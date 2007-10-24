@@ -1,0 +1,96 @@
+  	<!-- 	CONTENT -->
+		<div class="content1">
+
+  	  <!-- Page title -->		
+		  <div class="content1-pagetitle">Welcome to Mount Madonna Retreat Admin</div>			
+                				
+			<!-- Text container -->
+			<div class="content1-container line-box">
+				<div class="content1-container-1col">
+					<p class="content-title-noshade-size3">Search</p>                            
+        	        <div class="content-txtbox-noshade" id=myAutoComplete>
+                        <input type=text name="myInput" value="">
+                         <div id="myContainer"></div> 
+                         <script type="text/javascript"> 
+                            var myFunction = function() { 
+                                var myArray2 = ["d", "e", "f"]; 
+                                return myArray2.reverse(); 
+                            } 
+                            var myDataSource2 = new YAHOO.widget.DS_JSFunction(myFunction); 
+                            var myAutoComp = new YAHOO.widget.AutoComplete("myInput","myContainer", myDataSource2); 
+                         </script> 
+					</div>
+				</div>
+      </div>
+      
+			<!-- Text container -->
+			<div class="content1-container line-box">
+				<div class="content1-container-2col-left">
+					<p class="content-title-noshade-size3">Registration</p>
+					<div class="content-txtbox-noshade">
+						<p>Personal information about users registering for this program are entered here.</p>
+          </div>
+				</div>
+
+				<div class="content1-container-2col-right">
+				<p class="content-title-noshade-size3">Housing</p>
+        <div class="content-txtbox-noshade">
+          <p>Housing information for groups and rentals for this program are provided here.</p>
+				</div>
+				</div>		
+			</div>
+
+      <!-- Text container -->
+			<div class="content1-container">
+				<div class="content1-container-3col-left">
+					<p class="content-title-noshade-size3">Lorem Ipsum</p>
+					<p class="content-subtitle-noshade-size1">Lorem Ipsum</p>
+					<div class="content-txtbox-noshade">
+						<p>Lorem ipsum dolor sit amet, adipiscing elit, sed diam nonummy nibh euismod.</p>
+					</div>
+				</div>
+			
+				<div class="content1-container-3col-middle">
+					<p class="content-title-noshade-size3">Lorem Ipsum</p>
+					<p class="content-subtitle-noshade-size1">Lorem Ipsum</p>
+					<div class="content-txtbox-noshade">
+						<p>Lorem ipsum dolor sit amet, adipiscing elit, sed diam nonummy nibh euismod.</p>			 
+					</div>
+        </div>
+
+				<div class="content1-container-3col-right">
+					<p class="content-title-noshade-size3">Lorem Ipsum</p>
+					<p class="content-subtitle-noshade-size1">Lorem Ipsum</p>
+					<div class="content-txtbox-noshade">
+						<p>Lorem ipsum dolor sit amet, adipiscing elit, sed diam nonummy nibh euismod.</p>
+					</div>
+				</div>
+      </div>
+
+      <!-- Text container -->
+			<div class="content1-container">
+				<div class="content1-container-3col-left">
+					<p class="content-title-noshade-size3">Lorem Ipsum</p>
+					<p class="content-subtitle-noshade-size1">Lorem Ipsum</p>
+					<div class="content-txtbox-noshade">
+						<p>Lorem ipsum dolor sit amet, adipiscing elit, sed diam nonummy nibh euismod.</p>
+					</div>
+				</div>
+			
+				<div class="content1-container-3col-middle">
+					<p class="content-title-noshade-size3">Lorem Ipsum</p>
+					<p class="content-subtitle-noshade-size1">Lorem Ipsum</p>
+					<div class="content-txtbox-noshade">
+						<p>Lorem ipsum dolor sit amet, adipiscing elit, sed diam nonummy nibh euismod.</p>			 
+					</div>
+        </div>
+
+				<div class="content1-container-3col-right">
+					<p class="content-title-noshade-size3">Lorem Ipsum</p>
+					<p class="content-subtitle-noshade-size1">Lorem Ipsum</p>
+					<div class="content-txtbox-noshade">
+						<p>Lorem ipsum dolor sit amet, adipiscing elit, sed diam nonummy nibh euismod.</p>
+					</div>
+				</div>
+      </div>
+    </div>
