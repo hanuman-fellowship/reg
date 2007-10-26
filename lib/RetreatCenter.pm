@@ -36,11 +36,7 @@ __PACKAGE__->config(
                 },
                 'dirs'       => [ 'static', qr/^(images|css)/ ],    
                 'ignore_extensions' => [ 'html' ],
-            },
-    'RetreatCenter::View::JSON' => {
-                allow_callback => 1,
-                callback_param => 'cb',
-            },
+            }
 );
 
 # Start the application

@@ -64,7 +64,7 @@ CREATE TABLE credit_codes (
             description         TEXT
     );
 
-CREATE TABLE person_affilation (
+CREATE TABLE person_affiliation (
             person_id           INTEGER,
             affiliation_id      INTEGER,
             affilation_dt       TEXT
@@ -72,7 +72,9 @@ CREATE TABLE person_affilation (
 
 CREATE TABLE affiliations (
             id                  INTEGER PRIMARY KEY,
-            description         TEXT
+            description         TEXT,
+            create_dt           TEXT,
+            update_dt           TEXT
     );
 
 --
