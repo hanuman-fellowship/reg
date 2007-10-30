@@ -1,0 +1,71 @@
+make the tables with:
+
+sqlite3 retreatcenter.db <mktables
+
+import the data with:
+
+perl load.pl
+
+there will be a few error messages about
+erroneous affiliations.
+
+the migrated data is in these files which
+are read by load.pl:
+
+affils
+people
+reports
+
+The reports schema is wide open for change and improvement.
+
+The format column is an integer representing
+one of 11 different formats:
+
+    1  = "Name|Address|Email"
+    2  = "Email to CMS"
+    3  = "Name, Address"
+    4  = "Name, Home #, Work #"
+    5  = "Name, Home #, Work # - double spaced"
+    6  = "Name, Home #"
+    7  = "Count"
+    8  = "DBF format"
+    9  = "Statistics"
+    10 = "Just Name"
+    11 = "Name, Email"
+
+The rep_order column is a single letter for
+sorting on various columns in people:
+
+    Z zip_post
+    N last name
+    S sanskrit name
+
+The affils column is space separated integers
+representing foreign keys into the affils table.
+Bogus, yes.   It's due to the transforming of
+affils from letters to a mapping table.
+
+I would be quite fine with forcing the users
+to recreate the reports in your new format whatever
+it is.  No big deal.  So no real need to migrate this data.
+Just learn from it what the range of things the old
+one could do.
+
+One nice thing for the new would a column named 'nrecs'.
+The program would do the query and then
+take a random sample (at a certain probablity)
+to generate approximately nrecs records.
+I can explain further if needed.
+
+Perhaps a way to give a date and specify which 
+of the 5 dates in people to compare it to.
+Like select * from people where date_updat > '2006-01-01'.
+
+The minimum requirement is to be able
+to give zip code ranges and a series of affiliations.
+And to specify the output format.
+
+You can experiment and enhance it if you wish.
+You might ask Brajesh or Jayanti if they see
+any particular needs beyond what they have now.
+brajesh@ and jayanti@ mountmadonna.org.
