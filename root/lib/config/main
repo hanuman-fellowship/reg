@@ -11,17 +11,17 @@
    END;
 
    # define a data structure to hold sitewide data
-#   site = {
-#     title     => 'Catalyst::View::TTSite Example Page',
-#     copyright => '2007 Your Name Here',
-#   };
+   site = {
+     title     => 'Reg/Mlist redone right.  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=http://localhost:3000/person/search>People</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=http://localhost:3000/affil/list>Affiliations</a>',
+     # copyright => '2007-2010',
+   };
 
    # load up any other configuration items 
-#   PROCESS config/col
-#         + config/url;
+   PROCESS config/col
+         + config/url;
 
    # set defaults for variables, etc.
-#   DEFAULT 
-#     message = 'There is no message';
+   DEFAULT 
+     message = 'There is no message';
 
 -%]
