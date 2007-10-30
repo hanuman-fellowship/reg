@@ -5,7 +5,9 @@ use warnings;
 
 use base 'DBIx::Class::Schema';
 
-__PACKAGE__->load_classes;
+__PACKAGE__->load_classes({
+    RetreatCenterDB => [qw/Affil AffilPerson Person/]
+});
 
 
 # Created by DBIx::Class::Schema::Loader v0.04002 @ 2007-10-25 19:22:28
