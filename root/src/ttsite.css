@@ -16,6 +16,7 @@ body {
     border-bottom: 1px solid [% site.col.line %];
 }
 
+/* no footer please
 #footer {
     background-color: [% site.col.head %];
     text-align: center;
@@ -26,6 +27,7 @@ body {
     width: 100%;
     padding: 4px;
 }
+*/
 
 #content {
     padding: 10px;
