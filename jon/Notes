@@ -1,0 +1,78 @@
+extra body tag okay?
+    I got the focus right using it.
+footer is at a particular x coord?   > 20 nrecs it stays??? :(
+    it's actually off screen :(
+    i tried to get rid of it entirely with no luck.
+    success - edited the css file.
+empty message => "There is no message".
+    some way in TT to make it empty?
+    failed to reset message with query parameter, too.
+    tutorial says it is better to use the 'flash' technique?  what's that?
+_trim in Util.pm instead of Person.pm?
+not sure what is the convention for controllers /mlist/update or /person/update?
+    how about for templates?   mlist/search.tt2 or person/search.tt2?
+    person/update controller is in Person.pm, right?
+    perhaps if the view is about a particular model then
+        the tt2 file belongs there
+really cool that you can muck with the view
+    without restarting the server.  only when changing the controllers
+    do you need to restart.
+rewriting the URLs in case someone does a refresh
+    good after a delete, update_do
+    I followed the tutorial.
+    I didn't use Catalyst.uri_for... for the form actions
+        in the templates.  Okay?
+check for dups in create, update
+how to change the name_pref?
+need to put css class/div tags in the tt2 files.
+got the function - at some point the appearance
+get some cute little gifs for view/edit/delete?
+    steal somewhere?
+maxsize for text fields? so can't scroll them.
+max for nrecs?  to protect against mistakes?
+i forgot affils.
+need another link for crud for affils.
+how to do logging??  not to browser, how into server log???
+prohibit [>"'] as a_code - will interfere with html syntax
+    also # ) etc.  is there a uri_encode thingy?
+    to hex encode it?
+tried editing root/lib/config/main
+    looked like Perl so used heredoc.  no no.  this is TT.
+Add to program attributes:
+    registration start and end time
+    program start time and end time
+Add a table for _system_ type attributes:
+    Start/end times for dinner on different days.
+How to quote a value in the template which might
+    contain a ' and a "????   e.g. last name in the
+    person update form.  last name of D'Angelo.
+    " is safer, I guess. but not 100%.
+I notice that after the update form is submitted
+    it does a selective update - only the fields that changed
+    AND the blank fields are rewritten.  Yes?
+I guessed (and was right) that the create method
+    returns the object it just created!
+isn't it rather unOO to dig into the stash hashref???
+    or the params hashref???
+delete_all() for deleting a person is rather inefficient
+    in the way it deletes the affiliations.   better to
+    just do a delete after a search on the affiliation table
+    for p_id = $id!
+the fancy auto generated accessor 'affils' is nice
+    but it doesn't sort as I would like...
+    any way to specify an order by?
+need javascript validation of sex, alert before delete
+    other required fields?
+    date validation
+    email validation
+affiliations in column sort not running sort?
+    since i'm not doing it in the template... i can be smarter.
+delete an affiliation - also delete from affil_people.
+
+
+should we use automated form creation, field validation
+    a la HTML::Widget as explained in part 8 of the tutorial?
+    or should we do it ourselves - with better control?
+    i haven't tried part 8 yet so perhaps can't speak...
+
+partnering is next?
