@@ -1,0 +1,14 @@
+<!-- this form doubles as an update and as a create form. -->
+<body onload="document.form.last.focus()">
+<form action=[% '/person/' _ form_action %] name=form>
+<table cellpadding=5 border=1>
+<tr>
+<td align=right>Code</td>
+<td><input type=text name=a_code value='[% affil.a_code %]'></td>
+</tr>
+<td align=right>Description</td>
+<td><input type=text name=a_descrip value='[% affil.a_descrip %]' size=30></td>
+</tr>
+</table>
+<input type=submit value="Submit">
+</form>

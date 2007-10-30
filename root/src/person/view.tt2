@@ -1,0 +1,25 @@
+<table cellpadding=5 border=1>
+<tr><td align=right>Last</td><td>[% person.last %]</td></tr>
+<tr><td align=right>First</td><td>[% person.first %]</td></tr>
+<tr><td align=right>Sanskrit</td><td>[% person.sanskrit %]</td></tr>
+<tr><td align=right>Sex</td><td>[% sex %]</td></tr>
+<tr><td align=right>Address</td><td>[% person.addr1 %]</td></tr>
+<tr><td align=right>&nbsp;</td><td>[% person.addr2 %]</td></tr>
+<tr><td align=right>City</td><td>[% person.city %]</td></tr>
+<tr><td align=right>State/Province</td><td>[% person.st_prov %]</td></tr>
+<tr><td align=right>Zip/Postal Code</td><td>[% person.zip_post %]</td></tr>
+<tr><td align=right>Country</td><td>[% person.country %]</td></tr>
+<tr><td align=right>Email</td><td>[% person.email %]</td></tr>
+<tr><td align=right>Home</td><td>[% person.tel_home %]</td></tr>
+<tr><td align=right>Work</td><td>[% person.tel_work %]</td></tr>
+<tr><td align=right>Cell</td><td>[% person.tel_cell %]</td></tr>
+<!-- not person.affil below -->
+<tr>
+<td align=right>Affiliations</td>
+<td>
+[% FOREACH a IN affils %]
+[% a.descrip %]<br>
+[% END -%]
+</td>
+</tr>
+</table>

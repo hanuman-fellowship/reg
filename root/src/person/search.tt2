@@ -1,0 +1,18 @@
+<!-- extra body tag okay? -->
+<!-- the message field gives 'There is no message' if its not there! -->
+<body onload="document.search.pattern.focus();">
+[% message || Catalyst.request.params.message %]
+<p>
+<form action="/person/search_do" name=search>
+Pattern: <input type=text name=pattern size=20><br>
+Last <input type=radio name=field value=last checked>&nbsp;&nbsp;&nbsp;
+Sanskrit <input type=radio name=field value=sanskrit>&nbsp;&nbsp;&nbsp;
+Zip/Postal Code <input type=radio name=field value=zip_post>&nbsp;&nbsp;&nbsp;
+Email <input type=radio name=field value=email><br>
+Prefix <input type=radio name=match value=prefix checked>&nbsp;&nbsp;&nbsp;
+Substring <input type=radio name=match value=substr><br>
+Number of records <input type=text name=nrecs size=3 value=10><br>
+<input type=submit value="Submit">
+</form>
+
+<a href=/person/create>Create</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

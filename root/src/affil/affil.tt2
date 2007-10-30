@@ -1,0 +1,11 @@
+<!-- this form doubles as an update and as a create form. -->
+<body onload="document.form.descrip.focus()">
+<form action=[% '/affil/' _ form_action %] name=form>
+<table cellpadding=5 border=1>
+<tr>
+<td align=right>Description</td>
+<td><input type=text name=descrip value='[% affil.descrip %]'></td>
+</tr>
+</table>
+<input type=submit value="Submit">
+</form>
