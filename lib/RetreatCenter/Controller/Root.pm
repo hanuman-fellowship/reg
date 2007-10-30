@@ -29,7 +29,8 @@ RetreatCenter::Controller::Root - Root Controller for RetreatCenter
 sub default : Private {
     my ( $self, $c ) = @_;
 
-    $c->stash->{template} = 'index.tt2';
+    # Hello World
+    $c->response->body( $c->welcome_message );
 }
 
 =head2 end
@@ -42,7 +43,7 @@ sub end : ActionClass('RenderView') {}
 
 =head1 AUTHOR
 
-Shanker Neelakantan
+Jon Bjornstad
 
 =head1 LICENSE
 
