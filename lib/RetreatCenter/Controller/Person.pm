@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
+use Util qw/affil_table/;
+
 =head1 NAME
 
 RetreatCenter::Controller::Person - Catalyst Controller
@@ -115,35 +117,7 @@ sub update : Local {
     my $sex = $p->sex();
     $c->stash->{sex_female} = ($sex eq "F")? "checked": "";
     $c->stash->{sex_male}   = ($sex eq "M")? "checked": "";
-
-    # get the affiliations ready for the template
-    # this was too hard to do within the template...
-    # which affils should be checked?
-    my %checked = map { $_->id => 'checked' }
-                  $p->affils();
-    my @affils = $c->model('RetreatCenterDB::Affil')->search(
-        undef,
-        { order_by => 'descrip' },
-    );
-    my $aff;
-    my $n = 0;
-    for my $a (@affils) {
-        my $id = $a->id();
-        if ($n % 3 == 0) {
-            $aff .= "<tr>";
-        }
-        $aff .= "<td><input type=checkbox name=aff$id "
-                . ($checked{$id} || "")
-                . ">"
-                . $a->descrip
-                . "</td>";
-        if ($n % 3 == 2) {
-            $aff .= "</tr>\n";
-        }
-        ++$n;
-    }
-    $c->stash->{affil_table} = $aff;
-
+    $c->stash->{affil_table} = affil_table($c, $p->affils());
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "person/person.tt2";
 }
@@ -198,28 +172,7 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    # get the affiliations ready for the template
-    # this was too hard to do within the template...
-    my @affils = $c->model('RetreatCenterDB::Affil')->search(
-        undef,
-        { order_by => 'descrip' },
-    );
-    my $aff;
-    my $n = 0;
-    for my $a (@affils) {
-        my $id = $a->id();
-        if ($n % 3 == 0) {
-            $aff .= "<tr>";
-        }
-        $aff .= "<td><input type=checkbox name=aff$id>"
-                . $a->descrip
-                . "</td>";
-        if ($n % 3 == 2) {
-            $aff .= "</tr>\n";
-        }
-        ++$n;
-    }
-    $c->stash->{affil_table} = $aff;
+    $c->stash->{affil_table} = affil_table($c);
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "person/person.tt2";
 }
