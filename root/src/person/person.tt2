@@ -63,7 +63,7 @@
 </tr>
 </table>
 <h2>Affiliations</h2>
-<table>
+<table cellpadding=1>
 [% affil_table %]
 </table>
 <input type=submit value="Submit">
