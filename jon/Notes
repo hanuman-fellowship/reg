@@ -67,12 +67,18 @@ need javascript validation of sex, alert before delete
     email validation
 affiliations in column sort not running sort?
     since i'm not doing it in the template... i can be smarter.
+    done.  nicely.  I did put some HTML in the controller.
+    am I forgiven?
 delete an affiliation - also delete from affil_people.
-
-
+    done.
 should we use automated form creation, field validation
     a la HTML::Widget as explained in part 8 of the tutorial?
     or should we do it ourselves - with better control?
     i haven't tried part 8 yet so perhaps can't speak...
 
 partnering is next?
+
+phone list - do I join 3 tables with descrip = "Phone List"
+    or find the proper affil.id first, then join 2?
+    how to do joins at all???
+    or perhaps do the SQL yourself???  heavens!
