@@ -1,0 +1,45 @@
+.menu {
+    color: brown;
+}
+h1 {
+    line-height: 130%;
+}
+h2 {
+    font-size: 29 pt;
+    color: blue;
+    line-height: 130%;
+}
+h3 {
+    color: green;
+}
+body {
+    width: 700px;
+    font-size: 14pt;
+    font-family: Georgia, verdana;
+    line-height: 130%;
+    margin-top: 2cm;
+    margin-left: 2cm;
+}
+td {
+    font-size: 14pt;
+    font-family: Georgia, verdana;
+    line-height: 125%;
+}
+dt {
+    color: brown;
+}
+dt.two {
+    color: purple;
+}
+.path {
+	color: purple;
+	font-size: 14pt;
+	font-weight: bold;
+	font-family: courier;
+}
+.emphasize {
+	color: orange;
+	font-size: 15pt;
+	font-weight: bold;
+	font-style: italic;
+}

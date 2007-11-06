@@ -1,0 +1,97 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="regmlist.css" />
+</head>
+<body>
+<h2>Mlist</h2>
+<ol>
+<li>Migration of mlist, affil dbfs.
+<li>CRUD for people table
+<ul>
+<li>Dates (auto for Enter/Update)
+<li>Date objects returned for the accessor.
+<li>Validations (dates, sex, zip code, name not empty, etc)
+<li>Alert before Delete
+<li>Duplicate check after create, update
+</ul>
+<li>CRUD for affil table
+<ul>
+<li>Alert before Delete
+</ul>
+<li>CRUD for reports table
+<ol type=a>
+<li>Redesign schema - no migration
+<li>Search on description of report.
+<li>Zip code ranges
+<li>Affiliations
+<li>Formats
+<li>Sort Orders
+<li>Requested Number of Records (random subset)
+<li>Respect the affiliation to exclude from any mailing (the old x).
+<li>One of the 5 dates <= specified date.
+<li>Partners get one not two mailings.
+</ol>
+<li>Partnering
+<ul>
+<li>Search for and Join
+<li>Go to Partner
+<li>Separate
+</ul>
+<li>Stale
+<li>Phone List - list #3 (separate from Reports)
+<li>Online additions/updates
+<li>Unduplication Listing
+<li>All email addresses - a listing (excluding old affil 9)
+<li>Big Purge by date
+<li>Fellowship listing - already done in reports?
+<li>Not Implemented
+<ul>
+<li>Preferred Name - unused in old mlist
+<li>Recall mode - too much trouble with SQL?
+<li>Other-Bounce, Other-Gender - not needed?
+<li>Mailing next report
+<li>Zip Check and Affil/Date Stats - not needed?
+<li>Affil Listing - essentially done in Affil CRUD already. 
+</ul>
+</ol>
+After #1-4 can begin on Reg.  #5-13 can be done later.
+<h2>Reg</h2>
+<ol>
+<li>Schema design EXcluding housing.<br>
+Computerized Housing <u>can</u> be designed later and inserted.<br>
+It's hard enough without housing!<br>
+What about Rentals?  Regi??  In same table?
+<li>Program CRUD, migration of all programs.<br>
+Web/Brochure descriptions in textarea - not on separate dialog.<br>
+Upload of program image file.<br>
+Validations.
+<li>Leader CRUD, linking to Program.<br>
+Biography in text area, upload of leader image file.
+<li>Cancellation Policy CRUD, linking to Program.
+<li>Housing Costs CRUD, linking to Program.
+<li>Rentals CRUD - different from Program CRUD.
+<li>Registration CRUD linking to Programs.
+<ol type=a>
+<li>Search for Program, Person - coordinated efficiently somehow.
+<li>This can be begun as soon as we have basic Program CRUD.
+<li>Housing - get housing type from list, then enter house name manually - no checks.
+Later - auto search, full schema for housing.
+Perhaps do check against house, campground names?
+CRUD for those first, of course.
+<li>Validations.
+<li>Last, First then autofill from Mlist - foreign key.
+<li>Tab order - Zip/Postal Code before City and State/Province 
+and then auto fill of latter.
+<li>Confirmation Notes CRUD, expanding.
+<li>Confirmation Letter on first entry, later.  Use a template!
+<li>Delete and Cancel a registration.
+<li>Online Registration - ftp, select, import.
+<li>Same Address, Copy, Move.
+</ol>
+<li>Generation of Web pages<br>
+Use existing Perl code
+modified to read directly from tables rather than dumping text files.
+This can be done in parallel with Registration CRUD.
+</ol>
+</body>
+</html>
