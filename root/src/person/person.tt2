@@ -61,6 +61,18 @@
 <td align=right>Cell</td>
 <td><input type=text name=tel_cell value="[% person.tel_cell %]"></td>
 </tr>
+<tr>
+<td align=right>Date Hanuman Fellowship</td>
+<td><input type=text name=date_hf value="[% date_hf %]"></td>
+</tr>
+<tr>
+<td align=right>Date Land Member</td>
+<td><input type=text name=date_lm value="[% date_lm %]"></td>
+</tr>
+<tr>
+<td align=right>Date Pathways</td>
+<td><input type=text name=date_path value="[% date_path %]"></td>
+</tr>
 </table>
 <h2>Affiliations</h2>
 <table cellpadding=1>

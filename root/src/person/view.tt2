@@ -13,13 +13,18 @@
 <tr><td align=right>Home</td><td>[% person.tel_home %]</td></tr>
 <tr><td align=right>Work</td><td>[% person.tel_work %]</td></tr>
 <tr><td align=right>Cell</td><td>[% person.tel_cell %]</td></tr>
-<!-- not person.affil below -->
 <tr>
 <td align=right>Affiliations</td>
+<!-- not person.affil below -->
 <td>
 [% FOREACH a IN affils %]
 [% a.descrip %]<br>
 [% END -%]
 </td>
 </tr>
+<tr><td align=right>Date Hanuman Fellowship</td><td>[% date_hf %]</td></tr>
+<tr><td align=right>Date Land Member</td><td>[% date_lm %]</td></tr>
+<tr><td align=right>Date Pathways</td><td>[% date_path %]</td></tr>
+<tr><td align=right>Date Entered</td><td>[% date_entrd %]</td></tr>
+<tr><td align=right>Date Updated</td><td>[% date_updat %]</td></tr>
 </table>
