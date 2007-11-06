@@ -3,14 +3,26 @@ use warnings;
 package RetreatCenter::Controller::Listing;
 use base 'Catalyst::Controller';
 
+# DOES NOT WORK - do not try!
+# Joins???
 sub phone : Local {
     my ($self, $c) = @_;
 
     # join with affils, affil_people and people
     # to find "Phone List" affil id, then join with Person
     # or find Phone List first, then join two???
-    my $rs = $c->model('RetreatCenterDB::Person')->search(
-        # join with affil_people where 
+    my (@affils) = $c->model('RetreatCenterDB::Affil')->search(
+        {
+            descrip => { 'like', 'phone list' }
+        },
+    );
+    my @people = $c->model('RetreatCenterDB::Person')->search(
+        {
+            'affil_people.a_id' => $affils[0]->id(),
+        },
+        {
+            join => [qw/affil_people/],
+        }
     );
     my $rows;
     $rows .= <<"EOH";
