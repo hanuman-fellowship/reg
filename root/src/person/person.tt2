@@ -1,4 +1,5 @@
 <!-- this form doubles as an update and as a create form. -->
+
 <body onload="document.form.last.focus()">
 <form action=[% "/person/" _ form_action %] name=form>
 <table cellpadding=5 border=1>
@@ -76,7 +77,29 @@
 </table>
 <h2>Affiliations</h2>
 <table cellpadding=1>
-[% affil_table %]
+[% SET row = 0 %]
+[% FOREACH affil IN all_affils %]
+
+    [% UNLESS (row mod 3) %]
+        <tr>
+    [% END %]
+
+    <td>
+        [% IF person.affils.id %]
+            <input type=checkbox name="aff[% affil.id %]" checked>[% affil.descrip %]</input>
+        [% ELSE %]
+            <input type=checkbox name="aff[% affil.id %]">[% affil.descrip %]</input>
+        [% END %]
+    </td>
+
+    [% UNLESS (row mod 3) %]
+        </tr>
+    [% END %]
+
+    [% row = row + 1 %]
+[% END %]
+
 </table>
 <input type=submit value="Submit">
+
 </form>
