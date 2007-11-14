@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+die "usage: rate logfile\n" unless @ARGV == 2;
+my ($rate, $fname) = @ARGV;
+
+my $minutes = 0;
+open IN, $fname or die "cannot open $fname: $!\n";
+while (<IN>) {
+	last if /^__END__/;
+    chomp;
+    next if /^\s/;
+    s/^\w+\s\d+\s*//;
+    for my $range (split /\s*,\s*/) {
+        my ($start, $end) = split /-/, $range;
+        my ($sh, $sm) = split /:/, $start;
+        my ($eh, $em) = split /:/, $end;
+        $eh += 12 if $eh < $sh;
+        $minutes += ($eh*60+$em) - ($sh*60+$sm);
+    }
+}
+close IN;
+my $hours = $minutes/60;
+printf "%.2f hours at \$$rate per hour is \$%.2f\n",
+       $hours, $hours*$rate;
