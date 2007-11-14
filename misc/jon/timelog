@@ -1,0 +1,35 @@
+Oct 25 12:00-2:45
+    people crud with full mlist data
+Oct 26 10:45-1:15
+    affil crud
+    affil on person view, descriptions shown
+    links on top for People, Affiliations
+Oct 28 8:30-10:00
+    redoing affil with mapping table
+        trouble - I don't understand the DBIC relationships :(
+    it worked by some miracle
+Oct 29 6:20-8:50
+    getting affils in and out of the form 
+    not easy!
+    got sex there. also not easy.
+    next is the dates.
+    lots of notes.  need to consult with S about them all.
+Oct 29 8:40-9:50
+    getting report data, checking in 
+Oct 30 9:30-10:00, 5:30-5:50
+    Util.pm with affil_table exported on request.
+    3 column with better order
+Oct 31 12:10-12:30, 6:30-6:40
+    began phone list
+    joining the affil_people, people tables!  Shankar will have
+    the same task.  Yikes!
+Nov 4 12:00-12:20
+    a bit of progress on the phone list
+Nov 5 10:45-11:30
+    Laying out steps, milestones, estimates of difficulty.
+    Made a beginning.   Mlist might be complete enough - but
+    no estimates yet.
+Nov 6 6:00-7:15
+    dates in people table - using Date::Simple.
+    DateTime is So/Too complex, as is Date::Calc.
+    not using sort() in person affils view - rather order_by.
