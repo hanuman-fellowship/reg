@@ -3,7 +3,7 @@ use warnings;
 
 package Util;
 use base 'Exporter';
-our @EXPORT_OK = qw/affil_table date_fmt slash_to_d8/;
+our @EXPORT_OK = qw/affil_table/;
 
 use POSIX   qw/ceil/;
 use Date::Simple qw/d8/;
@@ -57,28 +57,6 @@ sub affil_table {
         $aff .= "</tr>\n";
     }
     $aff;
-}
-
-sub date_fmt {
-    my ($date_str) = @_;
-
-    ($date_str =~ /\d{8}/)? d8($date_str)->format("%m/%d/%Y")
-    :                       "";
-}
-
-sub slash_to_d8 {
-    my ($date_str) = @_;
-    
-    if (my ($m, $d, $y) = $date_str =~ m{(\d\d)/(\d\d)/(\d+)}) {
-        if ($y < 100) {
-            $y = (($y > 70)? "19"
-                 :           "20") . $y;
-        }
-        return "$y$m$d";
-    }
-    else {
-        return "";
-    }
 }
 
 1;
