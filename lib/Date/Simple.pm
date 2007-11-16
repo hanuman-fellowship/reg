@@ -1,15 +1,16 @@
 #
 # Date::Simple - a simple date object
 #
+use strict;
+use warnings;
 package Date::Simple;
 
-$VERSION = '3.01';
+our $VERSION = '3.01';
 use Exporter ();
-@ISA = ('Exporter');
-@EXPORT_OK = qw/ today  ymd  d8  date  leap_year  days_in_month /;
-%EXPORT_TAGS = (all => \@EXPORT_OK);
+our @ISA = ('Exporter');
+our @EXPORT_OK = qw/ today  ymd  d8  date  leap_year  days_in_month /;
+our %EXPORT_TAGS = (all => \@EXPORT_OK);
 
-use strict;
 use Carp ();
 use overload
     '+'   => '_add',
@@ -23,7 +24,32 @@ use overload
     'bool' => sub { 1 },
     '""'  => '_stringify';
 
+my $european = 0;       # default is month/day/year the American way
+my $default_format = "%Y-%m-%d";     # default default format is ISO-8601
+
+sub european {
+    my ($self) = @_;
+    $european = 1;
+}
+sub american {
+    my ($self) = @_;
+    $european = 0;
+}
+sub default_format {
+    #
+    # be careful in case default_format() is called as
+    # a method (class or instance) otherwise the default format
+    # would be "Date::Simple" or something else!
+    # this same technique is used in several other places
+    # with exported function names like today() and date().
+    #
+    shift if @_ && ($_[0] eq "Date::Simple" || ref($_[0]) eq "Date::Simple");
+    $default_format = shift if @_;
+    $default_format;
+}
+
 sub today {
+    shift if @_ && ($_[0] eq "Date::Simple" || ref($_[0]) eq "Date::Simple"); 
     my ($d, $m, $y) = (localtime)[3..5];
     $y += 1900;
     $m += 1;
@@ -33,33 +59,99 @@ sub today {
 sub _inval {
     my ($first);
     $first = shift;
-    Carp::croak ("Invalid ".
-                 (ref($first)||$first).
-                 " constructor args: ('".
-                 join("', '", @_)."')"
-                );
+    Carp::croak("Invalid ".
+                (ref($first)||$first).
+                " constructor args: ('".
+                join("', '", @_)."')"
+               );
 }
 
-sub _new {
+sub _three {
+    my ($x1, $x2, $x3) = @_;
+
+    my $y = $x3;
+    if (70 <= $y && $y < 100) {
+        $y += 1900;
+    }
+    elsif (0 <= $y && $y < 70) {
+        $y += 2000;
+    }
+    my $m = $european? $x2: $x1;
+    my $d = $european? $x1: $x2;
+    return ($y, $m, $d);
+}
+
+#
+# aside from the class name ($that)
+# there should be an ODD number of parameters
+# that specify what date you wish to instantiate.
+# These forms are recognized for Sept 2, 2007:
+#
+# "20070902"
+# "2007-09-02"
+# "090207"
+# 2007, 9, 2
+# [ 2007, 9, 2]
+# an existing Date::Simple object
+#
+# or a flexible format:
+#
+# "09/02/07"
+# "9/2/7"
+# "9 2 7"
+# "9-2-2007"
+# which is 3 groups of digits separated
+# by non-digits.  The groups
+# are month/day/year - unless Date::Simple->european()
+# has been called in which case it is day/month/year.
+# 1900/2000 is added on to a year < 100 as appropriate.
+# 70-99 is 1900 otherwise 2000.
+#
+# If there are an EVEN number of parameters
+# pop off the last one as the stringifying format for _this_ date.
+# it defaults to "%Y-%m-%d".
+#
+# if there are ZERO parameters then return "today"
+# with the default format.
+# if there is one parameter which contains a '%'
+# then return "today" with that parameter as a format.
+#
+sub new {
     my ($that, @ymd) = @_;
     my ($class);
 
-    $class = ref ($that) || $that;
+    $class = ref($that) || $that;
 
-    my $format = "%Y-%m-%d";                        # default format
+    my $format = $default_format;
     $format = pop @ymd if scalar(@ymd) % 2 == 0;    # last arg may be format
 
+    #
+    # The array @ymd is the set of parameters passed in.
+    # it is re-purposed to pass to ymd_to_days() below.
+    #
     if (scalar (@ymd) == 1) {
         my $x = $ymd[0];
         if (ref ($x) eq 'ARRAY') {
             @ymd = @$x;
-        } elsif (UNIVERSAL::isa($x, $class)) {
+        }
+        elsif (UNIVERSAL::isa($x, $class)) {
             return ($x);
-        } elsif ($x =~ /^(\d\d\d\d)-(\d\d)-(\d\d)$/
+        }
+        elsif ($x =~ /^(\d\d\d\d)-(\d\d)-(\d\d)$/
                || $x =~ /^(\d\d\d\d)(\d\d)(\d\d)$/)
         {
             @ymd = ($1, $2, $3);
-        } else {
+        }
+        elsif ($x =~ m{^(\d\d)(\d\d)(\d\d)$}) {
+            @ymd = _three($1, $2, $3);
+        }
+        elsif ($x =~ m{%}) {
+            return today($x);
+        }
+        elsif ($x =~ m{^(\d+)\D+(\d+)\D+(\d+)$}) {
+            @ymd = _three($1, $2, $3);
+        }
+        else {
             return (undef);
         }
     }
@@ -67,30 +159,19 @@ sub _new {
         return (today());
     }
     if (scalar (@ymd) == 3) {
-        my $days = ymd_to_days (@ymd);
+        my $days = ymd_to_days(@ymd);
         return undef if ! defined ($days);
         return bless {
-            days   => $days,
+            days     => $days,
             "format" => $format,
         }, $class;
     }
-    _inval ($class, @ymd);
+    _inval($class, @ymd);
 }
 
 sub date {
-    return (scalar (_new (__PACKAGE__, @_)));
-}
-
-# Same as date() but it's a method and croaks on error if called with
-# one arg.
-sub new {
-    my ($date);
-
-    $date = &_new;
-    if (! $date && scalar (@_) == 1) {
-        Carp::croak ("'" . shift() . "' is not a valid ISO formated date");
-    }
-    return ($date);
+    shift if @_ && ($_[0] eq "Date::Simple" || ref($_[0]) eq "Date::Simple");
+    return (scalar (new(__PACKAGE__, @_)));
 }
 
 sub next { return ($_[0] + 1); }
@@ -107,7 +188,7 @@ sub _gmtime {
 sub set_format {
     my $self = shift;
     $self->{"format"} = shift;
-	return $self;
+    return $self;
 }
 
 sub get_format {
@@ -130,7 +211,7 @@ sub ymd {
     my $days = &ymd_to_days;
     return undef unless defined ($days);
     return bless {        
-        days   => $days,
+        days     => $days,
         "format" => $format,
     }, __PACKAGE__;
 }
@@ -190,8 +271,10 @@ sub validate ($$$) {
     return 1;
 }
 
+#
 # Given a year, month, and day, return the canonical day number.
 # That is the number of days since 1 January 1970, negative if earlier.
+#
 sub ymd_to_days {
     my ($Y, $M, $D) = @_;
     my ($days, $x);
@@ -230,14 +313,16 @@ sub days_to_ymd {
         $year += 400;
         $mnum = 2;
         $mday = 29;
-    } else {
+    }
+    else {
         $year += 100 * _divmod ($tmp, 36524);
         $year += 4 * _divmod ($tmp, 1461);
         if ($tmp == 1460) {
             $year += 4;
             $mnum = 2;
             $mday = 29;
-        } else {
+        }
+        else {
             $year += _divmod ($tmp, 365);
             $mnum = _divmod ($tmp, 31);
             $mday = $tmp + (1, 1, 2, 2, 3, 3, 3, 4, 4, 5, 5, 5)[$mnum];
@@ -249,7 +334,8 @@ sub days_to_ymd {
             if ($mnum > 9) {
                 $mnum -= 9;
                 $year += 1;
-            } else {
+            }
+            else {
                 $mnum += 3;
             }
         }
@@ -273,22 +359,23 @@ sub day_of_week {
 # not normally be called directly.
 #------------------------------------------------------------------------------
 sub _stringify {
-        my $self = shift;
-        if ($self->{"format"}) {
-                $self->format($self->{"format"});
-        } else {
-                return sprintf ("%04d-%02d-%02d", as_ymd($self));
-        }
+    my $self = shift;
+    if ($self->{"format"}) {
+        $self->format($self->{"format"});
+    }
+    else {
+        return sprintf ("%04d-%02d-%02d", as_ymd($self));
+    }
 }
 
 sub _add {
     my ($date, $diff) = @_;
 
     if ($diff !~ /^-?\d+$/) {
-        Carp::croak ("Date interval must be an integer");
+        Carp::croak("Date interval must be an integer");
     }
     return bless {
-        days   => ($date->{days} + $diff),
+        days     => ($date->{days} + $diff),
         "format" => $date->{"format"},
     },  ref($date)
 }
@@ -297,7 +384,7 @@ sub _subtract {
     my ($left, $right, $reverse) = @_;
 
     if ($reverse) {
-        Carp::croak ("Can't subtract a date from a non-date");
+        Carp::croak("Can't subtract a date from a non-date");
     }
     if (ref($right) eq '' && $right =~ /^-?\d+$/) {
         return bless {
@@ -311,14 +398,14 @@ sub _subtract {
 sub _compare {
     my ($left, $right, $reverse) = @_;
 
-    $right = $left->new($right) || _inval ($left, $right);
-    return ($reverse ? $right->{days} <=> $left->{days}:
-                               $left->{days}  <=> $right->{days});
+    $right = $left->new($right) || _inval($left, $right);
+    return ($reverse ? $right->{days} <=> $left->{days}
+           :           $left->{days}  <=> $right->{days});
 }
 
 sub _eq {
     my ($left, $right) = @_;
-    return (($right = $left->_new($right)) && $right->{days} == $left->{days});
+    return (($right = $left->new($right)) && $right->{days} == $left->{days});
 }
 
 sub _ne {
@@ -453,9 +540,27 @@ should be public.
 
 Several functions take a string or numeric representation and generate
 a corresponding date object.  The most general is C<new>, whose
-argument list may be empty (returning the current date), a string in
-format YYYY-MM-DD or YYYYMMDD, a list or arrayref of year, month, and
-day number, or an existing date object.
+argument list can be one of these:
+
+    empty (returning today)
+    "YYYY-MM-DD"
+    "YYYYMMDD"
+    "MMDDYY" (or "DDMMYY" if European)
+    a list or arrayref of year, month, and day number
+    an existing date object
+
+    Or more flexibly:
+
+    "9/2/7"
+    "05/12/2006"
+    "8.22.96"
+    "2 3 78"
+        With the above there are 3 groups of digits
+        separated by some kind of non-digits.
+        If the year is < 70 it is in the 21st century.
+        If it is between 70 and 99 it is in the 20th century.
+        The first two digits are either month/day or day/month
+        depending on the European setting (default American).
 
 =over 4
 
@@ -466,11 +571,10 @@ day number, or an existing date object.
     my $date = Date::Simple->new('1972-01-17');
 
 The C<new> method will return a date object if the values passed in
-specify a valid date.  (See above.)  If an invalid date is passed, the
-method returns undef.  If the argument is invalid in form as opposed
-to numeric range, C<new> dies.
+specify a valid date.  (See above.)  If an invalid date (in form
+or in numeric range) is passed, the method returns undef.
 
-The C<date> function provides the same functionality but must be
+The C<date> function provides the same functionality but can be
 imported or qualified as C<Date::Simple::date>.  (To import all public
 functions, do C<use Date::Simple (':all');>.)  This function returns
 undef on all invalid input, rather than dying in some cases like
@@ -484,7 +588,7 @@ B<Caution:> To get tomorrow's date (or any fixed offset from today),
 do not use C<today + 1>.  Perl parses this as C<today(+1)>.  You need
 to put empty parentheses after the function: C<today() + 1>.
 
-=item ymd (YEAR, MONTH, DAY)
+=item ymd(YEAR, MONTH, DAY)
 
 Returns a date object with the given year, month, and day numbers.  If
 the arguments do not specify a valid date, undef is returned.
@@ -494,7 +598,7 @@ Example:
     use Date::Simple ('ymd');
     $pbd = ymd(1987, 12, 18);
 
-=item d8 (STRING)
+=item d8(STRING)
 
 Parses STRING as "YYYYMMDD" and returns the corresponding date object,
 or undef if STRING has the wrong format or specifies an invalid date.
@@ -559,9 +663,9 @@ Returns a list of three numbers: year, month, and day.
 Returns the "d8" representation (see C<d8>), like
 C<$date-E<gt>format("%Y%m%d")>.
 
-=item DATE->format (STRING)
+=item DATE->format(STRING)
 
-=item DATE->strftime (STRING)
+=item DATE->strftime(STRING)
 
 These functions are equivalent.  Return a string representing the
 date, in the format specified.  If you don't pass a parameter, an ISO
@@ -625,17 +729,33 @@ equivalent to C<$date = $date + $number>.
 
 =item "$date"
 
-You can interpolate a date instance directly into a string, in the
-format specified by ISO 8601 (eg: 2000-01-17).
+You can interpolate a date instance directly into a string.
+By default this in the format specified by ISO 8601 (eg: 2000-01-17).
 
 You can specify a different date format for string interpolation
-by giving it as an additional parameter to the constructors
-today, date, d8, ymd, and new.   See the format/strftime method 
-for details on the format string.
+on a per instance basis by giving it as an additional parameter
+to the constructors new, date, today, d8, and ymd.
+See the format/strftime method for details on the format string.
+There are also accessor methods set_format and get_format.
 
-Doing arithmetic on a date object will not change its associated format.
+Examples:
 
-If needed, there are also accessor methods set_format and get_format.
+    $d = Date::Simple->new("2/5/2007", "%A %m");
+    print "date is $d\n";
+    $d->set_format("%B %d");
+    print "date is $d\n";
+
+Doing arithmetic on a date object will not change the associated format.
+
+    $d = date("20070902", "%B %d");
+    $e = $d + 2;
+    print "date is $e\n";
+
+To change the default format of ISO 8601 use this:
+
+    Date::Simple->default_format("%A %m");
+    $d = date("20070902");
+    print "date is $d\n";
 
 =back
 
