@@ -77,28 +77,7 @@
 </table>
 <h2>Affiliations</h2>
 <table cellpadding=1>
-[% SET row = 0 %]
-[% FOREACH affil IN all_affils %]
-
-    [% UNLESS (row mod 3) %]
-        <tr>
-    [% END %]
-
-    <td>
-        [% IF person.affils.id %]
-            <input type=checkbox name="aff[% affil.id %]" checked>[% affil.descrip %]</input>
-        [% ELSE %]
-            <input type=checkbox name="aff[% affil.id %]">[% affil.descrip %]</input>
-        [% END %]
-    </td>
-
-    [% UNLESS (row mod 3) %]
-        </tr>
-    [% END %]
-
-    [% row = row + 1 %]
-[% END %]
-
+[% affil_table %]
 </table>
 <input type=submit value="Submit">
 
