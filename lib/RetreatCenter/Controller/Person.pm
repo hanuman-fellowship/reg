@@ -4,8 +4,10 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
-use Util qw/affil_table date_fmt slash_to_d8/;
-use Date::Simple qw/d8 today/;
+use Util qw/affil_table/;
+use Date::Simple qw/date today/;
+
+Date::Simple->default_format("%D");      # set it here - where else???
 
 =head1 NAME
 
@@ -103,11 +105,11 @@ sub view : Local {
             {order_by => 'descrip'}
         )
     ];
-    $c->stash->{date_entrd} = date_fmt($p->date_entrd());
-    $c->stash->{date_updat} = date_fmt($p->date_updat());
-    $c->stash->{date_path}  = date_fmt($p->date_path());
-    $c->stash->{date_lm}    = date_fmt($p->date_lm());
-    $c->stash->{date_hf}    = date_fmt($p->date_hf());
+    $c->stash->{date_entrd} = date($p->date_entrd()) || "";
+    $c->stash->{date_updat} = date($p->date_updat()) || "";
+    $c->stash->{date_hf}    = date($p->date_hf())    || "";;
+    $c->stash->{date_lm}    = date($p->date_lm())    || "";;
+    $c->stash->{date_path}  = date($p->date_path())  || "";;
     $c->stash->{template} = "person/view.tt2";
 }
 
@@ -120,9 +122,9 @@ sub update : Local {
     $c->stash->{sex_female}  = ($sex eq "F")? "checked": "";
     $c->stash->{sex_male}    = ($sex eq "M")? "checked": "";
     $c->stash->{affil_table} = affil_table($c, $p->affils());
-    $c->stash->{date_lm}     = date_fmt($p->date_lm());
-    $c->stash->{date_path}   = date_fmt($p->date_path());
-    $c->stash->{date_hf}     = date_fmt($p->date_hf());
+    $c->stash->{date_hf}     = date($p->date_hf())   || "";
+    $c->stash->{date_lm}     = date($p->date_lm())   || "";
+    $c->stash->{date_path}   = date($p->date_path()) || "";
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "person/person.tt2";
 }
@@ -130,16 +132,32 @@ sub update : Local {
 #
 # currently there's no way to know which fields changed
 # so assume they all did.  DBIx::Class is smart about this.
-# we can also be smart about affils...
+# can we be smart about affils???  yes, see ZZ below.
 #
 # check for dups???
 #
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    my $lm   = slash_to_d8($c->request->params->{date_lm});
-    my $hf   = slash_to_d8($c->request->params->{date_hf});
-    my $path = slash_to_d8($c->request->params->{date_path});
+    # dates are either blank or converted to d8 format
+    my @mess;
+    for my $d (qw/ date_hf date_lm date_path /) {
+        my $fld = $c->request->params->{$d};
+        my $dt = date($fld);
+        if ($fld && ! $dt) {
+            # tell them which date field is wrong???
+            push @mess, "Invalid date: $fld";
+            next;
+        }
+        $c->request->params->{$d} = $dt? $dt->as_d8()
+                                   :     "";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "person/error.tt2";
+        return;
+    }
+
     $c->model("RetreatCenterDB::Person")->find($id)->update({
         last     => $c->request->params->{last},
         first    => $c->request->params->{first},
@@ -155,9 +173,9 @@ sub update_do : Local {
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
         tel_cell => $c->request->params->{tel_cell},
-        date_lm  => $lm,
-        date_hf  => $hf,
-        date_path => $path,
+        date_hf    => $c->request->params->{date_hf},
+        date_lm    => $c->request->params->{date_lm},
+        date_path  => $c->request->params->{date_path},
         date_updat => today()->as_d8(),
     });
     #
@@ -165,9 +183,10 @@ sub update_do : Local {
     #
     my @cur_affils = grep { s/^aff(\d+)/$1/ }
                      keys %{$c->request->params};
-    # delete all old affiliations and create the new ones
-    # later - remember old, if no new do nothing... yes.
+    # delete all old affiliations and create the new ones.
+    # ZZ - later - remember old, if no new do nothing... yes.
     # if anything changed - just redo all by deleting/adding.
+    # trying to be smarter than this is probably not worth it?
     $c->model("RetreatCenterDB::AffilPerson")->search(
         { p_id => $id },
     )->delete();
@@ -195,9 +214,25 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    my $lm   = slash_to_d8($c->request->params->{date_lm});
-    my $hf   = slash_to_d8($c->request->params->{date_hf});
-    my $path = slash_to_d8($c->request->params->{date_path});
+    # dates are either blank or converted to d8 format
+    my @mess;
+    for my $d (qw/ date_hf date_lm date_path /) {
+        my $fld = $c->request->params->{$d};
+        my $dt = date($fld);
+        if ($fld && ! $dt) {
+            # tell them which date field is wrong???
+            push @mess, "Invalid date: $fld";
+            next;
+        }
+        $c->request->params->{$d} = $dt? $dt->as_d8()
+                                   :     "";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>n", @mess;
+        $c->stash->{template} = "person/error.tt2";
+        return;
+    }
+
     my $p = $c->model("RetreatCenterDB::Person")->create({
         last     => $c->request->params->{last},
         first    => $c->request->params->{first},
@@ -213,9 +248,9 @@ sub create_do : Local {
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
         tel_cell => $c->request->params->{tel_cell},
-        date_lm  => $lm,
-        date_hf  => $hf,
-        date_path => $path,
+        date_hf    => $c->request->params->{date_hf},
+        date_lm    => $c->request->params->{date_lm},
+        date_path  => $c->request->params->{date_path},
         date_updat => today()->as_d8(),
         date_entrd => today()->as_d8(),
     });
