@@ -1,4 +1,4 @@
-#!/usr/local/ActivePerl-5.8/bin/perl
+#!/usr/bin/perl
 
 BEGIN { 
     $ENV{CATALYST_ENGINE} ||= 'HTTP';
