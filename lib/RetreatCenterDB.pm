@@ -12,6 +12,9 @@ __PACKAGE__->load_classes({
         Person 
         Report 
         AffilReport
+        User
+        UserRole
+        Role
     /]
 });
 

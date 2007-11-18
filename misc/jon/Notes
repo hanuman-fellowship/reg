@@ -8,7 +8,9 @@ empty message => "There is no message".
     some way in TT to make it empty?
     failed to reset message with query parameter, too.
     tutorial says it is better to use the 'flash' technique?  what's that?
-_trim in Util.pm instead of Person.pm?
+    use this for rewriting the update url as well.
+trim in Util.pm instead of Person.pm?
+    done
 not sure what is the convention for controllers /mlist/update or /person/update?
     how about for templates?   mlist/search.tt2 or person/search.tt2?
     person/update controller is in Person.pm, right?
@@ -82,3 +84,30 @@ phone list - do I join 3 tables with descrip = "Phone List"
     or find the proper affil.id first, then join 2?
     how to do joins at all???
     or perhaps do the SQL yourself???  heavens!
+
+in creating new tables I keep forgetting the "DB"
+    after "RetreatCenter" in various places.
+    get a long error message...
+this passage in Authentication tutorial I did not understand:
+    Another option would be to use something like
+	sub base :Path :Args(0) {...} (where the ... refers to the
+	login code shown in sub index : Private above).  We are
+	using sub base :Path :Args(0) {...} here to specifically
+	match the URL /login. Path actions (aka, "literal actions")
+	create URI matches relative to the namespace of the controller
+	where they are defined. Although Path supports arguments
+	that allow relative and absolute paths to be defined, here
+	we use an empty Path definition to match on just the name
+	of the controller itself. The method name, base, is arbitrary.
+	We make the match even more specific with the :Args(0)
+	action modifier -- this forces the match on only /login,
+	not /login/somethingelse.
+a lot of this authentication is boilerplate.
+    you CAN do things differently but rarely need to.
+    so just copy it and use it until it becomes obvious
+    that you need something different...
+also don't understand the types of "Actions" as described
+    in the Catalyst::Manual::Intro
+    it may become clearer later when we need different things.
+I fiddled a good deal with the layout/html/main/etc
+    and the ttsite.css.   Show Shankar.  See if there's a better way.

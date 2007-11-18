@@ -13,7 +13,9 @@ body {
 
 #header {
     background-color: [% site.col.head %];
+/* no little red line all the way across please.
     border-bottom: 1px solid [% site.col.line %];
+*/
 }
 
 /* no footer please

@@ -1,4 +1,13 @@
 <table cellpadding=5 border=1>
+<a href="/person/update/[% person.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/delete/[% person.id %]">Delete</a>
+[% IF person.id_sps %]
+&nbsp;&nbsp;&nbsp;
+Partner <a href="/person/view/[% partner.id %]">[% partner.first _" "_ partner.last %]</a>
+&nbsp;&nbsp;&nbsp;<a href="/person/separate/[% person.id %]">Separate</a>
+[% END %]
+<p>
 <tr><td align=right>Last</td><td>[% person.last %]</td></tr>
 <tr><td align=right>First</td><td>[% person.first %]</td></tr>
 <tr><td align=right>Sanskrit</td><td>[% person.sanskrit %]</td></tr>
@@ -13,6 +22,7 @@
 <tr><td align=right>Home</td><td>[% person.tel_home %]</td></tr>
 <tr><td align=right>Work</td><td>[% person.tel_work %]</td></tr>
 <tr><td align=right>Cell</td><td>[% person.tel_cell %]</td></tr>
+<tr><td align=right>Comment</td><td>[% person.comment %]</td></tr>
 <tr>
 <td align=right>Affiliations</td>
 <!-- not person.affil below -->
@@ -22,6 +32,8 @@
 [% END -%]
 </td>
 </tr>
+</table>
+<table border=1 cellpadding=5>
 <tr><td align=right>Date Hanuman Fellowship</td><td>[% date_hf %]</td></tr>
 <tr><td align=right>Date Land Member</td><td>[% date_lm %]</td></tr>
 <tr><td align=right>Date Pathways</td><td>[% date_path %]</td></tr>

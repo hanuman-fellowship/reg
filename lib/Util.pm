@@ -3,7 +3,7 @@ use warnings;
 
 package Util;
 use base 'Exporter';
-our @EXPORT_OK = qw/affil_table/;
+our @EXPORT_OK = qw/affil_table trim/;
 
 use POSIX   qw/ceil/;
 use Date::Simple qw/d8/;
@@ -57,6 +57,17 @@ sub affil_table {
         $aff .= "</tr>\n";
     }
     $aff;
+}
+
+#
+# trim leading and trailing blanks off the parameter
+# and return the result
+#
+sub trim {
+    my ($s) = @_;
+
+    $s =~ s{^\s*|\s*$}{}g;
+    $s;
 }
 
 1;

@@ -1,24 +1,18 @@
 <table border=1 cellpadding=5>
 <tr>
-<th>V</th>
-<th>E</th>
 <th>Last</th>
 <th>First</th>
 <th>Sanskrit</th>
 <th>Zip/Postal Code</th>
 <th>Email</th>
-<th>D</th>
 </tr>
 [% FOREACH p IN people %]
 <tr>
-<td><a href="[% '/person/view/' _ p.id %]" >V</a></td>
-<td><a href="[% '/person/update/' _ p.id %]" >E</a></td>
-<td>[% p.last %]</td>
-<td>[% p.first %]</td>
+<td><a href="[% '/person/view/' _ p.id %]">[% p.last %]</a></td>
+<td><a href="[% '/person/view/' _ p.id %]">[% p.first %]</a></td>
 <td>[% p.sanskrit %]</td>
 <td>[% p.zip_post %]</td>
 <td>[% p.email %]</td>
-<td><a href="[% '/person/delete/' _ p.id %]" >D</a></td>
 </tr>
 [% END -%]
 </table>

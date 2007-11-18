@@ -13,7 +13,20 @@ use Catalyst::Runtime '5.70';
 # Static::Simple: will serve static files from the application's root 
 #                 directory
 
-use Catalyst qw/-Debug ConfigLoader Static::Simple StackTrace/;
+use Catalyst qw/
+    -Debug
+    ConfigLoader
+    Static::Simple
+    StackTrace
+
+    Authentication
+    Authentication::Store::DBIC
+    Authentication::Credential::Password
+
+    Session
+    Session::Store::FastMmap
+    Session::State::Cookie
+/;
 
 our $VERSION = '0.01';
 

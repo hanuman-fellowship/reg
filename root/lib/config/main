@@ -12,7 +12,7 @@
 
    # define a data structure to hold sitewide data
    site = {
-     title     => 'Reg/Mlist redone right.  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=http://localhost:3000/person/search>People</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href=http://localhost:3000/affil/list>Affiliations</a>',
+     title     => 'Reg/Mlist',
      # copyright => '2007-2010',
    };
 
@@ -22,6 +22,6 @@
 
    # set defaults for variables, etc.
    DEFAULT 
-     message = 'There is no message';
+     message = '';
 
 -%]

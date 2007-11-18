@@ -1,35 +1,16 @@
-package RetreatCenter::Controller::Person;
-
 use strict;
 use warnings;
+package RetreatCenter::Controller::Person;
 use base 'Catalyst::Controller';
 
 use lib '../..';
-
-use Util qw/affil_table/;
+use Util qw/affil_table trim/;
 use Date::Simple qw/date today/;
 
 Date::Simple->default_format("%D");      # set it here - where else???
 
-=head1 NAME
-
-RetreatCenter::Controller::Person - Catalyst Controller
-
-=head1 DESCRIPTION
-
-Catalyst Controller.
-
-=head1 METHODS
-
-=cut
-
-
-=head2 index 
-
-=cut
-
 sub index : Private {
-    my ( $self, $c ) = @_;
+    my ($self, $c) = @_;
 
     $c->forward('search');
 }
@@ -43,8 +24,7 @@ sub search : Local {
 sub search_do : Local {
     my ($self, $c) = @_;
 
-    my $pattern = $c->request->params->{pattern};
-    $pattern =~ s{^\s*|\s*$}{}g;        # trim leading/trailing blanks
+    my $pattern = trim($c->request->params->{pattern});
     my $field   = $c->request->params->{field};
     my $substr  = ($c->request->params->{match} eq 'substr')? '%': '';
     my $nrecs   = $c->request->params->{nrecs};
@@ -67,32 +47,33 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     #
-    # i tried using delete_all to do the cascade to the affils for this person.
-    # look at the DBIC_TRACE - it does it very inefficiently :(.
+    # i tried using delete_all() as directed
+    # to do the cascade to the affils for this person.
+    # look at the DBIC_TRACE - it does it VERY inefficiently :(.
     # delete with find() does the same.  but not with search()???.
     #
     #$c->model('RetreatCenterDB::Person')->search({id => $id})->delete_all();
-    #
     #$c->model('RetreatCenterDB::Person')->find($id)->delete();
     #
-    $c->model('RetreatCenterDB::Person')->search({id => $id})->delete();
-    $c->model('RetreatCenterDB::AffilPerson')->search({p_id => $id})->delete();
-    # the code below rewrites the url in the address
-    # bar but does not give a message... :(
-    $c->response->redirect(
-        $c->uri_for(
-            '/person/search',
-            { message => "Deleted" }
-        )
-    );
-}
+    # both the above do an inefficient delete of affils.
+    # this is direct and much better:
+    #$c->model('RetreatCenterDB::AffilPerson')->search({p_id => $id})->delete();
+    #
 
-# put this in Util.pm???
-sub _trim {
-    my ($s) = @_;
+    # first a find() to get the name for the message below
+    my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    my $name = $p->first() . " " . $p->last();
 
-    $s =~ s{^\s*|\s*$}{}g;
-    $s;
+    # now delete
+    $c->model('RetreatCenterDB::Person')->search(
+        { id => $id }
+    )->delete();
+    $c->model('RetreatCenterDB::AffilPerson')->search(
+        { p_id => $id }
+    )->delete();
+
+    $c->flash->{status_msg} = "$name was deleted.";
+    $c->response->redirect($c->uri_for('/person/search'));
 }
 
 sub view : Local {
@@ -100,6 +81,15 @@ sub view : Local {
 
     my $p = $c->model('RetreatCenterDB::Person')->find($id);
     $c->stash->{person} = $p;
+    #
+    # ???can we make a 'relationship' between people and itself
+    # and have $p->id_sps be another person object?
+    # until then...
+    #
+    if (my $id_sps = $p->id_sps()) {
+        my $sps = $c->model('RetreatCenterDB::Person')->find($id_sps);
+        $c->stash->{partner} = $sps;
+    }
     $c->stash->{sex} = ($p->sex() eq "M")? "Male": "Female";
     $c->stash->{affils} = [
         $p->affils(
@@ -160,7 +150,8 @@ sub update_do : Local {
         return;
     }
 
-    $c->model("RetreatCenterDB::Person")->find($id)->update({
+    my $p = $c->model("RetreatCenterDB::Person")->find($id);
+    $p->update({
         last     => $c->request->params->{last},
         first    => $c->request->params->{first},
         sanskrit => $c->request->params->{sanskrit},
@@ -175,6 +166,7 @@ sub update_do : Local {
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
         tel_cell => $c->request->params->{tel_cell},
+        comment  => $c->request->params->{comment},
         date_hf    => $c->request->params->{date_hf},
         date_lm    => $c->request->params->{date_lm},
         date_path  => $c->request->params->{date_path},
@@ -198,8 +190,9 @@ sub update_do : Local {
             p_id => $id,
         });
     }
-    $c->stash->{message} = "Updated";
-    $c->stash->{template} = "person/search.tt2";
+
+    $c->flash->{status_msg} = $p->first() . " " . $p->last() . " was updated.";
+    $c->response->redirect($c->uri_for('/person/search'));
 }
 
 sub create : Local {
@@ -250,6 +243,7 @@ sub create_do : Local {
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
         tel_cell => $c->request->params->{tel_cell},
+        comment  => $c->request->params->{comment},
         date_hf    => $c->request->params->{date_hf},
         date_lm    => $c->request->params->{date_lm},
         date_path  => $c->request->params->{date_path},
@@ -271,15 +265,20 @@ sub create_do : Local {
     $c->stash->{message} = "Created";
     $c->stash->{template} = "person/search.tt2";
 }
-=head1 AUTHOR
 
-Jon Bjornstad
-
-=head1 LICENSE
-
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
+sub separate : Local {
+    my ($self, $c, $id) = @_;
+    my $p   = $c->model('RetreatCenterDB::Person')->find($id);
+    my $sps = $c->model('RetreatCenterDB::Person')->find($p->id_sps());
+    $p->update({
+        id_sps => 0,
+    });
+    $sps->update({
+        id_sps => 0,
+    });
+    view($self, $c, $id);
+    # how about rewriting the url?
+    # use forward instead?
+}
 
 1;

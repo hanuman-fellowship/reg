@@ -43,10 +43,39 @@ Nov 15 6:00-7:00
         in a city/country that made trouble
         when sending confirmation letters with
         carpools...
-Nov 16 11:20-1:30
-    improve date parsing in Date::Simple.pm
+Nov 16 11:20-1:30, 8:30-8:45
+    improved date parsing in Date::Simple.pm
         didn't charge for all the time...
-    use it in Person.pm
-    date validation in update and create forms
-    now can use this as a model for reg/program forms.
+    used it in Person.pm
+        date validation in update and create forms
+        now can use this as a model for reg/program forms.
     restored affil_table - Shankar had started it in the template
+    put view in name links and delete and edit on the view page
+        seems better
+Nov 17 9:10-11:00, 11:30-12:30
+    partners - much easier than i expected!
+    for viewing, anyway - and separate was not that hard, either.
+
+    no charge for learning about sessions... which I think
+    are needed for partnering up two people.
+    authentication - validating who is who - pretty straightforward
+        copying.  a one time need and setup so I will put it as billable.
+        succeeded up to the User, Role and UserRoles classes loaded.
+        then "include authentication and session plugins"
+        and the next few items up to starting the server
+        and then it failed with:
+
+    Can't call method "can" on an undefined value at
+    /usr/local/ActivePerl-5.8/site/lib/Catalyst/Plugin/Authentication/
+        Store/DBIC.pm line 98.  Compilation failed in require
+        at script/retreatcenter_server.pl line 53.
+    need some help with this...
+    Found it!
+    I put an extra 'e': RetreateCenterDB::User in the yml file.
+        very tricky!   it now works! EXcellent.
+
+    fiddling with layout to get the standard links in a better place.
+
+    used the flash mechanism for the status message for deleting, updating
+    and then used redirect.   it is better...
+    got the name in the status message - even better.

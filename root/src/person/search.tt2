@@ -1,7 +1,9 @@
 <!-- extra body tag okay? -->
 <!-- the message field gives 'There is no message' if its not there! -->
 <body onload="document.search.pattern.focus();">
-[% message || Catalyst.request.params.message %]
+<a href=/person/create>Create</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<p>
+<div class=message>[% message || Catalyst.flash.status_msg %]</div>
 <p>
 <form action="/person/search_do" name=search>
 Pattern: <input type=text name=pattern size=20><br>
@@ -14,5 +16,3 @@ Substring <input type=radio name=match value=substr><br>
 Number of records <input type=text name=nrecs size=3 value=10><br>
 <input type=submit value="Submit">
 </form>
-
-<a href=/person/create>Create</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;

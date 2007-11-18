@@ -63,6 +63,10 @@
 <td><input type=text name=tel_cell value="[% person.tel_cell %]"></td>
 </tr>
 <tr>
+<td align=right>Comment</td>
+<td><input type=text name=comment value="[% person.comment %]"></td>
+</tr>
+<tr>
 <td align=right>Date Hanuman Fellowship</td>
 <td><input type=text name=date_hf value="[% date_hf %]"></td>
 </tr>
