@@ -15,9 +15,6 @@ my $p_sth = $dbh->prepare($p_sql)
 my $ap_sql = "insert into affil_people values(?, ?)";
 my $ap_sth = $dbh->prepare($ap_sql)
     or die "no prep affil_people\n";
-my $r_sql = "insert into reports values(?, ?, ?, ?, ?)";
-my $r_sth = $dbh->prepare($r_sql)
-    or die "no prep report\n";
 
 my @flds;
 
@@ -33,25 +30,6 @@ while (<$affils>) {
     $affil_id{$code} = $n;
 }
 close $affils;
-open my $report, "<", "report"
-    or die "cannot open report: $!\n";
-while (<$report>) {
-    chomp;
-    @flds = split /\|/;
-    my $af = "";
-    for my $a (split //, $flds[3]) {    # affils
-        if (exists $affil_id{$a}) {
-            $af .= "$affil_id{$a} ";
-        }
-        else {
-            print "no affil letter $a??\n";
-        }
-    }
-    chop $af;
-    $flds[3] = $af;
-    $r_sth->execute(@flds);
-}
-close $report;
 open my $people, "<", "people"
     or die "cannot open people: $!\n";
 $n = 0;

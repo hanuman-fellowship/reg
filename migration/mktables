@@ -36,9 +36,22 @@ create table affil_people (
 );
 drop table if exists reports;
 create table reports (
+    id integer primary key,
     descrip text,
     rep_order text,
     zip_range text,
-    affil text,
-    format integer
+    format integer,
+    last_run text
+);
+-- format can be one of:
+-- 1. first|last|addr1|addr2|city|st_prov|zip_post|country|email
+-- 2. first|last|addr1|addr2|city|st_prov|zip_post
+-- 3. first|last|addr1|addr2|city|st_prov|zip_post|country
+-- 4. first|last|tel_home|tel_work
+-- 5. first|last|tel_home
+
+drop table if exists affil_reports;
+create table affil_reports (
+    report_id integer,
+    affiliation_id integer
 );

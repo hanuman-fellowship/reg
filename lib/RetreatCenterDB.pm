@@ -6,7 +6,13 @@ use warnings;
 use base 'DBIx::Class::Schema';
 
 __PACKAGE__->load_classes({
-    RetreatCenterDB => [qw/Affil AffilPerson Person/]
+    RetreatCenterDB => [qw/
+        Affil 
+        AffilPerson 
+        Person 
+        Report 
+        AffilReport
+    /]
 });
 
 

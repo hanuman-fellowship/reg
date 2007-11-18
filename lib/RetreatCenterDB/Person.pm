@@ -53,19 +53,4 @@ __PACKAGE__->has_many(affil_person => 'RetreatCenterDB::AffilPerson', 'p_id');
 #   You must already have the has_many() defined to use a many_to_many().
 __PACKAGE__->many_to_many(affils => 'affil_person', 'affil');
 
-
-=head1 NAME
-
-MyAppDB::Book - A model object representing a book.
-
-=head1 DESCRIPTION
-
-This is an object that represents a row in the 'books' table of your application
-database.  It uses DBIx::Class (aka, DBIC) to do ORM.
-
-For Catalyst, this is designed to be used through MyApp::Model::MyAppDB.
-Offline utilities may wish to use this class directly.
-
-=cut
-
 1;

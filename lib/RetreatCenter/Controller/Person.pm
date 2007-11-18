@@ -4,6 +4,8 @@ use strict;
 use warnings;
 use base 'Catalyst::Controller';
 
+use lib '../..';
+
 use Util qw/affil_table/;
 use Date::Simple qw/date today/;
 

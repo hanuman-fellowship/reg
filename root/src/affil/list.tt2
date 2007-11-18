@@ -1,16 +1,17 @@
 <a href=/affil/create>Create</a>
 <p>
 <table cellpadding=5 border=1>
-<tr>
-<th>E</th>
-<th>Description</th>
-<th>D</th>
-</tr>
-[% FOREACH a IN affil %]
-<tr>
-<td><a href="[% '/affil/update/' _ a.id %]">E</a></td>
-<td>[% a.descrip %]</td>
-<td><a href="[% '/affil/delete/' _ a.id %]">D</a></td>
-</tr>
-[% END -%]
+    <tr>
+    <th>E</th>
+    <th>Description</th>
+    <th>D</th>
+    </tr>
+
+    [% FOREACH a IN affil %]
+    <tr>
+    <td><a href="[% '/affil/update/' _ a.id %]">E</a></td>
+    <td>[% a.descrip %]</td>
+    <td><a href="[% '/affil/delete/' _ a.id %]">D</a></td>
+    </tr>
+    [% END -%]
 </table>
