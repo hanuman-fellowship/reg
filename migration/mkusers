@@ -1,6 +1,7 @@
 --
 -- Add users and roles tables, along with a many-to-many join table
 --
+drop table if exists users;
 CREATE TABLE users (
     id            INTEGER PRIMARY KEY,
     username      TEXT,
@@ -10,10 +11,12 @@ CREATE TABLE users (
     last_name     TEXT,
     active        INTEGER
 );
+drop table if exists roles;
 CREATE TABLE roles (
     id   INTEGER PRIMARY KEY,
     role TEXT
 );
+drop table if exists user_roles;
 CREATE TABLE user_roles (
     user_id INTEGER,
     role_id INTEGER,
