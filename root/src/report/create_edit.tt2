@@ -1,0 +1,49 @@
+<!-- this form doubles as an update and as a create form. -->
+
+<body onload="document.form.last.focus()">
+<form action=[% "/report/" _ form_action %] name=form>
+    <table cellpadding=5 border=1>
+        <tr>
+        <td align=right>Description</td>
+        <td><input type=text name=descrip value="[% report.descrip %]"></td>
+        </tr>
+
+        <tr>
+        <td align=right>Format</td>
+        <td>
+            <select name="format">
+                <option value="1" [% format_selected_1 %]> Name, Address, Country, Email</option>
+                <option value="2" [% format_selected_2 %]> Name, Address, Zip</option>
+                <option value="3" [% format_selected_3 %]> Name, Address, Zip, Country</option>
+                <option value="4" [% format_selected_4 %]> Name, Home Tel#, Work Tel#</option>
+                <option value="5" [% format_selected_5 %]> Name, Home Tel#</option>
+            </select>
+        </td>
+        </tr>
+
+        <tr>
+        <td align=right>Zip Range</td>
+        <td><input type=text name=zip_range value="[% report.zip_range %]"></td>
+        </tr>
+
+        <tr>
+        <td align=right>Order by</td>
+        <td>
+            <select name="rep_order">
+                <option value="first" [% rep_order_selected_first %]>First name</option>
+                <option value="last" [% rep_order_selected_last %]>Last name</option>
+                <option value="zip_post" [% rep_order_selected_zip_post %]>Zip/Postal code</option>
+            </select>
+        </td>
+        </tr>
+    </table>
+
+    <h2>Affiliations</h2>
+
+    <table cellpadding=1>
+        [% affil_table %]
+    </table>
+
+    <input type=submit value="Submit">
+
+</form>

@@ -1,0 +1,16 @@
+<a href=/report/create>Create</a>
+<p>
+<table cellpadding=5 border=1>
+    <tr>
+    <th>Description</th>
+    <th>Zip Range</th>
+    </tr>
+
+    [% FOREACH report IN reports %]
+    <tr>
+        <td><a href="[% Catalyst.uri_for('/report/view/') _ report.id %]">[% report.descrip %]</a></td>
+        <td>[% report.zip_range %]</td>
+    </tr>
+    [% END -%]
+</table>
+

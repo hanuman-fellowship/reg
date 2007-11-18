@@ -1,0 +1,5 @@
+<center>Your Report Definition creation ran into an error!</center>
+
+<center><font color="red">[% error_msg %]</font></center>
+
+
