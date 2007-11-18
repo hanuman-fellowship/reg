@@ -1,0 +1,113 @@
+extra body tag okay?
+    I got the focus right using it.
+footer is at a particular x coord?   > 20 nrecs it stays??? :(
+    it's actually off screen :(
+    i tried to get rid of it entirely with no luck.
+    success - edited the css file.
+empty message => "There is no message".
+    some way in TT to make it empty?
+    failed to reset message with query parameter, too.
+    tutorial says it is better to use the 'flash' technique?  what's that?
+    use this for rewriting the update url as well.
+trim in Util.pm instead of Person.pm?
+    done
+not sure what is the convention for controllers /mlist/update or /person/update?
+    how about for templates?   mlist/search.tt2 or person/search.tt2?
+    person/update controller is in Person.pm, right?
+    perhaps if the view is about a particular model then
+        the tt2 file belongs there
+really cool that you can muck with the view
+    without restarting the server.  only when changing the controllers
+    do you need to restart.
+rewriting the URLs in case someone does a refresh
+    good after a delete, update_do
+    I followed the tutorial.
+    I didn't use Catalyst.uri_for... for the form actions
+        in the templates.  Okay?
+check for dups in create, update
+how to change the name_pref?
+need to put css class/div tags in the tt2 files.
+got the function - at some point the appearance
+get some cute little gifs for view/edit/delete?
+    steal somewhere?
+maxsize for text fields? so can't scroll them.
+max for nrecs?  to protect against mistakes?
+i forgot affils.
+need another link for crud for affils.
+how to do logging??  not to browser, how into server log???
+prohibit [>"'] as a_code - will interfere with html syntax
+    also # ) etc.  is there a uri_encode thingy?
+    to hex encode it?
+tried editing root/lib/config/main
+    looked like Perl so used heredoc.  no no.  this is TT.
+Add to program attributes:
+    registration start and end time
+    program start time and end time
+Add a table for _system_ type attributes:
+    Start/end times for dinner on different days.
+How to quote a value in the template which might
+    contain a ' and a "????   e.g. last name in the
+    person update form.  last name of D'Angelo.
+    " is safer, I guess. but not 100%.
+I notice that after the update form is submitted
+    it does a selective update - only the fields that changed
+    AND the blank fields are rewritten.  Yes?
+I guessed (and was right) that the create method
+    returns the object it just created!
+isn't it rather unOO to dig into the stash hashref???
+    or the params hashref???
+delete_all() for deleting a person is rather inefficient
+    in the way it deletes the affiliations.   better to
+    just do a delete after a search on the affiliation table
+    for p_id = $id!
+the fancy auto generated accessor 'affils' is nice
+    but it doesn't sort as I would like...
+    any way to specify an order by?
+need javascript validation of sex, alert before delete
+    other required fields?
+    date validation
+    email validation
+affiliations in column sort not running sort?
+    since i'm not doing it in the template... i can be smarter.
+    done.  nicely.  I did put some HTML in the controller.
+    am I forgiven?
+delete an affiliation - also delete from affil_people.
+    done.
+should we use automated form creation, field validation
+    a la HTML::Widget as explained in part 8 of the tutorial?
+    or should we do it ourselves - with better control?
+    i haven't tried part 8 yet so perhaps can't speak...
+
+partnering is next?
+
+phone list - do I join 3 tables with descrip = "Phone List"
+    or find the proper affil.id first, then join 2?
+    how to do joins at all???
+    or perhaps do the SQL yourself???  heavens!
+
+in creating new tables I keep forgetting the "DB"
+    after "RetreatCenter" in various places.
+    get a long error message...
+this passage in Authentication tutorial I did not understand:
+    Another option would be to use something like
+	sub base :Path :Args(0) {...} (where the ... refers to the
+	login code shown in sub index : Private above).  We are
+	using sub base :Path :Args(0) {...} here to specifically
+	match the URL /login. Path actions (aka, "literal actions")
+	create URI matches relative to the namespace of the controller
+	where they are defined. Although Path supports arguments
+	that allow relative and absolute paths to be defined, here
+	we use an empty Path definition to match on just the name
+	of the controller itself. The method name, base, is arbitrary.
+	We make the match even more specific with the :Args(0)
+	action modifier -- this forces the match on only /login,
+	not /login/somethingelse.
+a lot of this authentication is boilerplate.
+    you CAN do things differently but rarely need to.
+    so just copy it and use it until it becomes obvious
+    that you need something different...
+also don't understand the types of "Actions" as described
+    in the Catalyst::Manual::Intro
+    it may become clearer later when we need different things.
+I fiddled a good deal with the layout/html/main/etc
+    and the ttsite.css.   Show Shankar.  See if there's a better way.
