@@ -79,3 +79,17 @@ Nov 17 9:10-11:00, 11:30-12:30
     used the flash mechanism for the status message for deleting, updating
     and then used redirect.   it is better...
     got the name in the status message - even better.
+Nov 21 12:00-1:00
+    messed around with partnering people
+        not easy...  tried sessions, it was awkward.
+        typing first, last name - must match just once.
+Nov 21 6:00-6:50, 9:50-10:45
+    asking to create new partner or not - if yes, copy info.
+    akey after create or update of address fields
+
+    asking to copy addr, home phone to new existing partner
+    js alert for deletes, separates and partnering
+Nov 23 2:15-3:30, 10:00-10:15
+    unpartner the partner when deleting
+    look for and warn about duplicates
+    CSS float and clear positioning of view and create people pages
