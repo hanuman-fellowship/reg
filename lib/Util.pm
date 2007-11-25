@@ -3,7 +3,7 @@ use warnings;
 
 package Util;
 use base 'Exporter';
-our @EXPORT_OK = qw/affil_table trim/;
+our @EXPORT_OK = qw/affil_table trim nsquish/;
 
 use POSIX   qw/ceil/;
 use Date::Simple qw/d8/;
@@ -68,6 +68,26 @@ sub trim {
 
     $s =~ s{^\s*|\s*$}{}g;
     $s;
+}
+
+#
+# take the parameters, concatenate them,
+# extract the digits in order and suffix
+# them with the first letter.
+#
+# this is used during the efforts to locate
+# a duplicate entry.   If an address is
+# spelled differently or road instead of rd
+# it will have the same nsquished value.
+#
+# this is a poor man's MD5.
+# or an address-specific MD5.
+#
+sub nsquish {
+    my $s = join '', @_;
+    my ($c) = $s =~ m{([a-z])}i;
+    $s =~ s{\D}{}g;
+    $s.(uc $c);
 }
 
 1;
