@@ -1,0 +1,6 @@
+<form action='[% form_action %]'>
+[% message %]
+<p>
+<input type=submit name=yes value="Yes">&nbsp;&nbsp;
+<input type=submit name=no  value="No">
+</form>

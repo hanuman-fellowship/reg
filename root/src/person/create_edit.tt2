@@ -1,0 +1,99 @@
+<!-- this form doubles as an update and as a create form. -->
+
+<body onload="document.form.first.focus()">
+<form action=[% "/person/" _ form_action %] name=form>
+<table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
+    <tr>
+        <th align=right>First</td>
+        <td><input type=text name=first value="[% person.first %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Last</td>
+        <td><input type=text name=last value="[% person.last %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Sanskrit</td>
+        <td><input type=text name=sanskrit value="[% person.sanskrit %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Sex</td>
+        <td>
+        <input type=radio name=sex value="F" [% sex_female %] >Female
+        &nbsp;&nbsp;&nbsp;
+        <input type=radio name=sex value="M" [% sex_male %]>Male
+    </td>
+    </tr>
+    <tr>
+        <th align=right>Address</td>
+        <td><input type=text name=addr1 value="[% person.addr1 %]"></td>
+    </tr>
+    <tr>
+        <td align=right>&nbsp;</td>
+        <td><input type=text name=addr2 value="[% person.addr2 %]"></td>
+    </tr>
+    <tr>
+        <th align=right>City</td>
+        <td><input type=text name=city value="[% person.city %]"></td>
+    </tr>
+    <tr>
+        <th align=right>State/Province</td>
+        <td><input type=text name=st_prov value="[% person.st_prov %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Zip/Postal Code</td>
+        <td><input type=text name=zip_post value="[% person.zip_post %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Country</td>
+        <td><input type=text name=country value="[% person.country %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Email</td>
+        <td><input type=text name=email value="[% person.email %]"></td>
+    </tr>
+</table>
+<div style="float: left; margin-left: .3in">
+<table cellpadding=3 border=0">
+    <tr>
+        <th align=right>Home</td>
+        <td><input type=text name=tel_home value="[% person.tel_home %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Work</td>
+        <td><input type=text name=tel_work value="[% person.tel_work %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Cell</td>
+        <td><input type=text name=tel_cell value="[% person.tel_cell %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Comment</td>
+        <td><input type=text name=comment value="[% person.comment %]"></td>
+    </tr>
+</table>
+<table cellpadding=3 border=0 style="margin-top: .3in">
+    <tr>
+        <th align=right>Date Hanuman Fellowship</td>
+        <td><input type=text name=date_hf value="[% date_hf %]" size=10 maxlength=10></td>
+    </tr>
+    <tr>
+        <th align=right>Date Land Member</td>
+        <td><input type=text name=date_lm value="[% date_lm %]" size=10 maxlength=10></td>
+    </tr>
+    <tr>
+        <th align=right>Date Pathways</td>
+        <td><input type=text name=date_path value="[% date_path %]" size=10 maxlength=10></td>
+    </tr>
+</table>
+<p>
+<input type=submit value="Submit">
+</div>
+<div style="clear: left">
+<h2>Affiliations</h2>
+<table cellpadding=1>
+[% affil_table %]
+</table>
+</div>
+
+<input type=submit value="Submit">
+</form>

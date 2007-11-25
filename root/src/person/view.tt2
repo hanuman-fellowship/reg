@@ -1,30 +1,31 @@
-<table cellpadding=5 border=1>
+<table cellpadding=3 border=0 style="float: left;">
 <a href="/person/update/[% person.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/delete/[% person.id %]">Delete</a>
-[% IF person.id_sps %]
+<a href="/person/delete/[% person.id %]"
+onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-Partner <a href="/person/view/[% partner.id %]">[% partner.first _" "_ partner.last %]</a>
-&nbsp;&nbsp;&nbsp;<a href="/person/separate/[% person.id %]">Separate</a>
+[% IF person.id_sps %]
+Partnered with <a href="/person/view/[% partner.id %]">[% partner.first _" "_ partner.last %]</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/separate/[% person.id %]"
+onclick="return confirm('Okay to Separate?');">Separate</a>
+[% ELSE %]
+<a href="/person/partner/[% person.id %]">Partner With</a>
 [% END %]
 <p>
-<tr><td align=right>Last</td><td>[% person.last %]</td></tr>
-<tr><td align=right>First</td><td>[% person.first %]</td></tr>
-<tr><td align=right>Sanskrit</td><td>[% person.sanskrit %]</td></tr>
-<tr><td align=right>Sex</td><td>[% sex %]</td></tr>
-<tr><td align=right>Address</td><td>[% person.addr1 %]</td></tr>
-<tr><td align=right>&nbsp;</td><td>[% person.addr2 %]</td></tr>
-<tr><td align=right>City</td><td>[% person.city %]</td></tr>
-<tr><td align=right>State/Province</td><td>[% person.st_prov %]</td></tr>
-<tr><td align=right>Zip/Postal Code</td><td>[% person.zip_post %]</td></tr>
-<tr><td align=right>Country</td><td>[% person.country %]</td></tr>
-<tr><td align=right>Email</td><td>[% person.email %]</td></tr>
-<tr><td align=right>Home</td><td>[% person.tel_home %]</td></tr>
-<tr><td align=right>Work</td><td>[% person.tel_work %]</td></tr>
-<tr><td align=right>Cell</td><td>[% person.tel_cell %]</td></tr>
-<tr><td align=right>Comment</td><td>[% person.comment %]</td></tr>
+<tr><th align=right>First</td><td>[% person.first %]</td></tr>
+<tr><th align=right>Last</td><td>[% person.last %]</td></tr>
+<tr><th align=right>Sanskrit</td><td>[% person.sanskrit %]</td></tr>
+<tr><th align=right>Sex</td><td>[% sex %]</td></tr>
+<tr><th align=right>Address</td><td>[% person.addr1 %]</td></tr>
+<tr><th align=right>&nbsp;</td><td>[% person.addr2 %]</td></tr>
+<tr><th align=right>City</td><td>[% person.city %]</td></tr>
+<tr><th align=right>State/Province</td><td>[% person.st_prov %]</td></tr>
+<tr><th align=right>Zip/Postal Code</td><td>[% person.zip_post %]</td></tr>
+<tr><th align=right>Country</td><td>[% person.country %]</td></tr>
+<tr><th align=right>Email</td><td style="width: 2.5in">[% person.email %]</td></tr>
 <tr>
-<td align=right>Affiliations</td>
+<th align=right valign=top>Affiliations</td>
 <!-- not person.affil below -->
 <td>
 [% FOREACH a IN affils %]
@@ -33,10 +34,18 @@ Partner <a href="/person/view/[% partner.id %]">[% partner.first _" "_ partner.l
 </td>
 </tr>
 </table>
-<table border=1 cellpadding=5>
-<tr><td align=right>Date Hanuman Fellowship</td><td>[% date_hf %]</td></tr>
-<tr><td align=right>Date Land Member</td><td>[% date_lm %]</td></tr>
-<tr><td align=right>Date Pathways</td><td>[% date_path %]</td></tr>
-<tr><td align=right>Date Entered</td><td>[% date_entrd %]</td></tr>
-<tr><td align=right>Date Updated</td><td>[% date_updat %]</td></tr>
+<div style="float: left; margin-left: .3in"> 
+<table cellpadding=3 border=0>
+<tr><th align=right>Home</td><td>[% person.tel_home %]</td></tr>
+<tr><th align=right>Work</td><td>[% person.tel_work %]</td></tr>
+<tr><th align=right>Cell</td><td>[% person.tel_cell %]</td></tr>
+<tr><th align=right>Comment</td><td>[% person.comment %]</td></tr>
 </table>
+<table border=0 cellpadding=3 style="margin-top: .3in">
+<tr><th align=right>Date Hanuman Fellowship</td><td>[% date_hf %]</td></tr>
+<tr><th align=right>Date Land Member</td><td>[% date_lm %]</td></tr>
+<tr><th align=right>Date Pathways</td><td>[% date_path %]</td></tr>
+<tr><th align=right>Date Entered</td><td>[% date_entrd %]</td></tr>
+<tr><th align=right>Date Updated</td><td>[% date_updat %]</td></tr>
+</table>
+</div>

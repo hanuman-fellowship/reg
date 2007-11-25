@@ -1,0 +1,9 @@
+<body onload="document.form.first.focus()">
+Partner [% person.first _ " " _ person.last %] with:
+<p>
+<form action='[% Catalyst.uri_for("/person/partner_with/") _ person.id %]'
+      name=form>
+First: <input type=text name=first><br>
+Last: <input type=text name=last><br>
+<input type=submit>
+</form>
