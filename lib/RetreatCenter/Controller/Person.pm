@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Person;
 use base 'Catalyst::Controller';
 
 use lib '../..';
-use Util qw/affil_table trim/;
+use Util qw/affil_table trim nsquish/;
 use Date::Simple qw/date today/;
 
 Date::Simple->default_format("%D");      # set it here - where else???
@@ -29,14 +29,20 @@ sub search_do : Local {
     my $substr  = ($c->request->params->{match} eq 'substr')? '%': '';
     my $nrecs   = $c->request->params->{nrecs};
 
+    my %order_by = (
+        sanskrit => [ 'sanskrit', 'last', 'first' ],
+        zip_post => [ 'zip_post', 'last', 'first' ],
+        last     => [ 'last', 'first' ],
+        
+    );
     $c->stash->{people} = [
         $c->model('RetreatCenterDB::Person')->search(
             {
                 $field => { 'like', "$substr$pattern%" },
             },
             {
-                order_by => $field,
-                rows     => $nrecs
+                order_by => $order_by{$field},
+                rows     => $nrecs,
             },
         )
     ];
@@ -61,8 +67,10 @@ sub delete : Local {
     #
 
     # first a find() to get the name for the message below
+    # and the partner id in case they're partnered.
     my $p = $c->model('RetreatCenterDB::Person')->find($id);
     my $name = $p->first() . " " . $p->last();
+    my $id_sps = $p->id_sps();
 
     # now delete
     $c->model('RetreatCenterDB::Person')->search(
@@ -72,6 +80,14 @@ sub delete : Local {
         { p_id => $id }
     )->delete();
 
+    # were they partnered?  not any more.
+    if ($id_sps) {
+        my $partner = $c->model('RetreatCenterDB::Person')->find($id_sps);
+        $partner->update({
+            id_sps => 0,
+        });
+    }
+
     $c->flash->{status_msg} = "$name was deleted.";
     $c->response->redirect($c->uri_for('/person/search'));
 }
@@ -80,6 +96,11 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    if (! $p) {
+        $c->stash->{mess} = "Person not found - sorry.";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
     $c->stash->{person} = $p;
     #
     # ???can we make a 'relationship' between people and itself
@@ -118,7 +139,7 @@ sub update : Local {
     $c->stash->{date_lm}     = date($p->date_lm())   || "";
     $c->stash->{date_path}   = date($p->date_path()) || "";
     $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "person/person.tt2";
+    $c->stash->{template}    = "person/create_edit.tt2";
 }
 
 #
@@ -150,18 +171,23 @@ sub update_do : Local {
         return;
     }
 
+    my $addr1    = $c->request->params->{addr1};
+    my $addr2    = $c->request->params->{addr2};
+    my $zip_post = $c->request->params->{zip_post};
+
     my $p = $c->model("RetreatCenterDB::Person")->find($id);
     $p->update({
         last     => $c->request->params->{last},
         first    => $c->request->params->{first},
         sanskrit => $c->request->params->{sanskrit},
         sex      => $c->request->params->{sex},
-        addr1    => $c->request->params->{addr1},
-        addr2    => $c->request->params->{addr2},
+        addr1    => $addr1,
+        addr2    => $addr2,
         city     => $c->request->params->{city},
         st_prov  => $c->request->params->{st_prov},
-        zip_post => $c->request->params->{zip_post},
+        zip_post => $zip_post,
         country  => $c->request->params->{country},
+        akey     => nsquish($addr1, $addr2, $zip_post),
         email    => $c->request->params->{email},
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
@@ -200,7 +226,14 @@ sub create : Local {
 
     $c->stash->{affil_table} = affil_table($c);
     $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "person/person.tt2";
+    $c->stash->{template}    = "person/create_edit.tt2";
+}
+
+sub _view_person {
+    my ($p) = @_;
+    "<a href='/person/view/" . $p->id . "'>"
+    . $p->first . " " . $p->last
+    . "</a>";
 }
 
 #
@@ -228,17 +261,24 @@ sub create_do : Local {
         return;
     }
 
+    my $last     = $c->request->params->{last};
+    my $first    = $c->request->params->{first};
+    my $addr1    = $c->request->params->{addr1};
+    my $addr2    = $c->request->params->{addr2};
+    my $zip_post = $c->request->params->{zip_post};
+    my $akey     = nsquish($addr1, $addr2, $zip_post);
     my $p = $c->model("RetreatCenterDB::Person")->create({
         last     => $c->request->params->{last},
         first    => $c->request->params->{first},
         sanskrit => $c->request->params->{sanskrit},
         sex      => $c->request->params->{sex},
-        addr1    => $c->request->params->{addr1},
-        addr2    => $c->request->params->{addr2},
+        addr1    => $addr1,
+        addr2    => $addr2,
         city     => $c->request->params->{city},
         st_prov  => $c->request->params->{st_prov},
-        zip_post => $c->request->params->{zip_post},
+        zip_post => $zip_post,
         country  => $c->request->params->{country},
+        akey     => $akey,
         email    => $c->request->params->{email},
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
@@ -262,7 +302,41 @@ sub create_do : Local {
             p_id => $id,
         });
     }
-    $c->stash->{message} = "Created";
+    #
+    # look for possible duplicates and give a warning
+    # I know it would be better to catch a possible duplicate and prevent
+    # it from being created at all but that's more work.
+    # Perhaps later.
+    #
+    my @dups = $c->model("RetreatCenterDB::Person")->search(
+        {
+            last  => $last,
+            first => $first,
+            id    => { "!=", $id },     # but not ourselves
+        },
+    );
+    my $Clast  = substr($last, 0, 1);
+    my $Cfirst = substr($first, 0, 1);
+    push @dups, $c->model("RetreatCenterDB::Person")->search(
+        {
+            last  => { 'like' => "$Clast%"  },
+            first => { 'like' => "$Cfirst%" },
+            akey  => $akey,
+            id    => { "!=", $id },     # but not ourselves
+        }
+    );
+    my %seen;
+    @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups
+    my $dups;
+    for my $d (@dups) {
+        $dups .= _view_person($d) . ", ";
+    }
+    if ($dups) {
+        $dups =~ s{, $}{};     # final ', '
+        my $pl = (@dups == 1)? "": "s";
+        $dups = " - Possible duplicate$pl: $dups.";
+    }
+    $c->stash->{message} = "Created " . _view_person($p) . $dups;
     $c->stash->{template} = "person/search.tt2";
 }
 
@@ -277,8 +351,113 @@ sub separate : Local {
         id_sps => 0,
     });
     view($self, $c, $id);
-    # how about rewriting the url?
-    # use forward instead?
+    $c->forward('view');
+}
+
+sub partner : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    $c->stash->{person} = $p;
+    $c->stash->{template} = "person/partner.tt2";
+}
+
+sub partner_with : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p1 = $c->model('RetreatCenterDB::Person')->find($id);
+    my $first = trim($c->request->params->{first});
+    my $last  = trim($c->request->params->{last});
+    my (@people) = $c->model('RetreatCenterDB::Person')->search(
+        {
+            first => $first,
+            last  => $last,
+        },
+    );
+    if (@people == 1) {
+        my $p2 = $people[0];
+        if ($p2->id_sps != 0) {
+            $c->stash->{message} = $p2->first . " " . $p2->last
+                                 . " is already partnered!";
+            $c->forward('search');
+        }
+        else {
+            $p1->update({
+                id_sps => $p2->id,
+            });
+            # partner #2 with automatically gets partner #1's address.
+            # if they don't live together they don't get
+            # to be partnered - in the mlist sense anyway.
+            # is this discriminatory?
+            $p2->update({
+                id_sps   => $p1->id,
+                addr1    => $p1->addr1,
+                addr2    => $p1->addr2,
+                city     => $p1->city,
+                st_prov  => $p1->st_prov,
+                zip_post => $p1->zip_post,
+                country  => $p1->country,
+                tel_home => $p1->tel_home,
+            });
+            $c->stash->{message} = "Partnered"
+                                 . " " . _view_person($p1)
+                                 . " with"
+                                 . " " . _view_person($p2)
+                                 . ".";
+        }
+        $c->forward('search');
+    }
+    else {
+        $c->stash->{message} = $first . " " . $last
+                             . " was not found - create them?";
+        $c->stash->{form_action} = "/person/mkpartner/"
+                                  . $id . "/"
+                                  . $first . "/"
+                                  . $last;
+
+        $c->stash->{template} = "yes_no.tt2";
+        return;
+    }
+}
+
+sub mkpartner : Local {
+    my ($self, $c, $id, $first, $last) = @_;
+
+    if (! $c->request->params->{yes}) {
+        $c->stash->{message} = "The partnering was cancelled.";
+        $c->forward("search");
+        return;
+    }
+    my $p1 = $c->model('RetreatCenterDB::Person')->find($id);
+    my $addr1    = $p1->addr1;
+    my $addr2    = $p1->addr2;
+    my $zip_post = $p1->zip_post;
+
+    my $p2 = $c->model("RetreatCenterDB::Person")->create({
+        last     => $last,
+        first    => $first,
+        sanskrit => '',
+        sex      => ($p1->sex eq "M")? "F": "M",   # usually, not always
+        addr1    => $addr1,
+        addr2    => $addr2,
+        city     => $p1->city,
+        st_prov  => $p1->st_prov,
+        zip_post => $zip_post,
+        country  => $p1->country,
+        akey     => nsquish($addr1, $addr2, $zip_post),
+        tel_home => $p1->tel_home,
+        id_sps   => $p1->id,
+        date_entrd => today()->as_d8(),
+    });
+    $p1->update({
+        id_sps => $p2->id,
+    });
+    $c->stash->{message} = "Created"
+                         . " " . _view_person($p2)
+                         . " and partnered them with"
+                         . " " . _view_person($p1)
+                         . ".";
+    $c->forward("search");
 }
 
 1;

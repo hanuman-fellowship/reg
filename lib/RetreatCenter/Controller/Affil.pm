@@ -40,7 +40,7 @@ sub update : Local {
 
     $c->stash->{affil}       = $c->model('RetreatCenterDB::Affil')->find($id);
     $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "affil/affil.tt2";
+    $c->stash->{template}    = "affil/create_edit.tt2";
 }
 
 #
@@ -62,7 +62,7 @@ sub create : Local {
     my ($self, $c) = @_;
 
     $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "affil/affil.tt2";
+    $c->stash->{template}    = "affil/create_edit.tt2";
 }
 
 #
