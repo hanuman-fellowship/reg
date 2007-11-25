@@ -131,7 +131,10 @@ sub new {
     #
     if (scalar (@ymd) == 1) {
         my $x = $ymd[0];
-        if (ref ($x) eq 'ARRAY') {
+        if (! defined $x) {
+            return;
+        }
+        elsif (ref ($x) eq 'ARRAY') {
             @ymd = @$x;
         }
         elsif (UNIVERSAL::isa($x, $class)) {
@@ -152,7 +155,7 @@ sub new {
             @ymd = _three($1, $2, $3);
         }
         else {
-            return (undef);
+            return;     # undef
         }
     }
     if (scalar (@ymd) == 0) {
@@ -170,7 +173,12 @@ sub new {
 }
 
 sub date {
-    shift if @_ && ($_[0] eq "Date::Simple" || ref($_[0]) eq "Date::Simple");
+    if (@_
+        && defined $_[0]
+        && ($_[0] eq "Date::Simple" || ref($_[0]) eq "Date::Simple")
+    ) {
+        shift;
+    }
     return (scalar (new(__PACKAGE__, @_)));
 }
 

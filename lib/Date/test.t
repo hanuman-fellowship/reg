@@ -74,3 +74,6 @@ is(date("20071002") - date("20070928"), 4, "days between dates");
 Date::Simple->default_format("%B %A");
 $d = date("20070902");
 is("$d", "September Sunday", "new default format");
+
+$d = date('');
+is($d, undef, "'' gives undef?");
