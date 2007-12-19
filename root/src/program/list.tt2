@@ -1,4 +1,6 @@
 <h2>Programs</h2>
+<a href="/program/listdate">Sort by Start Date</a>
+&nbsp;&nbsp;&nbsp;
 [% IF Catalyst.check_user_roles('admin') %]
 <a href="/program/create">Create</a>
 &nbsp;&nbsp;&nbsp;
@@ -9,12 +11,14 @@ onclick="return confirm('Okay to Publish to staging area?');">Publish<a>
 <table border=0 cellpadding=3>
 <tr>
 <th align=left>Name</th>
+<th align=left>Start Date</th>
 <th align=left>Title</th>
 <th align=left>SubTitle</th>
 </tr>
 [% FOREACH p IN programs %]
     <tr>
     <td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
+    <td>[% p.sdate_obj %]</td>
     <td>[% p.title %]</td>
     <td>[% p.subtitle %]</td>
     </tr>

@@ -9,7 +9,6 @@ onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
 <p>
 [% END %]
 
-SO we have [% program.fullname %]
 <table cellpadding=3 border=0>
 
 <tr>
