@@ -69,4 +69,11 @@ sub fullname {
           ." ".$self->canpol->name
 }
 
+use Date::Simple qw/date/;
+sub sdate_obj {
+    my ($self) = @_;
+    
+    return date($self->sdate()) || "";
+}
+
 1;
