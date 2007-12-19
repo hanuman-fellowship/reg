@@ -6,6 +6,8 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/leader/delete/[% leader.id %]"
  onclick="return confirm('Okay to Delete [% leader.person.first %] [% leader.person.last %] as leader?');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/view/[% leader.person.id %]">Person Info</a>
 <ul>
 <table cellpadding=3 border=0>
 

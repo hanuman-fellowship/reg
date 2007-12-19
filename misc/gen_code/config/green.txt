@@ -1,0 +1,25 @@
+<table>
+<tr><th colspan=2><B>FEES</B> Per Person Per Day<br>(including meals, lodging, and facilities use - NOT including tuition)</th></tr>
+<tr><td colspan=2>&nbsp;</td></tr>
+<tr><th align=left valign=bottom>Housing Type</th><th align=right>Cost</th></tr>
+<tr><td>Commuting (Day use, meals &amp; facilities)</td><td align=right>34</td>
+</tr>
+<tr><td>Your Tent</td><td align=right>42</td>
+</tr>
+<tr><td>Your Van</td><td align=right>42</td>
+</tr>
+<tr><td>Mount Madonna Center Tent</td><td align=right>49</td>
+</tr>
+<tr><td>Dormitory (4-7 to a room or cabin)</td><td align=right>65</td>
+</tr>
+<tr><td>Triple (3 to a room or cabin)</td><td align=right>73</td>
+</tr>
+<tr><td>Double (2 to a room or cabin)</td><td align=right>83</td>
+</tr>
+<tr><td>Double with Bath (2 to a room)</td><td align=right>93</td>
+</tr>
+<tr><td>Single (1 to a room or cabin)</td><td align=right>107</td>
+</tr>
+<tr><td>Single with Bath (1 to a room)</td><td align=right>127</td>
+</tr>
+</table>

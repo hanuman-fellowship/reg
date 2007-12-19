@@ -60,4 +60,13 @@ __PACKAGE__->has_many(leader_program => 'RetreatCenterDB::LeaderProgram',
                       'p_id');
 __PACKAGE__->many_to_many(leaders => 'leader_program', 'leader');
 
+sub fullname {
+    my ($self) = @_;
+
+    return  uc $self->name
+          ." ".$self->title
+          ." ".$self->subtitle
+          ." ".$self->canpol->name
+}
+
 1;

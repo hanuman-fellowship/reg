@@ -1,0 +1,13 @@
+#
+# exceptions file
+#
+# format: program_name, tab, method_name, tab, replacement_text
+# if replacement_text is "file fname" then the contents
+# of fname will be used as the replacement text.
+#
+# comments and blank lines are ignored.
+#
+# example: (sans the leading #, of course)
+#
+# JON	dates	May 3-5, 7-10
+# JON	webdesc file desc.txt

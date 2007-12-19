@@ -78,7 +78,7 @@ sub leader_table {
         my $id = $_->id();
         my $last = $_->person->last();
         my $first = $_->person->first();
-        "<input type=checkbox name=lead$id  $checked{$id}>$last, $first";
+        "<input type=checkbox name=lead$id  $checked{$id}> $last, $first";
     }
     sort {
         $a->person->last()   cmp $b->person->last() or

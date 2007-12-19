@@ -1,0 +1,154 @@
+Apr 4 1:30-3:30, 4:15-5:45
+	discussing designs, plans with Akhilesh
+	template for web pages and lodging fees
+Apr 5 10:00-10:30
+	outlining in an email exactly what i
+	am planning on doing in the first phase
+Apr 6 12:25-12:45, 1:55-3:10, 3:20-4:55, 9:00-9:10
+	add new attributes to program page - will make pretty later
+	dumping out all values including housing costs
+	generating all program-unique items on the pages
+		including picture and month calendar
+
+	on my own time - made the program screen look pretty
+
+	Housing command - show and clear - to see clusters and rooms
+		likely not used much if at all!   moved from main menu
+		to have more screen real estate available.
+Apr 7 10:00-10:10, 11:30-11:50, 12:30-1:05, 1:15-5:35, 6:15-6:25
+	make a pic clickable if there's a larger one
+	consult with Gyaneshwar
+
+	own time making the program screen even prettier
+
+	extra tuition -> full tuition
+	dealt with two leader pictures
+
+	generate regtable - key value pair
+	moving over to center's unix machine
+		some trouble with a diff version of Perl
+	some trouble with colltot ending instead of extraweb
+	exceptions functionality
+	getting the pics/ set up properly
+	uploading to www.mountmadonna.org
+	some problem with next/prev month
+
+	making /usr/local/bin/genpages
+		to invoke gen and to ftp the pages
+Apr 9 9:35-10:20, 10:40-11:00
+	invoking genpages properly and redirecting the error and debug output
+	it works!
+
+	adjusted Program menu, testing.
+	added prognum into reg1 invoking of online reg.
+		doesn't work yet since new format of regtable
+Apr 10 11:30-12:30, 1:15-4:00
+	on Jayanti's suggestion - adding Linked? and Template
+		to program attributes.    
+	implemented them in the generation program
+
+	next is to get reg[1-3] working again
+		have regtemp.html and regcheck.html in the cgi-bin/mmc dir
+
+	did it well... housing table looks GREAT.
+Apr 11 7:00-7:10, 9:50-10:30
+	verifying that the images for web/leader are
+		present in the pics/ subdir.
+	javascript form validation
+		learning about it on my own time
+	restructuring the registration form preparing it for
+		the javascript validation and adding
+		the field Gyan mentioned - a checkbox for receiving mailings
+			default checked??  and they have to UNcheck it?
+Apr 12 2:20-2:45
+	further tweaks on the form
+Apr 13 8:00-8:45, 2:50-5:30
+	redoing the fee_table to accomodate economy at retreats
+	implementing javascript validation ala the fancy way
+Apr 14 10:45-12:00
+	on own time - redid the p_get routine so it's easier
+	to see which field you're in.   mostly cosmetic and
+	tedious - so no charge.
+
+	added checkbox for inclusion on occasional mailings.
+		is the wording okay?
+	reg2 - send cookies.  also verify that reg1 reads them
+
+	***
+	the various templates and forms need beautification attention
+		from the graphic and marketing people.
+	sizes, fonts, colors, backgrounds, logos, etc.
+	***
+
+	reg2 - server side checks, making cookies work with CGI.
+Apr 16 1:00-1:30, 1:45-3:30, 3:45-3:55, 4:15-5:20
+	cookies in reg1 and reg2 - escaped and unescaped
+		could not get CGI cookie methods to work :(
+	tidying up authorize.net fields
+	variable deposit - it works!
+Apr 19 3:00-4:00
+	add Couple radio button to reg1.html and a 
+		"staying with whom?" text field.
+Apr 20 9:25-11:50
+	desc field in reg is really a 3 part field:
+	desc, subdesc and barnacles (**+%)
+		desc is separated from subdesc by a dash
+		any non-alphanumeric at the end are the barnacles
+	new methods: title, subtitle, barnacles, fulldesc_plus
+		if there are leaders
+			title is leaders 
+			if subdesc
+				subtitle is desc - subdesc
+			else
+				subtitle is desc
+			fi
+		else
+			title is desc
+			subtitle is subdesc
+		fi
+		title and subtitle can be styled differently
+
+		still have methods for desc, subdesc, leaders
+		fulldesc_plus is fulldesc appended with
+			the strings looked up (in a table of some sort)
+			with each barnacle.  perhaps hdesc.txt and this
+			table can be merged
+	need to begin a document describing all this.
+		the web is a good place to keep it.
+		also store scripts, etc there for safekeeping
+
+	prog table has several mods that need to be propogated
+		desc, note1, note2 are now 75 chars long
+		additional fields at the end
+		compare dev to prod and make sure
+	later: the brochure generation
+		barnacles are dealt with differently there.
+
+	making a little CGI script on garlic for switching
+		staging to programs and back
+			for testing we'll call it 'live' instead of 'programs'
+		lots of trouble!    cacheing in Safari and 
+		permissions on garlic - mmcweb vs webserve users
+			made staging and live dirs 777.
+			security risk?
+
+	programs that have no leaders and no subdescription will look funny
+		title:        with nothing after the title.
+Apr 22 3:30-5:15, 12:45-1:00
+	rentals - making fields for the calendar of events
+	dumping them out
+	making Rental.pm for the methods to access them
+	starting the generating of the calendar of events and programs
+		nice polymorphism!
+Apr 24 3:50-5:00
+	generating eventindex, progindex
+	too slow of a response from intranet.mountmadonna.org
+		move it back local?
+		yes
+	eliminating calxxx.tmpl and replacing it with CSS classes
+		more control!
+	generating event and program calendars
+		attempted first to not use templates, then used them
+		spent a good bit longer than i put down for my experimentation
+Apr 25 12:50-1:30
+	inserting event and program lists into the templates

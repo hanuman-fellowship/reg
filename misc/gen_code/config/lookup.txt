@@ -1,0 +1,27 @@
+heading		Total Cost Per Person<br>(including tuition, meals, lodging, and facilities use)
+typehdr		Housing Type
+costhdr		Cost
+commuting	Commuting (Day use, meals &amp; facilities)
+own tent	Your Tent
+own van		Your Van
+center tent	Mount Madonna Center Tent
+dormitory	Dormitory (4-7 to a room or cabin)
+economy		Economy (8 or more to a room)
+quad		Quadruple (4 to a room)
+triple		Triple (3 to a room or cabin)
+double		Double (2 to a room or cabin)
+double bath	Double with Bath (2 to a room)
+single		Single (1 to a room or cabin)
+single bath	Single with Bath (1 to a room)
+*	Continuing Education Credit for nurses.
+**	Continuing Education Credit for nurses, LMFT's, and LCSW's.
+%	Qualifies for YTT 500. You must <a href="/ytt/ytt500.html">apply to the YTT 500 program</a> before taking this class for credit.
++	Fulfills the spiritual practice prerequisite for John F. Kennedy University's Graduate School for Holistic Studies. 	
+weburl	For more information see
+email1	You can contact
+email2	at
+imgwidth	170
+click_enlarge	(click to enlarge)
+email	Email
+phone	Phone
+website	Website

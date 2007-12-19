@@ -1,0 +1,19 @@
+#
+# exceptions file
+#
+# format: program_name, tab, method_name, tab, replacement_text
+# if replacement_text is "file fname" then the contents
+# of fname will be used as the replacement text.
+#
+# comments and blank lines are ignored.
+#
+# example: (sans the leading #, of course)
+#
+# JON	dates	May 3-5, 7-10
+# JON	webdesc file desc.txt
+BARILI	dates	October 26-28 (see <A HREF="BAR-10-26a.html">week-long program</a>)
+BARILI EXTRA	dates	October 26-31 or 26-Nov 2 (see <A HREF="BAR-10-26.html">weekend program</a>)
+ITP	fee_table	file config/itpfees.txt
+OPEN GATE OCT	fee_table	file config/ogsfees.txt
+CORNELL	fee_table	file config/cornellfees.txt
+AYURVEDA	title	Cynthia Ambika Copple, Della Davis, and Pratibha Queen
