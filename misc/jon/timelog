@@ -179,7 +179,7 @@ Dec 18 2:25-4:00
 Dec 18 4:10-4:30
     at MMC showing program creation, etc.
     getting feedback
-Dec 19 12:30-1:00, 1:30-2:00, 3:15-
+Dec 19 12:30-1:00, 1:30-2:00, 3:15-5:30
     new table for rentals, no type in programs
     begin on gen
     clobbered Util, need access to get back.
@@ -187,3 +187,4 @@ Dec 19 12:30-1:00, 1:30-2:00, 3:15-
     figured out that I can add the gen Program methods
         directly to the lib/RetreatCenterDB/Program.pm file.
         THAT file IS the program table class.
+    sort programs by date
