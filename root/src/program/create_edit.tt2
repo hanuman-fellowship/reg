@@ -1,0 +1,127 @@
+<h2>Programs</h2>
+<form action=[% "/program/" _ form_action %] name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td><input type=text name=name value="[% program.name %]"></td>
+<th align=right>From</th>
+<td><input type=text name=sdate value="[% sdate %]" size=10></td>
+<th align=right>To</th>
+<td><input type=text name=edate value="[% edate %]" size=10></td>
+</tr>
+
+<tr>
+<th align=right>Title</th>
+<td colspan=5><input type=text name=title value="[% program.title %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5><input type=text name=subtitle value="[% program.subtitle %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Confirmation Letter Notes</th>
+<td colspan=5><textarea name=confnote cols=60 rows=3>[% program.confnote %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right>Tuition</th>
+<td><input type=text name=tuition value="[% program.tuition %]" size=4></td>
+<td colspan=2><input type=checkbox value=yes name=collect_total [% check_collect_total %]> Collect Total</td>
+<td colspan=2><input type=checkbox value=yes name=kayakalpa [% check_kayakalpa %]> Kaya Kalpa</td>
+</tr>
+
+<tr>
+<th align=right>Extra Days</th>
+<td><input type=text name=extradays value="[% program.extradays %]" size=2></td>
+<td colspan=2><input type=checkbox value=yes name=sbath [% check_sbath %]> Single Bath</td>
+<td colspan=2><input type=checkbox value=yes name=retreat [% check_retreat %]> Retreat</td>
+</tr>
+
+<tr>
+<th align=right>Full Tuition</th>
+<td><input type=text name=full_tuition value="[% program.full_tuition %]" size=4></td>
+<td colspan=2><input type=checkbox value=yes name=economy [% check_economy %]> Economy</td>
+<td colspan=2><input type=checkbox value=yes name=webready [% check_webready %]> Web Ready</td>
+</tr>
+
+<tr>
+<th align=right>Online Deposit</th>
+<td><input type=text name=deposit value="[% program.deposit %]" size=4></td>
+<td colspan=2><input type=checkbox value=yes name=quad [% check_quad %]> Quad</td>
+<td colspan=2><input type=checkbox value=yes name=linked [% check_linked %]> Linked</td>
+</tr>
+
+<tr>
+<th align=right>Cancellation Policy</th>
+<td>
+<select name=canpol_id>
+[% FOREACH c IN canpol_opts %]
+<option value=[% c.id %]
+[% IF c.name == program.canpol.name %]
+    selected
+[% END %]
+>[% c.name %]</option>
+[% END %]
+</select>
+</td>
+<th align=right>GL Number</th>
+<td><input type=text name=glnum value="[% program.glnum %]" size=7></td>
+</tr>
+
+<tr>
+<th align=right>Housing Cost</th>
+<td>
+<select name=housecost_id>
+[% FOREACH h IN housecost_opts %]
+<option value=[% h.id %]
+[% IF h.name == program.housecost.name %]
+    selected
+[% END %]
+>[% h.name %]</option>
+[% END %]
+</select>
+</td>
+<th align=right>Footnotes</th>
+<td><input type=text name=footnotes value="[% program.footnotes %]" size=5></td>
+<td>&nbsp;</td>
+<td align=left>
+<input type=submit>
+</td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><input type=text name=url value="[% program.url %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>Program Image</th>
+<!-- display existing image -->
+<td colspan=2><input type=file name=image value="[% program.image %]"></td>
+<th align=right>Template</th>
+<td colspan=2><input type=text name=ptemplate value="[% program.ptemplate %]" size=30></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Description</th>
+<td colspan=5><textarea name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea></td>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Brochure Description</th>
+<td colspan=5><textarea name=brdesc cols=60 rows=10>[% program.brdesc %]</textarea></td>
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.name.focus();</script>

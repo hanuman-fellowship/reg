@@ -1,0 +1,35 @@
+<h2>Leaders</h2>
+<form action=[% '/leader/' _ form_action %] name=form>
+
+<h3>[% person.first %] [% person.last %]</h3>
+<p>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Public Email</th>
+<td><input type=text name=public_email value="[% leader.public_email %]"></td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td><input type=text name=url value="[% leader.url %]"></td>
+</tr>
+
+<tr>
+<th align=right>Image</th>
+<td><input type=file name=image value="[% leader.image %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Biography</th>
+<td><textarea rows=10 cols=50 name=biography>[% leader.biography %]</textarea></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.public_email.focus()</script>

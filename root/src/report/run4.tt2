@@ -1,0 +1,5 @@
+Record Count = [% count %]
+<p>
+Filename = <a href="/[% filename %]">[% filename %]</a>
+<p>
+Right click the link above to download the file to your system.

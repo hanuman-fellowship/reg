@@ -1,0 +1,12 @@
+<h2>Programs - Updating the Leaders</h2>
+<p>
+[% program.name %]<br>
+[% program.title %] - [% program.subtitle %]
+<p>
+<form action="/program/leader_update_do/[% program.id %]">
+<ul>
+[% leader_table %]
+<p>
+<input type=submit>
+</ul>
+</form>

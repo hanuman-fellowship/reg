@@ -1,0 +1,60 @@
+<h2>Rentals</h2>
+<form action=[% "/rental/" _ form_action %] name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td><input type=text name=name value="[% rental.name %]"></td>
+<th align=right>From</th>
+<td><input type=text name=sdate value="[% sdate %]" size=10></td>
+<th align=right>To</th>
+<td><input type=text name=edate value="[% edate %]" size=10></td>
+</tr>
+
+<tr>
+<th align=right>Title</th>
+<td colspan=5><input type=text name=title value="[% rental.title %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5><input type=text name=subtitle value="[% rental.subtitle %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td><input type=text name=glnum value="[% rental.glnum %]" size=7></td>
+<td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td> 
+</tr>
+
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><input type=text name=url value="[% rental.url %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>Telephone</th>
+<td><input type=text name=phone value="[% rental.phone %]" size=20></td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td><input type=text name=email value="[% rental.email %]" size=40></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td colspan=5><textarea name=webdesc cols=60 rows=10>[% rental.webdesc %]</textarea></td>
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.name.focus();</script>

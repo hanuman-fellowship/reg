@@ -1,0 +1,60 @@
+<h2>Rentals</h2>
+[% IF Catalyst.check_user_roles('admin') %]
+<a href="/rental/create">Create</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/update/[% rental.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/delete/[% rental.id %]"
+onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
+<p>
+[% END %]
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td>[% rental.name %]</td>
+<th align=right>From</th>
+<td>[% sdate %]</td>
+<th align=right>To</th>
+<td>[% edate %]</td>
+</tr>
+
+<tr>
+<th align=right>Title</th>
+<td colspan=5>[% rental.title %]</td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5>[% rental.subtitle %]</td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% rental.glnum %]</td>
+<th align=right>Linked</th>
+<td>[% rental.linked %]</td> 
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5>[% rental.url %]</td>
+</tr>
+
+<tr>
+<th align=right>Telephone</th>
+<td>[% rental.phone %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td>[% rental.email %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td colspan=5>[% webdesc %]</td>
+</td>
+</tr>
+
+</table>

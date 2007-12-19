@@ -1,0 +1,24 @@
+<h2>Housing Costs</h2>
+[% IF Catalyst.check_user_roles('admin') %]
+<a href="/housecost/create">Create</a>
+[% END %]
+<ul>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>Name</th>
+<th>Action</th>
+</tr>
+[% FOREACH hc IN housecosts %]
+<tr>
+<td>[% hc.name %]</td>
+<td>
+[% IF Catalyst.check_user_roles('admin') %]
+<a href="/housecost/update/[% hc.id %]">Edit</a>&nbsp;
+<a href="/housecost/delete/[% hc.id %]" onclick="return confirm('Okay to Delete [% hc.name %]?')">Del</a>
+[% ELSE %]
+<a href="/housecost/view/[% hc.id %]">View</a>
+[% END %]
+</td>
+</tr>
+[% END %]
+</ul>

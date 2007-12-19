@@ -1,0 +1,5 @@
+Record Count = [% count %]
+<!-- tricky space and newline formatting -->
+<pre>
+[% FOREACH p IN people %][% p.name _'|'_ p.addrs _'|'_ p.city _'|'_ p.st_prov _'|'_ p.zip_post %]
+[% END %]</pre>

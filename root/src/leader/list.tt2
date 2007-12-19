@@ -1,0 +1,19 @@
+<h2>Leaders</h2>
+<ul>
+Click on last name to see leader attributes.<br>
+Click on first name to see person attributes.<br>
+To create a leader add them as a Person first.
+<p>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>Last</th>
+<th align=left>First</th>
+</tr>
+[% FOREACH l IN leaders %]
+<tr>
+<td><a href="/leader/view/[% l.id %]">[% l.person.last %]</a></td>
+<td><a href="/person/view/[% l.person.id %]">[% l.person.first %]</a></td>
+</tr>
+[% END %]
+</table>
+</ul>

@@ -1,0 +1,22 @@
+<h2>Cancellation Policies</h2>
+<form action=[% '/canpol/' _ form_action %] name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td><input type=text name=name value="[% canpol.name %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Policy</th>
+<td><textarea cols=50 rows=5 name=policy>[% canpol.policy %]</textarea></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.name.focus()</script>

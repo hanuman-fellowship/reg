@@ -1,0 +1,15 @@
+<h2>Cancellation Policies</h2>
+
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td>[% canpol.name %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Policy</th>
+<td>[% policy %]</td>
+</tr>
+
+</table>

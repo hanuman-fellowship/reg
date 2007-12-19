@@ -14,7 +14,6 @@
     <td class=fl_name>[% p.first _ ' ' _ p.last %]</td>
     <td class=fl_phone>&nbsp;&nbsp;[% p.tel_home %]</td>
     <td class=fl_phone>&nbsp;&nbsp;[% p.tel_work %]</td>
-    <td class=fl_phone>&nbsp;&nbsp;[% p.tel_cell %]</td>
     <td class=fl_address>&nbsp;&nbsp;[% p.address %]</td>
 </tr>
 [% END %]

@@ -1,0 +1,89 @@
+<h2>Housing Costs</h2>
+<form action=[% '/housecost/' _ form_action %] name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td><input type=text name=name value="[% housecost.name %]"></td>
+</tr>
+
+<tr>
+<th align=right>Single</th>
+<td><input type=text name=single value="[% housecost.single %]"></td>
+</tr>
+
+<tr>
+<th align=right>Double</th>
+<td><input type=text name=double value="[% housecost.double %]"></td>
+</tr>
+
+<tr>
+<th align=right>Triple</th>
+<td><input type=text name=triple value="[% housecost.triple %]"></td>
+</tr>
+
+<tr>
+<th align=right>Quad</th>
+<td><input type=text name=quad value="[% housecost.quad %]"></td>
+</tr>
+
+<tr>
+<th align=right>Dormitory</th>
+<td><input type=text name=dormitory value="[% housecost.dormitory %]"></td>
+</tr>
+
+<tr>
+<th align=right>Economy</th>
+<td><input type=text name=economy value="[% housecost.economy %]"></td>
+</tr>
+
+<tr>
+<th align=right>Center Tent</th>
+<td><input type=text name=center_tent value="[% housecost.center_tent %]"></td>
+</tr>
+
+<tr>
+<th align=right>Own Van</th>
+<td><input type=text name=own_van value="[% housecost.own_van %]"></td>
+</tr>
+
+<tr>
+<th align=right>Own Tent</th>
+<td><input type=text name=own_tent value="[% housecost.own_tent %]"></td>
+</tr>
+
+<tr>
+<th align=right>Commuting</th>
+<td><input type=text name=commuting value="[% housecost.commuting %]"></td>
+</tr>
+
+<tr>
+<th align=right>Unknown</th>
+<td><input type=text name=unknown value="[% housecost.unknown %]"></td>
+</tr>
+
+<tr>
+<th align=right>Single Bath</th>
+<td><input type=text name=single_bath value="[% housecost.single_bath %]"></td>
+</tr>
+
+<tr>
+<th align=right>Double Bath</th>
+<td><input type=text name=double_bath value="[% housecost.double_bath %]"></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=radio name=type value="Total" [% checked_total %]> Total
+&nbsp;&nbsp;&nbsp;
+<input type=radio name=type value="Perday" [% checked_perday %]> Per Day
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.name.focus()</script>

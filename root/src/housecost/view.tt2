@@ -1,0 +1,79 @@
+<h2>Housing Costs</h2>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td>[% housecost.name %]</td>
+</tr>
+
+<tr>
+<th align=right>Single</th>
+<td>[% housecost.single %]</td>
+</tr>
+
+<tr>
+<th align=right>Double</th>
+<td>[% housecost.double %]</td>
+</tr>
+
+<tr>
+<th align=right>Triple</th>
+<td>[% housecost.triple %]</td>
+</tr>
+
+<tr>
+<th align=right>Quad</th>
+<td>[% housecost.quad %]</td>
+</tr>
+
+<tr>
+<th align=right>Dormitory</th>
+<td>[% housecost.dormitory %]</td>
+</tr>
+
+<tr>
+<th align=right>Economy</th>
+<td>[% housecost.economy %]</td>
+</tr>
+
+<tr>
+<th align=right>Center Tent</th>
+<td>[% housecost.center_tent %]</td>
+</tr>
+
+<tr>
+<th align=right>Own Van</th>
+<td>[% housecost.own_van %]</td>
+</tr>
+
+<tr>
+<th align=right>Own Tent</th>
+<td>[% housecost.own_tent %]</td>
+</tr>
+
+<tr>
+<th align=right>Commuting</th>
+<td>[% housecost.commuting %]</td>
+</tr>
+
+<tr>
+<th align=right>Unknown</th>
+<td>[% housecost.unknown %]</td>
+</tr>
+
+<tr>
+<th align=right>Single Bath</th>
+<td>[% housecost.single_bath %]</td>
+</tr>
+
+<tr>
+<th align=right>Double Bath</th>
+<td>[% housecost.double_bath %]</td>
+</tr>
+
+<tr>
+<th align=right>Type</th>
+<td>[% housecost.type %]</td>
+</tr>
+
+</table>

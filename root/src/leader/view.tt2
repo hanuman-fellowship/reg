@@ -1,0 +1,33 @@
+<h2>Leaders</h2>
+
+<h3>[% leader.person.first %] [% leader.person.last %]</h3>
+<p>
+<a href="/leader/update/[% leader.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/leader/delete/[% leader.id %]"
+ onclick="return confirm('Okay to Delete [% leader.person.first %] [% leader.person.last %] as leader?');">Delete</a>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Public Email</th>
+<td>[% leader.public_email %]</td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td>[% leader.url %]</td>
+</tr>
+
+<tr>
+<th align=right>Image</th>
+<td>[% leader.image %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Biography</th>
+<td>[% biography %]</td>
+</tr>
+
+</table>
+</ul>

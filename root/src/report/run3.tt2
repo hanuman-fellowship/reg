@@ -1,0 +1,16 @@
+<table cellpadding=1>
+<tr>
+<th>Name</th>
+<th>Home</th>
+<th>Work</th>
+<th>Cell</th>
+</tr>
+[% FOREACH p IN people %]
+<tr>
+    <td>[% p.name %]</td>
+    <td>[% p.tel_home %]</td>
+    <td>[% p.tel_work %]</td>
+    <td>[% p.tel_cell %]</td>
+</tr>
+[% END %]
+</table>

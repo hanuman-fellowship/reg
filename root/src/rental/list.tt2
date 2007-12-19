@@ -1,0 +1,20 @@
+<h2>Rentals</h2>
+[% IF Catalyst.check_user_roles('admin') %]
+<a href="/rental/create">Create</a>
+[% END %]
+<ul>
+<table border=0 cellpadding=3>
+<tr>
+<th align=left>Name</th>
+<th align=left>Title</th>
+<th align=left>SubTitle</th>
+</tr>
+[% FOREACH r IN rentals %]
+    <tr>
+    <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+    <td>[% r.title %]</td>
+    <td>[% r.subtitle %]</td>
+    </tr>
+[% END %]
+</table>
+</ul>

@@ -1,0 +1,131 @@
+<h2>Programs</h2>
+[% IF Catalyst.check_user_roles('admin') %]
+<a href="/program/create">Create</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/program/update/[% program.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/program/delete/[% program.id %]"
+onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
+<p>
+[% END %]
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td>[% program.name %]</td>
+<th align=right>From</th>
+<td>[% sdate %]</td>
+<th align=right>To</th>
+<td>[% edate %]</td>
+</tr>
+
+<tr>
+<th align=right>Title</th>
+<td colspan=5>[% program.title %]</td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5>[% program.subtitle %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Notes for the<br>Confirmation Letter</th>
+<td colspan=5 valign=top>[% confnote %]</td>
+</tr>
+
+<tr>
+<th align=right>Tuition</th>
+<td>[% program.tuition %]</td>
+<th align=right>Collect Total</th>
+<td>[% program.collect_total %]</td>
+<th align=right>Kaya Kalpa</th>
+<td>[% program.kayakalpa %]</td>
+</tr>
+
+<tr>
+<th align=right>Extra Days</th>
+<td>[% program.extradays %]</td>
+<th align=right>Single Bath</th><td>[% program.sbath %]</td>
+<th align=right>Retreat</th><td>[% program.retreat %]</td>
+</tr>
+
+<tr>
+<th align=right>Full Tuition</th>
+<td>[% program.full_tuition %]</td>
+<th align=right>Economy</th>
+<td>[% program.economy %]</td>
+<th align=right>Web Ready</th>
+<td>[% program.webready %]</td> 
+</tr>
+
+<tr>
+<th align=right>Online Deposit</th>
+<td>[% program.deposit %]</td>
+<th align=right>Quad</th>
+<td>[% program.quad %]</td> 
+<th align=right>Linked</th>
+<td>[% program.linked %]</td> 
+</tr>
+
+<tr>
+<th align=right>Cancellation Policy</th>
+<td><a href="/canpol/view/[% program.canpol.id %]">[% program.canpol.name %]</a></td>
+<th align=right>GL Number</th>
+<td>[% program.glnum %]</td>
+</tr>
+
+<tr>
+<th align=right>Housing Cost</th>
+<td><a href="/housecost/view/[% program.housecost.id %]">[% program.housecost.name %]</a></td>
+<th align=right>Footnotes</th>
+<td>[% program.footnotes %]</td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5>[% program.url %]</td>
+</tr>
+
+<tr>
+<th align=right>Program Image</th>
+<!-- display existing image -->
+<td colspan=2>[% program.image %]</td>
+<th align=right>Template</th>
+<td colspan=2>[% program.ptemplate %]</td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right valign=top>Leaders</th>
+<td align=left valign=top colspan=2>
+[% leaders %]
+[% IF Catalyst.check_user_roles('admin') %]
+<a href="/program/leader_update/[% program.id %]">Update</a>
+[% END %]
+<p>
+</td>
+<th align=right valign=top>Affiliations</th>
+<td align=left valign=top colspan=2>
+[% affils %]
+[% IF Catalyst.check_user_roles('admin') %]
+<a href="/program/affil_update/[% program.id %]">Update</a>
+[% END %]
+<p>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Description</th>
+<td colspan=5>[% webdesc %]</td>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Brochure Description</th>
+<td colspan=5>[% brdesc %]</td>
+</td>
+</tr>
+
+</table>

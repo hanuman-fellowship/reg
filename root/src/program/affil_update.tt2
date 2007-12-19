@@ -1,0 +1,14 @@
+<h2>Programs - Updating the Affiliations</h2>
+<p>
+[% program.name %]<br>
+[% program.title %] - [% program.subtitle %]
+<p>
+<form action="/program/affil_update_do/[% program.id %]">
+<ul>
+<table>
+[% affil_table %]
+</table>
+<p>
+<input type=submit>
+</ul>
+</form>
