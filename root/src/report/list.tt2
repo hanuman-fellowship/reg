@@ -1,6 +1,7 @@
+<h2>Reports</h2>
 <a href=/report/create>Create</a>
-<p>
-<table cellpadding=5 border=1>
+<ul>
+<table cellpadding=3 border=0>
     <tr>
     <th>Description</th>
     <th>Zip Range</th>
@@ -13,4 +14,4 @@
     </tr>
     [% END -%]
 </table>
-
+</ul>

@@ -1,18 +1,28 @@
+<h2>Affiliations</h2>
+[% IF Catalyst.check_user_roles('admin') %]
 <a href=/affil/create>Create</a>
-<p>
-<table cellpadding=5 border=1>
-    <tr>
-    <th>Description</th>
-    <th>Action</th>
-    </tr>
+[% END %]
+<ul>
+<table cellpadding=3 border=0>
 
-    [% FOREACH a IN affil %]
-    <tr>
-    <td>[% a.descrip %]</td>
-    <td>
-    <a href="[% '/affil/update/' _ a.id %]">Edit</a>&nbsp;
-    <a href="[% '/affil/delete/' _ a.id %]" onclick="return confirm('Okay to Delete [% a.descrip %]?')">Del</a>
-    </td>
-    </tr>
-    [% END -%]
+<tr>
+<th align=left>Description</th>
+[% IF Catalyst.check_user_roles('admin') %]
+<th>Action</th>
+[% END %]
+</tr>
+
+[% FOREACH a IN affil %]
+<tr>
+<td>[% a.descrip %]</td>
+[% IF Catalyst.check_user_roles('admin') %]
+<td>
+<a href="[% '/affil/update/' _ a.id %]">Edit</a>&nbsp;
+<a href="[% '/affil/delete/' _ a.id %]" onclick="return confirm('Okay to Delete [% a.descrip %]?')">Del</a>
+</td>
+[% END %]
+</tr>
+[% END -%]
+
 </table>
+</ul>

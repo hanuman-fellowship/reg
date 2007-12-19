@@ -2,10 +2,24 @@
 
 <div id="content">
 [% IF Catalyst.user_exists %]
-<a href=/person/search>People</a>&nbsp;
-<a href=/affil/list>Affiliations</a>&nbsp;
-<a href=/report/list>Reports</a>&nbsp;
-<a href=/logout>Logout</a>
+<table cellpadding=4>
+<tr>
+<td><a href=/person/search>People</a></td>
+<td><a href=/leader>Leaders</a></td>
+<td><a href=/affil/list>Affiliations</a></td>
+<td><a href=/listing>Listings</a></td>
+<td><a href=/report/list>Reports</a></td>
+<td><a href=/logout>Logout</a></td>
+</tr>
+
+<tr>
+<td><a href=/program/list>Programs</a></td>
+<td><a href=/rental/list>Rentals</a></td>
+<td colspan=2><a href=/canpol>Cancellation Policies</a></td>
+<td><a href=/housecost>Housing Costs</a></td>
+</tr>
+
+</table>
 <p>
 [% END %]
 [% content %]

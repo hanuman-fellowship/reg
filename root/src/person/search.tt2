@@ -1,18 +1,20 @@
-<!-- extra body tag okay? -->
-<!-- the message field gives 'There is no message' if its not there! -->
-<body onload="document.search.pattern.focus();">
+<h2>People</h2>
 <a href=/person/create>Create</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <p>
-<div class=message>[% message || Catalyst.flash.status_msg %]</div>
-<p>
+<div class=message>[% message || Catalyst.flash.message %]</div>
+<ul>
 <form action="/person/search_do" name=search>
-Pattern: <input type=text name=pattern size=20><br>
-Last <input type=radio name=field value=last checked>&nbsp;&nbsp;&nbsp;
+<table cellpadding=3>
+<tr><td>Pattern: <input type=text id=pattern name=pattern size=20></td></tr>
+<tr><td>Last <input type=radio name=field value=last checked>&nbsp;&nbsp;&nbsp;
 Sanskrit <input type=radio name=field value=sanskrit>&nbsp;&nbsp;&nbsp;
 Zip/Postal Code <input type=radio name=field value=zip_post>&nbsp;&nbsp;&nbsp;
-Email <input type=radio name=field value=email><br>
-Prefix <input type=radio name=match value=prefix checked>&nbsp;&nbsp;&nbsp;
-Substring <input type=radio name=match value=substr><br>
-Number of records <input type=text name=nrecs size=3 value=10><br>
-<input type=submit value="Submit">
+Email <input type=radio name=field value=email></td></tr>
+<tr><td>Prefix <input type=radio name=match value=prefix checked>&nbsp;&nbsp;&nbsp;
+Substring <input type=radio name=match value=substr></td></tr>
+<tr><td>Number of records <input type=text name=nrecs size=3 value=10></td></tr>
+<tr><td><input type=submit value="Submit"></td></tr>
+</table>
 </form>
+</ul>
+<script type="text/javascript">document.search.pattern.focus();</script>

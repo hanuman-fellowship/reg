@@ -1,10 +1,12 @@
-<table border=1 cellpadding=5>
+<h2>People</h2>
+<ul>
+<table border=0 cellpadding=3>
 <tr>
-<th>Last</th>
-<th>First</th>
-<th>Sanskrit</th>
-<th>Zip/Postal Code</th>
-<th>Email</th>
+<th align=left>Last</th>
+<th align=left>First</th>
+<th align=left>Sanskrit</th>
+<th align=left>Zip/Postal Code</th>
+<th align=left>Email</th>
 </tr>
 [% FOREACH p IN people %]
 <tr>
@@ -16,3 +18,4 @@
 </tr>
 [% END -%]
 </table>
+</ul>

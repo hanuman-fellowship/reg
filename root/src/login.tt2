@@ -1,19 +1,24 @@
 [% META title = 'Login' %]
     
 <!-- Login form -->
-<body onload="document.form.username.focus()">
 <form method="post" name=form action=" [% Catalyst.uri_for('/login') %] ">
 <table>
-    <tr>
-      <td>Username:</td>
-      <td><input type="text" name="username" size="20" /></td>
-    </tr>
-    <tr>
-      <td>Password:</td>
-      <td><input type="password" name="password" size="20" /></td>
-    </tr>
-    <tr>
-      <td colspan="2"><input type="submit" name="submit" value="Submit" /></td>
-    </tr>
+
+<tr>
+<th align=right>Username</th>
+<td><input type="text" name="username" size="20" /></td>
+</tr>
+
+<tr>
+<th align=right>Password</th>
+<td><input type="password" name="password" size="20" /></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type="submit"></td>
+</tr>
+
 </table>
 </form>
+<script type="text/javascript">document.form.username.focus();</script>

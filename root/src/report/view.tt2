@@ -1,29 +1,50 @@
+<h2>Reports</h2>
+<a href="[% Catalyst.uri_for('/report/create') %]">Create</a> 
+&nbsp;&nbsp;&nbsp;
 <a href="[% Catalyst.uri_for('/report/update/') _ report.id %]">Edit</a> 
-<a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]">Delete</a> 
+&nbsp;&nbsp;&nbsp;
+<a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]"
+onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
+&nbsp;&nbsp;&nbsp;
 <a href="[% Catalyst.uri_for('/report/run/') _ report.id %]">Run</a>
-<table cellpadding=5 border=1>
+<p>
+<table cellpadding=3 border=0>
     <tr>
-        <td align=right>Description</td>
+        <th align=right>Description</td>
         <td>[% report.descrip %]</td>
     </tr>
     <tr>
-        <td align=right>Zip Range</td>
+        <th align=right>Zip Ranges</td>
         <td>[% report.zip_range %]</td>
     </tr>
     <tr>
-        <td align=right>Format</td>
+        <th align=right>Format</td>
         <td>[% format_verbose %]</td>
     </tr>
     <tr>
-        <td align=right>Order Reports by</td>
+        <th align=right>Order by</td>
+        <!-- translate to more readable form???
         <td>[% report.rep_order %]</td>
+             first => First Name
+             as in create_edit.tt2 -->
+        <td>[%
+            IF report.rep_order == 'last';
+                'Last Name';
+            ELSE;
+                'Zip/Postal Code';
+            END
+        %]</td>
     </tr>
     <tr>
-        <td align=right>Last Run</td>
+        <th align=right>Number of Records</td>
+        <td>[% report.nrecs %]</td>
+    </tr>
+    <tr>
+        <th align=right>Last Run</td>
         <td>[% last_run %]</td>
     </tr>
     <tr>
-        <td align=right>Affiliations</td>
+        <th align=right valign=top>Affiliations</td>
         <td>
             [% FOREACH a IN affils %]
                 [% a.descrip %]<br>

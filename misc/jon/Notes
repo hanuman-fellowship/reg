@@ -162,3 +162,89 @@ styles in the views - better in the .css file
     if we enlarge the font - the 2 inch width may not be right.
 why do we need to put "Catalyst::uri_for('/person/search')"
     and not just "/person/search"?  can we ask the experts?
+DBIx::Class is simply not documented well enough yet.
+    Catalyst is not that great either.
+    Is there an O'Reilly book in progress?
+        for DBIx::Class or for Catalyst?
+        call O'Reilly.  perhaps the system(s) are
+        not yet mature enough.
+    DBIx::Class is so fucking abstract.
+        and it avoids SQL like the plague.  Why?
+        If there's not going to be an easy way to
+        construct the SQL::Abstract for a query that I know
+        I'm going abandon DBIx::Class and make my own.
+        It's not that hard.
+How about a large example of a Catalyst application?
+    open source, free to browse
+    complex, well explained.
+Where is it documented what all that stuff in root/src does?
+    Any way to turn it off for a screen that is
+    destined for the printer?   This is an application
+    not a 'site'.
+Egos abound.  Hackers love to make systems
+    so complex and so abstract that they are viewed
+    as profound geniuses.
+    That DBIx::Class has a Cookbook, a Tutorial, an Intro, a FAQ,
+    and an Example is not a good sign.  Why not just explain
+    it?  Having stuff you can copy or mimic is not the
+    same as understanding.
+what is the timeout value for login sessions?
+several different affiliations for
+    do not send me any mailings.   should they all
+    be collapsed into one?   8, 9, do not distribute, do not Give out, etc.
+the capitalization mixed case was not done very
+    intelligently - O'brien for example.
+    can we make it better?
+work on mlist so no dup ids!
+    that's no good
+need someone to rework the out of usa records!
+    there is an affiliation - likely not used consistently...
+    look for zip code of blank?
+    I can make further custom listings that don't
+    fit into the Report model.
+how about a report format that puts a link on 
+    the person's name - so you can edit their record!
+reformat the phone numbers in a consistent way?
+    the ones in the US anyway?
+addr1 addr2 - in Email to CMS format - extra space at the end
+    could have addrs method to remedy this.
+another attribute of a person
+    comments about extreme food or picky needs
+    difficult behavior
+    and this would pop up during registration
+search people by home phone
+    exact syntax needed.
+    831-460-2648 would not match (831) 460-2648
+what happens when one of two partners 
+    has a new address that is not the same as their partner?
+    they should be separated at that time!
+for reports - can't do a file://...    how to do it?
+for programs
+    checkbox labels - should be bold?  or a class?
+    a class to match the other labels... which are just <th>.
+
+for some reason sqlite3 allows putting 'yes' in an integer field
+    e.g. all the checkbox fields in program table.
+Hardcoded Defaults for programs:
+    Default - Housing Cost
+    MMC     - Cancellation Policy
+should role 'user' be able to delete/edit reports?
+do we need a role 'reception' - they can't see programs at all.
+    only people, affils, reports, listings.
+cascade deletes of affiliations to reports and programs as well.
+    and leaders to programs
+    or prohibit??? yes.
+more program form validation
+if you go to the login screen but you're already
+    logged in - go to the people search screen instead!
+prohibit a delete of a person, housecost, calpol or leader
+    if there are foreign keys to it.
+    jeeeez - it gets complicated!
+dates can be entered as 090910 for 9/9/2010
+    for doc...
+images for leaders and programs - does the
+    little server do file uploads???
+When in admin role and click on Program's housing costs
+    should the user view the cost structure and also see
+    Create  Edit  Delete???
+    ditto for Cancellation Policy??

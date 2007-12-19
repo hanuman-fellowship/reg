@@ -1,77 +1,22 @@
-<html>
-<head>
-<style>
-.heading {
-    display: block;
-    font-size: 15pt;
-	font-family: Arial;
-    font-weight: bold;
-    margin-bottom: 8mm;
-    text-align: center;
-}
-
-th {
-	font-family: Arial;
-    font-size: 10pt;
-    font-weight: bold;
-}
-.name {
-	font-family: Arial;
-    font-size: 10pt;
-    font-weight: normal;
-}
-.phone {
-	font-family: Arial;
-    font-size: 10pt;
-    font-weight: normal;
-	text-align: right;
-}
-.address {
-	font-family: Arial;
-    font-size: 10pt;
-    font-weight: normal;
-	text-align: left;
-}
-.sm1_address {
-	font-family: Arial;
-    font-size: 9pt;
-    font-weight: normal;
-	text-align: left;
-}
-.sm2_address {
-	font-family: Arial;
-    font-size: 8pt;
-    font-weight: normal;
-	text-align: left;
-}
-.sm3_address {
-	font-family: Arial;
-    font-size: 7pt;
-    font-weight: normal;
-	text-align: left;
-}
-.sm4_address {
-	font-family: Arial;
-    font-size: 6pt;
-    font-weight: normal;
-	text-align: left;
-}
-</style>
-</head>
-<body bgcolor=#ffffff>
-<span class='heading'>
-Hanuman Fellowship Phone List
-</span>
+<span class=fl_heading>Hanuman Fellowship Phone List</span>
 <table>
-<tr>
-<th align=left>Sanskrit</th>
-<th align=left>Name</th>
-<th align=center>Home</th>
-<th align=center>Work</th>
-<th align=center>Cell</th>
-<th align=left>&nbsp;&nbsp;Address</th>
+<tr class=fl_th>
+    <th align=left>Sanskrit</th>
+    <th align=left>Name</th>
+    <th align=center>Home</th>
+    <th align=center>Work</th>
+    <th align=center>Cell</th>
+    <th align=left>&nbsp;&nbsp;Address</th>
 </tr>
-[% rows %]
+[% FOREACH p IN people %]
+<tr class="fl_row[% p.class %]">
+    <td class=fl_name>[% p.sanskrit %]</td>
+    <td class=fl_name>[% p.first _ ' ' _ p.last %]</td>
+    <td class=fl_phone>&nbsp;&nbsp;[% p.tel_home %]</td>
+    <td class=fl_phone>&nbsp;&nbsp;[% p.tel_work %]</td>
+    <td class=fl_phone>&nbsp;&nbsp;[% p.tel_cell %]</td>
+    <td class=fl_address>&nbsp;&nbsp;[% p.address %]</td>
+</tr>
+[% END %]
 </table>
-</body>
-</html>
+</center>

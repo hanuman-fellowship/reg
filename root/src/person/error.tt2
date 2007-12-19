@@ -1,5 +1,5 @@
 The following errors were found:
-<p>
+<ul>
 [% mess %]
-<p>
+</ul>
 Please use the back button and fix them.

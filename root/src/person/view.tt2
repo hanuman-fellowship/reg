@@ -1,4 +1,6 @@
-<table cellpadding=3 border=0 style="float: left;">
+<h2>People</h2>
+<a href="/person/create">Create</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/person/update/[% person.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/delete/[% person.id %]"
@@ -12,7 +14,16 @@ onclick="return confirm('Okay to Separate?');">Separate</a>
 [% ELSE %]
 <a href="/person/partner/[% person.id %]">Partner With</a>
 [% END %]
+&nbsp;&nbsp;&nbsp;
+[% IF is_leader %]
+<a href="/leader/view/[% leader.id %]">Leader Info</a>
+[% ELSE %]
+    [% IF Catalyst.check_user_roles('admin') %]
+    <a href="/leader/create/[% person.id %]">Make Leader</a>
+    [% END %]
+[% END %]
 <p>
+<table cellpadding=3 border=0 style="float: left;">
 <tr><th align=right>First</td><td>[% person.first %]</td></tr>
 <tr><th align=right>Last</td><td>[% person.last %]</td></tr>
 <tr><th align=right>Sanskrit</td><td>[% person.sanskrit %]</td></tr>
@@ -24,6 +35,8 @@ onclick="return confirm('Okay to Separate?');">Separate</a>
 <tr><th align=right>Zip/Postal Code</td><td>[% person.zip_post %]</td></tr>
 <tr><th align=right>Country</td><td>[% person.country %]</td></tr>
 <tr><th align=right>Email</td><td style="width: 2.5in">[% person.email %]</td></tr>
+<tr><th align=right>Mailings</td><td>[% person.mailings %]</td></tr>
+
 <tr>
 <th align=right valign=top>Affiliations</td>
 <!-- not person.affil below -->

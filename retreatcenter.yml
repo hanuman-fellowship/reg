@@ -20,3 +20,9 @@ authentication:
         password_field: password
 
         # Other options can go here for hashed passwords
+authorization:
+    dbic:
+        role_class: RetreatCenterDB::Role
+        role_field: role
+        role_rel: map_user_role
+        user_role_user_field: user_id

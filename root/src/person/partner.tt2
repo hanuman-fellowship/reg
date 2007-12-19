@@ -3,7 +3,17 @@ Partner [% person.first _ " " _ person.last %] with:
 <p>
 <form action='[% Catalyst.uri_for("/person/partner_with/") _ person.id %]'
       name=form>
-First: <input type=text name=first><br>
-Last: <input type=text name=last><br>
+<table>
+<tr>
+    <td>First</td><td><input type=text name=first></td>
+</tr>
+<tr>    
+    <td>Last</td><td><input type=text name=last></td>
+</tr>
+<table>
+<p>
 <input type=submit>
+<p>
+Note: The new partner will inherit [% person.first %]'s 
+mailing address and home phone.
 </form>

@@ -93,3 +93,94 @@ Nov 23 2:15-3:30, 10:00-10:15
     unpartner the partner when deleting
     look for and warn about duplicates
     CSS float and clear positioning of view and create people pages
+Nov 28 12:00-1:30
+    a breakthrough - by abandoning (or extending) DBIx::Class
+    phone list is almost done
+Dec 5 12:00-12:30, 6:50-7:10, 7:35-10:35
+    tweaks on the phone list
+    taking over reports - zip parser, run.
+    pretty good progress - some tricky sql
+    next - count format and random set of certain size
+Dec 6 1:15-3:25
+    no_mail column instead of an affiliation
+    partners get one mailing not two - not easy!
+Dec 7 9:15-10:40, 11:50-1:30
+    nrecs in reports - random subset
+        that was fun - and quick.
+        i certainly am using the abundance of memory and processor speed!
+    fixing various things at the center
+        sutra mailing
+        regi finances
+        cost of housing columns
+        demonstrating, getting feedback from what I did.
+        blabbing - no charge.
+Dec 10 10:30-11:10, 11:00-11:30
+    sutra mailings talking to SVI about mail.
+    fixing housing costs - 1-5, 6-8
+    hope it works!    This hour was not on the rewrite project.
+    Same tally?
+Dec 11 9:15-9:45, 10:15-12:45, 2:00-3:00, 11:00-11:15
+    removing stale addresses in sutra
+
+    New Listings:
+        Email to VistaPrint 
+        Email addresses
+        Undup list
+            all create a file that you can download
+
+    At center - showing, fixing (edits to a partner), asking.
+    fixing a housing glitch
+Dec 12 1:30-4:10, 4:30-5:00
+    view_person for created
+    email format
+    test plan
+        which caused me to fix several small things!
+    experiments with belongs_to and has_many - success!
+Dec 13 1:55-2:50, 3:30-5:45
+    mlist test plan - further additions
+    a fix for regi - 25 mins
+    planning, beginning on program crud
+    expanded program,
+    added housecost, affilprogram but have not tested it yet.
+    now to do create/update/list/delete.
+    linking affils, canpol, housecost.
+    then leader.
+Dec 15 9:30-10:00, 12:15-2:50, 3:25-4:45, 5:15-9:20
+    fixing housing glitch
+    program crud
+        nearly done.  did create, edit, delete
+        need a better view
+        in create/update
+            glnum generation with javascript
+                on change of from date.
+            and to date = from + 2
+            and days of week of from/to in javascript.
+    alternative view sort by date???
+
+    vistaprint format for couples
+    housing costs crud
+    cancellation policy crud
+    enough!  did a lot!
+Dec 16 1:15-3:05, 3:20-4:00
+    Authorization - it works!
+    Conditioned the links in several places in the views
+        for create, delete, edit - as admin role.
+    ACL Authorization as well...
+    program, housecost, affil and canpol
+        are all protected - must be an admin to modify them.
+    very very nice work on their part.  and well documented.
+Dec 17 12:30-3:25, 5:00-6:50
+    leaders and affils in programs - done!
+    getting gen, *.pm etc for publish!
+    rentals
+    further polishing.   getting there!
+Dec 18 2:25-4:00
+    at MMC regi quick fix for Brajesh - not so quick
+Dec 18 4:10-4:30
+    at MMC showing program creation, etc.
+    getting feedback
+Dec 19 12:30-1:00, 1:30-2:00, 3:15-
+    new table for rentals, no type in programs
+    begin on gen
+    clobbered Util, need access to get back.
+    checking in

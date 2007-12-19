@@ -1,49 +1,59 @@
-<!-- this form doubles as an update and as a create form. -->
-
-<body onload="document.form.last.focus()">
+<h2>Reports</h2>
 <form action=[% "/report/" _ form_action %] name=form>
-    <table cellpadding=5 border=1>
-        <tr>
-        <td align=right>Description</td>
-        <td><input type=text name=descrip value="[% report.descrip %]"></td>
-        </tr>
+<table cellpadding=3 border=0>
 
-        <tr>
-        <td align=right>Format</td>
-        <td>
-            <select name="format">
-                <option value="1" [% format_selected_1 %]> Name, Address, Country, Email</option>
-                <option value="2" [% format_selected_2 %]> Name, Address, Zip</option>
-                <option value="3" [% format_selected_3 %]> Name, Address, Zip, Country</option>
-                <option value="4" [% format_selected_4 %]> Name, Home Tel#, Work Tel#</option>
-                <option value="5" [% format_selected_5 %]> Name, Home Tel#</option>
-            </select>
-        </td>
-        </tr>
+<tr>
+<td align=right>Description</td>
+<td><input type=text name=descrip size=30 value="[% report.descrip %]"></td>
+</tr>
 
-        <tr>
-        <td align=right>Zip Range</td>
-        <td><input type=text name=zip_range value="[% report.zip_range %]"></td>
-        </tr>
+<tr>
+<td align=right>Zip Ranges</td>
+<td><input type=text name=zip_range size=50 value="[% report.zip_range %]"></td>
+</tr>
 
-        <tr>
-        <td align=right>Order by</td>
-        <td>
-            <select name="rep_order">
-                <option value="first" [% rep_order_selected_first %]>First name</option>
-                <option value="last" [% rep_order_selected_last %]>Last name</option>
-                <option value="zip_post" [% rep_order_selected_zip_post %]>Zip/Postal code</option>
-            </select>
-        </td>
-        </tr>
-    </table>
+<tr>
+<td align=right>Format</td>
+<td>
+<select name="format">
+<option value="1" [% format_selected_1 %]> Email to CMS</option>
+<option value="2" [% format_selected_2 %]> Name, Address, Email</option>
+<option value="3" [% format_selected_3 %]> Name, Home, Work, Cell</option>
+<option value="4" [% format_selected_4 %]> Email to VistaPrint
+<option value="5" [% format_selected_5 %]> Just Email
+</select>
+</td>
+</tr>
 
-    <h2>Affiliations</h2>
+<tr>
+<td align=right>Order by</td>
+<td>
+<select name="rep_order">
+<option value="zip_post" [% rep_order_selected_zip_post %]>Zip/Postal Code</option>
+<option value="last" [% rep_order_selected_last %]>Last</option>
+</select>
+</td>
+</tr>
 
-    <table cellpadding=1>
-        [% affil_table %]
-    </table>
+<tr>
+<td align=right>Number of Records</td>
+<td><input type=text name=nrecs size=5 value="[% report.nrecs %]"></td>
+</tr>
 
-    <input type=submit value="Submit">
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"</td>
+</tr>
 
+</table>
+<p>
+
+<h2>Affiliations</h2>
+
+<table cellpadding=1>
+[% affil_table %]
+</table>
+
+<input type=submit value="Submit">
 </form>
+<script type='text/javascript'>document.form.descrip.focus();</script>

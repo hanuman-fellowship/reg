@@ -1,6 +1,5 @@
+<h2>People</h2>
 <!-- this form doubles as an update and as a create form. -->
-
-<body onload="document.form.first.focus()">
 <form action=[% "/person/" _ form_action %] name=form>
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
     <tr>
@@ -49,7 +48,11 @@
     </tr>
     <tr>
         <th align=right>Email</td>
-        <td><input type=text name=email value="[% person.email %]"></td>
+        <td><input type=text name=email size=30 value="[% person.email %]"></td>
+    </tr>
+    <tr>
+        <th align=right>Mailings</td>
+        <td><input type=checkbox name=mailings value='yes' [% mailings %]></td>
     </tr>
 </table>
 <div style="float: left; margin-left: .3in">
@@ -84,9 +87,12 @@
         <th align=right>Date Pathways</td>
         <td><input type=text name=date_path value="[% date_path %]" size=10 maxlength=10></td>
     </tr>
+    <tr>
+    <td>&nbsp;</td>
+    <td><input type=submit value="Submit"></td>
+    </tr>
 </table>
 <p>
-<input type=submit value="Submit">
 </div>
 <div style="clear: left">
 <h2>Affiliations</h2>
@@ -97,3 +103,4 @@
 
 <input type=submit value="Submit">
 </form>
+<script type="text/javascript">document.form.first.focus()</script>
