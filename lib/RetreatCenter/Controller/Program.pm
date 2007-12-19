@@ -148,7 +148,19 @@ sub list : Local {
     $c->stash->{programs} = [
         $c->model('RetreatCenterDB::Program')->search(
             undef,
-            { order_by => 'title' },
+            { order_by => 'name' },
+        )
+    ];
+    $c->stash->{template} = "program/list.tt2";
+}
+
+sub listdate : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{programs} = [
+        $c->model('RetreatCenterDB::Program')->search(
+            undef,
+            { order_by => 'sdate' },
         )
     ];
     $c->stash->{template} = "program/list.tt2";
