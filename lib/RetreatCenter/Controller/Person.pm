@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use lib '../..';
 use Util qw/affil_table trim nsquish/;
 use Date::Simple qw/date today/;
+use USState;
 
 Date::Simple->default_format("%D");      # set it here - where else???
 
@@ -46,6 +47,11 @@ sub search_do : Local {
             },
         )
     ];
+    if (scalar(@{$c->stash->{people}}) == 0) {
+        $c->stash->{message}  = "No one found matching '$pattern'.";
+        $c->stash->{template} = "person/search.tt2";
+        return;
+    }
     $c->stash->{template} = "person/search_result.tt2";
 }
 
@@ -88,7 +94,7 @@ sub delete : Local {
         });
     }
 
-    $c->flash->{status_msg} = "$name was deleted.";
+    $c->flash->{message} = "$name was deleted.";
     $c->response->redirect($c->uri_for('/person/search'));
 }
 
@@ -112,17 +118,19 @@ sub view : Local {
         $c->stash->{partner} = $sps;
     }
     $c->stash->{sex} = ($p->sex() eq "M")? "Male": "Female";
-    $c->stash->{affils} = [
-        $p->affils(
-            undef,
-            {order_by => 'descrip'}
-        )
-    ];
+    $c->stash->{affils} = [ $p->affils() ];
     $c->stash->{date_entrd} = date($p->date_entrd()) || "";
     $c->stash->{date_updat} = date($p->date_updat()) || "";
     $c->stash->{date_hf}    = date($p->date_hf())    || "";;
     $c->stash->{date_lm}    = date($p->date_lm())    || "";;
     $c->stash->{date_path}  = date($p->date_path())  || "";;
+
+    # is this person a leader?
+    my @leads = $c->model('RetreatCenterDB::Leader')->search(
+        { person_id => $id }
+    );
+    $c->stash->{is_leader} = scalar(@leads);
+    $c->stash->{leader} = $leads[0];
     $c->stash->{template} = "person/view.tt2";
 }
 
@@ -134,6 +142,7 @@ sub update : Local {
     my $sex = $p->sex();
     $c->stash->{sex_female}  = ($sex eq "F")? "checked": "";
     $c->stash->{sex_male}    = ($sex eq "M")? "checked": "";
+    $c->stash->{mailings}    = ($p->mailings())? "checked": "";
     $c->stash->{affil_table} = affil_table($c, $p->affils());
     $c->stash->{date_hf}     = date($p->date_hf())   || "";
     $c->stash->{date_lm}     = date($p->date_lm())   || "";
@@ -165,34 +174,51 @@ sub update_do : Local {
         $c->request->params->{$d} = $dt? $dt->as_d8()
                                    :     "";
     }
+
+    my $last     = $c->request->params->{last};
+    my $first    = $c->request->params->{first};
+    my $sex      = $c->request->params->{sex};
+    my $addr1    = $c->request->params->{addr1};
+    my $addr2    = $c->request->params->{addr2};
+    my $city     = $c->request->params->{city};
+    my $zip_post = $c->request->params->{zip_post};
+    my $st_prov  = $c->request->params->{st_prov};
+    my $country  = $c->request->params->{country};
+    my $akey     = nsquish($addr1, $addr2, $zip_post);
+
+    if ($sex ne 'F' && $sex ne 'M') {
+        push @mess, "You must specify Male or Female.";
+    }
+
+    if ($addr1 && usa($country) && ! valid_state($st_prov)) {
+        push @mess, "Invalid state: $st_prov";
+    }
+
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "person/error.tt2";
         return;
     }
 
-    my $addr1    = $c->request->params->{addr1};
-    my $addr2    = $c->request->params->{addr2};
-    my $zip_post = $c->request->params->{zip_post};
-
     my $p = $c->model("RetreatCenterDB::Person")->find($id);
     $p->update({
         last     => $c->request->params->{last},
         first    => $c->request->params->{first},
         sanskrit => $c->request->params->{sanskrit},
-        sex      => $c->request->params->{sex},
+        sex      => $sex,
         addr1    => $addr1,
         addr2    => $addr2,
-        city     => $c->request->params->{city},
-        st_prov  => $c->request->params->{st_prov},
+        city     => $city,
+        st_prov  => $st_prov,
         zip_post => $zip_post,
-        country  => $c->request->params->{country},
+        country  => $country,
         akey     => nsquish($addr1, $addr2, $zip_post),
         email    => $c->request->params->{email},
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
         tel_cell => $c->request->params->{tel_cell},
         comment  => $c->request->params->{comment},
+        mailings => $c->request->params->{mailings},
         date_hf    => $c->request->params->{date_hf},
         date_lm    => $c->request->params->{date_lm},
         date_path  => $c->request->params->{date_path},
@@ -216,94 +242,37 @@ sub update_do : Local {
             p_id => $id,
         });
     }
-
-    $c->flash->{status_msg} = $p->first() . " " . $p->last() . " was updated.";
-    $c->response->redirect($c->uri_for('/person/search'));
-}
-
-sub create : Local {
-    my ($self, $c) = @_;
-
-    $c->stash->{affil_table} = affil_table($c);
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "person/create_edit.tt2";
-}
-
-sub _view_person {
-    my ($p) = @_;
-    "<a href='/person/view/" . $p->id . "'>"
-    . $p->first . " " . $p->last
-    . "</a>";
-}
-
-#
-# check for dups???
-#
-sub create_do : Local {
-    my ($self, $c) = @_;
-
-    # dates are either blank or converted to d8 format
-    my @mess;
-    for my $d (qw/ date_hf date_lm date_path /) {
-        my $fld = $c->request->params->{$d};
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
-            next;
-        }
-        $c->request->params->{$d} = $dt? $dt->as_d8()
-                                   :     "";
-    }
-    if (@mess) {
-        $c->stash->{mess} = join "<br>n", @mess;
-        $c->stash->{template} = "person/error.tt2";
-        return;
-    }
-
-    my $last     = $c->request->params->{last};
-    my $first    = $c->request->params->{first};
-    my $addr1    = $c->request->params->{addr1};
-    my $addr2    = $c->request->params->{addr2};
-    my $zip_post = $c->request->params->{zip_post};
-    my $akey     = nsquish($addr1, $addr2, $zip_post);
-    my $p = $c->model("RetreatCenterDB::Person")->create({
-        last     => $c->request->params->{last},
-        first    => $c->request->params->{first},
-        sanskrit => $c->request->params->{sanskrit},
-        sex      => $c->request->params->{sex},
-        addr1    => $addr1,
-        addr2    => $addr2,
-        city     => $c->request->params->{city},
-        st_prov  => $c->request->params->{st_prov},
-        zip_post => $zip_post,
-        country  => $c->request->params->{country},
-        akey     => $akey,
-        email    => $c->request->params->{email},
-        tel_home => $c->request->params->{tel_home},
-        tel_work => $c->request->params->{tel_work},
-        tel_cell => $c->request->params->{tel_cell},
-        comment  => $c->request->params->{comment},
-        date_hf    => $c->request->params->{date_hf},
-        date_lm    => $c->request->params->{date_lm},
-        date_path  => $c->request->params->{date_path},
-        date_updat => today()->as_d8(),
-        date_entrd => today()->as_d8(),
-    });
-    my $id = $p->id();
     #
-    # which affiliations are checked?
+    # in case this person was partnered we must
+    # update the partner's address and home phone as well.
     #
-    my @cur_affils = grep { s/^aff(\d+)/$1/ }
-                     keys %{$c->request->params};
-    for my $ca (@cur_affils) {
-        $c->model("RetreatCenterDB::AffilPerson")->create({
-            a_id => $ca,
-            p_id => $id,
+    my $id_sps = $p->id_sps;
+    my $partner;
+    if ($id_sps != 0) {
+        $partner = $c->model("RetreatCenterDB::Person")->find($id_sps);
+        $partner->update({
+            addr1    => $addr1,
+            addr2    => $addr2,
+            city     => $c->request->params->{city},
+            st_prov  => $c->request->params->{st_prov},
+            zip_post => $zip_post,
+            country  => $c->request->params->{country},
+            akey     => nsquish($addr1, $addr2, $zip_post),
+            tel_home => $c->request->params->{tel_home},
         });
     }
+
+    my $msg = _view_person($p);
+    my $pronoun = ($p->sex eq "M")? "his": "her";
+    my $verb = "was";
+    if ($id_sps) {
+        $msg .= " and $pronoun partner "
+              . _view_person($partner);
+        $verb = "were"
+    }
+    $msg .= " $verb updated.";
     #
-    # look for possible duplicates and give a warning
+    # look for possible duplicates and give a warning.
     # I know it would be better to catch a possible duplicate and prevent
     # it from being created at all but that's more work.
     # Perhaps later.
@@ -326,7 +295,7 @@ sub create_do : Local {
         }
     );
     my %seen;
-    @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups
+    @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups :)
     my $dups;
     for my $d (@dups) {
         $dups .= _view_person($d) . ", ";
@@ -336,8 +305,143 @@ sub create_do : Local {
         my $pl = (@dups == 1)? "": "s";
         $dups = " - Possible duplicate$pl: $dups.";
     }
-    $c->stash->{message} = "Created " . _view_person($p) . $dups;
-    $c->stash->{template} = "person/search.tt2";
+    $c->flash->{message} = $msg . $dups;
+    $c->response->redirect($c->uri_for('/person/search'));
+}
+
+sub create : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{mailings}    = "checked";
+    $c->stash->{affil_table} = affil_table($c);
+    $c->stash->{form_action} = "create_do";
+    $c->stash->{template}    = "person/create_edit.tt2";
+}
+
+sub _view_person {
+    my ($p) = @_;
+    "<a href='/person/view/" . $p->id . "'>"
+    . $p->first . " " . $p->last
+    . "</a>";
+}
+
+#
+#
+#
+sub create_do : Local {
+    my ($self, $c) = @_;
+
+    # dates are either blank or converted to d8 format
+    my @mess;
+    for my $d (qw/ date_hf date_lm date_path /) {
+        my $fld = $c->request->params->{$d};
+        my $dt = date($fld);
+        if ($fld && ! $dt) {
+            # tell them which date field is wrong???
+            push @mess, "Invalid date: $fld";
+            next;
+        }
+        $c->request->params->{$d} = $dt? $dt->as_d8()
+                                   :     "";
+    }
+
+    my $last     = $c->request->params->{last};
+    my $first    = $c->request->params->{first};
+    my $sex      = $c->request->params->{sex};
+    my $addr1    = $c->request->params->{addr1};
+    my $addr2    = $c->request->params->{addr2};
+    my $city     = $c->request->params->{city};
+    my $zip_post = $c->request->params->{zip_post};
+    my $st_prov  = $c->request->params->{st_prov};
+    my $country  = $c->request->params->{country};
+    my $akey     = nsquish($addr1, $addr2, $zip_post);
+
+    if ($sex ne 'F' && $sex ne 'M') {
+        push @mess, "You must specify Male or Female.";
+    }
+
+    if ($addr1 && usa($country) && ! valid_state($st_prov)) {
+        push @mess, "Invalid state: $st_prov";
+    }
+
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "person/error.tt2";
+        return;
+    }
+
+    my $p = $c->model("RetreatCenterDB::Person")->create({
+        last     => $c->request->params->{last},
+        first    => $c->request->params->{first},
+        sanskrit => $c->request->params->{sanskrit},
+        sex      => $sex,
+        addr1    => $addr1,
+        addr2    => $addr2,
+        city     => $city,
+        st_prov  => $st_prov,
+        zip_post => $zip_post,
+        country  => $country,
+        akey     => $akey,
+        email    => $c->request->params->{email},
+        tel_home => $c->request->params->{tel_home},
+        tel_work => $c->request->params->{tel_work},
+        tel_cell => $c->request->params->{tel_cell},
+        comment  => $c->request->params->{comment},
+        mailings => $c->request->params->{mailings},
+        date_hf    => $c->request->params->{date_hf},
+        date_lm    => $c->request->params->{date_lm},
+        date_path  => $c->request->params->{date_path},
+        date_updat => today()->as_d8(),
+        date_entrd => today()->as_d8(),
+    });
+    my $id = $p->id();
+    #
+    # which affiliations are checked?
+    #
+    my @cur_affils = grep { s/^aff(\d+)/$1/ }
+                     keys %{$c->request->params};
+    for my $ca (@cur_affils) {
+        $c->model("RetreatCenterDB::AffilPerson")->create({
+            a_id => $ca,
+            p_id => $id,
+        });
+    }
+    #
+    # look for possible duplicates and give a warning.
+    # I know it would be better to catch a possible duplicate and prevent
+    # it from being created at all but that's more work.
+    # Perhaps later.
+    #
+    my @dups = $c->model("RetreatCenterDB::Person")->search(
+        {
+            last  => $last,
+            first => $first,
+            id    => { "!=", $id },     # but not ourselves
+        },
+    );
+    my $Clast  = substr($last, 0, 1);
+    my $Cfirst = substr($first, 0, 1);
+    push @dups, $c->model("RetreatCenterDB::Person")->search(
+        {
+            last  => { 'like' => "$Clast%"  },
+            first => { 'like' => "$Cfirst%" },
+            akey  => $akey,
+            id    => { "!=", $id },     # but not ourselves
+        }
+    );
+    my %seen;
+    @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups :)
+    my $dups;
+    for my $d (@dups) {
+        $dups .= _view_person($d) . ", ";
+    }
+    if ($dups) {
+        $dups =~ s{, $}{};     # final ', '
+        my $pl = (@dups == 1)? "": "s";
+        $dups = " - Possible duplicate$pl: $dups.";
+    }
+    $c->flash->{message} = "Created " . _view_person($p) . $dups;
+    $c->response->redirect($c->uri_for('/person/search'));
 }
 
 sub separate : Local {
@@ -423,21 +527,24 @@ sub partner_with : Local {
 sub mkpartner : Local {
     my ($self, $c, $id, $first, $last) = @_;
 
+    my $p1 = $c->model('RetreatCenterDB::Person')->find($id);
     if (! $c->request->params->{yes}) {
-        $c->stash->{message} = "The partnering was cancelled.";
+        $c->stash->{message} = "The partnering of "
+                              . _view_person($p1)
+                              . " was cancelled.";
         $c->forward("search");
         return;
     }
-    my $p1 = $c->model('RetreatCenterDB::Person')->find($id);
     my $addr1    = $p1->addr1;
     my $addr2    = $p1->addr2;
     my $zip_post = $p1->zip_post;
 
+    my $sex2 = ($p1->sex eq "M")? "F": "M";   # usually, not always
     my $p2 = $c->model("RetreatCenterDB::Person")->create({
         last     => $last,
         first    => $first,
         sanskrit => '',
-        sex      => ($p1->sex eq "M")? "F": "M",   # usually, not always
+        sex      => $sex2,
         addr1    => $addr1,
         addr2    => $addr2,
         city     => $p1->city,
@@ -452,9 +559,10 @@ sub mkpartner : Local {
     $p1->update({
         id_sps => $p2->id,
     });
+    my $pronoun = ($sex2 eq 'M')? "him": "her";
     $c->stash->{message} = "Created"
                          . " " . _view_person($p2)
-                         . " and partnered them with"
+                         . " and partnered $pronoun with"
                          . " " . _view_person($p1)
                          . ".";
     $c->forward("search");

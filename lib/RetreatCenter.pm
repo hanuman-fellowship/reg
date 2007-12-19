@@ -22,6 +22,8 @@ use Catalyst qw/
     Authentication
     Authentication::Store::DBIC
     Authentication::Credential::Password
+    Authorization::Roles
+    Authorization::ACL
 
     Session
     Session::Store::FastMmap
@@ -55,32 +57,16 @@ __PACKAGE__->config(
 # Start the application
 __PACKAGE__->setup;
 
-
-=head1 NAME
-
-RetreatCenter - Catalyst based application
-
-=head1 SYNOPSIS
-
-    script/retreatcenter_server.pl
-
-=head1 DESCRIPTION
-
-[enter your description here]
-
-=head1 SEE ALSO
-
-L<RetreatCenter::Controller::Root>, L<Catalyst>
-
-=head1 AUTHOR
-
-Shanker Neelakantan
-
-=head1 LICENSE
-
-This library is free software, you can redistribute it and/or modify
-it under the same terms as Perl itself.
-
-=cut
+# authorization rules
+for my $p (qw/ program canpol housecost affil leader rental /) {
+    for my $a (qw/ create create_do update update_do delete /) {
+        __PACKAGE__->deny_access_unless("/$p/$a", ['admin']);
+    }
+}
+for my $a (qw/ leader affil /) {
+    for my $a2 (qw/ update update_do /) {
+        __PACKAGE__->deny_access_unless("/program/$a\_$a2", ['admin']);
+    }
+}
 
 1;

@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 package RetreatCenterDB::Report;
 use base qw/DBIx::Class/;
 
@@ -12,6 +14,7 @@ __PACKAGE__->add_columns(qw/
     format
     zip_range
     rep_order
+    nrecs
     last_run
 /);
 # Set the primary key for the table

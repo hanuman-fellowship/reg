@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 package RetreatCenterDB::AffilReport;
 use base qw/DBIx::Class/;
 

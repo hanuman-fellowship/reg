@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 package RetreatCenterDB::Person;
 use base qw/DBIx::Class/;
 
@@ -30,6 +32,7 @@ __PACKAGE__->add_columns(qw/
     date_path
     date_lm
     comment
+    mailings
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -51,6 +54,8 @@ __PACKAGE__->has_many(affil_person => 'RetreatCenterDB::AffilPerson', 'p_id');
 #     2) Name of has_many() relationship this many_to_many() is shortcut for
 #     3) Name of belongs_to() relationship in model class of has_many() above
 #   You must already have the has_many() defined to use a many_to_many().
-__PACKAGE__->many_to_many(affils => 'affil_person', 'affil');
+__PACKAGE__->many_to_many(affils => 'affil_person', 'affil',
+                          { order_by => 'descrip' },
+                         );
 
 1;

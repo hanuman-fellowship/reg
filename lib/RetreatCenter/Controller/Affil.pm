@@ -20,9 +20,6 @@ sub list : Local {
     $c->stash->{template} = "affil/list.tt2";
 }
 
-# ??? confirm deletion and supply a count
-# of how many people and reports are affected.
-# also cascade deletes to report_afill as well
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
@@ -75,6 +72,13 @@ sub create_do : Local {
         descrip => $c->request->params->{descrip},
     });
     $c->response->redirect($c->uri_for('/affil/list'));
+}
+
+sub access_denied : Private {
+    my ($self, $c) = @_;
+
+    $c->stash->{mess}  = "Authorization denied!";
+    $c->stash->{template} = "gen_error.tt2";
 }
 
 1;

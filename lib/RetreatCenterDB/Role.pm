@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 package RetreatCenterDB::Role;
 
 use base qw/DBIx::Class/;

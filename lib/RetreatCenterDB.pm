@@ -15,6 +15,13 @@ __PACKAGE__->load_classes({
         User
         UserRole
         Role
+        Program
+        CanPol
+        HouseCost
+        AffilProgram
+        Leader
+        LeaderProgram
+        Rental
     /]
 });
 

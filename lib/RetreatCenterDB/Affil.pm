@@ -1,3 +1,5 @@
+use strict;
+use warnings;
 package RetreatCenterDB::Affil;
 use base qw/DBIx::Class/;
 
@@ -31,20 +33,5 @@ __PACKAGE__->has_many(affil_person => 'RetreatCenterDB::AffilPerson', 'a_id');
 #     3) Name of belongs_to() relationship in model class of has_many() above
 #   You must already have the has_many() defined to use a many_to_many().
 __PACKAGE__->many_to_many(persons => 'affil_person', 'person');
-
-
-=head1 NAME
-
-MyAppDB::Book - A model object representing a book.
-
-=head1 DESCRIPTION
-
-This is an object that represents a row in the 'books' table of your application
-database.  It uses DBIx::Class (aka, DBIC) to do ORM.
-
-For Catalyst, this is designed to be used through MyApp::Model::MyAppDB.
-Offline utilities may wish to use this class directly.
-
-=cut
 
 1;
