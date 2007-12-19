@@ -5,24 +5,10 @@
 <ul>
 <table cellpadding=3 border=0>
 
-<tr>
-<th align=left>Name</th>
-<th>Action</th>
-</tr>
-
 [% FOREACH cp IN canpols %]
 
 <tr>
-<td>[% cp.name %]</td>
-<td>
-[% IF Catalyst.check_user_roles('admin') %]
-<a href="/canpol/update/[% cp.id %]">Edit</a>&nbsp;
-<a href="/canpol/delete/[% cp.id %]"
- onclick="return confirm('Okay to Delete [% cp.name %]?')">Del</a>
-[% ELSE %]
-<a href="/canpol/view/[% cp.id %]">View</a>&nbsp;
-[% END %]
-</td>
+<td><a href="/canpol/view/[% cp.id %]">[% cp.name %]</a></td>
 </tr>
 
 [% END %]

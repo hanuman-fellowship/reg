@@ -5,20 +5,10 @@
 <ul>
 <table cellpadding=3 border=0>
 <tr>
-<th align=left>Name</th>
-<th>Action</th>
 </tr>
 [% FOREACH hc IN housecosts %]
 <tr>
-<td>[% hc.name %]</td>
-<td>
-[% IF Catalyst.check_user_roles('admin') %]
-<a href="/housecost/update/[% hc.id %]">Edit</a>&nbsp;
-<a href="/housecost/delete/[% hc.id %]" onclick="return confirm('Okay to Delete [% hc.name %]?')">Del</a>
-[% ELSE %]
-<a href="/housecost/view/[% hc.id %]">View</a>
-[% END %]
-</td>
+<td><a href="/housecost/view/[% hc.id %]">[% hc.name %]</a><td>
 </tr>
 [% END %]
 </ul>
