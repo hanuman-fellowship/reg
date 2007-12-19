@@ -9,7 +9,7 @@ my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
 my $af_sql = "insert into affils values(?, ?)";
 my $af_sth = $dbh->prepare($af_sql)
     or die "no prep affil\n";
-my $p_sql = "insert into people values(". ("?," x 22) . "?)";
+my $p_sql = "insert into people values(". ("?," x 23) . "?)";
 my $p_sth = $dbh->prepare($p_sql)
     or die "no prep people\n";
 my $ap_sql = "insert into affil_people values(?, ?)";
@@ -26,6 +26,7 @@ while (<$affils>) {
     chomp;
     ++$n;
     ($code, $value) = split /\|/;
+    next if $code eq '9' || $code eq '8';       # has its own column now
     $af_sth->execute($n, $value);
     $affil_id{$code} = $n;
 }
@@ -55,9 +56,12 @@ while (<$people>) {
         }
         $dt = "$y$m$d";
     }
-    $p_sth->execute(@flds[0..14, 16..19, 21..24]);
     $affils = $flds[20];
-    for my $a (split //, $affils) {
+    $affils =~ s{8}{};
+    my ($mailings) = ($affils =~ s{9}{})? "": "yes";
+    $p_sth->execute(@flds[0..14, 16..19, 21..24], $mailings);
+    my %seen;
+    for my $a (grep {!$seen{$_}++} split //, $affils) {
         if (exists $affil_id{$a}) {
             $ap_sth->execute($affil_id{$a}, $flds[16]);
         }

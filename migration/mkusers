@@ -31,6 +31,5 @@ INSERT INTO users VALUES (3, 'nogo', 'mypass', 'nogo@na.com', 'No', 'Go', 0);
 INSERT INTO roles VALUES (1, 'user');
 INSERT INTO roles VALUES (2, 'admin');
 INSERT INTO user_roles VALUES (1, 1);
-INSERT INTO user_roles VALUES (1, 2);
-INSERT INTO user_roles VALUES (2, 1);
+INSERT INTO user_roles VALUES (2, 2);
 INSERT INTO user_roles VALUES (3, 1);

@@ -1,0 +1,162 @@
+drop table if exists program;
+create table program (
+    id          integer primary key,
+    name        text,
+    title       text,
+    subtitle    text,
+    glnum       text,
+    housecost_id integer,
+    retreat     integer,
+    sdate       text,
+    edate       text,
+    tuition     integer,
+    confnote    text,
+    url         text,
+    webdesc     text,
+    brdesc      text,
+    webready    integer,
+    image       text,
+    kayakalpa   integer,
+    canpol_id   integer,
+    extradays   integer,
+    full_tuition integer,
+    deposit     integer,
+    collect_total integer,
+    linked      integer,
+    ptemplate   text,
+    sbath       integer,
+    quad        integer,
+    economy     integer,
+    footnotes   text,
+    -- for regi:
+    school      integer,
+    level       text,
+    -- for rentals:
+    phone       text,
+    email       text
+);
+insert into program values (
+    1,
+    'OGS',
+    '5 night silent retreat',
+    'with Adya',
+    '90123',
+    2,
+    '',
+    '20090303',
+    '20090307',
+    400,
+    'Please do not bring pets.
+Or food',
+    '',
+    'This is a great program.
+New line.
+Second new line.',
+    '',
+    'yes',
+    'adya.jpg',     -- image
+    'yes',
+    2,
+    '0',
+    '0',
+    100,
+    '',
+    'yes',
+    '',
+    'yes',
+    '',
+    'yes',
+    '**',       -- footnotes
+    NULL,
+    NULL,
+    NULL,
+    NULL
+);
+drop table if exists canpol;
+create table canpol (
+    id integer primary key,
+    name   text,
+    policy text
+);
+insert into canpol values (
+    1, 'MMC', 'No refund after 10 days before the program starts.
+Once it starts - if you quit... Sorry, Charlie'
+);
+insert into canpol values (
+    2, 'OGS', 'No refunds at all if you bail on us.'
+);
+drop table if exists housecost;
+create table housecost (
+    id              integer primary key,
+    name            text,
+    single          integer,
+    double          integer,
+    triple          integer,
+    quad            integer,
+    dormitory       integer,
+    economy         integer,
+    center_tent     integer,
+    own_tent        integer,
+    own_van         integer,
+    commuting       integer,
+    unknown         integer,
+    single_bath     integer,
+    double_bath     integer,
+    type            text
+);
+insert into housecost values (
+    1, 'Default', 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 'Perday'
+);
+insert into housecost values (
+    2, 'OGS', 900, 850, 800, 750, 700, 650, 600,
+              550, 500, 450, 400, 350, 300, 'Total'
+);
+drop table if exists affil_program;
+create table affil_program (
+    a_id integer,
+    p_id integer
+);
+drop table if exists leader;
+create table leader (
+    id integer primary key,
+    person_id integer,
+    public_email text,
+    url text,
+    image text,
+    biography text
+);
+drop table if exists leader_program;
+create table leader_program (
+    l_id, integer,      -- leader id
+    p_id integer        -- program id
+);
+drop table if exists rental;
+create table rental (
+    id          integer primary key,
+    name        text,
+    title       text,
+    subtitle    text,
+    glnum       text,
+    sdate       text,
+    edate       text,
+    url         text,
+    webdesc     text,
+    linked      integer,
+    phone       text,
+    email       text
+);
+insert into rental values (
+    1,
+    'Spring Yoga',
+    'Budding Energy',
+    'Shooting out of the ground',
+    '98765',
+    '090909',
+    '092009',
+    'www.springyoga.com',
+    'Come have fun.
+Tilling the earth of your body.',
+    'yes',
+    '234-098-0987',
+    'spring@yoga.org'
+);
