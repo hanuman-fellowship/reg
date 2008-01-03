@@ -248,3 +248,35 @@ When in admin role and click on Program's housing costs
     should the user view the cost structure and also see
     Create  Edit  Delete???
     ditto for Cancellation Policy??
+can't put a '+' in a form text field!
+    why?   it is the only character that is special in this way.
+    it is not within DBIx::Class.
+    it's within Catalyst server???
+If you have two or more leaders
+    they will be listed in alphabetical order
+    based on Last name, then first.  Okay?
+    What if there is one main leader and a minor one.
+after publish - go to list with message
+after program edit go to list as well?
+    these are good questions for the users.
+is there no value= field for <input type=file>???
+    wouldn't apply anyway...
+    do we need a separate update form for images???
+when deleting a leader
+    their person record remains intact, "make leader" returns
+    make sure to delete the associatated image, if any.
+which roles?
+    admin / template-editor
+    admin can create programs
+        but not edit/delete the templates
+put a javascript alert in front of deleting images
+    in leaders, programs
+members, images (for templates)
+restrictions on passwords?   >=5, what else?
+in updating strings - no " char.  ' okay.
+why use Catalyst.uri_for('/program/list') instead
+    of just '/program/list'?   for when it isn't localhost::3000?
+mailto links on email addresses
+do stale soon
+test - trimming of email in leader, user, rental and person
+http:// off in rental, leader

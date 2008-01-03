@@ -4,6 +4,7 @@ package RetreatCenter::Controller::Rental;
 use base 'Catalyst::Controller';
 
 use Date::Simple qw/date/;
+use Util qw/trim/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -65,6 +66,8 @@ sub create_do : Local {
     /) {
         $hash{$w} = $c->request->params->{$w};
     }
+    $hash{url} =~ s{^\s*http://}{};
+    $hash{email} = trim($hash{email});
     my $p = $c->model("RetreatCenterDB::Rental")->create({
         %hash,
     });
@@ -160,6 +163,8 @@ sub update_do : Local {
         $hash{$w} = ($w =~ m{date})? (date($v) || "")
                    :                 $v;
     }
+    $hash{url} =~ s{^\s*http://}{};
+    $hash{email} = trim($hash{email});
     my $p = $c->model("RetreatCenterDB::Rental")->find($id);
     $p->update(\%hash);
     $c->response->redirect($c->uri_for("/rental/view/" . $p->id));

@@ -9,7 +9,7 @@ my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
 my $af_sql = "insert into affils values(?, ?)";
 my $af_sth = $dbh->prepare($af_sql)
     or die "no prep affil\n";
-my $p_sql = "insert into people values(". ("?," x 23) . "?)";
+my $p_sql = "insert into people values(". ("?," x 20) . "?)";
 my $p_sth = $dbh->prepare($p_sql)
     or die "no prep people\n";
 my $ap_sql = "insert into affil_people values(?, ?)";
@@ -43,7 +43,7 @@ while (<$people>) {
     if (@flds == 24) {
         push @flds, "";
     }
-    for my $dt (@flds[18,19,21..23]) {
+    for my $dt (@flds[18,19]) {
         my ($m, $d, $y) = $dt =~ m{(..)/(..)/(..)};
         if ($dt eq "  /  /  ") {
             $dt = "        ";
@@ -59,7 +59,7 @@ while (<$people>) {
     $affils = $flds[20];
     $affils =~ s{8}{};
     my ($mailings) = ($affils =~ s{9}{})? "": "yes";
-    $p_sth->execute(@flds[0..14, 16..19, 21..24], $mailings);
+    $p_sth->execute(@flds[0..14, 16..19, 24], $mailings);
     my %seen;
     for my $a (grep {!$seen{$_}++} split //, $affils) {
         if (exists $affil_id{$a}) {
@@ -94,7 +94,7 @@ close $people;
 	  dtoc(date_updat) + t + ; 18
 	  dtoc(date_entrd) + t + ; 19
 	  alltrim(affil) + t + ; 20
-	  dtoc(date_hf) + t + ; 21
+	  dtoc(date_hf) + t + ; 21      these 3 dates are obsolete
 	  dtoc(date_path) + t + ; 22
 	  dtoc(date_lm) + t + ; 23
 	  alltrim(comment)

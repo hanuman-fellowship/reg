@@ -1,0 +1,45 @@
+<h2>Users</h2>
+<a href="/user/create">Create</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/user/update/[% user.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/user/delete/[% user.id %]"
+ onclick="return confirm('Okay to Delete [% user.first %] [% user.last %]?');">Delete</a>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>User Name</th>
+<td>[% user.username %]</td>
+</tr>
+
+<tr>
+<th align=right>First</th>
+<td>[% user.first %]</td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td>[% user.last %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Password</th>
+<td>[% user.password %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td><a href="mailto:[% user.email %]">[% user.email %]</a></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Roles</th>
+<td>
+[% FOREACH r IN user.roles %]
+[% r.fullname %]<br>
+[% END %]
+</td>
+
+</table>
+</ul>

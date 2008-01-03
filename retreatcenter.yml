@@ -24,5 +24,5 @@ authorization:
     dbic:
         role_class: RetreatCenterDB::Role
         role_field: role
-        role_rel: map_user_role
+        role_rel: user_role
         user_role_user_field: user_id

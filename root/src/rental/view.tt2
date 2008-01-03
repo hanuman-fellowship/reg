@@ -1,5 +1,5 @@
 <h2>Rentals</h2>
-[% IF Catalyst.check_user_roles('admin') %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Create</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/update/[% rental.id %]">Edit</a>
@@ -38,7 +38,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Web Address</th>
-<td colspan=5>[% rental.url %]</td>
+<td colspan=5><a href="http://[% rental.url %]">[% rental.url %]</a></td>
 </tr>
 
 <tr>
@@ -48,7 +48,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Email</th>
-<td>[% rental.email %]</td>
+<td><a href="mailto:[% rental.email %]">[% rental.email %]</a></td>
 </tr>
 
 <tr>

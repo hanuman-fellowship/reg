@@ -1,0 +1,13 @@
+<h2>Roles</h2>
+<a href="/role/create">Create</a>
+<ul>
+[% FOREACH r IN roles %]
+<a href="/role/view/[% r.id %]">[% r.fullname %]</a>
+<ul>
+    [% FOREACH u IN r.users %]
+    <a href="/user/view/[% u.id %]">[% u.first _ " " _ u.last %]</a><br>
+    [% END %]
+    <p>
+</ul>
+[% END %]
+</ul>

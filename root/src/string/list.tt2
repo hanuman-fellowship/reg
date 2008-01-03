@@ -1,0 +1,18 @@
+<h2>Strings</h2>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=left>Key</th>
+<th align=left>Value</th>
+</tr>
+
+[% FOREACH s IN strings %]
+<tr>
+<td><a href="[% Catalyst.uri_for('/string/update/') _ s.key %]">[% s.key %]</a></td>
+<td>[% s.value %]</td>
+</tr>
+[% END %]
+
+</table>
+</ul>

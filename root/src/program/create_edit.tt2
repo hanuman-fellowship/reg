@@ -1,5 +1,9 @@
 <h2>Programs</h2>
-<form action=[% "/program/" _ form_action %] name=form>
+<form action=[% "/program/" _ form_action %]
+      name=form
+      method=POST
+      enctype="multipart/form-data"
+>
 <table cellpadding=3 border=0>
 
 <tr>
@@ -59,11 +63,11 @@
 <td>
 <select name=canpol_id>
 [% FOREACH c IN canpol_opts %]
-<option value=[% c.id %]
-[% IF c.name == program.canpol.name %]
-    selected
-[% END %]
->[% c.name %]</option>
+    <option value=[% c.id %]
+    [% IF c.name == program.canpol.name %]
+        selected
+    [% END %]
+    >[% c.name %]</option>
 [% END %]
 </select>
 </td>
@@ -76,11 +80,11 @@
 <td>
 <select name=housecost_id>
 [% FOREACH h IN housecost_opts %]
-<option value=[% h.id %]
-[% IF h.name == program.housecost.name %]
-    selected
-[% END %]
->[% h.name %]</option>
+    <option value=[% h.id %]
+    [% IF h.name == program.housecost.name %]
+        selected
+    [% END %]
+    >[% h.name %]</option>
 [% END %]
 </select>
 </td>
@@ -98,14 +102,6 @@
 </tr>
 
 <tr>
-<th align=right>Program Image</th>
-<!-- display existing image -->
-<td colspan=2><input type=file name=image value="[% program.image %]"></td>
-<th align=right>Template</th>
-<td colspan=2><input type=text name=ptemplate value="[% program.ptemplate %]" size=30></td>
-</tr>
-
-<tr>
 <th align=right valign=top>Web Description</th>
 <td colspan=5><textarea name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea></td>
 </td>
@@ -114,6 +110,29 @@
 <tr>
 <th align=right valign=top>Brochure Description</th>
 <td colspan=5><textarea name=brdesc cols=60 rows=10>[% program.brdesc %]</textarea></td>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Program Image</th>
+<td colspan=2>
+[% IF program.image %]
+<img src="[% Catalyst.uri_for('/static/images/pth-') _ program.id _ '.jpg' %]"><br>
+[% END %]
+<input type=file name=image>
+</td>
+<th align=right valign=top>Template</th>
+<td colspan=2 valign=top>
+<select name=ptemplate>
+[% FOREACH t IN template_opts %]
+    <option value=[% t %]
+    [% IF t == program.ptemplate %]
+        selected
+    [% END %]
+    >[% t %]</option>
+[% END %]
+</select>
+<!-- input type=text name=ptemplate value="[% program.ptemplate %]" size=30 -->
 </td>
 </tr>
 

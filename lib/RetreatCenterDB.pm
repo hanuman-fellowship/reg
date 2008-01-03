@@ -22,6 +22,8 @@ __PACKAGE__->load_classes({
         Leader
         LeaderProgram
         Rental
+        Exception
+        String
     /]
 });
 

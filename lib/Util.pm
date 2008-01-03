@@ -5,6 +5,7 @@ package Util;
 use base 'Exporter';
 our @EXPORT_OK = qw/
     affil_table
+    role_table
     leader_table
     trim
     nsquish
@@ -68,6 +69,26 @@ sub affil_table {
 }
 
 #
+sub role_table {
+    my ($c) = shift;
+
+    my %checked = map { $_->id() => 'checked' } @_;
+
+    join "\n",
+    map {
+        my $id = $_->id();
+          "<tr><td>"
+        . "<input type=checkbox name=role$id  $checked{$id}> "
+        . $_->fullname
+        . "</td></tr>"
+    }
+    sort {
+        $a->fullname cmp $b->fullname
+    }
+    $c->model('RetreatCenterDB::Role')->all();
+}
+
+#
 sub leader_table {
     my ($c) = shift;
 
@@ -123,12 +144,15 @@ sub nsquish {
 #
 sub slurp {
     my ($fname) = @_;
-	$fname = "templates/$fname.html" unless $fname =~ /\./;
-    open IN, $fname
+
+    if (index($fname, '.') == -1) {
+        $fname = "root/static/templates/$fname.html";
+    }
+    open my $in, "<", $fname
 		or die "cannot open $fname: $!\n";
     local $/;
-    my $s = <IN>;
-    close IN;
+    my $s = <$in>;
+    close $in;
     return $s;
 }
 

@@ -1,0 +1,18 @@
+<h2>Strings</h2>
+<form action="[% '/string/' _ form_action %]" name=form>
+<table cellpadding=3 border=0>
+<tr>
+<td align=right>Key</td>
+<td>[% key %]</td>
+</tr>
+<tr>
+<td align=right>Value</td>
+<td><input type=text name=value value="[% value %]" size=70></td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+</table>
+</form>
+<script type="text/javascript">document.form.value.focus()</script>

@@ -21,4 +21,6 @@
 
 </table>
 </form>
+
+[% error_msg %]
 <script type="text/javascript">document.form.username.focus();</script>

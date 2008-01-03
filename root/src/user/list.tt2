@@ -1,0 +1,17 @@
+<h2>Users</h2>
+<a href="/user/create">Create</a>
+<p>
+<ul>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>User Name</th>
+<th align=left>Real Name</th>
+</tr>
+[% FOREACH u IN users %]
+<tr>
+<td><a href="/user/view/[% u.id %]">[% u.username %]</a></td>
+<td>[% u.first _ " " _ u.last %]</td>
+</tr>
+[% END %]
+</table>
+</ul>

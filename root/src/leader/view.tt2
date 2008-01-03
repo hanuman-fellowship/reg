@@ -2,33 +2,42 @@
 
 <h3>[% leader.person.first %] [% leader.person.last %]</h3>
 <p>
+[% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/leader/update/[% leader.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/leader/delete/[% leader.id %]"
  onclick="return confirm('Okay to Delete [% leader.person.first %] [% leader.person.last %] as leader?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+[% END %]
 <a href="/person/view/[% leader.person.id %]">Person Info</a>
 <ul>
 <table cellpadding=3 border=0>
 
 <tr>
 <th align=right>Public Email</th>
-<td>[% leader.public_email %]</td>
+<td><a href="mailto:[% leader.public_email %]">[% leader.public_email %]</a></td>
 </tr>
 
 <tr>
 <th align=right>Web Address</th>
-<td>[% leader.url %]</td>
-</tr>
-
-<tr>
-<th align=right>Image</th>
-<td>[% leader.image %]</td>
+<td><a href="http://[% leader.url %]">[% leader.url %]</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Biography</th>
 <td>[% biography %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Image</th>
+<td>
+[% IF leader.image %]
+<img src="[% Catalyst.uri_for('/static/images/lth-') _ leader.id _ '.jpg' %]"><br>
+<a href="[% Catalyst.uri_for('/leader/del_image/') _ leader.id %]" onclick="return confirm('Okay to Delete image for [% leader.person.first %] [% leader.person.last %]?');" >Delete Image</a>
+[% ELSE %]
+&nbsp;
+[% END %]
+</td>
 </tr>
 
 </table>

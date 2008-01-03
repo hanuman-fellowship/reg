@@ -5,7 +5,6 @@
     <th align=left>Name</th>
     <th align=center>Home</th>
     <th align=center>Work</th>
-    <th align=center>Cell</th>
     <th align=left>&nbsp;&nbsp;Address</th>
 </tr>
 [% FOREACH p IN people %]

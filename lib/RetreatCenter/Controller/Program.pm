@@ -9,10 +9,20 @@ use Util qw/
     slurp 
     monthyear
 /;
+use Lookup;
 
 use Date::Simple qw/date/;
 
 use lib '../../';       # so you can do a perl -c here.
+
+my %sys_template = map { $_ => 1 } qw/
+    progRow
+    e_progRow
+    e_rentalRow
+    events
+    popup
+    programs
+/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -51,6 +61,11 @@ sub create : Local {
             undef,
             { order_by => 'name' },
         ) ];
+    $c->stash->{template_opts} = [
+        grep { ! $sys_template{$_} }
+        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
+        <root/static/templates/*.html>
+    ];
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "program/create_edit.tt2";
 }
@@ -94,18 +109,33 @@ sub create_do : Local {
     for my $w (qw/
         name title subtitle glnum housecost_id
         retreat sdate edate tuition confnote
-        url webdesc brdesc webready image
+        url webdesc brdesc webready
         kayakalpa canpol_id extradays full_tuition deposit
         collect_total linked ptemplate sbath quad
         economy footnotes
-        school level phone email
+        school level
     /) {
         $hash{$w} = $c->request->params->{$w};
     }
+    $hash{url} =~ s{^\s*http://}{};
+    my $upload = $c->request->upload('image');
     my $p = $c->model("RetreatCenterDB::Program")->create({
+        image => $upload? "yes": "",
         %hash,
     });
     my $id = $p->id();
+    if ($upload) {
+        chdir "root/static/images";
+        $upload->copy_to("po-$id.jpg");
+        #
+        # invoke ImageMagick convert to create th-$id.jpg and b-$id.jpg
+        #
+        Lookup->init($c);
+        system("convert -scale $lookup{imgwidth}x po-$id.jpg pth-$id.jpg");
+        system("convert -scale $lookup{big_imgwidth}x po-$id.jpg pb-$id.jpg");
+        unlink "po-$id.jpg";
+        chdir "../../..";
+    }
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
@@ -123,11 +153,14 @@ sub view : Local {
         $c->stash->{$w} = $s;
     }
     my $l = join "<br>\n",
-                 sort
                  map  {
                     "<a href='/leader/view/" . $_->id() . "'>"
                      . $_->person->last() . ", " . $_->person->first()
                      . "</a>"
+                 }
+                 sort {
+                     $a->person->last  cmp $b->person->last or
+                     $a->person->first cmp $b->person->first
                  }
                  $p->leaders();
     $l .= "<br>" if $l;
@@ -192,6 +225,12 @@ sub update : Local {
             undef,
             { order_by => 'name' },
         ) ];
+    # templates
+    $c->stash->{template_opts} = [
+        grep { ! $sys_template{$_} }
+        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
+        <root/static/templates/*.html>
+    ];
 
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "program/create_edit.tt2";
@@ -239,15 +278,27 @@ sub update_do : Local {
     for my $w (qw/
         name title subtitle glnum housecost_id
         retreat sdate edate tuition confnote
-        url webdesc brdesc webready image
+        url webdesc brdesc webready
         kayakalpa canpol_id extradays full_tuition deposit
         collect_total linked ptemplate sbath quad
         economy footnotes
-        school level phone email
+        school level
     /) {
         my $v = $c->request->params->{$w};
         $hash{$w} = ($w =~ m{date})? (date($v) || "")
                    :                 $v;
+    }
+    $hash{url} =~ s{^\s*http://}{};
+    if (my $upload = $c->request->upload('image')) {
+        chdir "root/static/images";
+        $upload->copy_to("po-$id.jpg");
+        #
+        # invoke ImageMagick convert to create th-$id.jpg and b-$id.jpg
+        #
+        system("convert -scale 150x po-$id.jpg pth-$id.jpg");
+        system("convert -scale 600x po-$id.jpg pb-$id.jpg");
+        chdir "../../..";       # must cd back!   not stateless HTTP, exactly
+        $hash{image} = "yes";
     }
     my $p = $c->model("RetreatCenterDB::Program")->find($id);
     $p->update(\%hash);
@@ -326,6 +377,18 @@ sub delete : Local {
     $c->response->redirect($c->uri_for('/program/list'));
 }
 
+sub del_image : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = $c->stash->{program}
+        = $c->model("RetreatCenterDB::Program")->find($id);
+    $p->update({
+        image => "",
+    });
+    unlink <root/static/images/p*-$id.jpg>;
+    $c->response->redirect($c->uri_for("/program/view/$id"));
+}
+
 sub access_denied : Private {
     my ($self, $c) = @_;
 
@@ -333,37 +396,40 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
-1;
-
-__END__
 sub publish : Local {
     my ($self, $c) = @_;
 
-# temporary... what is the Cwd?
-open my $test, ">", "touchfile";
-print {$test} "hi\n";
-close $test;
-return;
+    # clear the arena
+    unlink <gen_files/*>;
+
+    Lookup->init($c);
+    $c->log->info("lookup website = $lookup{website}");
+
     # 
     # generate each of the program pages
     #
     my $tag_regexp = '<!--\s*T\s+(\w+)\s*-->';
-    for my $p (Gen::Program->programs) {
-        print $p->fname, "\n";
-        open OUT, ">".$p->fname
-            or die "cannot open ", $p->fname, ": $!\n";
-        my $copy = $p->template;
-        $copy =~ s/$tag_regexp/
-            except($p->pname, $1) || $p->$1()
-        /xge;
-        print OUT $copy;
-        close OUT;
+    for my $p ($c->model('RetreatCenterDB::Program')->all()) {
+        my $fname = $p->fname();
+        $c->log->info($fname);
+        open my $out, ">", $fname
+            or die "cannot open $fname: $!\n";
+        my $copy = $p->template_src();
+        $copy =~ s{$tag_regexp}{
+            #except($p->pname(), $1) || $p->$1()
+            $p->$1()
+        }xge;
+        print {$out} $copy;
+        close $out;
     }
+    $c->stash->{template} = "program/published.tt2";
 }
 
 1;
 
 __END__
+
+to be added to the publish method...
 
 #
 # generate the program and event calendars

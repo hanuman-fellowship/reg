@@ -1,5 +1,5 @@
 <h2>Programs</h2>
-[% IF Catalyst.check_user_roles('admin') %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/program/create">Create</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/program/update/[% program.id %]">Edit</a>
@@ -85,15 +85,7 @@ onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Web Address</th>
-<td colspan=5>[% program.url %]</td>
-</tr>
-
-<tr>
-<th align=right>Program Image</th>
-<!-- display existing image -->
-<td colspan=2>[% program.image %]</td>
-<th align=right>Template</th>
-<td colspan=2>[% program.ptemplate %]</td>
+<td colspan=5><a href="http://[% program.url %]">[% program.url %]</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
@@ -102,7 +94,7 @@ onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
 <th align=right valign=top>Leaders</th>
 <td align=left valign=top colspan=2>
 [% leaders %]
-[% IF Catalyst.check_user_roles('admin') %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/program/leader_update/[% program.id %]">Update</a>
 [% END %]
 <p>
@@ -110,7 +102,7 @@ onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
 <th align=right valign=top>Affiliations</th>
 <td align=left valign=top colspan=2>
 [% affils %]
-[% IF Catalyst.check_user_roles('admin') %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/program/affil_update/[% program.id %]">Update</a>
 [% END %]
 <p>
@@ -127,6 +119,21 @@ onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
 <th align=right valign=top>Brochure Description</th>
 <td colspan=5>[% brdesc %]</td>
 </td>
+</tr>
+
+<tr>
+<th align=right valign=top>Program Image</th>
+<td colspan=2>
+[% IF program.image %]
+<img src="[% Catalyst.uri_for('/static/images/pth-') _ program.id _ '.jpg' %]"><br>
+<a href="[% Catalyst.uri_for('/program/del_image/') _ program.id %]"
+onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete Image</a>
+[% ELSE %]
+&nbsp;
+[% END %]
+</td>
+<th align=right valign=top>Template</th>
+<td colspan=2 valign=top>[% program.ptemplate %]</td>
 </tr>
 
 </table>

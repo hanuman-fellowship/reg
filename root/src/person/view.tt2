@@ -18,7 +18,7 @@ onclick="return confirm('Okay to Separate?');">Separate</a>
 [% IF is_leader %]
 <a href="/leader/view/[% leader.id %]">Leader Info</a>
 [% ELSE %]
-    [% IF Catalyst.check_user_roles('admin') %]
+    [% IF Catalyst.check_user_roles('prog_admin') %]
     <a href="/leader/create/[% person.id %]">Make Leader</a>
     [% END %]
 [% END %]
@@ -34,7 +34,7 @@ onclick="return confirm('Okay to Separate?');">Separate</a>
 <tr><th align=right>State/Province</td><td>[% person.st_prov %]</td></tr>
 <tr><th align=right>Zip/Postal Code</td><td>[% person.zip_post %]</td></tr>
 <tr><th align=right>Country</td><td>[% person.country %]</td></tr>
-<tr><th align=right>Email</td><td style="width: 2.5in">[% person.email %]</td></tr>
+<tr><th align=right>Email</td><td style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td></tr>
 <tr><th align=right>Mailings</td><td>[% person.mailings %]</td></tr>
 
 <tr>
@@ -55,9 +55,6 @@ onclick="return confirm('Okay to Separate?');">Separate</a>
 <tr><th align=right>Comment</td><td>[% person.comment %]</td></tr>
 </table>
 <table border=0 cellpadding=3 style="margin-top: .3in">
-<tr><th align=right>Date Hanuman Fellowship</td><td>[% date_hf %]</td></tr>
-<tr><th align=right>Date Land Member</td><td>[% date_lm %]</td></tr>
-<tr><th align=right>Date Pathways</td><td>[% date_path %]</td></tr>
 <tr><th align=right>Date Entered</td><td>[% date_entrd %]</td></tr>
 <tr><th align=right>Date Updated</td><td>[% date_updat %]</td></tr>
 </table>

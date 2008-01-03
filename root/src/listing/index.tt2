@@ -3,4 +3,14 @@
 <a href="/listing/phone">Phone list</a>
 <p>
 <a href="/listing/undup">Unduplication File</a>
+<p>
+Purge Stale Addresses
+<ul>
+<form action="[% Catalyst.uri_for('/listing/stale') %]"
+      method=POST
+      enctype="multipart/form-data"
+>
+<input type=file name=stale_emails><br>
+<input type=submit>
+</ul>
 </ul>

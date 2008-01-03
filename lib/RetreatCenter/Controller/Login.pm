@@ -17,8 +17,8 @@ sub index : Private {
             # If successful, then let them use the application
             $c->response->redirect($c->uri_for('/person/search'));
             return;
-        } else {
-            # Set an error message
+        }
+        else {
             $c->stash->{error_msg} = "Bad username or password.";
         }
     }

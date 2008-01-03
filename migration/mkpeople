@@ -19,9 +19,6 @@ create table people (
     id_sps integer,
     date_updat text,
     date_entrd text,
-    date_hf text,
-    date_path text,
-    date_lm text,
     comment text,
     mailings integer
 );

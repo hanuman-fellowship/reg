@@ -116,7 +116,25 @@ EOS
     $fname =~ s{root/}{};
     $c->stash->{filename} = $fname;
     $c->stash->{template} = "listing/undup.tt2";
-    
+}
+
+sub stale : Local {
+    my ($self, $c) = @_;
+
+    my $upload = $c->request->upload('stale_emails');
+    my $n = 0;
+    if ($upload) {
+        my @emails = $upload->slurp =~ m{\S+\@\S+}g;
+        $n = @emails;
+        # here we go... i hope. yes!
+        $c->model("RetreatCenterDB::Person")->search(
+            { email => { -in => \@emails } },
+        )->update({
+            email => '',
+        });
+    }
+    $c->stash->{mess} = "$n emails purged.";
+    $c->stash->{template} = "gen_error.tt2";
 }
 
 1;

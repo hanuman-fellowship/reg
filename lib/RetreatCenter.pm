@@ -58,15 +58,23 @@ __PACKAGE__->config(
 __PACKAGE__->setup;
 
 # authorization rules
-for my $p (qw/ program canpol housecost affil leader rental /) {
+for my $c (qw/ user role /) {
     for my $a (qw/ create create_do update update_do delete /) {
-        __PACKAGE__->deny_access_unless("/$p/$a", ['admin']);
+        __PACKAGE__->deny_access_unless("/$c/$a", ['super_admin']);
+    }
+}
+for my $c (qw/ program canpol housecost leader rental /) {
+    for my $a (qw/ create create_do update update_do delete /) {
+        __PACKAGE__->deny_access_unless("/$c/$a", ['prog_admin']);
     }
 }
 for my $a (qw/ leader affil /) {
     for my $a2 (qw/ update update_do /) {
-        __PACKAGE__->deny_access_unless("/program/$a\_$a2", ['admin']);
+        __PACKAGE__->deny_access_unless("/program/$a\_$a2", ['prog_admin']);
     }
+}
+for my $a (qw/ list delete upload /) {
+    __PACKAGE__->deny_access_unless("/template/$a", ['web_designer']);
 }
 
 1;

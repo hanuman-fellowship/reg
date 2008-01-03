@@ -1,23 +1,43 @@
 <div id="header">[% PROCESS site/header %]</div>
 
 <div id="content">
-[% IF Catalyst.user_exists %]
+[% IF Catalyst.user_exists %]   <!-- not for login screen -->
 <table cellpadding=4>
 <tr>
 <td><a href=/person/search>People</a></td>
-<td><a href=/leader>Leaders</a></td>
 <td><a href=/affil/list>Affiliations</a></td>
 <td><a href=/listing>Listings</a></td>
 <td><a href=/report/list>Reports</a></td>
-<td><a href=/logout>Logout</a></td>
+<td>&nbsp;</td>
+<td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
+&nbsp;<a href=/logout>Logout</a></td>
+<td><a href=/user/pass>Change Password</a></td>
 </tr>
 
+[% IF Catalyst.check_user_roles('prog_staff') %]
 <tr>
 <td><a href=/program/list>Programs</a></td>
 <td><a href=/rental/list>Rentals</a></td>
+<td><a href=/leader>Leaders</a></td>
 <td colspan=2><a href=/canpol>Cancellation Policies</a></td>
 <td><a href=/housecost>Housing Costs</a></td>
 </tr>
+[% END %]
+
+[% IF Catalyst.check_user_roles('web_designer') %]
+<tr>
+<td><a href=/template/list>Templates</a></td>
+<td><a href=/exception/list>Exceptions</a></td>
+<td><a href=/string/list>Strings</a></td>
+</tr>
+[% END %]
+
+[% IF Catalyst.check_user_roles('super_admin') %]
+<tr>
+<td><a href=/user/list>Users</a></td>
+<td><a href=/role/list>Roles</a></td>
+</tr>
+[% END %]
 
 </table>
 <p>

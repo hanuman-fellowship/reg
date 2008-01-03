@@ -31,7 +31,7 @@
 
 <tr>
 <th align=right>Web Address</th>
-<td colspan=5><input type=text name=url value="[% rental.url %]" size=60></td>
+<td colspan=5><input type=text name=url value="[% rental.url %]" size=50></td>
 </tr>
 
 <tr>

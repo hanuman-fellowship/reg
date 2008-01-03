@@ -1,0 +1,20 @@
+<h2>Templates</h2>
+<ul>
+<table cellpadding=3>
+[% FOREACH t IN templates %]
+<tr>
+<td><a href="[% Catalyst.uri_for('/static/templates/') _ t _ '.html' %]">[% t %]</a><td>
+<td><a href="[% Catalyst.uri_for('/template/delete/') _ t %]"
+onclick="return confirm('Okay to Delete [% t %]?');">Del</a></td>
+</tr>
+[% END %]
+</table>
+<p>
+<form action=[% Catalyst.uri_for('/template/upload') %]
+      method=POST
+      enctype="multipart/form-data"
+>
+Upload <input type=file name=template_file><br>
+to a template named <input type=text name=fname><p>
+<input type=submit>
+</form>

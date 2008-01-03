@@ -1,0 +1,26 @@
+<h2>Changing password for [% Catalyst.user.first _ ' ' _ Catalyst.user.last %]</h2>
+<form action=/user/pass_do name=form>
+<table cellpadding=3>
+<tr>
+<th align=right>Current Password</th>
+<td><input type=password name=cur_pass></td>
+</tr>
+
+<tr>
+<th align=right>New Password</th>
+<td><input type=password name=new_pass></td>
+</tr>
+
+<tr>
+<th align=right>Repeat New Password</th>
+<td><input type=password name=new_pass2></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.cur_pass.focus()</script>

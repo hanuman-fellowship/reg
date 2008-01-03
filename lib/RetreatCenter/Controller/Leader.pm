@@ -4,6 +4,8 @@ package RetreatCenter::Controller::Leader;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
+use Util qw/trim/;
+use Lookup;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -46,13 +48,31 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    $c->model("RetreatCenterDB::Leader")->find($id)->update({
-        public_email => $c->request->params->{public_email},
-        image        => $c->request->params->{image},
-        url          => $c->request->params->{url},
+    my $leader =  $c->model("RetreatCenterDB::Leader")->find($id);
+    my @upd = ();
+    if (my $upload = $c->request->upload('image')) {
+        chdir "root/static/images";
+        $upload->copy_to("lo-$id.jpg");
+        #
+        # invoke ImageMagick convert to create th-$id.jpg and b-$id.jpg
+        #
+        Lookup->init($c);
+        system("convert -scale $lookup{imgwidth}x lo-$id.jpg lth-$id.jpg");
+        system("convert -scale $lookup{big_imgwidth}x lo-$id.jpg lb-$id.jpg");
+        unlink "lo-$id.jpg";
+        chdir "../../..";       # must cd back!   not stateless HTTP, exactly
+        @upd = (image => 'yes');
+    }
+    my $url = $c->request->params->{url};
+    $url =~ s{^\s*http://}{};
+    $leader->update({
+        public_email => trim($c->request->params->{public_email}),
+        url          => $url,
         biography    => $c->request->params->{biography},
+        @upd,
     });
-    $c->response->redirect($c->uri_for('/leader/list'));
+    # the person_id will not change here...
+    $c->response->redirect($c->uri_for("/leader/view/$id"));
 }
 
 sub view : Local {
@@ -78,14 +98,40 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->model("RetreatCenterDB::Leader")->create({
+    my $upload = $c->request->upload('image');
+    my $url = $c->request->params->{url};
+    $url =~ s{^\s*http://}{};
+    my $l = $c->model("RetreatCenterDB::Leader")->create({
         person_id    => $person_id,
-        public_email => $c->request->params->{public_email},
-        image        => $c->request->params->{image},
-        url          => $c->request->params->{url},
+        public_email => trim($c->request->params->{public_email}),
+        image        => $upload? "yes": "",
+        url          => $url,
         biography    => $c->request->params->{biography},
     });
-    $c->response->redirect($c->uri_for('/leader/list'));
+    my $id = $l->id();      # the new leader id
+    if ($upload) {
+        chdir "root/static/images";
+        $upload->copy_to("lo-$id.jpg");
+        #
+        # invoke ImageMagick convert to create th-$id.jpg and b-$id.jpg
+        #
+        system("convert -scale 150x lo-$id.jpg lth-$id.jpg");
+        system("convert -scale 600x lo-$id.jpg lb-$id.jpg");
+        chdir "../../..";
+    }
+    $c->response->redirect($c->uri_for("/leader/view/$id"));
+}
+
+sub del_image : Local {
+    my ($self, $c, $id) = @_;
+
+    my $l = $c->stash->{leader}
+        = $c->model("RetreatCenterDB::Leader")->find($id);
+    $l->update({
+        image => "",
+    });
+    unlink <root/static/images/l*-$id.jpg>;
+    $c->response->redirect($c->uri_for("/leader/view/$id"));
 }
 
 sub access_denied : Private {

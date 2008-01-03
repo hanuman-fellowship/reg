@@ -16,7 +16,7 @@ __PACKAGE__->add_columns(qw/
 # Set relationships:
 #
 __PACKAGE__->belongs_to(program => 'RetreatCenterDB::Program', 'p_id');
-__PACKAGE__->belongs_to(leader  => 'RetreatCenterDB::Leader',   'l_id');
+__PACKAGE__->belongs_to(leader  => 'RetreatCenterDB::Leader',  'l_id');
 
 
 1;

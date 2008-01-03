@@ -1,5 +1,9 @@
 <h2>Leaders</h2>
-<form action=[% '/leader/' _ form_action %] name=form>
+<form action=[% '/leader/' _ form_action %]
+      enctype="multipart/form-data"
+      name=form
+      method=POST
+>
 
 <h3>[% person.first %] [% person.last %]</h3>
 <p>
@@ -12,17 +16,22 @@
 
 <tr>
 <th align=right>Web Address</th>
-<td><input type=text name=url value="[% leader.url %]"></td>
-</tr>
-
-<tr>
-<th align=right>Image</th>
-<td><input type=file name=image value="[% leader.image %]"></td>
+<td><input type=text name=url value="[% leader.url %]" size=50></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Biography</th>
-<td><textarea rows=10 cols=50 name=biography>[% leader.biography %]</textarea></td>
+<td><textarea rows=10 cols=60 name=biography>[% leader.biography %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Image</th>
+<td>
+[% IF leader.image %]
+<img src="[% Catalyst.uri_for('/static/images/lth-') _ leader.id _ '.jpg' %]"><br>
+[% END %]
+<input type=file name=image>
+</td>
 </tr>
 
 <tr>

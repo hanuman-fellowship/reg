@@ -1,0 +1,28 @@
+<h2>Roles</h2>
+
+<a href="/role/create">Create</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/role/update/[% role.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/role/delete/[% role.id %]"
+ onclick="return confirm('Okay to Delete [% role.fullname %]?');">Delete</a>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Role</th>
+<td>[% role.role %]</td>
+</tr>
+
+<tr>
+<th align=right>Full Name</th>
+<td>[% role.fullname %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td>[% desc %]</td>
+</tr>
+
+</table>
+</ul>

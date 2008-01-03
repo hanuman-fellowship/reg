@@ -1,7 +1,7 @@
 <h2>Programs</h2>
 <a href="/program/listdate">Sort by Start Date</a>
 &nbsp;&nbsp;&nbsp;
-[% IF Catalyst.check_user_roles('admin') %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/program/create">Create</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/program/publish"

@@ -30,10 +30,7 @@ create table program (
     footnotes   text,
     -- for regi:
     school      integer,
-    level       text,
-    -- for rentals:
-    phone       text,
-    email       text
+    level       text
 );
 insert into program values (
     1,
@@ -54,7 +51,7 @@ New line.
 Second new line.',
     '',
     'yes',
-    'adya.jpg',     -- image
+    '',
     'yes',
     2,
     '0',
@@ -67,8 +64,6 @@ Second new line.',
     '',
     'yes',
     '**',       -- footnotes
-    NULL,
-    NULL,
     NULL,
     NULL
 );

@@ -121,9 +121,6 @@ sub view : Local {
     $c->stash->{affils} = [ $p->affils() ];
     $c->stash->{date_entrd} = date($p->date_entrd()) || "";
     $c->stash->{date_updat} = date($p->date_updat()) || "";
-    $c->stash->{date_hf}    = date($p->date_hf())    || "";;
-    $c->stash->{date_lm}    = date($p->date_lm())    || "";;
-    $c->stash->{date_path}  = date($p->date_path())  || "";;
 
     # is this person a leader?
     my @leads = $c->model('RetreatCenterDB::Leader')->search(
@@ -144,9 +141,6 @@ sub update : Local {
     $c->stash->{sex_male}    = ($sex eq "M")? "checked": "";
     $c->stash->{mailings}    = ($p->mailings())? "checked": "";
     $c->stash->{affil_table} = affil_table($c, $p->affils());
-    $c->stash->{date_hf}     = date($p->date_hf())   || "";
-    $c->stash->{date_lm}     = date($p->date_lm())   || "";
-    $c->stash->{date_path}   = date($p->date_path()) || "";
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "person/create_edit.tt2";
 }
@@ -162,19 +156,6 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     # dates are either blank or converted to d8 format
-    my @mess;
-    for my $d (qw/ date_hf date_lm date_path /) {
-        my $fld = $c->request->params->{$d};
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
-            next;
-        }
-        $c->request->params->{$d} = $dt? $dt->as_d8()
-                                   :     "";
-    }
-
     my $last     = $c->request->params->{last};
     my $first    = $c->request->params->{first};
     my $sex      = $c->request->params->{sex};
@@ -186,6 +167,7 @@ sub update_do : Local {
     my $country  = $c->request->params->{country};
     my $akey     = nsquish($addr1, $addr2, $zip_post);
 
+    my @mess;
     if ($sex ne 'F' && $sex ne 'M') {
         push @mess, "You must specify Male or Female.";
     }
@@ -213,7 +195,7 @@ sub update_do : Local {
         zip_post => $zip_post,
         country  => $country,
         akey     => nsquish($addr1, $addr2, $zip_post),
-        email    => $c->request->params->{email},
+        email    => trim($c->request->params->{email}),
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
         tel_cell => $c->request->params->{tel_cell},
@@ -332,19 +314,6 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     # dates are either blank or converted to d8 format
-    my @mess;
-    for my $d (qw/ date_hf date_lm date_path /) {
-        my $fld = $c->request->params->{$d};
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
-            next;
-        }
-        $c->request->params->{$d} = $dt? $dt->as_d8()
-                                   :     "";
-    }
-
     my $last     = $c->request->params->{last};
     my $first    = $c->request->params->{first};
     my $sex      = $c->request->params->{sex};
@@ -356,6 +325,7 @@ sub create_do : Local {
     my $country  = $c->request->params->{country};
     my $akey     = nsquish($addr1, $addr2, $zip_post);
 
+    my @mess;
     if ($sex ne 'F' && $sex ne 'M') {
         push @mess, "You must specify Male or Female.";
     }
@@ -382,7 +352,7 @@ sub create_do : Local {
         zip_post => $zip_post,
         country  => $country,
         akey     => $akey,
-        email    => $c->request->params->{email},
+        email    => trim($c->request->params->{email}),
         tel_home => $c->request->params->{tel_home},
         tel_work => $c->request->params->{tel_work},
         tel_cell => $c->request->params->{tel_cell},
