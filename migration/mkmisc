@@ -1,0 +1,16 @@
+drop table if exists exception;
+create table exception (
+    prog_id     integer,
+    tag         text,
+    value       text
+);
+insert into exception values (
+    1,
+    'title1',
+    'hi there'
+);
+drop table if exists string;
+create table string (
+    key         text,
+    value       text
+);

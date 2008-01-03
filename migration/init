@@ -1,0 +1,9 @@
+#!/bin/sh
+sqlite3 retreatcenter.db <mkpeople
+sqlite3 retreatcenter.db <mkmisc
+sqlite3 retreatcenter.db <mkprog
+sqlite3 retreatcenter.db <mkrep
+sqlite3 retreatcenter.db <mkusers
+load.pl
+loadstr.pl
+cp retreatcenter.db ..
