@@ -1,0 +1,39 @@
+<h2>Members</h2>
+<form action=[% '/member/' _ form_action %] name=form>
+
+<h3>[% person.first %] [% person.last %]</h3>
+<p>
+
+<ul>
+<table cellpadding=5 border=0>
+
+<tr>
+<td><input type=radio name=category value='General' [% category_general %]> General</td>
+<td>Expires on <input type=text name=date_general value='[% date_general %]' size=10></td>
+</tr>
+
+<tr>
+<td><input type=radio name=category value='Sponsor' [% category_sponsor %]> Sponsor</td>
+<td>Last paid on <input type=text name=date_sponsor value='[% date_sponsor %]' size=10></td>
+</tr>
+
+<tr><td>&nbsp;</td><td>Total Paid <input type=text name=total_paid value='[% member.total_paid %]' size=5></td></tr>
+
+<tr>
+<td><input type=radio name=category value='Life' [% category_life %]> Life</td>
+<td>As of <input type=text name=date_life value='[% date_life %]' size=10></td>
+</tr>
+
+<tr>
+<td><input type=radio name=category value='Lapsed' [% category_lapsed %]> Lapsed</td>
+<td>On <input type=text name=date_lapsed value='[% date_lapsed %]' size=10></td>
+</tr>
+
+<tr>
+<td><input type=submit value="Submit"></td>
+</tr>
+</table>
+</ul>
+
+</form>
+<!-- focus ??? do some fancy Javascripting -->

@@ -1,0 +1,38 @@
+<h2>Members</h2>
+<ul>
+Click on Sanskrit to update member attributes.<br>
+Click on Name to see person attributes.<br>
+To create a Member add them as a Person first.
+<p>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>Sanskrit</th>
+<th align=left>Name</th>
+<th align=left>Category</th>
+<th align=left>Date</th>
+<th align=left>Paid</th>
+</tr>
+[% FOREACH m IN members %]
+<tr>
+<td><a href="/member/update/[% m.id %]">[% m.person.sanskrit || m.person.first %]</a></td>
+<td><a href="/person/view/[% m.person.id %]">[% m.person.last _ ', ' _ m.person.first %]</a></td>
+<td>[% m.category %]</td>
+<td>
+[% IF    m.category == 'General' %][% m.general %]
+[% ELSIF m.category == 'Lapsed'  %][% m.lapsed  %]
+[% ELSIF m.category == 'Life'    %][% m.life    %]
+[% ELSIF m.category == 'Sponsor' %][% m.sponsor %]
+[% END %]
+</td>
+<td align=right>
+[% IF m.category == 'Sponsor' %]
+[% m.total_paid %]
+[% ELSE %]
+&nbsp;
+[% END %]
+</td>
+<td><a href="/member/delete/[% m.id %]" onclick="return confirm('Okay to Delete [% m.person.first _ ' ' _ m.person.last %] as member?');">Del</a></td>
+</tr>
+[% END %]
+</table>
+</ul>
