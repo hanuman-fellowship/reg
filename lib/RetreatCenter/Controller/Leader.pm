@@ -4,8 +4,8 @@ package RetreatCenter::Controller::Leader;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/trim/;
-use Lookup;
+use Util qw/trim resize/;
+use Lookup;     # resize needs this to have been done
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -51,16 +51,9 @@ sub update_do : Local {
     my $leader =  $c->model("RetreatCenterDB::Leader")->find($id);
     my @upd = ();
     if (my $upload = $c->request->upload('image')) {
-        chdir "root/static/images";
-        $upload->copy_to("lo-$id.jpg");
-        #
-        # invoke ImageMagick convert to create th-$id.jpg and b-$id.jpg
-        #
+        $upload->copy_to("root/static/images/lo-$id.jpg");
         Lookup->init($c);
-        system("convert -scale $lookup{imgwidth}x lo-$id.jpg lth-$id.jpg");
-        system("convert -scale $lookup{big_imgwidth}x lo-$id.jpg lb-$id.jpg");
-        unlink "lo-$id.jpg";
-        chdir "../../..";       # must cd back!   not stateless HTTP, exactly
+        resize('l', $id);
         @upd = (image => 'yes');
     }
     my $url = $c->request->params->{url};
@@ -110,14 +103,9 @@ sub create_do : Local {
     });
     my $id = $l->id();      # the new leader id
     if ($upload) {
-        chdir "root/static/images";
-        $upload->copy_to("lo-$id.jpg");
-        #
-        # invoke ImageMagick convert to create th-$id.jpg and b-$id.jpg
-        #
-        system("convert -scale 150x lo-$id.jpg lth-$id.jpg");
-        system("convert -scale 600x lo-$id.jpg lb-$id.jpg");
-        chdir "../../..";
+        $upload->copy_to("root/static/images/lo-$id.jpg");
+        Lookup->init($c);
+        resize('l', $id);
     }
     $c->response->redirect($c->uri_for("/leader/view/$id"));
 }

@@ -126,7 +126,6 @@ sub stale : Local {
     if ($upload) {
         my @emails = $upload->slurp =~ m{\S+\@\S+}g;
         $n = @emails;
-        # here we go... i hope. yes!
         $c->model("RetreatCenterDB::Person")->search(
             { email => { -in => \@emails } },
         )->update({

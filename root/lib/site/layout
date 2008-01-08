@@ -6,6 +6,9 @@
 <tr>
 <td><a href=/person/search>People</a></td>
 <td><a href=/affil/list>Affiliations</a></td>
+[% IF Catalyst.check_user_roles('member_admin') %]
+<td><a href=/member/list>Members</a></td>
+[% END %]
 <td><a href=/listing>Listings</a></td>
 <td><a href=/report/list>Reports</a></td>
 <td>&nbsp;</td>

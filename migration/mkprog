@@ -146,8 +146,8 @@ insert into rental values (
     'Budding Energy',
     'Shooting out of the ground',
     '98765',
-    '090909',
-    '092009',
+    '20090909',
+    '20090911',
     'www.springyoga.com',
     'Come have fun.
 Tilling the earth of your body.',

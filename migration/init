@@ -4,6 +4,7 @@ sqlite3 retreatcenter.db <mkmisc
 sqlite3 retreatcenter.db <mkprog
 sqlite3 retreatcenter.db <mkrep
 sqlite3 retreatcenter.db <mkusers
+sqlite3 retreatcenter.db <mkmember
 load.pl
 loadstr.pl
 cp retreatcenter.db ..

@@ -1,0 +1,21 @@
+drop table if exists member;
+create table member (
+    id integer primary key,
+    person_id integer,
+    category text,
+    date_general text,
+    date_sponsor text,
+    date_life text,
+    date_lapsed text,
+    total_paid integer
+);
+insert into member values (
+    1,
+    12930,
+    'General',
+    '20090909',
+    '',
+    '',
+    '',
+    0
+);

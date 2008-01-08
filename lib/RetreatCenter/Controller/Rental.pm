@@ -159,9 +159,7 @@ sub update_do : Local {
         sdate edate url webdesc
         linked phone email
     /) {
-        my $v = $c->request->params->{$w};
-        $hash{$w} = ($w =~ m{date})? (date($v) || "")
-                   :                 $v;
+        $hash{$w} = $c->request->params->{$w};
     }
     $hash{url} =~ s{^\s*http://}{};
     $hash{email} = trim($hash{email});

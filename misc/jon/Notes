@@ -202,7 +202,7 @@ need someone to rework the out of usa records!
     look for zip code of blank?
     I can make further custom listings that don't
     fit into the Report model.
-how about a report format that puts a link on 
+how about a report format that puts a link on
     the person's name - so you can edit their record!
 reformat the phone numbers in a consistent way?
     the ones in the US anyway?
@@ -215,7 +215,7 @@ another attribute of a person
 search people by home phone
     exact syntax needed.
     831-460-2648 would not match (831) 460-2648
-what happens when one of two partners 
+what happens when one of two partners
     has a new address that is not the same as their partner?
     they should be separated at that time!
 for reports - can't do a file://...    how to do it?
@@ -280,3 +280,74 @@ mailto links on email addresses
 do stale soon
 test - trimming of email in leader, user, rental and person
 http:// off in rental, leader
+renamed tabs:
+    title => title1
+    subtitle => title2
+    weburl, website => weburl
+    leaders => leader_names
+renamed styles
+    title => title1
+    subtitle => title2
+    in e_progRow - event_title2, event_title2
+    in progRow - title... ?? look
+can't put html tags in textareas :(
+    what to do?  prohibit them, process before use
+    like with expand.
+    wiki things?
+style sheet in picture popups???
+    fully qualified domain for pic?
+i put align=center where the click_enlarge style sheet
+    could have taken care of it.
+change big_imgwidth and you will
+    need to reupload all the pictures
+still need to do this:
+    generate eventlist, programlist for events.html and programs.html
+    make regtable - using prognum - corresponding to the use of it in
+        program html pages.
+did prognum - something still wrong with links
+    to programs - it includes 'gen_files/'.
+Rental email, phone are not just the field values.
+    need separately named method.
+To tell Adrienne:
+    document
+        attitude of "come here... sit down and I'll explain it to you".
+        humor is always welcome and always helps - perhaps in footnotes or
+            as an addendum if it might get in the way...
+        documents written by engineers are often lousy
+        she can use my cms_mmc.html as a secondary reference
+            the program itself as the first.
+        make it an HTML document accessible from the program directly 
+            use a simple style (like cms_mmc.html) - content matters most
+            Jamal can help fancy it up if needed.
+        perhaps a task oriented format in one chapter?
+            how do I do such and such a task?
+        in the end - she should write the kind of document
+            that she would want to read
+    if overwhelmed by complexity
+        not so complex yet - sans registration and sans housing!
+        Twain as Mississipi riverboat pilot
+    testing
+        feedback!  her own or what she gathers/overhears in the office.
+        not a whitewash, please!
+        even trivial things.
+        a successful test is a failure!
+        alternate UI suggestions if nothing else
+            and these never end...
+seems like a lot of duplication in the
+    DBIC_TRACE output...
+    are the results cached?
+rental tags need attention
+focus field for Users changes depending on
+    creating/updating - how to effect this?
+have Shankar update his time...
+IE does not support :3000 on OSX - it's old.
+    Firefox is much more forgiving.
+    does IE on XP work?
+Personal Retreats can begin and end on the same day
+    The p.r. program itself has no begin or end date, right?
+regtable should (also?) have program id as the identifier
+    not just the name - as this name might be reused
+the program listing page will grow as seasons pass
+    should what appears there be restricted by a range of dates?
+    that default to one month back to the infinite future?
+checkin, then rental tags, then testplan. 

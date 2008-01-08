@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Login;
 use base 'Catalyst::Controller';
 
+use Lookup;
+
 sub index : Private {
     my ($self, $c) = @_;
 
@@ -14,7 +16,8 @@ sub index : Private {
     if ($username && $password) {
         # Attempt to log the user in
         if ($c->login($username, $password)) {
-            # If successful, then let them use the application
+            # If successful, then let them use the application.
+            Lookup->init($c);       # where else to put this???
             $c->response->redirect($c->uri_for('/person/search'));
             return;
         }

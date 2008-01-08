@@ -12,10 +12,14 @@ our @EXPORT_OK = qw/
     slurp
     expand
     monthyear
+    resize
+    housing_types
+    parse_zips
 /;
 
 use POSIX   qw/ceil/;
 use Date::Simple qw/d8/;
+use Lookup;
 
 my ($naffils, @affils, %checked);
 
@@ -146,10 +150,10 @@ sub slurp {
     my ($fname) = @_;
 
     if (index($fname, '.') == -1) {
-        $fname = "root/static/templates/$fname.html";
+        $fname .= ".html";
     }
-    open my $in, "<", $fname
-		or die "cannot open $fname: $!\n";
+    open my $in, "<", "root/static/templates/$fname"
+		or die "cannot open r/s/t/$fname: $!\n";
     local $/;
     my $s = <$in>;
     close $in;
@@ -165,6 +169,7 @@ sub slurp {
 #
 sub expand {
 	my ($v) = @_;
+    $v =~ s{\r?\n}{\n}g;
 	$v =~ s#(^|\ )\*(.*?)\*#$1<b>$2</b>#smg;
 	$v =~ s#(^|\ )_(.*?)\_#$1<i>$2</i>#smg;
 	$v =~ s#%(.*?)%(.*?)%#<a href='http://$2' target=_blank>$1</a>#sg;
@@ -200,6 +205,84 @@ sub expand {
 sub monthyear {
     my ($sdate) = @_;
     return $sdate->format("%B %Y");
+}
+
+#
+# invoke ImageMagick convert to create
+# the thumbnail and large images from the original
+#
+# if you only want to resize one of the two
+# give the optional third parameter.
+#
+sub resize {
+    my ($type, $id, $which) = @_;
+
+    chdir "root/static/images";
+    if (!$which || $which eq "imgwidth") {
+        system("convert -scale $lookup{imgwidth}x"
+              ." ${type}o-$id.jpg ${type}th-$id.jpg");
+    }
+    if (!$which || $which eq "big_imgwidth") {
+        system("convert -scale $lookup{big_imgwidth}x"
+              ." ${type}o-$id.jpg ${type}b-$id.jpg");
+    }
+    chdir "../../..";       # must cd back!   not stateless HTTP, exactly
+}
+
+sub housing_types {
+    return qw/
+		unknown
+		commuting
+		own_tent
+		own_van
+		center_tent
+		economy
+		dormitory
+		quad
+		triple
+		double
+		double_bath
+		single
+		single_bath
+    /;
+}
+
+#
+# returns either an array_ref of array_ref of zip code ranges
+# or a scalar which is an error message.
+#
+sub parse_zips {
+    my ($s) = @_;
+    $s =~ s/\s*,\s*/,/g;
+
+    # Check for zip range validity
+    if ($s =~ m/[^0-9,-]/) {
+        return "Only digits, commas, spaces and hyphen allowed"
+              ." in the zip range field.";
+    }
+
+    my @ranges = split /,/, $s, -1;
+
+    my $ranges_ref = [];
+    for my $r (@ranges) {
+        # Field must be either a zip range or a single zip
+        if ($r =~ m/^(\d{5})-(\d{5})$/) {
+            my ($startzip, $endzip) = ($1, $2);
+
+            if ($startzip > $endzip) {
+                return "Zip range start is greater than end";
+            }
+            push @$ranges_ref, [ $startzip, $endzip ];
+        } 
+        elsif ($r =~ m/^\d{5}$/) {
+            push @$ranges_ref, [ $r, $r ];
+        }
+        else {
+            return "Please provide a valid 5 digit zip code (xxxxx)"
+                  ." or zip range (xxxxx-yyyyy)";
+        }
+    }
+    return $ranges_ref;
 }
 
 1;

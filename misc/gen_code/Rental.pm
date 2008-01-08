@@ -65,32 +65,32 @@ sub dates_tr2 {
 
 sub title {
 	my ($self) = @_;
-	my $title = $self->{"title"};
+	my $title = $self->title;
 	my $website = $self->{"website"};
 	$title = "<a href='http://$website' target=_blank>$title</a>" if $website;
 	$title;
 }
 sub subtitle {
 	my ($self) = @_;
-	my $subtitle = $self->{"subtitle"};
+	my $subtitle = $self->subtitle;
 	return "" unless $subtitle;
 	"<span class='event_subtitle'>$subtitle</span><br>";
 }
 sub desc {
 	my ($self) = @_;
-	my $desc = expand($self->{desc});
+	my $desc = expand($self->desc);
 	return "" unless $desc;
 	"<span class='event_desc'>$desc</span><br>";
 }
 sub phone {
 	my ($self) = @_;
-	my $phone = $self->{"phone"};
+	my $phone = $self->phone;
 	return "" unless $phone;
 	"<span class='event_phone'>$lookup{phone}: $phone</span><br>";
 }
-sub website {
+sub weburl {
 	my ($self) = @_;
-	my $website = $self->{"website"};
+	my $website = $self->website;
 	$website =~ s#http://##;
 	return "" unless $website;
 	"<span class='event_website'>$lookup{website}: ".

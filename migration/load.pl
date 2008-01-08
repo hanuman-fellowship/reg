@@ -44,17 +44,19 @@ while (<$people>) {
         push @flds, "";
     }
     for my $dt (@flds[18,19]) {
-        my ($m, $d, $y) = $dt =~ m{(..)/(..)/(..)};
         if ($dt eq "  /  /  ") {
-            $dt = "        ";
-        }
-        elsif ($y < 70) {
-            $y = "20$y";
+            $dt = "";
         }
         else {
-            $y = "19$y";
+            my ($m, $d, $y) = $dt =~ m{(..)/(..)/(..)};
+            if ($y < 70) {
+                $y = "20$y";
+            }
+            else {
+                $y = "19$y";
+            }
+            $dt = "$y$m$d";
         }
-        $dt = "$y$m$d";
     }
     $affils = $flds[20];
     $affils =~ s{8}{};

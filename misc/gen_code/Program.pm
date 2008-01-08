@@ -466,7 +466,7 @@ EOH
 		}
         return $pic_html;
     }
-}
+} 
 
 sub gen_popup {
     my ($pic_html, $pic) = @_;

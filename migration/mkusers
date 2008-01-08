@@ -34,7 +34,7 @@ insert into role values (2, 'prog_admin', 'Program Admin',
 'Create programs, rentals, leaders,
 cancellation policies, housing costs, housing configuration,
 and can publish to staging.');
-insert into role values (3, 'mail_admin', 'Mail Admin',
+insert into role values (3, 'mail_admin', 'Mailing List Admin',
 'Create affiliations, can do a purge and stale');
 insert into role values (4, 'prog_staff', 'Program Staff',
 'Does registrations, finances, housing');

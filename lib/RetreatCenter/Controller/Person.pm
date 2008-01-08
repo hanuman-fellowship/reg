@@ -128,6 +128,13 @@ sub view : Local {
     );
     $c->stash->{is_leader} = scalar(@leads);
     $c->stash->{leader} = $leads[0];
+
+    # is this person a member?
+    my @members = $c->model('RetreatCenterDB::Member')->search(
+        { person_id => $id }
+    );
+    $c->stash->{is_member} = scalar(@members);
+    $c->stash->{member} = $members[0];
     $c->stash->{template} = "person/view.tt2";
 }
 

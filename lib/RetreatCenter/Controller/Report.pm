@@ -6,8 +6,7 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
-use Util qw/affil_table/;
-use Validate qw/parse_zips/;
+use Util qw/affil_table parse_zips/;
 use Date::Simple qw/date today/;
 
 Date::Simple->default_format("%D");      # set it here - where else???

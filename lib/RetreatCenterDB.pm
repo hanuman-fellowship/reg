@@ -24,6 +24,7 @@ __PACKAGE__->load_classes({
         Rental
         Exception
         String
+        Member
     /]
 });
 

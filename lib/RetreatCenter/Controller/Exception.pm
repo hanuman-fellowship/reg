@@ -5,30 +5,30 @@ package RetreatCenter::Controller::Exception;
 use base 'Catalyst::Controller';
 
 #
-# a good initial list
+# a good list - complete?
 #
 my @tags = sort qw/
-    title1
-    title2
-    title1_barnacles
-    prog_dates_style
-    title2_barnacles
-    barnacles
-    webdesc_plus
-    weburl
-    month_calendar
-    fee_table
-    firstprog_prevmonth
-    firstprog_nextmonth
-    prevprog
-    nextprog
     cancellation_policy
     dates
     dates_tr
     dates_tr2
-    leaders
+    fee_table
+    firstprog_nextmonth
+    firstprog_prevmonth
+    fname
     leader_bio
+    leader_names
+    month_calendar
+    nextprog
     picture
+    prevprog
+    prog_dates_style
+    title1
+    title1_barnacles
+    title2
+    title2_barnacles
+    webdesc_plus
+    weburl
 /;
 
 sub index : Private {

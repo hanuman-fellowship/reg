@@ -1,17 +1,22 @@
 <h2>Rentals</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Create</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/program/publish"
+onclick="return confirm('Okay to Publish to staging area?');">Publish<a>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>
 <tr>
 <th align=left>Name</th>
+<th align=left>Start Date</th>
 <th align=left>Title</th>
 <th align=left>SubTitle</th>
 </tr>
 [% FOREACH r IN rentals %]
     <tr>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+    <td>[% r.sdate_obj %]</a></td>
     <td>[% r.title %]</td>
     <td>[% r.subtitle %]</td>
     </tr>
