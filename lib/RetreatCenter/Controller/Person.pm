@@ -208,9 +208,6 @@ sub update_do : Local {
         tel_cell => $c->request->params->{tel_cell},
         comment  => $c->request->params->{comment},
         mailings => $c->request->params->{mailings},
-        date_hf    => $c->request->params->{date_hf},
-        date_lm    => $c->request->params->{date_lm},
-        date_path  => $c->request->params->{date_path},
         date_updat => today()->as_d8(),
     });
     #
@@ -365,9 +362,6 @@ sub create_do : Local {
         tel_cell => $c->request->params->{tel_cell},
         comment  => $c->request->params->{comment},
         mailings => $c->request->params->{mailings},
-        date_hf    => $c->request->params->{date_hf},
-        date_lm    => $c->request->params->{date_lm},
-        date_path  => $c->request->params->{date_path},
         date_updat => today()->as_d8(),
         date_entrd => today()->as_d8(),
     });
