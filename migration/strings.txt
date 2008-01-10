@@ -30,3 +30,4 @@ ftp_site	www.mountmadonna.org
 ftp_login	mmc
 ftp_password	ashtanga!
 ftp_dir	www
+ftp_dir2	staging2
