@@ -351,3 +351,13 @@ the program listing page will grow as seasons pass
     should what appears there be restricted by a range of dates?
     that default to one month back to the infinite future?
 checkin, then rental tags, then testplan. 
+for testplan
+    future or not
+    web ready or not
+    linked or not
+    personal retreat or not - dates empty, unlinked, template = personal
+    program images take priority over leader images
+    only the first two leaders (alphabetically)
+        get their individual pictures on the page.  okay?
+        if not, a group pic as a program image is probably indicated.
+

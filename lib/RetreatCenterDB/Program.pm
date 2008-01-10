@@ -82,7 +82,10 @@ my %first_of_month;
 sub future_programs {
     my ($class, $c) = @_;
     my @programs = $c->model('RetreatCenterDB::Program')->search(
-        { sdate    => { '>=',    today()->as_d8() } },
+        {
+            sdate    => { '>=',    today()->as_d8() },
+            webready => 'yes',
+        },
         { order_by => [ 'sdate', 'edate' ] },
     );
     #
@@ -476,6 +479,9 @@ sub picture {
 
     my @leaders = $self->leaders;
     my $nleaders = @leaders;
+    # have an array of pictures instead???
+    # which gets pushed onto?
+    # and take the first two leaders that have images.
     my ($pic1, $pic2) = ("", "");
     if ($nleaders >= 1 && $leaders[0]->image) {
         $pic1 = "lth-" . $leaders[0]->id . ".jpg";

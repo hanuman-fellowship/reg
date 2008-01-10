@@ -27,31 +27,46 @@ sub search_do : Local {
 
     my $pattern = trim($c->request->params->{pattern});
     my $field   = $c->request->params->{field};
-    my $substr  = ($c->request->params->{match} eq 'substr')? '%': '';
+    my $match   = $c->request->params->{match};
+    my $substr  = ($match eq 'substr')? '%': '';
     my $nrecs   = $c->request->params->{nrecs};
+    my $offset  = $c->request->params->{offset} || 0;
 
     my %order_by = (
         sanskrit => [ 'sanskrit', 'last', 'first' ],
         zip_post => [ 'zip_post', 'last', 'first' ],
         last     => [ 'last', 'first' ],
-        
+        first    => [ 'first', 'last' ],
+        email    => [ 'email', 'last', 'first' ],
     );
-    $c->stash->{people} = [
+    my @people =
         $c->model('RetreatCenterDB::Person')->search(
             {
                 $field => { 'like', "$substr$pattern%" },
             },
             {
                 order_by => $order_by{$field},
-                rows     => $nrecs,
+                rows     => $nrecs+1,
+                offset   => $offset,
             },
-        )
-    ];
-    if (scalar(@{$c->stash->{people}}) == 0) {
+        );
+    if (@people == 0) {
         $c->stash->{message}  = "No one found matching '$pattern'.";
         $c->stash->{template} = "person/search.tt2";
         return;
     }
+    if (@people > $nrecs) {
+        pop @people;
+        $c->stash->{N} = $nrecs;
+        $c->stash->{nextN} = $c->uri_for('/person/search_do')
+                            . "?" 
+                            . "pattern=$pattern"
+                            . "&field=$field"
+                            . "&nrecs=$nrecs"
+                            . "&match=$match"
+                            . "&offset=" . ($offset+$nrecs);
+    }
+    $c->stash->{people} = \@people;
     $c->stash->{template} = "person/search_result.tt2";
 }
 
@@ -117,7 +132,9 @@ sub view : Local {
         my $sps = $c->model('RetreatCenterDB::Person')->find($id_sps);
         $c->stash->{partner} = $sps;
     }
-    $c->stash->{sex} = ($p->sex() eq "M")? "Male": "Female";
+    $c->stash->{sex} = ($p->sex() eq "M")? "Male"
+                      :($p->sex() eq "F")? "Female"
+                      :                    "Not Reported";
     $c->stash->{affils} = [ $p->affils() ];
     $c->stash->{date_entrd} = date($p->date_entrd()) || "";
     $c->stash->{date_updat} = date($p->date_updat()) || "";
@@ -175,14 +192,18 @@ sub update_do : Local {
     my $akey     = nsquish($addr1, $addr2, $zip_post);
 
     my @mess;
+    if ($last !~ m{\S}) {
+        push @mess, "Last name cannot be blank.";
+    }
+    if ($first !~ m{\S}) {
+        push @mess, "First name cannot be blank.";
+    }
     if ($sex ne 'F' && $sex ne 'M') {
         push @mess, "You must specify Male or Female.";
     }
-
     if ($addr1 && usa($country) && ! valid_state($st_prov)) {
         push @mess, "Invalid state: $st_prov";
     }
-
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "person/error.tt2";
@@ -329,15 +350,20 @@ sub create_do : Local {
     my $country  = $c->request->params->{country};
     my $akey     = nsquish($addr1, $addr2, $zip_post);
 
+    # consolidate create/update validation???
     my @mess;
+    if ($last !~ m{\S}) {
+        push @mess, "Last name cannot be blank.";
+    }
+    if ($first !~ m{\S}) {
+        push @mess, "First name cannot be blank.";
+    }
     if ($sex ne 'F' && $sex ne 'M') {
         push @mess, "You must specify Male or Female.";
     }
-
     if ($addr1 && usa($country) && ! valid_state($st_prov)) {
         push @mess, "Invalid state: $st_prov";
     }
-
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "person/error.tt2";
@@ -420,13 +446,14 @@ sub separate : Local {
     my $p   = $c->model('RetreatCenterDB::Person')->find($id);
     my $sps = $c->model('RetreatCenterDB::Person')->find($p->id_sps());
     $p->update({
-        id_sps => 0,
+        id_sps     => 0,
+        date_updat => today()->as_d8(),
     });
     $sps->update({
-        id_sps => 0,
+        id_sps     => 0,
+        date_updat => today()->as_d8(),
     });
-    view($self, $c, $id);
-    $c->forward('view');
+    $c->response->redirect($c->uri_for("/person/view/$id"));
 }
 
 sub partner : Local {
@@ -458,21 +485,23 @@ sub partner_with : Local {
         }
         else {
             $p1->update({
-                id_sps => $p2->id,
+                id_sps     => $p2->id,
+                date_updat => today()->as_d8(),
             });
             # partner #2 with automatically gets partner #1's address.
             # if they don't live together they don't get
             # to be partnered - in the mlist sense anyway.
             # is this discriminatory?
             $p2->update({
-                id_sps   => $p1->id,
-                addr1    => $p1->addr1,
-                addr2    => $p1->addr2,
-                city     => $p1->city,
-                st_prov  => $p1->st_prov,
-                zip_post => $p1->zip_post,
-                country  => $p1->country,
-                tel_home => $p1->tel_home,
+                id_sps     => $p1->id,
+                addr1      => $p1->addr1,
+                addr2      => $p1->addr2,
+                city       => $p1->city,
+                st_prov    => $p1->st_prov,
+                zip_post   => $p1->zip_post,
+                country    => $p1->country,
+                tel_home   => $p1->tel_home,
+                date_updat => today()->as_d8(),
             });
             $c->stash->{message} = "Partnered"
                                  . " " . _view_person($p1)
@@ -526,9 +555,11 @@ sub mkpartner : Local {
         tel_home => $p1->tel_home,
         id_sps   => $p1->id,
         date_entrd => today()->as_d8(),
+        date_updat => today()->as_d8(),
     });
     $p1->update({
-        id_sps => $p2->id,
+        id_sps     => $p2->id,
+        date_updat => today()->as_d8(),
     });
     my $pronoun = ($sex2 eq 'M')? "him": "her";
     $c->stash->{message} = "Created"

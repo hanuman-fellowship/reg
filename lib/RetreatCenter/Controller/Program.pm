@@ -3,6 +3,7 @@ use warnings;
 package RetreatCenter::Controller::Program;
 use base 'Catalyst::Controller';
 
+use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     leader_table
     affil_table
@@ -12,13 +13,11 @@ use Util qw/
     resize
     housing_types
 /;
-
 use Date::Simple qw/date/;
 use Net::FTP;
 use Lookup;
 use File::Copy;
 
-use lib '../../';       # so you can do a perl -c here.
 
 my %sys_template = map { $_ => 1 } qw/
     progRow
@@ -79,38 +78,7 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    # dates are either blank or converted to d8 format
-    my @mess;
-    for my $d (qw/ sdate edate /) {
-        my $fld = $c->request->params->{$d};
-        if (! $fld =~ /\S/) {
-            push @mess, "missing date field";
-            next;
-        }
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
-            next;
-        }
-        $c->request->params->{$d} = $dt? $dt->as_d8()
-                                   :     "";
-    }
-    if (!@mess && $c->request->params->{sdate}
-                  > 
-                  $c->request->params->{edate}
-    ) {
-        push @mess, "end date must be after the start date";
-    }
-    if (! $c->request->params->{title} =~ /\S/) {
-        push @mess, "title cannot be blank";
-    }
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
-        return;
-    }
-
+    # get form params into a hash
     my %hash;
     for my $w (qw/
         name title subtitle glnum housecost_id
@@ -124,6 +92,39 @@ sub create_do : Local {
         $hash{$w} = $c->request->params->{$w};
     }
     $hash{url} =~ s{^\s*http://}{};
+
+    # dates are either blank or converted to d8 format
+    my @mess;
+    for my $d (qw/ sdate edate /) {
+        my $fld = $hash{$d};
+        if ($hash{name} !~ m{personal\s*retreat}i && $fld !~ /\S/) {
+            push @mess, "missing date field";
+            next;
+        }
+        my $dt = date($fld);
+        if ($fld && ! $dt) {
+            # tell them which date field is wrong???
+            push @mess, "Invalid date: $fld";
+            next;
+        }
+        $hash{$d} = $dt? $dt->as_d8()
+                   :     "";
+    }
+    if (!@mess && $hash{sdate}
+                  > 
+                  $hash{edate}
+    ) {
+        push @mess, "end date must be after the start date";
+    }
+    if (! $hash{title} =~ /\S/) {
+        push @mess, "title cannot be blank";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "program/error.tt2";
+        return;
+    }
+
     my $upload = $c->request->upload('image');
     my $p = $c->model("RetreatCenterDB::Program")->create({
         image => $upload? "yes": "",
@@ -238,39 +239,7 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    # dates are either blank or converted to d8 format
-    my @mess;
-    for my $d (qw/ sdate edate /) {
-        my $fld = $c->request->params->{$d};
-        if (! $fld =~ /\S/) {
-            push @mess, "missing date field";
-            next;
-        }
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
-            next;
-        }
-        $c->request->params->{$d} = $dt? $dt->as_d8()
-                                   :     "";
-    }
-    if (!@mess && $c->request->params->{sdate}
-                  > 
-                  $c->request->params->{edate}
-    ) {
-        push @mess, "end date must be after the start date";
-    }
-    if (! $c->request->params->{title} =~ /\S/) {
-        push @mess, "title cannot be blank";
-    }
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        # ??? person or program or a general error template?
-        $c->stash->{template} = "person/error.tt2";
-        return;
-    }
-
+    # get form params into a hash
     my %hash;
     # ??? ask DBIx for this list?
     # ??? put at top for use here and in update_do?
@@ -286,6 +255,36 @@ sub update_do : Local {
         $hash{$w} = $c->request->params->{$w};
     }
     $hash{url} =~ s{^\s*http://}{};
+    # dates are either blank or converted to d8 format
+    my @mess;
+    for my $d (qw/ sdate edate /) {
+        my $fld = $hash{$d};
+        if ($hash{name} !~ m{personal\s*retreat}i && $fld !~ /\S/) {
+            push @mess, "missing date field";
+            next;
+        }
+        my $dt = date($fld);
+        if ($fld && ! $dt) {
+            # tell them which date field is wrong???
+            push @mess, "Invalid date: $fld";
+            next;
+        }
+        $hash{$d} = $dt? $dt->as_d8()
+                      :     "";
+    }
+    if (!@mess && $hash{sdate} > $hash{edate}) {
+        push @mess, "end date must be after the start date";
+    }
+    if (! $hash{title} =~ /\S/) {
+        push @mess, "title cannot be blank";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        # ??? person or program or a general error template?
+        $c->stash->{template} = "person/error.tt2";
+        return;
+    }
+
     if (my $upload = $c->request->upload('image')) {
         $upload->copy_to("root/static/images/po-$id.jpg");
         Lookup->init($c);
@@ -533,29 +532,48 @@ sub publish : Local {
         or die "cannot connect to ...";    # not die???
     $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
-    if ($lookup{ftp_dir}) {
-        $ftp->cwd($lookup{ftp_dir})
-            or die "cannot cwd ", $ftp->message; # not die???
+    $ftp->cwd($lookup{ftp_dir})
+        or die "cannot cwd ", $ftp->message; # not die???
+    $ftp->cwd($lookup{ftp_dir2});
+    for my $f ($ftp->ls()) {
+        $c->log->info("got $f");
+        $ftp->delete($f) if $f ne 'pics';
     }
-    $ftp->rmdir("staging", 1);      # clear it all away
-    $ftp->mkdir("staging");
-    $ftp->cwd("staging");
-    chdir "gen_files";
     $ftp->ascii();
+    chdir "gen_files";
     for my $f (<*.html>, 'regtable') {
         $ftp->put($f)
             or die "cannot put $f"; # not die???
     }
+    $ftp->quit();
+    chdir "..";
+    $c->stash->{ftp_dir2} = $lookup{ftp_dir2};
+    $c->stash->{template} = "program/published.tt2";
+}
+
+sub publish_pics : Local {
+    my ($self, $c) = @_;
+
+    Lookup->init($c);
+    my $ftp = Net::FTP->new($lookup{ftp_site})
+        or die "cannot connect to ...";    # not die???
+    $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd("$lookup{ftp_dir}/$lookup{ftp_dir2}/pics")
+        or die "cannot cwd ", $ftp->message; # not die???
+    for my $f ($ftp->ls()) {
+        $ftp->delete($f);
+    }
     $ftp->binary();
-    chdir "pics";
-    $ftp->mkdir("pics");
-    $ftp->cwd("pics");
+    chdir "gen_files/pics";
     for my $f (<*.jpg>) {
         $ftp->put($f)
             or die "cannot put $f"; # not die???
     }
-    chdir "../..";
     $ftp->quit();
+    chdir "../..";
+    $c->stash->{pics} = 1;
+    $c->stash->{ftp_dir2} = $lookup{ftp_dir2};
     $c->stash->{template} = "program/published.tt2";
 }
 
@@ -648,11 +666,11 @@ sub gen_regtable {
             next if $t =~ /economy/     && !$p->economy;
             next if $t =~ /single_bath/ && !$p->sbath;
             next if $t =~ /center_tent/
-                && !($p->name =~ m{personal retreat}i
+                && !($p->name =~ m{personal\s*retreat}i
                      || $p->name =~ m{tnt}i
                      || (5 <= $month && $month <= 10));
             next if $t =~ m{triple|dormitory}
-                    && $p->name =~ m{personal retreat}i;
+                    && $p->name =~ m{personal\s*retreat}i;
             print {$regt} "basic $t\t", $p->fees(0, $t), "\n";
             if ($p->extradays) {
                 print {$regt} "full $t\t", $p->fees(1, $t), "\n";

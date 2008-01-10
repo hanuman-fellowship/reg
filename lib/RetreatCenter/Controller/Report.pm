@@ -395,6 +395,8 @@ EOS
     $c->stash->{filename} = $fname;
     $c->stash->{people}   = $people_ref;
     $c->stash->{template} = "report/run" . $report->format() . ".tt2";
+    # to show it directly:
+    #$c->response->redirect($c->uri_for("/$fname"));
 }
 
 1;
