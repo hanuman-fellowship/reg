@@ -4,8 +4,7 @@
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/program/create">Create</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/program/publish"
-onclick="return confirm('Okay to Publish to staging area?');">Publish<a>
+<a href="/program/publish">Publish<a>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>

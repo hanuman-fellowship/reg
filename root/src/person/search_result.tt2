@@ -18,4 +18,8 @@
 </tr>
 [% END -%]
 </table>
+<p>
+[% IF nextN %]
+<a href=[% nextN %]>Next [% N %]</a>
+[% END %]
 </ul>

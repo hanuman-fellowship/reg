@@ -1,13 +1,13 @@
 <h2>People</h2>
 <!-- this form doubles as an update and as a create form. -->
-<form action=[% "/person/" _ form_action %] name=form>
+<form action=[% "/person/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
     <tr>
-        <th align=right>First</td>
+        <th align=right><span class="required">*</span> First</td>
         <td><input type=text name=first value="[% person.first %]"></td>
     </tr>
     <tr>
-        <th align=right>Last</td>
+        <th align=right><span class="required">*</span> Last</td>
         <td><input type=text name=last value="[% person.last %]"></td>
     </tr>
     <tr>
@@ -15,7 +15,7 @@
         <td><input type=text name=sanskrit value="[% person.sanskrit %]"></td>
     </tr>
     <tr>
-        <th align=right>Sex</td>
+        <th align=right><span class="required">*</span> Sex</td>
         <td>
         <input type=radio name=sex value="F" [% sex_female %] >Female
         &nbsp;&nbsp;&nbsp;

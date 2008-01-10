@@ -7,8 +7,7 @@
 <a href="/program/delete/[% program.id %]"
 onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/program/publish"
-onclick="return confirm('Okay to Publish to staging area?');">Publish<a>
+<a href="/program/publish">Publish<a>
 <p>
 [% END %]
 
