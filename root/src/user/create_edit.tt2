@@ -46,4 +46,4 @@
 
 </table>
 </form>
-<script type="text/javascript">document.form.first.focus()</script>
+<script type="text/javascript">document.form.username.focus()</script>
