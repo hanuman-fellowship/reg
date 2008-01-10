@@ -1,5 +1,5 @@
-Test Plan for Mlist
-===================
+Test Plan
+for People, Affiliations, Listings, Reports
 
 Log In
     (jane, mypass)
@@ -90,6 +90,9 @@ Listings
             and
                 123 Ornge Street Tampa, FL 12341
             are numerically close.
+    Purge Stale Addresses
+        Upload a file containing email addresses.
+        They will be removed from people's records.
 
 Reports
     Create a report - giving a description and zip code range.
