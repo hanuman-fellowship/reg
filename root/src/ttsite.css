@@ -10,6 +10,9 @@ body {
     padding: 0px;
     height: 100%;
 }
+.required {
+    color: red;
+}
 
 #header {
     background-color: [% site.col.head %];
