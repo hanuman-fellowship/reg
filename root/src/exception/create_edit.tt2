@@ -33,7 +33,7 @@
 </tr>
 
 <tr>
-<th align=right>Value</th>
+<th align=right valign=top>Value</th>
 <td>
 <textarea rows=10 cols=60 name=value>[% exception.value %]</textarea>
 </td>

@@ -1,4 +1,7 @@
 <h2>People</h2>
+<a href="/person/create">Create</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/search">Search</a>
 <ul>
 <table border=0 cellpadding=3>
 <tr>
@@ -6,7 +9,7 @@
 <th align=left>First</th>
 <th align=left>Sanskrit</th>
 <th align=left>Zip/Postal Code</th>
-<th align=left>Email</th>
+<th align=left>[% IF field == 'email' %]Email[% ELSE %]Home Phone[% END %]</th>
 </tr>
 [% FOREACH p IN people %]
 <tr>
@@ -14,7 +17,7 @@
 <td><a href="[% '/person/view/' _ p.id %]">[% p.first %]</a></td>
 <td>[% p.sanskrit %]</td>
 <td>[% p.zip_post %]</td>
-<td>[% p.email %]</td>
+<td>[% IF field == 'email' %][% p.email %][% ELSE %][% p.tel_home %][% END %]</td>
 </tr>
 [% END -%]
 </table>

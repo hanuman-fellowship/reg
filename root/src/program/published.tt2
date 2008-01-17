@@ -6,4 +6,6 @@ All future programs and rentals were published.
 If the pictures have changed, click <a href="/program/publish_pics">here</a> to publish them as well.
 [% END %]
 <p>
-To see the published pages in a new window click <a target=_blank href="http://www.mountmadonna.org/[% ftp_dir2 %]/events.html">here</a>.
+To see the published events in a new window click <a target=_blank href="http://www.mountmadonna.org/[% ftp_dir2 %]/events.html">here</a>.
+<p>
+To see only the programs click <a target=_blank href="http://www.mountmadonna.org/[% ftp_dir2 %]/programs.html">here</a>.

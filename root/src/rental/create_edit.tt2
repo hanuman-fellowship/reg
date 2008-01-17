@@ -3,16 +3,16 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Name</th>
+<th align=right><span class="required">*</span> Name</th>
 <td><input type=text name=name value="[% rental.name %]"></td>
-<th align=right>From</th>
+<th align=right><span class="required">*</span> From</th>
 <td><input type=text name=sdate value="[% sdate %]" size=10></td>
-<th align=right>To</th>
+<th align=right><span class="required">*</span> To</th>
 <td><input type=text name=edate value="[% edate %]" size=10></td>
 </tr>
 
 <tr>
-<th align=right>Title</th>
+<th align=right><span class="required">*</span> Title</th>
 <td colspan=5><input type=text name=title value="[% rental.title %]" size=60></td>
 </tr>
 

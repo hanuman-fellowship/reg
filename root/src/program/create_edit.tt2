@@ -7,16 +7,16 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Name</th>
+<th align=right><span class="required">*</span> Name</th>
 <td><input type=text name=name value="[% program.name %]"></td>
-<th align=right>From</th>
+<th align=right><span class="required">*</span> From</th>
 <td><input type=text name=sdate value="[% sdate %]" size=10></td>
-<th align=right>To</th>
+<th align=right><span class="required">*</span> To</th>
 <td><input type=text name=edate value="[% edate %]" size=10></td>
 </tr>
 
 <tr>
-<th align=right>Title</th>
+<th align=right><span class="required">*</span> Title</th>
 <td colspan=5><input type=text name=title value="[% program.title %]" size=60></td>
 </tr>
 
@@ -63,11 +63,7 @@
 <td>
 <select name=canpol_id>
 [% FOREACH c IN canpol_opts %]
-    <option value=[% c.id %]
-    [% IF c.name == program.canpol.name %]
-        selected
-    [% END %]
-    >[% c.name %]</option>
+    <option value=[% c.id %][% IF c.name == program.canpol.name %] selected[% END %]>[% c.name %]</option>
 [% END %]
 </select>
 </td>
@@ -80,11 +76,7 @@
 <td>
 <select name=housecost_id>
 [% FOREACH h IN housecost_opts %]
-    <option value=[% h.id %]
-    [% IF h.name == program.housecost.name %]
-        selected
-    [% END %]
-    >[% h.name %]</option>
+    <option value=[% h.id %][% IF h.name == program.housecost.name %] selected[% END %]>[% h.name %]</option>
 [% END %]
 </select>
 </td>
@@ -125,14 +117,9 @@
 <td colspan=2 valign=top>
 <select name=ptemplate>
 [% FOREACH t IN template_opts %]
-    <option value=[% t %]
-    [% IF t == program.ptemplate %]
-        selected
-    [% END %]
-    >[% t %]</option>
+    <option value='[% t %]'[% IF t == program.ptemplate %] selected[% END %]>[% t %]</option>
 [% END %]
 </select>
-<!-- input type=text name=ptemplate value="[% program.ptemplate %]" size=30 -->
 </td>
 </tr>
 

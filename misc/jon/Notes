@@ -24,7 +24,7 @@ rewriting the URLs in case someone does a refresh
     I followed the tutorial.
     I didn't use Catalyst.uri_for... for the form actions
         in the templates.  Okay?
-check for dups in create, update
+**check for dups in create, update
 how to change the name_pref?
 need to put css class/div tags in the tt2 files.
 got the function - at some point the appearance
@@ -40,12 +40,12 @@ prohibit [>"'] as a_code - will interfere with html syntax
     to hex encode it?
 tried editing root/lib/config/main
     looked like Perl so used heredoc.  no no.  this is TT.
-Add to program attributes:
-    registration start and end time
-    program start time and end time
-Add a table for _system_ type attributes:
-    Start/end times for dinner on different days.
-How to quote a value in the template which might
+**Add to program attributes:
+**    registration start and end time
+**    program start time and end time
+**Add a table for _system_ type attributes:
+**    Start/end times for dinner on different days??
+**How to quote a value in the template which might
     contain a ' and a "????   e.g. last name in the
     person update form.  last name of D'Angelo.
     " is safer, I guess. but not 100%.
@@ -54,13 +54,13 @@ I notice that after the update form is submitted
     AND the blank fields are rewritten.  Yes?
 I guessed (and was right) that the create method
     returns the object it just created!
-isn't it rather unOO to dig into the stash hashref???
-    or the params hashref???   Verbose, too.
-    $c->stash("key", "value"); seems better to me than
-    $c->stash->{key} = "value";
-    my $pattern = $c->request->params->{pattern};
-    or
-    my $pattern = $c->params('pattern');
+**isn't it rather unOO to dig into the stash hashref???
+**    or the params hashref???   Verbose, too.
+**    $c->stash("key", "value"); seems better to me than
+**    $c->stash->{key} = "value";
+**    my $pattern = $c->request->params->{pattern};
+**    or
+**    my $pattern = $c->params('pattern');
 delete_all() for deleting a person is rather inefficient
     in the way it deletes the affiliations.   better to
     just do a delete after a search on the affiliation table
@@ -71,7 +71,7 @@ the fancy auto generated accessor 'affils' is nice
 need javascript validation of sex, alert before delete
     other required fields?
     date validation
-    email validation
+**    email validation
 affiliations in column sort not running sort?
     since i'm not doing it in the template... i can be smarter.
     done.  nicely.  I did put some HTML in the controller.
@@ -160,11 +160,11 @@ Hire a user interface expert graphics person like Matt
 styles in the views - better in the .css file
     see view.tt2 and the width of the email field
     if we enlarge the font - the 2 inch width may not be right.
-why do we need to put "Catalyst::uri_for('/person/search')"
-    and not just "/person/search"?  can we ask the experts?
+**why do we need to put "Catalyst::uri_for('/person/search')"
+**    and not just "/person/search"?  can we ask the experts?
 DBIx::Class is simply not documented well enough yet.
     Catalyst is not that great either.
-    Is there an O'Reilly book in progress?
+**    Is there an O'Reilly book in progress?
         for DBIx::Class or for Catalyst?
         call O'Reilly.  perhaps the system(s) are
         not yet mature enough.
@@ -177,10 +177,10 @@ DBIx::Class is simply not documented well enough yet.
 How about a large example of a Catalyst application?
     open source, free to browse
     complex, well explained.
-Where is it documented what all that stuff in root/src does?
-    Any way to turn it off for a screen that is
-    destined for the printer?   This is an application
-    not a 'site'.
+**Where is it documented what all that stuff in root/src does?
+**    Any way to turn it off for a screen that is
+**    destined for the printer?   This is an application
+**    not a 'site'.
 Egos abound.  Hackers love to make systems
     so complex and so abstract that they are viewed
     as profound geniuses.
@@ -188,16 +188,17 @@ Egos abound.  Hackers love to make systems
     and an Example is not a good sign.  Why not just explain
     it?  Having stuff you can copy or mimic is not the
     same as understanding.
-what is the timeout value for login sessions?
-several different affiliations for
-    do not send me any mailings.   should they all
-    be collapsed into one?   8, 9, do not distribute, do not Give out, etc.
+**what is the timeout value for login sessions?
+**      settable where?
+**several different affiliations for
+**    do not send me any mailings.   should they all
+**    be collapsed into one?   8, 9, do not distribute, do not Give out, etc.
 the capitalization mixed case was not done very
     intelligently - O'brien for example.
     can we make it better?
-work on mlist so no dup ids!
+**work on mlist so no dup ids!
     that's no good
-need someone to rework the out of usa records!
+**need someone to rework the out of usa records!
     there is an affiliation - likely not used consistently...
     look for zip code of blank?
     I can make further custom listings that don't
@@ -208,13 +209,14 @@ reformat the phone numbers in a consistent way?
     the ones in the US anyway?
 addr1 addr2 - in Email to CMS format - extra space at the end
     could have addrs method to remedy this.
-another attribute of a person
-    comments about extreme food or picky needs
-    difficult behavior
-    and this would pop up during registration
-search people by home phone
-    exact syntax needed.
-    831-460-2648 would not match (831) 460-2648
+**another attribute of a person
+**    comments about extreme food or picky needs
+**    difficult behavior
+**    and this would pop up during registration
+**search people by home phone
+**    exact syntax needed.
+**    831-460-2648 would not match (831) 460-2648
+**    could do substring search of 2648 and find it.
 what happens when one of two partners
     has a new address that is not the same as their partner?
     they should be separated at that time!
@@ -223,20 +225,21 @@ for programs
     checkbox labels - should be bold?  or a class?
     a class to match the other labels... which are just <th>.
 
-for some reason sqlite3 allows putting 'yes' in an integer field
-    e.g. all the checkbox fields in program table.
+**for some reason sqlite3 allows putting 'yes' in an integer field
+**    e.g. all the checkbox fields in program table.
+**    make em text.
 Hardcoded Defaults for programs:
     Default - Housing Cost
     MMC     - Cancellation Policy
-should role 'user' be able to delete/edit reports?
+**should role 'user' be able to delete/edit reports?
 do we need a role 'reception' - they can't see programs at all.
     only people, affils, reports, listings.
 cascade deletes of affiliations to reports and programs as well.
     and leaders to programs
     or prohibit??? yes.
-more program form validation
-if you go to the login screen but you're already
-    logged in - go to the people search screen instead!
+**more program form validation
+**if you go to the login screen but you're already
+**    logged in - go to the people search screen instead!
 prohibit a delete of a person, housecost, calpol or leader
     if there are foreign keys to it.
     jeeeez - it gets complicated!
@@ -250,11 +253,12 @@ When in admin role and click on Program's housing costs
     ditto for Cancellation Policy??
 can't put a '+' in a form text field!
     why?   it is the only character that is special in this way.
+    use method=POST for such forms
     it is not within DBIx::Class.
     it's within Catalyst server???
 If you have two or more leaders
     they will be listed in alphabetical order
-    based on Last name, then first.  Okay?
+**    based on Last name, then first.  Okay?
     What if there is one main leader and a minor one.
 after publish - go to list with message
 after program edit go to list as well?
@@ -264,7 +268,7 @@ is there no value= field for <input type=file>???
     do we need a separate update form for images???
 when deleting a leader
     their person record remains intact, "make leader" returns
-    make sure to delete the associatated image, if any.
+    make sure to delete the associated image, if any.
 which roles?
     admin / template-editor
     admin can create programs
@@ -272,25 +276,25 @@ which roles?
 put a javascript alert in front of deleting images
     in leaders, programs
 members, images (for templates)
-restrictions on passwords?   >=5, what else?
-in updating strings - no " char.  ' okay.
-why use Catalyst.uri_for('/program/list') instead
-    of just '/program/list'?   for when it isn't localhost::3000?
+**restrictions on passwords?   >=5, what else?
+**in updating strings - no " char.  ' okay.
+**why use Catalyst.uri_for('/program/list') instead
+**    of just '/program/list'?   for when it isn't localhost::3000?
 mailto links on email addresses
 do stale soon
-test - trimming of email in leader, user, rental and person
+**test - trimming of email in leader, user, rental and person
 http:// off in rental, leader
-renamed tabs:
+**renamed tags:
     title => title1
     subtitle => title2
     weburl, website => weburl
     leaders => leader_names
-renamed styles
+**renamed styles
     title => title1
     subtitle => title2
     in e_progRow - event_title2, event_title2
     in progRow - title... ?? look
-can't put html tags in textareas :(
+**can't put html tags in textareas :(
     what to do?  prohibit them, process before use
     like with expand.
     wiki things?
@@ -308,6 +312,7 @@ did prognum - something still wrong with links
     to programs - it includes 'gen_files/'.
 Rental email, phone are not just the field values.
     need separately named method.
+
 To tell Adrienne:
     document
         attitude of "come here... sit down and I'll explain it to you".
@@ -331,8 +336,8 @@ To tell Adrienne:
         not a whitewash, please!
         even trivial things.
         a successful test is a failure!
-        alternate UI suggestions if nothing else
-            and these never end...
+        alternate UI suggestions if nothing else and these never end...
+
 seems like a lot of duplication in the
     DBIC_TRACE output...
     are the results cached?
@@ -345,8 +350,8 @@ IE does not support :3000 on OSX - it's old.
     does IE on XP work?
 Personal Retreats can begin and end on the same day
     The p.r. program itself has no begin or end date, right?
-regtable should (also?) have program id as the identifier
-    not just the name - as this name might be reused
+**regtable should (also?) have program id as the identifier
+**    not just the name - as this name might be reused
 the program listing page will grow as seasons pass
     should what appears there be restricted by a range of dates?
     that default to one month back to the infinite future?
@@ -360,4 +365,89 @@ for testplan
     only the first two leaders (alphabetically)
         get their individual pictures on the page.  okay?
         if not, a group pic as a program image is probably indicated.
+avi_template needs its tags updated
+    title => title1
+    subtitle => title2 etc.
+**FULL programs - very confusing
+**    what if not full at first but then you edit it into fullness?
+**templates have been modified.  cannot use the old ones.
+super admin CAN set a password to anything
+    nope, not null must be something (not 0)
+users, roles => 
+    roles cannot be created/deleted/added.
+    only by me - I implement the meaning of the role.
+**one worry - mailing list staff can edit/delete people
+**    that are registered for a program... dangerous?
+referential integrity issues...
+    always have a javascript deletion alert
+    and before and/or after deleting be sure to check:
 
+    affils - show/ask about people, program & reports with that affil
+        then delete and the 3 maps
+    leaders - show/ask about programs, then delete, also images
+    members - no problem
+    rentals - no problem
+    canpol - not if program
+    people - not if leader or a member, if ok -> affil map
+    housecost - not if program
+    program - images, exceptions, leader map, affil map
+        also a FULL version
+    templates - not if program
+    report - affil map
+    user - role map
+    exception - no problem
+    string - can't delete
+    role - can't delete
+keep looking at the server log to
+    see what inefficiencies can be eliminated
+    asking about roles once in tt2 files and then using the answer
+        many times is much much more efficient
+**deleting a person requires no authorization at all???
+**    we could make it mail_admin
+**A Tk app with optimal interface for blitz registrations!
+    to overcome the limits of the web - sans Ajax, that is.
+    might be easier.
+    would portably run on Windows or Linux
+we will have further ref integrity issues when
+    we do registration and housing, of course.
+how to have date objects automatically returned in the DBIx::Class object???
+    a conversion done for us.
+member sponsor payment history cannot be cleared
+    for archival puposes.
+    super admin is the only one that can delete members
+        and along with the member goes the history.
+document all date formats - in a popup help?
+    linked to in various places.
+    all formats including t, 5/6, 5
+brochure generation
+couple life members if partner+theirs >= 8000 then both.
+New address? - for online reg page
+tag for current date, current year
+years of General membership fees do not go towards
+    sponsoring membership, right?
+members paying sponsor dues and becoming Life members
+    many weird cases.   try em all.
+    creating and/or updating.
+    neither partner member, one pays 8000.
+        both Life
+    then again bring up Member form but
+        do nothing - it changes to General:(
+name of report is a required field.
+    affil descr cannot be blank.
+    name of rental cannot be blank.
+    user name, password >= 5
+    same for cancellation policy, housing cost
+    use a red asterisk - class of 'required'
+not green, red for messages?
+    it's a class, right?
+tags for current date, year.  in usual format.
+use my modified templates as a new starting point.
+Housing Cost default is called "Default" not MMC.
+New Address? on online reg page
+get OOs with a cron job - then faster when typing 'O', 'O'.
+Brochure generation - include FULL programs by noting the extra days.
+get_data for Person - return if @mess in all!
+regtable should have the program record id in it
+    so that similiarily named programs can be distinguished.
+    also so that one can go directly to the program rather
+    than needing to search for it...

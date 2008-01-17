@@ -1,14 +1,19 @@
 <h2>Programs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/program/create">Create</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/program/update/[% program.id %]">Edit</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/program/delete/[% program.id %]"
-onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/program/publish">Publish<a>
-<p>
+    <a href="/program/create">Create</a>
+    [% IF edit_okay %]
+        &nbsp;&nbsp;&nbsp;
+        <a href="/program/update/[% program.id %]">Edit</a>
+        &nbsp;&nbsp;&nbsp;
+        <a href="/program/delete/[% program.id %]"
+           onclick="return confirm('Okay to Delete [% program.name %]?');"
+              >Delete</a>
+    [% END %]
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/brochure">Brochure</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/publish">Publish<a>
+    <p>
 [% END %]
 
 <table cellpadding=3 border=0>
@@ -95,17 +100,21 @@ onclick="return confirm('Okay to Delete [% program.name %]?');">Delete</a>
 <tr>
 <th align=right valign=top>Leaders</th>
 <td align=left valign=top colspan=2>
-[% leaders %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/program/leader_update/[% program.id %]">Update</a>
+[% IF edit_okay %]
+    [% leaders %]
+    [% IF Catalyst.check_user_roles('prog_admin') %]
+        <a href="/program/leader_update/[% program.id %]">Update</a>
+    [% END %]
 [% END %]
 <p>
 </td>
 <th align=right valign=top>Affiliations</th>
 <td align=left valign=top colspan=2>
-[% affils %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/program/affil_update/[% program.id %]">Update</a>
+[% IF edit_okay %]
+    [% affils %]
+    [% IF Catalyst.check_user_roles('prog_admin') %]
+        <a href="/program/affil_update/[% program.id %]">Update</a>
+    [% END %]
 [% END %]
 <p>
 </td>

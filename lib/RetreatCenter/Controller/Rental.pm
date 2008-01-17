@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Rental;
 use base 'Catalyst::Controller';
 
 use Date::Simple qw/date/;
-use Util qw/trim/;
+use Util qw/trim empty/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -23,13 +23,31 @@ sub create : Local {
     $c->stash->{template}    = "rental/create_edit.tt2";
 }
 
-sub create_do : Local {
-    my ($self, $c) = @_;
+my %hash;
+my @mess;
+sub _get_data {
+    my ($c) = @_;
 
+    %hash = ();
+    @mess = ();
+    for my $w (qw/
+        name title subtitle glnum
+        sdate edate url webdesc
+        linked phone email
+    /) {
+        $hash{$w} = $c->request->params->{$w};
+    }
+    $hash{url} =~ s{^\s*http://}{};
+    $hash{email} = trim($hash{email});
+    if (empty($hash{name})) {
+        push @mess, "Name cannot be blank";
+    }
+    if (empty($hash{title})) {
+        push @mess, "Title cannot be blank";
+    }
     # dates are either blank or converted to d8 format
-    my @mess;
     for my $d (qw/ sdate edate /) {
-        my $fld = $c->request->params->{$d};
+        my $fld = $hash{$d};
         if (! $fld =~ /\S/) {
             push @mess, "missing date field";
             next;
@@ -40,34 +58,24 @@ sub create_do : Local {
             push @mess, "Invalid date: $fld";
             next;
         }
-        $c->request->params->{$d} = $dt? $dt->as_d8()
-                                   :     "";
+        $hash{$d} = $dt? $dt->as_d8()
+                   :     "";
     }
-    if (!@mess && $c->request->params->{sdate}
-                  > 
-                  $c->request->params->{edate}
-    ) {
-        push @mess, "end date must be after the start date";
+    if (!@mess && $hash{sdate} > $hash{edate}) {
+        push @mess, "End date must be after the Start date";
     }
-    if (! $c->request->params->{title} =~ /\S/) {
-        push @mess, "title cannot be blank";
-    }
+}
+
+sub create_do : Local {
+    my ($self, $c) = @_;
+
+    _get_data($c);
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "rental/error.tt2";
         return;
     }
 
-    my %hash;
-    for my $w (qw/
-        name title subtitle glnum
-        sdate edate url webdesc
-        linked phone email
-    /) {
-        $hash{$w} = $c->request->params->{$w};
-    }
-    $hash{url} =~ s{^\s*http://}{};
-    $hash{email} = trim($hash{email});
     my $p = $c->model("RetreatCenterDB::Rental")->create({
         %hash,
     });
@@ -119,36 +127,9 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    # dup'ed code - what to do???
-    # dates are either blank or converted to d8 format
-    my @mess;
-    for my $d (qw/ sdate edate /) {
-        my $fld = $c->request->params->{$d};
-        if (! $fld =~ /\S/) {
-            push @mess, "missing date field";
-            next;
-        }
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
-            next;
-        }
-        $c->request->params->{$d} = $dt? $dt->as_d8()
-                                   :     "";
-    }
-    if (!@mess && $c->request->params->{sdate}
-                  > 
-                  $c->request->params->{edate}
-    ) {
-        push @mess, "end date must be after the start date";
-    }
-    if (! $c->request->params->{title} =~ /\S/) {
-        push @mess, "title cannot be blank";
-    }
+    _get_data($c);
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
-        # ??? person or program or a general error template?
         $c->stash->{template} = "person/error.tt2";
         return;
     }

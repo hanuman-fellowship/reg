@@ -1,0 +1,13 @@
+<h2>[% leader.person.first %] [% leader.person.last %] is leading the following programs:</h2>
+<h3>Programs</h3>
+<ul>
+[% FOR p IN programs %]
+    <a href="/program/view/[% p.id %]">[% p.name %]</a><br>
+[% END %]
+</ul>
+<form action="/leader/del_confirm/[% leader.id %]" name=form>
+Continue with the deletion?
+<input type=submit value="Yes" name=yes> 
+<input type=submit value="No" name=no> 
+</form>
+<script type='text/javascript'>document.form.no.focus()</script>

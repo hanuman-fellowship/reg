@@ -1,0 +1,16 @@
+General Testing Guidelines
+
+In the various categories (People, Reports, Programs, etc)
+there are create, edit and delete functions.  Try each of these
+in each category.
+
+There are many variations on how
+the information is presented.  For example, with People
+you need to do a search to see them.  In Affiliations and Programs
+all are presented in a long list.  In Affiliations you
+have Edit and Delete links in the list.  In Programs
+you must first view the program before you can edit it.
+
+Required fields are marked with an asterisk.
+Verify in each case that you do get an error message
+if one is not given.

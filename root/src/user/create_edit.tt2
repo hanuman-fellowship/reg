@@ -4,31 +4,29 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>User Name</th>
+<th align=right><span class="required">*</span> User Name</th>
 <td><input type=text name=username value="[% user.username %]"></td>
 </tr>
 
 <tr>
-<th align=right>First</th>
+<th align=right><span class="required">*</span> First</th>
 <td><input type=text name=first value="[% user.first %]"></td>
 </tr>
 
 <tr>
-<th align=right>Last</th>
+<th align=right><span class="required">*</span> Last</th>
 <td><input type=text name=last value="[% user.last %]"></td>
 </tr>
 
 <tr>
-<th align=right>Password</th>
+<th align=right><span class="required">*</span> Password</th>
 <td><input type=text name=password value="[% user.password %]"></td>
 </tr>
 
 <tr>
-<th align=right>Email</th>
+<th align=right><span class="required">*</span> Email</th>
 <td><input type=text name=email value="[% user.email %]"></td>
 </tr>
-
-<tr><td>&nbsp;</td></tr>
 
 <tr>
 <th align=right valign=top>Roles</th>
@@ -36,8 +34,6 @@
 <table>
 [% role_table %]
 </table>
-
-<tr><td>&nbsp;</td></tr>
 
 <tr>
 <td>&nbsp;</td>

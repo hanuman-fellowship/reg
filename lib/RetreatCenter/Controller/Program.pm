@@ -10,23 +10,15 @@ use Util qw/
     slurp 
     monthyear
     expand
+    expand2
     resize
     housing_types
+    sys_template
 /;
-use Date::Simple qw/date/;
+use Date::Simple qw/date today/;
 use Net::FTP;
 use Lookup;
 use File::Copy;
-
-
-my %sys_template = map { $_ => 1 } qw/
-    progRow
-    e_progRow
-    e_rentalRow
-    events
-    popup
-    programs
-/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -53,7 +45,7 @@ sub create : Local {
         extradays    => 0,
         full_tuition => 0,
         deposit      => 100,
-        canpol       => { name => "MMC" },      # a clever way to set default!
+        canpol       => { name => "Default" },  # a clever way to set default!
         housecost    => { name => "Default" },  # fake an object!
         ptemplate    => 'template',
     };
@@ -67,7 +59,7 @@ sub create : Local {
             { order_by => 'name' },
         ) ];
     $c->stash->{template_opts} = [
-        grep { ! $sys_template{$_} }
+        grep { $_ eq "template" || ! sys_template($_) }
         map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
         <root/static/templates/*.html>
     ];
@@ -75,11 +67,22 @@ sub create : Local {
     $c->stash->{template}    = "program/create_edit.tt2";
 }
 
-sub create_do : Local {
-    my ($self, $c) = @_;
+my (%hash, @mess);
+my %readable = (
+    sdate   => 'Start Date',
+    edate   => 'End Date',
+    tuition => 'Tuition',
+    deposit => 'Deposit',
+    name    => 'Name',
+    title   => 'Title',
+    full_tuition => 'Full Tuition',
+    extradays    => 'Extra Days',
+);
+sub _get_data {
+    my ($c) = @_;
 
-    # get form params into a hash
-    my %hash;
+    %hash = ();
+    @mess = ();
     for my $w (qw/
         name title subtitle glnum housecost_id
         retreat sdate edate tuition confnote
@@ -93,32 +96,50 @@ sub create_do : Local {
     }
     $hash{url} =~ s{^\s*http://}{};
 
+    for my $f (qw/ name title /) {
+        if ($hash{$f} !~ m{\S}) {
+            push @mess, "$readable{$f} cannot be blank";
+        }
+    }
     # dates are either blank or converted to d8 format
-    my @mess;
     for my $d (qw/ sdate edate /) {
         my $fld = $hash{$d};
         if ($hash{name} !~ m{personal\s*retreat}i && $fld !~ /\S/) {
-            push @mess, "missing date field";
+            push @mess, "Missing $readable{$d} field";
             next;
         }
         my $dt = date($fld);
         if ($fld && ! $dt) {
             # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
+            push @mess, "Invalid $readable{$d}: $fld";
             next;
         }
         $hash{$d} = $dt? $dt->as_d8()
                    :     "";
     }
-    if (!@mess && $hash{sdate}
-                  > 
-                  $hash{edate}
-    ) {
-        push @mess, "end date must be after the start date";
+    if (!@mess && $hash{sdate} > $hash{edate}) {
+        push @mess, "End Date must be after Start Date";
     }
-    if (! $hash{title} =~ /\S/) {
-        push @mess, "title cannot be blank";
+    # check for numbers
+    for my $f (qw/
+        extradays tuition full_tuition deposit
+    /) {
+        if ($hash{$f} !~ m{^\s*\d+\s*$}) {
+            push @mess, "$readable{$f} must be a number";
+        }
     }
+    if ($hash{extradays} && $hash{full_tuition} < $hash{tuition}) {
+        push @mess, "Full Tuition must be more than normal Tuition.";
+    }
+    if ($hash{footnotes} =~ m{[^\*%+]}) {
+        push @mess, "Footnotes can only contain *, % and +";
+    }
+}
+
+sub create_do : Local {
+    my ($self, $c) = @_;
+
+    _get_data($c);
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "program/error.tt2";
@@ -135,6 +156,22 @@ sub create_do : Local {
         $upload->copy_to("root/static/images/po-$id.jpg");
         Lookup->init($c);
         resize('p', $id);
+    }
+    # make the FULL version, if requested
+    if ($hash{extradays}) {
+        my $full_edate = date($hash{edate}) + $hash{extradays};
+        $c->model("RetreatCenterDB::Program")->create({
+            %hash,
+            image     => "",
+            edate     => $full_edate->as_d8(),
+            name      => "$hash{name} FULL",
+            webready  => "",
+            linked    => "",
+            webdesc   => "",
+            brdesc    => "",
+            ptemplate => "",
+            url       => "",
+        });
     }
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
@@ -171,6 +208,8 @@ sub view : Local {
                  $p->affils();
     $a .= "<br>" if $a;
     $c->stash->{affils} = $a;
+
+    $c->stash->{edit_okay} = ($p->name !~ m{ FULL$});
 
     $c->stash->{template} = "program/view.tt2";
 }
@@ -227,7 +266,7 @@ sub update : Local {
         ) ];
     # templates
     $c->stash->{template_opts} = [
-        grep { ! $sys_template{$_} }
+        grep { $_ eq "template" || ! sys_template($_) }
         map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
         <root/static/templates/*.html>
     ];
@@ -239,49 +278,10 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    # get form params into a hash
-    my %hash;
-    # ??? ask DBIx for this list?
-    # ??? put at top for use here and in update_do?
-    for my $w (qw/
-        name title subtitle glnum housecost_id
-        retreat sdate edate tuition confnote
-        url webdesc brdesc webready
-        kayakalpa canpol_id extradays full_tuition deposit
-        collect_total linked ptemplate sbath quad
-        economy footnotes
-        school level
-    /) {
-        $hash{$w} = $c->request->params->{$w};
-    }
-    $hash{url} =~ s{^\s*http://}{};
-    # dates are either blank or converted to d8 format
-    my @mess;
-    for my $d (qw/ sdate edate /) {
-        my $fld = $hash{$d};
-        if ($hash{name} !~ m{personal\s*retreat}i && $fld !~ /\S/) {
-            push @mess, "missing date field";
-            next;
-        }
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid date: $fld";
-            next;
-        }
-        $hash{$d} = $dt? $dt->as_d8()
-                      :     "";
-    }
-    if (!@mess && $hash{sdate} > $hash{edate}) {
-        push @mess, "end date must be after the start date";
-    }
-    if (! $hash{title} =~ /\S/) {
-        push @mess, "title cannot be blank";
-    }
+    _get_data($c);
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
-        # ??? person or program or a general error template?
-        $c->stash->{template} = "person/error.tt2";
+        $c->stash->{template} = "program/error.tt2";
         return;
     }
 
@@ -292,7 +292,33 @@ sub update_do : Local {
         $hash{image} = "yes";
     }
     my $p = $c->model("RetreatCenterDB::Program")->find($id);
+    # is there a FULL version?
+    my @recs = $c->model("RetreatCenterDB::Program")->search({
+        name => $p->name . " FULL",
+    });
+    my $p_full;
+    if (@recs) {
+        $p_full = $recs[0];
+    }
     $p->update(\%hash);
+    if ($p->extradays && $p_full) {
+        # what if not before but now?
+        # we'd need to do a create rather than an update :(
+        # this is very messy - is there a better way?
+        my $full_edate = date($hash{edate}) + $hash{extradays};
+        $p_full->update({
+            %hash,
+            image     => "",
+            edate     => $full_edate->as_d8(),
+            name      => "$hash{name} FULL",
+            webready  => "",
+            linked    => "",
+            webdesc   => "",
+            brdesc    => "",
+            ptemplate => "",
+            url       => "",
+        });
+    }
     $c->response->redirect($c->uri_for("/program/view/" . $p->id));
 }
 
@@ -357,14 +383,39 @@ sub affil_update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    # explain this choice - see Person.pm.
+    my $p = $c->model("RetreatCenterDB::Program")->find($id);
+
+    # any FULL version
+    if ($p->extradays) {
+        $c->model("RetreatCenterDB::Program")->search({
+            name => $p->name . " FULL",
+        })->delete();
+    }
+
+    # this program
     $c->model('RetreatCenterDB::Program')->search(
         { id => $id }
     )->delete();
-    $c->model('RetreatCenterDB::AffilProgram')->search(
-        { p_id => $id }
-    )->delete();
-    # ??? LeaderProgram, too.
+    #$p->delete();
+
+    # affiliations
+    $c->model('RetreatCenterDB::AffilProgram')->search({
+        p_id => $id,
+    })->delete();
+
+    # leaders
+    $c->model('RetreatCenterDB::LeaderProgram')->search({
+        p_id => $id,
+    })->delete();
+
+    # exceptions
+    $c->model('RetreatCenterDB::Exception')->search({
+        prog_id => $id,
+    })->delete();
+
+    # and finally, any image
+    unlink <root/static/images/p*-$id.jpg>;
+
     $c->response->redirect($c->uri_for('/program/list'));
 }
 
@@ -510,25 +561,29 @@ sub publish : Local {
     # the .html files for the program and event lists.
     #
     my $s;
-    $s = slurp "events";
+
     open my $out, ">", "gen_files/events.html"
         or die "cannot create events.html: $!\n";
+    $s = slurp "events";
     $s =~ s/<!--\s*T\s+eventlist.*-->/$events/;
+    $s =~ s/$tag_regexp/ RetreatCenterDB::Program->$1() /xge;
     print {$out} $s;
     close $out;
-    $s = slurp "programs";
+
     undef $out;
     open $out, ">", "gen_files/programs.html"
         or die "cannot create programs.html: $!\n";
+    $s = slurp "programs";
     $s =~ s/<!--\s*T\s+programlist.*-->/$programs/;
+    $s =~ s/$tag_regexp/ RetreatCenterDB::Program->$1() /xge;
     print {$out} $s;
     close $out;
 
     #
-    # finally, ftp it all to www.mountmadonna.org
+    # finally, ftp all generated pages to www.mountmadonna.org
     # or whereever Lookup says, that is...
     #
-    my $ftp = Net::FTP->new($lookup{ftp_site})
+    my $ftp = Net::FTP->new($lookup{ftp_site}, Passive => $lookup{ftp_passive})
         or die "cannot connect to ...";    # not die???
     $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
@@ -555,10 +610,13 @@ sub publish_pics : Local {
     my ($self, $c) = @_;
 
     Lookup->init($c);
-    my $ftp = Net::FTP->new($lookup{ftp_site})
+    my $ftp = Net::FTP->new($lookup{ftp_site}, Passive => $lookup{ftp_passive})
         or die "cannot connect to ...";    # not die???
     $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
+    #
+    # this assumes pics/ is there...
+    #
     $ftp->cwd("$lookup{ftp_dir}/$lookup{ftp_dir2}/pics")
         or die "cannot cwd ", $ftp->message; # not die???
     for my $f ($ftp->ls()) {
@@ -575,6 +633,82 @@ sub publish_pics : Local {
     $c->stash->{pics} = 1;
     $c->stash->{ftp_dir2} = $lookup{ftp_dir2};
     $c->stash->{template} = "program/published.tt2";
+}
+
+sub brochure : Local {
+    my ($self, $c) = @_;
+
+    # make a guess at the season we are generating.
+    my $d = today();
+    my $m = $d->month();
+    my $y = $d->year() % 100;
+    my $seas;
+    if (4 <= $m && $m <= 9) {
+        $seas = 'f';
+    }
+    else {
+        $seas = 's';
+        ++$y if 10 <= $m && $m <= 12;
+    }
+    $c->stash->{season} = sprintf "$seas%02d", $y;
+    $c->stash->{fee_page} = 11;
+    $c->stash->{template} = "program/brochure.tt2";
+}
+
+sub brochure_do : Local {
+    my ($self, $c) = @_;
+
+    my $season   = $c->request->params->{season};
+    my ($bdate, $edate);
+    if (my ($s, $y) = $season =~ m{(^[fs])(\d\d)$}i) {
+        $s = lc $s;
+        $y += 2000;
+        $bdate = ($s eq 'f')? $y."1001": $y."0401";
+        $edate = ($s eq 'f')? ($y+1)."0331": $y."0930";
+    }
+    else {
+        $c->stash->{mess} = "Invalid season.";
+        $c->stash->{template} = "program/error.tt2";
+        return;
+    }
+    my $fee_page = $c->request->params->{fee_page};
+    if ($fee_page !~ m{^\d+$}) {
+        $c->stash->{mess} = "Invalid fee page number.";
+        $c->stash->{template} = "program/error.tt2";
+        return;
+    }
+    my $fname = "root/static/brochure.txt";
+    open my $br, ">", $fname
+        or die "cannot create $fname";
+    for my $p ($c->model('RetreatCenterDB::Program')->search(
+                   {
+                       sdate => { 'between' => [ $bdate, $edate ] },
+                       linked => 'yes',
+                       webready => 'yes',
+                   },
+                   { order_by => 'sdate' },
+               ))
+    {
+        print {$br} "\@date:<\$>", $p->dates3, "\n";
+        print {$br} "\@wkshop intro<\$>", $p->title, "\n";
+        print {$br} "\@wkshop<\$>", $p->subtitle, "\n";
+        my $s = $p->leader_names;
+        if ($s) {
+            print {$br} "\@presenter<\$>$s\n";
+        }
+        print {$br} "\@initial paragraph<\$>",
+            expand2(($p->brdesc)? $p->brdesc: $p->webdesc);
+        $s = expand2($p->leader_bio);
+        if ($s) {
+            print {$br} "\@text<\$>$s";
+        }
+	    print {$br} "<B>Tuition \$" . $p->tuition
+                  . "</B>, plus fees (see page $fee_page)\n";
+        print {$br} "<\\c>";
+    }
+    close $br;
+    $fname =~ s{root}{};
+    $c->response->redirect($c->uri_for($fname));
 }
 
 #

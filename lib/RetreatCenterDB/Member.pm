@@ -19,4 +19,7 @@ __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
 
+# ??? there's likely some way to put here the relationship to spons_hist???
+# so given a member can get the spons_hist records?
+
 1;

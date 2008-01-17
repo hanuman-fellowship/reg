@@ -1,4 +1,5 @@
 <h2>Members</h2>
+<a href="/member/membership_list">By Category</a>
 <ul>
 Click on Sanskrit to update member attributes.<br>
 Click on Name to see person attributes.<br>
@@ -31,7 +32,9 @@ To create a Member add them as a Person first.
 &nbsp;
 [% END %]
 </td>
+[% IF Catalyst.check_user_roles('super_admin') %]
 <td><a href="/member/delete/[% m.id %]" onclick="return confirm('Okay to Delete [% m.person.first _ ' ' _ m.person.last %] as member?');">Del</a></td>
+[% END %]
 </tr>
 [% END %]
 </table>

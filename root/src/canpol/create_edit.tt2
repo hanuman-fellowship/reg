@@ -3,7 +3,7 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Name</th>
+<th align=right><span class="required">*</span> Name</th>
 <td><input type=text name=name value="[% canpol.name %]"></td>
 </tr>
 

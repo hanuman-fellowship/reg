@@ -9,7 +9,10 @@ use base 'Catalyst::Controller';
 #
 my @tags = sort qw/
     cancellation_policy
+    current_year
+    current_date
     dates
+    dates3
     dates_tr
     dates_tr2
     fee_table

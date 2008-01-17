@@ -44,7 +44,8 @@ h1.title {
 }
 
 .message {
-    color: [% site.col.message %];
+/*    color: [% site.col.message %]; */
+    color: red;
 }
 
 .error {

@@ -31,8 +31,32 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    $c->model('RetreatCenterDB::Leader')->search({id => $id})->delete();
+    my $l = $c->model('RetreatCenterDB::Leader')->find($id);
+    if (my @programs = $l->programs()) {
+        $c->stash->{leader} = $l;
+        $c->stash->{programs} = \@programs;
+        $c->stash->{template} = "leader/del_confirm.tt2";
+        return;
+    }
+    _del($c, $id);
     $c->response->redirect($c->uri_for('/leader/list'));
+}
+
+sub del_confirm : Local {
+    my ($self, $c, $id) = @_;
+
+    if ($c->request->params->{yes}) {
+        _del($c, $id);
+    }
+    $c->response->redirect($c->uri_for('/leader/list'));
+}
+
+sub _del {
+    my ($c, $id) = @_;
+    $c->model('RetreatCenterDB::Leader')->search({id => $id})->delete();
+    $c->model('RetreatCenterDB::LeaderProgram')
+        ->search({l_id => $id})->delete();
+    unlink <root/static/images/l*-$id.jpg>;
 }
 
 sub update : Local {

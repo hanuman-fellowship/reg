@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Person;
 use base 'Catalyst::Controller';
 
 use lib '../..';
-use Util qw/affil_table trim nsquish/;
+use Util qw/affil_table trim empty nsquish/;
 use Date::Simple qw/date today/;
 use USState;
 
@@ -38,7 +38,13 @@ sub search_do : Local {
         last     => [ 'last', 'first' ],
         first    => [ 'first', 'last' ],
         email    => [ 'email', 'last', 'first' ],
+        tel_home => [ 'last', 'first' ],
     );
+    my $orig_pattern = $pattern;
+    if ($field eq 'tel_home') {
+        # intersperse % in the pattern
+        $pattern =~ s{(\d)}{$1%}g;
+    }
     my @people =
         $c->model('RetreatCenterDB::Person')->search(
             {
@@ -51,6 +57,7 @@ sub search_do : Local {
             },
         );
     if (@people == 0) {
+        $pattern =~ s{%}{}g;
         $c->stash->{message}  = "No one found matching '$pattern'.";
         $c->stash->{template} = "person/search.tt2";
         return;
@@ -60,12 +67,13 @@ sub search_do : Local {
         $c->stash->{N} = $nrecs;
         $c->stash->{nextN} = $c->uri_for('/person/search_do')
                             . "?" 
-                            . "pattern=$pattern"
+                            . "pattern=$orig_pattern"
                             . "&field=$field"
                             . "&nrecs=$nrecs"
                             . "&match=$match"
                             . "&offset=" . ($offset+$nrecs);
     }
+    $c->stash->{field} = $field eq 'tel_home'? 'tel_home': 'email';
     $c->stash->{people} = \@people;
     $c->stash->{template} = "person/search_result.tt2";
 }
@@ -73,27 +81,48 @@ sub search_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    #
-    # i tried using delete_all() as directed
-    # to do the cascade to the affils for this person.
-    # look at the DBIC_TRACE - it does it VERY inefficiently :(.
-    # delete with find() does the same.  but not with search()???.
-    #
-    #$c->model('RetreatCenterDB::Person')->search({id => $id})->delete_all();
-    #$c->model('RetreatCenterDB::Person')->find($id)->delete();
-    #
-    # both the above do an inefficient delete of affils.
-    # this is direct and much better:
-    #$c->model('RetreatCenterDB::AffilPerson')->search({p_id => $id})->delete();
-    #
-
-    # first a find() to get the name for the message below
-    # and the partner id in case they're partnered.
     my $p = $c->model('RetreatCenterDB::Person')->find($id);
+
+    #
+    # if this person is a leader or a member
+    # they can't be deleted.  their leadership
+    # and membership must be deleted first.
+    # I could ask if they would like me to do
+    # that for them but I don't feel like it at the moment.
+    #
+    my ($l) = $c->model('RetreatCenterDB::Leader')->search({person_id => $id});
+    my ($m) = $c->model('RetreatCenterDB::Member')->search({person_id => $id});
+    if ($l || $m) {
+        $c->stash->{person} = $p;
+        $c->stash->{leader} = $l if $l;
+        $c->stash->{member} = $m if $m;
+        $c->stash->{conjunction} = " and a " if $l && $m;
+        $c->stash->{template} = "person/memberleader.tt2";
+        return;
+    }
+    _del($c, $p);
+    $c->response->redirect($c->uri_for('/person/search'));
+}
+
+#
+# i tried using delete_all() as directed
+# to do the cascade to the affils for this person.
+# look at the DBIC_TRACE - it does it VERY inefficiently :(.
+# delete with find() does the same.  but not with search()???.
+#
+#$c->model('RetreatCenterDB::Person')->search({id => $id})->delete_all();
+#$c->model('RetreatCenterDB::Person')->find($id)->delete();
+#
+# both the above do an inefficient delete of affils.
+# this is direct and much better:
+#$c->model('RetreatCenterDB::AffilPerson')->search({p_id => $id})->delete();
+#
+sub _del {
+    my ($c, $p) = @_;
+
+    my $id = $p->id;
     my $name = $p->first() . " " . $p->last();
     my $id_sps = $p->id_sps();
-
-    # now delete
     $c->model('RetreatCenterDB::Person')->search(
         { id => $id }
     )->delete();
@@ -108,8 +137,23 @@ sub delete : Local {
             id_sps => 0,
         });
     }
+    # and leader or member
+    $c->model('RetreatCenterDB::Leader')->search({person_id => $id})->delete();
+    $c->model('RetreatCenterDB::Member')->search({person_id => $id})->delete();
 
     $c->flash->{message} = "$name was deleted.";
+}
+
+sub delete_anyway : Local {
+    my ($self, $c, $id) = @_;
+    
+    my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    if ($c->request->params->{yes}) {
+        _del($c, $p);
+    }
+    else {
+        $c->flash->{message} = $p->first . " " . $p->last . " was NOT deleted.";
+    }
     $c->response->redirect($c->uri_for('/person/search'));
 }
 
@@ -192,10 +236,10 @@ sub update_do : Local {
     my $akey     = nsquish($addr1, $addr2, $zip_post);
 
     my @mess;
-    if ($last !~ m{\S}) {
+    if (empty($last)) {
         push @mess, "Last name cannot be blank.";
     }
-    if ($first !~ m{\S}) {
+    if (empty($first)) {
         push @mess, "First name cannot be blank.";
     }
     if ($sex ne 'F' && $sex ne 'M') {
@@ -352,10 +396,10 @@ sub create_do : Local {
 
     # consolidate create/update validation???
     my @mess;
-    if ($last !~ m{\S}) {
+    if (empty($last)) {
         push @mess, "Last name cannot be blank.";
     }
-    if ($first !~ m{\S}) {
+    if (empty($first)) {
         push @mess, "First name cannot be blank.";
     }
     if ($sex ne 'F' && $sex ne 'M') {

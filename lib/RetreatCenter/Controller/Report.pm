@@ -6,7 +6,7 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
-use Util qw/affil_table parse_zips/;
+use Util qw/affil_table parse_zips empty/;
 use Date::Simple qw/date today/;
 
 Date::Simple->default_format("%D");      # set it here - where else???
@@ -91,6 +91,28 @@ sub update : Local {
     $c->stash->{template}    = "report/create_edit.tt2";
 }
 
+my %hash;
+my @mess;
+sub _get_data {
+    my ($c) = @_;
+
+    %hash = ();
+    @mess = ();
+    for my $w (qw/ descrip zip_range rep_order nrecs format /) {
+        $hash{$w} = $c->request->params->{$w};
+    }
+    if (empty($hash{descrip})) {
+        push @mess, "The report description cannot be blank.";
+    }
+    my $zips = parse_zips($hash{zip_range});
+    if (! ref($zips)) {
+        push @mess, $zips;
+    }
+    unless ($hash{nrecs} =~ m{^\s*\d*\s*$}) {
+        push @mess, "illegal Number of Records: $hash{nrecs}";
+    }
+}
+
 #
 # currently there's no way to know which fields changed
 # so assume they all did.  DBIx::Class is smart about this.
@@ -101,23 +123,15 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    my $zips = parse_zips($c->request->params->{zip_range});
-    if (! ref($zips)) {
-        $c->stash->{error_msg} = $zips;
-        $c->stash->{template} = 'report/error.tt2';
+    _get_data($c);
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "report/error.tt2";
         return;
     }
-
-    # ???: No transactions? How do you know the update worked?
-
     $c->model("RetreatCenterDB::Report")->find($id)->update({
-        descrip   => $c->request->params->{descrip},
-        rep_order => $c->request->params->{rep_order},
-        format    => $c->request->params->{format},
-        zip_range => $c->request->params->{zip_range},
-        nrecs     => $c->request->params->{nrecs},
+        %hash,
     });
-
 
     #
     # which affiliations are checked?
@@ -151,19 +165,14 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    my $zips = parse_zips($c->request->params->{zip_range});
-    if (! ref($zips)) {
-        $c->stash->{error_msg} = $zips;
-        $c->stash->{template} = 'report/error.tt2';
+    _get_data($c);
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "report/error.tt2";
         return;
     }
-
     my $report = $c->model("RetreatCenterDB::Report")->create({
-        descrip   => $c->request->params->{descrip},
-        rep_order => $c->request->params->{rep_order},
-        format    => $c->request->params->{format},
-        zip_range => $c->request->params->{zip_range},
-        nrecs     => $c->request->params->{nrecs},
+        %hash,
         last_run  => '',
     });
 
@@ -248,9 +257,7 @@ EOS
     if ($ENV{DBIC_TRACE}) {
         $c->log->info($sql);
     }
-# ??? put it in an array dude - yes simpler ???
-# thanks to Shanku
-    my $people_ref = Person->search($sql);
+    my @people = @{ Person->search($sql) };
     #
     # now to take care of two people in the report
     # who are partners.   this is tricky!  wake up.
@@ -260,18 +267,18 @@ EOS
     #
     my %partner_index = ();
     my $i = 0;
-    for my $p (@$people_ref) {
+    for my $p (@people) {
         if ($p->{id_sps}) {
             $partner_index{$p->{id}} = $i;
         }
         ++$i;
     }
     my $ndel = 0;
-    for my $p (@$people_ref) {
+    for my $p (@people) {
         if ($p->{id_sps}
             && (my $pi = $partner_index{$p->{id_sps}})
         ) {
-            my $ptn = $people_ref->[$pi];
+            my $ptn = $people[$pi];
             if ($p->addr1() eq $ptn->addr1()) {
                 # good enough match of address...
                 # modify $p so that their 'name' is both of them
@@ -299,23 +306,21 @@ EOS
     # if you have a better way of doing this please suggest it!
     #
     if ($ndel) {
-        $people_ref = [
-            grep { ! $_->{deleted} } @$people_ref
-        ];
+        @people = grep { ! $_->{deleted} } @people;
     }
     #
     # a random selection of nrecs?
     # keep it in the same order as before.
     #
     my $nrecs = $report->nrecs();
-    if ($nrecs && $nrecs > 0 && $nrecs < $#$people_ref) {
-        my @nums = 0 .. $#$people_ref;      # looks funny!
+    if ($nrecs && $nrecs > 0 && $nrecs < @people) {
+        my @nums = 0 .. $#people;
         my @subset;
         for (1 .. $nrecs) {
             push @subset, splice(@nums, rand(@nums), 1);
         }
         @subset = sort { $a <=> $b } @subset;
-        $people_ref = [ @$people_ref[@subset] ];    # an intense slice!
+        @people = @people[@subset];    # slice!
     }
 
     #
@@ -324,15 +329,6 @@ EOS
     #
     my $fname = '';
     if ($report->format() == 4) {       # VistaPrint
-        #
-        # ??? what about partnered people?
-        # yeah. what does VistaPrint do with
-        # the 6 fields of the name - concatenate them all (if
-        # non-blank, that is)?
-        # any length restrictions on them?
-        # if not we could just put our 'name' in the Salutation
-        # and it could be a partnered name.
-        #
         $fname = "root/static/vistaprint.txt";
         open my $out, ">", $fname
             or die "cannot create $fname: $!\n";
@@ -351,7 +347,7 @@ EOS
             "State",
             "Zip+4";
         print {$out} "\n";
-        for my $p (@$people_ref) {
+        for my $p (@people) {
             # accomodate partners
             if ($p->{name} =~ m{(.*)(\&.*)}) {
                 $p->{first} = $1;
@@ -378,7 +374,7 @@ EOS
         $fname = "root/static/just_email.txt";
         open my $out, ">", $fname
             or die "cannot create $fname: $!\n";
-        for my $p (@$people_ref) {
+        for my $p (@people) {
             print {$out} $p->{email}, "\n";
         }
         close $out;
@@ -390,12 +386,15 @@ EOS
         last_run => today(),
     });
 
-    $c->stash->{count}    = scalar(@$people_ref);
     $fname =~ s{root/}{};       # why is this needed???
+
+    # either
+    $c->stash->{count}    = scalar(@people);
     $c->stash->{filename} = $fname;
-    $c->stash->{people}   = $people_ref;
+    $c->stash->{people}   = \@people;
     $c->stash->{template} = "report/run" . $report->format() . ".tt2";
-    # to show it directly:
+
+    # or to show it directly:
     #$c->response->redirect($c->uri_for("/$fname"));
 }
 

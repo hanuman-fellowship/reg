@@ -8,13 +8,16 @@ our @EXPORT_OK = qw/
     role_table
     leader_table
     trim
+    empty
     nsquish
     slurp
     expand
+    expand2
     monthyear
     resize
     housing_types
     parse_zips
+    sys_template
 /;
 
 use POSIX   qw/ceil/;
@@ -124,6 +127,16 @@ sub trim {
 }
 
 #
+# is the string empty?  i.e. only white space?
+#
+sub empty {
+    my ($s) = @_;
+
+    return $s =~ m{^\s*$};
+
+}
+
+#
 # take the parameters, concatenate them,
 # extract the digits in order and suffix
 # them with the first letter.
@@ -200,6 +213,24 @@ sub expand {
 	}
 	$out .= $in_list if $in_list;
 	$out;
+}
+sub expand2 {
+    my ($v) = @_;
+
+    $v = expand($v);
+    my $quote = 0;
+    while ($v =~ m{"}) {
+        $v =~ s{"}{chr(0332+$quote)}e;
+        $quote = 1-$quote;
+    }
+    $v =~ s{'}{\325}g;
+    $v =~ s{<b>}{\@bolded}ig;
+    $v =~ s{<i>}{\@italicized}ig;
+    $v =~ s{<\/[ib]>}{<\@\$p>}ig;
+    $v =~ s{</?[ui]l>}{}ig;
+    $v =~ s{<li>}{<\\n\*}ig;
+    $v =~ s{<a[^>]*>([^<]*)</a>}{$1}ig;
+    $v;
 }
 
 sub monthyear {
@@ -283,6 +314,21 @@ sub parse_zips {
         }
     }
     return $ranges_ref;
+}
+
+my %sys_template = map { $_ => 1 } qw/
+    progRow
+    e_progRow
+    e_rentalRow
+    events
+    popup
+    programs
+    template
+/;
+
+sub sys_template {
+    my ($file) = @_;
+    return exists $sys_template{$file};
 }
 
 1;

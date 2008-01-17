@@ -116,6 +116,11 @@ sub _three {
 # if there is one parameter which contains a '%'
 # then return "today" with that parameter as a format.
 #
+# additionally:
+# a parameter of 't' will return today.
+# "11 8" will supply the year from today's date.
+# "8" will supply the month and year from today.
+#
 sub new {
     my ($that, @ymd) = @_;
     my ($class);
@@ -134,7 +139,8 @@ sub new {
         if (! defined $x) {
             return;
         }
-        elsif (ref ($x) eq 'ARRAY') {
+        $x =~ s{^\s*|\s*$}{}g;      # trim blanks
+        if (ref ($x) eq 'ARRAY') {
             @ymd = @$x;
         }
         elsif (UNIVERSAL::isa($x, $class)) {
@@ -153,6 +159,16 @@ sub new {
         }
         elsif ($x =~ m{^(\d+)\D+(\d+)\D+(\d+)$}) {
             @ymd = _three($1, $2, $3);
+        }
+        elsif ($x =~ m{^(\d+)\D+(\d+)$}) {
+            @ymd = (today()->year, $1, $2);
+        }
+        elsif ($x =~ m{^(\d+)$}) {
+            my $t = today();
+            @ymd = ($t->year, $t->month, $1);
+        }
+        elsif ($x eq 't') {
+            return today();
         }
         else {
             return;     # undef

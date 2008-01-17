@@ -14,26 +14,53 @@
 
 <tr>
 <td><input type=radio name=category value='Sponsor' [% category_sponsor %]> Sponsor</td>
-<td>Last paid on <input type=text name=date_sponsor value='[% date_sponsor %]' size=10></td>
-</tr>
-
-<tr><td>&nbsp;</td><td>Total Paid <input type=text name=total_paid value='[% member.total_paid %]' size=5></td></tr>
-
-<tr>
-<td><input type=radio name=category value='Life' [% category_life %]> Life</td>
-<td>As of <input type=text name=date_life value='[% date_life %]' size=10></td>
+<td>[% IF history %]Last paid on [% date_sponsor %]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Paid [% member.total_paid %][% END %]</td>
 </tr>
 
 <tr>
-<td><input type=radio name=category value='Lapsed' [% category_lapsed %]> Lapsed</td>
-<td>On <input type=text name=date_lapsed value='[% date_lapsed %]' size=10></td>
+<td>&nbsp;</td>
+<td>Make Payment:&nbsp;&nbsp;&nbsp;Date <input type=text name=mkpay_date size=10>&nbsp;&nbsp; Amount <input type=text name=mkpay_amount size=5>
+<p>
+<ul>
+'t' for today, negative amounts okay
+</ul>
+</td>
+</tr>
+
+<tr>
+<td><input type=radio name=category value='Life' [% category_life %] disabled> Life</td>
+<td>[% IF category_life %]As of [% date_life %][% ELSE %]&nbsp;[% END %]</td>
+</tr>
+
+<tr>
+<td><input type=radio name=category value='Lapsed' [% category_lapsed %] disabled> Lapsed</td>
+<td>
+[% IF category_lapsed %]On [% date_lapsed %][% ELSE %]&nbsp;[% END %]</td>
 </tr>
 
 <tr>
 <td><input type=submit value="Submit"></td>
 </tr>
 </table>
-</ul>
-
 </form>
-<!-- focus ??? do some fancy Javascripting -->
+[% IF history.0 %]
+    <p>
+    <table cellpadding=2>
+    <caption style="font-weight: bold">Payment History</caption>
+    <tr>
+    <th>Date</th>
+    <th>Amount</th>
+    </tr>
+    [% FOR h IN history %]
+        <tr>
+        <td>[% h.date_payment %]</td>
+        <td align=right>[% h.amount %]</td>
+        </tr>
+    [% END %]
+[% END %]
+</ul>
+[% IF category_general %]
+<script type='text/javascript'>document.form.date_general.focus()</script>
+[% ELSE %]
+<script type='text/javascript'>document.form.mkpay_date.focus()</script>
+[% END %]

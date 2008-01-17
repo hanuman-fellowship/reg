@@ -12,7 +12,7 @@ open my $strs, "<", "strings.txt"
 my ($key, $value);
 while (<$strs>) {
     chomp;
-    ($key, $value) = split /\t+/;
+    ($key, $value) = m{^\s*(\S+)\s+(.*)$};
     $sth->execute($key, $value);
 }
 close $strs;

@@ -24,11 +24,14 @@ create table user_role (
     primary key (user_id, role_id)
 );
 --
--- Load up some initial test data
+-- Load up some initial test users
 --
 insert into user values (1, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe');
 insert into user values (2, 'joe', 'mypass', 'joe@na.com', 'Joe', 'Blow');
 insert into user values (3, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith');
+--
+-- the roles - do not muck with the ids!
+--
 insert into role values (1, 'super_admin', 'Super Admin', 'Create users and roles.');
 insert into role values (2, 'prog_admin', 'Program Admin',
 'Create programs, rentals, leaders,

@@ -1,0 +1,157 @@
+Programs and Rentals
+
+This is a large subject with many subplots.
+
+Programs can only be seen by users with a role
+of Program Staff or Program Admin.
+
+A program has many attributes.
+
+Name
+Start date
+End date
+Title
+Subtitle
+Description
+Cancellation Policy
+Housing Cost
+etc.
+
+Some are required, some default automatically.
+
+The start date must be before the end date (unless,
+that is, the program name is "personal retreats" in
+which case both should be blank).
+
+Footnotes can only contain *, % and +.
+
+To add a Leader and an Affiliation to a program
+you choose "Update" when viewing the program not
+when editing it.  You can choose as many leaders
+and affiliations as you please.
+
+At this point in development the main goal is to
+create programs and to generate their web pages.
+This takes a good bit of doing.
+
+These categories of information are subsidiary to Programs:
+
+Leaders
+Cancellation Policies
+Housing Costs
+Templates
+Exceptions
+Strings
+Rentals in a way, too.
+
+Leaders are created by first finding/adding them as a Person.
+Then you can say "Make Leader" and fill in the Leader attributes.
+No leader attribute is required.
+You can optionally upload a picture of the leader.
+It will be resized for you so don't worry about it.
+There _will_ be a small and a large version so please
+upload a big enough image.  The widths of the two
+sizes are controlled by a String.  These comments about
+images apply to a Program, too.
+After creation of a leader you can go back and forth
+between "Leader Info" and "Person Info".  
+
+Cancellation Policies must have one named "Default".
+It is the normal policy that programs will have.
+A cancellation policy is essentially just a bit of
+explanatory text with a name.
+
+Housing Costs must have one named "Default".
+It is the normal lodging costs for a program.
+There are 13 types of housing with a cost for each.
+The cost fields must be either blank or a number.
+
+Templates are complex pieces of HTML that have 'tags'
+within them.  The role of Web Designer is the only one
+that can see and modify these templates.  Note that
+certain templates cannot be deleted.  These template names
+are needed by reg.  The others can be selected when creating
+a program.  Certain programs (like AVI or OGS) will
+have their own template.  The default template is named
+"template".
+
+Exceptions can only be seen/created by the role
+of Web Designer.   An exception is a Program name,
+a tag name (selected from a fixed list), and
+a value.   When filling tags in a template for a given
+program you can make an exception and supply the value.
+This is not needed often but it is nice to have.
+
+Strings - this is a fixed list of key - value pairs.
+This supplies various explanatory labels on the web
+pages and also various configuration values.   Only
+the web designer role can see/modify these.
+A character of a double quote " is not allowed in these
+strings.  If you need this (for some strange reason)
+put %22 instead.  It is translated to a " for you.
+
+Rentals are another type of program.  But simpler.
+No image but a telephone number and an email address.
+Like programs the start date must be before the end date.
+
+=====
+= Sidenote: For all date fields (programs, rentals, members)
+= you can enter the date November 8, 2009 in a variety of ways:
+=
+= 11/08/09
+= 11-8-9
+= 20091108
+= 
+= For today just enter 't'.
+= For the 5th of the current month just '5'.
+= For November 8th in the current year just '11 8' or '11/8'.
+=====
+
+=====
+= Sidenote:  In the web descriptions of programs and rentals
+= and in the leader biographies you can use these shortcuts
+for various formatting, links, and lists:
+
+This is *very* important and _fun_.
+
+Click %here%http://www.lala.com%
+
+# one
+# two
+# three
+
+- red
+- blue
+- green
+
+Try it!
+
+=====
+
+After all this information is in place you
+can choose "Publish" and the web pages for the programs
+will be generated.  This "Publish" link appears
+in several places for convenience.
+The response to "Publish" includes a link to
+also publish the pictures - as needed when they
+have changed.   On this response page there is
+also a link to see the generated and published
+web pages.   Examine each page _carefully_ to verify
+all the information on it.  Be especially attentive
+to the costs and cancellation policies.
+There are two links: programs and events.
+The events page includes the rentals, the programs
+link does not.
+
+Note that it is only the FUTURE programs and rentals 
+that are published.  AND only those programs that are 'Web Ready'
+and those rentals that are 'Linked'.
+
+Furthermore programs that are not 'Linked' are published
+in a separate place - named ul_ followed by the first
+3 letters from the program name followed by the month
+and day.  Like this:
+
+    ul_OGS-11-8.html
+
+At this point you will need to go to find these programs separately.

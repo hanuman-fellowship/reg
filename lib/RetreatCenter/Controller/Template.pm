@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Template;
 use base 'Catalyst::Controller';
 
+use Util qw/sys_template/;
+
 sub index : Private {
     my ($self, $c) = @_;
 
@@ -13,6 +15,12 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{templates} = [
+        map {
+            {
+                name   => $_,
+                delete => ! sys_template($_),
+            }
+        }
         map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
         <root/static/templates/*.html>
     ];
@@ -32,6 +40,15 @@ sub upload : Local {
 sub delete : Local {
     my ($self, $c, $fname) = @_;
 
+    if (my @programs = $c->model('RetreatCenterDB::Program')->search({
+                                 ptemplate => $fname,
+                                })
+    ) {
+        $c->stash->{ptemplate} = $fname;
+        $c->stash->{programs} = \@programs;
+        $c->stash->{template} = "template/cannot_del.tt2";
+        return;
+    }
     unlink "root/static/templates/$fname.html";
     $c->response->redirect($c->uri_for('/template/list'));
 }

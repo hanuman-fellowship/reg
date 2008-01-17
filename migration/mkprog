@@ -74,7 +74,7 @@ create table canpol (
     policy text
 );
 insert into canpol values (
-    1, 'MMC', 'No refund after 10 days before the program starts.
+    1, 'Default', 'No refund after 10 days before the program starts.
 Once it starts - if you quit... Sorry, Charlie'
 );
 insert into canpol values (
@@ -122,7 +122,7 @@ create table leader (
 );
 drop table if exists leader_program;
 create table leader_program (
-    l_id, integer,      -- leader id
+    l_id integer,       -- leader id
     p_id integer        -- program id
 );
 drop table if exists rental;

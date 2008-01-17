@@ -28,6 +28,13 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    my $cp = $c->model('RetreatCenterDB::CanPol')->find($id);
+    if (my @programs = $cp->programs()) {
+        $c->stash->{canpol}   = $cp;
+        $c->stash->{programs} = \@programs;
+        $c->stash->{template} = "canpol/cannot_del.tt2";
+        return;
+    }
     $c->model('RetreatCenterDB::CanPol')->search({id => $id})->delete();
     $c->response->redirect($c->uri_for('/canpol/list'));
 }

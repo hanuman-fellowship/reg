@@ -3,7 +3,7 @@ use warnings;
 package RetreatCenter::Controller::User;
 use base 'Catalyst::Controller';
 
-use Util qw/trim role_table/;
+use Util qw/trim empty role_table/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -29,6 +29,9 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     $c->model('RetreatCenterDB::User')->search({id => $id})->delete();
+    $c->model('RetreatCenterDB::UserRole')->search(
+        { user_id => $id }
+    )->delete();
     $c->response->redirect($c->uri_for('/user/list'));
 }
 
@@ -41,11 +44,13 @@ sub update : Local {
     $c->stash->{template}    = "user/create_edit.tt2";
 }
 
-sub update_do : Local {
-    my ($self, $c, $id) = @_;
+my %hash;
+my @mess;
+sub _get_data {
+    my ($c) = @_;
 
-    my $user =  $c->model("RetreatCenterDB::User")->find($id);
-    my %hash;
+    %hash = ();
+    @mess = ();
     for my $f (qw/
         username
         first
@@ -54,8 +59,26 @@ sub update_do : Local {
         email
     /) {
         $hash{$f} = $c->request->params->{$f};
+        if (empty($hash{$f})) {
+            push @mess, "\u$f cannot be blank.";
+        }
+    }
+    if (length($hash{password}) < 5) {
+        push @mess, "Password must be at least 5 characters long.";
     }
     $hash{email} = trim($hash{email});
+    $c->stash->{mess} = join "<br>\n", @mess;
+    $c->stash->{template} = "user/error.tt2";
+}
+
+sub update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    _get_data($c);
+    if (@mess) {
+        return;
+    }
+    my $user =  $c->model("RetreatCenterDB::User")->find($id);
     $user->update(\%hash);
 
     #
@@ -64,9 +87,7 @@ sub update_do : Local {
     $c->model("RetreatCenterDB::UserRole")->search(
         { user_id => $id },
     )->delete();
-    my @cur_roles = grep {  s{^role(\d+)}{$1}  }
-                    keys %{$c->request->params};
-    for my $r (@cur_roles) {
+    for my $r (_get_roles($c)) {
         $c->model("RetreatCenterDB::UserRole")->create({
             user_id => $id,
             role_id => $r,
@@ -92,27 +113,52 @@ sub create : Local {
     $c->stash->{template}    = "user/create_edit.tt2";
 }
 
+#
+# get the set and implied roles from the request params
+#
+# 1 super admin
+# 2 program admin
+# 3 mailing list admin
+# 4 program staff
+# 5 mailing list staff
+# 6 web designer
+# 7 membership admin
+#
+sub _get_roles {
+    my ($c) = @_;
+    my %cur_roles = map { $_ => 1 }
+                    grep {  s{^role(\d+)}{$1}  }
+                    keys %{$c->request->params};
+    # ensure additional roles are in place - don't dup code ???
+    if ($cur_roles{1}) {
+        @cur_roles{ 2..7 } = 1;
+    }
+    elsif ($cur_roles{6}) {
+        @cur_roles{ 2..5 } = 1;
+    }
+    elsif ($cur_roles{2}) {
+        $cur_roles{4} = 1;
+    }
+    elsif ($cur_roles{3}) {
+        $cur_roles{5} = 1;
+    }
+    elsif ($cur_roles{7}) {
+        $cur_roles{5} = 1;
+    }
+    return keys %cur_roles;
+}
+
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    my %hash;
-    for my $f (qw/
-        username
-        first
-        last
-        password
-        email
-    /) {
-        $hash{$f} = $c->request->params->{$f};
+    _get_data($c);
+    if (@mess) {
+        return;
     }
-    $hash{email} = trim($hash{email});
     my $u = $c->model("RetreatCenterDB::User")->create(\%hash);
     my $id = $u->id;
 
-    # add roles
-    my @cur_roles = grep {  s{^role(\d+)}{$1}  }
-                    keys %{$c->request->params};
-    for my $r (@cur_roles) {
+    for my $r (_get_roles($c)) {
         $c->model("RetreatCenterDB::UserRole")->create({
             user_id => $id,
             role_id => $r,

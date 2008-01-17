@@ -3,11 +3,8 @@ use warnings;
 package RetreatCenterDB::Person;
 use base qw/DBIx::Class/;
 
-# Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
-# Set the table name
 __PACKAGE__->table('people');
-# Set columns in table
 __PACKAGE__->add_columns(qw/
     last
     first

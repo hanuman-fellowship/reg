@@ -242,4 +242,34 @@ Jan 7 3:35-5:15, 6:05-7:50, 9:20-10:55, 11:20-12:45
     lapsed updating
     checked in.   pretty good!
 Jan 9 10:10-1:00
-    fixing things Adrienne found
+    explained things to Adrienne today
+    later - fixing things Adrienne found
+Jan 10 1:10-2:40, 3:00-6:40, 6:50-7:10, 10:15-11:20
+    checking for numbers in program/create_do
+    FULL programs
+        on create, simultaneous update
+    roles - one implies another
+    referential integrity issues
+        not easy but important!
+Jan 11 2:30-3:30, 11:20-12:00
+    retrieving misplaced online reg's
+    further ref integ instances
+    sitting watching 
+Jan 12 12:20-4:20, 10:45-12:05
+    sponsor payment history, membership list
+    got really confused with DBIx - assigned the
+    result of a search to a scalar and it never executed.
+    and no error even if I misspelled the DB Class name. :(
+    later - brochure generation
+Jan 14 4:00-6:50
+    fine tuning Member update dialog
+    partners becoming Life members - very tricky!
+    this is not for reg - so does not count towards the
+    do-not-exceed.
+Jan 14 8:15-10:15, 11:00-12:00
+    required fields
+    _get_data(), %hash, @mess more consistently
+    current_year, current_date
+    brochure generation - a beginning
+Jan 15 12:00-1:00
+    preparing testplans, tweaking this and that

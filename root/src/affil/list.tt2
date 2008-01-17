@@ -1,5 +1,6 @@
 <h2>Affiliations</h2>
-[% IF Catalyst.check_user_roles('mail_admin') %]
+[% madmin = Catalyst.check_user_roles('mail_admin') %]
+[% IF madmin %]
 <a href=/affil/create>Create</a>
 [% END %]
 <ul>
@@ -7,21 +8,21 @@
 
 <tr>
 <th align=left>Description</th>
-[% IF Catalyst.check_user_roles('mail_admin') %]
-<th>Action</th>
+[% IF madmin %]
+    <th>Action</th>
 [% END %]
 </tr>
 
 [% FOREACH a IN affil %]
-<tr>
-<td>[% a.descrip %]</td>
-[% IF Catalyst.check_user_roles('mail_admin') %]
-<td>
-<a href="[% '/affil/update/' _ a.id %]">Edit</a>&nbsp;
-<a href="[% '/affil/delete/' _ a.id %]" onclick="return confirm('Okay to Delete [% a.descrip %]?')">Del</a>
-</td>
-[% END %]
-</tr>
+    <tr>
+    <td>[% a.descrip %]</td>
+    [% IF madmin %]
+        <td>
+        <a href="[% '/affil/update/' _ a.id %]">Edit</a>&nbsp;
+        <a href="[% '/affil/delete/' _ a.id %]" onclick="return confirm('Okay to Delete [% a.descrip %]?')">Del</a>
+        </td>
+    [% END %]
+    </tr>
 [% END -%]
 
 </table>

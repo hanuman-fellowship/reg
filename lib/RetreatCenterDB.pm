@@ -1,7 +1,6 @@
-package RetreatCenterDB;
-
 use strict;
 use warnings;
+package RetreatCenterDB;
 
 use base 'DBIx::Class::Schema';
 
@@ -25,6 +24,7 @@ __PACKAGE__->load_classes({
         Exception
         String
         Member
+        SponsHist
     /]
 });
 

@@ -5,6 +5,8 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
+use Util qw/empty/;
+
 sub index : Private {
     my ( $self, $c ) = @_;
 
@@ -28,6 +30,13 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    my $hc = $c->model('RetreatCenterDB::HouseCost')->find($id);
+    if (my @programs = $hc->programs()) {
+        $c->stash->{housecost} = $hc;
+        $c->stash->{programs} = \@programs;
+        $c->stash->{template} = "housecost/cannot_del.tt2";
+        return;
+    }
     $c->model('RetreatCenterDB::HouseCost')->search({id => $id})->delete();
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
@@ -44,12 +53,15 @@ sub update : Local {
     $c->stash->{template}    = "housecost/create_edit.tt2";
 }
 
-sub update_do : Local {
-    my ($self, $c, $id) = @_;
+my %hash;
+my @mess;
+sub _get_data {
+    my ($c) = @_;
 
-    my %hash;
+    %hash = ();
+    @mess = ();
     # some way to ask DBIx for this list???
-    # it knows
+    # it knows.
     for my $w (qw/
         name
         single
@@ -69,6 +81,25 @@ sub update_do : Local {
     /) {
         $hash{$w} = $c->request->params->{$w};
     }
+    if (empty($hash{name})) {
+        push @mess, "Missing housing cost name.";
+    }
+    for my $k (keys %hash) {
+        next if $k eq "name" || $k eq "type";
+        next if empty($hash{$k}) || $hash{$k} =~ m{^\s*\d+\s*$};
+        push @mess, "Invalid cost for \u$k: $hash{$k}";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template}    = "housecost/error.tt2";
+    }
+}
+
+sub update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    _get_data($c);
+    return if @mess;
     $c->model("RetreatCenterDB::HouseCost")->find($id)->update({
         %hash,
     });
@@ -86,8 +117,8 @@ sub view : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{checked_perday} = "";
-    $c->stash->{checked_total}  = "checked";
+    $c->stash->{checked_perday} = "checked";
+    $c->stash->{checked_total}  = "";
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "housecost/create_edit.tt2";
 }
@@ -95,28 +126,8 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    my %hash;
-    # some way to ask DBIx for this list???
-    # it knows
-    for my $w (qw/
-        name
-        single
-        double
-        triple
-        quad
-        dormitory
-        economy
-        center_tent
-        own_tent
-        own_van
-        commuting
-        unknown
-        single_bath
-        double_bath
-        type
-    /) {
-        $hash{$w} = $c->request->params->{$w};
-    }
+    _get_data($c);
+    return if @mess;
     $c->model("RetreatCenterDB::HouseCost")->create({
         %hash,
     });

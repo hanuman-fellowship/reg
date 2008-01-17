@@ -1,0 +1,31 @@
+<h2>The affiliation '[% affil.descrip %]' is used in the following:</h2>
+[% IF people %]
+    <h3>People</h3>
+    <ul>
+    [% FOR p IN people %]
+        [% p.last %], [% p.first %]<br>
+    [% END %]
+    </ul>
+[% END %]
+[% IF programs %]
+    <h3>Programs</h3>
+    <ul>
+    [% FOR p IN programs %]
+        [% p.name %]<br>
+    [% END %]
+    </ul>
+[% END %]
+[% IF reports %]
+    <h3>Reports</h3>
+    <ul>
+    [% FOR r IN reports %]
+        [% r.descrip %]<br>
+    [% END %]
+    </ul>
+[% END %]
+<form action="/affil/del_confirm/[% affil.id %]" name=form>
+Continue with the deletion?
+<input type=submit value="Yes" name=yes> 
+<input type=submit value="No" name=no> 
+</form>
+<script type='text/javascript'>document.form.no.focus()</script>

@@ -92,7 +92,7 @@ sub future_programs {
     # go through the programs in order
     # skipping the unlinked programs
     # setting the prev and next links.
-    # and assigning a sequential program number
+    # and assigning a sequential program number.
     # these are used in subsequent methods.
     #
     my ($prev_prog);
@@ -253,6 +253,16 @@ sub dates {
         }
     }
     $dates;
+}
+#
+#
+#
+sub dates3 {
+    my ($self) = @_;
+    my $s = $self->dates();
+    $s =~ s{(\w+)}{substr($1, 0, 3)}eg;
+    $s =~ s{\s\s+}{ }g;
+    $s;
 }
 #
 # same as dates - but without the initial month name
@@ -547,6 +557,16 @@ sub gen_popup {
 	print {$out} $copy;
 	close $out;
     $pic_html;
+}
+
+# class methods
+sub current_date {
+    my ($class) = @_;
+    return today()->format("%B %e, %Y");
+}
+sub current_year {
+    my ($class) = @_;
+    return today()->year();
 }
 
 1;

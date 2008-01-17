@@ -1,35 +1,38 @@
 <h2>People</h2>
 <a href="/person/create">Create</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/person/search">Search</a>
+<p>
 <a href="/person/update/[% person.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/delete/[% person.id %]"
 onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 [% IF person.id_sps %]
-Partnered with <a href="/person/view/[% partner.id %]">[% partner.first _" "_ partner.last %]</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/person/separate/[% person.id %]"
-onclick="return confirm('Okay to Separate?');">Separate</a>
+    Partnered with <a href="/person/view/[% partner.id %]">[% partner.first _" "_ partner.last %]</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/person/separate/[% person.id %]"
+    onclick="return confirm('Okay to Separate?');">Separate</a>
 [% ELSE %]
-<a href="/person/partner/[% person.id %]">Partner With</a>
+    <a href="/person/partner/[% person.id %]">Partner With</a>
 [% END %]
-&nbsp;&nbsp;&nbsp;
-[% IF is_leader %]
-<a href="/leader/view/[% leader.id %]">Leader Info</a>
-[% ELSE %]
-    [% IF Catalyst.check_user_roles('prog_admin') %]
-    <a href="/leader/create/[% person.id %]">Make Leader</a>
+[% IF Catalyst.check_user_roles('prog_staff') %]
+    [% IF is_leader %]
+        &nbsp;&nbsp;&nbsp;
+        <a href="/leader/view/[% leader.id %]">Leader Info</a>
+    [% ELSE %]
+        [% IF Catalyst.check_user_roles('prog_admin') %]
+            &nbsp;&nbsp;&nbsp;
+            <a href="/leader/create/[% person.id %]">Make Leader</a>
+        [% END %]
     [% END %]
 [% END %]
-&nbsp;&nbsp;&nbsp;
 [% IF Catalyst.check_user_roles('member_admin') %]
+    &nbsp;&nbsp;&nbsp;
     [% IF is_member %]
         <a href="/member/update/[% member.id %]">Member Info</a>
     [% ELSE %]
-        [% IF Catalyst.check_user_roles('member_admin') %]
-            <a href="/member/create/[% person.id %]">Make Member</a>
-        [% END %]
+        <a href="/member/create/[% person.id %]">Make Member</a>
     [% END %]
 [% END %]
 <p>

@@ -7,10 +7,15 @@ Log In
 Search
     enter pattern, press Submit
     try substring instead of prefix
-    try sanskrit, zip, email
-    ask for more/less records
+    try sanskrit, zip, email, first, and home phone.
+        the numbers in home phone are not necessarily
+            sequential...  okay if you give 10 digits.
+            otherwise sort of weird - but useful nonetheless.
+    ask for more/less records (instead of Number of Records = 10).
 
     None found? You stay at the search screen.
+
+    Try "Next 10" until there are no more.
 
 Create a Person
     fill in all fields (country defaults to USA)
@@ -110,7 +115,7 @@ Reports
         have at least one of the affiliations in their record.
         Add one of the affiliations to a person not in the
             report and verify they get into the rerunning of the report.
-    In no case should a person with "Mailings" unchecked be included.
+    In no case should a person with "Mailings" UNchecked be included.
     Choose a format of "Email".
         This goes into a file.
         Only people with non-blank emails will be included.

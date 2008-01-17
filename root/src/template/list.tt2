@@ -1,11 +1,17 @@
 <h2>Templates</h2>
 <ul>
-<table cellpadding=3>
+<table cellpadding=3 border=0>
 [% FOREACH t IN templates %]
 <tr>
-<td><a href="[% Catalyst.uri_for('/static/templates/') _ t _ '.html' %]">[% t %]</a><td>
-<td><a href="[% Catalyst.uri_for('/template/delete/') _ t %]"
-onclick="return confirm('Okay to Delete [% t %]?');">Del</a></td>
+<td><a href="[% Catalyst.uri_for('/static/templates/') _ t.name _ '.html' %]">[% t.name %]</a></td>
+<td>
+[% IF t.delete %]
+    <a href="[% Catalyst.uri_for('/template/delete/') _ t %]"
+    onclick="return confirm('Okay to Delete [% t %]?');">Del</a>
+[% ELSE %]
+&nbsp;
+[% END %]
+</td>
 </tr>
 [% END %]
 </table>

@@ -2,7 +2,7 @@
 <form action=[% '/affil/' _ form_action %] name=form>
 <table cellpadding=3 border=0>
 <tr>
-<td align=right>Description</td>
+<td align=right><span class="required">*</span> Description</span></td>
 <td><input type=text name=descrip value="[% affil.descrip %]"></td>
 </tr>
 </table>

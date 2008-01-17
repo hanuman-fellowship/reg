@@ -12,10 +12,20 @@ create table member (
 insert into member values (
     1,
     12930,
-    'General',
-    '20090909',
+    'Sponsor',
+    '20080109',
     '',
     '',
     '',
-    0
+    105
 );
+drop table if exists spons_hist;
+create table spons_hist (
+    id integer primary key,
+    member_id integer,
+    date_payment text,
+    amount integer
+);
+insert into spons_hist values (1, 1, 20080101, 40);
+insert into spons_hist values (2, 1, 20080108, 60);
+insert into spons_hist values (3, 1, 20080109, 5);

@@ -1,0 +1,7 @@
+Sorry, the cancellation policy named '[% canpol.name %]'<br>
+cannot be deleted because it is being used in the following programs:
+<ul>
+[% FOR p IN programs %]
+    <a href="/program/view/[% p.id %]">[% p.name %]</a><br>
+[% END %]
+</ul>

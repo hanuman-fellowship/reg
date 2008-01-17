@@ -1,5 +1,4 @@
 <h2>Roles</h2>
-<a href="/role/create">Create</a>
 <ul>
 [% FOREACH r IN roles %]
 <a href="/role/view/[% r.id %]">[% r.fullname %]</a>

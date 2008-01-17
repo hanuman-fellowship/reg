@@ -2,9 +2,11 @@
 <a href="/program/listdate">Sort by Start Date</a>
 &nbsp;&nbsp;&nbsp;
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/program/create">Create</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/program/publish">Publish<a>
+    <a href="/program/create">Create</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/brochure">Brochure</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/publish">Publish<a>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>

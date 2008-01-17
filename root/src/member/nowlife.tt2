@@ -1,0 +1,7 @@
+<h2>Members</h2>
+<a href="/member/list">Members</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/member/membership_list">By Category</a>
+<ul>
+<span class="message">[% mess %]</span>
+</ul>

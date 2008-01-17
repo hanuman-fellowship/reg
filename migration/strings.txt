@@ -1,33 +1,34 @@
-heading		Total Cost Per Person<br>(including tuition, meals, lodging, and facilities use)
-typehdr		Housing Type
-costhdr		Cost
-commuting	Commuting (Day use, meals &amp; facilities)
-own_tent	Your Tent
-own_van		Your Van
-center_tent	Mount Madonna Center Tent
-dormitory	Dormitory (4-7 to a room or cabin)
-economy		Economy (8 or more to a room)
-quad		Quadruple (4 to a room)
-triple		Triple (3 to a room or cabin)
-double		Double (2 to a room or cabin)
-double_bath	Double with Bath (2 to a room)
-single		Single (1 to a room or cabin)
-single_bath	Single with Bath (1 to a room)
-*	Continuing Education Credit for nurses.
-**	Continuing Education Credit for nurses, LMFT's, and LCSW's.
-%	Qualifies for YTT 500. You must <a href="/ytt/ytt500.html">apply to the YTT 500 program</a> before taking this class for credit.
-+	Fulfills the spiritual practice prerequisite for John F. Kennedy University's Graduate School for Holistic Studies. 	
-weburl	For more information see
-email1	You can contact
-email2	at
-imgwidth	170
-big_imgwidth	600	
-click_enlarge	(click to enlarge)
-email	Email
-phone	Phone
-website	Website
-ftp_site	www.mountmadonna.org
-ftp_login	mmc
-ftp_password	ashtanga!
-ftp_dir	www
-ftp_dir2	staging2
+heading  Total Cost Per Person<br>(including tuition, meals, lodging, and facilities use)
+typehdr  Housing Type
+costhdr  Cost
+commuting Commuting (Day use, meals &amp; facilities)
+own_tent Your Tent
+own_van  Your Van
+center_tent Mount Madonna Center Tent
+dormitory Dormitory (4-7 to a room or cabin)
+economy  Economy (8 or more to a room)
+quad  Quadruple (4 to a room)
+triple  Triple (3 to a room or cabin)
+double  Double (2 to a room or cabin)
+double_bath Double with Bath (2 to a room)
+single  Single (1 to a room or cabin)
+single_bath Single with Bath (1 to a room)
+* Continuing Education Credit for nurses.
+** Continuing Education Credit for nurses, LMFT's, and LCSW's.
+% Qualifies for YTT 500. You must <a href="/ytt/ytt500.html">apply to the YTT 500 program</a> before taking this class for credit.
++ Fulfills the spiritual practice prerequisite for John F. Kennedy University's Graduate School for Holistic Studies.  
+weburl For more information see
+email1 You can contact
+email2 at
+imgwidth 170
+big_imgwidth 600 
+click_enlarge (click to enlarge)
+email Email
+phone Phone
+website Website
+ftp_site www.mountmadonna.org
+ftp_login mmc
+ftp_password ashtanga!
+ftp_dir www
+ftp_dir2 staging2
+ftp_passive 0

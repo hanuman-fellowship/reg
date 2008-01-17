@@ -4,7 +4,7 @@
 <a href="/user/update/[% user.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/user/delete/[% user.id %]"
- onclick="return confirm('Okay to Delete [% user.first %] [% user.last %]?');">Delete</a>
+ onclick="return confirm('Okay to Delete user [% user.first %] [% user.last %]?');">Delete</a>
 <ul>
 <table cellpadding=3 border=0>
 

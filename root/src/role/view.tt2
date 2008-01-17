@@ -1,11 +1,5 @@
 <h2>Roles</h2>
 
-<a href="/role/create">Create</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/role/update/[% role.id %]">Edit</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/role/delete/[% role.id %]"
- onclick="return confirm('Okay to Delete [% role.fullname %]?');">Delete</a>
 <ul>
 <table cellpadding=3 border=0>
 
