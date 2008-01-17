@@ -6,9 +6,7 @@
 <tr>
 <td><a href=/person/search>People</a></td>
 <td><a href=/affil/list>Affiliations</a></td>
-[% IF Catalyst.check_user_roles('member_admin') %]
-<td><a href=/member/list>Members</a></td>
-[% END %]
+<td>[% IF Catalyst.check_user_roles('member_admin') %]<a href=/member/list>Members</a>[% ELSE %]&nbsp;[% END %]</td>
 <td><a href=/listing>Listings</a></td>
 <td><a href=/report/list>Reports</a></td>
 <td>&nbsp;</td>
@@ -24,16 +22,25 @@
 <td><a href=/leader>Leaders</a></td>
 <td colspan=2><a href=/canpol>Cancellation Policies</a></td>
 <td><a href=/housecost>Housing Costs</a></td>
-</tr>
+[% ELSE %]
+<td colspan=6>&nbsp;</td>
 [% END %]
+<td align=right><a href=/static/help.html>Help</td>
+</tr>
 
 [% IF Catalyst.check_user_roles('web_designer') %]
 <tr>
 <td><a href=/template/list>Templates</a></td>
 <td><a href=/exception/list>Exceptions</a></td>
 <td><a href=/string/list>Strings</a></td>
-</tr>
+[% ELSE %]
+<td colspan=3>&nbsp;</td>
 [% END %]
+[% IF Catalyst.check_user_roles('super_admin') %]
+<td colspan=3>&nbsp;</td>
+<td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
+[% END %]
+</tr>
 
 [% IF Catalyst.check_user_roles('super_admin') %]
 <tr>

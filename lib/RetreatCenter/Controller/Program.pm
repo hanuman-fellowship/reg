@@ -680,6 +680,7 @@ sub brochure_do : Local {
     my $fname = "root/static/brochure.txt";
     open my $br, ">", $fname
         or die "cannot create $fname";
+    my $n = 0;
     for my $p ($c->model('RetreatCenterDB::Program')->search(
                    {
                        sdate => { 'between' => [ $bdate, $edate ] },
@@ -689,6 +690,7 @@ sub brochure_do : Local {
                    { order_by => 'sdate' },
                ))
     {
+        ++$n;
         print {$br} "\@date:<\$>", $p->dates3, "\n";
         print {$br} "\@wkshop intro<\$>", $p->title, "\n";
         print {$br} "\@wkshop<\$>", $p->subtitle, "\n";
@@ -705,6 +707,9 @@ sub brochure_do : Local {
 	    print {$br} "<B>Tuition \$" . $p->tuition
                   . "</B>, plus fees (see page $fee_page)\n";
         print {$br} "<\\c>";
+    }
+    if ($n == 0) {
+        print {$br} "No programs in season \U$season.\n";
     }
     close $br;
     $fname =~ s{root}{};

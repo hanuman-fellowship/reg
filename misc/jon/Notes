@@ -451,3 +451,10 @@ regtable should have the program record id in it
     so that similiarily named programs can be distinguished.
     also so that one can go directly to the program rather
     than needing to search for it...
+redo people search form so there
+    are bold labels.
+    Pattern
+    Search Field  and then vertically arranged?
+    Search Type   o Prefix    o Substring
+    Number per Page ___
+don't mess with inserting % if phone number pattern already has a %?

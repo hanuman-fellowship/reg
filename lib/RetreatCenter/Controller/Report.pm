@@ -148,7 +148,7 @@ sub update_do : Local {
             report_id => $id,
         });
     }
-    $c->forward('view');
+    $c->forward("view/$id");
 }
 
 sub create : Local {
@@ -189,7 +189,7 @@ sub create_do : Local {
             report_id => $id,
         });
     }
-    $c->forward('list');
+    $c->forward("view/$id");
 }
 
 #
@@ -394,7 +394,9 @@ EOS
     $c->stash->{people}   = \@people;
     $c->stash->{template} = "report/run" . $report->format() . ".tt2";
 
-    # or to show it directly:
+    # or to show it directly (with the below)???
+    # it is nice to see #recs.
+    # could have a format for just the count.
     #$c->response->redirect($c->uri_for("/$fname"));
 }
 
