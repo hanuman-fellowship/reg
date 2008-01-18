@@ -33,14 +33,12 @@
 <td><a href=/template/list>Templates</a></td>
 <td><a href=/exception/list>Exceptions</a></td>
 <td><a href=/string/list>Strings</a></td>
-[% ELSE %]
-<td colspan=3>&nbsp;</td>
-[% END %]
 [% IF Catalyst.check_user_roles('super_admin') %]
-<td colspan=3>&nbsp;</td>
-<td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
+    <td colspan=3>&nbsp;</td>
+    <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
 [% END %]
 </tr>
+[% END %]
 
 [% IF Catalyst.check_user_roles('super_admin') %]
 <tr>

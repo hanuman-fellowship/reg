@@ -17,7 +17,8 @@ sub index : Local {
 sub phone : Local {
     my ($self, $c) = @_;
 
-    my $people_ref = Person->search(<<"EOS");
+    # better way to do this??? DBIx::Class way?
+    my @people = @{ Person->search(<<"EOS") };
 select p.*
   from people p, affil_people ap, affils a
  where a.descrip like '%phone list%'
@@ -27,29 +28,59 @@ select p.*
 EOS
     # if no sanskrit name take the first name
     # ??? okay poking inside object?   not really.
-    for my $p (@$people_ref) {
+    for my $p (@people) {
         if (!$p->{sanskrit}) {
             $p->{sanskrit} = $p->{first};
         }
     }
 
     # sort by sanskrit name
-    $people_ref = [
-        sort {
-            $a->sanskrit() cmp $b->sanskrit();
-        }
-        @$people_ref
-    ];
+    @people = sort {
+                  $a->sanskrit() cmp $b->sanskrit();
+              }
+              @people;
 
-    # alternate css class from 1 to 0 and back
+    open my $ph, ">", "root/static/phone1.html"
+        or die "cannot create phone1.html";
+    print {$ph} <<"EOH";
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="phone.css" />
+</head>
+<body>
+<center>
+<span class=fl_heading>Hanuman Fellowship Phone List</span>
+</center>
+<table>
+<tr class=fl_th>
+    <th align=left>Sanskrit</th>
+    <th align=left>Name</th>
+    <th align=center>Home</th>
+    <th align=center>Work</th>
+    <th align=left>&nbsp;&nbsp;Address</th>
+</tr>
+EOH
     my $class = 1;
-    for my $p (@$people_ref) {
-        $p->{class} = $class;
+    my $address;
+    for my $p (@people) {
+        $address = $p->address();      # method call
+        print {$ph} <<"EOH";
+<tr class=fl_row$class>
+    <td class=fl_name>$p->{sanskrit}</td>
+    <td class=fl_name>$p->{first} $p->{last}</td>
+    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_home}</td>
+    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_work}</td>
+    <td class=fl_address>&nbsp;&nbsp;$address</td>
+</tr>
+EOH
         $class = 1-$class;
     }
-
-    $c->stash->{people} = $people_ref;
-    $c->stash->{template} = "listing/phone.tt2";
+print {$ph} <<"EOH";
+</table>
+</body>
+</html>
+EOH
+    $c->response->redirect($c->uri_for("/static/phone1.html"));
 }
 
 sub undup : Local {

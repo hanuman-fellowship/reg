@@ -48,7 +48,7 @@
     </tr>
     <tr>
         <th align=right>Email</td>
-        <td><input type=text name=email size=30 value="[% person.email %]"></td>
+        <td><input type=text name=email size=40 value="[% person.email %]"></td>
     </tr>
     <tr>
         <th align=right>Mailings</td>
