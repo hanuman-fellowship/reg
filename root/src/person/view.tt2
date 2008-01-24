@@ -36,19 +36,42 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% END %]
 [% END %]
 <p>
-<table cellpadding=3 border=0 style="float: left;">
-<tr><th align=right>First</td><td>[% person.first %]</td></tr>
-<tr><th align=right>Last</td><td>[% person.last %]</td></tr>
-<tr><th align=right>Sanskrit</td><td>[% person.sanskrit %]</td></tr>
-<tr><th align=right>Sex</td><td>[% sex %]</td></tr>
-<tr><th align=right>Address</td><td>[% person.addr1 %]</td></tr>
-<tr><th align=right>&nbsp;</td><td>[% person.addr2 %]</td></tr>
-<tr><th align=right>City</td><td>[% person.city %]</td></tr>
-<tr><th align=right>State/Province</td><td>[% person.st_prov %]</td></tr>
-<tr><th align=right>Zip/Postal Code</td><td>[% person.zip_post %]</td></tr>
-<tr><th align=right>Country</td><td>[% person.country %]</td></tr>
-<tr><th align=right>Email</td><td style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td></tr>
-<tr><th align=right>Mailings</td><td>[% person.mailings %]</td></tr>
+<table cellpadding=3 border=0>
+<tr>
+<th align=right>First</th><td>[% person.first %]</td>
+<th align=right>Home</td><td>[% person.tel_home %]</td>
+</tr>
+<tr>
+<th align=right>Last</th><td>[% person.last %]</td>
+<th align=right>Work</td><td>[% person.tel_work %]</td>
+</tr>
+<tr>
+<th align=right>Sanskrit</th><td>[% person.sanskrit %]</td>
+<th align=right>Cell</td><td>[% person.tel_cell %]</td>
+</tr>
+<tr>
+<th align=right>Sex</th><td>[% sex %]</td>
+<th align=right valign=top rowspan=4>Comment</td><td rowspan=4 valign=top>[% comment %]</td>
+</tr>
+<tr><th align=right>Address</th><td>[% person.addr1 %]</td></tr>
+<tr><th align=right>&nbsp;</th><td>[% person.addr2 %]</td></tr>
+<tr>
+<th align=right>City</th><td>[% person.city %]</td>
+</tr>
+<tr>
+<th align=right>State/Province</th><td>[% person.st_prov %]</td>
+</tr>
+<tr>
+<th align=right>Zip/Postal Code</th><td>[% person.zip_post %]</td>
+<th align=right>Date Entered</td><td>[% date_entrd %]</td>
+</tr>
+<tr>
+<th align=right>Country</th><td>[% person.country %]</td>
+<th align=right>Date Updated</td><td>[% date_updat %]</td>
+</tr>
+<tr><th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td></tr>
+<tr><th align=right>Mailings</th><td>[% person.mailings %]</td></tr>
+<tr><th align=right>Ambiguous</th><td>[% person.ambiguous %]</td></tr>
 
 <tr>
 <th align=right valign=top>Affiliations</td>
@@ -60,15 +83,3 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 </td>
 </tr>
 </table>
-<div style="float: left; margin-left: .3in"> 
-<table cellpadding=3 border=0>
-<tr><th align=right>Home</td><td>[% person.tel_home %]</td></tr>
-<tr><th align=right>Work</td><td>[% person.tel_work %]</td></tr>
-<tr><th align=right>Cell</td><td>[% person.tel_cell %]</td></tr>
-<tr><th align=right>Comment</td><td>[% person.comment %]</td></tr>
-</table>
-<table border=0 cellpadding=3 style="margin-top: .3in">
-<tr><th align=right>Date Entered</td><td>[% date_entrd %]</td></tr>
-<tr><th align=right>Date Updated</td><td>[% date_updat %]</td></tr>
-</table>
-</div>

@@ -1,28 +1,25 @@
 <h2>People</h2>
 <a href=/person/create>Create</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <p>
+<h3>Searching for People</h3>
+<p>
 <div class=message>[% message || Catalyst.flash.message %]</div>
 <ul>
 <form action="/person/search_do" name=search>
 <table cellpadding=3>
-<tr><td>Pattern: <input type=text id=pattern name=pattern size=20></td></tr>
-<tr><td>
-Last <input type=radio name=field value=last checked>
-&nbsp;&nbsp;&nbsp;
-Sanskrit <input type=radio name=field value=sanskrit>
-&nbsp;&nbsp;&nbsp;
-Zip/Postal Code <input type=radio name=field value=zip_post>
-&nbsp;&nbsp;&nbsp;
-Email <input type=radio name=field value=email>
-&nbsp;&nbsp;&nbsp;
-First <input type=radio name=field value=first>
-&nbsp;&nbsp;&nbsp;
-Home Phone <input type=radio name=field value=tel_home>
+<tr><th align=right>Search Pattern</th><td><input type=text id=pattern name=pattern size=20 value="[% pattern %]"></td></tr>
+<tr><th align=right valign=top>Field to Search On</th>
+<td>
+<input type=radio name=field value=last [% last_checked %]> Last<br>
+<input type=radio name=field value=sanskrit [% sanskrit_checked %]> Sanskrit<br>
+<input type=radio name=field value=zip_post [% zip_post_checked %]> Zip/Postal Code<br>
+<input type=radio name=field value=email [% email_checked %]> Email<br>
+<input type=radio name=field value=first [% first_checked %]> First<br>
+<input type=radio name=field value=tel_home [% tel_home_checked %]> Home Phone
 </td></tr>
-<tr><td>Prefix <input type=radio name=match value=prefix checked>&nbsp;&nbsp;&nbsp;
-Substring <input type=radio name=match value=substr></td></tr>
-<tr><td>Number of records <input type=text name=nrecs size=3 value=10></td></tr>
-<tr><td><input type=submit value="Submit"></td></tr>
+<tr><th align=right>Type of Search</th><td>Prefix <input type=radio name=match value=prefix [% prefix_checked %]>&nbsp;&nbsp;&nbsp;Substring <input type=radio name=match value=substr [% substr_checked %]></td></tr>
+<tr><th align=right>Records per Page</th><td><input type=text name=nrecs size=3 value=[% nrecs %]></td></tr>
+<tr><td>&nbsp;</td><td><input type=submit value="Submit"></td></tr>
 </table>
 </form>
 </ul>

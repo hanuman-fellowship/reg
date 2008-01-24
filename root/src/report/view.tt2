@@ -6,6 +6,8 @@
 <a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]"
 onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+<a href="[% Catalyst.uri_for('/report/count/') _ report.id %]">Count</a>
+&nbsp;&nbsp;&nbsp;
 <a href="[% Catalyst.uri_for('/report/run/') _ report.id %]">Run</a>
 <p>
 <table cellpadding=3 border=0>
@@ -52,3 +54,5 @@ onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
         </td>
     </tr>
 </table>
+<p>
+[% message %]

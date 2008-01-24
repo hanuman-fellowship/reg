@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Rental;
 use base 'Catalyst::Controller';
 
 use Date::Simple qw/date/;
-use Util qw/trim empty/;
+use Util qw/trim empty compute_glnum valid_email/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -64,21 +64,23 @@ sub _get_data {
     if (!@mess && $hash{sdate} > $hash{edate}) {
         push @mess, "End date must be after the Start date";
     }
+    if ($hash{email} && ! valid_email($hash{email})) {
+        push @mess, "Invalid email: $hash{email}";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "rental/error.tt2";
+    }
 }
 
 sub create_do : Local {
     my ($self, $c) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "rental/error.tt2";
-        return;
-    }
+    return if @mess;
 
-    my $p = $c->model("RetreatCenterDB::Rental")->create({
-        %hash,
-    });
+    $hash{glnum} = compute_glnum($c, $hash{sdate});
+    my $p = $c->model("RetreatCenterDB::Rental")->create(\%hash);
     my $id = $p->id();
     $c->response->redirect($c->uri_for("/rental/view/$id"));
 }
@@ -120,6 +122,7 @@ sub update : Local {
     for my $w (qw/ sdate edate /) {
         $c->stash->{$w} = date($p->$w) || "";
     }
+    $c->stash->{edit_gl}     = 1;
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "rental/create_edit.tt2";
 }
@@ -128,22 +131,8 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "person/error.tt2";
-        return;
-    }
+    return if @mess;
 
-    my %hash;
-    for my $w (qw/
-        name title subtitle glnum
-        sdate edate url webdesc
-        linked phone email
-    /) {
-        $hash{$w} = $c->request->params->{$w};
-    }
-    $hash{url} =~ s{^\s*http://}{};
-    $hash{email} = trim($hash{email});
     my $p = $c->model("RetreatCenterDB::Rental")->find($id);
     $p->update(\%hash);
     $c->response->redirect($c->uri_for("/rental/view/" . $p->id));

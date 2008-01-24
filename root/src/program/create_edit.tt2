@@ -68,7 +68,7 @@
 </select>
 </td>
 <th align=right>GL Number</th>
-<td><input type=text name=glnum value="[% program.glnum %]" size=7></td>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% program.glnum %]" size=7>[% ELSE %][% program.glnum %][% END %]</td>
 </tr>
 
 <tr>

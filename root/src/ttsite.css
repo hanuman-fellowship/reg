@@ -13,6 +13,10 @@ body {
 .required {
     color: red;
 }
+.dow {
+    color: red;
+    font-weight: bold;
+}
 
 #header {
     background-color: [% site.col.head %];

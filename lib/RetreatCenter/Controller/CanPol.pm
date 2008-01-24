@@ -5,6 +5,15 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
+#
+# ??? at the last minute I found that I didn't check
+# for blank CanPol names or policies.   The name IS
+# marked with an red asterisk so it should (obviously) not be blank
+# but the policy itself as well.   I'll leave this as
+# something that Adrienne can find!   When she finds it and you
+# fix it do the usual _get_data() @mess, %hash thing.
+#
+
 sub index : Private {
     my ( $self, $c ) = @_;
 
@@ -29,6 +38,10 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $cp = $c->model('RetreatCenterDB::CanPol')->find($id);
+    if ($cp->name eq 'Default') {
+        $c->stash->{template} = "canpol/nodel_default.tt2";
+        return;
+    }
     if (my @programs = $cp->programs()) {
         $c->stash->{canpol}   = $cp;
         $c->stash->{programs} = \@programs;

@@ -27,6 +27,7 @@ __PACKAGE__->add_columns(qw/
     date_entrd
     comment
     mailings
+    ambiguous
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

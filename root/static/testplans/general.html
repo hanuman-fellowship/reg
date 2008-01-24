@@ -1,7 +1,8 @@
 <pre>
 General Testing Guidelines
 
-In the various categories (People, Reports, Programs, etc)
+In each of the various categories (People, Reports, Programs, 
+Leaders, Housing Costs, Cancellation Policies, etc)
 there are create, edit and delete functions.  Try each of these
 in each category.
 
@@ -15,4 +16,32 @@ you must first view the program before you can edit it.
 Required fields are marked with an asterisk.
 Verify in each case that you do get an error message
 if one is not given.
+
+Errors arise for other reasons as well.  For example:
+
+    - Program and Rental start/end dates
+        an invalid format or with end < start.
+    - invalid email addresses for people, leaders, rentals
+    - non-numeric values for tuition, extra days, etc
+    - invalid US state abbreviation
+    - program footnotes can only contain *, % or +.
+    - etc.
+
+Try to break things and get all the error messages!
+On the page that shows you the error there should
+be a "Back" button to make it easier to go back.   You
+shouldn't need to use the Back button on the browser itself.
+
+The user should be instructed in how to click on a link
+and bring it up in a separate browser window or tab.
+Unfortunately this is browser and platform dependent.
+This now web-based reg _will_ work okay without this knowledge
+but the user who is 'in the know' about this will be more effective.
+For example, if the user chooses the "Email Check" listing
+and gets 10 links with bad emails they're going to want to
+click on them all to fix the email field.  If the link opens in the same
+window they'll need to click back a lot to get back to the
+other links to fix them.  Make sense?
+I _could_ force the opening of a new window or tab for these links
+but it is better to educate the user in this and give them control.
 </pre>

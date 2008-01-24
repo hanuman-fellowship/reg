@@ -3,7 +3,7 @@ use warnings;
 package RetreatCenter::Controller::User;
 use base 'Catalyst::Controller';
 
-use Util qw/trim empty role_table/;
+use Util qw/trim empty role_table valid_email/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -58,7 +58,7 @@ sub _get_data {
         password
         email
     /) {
-        $hash{$f} = $c->request->params->{$f};
+        $hash{$f} = trim($c->request->params->{$f});
         if (empty($hash{$f})) {
             push @mess, "\u$f cannot be blank.";
         }
@@ -66,18 +66,21 @@ sub _get_data {
     if (length($hash{password}) < 5) {
         push @mess, "Password must be at least 5 characters long.";
     }
-    $hash{email} = trim($hash{email});
-    $c->stash->{mess} = join "<br>\n", @mess;
-    $c->stash->{template} = "user/error.tt2";
+    if ($hash{email} && ! valid_email($hash{email})) {
+        push @mess, "Invalid email: $hash{email}";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "user/error.tt2";
+    }
 }
 
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     _get_data($c);
-    if (@mess) {
-        return;
-    }
+    return if @mess;
+
     my $user =  $c->model("RetreatCenterDB::User")->find($id);
     $user->update(\%hash);
 
@@ -152,9 +155,8 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     _get_data($c);
-    if (@mess) {
-        return;
-    }
+    return if @mess;
+
     my $u = $c->model("RetreatCenterDB::User")->create(\%hash);
     my $id = $u->id;
 

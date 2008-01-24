@@ -17,6 +17,8 @@ sub index : Private {
 sub membership_list : Local {
     my ($self, $c) = @_;
     
+    # ??? must be a way to collapse this repetitive code.
+    # for my $c (qw/ General Sponsor Life Lapsed /) { ...
     my @general =
         map {
             $_->[1]
@@ -59,6 +61,20 @@ sub membership_list : Local {
             { category => 'Life', },
         );
     my $nlife = @life;
+    my @lapsed =
+        map {
+            $_->[1]
+        }
+        sort {
+            $a->[0] cmp $b->[0]
+        }
+        map {
+            [ $_->person->sanskrit || $_->person->first, $_ ]
+        }
+        $c->model('RetreatCenterDB::Member')->search(
+            { category => 'Lapsed', },
+        );
+    my $nlapsed = @lapsed;
     open my $list, ">", "root/static/memlist.html"
         or die "cannot create memlist.html";
     print {$list} <<EOH;
@@ -68,6 +84,7 @@ sub membership_list : Local {
 <tr><td>General</td><td>$ngeneral</td></tr>
 <tr><td>Sponsor</td><td>$nsponsor</td></tr>
 <tr><td>Life</td><td>$nlife</td></tr>
+<tr><td>Lapsed</td><td>$nlapsed</td></tr>
 </table>
 <h3>General</h3>
 <table cellpadding=3>
@@ -121,6 +138,24 @@ EOH
         print {$list} "<td>", $p->sanskrit || $p->first, "</td>";
         print {$list} "<td>" . $p->last . ", " . $p->first . "</td>";
         print {$list} "<td>" . date($m->date_life) . "</td>";
+        print {$list} "</tr>\n";
+    }
+    print {$list} <<EOH;
+</table>
+<h3>Lapsed</h3>
+<table cellpadding=3>
+<tr>
+<th align=left>Sanskrit</th>
+<th align=left>Name</th>
+<th>On</th>
+</tr>
+EOH
+    for my $m (@lapsed) {
+        my $p = $m->person;
+        print {$list} "<tr>";
+        print {$list} "<td>", $p->sanskrit || $p->first, "</td>";
+        print {$list} "<td>" . $p->last . ", " . $p->first . "</td>";
+        print {$list} "<td>" . date($m->date_lapsed) . "</td>";
         print {$list} "</tr>\n";
     }
     print {$list} <<EOH;
@@ -255,6 +290,10 @@ sub _get_data {
             push @mess, "No paid date";
         }
     }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "program/error.tt2";
+    }
 }
 
 #
@@ -265,11 +304,7 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
-        return;
-    }
+    return if @mess;
 
     my $member =  $c->model("RetreatCenterDB::Member")->find($id);
 
@@ -321,9 +356,7 @@ sub update_do : Local {
     # update the member record
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
-    $member->update({
-        %hash,
-    });
+    $member->update(\%hash);
     # and the partner record if need be
     if ($partnered
         && $hash{total_paid} + $partner_paid >= 8000
@@ -392,11 +425,7 @@ sub create_do : Local {
     my ($self, $c, $person_id) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
-        return;
-    }
+    return if @mess;
     my @nowlife = ();
     if ($hash{mkpay_date}) {
         $hash{category} = 'Sponsor';

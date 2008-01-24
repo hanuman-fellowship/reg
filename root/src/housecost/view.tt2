@@ -3,9 +3,11 @@
 <a href="/housecost/create">Create</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/housecost/update/[% housecost.id %]">Edit</a>
+[% IF housecost.name != 'Default' %]
 &nbsp;&nbsp;&nbsp;
 <a href="/housecost/delete/[% housecost.id %]"
 onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
+[% END %]
 <p>
 [% END %]
 <table cellpadding=3 border=0>

@@ -1,0 +1,2 @@
+[% FOR p IN people %][% p.email %]
+[% END %]

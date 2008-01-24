@@ -3,81 +3,70 @@
 <form action=[% "/person/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
     <tr>
-        <th align=right><span class="required">*</span> First</td>
-        <td><input type=text name=first value="[% person.first %]"></td>
+        <th align=right><span class="required">*</span> First</th>
+        <td><input tabindex=1 type=text name=first value="[% person.first %]"></td>
+        <th align=right>Home</th>
+        <td><input tabindex=14 type=text name=tel_home value="[% person.tel_home %]"></td>
     </tr>
     <tr>
-        <th align=right><span class="required">*</span> Last</td>
-        <td><input type=text name=last value="[% person.last %]"></td>
+        <th align=right><span class="required">*</span> Last</th>
+        <td><input tabindex=2 type=text name=last value="[% person.last %]"></td>
+        <th align=right>Work</th>
+        <td><input tabindex=15 type=text name=tel_work value="[% person.tel_work %]"></td>
     </tr>
     <tr>
-        <th align=right>Sanskrit</td>
-        <td><input type=text name=sanskrit value="[% person.sanskrit %]"></td>
+        <th align=right>Sanskrit</th>
+        <td><input tabindex=3 type=text name=sanskrit value="[% person.sanskrit %]"></td>
+        <th align=right>Cell</th>
+        <td><input tabindex=16 type=text name=tel_cell value="[% person.tel_cell %]"></td>
     </tr>
     <tr>
-        <th align=right><span class="required">*</span> Sex</td>
+        <th align=right><span class="required">*</span> Sex</th>
         <td>
-        <input type=radio name=sex value="F" [% sex_female %] >Female
-        &nbsp;&nbsp;&nbsp;
-        <input type=radio name=sex value="M" [% sex_male %]>Male
-    </td>
+            <input tabindex=4 type=radio name=sex value="F" [% sex_female %] >Female
+            &nbsp;&nbsp;&nbsp;
+            <input tabindex=4 type=radio name=sex value="M" [% sex_male %]>Male
+        </td>
+        <th align=right valign=top rowspan=3>Comment</th>
+        <td rowspan=3><textarea tabindex=17 name=comment cols=40 rows=6>[% person.comment %]</textarea></td>
     </tr>
     <tr>
-        <th align=right>Address</td>
-        <td><input type=text name=addr1 value="[% person.addr1 %]"></td>
+        <th align=right>Address</th>
+        <td><input tabindex=5 type=text name=addr1 value="[% person.addr1 %]"></td>
     </tr>
     <tr>
         <td align=right>&nbsp;</td>
-        <td><input type=text name=addr2 value="[% person.addr2 %]"></td>
+        <td><input tabindex=6 type=text name=addr2 value="[% person.addr2 %]"></td>
     </tr>
     <tr>
-        <th align=right>City</td>
-        <td><input type=text name=city value="[% person.city %]"></td>
+        <th align=right>City</th>
+        <td><input tabindex=7 type=text name=city value="[% person.city %]"></td>
     </tr>
     <tr>
-        <th align=right>State/Province</td>
-        <td><input type=text name=st_prov value="[% person.st_prov %]"></td>
+        <th align=right>State/Province</th>
+        <td><input tabindex=8 type=text name=st_prov value="[% person.st_prov %]"></td>
+        <td>&nbsp;</td>
+        <td><input tabindex=18 type=submit value="Submit"></td>
     </tr>
     <tr>
-        <th align=right>Zip/Postal Code</td>
-        <td><input type=text name=zip_post value="[% person.zip_post %]"></td>
+        <th align=right>Zip/Postal Code</th>
+        <td><input tabindex=9 type=text name=zip_post value="[% person.zip_post %]"></td>
     </tr>
     <tr>
-        <th align=right>Country</td>
-        <td><input type=text name=country value="[% person.country %]"></td>
+        <th align=right>Country</th>
+        <td><input tabindex=10 type=text name=country value="[% person.country %]"></td>
     </tr>
     <tr>
-        <th align=right>Email</td>
-        <td><input type=text name=email size=40 value="[% person.email %]"></td>
+        <th align=right>Email</th>
+        <td colspan=3><input tabindex=11 type=text name=email size=40 value="[% person.email %]"></td>
     </tr>
     <tr>
-        <th align=right>Mailings</td>
-        <td><input type=checkbox name=mailings value='yes' [% mailings %]></td>
-    </tr>
-</table>
-<div style="float: left; margin-left: .3in">
-<table cellpadding=3 border=0">
-    <tr>
-        <th align=right>Home</td>
-        <td><input type=text name=tel_home value="[% person.tel_home %]"></td>
+        <th align=right>Mailings</th>
+        <td><input tabindex=12 type=checkbox name=mailings value='yes' [% mailings %]></td>
     </tr>
     <tr>
-        <th align=right>Work</td>
-        <td><input type=text name=tel_work value="[% person.tel_work %]"></td>
-    </tr>
-    <tr>
-        <th align=right>Cell</td>
-        <td><input type=text name=tel_cell value="[% person.tel_cell %]"></td>
-    </tr>
-    <tr>
-        <th align=right>Comment</td>
-        <td><input type=text name=comment value="[% person.comment %]"></td>
-    </tr>
-</table>
-<table cellpadding=3 border=0 style="margin-top: .3in">
-    <tr>
-    <td>&nbsp;</td>
-    <td><input type=submit value="Submit"></td>
+        <th align=right>Ambiguous</th>
+        <td><input tabindex=13 type=checkbox name=ambiguous value='yes' [% ambiguous %]></td>
     </tr>
 </table>
 <p>

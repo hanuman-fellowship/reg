@@ -1,10 +1,14 @@
 <h2>Listings</h2>
 <ul>
-<a href="/listing/phone">Phone list</a>
+
+<h3>Phone Lists</h3>
+<ol>
+<li><a href="/listing/phone_columns">In Columns</a>
+<li><a href="/listing/phone_line">In One Line</a>
+<li><a href="/listing/phone_noaddr">No Address</a>
+</ol>
 <p>
-<a href="/listing/undup">Unduplication File</a>
-<p>
-Purge Stale Addresses
+<h3>Purge Stale Addresses</h3>
 <ul>
 <form action="[% Catalyst.uri_for('/listing/stale') %]"
       method=POST
@@ -13,4 +17,8 @@ Purge Stale Addresses
 <input type=file name=stale_emails><br>
 <input type=submit>
 </ul>
+<p>
+<a href="/listing/undup">Unduplication File</a>
+<p>
+<a href="/listing/email_check">Email Check</a>
 </ul>

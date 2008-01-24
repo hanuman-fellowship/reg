@@ -1,0 +1,28 @@
+.heading {
+    display: block;
+    font-size: 15pt;
+	font-family: Arial;
+    font-weight: bold;
+    margin-bottom: 8mm;
+    text-align: center;
+}
+.person {
+    font-size: 11pt;
+	font-family: Arial;
+    display: block;
+    margin-bottom: 0.7mm;
+}
+.sanskrit {
+    font-weight: bold;
+    margin-right: 3mm;
+}
+.name {
+    margin-right: 2mm;
+}
+.phones {
+    font-weight: bold;
+    margin-right: 2mm;
+}
+.address {
+    font-size: 11pt;
+}

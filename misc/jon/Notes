@@ -458,3 +458,8 @@ redo people search form so there
     Search Type   o Prefix    o Substring
     Number per Page ___
 don't mess with inserting % if phone number pattern already has a %?
+Need some validation on the GL number in update_do
+    for Program and Rental.
+use fieldset and legends???
+    try it.  mention it to Jamal.
+New Address?  - add to online form

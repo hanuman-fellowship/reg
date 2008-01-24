@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Leader;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/trim resize/;
+use Util qw/trim resize valid_email/;
 use Lookup;     # resize needs this to have been done
 
 sub index : Private {
@@ -72,6 +72,12 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
+    my $email = trim($c->request->params->{public_email});
+    if ($email && ! valid_email($email)) {
+        $c->stash->{email} = $email;
+        $c->stash->{template} = "leader/bad_email.tt2";
+        return;
+    }
     my $leader =  $c->model("RetreatCenterDB::Leader")->find($id);
     my @upd = ();
     if (my $upload = $c->request->upload('image')) {
@@ -83,7 +89,7 @@ sub update_do : Local {
     my $url = $c->request->params->{url};
     $url =~ s{^\s*http://}{};
     $leader->update({
-        public_email => trim($c->request->params->{public_email}),
+        public_email => $email,
         url          => $url,
         biography    => $c->request->params->{biography},
         @upd,
@@ -115,12 +121,18 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c, $person_id) = @_;
 
+    my $email = trim($c->request->params->{public_email});
+    if ($email && ! valid_email($email)) {
+        $c->stash->{email} = $email;
+        $c->stash->{template} = "leader/bad_email.tt2";
+        return;
+    }
     my $upload = $c->request->upload('image');
     my $url = $c->request->params->{url};
     $url =~ s{^\s*http://}{};
     my $l = $c->model("RetreatCenterDB::Leader")->create({
         person_id    => $person_id,
-        public_email => trim($c->request->params->{public_email}),
+        public_email => $email,
         image        => $upload? "yes": "",
         url          => $url,
         biography    => $c->request->params->{biography},

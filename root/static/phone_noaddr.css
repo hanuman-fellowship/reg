@@ -1,0 +1,42 @@
+/* fl = fone list */
+body {
+    margin-left: .5in;
+}
+.fl_row0 {
+    background: #FFFFFF
+}
+.fl_row1 {
+    background: #DDDDDD
+}
+.fl_heading {
+    display: block;
+    font-size: 15pt;
+    font-family: Arial;
+    font-weight: bold;
+    margin-bottom: 8mm;
+/*    text-align: center; */
+    margin-left: 1.5in;
+}
+
+.fl_th {
+    font-family: Arial;
+    font-size: 10pt;
+    font-weight: bold;
+}
+.fl_name {
+    font-family: Arial;
+    font-size: 10pt;
+    font-weight: normal;
+}
+.fl_phone {
+    font-family: Arial;
+    font-size: 10pt;
+    font-weight: normal;
+    text-align: right;
+}
+.fl_address {
+    font-family: Arial;
+    font-size: 10pt;
+    font-weight: normal;
+    text-align: left;
+}

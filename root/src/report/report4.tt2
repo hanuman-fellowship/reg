@@ -1,0 +1,3 @@
+Salutation	First name	Middle	Last Name	Suffix	Title	Company	Address Line 1	Address Line 2	City	State	Zip+4
+[% FOR p IN people %]	[% p.first %]		[% p.last %]			[% p.addr1 %]	[% p.addr2 %]	[% p.city %]	[% p.st_prov %]	[% p.zip_post %]
+[% END %]

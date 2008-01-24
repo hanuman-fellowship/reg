@@ -1,11 +1,6 @@
 Sorry, <a href="/person/view/[% person.id %]">[% person.first %] [% person.last %]</a>, is a
 [% IF leader %]<a href="/leader/view/[% leader.id %]">leader</a>[% END %]
 [% conjunction %]
-[% IF member %]<a href="/member/update/[% member.id %]">member</a>[% END %].
+[% IF member %]<a href="/member/update/[% member.id %]">member</a>[% END %]
+and can't be deleted.
 <p>
-Delete anyway?
-<form action="/person/delete_anyway/[% person.id %]" name=form>
-<input type=submit value=Yes name=yes>
-<input type=submit value=No name=no>
-</form>
-<script type="text/javascript">document.form.no.focus()</script>

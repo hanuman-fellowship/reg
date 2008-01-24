@@ -1,9 +1,9 @@
-<table cellpadding=1>
+<table cellpadding=3>
 <tr>
-<th>Name</th>
-<th>Home</th>
-<th>Work</th>
-<th>Cell</th>
+<th align=left>Name</th>
+<th align=left>Home</th>
+<th align=left>Work</th>
+<th align=left>Cell</th>
 </tr>
 [% FOREACH p IN people %]
 <tr>

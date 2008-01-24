@@ -4,9 +4,11 @@
 <a href="/canpol/create">Create</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/canpol/update/[% canpol.id %]">Edit</a>
+[% IF canpol.name != 'Default' %]
 &nbsp;&nbsp;&nbsp;
 <a href="/canpol/delete/[% canpol.id %]"
 onclick="return confirm('Okay to Delete [% canpol.name %]?');">Delete</a>
+[% END %]
 <p>
 [% END %]
 <table cellpadding=3 border=0>

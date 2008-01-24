@@ -22,9 +22,9 @@
 <th align=right>Name</th>
 <td>[% program.name %]</td>
 <th align=right>From</th>
-<td>[% sdate %]</td>
+<td>[% sdate %] <span class=dow>[% sdate_dow %]</span></td>
 <th align=right>To</th>
-<td>[% edate %]</td>
+<td>[% edate %] <span class=dow>[% edate_dow %]</span></td>
 </tr>
 
 <tr>

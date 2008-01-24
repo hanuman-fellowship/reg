@@ -1,9 +1,6 @@
 <table>
 [% FOREACH p IN people %]
 <tr>
-<!--  for editing the record directly - cool!
-    <td><a href="/person/update/[% p.id %]">[% p.name %]</a></td>
--->
     <td>[% p.name %]</td>
     <td>[% p.address %]</td>
     <td>[% p.email %]</td>

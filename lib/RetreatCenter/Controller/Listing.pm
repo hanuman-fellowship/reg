@@ -4,6 +4,7 @@ package RetreatCenter::Controller::Listing;
 use base 'Catalyst::Controller';
 
 use Person;
+use Util qw/valid_email/;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -12,19 +13,15 @@ sub index : Local {
 }
 
 #
+# better way to do this the DBIx::Class way???
 #
-#
-sub phone : Local {
-    my ($self, $c) = @_;
-
-    # better way to do this??? DBIx::Class way?
+sub _phone_list {
     my @people = @{ Person->search(<<"EOS") };
 select p.*
   from people p, affil_people ap, affils a
  where a.descrip like '%phone list%'
        and ap.a_id = a.id
        and ap.p_id = p.id
- order by sanskrit, first;
 EOS
     # if no sanskrit name take the first name
     # ??? okay poking inside object?   not really.
@@ -33,24 +30,30 @@ EOS
             $p->{sanskrit} = $p->{first};
         }
     }
-
     # sort by sanskrit name
     @people = sort {
-                  $a->sanskrit() cmp $b->sanskrit();
+                  $a->{sanskrit} cmp $b->{sanskrit};
               }
               @people;
+    return @people;
+}
 
-    open my $ph, ">", "root/static/phone1.html"
-        or die "cannot create phone1.html";
+#
+# in columns
+#
+sub phone_columns : Local {
+    my ($self, $c) = @_;
+
+    my @people = _phone_list();
+    open my $ph, ">", "root/static/phone_columns.html"
+        or die "cannot create phone_columns.html";
     print {$ph} <<"EOH";
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="phone.css" />
+<link rel="stylesheet" type="text/css" href="phone_columns.css" />
 </head>
 <body>
-<center>
 <span class=fl_heading>Hanuman Fellowship Phone List</span>
-</center>
 <table>
 <tr class=fl_th>
     <th align=left>Sanskrit</th>
@@ -80,7 +83,98 @@ print {$ph} <<"EOH";
 </body>
 </html>
 EOH
-    $c->response->redirect($c->uri_for("/static/phone1.html"));
+    $c->response->redirect($c->uri_for("/static/phone_columns.html"));
+}
+
+#
+# no addr
+#
+sub phone_noaddr : Local {
+    my ($self, $c) = @_;
+
+    my @people = _phone_list();
+    open my $ph, ">", "root/static/phone_noaddr.html"
+        or die "cannot create phone_noaddr.html";
+    print {$ph} <<"EOH";
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="phone_noaddr.css" />
+</head>
+<body>
+<span class=fl_heading>Hanuman Fellowship Phone List</span>
+<table>
+<tr class=fl_th>
+    <th align=left>Sanskrit</th>
+    <th align=left>Name</th>
+    <th align=center>Home</th>
+    <th align=center>Work</th>
+    <th align=center>Cell</th>
+</tr>
+EOH
+    my $class = 1;
+    for my $p (@people) {
+        print {$ph} <<"EOH";
+<tr class=fl_row$class>
+    <td class=fl_name>$p->{sanskrit}</td>
+    <td class=fl_name>$p->{first} $p->{last}</td>
+    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_home}</td>
+    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_work}</td>
+    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_cell}</td>
+</tr>
+EOH
+        $class = 1-$class;
+    }
+print {$ph} <<"EOH";
+</table>
+</body>
+</html>
+EOH
+    $c->response->redirect($c->uri_for("/static/phone_noaddr.html"));
+}
+
+sub _tel_get {
+    my ($fone, $let) = @_;
+    $fone .= " $let " if $let && $fone;
+    return $fone;
+}
+#
+# in one line
+#
+sub phone_line : Local {
+    my ($self, $c) = @_;
+
+    open my $ph, ">", "root/static/phone_line.html"
+        or die "cannot create phone_line.html";
+    print {$ph} <<"EOH";
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="phone_line.css" />
+</head>
+<body>
+<span class=heading>Hanuman Fellowship Phone List</span>
+EOH
+    my @people = _phone_list();
+    for my $p (@people) {
+        my $fones = _tel_get($p->{tel_home}, 'h')
+                  . _tel_get($p->{tel_work}, 'w')
+                  . _tel_get($p->{tel_cell}, 'c');
+        chop $fones;    # final space
+        $fones =~ s{ [hwc]$}{} if length($fones) <= 14;
+        my $addr = $p->address();
+        print {$ph} <<"EOH";
+<span class='person'>
+<span class='sanskrit'>$p->{sanskrit}</span>
+<span class='name'>$p->{first} $p->{last}</span>
+<span class='phones'>$fones</span>
+<span class='address'>$addr</span>
+</span>
+EOH
+    }
+print {$ph} <<"EOH";
+</body>
+</html>
+EOH
+    $c->response->redirect($c->uri_for("/static/phone_line.html"));
 }
 
 sub undup : Local {
@@ -94,22 +188,37 @@ sub undup : Local {
     # need both addresses as well???
     #
     my $sth = Person->search_start(<<"EOS");
-select last, first
+select last, first, id, ambiguous
   from people
 order by last, first
 EOS
-    my ($prev_last, $prev_first) = ("", "");
-    my ($p, $last, $first);
+    my ($prev_last, $prev_first, $prev_id, $prev_amb) = ("", "", 0);
+    my ($last, $first, $id, $amb);
+    my $p;
     print {$out} "Same Last, First Names\n";
     print {$out} "======================\n";
+    my %dups;
     while ($p = Person->search_next($sth)) {
         $last  = $p->{last};
         $first = $p->{first};
+        $id    = $p->{id};
+        $amb   = $p->{ambiguous};
         if ($last eq $prev_last && $first eq $prev_first) {
             print {$out} "$last, $first\n";    
+            # both people should be marked as 'ambiguous'
+            $dups{$id}      = 1 if ! $amb;
+            $dups{$prev_id} = 1 if ! $prev_amb;
         }
         $prev_last  = $last;
         $prev_first = $first;
+        $prev_id    = $id;
+        $prev_amb   = $amb;
+    }
+    $sth->finish();
+    for my $id (keys %dups) {
+        $c->model('RetreatCenterDB::Person')->find($id)->update({
+            ambiguous => 'yes',
+        });
     }
     #
     # address dup
@@ -127,14 +236,13 @@ EOS
     while ($p = Person->search_next($sth)) {
         if ($prev
             && $p->{akey} eq $prev->{akey}
-            && $p->{last} ne $prev->{last}
-            && ($p->{id_sps} != 0 || $prev->{id_sps} != 0)
+            && ($p->{id_sps} == 0 || $prev->{id_sps} == 0)
         ) {
             print {$out} "$p->{last}, $p->{first}\n";    
             if ($p->{addr1} ne $prev->{addr1} 
                 ||
                 $p->{zip_post} ne $prev->{zip_post}
-             ) {
+            ) {
                 print {$out} "    $p->{addr1} $p->{zip_post}\n";
             }
             print {$out} "$prev->{last}, $prev->{first}\n";    
@@ -144,9 +252,7 @@ EOS
         $prev = $p;
     }
     close $out;
-    $fname =~ s{root/}{};
-    $c->stash->{filename} = $fname;
-    $c->stash->{template} = "listing/undup.tt2";
+    $c->response->redirect($c->uri_for("/static/undup.txt"));
 }
 
 sub stale : Local {
@@ -165,6 +271,27 @@ sub stale : Local {
     }
     $c->stash->{mess} = "$n emails purged.";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub email_check : Local {
+    my ($self, $c) = @_;
+
+    my @people;
+    my $email;
+    for my $p ($c->model('RetreatCenterDB::Person')->search(
+        { email => { "!=", "" }},
+        { order_by => 'email' },
+    )) {
+        if (($email = $p->email) && ! valid_email($email)) {
+            push @people, $p;
+        }
+    }
+    @people = sort {
+                  $a->email cmp $b->email
+              }
+              @people;
+    $c->stash->{people} = \@people;
+    $c->stash->{template} = "listing/bad_email.tt2";
 }
 
 1;

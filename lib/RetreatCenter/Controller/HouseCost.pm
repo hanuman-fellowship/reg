@@ -31,6 +31,10 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $hc = $c->model('RetreatCenterDB::HouseCost')->find($id);
+    if ($hc->name eq 'Default') {
+        $c->stash->{template} = "housecost/nodel_default.tt2";
+        return;
+    }
     if (my @programs = $hc->programs()) {
         $c->stash->{housecost} = $hc;
         $c->stash->{programs} = \@programs;
@@ -100,9 +104,7 @@ sub update_do : Local {
 
     _get_data($c);
     return if @mess;
-    $c->model("RetreatCenterDB::HouseCost")->find($id)->update({
-        %hash,
-    });
+    $c->model("RetreatCenterDB::HouseCost")->find($id)->update(\%hash);
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
 
@@ -128,9 +130,7 @@ sub create_do : Local {
 
     _get_data($c);
     return if @mess;
-    $c->model("RetreatCenterDB::HouseCost")->create({
-        %hash,
-    });
+    $c->model("RetreatCenterDB::HouseCost")->create(\%hash);
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
 

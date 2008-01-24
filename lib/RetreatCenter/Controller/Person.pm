@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Person;
 use base 'Catalyst::Controller';
 
 use lib '../..';
-use Util qw/affil_table trim empty nsquish/;
+use Util qw/affil_table trim empty nsquish valid_email/;
 use Date::Simple qw/date today/;
 use USState;
 
@@ -16,9 +16,34 @@ sub index : Private {
     $c->forward('search');
 }
 
-sub search : Local {
-    my ($self, $c) = @_;
+sub _view_person {
+    my ($p) = @_;
+    "<a href='/person/view/" . $p->id . "'>"
+    . $p->first . " " . $p->last
+    . "</a>";
+}
 
+sub search : Local {
+    my ($self, $c, $pattern, $field, $match, $nrecs) = @_;
+
+    if ($pattern) {
+        $c->stash->{message}  = "No one found matching '$pattern'.";
+    }
+    $c->stash->{pattern} = $pattern;
+    if (! $field) {
+        $c->stash->{last_checked} = "checked";
+    }
+    if (! $match) {
+        $c->stash->{prefix_checked} = "checked";
+    }
+    for my $f (qw/ 
+        last sanskrit zip_post email first tel_home prefix substr
+    /) {
+        if ($field eq $f || $match eq $f) {
+            $c->stash->{"$f\_checked"} = "checked";
+        }
+    }
+    $c->stash->{nrecs} = $nrecs || 10;
     $c->stash->{template} = "person/search.tt2";
 }
 
@@ -41,8 +66,8 @@ sub search_do : Local {
         tel_home => [ 'last', 'first' ],
     );
     my $orig_pattern = $pattern;
-    if ($field eq 'tel_home') {
-        # intersperse % in the pattern
+    if ($field eq 'tel_home' && !($pattern =~ s{^(['"])(.*)\1}{$2})) {
+        # intersperse % in the pattern - unless it was quoted
         $pattern =~ s{(\d)}{$1%}g;
     }
     my @people =
@@ -57,9 +82,9 @@ sub search_do : Local {
             },
         );
     if (@people == 0) {
+        # Nobody found.
         $pattern =~ s{%}{}g;
-        $c->stash->{message}  = "No one found matching '$pattern'.";
-        $c->stash->{template} = "person/search.tt2";
+        $c->response->redirect($c->uri_for("/person/search/$pattern/$field/$match/$nrecs"));
         return;
     }
     if (@people > $nrecs) {
@@ -144,19 +169,6 @@ sub _del {
     $c->flash->{message} = "$name was deleted.";
 }
 
-sub delete_anyway : Local {
-    my ($self, $c, $id) = @_;
-    
-    my $p = $c->model('RetreatCenterDB::Person')->find($id);
-    if ($c->request->params->{yes}) {
-        _del($c, $p);
-    }
-    else {
-        $c->flash->{message} = $p->first . " " . $p->last . " was NOT deleted.";
-    }
-    $c->response->redirect($c->uri_for('/person/search'));
-}
-
 sub view : Local {
     my ($self, $c, $id) = @_;
 
@@ -182,6 +194,9 @@ sub view : Local {
     $c->stash->{affils} = [ $p->affils() ];
     $c->stash->{date_entrd} = date($p->date_entrd()) || "";
     $c->stash->{date_updat} = date($p->date_updat()) || "";
+    my $comment = $p->comment;
+    $comment =~ s{\r?\n}{<br>\n}g;
+    $c->stash->{comment} = $comment;
 
     # is this person a leader?
     my @leads = $c->model('RetreatCenterDB::Leader')->search(
@@ -199,6 +214,144 @@ sub view : Local {
     $c->stash->{template} = "person/view.tt2";
 }
 
+sub create : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{mailings}    = "checked";
+    $c->stash->{ambiguous}   = "";
+    $c->stash->{affil_table} = affil_table($c);
+    $c->stash->{form_action} = "create_do";
+    $c->stash->{template}    = "person/create_edit.tt2";
+}
+
+my %hash;
+my @mess;
+sub _get_data {
+    my ($c) = @_;
+
+    %hash = ();
+    @mess = ();
+    for my $f (qw/
+        last first sanskrit sex
+        addr1 addr2 city st_prov zip_post country
+        email
+        tel_home tel_work tel_cell
+        comment mailings ambiguous
+    /) {
+        $hash{$f} = trim($c->request->params->{$f});
+    }
+    $hash{akey} = nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post});
+
+    if (empty($hash{last})) {
+        push @mess, "Last name cannot be blank.";
+    }
+    if (empty($hash{first})) {
+        push @mess, "First name cannot be blank.";
+    }
+    if ($hash{sex} ne 'F' && $hash{sex} ne 'M') {
+        push @mess, "You must specify Male or Female.";
+    }
+    if ($hash{addr1} && usa($hash{country}) && ! valid_state($hash{st_prov})) {
+        push @mess, "Invalid state: $hash{st_prov}";
+    }
+    if ($hash{email} && ! valid_email($hash{email})) {
+        push @mess, "Invalid email: $hash{email}";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "person/error.tt2";
+    }
+}
+
+#
+# which affiliations are checked?
+#
+sub _get_affils {
+    my ($c, $id) = @_;
+
+    my @cur_affils = grep { s/^aff(\d+)/$1/ }
+                     keys %{$c->request->params};
+    for my $ca (@cur_affils) {
+        $c->model("RetreatCenterDB::AffilPerson")->create({
+            a_id => $ca,
+            p_id => $id,
+        });
+    }
+}
+
+#
+# look for possible duplicates and give a warning.
+# I know it would be better to catch a possible duplicate and prevent
+# it from being created AT ALL but that's more work.
+# Perhaps later.
+#
+sub _get_dups {
+    my ($c, $id, $p) = @_;
+
+    my $last  = $p->last;
+    my $first = $p->first;
+    my $akey  = $p->akey;
+    my @dups = $c->model("RetreatCenterDB::Person")->search(
+        {
+            last  => $last,
+            first => $first,
+            id    => { "!=", $id },     # but not ourselves
+        },
+    );
+    if (@dups) {
+        # we have at least two duplicate names.
+        # make sure they're marked ambiguous.
+        for my $dup (@dups, $p) {
+            $dup->update({
+                ambiguous => "yes",
+            });
+        }
+    }
+    my $Clast  = substr($last, 0, 1);
+    my $Cfirst = substr($first, 0, 1);
+    push @dups, $c->model("RetreatCenterDB::Person")->search(
+        {
+            last  => { 'like' => "$Clast%"  },
+            first => { 'like' => "$Cfirst%" },
+            akey  => $p->akey,
+            id    => { "!=", $id },     # but not ourselves
+        }
+    );
+    my %seen;
+    @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups :)
+    my $dups;
+    for my $d (@dups) {
+        $dups .= _view_person($d) . ", ";
+    }
+    if ($dups) {
+        $dups =~ s{, $}{};     # final ', '
+        my $pl = (@dups == 1)? "": "s";
+        $dups = " - Possible duplicate$pl: $dups.";
+    }
+    $dups;
+}
+
+#
+#
+#
+sub create_do : Local {
+    my ($self, $c) = @_;
+
+    _get_data($c);
+    return if @mess;
+
+    my $p = $c->model("RetreatCenterDB::Person")->create({
+        %hash,
+        date_updat => today()->as_d8(),
+        date_entrd => today()->as_d8(),
+    });
+    my $id = $p->id();
+    _get_affils($c, $id);
+    $c->flash->{message} = "Created " . _view_person($p)
+                         . _get_dups($c, $id, $p);
+    $c->response->redirect($c->uri_for('/person/search'));
+}
+
 sub update : Local {
     my ($self, $c, $id) = @_;
 
@@ -208,6 +361,7 @@ sub update : Local {
     $c->stash->{sex_female}  = ($sex eq "F")? "checked": "";
     $c->stash->{sex_male}    = ($sex eq "M")? "checked": "";
     $c->stash->{mailings}    = ($p->mailings())? "checked": "";
+    $c->stash->{ambiguous}   = ($p->ambiguous())? "checked": "";
     $c->stash->{affil_table} = affil_table($c, $p->affils());
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "person/create_edit.tt2";
@@ -223,76 +377,19 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    # dates are either blank or converted to d8 format
-    my $last     = $c->request->params->{last};
-    my $first    = $c->request->params->{first};
-    my $sex      = $c->request->params->{sex};
-    my $addr1    = $c->request->params->{addr1};
-    my $addr2    = $c->request->params->{addr2};
-    my $city     = $c->request->params->{city};
-    my $zip_post = $c->request->params->{zip_post};
-    my $st_prov  = $c->request->params->{st_prov};
-    my $country  = $c->request->params->{country};
-    my $akey     = nsquish($addr1, $addr2, $zip_post);
-
-    my @mess;
-    if (empty($last)) {
-        push @mess, "Last name cannot be blank.";
-    }
-    if (empty($first)) {
-        push @mess, "First name cannot be blank.";
-    }
-    if ($sex ne 'F' && $sex ne 'M') {
-        push @mess, "You must specify Male or Female.";
-    }
-    if ($addr1 && usa($country) && ! valid_state($st_prov)) {
-        push @mess, "Invalid state: $st_prov";
-    }
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "person/error.tt2";
-        return;
-    }
+    _get_data($c);
+    return if @mess;
 
     my $p = $c->model("RetreatCenterDB::Person")->find($id);
     $p->update({
-        last     => $c->request->params->{last},
-        first    => $c->request->params->{first},
-        sanskrit => $c->request->params->{sanskrit},
-        sex      => $sex,
-        addr1    => $addr1,
-        addr2    => $addr2,
-        city     => $city,
-        st_prov  => $st_prov,
-        zip_post => $zip_post,
-        country  => $country,
-        akey     => nsquish($addr1, $addr2, $zip_post),
-        email    => trim($c->request->params->{email}),
-        tel_home => $c->request->params->{tel_home},
-        tel_work => $c->request->params->{tel_work},
-        tel_cell => $c->request->params->{tel_cell},
-        comment  => $c->request->params->{comment},
-        mailings => $c->request->params->{mailings},
+        %hash,
         date_updat => today()->as_d8(),
     });
-    #
-    # which affiliations are checked now?
-    #
-    my @cur_affils = grep { s/^aff(\d+)/$1/ }
-                     keys %{$c->request->params};
     # delete all old affiliations and create the new ones.
-    # ZZ - later - remember old, if no new do nothing... yes.
-    # if anything changed - just redo all by deleting/adding.
-    # trying to be smarter than this is probably not worth it?
     $c->model("RetreatCenterDB::AffilPerson")->search(
         { p_id => $id },
     )->delete();
-    for my $ca (@cur_affils) {
-        $c->model("RetreatCenterDB::AffilPerson")->create({
-            a_id => $ca,
-            p_id => $id,
-        });
-    }
+    _get_affils($c, $id);
     #
     # in case this person was partnered we must
     # update the partner's address and home phone as well.
@@ -302,14 +399,14 @@ sub update_do : Local {
     if ($id_sps != 0) {
         $partner = $c->model("RetreatCenterDB::Person")->find($id_sps);
         $partner->update({
-            addr1    => $addr1,
-            addr2    => $addr2,
-            city     => $c->request->params->{city},
-            st_prov  => $c->request->params->{st_prov},
-            zip_post => $zip_post,
-            country  => $c->request->params->{country},
-            akey     => nsquish($addr1, $addr2, $zip_post),
-            tel_home => $c->request->params->{tel_home},
+            addr1    => $hash{addr1},
+            addr2    => $hash{addr2},
+            city     => $hash{city},
+            st_prov  => $hash{st_prov},
+            zip_post => $hash{zip_post},
+            country  => $hash{country},
+            akey     => $hash{akey},
+            tel_home => $hash{tel_home},
         });
     }
 
@@ -322,166 +419,7 @@ sub update_do : Local {
         $verb = "were"
     }
     $msg .= " $verb updated.";
-    #
-    # look for possible duplicates and give a warning.
-    # I know it would be better to catch a possible duplicate and prevent
-    # it from being created at all but that's more work.
-    # Perhaps later.
-    #
-    my @dups = $c->model("RetreatCenterDB::Person")->search(
-        {
-            last  => $last,
-            first => $first,
-            id    => { "!=", $id },     # but not ourselves
-        },
-    );
-    my $Clast  = substr($last, 0, 1);
-    my $Cfirst = substr($first, 0, 1);
-    push @dups, $c->model("RetreatCenterDB::Person")->search(
-        {
-            last  => { 'like' => "$Clast%"  },
-            first => { 'like' => "$Cfirst%" },
-            akey  => $akey,
-            id    => { "!=", $id },     # but not ourselves
-        }
-    );
-    my %seen;
-    @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups :)
-    my $dups;
-    for my $d (@dups) {
-        $dups .= _view_person($d) . ", ";
-    }
-    if ($dups) {
-        $dups =~ s{, $}{};     # final ', '
-        my $pl = (@dups == 1)? "": "s";
-        $dups = " - Possible duplicate$pl: $dups.";
-    }
-    $c->flash->{message} = $msg . $dups;
-    $c->response->redirect($c->uri_for('/person/search'));
-}
-
-sub create : Local {
-    my ($self, $c) = @_;
-
-    $c->stash->{mailings}    = "checked";
-    $c->stash->{affil_table} = affil_table($c);
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "person/create_edit.tt2";
-}
-
-sub _view_person {
-    my ($p) = @_;
-    "<a href='/person/view/" . $p->id . "'>"
-    . $p->first . " " . $p->last
-    . "</a>";
-}
-
-#
-#
-#
-sub create_do : Local {
-    my ($self, $c) = @_;
-
-    # dates are either blank or converted to d8 format
-    my $last     = $c->request->params->{last};
-    my $first    = $c->request->params->{first};
-    my $sex      = $c->request->params->{sex};
-    my $addr1    = $c->request->params->{addr1};
-    my $addr2    = $c->request->params->{addr2};
-    my $city     = $c->request->params->{city};
-    my $zip_post = $c->request->params->{zip_post};
-    my $st_prov  = $c->request->params->{st_prov};
-    my $country  = $c->request->params->{country};
-    my $akey     = nsquish($addr1, $addr2, $zip_post);
-
-    # consolidate create/update validation???
-    my @mess;
-    if (empty($last)) {
-        push @mess, "Last name cannot be blank.";
-    }
-    if (empty($first)) {
-        push @mess, "First name cannot be blank.";
-    }
-    if ($sex ne 'F' && $sex ne 'M') {
-        push @mess, "You must specify Male or Female.";
-    }
-    if ($addr1 && usa($country) && ! valid_state($st_prov)) {
-        push @mess, "Invalid state: $st_prov";
-    }
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "person/error.tt2";
-        return;
-    }
-
-    my $p = $c->model("RetreatCenterDB::Person")->create({
-        last     => $c->request->params->{last},
-        first    => $c->request->params->{first},
-        sanskrit => $c->request->params->{sanskrit},
-        sex      => $sex,
-        addr1    => $addr1,
-        addr2    => $addr2,
-        city     => $city,
-        st_prov  => $st_prov,
-        zip_post => $zip_post,
-        country  => $country,
-        akey     => $akey,
-        email    => trim($c->request->params->{email}),
-        tel_home => $c->request->params->{tel_home},
-        tel_work => $c->request->params->{tel_work},
-        tel_cell => $c->request->params->{tel_cell},
-        comment  => $c->request->params->{comment},
-        mailings => $c->request->params->{mailings},
-        date_updat => today()->as_d8(),
-        date_entrd => today()->as_d8(),
-    });
-    my $id = $p->id();
-    #
-    # which affiliations are checked?
-    #
-    my @cur_affils = grep { s/^aff(\d+)/$1/ }
-                     keys %{$c->request->params};
-    for my $ca (@cur_affils) {
-        $c->model("RetreatCenterDB::AffilPerson")->create({
-            a_id => $ca,
-            p_id => $id,
-        });
-    }
-    #
-    # look for possible duplicates and give a warning.
-    # I know it would be better to catch a possible duplicate and prevent
-    # it from being created at all but that's more work.
-    # Perhaps later.
-    #
-    my @dups = $c->model("RetreatCenterDB::Person")->search(
-        {
-            last  => $last,
-            first => $first,
-            id    => { "!=", $id },     # but not ourselves
-        },
-    );
-    my $Clast  = substr($last, 0, 1);
-    my $Cfirst = substr($first, 0, 1);
-    push @dups, $c->model("RetreatCenterDB::Person")->search(
-        {
-            last  => { 'like' => "$Clast%"  },
-            first => { 'like' => "$Cfirst%" },
-            akey  => $akey,
-            id    => { "!=", $id },     # but not ourselves
-        }
-    );
-    my %seen;
-    @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups :)
-    my $dups;
-    for my $d (@dups) {
-        $dups .= _view_person($d) . ", ";
-    }
-    if ($dups) {
-        $dups =~ s{, $}{};     # final ', '
-        my $pl = (@dups == 1)? "": "s";
-        $dups = " - Possible duplicate$pl: $dups.";
-    }
-    $c->flash->{message} = "Created " . _view_person($p) . $dups;
+    $c->flash->{message} = $msg . _get_dups($c, $id, $p);
     $c->response->redirect($c->uri_for('/person/search'));
 }
 

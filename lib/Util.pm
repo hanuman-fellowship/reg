@@ -18,10 +18,12 @@ our @EXPORT_OK = qw/
     housing_types
     parse_zips
     sys_template
+    compute_glnum
+    valid_email
 /;
 
 use POSIX   qw/ceil/;
-use Date::Simple qw/d8/;
+use Date::Simple qw/d8 date/;
 use Lookup;
 
 my ($naffils, @affils, %checked);
@@ -122,6 +124,7 @@ sub leader_table {
 sub trim {
     my ($s) = @_;
 
+    return unless $s;
     $s =~ s{^\s*|\s*$}{}g;
     $s;
 }
@@ -329,6 +332,65 @@ my %sys_template = map { $_ => 1 } qw/
 sub sys_template {
     my ($file) = @_;
     return exists $sys_template{$file};
+}
+
+#
+# a very tricky calculation
+# I think it's right.
+#
+sub compute_glnum {
+    my ($c, $sdate) = @_;
+
+    my $dt = date($sdate);
+    my $week = $dt->week_of_month;
+    my $day = $dt->day;
+    my $mon = $dt->month;
+    my $dow = $dt->day_of_week;
+
+    # start of that week
+    my $sow = $dt - $dow;
+    if ($sow->month != $mon) {
+        $sow = $dt - ($day - 1);
+    }
+    $sow = $sow->as_d8();
+
+    # end of that week
+    my $eow = $dt + (6-$dow);
+    if ($eow->month != $mon) {
+        $eow = $dt + ($dt->days_in_month - $day);
+    }
+    $eow = $eow->as_d8();
+
+    #
+    # are there other already existing programs or rentals
+    # beginning this same week?  We can't assume
+    # that these events have gl numbers ascending from 1.
+    # an event may have been deleted.
+    #
+    my $num = 1;
+    my @programs = $c->model('RetreatCenterDB::Program')->search({
+        sdate => { between => [ $sow, $eow ] },
+    });
+    my @rentals = $c->model('RetreatCenterDB::Rental')->search({
+        sdate => { between => [ $sow, $eow ] },
+    });
+    my $max = 0;
+    for my $e (@programs, @rentals) {
+        my $digit = substr($e->glnum, 4, 1);
+        if ($digit > $max) {
+            $max = $digit;
+        }
+    }
+    return sprintf "%d%02d%d%d", $dt->year % 10, $dt->month, $week, $max+1;
+}
+
+#
+# See: http://en.wikipedia.org/wiki/E-mail_address
+# This should be good enough for MMC.
+#
+sub valid_email {
+    my ($s) = @_;
+    return $s =~ m{[-a-zA-Z0-9.&'+=_]+\@[a-zA-Z0-9.\-]+};
 }
 
 1;

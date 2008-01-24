@@ -23,7 +23,7 @@
 
 <tr>
 <th align=right>GL Number</th>
-<td><input type=text name=glnum value="[% rental.glnum %]" size=7></td>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
 <td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td> 
 </tr>
 

@@ -9,3 +9,21 @@ If the pictures have changed, click <a href="/program/publish_pics">here</a> to 
 To see the published events in a new window click <a target=_blank href="http://www.mountmadonna.org/[% ftp_dir2 %]/events.html">here</a>.
 <p>
 To see only the programs click <a target=_blank href="http://www.mountmadonna.org/[% ftp_dir2 %]/programs.html">here</a>.
+[% IF unlinked.0 %]
+<p>
+Unlinked programs:
+<table cellpadding=3 style="margin-left: .3in">
+<tr>
+<th align=left>Name</th>
+<th align=left>Title</th>
+<th align=left>Leaders</th>
+</tr>
+[% FOR p IN unlinked %]
+<tr>
+<td><a href="http://www.mountmadonna.org/[% ftp_dir2 %]/[% p.fname %]">[% p.name %]</a></td>
+<td>[% p.title %]</td>
+<td>[% p.leader_names %]</td>
+</tr>
+[% END %]
+</table>
+[% END %]

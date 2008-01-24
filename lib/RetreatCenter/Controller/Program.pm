@@ -14,6 +14,7 @@ use Util qw/
     resize
     housing_types
     sys_template
+    compute_glnum
 /;
 use Date::Simple qw/date today/;
 use Net::FTP;
@@ -67,7 +68,6 @@ sub create : Local {
     $c->stash->{template}    = "program/create_edit.tt2";
 }
 
-my (%hash, @mess);
 my %readable = (
     sdate   => 'Start Date',
     edate   => 'End Date',
@@ -78,6 +78,8 @@ my %readable = (
     full_tuition => 'Full Tuition',
     extradays    => 'Extra Days',
 );
+my %hash;
+my @mess;
 sub _get_data {
     my ($c) = @_;
 
@@ -96,6 +98,9 @@ sub _get_data {
     }
     $hash{url} =~ s{^\s*http://}{};
 
+    if (! $hash{linked} && $hash{ptemplate} eq 'template') {
+        push @mess, "Unlinked programs cannot use the standard template.";
+    }
     for my $f (qw/ name title /) {
         if ($hash{$f} !~ m{\S}) {
             push @mess, "$readable{$f} cannot be blank";
@@ -104,7 +109,7 @@ sub _get_data {
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate /) {
         my $fld = $hash{$d};
-        if ($hash{name} !~ m{personal\s*retreat}i && $fld !~ /\S/) {
+        if ($hash{name} !~ m{personal\s+retreat}i && $fld !~ /\S/) {
             push @mess, "Missing $readable{$d} field";
             next;
         }
@@ -128,11 +133,20 @@ sub _get_data {
             push @mess, "$readable{$f} must be a number";
         }
     }
-    if ($hash{extradays} && $hash{full_tuition} < $hash{tuition}) {
-        push @mess, "Full Tuition must be more than normal Tuition.";
+    if ($hash{extradays}) {
+        if ($hash{full_tuition} < $hash{tuition}) {
+            push @mess, "Full Tuition must be more than normal Tuition.";
+        }
+    }
+    else {
+        $hash{full_tuition} = 0;    # it has no meaning if > 0.
     }
     if ($hash{footnotes} =~ m{[^\*%+]}) {
         push @mess, "Footnotes can only contain *, % and +";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "program/error.tt2";
     }
 }
 
@@ -140,11 +154,11 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
-        return;
-    }
+    return if @mess;
+
+    # gl num is computed not gotten
+    $hash{glnum} = ($hash{name} =~ m{personal\s+retreat}i)?
+                        '99999': compute_glnum($c, $hash{sdate});
 
     my $upload = $c->request->upload('image');
     my $p = $c->model("RetreatCenterDB::Program")->create({
@@ -176,13 +190,25 @@ sub create_do : Local {
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
+my @day_name = qw/
+    Sun
+    Mon
+    Tue
+    Wed
+    Thu
+    Fri
+    Sat
+/;
 sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->stash->{program}
         = $c->model("RetreatCenterDB::Program")->find($id);
+    # prepare the dates and the days of the week
     for my $w (qw/ sdate edate /) {
-        $c->stash->{$w} = date($p->$w) || "";
+        if (my $d = $c->stash->{$w} = date($p->$w) || "") {
+            $c->stash->{"$w\_dow"} = $day_name[$d->day_of_week()];
+        }
     }
     for my $w (qw/ webdesc brdesc confnote /) {
         my $s = $p->$w();
@@ -271,6 +297,7 @@ sub update : Local {
         <root/static/templates/*.html>
     ];
 
+    $c->stash->{edit_gl}     = $c->check_user_roles('super_admin');
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "program/create_edit.tt2";
 }
@@ -279,12 +306,11 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
-        return;
-    }
+    return if @mess;
 
+    if (! $c->check_user_roles('super_admin')) {
+        delete $hash{glnum};
+    }
     if (my $upload = $c->request->upload('image')) {
         $upload->copy_to("root/static/images/po-$id.jpg");
         Lookup->init($c);
@@ -293,31 +319,46 @@ sub update_do : Local {
     }
     my $p = $c->model("RetreatCenterDB::Program")->find($id);
     # is there a FULL version?
-    my @recs = $c->model("RetreatCenterDB::Program")->search({
+    my ($p_full) = $c->model("RetreatCenterDB::Program")->search({
         name => $p->name . " FULL",
     });
-    my $p_full;
-    if (@recs) {
-        $p_full = $recs[0];
-    }
     $p->update(\%hash);
-    if ($p->extradays && $p_full) {
-        # what if not before but now?
-        # we'd need to do a create rather than an update :(
-        # this is very messy - is there a better way?
+    # there are several possibilities...
+    if ($p->extradays) {
         my $full_edate = date($hash{edate}) + $hash{extradays};
-        $p_full->update({
-            %hash,
-            image     => "",
-            edate     => $full_edate->as_d8(),
-            name      => "$hash{name} FULL",
-            webready  => "",
-            linked    => "",
-            webdesc   => "",
-            brdesc    => "",
-            ptemplate => "",
-            url       => "",
-        });
+        if ($p_full) {
+            $p_full->update({
+                %hash,
+                image     => "",
+                edate     => $full_edate->as_d8(),
+                name      => "$hash{name} FULL",
+                webready  => "",
+                linked    => "",
+                webdesc   => "",
+                brdesc    => "",
+                ptemplate => "",
+                url       => "",
+            });
+        }
+        else {
+            $c->model("RetreatCenterDB::Program")->create({
+                %hash,
+                image     => "",
+                edate     => $full_edate->as_d8(),
+                name      => "$hash{name} FULL",
+                webready  => "",
+                linked    => "",
+                webdesc   => "",
+                brdesc    => "",
+                ptemplate => "",
+                url       => "",
+            });
+        }
+    }
+    else {
+        if ($p_full) {
+            $p_full->delete();
+        }
     }
     $c->response->redirect($c->uri_for("/program/view/" . $p->id));
 }
@@ -484,6 +525,7 @@ sub publish : Local {
     # the leaders or the program picture
     # to the holding area.
     #
+    my @unlinked;
     my $tag_regexp = '<!--\s*T\s+(\w+)\s*-->';
     for my $p (@programs) {
         my $fname = $p->fname();
@@ -495,6 +537,9 @@ sub publish : Local {
         }xge;
         print {$out} $copy;
         close $out;
+        if (! $p->linked) {
+            push @unlinked, $p;
+        }
     }
 
     #
@@ -603,6 +648,7 @@ sub publish : Local {
     $ftp->quit();
     chdir "..";
     $c->stash->{ftp_dir2} = $lookup{ftp_dir2};
+    $c->stash->{unlinked} = \@unlinked;
     $c->stash->{template} = "program/published.tt2";
 }
 
@@ -805,11 +851,11 @@ sub gen_regtable {
             next if $t =~ /economy/     && !$p->economy;
             next if $t =~ /single_bath/ && !$p->sbath;
             next if $t =~ /center_tent/
-                && !($p->name =~ m{personal\s*retreat}i
+                && !($p->name =~ m{personal\s+retreat}i
                      || $p->name =~ m{tnt}i
                      || (5 <= $month && $month <= 10));
             next if $t =~ m{triple|dormitory}
-                    && $p->name =~ m{personal\s*retreat}i;
+                    && $p->name =~ m{personal\s+retreat}i;
             print {$regt} "basic $t\t", $p->fees(0, $t), "\n";
             if ($p->extradays) {
                 print {$regt} "full $t\t", $p->fees(1, $t), "\n";

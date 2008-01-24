@@ -9,7 +9,7 @@ my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
 my $af_sql = "insert into affils values(?, ?)";
 my $af_sth = $dbh->prepare($af_sql)
     or die "no prep affil\n";
-my $p_sql = "insert into people values(". ("?," x 20) . "?)";
+my $p_sql = "insert into people values(". ("?," x 21) . "'' )";
 my $p_sth = $dbh->prepare($p_sql)
     or die "no prep people\n";
 my $ap_sql = "insert into affil_people values(?, ?)";
@@ -35,6 +35,7 @@ open my $people, "<", "people"
     or die "cannot open people: $!\n";
 $n = 0;
 $|++;
+my %no_affil;
 while (<$people>) {
     chomp;
     ++$n;
@@ -67,8 +68,9 @@ while (<$people>) {
         if (exists $affil_id{$a}) {
             $ap_sth->execute($affil_id{$a}, $flds[16]);
         }
-        else {
+        elsif (! exists $no_affil{$a}) {
             print "no affil letter $a??\n";
+            $no_affil{$a} = 1;
         }
     }
 }

@@ -375,7 +375,29 @@ sub month { return (&as_ymd) [1]; }
 sub day   { return (&as_ymd) [2]; }
 
 sub day_of_week {
-    return ((${$_[0]} + 4) % 7);
+    return (($_[0]->{days} + 4) % 7);
+}
+
+#
+# there's probably a more concise way.
+# some arithmetic direct calculation
+# but this should be quick enough.
+#
+sub week_of_month {
+    my ($self) = @_;
+    my $day = $self->day;
+    my $mon = $self->month;
+    my $yr  = $self->year;
+    my $fdow = date($yr, $mon, 1)->day_of_week;
+    my $wk = 1;
+    for (1 .. $day-1) {
+        ++$fdow;
+        if ($fdow == 7) {
+            $fdow = 0;
+            ++$wk;
+        }
+    }
+    return $wk;
 }
 
 #------------------------------------------------------------------------------

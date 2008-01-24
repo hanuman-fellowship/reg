@@ -6,8 +6,9 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
-use Util qw/affil_table parse_zips empty/;
+use Util qw/affil_table parse_zips empty trim/;
 use Date::Simple qw/date today/;
+use Template;
 
 Date::Simple->default_format("%D");      # set it here - where else???
 
@@ -111,6 +112,10 @@ sub _get_data {
     unless ($hash{nrecs} =~ m{^\s*\d*\s*$}) {
         push @mess, "illegal Number of Records: $hash{nrecs}";
     }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "report/error.tt2";
+    }
 }
 
 #
@@ -124,14 +129,9 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "report/error.tt2";
-        return;
-    }
-    $c->model("RetreatCenterDB::Report")->find($id)->update({
-        %hash,
-    });
+    return if @mess;
+
+    $c->model("RetreatCenterDB::Report")->find($id)->update(\%hash);
 
     #
     # which affiliations are checked?
@@ -166,11 +166,8 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     _get_data($c);
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "report/error.tt2";
-        return;
-    }
+    return if @mess;
+
     my $report = $c->model("RetreatCenterDB::Report")->create({
         %hash,
         last_run  => '',
@@ -192,12 +189,17 @@ sub create_do : Local {
     $c->forward("view/$id");
 }
 
+sub count : Local {
+    my ($self, $c, $id) = @_;
+    run($self, $c, $id, 1);     # add parameter
+}
+
 #
 # execute the report generating the proper output
 # for the people that match the conditions.
 #
 sub run : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $count_only) = @_;
 
     my $report = $c->model('RetreatCenterDB::Report')->find($id);
 
@@ -322,82 +324,47 @@ EOS
         @subset = sort { $a <=> $b } @subset;
         @people = @people[@subset];    # slice!
     }
-
-    #
-    # generate a file rather than a screen?
-    # for all???
-    #
-    my $fname = '';
-    if ($report->format() == 4) {       # VistaPrint
-        $fname = "root/static/vistaprint.txt";
-        open my $out, ">", $fname
-            or die "cannot create $fname: $!\n";
-        my $t = "\t";
-        print {$out} join $t,
-            "Salutation",
-            "First name",
-            "Middle",
-            "Last Name",
-            "Suffix",
-            "Title",
-            "Company",
-            "Address Line 1",
-            "Address Line 2",
-            "City",
-            "State",
-            "Zip+4";
-        print {$out} "\n";
-        for my $p (@people) {
-            # accomodate partners
-            if ($p->{name} =~ m{(.*)(\&.*)}) {
-                $p->{first} = $1;
-                $p->{last}  = $2;
-            }
-            print {$out} join $t,
-                "",
-                $p->{first},
-                "",
-                $p->{last},
-                "",
-                "",
-                "",
-                $p->{addr1},
-                $p->{addr2},
-                $p->{city},
-                $p->{st_prov},
-                $p->{zip_post};
-            print {$out} "\n";
-        }
-        close $out;
-    }
-    elsif ($report->format() == 5) {       # Just Email
-        $fname = "root/static/just_email.txt";
-        open my $out, ">", $fname
-            or die "cannot create $fname: $!\n";
-        for my $p (@people) {
-            print {$out} $p->{email}, "\n";
-        }
-        close $out;
+    if ($count_only) {
+        $c->stash->{message} = "Record count = " . scalar(@people);
+        view($self, $c, $id);
+        return;
     }
     #
-    # finally, mark the report as having been run today.
+    # mark the report as having been run today.
     #
     $report->update({
         last_run => today(),
     });
+    if ($report->format() == 4) {       # VistaPrint
+        for my $p (@people) {
+            # accomodate partners
+            if ($p->{name} =~ m{(.*)(\&.*)}) {
+                $p->{first} = trim($1);
+                $p->{last}  = $2;
+            }
+        }
+    }
 
-    $fname =~ s{root/}{};       # why is this needed???
-
-    # either
-    $c->stash->{count}    = scalar(@people);
-    $c->stash->{filename} = $fname;
-    $c->stash->{people}   = \@people;
-    $c->stash->{template} = "report/run" . $report->format() . ".tt2";
-
-    # or to show it directly (with the below)???
-    # it is nice to see #recs.
-    # could have a format for just the count.
-    #$c->response->redirect($c->uri_for("/$fname"));
+    my $fname = 'report' . $report->format();
+    my $suf = "txt";
+    if (open my $in, "<", "root/src/report/$fname.tt2") {
+        my $line = <$in>;
+        if ($line =~ m{^<}) {
+            # it is likely HTML
+            $suf = "html";
+        }
+    }
+    # use the template toolkit outside of the Catalyst mechanism
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src/report',
+        EVAL_PERL    => 0,
+    });
+    $tt->process(
+        "$fname.tt2", 
+         { people => \@people },
+         "root/static/$fname.$suf",
+    );
+    $c->response->redirect($c->uri_for("/static/$fname.$suf"));
 }
 
 1;

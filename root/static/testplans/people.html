@@ -10,13 +10,20 @@ Search
     try substring instead of prefix
     try sanskrit, zip, email, first, and home phone.
         the numbers in home phone are not necessarily
-            sequential...  okay if you give 10 digits.
+            sequential...  this is okay if you give the full 10 digits.
             otherwise sort of weird - but useful nonetheless.
-    ask for more/less records (instead of Number of Records = 10).
+            if the pattern is quoted:
+                '1432'
+                or
+                '460-'
+            then it will match exactly (either substring or prefix).
+    ask for more/less records (instead of Records per Page = 10).
 
     None found? You stay at the search screen.
+        With _all_ of your search attributes preserved so you
+        can easily correct them.
 
-    Try "Next 10" until there are no more.
+    If more per page than shown - Try "Next 10" until there are no more.
 
 Create a Person
     fill in all fields (country defaults to USA)
@@ -28,7 +35,8 @@ Create a Person
 
     give incorrect State (in the U.S.)
     Leave sex unchosen - get error.
-    invalid dates for hf.    13/1/2009 or blah or 2/29/3
+    Give a multiple lined comment and verify
+        it looks correct after creation.
 
 Affiliations
     Click on Affiliations at the top
@@ -57,7 +65,16 @@ Create a duplicate record, see the warning about _possible_ dups.
     or similar address with first and last initials the same:
         Joe Smith   123 Orange St Tampa, FL 34510
         Joseph Smith 123 Orange Stree Tampa, FL 34510
-    similar dup checks are done after an update
+    similar dup checks are done after an update of an existing recrod
+        (rather than a new creation).  verify this.
+    If a duplicate is found with the checks above, the two (or more)
+        people involved will have their records marked "Ambiguous".
+        This is turned on automatically.  Turning it off
+        needs to be done manually if and when an ambiguity is resolved.
+        How about someone in the reception office contacting
+        each person with an ambiguous name and asking for
+        a middle initial to prepend to the first name?
+        Good idea but unlikely to happen. :(
 
 Partners
     Choose a person (that is not partnered).
@@ -80,12 +97,39 @@ Partners
     Delete one of a partnership and note that the undeleted partner
         is now no longer partnered.
     Edit the address or home phone of a partnered person
-        and note that these fields of their partner are updated as well.
+        and verify that these fields of their partner are updated as well.
+        and that each person's 'last updated' date is changed to today.
 
 Listings
-    phone list - people with "Phone List" affiliation checked
-        note that it is sorted by Sanskrit column
-        and that in the absence of a Sanskrit name, first is used.
+    phone lists
+        3 different ones.
+        - all include only people with "Phone List" affiliation checked
+
+        #1 note that it is sorted by Sanskrit column
+           and that in the absence of a Sanskrit name, first is used.
+           no cell phone
+        #2 all in one line - not columns
+           if only one phone - no letter following, otherwise
+           a h, w or c (for home work cell).
+        #3 just phone numbers
+
+        in all cases you can print the page - or save it to a file.
+            no links at the top for navigation.
+        to continue you must use 'Back' button on browser
+            or a bookmark to return to the home page of reg2.
+        alternatively you can open the phone list
+            in a separate tab or separate window - this is
+            browser dependent.  All users should be trained
+            in how to do this.  This knowledge is useful for ANY use of
+            the browser; not just reg.
+
+    Purge Stale Addresses
+        Upload a text file containing email addresses.
+        They will be removed from people's records.
+            (Not from rental, leaders, or users).
+        You'll see a count of how many email addresses
+            were detected in the file you uploaded.
+
     Unduplication List
         A list of _possible_ duplicates.
         Generate it once and save it and use it to do research.
@@ -96,29 +140,52 @@ Listings
             and
                 123 Ornge Street Tampa, FL 12341
             are numerically close.
-    Purge Stale Addresses
-        Upload a file containing email addresses.
-        They will be removed from people's records.
+    Email check
+        this checks all records for invalid email addresses
+        and allows you to go directly to the record to edit it.
 
 Reports
-    Create a report - giving a description and zip code range.
+    Create a report - giving a description and a zip code range.
     Format - choose "Name, Address, Email"
     Sort - Last Name or Zip
         Run the report.   See the rows on the screen. 
-    Change format to "Email to VistaPrint"
-        ReRun.  Reports the count and the listing
-            goes in a file - which you can save or view
-            with normal browser actions.
+        The report can be printed directly or saved if needed.
+    Change format to "Email to VistaPrint" and re-run.
     Change "Number of Records" to something less than the count.
         ReRun.   This is a random sample of the prior listing's rows.
-    Change the report and select some affiliations.
+    Edit the report and select some affiliations.
         Now the listing is restricted to people who
-        have at least one of the affiliations in their record.
+            have at least one of the affiliations in their record.
         Add one of the affiliations to a person not in the
             report and verify they get into the rerunning of the report.
-    In no case should a person with "Mailings" UNchecked be included.
-    Choose a format of "Email".
-        This goes into a file.
+    In no case should a person with "Mailings" UNchecked be included
+        in any report.
+    Choose a format of "Just Email".
         Only people with non-blank emails will be included.
         Sorted by email.
+
+    Try an invalid zip code range.  Make some mistakes.
+    Try several zip code ranges in the one field - like this:
+
+        95060-95062, 89012-89450, 01234
+
+    Verify you can delete reports.
+    Try the "Count" link instead of "Run" to get
+         a count of how many records will appear in the report
+         when it is run.
+
+    In the formats other than "Just Email" note that if both
+        partners make it into the report (affiliations match)
+        then the partners will be coalesced/merged/joined
+        into a single record.  Note the different name
+        that is displayed - if the partners have the same
+        last name it is not repeated:
+            
+            Mary Smith & John Doe
+            Penny & Charlie Trager
+
+        A weakness I just noticed - Partners don't necessarily
+        have the same work or cell number - and in the Format listing
+        the 3 phone numbers there is only one work and cell number.
+        Hmmm.  Not a big problem but not right, either.
 </pre>
