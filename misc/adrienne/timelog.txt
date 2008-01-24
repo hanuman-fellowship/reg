@@ -1,0 +1,6 @@
+Jan 9 2:00-5:00
+    introductory overview of project, documentation
+    went through testplan for people, affiliation
+    HTML tutorial
+Jan 15 2:30-5:45
+    further testplans, explanations
