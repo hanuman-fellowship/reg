@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Listing;
 use base 'Catalyst::Controller';
 
 use Person;
-use Util qw/valid_email/;
+use Util qw/valid_email model/;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -216,7 +216,7 @@ EOS
     }
     $sth->finish();
     for my $id (keys %dups) {
-        $c->model('RetreatCenterDB::Person')->find($id)->update({
+        model($c, 'Person')->find($id)->update({
             ambiguous => 'yes',
         });
     }
@@ -263,7 +263,7 @@ sub stale : Local {
     if ($upload) {
         my @emails = $upload->slurp =~ m{\S+\@\S+}g;
         $n = @emails;
-        $c->model("RetreatCenterDB::Person")->search(
+        model($c, 'Person')->search(
             { email => { -in => \@emails } },
         )->update({
             email => '',
@@ -278,7 +278,7 @@ sub email_check : Local {
 
     my @people;
     my $email;
-    for my $p ($c->model('RetreatCenterDB::Person')->search(
+    for my $p (model($c, 'Person')->search(
         { email => { "!=", "" }},
         { order_by => 'email' },
     )) {
@@ -292,6 +292,22 @@ sub email_check : Local {
               @people;
     $c->stash->{people} = \@people;
     $c->stash->{template} = "listing/bad_email.tt2";
+}
+
+# temp
+sub registrations : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{registrations} = [ model($c, 'Registration')->all() ];
+    $c->stash->{programs}      = [ model($c, 'Program')->all() ];
+    $c->stash->{bjs} = [
+        model($c, 'Person')->search(
+            {
+                last => { like => 'Bj%'},
+            },
+        )
+    ];
+    $c->stash->{template} = "listing/registrations.tt2";
 }
 
 1;

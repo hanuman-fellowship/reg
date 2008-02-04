@@ -5,7 +5,7 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
-use Util qw/empty/;
+use Util qw/empty model/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -17,7 +17,7 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{housecosts} = [
-        $c->model('RetreatCenterDB::HouseCost')->search(
+        model($c, 'HouseCost')->search(
             undef,
             {
                 order_by => 'name',
@@ -30,7 +30,7 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    my $hc = $c->model('RetreatCenterDB::HouseCost')->find($id);
+    my $hc = model($c, 'HouseCost')->find($id);
     if ($hc->name eq 'Default') {
         $c->stash->{template} = "housecost/nodel_default.tt2";
         return;
@@ -41,7 +41,7 @@ sub delete : Local {
         $c->stash->{template} = "housecost/cannot_del.tt2";
         return;
     }
-    $c->model('RetreatCenterDB::HouseCost')->search({id => $id})->delete();
+    model($c, 'HouseCost')->search({id => $id})->delete();
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
 
@@ -49,7 +49,7 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $hc = $c->stash->{housecost} = 
-        $c->model('RetreatCenterDB::HouseCost')->find($id);
+        model($c, 'HouseCost')->find($id);
     my $type = $hc->type();
     $c->stash->{checked_perday} = ($type eq "Perday")? "checked": "";
     $c->stash->{checked_total}  = ($type eq "Total" )? "checked": "";
@@ -62,29 +62,8 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = ();
+    %hash = %{ $c->request->params() };
     @mess = ();
-    # some way to ask DBIx for this list???
-    # it knows.
-    for my $w (qw/
-        name
-        single
-        double
-        triple
-        quad
-        dormitory
-        economy
-        center_tent
-        own_tent
-        own_van
-        commuting
-        unknown
-        single_bath
-        double_bath
-        type
-    /) {
-        $hash{$w} = $c->request->params->{$w};
-    }
     if (empty($hash{name})) {
         push @mess, "Missing housing cost name.";
     }
@@ -104,16 +83,15 @@ sub update_do : Local {
 
     _get_data($c);
     return if @mess;
-    $c->model("RetreatCenterDB::HouseCost")->find($id)->update(\%hash);
+    model($c, 'HouseCost')->find($id)->update(\%hash);
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
 
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{housecost}
-        = $c->model("RetreatCenterDB::HouseCost")->find($id);
-    $c->stash->{template} = "housecost/view.tt2";
+    $c->stash->{housecost} = model($c, 'HouseCost')->find($id);
+    $c->stash->{template}  = "housecost/view.tt2";
 }
 
 sub create : Local {
@@ -130,7 +108,7 @@ sub create_do : Local {
 
     _get_data($c);
     return if @mess;
-    $c->model("RetreatCenterDB::HouseCost")->create(\%hash);
+    model($c, 'HouseCost')->create(\%hash);
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
 

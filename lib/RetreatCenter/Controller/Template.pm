@@ -3,7 +3,7 @@ use warnings;
 package RetreatCenter::Controller::Template;
 use base 'Catalyst::Controller';
 
-use Util qw/sys_template/;
+use Util qw/sys_template model/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -40,7 +40,7 @@ sub upload : Local {
 sub delete : Local {
     my ($self, $c, $fname) = @_;
 
-    if (my @programs = $c->model('RetreatCenterDB::Program')->search({
+    if (my @programs = model($c, 'Program')->search({
                                  ptemplate => $fname,
                                 })
     ) {

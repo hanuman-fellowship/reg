@@ -4,11 +4,15 @@
 
 <tr>
 <th align=right><span class="required">*</span> Name</th>
+[% IF canpol.name == 'Default' %]
+<td>[% canpol.name %]</td>
+[% ELSE %]
 <td><input type=text name=name value="[% canpol.name %]"></td>
+[% END %]
 </tr>
 
 <tr>
-<th align=right valign=top>Policy</th>
+<th align=right valign=top><span class="required">*</span> Policy</th>
 <td><textarea cols=50 rows=5 name=policy>[% canpol.policy %]</textarea></td>
 </tr>
 

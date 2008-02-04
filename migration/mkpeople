@@ -20,7 +20,9 @@ create table people (
     date_updat text,
     date_entrd text,
     comment text,
-    mailings text,
+    e_mailings text,
+    snail_mailings text,
+    share_mailings text,
     ambiguous text
 );
 drop table if exists affils;

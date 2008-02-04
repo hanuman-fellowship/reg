@@ -25,6 +25,7 @@ __PACKAGE__->load_classes({
         String
         Member
         SponsHist
+        Registration
     /]
 });
 

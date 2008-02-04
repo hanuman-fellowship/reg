@@ -3,7 +3,13 @@ use warnings;
 package RetreatCenter::Controller::User;
 use base 'Catalyst::Controller';
 
-use Util qw/trim empty role_table valid_email/;
+use Util qw/
+    trim
+    empty
+    role_table
+    valid_email
+    model
+/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -17,7 +23,7 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{users} = [
-        $c->model('RetreatCenterDB::User')->search(
+        model($c, 'User')->search(
             undef,
             { order_by => 'username' }
         )
@@ -28,8 +34,8 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    $c->model('RetreatCenterDB::User')->search({id => $id})->delete();
-    $c->model('RetreatCenterDB::UserRole')->search(
+    model($c, 'User')->search({id => $id})->delete();
+    model($c, 'UserRole')->search(
         { user_id => $id }
     )->delete();
     $c->response->redirect($c->uri_for('/user/list'));
@@ -38,7 +44,7 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $u = $c->stash->{user} = $c->model('RetreatCenterDB::User')->find($id);
+    my $u = $c->stash->{user} = model($c, 'User')->find($id);
     $c->stash->{role_table} = role_table($c, $u->roles());
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "user/create_edit.tt2";
@@ -49,16 +55,10 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = ();
+    %hash = %{ $c->request->params() };
     @mess = ();
-    for my $f (qw/
-        username
-        first
-        last
-        password
-        email
-    /) {
-        $hash{$f} = trim($c->request->params->{$f});
+    for my $f (keys %hash) {
+        $hash{$f} = trim($hash{$f});
         if (empty($hash{$f})) {
             push @mess, "\u$f cannot be blank.";
         }
@@ -81,17 +81,17 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $user =  $c->model("RetreatCenterDB::User")->find($id);
+    my $user =  model($c, 'User')->find($id);
     $user->update(\%hash);
 
     #
     # delete all old and add new roles
     #
-    $c->model("RetreatCenterDB::UserRole")->search(
+    model($c, 'UserRole')->search(
         { user_id => $id },
     )->delete();
     for my $r (_get_roles($c)) {
-        $c->model("RetreatCenterDB::UserRole")->create({
+        model($c, 'UserRole')->create({
             user_id => $id,
             role_id => $r,
         });
@@ -104,7 +104,7 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $u = $c->stash->{user}
-        = $c->model("RetreatCenterDB::User")->find($id);
+        = model($c, 'User')->find($id);
     $c->stash->{template} = "user/view.tt2";
 }
 
@@ -157,11 +157,11 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $u = $c->model("RetreatCenterDB::User")->create(\%hash);
+    my $u = model($c, 'User')->create(\%hash);
     my $id = $u->id;
 
     for my $r (_get_roles($c)) {
-        $c->model("RetreatCenterDB::UserRole")->create({
+        model($c, 'UserRole')->create({
             user_id => $id,
             role_id => $r,
         });
@@ -179,7 +179,6 @@ sub pass : Local {
 sub pass_do : Local {
     my ($self, $c) = @_;
 
-    $c->log->info("user id is " . $c->user->id());
     my $good_pass = $c->user->password;
     my $cur_pass  = $c->request->params->{cur_pass};
     my $new_pass  = $c->request->params->{new_pass};

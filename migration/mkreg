@@ -1,0 +1,35 @@
+drop table if exists registration;
+create table registration (
+    id  integer primary key,
+    person_id integer,
+    program_id integer,
+
+    referral text,
+    adsource text,
+    kids text,      -- rather than 4 sep fields...
+    comment text,
+    confnote text,
+    h_type text,
+    h_name text,
+    perday integer,
+    work_study text,
+    manual text,
+    carpool text,
+    hascar text,  -- 15
+
+    arrived text,
+    total integer,
+
+    date_postmark text,
+
+    balance integer,
+
+    cancelled text,
+
+    date_start text,    -- if different from program start
+    date_end text,      -- if different from program end
+
+    status text,        -- sponsor/life?
+
+    ceu_license text    -- 24
+);

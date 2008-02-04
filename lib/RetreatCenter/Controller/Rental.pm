@@ -4,7 +4,13 @@ package RetreatCenter::Controller::Rental;
 use base 'Catalyst::Controller';
 
 use Date::Simple qw/date/;
-use Util qw/trim empty compute_glnum valid_email/;
+use Util qw/
+    trim
+    empty
+    compute_glnum
+    valid_email
+    model
+/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -28,15 +34,8 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = ();
+    %hash = %{ $c->request->params() };
     @mess = ();
-    for my $w (qw/
-        name title subtitle glnum
-        sdate edate url webdesc
-        linked phone email
-    /) {
-        $hash{$w} = $c->request->params->{$w};
-    }
     $hash{url} =~ s{^\s*http://}{};
     $hash{email} = trim($hash{email});
     if (empty($hash{name})) {
@@ -80,7 +79,7 @@ sub create_do : Local {
     return if @mess;
 
     $hash{glnum} = compute_glnum($c, $hash{sdate});
-    my $p = $c->model("RetreatCenterDB::Rental")->create(\%hash);
+    my $p = model($c, 'Rental')->create(\%hash);
     my $id = $p->id();
     $c->response->redirect($c->uri_for("/rental/view/$id"));
 }
@@ -89,7 +88,7 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->stash->{rental}
-        = $c->model("RetreatCenterDB::Rental")->find($id);
+        = model($c, 'Rental')->find($id);
     for my $w (qw/ sdate edate /) {
         $c->stash->{$w} = date($p->$w) || "";
     }
@@ -105,7 +104,7 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{rentals} = [
-        $c->model('RetreatCenterDB::Rental')->search(
+        model($c, 'Rental')->search(
             undef,
             { order_by => 'title' },
         )
@@ -116,7 +115,7 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->model('RetreatCenterDB::Rental')->find($id);
+    my $p = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $p;
     $c->stash->{"check_linked"}  = ($p->linked())? "checked": "";
     for my $w (qw/ sdate edate /) {
@@ -133,7 +132,7 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $p = $c->model("RetreatCenterDB::Rental")->find($id);
+    my $p = model($c, 'Rental')->find($id);
     $p->update(\%hash);
     $c->response->redirect($c->uri_for("/rental/view/" . $p->id));
 }
@@ -141,7 +140,7 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    $c->model('RetreatCenterDB::Rental')->search(
+    model($c, 'Rental')->search(
         { id => $id }
     )->delete();
     $c->response->redirect($c->uri_for('/rental/list'));

@@ -1,0 +1,4 @@
+<h2>Registration</h2>
+Program [% registration.program.name %]<br>
+From [% registration.program.sdate_obj %] To [% registration.program.edate_obj %]<br>
+Person [% registration.person.first %] [% registration.person.last %]<br>

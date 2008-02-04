@@ -6,7 +6,13 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
-use Util qw/affil_table parse_zips empty trim/;
+use Util qw/
+    affil_table
+    parse_zips
+    empty
+    trim
+    model
+/;
 use Date::Simple qw/date today/;
 use Template;
 
@@ -35,7 +41,7 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{reports} = [
-        $c->model('RetreatCenterDB::Report')->search(
+        model($c, 'Report')->search(
             undef,
             {
                 order_by => 'descrip',
@@ -48,17 +54,8 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    #
-    # i tried using delete_all to do the cascade to the affils for this report.
-    # look at the DBIC_TRACE - it does it very inefficiently :(.
-    # delete with find() does the same.  but not with search()???.
-    #
-    #$c->model('RetreatCenterDB::Report')->search({id => $id})->delete_all();
-    #
-    #$c->model('RetreatCenterDB::Report')->find($id)->delete();
-    #
-    $c->model('RetreatCenterDB::Report')->search({id => $id})->delete();
-    $c->model('RetreatCenterDB::AffilReport')->search({report_id => $id})->delete();
+    model($c, 'Report')->search({id => $id})->delete();
+    model($c, 'AffilReport')->search({report_id => $id})->delete();
 
     $c->forward('list');
 }
@@ -67,7 +64,7 @@ sub delete : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $report = $c->model('RetreatCenterDB::Report')->find($id);
+    my $report = model($c, 'Report')->find($id);
     $c->stash->{format_verbose} = $self->formats->{$report->format()};
     $c->stash->{report} = $report;
     $c->stash->{affils} = [
@@ -83,7 +80,7 @@ sub view : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $report = $c->model('RetreatCenterDB::Report')->find($id);
+    my $report = model($c, 'Report')->find($id);
     $c->stash->{report} = $report;
     $c->stash->{'format_selected_' . $report->format()} = 'selected';
     $c->stash->{'rep_order_selected_' . $report->rep_order()} = 'selected';
@@ -97,11 +94,11 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = ();
-    @mess = ();
-    for my $w (qw/ descrip zip_range rep_order nrecs format /) {
-        $hash{$w} = $c->request->params->{$w};
+    %hash = %{ $c->request->params() };
+    for my $k (keys %hash) {
+        delete $hash{$k} if $k =~ m{^aff\d+$};
     }
+    @mess = ();
     if (empty($hash{descrip})) {
         push @mess, "The report description cannot be blank.";
     }
@@ -131,19 +128,19 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    $c->model("RetreatCenterDB::Report")->find($id)->update(\%hash);
+    model($c, 'Report')->find($id)->update(\%hash);
 
     #
     # which affiliations are checked?
     #
-    $c->model("RetreatCenterDB::AffilReport")->search(
+    model($c, 'AffilReport')->search(
         { report_id => $id },
     )->delete();
 
     my @cur_affils = grep { s/^aff(\d+)/$1/ }
-                     keys %{$c->request->params};
+                     $c->request->param();
     for my $ca (@cur_affils) {
-        $c->model("RetreatCenterDB::AffilReport")->create({
+        model($c, 'AffilReport')->create({
             affiliation_id => $ca,
             report_id => $id,
         });
@@ -168,7 +165,7 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $report = $c->model("RetreatCenterDB::Report")->create({
+    my $report = model($c, 'Report')->create({
         %hash,
         last_run  => '',
     });
@@ -179,9 +176,9 @@ sub create_do : Local {
     # which affiliations are checked?
     #
     my @cur_affils = grep { s/^aff(\d+)/$1/ }
-                     keys %{$c->request->params};
+                     $c->request->param();
     for my $ca (@cur_affils) {
-        $c->model("RetreatCenterDB::AffilReport")->create({
+        model($c, 'AffilReport')->create({
             affiliation_id => $ca,
             report_id => $id,
         });
@@ -189,19 +186,17 @@ sub create_do : Local {
     $c->forward("view/$id");
 }
 
-sub count : Local {
-    my ($self, $c, $id) = @_;
-    run($self, $c, $id, 1);     # add parameter
-}
-
 #
 # execute the report generating the proper output
 # for the people that match the conditions.
 #
+# type is either empty, 'count' or 'share' - or 'countshare'!.
+#
 sub run : Local {
-    my ($self, $c, $id, $count_only) = @_;
+    my ($self, $c, $id, $type) = @_;
 
-    my $report = $c->model('RetreatCenterDB::Report')->find($id);
+    my $report = model($c, 'Report')->find($id);
+    my $format = $report->format();
 
     my $range_ref = parse_zips($report->zip_range);
     # cannot return a scalar... else the edit would have failed...
@@ -233,12 +228,28 @@ sub run : Local {
     my $fields = "first||' '||last as name, p.*";
 
     my $just_email = "";
-    if ($report->format() == 5) {   # Just Email
+    if ($format == 5) {   # Just Email
         # we only want non-blank emails
-        $just_email = " and email != ''";
+        $just_email = "email != '' and ";
         $order = "email";
         $fields = "email";
     }
+
+    # restrictions apply?
+    # have people said they want to be included?
+    my $restrict = "";
+    if ($format == 1 || $format == 2 || $format == 4) {
+        $restrict .= "snail_mailings = 'yes'";
+    }
+    if ($format == 2 || $format == 5) {
+        $restrict .= " and " if $restrict;
+        $restrict .= "e_mailings = 'yes'";
+    }
+    if ($type =~ m{share}) {
+        $restrict .= " and " if $restrict;
+        $restrict .= "share_mailings = 'yes'";
+    }
+    $restrict .= " and " if $restrict;
 
 # ??? without the distinct below
 # we get a row for each person and each affil that matches
@@ -248,7 +259,7 @@ sub run : Local {
 
 select distinct $fields
   from people p $ap
- where mailings = 'yes' $just_email and
+ where $restrict $just_email
        $zip_bool $affil_bool
  order by $order;
 
@@ -324,7 +335,7 @@ EOS
         @subset = sort { $a <=> $b } @subset;
         @people = @people[@subset];    # slice!
     }
-    if ($count_only) {
+    if ($type =~ m{count}) {
         $c->stash->{message} = "Record count = " . scalar(@people);
         view($self, $c, $id);
         return;
@@ -335,7 +346,7 @@ EOS
     $report->update({
         last_run => today(),
     });
-    if ($report->format() == 4) {       # VistaPrint
+    if ($format == 4) {       # VistaPrint
         for my $p (@people) {
             # accomodate partners
             if ($p->{name} =~ m{(.*)(\&.*)}) {
@@ -345,7 +356,7 @@ EOS
         }
     }
 
-    my $fname = 'report' . $report->format();
+    my $fname = "report$format";
     my $suf = "txt";
     if (open my $in, "<", "root/src/report/$fname.tt2") {
         my $line = <$in>;

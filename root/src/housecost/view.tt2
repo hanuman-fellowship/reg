@@ -18,8 +18,18 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 </tr>
 
 <tr>
+<th align=right>Single Bath</th>
+<td>[% housecost.single_bath %]</td>
+</tr>
+
+<tr>
 <th align=right>Single</th>
 <td>[% housecost.single %]</td>
+</tr>
+
+<tr>
+<th align=right>Double Bath</th>
+<td>[% housecost.double_bath %]</td>
 </tr>
 
 <tr>
@@ -71,17 +81,6 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 <th align=right>Unknown</th>
 <td>[% housecost.unknown %]</td>
 </tr>
-
-<tr>
-<th align=right>Single Bath</th>
-<td>[% housecost.single_bath %]</td>
-</tr>
-
-<tr>
-<th align=right>Double Bath</th>
-<td>[% housecost.double_bath %]</td>
-</tr>
-
 <tr>
 <th align=right>Type</th>
 <td>[% housecost.type %]</td>

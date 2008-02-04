@@ -6,7 +6,11 @@
 <a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]"
 onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="[% Catalyst.uri_for('/report/count/') _ report.id %]">Count</a>
+<a href="[% Catalyst.uri_for('/report/run/') _ report.id _ '/sharecount' %]">Share Count</a>
+&nbsp;&nbsp;&nbsp;
+<a href="[% Catalyst.uri_for('/report/run/') _ report.id _ '/share' %]">Share</a>
+&nbsp;&nbsp;&nbsp;
+<a href="[% Catalyst.uri_for('/report/run/') _ report.id _ '/count' %]">Run Count</a>
 &nbsp;&nbsp;&nbsp;
 <a href="[% Catalyst.uri_for('/report/run/') _ report.id %]">Run</a>
 <p>

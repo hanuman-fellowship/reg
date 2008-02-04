@@ -1,6 +1,6 @@
 Sorry, <a href="/person/view/[% person.id %]">[% person.first %] [% person.last %]</a>, is a
-[% IF leader %]<a href="/leader/view/[% leader.id %]">leader</a>[% END %]
+[% IF person.leader %]<a href="/leader/view/[% person.leader.id %]">leader</a>[% END %]
 [% conjunction %]
-[% IF member %]<a href="/member/update/[% member.id %]">member</a>[% END %]
+[% IF person.member %]<a href="/member/update/[% person.member.id %]">member</a>[% END %]
 and can't be deleted.
 <p>

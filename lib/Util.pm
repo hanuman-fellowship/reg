@@ -20,6 +20,8 @@ our @EXPORT_OK = qw/
     sys_template
     compute_glnum
     valid_email
+    digits
+    model
 /;
 
 use POSIX   qw/ceil/;
@@ -56,7 +58,7 @@ sub affil_table {
     my ($c) = shift;
     %checked = map { $_->id() => 'checked' } @_;
 
-    @affils = $c->model('RetreatCenterDB::Affil')->search(
+    @affils = model($c, 'Affil')->search(
         undef,
         { order_by => 'descrip' },
     );
@@ -94,7 +96,7 @@ sub role_table {
     sort {
         $a->fullname cmp $b->fullname
     }
-    $c->model('RetreatCenterDB::Role')->all();
+    model($c, 'Role')->all();
 }
 
 #
@@ -114,7 +116,7 @@ sub leader_table {
         $a->person->last()   cmp $b->person->last() or
         $a->person->first () cmp $b->person->first()
     }
-    $c->model('RetreatCenterDB::Leader')->all();
+    model($c, 'Leader')->all();
 }
 
 #
@@ -188,8 +190,13 @@ sub expand {
     $v =~ s{\r?\n}{\n}g;
 	$v =~ s#(^|\ )\*(.*?)\*#$1<b>$2</b>#smg;
 	$v =~ s#(^|\ )_(.*?)\_#$1<i>$2</i>#smg;
-	$v =~ s#%(.*?)%(.*?)%#<a href='http://$2' target=_blank>$1</a>#sg;
-	$v =~ s{~(.*?)~}{<a href="mailto:$1">$1</a>}sg;
+	$v =~ s{%(.*?)%(.*?)%}
+           {
+               my ($clickpoint, $link) = (trim($1), trim($2));
+               $link =~ s{http://}{};   # string http:// if any
+               "<a href='http://$link' target=_blank>$clickpoint</a>";
+           }esg;
+	$v =~ s{~\s*(\S+)\s*~}{<a href="mailto:$1">$1</a>}sg;
 	my $in_list = "";
 	my $out = "";
 	for (split /\n/, $v) {
@@ -217,6 +224,9 @@ sub expand {
 	$out .= $in_list if $in_list;
 	$out;
 }
+#
+# for the brochure
+#
 sub expand2 {
     my ($v) = @_;
 
@@ -368,10 +378,10 @@ sub compute_glnum {
     # an event may have been deleted.
     #
     my $num = 1;
-    my @programs = $c->model('RetreatCenterDB::Program')->search({
+    my @programs = model($c, 'Program')->search({
         sdate => { between => [ $sow, $eow ] },
     });
-    my @rentals = $c->model('RetreatCenterDB::Rental')->search({
+    my @rentals = model($c, 'Rental')->search({
         sdate => { between => [ $sow, $eow ] },
     });
     my $max = 0;
@@ -391,6 +401,18 @@ sub compute_glnum {
 sub valid_email {
     my ($s) = @_;
     return $s =~ m{[-a-zA-Z0-9.&'+=_]+\@[a-zA-Z0-9.\-]+};
+}
+
+# return only the digits
+sub digits {
+    my ($s) = @_;
+    $s =~ s{\D}{}g;
+    $s;
+}
+
+sub model {
+    my ($c, $table) = @_;
+    return $c->model("RetreatCenterDB::$table");
 }
 
 1;

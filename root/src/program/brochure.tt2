@@ -4,7 +4,7 @@
 <table>
 <tr><td align=right>Season</td><td><input type=text name=season size=3 maxlength=3 value='[% season %]'></td></tr>
 <tr><td align=right>Fees Page #</td><td><input type=text name=fee_page size=2 maxlength=2 value='[% fee_page %]'></td></tr>
-<tr><td>&nbsp;</td><td><input type=submit></td></tr>
+<tr><td>&nbsp;</td><td><input type=submit value="Submit"></td></tr>
 </table>
 </form>
 <script type="text/javascript">document.form.season.focus();</script>

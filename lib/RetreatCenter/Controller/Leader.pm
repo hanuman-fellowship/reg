@@ -4,7 +4,12 @@ package RetreatCenter::Controller::Leader;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/trim resize valid_email/;
+use Util qw/
+    trim
+    resize
+    valid_email
+    model
+/;
 use Lookup;     # resize needs this to have been done
 
 sub index : Private {
@@ -23,7 +28,7 @@ sub list : Local {
             or
             $a->person->first() cmp $b->person->first()
         }
-        $c->model('RetreatCenterDB::Leader')->all()
+        model($c, 'Leader')->all()
     ];
     $c->stash->{template} = "leader/list.tt2";
 }
@@ -31,7 +36,7 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->model('RetreatCenterDB::Leader')->find($id);
+    my $l = model($c, 'Leader')->find($id);
     if (my @programs = $l->programs()) {
         $c->stash->{leader} = $l;
         $c->stash->{programs} = \@programs;
@@ -53,17 +58,15 @@ sub del_confirm : Local {
 
 sub _del {
     my ($c, $id) = @_;
-    $c->model('RetreatCenterDB::Leader')->search({id => $id})->delete();
-    $c->model('RetreatCenterDB::LeaderProgram')
-        ->search({l_id => $id})->delete();
+    model($c, 'Leader')->search({id => $id})->delete();
+    model($c, 'LeaderProgram')->search({l_id => $id})->delete();
     unlink <root/static/images/l*-$id.jpg>;
 }
 
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->stash->{leader} = 
-        $c->model('RetreatCenterDB::Leader')->find($id);
+    my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
     $c->stash->{person} = $l->person();
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "leader/create_edit.tt2";
@@ -78,7 +81,7 @@ sub update_do : Local {
         $c->stash->{template} = "leader/bad_email.tt2";
         return;
     }
-    my $leader =  $c->model("RetreatCenterDB::Leader")->find($id);
+    my $leader =  model($c, 'Leader')->find($id);
     my @upd = ();
     if (my $upload = $c->request->upload('image')) {
         $upload->copy_to("root/static/images/lo-$id.jpg");
@@ -101,8 +104,7 @@ sub update_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->stash->{leader}
-        = $c->model("RetreatCenterDB::Leader")->find($id);
+    my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
     my $bio = $l->biography();
     $bio =~ s{\r?\n}{<br>\n}g if $bio;
     $c->stash->{biography} = $bio;
@@ -112,8 +114,7 @@ sub view : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->stash->{person}
-        = $c->model("RetreatCenterDB::Person")->find($person_id);
+    $c->stash->{person} = model($c, 'Person')->find($person_id);
     $c->stash->{form_action} = "create_do/$person_id";
     $c->stash->{template}    = "leader/create_edit.tt2";
 }
@@ -130,7 +131,7 @@ sub create_do : Local {
     my $upload = $c->request->upload('image');
     my $url = $c->request->params->{url};
     $url =~ s{^\s*http://}{};
-    my $l = $c->model("RetreatCenterDB::Leader")->create({
+    my $l = model($c, 'Leader')->create({
         person_id    => $person_id,
         public_email => $email,
         image        => $upload? "yes": "",
@@ -149,8 +150,7 @@ sub create_do : Local {
 sub del_image : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->stash->{leader}
-        = $c->model("RetreatCenterDB::Leader")->find($id);
+    my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
     $l->update({
         image => "",
     });

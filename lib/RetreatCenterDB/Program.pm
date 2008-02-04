@@ -35,31 +35,45 @@ __PACKAGE__->add_columns(qw/
     collect_total
     linked
     ptemplate
+    cl_template
     sbath
     quad
     economy
     footnotes
+    reg_start
+    reg_end
+    prog_start
+    prog_end
     school
     level
 /);
-# Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
 
-# relationships
+# cancellation policy
 __PACKAGE__->belongs_to(canpol => 'RetreatCenterDB::CanPol', 'canpol_id');
+# housecost
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
 
+# affiliations
 __PACKAGE__->has_many(affil_program => 'RetreatCenterDB::AffilProgram',
                       'p_id');
 __PACKAGE__->many_to_many(affils => 'affil_program', 'affil',
                           { order_by => 'descrip' },
                          );
 
+# registrations
+__PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
+                      'program_id');
+
+# leaders
 __PACKAGE__->has_many(leader_program => 'RetreatCenterDB::LeaderProgram',
                       'p_id');
 __PACKAGE__->many_to_many(leaders => 'leader_program', 'leader');
     # sort order???
+
+# exceptions - maybe
+__PACKAGE__->has_many(exceptions => 'RetreatCenterDB::Exception', 'prog_id');
 
 #
 # we really can't call $self->{field}
@@ -162,9 +176,8 @@ sub fname {
 }
 sub template_src {
 	my ($self) = @_;
-	return ($self->ptemplate)? 
-		slurp($self->ptemplate):
-		$default_template;
+	return ($self->ptemplate)?  slurp($self->ptemplate)
+          :                     $default_template;
 }
 
 sub title1 {
@@ -241,7 +254,7 @@ sub dates {
     } else {
         $dates .= $ed->format("%B %e");
     }
-    my $extra = $self->{extdays};
+    my $extra = $self->extradays;
     if ($extra) {
         $ed += $extra;
         if ($ed->month == $sd->month) {
@@ -343,7 +356,8 @@ EOH
 EOH
     $fee_table .= "<tr><th align=left valign=bottom>$lookup{typehdr}</th>";
     if ($extradays) {
-        $fee_table .= "<th align=right width=70>$ndays Days</th>".
+        my $plural = ($ndays > 1)? "s": "";
+        $fee_table .= "<th align=right width=70>$ndays Day$plural</th>".
                       "<th align=right width=70>$fulldays Days</th></tr>\n";
     } else {
         $fee_table .= "<th align=right>$lookup{costhdr}</th></tr>\n";
@@ -389,9 +403,6 @@ sub fees {
 										# personal retreat exception
     $ndays += $self->extradays if $full;
     my $hcost = $housecost->$type;      # column name is correct, yes?
-    if ($type =~ s{_bath}{}) {
-        $hcost += $housecost->$type;    # fun!
-    }
 	if ($housecost->type eq "Perday") {
 		$hcost = $ndays*$hcost;
 		$hcost -= 0.10*$hcost  if $ndays >= 7;

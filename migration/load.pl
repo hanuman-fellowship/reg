@@ -9,7 +9,7 @@ my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
 my $af_sql = "insert into affils values(?, ?)";
 my $af_sth = $dbh->prepare($af_sql)
     or die "no prep affil\n";
-my $p_sql = "insert into people values(". ("?," x 21) . "'' )";
+my $p_sql = "insert into people values(". ("?," x 23) . "'' )";
 my $p_sth = $dbh->prepare($p_sql)
     or die "no prep people\n";
 my $ap_sql = "insert into affil_people values(?, ?)";
@@ -26,7 +26,7 @@ while (<$affils>) {
     chomp;
     ++$n;
     ($code, $value) = split /\|/;
-    next if $code eq '9' || $code eq '8';       # has its own column now
+    next if $code =~ m{[d89Xqx]};;       # they have their own column now
     $af_sth->execute($n, $value);
     $affil_id{$code} = $n;
 }
@@ -59,10 +59,33 @@ while (<$people>) {
             $dt = "$y$m$d";
         }
     }
+
+    # what mailings are requested?
     $affils = $flds[20];
-    $affils =~ s{8}{};
-    my ($mailings) = ($affils =~ s{9}{})? "": "yes";
-    $p_sth->execute(@flds[0..14, 16..19, 24], $mailings);
+    my ($e_mailings, $snail_mailings, $share_mailings);
+    $e_mailings     = ($affils =~ m{[9x]}  )? "": "yes";
+    $snail_mailings = ($affils =~ m{x}     )? "": "yes";
+    $share_mailings = ($affils =~ m{[xdXq]})? "": "yes";
+    if ($affils =~ m{@}) {
+        $e_mailings = "yes";
+        $snail_mailings = "";
+        $share_mailings = "";
+    }
+    $affils =~ s{[dXqx98\@]}{}g;
+
+    for my $i (10..12) {    # force standard format of US phone numbers
+        next if $flds[$i] =~ m{\d\d\d-\d\d\d-\d\d\d\d};
+        my $tmp = $flds[$i];
+        $tmp =~ s{\D}{}g;
+        if (length($tmp) == 10) {
+            $flds[$i] = substr($tmp, 0, 3) . "-"
+                      . substr($tmp, 3, 3) . "-"
+                      . substr($tmp, 6, 4)
+        }
+    }
+
+    $p_sth->execute(@flds[0..14, 16..19, 24],
+                    $e_mailings, $snail_mailings, $share_mailings);
     my %seen;
     for my $a (grep {!$seen{$_}++} split //, $affils) {
         if (exists $affil_id{$a}) {

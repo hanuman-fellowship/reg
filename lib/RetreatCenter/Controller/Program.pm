@@ -15,6 +15,7 @@ use Util qw/
     housing_types
     sys_template
     compute_glnum
+    model
 /;
 use Date::Simple qw/date today/;
 use Net::FTP;
@@ -50,12 +51,12 @@ sub create : Local {
         housecost    => { name => "Default" },  # fake an object!
         ptemplate    => 'template',
     };
-    $c->stash->{canpol_opts} = [ $c->model("RetreatCenterDB::CanPol")->search(
+    $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
         undef,
         { order_by => 'name' },
     ) ];
     $c->stash->{housecost_opts} =
-        [ $c->model("RetreatCenterDB::HouseCost")->search(
+        [ model($c, 'HouseCost')->search(
             undef,
             { order_by => 'name' },
         ) ];
@@ -63,6 +64,10 @@ sub create : Local {
         grep { $_ eq "template" || ! sys_template($_) }
         map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
         <root/static/templates/*.html>
+    ];
+    $c->stash->{cl_template_opts} = [
+        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
+        <root/static/cl_templates/*.html>
     ];
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "program/create_edit.tt2";
@@ -83,21 +88,23 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = ();
-    @mess = ();
-    for my $w (qw/
-        name title subtitle glnum housecost_id
-        retreat sdate edate tuition confnote
-        url webdesc brdesc webready
-        kayakalpa canpol_id extradays full_tuition deposit
-        collect_total linked ptemplate sbath quad
-        economy footnotes
-        school level
+    %hash = %{ $c->request->params() };
+    # since unchecked boxes are not sent...
+    for my $f (qw/
+        collect_total
+        kayakalpa
+        sbath
+        retreat
+        economy
+        webready
+        quad
+        linked
     /) {
-        $hash{$w} = $c->request->params->{$w};
+        $hash{$f} = "" unless exists $hash{$f};
     }
     $hash{url} =~ s{^\s*http://}{};
 
+    @mess = ();
     if (! $hash{linked} && $hash{ptemplate} eq 'template') {
         push @mess, "Unlinked programs cannot use the standard template.";
     }
@@ -134,7 +141,7 @@ sub _get_data {
         }
     }
     if ($hash{extradays}) {
-        if ($hash{full_tuition} < $hash{tuition}) {
+        if ($hash{full_tuition} <= $hash{tuition}) {
             push @mess, "Full Tuition must be more than normal Tuition.";
         }
     }
@@ -143,6 +150,31 @@ sub _get_data {
     }
     if ($hash{footnotes} =~ m{[^\*%+]}) {
         push @mess, "Footnotes can only contain *, % and +";
+    }
+    for my $t (qw/
+        reg_start
+        reg_end
+        prog_start
+        prog_end
+    /) {
+        my $time = $hash{$t};
+        my ($hour, $min) = (-1, -1);
+        if ($time =~ m{^\s*(\d+)\s*$}) {
+            $hour = $1;
+            $min = 0;
+        }
+        elsif ($time =~ m{^\s*(\d+):(\d+)\s*$}) {
+            $hour = $1;
+            $min = $2;
+        }
+        if (! (   1 <= $hour && $hour <= 12
+               && 0 <= $min  && $min  <= 59)
+        ) {
+            push @mess, "Illegal time: $time";
+        }
+        else {
+            $hash{$t} = sprintf "%2d:%02d", $hour, $min;
+        }
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -161,7 +193,7 @@ sub create_do : Local {
                         '99999': compute_glnum($c, $hash{sdate});
 
     my $upload = $c->request->upload('image');
-    my $p = $c->model("RetreatCenterDB::Program")->create({
+    my $p = model($c, 'Program')->create({
         image => $upload? "yes": "",
         %hash,
     });
@@ -174,7 +206,7 @@ sub create_do : Local {
     # make the FULL version, if requested
     if ($hash{extradays}) {
         my $full_edate = date($hash{edate}) + $hash{extradays};
-        $c->model("RetreatCenterDB::Program")->create({
+        model($c, 'Program')->create({
             %hash,
             image     => "",
             edate     => $full_edate->as_d8(),
@@ -203,7 +235,7 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->stash->{program}
-        = $c->model("RetreatCenterDB::Program")->find($id);
+        = model($c, 'Program')->find($id);
     # prepare the dates and the days of the week
     for my $w (qw/ sdate edate /) {
         if (my $d = $c->stash->{$w} = date($p->$w) || "") {
@@ -244,11 +276,13 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{programs} = [
-        $c->model('RetreatCenterDB::Program')->search(
+        model($c, 'Program')->search(
             undef,
             { order_by => 'name' },
         )
     ];
+    my @files = <root/static/online_reg/*>;
+    $c->stash->{online} = scalar(@files);
     $c->stash->{template} = "program/list.tt2";
 }
 
@@ -256,7 +290,7 @@ sub listdate : Local {
     my ($self, $c) = @_;
 
     $c->stash->{programs} = [
-        $c->model('RetreatCenterDB::Program')->search(
+        model($c, 'Program')->search(
             undef,
             { order_by => 'sdate' },
         )
@@ -267,7 +301,7 @@ sub listdate : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->model('RetreatCenterDB::Program')->find($id);
+    my $p = model($c, 'Program')->find($id);
     $c->stash->{program} = $p;
     for my $w (qw/
         sbath collect_total kayakalpa retreat
@@ -280,13 +314,13 @@ sub update : Local {
     }
 
     # get all cancellation policies
-    $c->stash->{canpol_opts} = [ $c->model("RetreatCenterDB::CanPol")->search(
+    $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
         undef,
         { order_by => 'name' },
     ) ];
     # and housing costs
     $c->stash->{housecost_opts} =
-        [ $c->model("RetreatCenterDB::HouseCost")->search(
+        [ model($c, 'HouseCost')->search(
             undef,
             { order_by => 'name' },
         ) ];
@@ -295,6 +329,11 @@ sub update : Local {
         grep { $_ eq "template" || ! sys_template($_) }
         map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
         <root/static/templates/*.html>
+    ];
+    # confirmation letter templates
+    $c->stash->{cl_template_opts} = [
+        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
+        <root/static/cl_templates/*.html>
     ];
 
     $c->stash->{edit_gl}     = $c->check_user_roles('super_admin');
@@ -317,9 +356,9 @@ sub update_do : Local {
         resize('p', $id);
         $hash{image} = "yes";
     }
-    my $p = $c->model("RetreatCenterDB::Program")->find($id);
+    my $p = model($c, 'Program')->find($id);
     # is there a FULL version?
-    my ($p_full) = $c->model("RetreatCenterDB::Program")->search({
+    my ($p_full) = model($c, 'Program')->search({
         name => $p->name . " FULL",
     });
     $p->update(\%hash);
@@ -341,7 +380,7 @@ sub update_do : Local {
             });
         }
         else {
-            $c->model("RetreatCenterDB::Program")->create({
+            model($c, 'Program')->create({
                 %hash,
                 image     => "",
                 edate     => $full_edate->as_d8(),
@@ -367,7 +406,7 @@ sub leader_update : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->stash->{program}
-        = $c->model("RetreatCenterDB::Program")->find($id);
+        = model($c, 'Program')->find($id);
     $c->stash->{leader_table} = leader_table($c, $p->leaders());
     $c->stash->{template} = "program/leader_update.tt2";
 }
@@ -378,11 +417,11 @@ sub leader_update_do : Local {
     my @cur_leaders = grep {  s{^lead(\d+)}{$1}  }
                       keys %{$c->request->params};
     # delete all old leaders and create the new ones.
-    $c->model("RetreatCenterDB::LeaderProgram")->search(
+    model($c, 'LeaderProgram')->search(
         { p_id => $id },
     )->delete();
     for my $cl (@cur_leaders) {
-        $c->model("RetreatCenterDB::LeaderProgram")->create({
+        model($c, 'LeaderProgram')->create({
             l_id => $cl,
             p_id => $id,
         });
@@ -396,7 +435,7 @@ sub affil_update : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->stash->{program}
-        = $c->model("RetreatCenterDB::Program")->find($id);
+        = model($c, 'Program')->find($id);
     $c->stash->{affil_table} = affil_table($c, $p->affils());
     $c->stash->{template} = "program/affil_update.tt2";
 }
@@ -407,11 +446,11 @@ sub affil_update_do : Local {
     my @cur_affils = grep {  s{^aff(\d+)}{$1}  }
                      keys %{$c->request->params};
     # delete all old affils and create the new ones.
-    $c->model("RetreatCenterDB::AffilProgram")->search(
+    model($c, 'AffilProgram')->search(
         { p_id => $id },
     )->delete();
     for my $ca (@cur_affils) {
-        $c->model("RetreatCenterDB::AffilProgram")->create({
+        model($c, 'AffilProgram')->create({
             a_id => $ca,
             p_id => $id,
         });
@@ -424,38 +463,33 @@ sub affil_update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->model("RetreatCenterDB::Program")->find($id);
+    my $p = model($c, 'Program')->find($id);
 
     # any FULL version
     if ($p->extradays) {
-        $c->model("RetreatCenterDB::Program")->search({
+        model($c, 'Program')->search({
             name => $p->name . " FULL",
         })->delete();
     }
 
-    # this program
-    $c->model('RetreatCenterDB::Program')->search(
-        { id => $id }
-    )->delete();
-    #$p->delete();
-
-    # affiliations
-    $c->model('RetreatCenterDB::AffilProgram')->search({
+    # affiliation/programs
+    model($c, 'AffilProgram')->search({
         p_id => $id,
     })->delete();
 
-    # leaders
-    $c->model('RetreatCenterDB::LeaderProgram')->search({
+    # leader/programs
+    model($c, 'LeaderProgram')->search({
         p_id => $id,
     })->delete();
 
     # exceptions
-    $c->model('RetreatCenterDB::Exception')->search({
-        prog_id => $id,
-    })->delete();
+    $p->exceptions()->delete();
 
-    # and finally, any image
+    # any image
     unlink <root/static/images/p*-$id.jpg>;
+
+    # and finally, the program itself
+    $p->delete();
 
     $c->response->redirect($c->uri_for('/program/list'));
 }
@@ -464,7 +498,7 @@ sub del_image : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->stash->{program}
-        = $c->model("RetreatCenterDB::Program")->find($id);
+        = model($c, 'Program')->find($id);
     $p->update({
         image => "",
     });
@@ -503,7 +537,7 @@ sub publish : Local {
     # sorted by start date and then end date.
     # ???this seems to work but I suspect there is
     # a better way to do this???  
-    # Can I do $c->model('RetreatCenterDB::Program')->future_programs()???
+    # Can I do model($c, 'Program')->future_programs()???
     # No.
     #
     @programs = RetreatCenterDB::Program->future_programs($c);
@@ -512,9 +546,9 @@ sub publish : Local {
     gen_regtable();
 
     #
-    # get the exceptions
+    # get ALL the exceptions
     #
-    for my $e ($c->model('RetreatCenterDB::Exception')->all()) {
+    for my $e (model($c, 'Exception')->all()) {
         $except{$e->prog_id}{$e->tag} = expand($e->value);
     }
 
@@ -636,7 +670,6 @@ sub publish : Local {
         or die "cannot cwd ", $ftp->message; # not die???
     $ftp->cwd($lookup{ftp_dir2});
     for my $f ($ftp->ls()) {
-        $c->log->info("got $f");
         $ftp->delete($f) if $f ne 'pics';
     }
     $ftp->ascii();
@@ -727,7 +760,7 @@ sub brochure_do : Local {
     open my $br, ">", $fname
         or die "cannot create $fname";
     my $n = 0;
-    for my $p ($c->model('RetreatCenterDB::Program')->search(
+    for my $p (model($c, 'Program')->search(
                    {
                        sdate => { 'between' => [ $bdate, $edate ] },
                        linked => 'yes',
@@ -826,10 +859,11 @@ sub gen_regtable {
         # for looking up purposes.
         #
         print {$regt} "prognum\t", $p->prognum, "\n";
-        print {$regt} "pname\t", $p->name, "\n";
-        print {$regt} "desc\t", $p->title, "\n";
-        print {$regt} "dates\t", $p->dates, "\n";
-        print {$regt} "edate\t", $p->edate, "\n";
+        print {$regt} "pname\t",   $p->name, "\n";
+        print {$regt} "pid\t",     $p->id, "\n";
+        print {$regt} "desc\t",    $p->title, "\n";
+        print {$regt} "dates\t",   $p->dates, "\n";
+        print {$regt} "edate\t",   $p->edate, "\n";
         print {$regt} "leaders\t", $p->leader_names, "\n";
         print {$regt} "footnotes\t", $p->footnotes, "\n";
         print {$regt} "ndays\t$ndays\n";
@@ -840,9 +874,9 @@ sub gen_regtable {
         $pol =~ s/\n/NEWLINE/g;
         print {$regt} "canpol\t$pol\n";
 
-        my $tuition = $p->tuition;
+        my $tuition      = $p->tuition;
         my $full_tuition = $p->full_tuition;
-        my $month = $p->sdate_obj->month;
+        my $month        = $p->sdate_obj->month;
 
         my $housecost = $p->housecost;
         for my $t (housing_types()) {
@@ -856,9 +890,10 @@ sub gen_regtable {
                      || (5 <= $month && $month <= 10));
             next if $t =~ m{triple|dormitory}
                     && $p->name =~ m{personal\s+retreat}i;
-            print {$regt} "basic $t\t", $p->fees(0, $t), "\n";
+            (my $tt = $t) =~ s{_}{ }g;
+            print {$regt} "basic $tt\t", $p->fees(0, $t), "\n";
             if ($p->extradays) {
-                print {$regt} "full $t\t", $p->fees(1, $t), "\n";
+                print {$regt} "full $tt\t", $p->fees(1, $t), "\n";
             }
         }
     }

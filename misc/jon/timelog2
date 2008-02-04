@@ -1,0 +1,44 @@
+Jan 24 3:35-5:00
+    creating registrant with a few columns incl person_id, program_id
+        confusing but i did get it correct eventually
+Jan 29 1:40-4:15, 4:45-6:30, 7:20-7:50
+    Making a nice schema diagram and
+    supplying missing relationship methods
+    tidying up - using those new methods
+    fixing broken Person partnering things - broken
+        partly when doing preservation of empty search params.
+
+    canpol required name
+    clearer getting of data into hash - and related fixes.
+
+    query Jayanti, Adrienne about new program attributes
+        and mailing preferences
+Jan 30 12:45-1:40, 2:10-2:50, 3:35-3:50, 6:15-7:45, 9:30-12:00
+    dreg1 refactor and include pid, relay => sensing pid and
+        outputing to dreg_transactions instead.
+
+    on the Programs page - "Online (3)"
+    and then showing the list.
+
+    extracting relevant items from online file and
+        putting them in stash for the registration create form.
+        finding the person - or creating them.
+        new item on reg1.html: new address?
+            and disambiguation.
+        works pretty well.
+        problem with programs with extra days - web site
+            dates on page, and on dreg1.html
+
+    registration - got an online registration inserted
+
+    now to delete the one we just inserted and
+        to automatically get them
+Feb 2 2:55-4:00, 8:20-11:00
+    mlist mailings affiliations, fields.
+    program - confirmation letter templates,
+        start, end times for program and registration
+    worked on dreg[12] and dreg[12].html to enable
+        carpool, hascar (better than the other)
+        and \w+_mailings - with cookies, too.
+Feb 3 11:40-1:15
+    reports and the variety of mailings

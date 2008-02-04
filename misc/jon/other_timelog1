@@ -1,0 +1,53 @@
+Nov 15 6:00-7:00
+    fixing up botched housing and 8 bit char
+        in a city/country that made trouble
+        when sending confirmation letters with
+        carpools...
+Dec 7 11:50-1:30
+    fixing various things at the center
+        sutra mailing
+        regi finances
+        cost of housing columns
+        demonstrating, getting feedback from what I did.
+        blabbing - no charge.
+Dec 10 10:30-11:10, 11:00-11:30
+    sutra mailings talking to SVI about mail.
+    fixing housing costs - 1-5, 6-8
+    hope it works!
+Dec 11 9:15-9:45, 11:00-11:15
+    removing stale addresses in sutra
+    fixing a housing glitch
+Dec 13 1:55-2:20
+    a fix for regi
+Dec 15 9:30-10:00
+    fixing housing glitch
+Dec 18 2:25-4:00
+    at MMC regi quick fix for Brajesh - not so quick
+Dec 22 11:00-12:30
+    housing glitch - not easy!
+    email + name listing in reg1
+    pattern in comment search listing
+    email, current address now gets into mlist when
+        registering online.
+Jan 7 3:35-5:15, 6:05-7:50, 9:20-10:55, 11:20-12:45
+    members
+    something is not working - take a break, compare to leaders.
+    adjust horizontal alignment
+    insert a member at the first
+    forgot category - C needs better error messages!
+    lapsed updating
+    checked in.   pretty good!
+Jan 11 2:30-3:30
+    retrieving misplaced online reg's
+Jan 12 12:20-4:20
+    sponsor payment history, membership list
+    got really confused with DBIx - assigned the
+    result of a search to a scalar and it never executed.
+    and no error even if I misspelled the DB Class name. :(
+Jan 14 4:00-6:50
+    fine tuning Member update dialog
+    partners becoming Life members - very tricky!
+    this is not for reg - so does not count towards the
+    do-not-exceed.
+Jan 22 3:40-3:50
+    fixed sender of conf letter - not who_add but login.

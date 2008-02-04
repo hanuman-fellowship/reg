@@ -42,6 +42,9 @@ sub edate_obj {
     my ($self) = @_;
     return date($self->edate) || "";
 }
+sub extradays {     # see Program->dates()
+    return 0;
+}
 sub desc {
 	my ($self) = @_;
 	my $desc = expand($self->webdesc);
@@ -83,7 +86,7 @@ sub title2 {
 #
 # invoke the Program method by the same name.
 # Rentals also have sdate and edate methods.
-# no extdays but that's okay.
+# no extradays but that's okay.
 #
 sub dates {
 	my ($self) = @_;

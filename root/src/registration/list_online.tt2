@@ -1,0 +1,17 @@
+<h2>Online Registrations</h2>
+<table cellpadding=3>
+<tr>
+<th align=left>Person</th>
+<th align=left>Program</th>
+<th>Date</th>
+<th>Time</th>
+</tr>
+[% FOR r IN online %]
+<tr>
+<td><a href="/registration/get_online/[% r.fname %]">[% r.last %], [% r.first %]</a></td>
+<td>[% r.pname %]</td>
+<td>[% r.date %]</td>
+<td>[% r.time %]</td>
+</tr>
+[% END %]
+</table>

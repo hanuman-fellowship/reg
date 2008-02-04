@@ -22,5 +22,5 @@
 >
 Upload <input type=file name=template_file><br>
 to a template named <input type=text name=fname><p>
-<input type=submit>
+<input type=submit value="Submit">
 </form>

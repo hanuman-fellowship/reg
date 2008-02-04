@@ -60,24 +60,30 @@
         <th align=right>Email</th>
         <td colspan=3><input tabindex=11 type=text name=email size=40 value="[% person.email %]"></td>
     </tr>
-    <tr>
-        <th align=right>Mailings</th>
-        <td><input tabindex=12 type=checkbox name=mailings value='yes' [% mailings %]></td>
-    </tr>
+
+<tr>
+<th align=right valign=top>Mailings</th>
+<td>
+<table>
+<tr><td><input tabindex=12 type=checkbox name=e_mailings     value='yes' [% e_mailings %]> Email</td></tr>
+<tr><td><input tabindex=13 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]> Snail Mail</td></tr>
+<tr><td><input tabindex=14 type=checkbox name=share_mailings value='yes' [% share_mailings %]> Share</td></tr>
+</table>
+</tr>
+
     <tr>
         <th align=right>Ambiguous</th>
-        <td><input tabindex=13 type=checkbox name=ambiguous value='yes' [% ambiguous %]></td>
+        <td><input tabindex=15 type=checkbox name=ambiguous value='yes' [% ambiguous %]></td>
     </tr>
 </table>
+<div style="float: left">
 <p>
-</div>
-<div style="clear: left">
 <h2>Affiliations</h2>
 <table cellpadding=1>
 [% affil_table %]
 </table>
-</div>
 
 <input type=submit value="Submit">
+</div>
 </form>
 <script type="text/javascript">document.form.first.focus()</script>

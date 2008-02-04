@@ -15,7 +15,7 @@
       enctype="multipart/form-data"
 >
 <input type=file name=stale_emails><br>
-<input type=submit>
+<input type=submit value="Submit">
 </ul>
 <p>
 <a href="/listing/undup">Unduplication File</a>

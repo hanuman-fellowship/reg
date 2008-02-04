@@ -7,6 +7,6 @@
 <ul>
 [% leader_table %]
 <p>
-<input type=submit>
+<input type=submit value="Submit">
 </ul>
 </form>

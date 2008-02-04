@@ -3,6 +3,7 @@ use warnings;
 
 package RetreatCenter::Controller::Exception;
 use base 'Catalyst::Controller';
+use Util qw/model/;
 
 #
 # a good list - complete?
@@ -47,7 +48,7 @@ sub list : Local {
                   $a->program->name cmp $b->program->name ||
                   $a->tag           cmp $b->tag
               }
-              $c->model('RetreatCenterDB::Exception')->all();
+              model($c, 'Exception')->all();
     $c->stash->{exceptions} = \@exs;
     $c->stash->{template} = "exception/list.tt2";
 }
@@ -55,7 +56,7 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $prog_id, $tag) = @_;
 
-    $c->model('RetreatCenterDB::Exception')->search(
+    model($c, 'Exception')->search(
         {
             prog_id => $prog_id,
             tag     => $tag,
@@ -67,14 +68,14 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $prog_id, $tag) = @_;
 
-    my @e = $c->model('RetreatCenterDB::Exception')->search(
+    my @e = model($c, 'Exception')->search(
         {
             prog_id => $prog_id,
             tag     => $tag,
         }
     );
     $c->stash->{exception} = $e[0];
-    $c->stash->{programs} = [ $c->model("RetreatCenterDB::Program")->search(
+    $c->stash->{programs} = [ model($c, 'Program')->search(
         undef,
         { order_by => 'name' },
     ) ];
@@ -86,7 +87,7 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $prog_id, $tag) = @_;
 
-    $c->model("RetreatCenterDB::Exception")->search(
+    model($c, 'Exception')->search(
         {
             prog_id => $prog_id,
             tag     => $tag,
@@ -102,7 +103,7 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{programs} = [ $c->model("RetreatCenterDB::Program")->search(
+    $c->stash->{programs} = [ model($c, 'Program')->search(
         undef,
         { order_by => 'name' },
     ) ];
@@ -114,7 +115,7 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    $c->model("RetreatCenterDB::Exception")->create({
+    model($c, 'Exception')->create({
         prog_id => $c->request->params->{prog_id},
         tag     => $c->request->params->{tag},
         value   => $c->request->params->{value},

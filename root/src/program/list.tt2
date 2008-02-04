@@ -5,11 +5,15 @@
     &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/program/listdate">Sort by Start Date</a>
-&nbsp;&nbsp;&nbsp;
 [% IF admin %]
+    &nbsp;&nbsp;&nbsp;
     <a href="/program/brochure">Brochure</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish">Publish<a>
+[% END %]
+[% IF online > 0 %]
+    &nbsp;&nbsp;&nbsp;
+    <a href="/registration/list_online">Online ([% online %])</a>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>

@@ -26,14 +26,27 @@ __PACKAGE__->add_columns(qw/
     date_updat
     date_entrd
     comment
-    mailings
+    e_mailings
+    snail_mailings
+    share_mailings
     ambiguous
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
+# affiliations
 __PACKAGE__->has_many(affil_person => 'RetreatCenterDB::AffilPerson', 'p_id');
 __PACKAGE__->many_to_many(affils => 'affil_person', 'affil',
                           { order_by => 'descrip' },
                          );
+
+# registrations
+__PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration', 'person_id');
+
+# member - maybe
+__PACKAGE__->might_have(member => 'RetreatCenterDB::Member', 'person_id');
+# leader - maybe
+__PACKAGE__->might_have(leader => 'RetreatCenterDB::Leader', 'person_id');
+# partner - maybe
+__PACKAGE__->might_have(partner => 'RetreatCenterDB::Person', 'id_sps');
 
 1;

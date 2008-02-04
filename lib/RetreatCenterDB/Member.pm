@@ -19,7 +19,9 @@ __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
 
-# ??? there's likely some way to put here the relationship to spons_hist???
-# so given a member can get the spons_hist records?
+# sponsor history payments - maybe
+__PACKAGE__->has_many('payments' => 'RetreatCenterDB::SponsHist', 'member_id',
+                      { order_by => 'date_payment desc' },
+                     );
 
 1;

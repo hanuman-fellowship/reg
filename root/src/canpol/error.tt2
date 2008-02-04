@@ -1,0 +1,6 @@
+<h2>Cancellation Policies</h2>
+The following errors were found:
+<ul>
+[% mess %]
+</ul>
+Please go <input type=button value="Back" onclick="history.go(-1)"> and fix them.

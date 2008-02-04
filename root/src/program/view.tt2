@@ -38,11 +38,6 @@
 </tr>
 
 <tr>
-<th align=right valign=top>Notes for the<br>Confirmation Letter</th>
-<td colspan=5 valign=top>[% confnote %]</td>
-</tr>
-
-<tr>
 <th align=right>Tuition</th>
 <td>[% program.tuition %]</td>
 <th align=right>Collect Total</th>
@@ -143,8 +138,33 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 &nbsp;
 [% END %]
 </td>
-<th align=right valign=top>Template</th>
-<td colspan=2 valign=top>[% program.ptemplate %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Templates</th>
+<th>Web Page</th><td>[% program.ptemplate %]</td>
+<th>Confirmation Letter</th><td>[% program.cl_template %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Confirmation Letter<br>Notes</th>
+<td colspan=5 valign=top>[% confnote %]</td>
+</tr>
+
+<tr>
+<th align=right>Times</th>
+<td colspan=4>
+<table cellpadding=3>
+<tr>
+<th align=right>Registration Start</th><td>[% program.reg_start %]</td>
+<th align=right>Program Start</th><td>[% program.prog_start %]</td>
+</tr>
+<tr>
+<th align=right>End</th><td>[% program.reg_end %]</td>
+<th align=right>End</th><td>[% program.prog_end %]</td>
+</tr>
+</table>
+</td>
 </tr>
 
 </table>

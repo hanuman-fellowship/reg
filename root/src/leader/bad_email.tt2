@@ -1,0 +1,5 @@
+<h3>Leaders</h3>
+<ul>
+Invalid email: [% email %]
+</ul>
+Please go <input type=button value="Back" onclick="history.go(-1)"> and fix this.

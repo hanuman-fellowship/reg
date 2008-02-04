@@ -9,6 +9,6 @@
 [% affil_table %]
 </table>
 <p>
-<input type=submit>
+<input type=submit value="Submit">
 </ul>
 </form>

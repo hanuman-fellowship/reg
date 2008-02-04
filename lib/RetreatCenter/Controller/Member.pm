@@ -4,7 +4,7 @@ package RetreatCenter::Controller::Member;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/trim/;
+use Util qw/trim model/;
 use Date::Simple qw/date today/;
 
 sub index : Private {
@@ -29,7 +29,7 @@ sub membership_list : Local {
         map {
             [ $_->person->sanskrit || $_->person->first, $_ ]
         }
-        $c->model('RetreatCenterDB::Member')->search(
+        model($c, 'Member')->search(
             { category => 'General', },
         );
     my $ngeneral = @general;
@@ -43,7 +43,7 @@ sub membership_list : Local {
         map {
             [ $_->person->sanskrit || $_->person->first, $_ ]
         }
-        $c->model('RetreatCenterDB::Member')->search(
+        model($c, 'Member')->search(
             { category => 'Sponsor', },
         );
     my $nsponsor = @sponsor;
@@ -57,7 +57,7 @@ sub membership_list : Local {
         map {
             [ $_->person->sanskrit || $_->person->first, $_ ]
         }
-        $c->model('RetreatCenterDB::Member')->search(
+        model($c, 'Member')->search(
             { category => 'Life', },
         );
     my $nlife = @life;
@@ -71,7 +71,7 @@ sub membership_list : Local {
         map {
             [ $_->person->sanskrit || $_->person->first, $_ ]
         }
-        $c->model('RetreatCenterDB::Member')->search(
+        model($c, 'Member')->search(
             { category => 'Lapsed', },
         );
     my $nlapsed = @lapsed;
@@ -172,7 +172,7 @@ sub list : Local {
     # before getting the list, look for lapsed people.
     #
     my $today = today()->as_d8();
-    $c->model('RetreatCenterDB::Member')->search({
+    model($c, 'Member')->search({
         category     => 'General',
         date_general => { '<' => $today },
     })->update({
@@ -180,7 +180,7 @@ sub list : Local {
         date_lapsed => $today,
     });
     my $month3 = (today()-90)->as_d8();     # 3 months ago for Sponsors
-    $c->model('RetreatCenterDB::Member')->search({
+    model($c, 'Member')->search({
         category     => 'Sponsor',
         date_sponsor => { '<' => $month3 },
     })->update({
@@ -197,7 +197,7 @@ sub list : Local {
         map {
             [ $_->person->sanskrit || $_->person->first, $_ ]
         }
-        $c->model('RetreatCenterDB::Member')->all();
+        model($c, 'Member')->all();
     for my $m (@members) {
         my $c = lc $m->category;
         my $method = "date_$c";
@@ -211,7 +211,7 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $m = $c->stash->{member} = 
-        $c->model('RetreatCenterDB::Member')->find($id);
+        model($c, 'Member')->find($id);
     for my $w (qw/
         general
         sponsor
@@ -222,22 +222,14 @@ sub update : Local {
         $c->stash->{"date_$w"} = date($m->$method) || "";
         $c->stash->{"category_$w"} = ($m->category eq ucfirst($w))? "checked": "";
     }
-    # Boy, do I ever not understand DBIx::Class!
-    # does model()->search() return an array or an array_ref?
-    # an array apparently.
-    # we convert the SponsHist objects to hash_refs
-    # so we can have date objects.   is there a better way???
-    my @hist = map {
-                   {
-                   date_payment => date($_->date_payment()),
-                   amount       => $_->amount,
-                   }
-               }
-               $c->model('RetreatCenterDB::SponsHist')->search(
-                   { member_id => $id, },
-                   { order_by => 'date_payment desc' },
-               );
-    $c->stash->{history} = \@hist;
+    my @payments = $m->payments();
+    for my $p (@payments) {
+        # invoke a setter to convert d8 string from database to date object
+        # so it can be formatted via overloaded stringification
+        # in template - wow - is this cool or what?!
+        $p->date_payment(date($p->date_payment));       
+    }
+    $c->stash->{payments} = \@payments;
 
     $c->stash->{person} = $m->person();
     $c->stash->{form_action} = "update_do/$id";
@@ -249,17 +241,8 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = ();
+    %hash = %{ $c->request->params() };
     @mess = ();
-    # first get things into a more convenient hash
-    for my $w (qw/
-        category
-        date_general
-        mkpay_date
-        mkpay_amount
-    /) {
-        $hash{$w} = $c->request->params->{$w};
-    }
     if (! $hash{category}) {
         $hash{category} = 'General';    # strange to need to do this.
     }
@@ -306,7 +289,7 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $member =  $c->model("RetreatCenterDB::Member")->find($id);
+    my $member = model($c, 'Member')->find($id);
 
     my $partnered = 0;
     my $id_sps;
@@ -315,7 +298,7 @@ sub update_do : Local {
     my @nowlife = ();
     if ($hash{mkpay_date}) {
         # put payment in history, reset last paid
-        $c->model("RetreatCenterDB::SponsHist")->create({
+        model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $hash{mkpay_date},
             amount       => $hash{mkpay_amount},
@@ -325,7 +308,7 @@ sub update_do : Local {
 
         # recompute the total
         my $total = 0;
-        for my $p ($c->model("RetreatCenterDB::SponsHist")->search({
+        for my $p (model($c, 'SponsHist')->search({
                        member_id => $id,
                    })
         ) {
@@ -337,7 +320,7 @@ sub update_do : Local {
             $partnered = 1;
             # is the partner a member?
             # if so, how much have they paid?
-            ($partner_member) = $c->model('RetreatCenterDB::Member')->search({
+            ($partner_member) = model($c, 'Member')->search({
                                     person_id => $id_sps,
                                 });
             if ($partner_member) {
@@ -374,7 +357,7 @@ sub update_do : Local {
             # this person has paid everything >= 8000
             # make their partner a Life member.
             #
-            $partner_member = $c->model("RetreatCenterDB::Member")->create({
+            $partner_member = model($c, 'Member')->create({
                 person_id => $id_sps,
                 category  => 'Life',
                 date_life => $hash{date_life},
@@ -405,10 +388,9 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    $c->model('RetreatCenterDB::Member')
-        ->search({id => $id})->delete();
-    $c->model('RetreatCenterDB::SponsHist')
-        ->search({member_id => $id})->delete();
+    my $m = model($c, 'Member')->find($id);
+    $m->payments()->delete();
+    $m->delete();
     $c->response->redirect($c->uri_for('/member/list'));
 }
 
@@ -416,7 +398,7 @@ sub create : Local {
     my ($self, $c, $person_id) = @_;
 
     $c->stash->{person}
-        = $c->model("RetreatCenterDB::Person")->find($person_id);
+        = model($c, 'Person')->find($person_id);
     $c->stash->{form_action} = "create_do/$person_id";
     $c->stash->{template}    = "member/create_edit.tt2";
 }
@@ -442,12 +424,11 @@ sub create_do : Local {
         # they both may have just become life members.
         # if only one of a partnership is paying, is the other
         # a current sponsoring member or not?
-        my $person = $c->model('RetreatCenterDB::Person')->find($person_id);
+        my $person = model($c, 'Person')->find($person_id);
         my $partner_paid = 0;
         if (my $id_sps = $person->id_sps) {
-            my $partner = $c->model('RetreatCenterDB::Person')->find($id_sps);
-            my ($partner_member) = $c->model('RetreatCenterDB::Member')
-                                       ->search({
+            my $partner = model($c, 'Person')->find($id_sps);
+            my ($partner_member) = model($c, 'Member')->search({
                                              person_id => $id_sps,
                                          });
             if ($partner_member) {
@@ -473,8 +454,7 @@ sub create_do : Local {
                 else {
                     # the partner is now a Life member
                     # they were not a member before.
-                    $partner_member = $c->model("RetreatCenterDB::Member")
-                            ->create({
+                    $partner_member = model($c, 'Member')->create({
                         person_id => $id_sps,
                         category  => 'Life',
                         date_life => $hash{date_sponsor},
@@ -488,7 +468,7 @@ sub create_do : Local {
     my $amnt = $hash{mkpay_amount};
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
-    my $member = $c->model("RetreatCenterDB::Member")->create({
+    my $member = model($c, 'Member')->create({
         person_id    => $person_id,
         %hash,
     });
@@ -498,7 +478,7 @@ sub create_do : Local {
     my $id = $member->id();
     # put payment in history
     if ($date) {
-        $c->model("RetreatCenterDB::SponsHist")->create({
+        model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $date,
             amount       => $amnt,

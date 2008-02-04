@@ -1,0 +1,70 @@
+<h2>Registration</h2>
+<form action="/registration/create_do">
+<input type=hidden name=person_id     value=[% person.id %]>
+<input type=hidden name=program_id    value=[% program.id %]>
+<input type=hidden name=date_postmark value=[% date_postmark %]>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Person</th>
+<td>[% person.last %], [% person.first %]</th>
+[% IF date_start || date_end %]
+<td colspan=2>From <input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"> to <input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></td>
+[% END %]
+</tr>
+
+<tr>
+<th align=right>Program</th>
+<td>[% program.name %]</td>
+<td colspan=2>From [% pr_sdate %] to [% pr_edate %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td colspan=3>
+<textarea rows=6 cols=60 name=comment>[% comment %]</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right>Referral</th>
+<td>
+<select name=referral>
+<option value="ad"       [% ad_checked %]      >Advertisement</option>
+<option value="web"      [% web_checked %]     >Web</option>
+<option value="brochure" [% brochure_checked %]>Brochure</option>
+<option value="flyer"    [% flyer_checked %]   >Flyer</option>
+</select>
+</td>
+<th align=right>Ad Source</th>
+<td><input type=text name=adsource value="[% adsource %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Carpool</th>
+<td>
+<input type=checkbox name=carpool value=yes [% carpool_checked %]>
+Carpool<br>
+<input type=checkbox name=hascar value=yes [% hascar_checked %]>
+Has Car
+</td>
+<th align=right valign=top>CEU License #</th>
+<td valign=top>
+<input type=text name=ceu_license value="[% ceu_license %]">
+</td>
+</tr>
+
+<tr>
+<th align=right>Deposit</th>
+<td>
+<input type=text name=deposit value="[% deposit %]">
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>

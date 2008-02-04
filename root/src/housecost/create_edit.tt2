@@ -4,12 +4,26 @@
 
 <tr>
 <th align=right><span class="required">*</span> Name</th>
+[% IF housecost.name == 'Default' %]
+<td>[% housecost.name %]</td>
+[% ELSE %]
 <td><input type=text name=name value="[% housecost.name %]"></td>
+[% END %]
+</tr>
+
+<tr>
+<th align=right>Single Bath</th>
+<td><input type=text name=single_bath value="[% housecost.single_bath %]" size=4></td>
 </tr>
 
 <tr>
 <th align=right>Single</th>
 <td><input type=text name=single value="[% housecost.single %]" size=4></td>
+</tr>
+
+<tr>
+<th align=right>Double Bath</th>
+<td><input type=text name=double_bath value="[% housecost.double_bath %]" size=4></td>
 </tr>
 
 <tr>
@@ -60,16 +74,6 @@
 <tr>
 <th align=right>Unknown</th>
 <td><input type=text name=unknown value="[% housecost.unknown %]" size=4></td>
-</tr>
-
-<tr>
-<th align=right>Single Bath</th>
-<td><input type=text name=single_bath value="[% housecost.single_bath %]" size=4></td>
-</tr>
-
-<tr>
-<th align=right>Double Bath</th>
-<td><input type=text name=double_bath value="[% housecost.double_bath %]" size=4></td>
 </tr>
 
 <tr>

@@ -8,8 +8,8 @@
 <a href="/person/delete/[% person.id %]"
 onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-[% IF person.id_sps %]
-    Partnered with <a href="/person/view/[% partner.id %]">[% partner.first _" "_ partner.last %]</a>
+[% IF person.partner %]
+    Partnered with <a href="/person/view/[% person.partner.id %]">[% person.partner.first _" "_ person.partner.last %]</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/person/separate/[% person.id %]"
     onclick="return confirm('Okay to Separate?');">Separate</a>
@@ -17,9 +17,9 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     <a href="/person/partner/[% person.id %]">Partner With</a>
 [% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
-    [% IF is_leader %]
+    [% IF person.leader %]
         &nbsp;&nbsp;&nbsp;
-        <a href="/leader/view/[% leader.id %]">Leader Info</a>
+        <a href="/leader/view/[% person.leader.id %]">Leader Info</a>
     [% ELSE %]
         [% IF Catalyst.check_user_roles('prog_admin') %]
             &nbsp;&nbsp;&nbsp;
@@ -29,8 +29,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 [% END %]
 [% IF Catalyst.check_user_roles('member_admin') %]
     &nbsp;&nbsp;&nbsp;
-    [% IF is_member %]
-        <a href="/member/update/[% member.id %]">Member Info</a>
+    [% IF person.member %]
+        <a href="/member/update/[% person.member.id %]">Member Info</a>
     [% ELSE %]
         <a href="/member/create/[% person.id %]">Make Member</a>
     [% END %]
@@ -60,26 +60,43 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 </tr>
 <tr>
 <th align=right>State/Province</th><td>[% person.st_prov %]</td>
+<th align=right valign=top>Registrations</td>
+<td rowspan=10 valign=top>
+[% FOREACH r IN person.registrations %]
+<a href="/registration/view/[% r.id %]">[% r.program.name %]</a>, [% r.program.sdate_obj %]<br>
+[% END %]
+</td>
 </tr>
 <tr>
 <th align=right>Zip/Postal Code</th><td>[% person.zip_post %]</td>
-<th align=right>Date Entered</td><td>[% date_entrd %]</td>
 </tr>
 <tr>
 <th align=right>Country</th><td>[% person.country %]</td>
-<th align=right>Date Updated</td><td>[% date_updat %]</td>
 </tr>
 <tr><th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td></tr>
-<tr><th align=right>Mailings</th><td>[% person.mailings %]</td></tr>
+<tr><th align=right valign=top>Mailings</th><td>
+
+<table>
+<tr><td align=right>Email</td><td>[% person.e_mailings %]</td></tr>
+<tr><td align=right>Snail Mail</td><td>[% person.snail_mailings %]</td></tr>
+<tr><td align=right>Share</td><td>[% person.share_mailings %]</td></tr>
+</table>
+
+</td></tr>
 <tr><th align=right>Ambiguous</th><td>[% person.ambiguous %]</td></tr>
 
 <tr>
 <th align=right valign=top>Affiliations</td>
-<!-- not person.affil below -->
 <td>
 [% FOREACH a IN affils %]
 [% a.descrip %]<br>
-[% END -%]
+[% END %]
 </td>
+</tr>
+<tr>
+<th align=right>Date Entered</td><td>[% date_entrd %]</td>
+</tr>
+<tr>
+<th align=right>Date Updated</td><td>[% date_updat %]</td>
 </tr>
 </table>

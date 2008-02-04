@@ -4,6 +4,7 @@ package RetreatCenter::Controller::CanPol;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
+use Util qw/empty model/;
 
 #
 # ??? at the last minute I found that I didn't check
@@ -24,7 +25,7 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{canpols} = [
-        $c->model('RetreatCenterDB::CanPol')->search(
+        model($c, 'CanPol')->search(
             undef,
             {
                 order_by => 'name',
@@ -37,7 +38,7 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    my $cp = $c->model('RetreatCenterDB::CanPol')->find($id);
+    my $cp = model($c, 'CanPol')->find($id);
     if ($cp->name eq 'Default') {
         $c->stash->{template} = "canpol/nodel_default.tt2";
         return;
@@ -48,22 +49,43 @@ sub delete : Local {
         $c->stash->{template} = "canpol/cannot_del.tt2";
         return;
     }
-    $c->model('RetreatCenterDB::CanPol')->search({id => $id})->delete();
+    model($c, 'CanPol')->search({id => $id})->delete();
     $c->response->redirect($c->uri_for('/canpol/list'));
 }
 
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{canpol}       = $c->model('RetreatCenterDB::CanPol')->find($id);
+    $c->stash->{canpol}      = model($c, 'CanPol')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "canpol/create_edit.tt2";
+}
+
+my %hash;
+my @mess;
+sub _get_data {
+    my ($c) = @_;
+
+    %hash = %{ $c->request->params() };
+    @mess = ();
+    if (empty($hash{name})) {
+        push @mess, "Missing name";
+    }
+    if (empty($hash{policy})) {
+        push @mess, "Missing policy";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "canpol/error.tt2";
+    }
 }
 
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    $c->model("RetreatCenterDB::CanPol")->find($id)->update({
+    _get_data($c);
+    return if @mess;
+    model($c, 'CanPol')->find($id)->update({
         name   => $c->request->params->{name},
         policy => $c->request->params->{policy},
     });
@@ -80,8 +102,7 @@ sub create : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $cp = $c->stash->{canpol} =
-        $c->model("RetreatCenterDB::CanPol")->find($id);
+    my $cp = $c->stash->{canpol} = model($c, 'CanPol')->find($id);
     my $s = $cp->policy();
     $s =~ s{\r?\n}{<br>\n}g;
     $c->stash->{policy} = $s;
@@ -91,7 +112,9 @@ sub view : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    $c->model("RetreatCenterDB::CanPol")->create({
+    _get_data($c);
+    return if @mess;
+    model($c, 'CanPol')->create({
         name   => $c->request->params->{name},
         policy => $c->request->params->{policy},
     });

@@ -410,8 +410,9 @@ keep looking at the server log to
     would portably run on Windows or Linux
 we will have further ref integrity issues when
     we do registration and housing, of course.
-how to have date objects automatically returned in the DBIx::Class object???
-    a conversion done for us.
+is there a way for us to have date objects automatically
+    returned in the DBIx::Class object???
+    a conversion done for us from d8 string to Date::Simple object???.
 member sponsor payment history cannot be cleared
     for archival puposes.
     super admin is the only one that can delete members
@@ -459,7 +460,21 @@ redo people search form so there
     Number per Page ___
 don't mess with inserting % if phone number pattern already has a %?
 Need some validation on the GL number in update_do
-    for Program and Rental.
+    for Program and Rental. - only the super admin can change it...
 use fieldset and legends???
     try it.  mention it to Jamal.
 New Address?  - add to online form
+Can improve and now use the accessor methods in templates
+    rather than in the code - better for sure.
+    like $person->partner and $person->leader - done
+    others, too
+question for #catalyst or #tt
+    mispelled method names do not raise exception???
+    I tried TRY CATCH END but no exception for misspelled method/accessor
+perhaps the date/time postmark can be elsewhere - or shown in the view mode?
+    but not stuck in the comment?
+why does Catalyst bomb on me when I try to use
+     a non-existent field in an insert?  DBIx::Class gives
+     me no real error message. :(
+during registration - pop up person->comment
+    if a certain "Pop Up Comment" affiliation is present...

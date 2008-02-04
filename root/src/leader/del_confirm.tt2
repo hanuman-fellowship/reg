@@ -7,7 +7,7 @@
 </ul>
 <form action="/leader/del_confirm/[% leader.id %]" name=form>
 Continue with the deletion?
-<input type=submit value="Yes" name=yes> 
-<input type=submit value="No" name=no> 
+<input type=submit value="Submit" value="Yes" name=yes> 
+<input type=submit value="Submit" value="No" name=no> 
 </form>
 <script type='text/javascript'>document.form.no.focus()</script>

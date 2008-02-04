@@ -5,7 +5,7 @@ package RetreatCenter::Controller::String;
 use base 'Catalyst::Controller';
 
 use Lookup;
-use Util qw/resize/;
+use Util qw/resize model/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -16,7 +16,7 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{strings} = [ $c->model('RetreatCenterDB::String')->search(
+    $c->stash->{strings} = [ model($c, 'String')->search(
         undef,
         { order_by => 'key' }
     ) ];
@@ -27,7 +27,7 @@ use URI::Escape;
 sub update : Local {
     my ($self, $c, $key) = @_;
 
-    my $s = $c->model('RetreatCenterDB::String')->find($key);
+    my $s = model($c, 'String')->find($key);
 
     $c->stash->{key} = $key;
     $c->stash->{value} = uri_escape($s->value, '"');
@@ -39,7 +39,7 @@ sub update_do : Local {
     my ($self, $c, $key) = @_;
 
     my $value = uri_unescape($c->request->params->{value});
-    $c->model("RetreatCenterDB::String")->find($key)->update({
+    model($c, 'String')->find($key)->update({
         value => $value,
     });
     $lookup{$key} = $value;

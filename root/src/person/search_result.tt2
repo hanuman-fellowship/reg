@@ -14,7 +14,7 @@
 [% FOREACH p IN people %]
 <tr>
 <td><a href="[% '/person/view/' _ p.id %]">[% p.last %]</a></td>
-<td><a href="[% '/person/view/' _ p.id %]">[% p.first %]</a></td>
+<td>[% p.first %]</td>
 <td>[% p.sanskrit %]</td>
 <td>[% p.zip_post %]</td>
 <td>[% IF field == 'email' %][% p.email %][% ELSE %][% p.tel_home %][% END %]</td>
@@ -23,6 +23,6 @@
 </table>
 <p>
 [% IF nextN %]
-<a href=[% nextN %]>Next [% N %]</a>
+<a href="[% nextN %]">Next [% N %]</a>
 [% END %]
 </ul>

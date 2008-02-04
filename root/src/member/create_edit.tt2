@@ -43,7 +43,7 @@
 </tr>
 </table>
 </form>
-[% IF history.0 %]
+[% IF payments %]
     <p>
     <table cellpadding=2>
     <caption style="font-weight: bold">Payment History</caption>
@@ -51,10 +51,10 @@
     <th>Date</th>
     <th>Amount</th>
     </tr>
-    [% FOR h IN history %]
+    [% FOR p IN payments %]
         <tr>
-        <td>[% h.date_payment %]</td>
-        <td align=right>[% h.amount %]</td>
+        <td>[% p.date_payment %]</td>
+        <td align=right>[% p.amount %]</td>
         </tr>
     [% END %]
 [% END %]

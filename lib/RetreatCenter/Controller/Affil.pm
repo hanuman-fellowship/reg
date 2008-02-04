@@ -2,7 +2,9 @@ use strict;
 use warnings;
 package RetreatCenter::Controller::Affil;
 use base 'Catalyst::Controller';
-use Util qw/empty/;
+
+use lib '../..';
+use Util qw/empty model/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -13,7 +15,7 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{affil} = [ $c->model('RetreatCenterDB::Affil')->search(
+    $c->stash->{affil} = [ model($c, 'Affil')->search(
         undef,
         { order_by => 'descrip' }
     ) ];
@@ -28,7 +30,7 @@ sub delete : Local {
     # with this affiliation?  If so, show them and get confirmation 
     # before doing the deletion.
     #
-    my $a = $c->model('RetreatCenterDB::Affil')->find($id);
+    my $a = model($c, 'Affil')->find($id);
     my @people   = $a->people();
     my @programs = $a->programs();
     my @reports  = $a->reports();
@@ -57,22 +59,17 @@ sub del_confirm : Local {
 sub _del {
     my ($c, $id) = @_;
 
-    #
-    # $c->model('RetreatCenterDB::Affil')->find($id)->delete();
-    # this will delete others in affil_people?
-    # yes but very very inefficiently. :(
-    # better:
-    $c->model('RetreatCenterDB::Affil')->search({id => $id})->delete();
-    $c->model('RetreatCenterDB::AffilPerson')->search({a_id => $id})->delete();
-    $c->model('RetreatCenterDB::AffilProgram')->search({a_id => $id})->delete();
-    $c->model('RetreatCenterDB::AffilReport')->search(
+    model($c, 'Affil')->search({id => $id})->delete();
+    model($c, 'AffilPerson')->search({a_id => $id})->delete();
+    model($c, 'AffilProgram')->search({a_id => $id})->delete();
+    model($c, 'AffilReport')->search(
         {affiliation_id => $id})->delete();
 }
 
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{affil}       = $c->model('RetreatCenterDB::Affil')->find($id);
+    $c->stash->{affil}       = model($c, 'Affil')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "affil/create_edit.tt2";
 }
@@ -92,7 +89,7 @@ sub update_do : Local {
         $c->stash->{template} = "affil/error.tt2";
         return;
     }
-    $c->model("RetreatCenterDB::Affil")->find($id)->update({
+    model($c, 'Affil')->find($id)->update({
         descrip => $descrip,
     });
     $c->response->redirect($c->uri_for('/affil/list'));
@@ -117,7 +114,7 @@ sub create_do : Local {
         $c->stash->{template} = "affil/error.tt2";
         return;
     }
-    $c->model("RetreatCenterDB::Affil")->create({
+    model($c, 'Affil')->create({
         descrip => $descrip,
     });
     $c->response->redirect($c->uri_for('/affil/list'));

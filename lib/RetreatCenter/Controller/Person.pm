@@ -4,7 +4,14 @@ package RetreatCenter::Controller::Person;
 use base 'Catalyst::Controller';
 
 use lib '../..';
-use Util qw/affil_table trim empty nsquish valid_email/;
+use Util qw/
+    affil_table
+    trim
+    empty
+    nsquish
+    valid_email
+    model
+/;
 use Date::Simple qw/date today/;
 use USState;
 
@@ -39,7 +46,7 @@ sub search : Local {
     for my $f (qw/ 
         last sanskrit zip_post email first tel_home prefix substr
     /) {
-        if ($field eq $f || $match eq $f) {
+        if (defined $field && ($field eq $f || $match eq $f)) {
             $c->stash->{"$f\_checked"} = "checked";
         }
     }
@@ -56,6 +63,35 @@ sub search_do : Local {
     my $substr  = ($match eq 'substr')? '%': '';
     my $nrecs   = $c->request->params->{nrecs};
     my $offset  = $c->request->params->{offset} || 0;
+    my $search_ref;
+    my $orig_pattern = $pattern;
+    if ($pattern =~ m{\s+} && ($field eq 'last' || $field eq 'first')) {
+        my ($A, $B) = split /\s+/, $pattern, 2;
+        if ($field eq 'last') {
+            $search_ref = {
+                last =>  { 'like', "$substr$A%" },
+                first => { 'like', "$substr$B%" },
+            };
+        }
+        else {
+            $search_ref = {
+                last =>  { 'like', "$substr$B%" },
+                first => { 'like', "$substr$A%" },
+            };
+        }
+    }
+    elsif ($field eq 'tel_home' && !($pattern =~ s{^(['"])(.*)\1}{$2})) {
+        # intersperse % in the pattern - unless it was quoted
+        $pattern =~ s{(\d)}{$1%}g;
+        $search_ref = {
+            tel_home => { like => "$substr$pattern" },
+        };
+    }
+    else {
+        $search_ref = {
+            $field => { 'like', "$substr$pattern%" },
+        };
+    }
 
     my %order_by = (
         sanskrit => [ 'sanskrit', 'last', 'first' ],
@@ -65,26 +101,18 @@ sub search_do : Local {
         email    => [ 'email', 'last', 'first' ],
         tel_home => [ 'last', 'first' ],
     );
-    my $orig_pattern = $pattern;
-    if ($field eq 'tel_home' && !($pattern =~ s{^(['"])(.*)\1}{$2})) {
-        # intersperse % in the pattern - unless it was quoted
-        $pattern =~ s{(\d)}{$1%}g;
-    }
-    my @people =
-        $c->model('RetreatCenterDB::Person')->search(
-            {
-                $field => { 'like', "$substr$pattern%" },
-            },
-            {
-                order_by => $order_by{$field},
-                rows     => $nrecs+1,
-                offset   => $offset,
-            },
-        );
+    my @people = model($c, 'Person')->search(
+        $search_ref,
+        {
+            order_by => $order_by{$field},
+            rows     => $nrecs+1,
+            offset   => $offset,
+        },
+    );
     if (@people == 0) {
         # Nobody found.
         $pattern =~ s{%}{}g;
-        $c->response->redirect($c->uri_for("/person/search/$pattern/$field/$match/$nrecs"));
+        $c->response->redirect($c->uri_for("/person/search/$orig_pattern/$field/$match/$nrecs"));
         return;
     }
     if (@people > $nrecs) {
@@ -106,7 +134,7 @@ sub search_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    my $p = model($c, 'Person')->find($id);
 
     #
     # if this person is a leader or a member
@@ -114,80 +142,53 @@ sub delete : Local {
     # and membership must be deleted first.
     # I could ask if they would like me to do
     # that for them but I don't feel like it at the moment.
+    # it _should_ be hard to delete such people.
     #
-    my ($l) = $c->model('RetreatCenterDB::Leader')->search({person_id => $id});
-    my ($m) = $c->model('RetreatCenterDB::Member')->search({person_id => $id});
-    if ($l || $m) {
+    # what about registrations???  these, too... todo...
+    #
+    if ($p->leader || $p->member) {
         $c->stash->{person} = $p;
-        $c->stash->{leader} = $l if $l;
-        $c->stash->{member} = $m if $m;
-        $c->stash->{conjunction} = " and a " if $l && $m;
+        $c->stash->{conjunction} = " and a " if $p->leader && $p->member;
         $c->stash->{template} = "person/memberleader.tt2";
         return;
     }
-    _del($c, $p);
-    $c->response->redirect($c->uri_for('/person/search'));
-}
 
-#
-# i tried using delete_all() as directed
-# to do the cascade to the affils for this person.
-# look at the DBIC_TRACE - it does it VERY inefficiently :(.
-# delete with find() does the same.  but not with search()???.
-#
-#$c->model('RetreatCenterDB::Person')->search({id => $id})->delete_all();
-#$c->model('RetreatCenterDB::Person')->find($id)->delete();
-#
-# both the above do an inefficient delete of affils.
-# this is direct and much better:
-#$c->model('RetreatCenterDB::AffilPerson')->search({p_id => $id})->delete();
-#
-sub _del {
-    my ($c, $p) = @_;
-
-    my $id = $p->id;
-    my $name = $p->first() . " " . $p->last();
-    my $id_sps = $p->id_sps();
-    $c->model('RetreatCenterDB::Person')->search(
-        { id => $id }
-    )->delete();
-    $c->model('RetreatCenterDB::AffilPerson')->search(
+    # affilation/persons
+    model($c, 'AffilPerson')->search(
         { p_id => $id }
     )->delete();
 
-    # were they partnered?  not any more.
-    if ($id_sps) {
-        my $partner = $c->model('RetreatCenterDB::Person')->find($id_sps);
-        $partner->update({
+    # unpartner the partner as their spouse is dying
+    # will they remarry?
+    if ($p->partner) {
+        $p->partner->update({
             id_sps => 0,
         });
     }
-    # and leader or member
-    $c->model('RetreatCenterDB::Leader')->search({person_id => $id})->delete();
-    $c->model('RetreatCenterDB::Member')->search({person_id => $id})->delete();
+    #
+    # don't do $p->delete() as it does a dangerous cascade.
+    # for one, it deletes the partner record rather than updating it as above.
+    # ??? some other way aside from reSearching?
+    #
+    my $name = $p->first() . " " . $p->last();
+    model($c, 'Person')->search(
+        { id => $id }
+    )->delete();
 
     $c->flash->{message} = "$name was deleted.";
+    $c->response->redirect($c->uri_for('/person/search'));
 }
 
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    my $p = model($c, 'Person')->find($id);
     if (! $p) {
         $c->stash->{mess} = "Person not found - sorry.";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
     $c->stash->{person} = $p;
-    #
-    # ???can we make a 'relationship' between people and itself
-    # and have $p->id_sps be another person object?
-    # until then...
-    #
-    if (my $id_sps = $p->id_sps()) {
-        my $sps = $c->model('RetreatCenterDB::Person')->find($id_sps);
-        $c->stash->{partner} = $sps;
-    }
     $c->stash->{sex} = ($p->sex() eq "M")? "Male"
                       :($p->sex() eq "F")? "Female"
                       :                    "Not Reported";
@@ -195,29 +196,18 @@ sub view : Local {
     $c->stash->{date_entrd} = date($p->date_entrd()) || "";
     $c->stash->{date_updat} = date($p->date_updat()) || "";
     my $comment = $p->comment;
-    $comment =~ s{\r?\n}{<br>\n}g;
+    $comment =~ s{\r?\n}{<br>\n}g if $comment;
     $c->stash->{comment} = $comment;
 
-    # is this person a leader?
-    my @leads = $c->model('RetreatCenterDB::Leader')->search(
-        { person_id => $id }
-    );
-    $c->stash->{is_leader} = scalar(@leads);
-    $c->stash->{leader} = $leads[0];
-
-    # is this person a member?
-    my @members = $c->model('RetreatCenterDB::Member')->search(
-        { person_id => $id }
-    );
-    $c->stash->{is_member} = scalar(@members);
-    $c->stash->{member} = $members[0];
     $c->stash->{template} = "person/view.tt2";
 }
 
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{mailings}    = "checked";
+    $c->stash->{e_mailings}     = "checked";
+    $c->stash->{snail_mailings} = "checked";
+    $c->stash->{share mailings} = "checked";
     $c->stash->{ambiguous}   = "";
     $c->stash->{affil_table} = affil_table($c);
     $c->stash->{form_action} = "create_do";
@@ -229,18 +219,37 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = ();
-    @mess = ();
-    for my $f (qw/
-        last first sanskrit sex
-        addr1 addr2 city st_prov zip_post country
-        email
-        tel_home tel_work tel_cell
-        comment mailings ambiguous
-    /) {
-        $hash{$f} = trim($c->request->params->{$f});
+    %hash = %{ $c->request->params() };
+    for my $k (keys %hash) {
+        delete $hash{$k} if $k =~ m{^aff\d+$};
     }
+    # since unchecked checkboxes are not sent...
+    for my $f (qw/
+        e_mailings
+        snail_mailings
+        share_mailings
+        ambiguous
+    /) {
+        $hash{$f} = "" unless exists $hash{$f};
+    }
+    @mess = ();
     $hash{akey} = nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post});
+
+    # normalize telephone number format
+    for my $f (qw/
+        tel_home
+        tel_work
+        tel_cell
+    /) {
+        next if $hash{$f} =~ m{\d\d\d-\d\d\d-\d\d\d\d};
+        my $tmp = $hash{$f};
+        $tmp =~ s{\D}{}g;
+        if (length($tmp) == 10) {
+            $hash{$f} = substr($tmp, 0, 3) . "-"
+                      . substr($tmp, 3, 3) . "-"
+                      . substr($tmp, 6, 4)
+        }
+    }
 
     if (empty($hash{last})) {
         push @mess, "Last name cannot be blank.";
@@ -270,9 +279,9 @@ sub _get_affils {
     my ($c, $id) = @_;
 
     my @cur_affils = grep { s/^aff(\d+)/$1/ }
-                     keys %{$c->request->params};
+                     $c->request->param;
     for my $ca (@cur_affils) {
-        $c->model("RetreatCenterDB::AffilPerson")->create({
+        model($c, 'AffilPerson')->create({
             a_id => $ca,
             p_id => $id,
         });
@@ -291,7 +300,7 @@ sub _get_dups {
     my $last  = $p->last;
     my $first = $p->first;
     my $akey  = $p->akey;
-    my @dups = $c->model("RetreatCenterDB::Person")->search(
+    my @dups = model($c, 'Person')->search(
         {
             last  => $last,
             first => $first,
@@ -309,7 +318,7 @@ sub _get_dups {
     }
     my $Clast  = substr($last, 0, 1);
     my $Cfirst = substr($first, 0, 1);
-    push @dups, $c->model("RetreatCenterDB::Person")->search(
+    push @dups, model($c, 'Person')->search(
         {
             last  => { 'like' => "$Clast%"  },
             first => { 'like' => "$Cfirst%" },
@@ -340,7 +349,7 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $p = $c->model("RetreatCenterDB::Person")->create({
+    my $p = model($c, 'Person')->create({
         %hash,
         date_updat => today()->as_d8(),
         date_entrd => today()->as_d8(),
@@ -355,12 +364,14 @@ sub create_do : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    my $p = model($c, 'Person')->find($id);
     $c->stash->{person} = $p;
     my $sex = $p->sex();
     $c->stash->{sex_female}  = ($sex eq "F")? "checked": "";
     $c->stash->{sex_male}    = ($sex eq "M")? "checked": "";
-    $c->stash->{mailings}    = ($p->mailings())? "checked": "";
+    $c->stash->{e_mailings}     = (    $p->e_mailings())? "checked": "";
+    $c->stash->{snail_mailings} = ($p->snail_mailings())? "checked": "";
+    $c->stash->{share_mailings} = ($p->share_mailings())? "checked": "";
     $c->stash->{ambiguous}   = ($p->ambiguous())? "checked": "";
     $c->stash->{affil_table} = affil_table($c, $p->affils());
     $c->stash->{form_action} = "update_do/$id";
@@ -380,13 +391,13 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $p = $c->model("RetreatCenterDB::Person")->find($id);
+    my $p = model($c, 'Person')->find($id);
     $p->update({
         %hash,
         date_updat => today()->as_d8(),
     });
     # delete all old affiliations and create the new ones.
-    $c->model("RetreatCenterDB::AffilPerson")->search(
+    model($c, 'AffilPerson')->search(
         { p_id => $id },
     )->delete();
     _get_affils($c, $id);
@@ -394,11 +405,8 @@ sub update_do : Local {
     # in case this person was partnered we must
     # update the partner's address and home phone as well.
     #
-    my $id_sps = $p->id_sps;
-    my $partner;
-    if ($id_sps != 0) {
-        $partner = $c->model("RetreatCenterDB::Person")->find($id_sps);
-        $partner->update({
+    if ($p->partner) {
+        $p->partner->update({
             addr1    => $hash{addr1},
             addr2    => $hash{addr2},
             city     => $hash{city},
@@ -413,9 +421,9 @@ sub update_do : Local {
     my $msg = _view_person($p);
     my $pronoun = ($p->sex eq "M")? "his": "her";
     my $verb = "was";
-    if ($id_sps) {
+    if ($p->partner) {
         $msg .= " and $pronoun partner "
-              . _view_person($partner);
+              . _view_person($p->partner);
         $verb = "were"
     }
     $msg .= " $verb updated.";
@@ -425,8 +433,9 @@ sub update_do : Local {
 
 sub separate : Local {
     my ($self, $c, $id) = @_;
-    my $p   = $c->model('RetreatCenterDB::Person')->find($id);
-    my $sps = $c->model('RetreatCenterDB::Person')->find($p->id_sps());
+    my $p   = model($c, 'Person')->find($id);
+    my $sps = $p->partner;
+    #my $sps = model($c, 'Person')->find($p->id_sps());
     $p->update({
         id_sps     => 0,
         date_updat => today()->as_d8(),
@@ -441,7 +450,7 @@ sub separate : Local {
 sub partner : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->model('RetreatCenterDB::Person')->find($id);
+    my $p = model($c, 'Person')->find($id);
     $c->stash->{person} = $p;
     $c->stash->{template} = "person/partner.tt2";
 }
@@ -449,10 +458,10 @@ sub partner : Local {
 sub partner_with : Local {
     my ($self, $c, $id) = @_;
 
-    my $p1 = $c->model('RetreatCenterDB::Person')->find($id);
+    my $p1 = model($c, 'Person')->find($id);
     my $first = trim($c->request->params->{first});
     my $last  = trim($c->request->params->{last});
-    my (@people) = $c->model('RetreatCenterDB::Person')->search(
+    my (@people) = model($c, 'Person')->search(
         {
             first => $first,
             last  => $last,
@@ -460,10 +469,10 @@ sub partner_with : Local {
     );
     if (@people == 1) {
         my $p2 = $people[0];
-        if ($p2->id_sps != 0) {
-            $c->stash->{message} = $p2->first . " " . $p2->last
+        if ($p2->partner) {
+            $c->flash->{message} = $p2->first . " " . $p2->last
                                  . " is already partnered!";
-            $c->forward('search');
+            $c->response->redirect($c->uri_for("/person/search"));
         }
         else {
             $p1->update({
@@ -485,13 +494,13 @@ sub partner_with : Local {
                 tel_home   => $p1->tel_home,
                 date_updat => today()->as_d8(),
             });
-            $c->stash->{message} = "Partnered"
+            $c->flash->{message} = "Partnered"
                                  . " " . _view_person($p1)
                                  . " with"
                                  . " " . _view_person($p2)
                                  . ".";
         }
-        $c->forward('search');
+        $c->response->redirect($c->uri_for("/person/search"));
     }
     else {
         $c->stash->{message} = $first . " " . $last
@@ -509,12 +518,12 @@ sub partner_with : Local {
 sub mkpartner : Local {
     my ($self, $c, $id, $first, $last) = @_;
 
-    my $p1 = $c->model('RetreatCenterDB::Person')->find($id);
+    my $p1 = model($c, 'Person')->find($id);
     if (! $c->request->params->{yes}) {
-        $c->stash->{message} = "The partnering of "
+        $c->flash->{message} = "The partnering of "
                               . _view_person($p1)
                               . " was cancelled.";
-        $c->forward("search");
+        $c->response->redirect($c->uri_for("/person/search"));
         return;
     }
     my $addr1    = $p1->addr1;
@@ -522,7 +531,7 @@ sub mkpartner : Local {
     my $zip_post = $p1->zip_post;
 
     my $sex2 = ($p1->sex eq "M")? "F": "M";   # usually, not always
-    my $p2 = $c->model("RetreatCenterDB::Person")->create({
+    my $p2 = model($c, 'Person')->create({
         last     => $last,
         first    => $first,
         sanskrit => '',
@@ -544,12 +553,12 @@ sub mkpartner : Local {
         date_updat => today()->as_d8(),
     });
     my $pronoun = ($sex2 eq 'M')? "him": "her";
-    $c->stash->{message} = "Created"
+    $c->flash->{message} = "Created"
                          . " " . _view_person($p2)
                          . " and partnered $pronoun with"
                          . " " . _view_person($p1)
                          . ".";
-    $c->forward("search");
+    $c->response->redirect($c->uri_for("/person/search"));
 }
 
 1;
