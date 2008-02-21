@@ -33,6 +33,7 @@ sub formats : Private {
         3 => 'Name, Home, Work, Cell',
         4 => 'Email to VistaPrint',
         5 => 'Just Email',
+        6 => 'Name, Address, Link',
     };
 }
 

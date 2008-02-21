@@ -34,6 +34,7 @@ __PACKAGE__->add_columns(qw/
     deposit
     collect_total
     linked
+    unlinked_dir
     ptemplate
     cl_template
     sbath
@@ -65,6 +66,7 @@ __PACKAGE__->many_to_many(affils => 'affil_program', 'affil',
 # registrations
 __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
                       'program_id');
+        # ??? how to sort by person names?
 
 # leaders
 __PACKAGE__->has_many(leader_program => 'RetreatCenterDB::LeaderProgram',
@@ -89,7 +91,7 @@ use Lookup;
 use Image::Size;
 use File::Copy;
 
-my $default_template = slurp("template");
+my $default_template = slurp("default");
 my %first_of_month;
 
 # do I really need $c passed in???
@@ -110,9 +112,7 @@ sub future_programs {
     # these are used in subsequent methods.
     #
     my ($prev_prog);
-    my $n = 1;
     for my $p (grep { $_->linked } @programs) {
-        $p->{prognum} = $n++;
         $p->{prev}   = $prev_prog || $p;
         $prev_prog->{"next"} = $p;
         $prev_prog = $p;
@@ -131,10 +131,6 @@ sub future_programs {
         $first_of_month{$sd->month . $sd->year} = $p;
     }
     @programs;
-}
-sub prognum {
-    my ($self) = @_;
-    return $self->{prognum};
 }
 sub sdate_obj {
     my ($self) = @_;
@@ -405,8 +401,8 @@ sub fees {
     my $hcost = $housecost->$type;      # column name is correct, yes?
 	if ($housecost->type eq "Perday") {
 		$hcost = $ndays*$hcost;
-		$hcost -= 0.10*$hcost  if $ndays >= 7;
-		$hcost -= 0.10*$hcost  if $ndays >= 30;
+		$hcost -= 0.10*$hcost  if $ndays >= 7;      # Strings???
+		$hcost -= 0.10*$hcost  if $ndays >= 30;     # Strings???
 		$hcost = int($hcost);
 	}
 	return 0 unless $hcost;		# don't offer this housing type if cost is zero
@@ -470,7 +466,7 @@ sub leader_bio {
 sub month_calendar {
     my ($self) = @_;
     my $m = $self->sdate_obj->month;
-	my $cal = slurp "cal$m.tmp";
+	my $cal = slurp "cal$m";
     $cal;
 }
 sub nextprog {
@@ -481,6 +477,7 @@ sub prevprog {
     my ($self) = @_;
     $self->{prev}->fname;
 }
+
 #
 # either the leader pic(s) or the program pic
 # or nothing

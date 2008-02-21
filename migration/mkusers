@@ -32,6 +32,8 @@ insert into user values (3, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith');
 insert into user values (4, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou');
 insert into user values (5, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg');
 insert into user values (6, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan');
+insert into user values (7, 'web_user', 'webby', 'web@user.com', 'Web', 'User');
+insert into user values (8, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky');
 --
 -- the roles - do not muck with the ids!
 --
@@ -64,8 +66,11 @@ insert into user_role values (4, 5);
 insert into user_role values (4, 6);
 insert into user_role values (4, 7);
 -- shyama
-insert into user_role values (5, 5);
 insert into user_role values (5, 7);
+insert into user_role values (5, 5);
+-- soma
+insert into user_role values (8, 7);
+insert into user_role values (8, 5);
 -- pratibha
 insert into user_role values (6, 5);
 insert into user_role values (6, 7);

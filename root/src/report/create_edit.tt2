@@ -21,6 +21,7 @@
 <option value="3" [% format_selected_3 %]> Name, Home, Work, Cell</option>
 <option value="4" [% format_selected_4 %]> Email to VistaPrint
 <option value="5" [% format_selected_5 %]> Just Email
+<option value="6" [% format_selected_6 %]> Name, Address, Link
 </select>
 </td>
 </tr>

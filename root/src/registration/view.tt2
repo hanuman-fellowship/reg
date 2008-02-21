@@ -1,4 +1,96 @@
+<style>
+h3 {
+    margin-bottom: 1mm;
+    color: #338833;
+}
+</style>
 <h2>Registration</h2>
-Program [% registration.program.name %]<br>
-From [% registration.program.sdate_obj %] To [% registration.program.edate_obj %]<br>
-Person [% registration.person.first %] [% registration.person.last %]<br>
+<table cellpadding=2>
+<tr><th align=right>Program</th><td><a href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a>
+From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
+<span style="margin-left: 1in">
+<a href="/registration/list_reg_name/[% reg.program.id %]">Other [% reg.program.name %]</a>
+[% IF online > 0 %]
+&nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
+[% END %]
+</span>
+</td></tr>
+<tr><th align=right>Person</th><td><a href="/person/view/[% reg.person.id %]">[% reg.person.first %] [% reg.person.last %]</a>
+[% IF reg.date_start %] Arriving early on [% reg.date_start_obj %].[% END %]
+[% IF reg.date_end %] Leaving later on [% reg.date_end_obj %].[% END %]
+</td></tr>
+<tr><th align=right>Postmark</th><td>[% date_postmark %] [% reg.time_postmark %]</td></tr>
+<tr><th align=right>Housing</th><td>[% reg.h_type_disp %] in [% reg.h_name %]</td></tr>
+<tr><th align=right>Balance</th>
+<td>
+[% IF reg.balance %]
+<a href="/registration/pay_balance/[% reg.id %]/view">[% reg.balance %]</a>
+[% ELSE %]
+[% reg.balance %]
+[% END %]
+</td>
+</tr>
+<tr><th align=right valign=top>Comment</th><td>[% comment %]</td></tr>
+<tr><th align=right>Kids</th><td>[% reg.kids %]</td></tr>
+<tr><th align=right>Work Study</th><td>[% reg.work_study %]</td></tr>
+<tr><th align=right>CEU License</th><td>[% reg.ceu_license %]</td></tr>
+</table>
+<h3>Charges</h3>
+<table cellpadding=2>
+<tr>
+<th align=right>Amount</th>
+<th align=left>What</th>
+</tr>
+[% tot = 0 %]
+[% FOREACH ch IN reg.charges %]
+<tr>
+<td align=right>[% ch.amount %]</td>
+<td>[% ch.what %]</td>
+<td>
+<a href="javascript:void(0);" onclick="return overlib('[% ch.the_date_obj %]&nbsp;&nbsp;[% ch.time %]&nbsp;&nbsp;[% ch.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</td>
+</tr>
+[% tot = tot + ch.amount %]
+[% END %]
+<tr><td align=right><span style="border-top: solid thin">[% tot %]</span></td><td>Total</td></tr>
+</table>
+<h3>Payments</h3>
+<table cellpadding=2>
+<tr>
+<th align=right>Amount</th>
+<th align=left>What</th>
+<th align=left>Type</th>
+</tr>
+[% tot = 0 %]
+[% FOREACH py IN reg.payments %]
+<tr>
+<td align=right>[% py.amount %]</td>
+<td>[% py.what %]</td>
+<td>[% py.type %]</td>
+<td>
+<a href="javascript:void(0);" onclick="return overlib('[% py.the_date_obj %]&nbsp;&nbsp;[% py.time %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</td>
+</tr>
+[% tot = tot + py.amount %]
+[% END %]
+<tr><td align=right><span style="border-top: solid thin">[% tot %]</span></td><td>Total</td></tr>
+</table>
+<h3>History</h3>
+<table cellpadding=2>
+<tr>
+<th align=left>What</th>
+<!--
+<th>Date</th>
+<th>Time</th>
+<th align=left>Who</th>
+-->
+</tr>
+[% FOREACH h IN reg.history %]
+<tr>
+<td>[% h.what %]</td>
+<td>
+<a href="javascript:void(0);" onclick="return overlib('[% h.the_date_obj %]&nbsp;&nbsp;[% h.time %]&nbsp;&nbsp;[% h.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</td>
+</tr>
+[% END %]
+</table>

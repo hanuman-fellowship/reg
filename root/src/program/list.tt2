@@ -11,6 +11,8 @@
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish">Publish<a>
 [% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/grab_new">Grab New</a>
 [% IF online > 0 %]
     &nbsp;&nbsp;&nbsp;
     <a href="/registration/list_online">Online ([% online %])</a>
@@ -21,14 +23,12 @@
 <th align=left>Name</th>
 <th align=left>Start Date</th>
 <th align=left>Title</th>
-<th align=left>SubTitle</th>
 </tr>
 [% FOREACH p IN programs %]
     <tr>
     <td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
     <td>[% p.sdate_obj %]</td>
-    <td>[% p.title %]</td>
-    <td>[% p.subtitle %]</td>
+    <td><a href="/registration/list_reg_name/[% p.id %]">[% p.title %]</a></td>
     </tr>
 [% END %]
 </table>

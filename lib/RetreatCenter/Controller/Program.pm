@@ -16,6 +16,7 @@ use Util qw/
     sys_template
     compute_glnum
     model
+    empty
 /;
 use Date::Simple qw/date today/;
 use Net::FTP;
@@ -23,7 +24,7 @@ use Lookup;
 use File::Copy;
 
 sub index : Private {
-    my ( $self, $c ) = @_;
+    my ($self, $c) = @_;
 
     $c->forward('list');
 }
@@ -42,6 +43,7 @@ sub create : Local {
     $c->stash->{check_linked}        = "checked";
     $c->stash->{program_leaders}     = [];
     $c->stash->{program_affils}      = [];
+    Lookup->init($c);
     $c->stash->{program}             = {
         tuition      => 0,
         extradays    => 0,
@@ -49,7 +51,12 @@ sub create : Local {
         deposit      => 100,
         canpol       => { name => "Default" },  # a clever way to set default!
         housecost    => { name => "Default" },  # fake an object!
-        ptemplate    => 'template',
+        ptemplate    => 'default',
+        cl_template  => 'default',
+        reg_start    => $lookup{reg_start},
+        reg_end      => $lookup{reg_end},
+        prog_start   => $lookup{prog_start},
+        prog_end     => $lookup{prog_end},
     };
     $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
         undef,
@@ -61,13 +68,13 @@ sub create : Local {
             { order_by => 'name' },
         ) ];
     $c->stash->{template_opts} = [
-        grep { $_ eq "template" || ! sys_template($_) }
-        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
-        <root/static/templates/*.html>
+        grep { $_ eq "default" || ! sys_template($_) }
+        map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
+        <root/static/templates/web/*.html>
     ];
     $c->stash->{cl_template_opts} = [
-        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
-        <root/static/cl_templates/*.html>
+        map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
+        <root/static/templates/letter/*.tt2>
     ];
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "program/create_edit.tt2";
@@ -105,8 +112,16 @@ sub _get_data {
     $hash{url} =~ s{^\s*http://}{};
 
     @mess = ();
-    if (! $hash{linked} && $hash{ptemplate} eq 'template') {
-        push @mess, "Unlinked programs cannot use the standard template.";
+    if (! $hash{linked}) {
+        if ($hash{ptemplate} eq 'default') {
+            push @mess, "Unlinked programs cannot use the standard template.";
+        }
+        if (empty($hash{unlinked_dir})) {
+            push @mess, "Missing unlinked directory name";
+        }
+        elsif ($hash{unlinked_dir} =~ m{[^\w_.-]}) {
+            push @mess, "Illegal unlinked directory name";
+        }
     }
     for my $f (qw/ name title /) {
         if ($hash{$f} !~ m{\S}) {
@@ -217,6 +232,9 @@ sub create_do : Local {
             brdesc    => "",
             ptemplate => "",
             url       => "",
+            tuition   => $p->full_tuition,
+            extradays => 0,
+            full_tuition => 0,
         });
     }
     $c->response->redirect($c->uri_for("/program/view/$id"));
@@ -281,7 +299,7 @@ sub list : Local {
             { order_by => 'name' },
         )
     ];
-    my @files = <root/static/online_reg/*>;
+    my @files = <root/static/online/*>;
     $c->stash->{online} = scalar(@files);
     $c->stash->{template} = "program/list.tt2";
 }
@@ -326,14 +344,14 @@ sub update : Local {
         ) ];
     # templates
     $c->stash->{template_opts} = [
-        grep { $_ eq "template" || ! sys_template($_) }
-        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
-        <root/static/templates/*.html>
+        grep { $_ eq "default" || ! sys_template($_) }
+        map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
+        <root/static/templates/web/*.html>
     ];
     # confirmation letter templates
     $c->stash->{cl_template_opts} = [
-        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
-        <root/static/cl_templates/*.html>
+        map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
+        <root/static/templates/letter/*.tt2>
     ];
 
     $c->stash->{edit_gl}     = $c->check_user_roles('super_admin');
@@ -377,6 +395,9 @@ sub update_do : Local {
                 brdesc    => "",
                 ptemplate => "",
                 url       => "",
+                tuition   => $p->full_tuition,
+                extradays => 0,
+                full_tuition => 0,
             });
         }
         else {
@@ -391,6 +412,9 @@ sub update_do : Local {
                 brdesc    => "",
                 ptemplate => "",
                 url       => "",
+                tuition   => $p->full_tuition,
+                extradays => 0,
+                full_tuition => 0,
             });
         }
     }
@@ -659,6 +683,36 @@ sub publish : Local {
     close $out;
 
     #
+    # schmush around the unlinked programs
+    #
+    for my $ulp (@unlinked) {
+        my $dir = $ulp->unlinked_dir;
+        mkdir "gen_files/$dir";
+        mkdir "gen_files/$dir/pics";
+        rename "gen_files/" . $ulp->fname,
+               "gen_files/$dir/index.html";
+        copy "gen_files/regtable",
+             "gen_files/$dir/regtable";
+        # now for the pictures and the associated html files...
+        my $src = slurp("gen_files/$dir/index.html");
+        my @jpg = $src =~ m{pics/(.*?jpg)}g;
+        for my $j (@jpg) {
+            copy "gen_files/pics/$j",   # not move.
+                 "gen_files/$dir/pics/$j";
+                                        # it is POSSIBLE for a leader
+                                        # to lead both a linked and an
+                                        # unlinked program.
+            my $pic = $j;
+            $pic =~ s{gen_files/pics/}{};
+            $pic =~ s{th}{b};
+            copy "gen_files/pics/$pic",   # not move.
+                 "gen_files/$dir/pics/$pic";
+            copy "gen_files/$pic.html",
+                 "gen_files/$dir/$pic.html";
+        }
+    }
+
+    #
     # finally, ftp all generated pages to www.mountmadonna.org
     # or whereever Lookup says, that is...
     #
@@ -673,10 +727,32 @@ sub publish : Local {
         $ftp->delete($f) if $f ne 'pics';
     }
     $ftp->ascii();
+    # dangerous to chdir - in case we die...
+    # need to restore current directory.
+    # die does not really die.  the server keeps running somehow.
     chdir "gen_files";
-    for my $f (<*.html>, 'regtable') {
-        $ftp->put($f)
-            or die "cannot put $f"; # not die???
+    FILE:
+    for my $f (<*>) {
+        if (-d $f) {
+            next FILE if $f eq 'pics';
+            # an unlinked program directory
+            $ftp->mkdir("../$f");
+            for my $hf (<$f/*.html>) {
+                $ftp->put($hf, "../$hf")
+                    or die "cannot put $hf to ../$hf";
+            }
+            $ftp->mkdir("../$f/pics");
+            for my $p (<$f/pics/*>) {
+                $ftp->put($p, "../$p")
+                    or die "cannot put $p to ../$p";
+            }
+            $ftp->put("$f/regtable", "../$f/regtable")
+                    or die "cannot put $f/regtable to ../$f/regtable";
+        }
+        else {
+            $ftp->put($f)
+                or die "cannot put $f"; # not die???
+        }
     }
     $ftp->quit();
     chdir "..";
@@ -710,6 +786,9 @@ sub publish_pics : Local {
     $ftp->quit();
     chdir "../..";
     $c->stash->{pics} = 1;
+    my @unlinked = grep { $_->unlinked }
+                   RetreatCenterDB::Program->future_programs($c);
+    $c->stash->{unlinked} = \@unlinked;
     $c->stash->{ftp_dir2} = $lookup{ftp_dir2};
     $c->stash->{template} = "program/published.tt2";
 }
@@ -805,7 +884,7 @@ sub brochure_do : Local {
 # clear them first? or after using them???
 #
 sub gen_month_calendars {
-my ($c) = @_;
+    my ($c) = @_;
     my $cur_month = 0;
     my $cal;
     for my $p (grep { $_->linked } @programs) {
@@ -820,8 +899,8 @@ my ($c) = @_;
             # start a new calendar file
             $cur_month = $m;
             undef $cal;
-            open $cal, ">", "root/static/templates/cal$m.tmp"
-                or die "cannot create cal$m.tmp: $!\n";
+            open $cal, ">", "root/static/templates/web/cal$m.html"
+                or die "cannot create cal$m.html: $!\n";
             my $my = monthyear($p->sdate_obj);
             print {$cal} <<EOH;
 <table class='caltable'>
@@ -844,6 +923,7 @@ EOH
         close $cal;
     }
 }
+
 #
 # generate the regtable for online registration
 #
@@ -855,12 +935,10 @@ sub gen_regtable {
         my $fulldays = $ndays + $p->extradays;
 
         #
-        # prognum and pname should be first and second
-        # for looking up purposes.
+        # pid should be first for looking up purposes.
         #
-        print {$regt} "prognum\t", $p->prognum, "\n";
-        print {$regt} "pname\t",   $p->name, "\n";
         print {$regt} "pid\t",     $p->id, "\n";
+        print {$regt} "pname\t",   $p->name, "\n";
         print {$regt} "desc\t",    $p->title, "\n";
         print {$regt} "dates\t",   $p->dates, "\n";
         print {$regt} "edate\t",   $p->edate, "\n";
@@ -901,6 +979,3 @@ sub gen_regtable {
 }
 
 1;
-
-__END__
-

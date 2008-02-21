@@ -77,3 +77,14 @@ is("$d", "September Sunday", "new default format");
 
 $d = date('');
 is($d, undef, "'' gives undef?");
+
+$d = date("-1");
+is($d, today() -1, "days before");
+$d = date("+4");
+is($d, today()+4, "days after");
+Date::Simple->relative_date(date("9/2/2007"));
+$d = date("-3");
+is($d, date("8/30/2007"), "relative days before");
+#Date::Simple->relative_date(date("9/2/2007"));
+$d = date("+5");
+is($d, date("9/7/2007"), "relative days after");

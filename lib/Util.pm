@@ -126,7 +126,7 @@ sub leader_table {
 sub trim {
     my ($s) = @_;
 
-    return unless $s;
+    return $s unless $s;
     $s =~ s{^\s*|\s*$}{}g;
     $s;
 }
@@ -162,16 +162,16 @@ sub nsquish {
 }
 
 #
-# slurp an entire template into one variable
+# slurp an entire template (or other file) into one variable
 #
 sub slurp {
     my ($fname) = @_;
 
-    if (index($fname, '.') == -1) {
-        $fname .= ".html";
+    if (index($fname, '.') == -1) {     # no period - so it's a web template
+        $fname = "root/static/templates/web/$fname.html";
     }
-    open my $in, "<", "root/static/templates/$fname"
-		or die "cannot open r/s/t/$fname: $!\n";
+    open my $in, "<", $fname
+		or die "cannot open $fname: $!\n";
     local $/;
     my $s = <$in>;
     close $in;
@@ -188,8 +188,8 @@ sub slurp {
 sub expand {
 	my ($v) = @_;
     $v =~ s{\r?\n}{\n}g;
-	$v =~ s#(^|\ )\*(.*?)\*#$1<b>$2</b>#smg;
-	$v =~ s#(^|\ )_(.*?)\_#$1<i>$2</i>#smg;
+	$v =~ s#(^|\W)\*(.*?)\*#$1<b>$2</b>#smg;
+	$v =~ s#(^|\W)_(.*?)\_#$1<i>$2</i>#smg;
 	$v =~ s{%(.*?)%(.*?)%}
            {
                my ($clickpoint, $link) = (trim($1), trim($2));
@@ -336,7 +336,7 @@ my %sys_template = map { $_ => 1 } qw/
     events
     popup
     programs
-    template
+    default
 /;
 
 sub sys_template {

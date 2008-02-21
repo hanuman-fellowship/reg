@@ -5,8 +5,10 @@
   <style type="text/css">
 [% PROCESS ttsite.css %]
   </style>
+  <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
  </head>
  <body>
+ <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 [% content %]
  </body>
 </html>

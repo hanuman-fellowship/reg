@@ -5,41 +5,46 @@
 <p>
 
 <ul>
-<table cellpadding=5 border=0>
+<table cellpadding=3 border=0>
 
 <tr>
-<td><input type=radio name=category value='General' [% category_general %]> General</td>
-<td>Expires on <input type=text name=date_general value='[% date_general %]' size=10></td>
+<th><input type=radio name=category value='General' [% category_general %]> General</th>
+<th align=right>Expires on</th><td><input type=text name=date_general value='[% date_general %]' size=10 maxlength=10></th>
 </tr>
 
 <tr>
-<td><input type=radio name=category value='Sponsor' [% category_sponsor %]> Sponsor</td>
-<td>[% IF history %]Last paid on [% date_sponsor %]&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total Paid [% member.total_paid %][% END %]</td>
+<th><input type=radio name=category value='Sponsor' [% category_sponsor %]> Sponsor</th>
+<th align=right>Payment Date</th><td><input type=text name=mkpay_date size=10 maxlength=10><th align=right>Amount</th><td><input type=text name=mkpay_amount size=5></td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
-<td>Make Payment:&nbsp;&nbsp;&nbsp;Date <input type=text name=mkpay_date size=10>&nbsp;&nbsp; Amount <input type=text name=mkpay_amount size=5>
 <p>
-<ul>
-'t' for today, negative amounts okay
-</ul>
 </td>
+<th align=right>Benefits Expire on</td><td><input type=text name=date_sponsor value="[% date_sponsor %]" size=10 maxlength=10></td><th align=right>Total Paid</td><td>[% member.total_paid %]</th>
 </tr>
 
 <tr>
-<td><input type=radio name=category value='Life' [% category_life %] disabled> Life</td>
+<th align=left><input type=radio name=category value='Life' [% category_life %] disabled> Life</th>
 <td>[% IF category_life %]As of [% date_life %][% ELSE %]&nbsp;[% END %]</td>
+<td>&nbsp;</td>
+<th>Nights Left</th>
+[% IF Catalyst.check_user_roles('super_admin') %]
+<td><input type=text name=sponsor_nights value='[% member.sponsor_nights %]' size=2 maxlength=2></td>
+[% ELSE %]
+<td>[% member.sponsor_nights %]</td>
+[% END %]
 </tr>
 
 <tr>
-<td><input type=radio name=category value='Lapsed' [% category_lapsed %] disabled> Lapsed</td>
+<th align=left><input type=radio name=category value='Lapsed' [% category_lapsed %] disabled> Lapsed</th>
 <td>
 [% IF category_lapsed %]On [% date_lapsed %][% ELSE %]&nbsp;[% END %]</td>
 </tr>
 
 <tr>
-<td><input type=submit value="Submit"></td>
+<td>&nbsp;</td>
+<td align=right><input type=submit value="Submit"></td>
 </tr>
 </table>
 </form>

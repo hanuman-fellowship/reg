@@ -105,7 +105,9 @@ sub search_do : Local {
         $search_ref,
         {
             order_by => $order_by{$field},
-            rows     => $nrecs+1,
+            rows     => $nrecs+1,       # +1 so we know if there are more
+                                        # to be seen.  the extra one is
+                                        # popped off below.
             offset   => $offset,
         },
     );
@@ -114,6 +116,21 @@ sub search_do : Local {
         $pattern =~ s{%}{}g;
         $c->response->redirect($c->uri_for("/person/search/$orig_pattern/$field/$match/$nrecs"));
         return;
+    }
+    if (@people == 1) {
+        # just one so show their Person recrod
+        view($self, $c, $people[0]);
+        return;
+    }
+    if ($offset) {
+        $c->stash->{N} = $nrecs;
+        $c->stash->{prevN} = $c->uri_for('/person/search_do')
+                            . "?" 
+                            . "pattern=$orig_pattern"
+                            . "&field=$field"
+                            . "&nrecs=$nrecs"
+                            . "&match=$match"
+                            . "&offset=" . ($offset-$nrecs);
     }
     if (@people > $nrecs) {
         pop @people;
@@ -144,12 +161,18 @@ sub delete : Local {
     # that for them but I don't feel like it at the moment.
     # it _should_ be hard to delete such people.
     #
-    # what about registrations???  these, too... todo...
+    # what about registrations???  these, too.
     #
     if ($p->leader || $p->member) {
         $c->stash->{person} = $p;
         $c->stash->{conjunction} = " and a " if $p->leader && $p->member;
         $c->stash->{template} = "person/memberleader.tt2";
+        return;
+    }
+    if (my @r = $p->registrations) {
+        $c->stash->{person} = $p;
+        $c->stash->{registrations} = \@r;
+        $c->stash->{template} = "person/nodel_reg.tt2";
         return;
     }
 
@@ -182,7 +205,15 @@ sub delete : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = model($c, 'Person')->find($id);
+    my $p;
+    if (ref($id)) {
+        # called with Person object
+        $p = $id;
+    }
+    else {
+        # called with numeric id
+        $p = model($c, 'Person')->find($id);
+    }
     if (! $p) {
         $c->stash->{mess} = "Person not found - sorry.";
         $c->stash->{template} = "gen_error.tt2";
@@ -199,6 +230,17 @@ sub view : Local {
     $comment =~ s{\r?\n}{<br>\n}g if $comment;
     $c->stash->{comment} = $comment;
 
+    # Schwartzian???
+    # get the registrations and sort them
+    # in reverse program start date order.   Is there
+    # a way to do this within DBIx relationships?
+    # perhaps.
+    my @regs = sort {
+                   $b->program->sdate cmp $a->program->sdate
+               }
+               $p->registrations;
+    $c->stash->{registrations} = \@regs;
+
     $c->stash->{template} = "person/view.tt2";
 }
 
@@ -207,7 +249,7 @@ sub create : Local {
 
     $c->stash->{e_mailings}     = "checked";
     $c->stash->{snail_mailings} = "checked";
-    $c->stash->{share mailings} = "checked";
+    $c->stash->{share_mailings} = "checked";
     $c->stash->{ambiguous}   = "";
     $c->stash->{affil_table} = affil_table($c);
     $c->stash->{form_action} = "create_do";

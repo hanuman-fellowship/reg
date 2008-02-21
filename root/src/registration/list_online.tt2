@@ -1,4 +1,6 @@
 <h2>Online Registrations</h2>
+<a href="/registration/grab_new">Grab New</a>
+<p>
 <table cellpadding=3>
 <tr>
 <th align=left>Person</th>

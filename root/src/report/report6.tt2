@@ -1,0 +1,8 @@
+<table>
+[% FOREACH p IN people %]
+<tr>
+    <td><a href="/person/view/[% p.id %]">[% p.name %]</a></td>
+    <td>[% p.address %]</td>
+</tr>
+[% END %]
+</table>

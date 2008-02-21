@@ -26,6 +26,9 @@ __PACKAGE__->load_classes({
         Member
         SponsHist
         Registration
+        RegHistory
+        RegPayment
+        RegCharge
     /]
 });
 

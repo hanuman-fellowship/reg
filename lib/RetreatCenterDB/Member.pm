@@ -11,6 +11,7 @@ __PACKAGE__->add_columns(qw/
     person_id
     date_general
     date_sponsor
+    sponsor_nights
     date_life
     date_lapsed
     total_paid

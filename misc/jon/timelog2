@@ -42,3 +42,84 @@ Feb 2 2:55-4:00, 8:20-11:00
         and \w+_mailings - with cookies, too.
 Feb 3 11:40-1:15
     reports and the variety of mailings
+Feb 5 2:00-3:00, 9:00-11:45
+    further development on online registration
+    got first housing choice the default in housing options
+        the list modified by program attributes and housecost of 0.
+    person's affils - added to by program affils - create or update.
+    person updated - as long as they're unique.
+    showing registrations for a program - link to title
+        by same akey, first, last initial.
+    online, online_done - not in CVS
+    
+    when continuing - online regs not found - look for possible duplicate
+        and ask.
+Feb 6 3:15-4:15
+    allowing n days before and n days after a program
+    as a personal request via a special request in the comment field
+    mod to Date::Simple - success
+    very tricky.   but done.
+Feb 8 4:40-5:30, 5:35-6:15
+    adding kids, confnote, work study to initial reg screen
+    pop up comment
+    updating test plans
+    sponsor benefits expiry date
+    reworked reg screen.
+Feb 9 6:15-7:30
+    sponsor days
+    made reg_history, reg_payment, and reg_charge
+        need to add history, payments, and charges to Registration model
+    now to use them.
+Feb 11 1:15-2:50, 9:35-10:35
+    tweaks to reg_* tables, relationships
+    now creating records in reg_history, reg_payment, reg_charge
+    need better reg view.
+    prognum => id for web templates
+    more complete reg view, needs prettying
+Feb 12 8:30-9:15, 10:50-11:30
+    checking on pid instead of prognum generating regtable
+    it's okay now.  including full programs.
+Feb 14 1:10-1:25, 1:40-3:00, 5:00-7:15, 7:40-9:30, 10:15-12:50
+    email to sponsor members about their membership expiring soon
+        or having expired.
+    sponsor days optionally used during registration
+    better descriptions in Charges
+    better navigation around programs/persons/registrations
+    paying off balance during blitz registration
+        goes to two diff places.
+    using 'i' image and overlib!  fun!
+    next - confirmation letter
+Feb 15 9:45-10:45, 4:35-5:30, 9:00-9:45
+    further refinement - totals of payments, charges
+    CEU cost
+    sorting registrations in person view
+    template => default for web templates, .tt2 for cl_templates
+    confirmation letters - begun - it's going to work!
+Feb 17 3:00-5:30
+    unlinked programs are published into the proper directory
+        not into staging2.
+    prevN
+Feb 19 9:45-10:15, 12:40-12:50, 4:25-5:30
+    map link on people
+    new report format with name linked to view person
+    fixing introduced bug in creating/update roles for users.
+    input field on program registrations page for searching
+        for a particular registrant - in case there are hundreds
+        and off screen - make it two part - last name prefix, first name prefix
+        can fancy it up later - with ajax - to present the narrowing
+        list as you type.
+    confirmation letter - mimicking what old reg does now.
+Feb 20 5:15-6:00, 9:00-11:30, 12:00-1:20, 3:30-3:50
+    ajax enabled narrowing of the registration list
+    i think i have all the pieces.
+    firefox eventually worked, not Safari - why?
+        permission problems - it thinks it is cross-domain
+        it isn't :(
+    i have polished it pretty highly - color, font, pay/not
+        time for a demo to Adrienne and Jayanti
+    start on a test plan for registrations
+    further refinement and possible further ideas (to ask A, J) for
+        the interaction during blitz registration
+    couldn't sleep so got up to do more
+Feb 21 11:00-
+    checking in - mostly for backup purposes - important!

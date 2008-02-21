@@ -478,3 +478,165 @@ why does Catalyst bomb on me when I try to use
      me no real error message. :(
 during registration - pop up person->comment
     if a certain "Pop Up Comment" affiliation is present...
+it's sort of lame to have clicking on the title
+    of a program be the way to see the registrations
+    didn't want to have just a number.   or "Regs (10)" repeated in a sep column.
+    perhaps that would be okay.
+    Jamal can perhaps suggest some nice looking buttons
+    X for delete
+    something for Edit
+    something for Create
+    another for Registrations
+in test plan for registrations:
+    -1 day before +3 days after
+    for the initial create screen for registration.
+    oh man... on an update screen later the person could retype
+        their start date and this would affect the finances. :(
+        damn complex.
+Registration
+    conf_note and workstudy - need to show on initial
+        reg screen.   don't really need perday???
+    with this can we make a standard confirmation note template?
+Members, Sponsors
+    on Shankar's apple computer instance of dearReg
+        archive the members and sponshist tables before
+            overwriting with new revisions
+    keep history of past payments
+    keep total paid and also
+        ?display total paid in last 6 months and in the last year?
+    and another date - sponsor benefit expiry date
+        user editable - settable after a payment?
+        sponsors lapse only when this date is passed
+
+    since the decision of when this expiry date is
+    so complex let's at least display this history
+    in a more accessible way.
+
+    show this history in a graphical color coded table:
+
+    Year   Jan Feb Mar May Jun Jul Aug Sep Oct Nov Dec
+    2008   25
+    2007   25          50          75
+    2000   25          100         75
+    1999           25  50          75
+
+    dollar amount right justified in field?
+    play with the widths
+
+    color coded by degrees of how much the payment was
+        25 - grey
+        up to 50 - pink
+        up to 75 - green
+        up to 100 - blue etc
+        or some such
+
+    or a GD generated graph?
+    ranging to 2008 at the far right?
+    nah.
+
+    is this correct:  (an equivalent version that is easier
+    to calculate):
+    if the person has paid at least $150 within the last
+    year (from today going back) then they deserve sponsor
+    membership benefits?  or $300 within the last two years?
+    something like that?
+Mention kids and work study on the online registration form?
+    just in special requests or as an actual input field?
+    CEU license is put there conditionally
+Are discounts of > 7 and > 10 days handled properly
+    when registering online?  Personal Retreats or programs?
+For the doc: on registration creation screen
+    you can put -1 to arrive a day before and +1 to
+    stay one day after.
+Doc: "Pop Up" comment affiliation
+How to make changes to a registration and have
+    the charges recomputed???   Delete all, redo?
+    Might be the best... :(
+Next - Sponsor in good standing (expiry date not yet reached)
+    and has a day left.   They start at 12 (String?) on 1/1 each year.
+Unlinked programs - have another program attribute: ul_directory_name
+paging of printed web pages with CSS attribute
+    which browsers suppport this?   Explorer, yes.
+    perhaps others do but just not in Preview?
+    use this for late notices and CEUs!
+If you can't use all the fancy javascript ajax stuff
+    don't worry.  It is going to work.  It can be gussied up
+    over time if needed.
+CEU charges $10 (String?) - it wouldn't ask for a CEU license
+    number if the program didn't have footnotes, right?
+    right.
+Have a way to jump to a programs web page?  Staging/Live.
+    Force in a new window?  Prolly a good idea as it
+    is an entirely different world.
+Arrival and payment of balance is only
+    inserted when balance goes to zero.
+    Not right?  They have arrived - just still have a balance.
+    How often do people not fully pay at registration time?
+Nights left - when first creating the sponsor membership
+    are the nights left prorated within the year? - yes.
+    otherwise - become a sponsor member on Dec 1st
+    and get 12 nights!   several ways to 'game' the system, huh?
+Discounts, charges - 10% if > 7 days, then they bring a kid.
+    does the kid get a discount on his lodging, too?
+Pro-rated nights benefit - if sign up in Oct - you get 3 nights.
+    use ceil().  be generous.
+Email All - what about people sans email?
+    also General expiring
+General paying - Jan thru May - next year May
+    June-Dec - in next May
+Jayanti - how do you deal with the once a year free week-long program
+    or personal retreat for Life members?   Is this like
+    an extra 7 days of free lodging they can use?
+    Or are tuition and meals covered, too?
+Separate generation of CEU programs by category.
+    new development - new design of web site - ask Jamal.
+show online regs by program and then by postmark date/time
+Other ABC - on program line
+Printable registration itemization with 'i' details.
+Confirmation letter should
+    include the charge/payment itemization
+use the name 'default' for web templates and letter templates
+have templates in root/static/templates with subdirectories
+    of web and letter. - later for now templates and cl_templates
+    will serve okay.
+after publishing pictures
+    show the unlinked programs as well.
+need date help popup link
+    explaining relative -1, +3 entries as well
+what is the timeout value for being logged in?
+staying extra days with housing cost of Total - not taken care of!
+after someone has arrived and paid don't include
+    them in the list of 'to register' people. - optionally.
+don't need overlib.js everywhere - how to have it
+    only when needed?   does it need to be loaded in <head>?
+the "Pay" checkbox is checked on registration day
+    otherwise it is unchecked.
+need link to click on to "Get Online Now".
+    where should it be?
+apple-R to refresh will change list_reg_post to list_reg_name
+    because a key was pressed.   clicking on refresh button does not.
+    do nothing when non-printable keys are pressed.
+    which ones?  dump keynum to see what it is.
+house type width should be set - so it doesn't change
+    when a singleton registration is reached.
+    but what about when the user enlarges the text font size?
+    use a % value???
+house types like single_bath should be reshown
+    as Single Bath - less geeky.
+    do this with a special method in db/Registration.pm
+        that makes the transform - like sdate_obj in db/Program.pm
+        and a similar thing to transform textarea values.
+            comment_br - with <br> for \r\n.
+thought about not showing registrations that have already been paid off
+    during the blitz time.    ask Jayanti.   conditional on the
+    checkbox "Pay"?
+    don't jump to pay_balance if it is already 0!
+Why don't MMC programs have the funky MMC logo
+    next to them on the programs.html page?
+deletions of people - not if there are any registrations
+sponsors using free nights - after a 10% discount
+    they could actually make money!
+need to be able to NOT use all the nights they have
+    available.   registrar determines how many..
+doc that online regs ARE gotten every 10 minutes
+    but that you can "Grab New" if you wish.

@@ -55,12 +55,17 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
+    my %hash = %{$c->request->params};
+    for my $k (keys %hash) {
+        if ($k =~ m{role\d+}) {
+            delete $hash{$k};
+        }
+    }
     @mess = ();
-    for my $f (keys %hash) {
-        $hash{$f} = trim($hash{$f});
-        if (empty($hash{$f})) {
-            push @mess, "\u$f cannot be blank.";
+    for my $k (keys %hash) {
+        $hash{$k} = trim($hash{$k});
+        if (empty($hash{$k})) {
+            push @mess, "\u$k cannot be blank.";
         }
     }
     if (length($hash{password}) < 5) {

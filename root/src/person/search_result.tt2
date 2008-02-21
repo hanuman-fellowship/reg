@@ -22,7 +22,18 @@
 [% END -%]
 </table>
 <p>
-[% IF nextN %]
-<a href="[% nextN %]">Next [% N %]</a>
+<table cellpadding=2>
+<tr>
+[% IF prevN %]
+<td width=55><a href="[% prevN %]">Prev [% N %]</a></td>
+[% ELSE %]
+<td width=55>&nbsp;</td>
 [% END %]
+[% IF nextN %]
+<td width=55><a href="[% nextN %]">Next [% N %]</a></td>
+[% ELSE %]
+<td width=55></td>
+[% END %]
+</tr>
+</table>
 </ul>

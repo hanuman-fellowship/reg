@@ -8,6 +8,8 @@
 <a href="/person/delete/[% person.id %]"
 onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+<a href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
+&nbsp;&nbsp;&nbsp;
 [% IF person.partner %]
     Partnered with <a href="/person/view/[% person.partner.id %]">[% person.partner.first _" "_ person.partner.last %]</a>
     &nbsp;&nbsp;&nbsp;
@@ -60,10 +62,13 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 </tr>
 <tr>
 <th align=right>State/Province</th><td>[% person.st_prov %]</td>
-<th align=right valign=top>Registrations</td>
-<td rowspan=10 valign=top>
-[% FOREACH r IN person.registrations %]
-<a href="/registration/view/[% r.id %]">[% r.program.name %]</a>, [% r.program.sdate_obj %]<br>
+
+[% IF Catalyst.check_user_roles('prog_staff') %]
+    <th align=right valign=top>Registrations</td>
+    <td rowspan=10 valign=top>
+    [% FOREACH r IN registrations %]
+        <a href="/registration/view/[% r.id %]">[% r.program.name %]</a>, [% r.program.sdate_obj %]<br>
+    [% END %]
 [% END %]
 </td>
 </tr>

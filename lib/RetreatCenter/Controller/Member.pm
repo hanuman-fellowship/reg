@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Member;
 use base 'Catalyst::Controller';
 
+use Mail::SendEasy;
+
 use lib '../../';       # so you can do a perl -c here.
 use Util qw/trim model/;
 use Date::Simple qw/date today/;
@@ -179,10 +181,9 @@ sub list : Local {
         category    => 'Lapsed',
         date_lapsed => $today,
     });
-    my $month3 = (today()-90)->as_d8();     # 3 months ago for Sponsors
     model($c, 'Member')->search({
         category     => 'Sponsor',
-        date_sponsor => { '<' => $month3 },
+        date_sponsor => { '<' => $today },
     })->update({
         category    => 'Lapsed',
         date_lapsed => $today,
@@ -229,7 +230,9 @@ sub update : Local {
         # in template - wow - is this cool or what?!
         $p->date_payment(date($p->date_payment));       
     }
-    $c->stash->{payments} = \@payments;
+    if (@payments) {
+        $c->stash->{payments} = \@payments;
+    }
 
     $c->stash->{person} = $m->person();
     $c->stash->{form_action} = "update_do/$id";
@@ -275,13 +278,15 @@ sub _get_data {
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
+        $c->stash->{template} = "member/error.tt2";
     }
 }
 
 #
 # this is a perfect example of how software engineers
 # need to take care of all the weird cases - no matter how rare.
+#
+# Life members also have sponsor_nights :( ???
 #
 sub update_do : Local {
     my ($self, $c, $id) = @_;
@@ -291,6 +296,7 @@ sub update_do : Local {
 
     my $member = model($c, 'Member')->find($id);
 
+    my $today = today()->as_d8();
     my $partnered = 0;
     my $id_sps;
     my $partner_member;
@@ -304,7 +310,9 @@ sub update_do : Local {
             amount       => $hash{mkpay_amount},
         });
         $hash{category} = 'Sponsor';
-        $hash{date_sponsor} = $hash{mkpay_date};
+        if ($member->category() ne 'Sponsor') {
+            $hash{sponsor_nights} = 12;     # String???
+        }
 
         # recompute the total
         my $total = 0;
@@ -331,7 +339,7 @@ sub update_do : Local {
             || $hash{total_paid} + $partner_paid >= 8000
         ) {
             $hash{category} = 'Life';
-            $hash{date_life} = $hash{date_sponsor} || $member->date_sponsor;
+            $hash{date_life} = $today;
             push @nowlife, $member;
         }
     }
@@ -409,13 +417,14 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
     my @nowlife = ();
+    my $today = today()->as_d8();
     if ($hash{mkpay_date}) {
         $hash{category} = 'Sponsor';
-        $hash{date_sponsor} = $hash{mkpay_date};
+
         $hash{total_paid} = $hash{mkpay_amount};;
         if ($hash{total_paid} >= 5000) {
             $hash{category} = 'Life';
-            $hash{date_life} = $hash{date_sponsor};
+            $hash{date_life} = $today;
         }
         # we are creating this person as a member now.
         # are they part of a partnership?
@@ -439,7 +448,7 @@ sub create_do : Local {
 
                 # this person: (created below)
                 $hash{category} = 'Life';
-                $hash{date_life} = $hash{date_sponsor};
+                $hash{date_life} = $today;
 
                 # and their partner:
                 if ($partner_member) {
@@ -447,7 +456,7 @@ sub create_do : Local {
                     if ($partner_member->category ne "Life") {
                         $partner_member->update({
                             category  => 'Life',
-                            date_life => $hash{date_sponsor},
+                            date_life => $today,
                         });
                     }
                 }
@@ -457,7 +466,7 @@ sub create_do : Local {
                     $partner_member = model($c, 'Member')->create({
                         person_id => $id_sps,
                         category  => 'Life',
-                        date_life => $hash{date_sponsor},
+                        date_life => $today,
                     });
                 }
                 unshift @nowlife, $partner_member;
@@ -468,6 +477,9 @@ sub create_do : Local {
     my $amnt = $hash{mkpay_amount};
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
+    if ($hash{category} eq 'Sponsor') {
+        $hash{sponsor_nights} = 12;     # ??? a String???
+    }
     my $member = model($c, 'Member')->create({
         person_id    => $person_id,
         %hash,
@@ -499,6 +511,58 @@ sub create_do : Local {
         return;
     }
     $c->response->redirect($c->uri_for("/member/list"));
+}
+
+sub email_all : Local {
+    my ($self, $c) = @_;
+
+    my $mail = Mail::SendEasy->new(
+        smtp => 'mail.logicalpoetry.com:50',
+        user => 'jon@logicalpoetry.com',
+        pass => 'hello!',
+    );
+
+    my $today = today();
+    my $month2 = $today + 60;
+    my @sponsor =
+        model($c, 'Member')->search({
+            date_sponsor => { '<', $month2->as_d8() },
+        });
+    for my $sp (@sponsor) {
+        my $per = $sp->person;
+        my $name = $per->first . ' ' . $per->last;
+        my $email = $per->email;
+        my $sp_date = date($sp->date_sponsor);
+
+        my $verb = ($sp_date < $today)? "expired": "will expire";
+        my @payments = $sp->payments();
+        my $last_amount  = $payments[0]->amount;
+        my $last_paid = date($payments[0]->date_payment);
+        my $mem_admin = $c->user->first . ' ' . $c->user->last;
+        # Strings???
+        my $status = $mail->send(
+            subject => "Sponsor Membership in the Hanuman Fellowship",
+            #to => 'Jonny <jon@suecenter.org>',
+            to => $email,
+            from => $c->user->email,
+            msg => <<"EOM",
+Dear $name,
+
+Your sponsor membership $verb on $sp_date.
+You last paid \$$last_amount on $last_paid.
+
+Sincerely,
+$mem_admin
+Membership Administrator
+EOM
+        );
+
+        if (! $status) {
+            $c->log->info('mail error: ' . $mail->error);
+        }
+    }
+
+    $c->stash->{template} = "member/sent.tt2";
 }
 
 sub access_denied : Private {

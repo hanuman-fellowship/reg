@@ -1,0 +1,95 @@
+<head>
+<script type="text/javascript">
+// use CDATA tag/end???
+
+// prepare for an Ajax call:
+var xmlhttp = false;
+//if (window.XMLHttpRequest) {
+//    xmlhttp = new XMLHttpRequest();
+//    xmlhttp.overrideMimeType('text/xml');
+//}
+//else if (window.ActiveXObject) {
+//    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+//}
+
+var ua = navigator.userAgent.toLowerCase();
+if (!window.ActiveXObject)
+    xmlhttp = new XMLHttpRequest();
+else if (ua.indexOf('msie 5') == -1)
+    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+else
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+function getIt() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var resp = xmlhttp.responseText;
+        document.getElementById('regs').innerHTML = resp;
+    }
+}
+
+// process each character typed
+// and send off the Ajax request.
+// when the response to it is received,
+// it will be processed in getIt below.
+function process(e) {
+    var keynum;
+    var keychar;
+    var numcheck;
+
+    if (window.event) { // IE
+        keynum = e.keyCode;
+    }
+    else if (e.which) { // Netscape/Firefox/Opera
+        keynum = e.which;
+    }
+    if (keynum == 13) {     // they've hit Return
+        var f = getElementById('form');
+        f.submit();
+        return;
+    }
+    keychar = String.fromCharCode(keynum);
+    var s = document.getElementById('pat');
+    var t = s.value;
+    var url = 'http://localhost::3000/registration/matchreg/[% program.id %]/' + t;
+//alert('hi' + url);
+    if (! xmlhttp.open('GET', url, true)) {
+        //alert('did not work');
+    }
+    else {
+        //alert('did not work???');
+    }
+//alert("lala");
+    xmlhttp.onreadystatechange = getIt;
+//alert('yes');
+    xmlhttp.send(null);
+
+    return true;
+}
+</script>
+</head>
+
+<h2>Registrations for [% program.name %]</h2>
+<form name=form id= form action="/registration/list_reg_name/[% program.id %]">
+<a href="/program/view/[% program.id %]">Program</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/[% other_sort %]/[% program.id %]">[% other_sort_name %]</a>
+[% IF online %]
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/list_online">Online ([% online %])</a>
+[% END %]
+&nbsp;&nbsp;&nbsp;
+Search <input type=text size=15 name=pat id=pat
+              value="[% pat %]" onkeyup="return process(event)">
+<!-- &nbsp;&nbsp;&nbsp;
+Pay <input type=checkbox value="yes" name=pay [% pay_checked %]> -->
+</form>
+<ul>
+<div id=regs>
+[% regs %]
+</div>
+</ul>
+<script type="text/javascript">
+document.form.pat.focus();
+//var range = document.form.pat.createTextRange();
+//range.collapse(false);
+</script>

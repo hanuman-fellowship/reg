@@ -1,0 +1,36 @@
+<form name=form action="/registration/pay_balance_do/[% reg.id %]">
+<input type=hidden name=from value=[% from %]>
+<table cellpadding=3>
+<tr><th align=right>Program</th><td><a href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td></tr>
+<tr>
+<th align=right>Person</th>
+<td>
+<a href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
+<span style="margin-left: 1.5in"><a href="/registration/view/[% reg.id %]">To Registration</a></span>
+</td></tr>
+<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% reg.balance %]'></td></tr>
+
+<h2>Payment</h2>
+
+<tr>
+<th align=right>Type</th>
+<td>
+<select name=type>
+<option value='Credit Card' selected>Credit Card
+<option value='Check'>Check
+<option value='Cash'>Cash
+<option value='Online'>Online
+</select>
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit name=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.submit.focus();
+</script>

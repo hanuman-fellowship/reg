@@ -5,7 +5,7 @@
 <tr>
 <th align=right><span class="required">*</span> Name</th>
 [% IF housecost.name == 'Default' %]
-<td>[% housecost.name %]</td>
+<td>[% housecost.name %]<input type=hidden name=name value="[% housecost.name %]"></td>
 [% ELSE %]
 <td><input type=text name=name value="[% housecost.name %]"></td>
 [% END %]

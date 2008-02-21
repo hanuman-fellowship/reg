@@ -64,8 +64,8 @@
 [% END %]
 </select>
 </td>
-<th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input tabindex=20 type=text name=glnum value="[% program.glnum %]" size=7>[% ELSE %][% program.glnum %][% END %]</td>
+<th align=right>Unlinked Dir</th>
+<td><input type=text name=unlinked_dir size=10 value="[% program.unlinked_dir %]"></td>
 </tr>
 
 <tr>
@@ -109,6 +109,11 @@
 [% END %]
 <input tabindex=25 type=file name=image>
 </td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% IF edit_gl %]<input tabindex=20 type=text name=glnum value="[% program.glnum %]" size=7>[% ELSE %][% program.glnum %][% END %]</td>
 </tr>
 
 <tr>

@@ -5,6 +5,7 @@ create table member (
     category text,
     date_general text,
     date_sponsor text,
+    sponsor_nights integer,
     date_life text,
     date_lapsed text,
     total_paid integer
@@ -13,8 +14,9 @@ insert into member values (
     1,
     12930,
     'Sponsor',
-    '20080109',
     '',
+    '20080109',
+    10,
     '',
     '',
     105

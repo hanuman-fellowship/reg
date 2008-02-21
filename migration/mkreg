@@ -11,25 +11,51 @@ create table registration (
     confnote text,
     h_type text,
     h_name text,
-    perday integer,
     work_study text,
-    manual text,
     carpool text,
     hascar text,  -- 15
 
     arrived text,
-    total integer,
+    cancelled text,
 
     date_postmark text,
+    time_postmark text,
 
     balance integer,
 
-    cancelled text,
 
     date_start text,    -- if different from program start
     date_end text,      -- if different from program end
 
-    status text,        -- sponsor/life?
-
     ceu_license text    -- 24
+);
+drop table if exists reg_history;
+create table reg_history (
+    id integer primary key,
+    reg_id integer,
+    user_id integer,
+    the_date text,
+    time text,
+    what text
+);
+drop table if exists reg_charge;
+create table reg_charge (
+    id integer primary key,
+    reg_id integer,
+    user_id integer,
+    the_date text,
+    time text,
+    amount integer,
+    what text
+);
+drop table if exists reg_payment;
+create table reg_payment (
+    id integer primary key,
+    reg_id integer,
+    user_id integer,
+    the_date text,
+    time text,
+    amount integer,
+    type text,       -- cc, check, cash, online
+    what text
 );

@@ -1,29 +1,25 @@
 <h2>Registration</h2>
-<form action="/registration/create_do">
+<form method=POST name=form action="/registration/create_do">
 <input type=hidden name=person_id     value=[% person.id %]>
 <input type=hidden name=program_id    value=[% program.id %]>
 <input type=hidden name=date_postmark value=[% date_postmark %]>
+<input type=hidden name=time_postmark value=[% time_postmark %]>
+<input type=hidden name=deposit       value=[% deposit %]>
+<input type=hidden name=fname         value=[% fname %]>
 <table cellpadding=3 border=0>
 
 <tr>
 <th align=right>Person</th>
-<td>[% person.last %], [% person.first %]</th>
-[% IF date_start || date_end %]
-<td colspan=2>From <input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"> to <input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></td>
-[% END %]
+<td><a href="/person/view/[% person.id %]"
+onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a></td>
+<td>From <input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"></td><td>to <input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></td>
 </tr>
 
 <tr>
 <th align=right>Program</th>
-<td>[% program.name %]</td>
-<td colspan=2>From [% pr_sdate %] to [% pr_edate %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Comment</th>
-<td colspan=3>
-<textarea rows=6 cols=60 name=comment>[% comment %]</textarea>
-</td>
+<td><a href="/program/view/[% program.id %]"
+onclick='return confirm("This registration has not yet been completed.  Continue on to view the program [% program.name %]?");'>[% program.name %]</a></td>
+<td>From [% pr_sdate %]</td><td>to [% pr_edate %]</td>
 </tr>
 
 <tr>
@@ -48,17 +44,42 @@ Carpool<br>
 <input type=checkbox name=hascar value=yes [% hascar_checked %]>
 Has Car
 </td>
-<th align=right valign=top>CEU License #</th>
+
+<!-- need a slight adjustment here: font size will change it -->
+<th align=right valign=top><span style="display: block; margin-top: 1mm">CEU License #</span></th>
 <td valign=top>
 <input type=text name=ceu_license value="[% ceu_license %]">
 </td>
 </tr>
 
 <tr>
-<th align=right>Deposit</th>
-<td>
-<input type=text name=deposit value="[% deposit %]">
+<th align=right>Work Study</th>
+<td><input type=checkbox name=work_study value='yes'></td>
+<th align=right>Ages of Kids</th>
+<td><input type=text name=kids size=20></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td colspan=3>
+<textarea rows=6 cols=60 name=comment>[% comment %]</textarea>
 </td>
+</tr>
+
+<tr>
+<th align=right>Housing Type</th>
+<td>
+<select name=h_type>
+[% h_type_opts %]
+</select>
+</td>
+<th align=right>House Name</th>
+<td><input type=text size=10 name=h_name></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Notes for the<br>Confirmation Letter</th>
+<td colspan=3><textarea rows=4 cols=60 name=confnote></textarea></td>
 </tr>
 
 <tr>
@@ -67,4 +88,36 @@ Has Car
 </tr>
 
 </table>
+<script type="text/javascript">document.form.h_name.focus()</script>
+[% IF popup_comment %]
+<script type="text/javascript">alert("[% popup_comment %]");</script>
+[% END %]
+<p>
+
+<input type=hidden name=category value=[% category %]>
+
+[% IF nights %]
+<script type="text/javascript">
+var name = "[% person.first %] [% person.last %]";
+var pronoun1 = ("[% person.sex %]" == "M")? "He": "She";
+var category = ("[% category %]" == "Sponsor")? "Sponsoring": "Life";
+var s = ([% nights %] == 1)? "": "s";
+var pronoun2 = ([% nights %] == 1)? "it": "they";
+
+if (confirm(name
+            + " is a " + category + " member of the\nHanuman Fellowship.\n"
+            + pronoun1 + " has [% nights %] night" + s
+            + " left to use.  Should "
+            + pronoun2 + " be used?"
+)) {
+    // the output of the write statements can't be seen
+    // by doing "View Source" in the browser - but they *are* there.
+    document.write("<input type=hidden name=nights   value=[% nights %]>");
+    document.write("Sponsor nights will be used.");
+}
+else {
+    document.write("Sponsor nights will NOT be used.");
+}
+</script>
+[% END %]
 </form>

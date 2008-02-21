@@ -81,6 +81,12 @@ sub _three {
     return ($y, $m, $d);
 }
 
+my $rel_date;
+sub relative_date {
+    my ($class) = shift;
+    $rel_date = shift;
+}
+
 #
 # aside from the class name ($that)
 # there should be an ODD number of parameters
@@ -121,6 +127,13 @@ sub _three {
 # "11 8" will supply the year from today's date.
 # "8" will supply the month and year from today.
 #
+# and:
+# -1   means one day before the relative date
+# +4   means four days after the relative date
+#
+# the relative date defaults to today() but
+# can be changed with the method relative_date above.
+#
 sub new {
     my ($that, @ymd) = @_;
     my ($class);
@@ -139,7 +152,7 @@ sub new {
         if (! defined $x) {
             return;
         }
-        $x =~ s{^\s*|\s*$}{}g;      # trim blanks
+        $x =~ s{^\s*|\s*$}{}g if ! ref($x);      # trim blanks
         if (ref ($x) eq 'ARRAY') {
             @ymd = @$x;
         }
@@ -169,6 +182,14 @@ sub new {
         }
         elsif ($x eq 't') {
             return today();
+        }
+        elsif ($x =~ m{^-(\d+)}) {      # days before
+            my $n = $1;
+            return ($rel_date || today()) - $n;
+        }
+        elsif ($x =~ m{^\+(\d+)}) {     # days after
+            my $n = $1;
+            return ($rel_date || today()) + $n;
         }
         else {
             return;     # undef

@@ -1,0 +1,10 @@
+<h2>People</h2>
+[% person.first %] [% person.last %] is registered for these programs:
+<ul>
+[% FOR r IN registrations %]
+<a href="/registration/view/[% r.id %]">[% r.program.name %]</a> [% r.program.sdate_obj %]<br>
+[% END %]
+</ul>
+and cannot be deleted.
+<p>
+Go <input type=button value="Back" onclick="history.go(-1)"> to the person.
