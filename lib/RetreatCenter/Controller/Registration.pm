@@ -67,8 +67,24 @@ sub list_online : Local {
 sub grab_new : Local {
     my ($self, $c) = @_;
 
-    system("$ENV{HOME}/bin/getOO");      # do this with Net::FTP???
-                                    # yeah.
+    Lookup->init($c);
+    my $ftp = Net::FTP->new($lookup{ftp_site}, Passive => $lookup{ftp_passive})
+        or die "cannot connect to $lookup{ftp_site}";    # not die???
+    $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd($lookup{ftp_transactions})
+        or die "cannot cwd to $lookup{ftp_transactions} ", $ftp->message;
+    $ftp->ascii();
+    # don't do these mkdirs when things settle down???
+    mkdir "root/static/online"      unless -d "root/static/online";
+    mkdir "root/static/online_done" unless -d "root/static/online_done";
+
+    for my $f ($ftp->ls()) {
+        $ftp->get($f, "root/static/online/$f");
+        $ftp->delete($f);
+    }
+
+    $ftp->quit();
     $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 

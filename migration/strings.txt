@@ -32,6 +32,7 @@ ftp_password ashtanga!
 ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0
+ftp_transactions www/cgi-bin/dreg_transactions
 reg_start 4:00
 reg_end 7:00
 prog_start 7:00
