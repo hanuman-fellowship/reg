@@ -1,0 +1,57 @@
+<html>
+<head>
+<style type='text/css'>
+body {
+    font-family: Georgia, Times;
+    font-size: 12pt;
+    color: blue;
+    background: #99dd99;
+}
+</style>
+</head>
+<body>
+Dear [% person.first %],
+<p>
+You are registered for [% program.title %] on [% program.sdate_obj %]
+presented by [% program.leader_names %].
+<p>
+[% program.cl_picture %]
+<p>
+Registration is from [% program.reg_start %] to [% program.reg_end %].
+The program will begin at [% program.prog_start %] on [% program.sdate_obj %]
+and end at [% program.prog_end %] on [% program.edate_obj %].
+<p>
+Your balance is [% reg.balance %].
+<p>
+Thank you,<br>
+[% user.first %] [% user.last %]
+[% IF program.confnote %]
+<p>
+Program Notes:<br>
+<ul>
+[% program.confnote_br %]
+</ul>
+[% END %]
+
+[% IF reg.confnote %]
+<p>
+Personal Notes:
+<ul>
+[% reg.confnote_br %]
+</ul>
+[% END %]
+<p>
+Your Charges:<br>
+<table border=1 cellpadding=3>
+[% FOR ch IN reg.charges %]
+<tr><td align=right>[% ch.amount %]</td><td>[% ch.what %]</td></tr>
+[% END %]
+</table>
+Your Payments:<br>
+<table border=1 cellpadding=3>
+[% FOR p IN reg.payments %]
+<tr><td align=right>[% p.amount %]</td><td>[% p.what %]</td></tr>
+[% END %]
+</table>
+</body>
+</html>
