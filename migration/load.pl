@@ -27,6 +27,7 @@ while (<$affils>) {
     ++$n;
     ($code, $value) = split /\|/;
     next if $code =~ m{[d89Xqx]};;       # they have their own column now
+    next if $value =~ m{member}i;        # superceded
     $af_sth->execute($n, $value);
     $affil_id{$code} = $n;
 }

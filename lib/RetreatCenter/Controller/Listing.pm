@@ -263,9 +263,9 @@ sub stale : Local {
     if ($upload) {
         my @emails = $upload->slurp =~ m{\S+\@\S+}g;
         $n = @emails;
-        model($c, 'Person')->search(
-            { email => { -in => \@emails } },
-        )->update({
+        model($c, 'Person')->search({
+            email => { -in => \@emails },
+        })->update({
             email => '',
         });
     }

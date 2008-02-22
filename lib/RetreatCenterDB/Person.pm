@@ -49,4 +49,17 @@ __PACKAGE__->might_have(leader => 'RetreatCenterDB::Leader', 'person_id');
 # partner - maybe
 __PACKAGE__->might_have(partner => 'RetreatCenterDB::Person', 'id_sps');
 
+#
+# to make a multi-line column available
+# for viewing from within a template
+# by just using a different method name.
+#
+sub comment_br {
+    my ($self) = @_;
+
+    my $comment = $self->comment;
+    $comment =~ s{\r?\n}{<br>\n}g;
+    $comment;
+}
+
 1;

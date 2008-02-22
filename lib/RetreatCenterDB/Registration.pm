@@ -55,6 +55,10 @@ sub date_end_obj {
     my ($self) = @_;
     return date($self->date_end) || "";
 }
+sub date_postmark_obj {
+    my ($self) = @_;
+    return date($self->date_postmark) || "";
+}
 
 sub h_type_disp {
     my ($self) = @_;
@@ -64,6 +68,20 @@ sub h_type_disp {
     $type =~ s{\(.*\)}{};
     $type =~ s{Mount Madona }{};
     $type;
+}
+
+sub comment_br {
+    my ($self) = @_;
+    my $comment = $self->comment;
+    $comment =~ s{\r?\n}{<br>\n}g;
+    $comment;
+}
+
+sub confnote_br {
+    my ($self) = @_;
+    my $confnote = $self->confnote;
+    $confnote =~ s{\r?\n}{<br>\n}g;
+    $confnote;
 }
 
 1;

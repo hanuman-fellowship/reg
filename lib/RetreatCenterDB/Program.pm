@@ -132,13 +132,44 @@ sub future_programs {
     }
     @programs;
 }
+sub web_addr {
+    my ($self) = @_;
+
+    my $dir = "http://$lookup{ftp_site}/";
+
+    return ($self->linked)? "$dir$lookup{ftp_dir2}/" . $self->fname
+          :                 $dir . $self->unlinked_dir             ;
+}
+#
+# a few convenience methods to transform the contents
+# of a table column into something easily viewable
+# within a template...
+#
 sub sdate_obj {
     my ($self) = @_;
-    return date($self->sdate) || "";
+    date($self->sdate) || "";
 }
 sub edate_obj {
     my ($self) = @_;
-    return date($self->edate) || "";
+    date($self->edate) || "";
+}
+sub webdesc_br {
+    my ($self) = @_;
+    my $webdesc = $self->webdesc;
+    $webdesc =~ s{\r?\n}{<br>\n}g;
+    $webdesc;
+}
+sub brdesc_br {
+    my ($self) = @_;
+    my $brdesc = $self->brdesc;
+    $brdesc =~ s{\r?\n}{<br>\n}g;
+    $brdesc;
+}
+sub confnote_br  {
+    my ($self) = @_;
+    my $confnote = $self->confnote;
+    $confnote =~ s{\r?\n}{<br>\n}g;
+    $confnote;
 }
 sub fname {
     my ($self) = @_;
@@ -544,6 +575,47 @@ EOH
 			        "</td></tr><tr><td align=center class='click_enlarge'>".
 					"$lookup{click_enlarge}</td></tr></table>";
         return $pic_html;
+    }
+}
+sub cl_picture {
+    my ($self) = @_;
+
+    my $full = $lookup{imgwidth};
+    my $half = $full/2;
+
+    my @leaders = $self->leaders;
+    my $nleaders = @leaders;
+    # have an array of pictures instead???
+    # which gets pushed onto?
+    # and take the first two leaders that have images.
+    my ($pic1, $pic2) = ("", "");
+    if ($nleaders >= 1 && $leaders[0]->image) {
+        $pic1 = "lth-" . $leaders[0]->id . ".jpg";
+    }
+    if ($nleaders >= 2 && $leaders[1]->image) {
+        $pic2 = "lth-" . $leaders[1]->id . ".jpg";
+    }
+    if ($pic2 and ! $pic1) {
+        $pic1 = $pic2;
+        $pic2 = "";
+    }
+	if ($self->image) {  # use program pic if present
+		$pic1 = "pth-" . $self->id . ".jpg";
+		$pic2 = "";
+	}
+    return "" unless $pic1;          # no image at all
+
+    if ($pic2) {
+                                                    #       live2
+        my $pic1_html = "<img src='http://$lookup{ftp_site}/staging2/{pics/$pic1' width=$half>";
+        my $pic2_html = "<img src='http://$lookup{ftp_site}/staging2/pics/$pic2' width=$half>";
+        return <<EOH;
+<table cellspacing=0>
+<tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
+</table>
+EOH
+    } else {
+        return "<img src='http://$lookup{ftp_site}/staging2/pics/$pic1' width=$full>";
     }
 }
 sub cancellation_policy {

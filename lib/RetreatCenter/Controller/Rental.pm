@@ -92,11 +92,6 @@ sub view : Local {
     for my $w (qw/ sdate edate /) {
         $c->stash->{$w} = date($p->$w) || "";
     }
-    for my $w (qw/ webdesc /) {
-        my $s = $p->$w();
-        $s =~ s{\r?\n}{<br>\n}g if $s;
-        $c->stash->{$w} = $s;
-    }
     $c->stash->{template} = "rental/view.tt2";
 }
 

@@ -27,11 +27,7 @@ sub list : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $r = $c->stash->{role}
-        = model($c, 'Role')->find($id);
-    my $desc = $r->desc();
-    $desc =~ s{\r?\n}{<br>\n}g if $desc;
-    $c->stash->{desc} = $desc;
+    my $r = $c->stash->{role} = model($c, 'Role')->find($id);
     $c->stash->{template} = "role/view.tt2";
 }
 

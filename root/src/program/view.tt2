@@ -15,6 +15,8 @@
     <a href="/program/publish">Publish<a>
     &nbsp;&nbsp;&nbsp;
 [% END %]
+<a href="[% program.web_addr %]">Web</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/registration/list_reg_name/[% program.id %]">Registrations</a>
 <p>
 
@@ -22,7 +24,7 @@
 
 <tr>
 <th align=right>Name</th>
-<td>[% program.name %]</td>
+<td><span class=larger>[% program.name %]</span></td>
 <th align=right>From</th>
 <td>[% sdate %] <span class=dow>[% sdate_dow %]</span></td>
 <th align=right>To</th>
@@ -120,13 +122,13 @@
 
 <tr>
 <th align=right valign=top>Web Description</th>
-<td colspan=5>[% webdesc %]</td>
+<td colspan=5>[% program.webdesc_br %]</td>
 </td>
 </tr>
 
 <tr>
 <th align=right valign=top>Brochure Description</th>
-<td colspan=5>[% brdesc %]</td>
+<td colspan=5>[% program.brdesc_br %]</td>
 </td>
 </tr>
 
@@ -156,7 +158,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 <tr>
 <th align=right valign=top>Confirmation Letter<br>Notes</th>
-<td colspan=5 valign=top>[% confnote %]</td>
+<td colspan=5 valign=top>[% program.confnote_br %]</td>
 </tr>
 
 <tr>

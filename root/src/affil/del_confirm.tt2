@@ -25,7 +25,9 @@
 [% END %]
 <form action="/affil/del_confirm/[% affil.id %]" name=form>
 Continue with the deletion?
-<input type=submit value="Submit" value="Yes" name=yes> 
-<input type=submit value="Submit" value="No" name=no> 
+&nbsp;&nbsp;
+<input type=submit value="Yes" name=yes> 
+&nbsp;&nbsp;
+<input type=submit value="No" name=no> 
 </form>
 <script type='text/javascript'>document.form.no.focus()</script>

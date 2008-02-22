@@ -15,7 +15,7 @@
 
 <tr>
 <th align=right valign=top>Description</th>
-<td>[% desc %]</td>
+<td>[% role.desc_br %]</td>
 </tr>
 
 </table>

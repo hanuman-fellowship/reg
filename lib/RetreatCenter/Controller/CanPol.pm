@@ -103,9 +103,6 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $cp = $c->stash->{canpol} = model($c, 'CanPol')->find($id);
-    my $s = $cp->policy();
-    $s =~ s{\r?\n}{<br>\n}g;
-    $c->stash->{policy} = $s;
     $c->stash->{template} = "canpol/view.tt2";
 }
 

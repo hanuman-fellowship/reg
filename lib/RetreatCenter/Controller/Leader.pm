@@ -105,9 +105,6 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
-    my $bio = $l->biography();
-    $bio =~ s{\r?\n}{<br>\n}g if $bio;
-    $c->stash->{biography} = $bio;
     $c->stash->{template} = "leader/view.tt2";
 }
 

@@ -252,6 +252,7 @@ my @day_name = qw/
 sub view : Local {
     my ($self, $c, $id) = @_;
 
+    Lookup->init($c);       # for web_addr if nothing else.
     my $p = $c->stash->{program}
         = model($c, 'Program')->find($id);
     # prepare the dates and the days of the week
@@ -259,11 +260,6 @@ sub view : Local {
         if (my $d = $c->stash->{$w} = date($p->$w) || "") {
             $c->stash->{"$w\_dow"} = $day_name[$d->day_of_week()];
         }
-    }
-    for my $w (qw/ webdesc brdesc confnote /) {
-        my $s = $p->$w();
-        $s =~ s{\r?\n}{<br>\n}g if $s;
-        $c->stash->{$w} = $s;
     }
     my $l = join "<br>\n",
                  map  {
@@ -786,7 +782,7 @@ sub publish_pics : Local {
     $ftp->quit();
     chdir "../..";
     $c->stash->{pics} = 1;
-    my @unlinked = grep { $_->unlinked }
+    my @unlinked = grep { ! $_->linked }
                    RetreatCenterDB::Program->future_programs($c);
     $c->stash->{unlinked} = \@unlinked;
     $c->stash->{ftp_dir2} = $lookup{ftp_dir2};

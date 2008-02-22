@@ -11,7 +11,7 @@
 [% END %]
 <a href="/person/view/[% leader.person.id %]">Person Info</a>
 <ul>
-<table cellpadding=3 border=0>
+<table cellpadding=5 border=0>
 
 <tr>
 <th align=right>Public Email</th>
@@ -25,7 +25,7 @@
 
 <tr>
 <th align=right valign=top>Biography</th>
-<td>[% biography %]</td>
+<td>[% leader.biography_br %]</td>
 </tr>
 
 <tr>
@@ -36,6 +36,19 @@
 <a href="[% Catalyst.uri_for('/leader/del_image/') _ leader.id %]" onclick="return confirm('Okay to Delete image for [% leader.person.first %] [% leader.person.last %]?');" >Delete Image</a>
 [% ELSE %]
 &nbsp;
+[% END %]
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Programs</th>
+<td>
+<table cellpadding=2>
+[% FOR p IN leader.programs %]
+<tr>
+<td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
+<td>[% p.sdate_obj %]</td>
+</tr>
 [% END %]
 </td>
 </tr>

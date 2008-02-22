@@ -13,6 +13,13 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->has_many(programs => 'RetreatCenterDB::Program', 'canpol_id', 
-                      { order_by => 'name' });
+                      { order_by => 'sdate desc' });
+
+sub policy_br {
+    my ($self) = @_;
+    my $policy = $self->policy;
+    $policy =~ s{\r?\n}{<br>\n}g;
+    $policy;
+}
 
 1;

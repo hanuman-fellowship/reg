@@ -1,7 +1,11 @@
 <h2>Members</h2>
 <a href="/member/membership_list">By Category</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/member/email_all">Email All</a>
+<a href="/member/reset"
+   onclick="return confirm('Okay to Reset EVERYONE&rsquo;s nights?');">Reset Nights</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/member/email_all"
+   onclick="return confirm('Okay to Email EVERYONE?');">Email All</a>
 <ul>
 Click on Sanskrit to update member attributes.<br>
 Click on Name to see person attributes.<br>
@@ -22,10 +26,10 @@ To create a Member add them as a Person first.
 <td><a href="/person/view/[% m.person.id %]">[% m.person.last _ ', ' _ m.person.first %]</a></td>
 <td>[% m.category %]</td>
 <td>
-[% IF    m.category == 'General' %][% m.general %]
-[% ELSIF m.category == 'Lapsed'  %][% m.lapsed  %]
-[% ELSIF m.category == 'Life'    %][% m.life    %]
-[% ELSIF m.category == 'Sponsor' %][% m.sponsor %]
+[% IF    m.category == 'General' %][% m.date_general_obj %]
+[% ELSIF m.category == 'Lapsed'  %][% m.date_lapsed_obj  %]
+[% ELSIF m.category == 'Life'    %][% m.date_life_obj    %]
+[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj %]
 [% END %]
 </td>
 [% IF m.category == 'Sponsor' || m.category == 'Life' %]

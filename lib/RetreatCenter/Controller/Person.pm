@@ -226,9 +226,6 @@ sub view : Local {
     $c->stash->{affils} = [ $p->affils() ];
     $c->stash->{date_entrd} = date($p->date_entrd()) || "";
     $c->stash->{date_updat} = date($p->date_updat()) || "";
-    my $comment = $p->comment;
-    $comment =~ s{\r?\n}{<br>\n}g if $comment;
-    $c->stash->{comment} = $comment;
 
     # Schwartzian???
     # get the registrations and sort them

@@ -55,7 +55,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 <tr>
 <th align=right valign=top>Description</th>
-<td colspan=5>[% webdesc %]</td>
+<td colspan=5>[% rental.webdesc_br %]</td>
 </td>
 </tr>
 

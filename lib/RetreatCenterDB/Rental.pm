@@ -42,6 +42,12 @@ sub edate_obj {
     my ($self) = @_;
     return date($self->edate) || "";
 }
+sub webdesc_br {
+    my ($self) = @_;
+    my $webdesc = $self->webdesc;
+    $webdesc =~ s{\r?\n}{<br>\n}g;
+    $webdesc;
+}
 sub extradays {     # see Program->dates()
     return 0;
 }

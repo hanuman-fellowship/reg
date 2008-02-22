@@ -747,14 +747,11 @@ sub create_do : Local {
     });
     my $person = $r->person;
     my $user   = $c->user;
-    my $confnote = $r->confnote;
-    $confnote =~ s{\r?\n}{<br>\n}g;
     my $stash = {
         user     => $user,
         person   => $person,
         reg      => $r,
         program  => $pr,
-        confnote => $confnote,
     };
     my $html = "";
     $tt->process(
@@ -800,10 +797,6 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Registration')->find($id);
-    $c->stash->{date_postmark} = date($r->date_postmark);
-    my $comment= $r->comment;
-    $comment =~ s{\r?\n}{<br>\n}g;
-    $c->stash->{comment} = $comment;
     $c->stash->{reg} = $r;
     my @files = <root/static/online/*>;
     $c->stash->{online} = scalar(@files);

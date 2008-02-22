@@ -86,4 +86,18 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 <td>[% housecost.type %]</td>
 </tr>
 
+<tr>
+<th valign=top align=right>Programs</th>
+<td>
+<table cellpadding=3>
+[% FOR p IN housecost.programs %]
+<tr>
+<td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
+<td>[% p.sdate_obj %]</td>
+</tr>
+[% END %]
+</table>
+</td>
+</tr>
+
 </table>

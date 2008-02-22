@@ -640,3 +640,32 @@ need to be able to NOT use all the nights they have
     available.   registrar determines how many..
 doc that online regs ARE gotten every 10 minutes
     but that you can "Grab New" if you wish.
+for testplans for Programs:
+    Grab New
+    seeing Registrations
+    after publishing - can publish pics
+        also can click on Web to go to the
+        web page for that program (whether linked or not).
+    testplan for People
+        can go to registrations
+        can't delete if any registrations (also in deletions test plan)
+If there's only one registrant for a program
+    the link "Other <name>" will take you nowhere (to the same page).
+Members needs lots of testing.
+    I paid total of $5100 and became a Life member.
+    I click on myself to see my status and hit Submit
+    without changing anything and now I'm a General member.
+    You need to update the benefits expiration date - automatically
+    for Life members - set it to something way out.
+When mailing all the members - some kind of report on
+    how many were notified?
+When resetting - ask for password?
+    some more significant obstacle.
+How to have confirm default to No/Cancel?
+    none known - did a search
+the link "Web" points to the staging area
+    perhaps to .../live/... instead?
+    yeah likely best - have this be configurable?
+    two links?
+when listing programs - on leaders, canpol, etc
+    have a line indicating the boundary between past and future?

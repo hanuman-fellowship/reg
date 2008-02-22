@@ -1,13 +1,16 @@
 <h2>Templates</h2>
-<ul>
-<table cellpadding=3 border=0>
-[% FOREACH t IN templates %]
+<table border=0>
 <tr>
-<td><a href="[% Catalyst.uri_for('/static/templates/') _ t.name _ '.html' %]">[% t.name %]</a></td>
+<td>
+<h3>Web</h3>
+<table cellpadding=3 border=0>
+[% FOREACH t IN web_templates %]
+<tr>
+<td><a href="[% Catalyst.uri_for('/static/templates/web/') _ t.name _ '.html' %]">[% t.name %]</a></td>
 <td>
 [% IF t.delete %]
-    <a href="[% Catalyst.uri_for('/template/delete/') _ t %]"
-    onclick="return confirm('Okay to Delete [% t %]?');">Del</a>
+    <a href="[% Catalyst.uri_for('/template/delete/web/') _ t.name %]"
+       onclick="return confirm('Okay to Delete web template [% t.name %]?');">Del</a>
 [% ELSE %]
 &nbsp;
 [% END %]
@@ -16,11 +19,41 @@
 [% END %]
 </table>
 <p>
-<form action=[% Catalyst.uri_for('/template/upload') %]
+<form action=[% Catalyst.uri_for('/template/upload/web') %]
       method=POST
       enctype="multipart/form-data"
 >
-Upload <input type=file name=template_file><br>
-to a template named <input type=text name=fname><p>
+Upload <input type=file name=web_template_file size=20><br>
+to a template named <input type=text name=web_fname><p>
 <input type=submit value="Submit">
 </form>
+</td>
+<td valign=top>
+<h3>Letter</h3>
+<table cellpadding=3 border=0>
+[% FOREACH t IN letter_templates %]
+<tr>
+<td><a href="[% Catalyst.uri_for('/static/templates/letter/') _ t.name _ '.tt2' %]">[% t.name %]</a></td>
+<td>
+[% IF t.delete %]
+    <a href="[% Catalyst.uri_for('/template/delete/letter/') _ t.name %]"
+    onclick="return confirm('Okay to Delete letter template [% t.name %]?');">Del</a>
+[% ELSE %]
+&nbsp;
+[% END %]
+</td>
+</tr>
+[% END %]
+</table>
+<p>
+<form action=[% Catalyst.uri_for('/template/upload/letter') %]
+      method=POST
+      enctype="multipart/form-data"
+>
+Upload <input type=file name=letter_template_file size=20><br>
+to a template named <input type=text name=letter_fname><p>
+<input type=submit value="Submit">
+</form>
+</td>
+</tr>
+</table>

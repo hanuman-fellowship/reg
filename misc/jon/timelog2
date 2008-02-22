@@ -121,5 +121,16 @@ Feb 20 5:15-6:00, 9:00-11:30, 12:00-1:20, 3:30-3:50
     further refinement and possible further ideas (to ask A, J) for
         the interaction during blitz registration
     couldn't sleep so got up to do more
-Feb 21 11:00-
+Feb 21 11:00-11:45, 1:45-4:15, 8:00-8:30, 9:15-9:40, 11:00-11:15
     checking in - mostly for backup purposes - important!
+    templates - letter/web
+    _br and _obj everywhere.
+    membership free_prog_taken - needs lots of testing!
+    reset nights
+    programs for leader, canpol and housecost views.
+    linkings testplan
+    larger font/diff color for primary names in Person, Program
+    table for registrations in Person
+    futzing with confirmation letter
+Feb 22 1:00-
+    getOO built in to the source

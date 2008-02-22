@@ -14,31 +14,42 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{templates} = [
+    $c->stash->{web_templates} = [
         map {
             {
                 name   => $_,
                 delete => ! sys_template($_),
             }
         }
-        map { s{^.*templates/(.*)[.]html$}{$1}; $_ }
-        <root/static/templates/*.html>
+        map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
+        <root/static/templates/web/*.html>
+    ];
+    $c->stash->{letter_templates} = [
+        map {
+            {
+                name   => $_,
+                delete => $_ ne 'default'
+            }
+        }
+        map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
+        <root/static/templates/letter/*.tt2>
     ];
     $c->stash->{template} = 'template/list.tt2';
 }
 
 sub upload : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $type) = @_;
 
-    my $fname = $c->request->params->{fname};
-    $fname =~ s{[.]html$}{};
-    my $upload = $c->request->upload('template_file');
-    $upload->copy_to("root/static/templates/$fname.html");
+    my $fname = $c->request->params->{"${type}_fname"};
+    $fname =~ s{[.]\w+}{};
+    my $upload = $c->request->upload("${type}_template_file");
+    my $suf = ($type eq 'web')? 'html': 'tt2';
+    $upload->copy_to("root/static/templates/$type/$fname.$suf");
     $c->response->redirect($c->uri_for('/template/list'));
 }
 
 sub delete : Local {
-    my ($self, $c, $fname) = @_;
+    my ($self, $c, $type, $fname) = @_;
 
     if (my @programs = model($c, 'Program')->search({
                                  ptemplate => $fname,
@@ -49,7 +60,8 @@ sub delete : Local {
         $c->stash->{template} = "template/cannot_del.tt2";
         return;
     }
-    unlink "root/static/templates/$fname.html";
+    my $suf = ($type eq 'web')? 'html': 'tt2';
+    unlink "root/static/templates/$type/$fname.$suf";
     $c->response->redirect($c->uri_for('/template/list'));
 }
 

@@ -199,11 +199,6 @@ sub list : Local {
             [ $_->person->sanskrit || $_->person->first, $_ ]
         }
         model($c, 'Member')->all();
-    for my $m (@members) {
-        my $c = lc $m->category;
-        my $method = "date_$c";
-        $m->{$c} = date($m->$method);
-    }
     $c->stash->{members} = \@members;
     $c->stash->{template} = "member/list.tt2";
 }
@@ -219,17 +214,10 @@ sub update : Local {
         life
         lapsed
     /) {
-        my $method = "date_$w";
-        $c->stash->{"date_$w"} = date($m->$method) || "";
         $c->stash->{"category_$w"} = ($m->category eq ucfirst($w))? "checked": "";
     }
+    $c->stash->{free_prog_checked} = ($m->free_prog_taken)? "checked": "";
     my @payments = $m->payments();
-    for my $p (@payments) {
-        # invoke a setter to convert d8 string from database to date object
-        # so it can be formatted via overloaded stringification
-        # in template - wow - is this cool or what?!
-        $p->date_payment(date($p->date_payment));       
-    }
     if (@payments) {
         $c->stash->{payments} = \@payments;
     }
@@ -563,6 +551,17 @@ EOM
     }
 
     $c->stash->{template} = "member/sent.tt2";
+}
+
+sub reset : Local {
+    my ($self, $c) = @_;
+    model($c, 'Member')->search({
+        category => { 'in' => [ 'Sponsor', 'Life' ] },
+    })->update({
+        sponsor_nights  => 12,      # String???
+        free_prog_taken => '',
+    });
+    $c->response->redirect($c->uri_for("/member/list"));
 }
 
 sub access_denied : Private {

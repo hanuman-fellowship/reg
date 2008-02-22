@@ -15,11 +15,11 @@ From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 [% END %]
 </span>
 </td></tr>
-<tr><th align=right>Person</th><td><a href="/person/view/[% reg.person.id %]">[% reg.person.first %] [% reg.person.last %]</a>
+<tr><th align=right>Person</th><td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
 [% IF reg.date_start %] Arriving early on [% reg.date_start_obj %].[% END %]
 [% IF reg.date_end %] Leaving later on [% reg.date_end_obj %].[% END %]
 </td></tr>
-<tr><th align=right>Postmark</th><td>[% date_postmark %] [% reg.time_postmark %]</td></tr>
+<tr><th align=right>Postmark</th><td>[% reg.date_postmark_obj %] [% reg.time_postmark %]</td></tr>
 <tr><th align=right>Housing</th><td>[% reg.h_type_disp %] in [% reg.h_name %]</td></tr>
 <tr><th align=right>Balance</th>
 <td>
@@ -30,10 +30,11 @@ From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 [% END %]
 </td>
 </tr>
-<tr><th align=right valign=top>Comment</th><td>[% comment %]</td></tr>
+<tr><th align=right valign=top>Comment</th><td>[% reg.comment_br %]</td></tr>
 <tr><th align=right>Kids</th><td>[% reg.kids %]</td></tr>
 <tr><th align=right>Work Study</th><td>[% reg.work_study %]</td></tr>
 <tr><th align=right>CEU License</th><td>[% reg.ceu_license %]</td></tr>
+<tr><th align=right valign=top>Confirmation Note</th><td>[% reg.confnote_br %]</td></tr>
 </table>
 <h3>Charges</h3>
 <table cellpadding=2>

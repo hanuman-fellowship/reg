@@ -20,7 +20,21 @@ onclick="return confirm('Okay to Delete [% canpol.name %]?');">Delete</a>
 
 <tr>
 <th align=right valign=top>Policy</th>
-<td>[% policy %]</td>
+<td>[% canpol.policy_br %]</td>
+</tr>
+
+<tr>
+<th valign=top align=right>Programs</th>
+<td>
+<table cellpadding=3>
+[% FOR p IN canpol.programs %]
+<tr>
+<td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
+<td>[% p.sdate_obj %]</td>
+</tr>
+[% END %]
+</table>
+</td>
 </tr>
 
 </table>
