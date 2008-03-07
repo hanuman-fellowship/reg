@@ -87,11 +87,7 @@ sub create_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->stash->{rental}
-        = model($c, 'Rental')->find($id);
-    for my $w (qw/ sdate edate /) {
-        $c->stash->{$w} = date($p->$w) || "";
-    }
+    $c->stash->{rental} = model($c, 'Rental')->find($id);
     $c->stash->{template} = "rental/view.tt2";
 }
 

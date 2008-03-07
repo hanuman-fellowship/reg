@@ -17,6 +17,7 @@ To create a Member add them as a Person first.
 <th align=left>Name</th>
 <th align=left>Category</th>
 <th align=left>Date</th>
+<th align=left>Status</th>
 <th align=left>Paid</th>
 <th align=right>Nights</th>
 </tr>
@@ -27,10 +28,13 @@ To create a Member add them as a Person first.
 <td>[% m.category %]</td>
 <td>
 [% IF    m.category == 'General' %][% m.date_general_obj %]
-[% ELSIF m.category == 'Lapsed'  %][% m.date_lapsed_obj  %]
 [% ELSIF m.category == 'Life'    %][% m.date_life_obj    %]
 [% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj %]
+[% ELSE %]                         unknown
 [% END %]
+</td>
+<td>
+[% m.lapsed %]
 </td>
 [% IF m.category == 'Sponsor' || m.category == 'Life' %]
 <td align=right>
@@ -39,8 +43,13 @@ To create a Member add them as a Person first.
 <td align=right>
 [% m.sponsor_nights %]
 </td>
+<td>
+[% IF m.free_prog_taken %]
+<img src=/static/images/checked.gif>
+[% END %]
+</td>
 [% ELSE %]
-<td></td><td></td>
+<td></td><td></td><td></td>
 [% END %]
 [% IF Catalyst.check_user_roles('super_admin') %]
 <td><a href="/member/delete/[% m.id %]" onclick="return confirm('Okay to Delete [% m.person.first _ ' ' _ m.person.last %] as member?');">Del</a></td>

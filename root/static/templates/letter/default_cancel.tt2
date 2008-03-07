@@ -1,0 +1,30 @@
+<style>
+body {
+    font-family: Georgia, Times;
+    font-size: 14pt;
+    color: black;
+    background: ivory;
+}
+strong {
+    font-weight: bold;
+}
+</style>
+Greetings [% person.first %],
+<p>
+Your registration for the [% program.title %] program
+was cancelled on [% today.format("%B %e, %Y") %].<br>
+The program's cancellation policy is:
+<ul>
+[% program.canpol.policy_br %]
+</ul>
+<p>
+[% IF credit %]
+You have been given a credit of $[% amount %] applicable
+towards future programs.<br>
+This credit will expire on [% date_expire.format("%B %e, %Y") %].
+[% ELSE %]
+We're sorry but you have <strong>not</strong> been given a credit or refund.
+[% END %]
+<p>
+Sincerely,<br>
+[% user.first %] [% user.last %]

@@ -183,11 +183,11 @@ sub new {
         elsif ($x eq 't') {
             return today();
         }
-        elsif ($x =~ m{^-(\d+)}) {      # days before
+        elsif ($x =~ m{^\s*-(\d+)\s*}) {      # days before
             my $n = $1;
             return ($rel_date || today()) - $n;
         }
-        elsif ($x =~ m{^\+(\d+)}) {     # days after
+        elsif ($x =~ m{^\s*\+(\d+)\s*$}) {     # days after
             my $n = $1;
             return ($rel_date || today()) + $n;
         }

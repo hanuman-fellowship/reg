@@ -22,7 +22,6 @@ __PACKAGE__->add_columns(qw/
     confnote
     h_type
     h_name
-    work_study
     carpool
     hascar
     arrived
@@ -33,6 +32,10 @@ __PACKAGE__->add_columns(qw/
     date_start
     date_end
     ceu_license
+    letter_sent
+    status
+    nights_taken
+    free_prog_taken
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -66,7 +69,7 @@ sub h_type_disp {
     # Lookup->init();       # hopefully already done :(
     my $type = $lookup{$self->h_type};
     $type =~ s{\(.*\)}{};
-    $type =~ s{Mount Madona }{};
+    $type =~ s{Mount Madonna }{};
     $type;
 }
 
@@ -74,6 +77,9 @@ sub comment_br {
     my ($self) = @_;
     my $comment = $self->comment;
     $comment =~ s{\r?\n}{<br>\n}g;
+    if ($comment && $comment !~ m{<br>$}) {
+        $comment .= "<br>";
+    }
     $comment;
 }
 
@@ -81,7 +87,15 @@ sub confnote_br {
     my ($self) = @_;
     my $confnote = $self->confnote;
     $confnote =~ s{\r?\n}{<br>\n}g;
+    if ($confnote && $confnote !~ m{<br>$}) {
+        $confnote .= "<br>";
+    }
     $confnote;
+}
+
+sub status_str {
+    my ($self) = @_;
+    return ($self->status eq 'Sponsor')? 'Sponsoring': 'Life';
 }
 
 1;

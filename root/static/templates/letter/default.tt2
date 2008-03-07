@@ -1,57 +1,195 @@
 <html>
 <head>
 <style type='text/css'>
-body {
+body, td, th {
     font-family: Georgia, Times;
-    font-size: 12pt;
-    color: blue;
-    background: #99dd99;
+    font-size: 14pt;
+    color: black;
+    background: ivory;
+}
+.on_right {
+    display: block;
+    text-align: right;
+    margin-right: 1in;
+}
+strong {
+    font-weight: bold;
 }
 </style>
 </head>
 <body>
+<span class="on_right">[% today.format("%A, %B %e, %Y") %]</span>
+<p>
+[% IF program.confnote || reg.confnote %]
+<b>NOTES:</b><br>
+<ul>
+[% IF program.confnote %]
+    [% program.confnote_br %]<br>
+[% END %]
+[% IF reg.confnote %]
+    [% reg.confnote_br %]
+[% END %]
+</ul>
+[% END %]
+<span class="on_right">Receipt #[% reg.id %]</span>
+<p>
 Dear [% person.first %],
 <p>
-You are registered for [% program.title %] on [% program.sdate_obj %]
-presented by [% program.leader_names %].
+<!-- being careful of that comma before "as you requested" ... -->
+We have received your deposit/payment of $[% deposit %]
+and have scheduled you for<br>
+[% IF personal_retreat %]
+your personal retreat,
+[% ELSIF program.retreat %]
+    "[% program.title %]",
+[% ELSE %]
+    the "[% program.title %]" program[% IF program.leaders %] with [% program.leader_names %][% END %],
+[% END %]
+as you requested.
 <p>
 [% program.cl_picture %]
 <p>
-Registration is from [% program.reg_start %] to [% program.reg_end %].
-The program will begin at [% program.prog_start %] on [% program.sdate_obj %]
-and end at [% program.prog_end %] on [% program.edate_obj %].
+[% IF htdesc == 'Your Van' %]
+No lodging was reserved for you since you will be staying in your own van.
+[% ELSIF htdesc == 'Commuting' %]
+No lodging was reserved for you since you will be commuting.
+[% ELSE %]
+For lodging you have been given [% article %] "[% htdesc %]" reservation.
+[% END %]
 <p>
-Your balance is [% reg.balance %].
+[% IF reg.balance > 0 %]
+    Your balance due on arrival is $[% reg.balance %] for meals,
+    [% IF personal_retreat %]
+		lodging and facilities.
+	[% ELSE %]
+	    lodging, facilities and program.
+    [% END %]
+    <br>
+    We accept checks, money orders, Visa, MasterCard and cash.
+[% ELSIF reg.balance == 0 %]
+    Your account is paid in full; there is no balance due.
+[% ELSIF reg.balance < 0 %]
+	Because your first housing choice was not available
+	you are due a refund of $[% -1*reg.balance %].
+	We will issue you a refund when you check-in.
+[% END %]
+[% staying = (htdesc != 'Commuting') %]
+[% camping = (htdesc == 'Your Tent' || htdesc == 'Center Tent') %]
 <p>
-Thank you,<br>
+We suggest that you bring the following:
+<ul>
+[% IF staying %]
+    <li>towel (since towels are <i>not</i> provided)
+    <li>alarm clock
+[% END %]
+<li>flashlight
+<li>warm clothing for cool nights and mornings
+<li>comfortable clothes and shoes for a rural setting
+<li>a swimsuit for lake swimming or hot tubbing
+</ul>
+[% IF program.retreat %]
+    <li>loose clothing suitable for breathing practices and postures
+    <li>a blanket or mat for postures (optional)
+[% END %]
+[% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
+    <p>
+    Since you are camping remember to bring your own bedding.
+    [% IF htdesc == 'Center Tent' %]
+        <br>Foam mattresses are provided in center tents.
+    [% END %]
+[% END %]
+<p>
+You may wish to bring slippers, as shoes are not worn indoors.
+<p>
+Please <strong>DO NOT</strong> bring the following onto the property:
+<ul>
+<li>food
+<li>drugs
+<li>alcohol
+<li>pets
+</ul>
+<strong>DO NOT</strong> wear scented body products.
+<p>
+Due to extreme fire precautions <strong>DO NOT</strong> bring or use incense, candles,
+kerosene lamps, etc.
+<p>
+[% IF personal_retreat %]
+Your retreat begins on the afternoon of 
+[% ELSE %]
+Program registration is from
+[% program.reg_start %] to [% program.reg_end %] on<br>
+[% END %]
+[% program.sdate_obj.format("%A, %B %e") %][% IF personal_retreat %].[% ELSE %] in the Community Building.[% END %]<br>
+[% IF personal_retreat && sunday %]
+    Look for your housing information which will be posted
+    in the Community Building lobby.
+    <p>
+    Dinner is served from 5:00 pm to 6:00 pm.
+[% ELSE %]
+	Dinner is served from
+    [% IF program.retreat %]
+		6:00 pm to 7:00 pm.
+    [% ELSIF friday %]
+		5:30 pm to 6:30 pm.
+	[% ELSE %]
+		5:00 pm to 6:00 pm.
+	[% END %]
+    <p>
+	The office closes at 6:30 pm.<br>
+	If you will ARRIVE LATER than 6:00 pm please call to let us know.<br>
+    Notes are posted in the Community Building lobby for late arrivals.<br>
+	We will save dinner for you on request.
+[% END %]
+<p>
+[% IF ! personal_retreat %]
+Your program will begin at [% program.prog_start %].<br>
+[% END %]
+[% IF personal_retreat %]Your retreat[% ELSE %]The program [% END %]
+will end at [% program.prog_end %] on [% program.edate_obj.format("%A, %B %e") %].
+<p>
+[% program.canpol.policy_br %]
+<p>
+We look forward to seeing you here soon.
+<p>
+<span style="margin-left: 3in; display: block">
+Sincerely,<br>
 [% user.first %] [% user.last %]
-[% IF program.confnote %]
-<p>
-Program Notes:<br>
-<ul>
-[% program.confnote_br %]
-</ul>
-[% END %]
-
-[% IF reg.confnote %]
-<p>
-Personal Notes:
-<ul>
-[% reg.confnote_br %]
-</ul>
-[% END %]
+</span>
+<hr>
 <p>
 Your Charges:<br>
-<table border=1 cellpadding=3>
+<ul>
+<table cellpadding=3>
+<tr>
+<th align=right>Amount</th>
+<th align=left>What</th>
+</tr>
+[% tot = 0 %]
 [% FOR ch IN reg.charges %]
-<tr><td align=right>[% ch.amount %]</td><td>[% ch.what %]</td></tr>
+<tr>
+<td align=right>[% ch.amount %]</td>
+<td>[% ch.what %]</td>
+</tr>
+[% tot = tot + ch.amount %]
 [% END %]
+<tr><td align=right><span style="border-top: solid thin">[% tot %]</span></td><td>Total</td></tr>
 </table>
+</ul>
+<p>
 Your Payments:<br>
-<table border=1 cellpadding=3>
+<ul>
+<table cellpadding=3>
+<tr>
+<th align=right>Amount</th>
+<th align=left>What</th>
+</tr>
 [% FOR p IN reg.payments %]
-<tr><td align=right>[% p.amount %]</td><td>[% p.what %]</td></tr>
+<tr>
+<td align=right>[% p.amount %]</td>
+<td>[% p.what %]</td>
+</tr>
 [% END %]
 </table>
+</ul>
 </body>
 </html>

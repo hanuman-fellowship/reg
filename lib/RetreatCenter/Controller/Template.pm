@@ -28,7 +28,7 @@ sub list : Local {
         map {
             {
                 name   => $_,
-                delete => $_ ne 'default'
+                delete => $_ !~ m{default},
             }
         }
         map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }

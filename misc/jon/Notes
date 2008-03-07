@@ -669,3 +669,161 @@ the link "Web" points to the staging area
     two links?
 when listing programs - on leaders, canpol, etc
     have a line indicating the boundary between past and future?
+purge the root/static/templates/web directory
+    of cal[0-9].html files after publishing - they're just
+    temporary and unless purged they'll show up when
+    looking at Templates
+Need 'Grab New' when viewing a person's registration as well.
+confirmation letter of a program with two leaders
+    shows one picture but not the other.  why?
+need Donor table 
+    id
+    person_id
+    project_id
+    amount
+    date
+need Project table
+    id
+    description
+need SponsorNight table
+    id
+    member_id
+    reg_id
+    date
+    num_nights
+
+    the number of nights left is recomputed
+    based on the tally of SponsorNights taken this year.
+
+    these are shown as non-clickable
+    links on the member screen
+    program staff who are also member admins
+        can see and click on them
+Edit a reg and the charges are ALL recomputed.
+    the sponsor night record is recreated.
+create program.  the end date can be +3 meaning
+    +3 days after the start date.
+Okay... members
+    i will provide:
+        - a payment history including
+          payments for a general membership that do
+          not apply towards an accumulating sponsor membership
+        - a history of when free nights/program is taken
+            and for which registration.
+        - manual control over status and expiry dates
+        - only 3 statuses - general, sponsor and life.
+        - when listing people check their lapse status.
+            someone can be a lapsed sponsor member or
+            a lapsed general member - if the expiry date is
+            beyond today.
+        - email notification to members informing them
+            of their status - and their payment and nights-taken history.
+            they can reply to it if they don't agree.
+            include a link online they can consult that explains
+            the whole membership policy.
+    too difficult to do it automatically.
+        e.g.  two partners each pay $4000.
+        they become life members.   then they separate.
+        now they're back to being sponsors.
+
+        e.g.  the determination of when the sponsor
+        expiry date is is just too complex.   people will
+        not care too much about this date preciseness as long as
+        they can keep the date in the future.   which they CAN
+        do by paying regularily.   How about an automatic
+        deduction from their credit card?  that would simplify
+        things enormously.   but I presume many would rather
+        just pay in lump sums.
+    validate the Member create_edit params - must have a valid
+        date for the selected category.
+Why does Jayanti like the cryptic abbreviations in the comment
+    field? 
+            1-ot 2-sgl
+        instead of
+            1-Own Tent  2-Single
+    no limit on comment length anymore...
+Recomputing when editing a registration will work okay - except
+    for the free nights and free program stuff - tricky!
+OPEN GATE - no hot tubbing - in confirmation letter?
+When cancelling a registration
+    display cancellation policy, dates and how many days
+    til the program starts and present a dialog:
+
+        Shall they be given a $50 credit?
+
+    The $50 defaults (from Strings) and can be changed.
+
+    if credit is granted add a record to Credit which has a person_id foreign
+    key and a reg_id foreign key and a date(today) and amount and
+    an expiration date.    Show a person's credits when
+    viewing their records.   a 'credits' method which returns
+    an array of Credit records.
+
+    send a cancellation letter which details whether they
+    have a credit or not.
+
+    when they next register - pop up that they have a credit
+    that has not yet expired.  and use it as a negative charge.
+    mark the Credit record with the program where they used it.
+    So we have these columns:
+
+    Credit
+        id
+        person_id
+        reg_id
+        amount
+        date_given
+        date_expires
+        used_reg_id
+
+    On cancellation add a RegHistory record to this effect.
+
+    Cancellations can be UNcancelled - any credit will be scratched (deleted).
+        should it not be deleted but marked in some way? nah.
+        a RegHistory record will be added for the uncancellation.
+
+    Charges will need to be marked with a type so that
+    we can more easily clear and redo the charges for housing.
+
+    Have a dialog to ask for confirmation before sending confirmation letter.
+    Add a new command to ReSend the confirmation letter.
+
+    Sponsor tuition discount - max of $125 each time.
+
+    Have an easy way for the registrar to have the sponsor
+    take as many nights lodging as possible.  Or not.
+
+    Same as above for taking the free night for Life members.
+
+    Add to the confirmation letter - notes about their having
+    taken sponsor nights - and their needing to pay for meals.
+When entering a new program the To date should
+    be considered relative to the Start date.  So can say +2
+    for a weekend program.  Works.
+if cancelled - no payment of balance or sending of confirmation letter
+    or any editing at all - except of the comment?
+updated a person and it shows updated +8 hours?
+    some problem on Shankar's machine - time????
+search for registration given a receipt #.
+CEU field should not be shown if an online registration in a program
+    that does not allow CEUs.
+what if a Life member takes a free program
+    and comes two days early and stays a few days later?
+have separate charges for the early and after days.
+    then easier to not waive them.
+if arrive late or leave early - credits for lodging?
+    but not for tuition?
+    num of 'program lodging days'. - waivable for Life members
+    num of extra days (before or after) - not waivable
+show person's membership status on the registration view.
+    and nights taken/free program
+a different date format?
+    per person setting?
+    3 Mar 09 rather than 03/03/09?
+    then easier to see From 3 Mar 09 To 7 Mar 09 ???
+some way to catch the catalyst server at boot time
+    and set the default date format and to call Lookup->init()???
+    ask MST
+could have a link - add credit and ask for an amount
+    and do a negative charge for the person
+check for duplicate registrations and deny them

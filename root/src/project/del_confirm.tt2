@@ -1,0 +1,26 @@
+<h2>Project '[% project.desc %]' has the following donations:</h2>
+<ul>
+<table cellpadding=3>
+<tr>
+<th align=left>Person</th>
+<th align=right>Amount</th>
+<th align=center>Date</th>
+</tr>
+[% FOR d IN project.donations %]
+<tr>
+<td align=left><a href="/person/view/[% d.person.id %]">[% d.person.last %], [% d.person.first %]</a></td>
+<td align=right>[% d.amount %]</td>
+<td align=center>[% d.date_donate_obj %]</td>
+</tr>
+[% END %]
+<table>
+</ul>
+<form action="/project/del_confirm/[% project.id %]" name=form>
+<p>
+Continue with the deletion?
+&nbsp;&nbsp;
+<input type=submit value="Yes" name=yes> 
+&nbsp;&nbsp;
+<input type=submit value="No" name=no> 
+</form>
+<script type='text/javascript'>document.form.no.focus()</script>

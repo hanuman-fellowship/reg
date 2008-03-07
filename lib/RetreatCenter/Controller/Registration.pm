@@ -4,8 +4,17 @@ package RetreatCenter::Controller::Registration;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Date::Simple qw/date today/;
-use Util qw/nsquish digits model trim/;
+use Date::Simple qw/
+    date
+    today
+/;
+use Util qw/
+    nsquish
+    digits
+    model
+    trim
+    empty
+/;
 use Lookup;
     # damn awkward to keep this thing initialized... :(
     # is there no way to do this better???
@@ -25,7 +34,7 @@ sub list_online : Local {
     for my $f (<root/static/online/*>) {
         open my $in, "<", $f
             or die "cannot open $f: $!\n";
-        my ($date, $time, $first, $last, $pname);
+        my ($date, $time, $first, $last, $pid);
         while (<$in>) {
             if (m{x_date => (.*)}) {
                 $date = date($1)->format("%m/%d");
@@ -39,16 +48,18 @@ sub list_online : Local {
             elsif (m{x_lname => (.*)}) {
                 $last = $1;
             }
-            elsif (m{x_pname => (.*)}) {
-                $pname = $1;
+            elsif (m{x_pid => (.*)}) {
+                $pid = $1;
             }
         }
         close $in;
+        my $pr = model($c, 'Program')->find($pid);
+        # what if not found???
         (my $fname = $f) =~ s{root/static/online/}{};
         push @online, {
             first => $first,
             last  => $last,
-            pname => $pname,
+            pname => $pr->name,
             date  => $date,
             time  => $time,
             fname => $fname,
@@ -127,7 +138,10 @@ sub list_reg_name : Local {
         my $pr = $r->program;
         my $dt = $r->date_start || $pr->sdate;
         # is this precisely what we want or what?!! :)
-        if ($dt <= today()->as_d8() && $r->balance > 0) {
+        if ($dt <= today()->as_d8()
+            && $r->balance > 0
+            && ! $r->cancelled
+        ) {
             $c->response->redirect($c->uri_for("/registration/pay_balance/" .
                                    $regs[0]->id . "/list_reg_name"));
         }
@@ -172,7 +186,6 @@ sub list_reg_post : Local {
 }
 
 my %needed = map { $_ => 1 } qw/
-    pname
     pid
     fname
     lname
@@ -228,7 +241,7 @@ sub get_online : Local {
     }
     close $in;
 
-    # save the filename so we can delete when we're complete
+    # save the filename so we can delete it when the registration is complete
     $c->stash->{fname} = $fname;
 
     # verify that we have a pid, first, and last. and an amount.
@@ -376,24 +389,46 @@ sub get_online : Local {
         }
     }
     #
-    # life member or current sponsor?
-    # with nights left?
+    # life member or current sponsor?  with nights left?
+    # they must be in good standing if sponsor
+    # and can't take free nights if the housing cost is not a Perday type.
     #
     if (my $mem = $p->member) {
         my $cat = $mem->category;
         my $nights = $mem->sponsor_nights;
         if ($cat eq 'Life'
             || ($cat eq 'Sponsor' && $mem->date_sponsor >= $today)
+                                    # member in good standing
         ) {
-            $c->stash->{category} = $cat;   # they always get a 30%
-                                            # tuition discount.
-            if ($nights > 0) {
+            $c->stash->{status} = $cat;   # they always get a 30%
+                                          # tuition discount.
+            if ($pr->housecost->type eq 'Perday' && $nights > 0) {
                 $c->stash->{nights} = $nights;
+            }
+            else {
+                $c->stash->{nights} = 0;
+            }
+            $c->stash->{free_prog_taken}
+                = ($cat eq 'Life' && ! $mem->free_prog_taken)? "yes": "no";
+                        # sort of backwards... but okay.
+        }
+    }
+
+    # any credits?
+    if ($p->credits()) {
+        CREDIT:
+        for my $cr ($p->credits()) {
+            if (! $cr->date_used && $cr->date_expires > $today) {
+                $c->stash->{credit} = $cr;
+                last CREDIT;
             }
         }
     }
 
-    $c->stash->{ceu_license} = $hash{ceu_license};
+    if ($pr->footnotes =~ m{[*]}) {
+        $c->stash->{ceu} = 1;
+        $c->stash->{ceu_license} = $hash{ceu_license};
+    }
 
     # comments
     $c->stash->{comment} = <<"EOC";
@@ -420,7 +455,7 @@ EOC
     my $date = date($hash{date});
     $c->stash->{date_postmark} = $date->as_d8();
     $c->stash->{time_postmark} = $hash{time};
-    $c->stash->{deposit} = $hash{amount};
+    $c->stash->{deposit} = int($hash{amount});
 
     # sdate/edate (in the hash from the online file)
     # are normally empty - except for personal retreats
@@ -484,43 +519,78 @@ EOC
     $c->stash->{template} = "registration/create.tt2";
 }
 
-# now we actually create the registration
-# if from an online source there will be a filename
-# in the hash which needs deleting.
-sub create_do : Local {
-    my ($self, $c) = @_;
+my @mess;
+my %hash;
+my @dates;
+my $taken;
+sub _get_data {
+    my ($c) = @_;
 
-    my %hash = %{ $c->request->params() };
+    %hash = %{ $c->request->params() };
     my $pr = model($c, 'Program')->find($hash{program_id});
-    my @dates = ();
-    my @mess = ();
+    @dates = ();
+    @mess = ();
+    my $date_start;
     if ($hash{date_start}) {
         # what about personal retreats???
         Date::Simple->relative_date(date($pr->sdate));
-        my $d = date($hash{date_start});
-        if ($d) {
-            push @dates, date_start => $d->as_d8();
+        $date_start = date($hash{date_start});
+        Date::Simple->relative_date();
+        if ($date_start) {
+            push @dates, date_start => $date_start->as_d8();
         }
         else {
             push @mess, "Illegal date: $hash{date_start}";
         }
     }
+    my $date_end;
     if ($hash{date_end}) {
         Date::Simple->relative_date(date($pr->edate));
-        my $d = date($hash{date_end});
-        if ($d) {
-            push @dates, date_end => $d->as_d8();
+        $date_end = date($hash{date_end});
+        Date::Simple->relative_date();
+        if ($date_end) {
+            push @dates, date_end => $date_end->as_d8();
         }
         else {
             push @mess, "Illegal date: $hash{date_end}";
         }
     }
+    my $sdate = $date_start || date($pr->sdate);
+    my $edate = $date_end   || date($pr->edate);
+    my $ndays = ($edate - $sdate) || 1; # personal retreat exception
+
+    $taken = 0;
+    if ($hash{nights_taken} && ! empty($hash{nights_taken})) {
+        $taken = trim($hash{nights_taken});
+        if ($taken !~ m{^\d+$}) {
+            push @mess, "Illegal free nights taken: $taken.";
+        }
+        elsif ($taken > $hash{max_nights}) {
+            push @mess, "Cannot take more than $hash{max_nights} free nights.";
+        }
+        elsif ($taken && $hash{free_prog_taken}) {
+            push @mess, "Cannot take a free program AND free nights.";
+        }
+        elsif ($taken > $ndays) {
+            push @mess, "Only staying $ndays nights so can't take $taken of them free!";
+        }
+    }
+}
+
+# now we actually create the registration
+# if from an online source there will be a filename
+# in the hash which needs deleting.
+#
+sub create_do : Local {
+    my ($self, $c) = @_;
+
+    _get_data($c);
     if (@mess) {
         $c->stash->{mess} = join "<br>", @mess;
         $c->stash->{template} = "registration/error.tt2";
         return;
     }
-    my $r = model($c, 'Registration')->create({
+    my $reg = model($c, 'Registration')->create({
         person_id     => $hash{person_id},
         program_id    => $hash{program_id},
         date_postmark => $hash{date_postmark},
@@ -530,15 +600,19 @@ sub create_do : Local {
         adsource      => $hash{adsource},
         carpool       => $hash{carpool},
         hascar        => $hash{hascar},
-        comment       => $hash{comment},
+        comment       => trim($hash{comment}),
         h_type        => $hash{h_type},
         h_name        => $hash{h_name},
         kids          => $hash{kids},
-        confnote      => $hash{confnote},
+        confnote      => trim($hash{confnote}),
+        status        => $hash{status},
+        nights_taken  => $taken,
+        free_prog_taken => $hash{free_prog_taken},
         @dates,         # optionally
     });
-    my $reg_id = $r->id();
+    my $reg_id = $reg->id();
 
+    # prepare for history records
     #
     # who is doing this?
     # can't do $c->user->id for some unknown reason??? so...
@@ -555,11 +629,17 @@ sub create_do : Local {
     });
     my $web_user_id = $wu->id();
 
-    my $now_date = today()->as_d8();
+    my $today = today();
+    my $now_date = $today->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
     my $now_time = sprintf "%02d:%02d", $hour, $min;
+    my @common = (
+        reg_id   => $reg_id,
+        user_id  => $user_id,
+        the_date => $now_date,
+        time     => $now_time,
+    );
 
-    # history records
     # first, we have some PAST history
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
@@ -569,18 +649,33 @@ sub create_do : Local {
         what     => 'Online Registration',       # other name???
                                         # to not confuse with 'Registration'???
     });
-    my @common = (
-        reg_id   => $reg_id,
-        user_id  => $user_id,
-        the_date => $now_date,
-        time     => $now_time,
-    );
+
+    # now current history
     model($c, 'RegHistory')->create({
         @common,
         what    => 'Registration Created',
     });
 
-    # financial records
+    # credit, if any
+    if ($hash{credit_id}) {
+        my $cr = model($c, 'Credit')->find($hash{credit_id});
+        my $amount = $cr->amount();
+        my $pr_g = $cr->reg_given->program;
+        model($c, 'RegCharge')->create({
+            @common,
+            automatic => '',        # NOT automatic
+            amount  => -1*$amount,
+            what    => 'Credit from the '
+                       . $pr_g->name . ' program in '
+                       . $pr_g->sdate_obj->format("%B %Y"),
+        });
+        # and mark the credit as taken
+        $cr->update({
+            date_used   => $now_date,
+            used_reg_id => $reg_id,
+        });
+    }
+    # the payment (deposit)
     model($c, 'RegPayment')->create({
         @common,
         amount  => $hash{deposit},
@@ -588,31 +683,78 @@ sub create_do : Local {
         what    => 'Deposit',
     });
 
+    # add the automatic charges
+    _compute($c, $reg, @common);
+
+    # if this registration was from an online file
+    # move it aside.  we have finished processing it at this point.
+    if ($hash{fname}) {
+        rename "root/static/online/$hash{fname}",
+               "root/static/online_done/$hash{fname}";
+    }
+    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+}
+
+#
+# automatic charges - computed from the contents
+# of the registration record.
+#
+sub _compute {
+    my ($c, $reg, @common) = @_;
+
+    Lookup->init($c);
+    my $pr  = $reg->program;
+    my $mem = $reg->person->member;
+
+    my $sdate = date($reg->date_start || $pr->sdate);
+    my $edate = date($reg->date_end   || $pr->edate);
+    my $ndays = ($edate - $sdate) || 1; # personal retreat exception
+
     # tuition
     my $tuition = $pr->tuition;
     model($c, 'RegCharge')->create({
         @common,
-        amount  => $tuition,
-        what    => 'Tuition',
+        automatic => 'yes',
+        amount    => $tuition,
+        what      => 'Tuition',
     });
-    # sponsor/life members get a 30% discount on tuition
-    if ($hash{category}) {
-        model($c, 'RegCharge')->create({
-            @common,
-            amount  => -(0.30*$tuition),
-            what    => "30% Tuition discount for $hash{category} member",
-        });
-        
+
+    # sponsor/life members get a discount on tuition
+    # up to a max.
+    if ($reg->status) {
+        # Life members can take a free program ... so:
+        if ($reg->free_prog_taken) {
+            model($c, 'RegCharge')->create({
+                @common,
+                automatic => 'yes',
+                amount    => -1*$tuition,
+                what      => "Life member - free program - tuition waived.",
+            });
+        }
+        else {
+            my $amount = ($lookup{spons_tuit_disc}/100)*$tuition;
+            my $maxed = "";
+            if ($amount > $lookup{max_tuit_disc}) {
+                $amount = $lookup{max_tuit_disc};
+                $maxed = " - to a max of \$$lookup{max_tuit_disc}";
+            }
+            model($c, 'RegCharge')->create({
+                @common,
+                automatic => 'yes',
+                amount    => -1*$amount,
+                what      => "$lookup{spons_tuit_disc}% Tuition discount for "
+                            . $reg->status . " member$maxed",
+            });
+        }
     }
 
     # assuming we have decided on their housing at this point...
+    # we do have an h_type but perhaps not an h_name.
+    #
     # figure housing cost
     my $housecost = $pr->housecost;
-    my $sdate = date($r->date_start || $pr->sdate);
-    my $edate = date($r->date_end   || $pr->edate);
-    my $ndays = ($edate - $sdate) || 1; # personal retreat exception
 
-    my $h_type = $hash{h_type};           # what housing type was assigned?
+    my $h_type = $reg->h_type;           # what housing type was assigned?
     my $h_cost = $housecost->$h_type;      # column name is correct, yes?
     my ($tot_h_cost, $what);
 	if ($housecost->type eq "Perday") {
@@ -625,29 +767,54 @@ sub create_do : Local {
     }
     model($c, 'RegCharge')->create({
         @common,
-        amount  => $tot_h_cost,
-        what    => $what,
+        automatic => 'yes',
+        amount    => $tot_h_cost,
+        what      => $what,
     });
-	if ($housecost->type eq "Perday") {
-        if ($ndays >= 7) {      # Strings??? 7, 30, .10, .10
+    my $life_free = 0;
+    if ($reg->free_prog_taken) {
+        model($c, 'RegCharge')->create({
+            @common,
+            automatic => 'yes',
+            amount    => -$tot_h_cost,
+            what      => "Life member - free program - lodging waived",
+        });
+        $life_free = 1;
+        #
+        # finally, update the member record and add a NightHist record
+        #
+        $mem->update({
+            free_prog_taken => 'yes',
+        });
+        model($c, 'NightHist')->create({
+            member_id  => $mem->id,
+            num_nights => 0,
+            action     => 4,        # take free program
+            reg_id     => $reg->id,
+            @common,
+        });
+    }
+	if (!$life_free && $housecost->type eq "Perday") {
+        if ($ndays >= $lookup{disc1days}) {
             model($c, 'RegCharge')->create({
                 @common,
-                amount  => -(int(0.10*$tot_h_cost)),
-                what    => '10% Lodging Discount for programs >= 7 days',
+                automatic => 'yes',
+                amount    => -1*(int(($lookup{disc1pct}/100)*$tot_h_cost)),
+                what      => "$lookup{disc1pct}% Lodging Discount for programs >= $lookup{disc1days} days",
             });
         }
-        if ($ndays >= 30) {     # Strings???
+        if ($ndays >= $lookup{disc2days}) {
             model($c, 'RegCharge')->create({
                 @common,
-                amount  => -(int(0.10*$tot_h_cost)),
-                what    => '10% further Lodging Discount for programs >= 30 days',
+                automatic => 'yes',
+                amount    => -1*(int(($lookup{disc2pct}/100)*$tot_h_cost)),
+                what      => "$lookup{disc2pct}% Lodging Discount for programs >= $lookup{disc2days} days",
             });
         }
 	}
+
     #
     # sponsor/life members get free nights
-    # what about programs that have a Total Cost housing cost type???
-    # right - we shouldn't pop up the Sponsor dialog then, eh???
     #
     # do people take free nights only when they can get a single?
     # Hanuman Fellowship membership benefit brochure
@@ -657,156 +824,182 @@ sub create_do : Local {
     # sponsor member could actually get a credit.
     # not right somehow???
     #
-	my $nights_avail = $hash{nights} || 0;
-	if ($nights_avail && $housecost->type eq "Perday") {
-        # ??? probably a cleaner way of doing this...
-        my $nights_used;
-        my $nights_left;
-        if ($nights_avail > $ndays) {
-            # can't take more than the length of the program...
-            $nights_used = $ndays;
-            $nights_left = $nights_avail - $ndays;
-        }
-        else {
-            $nights_used = $nights_avail;
-            $nights_left = 0;
-        }
-        my $plural = ($nights_used == 1)? "": "s";
+	if (my $n = $reg->nights_taken) {
+        my $plural = ($n == 1)? "": "s";
         model($c, 'RegCharge')->create({
             @common,
-            amount  => -($h_cost * $nights_used),
-            what    => "$nights_used free night$plural lodging for $hash{category} member",
+            automatic => 'yes',
+            amount    => -1*($h_cost * $n),
+            what      => "$n free night$plural lodging for "
+                        . $reg->status_str . " member",
         });
         #
         # deduct these nights from the person's member record.
         #
-        my $p = model($c, 'Person')->find($hash{person_id});
-        my $m = $p->member;
-        $m->update({
-            sponsor_nights => $nights_left,
+        $mem->update({
+            sponsor_nights => $mem->sponsor_nights - $n,     # cool, eh?
+        });
+        #
+        # and add a NightHist record to specify what happened
+        #
+        model($c, 'NightHist')->create({
+            @common,
+            member_id  => $mem->id,
+            num_nights => $n,
+            action     => 2,    # take nights
         });
     }
    
-    if ($hash{work_study}) {
-        if ($pr->retreat) {
-            model($c, 'RegCharge')->create({
-                @common,
-                amount  => -(int($pr->tuition()/3)),
-                what    => '1/3 Tuition discount for work study during retreat',
-            });
-            model($c, 'RegCharge')->create({
-                @common,
-                amount  => -(int($tot_h_cost/3)),
-                what    => '1/3 Lodging discount for work study during retreat',
-                    # String for the 1/3???
-            });
-        }
-        else {
-            my $ws_disc = 24; # ??? String for the 24?
-            model($c, 'RegCharge')->create({
-                @common,
-                amount  => -($ndays*$ws_disc),
-                what    => "Discount for work study of \$$ws_disc a day"
-                         . " for $ndays days",
-            });
-        }
-    }
-    # ??? is there a minimum of $15 per day for lodging???
-    # ??? String for that?
-    if ($hash{kids}) {
-        my $min_age = 2;         # Strings???
-        my $max_age = 12;
-        my @ages = $hash{kids} =~ m{(\d+)}g;
+    #
+    # is there a minimum of $15 per day for lodging???
+    # figure the kids cost from the initial UNdiscounted rate.
+    # bringing your kids during your free program - they still pay.
+    #
+    if (my $kids = $reg->kids) {
+        my $min_age = $lookup{min_kid_age};
+        my $max_age = $lookup{max_kid_age};
+        my @ages = $kids =~ m{(\d+)}g;
         @ages = grep { $min_age <= $_ && $_ <= $max_age } @ages;
         my $nkids = @ages;
         my $plural = ($nkids == 1)? "": "s";
         if ($nkids) {
             model($c, 'RegCharge')->create({
                 @common,
-                amount  => int($nkids * ($tot_h_cost/2)),
-                what    => "$nkids kid$plural aged $min_age-$max_age"
-                         . " - half cost for lodging",
+                automatic => 'yes',
+                amount    => int($nkids * (($lookup{kid_disc}/100)*$tot_h_cost)),
+                what      => "$nkids kid$plural aged $min_age-$max_age"
+                           . " - $lookup{kid_disc}% for lodging",
             });
         }
     }
-    if ($hash{ceu_license}) {
+    if ($reg->ceu_license) {
         model($c, 'RegCharge')->create({
             @common,
-            amount  => 10,      # String???
-            what    => "CEU License fee",
+            automatic => 'yes',
+            amount    => $lookup{ceu_lic_fee},
+            what      => "CEU License fee",
         });
     }
 
     # calculate the balance, update the reg record
     my $balance = 0;
-    for my $ch ($r->charges) {
+    for my $ch ($reg->charges) {
         $balance += $ch->amount;
     }
-    for my $py ($r->payments) {
+    for my $py ($reg->payments) {
         $balance -= $py->amount;
     }
-    $r->update({
+    $reg->update({
         balance => $balance,
     });
+    # phew!
+}
 
+#
+# send a confirmation letter.
+# fill in a template and send it off.
+# use the template toolkit outside of the Catalyst mechanism.
+#
+sub send_conf : Local {
+    my ($self, $c, $id) = @_;
 
-    #
-    # IF we have assigned housing, send a confirmation letter.
-    # ??? don't send if no housing ???
-    # fill in a template and send it off.
-    #
-    # use the template toolkit outside of the Catalyst mechanism
-    #
+    my $reg = model($c, 'Registration')->find($id);
+    my $pr = $reg->program;
+    Lookup->init($c);
+    my $htdesc = $lookup{$reg->h_type};
+    $htdesc =~ s{\s*\(.*\)}{};           # don't need this
+    $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
+    my $personal_retreat = $pr->title =~ m{personal\s*retreat}i;
+    my $start = ($reg->date_start)? $reg->date_start_obj: $pr->sdate_obj;
+    my $stash = {
+        user     => $c->user,
+        person   => $reg->person,
+        reg      => $reg,
+        program  => $pr,
+        personal_retreat => $personal_retreat,
+        sunday   => $personal_retreat
+                    && ($reg->date_start_obj->day_of_week() == 0),
+        friday   => $start->day_of_week() == 6,
+        today    => today(),
+        deposit  => $reg->deposit,
+        htdesc   => $htdesc,
+        article  => ($htdesc =~ m{^[aeiou]}i)? 'an': 'a',
+    };
+    my $html = "";
     my $tt = Template->new({
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
-    my $person = $r->person;
-    my $user   = $c->user;
-    my $stash = {
-        user     => $user,
-        person   => $person,
-        reg      => $r,
-        program  => $pr,
-    };
-    my $html = "";
     $tt->process(
-        $pr->cl_template . ".tt2",      # input
-        $stash,
-        \$html,
+        $pr->cl_template . ".tt2",      # template
+        $stash,                         # variables
+        \$html,                         # output
     );
     #
-    # send the letter to $r->person->email
+    # assume the letter will be successfully
+    # printed or sent.
     #
+    _reg_hist($c, $id, "Confirmation Letter sent");
+    $reg->update({
+        letter_sent => 'yes',   # this duplicates the RegHistory record
+                                # above but is much easier accessed.
+    });
+    #
+    # if no email put letter to screen for printing and snail mailing.
+    # ??? needs some help here...  what to do after printing?
+    # just go back.  or have a bookmark to go somewhere???
+    # can we print it automatically?  don't know. better to not to.
+    #
+    if (! $reg->person->email) {
+        $c->res->output($html);
+        return;
+    }
+    _email($c,
+           html    => $html, 
+           subject => "Confirmation of Registration for " . $pr->title,
+           to      => $reg->person->email,
+           from    => $lookup{from},
+           from_title => $lookup{from_title},
+    );
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
+sub _email {
+    my ($c, %args) = @_;
+
+    # check args for keys letter, subject, to, from
+
+    #
+    # convert the HTML letter to text with lynx
+    # ??? any way to do this without creating a tmp text file?
+    # keeping it all in memory?
+    #
+    open my $lynx_dump, "|lynx -stdin -dump -width=95>/tmp/$$"
+        or die "cannot open |lynx: $!\n";
+    print {$lynx_dump} $args{html};
+    close $lynx_dump;
+    open my $text_in, "<", "/tmp/$$"
+        or die "cannot open /tmp/$$: $!\n";
+    my $text;
+    {
+        local $/;
+        $text = <$text_in>;
+        close $text_in;
+        unlink "/tmp/$$";
+    }
     my $mail = Mail::SendEasy->new(
-        smtp => 'mail.logicalpoetry.com:50',
-        user => 'jon@logicalpoetry.com',
-        pass => 'hello!',
+        smtp => $lookup{smtp_server},
+        user => $lookup{smtp_user},
+        pass => $lookup{smtp_pass},
     );
     my $status = $mail->send(
-        subject => "Confirmation of Registration for " . $pr->title,
-        to      => $person->email,
-        from    => $user->email,
-        msg     => "hi there",      # ??? need two version???
-        html    => $html,
+        %args,
+        msg => $text,
     );
     if (! $status) {
         # what to do about this???
         $c->log->info('mail error: ' . $mail->error);
     }
-    model($c, 'RegHistory')->create({
-        @common,
-        what    => 'Confirmation Letter Sent',
-    });
-
-    # if this registration was from an online file
-    # move it aside.  we have finished processing it at this point.
-    if ($hash{fname}) {
-        rename "root/static/online/$hash{fname}",
-               "root/static/online_done/$hash{fname}";
-    }
-
-    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
 
 sub view : Local {
@@ -891,6 +1084,210 @@ sub pay_balance_do : Local {
     }
 }
 
+sub cancel : Local {
+    my ($self, $c, $id) = @_;
+
+    my $reg = model($c, 'Registration')->find($id);
+    $c->stash->{reg} = $reg;
+    my $today = today();
+    $c->stash->{today} = $today;
+    $c->stash->{ndays} = $reg->program->sdate_obj - $today;
+    Lookup->init($c);
+    $c->stash->{amount} = $lookup{credit_amount};
+    $c->stash->{template} = "registration/credit_confirm.tt2";
+}
+
+sub cancel_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $credit    = $c->request->params->{yes};
+    my $amount    = $c->request->params->{amount};
+    my $reg       = model($c, 'Registration')->find($id);
+    $reg->update({
+        cancelled => 'yes',
+    });
+
+    # add reg history record
+    _reg_hist($c, $id,
+        "Cancelled - "
+        .  (($credit)? "Credit of \$$amount given."
+            :          "No credit given.")
+    );
+    my $date_expire;
+    if ($credit) {
+        # credit record
+        my $sdate = $reg->program->sdate_obj();
+        $date_expire = date(
+            $sdate->year() + 1,
+            $sdate->month(),
+            $sdate->day(),
+        );
+        model($c, 'Credit')->create({
+            reg_id       => $id,
+            person_id    => $reg->person->id(),
+            amount       => $amount,
+            date_given   => today->as_d8(),
+            date_expires => $date_expire->as_d8(),
+            date_used    => "",
+            used_reg_id  => 0,
+        });
+    }
+    #
+    # send cancellation confirmation letter
+    #
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $template = $reg->program->cl_template . "_cancel.tt2";
+    if (! -f "root/static/templates/letter/$template") {
+        $template = "default_cancel.tt2";
+    }
+    my $stash = {
+        person      => $reg->person,
+        program     => $reg->program,
+        credit      => $credit,
+        amount      => $amount,
+        date_expire => $date_expire,
+        user        => $c->user,
+        today       => today(),
+    };
+    $tt->process(
+        $template,      # template
+        $stash,         # variables
+        \$html,         # output
+    );
+    #
+    # assume the letter will be successfully
+    # printed or sent.
+    #
+    _reg_hist($c, $id, "Cancellation Letter sent");
+    if ($reg->person->email) {
+        _email($c,
+               html    => $html, 
+               subject => "Cancellation of Registration for "
+                          . $reg->program->title,
+               to      => $reg->person->email,
+               from    => $lookup{from},
+               from_title => $lookup{from_title},
+        );
+        $c->response->redirect($c->uri_for("/registration/view/$id"));
+    }
+    else {
+        $c->res->output($html);
+    }
+}
+
+#
+# utility sub for adding RegHistory records
+# takes care of getting the current user, date and time.
+#
+sub _reg_hist {
+    my ($c, $id, $what) = @_;
+
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    my $user_id = $u->id;
+    my $now_date = today()->as_d8();
+    my ($hour, $min) = (localtime())[2, 1];
+    my $now_time = sprintf "%02d:%02d", $hour, $min;
+    model($c, 'RegHistory')->create({
+        reg_id => $id,
+        what => $what,
+        user_id  => $user_id,
+        the_date => $now_date,
+        time     => $now_time,
+           
+    });
+}
+
+sub uncancel : Local {
+    my ($self, $c, $id) = @_;
+
+    my $reg = model($c, 'Registration')->find($id);
+    $reg->update({
+        cancelled => '',
+    });
+
+    # delete any credit that might have been given for this registration.
+    model($c, 'Credit')->search({
+        reg_id    => $id,
+    })->delete();
+
+    # note this event in reg history
+    _reg_hist($c, $id, "Registration UNcancelled");
+
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
+sub new_charge : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{reg} = model($c, 'Registration')->find($id);
+    $c->stash->{template} = "registration/new_charge.tt2";
+}
+sub new_charge_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $amount = trim($c->request->params->{amount});
+    my $what   = trim($c->request->params->{what});
+    
+    my @mess = ();
+    if (empty($amount)) {
+        push @mess, "Missing Amount";
+    }
+    if ($amount !~ m{^-?\d+$}) {
+        push @mess, "Illegal Amount: $amount";
+    }
+    if (empty($what)) {
+        push @mess, "Missing What";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "registration/error.tt2";
+        return;
+    }
+
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    my $user_id = $u->id;
+
+    # also get the user id of the 'web user'
+    my ($wu) = model($c, 'User')->search({
+        username => 'web_user',
+    });
+    my $web_user_id = $wu->id();
+
+    my $today = today();
+    my $now_date = $today->as_d8();
+    my ($hour, $min) = (localtime())[2, 1];
+    my $now_time = sprintf "%02d:%02d", $hour, $min;
+
+    model($c, 'RegCharge')->create({
+        reg_id    => $id,
+        user_id   => $user_id,
+        the_date  => $now_date,
+        time      => $now_time,
+        amount    => $amount,
+        what      => $what,
+        automatic => '',        # this charge will not be cleared
+                                # when editing a registration.
+    });
+    my $reg = model($c, 'Registration')->find($id);
+    $reg->update({
+        balance => $reg->balance + $amount,
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
+#
+# Ajax call
+#
 sub matchreg : Local {
     my ($self, $c, $prog_id, $pat) = @_;
 
@@ -946,6 +1343,7 @@ EOH
     }
     my $heading = <<"EOH";
 <tr>
+<td></td>
 <th align=left>Name</th>
 <th align=right>Balance</th>
 <th align=left>House Type</th>
@@ -963,6 +1361,13 @@ EOH
         my $house = $reg->h_name;
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark;
+        my $mark =            (!$house)? 'H'
+                  :(!$reg->letter_sent)? 'L'
+                  :   ($reg->cancelled)? 'X'
+                  :                      '&nbsp;';
+        if (length($mark) == 1) {
+            $mark = "<span class=required>$mark</span>";
+        }
         my $postrow = "";
         if ($postmark) {
             $postrow = <<"EOH";
@@ -971,15 +1376,21 @@ EOH
 </td>
 EOH
         }
+        my $pay_balance = $balance;
+        if (! $reg->cancelled) {
+            $pay_balance = "<a href='/registration/pay_balance/$id/list_reg_name'><span class=rname>$pay_balance</span></a>";
+        }
         $body .= <<"EOH";
 <tr>
+
+<td>$mark</td>
 
 <td>    <!-- width??? -->
 <a href='/registration/view/$id'><span class=rname>$name</span></a>
 </td>
 
 <td>
-<a href='/registration/pay_balance/$id/list_reg_name'><span class=rname>$balance</span></a>
+$pay_balance
 </td>
 
 <td>
@@ -996,7 +1407,7 @@ $postrow
 EOH
     }
     $body ||= "";
-<<"EOH";        # returning a bare string constant???
+<<"EOH";        # returning a bare string heredoc constant?  sure.
 <style>
 .rname {
     font-size: ${size}pt;
@@ -1008,6 +1419,99 @@ $heading
 $body
 </table>
 EOH
+}
+
+sub update_confnote : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{reg} = model($c, 'Registration')->find($id);
+    $c->stash->{template} = "registration/confnote.tt2";
+}
+sub update_confnote_do : Local{
+    my ($self, $c, $id) = @_;
+
+    my $reg = model($c, 'Registration')->find($id);
+    my $confnote = trim($c->request->params->{confnote});
+    $reg->update({
+        confnote => $confnote,
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+sub update_comment : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{reg} = model($c, 'Registration')->find($id);
+    $c->stash->{template} = "registration/comment.tt2";
+}
+sub update_comment_do : Local{
+    my ($self, $c, $id) = @_;
+
+    my $reg = model($c, 'Registration')->find($id);
+    my $comment = trim($c->request->params->{comment});
+    $reg->update({
+        comment => $comment,
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
+sub update : Local {
+    my ($self, $c, $id) = @_;
+
+    my $reg = model($c, 'Registration')->find($id);
+    $c->stash->{reg} = $reg;
+    $c->stash->{person} = $reg->person;
+    my $pr = $c->stash->{program} = $reg->program;
+    for my $ref (qw/ad web brochure flyer/) {
+        $c->stash->{"$ref\_selected"} = ($reg->referral eq $ref)? "selected": "";
+    }
+    if ($pr->footnotes =~ m{[*]}) {
+        $c->stash->{ceu} = 1;
+    }
+    my $h_type_opts = "<option type=unknown>Unknown\n";
+    Lookup->init($c);     # get %lookup ready.
+    HTYPE:
+    for my $htname (qw(
+        commuting
+        own_van
+        own_tent
+        center_tent
+        dormitory
+        economy
+        quad
+        triple
+        double
+        double_bath
+        single
+        single_bath
+    )) {
+        next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
+        next HTYPE if $htname eq "quad"        && ! $pr->quad;
+        next HTYPE if $htname eq "economy"     && ! $pr->economy;
+        next HTYPE if $pr->housecost->$htname == 0;     # wow!
+
+        my $selected = ($htname eq $reg->h_type)? " selected": "";
+        my $htdesc = $lookup{$htname};
+        $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
+        $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
+        $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
+    }
+    $c->stash->{h_type_opts} = $h_type_opts;
+    $c->stash->{template} = "registration/edit.tt2";
+}
+
+sub update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $reg = model($c, 'Registration')->find($id);
+
+    # check validity of the fields
+    # clear all automatic charges
+    # look carefully at any _changes_ in nights taken or free program
+    #   and adjust the member record in advance of the recomputation.
+    # recompute charges
+    # update the reg record
+
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
 1;

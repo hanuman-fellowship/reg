@@ -9,7 +9,11 @@
 [% IF Catalyst.check_user_roles('member_admin') %]<td><a href=/member/list>Members</a></td>[% END %]
 <td><a href=/listing>Listings</a></td>
 <td><a href=/report/list>Reports</a></td>
+[% IF Catalyst.check_user_roles('member_admin') %]
+<td><a href=/project/list>Projects</a></td>
+[% ELSE %]
 <td>&nbsp;</td>
+[% END %]
 <td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
 &nbsp;<a href=/logout>Logout</a></td>
 <td><a href=/user/pass>Change Password</a></td>

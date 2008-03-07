@@ -1,18 +1,18 @@
 use strict;
 use warnings;
-package RetreatCenterDB::SponsHist;
+package RetreatCenterDB::NightHist;
 use base qw/DBIx::Class/;
 
 use Date::Simple qw/date/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
-__PACKAGE__->table('spons_hist');
+__PACKAGE__->table('night_hist');
 __PACKAGE__->add_columns(qw/
     id
     member_id
-    date_payment
-    amount
-    general
+    reg_id
+    num_nights
+    action
     user_id
     the_date
     time
@@ -20,15 +20,21 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->belongs_to('member' => 'RetreatCenterDB::Member', 'member_id');
+__PACKAGE__->belongs_to('registration' => 'RetreatCenterDB::Registration', 'reg_id');
 __PACKAGE__->belongs_to('who'    => 'RetreatCenterDB::User',   'user_id');
 
-sub date_payment_obj {
-    my ($self) = @_;
-    date($self->date_payment) || "";
-}
 sub the_date_obj {
     my ($self) = @_;
-    date($self->the_date) || "";
+    date($self->the_date()) || "";
+}
+
+sub action_str {
+    my ($self) = @_;
+    my $n = $self->action();
+    return ($n == 1)? "Set Nights"
+          :($n == 2)? "Take Nights"
+          :($n == 3)? "Set Free Program"
+          :           "Take Free Program";
 }
 
 1;

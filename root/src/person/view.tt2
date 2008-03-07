@@ -10,6 +10,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 &nbsp;&nbsp;&nbsp;
 <a href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/donation/create/[% person.id %]">Donate</a>
+&nbsp;&nbsp;&nbsp;
 [% IF person.partner %]
     Partnered with <a href="/person/view/[% person.partner.id %]">[% person.partner.first _" "_ person.partner.last %]</a>
     &nbsp;&nbsp;&nbsp;
@@ -110,3 +112,46 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <th align=right>Date Updated</td><td>[% date_updat %]</td>
 </tr>
 </table>
+[% IF person.donations %]
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+    <p>
+    <table cellpadding=3>
+    <caption style="font-weight: bold">Donations</caption>
+    <tr>
+    <th align=right>Amount</th>
+    <th align=left>Project</th>
+    <th align=center>Date</th>
+    </tr>
+    [% FOR d IN person.donations %]
+    <tr>
+    <td align=right>[% d.amount %]</td>
+    <td><a href="/project/donations/[% d.project.id %]">[% d.project.desc %]</a></td>
+    <td>[% d.date_donate_obj %]</td>
+    <td><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    </tr>
+    [% END %]
+    </table>
+[% END %]
+[% IF person.credits %]
+    <p>
+    <table cellpadding=3>
+    <caption style="font-weight: bold">Credits</caption>
+    <tr>
+    <th align=right>Amount</th>
+    <th align=center>Expires</th>
+    <th align=left>Prog Given</th>
+    <th align=left>Prog Used</th>
+    <th align=center>Used On</th>
+    </tr>
+    [% FOR cr IN person.credits %]
+        <tr>
+        <td align=right>[% cr.amount %]</td>
+        <td>[% cr.date_expires_obj %]</td>
+        <td align=left><a href="/registration/view/[% cr.reg_given.id %]">[% cr.reg_given.program.name %]</a></td>
+        <td align=left><a href="/registration/view/[% cr.reg_used.id %]">[% cr.reg_used.program.name %]</a></td>
+        <td>[% cr.date_used_obj %]</td>
+        </tr>
+    [% END %]
+    </table>
+[% END %]

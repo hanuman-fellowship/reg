@@ -1,0 +1,19 @@
+<h2>Registration Cancellation Credit</h2>
+The registration for [% reg.person.first%] [% reg.person.last %]
+in [% reg.program.name %] will be cancelled.
+<p>
+Today is [% today.format("%B %e") %].<br>
+The program begins [% reg.program.sdate_obj.format("%B %e") %].<br>
+It is [% ndays %] days before the program starts. 
+<p>
+The cancellation policy is:
+<ul>
+[% reg.program.canpol.policy_br %]
+</ul>
+<p>
+<form action="/registration/cancel_do/[% reg.id %]">
+Should a credit of $<input type=text size=3 name=amount value="[% amount %]"> be given?
+<p>
+<input type=submit name=yes value="Yes">&nbsp;&nbsp;&nbsp;
+<input type=submit name=no  value="No">
+</form>

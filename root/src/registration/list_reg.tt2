@@ -1,17 +1,8 @@
 <head>
 <script type="text/javascript">
-// use CDATA tag/end???
 
 // prepare for an Ajax call:
 var xmlhttp = false;
-//if (window.XMLHttpRequest) {
-//    xmlhttp = new XMLHttpRequest();
-//    xmlhttp.overrideMimeType('text/xml');
-//}
-//else if (window.ActiveXObject) {
-//    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-//}
-
 var ua = navigator.userAgent.toLowerCase();
 if (!window.ActiveXObject)
     xmlhttp = new XMLHttpRequest();
@@ -51,16 +42,8 @@ function process(e) {
     var s = document.getElementById('pat');
     var t = s.value;
     var url = 'http://localhost::3000/registration/matchreg/[% program.id %]/' + t;
-//alert('hi' + url);
-    if (! xmlhttp.open('GET', url, true)) {
-        //alert('did not work');
-    }
-    else {
-        //alert('did not work???');
-    }
-//alert("lala");
+    xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = getIt;
-//alert('yes');
     xmlhttp.send(null);
 
     return true;

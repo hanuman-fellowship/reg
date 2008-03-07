@@ -157,15 +157,15 @@ Web Page <select tabindex=26 name=ptemplate>
 <table cellpadding=3>
 <tr>
 <th align=right>Registration Start</th>
-<td><input tabindex=29 type=text size=5 maxlength=5 name=reg_start value=[% program.reg_start %]></td>
+<td><input tabindex=29 type=text size=10 maxlength=10 name=reg_start value='[% program.reg_start %]'></td>
 <th align=right>Program Start</th>
-<td><input tabindex=31 type=text size=5 maxlength=5 name=prog_start value=[% program.prog_start %]></td>
+<td><input tabindex=31 type=text size=10 maxlength=10 name=prog_start value='[% program.prog_start %]'></td>
 </tr>
 <tr>
 <th align=right>End</th>
-<td><input tabindex=30 type=text size=5 maxlength=5 name=reg_end value=[% program.reg_end %]></td>
+<td><input tabindex=30 type=text size=10 maxlength=10 name=reg_end value='[% program.reg_end %]'></td>
 <th align=right>End</th>
-<td><input tabindex=32 type=text size=5 maxlength=5 name=prog_end value=[% program.prog_end %]></td>
+<td><input tabindex=32 type=text size=10 maxlength=10 name=prog_end value='[% program.prog_end %]'></td>
 </tr>
 
 </table>

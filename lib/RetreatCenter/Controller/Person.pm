@@ -374,7 +374,7 @@ sub _get_dups {
     if ($dups) {
         $dups =~ s{, $}{};     # final ', '
         my $pl = (@dups == 1)? "": "s";
-        $dups = " - Possible duplicate$pl: $dups.";
+        $dups = " - Possible duplicate$pl: $dups";
     }
     $dups;
 }
@@ -396,7 +396,8 @@ sub create_do : Local {
     my $id = $p->id();
     _get_affils($c, $id);
     $c->flash->{message} = "Created " . _view_person($p)
-                         . _get_dups($c, $id, $p);
+                         . _get_dups($c, $id, $p)
+                         . ".";
     $c->response->redirect($c->uri_for('/person/search'));
 }
 
@@ -466,7 +467,9 @@ sub update_do : Local {
         $verb = "were"
     }
     $msg .= " $verb updated.";
-    $c->flash->{message} = $msg . _get_dups($c, $id, $p);
+    $c->flash->{message} = $msg
+                         . _get_dups($c, $id, $p)
+                         . ".";
     $c->response->redirect($c->uri_for('/person/search'));
 }
 

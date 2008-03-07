@@ -1,12 +1,48 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <style>
 h3 {
     margin-bottom: 1mm;
     color: #338833;
 }
+.cancel {
+    margin-left: 1in;
+    color: red;
+    font-weight: bold;
+    font-size: 17pt;
+}
+.not_sent {
+    color: red;
+    font-size: 14pt;
+    font-weight: bold;
+}
 </style>
 <h2>Registration</h2>
+[% IF reg.cancelled %]
+<a href="/registration/uncancel/[% reg.id %]"
+   onclick="return confirm('Okay to UNcancel [% reg.person.last %], [% reg.person.first %]?');"
+>UnCancel</a>
+[% ELSE %]
+<a href="/registration/cancel/[% reg.id %]"
+   onclick="return confirm('Okay to Cancel [% reg.person.last %], [% reg.person.first %]?');"
+>Cancel</a>
+[% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/delete/[% reg.id %]"
+onclick="return confirm('Okay to Delete registration for [% reg.person.first %] [% reg.person.last %]?');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/update/[% reg.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+[% IF ! reg.cancelled %]
+    [% IF reg.letter_sent %]
+    <a href="/registration/send_conf/[% reg.id %]">ReSend Conf</a>
+    [% ELSE %]
+    <a class=not_sent href="/registration/send_conf/[% reg.id %]">Send Conf</a>
+    [% END %]
+[% END %]
+<p>
 <table cellpadding=2>
-<tr><th align=right>Program</th><td><a href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a>
+<tr><th align=right>Program</th><td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a>
 From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 <span style="margin-left: 1in">
 <a href="/registration/list_reg_name/[% reg.program.id %]">Other [% reg.program.name %]</a>
@@ -16,32 +52,69 @@ From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 </span>
 </td></tr>
 <tr><th align=right>Person</th><td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
+[% IF reg.cancelled %]
+<span class=cancel>
+Cancelled
+</span>
+[% END %]
 [% IF reg.date_start %] Arriving early on [% reg.date_start_obj %].[% END %]
 [% IF reg.date_end %] Leaving later on [% reg.date_end_obj %].[% END %]
 </td></tr>
-<tr><th align=right>Postmark</th><td>[% reg.date_postmark_obj %] [% reg.time_postmark %]</td></tr>
+
+[% IF reg.status %]
+<tr>
+<th align=right>Membership</th>
+<td>[% reg.status_str %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free nights.[% ELSIF reg.free_prog_taken %]taking their free program.[% END %]</td>
+</tr>
+[% END %]
+
+<tr>
+<th align=right>Postmark</th>
+<td>[% reg.date_postmark_obj %] [% reg.time_postmark %]</td>
+</tr>
+
+<tr>
+<th align=right>Referral</th>
+<td>[% reg.referral %] [% reg.adsource %]</td>
+</tr>
+
 <tr><th align=right>Housing</th><td>[% reg.h_type_disp %] in [% reg.h_name %]</td></tr>
 <tr><th align=right>Balance</th>
 <td>
-[% IF reg.balance %]
-<a href="/registration/pay_balance/[% reg.id %]/view">[% reg.balance %]</a>
-[% ELSE %]
 [% reg.balance %]
+[% IF reg.balance > 0 && ! reg.cancelled %]
+<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view">Pay It</a>
 [% END %]
 </td>
 </tr>
-<tr><th align=right valign=top>Comment</th><td>[% reg.comment_br %]</td></tr>
-<tr><th align=right>Kids</th><td>[% reg.kids %]</td></tr>
-<tr><th align=right>Work Study</th><td>[% reg.work_study %]</td></tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td>[% reg.comment_br %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
+</tr>
+
+<tr><th align=right>Ages of Kids</th><td>[% reg.kids %]</td></tr>
 <tr><th align=right>CEU License</th><td>[% reg.ceu_license %]</td></tr>
-<tr><th align=right valign=top>Confirmation Note</th><td>[% reg.confnote_br %]</td></tr>
+
+<tr>
+<th align=right valign=top>Confirmation Note</th>
+<td>[% reg.confnote_br %]<a href="/registration/update_confnote/[% reg.id %]">Update</a></td>
+</tr>
 </table>
+
+<!-------- Charges --------->
+<p>
+<div style="float: left">
 <h3>Charges</h3>
 <table cellpadding=2>
+
 <tr>
 <th align=right>Amount</th>
-<th align=left>What</th>
+<td align=left><b>What</b>
+<a style="margin-left: 1in" href="/registration/new_charge/[% reg.id %]">New Charge</a>
+</td>
 </tr>
+
 [% tot = 0 %]
 [% FOREACH ch IN reg.charges %]
 <tr>
@@ -53,15 +126,27 @@ From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 </tr>
 [% tot = tot + ch.amount %]
 [% END %]
-<tr><td align=right><span style="border-top: solid thin">[% tot %]</span></td><td>Total</td></tr>
+
+<tr>
+<td align=right><span style="border-top: solid thin">[% tot %]</span></td>
+<td>Total</td>
+</tr>
+
 </table>
+</div>
+
+<!-------- Payments --------->
+<p>
+<div style="float: left; margin-left: .5in">
 <h3>Payments</h3>
 <table cellpadding=2>
+
 <tr>
 <th align=right>Amount</th>
 <th align=left>What</th>
 <th align=left>Type</th>
 </tr>
+
 [% tot = 0 %]
 [% FOREACH py IN reg.payments %]
 <tr>
@@ -69,23 +154,28 @@ From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 <td>[% py.what %]</td>
 <td>[% py.type %]</td>
 <td>
-<a href="javascript:void(0);" onclick="return overlib('[% py.the_date_obj %]&nbsp;&nbsp;[% py.time %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj %]&nbsp;&nbsp;[% py.time %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
 </td>
 </tr>
 [% tot = tot + py.amount %]
 [% END %]
-<tr><td align=right><span style="border-top: solid thin">[% tot %]</span></td><td>Total</td></tr>
+
+<tr>
+<td align=right><span style="border-top: solid thin">[% tot %]</span></td>
+<td>Total</td>
+</tr>
 </table>
+
+<!-------- History --------->
+<p>
+<div style="float: left">
 <h3>History</h3>
 <table cellpadding=2>
+
 <tr>
 <th align=left>What</th>
-<!--
-<th>Date</th>
-<th>Time</th>
-<th align=left>Who</th>
--->
 </tr>
+
 [% FOREACH h IN reg.history %]
 <tr>
 <td>[% h.what %]</td>
@@ -95,3 +185,4 @@ From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 </tr>
 [% END %]
 </table>
+</div>

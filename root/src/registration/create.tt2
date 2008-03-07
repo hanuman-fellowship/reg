@@ -6,18 +6,20 @@
 <input type=hidden name=time_postmark value=[% time_postmark %]>
 <input type=hidden name=deposit       value=[% deposit %]>
 <input type=hidden name=fname         value=[% fname %]>
+<input type=hidden name=status        value=[% status %]>
+
 <table cellpadding=3 border=0>
 
 <tr>
 <th align=right>Person</th>
-<td><a href="/person/view/[% person.id %]"
+<td><a class=larger href="/person/view/[% person.id %]"
 onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a></td>
 <td>From <input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"></td><td>to <input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></td>
 </tr>
 
 <tr>
 <th align=right>Program</th>
-<td><a href="/program/view/[% program.id %]"
+<td><a class=larger href="/program/view/[% program.id %]"
 onclick='return confirm("This registration has not yet been completed.  Continue on to view the program [% program.name %]?");'>[% program.name %]</a></td>
 <td>From [% pr_sdate %]</td><td>to [% pr_edate %]</td>
 </tr>
@@ -46,15 +48,15 @@ Has Car
 </td>
 
 <!-- need a slight adjustment here: font size will change it -->
+[% IF ceu %]
 <th align=right valign=top><span style="display: block; margin-top: 1mm">CEU License #</span></th>
 <td valign=top>
 <input type=text name=ceu_license value="[% ceu_license %]">
 </td>
+[% END %]
 </tr>
 
 <tr>
-<th align=right>Work Study</th>
-<td><input type=checkbox name=work_study value='yes'></td>
 <th align=right>Ages of Kids</th>
 <td><input type=text name=kids size=20></td>
 </tr>
@@ -82,42 +84,61 @@ Has Car
 <td colspan=3><textarea rows=4 cols=60 name=confnote></textarea></td>
 </tr>
 
+[% IF nights > 0 || free_prog_taken == 'yes' %]
+<tr><t<td colspan=2 align=center class=larger>[% status %] member</td></tr>
+[% END %]
+[% IF nights > 0 %]
+<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2>&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
+[% END %]
+[% IF free_prog_taken == 'yes' %]
+<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog_taken value=yes></td></tr>
+[% END %]
+
 <tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>
 </tr>
 
 </table>
-<script type="text/javascript">document.form.h_name.focus()</script>
-[% IF popup_comment %]
-<script type="text/javascript">alert("[% popup_comment %]");</script>
-[% END %]
-<p>
-
-<input type=hidden name=category value=[% category %]>
-
-[% IF nights %]
-<script type="text/javascript">
-var name = "[% person.first %] [% person.last %]";
-var pronoun1 = ("[% person.sex %]" == "M")? "He": "She";
-var category = ("[% category %]" == "Sponsor")? "Sponsoring": "Life";
-var s = ([% nights %] == 1)? "": "s";
-var pronoun2 = ([% nights %] == 1)? "it": "they";
-
-if (confirm(name
-            + " is a " + category + " member of the\nHanuman Fellowship.\n"
-            + pronoun1 + " has [% nights %] night" + s
-            + " left to use.  Should "
-            + pronoun2 + " be used?"
-)) {
-    // the output of the write statements can't be seen
-    // by doing "View Source" in the browser - but they *are* there.
-    document.write("<input type=hidden name=nights   value=[% nights %]>");
-    document.write("Sponsor nights will be used.");
-}
-else {
-    document.write("Sponsor nights will NOT be used.");
-}
-</script>
+[% IF credit %]
+<input type=hidden name=credit_id value=[% credit.id %]>
 [% END %]
 </form>
+
+<!-- is there an alert? -->
+<script type="text/javascript">
+var s = "";
+if ("[% popup_comment %]" != "") {
+    s = "[% popup_comment %]\n";
+}
+if ("[% status %]" != "") {
+    var name = "[% person.first %] [% person.last %]";
+    var pronoun = ("[% person.sex %]" == "M")? "He": "She";
+    var status = ("[% status %]" == "Sponsor")? "Sponsoring": "Life";
+    var plural = ([% nights %] == 1)? "": "s";
+    var free_prog_taken = ("[% free_prog_taken %]" == "yes")?
+        pronoun + " has not taken a free program yet.\n"
+        : "";
+
+    s = s + "\n" + name + " is a " + status + " member.";
+    if ([% nights %] != 0) {
+        s = s + "\n" + pronoun + " has [% nights %] night" + plural
+              + " of free lodging left to use.\n";
+    }
+    if (free_prog_taken) {
+        s = s + free_prog_taken;
+    }
+    if ("[% credit %]" != "") {
+        [% pr = credit.reg_given.program %]
+        s = s + "\n"
+              + "[% person.first %] [% person.last %] has a credit of "
+              + "$[% credit.amount %]\nfrom the [% pr.name %] program in "
+              + "[% pr.sdate_obj.format('%B %Y') %].";
+    }
+}
+
+if (s) {
+    alert(s);
+}
+document.form.h_name.focus()
+</script>

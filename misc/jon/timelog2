@@ -132,5 +132,43 @@ Feb 21 11:00-11:45, 1:45-4:15, 8:00-8:30, 9:15-9:40, 11:00-11:15
     larger font/diff color for primary names in Person, Program
     table for registrations in Person
     futzing with confirmation letter
-Feb 22 1:10-
+Feb 22 1:10-2:20
     getOO built in to the source
+    updated Shankar's machine.  we'll see what is not working.
+Feb 25 9:35-10:35
+    sponsor/life discounts redone in reg.
+    a beginning anyway
+Feb 26 7:10-9:05
+    confirmation letter - mimicking old
+    using lynx for text version of html
+    if no email address then put it to the screen for printing.
+Feb 27 3:40-4:50
+    at the center gathering feedback re: donations, cancellations,
+    sponsor nights, editing of registrations, etc.
+Feb 28 2:50-5:15, 5:25-6:30
+    Cancelling a registration
+    giving and getting credit
+    Polishing confirmation letter.
+    the Lynx text alternative.
+    Now for the cancellation letter.
+Mar 1 3:55-5:55
+    send confirmation letter only by clicking link
+    registrations marked H, L, blank, and X.
+    sdate, edate for programs - e relative to s
+Mar 2 5:30-7:00
+    cancellation letter
+    sitting with Adrienne while she tested the latest changes.
+Mar 3 5:45-8:00
+    smtp params into strings
+    testing alternate cancel letter templates
+Mar 5 6:10-7:50, 9:40-11:40
+    adding attributes to support editing a registration
+        and recomputing the charges
+    several things to go into Strings
+    then test the _compute function!
+    works
+    add NightHist records, display
+Mar 6 10:00-10:45, 4:20-6:00, 11:00-12:10
+    final tweaks on reg charges before checkin
+    needs lots more testing.
+    now edit a registration and recompute!

@@ -129,23 +129,42 @@ sub _get_data {
         }
     }
     # dates are either blank or converted to d8 format
-    for my $d (qw/ sdate edate /) {
-        my $fld = $hash{$d};
-        if ($hash{name} !~ m{personal\s+retreat}i && $fld !~ /\S/) {
-            push @mess, "Missing $readable{$d} field";
-            next;
-        }
-        my $dt = date($fld);
-        if ($fld && ! $dt) {
-            # tell them which date field is wrong???
-            push @mess, "Invalid $readable{$d}: $fld";
-            next;
-        }
-        $hash{$d} = $dt? $dt->as_d8()
-                   :     "";
+    my ($sdate, $edate);
+    if ($hash{name} =~ m{personal\s+retreat}i) {
+        $hash{sdate} = "";        # force them to be blank
+        $hash{edate} = "";
     }
-    if (!@mess && $hash{sdate} > $hash{edate}) {
-        push @mess, "End Date must be after Start Date";
+    else {
+        if (empty($hash{sdate})) {
+            push @mess, "Missing Start Date";
+        }
+        else {
+            $sdate = date($hash{sdate});
+            if (! $sdate) {
+                push @mess, "Invalid Start Date: $hash{sdate}";
+            }
+            else {
+                $hash{sdate} = $sdate->as_d8();
+                Date::Simple->relative_date($sdate);
+                if (empty($hash{edate})) {
+                    push @mess, "Missing End Date";
+                }
+                else {
+                    $edate = date($hash{edate});
+                    if (! $edate) {
+                        push @mess, "Invalid End Date: $hash{edate}";
+                    }
+                    else {
+                        $hash{edate} = $edate->as_d8();
+                    }
+                }
+                Date::Simple->relative_date();
+            }
+        }
+    }
+
+    if (!@mess && $sdate && $sdate > $edate) {
+        push @mess, "Start Date cannot be after the End Date";
     }
     # check for numbers
     for my $f (qw/
@@ -174,11 +193,11 @@ sub _get_data {
     /) {
         my $time = $hash{$t};
         my ($hour, $min) = (-1, -1);
-        if ($time =~ m{^\s*(\d+)\s*$}) {
+        if ($time =~ m{^\s*(\d+\s*[ap][.]?m[.]?)$}) {
             $hour = $1;
             $min = 0;
         }
-        elsif ($time =~ m{^\s*(\d+):(\d+)\s*$}) {
+        elsif ($time =~ m{^\s*(\d+):(\d+)\s*[ap][.]?m[.]?$}) {
             $hour = $1;
             $min = $2;
         }
@@ -186,9 +205,6 @@ sub _get_data {
                && 0 <= $min  && $min  <= 59)
         ) {
             push @mess, "Illegal time: $time";
-        }
-        else {
-            $hash{$t} = sprintf "%2d:%02d", $hour, $min;
         }
     }
     if (@mess) {
@@ -253,33 +269,17 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     Lookup->init($c);       # for web_addr if nothing else.
-    my $p = $c->stash->{program}
-        = model($c, 'Program')->find($id);
-    # prepare the dates and the days of the week
-    for my $w (qw/ sdate edate /) {
-        if (my $d = $c->stash->{$w} = date($p->$w) || "") {
-            $c->stash->{"$w\_dow"} = $day_name[$d->day_of_week()];
-        }
-    }
-    my $l = join "<br>\n",
-                 map  {
-                    "<a href='/leader/view/" . $_->id() . "'>"
-                     . $_->person->last() . ", " . $_->person->first()
-                     . "</a>"
-                 }
-                 sort {
-                     $a->person->last  cmp $b->person->last or
-                     $a->person->first cmp $b->person->first
-                 }
-                 $p->leaders();
-    $l .= "<br>" if $l;
-    $c->stash->{leaders} = $l;
+    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
 
-    my $a = join "<br>\n",
-                 map { $_->descrip() }
-                 $p->affils();
-    $a .= "<br>" if $a;
-    $c->stash->{affils} = $a;
+    # since I don't know how to do joins in DBIx...
+    # and I want the leaders sorted by the person's last name
+    $c->stash->{leaders} = [
+        sort {
+            $a->person->last  cmp $b->person->last or
+            $a->person->first cmp $b->person->first
+        }
+        $p->leaders()
+    ];
 
     $c->stash->{edit_okay} = ($p->name !~ m{ FULL$});
 
@@ -317,6 +317,7 @@ sub update : Local {
 
     my $p = model($c, 'Program')->find($id);
     $c->stash->{program} = $p;
+$c->log->info($p->reg_start);
     for my $w (qw/
         sbath collect_total kayakalpa retreat
         economy webready quad linked
@@ -747,7 +748,7 @@ sub publish : Local {
         }
         else {
             $ftp->put($f)
-                or die "cannot put $f"; # not die???
+                or die "cannot put $f: " . $ftp->message; # not die???
         }
     }
     $ftp->quit();

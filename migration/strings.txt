@@ -1,3 +1,5 @@
+from_title MOUNT MADONNA Registration Office
+from reservations@mountmadonna.org
 heading  Total Cost Per Person<br>(including tuition, meals, lodging, and facilities use)
 typehdr  Housing Type
 costhdr  Cost
@@ -33,7 +35,21 @@ ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0
 ftp_transactions www/cgi-bin/dreg_transactions
-reg_start 4:00
-reg_end 7:00
-prog_start 7:00
-prog_end 12:30
+reg_start 4:00 pm
+reg_end 7:00 pm
+prog_start 7:00 pm
+prog_end 12:30 pm
+credit_amount 50
+smtp_server mail.logicalpoetry.com:50
+smtp_user jon@logicalpoetry.com
+smtp_pass hello!
+spons_tuit_disc 30
+max_tuit_disc 125
+disc1days 7
+disc1pct 10
+disc2days 30
+disc2pct 10
+min_kid_age 2
+max_kid_age 12
+kid_disc 50
+ceu_lic_fee 10

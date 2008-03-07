@@ -72,10 +72,10 @@ Second new line.',
     '',
     'yes',
     '**',       -- footnotes
-    '4:00',
-    '7:00',
-    '7:00',
-    '12:00',
+    '4:00 pm',
+    '7:00 pm',
+    '7:00 pm',
+    '12:00 pm',
     NULL,
     NULL
 );
@@ -85,7 +85,7 @@ insert into program values (
     'Beginning Alphabets',
     'For everyone',
     '90421',
-    2,
+    1,
     '',
     '20090403',
     '20090407',
@@ -111,10 +111,10 @@ Or food',
     '',
     'yes',
     '**',       -- footnotes
-    '4:00',
-    '7:00',
-    '7:00',
-    '12:00',
+    '4:00 pm',
+    '7:00 pm',
+    '7:00 pm',
+    '12:00 pm',
     NULL,
     NULL
 );
@@ -135,7 +135,9 @@ drop table if exists housecost;
 create table housecost (
     id              integer primary key,
     name            text,
+    single_bath     integer,
     single          integer,
+    double_bath     integer,
     double          integer,
     triple          integer,
     quad            integer,
@@ -146,8 +148,6 @@ create table housecost (
     own_van         integer,
     commuting       integer,
     unknown         integer,
-    single_bath     integer,
-    double_bath     integer,
     type            text
 );
 insert into housecost values (

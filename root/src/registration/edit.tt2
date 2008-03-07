@@ -1,0 +1,94 @@
+<h2>Registration</h2>
+<form method=POST name=form action="/registration/update_do/[% reg.id %]">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Person</th>
+<td><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a></td>
+<td>From <input type=text name=date_start size=10 maxlength=10 value="[% reg.date_start_obj %]"></td><td>to <input type=text name=date_end size=10 maxlength=10 value="[% reg.date_end_obj %]"></td>
+</tr>
+
+<tr>
+<th align=right>Program</th>
+<td><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a></td>
+<td>From [% program.sdate_obj %]</td><td>to [% program.edate_obj %]</td>
+</tr>
+
+<tr>
+<th align=right>Referral</th>
+<td>
+<select name=referral>
+<option value="ad"       [% ad_selected %]      >Advertisement</option>
+<option value="web"      [% web_selected %]     >Web</option>
+<option value="brochure" [% brochure_selected %]>Brochure</option>
+<option value="flyer"    [% flyer_selected %]   >Flyer</option>
+</select>
+</td>
+<th align=right>Ad Source</th>
+<td><input type=text name=adsource value="[% reg.adsource %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Carpool</th>
+<td>
+<input type=checkbox name=carpool value=yes [% IF reg.carpool %]checked[% END %]>
+Carpool<br>
+<input type=checkbox name=hascar value=yes [% IF reg.hascar %]checked[% END %]>
+Has Car
+</td>
+
+<!-- need a slight adjustment here: font size will change it -->
+[% IF ceu %]
+<th align=right valign=top><span style="display: block; margin-top: 1mm">CEU License #</span></th>
+<td valign=top>
+<input type=text name=ceu_license value="[% reg.ceu_license %]">
+</td>
+[% END %]
+</tr>
+
+<tr>
+<th align=right>Ages of Kids</th>
+<td><input type=text name=kids size=20 value="[% reg.kids %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td colspan=3>
+<textarea rows=6 cols=60 name=comment>[% reg.comment %]</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right>Housing Type</th>
+<td>
+<select name=h_type>
+[% h_type_opts %]
+</select>
+</td>
+<th align=right>House Name</th>
+<td><input type=text size=10 name=h_name value="[% reg.h_name %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Notes for the<br>Confirmation Letter</th>
+<td colspan=3><textarea rows=4 cols=60 name=confnote>[% reg.confnote %]</textarea></td>
+</tr>
+
+[% IF reg.status %]
+<tr><t<td colspan=2 align=center class=larger>[% reg.status_str %] member</td></tr>
+<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2 value="[% reg.nights_taken %]">&nbsp;&nbsp;([% person.member.sponsor_nights + reg.nights_taken %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
+[% IF reg.status == 'Life' %]
+<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog_taken value=yes [% IF reg.free_prog_taken %]checked[% END %]></td></tr>
+[% END %]
+
+[% END %]
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<!-- focus where??? -->
+<script type="text/javascript">document.form.h_name.focus()</script>

@@ -1,0 +1,34 @@
+<h2>Donation from [% person.first %] [% person.last %]</h2>
+<form action=[% '/donation/' _ form_action %] name=form method=post>
+<p>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount size=6></td>
+</tr>
+
+<tr>
+<th align=right>Project</th>
+<td>
+<select name=project>
+[% FOR p IN projects %]
+<option value=[% p.id %]>[% p.desc %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right>Date</th>
+<td><input type=text name=date_donate size=10></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.amount.focus()</script>

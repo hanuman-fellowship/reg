@@ -3,7 +3,7 @@ use warnings;
 package RetreatCenterDB::Member;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/date today/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('member');
@@ -16,7 +16,6 @@ __PACKAGE__->add_columns(qw/
     sponsor_nights
     date_life
     free_prog_taken
-    date_lapsed
     total_paid
 /);
 __PACKAGE__->set_primary_key(qw/id/);
@@ -26,6 +25,9 @@ __PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
 # sponsor history payments - maybe
 __PACKAGE__->has_many('payments' => 'RetreatCenterDB::SponsHist', 'member_id',
                       { order_by => 'date_payment desc' },
+                     );
+__PACKAGE__->has_many('nighthist' => 'RetreatCenterDB::NightHist', 'member_id',
+                      { order_by => 'the_date desc' },
                      );
 
 sub date_general_obj {
@@ -40,9 +42,18 @@ sub date_life_obj {
     my ($self) = @_;
     date($self->date_life) || "";
 }
-sub date_lapsed_obj {
+sub lapsed {
     my ($self) = @_;
-    date($self->date_lapsed) || "";
+    my $today = today()->as_d8();
+    if (($self->category eq 'General' && $self->date_general < $today)
+        ||
+        ($self->category eq 'Sponsor' && $self->date_sponsor < $today)
+    ) {
+        return "Lapsed";
+    }
+    else {
+        return "";
+    }
 }
 
 1;

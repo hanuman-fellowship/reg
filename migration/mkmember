@@ -8,28 +8,47 @@ create table member (
     sponsor_nights integer,
     date_life text,
     free_prog_taken text,
-    date_lapsed text,
     total_paid integer
-);
-insert into member values (
-    1,
-    12930,
-    'Sponsor',
-    '',
-    '20080109',
-    10,
-    '',
-    '',
-    '',
-    105
 );
 drop table if exists spons_hist;
 create table spons_hist (
     id integer primary key,
     member_id integer,
     date_payment text,
-    amount integer
+    amount integer,
+    general text,
+
+    user_id integer,    -- to User
+    the_date text,
+    time text
 );
-insert into spons_hist values (1, 1, 20080101, 40);
-insert into spons_hist values (2, 1, 20080108, 60);
-insert into spons_hist values (3, 1, 20080109, 5);
+drop table if exists night_hist;
+create table night_hist (
+    id integer primary key,
+    member_id integer,  -- to Member
+    num_nights integer,
+    action text,        -- 1-set nights,     2-take nights,
+                        -- 3-set free prog,  4-take free prog
+
+    reg_id integer,     -- to Registration
+    user_id integer,    -- to User
+    the_date text,
+    time text
+);
+drop table if exists project;
+create table project (
+    id integer primary key,
+    desc text
+);
+drop table if exists donation;
+create table donation (
+    id integer primary key,
+    person_id integer,      -- to Person
+    project_id integer,     -- to Project
+    date_donate text,
+    amount,
+
+    who_d integer, -- to User
+    date_d text, 
+    time_d text
+);

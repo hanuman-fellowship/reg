@@ -26,9 +26,9 @@
 <th align=right>Name</th>
 <td><span class=larger>[% program.name %]</span></td>
 <th align=right>From</th>
-<td>[% sdate %] <span class=dow>[% sdate_dow %]</span></td>
+<td>[% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span></td>
 <th align=right>To</th>
-<td>[% edate %] <span class=dow>[% edate_dow %]</span></td>
+<td>[% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span></td>
 </tr>
 
 <tr>
@@ -101,7 +101,9 @@
 <th align=right valign=top>Leaders</th>
 <td align=left valign=top colspan=2>
 [% IF edit_okay %]
-    [% leaders %]
+    [% FOR l IN leaders %]
+        <a href="/leader/view/[% l.id %]">[% l.person.last %], [% l.person.first %]</a><br>
+    [% END %]
     [% IF Catalyst.check_user_roles('prog_admin') %]
         <a href="/program/leader_update/[% program.id %]">Update</a>
     [% END %]
@@ -111,7 +113,9 @@
 <th align=right valign=top>Affiliations</th>
 <td align=left valign=top colspan=2>
 [% IF edit_okay %]
-    [% affils %]
+    [% FOR a IN program.affils %]
+        [% a.descrip %]<br>
+    [% END %]
     [% IF Catalyst.check_user_roles('prog_admin') %]
         <a href="/program/affil_update/[% program.id %]">Update</a>
     [% END %]

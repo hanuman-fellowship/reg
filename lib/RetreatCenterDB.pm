@@ -23,12 +23,18 @@ __PACKAGE__->load_classes({
         Rental
         Exception
         String
-        Member
-        SponsHist
+
         Registration
         RegHistory
         RegPayment
         RegCharge
+        Credit
+
+        Member
+        SponsHist
+        NightHist
+        Project
+        Donation
     /]
 });
 

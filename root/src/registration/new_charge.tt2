@@ -1,0 +1,31 @@
+<h2>New Charge</h2>
+<form action="/registration/new_charge_do/[% reg.id %]" name=form>
+<table cellpadding=3>
+<tr>
+<th align=right>Program</th>
+<td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td>
+</tr>
+
+<tr>
+<th align=right>Person</th>
+<td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
+</tr>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount size=5></td>
+</tr>
+
+<tr>
+<th align=right>For What</th>
+<td><input type=text name=what size=60></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.amount.focus();</script>

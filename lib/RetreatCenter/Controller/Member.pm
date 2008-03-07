@@ -63,20 +63,6 @@ sub membership_list : Local {
             { category => 'Life', },
         );
     my $nlife = @life;
-    my @lapsed =
-        map {
-            $_->[1]
-        }
-        sort {
-            $a->[0] cmp $b->[0]
-        }
-        map {
-            [ $_->person->sanskrit || $_->person->first, $_ ]
-        }
-        model($c, 'Member')->search(
-            { category => 'Lapsed', },
-        );
-    my $nlapsed = @lapsed;
     open my $list, ">", "root/static/memlist.html"
         or die "cannot create memlist.html";
     print {$list} <<EOH;
@@ -86,7 +72,6 @@ sub membership_list : Local {
 <tr><td>General</td><td>$ngeneral</td></tr>
 <tr><td>Sponsor</td><td>$nsponsor</td></tr>
 <tr><td>Life</td><td>$nlife</td></tr>
-<tr><td>Lapsed</td><td>$nlapsed</td></tr>
 </table>
 <h3>General</h3>
 <table cellpadding=3>
@@ -144,24 +129,6 @@ EOH
     }
     print {$list} <<EOH;
 </table>
-<h3>Lapsed</h3>
-<table cellpadding=3>
-<tr>
-<th align=left>Sanskrit</th>
-<th align=left>Name</th>
-<th>On</th>
-</tr>
-EOH
-    for my $m (@lapsed) {
-        my $p = $m->person;
-        print {$list} "<tr>";
-        print {$list} "<td>", $p->sanskrit || $p->first, "</td>";
-        print {$list} "<td>" . $p->last . ", " . $p->first . "</td>";
-        print {$list} "<td>" . date($m->date_lapsed) . "</td>";
-        print {$list} "</tr>\n";
-    }
-    print {$list} <<EOH;
-</table>
 EOH
     close $list;
     $c->response->redirect($c->uri_for("/static/memlist.html"));
@@ -170,24 +137,7 @@ EOH
 sub list : Local {
     my ($self, $c) = @_;
 
-    #
-    # before getting the list, look for lapsed people.
-    #
-    my $today = today()->as_d8();
-    model($c, 'Member')->search({
-        category     => 'General',
-        date_general => { '<' => $today },
-    })->update({
-        category    => 'Lapsed',
-        date_lapsed => $today,
-    });
-    model($c, 'Member')->search({
-        category     => 'Sponsor',
-        date_sponsor => { '<' => $today },
-    })->update({
-        category    => 'Lapsed',
-        date_lapsed => $today,
-    });
+    # sort by sanskrit or first
     my @members =
         map {
             $_->[1]
@@ -206,23 +156,17 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $m = $c->stash->{member} = 
-        model($c, 'Member')->find($id);
+    my $m = $c->stash->{member} = model($c, 'Member')->find($id);
     for my $w (qw/
         general
         sponsor
         life
-        lapsed
     /) {
         $c->stash->{"category_$w"} = ($m->category eq ucfirst($w))? "checked": "";
     }
     $c->stash->{free_prog_checked} = ($m->free_prog_taken)? "checked": "";
-    my @payments = $m->payments();
-    if (@payments) {
-        $c->stash->{payments} = \@payments;
-    }
 
-    $c->stash->{person} = $m->person();
+    $c->stash->{person}      = $m->person();
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "member/create_edit.tt2";
 }
@@ -235,15 +179,9 @@ sub _get_data {
     %hash = %{ $c->request->params() };
     @mess = ();
     if (! $hash{category}) {
-        $hash{category} = 'General';    # strange to need to do this.
+        push @mess, "You must select General, Sponsor or Life";
     }
     # dates are either blank or converted to d8 format
-    if ($hash{category} eq 'General'
-        && $hash{date_general}
-        && $hash{date_general} !~ m{\S}
-    ) {
-        push @mess, "Missing general date";
-    }
     for my $f (keys %hash) {
         next unless $f =~ m{date};
         next unless $hash{$f} =~ m{\S};
@@ -258,11 +196,20 @@ sub _get_data {
     }
     if ($hash{mkpay_amount} || $hash{mkpay_date}) {
         if ($hash{mkpay_amount} !~ m{^\s*-?\d+\s*$}) {
-            push @mess, "No paid amount";
+            push @mess, "No payment amount";
         }
         if (! $hash{mkpay_date}) {
-            push @mess, "No paid date";
+            push @mess, "No payment date";
         }
+    }
+    if ($hash{category} eq 'General' && ! $hash{date_general}) {
+        push @mess, "Missing General date";
+    }
+    if ($hash{category} eq 'Sponsor' && ! $hash{date_sponsor}) {
+        push @mess, "Missing Sponsor date";
+    }
+    if (! exists $hash{free_prog_taken}) {
+        $hash{free_prog_taken} = '';        # unchecked field not sent
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -285,96 +232,46 @@ sub update_do : Local {
     my $member = model($c, 'Member')->find($id);
 
     my $today = today()->as_d8();
-    my $partnered = 0;
-    my $id_sps;
-    my $partner_member;
-    my $partner_paid = 0;
-    my @nowlife = ();
     if ($hash{mkpay_date}) {
         # put payment in history, reset last paid
+
+        my ($hour, $min) = (localtime())[2, 1];
+        my $now_time = sprintf "%02d:%02d", $hour, $min;
+        # can't get id directly???
+        my $username = $c->user->username();
+        my ($u) = model($c, 'User')->search({
+            username => $username,
+        });
+        my $user_id = $u->id;
+
         model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $hash{mkpay_date},
             amount       => $hash{mkpay_amount},
+            general      => $hash{category} eq 'General'? 'yes': '',
+            user_id      => $user_id,
+            the_date     => today()->as_d8(),
+            time         => $now_time,
         });
-        $hash{category} = 'Sponsor';
-        if ($member->category() ne 'Sponsor') {
-            $hash{sponsor_nights} = 12;     # String???
-        }
-
-        # recompute the total
-        my $total = 0;
-        for my $p (model($c, 'SponsHist')->search({
-                       member_id => $id,
-                   })
-        ) {
-            $total += $p->amount;
-        }
-        $hash{total_paid} = $total;
-        # partner???
-        if ($id_sps = $member->person->id_sps) {
-            $partnered = 1;
-            # is the partner a member?
-            # if so, how much have they paid?
-            ($partner_member) = model($c, 'Member')->search({
-                                    person_id => $id_sps,
-                                });
-            if ($partner_member) {
-                $partner_paid = $partner_member->total_paid;
-            }
-        }
-        if ($hash{total_paid} >= 5000
-            || $hash{total_paid} + $partner_paid >= 8000
-        ) {
-            $hash{category} = 'Life';
-            $hash{date_life} = $today;
-            push @nowlife, $member;
-        }
     }
+
+    # recompute the total
+    my $total = 0;
+    PAYMENT:
+    for my $p (model($c, 'SponsHist')->search({
+                   member_id => $id,
+               })
+    ) {
+        next PAYMENT if $p->general;
+        $total += $p->amount;
+    }
+    $hash{total_paid} = $total;
 
     # update the member record
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
     $member->update(\%hash);
-    # and the partner record if need be
-    if ($partnered
-        && $hash{total_paid} + $partner_paid >= 8000
-    ) {
-        if ($partner_member) {
-            push @nowlife, $partner_member;
-            if ($partner_member->category ne "Life") {
-                $partner_member->update({
-                    category => 'Life',
-                    date_life => $hash{date_life},
-                });
-            }
-        }
-        else {
-            # this person has paid everything >= 8000
-            # make their partner a Life member.
-            #
-            $partner_member = model($c, 'Member')->create({
-                person_id => $id_sps,
-                category  => 'Life',
-                date_life => $hash{date_life},
-            });
-            push @nowlife, $partner_member;
-        }
-    }
-    if (@nowlife) {
-        my $mess = join " and ",
-                   map { $_->person->sanskrit || $_->person->first }
-                   @nowlife;
-        if (@nowlife == 1) {
-            $mess .= " is now a Life member.";
-        }
-        else {
-            $mess .= " are now Life members.";
-        }
-        $c->stash->{mess} = $mess;
-        $c->stash->{template} = "member/nowlife.tt2";
-        return;
-    }
+
     $c->response->redirect($c->uri_for("/member/list"));
 }
 
@@ -393,8 +290,7 @@ sub delete : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->stash->{person}
-        = model($c, 'Person')->find($person_id);
+    $c->stash->{person} = model($c, 'Person')->find($person_id);
     $c->stash->{form_action} = "create_do/$person_id";
     $c->stash->{template}    = "member/create_edit.tt2";
 }
@@ -404,99 +300,25 @@ sub create_do : Local {
 
     _get_data($c);
     return if @mess;
-    my @nowlife = ();
-    my $today = today()->as_d8();
-    if ($hash{mkpay_date}) {
-        $hash{category} = 'Sponsor';
 
-        $hash{total_paid} = $hash{mkpay_amount};;
-        if ($hash{total_paid} >= 5000) {
-            $hash{category} = 'Life';
-            $hash{date_life} = $today;
-        }
-        # we are creating this person as a member now.
-        # are they part of a partnership?
-        # it is possible that their partner is already a
-        # member.  we'll need to consider that partner's payments.
-        # they both may have just become life members.
-        # if only one of a partnership is paying, is the other
-        # a current sponsoring member or not?
-        my $person = model($c, 'Person')->find($person_id);
-        my $partner_paid = 0;
-        if (my $id_sps = $person->id_sps) {
-            my $partner = model($c, 'Person')->find($id_sps);
-            my ($partner_member) = model($c, 'Member')->search({
-                                             person_id => $id_sps,
-                                         });
-            if ($partner_member) {
-                $partner_paid = $partner_member->total_paid;
-            }
-            if ($hash{total_paid} + $partner_paid >= 8000) {
-                # both are now Life members
-
-                # this person: (created below)
-                $hash{category} = 'Life';
-                $hash{date_life} = $today;
-
-                # and their partner:
-                if ($partner_member) {
-                    # they were a member before maybe even a life member.
-                    if ($partner_member->category ne "Life") {
-                        $partner_member->update({
-                            category  => 'Life',
-                            date_life => $today,
-                        });
-                    }
-                }
-                else {
-                    # the partner is now a Life member
-                    # they were not a member before.
-                    $partner_member = model($c, 'Member')->create({
-                        person_id => $id_sps,
-                        category  => 'Life',
-                        date_life => $today,
-                    });
-                }
-                unshift @nowlife, $partner_member;
-            }
-        }
-    }
     my $date = $hash{mkpay_date};
     my $amnt = $hash{mkpay_amount};
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
-    if ($hash{category} eq 'Sponsor') {
-        $hash{sponsor_nights} = 12;     # ??? a String???
-    }
+
     my $member = model($c, 'Member')->create({
         person_id    => $person_id,
         %hash,
     });
-    if ($hash{category} eq 'Life') {
-        unshift @nowlife, $member;
-    }
     my $id = $member->id();
-    # put payment in history
+    # put any payment in history
     if ($date) {
         model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $date,
             amount       => $amnt,
+            general      => $hash{category} eq 'General'? 'yes': '',
         });
-    }
-    if (@nowlife) {
-        my $mess = join " and ",
-                   map { $_->person->sanskrit || $_->person->first }
-                   @nowlife;
-        if (@nowlife == 1) {
-            $mess .= " is now a Life member.";
-        }
-        else {
-            $mess .= " are now Life members.";
-        }
-        $c->stash->{mess} = $mess;
-        $c->stash->{template} = "member/nowlife.tt2";
-        return;
     }
     $c->response->redirect($c->uri_for("/member/list"));
 }

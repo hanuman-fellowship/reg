@@ -42,6 +42,14 @@ __PACKAGE__->many_to_many(affils => 'affil_person', 'affil',
 # registrations
 __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration', 'person_id');
 
+# donations
+__PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'person_id',
+    { order_by => 'date_donate desc'});
+
+# credits
+__PACKAGE__->has_many(credits => 'RetreatCenterDB::Credit', 'person_id',
+    { order_by => 'date_given desc'});
+
 # member - maybe
 __PACKAGE__->might_have(member => 'RetreatCenterDB::Member', 'person_id');
 # leader - maybe

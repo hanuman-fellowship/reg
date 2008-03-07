@@ -1,12 +1,12 @@
 <form name=form action="/registration/pay_balance_do/[% reg.id %]">
 <input type=hidden name=from value=[% from %]>
 <table cellpadding=3>
-<tr><th align=right>Program</th><td><a href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td></tr>
+<tr><th align=right>Program</th><td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td></tr>
 <tr>
 <th align=right>Person</th>
 <td>
-<a href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
-<span style="margin-left: 1.5in"><a href="/registration/view/[% reg.id %]">To Registration</a></span>
+<a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
+<span style="margin-left: .5in"><a href="/registration/view/[% reg.id %]">To Registration</a></span>
 </td></tr>
 <tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% reg.balance %]'></td></tr>
 

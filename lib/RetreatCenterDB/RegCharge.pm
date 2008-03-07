@@ -15,6 +15,7 @@ __PACKAGE__->add_columns(qw/
     time
     amount
     what
+    automatic
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
