@@ -394,23 +394,20 @@ sub get_online : Local {
     # and can't take free nights if the housing cost is not a Perday type.
     #
     if (my $mem = $p->member) {
-        my $cat = $mem->category;
-        my $nights = $mem->sponsor_nights;
-        if ($cat eq 'Life'
-            || ($cat eq 'Sponsor' && $mem->date_sponsor >= $today)
+        my $status = $mem->category;
+        if ($status eq 'Life'
+            || ($status eq 'Sponsor' && $mem->date_sponsor >= $today)
                                     # member in good standing
         ) {
-            $c->stash->{status} = $cat;   # they always get a 30%
-                                          # tuition discount.
+            $c->stash->{status} = $status;   # they always get a 30%
+                                             # tuition discount.
+            my $nights = $mem->sponsor_nights;
             if ($pr->housecost->type eq 'Perday' && $nights > 0) {
                 $c->stash->{nights} = $nights;
             }
-            else {
-                $c->stash->{nights} = 0;
+            if ($status eq 'Life' && ! $mem->free_prog_taken) {
+                $c->stash->{free_prog} = 1;
             }
-            $c->stash->{free_prog_taken}
-                = ($cat eq 'Life' && ! $mem->free_prog_taken)? "yes": "no";
-                        # sort of backwards... but okay.
         }
     }
 
@@ -484,7 +481,7 @@ EOC
         sgl/ba single_bath
     );
     # order is important:
-    my $h_type_opts = "<option type=unknown>Unknown\n";
+    my $h_type_opts = "<option value=unknown>Unknown\n";
     Lookup->init($c);     # get %lookup ready.
     HTYPE:
     for my $ht (qw(
@@ -523,13 +520,29 @@ my @mess;
 my %hash;
 my @dates;
 my $taken;
+my $tot_prog_days;
+my $prog_days;
+my $extra_days;
+
 sub _get_data {
     my ($c) = @_;
 
     %hash = %{ $c->request->params() };
     my $pr = model($c, 'Program')->find($hash{program_id});
+
+    # BIG TIME messing with dates.
+    # I'm reminded of a saying:
+    #
+    #    "If you have a date in your program
+    #     you have a bug in your program."
+    #
     @dates = ();
     @mess = ();
+    $extra_days = 0;
+    my $sdate = date($pr->sdate);       # personal retreats???
+    my $edate = date($pr->edate);       # defaults to today???
+    $tot_prog_days = $prog_days = $edate - $sdate;
+
     my $date_start;
     if ($hash{date_start}) {
         # what about personal retreats???
@@ -538,10 +551,19 @@ sub _get_data {
         Date::Simple->relative_date();
         if ($date_start) {
             push @dates, date_start => $date_start->as_d8();
+            if ($date_start < $sdate) {
+                $extra_days += $sdate - $date_start;
+            }
+            else {
+                $prog_days -= $date_start - $sdate;     # jeeez
+            }
         }
         else {
             push @mess, "Illegal date: $hash{date_start}";
         }
+    }
+    else {
+        push @dates, date_start => '';
     }
     my $date_end;
     if ($hash{date_end}) {
@@ -550,14 +572,20 @@ sub _get_data {
         Date::Simple->relative_date();
         if ($date_end) {
             push @dates, date_end => $date_end->as_d8();
+            if ($date_end > $edate) {
+                $extra_days += $date_end - $edate;
+            }
+            else {
+                $prog_days -= $edate - $date_end;
+            }
         }
         else {
             push @mess, "Illegal date: $hash{date_end}";
         }
     }
-    my $sdate = $date_start || date($pr->sdate);
-    my $edate = $date_end   || date($pr->edate);
-    my $ndays = ($edate - $sdate) || 1; # personal retreat exception
+    else {
+        push @dates, date_end => '';
+    }
 
     $taken = 0;
     if ($hash{nights_taken} && ! empty($hash{nights_taken})) {
@@ -568,13 +596,42 @@ sub _get_data {
         elsif ($taken > $hash{max_nights}) {
             push @mess, "Cannot take more than $hash{max_nights} free nights.";
         }
-        elsif ($taken && $hash{free_prog_taken}) {
+        elsif ($taken && $hash{free_prog}) {
             push @mess, "Cannot take a free program AND free nights.";
         }
-        elsif ($taken > $ndays) {
-            push @mess, "Only staying $ndays nights so can't take $taken of them free!";
+        elsif ($taken > ($prog_days + $extra_days)) {
+            my $plural = ($prog_days + $extra_days == 1)? "": "s";
+            push @mess,
+                "Only staying " . ($prog_days + $extra_days)
+               ." night$plural so can't take $taken of them free!";
         }
     }
+}
+
+#
+# who is doing this?  and what's the current date/time?
+#
+sub get_now {
+    my ($c, $reg_id) = @_;
+
+    # can't do $c->user->id for some unknown reason??? so...
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    my $user_id = $u->id;
+
+    my $today = today();
+    my $now_date = $today->as_d8();
+    my ($hour, $min) = (localtime())[2, 1];
+    my $now_time = sprintf "%02d:%02d", $hour, $min;
+    return
+        reg_id   => $reg_id,
+        user_id  => $user_id,
+        the_date => $now_date,
+        time     => $now_time;
+    # we return an array of 8 values perfect
+    # for passing to a DBI insert/update.
 }
 
 # now we actually create the registration
@@ -593,6 +650,7 @@ sub create_do : Local {
     my $reg = model($c, 'Registration')->create({
         person_id     => $hash{person_id},
         program_id    => $hash{program_id},
+        deposit       => $hash{deposit},
         date_postmark => $hash{date_postmark},
         time_postmark => $hash{time_postmark},
         ceu_license   => $hash{ceu_license},
@@ -607,38 +665,19 @@ sub create_do : Local {
         confnote      => trim($hash{confnote}),
         status        => $hash{status},
         nights_taken  => $taken,
-        free_prog_taken => $hash{free_prog_taken},
+        free_prog_taken => $hash{free_prog},
         @dates,         # optionally
     });
     my $reg_id = $reg->id();
 
     # prepare for history records
-    #
-    # who is doing this?
-    # can't do $c->user->id for some unknown reason??? so...
-    #
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
+    my @who_now = get_now($c, $reg_id);
 
     # also get the user id of the 'web user'
     my ($wu) = model($c, 'User')->search({
         username => 'web_user',
     });
     my $web_user_id = $wu->id();
-
-    my $today = today();
-    my $now_date = $today->as_d8();
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
-    my @common = (
-        reg_id   => $reg_id,
-        user_id  => $user_id,
-        the_date => $now_date,
-        time     => $now_time,
-    );
 
     # first, we have some PAST history
     model($c, 'RegHistory')->create({
@@ -652,7 +691,7 @@ sub create_do : Local {
 
     # now current history
     model($c, 'RegHistory')->create({
-        @common,
+        @who_now,
         what    => 'Registration Created',
     });
 
@@ -662,7 +701,7 @@ sub create_do : Local {
         my $amount = $cr->amount();
         my $pr_g = $cr->reg_given->program;
         model($c, 'RegCharge')->create({
-            @common,
+            @who_now,
             automatic => '',        # NOT automatic
             amount  => -1*$amount,
             what    => 'Credit from the '
@@ -671,20 +710,20 @@ sub create_do : Local {
         });
         # and mark the credit as taken
         $cr->update({
-            date_used   => $now_date,
+            date_used   => today()->as_d8(),
             used_reg_id => $reg_id,
         });
     }
     # the payment (deposit)
     model($c, 'RegPayment')->create({
-        @common,
+        @who_now,
         amount  => $hash{deposit},
         type    => 'Online',        # what else if not from online???
         what    => 'Deposit',
     });
 
     # add the automatic charges
-    _compute($c, $reg, @common);
+    _compute($c, $reg, @who_now);
 
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
@@ -700,20 +739,16 @@ sub create_do : Local {
 # of the registration record.
 #
 sub _compute {
-    my ($c, $reg, @common) = @_;
+    my ($c, $reg, @who_now) = @_;
 
     Lookup->init($c);
     my $pr  = $reg->program;
     my $mem = $reg->person->member;
 
-    my $sdate = date($reg->date_start || $pr->sdate);
-    my $edate = date($reg->date_end   || $pr->edate);
-    my $ndays = ($edate - $sdate) || 1; # personal retreat exception
-
     # tuition
     my $tuition = $pr->tuition;
     model($c, 'RegCharge')->create({
-        @common,
+        @who_now,
         automatic => 'yes',
         amount    => $tuition,
         what      => 'Tuition',
@@ -725,7 +760,7 @@ sub _compute {
         # Life members can take a free program ... so:
         if ($reg->free_prog_taken) {
             model($c, 'RegCharge')->create({
-                @common,
+                @who_now,
                 automatic => 'yes',
                 amount    => -1*$tuition,
                 what      => "Life member - free program - tuition waived.",
@@ -739,7 +774,7 @@ sub _compute {
                 $maxed = " - to a max of \$$lookup{max_tuit_disc}";
             }
             model($c, 'RegCharge')->create({
-                @common,
+                @who_now,
                 automatic => 'yes',
                 amount    => -1*$amount,
                 what      => "$lookup{spons_tuit_disc}% Tuition discount for "
@@ -758,23 +793,49 @@ sub _compute {
     my $h_cost = $housecost->$h_type;      # column name is correct, yes?
     my ($tot_h_cost, $what);
 	if ($housecost->type eq "Perday") {
-		$tot_h_cost = $ndays*$h_cost;
-        $what = "$ndays days Lodging at \$$h_cost per day";
+		$tot_h_cost = $prog_days*$h_cost;
+        my $plural = ($prog_days == 1)? "": "s";
+        $what = "$prog_days day$plural Lodging at \$$h_cost per day";
     }
     else {
-        $tot_h_cost = $h_cost;
+        $tot_h_cost = int($h_cost * ($prog_days/$tot_prog_days));
         $what = "Lodging - Total Cost";
+        if ($prog_days != $tot_prog_days) {
+            my $plural = ($prog_days == 1)? "": "s";
+            $what .= " - $prog_days day$plural";
+        }
     }
-    model($c, 'RegCharge')->create({
-        @common,
-        automatic => 'yes',
-        amount    => $tot_h_cost,
-        what      => $what,
-    });
-    my $life_free = 0;
-    if ($reg->free_prog_taken) {
+    if ($tot_h_cost != 0) {
         model($c, 'RegCharge')->create({
-            @common,
+            @who_now,
+            automatic => 'yes',
+            amount    => $tot_h_cost,
+            what      => $what,
+        });
+    }
+
+    # extra days - at the default housecost rate
+    my $def_h_cost = 0;
+    if ($extra_days) {
+        my ($def_housecost) = model($c, 'HouseCost')->search({
+            name => 'Default',
+        });
+        $def_h_cost = $def_housecost->$h_type;
+        $tot_h_cost += $extra_days*$def_h_cost;
+        my $plural = ($extra_days == 1)? "": "s";
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => 'yes',
+            amount    => $extra_days*$def_h_cost,
+            what      => "$extra_days day$plural Lodging"
+                        ." at \$$def_h_cost per day",
+        });
+    }
+
+    my $life_free = 0;
+    if ($reg->free_prog_taken && $tot_h_cost) {
+        model($c, 'RegCharge')->create({
+            @who_now,
             automatic => 'yes',
             amount    => -$tot_h_cost,
             what      => "Life member - free program - lodging waived",
@@ -791,24 +852,26 @@ sub _compute {
             num_nights => 0,
             action     => 4,        # take free program
             reg_id     => $reg->id,
-            @common,
+            @who_now,
         });
     }
 	if (!$life_free && $housecost->type eq "Perday") {
-        if ($ndays >= $lookup{disc1days}) {
+        if ($prog_days + $extra_days >= $lookup{disc1days}) {
             model($c, 'RegCharge')->create({
-                @common,
+                @who_now,
                 automatic => 'yes',
                 amount    => -1*(int(($lookup{disc1pct}/100)*$tot_h_cost)),
-                what      => "$lookup{disc1pct}% Lodging Discount for programs >= $lookup{disc1days} days",
+                what      => "$lookup{disc1pct}% Lodging discount for"
+                            ." programs >= $lookup{disc1days} days",
             });
         }
-        if ($ndays >= $lookup{disc2days}) {
+        if ($prog_days + $extra_days >= $lookup{disc2days}) {
             model($c, 'RegCharge')->create({
-                @common,
+                @who_now,
                 automatic => 'yes',
                 amount    => -1*(int(($lookup{disc2pct}/100)*$tot_h_cost)),
-                what      => "$lookup{disc2pct}% Lodging Discount for programs >= $lookup{disc2days} days",
+                what      => "$lookup{disc2pct}% Lodging discount for"
+                            ." programs >= $lookup{disc2days} days",
             });
         }
 	}
@@ -824,28 +887,52 @@ sub _compute {
     # sponsor member could actually get a credit.
     # not right somehow???
     #
-	if (my $n = $reg->nights_taken) {
-        my $plural = ($n == 1)? "": "s";
-        model($c, 'RegCharge')->create({
-            @common,
-            automatic => 'yes',
-            amount    => -1*($h_cost * $n),
-            what      => "$n free night$plural lodging for "
-                        . $reg->status_str . " member",
-        });
+    # what if the sponsor member comes early, stays after
+    # and the housing cost per day for the program is not the same
+    # as the default per day cost?   Which daily cost should be used
+    # for the free nights?  First the most expensive, then
+    # the least for the balance.  Are we being anally precise
+    # or what??
+    #
+	if (my $ntaken = $reg->nights_taken) {
+
+        my @boxes = (
+            [ $prog_days,  $h_cost     ],
+            [ $extra_days, $def_h_cost ],
+        );
+        @boxes = sort { $b->[1] <=> $a->[1] } @boxes;
+            # sorted most expensive nights(days) first
+
+        my $left_to_take = $ntaken;
+        BOX:
+        for my $b (@boxes) {
+            my ($n, $perday) = @$b;
+            $n = $left_to_take if $left_to_take < $n;
+            my $plural = ($n == 1)? "": "s";
+            model($c, 'RegCharge')->create({
+                @who_now,
+                automatic => 'yes',
+                amount    => -1*($n * $perday),
+                what      => "$n free night$plural Lodging at"
+                            ." \$$perday per day for "
+                            . $reg->status . " member",
+            });
+            $left_to_take -= $n;
+            last BOX unless $left_to_take;
+        }
         #
         # deduct these nights from the person's member record.
         #
         $mem->update({
-            sponsor_nights => $mem->sponsor_nights - $n,     # cool, eh?
+            sponsor_nights => $mem->sponsor_nights - $ntaken,     # cool, eh?
         });
         #
         # and add a NightHist record to specify what happened
         #
         model($c, 'NightHist')->create({
-            @common,
+            @who_now,
             member_id  => $mem->id,
-            num_nights => $n,
+            num_nights => $ntaken,
             action     => 2,    # take nights
         });
     }
@@ -862,19 +949,19 @@ sub _compute {
         @ages = grep { $min_age <= $_ && $_ <= $max_age } @ages;
         my $nkids = @ages;
         my $plural = ($nkids == 1)? "": "s";
-        if ($nkids) {
+        if ($nkids && $tot_h_cost) {
             model($c, 'RegCharge')->create({
-                @common,
+                @who_now,
                 automatic => 'yes',
-                amount    => int($nkids * (($lookup{kid_disc}/100)*$tot_h_cost)),
+                amount    => int($nkids*(($lookup{kid_disc}/100)*$tot_h_cost)),
                 what      => "$nkids kid$plural aged $min_age-$max_age"
-                           . " - $lookup{kid_disc}% for lodging",
+                            ." - $lookup{kid_disc}% for lodging",
             });
         }
     }
     if ($reg->ceu_license) {
         model($c, 'RegCharge')->create({
-            @common,
+            @who_now,
             automatic => 'yes',
             amount    => $lookup{ceu_lic_fee},
             what      => "CEU License fee",
@@ -911,6 +998,14 @@ sub send_conf : Local {
     $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
     my $personal_retreat = $pr->title =~ m{personal\s*retreat}i;
     my $start = ($reg->date_start)? $reg->date_start_obj: $pr->sdate_obj;
+    my @carpoolers = model($c, 'Registration')->search({
+        program_id => $pr->id,
+        carpool    => 'yes',
+    });      # Join???
+    @carpoolers = sort {
+                      $a->person->zip_post cmp $b->person->zip_post
+                  }
+                  @carpoolers;
     my $stash = {
         user     => $c->user,
         person   => $reg->person,
@@ -924,6 +1019,7 @@ sub send_conf : Local {
         deposit  => $reg->deposit,
         htdesc   => $htdesc,
         article  => ($htdesc =~ m{^[aeiou]}i)? 'an': 'a',
+        carpoolers => \@carpoolers,
     };
     my $html = "";
     my $tt = Template->new({
@@ -1038,25 +1134,9 @@ sub pay_balance_do : Local {
         $c->stash->{template} = "registration/error.tt2";
         return;
     }
-    # not $c->user->id; # ???
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
-
-    my $now_date = today()->as_d8();
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
-
-    my @common = (
-        reg_id => $id,
-        user_id  => $user_id,
-        the_date => $now_date,
-        time     => $now_time,
-    );
+    my @who_now = get_now($c, $id);
     model($c, 'RegPayment')->create({
-        @common,
+        @who_now,
         amount => $amount,
         type   => $type,
         what   => "Payment",
@@ -1068,7 +1148,7 @@ sub pay_balance_do : Local {
     });
     if ($balance == 0) {
         model($c, 'RegHistory')->create({
-            @common,
+            @who_now,
             what => 'Arrival and Payment of Balance',
         });
     }
@@ -1113,6 +1193,41 @@ sub cancel_do : Local {
         .  (($credit)? "Credit of \$$amount given."
             :          "No credit given.")
     );
+
+    # put back free nights/program
+    my $taken = $reg->nights_taken;
+    my $free  = $reg->free_prog_taken;
+    if ($taken || $free) {
+        my $mem = $reg->person->member();
+        my @who_now = get_now($c, $id);
+        if ($taken) {
+            my $new_nights = $mem->sponsor_nights + $taken;
+            $mem->update({
+                sponsor_nights => $new_nights,
+            });
+            model($c, 'NightHist')->create({
+                member_id  => $mem->id,
+                reg_id     => $id,
+                num_nights => $new_nights,
+                action     => 1,        # set nights
+                @who_now,
+            });
+        }
+        if ($free) {
+            $mem->update({
+                free_prog_taken => '',
+            });
+            model($c, 'NightHist')->create({
+                member_id  => $mem->id,
+                reg_id     => $id,
+                num_nights => 0,
+                action     => 3,        # clear free program
+                @who_now,
+            });
+        }
+    }
+
+    # give credit
     my $date_expire;
     if ($credit) {
         # credit record
@@ -1202,25 +1317,6 @@ sub _reg_hist {
         time     => $now_time,
            
     });
-}
-
-sub uncancel : Local {
-    my ($self, $c, $id) = @_;
-
-    my $reg = model($c, 'Registration')->find($id);
-    $reg->update({
-        cancelled => '',
-    });
-
-    # delete any credit that might have been given for this registration.
-    model($c, 'Credit')->search({
-        reg_id    => $id,
-    })->delete();
-
-    # note this event in reg history
-    _reg_hist($c, $id, "Registration UNcancelled");
-
-    $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
 sub new_charge : Local {
@@ -1378,7 +1474,10 @@ EOH
         }
         my $pay_balance = $balance;
         if (! $reg->cancelled) {
-            $pay_balance = "<a href='/registration/pay_balance/$id/list_reg_name'><span class=rname>$pay_balance</span></a>";
+            $pay_balance =
+                "<a href='/registration/pay_balance/$id/list_reg_name'>"
+               ."<span class=rname>$pay_balance</span>"
+               ."</a>";
         }
         $body .= <<"EOH";
 <tr>
@@ -1435,6 +1534,7 @@ sub update_confnote_do : Local{
     $reg->update({
         confnote => $confnote,
     });
+    _reg_hist($c, $id, "Confirmation Note updated.");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 sub update_comment : Local {
@@ -1451,6 +1551,7 @@ sub update_comment_do : Local{
     $reg->update({
         comment => $comment,
     });
+    _reg_hist($c, $id, "Comment updated.");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
@@ -1462,12 +1563,13 @@ sub update : Local {
     $c->stash->{person} = $reg->person;
     my $pr = $c->stash->{program} = $reg->program;
     for my $ref (qw/ad web brochure flyer/) {
-        $c->stash->{"$ref\_selected"} = ($reg->referral eq $ref)? "selected": "";
+        $c->stash->{"$ref\_selected"} = ($reg->referral eq $ref)? "selected"
+                                       :                          "";
     }
     if ($pr->footnotes =~ m{[*]}) {
         $c->stash->{ceu} = 1;
     }
-    my $h_type_opts = "<option type=unknown>Unknown\n";
+    my $h_type_opts = "<option value=unknown>Unknown\n";
     Lookup->init($c);     # get %lookup ready.
     HTYPE:
     for my $htname (qw(
@@ -1496,21 +1598,99 @@ sub update : Local {
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
     }
     $c->stash->{h_type_opts} = $h_type_opts;
+
+    my $status = $reg->status;      # status at time of first registration
+    if ($status) {
+        my $mem = $reg->person->member;
+        my $nights = $mem->sponsor_nights + $reg->nights_taken;
+        if ($pr->housecost->type eq 'Perday' && $nights > 0) {
+            $c->stash->{nights} = $nights;
+        }
+        if ($status eq 'Life'
+            && (! $mem->free_prog_taken || $reg->free_prog_taken)
+        ) {
+            $c->stash->{free_prog} = 1;
+        }
+    }
     $c->stash->{template} = "registration/edit.tt2";
 }
 
+#
+# there's a lot to do.
+#
+# check the validity of the fields
+# clear all automatic charges
+# look carefully at any _changes_ in nights taken or free program
+#   and adjust the member record in advance of the recomputation.
+# update the reg record
+# recompute charges
+#
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
+    _get_data($c);
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "registration/error.tt2";
+        return;
+    }
+    model($c, 'RegCharge')->search({
+        reg_id    => $id,
+        automatic => 'yes',
+    })->delete();
+
     my $reg = model($c, 'Registration')->find($id);
+    my @who_now = get_now($c, $id);
 
-    # check validity of the fields
-    # clear all automatic charges
-    # look carefully at any _changes_ in nights taken or free program
-    #   and adjust the member record in advance of the recomputation.
-    # recompute charges
-    # update the reg record
+    my $mem = $reg->person->member;
+    if ($reg->free_prog_taken && ! $hash{free_prog}) {
+        # they changed their mind about taking a free program
+        # so clear it in the member area.  and add a NightHist record.
+        $mem->update({
+            free_prog_taken => '',
+        });
+        model($c, 'NightHist')->create({
+            member_id  => $mem->id,
+            reg_id     => $id,
+            num_nights => 0,
+            action     => 3,        # clear free program
+            @who_now,
+        });
+    }
+    my $taken_before = $reg->nights_taken();
+    if ($taken_before && $taken_before != $taken) {
+        # put the nights back so we can taken them again (or not).
+        # add a NightHist record
+        my $new_nights = $mem->sponsor_nights + $taken_before;
+        $mem->update({
+            sponsor_nights => $new_nights,
+        });
+        model($c, 'NightHist')->create({
+            member_id  => $mem->id,
+            reg_id     => $id,
+            num_nights => $new_nights,
+            action     => 1,        # set nights
+            @who_now,
+        });
+    }
 
+    $reg->update({
+        ceu_license   => $hash{ceu_license},
+        referral      => $hash{referral},
+        adsource      => $hash{adsource},
+        carpool       => $hash{carpool},
+        hascar        => $hash{hascar},
+        comment       => trim($hash{comment}),
+        h_type        => $hash{h_type},
+        h_name        => $hash{h_name},
+        kids          => $hash{kids},
+        confnote      => trim($hash{confnote}),
+        nights_taken  => $taken,
+        free_prog_taken => $hash{free_prog},
+        @dates,         # optionally
+    });
+    _compute($c, $reg, @who_now);
+    _reg_hist($c, $id, "Registration updated.");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 

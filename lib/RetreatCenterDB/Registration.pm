@@ -15,6 +15,7 @@ __PACKAGE__->add_columns(qw/
     id
     person_id
     program_id
+    deposit
     referral
     adsource
     kids
@@ -91,11 +92,6 @@ sub confnote_br {
         $confnote .= "<br>";
     }
     $confnote;
-}
-
-sub status_str {
-    my ($self) = @_;
-    return ($self->status eq 'Sponsor')? 'Sponsoring': 'Life';
 }
 
 1;

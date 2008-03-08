@@ -18,16 +18,12 @@ h3 {
 }
 </style>
 <h2>Registration</h2>
-[% IF reg.cancelled %]
-<a href="/registration/uncancel/[% reg.id %]"
-   onclick="return confirm('Okay to UNcancel [% reg.person.last %], [% reg.person.first %]?');"
->UnCancel</a>
-[% ELSE %]
+[% IF ! reg.cancelled %]
 <a href="/registration/cancel/[% reg.id %]"
    onclick="return confirm('Okay to Cancel [% reg.person.last %], [% reg.person.first %]?');"
 >Cancel</a>
-[% END %]
 &nbsp;&nbsp;&nbsp;
+[% END %]
 <a href="/registration/delete/[% reg.id %]"
 onclick="return confirm('Okay to Delete registration for [% reg.person.first %] [% reg.person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
@@ -42,7 +38,10 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 [% END %]
 <p>
 <table cellpadding=2>
-<tr><th align=right>Program</th><td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a>
+
+<tr>
+<th align=right>Program</th>
+<td colspan=3><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a>
 From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 <span style="margin-left: 1in">
 <a href="/registration/list_reg_name/[% reg.program.id %]">Other [% reg.program.name %]</a>
@@ -50,8 +49,12 @@ From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
 &nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
 [% END %]
 </span>
-</td></tr>
-<tr><th align=right>Person</th><td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
+</td>
+</tr>
+
+<tr>
+<th align=right>Person</th>
+<td colspan=3><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
 [% IF reg.cancelled %]
 <span class=cancel>
 Cancelled
@@ -59,23 +62,26 @@ Cancelled
 [% END %]
 [% IF reg.date_start %] Arriving early on [% reg.date_start_obj %].[% END %]
 [% IF reg.date_end %] Leaving later on [% reg.date_end_obj %].[% END %]
-</td></tr>
+</td>
+</tr>
 
-[% IF reg.status %]
 <tr>
 <th align=right>Membership</th>
-<td>[% reg.status_str %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free nights.[% ELSIF reg.free_prog_taken %]taking their free program.[% END %]</td>
+<td>[% IF reg.status %][% reg.status %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free nights.[% ELSIF reg.free_prog_taken %]taking their free program.[% END %][% END %]</td>
+<th align=right>CEU License</th><td>[% reg.ceu_license %]</td>
 </tr>
-[% END %]
 
 <tr>
 <th align=right>Postmark</th>
 <td>[% reg.date_postmark_obj %] [% reg.time_postmark %]</td>
+<th align=right>Carpooling</th>
+<td>[% IF reg.carpool %]Wish to carpool.&nbsp;&nbsp;[% END %][% IF reg.hascar %]Has car.[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Referral</th>
 <td>[% reg.referral %] [% reg.adsource %]</td>
+<th align=right>Ages of Kids</th><td>[% reg.kids %]</td>
 </tr>
 
 <tr><th align=right>Housing</th><td>[% reg.h_type_disp %] in [% reg.h_name %]</td></tr>
@@ -90,21 +96,18 @@ Cancelled
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td>[% reg.comment_br %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
+<td>[% reg.comment_br %]<a href="/registration/update_comment/[% reg.id %]">Update Comment</a></td>
 </tr>
-
-<tr><th align=right>Ages of Kids</th><td>[% reg.kids %]</td></tr>
-<tr><th align=right>CEU License</th><td>[% reg.ceu_license %]</td></tr>
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td>[% reg.confnote_br %]<a href="/registration/update_confnote/[% reg.id %]">Update</a></td>
+<td>[% reg.confnote_br %]<a href="/registration/update_confnote/[% reg.id %]">Update Note</a></td>
 </tr>
 </table>
 
 <!-------- Charges --------->
 <p>
-<div style="float: left">
+<div style="float: left; margin-right: .5in">
 <h3>Charges</h3>
 <table cellpadding=2>
 
@@ -137,7 +140,7 @@ Cancelled
 
 <!-------- Payments --------->
 <p>
-<div style="float: left; margin-left: .5in">
+<div style="float: left">
 <h3>Payments</h3>
 <table cellpadding=2>
 
@@ -168,7 +171,6 @@ Cancelled
 
 <!-------- History --------->
 <p>
-<div style="float: left">
 <h3>History</h3>
 <table cellpadding=2>
 
@@ -185,4 +187,3 @@ Cancelled
 </tr>
 [% END %]
 </table>
-</div>

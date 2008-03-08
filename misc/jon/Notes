@@ -827,3 +827,21 @@ some way to catch the catalyst server at boot time
 could have a link - add credit and ask for an amount
     and do a negative charge for the person
 check for duplicate registrations and deny them
+if member admin adjusts nights or free prog
+    add a NightHist record.
+    they can also do a global resetting - will add lots
+        of NightHist records
+start date of coming might = leaving date is okay
+
+free nights (12 max) - much more than
+    the program is long is possible if someone
+    comes early, stays after
+ask Jayanti/Brajesh about organization of reg screen - add/update
+    top/bottom one/two column lines colors sizes
+If person is coming early or staying after
+    note this in the confirmation letter.
+    At the bottom of the letter -  Charges, Payments in diff color.
+Carpool list.
+Sponsoring members cannot take free nights
+    when the program is a Total Cost type program.
+    Life members CAN take it free, however.

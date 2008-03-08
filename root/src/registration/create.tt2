@@ -84,14 +84,14 @@ Has Car
 <td colspan=3><textarea rows=4 cols=60 name=confnote></textarea></td>
 </tr>
 
-[% IF nights > 0 || free_prog_taken == 'yes' %]
+[% IF status %]
 <tr><t<td colspan=2 align=center class=larger>[% status %] member</td></tr>
 [% END %]
 [% IF nights > 0 %]
 <tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2>&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
 [% END %]
-[% IF free_prog_taken == 'yes' %]
-<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog_taken value=yes></td></tr>
+[% IF free_prog %]
+<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog value=yes></td></tr>
 [% END %]
 
 <tr>
@@ -114,19 +114,18 @@ if ("[% popup_comment %]" != "") {
 if ("[% status %]" != "") {
     var name = "[% person.first %] [% person.last %]";
     var pronoun = ("[% person.sex %]" == "M")? "He": "She";
-    var status = ("[% status %]" == "Sponsor")? "Sponsoring": "Life";
-    var plural = ([% nights %] == 1)? "": "s";
-    var free_prog_taken = ("[% free_prog_taken %]" == "yes")?
-        pronoun + " has not taken a free program yet.\n"
+    var plural = ("[% nights %]" == "1")? "": "s";
+    var free_prog = ("[% free_prog %]")?
+        "\n" + pronoun + " has not taken a free program yet.\n"
         : "";
 
-    s = s + "\n" + name + " is a " + status + " member.";
-    if ([% nights %] != 0) {
+    s = s + "\n" + name + " is a [% status %] member.";
+    if ("[% nights %]" != "") {
         s = s + "\n" + pronoun + " has [% nights %] night" + plural
               + " of free lodging left to use.\n";
     }
-    if (free_prog_taken) {
-        s = s + free_prog_taken;
+    if (free_prog) {
+        s = s + free_prog;
     }
     if ("[% credit %]" != "") {
         [% pr = credit.reg_given.program %]

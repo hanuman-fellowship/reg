@@ -11,6 +11,7 @@
 <tr>
 <th align=right>Program</th>
 <td><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a></td>
+<input type=hidden name=program_id value="[% program.id %]">
 <td>From [% program.sdate_obj %]</td><td>to [% program.edate_obj %]</td>
 </tr>
 
@@ -75,12 +76,15 @@ Has Car
 </tr>
 
 [% IF reg.status %]
-<tr><t<td colspan=2 align=center class=larger>[% reg.status_str %] member</td></tr>
-<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2 value="[% reg.nights_taken %]">&nbsp;&nbsp;([% person.member.sponsor_nights + reg.nights_taken %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
-[% IF reg.status == 'Life' %]
-<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog_taken value=yes [% IF reg.free_prog_taken %]checked[% END %]></td></tr>
+<tr><t<td colspan=2 align=center class=larger>[% reg.status %] member</td></tr>
 [% END %]
 
+[% IF nights %]
+<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2 value="[% reg.nights_taken %]">&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
+[% END %]
+
+[% IF free_prog %]
+<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog value=yes [% IF reg.free_prog_taken %]checked[% END %]></td></tr>
 [% END %]
 
 <tr>

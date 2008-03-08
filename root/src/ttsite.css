@@ -12,6 +12,7 @@ body {
 }
 .larger {
     font-size: 17pt;
+    font-weight: bold;
     color: darkgreen;
 }
 .required {

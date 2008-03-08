@@ -4,6 +4,8 @@ create table registration (
     person_id integer,
     program_id integer,
 
+    deposit integer,
+
     referral text,
     adsource text,
     kids text,      -- rather than 4 sep fields...

@@ -6,18 +6,56 @@ body, td, th {
     font-size: 14pt;
     color: black;
     background: ivory;
+    margin-right: 1in;
 }
 .on_right {
     display: block;
     text-align: right;
-    margin-right: 1in;
+    margin-right: .1in;
 }
 strong {
     font-weight: bold;
 }
+h2 {
+    color: #227722;
+    font-size: 18pt;
+}
+h3 {
+    color: #7733ff;
+    font-size: 15pt;
+    margin-bottom: 1mm;
+}
+.name {
+    font-weight: bold;
+}
+.hascar {
+    color: red;
+}
+.addr {
+    font-weight: normal;
+    margin-left: .25in;
+    margin-bottom: .2in;
+}
+.fire {
+    font-weight: bold;
+    font-size: 18pt;
+    color: red;
+}
+.scent {
+    font-weight: bold;
+    color: purple;
+}
 </style>
 </head>
 <body>
+<center>
+<img height=200 src="http://www.mountmadonna.org/programs/main_image/nov_sc_sunset.jpg">
+<p>
+<span style="font-weight: bold; font-size: 17pt;">
+Mount Madonna Center
+</span>
+</center>
+<p>
 <span class="on_right">[% today.format("%A, %B %e, %Y") %]</span>
 <p>
 [% IF program.confnote || reg.confnote %]
@@ -47,7 +85,9 @@ your personal retreat,
 [% END %]
 as you requested.
 <p>
+<center>
 [% program.cl_picture %]
+</center>
 <p>
 [% IF htdesc == 'Your Van' %]
 No lodging was reserved for you since you will be staying in your own van.
@@ -86,11 +126,11 @@ We suggest that you bring the following:
 <li>warm clothing for cool nights and mornings
 <li>comfortable clothes and shoes for a rural setting
 <li>a swimsuit for lake swimming or hot tubbing
-</ul>
 [% IF program.retreat %]
     <li>loose clothing suitable for breathing practices and postures
     <li>a blanket or mat for postures (optional)
 [% END %]
+</ul>
 [% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
     <p>
     Since you are camping remember to bring your own bedding.
@@ -108,9 +148,9 @@ Please <strong>DO NOT</strong> bring the following onto the property:
 <li>alcohol
 <li>pets
 </ul>
-<strong>DO NOT</strong> wear scented body products.
+<span class=scent>DO NOT</span> wear scented body products.
 <p>
-Due to extreme fire precautions <strong>DO NOT</strong> bring or use incense, candles,
+Due to extreme fire precautions <span class=fire>DO NOT</span> bring or use incense, candles,
 kerosene lamps, etc.
 <p>
 [% IF personal_retreat %]
@@ -157,8 +197,7 @@ Sincerely,<br>
 </span>
 <hr>
 <p>
-Your Charges:<br>
-<ul>
+<h2>Charges</h2>
 <table cellpadding=3>
 <tr>
 <th align=right>Amount</th>
@@ -174,10 +213,8 @@ Your Charges:<br>
 [% END %]
 <tr><td align=right><span style="border-top: solid thin">[% tot %]</span></td><td>Total</td></tr>
 </table>
-</ul>
 <p>
-Your Payments:<br>
-<ul>
+<h2>Payments</h2>
 <table cellpadding=3>
 <tr>
 <th align=right>Amount</th>
@@ -190,6 +227,186 @@ Your Payments:<br>
 </tr>
 [% END %]
 </table>
+<hr>
+<h2>Address and Contact Information</h2>
+<b>Mount Madonna Center</b> - 445 Summit Rd, Watsonville, CA 95076<br>
+<p>
+<table cellpadding=3>
+<tr><th align=right>Phone</th><td>408-847-0406</td></tr>
+<tr><th align=right>Fax</th><td>408-847-2683</td></tr>
+<tr><th align=right>Email</th><td><a href="mailto:programs@mountmadonna.org">programs@mountmadonna.org</a></td></tr>
+<tr><th align=right valign=top>Business Hours</th><td>9-5 Monday, Wednesday, Thursday, and Friday<br>11-5 Tuesday and Saturday</td></tr>
+</table>
+<p>
+For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya>below</a>.
+<hr>
+[% IF carpoolers %]
+<h2>Carpool List</h2>
+[% FOR cp IN carpoolers %]
+[% p = cp.person %]
+<span class=name>[% p.first %] [% p.last %]</span>[% IF cp.hascar %] - <span class=hascar>HAS CAR</span>[% END %]<br>
+<div class=addr>
+[% p.addr1 %]<br>
+[% IF p.addr2 %][% p.addr2 %]<br>[% END %]
+[% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
+[% IF p.tel_home %][% p.tel_home %] - home<br>[% END %]
+[% IF p.tel_work %][% p.tel_work %] - work<br>[% END %]
+[% IF p.tel_cell %][% p.tel_cell %] - cell<br>[% END %]
+[% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna Center">[% p.email %]</a>[% END %]
+</div>
+[% END %]<!-- FOR cp IN -->
+[% END %]<!-- IF carpoolers -->
+<hr>
+<h2>Directions to Mount Madonna Center</h2>
+On the west coast of Central California approximately 2 hours driving 
+time south of San Francisco (more if traffic is heavy), Mount Madonna Center
+overlooks Monterey Bay from the Santa Cruz mountains between Santa Cruz and
+Watsonville, 3.5 miles off Highway 152.
+<p>
+<span class=name>From Highway 1, THE COAST:</span><br>
+Take Hwy 1 to Watsonville, then take the Airport Blvd exit.  Go
+approximately 3 miles on Airport Blvd, then left onto Hwy 152 East.
+At the top of the mountain turn left just after Mount Madonna Inn,
+into Mt Madonna County Park (Pole Line Rd).   Follow the yellow line
+through the park and continue straight through the 4-way stop onto
+Summit Rd. The Center is 1.5 miles further on the left (445 Summit Rd).
+<p>
+<span class=name>From Highway 101, INLAND:</span><br>
+Take Hwy 152 West at Gilroy.  Go approximately 10 miles through Gilroy 
+and up the mountain.  At the top of the mountain, turn right into Mt Madonna
+County Park (Pole Line Rd).  If you come to Mount Madonna Inn on your right,
+you've just missed your turn.  Follow the yellow line through the park and
+continue straight through the 4-way stop onto Summit Rd. The Center is 1.5 
+miles further on the left (445 Summit Rd).
+<p>
+<center>
+<img height=400 src="http://www.mountmadonna.org/Gif/circlemap.gif">
+</center>
+<p>
+For information about other forms of transportation to the center click <a href=http://www.mountmadonna.org/directions>here</a>.
+<a name=kaya></a>
+<p>
+<hr>
+[% IF program.kayakalpa %]
+<h2>Kaya Kalpa Wellness Center</h2>
+<center>
+<img src="http://www.mountmadonnainstitute.org/images/kaya_kalpa_massage.jpg">
+</center>
+<p>
+Kaya Kalpa is an ancient system of rejuvenation for the body and spirit.
+Nestled among the towering redwood trees at Mount Madonna Center, our
+Wellness Center offers a healing environment for relaxation, reflection and
+self-care.
+<p>
+To enhance your visit at the Center, we recommend trying one or more 
+of our nurturing bodywork sessions.  As these offerings are popular, it is
+optimal to schedule reservations in advance of your arrival.  Appointments may 
+also be scheduled, as available, upon arrival.  We look forward to meeting you!
+<p>
+Contact us in these ways:<p>
+<ul>
+<table cellpadding=3>
+<tr><th align=right>Email</th><td><a href="mailto:kkwc@garlic.com">kkwc@garlic.com</a></td></tr>
+<tr><th align=right>Phone</th><td>408-847-3276</td></tr>
+<tr><th align=right>Website</th><td><a href="http://www.mountmadonna.org/projects/kayakalpa">www.mountmadonna.org/projects/kayakalpa</a></td></tr>
+</table>
 </ul>
+<h2>Services Offered</h2>
+<h3>Massage</h3>
+$85 (60 min), $110 (90 min)<br>
+A warm organic sesame oil massage utilizing various therapeutic
+massage techniques for relaxation and restoration.
+Scented or unscented oil. 
+
+<h3>Swedana</h3>
+$110 (75 min)<br>
+An oiling of the entire body using traditional Ayurvedic 
+massage techniques, followed by an herbal steam in our cedar
+steam cabinet. Completing this procedure, a dusting of organic
+barley flour and a dry brushing exfoliates and refreshes the skin.
+Swedana helps the process of detoxification by inducing sweat,
+calming the mind and alleviating muscle and joint pain.
+Ask about contraindications. 
+
+<h3>Shirodhara</h3>
+$110 (60 min)<br>
+A warm ginger pack on the back and a head neck, shoulder,
+hand and foot massage followed by a steady stream of warm organic
+sesame oil over the forehead. This procedure is deeply relaxing,
+soothing and rejuvenating for the nervous system; it helps relieve
+stress, headaches, insomnia, and exhaustion. 
+
+<h3>Abhyanga</h3>
+$140 (60 min)<br>
+A vigorous warm oil Ayurvedic massage given simultaneously by
+two practitioners that stimulates the lymphatic system,
+moves prana (life force), relaxes muscles and deeply nurtures
+the entire being. 
+
+<h3>Reiki</h3>
+$75 (60 min)<br>
+A gentle hands-on approach to balance and harmonize one's subtle
+energies. Reiki is restorative and nurturing, calms emotional
+distress and relaxes an overstressed body. It complements other
+services. Recipient is fully clothed. 
+
+<h3>Asian Systems</h3>
+$85 (60 min) $110 (90 min)<br>
+A combination of Tui Na, Acupressure and Shiatsu. This procedure
+invigorates all of the vital systems of the body, calms the spirit,
+balances the subtle energies and relaxes the mind.
+Recipient is fully clothed.
+
+<h3>Sound & Color Tuning Fork Acupuncture</h3>
+$75 (60 min)<br>
+Experience color and sound as they resonate the energy fields
+of your body corresponding to your chakras, acupuncture meridians/points,
+elements and beyond. A synthesis of color light wheels, Dinshah filters,
+ancient healing sounds and tuning forks create a whirlpool of energy
+that integrates healing, invites deep transformation and
+re-establishes harmony. Recipient is fully clothed.
+
+<h3>Marma Point and Stone Massage</h3>
+$110 (60 min)<br>
+A warm organic almond oil Ayurvedic face massage using warm/cool
+stones on Marma energy points. This luxurious massage also includes
+head, neck, shoulder, hands, and feet for deep relaxation and nurturing. 
+
+<h3>Five Element Acupuncture</h3>
+$75 (60 min)<br>
+Five Element Acupuncture is an ancient form of acupuncture that
+works by treating a person at the levels of body, mind, heart,
+and spirit. It helps a person move back into harmony with themselves,
+their emotions, and their life as a whole. This harmony is achieved
+by looking at he person as a whole being as well as understanding
+their symptoms. The Five Elements are Fire, Earth, Metal, Water, and Wood. 
+
+<h2>Add on options:</h2>
+
+<h3>Herbal Steam</h3>
+$25 (up to 11 min)<br>
+Enhance the detoxification and cleansing process begun by a massage
+or Abhyanga with the exquisite experience of a steam in our cedar
+cabinet, complemented with fresh organic herbs. Ask about contraindications. 
+
+<h3>Therapeutic Oil</h3>
+$5<br>
+Our scented oils are crafted on site by a resident herbalist.
+These oils are created with organic sesame oil and local herbs:
+rosemary, arnica, and rose geranium.
+
+<h3>Shirodhara</h3>
+$70 (30 min)<br>
+A steady stream of oil over the third eye can be added after a
+massage or Abhyanga. 
+
+<h3>Marma Point Face Massage</h3>
+$35<br>
+A warm organic almond oil Ayurvedic face massage of Marma
+energy points. This procedure can be added to any massage.
+Scented or unscented oil. 
+<br>
+<br>
+[% END %]
 </body>
 </html>

@@ -33,7 +33,7 @@ sub action_str {
     my $n = $self->action();
     return ($n == 1)? "Set Nights"
           :($n == 2)? "Take Nights"
-          :($n == 3)? "Set Free Program"
+          :($n == 3)? "Clear Free Program"
           :           "Take Free Program";
 }
 

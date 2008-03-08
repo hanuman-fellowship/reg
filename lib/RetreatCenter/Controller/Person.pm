@@ -466,7 +466,7 @@ sub update_do : Local {
               . _view_person($p->partner);
         $verb = "were"
     }
-    $msg .= " $verb updated.";
+    $msg .= " $verb updated";
     $c->flash->{message} = $msg
                          . _get_dups($c, $id, $p)
                          . ".";

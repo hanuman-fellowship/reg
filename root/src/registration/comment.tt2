@@ -12,7 +12,7 @@
 </tr>
 
 <tr>
-<th align=right valign=top>Confirmation Note</th>
+<th align=right valign=top>Comment</th>
 <td><textarea rows=4 cols=60 name=comment>[% reg.comment %]</textarea></td>
 </tr>
 
