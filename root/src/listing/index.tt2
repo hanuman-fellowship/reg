@@ -18,7 +18,7 @@
 <input type=submit value="Submit">
 </ul>
 <p>
-<a href="/listing/undup">Unduplication File</a>
+<a target=_blank href="/listing/undup">Unduplication File</a>
 <p>
 <a href="/listing/email_check">Email Check</a>
 </ul>

@@ -176,3 +176,23 @@ Mar 7 11:30-12:30, 2:00-5:40, 8:15-8:45, 8:50-12:00
     finalizing edits, etc.
     edge cases - lots of em
     more messing around with status, nights, free prog - very very confusing.
+Mar 10 11:40-11:50, 4:25-6:20, 7:40-7:55, 8:35-9:40
+    began with import all (including past season) of the
+        old into the new - to see the completeness of it will be fun
+        this will help with scalability issues
+        lost connection to mmc :(
+    continuing - another goal - unreported genders - with link to
+        LWP::Simple::get() gender determination website.
+        put the unreported genders in the undup list for Bequia
+    improved undup list - links
+Mar 11 12:20-2:20
+    l_order for Leaders - tidied that code up - conforming with others.
+    continuing with import of prev reg data.
+Mar 12 11:50-12:30, 12:55-1:15
+    continuing with import of reg data - programs
+    cancellation policies - done
+Mar 13 2:30-3:00, 6:10-6:50
+    dumpall on mmc, getall on macbook
+    load housing costs - done
+Mar 14 11:50-
+    leaders - no gender!

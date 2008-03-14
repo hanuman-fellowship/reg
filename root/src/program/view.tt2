@@ -15,7 +15,7 @@
     <a href="/program/publish">Publish<a>
     &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="[% program.web_addr %]">Web</a>
+<a target=_blank href="[% program.web_addr %]">Web</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_reg_name/[% program.id %]">Registrations</a>
 <p>
@@ -24,7 +24,10 @@
 
 <tr>
 <th align=right>Name</th>
-<td><span class=larger>[% program.name %]</span></td>
+<td colspan=4><span class=larger>[% program.name %]</span>
+</tr>
+
+<tr>
 <th align=right>From</th>
 <td>[% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span></td>
 <th align=right>To</th>
@@ -99,9 +102,9 @@
 
 <tr>
 <th align=right valign=top>Leaders</th>
-<td align=left valign=top colspan=2>
+<td align=left valign=top>
 [% IF edit_okay %]
-    [% FOR l IN leaders %]
+    [% FOR l IN program.leaders %]
         <a href="/leader/view/[% l.id %]">[% l.person.last %], [% l.person.first %]</a><br>
     [% END %]
     [% IF Catalyst.check_user_roles('prog_admin') %]
@@ -156,8 +159,8 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 <tr>
 <th align=right valign=top>Templates</th>
-<th>Web Page</th><td>[% program.ptemplate %]</td>
-<th>Confirmation Letter</th><td>[% program.cl_template %]</td>
+<th align=right>Web Page</th><td>[% program.ptemplate %]</td>
+<th align=right>Confirmation</th><td>[% program.cl_template %]</td>
 </tr>
 
 <tr>

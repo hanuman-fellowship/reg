@@ -54,7 +54,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <th align=right>Cell</td><td>[% person.tel_cell %]</td>
 </tr>
 <tr>
-<th align=right>Sex</th><td>[% sex %]</td>
+<th align=right valign=top>Sex</th><td>[% sex %]</td>
 <th align=right valign=top rowspan=4>Comment</td><td rowspan=4 valign=top>[% person.comment_br %]</td>
 </tr>
 <tr><th align=right>Address</th><td>[% person.addr1 %]</td></tr>
@@ -65,10 +65,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <tr>
 <th align=right>State/Province</th><td>[% person.st_prov %]</td>
 
-[% IF Catalyst.check_user_roles('prog_staff') %]
-    <th align=right valign=top>Registrations</td>
+[% IF Catalyst.check_user_roles('prog_staff') && registrations %]
+    <td>&nbsp;</td>
     <td rowspan=12 valign=top>
     <table cellpadding=2>
+    <tr><td class=larger>Registrations</td></tr>
     [% FOREACH r IN registrations %]
         <tr>
         <td><a href="/registration/view/[% r.id %]">[% r.program.name %]</a></td>
@@ -116,8 +117,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
     <p>
+    <span class=larger>Donations</span>
     <table cellpadding=3>
-    <caption style="font-weight: bold">Donations</caption>
     <tr>
     <th align=right>Amount</th>
     <th align=left>Project</th>

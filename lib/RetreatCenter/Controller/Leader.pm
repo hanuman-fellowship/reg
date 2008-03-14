@@ -63,6 +63,35 @@ sub _del {
     unlink <root/static/images/l*-$id.jpg>;
 }
 
+my @mess;
+my %hash;
+sub _get_data {
+    my ($c) = @_;
+    
+    @mess = ();
+    %hash = ();
+    for my $f (qw/
+        public_email
+        l_order
+        url
+        biography
+    /) {
+        $hash{$f} = trim($c->request->params->{$f});
+    }
+    if ($hash{public_email} && ! valid_email($hash{public_email})) {
+        push @mess, "Invalid email address: $hash{public_email}";
+    }
+    if ($hash{l_order} !~ m{^\d+}) {
+        push @mess, "Illegal order: $hash{l_order}";
+    }
+    if (@mess) {
+        $c->stash->{mess}     = join "<br>\n", @mess;
+        $c->stash->{template} = "leader/error.tt2";
+        return;
+    }
+    $hash{url} =~ s{^http://}{};
+}
+
 sub update : Local {
     my ($self, $c, $id) = @_;
 
@@ -75,29 +104,19 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    my $email = trim($c->request->params->{public_email});
-    if ($email && ! valid_email($email)) {
-        $c->stash->{email} = $email;
-        $c->stash->{template} = "leader/bad_email.tt2";
-        return;
-    }
-    my $leader =  model($c, 'Leader')->find($id);
-    my @upd = ();
+    _get_data($c);
+    return if @mess;
+    my @img = ();
     if (my $upload = $c->request->upload('image')) {
         $upload->copy_to("root/static/images/lo-$id.jpg");
         Lookup->init($c);
         resize('l', $id);
-        @upd = (image => 'yes');
+        @img = (image => 'yes');
     }
-    my $url = $c->request->params->{url};
-    $url =~ s{^\s*http://}{};
-    $leader->update({
-        public_email => $email,
-        url          => $url,
-        biography    => $c->request->params->{biography},
-        @upd,
+    model($c, 'Leader')->find($id)->update({
+        %hash,
+        @img,
     });
-    # the person_id will not change here...
     $c->response->redirect($c->uri_for("/leader/view/$id"));
 }
 
@@ -111,35 +130,31 @@ sub view : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->stash->{person} = model($c, 'Person')->find($person_id);
+    $c->stash->{person}      = model($c, 'Person')->find($person_id);
     $c->stash->{form_action} = "create_do/$person_id";
+    $c->stash->{leader}      = { l_order => 1 };  # fake a Leader object
+                                                  # for this default
     $c->stash->{template}    = "leader/create_edit.tt2";
 }
 
 sub create_do : Local {
     my ($self, $c, $person_id) = @_;
 
-    my $email = trim($c->request->params->{public_email});
-    if ($email && ! valid_email($email)) {
-        $c->stash->{email} = $email;
-        $c->stash->{template} = "leader/bad_email.tt2";
-        return;
-    }
-    my $upload = $c->request->upload('image');
-    my $url = $c->request->params->{url};
-    $url =~ s{^\s*http://}{};
+    _get_data($c);
+    return if @mess;
     my $l = model($c, 'Leader')->create({
-        person_id    => $person_id,
-        public_email => $email,
-        image        => $upload? "yes": "",
-        url          => $url,
-        biography    => $c->request->params->{biography},
+        person_id => $person_id,
+        %hash,
     });
     my $id = $l->id();      # the new leader id
+    my $upload = $c->request->upload('image');
     if ($upload) {
         $upload->copy_to("root/static/images/lo-$id.jpg");
         Lookup->init($c);
         resize('l', $id);
+        $l->update({
+            image => 'yes',
+        });
     }
     $c->response->redirect($c->uri_for("/leader/view/$id"));
 }

@@ -851,7 +851,6 @@ sub _compute {
             member_id  => $mem->id,
             num_nights => 0,
             action     => 4,        # take free program
-            reg_id     => $reg->id,
             @who_now,
         });
     }
@@ -1207,7 +1206,6 @@ sub cancel_do : Local {
             });
             model($c, 'NightHist')->create({
                 member_id  => $mem->id,
-                reg_id     => $id,
                 num_nights => $new_nights,
                 action     => 1,        # set nights
                 @who_now,
@@ -1219,7 +1217,6 @@ sub cancel_do : Local {
             });
             model($c, 'NightHist')->create({
                 member_id  => $mem->id,
-                reg_id     => $id,
                 num_nights => 0,
                 action     => 3,        # clear free program
                 @who_now,
@@ -1245,6 +1242,7 @@ sub cancel_do : Local {
             date_expires => $date_expire->as_d8(),
             date_used    => "",
             used_reg_id  => 0,
+            # How about who did this??? and what time?
         });
     }
     #

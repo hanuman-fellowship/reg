@@ -271,16 +271,6 @@ sub view : Local {
     Lookup->init($c);       # for web_addr if nothing else.
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
 
-    # since I don't know how to do joins in DBIx...
-    # and I want the leaders sorted by the person's last name
-    $c->stash->{leaders} = [
-        sort {
-            $a->person->last  cmp $b->person->last or
-            $a->person->first cmp $b->person->first
-        }
-        $p->leaders()
-    ];
-
     $c->stash->{edit_okay} = ($p->name !~ m{ FULL$});
 
     $c->stash->{template} = "program/view.tt2";
@@ -692,14 +682,14 @@ sub publish : Local {
              "gen_files/$dir/regtable";
         # now for the pictures and the associated html files...
         my $src = slurp("gen_files/$dir/index.html");
-        my @jpg = $src =~ m{pics/(.*?jpg)}g;
-        for my $j (@jpg) {
-            copy "gen_files/pics/$j",   # not move.
-                 "gen_files/$dir/pics/$j";
+        my @img = $src =~ m{pics/(.*?(?:jpg|gif))}g;
+        for my $im (@img) {
+            copy "gen_files/pics/$im",   # not move.
+                 "gen_files/$dir/pics/$im";
                                         # it is POSSIBLE for a leader
                                         # to lead both a linked and an
                                         # unlinked program.
-            my $pic = $j;
+            my $pic = $im;
             $pic =~ s{gen_files/pics/}{};
             $pic =~ s{th}{b};
             copy "gen_files/pics/$pic",   # not move.

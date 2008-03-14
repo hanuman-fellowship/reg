@@ -27,7 +27,8 @@ __PACKAGE__->has_many('payments' => 'RetreatCenterDB::SponsHist', 'member_id',
                       { order_by => 'date_payment desc' },
                      );
 __PACKAGE__->has_many('nighthist' => 'RetreatCenterDB::NightHist', 'member_id',
-                      { order_by => 'the_date desc' },
+                      { order_by => 'the_date desc, time desc, id desc' },
+                      #  need id as well in case the date/time is the same...
                      );
 
 sub date_general_obj {

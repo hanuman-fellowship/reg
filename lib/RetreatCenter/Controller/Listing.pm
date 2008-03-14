@@ -180,9 +180,10 @@ EOH
 sub undup : Local {
     my ($self, $c) = @_;
 
-    my $fname = "root/static/undup.txt";
+    my $fname = "root/static/undup.html";
     open my $out, ">", $fname
         or die "cannot create $fname: $!\n";
+    print {$out} "<pre>\n";
     #
     # name dup
     # need both addresses as well???
@@ -204,7 +205,7 @@ EOS
         $id    = $p->{id};
         $amb   = $p->{ambiguous};
         if ($last eq $prev_last && $first eq $prev_first) {
-            print {$out} "$last, $first\n";    
+            print {$out} "<a target=other href='/person/view/$id'>$last, $first</a> and <a target=other href='/person/view/$prev_id'>namesake</a>\n";    
             # both people should be marked as 'ambiguous'
             $dups{$id}      = 1 if ! $amb;
             $dups{$prev_id} = 1 if ! $prev_amb;
@@ -238,21 +239,37 @@ EOS
             && $p->{akey} eq $prev->{akey}
             && ($p->{id_sps} == 0 || $prev->{id_sps} == 0)
         ) {
-            print {$out} "$p->{last}, $p->{first}\n";    
+            print {$out} "<a target=other href='/person/view/$p->{id}'>$p->{last}, $p->{first}</a>\n";    
             if ($p->{addr1} ne $prev->{addr1} 
                 ||
                 $p->{zip_post} ne $prev->{zip_post}
             ) {
                 print {$out} "    $p->{addr1} $p->{zip_post}\n";
             }
-            print {$out} "$prev->{last}, $prev->{first}\n";    
+            print {$out} "<a target=other href='/person/view/$prev->{id}'>$prev->{last}, $prev->{first}</a>\n";    
             print {$out} "    $prev->{addr1} $prev->{zip_post}\n";
             print {$out} "\n";
         }
         $prev = $p;
     }
+    #
+    # unreported gender
+    #
+    $sth = Person->search_start(<<"EOS");
+select id, last, first
+  from people
+ where sex != 'M' and sex != 'F'
+order by last, first
+EOS
+    print {$out} "\n\n";
+    print {$out} "Unreported Gender\n";
+    print {$out} "=================\n";
+    while ($p = Person->search_next($sth)) {
+        print {$out} "<a target=other href='/person/view/$p->{id}'>$p->{last}, $p->{first}</a>\n";
+    }
+    print {$out} "</pre>\n";
     close $out;
-    $c->response->redirect($c->uri_for("/static/undup.txt"));
+    $c->response->redirect($c->uri_for("/static/undup.html"));
 }
 
 sub stale : Local {

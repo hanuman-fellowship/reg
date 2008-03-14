@@ -8,11 +8,13 @@ To create a leader add them as a Person first.
 <tr>
 <th align=left>Last</th>
 <th align=left>First</th>
+<th align=right>Order</th>
 </tr>
 [% FOREACH l IN leaders %]
 <tr>
 <td><a href="/leader/view/[% l.id %]">[% l.person.last %]</a></td>
 <td><a href="/person/view/[% l.person.id %]">[% l.person.first %]</a></td>
+<td align=right>[% l.l_order %]</td>
 </tr>
 [% END %]
 </table>

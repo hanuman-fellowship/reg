@@ -195,6 +195,7 @@ Egos abound.  Hackers love to make systems
 **    be collapsed into one?   8, 9, do not distribute, do not Give out, etc.
 the capitalization mixed case was not done very
     intelligently - O'brien for example.
+    MCCALL -> MCC ???
     can we make it better?
 **work on mlist so no dup ids!
     that's no good
@@ -845,3 +846,55 @@ Carpool list.
 Sponsoring members cannot take free nights
     when the program is a Total Cost type program.
     Life members CAN take it free, however.
+Need to do manual registration.
+Online reg - unduplication needs doing and
+    if new address for someone - their partner's address
+    should be updated as well.
+Be looking for ways to optimize the SQL.
+    in a template rather than:
+        [% IF person.registrations %]
+            <span class=larger>Registration</span>
+            [% FOR r IN person.registrations %]
+                ...
+            [% END %]
+        [% END %]
+    do this:
+        [% regs = person.registrations %]
+        [% IF regs %]
+            <span class=larger>Registration</span>
+            [% FOR r IN regs %]
+                ...
+            [% END %]
+        [% END %]
+style - for the larger green headings - h3?  larger?
+    in ttsite.css not in each one...
+add an order attribute to Leader
+    defaults to 1.
+    used when there are multiple leaders to order
+    the way they are presented.
+next - housing costs - should be fun
+    images?  grab them, too.   resize the big ones.
+    next, back for programs by name, date
+    full programs need to be created afresh!
+    sort by date - descending? ascending?
+    or from today on??  or other ways of limiting the display?
+        like a check box for showing all or just
+        the current season or current plus prior?
+        or a range of dates?
+    transportation is not a program - what to do?
+    confirmation letter - default everywhere.
+    'Default' or 'default'?
+    have the headings (name, date) be clickable to sort
+        up and down
+developers create a nifty library that they use
+    and get attached to and then start promoting it
+    so that others can use it.   the hype begins.
+    the documentation may lag the hype.
+    ego is involved for sure.  
+    Use mine!  It is great!  I am great!
+Grab New and Online links should be elsewhere.
+transportation?
+    reserve a ride at online registration time?
+what if the image uploaded is a gif?
+    we assume it is a jpg. - shall we allow?
+use reg_start, prog_start, end too in web templates?

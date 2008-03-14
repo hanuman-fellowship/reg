@@ -41,6 +41,11 @@
 </tr>
 
 <tr>
+<th align=right>Order</th>
+<td>[% leader.l_order %]</a></td>
+</tr>
+
+<tr>
 <th align=right valign=top>Programs</th>
 <td>
 <table cellpadding=2>

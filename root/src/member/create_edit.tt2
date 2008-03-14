@@ -10,6 +10,7 @@ h3 {
 <form method=post action=[% '/member/' _ form_action %] name=form>
 
 <span class=larger>[% person.first %] [% person.last %]</span>
+<span style="margin-left: 1in"><a href="/person/view/[% person.id %]">Person Info</a></span>
 <p>
 
 <ul>
@@ -59,7 +60,8 @@ h3 {
 </tr>
 </table>
 </form>
-[% IF member.payments %]
+[% pays = member.payments %]
+[% IF pays %]
 <div style="float: left; margin-right: .7in">
 <h3>Payments</h3>
 <table cellpadding=3>
@@ -67,18 +69,19 @@ h3 {
 <th>Date</th>
 <th>Amount</th>
 </tr>
-[% FOR p IN member.payments %]
+[% FOR p IN pays %]
     <tr>
     <td>[% p.date_payment_obj %]</td>
     <td align=right>[% p.amount %]</td>
     <td align=center>[% IF p.general %]<img src=/static/images/checked.gif>[% END %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <td><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
 [% END %]
 </table>
 </div>
 [% END %]
-[% IF member.nighthist %]
+[% nhist = member.nighthist %]
+[% IF nhist %]
 <div>
 <h3>Free Nights and Programs</h3>
 <table cellpadding=3 style="float: left">
@@ -88,14 +91,14 @@ h3 {
 <th align=right># Nights</th>
 <th align=left>Action</th>
 </tr>
-[% FOR nh IN member.nighthist %]
+[% FOR nh IN nhist %]
     [% reg = nh.registration %]
     <tr>
     <td>[% IF reg.id %]<a href="/registration/view/[% reg.id %]">[% reg.program.name %]</a>[% END %]</td>
     <td>[% IF reg.id %][% reg.program.sdate_obj %][% END %]</td>
     <td align=right>[% IF nh.num_nights %][% nh.num_nights %][% END %]</td>
     <td align=left>[% nh.action_str %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% nh.the_date_obj %]&nbsp;&nbsp;[% nh.time %]&nbsp;&nbsp;[% nh.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <td><a href="javascript:void(0);" onclick="return overlib('[% nh.the_date_obj %]&nbsp;&nbsp;[% nh.time %]&nbsp;&nbsp;[% nh.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
 [% END %]
 </table>

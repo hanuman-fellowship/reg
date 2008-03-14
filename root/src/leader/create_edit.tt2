@@ -35,6 +35,11 @@
 </tr>
 
 <tr>
+<th align=right>Order</th>
+<td><input type=text name=l_order value="[% leader.l_order %]" size=2 maxlength=2></td>
+</tr>
+
+<tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>
 </tr>

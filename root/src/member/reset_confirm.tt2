@@ -1,0 +1,22 @@
+<span style="color: red; font-size: 18pt; font-weight: bold">Warning!</span>
+<p>
+You are about to reset the free nights taken to 12
+for <i>all</i> Sponsor members<br>
+and reset the free program for <i>all</i> Life members.
+<p>
+<p>
+<form action="/member/reset_do" name=form>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Password</th>
+<td><input type=password name=password></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td>
+Do you wish to proceed?<br>
+<input type=submit name=no value="No">&nbsp;&nbsp;<input type=submit name=yes value="Yes"></td></tr>
+</form>
+<script type="text/javascript">document.form.password.focus();</script>

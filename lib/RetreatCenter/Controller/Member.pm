@@ -208,13 +208,40 @@ sub _get_data {
     if ($hash{category} eq 'Sponsor' && ! $hash{date_sponsor}) {
         push @mess, "Missing Sponsor date";
     }
+    if ($hash{category} eq 'General') {
+        $hash{sponsor_nights} = 0;
+        $hash{free_prog_taken} = '';
+    }
+    else {
+        $hash{sponsor_nights} = trim($hash{sponsor_nights});
+        if ($hash{sponsor_nights} !~ m{^\d+$}) {
+            push @mess, "Invalid Nights Left: $hash{sponsor_nights}";
+        }
+    }
     if (! exists $hash{free_prog_taken}) {
-        $hash{free_prog_taken} = '';        # unchecked field not sent
+        $hash{free_prog_taken} = '';        # an unchecked field would not
+                                            # be sent if I didn't do this...
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "member/error.tt2";
     }
+}
+
+sub get_now {
+    my ($c) = @_;
+
+    my ($hour, $min) = (localtime())[2, 1];
+    my $now_time = sprintf "%02d:%02d", $hour, $min;
+    # can't get id directly???
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    return 
+        user_id  => $u->id,
+        the_date => today->as_d8(),
+        time     => $now_time,
 }
 
 #
@@ -230,28 +257,17 @@ sub update_do : Local {
     return if @mess;
 
     my $member = model($c, 'Member')->find($id);
+    my @who_now = get_now($c);
 
-    my $today = today()->as_d8();
     if ($hash{mkpay_date}) {
         # put payment in history, reset last paid
-
-        my ($hour, $min) = (localtime())[2, 1];
-        my $now_time = sprintf "%02d:%02d", $hour, $min;
-        # can't get id directly???
-        my $username = $c->user->username();
-        my ($u) = model($c, 'User')->search({
-            username => $username,
-        });
-        my $user_id = $u->id;
 
         model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $hash{mkpay_date},
             amount       => $hash{mkpay_amount},
             general      => $hash{category} eq 'General'? 'yes': '',
-            user_id      => $user_id,
-            the_date     => today()->as_d8(),
-            time         => $now_time,
+            @who_now,
         });
     }
 
@@ -260,9 +276,9 @@ sub update_do : Local {
     PAYMENT:
     for my $p (model($c, 'SponsHist')->search({
                    member_id => $id,
+                   general => { "!=", "yes" },
                })
     ) {
-        next PAYMENT if $p->general;
         $total += $p->amount;
     }
     $hash{total_paid} = $total;
@@ -270,6 +286,26 @@ sub update_do : Local {
     # update the member record
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
+    if ($member->sponsor_nights != $hash{sponsor_nights}) {
+        # add NightHist record to reflect the change
+        model($c, 'NightHist')->create({
+            member_id => $id,
+            reg_id => 0,
+            num_nights => $hash{sponsor_nights},
+            action => 1,    # set nights
+            @who_now,
+        });
+    }
+    if ($member->free_prog_taken ne $hash{free_prog_taken}) {
+        # add NightHist record to reflect the change
+        model($c, 'NightHist')->create({
+            member_id => $id,
+            reg_id => 0,
+            num_nights => 0,
+            action => ($hash{free_prog_taken})? 5: 3,  # set/clear free program
+            @who_now,
+        });
+    }
     $member->update(\%hash);
 
     $c->response->redirect($c->uri_for("/member/list"));
@@ -311,6 +347,8 @@ sub create_do : Local {
         %hash,
     });
     my $id = $member->id();
+    my @who_now = get_now($c);
+
     # put any payment in history
     if ($date) {
         model($c, 'SponsHist')->create({
@@ -318,6 +356,26 @@ sub create_do : Local {
             date_payment => $date,
             amount       => $amnt,
             general      => $hash{category} eq 'General'? 'yes': '',
+            @who_now,
+        });
+    }
+    # NightHist records
+    if ($hash{category} ne 'General') {
+        model($c, 'NightHist')->create({
+            @who_now,
+            member_id  => $id,
+            reg_id     => 0,
+            num_nights => $hash{sponsor_nights},
+            action     => 3,
+        });
+    }
+    if ($hash{category} eq 'Life') {
+        model($c, 'NightHist')->create({
+            @who_now,
+            member_id  => $id,
+            reg_id     => 0,
+            num_nights => 0,
+            action     => ($hash{free_prog_taken})? 5: 3,
         });
     }
     $c->response->redirect($c->uri_for("/member/list"));
@@ -377,6 +435,21 @@ EOM
 
 sub reset : Local {
     my ($self, $c) = @_;
+    $c->stash->{template} = "member/reset_confirm.tt2";
+}
+
+sub reset_do : Local {
+    my ($self, $c) = @_;
+
+    if ($c->request->params->{no}) {
+        $c->response->redirect($c->uri_for("/member/list"));
+        return;
+    }
+    if ($c->request->params->{password} ne "sita") {
+        $c->stash->{mess} = "Incorrect password";
+        $c->stash->{template} = "member/error.tt2";
+        return;
+    }
     model($c, 'Member')->search({
         category => { 'in' => [ 'Sponsor', 'Life' ] },
     })->update({

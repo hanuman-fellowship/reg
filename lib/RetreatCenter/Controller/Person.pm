@@ -14,6 +14,7 @@ use Util qw/
 /;
 use Date::Simple qw/date today/;
 use USState;
+use LWP::Simple;
 
 Date::Simple->default_format("%D");      # set it here - where else???
 
@@ -202,6 +203,26 @@ sub delete : Local {
     $c->response->redirect($c->uri_for('/person/search'));
 }
 
+sub _what_gender {
+    my ($name) = @_;
+
+    my $html = get("http://www.gpeters.com/names/baby-names.php?"
+                  ."name=" . $name);
+    my ($likelihood, $gender) =
+        $html =~ m{popular usage, it is <b>([\d.]+).*?to be a (\w+)'s};
+    my %name = qw(
+        girl Female
+        boy  Male
+    );
+    if ($gender) {
+        return "$likelihood => $name{$gender}";
+    }
+    if (($gender) = $html =~ m{It's a (.*?)!}) {
+        return "$name{$gender}";
+    }
+    return "Only God knows.";
+}
+
 sub view : Local {
     my ($self, $c, $id) = @_;
 
@@ -220,9 +241,13 @@ sub view : Local {
         return;
     }
     $c->stash->{person} = $p;
-    $c->stash->{sex} = ($p->sex() eq "M")? "Male"
-                      :($p->sex() eq "F")? "Female"
-                      :                    "Not Reported";
+    my $sex = $p->sex();
+    $c->stash->{sex} = ($sex eq "M")? "Male"
+                      :($sex eq "F")? "Female"
+                      :               "Not Reported";
+    if ($sex ne 'M' && $sex ne 'F') {
+            $c->stash->{sex} .= "<br>". _what_gender($p->first);
+    }
     $c->stash->{affils} = [ $p->affils() ];
     $c->stash->{date_entrd} = date($p->date_entrd()) || "";
     $c->stash->{date_updat} = date($p->date_updat()) || "";
@@ -236,7 +261,9 @@ sub view : Local {
                    $b->program->sdate cmp $a->program->sdate
                }
                $p->registrations;
-    $c->stash->{registrations} = \@regs;
+    if (@regs) {
+        $c->stash->{registrations} = \@regs;
+    }
 
     $c->stash->{template} = "person/view.tt2";
 }
@@ -297,7 +324,8 @@ sub _get_data {
         push @mess, "First name cannot be blank.";
     }
     if ($hash{sex} ne 'F' && $hash{sex} ne 'M') {
-        push @mess, "You must specify Male or Female.";
+        push @mess, "You must specify Male or Female: $hash{first} - "
+                  . _what_gender($hash{first});
     }
     if ($hash{addr1} && usa($hash{country}) && ! valid_state($hash{st_prov})) {
         push @mess, "Invalid state: $hash{st_prov}";

@@ -34,7 +34,9 @@ sub action_str {
     return ($n == 1)? "Set Nights"
           :($n == 2)? "Take Nights"
           :($n == 3)? "Clear Free Program"
-          :           "Take Free Program";
+          :($n == 4)? "Take Free Program"
+          :($n == 5)? "Set Free Program"
+          :           "Unknown action";
 }
 
 1;

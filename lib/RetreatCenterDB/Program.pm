@@ -71,8 +71,8 @@ __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
 # leaders
 __PACKAGE__->has_many(leader_program => 'RetreatCenterDB::LeaderProgram',
                       'p_id');
-__PACKAGE__->many_to_many(leaders => 'leader_program', 'leader');
-    # sort order???
+__PACKAGE__->many_to_many(leaders => 'leader_program', 'leader',
+                          { order_by => 'l_order' });
 
 # exceptions - maybe
 __PACKAGE__->has_many(exceptions => 'RetreatCenterDB::Exception', 'prog_id');
@@ -551,6 +551,9 @@ sub picture {
     # first copy the needed pictures to the 'holding area'
     for my $p ($pic1, $pic2) {
         next unless $p;
+        if (! -f "root/static/images/$p") {
+            $p =~ s{jpg}{gif};      # this modifies $pic1, $pic2
+        }
         mkdir "gen_files/pics";
         copy("root/static/images/$p", "gen_files/pics/$p");
         my $big = $p;

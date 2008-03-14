@@ -100,6 +100,10 @@ sub role_table {
 }
 
 #
+# after $c the parameters
+# are an array of leader objects
+# that should be checked in the display.
+#
 sub leader_table {
     my ($c) = shift;
 

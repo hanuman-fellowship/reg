@@ -27,6 +27,8 @@ Create a Person
 
     give incorrect State (in the U.S.)
     Leave sex unchosen - get error.
+        note the suggestion for a gender.
+        from http://www.gpeters.com/names/baby-names.php
     invalid dates for hf.    13/1/2009 or blah or 2/29/3
 
 Affiliations
@@ -86,8 +88,11 @@ Listings
         note that it is sorted by Sanskrit column
         and that in the absence of a Sanskrit name, first is used.
     Unduplication List
-        A list of _possible_ duplicates.
-        Generate it once and save it and use it to do research.
+        A list of _possible_ duplicates, _possible_ partners,
+        and unreported gender.
+
+        Generate it once, save it, and use it to do research.
+
         - Identical first/last names.
         - Unpartnered people with addresses that are 'numerically' close.
             e.g.
@@ -95,6 +100,15 @@ Listings
             and
                 123 Ornge Street Tampa, FL 12341
             are numerically close.
+*       - unreported genders
+            when you view such a person it does a lookup at:
+            http://www.gpeters.com/names/baby-names.php
+            to help you determine the gender.
+
+*       This list is opened in a new window.
+        All links in that listing open into the same other window.
+        This should help with navigation, yes?
+
     Purge Stale Addresses
         Upload a file containing email addresses.
         They will be removed from people's records.

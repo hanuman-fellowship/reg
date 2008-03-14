@@ -38,98 +38,11 @@ create table program (
     school      integer,
     level       text
 );
-insert into program values (
-    1,
-    'OGS',
-    '5 night silent retreat',
-    'with Adya',
-    '90123',
-    2,
-    '',
-    '20090303',
-    '20090307',
-    400,
-    'Please do not bring pets.
-Or food',
-    '',
-    'This is a great program.
-New line.
-Second new line.',
-    '',
-    'yes',
-    '',
-    'yes',
-    2,
-    '0',
-    '0',
-    100,
-    '',
-    'yes',
-    '',
-    'default',
-    'default',
-    'yes',
-    '',
-    'yes',
-    '**',       -- footnotes
-    '4:00 pm',
-    '7:00 pm',
-    '7:00 pm',
-    '12:00 pm',
-    NULL,
-    NULL
-);
-insert into program values (
-    2,
-    'ABC',
-    'Beginning Alphabets',
-    'For everyone',
-    '90421',
-    1,
-    '',
-    '20090403',
-    '20090407',
-    400,
-    'Please do not bring pets.
-Or food',
-    '',
-    'This is a wonderful program for word lovers everywhere.',
-    '',
-    'yes',
-    '',
-    'yes',
-    2,
-    '0',
-    '0',
-    100,
-    '',
-    'yes',
-    '',
-    'default',
-    'default',
-    'yes',
-    '',
-    'yes',
-    '**',       -- footnotes
-    '4:00 pm',
-    '7:00 pm',
-    '7:00 pm',
-    '12:00 pm',
-    NULL,
-    NULL
-);
 drop table if exists canpol;
 create table canpol (
     id integer primary key,
     name   text,
     policy text
-);
-insert into canpol values (
-    1, 'Default', 'No refund after 10 days before the program starts.
-Once it starts - if you quit... Sorry, Charlie'
-);
-insert into canpol values (
-    2, 'OGS', 'No refunds at all if you bail on us.'
 );
 drop table if exists housecost;
 create table housecost (
@@ -150,13 +63,6 @@ create table housecost (
     unknown         integer,
     type            text
 );
-insert into housecost values (
-    1, 'Default', 90, 85, 80, 75, 70, 65, 60, 55, 50, 45, 40, 35, 30, 'Perday'
-);
-insert into housecost values (
-    2, 'OGS', 900, 850, 800, 750, 700, 650, 600,
-              550, 500, 450, 400, 350, 300, 'Total'
-);
 drop table if exists affil_program;
 create table affil_program (
     a_id integer,
@@ -169,7 +75,8 @@ create table leader (
     public_email text,
     url text,
     image text,
-    biography text
+    biography text,
+    l_order integer     -- can't use 'order'
 );
 drop table if exists leader_program;
 create table leader_program (
@@ -190,19 +97,4 @@ create table rental (
     linked      text,
     phone       text,
     email       text
-);
-insert into rental values (
-    1,
-    'Spring Yoga',
-    'Budding Energy',
-    'Shooting out of the ground',
-    '98765',
-    '20090909',
-    '20090911',
-    'www.springyoga.com',
-    'Come have fun.
-Tilling the earth of your body.',
-    'yes',
-    '234-098-0987',
-    'spring@yoga.org'
 );

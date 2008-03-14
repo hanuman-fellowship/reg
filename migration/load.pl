@@ -18,11 +18,12 @@ my $ap_sth = $dbh->prepare($ap_sql)
 
 my @flds;
 
-open my $affils, "<", "affils"
+open my $affils, "<", "new/affils.txt"
     or die "cannot open affils: $!\n";
 my %affil_id;
 my ($code, $value, $n);
 while (<$affils>) {
+    next unless /\S/;
     chomp;
     ++$n;
     ($code, $value) = split /\|/;
@@ -32,12 +33,13 @@ while (<$affils>) {
     $affil_id{$code} = $n;
 }
 close $affils;
-open my $people, "<", "people"
+open my $people, "<", "new/people.txt"
     or die "cannot open people: $!\n";
 $n = 0;
 $|++;
 my %no_affil;
 while (<$people>) {
+    next unless /\S/;
     chomp;
     ++$n;
     print "$n\r";

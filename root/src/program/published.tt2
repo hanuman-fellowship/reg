@@ -21,7 +21,7 @@ Unlinked programs:
 </tr>
 [% FOR p IN unlinked %]
 <tr>
-<td><a href="http://www.mountmadonna.org/[% p.unlinked_dir %]">[% p.unlinked_dir %]</a></td>
+<td><a target=_blank href="http://www.mountmadonna.org/[% p.unlinked_dir %]">[% p.unlinked_dir %]</a></td>
 <td>[% p.name %]</td>
 <td>[% p.title %]</td>
 <td>[% p.leader_names %]</td>
