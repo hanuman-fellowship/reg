@@ -1,5 +1,5 @@
 <h2>People</h2>
-<a href=/person/create>Create</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href=/person/create>Add</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <p>
 <h3>Searching for People</h3>
 <p>
@@ -17,7 +17,6 @@
 <input type=radio name=field value=first [% first_checked %]> First<br>
 <input type=radio name=field value=tel_home [% tel_home_checked %]> Home Phone
 </td></tr>
-<tr><th align=right>Type of Search</th><td>Prefix <input type=radio name=match value=prefix [% prefix_checked %]>&nbsp;&nbsp;&nbsp;Substring <input type=radio name=match value=substr [% substr_checked %]></td></tr>
 <tr><th align=right>Records per Page</th><td><input type=text name=nrecs size=3 value=[% nrecs %]></td></tr>
 <tr><td>&nbsp;</td><td><input type=submit value="Submit"></td></tr>
 </table>

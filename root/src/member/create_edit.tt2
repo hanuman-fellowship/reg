@@ -40,7 +40,7 @@ h3 {
 <tr>
 <th align=left colspan=3><input type=radio name=category value='Life' [% category_life %]> Life</th>
 <th align=right>Nights Left</th>
-[% IF Catalyst.check_user_roles('super_admin') %]
+[% IF Catalyst.check_user_roles('member_admin') %]
 <td><input type=text name=sponsor_nights value='[% member.sponsor_nights %]' size=2 maxlength=2></td>
 [% ELSE %]
 <td>[% member.sponsor_nights %]</td>
@@ -50,7 +50,7 @@ h3 {
 <tr>
 <td colspan=3>&nbsp;</td>
 <td colspan=2>
-<input type=checkbox name=free_prog_taken [% free_prog_checked %]> <b>Free Program Taken</b>
+<input type=checkbox name=free_prog_taken [% free_prog_checked %] value=yes> <b>Free Program Taken</b>
 </td>
 </tr>
 

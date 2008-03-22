@@ -59,25 +59,28 @@ sub search_do : Local {
     my ($self, $c) = @_;
 
     my $pattern = trim($c->request->params->{pattern});
+    my $orig_pattern = $pattern;
+    $pattern =~ s{~}{%}g;
+    # % in a web form messes with url encoding... :(
+    # even when method=post?
+
     my $field   = $c->request->params->{field};
     my $match   = $c->request->params->{match};
-    my $substr  = ($match eq 'substr')? '%': '';
     my $nrecs   = $c->request->params->{nrecs};
     my $offset  = $c->request->params->{offset} || 0;
     my $search_ref;
-    my $orig_pattern = $pattern;
     if ($pattern =~ m{\s+} && ($field eq 'last' || $field eq 'first')) {
         my ($A, $B) = split /\s+/, $pattern, 2;
         if ($field eq 'last') {
             $search_ref = {
-                last =>  { 'like', "$substr$A%" },
-                first => { 'like', "$substr$B%" },
+                last =>  { 'like', "$A%" },
+                first => { 'like', "$B%" },
             };
         }
         else {
             $search_ref = {
-                last =>  { 'like', "$substr$B%" },
-                first => { 'like', "$substr$A%" },
+                last =>  { 'like', "$B%" },
+                first => { 'like', "$A%" },
             };
         }
     }
@@ -85,12 +88,12 @@ sub search_do : Local {
         # intersperse % in the pattern - unless it was quoted
         $pattern =~ s{(\d)}{$1%}g;
         $search_ref = {
-            tel_home => { like => "$substr$pattern" },
+            tel_home => { like => "$pattern" },
         };
     }
     else {
         $search_ref = {
-            $field => { 'like', "$substr$pattern%" },
+            $field => { 'like', "$pattern%" },
         };
     }
 
@@ -114,7 +117,6 @@ sub search_do : Local {
     );
     if (@people == 0) {
         # Nobody found.
-        $pattern =~ s{%}{}g;
         $c->response->redirect($c->uri_for("/person/search/$orig_pattern/$field/$match/$nrecs"));
         return;
     }

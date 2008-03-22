@@ -1,7 +1,7 @@
 <h2>Affiliations</h2>
 [% madmin = Catalyst.check_user_roles('mail_admin') %]
 [% IF madmin %]
-<a href=/affil/create>Create</a>
+<a href=/affil/create>Add</a>
 [% END %]
 <ul>
 <table cellpadding=3 border=0>

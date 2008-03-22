@@ -76,7 +76,7 @@ for my $name (keys %data) {
         $data{$name}{own_van},
         $data{$name}{commuting},
         $data{$name}{unknown},
-        ($hid == 1 || $hid >= 7)? 'Perday': 'Total'
+        ($hid == 0 || $hid >= 6)? 'Perday': 'Total'
     );
 }
 
@@ -139,7 +139,7 @@ close $ld;
 sub processLeader {
     # find first, last in People or add them
     # - get an id for use when creating the Leader record.
-    return unless $hash{first} =~ /\S/ && $hash{last} =~ /\S/;
+    return unless ($hash{first} =~ /\S/ || $hash{last} =~ /\S/);
     $per_sth->execute($hash{first}, $hash{last});
     my ($per_id) = $per_sth->fetchrow_array();
     if (!$per_id) {
@@ -221,8 +221,6 @@ my $p_sth = $dbh->prepare($p_sql) or die "no prep affil\n";
 my $lp_sql = "insert into leader_program values (?, ?)";
 my $lp_sth = $dbh->prepare($lp_sql) or die "no prep lp\n";
 
-open my $in, "<", "new/curprogr.txt"
-    or die "no curprog: $!\n";
 # got the order of names backwards so ...
 # reverse to the rescue.
 my %lookup = reverse qw/
@@ -243,38 +241,57 @@ my %init = (
     prog_start => '7:00 pm',
     prog_end   => '12:30 pm',
 );
-%hash = %init;
-my $pid = 1;            # explicit rather than auto assigned...
-while (<$in>) {
-    s{\r?\n$}{};
-    my ($k, $v) = split m{\t};
-    $v =~ s{^\s*|\s*$}{}g;
-    if ($v eq '-') {
-        $v = "";
-        while (<$in>) {
-            s{\r?\n$}{};
-            s{^\s*|\s*$}{}g;
-            last if m{^\.$};
-            $v .= "$_\n";
+for my $seas (qw/ cur s07 f07 /) {
+    open my $in, "<", "new/${seas}progr.txt"
+        or die "no ${seas}prog: $!\n";
+    %hash = %init;
+    while (<$in>) {
+        s{\r?\n$}{};
+        my ($k, $v) = split m{\t};
+        $v =~ s{^\s*|\s*$}{}g;
+        if ($v eq '-') {
+            $v = "";
+            while (<$in>) {
+                s{\r?\n$}{};
+                s{^\s*|\s*$}{}g;
+                last if m{^\.$};
+                $v .= "$_\n";
+            }
+        }
+        $k = $lookup{$k} || $k;
+        $hash{$k} = $v;
+        if ($k eq 'collect_total') {
+            unless ($hash{pid} == 69 && $seas ne 'cur') {
+                processProg();
+            }
+            %hash = %init;
         }
     }
-    $k = $lookup{$k} || $k;
-    $hash{$k} = $v;
-    if ($k eq 'collect_total') {
-        processProg();
-        %hash = %init;
-    }
+    close $in;
 }
-close $in;
 
 sub processProg {
-    return if $hash{name} =~ m{ FULL$};
-    $hash{id} = $pid++;
+    if ($hash{name} =~ m{ FULL$}) {
+        $hash{webready} = "";
+        $hash{image} = "";
+        $hash{linked} = "";
+        $hash{webdesc} = "";
+        $hash{brdesc} = "";
+        $hash{ptemplate} = "";
+        $hash{url} = "";
+        if ($hash{full_tuition} > 0) {
+            $hash{tuition} = $hash{full_tuition};
+        }
+        $hash{deposit} = 0;
+        $hash{fulltuition} = 0;
+        $hash{extradays} = 0;
+    }
+    $hash{id} = $hash{pid};
     for my $f (qw/ sdate edate /) {
         $hash{$f} =~ s{(..)/(..)/(....)}{$3$1$2}g;
         $hash{$f} =~ s{[/\s]}{}g;
     }
-    if (! $hash{linked}) {
+    if (! $hash{linked} && $hash{webready}) {
         $hash{unlinked_dir} = 't-'      # to not clobber the cur reg
                               . lc(substr($hash{name}, 0, 3)
                               . "-"

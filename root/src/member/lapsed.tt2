@@ -1,0 +1,25 @@
+<h2>Lapsed Members</h2>
+<a href="/member/email_lapsed">Send Email</a>
+<ul>
+<table cellpadding=3>
+<tr>
+<th>Name</th>
+<th>Category</th>
+<th>Lapse Date</th>
+</tr>
+[% IF members.0 %]  <!-- why is this needed??? -->
+[% FOREACH m IN members %]
+<tr>
+<td><a href="/member/update/[% m.id %]">[% m.person.sanskrit || m.person.first %]</a></td>
+<td align=right>[% m.category %]</td>
+<td align=center>
+[% IF    m.category == 'General' %][% m.date_general_obj %]
+[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj %]
+[% ELSE %]                         unknown
+[% END %]
+</td>
+</tr>
+[% END %]
+[% END %]
+</table>
+</ul>

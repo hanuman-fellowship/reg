@@ -1,7 +1,7 @@
 <h2>Cancellation Policies</h2>
 
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/canpol/create">Create</a>
+<a href="/canpol/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/canpol/update/[% canpol.id %]">Edit</a>
 [% IF canpol.name != 'Default' %]

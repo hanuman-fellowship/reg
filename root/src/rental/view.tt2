@@ -1,6 +1,6 @@
 <h2>Rentals</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/rental/create">Create</a>
+<a href="/rental/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/update/[% rental.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;

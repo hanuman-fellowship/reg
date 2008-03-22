@@ -6,18 +6,25 @@ Log In
 
 Search
     enter pattern, press Submit
-    try substring instead of prefix
+        it will use the pattern as a prefix of the last name
     try sanskrit, zip, email, first, and home phone.
         the numbers in home phone are not necessarily
             sequential...  okay if you give 10 digits.
             otherwise sort of weird - but useful nonetheless.
+*       if you quote the digits then they need to be sequential
+            '876'
+
+*   you can use the character ~ in a pattern as a kind of 'wild card':
+            ~fe
+        will look for a last name containing the characters 'fe' anywhere
+
     ask for more/less records (instead of Number of Records = 10).
 
     None found? You stay at the search screen.
 
     Try "Next 10" until there are no more.
 
-Create a Person
+Add a Person
     fill in all fields (country defaults to USA)
     choose a few affiliations
     note the two submit buttons (for convenience's sake)
@@ -117,20 +124,53 @@ Reports
     Create a report - giving a description and zip code range.
     Format - choose "Name, Address, Email"
     Sort - Last Name or Zip
-        Run the report.   See the rows on the screen. 
+
+    Run the report.   See the rows on the screen. 
+
     Change format to "Email to VistaPrint"
         ReRun.  Reports the count and the listing
             goes in a file - which you can save or view
             with normal browser actions.
     Change "Number of Records" to something less than the count.
         ReRun.   This is a random sample of the prior listing's rows.
-    Change the report and select some affiliations.
+
+    Edit the report and select some affiliations.
         Now the listing is restricted to people who
         have at least one of the affiliations in their record.
         Add one of the affiliations to a person not in the
             report and verify they get into the rerunning of the report.
-    In no case should a person with "Mailings" UNchecked be included.
+
     Choose a format of "Email".
         This goes into a file.
         Only people with non-blank emails will be included.
         Sorted by email.
+
+*   On a person's information screen there is a place
+    for them to specify how we should contact them (email,
+    snail mail or neither) and whether we can share their info with
+    MMC affiliates (what does that word mean anyway?
+    business partners?) - for when we are sharing (or selling)
+    our list with others.
+     
+    Running a report for our own uses is one thing.
+    For a mailing of a printed brochure or for an email spam blast.
+    We need to respect the settings each person has specified.
+    No email to a person unless they say they have said they permit it.
+
+    When choosing Run you can also check two checkboxes labelled 
+        Share and Count.
+
+    If "Count" is checked then "Run"
+    will count up (and display below) how many people
+    will be included in the report.
+    Jamal can use this to know how many copies of
+    a brochure need to be printed.
+      
+    Let's say that an affiliate wants to buy a portion of our
+    list - let's say the names and addresses in the western states
+    of people who are interested in Movement Programs.
+    We'll charge them based on the number of names we supply.
+     
+    The Share" checkbox ill generate the list and only include
+    people who have indicated that they allow us to share
+    their information with MMC affiliates.

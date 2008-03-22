@@ -251,6 +251,7 @@ sub create_do : Local {
             tuition   => $p->full_tuition,
             extradays => 0,
             full_tuition => 0,
+            deposit   => 0,
         });
     }
     $c->response->redirect($c->uri_for("/program/view/$id"));
@@ -436,6 +437,24 @@ sub leader_update_do : Local {
             l_id => $cl,
             p_id => $id,
         });
+    }
+    # ditto for any FULL program
+    # delete all old leaders and create the new ones.
+    my $p = model($c, 'Program')->find($id);
+    my ($p_full) = model($c, 'Program')->search({
+        name => $p->name . " FULL",
+    });
+    if ($p_full) {
+        my $full_id = $p_full->id;
+        model($c, 'LeaderProgram')->search(
+            { p_id => $full_id },
+        )->delete();
+        for my $cl (@cur_leaders) {
+            model($c, 'LeaderProgram')->create({
+                l_id => $cl,
+                p_id => $full_id,
+            });
+        }
     }
     # show the program again - with the updated leaders
     view($self, $c, $id);

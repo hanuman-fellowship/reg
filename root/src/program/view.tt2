@@ -1,6 +1,6 @@
 <h2>Programs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-    <a href="/program/create">Create</a>
+    <a href="/program/create">Add</a>
     [% IF edit_okay %]
         &nbsp;&nbsp;&nbsp;
         <a href="/program/update/[% program.id %]">Edit</a>
@@ -103,10 +103,10 @@
 <tr>
 <th align=right valign=top>Leaders</th>
 <td align=left valign=top>
+[% FOR l IN program.leaders %]
+    <a href="/leader/view/[% l.id %]">[% l.person.last %], [% l.person.first %]</a><br>
+[% END %]
 [% IF edit_okay %]
-    [% FOR l IN program.leaders %]
-        <a href="/leader/view/[% l.id %]">[% l.person.last %], [% l.person.first %]</a><br>
-    [% END %]
     [% IF Catalyst.check_user_roles('prog_admin') %]
         <a href="/program/leader_update/[% program.id %]">Update</a>
     [% END %]
@@ -143,7 +143,7 @@
 <th align=right valign=top>Program Image</th>
 <td colspan=2>
 [% IF program.image %]
-<img src="[% Catalyst.uri_for('/static/images/pth-') _ program.id _ '.jpg' %]"><br>
+<img src="[% program.image_file %]"><br>
 <a href="[% Catalyst.uri_for('/program/del_image/') _ program.id %]"
 onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete Image</a>
 [% ELSE %]

@@ -14,6 +14,7 @@ use Util qw/
     model
     trim
     empty
+    email_letter
 /;
 use Lookup;
     # damn awkward to keep this thing initialized... :(
@@ -1049,7 +1050,7 @@ sub send_conf : Local {
         $c->res->output($html);
         return;
     }
-    _email($c,
+    email_letter($c,
            html    => $html, 
            subject => "Confirmation of Registration for " . $pr->title,
            to      => $reg->person->email,
@@ -1057,44 +1058,6 @@ sub send_conf : Local {
            from_title => $lookup{from_title},
     );
     $c->response->redirect($c->uri_for("/registration/view/$id"));
-}
-
-sub _email {
-    my ($c, %args) = @_;
-
-    # check args for keys letter, subject, to, from
-
-    #
-    # convert the HTML letter to text with lynx
-    # ??? any way to do this without creating a tmp text file?
-    # keeping it all in memory?
-    #
-    open my $lynx_dump, "|lynx -stdin -dump -width=95>/tmp/$$"
-        or die "cannot open |lynx: $!\n";
-    print {$lynx_dump} $args{html};
-    close $lynx_dump;
-    open my $text_in, "<", "/tmp/$$"
-        or die "cannot open /tmp/$$: $!\n";
-    my $text;
-    {
-        local $/;
-        $text = <$text_in>;
-        close $text_in;
-        unlink "/tmp/$$";
-    }
-    my $mail = Mail::SendEasy->new(
-        smtp => $lookup{smtp_server},
-        user => $lookup{smtp_user},
-        pass => $lookup{smtp_pass},
-    );
-    my $status = $mail->send(
-        %args,
-        msg => $text,
-    );
-    if (! $status) {
-        # what to do about this???
-        $c->log->info('mail error: ' . $mail->error);
-    }
 }
 
 sub view : Local {
@@ -1277,13 +1240,13 @@ sub cancel_do : Local {
     #
     _reg_hist($c, $id, "Cancellation Letter sent");
     if ($reg->person->email) {
-        _email($c,
-               html    => $html, 
-               subject => "Cancellation of Registration for "
-                          . $reg->program->title,
-               to      => $reg->person->email,
-               from    => $lookup{from},
-               from_title => $lookup{from_title},
+        email_letter($c,
+            html    => $html, 
+            subject => "Cancellation of Registration for "
+                      . $reg->program->title,
+            to      => $reg->person->email,
+            from    => $lookup{from},
+            from_title => $lookup{from_title},
         );
         $c->response->redirect($c->uri_for("/registration/view/$id"));
     }

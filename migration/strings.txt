@@ -53,3 +53,4 @@ min_kid_age 2
 max_kid_age 12
 kid_disc 50
 ceu_lic_fee 10
+sponsor_nights 12

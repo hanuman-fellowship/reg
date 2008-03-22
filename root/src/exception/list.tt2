@@ -1,5 +1,5 @@
 <h2>Exceptions</h2>
-<a href=[% Catalyst.uri_for('/exception/create') %]>Create</a>
+<a href=[% Catalyst.uri_for('/exception/create') %]>Add</a>
 <ul>
 <table cellpadding=3 border=0>
 

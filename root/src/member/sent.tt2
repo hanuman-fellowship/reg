@@ -1,1 +1,14 @@
-sent!
+[% msg %]
+
+<h2>Members without an Email Address</h2>
+[% FOR m IN no_email %]
+[% p = m.person %]
+<b>[% p.first %] [% p.last %]</b><span style="margin-left: 1in">[% m.category %] - expired [% IF m.category == 'General' %][% m.date_general_obj%][% ELSE %][% m.date_sponsor_obj %][% END %]</span><br>
+[% p.addr1 %]<br>
+[% IF p.addr2 %]
+    [% p.addr2 %]<br>
+[% END %]
+[% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
+[% IF p.country %][% p.country %][% END %]
+<p>
+[% END %]

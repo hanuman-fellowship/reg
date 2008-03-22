@@ -6,8 +6,13 @@ use base 'Catalyst::Controller';
 use Mail::SendEasy;
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/trim model/;
+use Util qw/
+    trim
+    model
+    email_letter
+/;
 use Date::Simple qw/date today/;
+use Lookup;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -19,119 +24,35 @@ sub index : Private {
 sub membership_list : Local {
     my ($self, $c) = @_;
     
-    # ??? must be a way to collapse this repetitive code.
-    # for my $c (qw/ General Sponsor Life Lapsed /) { ...
-    my @general =
-        map {
-            $_->[1]
-        }
-        sort {
-            $a->[0] cmp $b->[0]
-        }
-        map {
-            [ $_->person->sanskrit || $_->person->first, $_ ]
-        }
-        model($c, 'Member')->search(
-            { category => 'General', },
-        );
-    my $ngeneral = @general;
-    my @sponsor =
-        map {
-            $_->[1]
-        }
-        sort {
-            $a->[0] cmp $b->[0]
-        }
-        map {
-            [ $_->person->sanskrit || $_->person->first, $_ ]
-        }
-        model($c, 'Member')->search(
-            { category => 'Sponsor', },
-        );
-    my $nsponsor = @sponsor;
-    my @life =
-        map {
-            $_->[1]
-        }
-        sort {
-            $a->[0] cmp $b->[0]
-        }
-        map {
-            [ $_->person->sanskrit || $_->person->first, $_ ]
-        }
-        model($c, 'Member')->search(
-            { category => 'Life', },
-        );
-    my $nlife = @life;
-    open my $list, ">", "root/static/memlist.html"
-        or die "cannot create memlist.html";
-    print {$list} <<EOH;
-<h2>Hanuman Fellowship Membership List</h2>
-<h3>Counts</h3>
-<table cellpadding=3>
-<tr><td>General</td><td>$ngeneral</td></tr>
-<tr><td>Sponsor</td><td>$nsponsor</td></tr>
-<tr><td>Life</td><td>$nlife</td></tr>
-</table>
-<h3>General</h3>
-<table cellpadding=3>
-<tr>
-<th align=left>Sanskrit</th>
-<th align=left>Name</th>
-<th>Expires</th>
-</tr>
-EOH
-    for my $m (@general) {
-        my $p = $m->person;
-        print {$list} "<tr>";
-        print {$list} "<td>", $p->sanskrit || $p->first, "</td>";
-        print {$list} "<td>" . $p->last . ", " . $p->first . "</td>";
-        print {$list} "<td>" . date($m->date_general) . "</td>";
-        print {$list} "</tr>\n";
+    my %stash;
+    for my $cat (qw/ general sponsor life /) {
+        $stash{lc $cat} = [
+            map {
+                $_->[1]
+            }
+            sort {
+                $a->[0] cmp $b->[0]
+            }
+            map {
+                [ $_->person->sanskrit || $_->person->first, $_ ]
+            }
+            model($c, 'Member')->search(
+                { category => ucfirst $cat },
+            )
+        ];
+        $stash{"n$cat"} = scalar(@{$stash{$cat}});
     }
-    print {$list} <<EOH;
-</table>
-<h3>Sponsor</h3>
-<table cellpadding=3>
-<tr>
-<th align=left>Sanskrit</th>
-<th align=left>Name</th>
-<th align=center>Last Paid</th>
-<th align=right>Total</th>
-</tr>
-EOH
-    for my $m (@sponsor) {
-        my $p = $m->person;
-        print {$list} "<tr>";
-        print {$list} "<td>", $p->sanskrit || $p->first, "</td>";
-        print {$list} "<td>" . $p->last . ", " . $p->first . "</td>";
-        print {$list} "<td align=center>" . date($m->date_sponsor) . "</td>";
-        print {$list} "<td align=right>" . $m->total_paid . "</td>";
-        print {$list} "</tr>\n";
-    }
-    print {$list} <<EOH;
-</table>
-<h3>Life</h3>
-<table cellpadding=3>
-<tr>
-<th align=left>Sanskrit</th>
-<th align=left>Name</th>
-<th>As Of</th>
-</tr>
-EOH
-    for my $m (@life) {
-        my $p = $m->person;
-        print {$list} "<tr>";
-        print {$list} "<td>", $p->sanskrit || $p->first, "</td>";
-        print {$list} "<td>" . $p->last . ", " . $p->first . "</td>";
-        print {$list} "<td>" . date($m->date_life) . "</td>";
-        print {$list} "</tr>\n";
-    }
-    print {$list} <<EOH;
-</table>
-EOH
-    close $list;
-    $c->response->redirect($c->uri_for("/static/memlist.html"));
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src/member',
+        EVAL_PERL    => 0,
+    });
+    $tt->process(
+        "by_category.tt2",# template
+        \%stash,          # variables
+        \$html,           # output
+    );
+    $c->res->output($html);
 }
 
 sub list : Local {
@@ -214,7 +135,7 @@ sub _get_data {
     }
     else {
         $hash{sponsor_nights} = trim($hash{sponsor_nights});
-        if ($hash{sponsor_nights} !~ m{^\d+$}) {
+        if ($hash{sponsor_nights} !~ m{^\d*$}) {
             push @mess, "Invalid Nights Left: $hash{sponsor_nights}";
         }
     }
@@ -233,7 +154,6 @@ sub get_now {
 
     my ($hour, $min) = (localtime())[2, 1];
     my $now_time = sprintf "%02d:%02d", $hour, $min;
-    # can't get id directly???
     my $username = $c->user->username();
     my ($u) = model($c, 'User')->search({
         username => $username,
@@ -245,10 +165,9 @@ sub get_now {
 }
 
 #
-# this is a perfect example of how software engineers
-# need to take care of all the weird cases - no matter how rare.
-#
-# Life members also have sponsor_nights :( ???
+# don't even try to move Sponsor to Life
+# when they exceed $5000 or $8000.
+# it will be a rare ocurrence.
 #
 sub update_do : Local {
     my ($self, $c, $id) = @_;
@@ -366,7 +285,7 @@ sub create_do : Local {
             member_id  => $id,
             reg_id     => 0,
             num_nights => $hash{sponsor_nights},
-            action     => 3,
+            action     => 1,
         });
     }
     if ($hash{category} eq 'Life') {
@@ -381,55 +300,172 @@ sub create_do : Local {
     $c->response->redirect($c->uri_for("/member/list"));
 }
 
-sub email_all : Local {
-    my ($self, $c) = @_;
-
-    my $mail = Mail::SendEasy->new(
-        smtp => 'mail.logicalpoetry.com:50',
-        user => 'jon@logicalpoetry.com',
-        pass => 'hello!',
-    );
+sub _lapsed_members {
+    my ($c) = @_;
+    my $today = today()->as_d8();
+    return [
+        model($c, 'Member')->search({
+            -or => [
+                -and => [
+                    category => 'General',
+                    date_general => { '<', $today },
+                ],
+                -and => [
+                    category => 'Sponsor',
+                    date_sponsor => { '<', $today },
+                ],
+            ],
+        })
+    ];
+}
+sub _soon_to_lapse_members {
+    my ($c) = @_;
 
     my $today = today();
-    my $month2 = $today + 60;
-    my @sponsor =
+    my $month = $today + 30;
+    $today = $today->as_d8();
+    $month = $month->as_d8();
+
+    return [
         model($c, 'Member')->search({
-            date_sponsor => { '<', $month2->as_d8() },
-        });
-    for my $sp (@sponsor) {
-        my $per = $sp->person;
+            -or => [
+                -and => [
+                    category => 'General',
+                    date_general => { between => [ $today, $month ] },
+                ],
+                -and => [
+                    category => 'Sponsor',
+                    date_sponsor => { between => [ $today, $month ] },
+                ],
+            ],
+        })
+    ];
+}
+
+sub lapsed : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{members} = _lapsed_members($c);
+    $c->stash->{template} = "member/lapsed.tt2";
+}
+
+sub lapse_soon : Local {
+    my ($self, $c) = @_;
+    
+    $c->stash->{members} = _soon_to_lapse_members($c);
+    $c->stash->{template} = "member/lapse_soon.tt2";
+}
+
+sub email_lapsed : Local {
+    my ($self, $c) = @_;
+
+    my @no_email;
+    my $nsent = 0;
+    my $mem_admin = $c->user->first . ' ' . $c->user->last;
+    MEMBER:
+    for my $m (@{_lapsed_members($c)}) {
+        my $per = $m->person;
         my $name = $per->first . ' ' . $per->last;
         my $email = $per->email;
-        my $sp_date = date($sp->date_sponsor);
+        if (! $email) {
+            push @no_email, $m;
+            next MEMBER;
+        }
+        my $exp_date = date($m->category eq 'General'? $m->date_general
+                            :                          $m->date_sponsor);
 
-        my $verb = ($sp_date < $today)? "expired": "will expire";
-        my @payments = $sp->payments();
+        my @payments = $m->payments();
         my $last_amount  = $payments[0]->amount;
         my $last_paid = date($payments[0]->date_payment);
-        my $mem_admin = $c->user->first . ' ' . $c->user->last;
-        # Strings???
-        my $status = $mail->send(
-            subject => "Sponsor Membership in the Hanuman Fellowship",
-            #to => 'Jonny <jon@suecenter.org>',
-            to => $email,
-            from => $c->user->email,
-            msg => <<"EOM",
-Dear $name,
+        my $type = $m->category;
 
-Your sponsor membership $verb on $sp_date.
-You last paid \$$last_amount on $last_paid.
-
-Sincerely,
-$mem_admin
-Membership Administrator
-EOM
+        my $html = "";
+        my $tt = Template->new({
+            INCLUDE_PATH => 'root/static/templates/letter',
+            EVAL_PERL    => 0,
+        });
+        my $stash = {
+            name        => $name,
+            type        => $type,
+            exp_date    => $exp_date,
+            last_amount => $last_amount,
+            last_paid   => $last_paid,
+            mem_admin   => $mem_admin,
+        };
+        $tt->process(
+            "lapse.tt2",      # template
+            $stash,           # variables
+            \$html,           # output
         );
-
-        if (! $status) {
-            $c->log->info('mail error: ' . $mail->error);
-        }
+        email_letter($c,
+            subject    => "Hanuman Fellowship Membership Status",
+            to         => $email,
+            from       => $c->user->email,
+            from_title => $mem_admin,
+            html       => $html,
+        );
+        ++$nsent;
     }
 
+    $c->stash->{msg} = "$nsent letter" . (($nsent == 1)? " was sent."
+                                          :              "s were sent.");
+    $c->stash->{no_email} = \@no_email;
+    $c->stash->{template} = "member/sent.tt2";
+}
+
+sub email_lapse_soon : Local {
+    my ($self, $c) = @_;
+
+    my @no_email;
+    my $nsent = 0;
+    my $mem_admin = $c->user->first . ' ' . $c->user->last;
+    MEMBER:
+    for my $m (@{_soon_to_lapse_members($c)}) {
+        my $per = $m->person;
+        my $name = $per->first . ' ' . $per->last;
+        my $email = $per->email;
+        if (! $email) {
+            push @no_email, $m;
+            next MEMBER;
+        }
+        my $exp_date = date($m->category eq 'General'? $m->date_general
+                            :                          $m->date_sponsor);
+        my $type = $m->category;
+
+        my @payments = $m->payments();
+        my $last_amount  = $payments[0]->amount;
+        my $last_paid = date($payments[0]->date_payment);
+        my $html = "";
+        my $tt = Template->new({
+            INCLUDE_PATH => 'root/static/templates/letter',
+            EVAL_PERL    => 0,
+        });
+        my $stash = {
+            name        => $name,
+            type        => $type,
+            exp_date    => $exp_date,
+            last_amount => $last_amount,
+            last_paid   => $last_paid,
+            mem_admin   => $mem_admin,
+        };
+        $tt->process(
+            "lapse_soon.tt2", # template
+            $stash,           # variables
+            \$html,           # output
+        );
+        email_letter($c,
+            subject    => "Hanuman Fellowship Membership Status",
+            to         => $email,
+            from       => $c->user->email,
+            from_title => $mem_admin,
+            html       => $html,
+        );
+        ++$nsent;
+    }
+
+    $c->stash->{msg} = "$nsent letter" . (($nsent == 1)? " was sent."
+                                          :              "s were sent.");
+    $c->stash->{no_email} = \@no_email;
     $c->stash->{template} = "member/sent.tt2";
 }
 
@@ -450,10 +486,11 @@ sub reset_do : Local {
         $c->stash->{template} = "member/error.tt2";
         return;
     }
+    Lookup->init($c);
     model($c, 'Member')->search({
         category => { 'in' => [ 'Sponsor', 'Life' ] },
     })->update({
-        sponsor_nights  => 12,      # String???
+        sponsor_nights  => $lookup{sponsor_nights},
         free_prog_taken => '',
     });
     $c->response->redirect($c->uri_for("/member/list"));

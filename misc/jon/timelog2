@@ -194,5 +194,16 @@ Mar 12 11:50-12:30, 12:55-1:15
 Mar 13 2:30-3:00, 6:10-6:50
     dumpall on mmc, getall on macbook
     load housing costs - done
-Mar 14 11:50-
+Mar 14 11:50-3:30, 8:30-11:00
     leaders - no gender!
+    finalized loading of programs, leaders, etc.
+    next is registrations
+Mar 16 2:35-3:15, 12:00-1:05
+    getting all seasons
+        assume 3 years back will not change
+    trying to load registrations - many new people to be
+        added to people table - because they weren't added
+        to the mailing list because they had no addresses.
+        how does this happen???? manual registrations?
+Mar 21 3:55-
+    no substring searching - use a ~ in front instead

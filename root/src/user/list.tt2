@@ -1,5 +1,5 @@
 <h2>Users</h2>
-<a href="/user/create">Create</a>
+<a href="/user/create">Add</a>
 <p>
 <ul>
 <table cellpadding=3 border=0>

@@ -1,5 +1,5 @@
 <h2>Reports</h2>
-<a href=/report/create>Create</a>
+<a href=/report/create>Add</a>
 <ul>
 <table cellpadding=3 border=0>
     <tr>

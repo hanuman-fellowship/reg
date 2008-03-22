@@ -1,5 +1,5 @@
 <h2>Users</h2>
-<a href="/user/create">Create</a>
+<a href="/user/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/user/update/[% user.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;

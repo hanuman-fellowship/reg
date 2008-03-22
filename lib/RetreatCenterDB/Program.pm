@@ -652,4 +652,10 @@ sub current_year {
     return today()->year();
 }
 
+sub image_file {
+    my ($self) = @_;
+    my $path = "/static/images/pth-" . $self->id;
+    (-f "root/$path.jpg")? "$path.jpg": "$path.gif";
+}
+
 1;

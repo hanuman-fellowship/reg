@@ -105,6 +105,13 @@ Like programs the start date must be before the end date.
 = For today just enter 't'.
 = For the 5th of the current month just '5'.
 = For November 8th in the current year just '11 8' or '11/8'.
+
+*In some places you can enter +2 or -1 for a date
+and it will be figured relative to either today or
+another date - whatever makes sense in that place.
+For example, when entering the _end_ date of a program
+it is relative to the start date - so you can put +2
+for the end date of a weekend program.
 =====
 
 =====
@@ -155,3 +162,11 @@ and day.  Like this:
     ul_OGS-11-8.html
 
 At this point you will need to go to find these programs separately.
+
+Extra Days
+==========
+Some programs have 'Extra Days'.  This causes the creation
+of another program with the original name suffixed with " FULL".
+This full program cannot be edited.   It parallels the short
+version.  Any edit to the short is reflected (properly) in the full.
+Leader updates for one.  Full programs do not have web sites.

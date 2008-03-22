@@ -22,6 +22,7 @@ our @EXPORT_OK = qw/
     valid_email
     digits
     model
+    email_letter
 /;
 
 use POSIX   qw/ceil/;
@@ -417,6 +418,49 @@ sub digits {
 sub model {
     my ($c, $table) = @_;
     return $c->model("RetreatCenterDB::$table");
+}
+
+my $mail_sender;
+
+sub email_letter {
+    my ($c, %args) = @_;
+
+    # check args for keys letter, subject, to, from
+
+    #
+    # convert the HTML letter to text with lynx
+    # ??? any way to do this without creating a tmp text file?
+    # keeping it all in memory?
+    #
+    open my $lynx_dump, "|lynx -stdin -dump -width=95>/tmp/$$"
+        or die "cannot open |lynx: $!\n";
+    print {$lynx_dump} $args{html};
+    close $lynx_dump;
+    open my $text_in, "<", "/tmp/$$"
+        or die "cannot open /tmp/$$: $!\n";
+    my $text;
+    {
+        local $/;
+        $text = <$text_in>;
+        close $text_in;
+        unlink "/tmp/$$";
+    }
+    if (! $mail_sender) {
+        Lookup->init($c);
+        $mail_sender = Mail::SendEasy->new(
+            smtp => $lookup{smtp_server},
+            user => $lookup{smtp_user},
+            pass => $lookup{smtp_pass},
+        )
+    }
+    my $status = $mail_sender->send(
+        %args,
+        msg => $text,
+    );
+    if (! $status) {
+        # what to do about this???
+        $c->log->info('mail error: ' . $mail_sender->error);
+    }
 }
 
 1;

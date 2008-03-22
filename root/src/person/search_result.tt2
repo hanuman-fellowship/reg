@@ -1,5 +1,5 @@
 <h2>People</h2>
-<a href="/person/create">Create</a>
+<a href="/person/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search">Search</a>
 <ul>

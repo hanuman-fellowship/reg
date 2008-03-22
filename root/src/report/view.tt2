@@ -1,18 +1,21 @@
 <h2>Reports</h2>
-<a href="[% Catalyst.uri_for('/report/create') %]">Create</a> 
-&nbsp;&nbsp;&nbsp;
-<a href="[% Catalyst.uri_for('/report/update/') _ report.id %]">Edit</a> 
-&nbsp;&nbsp;&nbsp;
-<a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]"
-onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
-&nbsp;&nbsp;&nbsp;
-<a href="[% Catalyst.uri_for('/report/run/') _ report.id _ '/sharecount' %]">Share Count</a>
-&nbsp;&nbsp;&nbsp;
-<a href="[% Catalyst.uri_for('/report/run/') _ report.id _ '/share' %]">Share</a>
-&nbsp;&nbsp;&nbsp;
-<a href="[% Catalyst.uri_for('/report/run/') _ report.id _ '/count' %]">Run Count</a>
-&nbsp;&nbsp;&nbsp;
-<a href="[% Catalyst.uri_for('/report/run/') _ report.id %]">Run</a>
+<form action="/report/run/[% report.id %]">
+<table cellpadding=5>
+<tr>
+<td valign=top><a href="[% Catalyst.uri_for('/report/create') %]">Add</a></td>
+<td valign=top><a href="[% Catalyst.uri_for('/report/update/') _ report.id %]">Edit</a> </td>
+<td valign=top><a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]"
+onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a></td>
+<td valign=top>
+<input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share<br>
+<input type=checkbox name=count value=yes [% IF count %]checked[% END %]>Count<br>
+</td>
+<td valign=top>
+<input type=submit value="Run" name=run>
+</td>
+</tr>
+</table>
+</form>
 <p>
 <table cellpadding=3 border=0>
     <tr>

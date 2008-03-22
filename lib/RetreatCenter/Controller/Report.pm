@@ -194,7 +194,10 @@ sub create_do : Local {
 # type is either empty, 'count' or 'share' - or 'countshare'!.
 #
 sub run : Local {
-    my ($self, $c, $id, $type) = @_;
+    my ($self, $c, $id) = @_;
+
+    my $share = $c->request->params->{share};
+    my $count = $c->request->params->{count};
 
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
@@ -246,7 +249,7 @@ sub run : Local {
         $restrict .= " and " if $restrict;
         $restrict .= "e_mailings = 'yes'";
     }
-    if ($type =~ m{share}) {
+    if ($share) {
         $restrict .= " and " if $restrict;
         $restrict .= "share_mailings = 'yes'";
     }
@@ -336,8 +339,10 @@ EOS
         @subset = sort { $a <=> $b } @subset;
         @people = @people[@subset];    # slice!
     }
-    if ($type =~ m{count}) {
+    if ($count) {
         $c->stash->{message} = "Record count = " . scalar(@people);
+        $c->stash->{count} = $count;
+        $c->stash->{share} = $share;
         view($self, $c, $id);
         return;
     }

@@ -898,3 +898,23 @@ transportation?
 what if the image uploaded is a gif?
     we assume it is a jpg. - shall we allow?
 use reg_start, prog_start, end too in web templates?
+can't create a new user - why?
+the disambiguation/verification step should take
+    place even if the name matches only one or zero records.
+current season - KORNFIELD FULL 07 should be KORNFIELD 07 FULL
+problems with ennye (spanish n) in online reservations, etc.
+    Christina Pen~a in mailing list but not there.
+    when loading people.txt need to convert these
+    8-bit chars to 7 bit...   what are they?
+    search for them.  likely added via online reg.
+many people were not put in mailing list
+    because there was no address at all...
+    won't work for the new way of organizing things...
+we COULD have pennies if i removed int() calls
+    and the -?\d+ edit.
+deletion of registrations - what about deposit???
+need a way of sending carpool list one-two weeks
+    before the program.  rather than include
+    it in the confirmation letter - because early registrants
+    get very little.
+why can't get id of current user from $c->user?

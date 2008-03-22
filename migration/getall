@@ -1,5 +1,6 @@
 #!/bin/sh
 cd /Users/jonbjornstad/catalyst/projects/RetreatCenter/migration
+rm -rf new
 echo ftp
 ftp www.mountmadonna.org <<EOC >/tmp/dump.out 2>&1
 get dmpfile.tar.Z
