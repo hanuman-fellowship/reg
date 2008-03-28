@@ -76,3 +76,12 @@ create table credit (
     date_used text,
     used_reg_id integer
 );
+drop table if exists conf_history;
+create table conf_history (
+    id integer primary key,
+    reg_id integer,
+    note text,
+    user_id integer,
+    the_date text,
+    time text
+);

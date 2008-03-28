@@ -1,0 +1,427 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use lib '../lib';
+use Util qw/nsquish/;
+
+$|++;       # unbuffer output
+
+my $unknown = 1;        # fixed id for unknown user
+
+my @seasons;
+my $p = shift @ARGV;
+while ($p ne 's08') {
+    push @seasons, $p;
+    if ($p =~ m{^s}) {
+        $p =~ s{s}{f};
+    }
+    else {
+        my ($yr) = $p =~ m{(\d+)};
+        $yr = ($yr + 1) % 100;
+        $p = 's' . sprintf("%02d", $yr);
+    }
+}
+push @seasons, 'cur';
+
+my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
+    or die "oh no\n";
+$dbh->do("delete from registration");
+$dbh->do("delete from reg_payment");
+$dbh->do("delete from reg_charge");
+$dbh->do("delete from reg_history");
+$dbh->do("delete from credit");
+
+#    id          integer primary key,
+#    username    text,
+#    password    text,
+#    email       text,
+#    first       text,
+#    last        text
+my $who_sql = "select id from user where username = ?";
+my $who_sth = $dbh->prepare($who_sql) or die "no who_sql\n";
+my $who_ins_sql = "
+insert into user
+(id, username, password, email, first, last)
+values
+(?, ?, ?, ?, ?, ?)
+";
+my $who_ins_sth = $dbh->prepare($who_ins_sql) or die "no who_ins_sql\n";
+
+my $p_sql = "select name, sdate from program where id = ?";
+my $p_sth = $dbh->prepare($p_sql) or die "no p_sql\n";
+
+my $per_sql = "select id from people where first = ? and last = ?";
+my $per_sth = $dbh->prepare($per_sql) or die "no per_sql\n";
+
+my $ins_per_sql = "
+insert into people
+(id, first, last, sex,
+ addr1, addr2, city, st_prov, zip_post, country,
+ tel_home, tel_work, tel_cell, email,
+ date_entrd, date_updat, comment, akey) 
+values
+(?, ?, ?, ?,
+ ?, ?, ?, ?, ?, ?,
+ ?, ?, ?, ?,
+ ?, ?, ?, ?)
+";
+my $ins_per_sth = $dbh->prepare($ins_per_sql) or die "no ins_per_sql\n";
+
+my $pay_ins_sql = "
+insert into reg_payment
+(id, reg_id, user_id, the_date, time, amount, type, what)
+values
+(?, ?, ?, ?, ?, ?, ?, ?)
+";
+my $pay_ins_sth = $dbh->prepare($pay_ins_sql) or die "no pay_ins";
+
+my $chg_ins_sql = "
+insert into reg_charge
+(id, reg_id, user_id, the_date, time, amount, what, automatic)
+values
+(?, ?, ?, ?, ?, ?, ?, ?)
+";
+my $chg_ins_sth = $dbh->prepare($chg_ins_sql) or die "no chg_ins\n";
+
+my $hist_ins_sql = "
+insert into reg_history
+(id, reg_id, user_id, the_date, time, what)
+values
+(?, ?, ?, ?, ?, ?)
+";
+my $hist_ins_sth = $dbh->prepare($hist_ins_sql);
+
+my $upd_per_sql = "
+update people
+set first = ?, last = ?, sex = ?, addr1 = ?, addr2 = ?,
+    city = ?, st_prov = ?, zip_post = ?, country = ?,
+    tel_home = ?, tel_work = ?, tel_cell = ?, email = ?,
+    date_updat = ?, comment = ?, akey = ?
+where id = ?
+";
+my $upd_per_sth = $dbh->prepare($upd_per_sql) or die "no upd_per_sql\n";
+
+my $insreg_sql = "insert into registration
+(id, program_id, person_id, comment, confnote, date_start, date_end,
+ referral, adsource, kids, h_type, h_name, carpool, hascar,
+ date_postmark, letter_sent, ceu_license, arrived, cancelled,
+ deposit, balance, time_postmark
+) 
+values
+(?, ?, ?, ?, ?, ?, ?,
+ ?, ?, ?, ?, ?, ?, ?,
+ ?, ?, ?, ?, ?,
+ ?, ?, ?)";
+my $ins_reg_sth = $dbh->prepare($insreg_sql) or die "no insreg_sql\n";
+
+my %type_map = qw/
+    O Online
+    S Cash
+    C Check
+/;
+$type_map{D} = 'Credit Card';
+
+my %map = qw/
+    pid      program_id
+    psdate   date_start
+    pedate   date_end
+    home     tel_home
+    work     tel_work
+    cell     tel_cell
+    htype    h_type
+    hname    h_name
+    car      hascar
+    post     date_postmark
+    confsent letter_sent
+    lic      ceu_license
+/;
+my %refmap = qw/
+    MW word_of_mouth
+    FL flyer
+    AD ad
+    WB web
+    BR brochure
+    WP web
+/;
+my %housemap = qw/
+    1   single
+    2   double
+    3   triple
+    COM commuting
+    D   dormitory
+    OT  own_tent
+    T   center_tent
+    EC  economy
+    QU  quad
+    VAN own_van
+/;
+my @houses = qw/
+    108BH
+    112B 114B 116B 118B
+    212B 214B 216B 218B
+    BRAJ_LITTLE
+    GDN5
+    KKWC
+    OH_3
+/;
+my %with_bath = map { s{_}{ }; $_ => 1 } @houses;
+my %hash;
+
+my $reg_id = 1;     # sequential primary key id - faster than 
+                    # giving 'undef' and have the database
+                    # do 'max' every time?
+my $person_id;
+
+my $sql = "select max(id) from people";
+my $sth = $dbh->prepare($sql);
+$sth->execute();
+my ($next_person_id) = $sth->fetchrow_array();
+$sth = undef;
+++$next_person_id;
+
+for my $seas (@seasons) {
+    print "reg $seas\t";
+    my $nreg = 0;
+    my $start_time = time();
+    open my $reg, "<", "new/${seas}reg.txt"
+        or die "no ${seas}reg\n";
+    while (<$reg>) {
+        # if $_ doesn't end in \r\n then
+        # trim off the \n trim trailing blanks
+        # and keep reading and appending lines
+        # until you do find a \r\n
+        while (! m{\r\n$}) {
+            chomp;
+            s{ *$}{};
+            $_ .= <$reg>;
+        }
+        s{\r?\n$}{};
+        my ($k, $v) = split m{\t};
+        $v =~ s{^\s*|\s*$}{}g;
+        if ($v eq '-') {
+            $v = "";
+            LINE:
+            while (<$reg>) {
+                s{\r?\n$}{};
+                s{^\s*|\s*$}{}g;
+                last LINE if m{^\.$};
+                $v .= "$_\n";
+            }
+        }
+        $k = $map{$k} if exists $map{$k};
+        $hash{$k} = $v;
+        if ($k eq 'ceusent') {
+            processReg();
+            ++$nreg;
+            %hash = ();
+        }
+        exit if $nreg == 300;
+    }
+    close $reg;
+    printf "%3.1f\n", $nreg/(time()-$start_time);
+}
+
+$p_sth = $per_sth = $ins_per_sth = $upd_per_sth = $ins_reg_sth = undef;
+$who_sth = $who_ins_sth = $pay_ins_sth = $chg_ins_sth = $hist_ins_sth = undef;
+$dbh->disconnect();
+
+sub processReg {
+    $hash{comment} = "";
+    $hash{comment} .= "$hash{'1comment'}\n" if $hash{'1comment'};
+    $hash{comment} .= "$hash{'2comment'}\n" if $hash{'2comment'};
+    $hash{comment} .= "$hash{'3comment'}\n" if $hash{'3comment'};
+    $hash{comment} .= $hash{overflow} if $hash{overflow};
+    $hash{time_postmark} = "";
+    if ($hash{comment} =~ s{(\d\d:\d\d)  online}{online}) {
+        $hash{time_postmark} = $1;
+    }
+
+    $hash{confnote} = "";
+    $hash{confnote} .= "$hash{'1note'}\n" if $hash{'1note'};
+    $hash{confnote} .= "$hash{'2note'}\n" if $hash{'2note'};
+    $hash{referral} = $refmap{$hash{referral}};
+    $hash{kids} = "";
+    if ($hash{nkids}) {
+        $hash{kids} .= "$hash{agekid1} " if $hash{agekid1};
+        $hash{kids} .= "$hash{agekid2} " if $hash{agekid2};
+        $hash{kids} .= "$hash{agekid3} " if $hash{agekid3};
+        $hash{kids} =~ s{\s+$}{};
+    }
+    $hash{h_type} = $housemap{$hash{h_type}};
+    $hash{h_type} .= "_bath" if $with_bath{$hash{h_name}};
+    for my $f (qw/
+        date_start date_end date_postmark letter_sent can_date
+        pmt1date pmt2date date_add
+    /) {
+        $hash{$f} =~ s{(..)/(..)/(....)}{$3$1$2};
+        $hash{$f} = "" if $hash{$f} eq "/  /";
+    }
+    $hash{cancelled} = "";
+    if ($hash{can_date}) {
+        $hash{cancelled} = "yes";
+    }
+    my ($name, $sdate);
+    if ($hash{program_id}) {
+        $p_sth->execute($hash{program_id});
+        unless (($name, $sdate) = $p_sth->fetchrow_array()) {
+            die "*** bad program id: $hash{program_id}\n";
+        }
+    }
+    else {
+        die "*** no proper program id: $hash{program_id}!\n";
+    }
+    # get or create the person record
+    # if already exists - update the record.
+    # include the program start date and program name.
+    #
+    #print "$hash{first} $hash{last} ";
+    $per_sth->execute($hash{first}, $hash{last});
+    for my $f (qw/ tel_home tel_work tel_cell /) {
+        $hash{$f} =~ s{\D}{}g;
+        $hash{$f} =~ s{(...)(...)(....)}{$1-$2-$3}g;
+    }
+    if (($person_id) = $per_sth->fetchrow_array()) {
+        $upd_per_sth->execute(
+            $hash{first},
+            $hash{last},
+            $hash{sex},
+            $hash{addr1},
+            $hash{addr2},
+            $hash{city},
+            $hash{st_prov},
+            $hash{zip_post},
+            $hash{country},
+            $hash{tel_home},
+            $hash{tel_work},
+            $hash{tel_cell},
+            $hash{email},
+            $sdate,
+            $name,
+            nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
+            $person_id
+        ) or die "could not update: " . $dbh->errstr;
+    }
+    else {
+        $person_id = $next_person_id++;
+        $ins_per_sth->execute(
+            $person_id,
+            $hash{first},
+            $hash{last},
+            $hash{sex},
+            $hash{addr1},
+            $hash{addr2},
+            $hash{city},
+            $hash{st_prov},
+            $hash{zip_post},
+            $hash{country},
+            $hash{tel_home},
+            $hash{tel_work},
+            $hash{tel_cell},
+            $hash{email},
+            $sdate,
+            $sdate,
+            $name,
+            nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
+        );
+
+        $per_sth->execute($hash{first}, $hash{last});
+        #($person_id) = $per_sth->fetchrow_array();
+        #print "- created  - id = $person_id\n";
+    }
+    $ins_reg_sth->execute($reg_id,
+                          $hash{program_id},
+                          $person_id,
+                          $hash{comment},
+                          $hash{confnote},
+                          $hash{date_start},
+                          $hash{date_end},
+                          $hash{referral},
+                          $hash{adsource},
+                          $hash{kids},
+                          $hash{h_type},
+                          $hash{h_name},
+                          $hash{carpool},
+                          $hash{hascar},
+                          $hash{date_postmark},
+                          $hash{letter_sent},
+                          $hash{ceu_license},
+                          $hash{arrived},
+                          $hash{cancelled},
+                          $hash{deposit},
+                          $hash{balance},
+                          $hash{time_postmark}
+                         );
+    # use deposit, pmt1, pmt2 in RegPayment records
+    #     and p1cash, pmt1date
+    # we don't have who did it...
+    payment($hash{deposit}, $hash{dcash}, $hash{date_add}, "Deposit")
+        if $hash{deposit};
+    payment($hash{pmt1}, $hash{p1cash}, $hash{pmt1date}, "Payment #1")
+        if $hash{pmt1};
+    payment($hash{pmt2}, $hash{p2cash}, $hash{pmt2date}, "Payment #2")
+        if $hash{pmt2};
+
+    # use adj, tuition, roomfood in RegCharge records
+    charge($hash{tuition}, $hash{date_add}, "Tuition")
+        if $hash{tuition};
+    charge($hash{roomfood}, $hash{date_add}, "Lodging")
+        if $hash{roomfood};
+    charge($hash{adj}, $hash{date_add}, "Adjustment")
+        if $hash{adj};
+
+    # use letter_sent, date_add/who_add, can_date in a RegHist record
+    if ($hash{date_add}) {
+        $who_sth->execute($hash{who_add});
+        my ($user_id) = $who_sth->fetchrow_array();
+        if (! $user_id) {
+            $who_ins_sth->execute(undef, $hash{who_add}, "-no login-",
+                'no@no.com',
+                ucfirst $hash{who_add}, "");
+            # again...
+            $who_sth->execute($hash{who_add});
+            ($user_id) = $who_sth->fetchrow_array();
+        }
+        history($hash{date_add}, $user_id, "Registered")
+    }
+    history($hash{letter_sent}, $unknown, "Confirmation Sent")
+        if $hash{letter_sent};
+    history($hash{can_date}, $unknown, "Cancelled")
+        if $hash{can_date};
+
+    ++$reg_id;
+}
+
+sub payment {
+    my ($amt, $type, $date, $msg) = @_;
+
+    if (exists $type_map{$type}) {
+        $type = $type_map{$type};
+    }
+    else {
+        $type = "unknown";
+    }
+    $pay_ins_sth->execute(
+        undef, $reg_id, $unknown,
+        $date, "12:00", 
+        $amt, $type, $msg
+    );
+}
+sub charge {
+    my ($amt, $date, $msg) = @_;
+
+    $chg_ins_sth->execute(
+        undef, $reg_id, $unknown,
+        $date, "12:00", 
+        $amt, $msg, ""      # not automatic - don't clear these charges
+    );
+}
+sub history {
+    my ($date, $who, $what) = @_;
+
+    $hist_ins_sth->execute(
+        undef, $reg_id, $who,
+        $date, "12:00",
+        $what,
+    );
+}

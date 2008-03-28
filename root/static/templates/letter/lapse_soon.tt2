@@ -1,0 +1,8 @@
+Dear [% name %],
+<p>
+Your Hanuman Fellowship [% type %] membership will expire on [% exp_date %].<br>
+You last paid $[% last_amount %] on [% last_paid %].
+<p>
+Sincerely,<br>
+[% mem_admin %]<br>
+Membership Administrator

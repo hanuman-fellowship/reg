@@ -37,7 +37,7 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
     [% END %]
 [% END %]
 <p>
-<table cellpadding=2>
+<table cellpadding=2 border=0>
 
 <tr>
 <th align=right>Program</th>
@@ -84,13 +84,13 @@ Cancelled
 <th align=right>Ages of Kids</th><td>[% reg.kids %]</td>
 </tr>
 
-<tr><th align=right>Housing</th><td>[% reg.h_type_disp %] in [% reg.h_name %]</td></tr>
+[% type = reg.h_type_disp %]
+<tr><th align=right>Housing</th><td>[% type %]
+[% IF type != 'Commuting ' && type != 'Your Van' %]in[% END %]
+[% reg.h_name %]</td></tr>
 <tr><th align=right>Balance</th>
 <td>
-[% reg.balance %]
-[% IF reg.balance > 0 && ! reg.cancelled %]
-<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view">Pay It</a>
-[% END %]
+[% reg.balance %][% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view">Pay It</a>[% END %]
 </td>
 </tr>
 
@@ -101,7 +101,7 @@ Cancelled
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td>[% reg.confnote_br %]<a href="/registration/update_confnote/[% reg.id %]">Update Note</a></td>
+<td>[% reg.confnote_br %]<a href="/registration/update_confnote/[% reg.id %]">Update Note</a></td>[% IF reg.confnotes.1 %]<td align=left valign=top><a href="/registration/conf_history/[% reg.id %]">Note History</a></td>[% END %]
 </tr>
 </table>
 
@@ -113,9 +113,7 @@ Cancelled
 
 <tr>
 <th align=right>Amount</th>
-<td align=left><b>What</b>
-<a style="margin-left: 1in" href="/registration/new_charge/[% reg.id %]">New Charge</a>
-</td>
+<th align=left>What</th>
 </tr>
 
 [% tot = 0 %]
@@ -135,6 +133,12 @@ Cancelled
 <td>Total</td>
 </tr>
 
+<tr>
+<td></td>
+<td>
+<a href="/registration/new_charge/[% reg.id %]">New Charge</a>
+</td>
+</tr>
 </table>
 </div>
 

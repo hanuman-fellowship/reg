@@ -216,11 +216,11 @@ EOS
         $prev_amb   = $amb;
     }
     $sth->finish();
-    for my $id (keys %dups) {
-        model($c, 'Person')->find($id)->update({
-            ambiguous => 'yes',
-        });
-    }
+    #for my $id (keys %dups) {
+    #    model($c, 'Person')->find($id)->update({
+    #        ambiguous => 'yes',
+    #    });
+    #}
     #
     # address dup
     #

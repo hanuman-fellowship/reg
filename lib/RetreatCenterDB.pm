@@ -29,6 +29,7 @@ __PACKAGE__->load_classes({
         RegPayment
         RegCharge
         Credit
+        ConfHistory
 
         Member
         SponsHist

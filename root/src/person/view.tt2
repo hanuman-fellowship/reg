@@ -8,7 +8,7 @@
 <a href="/person/delete/[% person.id %]"
 onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
+<a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/donation/create/[% person.id %]">Donate</a>
 &nbsp;&nbsp;&nbsp;

@@ -7,6 +7,7 @@ my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
     or die "oh no\n";
 my $sth = $dbh->prepare("insert into string values (?, ?);");
 
+print "strings\n";
 open my $strs, "<", "strings.txt"
     or die "cannot open strings.txt: $!\n";
 my ($key, $value);

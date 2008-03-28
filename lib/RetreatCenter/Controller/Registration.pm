@@ -439,7 +439,7 @@ EOC
         $c->stash->{comment} .= $hash{request};
     }
 
-    for my $how (qw/ ad web brochure flyer /) {
+    for my $how (qw/ ad web brochure flyer word_of_mouth /) {
         $c->stash->{"$how\_checked"} = "";
     }
     $c->stash->{"$hash{howHeard}_checked"} = "selected";
@@ -986,6 +986,8 @@ sub _compute {
 # send a confirmation letter.
 # fill in a template and send it off.
 # use the template toolkit outside of the Catalyst mechanism.
+# if there is a non-blank confnote
+# create a ConfHistory record for this sending.
 #
 sub send_conf : Local {
     my ($self, $c, $id) = @_;
@@ -1051,20 +1053,26 @@ sub send_conf : Local {
         return;
     }
     email_letter($c,
-           html    => $html, 
-           subject => "Confirmation of Registration for " . $pr->title,
-           to      => $reg->person->email,
-           from    => $lookup{from},
+           html       => $html, 
+           subject    => "Confirmation of Registration for " . $pr->title,
+           to         => $reg->person->email,
+           from       => $lookup{from},
            from_title => $lookup{from_title},
     );
+    my @who_now = get_now($c, $id);
+    if ($reg->confnote) {
+        model($c, 'ConfHistory')->create({
+            @who_now,
+            note => $reg->confnote,
+        });
+    }
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $r = model($c, 'Registration')->find($id);
-    $c->stash->{reg} = $r;
+    $c->stash->{reg} = model($c, 'Registration')->find($id);
     my @files = <root/static/online/*>;
     $c->stash->{online} = scalar(@files);
     $c->stash->{template} = "registration/view.tt2";
@@ -1387,10 +1395,12 @@ sub matchreg : Local {
 sub _reg_table {
     my ($reg_aref, $postmark) = @_;
     my $size = 12;
-    my $color = "black";
+    my $color = "#33a";
+    my $other_color = "#fff";
     if (scalar(@$reg_aref) == 1) {
         $size = 18;
         $color = "red";
+        $other_color = "#fff";
     }
     my $posthead = "";
     if ($postmark) {
@@ -1415,13 +1425,14 @@ EOH
         my $name = $per->last . ", " . $per->first;
         my $balance = $reg->balance;
         my $type = $reg->h_type_disp;
+        my $need_house = $type !~ m{commut|van}i;
         my $house = $reg->h_name;
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark;
-        my $mark =            (!$house)? 'H'
-                  :(!$reg->letter_sent)? 'L'
-                  :   ($reg->cancelled)? 'X'
-                  :                      '&nbsp;';
+        my $mark =         ($reg->cancelled)? 'X'
+                  : ($need_house && !$house)? 'H'
+                  :     (!$reg->letter_sent)? 'L'
+                  :                           '&nbsp;';
         if (length($mark) == 1) {
             $mark = "<span class=required>$mark</span>";
         }
@@ -1429,15 +1440,15 @@ EOH
         if ($postmark) {
             $postrow = <<"EOH";
 <td>
-<span class=rname>$date&nbsp;&nbsp;$time</span>
+<span class=rname2>$date&nbsp;&nbsp;$time</span>
 </td>
 EOH
         }
         my $pay_balance = $balance;
-        if (! $reg->cancelled) {
+        if (! $reg->cancelled && $balance > 0) {
             $pay_balance =
                 "<a href='/registration/pay_balance/$id/list_reg_name'>"
-               ."<span class=rname>$pay_balance</span>"
+               ."<span class=rname1>$pay_balance</span>"
                ."</a>";
         }
         $body .= <<"EOH";
@@ -1446,7 +1457,7 @@ EOH
 <td>$mark</td>
 
 <td>    <!-- width??? -->
-<a href='/registration/view/$id'><span class=rname>$name</span></a>
+<a href='/registration/view/$id'><span class=rname1>$name</span></a>
 </td>
 
 <td>
@@ -1454,11 +1465,11 @@ $pay_balance
 </td>
 
 <td>
-<span class=rname>$type</span>
+<span class=rname2>$type</span>
 </td>
 
 <td>
-<span class=rname>$house</span>
+<span class=rname2>$house</span>
 </td>
 
 $postrow
@@ -1469,9 +1480,17 @@ EOH
     $body ||= "";
 <<"EOH";        # returning a bare string heredoc constant?  sure.
 <style>
-.rname {
+.rname1 {
     font-size: ${size}pt;
     color: $color;
+    background: $other_color;
+}
+.rname2 {
+    font-size: ${size}pt;
+}
+a:hover .rname {
+    color: $other_color;
+    background: $color;
 }
 </style>
 <table cellpadding=4>
@@ -1523,7 +1542,7 @@ sub update : Local {
     $c->stash->{reg} = $reg;
     $c->stash->{person} = $reg->person;
     my $pr = $c->stash->{program} = $reg->program;
-    for my $ref (qw/ad web brochure flyer/) {
+    for my $ref (qw/ad web brochure flyer word_of_mouth/) {
         $c->stash->{"$ref\_selected"} = ($reg->referral eq $ref)? "selected"
                                        :                          "";
     }
@@ -1574,6 +1593,13 @@ sub update : Local {
         }
     }
     $c->stash->{template} = "registration/edit.tt2";
+}
+
+sub conf_history : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{reg} = model($c, 'Registration')->find($id);
+    $c->stash->{template} = "registration/conf_hist.tt2";
 }
 
 #

@@ -8,7 +8,7 @@
 <th align=left>Last</th>
 <th align=left>First</th>
 <th align=left>Sanskrit</th>
-<th align=left>Zip/Postal Code</th>
+<th align=center>Zip</th>
 <th align=left>[% IF field == 'email' %]Email[% ELSE %]Home Phone[% END %]</th>
 </tr>
 [% FOREACH p IN people %]
@@ -25,14 +25,14 @@
 <table cellpadding=2>
 <tr>
 [% IF prevN %]
-<td width=55><a href="[% prevN %]">Prev [% N %]</a></td>
+<td width=70><a href="[% prevN %]">Prev [% N %]</a></td>
 [% ELSE %]
-<td width=55>&nbsp;</td>
+<td width=70>&nbsp;</td>
 [% END %]
 [% IF nextN %]
-<td width=55><a href="[% nextN %]">Next [% N %]</a></td>
+<td width=70><a href="[% nextN %]">Next [% N %]</a></td>
 [% ELSE %]
-<td width=55></td>
+<td width=70></td>
 [% END %]
 </tr>
 </table>

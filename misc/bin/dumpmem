@@ -1,0 +1,55 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use DBI;
+use lib "lib";
+use Date::Simple qw/today/;
+use Net::FTP;
+
+my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
+    or die "no connect\n";
+my $today = today()->as_d8();
+my $sql = "
+    select p.id, m.category, m.date_general, m.date_sponsor
+    from people p, member m
+    where m.person_id = p.id
+";
+my $sth = $dbh->prepare($sql) or die "no prep\n";
+$sth->execute();
+open my $out, ">", "memstat"
+    or die "no memstat\n";
+while (my ($id, $category, $dgen, $dsp)
+            = $sth->fetchrow_array()
+) {
+    print {$out} "$id ";
+    if ($category eq 'General') {
+        if ($dgen < $today) {
+            print {$out} "Lapsed\n"; 
+        }
+        else {
+            print {$out} "General\n"; 
+        }
+    }
+    elsif ($category eq 'Sponsor') {
+        if ($dgen < $today) {
+            print {$out} "Lapsed\n"; 
+        }
+        else {
+            print {$out} "Sponsor\n"; 
+        }
+    }
+    else {
+        print {$out} "Life\n";
+    }
+}
+close $out;
+$sth->finish();
+$sth = undef;
+$dbh->disconnect();
+my $ftp = Net::FTP->new("www.mountmadonna.org");
+$ftp->login("mmc", "ashtanga!");
+$ftp->cwd("tmp");
+$ftp->ascii();
+$ftp->put("memstat");
+$ftp->quit();

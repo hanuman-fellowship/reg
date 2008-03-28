@@ -1,0 +1,219 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
+    or die "no connection\n";
+$dbh->do("delete from affil_people");
+
+# NO NO! already lots of people added!
+# $dbh->do("delete from people");
+
+my $find_sql = "select id from people where first = ? and last = ?";
+my $find_sth = $dbh->prepare($find_sql)
+    or die "no prep find people\n";
+
+my $ins_sql = "insert into people values(". ("?," x 23) . "'' )";
+                                                # last '' is for ambiguous
+my $ins_sth = $dbh->prepare($ins_sql)
+    or die "no prep ins people\n";
+
+my $upd_sql = "
+update people
+set addr1 = ?, addr2 = ?, city = ?, st_prov = ?,
+    zip_post = ?, country = ?, tel_home = ?, tel_work = ?, tel_cell = ?,
+    email = ?, sex = ?, e_mailings = ?, snail_mailings = ?, share_mailings = ?
+where id = ?";
+my $upd_sth = $dbh->prepare($upd_sql)
+    or die "no prep upd people\n";
+
+my $upd_part_sql = "update people set id_sps = ? where id = ?";
+my $upd_part_sth = $dbh->prepare($upd_part_sql)
+    or die "no prep upd part people\n";
+
+my $ap_sql = "insert into affil_people values(?, ?)";
+my $ap_sth = $dbh->prepare($ap_sql)
+    or die "no prep affil_people\n";
+
+my @flds;
+
+# get affil ids
+my %affil_id;
+open my $af_id, "<", "affil_id.txt"
+    or die "no affil_id\n";
+while (<$af_id>) {
+    chomp;
+    my ($code, $id) = split;
+    $affil_id{$code} = $id;
+}
+close $af_id;
+
+open my $people, "<", "new/people.txt"
+    or die "cannot open people: $!\n";
+my $n = 0;
+$|++;
+my %no_affil;
+
+my %new_id_for = ();
+my %partner_id = ();
+
+my $next_id;        # set to max then incremented
+my $sql = "select max(id) from people";
+my $sth = $dbh->prepare($sql);
+$sth->execute();
+($next_id) = $sth->fetchrow_array();
+$sth = undef;
+++$next_id;     # ready for an insert
+
+while (<$people>) {
+    next unless /\S/;       # first line
+    chomp;
+    ++$n;
+    print "$n\r" if $n % 100 == 0;
+    @flds = split /\|/;
+    if (@flds == 24) {
+        push @flds, "";
+    }
+    for my $dt (@flds[18,19]) {
+        if ($dt eq "  /  /  ") {
+            $dt = "";
+        }
+        else {
+            my ($m, $d, $y) = $dt =~ m{(..)/(..)/(..)};
+            if ($y < 70) {
+                $y = "20$y";
+            }
+            else {
+                $y = "19$y";
+            }
+            $dt = "$y$m$d";
+        }
+    }
+
+    # what mailings are requested?
+    my $affils = $flds[20];
+    my ($e_mailings, $snail_mailings, $share_mailings);
+    $e_mailings     = ($affils =~ m{[9x]}  )? "": "yes";
+    $snail_mailings = ($affils =~ m{x}     )? "": "yes";
+    $share_mailings = ($affils =~ m{[xdXq]})? "": "yes";
+    if ($affils =~ m{@}) {
+        $e_mailings = "yes";
+        $snail_mailings = "";
+        $share_mailings = "";
+    }
+    $affils =~ s{[dXqx98\@]}{}g;
+
+    for my $i (10..12) {    # force standard format of US phone numbers
+        next if $flds[$i] =~ m{\d\d\d-\d\d\d-\d\d\d\d};
+        my $tmp = $flds[$i];
+        $tmp =~ s{\D}{}g;
+        if (length($tmp) == 10) {
+            $flds[$i] = substr($tmp, 0, 3) . "-"
+                      . substr($tmp, 3, 3) . "-"
+                      . substr($tmp, 6, 4)
+        }
+    }
+
+    #
+    # if they're already in the database (by first/last name)
+    # update their record with phone numbers, address, affiliations
+    #
+    # if NOT there already take the next sequential id.
+    # keep track of partners and adjust it all later.
+    #
+    my $old_id = $flds[16];
+    if ($flds[17]) {        # they're partnered
+        $partner_id{$old_id} = $flds[17];
+    }
+    $flds[17] = "";         # filled later if partner
+
+    # ??? more than one match ???
+    # match on email, home/cell phone, address too?
+    #
+    $find_sth->execute($flds[1], $flds[0]);       # first, last
+    my $new_id;
+    if (($new_id) = $find_sth->fetchrow_array()) {
+        # existing record - update it
+        $upd_sth->execute(
+            $flds[3],
+            $flds[4],
+            $flds[5],
+            $flds[6],
+            $flds[7],
+            $flds[8],
+            $flds[10],
+            $flds[11],
+            $flds[12],
+            $flds[13],
+            $flds[14],
+            $e_mailings, $snail_mailings, $share_mailings,
+            $new_id
+        );
+        # from above for reference:
+        # addr1 = ?, addr2 = ?, city = ?, st_prov = ?,
+        # zip_post = ?, country = ?, home = ?, work = ?, cell = ?,
+        # email = ?, sex = ?, e_mailings = ?, snail_mailings = ?,
+        # share_mailings = ?,
+        # where id = ?";
+    }
+    else {
+        #
+        # new person
+        #
+        $new_id = $next_id++;
+        $ins_sth->execute(@flds[0..14], $new_id, @flds[17..19, 24],
+                        $e_mailings, $snail_mailings, $share_mailings);
+        $find_sth->execute($flds[1], $flds[0]);
+    }
+    $new_id_for{$old_id} = $new_id;
+    my %seen;
+    for my $a (grep {!$seen{$_}++} split //, $affils) {
+        if (exists $affil_id{$a}) {
+            $ap_sth->execute($affil_id{$a}, $new_id);
+        }
+        elsif (! exists $no_affil{$a}) {
+            print "no affil letter $a??\n";
+            $no_affil{$a} = 1;
+        }
+    }
+}
+print "\n";
+close $people;
+
+#
+# now fix up the partners
+# "update people set id_sps = ? where id = ?";
+#
+for my $id (keys %partner_id) {
+    $upd_part_sth->execute(
+        $new_id_for{$partner_id{$id}},
+        $new_id_for{$id}
+    );
+}
+__DATA__
+    ? Cap(alltrim(last))  + t + ;       0
+	  Cap(alltrim(first)) + t + ;
+      Cap(alltrim(sanskrit)) + t + ;
+	  Cap(alltrim(addr1)) + t + ;
+	  Cap(alltrim(addr2)) + t + ;
+	  Cap(alltrim(city)) + t + ;        5
+	  Cap(alltrim(st_prov)) + t + ;
+	  alltrim(zip_post) + t + ;
+	  Cap(alltrim(country)) + t + ;
+	  alltrim(akey) + t + ;
+	  alltrim(tel_home) + t + ;         10
+	  alltrim(tel_work) + t + ;
+	  alltrim(tel_cell) + t + ;
+	  alltrim(email) + t + ;
+	  alltrim(sex) + t + ;
+	  alltrim(name_pref) + t + ;        15
+	  alltrim(str(id)) + t + ;
+	  alltrim(str(id_sps)) + t + ;
+	  dtoc(date_updat) + t + ;
+	  dtoc(date_entrd) + t + ;
+	  alltrim(affil) + t + ;            20
+	  dtoc(date_hf) + t + ;
+	  dtoc(date_path) + t + ;
+	  dtoc(date_lm) + t + ;
+	  Cap(alltrim(comment))

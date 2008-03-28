@@ -4,6 +4,21 @@ use warnings;
 use DBI;
 use File::Copy;
 
+my @seasons;
+my $p = shift @ARGV;
+while ($p ne 's08') {
+    push @seasons, $p;
+    if ($p =~ m{^s}) {
+        $p =~ s{s}{f};
+    }
+    else {
+        my ($yr) = $p =~ m{(\d+)};
+        $yr = ($yr + 1) % 100;
+        $p = 's' . sprintf("%02d", $yr);
+    }
+}
+push @seasons, 'cur';
+
 my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
     or die "oh no\n";
 $dbh->do("delete from program");
@@ -11,6 +26,7 @@ $dbh->do("delete from canpol");
 $dbh->do("delete from housecost");
 $dbh->do("delete from leader");
 $dbh->do("delete from leader_program");
+$dbh->do("delete from affil_program");
 
 # first cancellation policies
 my $cp_sql = "insert into canpol values (?, ?, ?)";
@@ -221,8 +237,11 @@ my $p_sth = $dbh->prepare($p_sql) or die "no prep affil\n";
 my $lp_sql = "insert into leader_program values (?, ?)";
 my $lp_sth = $dbh->prepare($lp_sql) or die "no prep lp\n";
 
+my $af_pr_sql = "insert into affil_program values (?, ?)";
+my $af_pr_sth = $dbh->prepare($af_pr_sql);
+
 # got the order of names backwards so ...
-# reverse to the rescue.
+# reverse to the rescue rather than a painful edit.
 my %lookup = reverse qw/
     name          pname
     title         desc
@@ -241,33 +260,60 @@ my %init = (
     prog_start => '7:00 pm',
     prog_end   => '12:30 pm',
 );
-for my $seas (qw/ cur s07 f07 /) {
-    open my $in, "<", "new/${seas}progr.txt"
-        or die "no ${seas}prog: $!\n";
+# get affil ids
+my %affil_id;
+open my $af_id, "<", "affil_id.txt"
+    or die "no affil_id\n";
+while (<$af_id>) {
+    chomp;
+    my ($code, $id) = split;
+    $affil_id{$code} = $id;
+}
+close $af_id;
+
+my $got_pr = 0;
+my $got_hoff = 0;
+for my $seas (@seasons) {
+    print "prog $seas\n";
+    open my $in, "<", "new/${seas}prog.txt"
+        or die "no ${seas}progr: $!\n";
     %hash = %init;
+    PROGRAM:
     while (<$in>) {
         s{\r?\n$}{};
         my ($k, $v) = split m{\t};
         $v =~ s{^\s*|\s*$}{}g;
         if ($v eq '-') {
             $v = "";
+            LINE:
             while (<$in>) {
                 s{\r?\n$}{};
                 s{^\s*|\s*$}{}g;
-                last if m{^\.$};
+                last LINE if m{^\.$};
                 $v .= "$_\n";
             }
         }
         $k = $lookup{$k} || $k;
         $hash{$k} = $v;
         if ($k eq 'collect_total') {
-            unless ($hash{pid} == 69 && $seas ne 'cur') {
-                processProg();
+            if ($hash{pid} == 69) {
+                if ($got_pr) {
+                    next PROGRAM;
+                }
+                $got_pr = 1;
             }
+            if ($hash{pid} == 886) {
+                if ($got_hoff) {
+                    next PROGRAM;
+                }
+                $got_hoff = 1;
+            }
+            processProg();
             %hash = %init;
         }
     }
     close $in;
+    #??? get rentals
 }
 
 sub processProg {
@@ -328,6 +374,7 @@ sub processProg {
             print "could not find '$hash{image}'\n";
         }
     }
+    print "loading pid $hash{pid}\n";
     $p_sth->execute(@hash{@fields}) or die "no exec";      # yay!
     if ($hash{pres1} != 0) {
         addLeader($hash{pres1}, $hash{id});
@@ -335,7 +382,17 @@ sub processProg {
     if ($hash{pres2} != 0) {
         addLeader($hash{pres2}, $hash{id});
     }
+    # affiliations
+    my @affs = ();
+    @affs = split //, $hash{affil} if $hash{affil};
+    for my $code (@affs) {
+        if (exists $affil_id{$code}) {
+            $af_pr_sth->execute($affil_id{$code}, $hash{pid});
+        }
+    }
 }
+$cp_sth = $hc_sth = $per_sth = $aper_sth = $le_sth = $p_sth = $lp_sth = $af_pr_sth = undef;
+$dbh->disconnect();
 
 sub addLeader {
     my ($l_id, $p_id) = @_;

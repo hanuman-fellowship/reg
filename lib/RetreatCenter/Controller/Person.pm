@@ -60,7 +60,7 @@ sub search_do : Local {
 
     my $pattern = trim($c->request->params->{pattern});
     my $orig_pattern = $pattern;
-    $pattern =~ s{~}{%}g;
+    $pattern =~ s{\*}{%}g;
     # % in a web form messes with url encoding... :(
     # even when method=post?
 

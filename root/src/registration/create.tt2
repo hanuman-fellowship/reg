@@ -28,10 +28,11 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 <th align=right>Referral</th>
 <td>
 <select name=referral>
-<option value="ad"       [% ad_checked %]      >Advertisement</option>
-<option value="web"      [% web_checked %]     >Web</option>
-<option value="brochure" [% brochure_checked %]>Brochure</option>
-<option value="flyer"    [% flyer_checked %]   >Flyer</option>
+<option value="ad"            [% ad_checked %]           >Advertisement</option>
+<option value="web"           [% web_checked %]          >Web</option>
+<option value="brochure"      [% brochure_checked %]     >Brochure</option>
+<option value="flyer"         [% flyer_checked %]        >Flyer</option>
+<option value="word_of_mouth" [% word_of_mouth_checked %]>Word of Mouth</option>
 </select>
 </td>
 <th align=right>Ad Source</th>

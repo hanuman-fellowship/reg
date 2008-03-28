@@ -918,3 +918,26 @@ need a way of sending carpool list one-two weeks
     it in the confirmation letter - because early registrants
     get very little.
 why can't get id of current user from $c->user?
+where is 'arrived' shown on reg view? or list?
+seems that AJAX takes over and issues a request
+    on simply uncovering a window or moving back to a browser app window
+    where the registration list is shown.
+    i noticed the activity in the server log zip by.
+    fast!
+
+    also - if i type too fast it confuses the AJAX calls.
+        'ch' typed in quick succession - better c then the h - not good.
+have a radio button - future (normal), current, all,
+    range (with two dates - start, end) and a Go button
+    to refresh the programs shown.
+finding flaws in f95, f96 programs - takes time...
+view reg page - CEU, Carpool - funny table alignment
+undup - same home phone??? same email address?
+    when doing an online registration and looking up the
+    person - if you can match the first, last name then
+    try to match the home phone, cell phone or email address too.
+need a new style - larger clickable <a>
+    for program and person names on reg/view
+no fancy highlight on info icon link
+how about not having plurals in the menu up top?
+    s s s s s s

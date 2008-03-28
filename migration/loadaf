@@ -1,0 +1,35 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
+    or die "oh no\n";
+$dbh->do("delete from affils");
+$dbh->do("delete from affil_people");
+
+my $af_sql = "insert into affils values(?, ?)";
+my $af_sth = $dbh->prepare($af_sql)
+    or die "no prep affil\n";
+
+open my $affils, "<", "new/affils.txt"
+    or die "cannot open affils: $!\n";
+my %affil_id;
+my ($code, $value, $n);
+while (<$affils>) {
+    next unless /\S/;
+    chomp;
+    ++$n;
+    ($code, $value) = split /\|/;
+    next if $code =~ m{[d89Xqx]};;       # they have their own column now
+    next if $value =~ m{member}i;        # superceded
+    $af_sth->execute($n, $value);
+    $affil_id{$code} = $n;
+}
+close $affils;
+open my $af_id, ">", "affil_id.txt"
+    or die "no affil_id.txt\n";
+for my $code (keys %affil_id) {
+    print {$af_id} "$code $affil_id{$code}\n";
+}
+close $af_id;

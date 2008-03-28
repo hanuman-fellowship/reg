@@ -26,14 +26,17 @@ create table user_role (
 --
 -- Load up some initial test users
 --
-insert into user values (1, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe');
-insert into user values (2, 'joe', 'mypass', 'joe@na.com', 'Joe', 'Blow');
-insert into user values (3, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith');
-insert into user values (4, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou');
-insert into user values (5, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg');
-insert into user values (6, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan');
-insert into user values (7, 'web_user', 'webby', 'web@user.com', 'Web', 'User');
-insert into user values (8, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky');
+insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person');
+-- the above is used for legacy reg payments, etc.
+
+insert into user values (2, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe');
+insert into user values (3, 'joe', 'mypass', 'joe@na.com', 'Joe', 'Blow');
+insert into user values (4, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith');
+insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou');
+insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg');
+insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan');
+insert into user values (8, 'web_user', 'webby', 'web@user.com', 'Web', 'User');
+insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky');
 --
 -- the roles - do not muck with the ids!
 --
@@ -50,29 +53,29 @@ insert into role values (5, 'mail_staff', 'Mailing List Staff', 'People create/e
 insert into role values (6, 'web_designer', 'Web Designer', 'Templates, web images, exceptions, strings');
 insert into role values (7, 'member_admin', 'Membership Admin', 'Maintain Memberships');
 -- jane
-insert into user_role values (1, 1);
-insert into user_role values (1, 2);
-insert into user_role values (1, 3);
-insert into user_role values (1, 4);
-insert into user_role values (1, 5);
-insert into user_role values (1, 6);
-insert into user_role values (1, 7);
--- jamal
-insert into user_role values (4, 1);
-insert into user_role values (4, 2);
-insert into user_role values (4, 3);
-insert into user_role values (4, 4);
-insert into user_role values (4, 5);
-insert into user_role values (4, 6);
-insert into user_role values (4, 7);
--- shyama
-insert into user_role values (5, 7);
-insert into user_role values (5, 5);
--- soma
-insert into user_role values (8, 7);
-insert into user_role values (8, 5);
--- pratibha
-insert into user_role values (6, 5);
-insert into user_role values (6, 7);
+insert into user_role values (2, 1);
+insert into user_role values (2, 2);
+insert into user_role values (2, 3);
 insert into user_role values (2, 4);
-insert into user_role values (3, 5);
+insert into user_role values (2, 5);
+insert into user_role values (2, 6);
+insert into user_role values (2, 7);
+-- jamal
+insert into user_role values (5, 1);
+insert into user_role values (5, 2);
+insert into user_role values (5, 3);
+insert into user_role values (5, 4);
+insert into user_role values (5, 5);
+insert into user_role values (5, 6);
+insert into user_role values (5, 7);
+-- shyama
+insert into user_role values (6, 7);
+insert into user_role values (6, 5);
+-- soma
+insert into user_role values (9, 7);
+insert into user_role values (9, 5);
+-- pratibha
+insert into user_role values (7, 5);
+insert into user_role values (7, 7);
+insert into user_role values (3, 4);
+insert into user_role values (4, 5);
