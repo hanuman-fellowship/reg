@@ -1,0 +1,13 @@
+#!/bin/sh
+sqlite3 retreatcenter.db <mkpeople
+sqlite3 retreatcenter.db <mkmisc
+sqlite3 retreatcenter.db <mkprog
+sqlite3 retreatcenter.db <mkrep
+sqlite3 retreatcenter.db <mkusers
+sqlite3 retreatcenter.db <mkmember
+sqlite3 retreatcenter.db <mkreg
+loadstr
+loadaf
+cp retreatcenter.db ..
+cd ../root/static/images
+rm -f lo* lth* lb* po* pth* pb*

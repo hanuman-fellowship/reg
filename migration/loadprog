@@ -3,11 +3,15 @@ use strict;
 use warnings;
 use DBI;
 use File::Copy;
+use Getopt::Easy;
+
+get_options("s-single");
 
 my @seasons;
 my $p = shift @ARGV;
 while ($p ne 's08') {
     push @seasons, $p;
+    last if $O{single};
     if ($p =~ m{^s}) {
         $p =~ s{s}{f};
     }
@@ -17,7 +21,7 @@ while ($p ne 's08') {
         $p = 's' . sprintf("%02d", $yr);
     }
 }
-push @seasons, 'cur';
+push @seasons, 'cur' unless $O{single};
 
 my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
     or die "oh no\n";
@@ -98,7 +102,7 @@ for my $name (keys %data) {
 
 my $per_sql = "select id from people where first = ? and last = ?";
 my $per_sth = $dbh->prepare($per_sql) or die "no per_sql\n";
-my $aper_sql = "insert into people (first, last, sex) values (?, ?, ?)";
+my $aper_sql = "insert into people (id, first, last, sex) values (?, ?, ?, ?)";
 my $aper_sth = $dbh->prepare($aper_sql) or die "no aper_sql\n";
 # id
 # person_id
@@ -130,6 +134,22 @@ while (<$gender>) {
 }
 close $gender;
 
+# mess with the next people id
+#
+# the issue is that we want to preserve
+# the ids and addresses of the people in the
+# current mlist database.  
+# 
+# when loading the old registrations we want to create new people
+# and update their addresses as we go from old seasons to
+# the current one but people that are currently in the
+# mlist database will not have their addresses updated.
+# this id in the people database will be the cutoff between
+# the old and the new (or the new and the old!).
+#
+my $next_per_id = 200000;
+my $next_pro_id = 3000;
+
 open my $ld, "<", "new/leaders.txt"
     or die "cannot open leaders.txt: $!\n";
 my %hash = ();
@@ -159,10 +179,13 @@ sub processLeader {
     $per_sth->execute($hash{first}, $hash{last});
     my ($per_id) = $per_sth->fetchrow_array();
     if (!$per_id) {
-        print "creating person $hash{first} $hash{last}\n";
-        $aper_sth->execute($hash{first}, $hash{last}, $gender{$hash{first}});
-        $per_sth->execute($hash{first}, $hash{last});
-        ($per_id) = $per_sth->fetchrow_array();
+        $per_id = $next_per_id++;
+        #print "creating person $hash{first} $hash{last} id = $per_id\n";
+        $aper_sth->execute($per_id,
+                           $hash{first},
+                           $hash{last},
+                           $gender{$hash{first}}
+                          );
     }
     my $image = "";
     if ($hash{image} =~ /\S/) {
@@ -271,8 +294,9 @@ while (<$af_id>) {
 }
 close $af_id;
 
-my $got_pr = 0;
-my $got_hoff = 0;
+open my $pr_hoff, ">", "pr_hoff_id.txt"
+    or die "no pr_hoff.txt\n";
+
 for my $seas (@seasons) {
     print "prog $seas\n";
     open my $in, "<", "new/${seas}prog.txt"
@@ -296,19 +320,7 @@ for my $seas (@seasons) {
         $k = $lookup{$k} || $k;
         $hash{$k} = $v;
         if ($k eq 'collect_total') {
-            if ($hash{pid} == 69) {
-                if ($got_pr) {
-                    next PROGRAM;
-                }
-                $got_pr = 1;
-            }
-            if ($hash{pid} == 886) {
-                if ($got_hoff) {
-                    next PROGRAM;
-                }
-                $got_hoff = 1;
-            }
-            processProg();
+            processProg($seas);
             %hash = %init;
         }
     }
@@ -316,7 +328,37 @@ for my $seas (@seasons) {
     #??? get rentals
 }
 
+close $pr_hoff;
+
 sub processProg {
+    my ($season) = @_;
+    if ($hash{name} =~ m{^(personal retreats|hoffman)$}i) {
+        # transform these special cases into a new program
+        # pid  69 = personal retreat
+        # pid 886 = hoffman
+        $hash{name} .= " \U$season";
+        my $orig = $hash{pid};
+        $hash{pid} = $next_pro_id;
+        # remember this so you won't have to look it up.
+        print {$pr_hoff} "$season-$orig $next_pro_id\n";
+        $next_pro_id++;
+        if ($season eq 'cur') {
+            $hash{sdate} = "04/01/2008";
+            $hash{edate} = "09/30/2008";
+        }
+        else {
+            my ($fs, $year) = $season =~ m{(.)(..)};
+            $year += ($year > 70)? 1900: 2000;
+            if ($fs eq 'f') {
+                $hash{sdate} = "10/01/$year";
+                $hash{edate} = "03/31/" . ($year+1);
+            }
+            else {
+                $hash{sdate} = "04/01/$year";
+                $hash{edate} = "09/30/$year";
+            }
+        }
+    }
     if ($hash{name} =~ m{ FULL$}) {
         $hash{webready} = "";
         $hash{image} = "";
@@ -344,13 +386,14 @@ sub processProg {
                               . substr($hash{name}, -3, 3));
     }
     $hash{ptemplate} =~ s{[.]html}{};
-    $hash{ptemplate} = "default" if $hash{ptemplate} =~ m{^\s*$};
-    $hash{cl_template} = "default";
+    $hash{ptemplate} = "Default" if $hash{ptemplate} =~ m{^\s*$};
+    $hash{cl_template} = "Default";
     if (! -f "../root/static/templates/web/$hash{ptemplate}.html") {
         print "*** could not open web template $hash{ptemplate}\n";
     }
     $hash{canpol_id} = $canpol_id{$hash{canpol}};
     $hash{housecost_id} = $hash{housing}+1;
+    $hash{url} =~ s{http://}{};
     # images???
     my $image = "";
     if ($hash{image} =~ /\S/) {
@@ -374,7 +417,7 @@ sub processProg {
             print "could not find '$hash{image}'\n";
         }
     }
-    print "loading pid $hash{pid}\n";
+    #print "loading pid $hash{pid}\n";
     $p_sth->execute(@hash{@fields}) or die "no exec";      # yay!
     if ($hash{pres1} != 0) {
         addLeader($hash{pres1}, $hash{id});

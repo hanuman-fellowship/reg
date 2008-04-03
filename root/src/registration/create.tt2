@@ -1,12 +1,13 @@
 <h2>Registration</h2>
 <form method=POST name=form action="/registration/create_do">
-<input type=hidden name=person_id     value=[% person.id %]>
-<input type=hidden name=program_id    value=[% program.id %]>
-<input type=hidden name=date_postmark value=[% date_postmark %]>
-<input type=hidden name=time_postmark value=[% time_postmark %]>
-<input type=hidden name=deposit       value=[% deposit %]>
-<input type=hidden name=fname         value=[% fname %]>
-<input type=hidden name=status        value=[% status %]>
+<input type=hidden name=person_id     value='[% person.id %]'>
+<input type=hidden name=program_id    value='[% program.id %]'>
+<input type=hidden name=date_postmark value='[% date_postmark %]'>
+<input type=hidden name=time_postmark value='[% time_postmark %]'>
+<input type=hidden name=deposit       value='[% deposit %]'>
+<input type=hidden name=deposit_type  value='[% deposit_type %]'>
+<input type=hidden name=fname         value='[% fname %]'>
+<input type=hidden name=status        value='[% status %]'>
 
 <table cellpadding=3 border=0>
 
@@ -21,7 +22,7 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 <th align=right>Program</th>
 <td><a class=larger href="/program/view/[% program.id %]"
 onclick='return confirm("This registration has not yet been completed.  Continue on to view the program [% program.name %]?");'>[% program.name %]</a></td>
-<td>From [% pr_sdate %]</td><td>to [% pr_edate %]</td>
+<td>From [% program.sdate_obj %]</td><td>to [% program.edate_obj %]</td>
 </tr>
 
 <tr>

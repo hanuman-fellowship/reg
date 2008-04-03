@@ -1,6 +1,8 @@
 <h2>People</h2>
 <a href="/person/create">Add</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/person/register1/[% person.id %]">Register</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/person/search">Search</a>
 <p>
 <a href="/person/update/[% person.id %]">Edit</a>
@@ -73,7 +75,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% FOREACH r IN registrations %]
         <tr>
         <td><a href="/registration/view/[% r.id %]">[% r.program.name %]</a></td>
-        <td>[% r.program.sdate_obj %]</td>
+        <td>[% IF r.date_start %][% r.date_start_obj %][% ELSE %][% r.program.sdate_obj %][% END %]</td>
         </tr>
     [% END %]
     </table>

@@ -1,5 +1,7 @@
 #!/bin/sh
-cd /Users/jonbjornstad/catalyst/projects/RetreatCenter/migration
+mig=/Users/jonbjornstad/catalyst/projects/RetreatCenter/migration
+cd $mig
+
 rm -rf new
 echo ftp
 ftp www.mountmadonna.org <<EOC
@@ -12,19 +14,4 @@ uncompress -f dmpfile.tar.Z
 echo untar
 tar xvf dmpfile.tar
 
-echo loading
-sqlite3 retreatcenter.db <mkpeople
-sqlite3 retreatcenter.db <mkmisc
-sqlite3 retreatcenter.db <mkprog
-sqlite3 retreatcenter.db <mkrep
-sqlite3 retreatcenter.db <mkusers
-sqlite3 retreatcenter.db <mkmember
-sqlite3 retreatcenter.db <mkreg
-
-loadstr
-loadaf
-loadprog f89
-loadreg  f89
-loadpeople
-
-cp retreatcenter.db ..
+./loadall

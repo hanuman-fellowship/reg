@@ -128,38 +128,32 @@ sub _get_data {
             push @mess, "$readable{$f} cannot be blank";
         }
     }
-    # dates are either blank or converted to d8 format
+    # dates are converted to d8 format
     my ($sdate, $edate);
-    if ($hash{name} =~ m{personal\s+retreat}i) {
-        $hash{sdate} = "";        # force them to be blank
-        $hash{edate} = "";
+    if (empty($hash{sdate})) {
+        push @mess, "Missing Start Date";
     }
     else {
-        if (empty($hash{sdate})) {
-            push @mess, "Missing Start Date";
+        $sdate = date($hash{sdate});
+        if (! $sdate) {
+            push @mess, "Invalid Start Date: $hash{sdate}";
         }
         else {
-            $sdate = date($hash{sdate});
-            if (! $sdate) {
-                push @mess, "Invalid Start Date: $hash{sdate}";
+            $hash{sdate} = $sdate->as_d8();
+            Date::Simple->relative_date($sdate);
+            if (empty($hash{edate})) {
+                push @mess, "Missing End Date";
             }
             else {
-                $hash{sdate} = $sdate->as_d8();
-                Date::Simple->relative_date($sdate);
-                if (empty($hash{edate})) {
-                    push @mess, "Missing End Date";
+                $edate = date($hash{edate});
+                if (! $edate) {
+                    push @mess, "Invalid End Date: $hash{edate}";
                 }
                 else {
-                    $edate = date($hash{edate});
-                    if (! $edate) {
-                        push @mess, "Invalid End Date: $hash{edate}";
-                    }
-                    else {
-                        $hash{edate} = $edate->as_d8();
-                    }
+                    $hash{edate} = $edate->as_d8();
                 }
-                Date::Simple->relative_date();
             }
+            Date::Simple->relative_date();
         }
     }
 
@@ -717,6 +711,10 @@ sub publish : Local {
                  "gen_files/$dir/$pic.html";
         }
     }
+    #
+    # remove the temporary calX.html files
+    #
+    unlink <root/static/templates/web/cal?.html>;
 
     #
     # finally, ftp all generated pages to www.mountmadonna.org
@@ -975,7 +973,9 @@ sub gen_regtable {
             next if $t =~ m{triple|dormitory}
                     && $p->name =~ m{personal\s+retreat}i;
             (my $tt = $t) =~ s{_}{ }g;
-            print {$regt} "basic $tt\t", $p->fees(0, $t), "\n";
+            my $fees = $p->fees(0, $t);
+            next if $fees == 0;    # another way to eliminate a housing option 
+            print {$regt} "basic $tt\t$fees\n";
             if ($p->extradays) {
                 print {$regt} "full $tt\t", $p->fees(1, $t), "\n";
             }

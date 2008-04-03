@@ -40,19 +40,6 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 <table cellpadding=2 border=0>
 
 <tr>
-<th align=right>Program</th>
-<td colspan=3><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a>
-From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
-<span style="margin-left: 1in">
-<a href="/registration/list_reg_name/[% reg.program.id %]">Other [% reg.program.name %]</a>
-[% IF online > 0 %]
-&nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
-[% END %]
-</span>
-</td>
-</tr>
-
-<tr>
 <th align=right>Person</th>
 <td colspan=3><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
 [% IF reg.cancelled %]
@@ -62,6 +49,19 @@ Cancelled
 [% END %]
 [% IF reg.date_start %] Arriving early on [% reg.date_start_obj %].[% END %]
 [% IF reg.date_end %] Leaving later on [% reg.date_end_obj %].[% END %]
+</td>
+</tr>
+
+<tr>
+<th align=right>Program</th>
+<td colspan=3><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a>
+From [% reg.program.sdate_obj %] To [% reg.program.edate_obj %]
+<span style="margin-left: 1in">
+<a href="/registration/list_reg_name/[% reg.program.id %]">Other [% reg.program.name %]</a>
+[% IF online > 0 %]
+&nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
+[% END %]
+</span>
 </td>
 </tr>
 

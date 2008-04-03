@@ -220,6 +220,9 @@ my %needed = map { $_ => 1 } qw/
     withWhom
 /;
 
+#
+# an online registration via a file
+#
 sub get_online : Local {
     my ($self, $c, $fname) = @_;
     
@@ -256,10 +259,6 @@ sub get_online : Local {
     if (! $pr) {
         # ??? error screen
     }
-    $c->stash->{pr_sdate} = date($pr->sdate);
-    $c->stash->{pr_edate} = date($pr->edate);
-
-    $c->stash->{program} = $pr;
 
     #
     # find or create a person object.
@@ -302,16 +301,6 @@ sub get_online : Local {
             date_updat => $today,
             date_entrd => $today,
         });
-        #
-        # add the program affils to this person
-        #
-        my $person_id = $p->id();
-        for my $aff ($pr->affils()) {
-            model($c, 'AffilPerson')->create({
-                a_id => $aff->id,
-                p_id => $person_id,
-            });
-        }
     }
     else {
         if (@ppl == 1) {
@@ -361,23 +350,83 @@ sub get_online : Local {
             date_updat => $today,
         });
         my $person_id = $p->id;
-        #
-        # and the person's affils get _added to_ according
-        # to the program affiliations.
-        # make a quick lookup table of the person's affil ids.
-        #
-        my %cur_affils = map { $_->id => 1 }
-                         $p->affils;
-        for my $pr_affil_id (map { $_->id } $pr->affils) {
-            if (! exists $cur_affils{$pr_affil_id}) {
-                model($c, 'AffilPerson')->create({
-                    a_id => $pr_affil_id,
-                    p_id => $person_id,
-                });
-            }
+    }
+
+    #
+    # various fields from the online file make their way
+    # into the stash...
+
+    # comments
+    $c->stash->{comment} = <<"EOC";
+1-$hash{house1}  2-$hash{house2}  $hash{cabinRoom}  online
+EOC
+    if ($hash{withWhom}) {
+        $c->stash->{comment} .= "Sharing a room with $hash{withWhom}\n";
+    }
+    if ($hash{request}) {
+        $c->stash->{comment} .= $hash{request};
+    }
+
+    for my $how (qw/ ad web brochure flyer word_of_mouth /) {
+        $c->stash->{"$how\_checked"} = "";
+    }
+    $c->stash->{"$hash{howHeard}_checked"} = "selected";
+
+    $c->stash->{adsource} = $hash{advertiserName};
+
+    $c->stash->{carpool_checked} = $hash{carpool}? "checked": "";
+    $c->stash->{hascar_checked}  = $hash{hascar }? "checked": "";
+
+    # various hidden fields - to pass to create_do().
+    my $date = date($hash{date});
+    $c->stash->{date_postmark} = $date->as_d8();
+    $c->stash->{time_postmark} = $hash{time};
+    $c->stash->{deposit} = int($hash{amount});
+    $c->stash->{deposit_type} = "Online";
+
+    # sdate/edate (in the hash from the online file)
+    # are normally empty - except for personal retreats
+    if ($hash{sdate} || $hash{edate}) {
+        $c->stash->{date_start} = date($hash{sdate} || $pr->sdate);
+        $c->stash->{date_end  } = date($hash{edate} || $pr->edate);
+    }
+
+    # put the license # in the hash, we'll set ceu = 1 later.
+    $c->stash->{ceu_license} = $hash{ceu_license};
+
+    rest_of_reg($pr, $p, $c, $today, $hash{house1});
+}
+
+#
+# the stash is partially filled in (from an online or manual reg).
+# fill in the rest of it by looking at the program and person
+# and render the view.
+#
+sub rest_of_reg {
+    my ($pr, $p, $c, $today, $house1) = @_;
+
+    $c->stash->{program} = $pr;
+    $c->stash->{person} = $p;
+
+    #
+    # the person's affils get _added to_ according
+    # to the program affiliations.
+    # make a quick lookup table of the person's affil ids.
+    #
+    # is this being done too early?
+    # should we wait until create_do()?
+    #
+    my %cur_affils = map { $_->id => 1 }
+                     $p->affils;
+    for my $pr_affil_id (map { $_->id } $pr->affils) {
+        if (! exists $cur_affils{$pr_affil_id}) {
+            model($c, 'AffilPerson')->create({
+                a_id => $pr_affil_id,
+                p_id => $p->id,
+            });
         }
     }
-    $c->stash->{person} = $p;
+
     #
     # pop up comment?
     #
@@ -425,44 +474,7 @@ sub get_online : Local {
 
     if ($pr->footnotes =~ m{[*]}) {
         $c->stash->{ceu} = 1;
-        $c->stash->{ceu_license} = $hash{ceu_license};
     }
-
-    # comments
-    $c->stash->{comment} = <<"EOC";
-1-$hash{house1}  2-$hash{house2}  $hash{cabinRoom}  online
-EOC
-    if ($hash{withWhom}) {
-        $c->stash->{comment} .= "Sharing a room with $hash{withWhom}\n";
-    }
-    if ($hash{request}) {
-        $c->stash->{comment} .= $hash{request};
-    }
-
-    for my $how (qw/ ad web brochure flyer word_of_mouth /) {
-        $c->stash->{"$how\_checked"} = "";
-    }
-    $c->stash->{"$hash{howHeard}_checked"} = "selected";
-
-    $c->stash->{adsource} = $hash{advertiserName};
-
-    $c->stash->{carpool_checked} = $hash{carpool}? "checked": "";
-    $c->stash->{hascar_checked}  = $hash{hascar }? "checked": "";
-
-    # various hidden fields - to pass to create_do().
-    my $date = date($hash{date});
-    $c->stash->{date_postmark} = $date->as_d8();
-    $c->stash->{time_postmark} = $hash{time};
-    $c->stash->{deposit} = int($hash{amount});
-
-    # sdate/edate (in the hash from the online file)
-    # are normally empty - except for personal retreats
-    # or when the person is coming earlier or staying later
-    if ($hash{sdate} || $hash{edate}) {
-        $c->stash->{date_start} = date($hash{sdate} || $pr->sdate);
-        $c->stash->{date_end  } = date($hash{edate} || $pr->edate);
-    }
-
     # the housing select list.
     # default is the first housing choice.
     # lots of names for the house type... :(
@@ -506,7 +518,7 @@ EOC
         my $htname = $h_type{$ht};
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
 
-        my $selected = $ht eq $hash{house1}? " selected": "";
+        my $selected = ($ht eq $house1)? " selected": "";
         my $htdesc = $lookup{$htname};
         $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
         $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
@@ -719,7 +731,7 @@ sub create_do : Local {
     model($c, 'RegPayment')->create({
         @who_now,
         amount  => $hash{deposit},
-        type    => 'Online',        # what else if not from online???
+        type    => $hash{deposit_type},
         what    => 'Deposit',
     });
 
@@ -1679,6 +1691,46 @@ sub update_do : Local {
     _compute($c, $reg, @who_now);
     _reg_hist($c, $id, "Registration updated.");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
+#
+# a manual registration.
+# at this point we have chosen a person, a program
+# and have specified a deposit, a deposit type and a postmark date.
+# we now need to get the rest of the registration details.
+#
+sub manual : Local {
+    my ($self, $c) = @_;
+
+    my @mess = ();
+    my $deposit      = $c->request->params->{deposit};
+    if ($deposit !~ m{^\d+$}) {
+        push @mess, "Illegal deposit: $deposit";
+    }
+    my $deposit_type = $c->request->params->{deposit_type};
+    my $date_post    = $c->request->params->{date_post};
+    my $d = date($date_post);
+    if (! $d) {
+        push @mess, "Illegal postmark date: $date_post";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "registration/error.tt2";
+        return;
+    }
+    $date_post = $d;
+    my $program_id   = $c->request->params->{program_id};
+    my $person_id    = $c->request->params->{person_id};
+
+    my $pr = model($c, 'Program')->find($program_id);
+    my $p  = model($c, 'Person')->find($person_id);
+
+    $c->stash->{deposit} = $deposit;
+    $c->stash->{deposit_type} = $deposit_type;
+    $c->stash->{date_postmark} = $date_post->as_d8();
+    $c->stash->{time_postmark} = "12:00";
+
+    rest_of_reg($pr, $p, $c, today());
 }
 
 1;

@@ -4,20 +4,16 @@
 <div class=message>[% message || Catalyst.flash.message %]</div>
 <ul>
 <form action="/person/search_do" name=search>
-<table cellpadding=3>
-<tr><th align=right>Search</th><td><input type=text id=pattern name=pattern size=20 value="[% pattern %]"></td></tr>
-<tr><th align=right valign=top>Field to Search On</th>
-<td>
-<input type=radio name=field value=last [% last_checked %]> Last<br>
-<input type=radio name=field value=sanskrit [% sanskrit_checked %]> Sanskrit<br>
-<input type=radio name=field value=zip_post [% zip_post_checked %]> Zip<br>
-<input type=radio name=field value=email [% email_checked %]> Email<br>
-<input type=radio name=field value=first [% first_checked %]> First<br>
-<input type=radio name=field value=tel_home [% tel_home_checked %]> Home Phone
-</td></tr>
-<tr><th align=right>Records per Page</th><td><input type=text name=nrecs size=3 value=[% nrecs %]></td></tr>
-<tr><td>&nbsp;</td><td><input type=submit value="Submit"></td></tr>
-</table>
+Search for <input type=text id=pattern name=pattern size=20 value="[% pattern %]"> in 
+<select name=field style="color: green; font-size: 28pt">
+<option style="color: red" value=last [% last_selected %]> Last</option>
+<option value=sanskrit [% sanskrit_selected %]> Sanskrit</option>
+<option value=zip_post [% zip_post_selected %]> Zip</option>
+<option value=email [% email_selected %]> Email</option>
+<option value=first [% first_selected %]> First</option>
+<option value=tel_home [% tel_home_selected %]> Home Phone</option>
+</select>
+<input type=submit value="Go">
 </form>
 </ul>
 <script type="text/javascript">document.search.pattern.focus();</script>

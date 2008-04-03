@@ -4,15 +4,32 @@ use warnings;
 use DBI;
 use lib '../lib';
 use Util qw/nsquish/;
+use Getopt::Easy;
+
+get_options("s-single");
 
 $|++;       # unbuffer output
 
 my $unknown = 1;        # fixed id for unknown user
 
+#
+# program ids for person retreat and hoffman programs
+#
+my %pr_hoff;
+open my $prh, "<", "pr_hoff_id.txt"
+    or die "no pr_hoff_id.txt\n";
+while (<$prh>) {
+    chomp;
+    my ($k, $v) = split;
+    $pr_hoff{$k} = $v;
+}
+close $prh;
+
 my @seasons;
 my $p = shift @ARGV;
 while ($p ne 's08') {
     push @seasons, $p;
+    last if $O{single};
     if ($p =~ m{^s}) {
         $p =~ s{s}{f};
     }
@@ -22,7 +39,7 @@ while ($p ne 's08') {
         $p = 's' . sprintf("%02d", $yr);
     }
 }
-push @seasons, 'cur';
+push @seasons, 'cur' unless $O{single};
 
 my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
     or die "oh no\n";
@@ -212,14 +229,13 @@ for my $seas (@seasons) {
         $k = $map{$k} if exists $map{$k};
         $hash{$k} = $v;
         if ($k eq 'ceusent') {
-            processReg();
+            processReg($seas);
             ++$nreg;
             %hash = ();
         }
-        exit if $nreg == 300;
     }
     close $reg;
-    printf "%3.1f\n", $nreg/(time()-$start_time);
+    printf "%3.1f\n", $nreg/((time()-$start_time) || 1);
 }
 
 $p_sth = $per_sth = $ins_per_sth = $upd_per_sth = $ins_reg_sth = undef;
@@ -227,6 +243,8 @@ $who_sth = $who_ins_sth = $pay_ins_sth = $chg_ins_sth = $hist_ins_sth = undef;
 $dbh->disconnect();
 
 sub processReg {
+    my ($season) = @_;
+
     $hash{comment} = "";
     $hash{comment} .= "$hash{'1comment'}\n" if $hash{'1comment'};
     $hash{comment} .= "$hash{'2comment'}\n" if $hash{'2comment'};
@@ -261,46 +279,65 @@ sub processReg {
     if ($hash{can_date}) {
         $hash{cancelled} = "yes";
     }
+    for my $f (qw/ tel_home tel_work tel_cell /) {
+        $hash{$f} =~ s{\D}{}g;
+        $hash{$f} =~ s{(...)(...)(....)}{$1-$2-$3}g;
+    }
     my ($name, $sdate);
     if ($hash{program_id}) {
+        my $pid = $hash{program_id};
+        if ($pid == 69 || $pid == 886) {
+            # personal retreat or hoffman
+            # map it to the new program id.
+            if (exists $pr_hoff{"$season-$pid"}) {
+                $hash{program_id} = $pr_hoff{"$season-$pid"};
+            }
+            else {
+                die "*** missing program id for pr_hoff $season-$pid\n";
+            }
+        }
         $p_sth->execute($hash{program_id});
         unless (($name, $sdate) = $p_sth->fetchrow_array()) {
-            die "*** bad program id: $hash{program_id}\n";
+            die "*** missing program id: '$hash{program_id}'\n";
         }
     }
     else {
         die "*** no proper program id: $hash{program_id}!\n";
     }
     # get or create the person record
-    # if already exists - update the record.
+    # if already exists - update the record - ONLY if the
+    # id is >= 200,000.  otherwise the person was added
+    # during loadpeople and is current already.
+    #
     # include the program start date and program name.
     #
-    #print "$hash{first} $hash{last} ";
     $per_sth->execute($hash{first}, $hash{last});
-    for my $f (qw/ tel_home tel_work tel_cell /) {
-        $hash{$f} =~ s{\D}{}g;
-        $hash{$f} =~ s{(...)(...)(....)}{$1-$2-$3}g;
-    }
-    if (($person_id) = $per_sth->fetchrow_array()) {
-        $upd_per_sth->execute(
-            $hash{first},
-            $hash{last},
-            $hash{sex},
-            $hash{addr1},
-            $hash{addr2},
-            $hash{city},
-            $hash{st_prov},
-            $hash{zip_post},
-            $hash{country},
-            $hash{tel_home},
-            $hash{tel_work},
-            $hash{tel_cell},
-            $hash{email},
-            $sdate,
-            $name,
-            nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
-            $person_id
-        ) or die "could not update: " . $dbh->errstr;
+    if ((($person_id) = $per_sth->fetchrow_array())
+         && defined $person_id
+    ) {
+        if ($person_id >= 200000) {
+            $upd_per_sth->execute(
+                $hash{first},
+                $hash{last},
+                $hash{sex},
+                $hash{addr1},
+                $hash{addr2},
+                $hash{city},
+                $hash{st_prov},
+                $hash{zip_post},
+                $hash{country},
+                $hash{tel_home},
+                $hash{tel_work},
+                $hash{tel_cell},
+                $hash{email},
+                $sdate,
+                $name,
+                nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
+                $person_id
+            ) or die "could not update: " . $dbh->errstr;
+        }
+        # else the person was added during loadpeople
+        # and is already current.
     }
     else {
         $person_id = $next_person_id++;
@@ -324,11 +361,8 @@ sub processReg {
             $name,
             nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
         );
-
-        $per_sth->execute($hash{first}, $hash{last});
-        #($person_id) = $per_sth->fetchrow_array();
-        #print "- created  - id = $person_id\n";
     }
+    print "$hash{first} $hash{last} $hash{program_id}\n";
     $ins_reg_sth->execute($reg_id,
                           $hash{program_id},
                           $person_id,
@@ -351,7 +385,7 @@ sub processReg {
                           $hash{deposit},
                           $hash{balance},
                           $hash{time_postmark}
-                         );
+                         ) or die "no ins reg $DBI::errstr\n";
     # use deposit, pmt1, pmt2 in RegPayment records
     #     and p1cash, pmt1date
     # we don't have who did it...

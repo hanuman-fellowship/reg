@@ -2,7 +2,14 @@
 mig=/Users/jonbjornstad/catalyst/projects/RetreatCenter/migration
 cd $mig
 
-echo loading
+if [ `whoami` = 'jonbjornstad' ]
+then
+    db='sqlite3 retreatcenter.db'
+else
+    db='mysql -u sahadev -pJonB2458 reg2'
+fi
+
+echo creating tables
 sqlite3 retreatcenter.db <mkpeople
 sqlite3 retreatcenter.db <mkmisc
 sqlite3 retreatcenter.db <mkprog
@@ -11,17 +18,20 @@ sqlite3 retreatcenter.db <mkusers
 sqlite3 retreatcenter.db <mkmember
 sqlite3 retreatcenter.db <mkreg
 
+echo strings, affils
 loadstr
 loadaf
 
+echo clearing images
 cd ../root/static/images
 rm -f lo* lth* lb* po* pth* pb*
-
 cd $mig
-#loadprog f89
-#loadreg  f89
-loadprog f07
-loadreg  f07
-#loadpeople
+
+echo people
+loadpeople
+echo leaders, canpol, housecost, programs
+loadprog f89
+echo reg
+loadreg  f89
 
 cp retreatcenter.db ..

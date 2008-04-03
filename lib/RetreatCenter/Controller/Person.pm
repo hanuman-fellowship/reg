@@ -39,19 +39,15 @@ sub search : Local {
     }
     $c->stash->{pattern} = $pattern;
     if (! $field) {
-        $c->stash->{last_checked} = "checked";
-    }
-    if (! $match) {
-        $c->stash->{prefix_checked} = "checked";
+        $c->stash->{last_selected} = "selected";
     }
     for my $f (qw/ 
         last sanskrit zip_post email first tel_home prefix substr
     /) {
         if (defined $field && ($field eq $f || $match eq $f)) {
-            $c->stash->{"$f\_checked"} = "checked";
+            $c->stash->{"$f\_selected"} = "selected";
         }
     }
-    $c->stash->{nrecs} = $nrecs || 10;
     $c->stash->{template} = "person/search.tt2";
 }
 
@@ -66,7 +62,7 @@ sub search_do : Local {
 
     my $field   = $c->request->params->{field};
     my $match   = $c->request->params->{match};
-    my $nrecs   = $c->request->params->{nrecs};
+    my $nrecs   = 10;
     my $offset  = $c->request->params->{offset} || 0;
     my $search_ref;
     if ($pattern =~ m{\s+} && ($field eq 'last' || $field eq 'first')) {
@@ -631,6 +627,32 @@ sub mkpartner : Local {
                          . " " . _view_person($p1)
                          . ".";
     $c->response->redirect($c->uri_for("/person/search"));
+}
+
+# show all future programs and allow one to be chosen
+sub register1 : Local {
+    my ($self, $c, $id) = @_;
+
+    my $person = model($c, 'Person')->find($id);
+    my @programs = model($c, 'Program')->search(
+        {
+            sdate => { '>=',    today()->as_d8() },
+            name  => { -not_like => '%personal%retreat%' },
+        },
+        { order_by => [ 'sdate', 'name' ] },
+    );
+    my $jan1 = date(today()->year(), 1, 1)->as_d8();
+    my (@personal_retreats) = model($c, 'Program')->search(
+        {
+            name  => { like => '%personal%retreat%' },
+            sdate => { '>=', $jan1 },
+        },
+        { order_by => 'sdate' },
+    );
+    unshift @programs, @personal_retreats;
+    $c->stash->{person}   = $person;
+    $c->stash->{programs} = \@programs;
+    $c->stash->{template} = "person/register.tt2";
 }
 
 1;

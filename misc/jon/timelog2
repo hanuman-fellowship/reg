@@ -229,3 +229,45 @@ Mar 26 11:30-1:30
 Mar 27 8:00-8:30, 9:40-10:45
     planning out the next steps
     conf history records - nice!
+Mar 28  3:30-6:00
+    more messing around with loading of people
+        into the morass of registrations
+    got manual registration working
+        pick/add person, then "Register", choose program,
+        enter deposit, type of payment, postmark date
+Mar 31 8:00-8:50, 10:30-3:00
+    personal retreats per season, hoffman too.
+        made a beginning
+        fixed up the problematic s91 personal retreat
+            so dumpall won't redo the problem
+    load people first then don't overwrite them.
+    Catalyst install on krishna - make a beginning
+        pretty good.   got Catalyst, reg2, sqlite3 and almost
+            got imagemagick.   loaded a little.
+            needs some work.
+            amazed at the volume of software needed
+            and amazed that it all works.
+            to fully understand just one of these pieces
+                would take a lifetime!
+    need visible evidence that loadreg is working
+Apr 2 2:50-5:30, 9:45-12:30, 1:00-1:20
+    downloading mysql on OSX and krishna
+    after much futzing around... mysql is installed on OSX but
+    the DBD::mysql driver is very problematic.
+    krishna magically already had mysql installed - scheduler, Shantam, Ron
+    AND already had the DBD::mysql driver.   snooping in Shantam's
+    directry I found the root password for mysql and created an account
+    for sahadev and created the reg2 database. and put a test table
+    with test rows and was able to access them from a test Perl program.
+    so... we will use SQLite for macbookpro development
+    and mysql on Krishna for 'production'.  my datatypes are
+    very simple - only text and integer so no portability problems.
+
+    loading of all programs/registrations/people
+        further progress on this difficult task.
+        almost there - now to see what kind of mess we have made!
+        or ... how much of a mess we have to live with. 
+        i'm open to better ways of dealing with past faults.
+Apr 3 10:30-12:30, 2:25-
+    further testing and examination of the loaded data.
+    adding #registrants to program listing

@@ -23,12 +23,14 @@
 <th align=left>Name</th>
 <th align=left>Start Date</th>
 <th align=left>Title</th>
+<th align=right>Registrations</th>
 </tr>
 [% FOREACH p IN programs %]
     <tr>
     <td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
     <td>[% p.sdate_obj %]</td>
     <td><a href="/registration/list_reg_name/[% p.id %]">[% p.title %]</a></td>
+    <td align=right>[% p.registrations_rs.count %]</td>
     </tr>
 [% END %]
 </table>

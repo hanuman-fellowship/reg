@@ -51,7 +51,7 @@ function process(e) {
 </script>
 </head>
 
-<h2>Registrations for [% program.name %]</h2>
+<h2>Registrations for [% program.name %] - [% program.sdate_obj.format("%b %y") %]</h2>
 <form name=form id= form action="/registration/list_reg_name/[% program.id %]">
 <a href="/program/view/[% program.id %]">Program</a>
 &nbsp;&nbsp;&nbsp;

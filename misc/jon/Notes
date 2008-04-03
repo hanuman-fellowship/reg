@@ -926,10 +926,14 @@ seems that AJAX takes over and issues a request
     fast!
 
     also - if i type too fast it confuses the AJAX calls.
-        'ch' typed in quick succession - better c then the h - not good.
+        'c', 'h' typed in quick succession is ignored
+        better 'c', pause, then the 'h' - not good.
 have a radio button - future (normal), current, all,
     range (with two dates - start, end) and a Go button
-    to refresh the programs shown.
+    to refresh the programs shown.  or just one search field
+    in which one can put a variety of things.
+    date range, season name (incl cur - default),
+    or a pattern to match if just one then one can hit return, yes?
 finding flaws in f95, f96 programs - takes time...
 view reg page - CEU, Carpool - funny table alignment
 undup - same home phone??? same email address?
@@ -941,3 +945,31 @@ need a new style - larger clickable <a>
 no fancy highlight on info icon link
 how about not having plurals in the menu up top?
     s s s s s s
+delete unused and old affiliations
+cal\d.tmp do not belong in the web templates
+    directory - they are temporary files
+lapse and lapse_soon should not be deletable
+    they are needed by memberships
+experiment with drop down menus - to make
+    better use of the space
+email blast to all in a program
+    via a mailto: link?
+    it would work, yes?  are there limits?
+    otherwise - can do a textarea for the message
+    and just send it off myself. - with Bcc or
+    with individual emails.
+should not be able to delete a program
+    if there are registrations for it.
+    and when deleting a registration - what about the
+    payments?   and charges and history - not as important.
+Shankar can help with mySQL/Postgres and CVS server on Krishna.
+need a way to be on one person's registration
+    and to search for anothers without going back
+    to the list of all registrations
+lists of both programs and registrations should
+    show the first 15 and allow a quick searching/narrowing/restricting
+    or seeing the next 15?
+
+    programs should have a radio button/select list for
+        current/date range/...?
+        along with a search for a pattern.
