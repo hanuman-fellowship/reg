@@ -386,8 +386,8 @@ sub processProg {
                               . substr($hash{name}, -3, 3));
     }
     $hash{ptemplate} =~ s{[.]html}{};
-    $hash{ptemplate} = "Default" if $hash{ptemplate} =~ m{^\s*$};
-    $hash{cl_template} = "Default";
+    $hash{ptemplate} = "default" if $hash{ptemplate} =~ m{^\s*$};
+    $hash{cl_template} = "default";
     if (! -f "../root/static/templates/web/$hash{ptemplate}.html") {
         print "*** could not open web template $hash{ptemplate}\n";
     }
