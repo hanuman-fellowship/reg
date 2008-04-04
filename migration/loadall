@@ -25,9 +25,9 @@ loadaf
 echo people
 loadpeople
 echo leaders, canpol, housecost, programs
-loadprog -s f89
+loadprog f89
 echo reg
-loadreg  -s f89
+loadreg  f89
 
 if [ `whoami` = 'jonbjornstad' ]
 then
