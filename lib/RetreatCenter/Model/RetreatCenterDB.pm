@@ -6,9 +6,9 @@ use base 'Catalyst::Model::DBIC::Schema';
 __PACKAGE__->config(
     schema_class => 'RetreatCenterDB',
     connect_info => [
-        'dbi:SQLite:retreatcenter.db',
-        '',
-        '',
+        undef,
+        'sahadev',
+        'JonB',
         { AutoCommit => 1 },
         
     ],
