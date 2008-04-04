@@ -1,10 +1,9 @@
 <h2>Programs</h2>
+<form action="/program/listpat" name=form>
 [% admin = Catalyst.check_user_roles('prog_admin') %]
 [% IF admin %]
     <a href="/program/create">Add</a>
-    &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/program/listdate">Sort by Start Date</a>
 [% IF admin %]
     &nbsp;&nbsp;&nbsp;
     <a href="/program/brochure">Brochure</a>
@@ -17,6 +16,7 @@
     &nbsp;&nbsp;&nbsp;
     <a href="/registration/list_online">Online ([% online %])</a>
 [% END %]
+&nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value=[% pr_pat %]> <input type=submit value="Search"></form>
 <ul>
 <table border=0 cellpadding=3>
 <tr>
@@ -35,3 +35,4 @@
 [% END %]
 </table>
 </ul>
+<script type='text/javascript'>document.form.pr_pat.focus();</script>

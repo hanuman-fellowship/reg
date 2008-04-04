@@ -16,6 +16,7 @@ use Util qw/
     sys_template
     compute_glnum
     model
+    trim
     empty
 /;
 use Date::Simple qw/date today/;
@@ -274,26 +275,68 @@ sub view : Local {
 sub list : Local {
     my ($self, $c) = @_;
 
+    my $today = today()->as_d8();
     $c->stash->{programs} = [
         model($c, 'Program')->search(
-            undef,
-            { order_by => 'name' },
+            { sdate => { '>=', $today } },
+            { order_by => 'sdate' },
         )
     ];
     my @files = <root/static/online/*>;
     $c->stash->{online} = scalar(@files);
+    $c->stash->{pr_pat} = "";
     $c->stash->{template} = "program/list.tt2";
 }
 
-sub listdate : Local {
+sub listpat : Local {
     my ($self, $c) = @_;
 
+    my $today = today()->as_d8();
+    my $pr_pat = trim($c->request->params->{pr_pat});
+    if (empty($pr_pat)) {
+        $c->forward('list');
+        return;
+    }
+    my $cond;
+    if ($pr_pat =~ m{(^[fs])(\d\d)}i) {
+        my $seas = $1;
+        my $year = $2;
+        $seas = lc $seas;
+        if ($year > 70) {
+            $year += 1900;
+        }
+        else {
+            $year += 2000;
+        }
+        my ($d1, $d2);
+        if ($seas eq 'f') {
+            $d1 = $year . '1001';
+            $d2 = ($year+1) . '0331';
+        }
+        else {
+            $d1 = $year . '0401';
+            $d2 = $year . '0930';
+        }
+        $cond = {
+            sdate => { 'between' => [ $d1, $d2 ] },
+        };
+    }
+    else {
+        my $pat = $pr_pat;
+        $pat =~ s{\*}{%}g;
+        $cond = {
+            name => { 'like' => "${pat}%" },
+        };
+    }
     $c->stash->{programs} = [
         model($c, 'Program')->search(
-            undef,
+            $cond,
             { order_by => 'sdate' },
         )
     ];
+    $c->stash->{pr_pat} = $pr_pat;
+    my @files = <root/static/online/*>;
+    $c->stash->{online} = scalar(@files);
     $c->stash->{template} = "program/list.tt2";
 }
 
@@ -302,7 +345,6 @@ sub update : Local {
 
     my $p = model($c, 'Program')->find($id);
     $c->stash->{program} = $p;
-$c->log->info($p->reg_start);
     for my $w (qw/
         sbath collect_total kayakalpa retreat
         economy webready quad linked

@@ -268,7 +268,12 @@ Apr 2 2:50-5:30, 9:45-12:30, 1:00-1:20
         almost there - now to see what kind of mess we have made!
         or ... how much of a mess we have to live with. 
         i'm open to better ways of dealing with past faults.
-Apr 3 10:30-12:30, 2:25-6:05, 9:30-
+Apr 3 10:30-12:30, 2:25-6:05, 9:30-12:10
     further testing and examination of the loaded data.
     adding #registrants to program listing
     moving stuff to mysql and krishna - many tweaks!
+    it's all on krishna and working with mysql
+    restricting the program view - some experiments.
+Apr 4 10:45-11:40
+    further program view tweaks
+    go shell script

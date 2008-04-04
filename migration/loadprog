@@ -207,6 +207,7 @@ sub processLeader {
         }
         else {
             print "could not find '$hash{image}'\n";
+            $hash{image} = "";
         }
     }
     $le_sth->execute($hash{id}, $per_id, $hash{web}, $image, $hash{bio}, 1);
@@ -417,6 +418,7 @@ sub processProg {
         }
         else {
             print "could not find '$hash{image}'\n";
+            $hash{image} = "";
         }
     }
     #print "loading pid $hash{pid}\n";
