@@ -6,3 +6,4 @@ else
 export DBI_DSN="dbi:mysql:reg2"
 fi
 nohup script/retreatcenter_server.pl &
+tail -f nohup.out
