@@ -7,7 +7,7 @@ __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('project');
 __PACKAGE__->add_columns(qw/
     id
-    desc
+    descr
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

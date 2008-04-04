@@ -20,7 +20,7 @@ sub create : Local {
     $c->stash->{projects} = [
         model($c, 'Project')->search(
             undef,
-            { order_by => 'desc' },
+            { order_by => 'descr' },
         )
     ];
     $c->stash->{form_action} = "create_do/$person_id";

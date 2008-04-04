@@ -362,7 +362,7 @@ sub processReg {
             nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
         );
     }
-    print "$hash{first} $hash{last} $hash{program_id}\n";
+    #print "$hash{first} $hash{last} $hash{program_id}\n";
     $ins_reg_sth->execute($reg_id,
                           $hash{program_id},
                           $person_id,

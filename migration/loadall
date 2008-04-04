@@ -2,10 +2,11 @@
 if [ `whoami` = 'jonbjornstad' ]
 then
     db='sqlite3 retreatcenter.db'
-    export DBI_DSN="dbi:sqlite:retreatcenter.db"
+    export DBI_DSN="dbi:SQLite:retreatcenter.db"
 else
     db='mysql -u sahadev -pJonB2458 reg2'
     export DBI_DSN="dbi:mysql:reg2"
+    conv        # autoincrement to auto_increment
 fi
 
 echo creating tables
@@ -21,16 +22,19 @@ echo strings, affils
 loadstr
 loadaf
 
-echo clearing images
-cd ../root/static/images
-rm -f lo* lth* lb* po* pth* pb*
-cd $mig
-
 echo people
 loadpeople
 echo leaders, canpol, housecost, programs
-loadprog f89
+loadprog -s f89
 echo reg
-loadreg  f89
+loadreg  -s f89
 
+if [ `whoami` = 'jonbjornstad' ]
+then
 cp retreatcenter.db ..
+fi
+
+echo clearing images
+cd ../root/static/images
+rm -f lo* lth* lb* po* pth* pb*
+

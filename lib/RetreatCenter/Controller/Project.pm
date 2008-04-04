@@ -17,7 +17,7 @@ sub list : Local {
 
     $c->stash->{projects} = [ model($c, 'Project')->search(
         undef,
-        { order_by => 'desc' }
+        { order_by => 'descr' }
     ) ];
     $c->stash->{template} = "project/list.tt2";
 }
@@ -72,14 +72,14 @@ sub update : Local {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    my $desc = $c->request->params->{desc};
-    if (empty($desc)) {
+    my $descr = $c->request->params->{descr};
+    if (empty($descr)) {
         $c->stash->{mess} = "Project description cannot be blank.";
         $c->stash->{template} = "project/error.tt2";
         return;
     }
     model($c, 'Project')->find($id)->update({
-        desc => $desc,
+        descr => $descr,
     });
     $c->response->redirect($c->uri_for('/project/list'));
 }
@@ -97,14 +97,14 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    my $desc = $c->request->params->{desc};
-    if (empty($desc)) {
+    my $descr = $c->request->params->{descr};
+    if (empty($descr)) {
         $c->stash->{mess} = "Project description cannot be blank.";
         $c->stash->{template} = "project/error.tt2";
         return;
     }
     model($c, 'Project')->create({
-        desc => $desc,
+        descr => $descr,
     });
     $c->response->redirect($c->uri_for('/project/list'));
 }

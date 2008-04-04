@@ -10,18 +10,18 @@ __PACKAGE__->add_columns(qw/
     id
     role
     fullname
-    desc
+    descr
 /);
 __PACKAGE__->set_primary_key('id');
 
 __PACKAGE__->has_many(user_role => 'RetreatCenterDB::UserRole', 'role_id');
 __PACKAGE__->many_to_many(users => 'user_role', 'user');
 
-sub desc_br {
+sub descr_br {
     my ($self) = @_;
-    my $desc = $self->desc;
-    $desc =~ s{\r?\n}{<br>\n}g;
-    $desc;
+    my $descr = $self->descr;
+    $descr =~ s{\r?\n}{<br>\n}g;
+    $descr;
 }
 
 1;

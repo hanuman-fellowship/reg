@@ -15,7 +15,7 @@ create table role (
     id          integer primary key autoincrement,
     role        text,
     fullname    text,
-    desc        text
+    descr       text
 );
 drop table if exists user_role;
 create table user_role (

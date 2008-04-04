@@ -9,7 +9,7 @@ __PACKAGE__->add_columns(qw/
     id
     name
     single
-    double
+    dble
     triple
     quad
     dormitory

@@ -18,35 +18,35 @@ sub list : Local {
 
     $c->stash->{strings} = [ model($c, 'String')->search(
         undef,
-        { order_by => 'key' }
+        { order_by => 'the_key' }
     ) ];
     $c->stash->{template} = "string/list.tt2";
 }
 
 use URI::Escape;
 sub update : Local {
-    my ($self, $c, $key) = @_;
+    my ($self, $c, $the_key) = @_;
 
-    my $s = model($c, 'String')->find($key);
+    my $s = model($c, 'String')->find($the_key);
 
-    $c->stash->{key} = $key;
+    $c->stash->{the_key} = $the_key;
     $c->stash->{value} = uri_escape($s->value, '"');
-    $c->stash->{form_action} = "update_do/$key";
+    $c->stash->{form_action} = "update_do/$the_key";
     $c->stash->{template}    = "string/create_edit.tt2";
 }
 
 sub update_do : Local {
-    my ($self, $c, $key) = @_;
+    my ($self, $c, $the_key) = @_;
 
     my $value = uri_unescape($c->request->params->{value});
-    model($c, 'String')->find($key)->update({
+    model($c, 'String')->find($the_key)->update({
         value => $value,
     });
-    $lookup{$key} = $value;
-    if ($key =~ m{imgwidth} && $c->request->params->{resize_all}) {
+    $lookup{$the_key} = $value;
+    if ($the_key =~ m{imgwidth} && $c->request->params->{resize_all}) {
         for my $f (<root/static/images/*o-*.jpg>) {
             my ($type, $id) = $f =~ m{/(\w+)o-(\d+).jpg$};
-            resize($type, $id, $key);
+            resize($type, $id, $the_key);
         }
     }
     $c->response->redirect($c->uri_for('/string/list'));

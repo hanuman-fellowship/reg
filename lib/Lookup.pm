@@ -28,7 +28,7 @@ sub init {
     
     return if %lookup;      # already done
     for my $s ($c->model("RetreatCenterDB::String")->all()) {
-        $lookup{$s->key} = $s->value;
+        $lookup{$s->the_key} = $s->value;
     }
 }
 

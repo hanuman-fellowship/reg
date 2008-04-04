@@ -478,7 +478,7 @@ sub rest_of_reg {
     # the housing select list.
     # default is the first housing choice.
     # lots of names for the house type... :(
-    # these are also the
+    # these are also the method and column names
     my %h_type = qw(
         com    commuting
         ov     own_van
@@ -488,7 +488,7 @@ sub rest_of_reg {
         econ   economy
         quad   quad
         tpl    triple
-        dbl    double
+        dbl    dble
         dbl/ba double_bath
         sgl    single
         sgl/ba single_bath
@@ -1573,7 +1573,7 @@ sub update : Local {
         economy
         quad
         triple
-        double
+        dble
         double_bath
         single
         single_bath

@@ -3,7 +3,7 @@
 <table cellpadding=3 border=0>
 <tr>
 <td align=right><span class="required">*</span> Description</span></td>
-<td><input type=text name=desc value="[% project.desc %]"></td>
+<td><input type=text name=descr value="[% project.descr %]"></td>
 </tr>
 <tr>
 <td>&nbsp;</td>
@@ -11,4 +11,4 @@
 </tr>
 </table>
 </form>
-<script type="text/javascript">document.form.desc.focus()</script>
+<script type="text/javascript">document.form.descr.focus()</script>

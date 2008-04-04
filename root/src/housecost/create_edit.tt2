@@ -28,7 +28,7 @@
 
 <tr>
 <th align=right>Double</th>
-<td><input type=text name=double value="[% housecost.double %]" size=4></td>
+<td><input type=text name=dble value="[% housecost.dble %]" size=4></td>
 </tr>
 
 <tr>

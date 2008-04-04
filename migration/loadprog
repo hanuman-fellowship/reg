@@ -61,7 +61,7 @@ while (<$cp>) {
     }
 }
 close $cp;
-$canpol_id{MMC} = $canpol_id{Default};
+$canpol_id{0} = $canpol_id{MMC} = $canpol_id{Default};
 
 # housing costs
 my $hc_sql = "insert into housecost values ("
@@ -391,7 +391,9 @@ sub processProg {
     if (! -f "../root/static/templates/web/$hash{ptemplate}.html") {
         print "*** could not open web template $hash{ptemplate}\n";
     }
-    $hash{canpol_id} = $canpol_id{$hash{canpol}};
+    $hash{canpol_id} =
+        (exists $canpol_id{$hash{canpol}})? $canpol_id{$hash{canpol}}
+        :                                   $canpol_id{Default};
     $hash{housecost_id} = $hash{housing}+1;
     $hash{url} =~ s{http://}{};
     # images???

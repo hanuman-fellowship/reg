@@ -15,11 +15,11 @@
 
 [% FOREACH p IN projects %]
     <tr>
-    <td><a href="/project/donations/[% p.id %]">[% p.desc %]</a></td>
+    <td><a href="/project/donations/[% p.id %]">[% p.descr %]</a></td>
     [% IF madmin %]
         <td>
         <a href="[% '/project/update/' _ p.id %]">Edit</a>&nbsp;
-        <a href="[% '/project/delete/' _ p.id %]" onclick="return confirm('Okay to Delete [% p.desc %]?')">Del</a>
+        <a href="[% '/project/delete/' _ p.id %]" onclick="return confirm('Okay to Delete [% p.descr %]?')">Del</a>
         </td>
     [% END %]
     </tr>

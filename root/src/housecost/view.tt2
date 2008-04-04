@@ -34,7 +34,7 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Double</th>
-<td>[% housecost.double %]</td>
+<td>[% housecost.dble %]</td>
 </tr>
 
 <tr>

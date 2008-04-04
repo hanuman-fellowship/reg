@@ -1,4 +1,4 @@
-<h2>Project '[% project.desc %]' has the following donations:</h2>
+<h2>Project '[% project.descr %]' has the following donations:</h2>
 <ul>
 <table cellpadding=3>
 <tr>

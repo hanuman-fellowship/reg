@@ -51,7 +51,7 @@ create table housecost (
     single_bath     integer,
     single          integer,
     double_bath     integer,
-    double          integer,
+    dble            integer,
     triple          integer,
     quad            integer,
     dormitory       integer,

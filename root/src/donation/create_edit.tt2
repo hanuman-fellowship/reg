@@ -13,7 +13,7 @@
 <td>
 <select name=project>
 [% FOR p IN projects %]
-<option value=[% p.id %]>[% p.desc %]</option>
+<option value=[% p.id %]>[% p.descr %]</option>
 [% END %]
 </select>
 </td>
