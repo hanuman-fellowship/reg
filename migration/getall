@@ -1,7 +1,4 @@
 #!/bin/sh
-mig=/Users/jonbjornstad/catalyst/projects/RetreatCenter/migration
-cd $mig
-
 rm -rf new
 echo ftp
 ftp www.mountmadonna.org <<EOC
@@ -10,7 +7,7 @@ get dmpfile.tar.Z
 quit
 EOC
 echo uncompress
-uncompress -f dmpfile.tar.Z
+gunzip -f dmpfile.tar.Z
 echo untar
 tar xvf dmpfile.tar
 
