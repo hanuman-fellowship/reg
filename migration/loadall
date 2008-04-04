@@ -4,7 +4,7 @@ then
     db='sqlite3 retreatcenter.db'
     export DBI_DSN="dbi:SQLite:retreatcenter.db"
 else
-    db='mysql -u sahadev -pJonB2458 reg2'
+    db='mysql -u sahadev -pJonB reg2'
     export DBI_DSN="dbi:mysql:reg2"
     conv        # autoincrement to auto_increment
 fi
