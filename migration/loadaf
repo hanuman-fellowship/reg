@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use DBI;
 
-my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 $dbh->do("delete from affils");
 $dbh->do("delete from affil_people");

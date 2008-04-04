@@ -23,7 +23,7 @@ while ($p ne 's08') {
 }
 push @seasons, 'cur' unless $O{single};
 
-my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db")
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 $dbh->do("delete from program");
 $dbh->do("delete from canpol");

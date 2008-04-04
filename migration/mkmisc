@@ -6,6 +6,6 @@ create table exception (
 );
 drop table if exists string;
 create table string (
-    key         text,
+    the_key     text,
     value       text
 );

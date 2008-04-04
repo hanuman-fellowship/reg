@@ -15,7 +15,7 @@ create table people (
     tel_cell      text,
     email text,
     sex text,
-    id integer primary key,
+    id integer primary key autoincrement,
     id_sps integer,
     date_updat text,
     date_entrd text,
@@ -27,7 +27,7 @@ create table people (
 );
 drop table if exists affils;
 create table affils (
-    id integer primary key,
+    id integer primary key autoincrement,
     descrip text
 );
 drop table if exists affil_people;

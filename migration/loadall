@@ -1,22 +1,21 @@
 #!/bin/sh
-mig=/Users/jonbjornstad/catalyst/projects/RetreatCenter/migration
-cd $mig
-
 if [ `whoami` = 'jonbjornstad' ]
 then
     db='sqlite3 retreatcenter.db'
+    export DBI_DSN="dbi:sqlite:retreatcenter.db"
 else
     db='mysql -u sahadev -pJonB2458 reg2'
+    export DBI_DSN="dbi:mysql:reg2"
 fi
 
 echo creating tables
-sqlite3 retreatcenter.db <mkpeople
-sqlite3 retreatcenter.db <mkmisc
-sqlite3 retreatcenter.db <mkprog
-sqlite3 retreatcenter.db <mkrep
-sqlite3 retreatcenter.db <mkusers
-sqlite3 retreatcenter.db <mkmember
-sqlite3 retreatcenter.db <mkreg
+$db <mkpeople
+$db <mkmisc
+$db <mkprog
+$db <mkrep
+$db <mkusers
+$db <mkmember
+$db <mkreg
 
 echo strings, affils
 loadstr

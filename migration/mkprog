@@ -1,6 +1,6 @@
 drop table if exists program;
 create table program (
-    id          integer primary key,
+    id          integer primary key autoincrement,
     name        text,
     title       text,
     subtitle    text,
@@ -40,13 +40,13 @@ create table program (
 );
 drop table if exists canpol;
 create table canpol (
-    id integer primary key,
+    id integer primary key autoincrement,
     name   text,
     policy text
 );
 drop table if exists housecost;
 create table housecost (
-    id              integer primary key,
+    id              integer primary key autoincrement,
     name            text,
     single_bath     integer,
     single          integer,
@@ -70,7 +70,7 @@ create table affil_program (
 );
 drop table if exists leader;
 create table leader (
-    id integer primary key,
+    id integer primary key autoincrement,
     person_id integer,
     public_email text,
     url text,
@@ -85,7 +85,7 @@ create table leader_program (
 );
 drop table if exists rental;
 create table rental (
-    id          integer primary key,
+    id          integer primary key autoincrement,
     name        text,
     title       text,
     subtitle    text,
