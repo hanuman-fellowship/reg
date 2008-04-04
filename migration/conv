@@ -1,0 +1,2 @@
+#!/bin/sh
+perl -p -i -e 's/autoincrement/auto_increment/' mk*
