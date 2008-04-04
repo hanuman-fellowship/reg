@@ -1,4 +1,4 @@
-#!/usr/bin/sh
+#!/bin/sh
 if [ `whoami` = 'jonbjornstad' ]
 then
 export DBI_DSN="dbi:SQLite:retreatcenter.db"
