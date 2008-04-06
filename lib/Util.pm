@@ -289,7 +289,7 @@ sub housing_types {
 		dormitory
 		quad
 		triple
-		double
+		dble
 		double_bath
 		single
 		single_bath
