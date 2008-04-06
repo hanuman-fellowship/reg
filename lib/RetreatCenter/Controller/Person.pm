@@ -62,7 +62,7 @@ sub search_do : Local {
 
     my $field   = $c->request->params->{field};
     my $match   = $c->request->params->{match};
-    my $nrecs   = 10;
+    my $nrecs   = 15;
     my $offset  = $c->request->params->{offset} || 0;
     my $search_ref;
     if ($pattern =~ m{\s+} && ($field eq 'last' || $field eq 'first')) {

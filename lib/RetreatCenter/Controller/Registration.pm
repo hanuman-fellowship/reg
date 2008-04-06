@@ -1437,7 +1437,8 @@ EOH
         my $name = $per->last . ", " . $per->first;
         my $balance = $reg->balance;
         my $type = $reg->h_type_disp;
-        my $need_house = $type !~ m{commut|van}i;
+        my $need_house = (defined $type)? $type !~ m{commut|van}i
+                         :                0;
         my $house = $reg->h_name;
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark;

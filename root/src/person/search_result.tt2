@@ -25,12 +25,12 @@
 <table cellpadding=2>
 <tr>
 [% IF prevN %]
-<td width=70><a href="[% prevN %]">Prev [% N %]</a></td>
+<td width=70><a href="[% prevN %]">Prev</a></td>
 [% ELSE %]
 <td width=70>&nbsp;</td>
 [% END %]
 [% IF nextN %]
-<td width=70><a href="[% nextN %]">Next [% N %]</a></td>
+<td width=70><a href="[% nextN %]">Next</a></td>
 [% ELSE %]
 <td width=70></td>
 [% END %]

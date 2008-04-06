@@ -337,7 +337,6 @@ sub processProg {
         # transform these special cases into a new program
         # pid  69 = personal retreat
         # pid 886 = hoffman
-        $hash{name} .= " \U$season";
         my $orig = $hash{pid};
         $hash{pid} = $next_pro_id;
         # remember this so you won't have to look it up.
@@ -346,6 +345,7 @@ sub processProg {
         if ($season eq 'cur') {
             $hash{sdate} = "04/01/2008";
             $hash{edate} = "09/30/2008";
+            $hash{name} .= " S08";
         }
         else {
             my ($fs, $year) = $season =~ m{(.)(..)};
@@ -358,6 +358,7 @@ sub processProg {
                 $hash{sdate} = "04/01/$year";
                 $hash{edate} = "09/30/$year";
             }
+            $hash{name} .= " \U$season";
         }
     }
     if ($hash{name} =~ m{ FULL$}) {

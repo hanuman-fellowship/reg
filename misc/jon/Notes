@@ -973,3 +973,7 @@ lists of both programs and registrations should
     programs should have a radio button/select list for
         current/date range/...?
         along with a search for a pattern.
+on viewing a registration - a way to have a text
+    field where you can see the list of other registrations
+    matching the pattern - ajax-y like on the list of all registrations.
+add the sender's name to the confirmation note history.

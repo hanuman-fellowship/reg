@@ -1,0 +1,31 @@
+<h2>Registering for a Program</h2>
+<form action="/registration/manual" name=form>
+<input type=hidden name=person_id value=[% person.id %]>
+<span class=larger>[% person.first %] [% person.last %]</span>
+<p>
+<table cellpadding=3>
+<tr><th align=right>Deposit</th><td><input type=text size=4 maxlength=4 name=deposit>
+<select style="margin-left: .5in" name=deposit_type>
+<option value='Credit Card' selected>Credit Card
+<option value='Cash'>Cash
+<option value='Check'>Check
+</select>
+</td></tr>
+<tr><th>Postmark Date</th><td><input type=text size=10 maxlength=10 name=date_post>
+<input style="margin-left: 1in" type=submit value="Submit"></td></tr>
+<tr><th align=right valign=top>Program</th>
+<td>
+<table cellpadding=2>
+[% FOR p IN programs %]
+<tr>
+<td><input type=radio name=program_id value=[% p.id %]> [% p.name %]</td>
+<td>[% p.sdate_obj %]</td>
+<td>[% p.title %]</td>
+</tr>
+[% END %]
+</table>
+<td></tr>
+<tr><td></td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>
+<script type='text/javascript'>document.form.deposit.focus();</script>

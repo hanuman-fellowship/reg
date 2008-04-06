@@ -46,7 +46,7 @@ program start date.  It is composed of 4 parts:
     Verify all these things.  A challenge!
     Only the super admin can edit the GL Number directly.
 
-    A program named 'Personal Retreats' with a blank start date
+    A program named 'Personal Retreats'
         is an exception here.  It's GL Number is initially '99999' and
         can only be changed by the super admin.
 
@@ -85,8 +85,14 @@ Strings
 
 Leaders are created by first finding/adding them as a Person.
 Then you can say "Make Leader" and fill in the Leader attributes.
-No leader attribute is required.  If an email address
-    is given it must be in a valid syntax.
+None of the leader attributes are required (except for order).
+    If an email address is given it must be in a valid
+    syntax - a very basic check for this is performed.
+
+    The Order attribute defaults to 1.  If there is more than
+    one leader for a program the order they are presented
+    on the web page is determined by this field.
+
 You can optionally upload a picture of the leader.
 It will be resized for you so don't worry about its size.
 There _will_ be a small and a large version so please
@@ -113,6 +119,7 @@ Housing Costs must have one named "Default".
 It is the normal lodging costs for a program.
 There are 13 types of housing with a cost for each.
 The cost fields must be either blank or a number.
+If a cost is zero (0) this housing type will not be offered.
 
 Try creating new Cancellation Policies and Housing Costs.
 
@@ -144,11 +151,10 @@ program you can make a specific exception and supply the value.
 This is not needed often but it is nice to have.
 
 Rentals are another type of program.  But simpler.
-    No image but a telephone number and an email address.
-    Like programs the start date must be before the end date.
+    There is no image but there is a telephone number and an email address.
+    Like programs, the start date must be before the end date.
     Try getting error messages here.  Rentals also have
     GL Numbers (see above).
-
 
 Strings - this is a fixed list of key/value pairs.
 This supplies various explanatory labels on the web
@@ -175,6 +181,10 @@ you can enter a date (e.g. November 8, 2009) in a variety of ways:
 For today just enter 't'.
 For the 5th of the current month just '5'.
 For November 8th in the current year just '11 8' or '11/8'.
+
+Note that the End Date of a program is _relative_ to
+the Start Date.   You can put +2 in the End Date field
+for normal weekend programs.
 ******
 
 ******
@@ -224,20 +234,20 @@ The following program attributes affect (effect?) which types
         Quad
 
     You can check them on or off.  They're displayed
-    as "yes" or blank respectively.
+    as "yes" or blank respectively.   If a housing cost
+    is zero - this is another way to not offer a particular
+    housing type.
 
-    Verify that generated web page has or does not have these housing types.
+    Verify that generated web page has or does not have
+    the proper housing types.
 
 Note that it is only the FUTURE programs and rentals 
 that are published.  AND only those programs that are 'Web Ready'
 and those rentals that are 'Linked'.
 
-Programs that are not 'Linked' are published
-in a separate place - named ul_ followed by the first
-3 letters from the program name followed by the month
-and day.  Like this:
-
-    ul_OGS-11-8.html
+Programs that are not 'Linked' are required to have
+an Unlinked Dir attribute.   This is used when publishing.
+The web page is put at: www.mountmadonna.org/dirname
 
 These unlinked programs are listed on the response page and you
 can click on the links to see the unlinked program pages.
@@ -254,5 +264,34 @@ Jamal will use the "Brochure" link to get the above program information
 in a form that is convenient for creating the printed brochure.
 If there is a "Brochure Description" available it will be used
 otherwise the "Web Description" is taken.  The exact syntax of
-what Jamal needs in this is up to him.
+what Jamal needs in this is up to him.  To generate the brochure
+you specify a season and a page number where the lodging fees
+will be listed.
+
+THE PROGRAM LIST
+================
+On first choosing "Programs" at the top you will see
+all current and future programs - their name, description
+and the number of current registrations.
+
+This list includes programs
+that are still in progress and a "Personal Retreat" program
+whose dates span the entire current season (10/1-3/31 for fall/winter
+and 4/1-9/30 for spring/summer). Registrants for Personal
+Retreats will specify arrival and departure dates to override these
+dates - unless they want to stay the entire season, that is. :)
+
+On the program list:
+
+    Click on the program name to see the program attributes.
+    Click on the program description to see registrations for
+        that program.
+
+If you wish to see programs aside from the current and future
+ones you can enter a term in the Search text field and hit Return.
+In this field you can put a season (s03, f98, f07)
+to see all programs in that season.
+You can also put a pattern such as "korn" or "*dya".
+The '*' is a wildcard, as usual.  All programs (going back to
+the beginning of time) whose name matches this pattern will be shown.
 </pre>

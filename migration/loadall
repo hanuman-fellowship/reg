@@ -1,12 +1,12 @@
 #!/bin/sh
-if [ `whoami` = 'jonbjornstad' ]
+if [ `whoami` = 'sahadev' ]
 then
-    db='sqlite3 retreatcenter.db'
-    export DBI_DSN="dbi:SQLite:retreatcenter.db"
-else
     db='mysql -u sahadev -pJonB reg2'
     export DBI_DSN="dbi:mysql:reg2"
     conv        # autoincrement to auto_increment
+else
+    db='sqlite3 retreatcenter.db'
+    export DBI_DSN="dbi:SQLite:retreatcenter.db"
 fi
 
 echo creating tables

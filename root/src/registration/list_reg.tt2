@@ -41,7 +41,7 @@ function process(e) {
     keychar = String.fromCharCode(keynum);
     var s = document.getElementById('pat');
     var t = s.value;
-    var url = 'http://localhost::3000/registration/matchreg/[% program.id %]/' + t;
+    var url = 'http://localhost:3000/registration/matchreg/[% program.id %]/' + t;
     xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = getIt;
     xmlhttp.send(null);

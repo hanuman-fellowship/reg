@@ -272,13 +272,16 @@ sub view : Local {
     $c->stash->{template} = "program/view.tt2";
 }
 
+#
+# ??? order of display?   also end date???
+#
 sub list : Local {
     my ($self, $c) = @_;
 
     my $today = today()->as_d8();
     $c->stash->{programs} = [
         model($c, 'Program')->search(
-            { sdate => { '>=', $today } },
+            { edate => { '>=', $today } },
             { order_by => 'sdate' },
         )
     ];
@@ -288,6 +291,7 @@ sub list : Local {
     $c->stash->{template} = "program/list.tt2";
 }
 
+# ??? order of display?   also end date???
 sub listpat : Local {
     my ($self, $c) = @_;
 
@@ -331,7 +335,7 @@ sub listpat : Local {
     $c->stash->{programs} = [
         model($c, 'Program')->search(
             $cond,
-            { order_by => 'sdate' },
+            { order_by => 'sdate desc' },
         )
     ];
     $c->stash->{pr_pat} = $pr_pat;

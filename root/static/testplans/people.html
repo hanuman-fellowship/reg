@@ -7,7 +7,6 @@ Log In
 
 Search
     enter pattern, press Submit
-    try substring instead of prefix
     try sanskrit, zip, email, first, and home phone.
         the numbers in home phone are not necessarily
             sequential...  this is okay if you give the full 10 digits.
@@ -17,23 +16,19 @@ Search
                 or
                 '460-'
             then it will match exactly (either substring or prefix).
-    ask for more/less records (instead of Records per Page = 10).
 
     None found? You stay at the search screen.
-        With _all_ of your search attributes preserved so you
-        can easily correct them.
+        With your search pattern preserved so you can easily correct it.
 
-    If more per page than shown - Try "Next 10" until there are no more.
-*   There is also Prev 10.   Note that the position of the Next and Prev
-        do not change so your mouse can stay in one place
-        (assuming you haven't asked for more records than can fit
-        on the screen).
+    If more per page than shown - Try "Next" until there are no more.
+    There is also Prev.   Note that the position of the Next and Prev
+        do not change so your mouse can stay in one place.
 
-*   If there is only one person found that person will be
+    If there is only one person found that person will be
         shown immediately.  No separate step with
         a list containing just one person.
 
-*   If searching by Last name you can give
+    If searching by Last name you can give
         two strings separated by a space.  The first string
         will be matched against the last name field and the
         second will be matched against the first name field.
@@ -41,7 +36,10 @@ Search
         As clear as mud?
         or As clear as an azure sky of deepest summer?
         This will speed the finding by a lot!
-        This also applies if you're doing a substring search.
+
+    If there is a star '*' in a pattern it will be a 'wildcard'.
+        Searching for '*ete' will find someone named Peterson
+        and searching for '*ete *e' will find Joe Peterson.
 
 Create a Person
     fill in all fields (country defaults to USA)
@@ -67,7 +65,7 @@ Affiliations
         Verify it is gone from the people.
         And from the list when editing a person.
 
-*   One affiliation has a special name.
+    One affiliation has a special name.
         If an affiliation has the name "Pop Up Comment"
         (actually just if it contains "pop up") then
         when this person registers for a program
@@ -84,7 +82,7 @@ Find someone to Edit
         to see their info.
         verify the date of updating
 
-*Map - there is a link at the top named "Map"
+Map - there is a link at the top named "Map"
     it jumps to Google maps using the person's address.
     cool?
 
@@ -198,9 +196,14 @@ Reports
         95060-95062, 89012-89450, 01234
 
     Verify you can delete reports.
-    Try the "Count" link instead of "Run" to get
+    If you check "Count" and choose "Run" you'll get
          a count of how many records will appear in the report
          when it is run.
+    If you check "Share" the report will only include
+        people that have indicated they permit us to share
+        their demographic information with business associates.
+        The count of these people is obviously less than without
+        'Share' clicked.
 
     In the formats other than "Just Email" note that if both
         partners make it into the report (affiliations match)
@@ -222,8 +225,14 @@ Reports
         and see the link on the person's name which takes
         you to viewing that person's full record.
 
-*All of the person's Registrations are listed with
-    the Program name and the start date.   Click on program
+Add a Project and then people can Make Donations to it.
+    The donations a person has made are listed on their page.
+
+All of the person's Registrations are listed on the person's page
+    with the Program name and the start date.   Click on program
     name to go to that person's registration for that program.
     This is shown only if one of your roles is "Program Staff".
+
+If a person has cancelled a registration and received
+    a credit this, too, is listed on their page.
 </pre>

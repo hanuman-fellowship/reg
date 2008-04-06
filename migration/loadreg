@@ -215,15 +215,22 @@ for my $seas (@seasons) {
         }
         s{\r?\n$}{};
         my ($k, $v) = split m{\t};
+        $v = "" unless defined $v;
         $v =~ s{^\s*|\s*$}{}g;
         if ($v eq '-') {
-            $v = "";
-            LINE:
-            while (<$reg>) {
-                s{\r?\n$}{};
-                s{^\s*|\s*$}{}g;
-                last LINE if m{^\.$};
-                $v .= "$_\n";
+            if ($k ne 'overflow') {
+                # this does not mean read to a .
+                $v = "";
+            }
+            else {
+                $v = "";
+                LINE:
+                while (<$reg>) {
+                    s{\r?\n$}{};
+                    s{^\s*|\s*$}{}g;
+                    last LINE if m{^\.$};
+                    $v .= "$_\n";
+                }
             }
         }
         $k = $map{$k} if exists $map{$k};
@@ -362,7 +369,7 @@ sub processReg {
             nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
         );
     }
-    #print "$hash{first} $hash{last} $hash{program_id}\n";
+    #print "ins reg $hash{first} $hash{last} $hash{program_id}\n";
     $ins_reg_sth->execute($reg_id,
                           $hash{program_id},
                           $person_id,

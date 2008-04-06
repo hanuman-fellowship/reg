@@ -70,7 +70,9 @@ sub h_type_disp {
     my ($self) = @_;
     
     # Lookup->init();       # hopefully already done :(
-    my $type = $lookup{$self->h_type};
+    my $type = $self->h_type;
+    return "" if ! defined $type;
+    $type = $lookup{$type};
     $type =~ s{\(.*\)}{};
     $type =~ s{Mount Madonna }{};
     $type;
