@@ -27,5 +27,7 @@ __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->has_many(programs => 'RetreatCenterDB::Program', 'housecost_id', 
                       { order_by => 'sdate desc' });
+__PACKAGE__->has_many(rentals => 'RetreatCenterDB::Rental', 'housecost_id', 
+                      { order_by => 'sdate desc' });
 
 1;

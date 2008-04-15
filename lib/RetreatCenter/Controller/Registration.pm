@@ -1381,6 +1381,7 @@ sub matchreg : Local {
         $pref_first = "";
     }
     my $pr = model($c, 'Program')->find($prog_id);
+# ??? very inefficient - look at DBIC_TRACE output
     my @regs = map {
                    $_->[2]
                }
@@ -1398,6 +1399,7 @@ sub matchreg : Local {
                }
                $pr->registrations;
     Lookup->init($c);
+$c->log->info("count of regs = " . scalar(@regs));
     $c->res->output(_reg_table(\@regs));
 }
 
@@ -1460,9 +1462,8 @@ EOH
         my $pay_balance = $balance;
         if (! $reg->cancelled && $balance > 0) {
             $pay_balance =
-                "<a href='/registration/pay_balance/$id/list_reg_name'>"
-               ."<span class=rname1>$pay_balance</span>"
-               ."</a>";
+                "<span class=rname1><a href='/registration/pay_balance/$id/list_reg_name'>"
+               ."$pay_balance</a></span>";
         }
         $body .= <<"EOH";
 <tr>
@@ -1470,7 +1471,7 @@ EOH
 <td>$mark</td>
 
 <td>    <!-- width??? -->
-<a href='/registration/view/$id'><span class=rname1>$name</span></a>
+<span class=rname1><a href='/registration/view/$id'>$name</a></span></a>
 </td>
 
 <td>
@@ -1501,7 +1502,7 @@ EOH
 .rname2 {
     font-size: ${size}pt;
 }
-a:hover .rname {
+a:hover {
     color: $other_color;
     background: $color;
 }
@@ -1732,6 +1733,15 @@ sub manual : Local {
     $c->stash->{time_postmark} = "12:00";
 
     rest_of_reg($pr, $p, $c, today());
+}
+
+sub delete : Local {
+    my ($self, $c, $id) = @_;
+
+    my $reg = model($c, 'Registration')->find($id);
+    my $person_id = $reg->person_id;
+    $reg->delete();
+    $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }
 
 1;

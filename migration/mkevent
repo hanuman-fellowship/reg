@@ -1,0 +1,12 @@
+drop table if exists event;
+create table event (
+    id          integer primary key autoincrement,
+    name        text,
+    descr       text,
+    sdate       text,
+    edate       text,
+    sponsor     text,
+    user_id     integer, -- foreign key to User
+    the_date    text,
+    time        text
+);

@@ -1,0 +1,12 @@
+<h2>People</h2>
+You can mark people with these codes:
+<ul>
+<li>P - Primary
+<li>m - to be merged into the primary
+<li>p - to be partnered with the primary
+<li>n - for clarity, narrow down the list to just these
+</ul>
+Do merging or partnering but not both at once.
+<p>
+Please go <input id='back' type=button value="Back" onclick="history.go(-1)"> and fix them.
+<script type='text/javascript'>document.getElementById('back').focus();</script>

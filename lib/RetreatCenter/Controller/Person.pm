@@ -32,7 +32,7 @@ sub _view_person {
 }
 
 sub search : Local {
-    my ($self, $c, $pattern, $field, $match, $nrecs) = @_;
+    my ($self, $c, $pattern, $field, $nrecs) = @_;
 
     if ($pattern) {
         $c->stash->{message}  = "No one found matching '$pattern'.";
@@ -44,7 +44,7 @@ sub search : Local {
     for my $f (qw/ 
         last sanskrit zip_post email first tel_home prefix substr
     /) {
-        if (defined $field && ($field eq $f || $match eq $f)) {
+        if (defined $field && $field eq $f) {
             $c->stash->{"$f\_selected"} = "selected";
         }
     }
@@ -61,8 +61,10 @@ sub search_do : Local {
     # even when method=post?
 
     my $field   = $c->request->params->{field};
-    my $match   = $c->request->params->{match};
-    my $nrecs   = 15;
+    my $nrecs = 15;
+    if ($pattern =~ s{\s+(\d+)\s*$}{}) {
+        $nrecs = $1;
+    }
     my $offset  = $c->request->params->{offset} || 0;
     my $search_ref;
     if ($pattern =~ m{\s+} && ($field eq 'last' || $field eq 'first')) {
@@ -113,7 +115,7 @@ sub search_do : Local {
     );
     if (@people == 0) {
         # Nobody found.
-        $c->response->redirect($c->uri_for("/person/search/$orig_pattern/$field/$match/$nrecs"));
+        $c->response->redirect($c->uri_for("/person/search/$orig_pattern/$field/$nrecs"));
         return;
     }
     if (@people == 1) {
@@ -128,7 +130,6 @@ sub search_do : Local {
                             . "pattern=$orig_pattern"
                             . "&field=$field"
                             . "&nrecs=$nrecs"
-                            . "&match=$match"
                             . "&offset=" . ($offset-$nrecs);
     }
     if (@people > $nrecs) {
@@ -139,10 +140,10 @@ sub search_do : Local {
                             . "pattern=$orig_pattern"
                             . "&field=$field"
                             . "&nrecs=$nrecs"
-                            . "&match=$match"
                             . "&offset=" . ($offset+$nrecs);
     }
     $c->stash->{field} = $field eq 'tel_home'? 'tel_home': 'email';
+    $c->stash->{ids} = join '-', map { $_->id } @people;
     $c->stash->{people} = \@people;
     $c->stash->{template} = "person/search_result.tt2";
 }
@@ -202,7 +203,7 @@ sub delete : Local {
 }
 
 sub _what_gender {
-    my ($name) = @_;
+    my ($name, $id) = @_;
 
     my $html = get("http://www.gpeters.com/names/baby-names.php?"
                   ."name=" . $name);
@@ -213,10 +214,21 @@ sub _what_gender {
         boy  Male
     );
     if ($gender) {
-        return "$likelihood => $name{$gender}";
+        my $sex = $name{$gender};
+        if ($id) {
+            return "$likelihood => <a href='/person/set_gender/$id/"
+                 . substr($sex, 0, 1)
+                 . "'>$sex";
+        }
+        else {
+            return "$likelihood => $sex";
+        }
     }
     if (($gender) = $html =~ m{It's a (.*?)!}) {
-        return "$name{$gender}";
+        my $sex = $name{$gender};
+        return "<a href='/person/set_gender/$id/"
+                 . substr($sex, 0, 1)
+                 . "'>$sex";
     }
     return "Only God knows.";
 }
@@ -244,19 +256,23 @@ sub view : Local {
                       :($sex eq "F")? "Female"
                       :               "Not Reported";
     if ($sex ne 'M' && $sex ne 'F') {
-            $c->stash->{sex} .= "<br>". _what_gender($p->first);
+            $c->stash->{sex} .= "<br>". _what_gender($p->first, $id);
     }
     $c->stash->{affils} = [ $p->affils() ];
-    $c->stash->{date_entrd} = date($p->date_entrd()) || "";
-    $c->stash->{date_updat} = date($p->date_updat()) || "";
 
     # Schwartzian???
     # get the registrations and sort them
     # in reverse program start date order.   Is there
     # a way to do this within DBIx relationships?
     # perhaps.
-    my @regs = sort {
-                   $b->program->sdate cmp $a->program->sdate
+    my @regs = map {
+                   $_->[1]
+               }
+               sort {
+                   $b->[0] cmp $a->[0]
+               }
+               map {
+                   [ $_->date_start || $_->program->sdate, $_ ]
                }
                $p->registrations;
     if (@regs) {
@@ -653,6 +669,133 @@ sub register1 : Local {
     $c->stash->{person}   = $person;
     $c->stash->{programs} = \@programs;
     $c->stash->{template} = "person/register.tt2";
+}
+
+sub undup : Local {
+    my ($self, $c, $ids) = @_;
+
+    my @people = map { model($c, 'Person')->find($_) }
+                 split /-/, $ids;
+    $c->stash->{people} = \@people;
+    $c->stash->{template} = "person/undup.tt2";
+}
+
+sub undup_do : Local {
+    my ($self, $c) = @_;
+
+    my $content = "";
+    my $primary = 0;
+    my @merged = ();
+    my @non_blank = ();
+    my $partner = 0;
+    my $unknown = 0;
+    FIELD:
+    for my $id ($c->request->param) {
+        my $c = $c->request->params->{$id};
+        next FIELD unless defined $c && $c =~ /\S/;
+        push @non_blank, $id;
+        if ($c eq 'P') {
+            $primary = $id;
+        }
+        elsif ($c eq 'm') {
+            push @merged, $id;
+        }
+        elsif ($c eq 'p') {
+            $partner = $id;
+        }
+        else {
+            $unknown = 1;
+        }
+    }
+    if ($primary && $partner && @merged == 0 && ! $unknown) {
+        my $p = model($c, 'Person')->find($primary);
+        $p->update({
+            id_sps => $partner,
+        });
+        model($c, 'Person')->search({
+            id => $partner,
+        })->update({
+            id_sps   => $primary,
+            addr1    => $p->addr1,
+            addr2    => $p->addr2,
+            city     => $p->city,
+            st_prov  => $p->st_prov,
+            zip_post => $p->zip_post,
+            country  => $p->country,
+            tel_home => $p->tel_home,
+        });
+        $c->response->redirect($c->uri_for("/person/view/$primary"));
+        return;
+    }
+    if ($unknown) {
+        # narrow them down...
+        undup($self, $c, join '-', @non_blank);
+        return;
+    }
+    unless (@merged && $primary) {
+        # error
+        $c->stash->{template} = "person/undup_err.tt2";
+        return;
+    }
+    #
+    # for each person to merge, take their registrations
+    # and modify the person_id field to be the primary id.
+    # do the same with donations and credits.
+    #
+    # Unpartner the merged person and then any
+    # affil_person, leader, member (and related) records connected
+    # to the merged person should be deleted.
+    #
+    # sorry to delete them but too much trouble would ensue if
+    # the primary person was ALSO a leader or member or if they
+    # had the same affils.
+    #
+    # then delete the merged person record.
+    #
+    for my $mid (@merged) {
+        for my $table (qw/ Registration Credit Donation /) {
+            model($c, $table)->search({
+                person_id => $mid,
+            })->update({
+                person_id => $primary,
+            });
+        }
+        # partner, if any
+        model($c, 'Person')->search({
+            id_sps => $mid,
+        })->update({
+            id_sps => 0,
+        });
+        model($c, 'AffilPerson')->search({
+            p_id => $mid,
+        })->delete();
+        model($c, 'Leader')->search({
+            person_id => $mid,
+        })->delete();
+        # leader image???
+        if (my ($member) = model($c, 'Member')->search({
+                               person_id => $mid,
+                           })
+        ) {
+            $member->delete();      # should cascade
+        }
+        # finally, delete the person we are merging
+        model($c, 'Person')->search({
+            id => $mid,
+        })->delete();
+    }
+    $c->response->redirect($c->uri_for("/person/view/$primary"));
+}
+
+sub set_gender : Local {
+    my ($self, $c, $id, $gender) = @_;
+
+    model($c, 'Person')->search({
+        id => $id,
+    })->update({
+        sex => $gender,
+    });
+    $c->response->redirect($c->uri_for("/person/view/$id"));
 }
 
 1;

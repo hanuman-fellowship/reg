@@ -1,5 +1,5 @@
 <h2>Rentals</h2>
-<form action=[% "/rental/" _ form_action %] name=form>
+<form action=[% "/rental/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0>
 
 <tr>
@@ -25,6 +25,7 @@
 <th align=right>GL Number</th>
 <td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
 <td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td> 
+<td colspan=2><input type=checkbox value="yes" name=ceu [% check_ceu %]> CEU</td> 
 </tr>
 
 </tr>
@@ -42,14 +43,44 @@
 <tr>
 <th align=right>Email</th>
 <td><input type=text name=email value="[% rental.email %]" size=40></td>
+<td><input type=submit value="Submit"></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Description</th>
-<td colspan=5><textarea name=webdesc cols=60 rows=10>[% rental.webdesc %]</textarea></td>
+<td colspan=5><textarea name=webdesc cols=60 rows=5>[% rental.webdesc %]</textarea></td>
 </td>
 </tr>
 
+<tr>
+<th align=right valign=top>Comment</th>
+<td colspan=5><textarea name=comment cols=60 rows=3>[% rental.comment %]</textarea></td>
+</td>
+</tr>
+
+<tr>
+<th align=right>Housing Cost</th>
+<td>
+<select name=housecost_id>
+[% FOREACH h IN housecost_opts %]
+    <option value=[% h.id %][% IF h.name == rental.housecost.name %] selected[% END %]>[% h.name %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+<tr><th align=right>Single Bath</th><td><input type=text size=3 name=n_single_bath value=[% rental.n_single_bath %]></td></tr>
+<tr><th align=right>Single</th><td><input type=text size=3 name=n_single value=[% rental.n_single %]></th></tr>
+<tr><th align=right>Double Bath</th><td><input type=text size=3 name=n_double_bath value=[% rental.n_double_bath %]></td></tr>
+<tr><th align=right>Double</th><td><input type=text size=3 name=n_dble value=[% rental.n_dble %]></td></tr>
+<tr><th align=right>Triple</th><td><input type=text size=3 name=n_triple value=[% rental.n_triple %]></td></tr>
+<tr><th align=right>Quad</th><td><input type=text size=3 name=n_quad value=[% rental.n_quad %]></td></tr>
+<tr><th align=right>Dormitory</th><td><input type=text size=3 name=n_dormitory value=[% rental.n_dormitory %]></td></tr>
+<tr><th align=right>Economy</th><td><input type=text size=3 name=n_economy value=[% rental.n_economy %]></td></tr>
+<tr><th align=right>Center Tent</th><td><input type=text size=3 name=n_center_tent value=[% rental.n_center_tent %]></td></tr>
+<tr><th align=right>Own Tent</th><td><input type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td></tr>
+<tr><th align=right>Own Van</th><td><input type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td></tr>
+<tr><th align=right>Commuting</th><td><input type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td></tr>
 <tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>

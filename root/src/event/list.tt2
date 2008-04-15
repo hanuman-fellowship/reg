@@ -1,0 +1,24 @@
+<h2>Events</h2>
+<form action="/event/listpat" name=form>
+[% IF Catalyst.check_user_roles('prog_admin') %]
+<a href="/event/create">Add</a>
+&nbsp;&nbsp;&nbsp;<a href="/event/calendar">Calendar</a>
+&nbsp;&nbsp;&nbsp;<input text name=event_pat size=10 value=[% event_pat %]> <input type=submit value="Search"></form>
+[% END %]
+<ul>
+<table border=0 cellpadding=3>
+<tr>
+<th align=left>Name</th>
+<th align=left>Start Date</th>
+<th align=left>Description</th>
+</tr>
+[% FOREACH e IN events %]
+    <tr>
+    <td><a href="/event/view/[% e.id %]">[% e.name %]</a></td>
+    <td>[% e.sdate_obj %]</a></td>
+    <td>[% e.descr %]</a></td>
+    </tr>
+[% END %]
+</table>
+</ul>
+<script type="text/javascript">document.form.event_pat.focus();</script>

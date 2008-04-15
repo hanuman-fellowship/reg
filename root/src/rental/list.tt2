@@ -1,8 +1,8 @@
 <h2>Rentals</h2>
+<form action="/rental/listpat" name=form>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Add</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/program/publish">Publish<a>
+&nbsp;&nbsp;&nbsp;<input text name=rent_pat size=10 value=[% rent_pat %]> <input type=submit value="Search"></form>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>
@@ -10,15 +10,14 @@
 <th align=left>Name</th>
 <th align=left>Start Date</th>
 <th align=left>Title</th>
-<th align=left>SubTitle</th>
 </tr>
 [% FOREACH r IN rentals %]
     <tr>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
     <td>[% r.sdate_obj %]</a></td>
-    <td>[% r.title %]</td>
-    <td>[% r.subtitle %]</td>
+    <td>[% r.title %]</a></td>
     </tr>
 [% END %]
 </table>
 </ul>
+<script type="text/javascript">document.form.rent_pat.focus();</script>

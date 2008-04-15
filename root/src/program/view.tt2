@@ -17,7 +17,7 @@
 [% END %]
 <a target=_blank href="[% program.web_addr %]">Web</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/list_reg_name/[% program.id %]">Registrations</a>
+<a href="/registration/list_reg_name/[% program.id %]">Registrations ([% program.registrations_rs.count %])</a>
 <p>
 
 <table cellpadding=3 border=0>

@@ -1,0 +1,33 @@
+use strict;
+use warnings;
+package RetreatCenterDB::RentalPayment;
+use base qw/DBIx::Class/;
+
+use Date::Simple qw/date/;
+
+#
+# very similar to reg_payment
+# need some kind of hierarchy???
+#
+__PACKAGE__->load_components(qw/PK::Auto Core/);
+__PACKAGE__->table('rental_payment');
+__PACKAGE__->add_columns(qw/
+    id
+    rental_id
+    user_id
+    the_date
+    time
+    amount
+    type
+/);
+__PACKAGE__->set_primary_key(qw/id/);
+
+__PACKAGE__->belongs_to('rental' => 'RetreatCenterDB::Rental', 'rental_id');
+__PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
+
+sub the_date_obj {
+    my ($self) = @_;
+    return date($self->the_date);
+}
+
+1;

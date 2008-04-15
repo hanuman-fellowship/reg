@@ -1,0 +1,35 @@
+<h2>Events</h2>
+<form action=[% "/event/" _ form_action %] name=form method=post>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right><span class="required">*</span> Name</th>
+<td><input type=text name=name value="[% event.name %]"></td>
+<th align=right><span class="required">*</span> From</th>
+<td><input type=text name=sdate value="[% event.sdate_obj %]" size=10></td>
+<th align=right><span class="required">*</span> To</th>
+<td><input type=text name=edate value="[% event.edate_obj %]" size=10></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Description</th>
+<td colspan=5><input type=text name=descr value="[% event.descr %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Sponsor</th>
+<td>
+<select name=sponsor>
+[% sponsor_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.name.focus();</script>

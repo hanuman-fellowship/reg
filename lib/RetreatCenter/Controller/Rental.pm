@@ -3,7 +3,7 @@ use warnings;
 package RetreatCenter::Controller::Rental;
 use base 'Catalyst::Controller';
 
-use Date::Simple qw/date/;
+use Date::Simple qw/date today/;
 use Util qw/
     trim
     empty
@@ -25,6 +25,12 @@ sub create : Local {
 
     $c->stash->{check_webready} = "checked";
     $c->stash->{check_linked}   = "checked";
+    $c->stash->{check_ceu}   = "";
+    $c->stash->{housecost_opts} =
+        [ model($c, 'HouseCost')->search(
+            undef,
+            { order_by => 'name' },
+        ) ];
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "rental/create_edit.tt2";
 }
@@ -51,7 +57,13 @@ sub _get_data {
             push @mess, "missing date field";
             next;
         }
+        if ($d eq 'edate') {
+            Date::Simple->relative_date(date($hash{sdate}));
+        }
         my $dt = date($fld);
+        if ($d eq 'edate') {
+            Date::Simple->relative_date();
+        }
         if ($fld && ! $dt) {
             # tell them which date field is wrong???
             push @mess, "Invalid date: $fld";
@@ -63,6 +75,43 @@ sub _get_data {
     if (!@mess && $hash{sdate} > $hash{edate}) {
         push @mess, "End date must be after the Start date";
     }
+    my $ndays = date($hash{edate}) - date($hash{sdate});
+    my $hc = model($c, 'HouseCost')->find($hash{housecost_id});
+    my $total = 0;
+    for my $f (qw/
+        n_single_bath
+        n_single
+        n_double_bath
+        n_dble
+        n_triple
+        n_quad
+        n_dormitory
+        n_economy
+        n_center_tent
+        n_own_tent
+        n_own_van
+        n_commuting
+    /) {
+        my $s = $f;
+        $s =~ s{^n_}{};
+        if (! ($hash{$f} =~ m{^\s*\d*\d*$})) {
+            $s =~ s{_}{ };
+            $s =~ s{\b(\w)}{\u$1}g;
+            $s =~ s{Dble}{Double};
+            push @mess, "Illegal quantity for $s: $hash{$f}";
+        }
+        else {
+            if ($hc->type eq 'Perday') {
+                $total += $hc->$s * $hash{$f} * $ndays;
+            }
+            else {
+                # Total
+                $total += $hc->$s * $hash{$f};
+            }
+        }
+    }
+    $hash{total_charge} = $total;
+
     if ($hash{email} && ! valid_email($hash{email})) {
         push @mess, "Invalid email: $hash{email}";
     }
@@ -87,19 +136,92 @@ sub create_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{rental} = model($c, 'Rental')->find($id);
+    my $r = model($c, 'Rental')->find($id);
+    $c->stash->{rental} = $r;
+
+    my @payments = $r->payments;
+    my $tot = 0;
+    for my $p (@payments) {
+        $tot += $p->amount;
+    }
+    $c->stash->{tot_payment}  = $tot;
+    $c->stash->{balance}  = $r->total_charge - $tot;
+    $c->stash->{payments} = \@payments;
     $c->stash->{template} = "rental/view.tt2";
 }
 
 sub list : Local {
     my ($self, $c) = @_;
 
+    my $today = today()->as_d8();
     $c->stash->{rentals} = [
         model($c, 'Rental')->search(
-            undef,
-            { order_by => 'title' },
+            { sdate => { '>=', $today } },
+            { order_by => 'sdate' },
         )
     ];
+    $c->stash->{rent_pat} = "";
+    $c->stash->{template} = "rental/list.tt2";
+}
+
+sub listpat : Local {
+    my ($self, $c) = @_;
+
+    my $rent_pat = $c->request->params->{rent_pat};
+    if (empty($rent_pat)) {
+        $c->forward('list');
+        return;
+    }
+    my $cond;
+    if ($rent_pat =~ m{(^[fs])(\d\d)}i) {
+        my $seas = $1;
+        my $year = $2;
+        $seas = lc $seas;
+        if ($year > 70) {
+            $year += 1900;
+        }
+        else {
+            $year += 2000;
+        }
+        my ($d1, $d2);
+        if ($seas eq 'f') {
+            $d1 = $year . '1001';
+            $d2 = ($year+1) . '0331';
+        }
+        else {
+            $d1 = $year . '0401';
+            $d2 = $year . '0930';
+        }
+        $cond = {
+            sdate => { 'between' => [ $d1, $d2 ] },
+        };
+    }
+    elsif ($rent_pat =~ m{((\d\d)?\d\d)}) {
+        my $year = $1;
+        if ($year > 70 && $year <= 99) {
+            $year += 1900;
+        }
+        elsif ($year < 70) {
+            $year += 2000;
+        }
+        $cond = {
+            sdate => { 'between' => [ "${year}0101", "${year}1231" ] },
+        };
+    }
+    else {
+        my $pat = $rent_pat;
+        $pat =~ s{\*}{%}g;
+        $cond = {
+            name => { 'like' => "${pat}%" },
+        };
+    }
+    $c->stash->{rentals} = [
+        model($c, 'Rental')->search(
+            $cond,
+            { order_by => 'sdate desc' },
+        )
+    ];
+    $c->stash->{rent_pat} = $rent_pat;
     $c->stash->{template} = "rental/list.tt2";
 }
 
@@ -108,7 +230,13 @@ sub update : Local {
 
     my $p = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $p;
-    $c->stash->{"check_linked"}  = ($p->linked())? "checked": "";
+    $c->stash->{"check_linked"}    = ($p->linked()   )? "checked": "";
+    $c->stash->{"check_ceu"}       = ($p->ceu()      )? "checked": "";
+    $c->stash->{housecost_opts} =
+        [ model($c, 'HouseCost')->search(
+            undef,
+            { order_by => 'name' },
+        ) ];
     for my $w (qw/ sdate edate /) {
         $c->stash->{$w} = date($p->$w) || "";
     }
@@ -142,6 +270,46 @@ sub access_denied : Private {
 
     $c->stash->{mess}  = "Authorization denied!";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub pay_balance : Local {
+    my ($self, $c, $id, $amt) = @_;
+
+    my $r = model($c, 'Rental')->find($id);
+    $c->stash->{rental} = $r;
+    $c->stash->{amount} = $amt;
+    $c->stash->{template} = "rental/pay_balance.tt2";
+}
+
+sub pay_balance_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $amt = $c->request->params->{amount};
+    my $type = $c->request->params->{type};
+
+    # can't do $c->user->id for some unknown reason??? so...
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    my $user_id = $u->id;
+
+    my $today = today();
+    my $now_date = $today->as_d8();
+    my ($hour, $min) = (localtime())[2, 1];
+    my $now_time = sprintf "%02d:%02d", $hour, $min;
+
+    model($c, 'RentalPayment')->create({
+
+        rental_id => $id,
+        amount    => $amt,
+        type      => $type,
+
+        user_id  => $user_id,
+        the_date => $now_date,
+        time     => $now_time,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$id"));
 }
 
 1;

@@ -16,9 +16,16 @@
 >
 <input type=file name=stale_emails><br>
 <input type=submit value="Submit">
+</form>
 </ul>
 <p>
 <a target=_blank href="/listing/undup">Unduplication File</a>
 <p>
 <a href="/listing/email_check">Email Check</a>
+<p>
+<form action="/listing/mark_inactive">
+Last date of contact before which people should be marked inactive:
+<input type=text name=date_last size=10 maxlength=10>
+<input type=submit value="Submit">
+</form>
 </ul>

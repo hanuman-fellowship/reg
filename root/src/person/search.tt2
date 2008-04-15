@@ -1,12 +1,12 @@
 <h2>People</h2>
-<a href=/person/create>Add</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="/person/create" accesskey='a'>Add</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <p>
 <div class=message>[% message || Catalyst.flash.message %]</div>
 <ul>
 <form action="/person/search_do" name=search>
 Search for <input type=text id=pattern name=pattern size=20 value="[% pattern %]"> in 
 <select name=field style="color: green; font-size: 28pt">
-<option style="color: red" value=last [% last_selected %]> Last</option>
+<option style="color: red" value=last [% last_selected %]> Last Name</option>
 <option value=sanskrit [% sanskrit_selected %]> Sanskrit</option>
 <option value=zip_post [% zip_post_selected %]> Zip</option>
 <option value=email [% email_selected %]> Email</option>

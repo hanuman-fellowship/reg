@@ -5,6 +5,7 @@ use base 'Catalyst::Controller';
 
 use Person;
 use Util qw/valid_email model/;
+use Date::Simple qw/date/;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -205,7 +206,7 @@ EOS
         $id    = $p->{id};
         $amb   = $p->{ambiguous};
         if ($last eq $prev_last && $first eq $prev_first) {
-            print {$out} "<a target=other href='/person/view/$id'>$last, $first</a> and <a target=other href='/person/view/$prev_id'>namesake</a>\n";    
+            print {$out} "<a target=other href='/person/undup/$id-$prev_id'>$last, $first</a>\n";    
             # both people should be marked as 'ambiguous'
             $dups{$id}      = 1 if ! $amb;
             $dups{$prev_id} = 1 if ! $prev_amb;
@@ -216,6 +217,7 @@ EOS
         $prev_amb   = $amb;
     }
     $sth->finish();
+    # why is this commented out???
     #for my $id (keys %dups) {
     #    model($c, 'Person')->find($id)->update({
     #        ambiguous => 'yes',
@@ -232,21 +234,21 @@ order by akey
 EOS
     my ($prev);
     print {$out} "\n\n";
-    print {$out} "Same Address (and not partnered)\n";
-    print {$out} "============\n";
+    print {$out} "Similar Address (and not partnered)\n";
+    print {$out} "===============\n";
     while ($p = Person->search_next($sth)) {
         if ($prev
             && $p->{akey} eq $prev->{akey}
             && ($p->{id_sps} == 0 || $prev->{id_sps} == 0)
         ) {
-            print {$out} "<a target=other href='/person/view/$p->{id}'>$p->{last}, $p->{first}</a>\n";    
+            print {$out} "<a target=other href='/person/search_do?field=akey&pattern=$p->{akey}'>$p->{last}, $p->{first}</a>\n";    
             if ($p->{addr1} ne $prev->{addr1} 
                 ||
                 $p->{zip_post} ne $prev->{zip_post}
             ) {
                 print {$out} "    $p->{addr1} $p->{zip_post}\n";
             }
-            print {$out} "<a target=other href='/person/view/$prev->{id}'>$prev->{last}, $prev->{first}</a>\n";    
+            print {$out} "<a target=other href='/person/search_do?field=akey&pattern=$prev->{akey}'>$prev->{last}, $prev->{first}</a>\n";    
             print {$out} "    $prev->{addr1} $prev->{zip_post}\n";
             print {$out} "\n";
         }
@@ -325,6 +327,30 @@ sub registrations : Local {
         )
     ];
     $c->stash->{template} = "listing/registrations.tt2";
+}
+
+sub mark_inactive : Local {
+    my ($self, $c) = @_;
+
+    my ($date_last) = $c->request->params->{date_last};
+    my $dt = date($date_last);
+    if (! $dt) {
+        $c->stash->{mess} = "Invalid date: $date_last";
+        $c->stash->{template} = "listing/error.tt2";
+        return;
+    }
+    my $dt8 = $dt->as_d8();
+    my $n = model($c, 'Person')->search({
+        inactive => '',
+        date_updat => { "<=", $dt8 },
+    })->count();
+    $c->stash->{date_last} = $dt;
+    $c->stash->{count} = $n;
+    $c->stash->{template} = "listing/inactive.tt2";
+}
+
+sub mark_inactive_do : Local {
+    my ($self, $c, $date_last) = @_;
 }
 
 1;

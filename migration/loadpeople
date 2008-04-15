@@ -8,8 +8,9 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
 $dbh->do("delete from affil_people");
 $dbh->do("delete from people");
 
-my $ins_sql = "insert into people values(". ("?," x 23) . "'' )";
+my $ins_sql = "insert into people values(". ("?," x 23) . "'', '' )";
                                                 # last '' is for ambiguous
+                                                # and inactive
 my $ins_sth = $dbh->prepare($ins_sql)
     or die "no prep ins people\n";
 
@@ -59,6 +60,14 @@ while (<$people>) {
             }
             $dt = "$y$m$d";
         }
+    }
+    if ($flds[18] eq "") {
+        $flds[18] = $flds[19];
+        # date_updat = date_entrd if no last update
+    }
+    if ($flds[19] eq "") {
+        $flds[19] = $flds[18];
+        # date_entrd = date_updat if no entry date
     }
 
     # what mailings are requested?

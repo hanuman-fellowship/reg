@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenterDB::Person;
 use base qw/DBIx::Class/;
 
+use Date::Simple qw/date/;
+
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('people');
 __PACKAGE__->add_columns(qw/
@@ -30,6 +32,7 @@ __PACKAGE__->add_columns(qw/
     snail_mailings
     share_mailings
     ambiguous
+    inactive
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -68,6 +71,17 @@ sub comment_br {
     my $comment = $self->comment;
     $comment =~ s{\r?\n}{<br>\n}g;
     $comment;
+}
+
+sub date_updat_obj {
+    my ($self) = @_;
+    
+    return date($self->date_updat);
+}
+sub date_entrd_obj {
+    my ($self) = @_;
+
+    return date($self->date_entrd);
 }
 
 1;

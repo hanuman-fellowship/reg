@@ -3,7 +3,7 @@ if [ `whoami` = 'sahadev' ]
 then
     db='mysql -u sahadev -pJonB reg2'
     export DBI_DSN="dbi:mysql:reg2"
-    conv        # autoincrement to auto_increment
+    perl -p -i -e 's/autoincrement/auto_increment/' mk*
 else
     db='sqlite3 retreatcenter.db'
     export DBI_DSN="dbi:SQLite:retreatcenter.db"
@@ -17,24 +17,28 @@ $db <mkrep
 $db <mkusers
 $db <mkmember
 $db <mkreg
+$db <mkevent
 
-echo strings, affils
+echo strings
 loadstr
+echo affils
 loadaf
+
+echo clearing images
+cd ../root/static/images
+rm -f lo* lth* lb* po* pth* pb*
+cd ../../../migration
 
 echo people
 loadpeople
 echo leaders, canpol, housecost, programs
 loadprog f89
-echo reg
-loadreg  f89
+echo registrations
+loadreg f89
+echo rentals
+loadrent f89
 
 if [ `whoami` = 'jonbjornstad' ]
 then
-cp retreatcenter.db ..
+    cp retreatcenter.db ..
 fi
-
-echo clearing images
-cd ../root/static/images
-rm -f lo* lth* lb* po* pth* pb*
-

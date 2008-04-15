@@ -159,7 +159,7 @@ sub _get_data {
     }
 
     if (!@mess && $sdate && $sdate > $edate) {
-        push @mess, "Start Date cannot be after the End Date";
+        push @mess, "End Date must be after the Start Date";
     }
     # check for numbers
     for my $f (qw/
@@ -323,6 +323,18 @@ sub listpat : Local {
         }
         $cond = {
             sdate => { 'between' => [ $d1, $d2 ] },
+        };
+    }
+    elsif ($pr_pat =~ m{((\d\d)?\d\d)}) {
+        my $year = $1;
+        if ($year > 70 && $year <= 99) {
+            $year += 1900;
+        }
+        elsif ($year < 70) {
+            $year += 2000;
+        }
+        $cond = {
+            sdate => { 'between' => [ "${year}0101", "${year}1231" ] },
         };
     }
     else {

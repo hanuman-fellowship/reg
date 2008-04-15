@@ -1,7 +1,9 @@
 <h2>People</h2>
-<a href="/person/create">Add</a>
+<a href="/person/create" accesskey='a'>Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/search">Search</a>
+<a href="/person/undup/[% ids %]" accesskey='u'>Undup</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/search" accesskey='s'>Search</a>
 <ul>
 <table border=0 cellpadding=3>
 <tr>
@@ -13,7 +15,7 @@
 </tr>
 [% FOREACH p IN people %]
 <tr>
-<td><a href="[% '/person/view/' _ p.id %]">[% p.last %]</a></td>
+<td><a tabindex=1 href="[% '/person/view/' _ p.id %]">[% p.last %]</a></td>
 <td>[% p.first %]</td>
 <td>[% p.sanskrit %]</td>
 <td>[% p.zip_post %]</td>
@@ -25,12 +27,12 @@
 <table cellpadding=2>
 <tr>
 [% IF prevN %]
-<td width=70><a href="[% prevN %]">Prev</a></td>
+<td width=70><a href="[% prevN %]" accesskey='p'>Prev</a></td>
 [% ELSE %]
 <td width=70>&nbsp;</td>
 [% END %]
 [% IF nextN %]
-<td width=70><a href="[% nextN %]">Next</a></td>
+<td width=70><a href="[% nextN %]" accesskey='n'>Next</a></td>
 [% ELSE %]
 <td width=70></td>
 [% END %]

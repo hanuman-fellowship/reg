@@ -51,7 +51,8 @@ function process(e) {
 </script>
 </head>
 
-<h2>Registrations for [% program.name %] - [% program.sdate_obj.format("%b %y") %]</h2>
+<h2>
+Registrations ([% program.registrations_rs.count %]) for [% program.name %] - [% program.sdate_obj.format("%b %y") %]</h2>
 <form name=form id= form action="/registration/list_reg_name/[% program.id %]">
 <a href="/program/view/[% program.id %]">Program</a>
 &nbsp;&nbsp;&nbsp;
@@ -63,8 +64,6 @@ function process(e) {
 &nbsp;&nbsp;&nbsp;
 Search <input type=text size=15 name=pat id=pat
               value="[% pat %]" onkeyup="return process(event)">
-<!-- &nbsp;&nbsp;&nbsp;
-Pay <input type=checkbox value="yes" name=pay [% pay_checked %]> -->
 </form>
 <ul>
 <div id=regs>

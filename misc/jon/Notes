@@ -977,3 +977,44 @@ on viewing a registration - a way to have a text
     field where you can see the list of other registrations
     matching the pattern - ajax-y like on the list of all registrations.
 add the sender's name to the confirmation note history.
+when one registration left in narrowing - used to be larger and reg
+    what changed?  Okay in Firefox :(
+make an Event controller.
+    then CRUD - same as Rental essentially.
+    then Calendar merging (via sdate) Events, Rentals, Programs.
+event, program and rental listings
+    default is from today forward
+    a patterned list goes backward in time
+        is this confusing?
+calendar - links in more places
+    append a ">" to events that are not complete???
+make an undup facility - a menu choice shown
+    when search results are displayed.  all the ids are passed (somehow)
+    to the undup action.  there will be short text fields by each
+    name where you will be able to put a code:
+    p (primary), m (merge), or leave blank by each name.
+        address, phones, email, date of last update will be shown as well
+        as # of registrations.
+    also - searching - if you append '50' then it will show 50 records
+        per screen.
+Also today - another field for a report - date of last activity
+    when loading - copy date of entry to date of last update
+    what about people who have no dates at all?
+CMS/VistaPrint mailing to all members.
+when using undup - also use searching by email - in case the
+    last name is different - see email search for "ganth", Sheila.
+    maiden name?
+need an InActive attribute for people - for when they
+    have not contacted the center for x number of years.
+    Or if they are deceased.
+need CMS list of members.
+blue i's should not have the same link style as other links
+need P and p for partnering so you know which
+    address should be copied.
+implement an address search - but don't include on UI.
+    use it from the undup list.
+if submit undup tool and no markings - give an error.
+validate Canadian postal code?
+if change housing costs or types then would need to recompute
+    total charge for a rental.   registration charges as well.
+    SO... make sure these charges are correct.

@@ -1,0 +1,32 @@
+<h2>Events</h2>
+[% IF Catalyst.check_user_roles('prog_admin') %]
+<a href="/event/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/event/update/[% event.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/event/delete/[% event.id %]"
+onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
+<p>
+[% END %]
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Name</th>
+<td>[% event.name %]</td>
+<th align=right>From</th>
+<td>[% event.sdate_obj %] <span class=dow>[% event.sdate_obj.format("%a") %]</span></td>
+<th align=right>To</th>
+<td>[% event.edate_obj %] <span class=dow>[% event.edate_obj.format("%a") %]</span></td>
+</tr>
+
+<tr>
+<th align=right>Description</th>
+<td colspan=5>[% event.descr %]</td>
+</tr>
+
+<tr>
+<th align=right>Sponsor</th>
+<td>[% event.sponsor %]</td>
+</tr>
+
+</table>

@@ -256,7 +256,7 @@ my $p_sql = "insert into program ("
 . ") values ("
     . (join ",", ("?") x @fields)
 . ")";
-my $p_sth = $dbh->prepare($p_sql) or die "no prep affil\n";
+my $p_sth = $dbh->prepare($p_sql) or die "no prep ins prog\n";
 
 my $lp_sql = "insert into leader_program values (?, ?)";
 my $lp_sth = $dbh->prepare($lp_sql) or die "no prep lp\n";
@@ -326,7 +326,6 @@ for my $seas (@seasons) {
         }
     }
     close $in;
-    #??? get rentals
 }
 
 close $pr_hoff;

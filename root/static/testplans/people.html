@@ -24,6 +24,11 @@ Search
     There is also Prev.   Note that the position of the Next and Prev
         do not change so your mouse can stay in one place.
 
+    If you wish to see more than the default 15 records per page
+        you can append a number to the pattern.  Like so:
+
+        smith 30
+
     If there is only one person found that person will be
         shown immediately.  No separate step with
         a list containing just one person.
@@ -41,7 +46,7 @@ Search
         Searching for '*ete' will find someone named Peterson
         and searching for '*ete *e' will find Joe Peterson.
 
-Create a Person
+Add a Person
     fill in all fields (country defaults to USA)
     choose a few affiliations
     note the two submit buttons (for convenience's sake)
@@ -51,8 +56,24 @@ Create a Person
 
     give incorrect State (in the U.S.)
     Leave sex unchosen - get error.
+        Note that the gender is guessed at for you
+        by consulting www.gpeters.com/names/baby-names.php.
     Give a multiple lined comment and verify
         it looks correct after creation.
+
+Quick Access Keys    - for searching, editing, adding people
+    control-A    =    Add
+    control-E    =    Edit
+    control-L    =    Leader (make or info)
+    control-M    =    Member (make or info)
+    control-N    =    Next page of results (when viewing search results)
+    control-P    =    Prev page of results (when viewing search results)
+    control-P    =    Partner (partner with or view partner)
+    control-S    =    Search
+    control-U    =    Undup
+
+    After search results are shown the Tab key will take you
+    to the first name in the list.
 
 Affiliations
     Click on Affiliations at the top
@@ -159,13 +180,31 @@ Listings
     Unduplication List
         A list of _possible_ duplicates.
         Generate it once and save it and use it to do research.
+        It shows:
+
         - Identical first/last names.
+            Click on the names to be taken to an unduplication screen
+            for the two people.  See "UNDUPLICATION" below.
+            If there are 3 or more people with the same name it is better
+            to do a search for them by last/first name.  You'll know there
+            are 3 or more if two names in a row in this undup
+            list are the same.
+
         - Unpartnered people with addresses that are 'numerically' close.
             e.g.
                 123 Orange St Tampa, FL 12341
             and
                 123 Ornge Street Tampa, FL 12341
             are numerically close.
+        - Unreported Gender (not dups but this is as good place to
+            show this information it as any).  The names in the list
+            are actually links - they'll take you to the person's
+            screen.   The gender is guessed at using the site
+            www.gpeters.com/names/baby-names.php.  If it looks
+            obvious which gender it should be you can click on the
+            'Male' or 'Female' link there and the gender will be changed.
+            (Easier than doing edit, click, submit...).
+
     Email check
         this checks all records for invalid email addresses
         and allows you to go directly to the record to edit it.
@@ -235,4 +274,32 @@ All of the person's Registrations are listed on the person's page
 
 If a person has cancelled a registration and received
     a credit this, too, is listed on their page.
+
+UNDUPLICATION
+=============
+After a search you may see several people who are
+    in actuality, the same person.  The process of UNduplicating
+    these people is tricky and there's a link "Undup" to help.
+    This link brings up a dialog with complete demographic information
+    for all the people in the search result page.  There is
+    also email address, home phone, last date of updating the person record,
+    how many registrations this person has (after the name in parens),
+    and whether they're a leader, partner or member.
+
+    You can *narrow down* which people you see by putting 'n'
+    (lower n for narrow) in the text field next to the people's
+    names you wish to see.  The order is not guaranteed to be
+    the same on the next screen.
+
+    When you have identified who should be merged into whom
+    put a 'P' (capital P for primary) on the person you want to keep
+    and an 'm' (lower m for merge) on the people you want to merge
+    into the primary.  Registrations, donations and credits from
+    the merged people will be added to the primary person.
+    Any affiliation, leader or member information for the
+    merged people will be completely deleted.   A partner of a merged
+    people will be unpartnered but preserved.
+
+    Searches by last name will reveal some possible duplicates.
+    Also consider using email address.
 </pre>

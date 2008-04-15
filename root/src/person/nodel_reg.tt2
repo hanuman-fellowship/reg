@@ -7,4 +7,5 @@
 </ul>
 and cannot be deleted.
 <p>
-Go <input type=button value="Back" onclick="history.go(-1)"> to the person.
+Go <input type=button id="back" value="Back" onclick="history.go(-1)"> to the person.
+<script type='text/javascript'>document.getElementById('back').focus();</script>

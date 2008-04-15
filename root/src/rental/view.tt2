@@ -1,3 +1,5 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <h2>Rentals</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Add</a>
@@ -14,7 +16,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Name</th>
-<td>[% rental.name %]</td>
+<td><span class=larger>[% rental.name %]</span></td>
 <th align=right>From</th>
 <td>[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span></td>
 <th align=right>To</th>
@@ -36,6 +38,8 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <td>[% rental.glnum %]</td>
 <th align=right>Linked</th>
 <td>[% rental.linked %]</td> 
+<th align=right>CEU</th>
+<td>[% rental.ceu %]</td> 
 </tr>
 
 <tr>
@@ -59,4 +63,67 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </td>
 </tr>
 
+<tr>
+<th align=right valign=top>Comment</th>
+<td colspan=5>[% rental.comment_br %]</td>
+</td>
+</tr>
 </table>
+
+<div style="float: left">
+<table cellpadding=3>
+<tr>
+<th align=right>Housing Cost</th>
+<td><a href="/housecost/view/[% rental.housecost.id %]">[% rental.housecost.name %]</a></td>
+</tr>
+</td>
+</tr>
+<tr><th align=right>Single Bath</th><td>[% rental.n_single_bath %]</td></tr>
+<tr><th align=right>Single</th><td>[% rental.n_single %]</td></tr>
+<tr><th align=right>Double Bath</th><td>[% rental.n_double_bath %]</td></tr>
+<tr><th align=right>Double</th><td>[% rental.n_dble %]</td></tr>
+<tr><th align=right>Triple</th><td>[% rental.n_triple %]</td></tr>
+<tr><th align=right>Quad</th><td>[% rental.n_quad %]</td></tr>
+<tr><th align=right>Dormitory</th><td>[% rental.n_dormitory %]</td></tr>
+<tr><th align=right>Economy</th><td>[% rental.n_economy %]</td></tr>
+<tr><th align=right>Center Tent</th><td>[% rental.n_center_tent %]</td></tr>
+<tr><th align=right>Own Tent</th><td>[% rental.n_own_tent %]</td></tr>
+<tr><th align=right>Own Van</th><td>[% rental.n_own_van %]</td></tr>
+<tr><th align=right>Commuting</th><td>[% rental.n_commuting %]</td></tr>
+</table>
+</div>
+
+<div style="float: left; margin-left: 1in">
+<table cellpadding=3>
+<tr><th align=right>Total Charge</th>
+<td align=right>[% rental.total_charge %]</td>
+</tr>
+
+<tr>
+<th align=right>Balance</th>
+<td align=right>[% balance %]</td>
+<td><a href="/rental/pay_balance/[% rental.id %]/[% balance %]">Pay It</a></td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+<tr><th align=left>Payments</th></tr>
+<tr>
+<th align=right>Amount</th>
+<th align=left>Type</th>
+</tr>
+
+[% FOREACH p IN rental.payments %]
+<tr>
+<td align=right>[% p.amount %]</td>
+<td>[% p.type %]</td>
+<td>
+<a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</td>
+</tr>
+[% END %]
+<tr>
+<td align=right><span style="border-top: solid thin">[% tot_payment %]</span></td>
+<td>Total</td>
+</tr>
+</table>
+</div>

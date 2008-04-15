@@ -18,9 +18,28 @@ __PACKAGE__->add_columns(qw/
     linked
     phone
     email
+    ceu
+    comment
+    housecost_id
+    n_single_bath
+    n_single
+    n_double_bath
+    n_dble
+    n_triple
+    n_quad
+    n_dormitory
+    n_economy
+    n_center_tent
+    n_own_tent
+    n_own_van
+    n_commuting
+    total_charge
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
+__PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
+                        'housecost_id');
+__PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment', 'rental_id');
 
 use Lookup;
 use Util qw/expand/;
@@ -47,6 +66,12 @@ sub webdesc_br {
     my $webdesc = $self->webdesc;
     $webdesc =~ s{\r?\n}{<br>\n}g;
     $webdesc;
+}
+sub comment_br {
+    my ($self) = @_;
+    my $comment = $self->comment;
+    $comment =~ s{\r?\n}{<br>\n}g;
+    $comment;
 }
 sub extradays {     # see Program->dates()
     return 0;

@@ -21,6 +21,7 @@ __PACKAGE__->load_classes({
         Leader
         LeaderProgram
         Rental
+        RentalPayment
         Exception
         String
 
@@ -36,6 +37,8 @@ __PACKAGE__->load_classes({
         NightHist
         Project
         Donation
+
+        Event
     /]
 });
 
