@@ -1018,3 +1018,57 @@ validate Canadian postal code?
 if change housing costs or types then would need to recompute
     total charge for a rental.   registration charges as well.
     SO... make sure these charges are correct.
+should we replace 8-bit characters with ~ in names, addresses?
+the document should say that instead of modifying
+     a housing cost you should add a new one.
+     perhaps change names so that "Default" becomes
+     "up to 5/2007" or something and then adding a new
+     one called "Default".  If you modify one then the
+     programs that use it become compromised and you can't
+     understand its history as well.
+     There is no limit to how many housing costs you can have.
+online and manual registration - locating the proper
+    person - a critical undup step.
+when a rental payment comes in - who is it from?
+    how do we know from the check/credit card statement
+        which program it was for?
+    AND extra receipts - they need a person's name
+        i.e. a responsible party.   First choose a person
+        then an extra account? then an amount and a what.
+        Sukhdev just deleted most if not all of the extra accts.
+    should we have leaders for rentals as well
+        added in the same way as for programs?
+tell me more about extra accounts
+    what kind of things?
+    temple donations - that's donations to a project.
+    flashlight purchase?  that's at the store, right?
+    transportation?  that's a silly use of programs as it is now.
+    could transportation be added as a charge for a program?
+    or is it best to have it in a separate place?
+    Kaya Kalpa will have payments as well.    jeeeeeez.
+    bottom line - if there are separate gl numbers for financing
+        then we need a new/different place to record it.
+new attribute for people - deceased - in addition to inactive
+another attribute for housing cost - inactive
+    so they're not offered.
+purging in old reg loses web descriptions :(
+    is this true???
+when hovering over a link with an access key
+    the key does not change - fix this???
+add meeting places, a way to assign them to programs, rentals,
+    and events.   conflicts - how to avoid?
+    offer available ones???   or just report a conflict on trying to
+        double book?
+    it is okay to have multiple meeting places for one program/rental/event.
+THEN - use the GD library, image maps and balloon popups
+    a la the Human Genome Project for the MMC Calendar 2.0
+    along with buttons to see a wider range or with bigger this or that.
+    study on what Lincoln did!
+    style sheets with absolute placement?
+the '#' char in addresses - filter out b4 Google mapping it.
+Rajendra, SN have no knowledge of best order or effort required
+    of new features (creeping).   They only have a sense of the larger
+    reg rewrite because of estimates from the 4(5) bidders.
+    Don't worry about it!   You're getting a bargain.
+Can't redirect to root/static/fname.txt where the file is empty!
+    get a server error - something about dropping the connection!

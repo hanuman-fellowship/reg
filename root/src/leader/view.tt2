@@ -3,13 +3,13 @@
 <h3>[% leader.person.first %] [% leader.person.last %]</h3>
 <p>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/leader/update/[% leader.id %]">Edit</a>
+<a href="/leader/update/[% leader.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/leader/delete/[% leader.id %]"
  onclick="return confirm('Okay to Delete [% leader.person.first %] [% leader.person.last %] as leader?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/person/view/[% leader.person.id %]">Person Info</a>
+<a href="/person/view/[% leader.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
 <ul>
 <table cellpadding=5 border=0>
 

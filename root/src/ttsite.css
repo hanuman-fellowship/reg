@@ -1,3 +1,21 @@
+.keyed {
+    background: #ddeeee;
+}
+.hdr {
+    color: green;
+    font-weight: bold;
+    font-size: 15pt;
+    margin-bottom: .2mm;
+    display: block;
+}
+
+select {
+    font-size: 13pt;
+}
+
+input {
+    font-size: 13pt;
+}
 
 html {
     height: 100%;
@@ -112,4 +130,7 @@ h1.title {
     font-size: 10pt;
     font-weight: normal;
 	text-align: left;
+}
+.topbord {
+    border-top: solid thin;
 }

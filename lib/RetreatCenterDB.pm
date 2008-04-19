@@ -39,6 +39,10 @@ __PACKAGE__->load_classes({
         Donation
 
         Event
+        XAccount
+        XAccountPayment
+
+        Deposit
     /]
 });
 

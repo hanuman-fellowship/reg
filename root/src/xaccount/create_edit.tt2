@@ -1,0 +1,23 @@
+<h2>Extra Accounts</h2>
+<form action=[% "/xaccount/" _ form_action %] name=form method=post>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right valign=top><span class=required>*</span> Description</th>
+<td><input type=text name=descr value='[% xaccount.descr %]' size=50></td>
+</td>
+</tr>
+
+<tr>
+<th align=right><span class=required>*</span> GL Number</th>
+<td><input type=text name=glnum value="[% xaccount.glnum %]" size=7></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.descr.focus();</script>

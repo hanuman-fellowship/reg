@@ -288,7 +288,7 @@ Apr 7 11:00-11:30
 Apr 8 5:50-6:30, 10:00-11:00
     loadrent, set it off, went to dinner
     began events
-Apr 8 1:00-2:00, 2:10-3:00, 4:35-
+Apr 8 1:00-2:00, 2:10-3:00, 4:35-6:00
     Events, a merged calendar listing of events, programs and rentals.
     next - 08 or 2008 in a search field of events, programs and rentals
         will show all items where sdate is in that year.
@@ -305,9 +305,19 @@ Apr 12 2:30-5:00, 7:00-7:30
     marking people inactive
     accesskey on people search, view - nice!  ok with Safari, Firefox
         using control- keys
-Apr 14 5:00-6:30, 9:30-11:00, 11:15-
+Apr 14 5:00-6:30, 9:30-11:00, 11:15-1:50
     research on finances, rental payments, accounts
         deposits, monthly summaries.
     new rental attributes - ceu, comment, housing cost,
-        #s of people in each housing type, total cost
+        #s of people in each housing type, total charge, balance
         rental_payments
+    got all the above going.
+Apr 15 2:15-5:45, 10:15-11:00, 6:45-7:45, 8:30-9:40
+    xaccounts, payment to them
+    deposit beginning - nice!
+    now to incorporate all 3 sources of payments and
+        where they came from - with links back to them.
+    payments to XAccounts need to come through a person
+        done
+    better looking headings for tables and select lists.
+        stylin

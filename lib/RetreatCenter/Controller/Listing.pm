@@ -241,7 +241,7 @@ EOS
             && $p->{akey} eq $prev->{akey}
             && ($p->{id_sps} == 0 || $prev->{id_sps} == 0)
         ) {
-            print {$out} "<a target=other href='/person/search_do?field=akey&pattern=$p->{akey}'>$p->{last}, $p->{first}</a>\n";    
+            print {$out} "<a target=other href='/person/undup_akey/$p->{akey}'>$p->{last}, $p->{first}</a>\n";    
             if ($p->{addr1} ne $prev->{addr1} 
                 ||
                 $p->{zip_post} ne $prev->{zip_post}

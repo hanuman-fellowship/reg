@@ -8,16 +8,16 @@
 <table cellpadding=3>
 <tr>
 <th></th>
-<th align=left>Sanskrit</th>
 <th align=left>Name</th>
+<th align=left>Sanskrit</th>
 <th align=center>Expires</th>
 </tr>
 [% FOR m IN general %]
 [% p = m.person %]
 <tr>
 <td>[% IF m.lapsed %]*[% END %]</td>
+<td>[% p.last %], [% p.first %]</td>
 <td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
-<td>[% p.first %] [% p.last %]</td>
 <td align=center>[% m.date_general_obj %]</td>
 </tr>
 [% END %]
@@ -26,8 +26,8 @@
 <h2>Sponsor</h2>
 <tr>
 <th></th>
-<th valign=bottom align=left>Sanskrit</th>
 <th valign=bottom align=left>Name</th>
+<th valign=bottom align=left>Sanskrit</th>
 <th valign=bottom align=center>Benefits<br>Expire</th>
 <th valign=bottom align=center>Last<br>Paid</th>
 <th valign=bottom align=right>Total</th>
@@ -37,8 +37,8 @@
 [% p = m.person %]
 <tr>
 <td>[% IF m.lapsed %]*[% END %]</td>
+<td>[% p.last %], [% p.first %]</td>
 <td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
-<td>[% p.first %] [% p.last %]</td>
 <td align=center>[% m.date_sponsor_obj %]</td>
 <td align=center>[% m.payments.0.date_payment_obj %]</td>
 <td align=right>[% m.total_paid %]</td>
@@ -49,8 +49,8 @@
 <h2>Life</h2>
 <table cellpadding=3>
 <tr>
-<th valign=bottom align=left>Sanskrit</th>
 <th valign=bottom align=left>Name</th>
+<th valign=bottom align=left>Sanskrit</th>
 <th valign=bottom align=left>Total</th>
 <th valign=bottom align=right>Nights<br>Left</th>
 <th valign=bottom align=right>Free Prog<br>Taken</th>
@@ -58,8 +58,8 @@
 [% FOR m IN life %]
 [% p = m.person %]
 <tr>
+<td>[% p.last %], [% p.first %]</td>
 <td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
-<td>[% p.first %] [% p.last %]</td>
 <td align=right>[% m.total_paid %]</td>
 <td align=right>[% m.sponsor_nights %]</td>
 <td align=right>[% m.free_prog_taken %]</td>

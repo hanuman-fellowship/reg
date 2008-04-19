@@ -1,0 +1,21 @@
+<h3>Bulk Mailings</h3>
+<ul>
+<form action="/member/bulk_do">
+<table cellpadding=3>
+<tr>
+<td>
+<input type=checkbox name=general value='yes' checked> General
+<input type=checkbox name=sponsor value='yes' checked> Sponsor
+<input type=checkbox name=life value='yes' checked> Life
+</td>
+</tr>
+<tr>
+<td>
+<input type=radio name=type value=email checked> Email
+<input type=radio name=type value=snail> Snail
+</td>
+</tr>
+<tr><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>
+</ul>

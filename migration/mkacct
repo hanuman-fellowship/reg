@@ -1,0 +1,30 @@
+drop table if exists xaccount;
+create table xaccount (
+    id          integer primary key autoincrement,
+    descr       text,
+    glnum       text
+);
+drop table if exists xaccount_payment;
+create table xaccount_payment (
+    id          integer primary key autoincrement,
+    xaccount_id integer,
+    person_id   integer,
+    what        text,
+    amount      integer,
+    type        text,       -- cc, check, cash, online
+    user_id     integer,
+    the_date    text,
+    time        text
+);
+drop table if exists deposit;
+create table deposit (
+    id          integer primary key autoincrement,
+    user_id     integer,
+    the_date    text,
+    time        text,
+    cash        integer,
+    chk         integer,    -- can't have 'check' :(
+    credit      integer,
+    online      integer,
+    total       integer
+);

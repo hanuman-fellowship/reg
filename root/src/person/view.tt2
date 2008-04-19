@@ -1,44 +1,48 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <h2>People</h2>
-<a href="/person/create" accesskey='a'>Add</a>
+<a href="/person/create" accesskey='a'><span class=keyed>A</span>dd</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/register1/[% person.id %]">Register</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/person/search" accesskey='s'>Search</a>
-<p>
-<a href="/person/update/[% person.id %]" accesskey='e'>Edit</a>
+<a href="/person/update/[% person.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/delete/[% person.id %]"
 onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/person/register1/[% person.id %]" accesskey='r'><span class=keyed>R</span>egister</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
+<p>
 <a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/donation/create/[% person.id %]">Donate</a>
+<a href="/donation/create/[% person.id %]" accesskey='d'><span class=keyed>D</span>onate</a>
+&nbsp;&nbsp;&nbsp;
+<a accesskey='p' href="/xaccount/pay_balance/[% person.id %]"><span class=keyed>P</span>ayment</a>
 &nbsp;&nbsp;&nbsp;
 [% IF person.partner %]
-    Partnered with <a href="/person/view/[% person.partner.id %]" accesskey='p'>[% person.partner.first _" "_ person.partner.last %]</a>
+    Partnered <span class=keyed>W</span>ith <a href="/person/view/[% person.partner.id %]" accesskey='w'>[% person.partner.first _" "_ person.partner.last %]</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/person/separate/[% person.id %]"
     onclick="return confirm('Okay to Separate?');">Separate</a>
 [% ELSE %]
-    <a href="/person/partner/[% person.id %]" accesskey='p'>Partner With</a>
+    <a href="/person/partner/[% person.id %]" accesskey='w'>Partner <span class=keyed>W</span>ith</a>
 [% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
     [% IF person.leader %]
         &nbsp;&nbsp;&nbsp;
-        <a href="/leader/view/[% person.leader.id %]" accesskey='l'>Leader Info</a>
+        <a href="/leader/view/[% person.leader.id %]" accesskey='l'><span class=keyed>L</span>eader Info</a>
     [% ELSE %]
         [% IF Catalyst.check_user_roles('prog_admin') %]
             &nbsp;&nbsp;&nbsp;
-            <a href="/leader/create/[% person.id %]" accesskey='l'>Make Leader</a>
+            <a href="/leader/create/[% person.id %]" accesskey='l'>Make <span class=keyed>L</span>eader</a>
         [% END %]
     [% END %]
 [% END %]
 [% IF Catalyst.check_user_roles('member_admin') %]
     &nbsp;&nbsp;&nbsp;
     [% IF person.member %]
-        <a href="/member/update/[% person.member.id %]" accesskey='m'>Member Info</a>
+        <a href="/member/update/[% person.member.id %]" accesskey='m'><span class=keyed>M</span>ember Info</a>
     [% ELSE %]
-        <a href="/member/create/[% person.id %]" accesskey='m'>Make Member</a>
+        <a href="/member/create/[% person.id %]" accesskey='m'>Make <span class=keyed>M</span>ember</a>
     [% END %]
 [% END %]
 <p>
@@ -119,7 +123,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
     <p>
-    <span class=larger>Donations</span>
+    <span class=hdr>Donations</span>
     <table cellpadding=3>
     <tr>
     <th align=right>Amount</th>
@@ -138,8 +142,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 [% END %]
 [% IF person.credits %]
     <p>
+    <span class=hdr>Credits</span>
     <table cellpadding=3>
-    <caption style="font-weight: bold">Credits</caption>
     <tr>
     <th align=right>Amount</th>
     <th align=center>Expires</th>
@@ -154,6 +158,27 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         <td align=left><a href="/registration/view/[% cr.reg_given.id %]">[% cr.reg_given.program.name %]</a></td>
         <td align=left><a href="/registration/view/[% cr.reg_used.id %]">[% cr.reg_used.program.name %]</a></td>
         <td>[% cr.date_used_obj %]</td>
+        </tr>
+    [% END %]
+    </table>
+[% END %]
+[% IF person.payments %]
+    <p>
+    <span class=hdr>Payments</span>
+    <table cellpadding=3>
+    <tr>
+    <th align=right>Amount</th>
+    <th align=left>What</th>
+    <th align=left>Account</th>
+    <th align=left>Type</th>
+    </tr>
+    [% FOR p IN person.payments %]
+        <tr>
+        <td align=right>[% p.amount %]</td>
+        <td align=right>[% p.what %]</td>
+        <td align=right><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
+        <td align=right>[% p.type %]</td>
+        <td><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
         </tr>
     [% END %]
     </table>

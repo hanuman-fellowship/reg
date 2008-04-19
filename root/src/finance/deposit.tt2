@@ -1,0 +1,31 @@
+<h2>New Deposit</h2>
+<h3>Registration Payments</h3>
+<table cellpadding=3>
+<tr>
+<th align=left>Name</th>
+<th>Date</th>
+<th>Cash</th>
+<th>Check</th>
+<th>Credit</th>
+<th>Online</th>
+<th align=left>Program</th>
+</tr>
+[% FOR p IN reg_payments %]
+<tr>
+<td><a target=_blank href='/registration/view/[% p.reg_id %]'>[% p.name %]</a></td>
+<td>[% p.date %]</td>
+<td align=right>[% p.cash %]</td>
+<td align=right>[% p.chk %]</td>
+<td align=right>[% p.credit %]</td>
+<td align=right>[% p.online %]</td>
+<td>[% p.pname %]</td>
+</tr>
+[% END %]
+<tr>
+<td colspan=3 align=right><span class=topbord>[% cash %]</span></td>
+<td align=right><span class=topbord>[% check %]</span></td>
+<td align=right><span class=topbord>[% credit %]</span></td>
+<td align=right><span class=topbord>[% online %]</span></td>
+<td><span class=topbord>Total = $[% total %]</span></td>
+</tr>
+</table>

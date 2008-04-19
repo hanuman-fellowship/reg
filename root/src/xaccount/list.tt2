@@ -1,0 +1,18 @@
+<h2>Extra Accounts</h2>
+[% IF Catalyst.check_user_roles('prog_admin') %]
+<a href="/xaccount/create">Add</a>
+[% END %]
+<ul>
+<table border=0 cellpadding=3>
+<tr>
+<th align=left>Description</th>
+<th align=left>GL Number</th>
+</tr>
+[% FOREACH xa IN xaccounts %]
+    <tr>
+    <td><a href="/xaccount/view/[% xa.id %]">[% xa.descr %]</a></td>
+    <td>[% xa.glnum %]</a></td>
+    </tr>
+[% END %]
+</table>
+</ul>

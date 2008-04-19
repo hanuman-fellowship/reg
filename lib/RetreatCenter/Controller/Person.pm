@@ -798,4 +798,17 @@ sub set_gender : Local {
     $c->response->redirect($c->uri_for("/person/view/$id"));
 }
 
+sub undup_akey : Local {
+    my ($self, $c, $addr) = @_;
+    
+    undup($self, $c,
+          join '-',
+          map { $_->id }
+          model($c, 'Person')->search({
+              akey => $addr,
+          })
+         );
+          
+}
+
 1;

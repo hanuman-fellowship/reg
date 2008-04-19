@@ -12,17 +12,14 @@
 </select>
 </td></tr>
 <tr><th>Postmark Date</th><td><input type=text size=10 maxlength=10 name=date_post>
-<input style="margin-left: 1in" type=submit value="Submit"></td></tr>
 <tr><th align=right valign=top>Program</th>
 <td>
 <table cellpadding=2>
+<select name=program_id>
 [% FOR p IN programs %]
-<tr>
-<td><input type=radio name=program_id value=[% p.id %]> [% p.name %]</td>
-<td>[% p.sdate_obj %]</td>
-<td>[% p.title %]</td>
-</tr>
+<option value=[% p.id %]> [% p.name %] [% p.sdate_obj %]</option>
 [% END %]
+</select>
 </table>
 <td></tr>
 <tr><td></td><td><input type=submit value="Submit"></td></tr>

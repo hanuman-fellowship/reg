@@ -49,6 +49,10 @@ __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration', 'person_
 __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'person_id',
     { order_by => 'date_donate desc'});
 
+# payments
+__PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment', 'person_id',
+    { order_by => 'the_date desc'});
+
 # credits
 __PACKAGE__->has_many(credits => 'RetreatCenterDB::Credit', 'person_id',
     { order_by => 'date_given desc'});
@@ -82,6 +86,16 @@ sub date_entrd_obj {
     my ($self) = @_;
 
     return date($self->date_entrd);
+}
+
+sub addrs {
+    my ($self) = @_;
+
+    my $addrs = $self->addr1;
+    if ($self->addr2) {
+        $addrs .= $self->addr2;
+    }
+    $addrs;
 }
 
 1;

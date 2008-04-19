@@ -1,18 +1,14 @@
 <body onload="document.form.first.focus()">
-Partner [% person.first _ " " _ person.last %] with:
+<h3>Partner [% person.first _ " " _ person.last %] with:</h3>
 <p>
 <form action='[% Catalyst.uri_for("/person/partner_with/") _ person.id %]'
       name=form>
 <table>
-<tr>
-    <td>First</td><td><input type=text name=first></td>
-</tr>
-<tr>    
-    <td>Last</td><td><input type=text name=last></td>
-</tr>
+<tr><th align=right>First</th><td><input type=text name=first></td></tr>
+<tr><th align=right>Last</th><td><input type=text name=last></td></tr>
+<tr><td></td><td><input type=submit value="Submit"></td></tr>
 <table>
 <p>
-<input type=submit value="Submit">
 <p>
 Note: The new partner will inherit [% person.first %]'s 
 mailing address and home phone.

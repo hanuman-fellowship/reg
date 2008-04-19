@@ -3,15 +3,17 @@
 <ul>
 <table cellpadding=3>
 <tr>
-<th>Name</th>
-<th>Category</th>
+<th align=left>Sanskrit</th>
+<th align=left>Name</th>
+<th align=left>Category</th>
 <th align=center>Expiration Date</th>
 </tr>
 [% IF members.0 %]
 [% FOREACH m IN members %]
 <tr>
 <td><a href="/member/update/[% m.id %]">[% m.person.sanskrit || m.person.first %]</a></td>
-<td align=right>[% m.category %]</td>
+<td align=left>[% m.person.last %], [% m.person.first %]</td>
+<td align=left>[% m.category %]</td>
 <td align=center>
 [% IF    m.category == 'General' %][% m.date_general_obj %]
 [% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj %]

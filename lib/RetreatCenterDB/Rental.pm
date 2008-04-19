@@ -39,7 +39,9 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key(qw/id/);
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
-__PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment', 'rental_id');
+__PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment',
+                      'rental_id',
+                      { order_by => "id desc" });
 
 use Lookup;
 use Util qw/expand/;

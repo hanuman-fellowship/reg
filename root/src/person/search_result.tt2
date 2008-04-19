@@ -1,9 +1,9 @@
 <h2>People</h2>
-<a href="/person/create" accesskey='a'>Add</a>
+<a href="/person/create" accesskey='a'><span class=keyed>A</span>dd</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/undup/[% ids %]" accesskey='u'>Undup</a>
+<a href="/person/undup/[% ids %]" accesskey='u'><span class=keyed>U</span>ndup</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/search" accesskey='s'>Search</a>
+<a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
 <ul>
 <table border=0 cellpadding=3>
 <tr>
@@ -15,7 +15,7 @@
 </tr>
 [% FOREACH p IN people %]
 <tr>
-<td><a tabindex=1 href="[% '/person/view/' _ p.id %]">[% p.last %]</a></td>
+<td><a tabindex=1 id=name_lnk href="[% '/person/view/' _ p.id %]">[% p.last %]</a></td>
 <td>[% p.first %]</td>
 <td>[% p.sanskrit %]</td>
 <td>[% p.zip_post %]</td>
@@ -27,15 +27,16 @@
 <table cellpadding=2>
 <tr>
 [% IF prevN %]
-<td width=70><a href="[% prevN %]" accesskey='p'>Prev</a></td>
+<td width=70><a href="[% prevN %]" accesskey='p'><span class=keyed>P</span>rev</a></td>
 [% ELSE %]
 <td width=70>&nbsp;</td>
 [% END %]
 [% IF nextN %]
-<td width=70><a href="[% nextN %]" accesskey='n'>Next</a></td>
+<td width=70><a href="[% nextN %]" accesskey='n'><span class=keyed>N</span>ext</a></td>
 [% ELSE %]
 <td width=70></td>
 [% END %]
 </tr>
 </table>
 </ul>
+<script type="text/javascript">document.getElementById('name_lnk').focus();</script>

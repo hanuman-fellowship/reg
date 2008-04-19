@@ -1,0 +1,40 @@
+<h2>Finance</h2>
+<h3>Bank Deposits</h3>
+<ul>
+<a href="/finance/new_deposit">Make A New Deposit</a>
+<p>
+<table cellpadding=3>
+<tr>
+<th align=center>Date</th>
+<th align=center>Time</th>
+<th align=right>Cash</th>
+<th align=right>Check</th>
+<th align=right>Credit</th>
+<th align=right>Online</th>
+<th align=right>Total</th>
+</tr>
+[% FOR d IN deposits %]
+<tr>
+<td align=center>[% d.the_date %]</td>
+<td align=center>[% d.time %]</td>
+<td align=right>[% d.cash %]</td>
+<td align=right>[% d.chk %]</td>
+<td align=right>[% d.credit %]</td>
+<td align=right>[% d.online %]</td>
+<td align=right>[% d.total %]</td>
+</tr>
+[% END %]
+</table>
+</ul>
+<h3>Period End Summary</h3>
+<ul>
+<form action="/finance/month_end">
+<table cellpadding=3>
+<tr><th align=right>Start Date</th><td><input type=text name=sdate size=10></td></tr>
+<tr><th align=right>End Date</th><td><input type=text name=edate size=10></td></tr>
+<tr><td>&nbsp;</td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>
+</ul>
+
+

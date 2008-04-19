@@ -7,6 +7,7 @@ use Mail::SendEasy;
 
 use lib '../../';       # so you can do a perl -c here.
 use Util qw/
+    empty
     trim
     model
     email_letter
@@ -34,7 +35,7 @@ sub membership_list : Local {
                 $a->[0] cmp $b->[0]
             }
             map {
-                [ $_->person->sanskrit || $_->person->first, $_ ]
+                [ $_->person->last . ' ' . $_->person->first, $_ ]
             }
             model($c, 'Member')->search(
                 { category => ucfirst $cat },
@@ -67,7 +68,7 @@ sub list : Local {
             $a->[0] cmp $b->[0]
         }
         map {
-            [ $_->person->sanskrit || $_->person->first, $_ ]
+            [ $_->person->last . ' ' . $_->person->first, $_ ]
         }
         model($c, 'Member')->all();
     $c->stash->{members} = \@members;
@@ -227,7 +228,7 @@ sub update_do : Local {
     }
     $member->update(\%hash);
 
-    $c->response->redirect($c->uri_for("/member/list"));
+    $c->response->redirect($c->uri_for("/member/view/$id"));
 }
 
 #
@@ -260,6 +261,7 @@ sub create_do : Local {
     my $amnt = $hash{mkpay_amount};
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
+    $hash{total_paid} = $amnt;
 
     my $member = model($c, 'Member')->create({
         person_id    => $person_id,
@@ -297,7 +299,7 @@ sub create_do : Local {
             action     => ($hash{free_prog_taken})? 5: 3,
         });
     }
-    $c->response->redirect($c->uri_for("/member/list"));
+    $c->response->redirect($c->uri_for("/member/view/$id"));
 }
 
 sub _lapsed_members {
@@ -501,6 +503,67 @@ sub access_denied : Private {
 
     $c->stash->{mess}  = "Authorization denied!";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub view : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{member}   = model($c, 'Member')->find($id);
+    $c->stash->{template} = "member/view.tt2";
+}
+
+sub bulk : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{template} = "member/bulk.tt2";
+}
+
+sub bulk_do : Local {
+    my ($self, $c) = @_;
+
+    my @memtypes;
+    if ($c->request->params->{general}) {
+        push @memtypes, 'General';
+    }
+    if ($c->request->params->{sponsor}) {
+        push @memtypes, 'Sponsor';
+    }
+    if ($c->request->params->{life}) {
+        push @memtypes, 'Life';
+    }
+    my $email = $c->request->params->{type} eq 'email';
+    open my $list, ">", "root/static/memlist.txt"
+        or die "cannot create memlist.txt: $!\n";
+    my $n = 0;
+    for my $m (model($c, 'Member')->search({
+                   category => { 'in', \@memtypes },
+               })
+    ) {
+        ++$n;
+        my $p = $m->person;
+        if ($email) {
+            my $em = $p->email;
+            if (! empty($em)) {
+                print {$list} $p->email . "\n";
+            }
+        }
+        else {
+            print {$list} 
+                  $p->first . " " . $p->last . "|"
+                  . $p->addrs . "|"
+                  . $p->city . "|"
+                  . $p->st_prov . "|"
+                  . $p->zip_post
+                  . "\n";
+
+        }
+    }
+    if ($n == 0) {
+        # can't redirect to an empty root/static/ file. :(
+        print {$list} "\n";
+    }
+    close $list;
+    $c->response->redirect($c->uri_for("/static/memlist.txt"));
 }
 
 1;
