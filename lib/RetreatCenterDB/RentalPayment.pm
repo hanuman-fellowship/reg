@@ -30,4 +30,23 @@ sub the_date_obj {
     return date($self->the_date);
 }
 
+sub name {
+    my ($self) = @_;
+
+    return $self->rental->name;
+}
+
+sub link {
+    my ($self) = @_;
+
+    return "/rental/view/" . $self->rental_id;
+}
+
+# same as name???   Need a leader name instead?
+sub pname {
+    my ($self) = @_;
+
+    return $self->rental->name;
+}
+
 1;

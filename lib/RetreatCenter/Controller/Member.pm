@@ -23,7 +23,7 @@ sub index : Private {
 
 # to root/static file and then load that file in the browser.
 sub membership_list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $no_money) = @_;
     
     my %stash;
     for my $cat (qw/ general sponsor life /) {
@@ -43,6 +43,7 @@ sub membership_list : Local {
         ];
         $stash{"n$cat"} = scalar(@{$stash{$cat}});
     }
+    $stash{no_money} = $no_money;
     my $html = "";
     my $tt = Template->new({
         INCLUDE_PATH => 'root/src/member',
@@ -518,6 +519,10 @@ sub bulk : Local {
     $c->stash->{template} = "member/bulk.tt2";
 }
 
+#
+# would a sql 'join' come in handy here???
+# yes.
+#
 sub bulk_do : Local {
     my ($self, $c) = @_;
 
@@ -531,9 +536,11 @@ sub bulk_do : Local {
     if ($c->request->params->{life}) {
         push @memtypes, 'Life';
     }
+    my $mmc = $c->request->params->{mmc};
     my $email = $c->request->params->{type} eq 'email';
     open my $list, ">", "root/static/memlist.txt"
         or die "cannot create memlist.txt: $!\n";
+    my @people;
     my $n = 0;
     for my $m (model($c, 'Member')->search({
                    category => { 'in', \@memtypes },
@@ -541,6 +548,12 @@ sub bulk_do : Local {
     ) {
         ++$n;
         my $p = $m->person;
+        if ($p->akey eq '44595076S') {
+            next if $mmc eq 'exclude';
+        }
+        else {
+            next if $mmc eq 'only';
+        }
         if ($email) {
             my $em = $p->email;
             if (! empty($em)) {
@@ -548,14 +561,44 @@ sub bulk_do : Local {
             }
         }
         else {
+            push @people, $p;
+        }
+    }
+    if (! $email) {
+        # we need to join partners in @people and then print.
+        # and sort it by zip.
+        # this is very complicated!
+        #
+        my %partner = map { $_->id => $_ } @people;
+        for my $p (@people) {
+            if (my $sps = $partner{$p->id_sps}) {
+                if ($sps->last eq $p->last) {
+                    $sps->{name} = $sps->first
+                             . " & "
+                             . $p->first   . " " . $p->last;
+                }
+                else {
+                    $sps->{name} = $sps->first . " " . $sps->last
+                                 . " & "
+                                 . $p->first   . " " . $p->last;
+                }
+                delete $partner{$p->id};
+                $p = 0;     # clobber this person
+            }
+        }
+        for my $p (sort {
+                       $a->zip_post cmp $b->zip_post
+                   }
+                   grep { $_ != 0 }
+                   @people
+        ) {
             print {$list} 
-                  $p->first . " " . $p->last . "|"
+                  ($p->{name} || ($p->first . " " . $p->last)) . "|"
                   . $p->addrs . "|"
                   . $p->city . "|"
                   . $p->st_prov . "|"
                   . $p->zip_post
                   . "\n";
-
         }
     }
     if ($n == 0) {

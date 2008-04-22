@@ -1,5 +1,7 @@
 <h2>Members</h2>
-<a href="/member/membership_list">By Category</a>
+<a href="/member/membership_list">Category</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/member/membership_list/1">Category-$</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/reset">Reset Nights</a>
 &nbsp;&nbsp;&nbsp;

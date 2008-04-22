@@ -1,5 +1,4 @@
-<h2>New Deposit</h2>
-<h3>Registration Payments</h3>
+<h2>New Bank Deposit</h2>
 <table cellpadding=3>
 <tr>
 <th align=left>Name</th>
@@ -10,9 +9,9 @@
 <th>Online</th>
 <th align=left>Program</th>
 </tr>
-[% FOR p IN reg_payments %]
+[% FOR p IN payments %]
 <tr>
-<td><a target=_blank href='/registration/view/[% p.reg_id %]'>[% p.name %]</a></td>
+<td><a target=_blank href='[% p.link %]'>[% p.name %]</a></td>
 <td>[% p.date %]</td>
 <td align=right>[% p.cash %]</td>
 <td align=right>[% p.chk %]</td>

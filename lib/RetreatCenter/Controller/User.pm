@@ -55,7 +55,7 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    my %hash = %{$c->request->params};
+    %hash = %{$c->request->params};
     for my $k (keys %hash) {
         if ($k =~ m{role\d+}) {
             delete $hash{$k};

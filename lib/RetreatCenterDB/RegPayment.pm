@@ -27,4 +27,24 @@ sub the_date_obj {
     return date($self->the_date);
 }
 
+sub name {
+    my ($self) = @_;
+
+    my $per = $self->registration->person;
+    return $per->last . ", " . $per->first;
+}
+
+sub link {
+    my ($self) = @_;
+    
+    return "/registration/view/" . $self->reg_id;
+}
+
+sub pname {
+    my ($self) = @_;
+    
+    return $self->registration->program->name;
+
+}
+
 1;

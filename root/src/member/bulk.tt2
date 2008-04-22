@@ -2,20 +2,37 @@
 <ul>
 <form action="/member/bulk_do">
 <table cellpadding=3>
+
 <tr>
+<th align=right>Categories</th>
 <td>
 <input type=checkbox name=general value='yes' checked> General
 <input type=checkbox name=sponsor value='yes' checked> Sponsor
 <input type=checkbox name=life value='yes' checked> Life
 </td>
 </tr>
+
 <tr>
+<th align=right>MMC</th>
+<td>
+<input type=radio name=mmc value=include> Include
+<input type=radio name=mmc value=exclude checked> Exclude
+<input type=radio name=mmc value=only> Only
+</td>
+</tr>
+
+<tr>
+<th align=right>Type</th>
 <td>
 <input type=radio name=type value=email checked> Email
 <input type=radio name=type value=snail> Snail
 </td>
 </tr>
-<tr><td><input type=submit value="Submit"></td></tr>
+
+<tr>
+<td>&nbsp;</th>
+<td><input type=submit value="Submit"></td>
+</tr>
 </table>
 </form>
 </ul>

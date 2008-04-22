@@ -11,7 +11,7 @@ my $sql = "select last, first from people where id = ?";
 my $sth = $dbh->prepare($sql) or die "oops1\n";
 while (<$ppl>) {
     chomp;
-    my ($id, $last, $first) = split /\|/;
+    my ($id, $last, $first) = split /\|/, $_, -1;
     $sth->execute($id);
     my ($l, $f) = $sth->fetchrow_array();
     if ($l ne $last || $f ne $first) {
@@ -30,7 +30,7 @@ for my $tbl (qw/ member spons_hist night_hist /) {
     open my $mem, "<", "mem/$tbl.txt" or die "$tbl.txt\n";
     while (<$mem>) {
         chomp;
-        my @flds = split /\|/;
+        my @flds = split /\|/, $_, -1;
         $sth->execute(@flds);
     }
     close $mem;

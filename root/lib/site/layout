@@ -32,9 +32,13 @@
 <td align=right><a href=/static/help.html>Help</td>
 </tr>
 <tr>
+[% IF Catalyst.check_user_roles('prog_staff') %]
 <td><a href=/xaccount/list>Extra Accounts</a></td>
 <td><a href=/event/list>Events</a></td>
 <td><a href=/finance>Finance</a></td>
+[% ELSE %]
+<td rowspan=3>&nbsp</td>
+[% END %]
 [% IF Catalyst.check_user_roles('super_admin') %]
     <td colspan=4>&nbsp;</td>
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>

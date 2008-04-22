@@ -7,7 +7,11 @@ h3 {
 </style>
 <h2>Members</h2>
 <span class=larger>[% member.person.first %] [% member.person.last %]</span>
-<span style="margin-left: 1in"><a href="/person/view/[% member.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a></span>
+<span style="margin-left: 1in">
+<a href="/member/list" accesskey='l'><span class=keyed>L</span>ist</a>
+</span>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/view/[% member.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/update/[% member.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;

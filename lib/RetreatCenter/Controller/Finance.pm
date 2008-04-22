@@ -30,53 +30,47 @@ sub new_deposit : Local {
             ],
         ],
     };
-    my $order = {
-        order_by => 'the_date, time',
-    };
-    my @reg_payments;
+    my @payments;
     my ($cash, $check, $credit, $online, $total) = (0) x 5;
-    for my $p (model($c, 'RegPayment')->search($cond, $order)) {
-        my $reg = $p->registration;
-        my $per = $reg->person;
-        my $type = $p->type;
-        my $amt  = $p->amount;
-        if ($type eq 'Cash') {
-            $cash += $amt;
+    for my $src (qw/ Reg XAccount Rental /) {
+        for my $p (model($c, "${src}Payment")->search($cond)) {
+            my $type = $p->type;
+            my $amt  = $p->amount;
+            if ($type eq 'Cash') {
+                $cash += $amt;
+            }
+            elsif ($type eq 'Check') {
+                $check += $amt;
+            }
+            elsif ($type eq 'Credit Card') {
+                $credit += $amt;
+            }
+            elsif ($type eq 'Online') {
+                $online += $amt;
+            }
+            $total += $amt;
+            push @payments, {
+                name   => $p->name,
+                link   => $p->link,
+                date   => $p->the_date_obj,
+                cash   => ($type eq 'Cash'  )? $amt: "",
+                chk    => ($type eq 'Check' )? $amt: "",
+                credit => ($type eq 'Credit Card')? $amt: "",
+                online => ($type eq 'Online')? $amt: "",
+                pname  => $p->pname,
+            };
         }
-        elsif ($type eq 'Check') {
-            $check += $amt;
-        }
-        elsif ($type eq 'Credit Card') {
-            $credit += $amt;
-        }
-        elsif ($type eq 'Online') {
-            $online += $amt;
-        }
-        $total += $amt;
-        push @reg_payments, {
-            name   => $per->last . ", " . $per->first,
-            reg_id => $reg->id,
-            date   => $p->the_date_obj,
-            cash   => ($type eq 'Cash'  )? $amt: "",
-            chk    => ($type eq 'Check' )? $amt: "",
-            credit => ($type eq 'Credit Card')? $amt: "",
-            online => ($type eq 'Online')? $amt: "",
-            pname  => $reg->program->name,
-        };
     }
-    # ??? COULD make links in the .tt2 file
-    # to be able click over to the registration or the program
-    # in a separate window (_blank)
-    @reg_payments = sort {
+    @payments = sort {
                         $a->{name} cmp $b->{name}
                     }
-                    @reg_payments;
-    $c->stash->{reg_payments} = \@reg_payments;
-    $c->stash->{cash} = $cash;
-    $c->stash->{check} = $check;
-    $c->stash->{credit} = $credit;
-    $c->stash->{online} = $online;
-    $c->stash->{total} = $total;
+                    @payments;
+    $c->stash->{payments} = \@payments;
+    $c->stash->{cash}     = $cash;
+    $c->stash->{check}    = $check;
+    $c->stash->{credit}   = $credit;
+    $c->stash->{online}   = $online;
+    $c->stash->{total}    = $total;
     $c->stash->{template} = "finance/deposit.tt2";
 }
 

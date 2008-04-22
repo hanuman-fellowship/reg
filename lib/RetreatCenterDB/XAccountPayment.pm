@@ -33,4 +33,23 @@ sub the_date_obj {
     return date($self->the_date);
 }
 
+sub name {
+    my ($self) = @_;
+
+    my $per = $self->person;
+    return $per->last . ", " . $per->first;
+}
+
+sub link {
+    my ($self) = @_;
+
+    return "/person/view/" . $self->person_id;
+}
+
+sub pname {
+    my ($self) = @_;
+   
+    return $self->xaccount->descr;
+}
+
 1;
