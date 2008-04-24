@@ -29,4 +29,13 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 <td>[% event.sponsor %]</td>
 </tr>
 
+<tr>
+<th align=right valign=top>Meeting Places</th>
+<td valign=top>
+[% FOR b IN event.bookings %]
+    [% b.meeting_place.name %]<br>
+[% END %]
+<a href="/event/meetingplace_update/[% event.id %]">Update</a></td>
+</tr>
+
 </table>
