@@ -12,7 +12,7 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Name</th>
-<td>[% event.name %]</td>
+<td><span class=larger>[% event.name %]</span></td>
 <th align=right>From</th>
 <td>[% event.sdate_obj %] <span class=dow>[% event.sdate_obj.format("%a") %]</span></td>
 <th align=right>To</th>

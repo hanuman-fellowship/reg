@@ -1,0 +1,32 @@
+<h2>Meeting Places</h2>
+<form action=[% "/meetingplace/" _ form_action %] name=form method=post>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right><span class="required">*</span> Abbreviation</th>
+<td><input type=text name=abbr value="[% meetingplace.abbr %]"></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Name</th>
+<td><input type=text name=name value="[% meetingplace.name %]"></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Display Order</th>
+<td><input type=text name=disp_ord value="[% meetingplace.disp_ord %]"></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Color</th>
+<td><input type=text name=color value="[% meetingplace.color %]"></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.abbr.focus();</script>

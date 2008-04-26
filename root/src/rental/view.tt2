@@ -34,6 +34,17 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </tr>
 
 <tr>
+<th align=right valign=top>Meeting Places</th>
+<td align=left valign=top>
+[% FOR b IN rental.bookings %]
+    [% b.meeting_place.name %]<br>
+[% END %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
+    <a href="/rental/meetingplace_update/[% rental.id %]">Update</a>
+[% END %]
+</tr>
+
+<tr>
 <th align=right>GL Number</th>
 <td>[% rental.glnum %]</td>
 <th align=right>Linked</th>

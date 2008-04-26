@@ -1,0 +1,31 @@
+<h2>Meeting Place</h2>
+<a href="/meetingplace/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/meetingplace/update/[% meetingplace.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/meetingplace/delete/[% meetingplace.id %]"
+onclick="return confirm('Okay to Delete [% meetingplace.name %]?');">Delete</a>
+<p>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Abbrevation</th>
+<td>[% meetingplace.abbr %]</td>
+</tr>
+
+<tr>
+<th align=right>Name</th>
+<td>[% meetingplace.name %]</td>
+</tr>
+
+<tr>
+<th align=right>Display Order</th>
+<td>[% meetingplace.disp_ord %]</td>
+</tr>
+
+<tr>
+<th align=right>Color</th>
+<td>[% meetingplace.color %]</td>
+</tr>
+
+</table>

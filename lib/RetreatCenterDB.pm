@@ -43,6 +43,9 @@ __PACKAGE__->load_classes({
         XAccountPayment
 
         Deposit
+
+        MeetingPlace
+        Booking
     /]
 });
 

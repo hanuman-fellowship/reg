@@ -1,0 +1,20 @@
+<h2>Meeting Places</h2>
+<a href="/meetingplace/create">Add</a>
+<ul>
+<table border=0 cellpadding=3>
+<tr>
+<th align=left>Abbr</th>
+<th align=left>Name</th>
+<th align=right>Order</th>
+<th align=left>Color</th>
+</tr>
+[% FOREACH mp IN meetingplaces %]
+    <tr>
+    <td><a href="/meetingplace/view/[% mp.id %]">[% mp.abbr %]</a></td>
+    <td><a href="/meetingplace/view/[% mp.id %]">[% mp.name %]</a></td>
+    <td align=right>[% mp.disp_ord %]</td>
+    <td>[% mp.color %]</td>
+    </tr>
+[% END %]
+</table>
+</ul>

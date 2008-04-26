@@ -7,7 +7,11 @@ use Date::Simple qw/date today/;
 use Util qw/
     empty
     model
+    meetingplace_table
 /;
+use GD;
+use ActiveCal;
+use DateRange;      # imports overlap
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -189,9 +193,15 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $p = model($c, 'Event')->find($id);
-    $p->update(\%hash);
-    $c->response->redirect($c->uri_for("/event/view/" . $p->id));
+    my $e = model($c, 'Event')->find($id);
+    if ($e->sdate ne $hash{sdate} || $e->edate ne $hash{edate}) {
+        # invalidate the bookings as the dates have changed
+        model($c, 'Booking')->search({
+            event_id => $id,
+        })->delete();
+    }
+    $e->update(\%hash);
+    $c->response->redirect($c->uri_for("/event/view/" . $e->id));
 }
 
 sub delete : Local {
@@ -213,65 +223,183 @@ sub access_denied : Private {
 sub calendar : Local {
     my ($self, $c) = @_;
 
-    my $sdate = $c->request->params->{sdate};
-    my $edate = $c->request->params->{edate};
-    if (! defined $sdate || empty($sdate)) {
-        # the default: the current month
-        # or should it be from today + 30 days???
-        my $today = today();
-        my $year = $today->year;
-        my $month = $today->month;
-        $sdate = date($year, $month, 1);
-        $edate = date($year, $month, $sdate->days_in_month);
-        # is there a better way to do the above???
+    my ($no_where) = model($c, 'MeetingPlace')->search({
+        name => 'No Where',
+    });
+    my $today = today();
+    my $year = $today->year;
+    my $month = $today->month;
+    my $sdate = sprintf("%4d%02d%02d", $year, $month, 1);
+    my @events;
+    for my $ev_kind (qw/Event Program Rental/) {
+        push @events, model($c, $ev_kind)->search({
+                          edate => { '>=', $sdate },
+                      });
     }
-    else {
-        $sdate = date($sdate);
-        $edate = date($edate);
-        # errors???
+    my $maxdate = $sdate;
+    for my $e (@events) {
+        if ($e->edate > $maxdate) {
+            $maxdate = $e->edate;
+        }
     }
-    my $sdate8 = $sdate->as_d8();
-    my $edate8 = $edate->as_d8();
-    my $cond = {
-       -or => [
-           sdate => { 'between' => [ $sdate8, $edate8 ] },
-           -and => [
-               sdate => { '<=', $sdate8 },
-               edate => { '>=', $sdate8 },
-           ],
-       ],
-    };
-    my @programs = model($c, 'Program')->search($cond);
-    my @rentals  = model($c, 'Rental' )->search($cond);
-    my @events   = model($c, 'Event'  )->search($cond);
-    my $content = "";
-    my $d = $sdate;
-    my $prev_month = 0;
-    while ($d <= $edate) {
-        if ($d->month != $prev_month) {
-            $content .= "<h2>" . $d->format("%B %e") . "</h2>";
-            $prev_month = $d->month;
+    $maxdate = date($maxdate);
+    my $end_year  = $maxdate->year;
+    my $end_month = $maxdate->month;
+
+    my %cals;       # a hash of ActiveCal objects indexed by yearmonth
+    my %imgmaps;    # the image maps for each calendar image
+    #
+    # initialize the cals and imgmaps
+    #
+    while ($year < $end_year || ($year == $end_year && $month <= $end_month)) {
+        my $key = sprintf("%04d%02d", $year, $month);
+        $cals{$key} = ActiveCal->new($year, $month);
+        $imgmaps{$key} = "";
+        ++$month;
+        if ($month > 12) {
+            $month = 1;
+            ++$year;
         }
-        else {
-            $content .= "<h2>" . $d->format("%e") . "</h2>";
-        }
-        $content .= "<ul>\n";
-        for my $th (@programs, @rentals, @events) {     # thingy
-            if ($th->sdate <= $d && $d <= $th->edate) {
-                my $s = lc(ref($th));
-                $s =~ s{.*::}{};
-                $content .= "<a href='/$s/view/"
-                          . $th->id
-                          . "'>"
-                          . $th->name
-                          . "</a><br>\n";
+
+    }
+    #
+    # sort the events by start date so that
+    # a later event will overwrite one to its left
+    #
+    my $day_width = ActiveCal->day_width;
+    for my $ev (sort { $a->sdate <=> $b->sdate } @events) {
+        # draw on the right image(s)
+        #
+        my $ev_sdate = $ev->sdate_obj;
+        my $ev_edate = $ev->edate_obj;
+
+        for my $key (ActiveCal->keys($ev_sdate, $ev_edate)) {
+            my $cal = $cals{$key};
+            if (! $cal) {
+                # this event apparently begins in a prior month
+                # and overlaps into the first shown month???
+                # like today is April 10th and the event is from
+                # March 29th to April 4th.
+                $cal = $cals{$today->format("%Y%m")};
             }
-        }
-        $content .= "</ul>\n";
-        ++$d;
+            my $dr = overlap($ev->date_range, $cal);
+            my $d1 = $dr->sdate->day;
+            my $d2 = $dr->edate->day;
+            my @places = map { $_->meeting_place } $ev->bookings;
+            #
+            # if no meeting place assigned hopefully put it SOMEwhere.
+            # to alert the user that it is dangling homeless.
+            #
+            if (! @places && $no_where) {
+                push @places, $no_where;
+            }
+            my $im = $cal->image;
+            for my $pl (@places) {
+                my ($r, $g, $b) = $pl->color =~ m{(\d+)}g;
+                my $color = $im->colorAllocate($r, $g, $b);
+                my $black = $im->colorAllocate(0, 0, 0);
+                    # ??? do the above once for all meeting places
+                    # then index into a hash for the color.
+                my $x1 = ($d1-1) * $day_width;
+                # if overlapping from prior month don't indent it
+                if ($d1 == $ev_sdate->day) {
+                    $x1 += $day_width/2;
+                }
+                my $x2 = $d2 * $day_width;
+                # if overflowing to the next month don't exdent it
+                if ($d2 == $ev_edate->day) {
+                    $x2 -= $day_width/2;
+                }
+                my $y1 = $pl->disp_ord * 40;
+                my $y2 = $y1 + 20;
+                my $place_name = $pl->abbr;
+                if ($place_name eq '-') {
+                    $place_name = "";
+                }
+                else {
+                    $place_name = " ($place_name)";
+                }
+                my $event_name = $ev->name;
+                my $width = length($event_name . $place_name) * 20;
+
+                $im->rectangle($x1, $y1, $x2, $y2, $black);
+                $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $color);
+
+                # print the event and place names in the rectangle, if you can
+                $im->string(gdLargeFont, $x1 + 2, $y1 + 2,
+                            $event_name . $place_name, $black);
+
+                # add to the image map
+                $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n"
+                               .  "    target=_blank\n"
+                               .  "    href='" . $ev->link . "'\n"
+    . qq!    onmouseover="return overlib('!
+    . $event_name . $place_name
+    . qq!', FGCOLOR, '#FFFFFF', BGCOLOR, '#333333', BORDER, 2,!
+    . qq! TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, $width)"\n !
+    . qq!    onmouseout="return nd();">\n!;
+            }       # places the event meets in 
+        }       # keys of the calendar month images/maps the event spans
+    }       # events
+    #
+    # generate the HTML output
+    #
+    my $content = <<EOH;
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+<div style='margin-left: .5in'>
+EOH
+    for my $ym (sort keys %cals) {
+        my $ac = $cals{$ym};
+        $content .= "\n<h2>" . $ac->sdate->format("%B %Y") . "</h2>\n";
+
+        my $image = $c->uri_for("/static/images/$ym.png");
+        $content .= <<EOH;
+<img src='$image' usemap='#$ym'>
+<map name=$ym>
+$imgmaps{$ym}</map>
+EOH
+  
+        open my $imf, ">", "root/static/images/$ym.png"; 
+        print {$imf} $ac->image->png;
+        close $imf;
     }
-    $c->stash->{content} = $content;
+    $content .= "</div>\n";
+    $c->res->output($content);
     $c->stash->{template} = "event/calendar.tt2";
+}
+
+sub meetingplace_update : Local {
+    my ($self, $c, $id) = @_;
+
+    my $e = $c->stash->{event} = model($c, 'Event')->find($id);
+    $c->stash->{meetingplace_table}
+        = meetingplace_table($c, $e->sdate, $e->edate, $e->bookings());
+    $c->stash->{template} = "event/meetingplace_update.tt2";
+}
+
+sub meetingplace_update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $e = model($c, 'Event')->find($id);
+    my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
+                     keys %{$c->request->params};
+    # delete all old bookings and create the new ones.
+    model($c, 'Booking')->search(
+        { event_id => $id },
+    )->delete();
+    for my $mp (@cur_mps) {
+        model($c, 'Booking')->create({
+            meet_id    => $mp,
+            program_id => 0,
+            rental_id  => 0,
+            event_id   => $id,
+            sdate      => $e->sdate,
+            edate      => $e->edate,
+        });
+    }
+    # show the event again - with the updated meeting places
+    view($self, $c, $id);
+    $c->forward('view');
 }
 
 1;

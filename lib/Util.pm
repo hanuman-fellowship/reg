@@ -5,6 +5,7 @@ package Util;
 use base 'Exporter';
 our @EXPORT_OK = qw/
     affil_table
+    meetingplace_table
     role_table
     leader_table
     trim
@@ -98,6 +99,52 @@ sub role_table {
         $a->fullname cmp $b->fullname
     }
     model($c, 'Role')->all();
+}
+
+#
+# which meeting places are available in the
+# date range sdate-edate?
+#
+# note: PRE = Program/Rental/Event
+#
+sub meetingplace_table {
+    my ($c, $sdate, $edate, @cur_bookings) = @_;
+
+    # the other arguments are Bookings (which point to a
+    # meeting place currently assigned to this PRE in question)
+    my %checked = map { $_->meet_id() => 'checked' } @cur_bookings;
+
+    my $table = "";
+    MEETING_PLACE:
+    for my $mp (model($c, 'MeetingPlace')->search(
+                    undef,
+                    { order_by => 'name' }
+                )
+    ) {
+        my $id = $mp->id;
+        if (! $checked{$id}) {
+            # this meeting place is not currently assigned to
+            # the PRE in question.
+            # are there any bookings for this place that overlap
+            # with this request?
+            my @bookings = model($c, 'Booking')->search({
+                              meet_id => $id,
+                              sdate => { '<' => $edate },
+                              edate => { '>' => $sdate },
+                           });
+            next MEETING_PLACE if @bookings;
+        }
+        # it should be included in the table
+        $table .= "<input type=checkbox name=mp$id  "
+                  . ($checked{$id} || '')
+                  . "> "
+                  . $mp->name
+                  . "<br>\n";
+    }
+    if (! $table) {
+        $table = "Sorry, there is no place in the inn.";
+    }
+    $table;
 }
 
 #

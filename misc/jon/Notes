@@ -1076,3 +1076,78 @@ MMC include, exclude, only
 partnering in bulk mailings
 extra accounts, events, finance - only for program people
 by category sans $ or nights left
+
+make a date_range object
+    events, programs, and rentals all will have one
+    $dr1 = DateRange->new($sdate, $edate)
+    $dr1->sdate;
+    $dr1->edate;
+    $dr1->ndays;
+    $dr2 = DateRange->new($sd, $ed)
+    $dr3 = $dr1->overlap($dr2)
+    if (defined $dr3) ...
+given a date ($today) generate a hash of Calendar objects
+    keys are "year-month".
+    such an object has a DateRange (1st - last of the month)
+    an image (to write in), and a method called next_key
+    which gives the next_key of the hash (of the succeeding month).
+Bookings are for the entire time of the Event/Rental/Program.
+    so - a date range, no time.
+    an event (generic term for Event/Rental/Program) can have
+        multiple bookings.
+Rentals - more attributes to facilitate the
+    give and take of contract negotiation?   Akhilesh
+    put this in the Event Calendar - is it used?
+    or do the sums handle this?
+    cron job for reminders of critical dates (two weeks
+        before start date to finalize the housing needs)
+FULL programs also need the same meeting places as the normal program.
+doc - if meeting place abbr is '-' it can be used for
+    just displaying in a certain place (disp_ord, color).
+    - no particular place.  like Ramayana happening.
+events spanning month boundaries
+putting something else in the popup?
+    number of people registered/expected in a Program or Rental?
+writing the name on the rectangle
+size of event span rectangles?
+size of calendars?
+perhaps PRE with no meeting place should be put
+    at a certain fixed place on the calendar?
+change date for PRE and meeting places invalidated.
+begin and end the colored spans in the middle
+    because programs can butt up to each other.
+program reg count - on calendar
+F Sa Su not Sa Su M
+... if it doesn't fit.
+when looking for dups - 
+    - exact name match
+    IF there IS an address then look for
+        similar addresses with first/last that match 1st two chars
+        addresses compare equal if they have the same #s in them
+        and the same first letter
+Calendar in same named window so they dont accumulate.
+undup in new window
+already partnered - clickable
+two buttons in Reports
+    Run Report
+    Run Count
+        or some such
+
+    and checkbox for Share
+Next, Prev for next/prev person by last/first name
+Testplans - payments, xaccounts
+People testplan P, p
+Date 0902 for 9-2
+bulk member mailing sponsor, snail - bombs
+URI::Escape for mailto link editing a letter before sending it
+note that calendar link on top - always opens in same window
+all the test cases for overlapping date ranges
+    test booking a meeting space and note which
+    ones are even offered - butted up is okay.
+    no place in the inn.
+validation of meeting place attributes
+    color (3 numbers) and display order <= 7
+Meeting Place named "No Where" for unbooked PRE
+cascade delete of an event to meeting places.
+later <area>s that overlap previous ones do not take priority.
+    browser dependent?

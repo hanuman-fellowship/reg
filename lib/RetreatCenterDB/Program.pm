@@ -4,6 +4,7 @@ package RetreatCenterDB::Program;
 use base qw/DBIx::Class/;
 
 use lib "..";       # so can do perl -c
+use DateRange;
 
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -77,6 +78,9 @@ __PACKAGE__->many_to_many(leaders => 'leader_program', 'leader',
 # exceptions - maybe
 __PACKAGE__->has_many(exceptions => 'RetreatCenterDB::Exception', 'prog_id');
 
+# bookings
+__PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'program_id');
+
 #
 # we really can't call $self->{field}
 # but must call $self->field()
@@ -145,6 +149,9 @@ sub web_addr {
 # of a table column into something easily viewable
 # within a template...
 #
+# ??? memoize these date object creations
+# they only happen once and are stored in the object hash ref itself.
+#
 sub sdate_obj {
     my ($self) = @_;
     date($self->sdate) || "";
@@ -153,6 +160,15 @@ sub edate_obj {
     my ($self) = @_;
     date($self->edate) || "";
 }
+sub date_range {
+    my ($self) = @_;
+    return DateRange->new($self->sdate_obj, $self->edate_obj);
+}
+sub link {
+    my ($self) = @_;
+    return "/program/view/" . $self->id;
+}
+
 sub webdesc_br {
     my ($self) = @_;
     my $webdesc = $self->webdesc;

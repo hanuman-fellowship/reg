@@ -1,0 +1,18 @@
+drop table if exists meeting_place;
+create table meeting_place (
+    id          integer primary key autoincrement,
+    abbr text,
+    name text,
+    disp_ord integer,
+    color text
+);
+drop table if exists booking;
+create table booking (
+    id          integer primary key autoincrement,
+    meet_id     integer,
+    rental_id   integer,
+    program_id  integer,
+    event_id    integer,
+    sdate       text,
+    edate       text
+);

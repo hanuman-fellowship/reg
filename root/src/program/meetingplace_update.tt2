@@ -1,0 +1,12 @@
+<h2>Programs - Updating the Meeting Places</h2>
+<p>
+[% program.name %]<br>
+[% program.title %] - [% program.subtitle %]
+<p>
+<form action="/program/meetingplace_update_do/[% program.id %]">
+<ul>
+[% meetingplace_table %]
+<p>
+<input type=submit value="Submit">
+</ul>
+</form>

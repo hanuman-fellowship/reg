@@ -10,6 +10,7 @@ use Util qw/
     compute_glnum
     valid_email
     model
+    meetingplace_table
 /;
 
 use lib '../../';       # so you can do a perl -c here.
@@ -252,6 +253,13 @@ sub update_do : Local {
     return if @mess;
 
     my $p = model($c, 'Rental')->find($id);
+    if ($p->sdate ne $hash{sdate} || $p->edate ne $hash{edate}) {
+        # we have changed the dates of the rental
+        # and need to invalidate/remove any bookings for meeting spaces.
+        model($c, 'Booking')->search({
+            rental_id => $id,
+        })->delete();
+    }
     $p->update(\%hash);
     $c->response->redirect($c->uri_for("/rental/view/" . $p->id));
 }
@@ -311,5 +319,40 @@ sub pay_balance_do : Local {
     });
     $c->response->redirect($c->uri_for("/rental/view/$id"));
 }
+
+sub meetingplace_update : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
+    $c->stash->{meetingplace_table}
+        = meetingplace_table($c, $r->sdate, $r->edate, $r->bookings());
+    $c->stash->{template} = "rental/meetingplace_update.tt2";
+}
+
+sub meetingplace_update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Rental')->find($id);
+    my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
+                     keys %{$c->request->params};
+    # delete all old bookings and create the new ones.
+    model($c, 'Booking')->search(
+        { rental_id => $id },
+    )->delete();
+    for my $mp (@cur_mps) {
+        model($c, 'Booking')->create({
+            meet_id    => $mp,
+            program_id => 0,
+            rental_id  => $id,
+            event_id   => 0,
+            sdate      => $r->sdate,
+            edate      => $r->edate,
+        });
+    }
+    # show the rental again - with the updated meeting places
+    view($self, $c, $id);
+    $c->forward('view');
+}
+
 
 1;

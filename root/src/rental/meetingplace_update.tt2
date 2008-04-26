@@ -1,0 +1,12 @@
+<h2>Rentals - Updating the Meeting Places</h2>
+<p>
+[% rental.name %]<br>
+[% rental.title %] - [% rental.subtitle %]
+<p>
+<form action="/rental/meetingplace_update_do/[% rental.id %]">
+<ul>
+[% meetingplace_table %]
+<p>
+<input type=submit value="Submit">
+</ul>
+</form>

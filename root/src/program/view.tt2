@@ -113,6 +113,20 @@
 [% END %]
 <p>
 </td>
+
+<th align=right valign=top>Meeting Places</th>
+<td align=left valign=top>
+[% FOR b IN program.bookings %]
+    [% b.meeting_place.name %]<br>
+[% END %]
+[% IF edit_okay %]
+    [% IF Catalyst.check_user_roles('prog_admin') %]
+        <a href="/program/meetingplace_update/[% program.id %]">Update</a>
+    [% END %]
+[% END %]
+<p>
+</td>
+
 <th align=right valign=top>Affiliations</th>
 <td align=left valign=top colspan=2>
 [% IF edit_okay %]

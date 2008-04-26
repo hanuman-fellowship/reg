@@ -7,6 +7,7 @@ use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     leader_table
     affil_table
+    meetingplace_table
     slurp 
     monthyear
     expand
@@ -415,6 +416,12 @@ sub update_do : Local {
         $hash{image} = "yes";
     }
     my $p = model($c, 'Program')->find($id);
+    if ($p->sdate ne $hash{sdate} || $p->edate ne $hash{edate}) {
+        # invalidate the bookings as the dates have changed
+        model($c, 'Booking')->search({
+            program_id => $id,
+        })->delete();
+    }
     # is there a FULL version?
     my ($p_full) = model($c, 'Program')->search({
         name => $p->name . " FULL",
@@ -538,6 +545,40 @@ sub affil_update_do : Local {
         });
     }
     # show the program again - with the updated affils
+    view($self, $c, $id);
+    $c->forward('view');
+}
+
+sub meetingplace_update : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
+    $c->stash->{meetingplace_table}
+        = meetingplace_table($c, $p->sdate, $p->edate, $p->bookings());
+    $c->stash->{template} = "program/meetingplace_update.tt2";
+}
+
+sub meetingplace_update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = model($c, 'Program')->find($id);
+    my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
+                     keys %{$c->request->params};
+    # delete all old bookings and create the new ones.
+    model($c, 'Booking')->search(
+        { program_id => $id },
+    )->delete();
+    for my $mp (@cur_mps) {
+        model($c, 'Booking')->create({
+            meet_id    => $mp,
+            program_id => $id,
+            rental_id  => 0,
+            event_id   => 0,
+            sdate      => $p->sdate,
+            edate      => $p->edate,
+        });
+    }
+    # show the program again - with the updated meeting places
     view($self, $c, $id);
     $c->forward('view');
 }

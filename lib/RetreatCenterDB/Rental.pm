@@ -3,6 +3,11 @@ use warnings;
 package RetreatCenterDB::Rental;
 use base qw/DBIx::Class/;
 
+use Lookup;
+use Util qw/expand/;
+use Date::Simple qw/date today/;
+use DateRange;
+
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
 __PACKAGE__->add_columns(qw/
@@ -37,15 +42,18 @@ __PACKAGE__->add_columns(qw/
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
+
+# housing cost
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
+
+# payments
 __PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment',
                       'rental_id',
                       { order_by => "id desc" });
 
-use Lookup;
-use Util qw/expand/;
-use Date::Simple qw/date today/;
+# bookings
+__PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
 
 sub future_rentals {
     my ($class, $c) = @_;
@@ -62,6 +70,14 @@ sub sdate_obj {
 sub edate_obj {
     my ($self) = @_;
     return date($self->edate) || "";
+}
+sub date_range {
+    my ($self) = @_;
+    return DateRange->new($self->sdate_obj, $self->edate_obj);
+}
+sub link {
+    my ($self) = @_;
+    return "/rental/view/" . $self->id;
 }
 sub webdesc_br {
     my ($self) = @_;

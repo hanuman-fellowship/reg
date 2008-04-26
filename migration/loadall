@@ -19,6 +19,7 @@ $db <mkmember
 $db <mkreg
 $db <mkevent
 $db <mkacct
+$db <mkmeet
 
 echo strings
 loadstr

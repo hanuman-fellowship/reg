@@ -93,7 +93,7 @@ sub addrs {
 
     my $addrs = $self->addr1;
     if ($self->addr2) {
-        $addrs .= $self->addr2;
+        $addrs .= " " . $self->addr2;
     }
     $addrs;
 }
