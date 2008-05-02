@@ -1,0 +1,18 @@
+body {
+    margin-left: .5in;
+    margin-right: 1in;
+    font-size: 12pt;
+    font-family: Verdana;
+}
+.quote {
+    display: block;
+    margin-left: .5in;
+    margin-top: .3in;
+    margin-bottom: .3in;
+}
+h2 {
+    color: green;
+}
+h3 {
+    color: blue;
+}
