@@ -42,6 +42,15 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 [% IF Catalyst.check_user_roles('prog_admin') %]
     <a href="/rental/meetingplace_update/[% rental.id %]">Update</a>
 [% END %]
+</td>
+<th valign=top align=right>Coordinator</th>
+<td>
+[% IF rental.coordinator_id %]
+[% coord = rental.coordinator %]
+<a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
+[% END %]
+<a href="/rental/coordinator_update/[% rental.id %]">Update</a>
+</td>
 </tr>
 
 <tr>
@@ -49,8 +58,6 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <td>[% rental.glnum %]</td>
 <th align=right>Linked</th>
 <td>[% rental.linked %]</td> 
-<th align=right>CEU</th>
-<td>[% rental.ceu %]</td> 
 </tr>
 
 <tr>
@@ -84,6 +91,11 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <div style="float: left">
 <table cellpadding=3>
 <tr>
+<th align=right>Maximum</th>
+<td>[% rental.max %]</td>
+</tr>
+
+<tr>
 <th align=right>Housing Cost</th>
 <td><a href="/housecost/view/[% rental.housecost.id %]">[% rental.housecost.name %]</a></td>
 </tr>
@@ -106,7 +118,16 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 <div style="float: left; margin-left: 1in">
 <table cellpadding=3>
-<tr><th align=right>Total Charge</th>
+
+<tr>
+<th align=right>Minimum Charge</th>
+<td align=right>[% rental.minimum %]</td>
+<th align=right>Actual Lodging Charge</th>
+<td align=right>[% rental.actual_lodging %]</td>
+</tr>
+
+<tr>
+<th align=right>Total Charge</th>
 <td align=right>[% rental.total_charge %]</td>
 </tr>
 

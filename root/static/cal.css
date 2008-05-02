@@ -1,0 +1,12 @@
+.whole {
+    margin-left: .5in;
+}
+/* for Month Name - unused */
+.hdr {
+    display: block;
+    font-weight: bold;
+    font-size: 18pt;
+    margin-right: 1.5in;
+    margin-bottom: 3mm;
+    margin-top: .1in;
+}

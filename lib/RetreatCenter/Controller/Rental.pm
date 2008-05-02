@@ -26,7 +26,6 @@ sub create : Local {
 
     $c->stash->{check_webready} = "checked";
     $c->stash->{check_linked}   = "checked";
-    $c->stash->{check_ceu}   = "";
     $c->stash->{housecost_opts} =
         [ model($c, 'HouseCost')->search(
             undef,
@@ -76,7 +75,10 @@ sub _get_data {
     if (!@mess && $hash{sdate} > $hash{edate}) {
         push @mess, "End date must be after the Start date";
     }
-    my $ndays = date($hash{edate}) - date($hash{sdate});
+    my $ndays = 0;
+    if (!@mess) {
+        $ndays = date($hash{edate}) - date($hash{sdate});
+    }
     my $hc = model($c, 'HouseCost')->find($hash{housecost_id});
     my $total = 0;
     for my $f (qw/
@@ -232,7 +234,6 @@ sub update : Local {
     my $p = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $p;
     $c->stash->{"check_linked"}    = ($p->linked()   )? "checked": "";
-    $c->stash->{"check_ceu"}       = ($p->ceu()      )? "checked": "";
     $c->stash->{housecost_opts} =
         [ model($c, 'HouseCost')->search(
             undef,
@@ -354,5 +355,31 @@ sub meetingplace_update_do : Local {
     $c->forward('view');
 }
 
+sub coordinator_update : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{rental} = model($c, 'Rental')->find($id);
+    $c->stash->{template} = "rental/coordinator_update.tt2";
+}
+sub coordinator_update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Rental')->find($id);
+    my $first = trim($c->request->params->{first});
+    my $last  = trim($c->request->params->{last});
+    my ($person) = model($c, 'Person')->search({
+                       first => $first,
+                       last  => $last,
+                   });
+    if ($person) {
+        $r->update({
+            coordinator_id => $person->id,
+        });
+        $c->response->redirect($c->uri_for("/rental/view/$id"));
+    }
+    else {
+        $c->stash->{template} = "rental/no_coord.tt2";
+    }
+}
 
 1;

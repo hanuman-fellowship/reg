@@ -25,7 +25,6 @@
 <th align=right>GL Number</th>
 <td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
 <td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td> 
-<td colspan=2><input type=checkbox value="yes" name=ceu [% check_ceu %]> CEU</td> 
 </tr>
 
 </tr>
@@ -56,6 +55,11 @@
 <th align=right valign=top>Comment</th>
 <td colspan=5><textarea name=comment cols=60 rows=3>[% rental.comment %]</textarea></td>
 </td>
+</tr>
+
+<tr>
+<th align=right>Maximum</th>
+<td><input type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
 <tr>

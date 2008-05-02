@@ -673,5 +673,9 @@ sub image_file {
     my $path = "/static/images/pth-" . $self->id;
     (-f "root/$path.jpg")? "$path.jpg": "$path.gif";
 }
+sub count {
+    my ($self) = @_;
+    return scalar($self->registrations);
+}
 
 1;

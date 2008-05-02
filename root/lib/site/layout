@@ -29,7 +29,7 @@
 [% ELSE %]
 <td colspan=6>&nbsp;</td>
 [% END %]
-<td align=right><a href=/static/help.html>Help</td>
+<td align=right><a href=/static/help/index.html>Help</td>
 </tr>
 <tr>
 [% IF Catalyst.check_user_roles('prog_staff') %]
@@ -42,7 +42,7 @@
 <td rowspan=2>&nbsp</td>
 [% END %]
 [% IF Catalyst.check_user_roles('super_admin') %]
-    <td colspan=3>&nbsp;</td>
+    <td colspan=2>&nbsp;</td>
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
 [% END %]
 </tr>

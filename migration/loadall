@@ -13,6 +13,7 @@ echo creating tables
 $db <mkpeople
 $db <mkmisc
 $db <mkprog
+$db <mkrent
 $db <mkrep
 $db <mkusers
 $db <mkmember

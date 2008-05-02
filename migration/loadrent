@@ -39,7 +39,6 @@ my @fields = qw/
     linked
     phone
     email
-    ceu
     comment
     housecost_id
     n_single_bath
@@ -55,6 +54,14 @@ my @fields = qw/
     n_own_van
     n_commuting
     total_charge
+    contract_sent
+    sent_by
+    contract_received
+    received_by
+    max
+    start_hour
+    end_hour
+    coordinator_id
 /;
 my %lookup = qw/
     rname	name
@@ -110,9 +117,9 @@ sub processRental {
         $hash{$f} =~ s{[/\s]}{}g;
     }
     $hash{id} = undef;
-    if ($hash{name} =~ s{\s*\*\s*$}{}) {
-        $hash{ceu} = 'yes';
-    }
+    #if ($hash{name} =~ s{\s*\*\s*$}{}) {
+    #    $hash{ceu} = 'yes';
+    #}
     #print "rental $season - $hash{name}\n";
     $r_sth->execute(@hash{@fields});
 }

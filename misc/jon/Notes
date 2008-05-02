@@ -1108,6 +1108,7 @@ doc - if meeting place abbr is '-' it can be used for
 events spanning month boundaries
 putting something else in the popup?
     number of people registered/expected in a Program or Rental?
+    the date range
 writing the name on the rectangle
 size of event span rectangles?
 size of calendars?
@@ -1118,7 +1119,7 @@ begin and end the colored spans in the middle
     because programs can butt up to each other.
 program reg count - on calendar
 F Sa Su not Sa Su M
-... if it doesn't fit.
+... if it doesn't fit???
 when looking for dups - 
     - exact name match
     IF there IS an address then look for
@@ -1136,9 +1137,10 @@ two buttons in Reports
     and checkbox for Share
 Next, Prev for next/prev person by last/first name
 Testplans - payments, xaccounts
+    calendar, meeting place manipulations/searchings...
 People testplan P, p
-Date 0902 for 9-2
-bulk member mailing sponsor, snail - bombs
+Date 0902 for 9-2 in current year.
+bulk member mailing sponsor, snail - bombs??
 URI::Escape for mailto link editing a letter before sending it
 note that calendar link on top - always opens in same window
 all the test cases for overlapping date ranges
@@ -1147,7 +1149,134 @@ all the test cases for overlapping date ranges
     no place in the inn.
 validation of meeting place attributes
     color (3 numbers) and display order <= 7
+a javascript color picker?
 Meeting Place named "No Where" for unbooked PRE
+range of dates for generating the monthly calendar
+   individual dates, too?
+   2009/09-2010/12
+   or
+   2008/02,2008/10,2009/10
 cascade delete of an event to meeting places.
+    done
 later <area>s that overlap previous ones do not take priority.
-    browser dependent?
+    browser dependent?  likely not.
+clicking on calendar region goes to target=_blank
+    better to name the windows???
+    should click on program go to registration list or view program???
+examine SQL - for inefficiencies
+    do some pre-fetching?
+    or joining appropriately.
+    or does it matter?
+cacheing of colors in GD.
+some way of indicating Program/Rental or Event???
+what else in the Popup?   days?  descriptions?  capacities/registrations
+    rental/program/event
+add max capacity # to Rentals.
+ask about financing of Rentals - not just actual housing?
+    some interplay between max contractual, actual use?
+a contact person (or persons) for a Rental.
+    not a leader???   just a person_id(s).
+    RentalPerson rental_person table.
+    you type in the full name to choose it?
+    then have contact info ... and a name to put with payments
+scrolling through a big calendar is a drag.
+    anchors? jump to them?  useful?   Yes.
+it is now okay to have rentals/programs/events with
+    the exact same name.
+    this implies there's no need to put the date (month-day) in the name
+single day events - how to show on calendar?
+many test cases for edge events in calendar
+    one day events, events that begin/end on month edges
+    events that span from May 1 to Apr 1.   or May 10 to Apr 10.
+put description in popup. - why not?
+    nah - that is for the web.   the name should be a sufficient _identifier_.
+    done.  it's a good thing.
+for printing - special link
+    PRE details below image
+on left margin - SH, CCM??? maybe
+no deposit yet - red border on rentals
+    nah - too subtle - in the rental list in status column
+* at end of rental name - CEU???
+    ask Brajesh
+new rental attributes
+    contract sent date, by whom
+    signed contract received, by whom
+    deposit paid?
+        i.e. there is a payment for this account
+        what other charges?
+        good to have the charges itemized?
+            photocopying, extra food, etc.
+            yes. and a printable invoice.
+    max participants
+        how does this figure into the total charge?
+        e.g. we reserve space for 10, but in the
+            end they only used 4 in a double, 2 in triples
+    start hour, end hour - in addition to sdate, edate
+        a charge if earlier than 4 and later than 1
+        $2 per person (actual not max) per hour
+        $2 - in strings
+    deposit is $500 or $1000
+        depending on size - how so? e.g. >50 => 1000?
+        echo to screen when viewing, no column in table
+    max, min
+        max is guaranteed to be housed somewhere.
+        min = int(.75 * max) or ceil?
+        charge is actual usage OR days*min*dorm rate
+            whichever is more.
+        total_charge - recomputed after an edit
+    an associated coordinator - to show when the bank
+        deposit is done.  this is just a person_id that
+        is typed in precisely - like a partner.
+breakout spaces for rental/program with hourly use
+    rare but does happen - make this a later enhancement
+meeting places have a capacity
+    compare it to the rental max and the program registration count
+    eliminate a choice if it is too small? yes!
+browser skill - refreshing the screen
+    searching within
+another image map for jumping to different months!
+    yes!  issues with centering the year #
+    done - nice
+clicking on calendar when that window is already up
+    does not always do a refresh - why?  can I expire it immed?
+    especially calprint.html
+next - a margin (right, not left) with meeting place abbrevs
+    there right justified ??? just noise?  already have three
+    consistent indicators
+        vertical placement, color, abbrev in popup
+double clicking registration form WILL
+    register someone twice :(  prevent with Javascript thingy.
+read all bookings into core/a hash
+    then you can quickly search it for where/if to place an event
+    and for abutting happenings to put a red dotted line there.
+the listing of rentals should have a status field among others
+    contract sent, received & signed,
+    deposit received, two week out finalization of max, ...
+printable calendar - sans overlib, sans jump bar, with details of events
+keep a count of registrations IN the program record
+    much better, yes.  not so hard to maintain.
+generate the overlib line once and reuse it in each meeting place
+    good idea
+    can one have multiple shape/coords in an <area>?
+allocate all the colors you'll need for an image
+    and store them in the ActiveCal object.
+how to distinguish the programs from rentals from events?
+    in the popup?  visually with the colored rectangle?
+missing affiliations in program???
+Double housing registrations - not showing?
+swap first, last in /person/view/?
+expiration date/time on the calendar pages calprint.html especially
+when rentals/programs reserve space way ahead of time
+    like in 2011 or further the calendar generation ends up
+    taking a LONG time and showing with lots of empty months.
+    what to do????      Not show empty months?
+When calendar starts in the middle of the year
+    (or the end) what should the jump bar show and do?
+    Just to the top?  Should the months show even if you
+    can't jump to them?  A shorter jump bar for that year?
+    How to center the year label?
+how does MMC compare to the other centers as far
+    as 'throughput' goes?  numbers of people housed, etc?
+help file upload mechanism in Test Plans
+    index page for help
+    a single css file for help.

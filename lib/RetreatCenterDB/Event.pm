@@ -64,4 +64,14 @@ sub show {
           . "</a>";
 }
 
+sub count {
+    my ($self) = @_;
+    "";     # no count
+}
+
+sub title {
+    my ($self) = @_;
+    $self->descr;       # for the calendar
+}
+
 1;

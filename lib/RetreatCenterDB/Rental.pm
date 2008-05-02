@@ -23,7 +23,6 @@ __PACKAGE__->add_columns(qw/
     linked
     phone
     email
-    ceu
     comment
     housecost_id
     n_single_bath
@@ -39,6 +38,14 @@ __PACKAGE__->add_columns(qw/
     n_own_van
     n_commuting
     total_charge
+    contract_sent
+    sent_by
+    contract_received
+    received_by
+    max
+    start_hour
+    end_hour
+    coordinator_id
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -46,6 +53,16 @@ __PACKAGE__->set_primary_key(qw/id/);
 # housing cost
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
+
+# coordinator
+__PACKAGE__->belongs_to(coordinator => 'RetreatCenterDB::Person',
+                        'coordinator_id');
+
+# users
+__PACKAGE__->belongs_to(sent_by => 'RetreatCenterDB::User',
+                        'sent_by');
+__PACKAGE__->belongs_to(received_by => 'RetreatCenterDB::User',
+                        'received_by');
 
 # payments
 __PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment',
@@ -149,5 +166,44 @@ sub dates_tr2 {
 	my ($self) = @_;
 	return RetreatCenterDB::Program::dates_tr2($self);
 }
+sub count {
+    my ($self) = @_;
+    my $count = 0;
+    for my $f (qw/
+        n_single_bath
+        n_single
+        n_double_bath
+        n_dble
+        n_triple
+        n_quad
+        n_dormitory
+        n_economy
+        n_center_tent
+        n_own_tent
+        n_own_van
+        n_commuting
+    /) {
+        my $n = $self->$f;
+        $count += $n if $n;
+    }
+    $count;
+}
+
+sub minimum {
+    my ($self) = @_;
+    
+    my $max = $self->max;
+    my $hc = $self->housecost;
+    return 0 unless $hc;
+    return int(.75
+               *$max
+               *($hc->dormitory)
+               *(date($self->edate) - date($self->sdate)));
+}
+sub actual_lodging {
+    my ($self) = @_;
+    return 10;
+}
+
 
 1;

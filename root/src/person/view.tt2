@@ -162,7 +162,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% END %]
     </table>
 [% END %]
-[% IF person.payments %]
+[% pays = person.payments %]
+[% IF pays %]
     <p>
     <span class=hdr>Payments</span>
     <table cellpadding=3>
@@ -172,7 +173,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     <th align=left>Account</th>
     <th align=left>Type</th>
     </tr>
-    [% FOR p IN person.payments %]
+    [% FOR p IN pays %]
         <tr>
         <td align=right>[% p.amount %]</td>
         <td align=right>[% p.what %]</td>
@@ -182,4 +183,18 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         </tr>
     [% END %]
     </table>
+[% END %]
+[% rentals = person.rentals %]
+[% IF rentals %]
+    <p>
+    <span class=hdr>Rentals Coordinated</span>
+    <table cellpadding=3>
+    <tr>
+    <th align=left>Name</th>
+    <th align=left>Start Date</th>
+    </tr>
+    [% FOR r IN rentals %]
+    <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+    <td>[% r.sdate_obj %]</td>
+    [% END %]
 [% END %]

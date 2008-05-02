@@ -8,7 +8,7 @@ use Date::Simple qw/
 /;
 use GD;
 
-my $day_width = 30;
+my $day_width = 27;
 my $cal_height = 310;
 
 sub new {
@@ -18,12 +18,11 @@ sub new {
     my $cal_width = $ndays*$day_width + 1;
         # +1 above for the last vertical line
     my $im = GD::Image->new($cal_width, $cal_height);
-    my $white = $im->colorAllocate(255,255,255);
+    my $white = $im->colorAllocate(255,255,255);    # 1st color = background
     my $red   = $im->colorAllocate(255,  0,  0);
     my $black = $im->colorAllocate(0,    0,  0);
     # surrounding border
     $im->rectangle(0, 0, $cal_width-1, $cal_height-1, $black);
-    $im->fill(50, 50, $white);
 
     my @day_name = qw/Su M Tu W Th F Sa/;
     my $dow = date($year, $month, 1)->day_of_week();
@@ -42,26 +41,22 @@ sub new {
     $im->line(0, 40, $cal_width-1, 40, $black);
     my $last = $ndays * $day_width;
     bless {
+        image => $im,
         sdate => date($year, $month, 1),
         edate => date($year, $month, $ndays),
-        image => $im,
+        black => $black,
+        white => $white,
+        red   => $red,
     }, $class;
 }
 
-sub image {
-    my ($self) = @_;
-    $self->{image};
-}
-
-sub sdate {
-    my ($self) = @_;
-    $self->{sdate};
-}
-
-sub edate {
-    my ($self) = @_;
-    $self->{edate};
-}
+# accessors
+sub image { shift->{image}; }
+sub sdate { shift->{sdate}; }
+sub edate { shift->{edate}; }
+sub black { shift->{black}; }
+sub white { $_[0]->{white}; }
+sub red   { $_[0]->{red  }; }
 
 # return an array of keys
 # for the hash of ActiveCal objects
@@ -71,7 +66,7 @@ sub keys {
 
     my @keys;
     my $d = date($sdate->year, $sdate->month, 1);
-    while ($d < $edate) {
+    while ($d <= $edate) {
         push @keys, $d->format("%Y%m");
 
         # and on to the first of the next month

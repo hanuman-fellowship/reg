@@ -45,6 +45,9 @@ __PACKAGE__->many_to_many(affils => 'affil_person', 'affil',
 # registrations
 __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration', 'person_id');
 
+# rental coordinator
+__PACKAGE__->has_many(rentals => 'RetreatCenterDB::Rental', 'coordinator_id');
+
 # donations
 __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'person_id',
     { order_by => 'date_donate desc'});

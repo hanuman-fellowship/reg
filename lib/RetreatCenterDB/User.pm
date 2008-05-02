@@ -20,5 +20,8 @@ __PACKAGE__->has_many(user_role => 'RetreatCenterDB::UserRole', 'user_id');
 __PACKAGE__->many_to_many(roles => 'user_role', 'role',
                           { order_by => 'fullname' },
                          );
+# ??? several tables have foreign keys
+# to user table - should we have relationships here
+# reflecting that?  cascade deletes?
 
 1;

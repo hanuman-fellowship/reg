@@ -24,7 +24,7 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{sponsor_opts} = <<EOH;
+    $c->stash->{sponsor_opts} = <<"EOH";
 <option value="Center">Center
 <option value="School">School
 <option value="Institute">Institute
@@ -223,38 +223,63 @@ sub access_denied : Private {
 sub calendar : Local {
     my ($self, $c) = @_;
 
+    my $which = $c->request->params->{which};
+    my $today = today();
+    if ($which) {
+        my $dt = date($which);
+        if ($dt) {
+            $today = $dt;
+        }
+    }
     my ($no_where) = model($c, 'MeetingPlace')->search({
         name => 'No Where',
     });
-    my $today = today();
-    my $year = $today->year;
-    my $month = $today->month;
-    my $sdate = sprintf("%4d%02d%02d", $year, $month, 1);
+    my $start_year = $today->year;
+    my $start_month = $today->month;
+    my $min_ym = sprintf("%4d%02d", $start_year, $start_month);
+    my $the_first = sprintf("%4d%02d%02d", $start_year, $start_month, 1);
     my @events;
     for my $ev_kind (qw/Event Program Rental/) {
         push @events, model($c, $ev_kind)->search({
-                          edate => { '>=', $sdate },
+                          edate => { '>=', $the_first },
+                          name  => { -not_like, "Personal Retreats%" },
                       });
     }
-    my $maxdate = $sdate;
+
+    my $max_edate = $the_first;
     for my $e (@events) {
-        if ($e->edate > $maxdate) {
-            $maxdate = $e->edate;
+        if ($e->edate > $max_edate) {
+            $max_edate = $e->edate;
         }
     }
-    $maxdate = date($maxdate);
-    my $end_year  = $maxdate->year;
-    my $end_month = $maxdate->month;
+    $max_edate = date($max_edate);
+
+    my $end_year  = $max_edate->year;
+    my $end_month = $max_edate->month;
+    my $max_ym = sprintf("%4d%02d", $end_year, $end_month);
+
+    # get all relevant bookings
+    my @bookings = model($c, 'Booking')->search({
+                       edate => { '>=', $the_first },
+                   });
+
+    # get all meeting places in a hash indexed by id
+    my %meeting_places = map { $_->id => $_ }
+                         model($c, 'MeetingPlace')->all();
 
     my %cals;       # a hash of ActiveCal objects indexed by yearmonth
     my %imgmaps;    # the image maps for each calendar image
+    my %details;    # for the printable version
     #
     # initialize the cals and imgmaps
     #
+    my $year = $start_year;
+    my $month = $start_month;
     while ($year < $end_year || ($year == $end_year && $month <= $end_month)) {
         my $key = sprintf("%04d%02d", $year, $month);
         $cals{$key} = ActiveCal->new($year, $month);
         $imgmaps{$key} = "";
+        $details{$key} = "";
         ++$month;
         if ($month > 12) {
             $month = 1;
@@ -272,6 +297,17 @@ sub calendar : Local {
         #
         my $ev_sdate = $ev->sdate_obj;
         my $ev_edate = $ev->edate_obj;
+        my $event_name = $ev->name;
+        my $ev_count = $ev->count;
+        my $count = $ev_count;
+        if (length $count) {
+            $count = " [$count]";
+        }
+        my $ev_type = ref($ev);
+        $ev_type =~ s{.*::}{};
+        $ev_type = lc $ev_type . "_id";
+        my $ev_id = $ev->id;
+        my $title = $ev->title;
 
         for my $key (ActiveCal->keys($ev_sdate, $ev_edate)) {
             my $cal = $cals{$key};
@@ -283,9 +319,13 @@ sub calendar : Local {
                 $cal = $cals{$today->format("%Y%m")};
             }
             my $dr = overlap($ev->date_range, $cal);
-            my $d1 = $dr->sdate->day;
-            my $d2 = $dr->edate->day;
-            my @places = map { $_->meeting_place } $ev->bookings;
+
+            # this does a get of the meeting place record???
+            # yes, - replace it!!!
+            my @places = sort { $a->disp_ord <=> $b->disp_ord }
+                         map  { $_->meeting_place }
+                         grep { $_->$ev_type == $ev_id }
+                         @bookings;
             #
             # if no meeting place assigned hopefully put it SOMEwhere.
             # to alert the user that it is dangling homeless.
@@ -294,22 +334,34 @@ sub calendar : Local {
                 push @places, $no_where;
             }
             my $im = $cal->image;
+            my $black = $cal->black;
+            my $white = $cal->white;
+
+            # ???do not keep recomputing various things inside this loop
+            # ??? get all meeting places once into a hash where key = meet_id
+            my $details_shown = 0;
             for my $pl (@places) {
                 my ($r, $g, $b) = $pl->color =~ m{(\d+)}g;
                 my $color = $im->colorAllocate($r, $g, $b);
-                my $black = $im->colorAllocate(0, 0, 0);
                     # ??? do the above once for all meeting places
                     # then index into a hash for the color.
-                my $x1 = ($d1-1) * $day_width;
-                # if overlapping from prior month don't indent it
-                if ($d1 == $ev_sdate->day) {
-                    $x1 += $day_width/2;
+
+                my $x1 = ($dr->sdate->day-1) * $day_width;
+                my $x2 = $dr->edate->day * $day_width;
+
+                # shall we indent the left and right side?
+                # one day events are a special case.
+                if ($ev_sdate != $ev_edate) {
+                    # not overlapping from prior month?
+                    if ($dr->sdate == $ev_sdate) {
+                        $x1 += $day_width/2;
+                    }
+                    # not overflowing to the next month?
+                    if ($dr->edate == $ev_edate) {
+                        $x2 -= $day_width/2;
+                    }
                 }
-                my $x2 = $d2 * $day_width;
-                # if overflowing to the next month don't exdent it
-                if ($d2 == $ev_edate->day) {
-                    $x2 -= $day_width/2;
-                }
+
                 my $y1 = $pl->disp_ord * 40;
                 my $y2 = $y1 + 20;
                 my $place_name = $pl->abbr;
@@ -319,51 +371,241 @@ sub calendar : Local {
                 else {
                     $place_name = " ($place_name)";
                 }
-                my $event_name = $ev->name;
-                my $width = length($event_name . $place_name) * 20;
+                my $disp = $event_name . $place_name . $count;
+                # which is longest?
+                my $ld = length($disp);
+                my $lt = length($title);
+                my $width = ($ld > $lt)? $ld: $lt;
+                $disp .= "<br>$title<br>";
+                my $date_span = $ev_sdate->format("%b %e");
+                if ($ev_sdate->month == $ev_edate->month) {
+                    if ($ev_sdate->day != $ev_edate->day) {
+                        $date_span .= "-" . $ev_edate->day;
+                    }
+                }
+                else {
+                    $date_span .= " - " . $ev_edate->format("%b %e");
+                }
+                $disp .= $date_span;
+                # tidy up the date_span for the printable row
+                $date_span =~ s{^([a-z]+)([\d\s-]+)$}{$2}i;
 
-                $im->rectangle($x1, $y1, $x2, $y2, $black);
+                my $printable_row = join '',
+                                    map { "<td>$_</td>" }
+                                    $date_span,
+                                    $event_name,
+                                    $pl->name,
+                                    $ev_count;
+                $printable_row =~ s{(.*)<td>}{$1<td align=right>};
+                $disp =~ s{'}{\\'}g;    # what if name eq Mother's Day?
+
+                my $border = $black;
+                if (ref($ev) =~ m{Rental}) {
+                    $im->setStyle($black, $black, $color, $color);
+                    $border = gdStyled;
+                }
+                elsif (ref($ev) =~ m{Event}) {
+                    $im->setStyle($black, $black, $black, $black, $black,
+                                  $white, $white, $white, $white, $white);
+                    $border = gdStyled;
+                }
+                $im->rectangle($x1, $y1, $x2, $y2, $border);
                 $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $color);
 
-                # print the event and place names in the rectangle, if you can
-                $im->string(gdLargeFont, $x1 + 2, $y1 + 2,
-                            $event_name . $place_name, $black);
+                # print the event name in the rectangle,
+                # as much as will fit and then overflow it
+                $im->string(gdLargeFont, $x1 + 3, $y1 + 2,
+                            $event_name, $black);
 
                 # add to the image map
                 $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n"
-                               .  "    target=_blank\n"
+                               .  "    target=happening\n"
                                .  "    href='" . $ev->link . "'\n"
     . qq!    onmouseover="return overlib('!
-    . $event_name . $place_name
+    . $disp
     . qq!', FGCOLOR, '#FFFFFF', BGCOLOR, '#333333', BORDER, 2,!
-    . qq! TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, $width)"\n !
+    . qq! TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, $width * 20)"\n!
     . qq!    onmouseout="return nd();">\n!;
+                if (! $details_shown) {
+                    $details{$key} .= "<tr>$printable_row</tr>\n";
+                    $details_shown = 1;
+                }
             }       # places the event meets in 
         }       # keys of the calendar month images/maps the event spans
     }       # events
     #
+    # look for abutting events in the same meeting place.
+    # i.e. two bookings for a meeting place - one that ends
+    # and one that starts on the same date.
+    # a single day event does not count as such.
+    #
+    # Mark such with a dotted red line.
+    #
+    my %edges;
+    # ??? is there a class method to get colors?
+    # or is it a per image thing?
+    BOOKING:
+    for my $b (@bookings) {
+        for my $dt ($b->sdate, $b->edate) {
+            my $key = $b->meet_id . '-' . $dt;
+            if (exists $edges{$key} && $b != $edges{$key}) {
+
+                # we now know where to draw
+                my ($meet_id, $ym, $day) = $key =~ m{(\d+)-(\d{6})(\d\d)};
+                my $cal = $cals{$ym};
+                my $im = $cal->image;
+                my $red = $cal->red;
+                my $white = $cal->white;
+
+                my $y1 = ($meeting_places{$meet_id}->disp_ord()) * 40 + 1;
+                my $y2 = $y1 + 20 - 2;
+                my $x = ($day-1) * $day_width + $day_width/2;
+                $im->setThickness(3);
+                $im->setStyle($red, $red, $white, $white);
+                $im->line($x, $y1, $x, $y2, gdStyled);
+                next BOOKING;
+            }
+            $edges{$key} = $b;
+        }
+    }
+    #
+    # generate the jump image and map
+    #
+    my $jump_map = "<map name=jump>\n";
+    my $nyears = $end_year - $start_year + 1;
+
+    # 10 pixels per month, 15 between years
+    my $jim = GD::Image->new($nyears * 135, 21);
+    my $black = $jim->colorAllocate(0, 0, 0);
+    my $white = $jim->colorAllocate(255, 255, 255);
+    my @month_name = qw/
+        Jan Feb Mar
+        Apr May Jun
+        Jul Aug Sep
+        Oct Nov Dec
+    /;
+    $jim->fill(2, 2, $white);
+    for my $yr (1 .. $nyears) {
+        my $x = ($yr-1)*135;
+        $jim->line($x, 20, $x + 120, 20, $black);
+        for my $m (0 .. 12) {
+            my $x1 = $x + $m*10;
+            $jim->line($x1, 20, $x1, 18, $black);
+            next if $m == 12;
+            my $ym = sprintf("%4d%02d", $start_year+$yr-1, $m+1);
+            if ($ym > $max_ym) {
+                $ym = $max_ym;
+            }
+            if ($ym < $min_ym) {
+                $ym = $min_ym;
+            }
+            $jump_map .= "<area shape=rect coords='"
+                      . join(',', $x1, 0, $x1+10, 20)
+                      .  "' href='#$ym'"
+. qq! onmouseover="return overlib('!
+. $month_name[$m]
+#. " " . sprintf("%02d", ($start_year+$yr-1) % 100)
+. qq!', FGCOLOR, '#FFFFFF', BGCOLOR, '#333333', BORDER, 2,!
+. qq! TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, 50)"!
+# 50 => 95 if with year
+. qq! onmouseout="return nd();">\n!;
+        }
+        $jim->string(gdLargeFont, $x + 45, 1,
+                     $start_year+$yr-1, $black);
+    }
+    open my $jpng, ">", "root/static/images/jump.png"
+        or die "no jump png: $!\n";
+    print {$jpng} $jim->png;
+    close $jpng;
+    $jump_map .= "</map>";
+    #
     # generate the HTML output
     #
-    my $content = <<EOH;
-<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
-<div style='margin-left: .5in'>
+# ??? put the stylesheet in a separately editable file???
+    open my $printable, ">", "root/static/calprint.html"
+        or die "cannot create calprint.html\n";
+    print {$printable} <<"EOH";
+<head>
+<link rel="stylesheet" type="text/css" href="cal.css" />
+</head>
+<body>
+<div class=whole>
 EOH
+    my $content = <<"EOH";
+<head>
+<link rel="stylesheet" type="text/css" href="/static/cal.css" />
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+</head>
+<body>
+$jump_map
+<div class=whole>
+<p>
+EOH
+    my $jump_img = $c->uri_for("/static/images/jump.png");
+    my $firstcal = 1;
     for my $ym (sort keys %cals) {
         my $ac = $cals{$ym};
-        $content .= "\n<h2>" . $ac->sdate->format("%B %Y") . "</h2>\n";
+
+        # write the calendar images to be used shortly
+        open my $imf, ">", "root/static/images/$ym.png"
+            or die "not $ym.png: $!\n"; 
+        print {$imf} $ac->image->png;
+        close $imf;
+
+        my $month_name = $ac->sdate->format("%B %Y");
+        # ??? get the font styling into cal.css
+        my $form = ($firstcal)? "<form action='/event/calendar'>": "";
+        $content .= "$form<a name=$ym>\n<span style='font-weight: bold; font-size: 18pt'>"
+                  . $month_name
+                  . "</span><img style='margin-left: 1in' src=$jump_img usemap=#jump>";
+        if ($firstcal) {
+            my $go_form = <<"EOH";
+<span style="margin-left: .5in">Date</span> <input type=text name=which size=10>
+<input type=submit value="Go">
+</form>
+EOH
+            $content .= "<a style='margin-left: .5in'"
+                     .  " href='"
+                     .  $c->uri_for("/static/calprint.html")
+                     .  "'>Printable</a>"
+                     .  $go_form
+                     .  "<p>\n";
+            $firstcal = 0;
+        }
+        $content .= "</span><p>\n";
+        print {$printable} <<"EOH";
+<span style='font-weight: bold; font-size: 18pt'>$month_name</span><p>
+EOH
 
         my $image = $c->uri_for("/static/images/$ym.png");
-        $content .= <<EOH;
+        $content .= <<"EOH";
 <img src='$image' usemap='#$ym'>
 <map name=$ym>
 $imgmaps{$ym}</map>
+<p>
 EOH
-  
-        open my $imf, ">", "root/static/images/$ym.png"; 
-        print {$imf} $ac->image->png;
-        close $imf;
+        print {$printable} "<p><img src='$image'>\n";
+        if ($details{$ym}) {
+            print {$printable} <<"EOH";
+<p>
+<ul>
+<table cellpadding=3>
+<tr>
+<th align=left>Date</th>
+<th align=left>Name</th>
+<th align=left>Place</th>
+<th align=right>Count</th>
+</tr>
+$details{$ym}
+</table>
+</ul>
+EOH
+        }
+        print {$printable} "<p>\n";
     }
-    $content .= "</div>\n";
+    $content .= "</div>\n</body>\n";
+    print {$printable} "</div>\n</body>\n";
+    close $printable;
     $c->res->output($content);
     $c->stash->{template} = "event/calendar.tt2";
 }

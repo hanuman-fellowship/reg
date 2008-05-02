@@ -33,7 +33,14 @@ sub the_date_obj {
 sub name {
     my ($self) = @_;
 
-    return $self->rental->name;
+    my $r = $self->rental;
+    if ($r->coordinator_id) {
+        my $p = $r->coordinator;
+        return $p->last . ", " . $p->first;
+    }
+    else {
+        return $r->name . " - Coordinator";
+    }
 }
 
 sub link {
