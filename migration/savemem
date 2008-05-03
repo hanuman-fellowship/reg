@@ -22,7 +22,34 @@ for my $tbl (qw/ member spons_hist night_hist /) {
     }
     close $mem;
 }
-my $sql = "select p.id, p.last, p.first from people p, member m where m.person_id = p.id";
+=comment
+    last
+    first
+    sanskrit
+    addr1
+    addr2
+    city
+    st_prov
+    zip_post
+    country
+    akey
+    tel_home
+    tel_work
+    tel_cell
+    email
+    sex
+    id
+    id_sps
+    date_updat
+    date_entrd
+    comment
+    e_mailings
+    snail_mailings
+    share_mailings
+    ambiguous       # no longer used
+    inactive
+=cut
+my $sql = "select p.* from people p, member m where m.person_id = p.id";
 my $sth = $dbh->prepare($sql);
 $sth->execute();
 open my $mem, ">", "mem/people.txt" or die "people.txt\n";
