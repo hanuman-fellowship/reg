@@ -46,7 +46,6 @@ for my $tbl (qw/ member spons_hist night_hist /) {
     e_mailings
     snail_mailings
     share_mailings
-    ambiguous       # no longer used
     inactive
 =cut
 my $sql = "select p.* from people p, member m where m.person_id = p.id";
