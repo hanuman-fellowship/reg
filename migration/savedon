@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect("dbi:SQLite:../retreatcenter.db", "sahadev", "JonB")
+    or die "oh no\n";
+
+mkdir "don" unless -d "don";
+my @flds = ();
+
+for my $tbl (qw/ donation project /) {
+    my $sql = "select * from $tbl";
+    my $sth = $dbh->prepare($sql) or die "oops\n";
+    $sth->execute();
+    open my $don, ">", "don/$tbl.txt" or die "$tbl.txt\n";
+    while (@flds = $sth->fetchrow_array()) {
+        for my $f (@flds) {
+            $f = "" unless defined $f;
+        }
+        print {$don} join('|', @flds), "\n";
+    }
+    close $don;
+}
+my $sql = "select p.* distinct from people p, donation d where d.person_id = p.id";
+my $sth = $dbh->prepare($sql);
+$sth->execute();
+open my $don, ">", "don/people.txt" or die "people.txt\n";
+while (@flds = $sth->fetchrow_array()) {
+    for my $f (@flds) {
+        $f = "" unless defined $f;
+    }
+    print {$don} join('|', @flds), "\n";
+}
+close $don;
+undef $sth;
+$dbh->disconnect();

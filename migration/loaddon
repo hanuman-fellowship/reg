@@ -1,0 +1,38 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect("dbi:SQLite:../retreatcenter.db", "sahadev", "JonB")
+    or die "oh no\n";
+
+open my $ppl, "<", "don/people.txt" or die "people.txt\n";
+my $sql = "select last, first from people where id = ?";
+my $sth = $dbh->prepare($sql) or die "oops1\n";
+while (<$ppl>) {
+    chomp;
+    my ($id, $last, $first) = split /\|/, $_, -1;
+    $sth->execute($id);
+    my ($l, $f) = $sth->fetchrow_array();
+    if ($l ne $last || $f ne $first) {
+        print "problem - $id, $first, $last, $f, $l\n";
+    }
+}
+close $ppl;
+undef $sth;
+
+for my $tbl (qw/ donation project /) {
+    $dbh->do("delete from $tbl");
+    my $q = "?,?,?,?,?,?,?,?";
+    $q = "?,?" if $tbl eq 'project';
+    my $sql = "insert into $tbl values ($q)";
+    my $sth = $dbh->prepare($sql) or die "oops2 $tbl\n";
+    open my $don, "<", "don/$tbl.txt" or die "$tbl.txt\n";
+    while (<$don>) {
+        chomp;
+        my @flds = split /\|/, $_, -1;
+        $sth->execute(@flds);
+    }
+    close $don;
+}
+$dbh->disconnect();
