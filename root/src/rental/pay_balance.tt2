@@ -2,7 +2,7 @@
 <form name=form action="/rental/pay_balance_do/[% rental.id %]">
 <table cellpadding=3>
 <tr><th align=right>Name</th><td><a class=larger href="/rental/view/[% rental.id %]">[% rental.name %]</a> - [% rental.sdate_obj.format("%b %y") %]</td></tr>
-<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% amount %]'></td></tr>
+<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% rental.balance %]'></td></tr>
 <tr>
 <th align=right>Type</th>
 <td>

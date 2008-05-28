@@ -1,4 +1,4 @@
-<h2>Rentals - Adding a Coordinator</h2>
+<h2>Rentals - Adding The Coordinator</h2>
 [% rental.name %]<br>
 [% rental.title %]<br>
 <form action="/rental/coordinator_update_do/[% rental.id %]" name=form>

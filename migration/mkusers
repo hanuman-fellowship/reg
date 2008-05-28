@@ -38,6 +38,7 @@ insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Prati
 insert into user values (8, 'web_user', 'webby', 'web@user.com', 'Web', 'User');
 insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky');
 insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan');
+insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName');
 --
 -- the roles - do not muck with the ids!
 --
@@ -69,18 +70,26 @@ insert into user_role values (5, 4);
 insert into user_role values (5, 5);
 insert into user_role values (5, 6);
 insert into user_role values (5, 7);
+-- joe, mary
+insert into user_role values (3, 4);
+insert into user_role values (4, 5);
 -- shyama
-insert into user_role values (6, 7);
+insert into user_role values (6, 3);
 insert into user_role values (6, 5);
+insert into user_role values (6, 7);
 -- soma
-insert into user_role values (9, 7);
+insert into user_role values (9, 3);
 insert into user_role values (9, 5);
+insert into user_role values (9, 7);
 -- pratibha
+insert into user_role values (7, 3);
 insert into user_role values (7, 5);
 insert into user_role values (7, 7);
 -- rosemary
+insert into user_role values (10, 3);
 insert into user_role values (10, 5);
 insert into user_role values (10, 7);
-
-insert into user_role values (3, 4);
-insert into user_role values (4, 5);
+-- richard
+insert into user_role values (11, 3);
+insert into user_role values (11, 5);
+insert into user_role values (11, 7);

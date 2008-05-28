@@ -78,4 +78,11 @@ sub new_deposit_do : Local {
     my ($self, $c) = @_;
 }
 
+sub deposits : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{deposits} = 0;  # ???
+    $c->stash->{template} = "finance/prior_deposits.tt2";
+}
+
 1;

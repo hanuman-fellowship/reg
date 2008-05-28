@@ -1,0 +1,25 @@
+<h2>New Rental Charge</h2>
+
+<a href="/rental/view/[% rental.id %]"><span class=larger>[% rental.name %]</span></a>
+<p>
+<form action="/rental/new_charge_do/[% rental.id %]" name=form>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount size=5></td>
+</tr>
+
+<tr>
+<th align=right>For What</th>
+<td><input type=text name=what size=60></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.amount.focus();</script>

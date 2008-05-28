@@ -4,7 +4,6 @@ package RetreatCenterDB::Program;
 use base qw/DBIx::Class/;
 
 use lib "..";       # so can do perl -c
-use DateRange;
 
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -46,6 +45,7 @@ __PACKAGE__->add_columns(qw/
     reg_end
     prog_start
     prog_end
+    reg_count
     school
     level
 /);
@@ -159,10 +159,6 @@ sub sdate_obj {
 sub edate_obj {
     my ($self) = @_;
     date($self->edate) || "";
-}
-sub date_range {
-    my ($self) = @_;
-    return DateRange->new($self->sdate_obj, $self->edate_obj);
 }
 sub link {
     my ($self) = @_;
@@ -675,7 +671,7 @@ sub image_file {
 }
 sub count {
     my ($self) = @_;
-    return scalar($self->registrations);
+    return scalar($self->reg_count);
 }
 
 1;

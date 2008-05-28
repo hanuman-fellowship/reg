@@ -30,6 +30,7 @@ sub the_date_obj {
     return date($self->the_date);
 }
 
+# the following methods are for deposits.
 sub name {
     my ($self) = @_;
 

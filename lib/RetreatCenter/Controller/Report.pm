@@ -191,8 +191,6 @@ sub create_do : Local {
 # execute the report generating the proper output
 # for the people that match the conditions.
 #
-# type is either empty, 'count' or 'share' - or 'countshare'!.
-#
 sub run : Local {
     my ($self, $c, $id) = @_;
 
@@ -341,7 +339,6 @@ EOS
     }
     if ($count) {
         $c->stash->{message} = "Record count = " . scalar(@people);
-        $c->stash->{count} = $count;
         $c->stash->{share} = $share;
         view($self, $c, $id);
         return;

@@ -26,14 +26,20 @@ create table rental (
     n_own_tent        integer,
     n_own_van         integer,
     n_commuting       integer,
-    total_charge      integer,
+    max               integer,
+
+    balance           integer,  -- for ease of display
+                                -- recomputed after each update
+
     contract_sent     text,     -- date
     sent_by           text,     -- user id
     contract_received text,     -- date
     received_by       text,     -- user id
-    max               integer,
-    start_hour        integer,
-    end_hour          integer,
+    max_confirmed     text,
+
+    start_hour        text,
+    end_hour          text,
+
     coordinator_id    integer  -- person id
 );
 drop table if exists rental_payment;
@@ -42,6 +48,16 @@ create table rental_payment (
     rental_id integer,
     amount integer,
     type text,       -- cc, check, cash, online
+    user_id integer,
+    the_date text,
+    time text
+);
+drop table if exists rental_charge;
+create table rental_charge (
+    id integer primary key autoincrement,
+    rental_id integer,
+    amount integer,
+    what text,
     user_id integer,
     the_date text,
     time text

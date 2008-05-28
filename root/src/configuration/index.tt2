@@ -1,0 +1,25 @@
+<h2>Configuration</h2>
+<ul>
+<a href=/affil/list>Affiliations</a><p>
+[% IF Catalyst.check_user_roles('prog_staff') %]
+    <a href=/canpol>Cancellation Policies</a><p>
+[% END %]
+[% IF Catalyst.check_user_roles('web_designer') %]
+    <a href=/exception/list>Exceptions</a><p>
+[% END %]
+[% IF Catalyst.check_user_roles('prog_staff') %]
+    <a href=/xaccount/list>Extra Accounts</a><p>
+    <a href=/housecost>Housing Costs</a><p>
+    <a href=/leader>Leaders</a><p>
+    <a href=/meetingplace>Meeting Places</a><p>
+[% END %]
+<a href=/project/list>Projects</a><p>
+[% IF Catalyst.check_user_roles('web_designer') %]
+    <a href=/string/list>Strings</a><p>
+    <a href=/template/list>Templates</a><p>
+[% END %]
+[% IF Catalyst.check_user_roles('super_admin') %]
+    <a href=/role/list>Roles</a><p>
+    <a href=/user/list>Users</a><p>
+[% END %]
+</ul>

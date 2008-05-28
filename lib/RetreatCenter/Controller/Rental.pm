@@ -24,13 +24,16 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{check_webready} = "checked";
-    $c->stash->{check_linked}   = "checked";
+    $c->stash->{check_linked}          = "";
+    $c->stash->{check_max_confirmed}   = "";
     $c->stash->{housecost_opts} =
         [ model($c, 'HouseCost')->search(
             undef,
             { order_by => 'name' },
         ) ];
+    $c->stash->{rental} = {     # double faked object
+        housecost => { name => "Default" },
+    };
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "rental/create_edit.tt2";
 }
@@ -41,14 +44,12 @@ sub _get_data {
     my ($c) = @_;
 
     %hash = %{ $c->request->params() };
+    $hash{$_} =~ s{^\s*|\s*$}{}g for keys %hash;
     @mess = ();
-    $hash{url} =~ s{^\s*http://}{};
+    $hash{url} =~ s{^http://}{};
     $hash{email} = trim($hash{email});
     if (empty($hash{name})) {
         push @mess, "Name cannot be blank";
-    }
-    if (empty($hash{title})) {
-        push @mess, "Title cannot be blank";
     }
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate /) {
@@ -79,8 +80,12 @@ sub _get_data {
     if (!@mess) {
         $ndays = date($hash{edate}) - date($hash{sdate});
     }
-    my $hc = model($c, 'HouseCost')->find($hash{housecost_id});
-    my $total = 0;
+    if ($hash{email} && ! valid_email($hash{email})) {
+        push @mess, "Invalid email: $hash{email}";
+    }
+    if (! $hash{max} =~ m{\d+}) {
+        push @mess, "Invalid maximum";
+    }
     for my $f (qw/
         n_single_bath
         n_single
@@ -97,31 +102,19 @@ sub _get_data {
     /) {
         my $s = $f;
         $s =~ s{^n_}{};
-        if (! ($hash{$f} =~ m{^\s*\d*\d*$})) {
+        if (! ($hash{$f} =~ m{^\d*\d*$})) {
             $s =~ s{_}{ };
             $s =~ s{\b(\w)}{\u$1}g;
             $s =~ s{Dble}{Double};
             push @mess, "Illegal quantity for $s: $hash{$f}";
         }
-        else {
-            if ($hc->type eq 'Perday') {
-                $total += $hc->$s * $hash{$f} * $ndays;
-            }
-            else {
-                # Total
-                $total += $hc->$s * $hash{$f};
-            }
-        }
-    }
-    $hash{total_charge} = $total;
-
-    if ($hash{email} && ! valid_email($hash{email})) {
-        push @mess, "Invalid email: $hash{email}";
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "rental/error.tt2";
     }
+    $hash{linked}        = "" unless exists $hash{linked};
+    $hash{max_confirmed} = "" unless exists $hash{max_confirmed};
 }
 
 sub create_do : Local {
@@ -131,26 +124,127 @@ sub create_do : Local {
     return if @mess;
 
     $hash{glnum} = compute_glnum($c, $hash{sdate});
+
+    # can't do $c->user->id for some unknown reason??? so...
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    my $user_id = $u->id;
+
+    if ($hash{contract_sent}) {
+        $hash{sent_by} = $user_id;
+    }
+    if ($hash{contract_received}) {
+        $hash{received_by} = $user_id;
+    }
     my $p = model($c, 'Rental')->create(\%hash);
     my $id = $p->id();
     $c->response->redirect($c->uri_for("/rental/view/$id"));
 }
 
+sub _h24 {
+    my ($s) = @_;
+
+    my ($h) = $s =~ m{(\d+)};
+    if (1 <= $h && $h <= 7) {
+        $h += 12;
+    }
+    $h;
+}
+
+#
+# there are several things to compute for the display
+# update the balance in the record once you're done.
+#
 sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Rental')->find($id);
-    $c->stash->{rental} = $r;
 
     my @payments = $r->payments;
-    my $tot = 0;
+    my $tot_payments = 0;
     for my $p (@payments) {
-        $tot += $p->amount;
+        $tot_payments += $p->amount;
     }
-    $c->stash->{tot_payment}  = $tot;
-    $c->stash->{balance}  = $r->total_charge - $tot;
-    $c->stash->{payments} = \@payments;
-    $c->stash->{template} = "rental/view.tt2";
+
+    my $tot_charges = 0;
+
+    my $tot_other_charges = 0;
+    my @charges = $r->charges;
+    for my $p (@charges) {
+        $tot_other_charges += $p->amount;
+    }
+    $tot_charges += $tot_other_charges;
+
+    my $ndays = date($r->edate) - date($r->sdate);
+    my $hc    = $r->housecost; 
+    my $min_lodging = int(0.75
+                          * $r->max
+                          * $ndays
+                          * $hc->dormitory
+                         );
+    my $actual_lodging = 0;
+    my $tot_people = 0;
+    for my $f (qw/
+        n_single_bath
+        n_single
+        n_double_bath
+        n_dble
+        n_triple
+        n_quad
+        n_dormitory
+        n_economy
+        n_center_tent
+        n_own_tent
+        n_own_van
+        n_commuting
+    /) {
+        my $s = $f;
+        $s =~ s{^n_}{};
+        my $npeople = $r->$f || 0;
+        $tot_people += $npeople;
+        if ($hc->type eq 'Perday') {
+            $actual_lodging += $hc->$s * $npeople * $ndays;
+        }
+        else {
+            # Total
+            $actual_lodging += $hc->$s * $npeople;
+        }
+    }
+    my $lodging = ($min_lodging > $actual_lodging)? $min_lodging
+                :                                   $actual_lodging;
+
+    $tot_charges += $lodging;
+
+    my $extra_hours = 0;
+    my $start = _h24($r->start_hour);
+    my $end   = _h24($r->end_hour);
+    if ($start && $start < 16) {
+        $extra_hours += 16 - $start;
+    }
+    if ($end && 13 < $end) {
+        $extra_hours += $end - 13;
+    }
+    my $extra_hours_charge = $extra_hours * $tot_people * 2;   # 2 in string???
+
+    $tot_charges += $extra_hours_charge;
+
+    $r->update({
+        balance => $tot_charges - $tot_payments,
+    });
+
+    $c->stash->{rental}         = $r;
+    $c->stash->{min_lodging}    = $min_lodging;
+    $c->stash->{actual_lodging} = $actual_lodging;
+    $c->stash->{lodging}        = $lodging;
+    $c->stash->{extra_time}     = $extra_hours_charge;
+    $c->stash->{charges}        = \@charges;
+    $c->stash->{tot_other_charges} = $tot_other_charges;
+    $c->stash->{tot_charges}    = $tot_charges;
+    $c->stash->{payments}       = \@payments;
+    $c->stash->{tot_payments}   = $tot_payments;
+    $c->stash->{template}       = "rental/view.tt2";
 }
 
 sub list : Local {
@@ -233,7 +327,10 @@ sub update : Local {
 
     my $p = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $p;
-    $c->stash->{"check_linked"}    = ($p->linked()   )? "checked": "";
+    $c->stash->{"check_linked"}        = ($p->linked()          )? "checked"
+                                        :                          "";
+    $c->stash->{"check_max_confirmed"} = ($p->max_confirmed()   )? "checked"
+                                        :                          "";
     $c->stash->{housecost_opts} =
         [ model($c, 'HouseCost')->search(
             undef,
@@ -253,24 +350,47 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $p = model($c, 'Rental')->find($id);
-    if ($p->sdate ne $hash{sdate} || $p->edate ne $hash{edate}) {
+    my $r = model($c, 'Rental')->find($id);
+    if ($r->sdate ne $hash{sdate} || $r->edate ne $hash{edate}) {
         # we have changed the dates of the rental
         # and need to invalidate/remove any bookings for meeting spaces.
         model($c, 'Booking')->search({
             rental_id => $id,
         })->delete();
     }
-    $p->update(\%hash);
-    $c->response->redirect($c->uri_for("/rental/view/" . $p->id));
+
+    # can't do $c->user->id for some unknown reason??? so...
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    my $user_id = $u->id;
+    if ($hash{contract_sent} ne $r->contract_sent) {
+        $hash{sent_by} = $user_id;
+    }
+    if ($hash{contract_received} ne $r->contract_received) {
+        $hash{received_by} = $user_id;
+    }
+
+    $r->update(\%hash);
+    $c->response->redirect($c->uri_for("/rental/view/" . $r->id));
 }
 
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    model($c, 'Rental')->search(
-        { id => $id }
-    )->delete();
+    my $r = model($c, 'Rental')->find($id);
+
+    # bookings
+    model($c, 'Booking')->search({
+        rental_id => $id,
+    })->delete();
+
+    # the rental itself
+    model($c, 'Rental')->search({
+        id => $id,
+    })->delete();
+
     $c->response->redirect($c->uri_for('/rental/list'));
 }
 
@@ -282,11 +402,10 @@ sub access_denied : Private {
 }
 
 sub pay_balance : Local {
-    my ($self, $c, $id, $amt) = @_;
+    my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $r;
-    $c->stash->{amount} = $amt;
     $c->stash->{template} = "rental/pay_balance.tt2";
 }
 
@@ -380,6 +499,57 @@ sub coordinator_update_do : Local {
     else {
         $c->stash->{template} = "rental/no_coord.tt2";
     }
+}
+
+sub new_charge : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{rental} = model($c, 'Rental')->find($id);
+    $c->stash->{template} = "rental/new_charge.tt2";
+}
+sub new_charge_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $amount = trim($c->request->params->{amount});
+    my $what   = trim($c->request->params->{what});
+    
+    my @mess = ();
+    if (empty($amount)) {
+        push @mess, "Missing Amount";
+    }
+    if ($amount !~ m{^-?\d+$}) {
+        push @mess, "Illegal Amount: $amount";
+    }
+    if (empty($what)) {
+        push @mess, "Missing What";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "registration/error.tt2";
+        return;
+    }
+
+    my $username = $c->user->username();
+    my ($u) = model($c, 'User')->search({
+        username => $username,
+    });
+    my $user_id = $u->id;
+
+    my $today = today();
+    my $now_date = $today->as_d8();
+    my ($hour, $min) = (localtime())[2, 1];
+    my $now_time = sprintf "%02d:%02d", $hour, $min;
+
+    model($c, 'RentalCharge')->create({
+        rental_id => $id,
+        amount    => $amount,
+        what      => $what,
+
+        user_id   => $user_id,
+        the_date  => $now_date,
+        time      => $now_time,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$id"));
 }
 
 1;

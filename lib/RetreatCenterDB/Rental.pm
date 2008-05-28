@@ -6,7 +6,6 @@ use base qw/DBIx::Class/;
 use Lookup;
 use Util qw/expand/;
 use Date::Simple qw/date today/;
-use DateRange;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
@@ -37,14 +36,19 @@ __PACKAGE__->add_columns(qw/
     n_own_tent
     n_own_van
     n_commuting
-    total_charge
+    max
+
+    balance
+
     contract_sent
     sent_by
     contract_received
     received_by
-    max
+    max_confirmed
+
     start_hour
     end_hour
+
     coordinator_id
 /);
 # Set the primary key for the table
@@ -69,6 +73,11 @@ __PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment',
                       'rental_id',
                       { order_by => "id desc" });
 
+# charges
+__PACKAGE__->has_many(charges => 'RetreatCenterDB::RentalCharge',
+                      'rental_id',
+                      { order_by => "id desc" });
+
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
 
@@ -88,9 +97,13 @@ sub edate_obj {
     my ($self) = @_;
     return date($self->edate) || "";
 }
-sub date_range {
+sub contract_sent_obj {
     my ($self) = @_;
-    return DateRange->new($self->sdate_obj, $self->edate_obj);
+    return date($self->contract_sent) || "";
+}
+sub contract_received_obj {
+    my ($self) = @_;
+    return date($self->contract_received) || "";
 }
 sub link {
     my ($self) = @_;
@@ -188,22 +201,32 @@ sub count {
     }
     $count;
 }
-
-sub minimum {
+#??? Strings for status labels?
+# converted to hex
+sub status {
     my ($self) = @_;
-    
-    my $max = $self->max;
-    my $hc = $self->housecost;
-    return 0 unless $hc;
-    return int(.75
-               *$max
-               *($hc->dormitory)
-               *(date($self->edate) - date($self->sdate)));
+    my ($status, $color);
+    my $fmt = "#%02x%02x%02x";
+    if (! $self->contract_sent) {
+        $status = $lookup{rental_new};
+        $color  = sprintf $fmt, $lookup{rental_new_color} =~ m{\d+}g;
+    }
+    elsif (! ($self->contract_received
+              && scalar($self->payments) > 0
+             )
+    ) {
+        $status = $lookup{rental_sent};
+        $color  = sprintf $fmt, $lookup{rental_sent_color} =~ m{\d+}g;
+    }
+    elsif (! $self->max_confirmed) {
+        $status = $lookup{rental_deposit};
+        $color  = sprintf $fmt, $lookup{rental_deposit_color} =~ m{\d+}g;
+    }
+    else {
+        $status = $lookup{rental_ready};
+        $color  = sprintf $fmt, $lookup{rental_ready_color} =~ m{\d+}g;
+    }
+    "<td align=center bgcolor=$color>$status</td>";
 }
-sub actual_lodging {
-    my ($self) = @_;
-    return 10;
-}
-
 
 1;

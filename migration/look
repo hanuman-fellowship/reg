@@ -1,0 +1,8 @@
+open IN, "new/people.txt";
+while (<IN>) {
+    s{\r?\n}{};
+    if (/([^[:ascii:]])/) {
+        printf "%x: $_\n", ord($1);
+    }
+}
+close IN;

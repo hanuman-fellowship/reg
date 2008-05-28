@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+my $cnt_sql = <<"EOS";
+    update program
+    set reg_count = (select count(*) 
+                     from registration
+                     where program_id = ?
+                    )
+    where id = ?
+EOS
+my $cnt_sth = $dbh->prepare($cnt_sql);
+
+my $sql = "select id from program";
+my $sth = $dbh->prepare($sql);
+$sth->execute();
+while (my ($p_id) = $sth->fetchrow_array()) {
+    $cnt_sth->execute($p_id, $p_id) or die "oops $p_id";
+}
+$sth = undef;
+$cnt_sth = undef;
+$dbh->disconnect();

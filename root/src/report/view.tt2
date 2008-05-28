@@ -8,10 +8,10 @@
 onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a></td>
 <td valign=top>
 <input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share<br>
-<input type=checkbox name=count value=yes [% IF count %]checked[% END %]>Count<br>
 </td>
 <td valign=top>
-<input type=submit value="Run" name=run>
+<input type=submit value="Count"      name=count>
+<input type=submit value="Run Report" name=report>
 </td>
 </tr>
 </table>

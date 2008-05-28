@@ -1,0 +1,41 @@
+May 2 5:00-6:15
+    getting emails from online_done
+    remedying old reg that doesn't copy it into mlist
+May 13 1:25-2:30
+    reorganizing the menu at the top
+        nice!  better!
+May 14 1:35-2:30
+    take A's suggestion re: run/count (check share)
+    rental attributes
+    scratch ambiguous in migration and elsewhere
+May 15 5:10-6:45
+    further refinement on rentals
+May 16 9:00-10:15
+    rental charges, compute balance
+May 23 8:10-9:00
+    a few rental additions
+    tabs in rental dialog
+May 25 11:00-12:40, 1:10-1:30
+    contracts, max confirmed in rentals
+    next - registration count stored
+         - separate max, reg count columns
+         - status column
+         - rental colors in strings
+May 26 11:30-1:00, 1:50-5:20, 8:20-11:00
+    reg_count
+        on loading as well
+    housing cost default for rentals
+    multiple place names
+    tweaking calendar, rental list including status colored
+    population count at bottom of calendar
+    messed around successfully with FULL programs.
+    strings for colors, statuses
+    personal retreats on the calendar
+        made a beginning - complex!
+May 27 8:45-9:00, 10:00-12:30, 3:00-4:30
+    housing query to Jayanti, Adrienne
+    further work on PRs.  works!
+    now I need feedback!
+    various debuggings with calendar
+May 28 1:15-
+    checking in, savemem, getall, loadall, loadmem and fiddlings

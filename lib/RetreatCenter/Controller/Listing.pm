@@ -313,22 +313,6 @@ sub email_check : Local {
     $c->stash->{template} = "listing/bad_email.tt2";
 }
 
-# temp
-sub registrations : Local {
-    my ($self, $c) = @_;
-
-    $c->stash->{registrations} = [ model($c, 'Registration')->all() ];
-    $c->stash->{programs}      = [ model($c, 'Program')->all() ];
-    $c->stash->{bjs} = [
-        model($c, 'Person')->search(
-            {
-                last => { like => 'Bj%'},
-            },
-        )
-    ];
-    $c->stash->{template} = "listing/registrations.tt2";
-}
-
 sub mark_inactive : Local {
     my ($self, $c) = @_;
 

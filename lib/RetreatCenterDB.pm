@@ -20,8 +20,11 @@ __PACKAGE__->load_classes({
         AffilProgram
         Leader
         LeaderProgram
+
         Rental
         RentalPayment
+        RentalCharge
+
         Exception
         String
 

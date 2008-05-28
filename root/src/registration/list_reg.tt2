@@ -52,7 +52,7 @@ function process(e) {
 </head>
 
 <h2>
-Registrations ([% program.registrations_rs.count %]) for [% program.name %] - [% program.sdate_obj.format("%b %y") %]</h2>
+Registrations ([% program.reg_count %]) for [% program.name %] - [% program.sdate_obj.format("%b %y") %]</h2>
 <form name=form id= form action="/registration/list_reg_name/[% program.id %]">
 <a href="/program/view/[% program.id %]">Program</a>
 &nbsp;&nbsp;&nbsp;

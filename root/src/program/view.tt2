@@ -16,8 +16,16 @@
     &nbsp;&nbsp;&nbsp;
 [% END %]
 <a target=_blank href="[% program.web_addr %]">Web</a>
+[% IF full_id %]
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/list_reg_name/[% program.id %]">Registrations ([% program.registrations_rs.count %])</a>
+<a href="/program/view/[% full_id %]">Full</a>
+[% END %]
+[% IF normal_id %]
+&nbsp;&nbsp;&nbsp;
+<a href="/program/view/[% normal_id %]">Normal</a>
+[% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/list_reg_name/[% program.id %]">Registrations ([% program.reg_count %])</a>
 <p>
 
 <table cellpadding=3 border=0>

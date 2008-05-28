@@ -5,6 +5,7 @@ use DBI;
 
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
+$dbh->do("delete from string");
 my $sth = $dbh->prepare("insert into string values (?, ?);");
 
 open my $strs, "<", "strings.txt"

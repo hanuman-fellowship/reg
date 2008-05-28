@@ -41,6 +41,9 @@ loadreg f89
 echo rentals
 loadrent f89
 
+# update the reg_count field in all program records
+regcount
+
 if [ `whoami` = 'jonbjornstad' ]
 then
     cp retreatcenter.db ..

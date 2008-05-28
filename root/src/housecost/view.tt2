@@ -14,7 +14,7 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Name</th>
-<td>[% housecost.name %]</td>
+<td><span class='larger'>[% housecost.name %]</span></td>
 </tr>
 
 <tr>
@@ -86,30 +86,6 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 <td>[% housecost.type %]</td>
 </tr>
 
-<tr>
-<th valign=top align=right>Programs</th>
-<td>
-<table cellpadding=3>
-[% FOR p IN housecost.programs %]
-<tr>
-<td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
-<td>[% p.sdate_obj %]</td>
-</tr>
-[% END %]
-</table>
-</td>
-</tr>
-
-<tr>
-<th valign=top align=right>Rentals</th>
-<td>
-<table cellpadding=3>
-[% FOR r IN housecost.rentals %]
-<tr>
-<td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
-<td>[% r.sdate_obj %]</td>
-</tr>
-[% END %]
 </table>
 </td>
 </tr>

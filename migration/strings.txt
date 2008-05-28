@@ -54,3 +54,14 @@ max_kid_age 12
 kid_disc 50
 ceu_lic_fee 10
 sponsor_nights 12
+rental_new New
+rental_new_color 255,0,0
+rental_sent Sent
+rental_sent_color 255,100,100
+rental_deposit Deposit
+rental_deposit_color 255,255,0
+rental_ready Ready
+rental_ready_color 0,255,0
+event_color 0,0,255
+pr_color 130,150,200
+today_color 130,200,150

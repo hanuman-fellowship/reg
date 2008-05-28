@@ -1,3 +1,62 @@
+<style type="text/css">
+.tabs {
+    background-color: #003;
+    width: 400px;
+    border-right: 1px solid #fff;
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+    border-bottom: 1px solid #fff;
+}
+.tabs a {
+    color: #fff;
+}
+.elements {
+    background-color: #CCD9FF;
+    padding: 10px;
+    width: 650px;
+
+    position: absolute;
+    top: 220px;
+
+    display: none;
+}
+.lodging {
+    background-color: #CCD9FF;
+    padding: 10px;
+    width: 300px;
+
+    position: absolute;
+    top: 220px;
+
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+//<![CDATA[
+
+window.onload = setup;
+
+var cur;
+
+function setup() {
+    cur = document.getElementById('web');
+    cur.style.display = 'block';
+    document.getElementById('misc').style.display = 'none';
+    document.getElementById('lodging').style.display = 'none';
+}
+function show(newItem) {
+    var item = document.getElementById(newItem);
+    if (cur) {
+        cur.style.display = 'none';
+    }
+    item.style.display = 'block';
+    cur = item;
+    return false;
+}
+//]]>
+</script>
 <h2>Rentals</h2>
 <form action=[% "/rental/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0>
@@ -12,26 +71,36 @@
 </tr>
 
 <tr>
-<th align=right><span class="required">*</span> Title</th>
-<td colspan=5><input type=text name=title value="[% rental.title %]" size=60></td>
+<td colspan=4>
+<a href="" onclick="return show('web')">Web</a>
+&nbsp;&nbsp;
+<a href="" onclick="return show('misc')">Misc</a>
+&nbsp;&nbsp;
+<a href="" onclick="return show('lodging')">Lodging</a>
+&nbsp;&nbsp;
+<input type=submit value="Submit">
+</td>
+</tr>
+</table>
+
+<div class="elements" id="web">
+<table>
+
+<tr><td>&nbsp;</td><td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td></tr>
+
+<tr>
+<th align=right>Title</th>
+<td colspan=5><input type=text name=title value="[% rental.title %]" size=35></td>
 </tr>
 
 <tr>
 <th align=right>SubTitle</th>
-<td colspan=5><input type=text name=subtitle value="[% rental.subtitle %]" size=60></td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
-<td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td> 
-</tr>
-
+<td colspan=5><input type=text name=subtitle value="[% rental.subtitle %]" size=35></td>
 </tr>
 
 <tr>
 <th align=right>Web Address</th>
-<td colspan=5><input type=text name=url value="[% rental.url %]" size=50></td>
+<td colspan=5><input type=text name=url value="[% rental.url %]" size=35></td>
 </tr>
 
 <tr>
@@ -41,24 +110,64 @@
 
 <tr>
 <th align=right>Email</th>
-<td><input type=text name=email value="[% rental.email %]" size=40></td>
-<td><input type=submit value="Submit"></td>
+<td><input type=text name=email value="[% rental.email %]" size=35></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Description</th>
-<td colspan=5><textarea name=webdesc cols=60 rows=5>[% rental.webdesc %]</textarea></td>
+<td colspan=5><textarea name=webdesc cols=40 rows=5>[% rental.webdesc %]</textarea></td>
 </td>
 </tr>
+
+</table>
+</div>
+
+<div class="elements" id="misc">
+<table>
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td colspan=5><textarea name=comment cols=60 rows=3>[% rental.comment %]</textarea></td>
-</td>
+<td colspan=5><textarea name=comment cols=40 rows=3>[% rental.comment %]</textarea></td>
 </tr>
 
 <tr>
-<th align=right>Maximum</th>
+<th align=right>GL Number</th>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Start Hour</th>
+<td><input type=text name=start_hour value='[% rental.start_hour %]' size=4></td>
+</tr>
+
+<tr>
+<th align=right>End Hour</th>
+<td><input type=text name=end_hour value='[% rental.end_hour %]' size=4></td>
+</tr>
+
+<tr>
+<th align=right>Contract Sent</th>
+<td><input type=text name=contract_sent value='[% rental.contract_sent_obj %]' size=10></td>
+</tr>
+
+<tr>
+<th align=right>Contract Received</th>
+<td><input type=text name=contract_received value='[% rental.contract_received_obj %]' size=10></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=max_confirmed [% check_max_confirmed %]> Maximum Confirmed</td>
+</tr>
+
+</table>
+</div>
+
+<div class="lodging" id="lodging">
+<table>
+
+<tr>
+<th align=right><span class="required">*</span> Maximum</th>
 <td><input type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
@@ -85,11 +194,9 @@
 <tr><th align=right>Own Tent</th><td><input type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td></tr>
 <tr><th align=right>Own Van</th><td><input type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td></tr>
 <tr><th align=right>Commuting</th><td><input type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td></tr>
-<tr>
-<td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
-</tr>
 
 </table>
+</div>
+
 </form>
 <script type="text/javascript">document.form.name.focus();</script>

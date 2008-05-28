@@ -744,6 +744,13 @@ sub create_do : Local {
         rename "root/static/online/$hash{fname}",
                "root/static/online_done/$hash{fname}";
     }
+
+    # finally, bump the reg_count in the program record
+    model($c, 'Program')->search({
+        id => $hash{program_id},
+    })->update({
+        reg_count => \'reg_count + 1',      # tricky
+    });
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
 
@@ -1084,7 +1091,9 @@ sub send_conf : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $r = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $p = $c->stash->{program} = $r->program;
+    $c->stash->{non_pr} = $p->name !~ m{personal retreat}i;
     my @files = <root/static/online/*>;
     $c->stash->{online} = scalar(@files);
     $c->stash->{template} = "registration/view.tt2";
@@ -1228,6 +1237,13 @@ sub cancel_do : Local {
             # How about who did this??? and what time?
         });
     }
+
+    # decrement the reg_count in the program record
+    my $prog_id   = $reg->program_id;
+    model($c, 'Program')->find($prog_id)->update({
+        reg_count => \'reg_count - 1',
+    });
+
     #
     # send cancellation confirmation letter
     #
@@ -1334,12 +1350,6 @@ sub new_charge_do : Local {
     });
     my $user_id = $u->id;
 
-    # also get the user id of the 'web user'
-    my ($wu) = model($c, 'User')->search({
-        username => 'web_user',
-    });
-    my $web_user_id = $wu->id();
-
     my $today = today();
     my $now_date = $today->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
@@ -1399,7 +1409,6 @@ sub matchreg : Local {
                }
                $pr->registrations;
     Lookup->init($c);
-$c->log->info("count of regs = " . scalar(@regs));
     $c->res->output(_reg_table(\@regs));
 }
 
@@ -1740,7 +1749,11 @@ sub delete : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     my $person_id = $reg->person_id;
+    my $prog_id   = $reg->program_id;
     $reg->delete();
+    model($c, 'Program')->find($prog_id)->update({
+        reg_count => \'reg_count - 1',
+    });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }
 

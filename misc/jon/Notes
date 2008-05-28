@@ -1202,7 +1202,7 @@ new rental attributes
     contract sent date, by whom
     signed contract received, by whom
     deposit paid?
-        i.e. there is a payment for this account
+        i.e. there is at least one payment for this account
         what other charges?
         good to have the charges itemized?
             photocopying, extra food, etc.
@@ -1227,11 +1227,13 @@ new rental attributes
     an associated coordinator - to show when the bank
         deposit is done.  this is just a person_id that
         is typed in precisely - like a partner.
+generate invoice
 breakout spaces for rental/program with hourly use
     rare but does happen - make this a later enhancement
 meeting places have a capacity
     compare it to the rental max and the program registration count
     eliminate a choice if it is too small? yes!
+tabs for diff categories of info rather than one large form
 browser skill - refreshing the screen
     searching within
 another image map for jumping to different months!
@@ -1252,6 +1254,8 @@ read all bookings into core/a hash
 the listing of rentals should have a status field among others
     contract sent, received & signed,
     deposit received, two week out finalization of max, ...
+    a two week out automatic email - Cc'ing rental coordinator
+    new role?  rental admin?
 printable calendar - sans overlib, sans jump bar, with details of events
 keep a count of registrations IN the program record
     much better, yes.  not so hard to maintain.
@@ -1262,7 +1266,7 @@ allocate all the colors you'll need for an image
     and store them in the ActiveCal object.
 how to distinguish the programs from rentals from events?
     in the popup?  visually with the colored rectangle?
-missing affiliations in program???
+Missing affiliations in program???
 Double housing registrations - not showing?
 swap first, last in /person/view/?
 expiration date/time on the calendar pages calprint.html especially
@@ -1280,3 +1284,160 @@ how does MMC compare to the other centers as far
 help file upload mechanism in Test Plans
     index page for help
     a single css file for help.
+Comings and Goings
+Current Population
+optimize the calendar - use meeting places better (we already got them)
+    reg count in program record - no regetting each time
+add an optional maximum attribute for programs
+    if non-zero show it in the calendar
+in popup and on rectangle:
+    Roth R OH 12 (for rental)
+    Upasana SH   (for program)
+heading - Maximum not Count
+have the table of data collapse or not
+    javascript to expand it if checked??
+    may not print properly?
+red border for rentals (with no contract/deposit),
+    other colors for events, programs
+the lapsed member list - mark those w/o email.
+    then click on 'send email' and get their addresses.
+for long and complex forms (program, rental) partition
+    the fields into different tabs - javascript enabled -
+    with one submit button that submits all fields.
+on lapsed member list - sort by what - last name?
+    and soon to lapse
+date/time on apple???
+    membership payments have messed up times.
+loading past registrations - watch out for duplicate names
+    and do some kind of disambiguation
+    Andrea Moore!
+an online app to allow updates to address, phone, etc.
+    login using email address and generated password
+    which we send to them ...
+adding a new coordinator to a rental
+    error message sucks.   offer to add anew?
+at top:
+    People   Listings Configuration Members    Jane Doe Logout Password
+    Programs Rentals  Events        Calendar   Help
+    
+    Members shown only for Member admin else &nbsp;
+    second line only for Program staff
+
+    Listings
+        Reports
+        as before plus financial listings under heading
+    Configuration
+        Affiliations (no edit unless M)
+        Cancellation Policies - Ps (no edit unless P)
+        Exceptions - W
+        Extra Accounts - Ps (no edit unless P)
+        Housing Costs - Ps (no edit unless P)
+        Leaders - Ps (no edit unless P)
+        Meeting Places - Ps (no edit unless P)
+        Projects (no edit unless M)
+        Strings - W
+        Templates - W
+        Roles - S
+        Users - S
+
+        some not shown if not 
+            Super admin, Program admin, Mail admin, Web admin
+borders in calendar:
+    solid black - program
+    rental
+        pink - sent
+        red - no contract sent
+        purple - contract received, no deposit
+        green - deposit made
+when a person cancels a registration should
+    we decrement the registration count in the program record?
+    yes.
+is the number shown in the calendar for rental max
+    the total of the lodging requests or the actual max?
+    currently it is the total not the max.
+do we want to distinguish rental contracts received
+    and deposit paid with different colors?
+    how often do you receive a signed contract without a deposit?
+full programs will have the same meeting space as
+    its non-full counterpart.
+    you never edit the full program attributes
+    it's just a little extension
+    so when adding a meeting space to a program that has
+        a FULL counterpart you need to take the end date
+        of the full program instead of the end date of
+        the non-full.
+        need to w
+Personal Retreats 
+    not figured in population counts
+    how to add?
+    have a fake meeting place for a Personal Retreat
+        so that you'll have a disp_order and a color
+    in a separate step add the Personal Retreats that
+        fall within the range of the calendar
+        when you click on the image map thingy 
+            when any personal retreats are happening it takes
+            you to a screen which shows the personal retreats
+            for that day ONLY.
+Document the "No Where" meeting place
+be careful of programs/rents/events/prs/registrations that
+    cross month boundaries, like full programs and prs that
+    cross season boundaries
+have a color in Strings for Personal Retreats and put them
+    at the bottom of the calendar image.  adjust cal_height so
+    that it accomodates the meeting places.  put the number
+    of prs in the day occupying the entire width.  hovering
+    shows the peoples names.  clicking takes you to
+    a screen showing the pr registrations for that day.
+    where you can click on an individual.  or does overlib
+    provide a way (yes) where you can click on the name
+    in the popup?  that would be better.
+    for decimal rgb colors have a referral web page
+    no need for a color picker - unless you can steal it.
+calendar doc:
+    PRE = (programs, rentals, events)
+    from the current month on to the last scheduled PRE
+    the labels F Sa Su are in Red.
+    today is highlighted - with its own color
+    jump table to go to another month
+
+    meeting place colors, positions - up to 6 will fit
+    assigning meeting places to PRE
+    can click on rectangle to go to view the PRE
+    printable - includes details of PRE
+        including rental stage
+        if multiple meeting places - comma separated
+    Date field at top - to redefine starting place
+    rentals
+        4 statuses - each with own color (for the border), name
+            New     (just entered)
+            Sent    (contract sent)
+            Deposit (signed contract and deposit received)
+            Ready   (maximum confirmed)
+        popup shows 10,6 - maximum and total of housing requests
+            also shows the meeting place abbrev and status
+        printable detail table shows status with background color
+    programs
+        popup shows # of registrations and meeting place abbrev
+            (decremented when deleted/cancelled)
+    personal retreats - shown at bottom
+        has its own color
+        number on that day is shown
+        can click to see names (not hover - okay?)
+        click on names to go to registration
+    population count is at bottom
+    programs with a FULL extension are shown
+        dotted white line where normal ends, extension begins
+        reg count is shown as 15+3
+            meaning 15 regs for normal, 3 regs for FULL program.
+        can go from FULL to normal with links on view program page
+            and when there - to registrations
+    when two PRE abutt a red/white line shows the need
+        for a quick turnover of the meeting place.
+        if the two do not share a meeting place no line is seen.
+    in general what should the popups style be???
+        made prs click since annoying if too many popups?
+        make others clickable instead?
+        force a closing click? or mouseout to close?
+        timed?  what is best?
+strings for rental start and end time and charge
+    for extra hours.

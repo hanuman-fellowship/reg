@@ -7,12 +7,14 @@
 <th align=left>Name</th>
 <th align=left>Category</th>
 <th>Lapse Date</th>
+<th align=left>Email</th>
 </tr>
 [% IF members.0 %]  <!-- why is this needed??? -->
 [% FOREACH m IN members %]
+[% per = m.person %]
 <tr>
-<td><a href="/member/update/[% m.id %]">[% m.person.sanskrit || m.person.first %]</a></td>
-<td align=left>[% m.person.last %], [% m.person.first %]</td>
+<td><a href="/member/update/[% m.id %]">[% per.sanskrit || per.first %]</a></td>
+<td align=left>[% per.last %], [% per.first %]</td>
 <td align=left>[% m.category %]</td>
 <td align=center>
 [% IF    m.category == 'General' %][% m.date_general_obj %]
@@ -20,6 +22,7 @@
 [% ELSE %]                         unknown
 [% END %]
 </td>
+<td>[% per.email %]</td>
 </tr>
 [% END %]
 [% END %]

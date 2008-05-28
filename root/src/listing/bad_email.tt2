@@ -1,6 +1,6 @@
 <h3>Listings</h3>
 <ul>
 [% FOR p IN people %]
-<a href="/person/update/[% p.id %]">[% p.email %]</a><br>
+<a target=_blank href="/person/update/[% p.id %]">[% p.email %]</a><br>
 [% END %]
 </ul>

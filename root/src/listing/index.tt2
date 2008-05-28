@@ -1,14 +1,30 @@
 <h2>Listings</h2>
 <ul>
-
-<h3>Phone Lists</h3>
+<li><a href=/report/list>General Reports</a><p>
+<li>Phone Lists
 <ol>
 <li><a href="/listing/phone_columns">In Columns</a>
 <li><a href="/listing/phone_line">In One Line</a>
 <li><a href="/listing/phone_noaddr">No Address</a>
 </ol>
 <p>
-<h3>Purge Stale Addresses</h3>
+<li><a target=_blank href="/listing/undup">Unduplication File</a>
+<p>
+<li><a href="/listing/email_check">Email Check</a>
+<p>
+<li><a href="/finance/new_deposit">New Deposit</a><p>
+<li><a href="/finance/deposits">Prior Deposits</a><p>
+<li>Period End Summary
+<ul>
+<form action="/finance/month_end">
+<table cellpadding=3>
+<tr><th align=right>Start Date</th><td><input type=text name=sdate size=10></td></tr>
+<tr><th align=right>End Date</th><td><input type=text name=edate size=10></td></tr>
+<tr><td>&nbsp;</td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>
+</ul>
+<li>Purge Stale Addresses
 <ul>
 <form action="[% Catalyst.uri_for('/listing/stale') %]"
       method=POST
@@ -19,12 +35,8 @@
 </form>
 </ul>
 <p>
-<a target=_blank href="/listing/undup">Unduplication File</a>
-<p>
-<a href="/listing/email_check">Email Check</a>
-<p>
 <form action="/listing/mark_inactive">
-Last date of contact before which people should be marked inactive:
+<li>Last date of contact before which people should be marked inactive:
 <input type=text name=date_last size=10 maxlength=10>
 <input type=submit value="Submit">
 </form>

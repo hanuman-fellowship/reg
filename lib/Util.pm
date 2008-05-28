@@ -6,6 +6,7 @@ use base 'Exporter';
 our @EXPORT_OK = qw/
     affil_table
     meetingplace_table
+    places
     role_table
     leader_table
     trim
@@ -145,6 +146,12 @@ sub meetingplace_table {
         $table = "Sorry, there is no place in the inn.";
     }
     $table;
+}
+
+sub places {
+    my ($event) = @_;
+
+    join ", ", map { $_->meeting_place->abbr } $event->bookings;
 }
 
 #

@@ -268,7 +268,22 @@ sub view : Local {
     Lookup->init($c);       # for web_addr if nothing else.
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
 
-    $c->stash->{edit_okay} = ($p->name !~ m{ FULL$});
+    if (my ($full_p) = model($c, 'Program')->search({
+                           name => $p->name . " FULL",
+                       })
+    ) {
+        $c->stash->{full_id} = $full_p->id;
+    }
+    if ($p->name =~ m{^(.*) FULL$}) {
+        
+        my ($normal) = model($c, 'Program')->search({
+                           name => $1,
+                       });
+        $c->stash->{normal_id} = $normal->id;
+    }
+    else {
+        $c->stash->{edit_okay} = 1;
+    }
 
     $c->stash->{template} = "program/view.tt2";
 }
@@ -553,8 +568,15 @@ sub meetingplace_update : Local {
     my ($self, $c, $id) = @_;
 
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
+    my $edate = $p->edate;
+    if (my ($full_p) = model($c, 'Program')->search({
+                           name => $p->name . " FULL",
+                       })
+    ) {
+        $edate = $full_p->edate;
+    }
     $c->stash->{meetingplace_table}
-        = meetingplace_table($c, $p->sdate, $p->edate, $p->bookings());
+        = meetingplace_table($c, $p->sdate, $edate, $p->bookings());
     $c->stash->{template} = "program/meetingplace_update.tt2";
 }
 
@@ -562,6 +584,13 @@ sub meetingplace_update_do : Local {
     my ($self, $c, $id) = @_;
 
     my $p = model($c, 'Program')->find($id);
+    my $edate = $p->edate;
+    if (my ($full_p) = model($c, 'Program')->search({
+                           name => $p->name . " FULL",
+                       })
+    ) {
+        $edate = $full_p->edate;
+    }
     my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
                      keys %{$c->request->params};
     # delete all old bookings and create the new ones.
@@ -575,7 +604,7 @@ sub meetingplace_update_do : Local {
             rental_id  => 0,
             event_id   => 0,
             sdate      => $p->sdate,
-            edate      => $p->edate,
+            edate      => $edate,
         });
     }
     # show the program again - with the updated meeting places
@@ -607,6 +636,11 @@ sub delete : Local {
 
     # exceptions
     $p->exceptions()->delete();
+
+    # any bookings
+    model($c, 'Booking')->search({
+        program_id => $id,
+    })->delete();
 
     # any image
     unlink <root/static/images/p*-$id.jpg>;

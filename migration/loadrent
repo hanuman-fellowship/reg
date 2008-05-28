@@ -26,6 +26,20 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 $dbh->do("delete from rental");
 
+=comment
+rname	YOGAWORKS          *
+sdate	10/05/2007
+edate	10/08/2007
+title	                                                                           
+subtitle	                                                                           
+glnum	71012  
+phone	                               
+website	                                        
+email	                                        
+desc	-
+.
+linked	
+=cut
 my @fields = qw/
     id
     name
@@ -39,29 +53,7 @@ my @fields = qw/
     linked
     phone
     email
-    comment
     housecost_id
-    n_single_bath
-    n_single
-    n_double_bath
-    n_dble
-    n_triple
-    n_quad
-    n_dormitory
-    n_economy
-    n_center_tent
-    n_own_tent
-    n_own_van
-    n_commuting
-    total_charge
-    contract_sent
-    sent_by
-    contract_received
-    received_by
-    max
-    start_hour
-    end_hour
-    coordinator_id
 /;
 my %lookup = qw/
     rname	name
@@ -121,5 +113,6 @@ sub processRental {
     #    $hash{ceu} = 'yes';
     #}
     #print "rental $season - $hash{name}\n";
+    $hash{housecost_id} = 1;        # Default
     $r_sth->execute(@hash{@fields});
 }

@@ -4,7 +4,6 @@ package RetreatCenterDB::Event;
 use base qw/DBIx::Class/;
 
 use Date::Simple qw/date/;
-use DateRange;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('event');
@@ -33,10 +32,6 @@ sub sdate_obj {
 sub edate_obj {
     my ($self) = @_;
     return date($self->edate);
-}
-sub date_range {
-    my ($self) = @_;
-    return DateRange->new($self->sdate_obj, $self->edate_obj);
 }
 sub link {
     my ($self) = @_;

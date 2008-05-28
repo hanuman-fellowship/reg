@@ -1,71 +1,30 @@
-<div id="header">[% PROCESS site/header %]</div>
-
 <div id="content">
 [% IF Catalyst.user_exists %]   <!-- not for login screen -->
 <table cellpadding=4>
 <tr>
 <td><a href=/person/search>People</a></td>
-<td><a href=/affil/list>Affiliations</a></td>
-[% IF Catalyst.check_user_roles('member_admin') %]<td><a href=/member/list>Members</a></td>[% END %]
 <td><a href=/listing>Listings</a></td>
-<td><a href=/report/list>Reports</a></td>
-[% IF Catalyst.check_user_roles('member_admin') %]
-<td><a href=/project/list>Projects</a></td>
-[% ELSE %]
-<td>&nbsp;</td>
-[% END %]
+<td><a href=/configuration>Configuration</a></td>
+[% IF Catalyst.check_user_roles('member_admin') %]<td><a href=/member/list>Members</a></td>[% ELSE %]&nbsp;[% END %]
 <td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
 &nbsp;<a href=/logout>Logout</a></td>
-<td><a href=/user/pass>Change Password</a></td>
+<td><a href=/user/pass>Password</a></td>
 </tr>
 
 [% IF Catalyst.check_user_roles('prog_staff') %]
 <tr>
 <td><a href=/program/list>Programs</a></td>
 <td><a href=/rental/list>Rentals</a></td>
-<td><a href=/leader>Leaders</a></td>
-<td colspan=2><a href=/canpol>Cancellation Policies</a></td>
-<td colspan=2><a href=/housecost>Housing Costs</a></td>
-[% ELSE %]
-<td colspan=6>&nbsp;</td>
-[% END %]
-<td align=right><a href=/static/help/index.html>Help</td>
-</tr>
-<tr>
-[% IF Catalyst.check_user_roles('prog_staff') %]
-<td><a href=/xaccount/list>Extra Accounts</a></td>
 <td><a href=/event/list>Events</a></td>
-<td><a href=/finance>Finance</a></td>
-<td><a href=/meetingplace>Meeting Places</a></td>
 <td><a href=/event/calendar target=calendar>Calendar</a></td>
-[% ELSE %]
-<td rowspan=2>&nbsp</td>
-[% END %]
+<td><a target=_blank href=/static/help/index.html>Help</td>
 [% IF Catalyst.check_user_roles('super_admin') %]
-    <td colspan=2>&nbsp;</td>
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
 [% END %]
 </tr>
-
-[% IF Catalyst.check_user_roles('web_designer') %]
-<tr>
-<td><a href=/template/list>Templates</a></td>
-<td><a href=/exception/list>Exceptions</a></td>
-<td><a href=/string/list>Strings</a></td>
-</tr>
 [% END %]
-
-[% IF Catalyst.check_user_roles('super_admin') %]
-<tr>
-<td><a href=/user/list>Users</a></td>
-<td><a href=/role/list>Roles</a></td>
-</tr>
-[% END %]
-
 </table>
 <p>
-[% END %]
+[% END %]   <!-- if user exists -->
 [% content %]
 </div>
-
-<div id="footer">[% PROCESS site/footer %]</div>

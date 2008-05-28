@@ -10,3 +10,7 @@
     margin-bottom: 3mm;
     margin-top: .1in;
 }
+.pr_links {
+    text-decoration: none;
+    color: black;
+}

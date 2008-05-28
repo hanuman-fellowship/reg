@@ -1,5 +1,71 @@
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+<style type="text/css">
+.tabs {
+    background-color: #003;
+    width: 400px;
+    border-right: 1px solid #fff;
+    padding: 10px;
+    color: #fff;
+    text-align: center;
+    border-bottom: 1px solid #fff;
+}
+.tabs a {
+    color: #fff;
+}
+.elements {
+    background-color: #CCD9FF;
+    padding: 10px;
+    width: 650px;
+
+    position: absolute;
+    top: 250px;
+
+    display: none;
+}
+.lodging {
+    background-color: #CCD9FF;
+    padding: 10px;
+    width: 300px;
+
+    position: absolute;
+    top: 250px;
+
+    display: none;
+}
+</style>
+
+<script type="text/javascript">
+//<![CDATA[
+
+window.onload = setup;
+
+var cur;
+
+function setup() {
+    cur = document.getElementById('web');
+    cur.style.display = 'block';
+    document.getElementById('misc').style.display = 'none';
+    document.getElementById('lodging').style.display = 'none';
+    document.getElementById('finance').style.display = 'none';
+}
+function show(newItem) {
+    var item = document.getElementById(newItem);
+    if (cur) {
+        cur.style.display = 'none';
+    }
+    item.style.display = 'block';
+    cur = item;
+    return false;
+}
+//]]>
+</script>
+<style>
+h3 {
+    margin-bottom: 1mm;
+    color: #338833;
+}
+</style>
 <h2>Rentals</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Add</a>
@@ -12,7 +78,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <a href="/program/publish">Publish<a>
 <p>
 [% END %]
-<table cellpadding=3 border=0>
+<table cellpadding=3>
 
 <tr>
 <th align=right>Name</th>
@@ -24,6 +90,28 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </tr>
 
 <tr>
+<td colspan=4>
+<a href="" onclick="return show('web')">Web</a>
+&nbsp;&nbsp;
+<a href="" onclick="return show('misc')">Misc</a>
+&nbsp;&nbsp;
+<a href="" onclick="return show('lodging')">Lodging</a>
+&nbsp;&nbsp;
+<a href="" onclick="return show('finance')">Finance</a>
+</td>
+</tr>
+
+</table>
+
+<div class="elements" id="web">
+<table cellpadding=3>
+
+<tr>
+<th align=right>Linked</th>
+<td>[% rental.linked %]</td> 
+</tr>
+
+<tr>
 <th align=right>Title</th>
 <td colspan=5>[% rental.title %]</td>
 </tr>
@@ -31,33 +119,6 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <tr>
 <th align=right>SubTitle</th>
 <td colspan=5>[% rental.subtitle %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Meeting Places</th>
-<td align=left valign=top>
-[% FOR b IN rental.bookings %]
-    [% b.meeting_place.name %]<br>
-[% END %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
-    <a href="/rental/meetingplace_update/[% rental.id %]">Update</a>
-[% END %]
-</td>
-<th valign=top align=right>Coordinator</th>
-<td>
-[% IF rental.coordinator_id %]
-[% coord = rental.coordinator %]
-<a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
-[% END %]
-<a href="/rental/coordinator_update/[% rental.id %]">Update</a>
-</td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% rental.glnum %]</td>
-<th align=right>Linked</th>
-<td>[% rental.linked %]</td> 
 </tr>
 
 <tr>
@@ -81,14 +142,72 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </td>
 </tr>
 
+</table>
+</div>
+
+<div class="elements" id="misc">
+<table cellpadding=3>
+<tr>
+<th align=right valign=top>Meeting Places</th>
+<td align=left valign=top>
+[% FOR b IN rental.bookings %]
+    [% b.meeting_place.name %]<br>
+[% END %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
+    <a href="/rental/meetingplace_update/[% rental.id %]">Update</a>
+[% END %]
+</td>
+<th valign=top align=right>Coordinator</th>
+<td valign=top>
+[% IF rental.coordinator_id %]
+[% coord = rental.coordinator %]
+<a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
+[% END %]
+<a href="/rental/coordinator_update/[% rental.id %]">Update</a>
+</td>
+</tr>
+
 <tr>
 <th align=right valign=top>Comment</th>
 <td colspan=5>[% rental.comment_br %]</td>
 </td>
 </tr>
-</table>
 
-<div style="float: left">
+<tr>
+<th align=right>GL Number</th>
+<td>[% rental.glnum %]</td>
+</tr>
+
+
+<tr>
+<th align=right>Start Hour</th>
+<td>[% rental.start_hour %]</td>
+</tr>
+
+<tr>
+<th align=right>End Hour</th>
+<td>[% rental.end_hour %]</td>
+</tr>
+
+<tr>
+<th align=right>Contract Sent</th>
+<td>[% rental.contract_sent_obj %] [% IF rental.contract_sent %]by [% rental.sent_by.username %][% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Contract Received</th>
+<td>[% rental.contract_received_obj %] [% IF rental.contract_received %]by [% rental.received_by.username %][% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Maximum Confirmed</th>
+<td>[% rental.max_confirmed %]</td>
+</tr>
+
+</table>
+</div>
+
+<div class="lodging" id="lodging">
 <table cellpadding=3>
 <tr>
 <th align=right>Maximum</th>
@@ -116,35 +235,91 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </table>
 </div>
 
-<div style="float: left; margin-left: 1in">
+<div class="elements" id="finance">
 <table cellpadding=3>
 
 <tr>
-<th align=right>Minimum Charge</th>
-<td align=right>[% rental.minimum %]</td>
-<th align=right>Actual Lodging Charge</th>
-<td align=right>[% rental.actual_lodging %]</td>
+<th align=right>Minimum Lodging</th>
+<td align=right>[% min_lodging %]</td>
 </tr>
 
 <tr>
-<th align=right>Total Charge</th>
-<td align=right>[% rental.total_charge %]</td>
+<th align=right>Actual Lodging</th>
+<td align=right>[% actual_lodging %]</td>
+</tr>
+
+<tr>
+<th align=right>Lodging</th>
+<td align=right>[% lodging %]</td>
+</tr>
+
+<tr>
+<th align=right>Extra Time Charge</th>
+<td align=right>[% extra_time %]</td>
+</tr>
+
+<tr>
+<th align=right>Other Charges</th>
+<td align=right>[% tot_other_charges %]</td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Total Charges</th>
+<td align=right>[% tot_charges %]</td>
+</tr>
+
+<tr>
+<th align=right>Total Payments</th>
+<td align=right>[% tot_payments %]</td>
 </tr>
 
 <tr>
 <th align=right>Balance</th>
-<td align=right>[% balance %]</td>
-<td><a href="/rental/pay_balance/[% rental.id %]/[% balance %]">Pay It</a></td>
+<td align=right>[% rental.balance %]</td>
+[% IF rental.balance > 0 %]<td><a href="/rental/pay_balance/[% rental.id %]">Pay It</a></td>[% END %]
 </tr>
 
-<tr><td>&nbsp;</td></tr>
-<tr><th align=left>Payments</th></tr>
+</table>
+
+<h3>Other Charges</h3>
+
+<table cellpadding=3>
+<tr>
+<th align=right>Amount</th>
+<th align=left>What</th>
+</tr>
+
+[% FOREACH c IN charges %]
+<tr>
+<td align=right>[% c.amount %]</td>
+<td>[% c.what %]</td>
+<td>
+<a href="javascript:void(0);" onclick="return overlib('#[% c.id %]&nbsp;&nbsp;[% c.the_date_obj %]&nbsp;&nbsp;[% c.time %]&nbsp;&nbsp;[% c.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</td>
+</tr>
+[% END %]
+<tr>
+<td align=right><span style="border-top: solid thin">[% tot_other_charges %]</span></td>
+<td>Total</td>
+</tr>
+<tr>
+<td>&nbsp;</td>
+<td><a href="/rental/new_charge/[% rental.id %]">New Charge</a></td>
+</tr>
+
+</table>
+
+<h3>Payments</h3>
+
+<table cellpadding=3>
 <tr>
 <th align=right>Amount</th>
 <th align=left>Type</th>
 </tr>
 
-[% FOREACH p IN rental.payments %]
+[% FOREACH p IN payments %]
 <tr>
 <td align=right>[% p.amount %]</td>
 <td>[% p.type %]</td>
@@ -154,8 +329,9 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </tr>
 [% END %]
 <tr>
-<td align=right><span style="border-top: solid thin">[% tot_payment %]</span></td>
+<td align=right><span style="border-top: solid thin">[% tot_payments %]</span></td>
 <td>Total</td>
 </tr>
+
 </table>
 </div>

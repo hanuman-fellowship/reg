@@ -9,13 +9,13 @@
 <tr>
 <th align=left>Name</th>
 <th align=left>Start Date</th>
-<th align=left>Title</th>
+<th align=left>Status</th>
 </tr>
 [% FOREACH r IN rentals %]
     <tr>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
-    <td>[% r.sdate_obj %]</a></td>
-    <td>[% r.title %]</a></td>
+    <td>[% r.sdate_obj %]</td>
+    [% r.status %]
     </tr>
 [% END %]
 </table>

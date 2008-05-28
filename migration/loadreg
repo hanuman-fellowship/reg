@@ -13,7 +13,7 @@ $|++;       # unbuffer output
 my $unknown = 1;        # fixed id for unknown user
 
 #
-# program ids for person retreat and hoffman programs
+# program ids for personal retreat and hoffman programs
 #
 my %pr_hoff;
 open my $prh, "<", "pr_hoff_id.txt"
