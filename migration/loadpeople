@@ -38,10 +38,13 @@ my %no_affil;
 
 while (<$people>) {
     next unless /\S/;       # first line
-    s{\r?\n}{};             # DOS chomp
+    s{\r?\n}{}g;            # DOS chomps
     ++$n;
     print "$n\r" if $n % 100 == 0;
     @flds = split /\|/;
+    for my $f (@flds) {
+        $f =~ s{\cM}{}g;        # internal 
+    }
     if (@flds == 24) {
         push @flds, "";
     }
