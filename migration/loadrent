@@ -109,9 +109,9 @@ sub processRental {
         $hash{$f} =~ s{[/\s]}{}g;
     }
     $hash{id} = undef;
-    #if ($hash{name} =~ s{\s*\*\s*$}{}) {
-    #    $hash{ceu} = 'yes';
-    #}
+    if ($hash{name} =~ s{\s*\*\s*$}{}) {
+        $hash{ceu} = 'yes';
+    }
     #print "rental $season - $hash{name}\n";
     $hash{housecost_id} = 1;        # Default
     $r_sth->execute(@hash{@fields});
