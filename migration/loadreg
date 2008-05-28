@@ -280,6 +280,7 @@ sub processReg {
         pmt1date pmt2date date_add
     /) {
         $hash{$f} =~ s{(..)/(..)/(....)}{$3$1$2};
+        $hash{$f} =~ s{^4}{2};      # 4005 => 2005 somehow bogus dates got there
         $hash{$f} = "" if $hash{$f} eq "/  /";
     }
     $hash{cancelled} = "";
