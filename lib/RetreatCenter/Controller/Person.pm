@@ -288,7 +288,6 @@ sub create : Local {
     $c->stash->{e_mailings}     = "checked";
     $c->stash->{snail_mailings} = "checked";
     $c->stash->{share_mailings} = "checked";
-    $c->stash->{ambiguous}   = "";
     $c->stash->{affil_table} = affil_table($c);
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "person/create_edit.tt2";
@@ -308,7 +307,6 @@ sub _get_data {
         e_mailings
         snail_mailings
         share_mailings
-        ambiguous
     /) {
         $hash{$f} = "" unless exists $hash{$f};
     }
@@ -390,12 +388,7 @@ sub _get_dups {
     );
     if (@dups) {
         # we have at least two duplicate names.
-        # make sure they're marked ambiguous.
-        for my $dup (@dups, $p) {
-            $dup->update({
-                ambiguous => "yes",
-            });
-        }
+        # ??? what to do???
     }
     my $Clast  = substr($last, 0, 1);
     my $Cfirst = substr($first, 0, 1);
@@ -454,7 +447,6 @@ sub update : Local {
     $c->stash->{e_mailings}     = (    $p->e_mailings())? "checked": "";
     $c->stash->{snail_mailings} = ($p->snail_mailings())? "checked": "";
     $c->stash->{share_mailings} = ($p->share_mailings())? "checked": "";
-    $c->stash->{ambiguous}   = ($p->ambiguous())? "checked": "";
     $c->stash->{affil_table} = affil_table($c, $p->affils());
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "person/create_edit.tt2";

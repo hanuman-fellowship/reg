@@ -31,7 +31,6 @@ __PACKAGE__->add_columns(qw/
     e_mailings
     snail_mailings
     share_mailings
-    ambiguous
     inactive
 /);
 __PACKAGE__->set_primary_key(qw/id/);

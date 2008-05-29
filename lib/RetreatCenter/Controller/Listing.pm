@@ -190,39 +190,27 @@ sub undup : Local {
     # need both addresses as well???
     #
     my $sth = Person->search_start(<<"EOS");
-select last, first, id, ambiguous
+select last, first, id
   from people
 order by last, first
 EOS
-    my ($prev_last, $prev_first, $prev_id, $prev_amb) = ("", "", 0);
-    my ($last, $first, $id, $amb);
+    my ($prev_last, $prev_first, $prev_id) = ("", "", 0);
+    my ($last, $first, $id);
     my $p;
     print {$out} "Same Last, First Names\n";
     print {$out} "======================\n";
-    my %dups;
     while ($p = Person->search_next($sth)) {
         $last  = $p->{last};
         $first = $p->{first};
         $id    = $p->{id};
-        $amb   = $p->{ambiguous};
         if ($last eq $prev_last && $first eq $prev_first) {
             print {$out} "<a target=other href='/person/undup/$id-$prev_id'>$last, $first</a>\n";    
-            # both people should be marked as 'ambiguous'
-            $dups{$id}      = 1 if ! $amb;
-            $dups{$prev_id} = 1 if ! $prev_amb;
         }
         $prev_last  = $last;
         $prev_first = $first;
         $prev_id    = $id;
-        $prev_amb   = $amb;
     }
     $sth->finish();
-    # why is this commented out???
-    #for my $id (keys %dups) {
-    #    model($c, 'Person')->find($id)->update({
-    #        ambiguous => 'yes',
-    #    });
-    #}
     #
     # address dup
     #

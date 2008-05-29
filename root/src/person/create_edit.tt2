@@ -71,10 +71,6 @@
 </table>
 </tr>
 
-    <tr>
-        <th align=right>Ambiguous</th>
-        <td><input tabindex=15 type=checkbox name=ambiguous value='yes' [% ambiguous %]></td>
-    </tr>
 </table>
 <div style="float: left">
 <p>
