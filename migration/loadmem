@@ -7,19 +7,24 @@ my $dbh = DBI->connect("dbi:SQLite:../retreatcenter.db", "sahadev", "JonB")
     or die "oh no\n";
 
 open my $ppl, "<", "mem/people.txt" or die "people.txt\n";
-my $sql = "select last, first from people where id = ?";
+my $sql = "select last, first, addr1, date_updat from people where id = ?";
 my $sth = $dbh->prepare($sql) or die "oops1\n";
 while (<$ppl>) {
     chomp;
-    my ($id, $last, $first) = split /\|/, $_, -1;
+    my ($id, $last, $first, $addr1, $upd) = (split /\|/, $_, -1)[15, 0, 1, 3, 18];
     $sth->execute($id);
-    my ($l, $f) = $sth->fetchrow_array();
-    if ($l ne $last || $f ne $first) {
-        print "problem - $id, $first, $last, $f, $l\n";
+    my ($l, $f, $a, $up) = $sth->fetchrow_array();
+    if ($l ne $last || $f ne $first || $a ne $addr1) {
+        print "$id\tnreg\t$first, $last, $addr1, $upd\n\tmlist\t$f, $l, $a, $up\n";
     }
 }
 close $ppl;
 undef $sth;
+print "Continue? ";
+my $ans = <STDIN>;
+if (! $ans =~ m{^y}i) {
+    exit;
+}
 
 for my $tbl (qw/ member spons_hist night_hist /) {
     $dbh->do("delete from $tbl");
