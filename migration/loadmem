@@ -3,19 +3,29 @@ use strict;
 use warnings;
 use DBI;
 
-my $dbh = DBI->connect("dbi:SQLite:../retreatcenter.db", "sahadev", "JonB")
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 
 open my $ppl, "<", "mem/people.txt" or die "people.txt\n";
-my $sql = "select last, first, addr1, date_updat from people where id = ?";
+my $sql = "select last, first, addr1, addr2, city, st_prov, zip_post, date_updat from people where id = ?";
 my $sth = $dbh->prepare($sql) or die "oops1\n";
 while (<$ppl>) {
     chomp;
-    my ($id, $last, $first, $addr1, $upd) = (split /\|/, $_, -1)[15, 0, 1, 3, 18];
+    my ($id, $last, $first, $addr1, $addr2, $city, $state, $zip, $upd) = (split /\|/, $_, -1)[15, 0, 1, 3 .. 7, 18];
     $sth->execute($id);
-    my ($l, $f, $a, $up) = $sth->fetchrow_array();
-    if ($l ne $last || $f ne $first || $a ne $addr1) {
-        print "$id\tnreg\t$first, $last, $addr1, $upd\n\tmlist\t$f, $l, $a, $up\n";
+    my ($l, $f, $a1, $a2, $c, $s, $z, $up) = $sth->fetchrow_array();
+    if (   $l  ne $last
+        || $f  ne $first
+        || $a1 ne $addr1
+        || $a2 ne $addr2
+        || $c  ne $city
+        || $s  ne $state
+        || $z  ne $zip
+    ) {
+        print "$id\tnreg\t$first, $last, $addr1, $addr2, ",
+              "$city, $state, $zip, $upd\n",
+              "\tmlist\t$f, $l, $a1, $a2, $c, ",
+              "$s, $z, $up\n";
     }
 }
 close $ppl;
@@ -25,6 +35,7 @@ my $ans = <STDIN>;
 if (! $ans =~ m{^y}i) {
     exit;
 }
+exit;
 
 for my $tbl (qw/ member spons_hist night_hist /) {
     $dbh->do("delete from $tbl");
