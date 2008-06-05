@@ -22,7 +22,7 @@ close $ppl;
 undef $sth;
 print "Continue? ";
 my $ans = <STDIN>;
-if (! $ans =~ m{^y}i) {
+if ($ans !~ m{^y}i) {
     exit;
 }
 
