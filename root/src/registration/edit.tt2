@@ -5,7 +5,7 @@
 <tr>
 <th align=right>Person</th>
 <td><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a></td>
-<td>From <input type=text name=date_start size=10 maxlength=10 value="[% reg.date_start_obj %]"></td><td>to <input type=text name=date_end size=10 maxlength=10 value="[% reg.date_end_obj %]"></td>
+<td>From <input type=text name=date_start size=10 maxlength=10 value="[% IF reg.date_start != program.sdate %][% reg.date_start_obj %][% END %]"></td><td>to <input type=text name=date_end size=10 maxlength=10 value="[% IF reg.date_end != program.edate %][% reg.date_end_obj %][% END %]"></td>
 </tr>
 
 <tr>

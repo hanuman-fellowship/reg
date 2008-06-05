@@ -5,6 +5,7 @@
 <tr>
 <th align=left>Abbr</th>
 <th align=left>Name</th>
+<th align=right>Max</th>
 <th align=right>Order</th>
 <th align=left>Color</th>
 </tr>
@@ -12,6 +13,7 @@
     <tr>
     <td><a href="/meetingplace/view/[% mp.id %]">[% mp.abbr %]</a></td>
     <td><a href="/meetingplace/view/[% mp.id %]">[% mp.name %]</a></td>
+    <td align=right>[% mp.max %]</td>
     <td align=right>[% mp.disp_ord %]</td>
     <td>[% mp.color %]</td>
     </tr>

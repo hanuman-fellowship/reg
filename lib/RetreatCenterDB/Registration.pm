@@ -32,6 +32,8 @@ __PACKAGE__->add_columns(qw/
     balance
     date_start
     date_end
+    early
+    late
     ceu_license
     letter_sent
     status

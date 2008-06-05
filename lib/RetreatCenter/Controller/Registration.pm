@@ -28,6 +28,30 @@ sub index : Private {
     $c->forward('program/list');    # ???
 }
 
+#
+# %dates may have date_start and date_end.
+# set early and late accordingly.
+# if no date_start or date_end insert them 
+# as the program start/end dates.
+#
+sub transform_dates {
+    my ($pr, %dates) = @_;
+    
+    if ($dates{date_start}) {
+        $dates{early} = 'yes';
+    }
+    else {
+        $dates{date_start} = $pr->sdate;
+    }
+    if ($dates{date_end}) {
+        $dates{late} = 'yes';
+    }
+    else {
+        $dates{date_end} = $pr->edate;
+    }
+    %dates;
+}
+
 sub list_online : Local {
     my ($self, $c) = @_;
 
@@ -137,9 +161,7 @@ sub list_reg_name : Local {
     if (@regs == 1) {
         my $r = $regs[0];
         my $pr = $r->program;
-        my $dt = $r->date_start || $pr->sdate;
-        # is this precisely what we want or what?!! :)
-        if ($dt <= today()->as_d8()
+        if ($r->date_start <= today()->as_d8()
             && $r->balance > 0
             && ! $r->cancelled
         ) {
@@ -384,11 +406,23 @@ EOC
     $c->stash->{deposit} = int($hash{amount});
     $c->stash->{deposit_type} = "Online";
 
+    #
+    # date_start and date_end are always present in the table record.
+    # they are the program start/end dates unless overridden.
+    # in the stash and on the screen they are blank if they
+    # are the same as the program start/end dates.
+    #
+    # early and late are set accordingly when writing to
+    # the database.
+    #
+
     # sdate/edate (in the hash from the online file)
     # are normally empty - except for personal retreats
-    if ($hash{sdate} || $hash{edate}) {
-        $c->stash->{date_start} = date($hash{sdate} || $pr->sdate);
-        $c->stash->{date_end  } = date($hash{edate} || $pr->edate);
+    if ($hash{sdate}) {
+        $c->stash->{date_start} = date($hash{sdate});
+    }
+    if ($hash{edate}) {
+        $c->stash->{date_end} = date($hash{edate});
     }
 
     # put the license # in the hash, we'll set ceu = 1 later.
@@ -660,6 +694,8 @@ sub create_do : Local {
         $c->stash->{template} = "registration/error.tt2";
         return;
     }
+    my $pr = model($c, 'Program')->find($hash{program_id});
+    @dates = transform_dates($pr, @dates);
     my $reg = model($c, 'Registration')->create({
         person_id     => $hash{person_id},
         program_id    => $hash{program_id},
@@ -746,9 +782,7 @@ sub create_do : Local {
     }
 
     # finally, bump the reg_count in the program record
-    model($c, 'Program')->search({
-        id => $hash{program_id},
-    })->update({
+    $pr->update({
         reg_count => \'reg_count + 1',      # tricky
     });
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
@@ -1650,6 +1684,8 @@ sub update_do : Local {
     })->delete();
 
     my $reg = model($c, 'Registration')->find($id);
+    my $pr  = model($c, 'Program'     )->find($reg->program_id);
+
     my @who_now = get_now($c, $id);
 
     my $mem = $reg->person->member;
@@ -1684,6 +1720,7 @@ sub update_do : Local {
         });
     }
 
+    @dates = transform_dates($pr, @dates);
     $reg->update({
         ceu_license   => $hash{ceu_license},
         referral      => $hash{referral},

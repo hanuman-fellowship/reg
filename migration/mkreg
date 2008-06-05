@@ -26,6 +26,8 @@ create table registration (
 
     date_start text,    -- if different from program start
     date_end text,      -- if different from program end
+    early text,
+    late text,
 
     ceu_license text,
     letter_sent text,

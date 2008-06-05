@@ -50,6 +50,7 @@ __PACKAGE__->add_columns(qw/
     end_hour
 
     coordinator_id
+    lunches
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);

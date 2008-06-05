@@ -19,6 +19,11 @@ onclick="return confirm('Okay to Delete [% meetingplace.name %]?');">Delete</a>
 </tr>
 
 <tr>
+<th align=right>Max</th>
+<td align=right>[% meetingplace.max %]</td>
+</tr>
+
+<tr>
 <th align=right>Display Order</th>
 <td>[% meetingplace.disp_ord %]</td>
 </tr>

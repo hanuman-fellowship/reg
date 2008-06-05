@@ -65,3 +65,5 @@ rental_ready_color 0,255,0
 event_color 0,0,255
 pr_color 130,150,200
 today_color 130,200,150
+extra_hours_charge 2
+lunch_charge 9

@@ -65,7 +65,7 @@ values
 ";
 my $who_ins_sth = $dbh->prepare($who_ins_sql) or die "no who_ins_sql\n";
 
-my $p_sql = "select name, sdate from program where id = ?";
+my $p_sql = "select name, sdate, edate from program where id = ?";
 my $p_sth = $dbh->prepare($p_sql) or die "no p_sql\n";
 
 my $per_sql = "select id from people where first = ? and last = ?";
@@ -119,18 +119,18 @@ where id = ?
 ";
 my $upd_per_sth = $dbh->prepare($upd_per_sql) or die "no upd_per_sql\n";
 
-my $insreg_sql = "insert into registration
-(id, program_id, person_id, comment, confnote, date_start, date_end,
+my $ins_reg_sql = "insert into registration
+(id, program_id, person_id, comment, confnote, date_start, date_end, early, late,
  referral, adsource, kids, h_type, h_name, carpool, hascar,
  date_postmark, letter_sent, ceu_license, arrived, cancelled,
  deposit, balance, time_postmark
 ) 
 values
-(?, ?, ?, ?, ?, ?, ?,
+(?, ?, ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?,
  ?, ?, ?)";
-my $ins_reg_sth = $dbh->prepare($insreg_sql) or die "no insreg_sql\n";
+my $ins_reg_sth = $dbh->prepare($ins_reg_sql) or die "no ins_reg_sql\n";
 
 my %type_map = qw/
     O Online
@@ -291,7 +291,7 @@ sub processReg {
         $hash{$f} =~ s{\D}{}g;
         $hash{$f} =~ s{(...)(...)(....)}{$1-$2-$3}g;
     }
-    my ($name, $sdate);
+    my ($name, $sdate, $edate);
     if ($hash{program_id}) {
         my $pid = $hash{program_id};
         if ($pid == 69 || $pid == 886) {
@@ -305,7 +305,7 @@ sub processReg {
             }
         }
         $p_sth->execute($hash{program_id});
-        unless (($name, $sdate) = $p_sth->fetchrow_array()) {
+        unless (($name, $sdate, $edate) = $p_sth->fetchrow_array()) {
             die "*** missing program id: '$hash{program_id}'\n";
         }
     }
@@ -371,6 +371,23 @@ sub processReg {
         );
     }
     #print "ins reg $hash{first} $hash{last} $hash{program_id}\n";
+    #
+    # set date_start, date_end to program dates
+    # if not set already.   set early, late appropriately.
+    #
+    $hash{early} = $hash{late} = "";
+    if (! $hash{date_start}) {
+        $hash{date_start} = $sdate;
+    }
+    if ($hash{date_start} ne $sdate) {
+        $hash{early} = 'yes';
+    }
+    if (! $hash{date_end}) {
+        $hash{date_end} = $edate;
+    }
+    if ($hash{date_end} ne $edate) {
+        $hash{late} = 'yes';
+    }
     $ins_reg_sth->execute($reg_id,
                           $hash{program_id},
                           $person_id,
@@ -378,6 +395,8 @@ sub processReg {
                           $hash{confnote},
                           $hash{date_start},
                           $hash{date_end},
+                          $hash{early},
+                          $hash{late},
                           $hash{referral},
                           $hash{adsource},
                           $hash{kids},

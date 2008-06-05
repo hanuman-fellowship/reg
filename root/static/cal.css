@@ -1,14 +1,25 @@
 .whole {
-    margin-left: .5in;
+    margin-left: .3in;
 }
-/* for Month Name - unused */
+.jmptable {
+    margin-left: .3in;
+}
+.details {
+    font-family: Verdana;
+    margin-left: .3in;
+    display: inline;
+}
+.go {
+    font-size: 18pt;
+}
+.datefld {
+    font-family: Verdana;
+    margin-left: .3in;
+}
 .hdr {
-    display: block;
     font-weight: bold;
     font-size: 18pt;
-    margin-right: 1.5in;
-    margin-bottom: 3mm;
-    margin-top: .1in;
+    font-family: Verdana;
 }
 .pr_links {
     text-decoration: none;

@@ -25,6 +25,7 @@ our @EXPORT_OK = qw/
     digits
     model
     email_letter
+    lunch_table
 /;
 
 use POSIX   qw/ceil/;
@@ -106,10 +107,14 @@ sub role_table {
 # which meeting places are available in the
 # date range sdate-edate?
 #
+# and worry about the max of rentals as well.
+#
 # note: PRE = Program/Rental/Event
 #
 sub meetingplace_table {
-    my ($c, $sdate, $edate, @cur_bookings) = @_;
+    my ($c, $max, $sdate, $edate, @cur_bookings) = @_;
+
+    $max ||= 0;
 
     # the other arguments are Bookings (which point to a
     # meeting place currently assigned to this PRE in question)
@@ -118,7 +123,7 @@ sub meetingplace_table {
     my $table = "";
     MEETING_PLACE:
     for my $mp (model($c, 'MeetingPlace')->search(
-                    undef,
+                    { max => { '>=', $max } },
                     { order_by => 'name' }
                 )
     ) {
@@ -515,6 +520,64 @@ sub email_letter {
         # what to do about this???
         $c->log->info('mail error: ' . $mail_sender->error);
     }
+}
+
+sub lunch_table {
+    my ($view, $lunches, $sdate, $edate) = @_;
+
+    my @lunches = split //, $lunches;
+    my $s = <<"EOH";
+<table border=1 cellpadding=5 cellspacing=2>
+<tr>
+<td align=center>Sun</td>
+<td align=center>Mon</td>
+<td align=center>Tue</td>
+<td align=center>Wed</td>
+<td align=center>Thu</td>
+<td align=center>Fri</td>
+<td align=center>Sat</td>
+</tr>
+<tr>
+EOH
+    my $sdow = $sdate->day_of_week();
+    my $ndays = $edate - $sdate + 1;
+    my $dow = 0;
+    while ($dow < $sdow) {
+        $s .= "<td></td>";
+        ++$dow;
+    }
+    my $d = 0;
+    my $cur = $sdate;
+    while ($d < $ndays) {
+        my $lunch = $lunches[$d];
+        my $color = ($lunch && $view)? '#9F9': '#FFF';
+        $s .= "<td align=left bgcolor=$color>" . $cur->day;
+        if ($view) {
+            my $w = $lunch? '': 'w';
+            $s .= "<img src='/static/images/${w}checked.gif'>";
+        }
+        else {
+            $s .= " <input type=checkbox name=d$d"
+                . ($lunch? " checked": "")
+                . ">";
+        }
+        $s .= "</td>";
+        ++$cur;
+        ++$dow;
+        ++$d;
+        if ($dow == 7) {
+            $s .= "</tr>\n";
+            $dow = 0;
+        }
+    }
+    if ($dow > 0) {
+        while ($dow <= 6) {
+            $s .= "<td></td>";
+            ++$dow;
+        }
+    }
+    $s .= "</tr></table>\n";
+    $s;
 }
 
 1;

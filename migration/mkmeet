@@ -3,6 +3,7 @@ create table meeting_place (
     id          integer primary key autoincrement,
     abbr text,
     name text,
+    max  integer,
     disp_ord integer,
     color text
 );

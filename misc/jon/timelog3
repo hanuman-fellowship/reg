@@ -43,5 +43,19 @@ May 28 1:15-3:15, 4:30-7:00, 10:20-2:00
     disabling edits, adds in newreg - should have
     done this earlier!!!
     lots of trouble!
-May 29 10:45-
+May 29 10:45-12:30, 2:30-4:40
     finishing up - hope it is okay.
+    next - mayer template, editing of stupid rental/programs
+    and then test calendar! add reg count to program list.
+Jun 1 12:00-1:20
+    messing with javascript in the rental view/update.
+    boldening the current tab.
+Jun 2 5:30-7:00, 9:00-1:40
+    better javascript tab panels - learned more things to apply
+    next - editing
+    lunches - nice!
+Jun 3 9:00-10:30, 12:10-2:00, 5:20-6:15, 10:10-12:05
+    planning, debugging, database design
+    registration columns date_start, date_end always set
+        but not displayed if same as program [se]date.
+        population counts counts are currently wrong.

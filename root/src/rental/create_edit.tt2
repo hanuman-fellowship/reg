@@ -1,60 +1,75 @@
 <style type="text/css">
-.tabs {
-    background-color: #003;
-    width: 400px;
-    border-right: 1px solid #fff;
-    padding: 10px;
-    color: #fff;
+.head {
+    color: green;
+    font-weight: bold;
+    font-size: 14pt;
+    margin-top: 2mm;
+}
+.stuff {
+    margin-left: 10mm;
+}
+.tab { 
+    font-family: "Lucida Grande";
+    font-size: 15px;
+    width: 120px;
+    white-space: nowrap;
     text-align: center;
-    border-bottom: 1px solid #fff;
+    border-style: solid;
+    border-color: black;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
 }
-.tabs a {
-    color: #fff;
+.tabhold { 
+    background-color: white;
+    color: black;
 }
-.elements {
-    background-color: #CCD9FF;
-    padding: 10px;
-    width: 650px;
-
-    position: absolute;
-    top: 220px;
-
-    display: none;
+.tabfocus { 
+    background-color: black;
+    color: white;
 }
-.lodging {
-    background-color: #CCD9FF;
-    padding: 10px;
-    width: 300px;
-
-    position: absolute;
-    top: 220px;
-
-    display: none;
+.tabcontent { 
+    font-family: sans-serif; 
+    font-size: 14px;
+    width: 500px;
+    /* height: 275px; */
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 </style>
 
 <script type="text/javascript">
 //<![CDATA[
 
-window.onload = setup;
+var ntabs = 3;
 
-var cur;
+function tabs(t) {
+    for (var n = 1; n <= ntabs; n++) {
+        if (n == t) {
+            document.getElementById('tab'+n+'focus').style.display = 'block';
+            document.getElementById('tab'+n+'ready').style.display = 'none';
+            document.getElementById('content'+n).style.display     = 'block';
+        }
+        else {
+            document.getElementById('tab'+n+'focus').style.display = 'none';
+            document.getElementById('tab'+n+'ready').style.display = 'block';
+            document.getElementById('content'+n).style.display     = 'none';
+        }
+   }
+   document.getElementById('hid').innerHTML = 
+       "<input type=hidden name=section value=" + t + ">";
+    
+}
 
-function setup() {
-    cur = document.getElementById('web');
-    cur.style.display = 'block';
-    document.getElementById('misc').style.display = 'none';
-    document.getElementById('lodging').style.display = 'none';
-}
-function show(newItem) {
-    var item = document.getElementById(newItem);
-    if (cur) {
-        cur.style.display = 'none';
-    }
-    item.style.display = 'block';
-    cur = item;
-    return false;
-}
 //]]>
 </script>
 <h2>Rentals</h2>
@@ -70,37 +85,77 @@ function show(newItem) {
 <td><input type=text name=edate value="[% edate %]" size=10></td>
 </tr>
 
-<tr>
-<td colspan=4>
-<a href="" onclick="return show('web')">Web</a>
-&nbsp;&nbsp;
-<a href="" onclick="return show('misc')">Misc</a>
-&nbsp;&nbsp;
-<a href="" onclick="return show('lodging')">Lodging</a>
-&nbsp;&nbsp;
-<input type=submit value="Submit">
-</td>
-</tr>
 </table>
 
-<div class="elements" id="web">
+<p>
+
+<table cellpadding=0 cellspacing=0>
+<tr>
+<td>
+<div id="tab1focus" class="tab tabfocus" style="display: none">
+Web
+</div>
+<span onclick="tabs(1); edit('web')">
+<div id="tab1ready" class="tab tabhold" style="display: none">
+Web
+</div>
+</span>
+</td>
+
+<td>
+<div id="tab2focus" class="tab tabfocus" style="display: none">
+Misc
+</div>
+<span onclick="tabs(2); edit('misc')">
+<div id="tab2ready" class="tab tabhold" style="display: none">
+Misc
+</div>
+</span>
+</td>
+
+<td>
+<div id="tab3focus" class="tab tabfocus" style="display: none">
+Lodging
+</div>
+<span onclick="tabs(3); edit('lodging')">
+<div id="tab3ready" class="tab tabhold" style="display: none">
+Lodging
+</div>
+</span>
+</td>
+
+<td style="width: 120px" align=center>
+<span id=hid><input type=hidden name=section value=[% section %]></span>
+<input type=submit value="Submit">
+</td>
+
+</tr>
+
+<tr>
+<td colspan=4>
+
+<div id="content1" class="tabcontent" style="display: none">
+
 <table>
 
-<tr><td>&nbsp;</td><td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td></tr>
+<tr>
+<td width=120></td>
+<td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td>
+</tr>
 
 <tr>
 <th align=right>Title</th>
-<td colspan=5><input type=text name=title value="[% rental.title %]" size=35></td>
+<td colspan=5><input type=text name=title value="[% rental.title %]" size=30></td>
 </tr>
 
 <tr>
 <th align=right>SubTitle</th>
-<td colspan=5><input type=text name=subtitle value="[% rental.subtitle %]" size=35></td>
+<td colspan=5><input type=text name=subtitle value="[% rental.subtitle %]" size=30></td>
 </tr>
 
 <tr>
 <th align=right>Web Address</th>
-<td colspan=5><input type=text name=url value="[% rental.url %]" size=35></td>
+<td colspan=5><input type=text name=url value="[% rental.url %]" size=30></td>
 </tr>
 
 <tr>
@@ -110,24 +165,24 @@ function show(newItem) {
 
 <tr>
 <th align=right>Email</th>
-<td><input type=text name=email value="[% rental.email %]" size=35></td>
+<td><input type=text name=email value="[% rental.email %]" size=30></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Description</th>
-<td colspan=5><textarea name=webdesc cols=40 rows=5>[% rental.webdesc %]</textarea></td>
+<td colspan=5><textarea name=webdesc cols=30 rows=5>[% rental.webdesc %]</textarea></td>
 </td>
 </tr>
 
 </table>
 </div>
 
-<div class="elements" id="misc">
+<div id="content2" class="tabcontent" style="display: none">
 <table>
 
 <tr>
-<th align=right valign=top>Comment</th>
-<td colspan=5><textarea name=comment cols=40 rows=3>[% rental.comment %]</textarea></td>
+<th align=right valign=top width=140>Comment</th>
+<td colspan=5><textarea name=comment cols=28 rows=3>[% rental.comment %]</textarea></td>
 </tr>
 
 <tr>
@@ -163,11 +218,11 @@ function show(newItem) {
 </table>
 </div>
 
-<div class="lodging" id="lodging">
+<div id="content3" class="tabcontent" style="display: none">
 <table>
 
 <tr>
-<th align=right><span class="required">*</span> Maximum</th>
+<th align=right width=140><span class="required">*</span> Maximum</th>
 <td><input type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
@@ -199,4 +254,7 @@ function show(newItem) {
 </div>
 
 </form>
-<script type="text/javascript">document.form.name.focus();</script>
+<script type="text/javascript">
+document.form.name.focus();
+tabs([% section %]);
+</script>

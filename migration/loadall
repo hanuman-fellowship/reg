@@ -35,6 +35,7 @@ cd ../../../migration
 echo people
 loadpeople
 echo leaders, canpol, housecost, programs
+# ??? f07 => f89
 loadprog f89
 echo registrations
 loadreg f89

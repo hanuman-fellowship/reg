@@ -47,8 +47,8 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 Cancelled
 </span>
 [% END %]
-[% IF reg.date_start %] Arriving [% reg.date_start_obj %].[% END %]
-[% IF reg.date_end %] Leaving [% reg.date_end_obj %].[% END %]
+[% IF reg.date_start != program.sdate %] Arriving [% reg.date_start_obj %].[% END %]
+[% IF reg.date_end   != program.edate %] Leaving [% reg.date_end_obj %].[% END %]
 </td>
 </tr>
 

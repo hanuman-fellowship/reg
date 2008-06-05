@@ -11,6 +11,7 @@ __PACKAGE__->add_columns(qw/
     id
     abbr
     name
+    max
     disp_ord
     color
 /);

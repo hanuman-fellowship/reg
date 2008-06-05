@@ -11,7 +11,9 @@ use Util qw/
     valid_email
     model
     meetingplace_table
+    lunch_table
 /;
+use Lookup;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -35,6 +37,7 @@ sub create : Local {
         housecost => { name => "Default" },
     };
     $c->stash->{form_action} = "create_do";
+    $c->stash->{section}     = 3;   # lodging
     $c->stash->{template}    = "rental/create_edit.tt2";
 }
 
@@ -83,7 +86,7 @@ sub _get_data {
     if ($hash{email} && ! valid_email($hash{email})) {
         push @mess, "Invalid email: $hash{email}";
     }
-    if (! $hash{max} =~ m{\d+}) {
+    if (! $hash{max} =~ m{^\d+$}) {
         push @mess, "Invalid maximum";
     }
     for my $f (qw/
@@ -123,6 +126,10 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
+    delete $hash{section};      # irrelevant
+
+    $hash{lunches} = '0' x (date($hash{edate}) - date($hash{sdate}) + 1);
+
     $hash{glnum} = compute_glnum($c, $hash{sdate});
 
     # can't do $c->user->id for some unknown reason??? so...
@@ -138,9 +145,9 @@ sub create_do : Local {
     if ($hash{contract_received}) {
         $hash{received_by} = $user_id;
     }
-    my $p = model($c, 'Rental')->create(\%hash);
-    my $id = $p->id();
-    $c->response->redirect($c->uri_for("/rental/view/$id"));
+    my $r = model($c, 'Rental')->create(\%hash);
+    my $id = $r->id();
+    $c->response->redirect($c->uri_for("/rental/view/$id/3"));
 }
 
 sub _h24 {
@@ -158,8 +165,10 @@ sub _h24 {
 # update the balance in the record once you're done.
 #
 sub view : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $section) = @_;
 
+    Lookup->init($c);
+    $section ||= 1;
     my $r = model($c, 'Rental')->find($id);
 
     my @payments = $r->payments;
@@ -226,9 +235,21 @@ sub view : Local {
     if ($end && 13 < $end) {
         $extra_hours += $end - 13;
     }
-    my $extra_hours_charge = $extra_hours * $tot_people * 2;   # 2 in string???
+    my $extra_hours_charge = $extra_hours
+                           * $tot_people
+                           * $lookup{extra_hour_charge};
 
     $tot_charges += $extra_hours_charge;
+
+    # Lunches
+    my $lunch_charge = 0;
+    my $lunches = $r->lunches;
+    if ($lunches =~ /1/) {
+        $lunch_charge = $tot_people
+                      * $lookup{lunch_charge}
+                      * scalar($lunches =~ tr/1/1/);
+        $tot_charges += $lunch_charge;
+    }
 
     $r->update({
         balance => $tot_charges - $tot_payments,
@@ -239,11 +260,15 @@ sub view : Local {
     $c->stash->{actual_lodging} = $actual_lodging;
     $c->stash->{lodging}        = $lodging;
     $c->stash->{extra_time}     = $extra_hours_charge;
+    $c->stash->{lunch_charge}   = $lunch_charge;
     $c->stash->{charges}        = \@charges;
     $c->stash->{tot_other_charges} = $tot_other_charges;
     $c->stash->{tot_charges}    = $tot_charges;
     $c->stash->{payments}       = \@payments;
     $c->stash->{tot_payments}   = $tot_payments;
+    $c->stash->{section}        = $section;
+    $c->stash->{lunch_table}    = lunch_table(1, $r->lunches,
+                                              $r->sdate_obj, $r->edate_obj);
     $c->stash->{template}       = "rental/view.tt2";
 }
 
@@ -323,7 +348,7 @@ sub listpat : Local {
 }
 
 sub update : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $section) = @_;
 
     my $p = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $p;
@@ -341,6 +366,7 @@ sub update : Local {
     }
     $c->stash->{edit_gl}     = 1;
     $c->stash->{form_action} = "update_do/$id";
+    $c->stash->{section}     = $section;
     $c->stash->{template}    = "rental/create_edit.tt2";
 }
 
@@ -350,13 +376,17 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
+    my $section = $hash{section};
+    delete $hash{section};
     my $r = model($c, 'Rental')->find($id);
     if ($r->sdate ne $hash{sdate} || $r->edate ne $hash{edate}) {
         # we have changed the dates of the rental
         # and need to invalidate/remove any bookings for meeting spaces.
+        # and lunches no longer apply...
         model($c, 'Booking')->search({
             rental_id => $id,
         })->delete();
+        $hash{lunches} = '0' x (date($hash{edate}) - date($hash{sdate}) + 1);
     }
 
     # can't do $c->user->id for some unknown reason??? so...
@@ -373,7 +403,7 @@ sub update_do : Local {
     }
 
     $r->update(\%hash);
-    $c->response->redirect($c->uri_for("/rental/view/" . $r->id));
+    $c->response->redirect($c->uri_for("/rental/view/" . $r->id . "/$section"));
 }
 
 sub delete : Local {
@@ -437,7 +467,7 @@ sub pay_balance_do : Local {
         the_date => $now_date,
         time     => $now_time,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
 }
 
 sub meetingplace_update : Local {
@@ -445,7 +475,8 @@ sub meetingplace_update : Local {
 
     my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
     $c->stash->{meetingplace_table}
-        = meetingplace_table($c, $r->sdate, $r->edate, $r->bookings());
+        = meetingplace_table($c, $r->max, $r->sdate,
+                             $r->edate, $r->bookings());
     $c->stash->{template} = "rental/meetingplace_update.tt2";
 }
 
@@ -470,8 +501,7 @@ sub meetingplace_update_do : Local {
         });
     }
     # show the rental again - with the updated meeting places
-    view($self, $c, $id);
-    $c->forward('view');
+    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
 sub coordinator_update : Local {
@@ -494,7 +524,7 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person->id,
         });
-        $c->response->redirect($c->uri_for("/rental/view/$id"));
+        $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
         $c->stash->{template} = "rental/no_coord.tt2";
@@ -549,7 +579,33 @@ sub new_charge_do : Local {
         the_date  => $now_date,
         time      => $now_time,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
+}
+
+sub update_lunch : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Rental')->find($id);
+    $c->stash->{rental} = $r;
+    $c->stash->{lunch_table} = lunch_table(0, $r->lunches,
+                                          $r->sdate_obj, $r->edate_obj);
+    $c->stash->{template} = "rental/update_lunch.tt2";
+}
+
+sub update_lunch_do : Local {
+    my ($self, $c, $id) = @_;
+
+    %hash = %{ $c->request->params() };
+    my $r = model($c, 'Rental')->find($id);
+    my $ndays = $r->edate_obj - $r->sdate_obj + 1;
+    my $l = "";
+    for my $n (0 .. $ndays-1) {
+        $l .= (exists $hash{"d$n"})? "1": "0";
+    }
+    $r->update({
+        lunches => $l,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
 1;

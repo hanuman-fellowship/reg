@@ -40,7 +40,8 @@ create table rental (
     start_hour        text,
     end_hour          text,
 
-    coordinator_id    integer  -- person id
+    coordinator_id    integer, -- person id
+    lunches           text
 );
 drop table if exists rental_payment;
 create table rental_payment (

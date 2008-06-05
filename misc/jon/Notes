@@ -1441,3 +1441,93 @@ calendar doc:
         timed?  what is best?
 strings for rental start and end time and charge
     for extra hours.
+CMS report needs country
+    okay?
+    VistaPrint as well?
+Can't use " FULL" to find the full (or normal) program
+    as it depends on the name...  the name WEINTRAUB appears 3 times
+    and it gets the wrong FULL program.  also look at the starting date!
+    perhaps have a foreign key to the full program? yes.
+    that would save the lookup.
+population counts are screwy when two programs abutt
+    count first for breakfast but not for dinner
+    count second for dinner but not for breakfast
+    generating the 'meal list' distinguishes the two.
+loading from old - cancelled regs don't contribute to reg_count???
+max numbers for programs and events???
+rental field validation
+    maximum, start/end hour, dates for contract sending/receiving
+    editing of GL Number - restricted to super admin
+document - editing of GL number for programs - only super admin
+instead of check marks for lunches - change the background color?
+it is POSSIBLE for a person to come 20 days early to a program
+    and stay 30 days after.   highly unlikely but software engineers
+    need to be ready for all things possible likely or not.
+    how do we find these people and include them in any meal list
+    or population count?  if the registration record _always_ set
+    the date_start AND date_end values then we wouldn't need to 
+    reference the program record to see who was where when, right?
+    those fields could be indexed.
+    when viewing a registration record we could still display special
+    arriving or departing dates only if they varied from the
+    program dates.
+troublesome programs, rentals:
+    YTT admin.2 ending 2010?
+    open gate 3/21/06 - ends 2066
+    mothering mag
+simply exposing the window (switching away & back) of a list of registrations
+    window causes a regetting????   ajax???
+    yes, if the focus is in the search window
+    NOT OKAY!
+    the event is 'onkeyup'???
+    do the ajax thing only if a real key
+overlib popup too long - some way to calculate
+    the length better - number of cap/lower case letters?
+on registration list page - mark the early comers, late leavers
+    somehow?
+new attrib for registration - early_late - boolean
+    says whether the date_start or the date_end differ
+    from the program sdate, edate respectively.
+    good for finding early arrivals.
+    we can also mark them on the registration list somehow
+rentals
+    how often do people not come for the entire rental?
+    is there some way to discourage it?   like a charge of some sort?
+the plan:
+    redo loadreg to always set date_start, date_end
+        create index - test speed of access:
+
+            select count(*) from registration
+                where date_start <= d and d <= date_end 
+
+        before and after...
+        this will be done a lot for the population count and the meal list.
+    rework the online, manual registration controller
+    edit old reg to rectify the bogus dates in rentals/programs.
+        ytt admin.2
+        mothering mag
+        open gate 3/21/6
+        transportation
+        others?
+    redo the display of start, end in registration/view
+        and mark them in the reg list.
+    then redo population counts
+    testing - online reg (program, PR), manual reg, editing reg.
+        in each case - early, late, both, neither
+times in program, rental - different?  need to be?
+getting PRs into the calendar - be smarter about seasons
+the printable link on the calendar page
+    should toggle the display on/off tag for the
+    tables of event info.  then the image maps will still
+    be active.
+redo the Program dialog - with tabs.
+    add Lunches
+then meal list.
+make the PR popup stick, not mouseoff?
+getting population counts for every day on the calendar
+    on multiple mostly empty calendars is not truly useful.
+    the maximum and reg_counts will give a rough idea.
+    perhaps that will suffice but for an accurate count
+    (people coming early, leaving late) we can provide
+    them in the 'meal list' and the 'comings and goings'
+    lists.

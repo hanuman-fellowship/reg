@@ -1,65 +1,89 @@
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <style type="text/css">
-.tabs {
-    background-color: #003;
-    width: 400px;
-    border-right: 1px solid #fff;
-    padding: 10px;
-    color: #fff;
+.head {
+    color: green;
+    font-weight: bold;
+    font-size: 14pt;
+    margin-top: .1in;
+}
+.lunch {
+    margin-left: .3in;
+    margin-top: .1in;
+}
+.updlunch {
+    margin-left: .9in;
+}
+.lunch td {
+    width: 50px;
+}
+.stuff {
+    margin-left: 10mm;
+}
+.tab { 
+    font-family: "Lucida Grande";
+    font-size: 15px;
+    width: 120px;
+    white-space: nowrap;
     text-align: center;
-    border-bottom: 1px solid #fff;
+    border-style: solid;
+    border-color: black;
+    border-left-width: 1px;
+    border-right-width: 1px;
+    border-top-width: 1px;
+    border-bottom-width: 0px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    cursor: pointer;
 }
-.tabs a {
-    color: #fff;
+.tabhold { 
+    background-color: white;
+    color: black;
 }
-.elements {
-    background-color: #CCD9FF;
-    padding: 10px;
-    width: 650px;
-
-    position: absolute;
-    top: 250px;
-
-    display: none;
+.tabfocus { 
+    background-color: #e66;
+    color: white;
 }
-.lodging {
-    background-color: #CCD9FF;
-    padding: 10px;
-    width: 300px;
-
-    position: absolute;
-    top: 250px;
-
-    display: none;
+.tabcontent { 
+    font-family: sans-serif; 
+    font-size: 14px;
+    width: 500px;
+    border-style: solid;
+    border-color: black;
+    border-width: 1px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 </style>
 
 <script type="text/javascript">
 //<![CDATA[
+var ntabs = 4;
 
-window.onload = setup;
-
-var cur;
-
-function setup() {
-    cur = document.getElementById('web');
-    cur.style.display = 'block';
-    document.getElementById('misc').style.display = 'none';
-    document.getElementById('lodging').style.display = 'none';
-    document.getElementById('finance').style.display = 'none';
-}
-function show(newItem) {
-    var item = document.getElementById(newItem);
-    if (cur) {
-        cur.style.display = 'none';
+function tabs(t) {
+    for (var n = 1; n <= ntabs; n++) {
+        if (n == t) {
+            document.getElementById('tab'+n+'focus').style.display = 'block';
+            document.getElementById('tab'+n+'ready').style.display = 'none';
+            document.getElementById('content'+n).style.display     = 'block';
+        }
+        else {
+            document.getElementById('tab'+n+'focus').style.display = 'none';
+            document.getElementById('tab'+n+'ready').style.display = 'block';
+            document.getElementById('content'+n).style.display     = 'none';
+        }
     }
-    item.style.display = 'block';
-    cur = item;
-    return false;
+    if (t == 4)
+        t = 1;
+    document.getElementById('editlink').innerHTML =
+        '<a href="/rental/update/[% rental.id %]/' + t + '">Edit</a>';
 }
+
 //]]>
 </script>
+
 <style>
 h3 {
     margin-bottom: 1mm;
@@ -70,7 +94,7 @@ h3 {
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/update/[% rental.id %]">Edit</a>
+<span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/delete/[% rental.id %]"
 onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
@@ -89,66 +113,66 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <td>[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span></td>
 </tr>
 
+</table>
+<p>
+
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+
+<td>
+<div id="tab1focus" class="tab tabfocus" style="display: none">
+Misc
+</div>
+<span onclick="tabs(1)">
+<div id="tab1ready" class="tab tabhold" style="display: none">
+Misc
+</div>
+</span>
+</td>
+
+<td>
+<div id="tab2focus" class="tab tabfocus" style="display: none">
+Web
+</div>
+<span onclick="tabs(2)">
+<div id="tab2ready" class="tab tabhold" style="display: none">
+Web
+</div>
+</span>
+</td>
+
+<td>
+<div id="tab3focus" class="tab tabfocus" style="display: none">
+Lodging
+</div>
+<span onclick="tabs(3)">
+<div id="tab3ready" class="tab tabhold" style="display: none">
+Lodging
+</div>
+</span>
+</td>
+
+<td>
+<div id="tab4focus" class="tab tabfocus" style="display: none">
+Finance
+</div>
+<span onclick="tabs(4)">
+<div id="tab4ready" class="tab tabhold" style="display: none">
+Finance
+</div>
+</span>
+</td>
+
+</tr>
+
 <tr>
 <td colspan=4>
-<a href="" onclick="return show('web')">Web</a>
-&nbsp;&nbsp;
-<a href="" onclick="return show('misc')">Misc</a>
-&nbsp;&nbsp;
-<a href="" onclick="return show('lodging')">Lodging</a>
-&nbsp;&nbsp;
-<a href="" onclick="return show('finance')">Finance</a>
-</td>
-</tr>
 
-</table>
-
-<div class="elements" id="web">
-<table cellpadding=3>
+<div id="content1" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Linked</th>
-<td>[% rental.linked %]</td> 
-</tr>
-
-<tr>
-<th align=right>Title</th>
-<td colspan=5>[% rental.title %]</td>
-</tr>
-
-<tr>
-<th align=right>SubTitle</th>
-<td colspan=5>[% rental.subtitle %]</td>
-</tr>
-
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><a href="http://[% rental.url %]">[% rental.url %]</a></td>
-</tr>
-
-<tr>
-<th align=right>Telephone</th>
-<td>[% rental.phone %]</td>
-</tr>
-
-<tr>
-<th align=right>Email</th>
-<td><a href="mailto:[% rental.email %]">[% rental.email %]</a></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Description</th>
-<td colspan=5>[% rental.webdesc_br %]</td>
-</td>
-</tr>
-
-</table>
-</div>
-
-<div class="elements" id="misc">
-<table cellpadding=3>
-<tr>
-<th align=right valign=top>Meeting Places</th>
+<th align=right valign=top width=150>Meeting Places</th>
 <td align=left valign=top>
 [% FOR b IN rental.bookings %]
     [% b.meeting_place.name %]<br>
@@ -157,6 +181,9 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
     <a href="/rental/meetingplace_update/[% rental.id %]">Update</a>
 [% END %]
 </td>
+</tr>
+
+<tr>
 <th valign=top align=right>Coordinator</th>
 <td valign=top>
 [% IF rental.coordinator_id %]
@@ -205,12 +232,58 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </tr>
 
 </table>
+<p>
+<span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% rental.id %]">Update</a></span>
+<div class=lunch>[% lunch_table %]</div>
+
 </div>
 
-<div class="lodging" id="lodging">
+<div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3>
+
+<th align=right width=150>Linked</th>
+<td>[% rental.linked %]</td> 
+</tr>
+
 <tr>
-<th align=right>Maximum</th>
+<th align=right>Title</th>
+<td colspan=5>[% rental.title %]</td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5>[% rental.subtitle %]</td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><a href="http://[% rental.url %]">[% rental.url %]</a></td>
+</tr>
+
+<tr>
+<th align=right>Telephone</th>
+<td>[% rental.phone %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td><a href="mailto:[% rental.email %]">[% rental.email %]</a></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td colspan=5>[% rental.webdesc_br %]</td>
+</td>
+</tr>
+
+</table>
+</div>
+
+
+<div id="content3" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+<tr>
+<th align=right width=150>Maximum</th>
 <td>[% rental.max %]</td>
 </tr>
 
@@ -235,11 +308,11 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </table>
 </div>
 
-<div class="elements" id="finance">
+<div id="content4" class="tabcontent" style="display: none">
 <table cellpadding=3>
 
 <tr>
-<th align=right>Minimum Lodging</th>
+<th align=right width=150>Minimum Lodging</th>
 <td align=right>[% min_lodging %]</td>
 </tr>
 
@@ -247,6 +320,8 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <th align=right>Actual Lodging</th>
 <td align=right>[% actual_lodging %]</td>
 </tr>
+
+<tr><td></td></tr>
 
 <tr>
 <th align=right>Lodging</th>
@@ -259,11 +334,16 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </tr>
 
 <tr>
+<th align=right>Lunch Charge</th>
+<td align=right>[% lunch_charge %]</td>
+</tr>
+
+<tr>
 <th align=right>Other Charges</th>
 <td align=right>[% tot_other_charges %]</td>
 </tr>
 
-<tr><td>&nbsp;</td></tr>
+<tr><td></td></tr>
 
 <tr>
 <th align=right>Total Charges</th>
@@ -283,8 +363,10 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 </table>
 
-<h3>Other Charges</h3>
-
+<div class=head>
+Other Charges
+</div>
+<div class=stuff>
 <table cellpadding=3>
 <tr>
 <th align=right>Amount</th>
@@ -310,9 +392,12 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 </tr>
 
 </table>
+</div>
 
-<h3>Payments</h3>
-
+<div class=head>
+Payments
+</div>
+<div class=stuff>
 <table cellpadding=3>
 <tr>
 <th align=right>Amount</th>
@@ -335,3 +420,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 </table>
 </div>
+
+</td></tr></table>
+
+<script type="text/javascript">tabs([% section %]);</script>

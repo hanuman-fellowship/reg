@@ -564,6 +564,9 @@ sub affil_update_do : Local {
     $c->forward('view');
 }
 
+#
+# how about a max for a program???
+#
 sub meetingplace_update : Local {
     my ($self, $c, $id) = @_;
 
@@ -576,7 +579,7 @@ sub meetingplace_update : Local {
         $edate = $full_p->edate;
     }
     $c->stash->{meetingplace_table}
-        = meetingplace_table($c, $p->sdate, $edate, $p->bookings());
+        = meetingplace_table($c, 0, $p->sdate, $edate, $p->bookings());
     $c->stash->{template} = "program/meetingplace_update.tt2";
 }
 
@@ -607,9 +610,7 @@ sub meetingplace_update_do : Local {
             edate      => $edate,
         });
     }
-    # show the program again - with the updated meeting places
-    view($self, $c, $id);
-    $c->forward('view');
+    $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
 sub delete : Local {

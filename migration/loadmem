@@ -35,7 +35,6 @@ my $ans = <STDIN>;
 if (! $ans =~ m{^y}i) {
     exit;
 }
-exit;
 
 for my $tbl (qw/ member spons_hist night_hist /) {
     $dbh->do("delete from $tbl");

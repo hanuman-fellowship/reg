@@ -31,10 +31,16 @@ sub _get_data {
     my ($c) = @_;
 
     %hash = %{ $c->request->params() };
+    $hash{$_} =~ s{^\s*|\s*$}{}g for keys %hash;
     @mess = ();
     for my $f (qw/abbr name disp_ord color/) {
         if (empty($hash{$f})) {
             push @mess, "\u$f cannot be blank";
+        }
+    }
+    if (! @mess) {
+        if (! $hash{max} =~ m{^\d+$}) {
+            push @mess, "Illegal maximum: $hash{max}";
         }
     }
     if (@mess) {

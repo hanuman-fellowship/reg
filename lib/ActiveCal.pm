@@ -10,7 +10,7 @@ use Date::Simple qw/
 use Lookup;
 use GD;
 
-my $day_width = 35;     # 27?
+my $day_width = 30;
 my $cal_height = 320;
 my $day_height = 40;
 
@@ -38,9 +38,10 @@ sub new {
     my $dow = date($year, $month, 1)->day_of_week();
     for my $d (1 .. $ndays) {
         my $x = ($d-1) * $day_width;
-        my $d_offset = ($d < 10)? 9: 5;
+        my $d_offset = ($d < 10)? 11: 7;
         my $name = $day_name[$dow];
-        my $n_offset = (length($name) == 1)? 9: 5;
+        my $n_offset = (length($name) == 1)? 8: 4;
+        # the above are sensitive to the day_width
 
         $im->line($x, 0, $x, $cal_height-1, $black);
         if ($d == $today) {
@@ -51,7 +52,7 @@ sub new {
             );
         }
         # these offsets depend on the day height/width somehow...???
-        $im->string(gdLargeFont, $x+$d_offset+4, 5, $d, $black);
+        $im->string(gdLargeFont, $x+$d_offset, 5, $d, $black);
         $im->string(gdLargeFont, $x+$n_offset+4, 20, $name,
                     (1 <= $dow && $dow <= 4)? $black: $red);
         $dow = ($dow+1) % 7;
@@ -114,9 +115,6 @@ sub cal_height {
 sub add_group {
     my ($self, $count, $sday, $eday, $name) = @_;
     
-open JON, ">>/tmp/jon";
-print JON "add $count $sday, $eday " . $self->sdate, " $name\n";
-close JON;
     for my $d ($sday .. $eday) {
         $self->{counts}[$d] += $count;
     }
@@ -132,9 +130,9 @@ sub show_population {
         my $count = $self->{counts}[$d];
         next unless $count;
         my $x = ($d-1) * $day_width;
-        my $offset = ($count <  10)? 14
-                    :($count < 100)?  9
-                    :                 6;
+        my $offset = ($count <  10)? 11
+                    :($count < 100)?  7
+                    :                 3;
         $im->string(gdLargeFont, $x+$offset, $cal_height-18, $count, $black);
     }
 }

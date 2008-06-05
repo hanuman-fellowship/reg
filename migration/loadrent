@@ -3,6 +3,8 @@ use strict;
 use warnings;
 use DBI;
 use Getopt::Easy;
+use lib "../lib";
+use Date::Simple qw/date/;
 
 get_options("s-single");
 
@@ -54,6 +56,7 @@ my @fields = qw/
     phone
     email
     housecost_id
+    lunches
 /;
 my %lookup = qw/
     rname	name
@@ -91,7 +94,7 @@ for my $seas (@seasons) {
         }
         $k = $lookup{$k} || $k;
         $hash{$k} = $v;
-        if ($k eq 'linked') {
+        if ($k eq 'linked' && $hash{sdate}) {
             processRental($seas);
             %hash = ();
         }
@@ -108,6 +111,8 @@ sub processRental {
         $hash{$f} =~ s{(..)/(..)/(....)}{$3$1$2}g;
         $hash{$f} =~ s{[/\s]}{}g;
     }
+    my $ndays = date($hash{edate}) - date($hash{sdate}) + 1;
+    $hash{lunches} = '0' x $ndays;
     $hash{id} = undef;
     if ($hash{name} =~ s{\s*\*\s*$}{}) {
         $hash{ceu} = 'yes';

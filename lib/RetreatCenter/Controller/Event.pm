@@ -226,6 +226,11 @@ sub calendar : Local {
     my ($self, $c) = @_;
 
     Lookup->init($c);
+my $cnt = model($c, 'Registration')->search({
+    date_start => { '<=', '20080607' },
+    date_end   => { '>=', '20080607' },
+});
+$c->log->info("cnt = $cnt");
     my $which = $c->request->params->{which};
     my $today = today();
     if ($which) {
@@ -509,7 +514,7 @@ sub calendar : Local {
                                .  "    target=happening\n"
                                .  "    href='" . $ev->link . "'\n"
     . qq!    onmouseover="return overlib('$disp',!
-    . qq! STICKY, MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333',!
+    . qq! MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333',!
     . qq! BORDER, 2, TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, $width * 20)"\n!
     . qq!    onmouseout="return nd();">\n!;
                 if (! $details_shown) {
@@ -563,6 +568,8 @@ sub calendar : Local {
     # a PR might begin in a prior season
     # and continue through the next.
     # assume no longer than 30 days???
+    # needs to be smarter!!!!???
+    # it's about seasons...
     #
     my $pr_date = $the_first;
     $pr_date = date($the_first) - 30;
@@ -634,7 +641,7 @@ sub calendar : Local {
 . qq! onmouseover="return overlib('!
 . $month_name[$m]
 #. " " . sprintf("%02d", ($start_year+$yr-1) % 100)
-. qq!', STICKY, MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333', BORDER, 2,!
+. qq!', MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333', BORDER, 2,!
 . qq! TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, 50)"!
 # 50 => 95 if with year
 . qq! onmouseout="return nd();">\n!;
@@ -650,20 +657,25 @@ sub calendar : Local {
     #
     # generate the HTML output
     #
-# ??? put the stylesheet in a separately editable file???
-    open my $printable, ">", "root/static/calprint.html"
-        or die "cannot create calprint.html\n";
-    print {$printable} <<"EOH";
-<head>
-<link rel="stylesheet" type="text/css" href="cal.css" />
-</head>
-<body>
-<div class=whole>
-EOH
+    my $det_keys = join ',',
+                    map { "'$_'" }
+                   grep { $details{$_} }
+                   keys %details;
     my $content = <<"EOH";
 <head>
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+<script>
+var state = 'block';
+var months = new Array($det_keys);
+function detail_toggle() {
+    state = (state == 'block')? 'none': 'block';
+    for (var i = 0; i < months.length; ++i) {
+        //alert(months[i]);
+        document.getElementById('det' + months[i]).style.display = state;
+    }
+}
+</script>
 </head>
 <body>
 $jump_map
@@ -704,11 +716,11 @@ EOH
                 $im->rectangle($x1, $y1, $x2, $y2, $black);
                 $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
                                      $pr_color);
-                my $offset = ($n < 10)? 14: 9;
+                my $offset = ($n < 10)? 11: 7;
                 $im->string(gdLargeFont, $x1+$offset, $y1+3, $n, $black);
                 $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n"
 . qq! onclick="return overlib('$pr_links',!
-. qq! TEXTFONT, 'Verdana', TEXTSIZE, 5, STICKY, MOUSEOFF, WRAP,!
+. qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
 . qq! CELLPAD, 7, FGCOLOR, '$pr_bg', BORDER, 2)"!
 . qq! onmouseout="return nd();">\n!;
             }
@@ -721,40 +733,31 @@ EOH
         close $imf;
 
         my $month_name = $ac->sdate->format("%B %Y");
-        # ??? get the font styling into cal.css
         my $form = ($firstcal)? "<form action='/event/calendar'>": "";
-        $content .= "$form<a name=$key>\n<span style='font-weight: bold; font-size: 18pt'>"
+        $content .= "$form<a name=$key>\n<span class=hdr>"
                   . $month_name
-                  . "</span><img style='margin-left: 1in' src=$jump_img usemap=#jump>";
+                  . "<img border=0 class=jmptable src=$jump_img usemap=#jump>";
         if ($firstcal) {
             my $go_form = <<"EOH";
-<span style="margin-left: .5in">Date</span> <input type=text name=which size=10>
-<input type=submit value="Go">
+<span class=datefld>Date</span> <input type=text name=which size=10>
+<input class=go type=submit value="Go">
 </form>
 EOH
-            $content .= "<a style='margin-left: .5in'"
-                     .  " href='"
-                     .  $c->uri_for("/static/calprint.html")
-                     .  "'>Printable</a>"
-                     .  $go_form
-                     .  "<p>\n";
+            $content .= "</span>\n";
+            $content .= "<div class=details>Details <input type=checkbox name=detail checked onclick='detail_toggle()'></div>$go_form";
             $firstcal = 0;
         }
-        $content .= "</span><p>\n";
-        print {$printable} <<"EOH";
-<span style='font-weight: bold; font-size: 18pt'>$month_name</span><p>
-EOH
-
+        $content .= "<p>\n";
         my $image = $c->uri_for("/static/images/$key.png");
         $content .= <<"EOH";
-<img src='$image' usemap='#$key'>
+<img border=0 src='$image' usemap='#$key'>
 <map name=$key>
 $imgmaps{$key}</map>
 <p>
 EOH
-        print {$printable} "<p><img src='$image'>\n";
         if ($details{$key}) {
-            print {$printable} <<"EOH";
+            $content .= <<"EOH";
+<div id=det$key>
 <p>
 <ul>
 <table cellpadding=3>
@@ -769,23 +772,24 @@ EOH
 $details{$key}
 </table>
 </ul>
+</div>
 EOH
         }
-        print {$printable} "<p>\n";
     }
     $content .= "</div>\n</body>\n";
-    print {$printable} "</div>\n</body>\n";
-    close $printable;
     $c->res->output($content);
     $c->stash->{template} = "event/calendar.tt2";
 }
 
+#
+# what about a max for the event?
+#
 sub meetingplace_update : Local {
     my ($self, $c, $id) = @_;
 
     my $e = $c->stash->{event} = model($c, 'Event')->find($id);
     $c->stash->{meetingplace_table}
-        = meetingplace_table($c, $e->sdate, $e->edate, $e->bookings());
+        = meetingplace_table($c, 0, $e->sdate, $e->edate, $e->bookings());
     $c->stash->{template} = "event/meetingplace_update.tt2";
 }
 
