@@ -225,7 +225,7 @@ sub prev { return ($_[0] - 1); }
 
 sub _gmtime {
     my ($self) = @_;
-    my ($y, $m, $d) = days_to_ymd ($self->{days});
+    my ($y, $m, $d) = days_to_ymd($self->{days});
     $y -= 1900;
     $m -= 1;
     return (0, 0, 0, $d, $m, $y);
