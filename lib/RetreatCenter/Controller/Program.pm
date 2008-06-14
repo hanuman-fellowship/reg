@@ -19,6 +19,7 @@ use Util qw/
     model
     trim
     empty
+    lunch_table
 /;
 use Date::Simple qw/date today/;
 use Net::FTP;
@@ -45,6 +46,7 @@ sub create : Local {
     $c->stash->{check_linked}        = "checked";
     $c->stash->{program_leaders}     = [];
     $c->stash->{program_affils}      = [];
+    $c->stash->{section}             = 2;   # Web (a required field)
     Lookup->init($c);
     $c->stash->{program}             = {
         tuition      => 0,
@@ -215,9 +217,13 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
+    delete $hash{section};      # irrelevant
+
     # gl num is computed not gotten
     $hash{glnum} = ($hash{name} =~ m{personal\s+retreat}i)?
                         '99999': compute_glnum($c, $hash{sdate});
+
+    $hash{reg_count} = 0;       # otherwise it will not increment
 
     my $upload = $c->request->upload('image');
     my $p = model($c, 'Program')->create({
@@ -231,6 +237,7 @@ sub create_do : Local {
         resize('p', $id);
     }
     # make the FULL version, if requested
+    # it will have an id = normal id + 1
     if ($hash{extradays}) {
         my $full_edate = date($hash{edate}) + $hash{extradays};
         model($c, 'Program')->create({
@@ -263,28 +270,31 @@ my @day_name = qw/
     Sat
 /;
 sub view : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $section) = @_;
+
+    $section ||= 1;
+    $c->stash->{section} = $section;
 
     Lookup->init($c);       # for web_addr if nothing else.
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
 
-    if (my ($full_p) = model($c, 'Program')->search({
-                           name => $p->name . " FULL",
-                       })
-    ) {
-        $c->stash->{full_id} = $full_p->id;
+    $c->stash->{booking_program} = $p;
+
+    if ($p->extradays) {
+        $c->stash->{full_id} = $id + 1;
     }
-    if ($p->name =~ m{^(.*) FULL$}) {
-        
-        my ($normal) = model($c, 'Program')->search({
-                           name => $1,
-                       });
-        $c->stash->{normal_id} = $normal->id;
+    if ($p->name =~ m{ FULL$}) {
+        $c->stash->{normal_id} = $id - 1;
+        ($c->stash->{booking_program}) = model($c, 'Program')->find($id -1);
+        $c->stash->{edit_okay} = 0;
     }
     else {
         $c->stash->{edit_okay} = 1;
     }
-
+    if ($p->name !~ m{personal retreats}i) {
+        $c->stash->{lunch_table} = lunch_table(1, $p->lunches,
+                                               $p->sdate_obj, $p->edate_obj);
+    }
     $c->stash->{template} = "program/view.tt2";
 }
 
@@ -373,7 +383,10 @@ sub listpat : Local {
 }
 
 sub update : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $section) = @_;
+
+    $section ||= 1;
+    $c->stash->{section} = $section;
 
     my $p = model($c, 'Program')->find($id);
     $c->stash->{program} = $p;
@@ -421,6 +434,9 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
+    my $section = $hash{section};
+    delete $hash{section};
+
     if (! $c->check_user_roles('super_admin')) {
         delete $hash{glnum};
     }
@@ -438,9 +454,15 @@ sub update_do : Local {
         })->delete();
     }
     # is there a FULL version?
-    my ($p_full) = model($c, 'Program')->search({
-        name => $p->name . " FULL",
-    });
+    my $p_full;
+    if ($p->extradays) {
+        $p_full = model($c, 'Program')->find($p->id + 1);
+    }
+    elsif ($hash{extradays} != 0) {
+        $c->stash->{mess} = "Cannot belatedly create a FULL program.";
+        $c->stash->{template} = "program/error.tt2";
+        return;
+    }
     $p->update(\%hash);
     # there are several possibilities...
     if ($p->extradays) {
@@ -463,6 +485,10 @@ sub update_do : Local {
             });
         }
         else {
+            # it will get the next id??? NOOOOOOO :(
+            # need to delete, recreate!!
+            # or prohibit
+            # ??? did i successfully prohibit???
             model($c, 'Program')->create({
                 %hash,
                 image     => "",
@@ -485,7 +511,7 @@ sub update_do : Local {
             $p_full->delete();
         }
     }
-    $c->response->redirect($c->uri_for("/program/view/" . $p->id));
+    $c->response->redirect($c->uri_for("/program/view/" . $p->id . "/$section"));
 }
 
 sub leader_update : Local {
@@ -515,11 +541,8 @@ sub leader_update_do : Local {
     # ditto for any FULL program
     # delete all old leaders and create the new ones.
     my $p = model($c, 'Program')->find($id);
-    my ($p_full) = model($c, 'Program')->search({
-        name => $p->name . " FULL",
-    });
-    if ($p_full) {
-        my $full_id = $p_full->id;
+    if ($p->extradays) {
+        my $full_id = $p->id + 1;
         model($c, 'LeaderProgram')->search(
             { p_id => $full_id },
         )->delete();
@@ -530,16 +553,13 @@ sub leader_update_do : Local {
             });
         }
     }
-    # show the program again - with the updated leaders
-    view($self, $c, $id);
-    $c->forward('view');
+    $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
 sub affil_update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->stash->{program}
-        = model($c, 'Program')->find($id);
+    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
     $c->stash->{affil_table} = affil_table($c, $p->affils());
     $c->stash->{template} = "program/affil_update.tt2";
 }
@@ -559,9 +579,21 @@ sub affil_update_do : Local {
             p_id => $id,
         });
     }
-    # show the program again - with the updated affils
-    view($self, $c, $id);
-    $c->forward('view');
+    my $p = model($c, 'Program')->find($id);
+    if ($p->extradays) {
+$c->log->info("here we are");
+        # and ditto for the full program
+        model($c, 'AffilProgram')->search(
+            { p_id => $id + 1 },
+        )->delete();
+        for my $ca (@cur_affils) {
+            model($c, 'AffilProgram')->create({
+                a_id => $ca,
+                p_id => $id + 1,
+            });
+        }
+    }
+    $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
 #
@@ -572,11 +604,8 @@ sub meetingplace_update : Local {
 
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
     my $edate = $p->edate;
-    if (my ($full_p) = model($c, 'Program')->search({
-                           name => $p->name . " FULL",
-                       })
-    ) {
-        $edate = $full_p->edate;
+    if ($p->extradays) {
+        $edate += $p->extradays;
     }
     $c->stash->{meetingplace_table}
         = meetingplace_table($c, 0, $p->sdate, $edate, $p->bookings());
@@ -588,11 +617,8 @@ sub meetingplace_update_do : Local {
 
     my $p = model($c, 'Program')->find($id);
     my $edate = $p->edate;
-    if (my ($full_p) = model($c, 'Program')->search({
-                           name => $p->name . " FULL",
-                       })
-    ) {
-        $edate = $full_p->edate;
+    if ($p->extradays) {
+        $edate += $p->extradays;
     }
     my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
                      keys %{$c->request->params};
@@ -610,6 +636,8 @@ sub meetingplace_update_do : Local {
             edate      => $edate,
         });
     }
+    # ditto for any FULL version?
+    # No.  Makes for trouble in the calendar.
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
@@ -1117,5 +1145,32 @@ sub gen_regtable {
     }
     close $regt;
 }
+
+sub update_lunch : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = model($c, 'Program')->find($id);
+    $c->stash->{program} = $p;
+    $c->stash->{lunch_table} = lunch_table(0, $p->lunches,
+                                          $p->sdate_obj, $p->edate_obj);
+    $c->stash->{template} = "program/update_lunch.tt2";
+}
+
+sub update_lunch_do : Local {
+    my ($self, $c, $id) = @_;
+
+    %hash = %{ $c->request->params() };
+    my $p = model($c, 'Program')->find($id);
+    my $ndays = $p->edate_obj - $p->sdate_obj + 1;
+    my $l = "";
+    for my $n (0 .. $ndays-1) {
+        $l .= (exists $hash{"d$n"})? "1": "0";
+    }
+    $p->update({
+        lunches => $l,
+    });
+    $c->response->redirect($c->uri_for("/program/view/$id/1"));
+}
+
 
 1;

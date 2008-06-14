@@ -225,12 +225,14 @@ sub access_denied : Private {
 sub calendar : Local {
     my ($self, $c) = @_;
 
+    my @month_name = qw/
+        Jan Feb Mar
+        Apr May Jun
+        Jul Aug Sep
+        Oct Nov Dec
+    /;
+
     Lookup->init($c);
-my $cnt = model($c, 'Registration')->search({
-    date_start => { '<=', '20080607' },
-    date_end   => { '>=', '20080607' },
-});
-$c->log->info("cnt = $cnt");
     my $which = $c->request->params->{which};
     my $today = today();
     if ($which) {
@@ -302,6 +304,11 @@ $c->log->info("cnt = $cnt");
     my $day_width  = ActiveCal->day_width;
     my $cal_height = ActiveCal->cal_height;
     for my $ev (sort { $a->sdate <=> $b->sdate } @events) {
+        my $ev_type = ref($ev);
+        $ev_type =~ s{.*::}{};
+        $ev_type = lc $ev_type;
+        my $ev_type_id = "$ev_type\_id";
+
         # draw on the right image(s)
         #
         my $ev_sdate = $ev->sdate_obj;
@@ -310,16 +317,14 @@ $c->log->info("cnt = $cnt");
         my ($full_begins, $ndays_in_normal, $normal_end_day, $extra_count);
         $extra_count = "";
 
-        if (ref($ev) =~ m{Program}) {
+        if ($ev_type eq 'program') {
             # is there a FULL program?
             # if so, use its end date instead.
             # AND draw a little dotted line on the day
             # when the FULL extension begins (or equivalently
             # when the normal length program ends).
-            if (my ($full_p) = model($c, 'Program')->search({
-                                   name => $ev->name . " FULL",
-                               })
-            ) {
+            if ($ev->extradays) {
+                my ($full_p) = model($c, 'Program')->find($ev->id + 1);
                 $full_begins = $ev->edate_obj;
                 $ndays_in_normal = $ev->edate_obj - $ev->sdate_obj;
                 $normal_end_day = $ev->edate_obj->day;
@@ -334,13 +339,10 @@ $c->log->info("cnt = $cnt");
             if (length $extra_count) {
                 $count .= "+$extra_count";
             }
-            elsif (ref($ev) =~ m{Rental}) {
+            elsif ($ev_type eq 'rental') {
                 $count = $ev->max . ", $count";
             }
         }
-        my $ev_type = ref($ev);
-        $ev_type =~ s{.*::}{};
-        $ev_type = lc $ev_type . "_id";
         my $ev_id = $ev->id;
         my $title = $ev->title;
 
@@ -355,18 +357,11 @@ $c->log->info("cnt = $cnt");
             }
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
 
-            # for the daily population
-            $cal->add_group($ev_count, $dr->sdate->day,
-                            ($full_begins)? $dr->sdate->day+$ndays_in_normal
-                            :               $dr->edate->day,
-                            $ev->name
-                           );
-
             # this does a get of the meeting place record???
             # yes, - replace it!!!
             my @places = sort { $a->disp_ord <=> $b->disp_ord }
                          map  { $_->meeting_place }
-                         grep { $_->$ev_type == $ev_id }
+                         grep { $_->$ev_type_id == $ev_id }
                          @bookings;
             #
             # if no meeting place assigned hopefully put it SOMEwhere.
@@ -420,7 +415,7 @@ $c->log->info("cnt = $cnt");
                 my $disp = $event_name . $place_name;
                 if (length $count) {
                     $disp .= "[$count]";
-                    if (ref($ev) =~ m{Rental}) {
+                    if ($ev_type eq 'rental') {
                         my $status = $ev->status;
                         $status =~ s{<td.*>(.*)</td>}{$1};
                         $disp .= " $status";
@@ -447,19 +442,23 @@ $c->log->info("cnt = $cnt");
                 my $printable_row = join '',
                                     map { "<td>$_</td>" }
                                     $date_span,
-                                    $event_name,
+                                    "<a target=happening href='/$ev_type/view/"
+                                     . $ev->id
+                                     . "'>"
+                                     . $event_name
+                                     . "</a>",
                                     places($ev);
-                if (ref($ev) =~ m{Rental}) {
+                if ($ev_type eq 'rental') {
                     $printable_row .= "<td>&nbsp;</td>"
                                    .  "<td align=right>$count</td>";
                 }
-                elsif (ref($ev) =~ m{Program}) {
+                elsif ($ev_type eq 'program') {
                     $printable_row .= "<td align=right>$count</td>";
                 }
                 $disp =~ s{'}{\\'}g;    # what if name eq Mother's Day?
 
                 my $border = $black;
-                if (ref($ev) =~ m{Rental}) {
+                if ($ev_type eq 'rental') {
                     if (! $ev->contract_sent) {
                         $border = $im->colorAllocate(
                             $lookup{rental_new_color} =~ m{\d+}g);
@@ -481,7 +480,7 @@ $c->log->info("cnt = $cnt");
                     }
                     $printable_row .= $ev->status;
                 }
-                elsif (ref($ev) =~ m{Event}) {
+                elsif ($ev eq 'event') {
                     $border = $im->colorAllocate(
                             $lookup{event_color} =~ m{\d+}g);
                 }
@@ -498,9 +497,13 @@ $c->log->info("cnt = $cnt");
                         &&
                         $full_begins <= $dr->edate
                     ) {
-                        $im->setStyle($white, $white, $color, $color);
+                        $im->setStyle($white, $white, $white, $white,
+                                      $color, $color, $color, $color,
+                                     );
                         my $x3 = $normal_end_day * $day_width - $day_width/2;
+                        $im->setThickness(2);
                         $im->line($x3, $y1+1, $x3, $y2-1, gdStyled);
+                        $im->setThickness(1);
                     }
                 }
 
@@ -566,23 +569,25 @@ $c->log->info("cnt = $cnt");
     # personal retreats
     #
     # a PR might begin in a prior season
-    # and continue through the next.
-    # assume no longer than 30 days???
-    # needs to be smarter!!!!???
-    # it's about seasons...
+    # and continue through the next into the current month range.
+    # get the current, the previous and subsequent PR seasons.
+    # the 30*6 is not exactly 6 months prior but will suffice.
     #
-    my $pr_date = $the_first;
-    $pr_date = date($the_first) - 30;
-    $pr_date = $pr_date->as_d8();
-    my @pr_ids = map { $_->id }
-                 model($c, 'Program')->search({
-                     sdate => { '>=', $pr_date },
-                     name  => { 'like' => "Personal Retreats%" },
-                 });
+    my $the_prev = date($the_first) - 30*6;
+    $the_prev = $the_prev->as_d8();
+    my @pr_ids = map { $_->id }     # ???wasteful!  - just to get the ids
+                                    # we get the entire object.
+                 model($c, 'Program')->search(
+                    {
+                        edate => { '>=', $the_prev },
+                        name  => { 'like' => "Personal Retreats%" },
+                    },
+                 );
     my @pr_regs = model($c, 'Registration')->search(
                       {
                           program_id => { 'in', \@pr_ids },
-                          date_end => { '>=', $the_first },
+                          date_end   => { '>=', $the_first },
+                          cancelled  => '',
                       },
                       { order_by => 'date_start' }
                   );
@@ -614,12 +619,6 @@ $c->log->info("cnt = $cnt");
     my $jim = GD::Image->new($nyears * 135, 21);
     my $black = $jim->colorAllocate(0, 0, 0);
     my $white = $jim->colorAllocate(255, 255, 255);
-    my @month_name = qw/
-        Jan Feb Mar
-        Apr May Jun
-        Jul Aug Sep
-        Oct Nov Dec
-    /;
     $jim->fill(2, 2, $white);
     for my $yr (1 .. $nyears) {
         my $x = ($yr-1)*135;
@@ -685,43 +684,51 @@ EOH
     my $jump_img = $c->uri_for("/static/images/jump.png");
     my $firstcal = 1;
     my @pr_color = $lookup{pr_color} =~ m{\d+}g;
-    my $pr_bg = sprintf "#%02x%02x%02x", @pr_color;
+    # my $pr_bg = sprintf "#%02x%02x%02x", @pr_color;
     # ??? optimize - skip a $cals entirely if no PRs - have a flag
     # in the object.
     for my $key (sort keys %cals) {
         my $ac = $cals{$key};
+        my $m = substr($key, 4, 2);
+        $m =~ s{^0}{};      # worry about octal constant???
         my $im = $ac->image;
         my $pr_color = $im->colorAllocate(@pr_color);
         my $black = $ac->black;
-
-        $ac->show_population();
 
         # PRs
         for my $d (1 .. $ac->ndays) {
             my $arr_ref = $ac->get_prs($d);
             if (defined $arr_ref) {
+                my $day = date($key . sprintf("%02d", $d));
+                my $day_name = $day->format("%a");
                 my @prs = sort @$arr_ref;
                 my $n = @prs;
                 my $pr_links = "";
                 for my $pr (@prs) {
-                    my ($name, $id) = split /\t/, $pr;
-                    $pr_links .= "<a class=pr_links target=happening href="
+                    my ($name, $id, $status) = split /\t/, $pr;
+                    my $bg = ($status eq 'lv' )? '#FF3333'
+                            :($status eq 'arr')? '#33FF33'
+                            :                    '#FFFFFF';
+                    $pr_links .= "<tr><td><a class=pr_links target=happening href="
                                . $c->uri_for("/registration/view/$id")
-                               . ">$name</a><br>";
+                               . ">$name</a></td><td bgcolor=$bg>$status</td></tr>";
                 }
                 my $x1 = $day_width*($d-1);
-                my $y1 = $cal_height - 40;
+                my $y1 = $cal_height - 20 - 1;
                 my $x2 = $x1 + $day_width;
                 my $y2 = $y1 + 20;
-                $im->rectangle($x1, $y1, $x2, $y2, $black);
+                #$im->rectangle($x1, $y1, $x2, $y2, $black);
+                $im->line($x1, $y1, $x2, $y1, $black);
+                    # could just draw the upper line, yeah.
                 $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
                                      $pr_color);
                 my $offset = ($n < 10)? 11: 7;
                 $im->string(gdLargeFont, $x1+$offset, $y1+3, $n, $black);
                 $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n"
-. qq! onclick="return overlib('$pr_links',!
+. qq! onclick="return overlib('<center>$day_name $month_name[$m-1] $d</center><p><table cellpadding=2>$pr_links</table>',!
+                    # very cool to use $m-1 inside index inside ' inside " !!!
 . qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
-. qq! CELLPAD, 7, FGCOLOR, '$pr_bg', BORDER, 2)"!
+. qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2)"!
 . qq! onmouseout="return nd();">\n!;
             }
         }
@@ -778,7 +785,6 @@ EOH
     }
     $content .= "</div>\n</body>\n";
     $c->res->output($content);
-    $c->stash->{template} = "event/calendar.tt2";
 }
 
 #

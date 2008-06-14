@@ -48,22 +48,14 @@ sub create_do : Local {
     }
     # check and report errors???
  
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
-    # can't get id directly???
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
     model($c, 'Donation')->create({
         amount      => $amount,
         project_id  => $project_id,
         person_id   => $person_id,
         date_donate => $date_donate->as_d8(),
-        who_d       => $u->id,
+        who_d       => $c->user->obj->id,
         date_d      => today()->as_d8(),
-        time_d      => $now_time,
+        time_d      => sprintf "%02d:%02d", (localtime())[2, 1],
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }

@@ -26,6 +26,8 @@ our @EXPORT_OK = qw/
     model
     email_letter
     lunch_table
+    clear_lunch
+    get_lunch
 /;
 
 use POSIX   qw/ceil/;
@@ -543,14 +545,14 @@ EOH
     my $ndays = $edate - $sdate + 1;
     my $dow = 0;
     while ($dow < $sdow) {
-        $s .= "<td></td>";
+        $s .= "<td>&nbsp;</td>";
         ++$dow;
     }
     my $d = 0;
     my $cur = $sdate;
     while ($d < $ndays) {
         my $lunch = $lunches[$d];
-        my $color = ($lunch && $view)? '#9F9': '#FFF';
+        my $color = ($lunch && $view)? '#99FF99': '#FFFFFF';
         $s .= "<td align=left bgcolor=$color>" . $cur->day;
         if ($view) {
             my $w = $lunch? '': 'w';
@@ -567,17 +569,35 @@ EOH
         ++$d;
         if ($dow == 7) {
             $s .= "</tr>\n";
+            if ($d < $ndays) {
+                $s .= "<tr>\n";
+            }
             $dow = 0;
         }
     }
     if ($dow > 0) {
         while ($dow <= 6) {
-            $s .= "<td></td>";
+            $s .= "<td>&nbsp;</td>";
             ++$dow;
         }
     }
     $s .= "</tr></table>\n";
     $s;
+}
+
+my %lunch_cache;
+
+sub clear_lunch {
+    %lunch_cache = ();
+}
+sub get_lunch {
+    my ($c, $id) = @_;
+
+    if (! exists $lunch_cache{$id}) {
+        my $prog = model($c, 'Program')->find($id);
+        $lunch_cache{$id} = [ $prog->sdate_obj, $prog->lunches ];
+    }
+    return @{$lunch_cache{$id}};
 }
 
 1;

@@ -154,16 +154,10 @@ sub _get_data {
 sub get_now {
     my ($c) = @_;
 
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
     return 
-        user_id  => $u->id,
+        user_id  => $c->user->obj->id,
         the_date => today->as_d8(),
-        time     => $now_time,
+        time     => sprintf "%02d:%02d", (localtime())[2, 1];
 }
 
 #
@@ -360,7 +354,7 @@ sub lapse_soon : Local {
 }
 
 sub email_lapsed : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $test) = @_;
 
     my @no_email;
     my $nsent = 0;
@@ -379,7 +373,7 @@ sub email_lapsed : Local {
 
         my @payments = $m->payments();
         my $last_amount  = $payments[0]->amount;
-        my $last_paid = date($payments[0]->date_payment);
+        my $last_paid = $payments[0]->date_payment_obj;
         my $type = $m->category;
 
         my $html = "";
@@ -402,7 +396,8 @@ sub email_lapsed : Local {
         );
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Status",
-            to         => $email,
+            #to         => $email,
+            to         => (($test)? $c->user->email: $email),
             from       => $c->user->email,
             from_title => $mem_admin,
             html       => $html,
@@ -410,14 +405,18 @@ sub email_lapsed : Local {
         ++$nsent;
     }
 
-    $c->stash->{msg} = "$nsent letter" . (($nsent == 1)? " was sent."
-                                          :              "s were sent.");
+    $c->stash->{msg} = "$nsent email reminder letter"
+                     . (($nsent == 1)? " was sent."
+                        :              "s were sent.");
+    $c->stash->{status} = "expired";
+
+    $c->stash->{num_no_email} = scalar(@no_email);
     $c->stash->{no_email} = \@no_email;
     $c->stash->{template} = "member/sent.tt2";
 }
 
 sub email_lapse_soon : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $test) = @_;
 
     my @no_email;
     my $nsent = 0;
@@ -437,7 +436,7 @@ sub email_lapse_soon : Local {
 
         my @payments = $m->payments();
         my $last_amount  = $payments[0]->amount;
-        my $last_paid = date($payments[0]->date_payment);
+        my $last_paid = $payments[0]->date_payment_obj;
         my $html = "";
         my $tt = Template->new({
             INCLUDE_PATH => 'root/static/templates/letter',
@@ -458,7 +457,7 @@ sub email_lapse_soon : Local {
         );
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Status",
-            to         => $email,
+            to         => (($test)? $c->user->email: $email),
             from       => $c->user->email,
             from_title => $mem_admin,
             html       => $html,
@@ -466,8 +465,11 @@ sub email_lapse_soon : Local {
         ++$nsent;
     }
 
-    $c->stash->{msg} = "$nsent letter" . (($nsent == 1)? " was sent."
-                                          :              "s were sent.");
+    $c->stash->{status} = "will expire";
+    $c->stash->{msg} = "$nsent email reminder letter"
+                      . (($nsent == 1)? " was sent."
+                         :              "s were sent.");
+    $c->stash->{num_no_email} = scalar(@no_email);
     $c->stash->{no_email} = \@no_email;
     $c->stash->{template} = "member/sent.tt2";
 }

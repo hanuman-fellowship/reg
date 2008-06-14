@@ -1,0 +1,24 @@
+<style>
+.lunch td {
+    width: 50px;
+}
+</style>
+<h2>Programs - Updating Lunch Days</h2>
+<table>
+<tr>
+<th align=right>Name</th>
+<td><span class=larger>[% program.name %]</span></td>
+<th align=right>From</th>
+<td>[% rprogram.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span></td>
+<th align=right>To</th>
+<td>[% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span></td>
+</tr>
+</table>
+<p>
+<form action="/program/update_lunch_do/[% program.id %]">
+<ul class=lunch>
+[% lunch_table %]</span>
+<p>
+<input type=submit value="Submit">
+</ul>
+</form>

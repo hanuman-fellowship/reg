@@ -1,3 +1,8 @@
+<link rel="stylesheet" type="text/css" href="/static/tabs.css" />
+<script type="text/javascript" src="/static/js/tabs.js"></script>
+<script type="text/javascript">init_tabs(4, 0, 1);</script>
+
+[% id = program.id %]
 <h2>Programs</h2>
 <form action=[% "/program/" _ form_action %]
       name=form
@@ -8,126 +13,93 @@
 
 <tr>
 <th align=right><span class="required">*</span> Name</th>
-<td><input tabindex=1 type=text name=name value="[% program.name %]"></td>
+<td><input type=text name=name value="[% program.name %]"></td>
 <th align=right><span class="required">*</span> From
-<input tabindex=2 type=text name=sdate value="[% sdate %]" size=10>
+<input type=text name=sdate value="[% sdate %]" size=10>
 </th>
 <th align=right><span class="required">*</span> To
-<input tabindex=3 type=text name=edate value="[% edate %]" size=10>
+<input type=text name=edate value="[% edate %]" size=10>
 </th>
 </tr>
 
-<tr>
-<th align=right><span class="required">*</span> Title</th>
-<td colspan=5><input tabindex=4 type=text name=title value="[% program.title %]" size=60></td>
-</tr>
+</table>
 
-<tr>
-<th align=right>SubTitle</th>
-<td colspan=5><input tabindex=5 type=text name=subtitle value="[% program.subtitle %]" size=60></td>
-</tr>
+<p>
 
-<tr>
-<th align=right>Tuition</th>
-<td><input tabindex=6 type=text name=tuition value="[% program.tuition %]" size=4></td>
-<td><input tabindex=10 type=checkbox value=yes name=collect_total [% check_collect_total %]> Collect Total</td>
-<td colspan=2><input tabindex=14 type=checkbox value=yes name=kayakalpa [% check_kayakalpa %]> Kaya Kalpa</td>
-</tr>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>    <!-- tabs row -->
 
-<tr>
-<th align=right>Extra Days</th>
-<td><input tabindex=7 type=text name=extradays value="[% program.extradays %]" size=2></td>
-<td><input tabindex=11 type=checkbox value=yes name=sbath [% check_sbath %]> Single Bath</td>
-<td><input tabindex=15 type=checkbox value=yes name=retreat [% check_retreat %]> Retreat</td>
-</tr>
-
-<tr>
-<th align=right>Full Tuition</th>
-<td><input tabindex=8 type=text name=full_tuition value="[% program.full_tuition %]" size=4></td>
-<td><input tabindex=12 type=checkbox value=yes name=economy [% check_economy %]> Economy</td>
-<td><input tabindex=16 type=checkbox value=yes name=webready [% check_webready %]> Web Ready</td>
-</tr>
-
-<tr>
-<th align=right>Online Deposit</th>
-<td><input tabindex=9 type=text name=deposit value="[% program.deposit %]" size=4></td>
-<td><input tabindex=13 type=checkbox value=yes name=quad [% check_quad %]> Quad</td>
-<td><input tabindex=17 type=checkbox value=yes name=linked [% check_linked %]> Linked</td>
-</tr>
-
-<tr>
-<th align=right>Cancellation Policy</th>
 <td>
-<select tabindex=18 name=canpol_id>
-[% FOREACH c IN canpol_opts %]
-    <option value=[% c.id %][% IF c.name == program.canpol.name %] selected[% END %]>[% c.name %]</option>
-[% END %]
-</select>
+<div id="tab1focus" class="tab tabfocus" style="display: none">
+Misc
+</div>
+<span onclick="tabs(1)">
+<div id="tab1ready" class="tab tabhold" style="display: none">
+Misc
+</div>
+</span>
 </td>
-<th align=right>Unlinked Dir</th>
-<td><input type=text name=unlinked_dir size=10 value="[% program.unlinked_dir %]"></td>
-</tr>
 
-<tr>
-<th align=right>Housing Cost</th>
 <td>
-<select tabindex=19 name=housecost_id>
-[% FOREACH h IN housecost_opts %]
-    <option value=[% h.id %][% IF h.name == program.housecost.name %] selected[% END %]>[% h.name %]</option>
-[% END %]
-</select>
+<div id="tab2focus" class="tab tabfocus" style="display: none">
+Web
+</div>
+<span onclick="tabs(2)">
+<div id="tab2ready" class="tab tabhold" style="display: none">
+Web
+</div>
+</span>
 </td>
-<th align=right>Footnotes</th>
-<td><input tabindex=21 type=text name=footnotes value="[% program.footnotes %]" size=5></td>
-<td align=left>
-<input type=submit value="Submit" value="Sumbit">
-</td>
-</tr>
 
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><input tabindex=22 type=text name=url value="[% program.url %]" size=60></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Description</th>
-<td colspan=5><textarea tabindex=23 name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea></td>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Brochure Description</th>
-<td colspan=5><textarea tabindex=24 name=brdesc cols=60 rows=10>[% program.brdesc %]</textarea></td>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Program Image</th>
-<td colspan=2>
-[% IF program.image %]
-<img src="[% Catalyst.uri_for('/static/images/pth-') _ program.id _ '.jpg' %]"><br>
-[% END %]
-<input tabindex=25 type=file name=image>
-</td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input tabindex=20 type=text name=glnum value="[% program.glnum %]" size=7>[% ELSE %][% program.glnum %][% END %]</td>
-</tr>
-
-<tr>
-<th align=right valign=center>Templates</th>
-<th align=left valign=top>
-Web Page <select tabindex=26 name=ptemplate>
-[% FOREACH t IN template_opts %]
-    <option value='[% t %]'[% IF t == program.ptemplate %] selected[% END %]>[% t %]</option>
-[% END %]
-</select>
-</th>
-<th align=right>&nbsp;&nbsp;&nbsp;&nbsp;Confirmation Letter</th>
 <td>
-<select tabindex=27 name=cl_template>
+<div id="tab3focus" class="tab tabfocus" style="display: none">
+Lodging
+</div>
+<span onclick="tabs(3)">
+<div id="tab3ready" class="tab tabhold" style="display: none">
+Lodging
+</div>
+</span>
+</td>
+
+<td>
+<div id="tab4focus" class="tab tabfocus" style="display: none">
+Finance
+</div>
+<span onclick="tabs(4)">
+<div id="tab4ready" class="tab tabhold" style="display: none">
+Finance
+</div>
+</span>
+</td>
+
+<td class="emptytab">
+<span id=hid><input type=hidden name=section value=[% section %]></span>
+<input type=submit value="Submit">
+</td>
+
+</tr>       <!-- end of tabs row -->
+
+<tr><td colspan=5><!-- all the content panes -->
+
+<!-- Misc -->
+<div id="content1" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Kaya Kalpa</th>
+<td colspan=2><input type=checkbox value=yes name=kayakalpa [% check_kayakalpa %]></td>
+</tr>
+
+<tr>
+<th align=right>Retreat</th>
+<td><input type=checkbox value=yes name=retreat [% check_retreat %]></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Confirmation Letter<br>Template</th>
+<td valign=top>
+<select name=cl_template>
 [% FOREACH t IN cl_template_opts %]
 <option value='[% t %]'[% IF t == program.cl_template %] selected[% END %]>[% t %]</option>
 [% END %]
@@ -136,17 +108,9 @@ Web Page <select tabindex=26 name=ptemplate>
 </tr>
 
 <tr>
-<th align=right valign=center>Confirmation Letter<br>Notes</th>
-<td colspan=3>
-<table cellpadding=3>
-<tr>
-</tr>
-<tr>
-<td colspan=3>
-<textarea tabindex=28 name=confnote cols=60 rows=3>[% program.confnote %]</textarea>
-</td>
-</tr>
-</table>
+<th align=right valign=top>Confirmation Letter<br>Notes</th>
+<td colspan=4>
+<textarea name=confnote cols=55 rows=3>[% program.confnote %]</textarea>
 </td>
 </tr>
 
@@ -157,28 +121,180 @@ Web Page <select tabindex=26 name=ptemplate>
 <table cellpadding=3>
 <tr>
 <th align=right>Registration Start</th>
-<td><input tabindex=29 type=text size=10 maxlength=10 name=reg_start value='[% program.reg_start %]'></td>
+<td><input type=text size=10 maxlength=10 name=reg_start value='[% program.reg_start %]'></td>
 <th align=right>Program Start</th>
-<td><input tabindex=31 type=text size=10 maxlength=10 name=prog_start value='[% program.prog_start %]'></td>
+<td><input type=text size=10 maxlength=10 name=prog_start value='[% program.prog_start %]'></td>
 </tr>
 <tr>
 <th align=right>End</th>
-<td><input tabindex=30 type=text size=10 maxlength=10 name=reg_end value='[% program.reg_end %]'></td>
+<td><input type=text size=10 maxlength=10 name=reg_end value='[% program.reg_end %]'></td>
 <th align=right>End</th>
-<td><input tabindex=32 type=text size=10 maxlength=10 name=prog_end value='[% program.prog_end %]'></td>
+<td><input type=text size=10 maxlength=10 name=prog_end value='[% program.prog_end %]'></td>
 </tr>
-
 </table>
 
+</table>
+</div>
+
+<!-- Web -->
+<div id="content2" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right><span class="required">*</span> Title</th>
+<td colspan=5><input type=text name=title value="[% program.title %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5><input type=text name=subtitle value="[% program.subtitle %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><input type=text name=url value="[% program.url %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>Footnotes</th>
+<td><input type=text name=footnotes value="[% program.footnotes %]" size=5></td>
+</tr>
+
+<tr>
+<th align=right>Web Ready</th>
+<td><input type=checkbox value=yes name=webready [% check_webready %]></td>
+</tr>
+
+<tr>
+<th align=right>Linked</th>
+<td><input type=checkbox value=yes name=linked [% check_linked %]></td>
+</tr>
+
+<tr>
+<th align=right>Unlinked Dir</th>
+<td><input type=text name=unlinked_dir size=10 value="[% program.unlinked_dir %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Description</th>
+<td colspan=5><textarea name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea></td>
 </td>
 </tr>
 
 <tr>
-<td>&nbsp;</td>
-<td><input tabindex=33 type=submit value="Submit" value="Sumbit"></td>
+<th align=right valign=top>Brochure Description</th>
+<td colspan=5><textarea name=brdesc cols=60 rows=10>[% program.brdesc %]</textarea></td>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Program Image</th>
+<td colspan=2>
+[% IF program.image %]
+<img src="[% Catalyst.uri_for('/static/images/pth-') _ program.id _ '.jpg' %]"><br>
+[% END %]
+<input type=file name=image>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Page<br>Template</th>
+<td valign=top>
+<select name=ptemplate>
+[% FOREACH t IN template_opts %]
+    <option value='[% t %]'[% IF t == program.ptemplate %] selected[% END %]>[% t %]</option>
+[% END %]
+</select>
+</td>
 </tr>
 
 </table>
+</div>
+
+<!-- Lodging -->
+<div id="content3" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Housing Cost</th>
+<td>
+<select name=housecost_id>
+[% FOREACH h IN housecost_opts %]
+    <option value=[% h.id %][% IF h.name == program.housecost.name %] selected[% END %]>[% h.name %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right>Single Bath</th>
+<td><input type=checkbox value=yes name=sbath [% check_sbath %]></td>
+</tr>
+
+<tr>
+<th align=right>Economy</th>
+<td><input type=checkbox value=yes name=economy [% check_economy %]></td>
+</tr>
+
+<tr>
+<th align=right>Quad</th>
+<td><input type=checkbox value=yes name=quad [% check_quad %]></td>
+</tr>
+
+</table>
+</div>
+
+<!-- Finance -->
+<div id="content4" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Tuition</th>
+<td><input type=text name=tuition value="[% program.tuition %]" size=4></td>
+</tr>
+
+<tr>
+<th align=right>Extra Days</th>
+<td><input type=text name=extradays value="[% program.extradays %]" size=2></td>
+</tr>
+
+<tr>
+<th align=right>Full Tuition</th>
+<td><input type=text name=full_tuition value="[% program.full_tuition %]" size=4></td>
+</tr>
+
+<tr>
+<th align=right>Online Deposit</th>
+<td><input type=text name=deposit value="[% program.deposit %]" size=4></td>
+</tr>
+
+<tr>
+<th align=right>Collect Total</th>
+<td><input type=checkbox value=yes name=collect_total [% check_collect_total %]></td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% program.glnum %]" size=7>[% ELSE %][% program.glnum %][% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Cancellation Policy</th>
+<td>
+<select name=canpol_id>
+[% FOREACH c IN canpol_opts %]
+    <option value=[% c.id %][% IF c.name == program.canpol.name %] selected[% END %]>[% c.name %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+</table>
+</div>
+
+</td></tr></table>
 
 </form>
-<script type="text/javascript">document.form.name.focus();</script>
+
+<!-- where to focus? -->
+<script type="text/javascript">tabs([% section %]); document.form.name.focus();</script>

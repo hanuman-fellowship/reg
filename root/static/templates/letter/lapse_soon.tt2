@@ -3,50 +3,10 @@ Dear [% name %],
 Your Hanuman Fellowship [% type %] membership will expire on [% exp_date %].<br>
 You last paid $[% last_amount %] on [% last_paid %].
 <p>
+Information about HFS membership can be found <a href="http://hanumanfellowship.org/NEW_HFS_Membership_App.pdf">here</a>.
+<p>
 Sincerely,<br>
 [% mem_admin %]<br>
-Membership Administrator
-
-----
-
-
-
-        DATE
-NAME
-ADDRESS
-
-Dear NAME
-It's come to our attention that your sponsor membership will
-lapse on DATE.  Our records show that the last payment we received
-was $XXX on DATE.  Sponsor membership lapses if your sponsor dues
-have not been paid for 6 months.  Sponsor dues are $25/month or $300/year.  
-
-By being a current member you are supporting the activities of
-the Hanuman Fellowship and receive the following benefits:
-
-- Eligibility to vote for the Board of Directors
-- Discounts on meals, swedans & health treatments
-- 12 nights per year free accommodations at MMC (space available, accrued and used during each calendar year)
-- 30% discount on MMC programs (maximum $125)
-- Use of hot tub at specified times (see schedule at hot tub).
-
-If you wish to maintain current sponsor membership status and
-the associated benefits please send $XXX to bring your records up
-to date through INSERT THIS MONTHS DATE.  To keep your membership
-current from here forward, please continue your $25/month payments
-or the equivalent thereof in lump sums. 
-
-Please address checks to MMC, rather than to Hanuman Fellowship
-and note that payment is for sponsor membership.  Statements are
-sent out annually to you in January for tax purposes. We do not send
-out monthly statements, but feel free to contact us if you have
-any questions. 
-
-Once again, thanks for your support! If you have any questions,
-please call (408) 847-0406 x334 or email me at memberships@mountmadonna.org
-and I'll be glad to help you.                       
-
-                Warmly,
-
-                NAME
-                Membership Secretary
+Membership Administrator<br>
+(408) 847-0406 x334<br>
+<a href='mailto:memberships@mountmadonna.org'>memberships@mountmadonna.org</a>

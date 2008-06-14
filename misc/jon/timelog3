@@ -58,4 +58,26 @@ Jun 3 9:00-10:30, 12:10-2:00, 5:20-6:15, 10:10-12:05
     planning, debugging, database design
     registration columns date_start, date_end always set
         but not displayed if same as program [se]date.
-        population counts counts are currently wrong.
+        population counts are currently wrong.
+Jun 7 1:00-2:00, 3:00-6:00
+    refining rental tabs
+    program tabifying
+Jun 8 7:20-8:30, 10:30-12:45
+    refinements of js tabs(), links in details on calendar
+    meal list - a good beginning!
+    next - comings and goings
+Jun 9 9:10-9:50, 12:00-1:50, 2:25-5:30, 8:30-9:50
+    tweak to cancellations in loadreg
+    close attention to the meal list
+    rentals in meal list - nice!
+    early/late registrations - useful!
+    user ids gotten better - after consulting doc, forums
+    designing FULL - normal lunches, etc etc.
+        foreign keys.
+Jun 10 9:50-12:30
+    user_id, FULL - doing it right
+        $c->user->obj->id, FULL id = normal id + 1
+    messing with FULL issues, dotted lines, updating
+        affils, meeting places, lunches
+Jun 11 12:10-12:45, 3:30-6:15
+    meal list params, sorting of names

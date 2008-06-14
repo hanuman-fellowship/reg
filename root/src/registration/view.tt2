@@ -36,6 +36,11 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
     <a class=not_sent href="/registration/send_conf/[% reg.id %]">Send Conf</a>
     [% END %]
 [% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/list_reg_name/[% program.id %]">Other Regs</a>
+[% IF online > 0 %]
+&nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
+[% END %]
 <p>
 <table cellpadding=2 border=0>
 
@@ -47,8 +52,10 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 Cancelled
 </span>
 [% END %]
-[% IF reg.date_start != program.sdate %] Arriving [% reg.date_start_obj %].[% END %]
-[% IF reg.date_end   != program.edate %] Leaving [% reg.date_end_obj %].[% END %]
+[% IF reg.date_start != program.sdate %] Arriving [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span>
+[% END %]
+[% IF reg.date_end   != program.edate %] Leaving [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span>
+[% END %]
 </td>
 </tr>
 
@@ -56,12 +63,7 @@ Cancelled
 <th align=right>Program</th>
 <td colspan=3><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a>
 [% IF non_pr %]
-From [% program.sdate_obj %] To [% program.edate_obj %]
-[% END %]
-<span style="margin-left: 1in">
-<a href="/registration/list_reg_name/[% program.id %]">Other [% program.name %]</a>
-[% IF online > 0 %]
-&nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
+From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span> To [% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span>
 [% END %]
 </span>
 </td>

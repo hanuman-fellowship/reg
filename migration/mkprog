@@ -35,6 +35,7 @@ create table program (
     prog_start  text,
     prog_end    text,
     reg_count   integer,
+    lunches     text,
     -- for regi:
     school      integer,
     level       text

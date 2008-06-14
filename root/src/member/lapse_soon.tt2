@@ -1,5 +1,7 @@
 <h2>Members Who Will Lapse Within A Month</h2>
-<a href="/member/email_lapse_soon">Send Email</a>
+<a href="/member/email_lapse_soon">Send <span style="font-weight: bold; color: red">REAL</span> Email</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="/member/email_lapse_soon/1">Send Test Email (to yourself)</a>
 <ul>
 <table cellpadding=3>
 <tr>
@@ -7,12 +9,14 @@
 <th align=left>Name</th>
 <th align=left>Category</th>
 <th align=center>Expiration Date</th>
+<th align=left>Email</th>
 </tr>
 [% IF members.0 %]
 [% FOREACH m IN members %]
+[% p = m.person %]
 <tr>
-<td><a href="/member/update/[% m.id %]">[% m.person.sanskrit || m.person.first %]</a></td>
-<td align=left>[% m.person.last %], [% m.person.first %]</td>
+<td><a href="/member/update/[% m.id %]">[% p.sanskrit || p.first %]</a></td>
+<td align=left>[% p.last %], [% p.first %]</td>
 <td align=left>[% m.category %]</td>
 <td align=center>
 [% IF    m.category == 'General' %][% m.date_general_obj %]
@@ -20,6 +24,7 @@
 [% ELSE %]                         unknown
 [% END %]
 </td>
+<td>[% p.email %]</td>
 </tr>
 [% END %]
 [% END %]

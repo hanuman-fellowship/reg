@@ -1,0 +1,27 @@
+<h2>Early/Late Registrations for [% program.name %]</h2>
+<ul>
+<table cellpadding=3>
+
+<tr>
+<td><a href="/program/view/[% program.id %]">Program</a></td>
+<td>[% program.sdate_obj %]</td>
+<td>[% program.edate_obj %]</td>
+</tr>
+
+<tr><td></td></tr>
+
+<tr>
+<th align=left>Name</th>
+<th align=center>Arrive</th>
+<th align=center>Leave</th>
+</tr>
+[% FOR r IN registrations %]
+[% per = r.person %]
+<tr>
+<td align=left><a href="/registration/view/[% r.id %]">[% per.last %], [% per.first %]</a></td>
+<td align=center>[% IF r.date_start != program.sdate %][% r.date_start_obj %][% ELSE %]&nbsp;[% END %]</td>
+<td align=center>[% IF r.date_end != program.edate %][% r.date_end_obj %][% ELSE %]&nbsp;[% END %]</td>
+</tr>
+[% END %]
+</table>
+</ul>

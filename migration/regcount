@@ -11,6 +11,7 @@ my $cnt_sql = <<"EOS";
     set reg_count = (select count(*) 
                      from registration
                      where program_id = ?
+                       and cancelled = ''
                     )
     where id = ?
 EOS

@@ -17,14 +17,14 @@
 <td><a href=/rental/list>Rentals</a></td>
 <td><a href=/event/list>Events</a></td>
 <td><a href=/event/calendar target=calendar>Calendar</a></td>
-<td><a target=_blank href=/static/help/index.html>Help</td>
+<td><a target=_blank href=/static/help/index.html>Help</a></td>
 [% IF Catalyst.check_user_roles('super_admin') %]
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
 [% END %]
 </tr>
 [% END %]
 </table>
-<p>
+<p></p>
 [% END %]   <!-- if user exists -->
 [% content %]
 </div>

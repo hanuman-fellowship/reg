@@ -46,7 +46,7 @@ sub edate {
 
 sub show {
     my ($self) = @_;
-    $self->sdate . " - " . $self->edate;
+    $self->sdate->format() . " - " . $self->edate->format();
 }
 
 1;

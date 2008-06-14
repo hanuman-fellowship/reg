@@ -57,6 +57,8 @@ Registrations ([% program.reg_count %]) for [% program.name %] - [% program.sdat
 <a href="/program/view/[% program.id %]">Program</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/[% other_sort %]/[% program.id %]">[% other_sort_name %]</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/early_late/[% program.id %]">Early/Late</a>
 [% IF online %]
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>

@@ -1,5 +1,7 @@
 <h2>Lapsed Members</h2>
-<a href="/member/email_lapsed">Send Email</a>
+<a href="/member/email_lapsed">Send <span style="font-weight: bold; color: red">REAL</span> Email</a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<a href="/member/email_lapsed/1">Send Test Email (to yourself)</a>
 <ul>
 <table cellpadding=3>
 <tr>

@@ -1,9 +1,10 @@
-[% msg %]
-
-<h2>Members without an Email Address</h2>
+[% msg %]<br>
+There were [% num_no_email %] members without an email address:
+<p>
 [% FOR m IN no_email %]
 [% p = m.person %]
-<b>[% p.first %] [% p.last %]</b><span style="margin-left: 1in">[% m.category %] - expired [% IF m.category == 'General' %][% m.date_general_obj%][% ELSE %][% m.date_sponsor_obj %][% END %]</span><br>
+[% py = m.payments %]
+<b>[% p.first %] [% p.last %]</b><span style="margin-left: 1in">[% m.category %] - [% status %] on [% IF m.category == 'General' %][% m.date_general_obj%][% ELSE %][% m.date_sponsor_obj %][% END %]</span> - Last paid $[% py.amount %] on [% py.date_payment_obj %]<br>
 [% p.addr1 %]<br>
 [% IF p.addr2 %]
     [% p.addr2 %]<br>

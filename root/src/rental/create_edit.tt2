@@ -1,77 +1,6 @@
-<style type="text/css">
-.head {
-    color: green;
-    font-weight: bold;
-    font-size: 14pt;
-    margin-top: 2mm;
-}
-.stuff {
-    margin-left: 10mm;
-}
-.tab { 
-    font-family: "Lucida Grande";
-    font-size: 15px;
-    width: 120px;
-    white-space: nowrap;
-    text-align: center;
-    border-style: solid;
-    border-color: black;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 0px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    cursor: pointer;
-}
-.tabhold { 
-    background-color: white;
-    color: black;
-}
-.tabfocus { 
-    background-color: black;
-    color: white;
-}
-.tabcontent { 
-    font-family: sans-serif; 
-    font-size: 14px;
-    width: 500px;
-    /* height: 275px; */
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-</style>
-
-<script type="text/javascript">
-//<![CDATA[
-
-var ntabs = 3;
-
-function tabs(t) {
-    for (var n = 1; n <= ntabs; n++) {
-        if (n == t) {
-            document.getElementById('tab'+n+'focus').style.display = 'block';
-            document.getElementById('tab'+n+'ready').style.display = 'none';
-            document.getElementById('content'+n).style.display     = 'block';
-        }
-        else {
-            document.getElementById('tab'+n+'focus').style.display = 'none';
-            document.getElementById('tab'+n+'ready').style.display = 'block';
-            document.getElementById('content'+n).style.display     = 'none';
-        }
-   }
-   document.getElementById('hid').innerHTML = 
-       "<input type=hidden name=section value=" + t + ">";
-    
-}
-
-//]]>
-</script>
+<link rel="stylesheet" type="text/css" href="/static/tabs.css" />
+<script type="text/javascript" src="/static/js/tabs.js"></script>
+<script type="text/javascript">init_tabs(3, 0, 0);</script>
 <h2>Rentals</h2>
 <form action=[% "/rental/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0>
@@ -91,24 +20,25 @@ function tabs(t) {
 
 <table cellpadding=0 cellspacing=0>
 <tr>
+
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Web
+Misc
 </div>
-<span onclick="tabs(1); edit('web')">
+<span onclick="tabs(1)">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Web
+Misc
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
-<span onclick="tabs(2); edit('misc')">
+<span onclick="tabs(2)">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
@@ -117,25 +47,69 @@ Misc
 <div id="tab3focus" class="tab tabfocus" style="display: none">
 Lodging
 </div>
-<span onclick="tabs(3); edit('lodging')">
+<span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
 Lodging
 </div>
 </span>
 </td>
 
-<td style="width: 120px" align=center>
+<td class='emptytab' align=center>
 <span id=hid><input type=hidden name=section value=[% section %]></span>
 <input type=submit value="Submit">
+</td>
+
+<td class='emptytab'>
+&nbsp;
 </td>
 
 </tr>
 
 <tr>
-<td colspan=4>
+<td colspan=5>
 
 <div id="content1" class="tabcontent" style="display: none">
+<table>
 
+<tr>
+<th align=right valign=top width=140>Comment</th>
+<td colspan=5><textarea name=comment cols=28 rows=3>[% rental.comment %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Start Hour</th>
+<td><input type=text name=start_hour value='[% rental.start_hour %]' size=4></td>
+</tr>
+
+<tr>
+<th align=right>End Hour</th>
+<td><input type=text name=end_hour value='[% rental.end_hour %]' size=4></td>
+</tr>
+
+<tr>
+<th align=right>Contract Sent</th>
+<td><input type=text name=contract_sent value='[% rental.contract_sent_obj %]' size=10></td>
+</tr>
+
+<tr>
+<th align=right>Contract Received</th>
+<td><input type=text name=contract_received value='[% rental.contract_received_obj %]' size=10></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=max_confirmed [% check_max_confirmed %]> Maximum Confirmed</td>
+</tr>
+
+</table>
+</div>
+
+<div id="content2" class="tabcontent" style="display: none">
 <table>
 
 <tr>
@@ -177,47 +151,6 @@ Lodging
 </table>
 </div>
 
-<div id="content2" class="tabcontent" style="display: none">
-<table>
-
-<tr>
-<th align=right valign=top width=140>Comment</th>
-<td colspan=5><textarea name=comment cols=28 rows=3>[% rental.comment %]</textarea></td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
-</tr>
-
-<tr>
-<th align=right>Start Hour</th>
-<td><input type=text name=start_hour value='[% rental.start_hour %]' size=4></td>
-</tr>
-
-<tr>
-<th align=right>End Hour</th>
-<td><input type=text name=end_hour value='[% rental.end_hour %]' size=4></td>
-</tr>
-
-<tr>
-<th align=right>Contract Sent</th>
-<td><input type=text name=contract_sent value='[% rental.contract_sent_obj %]' size=10></td>
-</tr>
-
-<tr>
-<th align=right>Contract Received</th>
-<td><input type=text name=contract_received value='[% rental.contract_received_obj %]' size=10></td>
-</tr>
-
-<tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=max_confirmed [% check_max_confirmed %]> Maximum Confirmed</td>
-</tr>
-
-</table>
-</div>
-
 <div id="content3" class="tabcontent" style="display: none">
 <table>
 
@@ -252,6 +185,8 @@ Lodging
 
 </table>
 </div>
+
+</td></tr></table>
 
 </form>
 <script type="text/javascript">

@@ -1366,7 +1366,6 @@ full programs will have the same meeting space as
         a FULL counterpart you need to take the end date
         of the full program instead of the end date of
         the non-full.
-        need to w
 Personal Retreats 
     not figured in population counts
     how to add?
@@ -1531,3 +1530,71 @@ getting population counts for every day on the calendar
     (people coming early, leaving late) we can provide
     them in the 'meal list' and the 'comings and goings'
     lists.
+some problem with getting javascript and css files
+    in there - along with auto layout - it seems to adjust to it
+    and move them into <head>
+should deletion of a program be so easy?
+    does it cascade properly?
+contract sent, received dates - validation
+some rentals and prgroams ridiculously long - simply a place
+    to make payments - or a way to keep them from being purged
+    which is no longer needed...
+
+    Programs:
+    YTT 500
+    YTT 500 ADMIN.2
+    TRANSPORTATION
+    MOTHERING MAG
+
+    Rentals:
+    OMEGA 2-11
+    MEMBERSHIP
+    SECLUSION
+    CREDIT CARD MISC
+    TEMPLE DONATIONS
+
+Date::Simple today() does not use the default format! :(
+need different way of looking for registrations
+    it may entirely contain the two week period.
+personal retreats will not have lunches.
+date formats??? early/late list has so many slashes!
+    could we leave the year off?  and put Jun 4 instead of 06/04???
+        how about the dow?
+    like the meal list...
+foreign key for full programs
+    and one going backwards as well?
+    use edate from full program for meeting place bookings
+        OR have doubled bookings allowed in this circumstance
+        then can do normal methods on the full program
+    show meeting place in full - but no update 
+    same for leaders ???
+    and lunches and ???
+        lunches for both - and the normal range is written
+            to by both?
+do we need a comings and goings?
+can't take a normal program (sans a FULL extension)
+    and make the extradays attribute non-zero.
+    okay the other way around - FULL to non FULL.
+can't change the dates of a program after there
+    are registrations for it. makes for all kinds of trouble!
+note that normal and full programs have independent lunch updating.
+meeting places and affils are done in normal, lunch in both.
+lunches are still had by people leaving that day.
+    not so for dinner.
+    people who arrive that day get dinner but not lunch
+    no lunch on the arrival day - but don't prohibit it???
+how about a faint colored background for the weekend
+    days on the calendar?
+testing - meal list
+    have the range of dates requested vary
+    ensure the same numbers come up for the days
+    have people come early and leave late
+    lunches on various days - including the first day (bogus)
+    people in programs, rentals, personal retreats
+two main ways of getting the meal list:
+    default - two weeks worth of totals starting today, no details
+    enter t in both - check details - get just today with details
+
+    you can get whatever you want but perhaps the most
+        common two should be easier?
+kids - add to the meal list???

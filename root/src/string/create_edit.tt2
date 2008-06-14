@@ -2,7 +2,7 @@
 <form action="[% '/string/' _ form_action %]" name=form>
 <table cellpadding=3 border=0>
 <tr>
-<td align=right>Key</td>
+<th align=right>Key</th>
 <td>[% the_key %]
 [% IF the_key == 'imgwidth' || the_key == 'big_imgwidth' %]
 &nbsp;&nbsp;&nbsp;<input type=checkbox name=resize_all checked> Resize all images
@@ -10,7 +10,7 @@
 </td>
 </tr>
 <tr>
-<td align=right>Value</td>
+<th align=right>Value</th>
 <td><input type=text name=value value="[% value %]" size=70></td>
 </tr>
 <tr>

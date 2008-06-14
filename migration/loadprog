@@ -4,6 +4,8 @@ use warnings;
 use DBI;
 use File::Copy;
 use Getopt::Easy;
+use lib "../lib";
+use Date::Simple qw/date/;
 
 get_options("s-single");
 
@@ -248,6 +250,7 @@ my @fields = qw/
     reg_end
     prog_start
     prog_end
+    lunches
     school
     level
 /;
@@ -421,6 +424,8 @@ sub processProg {
             $hash{image} = "";
         }
     }
+    my $ndays = date($hash{edate}) - date($hash{sdate}) + 1;
+    $hash{lunches} = '0' x $ndays;
     #print "loading pid $hash{pid}\n";
     $p_sth->execute(@hash{@fields}) or die "no exec";      # yay!
     if ($hash{pres1} != 0) {

@@ -43,7 +43,7 @@
 <td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
 <td align=center>[% m.date_sponsor_obj %]</td>
 [% IF ! no_money %]
-<td align=center>[% m.payments.0.date_payment_obj %]</td>
+<td align=center>[% m.payments.date_payment_obj %]</td>
 <td align=right>[% m.total_paid %]</td>
 <td align=right>[% m.sponsor_nights %]</td>
 [% END %]

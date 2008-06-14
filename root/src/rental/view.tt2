@@ -1,88 +1,10 @@
+[% id = rental.id %]
+
+<link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
-<style type="text/css">
-.head {
-    color: green;
-    font-weight: bold;
-    font-size: 14pt;
-    margin-top: .1in;
-}
-.lunch {
-    margin-left: .3in;
-    margin-top: .1in;
-}
-.updlunch {
-    margin-left: .9in;
-}
-.lunch td {
-    width: 50px;
-}
-.stuff {
-    margin-left: 10mm;
-}
-.tab { 
-    font-family: "Lucida Grande";
-    font-size: 15px;
-    width: 120px;
-    white-space: nowrap;
-    text-align: center;
-    border-style: solid;
-    border-color: black;
-    border-left-width: 1px;
-    border-right-width: 1px;
-    border-top-width: 1px;
-    border-bottom-width: 0px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    cursor: pointer;
-}
-.tabhold { 
-    background-color: white;
-    color: black;
-}
-.tabfocus { 
-    background-color: #e66;
-    color: white;
-}
-.tabcontent { 
-    font-family: sans-serif; 
-    font-size: 14px;
-    width: 500px;
-    border-style: solid;
-    border-color: black;
-    border-width: 1px;
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 10px;
-    padding-right: 10px;
-}
-</style>
-
-<script type="text/javascript">
-//<![CDATA[
-var ntabs = 4;
-
-function tabs(t) {
-    for (var n = 1; n <= ntabs; n++) {
-        if (n == t) {
-            document.getElementById('tab'+n+'focus').style.display = 'block';
-            document.getElementById('tab'+n+'ready').style.display = 'none';
-            document.getElementById('content'+n).style.display     = 'block';
-        }
-        else {
-            document.getElementById('tab'+n+'focus').style.display = 'none';
-            document.getElementById('tab'+n+'ready').style.display = 'block';
-            document.getElementById('content'+n).style.display     = 'none';
-        }
-    }
-    if (t == 4)
-        t = 1;
-    document.getElementById('editlink').innerHTML =
-        '<a href="/rental/update/[% rental.id %]/' + t + '">Edit</a>';
-}
-
-//]]>
-</script>
+<script type="text/javascript" src="/static/js/tabs.js"></script>
+<script type="text/javascript">init_tabs(4, [% id %], 0);</script>
 
 <style>
 h3 {
@@ -99,7 +21,7 @@ h3 {
 <a href="/rental/delete/[% rental.id %]"
 onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/program/publish">Publish<a>
+<a href="/program/publish">Publish</a>
 <p>
 [% END %]
 <table cellpadding=3>
@@ -163,10 +85,14 @@ Finance
 </span>
 </td>
 
+<td class="emptytab">
+&nbsp;
+</td>
+
 </tr>
 
 <tr>
-<td colspan=4>
+<td colspan=5>
 
 <div id="content1" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
@@ -233,6 +159,7 @@ Finance
 
 </table>
 <p>
+
 <span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% rental.id %]">Update</a></span>
 <div class=lunch>[% lunch_table %]</div>
 
@@ -241,6 +168,7 @@ Finance
 <div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3>
 
+<tr>
 <th align=right width=150>Linked</th>
 <td>[% rental.linked %]</td> 
 </tr>
@@ -290,8 +218,6 @@ Finance
 <tr>
 <th align=right>Housing Cost</th>
 <td><a href="/housecost/view/[% rental.housecost.id %]">[% rental.housecost.name %]</a></td>
-</tr>
-</td>
 </tr>
 <tr><th align=right>Single Bath</th><td>[% rental.n_single_bath %]</td></tr>
 <tr><th align=right>Single</th><td>[% rental.n_single %]</td></tr>

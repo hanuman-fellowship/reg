@@ -661,22 +661,11 @@ sub _get_data {
 sub get_now {
     my ($c, $reg_id) = @_;
 
-    # can't do $c->user->id for some unknown reason??? so...
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
-
-    my $today = today();
-    my $now_date = $today->as_d8();
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
     return
         reg_id   => $reg_id,
-        user_id  => $user_id,
-        the_date => $now_date,
-        time     => $now_time;
+        user_id  => $c->user->obj->id,
+        the_date => today()->as_d8(),
+        time     => sprintf "%02d:%02d", (localtime())[2, 1];
     # we return an array of 8 values perfect
     # for passing to a DBI insert/update.
 }
@@ -715,6 +704,7 @@ sub create_do : Local {
         status        => $hash{status},
         nights_taken  => $taken,
         free_prog_taken => $hash{free_prog},
+        cancelled    => '',     # to be sure
         @dates,         # optionally
     });
     my $reg_id = $reg->id();
@@ -722,16 +712,10 @@ sub create_do : Local {
     # prepare for history records
     my @who_now = get_now($c, $reg_id);
 
-    # also get the user id of the 'web user'
-    my ($wu) = model($c, 'User')->search({
-        username => 'web_user',
-    });
-    my $web_user_id = $wu->id();
-
     # first, we have some PAST history
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
-        user_id  => $web_user_id,
+        user_id  => $c->user->obj->id,
         the_date => $hash{date_postmark},
         time     => $hash{time_postmark},
         what     => 'Online Registration',       # other name???
@@ -1792,6 +1776,22 @@ sub delete : Local {
         reg_count => \'reg_count - 1',
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
+}
+
+sub early_late : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $pr   = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search({
+                   program_id => $prog_id,
+                   -or => [
+                       early => 'yes',
+                       late  => 'yes',
+                   ],
+               });
+    $c->stash->{program} = $pr;
+    $c->stash->{registrations} = \@regs;
+    $c->stash->{template} = "registration/early_late.tt2";
 }
 
 1;

@@ -129,18 +129,6 @@ sub pay_balance_do : Local {
     my $what = $c->request->params->{what};
     my $type = $c->request->params->{type};
 
-    # can't do $c->user->id for some unknown reason??? so...
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
-
-    my $today = today();
-    my $now_date = $today->as_d8();
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
-
     model($c, 'XAccountPayment')->create({
         xaccount_id => $xaccount_id,
         person_id   => $person_id,
@@ -148,9 +136,9 @@ sub pay_balance_do : Local {
         type        => $type,
         what        => $what,
 
-        user_id     => $user_id,
-        the_date    => $now_date,
-        time        => $now_time,
+        user_id     => $c->user->obj->id,
+        the_date    => today()->as_d8(),
+        time        => sprintf "%02d:%02d", (localtime())[2, 1],
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }

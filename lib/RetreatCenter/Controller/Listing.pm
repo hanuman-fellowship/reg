@@ -4,8 +4,15 @@ package RetreatCenter::Controller::Listing;
 use base 'Catalyst::Controller';
 
 use Person;
-use Util qw/valid_email model/;
-use Date::Simple qw/date/;
+use Util qw/
+    valid_email
+    model
+    clear_lunch
+    get_lunch
+    trim
+/;
+use Date::Simple qw/date today/;
+use DateRange;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -260,6 +267,219 @@ EOS
     print {$out} "</pre>\n";
     close $out;
     $c->response->redirect($c->uri_for("/static/undup.html"));
+}
+
+#
+# we need to accomodate the weirdest most complex
+# least likely situation.  this is the bane of the
+# software engineer.
+#
+# assume that they arrive after breakfast
+# and leave after lunch and before dinner.
+#
+my ($event_start, $lunches);
+sub lunch {
+    my ($d) = @_;
+
+    my $i = $d-$event_start;
+    return $i >= 0 && substr($lunches, $i, 1);
+}
+
+# the details are mostly for testing purposes - maybe
+# i'm not afraid of using global variables... it's simpler!
+# we have a complex structure here!
+#
+my (@meals, @detls);
+my ($d8, $info, $npeople, $details);
+sub add {
+    my ($meal) = @_;
+    $meals[$d8]{$meal}++;
+    push @{$detls[$d8]{$meal}}, $info if $details;
+}
+sub sum {
+    my ($meal) = @_;
+    $meals[$d8]{$meal} += $npeople;
+    push @{$detls[$d8]{$meal}}, $info if $details;
+}
+sub detail_disp {
+    my ($aref) = @_;
+    # should be an array ref of array refs.
+    return "" unless defined $aref;
+    "<table>\n"
+    . (join "\n",
+       map { 
+           "<tr><td>$_->[0]</td><td>$_->[1]</td></tr>"
+       }
+       sort {
+           $a->[0] cmp $b->[0]
+       }
+       @$aref
+      )
+    . "</table>\n";
+}
+
+sub meal_list : Local {
+    my ($self, $c) = @_;
+
+    my $sdate = trim($c->request->params->{sdate});
+    my $edate = trim($c->request->params->{edate});
+    $details = $c->request->params->{details};
+
+    Date::Simple->default_format("%D");
+
+    my $fmt = "%b %e"; # easier for the kitchen to read
+
+    # validation
+    my $start = $sdate? date($sdate, $fmt): today($fmt);
+    if (! $start) {
+        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+
+    Date::Simple->relative_date($start);
+    my $end = $edate? date($edate, $fmt): $start + 13;
+    Date::Simple->relative_date();
+
+    if (! $end) {
+        $c->stash->{mess} = "Illegal end date: $end";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    if ($end < $start) {
+        $c->stash->{mess} = "End date must be after Start date.";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+
+    my $dr    = DateRange->new($start, $end);
+
+    my $start_d8 = $start->as_d8();
+    my $end_d8   = $end->as_d8();
+
+    my @regs = model($c, 'Registration')->search({
+                   date_start => { '<=' => $end_d8   },
+                   date_end   => { '>=' => $start_d8 },
+                   cancelled  => '',
+               });
+    my @rentals = model($c, 'Rental')->search({
+                      sdate => { '<=' => $end_d8   },
+                      edate => { '>=' => $start_d8 },
+                  });
+
+    @meals = ();   # hashrefs from $start to $end
+    @detls = ();   # names, sources
+    clear_lunch();
+    my $d;      # to loop through days
+    for my $r (@regs) {
+
+        if ($details) {
+            my $person = $r->person;
+            $info = [ $person->last . ", " . $person->first,
+                      $r->program->name
+                    ];
+        }
+        ($event_start, $lunches)  = get_lunch($c, $r->program_id);
+        my $ol = $dr->overlap(DateRange->new($r->date_start_obj,
+                                             $r->date_end_obj));
+        my $sd = $ol->sdate;
+        my $ed = $ol->edate;
+
+        my $r_start = $r->date_start_obj;
+        my $r_end   = $r->date_end_obj;
+
+        # optimizations???
+        # have a $n = day number?  so $d++; $n++; and then 'if lunch($n)'
+
+        for ($d = $sd; $d <= $ed; ++$d) {
+            $d8 = $d->as_d8();
+            add('breakfast') if $d != $r_start;
+            add('lunch')     if $d != $r_start && lunch($d);
+            add('dinner')    if $d != $r_end;
+        }
+    }
+    RENTAL:
+    for my $r (@rentals) {
+        # set globals
+
+        $event_start = $r->sdate_obj;
+        $lunches = $r->lunches;
+        $npeople = $r->count;
+        next RENTAL unless $npeople;
+
+        if ($details) {
+            $info = [ "$npeople People" , $r->name ];
+        }
+        my $ol = $dr->overlap(DateRange->new($event_start,
+                                             $r->edate_obj));
+        my $sd = $ol->sdate;
+        my $ed = $ol->edate;
+
+        my $r_start = $r->sdate_obj;
+        my $r_end   = $r->edate_obj;
+
+        # we assume all people in the rental
+        # arrive and leave at the same time.
+
+        for ($d = $sd; $d <= $ed; ++$d) {
+            $d8 = $d->as_d8();
+            sum('breakfast') if $d != $r_start;
+            sum('lunch')     if $d != $r_start && lunch($d);
+            sum('dinner')    if $d != $r_end;
+        }
+    }
+    my $css = $c->uri_for("/static/meal_list.css");
+    my $list .= <<"EOL";
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="$css" />
+</head>
+<body>
+<table cellpadding=3>
+<caption>Meal List</caption>
+<tr>
+<th colspan=2 align=center>Date</th>
+<th>Breakfast</th>
+<th>Lunch</th>
+<th>Dinner</th>
+</tr>
+EOL
+    $d = $start;
+    while ($d <= $end) {
+        my $key = $d->as_d8();
+        $list .= "<tr>\n";
+        $list .= "<td align=right>" . $d->format("%a") . "</td>\n";
+        $list .= "<td>$d</td>\n";
+        for my $m (qw/breakfast lunch dinner/) {
+            $list .= "<td align=right>"
+                      . ((defined $meals[$key]{$m})? $meals[$key]{$m}: "-")
+                      . "</td>\n";
+        }
+        $list .= "</tr>\n";
+        ++$d;
+    }
+    $list .= "</table>\n";
+    if ($details) {
+        $list .= "<p>\n";
+        $d = $start;
+        while ($d <= $end) {
+            my $key = $d->as_d8();
+            $list .= $d->format("%a") . " $d\n<ul>\n";
+            for my $m (qw/breakfast lunch dinner/) {
+                $list .= "\u$m\n\t<ul>\n"
+                       . detail_disp($detls[$key]{$m})
+                       . "\n\t</ul>\n";
+            }
+            $list .= "</ul>\n";
+            ++$d;
+        }
+        
+    }
+    $list .= <<"EOL";
+</body>
+</html>
+EOL
+    $c->res->output($list);
 }
 
 sub stale : Local {

@@ -46,6 +46,7 @@ __PACKAGE__->add_columns(qw/
     prog_start
     prog_end
     reg_count
+    lunches
     school
     level
 /);

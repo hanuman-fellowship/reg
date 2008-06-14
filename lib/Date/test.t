@@ -50,7 +50,7 @@ is("date is $d", "date is September Sunday", "format setting");
 is($d->get_format(), "%B %A", "format getting");
 
 $d = Date::Simple->new();
-is("$d", Date::Simple->today()->format(), "new() == today()");
+is("$d", today()->format(), "new() == today()");
 
 $d = Date::Simple->new([ 2007, 9, 2]);
 $e = Date::Simple->new(2007, 9, 2);
@@ -74,6 +74,10 @@ is(date("20071002") - date("20070928"), 4, "days between dates");
 Date::Simple->default_format("%B %A");
 $d = date("20070902");
 is("$d", "September Sunday", "new default format");
+
+$d = today("%B %A");
+is("$d", $d->format("%B") . " " . $d->format("%A"),
+         "today() new default format");
 
 $d = date('');
 is($d, undef, "'' gives undef?");

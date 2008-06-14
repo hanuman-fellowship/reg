@@ -63,20 +63,23 @@ sub create_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $meetingplace = model($c, 'MeetingPlace')->find($id);
-    $c->stash->{meetingplace} = $meetingplace;
+    my $mp = model($c, 'MeetingPlace')->find($id);
+    $mp->{bgcolor} = sprintf("#%02x%02x%02x", $mp->color =~ m{\d+}g);
+    $c->stash->{mp} = $mp;
     $c->stash->{template}     = "meetingplace/view.tt2";
 }
 
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{meetingplaces} = [
-        model($c, 'MeetingPlace')->search(
-            undef,
-            { order_by => 'abbr' },
-        )
-    ];
+    my @mp = model($c, 'MeetingPlace')->search(
+                 undef,
+                 { order_by => 'abbr' },
+             );
+    for my $mp (@mp) {
+        $mp->{bgcolor} = sprintf("#%02x%02x%02x", $mp->color =~ m{\d+}g);
+    }
+    $c->stash->{meetingplaces} = \@mp;
     $c->stash->{template} = "meetingplace/list.tt2";
 }
 

@@ -26,11 +26,13 @@ sub new {
     }
     my $ndays = days_in_month($year, $month);
     my $cal_width = $ndays*$day_width + 1;
-        # +1 above for the last vertical line
+        # we use +1 in the above line for the last vertical line
     my $im = GD::Image->new($cal_width, $cal_height);
     my $white = $im->colorAllocate(255,255,255);    # 1st color = background
     my $red   = $im->colorAllocate(255,  0,  0);
     my $black = $im->colorAllocate(0,    0,  0);
+    my $mon_thu = $im->colorAllocate($lookup{mon_thu_color} =~ m{\d+}g);
+    my $fri_sun = $im->colorAllocate($lookup{fri_sun_color} =~ m{\d+}g);
     # surrounding border
     $im->rectangle(0, 0, $cal_width-1, $cal_height-1, $black);
 
@@ -43,9 +45,19 @@ sub new {
         my $n_offset = (length($name) == 1)? 8: 4;
         # the above are sensitive to the day_width
 
-        $im->line($x, 0, $x, $cal_height-1, $black);
+        # vertical lines for the days of the month
+        $im->line($x, 0, $x, $cal_height-1, $black) unless $d == 1;
+            # if d == 1 the line is already there (surrounding border).
+
+        # background colors for the different days
+        $im->filledRectangle(
+            $x+1, $day_height, $x+$day_width-1, $cal_height-2,
+            ((1 <= $dow && $dow <= 4)? $mon_thu
+             :                         $fri_sun)
+        );
+
+        # today is special
         if ($d == $today) {
-            my $today_color = $im->colorAllocate(200,200,255);
             $im->filledRectangle(
                 $x+1, 1, $x+$day_width, $day_height-1,
                 $im->colorAllocate($lookup{today_color} =~ m{\d+}g)
@@ -141,10 +153,15 @@ sub add_pr {
     my ($self, $sday, $eday, $pr) = @_;
 
     my $per = $pr->person;
+    my $start = $pr->date_start_obj->day;
+    my $end   = $pr->date_end_obj->day;
     my $name = $per->last . ", " . $per->first;
     my $id = $pr->id;
     for my $d ($sday .. $eday) {
-        push @{$self->{prs}[$d]}, "$name\t$id";
+        my $status = ($d == $start)? "arr"
+                    :($d == $end  )? "lv"
+                    :                "";
+        push @{$self->{prs}[$d]}, "$name\t$id\t$status";
         $self->{counts}[$d]++;
     }
 }

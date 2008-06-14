@@ -55,9 +55,9 @@ sub _get_data {
         push @mess, "Name cannot be blank";
     }
     # dates are either blank or converted to d8 format
-    for my $d (qw/ sdate edate /) {
+    for my $d (qw/ sdate edate contract_sent contract_received /) {
         my $fld = $hash{$d};
-        if (! $fld =~ /\S/) {
+        if ($d =~ /date/ && $fld !~ /\S/) {
             push @mess, "missing date field";
             next;
         }
@@ -132,18 +132,11 @@ sub create_do : Local {
 
     $hash{glnum} = compute_glnum($c, $hash{sdate});
 
-    # can't do $c->user->id for some unknown reason??? so...
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
-
     if ($hash{contract_sent}) {
-        $hash{sent_by} = $user_id;
+        $hash{sent_by} = $c->user->obj->id;
     }
     if ($hash{contract_received}) {
-        $hash{received_by} = $user_id;
+        $hash{received_by} = $c->user->obj->id;
     }
     my $r = model($c, 'Rental')->create(\%hash);
     my $id = $r->id();
@@ -154,7 +147,7 @@ sub _h24 {
     my ($s) = @_;
 
     my ($h) = $s =~ m{(\d+)};
-    if (1 <= $h && $h <= 7) {
+    if ($h && 1 <= $h && $h <= 7) {
         $h += 12;
     }
     $h;
@@ -237,7 +230,7 @@ sub view : Local {
     }
     my $extra_hours_charge = $extra_hours
                            * $tot_people
-                           * $lookup{extra_hour_charge};
+                           * $lookup{extra_hours_charge};
 
     $tot_charges += $extra_hours_charge;
 
@@ -389,17 +382,11 @@ sub update_do : Local {
         $hash{lunches} = '0' x (date($hash{edate}) - date($hash{sdate}) + 1);
     }
 
-    # can't do $c->user->id for some unknown reason??? so...
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
     if ($hash{contract_sent} ne $r->contract_sent) {
-        $hash{sent_by} = $user_id;
+        $hash{sent_by} = $c->user->obj->id;
     }
     if ($hash{contract_received} ne $r->contract_received) {
-        $hash{received_by} = $user_id;
+        $hash{received_by} = $c->user->obj->id;
     }
 
     $r->update(\%hash);
@@ -445,13 +432,6 @@ sub pay_balance_do : Local {
     my $amt = $c->request->params->{amount};
     my $type = $c->request->params->{type};
 
-    # can't do $c->user->id for some unknown reason??? so...
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
-
     my $today = today();
     my $now_date = $today->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
@@ -463,7 +443,7 @@ sub pay_balance_do : Local {
         amount    => $amt,
         type      => $type,
 
-        user_id  => $user_id,
+        user_id  => $c->user->obj->id,
         the_date => $now_date,
         time     => $now_time,
     });
@@ -559,12 +539,6 @@ sub new_charge_do : Local {
         return;
     }
 
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
-
     my $today = today();
     my $now_date = $today->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
@@ -575,7 +549,7 @@ sub new_charge_do : Local {
         amount    => $amount,
         what      => $what,
 
-        user_id   => $user_id,
+        user_id   => $c->user->obj->id,
         the_date  => $now_date,
         time      => $now_time,
     });
@@ -605,7 +579,7 @@ sub update_lunch_do : Local {
     $r->update({
         lunches => $l,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }
 
 1;

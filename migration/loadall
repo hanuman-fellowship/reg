@@ -36,11 +36,11 @@ echo people
 loadpeople
 echo leaders, canpol, housecost, programs
 # ??? f07 => f89
-loadprog f89
+loadprog f07
 echo registrations
-loadreg f89
+loadreg f07
 echo rentals
-loadrent f89
+loadrent f07
 
 # update the reg_count field in all program records
 regcount

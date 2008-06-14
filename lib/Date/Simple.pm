@@ -53,6 +53,7 @@ sub today {
     my ($d, $m, $y) = (localtime)[3..5];
     $y += 1900;
     $m += 1;
+    push @_, $default_format unless @_;
     return ymd($y, $m, $d, @_);   # any arg is format
 }
 
@@ -167,7 +168,7 @@ sub new {
         elsif ($x =~ m{^(\d\d)(\d\d)(\d\d)$}) {
             @ymd = _three($1, $2, $3);
         }
-        elsif ($x =~ m{%}) {
+        elsif ($x =~ m{%}) {        # a format
             return today($x);
         }
         elsif ($x =~ m{^(\d+)\D+(\d+)\D+(\d+)$}) {
