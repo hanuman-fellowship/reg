@@ -1598,3 +1598,12 @@ two main ways of getting the meal list:
     you can get whatever you want but perhaps the most
         common two should be easier?
 kids - add to the meal list???
+better sort for the lists of lapsed or soon to lapse members.
+template toolkit
+    py = m.payments
+    py.amount is py[0].amount
+    can't do py.0.amount??
+    can't do m.payments.0.amount??
+total payments - doesn't drop general payments????
+    okay - but a little misleading having a total paid
+    for general members.

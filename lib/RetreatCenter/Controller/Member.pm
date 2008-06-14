@@ -372,8 +372,8 @@ sub email_lapsed : Local {
                             :                          $m->date_sponsor);
 
         my @payments = $m->payments();
-        my $last_amount  = $payments[0]->amount;
-        my $last_paid = $payments[0]->date_payment_obj;
+        my $last_amount  = (@payments)? $payments[0]->amount: 0 ;
+        my $last_paid    = (@payments)? $payments[0]->date_payment_obj: 0;
         my $type = $m->category;
 
         my $html = "";
@@ -435,8 +435,8 @@ sub email_lapse_soon : Local {
         my $type = $m->category;
 
         my @payments = $m->payments();
-        my $last_amount  = $payments[0]->amount;
-        my $last_paid = $payments[0]->date_payment_obj;
+        my $last_amount  = (@payments)? $payments[0]->amount: 0 ;
+        my $last_paid    = (@payments)? $payments[0]->date_payment_obj: 0;
         my $html = "";
         my $tt = Template->new({
             INCLUDE_PATH => 'root/static/templates/letter',

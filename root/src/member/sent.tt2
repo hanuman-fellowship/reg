@@ -4,7 +4,7 @@ There were [% num_no_email %] members without an email address:
 [% FOR m IN no_email %]
 [% p = m.person %]
 [% py = m.payments %]
-<b>[% p.first %] [% p.last %]</b><span style="margin-left: 1in">[% m.category %] - [% status %] on [% IF m.category == 'General' %][% m.date_general_obj%][% ELSE %][% m.date_sponsor_obj %][% END %]</span> - Last paid $[% py.amount %] on [% py.date_payment_obj %]<br>
+<b>[% p.first %] [% p.last %]</b><span style="margin-left: 1in">[% m.category %] - [% status %] on [% IF m.category == 'General' %][% m.date_general_obj%][% ELSE %][% m.date_sponsor_obj %][% END %]</span> - [% IF py %]Last paid $[% py.amount %] on [% py.date_payment_obj %][% END %]<br>
 [% p.addr1 %]<br>
 [% IF p.addr2 %]
     [% p.addr2 %]<br>

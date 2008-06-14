@@ -1,7 +1,9 @@
 Dear [% name %],
 <p>
 Your Hanuman Fellowship [% type %] membership will expire on [% exp_date %].<br>
+[% IF last_amount %]
 You last paid $[% last_amount %] on [% last_paid %].
+[% END %]
 <p>
 Information about HFS membership can be found <a href="http://hanumanfellowship.org/NEW_HFS_Membership_App.pdf">here</a>.
 <p>
