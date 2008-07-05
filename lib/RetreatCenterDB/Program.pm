@@ -91,7 +91,12 @@ __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'program_id');
 #
 
 use Date::Simple qw/date today/;
-use Util qw/slurp expand housing_types/;
+use Util qw/
+    slurp
+    expand
+    housing_types
+    places
+/;
 use Lookup;
 use Image::Size;
 use File::Copy;
@@ -673,6 +678,10 @@ sub image_file {
 sub count {
     my ($self) = @_;
     return scalar($self->reg_count);
+}
+sub meeting_places {
+    my ($self) = @_;
+    places($self);
 }
 
 1;

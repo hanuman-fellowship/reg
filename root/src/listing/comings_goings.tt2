@@ -1,0 +1,68 @@
+<h2>For [% date.format("%A, %B %e") %]</h2>
+<h3>Coming</h3>
+<ul>
+<table cellpadding=3>
+<tr>
+<th align=left>Name</th>
+<th align=left>Program/Rental</th>
+</tr>
+
+[% FOR r IN ind_coming %]
+[% p = r.person %]
+[% pr = r.program %]
+<tr>
+<td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
+<td><a target=happening href="/program/view/[% pr.id %]">[% pr.name %]</a></td>
+</tr>
+[% END %]
+
+[% FOR p IN prg_coming %]
+<tr>
+<td>[% p.count %] [% p.noun %]</td>
+<td><a target=happening href="/program/view/[% p.id %]">[% p.name %]</a></td>
+</tr>
+[% END %]
+
+[% FOR r IN rnt_coming %]
+<tr>
+<td>[% r.count %] people</td>
+<td><a target=happening href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+</tr>
+[% END %]
+
+</table>
+</ul>
+
+<h3>Going</h3>
+<ul>
+<table cellpadding=3>
+<tr>
+<th align=left>Name</th>
+<th align=left>Program/Rental</th>
+</tr>
+
+[% FOR r IN ind_going %]
+[% p = r.person %]
+[% pr = r.program %]
+<tr>
+<td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
+<td><a target=happening href="/program/view/[% pr.id %]">[% pr.name %]</a></td>
+</tr>
+[% END %]
+
+[% FOR p IN prg_going %]
+<tr>
+<td>[% p.count %] [% p.noun %]</td>
+<td><a target=happening href="/program/view/[% p.id %]">[% p.name %]</a></td>
+</tr>
+[% END %]
+
+[% FOR r IN rnt_going %]
+<tr>
+<td>[% r.count %] people</td>
+<td><a target=happening href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+</tr>
+[% END %]
+
+</table>
+</ul>

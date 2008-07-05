@@ -1,0 +1,17 @@
+<table border=1 cellpadding=5>
+<tr><th colspan=4>Members Sans Email</th></tr>
+<tr>
+<th>Name</th>
+<th>Home</th>
+<th>Work</th>
+<th>Cell</th>
+</tr>
+[% FOR p IN non_email %]
+<tr>
+<td><a target=person href="/person/view/[% p.id %]">[% p.first %] [% p.last %]</a> [% IF p.sanskrit %]([% p.sanskrit %])[% END %]</td>
+<td>[% IF p.tel_home %][% p.tel_home %][% END %]</td>
+<td>[% IF p.tel_work %][% p.tel_work %][% END %]</td>
+<td>[% IF p.tel_cell %][% p.tel_cell %][% END %]</td>
+</tr>
+[% END %]
+</table>

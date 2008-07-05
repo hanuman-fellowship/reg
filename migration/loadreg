@@ -379,13 +379,13 @@ sub processReg {
     if (! $hash{date_start}) {
         $hash{date_start} = $sdate;
     }
-    if ($hash{date_start} ne $sdate) {
+    elsif ($hash{date_start} ne $sdate) {
         $hash{early} = 'yes';
     }
     if (! $hash{date_end}) {
         $hash{date_end} = $edate;
     }
-    if ($hash{date_end} ne $edate) {
+    elsif ($hash{date_end} ne $edate) {
         $hash{late} = 'yes';
     }
     $ins_reg_sth->execute($reg_id,

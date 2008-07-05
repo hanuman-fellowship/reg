@@ -41,12 +41,14 @@ sub transform_dates {
         $dates{early} = 'yes';
     }
     else {
+        $dates{early}      = '';
         $dates{date_start} = $pr->sdate;
     }
     if ($dates{date_end}) {
         $dates{late} = 'yes';
     }
     else {
+        $dates{late}     = '';
         $dates{date_end} = $pr->edate;
     }
     %dates;
@@ -125,7 +127,7 @@ sub grab_new : Local {
 }
 
 sub list_reg_name : Local {
-    my ($self, $c, $prog_id) = @_;
+    my ($self, $c, $prog_id, $all) = @_;
 
     my $pat = $c->request->params->{pat} || "";
     $pat = trim($pat);
@@ -146,12 +148,17 @@ sub list_reg_name : Local {
                    $_->[2]
                }
                sort {
-                   $a->[0] cmp $b->[0] or
+                   $a->[0] cmp $b->[0] ||
                    $a->[1] cmp $b->[1]
                }
                grep {
-                   $_->[0] =~ m{^$pref_last}i  and
-                   $_->[1] =~ m{^$pref_first}i
+                   $all ||
+                   (
+                       (!$_->[2]->cancelled) &&
+                       (!($_->[2]->arrived) || $_->[2]->balance > 0) &&
+                       $_->[0] =~ m{^$pref_last}i  &&
+                       $_->[1] =~ m{^$pref_first}i
+                   )
                }
                map {
                    my $p = $_->person;
@@ -704,7 +711,8 @@ sub create_do : Local {
         status        => $hash{status},
         nights_taken  => $taken,
         free_prog_taken => $hash{free_prog},
-        cancelled    => '',     # to be sure
+        cancelled     => '',    # to be sure
+        arrived       => '',    # ditto
         @dates,         # optionally
     });
     my $reg_id = $reg->id();
@@ -767,7 +775,8 @@ sub create_do : Local {
 
     # finally, bump the reg_count in the program record
     $pr->update({
-        reg_count => \'reg_count + 1',      # tricky
+        #reg_count => \'reg_count + 1',      # tricky??? unneeded
+        reg_count => $pr->reg_count + 1,
     });
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
@@ -1414,11 +1423,13 @@ sub matchreg : Local {
                    $_->[2]
                }
                sort {
-                   $a->[0] cmp $b->[0] or
+                   $a->[0] cmp $b->[0] ||
                    $a->[1] cmp $b->[1]
                }
                grep {
-                   $_->[0] =~ m{^$pref_last}i  and
+                   (!$_->[2]->cancelled) &&
+                   (!($_->[2]->arrived) || $_->[2]->balance > 0) &&
+                   $_->[0] =~ m{^$pref_last}i  &&
                    $_->[1] =~ m{^$pref_first}i
                }
                map {
@@ -1782,7 +1793,22 @@ sub early_late : Local {
     my ($self, $c, $prog_id) = @_;
 
     my $pr   = model($c, 'Program')->find($prog_id);
-    my @regs = model($c, 'Registration')->search({
+    my $sdate = $pr->sdate;
+    my $edate = $pr->edate;
+    my @regs = sort {
+                   $a->{name} cmp $b->{name}
+               } map {
+                   my $p = $_->person;
+                   {
+                       id     => $_->id,
+                       name   => $p->last . ", " . $p->first,
+                       arrive => ($_->date_start eq $sdate)? ""
+                                 :               $_->date_start_obj->format,
+                       leave  => ($_->date_end eq $edate)? ""
+                                 :               $_->date_end_obj->format,
+                   }
+               }
+               model($c, 'Registration')->search({
                    program_id => $prog_id,
                    -or => [
                        early => 'yes',
@@ -1792,6 +1818,16 @@ sub early_late : Local {
     $c->stash->{program} = $pr;
     $c->stash->{registrations} = \@regs;
     $c->stash->{template} = "registration/early_late.tt2";
+}
+
+sub arrived : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Registration')->find($id);
+    $r->update({
+        arrived => 'yes',
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
 1;

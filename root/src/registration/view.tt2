@@ -29,6 +29,10 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/update/[% reg.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
+[% IF ! reg.arrived %]
+<a href="/registration/arrived/[% reg.id %]">Arrived</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
 [% IF ! reg.cancelled %]
     [% IF reg.letter_sent %]
     <a href="/registration/send_conf/[% reg.id %]">ReSend Conf</a>
@@ -132,8 +136,10 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% tot = tot + ch.amount %]
 [% END %]
 
+<tr><td style="border-top: solid thin"></td></tr>
+
 <tr>
-<td align=right><span style="border-top: solid thin">[% tot %]</span></td>
+<td align=right>[% tot %]</td>
 <td>Total</td>
 </tr>
 
@@ -171,8 +177,10 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% tot = tot + py.amount %]
 [% END %]
 
+<tr><td style="border-top: solid thin"></td></tr>
+
 <tr>
-<td align=right><span style="border-top: solid thin">[% tot %]</span></td>
+<td align=right>[% tot %]</td>
 <td>Total</td>
 </tr>
 </table>

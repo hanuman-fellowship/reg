@@ -16,11 +16,10 @@
 <th align=center>Leave</th>
 </tr>
 [% FOR r IN registrations %]
-[% per = r.person %]
 <tr>
-<td align=left><a href="/registration/view/[% r.id %]">[% per.last %], [% per.first %]</a></td>
-<td align=center>[% IF r.date_start != program.sdate %][% r.date_start_obj %][% ELSE %]&nbsp;[% END %]</td>
-<td align=center>[% IF r.date_end != program.edate %][% r.date_end_obj %][% ELSE %]&nbsp;[% END %]</td>
+<td align=left><a href="/registration/view/[% r.id %]">[% r.name %]</a></td>
+<td align=center>[% r.arrive %]</td>
+<td align=center>[% r.leave  %]</td>
 </tr>
 [% END %]
 </table>

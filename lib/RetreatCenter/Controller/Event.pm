@@ -160,7 +160,10 @@ sub listpat : Local {
         my $pat = $event_pat;
         $pat =~ s{\*}{%}g;
         $cond = {
-            name => { 'like' => "${pat}%" },
+            -or => [
+                name  => { 'like' => "${pat}%" },
+                descr => { 'like' => "${pat}%" },
+            ],
         };
     }
     $c->stash->{events} = [
@@ -450,7 +453,7 @@ sub calendar : Local {
                                     places($ev);
                 if ($ev_type eq 'rental') {
                     $printable_row .= "<td>&nbsp;</td>"
-                                   .  "<td align=right>$count</td>";
+                                   .  "<td align=left>$count</td>";
                 }
                 elsif ($ev_type eq 'program') {
                     $printable_row .= "<td align=right>$count</td>";
@@ -743,6 +746,7 @@ EOH
         my $form = ($firstcal)? "<form action='/event/calendar'>": "";
         $content .= "$form<a name=$key>\n<span class=hdr>"
                   . $month_name
+                  . "</span>"
                   . "<img border=0 class=jmptable src=$jump_img usemap=#jump>";
         if ($firstcal) {
             my $go_form = <<"EOH";
@@ -750,7 +754,6 @@ EOH
 <input class=go type=submit value="Go">
 </form>
 EOH
-            $content .= "</span>\n";
             $content .= "<div class=details>Details <input type=checkbox name=detail checked onclick='detail_toggle()'></div>$go_form";
             $firstcal = 0;
         }
@@ -773,8 +776,7 @@ EOH
 <th align=left   valign=bottom>Name</th>
 <th align=left   valign=bottom>Place</th>
 <th align=right  valign=bottom>Reg<br>Count</th>
-<th align=right  valign=bottom>Rental<br>Max</th>
-<th align=center valign=bottom>Rental<br>Status</th>
+<th align=center  valign=bottom colspan=2>Rental<br>Max&nbsp;&nbsp;Status</th>
 </tr>
 $details{$key}
 </table>

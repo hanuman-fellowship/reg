@@ -268,6 +268,7 @@ sub view : Local {
 sub list : Local {
     my ($self, $c) = @_;
 
+    Lookup->init($c);
     my $today = today()->as_d8();
     $c->stash->{rentals} = [
         model($c, 'Rental')->search(

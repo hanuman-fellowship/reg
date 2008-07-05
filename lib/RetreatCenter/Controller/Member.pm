@@ -58,9 +58,10 @@ sub membership_list : Local {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $life) = @_;
 
     # sort by sanskrit or first
+    my $cond = ($life)? undef: { category => { '!=' => 'Life' } };
     my @members =
         map {
             $_->[1]
@@ -71,7 +72,7 @@ sub list : Local {
         map {
             [ $_->person->last . ' ' . $_->person->first, $_ ]
         }
-        model($c, 'Member')->all();
+        model($c, 'Member')->search($cond);
     $c->stash->{members} = \@members;
     $c->stash->{template} = "member/list.tt2";
 }
@@ -609,6 +610,25 @@ sub bulk_do : Local {
     }
     close $list;
     $c->response->redirect($c->uri_for("/static/memlist.txt"));
+}
+
+sub non_email : Local {
+    my ($self, $c) = @_;
+    $c->stash->{non_email} = [
+        grep {
+            ! $_->email
+        }
+        sort {
+            $a->first cmp $b->first
+        }
+        map {
+            $_->person
+        }
+        model($c, 'Member')->search({
+            category => { '!=' => 'Life' }
+        })
+    ];
+    $c->stash->{template} = "member/non_email.tt2";
 }
 
 1;

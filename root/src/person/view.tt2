@@ -78,12 +78,13 @@ XX --!>
 <tr>
 <th align=right>State/Province</th><td>[% person.st_prov %]</td>
 
-[% IF Catalyst.check_user_roles('prog_staff') && registrations %]
+[% regs = person.registrations %]
+[% IF Catalyst.check_user_roles('prog_staff') && regs %]
     <td>&nbsp;</td>
     <td rowspan=12 valign=top>
     <table cellpadding=2>
     <tr><td class=larger>Registrations</td></tr>
-    [% FOREACH r IN registrations %]
+    [% FOREACH r IN regs %]
         <tr>
         <td><a href="/registration/view/[% r.id %]">[% r.program.name %]</a></td>
         <td>[% IF r.date_start %][% r.date_start_obj %][% ELSE %][% r.program.sdate_obj %][% END %]</td>

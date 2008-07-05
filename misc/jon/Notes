@@ -1459,6 +1459,7 @@ rental field validation
     editing of GL Number - restricted to super admin
 document - editing of GL number for programs - only super admin
 instead of check marks for lunches - change the background color?
+    done.  both.
 it is POSSIBLE for a person to come 20 days early to a program
     and stay 30 days after.   highly unlikely but software engineers
     need to be ready for all things possible likely or not.
@@ -1583,13 +1584,19 @@ lunches are still had by people leaving that day.
     not so for dinner.
     people who arrive that day get dinner but not lunch
     no lunch on the arrival day - but don't prohibit it???
+    lunch is not possible the first day of the rental/program.
+note in the doc that in the tabbed dialogs
+    the current tab is maintained when moving
+    between view and edit modes.
+    (this was not easily achieved!)
+    rental dialog - no edit of finances so tab is not there for edits
 how about a faint colored background for the weekend
     days on the calendar?
 testing - meal list
     have the range of dates requested vary
     ensure the same numbers come up for the days
     have people come early and leave late
-    lunches on various days - including the first day (bogus)
+    lunches on various days - including the first day (Not possible)
     people in programs, rentals, personal retreats
 two main ways of getting the meal list:
     default - two weeks worth of totals starting today, no details
@@ -1598,7 +1605,7 @@ two main ways of getting the meal list:
     you can get whatever you want but perhaps the most
         common two should be easier?
 kids - add to the meal list???
-better sort for the lists of lapsed or soon to lapse members.
+need better sort for the lists of lapsed or soon to lapse members.
 template toolkit
     py = m.payments
     py.amount is py[0].amount
@@ -1607,3 +1614,49 @@ template toolkit
 total payments - doesn't drop general payments????
     okay - but a little misleading having a total paid
     for general members.
+to lapsed list
+    add caveat - if there is any discrepancy please contact us.
+    from membership@mountmadonna.org not the login email
+    add link for getting just the list of snail mail addresses.
+    make it show a static/ file rather than $c->res->output.
+        to protect against resubmission?.
+Listings - Referral list. - used?
+add On Reg Notification to the Misc tab of Programs
+    and use it.
+meal list - should we have a place for storing a 'residential count'
+    that could be added to the meal list counts?
+deposits
+    finalize, store old ones for reference.
+calendar
+    months at beginning and end of jump table
+    may coerce towards recent and latest events.
+comings/goings - rentals too
+no longer necessary to schedule a separate
+    personal retreat when someone comes early or leaves late
+    i take care of the finances properly (default rate
+        for the extra days before and/or after).
+ask for list by postmark, then narrow the list => by name
+    still says "By Name". -> By Postmark
+when viewing registrations you see:
+    non arrived, > 0 balance, non-cancelled
+    unless you have requested 'All'.
+    non arrived, zero balance will take you to the registration
+        screen where you can choose 'Arrived'.
+        this can happen if the total was collected online...
+        they need to 'register' to know where their housing is.
+    once you type a restricting pattern you no longer
+        see the cancelled or arrived or > zero balance
+        you must choose 'All' again.
+    if you want to find a person's registration
+        after they have arrived and paid:
+            - go to registrations, click on All,
+                scroll down, find them, click on them.
+            - go to people search, find them, click on the reg
+meal list should not include people
+    who have not arrived!?
+how to optimize the constant re-getting of programs?
+    when making a late list for example
+    a cache of some sort?  does SQL itself or DBIx::Class provide such?
+Personal Retreats F09
+    must be entered along with the other programs in the season
+list of members sans email - name, phone #

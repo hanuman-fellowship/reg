@@ -42,7 +42,9 @@ __PACKAGE__->many_to_many(affils => 'affil_person', 'affil',
                          );
 
 # registrations
-__PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration', 'person_id');
+__PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
+                      'person_id',
+                      { order_by => 'date_start desc' });
 
 # rental coordinator
 __PACKAGE__->has_many(rentals => 'RetreatCenterDB::Rental', 'coordinator_id');

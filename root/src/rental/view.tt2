@@ -247,7 +247,7 @@ Finance
 <td align=right>[% actual_lodging %]</td>
 </tr>
 
-<tr><td></td></tr>
+<tr><td colspan=2 style="border-top: dashed thin"></td></tr>
 
 <tr>
 <th align=right>Lodging</th>
@@ -281,6 +281,7 @@ Finance
 <td align=right>[% tot_payments %]</td>
 </tr>
 
+<tr><td></td><td style="border-top: solid thin"></td></tr>
 <tr>
 <th align=right>Balance</th>
 <td align=right>[% rental.balance %]</td>
@@ -308,8 +309,9 @@ Other Charges
 </td>
 </tr>
 [% END %]
+<tr><td style="border-top: solid thin"></td><td></td></tr>
 <tr>
-<td align=right><span style="border-top: solid thin">[% tot_other_charges %]</span></td>
+<td align=right>[% tot_other_charges %]</td>
 <td>Total</td>
 </tr>
 <tr>
@@ -339,8 +341,9 @@ Payments
 </td>
 </tr>
 [% END %]
+<tr><td style="border-top: solid thin"></td><td></td></tr>
 <tr>
-<td align=right><span style="border-top: solid thin">[% tot_payments %]</span></td>
+<td align=right>[% tot_payments %]</td>
 <td>Total</td>
 </tr>
 

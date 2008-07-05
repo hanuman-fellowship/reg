@@ -554,7 +554,10 @@ EOH
         my $lunch = $lunches[$d];
         my $color = ($lunch && $view)? '#99FF99': '#FFFFFF';
         $s .= "<td align=left bgcolor=$color>" . $cur->day;
-        if ($view) {
+        if ($cur == $sdate) {
+            ;       # no lunch is possible the first day
+        }
+        elsif ($view) {
             my $w = $lunch? '': 'w';
             $s .= "<img src='/static/images/${w}checked.gif'>";
         }

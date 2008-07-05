@@ -260,25 +260,6 @@ sub view : Local {
     }
     $c->stash->{affils} = [ $p->affils() ];
 
-    # Schwartzian???
-    # get the registrations and sort them
-    # in reverse program start date order.   Is there
-    # a way to do this within DBIx relationships?
-    # perhaps.
-    my @regs = map {
-                   $_->[1]
-               }
-               sort {
-                   $b->[0] cmp $a->[0]
-               }
-               map {
-                   [ $_->date_start || $_->program->sdate, $_ ]
-               }
-               $p->registrations;
-    if (@regs) {
-        $c->stash->{registrations} = \@regs;
-    }
-
     $c->stash->{template} = "person/view.tt2";
 }
 
@@ -637,14 +618,14 @@ sub mkpartner : Local {
     $c->response->redirect($c->uri_for("/person/search"));
 }
 
-# show all future programs and allow one to be chosen
+# show all future (and current) programs and allow one to be chosen
 sub register1 : Local {
     my ($self, $c, $id) = @_;
 
     my $person = model($c, 'Person')->find($id);
     my @programs = model($c, 'Program')->search(
         {
-            sdate => { '>=',    today()->as_d8() },
+            edate => { '>'       => today()->as_d8() },
             name  => { -not_like => '%personal%retreat%' },
         },
         { order_by => [ 'sdate', 'name' ] },

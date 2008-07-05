@@ -1,5 +1,15 @@
 <h2>Listings</h2>
+<table border=0>
+<tr><td valign=top>
 <ul>
+<li><a href="/listing/comings_goings">Today's Comings and Goings</a>
+<p>
+<form action="/listing/comings_goings" method=POST>
+On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
+</form>
+<p>
+<li><a href="/listing/late_notices">Late Notices for Today</a>
+<p>
 <li>Meal Lists<p>
 <ul>
 <li><a href="/listing/meal_list">For Planning</a>
@@ -33,6 +43,20 @@
 
 </form>
 </ul>
+<li><a target=_blank href="/listing/undup">Unduplication File</a>
+<p>
+<li><a href="/listing/email_check">Email Check</a>
+<p>
+<form action="/listing/mark_inactive">
+<li>Last date of contact before which<br>people should be marked inactive:
+<br>
+<input type=text name=date_last size=10 maxlength=10>
+<input type=submit value="Submit">
+</form>
+<p>
+</ul>
+</td><td valign=top>
+<ul>
 <li><a href=/report/list>General Reports</a><p>
 <li>Phone Lists
 <ol>
@@ -40,10 +64,6 @@
 <li><a href="/listing/phone_line">In One Line</a>
 <li><a href="/listing/phone_noaddr">No Address</a>
 </ol>
-<p>
-<li><a target=_blank href="/listing/undup">Unduplication File</a>
-<p>
-<li><a href="/listing/email_check">Email Check</a>
 <p>
 <li><a href="/finance/new_deposit">New Deposit</a><p>
 <li><a href="/finance/deposits">Prior Deposits</a><p>
@@ -67,10 +87,5 @@
 <input type=submit value="Submit">
 </form>
 </ul>
-<p>
-<form action="/listing/mark_inactive">
-<li>Last date of contact before which people should be marked inactive:
-<input type=text name=date_last size=10 maxlength=10>
-<input type=submit value="Submit">
-</form>
 </ul>
+</td></tr></table>

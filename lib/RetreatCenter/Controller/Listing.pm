@@ -556,4 +556,138 @@ sub help_upload : Local {
     $c->response->redirect($c->uri_for("/static/help/index.html"));
 }
 
+sub comings_goings : Local {
+    my ($self, $c) = @_;
+
+    my $cg_date = trim($c->request->params->{cg_date});
+    my $d8;
+    if ($cg_date) {
+        my $d = date($cg_date);
+        if (! $d) {
+            $c->stash->{mess} = "Illegal date: $cg_date";
+            $c->stash->{template} = "gen_error.tt2";
+            return;
+        }
+        $d8 = $d->as_d8();
+    }
+    else {
+        $d8 = today()->as_d8();
+    }
+
+    my @coming = model($c, 'Registration')->search({
+                     date_start => $d8,
+                     cancelled  => '',
+                 });
+    my (@ind_coming) = map {
+                           $_->[1],
+                       }
+                       sort {
+                           $a->[0] cmp $b->[0]
+                       }
+                       map {
+                           my $p = $_->person;
+                           [ $p->last . $p->first, $_ ],
+                       }
+                       grep { $_->early }
+                       @coming;
+    my (@prg_coming) = grep { ! $_->early } @coming;
+    my %prg_coming;
+    for my $r (@prg_coming) {
+        ++$prg_coming{$r->program_id};
+    }
+    @prg_coming = ();
+    for my $p_id (keys %prg_coming) {
+        push @prg_coming, {
+            id    => $p_id,
+            name  => model($c, 'Program')->find($p_id)->name,
+            count => $prg_coming{$p_id},
+            noun  => ($prg_coming{$p_id} == 1)? "person": "people",
+        };
+    }
+    @prg_coming = sort {
+                      $a->{name} cmp $b->{name}
+                  }
+                  @prg_coming;
+    my (@rnt_coming) = sort {
+                           $a->name cmp $b->name
+                       }
+                       model($c, 'Rental')->search({
+                           sdate => $d8,
+                       });
+
+    my (@going) = model($c, 'Registration')->search({
+                      date_end => $d8,
+                      cancelled  => '',
+                  });
+    my (@ind_going) = map {
+                          $_->[1],
+                      }
+                      sort {
+                          $a->[0] cmp $b->[0]
+                      }
+                      map {
+                          my $p = $_->person;
+                          [ $p->last . $p->first, $_ ],
+                      }
+                      grep { $_->late }
+                      @going;
+    my (@prg_going ) = grep { ! $_->late } @going;
+    my %prg_going;
+    for my $r (@prg_going) {
+        ++$prg_going{$r->program_id};
+    }
+    @prg_going = ();
+    for my $p_id (keys %prg_going) {
+        push @prg_going, {
+            id    => $p_id,
+            name  => model($c, 'Program')->find($p_id)->name,
+            count => $prg_going{$p_id},
+            noun  => ($prg_going{$p_id} == 1)? "person": "people",
+        };
+    }
+    @prg_going = sort {
+                      $a->{name} cmp $b->{name}
+                  }
+                  @prg_going;
+    my (@rnt_going) = sort {
+                          $a->name cmp $b->name
+                      }
+                      model($c, 'Rental')->search({
+                          edate => $d8,
+                      });
+
+    $c->stash->{date} = date($d8);
+    $c->stash->{ind_coming} = \@ind_coming;
+    $c->stash->{ind_going}  = \@ind_going;
+    $c->stash->{prg_coming} = \@prg_coming;
+    $c->stash->{prg_going}  = \@prg_going;
+    $c->stash->{rnt_coming} = \@rnt_coming;
+    $c->stash->{rnt_going}  = \@rnt_going;
+
+    $c->stash->{template} = "listing/comings_goings.tt2";
+}
+
+sub late_notices : Local {
+    my ($self, $c) = @_;
+
+    my $d8 = today()->as_d8();
+    my @non_arr = map {
+                      $_->[1],
+                  }
+                  sort {
+                    $a->[0] cmp $b->[0]
+                  }
+                  map {
+                      my $pers = $_->person;
+                      [ $pers->last . ", " . $pers->first, $_ ]
+                  }
+                  model($c, 'Registration')->search({
+                      date_start => $d8,
+                      arrived    => '',
+                      cancelled  => '',
+                  });
+    $c->stash->{non_arr} = \@non_arr;
+    $c->stash->{template} = "listing/late_notices.tt2";
+}
+
 1;

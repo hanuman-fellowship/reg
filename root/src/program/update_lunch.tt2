@@ -9,7 +9,7 @@
 <th align=right>Name</th>
 <td><span class=larger>[% program.name %]</span></td>
 <th align=right>From</th>
-<td>[% rprogram.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span></td>
+<td>[% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span></td>
 <th align=right>To</th>
 <td>[% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span></td>
 </tr>

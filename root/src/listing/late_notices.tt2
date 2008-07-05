@@ -1,0 +1,10 @@
+<h2>Late Notices for Today</h2>
+<ul>
+[% FOR r IN non_arr %]
+[% pers = r.person %]
+[% prog = r.program %]
+<a href="/registration/view/[% r.id %]">[% pers.last %], [% pers.first %]</a> of [% prog.name %] meeting in [% prog.meeting_places %]<br>
+Housed in [% r.h_name %].
+<p>
+[% END %]
+</ul>
