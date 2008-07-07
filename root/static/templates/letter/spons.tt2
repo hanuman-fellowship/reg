@@ -1,0 +1,4 @@
+The Sponsor Membership is maintained with a
+yearly $[% lookup.mem_spons_pay_6 %] in advance
+or monthly dues of $[% lookup.mem_spons_pay_month %]
+per person which should be paid near the beginning of the month.

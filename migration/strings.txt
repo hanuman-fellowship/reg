@@ -69,3 +69,11 @@ extra_hours_charge 2
 lunch_charge 9
 mon_thu_color 240,240,255
 fri_sun_color 255,240,240
+mem_team Shyama Friedberg (Secretary), Richard Buzzini, Rosemary Griffin
+mem_phone 408-748-0406 x334
+mem_email memberships@mountmadonna.org
+mem_site http://hanumanfellowship.org/NEW_HFS_Membership_App.pdf
+mem_credit_phone 408-847-0406
+mem_credit_hours M-F 9-5, Sat 11-5, and Sun 1-7
+mem_spons_pay_month 25
+mem_spons_pay_6 300 

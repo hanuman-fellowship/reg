@@ -1,0 +1,9 @@
+[% INCLUDE style.tt2 %]
+Dear [% sanskrit %],
+<p>
+Thank you for the payment of $[% amount %]
+for General Membership in the Hanuman Fellowship
+which we received on [% pay_date %].
+Your dues are in effect until [% expire_date %]. 
+<p>
+[% INCLUDE info.tt2 %]

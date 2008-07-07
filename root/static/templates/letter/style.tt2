@@ -1,0 +1,8 @@
+<style>
+body {
+    width: 500px;
+}
+li {
+    margin-bottom: 3mm;
+}
+</style>

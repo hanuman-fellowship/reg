@@ -12,8 +12,13 @@ use Util qw/
     model
     email_letter
 /;
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+    today
+    days_in_month
+/;
 use Lookup;
+use Template;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -200,8 +205,12 @@ sub update_do : Local {
     $hash{total_paid} = $total;
 
     # update the member record
+    my $pay_date = $hash{mkpay_date};
+    my $amount   = $hash{mkpay_amount};
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
+    $member->update(\%hash);
+
     if ($member->sponsor_nights != $hash{sponsor_nights}) {
         # add NightHist record to reflect the change
         model($c, 'NightHist')->create({
@@ -222,9 +231,97 @@ sub update_do : Local {
             @who_now,
         });
     }
-    $member->update(\%hash);
+    if (!$amount) {
+        $c->response->redirect($c->uri_for("/member/view/$id"));
+        return;
+    }
 
-    $c->response->redirect($c->uri_for("/member/view/$id"));
+    Lookup->init($c);
+    my $html = acknowledge($member, $amount, $pay_date);
+    if (my $email = $member->person->email()) {
+        email_letter($c,
+            subject    => "Hanuman Fellowship Membership Payment",
+            to         => $email,
+            from       => $lookup{mem_email},
+            from_title => "HFS Membership",
+            html       => $html,
+        );
+        $c->response->redirect($c->uri_for("/member/view/$id"));
+    }
+    else {
+        $c->res->output($html);
+    }
+}
+
+sub acknowledge {
+    my ($member, $amount, $pay_date) = @_;
+
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $html     = "";
+    my $person   = $member->person;
+    my $category = $member->category;
+    my $benefits = ($category eq 'Sponsor'
+                    && date($member->date_sponsor) > today());
+    my $stash = {
+        sanskrit    => ($person->sanskrit || $person->first),
+        amount      => $amount,
+        pay_date    => date($pay_date),
+        expire_date => date($member->date_general),
+        due_date    => ($benefits? six_prior(date($member->date_sponsor))
+                        :          month_after(date($pay_date))
+                       ),
+        lookup      => \%lookup,
+    };
+    $tt->process(
+        # template file:
+        "ack_"
+            . ($category eq 'General'? 'gen': 'spons')
+            . (($category eq 'Sponsor' && ! $benefits)? "_pre": "")
+            . ".tt2",
+        $stash,                         # variables
+        \$html,                         # output
+    );
+    $html;
+}
+
+sub six_prior {
+    my ($dt) = @_;
+
+    my $day   = $dt->day;
+    my $month = $dt->month;
+    my $year  = $dt->year;
+    $month -= 6;
+    if ($month < 1) {
+        $month += 12;
+        --$year;
+    }
+    my $dim = days_in_month($year, $month);
+    if ($day > $dim) {
+        $day = $dim;
+    }
+    return date($year, $month, $day);
+}
+
+sub month_after {
+    my ($dt) = @_;
+
+    my $day   = $dt->day;
+    my $month = $dt->month;
+    my $year  = $dt->year;
+    ++$month;
+    if ($month > 12) {
+        $month -= 12;
+        ++$year;
+    }
+    my $dim = days_in_month($year, $month);
+    if ($day > $dim) {
+        $day = $dim;
+    }
+    return date($year, $month, $day);
+
 }
 
 #
@@ -254,10 +351,11 @@ sub create_do : Local {
     return if @mess;
 
     my $date = $hash{mkpay_date};
-    my $amnt = $hash{mkpay_amount};
+    my $amount = $hash{mkpay_amount};
+
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
-    $hash{total_paid} = $amnt;
+    $hash{total_paid} = $amount;
 
     my $member = model($c, 'Member')->create({
         person_id    => $person_id,
@@ -271,11 +369,12 @@ sub create_do : Local {
         model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $date,
-            amount       => $amnt,
+            amount       => $amount,
             general      => $hash{category} eq 'General'? 'yes': '',
             @who_now,
         });
     }
+
     # NightHist records
     if ($hash{category} ne 'General') {
         model($c, 'NightHist')->create({
@@ -295,7 +394,28 @@ sub create_do : Local {
             action     => ($hash{free_prog_taken})? 5: 3,
         });
     }
-    $c->response->redirect($c->uri_for("/member/view/$id"));
+
+    if (!$amount) {
+        $c->response->redirect($c->uri_for("/member/view/$id"));
+        return;
+    }
+
+    Lookup->init($c);
+    my $html = acknowledge($member, $amount, $date);
+    
+    if (my $email = $member->person->email()) {
+        email_letter($c,
+            subject    => "Hanuman Fellowship Membership Payment",
+            to         => $email,
+            from       => $lookup{mem_email},
+            from_title => "HFS Membership",
+            html       => $html,
+        );
+        $c->response->redirect($c->uri_for("/member/view/$id"));
+    }
+    else {
+        $c->res->output($html);
+    }
 }
 
 sub _lapsed_members {
@@ -360,10 +480,10 @@ sub email_lapsed : Local {
     my @no_email;
     my $nsent = 0;
     my $mem_admin = $c->user->first . ' ' . $c->user->last;
+    Lookup->init($c);
     MEMBER:
     for my $m (@{_lapsed_members($c)}) {
         my $per = $m->person;
-        my $name = $per->first . ' ' . $per->last;
         my $email = $per->email;
         if (! $email) {
             push @no_email, $m;
@@ -383,24 +503,25 @@ sub email_lapsed : Local {
             EVAL_PERL    => 0,
         });
         my $stash = {
-            name        => $name,
-            type        => $type,
+            sanskrit    => ($per->sanskrit || $per->first),
             exp_date    => $exp_date,
             last_amount => $last_amount,
             last_paid   => $last_paid,
-            mem_admin   => $mem_admin,
+            lookup      => \%lookup,
         };
         $tt->process(
-            "lapse.tt2",      # template
+            # template
+            "lapse_"
+                . ($type eq 'General'? 'gen': 'spons')
+                . ".tt2",
             $stash,           # variables
             \$html,           # output
         );
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Status",
-            #to         => $email,
             to         => (($test)? $c->user->email: $email),
-            from       => $c->user->email,
-            from_title => $mem_admin,
+            from       => $lookup{mem_email},
+            from_title => "HFS Membership",
             html       => $html,
         );
         ++$nsent;
@@ -422,6 +543,7 @@ sub email_lapse_soon : Local {
     my @no_email;
     my $nsent = 0;
     my $mem_admin = $c->user->first . ' ' . $c->user->last;
+    Lookup->init($c);
     MEMBER:
     for my $m (@{_soon_to_lapse_members($c)}) {
         my $per = $m->person;
@@ -444,24 +566,25 @@ sub email_lapse_soon : Local {
             EVAL_PERL    => 0,
         });
         my $stash = {
-            name        => $name,
-            type        => $type,
+            sanskrit    => ($per->sanskrit || $per->first),
             exp_date    => $exp_date,
             last_amount => $last_amount,
             last_paid   => $last_paid,
-            mem_admin   => $mem_admin,
+            lookup      => \%lookup,
         };
         $tt->process(
-            "lapse_soon.tt2", # template
+            "lapse_"
+                . ($type eq 'General'? 'gen': 'spons')
+                . "_soon.tt2", # template
             $stash,           # variables
             \$html,           # output
         );
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Status",
             to         => (($test)? $c->user->email: $email),
-            from       => $c->user->email,
-            from_title => $mem_admin,
             html       => $html,
+            from       => $lookup{mem_email},
+            from_title => "HFS Membership",
         );
         ++$nsent;
     }

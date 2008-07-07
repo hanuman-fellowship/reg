@@ -1660,3 +1660,7 @@ how to optimize the constant re-getting of programs?
 Personal Retreats F09
     must be entered along with the other programs in the season
 list of members sans email - name, phone #
+when making member payment (with subsequent email) & sending lapsed email
+    make the response page an actual file that
+    is viewed with root/static.  then a refresh will
+    not resend?

@@ -1,0 +1,12 @@
+[% INCLUDE style.tt2 %]
+Dear [% sanskrit %],
+<p>
+Thank you for the payment of $[% amount %]
+for Sponsor Membership in the Hanuman Fellowship
+which we received on [% pay_date %].
+Your benefits are now in effect as we&#8217;ve received the equivalent of
+6 months of dues. Your next payment will be due on [% due_date %].
+<p>
+[% INCLUDE spons.tt2 %]
+<p>
+[% INCLUDE info.tt2 %]
