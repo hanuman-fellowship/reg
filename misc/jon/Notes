@@ -1657,10 +1657,23 @@ meal list should not include people
 how to optimize the constant re-getting of programs?
     when making a late list for example
     a cache of some sort?  does SQL itself or DBIx::Class provide such?
-Personal Retreats F09
+doc - Personal Retreats F09
     must be entered along with the other programs in the season
 list of members sans email - name, phone #
+
 when making member payment (with subsequent email) & sending lapsed email
     make the response page an actual file that
     is viewed with root/static.  then a refresh will
     not resend?
+name/addr on top of printed
+ack of ack
+click on name of lapse to get letter
+no last payment in lapse letter?
+ensure no double sending
+    new window for the response?
+housing charge correct if early/late?
+dup regs?
+_here_ in printed letter?
+7 letter examples
+sort lapsed by last name
+Sanskrit - left align

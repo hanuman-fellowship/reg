@@ -7,7 +7,8 @@ h3 {
 </style>
 <h2>Members</h2>
 <!-- need post for +1 in dates -->
-<form method=post action=[% '/member/' _ form_action %] name=form>
+<form method=post action=[% '/member/' _ form_action %] name=form target=_blank
+onsubmit="history.go(-1)">
 
 <span class=larger>[% person.first %] [% person.last %]</span>
 <span style="margin-left: 1in"><a href="/person/view/[% person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a></span>

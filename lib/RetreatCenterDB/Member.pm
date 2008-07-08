@@ -24,7 +24,7 @@ __PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
 
 # sponsor history payments - maybe
 __PACKAGE__->has_many('payments' => 'RetreatCenterDB::SponsHist', 'member_id',
-                      { order_by => 'date_payment desc' },
+                      { order_by => 'date_payment desc, time desc' },
                      );
 __PACKAGE__->has_many('nighthist' => 'RetreatCenterDB::NightHist', 'member_id',
                       { order_by => 'the_date desc, time desc, id desc' },

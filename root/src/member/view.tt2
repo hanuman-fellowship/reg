@@ -16,14 +16,16 @@ h3 {
 <a href="/member/update/[% member.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
-<p style="color: red; font-size: 14pt">
-[% IF member.category == 'General' %]
+<p>
+<div style="color: red; font-size: 14pt">
+[% message %][% IF member.category == 'General' %]
 General Member - Expires [% member.date_general_obj %]
 [% ELSIF member.category == 'Sponsor' %]
-Sponsor Member - expires [% member.date_sponsor_obj %], [% member.sponsor_nights %] Nights Left
+Sponsor Member - Expires [% member.date_sponsor_obj %], [% member.sponsor_nights %] Nights Left
 [% ELSE %]
 Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member.free_prog_taken %]was taken.[% ELSE %]not yet taken.[% END %]
 [% END %]
+</div>
 <ul>
 </table>
 </form>

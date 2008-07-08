@@ -1,5 +1,5 @@
 [% INCLUDE style.tt2 %]
-Dear [% sanskrit %],
+[% message %]Dear [% sanskrit %],
 <p>
 Thank you for the payment of $[% amount %]
 for Sponsor Membership in the Hanuman Fellowship

@@ -1,15 +1,10 @@
 [% msg %]<br>
-There were [% num_no_email %] members without an email address:
-<p>
+There [% num_no_email %] without an email address.<br>
+Click on each of the names below to print their letter.<br>
+Close the window after printing.
+<ol>
 [% FOR m IN no_email %]
 [% p = m.person %]
-[% py = m.payments %]
-<b>[% p.first %] [% p.last %]</b><span style="margin-left: 1in">[% m.category %] - [% status %] on [% IF m.category == 'General' %][% m.date_general_obj%][% ELSE %][% m.date_sponsor_obj %][% END %]</span> - [% IF py %]Last paid $[% py.amount %] on [% py.date_payment_obj %][% END %]<br>
-[% p.addr1 %]<br>
-[% IF p.addr2 %]
-    [% p.addr2 %]<br>
+<li><a target=_blank href="/member/lapsed_letter/[% m.id %]/[% soon %]">[% p.last %], [% p.first %]</a>[% IF p.sanskrit %] ([% p.sanskrit %])[% END %]
 [% END %]
-[% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
-[% IF p.country %][% p.country %][% END %]
-<p>
-[% END %]
+<ul>

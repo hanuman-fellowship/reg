@@ -246,11 +246,21 @@ sub update_do : Local {
             from_title => "HFS Membership",
             html       => $html,
         );
-        $c->response->redirect($c->uri_for("/member/view/$id"));
+        $c->response->redirect($c->uri_for("/member/view/$id/1"));
     }
     else {
-        $c->res->output($html);
+        $c->res->output(no_here($html) . js_print());
     }
+}
+
+sub no_here {
+    my ($html) = @_;
+    $html =~ s{<a.*>here</a>.\n<p>}{ on the HFS website:<ul>www.hanumanfellowship.org</ul>};
+    $html;
+}
+
+sub js_print {
+    "<script type='text/javascript'>window.print()</script>";
 }
 
 sub acknowledge {
@@ -265,6 +275,33 @@ sub acknowledge {
     my $category = $member->category;
     my $benefits = ($category eq 'Sponsor'
                     && date($member->date_sponsor) > today());
+    my $message = "";
+    if ( ! $person->email) {
+        my $name = $person->first . " " . $person->last;
+        my $addr = $person->addr1 . "<br>\n";
+        if (my $addr2 = $person->addr2) {
+            $addr .= $addr2 . "<br>\n";
+        }
+        $addr .= $person->city . ", "
+               . $person->st_prov . " "
+               . $person->zip_post;
+        $message = <<"EOA";
+<style>
+body {
+    margin-left: .5in;
+}
+#addr {
+    margin-top: 2in;
+    margin-bottom: .5in;
+}
+</style>
+<div id=addr>
+$name<br>
+$addr
+<p>
+</div>
+EOA
+    }
     my $stash = {
         sanskrit    => ($person->sanskrit || $person->first),
         amount      => $amount,
@@ -274,6 +311,8 @@ sub acknowledge {
                         :          month_after(date($pay_date))
                        ),
         lookup      => \%lookup,
+        message     => $message,
+        category    => $category,
     };
     $tt->process(
         # template file:
@@ -411,10 +450,10 @@ sub create_do : Local {
             from_title => "HFS Membership",
             html       => $html,
         );
-        $c->response->redirect($c->uri_for("/member/view/$id"));
+        $c->response->redirect($c->uri_for("/member/view/$id/1"));
     }
     else {
-        $c->res->output($html);
+        $c->res->output(no_here($html) . js_print());
     }
 }
 
@@ -422,6 +461,16 @@ sub _lapsed_members {
     my ($c) = @_;
     my $today = today()->as_d8();
     return [
+        map {
+            $_->[1]
+        }
+        sort {
+            $a->[0] cmp $b->[0]
+        }
+        map {
+            my $per = $_->person();
+            [ $per->last . $per->first, $_ ]
+        }
         model($c, 'Member')->search({
             -or => [
                 -and => [
@@ -532,8 +581,11 @@ sub email_lapsed : Local {
                         :              "s were sent.");
     $c->stash->{status} = "expired";
 
-    $c->stash->{num_no_email} = scalar(@no_email);
+    $c->stash->{num_no_email} = (@no_email == 1)?
+                                      "was 1 member":
+                                      "were " . scalar(@no_email) . " members";
     $c->stash->{no_email} = \@no_email;
+    $c->stash->{soon} = "0";
     $c->stash->{template} = "member/sent.tt2";
 }
 
@@ -593,8 +645,11 @@ sub email_lapse_soon : Local {
     $c->stash->{msg} = "$nsent email reminder letter"
                       . (($nsent == 1)? " was sent."
                          :              "s were sent.");
-    $c->stash->{num_no_email} = scalar(@no_email);
+    $c->stash->{num_no_email} = (@no_email == 1)?
+                                      "was 1 member":
+                                      "were " . scalar(@no_email) . " members";
     $c->stash->{no_email} = \@no_email;
+    $c->stash->{soon} = "1";
     $c->stash->{template} = "member/sent.tt2";
 }
 
@@ -633,8 +688,11 @@ sub access_denied : Private {
 }
 
 sub view : Local {
-    my ($self, $c, $id) = @_;
-
+    my ($self, $c, $id, $email) = @_;
+    
+    if ($email) {
+        $c->stash->{message} = "Email acknowledgment of payment was sent.<p>";
+    }
     $c->stash->{member}   = model($c, 'Member')->find($id);
     $c->stash->{template} = "member/view.tt2";
 }
@@ -752,6 +810,91 @@ sub non_email : Local {
         })
     ];
     $c->stash->{template} = "member/non_email.tt2";
+}
+
+sub lapsed_letter : Local {
+    my ($self, $c, $id, $soon) = @_;
+
+    my $member = model($c, 'Member')->find($id);
+    my $per = $member->person;
+    my $category = $member->category;
+    my $exp_date;
+    if ($category eq 'General') {
+        $exp_date = $member->date_general_obj;
+    }
+    else {
+        $exp_date = $member->date_sponsor_obj;
+    }
+    my @payments = $member->payments;
+    my ($last_amount, $last_paid) = (0, 0);
+    if ($payments[0]) {
+        $last_amount = $payments[0]->amount;
+        $last_paid = $payments[0]->date_payment_obj;
+    }
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $name = $per->first . " " . $per->last;
+    my $addr = $per->addr1 . "<br>\n";
+    if (my $addr2 = $per->addr2) {
+        $addr .= $addr2 . "<br>\n";
+    }
+    $addr .= $per->city . ", "
+           . $per->st_prov . " "
+           . $per->zip_post;
+    my $message = <<"EOA";
+<style>
+body {
+    margin-left: .5in;
+}
+#addr {
+    margin-top: 2in;
+    margin-bottom: .5in;
+}
+</style>
+<div id=addr>
+$name<br>
+$addr
+<p>
+</div>
+EOA
+    Lookup->init($c);
+    my $stash = {
+        sanskrit    => ($per->sanskrit || $per->first),
+        exp_date    => $exp_date,
+        last_amount => $last_amount,
+        last_paid   => $last_paid,
+        lookup      => \%lookup,
+        message     => $message,
+    };
+    $tt->process(
+        # template
+        "lapse_"
+            . ($category eq 'General'? 'gen': 'spons')
+            . ($soon? "_soon": "")
+            . ".tt2",
+        $stash,           # variables
+        \$html,           # output
+    );
+        $message = <<"EOA";
+<style>
+body {
+    margin-left: .5in;
+}
+#addr {
+    margin-top: 2in;
+    margin-bottom: .5in;
+}
+</style>
+<div id=addr.
+$name<br>
+$addr
+<p>
+</div>
+EOA
+    $c->res->output(no_here($html) . js_print());
 }
 
 1;

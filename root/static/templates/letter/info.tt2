@@ -7,7 +7,7 @@ Please note:
 for the convenience of our members.
 To make such a payment call the reception office at [% lookup.mem_credit_phone %] during normal office hours: [% lookup.mem_credit_hours %].
 The receptionist will take your payment information.
-<li>If paying by check, make it payable to MMC rather than Hanuman Fellowship and note that the payment is for General Membership.
+<li>If paying by check, make it payable to MMC rather than Hanuman Fellowship and note that the payment is for [% category %] Membership.
 <li>We are communicating by Email primarily, so please make sure that we have your correct information.
 <li>Please use this notice as your receipt.
 <li>To claim a Tax Deduction for this donation, you must deduct the value of any benefits you receive.
