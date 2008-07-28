@@ -31,6 +31,7 @@ __PACKAGE__->add_columns(qw/
     e_mailings
     snail_mailings
     share_mailings
+    deceased
     inactive
 /);
 __PACKAGE__->set_primary_key(qw/id/);
@@ -100,6 +101,16 @@ sub addrs {
         $addrs .= " " . $self->addr2;
     }
     $addrs;
+}
+
+sub sex_disp {
+    my ($self) = @_;
+
+    my $sex = $self->sex;
+    return ($sex eq 'M')? "Male"
+          :($sex eq 'F')? "Female"
+          :               "Person of Indeterminate Gender"
+          ;
 }
 
 1;

@@ -78,10 +78,18 @@ XX --!>
 <tr>
 <th align=right>State/Province</th><td>[% person.st_prov %]</td>
 
+</tr>
+<tr>
+<th align=right>Zip/Postal Code</th><td>[% person.zip_post %]</td>
+</tr>
+<tr>
+<th align=right>Country</th><td>[% person.country %]</td>
+</tr>
+<tr><th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td></tr>
 [% regs = person.registrations %]
 [% IF Catalyst.check_user_roles('prog_staff') && regs %]
-    <td>&nbsp;</td>
-    <td rowspan=12 valign=top>
+<tr>
+    <td colspan=4 valign=top>
     <table cellpadding=2>
     <tr><td class=larger>Registrations</td></tr>
     [% FOREACH r IN regs %]
@@ -91,22 +99,15 @@ XX --!>
         </tr>
     [% END %]
     </table>
+</tr>
 [% END %]
-</td>
-</tr>
-<tr>
-<th align=right>Zip/Postal Code</th><td>[% person.zip_post %]</td>
-</tr>
-<tr>
-<th align=right>Country</th><td>[% person.country %]</td>
-</tr>
-<tr><th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td></tr>
+<tr><th align=right>Inactive</th><td align=left>[% person.inactive %]</td><th align=right>Deceased</th><td align=left>[% person.deceased %]</td></tr>
 <tr><th align=right valign=top>Mailings</th><td>
 
 <table>
 <tr><td align=right>Email</td><td>[% person.e_mailings %]</td></tr>
 <tr><td align=right>Snail Mail</td><td>[% person.snail_mailings %]</td></tr>
-<tr><td align=right>Share</td><td>[% person.share_mailings %]</td></tr>
+<tr><td align=right>Share</td><td>[% person.share_mailings %]</td>
 </table>
 
 </td></tr>

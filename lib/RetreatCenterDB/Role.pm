@@ -12,7 +12,7 @@ __PACKAGE__->add_columns(qw/
     fullname
     descr
 /);
-__PACKAGE__->set_primary_key('id');
+__PACKAGE__->set_primary_key(q/id/);
 
 __PACKAGE__->has_many(user_role => 'RetreatCenterDB::UserRole', 'role_id');
 __PACKAGE__->many_to_many(users => 'user_role', 'user');

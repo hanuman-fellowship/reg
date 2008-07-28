@@ -1,0 +1,25 @@
+use strict;
+use warnings;
+package RetreatCenterDB::House;
+use base qw/DBIx::Class/;
+
+__PACKAGE__->load_components(qw/PK::Auto Core/);
+__PACKAGE__->table('house');
+__PACKAGE__->add_columns(qw/
+    id
+    name
+    max
+    bath
+    tent
+    center
+    priority
+    x
+    y
+    clust_id
+    clust_order
+/);
+__PACKAGE__->set_primary_key(qw/id/);
+
+__PACKAGE__->belongs_to(cluster => 'RetreatCenterDB::Cluster', 'clust_id');
+
+1;

@@ -39,6 +39,7 @@ __PACKAGE__->add_columns(qw/
     status
     nights_taken
     free_prog_taken
+    house_id
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -48,6 +49,7 @@ __PACKAGE__->set_primary_key(qw/id/);
 #
 __PACKAGE__->belongs_to(person   => 'RetreatCenterDB::Person', 'person_id');
 __PACKAGE__->belongs_to(program  => 'RetreatCenterDB::Program','program_id');
+__PACKAGE__->belongs_to(house    => 'RetreatCenterDB::House',  'house_id');
 
 __PACKAGE__->has_many(history   => 'RetreatCenterDB::RegHistory',  'reg_id');
 __PACKAGE__->has_many(charges   => 'RetreatCenterDB::RegCharge',   'reg_id');

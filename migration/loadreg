@@ -123,13 +123,13 @@ my $ins_reg_sql = "insert into registration
 (id, program_id, person_id, comment, confnote, date_start, date_end, early, late,
  referral, adsource, kids, h_type, h_name, carpool, hascar,
  date_postmark, letter_sent, ceu_license, arrived, cancelled,
- deposit, balance, time_postmark
+ deposit, balance, time_postmark, house_id
 ) 
 values
 (?, ?, ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?,
- ?, ?, ?)";
+ ?, ?, ?, ?)";
 my $ins_reg_sth = $dbh->prepare($ins_reg_sql) or die "no ins_reg_sql\n";
 
 my %type_map = qw/
@@ -163,7 +163,7 @@ my %refmap = qw/
 /;
 my %housemap = qw/
     1   single
-    2   double
+    2   dble
     3   triple
     COM commuting
     D   dormitory
@@ -177,10 +177,6 @@ my @houses = qw/
     108BH
     112B 114B 116B 118B
     212B 214B 216B 218B
-    BRAJ_LITTLE
-    GDN5
-    KKWC
-    OH_3
 /;
 my %with_bath = map { s{_}{ }; $_ => 1 } @houses;
 my %hash;
@@ -411,7 +407,8 @@ sub processReg {
                           $hash{cancelled},
                           $hash{deposit},
                           $hash{balance},
-                          $hash{time_postmark}
+                          $hash{time_postmark},
+                          0     # house_id
                          ) or die "no ins reg $DBI::errstr\n";
     # use deposit, pmt1, pmt2 in RegPayment records
     #     and p1cash, pmt1date

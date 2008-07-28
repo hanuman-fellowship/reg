@@ -34,7 +34,10 @@ create table registration (
 
     status text,        -- Sponsor (in good standing), Life, or blank
     nights_taken integer,
-    free_prog_taken text
+    free_prog_taken text,
+
+    house_id integer    -- or 0 if no housing assigned yet or not needed
+                        -- since own van or commuting
 );
 drop table if exists reg_history;
 create table reg_history (

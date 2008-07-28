@@ -77,6 +77,8 @@ while (<$hc>) {
     s{\r?\n}{};
     my ($n, $type, $cost) = split m{\t};
     $type =~ s{[ ]}{_};
+    $type = "dble" if $type eq "double";
+    $type = "dble_bath" if $type eq "double_bath";
     $data{"HC$n"}{$type} = $cost;
 }
 close $hc;
@@ -87,8 +89,8 @@ for my $name (keys %data) {
         ($name eq 'HC0')? "Default": $name,
         $data{$name}{single} + $data{$name}{single_bath},
         $data{$name}{single},
-        $data{$name}{double} + $data{$name}{double_bath},
-        $data{$name}{double},
+        $data{$name}{dble} + $data{$name}{dble_bath},
+        $data{$name}{dble},
         $data{$name}{triple},
         $data{$name}{quad},
         $data{$name}{dormitory},

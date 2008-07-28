@@ -20,6 +20,7 @@ use Util qw/
     trim
     empty
     lunch_table
+    add_config
 /;
 use Date::Simple qw/date today/;
 use Net::FTP;
@@ -257,6 +258,14 @@ sub create_do : Local {
             deposit   => 0,
         });
     }
+    #
+    # we must ensure that we have config records
+    # out to the end of this program + 30 days.
+    # we add 30 days because registrations for Personal Retreats
+    # may extend beyond the last day of the season.
+    #
+    my $dt = date($hash{edate}) + 30;
+    add_config($c, $dt->as_d8());
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
@@ -464,9 +473,11 @@ sub update_do : Local {
         return;
     }
     $p->update(\%hash);
+    my $dt = date($hash{edate}) + 30;
     # there are several possibilities...
     if ($p->extradays) {
         my $full_edate = date($hash{edate}) + $hash{extradays};
+        $dt = $full_edate + 30;
         if ($p_full) {
             $p_full->update({
                 %hash,
@@ -511,6 +522,7 @@ sub update_do : Local {
             $p_full->delete();
         }
     }
+    add_config($c, $dt);
     $c->response->redirect($c->uri_for("/program/view/" . $p->id . "/$section"));
 }
 
@@ -581,7 +593,6 @@ sub affil_update_do : Local {
     }
     my $p = model($c, 'Program')->find($id);
     if ($p->extradays) {
-$c->log->info("here we are");
         # and ditto for the full program
         model($c, 'AffilProgram')->search(
             { p_id => $id + 1 },

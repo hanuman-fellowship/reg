@@ -28,10 +28,17 @@ our @EXPORT_OK = qw/
     lunch_table
     clear_lunch
     get_lunch
+    add_config
+    type_max
 /;
 
 use POSIX   qw/ceil/;
-use Date::Simple qw/d8 date/;
+use Date::Simple qw/
+    d8
+    date
+    today
+/;
+
 use Lookup;
 
 my ($naffils, @affils, %checked);
@@ -150,7 +157,7 @@ sub meetingplace_table {
                   . "<br>\n";
     }
     if (! $table) {
-        $table = "Sorry, there is no place in the inn.";
+        $table = "Sorry, there is no meeting place in the inn.";
     }
     $table;
 }
@@ -351,7 +358,7 @@ sub housing_types {
 		quad
 		triple
 		dble
-		double_bath
+		dble_bath
 		single
 		single_bath
     /;
@@ -601,6 +608,89 @@ sub get_lunch {
         $lunch_cache{$id} = [ $prog->sdate_obj, $prog->lunches ];
     }
     return @{$lunch_cache{$id}};
+}
+
+#
+# add a bunch of Config records
+# so that we're ready for the future.
+#
+# $new_last_date is a string in d8 format.
+#
+# if we pass a $house object just add config
+# records for that one house - otherwise all houses.
+#
+# in the one house case (a new house was added)
+# begin adding from today() - otherwise add from
+# when we last added a config record.
+#
+sub add_config {
+    my ($c, $new_last_date, $house) = @_;
+
+    $new_last_date = date($new_last_date);
+    my $last;
+    my @houses;
+    if ($house) {
+        $last = today();
+    }
+    else {
+        $last = date($lookup{sys_last_config_date});
+        ++$last;
+    }
+    if ($last >= $new_last_date) {
+        # we have just added a program or rental
+        # that ends before an existing one.
+        # so there is nothing to do.
+        return;
+    }
+
+    if ($house) {
+        push @houses, [ $house->id, $house->max ];
+    }
+    else {
+        for my $h (model($c, 'House')->all()) {
+            push @houses, [ $h->id, $h->max ];
+        }
+    }
+    my $d8;
+    while ($last <= $new_last_date) {
+        $d8 = $last->as_d8();
+        for my $h (@houses) {
+            model($c, 'Config')->create({
+                house_id   => $h->[0],
+                the_date   => $d8,
+                sex        => 'U',
+                curmax     => $h->[1],
+                cur        => 0,
+                program_id => 0,
+                rental_id  => 0,
+            });
+        }
+        ++$last;
+    }
+    return if $d8 eq $lookup{sys_last_config_date};
+
+    $lookup{sys_last_config_date} = $d8;
+    model($c, 'String')->find('sys_last_config_date')->update({
+        value => $d8,
+    });
+}
+
+# economy and dormitory???
+my %tmax = qw/
+    single_bath 1
+    single      1
+    dble        2
+    dble_bath   2
+    triple      3
+    quad        4
+    dormitory   7
+    economy    20
+    center_tent 1
+    own_tent    1
+/;
+sub type_max {
+    my ($h_type) = @_;
+    return $tmax{$h_type};
 }
 
 1;

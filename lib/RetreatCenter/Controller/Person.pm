@@ -269,6 +269,8 @@ sub create : Local {
     $c->stash->{e_mailings}     = "checked";
     $c->stash->{snail_mailings} = "checked";
     $c->stash->{share_mailings} = "checked";
+    $c->stash->{inactive} = "";
+    $c->stash->{deceased} = "";
     $c->stash->{affil_table} = affil_table($c);
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "person/create_edit.tt2";
@@ -288,6 +290,8 @@ sub _get_data {
         e_mailings
         snail_mailings
         share_mailings
+        inactive
+        deceased
     /) {
         $hash{$f} = "" unless exists $hash{$f};
     }
@@ -426,6 +430,8 @@ sub update : Local {
     $c->stash->{sex_female}  = ($sex eq "F")? "checked": "";
     $c->stash->{sex_male}    = ($sex eq "M")? "checked": "";
     $c->stash->{e_mailings}     = (    $p->e_mailings())? "checked": "";
+    $c->stash->{inactive}       = (      $p->inactive())? "checked": "";
+    $c->stash->{deceased}       = (      $p->deceased())? "checked": "";
     $c->stash->{snail_mailings} = ($p->snail_mailings())? "checked": "";
     $c->stash->{share_mailings} = ($p->share_mailings())? "checked": "";
     $c->stash->{affil_table} = affil_table($c, $p->affils());

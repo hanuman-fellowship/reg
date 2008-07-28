@@ -1,0 +1,63 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use lib "../lib";
+use Date::Simple qw/
+    date
+    today
+/;
+
+$|++;    # unbuffer stdout
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+$dbh->do("delete from config");
+
+my $sth = $dbh->prepare("select id, max from house");
+$sth->execute();
+my (@h_id, @h_max);
+while (my ($id, $max) = $sth->fetchrow_array()) {
+   push @h_id, $id;
+   push @h_max, $max;
+}
+print "got ", scalar(@h_id), " houses\n";
+
+$sth = $dbh->prepare("select max(edate) from rental");
+$sth->execute();
+my ($rent_max) = $sth->fetchrow_array();
+print "rent max = $rent_max\n";
+
+$sth = $dbh->prepare("select max(edate) from program");
+$sth->execute();
+my ($prog_max) = $sth->fetchrow_array();
+my $dt = date($prog_max) + 30;
+$prog_max = $dt->as_d8();
+print "prog max = $prog_max\n";
+
+my $max = ($prog_max > $rent_max)? $prog_max: $rent_max;
+$max = date($max);
+print "max = $max\n";
+my $today = today();
+
+my $ins_config = $dbh->prepare("
+    insert into config
+    (house_id, the_date, sex, curmax, cur, program_id, rental_id)
+    values
+    (?, ?, 'U', ?, 0, 0, 0)
+");
+$dt = $today;
+my $d8;
+my $n = 0;
+while ($dt <= $max) {
+    $d8 = $dt->as_d8();
+    for my $i (0 .. $#h_id) {
+        $ins_config->execute($h_id[$i], $d8, $h_max[$i]);
+        ++$n;
+    }
+    ++$dt;
+    print "$n\t$dt\r";
+}
+print "\ninserted $n config records\n";
+$dbh->do("update string set value = $d8 where the_key = 'sys_last_config_date'");

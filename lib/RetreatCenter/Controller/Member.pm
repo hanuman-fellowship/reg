@@ -310,6 +310,7 @@ EOA
         due_date    => ($benefits? six_prior(date($member->date_sponsor))
                         :          month_after(date($pay_date))
                        ),
+        total_paid  => $member->total_paid,
         lookup      => \%lookup,
         message     => $message,
         category    => $category,

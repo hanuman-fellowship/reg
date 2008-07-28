@@ -76,9 +76,6 @@ Has Car
 <select name=h_type>
 [% h_type_opts %]
 </select>
-</td>
-<th align=right>House Name</th>
-<td><input type=text size=10 name=h_name></td>
 </tr>
 
 <tr>

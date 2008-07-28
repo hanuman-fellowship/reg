@@ -93,3 +93,62 @@ Jun 22 10:30-11:00, 3:35-8:30
     finalize c&g
     late notices
     registration list updated, polished
+Jul 7 1:00-2:00
+    db housing design with Luke
+    2 hours for Luke
+Jul 13 2:00-3:00
+    writing design notes for housing after
+    talking with Luke - ready to go!
+Jul 14 6:15-6:30
+    get online - what if program not found?  like since deleted...
+    proceeding with housing
+Jul 15 9:50-10:50
+    mkhouse finally - 4 tables: House, Cluster, Config, RentalBooking
+    Registration got another attribute: house_id.
+    it compiled!
+Jul 16 4:00-6:40, 10:35-12:00
+    house, cluster CRUD
+    populate config on adding/editing program/rental/house
+        use string to remember last date
+    load house table from registrations f07 - cur.
+    pre-load clusters and assign to house.
+
+    take care of cascading a house deletion later please
+Jul 17 12:45-3:15, 3:30-5:25
+    continuing with house/cluster/booking etc
+    excellent success!  now to create all config records
+    and search them and modify them.
+    and to create house_id in registrations and
+    create rental_booking records in synchrony with config.
+Jul 18 4:00-5:40
+    use sys_last_config_date to add config records out
+        to a given date for all houses.
+        make a Util routine that does it and pass
+        a date and optionally a house id.
+        perhaps a new house was added and we need
+        to add config records just for that house.
+    began a rambling discussion of housing for internal
+        documentation.
+Jul 21 1:10-2:40, 2:55-3:05, 4:10-6:25, 8:30-9:15
+    rental bookings - modify view.tt2, Rental.pm
+    a good start
+    no Add if no entry for a type.
+Jul 22 11:45-12:54
+    hcck beginnings, loadconfig
+Jul 24 12:40-2:10
+    hcck continuing
+        first two requirements are done
+Jul 26 5:45-6:25, 8:20-10:30
+    deceased attr for people
+    get housing name
+    new attr for rental - status.
+    beginning of program housing
+Jul 27 6:30-10:15, 2:30-5:45
+    continuing program housing
+    tough!   but it seems to be bending to my will.
+    more progress - almost there...
+    i think i have considered all the weird cases!
+        (i'd like to be proven wrong)
+    next is auto choosing of "Sharing room with ...".
+    and also - a sorting of the possible offerings.
+        and displaying the encoding for that room.

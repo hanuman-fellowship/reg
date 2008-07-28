@@ -66,7 +66,7 @@ for my $a (qw/ list view /) {
     __PACKAGE__->deny_access_unless("/role/$a", ['super_admin']);
 }
 
-for my $c (qw/ program canpol housecost leader rental /) {
+for my $c (qw/ program canpol housecost leader rental cluster house /) {
     for my $a (qw/ create create_do update update_do delete /) {
         __PACKAGE__->deny_access_unless("/$c/$a", ['prog_admin']);
     }

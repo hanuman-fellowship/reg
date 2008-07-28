@@ -1677,3 +1677,83 @@ _here_ in printed letter?
 7 letter examples
 sort lapsed by last name
 Sanskrit - left align
+i need local copies of all css attributes and
+    javascript tutorials with event names, function list.
+Grab New is broken??
+difference between relationship belongs_to and might_have??
+    could be 0?
+drawing houses on daily pic:
+    perhaps don't show full name? optional?
+    have a way to insert a string/heading?
+    or a line.
+    so can have all OAKS tentsites arranged in a row
+        without all the names in front?
+rename class pr_links?
+when do we recover space from the config records?
+    no need to have them around forever.
+    the cluster overview and daily picture will need to
+    not allow going back in time too far.
+    maybe have a string 'sys_first_config_date'???
+    in analogy to sys_last_config_date???
+TESTING of housing and everything else
+    is critical before we go live.
+    much much better to find any problems now
+        rather than after we are depending on it!
+requirements for the hcck (right?) program:
+    - for every house id for every day from today to
+        sys_last_config_date we have one and only one config record.
+    - for every booking record there is the proper config records
+        with max, cur = house->max, sex is R, program_id is 0.
+    - for config records with a non-zero cur and a program id
+        of non-zero there are exactly cur registration records
+        with different reg ids.
+ask Savita about coverage for rental bookings
+    a couple in a tent - so just one instead of two?
+    not much to do about it...
+<select>, size=2 still shows 4.  even in t.html experiment.
+    why?  to accomodate the scroll bar, apparently.
+    it is fine.  compare to FireFox, IE.
+maybe don't put the campground name on the daily picture but
+    only the number.   then have a 'Label' object that
+    gets drawn.
+put the happenings of the day on the daily picture as well.
+send Shyama all the variety of letters
+    but first add to the sponsor letters the accumulated paid-to-date amount.
+referential integrity when a house is deleted
+    rental_booking, registration, config
+new attr of person - deceased
+    no email, reports, member communication
+editing a house, changing max - effect on config???
+be careful of double clicking an add of a house!
+    prevent it?
+dormitory with bath for an reg->h_type???
+    loadreg messed up.
+individual registration end date for personal retreat
+    is relative to the start date not the program end date.
+line 19631 in new/people.txt has dup id from prior record.
+people having identity crises and gender crises and partner crises
+    make for lots of trouble!
+tests:
+    new registration
+        housing type of double, single, double bath, unknown, van, commuting
+    update registration
+        change housing type
+    relodge (with same housing type).
+houses will have an inactive attribute
+    for when they're not be used.
+    have config records for them?
+have a daily picture that only shows 1 cluster?
+    for efficiency of refreshing, clarity.
+testing cases
+    change type of housing - force a relodge
+    change start or end date - force a relodge
+    add M to double, force a F into same room => X
+        vacate F, it reverts to an M.
+        OR vacate the M and it reverts to an F
+    add M to double, force two F into same room => X
+        the room gets unresized to a triple with
+            people in there who think it's a double.
+        vacate one of the F, it stays an X, then can't
+        put F _or_ M in there.   what an orgy!
+    try adding 4 people (forcing) into room with only 3 beds.
+        the 4th should fail.

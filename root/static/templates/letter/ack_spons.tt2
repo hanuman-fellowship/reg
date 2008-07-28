@@ -6,6 +6,8 @@ for Sponsor Membership in the Hanuman Fellowship
 which we received on [% pay_date %].
 Your benefits are now in effect as we&#8217;ve received the equivalent of
 6 months of dues. Your next payment will be due on [% due_date %].
+Through today you have paid a total of $[% total_paid %] toward your
+Sponsor Membership.
 <p>
 [% INCLUDE spons.tt2 %]
 <p>

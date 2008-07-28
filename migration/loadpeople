@@ -8,7 +8,7 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
 $dbh->do("delete from affil_people");
 $dbh->do("delete from people");
 
-my $ins_sql = "insert into people values(". ("?," x 23) . "'' )";
+my $ins_sql = "insert into people values(". ("?," x 24) . "'' )";
                                                 # last '' is for inactive
 my $ins_sth = $dbh->prepare($ins_sql)
     or die "no prep ins people\n";
@@ -83,7 +83,8 @@ while (<$people>) {
         $snail_mailings = "";
         $share_mailings = "";
     }
-    $affils =~ s{[dXqx98\@]}{}g;
+    my $deceased = ($affils =~ m{\*})? "yes": "";
+    $affils =~ s{[dXqx98\@\*]}{}g;
 
     for my $i (10..12) {    # force standard format of US phone numbers
         next if $flds[$i] =~ m{\d\d\d-\d\d\d-\d\d\d\d};
@@ -96,7 +97,8 @@ while (<$people>) {
         }
     }
     $ins_sth->execute(@flds[0..14], @flds[16..19, 24],
-                    $e_mailings, $snail_mailings, $share_mailings);
+                    $e_mailings, $snail_mailings, $share_mailings,
+                    $deceased);
     my %seen;
     for my $a (grep {!$seen{$_}++} split //, $affils) {
         if (exists $affil_id{$a}) {

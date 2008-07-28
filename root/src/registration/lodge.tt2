@@ -1,0 +1,42 @@
+<h2>Program Housing</h2>
+<form action="/registration/lodge_do/[% reg.id %]" name=form>
+<table cellpadding=3>
+<tr>
+<th align=right>Program</th>
+<td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td>
+</tr>
+
+<tr>
+<th align=right>Person</th>
+<td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
+</tr>
+</table>
+[% IF prior_house %]
+<h3>Vacated [% prior_house %] so we can now...</h3>
+[% END %]
+<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %]</h3>
+<table>
+<tr>
+[% IF n_opts == 0 %]
+<td>Sorry, there is no place in the inn.</td>
+[% ELSE %]
+<td align=right>Available Housing:</td>
+<td>
+<select name=house_id size=[% n_opts %]>
+[% house_opts %]
+</select>
+</td>
+[% END %]
+<td>
+Or force the use of this house: <input type=text name=force_house size=5>
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.comment.focus();</script>

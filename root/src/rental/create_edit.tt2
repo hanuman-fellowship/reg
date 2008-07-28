@@ -172,7 +172,7 @@ Lodging
 
 <tr><th align=right>Single Bath</th><td><input type=text size=3 name=n_single_bath value=[% rental.n_single_bath %]></td></tr>
 <tr><th align=right>Single</th><td><input type=text size=3 name=n_single value=[% rental.n_single %]></th></tr>
-<tr><th align=right>Double Bath</th><td><input type=text size=3 name=n_double_bath value=[% rental.n_double_bath %]></td></tr>
+<tr><th align=right>Double Bath</th><td><input type=text size=3 name=n_dble_bath value=[% rental.n_dble_bath %]></td></tr>
 <tr><th align=right>Double</th><td><input type=text size=3 name=n_dble value=[% rental.n_dble %]></td></tr>
 <tr><th align=right>Triple</th><td><input type=text size=3 name=n_triple value=[% rental.n_triple %]></td></tr>
 <tr><th align=right>Quad</th><td><input type=text size=3 name=n_quad value=[% rental.n_quad %]></td></tr>

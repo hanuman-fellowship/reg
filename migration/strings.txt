@@ -12,7 +12,7 @@ economy  Economy (8 or more to a room)
 quad  Quadruple (4 to a room)
 triple  Triple (3 to a room or cabin)
 dble  Double (2 to a room or cabin)
-double_bath Double with Bath (2 to a room)
+dble_bath Double with Bath (2 to a room)
 single  Single (1 to a room or cabin)
 single_bath Single with Bath (1 to a room)
 * Continuing Education Credit for nurses.
@@ -60,6 +60,8 @@ rental_sent Sent
 rental_sent_color 255,150,150
 rental_deposit Deposit
 rental_deposit_color 255,255,0
+rental_housing_color 150,255,150
+rental_housing Housing
 rental_ready Ready
 rental_ready_color 0,255,0
 event_color 0,0,255
@@ -77,3 +79,10 @@ mem_credit_phone 408-847-0406
 mem_credit_hours M-F 9-5, Sat 11-5, and Sun 1-7
 mem_spons_pay_month 25
 mem_spons_pay_6 300 
+sys_last_config_date 20080701
+house_width 10
+house_height 20
+house_let 9
+cov_less_color 255,0,0
+cov_more_color 0,255,0
+cov_okay_color 255,255,255

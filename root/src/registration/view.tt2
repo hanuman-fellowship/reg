@@ -95,7 +95,8 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% type = reg.h_type_disp %]
 <tr><th align=right>Housing</th><td>[% type %]
 [% IF type != 'Commuting ' && type != 'Your Van' %]in[% END %]
-[% reg.h_name %]</td></tr>
+[% IF reg.house_id %]<a href=/registration/relodge/[% reg.id %]>[% reg.house.name %]</a>[% ELSE %]<a href=/registration/lodge/[% reg.id %]>Lodge</a>[% END %]
+[% IF reg.h_name %] ([% reg.h_name %])[% END %]</td></tr>
 <tr><th align=right>Balance</th>
 <td>
 [% reg.balance %][% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view">Pay It</a>[% END %]
@@ -104,12 +105,12 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td>[% reg.comment_br %]<a href="/registration/update_comment/[% reg.id %]">Update Comment</a></td>
+<td colspan=3>[% reg.comment_br %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td>[% reg.confnote_br %]<a href="/registration/update_confnote/[% reg.id %]">Update Note</a></td>[% IF reg.confnotes.1 %]<td align=left valign=top><a href="/registration/conf_history/[% reg.id %]">Note History</a></td>[% END %]
+<td colspan=3>[% reg.confnote_br %]<a href="/registration/update_confnote/[% reg.id %]">Update</a></td>[% IF reg.confnotes.1 %]<td align=left valign=top><a href="/registration/conf_history/[% reg.id %]">Note History</a></td>[% END %]
 </tr>
 </table>
 

@@ -52,7 +52,7 @@ create table housecost (
     name            text,
     single_bath     integer,
     single          integer,
-    double_bath     integer,
+    dble_bath       integer,
     dble            integer,
     triple          integer,
     quad            integer,

@@ -57,6 +57,7 @@ my @fields = qw/
     email
     housecost_id
     lunches
+    status
 /;
 my %lookup = qw/
     rname	name
@@ -119,5 +120,6 @@ sub processRental {
     }
     #print "rental $season - $hash{name}\n";
     $hash{housecost_id} = 1;        # Default
+    $hash{status} = "new";
     $r_sth->execute(@hash{@fields});
 }

@@ -20,7 +20,7 @@ __PACKAGE__->add_columns(qw/
     commuting
     unknown
     single_bath
-    double_bath
+    dble_bath
     type
 /);
 __PACKAGE__->set_primary_key(qw/id/);

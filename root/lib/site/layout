@@ -1,6 +1,6 @@
 <div id="content">
 [% IF Catalyst.user_exists %]   <!-- not for login screen -->
-<table cellpadding=4>
+<table cellpadding=4 border=0>
 <tr>
 <td><a href=/person/search>People</a></td>
 <td><a href=/listing>Listings</a></td>
@@ -17,6 +17,7 @@
 <td><a href=/rental/list>Rentals</a></td>
 <td><a href=/event/list>Events</a></td>
 <td><a href=/event/calendar target=calendar>Calendar</a></td>
+<td><a target=_blank href=/dailypic/show>Daily Pic</a></td>
 <td><a target=_blank href=/static/help/index.html>Help</a></td>
 [% IF Catalyst.check_user_roles('super_admin') %]
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>

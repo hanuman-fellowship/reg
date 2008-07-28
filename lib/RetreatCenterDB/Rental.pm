@@ -26,7 +26,7 @@ __PACKAGE__->add_columns(qw/
     housecost_id
     n_single_bath
     n_single
-    n_double_bath
+    n_dble_bath
     n_dble
     n_triple
     n_quad
@@ -51,6 +51,7 @@ __PACKAGE__->add_columns(qw/
 
     coordinator_id
     lunches
+    status
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -186,7 +187,7 @@ sub count {
     for my $f (qw/
         n_single_bath
         n_single
-        n_double_bath
+        n_dble_bath
         n_dble
         n_triple
         n_quad
@@ -202,32 +203,12 @@ sub count {
     }
     $count;
 }
-#??? Strings for status labels?
-# converted to hex
-sub status {
+sub status_td {
     my ($self) = @_;
-    my ($status, $color);
-    my $fmt = "#%02x%02x%02x";
-    if (! $self->contract_sent) {
-        $status = $lookup{rental_new};
-        $color  = sprintf $fmt, $lookup{rental_new_color} =~ m{\d+}g;
-    }
-    elsif (! ($self->contract_received
-              && scalar($self->payments) > 0
-             )
-    ) {
-        $status = $lookup{rental_sent};
-        $color  = sprintf $fmt, $lookup{rental_sent_color} =~ m{\d+}g;
-    }
-    elsif (! $self->max_confirmed) {
-        $status = $lookup{rental_deposit};
-        $color  = sprintf $fmt, $lookup{rental_deposit_color} =~ m{\d+}g;
-    }
-    else {
-        $status = $lookup{rental_ready};
-        $color  = sprintf $fmt, $lookup{rental_ready_color} =~ m{\d+}g;
-    }
-    "<td align=center bgcolor=$color>$status</td>";
+    my $status = $self->status;
+    my $color = sprintf "#%02x%02x%02x",
+                        $lookup{"rental_$status\_color"} =~ m{\d+}g;
+    return "<td align=center bgcolor=$color>\u$status</td>";
 }
 
 1;

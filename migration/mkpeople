@@ -23,6 +23,7 @@ create table people (
     e_mailings text,
     snail_mailings text,
     share_mailings text,
+    deceased text,
     inactive text
 );
 drop table if exists affils;

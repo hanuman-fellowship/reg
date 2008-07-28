@@ -17,7 +17,7 @@ sub list : Local {
     my ($self, $c) = @_;
 
     $c->stash->{strings} = [ model($c, 'String')->search(
-        undef,
+        { the_key => { -not_like => 'sys_%' } },
         { order_by => 'the_key' }
     ) ];
     $c->stash->{template} = "string/list.tt2";

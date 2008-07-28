@@ -12,13 +12,17 @@ use Util qw/
     model
     meetingplace_table
     lunch_table
+    add_config
+    type_max
+    housing_types
 /;
 use Lookup;
+use POSIX;
 
 use lib '../../';       # so you can do a perl -c here.
 
 sub index : Private {
-    my ( $self, $c ) = @_;
+    my ($self, $c) = @_;
 
     $c->forward('list');
 }
@@ -92,7 +96,7 @@ sub _get_data {
     for my $f (qw/
         n_single_bath
         n_single
-        n_double_bath
+        n_dble_bath
         n_dble
         n_triple
         n_quad
@@ -140,6 +144,11 @@ sub create_do : Local {
     }
     my $r = model($c, 'Rental')->create(\%hash);
     my $id = $r->id();
+    #
+    # we must ensure that there are config records
+    # out to the end date of this rental.
+    #
+    add_config($c, $hash{edate});
     $c->response->redirect($c->uri_for("/rental/view/$id/3"));
 }
 
@@ -156,6 +165,7 @@ sub _h24 {
 #
 # there are several things to compute for the display
 # update the balance in the record once you're done.
+# and possible reset the status.
 #
 sub view : Local {
     my ($self, $c, $id, $section) = @_;
@@ -186,32 +196,52 @@ sub view : Local {
                           * $ndays
                           * $hc->dormitory
                          );
+    my (%bookings, %booking_count);
+    for my $b (model($c, 'RentalBooking')->search({
+                   rental_id => $id,
+               })
+    ) {
+        my $h_name = $b->house->name;
+        my $h_type = $b->h_type;
+        $bookings{$h_type} .= "<td><a href=/rental/del_booking/$id/"
+                            . $b->house_id
+                            . qq! onclick="return confirm('Okay to Delete booking of $h_name?');">!
+                            . $h_name
+                            . "</a></td>"
+                            ;
+        ++$booking_count{$h_type};
+    }
+    my %colcov;
     my $actual_lodging = 0;
     my $tot_people = 0;
-    for my $f (qw/
-        n_single_bath
-        n_single
-        n_double_bath
-        n_dble
-        n_triple
-        n_quad
-        n_dormitory
-        n_economy
-        n_center_tent
-        n_own_tent
-        n_own_van
-        n_commuting
-    /) {
-        my $s = $f;
-        $s =~ s{^n_}{};
-        my $npeople = $r->$f || 0;
+    my $fmt = "#%02x%02x%02x";
+    my $less = sprintf($fmt, $lookup{cov_less_color} =~ m{(\d+)}g);
+    my $more = sprintf($fmt, $lookup{cov_more_color} =~ m{(\d+)}g);
+    my $okay = sprintf($fmt, $lookup{cov_okay_color} =~ m{(\d+)}g);
+    my $less_more = 0;
+    TYPE:
+    for my $t (housing_types()) {
+        next TYPE if $t eq "unknown";
+        my $nt = "n_$t";
+        my $npeople = $r->$nt || 0;
         $tot_people += $npeople;
         if ($hc->type eq 'Perday') {
-            $actual_lodging += $hc->$s * $npeople * $ndays;
+            $actual_lodging += $hc->$t * $npeople * $ndays;
         }
         else {
             # Total
-            $actual_lodging += $hc->$s * $npeople;
+            $actual_lodging += $hc->$t * $npeople;
+        }
+        my $t_max = type_max($t);
+        next TYPE if $t_max == 0;;
+        my $needed = ceil($npeople/$t_max);
+        my $count = $booking_count{$t} || 0;
+        $colcov{$t} = ($needed < $count)? $less 
+                     :($needed > $count)? $more
+                     :                    $okay
+                     ;
+        if ($colcov{$t} ne $okay) {
+            $less_more = 1;    # see status setting below
         }
     }
     my $lodging = ($min_lodging > $actual_lodging)? $min_lodging
@@ -244,10 +274,32 @@ sub view : Local {
         $tot_charges += $lunch_charge;
     }
 
+    my $status;
+    if (! $r->contract_sent) {
+        $status = "new";
+    }
+    elsif (! ($r->contract_received && @payments > 0)) {
+        $status = "sent";
+    }
+    elsif (! $r->max_confirmed) {
+        $status = "deposit";
+    }
+    elsif ($less_more) {
+        $status = "housing";
+    }
+    else {
+        $status = "ready";
+    }
+    # ??? needed each view??? 
+    # a rental_booking may have been done
+    # housing costs could have changed...
     $r->update({
         balance => $tot_charges - $tot_payments,
+        status  => $status,
     });
 
+    $c->stash->{colcov}         = \%colcov;     # color of the coverage
+    $c->stash->{bookings}       = \%bookings;
     $c->stash->{rental}         = $r;
     $c->stash->{min_lodging}    = $min_lodging;
     $c->stash->{actual_lodging} = $actual_lodging;
@@ -381,6 +433,10 @@ sub update_do : Local {
             rental_id => $id,
         })->delete();
         $hash{lunches} = '0' x (date($hash{edate}) - date($hash{sdate}) + 1);
+        #
+        # and perhaps add a few more config records.
+        #
+        add_config($c, $hash{edate});
     }
 
     if ($hash{contract_sent} ne $r->contract_sent) {
@@ -581,6 +637,123 @@ sub update_lunch_do : Local {
         lunches => $l,
     });
     $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+}
+
+sub booking : Local {
+    my ($self, $c, $id, $h_type) = @_;
+
+    my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
+    my $sdate = $r->sdate;
+    my $edate1 = date($r->edate) - 1;
+    $edate1 = $edate1->as_d8();     # could I put this on the above line???
+
+    $c->stash->{h_type} = $h_type;
+    my $bath   = ($h_type =~ m{bath}  )? "yes": "";
+    my $tent   = ($h_type =~ m{tent}  )? "yes": "";
+    my $center = ($h_type =~ m{center})? "yes": "";
+    my $max    = type_max($h_type);
+    #
+    # look at a list of _possible_ houses for h_type.
+    # ??? what order to present them in?  priority/resized?
+    # consider cluster???  other bookings for this rental???
+    #
+    my $h_opts = "";
+    my $n = 0;
+    HOUSE:
+    for my $h (model($c, 'House')->search({
+                   bath   => $bath,
+                   tent   => $tent,
+                   center => $center,
+                   max    => { '>=', $max },
+               }) 
+    ) {
+        my $h_id = $h->id;
+        #
+        # is this house _completely_ available from sdate to edate1?
+        # needs a thorough testing!
+        #
+        my @cf = model($c, 'Config')->search({
+            house_id => $h_id,
+            the_date => { 'between' => [ $sdate, $edate1 ] },
+            cur      => { '>', 0 },
+        });
+        next HOUSE if @cf;        # nope
+
+        $h_opts .= "<option value=" 
+                 . $h_id
+                 . ($h_opts eq ""? " selected": "")
+                 . ">"
+                 . $h->name
+                 . "</option>"
+                 ;
+        ++$n;
+    }
+    $c->stash->{house_opts} = $h_opts;
+    $c->stash->{n_opts} = $n;       # $n not always = # opts???
+    $h_type =~ s{_(.)}{ \u$1};
+    $c->stash->{disp_h_type} = (($h_type =~ m{^[aeiou]})? "an": "a")
+                             . " '\u$h_type'";
+    $c->stash->{template} = "rental/booking.tt2";
+}
+
+#
+# actually make the booking
+# add a RentalBooking record
+# and update the sequence of Config records.
+#
+sub booking_do : Local {
+    my ($self, $c, $rental_id, $h_type) = @_;
+    my $chosen_house_id = $c->request->params->{chosen_house_id};
+    my $h = model($c, 'House')->find($chosen_house_id);
+    my $max = $h->max;
+    my $r = model($c, 'Rental')->find($rental_id);
+    my $sdate = $r->sdate;
+    my $edate1 = date($r->edate) - 1;
+    $edate1 = $edate1->as_d8();
+    model($c, 'RentalBooking')->create({
+        rental_id  => $rental_id,
+        date_start => $sdate,
+        date_end   => $edate1,
+        house_id   => $chosen_house_id,
+        h_type     => $h_type,
+    });
+    model($c, 'Config')->search({
+        house_id => $chosen_house_id,
+        the_date => { 'between' => [ $sdate, $edate1 ] },
+    })->update({
+        sex        => 'R',
+        cur        => $max,
+        curmax     => $max,
+        program_id => 0,
+        rental_id  => $rental_id,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+sub del_booking : Local {
+    my ($self, $c, $rental_id, $house_id) = @_;
+
+    model($c, 'RentalBooking')->search({
+        rental_id => $rental_id,
+        house_id  => $house_id,
+    })->delete();
+    my $r = model($c, 'Rental')->find($rental_id);
+    my $sdate = $r->sdate;
+    my $edate1 = date($r->edate) - 1;
+    $edate1 = $edate1->as_d8();
+    my $h = model($c, 'House')->find($house_id);
+    my $max = $h->max;
+    model($c, 'Config')->search({
+        house_id => $house_id,
+        the_date => { 'between' => [ $sdate, $edate1 ] },
+    })->update({
+        sex        => 'U',
+        cur        => 0,
+        curmax     => $max,
+        program_id => 0,
+        rental_id  => $rental_id,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
 
 1;

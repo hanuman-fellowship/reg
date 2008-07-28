@@ -1,0 +1,25 @@
+<h2>Rentals</h2>
+<h3>Adding [% disp_h_type %] booking for [% rental.name %]</h3>
+<form name=form action="/rental/booking_do/[% rental.id %]/[% h_type %]">
+<ul>
+[% IF house_opts %]
+<table border=0 cellpadding=3
+
+<tr>
+<td valign=top align=right>Available Houses</td>
+<td>
+<select name=chosen_house_id size=[% n_opts %]>
+[% house_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<td></td><td><input type=submit value="Submit"></td></tr>
+</table>
+[% ELSE %]
+Sorry, there is no place in the inn.
+[% END %]
+</ul>
+</form>
+<script type="text/javascript">document.form.chosen_house_id.focus();</script>

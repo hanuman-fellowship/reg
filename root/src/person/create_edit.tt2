@@ -61,6 +61,9 @@
         <td colspan=3><input tabindex=11 type=text name=email size=40 value="[% person.email %]"></td>
     </tr>
 
+    <tr><td></td><td><input type=checkbox name=inactive value='yes'[% inactive %]> Inactive</td>
+    <td></td><td><input type=checkbox name=deceased value='yes'[% deceased %]> Deceased</td></tr>
+
 <tr>
 <th align=right valign=top>Mailings</th>
 <td>

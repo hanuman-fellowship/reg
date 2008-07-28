@@ -419,9 +419,7 @@ sub calendar : Local {
                 if (length $count) {
                     $disp .= "[$count]";
                     if ($ev_type eq 'rental') {
-                        my $status = $ev->status;
-                        $status =~ s{<td.*>(.*)</td>}{$1};
-                        $disp .= " $status";
+                        $disp .= " " . ucfirst $ev->status;
                     }
                 }
                 # which is longest?
@@ -462,28 +460,12 @@ sub calendar : Local {
 
                 my $border = $black;
                 if ($ev_type eq 'rental') {
-                    if (! $ev->contract_sent) {
-                        $border = $im->colorAllocate(
-                            $lookup{rental_new_color} =~ m{\d+}g);
-                    }
-                    elsif (! ($ev->contract_received
-                              && scalar($ev->payments) > 0
-                             )
-                    ) {
-                        $border = $im->colorAllocate(
-                            $lookup{rental_sent_color} =~ m{\d+}g);
-                    }
-                    elsif (! $ev->max_confirmed) {
-                        $border = $im->colorAllocate(
-                            $lookup{rental_deposit_color} =~ m{\d+}g);
-                    }
-                    else {
-                        $border = $im->colorAllocate(
-                            $lookup{rental_ready_color} =~ m{\d+}g);
-                    }
-                    $printable_row .= $ev->status;
+                    $border = $im->colorAllocate(
+                        $lookup{"rental_" . $ev->status . "_color"} =~ m{\d+}g,
+                    );
+                    $printable_row .= $ev->status_td();
                 }
-                elsif ($ev eq 'event') {
+                elsif ($ev_type eq 'event') {
                     $border = $im->colorAllocate(
                             $lookup{event_color} =~ m{\d+}g);
                 }
@@ -637,7 +619,7 @@ sub calendar : Local {
             if ($ym < $min_ym) {
                 $ym = $min_ym;
             }
-            $jump_map .= "<area shape=rect coords='"
+            $jump_map .= "<area shape='rect' coords='"
                       . join(',', $x1, 0, $x1+10, 20)
                       .  "' href='#$ym'"
 . qq! onmouseover="return overlib('!
@@ -709,6 +691,7 @@ EOH
                 my $pr_links = "";
                 for my $pr (@prs) {
                     my ($name, $id, $status) = split /\t/, $pr;
+                    $name =~ s{'}{\\'}g;    # for O'Dwyer etc.
                     my $bg = ($status eq 'lv' )? '#FF3333'
                             :($status eq 'arr')? '#33FF33'
                             :                    '#FFFFFF';

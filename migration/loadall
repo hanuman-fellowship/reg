@@ -21,6 +21,7 @@ $db <mkreg
 $db <mkevent
 $db <mkacct
 $db <mkmeet
+$db <mkhouse
 
 echo strings
 loadstr
@@ -41,6 +42,9 @@ echo registrations
 loadreg f07
 echo rentals
 loadrent f07
+
+# add a LOT of config records
+loadconfig
 
 # update the reg_count field in all program records
 regcount

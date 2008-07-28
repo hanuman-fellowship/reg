@@ -1,0 +1,47 @@
+drop table if exists house;
+create table house (
+    id       integer primary key autoincrement,
+    name     text,
+    max      integer,       -- i.e. number of beds
+    bath     text,          -- (boolean)
+    tent     text,          -- (boolean)
+    center   text,          -- if tent - is it a center tent?
+    priority integer,       -- which to offer when
+    x        integer,       -- coords of daily picture
+    y        integer,
+    clust_id    integer,
+    clust_order integer     -- order within cluster
+);
+insert into house values (
+    1, '101', 2, '', '', '', 1, 100, 100, 1, 1
+);
+insert into house values (
+    2, '102', 2, '', '', '', 1, 100, 120, 1, 2
+);
+drop table if exists cluster;
+create table cluster (
+    id       integer primary key autoincrement,
+    name     text,
+    color    text           -- background - fg = black
+);
+insert into cluster values (
+    1, 'CC1', '120,180,220'
+);
+drop table if exists config;
+create table config (
+    house_id integer,
+    the_date text,      -- not a date range as in old reg
+    sex      text,      -- U, M, F, X or R
+    curmax   integer,   -- initially = house.max
+    cur      integer,   -- 0 up to curmax
+    program_id integer, -- this or a rental id or neither but not both
+    rental_id  integer  -- 
+);
+drop table if exists rental_booking;
+create table rental_booking (
+    rental_id  integer,
+    date_start text,
+    date_end   text,
+    house_id   integer,
+    h_type     text
+);

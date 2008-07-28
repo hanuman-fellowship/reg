@@ -15,7 +15,7 @@
     <tr>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
     <td>[% r.sdate_obj %]</td>
-    [% r.status %]
+    [% r.status_td %]
     </tr>
 [% END %]
 </table>

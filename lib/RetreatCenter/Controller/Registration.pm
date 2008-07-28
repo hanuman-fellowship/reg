@@ -15,6 +15,7 @@ use Util qw/
     trim
     empty
     email_letter
+    type_max
 /;
 use Lookup;
     # damn awkward to keep this thing initialized... :(
@@ -81,12 +82,13 @@ sub list_online : Local {
         }
         close $in;
         my $pr = model($c, 'Program')->find($pid);
-        # what if not found???
+        # what if not found??? see below.
         (my $fname = $f) =~ s{root/static/online/}{};
         push @online, {
             first => $first,
             last  => $last,
-            pname => $pr->name,
+            pname => $pr? $pr->name
+                    :     "Unknown Program",
             date  => $date,
             time  => $time,
             fname => $fname,
@@ -286,7 +288,9 @@ sub get_online : Local {
     #
     my ($pr) = model($c, 'Program')->find($hash{pid});
     if (! $pr) {
-        # ??? error screen
+        $c->stash->{mess} = "Unknown Program - cannot proceed";
+        $c->stash->{template} = "registration/error.tt2";
+        return;
     }
 
     #
@@ -530,7 +534,7 @@ sub rest_of_reg {
         quad   quad
         tpl    triple
         dbl    dble
-        dbl/ba double_bath
+        dbl/ba dble_bath
         sgl    single
         sgl/ba single_bath
     );
@@ -621,7 +625,13 @@ sub _get_data {
     }
     my $date_end;
     if ($hash{date_end}) {
-        Date::Simple->relative_date(date($pr->edate));
+        # when scheduling a personal retreat
+        # the "To Date" is relative to the start date
+        # not the end of the program!   ??? in doc, please.
+        Date::Simple->relative_date(
+            ($pr->name =~ m{personal retreat}i)? $date_start
+            :                                    date($pr->edate)
+        );
         $date_end = date($hash{date_end});
         Date::Simple->relative_date();
         if ($date_end) {
@@ -778,7 +788,10 @@ sub create_do : Local {
         #reg_count => \'reg_count + 1',      # tricky??? unneeded
         reg_count => $pr->reg_count + 1,
     });
-    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+    $c->response->redirect($c->uri_for("/registration/"
+        . (($reg->h_type =~ m{van|commut|unk})? "view"
+           :                                    "lodge")
+    . "/$reg_id"));
 }
 
 #
@@ -1477,13 +1490,16 @@ EOH
         my $name = $per->last . ", " . $per->first;
         my $balance = $reg->balance;
         my $type = $reg->h_type_disp;
-        my $need_house = (defined $type)? $type !~ m{commut|van}i
+        my $need_house = (defined $type)? $type !~ m{commut|van|unk}i
                          :                0;
-        my $house = $reg->h_name;
+        my $hid = $reg->house_id;
+        my $house = ($reg->h_name  )? "(" . $reg->h_name . ")"
+                   :($reg->house_id)? $reg->house->name
+                   :                  "";
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark;
         my $mark =         ($reg->cancelled)? 'X'
-                  : ($need_house && !$house)? 'H'
+                  :   ($need_house && !$hid)? 'H'
                   :     (!$reg->letter_sent)? 'L'
                   :                           '&nbsp;';
         if (length($mark) == 1) {
@@ -1614,7 +1630,7 @@ sub update : Local {
         quad
         triple
         dble
-        double_bath
+        dble_bath
         single
         single_bath
     )) {
@@ -1716,6 +1732,22 @@ sub update_do : Local {
     }
 
     @dates = transform_dates($pr, @dates);
+    if ($reg->house_id != 0
+        && ($hash{h_type} ne $reg->h_type
+            ||
+            $hash{date_start} != $reg->date_start
+            ||
+            $hash{date_end}   != $reg->date_end
+           )
+        ) {
+        # housing type has changed!  and we have a prior house.
+        # before we do the update of the reg record
+        # we must first vacate the house and adjust the config records.
+        #
+        # OR the dates have changed... this, too, invalidates
+        # the housing.
+        _vacate($c, $reg);
+    }
     $reg->update({
         ceu_license   => $hash{ceu_license},
         referral      => $hash{referral},
@@ -1733,7 +1765,11 @@ sub update_do : Local {
     });
     _compute($c, $reg, @who_now);
     _reg_hist($c, $id, "Registration updated.");
-    $c->response->redirect($c->uri_for("/registration/view/$id"));
+    $c->response->redirect($c->uri_for("/registration/"
+        . (($reg->house_id || $reg->h_type =~ m{van|commut|unk})? "view"
+          :                                                       "lodge")
+        . "/$id"
+    ));
 }
 
 #
@@ -1828,6 +1864,233 @@ sub arrived : Local {
         arrived => 'yes',
     });
     $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
+sub lodge : Local {
+    my ($self, $c, $id) = @_;
+    my $r = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $sdate = $r->date_start;
+    my $edate1 = date($r->date_end) - 1;
+    $edate1 = $edate1->as_d8();     # could I put this on the above line???
+
+    my $h_type = $c->stash->{h_type} = $r->h_type;
+    my $bath   = ($h_type =~ m{bath}  )? "yes": "";
+    my $tent   = ($h_type =~ m{tent}  )? "yes": "";
+    my $center = ($h_type =~ m{center})? "yes": "";
+    my $psex   = $r->person->sex;
+    my $max    = type_max($h_type);
+    #
+    # look at a list of _possible_ houses for h_type.
+    # ??? what order to present them in?  priority/resized?
+    # consider cluster???  other bookings for this rental???
+    #
+    my $h_opts = "";
+    my $n = 0;
+    HOUSE:
+    for my $h (model($c, 'House')->search({
+                   bath   => $bath,
+                   tent   => $tent,
+                   center => $center,
+                   max    => { '>=', $max },
+               }) 
+    ) {
+        my $h_id = $h->id;
+        #
+        # is this house truly available for this request
+        # from sdate to edate1?
+        # look for ways in which it is NOT.
+        # space, gender, room size
+        #
+        my @cf = model($c, 'Config')->search({
+            house_id => $h_id,
+            the_date => { 'between' => [ $sdate, $edate1 ] },
+            -or => [
+                \'cur = curmax',            # all full up
+                -and => [                   # can't mix genders
+                    sex => { '!=', $psex }, #   or put someone unsuspecting
+                    sex => { '!=', 'U'   }, #   in an X room
+                ],
+                curmax => { '<', $max },    # too small
+                -and => [                   # can't resize with someone there
+                    curmax => { '>', $max },
+                    cur    => { '>', 0    },
+                ],
+            ],
+        });
+        next HOUSE if @cf;        # nope
+        # put above ??? and get a count???
+
+        $h_opts .= "<option value=" 
+                 . $h_id
+                 . ($h_opts eq ""? " selected": "")
+                 . ">"
+                 . $h->name
+                 . "</option>"
+                 ;
+        ++$n;
+    }
+    $c->stash->{house_opts} = $h_opts;
+    $c->stash->{n_opts} = $n;       # $n not always = # opts???
+    $h_type =~ s{dble}{double};     # only for display...
+    $h_type =~ s{_(.)}{ \u$1};
+    $c->stash->{disp_h_type} = (($h_type =~ m{^[aeiou]})? "an": "a")
+                             . " '\u$h_type'";
+    $c->stash->{house_opts} = $h_opts;
+    $c->stash->{n_opts} = $n;
+    $c->stash->{template} = "registration/lodge.tt2";
+}
+
+#
+# we have identified a house for this registration.
+# put this in the registration record itself
+# and update the config records appropriately and carefully.
+#
+sub lodge_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my ($house_id) = $c->request->params->{house_id};
+    my ($force_house) = trim($c->request->params->{force_house});
+    my $house_max;
+    if ($force_house) {
+        my ($house) = model($c, 'House')->search({
+            name => $force_house,
+        });
+        if (! $house) {
+            $c->stash->{mess} = "Unknown house name: $force_house";
+            $c->stash->{template} = "registration/error.tt2";
+            return;
+        }
+        $house_id = $house->id;     # override
+        $house_max = $house->max;
+    }
+    my $r = model($c, 'Registration')->find($id);
+    $r->update({
+        house_id => $house_id,
+        h_name   => '',
+    });
+    my $sdate = $r->date_start;
+    my $edate = date($r->date_end) - 1;
+    $edate = $edate->as_d8();
+    my $psex = $r->person->sex;
+    my $cmax = type_max($r->h_type);
+    #
+    # if we forced a request for a triple into a double
+    # we can't set curmax in the config record
+    # to 3 - max is 2.
+    #
+    # what about forcing a 3rd person into
+    # a double that is a resized triple?
+    # that should reset curmax to 3.  see ** below.
+    #
+    # lastly (hopefully) we can't force too
+    # many people into a room.  everyone must
+    # have a bed.  this requires looking ahead.
+    #
+    if ($force_house && $cmax > $house_max) {
+        $cmax = $house_max;
+    }
+    if ($force_house) {
+        # look ahead to see if a room is plum full on some day.
+        my @cf = model($c, 'Config')->search({
+            house_id => $house_id,
+            the_date => { 'between' => [ $sdate, $edate ] },
+            cur      => $house_max,
+        });
+        if (@cf) {
+            $c->stash->{mess} = "Sorry, no beds left in $force_house"
+                              . " on " . date($cf[0]->the_date)
+                              . ".";
+            $c->stash->{template} = "registration/error.tt2";
+            return;
+        }
+    }
+    for my $cf (model($c, 'Config')->search({
+                    house_id => $house_id,
+                    the_date => { 'between' => [ $sdate, $edate ] }
+                })
+    ) {
+        my $csex = $cf->sex;
+        if ($cmax < $cf->cur + 1) {
+            $cmax = $house_max;     # note **
+        }
+        $cf->update({
+            curmax     => $cmax,
+            cur        => $cf->cur + 1,
+            sex        => ((   $csex eq 'U'
+                            || $csex eq $psex)? $psex
+                           :                    'X'),
+            program_id => $r->program_id,
+        });
+    }
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
+#
+# almost the same as lodge - except we
+# clear the prior house assignment first.
+#
+sub relodge : Local {
+    my ($self, $c, $id) = @_;
+    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $house = $reg->house;
+    $c->stash->{prior_house} = $house->name;        # see lodge.tt2 
+    _vacate($c, $reg);
+    lodge($self, $c, $id);
+}
+
+#
+# restore/clear/undo/decrement the config records for the registration
+#
+sub _vacate {
+    my ($c, $reg) = @_;
+
+    my $sdate = $reg->date_start;
+    my $edate = date($reg->date_end) - 1;
+    $edate = $edate->as_d8();
+    my $house_id = $reg->house_id;
+    my $hmax = $reg->house->max;
+    for my $cf (model($c, 'Config')->search({
+                    house_id => $house_id,
+                    the_date => { 'between' => [ $sdate, $edate ] }
+                })
+    ) {
+        # if we're back to empty.
+        # set curmax and sex back
+        #
+        # if we're back to one and the sex is 'X'
+        #    find out the gender of the remaining person.
+        #    VERY tricky, indeed.
+        #
+        # and don't undo the program id, right?
+        #
+        my @opts = ();
+        if ($cf->cur == 1) {
+            push @opts, curmax => $hmax;
+            push @opts, sex    => 'U';
+        }
+        if ($cf->cur == 2 && $cf->sex eq 'X') {
+            my $the_date = $cf->the_date;
+            my @reg = model($c, 'Registration')->search({
+                house_id   => $house_id,
+                date_start => { '<=', $the_date },
+                date_end   => { '>',  $the_date },
+                id         => { '!=', $reg->id },
+            });
+            if (@reg == 1) {
+                push @opts, sex => $reg[0]->person->sex;
+            }
+            else {
+                $c->log->info("WHAT??? $#reg");
+            }
+        }
+        $cf->update({
+            cur => $cf->cur - 1,
+            @opts,
+        });
+    }
+    $reg->update({
+        house_id => 0,
+    });
 }
 
 1;

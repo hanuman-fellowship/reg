@@ -49,6 +49,11 @@ __PACKAGE__->load_classes({
 
         MeetingPlace
         Booking
+
+        House
+        Cluster
+        Config
+        RentalBooking
     /]
 });
 
