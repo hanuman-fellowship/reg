@@ -30,9 +30,18 @@ sub update : Local {
     my $s = model($c, 'String')->find($the_key);
 
     $c->stash->{the_key} = $the_key;
-    $c->stash->{value} = uri_escape($s->value, '"');
+    my $value = $c->stash->{value} = uri_escape($s->value, '"');
     $c->stash->{form_action} = "update_do/$the_key";
-    $c->stash->{template}    = "string/create_edit.tt2";
+    if ($the_key =~ m{_color$}) {
+        my ($r, $g, $b) = $value =~ m{\d+}g;
+        $c->stash->{red}   = $r;
+        $c->stash->{green} = $g;
+        $c->stash->{blue}  = $b;
+        $c->stash->{template}    = "string/create_edit_color.tt2";
+    }
+    else {
+        $c->stash->{template}    = "string/create_edit.tt2";
+    }
 }
 
 sub update_do : Local {
@@ -49,7 +58,7 @@ sub update_do : Local {
             resize($type, $id, $the_key);
         }
     }
-    $c->response->redirect($c->uri_for('/string/list'));
+    $c->response->redirect($c->uri_for("/string/list#$the_key"));
 }
 
 sub access_denied : Private {

@@ -30,6 +30,7 @@ our @EXPORT_OK = qw/
     get_lunch
     add_config
     type_max
+    max_type
 /;
 
 use POSIX   qw/ceil/;
@@ -116,7 +117,7 @@ sub role_table {
 # which meeting places are available in the
 # date range sdate-edate?
 #
-# and worry about the max of rentals as well.
+# and worry about the max of rentals/programs as well.
 #
 # note: PRE = Program/Rental/Event
 #
@@ -127,8 +128,13 @@ sub meetingplace_table {
 
     # the other arguments are Bookings (which point to a
     # meeting place currently assigned to this PRE in question)
-    my %checked = map { $_->meet_id() => 'checked' } @cur_bookings;
-
+    my %checked    = map { $_->meet_id() => 'checked' }
+                     grep { ! $_->breakout() }
+                     @cur_bookings;
+    # br = breakout
+    my %br_checked = map { $_->meet_id() => 'checked' }
+                     grep { $_->breakout() }
+                     @cur_bookings;
     my $table = "";
     MEETING_PLACE:
     for my $mp (model($c, 'MeetingPlace')->search(
@@ -137,7 +143,7 @@ sub meetingplace_table {
                 )
     ) {
         my $id = $mp->id;
-        if (! $checked{$id}) {
+        if (! ($checked{$id} || $br_checked{$id})) {
             # this meeting place is not currently assigned to
             # the PRE in question.
             # are there any bookings for this place that overlap
@@ -150,14 +156,35 @@ sub meetingplace_table {
             next MEETING_PLACE if @bookings;
         }
         # it should be included in the table
-        $table .= "<input type=checkbox name=mp$id  "
+        $table .= "<tr><td>"
+                  . $mp->name
+                  . "</td><td align=right>"
+                  . $mp->max
+                  . "</td><td align=center>"
+                  . "<input type=checkbox name=mp$id  "
                   . ($checked{$id} || '')
                   . "> "
-                  . $mp->name
-                  . "<br>\n";
+                  . "</td><td align=center>"
+                  . "<input type=checkbox name=mpbr$id  "
+                  . ($br_checked{$id} || '')
+                  . "> "
+                  . "</td></tr>\n";
     }
     if (! $table) {
         $table = "Sorry, there is no meeting place in the inn.";
+    }
+    else {
+        $table = <<"EOH";
+<table cellpadding=3>
+<tr>
+<th align=left>Name</th>
+<th align=right>Max</th>
+<th>Main</th>
+<th>Breakout</th>
+</tr>
+$table
+</table>
+EOH
     }
     $table;
 }
@@ -493,7 +520,7 @@ my $mail_sender;
 sub email_letter {
     my ($c, %args) = @_;
 
-    # check args for keys letter, subject, to, from
+    # check args for keys letter, subject, to, from???
 
     #
     # convert the HTML letter to text with lynx
@@ -561,8 +588,8 @@ EOH
         my $lunch = $lunches[$d];
         my $color = ($lunch && $view)? '#99FF99': '#FFFFFF';
         $s .= "<td align=left bgcolor=$color>" . $cur->day;
-        if ($cur == $sdate) {
-            ;       # no lunch is possible the first day
+        if ($dow == 6) {
+            ;                # no lunch on Saturday
         }
         elsif ($view) {
             my $w = $lunch? '': 'w';
@@ -614,7 +641,8 @@ sub get_lunch {
 # add a bunch of Config records
 # so that we're ready for the future.
 #
-# $new_last_date is a string in d8 format.
+# $new_last_date is a string in d8 format
+# OR a Date::Simple object.
 #
 # if we pass a $house object just add config
 # records for that one house - otherwise all houses.
@@ -626,7 +654,9 @@ sub get_lunch {
 sub add_config {
     my ($c, $new_last_date, $house) = @_;
 
-    $new_last_date = date($new_last_date);
+    if (! ref($new_last_date)) {
+        $new_last_date = date($new_last_date);
+    }
     my $last;
     my @houses;
     if ($house) {
@@ -691,6 +721,39 @@ my %tmax = qw/
 sub type_max {
     my ($h_type) = @_;
     return $tmax{$h_type};
+}
+
+sub max_type {
+    my ($max, $bath, $tent, $center) = @_;
+    if ($max == 1) {
+        if ($tent) {
+            return ($center)? "center_tent"
+                  :           "own_tent"
+                  ;
+        }
+        else {
+            return ($bath)? "single_bath"
+                  :         "single"
+                  ;
+        }
+    }
+    elsif ($max == 2) {
+            return ($bath)? "dble_bath"
+                  :         "dble"
+                  ;
+    }
+    elsif ($max == 3) {
+        return "triple";
+    }
+    elsif ($max == 4) {
+        return "quad";
+    }
+    elsif ($max <= 7) {
+        return "dormitory";
+    }
+    else {
+        return "economy";
+    }
 }
 
 1;

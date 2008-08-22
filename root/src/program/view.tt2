@@ -35,18 +35,17 @@
 <a href="/registration/list_reg_name/[% id %]">Registrations ([% program.reg_count %])</a>
 <p>
 
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right>Name</th>
-<td colspan=4><span class=larger>[% program.name %]</span>
-<th align=right>From</th>
-<td>[% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span></td>
-<th align=right>To</th>
-<td>[% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span></td>
-</tr>
-
-</table>
+<b>Name</b>
+<span class=larger>[% program.name %]</span>
+<b>From</b>
+[% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<a href=/summary/view/[% program.summary_id %]>Summary</a>
 
 <p>
 
@@ -77,11 +76,11 @@ Web
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 </span>
 </td>
@@ -160,6 +159,16 @@ Finance
 <tr>
 <th align=right>Retreat</th>
 <td>[% program.retreat %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Notify on Reg</th>
+<td>[% program.notify_on_reg %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Max</th>
+<td>[% program.max %]</td>
 </tr>
 
 <tr>
@@ -272,7 +281,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </table>
 </div>
 
-<!-- Lodging -->
+<!-- Meals/Lodging -->
 <div id="content3" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 

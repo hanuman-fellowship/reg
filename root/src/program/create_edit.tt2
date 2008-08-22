@@ -53,11 +53,11 @@ Web
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 </span>
 </td>
@@ -97,6 +97,16 @@ Finance
 </tr>
 
 <tr>
+<th align=right>Notify on Reg</th>
+<td><input type=text value='[% program.notify_on_reg %]' name=notify_on_reg size=60></td>
+</tr>
+
+<tr>
+<th align=right>Max</th>
+<td><input type=text value='[% program.max %]' name=max size=3></td>
+</tr>
+
+<tr>
 <th align=right valign=top>Confirmation Letter<br>Template</th>
 <td valign=top>
 <select name=cl_template>
@@ -110,7 +120,7 @@ Finance
 <tr>
 <th align=right valign=top>Confirmation Letter<br>Notes</th>
 <td colspan=4>
-<textarea name=confnote cols=55 rows=3>[% program.confnote %]</textarea>
+<textarea name=confnote cols=60 rows=3>[% program.confnote %]</textarea>
 </td>
 </tr>
 
@@ -211,7 +221,7 @@ Finance
 </table>
 </div>
 
-<!-- Lodging -->
+<!-- Meals/Lodging -->
 <div id="content3" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 

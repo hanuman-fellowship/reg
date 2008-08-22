@@ -15,6 +15,7 @@ __PACKAGE__->add_columns(qw/
     event_id
     sdate
     edate
+    breakout
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

@@ -23,7 +23,7 @@
 
 <tr>
 <th align=right>Double Bath</th>
-<td><input type=text name=double_bath value="[% housecost.double_bath %]" size=4></td>
+<td><input type=text name=dble_bath value="[% housecost.dble_bath %]" size=4></td>
 </tr>
 
 <tr>

@@ -1,0 +1,31 @@
+[% per.first %] [% per.last %] ([% per.sex_disp %])<br>
+[% per.addr1 %]<br>
+[% IF per.addr2 %]
+    [% per.addr2 %]<br>
+[% END %]
+[% per.city %], [% per.st_prov %] [% per.zip_post %]<br>
+[% IF per.country %]
+    [% per.country %]<br>
+[% END %]
+<p>
+[% IF per.email %]
+    [% per.email %]<br>
+[% END %]
+[% IF per.tel_home %]
+    [% per.tel_home %] home<br>
+[% END %]
+[% IF per.tel_work %]
+    [% per.tel_work %] work<br>
+[% END %]
+[% IF per.tel_cell %]
+    [% per.tel_cell %] cell<br>
+[% END %]
+[% IF reg.comment %]
+<p>
+Comments:<br>
+<ul>
+    [% reg.comment_br %]
+</ul>
+[% END %]
+<p>
+From [% reg.date_start_obj %] to [% reg.date_end_obj %].

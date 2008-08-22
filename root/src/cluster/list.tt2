@@ -1,0 +1,29 @@
+<h2>Clusters</h2>
+[% padmin = Catalyst.check_user_roles('prog_admin') %]
+[% IF padmin %]
+<a href=/cluster/create>Add</a>
+[% END %]
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=left>Name</th>
+<th align=left>Color</th>
+</tr>
+
+[% FOREACH cl IN clusters %]
+    <tr>
+    <td><a href="/cluster/update/[% cl.id %]">[% cl.name %]</a></td>
+    <td style="cursor: pointer" width=100 bgcolor=[% cl.color_bg %] onclick="window.location.href='/cluster/update/[% cl.id %]'">
+    </td>
+    [% IF padmin %]
+        <td width=20></td>
+        <td>
+        <a href="[% '/cluster/delete/' _ cl.id %]" onclick="return confirm('Okay to Delete [% cl.name %]?')">Del</a>
+        </td>
+    [% END %]
+    </tr>
+[% END -%]
+
+</table>
+</ul>

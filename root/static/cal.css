@@ -1,5 +1,8 @@
-.whole {
+body {
+    background: #ffffff;
     margin-left: .3in;
+    font-size: 13pt;
+    font-family: "Lucida Grande";
 }
 .jmptable {
     margin-left: .3in;
@@ -13,15 +16,26 @@
     font-size: 18pt;
 }
 .datefld {
-    font-family: Verdana;
+    font-family: "Lucida Grande";
     margin-left: .3in;
 }
 .hdr {
     font-weight: bold;
     font-size: 18pt;
-    font-family: Verdana;
+    font-family: "Lucida Grande";
 }
 .pr_links {
     text-decoration: none;
     color: black;
+}
+a {
+    color: #33a;
+    text-decoration: none;
+    font-size: 13pt;
+}
+
+a:hover {
+    color: #fff;
+    background: #33a;
+    text-decoration: none;
 }

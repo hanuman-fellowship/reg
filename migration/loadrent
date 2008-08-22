@@ -58,6 +58,7 @@ my @fields = qw/
     housecost_id
     lunches
     status
+    summary_id
 /;
 my %lookup = qw/
     rname	name
@@ -71,8 +72,16 @@ my $r_sql = "insert into rental ("
     . (join ",", ("?") x @fields)
 . ")";
 my $r_sth = $dbh->prepare($r_sql) or die "no prep rental insert\n";
+my $summary_sth = $dbh->prepare("insert into summary (id) values (?)");
 
 my %hash;
+
+my $next_summary_id;
+open my $sum_id, "<", "summary_id.txt"
+    or die "no summary_id.txt\n";
+$next_summary_id = <$sum_id>;
+chomp $next_summary_id;
+close $sum_id;
 
 for my $seas (@seasons) {
     print "rental $seas\n";
@@ -102,7 +111,7 @@ for my $seas (@seasons) {
     }
     close $in;
 }
-$r_sth = undef;
+$r_sth = $summary_sth = undef;
 $dbh->disconnect();
 
 sub processRental {
@@ -121,5 +130,8 @@ sub processRental {
     #print "rental $season - $hash{name}\n";
     $hash{housecost_id} = 1;        # Default
     $hash{status} = "new";
+    $hash{summary_id} = $next_summary_id;
+    $summary_sth->execute($next_summary_id);
+    ++$next_summary_id;
     $r_sth->execute(@hash{@fields});
 }

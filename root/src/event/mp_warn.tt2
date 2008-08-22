@@ -1,0 +1,6 @@
+<h2>Events</h2>
+These meeting places were deleted for <a href="/event/view/[% event.id %]">[% event.name %]</a>:
+<p>
+<ul>
+[% names %]
+</ul>

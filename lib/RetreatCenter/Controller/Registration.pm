@@ -736,8 +736,8 @@ sub create_do : Local {
         user_id  => $c->user->obj->id,
         the_date => $hash{date_postmark},
         time     => $hash{time_postmark},
-        what     => 'Online Registration',       # other name???
-                                        # to not confuse with 'Registration'???
+        what     => ($hash{fname}? 'Online Registration'
+                    :              'Manual Registration'),
     });
 
     # now current history
@@ -775,6 +775,35 @@ sub create_do : Local {
 
     # add the automatic charges
     _compute($c, $reg, @who_now);
+
+    # notify those who want to know of each registration as it happens
+    if ($pr->notify_on_reg) {
+        my $html = "";
+        my $tt = Template->new({
+            INCLUDE_PATH => 'root/static/templates/letter',
+            EVAL_PERL    => 0,
+        });
+        my $stash = {
+            reg => $reg,
+            per => $reg->person,
+        };
+        $tt->process(
+            "onreg_notify.tt2",   # template
+            $stash,               # variables
+            \$html,               # output
+        );
+        email_letter($c,
+               html       => $html, 
+               subject    => "Notification of Registration for " . $pr->title,
+               to         => $pr->notify_on_reg,
+               from       => $lookup{from},
+               from_title => $lookup{from_title},
+        );
+        model($c, 'RegHistory')->create({
+            @who_now,
+            what    => 'On Register Notification Sent',
+        });
+    }
 
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
@@ -1135,6 +1164,7 @@ sub view : Local {
     my $p = $c->stash->{program} = $r->program;
     $c->stash->{non_pr} = $p->name !~ m{personal retreat}i;
     my @files = <root/static/online/*>;
+    $c->stash->{daily_pic_date} = $r->date_start();
     $c->stash->{online} = scalar(@files);
     $c->stash->{template} = "registration/view.tt2";
 }
@@ -1745,7 +1775,10 @@ sub update_do : Local {
         # we must first vacate the house and adjust the config records.
         #
         # OR the dates have changed... this, too, invalidates
-        # the housing.
+        # the housing and we need to vacate and relodge.
+        #
+        $c->stash->{message1} = "Vacated " . $reg->house->name . ".";
+                                    # see lodge.tt2 
         _vacate($c, $reg);
     }
     $reg->update({
@@ -1765,11 +1798,12 @@ sub update_do : Local {
     });
     _compute($c, $reg, @who_now);
     _reg_hist($c, $id, "Registration updated.");
-    $c->response->redirect($c->uri_for("/registration/"
-        . (($reg->house_id || $reg->h_type =~ m{van|commut|unk})? "view"
-          :                                                       "lodge")
-        . "/$id"
-    ));
+    if ($reg->house_id || $reg->h_type =~ m{van|commut|unk}) {
+        $c->response->redirect($c->uri_for("/registration/view/$id"));
+    }
+    else {
+        lodge($self, $c, $id);
+    }
 }
 
 #
@@ -1868,33 +1902,102 @@ sub arrived : Local {
 
 sub lodge : Local {
     my ($self, $c, $id) = @_;
-    my $r = $c->stash->{reg} = model($c, 'Registration')->find($id);
-    my $sdate = $r->date_start;
-    my $edate1 = date($r->date_end) - 1;
-    $edate1 = $edate1->as_d8();     # could I put this on the above line???
+    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $program_id = $reg->program_id();
+    # some easier/quicker way of doing the following???
+    # just a direct sql query???
+    my %prog_cluster = map { $_->cluster_id() => 1 }
+                       model($c, 'ProgramCluster')->search({
+                           program_id => $program_id,
+                       });
+    #
+    # is there a comment saying that they want to be
+    # housed with a friend who is also registered for this program?
+    #
+    my $share_house_id = 0;
+    my $share_house_name = "";
+    if ($reg->comment =~ m{Sharing a room with\s*([^.]*)[.]}) {
+        my $name = $1;
+        my ($first, $last) = split m{\s+}, $name;
+        $c->log->info("sharing with $last, $first");
+        my ($person) = model($c, 'Person')->search({
+            first => $first,
+            last  => $last,
+        });
+        if ($person) {
+            my ($reg2) = model($c, 'Registration')->search({
+                person_id => $person->id,
+                program_id => $program_id,
+            });
+            # if space left, same dates, same h_type, etc etc.
+            # oh jeez - I can't do everything.
+            # the best I guess would be to simply inform
+            # the registrar of where their friend is housed.
+            # if that room appears in the list (I can default it)
+            # then they can choose it.
+            if ($reg2) {
+                if ($reg2->house_id) {
+                    if ($reg2->h_type eq $reg->h_type) {
+                        $share_house_name = $reg2->house->name;
+                        $share_house_id   = $reg2->house_id;
+                        $c->stash->{message2} = "Share $share_house_name"
+                                               ." with $name?";
+                    }
+                    else {
+                        $c->stash->{message2} = "$name requested a housing type of '"
+                                              . $reg2->h_type_disp
+                                              . "' not '"
+                                              . $reg->h_type_disp
+                                              . "'."
+                                              ;
+                    }
+                }
+                else {
+                    $c->stash->{message2} = "$name has not yet been housed.";
+                }
+            }
+            else {
+                $c->stash->{message2} = "$name has not yet registered for "
+                    . $reg->program->name . ".";
+            }
+        }
+        else {
+            $c->stash->{message2} = "Could not find a person named $name.";
+        }
+    }
+    my $sdate = $reg->date_start;
+    my $edate1 = (date($reg->date_end) - 1)->as_d8();
 
-    my $h_type = $c->stash->{h_type} = $r->h_type;
+    my $h_type = $c->stash->{h_type} = $reg->h_type;
     my $bath   = ($h_type =~ m{bath}  )? "yes": "";
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
     my $center = ($h_type =~ m{center})? "yes": "";
-    my $psex   = $r->person->sex;
+    my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
     #
     # look at a list of _possible_ houses for h_type.
     # ??? what order to present them in?  priority/resized?
     # consider cluster???  other bookings for this rental???
     #
-    my $h_opts = "";
+    my @h_opts = ();
     my $n = 0;
+    my $selected = 0;
     HOUSE:
     for my $h (model($c, 'House')->search({
-                   bath   => $bath,
-                   tent   => $tent,
-                   center => $center,
-                   max    => { '>=', $max },
+                   inactive => '',
+                   bath     => $bath,
+                   tent     => $tent,
+                   center   => $center,
+                   max      => { '>=', $max },
                }) 
     ) {
         my $h_id = $h->id;
+        my ($codes, $code_sum) = ("", 0);
+        if (exists $prog_cluster{$h->cluster_id()}) {
+            $codes = "C";
+            $code_sum = $lookup{house_sum_cluster};     # string
+        }
+
         #
         # is this house truly available for this request
         # from sdate to edate1?
@@ -1918,25 +2021,95 @@ sub lodge : Local {
             ],
         });
         next HOUSE if @cf;        # nope
-        # put above ??? and get a count???
 
-        $h_opts .= "<option value=" 
-                 . $h_id
-                 . ($h_opts eq ""? " selected": "")
-                 . ">"
-                 . $h->name
-                 . "</option>"
-                 ;
+        # put above ??? and get a count???
+        # instead of getting the actual objects
+        # which we don't need?   actually, we do...
+
+        # we have a good house.  no config records are problematic.
+        # don't do a double search of config???
+        # what are the attributes of the configuration records?
+        my ($O, $P) = (0, 1);
+        for my $cf (model($c, 'Config')->search({
+                        house_id => $h_id,
+                        the_date => { 'between' => [ $sdate, $edate1 ] },
+                    })
+        ) {
+            if (!$O && $cf->cur() > 0) {
+                $O = 1;
+            }
+            if ($P && $cf->curmax() != $max) {
+                $P = 0;
+            }
+        }
+        if ($P) {
+            $codes .= "P";
+            $code_sum += $lookup{house_sum_perfect_fit};     # string
+        }
+        if ($O) {
+            $codes .= "O";
+            $code_sum += $lookup{house_sum_occupied};     # string
+        }
+        $codes = " - $codes" if $codes;
+        #
+        # C - cluster match
+        # P - perfect size - no further resize needed
+        # O - occupied (but there is space for more)
+
+        # put this option in an array to be sorted according
+        # to priority.  put the kind of house (resized,
+        # occupied, ...) in <option>
+        #
+        my $opt = "<option value=" 
+                  . $h_id
+                  . (($h_id == $share_house_id)? " selected"
+                    :                            "")
+                  . ">"
+                  . $h->name
+                  . $codes
+                  . "</option>\n"
+                  ;
+        push @h_opts, [ $opt, $code_sum, $h->priority ];
         ++$n;
+        if ($h_id == $share_house_id) {
+            $selected = 1;
+        }
     }
-    $c->stash->{house_opts} = $h_opts;
+    @h_opts = map {
+                  $_->[0]
+              }
+              sort {
+                $b->[1] <=> $a->[1] ||      # CPO      - descending
+                $a->[2] <=> $b->[2]         # priority - ascending
+              }
+              @h_opts;
+    if ($share_house_id && ! $selected) {
+        # male, female want to share
+        # one of them is already housed.
+        # the room is not in the list because of the gender mismatch
+        # put it on top - with a X code.
+        # make it selected
+        unshift @h_opts,
+            "<option value=" 
+            . $share_house_id
+            . " selected>"
+            . $share_house_name
+            . " - X"
+            . "</option>\n"
+            ;
+        $selected = 1;
+    }
+    if (@h_opts && ! $selected) {
+        # no house is otherwise selected
+        # insert a select into the first one.
+        $h_opts[0] =~ s{>}{ selected>};
+    }
+    $c->stash->{house_opts} = "@h_opts";
     $c->stash->{n_opts} = $n;       # $n not always = # opts???
     $h_type =~ s{dble}{double};     # only for display...
     $h_type =~ s{_(.)}{ \u$1};
     $c->stash->{disp_h_type} = (($h_type =~ m{^[aeiou]})? "an": "a")
                              . " '\u$h_type'";
-    $c->stash->{house_opts} = $h_opts;
-    $c->stash->{n_opts} = $n;
     $c->stash->{template} = "registration/lodge.tt2";
 }
 
@@ -1944,15 +2117,21 @@ sub lodge : Local {
 # we have identified a house for this registration.
 # put this in the registration record itself
 # and update the config records appropriately and carefully.
+# also add a program_cluster record if it is not there already.
 #
 sub lodge_do : Local {
     my ($self, $c, $id) = @_;
 
     my ($house_id) = $c->request->params->{house_id};
     my ($force_house) = trim($c->request->params->{force_house});
+    if (! ($house_id || $force_house)) {
+        $c->response->redirect($c->uri_for("/registration/view/$id"));
+        return;
+    }
     my $house_max;
+    my $house;
     if ($force_house) {
-        my ($house) = model($c, 'House')->search({
+        ($house) = model($c, 'House')->search({
             name => $force_house,
         });
         if (! $house) {
@@ -1963,16 +2142,34 @@ sub lodge_do : Local {
         $house_id = $house->id;     # override
         $house_max = $house->max;
     }
-    my $r = model($c, 'Registration')->find($id);
-    $r->update({
+    else {
+        ($house) = model($c, 'House')->find($house_id);
+    }
+    my $reg = model($c, 'Registration')->find($id);
+    $reg->update({
         house_id => $house_id,
         h_name   => '',
     });
-    my $sdate = $r->date_start;
-    my $edate = date($r->date_end) - 1;
-    $edate = $edate->as_d8();
-    my $psex = $r->person->sex;
-    my $cmax = type_max($r->h_type);
+    # program cluster record
+    my $cluster_id = $house->cluster_id();
+    my $program_id = $reg->program_id();
+            # can I just do a count below???
+            # does model need to be called in list context???
+            # didn't seem to do anything when called in scalar context!
+    my @pc = model($c, 'ProgramCluster')->search({ 
+                 program_id => $program_id,
+                 cluster_id => $cluster_id,
+             });
+    if (@pc == 0) {
+        model($c, 'ProgramCluster')->create({
+            program_id => $program_id,
+            cluster_id => $cluster_id,
+        });
+    }
+    my $sdate  = $reg->date_start;
+    my $edate1 = (date($reg->date_end) - 1)->as_d8();
+    my $psex = $reg->person->sex;
+    my $cmax = type_max($reg->h_type);
     #
     # if we forced a request for a triple into a double
     # we can't set curmax in the config record
@@ -1993,7 +2190,7 @@ sub lodge_do : Local {
         # look ahead to see if a room is plum full on some day.
         my @cf = model($c, 'Config')->search({
             house_id => $house_id,
-            the_date => { 'between' => [ $sdate, $edate ] },
+            the_date => { 'between' => [ $sdate, $edate1 ] },
             cur      => $house_max,
         });
         if (@cf) {
@@ -2006,7 +2203,7 @@ sub lodge_do : Local {
     }
     for my $cf (model($c, 'Config')->search({
                     house_id => $house_id,
-                    the_date => { 'between' => [ $sdate, $edate ] }
+                    the_date => { 'between' => [ $sdate, $edate1 ] }
                 })
     ) {
         my $csex = $cf->sex;
@@ -2019,7 +2216,7 @@ sub lodge_do : Local {
             sex        => ((   $csex eq 'U'
                             || $csex eq $psex)? $psex
                            :                    'X'),
-            program_id => $r->program_id,
+            program_id => $reg->program_id,
         });
     }
     $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -2033,7 +2230,8 @@ sub relodge : Local {
     my ($self, $c, $id) = @_;
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
     my $house = $reg->house;
-    $c->stash->{prior_house} = $house->name;        # see lodge.tt2 
+    $c->stash->{message1} = "Vacated " . $house->name . ".";
+                                # see lodge.tt2 
     _vacate($c, $reg);
     lodge($self, $c, $id);
 }
@@ -2044,14 +2242,13 @@ sub relodge : Local {
 sub _vacate {
     my ($c, $reg) = @_;
 
-    my $sdate = $reg->date_start;
-    my $edate = date($reg->date_end) - 1;
-    $edate = $edate->as_d8();
+    my $sdate  = $reg->date_start;
+    my $edate1 = (date($reg->date_end) - 1)->as_d8();
     my $house_id = $reg->house_id;
     my $hmax = $reg->house->max;
     for my $cf (model($c, 'Config')->search({
                     house_id => $house_id,
-                    the_date => { 'between' => [ $sdate, $edate ] }
+                    the_date => { 'between' => [ $sdate, $edate1 ] }
                 })
     ) {
         # if we're back to empty.

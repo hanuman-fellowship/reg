@@ -10,18 +10,18 @@ else
 fi
 
 echo creating tables
-$db <mkpeople
-$db <mkmisc
-$db <mkprog
-$db <mkrent
-$db <mkrep
-$db <mkusers
-$db <mkmember
-$db <mkreg
-$db <mkevent
-$db <mkacct
-$db <mkmeet
-$db <mkhouse
+echo people; $db <mkpeople
+echo misc  ; $db <mkmisc
+echo prog  ; $db <mkprog
+echo rent  ; $db <mkrent
+echo rep   ; $db <mkrep
+echo users ; $db <mkusers
+echo member ; $db <mkmember
+echo reg   ; $db <mkreg
+echo event ; $db <mkevent
+echo acct  ; $db <mkacct
+echo meet  ; $db <mkmeet
+echo house ; $db <mkhouse
 
 echo strings
 loadstr
@@ -30,7 +30,7 @@ loadaf
 
 echo clearing images
 cd ../root/static/images
-rm -f lo* lth* lb* po* pth* pb*
+rm -f 20*.png lo* lth* lb* po* pth* pb*
 cd ../../../migration
 
 echo people

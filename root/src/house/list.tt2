@@ -1,0 +1,40 @@
+<style>
+h3 {
+    color: green;
+    margin-bottom: 1mm;
+}
+</style>
+<h2>Houses</h2>
+<a href="/house/create">Add</a>
+<h3>Rooms</h3>
+<ul>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>Name</th>
+<th align=center>Max</th>
+<th align=center>Bath</th>
+</tr>
+[% FOREACH h IN rooms %]
+<tr>
+<td><a href="/house/view/[% h.id %]">[% h.name %]</a></td>
+<td align=right>[% h.max %]</td>
+<td align=center>[% IF h.bath %]<img src=/static/images/checked.gif>[% END %]</td>
+</tr>
+[% END %]
+</table>
+</ul>
+<h3>Tents</h3>
+<ul>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>Name</th>
+<th align=center>Center</th>
+</tr>
+[% FOREACH t IN tents %]
+<tr>
+<td><a href="/house/view/[% t.id %]">[% t.name %]</a></td>
+<td align=center>[% IF t.center %]<img src=/static/images/checked.gif>[% END %]</td>
+</tr>
+[% END %]
+</table>
+</ul>

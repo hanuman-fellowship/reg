@@ -16,9 +16,9 @@
 <td><a href=/program/list>Programs</a></td>
 <td><a href=/rental/list>Rentals</a></td>
 <td><a href=/event/list>Events</a></td>
-<td><a href=/event/calendar target=calendar>Calendar</a></td>
-<td><a target=_blank href=/dailypic/show>Daily Pic</a></td>
-<td><a target=_blank href=/static/help/index.html>Help</a></td>
+<td><a target=calendar href=/event/calendar>Calendar</a></td>
+<td><a target=dailypic href=/dailypic/show/[% daily_pic_date %]>Daily Pic</a></td>
+<td><a target=help href=/static/help/index.html>Help</a></td>
 [% IF Catalyst.check_user_roles('super_admin') %]
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
 [% END %]

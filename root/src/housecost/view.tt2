@@ -29,7 +29,7 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Double Bath</th>
-<td>[% housecost.double_bath %]</td>
+<td>[% housecost.dble_bath %]</td>
 </tr>
 
 <tr>

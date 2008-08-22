@@ -1,0 +1,14 @@
+<h3>Booking Entire Clusters for [% rental.name %]</h3>
+[% IF nclusters != 0 %]
+<form action="/rental/cluster_add_do/[% rental.id %]">
+<ul>
+[% FOR cl IN clusters %]
+<input type=checkbox name=cl[% cl.id %] value=yes>[% cl.name %]<br>
+[% END %]
+</ul>
+<p>
+<input type=submit value="Submit">
+</form>
+[% ELSE %]
+Sorry, there are no clusters that are entirely free.
+[% END %]

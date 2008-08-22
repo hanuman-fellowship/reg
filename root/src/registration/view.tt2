@@ -93,10 +93,26 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 
 [% type = reg.h_type_disp %]
-<tr><th align=right>Housing</th><td>[% type %]
-[% IF type != 'Commuting ' && type != 'Your Van' %]in[% END %]
-[% IF reg.house_id %]<a href=/registration/relodge/[% reg.id %]>[% reg.house.name %]</a>[% ELSE %]<a href=/registration/lodge/[% reg.id %]>Lodge</a>[% END %]
-[% IF reg.h_name %] ([% reg.h_name %])[% END %]</td></tr>
+<tr><th align=right>Housing</th>
+<td>[% type %]
+[% IF type != 'Commuting'
+   && type != 'Your Van'
+   && type != 'Unknown' %]
+
+    in
+
+    [% IF reg.house_id %]
+        <a href=/registration/relodge/[% reg.id %]>[% reg.house.name %]</a>
+    [% ELSE %]
+        <a href=/registration/lodge/[% reg.id %]>Lodge</a>
+    [% END %]
+
+
+[% END %]
+[% IF reg.h_name %]
+    ([% reg.h_name %])
+[% END %]
+</td></tr>
 <tr><th align=right>Balance</th>
 <td>
 [% reg.balance %][% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view">Pay It</a>[% END %]

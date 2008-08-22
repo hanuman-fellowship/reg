@@ -56,6 +56,7 @@ sub _get_data {
         bath
         tent
         center
+        inactive
     /) {
         $hash{$f} = "" unless exists $hash{$f};
     }
@@ -68,7 +69,7 @@ sub _get_data {
         x
         y
         priority
-        clust_order
+        cluster_order
     /) {
         $hash{$f} = trim($hash{$f});
         if (!($hash{$f} =~ m{^\d+$})) {
@@ -85,9 +86,10 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $h = $c->stash->{house} = model($c, 'House')->find($id);
-    $c->stash->{bath}   = $h->bath  ? "checked": "";
-    $c->stash->{tent}   = $h->tent  ? "checked": "";
-    $c->stash->{center} = $h->center? "checked": "";
+    $c->stash->{bath}     = $h->bath  ? "checked": "";
+    $c->stash->{tent}     = $h->tent  ? "checked": "";
+    $c->stash->{center}   = $h->center? "checked": "";
+    $c->stash->{inactive} = $h->inactive? "checked": "";
     $c->stash->{cluster_opts} =
         [ model($c, 'Cluster')->search(
             undef,

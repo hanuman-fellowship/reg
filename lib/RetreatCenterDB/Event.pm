@@ -14,13 +14,9 @@ __PACKAGE__->add_columns(qw/
     sdate
     edate
     sponsor
-    user_id
-    the_date
-    time
+    max
 /);
 __PACKAGE__->set_primary_key(qw/id/);
-
-__PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
 
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'event_id');

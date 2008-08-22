@@ -1,0 +1,232 @@
+#!/usr/bin/perl
+
+=comment
+requirements for the hcck (right?) program:
+    1- for every house id for every day from today to
+        sys_last_config_date we have one and only one config record.
+    2- there are the same number of distinct house_id's
+        in config as there are houses.
+    3- for every rental_booking record there is the proper config records
+        with max and cur = house->max, sex is R,
+        rental_id matches, program_id is 0 
+    4- for config records with a non-zero cur and a program id
+        of non-zero there are exactly cur registration records
+        with different reg ids for that date and that house.
+    5- look at all reg records with house_id != 0
+            multiply by date_end-date_start
+       this should match the sum of cur where program_id != 0
+    6- in all config records curmax should not be > house->max.
+=cut
+use warnings;
+use strict;
+use lib "lib";
+use DBI;
+use Date::Simple qw/
+    date
+    today
+/;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+my $sth = $dbh->prepare("
+    select value
+    from string
+    where the_key = 'sys_last_config_date'
+");
+$sth->execute();
+my ($lfd) = $sth->fetchrow_array();
+print "    last is $lfd\n";
+my $dt = date($lfd);
+
+$sth = $dbh->prepare("select max(edate) from rental");
+$sth->execute();
+my ($rent_max) = $sth->fetchrow_array();
+print "rent max is $rent_max\n";
+
+$sth = $dbh->prepare("select max(edate) from program");
+$sth->execute();
+my ($prog_max) = $sth->fetchrow_array();
+$dt = date($prog_max) + 30;
+$prog_max = $dt->as_d8();
+print "prog max is $prog_max\n";
+
+my $max = ($prog_max > $rent_max)? $prog_max: $rent_max;
+my $today = today()->as_d8();
+
+my $ndays = date($max)-date($today) + 1;
+print "$today to $max = $ndays days\n";
+
+$sth = $dbh->prepare("select id, max from house");
+$sth->execute();
+my (@h_id, %h_max);
+while (my ($id, $max) = $sth->fetchrow_array()) {
+   push @h_id, $id;
+    $h_max{$id} = $max;
+}
+my $nhouses = @h_id;
+print "got $nhouses houses\n";
+
+# requirement #2
+$sth = $dbh->prepare("
+    select count(distinct house_id)
+    from config;
+");
+$sth->execute();
+my ($ndistinct) = $sth->fetchrow_array();
+if ($nhouses != $ndistinct) {
+    print "** expected $nhouses house ids in config but got $ndistinct\n";
+}
+else {
+    print "nhouses sync\n";
+}
+
+# requirement #1
+# config records should all be present...
+$sth = $dbh->prepare("
+    select count(distinct the_date)
+    from config
+    where house_id = ?
+      and the_date >= $today
+");
+my $err = 0;
+for my $id (@h_id) {
+    $sth->execute($id);
+    my $n = $sth->fetchrow_array();
+    if ($n != $ndays) {
+        print "** mismatch $n vs $ndays for house id $id\n";
+        ++$err;
+    }
+}
+if (! $err) {
+    print "all config records present\n";
+}
+
+# requirement #3
+# rental_booking:
+#   rental_id 
+#   date_start
+#   date_end
+#   house_id
+#   h_type
+
+# config:
+#   house_id
+#   the_date
+#   sex
+#   curmax
+#   cur
+#   program_id
+#   rental_id
+#
+$sth = $dbh->prepare("
+    select *
+    from rental_booking
+");
+$sth->execute();
+$err = 0;
+my $sth2;
+while (my $rb_ref = $sth->fetchrow_hashref()) {
+    $sth2 = $dbh->prepare("
+        select *
+        from config
+        where house_id = $rb_ref->{house_id}
+          and the_date between $rb_ref->{date_start} and $rb_ref->{date_end}
+    ");
+    $sth2->execute();
+    while (my $cf_ref = $sth2->fetchrow_hashref()) {
+        my $note = "for house $cf_ref->{house_id}, date $cf_ref->{the_date}";
+        my $max = $h_max{$rb_ref->{house_id}};
+        if ($cf_ref->{curmax} != $max 
+            || $cf_ref->{cur} != $max
+        ) {
+            print "** curmax, max != $max $note\n";
+            ++$err;
+        }
+        if ($cf_ref->{sex} ne 'R') {
+            print "** sex should be R $note\n";
+            ++$err;
+        }
+        if ($cf_ref->{rental_id} != $rb_ref->{rental_id}) {
+            print "** rental id $cf_ref->{rental_id} should be "
+                . "$rb_ref->{rental_id} $note\n";
+            ++$err;
+        }
+        if ($cf_ref->{program_id} != 0) {
+            print "** program id should be 0 $note\n";
+            ++$err;
+        }
+    }
+}
+if (! $err) {
+    print "all rental_booking records correct\n";
+}
+
+# requirement #4
+# reg housing.
+$sth = $dbh->prepare("
+    select cur, house_id, the_date
+    from config
+    where cur != 0
+      and program_id != 0
+");
+$sth->execute();
+$sth2 = $dbh->prepare("
+    select count(distinct id)
+    from registration
+    where house_id = ?
+      and date_start <= ?
+      and date_end   >  ?
+");
+$err = 0;
+while (my ($cur, $house_id, $the_date) = $sth->fetchrow_array()) {
+    $sth2->execute($house_id, $the_date, $the_date);     
+    my ($count) = $sth2->fetchrow_array();
+    if ($count != $cur) {
+        print "** reg mismatch ($count != $cur) for house $house_id date $the_date\n";
+        ++$err;
+    }
+}
+if (! $err) {
+    print "all reg reservation records are correct\n";
+}
+
+# requirement #5
+$sth = $dbh->prepare("
+    select date_start, date_end
+    from registration
+    where house_id != 0
+");
+$sth->execute();
+my $reg_sum = 0;
+while (my ($start, $end) = $sth->fetchrow_array()) {
+    $reg_sum += date($end)-date($start);
+}
+$sth = $dbh->prepare("
+    select sum(cur)
+    from config
+    where program_id != 0
+");
+$sth->execute();
+my ($config_sum) = $sth->fetchrow_array();
+if ($reg_sum != $config_sum) {
+    print "** reg_sum $reg_sum != config_sum $config_sum\n";
+}
+else {
+    print "reg sum matches config sum\n";
+}
+
+# requirement #6
+$sth = $dbh->prepare("
+    select c.*
+    from config c, house h
+    where c.house_id = h.id
+      and (c.cur > h.max or c.curmax > h.max)
+");
+$sth->execute();
+$err = 0;
+while (my (@data) = $sth->fetchrow_array()) {
+    print "** curmax or max > house_max: @data\n";
+    ++$err;
+}
+if (! $err) {
+    print "no max or cur max > house_max\n";
+}

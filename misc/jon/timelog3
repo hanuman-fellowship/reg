@@ -152,3 +152,54 @@ Jul 27 6:30-10:15, 2:30-5:45
     next is auto choosing of "Sharing room with ...".
     and also - a sorting of the possible offerings.
         and displaying the encoding for that room.
+Jul 28 3:00-5:00, 11:30-2:45
+    house inactive, disp_code settings
+    finalized 'Sharing a room with Farst List.'
+    color picker investigation
+    events on dailypic. just right.
+    lots of small tweaks styling the calendar and dailypic.
+Jul 29 2:40-3:15, 4:50-6:30
+    yui colorpicker - I tried for a while.  many problems/issues.
+        so large and complex for one!
+    try the sue center inspired one.
+        good enough.  simple.  i understand it.
+        looks cool.  the person can always modify the
+        decimal #s, too, if they wish.
+Jul 30 9:45-12:30, 2:25-3:00
+    adding meeting places, clusters, houses
+    max for program and event - define
+    x,y for cluster
+    prepare for demo, demo (hour off - chatting)
+    discussing rental complexities
+Jul 31 2:00-4:00
+    rental improvements, queries, suggestions
+    cluster labels
+    max for program and event - implement
+Aug 1 4:00-6:30, 9:00-9:20
+    helping with netstat sluggage - need to do a cron job to shutdown -g0 -i6
+        at some interval - tnet will help know when.
+    max in program, event.
+    notify_on_reg as in old reg.
+    meeting places determine calendar height
+    meeting place deleted warning after an edit to sdate, edate, max 
+        events, programs, rentals
+Aug 9 12:15-1:40, 2:30-5:00
+    meeting about rentals, sums 
+    adjusting things after the meeting
+    beginning sums
+Aug 13 10:30-2:25, 4:05-6:30
+    planning day's activities, designing, laying out db design
+    rental cluster booking
+        gray area for capped/feature creep
+        finished cluster booking - not easy!
+    coded/priority sorting of housing options
+        10 C, 5 O, 2 P plus shared room - on top
+    daily pic current date.
+Aug 15 1:50-3:40, 10:35-
+    consider priority of the house when sorting
+    summary for both program and rental
+        in a separate table.
+        needs views, controllers
+    view and edit the summary
+Aug 21 4:30-5:25
+    sums beginning of editing

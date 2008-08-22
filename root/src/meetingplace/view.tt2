@@ -30,7 +30,7 @@ onclick="return confirm('Okay to Delete [% mp.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Color</th>
-<td bgcolor=[% mp.bgcolor %]>[% mp.color %]</td>
+<td width=100 bgcolor=[% mp.bgcolor %]></td>
 </tr>
 
 </table>

@@ -101,7 +101,6 @@ XX --!>
     </table>
 </tr>
 [% END %]
-<tr><th align=right>Inactive</th><td align=left>[% person.inactive %]</td><th align=right>Deceased</th><td align=left>[% person.deceased %]</td></tr>
 <tr><th align=right valign=top>Mailings</th><td>
 
 <table>
@@ -120,6 +119,7 @@ XX --!>
 [% END %]
 </td>
 </tr>
+<tr><th align=right>Inactive</th><td align=left>[% person.inactive %]</td><th align=right>Deceased</th><td align=left>[% person.deceased %]</td></tr>
 <tr>
 <th align=right>Date Entered</td><td>[% person.date_entrd_obj %]</td>
 </tr>

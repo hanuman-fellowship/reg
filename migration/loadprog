@@ -153,6 +153,7 @@ close $gender;
 #
 my $next_per_id = 200000;
 my $next_pro_id = 3000;
+my $next_summary_id = 1;
 
 open my $ld, "<", "new/leaders.txt"
     or die "cannot open leaders.txt: $!\n";
@@ -255,6 +256,7 @@ my @fields = qw/
     lunches
     school
     level
+    summary_id
 /;
 my $p_sql = "insert into program ("
     . (join ",", @fields)
@@ -262,6 +264,8 @@ my $p_sql = "insert into program ("
     . (join ",", ("?") x @fields)
 . ")";
 my $p_sth = $dbh->prepare($p_sql) or die "no prep ins prog\n";
+
+my $summary_sth = $dbh->prepare("insert into summary (id) values (?)");
 
 my $lp_sql = "insert into leader_program values (?, ?)";
 my $lp_sth = $dbh->prepare($lp_sql) or die "no prep lp\n";
@@ -331,6 +335,10 @@ for my $seas (@seasons) {
         }
     }
     close $in;
+    open my $sum_id, ">", "summary_id.txt"
+        or die "no summary_id.txt\n";
+    print {$sum_id} "$next_summary_id\n";
+    close $sum_id;
 }
 
 close $pr_hoff;
@@ -428,7 +436,11 @@ sub processProg {
     }
     my $ndays = date($hash{edate}) - date($hash{sdate}) + 1;
     $hash{lunches} = '0' x $ndays;
-    #print "loading pid $hash{pid}\n";
+
+    $hash{summary_id} = $next_summary_id;
+    $summary_sth->execute($next_summary_id);
+    ++$next_summary_id;
+
     $p_sth->execute(@hash{@fields}) or die "no exec";      # yay!
     if ($hash{pres1} != 0) {
         addLeader($hash{pres1}, $hash{id});
@@ -445,7 +457,7 @@ sub processProg {
         }
     }
 }
-$cp_sth = $hc_sth = $per_sth = $aper_sth = $le_sth = $p_sth = $lp_sth = $af_pr_sth = undef;
+$cp_sth = $hc_sth = $per_sth = $aper_sth = $le_sth = $p_sth = $lp_sth = $af_pr_sth = $summary_sth = undef;
 $dbh->disconnect();
 
 sub addLeader {

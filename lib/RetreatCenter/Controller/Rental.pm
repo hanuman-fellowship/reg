@@ -3,7 +3,10 @@ use warnings;
 package RetreatCenter::Controller::Rental;
 use base 'Catalyst::Controller';
 
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+    today
+/;
 use Util qw/
     trim
     empty
@@ -14,10 +17,12 @@ use Util qw/
     lunch_table
     add_config
     type_max
+    max_type
     housing_types
 /;
 use Lookup;
 use POSIX;
+use Template;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -30,8 +35,8 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{check_linked}          = "";
-    $c->stash->{check_max_confirmed}   = "";
+    $c->stash->{check_linked}      = "";
+    $c->stash->{check_tentative}   = "checked";
     $c->stash->{housecost_opts} =
         [ model($c, 'HouseCost')->search(
             undef,
@@ -80,6 +85,13 @@ sub _get_data {
         $hash{$d} = $dt? $dt->as_d8()
                    :     "";
     }
+    TIME:
+    for my $t ($hash{start_hour}, $hash{end_hour}) {
+        next TIME if empty($t);
+        if ($t !~ m{\d+} || ($t < 1 || 12 < $t)) {
+            push @mess, "Illegal time: $t";
+        }
+    }
     if (!@mess && $hash{sdate} > $hash{edate}) {
         push @mess, "End date must be after the Start date";
     }
@@ -91,7 +103,10 @@ sub _get_data {
         push @mess, "Invalid email: $hash{email}";
     }
     if (! $hash{max} =~ m{^\d+$}) {
-        push @mess, "Invalid maximum";
+        push @mess, "Invalid maximum.";
+    }
+    if (! $hash{deposit} =~ m{^\d+$}) {
+        push @mess, "Invalid deposit.";
     }
     for my $f (qw/
         n_single_bath
@@ -109,7 +124,7 @@ sub _get_data {
     /) {
         my $s = $f;
         $s =~ s{^n_}{};
-        if (! ($hash{$f} =~ m{^\d*\d*$})) {
+        if (! ($hash{$f} =~ m{^\d*$})) {
             $s =~ s{_}{ };
             $s =~ s{\b(\w)}{\u$1}g;
             $s =~ s{Dble}{Double};
@@ -120,8 +135,8 @@ sub _get_data {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "rental/error.tt2";
     }
-    $hash{linked}        = "" unless exists $hash{linked};
-    $hash{max_confirmed} = "" unless exists $hash{max_confirmed};
+    $hash{linked}    = "" unless exists $hash{linked};
+    $hash{tentative} = "" unless exists $hash{tentative};
 }
 
 sub create_do : Local {
@@ -132,7 +147,7 @@ sub create_do : Local {
 
     delete $hash{section};      # irrelevant
 
-    $hash{lunches} = '0' x (date($hash{edate}) - date($hash{sdate}) + 1);
+    $hash{lunches} = "";
 
     $hash{glnum} = compute_glnum($c, $hash{sdate});
 
@@ -142,6 +157,12 @@ sub create_do : Local {
     if ($hash{contract_received}) {
         $hash{received_by} = $c->user->obj->id;
     }
+    my $sum = model($c, 'Summary')->create({
+        date_updated => today()->as_d8(),
+        who_updated  => $c->user->obj->id,
+        time     => sprintf "%02d:%02d", (localtime())[2, 1],
+    });
+    $hash{summary_id} = $sum->id;
     my $r = model($c, 'Rental')->create(\%hash);
     my $id = $r->id();
     #
@@ -203,13 +224,41 @@ sub view : Local {
     ) {
         my $h_name = $b->house->name;
         my $h_type = $b->h_type;
-        $bookings{$h_type} .= "<td><a href=/rental/del_booking/$id/"
+        $bookings{$h_type} .= ("&nbsp;"x2)
+                            . "<a href=/rental/del_booking/$id/"
                             . $b->house_id
-                            . qq! onclick="return confirm('Okay to Delete booking of $h_name?');">!
+                            . qq! onclick="return confirm('Okay to Delete booking of $h_name?');"!
+                            . ">"
                             . $h_name
-                            . "</a></td>"
+                            . "</a>,"
                             ;
         ++$booking_count{$h_type};
+    }
+    for my $t (keys %bookings) {
+        chop $bookings{$t};     # final comma
+        $bookings{$t} = ("&nbsp;"x3) . $bookings{$t};   # space after Add
+    }
+    #
+    # now which clusters are assigned to this rental?
+    #
+    my @clusters = model($c, 'RentalCluster')->search({
+                       rental_id => $id,
+                   });
+    my $clusters = "";
+    for my $cl (@clusters) {
+        my $cl_name = $cl->cluster->name;
+        $clusters .= ("&nbsp;"x2)
+                  .  "<a href=/rental/cluster_delete/$id/"
+                  .  $cl->cluster_id
+                  . qq! onclick="return confirm('Okay to Delete cluster $cl_name?');"!
+                  .  ">"
+                  .  $cl_name
+                  .  "</a>,"
+                  ;
+    }
+    chop $clusters;     # final comma
+    if ($clusters) {
+        $clusters = ("&nbsp;"x3) . $clusters;   # space after Add
     }
     my %colcov;
     my $actual_lodging = 0;
@@ -218,7 +267,6 @@ sub view : Local {
     my $less = sprintf($fmt, $lookup{cov_less_color} =~ m{(\d+)}g);
     my $more = sprintf($fmt, $lookup{cov_more_color} =~ m{(\d+)}g);
     my $okay = sprintf($fmt, $lookup{cov_okay_color} =~ m{(\d+)}g);
-    my $less_more = 0;
     TYPE:
     for my $t (housing_types()) {
         next TYPE if $t eq "unknown";
@@ -240,9 +288,6 @@ sub view : Local {
                      :($needed > $count)? $more
                      :                    $okay
                      ;
-        if ($colcov{$t} ne $okay) {
-            $less_more = 1;    # see status setting below
-        }
     }
     my $lodging = ($min_lodging > $actual_lodging)? $min_lodging
                 :                                   $actual_lodging;
@@ -264,6 +309,8 @@ sub view : Local {
 
     $tot_charges += $extra_hours_charge;
 
+    my $balance = $tot_charges - $tot_payments;
+
     # Lunches
     my $lunch_charge = 0;
     my $lunches = $r->lunches;
@@ -275,32 +322,40 @@ sub view : Local {
     }
 
     my $status;
-    if (! $r->contract_sent) {
+    if ($r->tentative) {
+        $status = "tentative";
+    }
+    elsif (! ($r->contract_sent())) {
         $status = "new";
     }
-    elsif (! ($r->contract_received && @payments > 0)) {
+    elsif (! ($r->contract_received() && $r->payments() > 0)) {
         $status = "sent";
     }
-    elsif (! $r->max_confirmed) {
-        $status = "deposit";
-    }
-    elsif ($less_more) {
-        $status = "housing";
+    elsif (today()->as_d8() > $r->edate()) {
+        if ($balance != 0) {
+            $status = "due";
+        }
+        else {
+            $status = "done";
+        }
     }
     else {
-        $status = "ready";
+        $status = "received";
     }
     # ??? needed each view??? 
     # a rental_booking may have been done
     # housing costs could have changed...
+    # the program might be finished.
     $r->update({
-        balance => $tot_charges - $tot_payments,
+        balance => $balance,
         status  => $status,
     });
 
+    $c->stash->{rental}         = $r;
+    $c->stash->{daily_pic_date} = $r->sdate();
     $c->stash->{colcov}         = \%colcov;     # color of the coverage
     $c->stash->{bookings}       = \%bookings;
-    $c->stash->{rental}         = $r;
+    $c->stash->{clusters}       = $clusters;
     $c->stash->{min_lodging}    = $min_lodging;
     $c->stash->{actual_lodging} = $actual_lodging;
     $c->stash->{lodging}        = $lodging;
@@ -324,7 +379,7 @@ sub list : Local {
     my $today = today()->as_d8();
     $c->stash->{rentals} = [
         model($c, 'Rental')->search(
-            { sdate => { '>=', $today } },
+            { edate => { '>=', $today } },
             { order_by => 'sdate' },
         )
     ];
@@ -398,10 +453,10 @@ sub update : Local {
 
     my $p = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $p;
-    $c->stash->{"check_linked"}        = ($p->linked()          )? "checked"
-                                        :                          "";
-    $c->stash->{"check_max_confirmed"} = ($p->max_confirmed()   )? "checked"
-                                        :                          "";
+    $c->stash->{"check_linked"}    = ($p->linked()   )? "checked"
+                                        :               "";
+    $c->stash->{"check_tentative"} = ($p->tentative())? "checked"
+                                        :               "";
     $c->stash->{housecost_opts} =
         [ model($c, 'HouseCost')->search(
             undef,
@@ -425,14 +480,40 @@ sub update_do : Local {
     my $section = $hash{section};
     delete $hash{section};
     my $r = model($c, 'Rental')->find($id);
-    if ($r->sdate ne $hash{sdate} || $r->edate ne $hash{edate}) {
-        # we have changed the dates of the rental
+    my $names = "";
+    my $lunches = "";
+    if (  $r->sdate ne $hash{sdate}
+       || $r->edate ne $hash{edate}
+       || $r->max   <  $hash{max}
+    ) {
+        # we have changed the dates of the rental or the max
         # and need to invalidate/remove any bookings for meeting spaces.
         # and lunches no longer apply...
-        model($c, 'Booking')->search({
+        my @bookings = model($c, 'Booking')->search({
             rental_id => $id,
-        })->delete();
-        $hash{lunches} = '0' x (date($hash{edate}) - date($hash{sdate}) + 1);
+        });
+        #
+        # if only the max changed then we can keep the bookings
+        # of meeting places that are still able to accomodate
+        # the new max.
+        #
+        if (   $r->sdate eq $hash{sdate}
+            && $r->edate eq $hash{edate}
+        ) {
+            @bookings = grep {
+                            $_->meeting_place->max < $hash{max}
+                        }
+                        @bookings;
+        }
+        $names = join '<br>', map { $_->meeting_place->name } @bookings;
+        for my $b (@bookings) {
+            $b->delete();
+        }
+        if ($r->max >= $hash{max}) {
+            # must have been a date
+            $hash{lunches} = "";
+            $lunches = 1;
+        }
         #
         # and perhaps add a few more config records.
         #
@@ -442,12 +523,25 @@ sub update_do : Local {
     if ($hash{contract_sent} ne $r->contract_sent) {
         $hash{sent_by} = $c->user->obj->id;
     }
+    if ($hash{contract_sent}) {
+        # no longer tentative so force it!
+        $hash{tentative} = "";
+    }
     if ($hash{contract_received} ne $r->contract_received) {
         $hash{received_by} = $c->user->obj->id;
     }
 
     $r->update(\%hash);
-    $c->response->redirect($c->uri_for("/rental/view/" . $r->id . "/$section"));
+    if ($names || $lunches) {
+        $c->stash->{names}    = $names;
+        $c->stash->{lunches}  = $lunches;
+        $c->stash->{rental}   = $r;
+        $c->stash->{template} = "rental/mp_warn.tt2";
+    }
+    else {
+        $c->response->redirect($c->uri_for("/rental/view/"
+                               . $r->id . "/$section"));
+    }
 }
 
 sub delete : Local {
@@ -479,6 +573,9 @@ sub pay_balance : Local {
     my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Rental')->find($id);
+    $c->stash->{amount} = (today()->as_d8() >= $r->edate)? $r->balance()
+                         :                                 $r->deposit()
+                         ;
     $c->stash->{rental} = $r;
     $c->stash->{template} = "rental/pay_balance.tt2";
 }
@@ -521,24 +618,37 @@ sub meetingplace_update_do : Local {
     my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Rental')->find($id);
-    my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
-                     keys %{$c->request->params};
+    my @cur_mps;
+    my %seen = ();
+    for my $k (sort keys %{$c->request->params}) {
+        #
+        # keys are like this:
+        #     mp45
+        # or
+        #     mpbr23
+        # all mp come before any mpbr
+        #
+        my ($d) = $k =~ m{(\d+)};
+        my $br = ($k =~ m{br})? 'yes': '';
+        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
+    }
     # delete all old bookings and create the new ones.
     model($c, 'Booking')->search(
         { rental_id => $id },
     )->delete();
     for my $mp (@cur_mps) {
         model($c, 'Booking')->create({
-            meet_id    => $mp,
+            meet_id    => $mp->[0],
             program_id => 0,
             rental_id  => $id,
             event_id   => 0,
             sdate      => $r->sdate,
             edate      => $r->edate,
+            breakout   => $mp->[1],
         });
     }
     # show the rental again - with the updated meeting places
-    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }
 
 sub coordinator_update : Local {
@@ -561,7 +671,7 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person->id,
         });
-        $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+        $c->response->redirect($c->uri_for("/rental/view/$id/1"));
     }
     else {
         $c->stash->{template} = "rental/no_coord.tt2";
@@ -661,10 +771,11 @@ sub booking : Local {
     my $n = 0;
     HOUSE:
     for my $h (model($c, 'House')->search({
-                   bath   => $bath,
-                   tent   => $tent,
-                   center => $center,
-                   max    => { '>=', $max },
+                   inactive => '',
+                   bath     => $bath,
+                   tent     => $tent,
+                   center   => $center,
+                   max      => { '>=', $max },
                }) 
     ) {
         my $h_id = $h->id;
@@ -754,6 +865,159 @@ sub del_booking : Local {
         rental_id  => $rental_id,
     });
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+sub contract : Local {
+    my ($self, $c, $id) = @_;
+
+    my $rental = model($c, 'Rental')->find($id);
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my %stash = (
+        rental => $rental,
+    );
+    $tt->process(
+        "rental_contract.tt2",# template
+        \%stash,          # variables
+        \$html,           # output
+    );
+    $c->res->output($html);
+}
+
+sub cluster_add : Local {
+    my ($self, $c, $id) = @_;
+
+    # get the date range from the rental
+    # get all clusters
+    # for each cluster:
+    #     for each house in that cluster:
+    #         for each config records of that house in the date range
+    #             if cur != 0 the cluster is out.
+    # all qualifying clusters go into the template
+    #
+    my $rental = model($c, 'Rental')->find($id);
+    my $sdate = $rental->sdate();
+    my $edate = $rental->edate();
+    my @ok_clusters = ();
+    CLUSTER:
+    for my $cl (model($c, 'Cluster')->all({ order_by => 'name' })) {
+        for my $h (model($c, 'House')->search({ cluster_id => $cl->id })) {
+            for my $cf (model($c, 'Config')->search({
+                            house_id => $h->id,
+                            the_date => { 'between', => [ $sdate, $edate ] },
+                        })
+            ) {
+                if ($cf->cur() != 0) {
+                    next CLUSTER;
+                }
+            }
+        }
+        push @ok_clusters, $cl;
+    }
+    $c->stash->{rental}   = $rental;
+    $c->stash->{nclusters} = scalar(@ok_clusters);
+    $c->stash->{clusters} = \@ok_clusters;
+    $c->stash->{template} = "rental/cluster.tt2";
+}
+
+#
+# for all chosen clusters:
+#    mark the cluster for the rental
+#    add all houses in that cluster to the rental bookings.
+#    and update all the config records appropriately
+#
+sub cluster_add_do : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate();
+    my $edate1 = (date($rental->edate()) - 1)->as_d8();
+                                            # they don't stay the last day!
+    for my $cl_id (keys %{ $c->request->params()}) {
+        $cl_id =~ s{^cl}{};
+        model($c, 'RentalCluster')->create({
+            rental_id  => $rental_id,
+            cluster_id => $cl_id,
+        });
+        for my $h (model($c, 'House')->search({
+                       cluster_id => $cl_id,
+                   })
+        ) {
+            my $h_id = $h->id();
+            my $h_max = $h->max();
+            my $h_type = max_type($h_max, $h->bath(),
+                                  $h->tent(), $h->center());
+            model($c, 'RentalBooking')->create({
+                rental_id  => $rental_id,
+                house_id   => $h_id,
+                date_start => $sdate,
+                date_end   => $edate1,
+                h_type     => $h_type,
+            });
+            model($c, 'Config')->search({
+                house_id   => $h_id,
+                the_date   => { 'between' => [ $sdate, $edate1 ] },
+            })->update({
+                sex        => 'R',
+                cur        => $h_max,
+                program_id => 0,
+                rental_id  => $rental_id,
+            });
+        }
+    }
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+#
+# remove the indicated RentalClust record
+# for each house in the cluster
+#     remove the RentalBooking record
+#     adjust the config records for that house as well.
+#
+sub cluster_delete : Local {
+    my ($self, $c, $rental_id, $cluster_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate();
+    my $edate1 = (date($rental->edate()) - 1)->as_d8();
+                                            # they don't stay the last day!
+    model($c, 'RentalCluster')->search({
+        rental_id  => $rental_id,
+        cluster_id => $cluster_id,
+    })->delete();
+    for my $h (model($c, 'House')->search({
+                   cluster_id => $cluster_id,
+               })
+    ) {
+        my $h_id = $h->id();
+        model($c, 'RentalBooking')->search({
+            rental_id => $rental_id,
+            house_id  => $h_id,
+        })->delete();
+        model($c, 'Config')->search({
+            house_id => $h_id,
+            the_date => { between => [ $sdate, $edate1 ] },
+        })->update({
+            sex => 'U',
+            cur => 0,
+            rental_id  => 0,
+            program_id => 0,
+        });
+    }
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+sub view_summary : Local {
+    my ($self, $c, $id) = @_;
+
+    my $rental = model($c, 'Rental')->find($id);
+    $c->stash->{rental} = $rental;
+    $c->stash->{daily_pic_date} = $rental->sdate();
+    $c->stash->{summary} = $rental->summary();
+    $c->stash->{template} = "rental/view_summary.tt2";
 }
 
 1;

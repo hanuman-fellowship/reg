@@ -9,7 +9,9 @@
 
 [% FOREACH s IN strings %]
 <tr>
-<td><a href="[% Catalyst.uri_for('/string/update/') _ s.the_key %]">[% s.the_key %]</a></td>
+<td>
+<a name="[% s.the_key %]"></a>
+<a href="[% Catalyst.uri_for('/string/update/') _ s.the_key %]">[% s.the_key %]</a></td>
 [% s.value_td %]
 </tr>
 [% END %]

@@ -1,8 +1,19 @@
 <h2>Rental Payment</h2>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Name</th>
+<td><span class=larger>[% rental.name %]</span></td>
+<th align=right>From</th>
+<td>[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span></td>
+<th align=right>To</th>
+<td>[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span></td>
+</tr>
+
+</table>
 <form name=form action="/rental/pay_balance_do/[% rental.id %]">
 <table cellpadding=3>
-<tr><th align=right>Name</th><td><a class=larger href="/rental/view/[% rental.id %]">[% rental.name %]</a> - [% rental.sdate_obj.format("%b %y") %]</td></tr>
-<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% rental.balance %]'></td></tr>
+<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% amount %]'></td></tr>
 <tr>
 <th align=right>Type</th>
 <td>

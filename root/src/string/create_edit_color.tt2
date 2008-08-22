@@ -1,0 +1,122 @@
+<style type="text/css">
+.square {
+    width: 50; 
+    height: 50; 
+}
+#swatch {
+    height: 100;
+}
+#more_red {
+    background: #ff0000;
+}
+#more_green {
+    background: #00ff00;
+}
+#more_blue {
+    background: #0000ff;
+}
+#less_red {
+    background: #ff9999;
+}
+#less_green {
+    background: #99ff99;
+}
+#less_blue {
+    background: #9999ff;
+}
+#blacker {
+    background: #000000;
+}
+#whiter {
+    background: #ffffff;
+}
+</style>
+<script type="text/javascript">
+var red;
+var green;
+var blue;
+var incr = 10;
+
+function hex(n) {
+    var s = n.toString(16);
+    if (s.length == 1) {
+        s = '0' + s;
+    }
+    return s;
+}
+
+function adjust(r, g, b) {
+    red   += r;
+    green += g;
+    blue  += b;
+    red   = Math.min(Math.max(red,   0), 255);
+    green = Math.min(Math.max(green, 0), 255);
+    blue  = Math.min(Math.max(blue,  0), 255);
+    document.getElementById('swatch').style.background =
+        '#' + hex(red) + hex(green) + hex(blue);
+    document.getElementById('color_val').value =
+        red + ", " + green + ", " + blue;
+                                         
+}
+
+function colorSet(r, g, b) {
+    red = r;
+    green = g;
+    blue =  b;
+    adjust(0, 0, 0);
+    document.getElementById('swatch').style.background = 
+            '#' + hex(red) + hex(green) + hex(blue);
+}
+</script>
+<h2>Strings</h2>
+<form action="[% '/string/' _ form_action %]" name=form>
+<table cellpadding=3 border=0>
+<tr>
+<th align=right>Key</th>
+<td>[% the_key %]
+[% IF the_key == 'imgwidth' || the_key == 'big_imgwidth' %]
+&nbsp;&nbsp;&nbsp;<input type=checkbox name=resize_all checked> Resize all images
+[% END %]
+</td>
+</tr>
+<tr>
+<th align=right>Value</th>
+<td colspan=2><input type=text id=color_val name=value value="[% value %]" size=70></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td>
+<table>
+<td valign=top><input type=submit value="Submit"></td>
+<td>
+    <table style="margin-left: .5in" border=1>
+    <tr>
+    <td id=swatch colspan=4></td>
+    </tr>
+    <tr>
+    <td class=square id=more_red   onclick="adjust( incr,     0,     0);"></td>
+    <td class=square id=more_green onclick="adjust(    0,  incr,     0);"></td>
+    <td class=square id=more_blue  onclick="adjust(    0,     0,  incr);"></td>
+    <td class=square id=whiter     onclick="adjust( incr,  incr,  incr);"></td>
+    </tr>
+    <tr>
+    <td class=square id=less_red   onclick="adjust(-incr,     0,     0);"></td>
+    <td class=square id=less_green onclick="adjust(    0, -incr,     0);"></td>
+    <td class=square id=less_blue  onclick="adjust(    0,     0, -incr);"></td>
+    <td class=square id=blacker    onclick="adjust(-incr, -incr, -incr);"></td>
+    </tr>
+    <tr>
+    </tr>
+    </table>
+</td>
+</table>
+</td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.value.focus();
+colorSet([% red %], [% green %], [% blue %]);
+</script>

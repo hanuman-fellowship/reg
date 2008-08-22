@@ -21,21 +21,29 @@ h3 {
 <a href="/rental/delete/[% rental.id %]"
 onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/rental/contract/[% rental.id %]">Contract</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/program/publish">Publish</a>
 <p>
 [% END %]
-<table cellpadding=3>
 
+<table cellpadding=7>
 <tr>
-<th align=right>Name</th>
-<td><span class=larger>[% rental.name %]</span></td>
-<th align=right>From</th>
-<td>[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span></td>
-<th align=right>To</th>
-<td>[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span></td>
+<td>
+<b>Name</b>
+<span class=larger>[% rental.name %]</span>
+<b>From</b>
+[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
+</td>
 [% rental.status_td %]
-</tr>
-
+<td>
+&nbsp;
+&nbsp;
+&nbsp;
+<a href=/summary/view/[% rental.summary_id %]>Summary</a>
+</td></tr>
 </table>
 <p>
 
@@ -66,11 +74,11 @@ Web
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 </span>
 </td>
@@ -95,20 +103,39 @@ Finance
 <tr>
 <td colspan=5>
 
+<!-- Misc -->
 <div id="content1" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Tentative</th>
+<td>[% rental.tentative %]</td>
+</tr>
 
 <tr>
 <th align=right valign=top width=150>Meeting Places</th>
 <td align=left valign=top>
 [% FOR b IN rental.bookings %]
-    [% b.meeting_place.name %]<br>
+    [% IF b.breakout == '' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
 [% END %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
-    <a href="/rental/meetingplace_update/[% rental.id %]">Update</a>
+</td>
+<th align=right valign=top width=150>Breakout</th>
+<td align=left valign=top>
+[% FOR b IN rental.bookings %]
+    [% IF b.breakout == 'yes' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
 [% END %]
 </td>
 </tr>
+[% IF Catalyst.check_user_roles('prog_admin') %]
+    <tr>
+    <td></td>
+    <td align=center colspan=2><a href="/rental/meetingplace_update/[% rental.id %]">Update</a></td>
+    </tr>
+[% END %]
 
 <tr>
 <th valign=top align=right>Coordinator</th>
@@ -124,6 +151,12 @@ Finance
 <tr>
 <th align=right valign=top>Comment</th>
 <td colspan=5>[% rental.comment_br %]</td>
+</td>
+</tr>
+
+<tr>
+<th align=right>Required Deposit</th>
+<td>[% rental.deposit %]</td>
 </td>
 </tr>
 
@@ -151,11 +184,6 @@ Finance
 <tr>
 <th align=right>Contract Received</th>
 <td>[% rental.contract_received_obj %] [% IF rental.contract_received %]by [% rental.received_by.username %][% END %]</td>
-</tr>
-
-<tr>
-<th align=right>Maximum Confirmed</th>
-<td>[% rental.max_confirmed %]</td>
 </tr>
 
 </table>
@@ -209,29 +237,34 @@ Finance
 </div>
 
 
+<!-- Meals/Lodging -->
 <div id="content3" class="tabcontent" style="display: none">
+<!-- ??? strange table cell width problem here... -->
 <table cellpadding=3 border=0>
 <tr>
-<th align=right width=150>Maximum</th>
+<th width=150 align=right>Maximum</th>
 <td>[% rental.max %]</td>
+<td width=500 colspan=2><b>Reserved Clusters</b>&nbsp;&nbsp;&nbsp;<a href="/rental/cluster_add/[% rental.id %]">Add</a>[% clusters %]</td>
 </tr>
 
 <tr>
 <th align=right>Housing Cost</th>
 <td colspan=3><a href="/housecost/view/[% rental.housecost.id %]">[% rental.housecost.name %]</a></td>
 </tr>
-<tr><th align=right>Single Bath</th><td align=right>[% rental.n_single_bath %]</td><td style="width: 10; background: [% colcov.single_bath %]"></td>[% IF rental.n_single_bath %]<td><a href="/rental/booking/[% rental.id %]/single_bath">Add</a></td>[% bookings.single_bath %][% END %]</tr>
-<tr><th align=right>Single</th><td align=right>[% rental.n_single %]</td><td style="width: 10; background: [% colcov.single %]"></td>[% IF rental.n_single %]<td><a href="/rental/booking/[% rental.id %]/single">Add</a></td>[% bookings.single %][% END %]</tr>
-<tr><th align=right>Double Bath</th><td align=right>[% rental.n_dble_bath %]</td><td style="width: 10; background: [% colcov.dble_bath %]"></td>[% IF rental.n_dble_bath %]<td><a href="/rental/booking/[% rental.id %]/dble_bath">Add</a></td>[% bookings.dble_bath %][% END %]</tr>
-<tr><th align=right>Double</th><td align=right>[% rental.n_dble %]</td><td style="width: 10; background: [% colcov.dble %]"></td>[% IF rental.n_dble %]<td><a href="/rental/booking/[% rental.id %]/dble">Add</a></td>[% bookings.dble %][% END %]</tr>
-<tr><th align=right>Triple</th><td align=right>[% rental.n_triple %]</td><td style="width: 10; background: [% colcov.triple %]"></td>[% IF rental.n_triple %]<td><a href="/rental/booking/[% rental.id %]/triple">Add</a></td>[% bookings.triple %][% END %]</tr>
-<tr><th align=right>Quad</th><td align=right>[% rental.n_quad %]</td><td style="background: [% colcov.quad %]"></td>[% IF rental.n_quad %]<td><a href="/rental/booking/[% rental.id %]/quad">Add</a></td>[% bookings.quad %][% END %]</tr>
-<tr><th align=right>Dormitory</th><td align=right>[% rental.n_dormitory %]</td><td style="width: 10; background: [% colcov.dormitory %]"></td>[% IF rental.n_dormitory %]<td><a href="/rental/booking/[% rental.id %]/dormitory">Add</a></td>[% bookings.dormitory %][% END %]</tr>
-<tr><th align=right>Economy</th><td align=right>[% rental.n_economy %]</td><td style="width: 10; background: [% colcov.economy %]"></td>[% IF rental.n_economy %]<td><a href="/rental/booking/[% rental.id %]/economy">Add</a></td>[% bookings.economy %][% END %]</tr>
-<tr><th align=right>Center Tent</th><td align=right>[% rental.n_center_tent %]</td><td style="width: 10; background: [% colcov.center_tent %]"></td>[% IF rental.n_center_tent %]<td><a href="/rental/booking/[% rental.id %]/center_tent">Add</a></td>[% bookings.center_tent %][% END %]</tr>
-<tr><th align=right>Own Tent</th><td align=right>[% rental.n_own_tent %]</td><td style="width: 10; background: [% colcov.own_tent %]"></td>[% IF rental.n_own_tent %]<td><a href="/rental/booking/[% rental.id %]/own_tent">Add</a></td>[% bookings.own_tent %][% END %]</tr>
-<tr><th align=right>Own Van</th><td align=right>[% rental.n_own_van %]</td></tr>
-<tr><th align=right>Commuting</th><td align=right>[% rental.n_commuting %]</td></tr>
+<tr><td style="height:25px"></td></tr>
+<td></td><th width=80># of People</th></tr>
+<tr><th align=right>Single Bath</th><td align=center>[% rental.n_single_bath %]</td><td style="width: 10; background: [% colcov.single_bath %]"></td>[% IF rental.n_single_bath || bookings.single_bath %]<td><a href="/rental/booking/[% rental.id %]/single_bath">Add</a>[% bookings.single_bath %]</td>[% END %]</tr>
+<tr><th align=right>Single</th><td align=center>[% rental.n_single %]</td><td style="width: 10; background: [% colcov.single %]"></td>[% IF rental.n_single || bookings.single %]<td><a href="/rental/booking/[% rental.id %]/single">Add</a>[% bookings.single %]</td>[% END %]</tr>
+<tr><th align=right>Double Bath</th><td align=center>[% rental.n_dble_bath %]</td><td style="width: 10; background: [% colcov.dble_bath %]"></td>[% IF rental.n_dble_bath || bookings.dble_bath %]<td><a href="/rental/booking/[% rental.id %]/dble_bath">Add</a>[% bookings.dble_bath %]</td>[% END %]</tr>
+<tr><th align=right>Double</th><td align=center>[% rental.n_dble %]</td><td style="width: 10; background: [% colcov.dble %]"></td>[% IF rental.n_dble || bookings.dble %]<td><a href="/rental/booking/[% rental.id %]/dble">Add</a>[% bookings.dble %]</td>[% END %]</tr>
+<tr><th align=right>Triple</th><td align=center>[% rental.n_triple %]</td><td style="width: 10; background: [% colcov.triple %]"></td>[% IF rental.n_triple || bookings.triple %]<td><a href="/rental/booking/[% rental.id %]/triple">Add</a>[% bookings.triple %]</td>[% END %]</tr>
+<tr><th align=right>Quad</th><td align=center>[% rental.n_quad %]</td><td style="background: [% colcov.quad %]"></td>[% IF rental.n_quad || bookings.quad %]<td><a href="/rental/booking/[% rental.id %]/quad">Add</a>[% bookings.quad %]</td>[% END %]</tr>
+<tr><th align=right>Dormitory</th><td align=center>[% rental.n_dormitory %]</td><td style="width: 10; background: [% colcov.dormitory %]"></td>[% IF rental.n_dormitory || bookings.dormitory %]<td><a href="/rental/booking/[% rental.id %]/dormitory">Add</a>[% bookings.dormitory %]</td>[% END %]</tr>
+<tr><th align=right>Economy</th><td align=center>[% rental.n_economy %]</td><td style="width: 10; background: [% colcov.economy %]"></td>[% IF rental.n_economy || bookings.economy %]<td><a href="/rental/booking/[% rental.id %]/economy">Add</a>[% bookings.economy %]</td>[% END %]</tr>
+<tr><th align=right>Center Tent</th><td align=center>[% rental.n_center_tent %]</td><td style="width: 10; background: [% colcov.center_tent %]"></td>[% IF rental.n_center_tent || bookings.center_tent %]<td><a href="/rental/booking/[% rental.id %]/center_tent">Add</a>[% bookings.center_tent %]</td>[% END %]</tr>
+<tr><th align=right>Own Tent</th><td align=center>[% rental.n_own_tent %]</td><td style="width: 10; background: [% colcov.own_tent %]"></td>[% IF rental.n_own_tent || bookings.own_tent %]<td><a href="/rental/booking/[% rental.id %]/own_tent">Add</a>[% bookings.own_tent %]</td>[% END %]</tr>
+<tr><th align=right>Own Van</th><td align=center>[% rental.n_own_van %]</td></tr>
+<tr><th align=right>Commuting</th><td align=center>[% rental.n_commuting %]</td></tr>
 </table>
 </div>
 
@@ -239,19 +272,19 @@ Finance
 <table cellpadding=3>
 
 <tr>
-<th align=right width=150>Minimum Lodging</th>
+<th align=right>Min Meals/Lodging</th>
 <td align=right>[% min_lodging %]</td>
 </tr>
 
 <tr>
-<th align=right>Actual Lodging</th>
+<th align=right>Actual Meals/Lodging</th>
 <td align=right>[% actual_lodging %]</td>
 </tr>
 
 <tr><td colspan=2 style="border-top: dashed thin"></td></tr>
 
 <tr>
-<th align=right>Lodging</th>
+<th align=right>Meals/Lodging</th>
 <td align=right>[% lodging %]</td>
 </tr>
 

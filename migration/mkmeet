@@ -7,6 +7,37 @@ create table meeting_place (
     disp_ord integer,
     color text
 );
+insert into meeting_place values (
+    1, 'CC', 'CC Main', 500, 1, '150,180,240'
+);
+insert into meeting_place values (
+    2, 'SH', 'Seminar House', 75, 2, '180,150,210'
+);
+insert into meeting_place values (
+    3, 'OH', 'Orchard House', 30, 3, '190,240,190'
+);
+insert into meeting_place values (
+    4, 'CB', 'CB Main', 250, 4, '210,240,195'
+);
+insert into meeting_place values (
+    5, 'CCL', 'CC Lounge', 20, 5, '170,210,230'
+);
+insert into meeting_place values (
+    6, 'AR', 'Assembly Room', 250, 6, '170,170,230'
+);
+insert into meeting_place values (
+    7, 'WW', 'CB West Wing', 30, 7, '170,170,230'
+);
+insert into meeting_place values (
+    8, 'FE', 'CB Far East', 40, 8, '170,170,230'
+);
+insert into meeting_place values (
+    9, 'KKWC', 'Kaya Kalpa', 10, 9, '170,170,230'
+);
+insert into meeting_place values (
+    10, 'CCCR', 'CC Conference Room', 15, 10, '170,170,230'
+);
+
 drop table if exists booking;
 create table booking (
     id          integer primary key autoincrement,
@@ -15,5 +46,6 @@ create table booking (
     program_id  integer,
     event_id    integer,
     sdate       text,
-    edate       text
+    edate       text,
+    breakout    text
 );

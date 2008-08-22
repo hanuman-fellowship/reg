@@ -5,6 +5,9 @@ use base qw/DBIx::Class/;
 
 use Date::Simple qw/date/;
 use Lookup;
+use Util qw/
+    trim
+/;
 
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -75,11 +78,11 @@ sub h_type_disp {
     
     # Lookup->init();       # hopefully already done :(
     my $type = $self->h_type;
-    return "" if ! defined $type;
+    return "Unknown" if ! defined $type || ! exists $lookup{$type};
     $type = $lookup{$type};
     $type =~ s{\(.*\)}{};
     $type =~ s{Mount Madonna }{};
-    $type;
+    trim($type);
 }
 
 sub comment_br {

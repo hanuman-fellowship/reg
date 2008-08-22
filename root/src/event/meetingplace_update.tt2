@@ -1,6 +1,9 @@
 <h2>Events - Updating the Meeting Places</h2>
 <p>
 [% event.name %] - [% event.descr %]
+[% IF event.max %]
+- max of [% event.max %]
+[% END %]
 <p>
 <form action="/event/meetingplace_update_do/[% event.id %]">
 <ul>

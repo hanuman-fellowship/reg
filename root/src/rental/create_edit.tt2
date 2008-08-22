@@ -45,11 +45,11 @@ Web
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
-Lodging
+Meals/Lodging
 </div>
 </span>
 </td>
@@ -72,8 +72,18 @@ Lodging
 <table>
 
 <tr>
+<td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=tentative [% check_tentative %]> Tentative</td>
+</tr>
+
+<tr>
 <th align=right valign=top width=140>Comment</th>
-<td colspan=5><textarea name=comment cols=28 rows=3>[% rental.comment %]</textarea></td>
+<td colspan=5><textarea name=comment cols=55 rows=4>[% rental.comment %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right>Required Deposit</th>
+<td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
 </tr>
 
 <tr>
@@ -99,11 +109,6 @@ Lodging
 <tr>
 <th align=right>Contract Received</th>
 <td><input type=text name=contract_received value='[% rental.contract_received_obj %]' size=10></td>
-</tr>
-
-<tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=max_confirmed [% check_max_confirmed %]> Maximum Confirmed</td>
 </tr>
 
 </table>
@@ -170,18 +175,22 @@ Lodging
 </td>
 </tr>
 
-<tr><th align=right>Single Bath</th><td><input type=text size=3 name=n_single_bath value=[% rental.n_single_bath %]></td></tr>
-<tr><th align=right>Single</th><td><input type=text size=3 name=n_single value=[% rental.n_single %]></th></tr>
-<tr><th align=right>Double Bath</th><td><input type=text size=3 name=n_dble_bath value=[% rental.n_dble_bath %]></td></tr>
-<tr><th align=right>Double</th><td><input type=text size=3 name=n_dble value=[% rental.n_dble %]></td></tr>
-<tr><th align=right>Triple</th><td><input type=text size=3 name=n_triple value=[% rental.n_triple %]></td></tr>
-<tr><th align=right>Quad</th><td><input type=text size=3 name=n_quad value=[% rental.n_quad %]></td></tr>
-<tr><th align=right>Dormitory</th><td><input type=text size=3 name=n_dormitory value=[% rental.n_dormitory %]></td></tr>
-<tr><th align=right>Economy</th><td><input type=text size=3 name=n_economy value=[% rental.n_economy %]></td></tr>
-<tr><th align=right>Center Tent</th><td><input type=text size=3 name=n_center_tent value=[% rental.n_center_tent %]></td></tr>
-<tr><th align=right>Own Tent</th><td><input type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td></tr>
-<tr><th align=right>Own Van</th><td><input type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td></tr>
-<tr><th align=right>Commuting</th><td><input type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td></tr>
+<tr><td style="height: 25px"></tr>
+
+<tr><td></td><th># of People</th></tr>
+
+<tr><th align=right>Single Bath</th><td align=center><input type=text size=3 name=n_single_bath value=[% rental.n_single_bath %]></td></tr>
+<tr><th align=right>Single</th><td align=center><input type=text size=3 name=n_single value=[% rental.n_single %]></th></tr>
+<tr><th align=right>Double Bath</th><td align=center><input type=text size=3 name=n_dble_bath value=[% rental.n_dble_bath %]></td></tr>
+<tr><th align=right>Double</th><td align=center><input type=text size=3 name=n_dble value=[% rental.n_dble %]></td></tr>
+<tr><th align=right>Triple</th><td align=center><input type=text size=3 name=n_triple value=[% rental.n_triple %]></td></tr>
+<tr><th align=right>Quad</th><td align=center><input type=text size=3 name=n_quad value=[% rental.n_quad %]></td></tr>
+<tr><th align=right>Dormitory</th><td align=center><input type=text size=3 name=n_dormitory value=[% rental.n_dormitory %]></td></tr>
+<tr><th align=right>Economy</th><td align=center><input type=text size=3 name=n_economy value=[% rental.n_economy %]></td></tr>
+<tr><th align=right>Center Tent</th><td align=center><input type=text size=3 name=n_center_tent value=[% rental.n_center_tent %]></td></tr>
+<tr><th align=right>Own Tent</th><td align=center><input type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td></tr>
+<tr><th align=right>Own Van</th><td align=center><input type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td></tr>
+<tr><th align=right>Commuting</th><td align=center><input type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td></tr>
 
 </table>
 </div>

@@ -9,23 +9,66 @@ create table house (
     priority integer,       -- which to offer when
     x        integer,       -- coords of daily picture
     y        integer,
-    clust_id    integer,
-    clust_order integer     -- order within cluster
+    cluster_id    integer,
+    cluster_order integer,     -- order within cluster
+    inactive text,
+    disp_code text
 );
 insert into house values (
-    1, '101', 2, '', '', '', 1, 100, 100, 1, 1
+    1, '101', 2, '', '', '', 1, 50, 50, 1, 1, '', 'L'
 );
 insert into house values (
-    2, '102', 2, '', '', '', 1, 100, 120, 1, 2
+    2, '102', 2, 'yes', '', '', 1, 50, 80, 1, 2, '', 'L'
+);
+insert into house values (
+    3, '103', 2, '', '', '', 1, 50, 110, 1, 3, '', 'L'
+);
+insert into house values (
+    4, '104', 2, 'yes', '', '', 1, 50, 140, 1, 4, '', 'L'
+);
+insert into house values (
+    5, '201', 2, '', '', '', 2, 150, 50, 2, 1, '', 'L'
+);
+insert into house values (
+    6, '202', 4, '', '', '', 2, 150, 80, 2, 2, '', 'L'
+);
+insert into house values (
+    7, '203', 2, '', '', '', 2, 150, 110, 2, 3, '', 'L'
+);
+insert into house values (
+    8, '204', 4, '', '', '', 2, 150, 140, 2, 4, '', 'L'
+);
+insert into house values (
+    9, 'SH 1', 3, '', '', '', 3, 250, 50, 3, 1, '', 'Lt'
+);
+insert into house values (
+    10, 'SH 2', 7, '', '', '', 3, 250, 80, 3, 2, '', 'Lt'
+);
+insert into house values (
+    11, 'SH 3', 7, '', '', '', 3, 250, 110, 3, 3, '', 'Lt'
+);
+insert into house values (
+    12, 'SH 4', 3, '', '', '', 3, 250, 140, 3, 4, '', 'Lt'
+);
+insert into house values (
+    13, 'SH 5', 1, '', '', '', 3, 250, 170, 3, 5, '', 'Lt'
 );
 drop table if exists cluster;
 create table cluster (
     id       integer primary key autoincrement,
     name     text,
-    color    text           -- background - fg = black
+    color    text,           -- background - fg = black
+    x        integer,
+    y        integer
 );
 insert into cluster values (
-    1, 'CC1', '120,180,220'
+    1, 'CC 1st', '120,180,220', 30, 30
+);
+insert into cluster values (
+    2, 'CC 2nd', '220,180,120', 130, 30
+);
+insert into cluster values (
+    3, 'SH', '180,220,120', 250, 30
 );
 drop table if exists config;
 create table config (
@@ -44,4 +87,9 @@ create table rental_booking (
     date_end   text,
     house_id   integer,
     h_type     text
+);
+drop table if exists rental_cluster;
+create table rental_cluster (
+    rental_id  integer,
+    cluster_id integer
 );

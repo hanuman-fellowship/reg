@@ -1,6 +1,7 @@
 <h2>Rentals - Adding The Coordinator</h2>
 [% rental.name %]<br>
-[% rental.title %]<br>
+[% rental.title %]
+<p>
 <form action="/rental/coordinator_update_do/[% rental.id %]" name=form>
 <table cellpadding=3>
 <tr><th align=right>First</th><td><input type=text name=first size=20></td></tr>

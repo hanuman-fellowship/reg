@@ -44,7 +44,7 @@ __PACKAGE__->add_columns(qw/
     sent_by
     contract_received
     received_by
-    max_confirmed
+    tentative
 
     start_hour
     end_hour
@@ -52,6 +52,8 @@ __PACKAGE__->add_columns(qw/
     coordinator_id
     lunches
     status
+    deposit
+    summary_id
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -59,6 +61,8 @@ __PACKAGE__->set_primary_key(qw/id/);
 # housing cost
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
+# summary
+__PACKAGE__->belongs_to('summary' => 'RetreatCenterDB::Summary', 'summary_id');
 
 # coordinator
 __PACKAGE__->belongs_to(coordinator => 'RetreatCenterDB::Person',
@@ -209,6 +213,71 @@ sub status_td {
     my $color = sprintf "#%02x%02x%02x",
                         $lookup{"rental_$status\_color"} =~ m{\d+}g;
     return "<td align=center bgcolor=$color>\u$status</td>";
+}
+
+#
+# does this rental occur in the summer?
+# i.e. are center tents available?
+#
+sub summer {
+    my ($self) = @_;
+    
+    my $sdate = date($self->sdate);
+    my $m = $sdate->month();
+    return 5 <= $m && $m <= 10;
+}
+
+sub meeting_spaces {
+    my ($self) = @_;
+
+    my @places = map { $_->meeting_place->name } $self->bookings;
+    if (@places == 1) {
+        return $places[0];
+    }
+    elsif (@places == 2) {
+        return "$places[0] and $places[1]";
+    }
+    else {
+        my $last = pop @places;
+        return join ", ", @places, " and $last";
+    }
+}
+
+sub start_hour_disp {
+    my ($self) = @_;
+    my $h = $self->start_hour;
+    $h ||= 4;
+    _hour_disp($h);
+}
+sub end_hour_disp {
+    my ($self) = @_;
+    my $h = $self->end_hour;
+    $h ||= 1;
+    _hour_disp($h);
+}
+
+sub _hour_disp {
+    my ($h) = @_;
+    my $ampm = "pm";
+    if (8 <= $h && $h <= 11) {
+        $ampm = "am";
+    }
+    return "$h:00 $ampm";
+
+}
+
+#
+# is the Seminar House one of the 
+# main meeting places?
+#
+sub seminar_house {
+    my ($self) = @_;
+    for my $b ($self->bookings()) {
+        if ($b->meeting_place->name =~ m{seminar\s+house}i) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 1;

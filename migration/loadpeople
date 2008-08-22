@@ -3,6 +3,9 @@ use strict;
 use warnings;
 use DBI;
 
+use Getopt::Easy;
+get_options("n-nrecs=");
+
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "no connection\n";
 $dbh->do("delete from affil_people");
@@ -108,6 +111,9 @@ while (<$people>) {
             print "no affil letter $a??\n";
             $no_affil{$a} = 1;
         }
+    }
+    if ($O{nrecs}  && $n >= $O{nrecs}) {
+        last;
     }
 }
 print "\n";

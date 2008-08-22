@@ -35,14 +35,16 @@ create table rental (
     sent_by           text,     -- user id
     contract_received text,     -- date
     received_by       text,     -- user id
-    max_confirmed     text,
+    tentative         text,
 
     start_hour        text,
     end_hour          text,
 
     coordinator_id    integer, -- person id
     lunches           text,
-    status            text
+    status            text,
+    deposit           integer,
+    summary_id        integer
 );
 drop table if exists rental_payment;
 create table rental_payment (

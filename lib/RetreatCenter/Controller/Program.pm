@@ -21,6 +21,7 @@ use Util qw/
     empty
     lunch_table
     add_config
+    valid_email
 /;
 use Date::Simple qw/date today/;
 use Net::FTP;
@@ -206,6 +207,17 @@ sub _get_data {
             push @mess, "Illegal time: $time";
         }
     }
+    my @email = split m{[, ]+}, $hash{notify_on_reg};
+    for my $em (@email) {
+        if (! valid_email($em)) {
+            push @mess, "Illegal email address: $em";
+        }
+    }
+    $hash{notify_on_reg} = "@email";
+
+    if (! empty($hash{max}) && $hash{max} !~ m{^\s*\d+\s*$}) {
+        push @mess, "Max must be an integer";
+    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "program/error.tt2";
@@ -227,8 +239,14 @@ sub create_do : Local {
     $hash{reg_count} = 0;       # otherwise it will not increment
 
     my $upload = $c->request->upload('image');
+    my $sum = model($c, 'Summary')->create({
+        date_updated => today()->as_d8(),
+        who_updated  => $c->user->obj->id,
+        time     => sprintf "%02d:%02d", (localtime())[2, 1],
+    });
     my $p = model($c, 'Program')->create({
-        image => $upload? "yes": "",
+        summary_id => $sum->id,
+        image      => $upload? "yes": "",
         %hash,
     });
     my $id = $p->id();
@@ -238,13 +256,14 @@ sub create_do : Local {
         resize('p', $id);
     }
     # make the FULL version, if requested
-    # it will have an id = normal id + 1
+    # it _will_ have an id = normal id + 1
     if ($hash{extradays}) {
         my $full_edate = date($hash{edate}) + $hash{extradays};
+        $hash{edate} = $full_edate->as_d8();
         model($c, 'Program')->create({
             %hash,
             image     => "",
-            edate     => $full_edate->as_d8(),
+            edate     => $hash{edate},
             name      => "$hash{name} FULL",
             webready  => "",
             linked    => "",
@@ -264,8 +283,7 @@ sub create_do : Local {
     # we add 30 days because registrations for Personal Retreats
     # may extend beyond the last day of the season.
     #
-    my $dt = date($hash{edate}) + 30;
-    add_config($c, $dt->as_d8());
+    add_config($c, date($hash{edate}) + 30);
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
@@ -304,6 +322,7 @@ sub view : Local {
         $c->stash->{lunch_table} = lunch_table(1, $p->lunches,
                                                $p->sdate_obj, $p->edate_obj);
     }
+    $c->stash->{daily_pic_date} = $p->sdate();
     $c->stash->{template} = "program/view.tt2";
 }
 
@@ -456,11 +475,37 @@ sub update_do : Local {
         $hash{image} = "yes";
     }
     my $p = model($c, 'Program')->find($id);
-    if ($p->sdate ne $hash{sdate} || $p->edate ne $hash{edate}) {
-        # invalidate the bookings as the dates have changed
-        model($c, 'Booking')->search({
+    my $names = "";
+    my $lunches = 0;
+    if (   $p->sdate ne $hash{sdate}
+        || $p->edate ne $hash{edate}
+        || $p->max   < $hash{max}
+    ) {
+        # invalidate the bookings as the dates/max have changed
+        my @bookings = model($c, 'Booking')->search({
             program_id => $id,
-        })->delete();
+        });
+        #
+        # if only the max changed then we can keep the bookings
+        # of meeting places that are still able to accomodate
+        # the new max.
+        #
+        if (   $p->sdate eq $hash{sdate}
+            && $p->edate eq $hash{edate}
+        ) {
+            @bookings = grep {
+                            $_->meeting_place->max < $hash{max}
+                        }
+                        @bookings;
+        }
+        $names = join '<br>', map { $_->meeting_place->name } @bookings;
+        for my $b (@bookings) {
+            $b->delete();
+        }
+        if ($p->max >= $hash{max}) {
+            # must have been a date
+            $hash{lunches} = "";
+        }
     }
     # is there a FULL version?
     my $p_full;
@@ -523,7 +568,16 @@ sub update_do : Local {
         }
     }
     add_config($c, $dt);
-    $c->response->redirect($c->uri_for("/program/view/" . $p->id . "/$section"));
+    if ($names) {
+        $c->stash->{program} = $p;
+        $c->stash->{names} = $names;
+        $c->stash->{lunches} = $lunches; 
+        $c->stash->{template} = "program/mp_warn.tt2";
+    }
+    else {
+        $c->response->redirect($c->uri_for("/program/view/"
+                               . $p->id . "/$section"));
+    }
 }
 
 sub leader_update : Local {
@@ -619,7 +673,7 @@ sub meetingplace_update : Local {
         $edate += $p->extradays;
     }
     $c->stash->{meetingplace_table}
-        = meetingplace_table($c, 0, $p->sdate, $edate, $p->bookings());
+        = meetingplace_table($c, $p->max, $p->sdate, $edate, $p->bookings());
     $c->stash->{template} = "program/meetingplace_update.tt2";
 }
 
@@ -1182,6 +1236,5 @@ sub update_lunch_do : Local {
     });
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }
-
 
 1;

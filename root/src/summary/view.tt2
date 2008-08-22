@@ -1,0 +1,38 @@
+<h2>[% Type %] Summary</h2>
+<a href=/summary/update/[% Type %]/[% happening.id %]>Edit</a>
+<p>
+<table cellpadding=7>
+<tr>
+<td>
+<b>Name</b>
+<a class=larger href=/[% type %]/view/[% happening.id %]>[% happening.name %]</a>
+<b>From</b>
+[% happening.sdate_obj %] <span class=dow>[% happening.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% happening.edate_obj %] <span class=dow>[% happening.edate_obj.format("%a") %]</span>
+</td>
+[% IF type == 'rental' %]
+[% happening.status_td %]
+[% END %]
+</tr>
+</table>
+<style type="text/css">
+th {
+    text-align: right;
+}
+</style>
+<table cellpadding=3>
+<tr><th>Last Updated</th><td>[% sum.date_updated.obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
+<tr><th>Gate Code</th><td>[% sum.gate_code %]</td></tr>
+<tr><th>Registration Location</th><td>[% sum.registration_location %]</td></tr>
+<tr><th>Signage</th><td>[% sum.signage %]</td></tr>
+<tr><th>Orientation</th><td>[% sum.orientation %]</td></tr>
+<tr><th>Wind Up</th><td>[% sum.wind_up %]</td></tr>
+<tr><th>Alongside</th><td>[% sum.alongside %]</td></tr>
+<tr><th>Back-to-Back<td>[% sum.back_to_back %]</td></tr>
+<tr><th>Leader Name</th><td>[% sum.leader_name %]</td></tr>
+<tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td></tr>
+<tr><th>       Departure</th><td>[% sum.leader_departure %]</td></tr>
+<tr><th>       Housing</th><td>[% sum.leader_housing %]</td></tr>
+<tr><th>Food Service</th><td>[% sum.food_service %]</td></tr>
+</table>

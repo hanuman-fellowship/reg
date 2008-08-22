@@ -30,6 +30,11 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 </tr>
 
 <tr>
+<th align=right>Max</th>
+<td>[% event.max %]</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Meeting Places</th>
 <td valign=top>
 [% FOR b IN event.bookings %]

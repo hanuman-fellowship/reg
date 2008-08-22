@@ -11,31 +11,32 @@
 <td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
 </tr>
 </table>
-[% IF prior_house %]
-<h3>Vacated [% prior_house %] so we can now...</h3>
+[% IF message1 %]
+<h3>[% message1 %]</h3>
 [% END %]
-<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %]</h3>
+[% IF message2 %]
+<h3 style="color: red">[% message2 %]</h3>
+[% END %]
+<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %].</h3>
 <table>
 <tr>
 [% IF n_opts == 0 %]
 <td>Sorry, there is no place in the inn.</td>
 [% ELSE %]
-<td align=right>Available Housing:</td>
+<td align=right valign=top>Available Houses</td>
 <td>
 <select name=house_id size=[% n_opts %]>
 [% house_opts %]
 </select>
 </td>
 [% END %]
-<td>
-Or force the use of this house: <input type=text name=force_house size=5>
-</td>
+<td valign=top><input type=submit value="Submit"></td>
 </tr>
 
+<tr><td>&nbsp;</td></tr>
+
 <tr>
-<td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
-</tr>
+<td align=right>Force this house</td><td><input type=text name=force_house size=5></td></tr>
 
 </table>
 </form>

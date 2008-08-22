@@ -21,6 +21,9 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
+    $c->stash->{red  } = 255;
+    $c->stash->{green} = 255;
+    $c->stash->{blue } = 255;
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "meetingplace/create_edit.tt2";
 }
@@ -86,7 +89,11 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{meetingplace} = model($c, 'MeetingPlace')->find($id);
+    my $mp = $c->stash->{meetingplace} = model($c, 'MeetingPlace')->find($id);
+    my ($r, $g, $b) = $mp->color =~ m{\d+}g;
+    $c->stash->{red  } = $r;
+    $c->stash->{green} = $g;
+    $c->stash->{blue } = $b;
     $c->stash->{form_action}  = "update_do/$id";
     $c->stash->{template}     = "meetingplace/create_edit.tt2";
 }

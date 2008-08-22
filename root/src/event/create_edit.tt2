@@ -26,6 +26,11 @@
 </tr>
 
 <tr>
+<th align=right>Max</th>
+<td><input type=text name=max value="[% event.max %]" size=3></td>
+</tr>
+
+<tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>
 </tr>

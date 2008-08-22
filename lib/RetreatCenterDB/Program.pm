@@ -49,6 +49,9 @@ __PACKAGE__->add_columns(qw/
     lunches
     school
     level
+    max
+    notify_on_reg
+    summary_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -57,14 +60,14 @@ __PACKAGE__->belongs_to(canpol => 'RetreatCenterDB::CanPol', 'canpol_id');
 # housecost
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
-
+# summary
+__PACKAGE__->belongs_to('summary' => 'RetreatCenterDB::Summary', 'summary_id');
 # affiliations
 __PACKAGE__->has_many(affil_program => 'RetreatCenterDB::AffilProgram',
                       'p_id');
 __PACKAGE__->many_to_many(affils => 'affil_program', 'affil',
                           { order_by => 'descrip' },
                          );
-
 # registrations
 __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
                       'program_id');

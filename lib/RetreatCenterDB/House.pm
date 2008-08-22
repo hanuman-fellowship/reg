@@ -15,11 +15,13 @@ __PACKAGE__->add_columns(qw/
     priority
     x
     y
-    clust_id
-    clust_order
+    cluster_id
+    cluster_order
+    inactive
+    disp_code
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to(cluster => 'RetreatCenterDB::Cluster', 'clust_id');
+__PACKAGE__->belongs_to(cluster => 'RetreatCenterDB::Cluster', 'cluster_id');
 
 1;

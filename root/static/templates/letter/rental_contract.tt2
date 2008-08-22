@@ -1,0 +1,215 @@
+<html>
+<head>
+<style type="text/css">
+h3 {
+    text-align: center;
+    font-size: 20pt;
+}
+table {
+    margin-left: .5in;
+    margin-top: .1in;
+    margin-bottom: .1in;
+}
+body {
+    width: 7in;
+}
+#sig {
+    width: 500px;
+    border-bottom: thin solid;
+}
+#line {
+    margin-top: .7in;
+}
+#name {
+    width: 400px;
+}
+</style>
+</head>
+<body>
+<h3>Facilities Use Contract</h3>
+Mount Madonna Center, hereafter called the Center, and 
+[% c = rental.coordinator %]
+[% c.first %]
+[% c.last %]
+[% c.addr1 %]
+[% IF c.addr2 %]
+[% c.addr2 %]
+[% END %]
+[% c.city %],
+[% c.st_prov %]
+[% c.zip_post %]
+[% IF c.country %]
+[% c.country %]
+[% END %]
+for [% rental.name %], hereafter called the Renter, hereby agree as follows:
+<h2>Facilities</h2>
+The Center will provide workshop space in the [% rental.meeting_spaces %],
+or a comparable facility, and lodging for up to [% rental.max %]
+people from [% rental.start_hour_disp %] on [% rental.sdate_obj %] 
+to [% rental.end_hour_disp %] on [% rental.edate_obj %] at the following rates:
+<h2>Rates</h2>
+The costs below are dollars per person per day.
+[% hc = rental.housecost %]
+<table cellpadding=3>
+<tr><td>Commuting</th><td align=right>[% hc.commuting %]</td></tr>
+<tr><td>Own Tent</th><td align=right>[% hc.own_tent %]</td></tr>
+<tr><td>Own Van</th><td align=right>[% hc.own_van %]</td></tr>
+[% IF rental.summer %]
+<tr><td>Center Tent</th><td align=right>[% hc.center_tent %]</td></tr>
+[% END %]
+[% IF hc.economy %]
+<tr><td>Economy</td><td align=right>[% hc.economy %]</td></tr>
+[% END %]
+<tr><td>Dormitory (4-7 to a room)</td><td align=right>[% hc.dormitory %]</td></tr>
+<tr><td>Triple</td><td align=right>[% hc.triple %]</td></tr>
+<tr><td>Double</td><td align=right>[% hc.dble %]</td></tr>
+<tr><td>Double with bath</td><td align=right>[% hc.dble_bath %]</td></tr>
+<tr><td>Single</td><td align=right>[% hc.single %]</td></tr>
+<tr><td>Single with bath</td><td align=right>[% hc.single_bath %]</td></tr>
+</table>
+Children aged 2 to 12 staying in the room
+with a guest will pay 1/2 of the above rates.
+<p>
+<b>Please note all guest rooms must be vacated by 1 pm.</b>
+Room rates include accommodations, two meals and a snack per day,
+applicable state and local taxes, insurance, meeting space,
+and use of grounds and recreational facilities.
+Charges are based on actual occupancy, not room capacity
+– e.g., a room with 3 beds occupied by 2 people is charged as a double.
+[% IF rental.seminar_house %]
+<b>Renter agrees to house a minimum of 14 guests in the Seminar House.</b>
+[% END %]
+<i>There will be an additional charge of
+$2/person/hour for any
+additional time before 4:00 pm on the start date,
+or after 1:00 pm on the end date.</i>
+<h2>Meals</h2>
+The Center will provide two vegetarian meals and a snack per
+day: Friday dinner 5:30 pm; Saturday brunch 10:00 am, snack 1:00 pm,
+dinner 5:00 pm; Sunday breakfast 8:30 am, snack 12:30 pm.
+To be assured of a complete, fresh, hot meal, guests must arrive
+within the first half-hour of mealtime. 
+Meals are at the Community Building for the renter,
+other guests of the Center, and the Center community.
+<h2>Payment and Cancellation Policies</h2>
+The renter will pay a deposit of $[% rental.deposit %] amount
+upon the signing of this contract.
+<p>
+“Agreed Upon Revenue” is equal to the number of people specified
+under “Facilities” above, multiplied by the number of days of the
+rental specified in the same place, multiplied by the Dormitory
+rate specified under “Rates” above.
+For example, if the reservation is for x number of attendees
+for y number of days, the Agreed Upon Revenue is 
+(x)(y)(dormitory rate above). 
+<p>
+Cancellation charges shall be as follows:
+<table cellpadding=5>
+<tr>
+<th>
+If Written Notice Is Received in Advance
+</th>
+<th align=left>
+Payment Due
+</th>
+</tr>
+<tr><td>Up  to 180 days before arrival date</td><td>10% of Agreed Upon Revenue</td></tr>
+<tr><td>180 days to 121 days prior to arrival date</td><td>25% of Agreed Upon Revenue</td></tr>
+<tr><td>120 days to 61 days prior to arrival date</td><td>50% of Agreed Upon Revenue</td></tr>
+<tr><td>60 days to zero days prior to arrival date</td><td>75% of Agreed Upon Revenue</td></tr>
+</table>
+These cancellation charges are effective even if the Center
+is able to arrange an alternative rental. The Center will do its
+best to offset cancellation fees with replacement revenue,
+and give some credit to the Renter, at the Center’s option,
+if it is considered feasible to do so. These cancellation charges
+are not meant as a penalty but reflect the fact that the Center
+will have both administrative expenses in connection with the rental
+and, as the date gets closer, will have less and less chance of
+obtaining a replacement rental. The Center may, in its discretion,
+reduce these cancellation charges if a replacement rental is
+obtained, but the Renter should clearly understand that the
+Center is under no obligation to make a reduction and the
+Renter should not act in anticipation that a reduction is likely to be made.
+At the time of the event, payment due shall be paid within the
+first day of the rental period, and shall be computed at the
+per person per day rates under “Rates” above,
+or at the 75% of agreed upon revenue formula above,
+whichever is greater.  Any balance carried forward will
+incur a finance charge of 1% per month (14% annual rate).
+<h2>Concurrent Workshops</h2>
+The Center may schedule other workshops and activities during
+this workshop, provided that such activities do not use facilities
+reserved for the renter or interfere with operations of the workshop.
+<h2>Linens</h2>
+The Center will provide linens to the renter's guests occupying
+indoor accommodations (except for those in economy housing),
+including sheets, blankets, pillows, and pillowcases.
+Note: guests must bring their own towels.
+<h2>Rules</h2>
+The renter's guests will abide by Center rules,
+and the renter will help to communicate and insure the rules.
+Anyone who does not abide by the rules will be asked to leave.
+<ol>
+<li>Quiet hours are observed 9:00 pm to breakfast.
+Activities may continue during quiet hours so long as they proceed quietly.
+<li>Nudity is not permitted where visible to the public.
+<li>No pets, illegal drugs, or smoking allowed on the property,
+except that smoking is permitted on buildings' decks.
+<li>No adjustments for missed meals or missed days in residence
+are made for periods less than one week at a time.
+<li>No food may be brought to the Center.
+If you have special requests, please speak with us and we
+will do our best to provide for your needs.
+</ol>
+<h2>Housing Procedure</h2>
+No later than two weeks before the rental,
+renter will inform the Center of the guest list make-up
+(number of couples, single males/females, other requested
+configurations, and the types of rooms preferred).
+We will assign housing on a space-available basis as
+described in the accompanying letter starting "Dear Friends...."
+At that two week point, the housing agreed upon by both parties
+will be confirmed, with the Center guaranteeing the housing arranged,
+and the renter guaranteeing payment for that number 
+or the contractual minimum, whichever is greater.
+The same will be true if any additional housing requests are
+received after that point.
+The Center cannot guarantee that accommodation requests received
+later than two weeks out will be accepted.
+For housing requests received within the last week before the event,
+those that can be accepted will be surcharged $5.00 per
+outdoor accommodation and $10.00 per indoor accommodation.
+<h2>Arbitration</h2>
+In the event that a dispute occurs between the parties with
+regard to the rights or duties created by this agreement,
+or in the event of a breach of this agreement by either party,
+the parties hereto agree to binding arbitration to resolve any
+such disputes pursuant to the provisions of the 
+California Code of Civil Procedure, Sec. 128l1, et seq.
+Any such arbitration shall take place in the County of Santa Cruz,
+California.
+<h2>General Provisions</h2>
+This agreement is not a lease and it is agreed by the
+parties that no tenancy is created hereby.
+This agreement is intended to be a complete statement of the
+terms and conditions of the rental, and for the protection of both parties,
+any modification of this agreement is required to be in writing
+signed by both parties or it will not be enforceable.
+This contract shall be void unless signed by Renter and
+returned to the Center with the required deposit within two weeks
+of the date alongside the Program Director's signature.
+<p>
+<center>
+<table id=line border=0>
+<tr><td id=sig colspan=2></td></tr>
+<tr><td id=name align=left>Brajesh (Jerry Friedberg, Ph.D.)</td><td>Date</td></tr>
+<tr><td id=name align=left>Program Director of the Center</td></tr>
+</table>
+<table id=line border=0>
+<tr><td id=sig colspan=2></td></tr>
+<tr><td id=name align=left>[% c.first %] [% c.last %]</td><td>Date</td></tr>
+</table>
+</center>
+</body>
+</html>

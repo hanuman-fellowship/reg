@@ -74,6 +74,9 @@ sub _get_data {
     if (!@mess && $hash{sdate} > $hash{edate}) {
         push @mess, "End date must be after the Start date";
     }
+    if (! empty($hash{max}) && $hash{max} !~ m{^\s*\d+\s*$}) {
+        push @mess, "Max must be an integer";
+    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "event/error.tt2";
@@ -199,14 +202,29 @@ sub update_do : Local {
     return if @mess;
 
     my $e = model($c, 'Event')->find($id);
-    if ($e->sdate ne $hash{sdate} || $e->edate ne $hash{edate}) {
-        # invalidate the bookings as the dates have changed
-        model($c, 'Booking')->search({
+    my $names = "";
+    if (   $e->sdate ne $hash{sdate}
+        || $e->edate ne $hash{edate}
+        || $e->max   <  $hash{max}
+    ) {
+        # invalidate the bookings as the dates/max have changed
+        my @bookings = model($c, 'Booking')->search({
             event_id => $id,
-        })->delete();
+        });
+        $names = join '<br>', map { $_->meeting_place->name } @bookings;
+        for my $b (@bookings) {
+            $b->delete();
+        }
     }
     $e->update(\%hash);
-    $c->response->redirect($c->uri_for("/event/view/" . $e->id));
+    if ($names) {
+        $c->stash->{event} = $e;
+        $c->stash->{names} = $names;
+        $c->stash->{template} = "event/mp_warn.tt2";
+    }
+    else {
+        $c->response->redirect($c->uri_for("/event/view/" . $e->id));
+    }
 }
 
 sub delete : Local {
@@ -225,6 +243,10 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
+#
+# 40, 20 are the heights of the event rectangles.
+# put in ActiveCal??
+#
 sub calendar : Local {
     my ($self, $c) = @_;
 
@@ -290,7 +312,7 @@ sub calendar : Local {
     my $month = $start_month;
     while ($year < $end_year || ($year == $end_year && $month <= $end_month)) {
         my $key = sprintf("%04d%02d", $year, $month);
-        $cals{$key} = ActiveCal->new($year, $month);
+        $cals{$key} = ActiveCal->new($year, $month, \@events);
         $imgmaps{$key} = "";
         $details{$key} = "";
         ++$month;
@@ -305,7 +327,6 @@ sub calendar : Local {
     # a later event will overwrite one to its left
     #
     my $day_width  = ActiveCal->day_width;
-    my $cal_height = ActiveCal->cal_height;
     for my $ev (sort { $a->sdate <=> $b->sdate } @events) {
         my $ev_type = ref($ev);
         $ev_type =~ s{.*::}{};
@@ -494,7 +515,7 @@ sub calendar : Local {
 
                 # print the event name in the rectangle,
                 # as much as will fit and then overflow it
-                $im->string(gdLargeFont, $x1 + 3, $y1 + 2,
+                $im->string(gdGiantFont, $x1 + 3, $y1 + 2,
                             $event_name, $black);
 
                 # add to the image map
@@ -630,7 +651,7 @@ sub calendar : Local {
 # 50 => 95 if with year
 . qq! onmouseout="return nd();">\n!;
         }
-        $jim->string(gdLargeFont, $x + 45, 1,
+        $jim->string(gdGiantFont, $x + 45, 1,
                      $start_year+$yr-1, $black);
     }
     open my $jpng, ">", "root/static/images/jump.png"
@@ -663,13 +684,14 @@ function detail_toggle() {
 </head>
 <body>
 $jump_map
-<div class=whole>
 <p>
 EOH
     my $jump_img = $c->uri_for("/static/images/jump.png");
     my $firstcal = 1;
-    my @pr_color = $lookup{pr_color} =~ m{\d+}g;
-    # my $pr_bg = sprintf "#%02x%02x%02x", @pr_color;
+    my @pr_color  = $lookup{pr_color}  =~ m{\d+}g;
+    my $fmt = "#%02x%02x%02x";
+    my $arr_color = sprintf $fmt, $lookup{arr_color} =~ m{\d+}g;
+    my $lv_color  = sprintf $fmt, $lookup{lv_color}  =~ m{\d+}g;
     # ??? optimize - skip a $cals entirely if no PRs - have a flag
     # in the object.
     for my $key (sort keys %cals) {
@@ -692,15 +714,15 @@ EOH
                 for my $pr (@prs) {
                     my ($name, $id, $status) = split /\t/, $pr;
                     $name =~ s{'}{\\'}g;    # for O'Dwyer etc.
-                    my $bg = ($status eq 'lv' )? '#FF3333'
-                            :($status eq 'arr')? '#33FF33'
+                    my $bg = ($status eq 'lv' )? $lv_color
+                            :($status eq 'arr')? $arr_color
                             :                    '#FFFFFF';
                     $pr_links .= "<tr><td><a class=pr_links target=happening href="
                                . $c->uri_for("/registration/view/$id")
                                . ">$name</a></td><td bgcolor=$bg>$status</td></tr>";
                 }
                 my $x1 = $day_width*($d-1);
-                my $y1 = $cal_height - 20 - 1;
+                my $y1 = $ac->cal_height - 20 - 1;
                 my $x2 = $x1 + $day_width;
                 my $y2 = $y1 + 20;
                 #$im->rectangle($x1, $y1, $x2, $y2, $black);
@@ -709,7 +731,7 @@ EOH
                 $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
                                      $pr_color);
                 my $offset = ($n < 10)? 11: 7;
-                $im->string(gdLargeFont, $x1+$offset, $y1+3, $n, $black);
+                $im->string(gdGiantFont, $x1+$offset, $y1+3, $n, $black);
                 $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n"
 . qq! onclick="return overlib('<center>$day_name $month_name[$m-1] $d</center><p><table cellpadding=2>$pr_links</table>',!
                     # very cool to use $m-1 inside index inside ' inside " !!!
@@ -727,7 +749,7 @@ EOH
 
         my $month_name = $ac->sdate->format("%B %Y");
         my $form = ($firstcal)? "<form action='/event/calendar'>": "";
-        $content .= "$form<a name=$key>\n<span class=hdr>"
+        $content .= "$form<a name=$key></a>\n<span class=hdr>"
                   . $month_name
                   . "</span>"
                   . "<img border=0 class=jmptable src=$jump_img usemap=#jump>";
@@ -768,7 +790,7 @@ $details{$key}
 EOH
         }
     }
-    $content .= "</div>\n</body>\n";
+    $content .= "</body>\n";
     $c->res->output($content);
 }
 
@@ -780,7 +802,7 @@ sub meetingplace_update : Local {
 
     my $e = $c->stash->{event} = model($c, 'Event')->find($id);
     $c->stash->{meetingplace_table}
-        = meetingplace_table($c, 0, $e->sdate, $e->edate, $e->bookings());
+        = meetingplace_table($c, $e->max, $e->sdate, $e->edate, $e->bookings());
     $c->stash->{template} = "event/meetingplace_update.tt2";
 }
 

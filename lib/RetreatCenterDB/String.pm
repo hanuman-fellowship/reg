@@ -18,7 +18,9 @@ sub value_td {
     my $v = $self->value;
     if ($self->the_key =~ m{_color$}) {
         my $color = sprintf "#%02x%02x%02x", $v =~ m{\d+}g;
-        return "<td><span style='background: $color'>$v</span></td>";
+        return "<td><span style='background: $color'>"
+              . "&nbsp;" x 30
+              . "</span></td>";
     }
     return "<td>$v</td>";
 }

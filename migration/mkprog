@@ -38,7 +38,10 @@ create table program (
     lunches     text,
     -- for regi:
     school      integer,
-    level       text
+    level       text,
+    max         integer,
+    notify_on_reg text,
+    summary_id  integer
 );
 drop table if exists canpol;
 create table canpol (
@@ -84,4 +87,45 @@ drop table if exists leader_program;
 create table leader_program (
     l_id integer,       -- leader id
     p_id integer        -- program id
+);
+drop table if exists program_cluster;
+create table program_cluster (
+    program_id integer,
+    cluster_id integer
+);
+drop table if exists summary;
+create table summary (
+    id integer primary key autoincrement,
+    date_updated text,
+    time_updated text,
+    who_updated integer,        -- foreign key to User
+    gate_code text,
+    registration_location text,
+    signage text,
+    orientation text,
+    wind_up text,
+    alongside text,
+    back_to_back text,
+    leader_name text,
+    leader_arrival text,
+    leader_departure text,
+    leader_housing text,
+    food_service text,
+    flowers text,
+    houses text,
+    housekeeping text,
+    special_needs text,
+    finances text,
+    staff_arrival text,
+    miscellaneous text,
+    feedback text,
+    field_staff_setup text,
+    sound_setup text,
+    school_spaces text,
+    vacate_early text,
+    need_books text,
+    participant_list text,
+    schedule text,
+    yoga_classes text,
+    work_study text
 );

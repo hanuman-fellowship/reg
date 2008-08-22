@@ -11,11 +11,10 @@ use Lookup;
 use GD;
 
 my $day_width = 30;
-my $cal_height = 320;
 my $day_height = 40;
 
 sub new {
-    my ($class, $year, $month) = @_;
+    my ($class, $year, $month, $events_ref) = @_;
 
     my $today = today();
     if ($today->year == $year && $today->month == $month) {
@@ -25,8 +24,22 @@ sub new {
         $today = 0;
     }
     my $ndays = days_in_month($year, $month);
+    my $first = date($year, $month, 1);
+    my $last  = date($year, $month, $ndays);
     my $cal_width = $ndays*$day_width + 1;
         # we use +1 in the above line for the last vertical line
+    my $max = 3;        # always a certain height...
+    for my $ev (@$events_ref) {
+        if ($first <= $ev->edate && $ev->sdate <= $last) {
+            for my $bk ($ev->bookings) {
+                my $ord = $bk->meeting_place->disp_ord;
+                if ($ord > $max) {
+                    $max = $ord;
+                }
+            }
+        }
+    }
+    my $cal_height = $max*40 + 70;     # 100???
     my $im = GD::Image->new($cal_width, $cal_height);
     my $white = $im->colorAllocate(255,255,255);    # 1st color = background
     my $red   = $im->colorAllocate(255,  0,  0);
@@ -64,22 +77,22 @@ sub new {
             );
         }
         # these offsets depend on the day height/width somehow...???
-        $im->string(gdLargeFont, $x+$d_offset, 5, $d, $black);
-        $im->string(gdLargeFont, $x+$n_offset+4, 20, $name,
+        $im->string(gdGiantFont, $x+$d_offset, 5, $d, $black);
+        $im->string(gdGiantFont, $x+$n_offset+4, 20, $name,
                     (1 <= $dow && $dow <= 4)? $black: $red);
         $dow = ($dow+1) % 7;
     }
     $im->line(0, $day_height, $cal_width-1, $day_height, $black);
-    my $last = $ndays * $day_width;
     bless {
         image  => $im,
         sdate  => date($year, $month, 1),
         edate  => date($year, $month, $ndays),
         ndays  => $ndays,
-        cal_width => $cal_width,
         black  => $black,
         white  => $white,
         red    => $red,
+        cal_width  => $cal_width,
+        cal_height => $cal_height,
         counts => [],
         prs    => [],
     }, $class;
@@ -118,35 +131,9 @@ sub day_width {
     $day_width;
 }
 sub cal_height {
-    my ($class) = @_;
-    
-    $cal_height;
-}
-
-# add people on a day
-sub add_group {
-    my ($self, $count, $sday, $eday, $name) = @_;
-    
-    for my $d ($sday .. $eday) {
-        $self->{counts}[$d] += $count;
-    }
-}
-
-sub show_population {
     my ($self) = @_;
-
-    my $im = $self->{image};
-    my $black = $self->black;
-    $im->line(0, $cal_height-20, $self->{cal_width}-1, $cal_height-20, $black);
-    for my $d (1 .. $self->{ndays}) {
-        my $count = $self->{counts}[$d];
-        next unless $count;
-        my $x = ($d-1) * $day_width;
-        my $offset = ($count <  10)? 11
-                    :($count < 100)?  7
-                    :                 3;
-        $im->string(gdLargeFont, $x+$offset, $cal_height-18, $count, $black);
-    }
+    
+    $self->{cal_height};
 }
 
 sub add_pr {

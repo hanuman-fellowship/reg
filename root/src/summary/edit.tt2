@@ -1,0 +1,39 @@
+<h2>[% Type %] Summary</h2>
+<p>
+<table cellpadding=7>
+<tr>
+<td>
+<b>Name</b>
+<a class=larger href=/[% type %]/view/[% happening.id %]>[% happening.name %]</a>
+<b>From</b>
+[% happening.sdate_obj %] <span class=dow>[% happening.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% happening.edate_obj %] <span class=dow>[% happening.edate_obj.format("%a") %]</span>
+</td>
+[% IF type == 'rental' %]
+[% happening.status_td %]
+[% END %]
+</tr>
+</table>
+<style type="text/css">
+th {
+    text-align: right;
+}
+</style>
+<form action="/summary/update_do/[% sum.id %]" method=post>
+<table cellpadding=3>
+<tr><th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=10></td></tr>
+<tr><th>Registration Location</th><td><input type=text name=registration_location value='[% sum.registration_location %]' size=20></td></tr>
+<tr><th>Signage</th><td>[% sum.signage %]</td></tr>
+<tr><th>Orientation</th><td>[% sum.orientation %]</td></tr>
+<tr><th>Wind Up</th><td>[% sum.wind_up %]</td></tr>
+<tr><th>Alongside</th><td>[% sum.alongside %]</td></tr>
+<tr><th>Back-to-Back<td>[% sum.back_to_back %]</td></tr>
+<tr><th>Leader Name</th><td>[% sum.leader_name %]</td></tr>
+<tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td></tr>
+<tr><th>       Departure</th><td>[% sum.leader_departure %]</td></tr>
+<tr><th>       Housing</th><td>[% sum.leader_housing %]</td></tr>
+<tr><th>Food Service</th><td>[% sum.food_service %]</td></tr>
+<tr><th></th><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>

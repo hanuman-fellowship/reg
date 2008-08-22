@@ -25,6 +25,8 @@ __PACKAGE__->load_classes({
         RentalPayment
         RentalCharge
 
+        Summary
+
         Exception
         String
 
@@ -54,6 +56,8 @@ __PACKAGE__->load_classes({
         Cluster
         Config
         RentalBooking
+        RentalCluster
+        ProgramCluster
     /]
 });
 

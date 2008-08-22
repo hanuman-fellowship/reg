@@ -1049,8 +1049,10 @@ tell me more about extra accounts
     bottom line - if there are separate gl numbers for financing
         then we need a new/different place to record it.
 new attribute for people - deceased - in addition to inactive
+    * for affil in mlist
 another attribute for housing cost - inactive
     so they're not offered.
+    still create config records, however.
 purging in old reg loses web descriptions :(
     is this true???
 when hovering over a link with an access key
@@ -1740,20 +1742,192 @@ tests:
         change housing type
     relodge (with same housing type).
 houses will have an inactive attribute
-    for when they're not be used.
-    have config records for them?
+    for when they're not being used.
+    have config records for them? YES.
+    or when re-activating them make sure
+        all needed config records are there. NO.
 have a daily picture that only shows 1 cluster?
     for efficiency of refreshing, clarity.
+    mult clusters actually.
+    does not shrink the upper left part of the image, however.
 testing cases
     change type of housing - force a relodge
     change start or end date - force a relodge
     add M to double, force a F into same room => X
         vacate F, it reverts to an M.
         OR vacate the M and it reverts to an F
-    add M to double, force two F into same room => X
-        the room gets unresized to a triple with
+    add M to a double resized triple
+        force two F into same room => X
+        the room gets 'unresized' to a triple with
             people in there who think it's a double.
         vacate one of the F, it stays an X, then can't
         put F _or_ M in there.   what an orgy!
     try adding 4 people (forcing) into room with only 3 beds.
         the 4th should fail.
+    with "Sharing a room with Farst List" in the comment field
+        we look for that person and see if they're registered
+        for the same program.  If so and they're already housed
+        in the same type of housing then we put a message to
+        that effect on the lodging screen.  If they were coming
+        a day early or late and because of that the room were
+        not available it will not be in the list...  
+        Otherwise it will be defaulted to that room.  Nice!
+        A suitable error message is displayed in all
+        the other ways that this could go wrong.
+            Could not find a person named Farst List.
+            Farst List has not yet registered for Prog Nema.
+            Farst List has not been housed.
+            Farst List requested a housing type of 'Single' not 'Double'.
+why is reg view so wide?
+    second column should be narrower, yes?
+    if car pool message then second column shrinks.
+    any way to force a certain width on the second column?
+make a retreatcenter.db which is a minimal set for testing
+    and make it easy to reinstate it after mucking around.
+personal retreats - an unlinked program
+    what does its website look like?
+    what p_id?  
+    when registering online the user fills in the start, end dates?
+    or puts it in special requests?
+    how is payment calculated, taken?
+I can't show an encoding when displaying the
+    available houses - it is potentially different
+    for each day!   what did I do in reg, anyway?
+have another attribute for houses to direct
+    how to display the name label near the rectangle representing the house.
+    'display code' which consists of:
+        one of:
+            A above
+            B below
+            R right
+            L left
+        plus optionally appended:
+            t truncate first word
+    Easy! and nice.
+sort the list of available houses
+    by priority
+    someone else in room.  (to maximize use)
+    resize needed or not
+    same program/rental
+    same cluster
+104B
+    need the B?  not on room
+Work on DailyPic to restrict the view to a cluster (clusters).
+And leap to a day.
+color picker
+notes for demo on Wed
+    thank you for condolences and flowers
+    a satisfying challenge it is
+    VERY complicated!  they know!
+    this is serious - this is going to have a big
+        impact on your work.  hopefully positive!
+    (don't criticize playfulness as long as it is relevant)
+    their testing is crucial and will take time
+        can Brajesh assign someone?
+        pay adrienne
+        i'm doing what i can.  need help.
+        lots of feedback.
+        much better to find problems now before we 'go live'.
+    list of new features since last demo
+    Tabachnik?
+    testing technique - cases, keep making them, add to list
+use pop-up windows for small dialogs?
+update glossary w housing terms
+add list of houses in the coming and going listing.
+    must be ready today for new arrivals.
+    to be cleaned after they leave.
+daily picture needs events on that day
+note in doc that when changing the date (or max >)
+    of an event or program or rental
+    that you invalidate the meeting place booking
+Transportation, Credit Card Misc, Seclusion
+    no longer wedged into being a very long program or rental...
+    what are these used for???
+    Seclusion is like a PR?
+also - Personal Retreats
+    will not be in one big place
+    each season has its own.
+    AND no need to separately schedule a personal retreat
+    for someone coming early to or staying later after a program.
+have a sys_first_config as well?
+    change it when adding houses, purging?
+    ask about it.
+training videos - screen capture demo, voice over
+doc - in program and rental lists - you can type
+    a search string in several forms
+    f08, 2007, ady (search back to epoch) - backwards in time.
+        or blank - forward from today.
+        is this inconsistency okay?
+can't unclick carpool button on website.
+    must choose room or cabin even for tenters.
+    fix!
+    AND cvs add the source on mountmadonna.org/cgi-bin
+doc - 'No Where' meeting place for happenings that have
+    no other place.
+test lodging in tents, center tents, triples, quads, dorms, economy
+2 in a tent?  how?
+need maximum for programs and events.
+doc - change a max > for program or rental or event
+    and it should invalidate the meeting place.
+need (x, y) for cluster
+    if present it will insert the full name of the
+    cluster at that point in the daily picture.
+what order to present the housing types in?
+    commuting at top or bottom?
+no lodge if commuting/own van/unknown
+keep sc.css, sc.js in one place, include - how?
+    and the table of clickable color squares included somehow?
+double use - CC L - for meeting and/or for lodging.
+    I can't deal with this.
+doc - cluster matching in DailyPic - substr (LIKE)
+lunches ok on arrival day never on Sat.
+notify_on_reg - in programs?
+confirmation letter - default
+    cluttered with letters for membership.
+calendar has a minimum height - only expands if there
+    is an event with a meeting place row there...
+need a printable view of Rentals and Programs.
+    to see all tabs at once
+    maybe just a javascript manipulation???
+Rental contract - First Last addr1 city, state zip for Rental name.
+    Jon Bjornstad 514 Button St Santa Cruz, CA 95060 for Fun and Games.
+    okay?   any other inserted conjunctions or prepositions?
+rental status gets updated on viewing of the rental.
+    okay?
+strange table behavior with # of People, Reserved Clusters
+    in Rental View.   table td widths etc.
+warning - reserve the entire cluster for a rental
+    delete the booking of one room
+    assign that room to another rental/program
+    delete the cluster reservation of the cluster
+        and you clobber the secondary assignment.
+female, male want to room together
+    lodge female
+    when lodging male, the room is not offered
+        because it would be mixing the genders.
+        I do say "Share xxx with Fast Lirst?"
+        but xxx is not among the choices.
+        should it be?
+        you _can_ type it in and force it.
+        seems that it should be on top - with an X.
+doc: DailyPic link shows you the date with the
+    current rental/program/registration in view.
+    cool!
+lunch for a program on first day - and they
+    arrive after breakfast - the listing does not show it.
+there must be inefficiencies that I can improve
+    in database access - joins?
+do programs also have breakout spaces?  yes.
+    also put larger font on top
+have another table which is 'housing_log'
+    in which you log actions affecting housing.
+    this could be used to track down any glitches
+    turn this on or off depending on history.
+    on at first for sure.
+    columns: time, date, comment
+    including adding/deleting house, lodge, relodge, vacate, etc.
+    have a way of running hcck from the web and seeing the output.
+    or integrate it into the program?  nah.
+insert sc.css, sc.js for color (inherited from Sue Center hence
+    the sc) via a conditional in layout
+    then can remove duplicated code in string, meeting place, etc.

@@ -6,7 +6,5 @@ create table event (
     sdate       text,
     edate       text,
     sponsor     text,
-    user_id     integer, -- foreign key to User
-    the_date    text,
-    time        text
+    max         integer
 );
