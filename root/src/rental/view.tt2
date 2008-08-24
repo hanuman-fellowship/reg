@@ -16,6 +16,8 @@ h3 {
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Add</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/rental/duplicate/[% rental.id %]">Duplicate</a>
+&nbsp;&nbsp;&nbsp;
 <span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/delete/[% rental.id %]"
@@ -42,7 +44,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;
 &nbsp;
 &nbsp;
-<a href=/summary/view/[% rental.summary_id %]>Summary</a>
+<a href=/summary/view/rental/[% rental.summary_id %]>Summary</a>
 </td></tr>
 </table>
 <p>

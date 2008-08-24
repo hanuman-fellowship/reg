@@ -1931,3 +1931,28 @@ have another table which is 'housing_log'
 insert sc.css, sc.js for color (inherited from Sue Center hence
     the sc) via a conditional in layout
     then can remove duplicated code in string, meeting place, etc.
+ask the Catalyst irc group about simulaneous editing
+    and clobbering changes.
+today
+    finish sum editing.
+        if two at once - only update the diffs
+        and ask about the conflict
+    program breakout spaces
+    coordinator, leader contact info = email, phones
+    duplicate rentals, programs
+        go into edit mode on program
+
+        affils, sums, leaders are duplicated (new program id)
+        sans dates, meeting places, lunches, clusters, exceptions
+        with same canpol, housecost, 
+breakout spaces - main meeting place
+    can check both - main takes precedence
+        could prevent it from being chosen - not worth it.
+need wiki like expansions in fields in summary?
+    i preserve leading spaces for them...
+    what else?
+deleting a program is possible but very dangerous
+    should it be restricted/password protected?
+th label, td <a href>text
+    this does not align text - even with valign=top
+    solution?

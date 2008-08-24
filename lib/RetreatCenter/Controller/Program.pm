@@ -685,20 +685,33 @@ sub meetingplace_update_do : Local {
     if ($p->extradays) {
         $edate += $p->extradays;
     }
-    my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
-                     keys %{$c->request->params};
+    my @cur_mps;
+    my %seen = ();
+    for my $k (sort keys %{$c->request->params}) {
+        #
+        # keys are like this:
+        #     mp45
+        # or
+        #     mpbr23
+        # all mp come before any mpbr
+        #
+        my ($d) = $k =~ m{(\d+)};
+        my $br = ($k =~ m{br})? 'yes': '';
+        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
+    }
     # delete all old bookings and create the new ones.
     model($c, 'Booking')->search(
         { program_id => $id },
     )->delete();
     for my $mp (@cur_mps) {
         model($c, 'Booking')->create({
-            meet_id    => $mp,
+            meet_id    => $mp->[0],
             program_id => $id,
             rental_id  => 0,
             event_id   => 0,
             sdate      => $p->sdate,
             edate      => $edate,
+            breakout   => $mp->[1],
         });
     }
     # ditto for any FULL version?
@@ -1235,6 +1248,139 @@ sub update_lunch_do : Local {
         lunches => $l,
     });
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
+}
+
+# should duplicate ONLY ask for new dates?
+# no.   this is the time to change things from the old one.
+sub duplicate : Local {
+    my ($self, $c, $id) = @_;
+    my $p = model($c, 'Program')->find($id);
+    $p->set_columns({
+        id      => undef,
+        sdate   => "",
+        edate   => "",
+        lunches => "",
+        glnum   => "",
+    });
+    for my $w (qw/
+        sbath collect_total kayakalpa retreat
+        economy webready quad linked
+    /) {
+        $c->stash->{"check_$w"}  = ($p->$w)? "checked": "";
+    }
+    # get all cancellation policies
+    $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
+        undef,
+        { order_by => 'name' },
+    ) ];
+    # and housing costs
+    $c->stash->{housecost_opts} =
+        [ model($c, 'HouseCost')->search(
+            undef,
+            { order_by => 'name' },
+        ) ];
+    # templates
+    $c->stash->{template_opts} = [
+        grep { $_ eq "default" || ! sys_template($_) }
+        map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
+        <root/static/templates/web/*.html>
+    ];
+    # confirmation letter templates
+    $c->stash->{cl_template_opts} = [
+        map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
+        <root/static/templates/letter/*.tt2>
+    ];
+    $c->stash->{section}             = 2;   # Web (a required field)
+    $c->stash->{edit_gl} = 0;
+
+    $c->stash->{program} = $p;      # with modifed columns
+    $c->stash->{form_action} = "duplicate_do/$id";
+    $c->stash->{template}    = "program/create_edit.tt2";
+}
+
+#
+# duplicated code here from create_do - can we not repeat ourself - DRY???
+# should we?
+#
+sub duplicate_do : Local {
+    my ($self, $c, $old_id) = @_;
+    _get_data($c);
+    return if @mess;
+    delete $hash{section};      # irrelevant
+
+    # gl num is computed not gotten
+    $hash{glnum} = ($hash{name} =~ m{personal\s+retreat}i)?
+                        '99999': compute_glnum($c, $hash{sdate});
+
+    $hash{reg_count} = 0;       # otherwise it will not increment
+
+    my $upload = $c->request->upload('image');
+    my $sum = model($c, 'Summary')->create({
+        date_updated => today()->as_d8(),
+        who_updated  => $c->user->obj->id,
+        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+    });
+    my $p = model($c, 'Program')->create({
+        summary_id => $sum->id,
+        image      => $upload? "yes": "",
+        %hash,
+    });
+    my $id = $p->id();
+    if ($upload) {
+        $upload->copy_to("root/static/images/po-$id.jpg");
+        Lookup->init($c);
+        resize('p', $id);
+    }
+    # make the FULL version, if requested
+    # it _will_ have an id = normal id + 1
+    if ($hash{extradays}) {
+        my $full_edate = date($hash{edate}) + $hash{extradays};
+        $hash{edate} = $full_edate->as_d8();
+        model($c, 'Program')->create({
+            %hash,
+            image     => "",
+            edate     => $hash{edate},
+            name      => "$hash{name} FULL",
+            webready  => "",
+            linked    => "",
+            webdesc   => "",
+            brdesc    => "",
+            ptemplate => "",
+            url       => "",
+            tuition   => $p->full_tuition,
+            extradays => 0,
+            full_tuition => 0,
+            deposit   => 0,
+        });
+    }
+    #
+    # we must ensure that we have config records
+    # out to the end of this program + 30 days.
+    # we add 30 days because registrations for Personal Retreats
+    # may extend beyond the last day of the season.
+    #
+    add_config($c, date($hash{edate}) + 30);
+
+    # copy the leaders and affils
+    my @leader_programs = model($c, 'LeaderProgram')->search({
+        p_id => $old_id,
+    });
+    for my $lp (@leader_programs) {
+        model($c, 'LeaderProgram')->create({
+            l_id => $lp->l_id(),
+            p_id => $id,
+        });
+    }
+    my @affil_programs = model($c, 'AffilProgram')->search({
+        p_id => $old_id,
+    });
+    for my $ap (@affil_programs) {
+        model($c, 'AffilProgram')->create({
+            a_id => $ap->a_id(),
+            p_id => $id,
+        });
+    }
+    $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
 1;

@@ -10,6 +10,7 @@ our @EXPORT_OK = qw/
     role_table
     leader_table
     trim
+    etrim
     empty
     nsquish
     slurp
@@ -31,6 +32,7 @@ our @EXPORT_OK = qw/
     add_config
     type_max
     max_type
+    lines
 /;
 
 use POSIX   qw/ceil/;
@@ -227,7 +229,15 @@ sub trim {
     my ($s) = @_;
 
     return $s unless $s;
-    $s =~ s{^\s*|\s*$}{}g;
+    $s =~ s{^\s*|\s*$}{}gm;
+    $s;
+}
+# only trim ending space
+sub etrim {
+    my ($s) = @_;
+
+    return $s unless $s;
+    $s =~ s{\s*$}{}gm;
     $s;
 }
 
@@ -754,6 +764,11 @@ sub max_type {
     else {
         return "economy";
     }
+}
+
+sub lines {
+    my ($s) = @_;
+    $s =~ tr/\n/\n/;
 }
 
 1;

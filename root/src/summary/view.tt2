@@ -19,20 +19,49 @@
 <style type="text/css">
 th {
     text-align: right;
+    vertical-align: top;
 }
 </style>
-<table cellpadding=3>
-<tr><th>Last Updated</th><td>[% sum.date_updated.obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
-<tr><th>Gate Code</th><td>[% sum.gate_code %]</td></tr>
-<tr><th>Registration Location</th><td>[% sum.registration_location %]</td></tr>
-<tr><th>Signage</th><td>[% sum.signage %]</td></tr>
-<tr><th>Orientation</th><td>[% sum.orientation %]</td></tr>
-<tr><th>Wind Up</th><td>[% sum.wind_up %]</td></tr>
-<tr><th>Alongside</th><td>[% sum.alongside %]</td></tr>
-<tr><th>Back-to-Back<td>[% sum.back_to_back %]</td></tr>
-<tr><th>Leader Name</th><td>[% sum.leader_name %]</td></tr>
-<tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td></tr>
-<tr><th>       Departure</th><td>[% sum.leader_departure %]</td></tr>
-<tr><th>       Housing</th><td>[% sum.leader_housing %]</td></tr>
-<tr><th>Food Service</th><td>[% sum.food_service %]</td></tr>
+<table cellpadding=3 border=0>
+<tr><th>Last Updated</th><td>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
+
+<tr><th>Gate Code</th><td width=200>[% sum.gate_code %]</td>
+<th>School Spaces?</th><td>[% sum.school_spaces %]</td></tr>
+
+<tr><th>Registration Location</th><td>[% sum.registration_location %]</td>
+<th>Vacate Early?</th><td>[% sum.vacate_early %]</td></tr>
+
+<tr><th>Signage</th><td>[% sum.signage %]</td>
+<th>Need Books?</th><td>[% sum.need_books %]</td></tr>
+
+<tr><th>Orientation</th><td>[% sum.orientation %]</td>
+<th>Participant List?</th><td>[% sum.participant_list %]</td></tr>
+
+<tr><th>Wind Up</th><td>[% sum.wind_up %]</td>
+<th>Schedule?</th><td>[% sum.schedule %]</td></tr>
+
+<tr><th>Alongside</th><td>[% sum.alongside %]</td>
+<th>Yoga Classes?</th><td>[% sum.yoga_classes %]</td></tr>
+
+<tr><th>Back-to-Back<td>[% sum.back_to_back %]</td>
+<th>Work Study?</th><td>[% sum.work_study %]</td></tr>
+
+<tr><td>&nbsp;</td></tr>
+<tr><th>Leader Name</th><td colspan=3>[% sum.leader_name %]</td></tr>
+<tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td>
+    <th>Staff Arrival</th><td>[% sum.staff_arrival %]</td></tr>
+<tr><th>       Departure</th><td colspan=3>[% sum.leader_departure %]</td></tr>
+<tr><th>Housing</th><td colspan=3>[% sum.leader_housing %]</td></tr>
+<tr><td>&nbsp;</td></tr>
+
+<tr><th>Food Service</th><td colspan=3>[% sum.food_service_br %]</td></tr>
+<tr><th>Flowers</th><td colspan=3>[% sum.flowers_br %]</td></tr>
+<tr><th>Houses</th><td colspan=3>[% sum.houses_br %]</td></tr>
+<tr><th>HouseKeeping</th><td colspan=3>[% sum.housekeeping_br %]</td></tr>
+<tr><th>Special Needs</th><td colspan=3>[% sum.special_needs_br %]</td></tr>
+<tr><th>Finances</th><td colspan=3>[% sum.finances_br %]</td></tr>
+<tr><th>Miscellaneous</th><td colspan=3>[% sum.miscellaneous_br %]</td></tr>
+<tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup_br %]</td></tr>
+<tr><th>Sound Setup</th><td colspan=3>[% sum.sound_setup_br %]</td></tr>
+<tr><th>Feedback</th><td colspan=3>[% sum.feedback_br %]</td></tr>
 </table>

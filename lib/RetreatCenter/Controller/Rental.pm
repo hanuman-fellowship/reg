@@ -160,7 +160,7 @@ sub create_do : Local {
     my $sum = model($c, 'Summary')->create({
         date_updated => today()->as_d8(),
         who_updated  => $c->user->obj->id,
-        time     => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });
     $hash{summary_id} = $sum->id;
     my $r = model($c, 'Rental')->create(\%hash);

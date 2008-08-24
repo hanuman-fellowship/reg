@@ -6,6 +6,8 @@
 <h2>Programs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
     <a href="/program/create">Add</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/duplicate/[% program.id %]">Duplicate</a>
     [% IF edit_okay %]
         &nbsp;&nbsp;&nbsp;
         <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
@@ -45,7 +47,7 @@
 &nbsp;
 &nbsp;
 &nbsp;
-<a href=/summary/view/[% program.summary_id %]>Summary</a>
+<a href=/summary/view/program/[% program.summary_id %]>Summary</a>
 
 <p>
 
@@ -110,7 +112,7 @@ Finance
 
 <tr>
 <th align=right valign=top>Leaders</th>
-<td align=left valign=top>
+<td valign=top align=left>
 [% FOR l IN program.leaders %]
     <a href="/leader/view/[% l.id %]">[% l.person.last %], [% l.person.first %]</a><br>
 [% END %]
@@ -124,12 +126,27 @@ Finance
 </tr>
 
 <tr>
-<th align=right valign=top>Meeting Places</th>
+<th align=right valign=top width=150>Meeting Places</th>
 <td align=left valign=top>
-[% FOR b IN booking_program.bookings %]
-    [% b.meeting_place.name %]<br>
+[% FOR b IN program.bookings %]
+    [% IF b.breakout == '' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
 [% END %]
+</td>
+<th align=right valign=top width=150>Breakout</th>
+<td align=left valign=top>
+[% FOR b IN program.bookings %]
+    [% IF b.breakout == 'yes' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
+[% END %]
+</td>
+</tr>
 [% IF edit_okay %]
+    <tr>
+    <td></td>
+    <td colspan=2 align=center>
     [% IF Catalyst.check_user_roles('prog_admin') %]
         <a href="/program/meetingplace_update/[% id %]">Update</a>
     [% END %]

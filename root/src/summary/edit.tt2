@@ -19,21 +19,105 @@
 th {
     text-align: right;
 }
+#sub {
+    color: green;
+    background: lightgreen;
+}
 </style>
-<form action="/summary/update_do/[% sum.id %]" method=post>
+<form action="/summary/update_do/[% type %]/[% sum.id %]" method=post>
 <table cellpadding=3>
-<tr><th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=10></td></tr>
-<tr><th>Registration Location</th><td><input type=text name=registration_location value='[% sum.registration_location %]' size=20></td></tr>
-<tr><th>Signage</th><td>[% sum.signage %]</td></tr>
-<tr><th>Orientation</th><td>[% sum.orientation %]</td></tr>
-<tr><th>Wind Up</th><td>[% sum.wind_up %]</td></tr>
-<tr><th>Alongside</th><td>[% sum.alongside %]</td></tr>
-<tr><th>Back-to-Back<td>[% sum.back_to_back %]</td></tr>
-<tr><th>Leader Name</th><td>[% sum.leader_name %]</td></tr>
-<tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td></tr>
-<tr><th>       Departure</th><td>[% sum.leader_departure %]</td></tr>
-<tr><th>       Housing</th><td>[% sum.leader_housing %]</td></tr>
-<tr><th>Food Service</th><td>[% sum.food_service %]</td></tr>
-<tr><th></th><td><input type=submit value="Submit"></td></tr>
+
+<tr><th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=10></td>
+<th>School Spaces?</th><td><input type=checkbox name=school_spaces value='yes' [% checked_school_spaces %]></td></tr>
+
+<tr><th>Registration Location</th><td><input type=text name=registration_location value='[% sum.registration_location %]' size=20></td>
+<th>Vacate Early?</th><td><input type=checkbox name=vacate_early value='yes' [% checked_vacate_early %]></td></tr>
+
+<tr><th>Signage</th><td><input type=text name=signage value='[% sum.signage %]'></td>
+<th>Need Books?</th><td><input type=checkbox name=need_books value='yes' [% checked_need_books %]></td></tr>
+
+<tr><th>Orientation</th><td><input type=text name=orientation value='[% sum.orientation %]'></td>
+<th>Participant List?</th><td><input type=checkbox name=participant_list value='yes' [% checked_participant_list %]></td></tr>
+
+<tr><th>Wind Up</th><td><input type=text name=wind_up value='[% sum.wind_up %]'></td>
+<th>Schedule?</th><td><input type=checkbox name=schedule value='yes' [% checked_schedule %]></td></tr>
+
+<tr><th>Alongside</th><td><input type=text name=alongside value='[% sum.alongside %]'></td>
+<th>Yoga Classes?</th><td><input type=checkbox name=yoga_classes value='yes' [% checked_yoga_classes %]></td></tr>
+
+<tr><th>Back-to-Back<td><input type=text name=back_to_back value='[% sum.back_to_back %]'></td>
+<th>Work Study?</th><td><input type=checkbox name=work_study value='yes' [% checked_work_study %]></td></tr>
+
+<tr><td>&nbsp;</td></tr>
+<tr><th>Leader Name</th><td colspan=2><input type=text name=leader_name value='[% sum.leader_name %]'></td>
+<td><input id=sub type=submit value="Submit"></td></tr>
+<tr><th>       Arrival</th><td><input type=text name=leader_arrival value='[% sum.leader_arrival %]'></td>
+    <th>Staff Arrival</th><td colspan=3><input type=text name=staff_arrival value='[% sum.staff_arrival %]'></td></tr>
+<tr><th>Departure</th><td colspan=3><input type=text name=leader_departure value='[% sum.leader_departure %]'></td></tr>
+<tr><th>Housing</th><td colspan=3><input type=text name=leader_housing value='[% sum.leader_housing %]'></td></tr>
+<tr><td>&nbsp;</td></tr>
+
+<tr><th valign=top>Food Service</th>
+<td colspan=3>
+<textarea name=food_service rows=[% food_service_rows %] cols=50>
+[% sum.food_service %]
+</textarea></td></tr>
+
+<tr><th valign=top>Flowers</th>
+<td colspan=3>
+<textarea name=flowers rows=[% flowers_rows %] cols=50>
+[% sum.flowers %]
+</textarea></td></tr>
+
+<tr><th valign=top>Houses</th><td colspan=3>
+<textarea name=houses rows=[% houses_rows %] cols=50>
+[% sum.houses %]
+</textarea></td></tr>
+
+<tr><th valign=top>House Keeping</th>
+<td colspan=3>
+<textarea name=housekeeping rows=[% housekeeping_rows %] cols=50>
+[% sum.housekeeping %]
+</textarea></td></tr>
+
+<tr><th valign=top>Special Needs</th>
+<td colspan=3>
+<textarea name=special_needs rows=[% special_needs_rows %] cols=50>
+[% sum.special_needs %]
+</textarea></td>
+<td><input id=sub type=submit value="Submit"></td>
+</tr>
+
+<tr><th valign=top>Finances</th>
+<td colspan=3>
+<textarea name=finances rows=[% finances_rows %] cols=50>
+[% sum.finances %]
+</textarea></td></tr>
+
+<tr><th valign=top>Miscellaneous</th>
+<td colspan=3>
+<textarea name=miscellaneous rows=[% miscellaneous_rows %] cols=50>
+[% sum.miscellaneous %]
+</textarea></td></tr>
+
+<tr><th valign=top>Field Staff Setup</th>
+<td colspan=3>
+<textarea name=field_staff_setup rows=[% field_staff_setup_rows %] cols=50>
+[% sum.field_staff_setup %]
+</textarea></td></tr>
+
+<tr><th valign=top>Sound Setup</th>
+<td colspan=3>
+<textarea name=sound_setup rows=[% sound_setup_rows %] cols=50>
+[% sum.sound_setup %]
+</textarea></td></tr>
+
+<tr><th valign=top>Feedback</th>
+<td colspan=3>
+<textarea name=feedback rows=[% feedback_rows %] cols=50>
+[% sum.feedback %]
+</textarea></td></tr>
+
+<tr><th></th><td><input id=sub type=submit value="Submit"></td></tr>
 </table>
 </form>
