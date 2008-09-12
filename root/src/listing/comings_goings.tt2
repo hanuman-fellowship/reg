@@ -1,4 +1,7 @@
 <h2>For [% date.format("%A, %B %e") %]</h2>
+<a href=/listing/comings_goings/[% prev_date %]>Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/listing/comings_goings/[% next_date %]>Next</a>
 <h3>Coming</h3>
 <ul>
 <table cellpadding=3>

@@ -13,7 +13,9 @@
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td><textarea rows=4 cols=60 name=comment>[% reg.comment %]</textarea></td>
+<td><textarea rows=[% comment_lines %] cols=60 name=comment>
+[% comment %]
+</textarea></td>
 </tr>
 
 <tr>

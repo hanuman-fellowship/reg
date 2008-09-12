@@ -20,7 +20,7 @@ use Util qw/
     max_type
     housing_types
 /;
-use Lookup;
+use Global qw/%string/;
 use POSIX;
 use Template;
 
@@ -191,7 +191,7 @@ sub _h24 {
 sub view : Local {
     my ($self, $c, $id, $section) = @_;
 
-    Lookup->init($c);
+    Global->init($c);
     $section ||= 1;
     my $r = model($c, 'Rental')->find($id);
 
@@ -250,7 +250,7 @@ sub view : Local {
         $clusters .= ("&nbsp;"x2)
                   .  "<a href=/rental/cluster_delete/$id/"
                   .  $cl->cluster_id
-                  . qq! onclick="return confirm('Okay to Delete cluster $cl_name?');"!
+                  . qq! onclick="return confirm('Okay to Delete booking of cluster $cl_name?');"!
                   .  ">"
                   .  $cl_name
                   .  "</a>,"
@@ -264,9 +264,9 @@ sub view : Local {
     my $actual_lodging = 0;
     my $tot_people = 0;
     my $fmt = "#%02x%02x%02x";
-    my $less = sprintf($fmt, $lookup{cov_less_color} =~ m{(\d+)}g);
-    my $more = sprintf($fmt, $lookup{cov_more_color} =~ m{(\d+)}g);
-    my $okay = sprintf($fmt, $lookup{cov_okay_color} =~ m{(\d+)}g);
+    my $less = sprintf($fmt, $string{cov_less_color} =~ m{(\d+)}g);
+    my $more = sprintf($fmt, $string{cov_more_color} =~ m{(\d+)}g);
+    my $okay = sprintf($fmt, $string{cov_okay_color} =~ m{(\d+)}g);
     TYPE:
     for my $t (housing_types()) {
         next TYPE if $t eq "unknown";
@@ -305,7 +305,7 @@ sub view : Local {
     }
     my $extra_hours_charge = $extra_hours
                            * $tot_people
-                           * $lookup{extra_hours_charge};
+                           * $string{extra_hours_charge};
 
     $tot_charges += $extra_hours_charge;
 
@@ -316,7 +316,7 @@ sub view : Local {
     my $lunches = $r->lunches;
     if ($lunches =~ /1/) {
         $lunch_charge = $tot_people
-                      * $lookup{lunch_charge}
+                      * $string{lunch_charge}
                       * scalar($lunches =~ tr/1/1/);
         $tot_charges += $lunch_charge;
     }
@@ -375,7 +375,7 @@ sub view : Local {
 sub list : Local {
     my ($self, $c) = @_;
 
-    Lookup->init($c);
+    Global->init($c);
     my $today = today()->as_d8();
     $c->stash->{rentals} = [
         model($c, 'Rental')->search(

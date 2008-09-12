@@ -1,7 +1,10 @@
 <h2>Programs - Updating the Meeting Places</h2>
-<p>
-[% program.name %]<br>
-[% program.title %] - [% program.subtitle %]
+<b>Name</b>
+<span class=larger>[% program.name %]</span>
+<b>From</b>
+[% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span>
 <p>
 <form action="/program/meetingplace_update_do/[% program.id %]">
 <ul>

@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+$dbh->do("delete from confnote");
+
+my $nt_sql = "insert into confnote values(?, ?, ?)";
+my $nt_sth = $dbh->prepare($nt_sql)
+    or die "no prep confnote\n";
+
+open my $nt, "<", "new/note.txt"
+    or die "cannot open note.txt: $!\n";
+my $n = 0;
+while (<$nt>) {
+    my $abbr = $_;
+    my $note1 = <$nt>;
+    my $note2 = <$nt>;
+    for ($abbr, $note1, $note2) {
+        s{\s*\r?\n}{};
+    }
+    if ($note2) {
+        $note1 .= "\n$note2";
+    }
+    ++$n;
+    $nt_sth->execute($n, $abbr, "$note1\n");
+}
+close $nt;

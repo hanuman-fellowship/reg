@@ -248,6 +248,9 @@ $dbh->disconnect();
 sub processReg {
     my ($season) = @_;
 
+    for my $k (qw/ 1comment 2comment 3comment 1note 2note overflow /) {
+        $hash{$k} =~ s{\s*$}{} if $hash{$k};
+    }
     $hash{comment} = "";
     $hash{comment} .= "$hash{'1comment'}\n" if $hash{'1comment'};
     $hash{comment} .= "$hash{'2comment'}\n" if $hash{'2comment'};
@@ -421,11 +424,11 @@ sub processReg {
         if $hash{pmt2};
 
     # use adj, tuition, roomfood in RegCharge records
-    charge($hash{tuition}, $hash{date_add}, "Tuition")
+    charge($hash{tuition}, $hash{date_add}, "Tuition", "yes")
         if $hash{tuition};
-    charge($hash{roomfood}, $hash{date_add}, "Lodging")
+    charge($hash{roomfood}, $hash{date_add}, "Lodging", "yes")
         if $hash{roomfood};
-    charge($hash{adj}, $hash{date_add}, "Adjustment")
+    charge($hash{adj}, $hash{date_add}, "Adjustment", "")
         if $hash{adj};
 
     # use letter_sent, date_add/who_add, can_date in a RegHist record
@@ -466,12 +469,12 @@ sub payment {
     );
 }
 sub charge {
-    my ($amt, $date, $msg) = @_;
+    my ($amt, $date, $msg, $auto) = @_;
 
     $chg_ins_sth->execute(
         undef, $reg_id, $unknown,
         $date, "12:00", 
-        $amt, $msg, ""      # not automatic - don't clear these charges
+        $amt, $msg, $auto
     );
 }
 sub history {

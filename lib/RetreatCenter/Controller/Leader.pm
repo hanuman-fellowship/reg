@@ -10,7 +10,7 @@ use Util qw/
     valid_email
     model
 /;
-use Lookup;     # resize needs this to have been done
+use Global qw/%string/;     # resize needs this to have been done
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -109,7 +109,7 @@ sub update_do : Local {
     my @img = ();
     if (my $upload = $c->request->upload('image')) {
         $upload->copy_to("root/static/images/lo-$id.jpg");
-        Lookup->init($c);
+        Global->init($c);
         resize('l', $id);
         @img = (image => 'yes');
     }
@@ -150,7 +150,7 @@ sub create_do : Local {
     my $upload = $c->request->upload('image');
     if ($upload) {
         $upload->copy_to("root/static/images/lo-$id.jpg");
-        Lookup->init($c);
+        Global->init($c);
         resize('l', $id);
         $l->update({
             image => 'yes',

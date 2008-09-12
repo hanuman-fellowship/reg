@@ -4,9 +4,10 @@ package RetreatCenterDB::Registration;
 use base qw/DBIx::Class/;
 
 use Date::Simple qw/date/;
-use Lookup;
+use Global qw/%string/;
 use Util qw/
     trim
+    _br
 /;
 
 # Load required DBIC stuff
@@ -76,33 +77,14 @@ sub date_postmark_obj {
 sub h_type_disp {
     my ($self) = @_;
     
-    # Lookup->init();       # hopefully already done :(
     my $type = $self->h_type;
-    return "Unknown" if ! defined $type || ! exists $lookup{$type};
-    $type = $lookup{$type};
+    return "Unknown" if ! defined $type || ! exists $string{$type};
+    $type = $string{$type};
     $type =~ s{\(.*\)}{};
     $type =~ s{Mount Madonna }{};
     trim($type);
 }
 
-sub comment_br {
-    my ($self) = @_;
-    my $comment = $self->comment;
-    $comment =~ s{\r?\n}{<br>\n}g;
-    if ($comment && $comment !~ m{<br>$}) {
-        $comment .= "<br>";
-    }
-    $comment;
-}
-
-sub confnote_br {
-    my ($self) = @_;
-    my $confnote = $self->confnote;
-    $confnote =~ s{\r?\n}{<br>\n}g;
-    if ($confnote && $confnote !~ m{<br>$}) {
-        $confnote .= "<br>";
-    }
-    $confnote;
-}
+sub confnote_br { _br(shift->confnote()); }
 
 1;

@@ -1,8 +1,8 @@
 <h2>Housing Costs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/housecost/create">Add</a>
-&nbsp;&nbsp;&nbsp;
 <a href="/housecost/update/[% housecost.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/housecost/create">Add</a>
 [% IF housecost.name != 'Default' %]
 &nbsp;&nbsp;&nbsp;
 <a href="/housecost/delete/[% housecost.id %]"

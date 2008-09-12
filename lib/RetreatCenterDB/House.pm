@@ -24,4 +24,11 @@ __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->belongs_to(cluster => 'RetreatCenterDB::Cluster', 'cluster_id');
 
+sub name_disp {
+    my ($self) = @_;
+    my $name = $self->name();
+    $name =~ s{(\d{3})[BH]+$}{$1};
+    $name;
+}
+
 1;

@@ -112,8 +112,7 @@ create table summary (
     leader_housing text,
     food_service text,
     flowers text,
-    houses text,
-    housekeeping text,
+    lodging text,
     special_needs text,
     finances text,
     staff_arrival text,
@@ -128,4 +127,10 @@ create table summary (
     schedule text,
     yoga_classes text,
     work_study text
+);
+drop table if exists confnote;
+create table confnote (
+    id integer primary key autoincrement,
+    abbr      text,
+    expansion text
 );

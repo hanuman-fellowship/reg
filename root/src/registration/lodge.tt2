@@ -1,3 +1,9 @@
+<style type="text/css">
+#mess {
+    color: red;
+    font-size: 14pt;
+}
+</style>
 <h2>Program Housing</h2>
 <form action="/registration/lodge_do/[% reg.id %]" name=form>
 <table cellpadding=3>
@@ -12,25 +18,34 @@
 </tr>
 </table>
 [% IF message1 %]
-<h3>[% message1 %]</h3>
+<p>
+<span id=mess>[% message1 %]</span>
 [% END %]
 [% IF message2 %]
-<h3 style="color: red">[% message2 %]</h3>
+<p>
+<span id=mess>[% message2 %]</span>
 [% END %]
 <h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %].</h3>
-<table>
+<table border=0>
 <tr>
-[% IF n_opts == 0 %]
-<td>Sorry, there is no place in the inn.</td>
+[% IF total_opts == 0 %]
+<td style="color: red; font-size: 14pt">Sorry, there is no place in the inn.</td>
 [% ELSE %]
 <td align=right valign=top>Available Houses</td>
-<td>
-<select name=house_id size=[% n_opts %]>
+<td valign=top>
+<select name=house_id size=[% seen_opts %]>
 [% house_opts %]
 </select>
 </td>
 [% END %]
 <td valign=top><input type=submit value="Submit"></td>
+<td>
+<table cellpadding=3>
+<tr><td>C - this room's <b>C</b>luster has been used in this program before</td></tr>
+<tr><td>P - <b>P</b>erfect fit - no resize needed</td></tr>
+<tr><td>O - already <b>O</b>ccupied</td></tr>
+</table>
+</td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
@@ -40,4 +55,3 @@
 
 </table>
 </form>
-<script type="text/javascript">document.form.comment.focus();</script>

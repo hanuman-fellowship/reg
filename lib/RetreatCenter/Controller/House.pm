@@ -10,7 +10,7 @@ use Util qw/
     trim
     add_config
 /;
-use Lookup;
+use Global qw/%string/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -59,6 +59,10 @@ sub _get_data {
         inactive
     /) {
         $hash{$f} = "" unless exists $hash{$f};
+    }
+    if ($hash{center}) {
+        # center implies tent
+        $hash{tent} = "yes";
     }
     @mess = ();
     if (empty($hash{name})) {
@@ -135,8 +139,8 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
     my $house = model($c, 'House')->create(\%hash);
-    Lookup->init($c);
-    add_config($c, $lookup{sys_last_config_date}, $house);
+    Global->init($c);
+    add_config($c, $string{sys_last_config_date}, $house);
     $c->response->redirect($c->uri_for('/house/list'));
 }
 

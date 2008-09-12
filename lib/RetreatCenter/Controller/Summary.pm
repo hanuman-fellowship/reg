@@ -43,12 +43,12 @@ sub update : Local {
     my $sum = $happening->summary;
     $c->stash->{sum}       = $sum;
     for my $f (qw/
+        signage
         miscellaneous
         feedback
         food_service
         flowers
-        houses
-        housekeeping
+        lodging
         special_needs
         finances
         field_staff_setup

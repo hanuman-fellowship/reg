@@ -34,17 +34,24 @@ rm -f 20*.png lo* lth* lb* po* pth* pb*
 cd ../../../migration
 
 echo people
-loadpeople
+loadpeople -n 2000
 echo leaders, canpol, housecost, programs
-# ??? f07 => f89
-loadprog f07
+# ??? -s cur => f89
+loadprog -s cur
 echo registrations
-loadreg f07
+loadreg -s cur
 echo rentals
-loadrent f07
+loadrent -s cur
 
 # add a LOT of config records
 loadconfig
+
+# conf notes
+loadnote
+
+# initialize the member and donation data
+loaddon
+loadmem
 
 # update the reg_count field in all program records
 regcount

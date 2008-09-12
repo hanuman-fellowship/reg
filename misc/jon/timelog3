@@ -209,3 +209,28 @@ Aug 22 11:45-11:55, 12:40-3:40, 5:30-7:10
     dup'ing programs
         done but needs checking
         next is dup'ing rentals
+Aug 23 12:00-12:45
+    reworking Summary based on Savita's advice
+Aug 24 9:20-12:00
+    use join, prefetch for getting registrations.
+        MUCH faster!
+    Edit on left everywhere
+    refinements of searching for registrations
+Aug 25 9:20-12:00
+    conf_note - done.
+Aug 27 5:00-6:30
+    proper # lines in text areas for confnote, comments.
+    and trimming them on edit.
+    futzing with dates in reg so don't vacate unnecessarily.
+    also CPO legend as requested by Brajesh
+Aug 29 7:15-9:15
+    program duplication
+Aug 31 9:45-11:30
+    housekeeping report
+Sep 2 7:10-11:15
+    add rentals to housekeeping report
+        thorough testing
+        used template
+    tweaked DailyPic
+Sep 3 11:00-3:00
+    demos and feedback - fun!

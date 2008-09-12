@@ -14,11 +14,11 @@ h3 {
 </style>
 <h2>Rentals</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
+<span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
+&nbsp;&nbsp;&nbsp;
 <a href="/rental/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/duplicate/[% rental.id %]">Duplicate</a>
-&nbsp;&nbsp;&nbsp;
-<span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/delete/[% rental.id %]"
 onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
@@ -123,7 +123,7 @@ Finance
     [% END %]
 [% END %]
 </td>
-<th align=right valign=top width=150>Breakout</th>
+<th align=right valign=top width=150>Breakout Places</th>
 <td align=left valign=top>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == 'yes' %]

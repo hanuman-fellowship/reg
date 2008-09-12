@@ -7,7 +7,7 @@ use Date::Simple qw/
     date
     days_in_month
 /;
-use Lookup;
+use Global qw/%string/;
 use GD;
 
 my $day_width = 30;
@@ -44,8 +44,8 @@ sub new {
     my $white = $im->colorAllocate(255,255,255);    # 1st color = background
     my $red   = $im->colorAllocate(255,  0,  0);
     my $black = $im->colorAllocate(0,    0,  0);
-    my $mon_thu = $im->colorAllocate($lookup{mon_thu_color} =~ m{\d+}g);
-    my $fri_sun = $im->colorAllocate($lookup{fri_sun_color} =~ m{\d+}g);
+    my $mon_thu = $im->colorAllocate($string{mon_thu_color} =~ m{\d+}g);
+    my $fri_sun = $im->colorAllocate($string{fri_sun_color} =~ m{\d+}g);
     # surrounding border
     $im->rectangle(0, 0, $cal_width-1, $cal_height-1, $black);
 
@@ -73,7 +73,7 @@ sub new {
         if ($d == $today) {
             $im->filledRectangle(
                 $x+1, 1, $x+$day_width, $day_height-1,
-                $im->colorAllocate($lookup{today_color} =~ m{\d+}g)
+                $im->colorAllocate($string{today_color} =~ m{\d+}g)
             );
         }
         # these offsets depend on the day height/width somehow...???

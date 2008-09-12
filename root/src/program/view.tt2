@@ -5,12 +5,14 @@
 
 <h2>Programs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
+    [% IF edit_okay %]
+        <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
+        &nbsp;&nbsp;&nbsp;
+    [% END %]
     <a href="/program/create">Add</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/duplicate/[% program.id %]">Duplicate</a>
     [% IF edit_okay %]
-        &nbsp;&nbsp;&nbsp;
-        <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
         &nbsp;&nbsp;&nbsp;
         <a href="/program/delete/[% id %]"
            onclick="return confirm('Okay to Delete [% program.name %]?');"
@@ -134,7 +136,7 @@ Finance
     [% END %]
 [% END %]
 </td>
-<th align=right valign=top width=150>Breakout</th>
+<th align=right valign=top width=150>Breakout Places</th>
 <td align=left valign=top>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == 'yes' %]

@@ -1,0 +1,36 @@
+Sep 4 11:00-12:15
+    late notices from template
+Sep 6 11:25-12:45, 1:20-1:45, 2:55-3:45
+    testing tents (more than one person in one)
+    late notice paging, etc.
+    link on "Share room with ...".
+Sep 7 8:30-8:55, 10:40-11:00
+    campground report (parameter to housekeeping)
+    late notice - Saturday
+        more joins?
+Sep 8 4:40-6:55
+    daily pic design for CC 1 and 2.
+    can .outfile, .dump with SQLite3
+Sep 9 4:30-4:40
+    housing questions
+Sep 10 2:40-4:50, 3:25-5:00, 7:00-8:30, 10:15-12:00
+    cluster type attr
+        Indoors
+        Outdoors
+        Special
+    reworking dailypic for efficiency
+        one more refinement to go
+    trying mst's suggestion for pre-cacheing.
+        didn't work :(
+    reworked Lookup into Global and included %clust_color
+        and %houses_in
+    further optimizations
+    next is Ajax to get occupant's details only if asked
+
+    rental contracts polished a bit
+    dup rentals
+Sep 11 12:10-12:35, 1:10-4:30, 10:20-
+    dp_string#, links on DailyPic
+    all tents in!
+    next - Annotations, then optimize search for house
+    checking in - finally

@@ -216,7 +216,7 @@ else {
 
 # requirement #6
 $sth = $dbh->prepare("
-    select c.*
+    select c.*, h.tent
     from config c, house h
     where c.house_id = h.id
       and (c.cur > h.max or c.curmax > h.max)
@@ -224,6 +224,11 @@ $sth = $dbh->prepare("
 $sth->execute();
 $err = 0;
 while (my (@data) = $sth->fetchrow_array()) {
+    for my $d (@data) {
+        if (! defined($d)) {
+            $d = "-";
+        }
+    }
     print "** curmax or max > house_max: @data\n";
     ++$err;
 }

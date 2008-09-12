@@ -13,7 +13,7 @@ use Util qw/
 use GD;
 use ActiveCal;
 use DateRange;      # imports overlap
-use Lookup;
+use Global qw/%string/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -97,7 +97,8 @@ sub create_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{event} = model($c, 'Event')->find($id);
+    my $ev = $c->stash->{event} = model($c, 'Event')->find($id);
+    $c->stash->{daily_pic_date} = $ev->sdate();
     $c->stash->{template} = "event/view.tt2";
 }
 
@@ -257,7 +258,7 @@ sub calendar : Local {
         Oct Nov Dec
     /;
 
-    Lookup->init($c);
+    Global->init($c);
     my $which = $c->request->params->{which};
     my $today = today();
     if ($which) {
@@ -482,13 +483,13 @@ sub calendar : Local {
                 my $border = $black;
                 if ($ev_type eq 'rental') {
                     $border = $im->colorAllocate(
-                        $lookup{"rental_" . $ev->status . "_color"} =~ m{\d+}g,
+                        $string{"rental_" . $ev->status . "_color"} =~ m{\d+}g,
                     );
                     $printable_row .= $ev->status_td();
                 }
                 elsif ($ev_type eq 'event') {
                     $border = $im->colorAllocate(
-                            $lookup{event_color} =~ m{\d+}g);
+                            $string{event_color} =~ m{\d+}g);
                 }
 
                 $im->setThickness(4);
@@ -688,10 +689,10 @@ $jump_map
 EOH
     my $jump_img = $c->uri_for("/static/images/jump.png");
     my $firstcal = 1;
-    my @pr_color  = $lookup{pr_color}  =~ m{\d+}g;
+    my @pr_color  = $string{pr_color}  =~ m{\d+}g;
     my $fmt = "#%02x%02x%02x";
-    my $arr_color = sprintf $fmt, $lookup{arr_color} =~ m{\d+}g;
-    my $lv_color  = sprintf $fmt, $lookup{lv_color}  =~ m{\d+}g;
+    my $arr_color = sprintf $fmt, $string{arr_color} =~ m{\d+}g;
+    my $lv_color  = sprintf $fmt, $string{lv_color}  =~ m{\d+}g;
     # ??? optimize - skip a $cals entirely if no PRs - have a flag
     # in the object.
     for my $key (sort keys %cals) {

@@ -10,7 +10,6 @@ __PACKAGE__->config(
         'sahadev',
         'JonB',
         { AutoCommit => 1 },
-        
     ],
 );
 

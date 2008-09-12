@@ -55,7 +55,9 @@ Has Car
 <tr>
 <th align=right valign=top>Comment</th>
 <td colspan=3>
-<textarea rows=6 cols=60 name=comment>[% reg.comment %]</textarea>
+<textarea rows=[% comment_lines %] cols=60 name=comment>
+[% reg.comment %]
+</textarea>
 </td>
 </tr>
 
@@ -70,7 +72,9 @@ Has Car
 
 <tr>
 <th align=right valign=top>Notes for the<br>Confirmation Letter</th>
-<td colspan=3><textarea rows=4 cols=60 name=confnote>[% reg.confnote %]</textarea></td>
+<td colspan=3><textarea rows=[% note_lines %] cols=60 name=confnote>
+[% reg.confnote %]
+</textarea></td>
 </tr>
 
 [% IF reg.status %]
@@ -88,6 +92,27 @@ Has Car
 <tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>
+
+<td colspan=2>
+<span>
+Click <a href=#
+onclick="getElementById('help').style.display = 'block'; document.form.confnote.focus();"
+>here</a> to see all quick notes.
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td colspan=3>
+<div id=help style="display: none;">
+<table cellpadding=3>
+[% FOR cf IN confnotes %]
+<tr>
+<th align=left valign=top>[% cf.abbr %]</th>
+<td>[% cf.expansion_br %]</td>
+</tr>
+[% END %]
+</table>
+</div>
 </tr>
 
 </table>

@@ -1,26 +1,51 @@
 <h2>Confirmation Note</h2>
 <form action="/registration/update_confnote_do/[% reg.id %]" name=form>
-<table cellpadding=3>
+<table cellpadding=3 border=0>
 <tr>
 <th align=right>Program</th>
-<td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td>
+<td colspan=2><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td>
 </tr>
 
 <tr>
 <th align=right>Person</th>
-<td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
+<td colspan=2><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td><textarea rows=4 cols=60 name=confnote>[% reg.confnote %]</textarea></td>
+<td colspan=3><textarea rows=[% note_lines %] cols=60 name=confnote>
+[% note %]
+</textarea></td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<td width=20><input type=submit value="Submit"></td>
+<td colspan=2>
+<span style="margin-left: 1in">
+Click <a href=#
+onclick="getElementById('help').style.display = 'block'; document.form.confnote.focus();"
+>here</a> to see all quick notes.
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td colspan=3>
+<div id=help style="display: none; margin-left: 1in;">
+<table cellpadding=3>
+[% FOR cf IN confnotes %]
+<tr>
+<th align=left valign=top>[% cf.abbr %]</th>
+<td>[% cf.expansion_br %]</td>
+</tr>
+[% END %]
+</table>
+</div>
+</td>
 </tr>
 
 </table>
 </form>
-<script type="text/javascript">document.form.confnote.focus();</script>
+<script type="text/javascript">
+document.form.confnote.focus();
+</script>

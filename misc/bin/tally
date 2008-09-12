@@ -22,5 +22,5 @@ while (<IN>) {
 }
 close IN;
 my $hours = $minutes/60;
-printf "%.2f hours at \$$rate per hour is \$%.2f\n",
+printf "%.5f hours at \$$rate per hour = \$%.2f\n",
        $hours, $hours*$rate;

@@ -3,7 +3,7 @@ use warnings;
 package RetreatCenterDB::Rental;
 use base qw/DBIx::Class/;
 
-use Lookup;
+use Global qw/%string/;
 use Util qw/expand/;
 use Date::Simple qw/date today/;
 
@@ -140,20 +140,20 @@ sub weburl {
     my ($self) = @_;
     my $url = $self->url;
     return "" unless $url;
-    return "<span class='event_website'>$lookup{website}: <a href='http://$url' target='_blank'>$url</a></span><br>";
+    return "<span class='event_website'>$string{website}: <a href='http://$url' target='_blank'>$url</a></span><br>";
 }
 sub email_str {
 	my ($self) = @_;
 	my $email = $self->email;
 	return "" unless $email;
-	return "<span class='event_email'>$lookup{email}: ".
+	return "<span class='event_email'>$string{email}: ".
 		   "<a href='mailto:$email'>$email</a></span><br>";
 }
 sub phone_str {
 	my ($self) = @_;
 	my $phone = $self->phone;
 	return "" unless $phone;
-	"<span class='event_phone'>$lookup{phone}: $phone</span><br>";
+	"<span class='event_phone'>$string{phone}: $phone</span><br>";
 }
 sub title1 {
     my ($self) = @_;
@@ -211,7 +211,7 @@ sub status_td {
     my ($self) = @_;
     my $status = $self->status;
     my $color = sprintf "#%02x%02x%02x",
-                        $lookup{"rental_$status\_color"} =~ m{\d+}g;
+                        $string{"rental_$status\_color"} =~ m{\d+}g;
     return "<td align=center bgcolor=$color>\u$status</td>";
 }
 

@@ -25,7 +25,7 @@ use Util qw/
 /;
 use Date::Simple qw/date today/;
 use Net::FTP;
-use Lookup;
+use Global qw/%string/;
 use File::Copy;
 
 sub index : Private {
@@ -49,7 +49,7 @@ sub create : Local {
     $c->stash->{program_leaders}     = [];
     $c->stash->{program_affils}      = [];
     $c->stash->{section}             = 2;   # Web (a required field)
-    Lookup->init($c);
+    Global->init($c);
     $c->stash->{program}             = {
         tuition      => 0,
         extradays    => 0,
@@ -59,10 +59,10 @@ sub create : Local {
         housecost    => { name => "Default" },  # fake an object!
         ptemplate    => 'default',
         cl_template  => 'default',
-        reg_start    => $lookup{reg_start},
-        reg_end      => $lookup{reg_end},
-        prog_start   => $lookup{prog_start},
-        prog_end     => $lookup{prog_end},
+        reg_start    => $string{reg_start},
+        reg_end      => $string{reg_end},
+        prog_start   => $string{prog_start},
+        prog_end     => $string{prog_end},
     };
     $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
         undef,
@@ -252,7 +252,7 @@ sub create_do : Local {
     my $id = $p->id();
     if ($upload) {
         $upload->copy_to("root/static/images/po-$id.jpg");
-        Lookup->init($c);
+        Global->init($c);
         resize('p', $id);
     }
     # make the FULL version, if requested
@@ -302,7 +302,7 @@ sub view : Local {
     $section ||= 1;
     $c->stash->{section} = $section;
 
-    Lookup->init($c);       # for web_addr if nothing else.
+    Global->init($c);       # for web_addr if nothing else.
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
 
     $c->stash->{booking_program} = $p;
@@ -470,7 +470,7 @@ sub update_do : Local {
     }
     if (my $upload = $c->request->upload('image')) {
         $upload->copy_to("root/static/images/po-$id.jpg");
-        Lookup->init($c);
+        Global->init($c);
         resize('p', $id);
         $hash{image} = "yes";
     }
@@ -793,8 +793,8 @@ sub publish : Local {
     # clear the arena
     system("rm -rf gen_files; mkdir gen_files; mkdir gen_files/pics");
 
-    # and make sure we have initialized %lookup.
-    Lookup->init($c);
+    # and make sure we have initialized %string.
+    Global->init($c);
 
     #
     # get all the programs into an array
@@ -958,15 +958,15 @@ sub publish : Local {
 
     #
     # finally, ftp all generated pages to www.mountmadonna.org
-    # or whereever Lookup says, that is...
+    # or whereever Global says, that is...
     #
-    my $ftp = Net::FTP->new($lookup{ftp_site}, Passive => $lookup{ftp_passive})
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or die "cannot connect to ...";    # not die???
-    $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
+    $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd($lookup{ftp_dir})
+    $ftp->cwd($string{ftp_dir})
         or die "cannot cwd ", $ftp->message; # not die???
-    $ftp->cwd($lookup{ftp_dir2});
+    $ftp->cwd($string{ftp_dir2});
     for my $f ($ftp->ls()) {
         $ftp->delete($f) if $f ne 'pics';
     }
@@ -1000,7 +1000,7 @@ sub publish : Local {
     }
     $ftp->quit();
     chdir "..";
-    $c->stash->{ftp_dir2} = $lookup{ftp_dir2};
+    $c->stash->{ftp_dir2} = $string{ftp_dir2};
     $c->stash->{unlinked} = \@unlinked;
     $c->stash->{template} = "program/published.tt2";
 }
@@ -1008,15 +1008,15 @@ sub publish : Local {
 sub publish_pics : Local {
     my ($self, $c) = @_;
 
-    Lookup->init($c);
-    my $ftp = Net::FTP->new($lookup{ftp_site}, Passive => $lookup{ftp_passive})
+    Global->init($c);
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or die "cannot connect to ...";    # not die???
-    $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
+    $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
     #
     # this assumes pics/ is there...
     #
-    $ftp->cwd("$lookup{ftp_dir}/$lookup{ftp_dir2}/pics")
+    $ftp->cwd("$string{ftp_dir}/$string{ftp_dir2}/pics")
         or die "cannot cwd ", $ftp->message; # not die???
     for my $f ($ftp->ls()) {
         $ftp->delete($f);
@@ -1033,7 +1033,7 @@ sub publish_pics : Local {
     my @unlinked = grep { ! $_->linked }
                    RetreatCenterDB::Program->future_programs($c);
     $c->stash->{unlinked} = \@unlinked;
-    $c->stash->{ftp_dir2} = $lookup{ftp_dir2};
+    $c->stash->{ftp_dir2} = $string{ftp_dir2};
     $c->stash->{template} = "program/published.tt2";
 }
 
@@ -1254,19 +1254,35 @@ sub update_lunch_do : Local {
 # no.   this is the time to change things from the old one.
 sub duplicate : Local {
     my ($self, $c, $id) = @_;
-    my $p = model($c, 'Program')->find($id);
-    $p->set_columns({
+    my $orig_p = model($c, 'Program')->find($id);
+
+    # the image takes some special handling
+    # in the initial duplication dialog we want to indicate
+    # what the image _will_ be if we would take the image
+    # from the original program - but that image (the dup'ed one)
+    # does not yet exist.   We may abort the duplication process,
+    # we may upload a different image for the dup'ed program.
+    # if we want to not have an image at all in the dup'ed program
+    # we'll need to accept the old when creating the dup
+    # and THEN delete it.
+    if ($orig_p->image()) {
+        $c->stash->{dup_image} = $orig_p->image_file();
+    }
+
+    # things that are different from the original:
+    $orig_p->set_columns({
         id      => undef,
         sdate   => "",
         edate   => "",
         lunches => "",
         glnum   => "",
+        image   => "",      # not yet
     });
     for my $w (qw/
         sbath collect_total kayakalpa retreat
         economy webready quad linked
     /) {
-        $c->stash->{"check_$w"}  = ($p->$w)? "checked": "";
+        $c->stash->{"check_$w"}  = ($orig_p->$w)? "checked": "";
     }
     # get all cancellation policies
     $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
@@ -1293,14 +1309,21 @@ sub duplicate : Local {
     $c->stash->{section}             = 2;   # Web (a required field)
     $c->stash->{edit_gl} = 0;
 
-    $c->stash->{program} = $p;      # with modifed columns
+    $c->stash->{program} = $orig_p;      # with modifed columns
     $c->stash->{form_action} = "duplicate_do/$id";
+    $c->stash->{dup_message} = " - <span style='color: red'>Duplication</span>";
+        # forgive me for putting html/css here!
+        # i didn't want the dash '-' to be red
+        # and the dash shouldn't be there if there's no message...
+        # I could have done a conditional in the template
+        # but that would be more complex, yes?
     $c->stash->{template}    = "program/create_edit.tt2";
 }
 
 #
 # duplicated code here from create_do - can we not repeat ourself - DRY???
-# should we?
+# should we?   let's not worry about that for now.
+# there are several extra things that a duplication requires.
 #
 sub duplicate_do : Local {
     my ($self, $c, $old_id) = @_;
@@ -1314,23 +1337,49 @@ sub duplicate_do : Local {
 
     $hash{reg_count} = 0;       # otherwise it will not increment
 
-    my $upload = $c->request->upload('image');
+    # get the old program and the old summary
+    my ($old_prog)    = model($c, 'Program')->find($old_id);
+    my ($old_summary) = $old_prog->summary();
+
     my $sum = model($c, 'Summary')->create({
-        date_updated => today()->as_d8(),
+        $old_summary->get_columns(),        # to dup the old ...
+        id => undef,                        # with a new id
+        date_updated => today()->as_d8(),   # and new update status info
         who_updated  => $c->user->obj->id,
         time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });
-    my $p = model($c, 'Program')->create({
+
+    # the image takes special handling
+    # if a new one is provided, take that.
+    # otherwise use the old one, if any.
+    #
+    my $upload = $c->request->upload('image');
+
+    # now we can create the new dup'ed program
+    my $new_p = model($c, 'Program')->create({
         summary_id => $sum->id,
-        image      => $upload? "yes": "",
+        image      => ($upload || $old_prog->image())? "yes": "",
         %hash,
     });
-    my $id = $p->id();
+
+    my $new_id = $new_p->id();
+
+    # mess with the new image, if any.
     if ($upload) {
-        $upload->copy_to("root/static/images/po-$id.jpg");
-        Lookup->init($c);
-        resize('p', $id);
+        $upload->copy_to("root/static/images/po-$new_id.jpg");
+        Global->init($c);
+        resize('p', $new_id);
     }
+    elsif ($new_p->image()) {
+        # complicated! wake up.
+        my $path = "root/static/images";
+        my $suf = (-f "$path/po-$old_id.jpg")? "jpg": "gif";
+        for my $let (qw/ b o th /) {
+            copy "$path/p$let-$old_id.$suf",
+                 "$path/p$let-$new_id.$suf";
+        }
+    }
+
     # make the FULL version, if requested
     # it _will_ have an id = normal id + 1
     if ($hash{extradays}) {
@@ -1347,7 +1396,7 @@ sub duplicate_do : Local {
             brdesc    => "",
             ptemplate => "",
             url       => "",
-            tuition   => $p->full_tuition,
+            tuition   => $new_p->full_tuition,
             extradays => 0,
             full_tuition => 0,
             deposit   => 0,
@@ -1368,7 +1417,7 @@ sub duplicate_do : Local {
     for my $lp (@leader_programs) {
         model($c, 'LeaderProgram')->create({
             l_id => $lp->l_id(),
-            p_id => $id,
+            p_id => $new_id,
         });
     }
     my @affil_programs = model($c, 'AffilProgram')->search({
@@ -1377,10 +1426,10 @@ sub duplicate_do : Local {
     for my $ap (@affil_programs) {
         model($c, 'AffilProgram')->create({
             a_id => $ap->a_id(),
-            p_id => $id,
+            p_id => $new_id,
         });
     }
-    $c->response->redirect($c->uri_for("/program/view/$id"));
+    $c->response->redirect($c->uri_for("/program/view/$new_id"));
 }
 
 1;

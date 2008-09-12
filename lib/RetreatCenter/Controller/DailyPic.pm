@@ -3,12 +3,18 @@ use warnings;
 package RetreatCenter::Controller::DailyPic;
 use base 'Catalyst::Controller';
 
+use lib "../..";
+
 use GD;
 use Date::Simple qw/
     date
     today
 /;
-use Lookup;
+use Global qw/
+    %string
+    %clust_color
+    %houses_in
+/;
 use Util qw/
     model
 /;
@@ -18,21 +24,23 @@ sub index : Local {
 }
 
 sub show : Local {
-    my ($self, $c, $date) = @_;
+    my ($self, $c, $type, $date) = @_;
 
-    Lookup->init($c);
+    Global->init($c);
     my $today = today();
-    my $last_date = date($lookup{sys_last_config_date});
-    my ($dt, $clusters);
+    my $last_date = date($string{sys_last_config_date});
+    my $dt;
     if ($date) {
         $dt = date($date);
     }
     elsif (my $fdate = $c->request->params->{date}) {
         $dt = date($fdate);
         if ((! $dt)
-            || ($dt < $today)
-            || ($dt->as_d8() gt $last_date)
+#            || ($dt < $today)      # how far backwards in time can we go???
+            || ($dt->as_d8() > $last_date)
         ) {
+            # ??? better error message
+            # in case it is beyond the last date?
             $c->stash->{mess} = "Illegal date: $fdate";
             $c->stash->{template} = "gen_error.tt2";
             return;
@@ -41,59 +49,25 @@ sub show : Local {
     else {
         $dt = $today;
     }
-
-    my @clusters = ();
-
-    my @where = ();
-    if ($clusters = $c->request->params->{clusters}) {
-        if (my @clust_params = split m{\s+}, $clusters) {
-            my @cluster_ids = ();
-            my @bad_names = ();
-            for my $name (@clust_params) {
-                if (my (@cl) = model($c, 'Cluster')->search({
-                                   name => { -like => "%$name%" },
-                               })
-                ) {
-                    push @clusters, @cl;
-                    push @cluster_ids, map { $_->id } @cl;
-                }
-                else {
-                    push @bad_names, $name;
-                }
-            }
-            if (@bad_names) {
-                $c->stash->{mess} = "Unknown clusters: @bad_names";
-                $c->stash->{template} = "gen_error.tt2";
-                return;
-            }
-            @where = (
-                cluster_id => { -in => \@cluster_ids },
-            );
-        }
-    }
-    else {
-        @clusters = model($c, 'Cluster')->all();
-    }
     my $d8 = $dt->as_d8();
 
+    # first determine the size of the entire image
+    # by looking at the coordinates and codes of the houses.
     my ($width, $height) = (0, 0);
-    my @houses = model($c, 'House')->search({
-        inactive => '',    
-        @where,
-    });
+    my @houses = @{ $houses_in{$type} };
     for my $h (@houses) {
-        my $wd = $h->x + $h->max * $lookup{house_width};
-        my $code = $h->disp_code;
-        if (substr($code, 0, 1) eq 'R') {
+        my $wd = $h->x + $h->max * $string{house_width} + 6;
+        my $disp_code = $h->disp_code;
+        if (substr($disp_code, 0, 1) eq 'R') {
             my $name = $h->name;
-            if ($code =~ m{t}) {
+            if ($disp_code =~ m{t}) {
                 $name =~ s{^\S*\s*}{};
             }
-            $wd += length($name)*$lookup{house_let};
+            $wd += length($name)*$string{house_let};
         }
-        my $ht = $h->y + $lookup{house_height};
-        if (substr($code, 0, 1) eq 'B') {
-            $ht += $lookup{house_height};
+        my $ht = $h->y + $string{house_height};
+        if (substr($disp_code, 0, 1) eq 'B') {
+            $ht += $string{house_height};
         }
         if ($wd > $width) {
             $width = $wd;
@@ -103,31 +77,40 @@ sub show : Local {
         }
     }
     # margin???
-    $width += $lookup{house_height};
-    $height += $lookup{house_height};
-
-    # I can't imagine cluster labels extending beyond
-    # the houses in the cluster.  right?
+    $width += $string{house_height};
+    $height += $string{house_height};
 
     my $dp = GD::Image->new($width+1, $height+1);
     my $white = $dp->colorAllocate(255,255,255);    # 1st color = background
     my $black = $dp->colorAllocate(0, 0, 0);
     $dp->rectangle(0, 0, $width, $height, $black);
 
-    # cluster labels
-    for my $cl (@clusters) {
-        my $x = $cl->x;
-        my $y = $cl->y;
-        if ($x && $y) {
-            $dp->string(gdGiantFont, $x, $y, $cl->name, $black);
-        }
-    }
+    # we have the array_ref of colors for each color
+    # no need to go to the database
+    # but each new GD::Image must allocate its own colors ...
+    # so:
+    my %clust_col = map { $_ => $dp->colorAllocate(@{$clust_color{$_}}) }
+                    keys %clust_color;
 
     my $dp_map = "";    
-    my %clust_color;
-    for my $cl (@clusters) {
-        $clust_color{$cl->id} = $dp->colorAllocate($cl->color =~ m{\d+}g);
+    #
+    # with one SQL request get all the needed config records
+    # into a hash with keys of the house id.
+    # ALSO??? also restrict it to config records where cur > 0?
+    # if ! exists $config{$house_id} then we know it is empty.
+    # sure!
+    #
+    my @house_ids = map { $_->id() } @houses;
+    my %config;
+    for my $cf (model($c, 'Config')->search({
+                    house_id => { -in => \@house_ids },
+                    the_date => $d8,
+                    cur      => { '>', 0 },
+                })
+    ) {
+        $config{$cf->house_id()} = $cf;
     }
+    HOUSE:
     for my $h (@houses) {
         my $x1 = $h->x;
         my $y1 = $h->y;
@@ -138,98 +121,52 @@ sub show : Local {
         if (substr($disp_code, 1, 1) eq 't') {
             $tname =~ s{^\S+\s*}{};        
         }
-        $disp_code = substr($disp_code, 0, 1);
-        my $x2 = $x1 + $h->max * $lookup{house_width} + 3;
-        my $y2 = $y1 + $lookup{house_height};
+        my $code = substr($disp_code, 0, 1);
+        my ($offset) = $disp_code =~ m{(\d+)};
+        $offset |= 0;
+        my $x2 = $x1 + $h->max * $string{house_width} + 6;
+        my $y2 = $y1 + $string{house_height};
         $dp->rectangle($x1, $y1, $x2, $y2, $black);
         $dp->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
-                             $clust_color{$h->cluster_id});
+                             $clust_col{$h->cluster_id});
         # below we have a cool use of the ?: operator!  (what is its name?)
         $dp->string(gdGiantFont,
-            ($disp_code eq 'L')? ($x1-length($tname)*$lookup{house_let}-2,$y1+3)
-           :($disp_code eq 'R')? ($x2+3, $y1+3)
-           :($disp_code eq 'A')? ($x1, $y1-$lookup{house_height}+3)
-           :($disp_code eq 'B')? ($x1, $y1+$lookup{house_height}+3)
-           :                     (0, 0),    # shouldn't happen
+            ($code eq 'L')? ($x1-length($tname)*$string{house_let}-2,$y1+3)
+           :($code eq 'R')? ($x2+3, $y1+3)
+           :($code eq 'A')? ($x1-$offset, $y1-$string{house_height}+3)
+           :($code eq 'B')? ($x1, $y1+$string{house_height}+3)
+           :                (0, 0),    # shouldn't happen
                     $tname, $black);
-        # check the config table for this house, this date
-        # we _will_ find a record.  right?
-        my ($cf) = model($c, 'Config')->search({
-            house_id => $hid,
-            the_date => $d8,
-        });
+        my ($sex, $cur, $curmax);
+        if (exists $config{$hid}) {
+            my $cf = $config{$hid};
+            $sex    = $cf->sex();
+            $cur    = $cf->cur();
+            $curmax = $cf->curmax();
+        }
+        else {
+            $sex = 'U';     # doesn't matter
+            $cur = 0;
+            $curmax = $h->max();
+        }
         # encode the config record in a string
-        my $code = ($cf->sex x $cf->cur)
-                 . ('.' x ($cf->curmax - $cf->cur))
-                 . ('|' x ($h->max - $cf->curmax))
-                 ;
+        my $conf_code = ($sex x $cur)
+                      . ($string{empty_bed_char} x ($curmax - $cur))
+                      . ('|' x ($h->max() - $curmax))
+                      ;
         $dp->string(gdGiantFont,
                     $x1+3, $y1+3,
-                    $code, $black);
-        if ($cf->cur == 0) {
+                    $conf_code, $black);
+        if ($cur == 0) {
             next;       # assume that the config and the
                     # Registrations/RentalBookings are in synch.
                     # if not, we're screwed.
                     # this is why I made hcck!
         }
-        # prepare the overlib popups
-        #
-        # registrations?
-        # the end date is strictly less because
-        # we reserve housing up to the night before their end date.
-        #
-        # so:
-        #      date_start <= $d8 < date_end
-        #
-        my @regs = model($c, 'Registration')->search({
-            house_id => $hid,
-            date_start => { '<=', $d8 },
-            date_end   => { '>',  $d8 },
-        });
-        my $reg_names = "";
-        for my $r (@regs) {
-            $reg_names .= "<tr>"
-                       . "<td>"
-                       . "<a target=happening class=pr_links href="
-                       . $c->uri_for("/registration/view/" . $r->id)
-                       . ">"
-                       . $r->person->last . ", " . $r->person->first
-                       . "</a>"
-                       . "<td>" . $r->program->name . "</td>"
-                       . "</td>"
-                       . "</tr>";
-        }
-        $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.
-                                    # can't use &apos; :( why?
-        if ($reg_names) {
-            $dp_map .= "<area shape=rect coords='$x1, $y1, $x2, $y2'"
-. qq! onclick="return overlib('<center>$name</center><p><table cellpadding=2>$reg_names</table>',!
-. qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
-. qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2)"!
-. qq! onmouseout="return nd();">\n!;
-        }
-        else {
-            # no registrations - it may/must have been booked
-            # for a rental.
-            my @rentbook = model($c, 'RentalBooking')->search({
-                house_id => $hid,
-                date_start => { '<=', $d8 },
-                date_end   => { '>=', $d8 },
-            });
-            for my $rb (@rentbook) {      # max of one...
-                $dp_map .= "<area shape=rect coords='$x1, $y1, $x2, $y2'"
-. qq! onclick="return overlib('<center>$name</center><p><table cellpadding=2>!
-. "<tr><td><a target=happening class=pr_links href="
-. $c->uri_for("/rental/view/" . $rb->rental_id . "/3")
-. ">"
-. $rb->rental->name . " - " . $rb->h_type
-. "</a></td></tr>"
-. qq! </table>',!
-. qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
-. qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2)"!
-. qq! onmouseout="return nd();">\n!;
-            }
-        }
+        $dp_map .= "<area shape=rect coords='$x1, $y1, $x2, $y2'"
+                . qq! onclick="Send('$sex', $hid);"!
+                . qq! onmouseout="return nd();">\n!
+                ;
     }
     # write the image to be used shortly
     open my $imf, ">", "root/static/images/dailypic.png"
@@ -238,9 +175,10 @@ sub show : Local {
     close $imf;
     my $image = $c->uri_for("/static/images/dailypic.png");
     my $back = $dt - 1;
-    if ($back < $today) {
-        $back = $today;
-    }
+    # how far back can we go???
+    #if ($back < $today) {
+    #    $back = $today;
+    #}
     my $next = $dt + 1;
     if ($next > $last_date) {
         $next = $last_date;
@@ -265,9 +203,9 @@ sub show : Local {
             push @events, {
                 sdate => date($ev->sdate, "%m/%d"),
                 edate => date($ev->edate, "%m/%d"),
-                name  => $ev->name,
+                name  => $ev->name(),
                 type  => $ev_type,
-                id    => $ev->id,
+                id    => $ev->id(),
             };
         }
     }
@@ -286,27 +224,74 @@ $event_table
 </table>
 EOT
     }
+    my $links = "";
+    for my $t (1 .. 5) {
+        my $s = $string{"dp_type$t"};
+        next if $s eq 'future use';
+        my $style = "";
+        if ($type eq $s) {
+            $style = "style='font-weight: bold'";
+        }
+        $links .= "<a class=details $style href='/dailypic/show/$s/$d8'>\u$s</a>\n";
+    }
     my $html = <<EOH;
 <head>
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
-<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+<script type="text/javascript" src="/static/js/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
+<script type="text/javascript">
+
+// prepare for an Ajax call:
+var xmlhttp = false;
+var ua = navigator.userAgent.toLowerCase();
+if (!window.ActiveXObject)
+    xmlhttp = new XMLHttpRequest();
+else if (ua.indexOf('msie 5') == -1)
+    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+else
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+function Get() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        return overlib(xmlhttp.responseText,
+                       STICKY, MOUSEOFF, TEXTFONT,
+                       'Verdana', TEXTSIZE, 5, WRAP, CELLPAD, 7,
+                       FGCOLOR, '#FFFFFF', BORDER, 2)
+    }
+}
+
+function Send(sex, house_id) {
+    var url = 'http://localhost:3000/registration/who_is_there/'
+            + sex
+            + '/'
+            + house_id
+            + '/'
+            + $d8
+            ;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = Get;
+    xmlhttp.send(null);
+
+    return true;
+}
+</script>
 </head>
 <body>
 <span class=hdr>$dt_fmt</span>
 <p>
-<form method=POST action="/dailypic/show">
-<a class=details href="/dailypic/show/$back?clusters=$clusters">Back</a>
-<a class=details href="/dailypic/show/$next?clusters=$clusters">Next</a>
+<form method=POST action="/dailypic/show/$type">
+<a class=details href="/dailypic/show/$type/$back">Back</a>
+<a class=details href="/dailypic/show/$type/$next">Next</a>
 <span class=details> Date <input type=text name=date size=10 value='$dt'></span>
-<span class=details>Clusters <input type=text name=clusters size=15 value='$clusters'></span>
 <input class=go type=submit value="Go">
+$links
 </form>
 <p>
 <img style="margin-left: .5in;" src=$image usemap=#dailypic>
 $event_table
 <map name=dailypic>
-$dp_map
-</map>
+$dp_map</map>
 </body>
 EOH
     $c->res->output($html);

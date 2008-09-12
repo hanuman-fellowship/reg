@@ -38,8 +38,8 @@ print "prog max = $prog_max\n";
 
 my $max = ($prog_max > $rent_max)? $prog_max: $rent_max;
 $max = date($max);
-print "max = $max\n";
-my $today = today();
+print "  max = $max\n";
+my $today = today()-30;
 
 my $ins_config = $dbh->prepare("
     insert into config
@@ -57,7 +57,7 @@ while ($dt <= $max) {
         ++$n;
     }
     ++$dt;
-    print "$n\t$dt\r";
+    printf "%4d\t$dt\r", $n;
 }
 print "\ninserted $n config records\n";
 $dbh->do("update string set value = $d8 where the_key = 'sys_last_config_date'");

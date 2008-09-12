@@ -13,11 +13,15 @@ use Util qw/
     digits
     model
     trim
+    etrim
     empty
     email_letter
     type_max
+    lines
+    link_share
+    normalize
 /;
-use Lookup;
+use Global qw/%string/;
     # damn awkward to keep this thing initialized... :(
     # is there no way to do this better???
 use Template;
@@ -107,13 +111,13 @@ sub list_online : Local {
 sub grab_new : Local {
     my ($self, $c) = @_;
 
-    Lookup->init($c);
-    my $ftp = Net::FTP->new($lookup{ftp_site}, Passive => $lookup{ftp_passive})
-        or die "cannot connect to $lookup{ftp_site}";    # not die???
-    $ftp->login($lookup{ftp_login}, $lookup{ftp_password})
+    Global->init($c);
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd($lookup{ftp_transactions})
-        or die "cannot cwd to $lookup{ftp_transactions} ", $ftp->message;
+    $ftp->cwd($string{ftp_transactions})
+        or die "cannot cwd to $string{ftp_transactions} ", $ftp->message;
     $ftp->ascii();
     # don't do these mkdirs when things settle down???
     mkdir "root/static/online"      unless -d "root/static/online";
@@ -143,30 +147,39 @@ sub list_reg_name : Local {
     }
     $c->stash->{pat} = $pat;
     my $pr = model($c, 'Program')->find($prog_id);
+    $c->stash->{daily_pic_date} = $pr->sdate();
     $c->stash->{program} = $pr;
     # ??? dup'ed code in matchreg and list_reg_name
     # DRY??? don't repeat yourself!
-    my @regs = map {
-                   $_->[2]
-               }
-               sort {
-                   $a->[0] cmp $b->[0] ||
-                   $a->[1] cmp $b->[1]
-               }
-               grep {
-                   $all ||
-                   (
-                       (!$_->[2]->cancelled) &&
-                       (!($_->[2]->arrived) || $_->[2]->balance > 0) &&
-                       $_->[0] =~ m{^$pref_last}i  &&
-                       $_->[1] =~ m{^$pref_first}i
-                   )
-               }
-               map {
-                   my $p = $_->person;
-                   [ $p->last, $p->first, $_ ]
-               }
-               $pr->registrations;
+    my @name_match = ();
+    my @all = ();
+    if ($pref_last) {
+        push @name_match, 'person.last' => { like => "$pref_last%"  };
+    }
+    if ($pref_first) {
+        push @name_match, 'person.first' => { like => "$pref_first%" };
+    }
+    if (!($all || @name_match)) {
+        @all = (
+            -or => [
+                arrived => '',
+                balance => { '>', 0 },
+            ],
+            cancelled => '',
+        );
+    }
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+            @name_match,
+            @all,
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first /],
+            prefetch => [qw/ person /],   
+        }
+    );
     if (@regs == 1) {
         my $r = $regs[0];
         my $pr = $r->program;
@@ -183,7 +196,7 @@ sub list_reg_name : Local {
         }
         return;
     }
-    Lookup->init($c);
+    Global->init($c);
     $c->stash->{regs} = _reg_table(\@regs);
     $c->stash->{other_sort} = "list_reg_post";
     $c->stash->{other_sort_name} = "By Postmark";
@@ -197,18 +210,20 @@ sub list_reg_post : Local {
 
     my $pr = model($c, 'Program')->find($prog_id);
     $c->stash->{program} = $pr;
-    my @regs = map {
-                   $_->[1]
-               }
-               sort {
-                   $a->[0] cmp $b->[0]
-               }
-               map { [ $_->date_postmark . $_->time_postmark, $_ ] }
-               $pr->registrations;
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ date_postmark time_postmark /],
+            prefetch => [qw/ person /],   
+        }
+    );
     for my $r (@regs) {
         $r->{date_mark} = date($r->date_postmark);
     }
-    Lookup->init($c);
+    Global->init($c);
     $c->stash->{regs} = _reg_table(\@regs, 1);
     $c->stash->{other_sort} = "list_reg_name";
     $c->stash->{other_sort_name} = "By Name";
@@ -456,7 +471,7 @@ sub rest_of_reg {
     #
     # the person's affils get _added to_ according
     # to the program affiliations.
-    # make a quick lookup table of the person's affil ids.
+    # make a quick string table of the person's affil ids.
     #
     # is this being done too early?
     # should we wait until create_do()?
@@ -540,7 +555,7 @@ sub rest_of_reg {
     );
     # order is important:
     my $h_type_opts = "<option value=unknown>Unknown\n";
-    Lookup->init($c);     # get %lookup ready.
+    Global->init($c);     # get %string ready.
     HTYPE:
     for my $ht (qw(
         com
@@ -564,19 +579,22 @@ sub rest_of_reg {
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
 
         my $selected = ($ht eq $house1)? " selected": "";
-        my $htdesc = $lookup{$htname};
+        my $htdesc = $string{$htname};
         $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
         $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
     }
     $c->stash->{h_type_opts} = $h_type_opts;
+    $c->stash->{confnotes} = [
+        model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
+    ];
 
     $c->stash->{template} = "registration/create.tt2";
 }
 
 my @mess;
 my %hash;
-my @dates;
+my %dates;
 my $taken;
 my $tot_prog_days;
 my $prog_days;
@@ -594,7 +612,7 @@ sub _get_data {
     #    "If you have a date in your program
     #     you have a bug in your program."
     #
-    @dates = ();
+    %dates = ();
     @mess = ();
     $extra_days = 0;
     my $sdate = date($pr->sdate);       # personal retreats???
@@ -608,7 +626,7 @@ sub _get_data {
         $date_start = date($hash{date_start});
         Date::Simple->relative_date();
         if ($date_start) {
-            push @dates, date_start => $date_start->as_d8();
+            $dates{date_start} = $date_start->as_d8();
             if ($date_start < $sdate) {
                 $extra_days += $sdate - $date_start;
             }
@@ -621,7 +639,7 @@ sub _get_data {
         }
     }
     else {
-        push @dates, date_start => '';
+        $dates{date_start} = '';
     }
     my $date_end;
     if ($hash{date_end}) {
@@ -635,7 +653,7 @@ sub _get_data {
         $date_end = date($hash{date_end});
         Date::Simple->relative_date();
         if ($date_end) {
-            push @dates, date_end => $date_end->as_d8();
+            $dates{date_end} = $date_end->as_d8();
             if ($date_end > $edate) {
                 $extra_days += $date_end - $edate;
             }
@@ -648,7 +666,7 @@ sub _get_data {
         }
     }
     else {
-        push @dates, date_end => '';
+        $dates{date_end} = '';
     }
 
     $taken = 0;
@@ -701,7 +719,7 @@ sub create_do : Local {
         return;
     }
     my $pr = model($c, 'Program')->find($hash{program_id});
-    @dates = transform_dates($pr, @dates);
+    %dates = transform_dates($pr, %dates);
     my $reg = model($c, 'Registration')->create({
         person_id     => $hash{person_id},
         program_id    => $hash{program_id},
@@ -713,17 +731,17 @@ sub create_do : Local {
         adsource      => $hash{adsource},
         carpool       => $hash{carpool},
         hascar        => $hash{hascar},
-        comment       => trim($hash{comment}),
+        comment       => $hash{comment},
         h_type        => $hash{h_type},
         h_name        => $hash{h_name},
         kids          => $hash{kids},
-        confnote      => trim($hash{confnote}),
+        confnote      => _expand($c, $c->request->params->{confnote}),
         status        => $hash{status},
         nights_taken  => $taken,
         free_prog_taken => $hash{free_prog},
         cancelled     => '',    # to be sure
         arrived       => '',    # ditto
-        @dates,         # optionally
+        %dates,         # optionally
     });
     my $reg_id = $reg->id();
 
@@ -796,8 +814,8 @@ sub create_do : Local {
                html       => $html, 
                subject    => "Notification of Registration for " . $pr->title,
                to         => $pr->notify_on_reg,
-               from       => $lookup{from},
-               from_title => $lookup{from_title},
+               from       => $string{from},
+               from_title => $string{from_title},
         );
         model($c, 'RegHistory')->create({
             @who_now,
@@ -830,7 +848,7 @@ sub create_do : Local {
 sub _compute {
     my ($c, $reg, @who_now) = @_;
 
-    Lookup->init($c);
+    Global->init($c);
     my $pr  = $reg->program;
     my $mem = $reg->person->member;
 
@@ -856,17 +874,17 @@ sub _compute {
             });
         }
         else {
-            my $amount = ($lookup{spons_tuit_disc}/100)*$tuition;
+            my $amount = int(($string{spons_tuit_disc}/100)*$tuition);
             my $maxed = "";
-            if ($amount > $lookup{max_tuit_disc}) {
-                $amount = $lookup{max_tuit_disc};
-                $maxed = " - to a max of \$$lookup{max_tuit_disc}";
+            if ($amount > $string{max_tuit_disc}) {
+                $amount = $string{max_tuit_disc};
+                $maxed = " - to a max of \$$string{max_tuit_disc}";
             }
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
                 amount    => -1*$amount,
-                what      => "$lookup{spons_tuit_disc}% Tuition discount for "
+                what      => "$string{spons_tuit_disc}% Tuition discount for "
                             . $reg->status . " member$maxed",
             });
         }
@@ -944,22 +962,22 @@ sub _compute {
         });
     }
 	if (!$life_free && $housecost->type eq "Perday") {
-        if ($prog_days + $extra_days >= $lookup{disc1days}) {
+        if ($prog_days + $extra_days >= $string{disc1days}) {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
-                amount    => -1*(int(($lookup{disc1pct}/100)*$tot_h_cost)),
-                what      => "$lookup{disc1pct}% Lodging discount for"
-                            ." programs >= $lookup{disc1days} days",
+                amount    => -1*(int(($string{disc1pct}/100)*$tot_h_cost)),
+                what      => "$string{disc1pct}% Lodging discount for"
+                            ." programs >= $string{disc1days} days",
             });
         }
-        if ($prog_days + $extra_days >= $lookup{disc2days}) {
+        if ($prog_days + $extra_days >= $string{disc2days}) {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
-                amount    => -1*(int(($lookup{disc2pct}/100)*$tot_h_cost)),
-                what      => "$lookup{disc2pct}% Lodging discount for"
-                            ." programs >= $lookup{disc2days} days",
+                amount    => -1*(int(($string{disc2pct}/100)*$tot_h_cost)),
+                what      => "$string{disc2pct}% Lodging discount for"
+                            ." programs >= $string{disc2days} days",
             });
         }
 	}
@@ -1031,8 +1049,8 @@ sub _compute {
     # bringing your kids during your free program - they still pay.
     #
     if (my $kids = $reg->kids) {
-        my $min_age = $lookup{min_kid_age};
-        my $max_age = $lookup{max_kid_age};
+        my $min_age = $string{min_kid_age};
+        my $max_age = $string{max_kid_age};
         my @ages = $kids =~ m{(\d+)}g;
         @ages = grep { $min_age <= $_ && $_ <= $max_age } @ages;
         my $nkids = @ages;
@@ -1041,9 +1059,9 @@ sub _compute {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
-                amount    => int($nkids*(($lookup{kid_disc}/100)*$tot_h_cost)),
+                amount    => int($nkids*(($string{kid_disc}/100)*$tot_h_cost)),
                 what      => "$nkids kid$plural aged $min_age-$max_age"
-                            ." - $lookup{kid_disc}% for lodging",
+                            ." - $string{kid_disc}% for lodging",
             });
         }
     }
@@ -1051,7 +1069,7 @@ sub _compute {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
-            amount    => $lookup{ceu_lic_fee},
+            amount    => $string{ceu_lic_fee},
             what      => "CEU License fee",
         });
     }
@@ -1082,8 +1100,8 @@ sub send_conf : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     my $pr = $reg->program;
-    Lookup->init($c);
-    my $htdesc = $lookup{$reg->h_type};
+    Global->init($c);
+    my $htdesc = $string{$reg->h_type};
     $htdesc =~ s{\s*\(.*\)}{};           # don't need this
     $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
     my $personal_retreat = $pr->title =~ m{personal\s*retreat}i;
@@ -1144,8 +1162,8 @@ sub send_conf : Local {
            html       => $html, 
            subject    => "Confirmation of Registration for " . $pr->title,
            to         => $reg->person->email,
-           from       => $lookup{from},
-           from_title => $lookup{from_title},
+           from       => $string{from},
+           from_title => $string{from_title},
     );
     my @who_now = get_now($c, $id);
     if ($reg->confnote) {
@@ -1158,13 +1176,17 @@ sub send_conf : Local {
 }
 
 sub view : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $reg_id) = @_;
 
-    my $r = $c->stash->{reg} = model($c, 'Registration')->find($id);
-    my $p = $c->stash->{program} = $r->program;
-    $c->stash->{non_pr} = $p->name !~ m{personal retreat}i;
+    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($reg_id);
+    my $prog = $c->stash->{program} = $reg->program;
+    $c->stash->{comment} = link_share($c, $prog->id(), $reg->comment());
+    if ($prog->footnotes =~ m{[*]}) {
+        $c->stash->{ceu} = 1;
+    }
+    $c->stash->{non_pr} = $prog->name !~ m{personal retreat}i;
+    $c->stash->{daily_pic_date} = $reg->date_start();
     my @files = <root/static/online/*>;
-    $c->stash->{daily_pic_date} = $r->date_start();
     $c->stash->{online} = scalar(@files);
     $c->stash->{template} = "registration/view.tt2";
 }
@@ -1233,8 +1255,8 @@ sub cancel : Local {
     my $today = today();
     $c->stash->{today} = $today;
     $c->stash->{ndays} = $reg->program->sdate_obj - $today;
-    Lookup->init($c);
-    $c->stash->{amount} = $lookup{credit_amount};
+    Global->init($c);
+    $c->stash->{amount} = $string{credit_amount};
     $c->stash->{template} = "registration/credit_confirm.tt2";
 }
 
@@ -1351,8 +1373,8 @@ sub cancel_do : Local {
             subject => "Cancellation of Registration for "
                       . $reg->program->title,
             to      => $reg->person->email,
-            from    => $lookup{from},
-            from_title => $lookup{from_title},
+            from    => $string{from},
+            from_title => $string{from_title},
         );
         $c->response->redirect($c->uri_for("/registration/view/$id"));
     }
@@ -1461,26 +1483,36 @@ sub matchreg : Local {
         $pref_first = "";
     }
     my $pr = model($c, 'Program')->find($prog_id);
-# ??? very inefficient - look at DBIC_TRACE output
-    my @regs = map {
-                   $_->[2]
-               }
-               sort {
-                   $a->[0] cmp $b->[0] ||
-                   $a->[1] cmp $b->[1]
-               }
-               grep {
-                   (!$_->[2]->cancelled) &&
-                   (!($_->[2]->arrived) || $_->[2]->balance > 0) &&
-                   $_->[0] =~ m{^$pref_last}i  &&
-                   $_->[1] =~ m{^$pref_first}i
-               }
-               map {
-                   my $p = $_->person;
-                   [ $p->last, $p->first, $_ ]
-               }
-               $pr->registrations;
-    Lookup->init($c);
+    my @name_match = ();
+    my @all = ();
+    if ($pref_last) {
+        push @name_match, 'person.last' => { like => "$pref_last%"  };
+    }
+    if ($pref_first) {
+        push @name_match, 'person.first' => { like => "$pref_first%" };
+    }
+    if (! @name_match) {
+        @all = (
+            cancelled      => '',
+            -or => [
+                arrived        => '',
+                balance => { '>', 0 },
+            ]
+        );
+    }
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+            @name_match,
+            @all,
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    Global->init($c);
     $c->res->output(_reg_table(\@regs));
 }
 
@@ -1558,7 +1590,7 @@ EOH
 <span class=rname1><a href='/registration/view/$id'>$name</a></span></a>
 </td>
 
-<td>
+<td align=right>
 $pay_balance
 </td>
 
@@ -1601,16 +1633,20 @@ EOH
 sub update_confnote : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $cn = $c->stash->{note} = $reg->confnote();
+    $c->stash->{note_lines} = lines($cn) + 3;
+    $c->stash->{confnotes} = [
+        model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
+    ];
     $c->stash->{template} = "registration/confnote.tt2";
 }
 sub update_confnote_do : Local{
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    my $confnote = trim($c->request->params->{confnote});
     $reg->update({
-        confnote => $confnote,
+        confnote => _expand($c, $c->request->params->{confnote}),
     });
     _reg_hist($c, $id, "Confirmation Note updated.");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -1618,16 +1654,17 @@ sub update_confnote_do : Local{
 sub update_comment : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $comment = $c->stash->{comment} = $reg->comment();
+    $c->stash->{comment_lines} = lines($comment) + 3;
     $c->stash->{template} = "registration/comment.tt2";
 }
 sub update_comment_do : Local{
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    my $comment = trim($c->request->params->{comment});
     $reg->update({
-        comment => $comment,
+        comment => etrim($c->request->params->{comment}),
     });
     _reg_hist($c, $id, "Comment updated.");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -1648,7 +1685,7 @@ sub update : Local {
         $c->stash->{ceu} = 1;
     }
     my $h_type_opts = "<option value=unknown>Unknown\n";
-    Lookup->init($c);     # get %lookup ready.
+    Global->init($c);     # get %string ready.
     HTYPE:
     for my $htname (qw(
         commuting
@@ -1670,7 +1707,7 @@ sub update : Local {
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
 
         my $selected = ($htname eq $reg->h_type)? " selected": "";
-        my $htdesc = $lookup{$htname};
+        my $htdesc = $string{$htname};
         $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
         $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
@@ -1690,6 +1727,11 @@ sub update : Local {
             $c->stash->{free_prog} = 1;
         }
     }
+    $c->stash->{note_lines}    = lines($reg->confnote()) + 3;
+    $c->stash->{comment_lines} = lines($reg->comment ()) + 3;
+    $c->stash->{confnotes} = [
+        model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
+    ];
     $c->stash->{template} = "registration/edit.tt2";
 }
 
@@ -1761,15 +1803,18 @@ sub update_do : Local {
         });
     }
 
-    @dates = transform_dates($pr, @dates);
-    if ($reg->house_id != 0
-        && ($hash{h_type} ne $reg->h_type
+    %dates = transform_dates($pr, %dates);
+    if ($reg->house_id()
+        && (($hash{h_type} ne $reg->h_type())
             ||
-            $hash{date_start} != $reg->date_start
+            ($dates{date_start} != $reg->date_start())
             ||
-            $hash{date_end}   != $reg->date_end
+            ($dates{date_end}   != $reg->date_end())
            )
         ) {
+#$c->log->info("here -" . $hash{h_type} . "- -" . $reg->h_type() . "-");
+#$c->log->info("start -" . $hash{date_start} . "- -" . $reg->date_start() . "-");
+#$c->log->info("end -" . $hash{date_end} . "- -" . $reg->date_end() . "-");
         # housing type has changed!  and we have a prior house.
         # before we do the update of the reg record
         # we must first vacate the house and adjust the config records.
@@ -1787,18 +1832,18 @@ sub update_do : Local {
         adsource      => $hash{adsource},
         carpool       => $hash{carpool},
         hascar        => $hash{hascar},
-        comment       => trim($hash{comment}),
+        comment       => etrim($hash{comment}),
         h_type        => $hash{h_type},
         h_name        => $hash{h_name},
         kids          => $hash{kids},
-        confnote      => trim($hash{confnote}),
+        confnote      => _expand($c, $c->request->params->{confnote}),
         nights_taken  => $taken,
         free_prog_taken => $hash{free_prog},
-        @dates,         # optionally
+        %dates,         # optionally
     });
     _compute($c, $reg, @who_now);
     _reg_hist($c, $id, "Registration updated.");
-    if ($reg->house_id || $reg->h_type =~ m{van|commut|unk}) {
+    if ($reg->house_id() || $reg->h_type() =~ m{van|commut|unk}) {
         $c->response->redirect($c->uri_for("/registration/view/$id"));
     }
     else {
@@ -1919,7 +1964,8 @@ sub lodge : Local {
     if ($reg->comment =~ m{Sharing a room with\s*([^.]*)[.]}) {
         my $name = $1;
         my ($first, $last) = split m{\s+}, $name;
-        $c->log->info("sharing with $last, $first");
+        $first = normalize($first);
+        $last  = normalize($last);
         my ($person) = model($c, 'Person')->search({
             first => $first,
             last  => $last,
@@ -1941,7 +1987,7 @@ sub lodge : Local {
                         $share_house_name = $reg2->house->name;
                         $share_house_id   = $reg2->house_id;
                         $c->stash->{message2} = "Share $share_house_name"
-                                               ." with $name?";
+                                               ." with $first $last?";
                     }
                     else {
                         $c->stash->{message2} = "$name requested a housing type of '"
@@ -1995,7 +2041,7 @@ sub lodge : Local {
         my ($codes, $code_sum) = ("", 0);
         if (exists $prog_cluster{$h->cluster_id()}) {
             $codes = "C";
-            $code_sum = $lookup{house_sum_cluster};     # string
+            $code_sum = $string{house_sum_cluster};     # string
         }
 
         #
@@ -2044,11 +2090,11 @@ sub lodge : Local {
         }
         if ($P) {
             $codes .= "P";
-            $code_sum += $lookup{house_sum_perfect_fit};     # string
+            $code_sum += $string{house_sum_perfect_fit};     # string
         }
         if ($O) {
             $codes .= "O";
-            $code_sum += $lookup{house_sum_occupied};     # string
+            $code_sum += $string{house_sum_occupied};     # string
         }
         $codes = " - $codes" if $codes;
         #
@@ -2083,6 +2129,10 @@ sub lodge : Local {
                 $a->[2] <=> $b->[2]         # priority - ascending
               }
               @h_opts;
+    # after the sort we can now chop off the superfluous ones
+    if ($n > $string{max_lodge_opts}) {
+        $#h_opts = $string{max_lodge_opts} - 1;
+    }
     if ($share_house_id && ! $selected) {
         # male, female want to share
         # one of them is already housed.
@@ -2105,7 +2155,8 @@ sub lodge : Local {
         $h_opts[0] =~ s{>}{ selected>};
     }
     $c->stash->{house_opts} = "@h_opts";
-    $c->stash->{n_opts} = $n;       # $n not always = # opts???
+    $c->stash->{total_opts} = $n;
+    $c->stash->{seen_opts} = $string{seen_lodge_opts};
     $h_type =~ s{dble}{double};     # only for display...
     $h_type =~ s{_(.)}{ \u$1};
     $c->stash->{disp_h_type} = (($h_type =~ m{^[aeiou]})? "an": "a")
@@ -2288,6 +2339,166 @@ sub _vacate {
     $reg->update({
         house_id => 0,
     });
+}
+
+sub seek : Local {
+    my ($self, $c, $prog_id, $reg_id) = @_;
+
+    my $pattern = $c->request->params->{pattern} || "";
+    $pattern = trim($pattern);
+    my ($pref_last, $pref_first);
+    if ($pattern =~ m{(\S+)\s+(\S+)}) {
+        ($pref_last, $pref_first) = ($1, $2);
+    }
+    else {
+        $pref_last = $pattern;
+        $pref_first = "";
+    }
+    my @name_match = ();
+    if ($pref_last) {
+        push @name_match, 'person.last' => { like => "$pref_last%"  };
+    }
+    if ($pref_first) {
+        push @name_match, 'person.first' => { like => "$pref_first%" };
+    }
+    if (! @name_match) {
+        # no regs - stay where you are/were.
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+        return;
+    }
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+            @name_match,
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    if (@regs == 1) {
+        # we already have it... so no need to get again????
+        $c->response->redirect($c->uri_for("/registration/view/"
+                                           . $regs[0]->id()));
+    }
+    elsif (@regs == 0) {
+        # no regs - stay where you are/were.
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+    }
+    else {
+        $c->stash->{program} = model($c, 'Program')->find($prog_id);
+        $c->stash->{pat}     = $pref_last . (($pref_first)? " $pref_first": "");
+        $c->stash->{regs}    = _reg_table(\@regs);
+        $c->stash->{other_sort}      = "list_reg_post";
+        $c->stash->{other_sort_name} = "By Postmark";
+        my @files             = <root/static/online/*>;
+        $c->stash->{online}   = scalar(@files);
+        $c->stash->{template} = "registration/list_reg.tt2";
+    }
+}
+
+sub _expand {
+    my ($c, $s) = @_;
+    return $s if empty($s);
+    my %note;
+    for my $cf (model($c, 'ConfNote')->all()) {
+        $note{$cf->abbr()} = etrim($cf->expansion());
+    }
+    $s = etrim($s);
+    $s =~ s{^(\S+$)}{ $note{$1} || $1 }gem;
+    $s;
+}
+
+#
+# via an AJAX call on the daily picture.
+# who is in the room?
+#
+sub who_is_there : Local {
+    my ($self, $c, $sex, $house_id, $the_date) = @_;
+
+    # the sex parameter tells us whether
+    # this house is booked to a rental or to registrants in programs.
+    #
+    if ($sex eq 'R') {
+        # it is a rental
+        # find a booking_rental with house $house_id on $the_date
+        my (@rb) = model($c, 'RentalBooking')->search(
+            {
+                house_id   => $house_id,
+                date_start => { '<=', $the_date },
+                date_end   => { '>=', $the_date },
+                    # [] not [) given the design of rental_booking.
+                    # registration bookings are different
+            },
+            {
+                join     => [qw/ rental house /],
+                prefetch => [qw/ rental house /],
+            }
+        );
+        my $rb = $rb[0];    # should only be 1
+        my $h_type = $rb->h_type();
+        $h_type =~ s{dble}{double};
+        $h_type =~ s{_(.)}{ \u$1};
+        my $house = $rb->house();
+        $c->res->output(
+            "<center>"
+            . $house->name()
+            . "</center>"
+            . "<p><table cellpadding=2>"
+            . "<tr><td><a target=happening class=pr_links href="
+            . $c->uri_for("/rental/view/" . $rb->rental_id() . "/3")
+            . ">"
+            . $rb->rental->name() . " - \u$h_type"
+            . "</a></td></tr>"
+            . "</table>"
+        );
+        return;
+    }
+    #
+    # it must be one or more registrations
+    #
+    # the end date is strictly less because
+    # we reserve housing up to the night before their end date.
+    #
+    # so:
+    #      date_start <= $the_date < date_end
+    #
+    my @regs = model($c, 'Registration')->search(
+        {
+            house_id   => $house_id,
+            date_start => { '<=', $the_date },
+            date_end   => { '>',  $the_date },
+        },
+        {
+            join     => [qw/ person program house /],
+            prefetch => [qw/ person program house /],
+        }
+    );
+    if (! @regs) {
+        $c->res->output("Unknown");     # shouldn't happen
+        return;
+    }
+    my $reg_names = "";
+    for my $r (@regs) {
+        $reg_names .= "<tr>"
+                   . "<td>"
+                   . "<a target=happening class=pr_links href="
+                   . $c->uri_for("/registration/view/" . $r->id())
+                   . ">"
+                   . $r->person->last() . ", " . $r->person->first()
+                   . "</a>"
+                   . "<td>" . $r->program->name() . "</td>"
+                   . "</td>"
+                   . "</tr>";
+    }
+    $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.
+                                # can't use &apos; :( why?
+    $c->res->output("<center>"
+                   . $regs[0]->house->name()
+                   . "</center>"
+                   . "<p><table cellpadding=2>$reg_names</table>"
+                   );
 }
 
 1;

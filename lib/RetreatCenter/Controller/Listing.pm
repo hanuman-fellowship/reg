@@ -557,7 +557,7 @@ sub help_upload : Local {
 }
 
 sub comings_goings : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $date) = @_;
 
     my $cg_date = trim($c->request->params->{cg_date});
     my $d8;
@@ -570,9 +570,14 @@ sub comings_goings : Local {
         }
         $d8 = $d->as_d8();
     }
+    elsif ($date) {
+        $d8 = $date;
+    }
     else {
         $d8 = today()->as_d8();
     }
+    $c->stash->{prev_date} = (date($d8)-1)->as_d8();
+    $c->stash->{next_date} = (date($d8)+1)->as_d8();
 
     my @coming = model($c, 'Registration')->search({
                      date_start => $d8,
@@ -668,26 +673,221 @@ sub comings_goings : Local {
 }
 
 sub late_notices : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $date) = @_;
 
-    my $d8 = today()->as_d8();
-    my @non_arr = map {
-                      $_->[1],
-                  }
-                  sort {
-                    $a->[0] cmp $b->[0]
-                  }
-                  map {
-                      my $pers = $_->person;
-                      [ $pers->last . ", " . $pers->first, $_ ]
-                  }
-                  model($c, 'Registration')->search({
-                      date_start => $d8,
-                      arrived    => '',
-                      cancelled  => '',
-                  });
-    $c->stash->{non_arr} = \@non_arr;
-    $c->stash->{template} = "listing/late_notices.tt2";
+    my $d8;
+    if ($date) {
+        $d8 = $date;
+    }
+    else {
+        $d8 = today()->as_d8();
+    }
+    my @date_bool = ();
+    if (date($d8)->day_of_week() == 6) {    # Saturday
+        @date_bool = (
+                         -or => [
+                             date_start => $d8,
+                             date_start => (date($d8)+1)->as_d8(),
+                         ]
+                     );
+    }
+    else {
+        @date_bool = (date_start => $d8);
+    }
+    my @late_arr = model($c, 'Registration')->search(
+                       {
+                           @date_bool,
+                           arrived    => '',
+                           cancelled  => '',
+                       },
+                       {
+                           join     => [qw/ house program person /],
+                           prefetch => [qw/ house program person /],   
+                           order_by => [qw/ person.last person.first /],
+                       }
+                   );
+    my $tt = Template->new({
+        INCLUDE_PATH => "root/src/listing",
+        EVAL_PERL    => 0,
+    });
+    my $html;
+    $tt->process(
+        "late_notices.tt2",             # template
+        { late_arr => \@late_arr },     # variables
+        \$html,                         # output
+    );
+    $c->res->output($html);
+}
+
+sub housekeeping : Local {
+    my ($self, $c, $tent, $the_date) = @_;
+
+    my $bool_tent = ($tent)? "yes": "";
+    my $hs_date = trim($c->request->params->{hs_date});
+    my $d8;
+    if ($hs_date) {
+        my $d = date($hs_date);
+        if (! $d) {
+            $c->stash->{mess} = "Illegal date: $hs_date";
+            $c->stash->{template} = "gen_error.tt2";
+            return;
+        }
+        $d8 = $d->as_d8();
+    }
+    elsif ($the_date) {
+        $d8 = $the_date;
+    }
+    else {
+        $d8 = today()->as_d8();
+    }
+    my $d8_1 = (date($d8)-1)->as_d8();      # for RentalBookings
+
+    my %seen = ();
+    my %cluster_name = map {
+                           $_->id => $_->name
+                       }
+                       model($c, 'Cluster')->all();
+    my @arriving_houses =
+        grep {
+            !$seen{$_->id}++
+        }
+        map {
+            $_->house
+        }
+        model($c, 'Registration')->search(
+            {
+                house_id     => { '!=', 0 },
+                date_start   => $d8,
+                'house.tent' => $bool_tent,
+            },
+            {
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
+            }
+        );
+    push @arriving_houses,
+        grep {
+            !$seen{$_->id}++
+        }
+        map {
+            $_->house
+        }
+        model($c, 'RentalBooking')->search(
+            {
+                date_start   => $d8,
+                'house.tent' => $bool_tent,
+            },
+            {
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
+            }
+        );
+    @arriving_houses =
+        sort {
+            $cluster_name{$a->cluster_id} cmp $cluster_name{$b->cluster_id}
+            or
+            $a->cluster_order <=> $b->cluster_order
+        }
+        @arriving_houses;
+
+    # and now for the rooms vacated today
+    # start things over.
+    %seen = ();
+    my @departing_houses =
+        grep {
+            !$seen{$_->id}++
+        }
+        map {
+            $_->house
+        }
+        model($c, 'Registration')->search(
+            {
+                house_id     => { '!=', 0 },
+                date_end     => $d8,
+                'house.tent' => $bool_tent,
+            },
+            {
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
+            }
+        );
+    push @departing_houses,
+        grep {
+            !$seen{$_->id}++
+        }
+        map {
+            $_->house
+        }
+        model($c, 'RentalBooking')->search(
+            {
+                date_end => $d8_1,
+                    # $d8_1 and not $d8 since
+                    # the end date in RentalBooking is
+                    # one less than edate in the Rental.
+                    # this is different from Registrations.
+                'house.tent' => $bool_tent,
+            },
+            {
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
+            }
+        );
+    @departing_houses =
+        sort {
+            $cluster_name{$a->cluster_id} cmp $cluster_name{$b->cluster_id}
+            or
+            $a->cluster_order <=> $b->cluster_order
+        }
+        @departing_houses;
+    my %next_needed;
+    for my $h (@departing_houses) {
+        my $hid = $h->id();
+        # find the next day this house is needed.
+        my ($config) = model($c, 'Config')->search({
+            house_id => $hid,
+            the_date => { '>=', $d8 },
+            cur      => { '>', 0   },
+                # even if this bed is not needed...
+                # there may be someone else in the room so it would
+                # be nice to make up the bed for the tidyness of it all.
+        },
+        {
+            rows     => 1,
+        }
+        );
+        if ($config) {
+            my $n = date($config->the_date()) - date($d8);
+            my $name = $h->name();
+            if ($n == 0) {
+                $next_needed{$name} = " - needed TODAY";
+                #
+                # see if the person(s) occupying it today
+                # is/are actually arriving today or if they
+                # are already occupying it and their roommate
+                # has departed leaving an unmade bed.
+                if (! (my (@regs) = model($c, 'Registration')->search({
+                                     date_start => $d8,
+                                     house_id   => $hid,
+                                 }))
+                ) {
+                    $next_needed{$name} .= " (already occupied)";
+                }
+            }
+            else {
+                $next_needed{$name}  = " - needed in $n day";
+                $next_needed{$name} .= "s" if $n != 1;
+            }
+        }
+    }
+    $c->stash->{tent}           = $tent;
+    $c->stash->{the_date}       = date($d8);
+    $c->stash->{daily_pic_date} = $d8;
+    $c->stash->{next_date}      = (date($d8)+1)->as_d8();
+    $c->stash->{prev_date}      = (date($d8)-1)->as_d8();
+    $c->stash->{arriving_houses}  = \@arriving_houses;
+    $c->stash->{departing_houses} = \@departing_houses;
+    $c->stash->{next_needed}    = \%next_needed;
+    $c->stash->{template}       = "listing/housekeeping.tt2";
 }
 
 1;

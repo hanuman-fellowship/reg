@@ -4,7 +4,7 @@ use warnings;
 package RetreatCenter::Controller::String;
 use base 'Catalyst::Controller';
 
-use Lookup;
+use Global qw/%string/;
 use Util qw/resize model/;
 
 sub index : Private {
@@ -51,7 +51,7 @@ sub update_do : Local {
     model($c, 'String')->find($the_key)->update({
         value => $value,
     });
-    $lookup{$the_key} = $value;
+    $string{$the_key} = $value;
     if ($the_key =~ m{imgwidth} && $c->request->params->{resize_all}) {
         for my $f (<root/static/images/*o-*.jpg>) {
             my ($type, $id) = $f =~ m{/(\w+)o-(\d+).jpg$};

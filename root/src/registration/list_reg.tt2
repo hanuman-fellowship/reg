@@ -21,7 +21,7 @@ function getIt() {
 // process each character typed
 // and send off the Ajax request.
 // when the response to it is received,
-// it will be processed in getIt below.
+// it will be processed by getIt() above.
 function process(e) {
     var keynum;
     var keychar;

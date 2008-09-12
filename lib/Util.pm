@@ -33,6 +33,9 @@ our @EXPORT_OK = qw/
     type_max
     max_type
     lines
+    _br
+    normalize
+    link_share
 /;
 
 use POSIX   qw/ceil/;
@@ -42,7 +45,7 @@ use Date::Simple qw/
     today
 /;
 
-use Lookup;
+use Global qw/%string/;
 
 my ($naffils, @affils, %checked);
 
@@ -120,6 +123,8 @@ sub role_table {
 # date range sdate-edate?
 #
 # and worry about the max of rentals/programs as well.
+# highlight those > max in red.   Can't eliminate them
+# because breakout spaces don't need to respect the max.
 #
 # note: PRE = Program/Rental/Event
 #
@@ -139,8 +144,9 @@ sub meetingplace_table {
                      @cur_bookings;
     my $table = "";
     MEETING_PLACE:
+#                    { max => { '>=', $max } },
     for my $mp (model($c, 'MeetingPlace')->search(
-                    { max => { '>=', $max } },
+                    {},
                     { order_by => 'name' }
                 )
     ) {
@@ -150,6 +156,8 @@ sub meetingplace_table {
             # the PRE in question.
             # are there any bookings for this place that overlap
             # with this request?
+            # some way to do this search without the meet_id
+            # and cache the results???   yes.
             my @bookings = model($c, 'Booking')->search({
                               meet_id => $id,
                               sdate => { '<' => $edate },
@@ -157,12 +165,16 @@ sub meetingplace_table {
                            });
             next MEETING_PLACE if @bookings;
         }
+        my $mp_max = $mp->max();
+        my $color = ($mp_max < $max)? "red": "black";
         # it should be included in the table
         $table .= "<tr><td>"
                   . $mp->name
                   . "</td><td align=right>"
-                  . $mp->max
-                  . "</td><td align=center>"
+                  . "<span style='color: $color'>$mp_max</span"
+                  . "</td>"
+                  . "<td></td>"     # spacer
+                  . "<td align=center>"
                   . "<input type=checkbox name=mp$id  "
                   . ($checked{$id} || '')
                   . "> "
@@ -181,6 +193,7 @@ sub meetingplace_table {
 <tr>
 <th align=left>Name</th>
 <th align=right>Max</th>
+<td width=10></td>
 <th>Main</th>
 <th>Breakout</th>
 </tr>
@@ -373,11 +386,11 @@ sub resize {
 
     chdir "root/static/images";
     if (!$which || $which eq "imgwidth") {
-        system("convert -scale $lookup{imgwidth}x"
+        system("convert -scale $string{imgwidth}x"
               ." ${type}o-$id.jpg ${type}th-$id.jpg");
     }
     if (!$which || $which eq "big_imgwidth") {
-        system("convert -scale $lookup{big_imgwidth}x"
+        system("convert -scale $string{big_imgwidth}x"
               ." ${type}o-$id.jpg ${type}b-$id.jpg");
     }
     chdir "../../..";       # must cd back!   not stateless HTTP, exactly
@@ -551,11 +564,11 @@ sub email_letter {
         unlink "/tmp/$$";
     }
     if (! $mail_sender) {
-        Lookup->init($c);
+        Global->init($c);
         $mail_sender = Mail::SendEasy->new(
-            smtp => $lookup{smtp_server},
-            user => $lookup{smtp_user},
-            pass => $lookup{smtp_pass},
+            smtp => $string{smtp_server},
+            user => $string{smtp_user},
+            pass => $string{smtp_pass},
         )
     }
     my $status = $mail_sender->send(
@@ -673,7 +686,7 @@ sub add_config {
         $last = today();
     }
     else {
-        $last = date($lookup{sys_last_config_date});
+        $last = date($string{sys_last_config_date});
         ++$last;
     }
     if ($last >= $new_last_date) {
@@ -707,9 +720,9 @@ sub add_config {
         }
         ++$last;
     }
-    return if $d8 eq $lookup{sys_last_config_date};
+    return if $d8 eq $string{sys_last_config_date};
 
-    $lookup{sys_last_config_date} = $d8;
+    $string{sys_last_config_date} = $d8;
     model($c, 'String')->find('sys_last_config_date')->update({
         value => $d8,
     });
@@ -769,6 +782,52 @@ sub max_type {
 sub lines {
     my ($s) = @_;
     $s =~ tr/\n/\n/;
+}
+
+sub _br {
+    my ($s) = @_;
+ 
+    $s =~ s{\r?\n$}{};      # chop last
+    $s =~ s{\r?\n}{<br>\n}g;   # internal newlines
+    $s =~ s{^(\s+)}{"&nbsp;" x length($1)}emg;
+    $s .= "<br>" if $s;
+    $s;
+}
+
+sub normalize {
+    my ($s) = @_;
+    ucfirst lc $s;
+}
+
+# convert "Share room with First Last"
+# to a link to the other person's registration
+# if, that is, First Last is also registered.
+sub link_share {
+    my ($c, $program_id, $s) = @_;
+
+    if ($s =~ m{Sharing a room with\s*([^.]+)[.]}) {
+        my $name = $1;
+        my ($first, $last) = split m{\s+}, $name;
+        $first = normalize($first);
+        $last  = normalize($last);
+$c->log->info("f $first l $last");
+        if (my ($person) = model($c, 'Person')->search({
+                               first => $first,
+                               last  => $last,
+                           })
+        ) {
+            if (my ($reg) = model($c, 'Registration')->search({
+                                person_id => $person->id(),
+                                program_id => $program_id,
+                            })
+            ) {
+                my $id = $reg->id();
+                $s =~ s{$name}
+                       {<a href=/registration/view/$id>$first $last</a>};
+            }
+        }
+    }
+    _br($s);
 }
 
 1;

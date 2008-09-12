@@ -31,9 +31,6 @@ th {
 <tr><th>Registration Location</th><td>[% sum.registration_location %]</td>
 <th>Vacate Early?</th><td>[% sum.vacate_early %]</td></tr>
 
-<tr><th>Signage</th><td>[% sum.signage %]</td>
-<th>Need Books?</th><td>[% sum.need_books %]</td></tr>
-
 <tr><th>Orientation</th><td>[% sum.orientation %]</td>
 <th>Participant List?</th><td>[% sum.participant_list %]</td></tr>
 
@@ -46,7 +43,9 @@ th {
 <tr><th>Back-to-Back<td>[% sum.back_to_back %]</td>
 <th>Work Study?</th><td>[% sum.work_study %]</td></tr>
 
-<tr><td>&nbsp;</td></tr>
+
+<tr><td colspan=2>&nbsp;</td><th>Need Books?</th><td>[% sum.need_books %]</td></tr>
+
 <tr><th>Leader Name</th><td colspan=3>[% sum.leader_name %]</td></tr>
 <tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td>
     <th>Staff Arrival</th><td>[% sum.staff_arrival %]</td></tr>
@@ -54,10 +53,10 @@ th {
 <tr><th>Housing</th><td colspan=3>[% sum.leader_housing %]</td></tr>
 <tr><td>&nbsp;</td></tr>
 
+<tr><th>Signage</th><td colspan=3>[% sum.signage_br %]</td></tr>
 <tr><th>Food Service</th><td colspan=3>[% sum.food_service_br %]</td></tr>
 <tr><th>Flowers</th><td colspan=3>[% sum.flowers_br %]</td></tr>
-<tr><th>Houses</th><td colspan=3>[% sum.houses_br %]</td></tr>
-<tr><th>HouseKeeping</th><td colspan=3>[% sum.housekeeping_br %]</td></tr>
+<tr><th>Lodging</th><td colspan=3>[% sum.lodging_br %]</td></tr>
 <tr><th>Special Needs</th><td colspan=3>[% sum.special_needs_br %]</td></tr>
 <tr><th>Finances</th><td colspan=3>[% sum.finances_br %]</td></tr>
 <tr><th>Miscellaneous</th><td colspan=3>[% sum.miscellaneous_br %]</td></tr>

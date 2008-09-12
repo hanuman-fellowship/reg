@@ -25,16 +25,13 @@ th {
 }
 </style>
 <form action="/summary/update_do/[% type %]/[% sum.id %]" method=post>
-<table cellpadding=3>
+<table cellpadding=3 border=0>
 
 <tr><th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=10></td>
 <th>School Spaces?</th><td><input type=checkbox name=school_spaces value='yes' [% checked_school_spaces %]></td></tr>
 
 <tr><th>Registration Location</th><td><input type=text name=registration_location value='[% sum.registration_location %]' size=20></td>
 <th>Vacate Early?</th><td><input type=checkbox name=vacate_early value='yes' [% checked_vacate_early %]></td></tr>
-
-<tr><th>Signage</th><td><input type=text name=signage value='[% sum.signage %]'></td>
-<th>Need Books?</th><td><input type=checkbox name=need_books value='yes' [% checked_need_books %]></td></tr>
 
 <tr><th>Orientation</th><td><input type=text name=orientation value='[% sum.orientation %]'></td>
 <th>Participant List?</th><td><input type=checkbox name=participant_list value='yes' [% checked_participant_list %]></td></tr>
@@ -48,14 +45,23 @@ th {
 <tr><th>Back-to-Back<td><input type=text name=back_to_back value='[% sum.back_to_back %]'></td>
 <th>Work Study?</th><td><input type=checkbox name=work_study value='yes' [% checked_work_study %]></td></tr>
 
-<tr><td>&nbsp;</td></tr>
-<tr><th>Leader Name</th><td colspan=2><input type=text name=leader_name value='[% sum.leader_name %]'></td>
-<td><input id=sub type=submit value="Submit"></td></tr>
+<tr><td colspan=2>&nbsp;</td>
+<th>Need Books?</th><td><input type=checkbox name=need_books value='yes' [% checked_need_books %]></td></tr>
+
+<tr><th>Leader Name</th><td colspan=2><input type=text name=leader_name value='[% sum.leader_name %]'></td></tr>
 <tr><th>       Arrival</th><td><input type=text name=leader_arrival value='[% sum.leader_arrival %]'></td>
     <th>Staff Arrival</th><td colspan=3><input type=text name=staff_arrival value='[% sum.staff_arrival %]'></td></tr>
-<tr><th>Departure</th><td colspan=3><input type=text name=leader_departure value='[% sum.leader_departure %]'></td></tr>
+<tr><th>Departure</th><td><input type=text name=leader_departure value='[% sum.leader_departure %]'></td>
+<td><input id=sub type=submit value="Submit"></td></tr>
+
 <tr><th>Housing</th><td colspan=3><input type=text name=leader_housing value='[% sum.leader_housing %]'></td></tr>
 <tr><td>&nbsp;</td></tr>
+
+<tr><th valign=top>Signage</th>
+<td colspan=3>
+<textarea name=signage rows=[% signage_rows %] cols=50>
+[% sum.signage %]
+</textarea></td></tr>
 
 <tr><th valign=top>Food Service</th>
 <td colspan=3>
@@ -69,15 +75,9 @@ th {
 [% sum.flowers %]
 </textarea></td></tr>
 
-<tr><th valign=top>Houses</th><td colspan=3>
-<textarea name=houses rows=[% houses_rows %] cols=50>
-[% sum.houses %]
-</textarea></td></tr>
-
-<tr><th valign=top>House Keeping</th>
-<td colspan=3>
-<textarea name=housekeeping rows=[% housekeeping_rows %] cols=50>
-[% sum.housekeeping %]
+<tr><th valign=top>Lodging</th><td colspan=3>
+<textarea name=lodging rows=[% lodging_rows %] cols=50>
+[% sum.lodging %]
 </textarea></td></tr>
 
 <tr><th valign=top>Special Needs</th>

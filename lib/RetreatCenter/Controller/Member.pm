@@ -17,7 +17,7 @@ use Date::Simple qw/
     today
     days_in_month
 /;
-use Lookup;
+use Global qw/%string/;
 use Template;
 
 sub index : Private {
@@ -236,13 +236,13 @@ sub update_do : Local {
         return;
     }
 
-    Lookup->init($c);
+    Global->init($c);
     my $html = acknowledge($member, $amount, $pay_date);
     if (my $email = $member->person->email()) {
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Payment",
             to         => $email,
-            from       => $lookup{mem_email},
+            from       => $string{mem_email},
             from_title => "HFS Membership",
             html       => $html,
         );
@@ -311,7 +311,7 @@ EOA
                         :          month_after(date($pay_date))
                        ),
         total_paid  => $member->total_paid,
-        lookup      => \%lookup,
+        string      => \%string,
         message     => $message,
         category    => $category,
     };
@@ -440,14 +440,14 @@ sub create_do : Local {
         return;
     }
 
-    Lookup->init($c);
+    Global->init($c);
     my $html = acknowledge($member, $amount, $date);
     
     if (my $email = $member->person->email()) {
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Payment",
             to         => $email,
-            from       => $lookup{mem_email},
+            from       => $string{mem_email},
             from_title => "HFS Membership",
             html       => $html,
         );
@@ -530,7 +530,7 @@ sub email_lapsed : Local {
     my @no_email;
     my $nsent = 0;
     my $mem_admin = $c->user->first . ' ' . $c->user->last;
-    Lookup->init($c);
+    Global->init($c);
     MEMBER:
     for my $m (@{_lapsed_members($c)}) {
         my $per = $m->person;
@@ -557,7 +557,7 @@ sub email_lapsed : Local {
             exp_date    => $exp_date,
             last_amount => $last_amount,
             last_paid   => $last_paid,
-            lookup      => \%lookup,
+            string      => \%string,
         };
         $tt->process(
             # template
@@ -570,7 +570,7 @@ sub email_lapsed : Local {
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Status",
             to         => (($test)? $c->user->email: $email),
-            from       => $lookup{mem_email},
+            from       => $string{mem_email},
             from_title => "HFS Membership",
             html       => $html,
         );
@@ -596,7 +596,7 @@ sub email_lapse_soon : Local {
     my @no_email;
     my $nsent = 0;
     my $mem_admin = $c->user->first . ' ' . $c->user->last;
-    Lookup->init($c);
+    Global->init($c);
     MEMBER:
     for my $m (@{_soon_to_lapse_members($c)}) {
         my $per = $m->person;
@@ -623,7 +623,7 @@ sub email_lapse_soon : Local {
             exp_date    => $exp_date,
             last_amount => $last_amount,
             last_paid   => $last_paid,
-            lookup      => \%lookup,
+            string      => \%string,
         };
         $tt->process(
             "lapse_"
@@ -636,7 +636,7 @@ sub email_lapse_soon : Local {
             subject    => "Hanuman Fellowship Membership Status",
             to         => (($test)? $c->user->email: $email),
             html       => $html,
-            from       => $lookup{mem_email},
+            from       => $string{mem_email},
             from_title => "HFS Membership",
         );
         ++$nsent;
@@ -671,11 +671,11 @@ sub reset_do : Local {
         $c->stash->{template} = "member/error.tt2";
         return;
     }
-    Lookup->init($c);
+    Global->init($c);
     model($c, 'Member')->search({
         category => { 'in' => [ 'Sponsor', 'Life' ] },
     })->update({
-        sponsor_nights  => $lookup{sponsor_nights},
+        sponsor_nights  => $string{sponsor_nights},
         free_prog_taken => '',
     });
     $c->response->redirect($c->uri_for("/member/list"));
@@ -861,13 +861,13 @@ $addr
 <p>
 </div>
 EOA
-    Lookup->init($c);
+    Global->init($c);
     my $stash = {
         sanskrit    => ($per->sanskrit || $per->first),
         exp_date    => $exp_date,
         last_amount => $last_amount,
         last_paid   => $last_paid,
-        lookup      => \%lookup,
+        string      => \%string,
         message     => $message,
     };
     $tt->process(

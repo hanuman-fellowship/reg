@@ -57,6 +57,21 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 </ul>
 </td><td valign=top>
 <ul>
+
+<li><a href="/listing/housekeeping/0">Today's Housekeeping Report</a>
+<p>
+<form action="/listing/housekeeping/0" method=POST>
+On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
+</form>
+<p>
+
+<li><a href="/listing/housekeeping/1">Today's Campground Report</a>
+<p>
+<form action="/listing/housekeeping/1" method=POST>
+On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
+</form>
+<p>
+
 <li><a href=/report/list>General Reports</a><p>
 <li>Phone Lists
 <ol>

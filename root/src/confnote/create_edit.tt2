@@ -1,0 +1,25 @@
+<h2>Confirmation Notes</h2>
+<form action=[% '/confnote/' _ form_action %] name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Abbr</th>
+<td>
+<input type=text name=abbr value=[% confnote.abbr %]>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Value</th>
+<td>
+<textarea rows=3 cols=60 name=expansion>[% confnote.expansion %]</textarea>
+</td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+</table>
+</form>
+<script type="text/javascript">document.form.abbr.focus()</script>

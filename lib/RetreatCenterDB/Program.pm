@@ -100,7 +100,7 @@ use Util qw/
     housing_types
     places
 /;
-use Lookup;
+use Global qw/%string/;
 use Image::Size;
 use File::Copy;
 
@@ -148,9 +148,9 @@ sub future_programs {
 sub web_addr {
     my ($self) = @_;
 
-    my $dir = "http://$lookup{ftp_site}/";
+    my $dir = "http://$string{ftp_site}/";
 
-    return ($self->linked)? "$dir$lookup{ftp_dir2}/" . $self->fname
+    return ($self->linked)? "$dir$string{ftp_dir2}/" . $self->fname
           :                 $dir . $self->unlinked_dir             ;
 }
 #
@@ -226,6 +226,13 @@ sub template_src {
 	my ($self) = @_;
 	return ($self->ptemplate)?  slurp($self->ptemplate)
           :                     $default_template;
+}
+
+sub main_meeting_place {
+    my ($self) = @_;
+    my @bookings = grep { $_->breakout() eq 'yes' } $self->bookings();
+    @bookings? $bookings[0]->meeting_place()->name()
+    :          "";
 }
 
 sub title1 {
@@ -362,12 +369,12 @@ sub webdesc_plus {
 	if ($barnacles) {
 		$s .= "<ul>\n";
 		if ($barnacles =~ /\*\*/) {
-			$s .= "<li>$lookup{'**'}\n";
+			$s .= "<li>$string{'**'}\n";
 		} elsif ($barnacles =~ /\*/) {
-			$s .= "<li>$lookup{'*'}\n";
+			$s .= "<li>$string{'*'}\n";
 		}
-		$s .= "<li>$lookup{'+'}\n" if $barnacles =~ /\+/;
-		$s .= "<li>$lookup{'%'}\n" if $barnacles =~ /%/;
+		$s .= "<li>$string{'+'}\n" if $barnacles =~ /\+/;
+		$s .= "<li>$string{'%'}\n" if $barnacles =~ /%/;
 		$s .= "</ul>\n";
 	}
     $s;
@@ -376,7 +383,7 @@ sub weburl {
     my ($self) = @_;
     my $url = $self->url;
     return "" unless $url;
-    return "<p>$lookup{weburl} <a href='http://$url' target='_blank'>$url</a>.";
+    return "<p>$string{weburl} <a href='http://$url' target='_blank'>$url</a>.";
 }
 #
 # generate HTML (yes :() for a fee table)
@@ -399,16 +406,16 @@ sub fee_table {
 <table>
 EOH
 	$fee_table .= <<EOH unless $self->name =~ m{personal retreat}i;
-<tr><th colspan=$cols>$lookup{heading}</th></tr>
+<tr><th colspan=$cols>$string{heading}</th></tr>
 <tr><td colspan=$cols>&nbsp;</td></tr>
 EOH
-    $fee_table .= "<tr><th align=left valign=bottom>$lookup{typehdr}</th>";
+    $fee_table .= "<tr><th align=left valign=bottom>$string{typehdr}</th>";
     if ($extradays) {
         my $plural = ($ndays > 1)? "s": "";
         $fee_table .= "<th align=right width=70>$ndays Day$plural</th>".
                       "<th align=right width=70>$fulldays Days</th></tr>\n";
     } else {
-        $fee_table .= "<th align=right>$lookup{costhdr}</th></tr>\n";
+        $fee_table .= "<th align=right>$string{costhdr}</th></tr>\n";
     }
     # hard coded column names - another way???
     # somehow get them from HouseCost.pm???
@@ -425,7 +432,7 @@ EOH
 		next if $pr and $t =~ m{triple|dormitory};
 		my $cost = $self->fees(0, $t);
 		next unless $cost;		# this type of housing is not offered at all.
-        $fee_table .= "<tr><td>$lookup{$t}</td>";
+        $fee_table .= "<tr><td>$string{$t}</td>";
         $fee_table .= "<td align=right>$cost</td>\n";
         if ($extradays) {
             $fee_table .= "<td align=right>" .
@@ -505,11 +512,11 @@ sub leader_bio {
         if (my $email = $l->public_email) {
             my $first = $l->person->first;
             my $last  = $l->person->last;
-            $bio .= "<p>$lookup{email1} $first $last $lookup{email2}"
+            $bio .= "<p>$string{email1} $first $last $string{email2}"
                    ." <a href='mailto:$email'>$email</a>";
         }
         if (my $url = $l->url) {
-            $bio .= "<p>$lookup{weburl}"
+            $bio .= "<p>$string{weburl}"
                    ." <a href='http://$url' target='_blank'>$url</a>.";
         }
     }
@@ -544,7 +551,7 @@ sub prevprog {
 sub picture {
     my ($self) = @_;
 
-    my $full = $lookup{imgwidth};
+    my $full = $string{imgwidth};
     my $half = $full/2;
 
     my @leaders = $self->leaders;
@@ -589,7 +596,7 @@ sub picture {
         return <<EOH;
 <table cellspacing=0>
 <tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
-<tr><td align=center colspan=2 class='click_enlarge'>$lookup{'click_enlarge'}</td></tr>
+<tr><td align=center colspan=2 class='click_enlarge'>$string{'click_enlarge'}</td></tr>
 </table>
 EOH
     } else {
@@ -597,14 +604,14 @@ EOH
         $pic_html = "<table><tr><td>" .
 					gen_popup($pic_html, $pic1) .
 			        "</td></tr><tr><td align=center class='click_enlarge'>".
-					"$lookup{click_enlarge}</td></tr></table>";
+					"$string{click_enlarge}</td></tr></table>";
         return $pic_html;
     }
 }
 sub cl_picture {
     my ($self) = @_;
 
-    my $full = $lookup{imgwidth};
+    my $full = $string{imgwidth};
     my $half = $full/2;
 
     my @leaders = $self->leaders;
@@ -631,15 +638,15 @@ sub cl_picture {
 
     if ($pic2) {
                                                     #       live2
-        my $pic1_html = "<img src='http://$lookup{ftp_site}/staging2/{pics/$pic1' width=$half>";
-        my $pic2_html = "<img src='http://$lookup{ftp_site}/staging2/pics/$pic2' width=$half>";
+        my $pic1_html = "<img src='http://$string{ftp_site}/staging2/{pics/$pic1' width=$half>";
+        my $pic2_html = "<img src='http://$string{ftp_site}/staging2/pics/$pic2' width=$half>";
         return <<EOH;
 <table cellspacing=0>
 <tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
 </table>
 EOH
     } else {
-        return "<img src='http://$lookup{ftp_site}/staging2/pics/$pic1' width=$full>";
+        return "<img src='http://$string{ftp_site}/staging2/pics/$pic1' width=$full>";
     }
 }
 sub cancellation_policy {

@@ -9,8 +9,7 @@ __PACKAGE__->add_columns(qw/
     id
     name
     color
-    x
-    y
+    type
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

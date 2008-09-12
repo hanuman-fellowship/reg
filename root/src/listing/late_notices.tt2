@@ -1,10 +1,73 @@
-<h2>Late Notices for Today</h2>
-<ul>
-[% FOR r IN non_arr %]
-[% pers = r.person %]
-[% prog = r.program %]
-<a href="/registration/view/[% r.id %]">[% pers.last %], [% pers.first %]</a> of [% prog.name %] meeting in [% prog.meeting_places %]<br>
-Housed in [% r.h_name %].
+<style type="text/css">
+body {
+    font-size: 13pt;
+    width: 700px;
+}
+.large {
+    font-size: 35pt;
+    font-weight: bold;
+    text-align: center;
+}
+.big {
+    text-decoration: underline;
+    font-weight: bold;
+    font-size: 15pt;
+}
+.nice {
+    font-style: italic;
+}
+</style>
+[% FOR reg IN late_arr %]
+Late Notice for:
+<p class=large>
+[% reg.person.first %] [% reg.person.last %]
 <p>
+Welcome to Mount Madonna Center!  We&rsquo;re glad that you have arrived,
+and hope you had a pleasant journey!!
+[% IF reg.house_id %]
+<p>
+You are housed in the [% reg.house.cluster.name %] in room [% reg.house.name_disp %].
+<p>
+Your housing location is highlighted on the attached map(s).
+[% ELSIF reg.h_type == 'own_van' %]
+<p>
+Please park your vehicle in one of the spots marked &lsquo;OV&rsquo; on the attached map.
 [% END %]
-</ul>
+<p>
+[% mp = reg.program.main_meeting_place %]
+[% IF mp %]
+Your program &ldquo;[% reg.program.title %]&rdquo; meets
+in the [% mp %] building.
+[% END %]
+<p>
+If you asked for a &ldquo;DINNER SAVE,&rdquo; a meal with your name
+on it can be found on a shelf across from the silverware table
+on the way to the kitchen (go through the double doors and turn
+left in the carpeted lobby).  If you cannot find a plate with your
+name on it, take one marked &ldquo;GUEST.&rdquo;
+<p>
+PLEASE READ THIS PAGE AND THE ENCLOSED GUIDELINES.  THANK YOU!
+<p>
+<b>FOOD:</b> Meals are served for one hour.  An alternative to the main
+course is available upon request.  Please come to the Program Office
+with special food needs, rather than to the kitchen staff.
+And note: we are a strictly vegetarian community (no meat, fish, poultry,
+eggs to be consumed on the property).
+<p>
+<b>PARKING:</b> Only as marked &ndash; not right in front of
+the Community Building.
+<p>
+<b>SHOES:</b> If comfortable, remove your shoes upon entering our buildings.
+<p>
+<b>SATURDAY EARLY MORNING:</b> Yoga/meditation classes are offered
+in the Community Building, beginning at 7:30.  Please help keep
+building quiet 7:15-9:45 am.
+<center>
+<p class=big>
+PLEASE REGISTER IN THE PROGRAM OFFICE<br>
+TOMORROW DURING BUSINESS HOURS TO COMPLETE YOUR REGISTRATION [% IF reg.balance > 0 %] AND PAY YOUR OUTSTANDING BALANCE[% END %].
+<p class=nice>
+MAY YOUR STAY BE NOURISHING AND REWARDING
+</center>
+<div style="page-break-after:always"></div>
+[% END %]

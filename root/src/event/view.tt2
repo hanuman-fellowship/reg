@@ -1,8 +1,8 @@
 <h2>Events</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/event/create">Add</a>
-&nbsp;&nbsp;&nbsp;
 <a href="/event/update/[% event.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/event/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/event/delete/[% event.id %]"
 onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>

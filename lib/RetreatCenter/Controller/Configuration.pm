@@ -3,10 +3,19 @@ use warnings;
 package RetreatCenter::Controller::Configuration;
 use base 'Catalyst::Controller';
 
+use Global;
+
 sub index : Local {
     my ($self, $c) = @_;
 
     $c->stash->{template} = "configuration/index.tt2";
+}
+
+sub reload : Local {
+    my ($self, $c) = @_;
+
+    Global->init($c, 1);
+    $c->response->redirect($c->uri_for("/configuration"));
 }
 
 sub mark_inactive : Local {

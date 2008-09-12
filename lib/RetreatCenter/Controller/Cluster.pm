@@ -9,6 +9,10 @@ use Util qw/
     model
     trim
 /;
+use Global qw/
+    %string
+    %clust_color
+/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -37,11 +41,21 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $cl = $c->stash->{cluster}       = model($c, 'Cluster')->find($id);
+    my $cl = $c->stash->{cluster} = model($c, 'Cluster')->find($id);
     my ($r, $g, $b) = $cl->color =~ m{\d+}g;
     $c->stash->{red  } = $r;
     $c->stash->{green} = $g;
     $c->stash->{blue } = $b;
+    my $opts = "";
+    for my $t (1 .. 5) {
+        my $s = $string{"dp_type$t"};
+        next if $s eq 'future use';
+        $opts .= "<option value='$s'"
+              .  (($cl->type() eq $s)? " selected": "")
+              .  ">\u$s\n"
+              ;
+    }
+    $c->stash->{type_opts} = $opts;
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "cluster/create_edit.tt2";
 }
@@ -57,6 +71,7 @@ sub update_do : Local {
 
     my $name  = $c->request->params->{name};
     my $color = $c->request->params->{color};
+    my $type  = $c->request->params->{type};
     for my $f (qw/name color/) {
         if (empty($f)) {
             $c->stash->{mess} = "\u$f cannot be blank.";
@@ -64,22 +79,13 @@ sub update_do : Local {
             return;
         }
     }
-    my %coord = (x => "",  y => "");
-    for my $f (qw/x y/) {
-        my $fld = $c->request->params->{$f};
-        if ($fld !~ m{^\s*\d*\s*$}) {
-            $c->stash->{mess} = "\u$f Coord must be integral.";
-            $c->stash->{template} = "cluster/error.tt2";
-            return;
-        }
-        $coord{$f} = trim($fld);
-    }
     model($c, 'Cluster')->find($id)->update({
         name  => $name,
         color => $color,
-        x     => $coord{x},
-        y     => $coord{y},
+        type  => $type,
     });
+    # and update the Global
+    $clust_color{$id} = [ $color =~ m{(\d+)}g ];
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
 
@@ -89,6 +95,11 @@ sub create : Local {
     $c->stash->{red  } = 255;
     $c->stash->{green} = 255;
     $c->stash->{blue } = 255;
+    $c->stash->{type_opts} = <<"EOO";
+<option value="indoors">Indoors
+<option value="outdoors">Outdoors
+<option value="special">Special
+EOO
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "cluster/create_edit.tt2";
 }
@@ -101,6 +112,7 @@ sub create_do : Local {
 
     my $name  = $c->request->params->{name};
     my $color = $c->request->params->{color};
+    my $type  = $c->request->params->{type};
     for my $f (qw/name color/) {
         if (empty($f)) {
             $c->stash->{mess} = "\u$f cannot be blank.";
@@ -108,21 +120,10 @@ sub create_do : Local {
             return;
         }
     }
-    my %coord = (x => "",  y => "");
-    for my $f (qw/x y/) {
-        my $fld = $c->request->params->{$f};
-        if ($fld !~ m{^\s*\d*\s*$}) {
-            $c->stash->{mess} = "\u$f Coord must be integral.";
-            $c->stash->{template} = "cluster/error.tt2";
-            return;
-        }
-        $coord{$f} = trim($fld);
-    }
     model($c, 'Cluster')->create({
         name  => $name,
         color => $color,
-        x     => $coord{x},
-        y     => $coord{y},
+        type  => $type,
     });
     $c->response->redirect($c->uri_for('/cluster/list'));
 }

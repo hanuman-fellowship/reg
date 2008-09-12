@@ -1956,3 +1956,170 @@ deleting a program is possible but very dangerous
 th label, td <a href>text
     this does not align text - even with valign=top
     solution?
+filling in the pattern from a registration screen search
+    when there are more than one regs.   any way to force
+    the cursor to the end of the field?
+inconsistent use of Program/Rental title as link
+    it's green.  and not always a link to the event.
+what does housekeeping/field staff need?
+    a daily list of rooms that need cleaning and by when?
+    would appending a list of rooms to the going list help?
+where else to use joins?
+lots of repeated code used in searching for a registration
+    where to include/exclude cancelled/zero balance people?
+need elaborate test suite for full life cycle of
+    program creation, registration, housing, re-housing,
+    cancellation, arrival meal list, departure.
+    confirmation, cancellation letters
+    resending letters, seeing history.
+    coming back getting refund
+    using calendar, daily picture
+    members/non-members, persona with popup comment
+    deposit slip to bank.
+    rentals, events, too.
+    adjoining happenings on calendar.
+confirmation notes
+    if a line (in the multi-line text area)
+    contains an abbr all by itself then expand.
+cancellation letter - include the # of days before
+    the event that the cancellation occured.
+dailypic for days before today?
+    go to event/program starting in the past, click on dailypic
+    bombs.
+    if before today() see if there's a config record
+        for the day requested - otherwise make it the
+        minimum config record's date.
+rows for the confnote, comment in a registration?
+    edit.tt2, create.tt2, confnote.tt2
+    +2 from current?  min of 4?
+doc: after duplicating a program you need to:
+    rebook the meeting places
+    reassert the lunches
+    check the summary for anything that needs to be different
+
+    during the initial dup dialog be aware of:
+        verify any unlinked dir, housing cost, tuition cost
+        as you may want these to be different.
+
+    when duplicating mostly one provides new dates and accepts the rest.
+bug? if give empty string to $c->res->output()
+    then it goes to default template intead.
+    not right???
+insist on a thorough testing plan
+    don't let Brajesh say that we'll test it as we go.
+    he knows little about software
+    his only real experience is with old reg which grew organically.
+    this CAN be tested before we go live.
+reg list by name - need same heading as with program view.
+    forget # regs?
+since we don't keep track of rentals individual housing
+    we'll need to verify and clean rooms en masse - even if
+    some of the attendees come late or leave early.  yes?
+doc: deleting housing costs - why?
+    just rename them!
+    don't adjust default to reflect the new system.
+    rename the default so we preserve the history.
+    then add a new default.
+prohibit most edits/deletes of a past registration???
+    why allow a rewriting of history?
+today - sep 2nd:
+    include rentals in housekeeping list
+        and have tents in a separate place?
+        since they're another cluster maybe okay
+    test tents at least.
+
+housekeeping - need tent needed, vacatings
+    so can do a walk through, right?
+    to make sure things are in order for the guests?
+    no garbage/damage etc?
+
+doc: two people in room
+     only one leaves
+     nice to service that bed so it is neat
+     for the remaining person.
+TODO:
+run through a complete cycle
+    create program
+    register online and manual
+    receive registration, housing, conf letter
+    arrival
+    housekeeping, coming/going
+
+    variations - member, come early, 
+    multiple conf notes
+late notices - paged output?
+    what else on the page?
+dup rentals
+box with label (both or just one) on daily pic
+    new table - annotations
+    one attr is cluster foreign key
+    label, labx, laby, box x1/y1 x2/y2
+different fonts for GD?
+    for bathrooms
+okay to register for same program twice?
+    for housing weirdnesses?
+doc: late notices - personal retreats do not
+        specify where the program is meeting.
+    late notices for Saturday also include Sunday
+doc: when getting an online reservation
+    make sure the "Sharing a room with First Last."
+    looks correct.  If capitalization is not right, fix it.
+    Otherwise won't be able to find the person.
+online reg - sharing with First Last
+    have separate fields for First, Last
+    so that people don't suffix with (husband) or (wife).
+register (online or manual) leads to 
+    a housing choice.  if you go Back at this point to change
+    the housing type and then Forward again you will
+    add _another_ registration!
+write the F, M, X, R in colors?
+    they're not very visible
+    all different colors?  no - red - for visible blood.
+    but don't put - or | in red.
+    leave those in black.
+optimizations
+    look carefully at the SQL debug output
+        consolidate multiple queries into one
+        and use cheap memory wisely
+    create indices
+    use joins when you can as well.
+
+    in Lookup->init($c) do a search and initialize globals:
+
+    %clust_colors (key of cluster_id)
+    %houses_in (key of cluster type, value of an array of house objects)
+    %house_ids_in (key of cluster type, value of array of house ids)
+
+    in RetreatCenterDB:
+
+    sub connect {
+        my $new = shift->next::method(@_);
+        <populate pre-cache here>;
+        return $new;
+    }
+    wow.  it worked!
+    fast!
+
+how does the ajax overlib popup from the DailyPic get styled?
+
+viewing a housing cost
+    (link from a program)
+    how to see all?  cumbersome.
+    
+next - outdoor and special housing
+doc: * is wildcard in search for program
+    just like people
+looking for housing needs optimization
+    can we restrict it to tent or not?
+when looking for tent - don't do the PO thingy
+    yes the C
+dispense with the ORM thing - use DBH directly
+    to select distinct house_id from config where
+        complex boolean and house_id in (x, y, z)
+         to find houses that are not free.
+    test cases?
+make a list of complex test cases
+    housing conundrums
+Unknown - "No longer occupied"
+reports should respect the deceased attr
+    what else?

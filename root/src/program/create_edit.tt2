@@ -3,7 +3,7 @@
 <script type="text/javascript">init_tabs(4, 0, 1);</script>
 
 [% id = program.id %]
-<h2>Programs</h2>
+<h2>Programs[% dup_message %]</h2>
 <form action=[% "/program/" _ form_action %]
       name=form
       method=POST
@@ -201,7 +201,11 @@ Finance
 <th align=right valign=top>Program Image</th>
 <td colspan=2>
 [% IF program.image %]
-<img src="[% Catalyst.uri_for('/static/images/pth-') _ program.id _ '.jpg' %]"><br>
+<img src="[% program.image_file %]"><br>
+[% ELSE %]
+    [% IF dup_image %]
+        <img src=[% dup_image %]><br>
+    [% END %]
 [% END %]
 <input type=file name=image>
 </td>
@@ -216,6 +220,7 @@ Finance
 [% END %]
 </select>
 </td>
+<td style="left-margin: 1in;"><input type=submit value="Submit"></td>
 </tr>
 
 </table>

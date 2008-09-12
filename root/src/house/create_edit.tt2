@@ -50,7 +50,13 @@
 
 <tr>
 <th align=right>Display Code</th>
-<td><input type=text name=disp_code value="[% house.disp_code %]" size=2></td>
+<td><input type=text name=disp_code value="[% house.disp_code %]" size=4></td>
+<td rowspan=7>
+A - above<br>
+B - Below<br>
+L - Left<br>
+R - Right<br>
+t - truncate name
 </tr>
 
 <tr><td></td><td><input type=checkbox name=inactive value='yes' [% inactive %]> Inactive</td></tr>

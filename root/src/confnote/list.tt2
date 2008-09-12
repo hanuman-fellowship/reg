@@ -1,0 +1,24 @@
+<h2>Confirmation Notes</h2>
+<a href=[% Catalyst.uri_for('/confnote/create') %]>Add</a>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=center>Action&nbsp;&nbsp;</th>
+<th align=left>Abbr</th>
+<th align=left>Expansion</th>
+</tr>
+
+<!-- sorry for the long line below.
+     newlines and spaces end up showing in the page :(
+-->
+[% FOREACH cf IN confnotes %]
+<tr>
+<td valign=top><a href="/confnote/update/[% cf.id %]">Edit</a>&nbsp;&nbsp;&nbsp;<a href="/confnote/delete/[% cf.id %]" onclick="return confirm('Okay to Delete confirmation note - [% cf.abbr %]?');">Del</a></td>
+<td valign=top>[% cf.abbr %]</td>
+<td>[% cf.expansion_br %]</td>
+</tr>
+[% END %]
+
+</table>
+</ul>

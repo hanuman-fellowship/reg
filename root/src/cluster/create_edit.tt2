@@ -80,7 +80,7 @@ function colorSet(r, g, b) {
 <tr>
 <td align=right><span class="required">*</span> Color</td>
 <td><input type=text id=color_val name=color value="[% cluster.color %]"></td>
-<td rowspan=4>
+<td rowspan=5>
     <table border=1>
     <tr>
     <td id=swatch colspan=4></td>
@@ -104,13 +104,12 @@ function colorSet(r, g, b) {
 </tr>
 
 <tr>
-<td align=right>X Coord</td>
-<td><input type=text name=x value="[% cluster.x %]" size=4></td>
-</tr>
-
-<tr>
-<td align=right>Y Coord</td>
-<td><input type=text name=y value="[% cluster.y %]" size=4></td>
+<td align=right valign=top>Type</td>
+<td>
+<select name=type>
+[% type_opts %]
+</select>
+</td>
 </tr>
 
 <tr>

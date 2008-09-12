@@ -1,0 +1,38 @@
+<h1>[% IF tent %]Campground[% ELSE %]Housekeeping[% END %] Report<br>[% the_date.format("%A %B %e, %Y") %]</h1>
+<a href="/listing/housekeeping/[% tent %]/[% prev_date %]">Prev</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/listing/housekeeping/[% tent %]/[% next_date %]">Next</a>
+<hr width=500 align=left>
+<h2>Arriving</h2>
+<ul>
+[% prev_clust = '' %]
+[% FOR h IN arriving_houses %]
+    [% IF h.cluster_id != prev_clust %]
+        [% IF prev_clust %]
+        </ul>
+        [% END %]
+        <h3>[% h.cluster.name %]</h3><ul>
+        [% prev_clust = h.cluster_id %]
+    [% END %]
+    [% h.name %]<br>
+[% END %]
+</ul>
+</ul>
+<hr width=500 align=left>
+<h2>Departing</h2>
+<ul>
+[% prev_clust = '' %]
+[% FOR h IN departing_houses %]
+[% name = h.name %]
+    [% IF h.cluster_id != prev_clust %]
+        [% IF prev_clust %]
+        </ul>
+        [% END %]
+        <h3>[% h.cluster.name %]</h3><ul>
+        [% prev_clust = h.cluster_id %]
+    [% END %]
+    [% name %][% next_needed.$name %]<br>
+[% END %]
+</ul>
+</ul>
+<hr width=500 align=left>

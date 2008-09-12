@@ -2,9 +2,9 @@
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <h2>Extra Accounts</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/xaccount/create">Add</a>
-&nbsp;&nbsp;&nbsp;
 <a href="/xaccount/update/[% xaccount.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/xaccount/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/xaccount/delete/[% xaccount.id %]"
 onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>

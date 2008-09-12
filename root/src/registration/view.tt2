@@ -18,6 +18,9 @@ h3 {
 }
 </style>
 <h2>Registration</h2>
+<form name=form action=/registration/seek/[% program.id %]/[% reg.id %]>
+<a href="/registration/update/[% reg.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
 [% IF ! reg.cancelled %]
 <a href="/registration/cancel/[% reg.id %]"
    onclick="return confirm('Okay to Cancel [% reg.person.last %], [% reg.person.first %]?');"
@@ -26,8 +29,6 @@ h3 {
 [% END %]
 <a href="/registration/delete/[% reg.id %]"
 onclick="return confirm('Okay to Delete registration for [% reg.person.first %] [% reg.person.last %]?');">Delete</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/registration/update/[% reg.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 [% IF ! reg.arrived %]
 <a href="/registration/arrived/[% reg.id %]">Arrived</a>
@@ -39,12 +40,14 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
     [% ELSE %]
     <a class=not_sent href="/registration/send_conf/[% reg.id %]">Send Conf</a>
     [% END %]
+    &nbsp;&nbsp;&nbsp;
 [% END %]
-&nbsp;&nbsp;&nbsp;
 <a href="/registration/list_reg_name/[% program.id %]">Other Regs</a>
 [% IF online > 0 %]
 &nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
 [% END %]
+&nbsp;&nbsp;&nbsp;
+<input type=text name=pattern size=7><input type=submit value="Go"></form>
 <p>
 <table cellpadding=2 border=0>
 
@@ -76,7 +79,9 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <tr>
 <th align=right>Membership</th>
 <td>[% IF reg.status %][% reg.status %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free nights.[% ELSIF reg.free_prog_taken %]taking their free program.[% END %][% END %]</td>
+[% IF ceu %]
 <th align=right>CEU License</th><td>[% reg.ceu_license %]</td>
+[% END %]
 </tr>
 
 <tr>
@@ -121,7 +126,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td colspan=3>[% reg.comment_br %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
+<td colspan=3>[% comment %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
 </tr>
 
 <tr>
@@ -220,3 +225,6 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 [% END %]
 </table>
+<script type="text/javascript">
+document.form.pattern.focus();
+</script>
