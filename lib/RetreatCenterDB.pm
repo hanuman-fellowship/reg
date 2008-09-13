@@ -59,6 +59,7 @@ __PACKAGE__->load_classes({
         RentalBooking
         RentalCluster
         ProgramCluster
+        Annotation
     /]
 });
 

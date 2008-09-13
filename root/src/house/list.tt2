@@ -6,6 +6,8 @@ h3 {
 </style>
 <h2>Houses</h2>
 <a href="/house/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/house/toggleCBT>[% cbt_activate %] CB Terrace</a>
 <h3>Rooms</h3>
 <ul>
 <table cellpadding=3 border=0>

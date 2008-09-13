@@ -1,0 +1,66 @@
+<h2>Annotation</h2>
+<ul>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Type</th>
+<td>[% annotation.type %]</td>
+</tr>
+
+<tr>
+<th align=right>Label</th>
+<td>[% annotation.label %]</td>
+</tr>
+
+<tr>
+<th align=right>X</th>
+<td>[% annotation.x %]</td>
+</tr>
+
+<tr>
+<th align=right>Y</th>
+<td>[% annotation.y %]</td>
+</tr>
+
+<tr>
+<th align=right>Shape</th>
+<td>[% annotation.shape %]</td>
+</tr>
+
+<tr>
+<th align=right>X1</th>
+<td>[% annotation.x1 %]</td>
+</tr>
+
+<tr>
+<th align=right>Y1</th>
+<td>[% annotation.y1 %]</td>
+</tr>
+
+<tr>
+<th align=right>X2</th>
+<td>[% annotation.x2 %]</td>
+</tr>
+
+<tr>
+<th align=right>Y2</th>
+<td>[% annotation.y2 %]</td>
+</tr>
+
+<tr>
+<th align=right>Thickness</th>
+<td>[% annotation.thickness %]</td>
+</tr>
+
+<tr>
+<th align=right>Color</th>
+<td>[% annotation.color %]</td>
+</tr>
+
+<tr>
+<th align=right>Inactive</th>
+<td>[% annotation.inactive %]</td>
+</tr>
+
+</table>
+</ul>

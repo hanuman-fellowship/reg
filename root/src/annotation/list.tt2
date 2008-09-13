@@ -1,0 +1,32 @@
+<h2>Annotations</h2>
+<a href=/annotation/create>Add</a>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=left>Type</th>
+<th align=left>Label</th>
+<th align=left>Shape</th>
+<th>Action</th>
+</tr>
+
+[% FOREACH a IN annotations %]
+<tr>
+<td>
+[% a.cluster_type %]
+</td>
+<td>
+[% a.label %]
+</td>
+<td>
+[% a.shape %]
+</td>
+<td>
+<a href="/annotation/update/[% a.id %]">Edit</a>&nbsp;
+<a href="/annotation/delete/[% a.id %]" onclick="return confirm('Okay to Delete [% a.cluster_type %] - [% a.label %] - [% a.shape %]?')">Del</a>
+</td>
+</tr>
+[% END -%]
+
+</table>
+</ul>

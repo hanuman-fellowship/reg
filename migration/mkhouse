@@ -38,6 +38,15 @@ insert into cluster values (
 insert into cluster values (
     11, 'Oak Cabins', '220,240,50', 'indoors'
 );
+insert into cluster values (
+    12, 'CB Terrace', '255,185,185', 'outdoors'
+);
+insert into cluster values (
+    13, 'Miscellaneous', '155,255,110', 'special'
+);
+insert into cluster values (
+    14, 'School', '120,180,220', 'special'
+);
 drop table if exists house;
 CREATE TABLE house (
     id       integer primary key autoincrement,
@@ -60,13 +69,13 @@ INSERT INTO house VALUES(3,'103',2,'','','',1,60,75,1,3,'','A');
 INSERT INTO house VALUES(4,'104B',2,'yes','','',1,60,30,1,4,'','A5');
 INSERT INTO house VALUES(5,'201',2,'','','',2,360,75,2,1,'','A');
 INSERT INTO house VALUES(6,'203',2,'','','',2,400,75,2,3,'','A');
-INSERT INTO house VALUES(7,'SH 1',3,'','','',3,120,270,3,1,'','L');
-INSERT INTO house VALUES(8,'SH 2',7,'','','',3,120,295,3,2,'','L');
-INSERT INTO house VALUES(9,'SH 3',7,'','','',3,120,320,3,3,'','L');
-INSERT INTO house VALUES(10,'SH 4',3,'','','',3,120,345,3,4,'','L');
-INSERT INTO house VALUES(11,'SH 5',1,'','','',3,120,370,3,5,'','L');
-INSERT INTO house VALUES(12,'105H',2,'','','',3,190,75,1,5,'','A5');
-INSERT INTO house VALUES(13,'107',2,'','','',3,230,75,1,7,'','A');
+INSERT INTO house VALUES(7,'SH 1',3,'','','',3,120,270,3,1,'','Lt');
+INSERT INTO house VALUES(8,'SH 2',7,'','','',3,120,295,3,2,'','Lt');
+INSERT INTO house VALUES(9,'SH 3',7,'','','',3,120,320,3,3,'','Lt');
+INSERT INTO house VALUES(10,'SH 4',3,'','','',3,120,345,3,4,'','Lt');
+INSERT INTO house VALUES(11,'SH 5',1,'','','',3,120,370,3,5,'','Lt');
+INSERT INTO house VALUES(12,'105H',2,'','','',3,205,75,1,5,'','A5');
+INSERT INTO house VALUES(13,'107',2,'','','',3,245,75,1,7,'','A');
 INSERT INTO house VALUES(14,'108BH',2,'yes','','',3,170,30,1,8,'','A10');
 INSERT INTO house VALUES(15,'109',2,'','','',3,100,100,1,9,'','L');
 INSERT INTO house VALUES(16,'110',4,'','','',3,150,100,1,10,'','R');
@@ -84,8 +93,8 @@ INSERT INTO house VALUES(27,'202',4,'','','',3,303,30,2,2,'','A');
 INSERT INTO house VALUES(28,'204',4,'','','',3,360,30,2,4,'','A');
 INSERT INTO house VALUES(29,'206',4,'','','',3,417,30,2,6,'','A');
 INSERT INTO house VALUES(30,'208',4,'','','',3,510,30,2,8,'','A');
-INSERT INTO house VALUES(31,'205',2,'','','',3,530,75,2,5,'','A');
-INSERT INTO house VALUES(32,'207',2,'','','',3,570,75,2,7,'','A');
+INSERT INTO house VALUES(31,'205',2,'','','',3,545,75,2,5,'','A');
+INSERT INTO house VALUES(32,'207',2,'','','',3,585,75,2,7,'','A');
 INSERT INTO house VALUES(33,'211',2,'','','',3,440,125,2,11,'','L');
 INSERT INTO house VALUES(34,'212B',2,'yes','','',3,490,125,2,12,'','R');
 INSERT INTO house VALUES(35,'213',2,'','','',3,440,150,2,13,'','L');
@@ -94,11 +103,11 @@ INSERT INTO house VALUES(37,'215',2,'','','',3,440,175,2,15,'','L');
 INSERT INTO house VALUES(38,'216B',2,'yes','','',3,490,175,2,16,'','R');
 INSERT INTO house VALUES(39,'217',2,'','','',3,440,200,2,17,'','L');
 INSERT INTO house VALUES(40,'218B',2,'yes','','',3,490,200,2,18,'','R');
-INSERT INTO house VALUES(41,'RAM 1A',2,'','','',3,300,270,4,1,'','L');
-INSERT INTO house VALUES(42,'RAM 1B',2,'','','',3,300,295,4,2,'','L');
-INSERT INTO house VALUES(43,'RAM 2A',2,'','','',3,300,320,4,3,'','L');
-INSERT INTO house VALUES(44,'RAM 2B',2,'','','',3,300,345,4,4,'','L');
-INSERT INTO house VALUES(45,'RAM 2C',2,'','','',3,300,370,4,5,'','L');
+INSERT INTO house VALUES(41,'RAM 1A',2,'','','',3,300,270,4,1,'','Lt');
+INSERT INTO house VALUES(42,'RAM 1B',2,'','','',3,300,295,4,2,'','Lt');
+INSERT INTO house VALUES(43,'RAM 2A',2,'','','',3,300,320,4,3,'','Lt');
+INSERT INTO house VALUES(44,'RAM 2B',2,'','','',3,300,345,4,4,'','Lt');
+INSERT INTO house VALUES(45,'RAM 2C',2,'','','',3,300,370,4,5,'','Lt');
 
 -- Oaks own text
 -- 30 and 75 for x 60+n*25 for y
@@ -180,8 +189,8 @@ INSERT INTO house VALUES(106,'MAD 3',1,'','yes','yes',3,310,85,8,3,'','Lt');
 INSERT INTO house VALUES(107,'MAD 5',1,'','yes','yes',3,310,110,8,5,'','Lt');
 INSERT INTO house VALUES(108,'MAD 8',1,'','yes','yes',3,310,135,8,8,'','Lt');
 INSERT INTO house VALUES(109,'MAD 10',1,'','yes','yes',3,310,160,8,10,'','Lt');
-INSERT INTO house VALUES(110,'MAD A',1,'','yes','yes',3,310,185,8,11,'yes','Lt');
-INSERT INTO house VALUES(111,'MAD B',1,'','yes','yes',3,310,210,8,12,'yes','Lt');
+INSERT INTO house VALUES(110,'MAD A',1,'','yes','yes',3,350,160,8,11,'yes','Lt');
+INSERT INTO house VALUES(111,'MAD B',1,'','yes','yes',3,390,160,8,12,'yes','Lt');
 
 -- Knoll own - 9
 -- 380 x
@@ -197,15 +206,129 @@ INSERT INTO house VALUES(116,'KNOLL 9',1,'','yes','yes',3,440,60,10,12,'','Lt');
 
 -- Oak Cabins (1-9) - 11
 -- 440, 485 x, y 270+n*25
-INSERT INTO house VALUES(117,'OC 1',1,'','','',3,440,270,11,1,'','Lt');
-INSERT INTO house VALUES(118,'OC 2',1,'','','',3,440,295,11,2,'','Lt');
-INSERT INTO house VALUES(119,'OC 3',1,'','','',3,440,320,11,3,'','Lt');
-INSERT INTO house VALUES(120,'OC 4',1,'','','',3,440,345,11,4,'','Lt');
-INSERT INTO house VALUES(121,'OC 5',1,'','','',3,485,270,11,5,'','Lt');
-INSERT INTO house VALUES(122,'OC 6',1,'','','',3,485,295,11,6,'','Lt');
-INSERT INTO house VALUES(123,'OC 7',1,'','','',3,485,320,11,7,'','Lt');
-INSERT INTO house VALUES(124,'OC 8',1,'','','',3,485,345,11,8,'','Lt');
-INSERT INTO house VALUES(125,'OC 9',1,'','','',3,485,370,11,9,'','Lt');
+INSERT INTO house VALUES(117,'OC 1',2,'','','',3,440,270,11,1,'','Lt');
+INSERT INTO house VALUES(118,'OC 2',2,'','','',3,440,295,11,2,'','Lt');
+INSERT INTO house VALUES(119,'OC 3',2,'','','',3,440,320,11,3,'','Lt');
+INSERT INTO house VALUES(120,'OC 4',2,'','','',3,440,345,11,4,'','Lt');
+INSERT INTO house VALUES(121,'OC 5',2,'','','',3,440,370,11,5,'','Lt');
+INSERT INTO house VALUES(122,'OC 6',2,'','','',3,485,270,11,6,'','Lt');
+INSERT INTO house VALUES(123,'OC 7',2,'','','',3,485,295,11,7,'','Lt');
+INSERT INTO house VALUES(124,'OC 8',2,'','','',3,485,320,11,8,'','Lt');
+INSERT INTO house VALUES(125,'OC 9',2,'','','',3,485,345,11,9,'','Lt');
+
+-- CB Terrace - 50 tent spaces in a pinch
+INSERT INTO house VALUES(126,'CBT 1',1,'','yes','',9,250,210,12,1,'','Lt');
+INSERT INTO house VALUES(127,'CBT 2',1,'','yes','',9,250,235,12,2,'','Lt');
+INSERT INTO house VALUES(128,'CBT 3',1,'','yes','',9,250,260,12,3,'','Lt');
+INSERT INTO house VALUES(129,'CBT 4',1,'','yes','',9,250,285,12,4,'','Lt');
+INSERT INTO house VALUES(130,'CBT 5',1,'','yes','',9,250,310,12,5,'','Lt');
+INSERT INTO house VALUES(131,'CBT 6',1,'','yes','',9,250,335,12,6,'','Lt');
+INSERT INTO house VALUES(132,'CBT 7',1,'','yes','',9,250,360,12,7,'','Lt');
+INSERT INTO house VALUES(133,'CBT 8',1,'','yes','',9,250,385,12,8,'','Lt');
+INSERT INTO house VALUES(134,'CBT 9',1,'','yes','',9,250,410,12,9,'','Lt');
+INSERT INTO house VALUES(135,'CBT 10',1,'','yes','',9,250,435,12,10,'','Lt');
+--
+INSERT INTO house VALUES(136,'CBT 11',1,'','yes','',9,295,210,12,11,'','Lt');
+INSERT INTO house VALUES(137,'CBT 12',1,'','yes','',9,295,235,12,12,'','Lt');
+INSERT INTO house VALUES(138,'CBT 13',1,'','yes','',9,295,260,12,13,'','Lt');
+INSERT INTO house VALUES(139,'CBT 14',1,'','yes','',9,295,285,12,14,'','Lt');
+INSERT INTO house VALUES(140,'CBT 15',1,'','yes','',9,295,310,12,15,'','Lt');
+INSERT INTO house VALUES(141,'CBT 16',1,'','yes','',9,295,335,12,16,'','Lt');
+INSERT INTO house VALUES(142,'CBT 17',1,'','yes','',9,295,360,12,17,'','Lt');
+INSERT INTO house VALUES(143,'CBT 18',1,'','yes','',9,295,385,12,18,'','Lt');
+INSERT INTO house VALUES(144,'CBT 19',1,'','yes','',9,295,410,12,19,'','Lt');
+INSERT INTO house VALUES(145,'CBT 20',1,'','yes','',9,295,435,12,20,'','Lt');
+--
+INSERT INTO house VALUES(146,'CBT 21',1,'','yes','',9,340,210,12,21,'','Lt');
+INSERT INTO house VALUES(147,'CBT 22',1,'','yes','',9,340,235,12,22,'','Lt');
+INSERT INTO house VALUES(148,'CBT 23',1,'','yes','',9,340,260,12,23,'','Lt');
+INSERT INTO house VALUES(149,'CBT 24',1,'','yes','',9,340,285,12,24,'','Lt');
+INSERT INTO house VALUES(150,'CBT 25',1,'','yes','',9,340,310,12,25,'','Lt');
+INSERT INTO house VALUES(151,'CBT 26',1,'','yes','',9,340,335,12,26,'','Lt');
+INSERT INTO house VALUES(152,'CBT 27',1,'','yes','',9,340,360,12,27,'','Lt');
+INSERT INTO house VALUES(153,'CBT 28',1,'','yes','',9,340,385,12,28,'','Lt');
+INSERT INTO house VALUES(154,'CBT 29',1,'','yes','',9,340,410,12,29,'','Lt');
+INSERT INTO house VALUES(155,'CBT 30',1,'','yes','',9,340,435,12,30,'','Lt');
+--
+INSERT INTO house VALUES(156,'CBT 31',1,'','yes','',9,385,210,12,31,'','Lt');
+INSERT INTO house VALUES(157,'CBT 32',1,'','yes','',9,385,235,12,32,'','Lt');
+INSERT INTO house VALUES(158,'CBT 33',1,'','yes','',9,385,260,12,33,'','Lt');
+INSERT INTO house VALUES(159,'CBT 34',1,'','yes','',9,385,285,12,34,'','Lt');
+INSERT INTO house VALUES(160,'CBT 35',1,'','yes','',9,385,310,12,35,'','Lt');
+INSERT INTO house VALUES(161,'CBT 36',1,'','yes','',9,385,335,12,36,'','Lt');
+INSERT INTO house VALUES(162,'CBT 37',1,'','yes','',9,385,360,12,37,'','Lt');
+INSERT INTO house VALUES(163,'CBT 38',1,'','yes','',9,385,385,12,38,'','Lt');
+INSERT INTO house VALUES(164,'CBT 39',1,'','yes','',9,385,410,12,39,'','Lt');
+INSERT INTO house VALUES(165,'CBT 40',1,'','yes','',9,385,435,12,40,'','Lt');
+--
+INSERT INTO house VALUES(166,'CBT 41',1,'','yes','',9,430,210,12,41,'','Lt');
+INSERT INTO house VALUES(167,'CBT 42',1,'','yes','',9,430,235,12,42,'','Lt');
+INSERT INTO house VALUES(168,'CBT 43',1,'','yes','',9,430,260,12,43,'','Lt');
+INSERT INTO house VALUES(169,'CBT 44',1,'','yes','',9,430,285,12,44,'','Lt');
+INSERT INTO house VALUES(170,'CBT 45',1,'','yes','',9,430,310,12,45,'','Lt');
+INSERT INTO house VALUES(171,'CBT 46',1,'','yes','',9,430,335,12,46,'','Lt');
+INSERT INTO house VALUES(172,'CBT 47',1,'','yes','',9,430,360,12,47,'','Lt');
+INSERT INTO house VALUES(173,'CBT 48',1,'','yes','',9,430,385,12,48,'','Lt');
+INSERT INTO house VALUES(174,'CBT 49',1,'','yes','',9,430,410,12,49,'','Lt');
+INSERT INTO house VALUES(175,'CBT 50',1,'','yes','',9,430,435,12,50,'','Lt');
+
+-- Miscellaneous
+INSERT INTO house VALUES(176,'GDN 3',2,'','','',9,100,50,13,1,'','L');
+INSERT INTO house VALUES(177,'OH 3',2,'yes','','',9,100,75,13,2,'','L');
+INSERT INTO house VALUES(178,'KKWC',5,'yes','','',9,100,100,13,3,'','L');
+INSERT INTO house VALUES(179,'LTL HSE',2,'yes','','',9,100,125,13,4,'','L');
+INSERT INTO house VALUES(180,'CC CR',10,'','','',9,100,150,13,5,'','L');
+INSERT INTO house VALUES(181,'CC L',11,'','','',9,100,175,13,6,'','L');
+INSERT INTO house VALUES(182,'OH MAIN',12,'','','',9,100,200,13,7,'','L');
+INSERT INTO house VALUES(183,'SH MAIN',20,'','','',9,100,225,13,8,'','L');
+
+-- School
+INSERT INTO house VALUES(184,'MMS 4-3',7,'','','',9,275,50,14,1,'','Lt');
+INSERT INTO house VALUES(185,'MMS B-4',7,'','','',9,275,75,14,2,'','Lt');
+INSERT INTO house VALUES(186,'MMS C-13',7,'','','',9,275,100,14,3,'','Lt');
+INSERT INTO house VALUES(187,'MMS C-14',7,'','','',9,275,125,14,4,'','Lt');
+INSERT INTO house VALUES(188,'MMS C-16',7,'','','',9,275,150,14,5,'','Lt');
+
+drop table if exists annotation;
+CREATE TABLE annotation (
+    id           integer primary key autoincrement,
+    cluster_type text,
+    label        text,
+    x            integer,
+    y            integer,
+    x1           integer,
+    y1           integer,
+    x2           integer,
+    y2           integer,
+    shape        text,
+    thickness    integer,
+    color        text,
+    inactive     text
+);
+INSERT INTO "annotation" VALUES(5,'indoors','Conference',260,140,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(6,'indoors','Center',280,155,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(7,'indoors','Seminar House',100,245,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(8,'indoors','Ram Cluster',275,245,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(9,'indoors','Oaks Cabins',420,245,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(10,'indoors','B',105,78,NULL,NULL,NULL,NULL,'none',NULL,'255,100,100','');
+INSERT INTO "annotation" VALUES(11,'indoors','B',155,78,NULL,NULL,NULL,NULL,'none',NULL,'255,100,100','');
+INSERT INTO "annotation" VALUES(12,'indoors','B',180,78,NULL,NULL,NULL,NULL,'none',NULL,'255,100,100','');
+INSERT INTO "annotation" VALUES(13,'indoors','B',445,78,NULL,NULL,NULL,NULL,'none',NULL,'255,100,100','');
+INSERT INTO "annotation" VALUES(14,'indoors','B',495,78,NULL,NULL,NULL,NULL,'none',NULL,'255,100,100','');
+INSERT INTO "annotation" VALUES(15,'indoors','B',520,78,NULL,NULL,NULL,NULL,'none',NULL,'255,100,100','');
+INSERT INTO "annotation" VALUES(16,'indoors','Laundry',560,34,NULL,NULL,NULL,NULL,'none',NULL,'170,170,170','');
+INSERT INTO "annotation" VALUES(17,'special','Miscellaneous',75,25,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(18,'special','School',275,25,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(19,'outdoors','Oaks',95,17,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(20,'outdoors','Own',47,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(21,'outdoors','Center',138,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(22,'outdoors','Own',240,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(23,'outdoors','Center',290,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(24,'outdoors','Madrone',257,17,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(25,'outdoors','Own',370,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(26,'outdoors','Center',415,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(27,'outdoors','Knoll',390,17,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
+INSERT INTO "annotation" VALUES(28,'outdoors','CB Terrace',290,188,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
 
 drop table if exists config;
 create table config (

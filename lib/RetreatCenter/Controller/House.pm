@@ -31,6 +31,8 @@ sub list : Local {
         },
         { order_by => 'name' }
     ) ];
+    my ($cbt1) = model($c, 'House')->search({ name => 'CBT 1' });
+    $c->stash->{cbt_activate} = ($cbt1->inactive())? "Activate": "Inactivate";
     $c->stash->{template} = "house/list.tt2";
 }
 
@@ -156,6 +158,19 @@ sub access_denied : Private {
 
     $c->stash->{mess}  = "Authorization denied!";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub toggleCBT : Local {
+    my ($self, $c) = @_; 
+    
+    my ($cbt1) = model($c, 'House')->search({ name => "CBT 1" });
+    my $new_val = ($cbt1->inactive())? "": "yes";
+    model($c, 'House')->search({ name => { 'like', "CBT %" }})
+        ->update({ inactive => $new_val });
+    model($c, 'Annotation')->search({ label => { 'like', "%Terrace%" }})
+        ->update({ inactive => $new_val });
+    $c->response->redirect($c->uri_for('/house/list'));
+    Global->init($c, 1);    # force a reload
 }
 
 1;

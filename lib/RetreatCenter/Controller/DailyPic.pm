@@ -14,9 +14,11 @@ use Global qw/
     %string
     %clust_color
     %houses_in
+    %annotations_for
 /;
 use Util qw/
     model
+    empty
 /;
 
 sub index : Local {
@@ -168,6 +170,30 @@ sub show : Local {
                 . qq! onmouseout="return nd();">\n!
                 ;
     }
+    #
+    # render any annotations for this cluster type
+    #
+    for my $a (@{$annotations_for{$type}} ) {
+        my $color;
+        if (! empty($a->color())) {
+            $color = $dp->colorAllocate($a->color() =~ m{(\d+)}g);
+        }
+        else {
+            $color = $black;
+        }
+        if (! empty($a->label())) {
+            $dp->string(gdGiantFont,
+                        $a->x(), $a->y(),
+                        $a->label(),
+                        $color);
+        }
+        elsif ($a->shape() ne 'none') {
+            my $shape = $a->shape();
+            $dp->$shape($a->x1(), $a->y1(),
+                        $a->x2(), $a->y2(),
+                        $color);
+        }
+    }
     # write the image to be used shortly
     open my $imf, ">", "root/static/images/dailypic.png"
         or die "no dailypic.png: $!\n"; 
@@ -232,7 +258,18 @@ EOT
         if ($type eq $s) {
             $style = "style='font-weight: bold'";
         }
-        $links .= "<a class=details $style href='/dailypic/show/$s/$d8'>\u$s</a>\n";
+        my $keylab;
+        # sorry
+        if ($s eq "indoors") {
+            $keylab = "accesskey='i'><span class=keyed>I</span>ndoors</a>\n";
+        }
+        elsif ($s eq "outdoors") {
+            $keylab = "accesskey='o'><span class=keyed>O</span>utdoors</a>\n";
+        }
+        elsif ($s eq "special") {
+            $keylab = "accesskey='p'>S<span class=keyed>p</span>ecial</a>\n";
+        }
+        $links .= "<a class=details $style href='/dailypic/show/$s/$d8' $keylab\n";
     }
     my $html = <<EOH;
 <head>
@@ -281,9 +318,9 @@ function Send(sex, house_id) {
 <span class=hdr>$dt_fmt</span>
 <p>
 <form method=POST action="/dailypic/show/$type">
-<a class=details href="/dailypic/show/$type/$back">Back</a>
-<a class=details href="/dailypic/show/$type/$next">Next</a>
-<span class=details> Date <input type=text name=date size=10 value='$dt'></span>
+<a href="/dailypic/show/$type/$back" accesskey='b'><span class=keyed>B</span>ack</a>
+<a class=details href="/dailypic/show/$type/$next" accesskey='n'><span class=keyed>N</span>ext</a>
+<span class=details> <span class=keyed>D</span>ate <input type=text name=date size=10 value='$dt' accesskey='d'></span>
 <input class=go type=submit value="Go">
 $links
 </form>

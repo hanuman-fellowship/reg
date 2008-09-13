@@ -25,20 +25,23 @@ our @EXPORT_OK = qw/
     %string
     %clust_color
     %houses_in
+    %annotations_for
 /;
 
 our %string;
 our %clust_color;
 our %houses_in;     # house objects in cluster type
+our %annotations_for;
 
 sub init {
     my ($class, $c, $force) = @_;
     
     return if !$force && %string;      # already done
 
-    %string      = ();
-    %clust_color = ();
-    %houses_in   = ();
+    %string          = ();
+    %clust_color     = ();
+    %houses_in       = ();
+    %annotations_for = ();
     for my $s ($c->model('RetreatCenterDB::String')->all()) {
         $string{$s->the_key} = $s->value;
     }
@@ -53,6 +56,12 @@ sub init {
                })
     ) {
         push @{$houses_in{$clust_type{$h->cluster_id()}}}, $h;      # wow
+    }
+    for my $a ($c->model('RetreatCenterDB::Annotation')->search({
+                   inactive => '',
+               })
+    ) {
+        push @{$annotations_for{$a->cluster_type()}}, $a;           # yeah
     }
 }
 

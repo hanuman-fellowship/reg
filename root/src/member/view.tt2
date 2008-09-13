@@ -27,8 +27,6 @@ Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member
 [% END %]
 </div>
 <ul>
-</table>
-</form>
 [% pays = member.payments %]
 [% IF pays %]
 <div style="float: left; margin-right: .7in">

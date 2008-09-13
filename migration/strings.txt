@@ -82,7 +82,7 @@ mem_credit_hours M-F 9-5, Sat 11-5, and Sun 1-7
 mem_spons_pay_month 25
 mem_spons_pay_6 300 
 sys_last_config_date 20080701
-house_width 8.5
+house_width 8.75
 house_height 20
 house_let 10
 cov_less_color 255,0,0

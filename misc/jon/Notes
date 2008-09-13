@@ -2121,5 +2121,26 @@ dispense with the ORM thing - use DBH directly
 make a list of complex test cases
     housing conundrums
 Unknown - "No longer occupied"
-reports should respect the deceased attr
+reports should respect the deceased attr of people
     what else?
+dailypic goes automatically to Indoors
+    from there you can go to Outdoors or Special
+    have a drop down menu instead off of "DailyPic"?
+should DailyPic (and Calendar) have the link menu of layout at top?
+have a way of specifying which clusters to
+    search for housing in a program.
+    rentals are a different matter.
+        they already have cluster add/remove, for one
+changing a max in a house
+    does not automatically change the config records
+what if someone calls and wants to reserve
+    a personal retreat 2 years from now?
+    config will likely not be ready.
+    the Personal Retreat program for that season
+        has not yet been created.
+        that's what Duplicate Program is for!
+make a way to deal with CB Terrace
+    text box to enter how many tents to make active
+    the rest inactive
+    the annotation goes away if 0.
+check members, projects - edited view, list

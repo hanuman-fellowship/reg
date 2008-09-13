@@ -300,16 +300,19 @@ sub processReg {
                 $hash{program_id} = $pr_hoff{"$season-$pid"};
             }
             else {
-                die "*** missing program id for pr_hoff $season-$pid\n";
+                warn "*** missing program id for pr_hoff $season-$pid\n";
+                return;
             }
         }
         $p_sth->execute($hash{program_id});
         unless (($name, $sdate, $edate) = $p_sth->fetchrow_array()) {
-            die "*** missing program id: '$hash{program_id}'\n";
+            warn "*** missing program id: '$hash{program_id}'\n";
+            return;
         }
     }
     else {
-        die "*** no proper program id: $hash{program_id}!\n";
+        warn "*** no proper program id: $hash{program_id}!\n";
+        return;
     }
     # get or create the person record
     # if already exists - update the record - ONLY if the
