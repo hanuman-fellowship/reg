@@ -84,13 +84,18 @@ sub show : Local {
 
     my $dp = GD::Image->new($width+1, $height+1);
     my $white = $dp->colorAllocate(255,255,255);    # 1st color = background
-    my $black = $dp->colorAllocate(0, 0, 0);
+    my $black = $dp->colorAllocate(  0,  0,  0);
+    my %char_color;
+    for my $c (qw/ M F X R empty_bed resize /) {
+        $char_color{$c} = $dp->colorAllocate(
+                              $string{"dp_$c\_color"} =~ m{(\d+)}g);
+    }
     $dp->rectangle(0, 0, $width, $height, $black);
 
     # we have the array_ref of colors for each color
     # no need to go to the database
     # but each new GD::Image must allocate its own colors ...
-    # so:
+    # so ...
     my %clust_col = map { $_ => $dp->colorAllocate(@{$clust_color{$_}}) }
                     keys %clust_color;
 
@@ -126,6 +131,7 @@ sub show : Local {
         my $code = substr($disp_code, 0, 1);
         my ($offset) = $disp_code =~ m{(\d+)};
         $offset |= 0;
+        # the 3 and 6 below are for margins
         my $x2 = $x1 + $h->max * $string{house_width} + 6;
         my $y2 = $y1 + $string{house_height};
         $dp->rectangle($x1, $y1, $x2, $y2, $black);
@@ -151,14 +157,16 @@ sub show : Local {
             $cur = 0;
             $curmax = $h->max();
         }
+        my $cw = 9.2;       # char_width - seems to work, empirically derived
         # encode the config record in a string
-        my $conf_code = ($sex x $cur)
-                      . ($string{empty_bed_char} x ($curmax - $cur))
-                      . ('|' x ($h->max() - $curmax))
-                      ;
-        $dp->string(gdGiantFont,
-                    $x1+3, $y1+3,
-                    $conf_code, $black);
+        $dp->string(gdGiantFont, $x1+3, $y1+3,
+                    ($sex x $cur), $char_color{$sex})  if $cur;
+        $dp->string(gdGiantFont, $x1+3 + $cw*$cur, $y1+3,
+                    $string{dp_empty_bed_char} x ($curmax - $cur),
+                    $char_color{empty_bed})            if ($curmax - $cur);
+        $dp->string(gdGiantFont, $x1+3 + $cw*$curmax, $y1+3,
+                    $string{dp_resize_char}    x ($h->max() - $curmax),
+                    $char_color{resize})               if $curmax;
         if ($cur == 0) {
             next;       # assume that the config and the
                     # Registrations/RentalBookings are in synch.

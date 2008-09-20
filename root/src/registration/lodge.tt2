@@ -41,9 +41,9 @@
 <td valign=top><input type=submit value="Submit"></td>
 <td>
 <table cellpadding=3>
-<tr><td>C - this room's <b>C</b>luster has been used in this program before</td></tr>
-<tr><td>P - <b>P</b>erfect fit - no resize needed</td></tr>
 <tr><td>O - already <b>O</b>ccupied</td></tr>
+<tr><td>F - <b>F</b>oreign program</td></tr>
+<tr><td>R - <b>R</b>esize needed</td></tr>
 </table>
 </td>
 </tr>
@@ -51,7 +51,7 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td align=right>Force this house</td><td><input type=text name=force_house size=5></td></tr>
+<td align=right>Force this house</td><td><input type=text name=force_house size=10 value='[% force_house %]'></td></tr>
 
 </table>
 </form>

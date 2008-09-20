@@ -2144,3 +2144,100 @@ make a way to deal with CB Terrace
     the rest inactive
     the annotation goes away if 0.
 check members, projects - edited view, list
+cabin/room/tent - mark the houses as such
+    search for this in registration comment
+    OR have a separate field?   yes.
+        have 'relay' put it in a separate field
+    but don't mess with old reg way
+        make it conditional
+    not needed online if tent choice
+    cvs check-in of online software
+pay Shankar for his help with:
+    linux installation - when it is ready
+    cvs repository move to that machine
+        development sandbox - my machine
+        cvs repository
+        production - check out from repository to
+            live place
+    mst connect() conundrum
+yes, have program_cluster preset options association with program
+    to drive a house search for a registration
+    an order to it.
+    search first first, and, only if no results, then second.
+    an attr of program_cluster - the_order
+    add - next in sequence at end => max +1
+    delete - just remove
+    have "move up", "move down" to rearrange?
+    graphics <input type=image src="lala.gif">
+        with X, ^ and v
+        and an add
+        Likely useful and plus I'll learn some new things!
+    aim is to speed up the search and to limit the
+        offered options to the ones you likely want to choose from
+put cabin/room preference on the housing assign page
+focus on start date field in manual personal retreat registration
+    where is focus otherwise?
+force Housing - what if that room is full up?
+is a cluster view needed?
+    what to do with large clusters?
+    scroll horizontally?
+    or have a room(s) view?
+        where you select a few rooms to focus on?
+email all in a program
+when clicking on 'registrations'
+    either from the program screen or from the
+        list of all programs
+    go to the first person's screen with focus on the search box
+        to enable finding others
+    there's always the All Registrations link
+    and on first entry as program staff go to the
+        first person in the current program.
+    more efficient!
+!!! going _back_ with the browser button is problematic.
+    house someone, go back and house them again.
+        the first house is not vacated
+            the config record is wrong
+lodging for a FULL program???
+    test it!
+    get clusters for the Normal program
+add_config can take a long time when
+    adding a program/rental far into the future.
+    the browser will time out! :(
+creating indices helps, yes????
+    it seemed to.   try again.
+prohibit changing a date of a program
+    after there are registrations?
+on DailyPic have Personal Retreats
+    at the bottom?   It's always at top and doesn't need to be.
+    perhaps even eliminate it entirely?
+string for person color on DailyPic?
+do we need the ClusterView?
+sort the list of Clusters offered in Rental cluster reserve
+cache house names as well.
+cache user / role stuff?
+need search box on program view
+config attributes
+    no need to get House object when getting the Config record, right?
+    program_id, rental_id - how about JUST rental as a boolean?
+
+    make it tight!!!
+does forcing a lodging enforce the house max?
+    not in the case of tents yet...
+    tents are okay to force but not indoors?
+    right.   if you try to force too many people in a room
+        indoors it will balk and tell you you can't do it!
+doc: you can force as many people as you wish into a tent
+    and it will not complain
+test: the tricky and weird cases...
+    have a person all set to be lodged in a room
+    for all days of a program.  then a personal retreat
+    person comes in to take just one of the days filling up
+    that room for one day and spoiling it all.
+    can't even force it.
+    that PR would need to be put there with an 'F' in the codes.
+    cabin/tent - resort the list of available houses in case
+        the first choice is not the preferred type ...
+        if there is a preferred type, that is.
+we DO need the program id in config - to allow the 
+    showing of the 'F' in case someone in anothe program
+    is trying to get into that room.

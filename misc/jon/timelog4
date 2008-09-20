@@ -34,6 +34,34 @@ Sep 11 12:10-12:35, 1:10-4:30, 10:20-10:35
     all tents in!
     next - Annotations, then optimize search for house
     checking in - finally
-Sep 12 10:10-11:15, 12:20-1:00, 8:10-8:45, 9:10-9:40, 11:50-
+Sep 12 10:10-11:15, 12:20-1:00, 8:10-8:45, 9:10-9:40, 11:50-1:30
     adding special houses and CBT
     Annotations for cluster labeling and bathroom/laundry room
+        took a while but nice!
+Sep 13 12:00-1:00, 12:45-1:15
+    poking, asking, tweaking, pondering
+    darkend B, Laundry
+    added seq to program_cluster
+    added cabin
+    next - modify dreg1, relay for cabin/room as separate checkboxes
+         - add cabin to registration record??  yes.
+            it is not a choice of two, won't change like h_type
+Sep 14 1:00-2:00, 2:30-6:35
+    the "Move" link on the DailyPic popup
+    select, unselect of clusters
+        took some doing but it's done.  and well.
+        now to use it.
+Sep 15 1:30-3:00
+    color in DailyPic
+    cacheing house names
+    only columns not objects for reg list
+Sep 16 10:00-1:00
+    used arrow for Move in dp popup
+    using ProgramCluster for lodging search
+    resorting, reorganizing lodging - intense!
+Sep 17 11:30-1:30
+    polishing housing reservations in the edge cases
+    make some example weird test cases for the program staff to try.
+    normal cases - note only rooms in assigned clusters are presented.
+        and only of proper type tent/bath/center.
+    need to be aware of cabin/room issue next.

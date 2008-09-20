@@ -220,6 +220,7 @@ $sth = $dbh->prepare("
     from config c, house h
     where c.house_id = h.id
       and (c.cur > h.max or c.curmax > h.max)
+      and h.tent != 'yes'
 ");
 $sth->execute();
 $err = 0;

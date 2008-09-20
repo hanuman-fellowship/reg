@@ -260,6 +260,9 @@ sub etrim {
 sub empty {
     my ($s) = @_;
 
+    if (! defined $s) {
+        return 1;
+    }
     return $s =~ m{^\s*$};
 
 }

@@ -12,6 +12,7 @@ __PACKAGE__->add_columns(qw/
     bath
     tent
     center
+    cabin
     priority
     x
     y

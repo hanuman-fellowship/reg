@@ -8,6 +8,7 @@ __PACKAGE__->table('program_cluster');
 __PACKAGE__->add_columns(qw/
     program_id
     cluster_id
+    seq
 /);
 __PACKAGE__->set_primary_key(qw/
     program_id

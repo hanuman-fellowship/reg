@@ -15,12 +15,16 @@ h3 {
 <th align=left>Name</th>
 <th align=center>Max</th>
 <th align=center>Bath</th>
+<th align=center>Cabin</th>
+<th align=center>Inactive</th>
 </tr>
 [% FOREACH h IN rooms %]
 <tr>
 <td><a href="/house/view/[% h.id %]">[% h.name %]</a></td>
 <td align=right>[% h.max %]</td>
 <td align=center>[% IF h.bath %]<img src=/static/images/checked.gif>[% END %]</td>
+<td align=center>[% IF h.cabin %]<img src=/static/images/checked.gif>[% END %]</td>
+<td align=center>[% IF h.inactive %]<img src=/static/images/checked.gif>[% END %]</td>
 </tr>
 [% END %]
 </table>
@@ -31,11 +35,13 @@ h3 {
 <tr>
 <th align=left>Name</th>
 <th align=center>Center</th>
+<th align=center>Inactive</th>
 </tr>
 [% FOREACH t IN tents %]
 <tr>
 <td><a href="/house/view/[% t.id %]">[% t.name %]</a></td>
 <td align=center>[% IF t.center %]<img src=/static/images/checked.gif>[% END %]</td>
+<td align=center>[% IF t.inactive %]<img src=/static/images/checked.gif>[% END %]</td>
 </tr>
 [% END %]
 </table>

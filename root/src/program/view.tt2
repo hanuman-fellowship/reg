@@ -1,7 +1,80 @@
 [% id = program.id %]
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
-<script type="text/javascript">init_tabs(4, [% id %], 1);</script>
+<script type="text/javascript">
+
+init_tabs(4, [% id %], 1);
+
+// prepare for an Ajax call:
+var xmlhttp = false;
+var ua = navigator.userAgent.toLowerCase();
+if (!window.ActiveXObject)
+    xmlhttp = new XMLHttpRequest();
+else if (ua.indexOf('msie 5') == -1)
+    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+else
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+function Get() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var both = xmlhttp.responseText.split('XX');
+        document.getElementById('UNselected').innerHTML = both[0];
+        document.getElementById('selected')  .innerHTML = both[1];
+    }
+}
+
+function select_cluster(cluster_id) {
+    var url = 'http://localhost:3000/program/select_cluster/'
+            + [% id %]
+            + '/'
+            + cluster_id
+            ;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = Get;
+    xmlhttp.send(null);
+
+    return true;
+}
+
+function UNselect_cluster(cluster_id) {
+    var url = 'http://localhost:3000/program/UNselect_cluster/'
+            + [% id %]
+            + '/'
+            + cluster_id
+            ;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = Get;
+    xmlhttp.send(null);
+
+    return true;
+}
+
+function cluster_up(cluster_id) {
+    var url = 'http://localhost:3000/program/cluster_up/'
+            + [% id %]
+            + '/'
+            + cluster_id
+            ;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = Get;
+    xmlhttp.send(null);
+
+    return true;
+}
+
+function cluster_down(cluster_id) {
+    var url = 'http://localhost:3000/program/cluster_down/'
+            + [% id %]
+            + '/'
+            + cluster_id
+            ;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = Get;
+    xmlhttp.send(null);
+
+    return true;
+}
+</script>
 
 <h2>Programs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
@@ -325,7 +398,34 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </tr>
 
 </table>
+
+[% IF edit_okay %]
+<!-- Cluster Selection -->
+<div style="margin-left: 1in;">
+<table cellspacing=5 cellpadding=5 border=0>
+
+<tr>
+<td colspan=2 align=center
+    style="font-weight: bold; font-size: 14pt">Housing Clusters
+</td>
+</tr>
+
+<tr>
+
+<td align=center valign=top>
+<div id=UNselected style="width: 250px">[% UNselected_clusters %]</div>
+</td>
+
+<td align=center valign=top>
+<div id=selected style="width: 250px">[% selected_clusters %]</div>
+</td>
+
+</tr>
+</table>
 </div>
+</div>
+
+[% END %]
 
 <!-- Finance -->
 <div id="content4" class="tabcontent" style="display: none">

@@ -58,6 +58,7 @@ sub _get_data {
         bath
         tent
         center
+        cabin
         inactive
     /) {
         $hash{$f} = "" unless exists $hash{$f};
@@ -65,6 +66,10 @@ sub _get_data {
     if ($hash{center}) {
         # center implies tent
         $hash{tent} = "yes";
+    }
+    if ($hash{tent}) {
+        # if tent can't be a cabin
+        $hash{cabin} = "";
     }
     @mess = ();
     if (empty($hash{name})) {
@@ -92,10 +97,11 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $h = $c->stash->{house} = model($c, 'House')->find($id);
-    $c->stash->{bath}     = $h->bath  ? "checked": "";
-    $c->stash->{tent}     = $h->tent  ? "checked": "";
-    $c->stash->{center}   = $h->center? "checked": "";
-    $c->stash->{inactive} = $h->inactive? "checked": "";
+    $c->stash->{bath}     = $h->bath()    ? "checked": "";
+    $c->stash->{tent}     = $h->tent()    ? "checked": "";
+    $c->stash->{center}   = $h->center()  ? "checked": "";
+    $c->stash->{cabin}    = $h->cabin()   ? "checked": "";
+    $c->stash->{inactive} = $h->inactive()? "checked": "";
     $c->stash->{cluster_opts} =
         [ model($c, 'Cluster')->search(
             undef,

@@ -1,7 +1,7 @@
 <h1>[% IF tent %]Campground[% ELSE %]Housekeeping[% END %] Report<br>[% the_date.format("%A %B %e, %Y") %]</h1>
-<a href="/listing/housekeeping/[% tent %]/[% prev_date %]">Prev</a>
+<a href="/listing/housekeeping/[% tent %]/[% prev_date %]" accesskey='b'><span class=keyed>B</span>ack</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/listing/housekeeping/[% tent %]/[% next_date %]">Next</a>
+<a href="/listing/housekeeping/[% tent %]/[% next_date %]" accesskey='n'><span class=keyed>N</span>ext</a>
 <hr width=500 align=left>
 <h2>Arriving</h2>
 <ul>

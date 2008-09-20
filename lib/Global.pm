@@ -25,23 +25,30 @@ our @EXPORT_OK = qw/
     %string
     %clust_color
     %houses_in
+    %houses_in_cluster
+    %house_name_of
     %annotations_for
 /;
 
 our %string;
 our %clust_color;
 our %houses_in;     # house objects in cluster type
+our %houses_in_cluster;         # ??? better name?
+our %house_name_of;
 our %annotations_for;
 
 sub init {
     my ($class, $c, $force) = @_;
     
-    return if !$force && %string;      # already done
+    return if %string && ! $force;      # already done
+                                        # and we don't want to force it again
 
-    %string          = ();
-    %clust_color     = ();
-    %houses_in       = ();
-    %annotations_for = ();
+    %string            = ();
+    %clust_color       = ();
+    %houses_in         = ();
+    %houses_in_cluster = ();
+    %house_name_of     = ();
+    %annotations_for   = ();
     for my $s ($c->model('RetreatCenterDB::String')->all()) {
         $string{$s->the_key} = $s->value;
     }
@@ -55,7 +62,9 @@ sub init {
                    inactive => '',
                })
     ) {
+        $house_name_of{$h->id()} = $h->name();
         push @{$houses_in{$clust_type{$h->cluster_id()}}}, $h;      # wow
+        push @{$houses_in_cluster{$h->cluster_id()}},      $h;
     }
     for my $a ($c->model('RetreatCenterDB::Annotation')->search({
                    inactive => '',

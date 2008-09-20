@@ -36,6 +36,11 @@
 </tr>
 
 <tr>
+<th align=right>Cabin</th>
+<td>[% house.cabin %]</td>
+</tr>
+
+<tr>
 <th align=right>Priority</th>
 <td>[% house.priority %]</td>
 </tr>

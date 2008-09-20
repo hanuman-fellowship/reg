@@ -91,7 +91,8 @@ create table leader_program (
 drop table if exists program_cluster;
 create table program_cluster (
     program_id integer,
-    cluster_id integer
+    cluster_id integer,
+    seq        integer  -- can't be 'order'
 );
 drop table if exists summary;
 create table summary (

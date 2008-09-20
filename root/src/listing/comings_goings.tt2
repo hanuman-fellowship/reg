@@ -1,12 +1,12 @@
 <h2>For [% date.format("%A, %B %e") %]</h2>
-<a href=/listing/comings_goings/[% prev_date %]>Prev</a>
+<a href=/listing/comings_goings/[% prev_date %] accesskey='b'><span class=keyed>B</span>ack</a>
 &nbsp;&nbsp;&nbsp;
-<a href=/listing/comings_goings/[% next_date %]>Next</a>
+<a href=/listing/comings_goings/[% next_date %] accesskey='n'><span class=keyed>N</span>ext</a>
 <h3>Coming</h3>
 <ul>
 <table cellpadding=3>
 <tr>
-<th align=left>Name</th>
+<th align=left width=170px>Name</th>
 <th align=left>Program/Rental</th>
 </tr>
 
@@ -40,7 +40,7 @@
 <ul>
 <table cellpadding=3>
 <tr>
-<th align=left>Name</th>
+<th align=left width=170px>Name</th>
 <th align=left>Program/Rental</th>
 </tr>
 

@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Registration;
 use base 'Catalyst::Controller';
 
+use DBIx::Class::ResultClass::HashRefInflator;      # ???
+
 use lib '../../';       # so you can do a perl -c here.
 use Date::Simple qw/
     date
@@ -21,9 +23,14 @@ use Util qw/
     link_share
     normalize
 /;
-use Global qw/%string/;
-    # damn awkward to keep this thing initialized... :(
+    # damn awkward to keep this Global thing initialized... :(
     # is there no way to do this better???
+use Global qw/
+    %string
+    %house_name_of
+    %houses_in
+    %houses_in_cluster
+/;
 use Template;
 use Mail::SendEasy;
 
@@ -146,7 +153,43 @@ sub list_reg_name : Local {
         $pref_first = "";
     }
     $c->stash->{pat} = $pat;
+
     my $pr = model($c, 'Program')->find($prog_id);
+
+#    my ($pr1) = model($c, 'Program')->search(
+#        { id      => $prog_id },
+#        { columns => [ qw/ name edate sdate /] }
+#    );
+#$c->log->info('=' x 50);
+#$c->log->info("stuff = $pr1");
+#$c->log->info('hi' . $pr1->name . $pr1->edate . $pr1->title);
+#$c->log->info("pr = " . $pr);
+#
+#    my $href = $rs->find($prog_id, { columns => ['name', 'edate']});
+#$c->log->info(Dumper($href));
+#    my $href = $rs->find($prog_id);
+#$c->log->info(Dumper($href));
+#$c->log->info("=====> hashref $href->{name} and $href->{edate}");
+#
+#my $rs = $c->model('RetreatCenterDB::Program');
+#RetreatCenterDB::Program->result_class('DBIx::Class::ResultClass::HashRefInflator');
+#my $row = $rs->search(
+#    { id      => $prog_id },
+#    { columns => [ qw/ name edate sdate /] }
+#);
+#my $href = $row->next();
+#my $href = $c->model('RetreatCenterDB::Program')->storage->dbh_do(
+#    sub {
+#        my ($storage, $dbh, $prog_id, @cols) = @_;
+#        my $cols = join(q{, }, @cols);
+#        $dbh->selectrow_hashref(
+#            "SELECT $cols FROM program where id = $prog_id");
+#    },
+#    $prog_id, qw/ name edate sdate /
+#);
+#use Data::Dumper;
+#$c->log->info("=====> " . Dumper(\$href));
+
     $c->stash->{daily_pic_date} = $pr->sdate();
     $c->stash->{program} = $pr;
     # ??? dup'ed code in matchreg and list_reg_name
@@ -720,6 +763,11 @@ sub create_do : Local {
     }
     my $pr = model($c, 'Program')->find($hash{program_id});
     %dates = transform_dates($pr, %dates);
+    if ($dates{date_start} > $dates{date_end}) {
+        $c->stash->{mess} = "Start date is after the end date.";
+        $c->stash->{template} = "registration/error.tt2";
+        return;
+    }
     my $reg = model($c, 'Registration')->create({
         person_id     => $hash{person_id},
         program_id    => $hash{program_id},
@@ -1518,6 +1566,7 @@ sub matchreg : Local {
 
 #
 # if only one - make it larger - for fun.
+# this is not used if we go there directly, yes???
 #
 sub _reg_table {
     my ($reg_aref, $postmark) = @_;
@@ -1555,9 +1604,9 @@ EOH
         my $need_house = (defined $type)? $type !~ m{commut|van|unk}i
                          :                0;
         my $hid = $reg->house_id;
-        my $house = ($reg->h_name  )? "(" . $reg->h_name . ")"
-                   :($reg->house_id)? $reg->house->name
-                   :                  "";
+        my $house = ($reg->h_name)? "(" . $reg->h_name . ")"
+                   :($hid        )? $house_name_of{$hid}
+                   :                "";
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark;
         my $mark =         ($reg->cancelled)? 'X'
@@ -1804,6 +1853,11 @@ sub update_do : Local {
     }
 
     %dates = transform_dates($pr, %dates);
+    if ($dates{date_start} > $dates{date_end}) {
+        $c->stash->{mess} = "Start date is after the end date.";
+        $c->stash->{template} = "registration/error.tt2";
+        return;
+    }
     if ($reg->house_id()
         && (($hash{h_type} ne $reg->h_type())
             ||
@@ -1812,9 +1866,6 @@ sub update_do : Local {
             ($dates{date_end}   != $reg->date_end())
            )
         ) {
-#$c->log->info("here -" . $hash{h_type} . "- -" . $reg->h_type() . "-");
-#$c->log->info("start -" . $hash{date_start} . "- -" . $reg->date_start() . "-");
-#$c->log->info("end -" . $hash{date_end} . "- -" . $reg->date_end() . "-");
         # housing type has changed!  and we have a prior house.
         # before we do the update of the reg record
         # we must first vacate the house and adjust the config records.
@@ -1949,12 +2000,6 @@ sub lodge : Local {
     my ($self, $c, $id) = @_;
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
     my $program_id = $reg->program_id();
-    # some easier/quicker way of doing the following???
-    # just a direct sql query???
-    my %prog_cluster = map { $_->cluster_id() => 1 }
-                       model($c, 'ProgramCluster')->search({
-                           program_id => $program_id,
-                       });
     #
     # is there a comment saying that they want to be
     # housed with a friend who is also registered for this program?
@@ -2020,142 +2065,202 @@ sub lodge : Local {
     my $center = ($h_type =~ m{center})? "yes": "";
     my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
-    #
-    # look at a list of _possible_ houses for h_type.
-    # ??? what order to present them in?  priority/resized?
-    # consider cluster???  other bookings for this rental???
-    #
+
     my @h_opts = ();
     my $n = 0;
     my $selected = 0;
-    HOUSE:
-    for my $h (model($c, 'House')->search({
-                   inactive => '',
-                   bath     => $bath,
-                   tent     => $tent,
-                   center   => $center,
-                   max      => { '>=', $max },
-               }) 
+
+    #
+    # which clusters (and in what order) have
+    # been designated for this program?
+    #
+    PROGRAM_CLUSTER:
+    for my $pc (model($c, 'ProgramCluster')->search(
+                { program_id => $program_id },
+                {
+                    join     => 'cluster',
+                    prefetch => 'cluster',
+                    order_by => 'seq',
+                }
+               )
     ) {
-        my $h_id = $h->id;
-        my ($codes, $code_sum) = ("", 0);
-        if (exists $prog_cluster{$h->cluster_id()}) {
-            $codes = "C";
-            $code_sum = $string{house_sum_cluster};     # string
-        }
-
+        # Can we eliminate this entire cluster
+        # due to the type of houses/sites in it?
         #
-        # is this house truly available for this request
-        # from sdate to edate1?
-        # look for ways in which it is NOT.
-        # space, gender, room size
+        # using the _name_ of the cluster
+        # is not the best idea but hey ...
         #
-        my @cf = model($c, 'Config')->search({
-            house_id => $h_id,
-            the_date => { 'between' => [ $sdate, $edate1 ] },
-            -or => [
-                \'cur = curmax',            # all full up
-                -and => [                   # can't mix genders
-                    sex => { '!=', $psex }, #   or put someone unsuspecting
-                    sex => { '!=', 'U'   }, #   in an X room
-                ],
-                curmax => { '<', $max },    # too small
-                -and => [                   # can't resize with someone there
-                    curmax => { '>', $max },
-                    cur    => { '>', 0    },
-                ],
-            ],
-        });
-        next HOUSE if @cf;        # nope
-
-        # put above ??? and get a count???
-        # instead of getting the actual objects
-        # which we don't need?   actually, we do...
-
-        # we have a good house.  no config records are problematic.
-        # don't do a double search of config???
-        # what are the attributes of the configuration records?
-        my ($O, $P) = (0, 1);
-        for my $cf (model($c, 'Config')->search({
-                        house_id => $h_id,
-                        the_date => { 'between' => [ $sdate, $edate1 ] },
-                    })
+        my $cl_name = $pc->cluster->name();
+        my $cl_tent   = $cl_name =~ m{tent}i;
+        my $cl_center = $cl_name =~ m{center}i;
+        if (($tent && !$cl_tent) ||
+            (!$tent && $cl_tent) ||
+            (!$center && $cl_center) ||  # watch out for the word center
+            ($center && !$cl_center)     # in indoor housing!
         ) {
-            if (!$O && $cf->cur() > 0) {
-                $O = 1;
-            }
-            if ($P && $cf->curmax() != $max) {
-                $P = 0;
-            }
+            next PROGRAM_CLUSTER;
         }
-        if ($P) {
-            $codes .= "P";
-            $code_sum += $string{house_sum_perfect_fit};     # string
-        }
-        if ($O) {
-            $codes .= "O";
-            $code_sum += $string{house_sum_occupied};     # string
-        }
-        $codes = " - $codes" if $codes;
-        #
-        # C - cluster match
-        # P - perfect size - no further resize needed
-        # O - occupied (but there is space for more)
 
-        # put this option in an array to be sorted according
-        # to priority.  put the kind of house (resized,
-        # occupied, ...) in <option>
+        my @c_h_opts;       # for this cluster
+
+        HOUSE:
+        for my $h (@{$houses_in_cluster{$pc->cluster_id()}}) {
+            # note no database access yet ... it is all in memory
+
+            # is the max of the house inconsistent with $max?
+            # or the bath status
+            #
+            if (($h->max < $max) ||
+                ($h->bath && !$bath) ||
+                (!$h->bath && $bath)
+            ) {
+                next HOUSE;
+            }
+            my $h_id = $h->id;
+            my ($codes, $code_sum) = ("", 0);
+
+            #
+            # now we get current data from the database store.
+            #
+            # just search Config once???
+            # get all the records, then do the complex
+            # boolean below...
+            #
+            # AND why not just ALL the config
+            # records for all the houses in the cluster?
+            # you're going to get them all anyway
+            # so why not get them all at once?
+            #
+            # well, the first search below eliminates
+            # the already fully occupied or gender inappropriate ones.
+            # and this is done
+            # within the database - reduces the data transfer
+            # I _could_ have a 'in => []'
+            # and specify all the houses in the cluster
+            #
+            # is this house truly available for this request
+            # from sdate to edate1?
+            # look for ways in which it is NOT.
+            # space, gender, room size
+            #
+            my @cf = model($c, 'Config')->search({
+                house_id => $h_id,
+                the_date => { 'between' => [ $sdate, $edate1 ] },
+                -or => [
+                    \'cur >= curmax',           # all full up
+                    -and => [                   # can't mix genders
+                        sex => { '!=', $psex }, #   or put someone unsuspecting
+                        sex => { '!=', 'U'   }, #   in an X room
+                    ],
+                    curmax => { '<', $max },    # too small
+                    -and => [                   # can't resize - someone there
+                        curmax => { '>', $max },
+                        cur    => { '>', 0    },
+                    ],
+                ],
+            });
+            next HOUSE if @cf;        # nope
+
+            # we have a good house.
+            # no problematic config records were found.
+            #
+            # what are the attributes of the configuration records?
+            #
+            # P - perfect size - no further resize needed
+            # O - occupied (but there is space for more)
+            #
+            my ($O, $F, $P) = (0, 0, 1);
+            for my $cf (model($c, 'Config')->search({
+                            house_id => $h_id,
+                            the_date => { 'between' => [ $sdate, $edate1 ] },
+                        })
+            ) {
+                if (!$O && $cf->cur() > 0) {
+                    $O = 1;
+                    if (!$F && $cf->program_id() != $program_id) {
+                        $F = 1;
+                    }
+                }
+                if ($P && $cf->curmax() > $max) {
+                    $P = 0;
+                }
+            }
+            if ($O) {
+                $codes .= "O";
+                $code_sum += $string{house_sum_occupied};        # string
+            }
+            if ($F) {
+                $codes .= "F";
+                $code_sum -= 20;            # discourage this!
+            }
+            if ($P) {
+                $code_sum += $string{house_sum_perfect_fit};     # string
+            }
+            else {
+                $codes .= "R";      # resize needed - not as good...
+            }
+            $codes = " - $codes" if $codes;
+
+            # put this house in an option array to be sorted according
+            # to priority.  put the kind of house (resized,
+            # occupied, ...) in <option>
+            #
+            my $opt = "<option value=" 
+                      . $h_id
+                      . (($h_id == $share_house_id)? " selected"
+                        :                            "")
+                      . ">"
+                      . $h->name
+                      . $codes
+                      . "</option>\n"
+                      ;
+            push @c_h_opts, [ $opt, $code_sum, $h->priority ];
+            ++$n;
+            if ($h_id == $share_house_id) {
+                $selected = 1;
+            }
+        }   # end of houses in this cluster
         #
-        my $opt = "<option value=" 
-                  . $h_id
-                  . (($h_id == $share_house_id)? " selected"
-                    :                            "")
-                  . ">"
-                  . $h->name
-                  . $codes
-                  . "</option>\n"
-                  ;
-        push @h_opts, [ $opt, $code_sum, $h->priority ];
-        ++$n;
-        if ($h_id == $share_house_id) {
-            $selected = 1;
+        # now we can sort the houses in this cluster
+        # and then push them on the list of all chosen houses.
+        #
+        @c_h_opts = map {
+                        $_->[0]
+                    }
+                    sort {
+                      $b->[1] <=> $a->[1] ||      # PO       - descending
+                      $a->[2] <=> $b->[2]         # priority - ascending
+                    }
+                    @c_h_opts;
+        push @h_opts, @c_h_opts;
+        if (@h_opts > $string{max_lodge_opts}) {
+            last PROGRAM_CLUSTER;       # we have enough
         }
-    }
-    @h_opts = map {
-                  $_->[0]
-              }
-              sort {
-                $b->[1] <=> $a->[1] ||      # CPO      - descending
-                $a->[2] <=> $b->[2]         # priority - ascending
-              }
-              @h_opts;
-    # after the sort we can now chop off the superfluous ones
-    if ($n > $string{max_lodge_opts}) {
-        $#h_opts = $string{max_lodge_opts} - 1;
-    }
+    }       # end of PROGRAM_CLUSTER
     if ($share_house_id && ! $selected) {
         # male, female want to share
         # one of them is already housed.
         # the room is not in the list because of the gender mismatch
-        # put it on top - with a X code.
-        # make it selected
-        unshift @h_opts,
-            "<option value=" 
-            . $share_house_id
-            . " selected>"
-            . $share_house_name
-            . " - X"
-            . "</option>\n"
-            ;
-        $selected = 1;
+        # or a tent with nominally only one space.
+        # put it in the forced_house space
+        $c->stash->{force_house} = $share_house_name;
+        #unshift @h_opts,
+        #    "<option value=" 
+        #    . $share_house_id
+        #    . " selected>"
+        #    . $share_house_name
+        #    . " - X"
+        #    . "</option>\n"
+        #    ;
+        #$selected = 1;
     }
     if (@h_opts && ! $selected) {
         # no house is otherwise selected
         # insert a select into the first one.
         $h_opts[0] =~ s{>}{ selected>};
     }
-    $c->stash->{house_opts} = "@h_opts";
-    $c->stash->{total_opts} = $n;
+    $c->stash->{house_opts} = join '', @h_opts;
+    $c->stash->{total_opts} = @h_opts; 
     $c->stash->{seen_opts} = $string{seen_lodge_opts};
     $h_type =~ s{dble}{double};     # only for display...
     $h_type =~ s{_(.)}{ \u$1};
@@ -2197,26 +2302,6 @@ sub lodge_do : Local {
         ($house) = model($c, 'House')->find($house_id);
     }
     my $reg = model($c, 'Registration')->find($id);
-    $reg->update({
-        house_id => $house_id,
-        h_name   => '',
-    });
-    # program cluster record
-    my $cluster_id = $house->cluster_id();
-    my $program_id = $reg->program_id();
-            # can I just do a count below???
-            # does model need to be called in list context???
-            # didn't seem to do anything when called in scalar context!
-    my @pc = model($c, 'ProgramCluster')->search({ 
-                 program_id => $program_id,
-                 cluster_id => $cluster_id,
-             });
-    if (@pc == 0) {
-        model($c, 'ProgramCluster')->create({
-            program_id => $program_id,
-            cluster_id => $cluster_id,
-        });
-    }
     my $sdate  = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
     my $psex = $reg->person->sex;
@@ -2233,6 +2318,8 @@ sub lodge_do : Local {
     # lastly (hopefully) we can't force too
     # many people into a room.  everyone must
     # have a bed.  this requires looking ahead.
+    # except for tents, that is.
+    # so weird and so complicated.   jeez.
     #
     if ($force_house && $cmax > $house_max) {
         $cmax = $house_max;
@@ -2244,7 +2331,8 @@ sub lodge_do : Local {
             the_date => { 'between' => [ $sdate, $edate1 ] },
             cur      => $house_max,
         });
-        if (@cf) {
+            # tents are the exception - but you need to force it.
+        if (@cf && !$house->tent()) {
             $c->stash->{mess} = "Sorry, no beds left in $force_house"
                               . " on " . date($cf[0]->the_date)
                               . ".";
@@ -2252,6 +2340,13 @@ sub lodge_do : Local {
             return;
         }
     }
+    #
+    # we have passed all the hurdles.
+    #
+    $reg->update({
+        house_id => $house_id,
+        h_name   => '',
+    });
     for my $cf (model($c, 'Config')->search({
                     house_id => $house_id,
                     the_date => { 'between' => [ $sdate, $edate1 ] }
@@ -2471,8 +2566,9 @@ sub who_is_there : Local {
             date_end   => { '>',  $the_date },
         },
         {
-            join     => [qw/ person program house /],
-            prefetch => [qw/ person program house /],
+            join     => [qw/ person program /],
+            prefetch => [qw/ person program /],
+            order_by => [qw/ person.last person.first /],
         }
     );
     if (! @regs) {
@@ -2481,21 +2577,29 @@ sub who_is_there : Local {
     }
     my $reg_names = "";
     for my $r (@regs) {
+        my $rid = $r->id();
         $reg_names .= "<tr>"
-                   . "<td>"
-                   . "<a target=happening class=pr_links href="
-                   . $c->uri_for("/registration/view/" . $r->id())
+                   . "<td><a target=happening href="
+                   . $c->uri_for("/registration/view/$rid")
                    . ">"
                    . $r->person->last() . ", " . $r->person->first()
                    . "</a>"
-                   . "<td>" . $r->program->name() . "</td>"
+                   . "<td><a target=happening href="
+                   . $c->uri_for("/program/view/")
+                   . $r->program_id()
+                   . ">"
+                   . $r->program->name()
+                   . "</a></td>"
                    . "</td>"
+                   . "<td width=30 align=center><a target=happening href="
+                   . $c->uri_for("/registration/relodge/$rid")
+                   . "><img src=/static/images/move_arrow.gif></a></td>"
                    . "</tr>";
     }
     $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.
                                 # can't use &apos; :( why?
     $c->res->output("<center>"
-                   . $regs[0]->house->name()
+                   . $house_name_of{$house_id}
                    . "</center>"
                    . "<p><table cellpadding=2>$reg_names</table>"
                    );
