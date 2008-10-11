@@ -51,14 +51,12 @@ function process(e) {
 </script>
 </head>
 
-<h2>
-Registrations ([% program.reg_count %]) for [% program.name %] - [% program.sdate_obj.format("%b %y") %]</h2>
+<h2>Registrations[% IF ! multiple_progs %] for [% program.name %] - [% program.sdate_obj.format("%b %y") %][% END %]</h2>
+[% IF ! multiple_progs %]
 <form name=form id= form action="/registration/list_reg_name/[% program.id %]">
 <a href="/program/view/[% program.id %]">Program</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/[% other_sort %]/[% program.id %]">[% other_sort_name %]</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/registration/list_reg_name/[% program.id %]/1">All</a>
 [% IF online %]
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
@@ -66,14 +64,13 @@ Registrations ([% program.reg_count %]) for [% program.name %] - [% program.sdat
 &nbsp;&nbsp;&nbsp;
 Search <input type=text size=15 name=pat id=pat
               value="[% pat %]" onkeyup="return process(event)">
+<script type="text/javascript">
+document.form.pat.focus();
+</script>
 </form>
+[% END %]
 <ul>
 <div id=regs>
 [% regs %]
 </div>
 </ul>
-<script type="text/javascript">
-document.form.pat.focus();
-//var range = document.form.pat.createTextRange();
-//range.collapse(false);
-</script>

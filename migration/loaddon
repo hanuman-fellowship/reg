@@ -20,7 +20,7 @@ while (<$ppl>) {
 }
 close $ppl;
 undef $sth;
-print "Continue? ";
+print "Loading donations ... continue? ";
 my $ans = <STDIN>;
 if ($ans !~ m{^y}i) {
     exit;

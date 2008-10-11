@@ -44,6 +44,7 @@ __PACKAGE__->add_columns(qw/
     nights_taken
     free_prog_taken
     house_id
+    cabin_room
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -86,5 +87,12 @@ sub h_type_disp {
 }
 
 sub confnote_br { _br(shift->confnote()); }
+
+sub room_site {
+    my ($self) = @_;
+
+    ($self->h_type =~ m{tent}i)? 'site'
+    :                            'room'
+}
 
 1;

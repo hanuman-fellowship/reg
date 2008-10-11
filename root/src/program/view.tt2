@@ -106,10 +106,16 @@ function cluster_down(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 <a href="/program/view/[% normal_id %]">Normal</a>
 [% END %]
+[% IF program.ceu_issued %]
+&nbsp;&nbsp;&nbsp;
+<a href="/program/ceu/[% id %]">CEUs</a>
+[% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/early_late/[% id %]">Early/Late</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/list_reg_name/[% id %]">Registrations ([% program.reg_count %])</a>
+<a href="/registration/name_addr/[% id %]">NameAddr</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/first_reg/[% id %]">Registrations</a>
 <p>
 
 <b>Name</b>

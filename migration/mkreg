@@ -36,8 +36,9 @@ create table registration (
     nights_taken integer,
     free_prog_taken text,
 
-    house_id integer    -- or 0 if no housing assigned yet or not needed
+    house_id integer,   -- or 0 if no housing assigned yet or not needed
                         -- since own van or commuting
+    cabin_room text     -- 'cabin', 'room', or blank
 );
 drop table if exists reg_history;
 create table reg_history (

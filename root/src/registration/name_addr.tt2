@@ -1,0 +1,6 @@
+<h2>Participant List for [% program.name %] from [% program.our_dates %]</h2>
+<table>
+[% FOR r IN rows %]
+[% r %]
+[% END %]
+</table>

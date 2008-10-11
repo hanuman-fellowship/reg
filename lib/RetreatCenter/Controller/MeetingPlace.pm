@@ -3,7 +3,9 @@ use warnings;
 package RetreatCenter::Controller::MeetingPlace;
 use base 'Catalyst::Controller';
 
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+/;
 use Util qw/
     trim
     empty

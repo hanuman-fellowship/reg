@@ -8,9 +8,7 @@ use Util qw/
     model
     lines
     etrim
-/;
-use Date::Simple qw/
-    today
+    tt_today
 /;
 my @bools = qw/
     school_spaces
@@ -77,7 +75,7 @@ sub update_do : Local {
     # do we?  nope.
     $sum->update({
         %hash,
-        date_updated => today()->as_d8(),
+        date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });

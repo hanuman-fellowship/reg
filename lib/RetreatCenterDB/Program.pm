@@ -93,12 +93,16 @@ __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'program_id');
 # something about when it actually does populate the object...???
 #
 
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+    today
+/;
 use Util qw/
     slurp
     expand
     housing_types
     places
+    tt_today
 /;
 use Global qw/%string/;
 use Image::Size;
@@ -112,7 +116,7 @@ sub future_programs {
     my ($class, $c) = @_;
     my @programs = $c->model('RetreatCenterDB::Program')->search(
         {
-            sdate    => { '>=',    today()->as_d8() },
+            sdate    => { '>=',    tt_today($c)->as_d8() },
             webready => 'yes',
         },
         { order_by => [ 'sdate', 'edate' ] },
@@ -319,6 +323,21 @@ sub dates {
             $dates .= ", " . $sd->format("%B %e") . "-";
             $dates .= $ed->format("%B %e");
         }
+    }
+    $dates;
+}
+
+# almost the same as dates - but don't consider any FULL program
+sub our_dates {
+    my ($self) = @_;
+
+    my $sd = $self->sdate_obj;
+    my $ed = $self->edate_obj;
+    my $dates = $sd->format("%B %e") . "-";
+    if ($ed->month == $sd->month) {
+        $dates .= $ed->day;
+    } else {
+        $dates .= $ed->format("%B %e");
     }
     $dates;
 }
@@ -673,11 +692,11 @@ sub gen_popup {
 # class methods
 sub current_date {
     my ($class) = @_;
-    return today()->format("%B %e, %Y");
+    return today()->format("%B %e, %Y");    # can't use tt_today() - no $c
 }
 sub current_year {
     my ($class) = @_;
-    return today()->year();
+    return today()->year();                 # can't use tt_today() - no $c
 }
 
 sub image_file {
@@ -692,6 +711,10 @@ sub count {
 sub meeting_places {
     my ($self) = @_;
     places($self);
+}
+sub ceu_issued {
+    my ($self) = @_;
+    return $self->footnotes() =~ m{\*};
 }
 
 1;

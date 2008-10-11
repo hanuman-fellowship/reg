@@ -84,7 +84,7 @@ sub update_do : Local {
         color => $color,
         type  => $type,
     });
-    # and update the Global
+    # and update the Global.  no need to reload it all.
     $clust_color{$id} = [ $color =~ m{(\d+)}g ];
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
@@ -125,6 +125,10 @@ sub create_do : Local {
         color => $color,
         type  => $type,
     });
+    # no need to reload Configuration - creating clusters
+    # is quite rare and houses would be added soon afterwards
+    # which would do a reload.
+    #
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
 

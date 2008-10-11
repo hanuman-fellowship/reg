@@ -2239,5 +2239,139 @@ test: the tricky and weird cases...
         the first choice is not the preferred type ...
         if there is a preferred type, that is.
 we DO need the program id in config - to allow the 
-    showing of the 'F' in case someone in anothe program
+    showing of the 'F' in case someone in another program
     is trying to get into that room.
+for flow consistency with old reg:
+    on login go to first (alphabetically) registrant in current program
+        also go here if click on program title (not name) in Program List.
+    a link for "All Reg"
+    focus is on the search box to search for others in this
+        program by last first
+    tab to an adjacent search box to move to different program
+        in the future (edate > today())
+    on each indiv reg form have the same link, two searches.
+if "Share room with First Last." then they should
+    be in the <select> list at the top - even if forced into a tent.
+doc:
+    on Registration view screen there are two search boxes
+        this is complex!  and capable and fast.
+
+        one for the Registrant and one for the Program
+        in the Registrant field you put last prefix space first prefix
+            with * for % as well in both
+            shall we indicate that on the screen?
+        in program field you put optional program prefix (with optional *)
+
+        if not program pattern - look in current program
+        could put * for any program
+
+        NOTE: it looks only in programs and in registrations where
+            the end date has yet not passed.  Makes sense, yes?
+            Otherwise you search unnecessarily through so so many.
+
+        if the result is just one registration it is shown.
+        otherwise
+            if all the resulting registrations are in the
+            same program you are shown them as usual with a
+            search box filled in with the registrant pattern.
+            
+            if more than one program was found then the list of registrations
+            is shown with each preceded by the program name.
+            there is no Search box at all to refine the search.
+            you need to scroll through this list to find what you wish.
+doc:
+    go to current program, go to registrations
+    you see the first alphabetic one
+    click on AllRegs you see all non arrivals, non-cancelled.
+    then click on All to see ALL.
+    switch to another browser window and back
+        and you see the restricted view again.
+    funny.   what to do?  no restrictions?
+    then the list will not shrink as you do a blitz reg.
+    but perhaps you should do searches from a reg screen...
+    after a payment - go to the person's view screen or
+        to the list of all still to register?
+    ajax enabled searches in the list of all still to register
+        WILL show those already paid.
+    odd - but is it just what you want?
+    likely not - it hides things from you and then
+        it doesn't.   inconsistent, hard to learn.
+some way of avoiding the incessant looking
+    in User/Role?
+Katy says MF or FM not XX
+    ask Jayanti, Adrienne
+    we'd have to look in the registrations to determine
+    what it is.   the config record is just one char for sex.
+doc:
+    the configuration string 'tt_today' can be used
+    for time travel.   set it to 'username m/d/yyyy'.
+    it will apply only to the user named 'username'.
+    e.g.:
+        jane 10/4/2008
+editing and viewing a registration
+    the fields are in a diff order - is this a problem?
+the little 'i' information dealies - make them ajax instead???
+    will it save?  maybe not.
+cabin/room only applies to doubles sans bath, right?  yes.
+doc: if the calculated number of hours for a CEU
+    is not correct (how so?) then you can add a number
+    to the end of the url to override the # of hours
+    like so:
+    http://localhost:3000/registration/ceu/3071
+    http://localhost:3000/registration/ceu/3071/44
+click on occupied room in DailyPic
+    and there's a little red arrow by people's names
+    click to move them to another room.
+participant list for the presenter - include cancelled?
+    do not include cancelled.
+to show jayanti, adrienne:
+    housing in its complexity
+        clusters assigned to program
+    ceu
+    name addr - send to presenter email addr?
+    daily pic with ajax
+        move arrow on daily pic
+should we have the carpool list 2 or 3 across in zip sort order?
+
+email in name_addr as well
+
+linear list of participants
+    ordered by name or postmark
+    include just names OR names and addresses (email, phone)
+            OR just email
+    no cancelled people
+
+auto register when adding/updating leader
+swap order of offered housing
+    your -> own
+
+if XX - make it MF
+if XXX - ???
+
+yes links at top for daily pic, calendar
+
+prohibit CEU (except for COMP) for certain licenses
+    * RN prefix
+    ** RN or MFT or LCSW or LMFT
+        search old ceu license
+
+pic of house/tent not _Lodge_ - fun!
+
+set height as percentage (string) 120% - yes!
+    done
+
+late notice 'room' not 'site' for tents
+
+B annotations - on hallway (entrance)
+    and M on left, F on right
+
+float left for programs/rentals/events on dailypic
+
+cluster descriptions don't read well in the late notices.
+    what to do?
+prevent dup member creation?
+    a refresh at the wrong time...
+there are a LOT of gifs referenced by the program templates
+    that I'm not going to worry about.
+    and some in the default confirmation letter
+        that are absolute links to the web site.

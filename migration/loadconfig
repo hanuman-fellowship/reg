@@ -61,3 +61,5 @@ while ($dt <= $max) {
 }
 print "\ninserted $n config records\n";
 $dbh->do("update string set value = $d8 where the_key = 'sys_last_config_date'");
+$dbh->do("drop index if exists i_config");
+$dbh->do("create index if not exists i_config on config(house_id, the_date)");

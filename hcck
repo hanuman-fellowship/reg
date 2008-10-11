@@ -15,7 +15,8 @@ requirements for the hcck (right?) program:
     5- look at all reg records with house_id != 0
             multiply by date_end-date_start
        this should match the sum of cur where program_id != 0
-    6- in all config records curmax should not be > house->max.
+    6- in all config records curmax should not be > house->max
+       and curmax should be a digit (not blank).
 =cut
 use warnings;
 use strict;
@@ -207,6 +208,7 @@ $sth = $dbh->prepare("
 ");
 $sth->execute();
 my ($config_sum) = $sth->fetchrow_array();
+$config_sum ||= 0;
 if ($reg_sum != $config_sum) {
     print "** reg_sum $reg_sum != config_sum $config_sum\n";
 }
@@ -220,7 +222,7 @@ $sth = $dbh->prepare("
     from config c, house h
     where c.house_id = h.id
       and (c.cur > h.max or c.curmax > h.max)
-      and h.tent != 'yes'
+      -- and h.tent != 'yes'
 ");
 $sth->execute();
 $err = 0;
@@ -230,9 +232,36 @@ while (my (@data) = $sth->fetchrow_array()) {
             $d = "-";
         }
     }
-    print "** curmax or max > house_max: @data\n";
-    ++$err;
+    if ($data[7] eq 'yes') {
+        print "++ curmax or max > house_max: @data - but tent so okay\n";
+    }
+    else {
+        print "** curmax or max > house_max: @data\n";
+        ++$err;
+    }
 }
 if (! $err) {
     print "no max or cur max > house_max\n";
+}
+# a blank curmax will eval to 0, yes?
+# yes but an _undef_ curmax makes trouble - why?
+$sth = $dbh->prepare("
+    select c.*, h.tent
+    from config c, house h
+    where c.house_id = h.id
+      and (not (c.curmax >= 1 or c.curmax = '0'))
+");
+$sth->execute();
+$err = 0;
+while (my (@data) = $sth->fetchrow_array()) {
+    for my $d (@data) {
+        if (! defined($d)) {
+            $d = "-";
+        }
+    }
+    print "** bad curmax: @data\n";
+    ++$err;
+}
+if (! $err) {
+    print "no bad curmax\n";
 }

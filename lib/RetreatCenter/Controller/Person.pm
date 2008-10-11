@@ -11,8 +11,11 @@ use Util qw/
     nsquish
     valid_email
     model
+    tt_today
 /;
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+/;
 use USState;
 use LWP::Simple;
 
@@ -408,10 +411,11 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
+    my $today_d8 = tt_today($c)->as_d8();
     my $p = model($c, 'Person')->create({
         %hash,
-        date_updat => today()->as_d8(),
-        date_entrd => today()->as_d8(),
+        date_updat => $today_d8,
+        date_entrd => $today_d8,
     });
     my $id = $p->id();
     _get_affils($c, $id);
@@ -455,7 +459,7 @@ sub update_do : Local {
     my $p = model($c, 'Person')->find($id);
     $p->update({
         %hash,
-        date_updat => today()->as_d8(),
+        date_updat => tt_today($c)->as_d8(),
     });
     # delete all old affiliations and create the new ones.
     model($c, 'AffilPerson')->search(
@@ -505,7 +509,7 @@ sub separate : Local {
     });
     $sps->update({
         id_sps     => 0,
-        date_updat => today()->as_d8(),
+        date_updat => tt_today($c)->as_d8(),
     });
     $c->response->redirect($c->uri_for("/person/view/$id"));
 }
@@ -530,6 +534,7 @@ sub partner_with : Local {
             last  => $last,
         },
     );
+    my $today = tt_today($c)->as_d8();
     if (@people == 1) {
         my $p2 = $people[0];
         if ($p2->partner) {
@@ -540,7 +545,7 @@ sub partner_with : Local {
         else {
             $p1->update({
                 id_sps     => $p2->id,
-                date_updat => today()->as_d8(),
+                date_updat => $today,
             });
             # partner #2 with automatically gets partner #1's address.
             # if they don't live together they don't get
@@ -555,7 +560,7 @@ sub partner_with : Local {
                 zip_post   => $p1->zip_post,
                 country    => $p1->country,
                 tel_home   => $p1->tel_home,
-                date_updat => today()->as_d8(),
+                date_updat => $today,
             });
             $c->flash->{message} = "Partnered"
                                  . " " . _view_person($p1)
@@ -594,6 +599,7 @@ sub mkpartner : Local {
     my $zip_post = $p1->zip_post;
 
     my $sex2 = ($p1->sex eq "M")? "F": "M";   # usually, not always
+    my $today = tt_today($c)->as_d8();
     my $p2 = model($c, 'Person')->create({
         last     => $last,
         first    => $first,
@@ -608,12 +614,12 @@ sub mkpartner : Local {
         akey     => nsquish($addr1, $addr2, $zip_post),
         tel_home => $p1->tel_home,
         id_sps   => $p1->id,
-        date_entrd => today()->as_d8(),
-        date_updat => today()->as_d8(),
+        date_entrd => $today,
+        date_updat => $today,
     });
     $p1->update({
         id_sps     => $p2->id,
-        date_updat => today()->as_d8(),
+        date_updat => $today,
     });
     my $pronoun = ($sex2 eq 'M')? "him": "her";
     $c->flash->{message} = "Created"
@@ -628,15 +634,16 @@ sub mkpartner : Local {
 sub register1 : Local {
     my ($self, $c, $id) = @_;
 
+    my $today = tt_today($c);
     my $person = model($c, 'Person')->find($id);
     my @programs = model($c, 'Program')->search(
         {
-            edate => { '>'       => today()->as_d8() },
+            edate => { '>'       => $today->as_d8() },
             name  => { -not_like => '%personal%retreat%' },
         },
         { order_by => [ 'sdate', 'name' ] },
     );
-    my $jan1 = date(today()->year(), 1, 1)->as_d8();
+    my $jan1 = date($today->year(), 1, 1)->as_d8();
     my (@personal_retreats) = model($c, 'Program')->search(
         {
             name  => { like => '%personal%retreat%' },

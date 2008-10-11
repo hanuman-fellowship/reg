@@ -25,7 +25,7 @@
 <p>
 <span id=mess>[% message2 %]</span>
 [% END %]
-<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %].</h3>
+<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %].</h3>
 <table border=0>
 <tr>
 [% IF total_opts == 0 %]
@@ -41,8 +41,9 @@
 <td valign=top><input type=submit value="Submit"></td>
 <td>
 <table cellpadding=3>
-<tr><td>O - already <b>O</b>ccupied</td></tr>
+<tr><td>C - <b>C</b>abin</td></tr>
 <tr><td>F - <b>F</b>oreign program</td></tr>
+<tr><td>O - already <b>O</b>ccupied</td></tr>
 <tr><td>R - <b>R</b>esize needed</td></tr>
 </table>
 </td>

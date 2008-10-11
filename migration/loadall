@@ -34,7 +34,7 @@ rm -f 20*.png lo* lth* lb* po* pth* pb*
 cd ../../../migration
 
 echo people
-# -n 2000
+# ??? -n 2000
 loadpeople
 echo leaders, canpol, housecost, programs
 # ??? -s cur => f89

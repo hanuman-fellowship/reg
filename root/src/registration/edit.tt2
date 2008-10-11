@@ -32,10 +32,8 @@
 <tr>
 <th align=right valign=top>Carpool</th>
 <td>
-<input type=checkbox name=carpool value=yes [% IF reg.carpool %]checked[% END %]>
-Carpool<br>
-<input type=checkbox name=hascar value=yes [% IF reg.hascar %]checked[% END %]>
-Has Car
+<input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
+<input type=checkbox name=hascar  value=yes [% hascar_checked  %]> Has Car
 </td>
 
 <!-- need a slight adjustment here: font size will change it -->
@@ -62,11 +60,15 @@ Has Car
 </tr>
 
 <tr>
-<th align=right>Housing Type</th>
-<td>
+<th align=right valign=top>Housing Type</th>
+<td valign=top>
 <select name=h_type>
 [% h_type_opts %]
 </select>
+</td>
+<td valign=top>
+<input type=checkbox name=cabin value=yes [% cabin_checked %]> Cabin<br>
+<input type=checkbox name=room  value=yes [% room_checked  %]> Room
 </td>
 </tr>
 

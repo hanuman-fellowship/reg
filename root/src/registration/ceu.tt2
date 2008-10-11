@@ -1,0 +1,38 @@
+<html>
+<body>
+<div style='border-style:double; border-width: 10px'>
+<center>
+<div style='font-size:30pt; margin-top: .3in;
+font-family:Benguiat;font-variant:small-caps;font-weight:bold'>Certificate of
+Attendance</div>
+
+<div style='font-size:24.0pt;font-family:Benguiat;font-variant:
+small-caps;font-style:italic'>This is to certify 
+that<br></div>
+
+<div style='margin-top: .15in; font-size:40.0pt;font-family:"FormalScrp421 BT"'>
+[% name %]<br></div>
+<span style='font-size:13.0pt;font-family:"FormalScrp421 BT"' valign=bottom>
+[% license %]</span>
+<div style='margin-top: .15in; font-size:20.0pt;font-family:Benguiat;font-variant: small-caps;font-style:italic'>
+[% has_completed %]
+</div>
+
+<div style='margin-top: .15in; margin-bottom: .1in; font-size:20pt;font-family:Benguiat;font-variant: small-caps'>
+<b>Topic</b>: [% topic %]<br>
+<b>Date</b>: [% date %]<br>
+<b>Instructor</b>: [% instructor %]<br>
+<b>Hours of Training</b>: [% hours %]<br>
+</div>
+<img src=/static/images/signature.png width=270><br>
+<span style='font-size:12.0pt;font-family:Benguiat;font-variant: small-caps'>
+Gerald Brajesh Friedberg, PhD.<br>
+Mount Madonna Center for the Creative Arts &amp; Sciences<br>
+445 Summit Road<br>
+Watsonville, CA 95076<br>
+408-847-0406
+<p style='margin-top: .1in; margin-bottom: .1in'>
+<span style='font-size:10.0pt; font-family:Benguiat'>[% provider %]</span></p></center>
+</div>
+</body>
+</html>

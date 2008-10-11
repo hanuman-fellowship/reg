@@ -44,6 +44,7 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     model($c, 'House')->find($id)->delete();
+    Global->init($c, 1);
     $c->response->redirect($c->uri_for('/house/list'));
 }
 
@@ -123,6 +124,7 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
     model($c, 'House')->find($id)->update(\%hash);
+    Global->init($c, 1);
     $c->response->redirect($c->uri_for('/house/list'));
 }
 
@@ -149,6 +151,7 @@ sub create_do : Local {
     my $house = model($c, 'House')->create(\%hash);
     Global->init($c);
     add_config($c, $string{sys_last_config_date}, $house);
+    Global->init($c, 1);
     $c->response->redirect($c->uri_for('/house/list'));
 }
 

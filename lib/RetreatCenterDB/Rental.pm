@@ -4,8 +4,13 @@ package RetreatCenterDB::Rental;
 use base qw/DBIx::Class/;
 
 use Global qw/%string/;
-use Util qw/expand/;
-use Date::Simple qw/date today/;
+use Util qw/
+    expand
+    tt_today
+/;
+use Date::Simple qw/
+    date
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
@@ -90,7 +95,7 @@ __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
 sub future_rentals {
     my ($class, $c) = @_;
     my @rentals = $c->model('RetreatCenterDB::Rental')->search(
-        { sdate    => { '>=',    today()->as_d8() } },
+        { sdate    => { '>=',    tt_today($c)->as_d8() } },
         { order_by => [ 'sdate', 'edate' ] },
     );
     @rentals;

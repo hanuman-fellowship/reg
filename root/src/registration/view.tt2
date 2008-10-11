@@ -1,5 +1,19 @@
 <!-- include overlib.js only when needed -->
-<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+<script type="text/javascript" src="/static/js/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
+<script type="text/javascript">
+var newwin;
+function popup(url) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=550,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+}
+</script>
 <style>
 h3 {
     margin-bottom: 1mm;
@@ -17,8 +31,11 @@ h3 {
     font-weight: bold;
 }
 </style>
-<h2>Registration</h2>
+<h2 style="margin-bottom: 0px">Registration</h2>
 <form name=form action=/registration/seek/[% program.id %]/[% reg.id %]>
+<table border=0>
+<tr><td></td><td>&nbsp;&nbsp;&nbsp;Registrant</td><td>&nbsp;&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td></tr>
+<tr><td valign=center>
 <a href="/registration/update/[% reg.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 [% IF ! reg.cancelled %]
@@ -36,19 +53,25 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 [% END %]
 [% IF ! reg.cancelled %]
     [% IF reg.letter_sent %]
-    <a href="/registration/send_conf/[% reg.id %]">ReSend Conf</a>
+    <a href="/registration/send_conf/[% reg.id %]">ReSend</a>
     [% ELSE %]
-    <a class=not_sent href="/registration/send_conf/[% reg.id %]">Send Conf</a>
+    <a class=not_sent href="/registration/send_conf/[% reg.id %]">Send</a>
     [% END %]
     &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/registration/list_reg_name/[% program.id %]">Other Regs</a>
+[% IF reg.ceu_license %]
+<a href="/registration/ceu/[% reg.id %]">CEU</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
+<a href="/registration/list_reg_name/[% program.id %]">AllRegs</a>
 [% IF online > 0 %]
 &nbsp;&nbsp;&nbsp;<a href="/registration/list_online">Online ([% online %])</a>
 [% END %]
-&nbsp;&nbsp;&nbsp;
-<input type=text name=pattern size=7><input type=submit value="Go"></form>
-<p>
+</td><td valign=center>
+&nbsp;&nbsp;&nbsp;<input type=text name=reg_pat size=8 value='[% reg_pat %]'></td><td>&nbsp;&nbsp;&nbsp;<input type=text name=prog_pat size=8 value='[% prog_pat %]'></td><td><input type=submit value="Search">&nbsp;<a href="javascript:popup('/static/help/reg_search.html');">How?</a>
+</td></tr></table>
+</form>
+
 <table cellpadding=2 border=0>
 
 <tr>
@@ -99,25 +122,26 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 [% type = reg.h_type_disp %]
 <tr><th align=right>Housing</th>
-<td>[% type %]
+<td><table><tr><td align=center>
+[% type %]
+</td><td align=center>
 [% IF type != 'Commuting'
    && type != 'Your Van'
    && type != 'Unknown' %]
-
-    in
-
     [% IF reg.house_id %]
         <a href=/registration/relodge/[% reg.id %]>[% reg.house.name %]</a>
     [% ELSE %]
-        <a href=/registration/lodge/[% reg.id %]>Lodge</a>
+        <a href=/registration/lodge/[% reg.id %]>[% IF type == 'Your Tent' || type == 'Center Tent' %]<img style="" src=/static/images/tent.gif>[% ELSE %]<img src=/static/images/house.jpg>[% END %]</a>
     [% END %]
-
-
 [% END %]
 [% IF reg.h_name %]
     ([% reg.h_name %])
 [% END %]
-</td></tr>
+</td></tr></table>
+</td>
+<th align=right>Cabin/Room</th>
+<td>[% reg.cabin_room %]
+</tr>
 <tr><th align=right>Balance</th>
 <td>
 [% reg.balance %][% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view">Pay It</a>[% END %]
@@ -226,5 +250,5 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% END %]
 </table>
 <script type="text/javascript">
-document.form.pattern.focus();
+document.form.reg_pat.focus();
 </script>

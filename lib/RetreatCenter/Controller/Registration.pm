@@ -8,7 +8,6 @@ use DBIx::Class::ResultClass::HashRefInflator;      # ???
 use lib '../../';       # so you can do a perl -c here.
 use Date::Simple qw/
     date
-    today
 /;
 use Util qw/
     nsquish
@@ -22,7 +21,13 @@ use Util qw/
     lines
     link_share
     normalize
+    tt_today
+    ceu_license
 /;
+use POSIX qw/
+    ceil
+/;
+
     # damn awkward to keep this Global thing initialized... :(
     # is there no way to do this better???
 use Global qw/
@@ -140,10 +145,11 @@ sub grab_new : Local {
 }
 
 sub list_reg_name : Local {
-    my ($self, $c, $prog_id, $all) = @_;
+    my ($self, $c, $prog_id) = @_;
 
     my $pat = $c->request->params->{pat} || "";
     $pat = trim($pat);
+    $pat =~ s{\*}{%}g;
     my ($pref_last, $pref_first);
     if ($pat =~ m{(\S+)\s+(\S+)}) {
         ($pref_last, $pref_first) = ($1, $2);
@@ -152,6 +158,7 @@ sub list_reg_name : Local {
         $pref_last = $pat;
         $pref_first = "";
     }
+    $pat =~ s{%}{*}g;
     $c->stash->{pat} = $pat;
 
     my $pr = model($c, 'Program')->find($prog_id);
@@ -195,27 +202,16 @@ sub list_reg_name : Local {
     # ??? dup'ed code in matchreg and list_reg_name
     # DRY??? don't repeat yourself!
     my @name_match = ();
-    my @all = ();
     if ($pref_last) {
         push @name_match, 'person.last' => { like => "$pref_last%"  };
     }
     if ($pref_first) {
         push @name_match, 'person.first' => { like => "$pref_first%" };
     }
-    if (!($all || @name_match)) {
-        @all = (
-            -or => [
-                arrived => '',
-                balance => { '>', 0 },
-            ],
-            cancelled => '',
-        );
-    }
     my @regs = model($c, 'Registration')->search(
         {
             program_id     => $prog_id,
             @name_match,
-            @all,
         },
         {
             join     => [qw/ person /],
@@ -226,7 +222,7 @@ sub list_reg_name : Local {
     if (@regs == 1) {
         my $r = $regs[0];
         my $pr = $r->program;
-        if ($r->date_start <= today()->as_d8()
+        if ($r->date_start <= tt_today($c)->as_d8()
             && $r->balance > 0
             && ! $r->cancelled
         ) {
@@ -267,7 +263,7 @@ sub list_reg_post : Local {
         $r->{date_mark} = date($r->date_postmark);
     }
     Global->init($c);
-    $c->stash->{regs} = _reg_table(\@regs, 1);
+    $c->stash->{regs} = _reg_table(\@regs, postmark => 1);
     $c->stash->{other_sort} = "list_reg_name";
     $c->stash->{other_sort_name} = "By Name";
     my @files = <root/static/online/*>;
@@ -362,7 +358,7 @@ sub get_online : Local {
         },
     );
     my $p;
-    my $today = today()->as_d8();
+    my $today = tt_today($c)->as_d8();
     if (! @ppl || @ppl == 0) {
         #
         # no match so create a new person
@@ -449,7 +445,7 @@ sub get_online : Local {
 
     # comments
     $c->stash->{comment} = <<"EOC";
-1-$hash{house1}  2-$hash{house2}  $hash{cabinRoom}  online
+1-$hash{house1}  2-$hash{house2}  online
 EOC
     if ($hash{withWhom}) {
         $c->stash->{comment} .= "Sharing a room with $hash{withWhom}\n";
@@ -457,6 +453,8 @@ EOC
     if ($hash{request}) {
         $c->stash->{comment} .= $hash{request};
     }
+    $c->stash->{cabin_checked} = $hash{cabinRoom} eq 'cabin'? "checked": "";
+    $c->stash->{room_checked}  = $hash{cabinRoom} eq 'room' ? "checked": "";
 
     for my $how (qw/ ad web brochure flyer word_of_mouth /) {
         $c->stash->{"$how\_checked"} = "";
@@ -742,7 +740,7 @@ sub get_now {
     return
         reg_id   => $reg_id,
         user_id  => $c->user->obj->id,
-        the_date => today()->as_d8(),
+        the_date => tt_today($c)->as_d8(),
         time     => sprintf "%02d:%02d", (localtime())[2, 1];
     # we return an array of 8 values perfect
     # for passing to a DBI insert/update.
@@ -768,6 +766,13 @@ sub create_do : Local {
         $c->stash->{template} = "registration/error.tt2";
         return;
     }
+    my $cabin_room = "";
+    if ($hash{cabin} && ! $hash{room}) {
+        $cabin_room = "cabin";
+    }
+    elsif (!$hash{cabin} && $hash{room}) {
+        $cabin_room = "room";
+    }
     my $reg = model($c, 'Registration')->create({
         person_id     => $hash{person_id},
         program_id    => $hash{program_id},
@@ -789,6 +794,7 @@ sub create_do : Local {
         free_prog_taken => $hash{free_prog},
         cancelled     => '',    # to be sure
         arrived       => '',    # ditto
+        cabin_room    => $cabin_room,
         %dates,         # optionally
     });
     my $reg_id = $reg->id();
@@ -827,7 +833,7 @@ sub create_do : Local {
         });
         # and mark the credit as taken
         $cr->update({
-            date_used   => today()->as_d8(),
+            date_used   => tt_today($c)->as_d8(),
             used_reg_id => $reg_id,
         });
     }
@@ -1171,7 +1177,7 @@ sub send_conf : Local {
         sunday   => $personal_retreat
                     && ($reg->date_start_obj->day_of_week() == 0),
         friday   => $start->day_of_week() == 6,
-        today    => today(),
+        today    => tt_today($c),
         deposit  => $reg->deposit,
         htdesc   => $htdesc,
         article  => ($htdesc =~ m{^[aeiou]}i)? 'an': 'a',
@@ -1227,6 +1233,11 @@ sub view : Local {
     my ($self, $c, $reg_id) = @_;
 
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($reg_id);
+    _view($c, $reg);
+}
+
+sub _view {
+    my ($c, $reg) = @_;
     my $prog = $c->stash->{program} = $reg->program;
     $c->stash->{comment} = link_share($c, $prog->id(), $reg->comment());
     if ($prog->footnotes =~ m{[*]}) {
@@ -1300,7 +1311,7 @@ sub cancel : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     $c->stash->{reg} = $reg;
-    my $today = today();
+    my $today = tt_today($c);
     $c->stash->{today} = $today;
     $c->stash->{ndays} = $reg->program->sdate_obj - $today;
     Global->init($c);
@@ -1370,7 +1381,7 @@ sub cancel_do : Local {
             reg_id       => $id,
             person_id    => $reg->person->id(),
             amount       => $amount,
-            date_given   => today->as_d8(),
+            date_given   => tt_today($c)->as_d8(),
             date_expires => $date_expire->as_d8(),
             date_used    => "",
             used_reg_id  => 0,
@@ -1403,7 +1414,7 @@ sub cancel_do : Local {
         amount      => $amount,
         date_expire => $date_expire,
         user        => $c->user,
-        today       => today(),
+        today       => tt_today($c),
     };
     $tt->process(
         $template,      # template
@@ -1443,7 +1454,7 @@ sub _reg_hist {
         username => $username,
     });
     my $user_id = $u->id;
-    my $now_date = today()->as_d8();
+    my $now_date = tt_today($c)->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
     my $now_time = sprintf "%02d:%02d", $hour, $min;
     model($c, 'RegHistory')->create({
@@ -1490,7 +1501,7 @@ sub new_charge_do : Local {
     });
     my $user_id = $u->id;
 
-    my $today = today();
+    my $today = tt_today($c);
     my $now_date = $today->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
     my $now_time = sprintf "%02d:%02d", $hour, $min;
@@ -1522,6 +1533,7 @@ sub matchreg : Local {
         $pat = "";
     }
     $pat = trim($pat);
+    $pat =~ s{\*}{%}g;
     my ($pref_last, $pref_first);
     if ($pat =~ m{(\S+)\s+(\S+)}) {
         ($pref_last, $pref_first) = ($1, $2);
@@ -1532,27 +1544,16 @@ sub matchreg : Local {
     }
     my $pr = model($c, 'Program')->find($prog_id);
     my @name_match = ();
-    my @all = ();
     if ($pref_last) {
         push @name_match, 'person.last' => { like => "$pref_last%"  };
     }
     if ($pref_first) {
         push @name_match, 'person.first' => { like => "$pref_first%" };
     }
-    if (! @name_match) {
-        @all = (
-            cancelled      => '',
-            -or => [
-                arrived        => '',
-                balance => { '>', 0 },
-            ]
-        );
-    }
     my @regs = model($c, 'Registration')->search(
         {
             program_id     => $prog_id,
             @name_match,
-            @all,
         },
         {
             join     => [qw/ person /],
@@ -1569,7 +1570,7 @@ sub matchreg : Local {
 # this is not used if we go there directly, yes???
 #
 sub _reg_table {
-    my ($reg_aref, $postmark) = @_;
+    my ($reg_aref, %opt) = @_;
     my $size = 12;
     my $color = "#33a";
     my $other_color = "#fff";
@@ -1578,15 +1579,18 @@ sub _reg_table {
         $color = "red";
         $other_color = "#fff";
     }
+    my $proghead = "";
+    if ($opt{multiple}) {
+        $proghead = "<th align=left>Program</th>\n";
+    }
     my $posthead = "";
-    if ($postmark) {
-        $posthead = <<"EOH";
-<th align=center>Postmark</th>
-EOH
+    if ($opt{postmark}) {
+        $posthead = "<th align=center>Postmark</th>\n";
     }
     my $heading = <<"EOH";
 <tr>
-<td></td>
+$proghead
+<td></td>       <!-- for the marks -->
 <th align=left>Name</th>
 <th align=right>Balance</th>
 <th align=left>House Type</th>
@@ -1616,9 +1620,13 @@ EOH
         if (length($mark) == 1) {
             $mark = "<span class=required>$mark</span>";
         }
-        my $postrow = "";
-        if ($postmark) {
-            $postrow = <<"EOH";
+        my $program_td = "";
+        if ($opt{multiple}) {
+            $program_td = "<td>" . $reg->program->name() . "</td>\n";
+        }
+        my $postmark_td = "";
+        if ($opt{postmark}) {
+            $postmark_td = <<"EOH";
 <td>
 <span class=rname2>$date&nbsp;&nbsp;$time</span>
 </td>
@@ -1633,6 +1641,7 @@ EOH
         $body .= <<"EOH";
 <tr>
 
+$program_td
 <td>$mark</td>
 
 <td>    <!-- width??? -->
@@ -1651,7 +1660,7 @@ $pay_balance
 <span class=rname2>$house</span>
 </td>
 
-$postrow
+$postmark_td
 
 </tr>
 EOH
@@ -1776,6 +1785,12 @@ sub update : Local {
             $c->stash->{free_prog} = 1;
         }
     }
+    $c->stash->{carpool_checked} = $reg->carpool()? "checked": "";
+    $c->stash->{hascar_checked}  = $reg->hascar() ? "checked": "";
+    my $c_r = $reg->cabin_room();
+    $c->stash->{cabin_checked}   = $c_r eq 'cabin'? "checked": "";
+    $c->stash->{room_checked}    = $c_r eq 'room' ? "checked": "";
+
     $c->stash->{note_lines}    = lines($reg->confnote()) + 3;
     $c->stash->{comment_lines} = lines($reg->comment ()) + 3;
     $c->stash->{confnotes} = [
@@ -1877,6 +1892,13 @@ sub update_do : Local {
                                     # see lodge.tt2 
         _vacate($c, $reg);
     }
+    my $cabin_room = "";
+    if ($hash{cabin} && ! $hash{room}) {
+        $cabin_room = "cabin";
+    }
+    elsif (!$hash{cabin} && $hash{room}) {
+        $cabin_room = "room";
+    }
     $reg->update({
         ceu_license   => $hash{ceu_license},
         referral      => $hash{referral},
@@ -1890,6 +1912,7 @@ sub update_do : Local {
         confnote      => _expand($c, $c->request->params->{confnote}),
         nights_taken  => $taken,
         free_prog_taken => $hash{free_prog},
+        cabin_room    => $cabin_room,
         %dates,         # optionally
     });
     _compute($c, $reg, @who_now);
@@ -1939,7 +1962,9 @@ sub manual : Local {
     $c->stash->{date_postmark} = $date_post->as_d8();
     $c->stash->{time_postmark} = "12:00";
 
-    rest_of_reg($pr, $p, $c, today());
+    $c->stash->{cabin_checked}   = "";
+    $c->stash->{room_checked}    = "";
+    rest_of_reg($pr, $p, $c, tt_today($c));
 }
 
 sub delete : Local {
@@ -2035,12 +2060,13 @@ sub lodge : Local {
                                                ." with $first $last?";
                     }
                     else {
-                        $c->stash->{message2} = "$name requested a housing type of '"
-                                              . $reg2->h_type_disp
-                                              . "' not '"
-                                              . $reg->h_type_disp
-                                              . "'."
-                                              ;
+                        $c->stash->{message2}
+                            = "$name requested a housing type of '"
+                            . $reg2->h_type_disp
+                            . "' not '"
+                            . $reg->h_type_disp
+                            . "'."
+                            ;
                     }
                 }
                 else {
@@ -2065,6 +2091,7 @@ sub lodge : Local {
     my $center = ($h_type =~ m{center})? "yes": "";
     my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
+    my $cabin  = $reg->cabin_room eq 'cabin';
 
     my @h_opts = ();
     my $n = 0;
@@ -2089,6 +2116,7 @@ sub lodge : Local {
         #
         # using the _name_ of the cluster
         # is not the best idea but hey ...
+        # one _could_ put a tent and a room in the same cluster, right?
         #
         my $cl_name = $pc->cluster->name();
         my $cl_tent   = $cl_name =~ m{tent}i;
@@ -2100,8 +2128,6 @@ sub lodge : Local {
         ) {
             next PROGRAM_CLUSTER;
         }
-
-        my @c_h_opts;       # for this cluster
 
         HOUSE:
         for my $h (@{$houses_in_cluster{$pc->cluster_id()}}) {
@@ -2199,6 +2225,12 @@ sub lodge : Local {
             else {
                 $codes .= "R";      # resize needed - not as good...
             }
+            if ($h->cabin) {
+                $codes .= "C";
+                if ($cabin) {
+                    $code_sum += $string{house_sum_cabin};
+                }
+            }
             $codes = " - $codes" if $codes;
 
             # put this house in an option array to be sorted according
@@ -2214,45 +2246,62 @@ sub lodge : Local {
                       . $codes
                       . "</option>\n"
                       ;
-            push @c_h_opts, [ $opt, $code_sum, $h->priority ];
+            push @h_opts, [ $opt, $code_sum, $h->priority ];
             ++$n;
             if ($h_id == $share_house_id) {
                 $selected = 1;
             }
         }   # end of houses in this cluster
-        #
-        # now we can sort the houses in this cluster
-        # and then push them on the list of all chosen houses.
-        #
-        @c_h_opts = map {
-                        $_->[0]
-                    }
-                    sort {
-                      $b->[1] <=> $a->[1] ||      # PO       - descending
-                      $a->[2] <=> $b->[2]         # priority - ascending
-                    }
-                    @c_h_opts;
-        push @h_opts, @c_h_opts;
-        if (@h_opts > $string{max_lodge_opts}) {
-            last PROGRAM_CLUSTER;       # we have enough
+    }   # end of PROGRAM_CLUSTER
+    #
+    # and now the big sort:
+    #
+    @h_opts = map {
+                    $_->[0]
+                }
+                sort {
+                  $b->[1] <=> $a->[1] ||      # POC      - descending
+                  $a->[2] <=> $b->[2]         # priority - ascending
+                }
+                @h_opts;
+    if ($cabin && $h_opts[0] !~ m{-.*C}) {
+        # they want a cabin and the first choice is not a cabin
+        # get any cabins to the top and preserve the order
+        my @rooms = ();
+        my @cabins = ();
+        for my $o (@h_opts) {
+            if ($o =~ m{-.*C}) {
+                push @cabins, $o;
+            }
+            else {
+                push @rooms, $o;
+            }
         }
-    }       # end of PROGRAM_CLUSTER
+        @h_opts = (@cabins, @rooms);
+    }
+    #
+    # enforce the max_lodge_opts
+    # just truncate those beyond the stipulated max.
+    #
+    if (@h_opts > $string{max_lodge_opts}) {
+        $#h_opts = $string{max_lodge_opts};
+    }
     if ($share_house_id && ! $selected) {
         # male, female want to share
         # one of them is already housed.
         # the room is not in the list because of the gender mismatch
         # or a tent with nominally only one space.
-        # put it in the forced_house space
-        $c->stash->{force_house} = $share_house_name;
-        #unshift @h_opts,
-        #    "<option value=" 
-        #    . $share_house_id
-        #    . " selected>"
-        #    . $share_house_name
-        #    . " - X"
-        #    . "</option>\n"
-        #    ;
-        #$selected = 1;
+        # ?? put it in the forced_house space - no - too confusing.
+        # $c->stash->{force_house} = $share_house_name;
+        unshift @h_opts,
+            "<option value=" 
+            . $share_house_id
+            . " selected>"
+            . $share_house_name
+            . " - X"
+            . "</option>\n"
+            ;
+        $selected = 1;
     }
     if (@h_opts && ! $selected) {
         # no house is otherwise selected
@@ -2273,18 +2322,19 @@ sub lodge : Local {
 # we have identified a house for this registration.
 # put this in the registration record itself
 # and update the config records appropriately and carefully.
-# also add a program_cluster record if it is not there already.
 #
 sub lodge_do : Local {
     my ($self, $c, $id) = @_;
 
+    #
+    # settle on exactly which house we're using.
+    #
     my ($house_id) = $c->request->params->{house_id};
     my ($force_house) = trim($c->request->params->{force_house});
     if (! ($house_id || $force_house)) {
         $c->response->redirect($c->uri_for("/registration/view/$id"));
         return;
     }
-    my $house_max;
     my $house;
     if ($force_house) {
         ($house) = model($c, 'House')->search({
@@ -2296,11 +2346,12 @@ sub lodge_do : Local {
             return;
         }
         $house_id = $house->id;     # override
-        $house_max = $house->max;
     }
     else {
         ($house) = model($c, 'House')->find($house_id);
     }
+    my $house_max = $house->max;
+
     my $reg = model($c, 'Registration')->find($id);
     my $sdate  = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
@@ -2308,8 +2359,7 @@ sub lodge_do : Local {
     my $cmax = type_max($reg->h_type);
     #
     # if we forced a request for a triple into a double
-    # we can't set curmax in the config record
-    # to 3 - max is 2.
+    # we can't set curmax in the config record to 3 - max is 2.
     #
     # what about forcing a 3rd person into
     # a double that is a resized triple?
@@ -2318,20 +2368,22 @@ sub lodge_do : Local {
     # lastly (hopefully) we can't force too
     # many people into a room.  everyone must
     # have a bed.  this requires looking ahead.
-    # except for tents, that is.
+    # except for tents, that is!!
     # so weird and so complicated.   jeez.
     #
     if ($force_house && $cmax > $house_max) {
         $cmax = $house_max;
     }
     if ($force_house) {
-        # look ahead to see if a room is plum full on some day.
+        # we need to verify that this forced house
+        # is not plum full on some day.
+        #
         my @cf = model($c, 'Config')->search({
             house_id => $house_id,
             the_date => { 'between' => [ $sdate, $edate1 ] },
             cur      => $house_max,
         });
-            # tents are the exception - but you need to force it.
+            # tents are the exception - but you (or the user) need to force it.
         if (@cf && !$house->tent()) {
             $c->stash->{mess} = "Sorry, no beds left in $force_house"
                               . " on " . date($cf[0]->the_date)
@@ -2406,6 +2458,10 @@ sub _vacate {
         #
         # and don't undo the program id, right?
         #
+        # if we're not back to one should we see
+        # if all involved are of the same sex?  nah.
+        # let's leave a flaw in this - like Islamic art.
+        #
         my @opts = ();
         if ($cf->cur == 1) {
             push @opts, curmax => $hmax;
@@ -2436,17 +2492,30 @@ sub _vacate {
     });
 }
 
+#
+# patterns for matching people and/or for programs
+# are optionally provided.
+#
+# this is a multi-way search depending on the parameters:
+#
+# - registrations in the current program
+# - registrations in several programs
+# - programs
+#
 sub seek : Local {
     my ($self, $c, $prog_id, $reg_id) = @_;
 
-    my $pattern = $c->request->params->{pattern} || "";
-    $pattern = trim($pattern);
+    my $today_d8 = tt_today($c)->as_d8();
+    my $reg_pat = $c->request->params->{reg_pat} || "";
+    my $oreg_pat = $reg_pat;
+    $reg_pat =~ s{\*}{%}g if $reg_pat;
+    $reg_pat = trim($reg_pat);
     my ($pref_last, $pref_first);
-    if ($pattern =~ m{(\S+)\s+(\S+)}) {
+    if ($reg_pat =~ m{(\S+)\s+(\S+)}) {
         ($pref_last, $pref_first) = ($1, $2);
     }
     else {
-        $pref_last = $pattern;
+        $pref_last = $reg_pat;
         $pref_first = "";
     }
     my @name_match = ();
@@ -2456,20 +2525,70 @@ sub seek : Local {
     if ($pref_first) {
         push @name_match, 'person.first' => { like => "$pref_first%" };
     }
+    my @prog_match = ();
+    my $prog_pat = $c->request->params->{prog_pat};
+    my $oprog_pat = $prog_pat;
+    $prog_pat =~ s{\*}{%}g if $prog_pat;
+    if (empty($prog_pat)) {
+        push @prog_match, program_id => $prog_id,
+    }
+    else {
+        push @prog_match, 'program.name'  => { 'like' => "$prog_pat%" },
+                          'program.edate' => { '>=' => $today_d8      },
+    }
     if (! @name_match) {
-        # no regs - stay where you are/were.
-        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+        # if no prog match either then just stay where you are/were.
+        # they must have hit Search (or Return) by mistake
+        if (empty($prog_pat)) {
+            $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+            return;
+        }
+        # just a program match
+        # and if only one program matches
+        # go to the first alphabetic person
+        #
+        my (@progs) = model($c, 'Program')->search(
+            {
+                name  => { 'like' => "$prog_pat%" }, 
+                edate => { '>='   => $today_d8    },
+            },
+            {
+                order_by => 'sdate',
+            },
+        );
+        if (@progs == 1) {
+            first_reg(undef, $c, $progs[0]->id());
+            return;
+        }
+        elsif (@progs == 0) {
+            $c->stash->{message} = "No match.";
+            $c->stash->{reg_pat}  = $oreg_pat;
+            $c->stash->{prog_pat} = $oprog_pat;
+            view($self, $c, $reg_id);
+            return;
+        }
+
+        # we have some matching programs.
+        $c->stash->{programs} = \@progs;
+        my @files = <root/static/online/*>;
+        $c->stash->{online} = scalar(@files);
+        $c->stash->{pr_pat} = "";
+        $c->stash->{template} = "program/list.tt2";
         return;
     }
     my @regs = model($c, 'Registration')->search(
         {
-            program_id     => $prog_id,
+            @prog_match,
             @name_match,
+            # date_start => { '>=' => $today_d8 },
+            # had this condition but then we couldn't find people
+            # in the current program because their date_start
+            # was < today.
         },
         {
-            join     => [qw/ person /],
+            join     => [qw/ person program /],
             order_by => [qw/ person.last person.first /],
-            prefetch => [qw/ person /],   
+            prefetch => [qw/ person /],
         }
     );
     if (@regs == 1) {
@@ -2478,13 +2597,36 @@ sub seek : Local {
                                            . $regs[0]->id()));
     }
     elsif (@regs == 0) {
-        # no regs - stay where you are/were.
-        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+        # no regs - stay where you are/were. - with a message
+        $c->stash->{message} = "No match.";
+        $c->stash->{reg_pat}  = $oreg_pat;
+        $c->stash->{prog_pat} = $oprog_pat;
+        view($self, $c, $reg_id);
+        return;
     }
     else {
-        $c->stash->{program} = model($c, 'Program')->find($prog_id);
-        $c->stash->{pat}     = $pref_last . (($pref_first)? " $pref_first": "");
-        $c->stash->{regs}    = _reg_table(\@regs);
+        # are all the registrations in the same program?
+        my $multiple = 0;
+        if (empty($prog_pat)) {
+            $c->stash->{program} = model($c, 'Program')->find($prog_id);
+        }
+        else {
+            my %p_ids;
+            for my $r (@regs) {
+                $p_ids{$r->program_id()} = 1; 
+            }
+            my $nprogs = keys %p_ids;
+            if ($nprogs == 1) {
+                my ($only_prog_id) = keys %p_ids;
+                $c->stash->{program} = model($c,'Program')->find($only_prog_id);
+            }
+            else {
+                $c->stash->{multiple_progs} = 1;
+                $multiple = 1;
+            }
+        }
+        $c->stash->{pat}     = $oreg_pat;
+        $c->stash->{regs}    = _reg_table(\@regs, multiple => $multiple);
         $c->stash->{other_sort}      = "list_reg_post";
         $c->stash->{other_sort_name} = "By Postmark";
         my @files             = <root/static/online/*>;
@@ -2603,6 +2745,123 @@ sub who_is_there : Local {
                    . "</center>"
                    . "<p><table cellpadding=2>$reg_names</table>"
                    );
+}
+
+#
+# view the first (alphabetically) registration for this program
+# OR, if there are no registrations, say so in an error screen.
+#
+sub first_reg : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my ($reg) = model($c, 'Registration')->search(
+        {
+            program_id => $prog_id,
+        },
+        {
+            rows     => 1,
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first /],
+            prefetch => [qw/ person /],
+        }
+    );
+    if ($reg) {
+        $c->stash->{reg} = $reg;
+        _view($c, $reg);
+    }
+    else {
+        my $prog = model($c, 'Program')->find($prog_id);
+        $c->stash->{mess} = "No one has yet registered for "
+                          . $prog->name() . "."; 
+        $c->stash->{template} = "registration/error.tt2";
+    }
+}
+
+sub ceu : Local {
+    my ($self, $c, $reg_id, $override_hours) = @_;
+    $c->res->output(
+        ceu_license(
+            model($c, 'Registration')->find($reg_id),
+            $override_hours,
+        )
+    );
+    return;
+}
+
+my $npeople;
+my @people;
+
+sub _person_data {
+    my ($i) = @_;
+
+    if ($i >= $npeople) {
+        return;
+    }
+    my $p = $people[$i];
+    return "<td valign=top>"
+         . "<b>" . $p->last . ", " . $p->first . "</b><br>"
+         . $p->addr1 . "<br>"
+         . ($p->addr2? $p->addr2 . "<br>": "")
+         . $p->city . ", " . $p->st_prov . " " . $p->zip_post . "<br>"
+         . ($p->country? $p->country . "<br>": "")
+         . ($p->tel_home? $p->tel_home . " home<br>": "")
+         . ($p->tel_work? $p->tel_work . " work<br>": "")
+         . ($p->tel_cell? $p->tel_cell . " cell<br>": "")
+         . "<p>"
+         . "</td>"
+         ;
+}
+
+sub name_addr : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my ($program) = model($c, 'Program')->find($prog_id);
+    my (@regs) = model($c, 'Registration')->search(
+        {
+            # not cancelled??
+            program_id => $prog_id,
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    # here we're only interested in the person information
+    #
+    @people = map { $_->person } @regs;     # not global - see above
+
+    # make the 3 across table - too tricky to do
+    # in the template.  we want it sorted by last name
+    # going down the column.
+    #
+    $npeople = @people;         # not my - see above
+    my $n = ceil($npeople/3);   # length of 1st, 2nd column
+    my $na_rows = "";
+    for my $i (0 .. $n-1) {
+        $na_rows .= "<tr>";
+
+        $na_rows .= _person_data($i);
+        $na_rows .= _person_data($i+$n);
+        $na_rows .= _person_data($i+2*$n);
+
+        $na_rows .= "</tr>\n";
+    }
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src',
+        EVAL_PERL    => 0,
+    }) or die Template->error();
+    my $stash = {
+        program => $program,
+        rows    => $na_rows,
+    };
+    $tt->process(
+        "registration/name_addr.tt2",   # template
+        $stash,               # variables
+        \$html,               # output
+    ) or die $tt->error();
+    $c->res->output($html);
 }
 
 1;

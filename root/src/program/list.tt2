@@ -30,7 +30,7 @@
     <td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
     <td>[% p.sdate_obj %]</td>
     <td align=right>[% p.reg_count %]</td>
-    <td><a href="/registration/list_reg_name/[% p.id %]">[% p.title %]</a></td>
+    <td><a href="/registration/first_reg/[% p.id %]">[% p.title %]</a></td>
     </tr>
 [% END %]
 </table>

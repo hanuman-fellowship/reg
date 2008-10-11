@@ -5,7 +5,6 @@ use base 'Catalyst::Controller';
 
 use Date::Simple qw/
     date
-    today
 /;
 use Util qw/
     trim
@@ -19,6 +18,7 @@ use Util qw/
     type_max
     max_type
     housing_types
+    tt_today
 /;
 use Global qw/%string/;
 use POSIX;
@@ -158,7 +158,7 @@ sub create_do : Local {
         $hash{received_by} = $c->user->obj->id;
     }
     my $sum = model($c, 'Summary')->create({
-        date_updated => today()->as_d8(),
+        date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });
@@ -331,7 +331,7 @@ sub view : Local {
     elsif (! ($r->contract_received() && $r->payments() > 0)) {
         $status = "sent";
     }
-    elsif (today()->as_d8() > $r->edate()) {
+    elsif (tt_today($c)->as_d8() > $r->edate()) {
         if ($balance != 0) {
             $status = "due";
         }
@@ -376,7 +376,7 @@ sub list : Local {
     my ($self, $c) = @_;
 
     Global->init($c);
-    my $today = today()->as_d8();
+    my $today = tt_today($c)->as_d8();
     $c->stash->{rentals} = [
         model($c, 'Rental')->search(
             { edate => { '>=', $today } },
@@ -573,8 +573,8 @@ sub pay_balance : Local {
     my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Rental')->find($id);
-    $c->stash->{amount} = (today()->as_d8() >= $r->edate)? $r->balance()
-                         :                                 $r->deposit()
+    $c->stash->{amount} = (tt_today($c)->as_d8() >= $r->edate)? $r->balance()
+                         :                                      $r->deposit()
                          ;
     $c->stash->{rental} = $r;
     $c->stash->{template} = "rental/pay_balance.tt2";
@@ -586,7 +586,7 @@ sub pay_balance_do : Local {
     my $amt = $c->request->params->{amount};
     my $type = $c->request->params->{type};
 
-    my $today = today();
+    my $today = tt_today($c);
     my $now_date = $today->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
     my $now_time = sprintf "%02d:%02d", $hour, $min;
@@ -706,7 +706,7 @@ sub new_charge_do : Local {
         return;
     }
 
-    my $today = today();
+    my $today = tt_today($c);
     my $now_date = $today->as_d8();
     my ($hour, $min) = (localtime())[2, 1];
     my $now_time = sprintf "%02d:%02d", $hour, $min;

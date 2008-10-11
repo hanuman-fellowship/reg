@@ -12,8 +12,11 @@ use Util qw/
     empty
     trim
     model
+    tt_today
 /;
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+/;
 use Template;
 
 Date::Simple->default_format("%D");      # set it here - where else???
@@ -347,7 +350,7 @@ EOS
     # mark the report as having been run today.
     #
     $report->update({
-        last_run => today(),
+        last_run => tt_today($c),
     });
     if ($format == 4) {       # VistaPrint
         for my $p (@people) {

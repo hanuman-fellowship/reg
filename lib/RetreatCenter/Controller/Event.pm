@@ -3,12 +3,15 @@ use warnings;
 package RetreatCenter::Controller::Event;
 use base 'Catalyst::Controller';
 
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+/;
 use Util qw/
     empty
     model
     meetingplace_table
     places
+    tt_today
 /;
 use GD;
 use ActiveCal;
@@ -105,7 +108,7 @@ sub view : Local {
 sub list : Local {
     my ($self, $c) = @_;
 
-    my $today = today()->as_d8();
+    my $today = tt_today($c)->as_d8();
     $c->stash->{events} = [
         model($c, 'Event')->search(
             { sdate => { '>=', $today } },
@@ -260,7 +263,7 @@ sub calendar : Local {
 
     Global->init($c);
     my $which = $c->request->params->{which};
-    my $today = today();
+    my $today = tt_today($c);
     if ($which) {
         my $dt = date($which);
         if ($dt) {

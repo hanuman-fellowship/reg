@@ -22,8 +22,12 @@ use Util qw/
     lunch_table
     add_config
     valid_email
+    tt_today
+    ceu_license
 /;
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+/;
 use Net::FTP;
 use Global qw/%string/;
 use File::Copy;
@@ -240,7 +244,7 @@ sub create_do : Local {
 
     my $upload = $c->request->upload('image');
     my $sum = model($c, 'Summary')->create({
-        date_updated => today()->as_d8(),
+        date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });
@@ -398,7 +402,7 @@ sub _get_cluster_groups {
 sub list : Local {
     my ($self, $c) = @_;
 
-    my $today = today()->as_d8();
+    my $today = tt_today($c)->as_d8();
     $c->stash->{programs} = [
         model($c, 'Program')->search(
             { edate => { '>=', $today } },
@@ -415,7 +419,7 @@ sub list : Local {
 sub listpat : Local {
     my ($self, $c) = @_;
 
-    my $today = today()->as_d8();
+    my $today = tt_today($c)->as_d8();
     my $pr_pat = trim($c->request->params->{pr_pat});
     if (empty($pr_pat)) {
         $c->forward('list');
@@ -467,7 +471,7 @@ sub listpat : Local {
     $c->stash->{programs} = [
         model($c, 'Program')->search(
             $cond,
-            { order_by => 'sdate desc' },
+            { order_by => 'sdate' },
         )
     ];
     $c->stash->{pr_pat} = $pr_pat;
@@ -1107,7 +1111,7 @@ sub brochure : Local {
     my ($self, $c) = @_;
 
     # make a guess at the season we are generating.
-    my $d = today();
+    my $d = tt_today($c);
     my $m = $d->month();
     my $y = $d->year() % 100;
     my $seas;
@@ -1410,7 +1414,7 @@ sub duplicate_do : Local {
     my $sum = model($c, 'Summary')->create({
         $old_summary->get_columns(),        # to dup the old ...
         id => undef,                        # with a new id
-        date_updated => today()->as_d8(),   # and new update status info
+        date_updated => tt_today($c)->as_d8(),   # and new update status info
         who_updated  => $c->user->obj->id,
         time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });
@@ -1573,6 +1577,47 @@ sub cluster_down : Local {
     $p_cl3->update({ seq => $seq4 });
     $p_cl4->update({ seq => $seq3 });
     $c->res->output(_get_cluster_groups($c, $program_id));
+}
+
+# find the 'current' program - not a Personal Retreat
+# and show the alphabetically first registrant.
+sub cur_prog : Local {
+    my ($self, $c) = @_;
+    
+    my $today_d8 = tt_today($c)->as_d8();
+    my @progs = model($c, 'Program')->search(
+        {
+            edate => { '>=', $today_d8 },
+            name  => { -not_like => "%personal%retreat%" },
+        },
+        {
+            rows     => 1,
+            order_by => 'sdate',
+        },
+    );
+    if (@progs) {
+        $c->response->redirect($c->uri_for("/registration/first_reg/"
+                                           . $progs[0]->id()));
+    }
+    else {
+        $c->response->redirect($c->uri_for("/program/list"));
+    }
+}
+
+sub ceu : Local {
+    my ($self, $c, $prog_id, $override_hours) = @_;    
+
+    my $html = "";
+    for my $r (model($c, 'Registration')->search({
+                   program_id  => $prog_id,
+                   ceu_license => { "!=", "" },
+               }) 
+    ) {
+        $html .= ceu_license($r, $override_hours)
+              .  "<div style='page-break-after:always'></div>\n"
+              ;
+    }
+    $c->res->output($html);
 }
 
 1;

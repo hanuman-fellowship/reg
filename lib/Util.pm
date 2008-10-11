@@ -36,6 +36,8 @@ our @EXPORT_OK = qw/
     _br
     normalize
     link_share
+    tt_today
+    ceu_license
 /;
 
 use POSIX   qw/ceil/;
@@ -44,6 +46,7 @@ use Date::Simple qw/
     date
     today
 /;
+use Template;
 
 use Global qw/%string/;
 
@@ -686,7 +689,7 @@ sub add_config {
     my $last;
     my @houses;
     if ($house) {
-        $last = today();
+        $last = today();        # not tt_today()
     }
     else {
         $last = date($string{sys_last_config_date});
@@ -813,7 +816,6 @@ sub link_share {
         my ($first, $last) = split m{\s+}, $name;
         $first = normalize($first);
         $last  = normalize($last);
-$c->log->info("f $first l $last");
         if (my ($person) = model($c, 'Person')->search({
                                first => $first,
                                last  => $last,
@@ -831,6 +833,164 @@ $c->log->info("f $first l $last");
         }
     }
     _br($s);
+}
+
+sub tt_today {
+    my ($c) = @_;    
+
+    my $s = $string{tt_today};
+    if (! $s) {
+        return today();
+    }
+    my $login = $c->user->username();
+    my ($user, $dt) = split m{\s+}, $string{tt_today};
+    $dt = date($dt);
+    return ($user eq $login && $dt)? $dt: today();
+}
+
+# given a Registration return the ceu_license
+sub ceu_license {
+    my ($reg, $override_hours) = @_;
+    my $person = $reg->person;
+    my $program = $reg->program;
+    my $lic = uc $reg->ceu_license;
+	$lic =~ s{^\s*}{};
+    my ($license, $has_completed, $provider);
+	if ($lic =~ /^RN/) {
+		$license  = "Registered Nurse License Number: $lic<br>";
+		$has_completed = "Has completed the following course work<br>". 
+                               "for Continuing Education Credit:";
+		$provider = "This Certificate must be retained by the ".
+						  "licensee for a period of four years after ".
+						  "the course ends.<br>".
+		                  "Board of Registered Nursing, Provider #05557";
+	}
+	elsif ($lic =~ /COMP/i) {
+		# extra space so it's the same size and spacing as the others
+		$license  = "&nbsp;<br>";
+		$provider = "&nbsp;<br>&nbsp;";
+		$has_completed = "Has completed the following course work:<br>".
+							   "&nbsp;";
+	}
+	else {
+		$license  = "License Number: $lic<br>";
+		$has_completed = "Has completed the following course work<br>".
+                               "for Continuing Education Credit:";
+		$provider = "This Certificate must be retained by the ".
+						  "licensee for a period of four years after ".
+						  "the course ends.<br>".
+		                  "Board of Behavioral Sciences, Provider #PCE632";
+	}
+    my $ndays = $program->edate - $program->sdate;
+    my $hours = ($program->retreat && $ndays == 4)? 18
+               :($program->name =~ m{YTT}        )? 120
+               :                                    $ndays*5
+               ;
+    if ($override_hours) {
+        $hours = $override_hours;
+    }
+    my $sdate = $program->sdate_obj;
+    my $edate = $program->edate_obj;
+    my $date = $sdate->format("%B %e");
+    if (   $sdate->month == $edate->month 
+        && $sdate->year  == $sdate->year )
+    {
+        # February 4-6, 2005
+        $date .= sprintf "-%d, %d",
+                         $edate->day,
+                         $sdate->format("%Y");
+    }
+    elsif ($edate->year == $sdate->year) {
+        # February 4 - March 6, 2005
+        $date .= $edate->format(" - %B&nbsp;%e, %Y");
+    }
+    else {
+        # December 31, 2005 - January 3, 2006
+        $date .= sprintf ", %s - %s",
+                         $sdate->format("%Y"),
+                         $edate->format("%B %e, %Y");
+    }
+    my $stash = {
+        name          => $person->first . " " . $person->last,
+        topic         => $program->title,
+        date          => $date,
+        instructor    => $program->leader_names,
+        license       => $license,
+        has_completed => $has_completed,
+        provider      => $provider,
+        hours         => $hours . " (" . _spell($hours) . ")",
+    };
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src/registration',
+        EVAL_PERL    => 0,
+    }) or die Template->error();
+    $tt->process(
+        "ceu.tt2",   # template
+        $stash,      # variables
+        \$html,      # output
+    ) or die $tt->error();
+    $html;
+}
+
+#
+# spell out a number in words
+# < 1000, please.
+#
+sub _spell {
+	my ($x) = @_;
+	my %ones = (
+		1 => "One",
+		2 => "Two",
+		3 => "Three",
+		4 => "Four",
+		5 => "Five",
+		6 => "Six",
+		7 => "Seven",
+		8 => "Eight",
+		9 => "Nine",
+		10 => "Ten",
+		11 => "Eleven",
+		12 => "Twelve",
+		13 => "Thirteen",
+		14 => "Fourteen",
+		15 => "Fifteen",
+		16 => "Sixteen",
+		17 => "Seventeen",
+		18 => "Eighteen",
+		19 => "Nineteen",
+	);
+	my $sp = "";
+	if ($x >= 100) {
+        my $h = 100*int($x/100);
+		$x -= $h;
+		$sp = "$ones{$h/100} Hundred";
+		if ($x > 0) {
+			$sp .= " and ";
+		}
+	}
+	if ($x > 19) {
+		my $tens = int($x/10)*10;
+		$x %= 10;
+		my %tens = (
+			20 => "Twenty",
+			30 => "Thirty",
+			40 => "Forty",
+			50 => "Fifty",
+			60 => "Sixty",
+			70 => "Seventy",
+			80 => "Eighty",
+			90 => "Ninety",
+		);
+		$sp .= "$tens{$tens}";
+		if ($x > 0) {
+			$sp .= q{ };
+		}
+	}
+	if ($x > 0) {
+		$sp .= $ones{$x}
+	}
+	return $sp;
 }
 
 1;

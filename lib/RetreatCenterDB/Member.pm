@@ -3,7 +3,10 @@ use warnings;
 package RetreatCenterDB::Member;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+    today
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('member');
@@ -45,7 +48,7 @@ sub date_life_obj {
 }
 sub lapsed {
     my ($self) = @_;
-    my $today = today()->as_d8();
+    my $today = today()->as_d8();       # can't use tt_today - no $c :(
     if (($self->category eq 'General' && $self->date_general < $today)
         ||
         ($self->category eq 'Sponsor' && $self->date_sponsor < $today)

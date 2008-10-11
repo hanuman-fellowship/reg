@@ -152,7 +152,7 @@ INSERT INTO "house" VALUES(112,'KNOLL 10',1,'','yes','','',3,380,60,9,12,'','Lt'
 INSERT INTO "house" VALUES(113,'KNOLL 11',1,'','yes','','',3,380,85,9,12,'','Lt');
 INSERT INTO "house" VALUES(114,'KNOLL H2O',1,'','yes','','',3,380,110,9,12,'yes','Lt');
 INSERT INTO "house" VALUES(115,'KNOLL 9',1,'','yes','yes','',3,440,60,10,12,'','Lt');
-INSERT INTO "house" VALUES(116,'KNOLL 12',1,'','yes','yes','',3,440,85,9,12,'','Lt');
+INSERT INTO "house" VALUES(116,'KNOLL 12',1,'','yes','yes','',3,440,85,10,12,'','Lt');
 INSERT INTO "house" VALUES(117,'OC 1',2,'','','','yes',3,440,270,11,1,'','Lt');
 INSERT INTO "house" VALUES(118,'OC 2',2,'','','','yes',3,440,295,11,2,'','Lt');
 INSERT INTO "house" VALUES(119,'OC 3',2,'','','','yes',3,440,320,11,3,'','Lt');
@@ -220,7 +220,7 @@ INSERT INTO "house" VALUES(180,'CC CR',10,'','','','',9,100,150,13,5,'','L');
 INSERT INTO "house" VALUES(181,'CC L',11,'','','','',9,100,175,13,6,'','L');
 INSERT INTO "house" VALUES(182,'OH MAIN',12,'','','','',9,100,200,13,7,'','L');
 INSERT INTO "house" VALUES(183,'SH MAIN',20,'','','','',9,100,225,13,8,'','L');
-INSERT INTO "house" VALUES(184,'MMS 4-3',7,'','','','',9,275,50,14,1,'','Lt');
+INSERT INTO "house" VALUES(184,'MMS A-3',7,'','','','',9,275,50,14,1,'','Lt');
 INSERT INTO "house" VALUES(185,'MMS B-4',7,'','','','',9,275,75,14,2,'','Lt');
 INSERT INTO "house" VALUES(186,'MMS C-13',7,'','','','',9,275,100,14,3,'','Lt');
 INSERT INTO "house" VALUES(187,'MMS C-14',7,'','','','',9,275,125,14,4,'','Lt');

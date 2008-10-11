@@ -3,7 +3,9 @@ use warnings;
 package RetreatCenter::Controller::XAccount;
 use base 'Catalyst::Controller';
 
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+/;
 use Util qw/
     trim
     empty
@@ -137,7 +139,7 @@ sub pay_balance_do : Local {
         what        => $what,
 
         user_id     => $c->user->obj->id,
-        the_date    => today()->as_d8(),
+        the_date    => tt_today($c)->as_d8(),
         time        => sprintf "%02d:%02d", (localtime())[2, 1],
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));

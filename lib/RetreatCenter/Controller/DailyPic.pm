@@ -8,7 +8,6 @@ use lib "../..";
 use GD;
 use Date::Simple qw/
     date
-    today
 /;
 use Global qw/
     %string
@@ -19,6 +18,7 @@ use Global qw/
 use Util qw/
     model
     empty
+    tt_today
 /;
 
 sub index : Local {
@@ -29,7 +29,7 @@ sub show : Local {
     my ($self, $c, $type, $date) = @_;
 
     Global->init($c);
-    my $today = today();
+    my $today = tt_today($c);
     my $last_date = date($string{sys_last_config_date});
     my $dt;
     if ($date) {
@@ -83,6 +83,8 @@ sub show : Local {
     $height += $string{house_height};
 
     my $dp = GD::Image->new($width+1, $height+1);
+    my $pct = $string{dp_img_percent}/100;
+    my $resize_height = $height*$pct;
     my $white = $dp->colorAllocate(255,255,255);    # 1st color = background
     my $black = $dp->colorAllocate(  0,  0,  0);
     my %char_color;
@@ -173,6 +175,14 @@ sub show : Local {
                     # if not, we're screwed.
                     # this is why I made hcck!
         }
+        # for the image maps to work we need to adjust
+        # the coordinates according to how the browser
+        # will resize the image.
+        #
+        $x1 *= $pct;
+        $y1 *= $pct;
+        $x2 *= $pct;
+        $y2 *= $pct;
         $dp_map .= "<area shape=rect coords='$x1, $y1, $x2, $y2'"
                 . qq! onclick="Send('$sex', $hid);"!
                 . qq! onmouseout="return nd();">\n!
@@ -251,7 +261,6 @@ sub show : Local {
     }
     if ($event_table) {
         $event_table = <<EOT;
-<p>
 <table cellpadding=3>
 <tr><th>Start</th><th>End</td><th align=left>Name</th></tr>
 $event_table
@@ -333,7 +342,7 @@ function Send(sex, house_id) {
 $links
 </form>
 <p>
-<img style="margin-left: .5in;" src=$image usemap=#dailypic>
+<img height=$resize_height src=$image usemap=#dailypic>
 $event_table
 <map name=dailypic>
 $dp_map</map>

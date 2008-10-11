@@ -4,8 +4,14 @@ package RetreatCenter::Controller::Donation;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/trim model/;
-use Date::Simple qw/date today/;
+use Util qw/
+    trim
+    model
+    tt_today
+/;
+use Date::Simple qw/
+    date
+/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -54,7 +60,7 @@ sub create_do : Local {
         person_id   => $person_id,
         date_donate => $date_donate->as_d8(),
         who_d       => $c->user->obj->id,
-        date_d      => today()->as_d8(),
+        date_d      => tt_today($c)->as_d8(),
         time_d      => sprintf "%02d:%02d", (localtime())[2, 1],
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));

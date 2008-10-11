@@ -21,9 +21,14 @@ sub index : Private {
     if ($username && $password) {
         # Attempt to log the user in
         if ($c->login($username, $password)) {
-            # If successful, then let them use the application.
+            # successful, let them use the application!
             Global->init($c);       # where else to put this???
-            $c->response->redirect($c->uri_for('/person/search'));
+            if ($c->check_user_roles('prog_staff')) {
+                $c->response->redirect($c->uri_for('/program/cur_prog'));
+            }
+            else {
+                $c->response->redirect($c->uri_for('/person/search'));
+            }
             return;
         }
         else {

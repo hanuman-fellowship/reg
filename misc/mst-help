@@ -1,0 +1,144 @@
+[09:11am] b10m joined the chat room.
+[09:12am] jonbjornstad: Question...  Is there a way to get control at Catalyst server start up time?  I want to do some initializations.  I would need a $c - Catalyst context to do the inits.
+[09:12am] mst: step back. explain what you're trying to achieve.
+[09:12am] jonbjornstad: okay.  thank you for being here.
+[09:13am] jonbjornstad: I'm using the fabulous DBIx::Class for database ORM access.    Some tables hardly change at all and are frequently used.  I'd like to read their contents into globally accessible variables at start up time.
+[09:14am] jshirley: jonbjornstad++ # best response to /achieve ever.
+[09:15am] mst: jonbjornstad: there is no $c outside of requests
+[09:15am] mst: however
+[09:15am] mst: seems to me like that's not what you want anyway
+[09:15am] jonbjornstad: okay.
+[09:15am] • mst thinks
+[09:15am] lordarthas joined the chat room.
+[09:16am] mst: jonbjornstad: do you just need to get an array of values
+[09:16am] mst: or lookup-by-PK as well?
+[09:17am] mst: either way, it seems to me your DBIC $schema should do this on ->connect
+[09:17am] charsba__ left the chat room. (Read error: Connection reset by peer)
+[09:17am] mst: that's how I've done it for @clients before now
+[09:18am] jonbjornstad: just an array of values - no particular PK
+[09:18am] jonbjornstad: how do I get control at DBIC connect time?
+[09:19am] mst: sub connect {
+[09:19am] charsbar joined the chat room.
+[09:20am] jonbjornstad: that is a function in the DBIx::Class package??
+[09:20am] mst: no
+[09:20am] mst: it's a DBIx::Class::Schema method
+[09:21am] mst: please learn DBIx::Class before trying to hack it 
+[09:21am] jonbjornstad: of course!
+[09:21am] jonbjornstad: that's why I'm asking the expert!
+[09:21am] mst: alright, but this is as fundamental as DBI->connect
+[09:21am] mst: you shouldn't need telling
+[09:21am] mst: you also shouldn't call methods functions 
+[09:22am] jonbjornstad: okay so I add a method to DBIx::Class::Schema called connect() and there I can do my inits?
+[09:22am] dhoss-laptop: http://www.hasthelhcdestroyedtheearth.com/ ++
+[09:22am] ilmari: does purl do rss factoids?
+[09:22am] mst: jonbjornstad: not to DBIx::Class::Schema itself, no
+[09:22am] AndyA left the chat room. (Ping timeout: 360 seconds)
+[09:23am] mst: jonbjornstad: do you understand what subclassing is?
+[09:23am] jonbjornstad: yes
+[09:23am] mst: you have a MyApp::Schema or similar that does "use base qw(DBIx::Class::Schema);"
+[09:23am] mst: right?
+[09:23am] purl: i heard right was wrong. or more likely to not have problems with torturing people
+[09:23am] jonbjornstad: yes
+[09:23am] mst: so you can add the method there 
+[09:23am] jonbjornstad: okay.
+[09:24am] mst: if this isn't obvious, I suspect you're treating DBIC as magic
+[09:24am] mst: it's not. it's a bunch of classes that co-operate together. it's still just perl.
+[09:24am] mst: it just happens to be Sufficiently Advanced Technology when you first encounter it 
+[09:24am] lordarthas left the chat room. (Ping timeout: 360 seconds)
+[09:25am] jonbjornstad: it DOES take a bit of learning to use it effectively.
+[09:25am] jonbjornstad: i have been able to use it in a rather complex environment (44 tables) without understanding it deeply.
+[09:25am] jonbjornstad: that is a testament to its quality!
+[09:26am] mst: actually, it's probably a testament to the documentation
+[09:26am] mst: castaway++ # and everybody who helped her
+[09:26am] jonbjornstad: kudos to all!
+[09:26am] Nom: Anyone here per chance worked with one of those network appliance builders before?  Where you drag and drop servers, and hit deploy and it builds and configures all your network appliances?
+[09:27am] jonbjornstad: reading perldoc DBIx::Class::Schema
+[09:33am] nigel left the chat room. (Quit: nigel)
+[09:33am] jonbjornstad: i have a MyAppDB.pm which subclasses DBIx::Class::Schema and does a load_classes().  How do I get a $schema so that I can do my initializations?
+[09:34am] mst: did you look at the docs for connect() ?
+[09:34am] jonbjornstad: The connect(dsn, ...) happens elsewhere, right?
+[09:34am] mst: yes, it's called elsewhere
+[09:34am] mst: it could be called from many elsewheres
+[09:34am] mst: that's -why- you want to wrap that
+[09:35am] jonbjornstad: (did I just make up a word elsewhere?  )
+[09:36am] jonbjornstad: I see the doc for connect() but it doesn't enlighten me further.
+[09:37am] mst: my $schema = My::Schema->connect;
+[09:37am] mst: right?
+[09:37am] purl: i think right is wrong. or more likely to not have problems with torturing people
+[09:38am] Nom: incompatible encoding
+[09:39am] jonbjornstad: and in My::Schema connect() I call the base class connect() to actually do the connection to the DB?
+[09:39am] mst: right.
+[09:39am] mst: sub connect { my $new = shift->next::method(@_); <populate pre-cache here>; return $new; }
+[09:41am] AndyA joined the chat room.
+[09:42am] kane[work] joined the chat room.
+[09:42am] jonbjornstad: pondering this
+[09:45am] AndyA left the chat room. (Ping timeout: 240 seconds)
+[09:46am] kane[work] left the chat room. (Read error: Connection reset by peer)
+[09:48am] jonbjornstad: do I do this?:  sub connect { my $schema = shift->SUPER::connect(@_);  <populate pre-cache with $schema->resultset('DVD')->search(...); return $schema }
+[09:49am] confound: mst's "next::method" was a literal, not an example
+[09:50am] jonbjornstad: really?
+[09:50am] • purl wiggles her butt
+[09:50am] rjbs: really.
+[09:50am] confound: perldoc Class::C3
+[09:50am] jonbjornstad: okay 
+[09:51am] jonbjornstad: and the $new above is used as the $schema?
+[09:51am] t0m: yes
+[09:51am] AndyA joined the chat room.
+[09:51am] jonbjornstad: phew!  okay!  I have learned many things.  Thank you.    Now to try this!
+[09:52am] mst: jonbjornstad: if you use SUPER you are wrong
+[09:52am] mst: jonbjornstad: fucking follow the example I give you
+[09:52am] bwana147 left the chat room.
+[09:52am] jonbjornstad: okie dokie.  will do.
+[09:52am] mst: jonbjornstad: also, I used $new
+[09:53am] mst: jonbjornstad: because generally in a method the invocant should be $class for a class method or $self for an object method
+[09:53am] mst: jonbjornstad: in the case of a constructor I always use $new, to remind people that it's a constructor and it needs returning
+[09:56am] jonbjornstad: i suspect most users (like me) of DBIC use it as magic.    understanding the fullness of its structure is not an easy task and should not be necessary.
+[09:56am] Diablo-D3 left the chat room. (Quit: This computer has gone to sleep)
+[09:57am] confound: luckily, that's not relevant, because you're not anywhere near that 
+[09:57am] jonbjornstad: for sure!
+[09:57am] purl: like totally!
+[09:57am] rjbs: purl: thanks
+[09:57am] mst: jonbjornstad: there was no understanding structure involved in what I just showed you
+[09:57am] mst: jonbjornstad: only reading the docs, and trivial subclassing
+[09:58am] jonbjornstad: okay.  thank you very much.
+[09:58am] arnooo left the chat room. (Remote host closed the connection)
+[10:08am] Imran-UK left the chat room. (Quit: I am excitied about: Sharks with Frikkin lasers on their heads.)
+[10:10am] dhoss-laptop left the chat room. (Quit: http://www.mibbit.com ajax IRC Client)
+[10:12am] davinchi left the chat room. (Quit: Leaving)
+[10:13am] • Caelum liked OS/2
+[10:13am] Caelum: wonder if it works in vmware
+[10:13am] rjbs: I seem to recall liking it for a few weeks before discovering Linux.
+[10:14am] rjbs: No, that can't be true.
+[10:14am] rjbs: because OS/2 2 came out in 1992
+[10:14am] rjbs: and I moved to Linux in 1995
+[10:15am] rjbs: At the launch of OS/2 Warp in 1994, Patrick Stewart was to be the Master of Ceremonies; however Kate Mulgrew of the then-upcoming series Star Trek: Voyager was substituted at the last minute.
+[10:15am] rjbs: thus dooming OS/2 forever
+[10:15am] Caelum:
+[10:17am] Caelum: http://www.ecomstation.com/
+[10:17am] stoptypingnow joined the chat room.
+[10:19am] lunartear joined the chat room.
+[10:28am] • mst sighs
+[10:28am] mst: got whinged at for telling somebody they didn't know what the fuck they were talking about
+[10:28am] mst: GOD DAMMIT THEY DIDN'T
+[10:28am] mst: FUCK OFF
+[10:28am] purl: The fuck is now "off".
+[10:28am] marcus: mst: client? 
+[10:29am] mst: nah
+[10:29am] mst: Emmanuel Quibblingbastard
+[10:29am] mst: or whatever
+[10:30am] sekimura joined the chat room.
+[10:33am] yusukebe left the chat room. (Quit: Leaving...)
+[10:36am] pleemans joined the chat room.
+[10:48am] AndyA left the chat room. (Ping timeout: 360 seconds)
+[10:51am] marcus: you seems lightly upset
+[10:52am] AndyA joined the chat room.
+[10:54am] darobin left the chat room. (Ping timeout: 360 seconds)
+[10:54am] rjbs: WHINGWHINGWHING
+[10:55am] confound: whing chung
+[10:55am] lostinfog joined the chat room.
+[10:59am] konobi: jshirley++ # grasping the fitesque concept without a long speech
+[11:00am] jshirley: konobi: recall I did attend your fitesque talk up at van.pm
+[11:00am] jshirley:
+[11:01am] konobi: doh!
+[11:04am] jshirley: konobi: it's ok, I was too busy drinking coffee to listen to you.
+[11:04am] 

@@ -10,8 +10,11 @@ use Util qw/
     clear_lunch
     get_lunch
     trim
+    tt_today
 /;
-use Date::Simple qw/date today/;
+use Date::Simple qw/
+    date
+/;
 use DateRange;
 
 sub index : Local {
@@ -330,7 +333,8 @@ sub meal_list : Local {
     my $fmt = "%b %e"; # easier for the kitchen to read
 
     # validation
-    my $start = $sdate? date($sdate, $fmt): today($fmt);
+    my $start = $sdate? date($sdate): tt_today($c);
+    $start->set_format($fmt);
     if (! $start) {
         $c->stash->{mess} = "Illegal start date: $sdate";
         $c->stash->{template} = "gen_error.tt2";
@@ -574,7 +578,7 @@ sub comings_goings : Local {
         $d8 = $date;
     }
     else {
-        $d8 = today()->as_d8();
+        $d8 = tt_today($c)->as_d8();
     }
     $c->stash->{prev_date} = (date($d8)-1)->as_d8();
     $c->stash->{next_date} = (date($d8)+1)->as_d8();
@@ -680,7 +684,7 @@ sub late_notices : Local {
         $d8 = $date;
     }
     else {
-        $d8 = today()->as_d8();
+        $d8 = tt_today($c)->as_d8();
     }
     my @date_bool = ();
     if (date($d8)->day_of_week() == 6) {    # Saturday
@@ -738,7 +742,7 @@ sub housekeeping : Local {
         $d8 = $the_date;
     }
     else {
-        $d8 = today()->as_d8();
+        $d8 = tt_today($c)->as_d8();
     }
     my $d8_1 = (date($d8)-1)->as_d8();      # for RentalBookings
 

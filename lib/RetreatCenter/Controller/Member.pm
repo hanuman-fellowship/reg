@@ -11,10 +11,10 @@ use Util qw/
     trim
     model
     email_letter
+    tt_today
 /;
 use Date::Simple qw/
     date
-    today
     days_in_month
 /;
 use Global qw/%string/;
@@ -162,7 +162,7 @@ sub get_now {
 
     return 
         user_id  => $c->user->obj->id,
-        the_date => today->as_d8(),
+        the_date => tt_today($c)->as_d8(),
         time     => sprintf "%02d:%02d", (localtime())[2, 1];
 }
 
@@ -237,7 +237,7 @@ sub update_do : Local {
     }
 
     Global->init($c);
-    my $html = acknowledge($member, $amount, $pay_date);
+    my $html = acknowledge($c, $member, $amount, $pay_date);
     if (my $email = $member->person->email()) {
         email_letter($c,
             subject    => "Hanuman Fellowship Membership Payment",
@@ -264,7 +264,7 @@ sub js_print {
 }
 
 sub acknowledge {
-    my ($member, $amount, $pay_date) = @_;
+    my ($c, $member, $amount, $pay_date) = @_;
 
     my $tt = Template->new({
         INCLUDE_PATH => 'root/static/templates/letter',
@@ -274,7 +274,7 @@ sub acknowledge {
     my $person   = $member->person;
     my $category = $member->category;
     my $benefits = ($category eq 'Sponsor'
-                    && date($member->date_sponsor) > today());
+                    && date($member->date_sponsor) > tt_today($c));
     my $message = "";
     if ( ! $person->email) {
         my $name = $person->first . " " . $person->last;
@@ -441,7 +441,7 @@ sub create_do : Local {
     }
 
     Global->init($c);
-    my $html = acknowledge($member, $amount, $date);
+    my $html = acknowledge($c, $member, $amount, $date);
     
     if (my $email = $member->person->email()) {
         email_letter($c,
@@ -460,7 +460,7 @@ sub create_do : Local {
 
 sub _lapsed_members {
     my ($c) = @_;
-    my $today = today()->as_d8();
+    my $today = tt_today($c)->as_d8();
     return [
         map {
             $_->[1]
@@ -489,7 +489,7 @@ sub _lapsed_members {
 sub _soon_to_lapse_members {
     my ($c) = @_;
 
-    my $today = today();
+    my $today = tt_today($c);
     my $month = $today + 30;
     $today = $today->as_d8();
     $month = $month->as_d8();

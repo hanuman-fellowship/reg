@@ -73,8 +73,8 @@ extra_hours_charge 2
 lunch_charge 9
 mon_thu_color 240,240,255
 fri_sun_color 255,240,240
-mem_team Shyama Friedberg (Secretary), Richard Buzzini, Rosemary Griffin
-mem_phone 408-748-0406 x334
+mem_team Shyama Friedberg (Secretary), Richard Buzzini
+mem_phone 408-847-0406 x334
 mem_email memberships@mountmadonna.org
 mem_site http://hanumanfellowship.org/NEW_HFS_Membership_App.pdf
 mem_credit_phone 408-847-0406
@@ -92,6 +92,7 @@ arr_color 30,255,30
 lv_color 255,30,30
 house_sum_perfect_fit 5 
 house_sum_occupied 10
+house_sum_cabin 20
 dp_M_color 255,0,0
 dp_F_color 255,0,0
 dp_X_color 255,0,0
@@ -105,5 +106,7 @@ dp_type2 outdoors
 dp_type3 special
 dp_type4 future use
 dp_type5 future use
+dp_img_percent 120
 seen_lodge_opts 10
 max_lodge_opts 30
+tt_today 

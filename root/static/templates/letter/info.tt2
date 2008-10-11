@@ -1,19 +1,19 @@
-Information about HFS membership can be found <a href='[% lookup.mem_site %]'>here</a>.
+Information about HFS membership can be found <a href='[% string.mem_site %]'>here</a>.
 <p>
 Please note: 
 <ul>
 <li>We have initiated the use of Credit Cards
 for the convenience of our members.
-To make such a payment call the reception office at [% lookup.mem_credit_phone %] during normal office hours: [% lookup.mem_credit_hours %].
+To make such a payment call the reception office at [% string.mem_credit_phone %] during normal office hours: [% string.mem_credit_hours %].
 The receptionist will take your payment information.
 <li>If paying by check, make it payable to MMC rather than Hanuman Fellowship and note that the payment is for [% category %] Membership.
-<li>We are communicating by Email primarily, so please make sure that we have your correct information.
-<li>Please use this notice as your receipt.
+<li><span style="color: navy">We are communicating by Email primarily, so please make sure that we have your correct information.</span>
+<li><span style="color: navy">Please use this notice as your receipt.</span>
 <li>To claim a Tax Deduction for this donation, you must deduct the value of any benefits you receive.
 </ul>
 Sincerely,<br>
 Membership Team<br>
-[% lookup.mem_team %]
+[% string.mem_team %]
 <p>
-[% lookup.mem_phone %]<br>
-<a href='mailto:[% lookup.mem_email %]'>[% lookup.mem_email %]</a>
+[% string.mem_phone %]<br>
+<a href='mailto:[% string.mem_email %]'>[% string.mem_email %]</a>
