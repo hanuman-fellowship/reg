@@ -1,9 +1,9 @@
 <pre>
-From A to Z.
-Cradle to the Grave.
-Alpha to Omega.
-Soup to Nuts.
-
+From A to Z.<br>
+Cradle to the Grave.<br>
+Alpha to Omega.<br>
+Soup to Nuts.<br>
+<p>
 Here we test the new registration program by creating
 a program anew, publishing it to the web, registering online,
 sending confirmation letters, registering manually,
@@ -11,5 +11,162 @@ cancelling, housing, accepting payments when the people arrive,
 printing meal lists, housekeeping reports, late notices,
 ceus, participant lists, summaries, etc.  i.e. everything from A to Z.
 Oh and then we have rentals.
-<p
+<p>
+Testing now is crucial.  The old reg evolved over a long
+period of time.  This is _new_ software that has not been
+subjected to the fire/kiln of time.  There are weaknesses
+and frailties that need to be found and remedied.
+This is _much_ better done BEFORE we 'go live'.
+<p>
+Create a New Program
+    make a new cancellation policy
+    make a new housing cost
+        have values that are easily distinguished from the default
+    add the leader as a person (include phone, email)
+    make them a leader (include bio, phone, email, web address)
+        also upload a picture of the person.
+    add a new affiliation for this program
+    create the program
+        use the 4 tabs
+        set the date a month in advance of 'today'.
+            make it 4 or 5 days long
+        no extra days
+        set tuition and online deposit
+            to an unusual amount so you'll recognize it
+        set footnotes to * (CEU for nurses)
+        assign the housing cost and the cancellation policy
+            you created above.
+        some things to set after creation choosing Edit:
+            set a few days for lunch
+            assign some housing clusters
+            assign the leader you made above
+                note they are automatically registered
+                but that they need to be housed.
+            assign meeting and breakout places
+    
+Publish to the Web
+    Also publish the pictures.
+    go to see the page thus generated.
+        enlarge the pic of the leader
+        check housing prices
+    update the web description (or title) of the program, re-publish
+        use the shortcuts:
+            _underline_
+            *bold*
+            %url%link%
+            ~mailto~
+            # numbered list
+            - unordered list
+    update the bio of the leader, re-publish
+
+Update the Summary of the program.
+    it's a link on the right hand side of the program screen
+    Enter various details in the various fields.
+
+Register Online
+    see the web page for the program
+    register online
+        enter a recognizable person (a newly created name)
+        with your email address (so you can recieve the confirmation letter)
+        make some mistakes and get the errors
+    choose housing options
+    enter some special request
+    use credit card of 411111111111 (4 followed by 1's to fill the field)
+        expire 0909
+    receive the authorize.net notification email
+
+Get the Online Registrations
+    go to the Programs link and choose "Grab New"
+        to get the just entered online registration
+    select it.
+    see the special requests, housing options
+        default housing type is 1st choice
+    select a house
+        look carefully at the list.
+        see its order and the markings (RFOCS)
+        verify.
+    finish the registration
+    choose "Send" to send off the confirmation letter
+    receive it in your email.
+
+Look at the Calendar and DailyPic and verify that
+    everything looks good and as expected.
+    repeat this verification as you follow the rest of this testplan.
+
+Repeat the above steps to get a variety of people in the program.
+    Perhaps 7 or 8 or more.
+    Variations:
+        Gender, housing choices.
+        In special requests say you want to come early or leave late.
+        Have someone with kids.
+        Have some room with another (who register separately).
+        Enter license number for a CEU.
+    Verify the charges in each case.  Many possibilities/combinations.
+
+Find people (anyone, actually - doesn't matter who)
+    already in the People list and _manually_ register them
+    for this second program by choosing the "Register" link.
+
+Make _another_ program that has extra days.
+    Make its date close to the first one above even overlapping.
+    Footnotes of ** (for CEU for MFTs, etc).
+    Register several people for it online and manually.
+
+Try searching for people in both programs in the Registration screen.
+    the two-way search
+        (last, first prefixes, * wild cards, program name prefix).
+        see the "How?" help.
+
+Add a Personal Retreat
+    manually from someone in the People list.
+    make it around the time of the two programs.
+    see them arriving, leaving in the calendar
+
+Get various listings and tallies.
+    - Lists, Tally on Program screen.
+    - Meal lists, Comings and Goings, Housekeeping/Campground Reports
+            for the various days of the program and before and after.
+            all in the Listings link.
+            verify all the information is correct.
+    - Late Notices
+        usually used only for 'today'
+        can time travel by appending /20081103 to the normal url
+            like so:
+            http://localhost:3000/listing/late_notices/20081017
+
+            date is in form yyyymmdd
+
+        Late notices only for people who have been housed.
+        Mark someone as "Arrived" by clicking "Arrived"
+            or by paying their balance.
+            then they don't appear in Late Notice.
+
+Other things:
+
+    Make an affiliation whose name contains "pop up".
+    Give a person this affiliation.   Put some data in their
+    comments field.   This comment will 'pop up' at registration time.
+
+    Make someone an HFS member and give them a sponsor expiration date
+    in the future.  Give them some free nights.  See how their
+    registration charges are affected.
+
+    Cancel someone's registration.  See the cancellation policy.
+    See the cancellation letter that is emailed.  See the credit
+    in the person's screen.  Register this person for another program
+    and see that the credit is applied.
+
+Rentals
+    Another world.  Many things to look at here as well.
+    Stay tuned.
+
+To be worked on still:
+
+    Bank deposits - in the Listing screen.
+        It should work.  Give it a try.  Let's see what's wrong.
+
+    Month End Report - to be done.
+
+    Cluster Overview - to see all houses in a cluster
+        over a two week period.
 </pre>
