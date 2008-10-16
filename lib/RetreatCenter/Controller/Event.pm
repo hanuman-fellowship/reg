@@ -342,32 +342,25 @@ sub calendar : Local {
         my $ev_sdate = $ev->sdate_obj;
         my $ev_edate = $ev->edate_obj;
 
-        my ($full_begins, $ndays_in_normal, $normal_end_day, $extra_count);
-        $extra_count = "";
+        my ($full_begins, $ndays_in_normal, $normal_end_day);
 
         if ($ev_type eq 'program') {
-            # is there a FULL program?
-            # if so, use its end date instead.
-            # AND draw a little dotted line on the day
-            # when the FULL extension begins (or equivalently
+            # are there extra days?
+            # draw a little dotted line on the day
+            # when the full extension begins (or equivalently
             # when the normal length program ends).
             if ($ev->extradays) {
-                my ($full_p) = model($c, 'Program')->find($ev->id + 1);
                 $full_begins = $ev->edate_obj;
                 $ndays_in_normal = $ev->edate_obj - $ev->sdate_obj;
                 $normal_end_day = $ev->edate_obj->day;
-                $ev_edate = $full_p->edate_obj;
-                $extra_count = $full_p->reg_count;
+                $ev_edate = $ev->edate_obj + $ev->extradays;
             }
         }
         my $event_name = $ev->name;
         my $ev_count = $ev->count;
         my $count = $ev_count;
         if (length $count) {
-            if (length $extra_count) {
-                $count .= "+$extra_count";
-            }
-            elsif ($ev_type eq 'rental') {
+            if ($ev_type eq 'rental') {
                 $count = $ev->max . ", $count";
             }
         }

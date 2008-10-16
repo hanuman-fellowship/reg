@@ -1,0 +1,57 @@
+<h2>Participant List for [% program.name %] from [% program.dates %]</h2>
+<form action="/registration/name_addr_do/[% program.id %]">
+<table cellpadding=5 border=0>
+
+<tr>
+<th align=right>Format</th>
+<td>
+<input type=radio name=format value="3col" checked>3 Column
+&nbsp;&nbsp;&nbsp;
+<input type=radio name=format value="linear">Linear
+</td>
+</tr>
+
+<tr>
+<th align=right>Order</th>
+<td>
+<input type=radio name=order value="name" checked>Name
+&nbsp;&nbsp;&nbsp;
+<input type=radio name=order value="postmark">Postmark
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Containing</th>
+<td>
+<input type=radio name=containing value="all" checked> All Contact Info<br>
+<input type=radio name=containing value="name"> Just Name<br>
+<input type=radio name=containing value="email"> Just Email
+</td>
+</tr>
+
+[% IF email %]
+<tr>
+<th align=right valign=top>Email Leaders</th>
+<td valign=top>
+[% email %]
+<p>
+If none is checked, output is to screen.
+</td>
+</tr>
+[% END %]
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<a href=/program/view/[% program.id %]>To Program</a>
+</td>
+</tr>
+
+</table>
+</form>
+<p>

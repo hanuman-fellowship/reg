@@ -45,6 +45,7 @@
 <tr><td>F - <b>F</b>oreign program</td></tr>
 <tr><td>O - already <b>O</b>ccupied</td></tr>
 <tr><td>R - <b>R</b>esize needed</td></tr>
+<tr><td>S - <b>S</b>hare</td></tr>
 </table>
 </td>
 </tr>

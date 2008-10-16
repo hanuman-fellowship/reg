@@ -15,7 +15,7 @@
 <th align=right>Person</th>
 <td><a class=larger href="/person/view/[% person.id %]"
 onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a></td>
-<td>From <input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"></td><td>to <input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></td>
+<td>From <input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"></td><td>To <input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></td>
 </tr>
 
 <tr>
@@ -153,13 +153,13 @@ if ("[% status %]" != "") {
     if (free_prog) {
         s = s + free_prog;
     }
-    if ("[% credit %]" != "") {
-        [% pr = credit.reg_given.program %]
-        s = s + "\n"
-              + "[% person.first %] [% person.last %] has a credit of "
-              + "$[% credit.amount %]\nfrom the [% pr.name %] program in "
-              + "[% pr.sdate_obj.format('%B %Y') %].";
-    }
+}
+if ("[% credit %]" != "") {
+    [% pr = credit.reg_given.program %]
+    s = s + "\n"
+          + "[% person.first %] [% person.last %] has a credit of "
+          + "$[% credit.amount %]\nfrom the [% pr.name %] program in "
+          + "[% pr.sdate_obj.format('%B %Y') %].";
 }
 
 if (s) {

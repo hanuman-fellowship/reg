@@ -26,12 +26,12 @@ XX -->
     &nbsp;&nbsp;&nbsp;
     <a href="/person/separate/[% person.id %]"
     onclick="return confirm('Okay to Separate?');">Separate</a>
-XX --!>
+XX -->
 [% ELSE %]
 <!-- XX
 &nbsp;&nbsp;&nbsp;
     <a href="/person/partner/[% person.id %]" accesskey='w'>Partner <span class=keyed>W</span>ith</a>
-XX --!>
+XX -->
 [% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
     [% IF person.leader %]

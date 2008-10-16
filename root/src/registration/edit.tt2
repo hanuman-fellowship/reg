@@ -12,7 +12,7 @@
 <th align=right>Program</th>
 <td><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a></td>
 <input type=hidden name=program_id value="[% program.id %]">
-<td>From [% program.sdate_obj %]</td><td>to [% program.edate_obj %]</td>
+<td>From [% program.sdate_obj %]</td><td>To [% program.edate_obj %]</td>
 </tr>
 
 <tr>

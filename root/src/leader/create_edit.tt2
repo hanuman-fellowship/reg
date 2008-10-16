@@ -25,6 +25,11 @@
 </tr>
 
 <tr>
+<th align=right valign=top>Assistant</th>
+<td><input type=checkbox value=yes name=assistant [% check_assistant %]></td>
+</tr>
+
+<tr>
 <th align=right valign=top>Image</th>
 <td>
 [% IF leader.image %]

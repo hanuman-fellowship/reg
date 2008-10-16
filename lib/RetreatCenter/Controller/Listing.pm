@@ -321,6 +321,15 @@ sub detail_disp {
     . "</table>\n";
 }
 
+#
+# very tricky.  Pay Attention.
+# we consider the date range of the requested meal list.
+# breakfast does not happen on the arrival date - programs and rentals.
+# program lunches do not happen on the first day of the program
+# even if that day is selected.
+# rental lunches CAN happen on the first day - depending on the start time.
+# dinner does not happen on the departure date - programs and rentals.
+#
 sub meal_list : Local {
     my ($self, $c) = @_;
 

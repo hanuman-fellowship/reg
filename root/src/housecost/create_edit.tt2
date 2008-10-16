@@ -72,11 +72,6 @@
 </tr>
 
 <tr>
-<th align=right>Unknown</th>
-<td><input type=text name=unknown value="[% housecost.unknown %]" size=4></td>
-</tr>
-
-<tr>
 <td>&nbsp;</td>
 <td><input type=radio name=type value="Total" [% checked_total %]> Total
 &nbsp;&nbsp;&nbsp;

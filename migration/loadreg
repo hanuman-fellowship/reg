@@ -5,12 +5,24 @@ use DBI;
 use lib '../lib';
 use Util qw/nsquish/;
 use Getopt::Easy;
+use Date::Simple qw/
+    date
+/;
 
 get_options("s-single");
 
 $|++;       # unbuffer output
 
 my $unknown = 1;        # fixed id for unknown user
+
+my %full_prog;          # program ids of full programs loaded in loadprog
+open my $full, "<", "fullprog.txt"
+    or die "cannot open fullprog.txt\n";
+while (<$full>) {
+    chomp;
+    $full_prog{$_} = 1;
+}
+close $full;
 
 #
 # program ids for personal retreat and hoffman programs
@@ -65,7 +77,7 @@ values
 ";
 my $who_ins_sth = $dbh->prepare($who_ins_sql) or die "no who_ins_sql\n";
 
-my $p_sql = "select name, sdate, edate from program where id = ?";
+my $p_sql = "select name, sdate, edate, extradays from program where id = ?";
 my $p_sth = $dbh->prepare($p_sql) or die "no p_sql\n";
 
 my $per_sql = "select id from people where first = ? and last = ?";
@@ -123,13 +135,13 @@ my $ins_reg_sql = "insert into registration
 (id, program_id, person_id, comment, confnote, date_start, date_end, early, late,
  referral, adsource, kids, h_type, h_name, carpool, hascar,
  date_postmark, letter_sent, ceu_license, arrived, cancelled,
- deposit, balance, time_postmark, house_id, cabin_room
+ deposit, balance, time_postmark, house_id, cabin_room, leader_assistant
 ) 
 values
 (?, ?, ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?,
- ?, ?, ?, ?, ?)";
+ ?, ?, ?, ?, ?, ?)";
 my $ins_reg_sth = $dbh->prepare($ins_reg_sql) or die "no ins_reg_sql\n";
 
 my %type_map = qw/
@@ -294,7 +306,7 @@ sub processReg {
         $hash{$f} =~ s{\D}{}g;
         $hash{$f} =~ s{(...)(...)(....)}{$1-$2-$3}g;
     }
-    my ($name, $sdate, $edate);
+    my ($name, $sdate, $edate, $extradays);
     if ($hash{program_id}) {
         my $pid = $hash{program_id};
         if ($pid == 69 || $pid == 886) {
@@ -308,10 +320,20 @@ sub processReg {
                 return;
             }
         }
+        my $full = 0;
+        if ($full_prog{$hash{program_id}}) {
+            $full = 1;
+            --$hash{program_id};        # get the normal program
+        }
         $p_sth->execute($hash{program_id});
-        unless (($name, $sdate, $edate) = $p_sth->fetchrow_array()) {
+        unless (($name, $sdate, $edate, $extradays)
+                  = $p_sth->fetchrow_array()) {
             warn "*** missing program id: '$hash{program_id}'\n";
             return;
+        }
+        if ($full) {
+            $edate = date($edate) + $extradays;
+            $edate = $edate->as_d8();
         }
     }
     else {
@@ -419,7 +441,8 @@ sub processReg {
                           $hash{balance},
                           $hash{time_postmark},
                           0,     # house_id
-                          $hash{cabin_room}
+                          $hash{cabin_room},
+                          ''        # leader assistant
                          ) or die "no ins reg $DBI::errstr\n";
     # use deposit, pmt1, pmt2 in RegPayment records
     #     and p1cash, pmt1date

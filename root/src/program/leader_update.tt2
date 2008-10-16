@@ -4,9 +4,9 @@
 [% program.title %] - [% program.subtitle %]
 <p>
 <form action="/program/leader_update_do/[% program.id %]">
-<ul>
-[% leader_table %]
-<p>
 <input type=submit value="Submit">
-</ul>
+<table>
+[% leader_table %]
+</table>
+<input type=submit value="Submit">
 </form>

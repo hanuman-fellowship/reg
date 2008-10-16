@@ -259,35 +259,13 @@ sub create_do : Local {
         Global->init($c);
         resize('p', $id);
     }
-    # make the FULL version, if requested
-    # it _will_ have an id = normal id + 1
-    if ($hash{extradays}) {
-        my $full_edate = date($hash{edate}) + $hash{extradays};
-        $hash{edate} = $full_edate->as_d8();
-        model($c, 'Program')->create({
-            %hash,
-            image     => "",
-            edate     => $hash{edate},
-            name      => "$hash{name} FULL",
-            webready  => "",
-            linked    => "",
-            webdesc   => "",
-            brdesc    => "",
-            ptemplate => "",
-            url       => "",
-            tuition   => $p->full_tuition,
-            extradays => 0,
-            full_tuition => 0,
-            deposit   => 0,
-        });
-    }
     #
     # we must ensure that we have config records
     # out to the end of this program + 30 days.
     # we add 30 days because registrations for Personal Retreats
     # may extend beyond the last day of the season.
     #
-    add_config($c, date($hash{edate}) + 30);
+    add_config($c, date($hash{edate}) + $hash{extradays} + 30);
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
@@ -309,24 +287,16 @@ sub view : Local {
     Global->init($c);       # for web_addr if nothing else.
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
 
-    $c->stash->{booking_program} = $p;
-
-    if ($p->extradays) {
-        $c->stash->{full_id} = $id + 1;
-    }
-    if ($p->name =~ m{ FULL$}) {
-        $c->stash->{normal_id} = $id - 1;
-        ($c->stash->{booking_program}) = model($c, 'Program')->find($id -1);
-        $c->stash->{edit_okay} = 0;
-    }
-    else {
-        $c->stash->{edit_okay} = 1;
-    }
     if ($p->name !~ m{personal retreats}i) {
-        $c->stash->{lunch_table} = lunch_table(1, $p->lunches,
-                                               $p->sdate_obj, $p->edate_obj);
+        $c->stash->{lunch_table}
+            = lunch_table(1,
+                          $p->lunches,
+                          $p->sdate_obj,
+                          $p->edate_obj + $p->extradays
+                         );
     }
     $c->stash->{daily_pic_date} = $p->sdate();
+    $c->stash->{leaders_house} = $p->leaders_house($c);
     my $s = _get_cluster_groups($c, $id);
     my ($UN, $sel) = split /XX/, $s;
     $c->stash->{UNselected_clusters} = $UN;
@@ -379,7 +349,7 @@ sub _get_cluster_groups {
            ;
         $select_lookup{$cid} = 1;
     }
-    my $UNselected = "<tr><th align=center>UNselected</th></tr>\n";
+    my $UNselected = "<tr><th align=center>Not Selected</th></tr>\n";
     for my $cl (model($c, 'Cluster')->search( {}, { order_by => 'name' })) {
         next if exists $select_lookup{$cl->id()};
         $UNselected .=
@@ -393,7 +363,7 @@ sub _get_cluster_groups {
                     . "</td></tr>\n"
                     ;
     }
-    return "<table>\n${UNselected}</table>XX<table>\n$selected</table>";
+    return "<table>\n$UNselected</table>XX<table>\n$selected</table>";
 }
 
 #
@@ -577,67 +547,8 @@ sub update_do : Local {
             $hash{lunches} = "";
         }
     }
-    # is there a FULL version?
-    my $p_full;
-    if ($p->extradays) {
-        $p_full = model($c, 'Program')->find($p->id + 1);
-    }
-    elsif ($hash{extradays} != 0) {
-        $c->stash->{mess} = "Cannot belatedly create a FULL program.";
-        $c->stash->{template} = "program/error.tt2";
-        return;
-    }
     $p->update(\%hash);
-    my $dt = date($hash{edate}) + 30;
-    # there are several possibilities...
-    if ($p->extradays) {
-        my $full_edate = date($hash{edate}) + $hash{extradays};
-        $dt = $full_edate + 30;
-        if ($p_full) {
-            $p_full->update({
-                %hash,
-                image     => "",
-                edate     => $full_edate->as_d8(),
-                name      => "$hash{name} FULL",
-                webready  => "",
-                linked    => "",
-                webdesc   => "",
-                brdesc    => "",
-                ptemplate => "",
-                url       => "",
-                tuition   => $p->full_tuition,
-                extradays => 0,
-                full_tuition => 0,
-            });
-        }
-        else {
-            # it will get the next id??? NOOOOOOO :(
-            # need to delete, recreate!!
-            # or prohibit
-            # ??? did i successfully prohibit???
-            model($c, 'Program')->create({
-                %hash,
-                image     => "",
-                edate     => $full_edate->as_d8(),
-                name      => "$hash{name} FULL",
-                webready  => "",
-                linked    => "",
-                webdesc   => "",
-                brdesc    => "",
-                ptemplate => "",
-                url       => "",
-                tuition   => $p->full_tuition,
-                extradays => 0,
-                full_tuition => 0,
-            });
-        }
-    }
-    else {
-        if ($p_full) {
-            $p_full->delete();
-        }
-    }
-    add_config($c, $dt);
+    add_config($c, date($hash{edate}) + 30);
     if ($names) {
         $c->stash->{program} = $p;
         $c->stash->{names} = $names;
@@ -660,36 +571,61 @@ sub leader_update : Local {
 }
 
 sub leader_update_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $prog_id) = @_;
 
+    my $program = model($c, 'Program')->find($prog_id);
     my @cur_leaders = grep {  s{^lead(\d+)}{$1}  }
                       keys %{$c->request->params};
     # delete all old leaders and create the new ones.
     model($c, 'LeaderProgram')->search(
-        { p_id => $id },
+        { p_id => $prog_id },
     )->delete();
     for my $cl (@cur_leaders) {
         model($c, 'LeaderProgram')->create({
             l_id => $cl,
-            p_id => $id,
+            p_id => $prog_id,
         });
     }
-    # ditto for any FULL program
-    # delete all old leaders and create the new ones.
-    my $p = model($c, 'Program')->find($id);
-    if ($p->extradays) {
-        my $full_id = $p->id + 1;
-        model($c, 'LeaderProgram')->search(
-            { p_id => $full_id },
-        )->delete();
-        for my $cl (@cur_leaders) {
-            model($c, 'LeaderProgram')->create({
-                l_id => $cl,
-                p_id => $full_id,
+    #
+    # ensure that the leaders are registered for the program.
+    #
+    my $new_regs = 0;
+    for my $cl (@cur_leaders) {
+        my $leader = model($c, 'Leader')->find($cl);
+        my $assist = $leader->assistant();
+        my $person_id = $leader->person->id();
+        my ($reg) = model($c, 'Registration')->search({
+            person_id  => $person_id,
+            program_id => $prog_id,
+        });
+        if (! $reg) {
+            # need to register them
+            # we will house them later...
+            #
+            my $edate = date($program->edate()) + $program->extradays();
+            model($c, 'Registration')->create({
+                person_id  => $person_id,
+                program_id => $prog_id,
+                comment    => $assist? "1-dbl assistant"
+                              :        "1-sgl/ba leader",
+                house_id   => 0,
+                h_type     => $assist? "dble": "single_bath",
+                cancelled  => '',    # to be sure
+                arrived    => '',    # ditto
+                date_start => $program->sdate(),
+                date_end   => $edate->as_d8(),
+                balance    => 0,
+                leader_assistant => 'yes',      # only way to set this
             });
+            ++$new_regs;
         }
     }
-    $c->response->redirect($c->uri_for("/program/view/$id"));
+    if ($new_regs) {
+        $program->update({
+            reg_count => $program->reg_count() + $new_regs,
+        });
+    }
+    $c->response->redirect($c->uri_for("/program/view/$prog_id"));
 }
 
 sub affil_update : Local {
@@ -784,8 +720,6 @@ sub meetingplace_update_do : Local {
             breakout   => $mp->[1],
         });
     }
-    # ditto for any FULL version?
-    # No.  Makes for trouble in the calendar.
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
@@ -793,13 +727,6 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $p = model($c, 'Program')->find($id);
-
-    # any FULL version
-    if ($p->extradays) {
-        model($c, 'Program')->search({
-            name => $p->name . " FULL",
-        })->delete();
-    }
 
     # affiliation/programs
     model($c, 'AffilProgram')->search({
@@ -1450,35 +1377,13 @@ sub duplicate_do : Local {
         }
     }
 
-    # make the FULL version, if requested
-    # it _will_ have an id = normal id + 1
-    if ($hash{extradays}) {
-        my $full_edate = date($hash{edate}) + $hash{extradays};
-        $hash{edate} = $full_edate->as_d8();
-        model($c, 'Program')->create({
-            %hash,
-            image     => "",
-            edate     => $hash{edate},
-            name      => "$hash{name} FULL",
-            webready  => "",
-            linked    => "",
-            webdesc   => "",
-            brdesc    => "",
-            ptemplate => "",
-            url       => "",
-            tuition   => $new_p->full_tuition,
-            extradays => 0,
-            full_tuition => 0,
-            deposit   => 0,
-        });
-    }
     #
     # we must ensure that we have config records
     # out to the end of this program + 30 days.
     # we add 30 days because registrations for Personal Retreats
     # may extend beyond the last day of the season.
     #
-    add_config($c, date($hash{edate}) + 30);
+    add_config($c, date($hash{edate}) + $hash{extradays} + 30);
 
     # copy the leaders and affils
     my @leader_programs = model($c, 'LeaderProgram')->search({

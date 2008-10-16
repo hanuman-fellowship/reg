@@ -126,8 +126,10 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% type %]
 </td><td align=center>
 [% IF type != 'Commuting'
-   && type != 'Your Van'
-   && type != 'Unknown' %]
+   && type != 'Own Van'
+   && type != 'Unknown'
+   && type != 'Not Needed'
+%]
     [% IF reg.house_id %]
         <a href=/registration/relodge/[% reg.id %]>[% reg.house.name %]</a>
     [% ELSE %]

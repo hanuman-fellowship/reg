@@ -21,9 +21,11 @@ function tabs(t) {
     if (t == 4 && ! program)
         t = 1;
     if (id) {
-        document.getElementById('editlink').innerHTML
-            = '<a href="/' + ((program)? 'program': 'rental')
-              + '/update/' + id + '/' + t + '">Edit</a>';
+        var el = document.getElementById('editlink');
+        if (el != null) {
+            el.innerHTML = '<a href="/' + ((program)? 'program': 'rental')
+                + '/update/' + id + '/' + t + '">Edit</a>';
+        }
     }
     else {
         document.getElementById('hid').innerHTML =

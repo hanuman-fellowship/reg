@@ -56,6 +56,10 @@ onsubmit="history.go(-1)">
 </tr>
 
 <tr>
+<th align=left colspan=3><input type=radio name=category value='Inactive' [% category_inactive %]> Inactive</th>
+</tr>
+
+<tr>
 <td>&nbsp;</td>
 <td align=left valign=top><input type=submit value="Submit"></td>
 </tr>

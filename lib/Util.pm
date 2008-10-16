@@ -38,6 +38,7 @@ our @EXPORT_OK = qw/
     link_share
     tt_today
     ceu_license
+    commify
 /;
 
 use POSIX   qw/ceil/;
@@ -213,6 +214,17 @@ sub places {
     join ", ", map { $_->meeting_place->abbr } $event->bookings;
 }
 
+my @leaders;
+my $nleaders;
+
+sub _leader_elem {
+    my ($i) = @_;
+    if ($i > $nleaders) {
+        return "&nbsp;";
+    }
+    $leaders[$i];
+}
+
 #
 # after $c the parameters
 # are an array of leader objects
@@ -223,18 +235,34 @@ sub leader_table {
 
     my %checked = map { $_->id() => 'checked' } @_;
 
-    join "<br>\n",
+    @leaders =
     map {
-        my $id = $_->id();
-        my $last = $_->person->last();
-        my $first = $_->person->first();
-        "<input type=checkbox name=lead$id  $checked{$id}> $last, $first";
+        my $name = $_->[0];
+        my $id = $_->[1];
+        my $assistant = ($_->[2])? " * ": "";
+        "<input type=checkbox name=lead$id $checked{$id}> $name$assistant"
     }
     sort {
-        $a->person->last()   cmp $b->person->last() or
-        $a->person->first () cmp $b->person->first()
+        $a->[0] cmp $b->[0]
+    }
+    map {
+        my $p = $_->person();
+        [ $p->last() . ", " . $p->first, $_->id(), $_->assistant ]
     }
     model($c, 'Leader')->all();
+    $nleaders = @leaders;
+    my $n = ceil($nleaders)/3;
+    my $rows = "";
+    for my $i (0 .. $n-1) {
+        $rows .= "<tr>";
+
+        $rows .= "<td>" . _leader_elem($i)      . "</td>";
+        $rows .= "<td>" . _leader_elem($i+$n)   . "</td>";
+        $rows .= "<td>" . _leader_elem($i+2*$n) . "</td>";
+
+        $rows .= "</tr>\n";
+    }
+    $rows;
 }
 
 #
@@ -555,6 +583,8 @@ sub email_letter {
     # convert the HTML letter to text with lynx
     # ??? any way to do this without creating a tmp text file?
     # keeping it all in memory?
+    # avoid the lynx call if not html???
+    # put this info in %args???
     #
     open my $lynx_dump, "|lynx -stdin -dump -width=95>/tmp/$$"
         or die "cannot open |lynx: $!\n";
@@ -813,9 +843,9 @@ sub link_share {
 
     if ($s =~ m{Sharing a room with\s*([^.]+)[.]}) {
         my $name = $1;
-        my ($first, $last) = split m{\s+}, $name;
-        $first = normalize($first);
-        $last  = normalize($last);
+        my @names = map { normalize($_); } split m{\s+}, trim($name);
+        my $last  = pop @names;
+        my $first = "@names";
         if (my ($person) = model($c, 'Person')->search({
                                first => $first,
                                last  => $last,
@@ -991,6 +1021,13 @@ sub _spell {
 		$sp .= $ones{$x}
 	}
 	return $sp;
+}
+
+sub commify {
+    my ($n) = @_;
+    $n = reverse $n;
+    $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+    return scalar reverse $n;
 }
 
 1;

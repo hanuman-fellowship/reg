@@ -12,6 +12,7 @@ __PACKAGE__->add_columns(qw/
     url
     image
     biography
+    assistant
     l_order
 /);
 __PACKAGE__->set_primary_key(qw/id/);

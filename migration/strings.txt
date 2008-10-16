@@ -3,9 +3,11 @@ from reservations@mountmadonna.org
 heading  Total Cost Per Person<br>(including tuition, meals, lodging, and facilities use)
 typehdr  Housing Type
 costhdr  Cost
+unknown Unknown
+not_needed Not Needed
 commuting Commuting (Day use, meals &amp; facilities)
-own_tent Your Tent
-own_van  Your Van
+own_tent Own Tent
+own_van  Own Van
 center_tent Mount Madonna Center Tent
 dormitory Dormitory (4-7 to a room or cabin)
 economy  Economy (8 or more to a room)
@@ -30,7 +32,7 @@ phone Phone
 website Website
 ftp_site www.mountmadonna.org
 ftp_login mmc
-ftp_password ashtanga!
+ftp_password 1hello
 ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0

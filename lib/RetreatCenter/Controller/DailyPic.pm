@@ -161,8 +161,12 @@ sub show : Local {
         }
         my $cw = 9.2;       # char_width - seems to work, empirically derived
         # encode the config record in a string
+        my $sexcode = ($sex x $cur);
+        if ($sexcode eq 'XX') {
+            $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
+        }
         $dp->string(gdGiantFont, $x1+3, $y1+3,
-                    ($sex x $cur), $char_color{$sex})  if $cur;
+                    $sexcode, $char_color{$sex})  if $cur;
         $dp->string(gdGiantFont, $x1+3 + $cw*$cur, $y1+3,
                     $string{dp_empty_bed_char} x ($curmax - $cur),
                     $char_color{empty_bed})            if ($curmax - $cur);

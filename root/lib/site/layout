@@ -21,7 +21,6 @@
 <td><a href=/event/list>Events</a></td>
 <td><a target=calendar href=/event/calendar>Calendar</a></td>
 <td><a target=dailypic href=/dailypic/show/indoors/[% daily_pic_date %]>DailyPic</a></td>
-<td><a target=clustover href=/cluster/view/[% clust_ov_date %]>ClusterView</a></td>
 </tr>
 [% END %]
 </table>

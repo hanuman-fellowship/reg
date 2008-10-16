@@ -66,7 +66,12 @@ sub list : Local {
     my ($self, $c, $life) = @_;
 
     # sort by sanskrit or first
-    my $cond = ($life)? undef: { category => { '!=' => 'Life' } };
+    my $cond = ($life)? undef
+               :        {
+                            category => { '!=' => 'Life' },
+                            category => { '!=' => 'Inactive' },
+                        }
+               ;
     my @members =
         map {
             $_->[1]
@@ -90,6 +95,7 @@ sub update : Local {
         general
         sponsor
         life
+        inactive
     /) {
         $c->stash->{"category_$w"} = ($m->category eq ucfirst($w))? "checked": "";
     }
@@ -108,7 +114,7 @@ sub _get_data {
     %hash = %{ $c->request->params() };
     @mess = ();
     if (! $hash{category}) {
-        push @mess, "You must select General, Sponsor or Life";
+        push @mess, "You must select General, Sponsor, Life or Inactive";
     }
     # dates are either blank or converted to d8 format
     for my $f (keys %hash) {
@@ -807,7 +813,8 @@ sub non_email : Local {
             $_->person
         }
         model($c, 'Member')->search({
-            category => { '!=' => 'Life' }
+            category => { '!=' => 'Life'     },
+            category => { '!=' => 'Inactive' }
         })
     ];
     $c->stash->{template} = "member/non_email.tt2";

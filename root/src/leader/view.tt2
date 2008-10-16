@@ -29,6 +29,11 @@
 </tr>
 
 <tr>
+<th align=right valign=top>Assistant</th>
+<td>[% leader.assistant %]</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Image</th>
 <td>
 [% IF leader.image %]

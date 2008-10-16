@@ -1,0 +1,113 @@
+<h2>Program Summary for [% name %] from [% dates %]</h2>
+
+<div style="float: left; margin-left: 1in;">
+<h2>Attendance</h2>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Attended</td>
+<td align=right width=55>[% adults %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Females</td>
+<td align=right>[% females %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Males</td>
+<td align=right>[% males %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Kids</td>
+<td align=right>[% kids %]</td>
+</tr>
+<tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Registered</td>
+<td align=right>[% registered %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Cancelled</td>
+<td align=right>[% cancelled %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>No Shows</td>
+<td align=right>[% no_shows %]</td>
+</tr>
+<tr>
+
+</table>
+</div>
+
+<div style="float: left; margin-left: 1in; margin-bottom: .7in;">
+<h2>Finances</h2>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Tuition</td>
+<td align=right width=90>[% tuition %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Lodging</td>
+<td align=right>[% lodging %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Adjustments</td>
+<td align=right>[% adjustment %]</td>
+</tr>
+<tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Deposits</td>
+<td align=right>[% deposit %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Payments</td>
+<td align=right>[% payment %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Balance</td>
+<td align=right>[% balance %]</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Credit</td>
+<td align=right>[% credit %]</td>
+</tr>
+<tr>
+
+</table>
+</div>
+
+<div style="clear: both; margin-left: 1in">
+[% IF full %]
+<a href=/registration/tally/[% id %]>Both</a><br>
+<a href=/registration/tally/[% id %]/1>Normal Only</a><br>
+<a href=/registration/tally/[% id %]/2>Full Only</a>
+[% END %]
+<p>
+<a href=/program/view/[% id %]>To Program</a>
+</div>

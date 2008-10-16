@@ -247,12 +247,12 @@ INSERT INTO "annotation" VALUES(6,'indoors','Center',280,155,NULL,NULL,NULL,NULL
 INSERT INTO "annotation" VALUES(7,'indoors','Seminar House',80,245,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
 INSERT INTO "annotation" VALUES(8,'indoors','Ram Cluster',265,245,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
 INSERT INTO "annotation" VALUES(9,'indoors','Oaks Cabins',425,245,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
-INSERT INTO "annotation" VALUES(10,'indoors','B',105,78,NULL,NULL,NULL,NULL,'none',NULL,'235,75,75','');
-INSERT INTO "annotation" VALUES(11,'indoors','B',155,78,NULL,NULL,NULL,NULL,'none',NULL,'235,75,75','');
-INSERT INTO "annotation" VALUES(12,'indoors','B',180,78,NULL,NULL,NULL,NULL,'none',NULL,'235,75,75','');
-INSERT INTO "annotation" VALUES(13,'indoors','B',445,78,NULL,NULL,NULL,NULL,'none',NULL,'235,75,75','');
-INSERT INTO "annotation" VALUES(14,'indoors','B',495,78,NULL,NULL,NULL,NULL,'none',NULL,'235,75,75','');
-INSERT INTO "annotation" VALUES(15,'indoors','B',520,78,NULL,NULL,NULL,NULL,'none',NULL,'235,75,75','');
+INSERT INTO "annotation" VALUES(10,'indoors','M',115,78,NULL,NULL,NULL,NULL,'none',NULL,'0,0,255','');
+INSERT INTO "annotation" VALUES(11,'indoors','F',150,78,NULL,NULL,NULL,NULL,'none',NULL,'255,0,0','');
+INSERT INTO "annotation" VALUES(12,'indoors','BH',175,78,NULL,NULL,NULL,NULL,'none',NULL,'255,0,0','');
+INSERT INTO "annotation" VALUES(13,'indoors','M',455,78,NULL,NULL,NULL,NULL,'none',NULL,'0,0,255','');
+INSERT INTO "annotation" VALUES(14,'indoors','F',490,78,NULL,NULL,NULL,NULL,'none',NULL,'255,0,0','');
+INSERT INTO "annotation" VALUES(15,'indoors','F',515,78,NULL,NULL,NULL,NULL,'none',NULL,'255,0,0','');
 INSERT INTO "annotation" VALUES(16,'indoors','Laundry',560,34,NULL,NULL,NULL,NULL,'none',NULL,'90,90,90','');
 INSERT INTO "annotation" VALUES(17,'special','Miscellaneous',75,25,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
 INSERT INTO "annotation" VALUES(18,'special','School',275,25,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');

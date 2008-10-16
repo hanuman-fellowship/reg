@@ -75,6 +75,7 @@ sub _get_data {
         l_order
         url
         biography
+        assistant
     /) {
         $hash{$f} = trim($c->request->params->{$f});
     }
@@ -90,6 +91,8 @@ sub _get_data {
         return;
     }
     $hash{url} =~ s{^http://}{};
+    $hash{assistant} = '' unless $hash{assistant};
+            # since not sent if not checked...
 }
 
 sub update : Local {
@@ -98,6 +101,7 @@ sub update : Local {
     my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
     $c->stash->{person} = $l->person();
     $c->stash->{form_action} = "update_do/$id";
+    $c->stash->{"check_assistant"}  = ($l->assistant)? "checked": "";
     $c->stash->{template}    = "leader/create_edit.tt2";
 }
 
@@ -134,6 +138,7 @@ sub create : Local {
     $c->stash->{form_action} = "create_do/$person_id";
     $c->stash->{leader}      = { l_order => 1 };  # fake a Leader object
                                                   # for this default
+    $c->stash->{check_assistant} = '';
     $c->stash->{template}    = "leader/create_edit.tt2";
 }
 

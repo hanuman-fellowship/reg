@@ -18,10 +18,13 @@ h3 {
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
 <p>
 <div style="color: red; font-size: 14pt">
-[% message %][% IF member.category == 'General' %]
+[% cat = member.category %]
+[% message %][% IF cat == 'General' %]
 General Member - Expires [% member.date_general_obj %]
-[% ELSIF member.category == 'Sponsor' %]
+[% ELSIF cat == 'Sponsor' %]
 Sponsor Member - Expires [% member.date_sponsor_obj %], [% member.sponsor_nights %] Nights Left
+[% ELSIF cat == 'Inactive' %]
+Inactive Member
 [% ELSE %]
 Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member.free_prog_taken %]was taken.[% ELSE %]not yet taken.[% END %]
 [% END %]

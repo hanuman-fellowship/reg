@@ -2329,9 +2329,11 @@ to show jayanti, adrienne:
         clusters assigned to program
     ceu
     name addr - send to presenter email addr?
+        or print
     daily pic with ajax
         move arrow on daily pic
 should we have the carpool list 2 or 3 across in zip sort order?
+    nah?  ask Jayanti/Adrienne
 
 email in name_addr as well
 
@@ -2341,37 +2343,112 @@ linear list of participants
             OR just email
     no cancelled people
 
-auto register when adding/updating leader
+--- done:
+pic of house/tent not _Lodge_ - fun!
+late notice 'room' not 'site' for tents
+set height as percentage (string) 120% - yes!
+    done
+B annotations - on hallway (entrance)
+    and M on left, F on right
 swap order of offered housing
     your -> own
-
 if XX - make it MF
 if XXX - ???
-
-yes links at top for daily pic, calendar
-
 prohibit CEU (except for COMP) for certain licenses
     * RN prefix
     ** RN or MFT or LCSW or LMFT
         search old ceu license
+    if another license is put in should we
+        rewrite it as COMP and inform them
+        that they won't be getting a 'real' CEU?
+two part first name - handled in Sharing
+    as long as the two parts are in the same order!
+    Amrita Kaye Estell -or- Kaye Amrita Estell
+        sharing with
+    Barbara Archana Peavey
+auto register when adding/updating leader
+deleting a registration does not vacate their housing???
+add category (not new attr) of inactive to members.
+---
 
-pic of house/tent not _Lodge_ - fun!
-
-set height as percentage (string) 120% - yes!
-    done
-
-late notice 'room' not 'site' for tents
-
-B annotations - on hallway (entrance)
-    and M on left, F on right
-
-float left for programs/rentals/events on dailypic
+yes links at top for daily pic, calendar???
+    not sure.
 
 cluster descriptions don't read well in the late notices.
     what to do?
 prevent dup member creation?
-    a refresh at the wrong time...
+    a refresh at the wrong time makes for trouble ...
 there are a LOT of gifs referenced by the program templates
     that I'm not going to worry about.
     and some in the default confirmation letter
         that are absolute links to the web site.
+full programs are fucked up.
+    Finance tab is non-functional - why?
+    what about housing clusters for a full program?
+    leaders for both - but registered only for full.
+    who invented this thing?
+    what about lunches?  need to add separately?
+        a lunch in the first part should be for both registrant groups, yes?
+    i have taken care of all of the above
+        including migrating old data
+dup'ed id in mlist :(
+    101186 what to do?
+    Jared Avery] Buss, Rosemary Allen
+    scratch the ], too
+
+    101284 as well
+    101328
+    101374 - how many others? :(
+        this is Swain Lal?
+where are Vatsa (2)
+doc:
+    WARNING:
+    lunches must be set independently for normal and full
+    versions of a program.  setting lunch days in the normal program
+        does not automatically set those days in the full program.
+doc:
+    work study is not kept track of individually.
+    handle it via comments, summary
+
+yes, assistant attribute on leaders
+    leaders and assistants get free housing and tuition
+    leaders sgl/ba, assistants dble
+    manual adjust those who don't fit this.
+new housing type 'Not Needed' - no charge (resident)
+    still charge Tuition, however.
+    this is different than Unknown
+no _FULL programs.    if a program has a non-zero extradays
+    then there needs to be a full tuition > tuition.
+    when someone registers if extradays != 0 && 
+    their end date = program->edate + extradays
+        then they are charged full tuition
+    lunches need to be considered - edate + extradays
+    importing _FULL programs, registrations - needs to change
+I thought credit given was announced in a popup!?
+
+test cases:
+    two programs
+        both have a housing cost different from the default
+        one with 2 extra days
+            experiment with all the different possibilties
+                of arrival and departure dates.
+            note tuition charges - if any days after the program edate - full.
+        one with 0 extra days
+            experiment with all the different possibilities
+                of arrival and departure dates.
+    online registration:
+        try every possible housing type
+        and make sure it gets into the reg create screen properly.
+        basic and full both.
+
+we don't have a separate count in the registration record
+    of the # of people in the extension of a normal-full program.
+    is this a problem?
+can you send a confirmation letter before
+    the housing is known and settled?
+doc/testplan:
+    alerts at registration time:
+        popup comment "pop up" in affiliation
+        free nights to take (sponsor member)
+        free program to take (life member
+        credit to take

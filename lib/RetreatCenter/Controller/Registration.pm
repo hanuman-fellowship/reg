@@ -23,6 +23,7 @@ use Util qw/
     normalize
     tt_today
     ceu_license
+    commify
 /;
 use POSIX qw/
     ceil
@@ -37,7 +38,6 @@ use Global qw/
     %houses_in_cluster
 /;
 use Template;
-use Mail::SendEasy;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -302,7 +302,9 @@ my %needed = map { $_ => 1 } qw/
     share_mailings
     sdate
     edate
-    withWhom
+    withwhom_first
+    withwhom_last
+    progchoice
 /;
 
 #
@@ -447,11 +449,17 @@ sub get_online : Local {
     $c->stash->{comment} = <<"EOC";
 1-$hash{house1}  2-$hash{house2}  online
 EOC
-    if ($hash{withWhom}) {
-        $c->stash->{comment} .= "Sharing a room with $hash{withWhom}\n";
+    if ($hash{withwhom_first}) {
+        $c->stash->{comment}
+            .= "Sharing a room with"
+            .  " $hash{withwhom_first} $hash{withwhom_last}.\n";
     }
     if ($hash{request}) {
         $c->stash->{comment} .= $hash{request};
+    }
+$c->log->info("progchoice: $hash{progchoice}");
+    if ($hash{progchoice} eq 'full') {
+        $c->stash->{date_end} = "+" . $pr->extradays;
     }
     $c->stash->{cabin_checked} = $hash{cabinRoom} eq 'cabin'? "checked": "";
     $c->stash->{room_checked}  = $hash{cabinRoom} eq 'room' ? "checked": "";
@@ -495,7 +503,7 @@ EOC
     # put the license # in the hash, we'll set ceu = 1 later.
     $c->stash->{ceu_license} = $hash{ceu_license};
 
-    rest_of_reg($pr, $p, $c, $today, $hash{house1});
+    _rest_of_reg($pr, $p, $c, $today, $hash{house1});
 }
 
 #
@@ -503,7 +511,7 @@ EOC
 # fill in the rest of it by looking at the program and person
 # and render the view.
 #
-sub rest_of_reg {
+sub _rest_of_reg {
     my ($pr, $p, $c, $today, $house1) = @_;
 
     $c->stash->{program} = $pr;
@@ -595,23 +603,23 @@ sub rest_of_reg {
         sgl/ba single_bath
     );
     # order is important:
-    my $h_type_opts = "<option value=unknown>Unknown\n";
+    my $h_type_opts = "";
     Global->init($c);     # get %string ready.
     HTYPE:
-    for my $ht (qw(
-        com
-        ov
-        ot
-        ct
-        dorm
-        econ
-        quad
-        tpl
-        dbl
-        dbl/ba
-        sgl
+    for my $ht (qw!
         sgl/ba
-    )) {
+        sgl
+        dbl/ba
+        dbl
+        tpl
+        quad
+        econ
+        dorm
+        ct
+        ot
+        ov
+        com
+    !) {
         next HTYPE if $ht eq "sgl/ba" && ! $pr->sbath;
         next HTYPE if $ht eq "quad"   && ! $pr->quad;
         next HTYPE if $ht eq "econ"   && ! $pr->economy;
@@ -625,11 +633,14 @@ sub rest_of_reg {
         $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
     }
+    $h_type_opts .= "<option value=unknown>Unknown\n";
+    $h_type_opts .= "<option value=not_needed>Not Needed\n";
     $c->stash->{h_type_opts} = $h_type_opts;
     $c->stash->{confnotes} = [
         model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
     ];
 
+$c->log->info("before create.tt2, date_end = " . $c->stash->{date_end});
     $c->stash->{template} = "registration/create.tt2";
 }
 
@@ -653,6 +664,9 @@ sub _get_data {
     #    "If you have a date in your program
     #     you have a bug in your program."
     #
+    # many variations and testings to do here.
+    # make a series of test cases to verify.
+    #
     %dates = ();
     @mess = ();
     $extra_days = 0;
@@ -662,7 +676,7 @@ sub _get_data {
 
     my $date_start;
     if ($hash{date_start}) {
-        # what about personal retreats???
+        # what about personal retreats???   - can't say +2 or -1?
         Date::Simple->relative_date(date($pr->sdate));
         $date_start = date($hash{date_start});
         Date::Simple->relative_date();
@@ -672,6 +686,7 @@ sub _get_data {
                 $extra_days += $sdate - $date_start;
             }
             else {
+                # they came after the program started
                 $prog_days -= $date_start - $sdate;     # jeeez
             }
         }
@@ -694,12 +709,23 @@ sub _get_data {
         $date_end = date($hash{date_end});
         Date::Simple->relative_date();
         if ($date_end) {
+            # be careful...
+            # the end date may be within 
+            # the extended part of normal-full program.
+            #
             $dates{date_end} = $date_end->as_d8();
             if ($date_end > $edate) {
-                $extra_days += $date_end - $edate;
+                my $ndays = $date_end - $edate;
+                if ($ndays > $pr->extradays) {
+                    $prog_days += $pr->extradays;
+                    $extra_days += $ndays - $pr->extradays;
+                }
+                else {
+                    $prog_days += $ndays;
+                }
             }
             else {
-                $prog_days -= $edate - $date_end;
+                $prog_days = $date_end - $sdate;
             }
         }
         else {
@@ -795,6 +821,7 @@ sub create_do : Local {
         cancelled     => '',    # to be sure
         arrived       => '',    # ditto
         cabin_room    => $cabin_room,
+        leader_assistant => '',
         %dates,         # optionally
     });
     my $reg_id = $reg->id();
@@ -886,7 +913,6 @@ sub create_do : Local {
 
     # finally, bump the reg_count in the program record
     $pr->update({
-        #reg_count => \'reg_count + 1',      # tricky??? unneeded
         reg_count => $pr->reg_count + 1,
     });
     $c->response->redirect($c->uri_for("/registration/"
@@ -908,6 +934,10 @@ sub _compute {
 
     # tuition
     my $tuition = $pr->tuition;
+    if ($pr->extradays && $reg->date_end > $pr->edate) {
+        # they need to pay the full tuition amount
+        $tuition = $pr->full_tuition;
+    }
     model($c, 'RegCharge')->create({
         @who_now,
         automatic => 'yes',
@@ -945,13 +975,18 @@ sub _compute {
     }
 
     # assuming we have decided on their housing at this point...
-    # we do have an h_type but perhaps not an h_name.
+    # we do have an h_type but perhaps not a housing_id.
     #
     # figure housing cost
     my $housecost = $pr->housecost;
 
     my $h_type = $reg->h_type;           # what housing type was assigned?
-    my $h_cost = $housecost->$h_type;      # column name is correct, yes?
+    my $lead_assist = $reg->leader_assistant;   # no housing charge
+                                                # for these people
+    my $h_cost = ($h_type eq 'not_needed'
+                  || $h_type eq 'unknown')? 0
+                 :                          $housecost->$h_type;
+                                            # column name is correct, yes?
     my ($tot_h_cost, $what);
 	if ($housecost->type eq "Perday") {
 		$tot_h_cost = $prog_days*$h_cost;
@@ -966,6 +1001,9 @@ sub _compute {
             $what .= " - $prog_days day$plural";
         }
     }
+    if ($lead_assist) {
+        $tot_h_cost = 0;
+    }
     if ($tot_h_cost != 0) {
         model($c, 'RegCharge')->create({
             @who_now,
@@ -976,21 +1014,27 @@ sub _compute {
     }
 
     # extra days - at the default housecost rate
+    # but not for leaders/assistants???
     my $def_h_cost = 0;
-    if ($extra_days) {
+    if ($extra_days && ! $lead_assist) {
         my ($def_housecost) = model($c, 'HouseCost')->search({
             name => 'Default',
         });
-        $def_h_cost = $def_housecost->$h_type;
+        $def_h_cost = ($h_type eq 'not_needed'
+                       || $h_type eq 'unknown')? 0
+                      :                          $def_housecost->$h_type;
+                                                 # column name is correct, yes?
         $tot_h_cost += $extra_days*$def_h_cost;
         my $plural = ($extra_days == 1)? "": "s";
-        model($c, 'RegCharge')->create({
-            @who_now,
-            automatic => 'yes',
-            amount    => $extra_days*$def_h_cost,
-            what      => "$extra_days day$plural Lodging"
-                        ." at \$$def_h_cost per day",
-        });
+        if ($def_h_cost != 0) {
+            model($c, 'RegCharge')->create({
+                @who_now,
+                automatic => 'yes',
+                amount    => $extra_days*$def_h_cost,
+                what      => "$extra_days day$plural Lodging"
+                            ." at \$$def_h_cost per day",
+            });
+        }
     }
 
     my $life_free = 0;
@@ -1015,7 +1059,7 @@ sub _compute {
             @who_now,
         });
     }
-	if (!$life_free && $housecost->type eq "Perday") {
+	if (!$life_free && !$lead_assist && $housecost->type eq "Perday") {
         if ($prog_days + $extra_days >= $string{disc1days}) {
             model($c, 'RegCharge')->create({
                 @who_now,
@@ -1742,34 +1786,44 @@ sub update : Local {
     if ($pr->footnotes =~ m{[*]}) {
         $c->stash->{ceu} = 1;
     }
-    my $h_type_opts = "<option value=unknown>Unknown\n";
+    my $h_type_opts = "";
     Global->init($c);     # get %string ready.
+    my $cur_htype = $reg->h_type;
     HTYPE:
-    for my $htname (qw(
-        commuting
-        own_van
-        own_tent
-        center_tent
-        dormitory
-        economy
-        quad
-        triple
-        dble
-        dble_bath
-        single
+    for my $htname (qw/
         single_bath
-    )) {
+        single
+        dble_bath
+        dble
+        triple
+        quad
+        economy
+        dormitory
+        center_tent
+        own_tent
+        own_van
+        commuting
+    /) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
         next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
 
-        my $selected = ($htname eq $reg->h_type)? " selected": "";
+        my $selected = ($htname eq $cur_htype)? " selected": "";
         my $htdesc = $string{$htname};
         $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
         $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
     }
+    # hacky :(  how else please?
+    $h_type_opts .= "<option value=unknown"
+                 .  ($cur_htype eq "unknown"? " selected"
+                     :                        ""         )
+                 .  ">Unknown\n";
+    $h_type_opts .= "<option value=not_needed"
+                 .  ($cur_htype eq "not_needed"? " selected"
+                     :                           ""         )
+                 .  ">Not Needed\n";
     $c->stash->{h_type_opts} = $h_type_opts;
 
     my $status = $reg->status;      # status at time of first registration
@@ -1916,8 +1970,8 @@ sub update_do : Local {
         %dates,         # optionally
     });
     _compute($c, $reg, @who_now);
-    _reg_hist($c, $id, "Registration updated.");
-    if ($reg->house_id() || $reg->h_type() =~ m{van|commut|unk}) {
+    _reg_hist($c, $id, "Registration Updated.");
+    if ($reg->house_id() || $reg->h_type() =~ m{van|commut|unk|need}) {
         $c->response->redirect($c->uri_for("/registration/view/$id"));
     }
     else {
@@ -1964,7 +2018,7 @@ sub manual : Local {
 
     $c->stash->{cabin_checked}   = "";
     $c->stash->{room_checked}    = "";
-    rest_of_reg($pr, $p, $c, tt_today($c));
+    _rest_of_reg($pr, $p, $c, tt_today($c));
 }
 
 sub delete : Local {
@@ -1973,6 +2027,8 @@ sub delete : Local {
     my $reg = model($c, 'Registration')->find($id);
     my $person_id = $reg->person_id;
     my $prog_id   = $reg->program_id;
+
+    _vacate($c, $reg) if $reg->house_id;
     $reg->delete();
     model($c, 'Program')->find($prog_id)->update({
         reg_count => \'reg_count - 1',
@@ -2024,6 +2080,7 @@ sub arrived : Local {
 sub lodge : Local {
     my ($self, $c, $id) = @_;
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    $c->stash->{daily_pic_date} = $reg->date_start;
     my $program_id = $reg->program_id();
     #
     # is there a comment saying that they want to be
@@ -2033,9 +2090,9 @@ sub lodge : Local {
     my $share_house_name = "";
     if ($reg->comment =~ m{Sharing a room with\s*([^.]*)[.]}) {
         my $name = $1;
-        my ($first, $last) = split m{\s+}, $name;
-        $first = normalize($first);
-        $last  = normalize($last);
+        my @names = map { normalize($_) } split m{\s+}, trim($name);
+        my $last = pop @names;
+        my $first = "@names";       # for a two part first name ...
         my ($person) = model($c, 'Person')->search({
             first => $first,
             last  => $last,
@@ -2291,14 +2348,13 @@ sub lodge : Local {
         # one of them is already housed.
         # the room is not in the list because of the gender mismatch
         # or a tent with nominally only one space.
-        # ?? put it in the forced_house space - no - too confusing.
-        # $c->stash->{force_house} = $share_house_name;
+        #
         unshift @h_opts,
             "<option value=" 
             . $share_house_id
             . " selected>"
             . $share_house_name
-            . " - X"
+            . " - S"
             . "</option>\n"
             ;
         $selected = 1;
@@ -2637,12 +2693,13 @@ sub seek : Local {
 
 sub _expand {
     my ($c, $s) = @_;
+    $s = etrim($s);
     return $s if empty($s);
+    # ??? get these each time??? cache them!
     my %note;
     for my $cf (model($c, 'ConfNote')->all()) {
         $note{$cf->abbr()} = etrim($cf->expansion());
     }
-    $s = etrim($s);
     $s =~ s{^(\S+$)}{ $note{$1} || $1 }gem;
     $s;
 }
@@ -2790,62 +2847,112 @@ sub ceu : Local {
 
 my $npeople;
 my @people;
+my $containing;
 
 sub _person_data {
     my ($i) = @_;
 
     if ($i >= $npeople) {
-        return;
+        return "";
     }
     my $p = $people[$i];
-    return "<td valign=top>"
-         . "<b>" . $p->last . ", " . $p->first . "</b><br>"
-         . $p->addr1 . "<br>"
-         . ($p->addr2? $p->addr2 . "<br>": "")
-         . $p->city . ", " . $p->st_prov . " " . $p->zip_post . "<br>"
-         . ($p->country? $p->country . "<br>": "")
-         . ($p->tel_home? $p->tel_home . " home<br>": "")
-         . ($p->tel_work? $p->tel_work . " work<br>": "")
-         . ($p->tel_cell? $p->tel_cell . " cell<br>": "")
-         . "<p>"
-         . "</td>"
-         ;
+    if ($containing eq 'all') {
+        return "<b>" . $p->last . ", " . $p->first . "</b><br>"
+             . $p->addr1 . "<br>"
+             . ($p->addr2? $p->addr2 . "<br>": "")
+             . $p->city . ", " . $p->st_prov . " " . $p->zip_post . "<br>"
+             . ($p->country? $p->country . "<br>": "")
+             . ($p->tel_home? $p->tel_home . " home<br>": "")
+             . ($p->tel_work? $p->tel_work . " work<br>": "")
+             . ($p->tel_cell? $p->tel_cell . " cell<br>": "")
+             . ($p->email   ? $p->email                 : "")
+             . "<p>"
+             ;
+    }
+    elsif ($containing eq 'name') {
+        return $p->last . ", " . $p->first . "<br>";
+    }
+    elsif ($containing eq 'email') {
+        # if no email return nothing.
+        # the row gets collapsed, right???.
+        #
+        return $p->email? ($p->email . "<br>")
+               :          ""
+               ;
+    }
 }
 
 sub name_addr : Local {
     my ($self, $c, $prog_id) = @_;
+    
+    my $program = model($c, 'Program')->find($prog_id);
+    $c->stash->{program}  = $program;
+    $c->stash->{email}    = $program->email_nameaddr();
+    $c->stash->{template} = "registration/pre_name_addr.tt2";
+}
 
-    my ($program) = model($c, 'Program')->find($prog_id);
+sub name_addr_do : Local {
+    my ($self, $c, $prog_id) = @_;
+    my $program = model($c, 'Program')->find($prog_id);
+
+    my $p_order = $c->request->params->{order};
+    my $order = ($p_order eq 'name')? [qw/ person.last person.first /]
+                :                     [qw/ date_postmark time_postmark /];
     my (@regs) = model($c, 'Registration')->search(
         {
-            # not cancelled??
             program_id => $prog_id,
+            cancelled  => '',
         },
         {
             join     => [qw/ person /],
-            order_by => [qw/ person.last person.first /],
+            order_by => $order,
             prefetch => [qw/ person /],   
         }
     );
-    # here we're only interested in the person information
+    # here we're only interested in the person information so...
     #
-    @people = map { $_->person } @regs;     # not global - see above
+    @people = map { $_->person } @regs;     # not my - see above
+    $npeople = @people;
 
-    # make the 3 across table - too tricky to do
-    # in the template.  we want it sorted by last name
-    # going down the column.
-    #
-    $npeople = @people;         # not my - see above
-    my $n = ceil($npeople/3);   # length of 1st, 2nd column
-    my $na_rows = "";
-    for my $i (0 .. $n-1) {
-        $na_rows .= "<tr>";
+    my $info_rows;
+    my $mailto = "";
+    $containing = $c->request->params->{containing};
+    if ($c->request->params->{format} eq 'linear') {
+        $info_rows = "";
+        for my $i (0 .. $#people) {
+            my $s = _person_data($i);
+            $info_rows .= "$s\n";
+            if ($containing eq "email") {
+                $s =~ s{<br>}{};
+                $mailto .= "$s," if $s;
+            }
+        }
+        if ($containing eq "email") {
+            $mailto =~ s{,$}{};
+            $mailto = "<a href='mailto:?bcc=$mailto'>Email All</a><p>\n";
+        }
+    }
+    else {
+        # make the 3 across table - too tricky to do
+        # in the template.  we want it sorted by last name
+        # going down the column.
+        #
+        my $n = ceil($npeople/3);   # length of 1st, 2nd column
+        $info_rows = "<table cellpadding=3>\n";
+        for my $i (0 .. $n-1) {
+            $info_rows .= "<tr>";
 
-        $na_rows .= _person_data($i);
-        $na_rows .= _person_data($i+$n);
-        $na_rows .= _person_data($i+2*$n);
+            $info_rows .= "<td valign=top>" . _person_data($i) . "</td>";
+            $info_rows .= "<td valign=top>" . _person_data($i+$n) . "</td>";
+            $info_rows .= "<td valign=top>" . _person_data($i+2*$n) . "</td>";
 
-        $na_rows .= "</tr>\n";
+            $info_rows .= "</tr>\n";
+        }
+        $info_rows .= "</table>\n";
+        if ($containing eq "email") {
+            $mailto =~ s{,$}{};
+            $mailto = "<a href='mailto:?bcc=$mailto'>Email All</a><p>\n";
+        }
     }
     my $html = "";
     my $tt = Template->new({
@@ -2854,14 +2961,149 @@ sub name_addr : Local {
     }) or die Template->error();
     my $stash = {
         program => $program,
-        rows    => $na_rows,
+        rows    => $info_rows,
+        mailto  => $mailto,
     };
     $tt->process(
         "registration/name_addr.tt2",   # template
         $stash,               # variables
         \$html,               # output
     ) or die $tt->error();
-    $c->res->output($html);
+    my $email = "";
+    for my $em (keys %{$c->request->params()}) {
+        if ($em =~ m{^email}) {
+            $email .= $c->request->params->{$em} . ", ";
+        }
+    }
+    if ($email) {
+        $email =~ s{, $}{};     # chop last comma
+        email_letter($c,
+               html       => $html, 
+               subject    => "Participant List for "
+                            . $program->name
+                            . " from "
+                            . $program->dates,
+               to         => $email,
+               from       => $string{from},
+               from_title => $string{from_title},
+        );
+        $c->stash->{program}  = $program;
+        $c->stash->{email}    = $email;
+        $c->stash->{template} = "registration/name_addr_conf.tt2";
+    }
+    else {
+        $c->res->output($html);
+    }
+}
+
+#
+#
+#
+sub tally : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id => $prog_id,
+        },
+        {
+            join     => [qw/ person /],
+            prefetch => [qw/ person /],
+        }
+    );
+    my $registered = 0;
+    my $cancelled  = 0;
+    my $no_shows   = 0;
+
+    my $males      = 0;
+    my $females    = 0;
+
+    my $adults     = 0;
+    my $kids       = 0;
+
+    my $tuition    = 0;
+    my $lodging    = 0;
+    my $adjustment = 0;
+
+    my $deposit    = 0;
+    my $payment    = 0;
+    my $balance    = 0;
+
+    my $credit     = 0;
+
+    for my $r (@regs) {
+        ++$registered;
+        for my $rp ($r->payments()) {
+            my $what   = $rp->what;
+            my $amount = $rp->amount();
+            if ($what =~ m{deposit}i) {
+                $deposit += $amount;
+            }
+            elsif ($what =~ m{payment}i) {
+                $payment += $amount;
+            }
+            else {
+                # ??? what else?
+            }
+        }
+        if (my ($credit_rec) = model($c, 'Credit')->search({
+                person_id => $r->person_id(),
+                reg_id    => $r->id(),
+            })
+        ) {
+            $credit += $credit_rec->amount();
+        }
+        if ($r->cancelled) {
+            ++$cancelled;
+            next;
+        }
+        if (! $r->arrived) {
+            ++$no_shows;
+            next;
+        }
+        ++$adults;
+        if ($r->person->sex eq 'F') {
+            ++$females;
+        }
+        else {
+            ++$males;
+        }
+        if (my $k = $r->kids) {
+            my @ages = $k =~ m{(\d+)}g;
+            $kids += @ages;
+        }
+        # charges
+        for my $rc ($r->charges()) {
+            my $what   = $rc->what();
+            my $amount = $rc->amount();
+            if ($what =~ m{tuition}i) {
+                $tuition += $amount;
+            }
+            elsif ($what =~ m{lodging}i) {
+                $lodging += $amount;
+            }
+            else {
+                $adjustment += $amount;
+            }
+        }
+        $balance += $r->balance();
+    }
+    $c->stash->{program}    = model($c, 'Program')->find($prog_id);
+    $c->stash->{registered} = $registered;
+    $c->stash->{cancelled}  = $cancelled;
+    $c->stash->{no_shows}   = $no_shows;
+    $c->stash->{males}      = $males;
+    $c->stash->{females}    = $females;
+    $c->stash->{adults}     = $adults;
+    $c->stash->{kids}       = $kids;
+    $c->stash->{tuition}    = commify($tuition);
+    $c->stash->{lodging}    = commify($lodging);
+    $c->stash->{adjustment} = commify($adjustment);
+    $c->stash->{deposit}    = commify($deposit);
+    $c->stash->{payment}    = commify($payment);
+    $c->stash->{credit}     = commify($credit);
+    $c->stash->{balance}    = commify($balance);
+    $c->stash->{template}   = "registration/tally.tt2";
 }
 
 1;

@@ -65,7 +65,6 @@ create table housecost (
     own_tent        integer,
     own_van         integer,
     commuting       integer,
-    unknown         integer,
     type            text
 );
 drop table if exists affil_program;
@@ -81,6 +80,7 @@ create table leader (
     url text,
     image text,
     biography text,
+    assistant text,
     l_order integer     -- can't use 'order'
 );
 drop table if exists leader_program;

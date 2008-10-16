@@ -3,6 +3,10 @@ use warnings;
 package RetreatCenterDB::Program;
 use base qw/DBIx::Class/;
 
+use Util qw/
+    model
+/;
+
 use lib "..";       # so can do perl -c
 
 # Load required DBIC stuff
@@ -193,7 +197,7 @@ sub brdesc_br {
 sub confnote_br  {
     my ($self) = @_;
     my $confnote = $self->confnote;
-    $confnote =~ s{\r?\n}{<br>\n}g;
+    $confnote =~ s{\r?\n}{<br>\n}g if $confnote;
     $confnote;
 }
 sub fname {
@@ -291,6 +295,9 @@ sub leader_names {
                       $a->person->last  cmp $b->person->last or
                       $a->person->first cmp $b->person->first
                   }
+                  grep {
+                    ! $_->assistant
+                  }
                   $self->leaders;
     return "" unless @leaders;
     my $last = pop @leaders;
@@ -327,20 +334,6 @@ sub dates {
     $dates;
 }
 
-# almost the same as dates - but don't consider any FULL program
-sub our_dates {
-    my ($self) = @_;
-
-    my $sd = $self->sdate_obj;
-    my $ed = $self->edate_obj;
-    my $dates = $sd->format("%B %e") . "-";
-    if ($ed->month == $sd->month) {
-        $dates .= $ed->day;
-    } else {
-        $dates .= $ed->format("%B %e");
-    }
-    $dates;
-}
 #
 #
 #
@@ -656,7 +649,7 @@ sub cl_picture {
     return "" unless $pic1;          # no image at all
 
     if ($pic2) {
-                                                    #       live2
+                                                    #       live2???
         my $pic1_html = "<img src='http://$string{ftp_site}/staging2/{pics/$pic1' width=$half>";
         my $pic2_html = "<img src='http://$string{ftp_site}/staging2/pics/$pic2' width=$half>";
         return <<EOH;
@@ -715,6 +708,77 @@ sub meeting_places {
 sub ceu_issued {
     my ($self) = @_;
     return $self->footnotes() =~ m{\*};
+}
+#
+# look for an email addresses of the leaders.
+# return a list of checkboxes
+#
+sub email_nameaddr {
+    my ($self) = @_;
+    my @leaders = $self->leaders();
+    my $html = "";
+    my $em;
+    my $n = 1;
+    for my $l (@leaders) { 
+        if ($em = $l->public_email) {
+            $html .= _em_check($em, $n++);
+        }
+        if ($em = $l->person->email) {
+            $html .= _em_check($em, $n++);
+        }
+    } 
+    $html;
+}
+sub _em_check {
+    my ($em, $n) = @_;
+    return "<input type=checkbox name='email$n' value='$em'>$em<br>";
+}
+
+#
+# a table of leader names and a note if they're unregistered or unhoused.
+#
+sub leaders_house {
+    my ($self, $c) = @_;
+    my $html = "<table>\n";
+    for my $l ($self->leaders()) {
+        my $person = $l->person;
+        my $name = $person->last . ", " . $person->first;
+        $html .= "<tr>";
+        $html .= "<td>"
+              .  "<a href=/leader/view/" . $l->id() . ">$name</a>"
+              .  (($l->assistant)? " * ": "")
+              .  "</td>"
+              ;
+        # when a program has extra days
+        # the leaders will be registered for the full one not the normal.
+        #
+        my (@reg) = model($c, 'Registration')->search({
+            person_id  => $person->id(),
+            program_id => $self->id(),
+        });
+        my $style = "style='font-weight: bold; color: red; margin-left: .4in'";
+        if (@reg) {
+            my $reg = $reg[0];
+            if ($reg->house_id == 0) {
+                $html .= "<td colspan=2>"
+                      .  "<a $style href=/registration/lodge/"
+                      .  $reg->id()
+                      .  ">Needs Housing</a>"
+                      .  "</td>"
+                      ;
+            }
+        }
+        else {
+            $html .= "<td colspan=2>"
+                  .  "<a $style href=/program/leader_update/"
+                  .  $self->id()
+                  .  ">Unregistered</a>"
+                  .= "</td>";
+        }
+        $html .= "</tr>\n";
+    }
+    $html .= "</table>\n";
+    $html;
 }
 
 1;

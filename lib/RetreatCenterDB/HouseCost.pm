@@ -18,7 +18,6 @@ __PACKAGE__->add_columns(qw/
     own_tent
     own_van
     commuting
-    unknown
     single_bath
     dble_bath
     type
