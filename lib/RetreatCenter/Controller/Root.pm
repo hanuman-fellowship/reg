@@ -16,7 +16,28 @@ sub default : Private {
     $c->response->body( $c->welcome_message );
 }
 
-sub end : ActionClass('RenderView') {}
+sub _set {
+    my ($c, $u, $attr, $default) = @_;
+    if ($u) {
+        if (my $v = $u->$attr) {
+            $c->stash->{$attr} = sprintf "#%02x%02x%02x",
+                                         $v =~ m{(\d+)}g;
+        }
+        else {
+            $c->stash->{$attr} = $default;
+        }
+    }
+    else {
+        $c->stash->{$attr} = $default;
+    }
+}
+sub end : ActionClass('RenderView') {
+    my ($self, $c) = @_;
+    my $u = $c->user;
+    _set($c, $u, 'fg', 'black');
+    _set($c, $u, 'bg', 'white');
+    _set($c, $u, 'link', 'blue');
+}
 
 # Note that 'auto' runs after 'begin' but before your actions and that
 # 'auto' "chain" (all from application path to most specific class are run)

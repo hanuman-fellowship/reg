@@ -2399,7 +2399,15 @@ dup'ed id in mlist :(
     101284 as well
     101328
     101374 - how many others? :(
-        this is Swain Lal?
+    Swain Lal?  73046 not sure about this fellow
+
+    check.pl output:
+    101186 - dup id for: Buss Jared Avery]  and Allen Rosemary 
+    sps id is 0
+    101284 - dup id for: Berger Mona  and Minnick Larry 
+    sps id is 0
+    101328 - dup id for: Niebt Thecla  and Moreno Margo 
+    sps id is 101330
 where are Vatsa (2)
 doc:
     WARNING:

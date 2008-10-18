@@ -337,6 +337,7 @@ sub slurp {
 
 #
 # __, **, %%%, ~~ expansions into <i>, <b>, <a href=>, <a mailto>
+# and #, - into lists
 #
 # the first _ and * need to appear either after a blank
 # or at the beginning of the line - in case an underscore
@@ -652,7 +653,7 @@ EOH
         }
         elsif ($view) {
             my $w = $lunch? '': 'w';
-            $s .= "<img src='/static/images/${w}checked.gif'>";
+            $s .= "<img src='/static/images/${w}checked.gif' border=0>";
         }
         else {
             $s .= " <input type=checkbox name=d$d"

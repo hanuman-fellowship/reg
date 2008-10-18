@@ -1,7 +1,6 @@
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <h2>People</h2>
-<!-- XX remove this comment later
 <a href="/person/create" accesskey='a'><span class=keyed>A</span>dd</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/update/[% person.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
@@ -9,7 +8,6 @@
 <a href="/person/delete/[% person.id %]"
 onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-XX -->
 <a href="/person/register1/[% person.id %]" accesskey='r'><span class=keyed>R</span>egister</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
@@ -22,16 +20,12 @@ XX -->
 [% IF person.partner %]
 &nbsp;&nbsp;&nbsp;
     Partnered <span class=keyed>W</span>ith <a href="/person/view/[% person.partner.id %]" accesskey='w'>[% person.partner.first _" "_ person.partner.last %]</a>
-<!-- XX
     &nbsp;&nbsp;&nbsp;
     <a href="/person/separate/[% person.id %]"
     onclick="return confirm('Okay to Separate?');">Separate</a>
-XX -->
 [% ELSE %]
-<!-- XX
 &nbsp;&nbsp;&nbsp;
     <a href="/person/partner/[% person.id %]" accesskey='w'>Partner <span class=keyed>W</span>ith</a>
-XX -->
 [% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
     [% IF person.leader %]

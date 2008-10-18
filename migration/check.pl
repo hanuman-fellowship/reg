@@ -8,6 +8,7 @@ open my $clean, ">", "clean";
 
 my (@flds, $id, $sps_id, %id_for);
 while (<$mlist>) {
+    next unless /\S/;
     @flds = split /\|/; 
     ($id, $sps_id) = @flds[16,17];
     if (exists $id_for{$id}) {

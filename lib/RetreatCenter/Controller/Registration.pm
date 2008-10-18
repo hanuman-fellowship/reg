@@ -2792,7 +2792,7 @@ sub who_is_there : Local {
                    . "</td>"
                    . "<td width=30 align=center><a target=happening href="
                    . $c->uri_for("/registration/relodge/$rid")
-                   . "><img src=/static/images/move_arrow.gif></a></td>"
+                   . "><img src=/static/images/move_arrow.gif border=0></a></td>"
                    . "</tr>";
     }
     $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.

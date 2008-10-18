@@ -13,6 +13,9 @@ __PACKAGE__->add_columns(qw/
     email
     first
     last
+    bg
+    fg
+    link
 /);
 __PACKAGE__->set_primary_key('id');
 

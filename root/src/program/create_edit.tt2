@@ -201,10 +201,10 @@ Finance
 <th align=right valign=top>Program Image</th>
 <td colspan=2>
 [% IF program.image %]
-<img src="[% program.image_file %]"><br>
+<img src="[% program.image_file %]" border=0><br>
 [% ELSE %]
     [% IF dup_image %]
-        <img src=[% dup_image %]><br>
+        <img src=[% dup_image %] border=0><br>
     [% END %]
 [% END %]
 <input type=file name=image>

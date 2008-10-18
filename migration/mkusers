@@ -8,7 +8,10 @@ create table user (
     password    text,
     email       text,
     first       text,
-    last        text
+    last        text,
+    bg          text,       -- rgb colors or blank
+    fg          text,
+    link        text
 );
 drop table if exists role;
 create table role (
@@ -26,19 +29,19 @@ create table user_role (
 --
 -- Load up some initial test users
 --
-insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person');
+insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person', '', '', '');
 -- the above is used for legacy reg payments, etc.
 
-insert into user values (2, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe');
-insert into user values (3, 'joe', 'mypass', 'joe@na.com', 'Joe', 'Blow');
-insert into user values (4, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith');
-insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou');
-insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg');
-insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan');
-insert into user values (8, 'web_user', 'webby', 'web@user.com', 'Web', 'User');
-insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky');
-insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan');
-insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName');
+insert into user values (2, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe', '200,100,100', '100,100,200', '100,200,100');
+insert into user values (3, 'joe', 'mypass', 'joe@na.com', 'Joe', 'Blow', '', '', '');
+insert into user values (4, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith', '', '', '');
+insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou', '', '', '');
+insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg', '', '', '');
+insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan', '', '', '');
+insert into user values (8, 'web_user', 'webby', 'web@user.com', 'Web', 'User', '', '', '');
+insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky', '', '', '');
+insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan', '', '', '');
+insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName', '', '', '');
 --
 -- the roles - do not muck with the ids!
 --

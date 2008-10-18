@@ -1,15 +1,13 @@
 <h2>Configuration</h2>
 <ul>
-[% IF Catalyst.check_user_roles('super_admin') %]
-    <a href=/configuration/reload>Reload</a><p>
-[% END %]
 <a href=/affil/list>Affiliations</a><p>
 [% IF Catalyst.check_user_roles('prog_staff') %]
     <a href=/annotation>Annotations</a><p>
     <a href=/canpol>Cancellation Policies</a><p>
     <a href=/cluster>Clusters</a><p>
-    <a href=/confnote>Confirmation Notes</a></p>
+    <a href=/confnote>Confirmation Notes</a><p>
 [% END %]
+<a href=/configuration/display>Display Colors</a><p>
 [% IF Catalyst.check_user_roles('web_designer') %]
     <a href=/exception/list>Exceptions</a><p>
 [% END %]

@@ -24,7 +24,7 @@ function Get() {
 }
 
 function select_cluster(cluster_id) {
-    var url = 'http://localhost:3000/program/select_cluster/'
+    var url = '[% Catalyst.uri_for("/program/select_cluster/") %]'
             + [% id %]
             + '/'
             + cluster_id
@@ -37,7 +37,7 @@ function select_cluster(cluster_id) {
 }
 
 function UNselect_cluster(cluster_id) {
-    var url = 'http://localhost:3000/program/UNselect_cluster/'
+    var url = '[% Catalyst.uri_for("/program/UNselect_cluster/") %]'
             + [% id %]
             + '/'
             + cluster_id
@@ -50,7 +50,7 @@ function UNselect_cluster(cluster_id) {
 }
 
 function cluster_up(cluster_id) {
-    var url = 'http://localhost:3000/program/cluster_up/'
+    var url = '[% Catalyst.uri_for("/program/cluster_up/") %]'
             + [% id %]
             + '/'
             + cluster_id
@@ -63,7 +63,7 @@ function cluster_up(cluster_id) {
 }
 
 function cluster_down(cluster_id) {
-    var url = 'http://localhost:3000/program/cluster_down/'
+    var url = '[% Catalyst.uri_for("/program/cluster_down/") %]'
             + [% id %]
             + '/'
             + cluster_id
@@ -338,7 +338,7 @@ Finance
 <th align=right valign=top>Program Image</th>
 <td colspan=2>
 [% IF program.image %]
-<img src="[% program.image_file %]"><br>
+<img src="[% program.image_file %]" border=0><br>
 <a href="[% Catalyst.uri_for('/program/del_image/') _ id %]"
 onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete Image</a>
 [% ELSE %]

@@ -335,14 +335,14 @@ sub _get_cluster_groups {
            . (
                 ($cid != $first_id)?
                     "<a href='#' onclick='cluster_up($cid); return false'"
-                    . ">&nbsp;<img src=/static/images/green_up_arrow.gif></a>"
+                    . ">&nbsp;<img src=/static/images/green_up_arrow.gif border=0></a>"
                 :   "&nbsp;"
              )
            . "</td><td>"
            . (
                 ($cid != $last_id )?
                     "<a href='#' onclick='cluster_down($cid); return false'"
-                    . ">&nbsp;<img src=/static/images/red_down_arrow.gif></a>"
+                    . ">&nbsp;<img src=/static/images/red_down_arrow.gif border=0></a>"
                 :   "&nbsp;"
              )
            . "</td></tr>\n"

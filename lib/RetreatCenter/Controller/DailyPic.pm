@@ -217,11 +217,14 @@ sub show : Local {
         }
     }
     # write the image to be used shortly
-    open my $imf, ">", "root/static/images/dailypic.png"
-        or die "no dailypic.png: $!\n"; 
+    my $im_name = "dp$type"
+                  . join("", (localtime())[reverse (0 .. 5)])
+                  . ".png";
+    open my $imf, ">", "root/static/images/$im_name"
+        or die "no $im_name: $!\n"; 
     print {$imf} $dp->png;
     close $imf;
-    my $image = $c->uri_for("/static/images/dailypic.png");
+    my $image = $c->uri_for("/static/images/$im_name");
     my $back = $dt - 1;
     # how far back can we go???
     #if ($back < $today) {
@@ -292,7 +295,8 @@ EOT
         }
         $links .= "<a class=details $style href='/dailypic/show/$s/$d8' $keylab\n";
     }
-    my $html = <<EOH;
+    my $who_is_there = $c->uri_for("/registration/who_is_there");
+    my $html = <<"EOH";
 <head>
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js">
@@ -320,7 +324,7 @@ function Get() {
 }
 
 function Send(sex, house_id) {
-    var url = 'http://localhost:3000/registration/who_is_there/'
+    var url = '$who_is_there/'
             + sex
             + '/'
             + house_id
@@ -346,7 +350,7 @@ function Send(sex, house_id) {
 $links
 </form>
 <p>
-<img height=$resize_height src=$image usemap=#dailypic>
+<img height=$resize_height src=$image border=0 usemap=#dailypic>
 $event_table
 <map name=dailypic>
 $dp_map</map>
