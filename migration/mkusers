@@ -32,7 +32,7 @@ create table user_role (
 insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person', '', '', '');
 -- the above is used for legacy reg payments, etc.
 
-insert into user values (2, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe', '200,100,100', '100,100,200', '100,200,100');
+insert into user values (2, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe', '', '', '');
 insert into user values (3, 'joe', 'mypass', 'joe@na.com', 'Joe', 'Blow', '', '', '');
 insert into user values (4, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith', '', '', '');
 insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou', '', '', '');
