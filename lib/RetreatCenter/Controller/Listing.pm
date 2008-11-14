@@ -903,4 +903,30 @@ sub housekeeping : Local {
     $c->stash->{template}       = "listing/housekeeping.tt2";
 }
 
+#
+# display all of the records in the make_up table.
+#
+sub make_up : Local {
+    my ($self, $c) = @_;
+    
+    for my $mu (model($c, 'MakeUp')->search(
+                    { },
+                    {
+                        join     => {
+                            house => 'cluster',
+                        },
+                        prefetch => {
+                            house => 'cluster',
+                        },
+                        order_by => [qw/
+                            house.cluster.name
+                            house.cluster_order
+                        /],
+                    }
+                )
+    ) {
+        $c->log->info($mu->house->cluster->name . " " .  $mu->house->name);
+    }
+}
+
 1;

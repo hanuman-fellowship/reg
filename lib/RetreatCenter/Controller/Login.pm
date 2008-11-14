@@ -23,6 +23,7 @@ sub index : Private {
         if ($c->login($username, $password)) {
             # successful, let them use the application!
             Global->init($c);       # where else to put this???
+            _clear_images();
             if ($c->check_user_roles('prog_staff')) {
                 $c->response->redirect($c->uri_for('/program/cur_prog'));
             }
@@ -37,6 +38,22 @@ sub index : Private {
     }
     # If either of above don't work out, send to the login page
     $c->stash->{template} = 'login.tt2';
+}
+
+#
+# clear any GD generated images that are more
+# than two minutes old.  certainly the browser
+# has gotten it already.
+#
+sub _clear_images {
+    my $now = sprintf("%04d%02d%02d%02d%02d%02d",
+                      (localtime())[reverse (0 .. 5)]);
+    for my $im (<root/static/images/im*.png>) {
+        my $stamp = substr($im, -18, 14);
+        if ($now - $stamp > 120) {
+            unlink $im;
+        }
+    }
 }
 
 1;

@@ -163,40 +163,6 @@ sub list_reg_name : Local {
 
     my $pr = model($c, 'Program')->find($prog_id);
 
-#    my ($pr1) = model($c, 'Program')->search(
-#        { id      => $prog_id },
-#        { columns => [ qw/ name edate sdate /] }
-#    );
-#$c->log->info('=' x 50);
-#$c->log->info("stuff = $pr1");
-#$c->log->info('hi' . $pr1->name . $pr1->edate . $pr1->title);
-#$c->log->info("pr = " . $pr);
-#
-#    my $href = $rs->find($prog_id, { columns => ['name', 'edate']});
-#$c->log->info(Dumper($href));
-#    my $href = $rs->find($prog_id);
-#$c->log->info(Dumper($href));
-#$c->log->info("=====> hashref $href->{name} and $href->{edate}");
-#
-#my $rs = $c->model('RetreatCenterDB::Program');
-#RetreatCenterDB::Program->result_class('DBIx::Class::ResultClass::HashRefInflator');
-#my $row = $rs->search(
-#    { id      => $prog_id },
-#    { columns => [ qw/ name edate sdate /] }
-#);
-#my $href = $row->next();
-#my $href = $c->model('RetreatCenterDB::Program')->storage->dbh_do(
-#    sub {
-#        my ($storage, $dbh, $prog_id, @cols) = @_;
-#        my $cols = join(q{, }, @cols);
-#        $dbh->selectrow_hashref(
-#            "SELECT $cols FROM program where id = $prog_id");
-#    },
-#    $prog_id, qw/ name edate sdate /
-#);
-#use Data::Dumper;
-#$c->log->info("=====> " . Dumper(\$href));
-
     $c->stash->{daily_pic_date} = $pr->sdate();
     $c->stash->{program} = $pr;
     # ??? dup'ed code in matchreg and list_reg_name
@@ -457,7 +423,6 @@ EOC
     if ($hash{request}) {
         $c->stash->{comment} .= $hash{request};
     }
-$c->log->info("progchoice: $hash{progchoice}");
     if ($hash{progchoice} eq 'full') {
         $c->stash->{date_end} = "+" . $pr->extradays;
     }
@@ -640,7 +605,6 @@ sub _rest_of_reg {
         model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
     ];
 
-$c->log->info("before create.tt2, date_end = " . $c->stash->{date_end});
     $c->stash->{template} = "registration/create.tt2";
 }
 
@@ -1288,9 +1252,11 @@ sub _view {
         $c->stash->{ceu} = 1;
     }
     $c->stash->{non_pr} = $prog->name !~ m{personal retreat}i;
-    $c->stash->{daily_pic_date} = $reg->date_start();
     my @files = <root/static/online/*>;
     $c->stash->{online} = scalar(@files);
+    $c->stash->{daily_pic_date} = $reg->date_start();
+    $c->stash->{cur_cluster} = ($reg->house_id)? $reg->house->cluster_id
+                               :                 1;
     $c->stash->{template} = "registration/view.tt2";
 }
 
@@ -1615,14 +1581,6 @@ sub matchreg : Local {
 #
 sub _reg_table {
     my ($reg_aref, %opt) = @_;
-    my $size = 12;
-    my $color = "#33a";
-    my $other_color = "#fff";
-    if (scalar(@$reg_aref) == 1) {
-        $size = 18;
-        $color = "red";
-        $other_color = "#fff";
-    }
     my $proghead = "";
     if ($opt{multiple}) {
         $proghead = "<th align=left>Program</th>\n";
@@ -1679,8 +1637,8 @@ EOH
         my $pay_balance = $balance;
         if (! $reg->cancelled && $balance > 0) {
             $pay_balance =
-                "<span class=rname1><a href='/registration/pay_balance/$id/list_reg_name'>"
-               ."$pay_balance</a></span>";
+                "<a href='/registration/pay_balance/$id/list_reg_name'>"
+               ."$pay_balance</a>";
         }
         $body .= <<"EOH";
 <tr>
@@ -1689,21 +1647,12 @@ $program_td
 <td>$mark</td>
 
 <td>    <!-- width??? -->
-<span class=rname1><a href='/registration/view/$id'>$name</a></span></a>
+<a href='/registration/view/$id'>$name</a>
 </td>
 
-<td align=right>
-$pay_balance
-</td>
-
-<td>
-<span class=rname2>$type</span>
-</td>
-
-<td>
-<span class=rname2>$house</span>
-</td>
-
+<td align=right>$pay_balance</td>
+<td>$type</td>
+<td>$house</td>
 $postmark_td
 
 </tr>
@@ -1711,20 +1660,6 @@ EOH
     }
     $body ||= "";
 <<"EOH";        # returning a bare string heredoc constant?  sure.
-<style>
-.rname1 {
-    font-size: ${size}pt;
-    color: $color;
-    background: $other_color;
-}
-.rname2 {
-    font-size: ${size}pt;
-}
-a:hover {
-    color: $other_color;
-    background: $color;
-}
-</style>
 <table cellpadding=4>
 $heading
 $body
@@ -2149,6 +2084,8 @@ sub lodge : Local {
     my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
     my $cabin  = $reg->cabin_room eq 'cabin';
+    my @kids   = ($reg->kids)? (cur => { '>', 0 })
+                 :             ();
 
     my @h_opts = ();
     my $n = 0;
@@ -2176,7 +2113,7 @@ sub lodge : Local {
         # one _could_ put a tent and a room in the same cluster, right?
         #
         my $cl_name = $pc->cluster->name();
-        my $cl_tent   = $cl_name =~ m{tent}i;
+        my $cl_tent   = $cl_name =~ m{tent|terrace}i;
         my $cl_center = $cl_name =~ m{center}i;
         if (($tent && !$cl_tent) ||
             (!$tent && $cl_tent) ||
@@ -2189,7 +2126,6 @@ sub lodge : Local {
         HOUSE:
         for my $h (@{$houses_in_cluster{$pc->cluster_id()}}) {
             # note no database access yet ... it is all in memory
-
             # is the max of the house inconsistent with $max?
             # or the bath status
             #
@@ -2216,15 +2152,18 @@ sub lodge : Local {
             #
             # well, the first search below eliminates
             # the already fully occupied or gender inappropriate ones.
-            # and this is done
-            # within the database - reduces the data transfer
+            # and this is done within the database - reduces
+            # the data transfer.
             # I _could_ have a 'in => []'
             # and specify all the houses in the cluster
             #
-            # is this house truly available for this request
-            # from sdate to edate1?
-            # look for ways in which it is NOT.
-            # space, gender, room size
+            # is this house truly available for this
+            # request from sdate to edate1?
+            # look for ways in which it is NOT:
+            #     - space
+            #     - gender
+            #     - room size
+            #     - kids and cur > 0
             #
             my @cf = model($c, 'Config')->search({
                 house_id => $h_id,
@@ -2240,6 +2179,7 @@ sub lodge : Local {
                         curmax => { '>', $max },
                         cur    => { '>', 0    },
                     ],
+                    @kids,                      # kids => cur > 0
                 ],
             });
             next HOUSE if @cf;        # nope
@@ -2427,6 +2367,10 @@ sub lodge_do : Local {
     # except for tents, that is!!
     # so weird and so complicated.   jeez.
     #
+    # if kids in this registration then we must set curmax = cur.
+    # this will effectively resize the room so no one else
+    # will be put there.
+    #
     if ($force_house && $cmax > $house_max) {
         $cmax = $house_max;
     }
@@ -2455,6 +2399,7 @@ sub lodge_do : Local {
         house_id => $house_id,
         h_name   => '',
     });
+    my $kids = $reg->kids;
     for my $cf (model($c, 'Config')->search({
                     house_id => $house_id,
                     the_date => { 'between' => [ $sdate, $edate1 ] }
@@ -2463,6 +2408,9 @@ sub lodge_do : Local {
         my $csex = $cf->sex;
         if ($cmax < $cf->cur + 1) {
             $cmax = $house_max;     # note **
+        }
+        if ($kids) {
+            $cmax = 1;      # cur _will_ be 1
         }
         $cf->update({
             curmax     => $cmax,

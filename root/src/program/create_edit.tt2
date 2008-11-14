@@ -31,44 +31,44 @@
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
 <span onclick="tabs(1)">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Web
+Meals/Lodging
 </div>
 <span onclick="tabs(2)">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Web
+Meals/Lodging
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Meals/Lodging
+Finance
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
-Meals/Lodging
+Finance
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Finance
+Misc
 </div>
 <span onclick="tabs(4)">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Finance
+Misc
 </div>
 </span>
 </td>
@@ -82,72 +82,8 @@ Finance
 
 <tr><td colspan=5><!-- all the content panes -->
 
-<!-- Misc -->
-<div id="content1" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right>Kaya Kalpa</th>
-<td colspan=2><input type=checkbox value=yes name=kayakalpa [% check_kayakalpa %]></td>
-</tr>
-
-<tr>
-<th align=right>Retreat</th>
-<td><input type=checkbox value=yes name=retreat [% check_retreat %]></td>
-</tr>
-
-<tr>
-<th align=right>Notify on Reg</th>
-<td><input type=text value='[% program.notify_on_reg %]' name=notify_on_reg size=60></td>
-</tr>
-
-<tr>
-<th align=right>Max</th>
-<td><input type=text value='[% program.max %]' name=max size=3></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Confirmation Letter<br>Template</th>
-<td valign=top>
-<select name=cl_template>
-[% FOREACH t IN cl_template_opts %]
-<option value='[% t %]'[% IF t == program.cl_template %] selected[% END %]>[% t %]</option>
-[% END %]
-</select>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Confirmation Letter<br>Notes</th>
-<td colspan=4>
-<textarea name=confnote cols=60 rows=3>[% program.confnote %]</textarea>
-</td>
-</tr>
-
-<tr>
-<th align=right>Times</th>
-<td colspan=3>
-
-<table cellpadding=3>
-<tr>
-<th align=right>Registration Start</th>
-<td><input type=text size=10 maxlength=10 name=reg_start value='[% program.reg_start %]'></td>
-<th align=right>Program Start</th>
-<td><input type=text size=10 maxlength=10 name=prog_start value='[% program.prog_start %]'></td>
-</tr>
-<tr>
-<th align=right>End</th>
-<td><input type=text size=10 maxlength=10 name=reg_end value='[% program.reg_end %]'></td>
-<th align=right>End</th>
-<td><input type=text size=10 maxlength=10 name=prog_end value='[% program.prog_end %]'></td>
-</tr>
-</table>
-
-</table>
-</div>
-
 <!-- Web -->
-<div id="content2" class="tabcontent" style="display: none">
+<div id="content1" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -227,7 +163,7 @@ Finance
 </div>
 
 <!-- Meals/Lodging -->
-<div id="content3" class="tabcontent" style="display: none">
+<div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -260,7 +196,7 @@ Finance
 </div>
 
 <!-- Finance -->
-<div id="content4" class="tabcontent" style="display: none">
+<div id="content3" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -303,6 +239,70 @@ Finance
 </select>
 </td>
 </tr>
+
+</table>
+</div>
+
+<!-- Misc -->
+<div id="content4" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Kaya Kalpa</th>
+<td colspan=2><input type=checkbox value=yes name=kayakalpa [% check_kayakalpa %]></td>
+</tr>
+
+<tr>
+<th align=right>Retreat</th>
+<td><input type=checkbox value=yes name=retreat [% check_retreat %]></td>
+</tr>
+
+<tr>
+<th align=right>Notify on Reg</th>
+<td><input type=text value='[% program.notify_on_reg %]' name=notify_on_reg size=60></td>
+</tr>
+
+<tr>
+<th align=right>Max</th>
+<td><input type=text value='[% program.max %]' name=max size=3></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Conf Template</th>
+<td valign=top>
+<select name=cl_template>
+[% FOREACH t IN cl_template_opts %]
+<option value='[% t %]'[% IF t == program.cl_template %] selected[% END %]>[% t %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Conf Notes</th>
+<td colspan=4>
+<textarea name=confnote cols=55 rows=3>[% program.confnote %]</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right>Times</th>
+<td colspan=3>
+
+<table cellpadding=3>
+<tr>
+<th align=right>Registration Start</th>
+<td><input type=text size=10 maxlength=10 name=reg_start value='[% program.reg_start %]'></td>
+<th align=right>Program Start</th>
+<td><input type=text size=10 maxlength=10 name=prog_start value='[% program.prog_start %]'></td>
+</tr>
+<tr>
+<th align=right>End</th>
+<td><input type=text size=10 maxlength=10 name=reg_end value='[% program.reg_end %]'></td>
+<th align=right>End</th>
+<td><input type=text size=10 maxlength=10 name=prog_end value='[% program.prog_end %]'></td>
+</tr>
+</table>
 
 </table>
 </div>

@@ -216,9 +216,13 @@ sub show : Local {
                         $color);
         }
     }
-    # write the image to be used shortly
-    my $im_name = "dp$type"
-                  . join("", (localtime())[reverse (0 .. 5)])
+    # write the image (to be used shortly) to a file
+    # with a well defined name
+    #
+    my $im_name = "im"
+                  . uc(substr($type, 0, 1)) 
+                  . sprintf("%04d%02d%02d%02d%02d%02d",
+                            (localtime())[reverse (0 .. 5)])
                   . ".png";
     open my $imf, ">", "root/static/images/$im_name"
         or die "no $im_name: $!\n"; 

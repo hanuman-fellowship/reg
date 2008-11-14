@@ -1,0 +1,120 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use lib "lib";
+use Date::Simple qw/
+    today
+    date
+/;
+
+my $cur_date = (shift || today()->as_d8())
+    or die "gather_made yyyymmdd\n";
+
+my $cur_date1 = (date($cur_date) - 1)->as_d8();
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+my @house_ids;
+
+# we use 'distinct' below because more than one
+# registration might be vacating the room on $cur_date.
+# the corresponding config record end date is actually
+# one day before since we reserve nights not days.
+#
+my $getreg_sth = $dbh->prepare("
+    select distinct house_id
+    from registration
+    where house_id != 0
+      and date_end = $cur_date
+");
+$getreg_sth->execute();
+while (my ($house_id) = $getreg_sth->fetchrow_array()) {
+    push @house_ids, $house_id;
+}
+
+# rentals reserve the entire room.
+# the last night is a day before the cur_date.
+#
+my $getrental_sth = $dbh->prepare("
+    select house_id
+    from rental_booking
+    where date_end = $cur_date1
+");
+$getrental_sth->execute();
+while (my ($house_id) = $getrental_sth->fetchrow_array()) {
+    push @house_ids, $house_id;
+}
+
+print "houses: @house_ids\n";
+
+my $ins_sth = $dbh->prepare("
+    insert into make_up (
+        house_id, date_vacated, date_needed
+    )
+    values (
+        ?, ?, ?
+    );
+");
+# can I combine these two sql statments?
+# not sure.  the same column name 'date_start'
+# in the two tables makes for confusion.
+# so ...
+#
+my $nextreg_sth = $dbh->prepare("
+    select date_start
+    from registration
+    where house_id = ? and date_end > $cur_date
+    order by date_start
+    limit 1
+");
+my $nextrental_sth = $dbh->prepare("
+    select date_start
+    from rental_booking
+    where house_id = ? and date_end > $cur_date
+    order by date_start
+    limit 1
+");
+
+my ($next, $next_reg_date, $next_rental_date);
+for my $house_id (@house_ids) {
+
+    # when is this house next needed?
+    $next = '';
+    $nextreg_sth->execute($house_id);
+    ($next_reg_date) = $nextreg_sth->fetchrow_array();
+    if ($next_reg_date) {
+        $next = $next_reg_date;
+    }
+
+    $nextrental_sth->execute($house_id);
+    ($next_rental_date) = $nextrental_sth->fetchrow_array();
+    if ($next_rental_date && $next_rental_date < $next) {
+        $next = $next_rental_date;
+    }
+
+    if ($next && $next < $cur_date) {
+        # this could happen since we're taking the date_start
+        # where the date_end > cur_date.
+        #
+        $next = $cur_date;
+    }
+
+    $ins_sth->execute($house_id, $cur_date, $next);
+}
+__END__
+one person in room
+    - a reg is next use
+    - a rental is the next use
+two people in room
+    - both leave the same day (i.e. same as case above)
+        - a reg is next use
+        - a rental is the next use
+    - only one leaves.   the room should be made up right away
+        for the comfort of the remaining person who leaves
+        a few days later.
+room is not made up because there are no
+    subsequent reg or rental reservations.
+    then there IS a reservation/booking.
+    the make_up record should be modified.

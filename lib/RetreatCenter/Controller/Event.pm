@@ -615,6 +615,12 @@ sub calendar : Local {
     #
     # generate the jump image and map
     #
+    my $jump_name = "im" 
+                  . 'J'
+                  . sprintf("%04d%02d%02d%02d%02d%02d", 
+                            (localtime())[reverse (0 .. 5)])
+                  . ".png"
+                  ;
     my $jump_map = "<map name=jump>\n";
     my $nyears = $end_year - $start_year + 1;
 
@@ -651,8 +657,8 @@ sub calendar : Local {
         $jim->string(gdGiantFont, $x + 45, 1,
                      $start_year+$yr-1, $black);
     }
-    open my $jpng, ">", "root/static/images/jump.png"
-        or die "no jump png: $!\n";
+    open my $jpng, ">", "root/static/images/$jump_name"
+        or die "no $jump_name: $!\n";
     print {$jpng} $jim->png;
     close $jpng;
     $jump_map .= "</map>";
@@ -683,7 +689,7 @@ function detail_toggle() {
 $jump_map
 <p>
 EOH
-    my $jump_img = $c->uri_for("/static/images/jump.png");
+    my $jump_img = $c->uri_for("/static/images/$jump_name");
     my $firstcal = 1;
     my @pr_color  = $string{pr_color}  =~ m{\d+}g;
     my $fmt = "#%02x%02x%02x";
@@ -739,8 +745,13 @@ EOH
         }
 
         # write the calendar images to be used shortly
-        open my $imf, ">", "root/static/images/$key.png"
-            or die "not $key.png: $!\n"; 
+        my $cal_name = "im" 
+                       . $key 
+                       . sprintf("%04d%02d%02d%02d%02d%02d", 
+                                 (localtime())[reverse (0 .. 5)])
+                       . ".png";
+        open my $imf, ">", "root/static/images/$cal_name"
+            or die "no $cal_name: $!\n"; 
         print {$imf} $im->png;
         close $imf;
 
@@ -760,7 +771,7 @@ EOH
             $firstcal = 0;
         }
         $content .= "<p>\n";
-        my $image = $c->uri_for("/static/images/$key.png");
+        my $image = $c->uri_for("/static/images/$cal_name");
         $content .= <<"EOH";
 <img border=0 src='$image' usemap='#$key'>
 <map name=$key>

@@ -23,33 +23,33 @@
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
 <span onclick="tabs(1)">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Web
+Meals/Lodging
 </div>
 <span onclick="tabs(2)">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Web
+Meals/Lodging
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Meals/Lodging
+Misc
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
-Meals/Lodging
+Misc
 </div>
 </span>
 </td>
@@ -69,52 +69,6 @@ Meals/Lodging
 <td colspan=5>
 
 <div id="content1" class="tabcontent" style="display: none">
-<table>
-
-<tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=tentative [% check_tentative %]> Tentative</td>
-</tr>
-
-<tr>
-<th align=right valign=top width=140>Comment</th>
-<td colspan=5><textarea name=comment cols=55 rows=4>[% rental.comment %]</textarea></td>
-</tr>
-
-<tr>
-<th align=right>Required Deposit</th>
-<td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
-</tr>
-
-<tr>
-<th align=right>Start Hour</th>
-<td><input type=text name=start_hour value='[% rental.start_hour %]' size=4></td>
-</tr>
-
-<tr>
-<th align=right>End Hour</th>
-<td><input type=text name=end_hour value='[% rental.end_hour %]' size=4></td>
-</tr>
-
-<tr>
-<th align=right>Contract Sent</th>
-<td><input type=text name=contract_sent value='[% rental.contract_sent_obj %]' size=10></td>
-</tr>
-
-<tr>
-<th align=right>Contract Received</th>
-<td><input type=text name=contract_received value='[% rental.contract_received_obj %]' size=10></td>
-</tr>
-
-</table>
-</div>
-
-<div id="content2" class="tabcontent" style="display: none">
 <table>
 
 <tr>
@@ -156,7 +110,7 @@ Meals/Lodging
 </table>
 </div>
 
-<div id="content3" class="tabcontent" style="display: none">
+<div id="content2" class="tabcontent" style="display: none">
 <table>
 
 <tr>
@@ -191,6 +145,52 @@ Meals/Lodging
 <tr><th align=right>Own Tent</th><td align=center><input type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td></tr>
 <tr><th align=right>Own Van</th><td align=center><input type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td></tr>
 <tr><th align=right>Commuting</th><td align=center><input type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td></tr>
+
+</table>
+</div>
+
+<div id="content3" class="tabcontent" style="display: none">
+<table>
+
+<tr>
+<td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=tentative [% check_tentative %]> Tentative</td>
+</tr>
+
+<tr>
+<th align=right valign=top width=140>Comment</th>
+<td colspan=5><textarea name=comment cols=55 rows=4>[% rental.comment %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right>Required Deposit</th>
+<td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Start Hour</th>
+<td><input type=text name=start_hour value='[% rental.start_hour %]' size=4></td>
+</tr>
+
+<tr>
+<th align=right>End Hour</th>
+<td><input type=text name=end_hour value='[% rental.end_hour %]' size=4></td>
+</tr>
+
+<tr>
+<th align=right>Contract Sent</th>
+<td><input type=text name=contract_sent value='[% rental.contract_sent_obj %]' size=10></td>
+</tr>
+
+<tr>
+<th align=right>Contract Received</th>
+<td><input type=text name=contract_received value='[% rental.contract_received_obj %]' size=10></td>
+</tr>
 
 </table>
 </div>

@@ -2313,6 +2313,7 @@ editing and viewing a registration
 the little 'i' information dealies - make them ajax instead???
     will it save?  maybe not.
 cabin/room only applies to doubles sans bath, right?  yes.
+    and singles sans bath
 doc: if the calculated number of hours for a CEU
     is not correct (how so?) then you can add a number
     to the end of the url to override the # of hours
@@ -2460,3 +2461,94 @@ doc/testplan:
         free nights to take (sponsor member)
         free program to take (life member
         credit to take
+no H after room names in CC on DailyPic or ClusterView
+    so should it be there anywhere at all???
+    not on late notice.
+    and the B?
+pop up comment -> alert when registering.
+changing extra days to non zero or changing it
+    doesn't affect lunch days length
+ajax cluster assign green, red arrows - inconsistent?
+selected item in <select> is not centered in the
+    list of options when clicking?
+from note history page - have a way to get to registration
+    and have dailypic date set on that screen.
+browser skill - Alt-D to get to address field
+red arrow to rehouse does not work
+browser skill
+    don't need to click on arrow widget in select field
+        can click anywhere
+kids in dorm - take up beds.
+housekeeping report can put houses in a list of dirty houses
+    and they can stay in the list until housekeeping takes them.
+    and when they're next needed
+housekeeping coming and going residing people
+    for future planning
+cron job that sends a to-the-point text message to a specific (in strings)
+    cell phone number about the Oaks Cabins openings/closings.
+test: when lodging a person with kids
+    the rooms offered must be empty and on choosing one
+    it is resized so there are no further beds available.
+    we shouldn't unwillingly subject others to kids, right?
+    but ... is it fair to give a parent with a child an entire dorm
+        with their own kids and have the parent pay a dorm
+        rate and their kids half rate when there really aren't
+        enough people for a dorm?  this is up to the discretion
+        of the registrar.
+resend full carpool list a week before to all carpoolers.
+    and say this on the confirmation letter.
+sharing room with ...
+    Monica Deraspe-Bolles
+    McKenzie Deraspe-Bolles
+    two females :)
+    and should it have been DeRaspe? :(?
+test: clusterview - when viewing a person's registration choosing ClusterView
+    brings you to the date and cluster of the currently assigned house.
+    nice!
+it is amazing (and nice) that it is so fast.
+    e.g. drawing the ClusterView is VERY complex and VERY complex
+    to code and describe ... and yet it happens in a blink of the eye.
+    the user has no idea.   true of most things in software, actually!
+to dos:
+   could not publish in IE?
+       trouble uploading a file. why?
+    better titles for the browser window - easier to know
+        what window you're switching to.
+    online registration form - initial focus to First Name.
+    on choosing a housing preference (1st/2nd) of
+        double/single (sans bath) then open up (div style display block) the
+        cabin/room choice.   and checking cabin unchecks room and vica versa
+        same checking/unchecking when editing a registration screen.
+    room priorites - get them better/closer.
+    have Jamal provide some graphic way of distinguishing
+        the various screens.   a little logo for each type of screen?
+    first person of a shared room - somehow indicate
+        that their partner has not yet registered on line.
+        we can't make a link but we could indicate that their
+            roomie IS in the online list.  Jayanti wants to know
+            for the conf note to inform them that their roomie
+            needs to register as well.
+    alphabetize the testplans
+    in a to z testplan note that the can pol and housecost, affil etc
+        are in configuration
+    inactive/deceased - put Status label to the left.
+    conf letter template offers - only real ones not the other
+        files in that directory.
+        ditto for program templates
+    balloon help for various fields - or put it to the right
+        when in that field.  2.0
+    url proper for unselecting, up down of program housing
+        does it work on IE?
+    breakout places not so far to right (next line?)
+    feedback while publishing - 2.0
+    browser skill - resize text font.
+    IE shows some text much smaller than Safari - why?
+        css?
+    consider reordering the tabs in Program and Rentals
+        program creation should start at tab #1?
+        confusing to go back and then forward.
+    verify that program creation (full -including all
+        the updates) make sense.
+doc: 1) auto dash insertion for phone numbers
+     2) changing max will delete meeting places that are too small.
+        can just add em back.

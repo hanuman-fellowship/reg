@@ -20,7 +20,9 @@ use Util qw/
     housing_types
     tt_today
 /;
-use Global qw/%string/;
+use Global qw/
+    %string
+/;
 use POSIX;
 use Template;
 

@@ -29,7 +29,10 @@ use Date::Simple qw/
     date
 /;
 use Net::FTP;
-use Global qw/%string/;
+use Global qw/
+    %string
+    @clusters
+/;
 use File::Copy;
 
 sub index : Private {
@@ -52,7 +55,7 @@ sub create : Local {
     $c->stash->{check_linked}        = "checked";
     $c->stash->{program_leaders}     = [];
     $c->stash->{program_affils}      = [];
-    $c->stash->{section}             = 2;   # Web (a required field)
+    $c->stash->{section}             = 1;   # Web (a required field)
     Global->init($c);
     $c->stash->{program}             = {
         tuition      => 0,
@@ -350,7 +353,7 @@ sub _get_cluster_groups {
         $select_lookup{$cid} = 1;
     }
     my $UNselected = "<tr><th align=center>Not Selected</th></tr>\n";
-    for my $cl (model($c, 'Cluster')->search( {}, { order_by => 'name' })) {
+    for my $cl (@clusters) {
         next if exists $select_lookup{$cl->id()};
         $UNselected .=
                     "<tr><td>"

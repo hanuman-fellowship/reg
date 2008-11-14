@@ -127,44 +127,44 @@ function cluster_down(cluster_id) {
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
 <span onclick="tabs(1)">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Web
+Meals/Lodging
 </div>
 <span onclick="tabs(2)">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Web
+Meals/Lodging
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Meals/Lodging
+Finance
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
-Meals/Lodging
+Finance
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Finance
+Misc
 </div>
 <span onclick="tabs(4)">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Finance
+Misc
 </div>
 </span>
 </td>
@@ -177,114 +177,8 @@ Finance
 
 <tr><td colspan=5><!-- all the content panes -->
 
-<!-- Misc -->
-<div id="content1" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right valign=top>Leaders</th>
-<td valign=top align=left>
-[% leaders_house %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
-    <a href="/program/leader_update/[% id %]">Update</a>
-[% END %]
-<p>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top width=150>Meeting Places</th>
-<td align=left valign=top>
-[% FOR b IN program.bookings %]
-    [% IF b.breakout == '' %]
-        [% b.meeting_place.name %]<br>
-    [% END %]
-[% END %]
-</td>
-<th align=right valign=top width=150>Breakout Places</th>
-<td align=left valign=top>
-[% FOR b IN program.bookings %]
-    [% IF b.breakout == 'yes' %]
-        [% b.meeting_place.name %]<br>
-    [% END %]
-[% END %]
-</td>
-</tr>
-
-[% IF Catalyst.check_user_roles('prog_admin') %]
-<tr>
-<td></td>
-<td colspan=2 align=center>
-<a href="/program/meetingplace_update/[% id %]">Update</a>
-</td>
-</tr>
-[% END %]
-
-<tr>
-<th align=right valign=top>Affiliations</th>
-<td align=left valign=top colspan=2>
-[% FOR a IN program.affils %]
-    [% a.descrip %]<br>
-[% END %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
-    <a href="/program/affil_update/[% id %]">Update</a>
-[% END %]
-</td>
-</tr>
-
-<tr>
-<th align=right>Kaya Kalpa</th>
-<td>[% program.kayakalpa %]</td>
-</tr>
-
-<tr>
-<th align=right>Retreat</th>
-<td>[% program.retreat %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Notify on Reg</th>
-<td>[% program.notify_on_reg %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Max</th>
-<td>[% program.max %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Confirmation Letter<br>Template</th>
-<td valign=top>[% program.cl_template %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Confirmation Letter<br>Notes</th>
-<td colspan=5 valign=top>[% program.confnote_br %]</td>
-</tr>
-
-<tr>
-<th align=right>Times</th>
-<td colspan=4>
-
-<table cellpadding=3>   <!-- for Times -->
-<tr>
-<th align=right>Registration Start</th><td>[% program.reg_start %]</td>
-<th align=right>Program Start</th><td>[% program.prog_start %]</td>
-</tr>
-<tr>
-<th align=right>End</th><td>[% program.reg_end %]</td>
-<th align=right>End</th><td>[% program.prog_end %]</td>
-</tr>
-</table>                <!-- Times table -->
-
-</td>
-</tr>
-
-</table>
-</div>
-
 <!-- Web -->
-<div id="content2" class="tabcontent" style="display: none">
+<div id="content1" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -355,7 +249,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </div>
 
 <!-- Meals/Lodging -->
-<div id="content3" class="tabcontent" style="display: none">
+<div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -410,10 +304,10 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 </table>
 
-</div>      <!-- end of content3 pane -->
+</div>      <!-- end of content2 pane -->
 
 <!-- Finance -->
-<div id="content4" class="tabcontent" style="display: none">
+<div id="content3" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -450,6 +344,112 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 <th align=right>Cancellation Policy</th>
 <td><a href="/canpol/view/[% program.canpol.id %]">[% program.canpol.name %]</a></td>
 <td>&nbsp;</td><td>&nbsp;</td>
+</tr>
+
+</table>
+</div>
+
+<!-- Misc -->
+<div id="content4" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right valign=top>Leaders</th>
+<td valign=top align=left colspan=3>
+[% leaders_house %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
+    <a href="/program/leader_update/[% id %]">Update</a>
+[% END %]
+<p>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top width=150>Meeting Places</th>
+<td align=left valign=top>
+[% FOR b IN program.bookings %]
+    [% IF b.breakout == '' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
+[% END %]
+</td>
+<th align=right valign=top width=150>Breakout Places</th>
+<td align=left valign=top>
+[% FOR b IN program.bookings %]
+    [% IF b.breakout == 'yes' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
+[% END %]
+</td>
+</tr>
+
+[% IF Catalyst.check_user_roles('prog_admin') %]
+<tr>
+<td></td>
+<td>
+<a href="/program/meetingplace_update/[% id %]">Update</a>
+</td>
+</tr>
+[% END %]
+
+<tr>
+<th align=right valign=top>Affiliations</th>
+<td align=left valign=top colspan=2>
+[% FOR a IN program.affils %]
+    [% a.descrip %]<br>
+[% END %]
+[% IF Catalyst.check_user_roles('prog_admin') %]
+    <a href="/program/affil_update/[% id %]">Update</a>
+[% END %]
+</td>
+</tr>
+
+<tr>
+<th align=right>Kaya Kalpa</th>
+<td>[% program.kayakalpa %]</td>
+</tr>
+
+<tr>
+<th align=right>Retreat</th>
+<td>[% program.retreat %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Notify on Reg</th>
+<td>[% program.notify_on_reg %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Max</th>
+<td>[% program.max %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Conf Template</th>
+<td valign=top>[% program.cl_template %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Conf Notes</th>
+<td colspan=5 valign=top>[% program.confnote_br %]</td>
+</tr>
+
+<tr>
+<th align=right>Times</th>
+<td colspan=4>
+
+<table cellpadding=3>   <!-- for Times -->
+<tr>
+<th align=right>Registration Start</th><td>[% program.reg_start %]</td>
+<th align=right>Program Start</th><td>[% program.prog_start %]</td>
+</tr>
+<tr>
+<th align=right>End</th><td>[% program.reg_end %]</td>
+<th align=right>End</th><td>[% program.prog_end %]</td>
+</tr>
+</table>                <!-- Times table -->
+
+</td>
 </tr>
 
 </table>

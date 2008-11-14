@@ -831,9 +831,18 @@ sub _br {
     $s;
 }
 
+#
+# hyphenated names need an extra capital
+# SMITH-JOHNSON => Smith-Johnson
+# smith-johnson => Smith-Johnson
+# Mckenzie      => McKenzie
+#
 sub normalize {
     my ($s) = @_;
-    ucfirst lc $s;
+    join '-',
+         map { s{^Mc(.)}{Mc\u$1}; $_ }
+         map { ucfirst lc }
+         split m{-}, $s;
 }
 
 # convert "Share room with First Last"

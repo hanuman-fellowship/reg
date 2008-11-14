@@ -23,6 +23,7 @@ package Global;
 use base 'Exporter';
 our @EXPORT_OK = qw/
     %string
+    @clusters
     %clust_color
     %houses_in
     %houses_in_cluster
@@ -31,6 +32,7 @@ our @EXPORT_OK = qw/
 /;
 
 our %string;
+our @clusters;
 our %clust_color;
 our %houses_in;     # house objects in cluster type
 our %houses_in_cluster;         # ??? better name?
@@ -44,6 +46,7 @@ sub init {
                                         # and we don't want to force it again
 
     %string            = ();
+    @clusters          = ();
     %clust_color       = ();
     %houses_in         = ();
     %houses_in_cluster = ();
@@ -53,14 +56,24 @@ sub init {
         $string{$s->the_key} = $s->value;
     }
     my %clust_type;     # not exported - intermediate variable
-    for my $cl ($c->model('RetreatCenterDB::Cluster')->all()) {
+    for my $cl ($c->model('RetreatCenterDB::Cluster')->search(
+        {},
+        { order_by => 'name' })
+    ) {
         my $id = $cl->id();
+        push @clusters, $cl;
         $clust_color{$id} = [ $cl->color =~ m{\d+}g ];
+        $houses_in_cluster{$id} = [];
         $clust_type{$id} = $cl->type();
     }
-    for my $h ($c->model('RetreatCenterDB::House')->search({
-                   inactive => '',
-               })
+    for my $h ($c->model('RetreatCenterDB::House')->search(
+                  {
+                      inactive => '',
+                  },
+                  {
+                      order_by => 'cluster_order',    # mostly for ClusterView
+                  }
+              )
     ) {
         $house_name_of{$h->id()} = $h->name();
         push @{$houses_in{$clust_type{$h->cluster_id()}}}, $h;      # wow

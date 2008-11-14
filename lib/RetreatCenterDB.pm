@@ -60,6 +60,8 @@ __PACKAGE__->load_classes({
         RentalCluster
         ProgramCluster
         Annotation
+
+        MakeUp
     /]
 });
 
