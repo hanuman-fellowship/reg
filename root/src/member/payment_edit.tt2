@@ -1,0 +1,9 @@
+<span class=larger>[% payment.member.person.first %] [% payment.member.person.last %]</span>
+<p>
+<form action="/member/payment_update_do/[% payment.id %]">
+<table cellpadding=3>
+<tr><th align=right>Payment Date</th><td><input type=text name=date_payment value="[% payment.date_payment_obj %]"</td></tr>
+<tr><th align=right>Amount</th><td><input type=text name=amount value="[% payment.amount %]"</td></tr>
+<tr><td></td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>

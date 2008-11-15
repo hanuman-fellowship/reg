@@ -200,7 +200,6 @@ sub update_do : Local {
 
     # recompute the total
     my $total = 0;
-    PAYMENT:
     for my $p (model($c, 'SponsHist')->search({
                    member_id => $id,
                    general => { "!=", "yes" },
@@ -903,6 +902,64 @@ $addr
 </div>
 EOA
     $c->res->output(no_here($html) . js_print());
+}
+
+sub payment_delete : Local {
+    my ($self, $c, $payment_id) = @_;
+    my $pmt = model($c, 'SponsHist')->find($payment_id);
+    $pmt->delete();
+
+    # recompute the total
+    my $member_id = $pmt->member_id;
+    my $total = 0;
+    for my $p (model($c, 'SponsHist')->search({
+                   member_id => $member_id,
+                   general => { "!=", "yes" },
+               })
+    ) {
+        $total += $p->amount;
+    }
+    $pmt->member->update({
+        total_paid => $total,
+    });
+    $c->response->redirect($c->uri_for("/member/update/" . $pmt->member_id));
+}
+
+sub payment_update : Local {
+    my ($self, $c, $payment_id) = @_;
+    my $pmt = model($c, 'SponsHist')->find($payment_id);
+    $c->stash->{payment} = $pmt;
+    $c->stash->{template} = "member/payment_edit.tt2";
+}
+
+sub payment_update_do : Local {
+    my ($self, $c, $payment_id) = @_;
+    # check params
+    my $date_payment = $c->request->params->{date_payment};
+    $date_payment = date($date_payment);
+    # check it
+    my $amount = $c->request->params->{amount};
+    # check it
+    my $pmt = model($c, 'SponsHist')->find($payment_id);
+    $pmt->update({
+        date_payment => $date_payment->as_d8(),
+        amount       => $amount,
+    });
+
+    # recompute the total
+    my $member_id = $pmt->member_id;
+    my $total = 0;
+    for my $p (model($c, 'SponsHist')->search({
+                   member_id => $member_id,
+                   general => { "!=", "yes" },
+               })
+    ) {
+        $total += $p->amount;
+    }
+    $pmt->member->update({
+        total_paid => $total,
+    });
+    $c->response->redirect($c->uri_for("/member/update/" . $pmt->member_id));
 }
 
 1;

@@ -1,8 +1,24 @@
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+<script type="text/javascript">
+function show_edit_delete() {
+    var i = 1;
+    while (true) {
+        var el = document.getElementById('ed' + i);
+        if (el == null) {
+            return;
+        }
+        el.style.display = "inline";
+        ++i;
+    }
+}
+</script>
 <style>
 h3 {
     color: green;
     margin-bottom: 1mm;
+}
+.hidden {
+    display: none;
 }
 </style>
 <h2>Members</h2>
@@ -74,15 +90,20 @@ onsubmit="history.go(-1)">
 <th>Date</th>
 <th>Amount</th>
 </tr>
+[% n = 1 %]
 [% FOR p IN pays %]
     <tr>
     <td>[% p.date_payment_obj %]</td>
     <td align=right>[% p.amount %]</td>
     <td align=center>[% IF p.general %]<img src=/static/images/checked.gif>[% END %]</td>
+    <td><span id="ed[% n %]" class=hidden><a href="/member/payment_update/[% p.id %]">Edit</a> <a href="/member/payment_delete/[% p.id %]" onclick="return confirm('Okay to Delete this payment of $[% p.amount %] on [% p.date_payment_obj %]?');">Delete</a></span></td>
     <td><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
+    [% n = n + 1 %]
 [% END %]
 </table>
+<p>
+<a href="#" onclick="show_edit_delete(); return false;">Edit/Delete</a>
 </div>
 [% END %]
 [% nhist = member.nighthist %]
