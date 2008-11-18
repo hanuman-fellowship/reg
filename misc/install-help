@@ -1,0 +1,56 @@
+jonbjornstad: i have a question re: installation of Catalyst...
+[11:43am] jshirley: ask to ask
+[11:43am] purl: Don't ask to ask.  Just ask!  If no one answers, then rest assured it's because no one knows the answer. or perhaps no one likes you enough to bother answering
+[11:43am] jshirley: jonbjornstad: ^ please, continue.
+[11:43am] jonbjornstad: i've been developing a large web app with Catalyst and DBIx::Class for about a year now.  it is time to deploy it on another server so I began the installation of Catalyst again...  a web search said i could use mst's cat-install so i did that.
+[11:44am] jonbjornstad: then i realized that it did not get DBIx::Class so I did that.
+[11:44am] jonbjornstad: then I realized that I didn't have Template so I did that.
+[11:44am] castaway: sounds like problem is: I forgot to keep Makefile.PL uptodate 
+[11:45am] jonbjornstad: then I saw that another way to install was Task::Catalyst so ... I started that.  and it is still going.
+[11:45am] jonbjornstad: So so many dependencies!  Yikes!
+[11:45am] jonbjornstad: am I going about this wrong??
+[11:46am] castaway: ideally, you keep a list of which deps your app needs
+[11:46am] jshirley: jonbjornstad: what castaway said... Makefile.PL 
+[11:46am] castaway: put them in Makefile.PL
+[11:46am] jatan: installing all of cats depends via cpan does take a lot of time.. yes 
+[11:46am] castaway: and later just do "make installdeps"
+[11:46am] jatan: just did that recently on an fresh perl 5.10 install
+[11:48am] jonbjornstad: when you say "Makefile.PL" are you referring to a Makefile for my app?
+[11:48am] Lorn left the chat room. (Ping timeout: 360 seconds)
+[11:49am] castaway: jonbjornstad: yesss..
+[11:49am] castaway: theres one in your app dir, catalyst.pl put it there
+[11:50am] shadowpaste: "jonbjornstad" at 217.168.144.84 pasted "install Task::Catalyst end result" (11 lines) at http://scsys.co.uk:8001/20629
+[11:51am] holoway left the chat room. (Quit: holoway)
+[11:51am] jonbjornstad: that is what installing Task::Catalyst ended up saying.    is there a problem that needs addressing or can I ignore?    I guess I can test my app and see...
+[11:52am] castaway: task::catalyst probably has more than you need
+[11:52am] castaway: you may need configloader tho
+[11:54am] jonbjornstad: where is configloader used?
+[11:54am] castaway: check your plugins list?
+[11:55am] jonbjornstad: another query - is Rockaway's book on Catalyst the best available?
+[11:55am] jgottshall: jonbjornstad: right now it's the *only* book available
+[11:55am] hobbs: by virtue of being the only one available, yes.
+[11:55am] jonbjornstad: k
+[11:58am] nilsonsfj joined the chat room.
+[12:01pm] kixxx joined the chat room.
+[12:03pm] jonbjornstad: my plugins list does use ConfigLoader - it says to parse the YAML file.... so I'm pursuing getting that installed properly - which led me to XML::Simple etc.... and ... it is now installed.
+[12:03pm] jonbjornstad: is the installation process just this complex and there's not much to be done about it???
+[12:04pm] jonbjornstad: looks like Catalyst is very much a community effort.    everyone depends on someone else!
+[12:06pm] acmoore left the chat room. (Quit: Leaving)
+[12:10pm] jonbjornstad: thank you all for your help
+[12:12pm] amiri: Does anybody know why I don't see the authenticated user in the apache access_log? I am using Session, Authentication, Session::Store::DBIC and Session::State::Cookie.
+[12:12pm] fgutierr left the chat room. (Quit: Leaving)
+[12:12pm] Peyomp: jonbjornstad: Its perl.  We're only here because of the CPAN.
+[12:13pm] Peyomp: Everything depends on everything else.  Why use perl otherwise?
+[12:13pm] Peyomp: If not for massive chains of dependencies we would have moved to a 'cooler' language long ago.
+[12:13pm] Peyomp: One with shit library support and no central repo.
+[12:13pm] jonbjornstad: you mean Ruby and Rails?
+[12:14pm] Peyomp: Or Python.  Or Erlang.  Something that would get us laid.
+[12:14pm] jonbjornstad: lol
+[12:14pm] Peyomp:
+[12:14pm] jonbjornstad: you're right... it is Perl.
+[12:14pm] Peyomp: The point of Perl is to be lazy and not reinvent the wheel.  The CPAN has achieved that more than any other language.  Catalyst is just a sane way to let us harness the CPAN.
+[12:15pm] Peyomp: Thats my second rant today. 
+[12:15pm] Peyomp: The first was about how Silverlight is an evil piece of shit.
+[12:15pm] c0bra: why?
+[12:15pm] c0bra: (I must have missed it)
+[12:15pm] jonbjornstad: Ruby on Rails has a lot of hype - and one can do simple things in it very quickly - but dig a little deeper and try something more complex and it, too, is incredibly complex.
