@@ -628,7 +628,7 @@ sub leader_update_do : Local {
             reg_count => $program->reg_count() + $new_regs,
         });
     }
-    $c->response->redirect($c->uri_for("/program/view/$prog_id"));
+    $c->response->redirect($c->uri_for("/program/view/$prog_id/4"));
 }
 
 sub affil_update : Local {
@@ -667,7 +667,7 @@ sub affil_update_do : Local {
             });
         }
     }
-    $c->response->redirect($c->uri_for("/program/view/$id"));
+    $c->response->redirect($c->uri_for("/program/view/$id/4"));
 }
 
 #
@@ -723,7 +723,7 @@ sub meetingplace_update_do : Local {
             breakout   => $mp->[1],
         });
     }
-    $c->response->redirect($c->uri_for("/program/view/$id"));
+    $c->response->redirect($c->uri_for("/program/view/$id/4"));
 }
 
 sub delete : Local {
@@ -1247,7 +1247,7 @@ sub update_lunch_do : Local {
     $p->update({
         lunches => $l,
     });
-    $c->response->redirect($c->uri_for("/program/view/$id/1"));
+    $c->response->redirect($c->uri_for("/program/view/$id/2"));
 }
 
 # should duplicate ONLY ask for new dates?

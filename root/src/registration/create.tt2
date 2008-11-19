@@ -134,8 +134,8 @@ onclick="getElementById('help').style.display = 'block'; document.form.confnote.
 <!-- is there an alert? -->
 <script type="text/javascript">
 var s = "";
-if ("[% popup_comment %]" != "") {
-    s = "[% popup_comment %]\n";
+if ("[% alert_comment %]" != "") {
+    s = "[% alert_comment %]\n";
 }
 if ("[% status %]" != "") {
     var name = "[% person.first %] [% person.last %]";

@@ -112,8 +112,10 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 [% a.descrip %]<br>
 [% END %]
 </td>
+[% IF person.deceased || person.inactive %]
 </tr>
-<tr><th align=right>Inactive</th><td align=left>[% person.inactive %]</td><th align=right>Deceased</th><td align=left>[% person.deceased %]</td></tr>
+<tr><th align=right>Status</th><td align=left>[% IF person.inactive %]Inactive[% ELSE %]Deceased[% END %]</td></tr>
+[% END %]
 <tr>
 <th align=right>Date Entered</td><td>[% person.date_entrd_obj %]</td>
 </tr>

@@ -47,14 +47,21 @@ loadrent -s cur
 # add a LOT of config records
 loadconfig
 
+# now we can load future housing
+echo housing assignments
+loadhousing
+
 # conf notes
 loadnote
 
 # initialize the member and donation data
+echo Donations
 loaddon
+echo Memberships
 loadmem
 
 # update the reg_count field in all program records
+echo updating regcount
 regcount
 
 if [ `whoami` = 'jonbjornstad' ]

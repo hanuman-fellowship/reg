@@ -126,7 +126,7 @@ update people
 set first = ?, last = ?, sex = ?, addr1 = ?, addr2 = ?,
     city = ?, st_prov = ?, zip_post = ?, country = ?,
     tel_home = ?, tel_work = ?, tel_cell = ?, email = ?,
-    date_updat = ?, comment = ?, akey = ?
+    comment = ?, akey = ?
 where id = ?
 ";
 my $upd_per_sth = $dbh->prepare($upd_per_sql) or die "no upd_per_sql\n";
@@ -366,7 +366,6 @@ sub processReg {
                 $hash{tel_work},
                 $hash{tel_cell},
                 $hash{email},
-                $sdate,
                 $name,
                 nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
                 $person_id

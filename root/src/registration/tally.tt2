@@ -1,4 +1,4 @@
-<h2>Program Summary for [% name %] from [% dates %]</h2>
+<h2>Program Summary for [% program.name %] from [% program.dates %]</h2>
 
 <div style="float: left; margin-left: 1in;">
 <h2>Attendance</h2>

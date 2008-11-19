@@ -152,5 +152,33 @@ Oct 22 9:25-9:45
     rooms to make up viewer and resetter.
         list them by cluster
         make a way to reset all or reset all in a cluster
-Nov 13 1:15-
+Nov 13 1:15-4:15
     check in, move memdon data, help test again
+    sat with Laura doing testing on People
+Nov 14 12:30-5:00, 8:00-10:00
+    further testing with Laura
+    gathering requirements
+        green fund
+        import housing assignments (for reg not rental)
+            do forces not searches (using Cluster assignments)
+    allow edit/delete of payments
+        one click to display divs - show Edit Delete links?
+            all such divs have same id?
+                is that okay?
+                or does id have to be unique? yes.
+                have id suffixed by integer, loop through until done
+    shyama membership
+    fixed many things Laura found.
+        needs a retest!
+    loadhousing
+        yes!
+    vacate on cancel
+Nov 16 8:00-10:00
+    installing on kali.  Mail::SendEasy, GD
+        trouble with ImageMagick :(
+Nov 17 10:30-12:10
+    installed Catalyst with cat-install
+    DBIx::Class (warning about slowdown)
+    Template
+    then Task::Catalyst - which brought in oodles more
+    seems like I've got enough... time will tell.

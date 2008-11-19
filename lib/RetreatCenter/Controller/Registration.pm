@@ -505,10 +505,10 @@ sub _rest_of_reg {
     # pop up comment?
     #
     for my $a ($p->affils) {
-        if ($a->descrip =~ m{pop up}i) {
+        if ($a->descrip =~ m{alert}i) {
             my $s = $p->comment;
             $s =~ s{\r?\n}{\\n}g;
-            $c->stash->{popup_comment} = $s;
+            $c->stash->{alert_comment} = $s;
             last;
         }
     }
@@ -1335,9 +1335,13 @@ sub cancel_do : Local {
     my $credit    = $c->request->params->{yes};
     my $amount    = $c->request->params->{amount};
     my $reg       = model($c, 'Registration')->find($id);
+
     $reg->update({
         cancelled => 'yes',
     });
+
+    # return any assigned housing to the pool
+    _vacate($c, $reg) if $reg->house_id;
 
     # add reg history record
     _reg_hist($c, $id,

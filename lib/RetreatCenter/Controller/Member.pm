@@ -63,13 +63,15 @@ sub membership_list : Local {
 }
 
 sub list : Local {
-    my ($self, $c, $life) = @_;
+    my ($self, $c, $all) = @_;
 
     # sort by sanskrit or first
-    my $cond = ($life)? undef
+    my $cond = ($all)? undef
                :        {
-                            category => { '!=' => 'Life' },
-                            category => { '!=' => 'Inactive' },
+                            -or => [
+                                category => 'General',
+                                category => 'Sponsor',
+                            ],
                         }
                ;
     my @members =
@@ -934,15 +936,25 @@ sub payment_update : Local {
 
 sub payment_update_do : Local {
     my ($self, $c, $payment_id) = @_;
-    # check params
+
+    my @mess = ();
     my $date_payment = $c->request->params->{date_payment};
-    $date_payment = date($date_payment);
-    # check it
-    my $amount = $c->request->params->{amount};
-    # check it
+    my $dt = date($date_payment);
+    if (!$dt) {
+        push @mess, "Invalid date: $date_payment";
+    }
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^\d+$}) {
+        push @mess, "Invalid amount: $amount";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "member/error.tt2";
+        return;
+    }
     my $pmt = model($c, 'SponsHist')->find($payment_id);
     $pmt->update({
-        date_payment => $date_payment->as_d8(),
+        date_payment => $dt->as_d8(),
         amount       => $amount,
     });
 

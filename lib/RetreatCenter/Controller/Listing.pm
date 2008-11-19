@@ -510,7 +510,7 @@ sub stale : Local {
         });
     }
     $c->stash->{mess} = "$n emails purged.";
-    $c->stash->{template} = "gen_error.tt2";
+    $c->stash->{template} = "gen_message.tt2";
 }
 
 sub email_check : Local {
@@ -556,17 +556,6 @@ sub mark_inactive : Local {
 
 sub mark_inactive_do : Local {
     my ($self, $c, $date_last) = @_;
-}
-
-sub help_upload : Local {
-    my ($self, $c) = @_;
-
-    if (my $upload = $c->request->upload('helpfile')) {
-        my $name = $upload->filename;
-        $name =~ s{.*/}{};
-        $upload->copy_to("root/static/help/$name");
-    }
-    $c->response->redirect($c->uri_for("/static/help/index.html"));
 }
 
 sub comings_goings : Local {

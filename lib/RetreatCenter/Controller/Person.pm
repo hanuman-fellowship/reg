@@ -15,6 +15,7 @@ use Util qw/
 /;
 use Date::Simple qw/
     date
+    today
 /;
 use USState;
 use LWP::Simple;
@@ -157,7 +158,7 @@ sub delete : Local {
     my $p = model($c, 'Person')->find($id);
 
     #
-    # if this person is a leader or a member
+    # if this person is a leader or a member (or has made donations)
     # they can't be deleted.  their leadership
     # and membership must be deleted first.
     # I could ask if they would like me to do
@@ -176,6 +177,12 @@ sub delete : Local {
         $c->stash->{person} = $p;
         $c->stash->{registrations} = \@r;
         $c->stash->{template} = "person/nodel_reg.tt2";
+        return;
+    }
+    if (my @d = $p->donations) {
+        $c->stash->{person} = $p;
+        $c->stash->{donations} = \@d;
+        $c->stash->{template} = "person/nodel_don.tt2";
         return;
     }
 

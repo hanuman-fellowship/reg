@@ -6,19 +6,19 @@
         <th align=right><span class="required">*</span> First</th>
         <td><input tabindex=1 type=text name=first value="[% person.first %]"></td>
         <th align=right>Home</th>
-        <td><input tabindex=14 type=text name=tel_home value="[% person.tel_home %]"></td>
+        <td><input tabindex=15 type=text name=tel_home value="[% person.tel_home %]"></td>
     </tr>
     <tr>
         <th align=right><span class="required">*</span> Last</th>
         <td><input tabindex=2 type=text name=last value="[% person.last %]"></td>
         <th align=right>Work</th>
-        <td><input tabindex=15 type=text name=tel_work value="[% person.tel_work %]"></td>
+        <td><input tabindex=16 type=text name=tel_work value="[% person.tel_work %]"></td>
     </tr>
     <tr>
         <th align=right>Sanskrit</th>
         <td><input tabindex=3 type=text name=sanskrit value="[% person.sanskrit %]"></td>
         <th align=right>Cell</th>
-        <td><input tabindex=16 type=text name=tel_cell value="[% person.tel_cell %]"></td>
+        <td><input tabindex=17 type=text name=tel_cell value="[% person.tel_cell %]"></td>
     </tr>
     <tr>
         <th align=right><span class="required">*</span> Sex</th>
@@ -28,7 +28,7 @@
             <input tabindex=4 type=radio name=sex value="M" [% sex_male %]>Male
         </td>
         <th align=right valign=top rowspan=3>Comment</th>
-        <td rowspan=3><textarea tabindex=17 name=comment cols=40 rows=6>[% person.comment %]</textarea></td>
+        <td rowspan=4><textarea tabindex=18 name=comment cols=40 rows=6>[% person.comment %]</textarea></td>
     </tr>
     <tr>
         <th align=right>Address</th>
@@ -46,7 +46,7 @@
         <th align=right>State/Province</th>
         <td><input tabindex=8 type=text name=st_prov value="[% person.st_prov %]"></td>
         <td>&nbsp;</td>
-        <td><input tabindex=18 type=submit value="Submit"></td>
+        <td><input tabindex=19 type=submit value="Submit"></td>
     </tr>
     <tr>
         <th align=right>Zip/Postal Code</th>
@@ -71,8 +71,8 @@
 </table>
 </tr>
 
-    <tr><td></td><td><input type=checkbox name=inactive value='yes'[% inactive %]> Inactive</td>
-    <td></td><td><input type=checkbox name=deceased value='yes'[% deceased %]> Deceased</td></tr>
+<tr><th align=right>Status</th><td><input type=checkbox name=inactive value='yes'[% inactive %]> Inactive</td>
+<td></td><td><input type=checkbox name=deceased value='yes'[% deceased %]> Deceased</td></tr>
 
 </table>
 <div style="float: left">
