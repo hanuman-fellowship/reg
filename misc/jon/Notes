@@ -2552,3 +2552,33 @@ to dos:
 doc: 1) auto dash insertion for phone numbers
      2) changing max will delete meeting places that are too small.
         can just add em back.
+lunches moved to Meals/Lodging tab (from Misc tab) in Rentals?
+focus on manual reg screen for Personal Retreats - on Start Date
+    others on Comment?
+? for Brajesh
+    how far back should we go given that it will bring
+        in LOTS of duplicates and will be a real chore for
+        someone to undup.  the distant past is quite irrelavant, yes?
+    MMI - can you use the concept of a program in newReg
+        for housing and cost of housing purposes?  what is missing?
+        could you use a spreadsheet for other finances?
+        is MMI going to survive?
+    sums need to be re-entered.
+        have someone do it now - for practice and feedback.
+        i can't preserve the entries really, right?.
+    meeting places, breakout places need to be entered for programs/rentals.
+        not worth developing a one-time auto import from current calendar
+    not just Laura does testing
+        she's the first tester.  others will need to know at some point.
+        i think having _everyone_ do a program a-z is a good idea.
+        Laura could be the teacher.
+check reports - no deceased or inactive people
+document undup technique
+provide a measure of how much undupping is needed
+    so can compare various levels of importing of the past.
+evaluation forms online - sent by email
+    filled out on the web, keyed to the program id
+        anonymous?  or give them a passcode to prevent abuse?
+        can remember the ip address of user to prevent dups.
+    gathered via ftp of text files.
+    tallied in newReg

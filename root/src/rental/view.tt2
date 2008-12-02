@@ -187,6 +187,19 @@ Misc
 <table cellpadding=3>
 
 <tr>
+<th align=right>Required Deposit</th>
+<td>[% rental.deposit %]</td>
+</td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% rental.glnum %]</td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
 <th align=right>Min Meals/Lodging</th>
 <td align=right>[% min_lodging %]</td>
 </tr>
@@ -350,17 +363,6 @@ Payments
 <th align=right valign=top>Comment</th>
 <td colspan=5>[% rental.comment_br %]</td>
 </td>
-</tr>
-
-<tr>
-<th align=right>Required Deposit</th>
-<td>[% rental.deposit %]</td>
-</td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% rental.glnum %]</td>
 </tr>
 
 <tr>

@@ -1,3 +1,16 @@
+<script type="text/javascript">
+var newwin;
+function popup(url) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=750,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(600, 0);
+}
+</script>
 <h2>Registration</h2>
 <form method=POST name=form action="/registration/update_do/[% reg.id %]">
 <table cellpadding=3 border=0>
@@ -73,7 +86,7 @@
 </tr>
 
 <tr>
-<th align=right valign=top>Notes for the<br>Confirmation Letter</th>
+<th align=right valign=top>Confirmation Note</th>
 <td colspan=3><textarea rows=[% note_lines %] cols=60 name=confnote>
 [% reg.confnote %]
 </textarea></td>
@@ -95,26 +108,8 @@
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>
 
-<td colspan=2>
-<span>
-Click <a href=#
-onclick="getElementById('help').style.display = 'block'; document.form.confnote.focus();"
->here</a> to see all quick notes.
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td colspan=3>
-<div id=help style="display: none;">
-<table cellpadding=3>
-[% FOR cf IN confnotes %]
-<tr>
-<th align=left valign=top>[% cf.abbr %]</th>
-<td>[% cf.expansion_br %]</td>
-</tr>
-[% END %]
-</table>
-</div>
+<td><span style="margin-left: 1in">Click <a href="#" onclick="javascript:popup('/registration/conf_notes'); return false;">here</a> to see all quick notes.
+
 </tr>
 
 </table>

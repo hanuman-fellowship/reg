@@ -25,16 +25,19 @@ Log in as 'jane' with password 'mypass'.
     This gives full access.
 
 Create a New Program
-    make a new cancellation policy
-    make a new housing cost
-        have values that are easily distinguished from the default
-    add the leader as a person (include phone, email)
-    make them a leader (include bio, phone, email, web address)
-        also upload a picture of the person.
-    add a new affiliation for this program
-    create the program
-        use the 4 tabs
-        set the date a month in advance of 'today'.
+    1 - Preliminaries:
+        make a new cancellation policy
+        make a new housing cost
+            have values that are easily distinguished from the default
+        add the leader as a person (include phone, email)
+        make them a leader (include bio, phone, email, web address)
+            also upload a picture of the person.
+
+        add a new affiliation to be used for this program
+
+    2 - Add the program
+        use the 4 tabs in succession before hitting Submit
+        set the date to a month in advance of 'today'.
             make it 4 or 5 days long
         no extra days
         set tuition and online deposit
@@ -42,14 +45,19 @@ Create a New Program
         set footnotes to * (CEU for nurses)
         assign the housing cost and the cancellation policy
             you created above.
-        some things to set after creation choosing Edit:
+
+    3 - Post creation updates
+            use the tabs Meals/Lodging and Misc:
+
             set a few days for lunch
             assign some housing clusters
+
             assign the leader you made above
                 note they are automatically registered
                 but that they need to be housed.
             assign meeting and breakout places
                 notice the effect of the Max of the program
+            add a few affiliations
     
 Publish to the Web
     Also publish the pictures.
@@ -74,7 +82,7 @@ Register Online
     see the web page for the program
     register online
         enter a recognizable person (a newly created name)
-        with your email address (so you can recieve the confirmation letter)
+        with _your_ email address (so you can receive the confirmation letter)
         make some mistakes and get the errors
     choose housing options
     enter some special request
@@ -84,10 +92,12 @@ Register Online
 
 Get the Online Registrations
     go to the Programs link and choose "Grab New"
-        to get the just entered online registration
+        to get the just-entered online registration
     select it.
     see the special requests, housing options
-        default housing type is 1st choice
+        the defaulted housing type should be their 1st choice
+    add a confirmation note
+        click the link to see all 'quick' notes.
     select a house
         look carefully at the list.
         see its order and the markings (RFOCS)
@@ -99,10 +109,15 @@ Get the Online Registrations
     verify that the affiliation for the program
         got to the person's demographic screen.
 
-Look at the Calendar and DailyPic and verify that
-    everything looks good and as expected.
+Look at the Calendar and DailyPic and ClusterView and verify that
+    everything looks good and is as expected.
     Repeat this verification as you follow the rest of this testplan.
     Click on the program boxes and see that you go to that program.
+
+    Calendar
+        Note 'today' is marked specially.
+        Alternating colors for Mon-Thu and Fri/Sat/Sun.
+        Personal retreats at bottom
 
 Add some "Events" around the time of the newly created programs.
     Give them a meeting place - so they'll appear on the Calendar.
@@ -118,8 +133,6 @@ Repeat the above steps to get a variety of people in the program.
         Have someone with kids.
         Have some room with another (who register separately).
         Enter license number for a CEU.
-        No email address - see the confirmation letter on the screen
-            and print it for postal sending.
         add a confirmation note.
             verify it gets in the confirmation letter.
 
@@ -129,7 +142,10 @@ Repeat the above steps to get a variety of people in the program.
 
 Find people (anyone, actually - doesn't matter who)
     already in the People list and _manually_ register them
-    for this second program by choosing the "Register" link.
+    for the program by choosing the "Register" link.
+
+    No email address - see the confirmation letter on the screen
+        and print it for postal sending.
 
 Make _another_ program that has extra days.
     Make its date close to the first one above even overlapping.
@@ -159,6 +175,8 @@ See the list of ALL registrations for a program.
     X - cancelled
     H - needs housing
 
+    (graphic distinct icons instead)
+
 Get various listings and tallies.
     - Lists, Tally on Program screen.
     - Meal lists, Comings and Goings, Housekeeping/Campground Reports
@@ -169,32 +187,41 @@ Get various listings and tallies.
         Usually used only for 'today'
         but can time travel by appending /20081103 to the normal url
             like so:
-            http://localhost:3000/listing/late_notices/20081017
+            http://.../listing/late_notices/20081017
 
             date is in form yyyymmdd
 
         Late notices only for people who have been housed.
         Mark someone as "Arrived" by clicking "Arrived"
+                (for people who have a zero balance on arrival)
             or by paying their balance.
             then they don't appear in Late Notice.
     - CEUs.  Can print many from the Program menu
         or individually on a registration screen.
-        Print them _landscape_ and watch for headers/footers.
+        Print them _landscape_ and watch for
+            headers/footers and top/bottom margins.
+    - to come: the To-Be-Made-Up report
 
 Other things:
 
-    Make an affiliation whose name contains "pop up".
+    Make an affiliation whose name contains "Alert".
     Give a person this affiliation.   Put some data in their
-    comments field.   This comment will 'pop up' at registration time.
+    comments field.   This comment will 'pop up' at registration time
+    to alert the registrar.
 
     Make someone an HFS member and give them a sponsor expiration date
     in the future.  Give them some free nights.  See how their
     registration charges are affected.
 
+    Life members get one free program.
+
     Cancel someone's registration.  See the cancellation policy.
     See the cancellation letter that is emailed.  See the credit
     in the person's screen.  Register this person for another program
     and see that the credit is applied.
+
+Extra Accounts & Payments
+Projects & Donations
 
 Rentals
     Another world.  Many things to look at here as well.
@@ -206,7 +233,4 @@ To be worked on still:
         It should work.  Give it a try.  Let's see what's wrong.
 
     Month End Report - to be done.
-
-    Cluster Overview - to see all houses in a cluster
-        over a two week period.
 </pre>

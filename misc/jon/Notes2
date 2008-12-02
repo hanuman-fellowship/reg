@@ -1,0 +1,205 @@
+to-do items from testing with Laura:
+
+---
+alphabetize testplans
+alt-enter for full screen - browser skills
+show search pattern on results page?
+label for Inactive, Deceased - 'Status'
+    and don't show if neither
+add space between addr1, addr2
+no tab to Share, Home then Work?
+Alert when registering rather than Pop Up?
+sort affil list ignoring case - nah
+Separate bombs - tt_today?
+doc in browse skills - print background colors
+updated date is not start date of program
+    they registered for - it is the current date
+delete a person - what about their donations?
+import all housing from cur on.
+purge email response - better?
+    not sure what this is...
+edit Misc - stay on Misc
+stay on tabs for Rentals editing
+RAM 1 <-> 2
+update Lunches
+    did not consider extra days
+manual reg - default Double for h_type
+book clusters for Rentals - order?
+No Where - not working?
+If no CEUs in program, say so when asking for Program CEUs.
+Early/Late listing - respects extended programs...
+update Lunches, Leaders, Meeting Places, Affils => back to same tab
+L, H, X => graphic icons of
+    envelope, house (small version of same), red X (stolen from Netflix?)
+"Pay It" - replace with a dollar bill graphic
+Own Tent - house picture?
+on reg screen - Charges to the right?
+    payment, history down below
+    I think not.   Too much info - becomes noise.
+extra days - Name From To add "Plus..."
+    does it look too noisy?   or is an extended program
+        just innately complex so it _should_ look noisy?
+    better way?  Heading for Lists, Tally is cleaner.
+link for quick notes in separate window
+    in 3 places - reg screen, update conf note screen,
+        and on housing screen
+---
+on housing screen
+    put space for conf note
+allow an easier way to change housing type - from
+    the choose house screen
+    also - show both choices of housing (if available from online)
+
+footnotes #->%?  correct?
+
+deposits - since last deposit, save it
+month-end report?
+VPN access
+too many windows open for membership activity
+add house to Rentals - list too long
+colorization of R for rentals?
+    better - show first 3 letters when radio button chosen?
+Summary tabs into field gos to second line?
+    tabs should not go to Submit
+Registrations link on top of Summary
+On reg1.html explain special requests
+    special foods, kids, early late, snoring
+in Online list make program name a link
+GrabNew elsewhere - or 'Online' since grabbing new will be cron job
+wrapping in comments entered online?
+history records for which house relodged, vacating?
+    maybe
+in middle of reg on another window - go to a program
+    what?
+submit reg - fails network, on refresh gives sdate error
+    prohibit double reg
+in History - conf letter REsent
+font - not always Verdana in IE
+    sometimes not always
+red arrow for moving - didn't pop up - why?
+    window already existed?
+confirmation letter - KayaKalpa is too much
+printout of confirmation letter should be smaller font
+lsw, LSW, online reg - case insensitive
+    try LSW when only nurses?
+CEU license cost, kid cost, extra day cost, discounts
+    should this be mentioned near Special Requests?
+    how do PRs work in this regard?
+    online PRs request arrival, departure dates?
+manual reg - defaults to PR - the _current_ PR
+Firefox - better tabbing, opening of other windows/tabs?
+    should we require Firefox?
+unlinked dir for PRs?
+Cancellation - be sure to vacate the house, Deletes, too.
+No lunches for PR
+PR screwed up charges?
+    negative # of days?
+online evaluation form
+    records w/ program id, name, date - ftp'ed from mmc.org to kali
+Center Tent spaces should be available during
+    winter for Own Tent people
+are receipt numbers necessary?
+no expiration of session?
+MMI
+    import from D/C/M programs
+    go to the _one_ D/C/M program
+    MMI charges, payments are linked to the person not the program
+        including course housing etc?
+in DailyPic, ClusterView - popup shows kids, if present
+on housing screen - show kids if present
+only one reg screen - don't keep opening new ones?
+    maybe maybe not - can modifier keys override naming a window?
+search online list for roommates before
+    saying they're not there at all.
+capitalize first, last names (Mc O') on entry online
+    for normalization
+no double reg in program with same name/person id
+on first Registration screen "Submit" -> "Register"?
+    maybe
+Forcing into another type - should we change h_type automatically?
+    better - after a force - display the fullness of what they
+    have done.   all residents of the room, their h_type
+        plus kids
+Sharing overides no bed? :(
+assistant * - legend on Leaders screen
+Color instructions on all pages - not just Display
+    a way of not repeating all the color code?
+Change password - error on success?
+Tally - heading 'for' 'from'?
+    no Tuition, Lodging, Adjustments
+    "To Program" bombs
+List of all current programs should show
+    programs with extra days that have not quite yet ended.
+Check Early/Late list considering extended programs
+View Rental - diff display background - td elements?
+For extended programs initial reg screen should say so (view too)
+    "Plus 3 days to 11/9"
+do program staff have access to member info?
+    should they?  not write access.
+    they might get questions about # of days left...
+ajax on all regs screen
+No Where - didn't show until = 9?
+Donations - not in New Deposit, payments _are_ there.
+negative balance not offset by negative charge?
+    try to reproduce:
+    w credit of -50
+    deposit of 100
+    & free program
+Late Notices
+    cluster name does not read properly.
+    perhaps don't try to put in a sentence - rather in a tabular form?
+    cabin, tent, room - not just room.
+    
+    how does the Confirmation letter read?
+when duplicating a program - the leaders are duplicated
+    but not registered.
+...
+Green Fund - new well known Project
+    on reg1.html have place for entering a dollar amount
+    to be included in the credit card total
+    a link explaining it in separate smaller window
+    x_green 40
+
+    generates acknowledgment letter
+    project page shows all by month, with subtotals by month
+KayaKalpa changes
+    in reg1 link to their page, email address
+duplicate program with extra days??? does it work?
+no Submit at bottom of Web tab of Program
+    colorize the one that's there?
+feedback while Publishing
+the program default template
+    check in begin, end times
+    orientation = program start
+    end time of program
+doc: blank line before # in shortcuts
+need help link for shortcuts
+errors on website - can we put focus on erroneous field?
+    rather than just 'back'?
+for conf letter
+    when does office close?  not always 6:30.
+    invoice table - needs cell padding
+        okay on MacBook Mail, Safari not Outlook on IE
+carpool
+    say 'as of' date.
+    cronjob will send one week before program
+        Bcc'ing registrar (who?) - all program admins
+other cronjobs:
+    make up list
+    grab online
+dashes under charges, payments on reg screen
+    not visible in IE.
+
+
+
+
+future...
+enter zip => city, state?
+    for phase two - not really needed since most reg is online
+ajax cluster assign to program - iffy on IE?
+    how does it not work?  okay on Safari locally.
+dup check - when is it done?
+    enter exact dup names, with address
+        no dup warning?
+Partnering not found?
+dups, search for partners - still some trouble there

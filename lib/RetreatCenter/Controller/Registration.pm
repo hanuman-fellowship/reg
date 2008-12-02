@@ -1247,6 +1247,17 @@ sub view : Local {
 sub _view {
     my ($c, $reg) = @_;
     my $prog = $c->stash->{program} = $reg->program;
+    my $extra = $prog->extradays();
+    if ($extra) {
+        my $edate2 = $prog->edate_obj + $extra;
+        $c->stash->{plus} = "<b>Plus</b> $extra day"
+                          . ($extra > 1? "s": "")
+                          . " <b>To</b> " . $edate2
+                          . " <span class=dow>"
+                          . $edate2->format("%a")
+                          . "</span>"
+                          ;
+    }
     $c->stash->{comment} = link_share($c, $prog->id(), $reg->comment());
     if ($prog->footnotes =~ m{[*]}) {
         $c->stash->{ceu} = 1;
@@ -1619,10 +1630,12 @@ EOH
                    :                "";
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark;
-        my $mark =         ($reg->cancelled)? 'X'
-                  :   ($need_house && !$hid)? 'H'
-                  :     (!$reg->letter_sent)? 'L'
-                  :                           '&nbsp;';
+        my $ht = 20;
+        my $mark =
+                     ($reg->cancelled)? "<img src=/static/images/redX.gif height=$ht>"
+            :   ($need_house && !$hid)? "<img src=/static/images/house.jpg height=$ht>"
+            :     (!$reg->letter_sent)? "<img src=/static/images/envelope.jpg height=$ht>"
+            :                           "&nbsp;";
         if (length($mark) == 1) {
             $mark = "<span class=required>$mark</span>";
         }
@@ -1648,7 +1661,7 @@ EOH
 <tr>
 
 $program_td
-<td>$mark</td>
+<td align=center>$mark</td>
 
 <td>    <!-- width??? -->
 <a href='/registration/view/$id'>$name</a>
@@ -1677,9 +1690,6 @@ sub update_confnote : Local {
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
     my $cn = $c->stash->{note} = $reg->confnote();
     $c->stash->{note_lines} = lines($cn) + 3;
-    $c->stash->{confnotes} = [
-        model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
-    ];
     $c->stash->{template} = "registration/confnote.tt2";
 }
 sub update_confnote_do : Local{
@@ -1786,9 +1796,6 @@ sub update : Local {
 
     $c->stash->{note_lines}    = lines($reg->confnote()) + 3;
     $c->stash->{comment_lines} = lines($reg->comment ()) + 3;
-    $c->stash->{confnotes} = [
-        model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
-    ];
     $c->stash->{template} = "registration/edit.tt2";
 }
 
@@ -1957,7 +1964,7 @@ sub manual : Local {
 
     $c->stash->{cabin_checked}   = "";
     $c->stash->{room_checked}    = "";
-    _rest_of_reg($pr, $p, $c, tt_today($c));
+    _rest_of_reg($pr, $p, $c, tt_today($c), "dbl");
 }
 
 sub delete : Local {
@@ -1981,6 +1988,8 @@ sub early_late : Local {
     my $pr   = model($c, 'Program')->find($prog_id);
     my $sdate = $pr->sdate;
     my $edate = $pr->edate;
+    my $edate2 = ($pr->extradays)? ($pr->edate_obj + $pr->extradays)->as_d8()
+                 :                 $edate;
     my @regs = sort {
                    $a->{name} cmp $b->{name}
                } map {
@@ -1990,7 +1999,8 @@ sub early_late : Local {
                        name   => $p->last . ", " . $p->first,
                        arrive => ($_->date_start eq $sdate)? ""
                                  :               $_->date_start_obj->format,
-                       leave  => ($_->date_end eq $edate)? ""
+                       leave  => ($_->date_end eq $edate
+                                  || $_->date_end eq $edate2)? ""
                                  :               $_->date_end_obj->format,
                    }
                }
@@ -2002,6 +2012,9 @@ sub early_late : Local {
                    ],
                });
     $c->stash->{program} = $pr;
+    if ($pr->extradays) {
+        $c->stash->{plus} = $pr->edate_obj() + $pr->extradays;
+    }
     $c->stash->{registrations} = \@regs;
     $c->stash->{template} = "registration/early_late.tt2";
 }
@@ -2016,9 +2029,25 @@ sub arrived : Local {
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
+my %htype_exp = (
+    ot       => "Own Tent",
+    ct       => "Center Tent",
+    dbl      => "Double",
+    'dbl/ba' => "Double with Bath",
+    'sgl'    => "Single",
+    'sgl/ba' => "Single with Bath",
+    com      => "Commuting",
+    ov       => "Own Van",
+    dorm     => "Dormitory",
+    quad     => "Quad",
+    econ     => "Economy",
+    tpl      => "Triple",
+);
+
 sub lodge : Local {
     my ($self, $c, $id) = @_;
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $pr = $reg->program();
     $c->stash->{daily_pic_date} = $reg->date_start;
     my $program_id = $reg->program_id();
     #
@@ -2308,6 +2337,62 @@ sub lodge : Local {
         # insert a select into the first one.
         $h_opts[0] =~ s{>}{ selected>};
     }
+    # include kids and second choice
+    if (my @ages = $reg->kids() =~ m{(\d+)}g) {
+        $c->stash->{kids} = " with child"
+                          . ((@ages > 1)? "ren"
+                             :            ""   )
+                          ;
+    }
+    if (my ($second) = $reg->comment() =~ m{2-(\S+).*online}) {
+        # hack! :(  housing types are a mess.
+        $second = $htype_exp{$second} || "Unknown";
+        $c->stash->{second_choice} = "<br>Second choice is '$second'.";
+    }
+    my $cn = $c->stash->{note} = $reg->confnote();
+    $c->stash->{note_lines} = lines($cn) + 3;
+
+    # copied - can we consolidate???
+    my $h_type_opts = "";
+    Global->init($c);     # get %string ready.
+    my $cur_htype = $reg->h_type;
+    HTYPE:
+    for my $htname (qw/
+        single_bath
+        single
+        dble_bath
+        dble
+        triple
+        quad
+        economy
+        dormitory
+        center_tent
+        own_tent
+        own_van
+        commuting
+    /) {
+        next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
+        next HTYPE if $htname eq "quad"        && ! $pr->quad;
+        next HTYPE if $htname eq "economy"     && ! $pr->economy;
+        next HTYPE if $pr->housecost->$htname == 0;     # wow!
+
+        my $selected = ($htname eq $cur_htype)? " selected": "";
+        my $htdesc = $string{$htname};
+        $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
+        $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
+        $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
+    }
+    # hacky :(  how else please?
+    $h_type_opts .= "<option value=unknown"
+                 .  ($cur_htype eq "unknown"? " selected"
+                     :                        ""         )
+                 .  ">Unknown\n";
+    $h_type_opts .= "<option value=not_needed"
+                 .  ($cur_htype eq "not_needed"? " selected"
+                     :                           ""         )
+                 .  ">Not Needed\n";
+    $c->stash->{h_type_opts} = $h_type_opts;
+
     $c->stash->{house_opts} = join '', @h_opts;
     $c->stash->{total_opts} = @h_opts; 
     $c->stash->{seen_opts} = $string{seen_lodge_opts};
@@ -2326,12 +2411,33 @@ sub lodge : Local {
 sub lodge_do : Local {
     my ($self, $c, $id) = @_;
 
+    my $reg = model($c, 'Registration')->find($id);
+    my $new_htype = $c->request->params->{htype};
+    if ($reg->h_type() ne $new_htype) {
+        # the housing type was changed
+        $reg->update({
+            h_type => $new_htype,
+        });
+        if ($new_htype =~ m{^(own_van|commuting|unknown|not needed)$}) {
+                        # hash lookup instead?
+            $c->response->redirect($c->uri_for("/registration/view/$id"));
+            return;
+        }
+        # we need to search again with the new type
+        lodge($self, $c, $id);
+        # ??? another way of calling? with same params???
+        return;
+    }
+
     #
     # settle on exactly which house we're using.
     #
     my ($house_id) = $c->request->params->{house_id};
     my ($force_house) = trim($c->request->params->{force_house});
     if (! ($house_id || $force_house)) {
+        $reg->update({
+            confnote => _expand($c, $c->request->params->{confnote}),
+        });
         $c->response->redirect($c->uri_for("/registration/view/$id"));
         return;
     }
@@ -2352,7 +2458,6 @@ sub lodge_do : Local {
     }
     my $house_max = $house->max;
 
-    my $reg = model($c, 'Registration')->find($id);
     my $sdate  = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
     my $psex = $reg->person->sex;
@@ -2402,6 +2507,7 @@ sub lodge_do : Local {
     $reg->update({
         house_id => $house_id,
         h_name   => '',
+        confnote => _expand($c, $c->request->params->{confnote}),
     });
     my $kids = $reg->kids;
     for my $cf (model($c, 'Config')->search({
@@ -3041,6 +3147,7 @@ sub tally : Local {
         $balance += $r->balance();
     }
     $c->stash->{program}    = model($c, 'Program')->find($prog_id);
+    $c->stash->{id}         = $prog_id;
     $c->stash->{registered} = $registered;
     $c->stash->{cancelled}  = $cancelled;
     $c->stash->{no_shows}   = $no_shows;
@@ -3056,6 +3163,30 @@ sub tally : Local {
     $c->stash->{credit}     = commify($credit);
     $c->stash->{balance}    = commify($balance);
     $c->stash->{template}   = "registration/tally.tt2";
+}
+
+sub conf_notes : Local {
+    my ($self, $c) = @_;
+    my @notes = model($c, 'ConfNote')->search(undef, { order_by => 'abbr' });
+    my $html = <<"EOH";
+<center>
+<h2>Quick Confirmation Notes</h2>
+</center>
+Place the abbreviation at the beginning of the line.
+<p>
+<table cellpadding=3>
+<tr><th align=left>Abbr</th><th align=left>Expansion</th></tr>
+EOH
+    for my $n (@notes) {
+        $html .= "<tr><th align=right valign=top>"
+              .  $n->abbr()
+              .  "</th><td>"
+              .  $n->expansion()
+              .  "</td></tr>\n";
+    }
+    $html .= "</table>\n";
+    $c->res->output($html);
+    return;
 }
 
 1;

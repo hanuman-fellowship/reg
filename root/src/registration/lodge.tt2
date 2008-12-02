@@ -1,3 +1,16 @@
+<script type="text/javascript">
+var newwin;
+function popup(url) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=750,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(600, 0);
+}
+</script>
 <style type="text/css">
 #mess {
     color: red;
@@ -25,35 +38,61 @@
 <p>
 <span id=mess>[% message2 %]</span>
 [% END %]
-<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %].</h3>
+<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %].  [% second_choice %]</h3>
 <table border=0>
 <tr>
 [% IF total_opts == 0 %]
 <td style="color: red; font-size: 14pt">Sorry, there is no place in the inn.</td>
 [% ELSE %]
-<td align=right valign=top>Available Houses</td>
+<th align=right valign=top>Available Houses</th>
 <td valign=top>
 <select name=house_id size=[% seen_opts %]>
 [% house_opts %]
 </select>
 </td>
 [% END %]
-<td valign=top><input type=submit value="Submit"></td>
-<td>
+<td valign=top><input type=submit value="Submit">
+<p>
 <table cellpadding=3>
-<tr><td>C - <b>C</b>abin</td></tr>
-<tr><td>F - <b>F</b>oreign program</td></tr>
-<tr><td>O - already <b>O</b>ccupied</td></tr>
-<tr><td>R - <b>R</b>esize needed</td></tr>
-<tr><td>S - <b>S</b>hare</td></tr>
+<tr><td>C</td><td><b>C</b>abin</td></tr>
+<tr><td>F</td><td><b>F</b>oreign program</td></tr>
+<tr><td>O</td><td><b>O</b>ccupied already</td></tr>
+<tr><td>R</td><td><b>R</b>esize needed</td></tr>
+<tr><td>S</td><td><b>S</b>hare</td></tr>
 </table>
+
 </td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
+<tr><th align=right>Force this house</th><td><input type=text name=force_house size=10 value='[% force_house %]'></td></tr>
+
 <tr>
-<td align=right>Force this house</td><td><input type=text name=force_house size=10 value='[% force_house %]'></td></tr>
+<th align=right>Housing Type</th>
+<td>
+<select name=htype onchange="form.submit();">
+[% h_type_opts %]
+</select>
+</td>
+</tr>
 
 </table>
+
+<p>
+
+<table>
+<tr>
+<th align=right valign=top>Confirmation Note</th>
+<td><textarea rows=[% note_lines %] cols=60 name=confnote>
+[% note %]
+</textarea></td>
+</tr>
+
+<tr>
+<td></td>
+<td><span style="margin-left: 1in">Click <a href="#" onclick="javascript:popup('/registration/conf_notes'); return false;">here</a> to see all quick notes.
+</tr>
+</table>
+
 </form>

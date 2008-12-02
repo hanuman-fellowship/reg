@@ -342,7 +342,7 @@ sub processProg {
     }
     if ($hash{name} =~ m{ FULL$}) {
         print {$full} "$hash{pid}\n";
-        return;     # skip this entirely!
+        return;     # skip this entirely!    we have a new way.
         $hash{webready} = "";
         $hash{image} = "";
         $hash{linked} = "";
@@ -368,6 +368,7 @@ sub processProg {
                               . "-"
                               . substr($hash{name}, -3, 3));
     }
+    $hash{footnotes} =~ s{#}{%};        # right??
     $hash{ptemplate} =~ s{[.]html}{};
     $hash{ptemplate} = "default" if $hash{ptemplate} =~ m{^\s*$};
     $hash{cl_template} = "default";

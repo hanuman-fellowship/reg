@@ -14,7 +14,7 @@ my $day_width = 30;
 my $day_height = 40;
 
 sub new {
-    my ($class, $year, $month, $events_ref) = @_;
+    my ($class, $year, $month, $events_ref, $no_where_ord) = @_;
 
     my $today = today();
     if ($today->year == $year && $today->month == $month) {
@@ -31,11 +31,16 @@ sub new {
     my $max = 3;        # always a certain height...
     for my $ev (@$events_ref) {
         if ($first <= $ev->edate && $ev->sdate <= $last) {
+            my $nbookings = 0;
             for my $bk ($ev->bookings) {
+                ++$nbookings;
                 my $ord = $bk->meeting_place->disp_ord;
                 if ($ord > $max) {
                     $max = $ord;
                 }
+            }
+            if (!$nbookings && $no_where_ord > $max) {
+                $max = $no_where_ord;
             }
         }
     }

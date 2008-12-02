@@ -481,6 +481,7 @@ sub update_do : Local {
 
     my $section = $hash{section};
     delete $hash{section};
+
     my $r = model($c, 'Rental')->find($id);
     my $names = "";
     my $lunches = "";
@@ -603,7 +604,7 @@ sub pay_balance_do : Local {
         the_date => $now_date,
         time     => $now_time,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/3"));
 }
 
 sub meetingplace_update : Local {
@@ -650,7 +651,7 @@ sub meetingplace_update_do : Local {
         });
     }
     # show the rental again - with the updated meeting places
-    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
 }
 
 sub coordinator_update : Local {
@@ -673,7 +674,7 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person->id,
         });
-        $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+        $c->response->redirect($c->uri_for("/rental/view/$id/4"));
     }
     else {
         $c->stash->{template} = "rental/no_coord.tt2";
@@ -722,7 +723,7 @@ sub new_charge_do : Local {
         the_date  => $now_date,
         time      => $now_time,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/3"));
 }
 
 sub update_lunch : Local {
@@ -748,7 +749,7 @@ sub update_lunch_do : Local {
     $r->update({
         lunches => $l,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
 }
 
 sub booking : Local {
@@ -905,7 +906,7 @@ sub cluster_add : Local {
     my $edate = $rental->edate();
     my @ok_clusters = ();
     CLUSTER:
-    for my $cl (model($c, 'Cluster')->all({ order_by => 'name' })) {
+    for my $cl (model($c, 'Cluster')->search(undef, { order_by => 'name' })) {
         for my $h (model($c, 'House')->search({ cluster_id => $cl->id })) {
             for my $cf (model($c, 'Config')->search({
                             house_id => $h->id,
@@ -970,7 +971,7 @@ sub cluster_add_do : Local {
             });
         }
     }
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
 
 #

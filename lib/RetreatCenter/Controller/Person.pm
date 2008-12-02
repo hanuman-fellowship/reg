@@ -149,6 +149,7 @@ sub search_do : Local {
     $c->stash->{field} = $field eq 'tel_home'? 'tel_home': 'email';
     $c->stash->{ids} = join '-', map { $_->id } @people;
     $c->stash->{people} = \@people;
+    $c->stash->{pattern} = $orig_pattern;
     $c->stash->{template} = "person/search_result.tt2";
 }
 

@@ -114,6 +114,7 @@ function cluster_down(cluster_id) {
 [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span>
 <b>To</b>
 [% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span>
+[% plus %]
 &nbsp;
 &nbsp;
 &nbsp;

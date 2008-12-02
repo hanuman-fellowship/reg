@@ -37,6 +37,9 @@ insert into meeting_place values (
 insert into meeting_place values (
     10, 'CCCR', 'CC Conference Room', 15, 10, '170,170,230'
 );
+insert into meeting_place values (
+    11, 'NW', 'No Where', 10, 11, '255,0,0'
+);
 
 drop table if exists booking;
 create table booking (

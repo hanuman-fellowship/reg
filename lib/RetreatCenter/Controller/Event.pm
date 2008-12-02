@@ -270,9 +270,12 @@ sub calendar : Local {
             $today = $dt;
         }
     }
+
     my ($no_where) = model($c, 'MeetingPlace')->search({
         name => 'No Where',
     });
+    my $no_where_ord = ($no_where)? $no_where->disp_ord(): 0;
+
     my $start_year = $today->year;
     my $start_month = $today->month;
     my $min_ym = sprintf("%4d%02d", $start_year, $start_month);
@@ -316,7 +319,7 @@ sub calendar : Local {
     my $month = $start_month;
     while ($year < $end_year || ($year == $end_year && $month <= $end_month)) {
         my $key = sprintf("%04d%02d", $year, $month);
-        $cals{$key} = ActiveCal->new($year, $month, \@events);
+        $cals{$key} = ActiveCal->new($year, $month, \@events, $no_where_ord);
         $imgmaps{$key} = "";
         $details{$key} = "";
         ++$month;

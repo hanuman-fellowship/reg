@@ -306,7 +306,7 @@ sub processReg {
         $hash{$f} =~ s{\D}{}g;
         $hash{$f} =~ s{(...)(...)(....)}{$1-$2-$3}g;
     }
-    my ($name, $sdate, $edate, $extradays);
+    my ($name, $sdate, $edate, $edate2, $extradays);
     if ($hash{program_id}) {
         my $pid = $hash{program_id};
         if ($pid == 69 || $pid == 886) {
@@ -331,9 +331,10 @@ sub processReg {
             warn "*** missing program id: '$hash{program_id}'\n";
             return;
         }
+        $edate2 = $edate;
         if ($full) {
-            $edate = date($edate) + $extradays;
-            $edate = $edate->as_d8();
+            $edate2 = date($edate) + $extradays;
+            $edate2 = $edate2->as_d8();
         }
     }
     else {
@@ -412,7 +413,9 @@ sub processReg {
     if (! $hash{date_end}) {
         $hash{date_end} = $edate;
     }
-    elsif ($hash{date_end} ne $edate) {
+    elsif ($hash{date_end}    ne $edate
+           || $hash{date_end} ne $edate2
+    ) {
         $hash{late} = 'yes';
     }
     $ins_reg_sth->execute($reg_id,

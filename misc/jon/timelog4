@@ -160,7 +160,8 @@ Nov 14 12:30-5:00, 8:00-10:00
     gathering requirements
         green fund
         import housing assignments (for reg not rental)
-            do forces not searches (using Cluster assignments)
+            do forces (we know what house we want)
+            not searches (using Cluster assignments)
     allow edit/delete of payments
         one click to display divs - show Edit Delete links?
             all such divs have same id?
@@ -176,9 +177,27 @@ Nov 14 12:30-5:00, 8:00-10:00
 Nov 16 8:00-10:00
     installing on kali.  Mail::SendEasy, GD
         trouble with ImageMagick :(
-Nov 17 10:30-12:10
+Nov 17 10:30-12:10, 8:30-12:30
     installed Catalyst with cat-install
     DBIx::Class (warning about slowdown)
     Template
     then Task::Catalyst - which brought in oodles more
     seems like I've got enough... time will tell.
+    four hours for Shankar with CVS, mysql, etc.
+Nov 18 10:15-11:00
+    further testing, installing (a few more Catalyst plugins)
+        getting close
+Nov 20 11:00-2:30
+    sitting with Laura testing, Shyama for memberships
+Nov 21 9:45-12:00
+    laura and I testing, gathering requirements
+Nov 24 9:30-2:30
+    laura and I testing, gathering requirements
+Nov 28 8:35-9:10, 2:20-5:20
+    entering results of testing
+    further fixes
+Nov 30 12:45-3:00, 4:20-6:25
+    images instead of X, H, L
+    misc other fixes
+    change housing type at housing screen.
+        yes!

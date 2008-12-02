@@ -289,6 +289,17 @@ sub view : Local {
 
     Global->init($c);       # for web_addr if nothing else.
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
+    my $extra = $p->extradays();
+    if ($extra) {
+        my $edate2 = $p->edate_obj() + $extra;
+        $c->stash->{plus} = "<b>Plus</b> $extra day"
+                          . ($extra > 1? "s": "")
+                          . " <b>To</b> " . $edate2
+                          . " <span class=dow>"
+                          . $edate2->format("%a")
+                          . "</span>"
+                          ;
+    }
 
     if ($p->name !~ m{personal retreats}i) {
         $c->stash->{lunch_table}
@@ -767,7 +778,7 @@ sub del_image : Local {
         image => "",
     });
     unlink <root/static/images/p*-$id.jpg>;
-    $c->response->redirect($c->uri_for("/program/view/$id"));
+    $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }
 
 sub access_denied : Private {
@@ -1229,8 +1240,10 @@ sub update_lunch : Local {
 
     my $p = model($c, 'Program')->find($id);
     $c->stash->{program} = $p;
-    $c->stash->{lunch_table} = lunch_table(0, $p->lunches,
-                                          $p->sdate_obj, $p->edate_obj);
+    $c->stash->{lunch_table} = lunch_table(0,
+                                           $p->lunches,
+                                          $p->sdate_obj,
+                                          $p->edate_obj + $p->extradays);
     $c->stash->{template} = "program/update_lunch.tt2";
 }
 
@@ -1239,7 +1252,7 @@ sub update_lunch_do : Local {
 
     %hash = %{ $c->request->params() };
     my $p = model($c, 'Program')->find($id);
-    my $ndays = $p->edate_obj - $p->sdate_obj + 1;
+    my $ndays = $p->edate_obj - $p->sdate_obj + 1 + $p->extradays;
     my $l = "";
     for my $n (0 .. $ndays-1) {
         $l .= (exists $hash{"d$n"})? "1": "0";
@@ -1524,6 +1537,9 @@ sub ceu : Local {
         $html .= ceu_license($r, $override_hours)
               .  "<div style='page-break-after:always'></div>\n"
               ;
+    }
+    if (! $html) {
+        $html = "No one requested a CEU.";
     }
     $c->res->output($html);
 }

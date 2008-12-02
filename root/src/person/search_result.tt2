@@ -4,6 +4,8 @@
 <a href="/person/undup/[% ids %]" accesskey='u'><span class=keyed>U</span>ndup</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
+&nbsp;&nbsp;&nbsp;
+Searched for: [% pattern %]
 <ul>
 <table border=0 cellpadding=3>
 <tr>

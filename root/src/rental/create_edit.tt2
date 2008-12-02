@@ -1,6 +1,6 @@
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
-<script type="text/javascript">init_tabs(3, 0, 0);</script>
+<script type="text/javascript">init_tabs(4, 0, 0);</script>
 <h2>Rentals</h2>
 <form action=[% "/rental/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0>
@@ -45,10 +45,21 @@ Meals/Lodging
 
 <td>
 <div id="tab3focus" class="tab tabfocus" style="display: none">
-Misc
+Finance
 </div>
 <span onclick="tabs(3)">
 <div id="tab3ready" class="tab tabhold" style="display: none">
+Finance
+</div>
+</span>
+</td>
+
+<td>
+<div id="tab4focus" class="tab tabfocus" style="display: none">
+Misc
+</div>
+<span onclick="tabs(4)">
+<div id="tab4ready" class="tab tabhold" style="display: none">
 Misc
 </div>
 </span>
@@ -153,16 +164,6 @@ Misc
 <table>
 
 <tr>
-<td>&nbsp;</td>
-<td colspan=2><input type=checkbox value="yes" name=tentative [% check_tentative %]> Tentative</td>
-</tr>
-
-<tr>
-<th align=right valign=top width=140>Comment</th>
-<td colspan=5><textarea name=comment cols=55 rows=4>[% rental.comment %]</textarea></td>
-</tr>
-
-<tr>
 <th align=right>Required Deposit</th>
 <td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
 </tr>
@@ -170,6 +171,22 @@ Misc
 <tr>
 <th align=right>GL Number</th>
 <td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
+</tr>
+
+</table>
+</div>
+
+<div id="content4" class="tabcontent" style="display: none">
+<table>
+
+<tr>
+<td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=tentative [% check_tentative %]> Tentative</td>
+</tr>
+
+<tr>
+<th align=right valign=top width=140>Comment</th>
+<td colspan=5><textarea name=comment cols=55 rows=4>[% rental.comment %]</textarea></td>
 </tr>
 
 <tr>

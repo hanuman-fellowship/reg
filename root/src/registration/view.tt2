@@ -91,9 +91,9 @@ Cancelled
 
 <tr>
 <th align=right>Program</th>
-<td colspan=3><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a>
+<td colspan=4><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a>
 [% IF non_pr %]
-From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span> To [% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span>
+From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span> To [% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span> [% plus %]
 [% END %]
 </span>
 </td>
@@ -133,7 +133,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
     [% IF reg.house_id %]
         <a href=/registration/relodge/[% reg.id %]>[% reg.house.name %]</a>
     [% ELSE %]
-        <a href=/registration/lodge/[% reg.id %]>[% IF type == 'Your Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.jpg border=0>[% END %]</a>
+        <a href=/registration/lodge/[% reg.id %]>[% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.jpg border=0>[% END %]</a>
     [% END %]
 [% END %]
 [% IF reg.h_name %]
@@ -145,10 +145,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>[% reg.cabin_room %]
 </tr>
 <tr><th align=right>Balance</th>
-<td>
-[% reg.balance %][% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view">Pay It</a>[% END %]
-</td>
-</tr>
+<td><table><tr><td align=center>[% reg.balance %]</td><td align=center>[% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>[% END %]</td></tr></table></td>
 
 <tr>
 <th align=right valign=top>Comment</th>
@@ -162,7 +159,6 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </table>
 
 <!-------- Charges --------->
-<p>
 <div style="float: left; margin-right: .5in">
 <h3>Charges</h3>
 <table cellpadding=2>
