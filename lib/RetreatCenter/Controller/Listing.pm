@@ -896,8 +896,19 @@ sub housekeeping : Local {
 # display all of the records in the make_up table.
 #
 sub make_up : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $tent) = @_;
     
+    $tent ||= 0;
+    my $today = tt_today($c);
+    my $prev_clust = '';
+    my $type = ($tent)? "Campsite"
+               :        "Room"
+               ;
+    my $heading = "<span class=heading>$type Make-Up List</span>\n"
+                . "<span class=timestamp>As of " . localtime() . "</span>\n"
+                ;
+    my $html = "";
+    MAKE_UP_HOUSE:
     for my $mu (model($c, 'MakeUp')->search(
                     { },
                     {
@@ -914,8 +925,85 @@ sub make_up : Local {
                     }
                 )
     ) {
-        $c->log->info($mu->house->cluster->name . " " .  $mu->house->name);
+        my $htent = $mu->house->tent();
+        if (($tent && !$htent)
+            ||
+            (!$tent && $htent)
+        ) {
+            next MAKE_UP_HOUSE;
+        }
+        my $clust = $mu->house->cluster->name;
+        if ($clust ne $prev_clust) {
+            if ($prev_clust) {
+                $html .= "</table></ul>\n";
+            }
+            $html .= "<h2>$clust</h2>\n<ul><table>\n";
+            $prev_clust = $clust;
+        }
+        my $needed;
+        if ($mu->date_needed()) {
+            $needed = $mu->date_needed_obj() - $today;
+            if ($needed < 5) {
+                my $pl = ($needed == 1)? "": "s";
+                $needed = "<span style='color: red'>$needed day$pl</span>";
+            }
+            else {
+                $needed .= " days";
+            }
+        }
+        else {
+            $needed = "never";
+        }
+        $html .= "<tr><td><input type=checkbox name=h"
+              .  $mu->house_id()
+              .  "> "
+              .  $mu->house->name()
+              .  "</td><td>&nbsp;&nbsp;&nbsp;$needed"
+              .  "</td></tr>\n"
+              ;
     }
+    $html .= "</table></ul>\n";
+    $c->res->output(<<"EOH");
+<html>
+<head>
+<style type="text/css">
+.heading {
+    font-weight: bold;
+    font-size: 20pt;
+}
+.timestamp {
+    font-size: 13pt;
+    text-align: right;
+    margin-left: 1in;
+}
+</style>
+</head>
+<body>
+<form action=/listing/make_up_do/$tent>
+$heading
+<p>
+<input type=submit value="Submit">
+<a style='margin-left: 2in' href="/listing">To Listings</a>
+$html
+<p>
+<input type=submit value="Submit">
+</form>
+</html>
+EOH
+}
+
+sub make_up_do : Local {
+    my ($self, $c, $tent) = @_;
+
+    my @ids = ();
+    for my $hid (keys %{ $c->request->params() }) {
+        $hid =~ s{^h}{};
+        push @ids, $hid;
+    }
+    model($c, 'MakeUp')->search({
+        house_id => { -in => \@ids },
+    })->delete();
+    $c->response->redirect($c->uri_for("/listing/make_up/$tent"));
 }
 
 1;

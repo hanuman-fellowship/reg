@@ -19,7 +19,7 @@
 <td><a href=/program/list>Programs</a></td>
 <td><a href=/rental/list>Rentals</a></td>
 <td><a href=/event/list>Events</a></td>
-<td><a target=calendar href=/event/calendar>Calendar</a></td>
+<td><a target=calendar href='/event/calendar/[% cal_param %]'>Calendar</a></td>
 <td><a target=dailypic href=/dailypic/show/indoors/[% daily_pic_date %]>DailyPic</a></td>
 <td><a target=clusterview href=/cluster/show/[% daily_pic_date %]/[% cur_cluster %]>ClusterView</a></td>
 </tr>

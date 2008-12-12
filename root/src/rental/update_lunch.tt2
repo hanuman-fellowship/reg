@@ -1,3 +1,15 @@
+<script type="text/javascript">
+var check_on = false;
+function toggle_all() {
+    check_on = ! check_on;
+    var form = document.form;
+    for (var i = 0; i < form.length; ++i) {
+        if (form[i].type == 'checkbox') {
+            form[i].checked = check_on;
+        }
+    }
+}
+</script>
 <style>
 .lunch td {
     width: 50px;
@@ -15,10 +27,11 @@
 </tr>
 </table>
 <p>
-<form action="/rental/update_lunch_do/[% rental.id %]">
+<form name=form action="/rental/update_lunch_do/[% rental.id %]">
 <ul class=lunch>
 [% lunch_table %]</span>
 <p>
 <input type=submit value="Submit">
+<span style="margin-left: 1in">All <input type=checkbox name=all onclick="toggle_all();"></span>
 </ul>
 </form>

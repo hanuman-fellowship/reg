@@ -201,3 +201,19 @@ Nov 30 12:45-3:00, 4:20-6:25
     misc other fixes
     change housing type at housing screen.
         yes!
+Dec 1 11:00-5:40, 8:00-10:00
+    testing, fixing at the center
+    configuring and loading mysql on kali
+Dec 8 1:30-4:30
+    testing, consulting at the center re: programs, rentals, deposits, etc
+Dec 9 9:15-11:15
+    calendar enhancements
+        end date or # months, 12/7 = 12/1/2007 - to do, no graphic option
+        Dec 7 = Dec 2007 - to do
+        nice printout.
+        How?
+Dec 11 8:00-12:50, 1:20-3:20
+    calendar initiation, params/path info,
+        cal_param in rental/program/event, registration
+    meeting with Laura - more input/suggestion
+    many fixes - all checkboxes, etc.

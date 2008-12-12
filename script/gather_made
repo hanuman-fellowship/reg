@@ -2,19 +2,31 @@
 use strict;
 use warnings;
 use DBI;
-use lib "lib";
+use FindBin;
+use lib "$FindBin::Bin/../lib";
 use Date::Simple qw/
     today
     date
 /;
+chdir "$FindBin::Bin/..";
 
 my $cur_date = (shift || today()->as_d8())
     or die "gather_made yyyymmdd\n";
 
 my $cur_date1 = (date($cur_date) - 1)->as_d8();
 
-my $dbh = DBI->connect(undef, "sahadev", "JonB")
+my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db", "sahadev", "JonB")
     or die "oh no\n";
+
+my %already = ();
+my $get_sth = $dbh->prepare("
+    select house_id
+    from make_up;
+");
+$get_sth->execute();
+while (my ($id) = $get_sth->fetchrow_array()) {
+    $already{$id} = 1;
+}
 
 my @house_ids;
 
@@ -47,8 +59,6 @@ while (my ($house_id) = $getrental_sth->fetchrow_array()) {
     push @house_ids, $house_id;
 }
 
-print "houses: @house_ids\n";
-
 my $ins_sth = $dbh->prepare("
     insert into make_up (
         house_id, date_vacated, date_needed
@@ -76,6 +86,9 @@ my $nextrental_sth = $dbh->prepare("
     order by date_start
     limit 1
 ");
+
+# eliminate the ones already there in the make up list.
+@house_ids = grep { !$already{$_} } @house_ids;
 
 my ($next, $next_reg_date, $next_rental_date);
 for my $house_id (@house_ids) {

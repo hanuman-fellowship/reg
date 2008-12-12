@@ -57,7 +57,10 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 </ul>
 </td><td valign=top>
 <ul>
-
+<li><a href="/listing/make_up">Room Make-Up List<a>
+<p>
+<li><a href="/listing/make_up/1">Campsite Make-Up List<a>
+<p>
 <li><a href="/listing/housekeeping/0">Today's Housekeeping Report</a>
 <p>
 <form action="/listing/housekeeping/0" method=POST>

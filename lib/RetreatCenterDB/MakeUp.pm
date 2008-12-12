@@ -22,7 +22,7 @@ sub date_vacated_obj {
     my ($self) = @_;
     return date($self->date_vacated);
 }
-sub date_needed {
+sub date_needed_obj {
     my ($self) = @_;
     return date($self->date_needed);
 }

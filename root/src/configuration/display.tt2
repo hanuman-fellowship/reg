@@ -73,6 +73,16 @@ function setId(id) {
     var colors = nums.split(",");
     colorSet(parseInt(colors[0]), parseInt(colors[1]), parseInt(colors[2]));
 }
+
+function restore_default() {
+    curId = 'user_bg'; 
+    colorSet(255, 255, 255);
+    curId = 'user_fg'; 
+    colorSet(0, 0, 0);
+    curId = 'user_link'; 
+    colorSet(0, 0, 255);
+    document.form.user_bg.focus();
+}
 </script>
 <h2>Setting Your Own Display Colors</h2>
 <form action=/configuration/display_do name=form>
@@ -97,11 +107,6 @@ function setId(id) {
 </tr>
 
 <tr>
-<td>&nbsp;</td>
-<td align=center><input type=submit value="Submit"></td>
-</tr>
-
-<tr>
 <td></td>
 <td rowspan=4>
     <table border=1>
@@ -123,6 +128,10 @@ function setId(id) {
     <tr>
     </tr>
     </table>
+<p>
+<center>
+<input style="background: lightgreen;" type=submit value="Submit">
+</center>
 </td>
 <td valign=center width=330>
 Click in one of the 3 text fields above.
@@ -134,6 +143,10 @@ Adjust the color by clicking on the 8 squares below the swatch.
 Play with it.
 <p>
 Click the Submit button to finish.
+<center>
+<input type=submit value="Restore Defaults"
+    onclick="restore_default(); return false;">
+</center>
 </td>
 </tr>
 

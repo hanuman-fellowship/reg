@@ -1,0 +1,127 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use lib "../lib";
+use Date::Simple qw/
+    date
+    today
+/;
+use DBI;
+
+$|++;    # unbuffer stdout
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+my $today = today()->as_d8();
+
+my $reg_sth = $dbh->prepare("
+    select id, person_id, program_id, h_type, h_name, date_start, date_end, kids
+    from registration
+    where date_start >= $today
+      and h_name != ''
+");
+# no house name for commuting, own van, unknown
+my $reg_upd_sth = $dbh->prepare("
+    update registration
+    set house_id = ?,
+        h_name   = ''
+    where id = ?
+");
+my $house_sth = $dbh->prepare("
+    select id, max
+    from house
+    where name = ?
+");
+my $psex_sth = $dbh->prepare("
+    select sex
+    from people
+    where id = ?
+");
+my $config_sth = $dbh->prepare("
+    select house_id, the_date, cur, sex
+    from config
+    where house_id = ?
+      and ? <= the_date and the_date < ?
+");
+my $upd_config_sth = $dbh->prepare("
+    update config
+    set curmax = ?,
+        cur = ?,
+        sex = ?,
+        program_id = ?
+    where house_id = ? and the_date = ?
+");
+
+my %new_name = (
+    'RAM1 A' => 'RAM 1A',    
+    'RAM1 B' => 'RAM 1B',    
+    'RAM2 A' => 'RAM 2A',    
+    'RAM2 B' => 'RAM 2B',    
+    'RAM2 C' => 'RAM 2C',    
+    '218'    => '218B',
+);
+
+# economy and dormitory???
+my %tmax = qw/
+    single_bath 1
+    single      1
+    dble        2
+    dble_bath   2
+    triple      3
+    quad        4
+    dormitory   7
+    economy    20
+    center_tent 1
+    own_tent    1
+/;
+sub type_max {
+    my ($h_type) = @_;
+    return $tmax{$h_type};
+}
+
+$reg_sth->execute();
+REG:
+while (my ($r_id, $person_id, $program_id, $h_type,
+           $h_name, $date_start, $date_end, $kids)
+         = $reg_sth->fetchrow_array()
+) {
+    if (exists $new_name{$h_name}) {
+        $h_name = $new_name{$h_name};
+    }
+    $house_sth->execute($h_name);
+    my ($h_id, $house_max) = $house_sth->fetchrow_array();
+    if (! $h_id) {
+        print "unknown house name: $h_name\n";
+        next REG;
+    }
+    $reg_upd_sth->execute($h_id, $r_id);
+    # get the registrant's sex
+    $psex_sth->execute($person_id);
+    my ($psex) = $psex_sth->fetchrow_array();
+
+    my $cmax = type_max($h_type);
+    if ($cmax > $house_max) {
+        $cmax = $house_max;
+    }
+    $config_sth->execute($h_id, $date_start, $date_end);
+    while (my ($house_id, $the_date, $c_cur, $c_sex)
+             = $config_sth->fetchrow_array()
+    ) {
+        if ($cmax < $c_cur + 1) {
+            $cmax = $house_max;
+        }
+        if ($kids) {
+            $cmax = 1;      # so no others will go in that room
+        }
+        $upd_config_sth->execute(
+            $cmax,       # curmax
+            $c_cur + 1,  # cur
+            ($c_sex eq 'U' || $c_sex eq $psex)? $psex       # sex
+            :                                   'X',
+            $program_id,            # program id from registration
+            $house_id, $the_date     # this one
+        );
+    }
+}

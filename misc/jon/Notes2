@@ -27,7 +27,6 @@ manual reg - default Double for h_type
 book clusters for Rentals - order?
 No Where - not working?
 If no CEUs in program, say so when asking for Program CEUs.
-Early/Late listing - respects extended programs...
 update Lunches, Leaders, Meeting Places, Affils => back to same tab
 L, H, X => graphic icons of
     envelope, house (small version of same), red X (stolen from Netflix?)
@@ -43,34 +42,71 @@ extra days - Name From To add "Plus..."
 link for quick notes in separate window
     in 3 places - reg screen, update conf note screen,
         and on housing screen
----
 on housing screen
     put space for conf note
 allow an easier way to change housing type - from
     the choose house screen
     also - show both choices of housing (if available from online)
+housing choices on house screen not second choice.
+Early/Late listing - respects extended programs...
+    not done yet
+other cronjobs:
+    make up list
+        works okay - sets the 'next needed' date.
+            might that date may change before the bed is ready???
+                may change earlier or later.
+            yes.  should we worry about it and every time
+                the make up screen is shown should we look again?
+            maybe.
+    grab online
 
+    need to set properly with crontab -e
+        what time?
+GrabNew elsewhere - or 'Online' since grabbing new will be cron job
+    on Program list screen only - okay?
+    also on Registration
+    Grab New only on Online list screen
+Cancellation - be sure to vacate the house, Deletes, too.
+    done, yes?
+PublishPics as a separate link
+in Online list make program name a link
+in DailyPic, ClusterView - popup shows kids, if present
+Registrations link on top of Summary
+calendar - set end date, not show images etc
+all lunches - check "all"
+assign meeting place - order by disp_order
+reset display colors to default
 footnotes #->%?  correct?
+add house to Rentals - list too long
+    sorted by priority, limited select options, Resize at bottom
+No lunches for PR
+rentals
+    add rental -start on Finance?
+    deposit required? on rentals?
+    after creation - what tab is shown?
+---
+Center Tent spaces should be available during
+    winter for Own Tent people
 
+Summary - need Plus ... for extended programs
+
+
+web design - no change of color if clicked on
 deposits - since last deposit, save it
 month-end report?
 VPN access
 too many windows open for membership activity
-add house to Rentals - list too long
 colorization of R for rentals?
-    better - show first 3 letters when radio button chosen?
+    better - show first 3 (or 2) letters when radio button is chosen?
 Summary tabs into field gos to second line?
     tabs should not go to Submit
-Registrations link on top of Summary
 On reg1.html explain special requests
     special foods, kids, early late, snoring
-in Online list make program name a link
-GrabNew elsewhere - or 'Online' since grabbing new will be cron job
 wrapping in comments entered online?
 history records for which house relodged, vacating?
     maybe
 in middle of reg on another window - go to a program
-    what?
+    opens up yet another window or does it clobber the mid-reg?
 submit reg - fails network, on refresh gives sdate error
     prohibit double reg
 in History - conf letter REsent
@@ -90,22 +126,17 @@ manual reg - defaults to PR - the _current_ PR
 Firefox - better tabbing, opening of other windows/tabs?
     should we require Firefox?
 unlinked dir for PRs?
-Cancellation - be sure to vacate the house, Deletes, too.
-No lunches for PR
 PR screwed up charges?
     negative # of days?
 online evaluation form
     records w/ program id, name, date - ftp'ed from mmc.org to kali
-Center Tent spaces should be available during
-    winter for Own Tent people
-are receipt numbers necessary?
+are receipt numbers necessary?  == payment record id
 no expiration of session?
 MMI
     import from D/C/M programs
     go to the _one_ D/C/M program
     MMI charges, payments are linked to the person not the program
         including course housing etc?
-in DailyPic, ClusterView - popup shows kids, if present
 on housing screen - show kids if present
 only one reg screen - don't keep opening new ones?
     maybe maybe not - can modifier keys override naming a window?
@@ -184,11 +215,19 @@ carpool
     say 'as of' date.
     cronjob will send one week before program
         Bcc'ing registrar (who?) - all program admins
-other cronjobs:
-    make up list
-    grab online
+in blitz reg screen (AllRegs) the program date
+    is not complete - do like Lists, Tallies?
 dashes under charges, payments on reg screen
     not visible in IE.
+prohibit sending confirmation letter
+    unless housing has been set.
+program dates: From 12/23/08 Tue To 12/25/08 Thu Or 12/28/08 Sun
+    dates bold, labels not bold, DOW red not bold
+
+protect against dups when backing up
+    adding registration, program.
+
+pay it in rental - not the balance?
 
 
 
@@ -203,3 +242,13 @@ dup check - when is it done?
         no dup warning?
 Partnering not found?
 dups, search for partners - still some trouble there
+doc: calendar - end date calculation may include
+    one more month if an event that starts earlier overlaps into it.
+initial focus of summary, tab order?
++2 for extended does not show
+on program - Registrations or AllRegs or FirstReg 
+program tally - tally genders/kids before program happens
+    attended then blank, then gender tally
+    also do the tuition tally
+program staff cannot add houses - don't offer it
+templates - some should not show

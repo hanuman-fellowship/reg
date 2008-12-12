@@ -1,6 +1,14 @@
+<head><!-- an addition/supplement to the head -->
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript">init_tabs(4, 0, 1);</script>
+<style type="text/css">
+#sub {
+    color: green;
+    background: lightgreen;
+}
+</style>
+</head>
 
 [% id = program.id %]
 <h2>Programs[% dup_message %]</h2>
@@ -75,7 +83,7 @@ Misc
 
 <td class="emptytab">
 <span id=hid><input type=hidden name=section value=[% section %]></span>
-<input type=submit value="Submit">
+<input id=sub type=submit value="Submit">
 </td>
 
 </tr>       <!-- end of tabs row -->
@@ -156,7 +164,6 @@ Misc
 [% END %]
 </select>
 </td>
-<td style="left-margin: 1in;"><input type=submit value="Submit"></td>
 </tr>
 
 </table>

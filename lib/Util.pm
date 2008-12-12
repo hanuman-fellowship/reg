@@ -151,7 +151,7 @@ sub meetingplace_table {
 #                    { max => { '>=', $max } },
     for my $mp (model($c, 'MeetingPlace')->search(
                     {},
-                    { order_by => 'name' }
+                    { order_by => 'disp_ord' }
                 )
     ) {
         my $id = $mp->id;

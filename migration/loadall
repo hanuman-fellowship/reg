@@ -4,9 +4,11 @@ then
     db='mysql -u sahadev -pJonB reg2'
     export DBI_DSN="dbi:mysql:reg2"
     perl -p -i -e 's/autoincrement/auto_increment/' mk*
+    MYSQL=1
 else
     db='sqlite3 retreatcenter.db'
     export DBI_DSN="dbi:SQLite:retreatcenter.db"
+    MYSQL=
 fi
 
 echo creating tables
@@ -45,7 +47,7 @@ echo rentals
 loadrent -s cur
 
 # add a LOT of config records
-loadconfig
+loadconfig $MYSQL
 
 # now we can load future housing
 echo housing assignments

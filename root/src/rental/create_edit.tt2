@@ -164,7 +164,7 @@ Misc
 <table>
 
 <tr>
-<th align=right>Required Deposit</th>
+<th align=right><span class="required">*</span> Required Deposit</th>
 <td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
 </tr>
 

@@ -48,7 +48,7 @@ sub create : Local {
         housecost => { name => "Default" },
     };
     $c->stash->{form_action} = "create_do";
-    $c->stash->{section}     = 3;   # lodging
+    $c->stash->{section}     = 1;   # web
     $c->stash->{template}    = "rental/create_edit.tt2";
 }
 
@@ -147,7 +147,8 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    delete $hash{section};      # irrelevant
+    my $section = $hash{section};
+    delete $hash{section};
 
     $hash{lunches} = "";
 
@@ -172,7 +173,7 @@ sub create_do : Local {
     # out to the end date of this rental.
     #
     add_config($c, $hash{edate});
-    $c->response->redirect($c->uri_for("/rental/view/$id/3"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
 }
 
 sub _h24 {
@@ -283,7 +284,7 @@ sub view : Local {
             $actual_lodging += $hc->$t * $npeople;
         }
         my $t_max = type_max($t);
-        next TYPE if $t_max == 0;;
+        next TYPE if !$t_max;
         my $needed = ceil($npeople/$t_max);
         my $count = $booking_count{$t} || 0;
         $colcov{$t} = ($needed < $count)? $less 
@@ -355,6 +356,7 @@ sub view : Local {
 
     $c->stash->{rental}         = $r;
     $c->stash->{daily_pic_date} = $r->sdate();
+    $c->stash->{cal_param}      = $r->sdate_obj->as_d8() . "/1";
     $c->stash->{colcov}         = \%colcov;     # color of the coverage
     $c->stash->{bookings}       = \%bookings;
     $c->stash->{clusters}       = $clusters;
@@ -770,8 +772,7 @@ sub booking : Local {
     # ??? what order to present them in?  priority/resized?
     # consider cluster???  other bookings for this rental???
     #
-    my $h_opts = "";
-    my $n = 0;
+    my @h_opts = ();
     HOUSE:
     for my $h (model($c, 'House')->search({
                    inactive => '',
@@ -779,7 +780,9 @@ sub booking : Local {
                    tent     => $tent,
                    center   => $center,
                    max      => { '>=', $max },
-               }) 
+               },
+               { order_by => 'priority' }
+              ) 
     ) {
         my $h_id = $h->id;
         #
@@ -793,17 +796,18 @@ sub booking : Local {
         });
         next HOUSE if @cf;        # nope
 
-        $h_opts .= "<option value=" 
+        push @h_opts,
+                 "<option value=" 
                  . $h_id
-                 . ($h_opts eq ""? " selected": "")
                  . ">"
                  . $h->name
-                 . "</option>"
+                 . (($h->max == $max)? "": " - R")
+                 . "</option>\n"
                  ;
-        ++$n;
     }
-    $c->stash->{house_opts} = $h_opts;
-    $c->stash->{n_opts} = $n;       # $n not always = # opts???
+    my @R_opts   = grep { /- R/ } @h_opts;
+    my @noR_opts = grep { ! /- R/ } @h_opts;
+    $c->stash->{house_opts} = join '', @noR_opts, @R_opts;
     $h_type =~ s{_(.)}{ \u$1};
     $c->stash->{disp_h_type} = (($h_type =~ m{^[aeiou]})? "an": "a")
                              . " '\u$h_type'";
@@ -818,6 +822,10 @@ sub booking : Local {
 sub booking_do : Local {
     my ($self, $c, $rental_id, $h_type) = @_;
     my $chosen_house_id = $c->request->params->{chosen_house_id};
+    if (! $chosen_house_id) {
+        $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+        return;
+    }
     my $h = model($c, 'House')->find($chosen_house_id);
     my $max = $h->max;
     my $r = model($c, 'Rental')->find($rental_id);
@@ -841,7 +849,7 @@ sub booking_do : Local {
         program_id => 0,
         rental_id  => $rental_id,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
 
 sub del_booking : Local {
@@ -867,7 +875,7 @@ sub del_booking : Local {
         program_id => 0,
         rental_id  => $rental_id,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
 
 sub contract : Local {
@@ -1010,7 +1018,7 @@ sub cluster_delete : Local {
             program_id => 0,
         });
     }
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
 
 sub view_summary : Local {

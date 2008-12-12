@@ -9,9 +9,9 @@
     <a href="/program/brochure">Brochure</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish">Publish<a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/publish_pics">PublishPics<a>
 [% END %]
-&nbsp;&nbsp;&nbsp;
-<a href="/registration/grab_new">Grab New</a>
 [% IF online > 0 %]
     &nbsp;&nbsp;&nbsp;
     <a href="/registration/list_online">Online ([% online %])</a>

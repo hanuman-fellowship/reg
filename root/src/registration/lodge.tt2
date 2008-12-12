@@ -38,7 +38,7 @@ function popup(url) {
 <p>
 <span id=mess>[% message2 %]</span>
 [% END %]
-<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %].  [% second_choice %]</h3>
+<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %].[% house_prefs %]</h3>
 <table border=0>
 <tr>
 [% IF total_opts == 0 %]
@@ -53,14 +53,13 @@ function popup(url) {
 [% END %]
 <td valign=top><input type=submit value="Submit">
 <p>
-<table cellpadding=3>
-<tr><td>C</td><td><b>C</b>abin</td></tr>
-<tr><td>F</td><td><b>F</b>oreign program</td></tr>
-<tr><td>O</td><td><b>O</b>ccupied already</td></tr>
-<tr><td>R</td><td><b>R</b>esize needed</td></tr>
-<tr><td>S</td><td><b>S</b>hare</td></tr>
+<table>
+<tr><td>C</td><td> - cabin</td></tr>
+<tr><td>F</td><td> - foreign program</td></tr>
+<tr><td>O</td><td> - occupied already</td></tr>
+<tr><td>R</td><td> - resize needed</td></tr>
+<tr><td>S</td><td> - share</td></tr>
 </table>
-
 </td>
 </tr>
 

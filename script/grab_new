@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use Net::FTP;
+use FindBin;
+
+chdir "$FindBin::Bin/..";
+
+my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db", "sahadev", "JonB")
+    or die "oh no\n";
+my $sth = $dbh->prepare("
+    select the_key, value
+    from string
+    where the_key like 'ftp_%'
+");
+$sth->execute();
+my %string;
+while (my ($the_key, $value) = $sth->fetchrow_array()) {
+    $string{$the_key} = $value;
+}
+
+my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+    or die "cannot connect to $string{ftp_site}";    # not die???
+$ftp->login($string{ftp_login}, $string{ftp_password})
+    or die "cannot login ", $ftp->message; # not die???
+$ftp->cwd($string{ftp_transactions})
+    or die "cannot cwd to $string{ftp_transactions} ", $ftp->message;
+$ftp->ascii();
+# don't do these mkdirs when things settle down???
+mkdir "root/static/online"      unless -d "root/static/online";
+mkdir "root/static/online_done" unless -d "root/static/online_done";
+
+for my $f ($ftp->ls()) {
+    $ftp->get($f, "root/static/online/$f");
+    $ftp->delete($f);
+}

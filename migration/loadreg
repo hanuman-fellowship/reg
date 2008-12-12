@@ -413,9 +413,7 @@ sub processReg {
     if (! $hash{date_end}) {
         $hash{date_end} = $edate;
     }
-    elsif ($hash{date_end}    ne $edate
-           || $hash{date_end} ne $edate2
-    ) {
+    elsif (! ($hash{date_end} eq $edate || $hash{date_end} eq $edate2)) {
         $hash{late} = 'yes';
     }
     $ins_reg_sth->execute($reg_id,

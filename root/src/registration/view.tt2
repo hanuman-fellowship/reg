@@ -12,6 +12,7 @@ function popup(url) {
     if (window.focus) {
         newwin.focus();
     }
+    newwin.moveTo(900, 0);
 }
 </script>
 <style>
@@ -133,7 +134,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
     [% IF reg.house_id %]
         <a href=/registration/relodge/[% reg.id %]>[% reg.house.name %]</a>
     [% ELSE %]
-        <a href=/registration/lodge/[% reg.id %]>[% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.jpg border=0>[% END %]</a>
+        <a href=/registration/lodge/[% reg.id %]>[% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.gif border=0>[% END %]</a>
     [% END %]
 [% END %]
 [% IF reg.h_name %]

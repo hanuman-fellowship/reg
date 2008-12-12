@@ -2,7 +2,7 @@
 <form action="/rental/listpat" name=form>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/rental/create">Add</a>
-&nbsp;&nbsp;&nbsp;<input text name=rent_pat size=10 value=[% rent_pat %]> <input type=submit value="Search"></form>
+<span style="margin-left: 1.5in"><input text name=rent_pat size=10 value=[% rent_pat %]> <input type=submit value="Search"></span></form>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>

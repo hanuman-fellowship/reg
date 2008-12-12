@@ -11,7 +11,7 @@
 [% FOR r IN online %]
 <tr>
 <td><a href="/registration/get_online/[% r.fname %]">[% r.last %], [% r.first %]</a></td>
-<td>[% r.pname %]</td>
+<td><a href="/program/view/[% r.pid %]">[% r.pname %]</a></td>
 <td>[% r.date %]</td>
 <td>[% r.time %]</td>
 </tr>

@@ -5,8 +5,10 @@ use base 'Catalyst::Controller';
 
 use Date::Simple qw/
     date
+    days_in_month
 /;
 use Util qw/
+    trim
     empty
     model
     meetingplace_table
@@ -102,6 +104,7 @@ sub view : Local {
 
     my $ev = $c->stash->{event} = model($c, 'Event')->find($id);
     $c->stash->{daily_pic_date} = $ev->sdate();
+    $c->stash->{cal_param}      = $ev->sdate_obj->as_d8() . "/1";
     $c->stash->{template} = "event/view.tt2";
 }
 
@@ -252,7 +255,7 @@ sub access_denied : Private {
 # put in ActiveCal??
 #
 sub calendar : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $the_start, $the_end) = @_;
 
     my @month_name = qw/
         Jan Feb Mar
@@ -262,12 +265,75 @@ sub calendar : Local {
     /;
 
     Global->init($c);
-    my $which = $c->request->params->{which};
-    my $today = tt_today($c);
-    if ($which) {
-        my $dt = date($which);
-        if ($dt) {
-            $today = $dt;
+    my $start_param = trim($c->request->params->{start});
+    if (!$start_param) {
+        $start_param = $the_start;
+    }
+    my $start;
+    if ($start_param) {
+        if (my ($m, $y) = $start_param =~ m{^(\d+)\D+(\d+)$}g) {
+            # month year
+            $y += 2000 if $y < 1900;
+            $start = date($y, $m, 1);
+        }
+        else {
+            my $dt = date($start_param);
+            if ($dt) {
+                $start = $dt;
+            }
+            else {
+                $start = tt_today($c);
+            }
+        }
+    }
+    else {
+        $start = tt_today($c);
+    }
+    $start_param = $start->format("%D");
+    my $start_year = $start->year;
+    my $start_month = $start->month;
+    my $min_ym = sprintf("%4d%02d", $start_year, $start_month);
+    my $the_first = sprintf("%4d%02d%02d", $start_year, $start_month, 1);
+
+    # optional end date - otherwise it goes to the last happening date
+    # unless, that is, we have a the_end method parameter
+    my $end_param = trim($c->request->params->{end});
+    if (!$end_param && $the_end) {
+        $end_param = $the_end;
+    }
+    my @opt_end = ();
+    if ($end_param) {
+        # n months???
+        my $end_date;
+        if (my ($m, $y) = $end_param =~ m{^(\d+)\D+(\d+)$}g) {
+            # month year
+            $y += 2000 if $y < 1900;
+            $end_date = date($y, $m, 1);
+        }
+        elsif ($end_param =~ m{^(\d{1,2})$}) {
+            # end_param is how many months to show in total
+            # it does not include something like 040109
+            #
+            # find the ending month/year.
+            my $em = $start_month;
+            my $ey = $start_year;
+            my $nmonths = $end_param;
+            while (--$nmonths) {
+                ++$em;
+                if ($em > 12) {
+                    $em = 1;
+                    ++$ey;
+                }
+            }
+            $end_date = date($ey, $em, days_in_month($ey, $em));
+        }
+        else {
+            # end_param is the last date
+            $end_date = date($end_param);
+        }
+        $end_param = $end_date->format("%D");
+        if ($end_date) {
+            @opt_end = (sdate => { '<=', $end_date->as_d8() });
         }
     }
 
@@ -276,14 +342,11 @@ sub calendar : Local {
     });
     my $no_where_ord = ($no_where)? $no_where->disp_ord(): 0;
 
-    my $start_year = $today->year;
-    my $start_month = $today->month;
-    my $min_ym = sprintf("%4d%02d", $start_year, $start_month);
-    my $the_first = sprintf("%4d%02d%02d", $start_year, $start_month, 1);
     my @events;
     for my $ev_kind (qw/Event Program Rental/) {
         push @events, model($c, $ev_kind)->search({
                           edate => { '>=', $the_first },
+                          @opt_end,
                           name  => { -not_like, "Personal Retreats%" },
                       });
     }
@@ -306,6 +369,7 @@ sub calendar : Local {
                    });
 
     # get all meeting places in a hash indexed by id
+    # cache this?
     my %meeting_places = map { $_->id => $_ }
                          model($c, 'MeetingPlace')->all();
 
@@ -364,7 +428,7 @@ sub calendar : Local {
         my $count = $ev_count;
         if (length $count) {
             if ($ev_type eq 'rental') {
-                $count = $ev->max . ", $count";
+                $count = $ev->max . "/$count";
             }
         }
         my $ev_id = $ev->id;
@@ -377,7 +441,7 @@ sub calendar : Local {
                 # and overlaps into the first shown month???
                 # like today is April 10th and the event is from
                 # March 29th to April 4th.
-                $cal = $cals{$today->format("%Y%m")};
+                $cal = $cals{$start->format("%Y%m")};
             }
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
 
@@ -472,7 +536,7 @@ sub calendar : Local {
                                     places($ev);
                 if ($ev_type eq 'rental') {
                     $printable_row .= "<td>&nbsp;</td>"
-                                   .  "<td align=left>$count</td>";
+                                   .  "<td align=center>$count</td>";
                 }
                 elsif ($ev_type eq 'program') {
                     $printable_row .= "<td align=right>$count</td>";
@@ -677,13 +741,31 @@ sub calendar : Local {
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <script>
-var state = 'block';
+var det_state = 'block';
+var img_state = 'block';
 var months = new Array($det_keys);
 function detail_toggle() {
-    state = (state == 'block')? 'none': 'block';
+    det_state = (det_state == 'block')? 'none': 'block';
     for (var i = 0; i < months.length; ++i) {
-        //alert(months[i]);
-        document.getElementById('det' + months[i]).style.display = state;
+        var el = document.getElementById('det' + months[i]);
+        // may not be there - if Personal Retreat
+        if (el != null)
+            el.style.display = det_state;
+    }
+}
+function image_toggle() {
+    //alert('image toggle');
+    img_state = (img_state == 'block')? 'none': 'block';
+    for (var i = 0; i < months.length; ++i) {
+        var el = document.getElementById('img' + months[i]);
+        // may not be there - if Personal Retreat
+        if (el != null)
+            el.style.display = img_state;
+        // don't break the page if no images
+        el = document.getElementById('break' + months[i]);
+        // may not be there - if Personal Retreat
+        if (el != null)
+            el.style.display = img_state;
     }
 }
 </script>
@@ -759,24 +841,53 @@ EOH
         close $imf;
 
         my $month_name = $ac->sdate->format("%B %Y");
-        my $form = ($firstcal)? "<form action='/event/calendar'>": "";
-        $content .= "$form<a name=$key></a>\n<span class=hdr>"
+        $content .= "<a name=$key></a>\n<span class=hdr>"
                   . $month_name
                   . "</span>"
                   . "<img border=0 class=jmptable src=$jump_img usemap=#jump>";
         if ($firstcal) {
             my $go_form = <<"EOH";
-<span class=datefld>Date</span> <input type=text name=which size=10>
-<input class=go type=submit value="Go">
+<style type="text/css">
+\@media print {
+    .noprint {
+        display: none;
+    }
+}
+</style>
+<script type="text/javascript">
+var newwin;
+function popup(url) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=550,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
+<div class=noprint>
+<form action='/event/calendar'>
+<span class=datefld>Images <input type=checkbox name=images checked onclick='image_toggle()'></span>
+<span class=datefld>Details <input type=checkbox name=detail checked onclick='detail_toggle()'></span>
+<span class=datefld>Start</span> <input type=text name=start size=10 value='$start_param'>
+<span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
+<span class=datefld><input class=go type=submit value="Go"></span>
+<a href="javascript:popup('/static/help/calendar.html');">How?</a>
 </form>
+</div>
+<p>
 EOH
-            $content .= "<div class=details>Details <input type=checkbox name=detail checked onclick='detail_toggle()'></div>$go_form";
+            $content = $go_form . $content;
             $firstcal = 0;
         }
         $content .= "<p>\n";
         my $image = $c->uri_for("/static/images/$cal_name");
         $content .= <<"EOH";
+<div id=img$key>
 <img border=0 src='$image' usemap='#$key'>
+</div>
 <map name=$key>
 $imgmaps{$key}</map>
 <p>
@@ -792,12 +903,13 @@ EOH
 <th align=left   valign=bottom>Name</th>
 <th align=left   valign=bottom>Place</th>
 <th align=right  valign=bottom>Reg<br>Count</th>
-<th align=center  valign=bottom colspan=2>Rental<br>Max&nbsp;&nbsp;Status</th>
+<th align=center  valign=bottom colspan=2>Rental<br>Max/Reserved&nbsp;&nbsp;Status</th>
 </tr>
 $details{$key}
 </table>
 </ul>
 </div>
+<div id=break$key style='page-break-after:always'></div>
 EOH
         }
     }

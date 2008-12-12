@@ -10,6 +10,7 @@ use Util qw/
     trim
     empty
     model
+    tt_today
 /;
 
 use lib '../../';       # so you can do a perl -c here.

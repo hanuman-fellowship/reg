@@ -1,5 +1,9 @@
 <h2>[% Type %] Summary</h2>
 <a href=/summary/update/[% Type %]/[% happening.id %]>Edit</a>
+[% IF type == 'program' %]
+&nbsp;&nbsp;&nbsp;
+<a href=/registration/first_reg/[% happening.id %]>Registrations</a>
+[% END %]
 <p>
 <table cellpadding=7>
 <tr>

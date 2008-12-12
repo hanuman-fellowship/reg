@@ -310,6 +310,7 @@ sub view : Local {
                          );
     }
     $c->stash->{daily_pic_date} = $p->sdate();
+    $c->stash->{cal_param}      = $p->sdate_obj->as_d8() . "/1";
     $c->stash->{leaders_house} = $p->leaders_house($c);
     my $s = _get_cluster_groups($c, $id);
     my ($UN, $sel) = split /XX/, $s;

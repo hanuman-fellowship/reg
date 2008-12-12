@@ -61,7 +61,13 @@ sub transform_dates {
         $dates{early}      = '';
         $dates{date_start} = $pr->sdate;
     }
-    if ($dates{date_end}) {
+    my $edate = $pr->edate();
+    my $edate2 = (date($pr->edate()) + $pr->extradays())->as_d8();
+        # edate2 may be different in case this is an 'extended' program.
+    if ($dates{date_end}
+        && $dates{date_end} ne $edate
+        && $dates{date_end} ne $edate2
+    ) {
         $dates{late} = 'yes';
     }
     else {
@@ -105,6 +111,7 @@ sub list_online : Local {
             last  => $last,
             pname => $pr? $pr->name
                     :     "Unknown Program",
+            pid   => $pid,
             date  => $date,
             time  => $time,
             fname => $fname,
@@ -164,6 +171,7 @@ sub list_reg_name : Local {
     my $pr = model($c, 'Program')->find($prog_id);
 
     $c->stash->{daily_pic_date} = $pr->sdate();
+    $c->stash->{cal_param}      = $pr->sdate_obj->as_d8() . "/1";
     $c->stash->{program} = $pr;
     # ??? dup'ed code in matchreg and list_reg_name
     # DRY??? don't repeat yourself!
@@ -1633,7 +1641,7 @@ EOH
         my $ht = 20;
         my $mark =
                      ($reg->cancelled)? "<img src=/static/images/redX.gif height=$ht>"
-            :   ($need_house && !$hid)? "<img src=/static/images/house.jpg height=$ht>"
+            :   ($need_house && !$hid)? "<img src=/static/images/house.gif height=$ht>"
             :     (!$reg->letter_sent)? "<img src=/static/images/envelope.jpg height=$ht>"
             :                           "&nbsp;";
         if (length($mark) == 1) {
@@ -1738,6 +1746,8 @@ sub update : Local {
     my $h_type_opts = "";
     Global->init($c);     # get %string ready.
     my $cur_htype = $reg->h_type;
+    my $mon = $reg->date_start_obj->month();
+    my $winter = $mon > 10 || $mon < 5;
     HTYPE:
     for my $htname (qw/
         single_bath
@@ -1757,6 +1767,7 @@ sub update : Local {
         next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
+        next HTYPE if $htname eq 'center_tent' && $winter;
 
         my $selected = ($htname eq $cur_htype)? " selected": "";
         my $htdesc = $string{$htname};
@@ -2110,6 +2121,9 @@ sub lodge : Local {
     my $sdate = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
 
+    my $mon = $reg->date_start_obj->month();
+    my $summer = 5 <= $mon && $mon <= 10;
+
     my $h_type = $c->stash->{h_type} = $reg->h_type;
     my $bath   = ($h_type =~ m{bath}  )? "yes": "";
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
@@ -2150,8 +2164,10 @@ sub lodge : Local {
         my $cl_center = $cl_name =~ m{center}i;
         if (($tent && !$cl_tent) ||
             (!$tent && $cl_tent) ||
-            (!$center && $cl_center) ||  # watch out for the word center
-            ($center && !$cl_center)     # in indoor housing!
+            ($summer && (!$center && $cl_center ||
+                         $center && !$cl_center   ))
+                # watch out for the word center
+                # in indoor housing!
         ) {
             next PROGRAM_CLUSTER;
         }
@@ -2337,22 +2353,22 @@ sub lodge : Local {
         # insert a select into the first one.
         $h_opts[0] =~ s{>}{ selected>};
     }
-    # include kids and second choice
+    # include kids and housing prefs
     if (my @ages = $reg->kids() =~ m{(\d+)}g) {
         $c->stash->{kids} = " with child"
                           . ((@ages > 1)? "ren"
                              :            ""   )
                           ;
     }
-    if (my ($second) = $reg->comment() =~ m{2-(\S+).*online}) {
-        # hack! :(  housing types are a mess.
-        $second = $htype_exp{$second} || "Unknown";
-        $c->stash->{second_choice} = "<br>Second choice is '$second'.";
+    if (my ($prefs) = $reg->comment() =~ m{(1-.*)$}m) {
+        $prefs =~ s{\s*online\s*$}{}m;
+        $c->stash->{house_prefs} = "<br>Housing choices: $prefs.";
     }
     my $cn = $c->stash->{note} = $reg->confnote();
     $c->stash->{note_lines} = lines($cn) + 3;
 
     # copied - can we consolidate???
+    # probably???
     my $h_type_opts = "";
     Global->init($c);     # get %string ready.
     my $cur_htype = $reg->h_type;
@@ -2375,6 +2391,7 @@ sub lodge : Local {
         next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
+        next HTYPE if $htname eq 'center_tent' && !$summer;
 
         my $selected = ($htname eq $cur_htype)? " selected": "";
         my $htdesc = $string{$htname};
@@ -2841,6 +2858,7 @@ sub who_is_there : Local {
                    . ">"
                    . $r->person->last() . ", " . $r->person->first()
                    . "</a>"
+                   . _get_kids($r->kids())
                    . "<td><a target=happening href="
                    . $c->uri_for("/program/view/")
                    . $r->program_id()
@@ -2860,6 +2878,20 @@ sub who_is_there : Local {
                    . "</center>"
                    . "<p><table cellpadding=2>$reg_names</table>"
                    );
+}
+
+sub _get_kids {
+    my ($s) = @_;
+    my @ages = $s =~ m{(\d+)}g;
+    if (!@ages) {
+        return "";
+    }
+    elsif (@ages == 1) {
+        return " with child";
+    }
+    else {
+        return " with children";
+    }
 }
 
 #
@@ -3172,7 +3204,7 @@ sub conf_notes : Local {
 <center>
 <h2>Quick Confirmation Notes</h2>
 </center>
-Place the abbreviation at the beginning of the line.
+Place the abbreviation alone on the line and it will be expanded.
 <p>
 <table cellpadding=3>
 <tr><th align=left>Abbr</th><th align=left>Expansion</th></tr>

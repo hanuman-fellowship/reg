@@ -8,7 +8,7 @@
 <tr>
 <td valign=top align=right>Available Houses</td>
 <td>
-<select name=chosen_house_id size=[% n_opts %]>
+<select name=chosen_house_id size=15>
 [% house_opts %]
 </select>
 </td>

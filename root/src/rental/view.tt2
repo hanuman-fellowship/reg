@@ -180,6 +180,10 @@ Misc
 <tr><th align=right>Own Van</th><td align=center>[% rental.n_own_van %]</td></tr>
 <tr><th align=right>Commuting</th><td align=center>[% rental.n_commuting %]</td></tr>
 </table>
+<p>
+<span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% rental.id %]">Update</a></span>
+<div class=lunch>[% lunch_table %]</div>
+
 </div>
 
 <!-- Finance -->
@@ -387,9 +391,6 @@ Payments
 
 </table>
 <p>
-
-<span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% rental.id %]">Update</a></span>
-<div class=lunch>[% lunch_table %]</div>
 
 </div>  <!-- end Misc div -->
 
