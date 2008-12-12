@@ -1274,6 +1274,7 @@ sub _view {
     my @files = <root/static/online/*>;
     $c->stash->{online} = scalar(@files);
     $c->stash->{daily_pic_date} = $reg->date_start();
+    $c->stash->{cal_param}      = $reg->date_start_obj->as_d8() . "/1";
     $c->stash->{cur_cluster} = ($reg->house_id)? $reg->house->cluster_id
                                :                 1;
     $c->stash->{template} = "registration/view.tt2";
@@ -2060,6 +2061,7 @@ sub lodge : Local {
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
     my $pr = $reg->program();
     $c->stash->{daily_pic_date} = $reg->date_start;
+    $c->stash->{cal_param}      = $reg->date_start_obj->as_d8() . "/1";
     my $program_id = $reg->program_id();
     #
     # is there a comment saying that they want to be
