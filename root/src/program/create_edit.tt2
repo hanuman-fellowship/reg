@@ -2,12 +2,6 @@
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript">init_tabs(4, 0, 1);</script>
-<style type="text/css">
-#sub {
-    color: green;
-    background: lightgreen;
-}
-</style>
 </head>
 
 [% id = program.id %]
@@ -41,7 +35,7 @@
 <div id="tab1focus" class="tab tabfocus" style="display: none">
 Web
 </div>
-<span onclick="tabs(1)">
+<span onclick="tabs(1); document.form.title.focus();">
 <div id="tab1ready" class="tab tabhold" style="display: none">
 Web
 </div>
@@ -52,7 +46,7 @@ Web
 <div id="tab2focus" class="tab tabfocus" style="display: none">
 Meals/Lodging
 </div>
-<span onclick="tabs(2)">
+<span onclick="tabs(2); document.form.housecost_id.focus();">
 <div id="tab2ready" class="tab tabhold" style="display: none">
 Meals/Lodging
 </div>
@@ -63,7 +57,7 @@ Meals/Lodging
 <div id="tab3focus" class="tab tabfocus" style="display: none">
 Finance
 </div>
-<span onclick="tabs(3)">
+<span onclick="tabs(3); document.form.tuition.focus();">
 <div id="tab3ready" class="tab tabhold" style="display: none">
 Finance
 </div>
@@ -74,7 +68,7 @@ Finance
 <div id="tab4focus" class="tab tabfocus" style="display: none">
 Misc
 </div>
-<span onclick="tabs(4)">
+<span onclick="tabs(4); document.form.confnote.focus();">
 <div id="tab4ready" class="tab tabhold" style="display: none">
 Misc
 </div>
@@ -83,7 +77,7 @@ Misc
 
 <td class="emptytab">
 <span id=hid><input type=hidden name=section value=[% section %]></span>
-<input id=sub type=submit value="Submit">
+<input type=submit value="Submit">
 </td>
 
 </tr>       <!-- end of tabs row -->
