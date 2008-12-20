@@ -26,6 +26,20 @@ create table rental (
     n_own_tent        integer,
     n_own_van         integer,
     n_commuting       integer,
+
+    att_single_bath     text,
+    att_single          text,
+    att_dble_bath       text,
+    att_dble            text,
+    att_triple          text,
+    att_quad            text,
+    att_dormitory       text,
+    att_economy         text,
+    att_center_tent     text,
+    att_own_tent        text,
+    att_own_van         text,
+    att_commuting       text,
+
     max               integer,
 
     balance           integer,  -- for ease of display

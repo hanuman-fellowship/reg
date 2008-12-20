@@ -254,3 +254,5 @@ program tally - tally genders/kids before program happens
     also do the tuition tally
 program staff cannot add houses - don't offer it
 templates - some should not show
+better format for dates?  instead of 11/03/09 use Nov 3 '09 ??
+    easily done with Date::Simple default formats.

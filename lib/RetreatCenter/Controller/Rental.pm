@@ -97,9 +97,9 @@ sub _get_data {
     if (!@mess && $hash{sdate} > $hash{edate}) {
         push @mess, "End date must be after the Start date";
     }
-    my $ndays = 0;
+    my $rental_ndays = 0;
     if (!@mess) {
-        $ndays = date($hash{edate}) - date($hash{sdate});
+        $rental_ndays = date($hash{edate}) - date($hash{sdate});
     }
     if ($hash{email} && ! valid_email($hash{email})) {
         push @mess, "Invalid email: $hash{email}";
@@ -110,27 +110,55 @@ sub _get_data {
     if (! $hash{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
     }
+    H_TYPE:
     for my $f (qw/
-        n_single_bath
-        n_single
-        n_dble_bath
-        n_dble
-        n_triple
-        n_quad
-        n_dormitory
-        n_economy
-        n_center_tent
-        n_own_tent
-        n_own_van
-        n_commuting
+        single_bath
+        single
+        dble_bath
+        dble
+        triple
+        quad
+        dormitory
+        economy
+        center_tent
+        own_tent
+        own_van
+        commuting
     /) {
         my $s = $f;
-        $s =~ s{^n_}{};
-        if (! ($hash{$f} =~ m{^\d*$})) {
+        $s =~ s{_}{ };
+        $s =~ s{\b(\w)}{\u$1}g;
+        $s =~ s{Dble}{Double};
+        my $npeople;
+        if ($hash{"n_$f"} !~ m{^\d*$}) {
+            my $s = $f;
             $s =~ s{_}{ };
             $s =~ s{\b(\w)}{\u$1}g;
             $s =~ s{Dble}{Double};
-            push @mess, "Illegal quantity for $s: $hash{$f}";
+            push @mess, "Illegal quantity for $s: " . $hash{"n_$f"};
+        }
+        else {
+            $npeople = $hash{"h_$f"};
+        }
+        # att_???
+        if (! empty($hash{"att_$f"})) {
+            my @terms = split m{\s*,\s*}, $hash{"att_$f"};
+            my $total_peeps = 0;
+            TERM:
+            for my $t (@terms) {
+                if ($t !~ m{^\s*(\d+)\s*x\s*(\d+)\s*}i) {
+                    push @mess, "Illegal attendance for $s: " . $hash{"att_$f"};
+                    next H_TYPE;
+                }
+                my ($t_npeople, $t_ndays) = ($1, $2);
+                $total_peeps += $t_npeople;
+                if ($t_ndays > $rental_ndays) {
+                    push @mess, "Attendance > # days of rental!: $t_ndays";
+                }
+            }
+            if ($total_peeps > $hash{"n_$f"}) {
+                push @mess, "Total people in attendance field > # of people";
+            }
         }
     }
     if (@mess) {
@@ -743,15 +771,15 @@ sub update_lunch_do : Local {
 
     %hash = %{ $c->request->params() };
     my $r = model($c, 'Rental')->find($id);
-    my $ndays = $r->edate_obj - $r->sdate_obj + 1;
+    my $ndays = $r->edate_obj - $r->sdate_obj;
     my $l = "";
-    for my $n (0 .. $ndays-1) {
+    for my $n (0 .. $ndays) {
         $l .= (exists $hash{"d$n"})? "1": "0";
     }
     $r->update({
         lunches => $l,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
 sub booking : Local {

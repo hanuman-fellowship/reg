@@ -32,7 +32,7 @@ phone Phone
 website Website
 ftp_site www.mountmadonna.org
 ftp_login mmc
-ftp_password 1hello
+ftp_password (gAn3sh]
 ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0

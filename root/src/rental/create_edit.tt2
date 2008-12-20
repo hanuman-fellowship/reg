@@ -1,6 +1,19 @@
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript">init_tabs(4, 0, 0);</script>
+<script type="text/javascript">
+var newwin;
+function popup(url) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=350,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
 <h2>Rentals</h2>
 <form action=[% "/rental/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0>
@@ -126,13 +139,13 @@ Misc
 
 <tr>
 <th align=right width=140><span class="required">*</span> Maximum</th>
-<td><input type=text size=3 name=max value='[% rental.max %]'></td>
+<td><input tabindex=1 type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
 <tr>
 <th align=right>Housing Cost</th>
 <td>
-<select name=housecost_id>
+<select tabindex=2 name=housecost_id>
 [% FOREACH h IN housecost_opts %]
     <option value=[% h.id %][% IF h.name == rental.housecost.name %] selected[% END %]>[% h.name %]</option>
 [% END %]
@@ -142,20 +155,83 @@ Misc
 
 <tr><td style="height: 25px"></tr>
 
-<tr><td></td><th># of People</th></tr>
+<tr>
+<td></td>
+<th># of<br>People</th>
+<th align=center>Attendance <span style="font-weight: normal; margin-left: .5in;"><a href="#" onclick="javascript:popup('/static/help/attendance.html');">How?</a></span></th>
+</tr>
 
-<tr><th align=right>Single Bath</th><td align=center><input type=text size=3 name=n_single_bath value=[% rental.n_single_bath %]></td></tr>
-<tr><th align=right>Single</th><td align=center><input type=text size=3 name=n_single value=[% rental.n_single %]></th></tr>
-<tr><th align=right>Double Bath</th><td align=center><input type=text size=3 name=n_dble_bath value=[% rental.n_dble_bath %]></td></tr>
-<tr><th align=right>Double</th><td align=center><input type=text size=3 name=n_dble value=[% rental.n_dble %]></td></tr>
-<tr><th align=right>Triple</th><td align=center><input type=text size=3 name=n_triple value=[% rental.n_triple %]></td></tr>
-<tr><th align=right>Quad</th><td align=center><input type=text size=3 name=n_quad value=[% rental.n_quad %]></td></tr>
-<tr><th align=right>Dormitory</th><td align=center><input type=text size=3 name=n_dormitory value=[% rental.n_dormitory %]></td></tr>
-<tr><th align=right>Economy</th><td align=center><input type=text size=3 name=n_economy value=[% rental.n_economy %]></td></tr>
-<tr><th align=right>Center Tent</th><td align=center><input type=text size=3 name=n_center_tent value=[% rental.n_center_tent %]></td></tr>
-<tr><th align=right>Own Tent</th><td align=center><input type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td></tr>
-<tr><th align=right>Own Van</th><td align=center><input type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td></tr>
-<tr><th align=right>Commuting</th><td align=center><input type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td></tr>
+<tr>
+<th align=right>Single Bath</th>
+<td align=center><input tabindex=3 type=text size=3 name=n_single_bath value=[% rental.n_single_bath %]></td>
+<td align=center><input tabindex=15 type=text size=30 name=att_single_bath value='[% rental.att_single_bath %]'></td>
+</tr>
+
+<tr>
+<th align=right>Single</th>
+<td align=center><input tabindex=4 type=text size=3 name=n_single value=[% rental.n_single %]></th>
+<td align=center><input tabindex=16 type=text size=30 name=att_single value='[% rental.att_single %]'></th>
+</tr>
+
+<tr>
+<th align=right>Double Bath</th>
+<td align=center><input tabindex=5 type=text size=3 name=n_dble_bath value=[% rental.n_dble_bath %]></td>
+<td align=center><input tabindex=17 type=text size=30 name=att_dble_bath value='[% rental.att_dble_bath %]'></td>
+</tr>
+
+<tr>
+<th align=right>Double</th>
+<td align=center><input tabindex=6 type=text size=3 name=n_dble value=[% rental.n_dble %]></td>
+<td align=center><input tabindex=18 type=text size=30 name=att_dble value='[% rental.att_dble %]'></td>
+</tr>
+
+<tr>
+<th align=right>Triple</th>
+<td align=center><input tabindex=7 type=text size=3 name=n_triple value=[% rental.n_triple %]></td>
+<td align=center><input tabindex=19 type=text size=30 name=att_triple value='[% rental.att_triple %]'></td>
+</tr>
+
+<tr>
+<th align=right>Quad</th>
+<td align=center><input tabindex=8 type=text size=3 name=n_quad value=[% rental.n_quad %]></td>
+<td align=center><input tabindex=20 type=text size=30 name=att_quad value='[% rental.att_quad %]'></td>
+</tr>
+
+<tr>
+<th align=right>Dormitory</th>
+<td align=center><input tabindex=9 type=text size=3 name=n_dormitory value=[% rental.n_dormitory %]></td>
+<td align=center><input type=text size=30 name=att_dormitory value='[% rental.att_dormitory %]'></td>
+</tr>
+
+<tr>
+<th align=right>Economy</th>
+<td align=center><input tabindex=10 type=text size=3 name=n_economy value=[% rental.n_economy %]></td>
+<td align=center><input tabindex=21 type=text size=30 name=att_economy value='[% rental.att_economy %]'></td>
+</tr>
+
+<tr>
+<th align=right>Center Tent</th>
+<td align=center><input tabindex=11 type=text size=3 name=n_center_tent value=[% rental.n_center_tent %]></td>
+<td align=center><input type=text size=30 name=att_center_tent value='[% rental.att_center_tent %]'></td>
+</tr>
+
+<tr>
+<th align=right>Own Tent</th>
+<td align=center><input tabindex=12 type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td>
+<td align=center><input tabindex=22 type=text size=30 name=att_own_tent value='[% rental.att_own_tent %]'></td>
+</tr>
+
+<tr>
+<th align=right>Own Van</th>
+<td align=center><input tabindex=13 type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td>
+<td align=center><input tabindex=23 type=text size=30 name=att_own_van value='[% rental.att_own_van %]'></td>
+</tr>
+
+<tr>
+<th align=right>Commuting</th>
+<td align=center><input tabindex=14 type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td>
+<td align=center><input tabindex=24 type=text size=30 name=att_commuting value='[% rental.att_commuting %]'></td>
+</tr>
 
 </table>
 </div>
@@ -216,6 +292,18 @@ Misc
 
 </form>
 <script type="text/javascript">
-document.form.name.focus();
 tabs([% section %]);
+[% IF form_action == 'create_do' %]
+document.form.name.focus();
+[% ELSE %]
+    [% IF section == 1 %]
+        document.form.title.focus();
+    [% ELSIF section == 2 %]
+        document.form.max.focus();
+    [% ELSIF section == 3 %]
+        document.form.deposit.focus();
+    [% ELSE %]
+        document.form.comment.focus();
+    [% END %]
+[% END %]
 </script>

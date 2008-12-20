@@ -29,6 +29,7 @@ __PACKAGE__->add_columns(qw/
     email
     comment
     housecost_id
+
     n_single_bath
     n_single
     n_dble_bath
@@ -41,6 +42,20 @@ __PACKAGE__->add_columns(qw/
     n_own_tent
     n_own_van
     n_commuting
+
+    att_single_bath
+    att_single
+    att_dble_bath
+    att_dble
+    att_triple
+    att_quad
+    att_dormitory
+    att_economy
+    att_center_tent
+    att_own_tent
+    att_own_van
+    att_commuting
+
     max
 
     balance
