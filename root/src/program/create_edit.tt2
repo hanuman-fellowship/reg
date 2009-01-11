@@ -1,7 +1,21 @@
 <head><!-- an addition/supplement to the head -->
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
-<script type="text/javascript">init_tabs(4, 0, 1);</script>
+<script type="text/javascript">
+
+init_tabs(4, 0, 1);
+
+function set_level_visibility() {
+    var lev_div = document.getElementById('level');
+    if (document.form.school.value == 0) {
+        lev_div.style.visibility = 'hidden';
+    }
+    else {
+        lev_div.style.visibility = 'visible';
+    }
+    return true;
+}
+</script>
 </head>
 
 [% id = program.id %]
@@ -305,6 +319,26 @@ Misc
 </tr>
 </table>
 
+<tr>
+<th align=right valign=top>Sponsoring Organization</th>
+<td valign=top>
+<select name=school
+        onchange="set_level_visibility();"
+>
+[% school_opts %]
+</select>
+</td>
+</tr>
+
+<tr id=level>
+<th align=right>Level</th>
+<td>
+<select name=level>
+[% level_opts %]
+</select>
+</td>
+</tr>
+
 </table>
 </div>
 
@@ -312,5 +346,10 @@ Misc
 
 </form>
 
-<!-- where to focus? -->
-<script type="text/javascript">tabs([% section %]); document.form.name.focus();</script>
+<script type="text/javascript">
+    <!-- where to focus? -->
+    tabs([% section %]); document.form.name.focus();
+
+    <!-- show level? -->
+    document.getElementById('level').style.visibility = '[% show_level %]';
+</script>

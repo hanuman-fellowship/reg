@@ -1,0 +1,350 @@
+[% id = proposal.id %]
+
+<h2>Proposals</h2>
+<a href="/proposal/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+[% IF ! proposal.rental_id %]
+<a href="/proposal/update/[% id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/proposal/delete/[% id %]"
+onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
+<a href="/proposal/list">List</a>
+&nbsp;&nbsp;&nbsp;
+[% IF proposal.rental_id %]
+    <a href="/rental/view/[% proposal.rental_id %]">To Rental</a>
+[% ELSIF ! proposal.denied %]
+    <a target=_blank href="/proposal/approve/[% id %]">Approve</a>
+[% END %]
+<p>
+<table cellpadding=2 border=0>
+
+<tr>
+<th align=right>Date of Call</th>
+<td>[% proposal.date_of_call_obj %]</td>
+</tr>
+
+<tr>
+<th align=right>Group Name</th>
+<td>[% proposal.group_name %]</td>
+</tr>
+
+<tr>
+<th align=right>Type of Rental</th>
+<td>[% proposal.rental_type %]</td>
+</tr>
+
+<tr><td colspan=4><hr></td></tr>
+<tr><th style="font-size: 15pt; color: green">Contact Person</th></tr>
+[% IF proposal.person_id %]
+[% p = proposal.person %]
+<tr>
+<th align=right>First</th>
+<td>[% p.first %]</td>
+<th align=right>Home</th>
+<td>[% p.tel_home %]</td>
+<td><a href="/person/view/[% p.id %]">To Person</a></td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td>[% p.last %]</td>
+<th align=right>Work</th>
+<td>[% p.tel_work %]</td>
+
+</tr>
+
+<tr>
+<th align=right>Address</th>
+<td>[% p.addr1 %]</td>
+<th align=right>Cell</th>
+<td>[% p.tel_cell %]</td>
+
+</tr>
+
+<tr>
+<th></th>
+<td colspan=3>[% p.addr2 %]</td>
+</tr>
+
+<tr>
+<th align=right>City</th>
+<td colspan=3>[% p.city %]</td>
+</tr>
+
+<tr>
+<th align=right>State/Province</th>
+<td colspan=3>[% p.st_prov %]</td>
+</tr>
+
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td colspan=3>[% p.zip_post %]</td>
+</tr>
+
+<tr>
+<th align=right>Country</th>
+<td colspan=3>[% p.country %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=3><a href="mailto:[% p.email %]">[% p.email %]</a></td>
+</tr>
+[% ELSE %]
+<tr>
+<th align=right>First</th>
+<td>[% proposal.first %]</td>
+<th align=right>Home</th>
+<td>[% proposal.tel_home %]</td>
+<td><a href="/proposal/transmit/[% id %]">Transmit</a></td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td>[% proposal.last %]</td>
+<th align=right>Work</th>
+<td>[% proposal.tel_work %]</td>
+
+</tr>
+
+<tr>
+<th align=right>Address</th>
+<td>[% proposal.addr1 %]</td>
+<th align=right>Cell</th>
+<td>[% proposal.tel_cell %]</td>
+
+</tr>
+
+<tr>
+<th></th>
+<td colspan=3>[% proposal.addr2 %]</td>
+</tr>
+
+<tr>
+<th align=right>City</th>
+<td colspan=3>[% proposal.city %]</td>
+</tr>
+
+<tr>
+<th align=right>State/Province</th>
+<td colspan=3>[% proposal.st_prov %]</td>
+</tr>
+
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td colspan=3>[% proposal.zip_post %]</td>
+</tr>
+
+<tr>
+<th align=right>Country</th>
+<td colspan=3>[% proposal.country %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=3><a href="mailto:[% proposal.email %]">[% proposal.email %]</a></td>
+</tr>
+[% END %]
+
+[% IF proposal.cs_first %]
+<tr><td colspan=4><hr></td></tr>
+<tr><th style="font-size: 15pt; color: green">Contract Signer</th></tr>
+[% IF proposal.cs_person_id %]
+[% csp = proposal.cs_person %]
+<tr>
+<th align=right>First</th>
+<td>[% csp.first %]</td>
+<th align=right>Home</th>
+<td>[% csp.tel_home %]</td>
+<td><a href="/person/view/[% csp.id %]">To Person</a></td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td>[% csp.last %]</td>
+<th align=right>Work</th>
+<td>[% csp.tel_work %]</td>
+
+</tr>
+
+<tr>
+<th align=right>Address</th>
+<td>[% csp.addr1 %]</td>
+<th align=right>Cell</th>
+<td>[% csp.tel_cell %]</td>
+
+</tr>
+
+<tr>
+<th></th>
+<td colspan=3>[% csp.addr2 %]</td>
+</tr>
+
+<tr>
+<th align=right>City</th>
+<td colspan=3>[% csp.city %]</td>
+</tr>
+
+<tr>
+<th align=right>State/Province</th>
+<td colspan=3>[% csp.st_prov %]</td>
+</tr>
+
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td colspan=3>[% csp.zip_post %]</td>
+</tr>
+
+<tr>
+<th align=right>Country</th>
+<td colspan=3>[% csp.country %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=3><a href="mailto:[% csp.email %]">[% csp.email %]</a></td>
+</tr>
+[% ELSE %]
+<tr>
+<th align=right>First</th>
+<td>[% proposal.cs_first %]</td>
+<th align=right>Home</th>
+<td>[% proposal.cs_tel_home %]</td>
+<td><a href="/proposal/cs_transmit/[% id %]">Transmit</a></td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td>[% proposal.cs_last %]</td>
+<th align=right>Work</th>
+<td>[% proposal.cs_tel_work %]</td>
+
+</tr>
+
+<tr>
+<th align=right>Address</th>
+<td>[% proposal.cs_addr1 %]</td>
+<th align=right>Cell</th>
+<td>[% proposal.cs_tel_cell %]</td>
+
+</tr>
+
+<tr>
+<th></th>
+<td colspan=3>[% proposal.cs_addr2 %]</td>
+</tr>
+
+<tr>
+<th align=right>City</th>
+<td colspan=3>[% proposal.cs_city %]</td>
+</tr>
+
+<tr>
+<th align=right>State/Province</th>
+<td colspan=3>[% proposal.cs_st_prov %]</td>
+</tr>
+
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td colspan=3>[% proposal.cs_zip_post %]</td>
+</tr>
+
+<tr>
+<th align=right>Country</th>
+<td colspan=3>[% proposal.cs_country %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=3><a href="mailto:[% proposal.cs_email %]">[% proposal.cs_email %]</a></td>
+</tr>
+[% END %]
+[% END %]
+
+<tr><td colspan=4><hr></td></tr>
+<tr>
+<th align=right>Min</th>
+<td colspan=3>
+[% proposal.min %]
+<span style="font-weight: bold; margin-left: .3in">Max</span>
+[% proposal.max %]
+</td>
+</tr>
+
+<tr>
+<th align=right>Dates Requested</th>
+<td colspan=3>[% proposal.dates_requested_br %]</td>
+</tr>
+
+<tr>
+<th align=right>Check In</th>
+<td colspan=3>
+[% proposal.check_in_time %]
+<span style="font-weight: bold; margin-left: .3in">Check Out</th>
+[% proposal.check_out_time %]
+</td>
+</tr>
+
+<tr>
+<th align=right>Other Things Happening</th>
+<td colspan=3>[% proposal.other_things %]</td>
+</tr>
+
+<tr>
+<th align=right>Meeting Space</th>
+<td colspan=3>[% proposal.meeting_space %]</td>
+</tr>
+
+<tr>
+<th align=right>Housing Space</th>
+<td colspan=3>[% proposal.housing_space %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Leader Housing</th>
+<td colspan=3>[% proposal.leader_housing %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Special Needs</th>
+<td colspan=3>[% proposal.special_needs_br %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Food Service</th>
+<td colspan=3>[% proposal.food_service_br %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Other Requests</th>
+<td colspan=3>[% proposal.other_requests_br %]</td>
+</tr>
+
+<tr>
+<th align=right>Program Meeting Date</th>
+<td colspan=3>[% proposal.program_meeting_date_obj %]</td>
+</tr>
+
+<tr>
+<th align=right>Denied</th>
+<td colspan=3>[% proposal.denied %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Provisos</th>
+<td colspan=3>[% proposal.provisos_br %]</td>
+</tr>
+
+<tr>
+<th align=right>Deposit</th>
+<td colspan=3>[% proposal.deposit %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Miscellaneous Notes</th>
+<td colspan=3>[% proposal.misc_notes_br %]</td>
+</tr>
+
+</table>

@@ -39,6 +39,8 @@ our @EXPORT_OK = qw/
     tt_today
     ceu_license
     commify
+    wintertime
+    dcm_registration
 /;
 
 use POSIX   qw/ceil/;
@@ -312,10 +314,13 @@ sub empty {
 # or an address-specific MD5.
 #
 sub nsquish {
-    my $s = join '', @_;
-    my ($c) = $s =~ m{([a-z])}i;
-    $s =~ s{\D}{}g;
-    $s.(uc $c);
+    my ($addr1, $addr2, $zip) = @_;
+    my $s = uc($addr1 . $addr2 . $zip);
+    my $n = $s;
+    $n =~ s{\D}{}g;
+    $s =~ s{[^A-Z]}{}g;
+    $s = substr($s, 0, 3);
+    return ($n . $s); 
 }
 
 #
@@ -824,6 +829,9 @@ sub lines {
 sub _br {
     my ($s) = @_;
  
+    if (! $s) {
+        return $s; 
+    }
     $s =~ s{\r?\n$}{};      # chop last
     $s =~ s{\r?\n}{<br>\n}g;   # internal newlines
     $s =~ s{^(\s+)}{"&nbsp;" x length($1)}emg;
@@ -851,6 +859,7 @@ sub normalize {
 sub link_share {
     my ($c, $program_id, $s) = @_;
 
+    return $s if ! $s; 
     if ($s =~ m{Sharing a room with\s*([^.]+)[.]}) {
         my $name = $1;
         my @names = map { normalize($_); } split m{\s+}, trim($name);
@@ -1040,4 +1049,40 @@ sub commify {
     return scalar reverse $n;
 }
 
+sub wintertime {
+    my ($mon) = @_;
+    return(11 <= $mon || $mon <= 4);
+}
+
+#
+# can use a prefetch/join to help further with this...???
+# to add another search condition
+#
+# should this be a method in the Person data object instead???
+#
+sub dcm_registration {
+    my ($c, $person_id) = @_;
+
+    my @regs = model($c, 'Registration')->search(
+        {
+            person_id => $person_id,
+        },
+        {
+            prefetch => [qw/program/],
+        }
+    );
+    @regs = grep {
+                $_->program->level() =~ m{[DCM]}
+            }
+            @regs;
+    if (@regs == 1) {
+        return $regs[0];
+    }
+    elsif (! @regs) {
+        return 0;
+    }
+    else {
+        return scalar(@regs);
+    }
+}
 1;

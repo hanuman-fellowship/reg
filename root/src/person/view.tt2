@@ -1,31 +1,34 @@
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+[% id = person.id %]
 <h2>People</h2>
 <a href="/person/create" accesskey='a'><span class=keyed>A</span>dd</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/update/[% person.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
+<a href="/person/update/[% id %]" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/delete/[% person.id %]"
+<a href="/person/delete/[% id %]"
 onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/register1/[% person.id %]" accesskey='r'><span class=keyed>R</span>egister</a>
+<a href="/person/register1/[% id %]" accesskey='r'><span class=keyed>R</span>egister</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
+&nbsp;&nbsp;&nbsp;
+[% IF person.mmi_payments %]<a href="/person/list_mmi_payment/[% id %]">MMI Payments</a>[% END %]
 <p>
 <a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/donation/create/[% person.id %]" accesskey='d'><span class=keyed>D</span>onate</a>
+<a href="/donation/create/[% id %]" accesskey='d'><span class=keyed>D</span>onate</a>
 &nbsp;&nbsp;&nbsp;
-<a accesskey='p' href="/xaccount/pay_balance/[% person.id %]"><span class=keyed>P</span>ayment</a>
+<a accesskey='p' href="/xaccount/pay_balance/[% id %]"><span class=keyed>P</span>ayment</a>
 [% IF person.partner %]
 &nbsp;&nbsp;&nbsp;
     Partnered <span class=keyed>W</span>ith <a href="/person/view/[% person.partner.id %]" accesskey='w'>[% person.partner.first _" "_ person.partner.last %]</a>
     &nbsp;&nbsp;&nbsp;
-    <a href="/person/separate/[% person.id %]"
+    <a href="/person/separate/[% id %]"
     onclick="return confirm('Okay to Separate?');">Separate</a>
 [% ELSE %]
 &nbsp;&nbsp;&nbsp;
-    <a href="/person/partner/[% person.id %]" accesskey='w'>Partner <span class=keyed>W</span>ith</a>
+    <a href="/person/partner/[% id %]" accesskey='w'>Partner <span class=keyed>W</span>ith</a>
 [% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
     [% IF person.leader %]
@@ -34,7 +37,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% ELSE %]
         [% IF Catalyst.check_user_roles('prog_admin') %]
             &nbsp;&nbsp;&nbsp;
-            <a href="/leader/create/[% person.id %]" accesskey='l'>Make <span class=keyed>L</span>eader</a>
+            <a href="/leader/create/[% id %]" accesskey='l'>Make <span class=keyed>L</span>eader</a>
         [% END %]
     [% END %]
 [% END %]
@@ -43,91 +46,91 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% IF person.member %]
         <a href="/member/update/[% person.member.id %]" accesskey='m'><span class=keyed>M</span>ember Info</a>
     [% ELSE %]
-        <a href="/member/create/[% person.id %]" accesskey='m'>Make <span class=keyed>M</span>ember</a>
+        <a href="/member/create/[% id %]" accesskey='m'>Make <span class=keyed>M</span>ember</a>
     [% END %]
 [% END %]
 <p>
 <table cellpadding=3 border=0>
+
 <tr>
-<th align=right valign=bottom>First</th><td valign=bottom><span class=larger>[% person.first %]</span></td>
+<th align=right valign=bottom>First</th><td valign=bottom width=200><span class=larger>[% person.first %]</span></td>
 <th align=right>Home</td><td>[% person.tel_home %]</span></td>
 </tr>
+
 <tr>
 <th align=right valign=bottom>Last</th><td valign=bottom><span class=larger>[% person.last %]</span></td>
 <th align=right>Work</td><td>[% person.tel_work %]</td>
 </tr>
+
 <tr>
 <th align=right>Sanskrit</th><td>[% person.sanskrit %]</td>
 <th align=right>Cell</td><td>[% person.tel_cell %]</td>
 </tr>
+
 <tr>
 <th align=right valign=top>Sex</th><td>[% sex %]</td>
-<th align=right valign=top rowspan=4>Comment</td><td rowspan=4 valign=top>[% person.comment_br %]</td>
 </tr>
-<tr><th align=right>Address</th><td>[% person.addr1 %]</td></tr>
-<tr><th align=right>&nbsp;</th><td>[% person.addr2 %]</td></tr>
-<tr>
-<th align=right>City</th><td>[% person.city %]</td>
-</tr>
-<tr>
-<th align=right>State/Province</th><td>[% person.st_prov %]</td>
 
-</tr>
-<tr>
-<th align=right>Zip/Postal Code</th><td>[% person.zip_post %]</td>
-</tr>
-<tr>
-<th align=right>Country</th><td>[% person.country %]</td>
-</tr>
-<tr><th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td></tr>
-[% regs = person.registrations %]
-[% IF Catalyst.check_user_roles('prog_staff') && regs %]
-<tr>
-    <td colspan=4 valign=top>
-    <table cellpadding=2>
-    <tr><td class=larger>Registrations</td></tr>
-    [% FOREACH r IN regs %]
-        <tr>
-        <td><a href="/registration/view/[% r.id %]">[% r.program.name %]</a></td>
-        <td>[% IF r.date_start %][% r.date_start_obj %][% ELSE %][% r.program.sdate_obj %][% END %]</td>
-        </tr>
-    [% END %]
-    </table>
-</tr>
-[% END %]
-<tr><th align=right valign=top>Mailings</th><td>
-
+<tr><th align=right>Address</th><td>[% person.addr1 %]</td>
+<th align=right valign=top>Mailings</th>
+<td rowspan=3>
 <table>
 <tr><td align=right>Email</td><td>[% person.e_mailings %]</td></tr>
 <tr><td align=right>Snail Mail</td><td>[% person.snail_mailings %]</td></tr>
 <tr><td align=right>Share</td><td>[% person.share_mailings %]</td>
 </table>
-
-</td></tr>
-
-<tr>
-<th align=right valign=top>Affiliations</td>
-<td>
-[% FOREACH a IN affils %]
-[% a.descrip %]<br>
-[% END %]
 </td>
-[% IF person.deceased || person.inactive %]
 </tr>
-<tr><th align=right>Status</th><td align=left>[% IF person.inactive %]Inactive[% ELSE %]Deceased[% END %]</td></tr>
-[% END %]
+
+<tr><th align=right>&nbsp;</th><td>[% person.addr2 %]</td></tr>
+
+<tr><th align=right>City</th><td>[% person.city %]</td>
+</tr>
+
 <tr>
+<th align=right>State/Province</th><td>[% person.st_prov %]</td>
 <th align=right>Date Entered</td><td>[% person.date_entrd_obj %]</td>
 </tr>
+
 <tr>
+<th align=right>Zip/Postal Code</th><td>[% person.zip_post %]</td>
 <th align=right>Date Updated</td><td>[% person.date_updat_obj %]</td>
 </tr>
+
+<tr>
+<th align=right>Country</th><td>[% person.country %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td valign=top>[% person.comment_br %]</td>
+</tr>
+
+[% IF person.deceased || person.inactive %]
+<tr>
+<th align=right>Status</th>
+<td align=left>[% IF person.inactive %]Inactive[% ELSE %]Deceased[% END %]</td>
+</tr>
+[% END %]
+
 </table>
+
+<p>
+<span class=larger>Affiliations</span>
+<ul>
+[% FOREACH a IN person.affils %]
+    [% a.descrip %]<br>
+[% END %]
+</ul>
+
 [% IF person.donations %]
-<!-- include overlib.js only when needed -->
-<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
     <p>
-    <span class=hdr>Donations</span>
+    <span class=larger>Donations</span>
+    <ul>
     <table cellpadding=3>
     <tr>
     <th align=right>Amount</th>
@@ -143,10 +146,71 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% END %]
     </table>
+    </ul>
 [% END %]
+
+[% pays = person.payments %]
+[% IF pays %]
+    <p>
+    <span class=larger>Payments</span>
+    <ul>
+    <table cellpadding=3>
+    <tr>
+    <th align=right>Amount</th>
+    <th align=left>What</th>
+    <th align=left>Account</th>
+    <th align=left>Type</th>
+    </tr>
+    [% FOR p IN pays %]
+        <tr>
+        <td align=right>[% p.amount %]</td>
+        <td align=right>[% p.what %]</td>
+        <td align=right><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
+        <td align=right>[% p.type %]</td>
+        <td><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+        </tr>
+    [% END %]
+    </table>
+    </ul>
+[% END %]
+
+[% progs = person.leader.programs %]
+[% IF Catalyst.check_user_roles('prog_staff') && progs %]
+    <p>
+    <span class=larger>Programs Lead</span>
+    <ul>
+    <table cellpadding=3>
+    [% FOREACH p IN progs %]
+        <tr>
+        <td><a href="/program/view/[% p.id %]">[% p.name %]</a><td>
+        <td>[% p.sdate_obj %]<td>
+        </tr>
+    [% END %]
+    </table>
+    </ul>
+[% END %]
+
+[% regs = person.registrations %]
+[% IF Catalyst.check_user_roles('prog_staff') && regs %]
+    <p>
+    <span class=larger>Registrations</span>
+    <ul>
+    <table cellpadding=3>
+    [% FOREACH r IN regs %]
+        <tr>
+        <td>[% IF r.program.school != 0 %]<span class=required>*</span>[% END %]</td>
+        <td><a href="/registration/view/[% r.id %]">[% r.program.name %]</a></td>
+        <td>[% IF r.date_start %][% r.date_start_obj %][% ELSE %][% r.program.sdate_obj %][% END %]</td>
+        </tr>
+    [% END %]
+    </table>
+    </ul>
+[% END %]
+
 [% IF person.credits %]
     <p>
-    <span class=hdr>Credits</span>
+    <span class=larger>Credits</span>
+    <ul>
     <table cellpadding=3>
     <tr>
     <th align=right>Amount</th>
@@ -165,40 +229,45 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         </tr>
     [% END %]
     </table>
+    </ul>
 [% END %]
-[% pays = person.payments %]
-[% IF pays %]
+
+[% proposals = person.proposals %]
+[% IF Catalyst.check_user_roles('prog_staff') && proposals %]
     <p>
-    <span class=hdr>Payments</span>
+    <span class=larger>Proposals Submitted</span>
+    <ul>
     <table cellpadding=3>
     <tr>
-    <th align=right>Amount</th>
-    <th align=left>What</th>
-    <th align=left>Account</th>
-    <th align=left>Type</th>
+    <th align=left>Group Name</th>
+    <th align=left>Date of Call</th>
     </tr>
-    [% FOR p IN pays %]
+    [% FOR p IN proposals %]
         <tr>
-        <td align=right>[% p.amount %]</td>
-        <td align=right>[% p.what %]</td>
-        <td align=right><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
-        <td align=right>[% p.type %]</td>
-        <td><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+        <td><a href="/proposal/view/[% p.id %]">[% p.group_name %]</a></td>
+        <td>[% p.date_of_call_obj %]</td>
         </tr>
     [% END %]
     </table>
+    </ul>
 [% END %]
+
 [% rentals = person.rentals %]
-[% IF rentals %]
+[% IF Catalyst.check_user_roles('prog_staff') && rentals %]
     <p>
-    <span class=hdr>Rentals Coordinated</span>
+    <span class=larger>Rentals Coordinated</span>
+    <ul>
     <table cellpadding=3>
     <tr>
     <th align=left>Name</th>
     <th align=left>Start Date</th>
     </tr>
     [% FOR r IN rentals %]
-    <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
-    <td>[% r.sdate_obj %]</td>
+        <tr>
+        <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+        <td>[% r.sdate_obj %]</td>
+        </tr>
     [% END %]
+    </table>
+    </ul>
 [% END %]

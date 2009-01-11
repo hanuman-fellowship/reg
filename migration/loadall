@@ -1,4 +1,6 @@
 #!/bin/sh
+howmuch='f07'       # f89
+
 if [ `whoami` = 'sahadev' ]
 then
     db='mysql -u sahadev -pJonB reg2'
@@ -36,15 +38,16 @@ rm -f 20*.png lo* lth* lb* po* pth* pb*
 cd ../../../migration
 
 echo people
-# ??? -n 2000
 loadpeople
 echo leaders, canpol, housecost, programs
-# ??? -s cur => f89
-loadprog -s cur
+loadprog $howmuch
 echo registrations
-loadreg -s cur
+loadreg $howmuch
 echo rentals
-loadrent -s cur
+loadrent $howmuch
+
+# load all mmi payments
+loadmmi
 
 # add a LOT of config records
 loadconfig $MYSQL
@@ -61,6 +64,11 @@ echo Donations
 loaddon
 echo Memberships
 loadmem
+
+# split the F08 PRs from the S08 ones
+# this is done before the regcount is done...
+echo split F08 PRs from S08
+splitPR
 
 # update the reg_count field in all program records
 echo updating regcount

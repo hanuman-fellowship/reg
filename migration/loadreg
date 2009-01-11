@@ -3,7 +3,9 @@ use strict;
 use warnings;
 use DBI;
 use lib '../lib';
-use Util qw/nsquish/;
+use Util qw/
+    nsquish
+/;
 use Getopt::Easy;
 use Date::Simple qw/
     date
@@ -80,7 +82,7 @@ my $who_ins_sth = $dbh->prepare($who_ins_sql) or die "no who_ins_sql\n";
 my $p_sql = "select name, sdate, edate, extradays from program where id = ?";
 my $p_sth = $dbh->prepare($p_sql) or die "no p_sql\n";
 
-my $per_sql = "select id from people where first = ? and last = ?";
+my $per_sql = "select id, date_updat from people where first = ? and last = ?";
 my $per_sth = $dbh->prepare($per_sql) or die "no per_sql\n";
 
 my $ins_per_sql = "
@@ -135,13 +137,14 @@ my $ins_reg_sql = "insert into registration
 (id, program_id, person_id, comment, confnote, date_start, date_end, early, late,
  referral, adsource, kids, h_type, h_name, carpool, hascar,
  date_postmark, letter_sent, ceu_license, arrived, cancelled,
- deposit, balance, time_postmark, house_id, cabin_room, leader_assistant
+ deposit, balance, time_postmark, house_id, cabin_room, leader_assistant,
+ pref1, pref2
 ) 
 values
 (?, ?, ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?,
- ?, ?, ?, ?, ?, ?)";
+ ?, ?, ?, ?, ?, ?, ?, ?)";
 my $ins_reg_sth = $dbh->prepare($ins_reg_sql) or die "no ins_reg_sql\n";
 
 my %type_map = qw/
@@ -185,6 +188,20 @@ my %housemap = qw/
     QU  quad
     VAN own_van
 /;
+my %comm_h_type = qw(
+    com    commuting
+    ov     own_van
+    ot     own_tent
+    ct     center_tent
+    dorm   dormitory
+    econ   economy
+    quad   quad
+    tpl    triple
+    dbl    dble
+    dbl/ba dble_bath
+    sgl    single
+    sgl/ba single_bath
+);
 my @houses = qw/
     108BH
     112B 114B 116B 118B
@@ -204,6 +221,13 @@ $sth->execute();
 my ($next_person_id) = $sth->fetchrow_array();
 $sth = undef;
 ++$next_person_id;
+
+# for updating the "last_updat" field:
+my $upd_upd_sth = $dbh->prepare("
+    update people
+       set date_updat = ?
+     where id = ?
+");
 
 for my $seas (@seasons) {
     print "reg $seas\t";
@@ -255,6 +279,7 @@ for my $seas (@seasons) {
 
 $p_sth = $per_sth = $ins_per_sth = $upd_per_sth = $ins_reg_sth = undef;
 $who_sth = $who_ins_sth = $pay_ins_sth = $chg_ins_sth = $hist_ins_sth = undef;
+$upd_upd_sth = undef;
 $dbh->disconnect();
 
 sub processReg {
@@ -275,6 +300,13 @@ sub processReg {
     $hash{time_postmark} = "";
     if ($hash{comment} =~ s{(\d\d:\d\d)  online}{online}) {
         $hash{time_postmark} = $1;
+    }
+    my ($pref1, $pref2) = ("", "");
+    if ($hash{comment} =~ m{1-(\S+)}) {
+        $pref1 = $comm_h_type{$1};
+    }
+    if ($hash{comment} =~ m{2-(\S+)}) {
+        $pref2 = $comm_h_type{$1};
     }
 
     $hash{confnote} = "";
@@ -341,6 +373,23 @@ sub processReg {
         warn "*** no proper program id: $hash{program_id}!\n";
         return;
     }
+    #
+    # set date_start, date_end to program dates
+    # if not set already.   set early, late appropriately.
+    #
+    $hash{early} = $hash{late} = "";
+    if (! $hash{date_start}) {
+        $hash{date_start} = $sdate;
+    }
+    elsif ($hash{date_start} ne $sdate) {
+        $hash{early} = 'yes';
+    }
+    if (! $hash{date_end}) {
+        $hash{date_end} = $edate;
+    }
+    elsif (! ($hash{date_end} eq $edate || $hash{date_end} eq $edate2)) {
+        $hash{late} = 'yes';
+    }
     # get or create the person record
     # if already exists - update the record - ONLY if the
     # id is >= 200,000.  otherwise the person was added
@@ -349,7 +398,8 @@ sub processReg {
     # include the program start date and program name.
     #
     $per_sth->execute($hash{first}, $hash{last});
-    if ((($person_id) = $per_sth->fetchrow_array())
+    my $upd_date;
+    if ((($person_id, $upd_date) = $per_sth->fetchrow_array())
          && defined $person_id
     ) {
         if ($person_id >= 200000) {
@@ -374,6 +424,14 @@ sub processReg {
         }
         # else the person was added during loadpeople
         # and is already current.
+        #
+        # but ...
+        # we still need to update the date_updat with the end
+        # date of the program - as long as the previous date_updat
+        # is earlier...
+        if (!$upd_date || $upd_date < $hash{date_end}) {
+            $upd_upd_sth->execute($hash{date_end}, $person_id);
+        }
     }
     else {
         $person_id = $next_person_id++;
@@ -392,29 +450,11 @@ sub processReg {
             $hash{tel_work},
             $hash{tel_cell},
             $hash{email},
-            $sdate,
-            $sdate,
+            $hash{date_postmark},   # date added
+            $hash{date_end},        # date of last update (last contact)
             $name,
             nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
         );
-    }
-    #print "ins reg $hash{first} $hash{last} $hash{program_id}\n";
-    #
-    # set date_start, date_end to program dates
-    # if not set already.   set early, late appropriately.
-    #
-    $hash{early} = $hash{late} = "";
-    if (! $hash{date_start}) {
-        $hash{date_start} = $sdate;
-    }
-    elsif ($hash{date_start} ne $sdate) {
-        $hash{early} = 'yes';
-    }
-    if (! $hash{date_end}) {
-        $hash{date_end} = $edate;
-    }
-    elsif (! ($hash{date_end} eq $edate || $hash{date_end} eq $edate2)) {
-        $hash{late} = 'yes';
     }
     $ins_reg_sth->execute($reg_id,
                           $hash{program_id},
@@ -442,7 +482,9 @@ sub processReg {
                           $hash{time_postmark},
                           0,     # house_id
                           $hash{cabin_room},
-                          ''        # leader assistant
+                          '',        # leader assistant
+                          $pref1,
+                          $pref2
                          ) or die "no ins reg $DBI::errstr\n";
     # use deposit, pmt1, pmt2 in RegPayment records
     #     and p1cash, pmt1date

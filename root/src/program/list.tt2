@@ -12,6 +12,8 @@
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish_pics">PublishPics<a>
 [% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/program/list/1">PR/DCM<a>
 [% IF online > 0 %]
     &nbsp;&nbsp;&nbsp;
     <a href="/registration/list_online">Online ([% online %])</a>
@@ -20,6 +22,7 @@
 <ul>
 <table border=0 cellpadding=3>
 <tr>
+<th></th>
 <th align=left>Name</th>
 <th align=left>Start Date</th>
 <th align=right>Reg Count</th>
@@ -27,6 +30,7 @@
 </tr>
 [% FOREACH p IN programs %]
     <tr>
+    <td>[% IF p.school != 0 %]<span class=required>*</span>[% END %]</td>
     <td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
     <td>[% p.sdate_obj %]</td>
     <td align=right>[% p.reg_count %]</td>

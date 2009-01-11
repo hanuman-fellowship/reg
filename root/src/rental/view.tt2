@@ -14,18 +14,25 @@ h3 {
 </style>
 <h2>Rentals</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
-&nbsp;&nbsp;&nbsp;
 <a href="/rental/create">Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/duplicate/[% rental.id %]">Duplicate</a>
+<span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/delete/[% rental.id %]"
 onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/rental/duplicate/[% rental.id %]">Duplicate</a>
+&nbsp;&nbsp;&nbsp;
+[% proposal = rental.proposal %]
+[% IF proposal %]
+<a href="/proposal/view/[% proposal.id %]">To Proposal</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
+<a href="/program/publish">Publish</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/rental/contract/[% rental.id %]">Contract</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/program/publish">Publish</a>
+<a href="/rental/invoice/[% rental.id %]">Invoice</a>
 <p>
 [% END %]
 
@@ -179,8 +186,8 @@ Misc
 <td></td>
 <th># of<br>People</th>
 <th></th>
-<th width=400 align=left>Rooms</th>
-<th>Attendance</th>
+<th width=300 align=left valign=bottom>Rooms</th>
+<th valign=bottom>Attendance</th>
 </tr>
 
 <tr>
@@ -204,7 +211,7 @@ Misc
 <td align=center>[% rental.n_dble_bath %]</td>
 <td style="background: [% colcov.dble_bath %]"></td>
 [% IF rental.n_dble_bath || bookings.dble_bath %]<td><a href="/rental/booking/[% rental.id %]/dble_bath">Add</a>[% bookings.dble_bath %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_double_bath %]</td>
+<td>[% rental.att_dble_bath %]</td>
 </tr>
 
 <tr>
@@ -212,7 +219,7 @@ Misc
 <td align=center>[% rental.n_dble %]</td>
 <td style="background: [% colcov.dble %]"></td>
 [% IF rental.n_dble || bookings.dble %]<td><a href="/rental/booking/[% rental.id %]/dble">Add</a>[% bookings.dble %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_double %]</td>
+<td>[% rental.att_dble %]</td>
 </tr>
 
 <tr>
@@ -295,59 +302,6 @@ Misc
 <td>[% rental.glnum %]</td>
 </tr>
 
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<th align=right>Min Meals/Lodging</th>
-<td align=right>[% min_lodging %]</td>
-</tr>
-
-<tr>
-<th align=right>Actual Meals/Lodging</th>
-<td align=right>[% actual_lodging %]</td>
-</tr>
-
-<tr><td colspan=2 style="border-top: dashed thin"></td></tr>
-
-<tr>
-<th align=right>Meals/Lodging</th>
-<td align=right>[% lodging %]</td>
-</tr>
-
-<tr>
-<th align=right>Extra Time Charge</th>
-<td align=right>[% extra_time %]</td>
-</tr>
-
-<tr>
-<th align=right>Lunch Charge</th>
-<td align=right>[% lunch_charge %]</td>
-</tr>
-
-<tr>
-<th align=right>Other Charges</th>
-<td align=right>[% tot_other_charges %]</td>
-</tr>
-
-<tr><td></td></tr>
-
-<tr>
-<th align=right>Total Charges</th>
-<td align=right>[% tot_charges %]</td>
-</tr>
-
-<tr>
-<th align=right>Total Payments</th>
-<td align=right>[% tot_payments %]</td>
-</tr>
-
-<tr><td></td><td style="border-top: solid thin"></td></tr>
-<tr>
-<th align=right>Balance</th>
-<td align=right>[% rental.balance %]</td>
-[% IF rental.balance > 0 %]<td><a href="/rental/pay_balance/[% rental.id %]">Pay It</a></td>[% END %]
-</tr>
-
 </table>
 
 <div class=head>
@@ -407,6 +361,11 @@ Payments
 <td>Total</td>
 </tr>
 
+<tr>
+<td></td>
+<td><a href="/rental/pay_balance/[% id %]">New Payment</a></td>
+</tr>
+
 </table>
 </div>
 
@@ -447,13 +406,21 @@ Payments
 [% END %]
 
 <tr>
-<th valign=top align=right>Coordinator</th>
+<th valign=top align=right>Contact Person</th>
 <td valign=top>
 [% IF rental.coordinator_id %]
 [% coord = rental.coordinator %]
 <a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
 [% END %]
 <a href="/rental/coordinator_update/[% rental.id %]">Update</a>
+</td>
+<th valign=top align=right>Contract Signer</th>
+<td valign=top>
+[% IF rental.cs_person_id %]
+[% cs = rental.contract_signer %]
+<a href="/person/view/[% cs.id %]">[% cs.first %] [% cs.last %]</a><br>
+[% END %]
+<a href="/rental/contract_signer_update/[% rental.id %]">Update</a>
 </td>
 </tr>
 

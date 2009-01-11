@@ -1,0 +1,246 @@
+<script type="text/javascript">
+function show_no_show_cs() {
+    var cs_div = document.getElementById('cs');
+    if (cs_div.style.display == 'none') {
+        cs_div.style.display = 'block';
+        document.form.cs_first.focus();
+    }
+    else {
+        cs_div.style.display = 'none';
+    }
+}
+</script>
+<h2>Proposals</h2>
+<form action=[% "/proposal/" _ form_action %] name=form method=post>
+
+<table cellpadding=2>
+
+<tr>
+<th align=right style="min-width: 200px">Date of Call</th>
+<td><input type=text name=date_of_call value="[% date_of_call %]" size=10></td>
+</tr>
+
+<tr>
+<th align=right>Group Name</th>
+<td><input type=text name=group_name value="[% proposal.group_name %]"></td>
+</tr>
+
+<tr>
+<th align=right>Type of Rental</th>
+<td><input type=text name=rental_type value="[% proposal.rental_type %]"></td>
+</tr>
+
+[% IF ! proposal.person_id %]
+<tr><td colspan=4><hr width=600 align=left></td></tr>
+<tr><th align=left style="color: green; font-size: 15pt">Contact Person</th></tr>
+
+<tr>
+<th align=right>First</th>
+<td><input type=text name=first value="[% proposal.first %]"></td>
+<th align=right>Home</th>
+<td><input type=text name=tel_home value="[% proposal.tel_home %]" size=15></td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td><input type=text name=last value="[% proposal.last %]"></td>
+<th align=right>Work</th>
+<td><input type=text name=tel_work value="[% proposal.tel_work %]" size=15></td>
+</tr>
+
+<tr>
+<th align=right>Address</th>
+<td><input type=text name=addr1 value="[% proposal.addr1 %]"></td>
+<th align=right>Cell</th>
+<td><input type=text name=tel_cell value="[% proposal.tel_cell %]" size=15></td>
+</tr>
+
+<tr>
+<th></th>
+<td colspan=3><input type=text name=addr2 value="[% proposal.addr2 %]"></td>
+</tr>
+
+<tr>
+<th align=right>City</th>
+<td colspan=2><input type=text name=city value="[% proposal.city %]"></td>
+<td colspan=2><a href="#" onclick="show_no_show_cs()"; return false;">Contract Signer?</a><td>
+</tr>
+
+<tr>
+<th align=right>State/Province</th>
+<td colspan=3><input type=text name=st_prov value="[% proposal.st_prov %]"></td>
+</tr>
+
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td colspan=3><input type=text name=zip_post value="[% proposal.zip_post %]"></td>
+</tr>
+
+<tr>
+<th align=right>Country</th>
+<td colspan=3><input type=text name=country value="[% proposal.country %]"></td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=3><input type=text name=email value="[% proposal.email %]" size=30></td>
+</tr>
+[% END %]
+
+</table>
+
+<div id=cs>
+<table cellpadding=2>
+[% IF ! proposal.cs_person_id %]
+<tr><td colspan=4><hr></td></tr>
+<tr><th align=left style="color: green; font-size: 15pt">Contract Signer</th></tr>
+
+<tr>
+<th align=right style="min-width: 200px">First</th>
+<td><input type=text name=cs_first value="[% proposal.cs_first %]"></td>
+<th align=right>Home</th>
+<td><input type=text name=cs_tel_home value="[% proposal.cs_tel_home %]" size=15></td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td><input type=text name=cs_last value="[% proposal.cs_last %]"></td>
+<th align=right>Work</th>
+<td><input type=text name=cs_tel_work value="[% proposal.cs_tel_work %]" size=15></td>
+</tr>
+
+<tr>
+<th align=right>Address</th>
+<td><input type=text name=cs_addr1 value="[% proposal.cs_addr1 %]"></td>
+<th align=right>Cell</th>
+<td><input type=text name=cs_tel_cell value="[% proposal.cs_tel_cell %]" size=15></td>
+</tr>
+
+<tr>
+<th></th>
+<td colspan=3><input type=text name=cs_addr2 value="[% proposal.cs_addr2 %]"></td>
+</tr>
+
+<tr>
+<th align=right>City</th>
+<td colspan=3><input type=text name=cs_city value="[% proposal.cs_city %]"></td>
+</tr>
+
+<tr>
+<th align=right>State/Province</th>
+<td colspan=3><input type=text name=cs_st_prov value="[% proposal.cs_st_prov %]"></td>
+</tr>
+
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td colspan=3><input type=text name=cs_zip_post value="[% proposal.cs_zip_post %]"></td>
+</tr>
+
+<tr>
+<th align=right>Country</th>
+<td colspan=3><input type=text name=cs_country value="[% proposal.cs_country %]"></td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=3><input type=text name=cs_email value="[% proposal.cs_email %]" size=30></td>
+</tr>
+
+</table>
+[% END %]
+</div>
+
+<table cellpadding=2>
+<tr><td colspan=4><hr width=600 align=left></td></tr>
+<tr>
+<th align=right>Min</th>
+<td colspan=3>
+<input type=text name=min value="[% proposal.min %]" size=3>
+<span style="margin-left: .3in; font-weight: bold;">Max
+<input type=text name=max value="[% proposal.max %]" size=3>
+</td>
+</tr>
+
+<tr>
+<th align=right>Dates Requested</th>
+<td colspan=3><textarea name=dates_requested cols=60 rows=2>[% proposal.dates_requested %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right>Check In</th>
+<td colspan=3>
+<input type=text name=checkin_time value="[% proposal.checkin_time %]" size=5>
+<span style="margin-left: .3in; font-weight: bold">Check Out</span>
+<input type=text name=checkout_time value="[% proposal.checkout_time %]" size=5>
+</td>
+</tr>
+
+<tr>
+<th align=right>Other Things Happening</th>
+<td colspan=3><input type=text name=other_things value="[% proposal.other_things %]" size=40></td>
+</tr>
+
+<tr>
+<th align=right>Meeting Space</th>
+<td colspan=3><input type=text name=meeting_space value="[% proposal.meeting_space %]"></td>
+</tr>
+
+<tr>
+<th align=right>Housing Space</th>
+<td colspan=3><input type=text name=housing_space value="[% proposal.housing_space %]"></td>
+</tr>
+
+<tr>
+<th align=right>Leader Housing</th>
+<td colspan=3><input type=text name=leader_housing value="[% proposal.leader_housing %]"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Special Needs</th>
+<td colspan=3><textarea name=special_needs cols=60 rows=5>[% proposal.special_needs %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Food Service</th>
+<td colspan=3><textarea name=food_service cols=60 rows=5>[% proposal.food_service %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Other Requests</th>
+<td colspan=3><textarea name=other_requests cols=60 rows=5>[% proposal.other_requests %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right>Program Meeting Date</th>
+<td colspan=3>
+<input type=text name=program_meeting_date value="[% program_meeting_date %]" size=10>
+<span style="margin-left: .3in; font-weight: bold">Denied</span>
+<input type=checkbox value=yes name=denied [% check_denied %]>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Provisos</th>
+<td colspan=3><textarea name=provisos cols=60 rows=5>[% proposal.provisos %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right>Deposit</th>
+<td colspan=3><input type=text name=deposit value="[% proposal.deposit %]" size=5></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Miscellaneous Notes</th>
+<td colspan=3><textarea name=misc_notes cols=60 rows=5>[% proposal.misc_notes %]</textarea></td>
+</tr>
+
+<tr>
+<th></th>
+<td colspan=3><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+<script type="text/javascript">
+document.form.date_of_call.focus();
+document.getElementById('cs').style.display = 'none';
+</script>

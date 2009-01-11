@@ -12,6 +12,8 @@ use Util qw/
     valid_email
     model
     tt_today
+    commify
+    dcm_registration
 /;
 use Date::Simple qw/
     date
@@ -19,6 +21,7 @@ use Date::Simple qw/
 /;
 use USState;
 use LWP::Simple;
+use Template;
 
 Date::Simple->default_format("%D");      # set it here - where else???
 
@@ -269,8 +272,6 @@ sub view : Local {
     if ($sex ne 'M' && $sex ne 'F') {
             $c->stash->{sex} .= "<br>". _what_gender($p->first, $id);
     }
-    $c->stash->{affils} = [ $p->affils() ];
-
     $c->stash->{template} = "person/view.tt2";
 }
 
@@ -803,6 +804,127 @@ sub undup_akey : Local {
           })
          );
           
+}
+
+sub list_mmi_payment : Local {
+    my ($self, $c, $id, $show_gl) = @_;
+
+    my $person = $c->stash->{person} = model($c, 'Person')->find($id);
+    my $tot = 0;
+    for my $pay ($person->mmi_payments()) {
+        $tot += $pay->amount();
+    }
+    $c->stash->{today} = today();
+    $c->stash->{time} = sprintf("%02d:%02d", (localtime())[2, 1]);
+    $c->stash->{mmi_print} = 0;
+    $c->stash->{show_gl} = $show_gl;
+    $c->stash->{tot} = commify($tot);
+    $c->stash->{template} = "person/mmi_payments.tt2";
+}
+
+sub list_mmi_payment_print : Local {
+    my ($self, $c, $id) = @_;
+
+    my $person = model($c, 'Person')->find($id);
+    my $tot = 0;
+    for my $pay ($person->mmi_payments()) {
+        $tot += $pay->amount();
+    }
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src',
+        EVAL_PERL    => 0,
+    });
+    my $stash = {
+        mmi_print => 1,
+        tot       => commify($tot),
+        person    => $person,
+        today     => today(),
+        time      => sprintf("%02d:%02d", (localtime())[2, 1]),
+    };
+    $tt->process(
+        "person/mmi_payments.tt2",   # template
+        $stash,               # variables
+        \$html,               # output
+    );
+    $c->res->output($html);
+    return;
+}
+
+sub del_mmi_payment : Local {
+    my ($self, $c, $person_id, $payment_id) = @_;
+    
+    model($c, 'MMIPayment')->find($payment_id)->delete();
+    $c->response->redirect($c->uri_for("/person/list_mmi_payment/$person_id"));
+}
+
+sub create_mmi_payment : Local {
+    my ($self, $c, $reg_id, $person_id) = @_;
+    
+    $c->stash->{person}   = model($c, 'Person')->find($person_id);
+    $c->stash->{reg}      = model($c, 'Registration')->find($reg_id);
+    $c->stash->{template} = "person/create_mmi_payment.tt2";
+}
+
+sub create_mmi_payment_do : Local {
+    my ($self, $c, $reg_id, $person_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $dcm = dcm_registration($c, $person_id);
+    my $program;
+    my $sixth;
+    if (ref($dcm)) {
+        # this person has enrolled in a DCM program
+        $program = $dcm->program();
+        $sixth = $program->level();
+    }
+    else {
+        # this person is an auditor
+        # the 6th digit below is the 'month ordinal' of the current MMI course
+        $program = $reg->program();
+        my $yyyymm = $program->edate_obj->format("%Y%m");
+        my @progs = model($c, 'Program')->search(
+                    {
+                        school => { '!='   => 0          },
+                        edate  => { 'like' => "$yyyymm%" },
+                    },
+                    { order_by => 'edate asc' }
+                    );
+        my $cur_id = $program->id();
+        $sixth = 1;         # just in case the loop below fails
+        for my $i (0 .. $#progs) {
+            if ($progs[$i]->id() == $cur_id) {
+                $sixth = $i+1;      # +1 since we start at 0
+                last;
+            }
+        }
+    }
+
+    # validate amount???
+
+    my $edate = $program->edate_obj();
+    my $m = $edate->month();
+    my $glnum = $c->request->params->{type}
+              . $program->school()
+              . $edate->format("%y")
+              . ((1 <= $m && $m <=  9)? $m
+                 :          ($m == 10)? 'X'
+                 :          ($m == 11)? 'Y'
+                 :                      'Z'
+                )
+              . $sixth
+              ;
+
+    model($c, 'MMIPayment')->create({
+        person_id    => $person_id,
+        amount       => $c->request->params->{amount},
+        cash         => $c->request->params->{cash},
+        gl           => $glnum,
+        payment_date => tt_today($c)->as_d8(),
+        reg_id       => $reg_id,
+        note         => $c->request->params->{note},
+    });
+    $c->response->redirect($c->uri_for("/person/list_mmi_payment/$person_id"));
 }
 
 1;

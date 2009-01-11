@@ -6,11 +6,14 @@
 <table border=0 cellpadding=3
 
 <tr>
-<td valign=top align=right>Available Houses</td>
+<td valign=top align=right>Available Rooms</td>
 <td>
-<select name=chosen_house_id size=15>
+<select name=chosen_house_id size=15 multiple=1>
 [% house_opts %]
 </select>
+</td>
+<td valign=top>
+To speed things along you may choose multiple rooms.
 </td>
 </tr>
 

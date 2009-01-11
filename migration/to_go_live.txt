@@ -1,0 +1,16 @@
+undup - ongoing
+inactivate (after what point?)
+assign meeting places for rentals/programs
+add clusters for housing to programs
+assign rental housing
+add events
+register leaders of programs if not already registered
+delete bogus rentals/programs - used for accounting purposes?
+    like MISC, YTT 500, YTT 500 ADMIN.2, TRANSPORTATION
+    SECLUSION, MEMBERSHIP, MOTHERING MAG
+    dup'ed INFINITE SMILE rental
+add maximums & deposits for rentals
+add anew reports for mailings
+publish, verify
+re-enter sums
+    copy,paste & wiki-ize

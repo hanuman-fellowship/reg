@@ -39,6 +39,8 @@ our %houses_in_cluster;         # ??? better name?
 our %house_name_of;
 our %annotations_for;
 
+use Date::Simple;
+
 sub init {
     my ($class, $c, $force) = @_;
     
@@ -85,6 +87,7 @@ sub init {
     ) {
         push @{$annotations_for{$a->cluster_type()}}, $a;           # yeah
     }
+    Date::Simple->default_format($string{default_date_format});
 }
 
 1;

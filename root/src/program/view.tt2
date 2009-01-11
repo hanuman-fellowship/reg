@@ -78,15 +78,15 @@ function cluster_down(cluster_id) {
 
 <h2>Programs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-    <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
-    &nbsp;&nbsp;&nbsp;
     <a href="/program/create">Add</a>
     &nbsp;&nbsp;&nbsp;
-    <a href="/program/duplicate/[% program.id %]">Duplicate</a>
+    <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/delete/[% id %]"
        onclick="return confirm('Okay to Delete [% program.name %]?');"
           >Delete</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/duplicate/[% program.id %]">Duplicate</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/brochure">Brochure</a>
     &nbsp;&nbsp;&nbsp;
@@ -105,7 +105,13 @@ function cluster_down(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/tally/[% id %]/0">Tally</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/first_reg/[% id %]">Registrations</a>
+[% IF program.school != 0 && program.level == 'S' %]
+<a href="/registration/mmi_import/[% program.id %]">Import</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
+<a href="/registration/first_reg/[% id %]">1st Reg</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/list_reg_name/[% id %]">AllRegs</a>
 <p>
 
 <b>Name</b>
@@ -452,6 +458,18 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 </td>
 </tr>
+
+<tr>
+<th align=right valign=top>Sponsoring<br>Organization</th>
+<td valign=top>[% school %]</td>
+</tr>
+
+[% IF program.school != 0 %]
+<tr>
+<th align=right>Level</th>
+<td>[% level %]</td>
+</tr>
+[% END %]
 
 </table>
 </div>

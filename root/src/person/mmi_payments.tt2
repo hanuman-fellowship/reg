@@ -1,0 +1,67 @@
+[% IF mmi_print %]
+<head>
+<link rel="stylesheet" type="text/css" href="/src/ttsite.css" />
+</head>
+<br>
+[% END %]
+<ul>
+<h2>MMI Payments for [% person.first %] [% person.last %]
+<span style="margin-left: 15mm; font-weight: normal; font-size: 10pt">As of [% today %], [% time %]</span>
+</h2>
+[% IF ! mmi_print %]
+<p>
+<a href="/person/list_mmi_payment_print/[% person.id %]">Printable</a>
+[% IF ! show_gl %]
+&nbsp;&nbsp;&nbsp;
+<a href="/person/list_mmi_payment/[% person.id %]/1">Show GL</a>
+[% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/person/view/[% person.id %]">Person Info</a>
+<p>
+[% END %]
+<table cellpadding=5>
+<tr>
+<th>Amount</th>
+<th align=left>Description</th>
+<th>Date</th>
+<th align=left>Payment Type</th>
+[% IF show_gl %]
+<th align=center>GL Num</th>
+[% END %]
+<th align=left>Program</th>
+<th align=left>Note</th>
+[% IF ! mmi_print %]
+<th>Action</th>
+[% END %]
+</tr>
+[% FOREACH p IN person.mmi_payments %]
+    <tr>
+    <td align=right>[% p.amount %]
+    <td>[% p.for_what %]
+    <td>[% p.payment_date_obj %]
+    <td align=center>[% p.cash_disp %]
+    [% IF show_gl %]
+    <td align=center>[% p.gl %]</td>
+    [% END %]
+    [% IF mmi_print %]
+    <td>[% p.registration.program.name %]</td>
+    [% ELSE %]
+    <td><a href="/registration/view/[% p.reg_id %]">[% p.registration.program.name %]</a></td>
+    [% END %]
+    <td>[% p.note %]</td>
+    [% IF ! mmi_print %]
+    <td align=center><a href="/person/del_mmi_payment/[% person.id%]/[% p.id %]"
+    onclick="return confirm('Okay to Delete payment of $[% p.amount %]?');"
+    >Del</a></td>
+    [% END %]
+    </tr>
+[% END %]
+<tr>
+<td colspan=2><hr></td>
+</tr>
+<tr>
+<td align=right>$[% tot %]</td>
+<td>Total</td>
+</tr>
+</table>
+</ul>

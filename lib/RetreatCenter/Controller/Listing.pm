@@ -11,9 +11,11 @@ use Util qw/
     get_lunch
     trim
     tt_today
+    commify
 /;
 use Date::Simple qw/
     date
+    today
 /;
 use DateRange;
 
@@ -204,17 +206,21 @@ select last, first, id
   from people
 order by last, first
 EOS
+    my $n_same_name = 0;
+    my $n_people = 0;
     my ($prev_last, $prev_first, $prev_id) = ("", "", 0);
     my ($last, $first, $id);
     my $p;
     print {$out} "Same Last, First Names\n";
     print {$out} "======================\n";
     while ($p = Person->search_next($sth)) {
+        ++$n_people;
         $last  = $p->{last};
         $first = $p->{first};
         $id    = $p->{id};
         if ($last eq $prev_last && $first eq $prev_first) {
             print {$out} "<a target=other href='/person/undup/$id-$prev_id'>$last, $first</a>\n";    
+            ++$n_same_name;
         }
         $prev_last  = $last;
         $prev_first = $first;
@@ -224,6 +230,7 @@ EOS
     #
     # address dup
     #
+    my $n_addr_dup = 0;
     $sth = Person->search_start(<<"EOS");
 select *
   from people
@@ -249,12 +256,14 @@ EOS
             print {$out} "<a target=other href='/person/search_do?field=akey&pattern=$prev->{akey}'>$prev->{last}, $prev->{first}</a>\n";    
             print {$out} "    $prev->{addr1} $prev->{zip_post}\n";
             print {$out} "\n";
+            ++$n_addr_dup;
         }
         $prev = $p;
     }
     #
     # unreported gender
     #
+    my $n_no_gender = 0;
     $sth = Person->search_start(<<"EOS");
 select id, last, first
   from people
@@ -266,8 +275,17 @@ EOS
     print {$out} "=================\n";
     while ($p = Person->search_next($sth)) {
         print {$out} "<a target=other href='/person/view/$p->{id}'>$p->{last}, $p->{first}</a>\n";
+        ++$n_no_gender;
     }
-    print {$out} "</pre>\n";
+    print {$out} <<"EOF";
+
+Tallies:
+       People: $n_people
+    Same Name: $n_same_name
+     Addr Dup: $n_addr_dup
+    No Gender: $n_no_gender
+</pre>
+EOF
     close $out;
     $c->response->redirect($c->uri_for("/static/undup.html"));
 }
@@ -534,6 +552,50 @@ sub email_check : Local {
     $c->stash->{template} = "listing/bad_email.tt2";
 }
 
+#
+#
+#
+sub activity_tally : Local {
+    my ($self, $c) = @_;
+
+    my $cur_year = today()->year();
+    my $html = <<"EOH";
+<h3>Last Active Tally by Year</h3>
+<ul>
+<table cellpadding=2 border=0>
+<tr>
+<th>Year</th>
+<th align=right>Number</th>
+<th align=right>SubTotal</th>
+</tr>
+EOH
+    my $subtot = 0;
+    for my $y (1980 .. $cur_year) {
+        my $n = model($c, 'Person')->search({
+            date_updat => { between => [ $y."0101", $y."1231" ] },
+        })->count();
+        $subtot += $n;
+        my $cn = commify($n);
+        my $csubtot = commify($subtot);
+        $html .= <<"EOH";
+<tr>
+<td>$y</td>
+<td align=right>$cn</td>
+<td align=right>$csubtot</td>
+</tr>
+EOH
+    }
+    $html .= <<"EOH";
+</table>
+</ul>
+EOH
+    $c->res->output($html);
+}
+
+#
+# ???members should not be marked inactive.
+# nor should anyone at 445 Summit Rd 95076
+#
 sub mark_inactive : Local {
     my ($self, $c) = @_;
 

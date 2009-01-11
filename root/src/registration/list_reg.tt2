@@ -41,7 +41,8 @@ function process(e) {
     keychar = String.fromCharCode(keynum);
     var s = document.getElementById('pat');
     var t = s.value;
-    var url = 'http://localhost:3000/registration/matchreg/[% program.id %]/' + t;
+    var url = '[% Catalyst.uri_for("/registration/matchreg/") %]' +
+              '[% program.id %]/' + t;
     xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = getIt;
     xmlhttp.send(null);
@@ -52,15 +53,22 @@ function process(e) {
 </head>
 
 <h2>Registrations[% IF ! multiple_progs %] for [% program.name %] - [% program.sdate_obj.format("%b %y") %][% END %]</h2>
+
 [% IF ! multiple_progs %]
 <form name=form id= form action="/registration/list_reg_name/[% program.id %]">
+
 <a href="/program/view/[% program.id %]">Program</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/[% other_sort %]/[% program.id %]">[% other_sort_name %]</a>
+
+[% END %]
+
 [% IF online %]
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
 [% END %]
+
+[% IF ! multiple_progs %]
 &nbsp;&nbsp;&nbsp;
 Search <input type=text size=15 name=pat id=pat
               value="[% pat %]" onkeyup="return process(event)">
@@ -69,6 +77,7 @@ document.form.pat.focus();
 </script>
 </form>
 [% END %]
+
 <ul>
 <div id=regs>
 [% regs %]

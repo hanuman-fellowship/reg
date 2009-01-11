@@ -12,7 +12,7 @@ function popup(url) {
 }
 </script>
 <style type="text/css">
-#mess {
+.mess {
     color: red;
     font-size: 14pt;
 }
@@ -32,17 +32,17 @@ function popup(url) {
 </table>
 [% IF message1 %]
 <p>
-<span id=mess>[% message1 %]</span>
+<span class=mess>[% message1 %]</span>
 [% END %]
 [% IF message2 %]
 <p>
-<span id=mess>[% message2 %]</span>
+<span class=mess>[% message2 %]</span>
 [% END %]
 <h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %].[% house_prefs %]</h3>
 <table border=0>
 <tr>
 [% IF total_opts == 0 %]
-<td style="color: red; font-size: 14pt">Sorry, there is no place in the inn.</td>
+<td class=mess>No place in the inn.<br>Perhaps you need to add more<br>clusters to the program?</td>
 [% ELSE %]
 <th align=right valign=top>Available Houses</th>
 <td valign=top>
@@ -65,7 +65,7 @@ function popup(url) {
 
 <tr><td>&nbsp;</td></tr>
 
-<tr><th align=right>Force this house</th><td><input type=text name=force_house size=10 value='[% force_house %]'></td></tr>
+<tr><th align=right>Force this room</th><td><input type=text name=force_house size=10 value='[% force_house %]'></td></tr>
 
 <tr>
 <th align=right>Housing Type</th>

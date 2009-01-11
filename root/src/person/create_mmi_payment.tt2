@@ -1,0 +1,50 @@
+<h2>Adding an MMI Payment for [% person.first %] [% person.last %] in [% reg.program.name %]</h2>
+<form action="/person/create_mmi_payment_do/[% reg.id %]/[% person.id %]"
+      name=form
+>
+<table cellpadding=5>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount size=6></td>
+</tr>
+
+<tr>
+<th align=right>Type</th>
+<td>
+<select name=cash>
+<option value='D' selected>Credit Card
+<option value='C'>Check
+<option value='$'>Cash
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right>For</th>
+<td>
+<select name=type>
+<option value='1' selected>Tuition
+<option value='2'>Meals and Lodging
+<option value='3'>Application Fee
+<option value='4'>Registration Fee
+<option value='5'>Other
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right>Note</th>
+<td><input type=text name=note size=40></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit">
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.amount.focus();
+</script>

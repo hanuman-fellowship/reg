@@ -4,17 +4,27 @@
 <tr>
 <td valign=top><a href="[% Catalyst.uri_for('/report/update/') _ report.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
+</td>
 <td valign=top><a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]"
 onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+</td>
 <td valign=top><a href="[% Catalyst.uri_for('/report/list') %]">List</a>
+&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;
 </td>
 <td valign=top>
-<input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share<br>
+<input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]>Collapse
+&nbsp;
+</td>
+<td valign=top>
+<input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
 </td>
 <td valign=top>
 <input type=submit value="Count"      name=count>
+&nbsp;
 <input type=submit value="Run Report" name=report>
 </td>
 </tr>

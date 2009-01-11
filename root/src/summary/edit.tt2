@@ -24,7 +24,10 @@ th {
     background: lightgreen;
 }
 </style>
-<form action="/summary/update_do/[% type %]/[% sum.id %]" method=post>
+<form action="/summary/update_do/[% type %]/[% sum.id %]"
+      name=form
+      method=post
+>
 <table cellpadding=3 border=0>
 
 <tr><th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=10></td>
@@ -121,3 +124,6 @@ th {
 <tr><th></th><td><input id=sub type=submit value="Submit"></td></tr>
 </table>
 </form>
+<script type="text/javascript">
+document.form.gate_code.focus();
+</script>

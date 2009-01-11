@@ -47,6 +47,8 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 <p>
 <li><a href="/listing/email_check">Email Check</a>
 <p>
+<li><a href="/listing/activity_tally">Last Active Tally by Year</a>
+<p>
 <form action="/listing/mark_inactive">
 <li>Last date of contact before which<br>people should be marked inactive:
 <br>

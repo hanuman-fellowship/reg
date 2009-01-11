@@ -59,6 +59,7 @@ sub update : Local {
     }
     $c->stash->{template} = "summary/edit.tt2";
 }
+
 sub update_do : Local {
     my ($self, $c, $type, $id) = @_;
     my $sum = model($c, 'Summary')->find($id);

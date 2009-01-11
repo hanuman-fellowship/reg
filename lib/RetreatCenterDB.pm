@@ -25,6 +25,7 @@ __PACKAGE__->load_classes({
         Rental
         RentalPayment
         RentalCharge
+        Proposal
 
         Summary
 
@@ -62,6 +63,8 @@ __PACKAGE__->load_classes({
         Annotation
 
         MakeUp
+
+        MMIPayment
     /]
 });
 

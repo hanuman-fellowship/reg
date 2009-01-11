@@ -247,11 +247,22 @@ sub show : Local {
     my $event_table = "";
     my @events = ();
     for my $type (qw/Event Rental Program/) {
+        EVENT:
         for my $ev (model($c, $type)->search({
                         sdate => { '<=', $d8 },
                         edate => { '>=', $d8 },
                     })
         ) {
+            if ($type eq 'Program'
+                && (
+                    ($ev->name() =~ m{personal.*retreats}i)
+                    ||
+                    ($ev->level() =~ m{[DCM]})
+                   )
+            ) {
+                next EVENT;
+            }
+
             my $ev_type = ref($ev);
             $ev_type =~ s{.*::}{};
             $ev_type = lc $ev_type;

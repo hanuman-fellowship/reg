@@ -70,6 +70,7 @@ __PACKAGE__->add_columns(qw/
     end_hour
 
     coordinator_id
+    cs_person_id
     lunches
     status
     deposit
@@ -87,6 +88,9 @@ __PACKAGE__->belongs_to('summary' => 'RetreatCenterDB::Summary', 'summary_id');
 # coordinator
 __PACKAGE__->belongs_to(coordinator => 'RetreatCenterDB::Person',
                         'coordinator_id');
+# contract signer
+__PACKAGE__->belongs_to(contract_signer => 'RetreatCenterDB::Person',
+                        'cs_person_id');
 
 # users
 __PACKAGE__->belongs_to(sent_by => 'RetreatCenterDB::User',
@@ -106,6 +110,9 @@ __PACKAGE__->has_many(charges => 'RetreatCenterDB::RentalCharge',
 
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
+
+# proposal - maybe
+__PACKAGE__->might_have(proposal => 'RetreatCenterDB::Proposal', 'rental_id');
 
 sub future_rentals {
     my ($class, $c) = @_;

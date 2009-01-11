@@ -35,6 +35,20 @@ use Global qw/
 /;
 use File::Copy;
 
+my @sch_opts = (
+    'MMC',
+    'MMI College of Ayurveda',
+    'MMI School of Professional Massage',
+    'MMI School of Yoga',
+    'MMI School of Community Studies',
+);
+my %mmi_levels = (
+    D => "Diploma",
+    C => "Certificate",
+    M => "Masters",
+    S => "Course",
+);
+
 sub index : Private {
     my ($self, $c) = @_;
 
@@ -89,6 +103,21 @@ sub create : Local {
         map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
         <root/static/templates/letter/*.tt2>
     ];
+    my $sch_opts = "";
+    for my $i (0 .. $#sch_opts) {
+        $sch_opts .= "<option value=$i "
+                  .  ($i == 0? "selected": "")
+                  .  ">$sch_opts[$i]\n"
+                  ;
+    }
+    $c->stash->{school_opts}    = $sch_opts;
+    $c->stash->{level_opts} = <<"EOO";
+<option value=D>Diploma
+<option value=C>Certificate
+<option value=M>Masters
+<option value=S>Course
+EOO
+    $c->stash->{show_level}  = "hidden";
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "program/create_edit.tt2";
 }
@@ -316,6 +345,8 @@ sub view : Local {
     my ($UN, $sel) = split /XX/, $s;
     $c->stash->{UNselected_clusters} = $UN;
     $c->stash->{selected_clusters}   = $sel;
+    $c->stash->{school} = $sch_opts[$p->school()];
+    $c->stash->{level} = $mmi_levels{$p->level()};
     $c->stash->{template} = "program/view.tt2";
 }
 
@@ -385,12 +416,33 @@ sub _get_cluster_groups {
 # ??? order of display?   also end date???
 #
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $pr_dcm) = @_;
 
-    my $today = tt_today($c)->as_d8();
+    # ??? how to include programs that are extended and not quite finished???
+    # good enough to include programs that may have finished a week ago?
+    my $cutoff = tt_today($c) - 7;
+    $cutoff = $cutoff->as_d8();
+    my @cond = ();
+    if ($pr_dcm) {
+        @cond = (
+            -or => [
+                name  => { like => '%personal%retreat%' },
+                level => { -in  => [qw/  D C M  /] },
+            ],
+        );
+    }
+    else {
+        @cond = (
+                name  => { -not_like => '%personal%retreat%' },
+                level => { 'not in'  => [qw/  D C M  /] },
+        );
+    }
     $c->stash->{programs} = [
         model($c, 'Program')->search(
-            { edate => { '>=', $today } },
+            {
+                edate => { '>=', $cutoff },
+                @cond,
+            },
             { order_by => 'sdate' },
         )
     ];
@@ -505,6 +557,26 @@ sub update : Local {
         map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
         <root/static/templates/letter/*.tt2>
     ];
+    # school options
+    my $sch_opts = "";
+    for my $i (0 .. $#sch_opts) {
+        $sch_opts .= "<option value=$i "
+                  .  ($i == $p->school()? "selected": "")
+                  .  ">$sch_opts[$i]\n"
+                  ;
+    }
+    $c->stash->{school_opts}    = $sch_opts;
+
+    my $level_opts = "";
+    # order matters here
+    for my $l ('D', 'C', 'M', 'S') {
+        $level_opts .= "<option value=$l "
+                    .  ($l eq $p->level()? "selected": "")
+                    .  ">$mmi_levels{$l}\n"
+                    ;
+    }
+    $c->stash->{level_opts} = $level_opts;
+    $c->stash->{show_level} = $p->school() == 0? "hidden": "visible";
 
     $c->stash->{edit_gl}     = $c->check_user_roles('super_admin');
     $c->stash->{form_action} = "update_do/$id";

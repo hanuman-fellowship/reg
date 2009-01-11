@@ -47,20 +47,29 @@ __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
                       'person_id',
                       { order_by => 'date_start desc' });
 
+# proposal submitter
+__PACKAGE__->has_many(proposals => 'RetreatCenterDB::Proposal', 'person_id');
+
 # rental coordinator
 __PACKAGE__->has_many(rentals => 'RetreatCenterDB::Rental', 'coordinator_id');
 
 # donations
 __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'person_id',
-    { order_by => 'date_donate desc'});
+                      { order_by => 'date_donate desc'});
 
 # payments
-__PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment', 'person_id',
-    { order_by => 'the_date desc'});
+__PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment',
+                                  'person_id',
+                      { order_by => 'the_date desc'});
+
+# MMI payments
+__PACKAGE__->has_many(mmi_payments => 'RetreatCenterDB::MMIPayment',
+                                      'person_id',
+                      { order_by => 'payment_date desc'});
 
 # credits
 __PACKAGE__->has_many(credits => 'RetreatCenterDB::Credit', 'person_id',
-    { order_by => 'date_given desc'});
+                      { order_by => 'date_given desc'});
 
 # member - maybe
 __PACKAGE__->might_have(member => 'RetreatCenterDB::Member', 'person_id');

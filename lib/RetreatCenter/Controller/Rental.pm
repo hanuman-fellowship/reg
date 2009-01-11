@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Rental;
 use base 'Catalyst::Controller';
 
+use lib '../../';       # so you can do a perl -c here.
+
 use Date::Simple qw/
     date
 /;
@@ -19,37 +21,19 @@ use Util qw/
     max_type
     housing_types
     tt_today
+    commify
 /;
 use Global qw/
     %string
 /;
 use POSIX;
 use Template;
-
-use lib '../../';       # so you can do a perl -c here.
+use CGI qw/:html/;      # for Tr, td
 
 sub index : Private {
     my ($self, $c) = @_;
 
     $c->forward('list');
-}
-
-sub create : Local {
-    my ($self, $c) = @_;
-
-    $c->stash->{check_linked}      = "";
-    $c->stash->{check_tentative}   = "checked";
-    $c->stash->{housecost_opts} =
-        [ model($c, 'HouseCost')->search(
-            undef,
-            { order_by => 'name' },
-        ) ];
-    $c->stash->{rental} = {     # double faked object
-        housecost => { name => "Default" },
-    };
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{section}     = 1;   # web
-    $c->stash->{template}    = "rental/create_edit.tt2";
 }
 
 my %hash;
@@ -111,31 +95,15 @@ sub _get_data {
         push @mess, "Invalid deposit.";
     }
     H_TYPE:
-    for my $f (qw/
-        single_bath
-        single
-        dble_bath
-        dble
-        triple
-        quad
-        dormitory
-        economy
-        center_tent
-        own_tent
-        own_van
-        commuting
-    /) {
+    for my $f (housing_types()) {
+        next H_TYPE if $f eq "unknown";
         my $s = $f;
         $s =~ s{_}{ };
         $s =~ s{\b(\w)}{\u$1}g;
         $s =~ s{Dble}{Double};
         my $npeople;
         if ($hash{"n_$f"} !~ m{^\d*$}) {
-            my $s = $f;
-            $s =~ s{_}{ };
-            $s =~ s{\b(\w)}{\u$1}g;
-            $s =~ s{Dble}{Double};
-            push @mess, "Illegal quantity for $s: " . $hash{"n_$f"};
+            push @mess, "$s: Illegal quantity: " . $hash{"n_$f"};
         }
         else {
             $npeople = $hash{"h_$f"};
@@ -147,17 +115,17 @@ sub _get_data {
             TERM:
             for my $t (@terms) {
                 if ($t !~ m{^\s*(\d+)\s*x\s*(\d+)\s*}i) {
-                    push @mess, "Illegal attendance for $s: " . $hash{"att_$f"};
+                    push @mess, "$s: Illegal attendance: " . $hash{"att_$f"};
                     next H_TYPE;
                 }
                 my ($t_npeople, $t_ndays) = ($1, $2);
                 $total_peeps += $t_npeople;
                 if ($t_ndays > $rental_ndays) {
-                    push @mess, "Attendance > # days of rental!: $t_ndays";
+                    push @mess, "$s: Attendance > # days of rental!: $t_ndays";
                 }
             }
             if ($total_peeps > $hash{"n_$f"}) {
-                push @mess, "Total people in attendance field > # of people";
+                push @mess, "$s: Total people in attendance field > # of people";
             }
         }
     }
@@ -167,6 +135,24 @@ sub _get_data {
     }
     $hash{linked}    = "" unless exists $hash{linked};
     $hash{tentative} = "" unless exists $hash{tentative};
+}
+
+sub create : Local {
+    my ($self, $c) = @_;
+
+    $c->stash->{check_linked}      = "";
+    $c->stash->{check_tentative}   = "checked";
+    $c->stash->{housecost_opts} =
+        [ model($c, 'HouseCost')->search(
+            undef,
+            { order_by => 'name' },
+        ) ];
+    $c->stash->{rental} = {     # double faked object
+        housecost => { name => "Default" },
+    };
+    $c->stash->{form_action} = "create_do";
+    $c->stash->{section}     = 1;   # web
+    $c->stash->{template}    = "rental/create_edit.tt2";
 }
 
 sub create_do : Local {
@@ -191,7 +177,7 @@ sub create_do : Local {
     my $sum = model($c, 'Summary')->create({
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
-        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_updated => sprintf("%02d:%02d", (localtime())[2, 1]),
     });
     $hash{summary_id} = $sum->id;
     my $r = model($c, 'Rental')->create(\%hash);
@@ -200,8 +186,64 @@ sub create_do : Local {
     # we must ensure that there are config records
     # out to the end date of this rental.
     #
+$c->log->info("h edate = $hash{edate}");
     add_config($c, $hash{edate});
     $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
+}
+
+sub create_from_proposal : Local {
+    my ($self, $c, $proposal_id) = @_;
+
+    my $proposal = model($c, 'Proposal')->find($proposal_id);
+
+    _get_data($c);
+    return if @mess;
+
+    my $section = $hash{section};
+    delete $hash{section};
+
+    $hash{lunches} = "";
+
+    $hash{glnum} = compute_glnum($c, $hash{sdate});
+
+    if ($hash{contract_sent}) {
+        $hash{sent_by} = $c->user->obj->id;
+    }
+    if ($hash{contract_received}) {
+        $hash{received_by} = $c->user->obj->id;
+    }
+    my $sum = model($c, 'Summary')->create({
+        date_updated   => tt_today($c)->as_d8(),
+        who_updated    => $c->user->obj->id,
+        time_updated   => sprintf("%02d:%02d", (localtime())[2, 1]),
+
+        special_needs  => $proposal->special_needs(),
+        food_service   => $proposal->food_service(),
+        miscellaneous  => $proposal->misc_notes(),
+        leader_housing => $proposal->leader_housing(),
+        # perhaps utilise other attributes from the proposal
+        # in the creation of the Summary???
+    });
+    $hash{summary_id}     = $sum->id();
+    $hash{coordinator_id} = $proposal->person_id();
+
+    my $r = model($c, 'Rental')->create(\%hash);
+    my $rental_id = $r->id();
+    #
+    # update the proposal with the rental_id
+    #
+    $proposal->update({
+        rental_id => $rental_id,
+    });
+    #
+    # we must ensure that there are config records
+    # out to the end date of this rental.
+    #
+    add_config($c, $hash{edate});
+    #
+    # and show the newly created rental
+    #
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/$section"));
 }
 
 sub _h24 {
@@ -232,14 +274,11 @@ sub view : Local {
         $tot_payments += $p->amount;
     }
 
-    my $tot_charges = 0;
-
     my $tot_other_charges = 0;
     my @charges = $r->charges;
     for my $p (@charges) {
         $tot_other_charges += $p->amount;
     }
-    $tot_charges += $tot_other_charges;
 
     my $ndays = date($r->edate) - date($r->sdate);
     my $hc    = $r->housecost; 
@@ -304,7 +343,7 @@ sub view : Local {
         my $nt = "n_$t";
         my $npeople = $r->$nt || 0;
         $tot_people += $npeople;
-        if ($hc->type eq 'Perday') {
+        if ($hc->type eq 'Per Day') {
             $actual_lodging += $hc->$t * $npeople * $ndays;
         }
         else {
@@ -323,25 +362,6 @@ sub view : Local {
     my $lodging = ($min_lodging > $actual_lodging)? $min_lodging
                 :                                   $actual_lodging;
 
-    $tot_charges += $lodging;
-
-    my $extra_hours = 0;
-    my $start = _h24($r->start_hour);
-    my $end   = _h24($r->end_hour);
-    if ($start && $start < 16) {
-        $extra_hours += 16 - $start;
-    }
-    if ($end && 13 < $end) {
-        $extra_hours += $end - 13;
-    }
-    my $extra_hours_charge = $extra_hours
-                           * $tot_people
-                           * $string{extra_hours_charge};
-
-    $tot_charges += $extra_hours_charge;
-
-    my $balance = $tot_charges - $tot_payments;
-
     # Lunches
     my $lunch_charge = 0;
     my $lunches = $r->lunches;
@@ -349,8 +369,12 @@ sub view : Local {
         $lunch_charge = $tot_people
                       * $string{lunch_charge}
                       * scalar($lunches =~ tr/1/1/);
-        $tot_charges += $lunch_charge;
     }
+
+    my $balance = 0; # ???
+        # we need to compute it each time???
+        # or only on invoicing?
+        # due or done?
 
     my $status;
     if ($r->tentative) {
@@ -388,14 +412,9 @@ sub view : Local {
     $c->stash->{colcov}         = \%colcov;     # color of the coverage
     $c->stash->{bookings}       = \%bookings;
     $c->stash->{clusters}       = $clusters;
-    $c->stash->{min_lodging}    = $min_lodging;
-    $c->stash->{actual_lodging} = $actual_lodging;
-    $c->stash->{lodging}        = $lodging;
-    $c->stash->{extra_time}     = $extra_hours_charge;
     $c->stash->{lunch_charge}   = $lunch_charge;
     $c->stash->{charges}        = \@charges;
     $c->stash->{tot_other_charges} = $tot_other_charges;
-    $c->stash->{tot_charges}    = $tot_charges;
     $c->stash->{payments}       = \@payments;
     $c->stash->{tot_payments}   = $tot_payments;
     $c->stash->{section}        = $section;
@@ -577,17 +596,21 @@ sub update_do : Local {
     }
 }
 
+# what about a proposal that gave rise to this rental???
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Rental')->find($id);
 
-    # bookings
+    # multiple bookings
     model($c, 'Booking')->search({
         rental_id => $id,
     })->delete();
 
-    # the rental itself
+    # the summary
+    $r->summary->delete();
+
+    # and the rental itself
     model($c, 'Rental')->search({
         id => $id,
     })->delete();
@@ -849,34 +872,48 @@ sub booking : Local {
 #
 sub booking_do : Local {
     my ($self, $c, $rental_id, $h_type) = @_;
-    my $chosen_house_id = $c->request->params->{chosen_house_id};
-    if (! $chosen_house_id) {
+
+    # since we could have multiple houses at once
+    # we have to mess around.
+    # the param could be either an array ref or a scalar.?
+    #
+    my @chosen_house_ids = ();
+    my $chid = $c->request->params->{chosen_house_id};
+    if (ref($chid)) {
+        @chosen_house_ids = @$chid;
+    }
+    else {
+        @chosen_house_ids = $chid;
+    }
+    if (! @chosen_house_ids) {
         $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
         return;
     }
-    my $h = model($c, 'House')->find($chosen_house_id);
-    my $max = $h->max;
-    my $r = model($c, 'Rental')->find($rental_id);
-    my $sdate = $r->sdate;
-    my $edate1 = date($r->edate) - 1;
-    $edate1 = $edate1->as_d8();
-    model($c, 'RentalBooking')->create({
-        rental_id  => $rental_id,
-        date_start => $sdate,
-        date_end   => $edate1,
-        house_id   => $chosen_house_id,
-        h_type     => $h_type,
-    });
-    model($c, 'Config')->search({
-        house_id => $chosen_house_id,
-        the_date => { 'between' => [ $sdate, $edate1 ] },
-    })->update({
-        sex        => 'R',
-        cur        => $max,
-        curmax     => $max,
-        program_id => 0,
-        rental_id  => $rental_id,
-    });
+    for my $h_id (@chosen_house_ids) {
+        my $h = model($c, 'House')->find($h_id);
+        my $max = $h->max;
+        my $r = model($c, 'Rental')->find($rental_id);
+        my $sdate = $r->sdate;
+        my $edate1 = date($r->edate) - 1;
+        $edate1 = $edate1->as_d8();
+        model($c, 'RentalBooking')->create({
+            rental_id  => $rental_id,
+            date_start => $sdate,
+            date_end   => $edate1,
+            house_id   => $h_id,
+            h_type     => $h_type,
+        });
+        model($c, 'Config')->search({
+            house_id => $h_id,
+            the_date => { 'between' => [ $sdate, $edate1 ] },
+        })->update({
+            sex        => 'R',
+            cur        => $max,
+            curmax     => $max,
+            program_id => 0,
+            rental_id  => $rental_id,
+        });
+    }
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
 
@@ -1057,6 +1094,268 @@ sub view_summary : Local {
     $c->stash->{daily_pic_date} = $rental->sdate();
     $c->stash->{summary} = $rental->summary();
     $c->stash->{template} = "rental/view_summary.tt2";
+}
+
+#
+# provide a Back button at the bottom but
+# exclude it when printing!
+#
+sub invoice : Local {
+    my ($self, $c, $id) = @_;
+
+    Global->init($c);
+    my $rental = model($c, 'Rental')->find($id);
+    my $ndays = $rental->edate_obj() - $rental->sdate_obj();
+    my $hc = $rental->housecost();
+    my $max = $rental->max();
+    my $html = <<"EOH";
+<html>
+<head>
+</head>
+<body>
+EOH
+    $html .= "<h1>Invoice for "
+          .  $rental->name()
+          .  "<br>"
+          .  $rental->sdate_obj->format("%b %e, %Y")
+          .  " to "
+          .  $rental->edate_obj->format("%b %e, %Y")
+          .  "</h1>\n";
+    $html .= <<"EOH";
+<h2>Housing Charges</h2>
+<ul>
+<table cellpadding=8 border=1>
+<tr>
+<th align=right>Type</th>
+<th>Cost<br>Per Night</th>
+<th># of<br>People</th>
+<th># of<br>Nights</th>
+<th>Total</th>
+</tr>
+EOH
+    my $tot_housing_charge = 0;
+    my $tot_people = 0;
+    H_TYPE:
+    for my $type (reverse housing_types()) {
+        next H_TYPE if $type eq "unknown";
+        my $meth = "n_$type";
+        my $n = $rental->$meth();
+        next H_TYPE if empty($n);
+        $tot_people += $n;
+        $meth = "att_$type";
+        my $att = $rental->$meth();
+        my @duples = ();           # better names!
+        my $tot_other = 0;
+        if (! empty($att)) {
+            my @terms = split m{\s*,\s*}, $att;
+            for my $term (@terms) {
+                my ($npeople, $ndays) = split m{\s*x\s*}i, $term;
+                $tot_other += $npeople;
+                push @duples, [ $npeople, $ndays ];
+            }
+        }
+        my $type_shown = 0;
+        $n -= $tot_other;
+        my $cost = $hc->$type();
+        my $show_cost = $cost;
+        my $s = $type;
+        $s =~ s{_}{ };
+        $s =~ s{\b(\w)}{\u$1}g;
+        $s =~ s{Dble}{Double};
+        if ($n) {
+            $html .= Tr(th({ -align => 'right'}, [ $s ]),
+                        td({ -align => 'right'},
+                           [ $show_cost, $n, $ndays,
+                             commify($n * $cost * $ndays)
+                           ]
+                          )
+                       );
+            $tot_housing_charge += $n * $cost * $ndays;
+            $type_shown = 1;
+        }
+        if ($type_shown) {
+            $s = "";
+            $show_cost = "";
+        }
+        for my $a (sort {
+                       $b->[1] <=> $a->[1]
+                   }
+                   @duples
+        ) {
+            my ($np, $nd) = @$a;
+            $html .= Tr(th({ -align => 'right'}, [ $s ]),
+                        td({ -align => 'right'},
+                           [ $show_cost, $np, $nd, 
+                             commify($np * $cost * $nd)
+                           ]
+                          )
+                       );
+            $tot_housing_charge += $np * $cost * $nd;
+            $s = "";
+            $show_cost = "";
+        }
+    }
+    $html .= Tr(th({ -align => 'right'}, [ "Total" ]),
+                td({ -align => 'right'},
+                   [ "", $tot_people, "", '$' . commify($tot_housing_charge)
+                   ]
+                  )
+               );
+    $html .= <<"EOH";
+</table>
+EOH
+    my $dorm_rate = $hc->dormitory();
+    my $min_lodging = int(0.75
+                          * $max
+                          * $ndays
+                          * $dorm_rate
+                         );
+    if ($tot_housing_charge < $min_lodging) {
+        my $s = commify($min_lodging);
+        $html .= <<"EOH";
+<div style="width: 500">
+<p>
+However, the <i>minimum</i> lodging cost was contractually agreed to be
+3/4 times the maximum ($max) times $ndays nights at the dormitory rate
+of \$$dorm_rate per night which comes to a total of \$$s.
+</div>
+EOH
+        $tot_housing_charge = $min_lodging;
+    }
+    $html .= "</ul>\n";
+
+    my $extra_hours = 0;
+    my $start = _h24($rental->start_hour);
+    my $end   = _h24($rental->end_hour);
+    my $extime = "";
+    my $tr_extra = "";
+    if ($start && $start < 16) {
+        $extra_hours += 16 - $start;
+        $extime .= "started at " . $rental->start_hour() . ":00 (before 4:00)";
+    }
+    if ($end && 13 < $end) {
+        $extra_hours += $end - 13;
+        $extime .= " and " if $extime;
+        $extime .= "ended at " . $rental->end_hour() . ":00 (after 1:00)";
+    }
+    my $extra_hours_charge = $extra_hours
+                           * $tot_people
+                           * $string{extra_hours_charge};
+    if ($extra_hours_charge) {
+        my $pl = ($extra_hours == 1)? "": "s";
+        my $s = commify($extra_hours_charge);
+        $html .= <<"EOH";
+<h2>Extra Time Charge</h2>
+<div style="width: 500">
+<ul>
+Since the rental $extime
+there is an extra time charge for
+$extra_hours hour$pl for $tot_people people
+at \$$string{extra_hours_charge}
+per hour = \$$s.
+</div>
+</ul>
+EOH
+        $tr_extra = "<tr><th align=right>Extra Time</th><td align=right>$s</td></tr>";
+    }
+
+    my @charges = $rental->charges();
+    my $tot_other_charges = 0;
+    my $tr_other = "";
+    if (@charges) {
+        $html .= <<"EOH";
+<h2>Other Charges</h2>
+<ul>
+<table cellpadding=8 border=1>
+<tr>
+<th>Amount</th>
+<th align=left>What</th>
+</tr>
+EOH
+        for my $ch (@charges) {
+            $tot_other_charges += $ch->amount;
+            $html .= "<tr>"
+                  .  "<td align=right>" . commify($ch->amount()) . "</td>"
+                  .  "<td>" . $ch->what()   . "</td>"
+                  .  "</tr>\n"
+                  ;
+        }
+        $html .= "<tr><td align=right>\$"
+              .  commify($tot_other_charges)
+              .  "</td><td>Total</td></tr>\n";
+        $html .= "</table></ul>\n";
+        $tr_other = "<tr><th align=right>Other</th><td align=right>"
+                  . commify($tot_other_charges)
+                  . "</td></tr>";
+    }
+    my $tot_charges = $tot_housing_charge
+                    + $extra_hours_charge
+                    + $tot_other_charges
+                    ;
+    my $st = commify($tot_charges);
+    my $sh = commify($tot_housing_charge);
+    $html .= <<"EOH";
+<h2>Total Charges</h2>
+<ul>
+<table cellpadding=8 border=1>
+<tr><th align=right>Housing</th><td align=right>$sh</td></tr>
+$tr_extra
+$tr_other
+<tr><th>Total</th><td>\$$st</td></tr>
+</table>
+</ul>
+EOH
+    my $tot_payments = 0;
+    my @payments = $rental->payments();
+    if (@payments) {
+        $html .= <<"EOH";
+<h2>Total Payments</h2>
+<ul>
+<table cellpadding=8 border=1>
+<tr>
+<th>Date</th>
+<th>Amount</th>
+</tr>
+EOH
+        for my $p (@payments) {
+            $html .= "<tr>"
+                  .  "<td>" . $p->the_date_obj() . "</td>"
+                  .  "<td align=right>" . commify($p->amount()) . "</td>"
+                  .  "</tr>\n"
+                  ;
+            $tot_payments += $p->amount();
+        }
+        my $s = commify($tot_payments);
+        $html .= <<"EOH";
+<tr>
+<td>Total</td>
+<td align=right>\$$s</td>
+</tr>
+</table>
+</ul>
+EOH
+    }
+
+    my $balance = $tot_charges - $tot_payments;
+    my $sb = commify($balance);
+    if ($sb == 0) {
+        $sb = "Paid in Full";
+    }
+    else {
+        $sb = "\$$sb";
+    }
+    $html .= <<"EOH";
+<h2>Balance</h2>
+<ul>
+    $sb
+</ul>
+</body>
+</html>
+EOH
+    $rental->update({
+        balance => $balance,
+    });
+    $c->res->output($html);
 }
 
 1;

@@ -103,7 +103,7 @@ for my $name (keys %data) {
         $data{$name}{own_tent},
         $data{$name}{own_van},
         $data{$name}{commuting},
-        ($hid == 0 || $hid >= 6)? 'Perday': 'Total'
+        ($hid == 0 || $hid >= 6)? 'Per Day': 'Total'
     );
 }
 
@@ -260,6 +260,7 @@ my @fields = qw/
     school
     level
     summary_id
+    notify_on_reg
 /;
 my $p_sql = "insert into program ("
     . (join ",", @fields)
@@ -325,6 +326,11 @@ sub processProg {
             $hash{sdate} = "04/01/2008";
             $hash{edate} = "09/30/2008";
             $hash{name} .= " S08";
+            # ackk! we need F08 also
+            # do a post process thing to split the F08 regs
+            # off from 'Personal Retreats S08'.
+            # to do otherwise is too tricky.
+            # do this before setting reg_counts
         }
         else {
             my ($fs, $year) = $season =~ m{(.)(..)};
@@ -410,6 +416,28 @@ sub processProg {
     $hash{summary_id} = $next_summary_id;
     $summary_sth->execute($next_summary_id);
     ++$next_summary_id;
+
+    # notify on reg - diff name
+    $hash{notify_on_reg} = $hash{or_not};
+
+    # school only makes sense for MMI programs
+    # let school be zero to indicate non MMI
+    if ($hash{mmi} ne "yes") {
+        $hash{school} = 0;
+    }
+    # redo the school value
+    if ($hash{school} == 2) {
+        $hash{school} = 1;      # Ayurveda
+    }
+    if ($hash{school} == 3) {
+        $hash{school} = 2;      # Massage
+    }
+    # 3 is Yoga, 4 is Community Studies
+    # these values are hard-coded into the source.  is this okay?
+
+    if ($hash{school} == 0) {
+        $hash{level} = ' ';         # level does not apply to MMC programs
+    }
 
     $p_sth->execute(@hash{@fields}) or die "no exec";      # yay!
     if ($hash{pres1} != 0) {

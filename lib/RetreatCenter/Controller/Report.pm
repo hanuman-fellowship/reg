@@ -19,8 +19,6 @@ use Date::Simple qw/
 /;
 use Template;
 
-Date::Simple->default_format("%D");      # set it here - where else???
-
 sub index : Private {
     my ( $self, $c ) = @_;
 
@@ -197,8 +195,9 @@ sub create_do : Local {
 sub run : Local {
     my ($self, $c, $id) = @_;
 
-    my $share = $c->request->params->{share};
-    my $count = $c->request->params->{count};
+    my $share    = $c->request->params->{share};
+    my $count    = $c->request->params->{count};
+    my $collapse = $c->request->params->{collapse};
 
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
@@ -317,6 +316,49 @@ EOS
             }
         }
     }
+
+    #
+    # if we should collapse records with the same address, do so.
+    #
+    if ($collapse && ! $just_email) {
+        # sort to get same addresses together
+        @people = map {
+                      $_->[1]
+                  }
+                  sort {
+                      $a->[0] cmp $b->[0]
+                  }
+                  map {
+                      [ $_->{akey}, $_ ]
+                  }
+                  @people;
+        my $prev;
+        my $prev_akey = "";
+        for my $p (@people) {
+            # if not deleted already (due to partnering) and the
+            # address is the same as the previous person...
+            #
+            if (! $p->{deleted} && $p->{akey} eq $prev_akey) {
+                $prev->{name} .= " et. al." unless $prev->{deleted};
+                $p->{deleted} = 1;
+                ++$ndel;
+            }
+            $prev = $p;
+            $prev_akey = $p->{akey};
+        }
+        # resort
+        @people = map {
+                      $_->[1]
+                  }
+                  sort {
+                      $a->[0] cmp $b->[0]
+                  }
+                  map {
+                      [ $_->{$order}, $_ ]
+                  }
+                  @people;
+    }
+
     #
     # filter out the ones we marked for deletion above.
     # wasteful of memory???
@@ -342,7 +384,8 @@ EOS
     }
     if ($count) {
         $c->stash->{message} = "Record count = " . scalar(@people);
-        $c->stash->{share} = $share;
+        $c->stash->{share}    = $share;
+        $c->stash->{collapse} = $collapse;
         view($self, $c, $id);
         return;
     }

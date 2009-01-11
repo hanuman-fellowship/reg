@@ -32,14 +32,16 @@ create table registration (
     ceu_license text,
     letter_sent text,
 
-    status text,        -- Sponsor (in good standing), Life, or blank
+    status text,           -- Sponsor (in good standing), Life, or blank
     nights_taken integer,
     free_prog_taken text,
 
-    house_id integer,   -- or 0 if no housing assigned yet or not needed
-                        -- since own van or commuting
-    cabin_room text,    -- 'cabin', 'room', or blank
-    leader_assistant text -- 'yes' if housing should be free
+    house_id integer,      -- or 0 if no housing assigned yet or not needed
+                           -- since own van or commuting
+    cabin_room text,       -- 'cabin', 'room', or blank
+    leader_assistant text, -- 'yes' if housing should be free
+    pref1 text,            -- 1st housing preference
+    pref2 text             -- 2nd
 );
 drop table if exists reg_history;
 create table reg_history (
@@ -71,6 +73,18 @@ create table reg_payment (
     amount integer,
     type text,       -- cc, check, cash, online
     what text
+);
+drop table if exists mmi_payment;
+create table mmi_payment (
+    id integer   primary key autoincrement,
+    person_id    integer,
+    amount       integer,
+    gl           text,
+    payment_date text,
+    cash         text,
+    deleted      text,
+    reg_id       integer,
+    note         text
 );
 drop table if exists credit;
 create table credit (

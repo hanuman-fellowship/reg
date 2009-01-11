@@ -14,72 +14,73 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Name</th>
-<td><span class='larger'>[% housecost.name %]</span></td>
+<td colspan=2><span class='larger'>[% housecost.name %]</span></td>
 </tr>
 
 <tr>
 <th align=right>Single Bath</th>
-<td>[% housecost.single_bath %]</td>
+<td align=right width=3>[% housecost.single_bath %]</td>
+<td></td>
 </tr>
 
 <tr>
 <th align=right>Single</th>
-<td>[% housecost.single %]</td>
+<td align=right>[% housecost.single %]</td>
 </tr>
 
 <tr>
 <th align=right>Double Bath</th>
-<td>[% housecost.dble_bath %]</td>
+<td align=right>[% housecost.dble_bath %]</td>
 </tr>
 
 <tr>
 <th align=right>Double</th>
-<td>[% housecost.dble %]</td>
+<td align=right>[% housecost.dble %]</td>
 </tr>
 
 <tr>
 <th align=right>Triple</th>
-<td>[% housecost.triple %]</td>
+<td align=right>[% housecost.triple %]</td>
 </tr>
 
 <tr>
 <th align=right>Quad</th>
-<td>[% housecost.quad %]</td>
+<td align=right>[% housecost.quad %]</td>
 </tr>
 
 <tr>
 <th align=right>Dormitory</th>
-<td>[% housecost.dormitory %]</td>
+<td align=right>[% housecost.dormitory %]</td>
 </tr>
 
 <tr>
 <th align=right>Economy</th>
-<td>[% housecost.economy %]</td>
+<td align=right>[% housecost.economy %]</td>
 </tr>
 
 <tr>
 <th align=right>Center Tent</th>
-<td>[% housecost.center_tent %]</td>
+<td align=right>[% housecost.center_tent %]</td>
 </tr>
 
 <tr>
 <th align=right>Own Van</th>
-<td>[% housecost.own_van %]</td>
+<td align=right>[% housecost.own_van %]</td>
 </tr>
 
 <tr>
 <th align=right>Own Tent</th>
-<td>[% housecost.own_tent %]</td>
+<td align=right>[% housecost.own_tent %]</td>
 </tr>
 
 <tr>
 <th align=right>Commuting</th>
-<td>[% housecost.commuting %]</td>
+<td align=right>[% housecost.commuting %]</td>
 </tr>
 
 <tr>
 <th align=right>Type</th>
-<td>[% housecost.type %]</td>
+<td colspan=2>[% housecost.type %]</td>
 </tr>
 
 </table>

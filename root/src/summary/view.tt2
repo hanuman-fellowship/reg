@@ -3,9 +3,15 @@
 [% IF type == 'program' %]
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/first_reg/[% happening.id %]>Registrations</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/program/view/[% happening.id %]>To Program</a>
+[% ELSE %]
+&nbsp;&nbsp;&nbsp;
+<a href=/rental/view/[% happening.id %]>To Rental</a>
 [% END %]
 <p>
 <table cellpadding=7>
+
 <tr>
 <td>
 <b>Name</b>
@@ -14,11 +20,12 @@
 [% happening.sdate_obj %] <span class=dow>[% happening.sdate_obj.format("%a") %]</span>
 <b>To</b>
 [% happening.edate_obj %] <span class=dow>[% happening.edate_obj.format("%a") %]</span>
-</td>
 [% IF type == 'rental' %]
 [% happening.status_td %]
 [% END %]
+</td>
 </tr>
+
 </table>
 <style type="text/css">
 th {
@@ -27,6 +34,30 @@ th {
 }
 </style>
 <table cellpadding=3 border=0>
+[% IF type == 'rental' %]
+<tr>
+<th align=right>Contact Person</th>
+<td>
+[% coord = happening.coordinator %]
+<a href=/person/view/[% coord.id %]>[% coord.first %] [% coord.last %]</a>
+&nbsp;&nbsp;
+<a href='mailto:[% coord.email %]'>[% coord.email %]</a>
+[% IF coord.tel_home %]
+&nbsp;&nbsp;
+[% coord.tel_home %] home
+[% END %]
+[% IF coord.tel_work %]
+&nbsp;&nbsp;
+[% coord.tel_work %] work
+[% END %]
+[% IF coord.tel_cell %]
+&nbsp;&nbsp;
+[% coord.tel_cell %] cell
+[% END %]
+</td>
+</tr>
+[% ELSE %]
+[% END %]
 <tr><th>Last Updated</th><td>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
 
 <tr><th>Gate Code</th><td width=200>[% sum.gate_code %]</td>

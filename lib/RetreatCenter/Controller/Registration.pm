@@ -24,6 +24,8 @@ use Util qw/
     tt_today
     ceu_license
     commify
+    wintertime
+    dcm_registration
 /;
 use POSIX qw/
     ceil
@@ -38,6 +40,25 @@ use Global qw/
     %houses_in_cluster
 /;
 use Template;
+
+# lots of names for the house type... :(
+# there are also the method and column names
+# a better way???  more consolidated.
+# even a separate module to deal with all the names.
+my %comm_h_type = qw(
+    com    commuting
+    ov     own_van
+    ot     own_tent
+    ct     center_tent
+    dorm   dormitory
+    econ   economy
+    quad   quad
+    tpl    triple
+    dbl    dble
+    dbl/ba dble_bath
+    sgl    single
+    sgl/ba single_bath
+);
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -93,10 +114,10 @@ sub list_online : Local {
                 $time = $1;
             }
             elsif (m{x_fname => (.*)}) {
-                $first = $1;
+                $first = normalize($1);
             }
             elsif (m{x_lname => (.*)}) {
-                $last = $1;
+                $last = normalize($1);
             }
             elsif (m{x_pid => (.*)}) {
                 $pid = $1;
@@ -326,6 +347,8 @@ sub get_online : Local {
     #
     # find or create a person object.
     #
+    $hash{fname} = normalize($hash{fname});
+    $hash{lname} = normalize($hash{lname});
     my @ppl = ();
     (@ppl) = model($c, 'Person')->search(
         {
@@ -425,8 +448,11 @@ sub get_online : Local {
 EOC
     if ($hash{withwhom_first}) {
         $c->stash->{comment}
-            .= "Sharing a room with"
-            .  " $hash{withwhom_first} $hash{withwhom_last}.\n";
+            .= "Sharing a room with "
+            .  normalize($hash{withwhom_first})
+            .  " "
+            .  normalize($hash{withwhom_last})
+            .  ".\n";
     }
     if ($hash{request}) {
         $c->stash->{comment} .= $hash{request};
@@ -523,7 +549,7 @@ sub _rest_of_reg {
     #
     # life member or current sponsor?  with nights left?
     # they must be in good standing if sponsor
-    # and can't take free nights if the housing cost is not a Perday type.
+    # and can't take free nights if the housing cost is not a Per Day type.
     #
     if (my $mem = $p->member) {
         my $status = $mem->category;
@@ -534,7 +560,7 @@ sub _rest_of_reg {
             $c->stash->{status} = $status;   # they always get a 30%
                                              # tuition discount.
             my $nights = $mem->sponsor_nights;
-            if ($pr->housecost->type eq 'Perday' && $nights > 0) {
+            if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
                 $c->stash->{nights} = $nights;
             }
             if ($status eq 'Life' && ! $mem->free_prog_taken) {
@@ -559,22 +585,6 @@ sub _rest_of_reg {
     }
     # the housing select list.
     # default is the first housing choice.
-    # lots of names for the house type... :(
-    # these are also the method and column names
-    my %h_type = qw(
-        com    commuting
-        ov     own_van
-        ot     own_tent
-        ct     center_tent
-        dorm   dormitory
-        econ   economy
-        quad   quad
-        tpl    triple
-        dbl    dble
-        dbl/ba dble_bath
-        sgl    single
-        sgl/ba single_bath
-    );
     # order is important:
     my $h_type_opts = "";
     Global->init($c);     # get %string ready.
@@ -597,7 +607,7 @@ sub _rest_of_reg {
         next HTYPE if $ht eq "quad"   && ! $pr->quad;
         next HTYPE if $ht eq "econ"   && ! $pr->economy;
         # also ...
-        my $htname = $h_type{$ht};
+        my $htname = $comm_h_type{$ht};
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
 
         my $selected = ($ht eq $house1)? " selected": "";
@@ -771,6 +781,13 @@ sub create_do : Local {
     elsif (!$hash{cabin} && $hash{room}) {
         $cabin_room = "room";
     }
+    my ($pref1, $pref2) = ("", "");
+    if ($hash{comment} =~ m{1-(\S+)}) {
+        $pref1 = $comm_h_type{$1};
+    }
+    if ($hash{comment} =~ m{2-(\S+)}) {
+        $pref2 = $comm_h_type{$1};
+    }
     my $reg = model($c, 'Registration')->create({
         person_id     => $hash{person_id},
         program_id    => $hash{program_id},
@@ -794,6 +811,8 @@ sub create_do : Local {
         arrived       => '',    # ditto
         cabin_room    => $cabin_room,
         leader_assistant => '',
+        pref1         => $pref1,
+        pref2         => $pref2,
         %dates,         # optionally
     });
     my $reg_id = $reg->id();
@@ -888,8 +907,8 @@ sub create_do : Local {
         reg_count => $pr->reg_count + 1,
     });
     $c->response->redirect($c->uri_for("/registration/"
-        . (($reg->h_type =~ m{van|commut|unk})? "view"
-           :                                    "lodge")
+        . (($reg->h_type =~ m{own_van|commuting|unknown|not_needed})? "view"
+           :                                                          "lodge")
     . "/$reg_id"));
 }
 
@@ -960,7 +979,7 @@ sub _compute {
                  :                          $housecost->$h_type;
                                             # column name is correct, yes?
     my ($tot_h_cost, $what);
-	if ($housecost->type eq "Perday") {
+	if ($housecost->type eq "Per Day") {
 		$tot_h_cost = $prog_days*$h_cost;
         my $plural = ($prog_days == 1)? "": "s";
         $what = "$prog_days day$plural Lodging at \$$h_cost per day";
@@ -1031,7 +1050,7 @@ sub _compute {
             @who_now,
         });
     }
-	if (!$life_free && !$lead_assist && $housecost->type eq "Perday") {
+	if (!$life_free && !$lead_assist && $housecost->type eq "Per Day") {
         if ($prog_days + $extra_days >= $string{disc1days}) {
             model($c, 'RegCharge')->create({
                 @who_now,
@@ -1254,7 +1273,7 @@ sub view : Local {
 
 sub _view {
     my ($c, $reg) = @_;
-    my $prog = $c->stash->{program} = $reg->program;
+    my $prog = $c->stash->{program} = $reg->program();
     my $extra = $prog->extradays();
     if ($extra) {
         my $edate2 = $prog->edate_obj + $extra;
@@ -1275,8 +1294,22 @@ sub _view {
     $c->stash->{online} = scalar(@files);
     $c->stash->{daily_pic_date} = $reg->date_start();
     $c->stash->{cal_param}      = $reg->date_start_obj->as_d8() . "/1";
-    $c->stash->{cur_cluster} = ($reg->house_id)? $reg->house->cluster_id
-                               :                 1;
+    $c->stash->{cur_cluster}    = ($reg->house_id)? $reg->house->cluster_id
+                                  :                 1;
+    # to DCM?
+    $c->stash->{dcm_reg_id} = 0;
+    if ($prog->level() eq 'S') {
+        my $dcm = dcm_registration($c, $reg->person->id());
+        if (ref($dcm)) {
+            $c->stash->{dcm_reg_id} = $dcm->id();
+        }
+        # else if $dcm > 1 !!!! ???? give error
+        # my $person = model($c, 'Person')->find($person_id);
+        # my $name = $person->first() . " " . $person->last();
+        # $c->stash->{mess}
+        #   = (@dcm)? "$name is enrolled in <i>more than one</i> D/C/M program!"
+        #   :       "$name is not enrolled in <i>any</i> D/C/M program!";
+    }
     $c->stash->{template} = "registration/view.tt2";
 }
 
@@ -1629,8 +1662,13 @@ EOH
         my $per = $reg->person;
         my $id = $reg->id;
         my $name = $per->last . ", " . $per->first;
-        my $balance = $reg->balance;
-        my $type = $reg->h_type_disp;
+        my $balance = $reg->balance();
+        my $type = $reg->h_type_disp();
+
+        my $h_type = $reg->h_type();
+        my $pref1 = $reg->pref1();
+        my $pref2 = $reg->pref2();
+
         my $need_house = (defined $type)? $type !~ m{commut|van|unk}i
                          :                0;
         my $hid = $reg->house_id;
@@ -1640,13 +1678,21 @@ EOH
         my $date = date($reg->date_postmark);
         my $time = $reg->time_postmark;
         my $ht = 20;
-        my $mark =
-                     ($reg->cancelled)? "<img src=/static/images/redX.gif height=$ht>"
-            :   ($need_house && !$hid)? "<img src=/static/images/house.gif height=$ht>"
-            :     (!$reg->letter_sent)? "<img src=/static/images/envelope.jpg height=$ht>"
-            :                           "&nbsp;";
-        if (length($mark) == 1) {
-            $mark = "<span class=required>$mark</span>";
+        my $mark = ($reg->cancelled)?
+                       "<img src=/static/images/redX.gif height=$ht>"
+                  :($need_house && !$hid)?
+                       "<img src=/static/images/house.gif height=$ht>"
+                  :(!$reg->letter_sent)?
+                       "<img src=/static/images/envelope.jpg height=$ht>"
+                  :    "";
+        if ($need_house && $hid) {
+            # no height= since it pixelizes it :(
+            if ($h_type ne $pref1 && $h_type ne $pref2) {
+                $mark = "<img src=/static/images/unhappy2.gif>&nbsp;$mark";
+            }
+            elsif ($h_type ne $pref1) {
+                $mark = "<img src=/static/images/unhappy1.gif>&nbsp;$mark";
+            }
         }
         my $program_td = "";
         if ($opt{multiple}) {
@@ -1670,7 +1716,7 @@ EOH
 <tr>
 
 $program_td
-<td align=center>$mark</td>
+<td align=right>$mark</td>
 
 <td>    <!-- width??? -->
 <a href='/registration/view/$id'>$name</a>
@@ -1748,7 +1794,6 @@ sub update : Local {
     Global->init($c);     # get %string ready.
     my $cur_htype = $reg->h_type;
     my $mon = $reg->date_start_obj->month();
-    my $winter = $mon > 10 || $mon < 5;
     HTYPE:
     for my $htname (qw/
         single_bath
@@ -1768,7 +1813,7 @@ sub update : Local {
         next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
-        next HTYPE if $htname eq 'center_tent' && $winter;
+        next HTYPE if $htname eq 'center_tent' && wintertime($mon);
 
         my $selected = ($htname eq $cur_htype)? " selected": "";
         my $htdesc = $string{$htname};
@@ -1791,7 +1836,7 @@ sub update : Local {
     if ($status) {
         my $mem = $reg->person->member;
         my $nights = $mem->sponsor_nights + $reg->nights_taken;
-        if ($pr->housecost->type eq 'Perday' && $nights > 0) {
+        if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
             $c->stash->{nights} = $nights;
         }
         if ($status eq 'Life'
@@ -2085,7 +2130,7 @@ sub lodge : Local {
             });
             # if space left, same dates, same h_type, etc etc.
             # oh jeez - I can't do everything.
-            # the best I guess would be to simply inform
+            # the best, I guess, would be to simply inform
             # the registrar of where their friend is housed.
             # if that room appears in the list (I can default it)
             # then they can choose it.
@@ -2099,7 +2144,7 @@ sub lodge : Local {
                     }
                     else {
                         $c->stash->{message2}
-                            = "$name requested a housing type of '"
+                            = "$name is housed in a '"
                             . $reg2->h_type_disp
                             . "' not '"
                             . $reg->h_type_disp
@@ -2118,6 +2163,30 @@ sub lodge : Local {
         }
         else {
             $c->stash->{message2} = "Could not find a person named $name.";
+        }
+        #
+        # if the person hasn't yet registered for this program
+        # look for them in the online files.
+        #
+        if ($c->stash->{message2} =~ m{Could not find|has not yet reg}) {
+            for my $f (<root/static/online/*>) {
+                open my $in, "<", $f
+                    or die "cannot open $f: $!\n";
+                # x_fname, x_lname - could be anywhere in the file
+                my ($found_first, $found_last) = (0, 0);
+                while (<$in>) {
+                    if (m{x_fname => $first}i) {
+                        $found_first = 1;
+                    }
+                    elsif (m{x_lname => $last}i) {
+                        $found_last = 1;
+                    }
+                }
+                close $in;
+                if ($found_first && $found_last) {
+                    $c->stash->{message2} = "$first $last <b>has</b> registered online but has not yet been imported.";
+                }
+            }
         }
     }
     my $sdate = $reg->date_start;
@@ -2196,7 +2265,7 @@ sub lodge : Local {
             # get all the records, then do the complex
             # boolean below...
             #
-            # AND why not just ALL the config
+            # AND why not just get ALL the config
             # records for all the houses in the cluster?
             # you're going to get them all anyway
             # so why not get them all at once?
@@ -2205,7 +2274,7 @@ sub lodge : Local {
             # the already fully occupied or gender inappropriate ones.
             # and this is done within the database - reduces
             # the data transfer.
-            # I _could_ have a 'in => []'
+            # I _could_ have an 'in => []'
             # and specify all the houses in the cluster
             #
             # is this house truly available for this
@@ -2437,7 +2506,7 @@ sub lodge_do : Local {
         $reg->update({
             h_type => $new_htype,
         });
-        if ($new_htype =~ m{^(own_van|commuting|unknown|not needed)$}) {
+        if ($new_htype =~ m{^(own_van|commuting|unknown|not_needed)$}) {
                         # hash lookup instead?
             $c->response->redirect($c->uri_for("/registration/view/$id"));
             return;
@@ -2560,10 +2629,16 @@ sub lodge_do : Local {
 sub relodge : Local {
     my ($self, $c, $id) = @_;
     my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
-    my $house = $reg->house;
-    $c->stash->{message1} = "Vacated " . $house->name . ".";
-                                # see lodge.tt2 
-    _vacate($c, $reg);
+    if ($reg->house_id()) {
+        my $house = $reg->house;
+        # the user may have vacated, then chosen "Back"
+        # and tried to vacate again.  so we check that there
+        # is still a house.
+        #
+        $c->stash->{message1} = "Vacated " . $house->name . ".";
+                                    # see lodge.tt2 
+        _vacate($c, $reg);
+    }
     lodge($self, $c, $id);
 }
 
@@ -2590,15 +2665,20 @@ sub _vacate {
         #    VERY tricky, indeed.
         #
         # and don't undo the program id, right?
+        # well, if there is no one left in the room
+        # we might as well set the program id to 0.
         #
         # if we're not back to one should we see
         # if all involved are of the same sex?  nah.
         # let's leave a flaw in this - like Islamic art.
         #
         my @opts = ();
-        if ($cf->cur == 1) {
-            push @opts, curmax => $hmax;
-            push @opts, sex    => 'U';
+        if ($cf->cur() == 1) {
+            push @opts,
+                curmax     => $hmax,
+                sex        =>   'U',
+                program_id =>     0
+                ;
         }
         if ($cf->cur == 2 && $cf->sex eq 'X') {
             my $the_date = $cf->the_date;
@@ -2606,17 +2686,17 @@ sub _vacate {
                 house_id   => $house_id,
                 date_start => { '<=', $the_date },
                 date_end   => { '>',  $the_date },
-                id         => { '!=', $reg->id },
+                id         => { '!=', $reg->id  },
             });
             if (@reg == 1) {
                 push @opts, sex => $reg[0]->person->sex;
             }
             else {
-                $c->log->info("WHAT??? $#reg");
+                $c->log->info("Inconsistent config records??? $#reg");
             }
         }
         $cf->update({
-            cur => $cf->cur - 1,
+            cur => $cf->cur() - 1,
             @opts,
         });
     }
@@ -2818,7 +2898,7 @@ sub who_is_there : Local {
             . "</center>"
             . "<p><table cellpadding=2>"
             . "<tr><td><a target=happening class=pr_links href="
-            . $c->uri_for("/rental/view/" . $rb->rental_id() . "/3")
+            . $c->uri_for("/rental/view/" . $rb->rental_id() . "/2")
             . ">"
             . $rb->rental->name() . " - \u$h_type"
             . "</a></td></tr>"
@@ -2901,11 +2981,11 @@ sub _get_kids {
 # OR, if there are no registrations, say so in an error screen.
 #
 sub first_reg : Local {
-    my ($self, $c, $prog_id) = @_;
+    my ($self, $c, $program_id) = @_;
 
     my ($reg) = model($c, 'Registration')->search(
         {
-            program_id => $prog_id,
+            program_id => $program_id,
         },
         {
             rows     => 1,
@@ -2919,10 +2999,9 @@ sub first_reg : Local {
         _view($c, $reg);
     }
     else {
-        my $prog = model($c, 'Program')->find($prog_id);
-        $c->stash->{mess} = "No one has yet registered for "
-                          . $prog->name() . "."; 
-        $c->stash->{template} = "registration/error.tt2";
+        $c->response->redirect(
+            $c->uri_for("/registration/list_reg_name/$program_id")
+        );
     }
 }
 
@@ -3221,6 +3300,118 @@ EOH
     $html .= "</table>\n";
     $c->res->output($html);
     return;
+}
+
+#
+# for the given MMI program automatically register
+# everyone who is in a D/C/M program that is concurrent
+# with the given program.   Offer the list of D/C/M programs
+# and let the user choose which to do the import on.
+#
+sub mmi_import : Local {
+    my ($self, $c, $program_id) = @_;
+
+    my $p = model($c, 'Program')->find($program_id);
+    my $sdate = $p->sdate();
+    my @progs = model($c, 'Program')->search({
+        school => { '!=', 0      },
+        level  => { '!=', 'S'    },
+        sdate  => { '<=', $sdate },
+        edate  => { '>=', $sdate },
+    },
+    {
+        order_by => 'sdate asc, edate asc',
+    });
+    $c->stash->{cur_prog} = $p;
+    $c->stash->{dcm_progs} = \@progs;
+    $c->stash->{template} = "registration/mmi_import.tt2";
+}
+
+sub mmi_import_do : Local {
+    my ($self, $c, $program_id) = @_;
+
+    my $program = model($c, 'Program')->find($program_id);
+    my %person_ids = ();
+    for my $dcm_id (keys %{ $c->request->params() }) {
+        $dcm_id =~ s{^n}{};
+        REG:
+        for my $reg (model($c, 'Program')->find($dcm_id)->registrations()) {
+            next REG if $reg->cancelled();
+            $person_ids{$reg->person->id()} = 1;
+        }
+    }
+    my $new_regs = 0;
+    IDS:
+    for my $person_id (keys %person_ids) {
+        my @regs = model($c, 'Registration')->search({
+                       person_id  => $person_id,
+                       program_id => $program_id,
+                   });
+        next IDS if @regs;      # already registered
+        #
+        # register this person.
+        # we will house them later...
+        #
+
+        # what kind of housing should we initially use for this person?
+        #
+        # look in their past registrations and take the most recent one.
+        #
+        # if the current program is in the wintertime, keep looking
+        # for a non-tent option in reverse chronological order.
+        #
+        # a small weakness - if the prior registrations were all
+        # in the wintertime and now they want a tent - we can't guess that.
+        #
+        my @h_types
+            = grep {
+                  m{\S} && ! m{unknown|not_needed}
+                      # we only want valid types
+              }
+              map {
+                  $_->h_type()
+              }
+              model($c, 'Registration')->search(
+                  { person_id => $person_id        },
+                  { order_by  => 'date_start desc' },
+              );
+        my $h_type = shift @h_types;
+        my $sdate = $program->sdate_obj();
+        my $m = $sdate->month();
+        if ($h_type =~ m{tent} && wintertime($m)) {
+            $h_type = "";
+            H_TYPE:
+            for my $ht (@h_types) {
+                if ($ht !~ m{tent}) {
+                    $h_type = $ht;
+                    last H_TYPE;
+                }
+            }
+        }
+        $h_type ||= "dble";     # a good choice for a last chance default
+        my $edate = date($program->edate()) + $program->extradays();
+        model($c, 'Registration')->create({
+            person_id  => $person_id,
+            program_id => $program_id,
+            house_id   => 0,
+            h_type     => $h_type,
+            cancelled  => '',    # to be sure
+            arrived    => '',    # ditto
+            date_start => $program->sdate(),
+            date_end   => $edate->as_d8(),
+            balance    => 0,
+        });
+        # finances???
+        ++$new_regs;
+    }
+    if ($new_regs) {
+        $program->update({
+            reg_count => $program->reg_count() + $new_regs,
+        });
+    }
+    $c->response->redirect(
+        $c->uri_for("/registration/list_reg_name/$program_id")
+    );
 }
 
 1;

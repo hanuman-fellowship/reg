@@ -42,6 +42,7 @@ insert into user values (8, 'web_user', 'webby', 'web@user.com', 'Web', 'User', 
 insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky', '', '', '');
 insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan', '', '', '');
 insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName', '', '', '');
+insert into user values (12, 'lori', 'march', 'lori_march@hotmail.com', 'Lori', 'March', '', '', '');
 --
 -- the roles - do not muck with the ids!
 --
@@ -96,3 +97,7 @@ insert into user_role values (10, 7);
 insert into user_role values (11, 3);
 insert into user_role values (11, 5);
 insert into user_role values (11, 7);
+-- lori
+insert into user_role values (12, 3);
+insert into user_role values (12, 5);
+insert into user_role values (12, 7);

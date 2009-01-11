@@ -84,6 +84,12 @@ rentals
     add rental -start on Finance?
     deposit required? on rentals?
     after creation - what tab is shown?
+search online list for roommates before
+    saying they're not there at all.
+capitalize first, last names (Mc O') on entry online
+    for normalization
+on create program page - offer school and (onchange level)
+    level can be a series of radio buttons rather than select/option (nah)
 ---
 Center Tent spaces should be available during
     winter for Own Tent people
@@ -92,12 +98,14 @@ Summary - need Plus ... for extended programs
 
 
 web design - no change of color if clicked on
+    what?
 deposits - since last deposit, save it
 month-end report?
 VPN access
 too many windows open for membership activity
 colorization of R for rentals?
     better - show first 3 (or 2) letters when radio button is chosen?
+    or not
 Summary tabs into field gos to second line?
     tabs should not go to Submit
 On reg1.html explain special requests
@@ -105,6 +113,7 @@ On reg1.html explain special requests
 wrapping in comments entered online?
 history records for which house relodged, vacating?
     maybe
+    not vacating but yes which house lodged
 in middle of reg on another window - go to a program
     opens up yet another window or does it clobber the mid-reg?
 submit reg - fails network, on refresh gives sdate error
@@ -128,6 +137,7 @@ Firefox - better tabbing, opening of other windows/tabs?
 unlinked dir for PRs?
 PR screwed up charges?
     negative # of days?
+    okay if within the PR season?
 online evaluation form
     records w/ program id, name, date - ftp'ed from mmc.org to kali
 are receipt numbers necessary?  == payment record id
@@ -138,12 +148,9 @@ MMI
     MMI charges, payments are linked to the person not the program
         including course housing etc?
 on housing screen - show kids if present
+    on popup - yes?
 only one reg screen - don't keep opening new ones?
     maybe maybe not - can modifier keys override naming a window?
-search online list for roommates before
-    saying they're not there at all.
-capitalize first, last names (Mc O') on entry online
-    for normalization
 no double reg in program with same name/person id
 on first Registration screen "Submit" -> "Register"?
     maybe
@@ -153,8 +160,8 @@ Forcing into another type - should we change h_type automatically?
         plus kids
 Sharing overides no bed? :(
 assistant * - legend on Leaders screen
-Color instructions on all pages - not just Display
-    a way of not repeating all the color code?
+Color instructions on all pages - not just Display Colors
+    a way of not repeating all the color code?  sure.  try.
 Change password - error on success?
 Tally - heading 'for' 'from'?
     no Tuition, Lodging, Adjustments
@@ -231,6 +238,10 @@ pay it in rental - not the balance?
 initial focus when changing tabs in Rentals/Programs?
     should be able to set to first field.
 
+email syntax check should permit only ONE email address
+    and nothing else
+new files help/attendance.html and timelog2 for Shankar
+
 
 
 
@@ -256,3 +267,331 @@ program staff cannot add houses - don't offer it
 templates - some should not show
 better format for dates?  instead of 11/03/09 use Nov 3 '09 ??
     easily done with Date::Simple default formats.
+summary - who, when updated - do we show it?
+
+rental bookings - how did vishnu dev, mmi-lele get a booking????
+    reload and check hcck!
+Perday => Per Day
+
+to do for proposals:
+    the list should include status, max, and dates requested
+    add affiliation for "Rental Coordinator".
+    add link to 'Transmit' the person and another 'Convert' for the proposal.
+        Converting the proposal automatically transmits the person
+        after which 'Transmit' is shown as "To Person"
+        and 'Convert' as "To Rental".
+        rental_id and person_id become non-zero
+        read-only values for the person's demographics after transmission
+        the proposal values (Group Name) cannot be changed.
+            nothing else matters - they are not 'converted'.
+    on transmitting - update an existing person record
+        with the current info
+
+leaders of programs - should the link on the program screen
+    for the leader take you to their leader info or to their
+    registration for this program?
+donations, payments
+    list type of payment, date in both??
+delete person - linked to proposals???
+
+add/update person as proposal submitter
+    also change date entered, updated.
+
+use 1st 3 alpha letters of address for the akey
+optionally collapse same addresses and add et. al.
+    and show the addresses - somehow
+get all data from old reg/mlist
+    new listing: inactivation step
+    with a date parameter
+    followed by counts of reports
+ask Luke about standardization of addresses via a web API.
+MMI programs - what to do?
+    they will occupy meeting spaces and housing
+        so we do need to show them to everyone.
+        otherwise in the daily pic there'll be someone
+        you see but that if you click on them you see nothing!
+need to get extra accounts still - and the payments?.
+
+mmi payments - when in course allow only tuition, meals and lodging or Other?
+    and when "To DCM" allow only App Fee and Reg Fee or Other?
+    or tuition only in DCM unless it is an auditor?
+    tuition on a mmi course program is the tution for just
+    the one class.  in a DCM it is the tuition for the entire
+    program.
+
+rental add house - make it a table of checkboxes
+
+charges for MMI program - none for D/C/M? but yes course.
+    but no tuition - yes lodging
+
+add attributes to mmi_payment - reg_id and note
+    decipher reg_id from gl number in existing payments
+        too hard (or confusing!)   n_in_mon or level???? glnum????
+        settle for future payments?
+        it is the D/C/M program start date (6th digit is D/C/M)
+        for auditors the payment is attributed to the course itself.
+
+        weird design!
+        the information about which course the meals/lodging was
+        for is lost... we could guess by looking at the date of
+        payment - but should we?
+
+        perhaps it can be re-thought?
+
+list of mmi_payments - totals of the different types of payments
+    tuition, meals & lodging, reg fee, app fee, other
+
+import on mmi course - show checkboxes of all current (not ended) D/C/M programs
+
+save deposits - with date/time stamp
+deposit choice - file/jive
+
+mark inactive
+    make sure date_update is set correctly from registrations
+        loadreg seasons going backwards - don't reset
+    do this after all is loaded
+        keep track of how many are left each time
+
+loadprog -s f02 loadreg -s f02, loadrent -s f02
+    can I do this post loadall?
+    after each season is loaded do an undup list
+        that list should have counts - of numbers of people
+            with same name, same addr
+
+unhappy smileys - adrienne, sukhdev, jayanti offerings
+
+rental transmit/convert - error for dups in names
+
+view summary - show coordinator/leader info read only
+
+smaller font for confirmation letter
+
+kaya kalpa on dreg1.html -> scheduler
+
+default date format not mm/dd/yy but Dec 3 '09 or Jan 12 '10???
+    easily done.
+    Global->init() is a good place.
+    or individual choice? :) like color?
+
+what about extra account payments from the past?
+
+D/C/M programs do not go on calendar.  - it would just be noise
+    can make an Events for special days in the life of a D/C/M program
+        - like orientations, graduations, etc.
+
+mmi payments - gl numbers - figure the nth in the month thing
+
+is it time for a parallel test?
+
+doc!!!!!
+    more than a rough testplan
+
+reg, program start/end times = no pm or am
+    8 is am
+    7 is pm
+    elsewhere too?
+        in rentals.
+
+if h_type is "Not Needed" don't bother looking
+    after a manual reg or edit!
+
+the deposit for a manual registration into an MMI program
+    should be transformed into an mmi_payment.
+
+don't check various things in Program if web ready is not set.
+do check level
+
+doc:
+    MMI Programs:
+
+    For programs offered by Mount Madonna Institute (henceforward MMI)
+    the 'sponsoring organization' of the program is not MMC
+        it is either:
+            MMI College of Ayurvda
+            MMI School of Professional Massage
+            MMI School of Yoga
+            MMI School of Community Studies
+    You then need to specify a level:
+        Diploma
+        Certificate
+        Masters
+        Course
+    If it is not a Course then it is refered to as a DCM program.
+    MMI Courses/DCMs are marked with a red star in the list of programs.
+
+    Actually, to see current Personal Retreats and DCMs you must
+        choose "PR/DCM" on the list progs page OR
+        do a search for a program with a pattern (or season/year).
+        These are not normally included because they are
+        ever-present (or present for months at a time unlike
+        most programs that are typically just a weekend)
+        and become a kind of noise.
+
+    MMI Programs, at this time, do not have web pages - and hence
+    no on-line registration.  People have to actually _apply_ to
+    be a student of the Institute - just like any accredited school.
+    Application forms _are_ available at the MMI web site.
+
+    Registrations for a MMI _course_ are facilitated by the "Import"
+        link on the course Program page.  You are presented with 
+        the DCM programs that are concurrent with the course date range.
+        You choose one or more DCM programs and everyone in
+        these programs is registered for the course.  The housing
+        type choice is assigned individually - based on the most recent
+        housing type they were assigned.  If the DCM course is in winter,
+        tenting choices are avoided.  Double is the default type.
+        The housing type is set but the registrar still needs to go through
+        and house everyone individually.
+
+    People can register for only one DCM program at a time.
+        Such second registrations are prohibited.  When viewing
+        a registration in an MMI _course_ there is a link "To DCM"
+        with which you can jump to their DCM registration.
+
+    Tuition for DCM Programs is quite flexible depending on
+        their ability to pay.  Various creative discounts for payment
+        in full, etc.  So ... we don't really record the tuition _charges_.
+        The comment field in the DCM program registration screen
+        is used extensively to detail the payment arrangements that
+        have been made.
+
+    MMI Payments
+        We DO keep close track of the _payments_.  All MMI Payments
+        are linked directly to the person not to the registrations.
+        On any MMI program registration screen there
+        is a section at the bottom named "MMI Payments" with
+        links "New" and "List".
+        
+        Choosing "New" to create a new MMI payment
+        you supply a dollar amount, type (credit/check/cash), what the payment
+        is for (Tuition/Meals&Lodging/Fees/...) and an optional note.
+
+        For general ledger accounting purposes MMI Programs
+        do not really have a single GL number.  Each MMI payment has its _own_
+        6 digit GL number which is automatically computed thusly:
+
+            digit 1 - what for (1=Tuition, 2=Meals & Lodging, 3=Application Fee,
+                                4=Registration Fee, 5=Other)
+            digit 2 - school (1=Ayurveda, 2=Massage, 3=Yoga, 4=Community)
+            digit 3 - tens digit of year
+            digit 4 - units digit of year
+            digit 5 - month (1=Jan, ...  9=Sep, X=Oct, Y=Nov, Z=Dec)
+            digit 6 - level (D=Diploma, C=Certificate, M=Masters)
+
+        Each registrant making a payment is enrolled in just one DCM program.
+        That DCM program and its _end_ date are used to determine
+        digits 2-6 above.  Note that digit 5 could be a letter (X-Z)
+        and digit 6 is not a digit (0-9) at all but D, C, or M.
+
+        *Anyone* can register for a MMI _course_ - even people who
+        are not enrolled in a DCM program.  These are called "auditors".
+        When auditors make a payment (via "New" MMI Payment) 
+        the values in digits 2-6 are determined using the MMI _course_ itself.
+        Digit 6 is not D, C, or M but it is the _ordinal number_ of the
+        course within its month.   e.g. It will be 2 if it is the
+        second MMI course within the month of its _end_ date.
+
+        The program where you clicked on the "New" link will
+        be remembered with the payment itself.  This means you could
+        make a tuition payment on a course registration.  This raises
+        the question - are all tuition payments really attached
+        to the DCM program?  Auditors would pay a tuition I presume, yes?
+        And they have no DCM program.
+
+    List of MMI Payments
+        On an MMI program registration there is a link named "List"
+        for displaying all of a person's MMI payments.   On the Person
+        screen the link is "MMI Payments".
+
+        These fields are listed from the payment records:
+            
+            amount, description, date, payment type,
+            program name, and an optional note.
+
+        You can optionally show the GL number as well, if you wish,
+        with the link "Show GL".
+
+        Note that the program where a payment was made
+        was not recorded before newReg began to be used.
+
+    Calendar and DailyPic
+        DCM Programs (and Personal Retreats) are not shown on the
+        calendar (or the daily pic) as they would be annoyingly and
+        uselessly ever present.
+
+how to only show current programs in list
+    when there are extended programs?
+    we could assume extended programs don't have more than a week of
+        extension.  use today for edates where extradays = 0
+        and today+7 for edates where extradays != 0?
+        combined with -and and -or appropriately.
+
+need better indexes - especially now that
+    we have much more data - it is good to load
+    things up to see where the inefficiencies are.
+
+deposits from manual registrations in a MMI program
+    must be routed to mmi_payment, not reg_payment.
+for all MMI registrations - be careful of reg_charges.
+    m&l but not tuition - and show the m&l charge.
+
+tab order for proposals
+    when fields settle down.
+transmit proposal - what gender?
+
+if CVS is not working and you get an error like
+    /usr/local/cvsroot/CVSROOT/config: permission denied
+then do this as root:
+    echo 0 > /selinux/enforce
+
+proposals - textarea for date requested.
+    sort list by date of program meeting
+    textarea _br for proposal view/edit
+    * convert -> approve
+    * misc_notes valign top
+    no edit after approve
+    append provisos to miscell.
+    summary first on clicking on rental list.
+    on summary have "To Data" or some term
+    Proposal -> Tentative -> Sent
+        no New
+    no contract until meeting space set
+        also not default housing cost
+    contract name 'at' address
+    contract signer as sep person with address
+
+* when searching for Rentals.
+
+email all in a program?
+
+i deleted a rental - did it delete the proposal?
+    shouldn't
+
+wiki for summaries?
+
+start, end to rental from proposal
+
+lunches indivi - yes.
+    in contract somehow
+
+tabs order
+    m&l, misc, finance, web
+
+no edit after approval
+
+in summary - start/end times
+    coordinator contact
+
+seminar house reserve clusgter??
+
+drag and drop in rental housing
+    or pop up menu of choices
+
+children - what to do in rentals?
+
+attendance - alters rates for some people
+    simply
+
+lori not richard on membership letters
+
+How? next to Program and Rental searching

@@ -51,7 +51,7 @@ sub update : Local {
     my $hc = $c->stash->{housecost} = 
         model($c, 'HouseCost')->find($id);
     my $type = $hc->type();
-    $c->stash->{checked_perday} = ($type eq "Perday")? "checked": "";
+    $c->stash->{checked_perday} = ($type eq "Per Day")? "checked": "";
     $c->stash->{checked_total}  = ($type eq "Total" )? "checked": "";
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "housecost/create_edit.tt2";

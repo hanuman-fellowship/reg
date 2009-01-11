@@ -1,0 +1,57 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+#
+# dup the Personal Retreats S08 program
+# and rename S08 to F08
+# unlinked dir t-per-f08
+# sdate 20081001, edate 20090331
+#
+# select from registration the S08 PRs
+# that begin >= 20081001 and put them
+# all instead in S08.
+# this is simply an update statement that
+# changes the program_id field in the reg record.
+#
+
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+my $pr_s08_sth = $dbh->prepare("
+    select *
+      from program
+     where name like 'personal%retreat%s08';
+");
+$pr_s08_sth->execute();
+my ($p_ref) = $pr_s08_sth->fetchrow_hashref();
+
+my $old_pid = $p_ref->{id};
+
+$p_ref->{id} = undef;
+$p_ref->{name} =~ s{S08}{F08};
+$p_ref->{unlinked_dir} = "t-per-f08";
+$p_ref->{sdate} = "20081001";
+$p_ref->{edate} = "20090331";
+
+my @fields = keys %$p_ref;
+# yikes
+# print "@fields and @{$p_ref}{@fields}\n";
+
+my $ins_sql =
+"insert into program ("
+. (join ",", @fields)
+. ") values ("
+    . (join ",", ("?") x @fields)
+. ")"
+;
+my $ins_sth = $dbh->prepare($ins_sql);
+$ins_sth->execute(@{$p_ref}{@fields});
+# wow!
+my $new_pid = $dbh->last_insert_id(undef, undef, undef, undef);
+$dbh->do("
+    update registration
+    set program_id = $new_pid
+    where program_id = $old_pid
+      and date_start >= '20081001'
+");

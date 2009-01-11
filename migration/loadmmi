@@ -1,0 +1,74 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+$dbh->do("delete from mmi_payment");
+
+my $mp_sql = "
+    insert into mmi_payment
+    values(?, ?, ?, ?, ?, ?, ?, ?, ?)
+";
+my $mp_sth = $dbh->prepare($mp_sql)
+    or die "no prep\n";
+my $per_sth = $dbh->prepare("
+    select id
+      from people
+     where first = ? and last = ?
+");
+
+my %id_for;
+sub get_person {
+    my ($first, $last) = @_;
+
+    if (exists $id_for{$first}{$last}) {
+        return $id_for{$first}{$last};
+    }
+    $per_sth->execute($first, $last);
+    my ($person_id) = $per_sth->fetchrow_array();
+    if ($person_id) {
+        $id_for{$first}{$last} = $person_id;
+    }
+    return $person_id;
+}
+
+open my $mp, "<", "new/regi_pay.txt"
+    or die "cannot open regi_pay.txt: $!\n";
+my $n = 0;
+while (<$mp>) {
+    my $first   = $_;
+    my $last    = <$mp>;
+    my $amount  = <$mp>;
+    my $gl      = <$mp>;
+    my $date    = <$mp>;
+    my $cash    = <$mp>;
+    my $deleted = <$mp>;
+    # a DOS kind of chomp:
+    for ($first, $last, $amount, $gl, $date, $cash, $deleted) {
+        s{\s*\r?\n}{};
+        s{^\S+\s+}{};
+        s{\s+$}{};
+    }
+    if ($first eq 'first') {    # weird case
+        $first = "";
+    }
+
+    my $person_id = get_person($first, $last);
+    if (! $person_id) {
+        print "could not find '$first' '$last'\n";
+        next;
+    }
+
+    $date = substr($date, 6, 4) . substr($date, 0, 2) . substr($date, 3, 2);
+    ++$n;
+    #
+    # find the program and then the registration
+    #
+    $mp_sth->execute($n, $person_id, $amount,
+                     $gl, $date, $cash, $deleted,
+                     0, ""      # unknown reg_id and note
+    );
+}
+close $mp;

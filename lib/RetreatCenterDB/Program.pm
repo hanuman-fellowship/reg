@@ -470,7 +470,7 @@ sub fees {
 										# personal retreat exception
     $ndays += $self->extradays if $full;
     my $hcost = $housecost->$type;      # column name is correct, yes?
-	if ($housecost->type eq "Perday") {
+	if ($housecost->type eq "Per Day") {
 		$hcost = $ndays*$hcost;
 		$hcost -= 0.10*$hcost  if $ndays >= 7;      # Strings???
 		$hcost -= 0.10*$hcost  if $ndays >= 30;     # Strings???

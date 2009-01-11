@@ -46,6 +46,8 @@ __PACKAGE__->add_columns(qw/
     house_id
     cabin_room
     leader_assistant
+    pref1
+    pref2
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);

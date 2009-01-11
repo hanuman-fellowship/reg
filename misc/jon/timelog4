@@ -177,13 +177,14 @@ Nov 14 12:30-5:00, 8:00-10:00
 Nov 16 8:00-10:00
     installing on kali.  Mail::SendEasy, GD
         trouble with ImageMagick :(
-Nov 17 10:30-12:10, 8:30-12:30
+Nov 17 10:30-12:10
     installed Catalyst with cat-install
     DBIx::Class (warning about slowdown)
     Template
     then Task::Catalyst - which brought in oodles more
     seems like I've got enough... time will tell.
     four hours for Shankar with CVS, mysql, etc.
+        pay for him only
 Nov 18 10:15-11:00
     further testing, installing (a few more Catalyst plugins)
         getting close
@@ -225,3 +226,81 @@ Dec 13 8:50-9:35, 9:50-10:45, 11:30-2:30
     password changes on various machines
 
     invoice for rentals
+Dec 21 11:30-2:45, 7:15-8:45, 11:10-12:55
+    co from kali
+    pref1, pref2 for sad faces and for default h_type
+    further refinements on "Sharing a room with"
+        looking in online files
+        added to a_z testplan
+    multiple select bookings for rentals
+    1stReg, AllReg
+    note above additional requests in dreg1.html on www.mountmadonna.org
+    invoice for rentals - nice!
+    todo: ci to kali, update tst instance
+        NOTE: attendance.html in roots/static/help needs adding!!!
+        and unhappy[12].gif and timelog2 for shankar
+Dec 24 11:25-1:50, 1:00-1:15
+    proposals beginning - good!
+    later - better presentation of invoice
+    to do:
+        which are required fields?
+        tab order
+        listpat
+Dec 25 8:45-9:30
+    refining proposal add/create and view.
+    add other charges, payments to invoice 
+    transmit to person, rental.
+Dec 26 8:40-11:00
+    additional things in invoice - minimum lodging cost,
+        extra charges, payments.
+Dec 28 9:45-10:30, 11:00-1:00
+    proposal conversion, transmitting
+Dec 30 7:25-7:55, 8:05-12:00
+    getting _all_ data including regi_payments
+    akey => 3 letters
+    collapse addresses - no show - needed?
+Dec 31 8:00-10:30
+    mmi_payments - good job!
+        it remains to do create and del
+            after del - reshow the list
+            after create - return to registration
+    still need to do 'import' from d/c/m for MMI courses
+    school/level in program - school 0 = Center
+        use onchange to show/not show the level
+        level is D/C/M/S (Diploma Certificate Masters Course)
+    mmi gl accounting list
+Jan 2 8:55-11:10
+    printable mmi_payment list
+    mmi payments        (gl number???)
+    To D/C/M action.
+Jan 3 11:20-3:00, 9:15-12:20
+    making list of further needs - it is never ending!
+    school/level on program/create
+    default date format in strings
+        strftime in doc
+    begin import into MMI course from D/C/M programs.
+    continuing import - setting of h_type from prior registrations!
+    tried to deduce registration/program from glnum in mmi_payment
+        and failed.  suffice for future ones?  ask about it.
+Jan 4 3:40-6:00, 9:00-11:10
+    split F08 PRs from S08 PRs
+    MMI doc beginning, PR/DCM link on Program list.
+    update date in Person is now correct
+        based on the end date of the last program they attended
+        better for determining whether to mark them inactive or not.
+    last active tally
+
+    rental conversion
+Jan 5 11:00-2:30, 4:00-5:30, 9:45-12:20
+    dcm util function returning 0, #dcm's, ref to Registration record
+        using it
+    tweaks on mmi payment display
+    auditors
+    reading about performance enhancements of sql indices
+    mmi doc - re-understanding it all the while
+    at center - helping Shyama, negociating VPN fixing,
+        gathering requirements.
+    converting a proposal to a rental
+Jan 6 12:00-12:40, 4:10-5:10
+    demo to Brajesh, gather suggestions
+    checking in, getting unhappies

@@ -4,8 +4,14 @@ use warnings;
 package RetreatCenter::Controller::String;
 use base 'Catalyst::Controller';
 
-use Global qw/%string/;
-use Util qw/resize model/;
+use Global qw/
+    %string
+/;
+use Util qw/
+    resize
+    model
+/;
+use Date::Simple;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -57,6 +63,9 @@ sub update_do : Local {
             my ($type, $id) = $f =~ m{/(\w+)o-(\d+).jpg$};
             resize($type, $id, $the_key);
         }
+    }
+    if ($the_key eq 'default_date_format') {
+        Date::Simple->default_format($value);
     }
     $c->response->redirect($c->uri_for("/string/list#$the_key"));
 }

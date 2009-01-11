@@ -1,6 +1,10 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use lib "../lib";
+use Util qw/
+    nsquish
+/;
 use DBI;
 
 use Getopt::Easy;
@@ -51,6 +55,8 @@ while (<$people>) {
     if (@flds == 24) {
         push @flds, "";
     }
+    # recalc the akey field
+    $flds[9] = nsquish($flds[3], $flds[4], $flds[7]);
     for my $dt (@flds[18,19]) {
         if ($dt eq "  /  /  ") {
             $dt = "";
