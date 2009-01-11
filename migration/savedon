@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use DBI;
 
-my $dbh = DBI->connect("dbi:SQLite:../retreatcenter.db", "sahadev", "JonB")
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 
 mkdir "don" unless -d "don";

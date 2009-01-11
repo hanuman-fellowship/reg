@@ -1,0 +1,14 @@
+#!/bin/sh
+if [ `whoami` = 'sahadev' ]
+then
+    db='mysql -u sahadev -pJonB reg2'
+    export DBI_DSN="dbi:mysql:reg2"
+    perl -p -i -e 's/autoincrement/auto_increment/' mk*
+    MYSQL=1
+else
+    db='sqlite3 retreatcenter.db'
+    export DBI_DSN="dbi:SQLite:retreatcenter.db"
+    MYSQL=
+fi
+savedon
+savemem
