@@ -22,7 +22,7 @@ for my $tbl (qw/ donation project /) {
     }
     close $don;
 }
-my $sql = "select p.* distinct from people p, donation d where d.person_id = p.id";
+my $sql = "select p.* from people p, donation d where d.person_id = p.id";
 my $sth = $dbh->prepare($sql);
 $sth->execute();
 open my $don, ">", "don/people.txt" or die "people.txt\n";
