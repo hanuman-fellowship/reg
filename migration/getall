@@ -1,5 +1,4 @@
 #!/bin/sh
-cd /Users/jonbjornstad/newReg/RetreatCenter/migration
 rm -rf new
 echo ftp
 ftp www.mountmadonna.org <<EOC
