@@ -114,7 +114,7 @@ sub _get_data {
             my $total_peeps = 0;
             TERM:
             for my $t (@terms) {
-                if ($t !~ m{^\s*(\d+)\s*x\s*(\d+)\s*}i) {
+                if ($t !~ m{^\s*(\d+)\s*k?\s*x\s*(\d+)\s*}i) {
                     push @mess, "$s: Illegal attendance: " . $hash{"att_$f"};
                     next H_TYPE;
                 }
@@ -1144,14 +1144,16 @@ EOH
         $tot_people += $n;
         $meth = "att_$type";
         my $att = $rental->$meth();
-        my @duples = ();           # better names!
+        my @triples = ();           # better names!?
         my $tot_other = 0;
         if (! empty($att)) {
             my @terms = split m{\s*,\s*}, $att;
             for my $term (@terms) {
                 my ($npeople, $ndays) = split m{\s*x\s*}i, $term;
+                $npeople =~ s{\s}{};
+                my $kid = $npeople =~ s{k}{}i;
                 $tot_other += $npeople;
-                push @duples, [ $npeople, $ndays ];
+                push @triples, [ $npeople, $ndays, $kid ];
             }
         }
         my $type_shown = 0;
@@ -1177,20 +1179,28 @@ EOH
             $s = "";
             $show_cost = "";
         }
+        #
+        # now for the exceptions
+        #
         for my $a (sort {
                        $b->[1] <=> $a->[1]
                    }
-                   @duples
+                   @triples
         ) {
-            my ($np, $nd) = @$a;
+            my ($np, $nd, $kids) = @$a;
+            my $factor = 1;
+            if ($kids) {
+                $np = "$np kid";
+                $np .= "s" if $np > 1;
+                $factor = .5;
+            }
+            my $subtot = int($np * $cost * $factor * $nd);
             $html .= Tr(th({ -align => 'right'}, [ $s ]),
                         td({ -align => 'right'},
-                           [ $show_cost, $np, $nd, 
-                             commify($np * $cost * $nd)
-                           ]
+                           [ $show_cost, $np, $nd, commify($subtot) ]
                           )
                        );
-            $tot_housing_charge += $np * $cost * $nd;
+            $tot_housing_charge += $subtot;
             $s = "";
             $show_cost = "";
         }
