@@ -1,0 +1,79 @@
+<style type="text/css">
+.grayrow {
+    background: #ededed;
+}
+</style>
+<h2>Issues</h2>
+<form name=form action=/issue/search>
+<a href=/issue/create>Add</a>
+<span style="margin-left: 1in">
+<input type=text size=10 name=pat>
+<input type=submit value="Search">
+</span>
+</form>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=center width=50>Id</th>
+<th align=center>Priority</th>
+<th align=left>Title</th>
+<th>Action</th>
+</tr>
+
+[% class = 'grayrow' %]
+[% FOREACH i IN issues %]
+    <tr class=[% class %]>
+    <td align=center>[% i.id %]</td>
+    <td align=center>[% i.priority %]</td>
+    <td width=600><a href="/issue/update/[% i.id %]">[% i.title %]</a></td>
+    <td align=center>
+    <a href="[% '/issue/delete/' _ i.id %]" onclick="return confirm('Okay to Delete [% i.title %]?')">Del</a>
+    </td>
+    </tr>
+    [% IF class == 'grayrow' %]
+        [% class = '' %]
+    [% ELSE %]
+        [% class = 'grayrow' %]
+    [% END %]
+[% END -%]
+
+</table>
+</ul>
+
+[% IF closed_issues.0.title %]
+[% class = 'grayrow' %]
+<hr width=800 align=left>
+<ul>
+<h4>Closed Issues</h4>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=center width=50>Id</th>
+<th align=center>Priority</th>
+<th align=left>Title</th>
+<th>Action</th>
+</tr>
+
+[% class = 'grayrow' %]
+[% FOREACH i IN closed_issues %]
+    <tr class=[% class %]>
+    <td align=center>[% i.id %]</td>
+    <td align=center>[% i.priority %]</td>
+    <td width=600><a href="/issue/update/[% i.id %]">[% i.title %]</a></td>
+    <td align=center>
+    <a href="[% '/issue/delete/' _ i.id %]" onclick="return confirm('Okay to Delete [% i.title %]?')">Del</a>
+    </td>
+    </tr>
+    [% IF class == 'grayrow' %]
+        [% class = '' %]
+    [% ELSE %]
+        [% class = 'grayrow' %]
+    [% END %]
+[% END %]
+
+</table>
+</ul>
+[% END %]
+
+<script type="text/javascript">document.form.pat.focus()</script>

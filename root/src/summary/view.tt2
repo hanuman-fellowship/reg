@@ -33,34 +33,79 @@ th {
     vertical-align: top;
 }
 </style>
-<table cellpadding=3 border=0>
 [% IF type == 'rental' %]
+<table cellpadding=3 border=0>
 <tr>
-<th align=right>Contact Person</th>
+<th align=right width=180>Contact Person</th>
 <td>
 [% coord = happening.coordinator %]
 <a href=/person/view/[% coord.id %]>[% coord.first %] [% coord.last %]</a>
-&nbsp;&nbsp;
+</td><td>
 <a href='mailto:[% coord.email %]'>[% coord.email %]</a>
-[% IF coord.tel_home %]
-&nbsp;&nbsp;
-[% coord.tel_home %] home
-[% END %]
-[% IF coord.tel_work %]
-&nbsp;&nbsp;
-[% coord.tel_work %] work
-[% END %]
-[% IF coord.tel_cell %]
-&nbsp;&nbsp;
-[% coord.tel_cell %] cell
-[% END %]
+</td><td>
+[% IF coord.tel_home %][% coord.tel_home %] home [% END %]
+[% IF coord.tel_work %][% coord.tel_work %] work [% END %]
+[% IF coord.tel_cell %][% coord.tel_cell %] cell [% END %]
 </td>
 </tr>
-[% ELSE %]
-[% END %]
-<tr><th>Last Updated</th><td>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
 
-<tr><th>Gate Code</th><td width=200>[% sum.gate_code %]</td>
+[% IF happening.cs_person_id %]
+[% cs = happening.contract_signer %]
+<tr>
+<th align=right>Contract Signer</th>
+<td>
+<a href=/person/view/[% cs.id %]>[% cs.first %] [% cs.last %]</a>
+</td><td>
+<a href='mailto:[% cs.email %]'>[% cs.email %]</a>
+</td><td>
+[% IF cs.tel_home %][% cs.tel_home %] home [% END %]
+[% IF cs.tel_work %][% cs.tel_work %] work [% END %]
+[% IF cs.tel_cell %][% cs.tel_cell %] cell [% END %]
+</td>
+</tr>
+[% END %]
+
+<tr>
+<th align=right>Start Hour</th><td>[% happening.start_hour %]&nbsp;&nbsp;<b>End Hour</b> [% happening.end_hour %]</td>
+</tr>
+</table>
+[% ELSE %]
+
+<table cellpadding=3 border=0>
+<tr>
+<th align=right valign=top width=180>Leaders</th>
+<td>
+<table>
+[% FOR l IN happening.leaders %]
+    [% p = l.person %]
+    <tr>
+    <td><a href=/person/view/[% p.id %]>[% p.first %] [% p.last %]</a></td>
+    <td>[% IF p.email %]<a href='mailto:[% p.email %]'>[% p.email %]</a>[% END %]</td>
+    <td>
+    [% IF p.tel_home %][% p.tel_home %] home[% END %]
+    [% IF p.tel_work %][% p.tel_work %] work[% END %]
+    [% IF p.tel_cell %][% p.tel_cell %] cell[% END %]
+    </td>
+    </tr>
+[% END %]
+</table>
+</td>
+</tr>
+[% pr = happening %]
+<tr>
+<th align=right>Registration Start</th><td>[% pr.reg_start %]&nbsp;&nbsp;<b>End</b> [% pr.reg_end %]</td>
+</tr>
+<tr>
+<th align=right>Program Start</th><td>[% pr.prog_start %]&nbsp;&nbsp;<b>End</b> [% pr.prog_end %]</td>
+</tr>
+</table>
+[% END %]
+
+<p>
+
+<table cellpadding=3 border=0>
+
+<tr><th width=180>Gate Code</th><td>[% sum.gate_code %]</td>
 <th>School Spaces?</th><td>[% sum.school_spaces %]</td></tr>
 
 <tr><th>Registration Location</th><td>[% sum.registration_location %]</td>
@@ -98,4 +143,5 @@ th {
 <tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup_br %]</td></tr>
 <tr><th>Sound Setup</th><td colspan=3>[% sum.sound_setup_br %]</td></tr>
 <tr><th>Feedback</th><td colspan=3>[% sum.feedback_br %]</td></tr>
+<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
 </table>

@@ -28,20 +28,25 @@ body {
 <body>
 <h3>Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
-[% c = rental.coordinator %]
-[% c.first %]
-[% c.last %]
-[% c.addr1 %]
-[% IF c.addr2 %]
-[% c.addr2 %]
+[% IF rental.contract_signer %]
+    [% p = rental.contract_signer %]
+[% ELSE %]
+    [% p = rental.coordinator %]
 [% END %]
-[% c.city %],
-[% c.st_prov %]
-[% c.zip_post %]
-[% IF c.country %]
-[% c.country %]
+[% p.first %]
+[% p.last %]
+at
+[% p.addr1 %]
+[% IF p.addr2 %]
+[% p.addr2 %]
 [% END %]
-for [% rental.name %], hereafter called the Renter, hereby agree as follows:
+[% p.city %],
+[% p.st_prov %]
+[% p.zip_post %]
+[% IF p.country %]
+[% p.country %]
+[% END %]
+for '[% rental.name %]', hereafter called the Renter, hereby agree as follows:
 <h2>Facilities</h2>
 The Center will provide workshop space in the [% rental.meeting_spaces %],
 or a comparable facility, and lodging for up to [% rental.max %]
@@ -208,7 +213,7 @@ of the date alongside the Program Director's signature.
 </table>
 <table id=line border=0>
 <tr><td id=sig colspan=2></td></tr>
-<tr><td id=name align=left>[% c.first %] [% c.last %]</td><td>Date</td></tr>
+<tr><td id=name align=left>[% p.first %] [% p.last %]</td><td>Date</td></tr>
 </table>
 </center>
 </body>

@@ -9,3 +9,12 @@ create table string (
     the_key     text,
     value       text
 );
+drop table if exists issue;
+create table issue (
+    id   integer primary key autoincrement,
+    priority text,
+    title text,
+    notes text,
+    date_entered text,
+    date_closed text
+);

@@ -163,6 +163,8 @@ sub show : Local {
         # encode the config record in a string
         my $sexcode = ($sex x $cur);
         if ($sexcode eq 'XX') {
+            # for non-sexist purposes...
+            # to not make the women angry ...
             $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
         }
         $dp->string(gdGiantFont, $x1+3, $y1+3,

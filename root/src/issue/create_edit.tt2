@@ -1,0 +1,36 @@
+<h2>Issues</h2>
+<form action=[% '/issue/' _ form_action %] name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<td align=right>Title</td>
+<td><input type=text name=title value="[% issue.title %]" size=50></td>
+</tr>
+
+<tr>
+<td align=right>Priority</td>
+<td><input type=text name=priority value="[% issue.priority %]" size=2></td>
+</tr>
+
+<tr>
+<td align=right valign=top>Notes</td>
+<td>
+<textarea name=notes cols=60 rows=5>
+[% issue.notes %]
+</textarea>
+</td>
+</tr>
+
+<tr>
+<td align=right>Date Closed</td>
+<td><input type=text name=date_closed value="[% issue.date_closed_obj %]" size=10></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.title.focus()</script>

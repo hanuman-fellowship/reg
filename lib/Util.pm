@@ -719,6 +719,7 @@ sub get_lunch {
 sub add_config {
     my ($c, $new_last_date, $house) = @_;
 
+$c->log->info("in add config nld = $new_last_date");
     if (! ref($new_last_date)) {
         $new_last_date = date($new_last_date);
     }

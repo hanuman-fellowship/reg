@@ -162,7 +162,7 @@ function show_no_show_cs() {
 </tr>
 
 <tr>
-<th align=right>Dates Requested</th>
+<th align=right valign=top>Dates Requested</th>
 <td colspan=3><textarea name=dates_requested cols=60 rows=2>[% proposal.dates_requested %]</textarea></td>
 </tr>
 

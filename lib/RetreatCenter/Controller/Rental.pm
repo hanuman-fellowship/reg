@@ -124,8 +124,32 @@ sub _get_data {
                     push @mess, "$s: Attendance > # days of rental!: $t_ndays";
                 }
             }
-            if ($total_peeps > $hash{"n_$f"}) {
-                push @mess, "$s: Total people in attendance field > # of people";
+            # it is okay to have more people in the 'attendance' field
+            # than the '# of people' field.  Perhaps someone left early
+            # and this changed the attendance tallies.  Like this:
+            #
+            # 2 people in a double the entire 5 days.
+            # 3 people in triple.  1 leaves the 5 day program after 2 days.
+            # We need this:
+            #
+            # Double    2    2x5, 2x3
+            # Triple    3    1x2, 3x2
+            #
+            # If NO 'attendance' field at all - assume they stayed the
+            # whole time. If there IS an attendance field you'll need to
+            # specify even those who stayed the full time.
+            #
+            # the '# of people' field is used to determine the need
+            # for room reservations.  It in combination with the 'attendance'
+            # field is used for the invoice cost calculations.
+            #
+            #if ($total_peeps > $hash{"n_$f"}) {
+            #    push @mess, "$s: Total people in attendance field"
+            #               ." > # of people";
+            #}
+            if ($total_peeps < $hash{"n_$f"}) {
+                push @mess, "$s: Total people in non-blank attendance field"
+                           ." < # of people";
             }
         }
     }
@@ -186,7 +210,6 @@ sub create_do : Local {
     # we must ensure that there are config records
     # out to the end date of this rental.
     #
-$c->log->info("h edate = $hash{edate}");
     add_config($c, $hash{edate});
     $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
 }
@@ -212,6 +235,11 @@ sub create_from_proposal : Local {
     if ($hash{contract_received}) {
         $hash{received_by} = $c->user->obj->id;
     }
+    my $misc = $proposal->misc_notes();
+    if (my $prov = $proposal->provisos()) {
+        $misc =~ s{\s*$}{};      # trim the end
+        $misc .= "\n\n$prov";
+    }
     my $sum = model($c, 'Summary')->create({
         date_updated   => tt_today($c)->as_d8(),
         who_updated    => $c->user->obj->id,
@@ -219,13 +247,15 @@ sub create_from_proposal : Local {
 
         special_needs  => $proposal->special_needs(),
         food_service   => $proposal->food_service(),
-        miscellaneous  => $proposal->misc_notes(),
+        miscellaneous  => $misc,
         leader_housing => $proposal->leader_housing(),
+
         # perhaps utilise other attributes from the proposal
         # in the creation of the Summary???
     });
     $hash{summary_id}     = $sum->id();
     $hash{coordinator_id} = $proposal->person_id();
+    $hash{cs_person_id}   = $proposal->cs_person_id();
 
     my $r = model($c, 'Rental')->create(\%hash);
     my $rental_id = $r->id();
@@ -259,31 +289,31 @@ sub _h24 {
 #
 # there are several things to compute for the display
 # update the balance in the record once you're done.
-# and possible reset the status.
+# and possibly reset the status.
 #
 sub view : Local {
     my ($self, $c, $id, $section) = @_;
 
     Global->init($c);
     $section ||= 1;
-    my $r = model($c, 'Rental')->find($id);
+    my $rental = model($c, 'Rental')->find($id);
 
-    my @payments = $r->payments;
+    my @payments = $rental->payments;
     my $tot_payments = 0;
     for my $p (@payments) {
         $tot_payments += $p->amount;
     }
 
     my $tot_other_charges = 0;
-    my @charges = $r->charges;
+    my @charges = $rental->charges;
     for my $p (@charges) {
         $tot_other_charges += $p->amount;
     }
 
-    my $ndays = date($r->edate) - date($r->sdate);
-    my $hc    = $r->housecost; 
+    my $ndays = date($rental->edate) - date($rental->sdate);
+    my $hc    = $rental->housecost(); 
     my $min_lodging = int(0.75
-                          * $r->max
+                          * $rental->max
                           * $ndays
                           * $hc->dormitory
                          );
@@ -337,11 +367,12 @@ sub view : Local {
     my $less = sprintf($fmt, $string{cov_less_color} =~ m{(\d+)}g);
     my $more = sprintf($fmt, $string{cov_more_color} =~ m{(\d+)}g);
     my $okay = sprintf($fmt, $string{cov_okay_color} =~ m{(\d+)}g);
+    my $att_days = 0;
     TYPE:
     for my $t (housing_types()) {
         next TYPE if $t eq "unknown";
         my $nt = "n_$t";
-        my $npeople = $r->$nt || 0;
+        my $npeople = $rental->$nt || 0;
         $tot_people += $npeople;
         if ($hc->type eq 'Per Day') {
             $actual_lodging += $hc->$t * $npeople * $ndays;
@@ -358,36 +389,45 @@ sub view : Local {
                      :($needed > $count)? $more
                      :                    $okay
                      ;
+        my $meth = "att_$t";
+        my $att = $rental->$meth();
+        if (empty($att)) {
+            $att_days += $npeople * $ndays;
+        }
+        else {
+            my @terms = split m{\s*,\s*}, $att;
+            for my $term (@terms) {
+                my ($np, $nd) = split m{\s*x\s*}i, $term;
+                $np =~ s{\s}{};
+                my $children = $np =~ s{c}{}i;
+                $att_days += $np * $nd;
+            }
+        }
     }
     my $lodging = ($min_lodging > $actual_lodging)? $min_lodging
                 :                                   $actual_lodging;
 
     # Lunches
     my $lunch_charge = 0;
-    my $lunches = $r->lunches;
+    my $lunches = $rental->lunches;
     if ($lunches =~ /1/) {
         $lunch_charge = $tot_people
                       * $string{lunch_charge}
                       * scalar($lunches =~ tr/1/1/);
     }
 
-    my $balance = 0; # ???
-        # we need to compute it each time???
-        # or only on invoicing?
-        # due or done?
-
     my $status;
-    if ($r->tentative) {
+    if ($rental->tentative) {
         $status = "tentative";
     }
-    elsif (! ($r->contract_sent())) {
+    elsif (! ($rental->contract_sent())) {
         $status = "new";
     }
-    elsif (! ($r->contract_received() && $r->payments() > 0)) {
+    elsif (! ($rental->contract_received() && $rental->payments() > 0)) {
         $status = "sent";
     }
-    elsif (tt_today($c)->as_d8() > $r->edate()) {
-        if ($balance != 0) {
+    elsif (tt_today($c)->as_d8() > $rental->edate()) {
+        if ($rental->balance() != 0) {
             $status = "due";
         }
         else {
@@ -397,18 +437,18 @@ sub view : Local {
     else {
         $status = "received";
     }
-    # ??? needed each view??? 
+    # ??? needed each view???
     # a rental_booking may have been done
     # housing costs could have changed...
     # the program might be finished.
-    $r->update({
-        balance => $balance,
+    $rental->update({
         status  => $status,
     });
 
-    $c->stash->{rental}         = $r;
-    $c->stash->{daily_pic_date} = $r->sdate();
-    $c->stash->{cal_param}      = $r->sdate_obj->as_d8() . "/1";
+    $c->stash->{rental}         = $rental;
+    $c->stash->{non_att_days}   = $tot_people*$ndays - $att_days;
+    $c->stash->{daily_pic_date} = $rental->sdate();
+    $c->stash->{cal_param}      = $rental->sdate_obj->as_d8() . "/1";
     $c->stash->{colcov}         = \%colcov;     # color of the coverage
     $c->stash->{bookings}       = \%bookings;
     $c->stash->{clusters}       = $clusters;
@@ -418,8 +458,12 @@ sub view : Local {
     $c->stash->{payments}       = \@payments;
     $c->stash->{tot_payments}   = $tot_payments;
     $c->stash->{section}        = $section;
-    $c->stash->{lunch_table}    = lunch_table(1, $r->lunches,
-                                              $r->sdate_obj, $r->edate_obj);
+    $c->stash->{lunch_table}    = lunch_table(
+                                      1,
+                                      $rental->lunches(),
+                                      $rental->sdate_obj(),
+                                      $rental->edate_obj(),
+                                  );
     $c->stash->{template}       = "rental/view.tt2";
 }
 
@@ -947,6 +991,24 @@ sub contract : Local {
     my ($self, $c, $id) = @_;
 
     my $rental = model($c, 'Rental')->find($id);
+    my $cs = ($rental->contract_signer() || $rental->coordinator());
+    my @mess = ();
+    if (empty($cs->addr1())) {
+        push @mess, $cs->first() . " " . $cs->last()
+                    . " does not have an address.";
+    }
+    my @bookings = $rental->bookings();
+    if (! @bookings) {
+        push @mess, "There is no assigned meeting place.";
+    }
+    if ($rental->housecost->name() eq "Default") {
+        push @mess, "The housing cost cannot be the default.";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "rental/error.tt2";
+        return;
+    }
     my $html = "";
     my $tt = Template->new({
         INCLUDE_PATH => 'root/static/templates/letter',
@@ -1140,31 +1202,32 @@ EOH
         next H_TYPE if $type eq "unknown";
         my $meth = "n_$type";
         my $n = $rental->$meth();
-        next H_TYPE if empty($n);
-        $tot_people += $n;
         $meth = "att_$type";
         my $att = $rental->$meth();
-        my @triples = ();           # better names!?
-        my $tot_other = 0;
+        next H_TYPE if empty($n) && empty($att);
+        $tot_people += $n;
+        my @attendance = ();
         if (! empty($att)) {
             my @terms = split m{\s*,\s*}, $att;
             for my $term (@terms) {
                 my ($npeople, $ndays) = split m{\s*x\s*}i, $term;
                 $npeople =~ s{\s}{};
-                my $kid = $npeople =~ s{k}{}i;
-                $tot_other += $npeople;
-                push @triples, [ $npeople, $ndays, $kid ];
+                my $children = $npeople =~ s{c}{}i;
+                push @attendance, [ $npeople, $ndays, $children ];
             }
         }
         my $type_shown = 0;
-        $n -= $tot_other;
         my $cost = $hc->$type();
         my $show_cost = $cost;
         my $s = $type;
         $s =~ s{_}{ };
         $s =~ s{\b(\w)}{\u$1}g;
         $s =~ s{Dble}{Double};
-        if ($n) {
+        if (! @attendance) {
+            #
+            # No special attendance - so use the '# of people'
+            # to determine the costs.  This is hopefully the normal case.
+            #
             $html .= Tr(th({ -align => 'right'}, [ $s ]),
                         td({ -align => 'right'},
                            [ $show_cost, $n, $ndays,
@@ -1185,13 +1248,13 @@ EOH
         for my $a (sort {
                        $b->[1] <=> $a->[1]
                    }
-                   @triples
+                   @attendance
         ) {
-            my ($np, $nd, $kids) = @$a;
+            my ($np, $nd, $children) = @$a;
             my $factor = 1;
-            if ($kids) {
-                $np = "$np kid";
-                $np .= "s" if $np > 1;
+            if ($children) {
+                $np = "$np child";
+                $np .= "ren" if $np > 1;
                 $factor = .5;
             }
             my $subtot = int($np * $cost * $factor * $nd);
@@ -1311,7 +1374,7 @@ EOH
 <tr><th align=right>Housing</th><td align=right>$sh</td></tr>
 $tr_extra
 $tr_other
-<tr><th>Total</th><td>\$$st</td></tr>
+<tr><th align=right>Total</th><td>\$$st</td></tr>
 </table>
 </ul>
 EOH
@@ -1362,6 +1425,18 @@ EOH
 </body>
 </html>
 EOH
+    #
+    # update the balance here this will help determine
+    # the status of the rental.  hopefully we don't need
+    # to compute the balance elsewhere.  If a new charge
+    # is added we'll need to change the balance and the
+    # status - but to do that all we need to is ask for
+    # invoice.  is this okay?  it is awkward to compute
+    # the balance in several places.  make convenience sub???
+    #
+    # the balance is computed when creating the invoice.
+    # the status is set when viewing the rental.
+    #
     $rental->update({
         balance => $balance,
     });

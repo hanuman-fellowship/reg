@@ -186,7 +186,7 @@ Misc
 <td></td>
 <th># of<br>People</th>
 <th></th>
-<th width=300 align=left valign=bottom>Rooms</th>
+<th align=left valign=bottom>Rooms</th>
 <th valign=bottom>Attendance</th>
 </tr>
 
@@ -278,6 +278,11 @@ Misc
 <tr>
 <th align=right>Commuting</th>
 <td align=center>[% rental.n_commuting %]</td>
+</tr>
+
+<tr>
+<td></td><td></td>
+<td colspan=3><b>Days of Non-Attendance:</b> [% non_att_days %]</td>
 </tr>
 
 </table>

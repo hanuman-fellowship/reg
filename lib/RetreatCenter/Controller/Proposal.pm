@@ -10,6 +10,7 @@ use Util qw/
     etrim
     tt_today
     nsquish
+    empty
 /;
 use Date::Simple qw/
     date
@@ -156,7 +157,9 @@ sub approve : Local {
 
     my $person_id = _transmit($c, $id);
     my $cs_person_id = 0;
-    #my $cs_person_id = _cs_transmit($c, $id);
+    if (! empty($proposal->cs_last())) {
+        $cs_person_id = _cs_transmit($c, $id);
+    }
     # ??? if transmit fails...
 
     # now we fill in the stash in preparation for
@@ -175,6 +178,8 @@ sub approve : Local {
         cs_person_id   => $cs_person_id,
         max            => $proposal->max(),
         deposit        => $proposal->deposit(),
+        start_hour     => $proposal->checkin_time(),
+        end_hour       => $proposal->checkout_time(),
         # what else???
     };
     $c->stash->{section}     = 1;   # web
@@ -209,7 +214,7 @@ sub _transmit {
     else {
         $c->stash->{mess}
             = "Sorry, you must first create a Proposal Submitter affiliation";
-        $c->stash->{template} = "program/error.tt2";
+        $c->stash->{template} = "proposal/error.tt2";
         return;
     }
 
@@ -281,6 +286,74 @@ sub _transmit {
         });
         $proposal->update({
             person_id => $person_id,
+        });
+    }
+    else {
+        # more than one match - damn
+        # ???
+    }
+    return $person_id;
+}
+
+# ??? UGly to copy above.
+# how else?   method name constructed by prepending "cs_"?
+sub _cs_transmit {
+    my ($c, $id) = @_;
+
+    my $proposal = model($c, 'Proposal')->find($id);
+
+    # does this person already exist in the People table?
+    my @people = model($c, 'Person')->search({
+                     first => $proposal->cs_first(),
+                     last  => $proposal->cs_last(),
+                 });
+
+    my $person_id;
+    if (@people == 1) {
+        my $person = $people[0];
+        $person_id = $person->id();
+        $person->update({
+            addr1    => $proposal->cs_addr1(),
+            addr2    => $proposal->cs_addr2(),
+            city     => $proposal->cs_city(),
+            st_prov  => $proposal->cs_st_prov(),
+            zip_post => $proposal->cs_zip_post(),
+            country  => $proposal->cs_country(),
+            tel_home => $proposal->cs_tel_home(),
+            tel_work => $proposal->cs_tel_work(),
+            tel_cell => $proposal->cs_tel_cell(),
+            email    => $proposal->cs_email(),
+        });
+        # did the above clobber anything important???
+        # hope not.
+
+        # update the proposal
+        $proposal->update({
+            cs_person_id => $person_id,
+        });
+    }
+    elsif (! @people) {
+        my $person = model($c, 'Person')->create({
+            first    => $proposal->cs_first(),
+            last     => $proposal->cs_last(),
+            addr1    => $proposal->cs_addr1(),
+            addr2    => $proposal->cs_addr2(),
+            city     => $proposal->cs_city(),
+            st_prov  => $proposal->cs_st_prov(),
+            zip_post => $proposal->cs_zip_post(),
+            country  => $proposal->cs_country(),
+            tel_home => $proposal->cs_tel_home(),
+            tel_work => $proposal->cs_tel_work(),
+            tel_cell => $proposal->cs_tel_cell(),
+            email    => $proposal->cs_email(),
+            akey     => nsquish($proposal->cs_addr1(),
+                                $proposal->cs_addr2(),
+                                $proposal->cs_zip_post()
+                        ),
+        });
+        $person_id = $person->id();
+        $proposal->update({
+            cs_person_id => $person_id,
         });
     }
     else {

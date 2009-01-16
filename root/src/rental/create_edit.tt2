@@ -6,7 +6,7 @@ var newwin;
 function popup(url) {
     newwin = window.open(
         url, 'reg_search_help',
-        'height=350,width=550, scrollbars'
+        'height=450,width=550, scrollbars'
     );
     if (window.focus) {
         newwin.focus();

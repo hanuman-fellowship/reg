@@ -974,14 +974,14 @@ sub make_up : Local {
     for my $mu (model($c, 'MakeUp')->search(
                     { },
                     {
-                        join     => {
+                        join => {
                             house => 'cluster',
                         },
                         prefetch => {
                             house => 'cluster',
                         },
                         order_by => [qw/
-                            house.cluster.name
+                            cluster.name
                             house.cluster_order
                         /],
                     }

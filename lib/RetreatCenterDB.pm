@@ -65,6 +65,8 @@ __PACKAGE__->load_classes({
         MakeUp
 
         MMIPayment
+
+        Issue
     /]
 });
 

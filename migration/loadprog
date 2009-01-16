@@ -292,10 +292,10 @@ my %lookup = reverse qw/
     ptemplate     template
 /;
 my %init = (
-    reg_start  => '4:00 pm',
-    reg_end    => '7:00 pm',
-    prog_start => '7:00 pm',
-    prog_end   => '12:30 pm',
+    reg_start  => '4',
+    reg_end    => '7',
+    prog_start => '7',
+    prog_end   => '12:30',
 );
 # get affil ids
 my %affil_id;

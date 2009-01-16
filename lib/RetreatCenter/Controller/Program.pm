@@ -138,6 +138,10 @@ sub _get_data {
     my ($c) = @_;
 
     %hash = %{ $c->request->params() };
+    #
+    if ($hash{school} == 0) {
+        $hash{level} = ' ';
+    }
     # since unchecked boxes are not sent...
     for my $f (qw/
         collect_total
@@ -227,13 +231,13 @@ sub _get_data {
         prog_start
         prog_end
     /) {
-        my $time = $hash{$t};
+        my $time = trim($hash{$t});
         my ($hour, $min) = (-1, -1);
-        if ($time =~ m{^\s*(\d+\s*[ap][.]?m[.]?)$}) {
-            $hour = $1;
+        if ($time =~ m{^\d+$}) {
+            $hour = $time;
             $min = 0;
         }
-        elsif ($time =~ m{^\s*(\d+):(\d+)\s*[ap][.]?m[.]?$}) {
+        elsif ($time =~ m{^(\d+):(\d+)$}) {
             $hour = $1;
             $min = $2;
         }
@@ -242,6 +246,8 @@ sub _get_data {
         ) {
             push @mess, "Illegal time: $time";
         }
+        # normalized:
+        $hash{$t} = sprintf("%d:%02d", $hour, $min);
     }
     my @email = split m{[, ]+}, $hash{notify_on_reg};
     for my $em (@email) {

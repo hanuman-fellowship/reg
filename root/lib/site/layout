@@ -12,6 +12,7 @@
 [% IF Catalyst.check_user_roles('super_admin') %]
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
 [% END %]
+<td align=right><a href=/issue/list>Issues</a></td>
 </tr>
 
 [% IF Catalyst.check_user_roles('prog_staff') %]

@@ -1,6 +1,7 @@
 to-do items from testing with Laura:
 
 ---
+THESE ITEMS ARE DONE:
 alphabetize testplans
 alt-enter for full screen - browser skills
 show search pattern on results page?
@@ -90,6 +91,32 @@ capitalize first, last names (Mc O') on entry online
     for normalization
 on create program page - offer school and (onchange level)
     level can be a series of radio buttons rather than select/option (nah)
+* start, end to rental from proposal
+* OK '*' when searching for Rentals.
+* no edit after approval
+* in summary - start/end times
+*     coordinator contact
+* children - what to do in rentals? -  done
+* proposals 
+    * textarea for date requested.
+    * convert -> approve
+    * misc_notes valign top
+    * no edit after approve
+    * append provisos to miscell.
+* seminar house reserve clusgter??
+    * okay - was not avail
+VPN access   - okay thanks to Jim.
+On reg1.html explain special requests
+    special foods, kids, early late, snoring
+on housing screen - show kids if present
+    on popup - yes?
+No Where - didn't show until = 9? - fixed
+initial focus when changing tabs in Rentals/Programs?
+    should be able to set to first field.
+on program - Registrations or AllRegs or FirstReg 
+
+
+
 ---
 Center Tent spaces should be available during
     winter for Own Tent people
@@ -101,15 +128,12 @@ web design - no change of color if clicked on
     what?
 deposits - since last deposit, save it
 month-end report?
-VPN access
 too many windows open for membership activity
 colorization of R for rentals?
     better - show first 3 (or 2) letters when radio button is chosen?
     or not
-Summary tabs into field gos to second line?
-    tabs should not go to Submit
-On reg1.html explain special requests
-    special foods, kids, early late, snoring
+Summary tabs into field goes to second line?
+    tabs should not go to Submit    - browser preference
 wrapping in comments entered online?
 history records for which house relodged, vacating?
     maybe
@@ -140,6 +164,7 @@ PR screwed up charges?
     okay if within the PR season?
 online evaluation form
     records w/ program id, name, date - ftp'ed from mmc.org to kali
+    see Breitenbush form
 are receipt numbers necessary?  == payment record id
 no expiration of session?
 MMI
@@ -147,8 +172,6 @@ MMI
     go to the _one_ D/C/M program
     MMI charges, payments are linked to the person not the program
         including course housing etc?
-on housing screen - show kids if present
-    on popup - yes?
 only one reg screen - don't keep opening new ones?
     maybe maybe not - can modifier keys override naming a window?
 no double reg in program with same name/person id
@@ -176,7 +199,6 @@ do program staff have access to member info?
     should they?  not write access.
     they might get questions about # of days left...
 ajax on all regs screen
-No Where - didn't show until = 9?
 Donations - not in New Deposit, payments _are_ there.
 negative balance not offset by negative charge?
     try to reproduce:
@@ -190,7 +212,7 @@ Late Notices
     
     how does the Confirmation letter read?
 when duplicating a program - the leaders are duplicated
-    but not registered.
+    but not registered.  should be.  not housed, however.
 ...
 Green Fund - new well known Project
     on reg1.html have place for entering a dollar amount
@@ -235,9 +257,6 @@ protect against dups when backing up
     adding registration, program.
 
 pay it in rental - not the balance?
-initial focus when changing tabs in Rentals/Programs?
-    should be able to set to first field.
-
 email syntax check should permit only ONE email address
     and nothing else
 new files help/attendance.html and timelog2 for Shankar
@@ -259,7 +278,6 @@ doc: calendar - end date calculation may include
     one more month if an event that starts earlier overlaps into it.
 initial focus of summary, tab order?
 +2 for extended does not show
-on program - Registrations or AllRegs or FirstReg 
 program tally - tally genders/kids before program happens
     attended then blank, then gender tally
     also do the tuition tally
@@ -537,22 +555,21 @@ for all MMI registrations - be careful of reg_charges.
 
 tab order for proposals
     when fields settle down.
+    also required fields.
 transmit proposal - what gender?
+    until it matters - don't worry?
+    make a guess?
 
 if CVS is not working and you get an error like
     /usr/local/cvsroot/CVSROOT/config: permission denied
 then do this as root:
     echo 0 > /selinux/enforce
 
-proposals - textarea for date requested.
+proposals 
+    ?? summary first on clicking on rental list.
+    xx on summary have "To Data" or some term
     sort list by date of program meeting
     textarea _br for proposal view/edit
-    * convert -> approve
-    * misc_notes valign top
-    no edit after approve
-    append provisos to miscell.
-    summary first on clicking on rental list.
-    on summary have "To Data" or some term
     Proposal -> Tentative -> Sent
         no New
     no contract until meeting space set
@@ -560,16 +577,14 @@ proposals - textarea for date requested.
     contract name 'at' address
     contract signer as sep person with address
 
-* when searching for Rentals.
 
 email all in a program?
+    but not cancelled people
 
 i deleted a rental - did it delete the proposal?
-    shouldn't
+    shouldn't summary yes.
 
 wiki for summaries?
-
-start, end to rental from proposal
 
 lunches indivi - yes.
     in contract somehow
@@ -577,21 +592,25 @@ lunches indivi - yes.
 tabs order
     m&l, misc, finance, web
 
-no edit after approval
-
-in summary - start/end times
-    coordinator contact
-
-seminar house reserve clusgter??
 
 drag and drop in rental housing
     or pop up menu of choices
 
-children - what to do in rentals?
 
 attendance - alters rates for some people
-    simply
+    simply maybe maybe not
 
 lori not richard on membership letters
 
 How? next to Program and Rental searching
+
+ask that Laura be my 'employee'
+    helping test, document, maintain todo-lists
+        prioritize, train
+    and just someone to work with. so my job
+    is not so lonely.
+    rentals too.
+    everything.
+
+program summary 
+    all leaders, assistants with email, phones, show in summary.
