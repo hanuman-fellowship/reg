@@ -41,6 +41,8 @@ our @EXPORT_OK = qw/
     commify
     wintertime
     dcm_registration
+    stash
+    error
 /;
 
 use POSIX   qw/ceil/;
@@ -436,6 +438,8 @@ sub resize {
     chdir "../../..";       # must cd back!   not stateless HTTP, exactly
 }
 
+# ??? have a parameter to optionally 
+# not return unknown, commuting, own_van
 sub housing_types {
     return qw/
 		unknown
@@ -592,18 +596,22 @@ sub email_letter {
     # avoid the lynx call if not html???
     # put this info in %args???
     #
-    open my $lynx_dump, "|lynx -stdin -dump -width=95>/tmp/$$"
-        or die "cannot open |lynx: $!\n";
-    print {$lynx_dump} $args{html};
-    close $lynx_dump;
-    open my $text_in, "<", "/tmp/$$"
-        or die "cannot open /tmp/$$: $!\n";
-    my $text;
-    {
-        local $/;
-        $text = <$text_in>;
-        close $text_in;
-        unlink "/tmp/$$";
+    my @msg = ();
+    if (exists $args{html}) {
+        open my $lynx_dump, "|lynx -stdin -dump -width=95>/tmp/$$"
+            or die "cannot open |lynx: $!\n";
+        print {$lynx_dump} $args{html};
+        close $lynx_dump;
+        open my $text_in, "<", "/tmp/$$"
+            or die "cannot open /tmp/$$: $!\n";
+        my $text;
+        {
+            local $/;
+            $text = <$text_in>;
+            close $text_in;
+            unlink "/tmp/$$";
+        }
+        @msg = (msg => $text);
     }
     if (! $mail_sender) {
         Global->init($c);
@@ -615,7 +623,7 @@ sub email_letter {
     }
     my $status = $mail_sender->send(
         %args,
-        msg => $text,
+        @msg,
     );
     if (! $status) {
         # what to do about this???
@@ -1086,4 +1094,21 @@ sub dcm_registration {
         return scalar(@regs);
     }
 }
+
+sub stash {
+    my ($c, %args) = @_;
+
+    for my $k (keys %args) {
+        $c->stash->{$k} = $args{$k};
+    }
+}
+
+sub error {
+    my ($c, $mess, $template) = @_;
+    stash($c,
+        mess     => $mess,
+        template => $template,
+    );
+}
+
 1;

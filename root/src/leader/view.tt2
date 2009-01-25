@@ -25,7 +25,7 @@
 
 <tr>
 <th align=right valign=top>Biography</th>
-<td>[% leader.biography_br %]</td>
+<td>[% leader.biography_ex %]</td>
 </tr>
 
 <tr>

@@ -16,5 +16,6 @@ create table issue (
     title text,
     notes text,
     date_entered text,
-    date_closed text
+    date_closed text,
+    user_id integer
 );

@@ -43,6 +43,7 @@ insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresk
 insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan', '', '', '');
 insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName', '', '', '');
 insert into user values (12, 'lori', 'march', 'lori_march@hotmail.com', 'Lori', 'March', '', '', '');
+insert into user values (13, 'charlie', 'mypass', 'jon@logicalpoetry.com', 'Charlie', 'Smith', '', '', '');
 --
 -- the roles - do not muck with the ids!
 --
@@ -58,6 +59,7 @@ insert into role values (4, 'prog_staff', 'Program Staff',
 insert into role values (5, 'mail_staff', 'Mailing List Staff', 'People create/edit/delete, partnering, affiliations');
 insert into role values (6, 'web_designer', 'Web Designer', 'Templates, web images, exceptions, strings');
 insert into role values (7, 'member_admin', 'Membership Admin', 'Maintain Memberships');
+insert into role values (8, 'field_staff', 'Field Staff', 'Room Makeup, Campsite Tidying');
 -- jane
 insert into user_role values (2, 1);
 insert into user_role values (2, 2);
@@ -101,3 +103,5 @@ insert into user_role values (11, 7);
 insert into user_role values (12, 3);
 insert into user_role values (12, 5);
 insert into user_role values (12, 7);
+-- charlie
+insert into user_role values (13, 8);

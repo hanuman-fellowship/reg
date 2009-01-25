@@ -2,17 +2,23 @@
 [% IF Catalyst.user_exists %]   <!-- not for login screen -->
 <table cellpadding=4 border=0>
 <tr>
+[% IF Catalyst.check_user_roles('field_staff') %]
+<td><a href=/listing/field>Listings</a></td>
+[% ELSE %]
 <td><a href=/person/search>People</a></td>
 <td><a href=/listing>Listings</a></td>
+[% END %]
 <td><a href=/configuration>Configuration</a></td>
-[% IF Catalyst.check_user_roles('member_admin') %]<td><a href=/member/list>Members</a></td>[% ELSE %]<td></td>[% END %]
+[% IF Catalyst.check_user_roles('member_admin') %]<td><a href=/member/list>Members</a></td>[% END %]
 <td><a target=help href=/static/help/index.html>Help</a></td>
 <td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
-&nbsp;<a href=/logout>Logout</a></td>
+</td><td><a href=/logout>Logout</a></td>
 [% IF Catalyst.check_user_roles('super_admin') %]
     <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
 [% END %]
-<td align=right><a href=/issue/list>Issues</a></td>
+[% IF Catalyst.check_user_roles('prog_admin') %]
+    <td align=right><a href=/issue/list>Issues</a></td>
+[% END %]
 </tr>
 
 [% IF Catalyst.check_user_roles('prog_staff') %]

@@ -35,7 +35,7 @@
 <td valign=top>
 [% email %]
 <p>
-If none is checked, output is to screen.
+If none is checked, output is to the screen.
 </td>
 </tr>
 [% END %]

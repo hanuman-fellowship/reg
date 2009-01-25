@@ -12,12 +12,16 @@ use Util qw/
     trim
     tt_today
     commify
+    housing_types
 /;
 use Date::Simple qw/
     date
     today
 /;
 use DateRange;
+use Global qw/
+    %string
+/;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -355,18 +359,16 @@ sub meal_list : Local {
     my $edate = trim($c->request->params->{edate});
     $details = $c->request->params->{details};
 
-    Date::Simple->default_format("%D");
-
     my $fmt = "%b %e"; # easier for the kitchen to read
 
     # validation
     my $start = $sdate? date($sdate): tt_today($c);
-    $start->set_format($fmt);
     if (! $start) {
         $c->stash->{mess} = "Illegal start date: $sdate";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
+    $start->set_format($fmt);
 
     Date::Simple->relative_date($start);
     my $end = $edate? date($edate, $fmt): $start + 13;
@@ -377,6 +379,7 @@ sub meal_list : Local {
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
+    $end->set_format($fmt);
     if ($end < $start) {
         $c->stash->{mess} = "End date must be after Start date.";
         $c->stash->{template} = "gen_error.tt2";
@@ -955,7 +958,7 @@ sub housekeeping : Local {
 }
 
 #
-# display all of the records in the make_up table.
+# display all of the records in the made_up table.
 #
 sub make_up : Local {
     my ($self, $c, $tent) = @_;
@@ -966,10 +969,9 @@ sub make_up : Local {
     my $type = ($tent)? "Campsite"
                :        "Room"
                ;
-    my $heading = "<span class=heading>$type Make-Up List</span>\n"
-                . "<span class=timestamp>As of " . localtime() . "</span>\n"
-                ;
     my $html = "";
+    my $clust_num = 0;
+    my $house_num = 0;
     MAKE_UP_HOUSE:
     for my $mu (model($c, 'MakeUp')->search(
                     { },
@@ -999,13 +1001,21 @@ sub make_up : Local {
             if ($prev_clust) {
                 $html .= "</table></ul>\n";
             }
-            $html .= "<h2>$clust</h2>\n<ul><table>\n";
+            ++$clust_num;
+            $house_num = 0;
+            $html .= <<"EOH";
+<h2>$clust
+<span class=all>All <input type=checkbox onclick="toggle_all($clust_num)"></span>
+</h2>
+<ul>
+<table>
+EOH
             $prev_clust = $clust;
         }
         my $needed;
         if ($mu->date_needed()) {
             $needed = $mu->date_needed_obj() - $today;
-            if ($needed < 5) {
+            if ($needed <= $string{make_up_urgent_days}) {
                 my $pl = ($needed == 1)? "": "s";
                 $needed = "<span style='color: red'>$needed day$pl</span>";
             }
@@ -1016,7 +1026,8 @@ sub make_up : Local {
         else {
             $needed = "never";
         }
-        $html .= "<tr><td><input type=checkbox name=h"
+        ++$house_num;
+        $html .= "<tr><td><input type=checkbox id=$clust_num-$house_num name=h"
               .  $mu->house_id()
               .  "> "
               .  $mu->house->name()
@@ -1025,33 +1036,14 @@ sub make_up : Local {
               ;
     }
     $html .= "</table></ul>\n";
-    $c->res->output(<<"EOH");
-<html>
-<head>
-<style type="text/css">
-.heading {
-    font-weight: bold;
-    font-size: 20pt;
-}
-.timestamp {
-    font-size: 13pt;
-    text-align: right;
-    margin-left: 1in;
-}
-</style>
-</head>
-<body>
-<form action=/listing/make_up_do/$tent>
-$heading
-<p>
-<input type=submit value="Submit">
-<a style='margin-left: 2in' href="/listing">To Listings</a>
-$html
-<p>
-<input type=submit value="Submit">
-</form>
-</html>
-EOH
+    $c->stash->{heading} ="<span class=heading>$type Make-Up List</span>\n"
+                        . "<span class=timestamp>As of "
+                        . localtime() 
+                        . "</span>\n"
+                        ;
+    $c->stash->{content}  = $html;
+    $c->stash->{tent}     = $tent;
+    $c->stash->{template} = "listing/make_up.tt2";
 }
 
 sub make_up_do : Local {
@@ -1065,7 +1057,134 @@ sub make_up_do : Local {
     model($c, 'MakeUp')->search({
         house_id => { -in => \@ids },
     })->delete();
-    $c->response->redirect($c->uri_for("/listing/make_up/$tent"));
+    if ($c->check_user_roles('field_staff')) {
+        $c->stash->{template} = "listing/field.tt2";
+    }
+    else {
+        $c->response->redirect($c->uri_for("/listing/"));
+    }
 }
+
+#
+# listings for the field staff
+# so they see nothing else.
+#
+sub field : Local {
+    my ($self, $c) = @_;
+    $c->stash->{template} = "listing/field.tt2";
+}
+
+#
+# numbers of beds to make up - not rooms.
+# numbers of people that left a campsite - not sites.
+#
+sub field_plan : Local {
+    my ($self, $c) = @_;
+
+    my ($sdate, $edate);
+    $sdate = trim($c->request->params->{sdate});
+    if ($sdate eq "t13") {
+        # couldn't put sdate=t&edate=+13 or
+        #              sdate=t&edate=%2B13
+        # in listing/index.tt2 or listing/field.tt2
+        # for some reason.
+        $sdate = "t";
+        $edate = "+13";
+    }
+    else {
+        $edate = trim($c->request->params->{edate});
+    }
+
+    # validation
+    my $start = $sdate? date($sdate): tt_today($c);
+    if (! $start) {
+        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my $start_d8 = $start->as_d8();
+
+    Date::Simple->relative_date($start);
+    my $end = $edate? date($edate): $start + 13;
+    Date::Simple->relative_date();
+
+    if (! $end) {
+        $c->stash->{mess} = "Illegal end date: $end";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my $end_d8 = $end->as_d8();
+
+    if ($end < $start) {
+        $c->stash->{mess} = "End date must be after Start date.";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+
+    my (%beds, %sites);
+    my $d = $start;
+    while ($d <= $end) {
+        my $d8 = $d->as_d8();
+        $beds{$d8} = 0;
+        $sites{$d8} = 0;
+        ++$d;
+    }
+    my @regs = model($c, 'Registration')->search(
+               {
+                   date_end   => { between => [ $start_d8, $end_d8 ] },
+                   house_id   => { '!='    => 0                      },
+                   cancelled  => '',
+               },
+    );
+    for my $r (@regs) {
+        my $ed = $r->date_end();
+        if ($r->h_type() =~ m{tent}) {
+            ++$sites{$ed};
+        }
+        else {
+            ++$beds{$ed};
+        }
+    }
+    # ??? is this right?   +1, -1???  or bookings?
+    # +/- 1 above in reg?
+    my @rentals = model($c, 'Rental')->search(
+                  {
+                      edate   => { between => [ $start_d8, $end_d8 ] },
+                  },
+    );
+    for my $r (@rentals) {
+        my $ed = $r->edate();
+        HTYPE:
+        for my $ht (housing_types()) {
+            next HTYPE if $ht eq 'unknown'
+                       || $ht eq 'commuting'
+                       || $ht eq 'own_van'
+                       ;
+            my $method = "n_$ht";
+            my $n = $r->$method();
+            if ($ht =~ m{tent}) {
+                $sites{$ed} += $n;
+            }
+            else {
+                $beds{$ed} += $n;
+            }
+        }
+    }
+    $d = $start;
+    my $rows = "";
+    while ($d <= $end) {
+        my $key = $d->as_d8();
+        $rows .= "<tr align=right>\n";
+        $rows .= "<td align=center>$d</td>\n";
+        $rows .= "<td>$beds{$key}</td>\n";
+        $rows .= "<td>$sites{$key}</td>\n";
+        $rows .= "</tr>\n";
+        ++$d;
+    }
+    $c->stash->{time} = localtime();
+    $c->stash->{rows} = $rows;
+    $c->stash->{template} = "listing/field_plan.tt2";
+}
+
 
 1;

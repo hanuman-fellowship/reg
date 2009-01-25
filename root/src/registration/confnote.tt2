@@ -3,12 +3,12 @@ var newwin;
 function popup(url) {
     newwin = window.open(
         url, 'reg_search_help',
-        'height=750,width=550, scrollbars'
+        'height=670,width=550, scrollbars'
     );
     if (window.focus) {
         newwin.focus();
     }
-    newwin.moveTo(600, 0);
+    newwin.moveTo(700, 0);
 }
 </script>
 <h2>Confirmation Note</h2>
@@ -21,7 +21,8 @@ function popup(url) {
 
 <tr>
 <th align=right>Person</th>
-<td colspan=2><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
+<td colspan=2><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a>
+<span style="font-weight: normal; margin-left: 1in;"><a href="#" onclick="javascript:popup('/static/help/shortcuts.html');">How?</a></span></td>
 </tr>
 
 <tr>

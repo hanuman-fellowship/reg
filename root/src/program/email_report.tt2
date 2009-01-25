@@ -1,0 +1,19 @@
+The email was sent to [% nemail %] in the <a href=/program/view/[% program.id %]>[% program.name %]</a> program.
+<p>
+[% IF nsnail != '0 people' %]
+[% nsnail %] did not have an email address:
+<ul>
+[% FOREACH p IN snails %]
+<span style="font-weight: bold; font-size: 15pt">[% p.last %], [% p.first %]</span><br>
+[% p.addr1 %]<br>
+[% IF p.addr2 %][% p.addr2 %]<br>[% END %]
+[% p.city %], [% p.st_prov %] [% p.zip_post %]
+<p>
+[% IF p.country %][% p.country %]<br>[% END %]
+[% IF p.tel_home %][% p.tel_home %] home<br>[% END %]
+[% IF p.tel_work %][% p.tel_work %] work<br>[% END %]
+[% IF p.tel_cell %][% p.tel_cell %] cell<br>[% END %]
+<hr width=240 align=left>
+[% END %]
+</ul>
+[% END %]

@@ -1,6 +1,8 @@
 <h2>Configuration</h2>
 <ul>
-<a href=/affil/list>Affiliations</a><p>
+[% IF ! Catalyst.check_user_roles('field_staff') %]
+    <a href=/affil/list>Affiliations</a><p>
+[% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
     <a href=/annotation>Annotations</a><p>
     <a href=/canpol>Cancellation Policies</a><p>
@@ -19,7 +21,9 @@
     <a href=/meetingplace>Meeting Places</a><p>
 [% END %]
 <a href=/user/pass>Password</a><p>
-<a href=/project/list>Projects</a><p>
+[% IF ! Catalyst.check_user_roles('field_staff') %]
+    <a href=/project/list>Projects</a><p>
+[% END %]
 [% IF Catalyst.check_user_roles('web_designer') %]
     <a href=/string/list>Strings</a><p>
     <a href=/template/list>Templates</a><p>

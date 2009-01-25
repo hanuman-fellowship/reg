@@ -1,0 +1,49 @@
+<h2>Field Staff Listings</h2>
+<ul>
+<table cellpadding=5 border=0>
+<tr><td height=60>
+
+<a href="/listing/make_up">Room Make-Up List<a>
+
+</td><tr><td height=60>
+
+<a href="/listing/make_up/1">Campsite Make-Up List<a>
+
+</td><tr><td height=60>
+
+<a href="/listing/housekeeping/0">Today's Housekeeping Report</a>
+
+</td>
+
+<form action="/listing/housekeeping/0" method=POST>
+<td align=left>
+On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
+</form>
+
+</td><tr><td height=60>
+
+<a href="/listing/housekeeping/1">Today's Campground Report</a>
+
+</td>
+
+<form action="/listing/housekeeping/1" method=POST>
+<td align=left>
+On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
+</form>
+
+</td><tr><td height=60>
+
+<a href="/listing/field_plan?sdate=t13">Field Staff Planning Report</a>
+
+</td>
+
+
+<form action="/listing/field_plan" method=POST>
+<td align=left>Start <input type=text name=sdate size=10>
+
+End <input type=text name=edate size=10>&nbsp;<input type=submit value="Go"></td>
+</form>
+</tr>
+
+</td></tr></table>
+</ul>

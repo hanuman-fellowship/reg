@@ -2,17 +2,17 @@
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript">init_tabs(4, 0, 0);</script>
 <script type="text/javascript">
-var newwin;
-function popup(url) {
-    newwin = window.open(
+function popup(url, height) {
+    var newwin = window.open(
         url, 'reg_search_help',
-        'height=450,width=550, scrollbars'
+        'height=' + height + ', width=550, scrollbars'
     );
     if (window.focus) {
         newwin.focus();
     }
     newwin.moveTo(700, 0);
 }
+</script>
 </script>
 <h2>Rentals</h2>
 <form action="/rental/[% form_action %]" name=form method=post>
@@ -22,9 +22,9 @@ function popup(url) {
 <th align=right><span class="required">*</span> Name</th>
 <td><input type=text name=name value="[% rental.name %]"></td>
 <th align=right><span class="required">*</span> From</th>
-<td><input type=text name=sdate value="[% sdate %]" size=10></td>
+<td><input type=text name=sdate value="[% rental.sdate_obj.format("%D") %]" size=10></td>
 <th align=right><span class="required">*</span> To</th>
-<td><input type=text name=edate value="[% edate %]" size=10></td>
+<td><input type=text name=edate value="[% rental.edate_obj.format("%D") %]" size=10></td>
 </tr>
 
 </table>
@@ -36,22 +36,22 @@ function popup(url) {
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Web
+Meals & Lodging
 </div>
-<span onclick="tabs(1); document.form.title.focus();">
+<span onclick="tabs(1); document.form.max.focus();">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Web
+Meals & Lodging
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Meals/Lodging
+Misc
 </div>
-<span onclick="tabs(2); document.form.max.focus();">
+<span onclick="tabs(2); document.form.comment.focus();">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Meals/Lodging
+Misc
 </div>
 </span>
 </td>
@@ -69,11 +69,11 @@ Finance
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
-<span onclick="tabs(4); document.form.comment.focus();">
+<span onclick="tabs(4); document.form.title.focus();">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
@@ -92,49 +92,8 @@ Misc
 <tr>
 <td colspan=5>
 
+<!-- Meals & Lodging div -->
 <div id="content1" class="tabcontent" style="display: none">
-<table>
-
-<tr>
-<td width=120></td>
-<td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td>
-</tr>
-
-<tr>
-<th align=right>Title</th>
-<td colspan=5><input type=text name=title value="[% rental.title %]" size=30></td>
-</tr>
-
-<tr>
-<th align=right>SubTitle</th>
-<td colspan=5><input type=text name=subtitle value="[% rental.subtitle %]" size=30></td>
-</tr>
-
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><input type=text name=url value="[% rental.url %]" size=30></td>
-</tr>
-
-<tr>
-<th align=right>Telephone</th>
-<td><input type=text name=phone value="[% rental.phone %]" size=20></td>
-</tr>
-
-<tr>
-<th align=right>Email</th>
-<td><input type=text name=email value="[% rental.email %]" size=30></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Description</th>
-<td colspan=5><textarea name=webdesc cols=30 rows=5>[% rental.webdesc %]</textarea></td>
-</td>
-</tr>
-
-</table>
-</div>
-
-<div id="content2" class="tabcontent" style="display: none">
 <table>
 
 <tr>
@@ -158,7 +117,9 @@ Misc
 <tr>
 <td></td>
 <th># of<br>People</th>
-<th align=center valign=bottom>Attendance <span style="font-weight: normal; margin-left: .5in;"><a href="#" onclick="javascript:popup('/static/help/attendance.html');">How?</a></span></th>
+<th align=center valign=bottom>Attendance
+<span style="font-weight: normal; margin-left: .5in;"><a href="#" onclick="javascript:popup('/static/help/attendance.html', 450);">How?</a></span>
+</th>
 </tr>
 
 <tr>
@@ -236,23 +197,8 @@ Misc
 </table>
 </div>
 
-<div id="content3" class="tabcontent" style="display: none">
-<table>
-
-<tr>
-<th align=right><span class="required">*</span> Required Deposit</th>
-<td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
-</tr>
-
-</table>
-</div>
-
-<div id="content4" class="tabcontent" style="display: none">
+<!-- Misc div -->
+<div id="content2" class="tabcontent" style="display: none">
 <table>
 
 <tr>
@@ -267,26 +213,88 @@ Misc
 
 <tr>
 <th align=right>Start Hour</th>
-<td><input type=text name=start_hour value='[% rental.start_hour %]' size=4></td>
+<td><input type=text name=start_hour value='[% rental.start_hour %]' size=5></td>
 </tr>
 
 <tr>
 <th align=right>End Hour</th>
-<td><input type=text name=end_hour value='[% rental.end_hour %]' size=4></td>
+<td><input type=text name=end_hour value='[% rental.end_hour %]' size=5></td>
 </tr>
 
 <tr>
 <th align=right>Contract Sent</th>
-<td><input type=text name=contract_sent value='[% rental.contract_sent_obj %]' size=10></td>
+<td><input type=text name=contract_sent value='[% rental.contract_sent_obj.format("%D") %]' size=10></td>
 </tr>
 
 <tr>
 <th align=right>Contract Received</th>
-<td><input type=text name=contract_received value='[% rental.contract_received_obj %]' size=10></td>
+<td><input type=text name=contract_received value='[% rental.contract_received_obj.format("%D") %]' size=10></td>
 </tr>
 
 </table>
-</div>
+</div>      <!-- end Misc div -->
+
+<!-- Finance div -->
+<div id="content3" class="tabcontent" style="display: none">
+<table>
+
+<tr>
+<th align=right><span class="required">*</span> Required Deposit</th>
+<td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
+</tr>
+
+</table>
+</div>      <!-- end Finance div -->
+
+<!-- Web div -->
+<div id="content4" class="tabcontent" style="display: none">
+<table>
+
+<tr>
+<td width=120></td>
+<td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td>
+</tr>
+
+<tr>
+<th align=right>Title</th>
+<td colspan=5><input type=text name=title value="[% rental.title %]" size=30></td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5><input type=text name=subtitle value="[% rental.subtitle %]" size=30></td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><input type=text name=url value="[% rental.url %]" size=30></td>
+</tr>
+
+<tr>
+<th align=right>Telephone</th>
+<td><input type=text name=phone value="[% rental.phone %]" size=20></td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td><input type=text name=email value="[% rental.email %]" size=30>
+<span style="font-weight: normal; margin-left: 1.5in;"><a href="#" onclick="javascript:popup('/static/help/shortcuts.html', 670);">How?</a></span>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td colspan=5><textarea name=webdesc cols=60 rows=6>[% rental.webdesc %]</textarea></td>
+</td>
+</tr>
+
+</table>
+</div>      <!-- end Web div -->
 
 </td></tr></table>
 
@@ -297,11 +305,11 @@ tabs([% section %]);
 document.form.name.focus();
 [% ELSE %]
     [% IF section == 1 %]
-        document.form.title.focus();
-    [% ELSIF section == 2 %]
         document.form.max.focus();
     [% ELSIF section == 3 %]
         document.form.deposit.focus();
+    [% ELSIF section == 4 %]
+        document.form.title.focus();
     [% ELSE %]
         document.form.comment.focus();
     [% END %]

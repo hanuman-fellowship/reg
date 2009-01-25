@@ -27,6 +27,9 @@ sub index : Private {
             if ($c->check_user_roles('prog_staff')) {
                 $c->response->redirect($c->uri_for('/program/cur_prog'));
             }
+            elsif ($c->check_user_roles('field_staff')) {
+                $c->response->redirect($c->uri_for('/listing/field'));
+            }
             else {
                 $c->response->redirect($c->uri_for('/person/search'));
             }

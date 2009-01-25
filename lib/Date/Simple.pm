@@ -244,6 +244,19 @@ sub get_format {
 sub format {
     my ($self, $format) = @_;
     return "$self" unless defined ($format);
+
+    # two new format characters to supplement strftime:
+    if ($format =~ m{%[Qq]}) {
+        my $y = $self->year();
+        if ($y != today()->year) {
+            $format =~ s{%Q}{$y}g;
+            $format =~ s{%q}{sprintf("%02d", $y%100)}ge;
+        }
+        else {
+            $format =~ s{\s*%[Qq]}{}g;
+        }
+    }
+
     require POSIX;
     local $ENV{TZ} = 'UTC+0';
     return POSIX::strftime ($format, _gmtime ($self));

@@ -94,11 +94,11 @@ function cluster_down(cluster_id) {
     &nbsp;&nbsp;&nbsp;
 [% END %]
 <a target=_blank href="[% program.web_addr %]">Web</a>
+<p style="margin-top: 2mm">
 [% IF program.ceu_issued %]
-&nbsp;&nbsp;&nbsp;
 <a href="/program/ceu/[% id %]">CEUs</a>
-[% END %]
 &nbsp;&nbsp;&nbsp;
+[% END %]
 <a href="/registration/early_late/[% id %]">Early/Late</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/name_addr/[% id %]">Lists</a>
@@ -112,6 +112,8 @@ function cluster_down(cluster_id) {
 <a href="/registration/first_reg/[% id %]">1st Reg</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_reg_name/[% id %]">AllRegs</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/program/email_all/[% id %]">Email</a>
 <p>
 
 <b>Name</b>
@@ -189,7 +191,7 @@ Misc
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Title</th>
+<th align=right width=170>Title</th>
 <td colspan=5>[% program.title %]</td>
 </tr>
 
@@ -225,13 +227,13 @@ Misc
 
 <tr>
 <th align=right valign=top>Web Description</th>
-<td colspan=5>[% program.webdesc_br %]</td>
+<td colspan=5>[% program.webdesc_ex %]</td>
 </td>
 </tr>
 
 <tr>
 <th align=right valign=top>Brochure Description</th>
-<td colspan=5>[% program.brdesc_br %]</td>
+<td colspan=5>[% program.brdesc_ex %]</td>
 </td>
 </tr>
 
@@ -438,7 +440,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 <tr>
 <th align=right valign=top>Conf Notes</th>
-<td colspan=5 valign=top>[% program.confnote_br %]</td>
+<td colspan=5 valign=top>[% program.confnote_ex %]</td>
 </tr>
 
 <tr>

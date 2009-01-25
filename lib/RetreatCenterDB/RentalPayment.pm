@@ -33,7 +33,6 @@ sub the_date_obj {
 # the following methods are for deposits.
 sub name {
     my ($self) = @_;
-
     my $r = $self->rental;
     if ($r->coordinator_id) {
         my $p = $r->coordinator;
@@ -46,15 +45,18 @@ sub name {
 
 sub link {
     my ($self) = @_;
-
     return "/rental/view/" . $self->rental_id;
 }
 
 # same as name???   Need a leader name instead?
 sub pname {
     my ($self) = @_;
+    return $self->rental->name();
+}
 
-    return $self->rental->name;
+sub glnum {
+    my ($self) = @_;
+    return $self->rental->glnum();
 }
 
 1;

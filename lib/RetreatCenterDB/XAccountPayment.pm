@@ -48,8 +48,12 @@ sub link {
 
 sub pname {
     my ($self) = @_;
-   
-    return $self->xaccount->descr;
+    return $self->xaccount->descr();
+}
+
+sub glnum {
+    my ($self) = @_;
+    return $self->xaccount->glnum();
 }
 
 1;

@@ -46,12 +46,12 @@ onsubmit="history.go(-1)">
 
 <tr>
 <th align=left><input type=radio name=category value='General' [% category_general %]> General</th>
-<th align=right>Expires on</th><td><input type=text name=date_general value='[% member.date_general_obj %]' size=10 maxlength=10></th>
+<th align=right>Expires on</th><td><input type=text name=date_general value='[% member.date_general_obj.format("%D") %]' size=10 maxlength=10></th>
 </tr>
 
 <tr>
 <th align=left><input type=radio name=category value='Sponsor' [% category_sponsor %]> Sponsor</th>
-<th align=right>Benefits Expire on</td><td><input type=text name=date_sponsor value="[% member.date_sponsor_obj %]" size=10 maxlength=10></td><th align=right>Total Paid</td><td>[% member.total_paid %]</th>
+<th align=right>Benefits Expire on</td><td><input type=text name=date_sponsor value="[% member.date_sponsor_obj.format("%D") %]" size=10 maxlength=10></td><th align=right>Total Paid</td><td>[% member.total_paid %]</th>
 </tr>
 
 <tr>

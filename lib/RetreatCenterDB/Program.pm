@@ -3,11 +3,21 @@ use warnings;
 package RetreatCenterDB::Program;
 use base qw/DBIx::Class/;
 
-use Util qw/
-    model
-/;
-
 use lib "..";       # so can do perl -c
+use Date::Simple qw/
+    date
+    today
+/;
+use Util qw/
+    slurp
+    expand
+    housing_types
+    places
+    tt_today
+/;
+use Global qw/%string/;
+use Image::Size;
+use File::Copy;
 
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -97,21 +107,6 @@ __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'program_id');
 # something about when it actually does populate the object...???
 #
 
-use Date::Simple qw/
-    date
-    today
-/;
-use Util qw/
-    slurp
-    expand
-    housing_types
-    places
-    tt_today
-/;
-use Global qw/%string/;
-use Image::Size;
-use File::Copy;
-
 my $default_template = slurp("default");
 my %first_of_month;
 
@@ -182,23 +177,17 @@ sub link {
     return "/program/view/" . $self->id;
 }
 
-sub webdesc_br {
+sub webdesc_ex {
     my ($self) = @_;
-    my $webdesc = $self->webdesc;
-    $webdesc =~ s{\r?\n}{<br>\n}g;
-    $webdesc;
+    expand($self->webdesc());
 }
-sub brdesc_br {
+sub brdesc_ex {
     my ($self) = @_;
-    my $brdesc = $self->brdesc;
-    $brdesc =~ s{\r?\n}{<br>\n}g;
-    $brdesc;
+    expand($self->brdesc());
 }
-sub confnote_br  {
+sub confnote_ex  {
     my ($self) = @_;
-    my $confnote = $self->confnote;
-    $confnote =~ s{\r?\n}{<br>\n}g if $confnote;
-    $confnote;
+    expand($self->confnote());
 }
 sub fname {
     my ($self) = @_;

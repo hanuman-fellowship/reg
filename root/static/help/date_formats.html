@@ -40,7 +40,7 @@
            %Oe %OH %OI %Om %OM %OS %Ou %OU %OV %Ow %OW %Oy are supposed to
            provide alternate representations.
 
-           Additionly %OB implemented to represent alternative months names
+           Additionally %OB is implemented to represent alternative month names.
            (used standalone, without day mentioned).
 
      %e    is replaced by the day of month as a decimal number (1-31); single
@@ -79,6 +79,12 @@
 
      %p    is replaced by national representation of either "ante meridiem" or
            "post meridiem" as appropriate.
+
+     %Q    is the same as %Y if the date's year is not the current year.
+     %q    is the same as %y if the date's year is not the current year.
+           
+           If the year IS the current year then these will yield
+           an empty string (and any blanks before them will be excised).
 
      %R    is equivalent to '%H:%M'.
 

@@ -8,6 +8,7 @@ use Global qw/%string/;
 use Util qw/
     trim
     _br
+    expand
 /;
 
 # Load required DBIC stuff
@@ -89,7 +90,7 @@ sub h_type_disp {
     trim($type);
 }
 
-sub confnote_br { _br(shift->confnote()); }
+sub confnote_ex { expand(shift->confnote()); }
 
 sub room_site {
     my ($self) = @_;

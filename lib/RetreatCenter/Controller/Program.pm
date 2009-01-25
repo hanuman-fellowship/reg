@@ -24,6 +24,9 @@ use Util qw/
     valid_email
     tt_today
     ceu_license
+    email_letter
+    stash
+    error
 /;
 use Date::Simple qw/
     date
@@ -58,51 +61,7 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    # set defaults
-    $c->stash->{check_kayakalpa}     = "checked";
-    $c->stash->{check_retreat}       = "";
-    $c->stash->{check_sbath}         = "checked";
-    $c->stash->{check_quad}          = "";
-    $c->stash->{check_collect_total} = "";
-    $c->stash->{check_economy}       = "";
-    $c->stash->{check_webready}      = "checked";
-    $c->stash->{check_linked}        = "checked";
-    $c->stash->{program_leaders}     = [];
-    $c->stash->{program_affils}      = [];
-    $c->stash->{section}             = 1;   # Web (a required field)
     Global->init($c);
-    $c->stash->{program}             = {
-        tuition      => 0,
-        extradays    => 0,
-        full_tuition => 0,
-        deposit      => 100,
-        canpol       => { name => "Default" },  # a clever way to set default!
-        housecost    => { name => "Default" },  # fake an object!
-        ptemplate    => 'default',
-        cl_template  => 'default',
-        reg_start    => $string{reg_start},
-        reg_end      => $string{reg_end},
-        prog_start   => $string{prog_start},
-        prog_end     => $string{prog_end},
-    };
-    $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
-        undef,
-        { order_by => 'name' },
-    ) ];
-    $c->stash->{housecost_opts} =
-        [ model($c, 'HouseCost')->search(
-            undef,
-            { order_by => 'name' },
-        ) ];
-    $c->stash->{template_opts} = [
-        grep { $_ eq "default" || ! sys_template($_) }
-        map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
-        <root/static/templates/web/*.html>
-    ];
-    $c->stash->{cl_template_opts} = [
-        map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
-        <root/static/templates/letter/*.tt2>
-    ];
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
@@ -110,16 +69,61 @@ sub create : Local {
                   .  ">$sch_opts[$i]\n"
                   ;
     }
-    $c->stash->{school_opts}    = $sch_opts;
-    $c->stash->{level_opts} = <<"EOO";
+    # set defaults by putting them in the stash
+    stash($c,
+        check_kayakalpa     => "checked",
+        check_retreat       => "",
+        check_sbath         => "checked",
+        check_quad          => "",
+        check_collect_total => "",
+        check_economy       => "",
+        check_webready      => "checked",
+        check_linked        => "checked",
+        program_leaders     => [],
+        program_affils      => [],
+        section             => 1,   # Web (a required field)
+        program             => {
+            tuition      => 0,
+            extradays    => 0,
+            full_tuition => 0,
+            deposit      => 100,
+            canpol       => { name => "Default" },  # a clever way to set default!
+            housecost    => { name => "Default" },  # fake an object!
+            ptemplate    => 'default',
+            cl_template  => 'default',
+            reg_start    => $string{reg_start},
+            reg_end      => $string{reg_end},
+            prog_start   => $string{prog_start},
+            prog_end     => $string{prog_end},
+        },
+        canpol_opts => [ model($c, 'CanPol')->search(
+            undef,
+            { order_by => 'name' },
+        ) ],
+        housecost_opts => [ model($c, 'HouseCost')->search(
+            undef,
+            { order_by => 'name' },
+        ) ],
+        template_opts => [
+            grep { $_ eq "default" || ! sys_template($_) }
+            map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
+            <root/static/templates/web/*.html>
+        ],
+        cl_template_opts => [
+            map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
+            <root/static/templates/letter/*.tt2>
+        ],
+        school_opts    => $sch_opts,
+        level_opts => <<"EOO",
 <option value=D>Diploma
 <option value=C>Certificate
 <option value=M>Masters
 <option value=S>Course
 EOO
-    $c->stash->{show_level}  = "hidden";
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "program/create_edit.tt2";
+        show_level  => "hidden",
+        form_action => "create_do",
+        template    => "program/create_edit.tt2",
+    );
 }
 
 my %readable = (
@@ -132,15 +136,15 @@ my %readable = (
     full_tuition => 'Full Tuition',
     extradays    => 'Extra Days',
 );
-my %hash;
+my %P;
 my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
+    %P = %{ $c->request->params() };
     #
-    if ($hash{school} == 0) {
-        $hash{level} = ' ';
+    if ($P{school} == 0) {
+        $P{level} = ' ';
     }
     # since unchecked boxes are not sent...
     for my $f (qw/
@@ -153,50 +157,50 @@ sub _get_data {
         quad
         linked
     /) {
-        $hash{$f} = "" unless exists $hash{$f};
+        $P{$f} = "" unless exists $P{$f};
     }
-    $hash{url} =~ s{^\s*http://}{};
+    $P{url} =~ s{^\s*http://}{};
 
     @mess = ();
-    if (! $hash{linked}) {
-        if ($hash{ptemplate} eq 'default') {
+    if (! $P{linked}) {
+        if ($P{ptemplate} eq 'default') {
             push @mess, "Unlinked programs cannot use the standard template.";
         }
-        if (empty($hash{unlinked_dir})) {
+        if (empty($P{unlinked_dir})) {
             push @mess, "Missing unlinked directory name";
         }
-        elsif ($hash{unlinked_dir} =~ m{[^\w_.-]}) {
+        elsif ($P{unlinked_dir} =~ m{[^\w_.-]}) {
             push @mess, "Illegal unlinked directory name";
         }
     }
     for my $f (qw/ name title /) {
-        if ($hash{$f} !~ m{\S}) {
+        if ($P{$f} !~ m{\S}) {
             push @mess, "$readable{$f} cannot be blank";
         }
     }
     # dates are converted to d8 format
     my ($sdate, $edate);
-    if (empty($hash{sdate})) {
+    if (empty($P{sdate})) {
         push @mess, "Missing Start Date";
     }
     else {
-        $sdate = date($hash{sdate});
+        $sdate = date($P{sdate});
         if (! $sdate) {
-            push @mess, "Invalid Start Date: $hash{sdate}";
+            push @mess, "Invalid Start Date: $P{sdate}";
         }
         else {
-            $hash{sdate} = $sdate->as_d8();
+            $P{sdate} = $sdate->as_d8();
             Date::Simple->relative_date($sdate);
-            if (empty($hash{edate})) {
+            if (empty($P{edate})) {
                 push @mess, "Missing End Date";
             }
             else {
-                $edate = date($hash{edate});
+                $edate = date($P{edate});
                 if (! $edate) {
-                    push @mess, "Invalid End Date: $hash{edate}";
+                    push @mess, "Invalid End Date: $P{edate}";
                 }
                 else {
-                    $hash{edate} = $edate->as_d8();
+                    $P{edate} = $edate->as_d8();
                 }
             }
             Date::Simple->relative_date();
@@ -210,19 +214,19 @@ sub _get_data {
     for my $f (qw/
         extradays tuition full_tuition deposit
     /) {
-        if ($hash{$f} !~ m{^\s*\d+\s*$}) {
+        if ($P{$f} !~ m{^\s*\d+\s*$}) {
             push @mess, "$readable{$f} must be a number";
         }
     }
-    if ($hash{extradays}) {
-        if ($hash{full_tuition} <= $hash{tuition}) {
+    if ($P{extradays}) {
+        if ($P{full_tuition} <= $P{tuition}) {
             push @mess, "Full Tuition must be more than normal Tuition.";
         }
     }
     else {
-        $hash{full_tuition} = 0;    # it has no meaning if > 0.
+        $P{full_tuition} = 0;    # it has no meaning if > 0.
     }
-    if ($hash{footnotes} =~ m{[^\*%+]}) {
+    if ($P{footnotes} =~ m{[^\*%+]}) {
         push @mess, "Footnotes can only contain *, % and +";
     }
     for my $t (qw/
@@ -231,7 +235,7 @@ sub _get_data {
         prog_start
         prog_end
     /) {
-        my $time = trim($hash{$t});
+        my $time = trim($P{$t});
         my ($hour, $min) = (-1, -1);
         if ($time =~ m{^\d+$}) {
             $hour = $time;
@@ -247,22 +251,24 @@ sub _get_data {
             push @mess, "Illegal time: $time";
         }
         # normalized:
-        $hash{$t} = sprintf("%d:%02d", $hour, $min);
+        $P{$t} = sprintf("%d:%02d", $hour, $min);
     }
-    my @email = split m{[, ]+}, $hash{notify_on_reg};
+    my @email = split m{[, ]+}, $P{notify_on_reg};
     for my $em (@email) {
         if (! valid_email($em)) {
             push @mess, "Illegal email address: $em";
         }
     }
-    $hash{notify_on_reg} = "@email";
+    $P{notify_on_reg} = "@email";
 
-    if (! empty($hash{max}) && $hash{max} !~ m{^\s*\d+\s*$}) {
+    if (! empty($P{max}) && $P{max} !~ m{^\s*\d+\s*$}) {
         push @mess, "Max must be an integer";
     }
     if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
+        error($c,
+            join("<br>\n", @mess),
+            "program/error.tt2",
+        );
     }
 }
 
@@ -272,13 +278,13 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    delete $hash{section};      # irrelevant
+    delete $P{section};      # irrelevant
 
     # gl num is computed not gotten
-    $hash{glnum} = ($hash{name} =~ m{personal\s+retreat}i)?
-                        '99999': compute_glnum($c, $hash{sdate});
+    $P{glnum} = ($P{name} =~ m{personal\s+retreat}i)?
+                        '99999': compute_glnum($c, $P{sdate});
 
-    $hash{reg_count} = 0;       # otherwise it will not increment
+    $P{reg_count} = 0;       # otherwise it will not increment
 
     my $upload = $c->request->upload('image');
     my $sum = model($c, 'Summary')->create({
@@ -289,7 +295,7 @@ sub create_do : Local {
     my $p = model($c, 'Program')->create({
         summary_id => $sum->id,
         image      => $upload? "yes": "",
-        %hash,
+        %P,
     });
     my $id = $p->id();
     if ($upload) {
@@ -303,7 +309,7 @@ sub create_do : Local {
     # we add 30 days because registrations for Personal Retreats
     # may extend beyond the last day of the season.
     #
-    add_config($c, date($hash{edate}) + $hash{extradays} + 30);
+    add_config($c, date($P{edate}) + $P{extradays} + 30);
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
@@ -319,41 +325,47 @@ my @day_name = qw/
 sub view : Local {
     my ($self, $c, $id, $section) = @_;
 
-    $section ||= 1;
-    $c->stash->{section} = $section;
-
     Global->init($c);       # for web_addr if nothing else.
-    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
+    $section ||= 1;
+    stash($c, section => $section);
+
+    my $p = model($c, 'Program')->find($id);
+    stash($c, program => $p);
     my $extra = $p->extradays();
     if ($extra) {
         my $edate2 = $p->edate_obj() + $extra;
-        $c->stash->{plus} = "<b>Plus</b> $extra day"
-                          . ($extra > 1? "s": "")
-                          . " <b>To</b> " . $edate2
-                          . " <span class=dow>"
-                          . $edate2->format("%a")
-                          . "</span>"
-                          ;
+        stash($c,
+            plus => "<b>Plus</b> $extra day"
+                  . ($extra > 1? "s": "")
+                  . " <b>To</b> " . $edate2
+                  . " <span class=dow>"
+                  . $edate2->format("%a")
+                  . "</span>"
+        );
     }
 
     if ($p->name !~ m{personal retreats}i) {
-        $c->stash->{lunch_table}
-            = lunch_table(1,
-                          $p->lunches,
-                          $p->sdate_obj,
-                          $p->edate_obj + $p->extradays
-                         );
+        stash($c,
+            lunch_table => lunch_table(
+                               1,
+                               $p->lunches,
+                               $p->sdate_obj,
+                               $p->edate_obj + $p->extradays
+                           )
+        );
     }
-    $c->stash->{daily_pic_date} = $p->sdate();
-    $c->stash->{cal_param}      = $p->sdate_obj->as_d8() . "/1";
-    $c->stash->{leaders_house} = $p->leaders_house($c);
     my $s = _get_cluster_groups($c, $id);
     my ($UN, $sel) = split /XX/, $s;
-    $c->stash->{UNselected_clusters} = $UN;
-    $c->stash->{selected_clusters}   = $sel;
-    $c->stash->{school} = $sch_opts[$p->school()];
-    $c->stash->{level} = $mmi_levels{$p->level()};
-    $c->stash->{template} = "program/view.tt2";
+    stash($c,
+        UNselected_clusters => $UN,
+        selected_clusters   => $sel,
+        daily_pic_date      => $p->sdate(),
+        cal_param           => $p->sdate_obj->as_d8() . "/1",
+        leaders_house       => $p->leaders_house($c),
+        school              => $sch_opts[$p->school()],
+        level               => $mmi_levels{$p->level()},
+        template            => "program/view.tt2",
+    );
 }
 
 sub _get_cluster_groups {
@@ -443,19 +455,23 @@ sub list : Local {
                 level => { 'not in'  => [qw/  D C M  /] },
         );
     }
-    $c->stash->{programs} = [
-        model($c, 'Program')->search(
-            {
-                edate => { '>=', $cutoff },
-                @cond,
-            },
-            { order_by => 'sdate' },
-        )
-    ];
+    stash($c,
+        programs => [
+            model($c, 'Program')->search(
+                {
+                    edate => { '>=', $cutoff },
+                    @cond,
+                },
+                { order_by => 'sdate' },
+            )
+        ]
+    );
     my @files = <root/static/online/*>;
-    $c->stash->{online} = scalar(@files);
-    $c->stash->{pr_pat} = "";
-    $c->stash->{template} = "program/list.tt2";
+    stash($c,
+        online   => scalar(@files),
+        pr_pat   => "",
+        template => "program/list.tt2",
+    );
 }
 
 # ??? order of display?   also end date???
@@ -511,59 +527,25 @@ sub listpat : Local {
             name => { 'like' => "${pat}%" },
         };
     }
-    $c->stash->{programs} = [
-        model($c, 'Program')->search(
-            $cond,
-            { order_by => 'sdate' },
-        )
-    ];
-    $c->stash->{pr_pat} = $pr_pat;
     my @files = <root/static/online/*>;
-    $c->stash->{online} = scalar(@files);
-    $c->stash->{template} = "program/list.tt2";
+    stash($c,
+        online   => scalar(@files),
+        programs => [
+            model($c, 'Program')->search(
+                $cond,
+                { order_by => 'sdate' },
+            )
+        ],
+        pr_pat   => $pr_pat,
+        template => "program/list.tt2",
+    );
 }
 
 sub update : Local {
     my ($self, $c, $id, $section) = @_;
 
     $section ||= 1;
-    $c->stash->{section} = $section;
-
     my $p = model($c, 'Program')->find($id);
-    $c->stash->{program} = $p;
-    for my $w (qw/
-        sbath collect_total kayakalpa retreat
-        economy webready quad linked
-    /) {
-        $c->stash->{"check_$w"}  = ($p->$w)? "checked": "";
-    }
-    for my $w (qw/ sdate edate /) {
-        $c->stash->{$w} = date($p->$w) || "";
-    }
-
-    # get all cancellation policies
-    $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
-        undef,
-        { order_by => 'name' },
-    ) ];
-    # and housing costs
-    $c->stash->{housecost_opts} =
-        [ model($c, 'HouseCost')->search(
-            undef,
-            { order_by => 'name' },
-        ) ];
-    # templates
-    $c->stash->{template_opts} = [
-        grep { $_ eq "default" || ! sys_template($_) }
-        map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
-        <root/static/templates/web/*.html>
-    ];
-    # confirmation letter templates
-    $c->stash->{cl_template_opts} = [
-        map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
-        <root/static/templates/letter/*.tt2>
-    ];
-    # school options
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
@@ -571,22 +553,57 @@ sub update : Local {
                   .  ">$sch_opts[$i]\n"
                   ;
     }
-    $c->stash->{school_opts}    = $sch_opts;
-
-    my $level_opts = "";
     # order matters here
+    my $level_opts = "";
     for my $l ('D', 'C', 'M', 'S') {
         $level_opts .= "<option value=$l "
                     .  ($l eq $p->level()? "selected": "")
                     .  ">$mmi_levels{$l}\n"
                     ;
     }
-    $c->stash->{level_opts} = $level_opts;
-    $c->stash->{show_level} = $p->school() == 0? "hidden": "visible";
 
-    $c->stash->{edit_gl}     = $c->check_user_roles('super_admin');
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "program/create_edit.tt2";
+    for my $w (qw/
+        sbath collect_total kayakalpa retreat
+        economy webready quad linked
+    /) {
+        stash($c,
+            "check_$w" => ($p->$w)? "checked": ""
+        );
+    }
+    for my $w (qw/ sdate edate /) {
+        stash($c,
+            $w => date($p->$w)->format("%D") || ""
+        );
+    }
+
+    stash($c,
+        section     => $section,
+        program     => $p,
+        canpol_opts => [ model($c, 'CanPol')->search(
+            undef,
+            { order_by => 'name' },
+        ) ],
+        housecost_opts =>
+            [ model($c, 'HouseCost')->search(
+                undef,
+                { order_by => 'name' },
+            ) ],
+        template_opts => [
+            grep { $_ eq "default" || ! sys_template($_) }
+            map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
+            <root/static/templates/web/*.html>
+        ],
+        cl_template_opts => [
+            map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
+            <root/static/templates/letter/*.tt2>
+        ],
+        school_opts => $sch_opts,
+        level_opts  => $level_opts,
+        show_level  => $p->school() == 0? "hidden": "visible",
+        edit_gl     => $c->check_user_roles('super_admin'),
+        form_action => "update_do/$id",
+        template    => "program/create_edit.tt2",
+    );
 }
 
 sub update_do : Local {
@@ -595,24 +612,24 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $section = $hash{section};
-    delete $hash{section};
+    my $section = $P{section};
+    delete $P{section};
 
     if (! $c->check_user_roles('super_admin')) {
-        delete $hash{glnum};
+        delete $P{glnum};
     }
     if (my $upload = $c->request->upload('image')) {
         $upload->copy_to("root/static/images/po-$id.jpg");
         Global->init($c);
         resize('p', $id);
-        $hash{image} = "yes";
+        $P{image} = "yes";
     }
     my $p = model($c, 'Program')->find($id);
     my $names = "";
     my $lunches = 0;
-    if (   $p->sdate ne $hash{sdate}
-        || $p->edate ne $hash{edate}
-        || $p->max   < $hash{max}
+    if (   $p->sdate ne $P{sdate}
+        || $p->edate ne $P{edate}
+        || $p->max   < $P{max}
     ) {
         # invalidate the bookings as the dates/max have changed
         my @bookings = model($c, 'Booking')->search({
@@ -623,11 +640,11 @@ sub update_do : Local {
         # of meeting places that are still able to accomodate
         # the new max.
         #
-        if (   $p->sdate eq $hash{sdate}
-            && $p->edate eq $hash{edate}
+        if (   $p->sdate eq $P{sdate}
+            && $p->edate eq $P{edate}
         ) {
             @bookings = grep {
-                            $_->meeting_place->max < $hash{max}
+                            $_->meeting_place->max < $P{max}
                         }
                         @bookings;
         }
@@ -635,18 +652,20 @@ sub update_do : Local {
         for my $b (@bookings) {
             $b->delete();
         }
-        if ($p->max >= $hash{max}) {
+        if ($p->max >= $P{max}) {
             # must have been a date
-            $hash{lunches} = "";
+            $P{lunches} = "";
         }
     }
-    $p->update(\%hash);
-    add_config($c, date($hash{edate}) + 30);
+    $p->update(\%P);
+    add_config($c, date($P{edate}) + 30);
     if ($names) {
-        $c->stash->{program} = $p;
-        $c->stash->{names} = $names;
-        $c->stash->{lunches} = $lunches; 
-        $c->stash->{template} = "program/mp_warn.tt2";
+        stash($c,
+            program  => $p,
+            names    => $names,
+            lunches  => $lunches, 
+            template => "program/mp_warn.tt2",
+        );
     }
     else {
         $c->response->redirect($c->uri_for("/program/view/"
@@ -657,10 +676,12 @@ sub update_do : Local {
 sub leader_update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->stash->{program}
-        = model($c, 'Program')->find($id);
-    $c->stash->{leader_table} = leader_table($c, $p->leaders());
-    $c->stash->{template} = "program/leader_update.tt2";
+    my $p = model($c, 'Program')->find($id);
+    stash($c,
+        program      => $p,
+        leader_table => leader_table($c, $p->leaders()),
+        template     => "program/leader_update.tt2",
+    );
 }
 
 sub leader_update_do : Local {
@@ -724,9 +745,12 @@ sub leader_update_do : Local {
 sub affil_update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
-    $c->stash->{affil_table} = affil_table($c, $p->affils());
-    $c->stash->{template} = "program/affil_update.tt2";
+    my $p = model($c, 'Program')->find($id);
+    stash($c,
+        program     => $p,
+        affil_table => affil_table($c, $p->affils()),
+        template    => "program/affil_update.tt2",
+    );
 }
 
 sub affil_update_do : Local {
@@ -766,14 +790,19 @@ sub affil_update_do : Local {
 sub meetingplace_update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
+    my $p = model($c, 'Program')->find($id);
     my $edate = $p->edate;
     if ($p->extradays) {
         $edate += $p->extradays;
     }
-    $c->stash->{meetingplace_table}
-        = meetingplace_table($c, $p->max, $p->sdate, $edate, $p->bookings());
-    $c->stash->{template} = "program/meetingplace_update.tt2";
+    stash($c,
+        program => $p,
+        meetingplace_table => meetingplace_table($c,
+                                  $p->max, $p->sdate,
+                                  $edate,  $p->bookings(),
+                              ),
+        template => "program/meetingplace_update.tt2",
+    );
 }
 
 sub meetingplace_update_do : Local {
@@ -863,8 +892,10 @@ sub del_image : Local {
 sub access_denied : Private {
     my ($self, $c) = @_;
 
-    $c->stash->{mess}  = "Authorization denied!";
-    $c->stash->{template} = "gen_error.tt2";
+    error($c,
+        "Authorization denied!",
+        "gen_error.tt2",
+    );
 }
 
 my @programs;
@@ -1090,9 +1121,11 @@ sub publish : Local {
     }
     $ftp->quit();
     chdir "..";
-    $c->stash->{ftp_dir2} = $string{ftp_dir2};
-    $c->stash->{unlinked} = \@unlinked;
-    $c->stash->{template} = "program/published.tt2";
+    stash($c,
+        ftp_dir2 => $string{ftp_dir2},
+        unlinked => \@unlinked,
+        template => "program/published.tt2",
+    );
 }
 
 sub publish_pics : Local {
@@ -1119,12 +1152,14 @@ sub publish_pics : Local {
     }
     $ftp->quit();
     chdir "../..";
-    $c->stash->{pics} = 1;
     my @unlinked = grep { ! $_->linked }
                    RetreatCenterDB::Program->future_programs($c);
-    $c->stash->{unlinked} = \@unlinked;
-    $c->stash->{ftp_dir2} = $string{ftp_dir2};
-    $c->stash->{template} = "program/published.tt2";
+    stash($c,
+        unlinked => \@unlinked,
+        pics     => 1,
+        ftp_dir2 => $string{ftp_dir2},
+        template => "program/published.tt2",
+    );
 }
 
 sub brochure : Local {
@@ -1142,9 +1177,11 @@ sub brochure : Local {
         $seas = 's';
         ++$y if 10 <= $m && $m <= 12;
     }
-    $c->stash->{season} = sprintf "$seas%02d", $y;
-    $c->stash->{fee_page} = 11;
-    $c->stash->{template} = "program/brochure.tt2";
+    stash($c,
+        season   => sprintf("$seas%02d", $y),
+        fee_page => 11,
+        template => "program/brochure.tt2",
+    );
 }
 
 sub brochure_do : Local {
@@ -1159,14 +1196,18 @@ sub brochure_do : Local {
         $edate = ($s eq 'f')? ($y+1)."0331": $y."0930";
     }
     else {
-        $c->stash->{mess} = "Invalid season.";
-        $c->stash->{template} = "program/error.tt2";
+        error($c,
+            "Invalid season.",
+            "program/error.tt2",
+        );
         return;
     }
     my $fee_page = $c->request->params->{fee_page};
     if ($fee_page !~ m{^\d+$}) {
-        $c->stash->{mess} = "Invalid fee page number.";
-        $c->stash->{template} = "program/error.tt2";
+        error($c,
+            "Invalid fee page number.",
+            "program/error.tt2",
+        );
         return;
     }
     my $fname = "root/static/brochure.txt";
@@ -1191,8 +1232,8 @@ sub brochure_do : Local {
             print {$br} "\@presenter<\$>$s\n";
         }
         print {$br} "\@initial paragraph<\$>",
-            expand2(($p->brdesc)? $p->brdesc: $p->webdesc);
-        $s = expand2($p->leader_bio);
+            expand2(($p->brdesc())? $p->brdesc(): $p->webdesc());
+        $s = expand2($p->leader_bio());
         if ($s) {
             print {$br} "\@text<\$>$s";
         }
@@ -1318,23 +1359,26 @@ sub update_lunch : Local {
     my ($self, $c, $id) = @_;
 
     my $p = model($c, 'Program')->find($id);
-    $c->stash->{program} = $p;
-    $c->stash->{lunch_table} = lunch_table(0,
-                                           $p->lunches,
-                                          $p->sdate_obj,
-                                          $p->edate_obj + $p->extradays);
-    $c->stash->{template} = "program/update_lunch.tt2";
+    stash($c,
+        program     => $p,
+        lunch_table => lunch_table(0,
+                                   $p->lunches,
+                                   $p->sdate_obj,
+                                   $p->edate_obj + $p->extradays
+                                  ),
+        template    => "program/update_lunch.tt2",
+    );
 }
 
 sub update_lunch_do : Local {
     my ($self, $c, $id) = @_;
 
-    %hash = %{ $c->request->params() };
+    %P = %{ $c->request->params() };
     my $p = model($c, 'Program')->find($id);
     my $ndays = $p->edate_obj - $p->sdate_obj + 1 + $p->extradays;
     my $l = "";
     for my $n (0 .. $ndays-1) {
-        $l .= (exists $hash{"d$n"})? "1": "0";
+        $l .= (exists $P{"d$n"})? "1": "0";
     }
     $p->update({
         lunches => $l,
@@ -1358,7 +1402,9 @@ sub duplicate : Local {
     # we'll need to accept the old when creating the dup
     # and THEN delete it.
     if ($orig_p->image()) {
-        $c->stash->{dup_image} = $orig_p->image_file();
+        stash($c,
+            dup_image => $orig_p->image_file(),
+        );
     }
 
     # things that are different from the original:
@@ -1374,42 +1420,41 @@ sub duplicate : Local {
         sbath collect_total kayakalpa retreat
         economy webready quad linked
     /) {
-        $c->stash->{"check_$w"}  = ($orig_p->$w)? "checked": "";
+        stash($c,
+            "check_$w" => ($orig_p->$w)? "checked": ""
+        );
     }
-    # get all cancellation policies
-    $c->stash->{canpol_opts} = [ model($c, 'CanPol')->search(
-        undef,
-        { order_by => 'name' },
-    ) ];
-    # and housing costs
-    $c->stash->{housecost_opts} =
-        [ model($c, 'HouseCost')->search(
+    stash($c,
+        canpol_opts => [ model($c, 'CanPol')->search(
             undef,
             { order_by => 'name' },
-        ) ];
-    # templates
-    $c->stash->{template_opts} = [
-        grep { $_ eq "default" || ! sys_template($_) }
-        map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
-        <root/static/templates/web/*.html>
-    ];
-    # confirmation letter templates
-    $c->stash->{cl_template_opts} = [
-        map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
-        <root/static/templates/letter/*.tt2>
-    ];
-    $c->stash->{section}             = 2;   # Web (a required field)
-    $c->stash->{edit_gl} = 0;
-
-    $c->stash->{program} = $orig_p;      # with modifed columns
-    $c->stash->{form_action} = "duplicate_do/$id";
-    $c->stash->{dup_message} = " - <span style='color: red'>Duplication</span>";
-        # forgive me for putting html/css here!
-        # i didn't want the dash '-' to be red
-        # and the dash shouldn't be there if there's no message...
-        # I could have done a conditional in the template
-        # but that would be more complex, yes?
-    $c->stash->{template}    = "program/create_edit.tt2";
+        ) ],
+        housecost_opts =>
+            [ model($c, 'HouseCost')->search(
+                undef,
+                { order_by => 'name' },
+            ) ],
+        template_opts => [
+            grep { $_ eq "default" || ! sys_template($_) }
+            map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
+            <root/static/templates/web/*.html>
+        ],
+        cl_template_opts => [
+            map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
+            <root/static/templates/letter/*.tt2>
+        ],
+        section     => 2,   # Web (a required field)
+        edit_gl     => 0,
+        program     => $orig_p,      # with modifed columns
+        form_action => "duplicate_do/$id",
+        dup_message => " - <span style='color: red'>Duplication</span>",
+            # forgive me for putting html/css here!
+            # i didn't want the dash '-' to be red
+            # and the dash shouldn't be there if there's no message...
+            # I could have done a conditional in the template
+            # but that would be more complex, yes?
+        template    => "program/create_edit.tt2",
+    );
 }
 
 #
@@ -1421,13 +1466,13 @@ sub duplicate_do : Local {
     my ($self, $c, $old_id) = @_;
     _get_data($c);
     return if @mess;
-    delete $hash{section};      # irrelevant
+    delete $P{section};      # irrelevant
 
     # gl num is computed not gotten
-    $hash{glnum} = ($hash{name} =~ m{personal\s+retreat}i)?
-                        '99999': compute_glnum($c, $hash{sdate});
+    $P{glnum} = ($P{name} =~ m{personal\s+retreat}i)?
+                        '99999': compute_glnum($c, $P{sdate});
 
-    $hash{reg_count} = 0;       # otherwise it will not increment
+    $P{reg_count} = 0;       # otherwise it will not increment
 
     # get the old program and the old summary
     my ($old_prog)    = model($c, 'Program')->find($old_id);
@@ -1451,7 +1496,7 @@ sub duplicate_do : Local {
     my $new_p = model($c, 'Program')->create({
         summary_id => $sum->id,
         image      => ($upload || $old_prog->image())? "yes": "",
-        %hash,
+        %P,
     });
 
     my $new_id = $new_p->id();
@@ -1478,7 +1523,7 @@ sub duplicate_do : Local {
     # we add 30 days because registrations for Personal Retreats
     # may extend beyond the last day of the season.
     #
-    add_config($c, date($hash{edate}) + $hash{extradays} + 30);
+    add_config($c, date($P{edate}) + $P{extradays} + 30);
 
     # copy the leaders and affils
     my @leader_programs = model($c, 'LeaderProgram')->search({
@@ -1621,6 +1666,89 @@ sub ceu : Local {
         $html = "No one requested a CEU.";
     }
     $c->res->output($html);
+}
+
+sub email_all : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = model($c, 'Program')->find($id);
+    stash($c,
+        program  => $p,
+        template => "program/email_all.tt2",
+    );
+}
+
+sub email_all_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $subj = $c->request->params->{subject};
+    my $body = $c->request->params->{body};
+    @mess = ();
+    if (empty($subj)) {
+        push @mess, "Missing subject";
+    }
+    if (empty($body)) {
+        push @mess, "Missing body of letter";
+    }
+    if (@mess) {
+        error($c,
+            join("<br>\n", @mess),
+            "program/error.tt2",
+        );
+        return;
+    }
+    my $cc = $c->request->params->{cc};
+    my $p = model($c, 'Program')->find($id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id   => $id,
+            cancelled    => '',
+        },
+        {
+            join     => qw/person/,
+            prefetch => qw/person/,
+        },
+    );
+    my (@emails, @snails);
+    for my $r (@regs) {
+        if (empty($r->person->email())) {
+            push @snails, $r->person();
+        }
+        else {
+            push @emails, $r->person->email();
+        }
+    }
+    my $emails = join ", ", @emails;
+    Global->init($c);
+    email_letter($c,
+        msg     => $body,
+        subject => $subj,
+        to      => $emails,     # bcc??
+        cc      => $cc,         # okay even if empty? yes.
+        from       => $string{from},
+        from_title => $string{from_title},
+    );
+    # sort by last, first
+    @snails = map {
+                  $_->[1],
+              }
+              sort {
+                  $a->[0] cmp $b->[1]
+              }
+              map {
+                  [ $_->last() . ", " . $_->first(), $_ ],
+              }
+              @snails;
+
+    my $ne = @emails;
+    my $ns = @snails;
+    stash($c,
+        program  => $p,
+        nemail   => $ne . (($ne == 1)? " person": " people"),
+        nsnail   => $ns . (($ns == 1)? " person": " people"),
+        snails   => \@snails,
+        template => "program/email_report.tt2",
+    );
 }
 
 1;

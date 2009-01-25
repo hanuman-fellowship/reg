@@ -42,9 +42,12 @@ sub link {
 
 sub pname {
     my ($self) = @_;
-    
-    return $self->registration->program->name;
+    return $self->registration->program->name();
+}
 
+sub glnum {
+    my ($self) = @_;
+    return $self->registration->program->glnum();
 }
 
 1;

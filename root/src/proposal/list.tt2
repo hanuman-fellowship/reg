@@ -4,9 +4,9 @@
 <span style="margin-left: 1.5in"><input text name=proposal_pat size=10 value=[% proposal_pat %]> <input type=submit value="Search"></span></form>
 <ul>
 <table border=0 cellpadding=5>
-<tr>
+<tr valign=bottom>
 <th align=left>Group Name</th>
-<th align=left>Date of Call</th>
+<th align=center>Program<br>Meeting Date</th>
 <th align=left>Status</th>
 <th align=left>Dates Requested</th>
 <th align=right>Maximum</th>
@@ -14,7 +14,7 @@
 [% FOREACH p IN proposals %]
     <tr>
     <td><a href="/proposal/view/[% p.id %]">[% p.group_name %]</a></td>
-    <td>[% p.date_of_call_obj %]</td>
+    <td align=center>[% p.program_meeting_date_obj %]</td>
     <td>[% p.status %]</td>
     <td>[% p.dates_requested %]</td>
     <td align=right>[% p.max %]</td>

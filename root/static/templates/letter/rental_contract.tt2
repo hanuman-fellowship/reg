@@ -50,8 +50,8 @@ for '[% rental.name %]', hereafter called the Renter, hereby agree as follows:
 <h2>Facilities</h2>
 The Center will provide workshop space in the [% rental.meeting_spaces %],
 or a comparable facility, and lodging for up to [% rental.max %]
-people from [% rental.start_hour_disp %] on [% rental.sdate_obj %] 
-to [% rental.end_hour_disp %] on [% rental.edate_obj %] at the following rates:
+people from [% rental.start_hour_disp %] on [% rental.sdate_obj.format("%D") %] 
+to [% rental.end_hour_disp %] on [% rental.edate_obj.format("%D") %] at the following rates:
 <h2>Rates</h2>
 The costs below are dollars per person per day.
 [% hc = rental.housecost %]

@@ -37,10 +37,10 @@ ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0
 ftp_transactions www/cgi-bin/dreg_transactions
-reg_start 4:00 pm
-reg_end 7:00 pm
-prog_start 7:00 pm
-prog_end 12:30 pm
+reg_start 4:00
+reg_end 7:00
+prog_start 7:00
+prog_end 12:30
 credit_amount 50
 smtp_server mail.logicalpoetry.com:50
 smtp_user jon@logicalpoetry.com
@@ -113,3 +113,4 @@ seen_lodge_opts 10
 max_lodge_opts 30
 tt_today 
 default_date_format %D
+make_up_urgent_days 4

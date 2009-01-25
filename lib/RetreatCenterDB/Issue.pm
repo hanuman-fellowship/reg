@@ -16,8 +16,11 @@ __PACKAGE__->add_columns(qw/
     notes
     date_entered
     date_closed
+    user_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
+
+__PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
 
 sub date_entered_obj {
     my ($self) = @_;

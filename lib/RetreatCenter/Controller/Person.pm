@@ -23,8 +23,6 @@ use USState;
 use LWP::Simple;
 use Template;
 
-Date::Simple->default_format("%D");      # set it here - where else???
-
 sub index : Private {
     my ($self, $c) = @_;
 
@@ -925,6 +923,32 @@ sub create_mmi_payment_do : Local {
         note         => $c->request->params->{note},
     });
     $c->response->redirect($c->uri_for("/person/list_mmi_payment/$person_id"));
+}
+
+sub get_addr : Local {
+    my ($self, $c, $first, $last) = @_;
+
+    my @persons = model($c, 'Person')->search({
+        first => $first,
+        last  => $last,
+    });
+    my $addr = "not found";
+    if (@persons) {
+        my $p = $persons[0];
+        $addr = join '|',
+                $p->addr1(),
+                $p->addr2(),
+                $p->city(),
+                $p->st_prov(),
+                $p->zip_post(),
+                $p->country(),
+                $p->tel_home(),
+                $p->tel_work(),
+                $p->tel_cell(),
+                $p->email(),
+                ;
+    }
+    $c->res->output($addr);
 }
 
 1;

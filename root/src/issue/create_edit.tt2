@@ -21,10 +21,17 @@
 </td>
 </tr>
 
+[% IF form_action != 'create_do' %]
 <tr>
 <td align=right>Date Closed</td>
 <td><input type=text name=date_closed value="[% issue.date_closed_obj %]" size=10></td>
 </tr>
+
+<tr>
+<td align=right>Entered By</td>
+<td>[% issue.user.username %]</td>
+</tr>
+[% END %]
 
 <tr>
 <td></td>

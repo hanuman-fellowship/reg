@@ -142,11 +142,9 @@ sub link {
     my ($self) = @_;
     return "/rental/view/" . $self->id;
 }
-sub webdesc_br {
+sub webdesc_ex {
     my ($self) = @_;
-    my $webdesc = $self->webdesc;
-    $webdesc =~ s{\r?\n}{<br>\n}g;
-    $webdesc;
+    expand($self->webdesc());
 }
 sub comment_br {
     my ($self) = @_;
@@ -235,11 +233,22 @@ sub count {
     $count;
 }
 sub status_td {
-    my ($self) = @_;
+    my ($self, $link) = @_;
     my $status = $self->status;
     my $color = sprintf "#%02x%02x%02x",
                         $string{"rental_$status\_color"} =~ m{\d+}g;
-    return "<td align=center bgcolor=$color>\u$status</td>";
+    if ($link) {
+        return
+           "<td align=center bgcolor=$color"
+         . " style='cursor: pointer'"
+         . qq! onclick='window.location.href="/rental/view/!
+         . $self->id()
+         . qq!/1"'>\u$status</td>!
+         ;
+    }
+    else {
+        return "<td align=center bgcolor=$color>\u$status</td>";
+    }
 }
 
 #

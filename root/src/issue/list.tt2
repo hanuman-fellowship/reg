@@ -43,7 +43,7 @@
 
 [% IF closed_issues.0.title %]
 [% class = 'grayrow' %]
-<hr width=800 align=left>
+<hr width=835 align=left>
 <ul>
 <h4>Closed Issues</h4>
 <table cellpadding=3 border=0>

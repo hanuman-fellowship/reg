@@ -281,9 +281,9 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 <tr>
 <th align=right>Check In</th>
 <td colspan=3>
-[% proposal.check_in_time %]
+[% proposal.checkin_time %]
 <span style="font-weight: bold; margin-left: .3in">Check Out</th>
-[% proposal.check_out_time %]
+[% proposal.checkout_time %]
 </td>
 </tr>
 

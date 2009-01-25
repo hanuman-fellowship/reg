@@ -115,8 +115,39 @@ initial focus when changing tabs in Rentals/Programs?
     should be able to set to first field.
 on program - Registrations or AllRegs or FirstReg 
 
+"All" next to each housing cluster on the made-up page.
+    Mimic what you did for lunches.
 
+Modify Date::Simple to introduce
+    a new format character that shows the year
+    unless it is the current year in which case it is the empty string.
+    Then we can do '21 Jan' (like the airline boarding pass did).
 
+rental tab order
+    m&l, misc, finance, web
+
+MMI
+    import from D/C/M programs
+    go to the _one_ D/C/M program
+    MMI charges, payments are linked to the person not the program
+        including course housing etc?
+
+if someone calls back to make another proposal - 
+    have ajax function to pull in their demographic info
+    from the people table?
+    otherwise you need to retype it all...
+
+use Time::Simple.pm
+
+checkin, checkout proposal/rental times
+    validate with \d+(:\d+)?
+    AND consider the partial hours
+
+doc: rental check in and check out times
+    CAN have partial hours
+email all in a program?
+    not the cancelled ones.
+Issues - added by whom?
 ---
 Center Tent spaces should be available during
     winter for Own Tent people
@@ -167,11 +198,6 @@ online evaluation form
     see Breitenbush form
 are receipt numbers necessary?  == payment record id
 no expiration of session?
-MMI
-    import from D/C/M programs
-    go to the _one_ D/C/M program
-    MMI charges, payments are linked to the person not the program
-        including course housing etc?
 only one reg screen - don't keep opening new ones?
     maybe maybe not - can modifier keys override naming a window?
 no double reg in program with same name/person id
@@ -589,10 +615,6 @@ wiki for summaries?
 lunches indivi - yes.
     in contract somehow
 
-tabs order
-    m&l, misc, finance, web
-
-
 drag and drop in rental housing
     or pop up menu of choices
 
@@ -614,3 +636,87 @@ ask that Laura be my 'employee'
 
 program summary 
     all leaders, assistants with email, phones, show in summary.
+
+==
+manual registration
+    1 - choose program/pr
+    2 - deposit (from program), housing prefs (restricted list
+        dependent on the program)
+    3 - rest of the reg
+
+show housing preferences on reg view
+    with Update
+    not just 1-sgl etc
+        this was an artifact of the old hack
+    this affects other things - shared rooms
+    default housing choice
+
+proposals
+    tab order
+    required fields
+    list order by program meeting date
+    consolidate transmits
+
+kaya kalpa in conf letter - update
+    on reg form - link to site, phone, email
+
+membership - date of next payment on conf letter?
+
+rental list - 2 links - rental and summary
+
+javascript validation of required fields - also
+    putting focus on the missing/incorrect field
+    other forms as well.
+
+a new role: Field Staff
+    On login they see only listings for their use.
+    Can't go anywhere else.  Aside from Logout, Help, etc.
+a listing of two weeks ahead from today (but can supply other dates)
+    of indoor and campsite use.  ignore commuters & own van lodging.
+
++ for footnotes is okay?
+
+pop up calendar in various places
+
+auto capitalize the state in Person, Proposal?
+    check the validity of the state in Proposal?
+
+dup code in name proposal/create_edit.tt2
+    is there a better way???
+
+times in Program prog/reg start/end
+    use Time::Simple
+    elsewhere?
+
+search and consider these spots marked with ???
+
+DEPOSITS
+    a string contains the date of the last deposit.
+    have another string that is the 'reconciling' status.
+    when Sukhdev (or whoever) requests the jiving deposit
+    put a 1 in $string{reconciling} otherwise it has a 0.
+    reference it whenever a payment is about to be made
+    and display it on the payment page.
+    ALSO - when a payment is being made on the same day
+    that the last deposit was made put up a notice
+    that this payment will be 'posted' (marked as having
+    been made) on the next day.
+    No more than one deposit is made a day, right?
+
+wiki-ize (a la program web descriptions) the various
+    textareas in a Summary.  yes, easy!
+    this means two things:
+        entry - have a "How?" kind of popup window link for the shortcuts, etc.
+        display - _expand them
+    do the same for program and ?rental descriptions
+
+    if you want both * and _ put the * on the outside.
+
+two cron jobs - getonline, makeup
+    others?
+        send carpool lists
+
+what heading for Deposit listing - Program/Rental/Project/Extra Account
+    - Account?
+Are Project donations included in the Deposit that Sukh does?
+MMI payments should not be included, right?

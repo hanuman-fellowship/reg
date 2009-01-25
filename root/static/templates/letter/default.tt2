@@ -62,10 +62,10 @@ Mount Madonna Center
 <b>NOTES:</b><br>
 <ul>
 [% IF program.confnote %]
-    [% program.confnote_br %]<br>
+    [% program.confnote_ex %]<br>
 [% END %]
 [% IF reg.confnote %]
-    [% reg.confnote_br %]
+    [% reg.confnote_ex %]
 [% END %]
 </ul>
 [% END %]

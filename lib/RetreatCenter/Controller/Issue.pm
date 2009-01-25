@@ -91,6 +91,7 @@ sub create_do : Local {
     my %hash = %{ $c->request->params() };
     $hash{date_entered} = today()->as_d8();
     $hash{date_closed}  = '';
+    $hash{user_id} = $c->user->obj->id();
     model($c, 'Issue')->create(\%hash);
     $c->response->redirect($c->uri_for('/issue/list'));
 }

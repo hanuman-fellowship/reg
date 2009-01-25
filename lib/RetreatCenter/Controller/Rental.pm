@@ -8,6 +8,7 @@ use lib '../../';       # so you can do a perl -c here.
 use Date::Simple qw/
     date
 /;
+use Time::Simple;
 use Util qw/
     trim
     empty
@@ -42,10 +43,9 @@ sub _get_data {
     my ($c) = @_;
 
     %hash = %{ $c->request->params() };
-    $hash{$_} =~ s{^\s*|\s*$}{}g for keys %hash;
+    $hash{$_} = trim($hash{$_}) for keys %hash;
     @mess = ();
     $hash{url} =~ s{^http://}{};
-    $hash{email} = trim($hash{email});
     if (empty($hash{name})) {
         push @mess, "Name cannot be blank";
     }
@@ -72,10 +72,16 @@ sub _get_data {
                    :     "";
     }
     TIME:
-    for my $t ($hash{start_hour}, $hash{end_hour}) {
-        next TIME if empty($t);
-        if ($t !~ m{\d+} || ($t < 1 || 12 < $t)) {
-            push @mess, "Illegal time: $t";
+    for my $n (qw/start_hour end_hour/) {
+        my $t = $hash{$n};
+        if (empty($t)) {
+            my $sn = $n;
+            $sn =~ s{_}{ };
+            $sn =~ s{\b(\w)}{uc $1}eg;  # pretty good!
+            push @mess, "Missing $sn";
+        }
+        elsif (! Time::Simple->new($t)) {
+            push @mess, Time::Simple->error();
         }
     }
     if (!@mess && $hash{sdate} > $hash{edate}) {
@@ -120,11 +126,13 @@ sub _get_data {
                 }
                 my ($t_npeople, $t_ndays) = ($1, $2);
                 $total_peeps += $t_npeople;
-                if ($t_ndays > $rental_ndays) {
-                    push @mess, "$s: Attendance > # days of rental!: $t_ndays";
+
+                # we may not have a valid $rental_ndays so be careful
+                if (!@mess && $t_ndays > $rental_ndays) {
+                    push @mess, "$s: Attendance > # days of rental: $t_ndays";
                 }
             }
-            # it is okay to have more people in the 'attendance' field
+            # It IS okay to have more people in the 'attendance' field
             # than the '# of people' field.  Perhaps someone left early
             # and this changed the attendance tallies.  Like this:
             #
@@ -173,6 +181,8 @@ sub create : Local {
         ) ];
     $c->stash->{rental} = {     # double faked object
         housecost => { name => "Default" },
+        start_hour => "4:00",
+        end_hour   => "1:00",
     };
     $c->stash->{form_action} = "create_do";
     $c->stash->{section}     = 1;   # web
@@ -276,14 +286,24 @@ sub create_from_proposal : Local {
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/$section"));
 }
 
-sub _h24 {
+sub _mins {
     my ($s) = @_;
 
-    my ($h) = $s =~ m{(\d+)};
+    my ($h, $m) = $s =~ m{(\d+)(?::(\d+))?};
     if ($h && 1 <= $h && $h <= 7) {
         $h += 12;
     }
-    $h;
+    $h*60+$m;
+}
+
+sub _hour_min {
+    my ($mins) = @_;
+    my $h = $mins/60;
+    if ($h > 12) {
+        $h -= 12;
+    }
+    my $m = $mins%60;
+    return sprintf("%d:%02d", $h, $m);
 }
 
 #
@@ -557,9 +577,6 @@ sub update : Local {
             undef,
             { order_by => 'name' },
         ) ];
-    for my $w (qw/ sdate edate /) {
-        $c->stash->{$w} = date($p->$w) || "";
-    }
     $c->stash->{edit_gl}     = 1;
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{section}     = $section;
@@ -640,7 +657,8 @@ sub update_do : Local {
     }
 }
 
-# what about a proposal that gave rise to this rental???
+# what about the proposal that gave rise to this rental???
+# at least make the rental_id field 0 in the proposal.
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
@@ -655,6 +673,7 @@ sub delete : Local {
     $r->summary->delete();
 
     # and the rental itself
+    # does this cascade to rental payments???
     model($c, 'Rental')->search({
         id => $id,
     })->delete();
@@ -993,7 +1012,10 @@ sub contract : Local {
     my $rental = model($c, 'Rental')->find($id);
     my $cs = ($rental->contract_signer() || $rental->coordinator());
     my @mess = ();
-    if (empty($cs->addr1())) {
+    if (! $cs) {
+        push @mess, "Contracts need a coordinator or a contract signer.";
+    }
+    elsif (empty($cs->addr1())) {
         push @mess, $cs->first() . " " . $cs->last()
                     . " does not have an address.";
     }
@@ -1298,24 +1320,29 @@ EOH
     $html .= "</ul>\n";
 
     my $extra_hours = 0;
-    my $start = _h24($rental->start_hour);
-    my $end   = _h24($rental->end_hour);
+    my $start = Time::Simple->new($rental->start_hour());
+    my $end   = Time::Simple->new($rental->end_hour());
     my $extime = "";
     my $tr_extra = "";
-    if ($start && $start < 16) {
-        $extra_hours += 16 - $start;
-        $extime .= "started at " . $rental->start_hour() . ":00 (before 4:00)";
+    my $diff = Time::Simple->new("4:00") - $start;
+    if ($diff > 0) {
+        $extra_hours += $diff/60;
+        $extime .= "started at " . $start->format(2) . " (before 4:00)";
     }
-    if ($end && 13 < $end) {
-        $extra_hours += $end - 13;
+    $diff = $end - Time::Simple->new("1:00");
+    if ($diff > 0) {
+        $extra_hours += $diff/60;
         $extime .= " and " if $extime;
-        $extime .= "ended at " . $rental->end_hour() . ":00 (after 1:00)";
+        $extime .= "ended at " . $end->format(2) . " (after 1:00)";
     }
-    my $extra_hours_charge = $extra_hours
-                           * $tot_people
-                           * $string{extra_hours_charge};
-    if ($extra_hours_charge) {
+    my $extra_hours_charge = sprintf("%.2f", 
+                                     $extra_hours
+                                     * $tot_people
+                                     * $string{extra_hours_charge}
+                                    );
+    if ($extra_hours) {
         my $pl = ($extra_hours == 1)? "": "s";
+        $extra_hours = sprintf("%.2f", $extra_hours);
         my $s = commify($extra_hours_charge);
         $html .= <<"EOH";
 <h2>Extra Time Charge</h2>

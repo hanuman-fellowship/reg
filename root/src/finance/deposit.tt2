@@ -7,7 +7,7 @@
 <th>Check</th>
 <th>Credit</th>
 <th>Online</th>
-<th align=left>Program</th>
+<th align=left>Account</th>
 </tr>
 [% FOR p IN payments %]
 <tr>

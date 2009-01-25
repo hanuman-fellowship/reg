@@ -1,11 +1,9 @@
 <script type="text/javascript">
-var check_on = false;
 function toggle_all() {
-    check_on = ! check_on;
     var form = document.form;
     for (var i = 0; i < form.length; ++i) {
         if (form[i].type == 'checkbox') {
-            form[i].checked = check_on;
+            form[i].checked = ! form[i].checked;
         }
     }
 }

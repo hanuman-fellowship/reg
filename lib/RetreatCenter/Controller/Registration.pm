@@ -803,7 +803,7 @@ sub create_do : Local {
         h_type        => $hash{h_type},
         h_name        => $hash{h_name},
         kids          => $hash{kids},
-        confnote      => _expand($c, $c->request->params->{confnote}),
+        confnote      => cf_expand($c, $c->request->params->{confnote}),
         status        => $hash{status},
         nights_taken  => $taken,
         free_prog_taken => $hash{free_prog},
@@ -1752,7 +1752,7 @@ sub update_confnote_do : Local{
 
     my $reg = model($c, 'Registration')->find($id);
     $reg->update({
-        confnote => _expand($c, $c->request->params->{confnote}),
+        confnote => cf_expand($c, $c->request->params->{confnote}),
     });
     _reg_hist($c, $id, "Confirmation Note updated.");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -1966,7 +1966,7 @@ sub update_do : Local {
         h_type        => $hash{h_type},
         h_name        => $hash{h_name},
         kids          => $hash{kids},
-        confnote      => _expand($c, $c->request->params->{confnote}),
+        confnote      => cf_expand($c, $c->request->params->{confnote}),
         nights_taken  => $taken,
         free_prog_taken => $hash{free_prog},
         cabin_room    => $cabin_room,
@@ -2524,7 +2524,7 @@ sub lodge_do : Local {
     my ($force_house) = trim($c->request->params->{force_house});
     if (! ($house_id || $force_house)) {
         $reg->update({
-            confnote => _expand($c, $c->request->params->{confnote}),
+            confnote => cf_expand($c, $c->request->params->{confnote}),
         });
         $c->response->redirect($c->uri_for("/registration/view/$id"));
         return;
@@ -2595,7 +2595,7 @@ sub lodge_do : Local {
     $reg->update({
         house_id => $house_id,
         h_name   => '',
-        confnote => _expand($c, $c->request->params->{confnote}),
+        confnote => cf_expand($c, $c->request->params->{confnote}),
     });
     my $kids = $reg->kids;
     for my $cf (model($c, 'Config')->search({
@@ -2848,7 +2848,7 @@ sub seek : Local {
     }
 }
 
-sub _expand {
+sub cf_expand {
     my ($c, $s) = @_;
     $s = etrim($s);
     return $s if empty($s);

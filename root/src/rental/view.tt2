@@ -62,22 +62,22 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Web
+Meals/Lodging
 </div>
 <span onclick="tabs(1)">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Web
+Meals/Lodging
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Meals/Lodging
+Misc
 </div>
 <span onclick="tabs(2)">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Meals/Lodging
+Misc
 </div>
 </span>
 </td>
@@ -95,11 +95,11 @@ Finance
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
 <span onclick="tabs(4)">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
@@ -115,51 +115,9 @@ Misc
 <td colspan=5>
 
 <!-- -->
-<div id="content1" class="tabcontent" style="display: none">
-<table cellpadding=3>
-
-<tr>
-<th align=right width=150>Linked</th>
-<td>[% rental.linked %]</td> 
-</tr>
-
-<tr>
-<th align=right>Title</th>
-<td colspan=5>[% rental.title %]</td>
-</tr>
-
-<tr>
-<th align=right>SubTitle</th>
-<td colspan=5>[% rental.subtitle %]</td>
-</tr>
-
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><a href="http://[% rental.url %]">[% rental.url %]</a></td>
-</tr>
-
-<tr>
-<th align=right>Telephone</th>
-<td>[% rental.phone %]</td>
-</tr>
-
-<tr>
-<th align=right>Email</th>
-<td><a href="mailto:[% rental.email %]">[% rental.email %]</a></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Description</th>
-<td colspan=5>[% rental.webdesc_br %]</td>
-</td>
-</tr>
-
-</table>
-</div>
-
 
 <!-- Meals/Lodging -->
-<div id="content2" class="tabcontent" style="display: none">
+<div id="content1" class="tabcontent" style="display: none">
 <!-- ??? strange table cell width problem here... -->
 <table cellpadding=3 border=0>
 <tr>
@@ -290,7 +248,91 @@ Misc
 <span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% rental.id %]">Update</a></span>
 <div class=lunch>[% lunch_table %]</div>
 
-</div>
+</div>      <!-- end Meals & Lodging div -->
+
+<!-- Misc -->
+<div id="content2" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Tentative</th>
+<td>[% rental.tentative %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top width=150>Meeting Places</th>
+<td align=left valign=top>
+[% FOR b IN rental.bookings %]
+    [% IF b.breakout == '' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
+[% END %]
+</td>
+<th align=right valign=top width=150>Breakout Places</th>
+<td align=left valign=top>
+[% FOR b IN rental.bookings %]
+    [% IF b.breakout == 'yes' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
+[% END %]
+</td>
+</tr>
+[% IF Catalyst.check_user_roles('prog_admin') %]
+    <tr>
+    <td></td>
+    <td align=left colspan=2><a href="/rental/meetingplace_update/[% rental.id %]">Update</a></td>
+    </tr>
+[% END %]
+
+<tr>
+<th valign=top align=right>Contact Person</th>
+<td valign=top>
+[% IF rental.coordinator_id %]
+[% coord = rental.coordinator %]
+<a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
+[% END %]
+<a href="/rental/coordinator_update/[% rental.id %]">Update</a>
+</td>
+<th valign=top align=right>Contract Signer</th>
+<td valign=top>
+[% IF rental.cs_person_id %]
+[% cs = rental.contract_signer %]
+<a href="/person/view/[% cs.id %]">[% cs.first %] [% cs.last %]</a><br>
+[% END %]
+<a href="/rental/contract_signer_update/[% rental.id %]">Update</a>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td colspan=5>[% rental.comment_br %]</td>
+</td>
+</tr>
+
+<tr>
+<th align=right>Start Hour</th>
+<td>[% rental.start_hour %]</td>
+</tr>
+
+<tr>
+<th align=right>End Hour</th>
+<td>[% rental.end_hour %]</td>
+</tr>
+
+<tr>
+<th align=right>Contract Sent</th>
+<td>[% rental.contract_sent_obj %] [% IF rental.contract_sent %]by [% rental.sent_by.username %][% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Contract Received</th>
+<td>[% rental.contract_received_obj %] [% IF rental.contract_received %]by [% rental.received_by.username %][% END %]</td>
+</tr>
+
+</table>
+<p>
+
+</div>  <!-- end Misc div -->
 
 <!-- Finance -->
 <div id="content3" class="tabcontent" style="display: none">
@@ -376,89 +418,47 @@ Payments
 
 </div>  <!-- end Finance div -->
 
-<!-- Misc -->
 <div id="content4" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
+<table cellpadding=3>
 
 <tr>
-<th align=right>Tentative</th>
-<td>[% rental.tentative %]</td>
+<th align=right width=150>Linked</th>
+<td>[% rental.linked %]</td> 
 </tr>
 
 <tr>
-<th align=right valign=top width=150>Meeting Places</th>
-<td align=left valign=top>
-[% FOR b IN rental.bookings %]
-    [% IF b.breakout == '' %]
-        [% b.meeting_place.name %]<br>
-    [% END %]
-[% END %]
+<th align=right>Title</th>
+<td colspan=5>[% rental.title %]</td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5>[% rental.subtitle %]</td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><a href="http://[% rental.url %]">[% rental.url %]</a></td>
+</tr>
+
+<tr>
+<th align=right>Telephone</th>
+<td>[% rental.phone %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td><a href="mailto:[% rental.email %]">[% rental.email %]</a></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td colspan=5>[% rental.webdesc_ex %]</td>
 </td>
-<th align=right valign=top width=150>Breakout Places</th>
-<td align=left valign=top>
-[% FOR b IN rental.bookings %]
-    [% IF b.breakout == 'yes' %]
-        [% b.meeting_place.name %]<br>
-    [% END %]
-[% END %]
-</td>
-</tr>
-[% IF Catalyst.check_user_roles('prog_admin') %]
-    <tr>
-    <td></td>
-    <td align=left colspan=2><a href="/rental/meetingplace_update/[% rental.id %]">Update</a></td>
-    </tr>
-[% END %]
-
-<tr>
-<th valign=top align=right>Contact Person</th>
-<td valign=top>
-[% IF rental.coordinator_id %]
-[% coord = rental.coordinator %]
-<a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
-[% END %]
-<a href="/rental/coordinator_update/[% rental.id %]">Update</a>
-</td>
-<th valign=top align=right>Contract Signer</th>
-<td valign=top>
-[% IF rental.cs_person_id %]
-[% cs = rental.contract_signer %]
-<a href="/person/view/[% cs.id %]">[% cs.first %] [% cs.last %]</a><br>
-[% END %]
-<a href="/rental/contract_signer_update/[% rental.id %]">Update</a>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Comment</th>
-<td colspan=5>[% rental.comment_br %]</td>
-</td>
-</tr>
-
-<tr>
-<th align=right>Start Hour</th>
-<td>[% rental.start_hour %]</td>
-</tr>
-
-<tr>
-<th align=right>End Hour</th>
-<td>[% rental.end_hour %]</td>
-</tr>
-
-<tr>
-<th align=right>Contract Sent</th>
-<td>[% rental.contract_sent_obj %] [% IF rental.contract_sent %]by [% rental.sent_by.username %][% END %]</td>
-</tr>
-
-<tr>
-<th align=right>Contract Received</th>
-<td>[% rental.contract_received_obj %] [% IF rental.contract_received %]by [% rental.received_by.username %][% END %]</td>
 </tr>
 
 </table>
-<p>
-
-</div>  <!-- end Misc div -->
+</div>          <!-- end Web div -->
 
 </td></tr>      <!-- end content td -->
 

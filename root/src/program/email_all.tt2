@@ -1,0 +1,29 @@
+<h3>Emailing Everyone in [% program.name %]</h3>
+<form name=form action=/program/email_all_do/[% program.id %]>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Subject</th>
+<td><input type=text name=subject size=40></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Body</th>
+<td><textarea name=body rows=15 cols=60></textarea></td>
+</tr>
+
+<tr>
+<th align=right>Cc</th>
+<td><input type=text name=cc size=40></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.subject.focus();
+</script>

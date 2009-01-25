@@ -27,30 +27,76 @@ sub _get_data {
         $hash{$f} = etrim($hash{$f});
     }
 
-    my $dt = date($hash{date_of_call});
-    if (! $dt) {
-        push @mess, "Invalid Date of Call: $hash{date_of_call}";
+    #
+    # required fields
+    #
+    for my $f (qw/
+        date_of_call
+        group_name
+        rental_type
+        max
+        dates_requested
+        checkin_time
+        checkout_time
+        program_meeting_date
+        meeting_space
+
+        first
+        last
+        addr1
+        city
+        st_prov
+        zip_post
+        email
+
+        deposit
+    /) {
+        if (empty($hash{$f})) {
+            my $sf = $f;
+            $sf =~ s{_}{ }g;
+            $sf =~ s{(\w+)}{ucfirst $1}eg;
+            $sf = "State/Province" if $sf eq "St Prov";
+            $sf = "Zip/PostalCode" if $sf eq "Zip Post";
+            push @mess, "Missing field: $sf";
+        }
     }
-    else {
-        $hash{date_of_call} = $dt->as_d8();
+    if (   empty($hash{tel_home})
+        && empty($hash{tel_work})
+        && empty($hash{tel_cell})
+    ) {
+        push @mess, "Must have at least one phone number.";
     }
-    $dt = date($hash{program_meeting_date});
-    if (! $dt) {
-        push @mess, "Invalid Program Meeting Date: $hash{program_meeting_date}";
+    if (! @mess) {
+        my $dt = date($hash{date_of_call});
+        if (! $dt) {
+            push @mess, "Invalid Date of Call: $hash{date_of_call}";
+        }
+        else {
+            $hash{date_of_call} = $dt->as_d8();
+        }
+        $dt = date($hash{program_meeting_date});
+        if (! $dt) {
+            push @mess, "Invalid Program Meeting Date: $hash{program_meeting_date}";
+        }
+        else {
+            $hash{program_meeting_date} = $dt->as_d8();
+        }
+        $hash{denied} = "" unless exists $hash{denied};
     }
-    else {
-        $hash{program_meeting_date} = $dt->as_d8();
-    }
-    $hash{denied} = "" unless exists $hash{denied};
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "program/error.tt2";
+        $c->stash->{template} = "proposal/error.tt2";
     }
 }
 
 sub create : Local {
     my ($self, $c) = @_;
 
+    # defaults
+    $c->stash->{proposal} = {
+        checkin_time  => "4:00",
+        checkout_time => "1:00",
+    };
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "proposal/create_edit.tt2";
 }
@@ -59,6 +105,7 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     _get_data($c);
+    return if @mess;
     my $proposal = model($c, 'Proposal')->create(\%hash);
     my $id = $proposal->id();
     $c->response->redirect($c->uri_for("/proposal/view/$id"));
@@ -86,9 +133,6 @@ sub update : Local {
     /) {
         $c->stash->{"$f\_rows"} = lines($proposal->$f()) + 3;    # 3 in strings?
     }
-    for my $w (qw/ date_of_call program_meeting_date /) {
-        $c->stash->{$w} = date($proposal->$w) || "";
-    }
     $c->stash->{"check_denied"}  = ($proposal->denied())? "checked": "";
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template} = "proposal/create_edit.tt2";
@@ -99,6 +143,7 @@ sub update_do : Local {
 
     my $proposal = model($c, 'Proposal')->find($id);
     _get_data($c);
+    return if @mess;
     $proposal->update(\%hash);
     $c->response->redirect($c->uri_for("/proposal/view/$id"));
 }
@@ -111,11 +156,11 @@ sub list : Local {
     my ($self, $c) = @_;
 
     Global->init($c);
-    my $date_limit = (tt_today($c) - 30)->as_d8();
+    my $today = (tt_today($c)-3)->as_d8();
     $c->stash->{proposals} = [
         model($c, 'Proposal')->search(
-            { date_of_call => { '>=', $date_limit } },
-            { order_by     => 'date_of_call' },
+            { program_meeting_date => { '>=', $today } },
+            { order_by             => 'program_meeting_date' },
         )
     ];
     $c->stash->{proposal_pat} = "";
@@ -140,13 +185,14 @@ sub listpat : Local {
     my ($self, $c) = @_;
     
     my $pat = $c->request->params->{proposal_pat};
+    $c->stash->{proposal_pat} = $pat;
+    $pat =~ s{\*}{%}g;
     $c->stash->{proposals} = [
         model($c, 'Proposal')->search(
-            { group_name => { 'like' => "%$pat%" }  },
-            { order_by   => 'date_of_call' },
+            { group_name => { 'like' => "$pat%" }  },
+            { order_by   => 'program_meeting_date' },
         )
     ];
-    $c->stash->{proposal_pat} = $pat;
     $c->stash->{template} = "proposal/list.tt2";
 }
 

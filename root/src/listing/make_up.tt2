@@ -1,0 +1,39 @@
+<head>
+<style type="text/css">
+.heading {
+    font-weight: bold;
+    font-size: 20pt;
+}
+.timestamp {
+    font-size: 13pt;
+    text-align: right;
+    margin-left: 1in;
+}
+.all {
+    margin-left: 1in;
+    font-size: 13pt;
+    font-weight: bold;
+}
+</style>
+<script type="text/javascript">
+function toggle_all(clust_num) {
+    var hs = 0;
+    while (true) {
+        ++hs;
+        var box = document.getElementById(clust_num + '-' + hs);
+        if (! box) {
+            return;
+        }
+        box.checked = ! box.checked;
+    }
+}
+</script>
+</head>
+<form action=/listing/make_up_do/[% tent %]>
+[% heading %]
+<p>
+<input type=submit value="Submit">
+[% content %]
+<p>
+<input type=submit value="Submit">
+</form>

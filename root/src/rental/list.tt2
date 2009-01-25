@@ -1,4 +1,8 @@
-<h2>Rentals</h2>
+<h2>Rentals
+<span style="font-weight: normal; font-size: 11pt; margin-left: .5in;">
+click Name for Summary; click Status for Rental
+</span>
+</h2>
 <form action="/rental/listpat" name=form>
 <a href="/proposal/list">Proposals</a>
 &nbsp;&nbsp;&nbsp;
@@ -13,9 +17,9 @@
 </tr>
 [% FOREACH r IN rentals %]
     <tr>
-    <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+    <td><a href="/summary/view/rental/[% r.summary.id %]">[% r.name %]</a></td>
     <td>[% r.sdate_obj %]</td>
-    [% r.status_td %]
+    [% r.status_td(1) %]
     </tr>
 [% END %]
 </table>

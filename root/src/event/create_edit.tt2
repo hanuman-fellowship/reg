@@ -6,9 +6,9 @@
 <th align=right><span class="required">*</span> Name</th>
 <td><input type=text name=name value="[% event.name %]"></td>
 <th align=right><span class="required">*</span> From</th>
-<td><input type=text name=sdate value="[% event.sdate_obj %]" size=10></td>
+<td><input type=text name=sdate value="[% event.sdate_obj.format("%D") %]" size=10></td>
 <th align=right><span class="required">*</span> To</th>
-<td><input type=text name=edate value="[% event.edate_obj %]" size=10></td>
+<td><input type=text name=edate value="[% event.edate_obj.format("%D") %]" size=10></td>
 </tr>
 
 <tr>
