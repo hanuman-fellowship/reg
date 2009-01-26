@@ -1,12 +1,12 @@
-<h2>New Bank Deposit</h2>
-<table cellpadding=3>
+<h2>Reconciling the Bank Deposit</h2>
+<table cellpadding=3 border=0>
 <tr>
 <th align=left>Name</th>
 <th>Date</th>
-<th>Cash</th>
-<th>Check</th>
-<th>Credit</th>
-<th>Online</th>
+<th width=70 align=right>Cash</th>
+<th width=70 align=right>Check</th>
+<th width=70 align=right>Credit</th>
+<th width=70 align=right>Online</th>
 <th align=left>Account</th>
 </tr>
 [% FOR p IN payments %]
@@ -20,11 +20,24 @@
 <td>[% p.pname %]</td>
 </tr>
 [% END %]
+<!-- the line above the totals: -->
 <tr>
-<td colspan=3 align=right><span class=topbord>[% cash %]</span></td>
-<td align=right><span class=topbord>[% check %]</span></td>
-<td align=right><span class=topbord>[% credit %]</span></td>
-<td align=right><span class=topbord>[% online %]</span></td>
-<td><span class=topbord>Total = $[% total %]</span></td>
+<td colspan=2></td>
+<td><hr color=black></td>
+<td><hr color=black></td>
+<td><hr color=black></td>
+<td><hr color=black></td>
+<td><hr color=black></td>
+</tr>
+<tr>
+<td colspan=3 align=right>[% cash %]</td>
+<td align=right>[% check %]</td>
+<td align=right>[% credit %]</td>
+<td align=right>[% online %]</td>
+<td>Total = $[% total %]</td>
 </tr>
 </table>
+[% IF again %]
+<p>
+If it reconciles <a target=_blank href=/finance/file_deposit>Generate it again for Filing</a>.
+[% END %]

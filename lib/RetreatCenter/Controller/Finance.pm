@@ -6,8 +6,15 @@ use base 'Catalyst::Controller';
 use Util qw/
     model
     commify
+    stash
+    tt_today
 /;
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Global qw/
+    %string
+/;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -16,20 +23,26 @@ sub index : Local {
 }
 
 sub reconcile_deposit : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $id) = @_;
 
-    # ??? replace by actual last deposit date/time
-    my $last_date = "20090123";
-    my $last_time = "00:00";
-
+    my ($date_start, $date_end);
+    my $dep;
+    if ($id) {
+        $dep = model($c, 'Deposit')->find($id);
+        $date_start = $dep->date_start();
+        $date_end   = $dep->date_end();
+    }
+    else {
+        $date_start = (date($string{last_deposit_date})+1)->as_d8();
+        $date_end   = tt_today($c)->as_d8();
+    }
+    if ($date_end < $date_start) {
+        # we just made a deposit and are asking again
+        stash($c, template => "finance/already.tt2");
+        return;
+    }
     my $cond = {
-        -or => [
-            the_date => { '>', $last_date },
-            -and => [
-                the_date => $last_date,
-                time     => { '>=', $last_time },
-            ],
-        ],
+        the_date => { between => [ $date_start, $date_end ] },
     };
     my @payments;
     my ($cash, $check, $credit, $online, $total) = (0) x 5;
@@ -66,30 +79,48 @@ sub reconcile_deposit : Local {
                         $a->{name} cmp $b->{name}
                     }
                     @payments;
-    $c->stash->{payments} = \@payments;
-    $c->stash->{cash}     = $cash;
-    $c->stash->{check}    = $check;
-    $c->stash->{credit}   = $credit;
-    $c->stash->{online}   = $online;
-    $c->stash->{total}    = $total;
-    $c->stash->{template} = "finance/deposit.tt2";
+
+    $string{reconciling} = $c->user->obj->username();
+        # on disk??  not needed?
+
+    stash($c,
+        payments => \@payments,
+        again    => ! $id,
+        cash     => $cash,
+        check    => $check,
+        credit   => $credit,
+        online   => $online,
+        total    => commify($total),
+        template => "finance/deposit.tt2",
+    );
 }
 
+#
+# the id  is passed in if we are viewing a past deposit.
+# Without it we are creating a new one.
+#
 sub file_deposit : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $id) = @_;
 
-    # ??? replace by actual last deposit date/time
-    my $last_date = "20090123";
-    my $last_time = "00:00";
+    my ($date_start, $date_end);
+    my $dep;
+    if ($id) {
+        $dep = model($c, 'Deposit')->find($id);
+        $date_start = $dep->date_start();
+        $date_end   = $dep->date_end();
+    }
+    else {
+        $date_start = (date($string{last_deposit_date})+1)->as_d8();
+        $date_end   = tt_today($c)->as_d8();
+    }
+    if ($date_end < $date_start) {
+        # we just made a deposit and are asking again
+        stash($c, template => "finance/already.tt2");
+        return;
+    }
 
     my $cond = {
-        -or => [
-            the_date => { '>', $last_date },
-            -and => [
-                the_date => $last_date,
-                time     => { '>=', $last_time },
-            ],
-        ],
+        the_date => { between => [ $date_start, $date_end ] },
     };
     my @payments;
     for my $src (qw/ Reg XAccount Rental /) {
@@ -123,20 +154,37 @@ sub file_deposit : Local {
 
     my $indent = "&nbsp;" x 5;
 
-    my $time = localtime();
+    my $timestamp;
+    my $time;
+    if ($id) {
+        $timestamp = date($date_end)->format("%D") . " " . $dep->time();
+    }
+    else {
+        $time = sprintf("%02d:%02d", (localtime())[2, 1]),
+        $timestamp = tt_today($c) . " " . $time;
+    }
     my $html = <<"EOH";
-$time<span style="font-size: 25pt; font-weight: bold; margin-left: 1.5in;">Bank Deposit</span>
+<style type="text/css">
+body {
+    font-size: 13pt;
+    font-family: Helvetica;
+}
+td, th {
+    font-size: 15pt;
+}
+</style>
+$timestamp<span style="font-size: 25pt; font-weight: bold; margin-left: 1in;">Bank Deposit</span>
 <p>
 <table cellpadding=3>
-<tr>
-<th align=left>Account (GL number)<br>${indent}Name</th>
+<tr valign=bottom>
+<th align=left><b>Account</b> (GL number)<br>${indent}Name</th>
 <th align=center>Date</th>
 <th align=right width=70>Cash</th>
 <th align=right width=70>Check</th>
 <th align=right width=70>Credit</th>
 <th align=right width=70>Total</th>
 </tr>
-<tr><td colspan=6><hr size=2 color=black></td></tr>
+<tr><td colspan=6><hr color=black></td></tr>
 EOH
     my $prev_glnum = "";
     my ($cash, $check, $credit) = (0, 0, 0);
@@ -145,7 +193,12 @@ EOH
         if ($p->{glnum} ne $prev_glnum) {
             if ($prev_glnum) {
                 my $total = $cash+$check+$credit;
-                $html .= "<tr><td colspan=2></td><td colspan=3><hr size=2 color=black></td></tr>\n";
+                $html .= "<tr>"
+                      .  "<td colspan=2></td>"
+                      .  "<td><hr color=black></td>"
+                      .  "<td><hr color=black></td>"
+                      .  "<td><hr color=black></td>"
+                      .  "</tr>\n";
                 $html .= "<tr>"
                       .  "<td colspan=3 align=right>$cash</td>"
                       .  "<td align=right>$check</td>"
@@ -163,7 +216,7 @@ EOH
                 ($cash, $check, $credit) = (0, 0, 0);
             }
             $html .= "<tr>"
-                  .  "<td colspan=6 align=left>$p->{pname} ($p->{glnum})</td>"
+                  .  "<td colspan=6 align=left><b>$p->{pname}</b> ($p->{glnum})</td>"
                   .  "</tr>\n"
                   ;
         }
@@ -171,7 +224,7 @@ EOH
         my $type = $p->{type};
         my $n = ($type eq "Cash" )? 1
                :($type eq "Check")? 2
-               :                    3       # includes Online
+               :                    3       # Credit - includes Online
                ;
         my $amt = $p->{amt};
         $html .= "<tr>"
@@ -191,7 +244,12 @@ EOH
         }
     }
     my $total = $cash+$check+$credit;
-    $html .= "<tr><td colspan=2></td><td colspan=3><hr size=2 color=black></td></tr>\n";
+    $html .= "<tr>"
+          .  "<td colspan=2></td>"
+          .  "<td><hr color=black></td>"
+          .  "<td><hr color=black></td>"
+          .  "<td><hr color=black></td>"
+          .  "</tr>\n";
     $html .= "<tr>"
           .  "<td colspan=3 align=right>$cash</td>"
           .  "<td align=right>$check</td>"
@@ -206,12 +264,17 @@ EOH
     $gcheck  += $check;
     $gcredit += $credit;
     $gtotal  += $total;
-    $html .= "<tr><td colspan=2></td><td colspan=4><hr size=4 color=black></td></tr>\n";
+    $html .= "<tr><td colspan=2></td>"
+          .  "<td><hr color=black></td>"
+          .  "<td><hr color=black></td>"
+          .  "<td><hr color=black></td>"
+          .  "<td><hr color=black></td>"
+          .  "</tr>\n";
     $html .= "<tr>"
           .  "<td colspan=3 align=right>$gcash</td>"
           .  "<td align=right>$gcheck</td>"
           .  "<td align=right>$gcredit</td>"
-          .  "<td align=right>"
+          .  "<td align=right>\$"
           .  commify($gtotal)
           .  "</td>"
           .  "</tr>\n"
@@ -219,14 +282,41 @@ EOH
     $html .= <<"EOH";
 </table>
 EOH
+    if (! $id && $gtotal != 0) {
+        #
+        # create a new deposit and update the last_deposit_date
+        #
+        model($c, 'Deposit')->create({
+            user_id    => $c->user->obj->id(),
+            time       => $time,
+            date_start => $date_start,
+            date_end   => $date_end,
+            cash       => $gcash,
+            chk        => $gcheck,
+            credit     => $gcredit,
+            total      => $gtotal,
+        });
+        $string{last_deposit_date} = $date_end;                   # in memory
+        model($c, 'String')->find('last_deposit_date')->update({  # on disk
+            value => $date_end,
+        });
+        $string{reconciling} = 0;   # only in memory???
+    }
     $c->res->output($html);
 }
 
 sub deposits : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{deposits} = 0;  # ???
-    $c->stash->{template} = "finance/prior_deposits.tt2";
+    stash($c,
+        deposits => [ 
+            model($c, 'Deposit')->search(
+                { },
+                { order_by => 'date_start desc' },
+            )
+        ],
+        template => "finance/prior_deposits.tt2",
+    );
 }
 
 1;

@@ -74,7 +74,7 @@ Deposit
 <td>
 <ol>
 <li><a href="/finance/reconcile_deposit">Reconcile</a>
-<li><a href="/finance/file_deposit">File</a>
+<li><a target=_blank href="/finance/file_deposit">File</a>
 </ol>
 </td>
 </tr>

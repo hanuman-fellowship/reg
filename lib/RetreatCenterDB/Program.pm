@@ -14,6 +14,7 @@ use Util qw/
     housing_types
     places
     tt_today
+    model
 /;
 use Global qw/%string/;
 use Image::Size;

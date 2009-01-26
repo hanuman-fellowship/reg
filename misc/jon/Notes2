@@ -365,8 +365,13 @@ mmi payments - when in course allow only tuition, meals and lodging or Other?
 
 rental add house - make it a table of checkboxes
 
-charges for MMI program - none for D/C/M? but yes course.
+charges for MMI program - none for D/C/M? but yes, course.
     but no tuition - yes lodging
+    ???   but no normal payment in reg.
+    ???!!! must do payment via New MMI Payment.
+    deposits do not include mmi payments.
+        who makes deposits for mmi?
+    do we need a separate deposit listing for mmi?
 
 add attributes to mmi_payment - reg_id and note
     decipher reg_id from gl number in existing payments
@@ -719,4 +724,10 @@ two cron jobs - getonline, makeup
 what heading for Deposit listing - Program/Rental/Project/Extra Account
     - Account?
 Are Project donations included in the Deposit that Sukh does?
+    if not, where are they handled?
+
 MMI payments should not be included, right?
+
+doc: only one deposit per day, right?
+
+rentals - default start, end times.

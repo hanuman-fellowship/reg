@@ -17,3 +17,10 @@ while (<$strs>) {
     $sth->execute($key, $value);
 }
 close $strs;
+
+use lib "../lib";
+use Date::Simple qw/
+    today
+/;
+# special case
+$sth->execute('last_deposit_date', today()->as_d8());

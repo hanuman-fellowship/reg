@@ -26,6 +26,9 @@ use Util qw/
     commify
     wintertime
     dcm_registration
+    stash
+    error
+    payment_warning
 /;
 use POSIX qw/
     ceil
@@ -144,8 +147,10 @@ sub list_online : Local {
                   $a->{time}  cmp $b->{time}
               }
               @online;
-    $c->stash->{online} = \@online;
-    $c->stash->{template} = "registration/list_online.tt2";
+    stash($c,
+        online   => \@online,
+        template => "registration/list_online.tt2",
+    );
 }
 
 sub grab_new : Local {
@@ -187,13 +192,9 @@ sub list_reg_name : Local {
         $pref_first = "";
     }
     $pat =~ s{%}{*}g;
-    $c->stash->{pat} = $pat;
 
     my $pr = model($c, 'Program')->find($prog_id);
 
-    $c->stash->{daily_pic_date} = $pr->sdate();
-    $c->stash->{cal_param}      = $pr->sdate_obj->as_d8() . "/1";
-    $c->stash->{program} = $pr;
     # ??? dup'ed code in matchreg and list_reg_name
     # DRY??? don't repeat yourself!
     my @name_match = ();
@@ -222,28 +223,33 @@ sub list_reg_name : Local {
             && ! $r->cancelled
         ) {
             $c->response->redirect($c->uri_for("/registration/pay_balance/" .
-                                   $regs[0]->id . "/list_reg_name"));
+                                   $r->id . "/list_reg_name"));
         }
         else {
             $c->response->redirect($c->uri_for("/registration/view/" .
-                                   $regs[0]->id));
+                                   $r->id));
         }
         return;
     }
     Global->init($c);
-    $c->stash->{regs} = _reg_table(\@regs);
-    $c->stash->{other_sort} = "list_reg_post";
-    $c->stash->{other_sort_name} = "By Postmark";
     my @files = <root/static/online/*>;
-    $c->stash->{online} = scalar(@files);
-    $c->stash->{template} = "registration/list_reg.tt2";
+    stash($c,
+        online          => scalar(@files),
+        pat             => $pat,
+        daily_pic_date  => $pr->sdate(),
+        cal_param       => $pr->sdate_obj->as_d8() . "/1",
+        program         => $pr,
+        regs            => _reg_table(\@regs),
+        other_sort      => "list_reg_post",
+        other_sort_name => "By Postmark",
+        template        => "registration/list_reg.tt2",
+    );
 }
 
 sub list_reg_post : Local {
     my ($self, $c, $prog_id) = @_;
 
     my $pr = model($c, 'Program')->find($prog_id);
-    $c->stash->{program} = $pr;
     my @regs = model($c, 'Registration')->search(
         {
             program_id     => $prog_id,
@@ -258,12 +264,15 @@ sub list_reg_post : Local {
         $r->{date_mark} = date($r->date_postmark);
     }
     Global->init($c);
-    $c->stash->{regs} = _reg_table(\@regs, postmark => 1);
-    $c->stash->{other_sort} = "list_reg_name";
-    $c->stash->{other_sort_name} = "By Name";
     my @files = <root/static/online/*>;
-    $c->stash->{online} = scalar(@files);
-    $c->stash->{template} = "registration/list_reg.tt2";
+    stash($c,
+        online          => scalar(@files),
+        program         => $pr,
+        regs            => _reg_table(\@regs, postmark => 1),
+        other_sort      => "list_reg_name",
+        other_sort_name => "By Name",
+        template        => "registration/list_reg.tt2",
+    );
 }
 
 my %needed = map { $_ => 1 } qw/
@@ -311,7 +320,7 @@ sub get_online : Local {
     #
     # first extract all information from the file.
     #
-    my %hash;
+    my %P;
     open my $in, "<", "root/static/online/$fname"
         or die "cannot open root/static/online/$fname: $!";
     while (<$in>) {
@@ -319,16 +328,16 @@ sub get_online : Local {
         my ($key, $value) = m{^x_(\w+) => (.*)$};
         next unless $key;
         if ($needed{$key}) {
-            $hash{$key} = $value;
+            $P{$key} = $value;
         }
         elsif ($key =~ m{^request\d+}) {
-            $hash{request} .= "$value\n";
+            $P{request} .= "$value\n";
         }
     }
     close $in;
 
     # save the filename so we can delete it when the registration is complete
-    $c->stash->{fname} = $fname;
+    stash($c, fname => $fname);
 
     # verify that we have a pid, first, and last. and an amount.
     # ...
@@ -337,23 +346,25 @@ sub get_online : Local {
     # first, find the program
     # without it we can do nothing!
     #
-    my ($pr) = model($c, 'Program')->find($hash{pid});
+    my ($pr) = model($c, 'Program')->find($P{pid});
     if (! $pr) {
-        $c->stash->{mess} = "Unknown Program - cannot proceed";
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            "Unknown Program - cannot proceed",
+            "registration/error.tt2",
+        );
         return;
     }
 
     #
     # find or create a person object.
     #
-    $hash{fname} = normalize($hash{fname});
-    $hash{lname} = normalize($hash{lname});
+    $P{fname} = normalize($P{fname});
+    $P{lname} = normalize($P{lname});
     my @ppl = ();
     (@ppl) = model($c, 'Person')->search(
         {
-            first => $hash{fname},
-            last  => $hash{lname},
+            first => $P{fname},
+            last  => $P{lname},
         },
     );
     my $p;
@@ -366,24 +377,24 @@ sub get_online : Local {
         # or cell phone search???
         #
         $p = model($c, 'Person')->create({
-            first    => $hash{fname},
-            last     => $hash{lname},
-            addr1    => $hash{street1},
-            addr2    => $hash{street2},
-            city     => $hash{city},
-            st_prov  => $hash{state},
-            zip_post => $hash{zip},
-            country  => $hash{country},
-            akey     => nsquish($hash{street1}, $hash{street2}, $hash{zip}),
-            tel_home => $hash{ephone},
-            tel_work => $hash{dphone},
-            tel_cell => $hash{cphone},
-            email    => $hash{email},
-            sex      => ($hash{gender} eq 'Male'? 'M': 'F'),
+            first    => $P{fname},
+            last     => $P{lname},
+            addr1    => $P{street1},
+            addr2    => $P{street2},
+            city     => $P{city},
+            st_prov  => $P{state},
+            zip_post => $P{zip},
+            country  => $P{country},
+            akey     => nsquish($P{street1}, $P{street2}, $P{zip}),
+            tel_home => $P{ephone},
+            tel_work => $P{dphone},
+            tel_cell => $P{cphone},
+            email    => $P{email},
+            sex      => ($P{gender} eq 'Male'? 'M': 'F'),
             id_sps   => 0,
-            e_mailings     => $hash{e_mailings},
-            snail_mailings => $hash{snail_mailings},
-            share_mailings => $hash{share_mailings},
+            e_mailings     => $P{e_mailings},
+            snail_mailings => $P{snail_mailings},
+            share_mailings => $P{share_mailings},
             date_updat => $today,
             date_entrd => $today,
         });
@@ -397,13 +408,13 @@ sub get_online : Local {
             # disambiguate somehow???
             # cell first, then zip
             for my $q (@ppl) {
-                if (digits($q->tel_cell) eq digits($hash{cphone})) {
+                if (digits($q->tel_cell) eq digits($P{cphone})) {
                     $p = $q;
                 }
             }
             if (!$p) {
                 for my $q (@ppl) {
-                    if ($q->zip_post eq $hash{zip}) {
+                    if ($q->zip_post eq $P{zip}) {
                         $p = $q;
                     }
                 }
@@ -418,21 +429,21 @@ sub get_online : Local {
         # that person's address etc gets the values
         # from the web registration.
         $p->update({
-            addr1    => $hash{street1},
-            addr2    => $hash{street2},
-            city     => $hash{city},
-            st_prov  => $hash{state},
-            zip_post => $hash{zip},
-            country  => $hash{country},
-            akey     => nsquish($hash{street1}, $hash{street2}, $hash{zip}),
-            tel_home => $hash{ephone},
-            tel_work => $hash{dphone},
-            tel_cell => $hash{cphone},
-            email    => $hash{email},
-            sex      => ($hash{gender} eq 'Male'? 'M': 'F'),
-            e_mailings     => $hash{e_mailings},
-            snail_mailings => $hash{snail_mailings},
-            share_mailings => $hash{share_mailings},
+            addr1    => $P{street1},
+            addr2    => $P{street2},
+            city     => $P{city},
+            st_prov  => $P{state},
+            zip_post => $P{zip},
+            country  => $P{country},
+            akey     => nsquish($P{street1}, $P{street2}, $P{zip}),
+            tel_home => $P{ephone},
+            tel_work => $P{dphone},
+            tel_cell => $P{cphone},
+            email    => $P{email},
+            sex      => ($P{gender} eq 'Male'? 'M': 'F'),
+            e_mailings     => $P{e_mailings},
+            snail_mailings => $P{snail_mailings},
+            share_mailings => $P{share_mailings},
             date_updat => $today,
         });
         my $person_id = $p->id;
@@ -443,42 +454,33 @@ sub get_online : Local {
     # into the stash...
 
     # comments
-    $c->stash->{comment} = <<"EOC";
-1-$hash{house1}  2-$hash{house2}  online
-EOC
-    if ($hash{withwhom_first}) {
-        $c->stash->{comment}
-            .= "Sharing a room with "
-            .  normalize($hash{withwhom_first})
-            .  " "
-            .  normalize($hash{withwhom_last})
-            .  ".\n";
+    my $comment = "1-$P{house1}  2-$P{house2}  online\n";
+    if ($P{withwhom_first}) {
+        $comment .= "Sharing a room with "
+                 .  normalize($P{withwhom_first})
+                 .  " "
+                 .  normalize($P{withwhom_last})
+                 .  ".\n";
     }
-    if ($hash{request}) {
-        $c->stash->{comment} .= $hash{request};
+    if ($P{request}) {
+        $comment .= $P{request};
     }
-    if ($hash{progchoice} eq 'full') {
-        $c->stash->{date_end} = "+" . $pr->extradays;
+    if ($P{progchoice} eq 'full') {
+        stash($c, date_end => "+" . $pr->extradays);
     }
-    $c->stash->{cabin_checked} = $hash{cabinRoom} eq 'cabin'? "checked": "";
-    $c->stash->{room_checked}  = $hash{cabinRoom} eq 'room' ? "checked": "";
-
     for my $how (qw/ ad web brochure flyer word_of_mouth /) {
-        $c->stash->{"$how\_checked"} = "";
+        stash($c, "$how\_checked" => "");
     }
-    $c->stash->{"$hash{howHeard}_checked"} = "selected";
+    # sdate/edate (in the hash from the online file)
+    # are normally empty - except for personal retreats
+    if ($P{sdate}) {
+        stash($c, date_start => date($P{sdate}));
+    }
+    if ($P{edate}) {
+        stash($c, date_end => date($P{edate}));
+    }
 
-    $c->stash->{adsource} = $hash{advertiserName};
-
-    $c->stash->{carpool_checked} = $hash{carpool}? "checked": "";
-    $c->stash->{hascar_checked}  = $hash{hascar }? "checked": "";
-
-    # various hidden fields - to pass to create_do().
-    my $date = date($hash{date});
-    $c->stash->{date_postmark} = $date->as_d8();
-    $c->stash->{time_postmark} = $hash{time};
-    $c->stash->{deposit} = int($hash{amount});
-    $c->stash->{deposit_type} = "Online";
+    my $date = date($P{date});
 
     #
     # date_start and date_end are always present in the table record.
@@ -490,19 +492,22 @@ EOC
     # the database.
     #
 
-    # sdate/edate (in the hash from the online file)
-    # are normally empty - except for personal retreats
-    if ($hash{sdate}) {
-        $c->stash->{date_start} = date($hash{sdate});
-    }
-    if ($hash{edate}) {
-        $c->stash->{date_end} = date($hash{edate});
-    }
+    stash($c,
+        comment         => $comment,
+        cabin_checked   => $P{cabinRoom} eq 'cabin'? "checked": "",
+        room_checked    => $P{cabinRoom} eq 'room' ? "checked": "",
+        adsource        => $P{advertiserName},
+        carpool_checked => $P{carpool}? "checked": "",
+        hascar_checked  => $P{hascar }? "checked": "",
+        date_postmark   => $date->as_d8(),
+        time_postmark   => $P{time},
+        deposit         => int($P{amount}),
+        deposit_type    => "Online",
+        ceu_license     => $P{ceu_license},
+        "$P{howHeard}_checked" => "selected",
+    );
 
-    # put the license # in the hash, we'll set ceu = 1 later.
-    $c->stash->{ceu_license} = $hash{ceu_license};
-
-    _rest_of_reg($pr, $p, $c, $today, $hash{house1});
+    _rest_of_reg($pr, $p, $c, $today, $P{house1});
 }
 
 #
@@ -512,9 +517,6 @@ EOC
 #
 sub _rest_of_reg {
     my ($pr, $p, $c, $today, $house1) = @_;
-
-    $c->stash->{program} = $pr;
-    $c->stash->{person} = $p;
 
     #
     # the person's affils get _added to_ according
@@ -542,7 +544,7 @@ sub _rest_of_reg {
         if ($a->descrip =~ m{alert}i) {
             my $s = $p->comment;
             $s =~ s{\r?\n}{\\n}g;
-            $c->stash->{alert_comment} = $s;
+            stash($c, alert_comment => $s);
             last;
         }
     }
@@ -557,14 +559,14 @@ sub _rest_of_reg {
             || ($status eq 'Sponsor' && $mem->date_sponsor >= $today)
                                     # member in good standing
         ) {
-            $c->stash->{status} = $status;   # they always get a 30%
+            stash($c, status => $status);    # they always get a 30%
                                              # tuition discount.
             my $nights = $mem->sponsor_nights;
             if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
-                $c->stash->{nights} = $nights;
+                stash($c, nights => $nights);
             }
             if ($status eq 'Life' && ! $mem->free_prog_taken) {
-                $c->stash->{free_prog} = 1;
+                stash($c, free_prog => 1);
             }
         }
     }
@@ -574,14 +576,14 @@ sub _rest_of_reg {
         CREDIT:
         for my $cr ($p->credits()) {
             if (! $cr->date_used && $cr->date_expires > $today) {
-                $c->stash->{credit} = $cr;
+                stash($c, credit => $cr);
                 last CREDIT;
             }
         }
     }
 
     if ($pr->footnotes =~ m{[*]}) {
-        $c->stash->{ceu} = 1;
+        stash($c, ceu => 1);
     }
     # the housing select list.
     # default is the first housing choice.
@@ -618,16 +620,19 @@ sub _rest_of_reg {
     }
     $h_type_opts .= "<option value=unknown>Unknown\n";
     $h_type_opts .= "<option value=not_needed>Not Needed\n";
-    $c->stash->{h_type_opts} = $h_type_opts;
-    $c->stash->{confnotes} = [
-        model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
-    ];
-
-    $c->stash->{template} = "registration/create.tt2";
+    stash($c,
+        program => $pr,
+        person => $p,
+        h_type_opts => $h_type_opts,
+        confnotes   => [
+            model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
+        ],
+        template    => "registration/create.tt2",
+    );
 }
 
 my @mess;
-my %hash;
+my %P;
 my %dates;
 my $taken;
 my $tot_prog_days;
@@ -637,8 +642,8 @@ my $extra_days;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
-    my $pr = model($c, 'Program')->find($hash{program_id});
+    %P = %{ $c->request->params() };
+    my $pr = model($c, 'Program')->find($P{program_id});
 
     # BIG TIME messing with dates.
     # I'm reminded of a saying:
@@ -657,10 +662,10 @@ sub _get_data {
     $tot_prog_days = $prog_days = $edate - $sdate;
 
     my $date_start;
-    if ($hash{date_start}) {
+    if ($P{date_start}) {
         # what about personal retreats???   - can't say +2 or -1?
         Date::Simple->relative_date(date($pr->sdate));
-        $date_start = date($hash{date_start});
+        $date_start = date($P{date_start});
         Date::Simple->relative_date();
         if ($date_start) {
             $dates{date_start} = $date_start->as_d8();
@@ -673,14 +678,14 @@ sub _get_data {
             }
         }
         else {
-            push @mess, "Illegal date: $hash{date_start}";
+            push @mess, "Illegal date: $P{date_start}";
         }
     }
     else {
         $dates{date_start} = '';
     }
     my $date_end;
-    if ($hash{date_end}) {
+    if ($P{date_end}) {
         # when scheduling a personal retreat
         # the "To Date" is relative to the start date
         # not the end of the program!   ??? in doc, please.
@@ -688,7 +693,7 @@ sub _get_data {
             ($pr->name =~ m{personal retreat}i)? $date_start
             :                                    date($pr->edate)
         );
-        $date_end = date($hash{date_end});
+        $date_end = date($P{date_end});
         Date::Simple->relative_date();
         if ($date_end) {
             # be careful...
@@ -711,7 +716,7 @@ sub _get_data {
             }
         }
         else {
-            push @mess, "Illegal date: $hash{date_end}";
+            push @mess, "Illegal date: $P{date_end}";
         }
     }
     else {
@@ -719,15 +724,15 @@ sub _get_data {
     }
 
     $taken = 0;
-    if ($hash{nights_taken} && ! empty($hash{nights_taken})) {
-        $taken = trim($hash{nights_taken});
+    if ($P{nights_taken} && ! empty($P{nights_taken})) {
+        $taken = trim($P{nights_taken});
         if ($taken !~ m{^\d+$}) {
             push @mess, "Illegal free nights taken: $taken.";
         }
-        elsif ($taken > $hash{max_nights}) {
-            push @mess, "Cannot take more than $hash{max_nights} free nights.";
+        elsif ($taken > $P{max_nights}) {
+            push @mess, "Cannot take more than $P{max_nights} free nights.";
         }
-        elsif ($taken && $hash{free_prog}) {
+        elsif ($taken && $P{free_prog}) {
             push @mess, "Cannot take a free program AND free nights.";
         }
         elsif ($taken > ($prog_days + $extra_days)) {
@@ -756,57 +761,61 @@ sub get_now {
 
 # now we actually create the registration
 # if from an online source there will be a filename
-# in the hash which needs deleting.
+# in the %P which needs deleting.
 #
 sub create_do : Local {
     my ($self, $c) = @_;
 
     _get_data($c);
     if (@mess) {
-        $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            join("<br>", @mess),
+            "registration/error.tt2",
+        );
         return;
     }
-    my $pr = model($c, 'Program')->find($hash{program_id});
+    my $pr = model($c, 'Program')->find($P{program_id});
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} > $dates{date_end}) {
-        $c->stash->{mess} = "Start date is after the end date.";
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            "Start date is after the end date.",
+            "registration/error.tt2",
+        );
         return;
     }
     my $cabin_room = "";
-    if ($hash{cabin} && ! $hash{room}) {
+    if ($P{cabin} && ! $P{room}) {
         $cabin_room = "cabin";
     }
-    elsif (!$hash{cabin} && $hash{room}) {
+    elsif (!$P{cabin} && $P{room}) {
         $cabin_room = "room";
     }
     my ($pref1, $pref2) = ("", "");
-    if ($hash{comment} =~ m{1-(\S+)}) {
+    if ($P{comment} =~ m{1-(\S+)}) {
         $pref1 = $comm_h_type{$1};
     }
-    if ($hash{comment} =~ m{2-(\S+)}) {
+    if ($P{comment} =~ m{2-(\S+)}) {
         $pref2 = $comm_h_type{$1};
     }
     my $reg = model($c, 'Registration')->create({
-        person_id     => $hash{person_id},
-        program_id    => $hash{program_id},
-        deposit       => $hash{deposit},
-        date_postmark => $hash{date_postmark},
-        time_postmark => $hash{time_postmark},
-        ceu_license   => $hash{ceu_license},
-        referral      => $hash{referral},
-        adsource      => $hash{adsource},
-        carpool       => $hash{carpool},
-        hascar        => $hash{hascar},
-        comment       => $hash{comment},
-        h_type        => $hash{h_type},
-        h_name        => $hash{h_name},
-        kids          => $hash{kids},
+        person_id     => $P{person_id},
+        program_id    => $P{program_id},
+        deposit       => $P{deposit},
+        date_postmark => $P{date_postmark},
+        time_postmark => $P{time_postmark},
+        ceu_license   => $P{ceu_license},
+        referral      => $P{referral},
+        adsource      => $P{adsource},
+        carpool       => $P{carpool},
+        hascar        => $P{hascar},
+        comment       => $P{comment},
+        h_type        => $P{h_type},
+        h_name        => $P{h_name},
+        kids          => $P{kids},
         confnote      => cf_expand($c, $c->request->params->{confnote}),
-        status        => $hash{status},
+        status        => $P{status},
         nights_taken  => $taken,
-        free_prog_taken => $hash{free_prog},
+        free_prog_taken => $P{free_prog},
         cancelled     => '',    # to be sure
         arrived       => '',    # ditto
         cabin_room    => $cabin_room,
@@ -824,10 +833,10 @@ sub create_do : Local {
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
         user_id  => $c->user->obj->id,
-        the_date => $hash{date_postmark},
-        time     => $hash{time_postmark},
-        what     => ($hash{fname}? 'Online Registration'
-                    :              'Manual Registration'),
+        the_date => $P{date_postmark},
+        time     => $P{time_postmark},
+        what     => ($P{fname}? 'Online Registration'
+                    :           'Manual Registration'),
     });
 
     # now current history
@@ -837,8 +846,8 @@ sub create_do : Local {
     });
 
     # credit, if any
-    if ($hash{credit_id}) {
-        my $cr = model($c, 'Credit')->find($hash{credit_id});
+    if ($P{credit_id}) {
+        my $cr = model($c, 'Credit')->find($P{credit_id});
         my $amount = $cr->amount();
         my $pr_g = $cr->reg_given->program;
         model($c, 'RegCharge')->create({
@@ -858,8 +867,8 @@ sub create_do : Local {
     # the payment (deposit)
     model($c, 'RegPayment')->create({
         @who_now,
-        amount  => $hash{deposit},
-        type    => $hash{deposit_type},
+        amount  => $P{deposit},
+        type    => $P{deposit_type},
         what    => 'Deposit',
     });
 
@@ -897,9 +906,9 @@ sub create_do : Local {
 
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
-    if ($hash{fname}) {
-        rename "root/static/online/$hash{fname}",
-               "root/static/online_done/$hash{fname}";
+    if ($P{fname}) {
+        rename "root/static/online/$P{fname}",
+               "root/static/online_done/$P{fname}";
     }
 
     # finally, bump the reg_count in the program record
@@ -909,7 +918,8 @@ sub create_do : Local {
     $c->response->redirect($c->uri_for("/registration/"
         . (($reg->h_type =~ m{own_van|commuting|unknown|not_needed})? "view"
            :                                                          "lodge")
-    . "/$reg_id"));
+        . "/$reg_id")
+    );
 }
 
 #
@@ -1267,79 +1277,94 @@ sub send_conf : Local {
 sub view : Local {
     my ($self, $c, $reg_id) = @_;
 
-    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($reg_id);
+    my $reg = model($c, 'Registration')->find($reg_id);
+    stash($c, reg => $reg);
     _view($c, $reg);
 }
 
 sub _view {
     my ($c, $reg) = @_;
-    my $prog = $c->stash->{program} = $reg->program();
+    my $prog = $reg->program();
     my $extra = $prog->extradays();
     if ($extra) {
         my $edate2 = $prog->edate_obj + $extra;
-        $c->stash->{plus} = "<b>Plus</b> $extra day"
+        stash($c, plus => "<b>Plus</b> $extra day"
                           . ($extra > 1? "s": "")
                           . " <b>To</b> " . $edate2
                           . " <span class=dow>"
                           . $edate2->format("%a")
                           . "</span>"
-                          ;
+        );
     }
-    $c->stash->{comment} = link_share($c, $prog->id(), $reg->comment());
     if ($prog->footnotes =~ m{[*]}) {
-        $c->stash->{ceu} = 1;
+        stash($c, ceu => 1);
     }
-    $c->stash->{non_pr} = $prog->name !~ m{personal retreat}i;
-    my @files = <root/static/online/*>;
-    $c->stash->{online} = scalar(@files);
-    $c->stash->{daily_pic_date} = $reg->date_start();
-    $c->stash->{cal_param}      = $reg->date_start_obj->as_d8() . "/1";
-    $c->stash->{cur_cluster}    = ($reg->house_id)? $reg->house->cluster_id
-                                  :                 1;
     # to DCM?
-    $c->stash->{dcm_reg_id} = 0;
+    my $dcm_reg_id = 0;
     if ($prog->level() eq 'S') {
         my $dcm = dcm_registration($c, $reg->person->id());
         if (ref($dcm)) {
-            $c->stash->{dcm_reg_id} = $dcm->id();
+            $dcm_reg_id = $dcm->id();
         }
         # else if $dcm > 1 !!!! ???? give error
+        # prohibit it from happening in the first place!
         # my $person = model($c, 'Person')->find($person_id);
         # my $name = $person->first() . " " . $person->last();
         # $c->stash->{mess}
         #   = (@dcm)? "$name is enrolled in <i>more than one</i> D/C/M program!"
         #   :       "$name is not enrolled in <i>any</i> D/C/M program!";
     }
-    $c->stash->{template} = "registration/view.tt2";
+    my @files = <root/static/online/*>;
+    stash($c,
+        online         => scalar(@files),
+        comment        => link_share($c, $prog->id(), $reg->comment()),
+        non_pr         => $prog->name !~ m{personal retreat}i,
+        daily_pic_date => $reg->date_start(),
+        cal_param      => $reg->date_start_obj->as_d8() . "/1",
+        cur_cluster    => ($reg->house_id)? $reg->house->cluster_id: 1,
+        dcm_reg_id     => $dcm_reg_id,
+        program        => $prog,
+        template       => "registration/view.tt2",
+    );
 }
 
 sub pay_balance : Local {
     my ($self, $c, $id, $from) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    $c->stash->{from} = $from;
-    $c->stash->{reg} = $reg;
-    $c->stash->{template} = "registration/pay_balance.tt2";
+    stash($c,
+        message  => payment_warning($c),
+        from     => $from,
+        reg      => $reg,
+        template => "registration/pay_balance.tt2",
+    );
 }
 
 sub pay_balance_do : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    my $amount = $c->request->params->{amount};
+    my $amount = trim($c->request->params->{amount});
     my $type   = $c->request->params->{type};
-    if ($amount !~ m{^\s*\d+\s*$}) {
-        $c->stash->{mess} = "Illegal amount: $amount";
-        $c->stash->{template} = "registration/error.tt2";
+    if ($amount !~ m{^\d+$}) {
+        error($c,
+            "Illegal amount: $amount",
+            "registration/error.tt2",
+        );
         return;
     }
     my $balance = $reg->balance;
     if ($amount > $balance) {
-        $c->stash->{mess} = "Payment is more than the balance of $balance.";
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            "Payment is more than the balance of $balance.",
+            "registration/error.tt2",
+        );
         return;
     }
     my @who_now = get_now($c, $id);
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        push @who_now, the_date => (tt_today($c)+1)->as_d8(),
+    }
     model($c, 'RegPayment')->create({
         @who_now,
         amount => $amount,
@@ -1373,13 +1398,15 @@ sub cancel : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    $c->stash->{reg} = $reg;
     my $today = tt_today($c);
-    $c->stash->{today} = $today;
-    $c->stash->{ndays} = $reg->program->sdate_obj - $today;
     Global->init($c);
-    $c->stash->{amount} = $string{credit_amount};
-    $c->stash->{template} = "registration/credit_confirm.tt2";
+    stash($c,
+        today    => $today,
+        ndays    => $reg->program->sdate_obj - $today,
+        reg      => $reg,
+        amount   => $string{credit_amount},
+        template => "registration/credit_confirm.tt2",
+    );
 }
 
 sub cancel_do : Local {
@@ -1537,8 +1564,11 @@ sub _reg_hist {
 sub new_charge : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{reg} = model($c, 'Registration')->find($id);
-    $c->stash->{template} = "registration/new_charge.tt2";
+    my $reg = model($c, 'Registration')->find($id);
+    stash($c,
+        reg      => $reg,
+        template => "registration/new_charge.tt2",
+    );
 }
 sub new_charge_do : Local {
     my ($self, $c, $id) = @_;
@@ -1557,8 +1587,10 @@ sub new_charge_do : Local {
         push @mess, "Missing What";
     }
     if (@mess) {
-        $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            join("<br>", @mess),
+            "registration/error.tt2",
+        );
         return;
     }
 
@@ -1742,10 +1774,15 @@ EOH
 sub update_confnote : Local {
     my ($self, $c, $id) = @_;
 
-    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
-    my $cn = $c->stash->{note} = $reg->confnote();
-    $c->stash->{note_lines} = lines($cn) + 3;
-    $c->stash->{template} = "registration/confnote.tt2";
+    my $reg = model($c, 'Registration')->find($id);
+    my $cn = $reg->confnote();
+
+    stash($c,
+        reg        => $reg,
+        note       => $cn,
+        note_lines => lines($cn) + 3,
+        template   => "registration/confnote.tt2",
+    );
 }
 sub update_confnote_do : Local{
     my ($self, $c, $id) = @_;
@@ -1760,10 +1797,14 @@ sub update_confnote_do : Local{
 sub update_comment : Local {
     my ($self, $c, $id) = @_;
 
-    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
-    my $comment = $c->stash->{comment} = $reg->comment();
-    $c->stash->{comment_lines} = lines($comment) + 3;
-    $c->stash->{template} = "registration/comment.tt2";
+    my $reg = model($c, 'Registration')->find($id);
+    my $comment = $reg->comment();
+    stash($c,
+        reg           => $reg,
+        comment       => $comment,
+        comment_lines => lines($comment) + 3,
+        template      => "registration/comment.tt2",
+    );
 }
 sub update_comment_do : Local{
     my ($self, $c, $id) = @_;
@@ -1780,20 +1821,17 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    $c->stash->{reg} = $reg;
-    $c->stash->{person} = $reg->person;
-    my $pr = $c->stash->{program} = $reg->program;
+    my $pr  = $reg->program();
     for my $ref (qw/ad web brochure flyer word_of_mouth/) {
-        $c->stash->{"$ref\_selected"} = ($reg->referral eq $ref)? "selected"
-                                       :                          "";
+        stash($c, "$ref\_selected" => ($reg->referral eq $ref)? "selected": "");
     }
     if ($pr->footnotes =~ m{[*]}) {
-        $c->stash->{ceu} = 1;
+        stash($c, ceu => 1);
     }
     my $h_type_opts = "";
     Global->init($c);     # get %string ready.
     my $cur_htype = $reg->h_type;
-    my $mon = $reg->date_start_obj->month();
+    my $mon       = $reg->date_start_obj->month();
     HTYPE:
     for my $htname (qw/
         single_bath
@@ -1830,37 +1868,44 @@ sub update : Local {
                  .  ($cur_htype eq "not_needed"? " selected"
                      :                           ""         )
                  .  ">Not Needed\n";
-    $c->stash->{h_type_opts} = $h_type_opts;
 
     my $status = $reg->status;      # status at time of first registration
     if ($status) {
         my $mem = $reg->person->member;
         my $nights = $mem->sponsor_nights + $reg->nights_taken;
         if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
-            $c->stash->{nights} = $nights;
+            stash($c, nights => $nights);
         }
         if ($status eq 'Life'
             && (! $mem->free_prog_taken || $reg->free_prog_taken)
         ) {
-            $c->stash->{free_prog} = 1;
+            stash($c, free_prog => 1);
         }
     }
-    $c->stash->{carpool_checked} = $reg->carpool()? "checked": "";
-    $c->stash->{hascar_checked}  = $reg->hascar() ? "checked": "";
     my $c_r = $reg->cabin_room();
-    $c->stash->{cabin_checked}   = $c_r eq 'cabin'? "checked": "";
-    $c->stash->{room_checked}    = $c_r eq 'room' ? "checked": "";
-
-    $c->stash->{note_lines}    = lines($reg->confnote()) + 3;
-    $c->stash->{comment_lines} = lines($reg->comment ()) + 3;
-    $c->stash->{template} = "registration/edit.tt2";
+    stash($c,
+        person          => $reg->person,
+        reg             => $reg,
+        program         => $pr,
+        h_type_opts     => $h_type_opts,
+        carpool_checked => $reg->carpool()? "checked": "",
+        hascar_checked  => $reg->hascar() ? "checked": "",
+        cabin_checked   => $c_r eq 'cabin'? "checked": "",
+        room_checked    => $c_r eq 'room' ? "checked": "",
+        note_lines      => lines($reg->confnote()) + 3,
+        comment_lines   => lines($reg->comment ()) + 3,
+        template        => "registration/edit.tt2",
+    );
 }
 
 sub conf_history : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{reg} = model($c, 'Registration')->find($id);
-    $c->stash->{template} = "registration/conf_hist.tt2";
+    my $reg = model($c, 'Registration')->find($id);
+    stash($c,
+        reg      => $reg,
+        template => "registration/conf_hist.tt2",
+    );
 }
 
 #
@@ -1878,8 +1923,10 @@ sub update_do : Local {
 
     _get_data($c);
     if (@mess) {
-        $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            join("<br>", @mess),
+            "registration/error.tt2",
+        );
         return;
     }
     model($c, 'RegCharge')->search({
@@ -1893,7 +1940,7 @@ sub update_do : Local {
     my @who_now = get_now($c, $id);
 
     my $mem = $reg->person->member;
-    if ($reg->free_prog_taken && ! $hash{free_prog}) {
+    if ($reg->free_prog_taken && ! $P{free_prog}) {
         # they changed their mind about taking a free program
         # so clear it in the member area.  and add a NightHist record.
         $mem->update({
@@ -1926,12 +1973,14 @@ sub update_do : Local {
 
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} > $dates{date_end}) {
-        $c->stash->{mess} = "Start date is after the end date.";
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            "Start date is after the end date.",
+            "registration/error.tt2",
+        );
         return;
     }
     if ($reg->house_id()
-        && (($hash{h_type} ne $reg->h_type())
+        && (($P{h_type} ne $reg->h_type())
             ||
             ($dates{date_start} != $reg->date_start())
             ||
@@ -1945,30 +1994,30 @@ sub update_do : Local {
         # OR the dates have changed... this, too, invalidates
         # the housing and we need to vacate and relodge.
         #
-        $c->stash->{message1} = "Vacated " . $reg->house->name . ".";
+        stash($c, message1 => "Vacated " . $reg->house->name . ".");
                                     # see lodge.tt2 
         _vacate($c, $reg);
     }
     my $cabin_room = "";
-    if ($hash{cabin} && ! $hash{room}) {
+    if ($P{cabin} && ! $P{room}) {
         $cabin_room = "cabin";
     }
-    elsif (!$hash{cabin} && $hash{room}) {
+    elsif (!$P{cabin} && $P{room}) {
         $cabin_room = "room";
     }
     $reg->update({
-        ceu_license   => $hash{ceu_license},
-        referral      => $hash{referral},
-        adsource      => $hash{adsource},
-        carpool       => $hash{carpool},
-        hascar        => $hash{hascar},
-        comment       => etrim($hash{comment}),
-        h_type        => $hash{h_type},
-        h_name        => $hash{h_name},
-        kids          => $hash{kids},
+        ceu_license   => $P{ceu_license},
+        referral      => $P{referral},
+        adsource      => $P{adsource},
+        carpool       => $P{carpool},
+        hascar        => $P{hascar},
+        comment       => etrim($P{comment}),
+        h_type        => $P{h_type},
+        h_name        => $P{h_name},
+        kids          => $P{kids},
         confnote      => cf_expand($c, $c->request->params->{confnote}),
         nights_taken  => $taken,
-        free_prog_taken => $hash{free_prog},
+        free_prog_taken => $P{free_prog},
         cabin_room    => $cabin_room,
         %dates,         # optionally
     });
@@ -2003,8 +2052,10 @@ sub manual : Local {
         push @mess, "Illegal postmark date: $date_post";
     }
     if (@mess) {
-        $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "registration/error.tt2";
+        error($c,
+            join("<br>", @mess),
+            "registration/error.tt2",
+        );
         return;
     }
     $date_post = $d;
@@ -2014,13 +2065,14 @@ sub manual : Local {
     my $pr = model($c, 'Program')->find($program_id);
     my $p  = model($c, 'Person')->find($person_id);
 
-    $c->stash->{deposit} = $deposit;
-    $c->stash->{deposit_type} = $deposit_type;
-    $c->stash->{date_postmark} = $date_post->as_d8();
-    $c->stash->{time_postmark} = "12:00";
-
-    $c->stash->{cabin_checked}   = "";
-    $c->stash->{room_checked}    = "";
+    stash($c,
+        deposit       => $deposit,
+        deposit_type  => $deposit_type,
+        date_postmark => $date_post->as_d8(),
+        time_postmark => "12:00",
+        cabin_checked => "",
+        room_checked  => "",
+    );
     _rest_of_reg($pr, $p, $c, tt_today($c), "dbl");
 }
 
@@ -2068,12 +2120,14 @@ sub early_late : Local {
                        late  => 'yes',
                    ],
                });
-    $c->stash->{program} = $pr;
     if ($pr->extradays) {
-        $c->stash->{plus} = $pr->edate_obj() + $pr->extradays;
+        stash($c, plus => $pr->edate_obj() + $pr->extradays);
     }
-    $c->stash->{registrations} = \@regs;
-    $c->stash->{template} = "registration/early_late.tt2";
+    stash($c,
+        program       => $pr,
+        registrations => \@regs,
+        template      => "registration/early_late.tt2",
+    );
 }
 
 sub arrived : Local {
@@ -2103,17 +2157,18 @@ my %htype_exp = (
 
 sub lodge : Local {
     my ($self, $c, $id) = @_;
-    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
-    my $pr = $reg->program();
-    $c->stash->{daily_pic_date} = $reg->date_start;
-    $c->stash->{cal_param}      = $reg->date_start_obj->as_d8() . "/1";
+
+    my $reg        = model($c, 'Registration')->find($id);
+    my $pr         = $reg->program();
     my $program_id = $reg->program_id();
+
     #
     # is there a comment saying that they want to be
     # housed with a friend who is also registered for this program?
     #
     my $share_house_id = 0;
     my $share_house_name = "";
+    my $message2 = "";
     if ($reg->comment =~ m{Sharing a room with\s*([^.]*)[.]}) {
         my $name = $1;
         my @names = map { normalize($_) } split m{\s+}, trim($name);
@@ -2139,36 +2194,35 @@ sub lodge : Local {
                     if ($reg2->h_type eq $reg->h_type) {
                         $share_house_name = $reg2->house->name;
                         $share_house_id   = $reg2->house_id;
-                        $c->stash->{message2} = "Share $share_house_name"
-                                               ." with $first $last?";
+                        $message2 = "Share $share_house_name"
+                                   ." with $first $last?";
                     }
                     else {
-                        $c->stash->{message2}
-                            = "$name is housed in a '"
-                            . $reg2->h_type_disp
-                            . "' not '"
-                            . $reg->h_type_disp
-                            . "'."
-                            ;
+                        $message2 = "$name is housed in a '"
+                                  . $reg2->h_type_disp
+                                  . "' not '"
+                                  . $reg->h_type_disp
+                                  . "'."
+                                  ;
                     }
                 }
                 else {
-                    $c->stash->{message2} = "$name has not yet been housed.";
+                    $message2 = "$name has not yet been housed.";
                 }
             }
             else {
-                $c->stash->{message2} = "$name has not yet registered for "
-                    . $reg->program->name . ".";
+                $message2 = "$name has not yet registered for "
+                          . $reg->program->name . ".";
             }
         }
         else {
-            $c->stash->{message2} = "Could not find a person named $name.";
+            $message2 = "Could not find a person named $name.";
         }
         #
         # if the person hasn't yet registered for this program
         # look for them in the online files.
         #
-        if ($c->stash->{message2} =~ m{Could not find|has not yet reg}) {
+        if ($message2 =~ m{Could not find|has not yet reg}) {
             for my $f (<root/static/online/*>) {
                 open my $in, "<", $f
                     or die "cannot open $f: $!\n";
@@ -2184,7 +2238,8 @@ sub lodge : Local {
                 }
                 close $in;
                 if ($found_first && $found_last) {
-                    $c->stash->{message2} = "$first $last <b>has</b> registered online but has not yet been imported.";
+                    $message2 = "$first $last <b>has</b> registered"
+                               ." online but has not yet been imported.";
                 }
             }
         }
@@ -2195,7 +2250,7 @@ sub lodge : Local {
     my $mon = $reg->date_start_obj->month();
     my $summer = 5 <= $mon && $mon <= 10;
 
-    my $h_type = $c->stash->{h_type} = $reg->h_type;
+    my $h_type = $reg->h_type;
     my $bath   = ($h_type =~ m{bath}  )? "yes": "";
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
     my $center = ($h_type =~ m{center})? "yes": "";
@@ -2426,17 +2481,13 @@ sub lodge : Local {
     }
     # include kids and housing prefs
     if (my @ages = $reg->kids() =~ m{(\d+)}g) {
-        $c->stash->{kids} = " with child"
-                          . ((@ages > 1)? "ren"
-                             :            ""   )
-                          ;
+        stash($c, kids => " with child" . ((@ages > 1)? "ren":""));
     }
     if (my ($prefs) = $reg->comment() =~ m{(1-.*)$}m) {
         $prefs =~ s{\s*online\s*$}{}m;
-        $c->stash->{house_prefs} = "<br>Housing choices: $prefs.";
+        stash($c, house_prefs => "<br>Housing choices: $prefs.");
     }
-    my $cn = $c->stash->{note} = $reg->confnote();
-    $c->stash->{note_lines} = lines($cn) + 3;
+    my $cn = $reg->confnote();
 
     # copied - can we consolidate???
     # probably???
@@ -2479,16 +2530,25 @@ sub lodge : Local {
                  .  ($cur_htype eq "not_needed"? " selected"
                      :                           ""         )
                  .  ">Not Needed\n";
-    $c->stash->{h_type_opts} = $h_type_opts;
 
-    $c->stash->{house_opts} = join '', @h_opts;
-    $c->stash->{total_opts} = @h_opts; 
-    $c->stash->{seen_opts} = $string{seen_lodge_opts};
     $h_type =~ s{dble}{double};     # only for display...
     $h_type =~ s{_(.)}{ \u$1};
-    $c->stash->{disp_h_type} = (($h_type =~ m{^[aeiou]})? "an": "a")
-                             . " '\u$h_type'";
-    $c->stash->{template} = "registration/lodge.tt2";
+
+    stash($c,
+        reg           => $reg,
+        note          => $cn,
+        note_lines    => lines($cn) + 3,
+        message2      => $message2,
+        h_type        => $h_type,
+        cal_param     => $reg->date_start_obj->as_d8() . "/1",
+        h_type_opts   => $h_type_opts,
+        house_opts    => join('', @h_opts),
+        total_opts    => scalar(@h_opts), 
+        seen_opts     => $string{seen_lodge_opts},
+        disp_h_type   => (($h_type =~ m{^[aeiou]})? "an": "a") . " '\u$h_type'",
+        daily_pic_date => $reg->date_start,
+        template      => "registration/lodge.tt2",
+    );
 }
 
 #
@@ -2535,8 +2595,10 @@ sub lodge_do : Local {
             name => $force_house,
         });
         if (! $house) {
-            $c->stash->{mess} = "Unknown house name: $force_house";
-            $c->stash->{template} = "registration/error.tt2";
+            error($c,
+                "Unknown house name: $force_house",
+                "registration/error.tt2",
+            );
             return;
         }
         $house_id = $house->id;     # override
@@ -2582,10 +2644,12 @@ sub lodge_do : Local {
         });
             # tents are the exception - but you (or the user) need to force it.
         if (@cf && !$house->tent()) {
-            $c->stash->{mess} = "Sorry, no beds left in $force_house"
-                              . " on " . date($cf[0]->the_date)
-                              . ".";
-            $c->stash->{template} = "registration/error.tt2";
+            error($c,
+                "Sorry, no beds left in $force_house"
+                     . " on " . date($cf[0]->the_date)
+                     . ".",
+                "registration/error.tt2",
+            );
             return;
         }
     }
@@ -2628,14 +2692,15 @@ sub lodge_do : Local {
 #
 sub relodge : Local {
     my ($self, $c, $id) = @_;
-    my $reg = $c->stash->{reg} = model($c, 'Registration')->find($id);
+    my $reg = model($c, 'Registration')->find($id);
+    stash($c, reg => $reg);
     if ($reg->house_id()) {
         my $house = $reg->house;
         # the user may have vacated, then chosen "Back"
         # and tried to vacate again.  so we check that there
         # is still a house.
         #
-        $c->stash->{message1} = "Vacated " . $house->name . ".";
+        stash($c, message1 => "Vacated " . $house->name . ".");
                                     # see lodge.tt2 
         _vacate($c, $reg);
     }
@@ -2774,19 +2839,23 @@ sub seek : Local {
             return;
         }
         elsif (@progs == 0) {
-            $c->stash->{message} = "No match.";
-            $c->stash->{reg_pat}  = $oreg_pat;
-            $c->stash->{prog_pat} = $oprog_pat;
+            stash($c,
+                message  => "No match.",
+                reg_pat  => $oreg_pat,
+                prog_pat => $oprog_pat,
+            );
             view($self, $c, $reg_id);
             return;
         }
 
         # we have some matching programs.
-        $c->stash->{programs} = \@progs;
         my @files = <root/static/online/*>;
-        $c->stash->{online} = scalar(@files);
-        $c->stash->{pr_pat} = "";
-        $c->stash->{template} = "program/list.tt2";
+        stash($c,
+            programs => \@progs,
+            online   => scalar(@files),
+            pr_pat   => "",
+            template => "program/list.tt2",
+        );
         return;
     }
     my @regs = model($c, 'Registration')->search(
@@ -2811,9 +2880,11 @@ sub seek : Local {
     }
     elsif (@regs == 0) {
         # no regs - stay where you are/were. - with a message
-        $c->stash->{message} = "No match.";
-        $c->stash->{reg_pat}  = $oreg_pat;
-        $c->stash->{prog_pat} = $oprog_pat;
+        stash($c,
+            message  => "No match.",
+            reg_pat  => $oreg_pat,
+            prog_pat => $oprog_pat,
+        );
         view($self, $c, $reg_id);
         return;
     }
@@ -2821,7 +2892,7 @@ sub seek : Local {
         # are all the registrations in the same program?
         my $multiple = 0;
         if (empty($prog_pat)) {
-            $c->stash->{program} = model($c, 'Program')->find($prog_id);
+            stash($c, program => model($c, 'Program')->find($prog_id));
         }
         else {
             my %p_ids;
@@ -2831,20 +2902,23 @@ sub seek : Local {
             my $nprogs = keys %p_ids;
             if ($nprogs == 1) {
                 my ($only_prog_id) = keys %p_ids;
-                $c->stash->{program} = model($c,'Program')->find($only_prog_id);
+                my $pr = model($c,'Program')->find($only_prog_id);
+                stash($c, program => $pr);
             }
             else {
-                $c->stash->{multiple_progs} = 1;
+                stash($c, multiple_progs => 1);
                 $multiple = 1;
             }
         }
-        $c->stash->{pat}     = $oreg_pat;
-        $c->stash->{regs}    = _reg_table(\@regs, multiple => $multiple);
-        $c->stash->{other_sort}      = "list_reg_post";
-        $c->stash->{other_sort_name} = "By Postmark";
-        my @files             = <root/static/online/*>;
-        $c->stash->{online}   = scalar(@files);
-        $c->stash->{template} = "registration/list_reg.tt2";
+        my @files = <root/static/online/*>;
+        stash($c,
+            online     => scalar(@files),
+            pat        => $oreg_pat,
+            regs       => _reg_table(\@regs, multiple => $multiple),
+            other_sort => "list_reg_post",
+            template   => "registration/list_reg.tt2",
+            other_sort_name => "By Postmark",
+        );
     }
 }
 
@@ -2995,7 +3069,7 @@ sub first_reg : Local {
         }
     );
     if ($reg) {
-        $c->stash->{reg} = $reg;
+        stash($c, reg => $reg);
         _view($c, $reg);
     }
     else {
@@ -3057,9 +3131,11 @@ sub name_addr : Local {
     my ($self, $c, $prog_id) = @_;
     
     my $program = model($c, 'Program')->find($prog_id);
-    $c->stash->{program}  = $program;
-    $c->stash->{email}    = $program->email_nameaddr();
-    $c->stash->{template} = "registration/pre_name_addr.tt2";
+    stash($c,
+        program  => $program,
+        email    => $program->email_nameaddr(),
+        template => "registration/pre_name_addr.tt2",
+    );
 }
 
 sub name_addr_do : Local {
@@ -3158,9 +3234,11 @@ sub name_addr_do : Local {
                from       => $string{from},
                from_title => $string{from_title},
         );
-        $c->stash->{program}  = $program;
-        $c->stash->{email}    = $email;
-        $c->stash->{template} = "registration/name_addr_conf.tt2";
+        stash($c,
+            program  => $program,
+            email    => $email,
+            template => "registration/name_addr_conf.tt2",
+        );
     }
     else {
         $c->res->output($html);
@@ -3173,6 +3251,7 @@ sub name_addr_do : Local {
 sub tally : Local {
     my ($self, $c, $prog_id) = @_;
 
+    my $pr = model($c, 'Program')->find($prog_id);
     my @regs = model($c, 'Registration')->search(
         {
             program_id => $prog_id,
@@ -3259,23 +3338,25 @@ sub tally : Local {
         }
         $balance += $r->balance();
     }
-    $c->stash->{program}    = model($c, 'Program')->find($prog_id);
-    $c->stash->{id}         = $prog_id;
-    $c->stash->{registered} = $registered;
-    $c->stash->{cancelled}  = $cancelled;
-    $c->stash->{no_shows}   = $no_shows;
-    $c->stash->{males}      = $males;
-    $c->stash->{females}    = $females;
-    $c->stash->{adults}     = $adults;
-    $c->stash->{kids}       = $kids;
-    $c->stash->{tuition}    = commify($tuition);
-    $c->stash->{lodging}    = commify($lodging);
-    $c->stash->{adjustment} = commify($adjustment);
-    $c->stash->{deposit}    = commify($deposit);
-    $c->stash->{payment}    = commify($payment);
-    $c->stash->{credit}     = commify($credit);
-    $c->stash->{balance}    = commify($balance);
-    $c->stash->{template}   = "registration/tally.tt2";
+    stash($c,
+        program    => $pr,
+        id         => $prog_id,
+        registered => $registered,
+        cancelled  => $cancelled,
+        no_shows   => $no_shows,
+        males      => $males,
+        females    => $females,
+        adults     => $adults,
+        kids       => $kids,
+        tuition    => commify($tuition),
+        lodging    => commify($lodging),
+        adjustment => commify($adjustment),
+        deposit    => commify($deposit),
+        payment    => commify($payment),
+        credit     => commify($credit),
+        balance    => commify($balance),
+        template   => "registration/tally.tt2",
+    );
 }
 
 sub conf_notes : Local {
@@ -3322,9 +3403,11 @@ sub mmi_import : Local {
     {
         order_by => 'sdate asc, edate asc',
     });
-    $c->stash->{cur_prog} = $p;
-    $c->stash->{dcm_progs} = \@progs;
-    $c->stash->{template} = "registration/mmi_import.tt2";
+    stash($c,
+        cur_prog  => $p,
+        dcm_progs => \@progs,
+        template  => "registration/mmi_import.tt2",
+    );
 }
 
 sub mmi_import_do : Local {

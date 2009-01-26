@@ -32,9 +32,9 @@ create table user_role (
 insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person', '', '', '');
 -- the above is used for legacy reg payments, etc.
 
-insert into user values (2, 'jane', 'mypass', 'jane@na.com', 'Jane', 'Doe', '', '', '');
-insert into user values (3, 'joe', 'mypass', 'joe@na.com', 'Joe', 'Blow', '', '', '');
-insert into user values (4, 'mary', 'mypass', 'mary@na.com', 'Mary', 'Smith', '', '', '');
+insert into user values (2, 'jane', 'p', 'jane@na.com', 'Jane', 'Doe', '', '', '');
+insert into user values (3, 'joe', 'p', 'joe@na.com', 'Joe', 'Blow', '', '', '');
+insert into user values (4, 'mary', 'p', 'mary@na.com', 'Mary', 'Smith', '', '', '');
 insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou', '', '', '');
 insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg', '', '', '');
 insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan', '', '', '');
@@ -43,7 +43,7 @@ insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresk
 insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan', '', '', '');
 insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName', '', '', '');
 insert into user values (12, 'lori', 'march', 'lori_march@hotmail.com', 'Lori', 'March', '', '', '');
-insert into user values (13, 'charlie', 'mypass', 'jon@logicalpoetry.com', 'Charlie', 'Smith', '', '', '');
+insert into user values (13, 'charlie', 'p', 'jon@logicalpoetry.com', 'Charlie', 'Smith', '', '', '');
 --
 -- the roles - do not muck with the ids!
 --

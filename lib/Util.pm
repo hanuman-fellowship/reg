@@ -43,6 +43,7 @@ our @EXPORT_OK = qw/
     dcm_registration
     stash
     error
+    payment_warning
 /;
 
 use POSIX   qw/ceil/;
@@ -53,7 +54,9 @@ use Date::Simple qw/
 /;
 use Template;
 
-use Global qw/%string/;
+use Global qw/
+    %string
+/;
 
 my ($naffils, @affils, %checked);
 
@@ -1095,20 +1098,39 @@ sub dcm_registration {
     }
 }
 
-sub stash {
-    my ($c, %args) = @_;
+#sub stash {
+#    my ($c, %args) = @_;
+#
+#    for my $k (keys %args) {
+#        $c->stash->{$k} = $args{$k};
+#    }
+#}
 
-    for my $k (keys %args) {
-        $c->stash->{$k} = $args{$k};
+# equivalently and likely more efficient:
+sub stash {
+    my $st_ref = shift->stash;
+    for (my $i = 0; $i < @_; $i += 2) {
+        $st_ref->{$_[$i]} = $_[$i+1];
     }
 }
 
 sub error {
-    my ($c, $mess, $template) = @_;
-    stash($c,
-        mess     => $mess,
-        template => $template,
-    );
+    my $st_ref = shift->stash;
+    $st_ref->{mess}     = shift;
+    $st_ref->{template} = shift;
+}
+
+sub payment_warning {
+    my ($c) = @_;
+
+    if ($string{reconciling}) {
+        return "Warning! \u$string{reconciling} is doing a reconciliation!";
+    }
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        return "This payment will be posted tomorrow<br>"
+             . "since a deposit has already been done today.";
+    }
+    return "";
 }
 
 1;

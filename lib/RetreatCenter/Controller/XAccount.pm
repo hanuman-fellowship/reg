@@ -11,6 +11,11 @@ use Util qw/
     empty
     model
     tt_today
+    stash
+    payment_warning
+/;
+use Global qw/
+    %string
 /;
 
 use lib '../../';       # so you can do a perl -c here.
@@ -113,14 +118,17 @@ sub access_denied : Private {
 sub pay_balance : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->stash->{person} = model($c, 'Person')->find($person_id);
-    $c->stash->{xaccounts} = [
-        model($c, 'XAccount')->search(
-            undef,
-            { order_by => 'descr' },
-        )
-    ];
-    $c->stash->{template} = "xaccount/pay_balance.tt2";
+    stash($c,
+        message  => payment_warning($c),
+        person => model($c, 'Person')->find($person_id),
+        xaccounts => [
+            model($c, 'XAccount')->search(
+                undef,
+                { order_by => 'descr' },
+            )
+        ],
+        template => "xaccount/pay_balance.tt2",
+    );
 }
 
 sub pay_balance_do : Local {
@@ -131,6 +139,10 @@ sub pay_balance_do : Local {
     my $person_id = $c->request->params->{person_id};
     my $what = $c->request->params->{what};
     my $type = $c->request->params->{type};
+    my $now_date = tt_today($c)->as_d8();
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        $now_date = (tt_today($c)+1)->as_d8();
+    }
 
     model($c, 'XAccountPayment')->create({
         xaccount_id => $xaccount_id,
@@ -140,7 +152,7 @@ sub pay_balance_do : Local {
         what        => $what,
 
         user_id     => $c->user->obj->id,
-        the_date    => tt_today($c)->as_d8(),
+        the_date    => $now_date,
         time        => sprintf "%02d:%02d", (localtime())[2, 1],
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));

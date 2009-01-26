@@ -880,8 +880,7 @@ sub delete : Local {
 sub del_image : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = $c->stash->{program}
-        = model($c, 'Program')->find($id);
+    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
     $p->update({
         image => "",
     });

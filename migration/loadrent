@@ -131,6 +131,8 @@ sub processRental {
     $hash{housecost_id} = 1;        # Default
     $hash{status} = "new";
     $hash{summary_id} = $next_summary_id;
+    $hash{start_hour} = '4:00';
+    $hash{end_hour} = '1:00';
     $summary_sth->execute($next_summary_id);
     ++$next_summary_id;
     $r_sth->execute(@hash{@fields});

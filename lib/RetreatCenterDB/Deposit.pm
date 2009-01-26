@@ -10,21 +10,25 @@ __PACKAGE__->table('deposit');
 __PACKAGE__->add_columns(qw/
     id
     user_id
-    the_date
     time
+    date_start
+    date_end
     cash
     chk
     credit
-    online
     total
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
 
-sub the_date_obj {
+sub date_start_obj {
     my ($self) = @_;
-    return date($self->the_date);
+    return date($self->date_start);
+}
+sub date_end_obj {
+    my ($self) = @_;
+    return date($self->date_end);
 }
 
 1;

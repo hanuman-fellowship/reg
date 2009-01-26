@@ -5,7 +5,7 @@
 <tr><th align=right>Program</th><td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td></tr>
 <tr>
 <th align=right>Person</th>
-<td>
+<td colspan=2>
 <a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
 <span style="margin-left: .5in"><a href="/registration/view/[% reg.id %]">To Registration</a></span>
 </td></tr>
@@ -24,7 +24,10 @@
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit name=submit value="Submit"></td>
+<td valign=top><input type=submit name=submit value="Submit"></td>
+[% IF message %]
+<td valign=top><span style="color: red; font-weight: bold; font-size: 15pt;">[% message %]</span></td>
+[% END %]
 </tr>
 
 </table>

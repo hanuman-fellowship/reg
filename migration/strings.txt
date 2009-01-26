@@ -9,10 +9,10 @@ commuting Commuting (Day use, meals &amp; facilities)
 own_tent Own Tent
 own_van  Own Van
 center_tent Mount Madonna Center Tent
-dormitory Dormitory (4-7 to a room or cabin)
+dormitory Dormitory (4-7 to a room)
 economy  Economy (8 or more to a room)
 quad  Quadruple (4 to a room)
-triple  Triple (3 to a room or cabin)
+triple  Triple (3 to a room)
 dble  Double (2 to a room or cabin)
 dble_bath Double with Bath (2 to a room)
 single  Single (1 to a room or cabin)
@@ -114,3 +114,4 @@ max_lodge_opts 30
 tt_today 
 default_date_format %D
 make_up_urgent_days 4
+reconciling 0

@@ -1,23 +1,30 @@
-<h2>Prior Bank Deposits</h2>
-<table cellpadding=3>
+<h2>Bank Deposits</h2>
+<ul>
+<table cellpadding=5>
 <tr>
-<th align=center>Date</th>
+<th align=center>Who</th>
+<th align=center>Start Date</th>
+<th align=center>End Date</th>
 <th align=center>Time</th>
 <th align=right>Cash</th>
 <th align=right>Check</th>
 <th align=right>Credit</th>
-<th align=right>Online</th>
 <th align=right>Total</th>
+<th align=center colspan=2>View</th>
 </tr>
 [% FOR d IN deposits %]
 <tr>
-<td align=center>[% d.the_date %]</td>
+<td align=center>[% d.user.username %]</td>
+<td align=center>[% d.date_start_obj %]</td>
+<td align=center>[% d.date_end_obj %]</td>
 <td align=center>[% d.time %]</td>
 <td align=right>[% d.cash %]</td>
 <td align=right>[% d.chk %]</td>
 <td align=right>[% d.credit %]</td>
-<td align=right>[% d.online %]</td>
 <td align=right>[% d.total %]</td>
+<td align=right><a href="/finance/reconcile_deposit/[% d.id %]">Reconcile</a></td>
+<td align=right><a href="/finance/file_deposit/[% d.id %]">File</a></td>
 </tr>
 [% END %]
 </table>
+</ul>

@@ -20,11 +20,11 @@ drop table if exists deposit;
 create table deposit (
     id          integer primary key autoincrement,
     user_id     integer,
-    the_date    text,
+    date_start  text,
+    date_end    text,
     time        text,
     cash        integer,
     chk         integer,    -- can't have 'check' :(
     credit      integer,
-    online      integer,
     total       integer
 );

@@ -23,6 +23,8 @@ use Util qw/
     housing_types
     tt_today
     commify
+    stash
+    payment_warning
 /;
 use Global qw/
     %string
@@ -692,11 +694,13 @@ sub pay_balance : Local {
     my ($self, $c, $id) = @_;
 
     my $r = model($c, 'Rental')->find($id);
-    $c->stash->{amount} = (tt_today($c)->as_d8() >= $r->edate)? $r->balance()
-                         :                                      $r->deposit()
-                         ;
-    $c->stash->{rental} = $r;
-    $c->stash->{template} = "rental/pay_balance.tt2";
+    stash($c,
+        message  => payment_warning($c),
+        amount   => (tt_today($c)->as_d8() >= $r->edate)? $r->balance()
+                    :                                     $r->deposit(),
+        rental   => $r,
+        template => "rental/pay_balance.tt2",
+    );
 }
 
 sub pay_balance_do : Local {
@@ -707,6 +711,9 @@ sub pay_balance_do : Local {
 
     my $today = tt_today($c);
     my $now_date = $today->as_d8();
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        $now_date = (tt_today($c)+1)->as_d8();
+    }
     my ($hour, $min) = (localtime())[2, 1];
     my $now_time = sprintf "%02d:%02d", $hour, $min;
 
