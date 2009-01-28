@@ -1009,7 +1009,7 @@ sub one_time : Local {
     for my $m (@no_email) {
         $html .= $m->person->first . " " . $m->person->last . "<br>"
               .  $m->person->addr1 . "<br>"
-              .  (empty($m->person->addr2)? "": ($m->person->addr . "<br>"))
+              .  (empty($m->person->addr2)? "": ($m->person->addr2 . "<br>"))
               .  $m->person->city . ", "
               .  $m->person->st_prov . " "
               .  $m->person->zip_post . "<br>"
