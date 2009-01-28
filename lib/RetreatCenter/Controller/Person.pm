@@ -14,6 +14,7 @@ use Util qw/
     tt_today
     commify
     dcm_registration
+    payment_warning
 /;
 use Date::Simple qw/
     date
@@ -859,6 +860,7 @@ sub del_mmi_payment : Local {
 sub create_mmi_payment : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
     
+    $c->stash->{message}  = payment_warning($c);
     $c->stash->{person}   = model($c, 'Person')->find($person_id);
     $c->stash->{reg}      = model($c, 'Registration')->find($reg_id);
     $c->stash->{template} = "person/create_mmi_payment.tt2";

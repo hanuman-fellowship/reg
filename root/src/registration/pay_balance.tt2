@@ -9,7 +9,12 @@
 <a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a>
 <span style="margin-left: .5in"><a href="/registration/view/[% reg.id %]">To Registration</a></span>
 </td></tr>
-<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% reg.balance %]'></td></tr>
+<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% reg.balance %]'></td>
+[% IF message %]
+<td valign=top><span style="color: red; font-weight: bold; font-size: 15pt;">[% message %]</span></td>
+[% END %]
+</tr>
+
 <tr>
 <th align=right>Type</th>
 <td>
@@ -25,9 +30,6 @@
 <tr>
 <td>&nbsp;</td>
 <td valign=top><input type=submit name=submit value="Submit"></td>
-[% IF message %]
-<td valign=top><span style="color: red; font-weight: bold; font-size: 15pt;">[% message %]</span></td>
-[% END %]
 </tr>
 
 </table>

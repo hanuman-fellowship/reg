@@ -8,6 +8,7 @@ use Util qw/
     trim
     model
     tt_today
+    payment_warning
 /;
 use Date::Simple qw/
     date
@@ -29,6 +30,7 @@ sub create : Local {
             { order_by => 'descr' },
         )
     ];
+    $c->stash->{message}     = payment_warning($c);
     $c->stash->{form_action} = "create_do/$person_id";
     $c->stash->{template}    = "donation/create_edit.tt2";
 }

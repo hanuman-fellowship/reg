@@ -12,6 +12,7 @@ use Util qw/
     model
     email_letter
     tt_today
+    slurp
 /;
 use Date::Simple qw/
     date
@@ -972,6 +973,51 @@ sub payment_update_do : Local {
         total_paid => $total,
     });
     $c->response->redirect($c->uri_for("/member/update/" . $pmt->member_id));
+}
+
+sub one_time : Local {
+    my ($self, $c) = @_;
+
+    my @sponsors = model($c, 'Member')->search({
+        category => 'Sponsor',
+    });
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my @no_email;
+    for my $m (@sponsors) {
+        if (empty($m->person->email())) {
+            push @no_email, $m;
+            next;
+        }
+        my $html = "";
+        $tt->process(
+            "one_time.tt2",       # template
+            { member => $m },     # variables
+            \$html,               # output
+        );
+        email_letter($c,
+               html       => $html, 
+               subject    => "HFS Sponsor Memberships - New Guidelines",
+               to         => $m->person->email(),
+               from       => $string{mem_email},
+               from_title => "HFS Membership",
+        );
+    }
+    my $html = "";
+    for my $m (@no_email) {
+        $html .= $m->person->first . " " . $m->person->last . "<br>"
+              .  $m->person->addr1 . "<br>"
+              .  (empty($m->person->addr2)? "": ($m->person->addr . "<br>"))
+              .  $m->person->city . ", "
+              .  $m->person->st_prov . " "
+              .  $m->person->zip_post . "<br>"
+              .  (empty($m->person->country)? "": ($m->person->country."<br>"))
+              .  $m->date_sponsor_obj->format("%D") . "<p>\n"
+              ;
+    }
+    $c->res->output($html);
 }
 
 1;

@@ -1,4 +1,5 @@
 <h2>Issues</h2>
+</head>
 <form action=[% '/issue/' _ form_action %] name=form>
 <table cellpadding=3 border=0>
 

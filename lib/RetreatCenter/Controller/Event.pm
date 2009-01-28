@@ -331,6 +331,10 @@ sub calendar : Local {
             # end_param is the last date
             $end_date = date($end_param);
         }
+        if (! $end_date || $end_date < $start) {
+            # incorrect syntax/bad value
+            $end_date = $start;
+        }
         $end_param = $end_date->format("%D");
         if ($end_date) {
             @opt_end = (sdate => { '<=', $end_date->as_d8() });

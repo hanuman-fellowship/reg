@@ -1,4 +1,17 @@
+<script type="text/javascript">
+function popup(url) {
+    var newwin = window.open(
+        url, 'reg_search_help',
+        'height=680,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
 <h2>[% Type %] Summary</h2>
+</head>
 <p>
 <table cellpadding=7>
 <tr>
@@ -58,7 +71,7 @@ th {
 <td><input id=sub type=submit value="Submit"></td></tr>
 
 <tr><th>Housing</th><td colspan=3><input type=text name=leader_housing value='[% sum.leader_housing %]'></td></tr>
-<tr><td>&nbsp;</td></tr>
+<tr><td colspan=3 align=right><a href="#" onclick="popup('/static/help/shortcuts.html')">How?</a></td></tr>
 
 <tr><th valign=top>Signage</th>
 <td colspan=3>

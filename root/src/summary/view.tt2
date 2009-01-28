@@ -36,15 +36,15 @@ th {
 [% IF type == 'rental' %]
 <table cellpadding=3 border=0>
 <tr>
-<th align=right width=180>Contact Person</th>
-<td>
+<th align=right width=180 valign=top>Contact Person</th>
+<td valign=top>
 [% coord = happening.coordinator %]
 <a href=/person/view/[% coord.id %]>[% coord.first %] [% coord.last %]</a>
-</td><td>
+</td><td valign=top>
 <a href='mailto:[% coord.email %]'>[% coord.email %]</a>
 </td><td>
-[% IF coord.tel_home %][% coord.tel_home %] home [% END %]
-[% IF coord.tel_work %][% coord.tel_work %] work [% END %]
+[% IF coord.tel_home %][% coord.tel_home %] home [% END %]<br>
+[% IF coord.tel_work %][% coord.tel_work %] work [% END %]<br>
 [% IF coord.tel_cell %][% coord.tel_cell %] cell [% END %]
 </td>
 </tr>
@@ -52,14 +52,14 @@ th {
 [% IF happening.cs_person_id %]
 [% cs = happening.contract_signer %]
 <tr>
-<th align=right>Contract Signer</th>
-<td>
+<th align=right valign=top>Contract Signer</th>
+<td valign=top>
 <a href=/person/view/[% cs.id %]>[% cs.first %] [% cs.last %]</a>
-</td><td>
+</td><td valign=top>
 <a href='mailto:[% cs.email %]'>[% cs.email %]</a>
-</td><td>
-[% IF cs.tel_home %][% cs.tel_home %] home [% END %]
-[% IF cs.tel_work %][% cs.tel_work %] work [% END %]
+</td><td valign=top>
+[% IF cs.tel_home %][% cs.tel_home %] home [% END %]<br>
+[% IF cs.tel_work %][% cs.tel_work %] work [% END %]<br>
 [% IF cs.tel_cell %][% cs.tel_cell %] cell [% END %]
 </td>
 </tr>
@@ -133,15 +133,15 @@ th {
 <tr><th>Housing</th><td colspan=3>[% sum.leader_housing %]</td></tr>
 <tr><td>&nbsp;</td></tr>
 
-<tr><th>Signage</th><td colspan=3>[% sum.signage_br %]</td></tr>
-<tr><th>Food Service</th><td colspan=3>[% sum.food_service_br %]</td></tr>
-<tr><th>Flowers</th><td colspan=3>[% sum.flowers_br %]</td></tr>
-<tr><th>Lodging</th><td colspan=3>[% sum.lodging_br %]</td></tr>
-<tr><th>Special Needs</th><td colspan=3>[% sum.special_needs_br %]</td></tr>
-<tr><th>Finances</th><td colspan=3>[% sum.finances_br %]</td></tr>
-<tr><th>Miscellaneous</th><td colspan=3>[% sum.miscellaneous_br %]</td></tr>
-<tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup_br %]</td></tr>
-<tr><th>Sound Setup</th><td colspan=3>[% sum.sound_setup_br %]</td></tr>
-<tr><th>Feedback</th><td colspan=3>[% sum.feedback_br %]</td></tr>
+<tr><th>Signage</th><td colspan=3>[% sum.signage_ex %]</td></tr>
+<tr><th>Food Service</th><td colspan=3>[% sum.food_service_ex %]</td></tr>
+<tr><th>Flowers</th><td colspan=3>[% sum.flowers_ex %]</td></tr>
+<tr><th>Lodging</th><td colspan=3>[% sum.lodging_ex %]</td></tr>
+<tr><th>Special Needs</th><td colspan=3>[% sum.special_needs_ex %]</td></tr>
+<tr><th>Finances</th><td colspan=3>[% sum.finances_ex %]</td></tr>
+<tr><th>Miscellaneous</th><td colspan=3>[% sum.miscellaneous_ex %]</td></tr>
+<tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup_ex %]</td></tr>
+<tr><th>Sound Setup</th><td colspan=3>[% sum.sound_setup_ex %]</td></tr>
+<tr><th>Feedback</th><td colspan=3>[% sum.feedback_ex %]</td></tr>
 <tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
 </table>

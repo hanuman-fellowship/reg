@@ -148,6 +148,8 @@ doc: rental check in and check out times
 email all in a program?
     not the cancelled ones.
 Issues - added by whom?
+email all in a program?
+    but not cancelled people
 ---
 Center Tent spaces should be available during
     winter for Own Tent people
@@ -609,11 +611,11 @@ proposals
     contract signer as sep person with address
 
 
-email all in a program?
-    but not cancelled people
+use Bcc! for email all
+    add to Mail::SendEasy?
 
 i deleted a rental - did it delete the proposal?
-    shouldn't summary yes.
+    it shouldn't.  summary yes.
 
 wiki for summaries?
 
@@ -731,3 +733,40 @@ MMI payments should not be included, right?
 doc: only one deposit per day, right?
 
 rentals - default start, end times.
+
+reconciling - do we need to put it on the disk or just in memory?
+    surely it is a short term thing.  a reconciliation would
+    not cross a server restart.
+
+next is housing preferences shown not in comments
+    and an Update link.
+    and specified in a manual registration
+
+    1. find person, choose 'Register'
+    2. choose program and ajax functions fill in:
+        - two <select> housing preferences
+        - deposit
+       user then chooses two h_types,
+        verifies the deposit amount
+        and specifies the deposit payment type
+        and postmark date.
+       presses Submit
+    3. normal reg create screen
+
+maybe we don't need 1st reg.
+
+denied at top like approved?
+
+better example for shortcuts.html
+How? => Formatting Shortcuts
+
+add rental room, don't select anything, hit submit
+
+better line for contract - <hr>
+
+&nbsp; in empty spaces for invoice
+
+(people) x (days) in attendance help
+    order of example switched.
+    first explain the situation, then put the codes
+    that go into the attendance field.

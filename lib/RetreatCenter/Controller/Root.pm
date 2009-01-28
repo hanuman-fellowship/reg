@@ -3,6 +3,10 @@ use warnings;
 package RetreatCenter::Controller::Root;
 use base 'Catalyst::Controller';
 
+use Util qw/
+    tt_today
+/;
+
 #
 # Sets the actions in this controller to be registered with no prefix
 # so they function identically to actions created in MyApp.pm
@@ -37,6 +41,10 @@ sub end : ActionClass('RenderView') {
     _set($c, $u, 'fg', 'black');
     _set($c, $u, 'bg', 'white');
     _set($c, $u, 'link', 'blue');
+    if ($u) {
+        # tt_today() needs a user.
+        $c->stash->{today} = tt_today($c);
+    }
 }
 
 # Note that 'auto' runs after 'begin' but before your actions and that

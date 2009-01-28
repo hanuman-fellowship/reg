@@ -6,7 +6,7 @@ use Date::Simple qw/
     date
 /;
 use Util qw/
-    _br
+    expand
 /;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -72,12 +72,12 @@ __PACKAGE__->belongs_to(cs_person => 'RetreatCenterDB::Person', 'cs_person_id');
 
 sub date_of_call_obj  { date(shift->date_of_call) || ""; }
 sub program_meeting_date_obj { date(shift->program_meeting_date) || ""; }
-sub dates_requested_br  { _br(shift->dates_requested()); }
-sub special_needs_br    { _br(shift->special_needs  ()); }
-sub food_service_br     { _br(shift->food_service   ()); }
-sub other_requests_br   { _br(shift->other_requests ()); }
-sub provisos_br         { _br(shift->provisos       ()); }
-sub misc_notes_br       { _br(shift->misc_notes     ()); }
+sub dates_requested_ex  { expand(shift->dates_requested()); }
+sub special_needs_ex    { expand(shift->special_needs  ()); }
+sub food_service_ex     { expand(shift->food_service   ()); }
+sub other_requests_ex   { expand(shift->other_requests ()); }
+sub provisos_ex         { expand(shift->provisos       ()); }
+sub misc_notes_ex       { expand(shift->misc_notes     ()); }
 
 sub status {
     my ($self) = @_;

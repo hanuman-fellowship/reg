@@ -177,6 +177,7 @@ sub show : Local {
     else {
         $dt = $today;
     }
+    $dt->set_format("%D");      # ensure it is mm/dd/yy for input purposes
     my $d8 = $dt->as_d8();
     my $ndays = 14;     # parameter?
     if (!$cur_clust) {

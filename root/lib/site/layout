@@ -29,6 +29,7 @@
 <td><a target=calendar href='/event/calendar/[% cal_param %]'>Calendar</a></td>
 <td><a target=dailypic href=/dailypic/show/indoors/[% daily_pic_date %]>DailyPic</a></td>
 <td><a target=clusterview href=/cluster/show/[% daily_pic_date %]/[% cur_cluster %]>ClusterView</a></td>
+<td>[% today.format("%A %B %e, %Y") %]
 </tr>
 [% END %]
 </table>

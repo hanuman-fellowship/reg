@@ -80,8 +80,10 @@ sub reconcile_deposit : Local {
                     }
                     @payments;
 
-    $string{reconciling} = $c->user->obj->username();
+    if (! $id) {
+        $string{reconciling} = $c->user->obj->username();
         # on disk??  not needed?
+    }
 
     stash($c,
         payments => \@payments,
@@ -161,7 +163,7 @@ sub file_deposit : Local {
     }
     else {
         $time = sprintf("%02d:%02d", (localtime())[2, 1]),
-        $timestamp = tt_today($c) . " " . $time;
+        $timestamp = tt_today($c)->format("%D") . " " . $time;
     }
     my $html = <<"EOH";
 <style type="text/css">
@@ -282,24 +284,26 @@ EOH
     $html .= <<"EOH";
 </table>
 EOH
-    if (! $id && $gtotal != 0) {
-        #
-        # create a new deposit and update the last_deposit_date
-        #
-        model($c, 'Deposit')->create({
-            user_id    => $c->user->obj->id(),
-            time       => $time,
-            date_start => $date_start,
-            date_end   => $date_end,
-            cash       => $gcash,
-            chk        => $gcheck,
-            credit     => $gcredit,
-            total      => $gtotal,
-        });
-        $string{last_deposit_date} = $date_end;                   # in memory
-        model($c, 'String')->find('last_deposit_date')->update({  # on disk
-            value => $date_end,
-        });
+    if (! $id) {
+        if ($gtotal != 0) {
+            #
+            # create a new deposit and update the last_deposit_date
+            #
+            model($c, 'Deposit')->create({
+                user_id    => $c->user->obj->id(),
+                time       => $time,
+                date_start => $date_start,
+                date_end   => $date_end,
+                cash       => $gcash,
+                chk        => $gcheck,
+                credit     => $gcredit,
+                total      => $gtotal,
+            });
+            $string{last_deposit_date} = $date_end;         # in memory
+            model($c, 'String')->find('last_deposit_date')->update({  # on disk
+                value => $date_end,
+            });
+        }
         $string{reconciling} = 0;   # only in memory???
     }
     $c->res->output($html);

@@ -7,6 +7,7 @@ use lib '../../';       # so you can do a perl -c here.
 
 use Date::Simple qw/
     date
+    today
 /;
 use Time::Simple;
 use Util qw/
@@ -39,27 +40,27 @@ sub index : Private {
     $c->forward('list');
 }
 
-my %hash;
+my %P;
 my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
-    $hash{$_} = trim($hash{$_}) for keys %hash;
+    %P = %{ $c->request->params() };
+    $P{$_} = trim($P{$_}) for keys %P;
     @mess = ();
-    $hash{url} =~ s{^http://}{};
-    if (empty($hash{name})) {
+    $P{url} =~ s{^http://}{};
+    if (empty($P{name})) {
         push @mess, "Name cannot be blank";
     }
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate contract_sent contract_received /) {
-        my $fld = $hash{$d};
+        my $fld = $P{$d};
         if ($d =~ /date/ && $fld !~ /\S/) {
             push @mess, "missing date field";
             next;
         }
         if ($d eq 'edate') {
-            Date::Simple->relative_date(date($hash{sdate}));
+            Date::Simple->relative_date(date($P{sdate}));
         }
         my $dt = date($fld);
         if ($d eq 'edate') {
@@ -70,12 +71,12 @@ sub _get_data {
             push @mess, "Invalid date: $fld";
             next;
         }
-        $hash{$d} = $dt? $dt->as_d8()
+        $P{$d} = $dt? $dt->as_d8()
                    :     "";
     }
     TIME:
     for my $n (qw/start_hour end_hour/) {
-        my $t = $hash{$n};
+        my $t = $P{$n};
         if (empty($t)) {
             my $sn = $n;
             $sn =~ s{_}{ };
@@ -86,20 +87,20 @@ sub _get_data {
             push @mess, Time::Simple->error();
         }
     }
-    if (!@mess && $hash{sdate} > $hash{edate}) {
+    if (!@mess && $P{sdate} > $P{edate}) {
         push @mess, "End date must be after the Start date";
     }
     my $rental_ndays = 0;
     if (!@mess) {
-        $rental_ndays = date($hash{edate}) - date($hash{sdate});
+        $rental_ndays = date($P{edate}) - date($P{sdate});
     }
-    if ($hash{email} && ! valid_email($hash{email})) {
-        push @mess, "Invalid email: $hash{email}";
+    if ($P{email} && ! valid_email($P{email})) {
+        push @mess, "Invalid email: $P{email}";
     }
-    if (! $hash{max} =~ m{^\d+$}) {
+    if (! $P{max} =~ m{^\d+$}) {
         push @mess, "Invalid maximum.";
     }
-    if (! $hash{deposit} =~ m{^\d+$}) {
+    if (! $P{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
     }
     H_TYPE:
@@ -110,20 +111,22 @@ sub _get_data {
         $s =~ s{\b(\w)}{\u$1}g;
         $s =~ s{Dble}{Double};
         my $npeople;
-        if ($hash{"n_$f"} !~ m{^\d*$}) {
-            push @mess, "$s: Illegal quantity: " . $hash{"n_$f"};
+        if ($P{"n_$f"} !~ m{^\d*$}) {
+            push @mess, "$s: Illegal quantity: " . $P{"n_$f"};
         }
         else {
-            $npeople = $hash{"h_$f"};
+            $npeople = $P{"h_$f"};
         }
-        # att_???
-        if (! empty($hash{"att_$f"})) {
-            my @terms = split m{\s*,\s*}, $hash{"att_$f"};
+        #
+        # Attendance
+        #
+        if (! empty($P{"att_$f"})) {
+            my @terms = split m{\s*,\s*}, $P{"att_$f"};
             my $total_peeps = 0;
             TERM:
             for my $t (@terms) {
-                if ($t !~ m{^\s*(\d+)\s*k?\s*x\s*(\d+)\s*}i) {
-                    push @mess, "$s: Illegal attendance: " . $hash{"att_$f"};
+                if ($t !~ m{^(\d+)\s*c?\s*x\s*(\d+)}i) {
+                    push @mess, "$s: Illegal attendance: " . $P{"att_$f"};
                     next H_TYPE;
                 }
                 my ($t_npeople, $t_ndays) = ($1, $2);
@@ -153,11 +156,11 @@ sub _get_data {
             # for room reservations.  It in combination with the 'attendance'
             # field is used for the invoice cost calculations.
             #
-            #if ($total_peeps > $hash{"n_$f"}) {
+            #if ($total_peeps > $P{"n_$f"}) {
             #    push @mess, "$s: Total people in attendance field"
             #               ." > # of people";
             #}
-            if ($total_peeps < $hash{"n_$f"}) {
+            if ($total_peeps < $P{"n_$f"}) {
                 push @mess, "$s: Total people in non-blank attendance field"
                            ." < # of people";
             }
@@ -167,8 +170,8 @@ sub _get_data {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "rental/error.tt2";
     }
-    $hash{linked}    = "" unless exists $hash{linked};
-    $hash{tentative} = "" unless exists $hash{tentative};
+    $P{linked}    = "" unless exists $P{linked};
+    $P{tentative} = "" unless exists $P{tentative};
 }
 
 sub create : Local {
@@ -197,32 +200,32 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $section = $hash{section};
-    delete $hash{section};
+    my $section = $P{section};
+    delete $P{section};
 
-    $hash{lunches} = "";
+    $P{lunches} = "";
 
-    $hash{glnum} = compute_glnum($c, $hash{sdate});
+    $P{glnum} = compute_glnum($c, $P{sdate});
 
-    if ($hash{contract_sent}) {
-        $hash{sent_by} = $c->user->obj->id;
+    if ($P{contract_sent}) {
+        $P{sent_by} = $c->user->obj->id;
     }
-    if ($hash{contract_received}) {
-        $hash{received_by} = $c->user->obj->id;
+    if ($P{contract_received}) {
+        $P{received_by} = $c->user->obj->id;
     }
     my $sum = model($c, 'Summary')->create({
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => sprintf("%02d:%02d", (localtime())[2, 1]),
     });
-    $hash{summary_id} = $sum->id;
-    my $r = model($c, 'Rental')->create(\%hash);
+    $P{summary_id} = $sum->id;
+    my $r = model($c, 'Rental')->create(\%P);
     my $id = $r->id();
     #
     # we must ensure that there are config records
     # out to the end date of this rental.
     #
-    add_config($c, $hash{edate});
+    add_config($c, $P{edate});
     $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
 }
 
@@ -234,18 +237,18 @@ sub create_from_proposal : Local {
     _get_data($c);
     return if @mess;
 
-    my $section = $hash{section};
-    delete $hash{section};
+    my $section = $P{section};
+    delete $P{section};
 
-    $hash{lunches} = "";
+    $P{lunches} = "";
 
-    $hash{glnum} = compute_glnum($c, $hash{sdate});
+    $P{glnum} = compute_glnum($c, $P{sdate});
 
-    if ($hash{contract_sent}) {
-        $hash{sent_by} = $c->user->obj->id;
+    if ($P{contract_sent}) {
+        $P{sent_by} = $c->user->obj->id;
     }
-    if ($hash{contract_received}) {
-        $hash{received_by} = $c->user->obj->id;
+    if ($P{contract_received}) {
+        $P{received_by} = $c->user->obj->id;
     }
     my $misc = $proposal->misc_notes();
     if (my $prov = $proposal->provisos()) {
@@ -265,11 +268,11 @@ sub create_from_proposal : Local {
         # perhaps utilise other attributes from the proposal
         # in the creation of the Summary???
     });
-    $hash{summary_id}     = $sum->id();
-    $hash{coordinator_id} = $proposal->person_id();
-    $hash{cs_person_id}   = $proposal->cs_person_id();
+    $P{summary_id}     = $sum->id();
+    $P{coordinator_id} = $proposal->person_id();
+    $P{cs_person_id}   = $proposal->cs_person_id();
 
-    my $r = model($c, 'Rental')->create(\%hash);
+    my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
     #
     # update the proposal with the rental_id
@@ -281,7 +284,7 @@ sub create_from_proposal : Local {
     # we must ensure that there are config records
     # out to the end date of this rental.
     #
-    add_config($c, $hash{edate});
+    add_config($c, $P{edate});
     #
     # and show the newly created rental
     #
@@ -591,15 +594,15 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $section = $hash{section};
-    delete $hash{section};
+    my $section = $P{section};
+    delete $P{section};
 
     my $r = model($c, 'Rental')->find($id);
     my $names = "";
     my $lunches = "";
-    if (  $r->sdate ne $hash{sdate}
-       || $r->edate ne $hash{edate}
-       || $r->max   <  $hash{max}
+    if (  $r->sdate ne $P{sdate}
+       || $r->edate ne $P{edate}
+       || $r->max   <  $P{max}
     ) {
         # we have changed the dates of the rental or the max
         # and need to invalidate/remove any bookings for meeting spaces.
@@ -612,11 +615,11 @@ sub update_do : Local {
         # of meeting places that are still able to accomodate
         # the new max.
         #
-        if (   $r->sdate eq $hash{sdate}
-            && $r->edate eq $hash{edate}
+        if (   $r->sdate eq $P{sdate}
+            && $r->edate eq $P{edate}
         ) {
             @bookings = grep {
-                            $_->meeting_place->max < $hash{max}
+                            $_->meeting_place->max < $P{max}
                         }
                         @bookings;
         }
@@ -624,29 +627,29 @@ sub update_do : Local {
         for my $b (@bookings) {
             $b->delete();
         }
-        if ($r->max >= $hash{max}) {
+        if ($r->max >= $P{max}) {
             # must have been a date
-            $hash{lunches} = "";
+            $P{lunches} = "";
             $lunches = 1;
         }
         #
         # and perhaps add a few more config records.
         #
-        add_config($c, $hash{edate});
+        add_config($c, $P{edate});
     }
 
-    if ($hash{contract_sent} ne $r->contract_sent) {
-        $hash{sent_by} = $c->user->obj->id;
+    if ($P{contract_sent} ne $r->contract_sent) {
+        $P{sent_by} = $c->user->obj->id;
     }
-    if ($hash{contract_sent}) {
+    if ($P{contract_sent}) {
         # no longer tentative so force it!
-        $hash{tentative} = "";
+        $P{tentative} = "";
     }
-    if ($hash{contract_received} ne $r->contract_received) {
-        $hash{received_by} = $c->user->obj->id;
+    if ($P{contract_received} ne $r->contract_received) {
+        $P{received_by} = $c->user->obj->id;
     }
 
-    $r->update(\%hash);
+    $r->update(\%P);
     if ($names || $lunches) {
         $c->stash->{names}    = $names;
         $c->stash->{lunches}  = $lunches;
@@ -774,7 +777,7 @@ sub meetingplace_update_do : Local {
         });
     }
     # show the rental again - with the updated meeting places
-    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
 sub coordinator_update : Local {
@@ -789,6 +792,13 @@ sub coordinator_update_do : Local {
     my $r = model($c, 'Rental')->find($id);
     my $first = trim($c->request->params->{first});
     my $last  = trim($c->request->params->{last});
+    if (empty($first) && empty($last)) {
+        $r->update({
+            coordinator_id => 0,
+        });
+        $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+        return;
+    }
     my ($person) = model($c, 'Person')->search({
                        first => $first,
                        last  => $last,
@@ -797,7 +807,41 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person->id,
         });
-        $c->response->redirect($c->uri_for("/rental/view/$id/4"));
+        $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+    }
+    else {
+        $c->stash->{template} = "rental/no_coord.tt2";
+    }
+}
+
+sub contract_signer_update : Local {
+    my ($self, $c, $id) = @_;
+
+    $c->stash->{rental} = model($c, 'Rental')->find($id);
+    $c->stash->{template} = "rental/contract_signer_update.tt2";
+}
+sub contract_signer_update_do : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Rental')->find($id);
+    my $first = trim($c->request->params->{first});
+    my $last  = trim($c->request->params->{last});
+    if (empty($first) && empty($last)) {
+        $r->update({
+            cs_person_id => 0,
+        });
+        $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+        return;
+    }
+    my ($person) = model($c, 'Person')->search({
+                       first => $first,
+                       last  => $last,
+                   });
+    if ($person) {
+        $r->update({
+            cs_person_id => $person->id,
+        });
+        $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
         $c->stash->{template} = "rental/no_coord.tt2";
@@ -862,17 +906,17 @@ sub update_lunch : Local {
 sub update_lunch_do : Local {
     my ($self, $c, $id) = @_;
 
-    %hash = %{ $c->request->params() };
+    %P = %{ $c->request->params() };
     my $r = model($c, 'Rental')->find($id);
     my $ndays = $r->edate_obj - $r->sdate_obj;
     my $l = "";
     for my $n (0 .. $ndays) {
-        $l .= (exists $hash{"d$n"})? "1": "0";
+        $l .= (exists $P{"d$n"})? "1": "0";
     }
     $r->update({
         lunches => $l,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }
 
 sub booking : Local {
@@ -956,7 +1000,7 @@ sub booking_do : Local {
         @chosen_house_ids = $chid;
     }
     if (! @chosen_house_ids) {
-        $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+        $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
         return;
     }
     for my $h_id (@chosen_house_ids) {
@@ -984,7 +1028,7 @@ sub booking_do : Local {
             rental_id  => $rental_id,
         });
     }
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 sub del_booking : Local {
@@ -1010,7 +1054,7 @@ sub del_booking : Local {
         program_id => 0,
         rental_id  => $rental_id,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 sub contract : Local {
@@ -1038,6 +1082,13 @@ sub contract : Local {
         $c->stash->{template} = "rental/error.tt2";
         return;
     }
+    #
+    # assume the contract is sent the same day it is generated.
+    #
+    $rental->update({
+        contract_sent => today()->as_d8(),
+        sent_by       => $c->user->obj->id,
+    });
     my $html = "";
     my $tt = Template->new({
         INCLUDE_PATH => 'root/static/templates/letter',
@@ -1135,7 +1186,7 @@ sub cluster_add_do : Local {
             });
         }
     }
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 #
@@ -1174,7 +1225,7 @@ sub cluster_delete : Local {
             program_id => 0,
         });
     }
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 sub view_summary : Local {

@@ -1,0 +1,12 @@
+<h2>Rentals - Adding The Contract Signer</h2>
+[% rental.name %]<br>
+[% rental.title %]
+<p>
+<form action="/rental/contract_signer_update_do/[% rental.id %]" name=form>
+<table cellpadding=3>
+<tr><th align=right>First</th><td><input type=text name=first size=20></td></tr>
+<tr><th align=right>Last</th><td><input type=text name=last size=20></td></tr>
+<tr><td>&nbsp;</td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>
+<script type='text/javascript'>document.form.first.focus();</script>
