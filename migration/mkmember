@@ -38,17 +38,18 @@ create table night_hist (
 drop table if exists project;
 create table project (
     id integer primary key autoincrement,
-    descr text
+    descr text,
+    glnum text
 );
 drop table if exists donation;
 create table donation (
-    id integer primary key autoincrement,
-    person_id integer,      -- to Person
+    id         integer primary key autoincrement,
+    person_id  integer,      -- to Person
     project_id integer,     -- to Project
-    date_donate text,
-    amount integer,
-
-    who_d integer, -- to User
-    date_d text, 
-    time_d text
+    the_date   text,
+    amount     integer,
+    type       text,
+    who_d      integer, -- to User
+    date_d     text, 
+    time_d     text
 );

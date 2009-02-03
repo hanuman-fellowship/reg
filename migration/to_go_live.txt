@@ -23,3 +23,4 @@ add anew reports for mailings
 publish, verify
 re-enter sums
     copy,paste & wiki-ize
+enter free nights free programs status for members

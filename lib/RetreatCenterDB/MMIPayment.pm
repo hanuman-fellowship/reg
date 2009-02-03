@@ -13,9 +13,9 @@ __PACKAGE__->add_columns(qw/
     id
     person_id
     amount
-    gl
-    payment_date
-    cash
+    glnum
+    the_date
+    type
     deleted
     reg_id
     note
@@ -27,18 +27,24 @@ __PACKAGE__->belongs_to('person'       => 'RetreatCenterDB::Person',
 __PACKAGE__->belongs_to('registration' => 'RetreatCenterDB::Registration',
                         'reg_id');
 
-sub payment_date_obj {
+sub the_date_obj {
     my ($self) = @_;
-    return date($self->payment_date);
+    return date($self->the_date);
 }
 
-sub cash_disp {
+sub name {
+    my ($self) = @_;
+    my $per = $self->person;
+    return $per->last . ", " . $per->first;
+}
+
+sub type_disp {
     my ($self) = @_;
 
-    my $cash = $self->cash();
-    return ($cash eq 'D')? "Credit Card"
-          :($cash eq 'C')? "Check"
-          :($cash eq '$')? "Cash"
+    my $type = $self->type();
+    return ($type eq 'D')? "Credit Card"
+          :($type eq 'C')? "Check"
+          :($type eq '$')? "Cash"
           :                "Online"
           ;
 }
@@ -53,6 +59,26 @@ sub for_what {
           :($type eq '4')? "Registration Fee"
           :                "Other"
           ;
+}
+
+sub pname {
+    my ($self) = @_;
+    if ($self->reg_id) {
+        return $self->registration->program->name();
+    }
+    else {
+        return "unknown MMI Program";
+    }
+}
+
+sub link {
+    my ($self) = @_;
+    if ($self->reg_id) {
+        return "/registration/view/" . $self->reg_id;
+    }
+    else {
+        return "/person/view/" . $self->person_id;
+    }
 }
 
 1;

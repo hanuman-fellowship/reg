@@ -76,15 +76,15 @@ create table reg_payment (
 );
 drop table if exists mmi_payment;
 create table mmi_payment (
-    id integer   primary key autoincrement,
-    person_id    integer,
-    amount       integer,
-    gl           text,
-    payment_date text,
-    cash         text,
-    deleted      text,
-    reg_id       integer,
-    note         text
+    id integer primary key autoincrement,
+    person_id  integer,
+    amount     integer,
+    glnum      text,
+    the_date   text,
+    type       text,
+    deleted    text,
+    reg_id     integer,
+    note       text
 );
 drop table if exists credit;
 create table credit (

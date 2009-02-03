@@ -1,10 +1,17 @@
 <h2>Projects</h2>
 <form action=[% '/project/' _ form_action %] name=form>
 <table cellpadding=3 border=0>
+
 <tr>
-<td align=right><span class="required">*</span> Description</span></td>
+<th align=right><span class="required">*</span> Description</span></th>
 <td><input type=text name=descr value="[% project.descr %]"></td>
 </tr>
+
+<tr>
+<th align=right><span class="required">*</span> GL Number</span></th>
+<td><input type=text name=glnum value="[% project.glnum %]"></td>
+</tr>
+
 <tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>

@@ -35,22 +35,22 @@ h3 {
 <h2 style="margin-bottom: 0px">Registration</h2>
 <form name=form action=/registration/seek/[% program.id %]/[% reg.id %]>
 <table border=0>
-<tr><td></td><td>&nbsp;&nbsp;&nbsp;Registrant</td><td>&nbsp;&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td></tr>
+<tr><td></td><td>&nbsp;&nbsp;Registrant</td><td>&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td></tr>
 <tr><td valign=center>
 <a href="/registration/update/[% reg.id %]">Edit</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 [% IF ! reg.cancelled %]
 <a href="/registration/cancel/[% reg.id %]"
    onclick="return confirm('Okay to Cancel [% reg.person.last %], [% reg.person.first %]?');"
 >Cancel</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 [% END %]
 <a href="/registration/delete/[% reg.id %]"
 onclick="return confirm('Okay to Delete registration for [% reg.person.first %] [% reg.person.last %]?');">Delete</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 [% IF ! reg.arrived %]
 <a href="/registration/arrived/[% reg.id %]">Arrived</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 [% END %]
 [% IF ! reg.cancelled %]
     [% IF reg.letter_sent %]
@@ -58,11 +58,11 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
     [% ELSE %]
     <a class=not_sent href="/registration/send_conf/[% reg.id %]">Send</a>
     [% END %]
-    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;
 [% END %]
 [% IF reg.ceu_license %]
 <a href="/registration/ceu/[% reg.id %]">CEU</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 [% END %]
 [% IF reg.program.school != 0 && reg.program.level == 'S' %]
     [% IF dcm_reg_id %]
@@ -70,16 +70,14 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
     [% ELSE %]
     Auditor
     [% END %]
-    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;
 [% END %]
 <a href="/registration/list_reg_name/[% program.id %]">AllRegs</a>
-&nbsp;&nbsp;&nbsp;
-[% IF online > 0 %]
+&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
-&nbsp;&nbsp;&nbsp;
-[% END %]
+&nbsp;&nbsp;
 </td><td valign=center>
-<input type=text name=reg_pat size=8 value='[% reg_pat %]'></td><td>&nbsp;&nbsp;&nbsp;<input type=text name=prog_pat size=8 value='[% prog_pat %]'></td><td><input type=submit value="Search">&nbsp;<a href="javascript:popup('/static/help/reg_search.html');">How?</a>
+<input type=text name=reg_pat size=8 value='[% reg_pat %]'></td><td>&nbsp;&nbsp;<input type=text name=prog_pat size=8 value='[% prog_pat %]'></td><td><input type=submit value="Search">&nbsp;<a href="javascript:popup('/static/help/reg_search.html');">How?</a>
 </td></tr></table>
 </form>
 
@@ -245,7 +243,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <h3>MMI Payments</h3>
 <ul>
 <a href="/person/create_mmi_payment/[% reg.id %]/[% reg.person.id %]">New</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;
 <a href="/person/list_mmi_payment/[% reg.person.id %]">List</a>
 </ul>
 </div>

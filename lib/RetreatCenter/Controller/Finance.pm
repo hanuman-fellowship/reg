@@ -11,6 +11,7 @@ use Util qw/
 /;
 use Date::Simple qw/
     date
+    today
 /;
 use Global qw/
     %string
@@ -46,20 +47,26 @@ sub reconcile_deposit : Local {
     };
     my @payments;
     my ($cash, $check, $credit, $online, $total) = (0) x 5;
-    for my $src (qw/ Reg XAccount Rental /) {
-        for my $p (model($c, "${src}Payment")->search($cond)) {
+    for my $src (qw/
+        RegPayment
+        XAccountPayment
+        RentalPayment
+        MMIPayment
+        Donation
+    /) {
+        for my $p (model($c, $src)->search($cond)) {
             my $type = $p->type;
             my $amt  = $p->amount;
-            if ($type eq 'Cash') {
-                $cash += $amt;
-            }
-            elsif ($type eq 'Check') {
-                $check += $amt;
-            }
-            elsif ($type eq 'Credit Card') {
+            if ($type eq 'D') {
                 $credit += $amt;
             }
-            elsif ($type eq 'Online') {
+            elsif ($type eq 'C') {
+                $check += $amt;
+            }
+            elsif ($type eq 'S') {
+                $cash += $amt;
+            }
+            elsif ($type eq 'O') {
                 $online += $amt;
             }
             $total += $amt;
@@ -67,10 +74,11 @@ sub reconcile_deposit : Local {
                 name   => $p->name,
                 link   => $p->link,
                 date   => $p->the_date_obj->format("%D"),
-                cash   => ($type eq 'Cash'  )? $amt: "",
-                chk    => ($type eq 'Check' )? $amt: "",
-                credit => ($type eq 'Credit Card')? $amt: "",
-                online => ($type eq 'Online')? $amt: "",
+                type   => $type,
+                cash   => ($type eq 'S')? $amt: "",
+                chk    => ($type eq 'C')? $amt: "",
+                credit => ($type eq 'D')? $amt: "",
+                online => ($type eq 'O')? $amt: "",
                 pname  => $p->pname,
             };
         }
@@ -125,8 +133,14 @@ sub file_deposit : Local {
         the_date => { between => [ $date_start, $date_end ] },
     };
     my @payments;
-    for my $src (qw/ Reg XAccount Rental /) {
-        for my $p (model($c, "${src}Payment")->search($cond)) {
+    for my $src (qw/
+        RegPayment
+        XAccountPayment
+        RentalPayment
+        MMIPayment
+        Donation
+    /) {
+        for my $p (model($c, $src)->search($cond)) {
             my $type = $p->type();
             my $amt  = $p->amount();
             push @payments, {
@@ -189,11 +203,12 @@ $timestamp<span style="font-size: 25pt; font-weight: bold; margin-left: 1in;">Ba
 <tr><td colspan=6><hr color=black></td></tr>
 EOH
     my $prev_glnum = "";
+    my $prev_pname = "";     # needed for MMI programs
     my ($cash, $check, $credit) = (0, 0, 0);
     my ($gcash, $gcheck, $gcredit, $gtotal) = (0, 0, 0, 0);
     for my $p (@payments) {
         if ($p->{glnum} ne $prev_glnum) {
-            if ($prev_glnum) {
+            if ($prev_glnum || $prev_pname) {
                 my $total = $cash+$check+$credit;
                 $html .= "<tr>"
                       .  "<td colspan=2></td>"
@@ -223,10 +238,11 @@ EOH
                   ;
         }
         $prev_glnum = $p->{glnum};
+        $prev_pname = $p->{pname};
         my $type = $p->{type};
-        my $n = ($type eq "Cash" )? 1
-               :($type eq "Check")? 2
-               :                    3       # Credit - includes Online
+        my $n = ($type eq "S")? 1
+               :($type eq "C")? 2
+               :                3       # Credit - includes Online
                ;
         my $amt = $p->{amt};
         $html .= "<tr>"
@@ -297,7 +313,6 @@ EOH
                 cash       => $gcash,
                 chk        => $gcheck,
                 credit     => $gcredit,
-                total      => $gtotal,
             });
             $string{last_deposit_date} = $date_end;         # in memory
             model($c, 'String')->find('last_deposit_date')->update({  # on disk
@@ -312,11 +327,24 @@ EOH
 sub deposits : Local {
     my ($self, $c) = @_;
 
+    my $dt;
+    if ($dt = $c->request->params->{date_start}) {
+        $dt = date($dt);
+        if (! $dt) {
+            $dt = today();
+        }
+    }
+    else {
+        $dt = today();
+    }
     stash($c,
         deposits => [ 
             model($c, 'Deposit')->search(
-                { },
-                { order_by => 'date_start desc' },
+                { date_start => { '<=', $dt->as_d8() } },
+                {
+                    rows => 10,
+                    order_by => 'date_start desc'
+                },
             )
         ],
         template => "finance/prior_deposits.tt2",

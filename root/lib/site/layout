@@ -1,5 +1,6 @@
 <div id="content">
 [% IF Catalyst.user_exists %]   <!-- not for login screen -->
+<div class=noprint>
 <table cellpadding=4 border=0>
 <tr>
 [% IF Catalyst.check_user_roles('field_staff') %]
@@ -14,11 +15,9 @@
 <td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
 </td><td><a href=/logout>Logout</a></td>
 [% IF Catalyst.check_user_roles('super_admin') %]
-    <td align=right><a href=/static/testplans/index.html>Test Plans</a></td>
+    <td align=right><a href=/static/testplans/index.html>TestPlans</a></td>
 [% END %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
-    <td align=right><a href=/issue/list>Issues</a></td>
-[% END %]
+<td align=left><a href=/issue/list>Issues</a></td>
 </tr>
 
 [% IF Catalyst.check_user_roles('prog_staff') %]
@@ -29,10 +28,11 @@
 <td><a target=calendar href='/event/calendar/[% cal_param %]'>Calendar</a></td>
 <td><a target=dailypic href=/dailypic/show/indoors/[% daily_pic_date %]>DailyPic</a></td>
 <td><a target=clusterview href=/cluster/show/[% daily_pic_date %]/[% cur_cluster %]>ClusterView</a></td>
-<td>[% today.format("%A %B %e, %Y") %]
+<td colspan=3>[% today.format("%A %B %e, %Y") %]
 </tr>
 [% END %]
 </table>
+</div>
 <p></p>
 [% END %]   <!-- if user exists -->
 [% content %]

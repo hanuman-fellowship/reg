@@ -1,6 +1,11 @@
 .keyed {
     background: #ddeeee;
 }
+@media print {
+    .noprint {
+        display: none;
+    }
+}
 .hdr {
     color: green;
     font-weight: bold;

@@ -73,13 +73,20 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     my $descr = $c->request->params->{descr};
+    my $glnum = $c->request->params->{glnum};
     if (empty($descr)) {
         $c->stash->{mess} = "Project description cannot be blank.";
         $c->stash->{template} = "project/error.tt2";
         return;
     }
+    if (empty($glnum)) {
+        $c->stash->{mess} = "Project GL Number cannot be blank.";
+        $c->stash->{template} = "project/error.tt2";
+        return;
+    }
     model($c, 'Project')->find($id)->update({
         descr => $descr,
+        glnum => $glnum,
     });
     $c->response->redirect($c->uri_for('/project/list'));
 }
@@ -98,13 +105,20 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     my $descr = $c->request->params->{descr};
+    my $glnum = $c->request->params->{glnum};
     if (empty($descr)) {
         $c->stash->{mess} = "Project description cannot be blank.";
         $c->stash->{template} = "project/error.tt2";
         return;
     }
+    if (empty($glnum)) {
+        $c->stash->{mess} = "Project GL Number cannot be blank.";
+        $c->stash->{template} = "project/error.tt2";
+        return;
+    }
     model($c, 'Project')->create({
         descr => $descr,
+        glnum => $glnum,
     });
     $c->response->redirect($c->uri_for('/project/list'));
 }

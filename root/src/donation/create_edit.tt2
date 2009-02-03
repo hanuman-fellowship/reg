@@ -12,6 +12,18 @@
 </tr>
 
 <tr>
+<th align=right>Type</th>
+<td>
+<select name=type>
+<option value='D' selected>Credit Card
+<option value='C'>Check
+<option value='S'>Cash
+<option value='O'>Online
+</select>
+</td>
+</tr>
+
+<tr>
 <th align=right>Project</th>
 <td>
 <select name=project>
@@ -24,7 +36,7 @@
 
 <tr>
 <th align=right>Date</th>
-<td><input type=text name=date_donate size=10></td>
+<td><input type=text name=the_date size=10></td>
 </tr>
 
 <tr>

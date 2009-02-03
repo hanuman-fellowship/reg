@@ -64,6 +64,7 @@ sub update_do : Local {
     my ($self, $c, $type, $id) = @_;
     my $sum = model($c, 'Summary')->find($id);
     my %hash = %{ $c->request->params() };
+$c->log->info("signage = '$hash{signage}'");
     for my $f (keys %hash) {
         $hash{$f} = etrim($hash{$f});
     }

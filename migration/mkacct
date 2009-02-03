@@ -25,6 +25,5 @@ create table deposit (
     time        text,
     cash        integer,
     chk         integer,    -- can't have 'check' :(
-    credit      integer,
-    total       integer
+    credit      integer
 );

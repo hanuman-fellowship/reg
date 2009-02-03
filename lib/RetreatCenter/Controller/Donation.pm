@@ -40,13 +40,14 @@ sub create_do : Local {
 
     my $amount = trim($c->request->params->{amount});
     my $project_id = $c->request->params->{project};
-    my $dt = $c->request->params->{date_donate};
-    my $date_donate = date($dt);
+    my $dt = $c->request->params->{the_date};
+    my $type = $c->request->params->{type};
+    my $the_date = date($dt);
     my @mess = ();
     if ($amount !~ m{^\d+$}) {
         push @mess, "Illegal amount: $amount";
     }
-    if (! ref($date_donate)) {
+    if (! ref($the_date)) {
         push @mess, "Illegal date: $dt";
     }
     if (@mess) {
@@ -57,10 +58,11 @@ sub create_do : Local {
     # check and report errors???
  
     model($c, 'Donation')->create({
-        amount      => $amount,
-        project_id  => $project_id,
-        person_id   => $person_id,
-        date_donate => $date_donate->as_d8(),
+        amount     => $amount,
+        type       => $type,
+        project_id => $project_id,
+        person_id  => $person_id,
+        the_date   => $the_date->as_d8(),
         who_d       => $c->user->obj->id,
         date_d      => tt_today($c)->as_d8(),
         time_d      => sprintf "%02d:%02d", (localtime())[2, 1],

@@ -233,22 +233,11 @@ sub count {
     $count;
 }
 sub status_td {
-    my ($self, $link) = @_;
+    my ($self) = @_;
     my $status = $self->status;
     my $color = sprintf "#%02x%02x%02x",
                         $string{"rental_$status\_color"} =~ m{\d+}g;
-    if ($link) {
-        return
-           "<td align=center bgcolor=$color"
-         . " style='cursor: pointer'"
-         . qq! onclick='window.location.href="/rental/view/!
-         . $self->id()
-         . qq!/1"'>\u$status</td>!
-         ;
-    }
-    else {
-        return "<td align=center bgcolor=$color>\u$status</td>";
-    }
+    return "<td align=center bgcolor=$color>\u$status</td>";
 }
 
 #

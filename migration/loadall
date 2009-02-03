@@ -1,5 +1,5 @@
 #!/bin/sh
-howmuch='f07'       # f89
+howmuch='s08'       # f89 or cur
 
 if [ `whoami` = 'sahadev' ]
 then
@@ -47,6 +47,7 @@ echo rentals
 loadrent $howmuch
 
 # load all mmi payments
+echo mmi
 loadmmi
 
 # add a LOT of config records
@@ -56,13 +57,16 @@ loadconfig $MYSQL
 echo housing assignments
 loadhousing
 
-# conf notes
+echo conf notes
 loadnote
 
+echo deposits
+loaddep
+
 # initialize the member and donation data
-echo Donations
+echo donations
 loaddon
-echo Memberships
+echo memberships
 loadmem
 
 # split the F08 PRs from the S08 ones

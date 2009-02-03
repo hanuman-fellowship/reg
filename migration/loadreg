@@ -529,12 +529,13 @@ sub processReg {
 sub payment {
     my ($amt, $type, $date, $msg) = @_;
 
-    if (exists $type_map{$type}) {
-        $type = $type_map{$type};
-    }
-    else {
-        $type = "unknown";
-    }
+    # we moved back to just D, C, S, and O.
+    #if (exists $type_map{$type}) {
+    #    $type = $type_map{$type};
+    #}
+    #else {
+    #    $type = "unknown";
+    #}
     $pay_ins_sth->execute(
         undef, $reg_id, $unknown,
         $date, "12:00", 

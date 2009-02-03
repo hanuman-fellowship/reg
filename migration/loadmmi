@@ -43,10 +43,10 @@ while (<$mp>) {
     my $amount  = <$mp>;
     my $gl      = <$mp>;
     my $date    = <$mp>;
-    my $cash    = <$mp>;
+    my $type    = <$mp>;
     my $deleted = <$mp>;
     # a DOS kind of chomp:
-    for ($first, $last, $amount, $gl, $date, $cash, $deleted) {
+    for ($first, $last, $amount, $gl, $date, $type, $deleted) {
         s{\s*\r?\n}{};
         s{^\S+\s+}{};
         s{\s+$}{};
@@ -67,7 +67,7 @@ while (<$mp>) {
     # find the program and then the registration
     #
     $mp_sth->execute($n, $person_id, $amount,
-                     $gl, $date, $cash, $deleted,
+                     $gl, $date, $type, $deleted,
                      0, ""      # unknown reg_id and note
     );
 }

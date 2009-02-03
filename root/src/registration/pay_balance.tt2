@@ -19,10 +19,10 @@
 <th align=right>Type</th>
 <td>
 <select name=type>
-<option value='Credit Card' selected>Credit Card
-<option value='Check'>Check
-<option value='Cash'>Cash
-<option value='Online'>Online
+<option value='D' selected>Credit Card
+<option value='C'>Check
+<option value='S'>Cash
+<option value='O'>Online
 </select>
 </td>
 </tr>

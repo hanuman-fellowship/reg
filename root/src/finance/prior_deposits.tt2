@@ -1,5 +1,8 @@
 <h2>Bank Deposits</h2>
 <ul>
+<form action=/finance/deposits>
+<b>Start Date</b> <input type=text name=date_start size=10> <input type=submit value="Go">
+</form>
 <table cellpadding=5>
 <tr>
 <th align=center>Who</th>
@@ -21,7 +24,7 @@
 <td align=right>[% d.cash %]</td>
 <td align=right>[% d.chk %]</td>
 <td align=right>[% d.credit %]</td>
-<td align=right>[% d.total %]</td>
+<td align=right>[% d.cash + d.chk + d.credit  %]</td>
 <td align=right><a href="/finance/reconcile_deposit/[% d.id %]">Reconcile</a></td>
 <td align=right><a href="/finance/file_deposit/[% d.id %]">File</a></td>
 </tr>

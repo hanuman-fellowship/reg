@@ -63,10 +63,8 @@ function process(e) {
 
 [% END %]
 
-[% IF online %]
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
-[% END %]
 
 [% IF ! multiple_progs %]
 &nbsp;&nbsp;&nbsp;

@@ -14,9 +14,9 @@ __PACKAGE__->add_columns(qw/
     id
     person_id
     project_id
-    date_donate
+    the_date
     amount
-
+    type
     who_d
     date_d
     time_d
@@ -31,13 +31,30 @@ __PACKAGE__->belongs_to(person  => 'RetreatCenterDB::Person',  'person_id');
 __PACKAGE__->belongs_to(project => 'RetreatCenterDB::Project', 'project_id');
 __PACKAGE__->belongs_to(who     => 'RetreatCenterDB::User',    'who_d');
 
-sub date_donate_obj {
+sub the_date_obj {
     my ($self) = @_;
-    date($self->date_donate) || "";
+    date($self->the_date) || "";
 }
 sub date_d_obj {
     my ($self) = @_;
     date($self->date_d) || "";
+}
+sub name {
+    my ($self) = @_;
+    my $per = $self->person;
+    return $per->last . ", " . $per->first;
+}
+sub pname {
+    my ($self) = @_;
+    return $self->project->descr();
+}
+sub link {
+    my ($self) = @_;
+    return "/person/view/" . $self->person_id;
+}
+sub glnum {
+    my ($self) = @_;
+    return $self->project->glnum();
 }
 
 1;

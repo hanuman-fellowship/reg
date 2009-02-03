@@ -288,7 +288,9 @@ sub etrim {
     my ($s) = @_;
 
     return $s unless $s;
-    $s =~ s{\s*$}{}gm;
+    $s =~ s{[\r ]*$}{}gm;
+    $s =~ s{\s*$}{};        # new lines at the very end
+                            # they creep into a textarea for some reason
     $s;
 }
 
@@ -346,25 +348,31 @@ sub slurp {
 }
 
 #
-# __, **, %%%, ~~ expansions into <i>, <b>, <a href=>, <a mailto>
+# __, ++, **, %%%, ~~ expansions into <u>, <i>, <b>, <a href=>, <a mailto>
 # and #, - into lists
 #
-# the first _ and * need to appear either after a blank
+# the first _ needs to appear either after a non-word char
 # or at the beginning of the line - in case an underscore
 # is needed elsewhere - like in a web address.
 #
 sub expand {
 	my ($v) = @_;
     $v =~ s{\r?\n}{\n}g;
-	$v =~ s#(^|\W)\*(.*?)\*#$1<b>$2</b>#smg;
-	$v =~ s#(^|\W)_(.*?)\_#$1<i>$2</i>#smg;
-	$v =~ s{%(.*?)%(.*?)%}
+	$v =~ s{(^|\W)_([^_]*?)\_}{$1<u>$2</u>}smg;
+	$v =~ s{\*([^*]*?)\*}{<b>$1</b>}mg;
+	$v =~ s{\+([^+]*?)\+}{<i>$1</i>}mg;
+    $v =~ s{\^\^([^^]*)\^\^}{<span style="font-size: 18pt;">$1</span>}mg;
+    $v =~ s{\^([^^]*)\^}{<span style="font-size: 15pt;">$1</span>}mg;
+    $v =~ s{\|([^|]*)\|:(#?\w+)}{<span style="background: $2;">$1</span>}mg;
+    $v =~ s{\|([^|]*)\|}{<span style="background: yellow;">$1</span>}mg;
+	$v =~ s{%([^%]*?)%([^%]*?)%}
            {
                my ($clickpoint, $link) = (trim($1), trim($2));
                $link =~ s{http://}{};   # string http:// if any
                "<a href='http://$link' target=_blank>$clickpoint</a>";
            }esg;
 	$v =~ s{~\s*(\S+)\s*~}{<a href="mailto:$1">$1</a>}sg;
+    $v =~ s{/\s*$}{<br>}mg;
 	my $in_list = "";
 	my $out = "";
 	for (split /\n/, $v) {
@@ -390,6 +398,7 @@ sub expand {
 		$out .= "$_\n";
 	}
 	$out .= $in_list if $in_list;
+    $v =~ s{\n\n}{<p>\n}g;      # last to not mess with the ending of lists.
 	$out;
 }
 #

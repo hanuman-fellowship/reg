@@ -770,3 +770,38 @@ better line for contract - <hr>
     order of example switched.
     first explain the situation, then put the codes
     that go into the attendance field.
+
+projects need GL numbers???
+    yes.  given.
+    what about existing donations?
+
+tech doc:
+    the 5 types of payments 
+        (reg_pay, rental_pay, mmi_pay, donation, xaccount_pay)
+    have these things in common (which I guess is what a Java interface is for):
+
+    - amount
+    - the_date
+    - type
+        the above 3 are direct attributes
+    - glnum()
+    - name() - of the the person making the payment
+    - pname() - the program (perhaps MMI)/rental/Extra Account/Project
+        to which the payment is directed.
+    - link() - href to the registration (reg_payment, mmi_payment),
+        the rental (rental_payment)
+        or the person (xaccount xaccount_payment, project donation)
+
+        this link is where clicking on the name() goes.
+
+    flaws in existing mmi payment data
+        results in no pointer to registration/mmi program.  sorry.
+        but we do have the glnum. future payments will have that.
+
+
+payments - when showing the type field need
+    to expand O to Online, C to Check etc.
+
+cache the users - they don't change often
+
+use Time::Simple show() for summary top part

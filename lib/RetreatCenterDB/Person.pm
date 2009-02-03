@@ -55,7 +55,7 @@ __PACKAGE__->has_many(rentals => 'RetreatCenterDB::Rental', 'coordinator_id');
 
 # donations
 __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'person_id',
-                      { order_by => 'date_donate desc'});
+                      { order_by => 'the_date desc'});
 
 # payments
 __PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment',
@@ -65,7 +65,7 @@ __PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment',
 # MMI payments
 __PACKAGE__->has_many(mmi_payments => 'RetreatCenterDB::MMIPayment',
                                       'person_id',
-                      { order_by => 'payment_date desc'});
+                      { order_by => 'the_date desc'});
 
 # credits
 __PACKAGE__->has_many(credits => 'RetreatCenterDB::Credit', 'person_id',

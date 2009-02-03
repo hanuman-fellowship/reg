@@ -26,6 +26,11 @@ function popup(url) {
     }
     newwin.moveTo(700, 0);
 }
+function more(id) {
+    var el = document.getElementById(id);
+    el.rows = parseInt(el.rows) + 3;
+    return false;
+}
 </script>
 </head>
 
@@ -151,8 +156,9 @@ Misc
 
 <tr>
 <th align=right valign=top>Web Description</th>
-<td colspan=5><textarea name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea></td>
+<td colspan=5><textarea id=webdesc name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea>
 </td>
+<td valign=bottom><a href="#" onclick="return more('webdesc');">more</a></td>
 </tr>
 
 <tr>

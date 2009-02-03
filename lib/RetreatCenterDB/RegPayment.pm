@@ -29,14 +29,12 @@ sub the_date_obj {
 
 sub name {
     my ($self) = @_;
-
     my $per = $self->registration->person;
     return $per->last . ", " . $per->first;
 }
 
 sub link {
     my ($self) = @_;
-    
     return "/registration/view/" . $self->reg_id;
 }
 

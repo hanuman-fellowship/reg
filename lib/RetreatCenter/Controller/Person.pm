@@ -916,13 +916,13 @@ sub create_mmi_payment_do : Local {
               ;
 
     model($c, 'MMIPayment')->create({
-        person_id    => $person_id,
-        amount       => $c->request->params->{amount},
-        cash         => $c->request->params->{cash},
-        gl           => $glnum,
-        payment_date => tt_today($c)->as_d8(),
-        reg_id       => $reg_id,
-        note         => $c->request->params->{note},
+        person_id => $person_id,
+        amount    => $c->request->params->{amount},
+        cash      => $c->request->params->{cash},
+        glnum     => $glnum,
+        the_date  => tt_today($c)->as_d8(),
+        reg_id    => $reg_id,
+        note      => $c->request->params->{note},
     });
     $c->response->redirect($c->uri_for("/person/list_mmi_payment/$person_id"));
 }

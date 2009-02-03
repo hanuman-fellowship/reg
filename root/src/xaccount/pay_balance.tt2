@@ -4,10 +4,25 @@
 Payment for [% person.last %], [% person.first %]
 <p>
 <table cellpadding=3>
-<tr><th align=right>Amount</th><td><input type=input name=amount size=5></td>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=input name=amount size=5></td>
 [% IF message %]
 <td valign=top><span style="color: red; font-weight: bold; font-size: 15pt;">[% message %]</span></td>
 [% END %]
+</tr>
+
+<tr>
+<th align=right>Type</th>
+<td>
+<select name=type>
+<option value='D' selected>Credit Card
+<option value='C'>Check
+<option value='S'>Cash
+<option value='O'>Online
+</select>
+</td>
 </tr>
 
 <tr>
@@ -20,17 +35,10 @@ Payment for [% person.last %], [% person.first %]
 </select>
 </td>
 </tr>
-<tr><th align=right>What</th><td colspan=2><input type=input name=what size=50></td></tr>
+
 <tr>
-<th align=right>Type</th>
-<td>
-<select name=type>
-<option value='Credit Card' selected>Credit Card
-<option value='Check'>Check
-<option value='Cash'>Cash
-<option value='Online'>Online
-</select>
-</td>
+<th align=right>What</th>
+<td colspan=2><input type=input name=what size=50></td>
 </tr>
 
 <tr>

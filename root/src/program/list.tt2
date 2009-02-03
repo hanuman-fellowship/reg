@@ -14,10 +14,8 @@
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/program/list/1">PR/DCM<a>
-[% IF online > 0 %]
-    &nbsp;&nbsp;&nbsp;
-    <a href="/registration/list_online">Online ([% online %])</a>
-[% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value=[% pr_pat %]> <input type=submit value="Search"></form>
 <ul>
 <table border=0 cellpadding=3>

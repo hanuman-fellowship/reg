@@ -6,9 +6,9 @@
 <table cellpadding=3>
 <tr><th align=right>Deposit</th><td><input type=text size=4 maxlength=4 name=deposit>
 <select style="margin-left: .5in" name=deposit_type>
-<option value='Credit Card' selected>Credit Card
-<option value='Cash'>Cash
-<option value='Check'>Check
+<option value='D' selected>Credit Card
+<option value='C'>Check
+<option value='S'>Cash
 </select>
 </td></tr>
 <tr><th>Postmark Date</th><td><input type=text size=10 maxlength=10 name=date_post>

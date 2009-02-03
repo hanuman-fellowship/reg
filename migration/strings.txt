@@ -75,7 +75,7 @@ extra_hours_charge 2
 lunch_charge 9
 mon_thu_color 240,240,255
 fri_sun_color 255,240,240
-mem_team Shyama Friedberg (Secretary), Richard Buzzini
+mem_team Shyama Friedberg (Secretary), Lori March
 mem_phone 408-847-0406 x334
 mem_email memberships@mountmadonna.org
 mem_site http://hanumanfellowship.org/NEW_HFS_Membership_App.pdf
