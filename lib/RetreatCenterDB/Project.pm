@@ -13,6 +13,6 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key(qw/id/);
 
 __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'project_id',
-                          { order_by => 'date_donate desc'});
+                          { order_by => 'the_date desc'});
 
 1;
