@@ -28,8 +28,8 @@ if ($ans !~ m{^y}i) {
 
 for my $tbl (qw/ donation project /) {
     $dbh->do("delete from $tbl");
-    my $q = "?,?,?,?,?,?,?,?";
-    $q = "?,?" if $tbl eq 'project';
+    my $q = "?,?,?,?,?,?,?,?,?";
+    $q = "?,?,?" if $tbl eq 'project';
     my $sql = "insert into $tbl values ($q)";
     my $sth = $dbh->prepare($sql) or die "oops2 $tbl\n";
     open my $don, "<", "don/$tbl.txt" or die "$tbl.txt\n";
