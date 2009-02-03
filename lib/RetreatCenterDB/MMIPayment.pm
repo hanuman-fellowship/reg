@@ -52,7 +52,7 @@ sub type_disp {
 sub for_what {
     my ($self) = @_;
 
-    my $type = substr($self->gl(), 0, 1);
+    my $type = substr($self->glnum(), 0, 1);
     return ($type eq '1')? "Tuition"
           :($type eq '2')? "Meals and Lodging"
           :($type eq '3')? "Application Fee"
