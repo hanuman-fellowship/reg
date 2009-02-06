@@ -13,7 +13,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
 &nbsp;&nbsp;&nbsp;
-[% IF person.mmi_payments %]<a href="/person/list_mmi_payment/[% id %]">MMI Payments</a>[% END %]
+[% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]<a href="/person/list_mmi_payment/[% id %]">MMI Payments</a>[% END %]
 <p>
 <a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
@@ -134,14 +134,16 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     <table cellpadding=3>
     <tr>
     <th align=right>Amount</th>
+    <th align=right>Type</th>
     <th align=left>Project</th>
     <th align=center>Date</th>
     </tr>
     [% FOR d IN person.donations %]
     <tr>
     <td align=right>[% d.amount %]</td>
+    <td>[% d.type_sh %]</td>
     <td><a href="/project/donations/[% d.project.id %]">[% d.project.descr %]</a></td>
-    <td>[% d.date_donate_obj %]</td>
+    <td>[% d.the_date_obj %]</td>
     <td><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
     [% END %]
@@ -166,7 +168,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         <td align=right>[% p.amount %]</td>
         <td align=right>[% p.what %]</td>
         <td align=right><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
-        <td align=right>[% p.type %]</td>
+        <td align=right>[% p.type_sh %]</td>
         <td><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
         </tr>
     [% END %]
@@ -199,7 +201,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% FOREACH r IN regs %]
         <tr>
         <td>[% IF r.program.school != 0 %]<span class=required>*</span>[% END %]</td>
+        [% IF r.program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
         <td><a href="/registration/view/[% r.id %]">[% r.program.name %]</a></td>
+        [% ELSE %]
+        <td>[% r.program.name %]</td>
+        [% END %]
         <td>[% IF r.date_start %][% r.date_start_obj %][% ELSE %][% r.program.sdate_obj %][% END %]</td>
         </tr>
     [% END %]

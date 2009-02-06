@@ -568,7 +568,25 @@ doc:
     Calendar and DailyPic
         DCM Programs (and Personal Retreats) are not shown on the
         calendar (or the daily pic) as they would be annoyingly and
-        uselessly ever present.
+        uselessly ever-present.
+
+    There is a role 'mmi_admin'.  Only users with this role can _see_
+        MMI registrations or payments or modify MMI programs.
+        Normal program admins/staff can see the programs but not modify them.
+        This is enforced via _whatever way_ you might try to get
+        to the payments or registration or program.  A few examples:
+
+        - The MMI payments are viewable via the person record
+          of a person who is enrolled in an MMI program/course.
+
+        - Clicking on an MMI person's room in the DailyPic
+          or the ClusterView will show you their name but
+          not allow you to click through to their
+          registration - unless one of your roles is mmi_admin.
+
+        - Asking for the Early/Late registrations list from
+          a program screen.  You'll see different things depending
+          on your role.
 
 how to only show current programs in list
     when there are extended programs?
@@ -798,10 +816,46 @@ tech doc:
         results in no pointer to registration/mmi program.  sorry.
         but we do have the glnum. future payments will have that.
 
-
 payments - when showing the type field need
     to expand O to Online, C to Check etc.
+    hash to map single char to display name
 
 cache the users - they don't change often
 
-use Time::Simple show() for summary top part
+MMI - no finances to non MMI person
+    all else?
+    click on DailyPic/ClusterView only see who, can't go there.
+    click on Calendar - _can_ go there but no changes at all.
+
+recompute housing fees when doing a lodge/relodge
+    and you have changed the housing type!
+
+edit reg vs create reg
+    merge?  very similar.  identical?
+    then just one to mess with...
+    need a sub-table for secondary housing preferences
+        like first, second, cabin/room, sharing with.
+
+change password - silly response as if error
+
+assistant/leader - noted on registration page for special costing
+
+simplify the myriad terms for the housing costs
+    from the web site all the way to the method names
+    descriptions from %string?  long/short?
+
+document the tnt thing - see Program::publish()
+
+doc:
+    Housing Types
+        ordered list of them in Util::housing_types().
+        these are names of columns in the housing_cost table
+        and values in pref1, pref2 in registration
+        and prefixed with n_ and att_ in rental.
+
+        they are also keys in string and prefixed with long_
+            for display purposes
+
+        can supply 1 or 2 to get more types
+            1 - own van, commuting
+            2 - unknown, not_needed

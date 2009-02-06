@@ -79,12 +79,14 @@ function cluster_down(cluster_id) {
 <h2>Programs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
     <a href="/program/create">Add</a>
-    &nbsp;&nbsp;&nbsp;
-    <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
-    &nbsp;&nbsp;&nbsp;
-    <a href="/program/delete/[% id %]"
-       onclick="return confirm('Okay to Delete [% program.name %]?');"
-          >Delete</a>
+    [% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
+        &nbsp;&nbsp;&nbsp;
+        <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
+        &nbsp;&nbsp;&nbsp;
+        <a href="/program/delete/[% id %]"
+           onclick="return confirm('Okay to Delete [% program.name %]?');"
+              >Delete</a>
+    [% END %]
     &nbsp;&nbsp;&nbsp;
     <a href="/program/duplicate/[% program.id %]">Duplicate</a>
     &nbsp;&nbsp;&nbsp;
@@ -105,12 +107,15 @@ function cluster_down(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/tally/[% id %]/0">Tally</a>
 &nbsp;&nbsp;&nbsp;
-[% IF program.school != 0 && program.level == 'S' %]
+[% IF program.school != 0 && program.level == 'S' &&
+   Catalyst.check_user_roles('mmi_admin') %]
 <a href="/registration/mmi_import/[% program.id %]">Import</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/registration/first_reg/[% id %]">1st Reg</a>
-&nbsp;&nbsp;&nbsp;
+[% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
+    <a href="/registration/first_reg/[% id %]">1st Reg</a>
+    &nbsp;&nbsp;&nbsp;
+[% END %]
 <a href="/registration/list_reg_name/[% id %]">AllRegs</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/program/email_all/[% id %]">Email</a>

@@ -130,8 +130,8 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 
 [% type = reg.h_type_disp %]
-<tr><th align=right>Housing</th>
-<td><table><tr><td align=center>
+<tr><th align=right valign=center>Housing</th>
+<td valign=center><table><tr><td align=center>
 [% type %]
 </td><td align=center>
 [% IF type != 'Commuting'
@@ -150,15 +150,25 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% END %]
 </td></tr></table>
 </td>
-<th align=right>Cabin/Room</th>
+<th align=right valign=center>Housing Preferences</th><td valign=center>[% reg.pref1_sh %]<br>[% reg.pref2_sh %]</td>
+</tr>
+
+<tr>
+<th colspan=3 align=right>Cabin/Room</th>
 <td>[% reg.cabin_room %]
 </tr>
+
+[% IF reg.share_first %]
+<th colspan=3 align=right>Sharing With</th>
+<td>[% share %]</td>
+[% END %]
+
 <tr><th align=right>Balance</th>
 <td><table><tr><td align=center>[% reg.balance %]</td><td align=center>[% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>[% END %]</td></tr></table></td>
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td colspan=3>[% comment %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
+<td colspan=3>[% reg.comment_br %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
 </tr>
 
 <tr>
@@ -222,7 +232,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <tr>
 <td align=right>[% py.amount %]</td>
 <td>[% py.what %]</td>
-<td>[% py.type %]</td>
+<td>[% py.type_sh %]</td>
 <td>
 <a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj %]&nbsp;&nbsp;[% py.time %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
 </td>

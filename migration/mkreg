@@ -41,7 +41,9 @@ create table registration (
     cabin_room text,       -- 'cabin', 'room', or blank
     leader_assistant text, -- 'yes' if housing should be free
     pref1 text,            -- 1st housing preference
-    pref2 text             -- 2nd
+    pref2 text,            -- 2nd
+    share_first text,
+    share_last text
 );
 drop table if exists reg_history;
 create table reg_history (

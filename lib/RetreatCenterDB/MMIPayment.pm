@@ -6,6 +6,9 @@ use base qw/DBIx::Class/;
 use Date::Simple qw/
     date
 /;
+use Global qw/
+    %string
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('mmi_payment');
@@ -40,13 +43,7 @@ sub name {
 
 sub type_disp {
     my ($self) = @_;
-
-    my $type = $self->type();
-    return ($type eq 'D')? "Credit Card"
-          :($type eq 'C')? "Check"
-          :($type eq '$')? "Cash"
-          :                "Online"
-          ;
+    return $string{"payment_" . $self->type()};
 }
 
 sub for_what {
@@ -79,6 +76,11 @@ sub link {
     else {
         return "/person/view/" . $self->person_id;
     }
+}
+
+sub type_sh {
+    my ($self) = @_;
+    return $string{"payment_" . $self->type()};
 }
 
 1;

@@ -94,10 +94,10 @@ Web
 
 <!-- Meals & Lodging div -->
 <div id="content1" class="tabcontent" style="display: none">
-<table>
+<table border=0>
 
 <tr>
-<th align=right width=140><span class="required">*</span> Maximum</th>
+<th align=right width=100><span class="required">*</span> Maximum</th>
 <td><input tabindex=1 type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
@@ -122,77 +122,16 @@ Web
 </th>
 </tr>
 
-<tr>
-<th align=right>Single Bath</th>
-<td align=center><input tabindex=3 type=text size=3 name=n_single_bath value=[% rental.n_single_bath %]></td>
-<td align=center><input tabindex=15 type=text size=30 name=att_single_bath value='[% rental.att_single_bath %]'></td>
-</tr>
+[% FOREACH t IN h_types %]
+    [% n = 'n_' _ t %]
+    [% att = 'att_' _ t %]
 
-<tr>
-<th align=right>Single</th>
-<td align=center><input tabindex=4 type=text size=3 name=n_single value=[% rental.n_single %]></th>
-<td align=center><input tabindex=16 type=text size=30 name=att_single value='[% rental.att_single %]'></th>
-</tr>
-
-<tr>
-<th align=right>Double Bath</th>
-<td align=center><input tabindex=5 type=text size=3 name=n_dble_bath value=[% rental.n_dble_bath %]></td>
-<td align=center><input tabindex=17 type=text size=30 name=att_dble_bath value='[% rental.att_dble_bath %]'></td>
-</tr>
-
-<tr>
-<th align=right>Double</th>
-<td align=center><input tabindex=6 type=text size=3 name=n_dble value=[% rental.n_dble %]></td>
-<td align=center><input tabindex=18 type=text size=30 name=att_dble value='[% rental.att_dble %]'></td>
-</tr>
-
-<tr>
-<th align=right>Triple</th>
-<td align=center><input tabindex=7 type=text size=3 name=n_triple value=[% rental.n_triple %]></td>
-<td align=center><input tabindex=19 type=text size=30 name=att_triple value='[% rental.att_triple %]'></td>
-</tr>
-
-<tr>
-<th align=right>Quad</th>
-<td align=center><input tabindex=8 type=text size=3 name=n_quad value=[% rental.n_quad %]></td>
-<td align=center><input tabindex=20 type=text size=30 name=att_quad value='[% rental.att_quad %]'></td>
-</tr>
-
-<tr>
-<th align=right>Dormitory</th>
-<td align=center><input tabindex=9 type=text size=3 name=n_dormitory value=[% rental.n_dormitory %]></td>
-<td align=center><input type=text size=30 name=att_dormitory value='[% rental.att_dormitory %]'></td>
-</tr>
-
-<tr>
-<th align=right>Economy</th>
-<td align=center><input tabindex=10 type=text size=3 name=n_economy value=[% rental.n_economy %]></td>
-<td align=center><input tabindex=21 type=text size=30 name=att_economy value='[% rental.att_economy %]'></td>
-</tr>
-
-<tr>
-<th align=right>Center Tent</th>
-<td align=center><input tabindex=11 type=text size=3 name=n_center_tent value=[% rental.n_center_tent %]></td>
-<td align=center><input type=text size=30 name=att_center_tent value='[% rental.att_center_tent %]'></td>
-</tr>
-
-<tr>
-<th align=right>Own Tent</th>
-<td align=center><input tabindex=12 type=text size=3 name=n_own_tent value=[% rental.n_own_tent %]></td>
-<td align=center><input tabindex=22 type=text size=30 name=att_own_tent value='[% rental.att_own_tent %]'></td>
-</tr>
-
-<tr>
-<th align=right>Own Van</th>
-<td align=center><input tabindex=13 type=text size=3 name=n_own_van value=[% rental.n_own_van %]></td>
-<td align=center><input tabindex=23 type=text size=30 name=att_own_van value='[% rental.att_own_van %]'></td>
-</tr>
-
-<tr>
-<th align=right>Commuting</th>
-<td align=center><input tabindex=14 type=text size=3 name=n_commuting value=[% rental.n_commuting %]></td>
-<td align=center><input tabindex=24 type=text size=30 name=att_commuting value='[% rental.att_commuting %]'></td>
-</tr>
+    <tr>
+    <th align=right>[% string.$t %]</th>
+    <td align=center><input tabindex=3 type=text size=3 name=[% n %] value='[% rental.$n %]'></td>
+    <td align=center><input tabindex=15 type=text size=30 name=[% att %] value='[% rental.$att %]'></td>
+    </tr>
+[% END %]
 
 </table>
 </div>

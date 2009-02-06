@@ -12,6 +12,7 @@ open my $strs, "<", "strings.txt"
     or die "cannot open strings.txt: $!\n";
 my ($key, $value);
 while (<$strs>) {
+    next if m{^#} || m{^\s*$};
     chomp;
     ($key, $value) = m{^\s*(\S+)\s+(.*)$};
     $sth->execute($key, $value);

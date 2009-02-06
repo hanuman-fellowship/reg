@@ -1331,8 +1331,7 @@ sub gen_regtable {
         my $month        = $p->sdate_obj->month;
 
         my $housecost = $p->housecost;
-        for my $t (housing_types()) {
-            next if $t =~ /unknown/;
+        for my $t (housing_types(1)) {
             next if $t =~ /quad/        && !$p->quad;
             next if $t =~ /economy/     && !$p->economy;
             next if $t =~ /single_bath/ && !$p->sbath;
@@ -1342,12 +1341,11 @@ sub gen_regtable {
                      || (5 <= $month && $month <= 10));
             next if $t =~ m{triple|dormitory}
                     && $p->name =~ m{personal\s+retreat}i;
-            (my $tt = $t) =~ s{_}{ }g;
             my $fees = $p->fees(0, $t);
             next if $fees == 0;    # another way to eliminate a housing option 
-            print {$regt} "basic $tt\t$fees\n";
+            print {$regt} "basic $t\t$fees\n";
             if ($p->extradays) {
-                print {$regt} "full $tt\t", $p->fees(1, $t), "\n";
+                print {$regt} "full $t\t", $p->fees(1, $t), "\n";
             }
         }
     }

@@ -1,7 +1,7 @@
 [% INCLUDE style.tt2 %]
 [% message %]Dear [% sanskrit %],
 <p>
-Your Hanuman Fellowship General Membership expired on [% exp_date %].<br>
+Your Hanuman Fellowship General Membership expired on [% exp_date->format("%D") %].<br>
 [% IF last_amount %]
 You last paid $[% last_amount %] on [% last_paid %].
 [% END %]

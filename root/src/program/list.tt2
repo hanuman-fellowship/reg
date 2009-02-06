@@ -32,7 +32,11 @@
     <td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
     <td>[% p.sdate_obj %]</td>
     <td align=right>[% p.reg_count %]&nbsp;&nbsp;</td>
-    <td><a href="/registration/first_reg/[% p.id %]">[% p.title %]</a></td>
+    [% IF p.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
+        <td><a href="/registration/first_reg/[% p.id %]">[% p.title %]</a></td>
+    [% ELSE %]
+        <td>[% p.title %]</td>
+    [% END %]
     </tr>
 [% END %]
 </table>

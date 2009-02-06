@@ -19,7 +19,6 @@ use Util qw/
     email_letter
     type_max
     lines
-    link_share
     normalize
     tt_today
     ceu_license
@@ -239,7 +238,7 @@ sub list_reg_name : Local {
         daily_pic_date  => $pr->sdate(),
         cal_param       => $pr->sdate_obj->as_d8() . "/1",
         program         => $pr,
-        regs            => _reg_table(\@regs),
+        regs            => _reg_table($c, \@regs),
         other_sort      => "list_reg_post",
         other_sort_name => "By Postmark",
         template        => "registration/list_reg.tt2",
@@ -268,7 +267,7 @@ sub list_reg_post : Local {
     stash($c,
         online          => scalar(@files),
         program         => $pr,
-        regs            => _reg_table(\@regs, postmark => 1),
+        regs            => _reg_table($c, \@regs, postmark => 1),
         other_sort      => "list_reg_name",
         other_sort_name => "By Name",
         template        => "registration/list_reg.tt2",
@@ -454,16 +453,9 @@ sub get_online : Local {
     # into the stash...
 
     # comments
-    my $comment = "1-$P{house1}  2-$P{house2}  online\n";
-    if ($P{withwhom_first}) {
-        $comment .= "Sharing a room with "
-                 .  normalize($P{withwhom_first})
-                 .  " "
-                 .  normalize($P{withwhom_last})
-                 .  ".\n";
-    }
+    my $comment = "";
     if ($P{request}) {
-        $comment .= $P{request};
+        $comment = $P{request};
     }
     if ($P{progchoice} eq 'full') {
         stash($c, date_end => "+" . $pr->extradays);
@@ -494,6 +486,8 @@ sub get_online : Local {
 
     stash($c,
         comment         => $comment,
+        share_first     => normalize($P{withwhom_first}),
+        share_last      => normalize($P{withwhom_last}),
         cabin_checked   => $P{cabinRoom} eq 'cabin'? "checked": "",
         room_checked    => $P{cabinRoom} eq 'room' ? "checked": "",
         adsource        => $P{advertiserName},
@@ -507,7 +501,7 @@ sub get_online : Local {
         "$P{howHeard}_checked" => "selected",
     );
 
-    _rest_of_reg($pr, $p, $c, $today, $P{house1});
+    _rest_of_reg($pr, $p, $c, $today, $P{house1}, $P{house2});
 }
 
 #
@@ -516,7 +510,7 @@ sub get_online : Local {
 # and render the view.
 #
 sub _rest_of_reg {
-    my ($pr, $p, $c, $today, $house1) = @_;
+    my ($pr, $p, $c, $today, $house1, $house2) = @_;
 
     #
     # the person's affils get _added to_ according
@@ -589,6 +583,7 @@ sub _rest_of_reg {
     # default is the first housing choice.
     # order is important:
     my $h_type_opts = "";
+    my $h_type_opts2 = "";
     Global->init($c);     # get %string ready.
     HTYPE:
     for my $ht (qw!
@@ -613,18 +608,22 @@ sub _rest_of_reg {
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
 
         my $selected = ($ht eq $house1)? " selected": "";
+        my $selected2 = ($ht eq $house2)? " selected": "";
         my $htdesc = $string{$htname};
         $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
         $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
+        $h_type_opts2 .= "<option value=$htname$selected2>$htdesc\n";
     }
     $h_type_opts .= "<option value=unknown>Unknown\n";
     $h_type_opts .= "<option value=not_needed>Not Needed\n";
     stash($c,
         program => $pr,
         person => $p,
-        h_type_opts => $h_type_opts,
-        confnotes   => [
+        h_type_opts  => $h_type_opts,
+        h_type_opts1 => $h_type_opts,
+        h_type_opts2 => $h_type_opts2,
+        confnotes    => [
             model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
         ],
         template    => "registration/create.tt2",
@@ -790,13 +789,6 @@ sub create_do : Local {
     elsif (!$P{cabin} && $P{room}) {
         $cabin_room = "room";
     }
-    my ($pref1, $pref2) = ("", "");
-    if ($P{comment} =~ m{1-(\S+)}) {
-        $pref1 = $comm_h_type{$1};
-    }
-    if ($P{comment} =~ m{2-(\S+)}) {
-        $pref2 = $comm_h_type{$1};
-    }
     my $reg = model($c, 'Registration')->create({
         person_id     => $P{person_id},
         program_id    => $P{program_id},
@@ -820,8 +812,10 @@ sub create_do : Local {
         arrived       => '',    # ditto
         cabin_room    => $cabin_room,
         leader_assistant => '',
-        pref1         => $pref1,
-        pref2         => $pref2,
+        pref1         => $P{pref1},
+        pref2         => $P{pref2},
+        share_first   => $P{share_first},
+        share_last    => $P{share_last},
         %dates,         # optionally
     });
     my $reg_id = $reg->id();
@@ -1315,9 +1309,58 @@ sub _view {
         #   :       "$name is not enrolled in <i>any</i> D/C/M program!";
     }
     my @files = <root/static/online/*>;
+    my $share_first = $reg->share_first();
+    my $share_last  = $reg->share_last();
+    my $share = "$share_first $share_last";
+    if ($share_first) {
+        if (my ($person) = model($c, 'Person')->search({
+                               first => $share_first,
+                               last  => $share_last,
+                           })
+        ) {
+            if (my ($reg) = model($c, 'Registration')->search({
+                                person_id  => $person->id(),
+                                program_id => $reg->program_id(),
+                            })
+            ) {
+                my $id = $reg->id();
+                $share = "<a href=/registration/view/$id>$share</a>";
+            }
+            else {
+                # not registered - but are they in the online list?
+                my ($found_first, $found_last) = (0, 0);
+                for my $f (<root/static/online/*>) {
+                    open my $in, "<", $f
+                        or die "cannot open $f: $!\n";
+                    # x_fname, x_lname - could be anywhere in the file
+                    while (<$in>) {
+                        if (m{x_fname => $share_first}i) {
+                            $found_first = 1;
+                        }
+                        elsif (m{x_lname => $share_last}i) {
+                            $found_last = 1;
+                        }
+                    }
+                    close $in;
+                    if ($found_first && $found_last) {
+                        last;
+                    }
+                }
+                if ($found_first && $found_last) {
+                    $share .= " - <span class=required><b>is</b> in the online list</span>";
+                }
+                else {
+                    $share .= " - <span class=required>not registered</span>";
+                }
+            }
+        }
+        else {
+            $share .= " - <span class=required>could not find</span>";
+        }
+    }
     stash($c,
         online         => scalar(@files),
-        comment        => link_share($c, $prog->id(), $reg->comment()),
+        share          => $share,
         non_pr         => $prog->name !~ m{personal retreat}i,
         daily_pic_date => $reg->date_start(),
         cal_param      => $reg->date_start_obj->as_d8() . "/1",
@@ -1661,7 +1704,7 @@ sub matchreg : Local {
         }
     );
     Global->init($c);
-    $c->res->output(_reg_table(\@regs));
+    $c->res->output(_reg_table($c, \@regs));
 }
 
 #
@@ -1669,7 +1712,7 @@ sub matchreg : Local {
 # this is not used if we go there directly, yes???
 #
 sub _reg_table {
-    my ($reg_aref, %opt) = @_;
+    my ($c, $reg_aref, %opt) = @_;
     my $proghead = "";
     if ($opt{multiple}) {
         $proghead = "<th align=left>Program</th>\n";
@@ -1739,10 +1782,18 @@ EOH
 EOH
         }
         my $pay_balance = $balance;
-        if (! $reg->cancelled && $balance > 0) {
+        if (! $reg->cancelled && $balance > 0
+            && ($reg->program->school() == 0
+                || $c->check_user_roles('mmi_admin'))
+        ) {
             $pay_balance =
                 "<a href='/registration/pay_balance/$id/list_reg_name'>"
                ."$pay_balance</a>";
+        }
+        if ($reg->program->school() == 0
+            || $c->check_user_roles('mmi_admin')
+        ) {
+            $name = "<a href='/registration/view/$id'>$name</a>";
         }
         $body .= <<"EOH";
 <tr>
@@ -1751,7 +1802,7 @@ $program_td
 <td align=right>$mark</td>
 
 <td>    <!-- width??? -->
-<a href='/registration/view/$id'>$name</a>
+$name
 </td>
 
 <td align=right>$pay_balance</td>
@@ -1829,6 +1880,8 @@ sub update : Local {
         stash($c, ceu => 1);
     }
     my $h_type_opts = "";
+    my $h_type_opts1 = "";
+    my $h_type_opts2 = "";
     Global->init($c);     # get %string ready.
     my $cur_htype = $reg->h_type;
     my $mon       = $reg->date_start_obj->month();
@@ -1854,10 +1907,14 @@ sub update : Local {
         next HTYPE if $htname eq 'center_tent' && wintertime($mon);
 
         my $selected = ($htname eq $cur_htype)? " selected": "";
+        my $selected1 = ($htname eq $reg->pref1())? " selected": "";
+        my $selected2 = ($htname eq $reg->pref2())? " selected": "";
         my $htdesc = $string{$htname};
         $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
         $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
+        $h_type_opts1 .= "<option value=$htname$selected1>$htdesc\n";
+        $h_type_opts2 .= "<option value=$htname$selected2>$htdesc\n";
     }
     # hacky :(  how else please?
     $h_type_opts .= "<option value=unknown"
@@ -1888,6 +1945,8 @@ sub update : Local {
         reg             => $reg,
         program         => $pr,
         h_type_opts     => $h_type_opts,
+        h_type_opts1    => $h_type_opts1,
+        h_type_opts2    => $h_type_opts2,
         carpool_checked => $reg->carpool()? "checked": "",
         hascar_checked  => $reg->hascar() ? "checked": "",
         cabin_checked   => $c_r eq 'cabin'? "checked": "",
@@ -2019,6 +2078,10 @@ sub update_do : Local {
         nights_taken  => $taken,
         free_prog_taken => $P{free_prog},
         cabin_room    => $cabin_room,
+        share_first   => $P{share_first},
+        share_last    => $P{share_last},
+        pref1         => $P{pref1},
+        pref2         => $P{pref2},
         %dates,         # optionally
     });
     _compute($c, $reg, @who_now);
@@ -2073,7 +2136,7 @@ sub manual : Local {
         cabin_checked => "",
         room_checked  => "",
     );
-    _rest_of_reg($pr, $p, $c, tt_today($c), "dbl");
+    _rest_of_reg($pr, $p, $c, tt_today($c), "dbl", "dbl");
 }
 
 sub delete : Local {
@@ -2163,20 +2226,18 @@ sub lodge : Local {
     my $program_id = $reg->program_id();
 
     #
-    # is there a comment saying that they want to be
     # housed with a friend who is also registered for this program?
     #
     my $share_house_id = 0;
     my $share_house_name = "";
+    my $share_first = $reg->share_first();
+    my $share_last  = $reg->share_last();
+    my $name = "$share_first $share_last";
     my $message2 = "";
-    if ($reg->comment =~ m{Sharing a room with\s*([^.]*)[.]}) {
-        my $name = $1;
-        my @names = map { normalize($_) } split m{\s+}, trim($name);
-        my $last = pop @names;
-        my $first = "@names";       # for a two part first name ...
+    if ($share_first) {
         my ($person) = model($c, 'Person')->search({
-            first => $first,
-            last  => $last,
+            first => $share_first,
+            last  => $share_last,
         });
         if ($person) {
             my ($reg2) = model($c, 'Registration')->search({
@@ -2195,7 +2256,7 @@ sub lodge : Local {
                         $share_house_name = $reg2->house->name;
                         $share_house_id   = $reg2->house_id;
                         $message2 = "Share $share_house_name"
-                                   ." with $first $last?";
+                                   ." with $share_first $share_last?";
                     }
                     else {
                         $message2 = "$name is housed in a '"
@@ -2229,16 +2290,16 @@ sub lodge : Local {
                 # x_fname, x_lname - could be anywhere in the file
                 my ($found_first, $found_last) = (0, 0);
                 while (<$in>) {
-                    if (m{x_fname => $first}i) {
+                    if (m{x_fname => $share_first}i) {
                         $found_first = 1;
                     }
-                    elsif (m{x_lname => $last}i) {
+                    elsif (m{x_lname => $share_last}i) {
                         $found_last = 1;
                     }
                 }
                 close $in;
                 if ($found_first && $found_last) {
-                    $message2 = "$first $last <b>has</b> registered"
+                    $message2 = "$share_first $share_last <b>has</b> registered"
                                ." online but has not yet been imported.";
                 }
             }
@@ -2483,10 +2544,11 @@ sub lodge : Local {
     if (my @ages = $reg->kids() =~ m{(\d+)}g) {
         stash($c, kids => " with child" . ((@ages > 1)? "ren":""));
     }
-    if (my ($prefs) = $reg->comment() =~ m{(1-.*)$}m) {
-        $prefs =~ s{\s*online\s*$}{}m;
-        stash($c, house_prefs => "<br>Housing choices: $prefs.");
-    }
+    stash($c, house_prefs => "<br>Housing choices: "
+                           . _htrans($reg->pref1())
+                           . ", "
+                           . _htrans($reg->pref2())
+                           );
     my $cn = $reg->confnote();
 
     # copied - can we consolidate???
@@ -2531,8 +2593,7 @@ sub lodge : Local {
                      :                           ""         )
                  .  ">Not Needed\n";
 
-    $h_type =~ s{dble}{double};     # only for display...
-    $h_type =~ s{_(.)}{ \u$1};
+    $h_type = _htrans($h_type);
 
     stash($c,
         reg           => $reg,
@@ -2551,6 +2612,13 @@ sub lodge : Local {
     );
 }
 
+sub _htrans {
+    my ($type) = @_;
+    $type =~ s{dble}{double};
+    $type =~ s{_(.)}{ \u$1};
+    ucfirst $type;
+}
+
 #
 # we have identified a house for this registration.
 # put this in the registration record itself
@@ -2566,6 +2634,14 @@ sub lodge_do : Local {
         $reg->update({
             h_type => $new_htype,
         });
+        # recompute the automatic charges since h_type changed
+        model($c, 'RegCharge')->search({
+            reg_id    => $id,
+            automatic => 'yes',
+        })->delete();
+        my @who_now = get_now($c, $id);
+        _compute($c, $reg, @who_now);
+
         if ($new_htype =~ m{^(own_van|commuting|unknown|not_needed)$}) {
                         # hash lookup instead?
             $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -2914,7 +2990,7 @@ sub seek : Local {
         stash($c,
             online     => scalar(@files),
             pat        => $oreg_pat,
-            regs       => _reg_table(\@regs, multiple => $multiple),
+            regs       => _reg_table($c, \@regs, multiple => $multiple),
             other_sort => "list_reg_post",
             template   => "registration/list_reg.tt2",
             other_sort_name => "By Postmark",
@@ -3008,23 +3084,36 @@ sub who_is_there : Local {
     my $reg_names = "";
     for my $r (@regs) {
         my $rid = $r->id();
+        my $pr = $r->program();
+        my $name = $r->person->last() . ", " . $r->person->first();
+        my $relodge = "";
+        if ($pr->school() == 0 
+            || $c->check_user_roles('mmi_admin')
+        ) {
+            $name = "<a target=happening href="
+                  . $c->uri_for("/registration/view/$rid")
+                  . ">"
+                  . $name
+                  . "</a>"
+                  ;
+            $relodge = "<td width=30 align=center><a target=happening href="
+                     . $c->uri_for("/registration/relodge/$rid")
+                     . "><img src=/static/images/move_arrow.gif border=0>"
+                     . "</a></td>"
+                     ;
+        }
         $reg_names .= "<tr>"
-                   . "<td><a target=happening href="
-                   . $c->uri_for("/registration/view/$rid")
-                   . ">"
-                   . $r->person->last() . ", " . $r->person->first()
-                   . "</a>"
+                   . "<td>"
+                   . $name
                    . _get_kids($r->kids())
                    . "<td><a target=happening href="
                    . $c->uri_for("/program/view/")
-                   . $r->program_id()
+                   . $pr->id()
                    . ">"
-                   . $r->program->name()
+                   . $pr->name()
                    . "</a></td>"
                    . "</td>"
-                   . "<td width=30 align=center><a target=happening href="
-                   . $c->uri_for("/registration/relodge/$rid")
-                   . "><img src=/static/images/move_arrow.gif border=0></a></td>"
+                   . $relodge
                    . "</tr>";
     }
     $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.

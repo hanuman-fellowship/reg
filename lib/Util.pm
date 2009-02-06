@@ -35,7 +35,6 @@ our @EXPORT_OK = qw/
     lines
     _br
     normalize
-    link_share
     tt_today
     ceu_license
     commify
@@ -450,24 +449,27 @@ sub resize {
     chdir "../../..";       # must cd back!   not stateless HTTP, exactly
 }
 
-# ??? have a parameter to optionally 
-# not return unknown, commuting, own_van
 sub housing_types {
+    my ($extra) = @_;
+
+    # types for which the field staff
+    # will need to tidy up after:
     return qw/
-		unknown
-		commuting
-		own_tent
-		own_van
-		center_tent
-		economy
-		dormitory
-		quad
-		triple
-		dble
-		dble_bath
-		single
 		single_bath
-    /;
+		single
+		dble_bath
+		dble
+		triple
+		quad
+		dormitory
+		economy
+		center_tent
+		own_tent
+    /,
+    # optionally, the other types
+    (($extra >= 1)? qw/ own_van commuting  /: ()),
+    (($extra >= 2)? qw/ unknown not_needed /: ()),
+    ;
 }
 
 #
@@ -874,37 +876,6 @@ sub normalize {
          split m{-}, $s;
 }
 
-# convert "Share room with First Last"
-# to a link to the other person's registration
-# if, that is, First Last is also registered.
-sub link_share {
-    my ($c, $program_id, $s) = @_;
-
-    return $s if ! $s; 
-    if ($s =~ m{Sharing a room with\s*([^.]+)[.]}) {
-        my $name = $1;
-        my @names = map { normalize($_); } split m{\s+}, trim($name);
-        my $last  = pop @names;
-        my $first = "@names";
-        if (my ($person) = model($c, 'Person')->search({
-                               first => $first,
-                               last  => $last,
-                           })
-        ) {
-            if (my ($reg) = model($c, 'Registration')->search({
-                                person_id => $person->id(),
-                                program_id => $program_id,
-                            })
-            ) {
-                my $id = $reg->id();
-                $s =~ s{$name}
-                       {<a href=/registration/view/$id>$first $last</a>};
-            }
-        }
-    }
-    _br($s);
-}
-
 sub tt_today {
     my ($c) = @_;    
 
@@ -1115,7 +1086,7 @@ sub dcm_registration {
 #    }
 #}
 
-# equivalently and likely more efficient:
+# equivalent and likely more efficient:
 sub stash {
     my $st_ref = shift->stash;
     for (my $i = 0; $i < @_; $i += 2) {

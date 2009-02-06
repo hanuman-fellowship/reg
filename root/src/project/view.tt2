@@ -6,6 +6,7 @@
 <tr>
 <th align=left>Person</th>
 <th align=right>Amount</th>
+<th align=right>Type</th>
 <th align=center>Date</th>
 </tr>
 [% tot = 0 %]
@@ -13,6 +14,7 @@
 <tr>
 <td align=left><a href="/person/view/[% d.person.id %]">[% d.person.last %], [% d.person.first %]</a></td>
 <td align=right>[% d.amount %]</td>
+<td align=right>[% d.type_sh %]</td>
 <td>[% d.the_date_obj %]</td>
     <td><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
 </tr>

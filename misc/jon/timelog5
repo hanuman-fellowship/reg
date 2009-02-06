@@ -63,3 +63,24 @@ Feb 2 6:00-6:30, 9:00-10:00
     further capabilites in expand()
         ^, ^^, +, |, (more)
     futzing with newlines in text areas
+Feb 3 10:30-5:30, 6:00-6:15
+    at center, 'more' in text areas, shortcut help
+    reloading, adjusting new fields, etc.
+    share_first, share_last, pref1, pref2 - integrated
+        still need to do get_online in Registration.pm
+        and modifying them when updating.
+        then test!  manual and online
+Feb 4 1:00-2:00, 9:30-10:00, 9:00-9:20
+    further refinement with housing preferences
+    sending letters re: Rentals, Summaries
+Feb 5 5:10-6:20, 7:00-7:20
+    housing types consistified - began
+    test Rentals, publish, check pages
+        regtable needs a relook in dreg1
+        new _ in basic/full house costs
+    registration - look for h_type, etc.
+    tren/view.tt2 and tren/create_edit.tt2
+        send @htypes, %string, %bookings
+        use FOREACH to make more concise
+Feb 6 12:20-
+    further h_type work

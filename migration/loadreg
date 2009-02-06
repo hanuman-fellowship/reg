@@ -134,17 +134,20 @@ where id = ?
 my $upd_per_sth = $dbh->prepare($upd_per_sql) or die "no upd_per_sql\n";
 
 my $ins_reg_sql = "insert into registration
-(id, program_id, person_id, comment, confnote, date_start, date_end, early, late,
+(id, program_id, person_id, comment, confnote,
+ date_start, date_end, early, late,
  referral, adsource, kids, h_type, h_name, carpool, hascar,
  date_postmark, letter_sent, ceu_license, arrived, cancelled,
  deposit, balance, time_postmark, house_id, cabin_room, leader_assistant,
- pref1, pref2
+ pref1, pref2, share_first, share_last
 ) 
 values
-(?, ?, ?, ?, ?, ?, ?, ?, ?,
+(?, ?, ?, ?, ?,
+ ?, ?, ?, ?,
  ?, ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?, ?,
- ?, ?, ?, ?, ?, ?, ?, ?)";
+ ?, ?, ?, ?, ?, ?,
+ ?, ?, ?, ?)";
 my $ins_reg_sth = $dbh->prepare($ins_reg_sql) or die "no ins_reg_sql\n";
 
 my %type_map = qw/
@@ -298,16 +301,22 @@ sub processReg {
     $hash{comment} .= "$hash{'3comment'}\n" if $hash{'3comment'};
     $hash{comment} .= $hash{overflow} if $hash{overflow};
     $hash{time_postmark} = "";
-    if ($hash{comment} =~ s{(\d\d:\d\d)  online}{online}) {
+    if ($hash{comment} =~ s{(\d\d:\d\d)\s*online}{}) {
         $hash{time_postmark} = $1;
     }
     my ($pref1, $pref2) = ("", "");
-    if ($hash{comment} =~ m{1-(\S+)}) {
+    my ($share_first, $share_last) = ("", "");
+    if ($hash{comment} =~ s{1-(\S+)}{}) {
         $pref1 = $comm_h_type{$1};
     }
-    if ($hash{comment} =~ m{2-(\S+)}) {
+    if ($hash{comment} =~ s{2-(\S+)}{}) {
         $pref2 = $comm_h_type{$1};
     }
+    if ($hash{comment} =~ s{Sharing a room with (\S+) (\S+)[.]}{}) {
+        $share_first = $1;
+        $share_last = $2;
+    }
+    $hash{comment} =~ s{^\s*}{};     # only requests remain
 
     $hash{confnote} = "";
     $hash{confnote} .= "$hash{'1note'}\n" if $hash{'1note'};
@@ -484,7 +493,9 @@ sub processReg {
                           $hash{cabin_room},
                           '',        # leader assistant
                           $pref1,
-                          $pref2
+                          $pref2,
+                          $share_first,
+                          $share_last
                          ) or die "no ins reg $DBI::errstr\n";
     # use deposit, pmt1, pmt2 in RegPayment records
     #     and p1cash, pmt1date

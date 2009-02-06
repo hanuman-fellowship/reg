@@ -18,41 +18,37 @@ function popup(url) {
 <tr>
 <th align=right>Person</th>
 <td><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a></td>
-<td>From <input type=text name=date_start size=10 maxlength=10 value="[% IF reg.date_start != program.sdate %][% reg.date_start_obj.format("%D") %][% END %]"></td><td>to <input type=text name=date_end size=10 maxlength=10 value="[% IF reg.date_end != program.edate %][% reg.date_end_obj.format("%D") %][% END %]"></td>
+<td><b>From</b> <input type=text name=date_start size=10 maxlength=10 value="[% IF reg.date_start != program.sdate %][% reg.date_start_obj.format("%D") %][% END %]">&nbsp;<b>To</b> <input type=text name=date_end size=10 maxlength=10 value="[% IF reg.date_end != program.edate %][% reg.date_end_obj.format("%D") %][% END %]"></td>
 </tr>
 
 <tr>
 <th align=right>Program</th>
 <td><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a></td>
 <input type=hidden name=program_id value="[% program.id %]">
-<td>From [% program.sdate_obj %]</td><td>To [% program.edate_obj %]</td>
+<td><b>From</b> [% program.sdate_obj %]&nbsp;<b>To</b> [% program.edate_obj %]</td>
 </tr>
 
 <tr>
 <th align=right>Referral</th>
-<td>
+<td colspan=3>
 <select name=referral>
 <option value="ad"       [% ad_selected %]      >Advertisement</option>
 <option value="web"      [% web_selected %]     >Web</option>
 <option value="brochure" [% brochure_selected %]>Brochure</option>
 <option value="flyer"    [% flyer_selected %]   >Flyer</option>
 </select>
-</td>
-<th align=right>Ad Source</th>
-<td><input type=text name=adsource value="[% reg.adsource %]"></td>
+<b>Ad Source</b>
+<input type=text name=adsource value="[% reg.adsource %]"></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Carpool</th>
-<td>
+<td colspan=3>
 <input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
 <input type=checkbox name=hascar  value=yes [% hascar_checked  %]> Has Car
-</td>
-
 <!-- need a slight adjustment here: font size will change it -->
 [% IF ceu %]
-<th align=right valign=top><span style="display: block; margin-top: 1mm">CEU License #</span></th>
-<td valign=top>
+<span style="margin-left: .5in; font-weight: bold" >CEU License #</span>
 <input type=text name=ceu_license value="[% reg.ceu_license %]">
 </td>
 [% END %]
@@ -60,7 +56,7 @@ function popup(url) {
 
 <tr>
 <th align=right>Ages of Kids</th>
-<td><input type=text name=kids size=20 value="[% reg.kids %]"></td>
+<td><input type=text name=kids size=10 value="[% reg.kids %]"></td>
 </tr>
 
 <tr>
@@ -79,9 +75,30 @@ function popup(url) {
 [% h_type_opts %]
 </select>
 </td>
-<td valign=top>
+<th align=right>Housing Preferences</th>
+<td colspan=3>
+<b>First</b>
+<select name=pref1>
+[% h_type_opts1 %]
+</select>
+<br>
+<b>Second</b>
+<select name=pref2>
+[% h_type_opts2 %]
+</select>
+</td>
+
+<tr>
+<td colspan=3 align=right valign=top>
 <input type=checkbox name=cabin value=yes [% cabin_checked %]> Cabin<br>
 <input type=checkbox name=room  value=yes [% room_checked  %]> Room
+</td>
+</tr>
+
+<tr>
+<th colspan=3 align=right>Sharing With</th>
+<td colspan=3>
+<input type=text name=share_first value="[% reg.share_first %]" size=15><br><input type=text name=share_last value="[% reg.share_last %]" size=15>
 </td>
 </tr>
 

@@ -131,6 +131,8 @@ sub create : Local {
 # 5 mailing list staff
 # 6 web designer
 # 7 membership admin
+# 8 field staff
+# 9 mmi admin
 #
 sub _get_roles {
     my ($c) = @_;
@@ -139,7 +141,7 @@ sub _get_roles {
                     keys %{$c->request->params};
     # ensure additional roles are in place - don't dup code ???
     if ($cur_roles{1}) {
-        @cur_roles{ 2..7 } = 1;
+        @cur_roles{ 2..7, 9 } = 1;
     }
     elsif ($cur_roles{6}) {
         @cur_roles{ 2..5 } = 1;

@@ -39,9 +39,9 @@
     <td align=right>[% p.amount %]
     <td>[% p.for_what %]
     <td>[% p.the_date_obj %]
-    <td align=center>[% p.type_disp %]
+    <td align=center>[% p.type_sh %]
     [% IF show_gl %]
-    <td align=center>[% p.gl %]</td>
+    <td align=center>[% p.glnum %]</td>
     [% END %]
     [% IF mmi_print %]
     <td>[% p.registration.program.name %]</td>

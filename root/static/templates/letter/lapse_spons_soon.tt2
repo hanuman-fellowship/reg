@@ -1,9 +1,9 @@
 [% INCLUDE style.tt2 %]
 Dear [% sanskrit %],
 <p>
-Your Hanuman Fellowship Sponsor membership will expire on [% exp_date %].<br>
+Your Hanuman Fellowship Sponsor membership will expire on [% exp_date->format("%D") %].<br>
 [% IF last_amount %]
-You last paid $[% last_amount %] on [% last_paid %].
+You last paid $[% last_amount %] on [% last_paid->format("%D") %].
 [% END %]
 <p>
 [% INCLUDE spons.tt2 %]

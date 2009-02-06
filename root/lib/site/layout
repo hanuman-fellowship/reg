@@ -10,7 +10,11 @@
 <td><a href=/listing>Listings</a></td>
 [% END %]
 <td><a href=/configuration>Configuration</a></td>
-[% IF Catalyst.check_user_roles('member_admin') %]<td><a href=/member/list>Members</a></td>[% END %]
+[% IF Catalyst.check_user_roles('member_admin') %]
+<td><a href=/member/list>Members</a></td>
+[% ELSE %]
+<td>&nbsp;</td>
+[% END %]
 <td><a target=help href=/static/help/index.html>Help</a></td>
 <td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
 </td><td><a href=/logout>Logout</a></td>

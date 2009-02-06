@@ -421,8 +421,7 @@ EOH
     }
     # hard coded column names - another way???
     # somehow get them from HouseCost.pm???
-    for my $t (housing_types()) {
-        next if $t =~ m{unknown};
+    for my $t (housing_types(1)) {
         next if $t =~ m{economy}     && ! $self->economy;
         next if $t =~ m{quad}        && ! $self->quad;
 		next if $t =~ m{single_bath} && ! $self->sbath;
@@ -434,7 +433,7 @@ EOH
 		next if $pr and $t =~ m{triple|dormitory};
 		my $cost = $self->fees(0, $t);
 		next unless $cost;		# this type of housing is not offered at all.
-        $fee_table .= "<tr><td>$string{$t}</td>";
+        $fee_table .= "<tr><td>" . $string{"long_$t"} . "</td>";
         $fee_table .= "<td align=right>$cost</td>\n";
         if ($extradays) {
             $fee_table .= "<td align=right>" .

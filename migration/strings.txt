@@ -3,20 +3,52 @@ from reservations@mountmadonna.org
 heading  Total Cost Per Person<br>(including tuition, meals, lodging, and facilities use)
 typehdr  Housing Type
 costhdr  Cost
+
+# Housing Types - short and long
 unknown Unknown
+long_unknown Unknown
+
 not_needed Not Needed
-commuting Commuting (Day use, meals &amp; facilities)
+long_not_needed Not Needed
+
+commuting Commuting
+long_commuting Commuting (Day use, meals &amp; facilities)
+
 own_tent Own Tent
+long_own_tent Own Tent
+
 own_van  Own Van
-center_tent Mount Madonna Center Tent
-dormitory Dormitory (4-7 to a room)
-economy  Economy (8 or more to a room)
-quad  Quadruple (4 to a room)
-triple  Triple (3 to a room)
-dble  Double (2 to a room or cabin)
-dble_bath Double with Bath (2 to a room)
-single  Single (1 to a room or cabin)
-single_bath Single with Bath (1 to a room)
+long_own_van  Own Van
+
+center_tent Center Tent
+long_center_tent Mount Madonna Center Tent
+
+dormitory Dormitory
+long_dormitory Dormitory (4-7 to a room)
+
+economy  Economy
+long_economy  Economy (8 or more to a room)
+
+quad  Quad
+long_quad  Quadruple (4 to a room)
+
+triple  Triple
+long_triple  Triple (3 to a room)
+
+dble  Double
+long_dble  Double (2 to a room or cabin)
+
+dble_bath Double w/ Bath
+long_dble_bath Double with Bath (2 to a room)
+
+single  Single
+long_single  Single (1 to a room or cabin)
+
+single_bath Single w/ Bath
+long_single_bath Single with Bath (1 to a room)
+
+#------------
+
 * Continuing Education Credit for nurses.
 ** Continuing Education Credit for nurses, LMFT's, and LCSW's.
 % Qualifies for YTT 500. You must <a href="/ytt/ytt500.html">apply to the YTT 500 program</a> before taking this class for credit.
@@ -112,6 +144,10 @@ dp_img_percent 120
 seen_lodge_opts 10
 max_lodge_opts 30
 tt_today 
-default_date_format %D
+default_date_format %b %e %q
 make_up_urgent_days 4
 reconciling 0
+payment_O Online
+payment_C Check
+payment_D Credit
+payment_S Cash

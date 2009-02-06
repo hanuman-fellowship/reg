@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenterDB::XAccountPayment;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Global qw/
+    %string
+/;
 
 #
 # very similar to reg_payment
@@ -54,6 +59,11 @@ sub pname {
 sub glnum {
     my ($self) = @_;
     return $self->xaccount->glnum();
+}
+
+sub type_sh {
+    my ($self) = @_;
+    $string{"payment_" . $self->type()};
 }
 
 1;

@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenterDB::RentalPayment;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Global qw/
+    %string
+/;
 
 #
 # very similar to reg_payment
@@ -57,6 +62,11 @@ sub pname {
 sub glnum {
     my ($self) = @_;
     return $self->rental->glnum();
+}
+
+sub type_sh {
+    my ($self) = @_;
+    return $string{"payment_" . $self->type()};
 }
 
 1;

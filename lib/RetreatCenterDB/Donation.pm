@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenterDB::Donation;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Global qw/
+    %string
+/;
 
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -55,6 +60,10 @@ sub link {
 sub glnum {
     my ($self) = @_;
     return $self->project->glnum();
+}
+sub type_sh {
+    my ($self) = @_;
+    return $string{"payment_" . $self->type()};
 }
 
 1;

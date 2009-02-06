@@ -1156,10 +1156,6 @@ sub field_plan : Local {
         my $ed = $r->edate();
         HTYPE:
         for my $ht (housing_types()) {
-            next HTYPE if $ht eq 'unknown'
-                       || $ht eq 'commuting'
-                       || $ht eq 'own_van'
-                       ;
             my $method = "n_$ht";
             my $n = $r->$method();
             if ($ht =~ m{tent}) {

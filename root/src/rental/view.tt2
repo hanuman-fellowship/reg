@@ -148,95 +148,29 @@ Web
 <th valign=bottom>Attendance</th>
 </tr>
 
-<tr>
-<th align=right>Single Bath</th>
-<td align=center>[% rental.n_single_bath %]</td>
-<td width=15 style="background: [% colcov.single_bath %]"></td>
-[% IF rental.n_single_bath || bookings.single_bath %]<td><a href="/rental/booking/[% rental.id %]/single_bath">Add</a>[% bookings.single_bath %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_single_bath %]</td>
-</tr>
+<!-- 
+    Some fancy Template Tooklit machinations here.
+    To index a hash with a variable you need to precede it with a '$'.
+-->
+[% FOREACH t IN h_types %]
+    [% n = 'n_' _ t %]
+    [% att = 'att_' _ t %]
 
-<tr>
-<th align=right>Single</th>
-<td align=center>[% rental.n_single %]</td>
-<td style="background: [% colcov.single %]"></td>
-[% IF rental.n_single || bookings.single %]<td><a href="/rental/booking/[% rental.id %]/single">Add</a>[% bookings.single %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_single %]</td>
-</tr>
-
-<tr>
-<th align=right>Double Bath</th>
-<td align=center>[% rental.n_dble_bath %]</td>
-<td style="background: [% colcov.dble_bath %]"></td>
-[% IF rental.n_dble_bath || bookings.dble_bath %]<td><a href="/rental/booking/[% rental.id %]/dble_bath">Add</a>[% bookings.dble_bath %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_dble_bath %]</td>
-</tr>
-
-<tr>
-<th align=right>Double</th>
-<td align=center>[% rental.n_dble %]</td>
-<td style="background: [% colcov.dble %]"></td>
-[% IF rental.n_dble || bookings.dble %]<td><a href="/rental/booking/[% rental.id %]/dble">Add</a>[% bookings.dble %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_dble %]</td>
-</tr>
-
-<tr>
-<th align=right>Triple</th>
-<td align=center>[% rental.n_triple %]</td>
-<td style="background: [% colcov.triple %]"></td>
-[% IF rental.n_triple || bookings.triple %]<td><a href="/rental/booking/[% rental.id %]/triple">Add</a>[% bookings.triple %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_triple %]</td>
-</tr>
-
-<tr>
-<th align=right>Quad</th>
-<td align=center>[% rental.n_quad %]</td>
-<td style="background: [% colcov.quad %]"></td>
-[% IF rental.n_quad || bookings.quad %]<td><a href="/rental/booking/[% rental.id %]/quad">Add</a>[% bookings.quad %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_quad %]</td>
-</tr>
-
-<tr>
-<th align=right>Dormitory</th>
-<td align=center>[% rental.n_dormitory %]</td>
-<td style="background: [% colcov.dormitory %]"></td>
-[% IF rental.n_dormitory || bookings.dormitory %]<td><a href="/rental/booking/[% rental.id %]/dormitory">Add</a>[% bookings.dormitory %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_dormitory %]</td>
-</tr>
-
-<tr>
-<th align=right>Economy</th>
-<td align=center>[% rental.n_economy %]</td>
-<td style="background: [% colcov.economy %]"></td>
-[% IF rental.n_economy || bookings.economy %]<td><a href="/rental/booking/[% rental.id %]/economy">Add</a>[% bookings.economy %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_economy %]</td>
-</tr>
-
-<tr>
-<th align=right>Center Tent</th>
-<td align=center>[% rental.n_center_tent %]</td>
-<td style="background: [% colcov.center_tent %]"></td>
-[% IF rental.n_center_tent || bookings.center_tent %]<td><a href="/rental/booking/[% rental.id %]/center_tent">Add</a>[% bookings.center_tent %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_center_tent %]</td>
-</tr>
-
-<tr>
-<th align=right>Own Tent</th>
-<td align=center>[% rental.n_own_tent %]</td>
-<td style="background: [% colcov.own_tent %]"></td>
-[% IF rental.n_own_tent || bookings.own_tent %]<td><a href="/rental/booking/[% rental.id %]/own_tent">Add</a>[% bookings.own_tent %]</td>[% ELSE %]<td></td>[% END %]
-<td>[% rental.att_own_tent %]</td>
-</tr>
-
-<tr>
-<th align=right>Own Van</th>
-<td align=center>[% rental.n_own_van %]</td>
-</tr>
-
-<tr>
-<th align=right>Commuting</th>
-<td align=center>[% rental.n_commuting %]</td>
-</tr>
+    <tr>
+    <th align=right>[% string.$t %]</th>
+    <td align=center>[% rental.$n %]</td>
+    <td width=15 style="background: [% colcov.$t %]"></td>
+    [% IF rental.$att || bookings.$t %]
+        <td>
+        <a href="/rental/booking/[% rental.id %]/[% t %]"
+            >Add</a>[% bookings.$t %]
+        </td>
+    [% ELSE %]
+        <td></td>
+    [% END %]
+    <td>[% rental.$att %]</td>
+    </tr>
+[% END %]
 
 <tr>
 <td></td><td></td>
@@ -396,7 +330,7 @@ Payments
 [% FOREACH p IN payments %]
 <tr>
 <td align=right>[% p.amount %]</td>
-<td>[% p.type %]</td>
+<td>[% p.type_sh %]</td>
 <td>
 <a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
 </td>

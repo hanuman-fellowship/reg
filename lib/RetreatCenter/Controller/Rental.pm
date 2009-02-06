@@ -104,29 +104,25 @@ sub _get_data {
         push @mess, "Invalid deposit.";
     }
     H_TYPE:
-    for my $f (housing_types()) {
-        next H_TYPE if $f eq "unknown";
-        my $s = $f;
-        $s =~ s{_}{ };
-        $s =~ s{\b(\w)}{\u$1}g;
-        $s =~ s{Dble}{Double};
+    for my $t (housing_types(1)) {
         my $npeople;
-        if ($P{"n_$f"} !~ m{^\d*$}) {
-            push @mess, "$s: Illegal quantity: " . $P{"n_$f"};
+        if ($P{"n_$t"} !~ m{^\d*$}) {
+            push @mess, "$string{$t}: Illegal quantity: " . $P{"n_$t"};
         }
         else {
-            $npeople = $P{"h_$f"};
+            $npeople = $P{"h_$t"};
         }
         #
         # Attendance
         #
-        if (! empty($P{"att_$f"})) {
-            my @terms = split m{\s*,\s*}, $P{"att_$f"};
+        if (! empty($P{"att_$t"})) {
+            my @terms = split m{\s*,\s*}, $P{"att_$t"};
             my $total_peeps = 0;
             TERM:
-            for my $t (@terms) {
-                if ($t !~ m{^(\d+)\s*c?\s*x\s*(\d+)}i) {
-                    push @mess, "$s: Illegal attendance: " . $P{"att_$f"};
+            for my $tm (@terms) {
+                if ($tm !~ m{^(\d+)\s*c?\s*x\s*(\d+)}i) {
+                    push @mess, "$string{$t}:"
+                               ." Illegal attendance: " . $P{"att_$t"};
                     next H_TYPE;
                 }
                 my ($t_npeople, $t_ndays) = ($1, $2);
@@ -134,7 +130,8 @@ sub _get_data {
 
                 # we may not have a valid $rental_ndays so be careful
                 if (!@mess && $t_ndays > $rental_ndays) {
-                    push @mess, "$s: Attendance > # days of rental: $t_ndays";
+                    push @mess, "$string{$t}:"
+                               ." Attendance > # days of rental: $t_ndays";
                 }
             }
             # It IS okay to have more people in the 'attendance' field
@@ -156,12 +153,9 @@ sub _get_data {
             # for room reservations.  It in combination with the 'attendance'
             # field is used for the invoice cost calculations.
             #
-            #if ($total_peeps > $P{"n_$f"}) {
-            #    push @mess, "$s: Total people in attendance field"
-            #               ." > # of people";
-            #}
-            if ($total_peeps < $P{"n_$f"}) {
-                push @mess, "$s: Total people in non-blank attendance field"
+            if ($total_peeps < $P{"n_$t"}) {
+                push @mess, "$string{$t}: "
+                           ."Total people in non-blank attendance field"
                            ." < # of people";
             }
         }
@@ -177,21 +171,25 @@ sub _get_data {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{check_linked}      = "";
-    $c->stash->{check_tentative}   = "checked";
-    $c->stash->{housecost_opts} =
-        [ model($c, 'HouseCost')->search(
-            undef,
-            { order_by => 'name' },
-        ) ];
-    $c->stash->{rental} = {     # double faked object
-        housecost => { name => "Default" },
-        start_hour => "4:00",
-        end_hour   => "1:00",
-    };
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{section}     = 1;   # web
-    $c->stash->{template}    = "rental/create_edit.tt2";
+    stash($c,
+        check_linked     => "",
+        check_tentative  => "checked",
+        form_action      => "create_do",
+        section          => 1,   # web
+        template         => "rental/create_edit.tt2",
+        h_types          => [ housing_types(1) ],
+        string           => \%string,
+        housecost_opts   =>
+            [ model($c, 'HouseCost')->search(
+                undef,
+                { order_by => 'name' },
+            ) ],
+        rental => {     # double faked object
+            housecost => { name => "Default" },
+            start_hour => "4:00",
+            end_hour   => "1:00",
+        },
+    );
 }
 
 sub create_do : Local {
@@ -393,9 +391,9 @@ sub view : Local {
     my $more = sprintf($fmt, $string{cov_more_color} =~ m{(\d+)}g);
     my $okay = sprintf($fmt, $string{cov_okay_color} =~ m{(\d+)}g);
     my $att_days = 0;
+    my @h_types = housing_types(1);
     TYPE:
-    for my $t (housing_types()) {
-        next TYPE if $t eq "unknown";
+    for my $t (@h_types) {
         my $nt = "n_$t";
         my $npeople = $rental->$nt || 0;
         $tot_people += $npeople;
@@ -470,26 +468,30 @@ sub view : Local {
         status  => $status,
     });
 
-    $c->stash->{rental}         = $rental;
-    $c->stash->{non_att_days}   = $tot_people*$ndays - $att_days;
-    $c->stash->{daily_pic_date} = $rental->sdate();
-    $c->stash->{cal_param}      = $rental->sdate_obj->as_d8() . "/1";
-    $c->stash->{colcov}         = \%colcov;     # color of the coverage
-    $c->stash->{bookings}       = \%bookings;
-    $c->stash->{clusters}       = $clusters;
-    $c->stash->{lunch_charge}   = $lunch_charge;
-    $c->stash->{charges}        = \@charges;
-    $c->stash->{tot_other_charges} = $tot_other_charges;
-    $c->stash->{payments}       = \@payments;
-    $c->stash->{tot_payments}   = $tot_payments;
-    $c->stash->{section}        = $section;
-    $c->stash->{lunch_table}    = lunch_table(
-                                      1,
-                                      $rental->lunches(),
-                                      $rental->sdate_obj(),
-                                      $rental->edate_obj(),
-                                  );
-    $c->stash->{template}       = "rental/view.tt2";
+    stash($c,
+        rental         => $rental,
+        non_att_days   => $tot_people*$ndays - $att_days,
+        daily_pic_date => $rental->sdate(),
+        cal_param      => $rental->sdate_obj->as_d8() . "/1",
+        colcov         => \%colcov,     # color of the coverage
+        bookings       => \%bookings,
+        clusters       => $clusters,
+        h_types        => \@h_types,
+        string         => \%string,
+        lunch_charge   => $lunch_charge,
+        charges        => \@charges,
+        tot_other_charges => $tot_other_charges,
+        payments       => \@payments,
+        tot_payments   => $tot_payments,
+        section        => $section,
+        lunch_table    => lunch_table(
+                              1,
+                              $rental->lunches(),
+                              $rental->sdate_obj(),
+                              $rental->edate_obj(),
+                          ),
+        template       => "rental/view.tt2",
+    );
 }
 
 sub list : Local {
@@ -571,21 +573,23 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id, $section) = @_;
 
-    my $p = model($c, 'Rental')->find($id);
-    $c->stash->{rental} = $p;
-    $c->stash->{"check_linked"}    = ($p->linked()   )? "checked"
-                                        :               "";
-    $c->stash->{"check_tentative"} = ($p->tentative())? "checked"
-                                        :               "";
-    $c->stash->{housecost_opts} =
-        [ model($c, 'HouseCost')->search(
-            undef,
-            { order_by => 'name' },
-        ) ];
-    $c->stash->{edit_gl}     = 1;
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{section}     = $section;
-    $c->stash->{template}    = "rental/create_edit.tt2";
+    my $r = model($c, 'Rental')->find($id);
+    stash($c,
+        rental      => $r,
+        edit_gl     => 1,
+        form_action => "update_do/$id",
+        section     => $section,
+        h_types     => [ housing_types(1) ],
+        string      => \%string,
+        template    => "rental/create_edit.tt2",
+        check_linked    => ($r->linked()   )? "checked": "",
+        check_tentative => ($r->tentative())? "checked": "",
+        housecost_opts  =>
+            [ model($c, 'HouseCost')->search(
+                undef,
+                { order_by => 'name' },
+            ) ],
+    );
 }
 
 sub update_do : Local {
@@ -1278,8 +1282,7 @@ EOH
     my $tot_housing_charge = 0;
     my $tot_people = 0;
     H_TYPE:
-    for my $type (reverse housing_types()) {
-        next H_TYPE if $type eq "unknown";
+    for my $type (housing_types(1)) {
         my $meth = "n_$type";
         my $n = $rental->$meth();
         $meth = "att_$type";
@@ -1299,10 +1302,7 @@ EOH
         my $type_shown = 0;
         my $cost = $hc->$type();
         my $show_cost = $cost;
-        my $s = $type;
-        $s =~ s{_}{ };
-        $s =~ s{\b(\w)}{\u$1}g;
-        $s =~ s{Dble}{Double};
+        my $s = $string{$type};
         if (! @attendance) {
             #
             # No special attendance - so use the '# of people'

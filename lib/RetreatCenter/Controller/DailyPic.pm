@@ -243,6 +243,7 @@ sub show : Local {
     $back = $back->as_d8();
     $next = $next->as_d8();
     my $dt_fmt = $dt->format("%A %B %e, %Y");
+    my $dtD = $dt->format("%D");
     #
     # find everything that is happening on this day
     #
@@ -362,7 +363,7 @@ function Send(sex, house_id) {
 <form method=POST action="/dailypic/show/$type">
 <a href="/dailypic/show/$type/$back" accesskey='b'><span class=keyed>B</span>ack</a>
 <a class=details href="/dailypic/show/$type/$next" accesskey='n'><span class=keyed>N</span>ext</a>
-<span class=details> <span class=keyed>D</span>ate <input type=text name=date size=10 value='$dt' accesskey='d'></span>
+<span class=details> <span class=keyed>D</span>ate <input type=text name=date size=10 value='$dtD' accesskey='d'></span>
 <input class=go type=submit value="Go">
 $links
 </form>

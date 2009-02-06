@@ -4,6 +4,9 @@ package RetreatCenterDB::RegPayment;
 use base qw/DBIx::Class/;
 
 use Date::Simple qw/date/;
+use Global qw/
+    %string
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('reg_payment');
@@ -46,6 +49,11 @@ sub pname {
 sub glnum {
     my ($self) = @_;
     return $self->registration->program->glnum();
+}
+
+sub type_sh {
+    my ($self) = @_;
+    return $string{"payment_" . $self->type() };
 }
 
 1;

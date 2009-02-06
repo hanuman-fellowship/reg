@@ -3,8 +3,12 @@ use warnings;
 package RetreatCenterDB::Registration;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
-use Global qw/%string/;
+use Date::Simple qw/
+    date
+/;
+use Global qw/
+    %string
+/;
 use Util qw/
     trim
     _br
@@ -49,6 +53,8 @@ __PACKAGE__->add_columns(qw/
     leader_assistant
     pref1
     pref2
+    share_first
+    share_last
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -97,6 +103,19 @@ sub room_site {
 
     ($self->h_type =~ m{tent}i)? 'site'
     :                            'room'
+}
+
+sub pref1_sh {
+    my ($self) = @_;
+    my $s = $string{$self->pref1()};
+    $s =~ s{ \(.*}{};
+    $s;
+}
+sub pref2_sh {
+    my ($self) = @_;
+    my $s = $string{$self->pref2()};
+    $s =~ s{ \(.*}{};
+    $s;
 }
 
 1;
