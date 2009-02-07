@@ -52,6 +52,7 @@ __PACKAGE__->might_have(rental  => 'RetreatCenterDB::Rental',  'summary_id');
 __PACKAGE__->might_have(program => 'RetreatCenterDB::Program', 'summary_id');
 
 sub     date_updated_obj { date(shift->date_updated) || ""; }
+sub    leader_housing_ex { expand(shift->leader_housing   ()); }
 sub           signage_ex { expand(shift->signage          ()); }
 sub     miscellaneous_ex { expand(shift->miscellaneous    ()); }
 sub          feedback_ex { expand(shift->feedback         ()); }

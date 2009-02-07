@@ -115,7 +115,7 @@ sub _get_data {
         #
         # Attendance
         #
-        if (! empty($P{"att_$t"})) {
+        if ($P{"att_$t"}) {
             my @terms = split m{\s*,\s*}, $P{"att_$t"};
             my $total_peeps = 0;
             TERM:

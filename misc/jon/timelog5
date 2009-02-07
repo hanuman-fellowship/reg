@@ -82,5 +82,7 @@ Feb 5 5:10-6:20, 7:00-7:20
     tren/view.tt2 and tren/create_edit.tt2
         send @htypes, %string, %bookings
         use FOREACH to make more concise
-Feb 6 12:20-
-    further h_type work
+Feb 6 12:20-1:30, 10:40-12:20, 1:50-5:45
+    further h_type work - seems to work in Rentals!
+    meeting at center re: Rentals
+    looking at fckeditor and its use in other sites

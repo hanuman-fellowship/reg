@@ -389,6 +389,7 @@ sub weburl {
 }
 #
 # generate HTML (yes :() for a fee table)
+# ??? _could_ do this in a Template.
 #
 sub fee_table {
     my ($self) = @_;
@@ -419,8 +420,11 @@ EOH
     } else {
         $fee_table .= "<th align=right>$string{costhdr}</th></tr>\n";
     }
-    # hard coded column names - another way???
+    # the hard coded column names below - another way?
     # somehow get them from HouseCost.pm???
+    # I think we need them hardcoded.  To tie 'quad' in program to
+    # 'quad' in housing_cost.
+    #
     for my $t (housing_types(1)) {
         next if $t =~ m{economy}     && ! $self->economy;
         next if $t =~ m{quad}        && ! $self->quad;

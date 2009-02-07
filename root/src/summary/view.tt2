@@ -132,7 +132,7 @@ th {
 <tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td>
     <th>Staff Arrival</th><td>[% sum.staff_arrival %]</td></tr>
 <tr><th>       Departure</th><td colspan=3>[% sum.leader_departure %]</td></tr>
-<tr><th>Housing</th><td colspan=3>[% sum.leader_housing %]</td></tr>
+<tr><th>Housing</th><td colspan=3>[% sum.leader_housing_ex %]</td></tr>
 <tr><td colspan=4>&nbsp;</td></tr>
 
 <tr><th>Signage</th><td colspan=3>[% sum.signage_ex %]</td></tr>

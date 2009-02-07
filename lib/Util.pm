@@ -360,8 +360,8 @@ sub expand {
 	$v =~ s{(^|\W)_([^_]*?)\_}{$1<u>$2</u>}smg;
 	$v =~ s{\*([^*]*?)\*}{<b>$1</b>}mg;
 	$v =~ s{\+([^+]*?)\+}{<i>$1</i>}mg;
-    $v =~ s{\^\^([^^]*)\^\^}{<span style="font-size: 18pt;">$1</span>}mg;
-    $v =~ s{\^([^^]*)\^}{<span style="font-size: 15pt;">$1</span>}mg;
+    $v =~ s{\^\^([^^]*)\^\^}{<span style="font-size: 20pt; font-weight: bold">$1</span>}mg;
+    $v =~ s{\^([^^]*)\^}{<span style="font-size: 16pt;">$1</span>}mg;
     $v =~ s{\|([^|]*)\|:(#?\w+)}{<span style="background: $2;">$1</span>}mg;
     $v =~ s{\|([^|]*)\|}{<span style="background: yellow;">$1</span>}mg;
 	$v =~ s{%([^%]*?)%([^%]*?)%}

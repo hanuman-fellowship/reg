@@ -1,2 +1,46 @@
 All about Rentals
 A to Z
+
+call comes for a proposed rental
+fill out a Proposal
+    Contact Person's info - note required fields
+        on leaving last name - fills in from prior data if available
+    if Contract Signer is different - opens up.
+        also auto fill from prior data
+    Max,
+    Date requested
+    default check in, check out - CAN put :30 for half hour.
+        default is 8 am, 7 pm
+    program meeting date is important
+    deposit is required
+
+    multiline fields with shortcuts (need to add 'more')
+        
+
+    proposals are listed in order of program meeting date
+        only current or future ones are shown
+        can search for others by group name
+            * is wildcard
+
+    can edit/update/delete them as usual
+
+program meeting happens
+    approve/deny
+
+    if deny
+        edit, check deny and possibly put a reason in misc notes
+        click 'transmit' to move contact, signer to People
+    if approve - click Approve
+        it brings up a Rental create screen filled in:
+            check in, check out
+            tentative
+            rental name => group name
+            coordinator/contract signer comes over
+            max, deposit
+        after filling in start, end date, hitting submit
+            the summary is created 
+                moving special needs, food service,
+                leader housing, misc notes, provisos, etc from 
+                the Proposal
+            persons are 'transmitted' to the People table
+                with affiliation 'Proposal Submitter'

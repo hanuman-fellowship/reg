@@ -28,6 +28,7 @@ use Util qw/
     stash
     error
     payment_warning
+    housing_types
 /;
 use POSIX qw/
     ceil
@@ -42,25 +43,6 @@ use Global qw/
     %houses_in_cluster
 /;
 use Template;
-
-# lots of names for the house type... :(
-# there are also the method and column names
-# a better way???  more consolidated.
-# even a separate module to deal with all the names.
-my %comm_h_type = qw(
-    com    commuting
-    ov     own_van
-    ot     own_tent
-    ct     center_tent
-    dorm   dormitory
-    econ   economy
-    quad   quad
-    tpl    triple
-    dbl    dble
-    dbl/ba dble_bath
-    sgl    single
-    sgl/ba single_bath
-);
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -339,7 +321,7 @@ sub get_online : Local {
     stash($c, fname => $fname);
 
     # verify that we have a pid, first, and last. and an amount.
-    # ...
+    # ...???
 
     #
     # first, find the program
@@ -586,37 +568,19 @@ sub _rest_of_reg {
     my $h_type_opts2 = "";
     Global->init($c);     # get %string ready.
     HTYPE:
-    for my $ht (qw!
-        sgl/ba
-        sgl
-        dbl/ba
-        dbl
-        tpl
-        quad
-        econ
-        dorm
-        ct
-        ot
-        ov
-        com
-    !) {
-        next HTYPE if $ht eq "sgl/ba" && ! $pr->sbath;
-        next HTYPE if $ht eq "quad"   && ! $pr->quad;
-        next HTYPE if $ht eq "econ"   && ! $pr->economy;
-        # also ...
-        my $htname = $comm_h_type{$ht};
-        next HTYPE if $pr->housecost->$htname == 0;     # wow!
+    for my $ht (housing_types(2)) {
+        next HTYPE if $ht eq "single_bath" && ! $pr->sbath;
+        next HTYPE if $ht eq "quad"        && ! $pr->quad;
+        next HTYPE if $ht eq "economy"     && ! $pr->economy;
+        if ($ht !~ m{unknown|not_needed} && $pr->housecost->$ht == 0) {
+            next HTYPE;
+        }
 
-        my $selected = ($ht eq $house1)? " selected": "";
+        my $selected = ($ht eq $house1 )? " selected": "";
         my $selected2 = ($ht eq $house2)? " selected": "";
-        my $htdesc = $string{$htname};
-        $htdesc =~ s{\(.*\)}{};              # registrar doesn't need this
-        $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
-        $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
-        $h_type_opts2 .= "<option value=$htname$selected2>$htdesc\n";
+        $h_type_opts .= "<option value=$ht$selected>$string{$ht}\n";
+        $h_type_opts2 .= "<option value=$ht$selected2>$string{$ht}\n";
     }
-    $h_type_opts .= "<option value=unknown>Unknown\n";
-    $h_type_opts .= "<option value=not_needed>Not Needed\n";
     stash($c,
         program => $pr,
         person => $p,
@@ -3038,19 +3002,16 @@ sub who_is_there : Local {
             }
         );
         my $rb = $rb[0];    # should only be 1
-        my $h_type = $rb->h_type();
-        $h_type =~ s{dble}{double};
-        $h_type =~ s{_(.)}{ \u$1};
-        my $house = $rb->house();
         $c->res->output(
             "<center>"
-            . $house->name()
+            . $rb->house->name()
             . "</center>"
             . "<p><table cellpadding=2>"
             . "<tr><td><a target=happening class=pr_links href="
-            . $c->uri_for("/rental/view/" . $rb->rental_id() . "/2")
+            . $c->uri_for("/rental/view/" . $rb->rental_id() . "/1")
             . ">"
-            . $rb->rental->name() . " - \u$h_type"
+            . $rb->rental->name() . " - "
+            . $string{$rb->h_type()}
             . "</a></td></tr>"
             . "</table>"
         );

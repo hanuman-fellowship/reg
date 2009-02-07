@@ -859,3 +859,33 @@ doc:
         can supply 1 or 2 to get more types
             1 - own van, commuting
             2 - unknown, not_needed
+
+Use Template Toolkit on garlic - dreg1, dreg2, etc
+
+ask Jayanti about the different names of housing types.
+    web page - dreg1, dreg2, etc.
+    long vs short
+
+agenda for Rental meeting
+    lifecycle when some don't attend the entire rental
+        _actual_ example of a complicated past one
+        bookings of rooms to ensure coverage
+        who is in what room (does it matter?)
+        the 2x3 mess - but needed?
+    what about renting/costing the room to the renter not the bed to the person?
+    what communications are truly needed with contact person?
+        how might they be facilitated?  individual web site
+            that both contact person and rental_admin can see?
+    housing cost with lunches - no Saturday, no first day (usually)
+        could be more precise
+        even if some leave early or arrive late they
+        are still counted for lunches in kitchen report
+        how should the optional lunches appear in contract?
+
+
+Add only when att_ - why?
+
+Time::Simple show for Rental times in view.
+
+meeting & breakout space on top of Sum
+Checklist - separate item for sum?
