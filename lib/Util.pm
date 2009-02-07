@@ -397,7 +397,7 @@ sub expand {
 		$out .= "$_\n";
 	}
 	$out .= $in_list if $in_list;
-    $v =~ s{\n\n}{<p>\n}g;      # last to not mess with the ending of lists.
+    $out =~ s{\n\n}{<p>\n}g;      # last to not mess with the ending of lists.
 	$out;
 }
 #
