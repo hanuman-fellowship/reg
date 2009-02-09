@@ -232,13 +232,13 @@ Misc
 
 <tr>
 <th align=right valign=top>Web Description</th>
-<td colspan=5>[% program.webdesc_ex %]</td>
+<td colspan=5>[% program.webdesc %]</td>
 </td>
 </tr>
 
 <tr>
 <th align=right valign=top>Brochure Description</th>
-<td colspan=5>[% program.brdesc_ex %]</td>
+<td colspan=5>[% program.brdesc %]</td>
 </td>
 </tr>
 
@@ -445,7 +445,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 <tr>
 <th align=right valign=top>Conf Notes</th>
-<td colspan=5 valign=top>[% program.confnote_ex %]</td>
+<td colspan=5 valign=top>[% program.confnote %]</td>
 </tr>
 
 <tr>

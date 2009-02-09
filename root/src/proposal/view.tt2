@@ -275,7 +275,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 
 <tr>
 <th align=right>Dates Requested</th>
-<td colspan=3>[% proposal.dates_requested_ex %]</td>
+<td colspan=3>[% proposal.dates_requested %]</td>
 </tr>
 
 <tr>
@@ -309,17 +309,17 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 
 <tr>
 <th align=right valign=top>Special Needs</th>
-<td colspan=3>[% proposal.special_needs_ex %]</td>
+<td colspan=3>[% proposal.special_needs %]</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Food Service</th>
-<td colspan=3>[% proposal.food_service_ex %]</td>
+<td colspan=3>[% proposal.food_service %]</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Other Requests</th>
-<td colspan=3>[% proposal.other_requests_ex %]</td>
+<td colspan=3>[% proposal.other_requests %]</td>
 </tr>
 
 <tr>
@@ -334,7 +334,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 
 <tr>
 <th align=right valign=top>Provisos</th>
-<td colspan=3>[% proposal.provisos_ex %]</td>
+<td colspan=3>[% proposal.provisos %]</td>
 </tr>
 
 <tr>
@@ -344,7 +344,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 
 <tr>
 <th align=right valign=top>Miscellaneous Notes</th>
-<td colspan=3>[% proposal.misc_notes_ex %]</td>
+<td colspan=3>[% proposal.misc_notes %]</td>
 </tr>
 
 </table>

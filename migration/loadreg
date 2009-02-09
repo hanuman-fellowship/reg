@@ -329,7 +329,8 @@ sub processReg {
         $hash{kids} .= "$hash{agekid3} " if $hash{agekid3};
         $hash{kids} =~ s{\s+$}{};
     }
-    $hash{h_type} = $housemap{$hash{h_type}};
+    $hash{h_type} = (exists $housemap{$hash{h_type}})? $housemap{$hash{h_type}}
+                    :                                  "unknown";
     $hash{h_type} .= "_bath" if $with_bath{$hash{h_name}};
     for my $f (qw/
         date_start date_end date_postmark letter_sent can_date

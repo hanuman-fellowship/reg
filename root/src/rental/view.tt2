@@ -387,7 +387,7 @@ Payments
 
 <tr>
 <th align=right valign=top>Description</th>
-<td colspan=5>[% rental.webdesc_ex %]</td>
+<td colspan=5>[% rental.webdesc %]</td>
 </td>
 </tr>
 

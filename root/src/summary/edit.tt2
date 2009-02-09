@@ -1,21 +1,5 @@
-<script type="text/javascript">
-function popup(url) {
-    var newwin = window.open(
-        url, 'reg_search_help',
-        'height=680,width=560, scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
-function more(id) {
-    var el = document.getElementById(id);
-    el.rows = parseInt(el.rows) + 3;
-//    el.cols = parseInt(el.cols) + 3;
-    return false;
-}
-</script>
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <h2>[% Type %] Summary</h2>
 </head>
 <p>
@@ -81,9 +65,7 @@ th {
 [% sum.leader_housing %]
 </textarea>
 </td>
-<td valign=bottom><a href="#" onclick="return more('leader_housing');">more</a></td>
 </tr>
-<tr><td colspan=3 align=right><a href="#" onclick="popup('/static/help/shortcuts.html')">How?</a></td></tr>
 
 <tr><th valign=top>Signage</th>
 <td colspan=3>
@@ -91,7 +73,6 @@ th {
 [% sum.signage %]
 </textarea>
 </td>
-<td valign=bottom><a href="#" onclick="return more('signage');">more</a></td>
 </tr>
 
 <tr><th valign=top>Food Service</th>
@@ -100,7 +81,6 @@ th {
 [% sum.food_service %]
 </textarea>
 </td>
-<td valign=bottom><a href="#" onclick="return more('food_service');">more</a></td>
 </tr>
 
 <tr><th valign=top>Flowers</th>
@@ -109,14 +89,12 @@ th {
 [% sum.flowers %]
 </textarea>
 </td>
-<td valign=bottom><a href="#" onclick="return more('flowers');">more</a></td>
 </tr>
 
 <tr><th valign=top>Lodging</th><td colspan=3>
 <textarea id=lodging name=lodging rows=[% lodging_rows %] cols=60>
 [% sum.lodging %]
 </textarea>
-<td valign=bottom><a href="#" onclick="return more('lodging');">more</a></td>
 </td></tr>
 
 <tr><th valign=top>Special Needs</th>
@@ -126,7 +104,6 @@ th {
 </textarea>
 </td>
 <td valign=bottom><input id=sub type=submit value="Submit"><p>
-<a href="#" onclick="return more('special_needs');">more</a></td>
 </tr>
 
 <tr><th valign=top>Finances</th>
@@ -134,7 +111,6 @@ th {
 <textarea id=finances name=finances rows=[% finances_rows %] cols=60>
 [% sum.finances %]
 </textarea>
-<td valign=bottom><a href="#" onclick="return more('finances');">more</a></td>
 </td></tr>
 
 <tr><th valign=top>Miscellaneous</th>
@@ -142,7 +118,6 @@ th {
 <textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
 [% sum.miscellaneous %]
 </textarea>
-<td valign=bottom><a href="#" onclick="return more('miscellaneous');">more</a></td>
 </td></tr>
 
 <tr><th valign=top>Field Staff Setup</th>
@@ -150,7 +125,6 @@ th {
 <textarea id=field_staff_setup name=field_staff_setup rows=[% field_staff_setup_rows %] cols=60>
 [% sum.field_staff_setup %]
 </textarea>
-<td valign=bottom><a href="#" onclick="return more('field_staff_setup');">more</a></td>
 </td></tr>
 
 <tr><th valign=top>Sound Setup</th>
@@ -158,7 +132,6 @@ th {
 <textarea id=sound_setup name=sound_setup rows=[% sound_setup_rows %] cols=60>
 [% sum.sound_setup %]
 </textarea>
-<td valign=bottom><a href="#" onclick="return more('sound_setup');">more</a></td>
 </td></tr>
 
 <tr><th valign=top>Feedback</th>
@@ -166,7 +139,6 @@ th {
 <textarea id=feedback name=feedback rows=[% feedback_rows %] cols=60>
 [% sum.feedback %]
 </textarea>
-<td valign=bottom><a href="#" onclick="return more('feedback');">more</a></td>
 </td></tr>
 
 <tr><th></th><td><input id=sub type=submit value="Submit"></td></tr>

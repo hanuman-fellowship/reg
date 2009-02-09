@@ -1,5 +1,7 @@
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <script type="text/javascript">init_tabs(4, 0, 0);</script>
 <script type="text/javascript">
 function popup(url, height) {
@@ -222,7 +224,6 @@ Web
 <tr>
 <th align=right>Email</th>
 <td><input type=text name=email value="[% rental.email %]" size=30>
-<span style="font-weight: normal; margin-left: 1.5in;"><a href="#" onclick="javascript:popup('/static/help/shortcuts.html', 670);">How?</a></span>
 </td>
 </tr>
 

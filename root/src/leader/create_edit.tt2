@@ -1,15 +1,5 @@
-<script type="text/javascript">
-function popup(url) {
-    var newwin = window.open(
-        url, 'reg_search_help',
-        'height=670,width=550, scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
-</script>
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <h2>Leaders</h2>
 <form action=[% '/leader/' _ form_action %]
       enctype="multipart/form-data"
@@ -39,7 +29,6 @@ function popup(url) {
 <tr>
 <th align=right valign=top>Assistant</th>
 <td><input type=checkbox value=yes name=assistant [% check_assistant %]>
-<span style="font-weight: normal; margin-left: 3in;"><a href="#" onclick="javascript:popup('/static/help/shortcuts.html');">How?</a></span></td>
 </td>
 </tr>
 

@@ -1,3 +1,5 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <script type="text/javascript">
 
 // prepare for an Ajax call:
@@ -92,16 +94,6 @@ function show_no_show_cs() {
     else {
         cs_div.style.display = 'none';
     }
-}
-function popup(url) {
-    var newwin = window.open(
-        url, 'reg_search_help',
-        'height=680,width=550, scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
 }
 </script>
 <style type="text/css">
@@ -315,7 +307,6 @@ th {
 <th>Leader Housing</th>
 <td><input tabindex=36 type=text name=leader_housing value="[% proposal.leader_housing %]">
 <input style="margin-left: 10mm" id=sub type=submit value="Submit"></td>
-<td align=center><a href='#' onclick="popup('/static/help/shortcuts.html');">How?</a></td>
 </tr>
 
 <tr>

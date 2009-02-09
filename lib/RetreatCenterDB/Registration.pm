@@ -91,9 +91,6 @@ sub h_type_disp {
     my $type = $self->h_type;
     return "Unknown" if ! defined $type || ! exists $string{$type};
     $type = $string{$type};
-    $type =~ s{\(.*\)}{};
-    $type =~ s{Mount Madonna }{};
-    trim($type);
 }
 
 sub confnote_ex { expand(shift->confnote()); }
