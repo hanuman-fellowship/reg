@@ -17,17 +17,6 @@ function set_level_visibility() {
     }
     return true;
 }
-
-function popup(url) {
-    var newwin = window.open(
-        url, 'reg_search_help',
-        'height=670,width=550, scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
 </script>
 </head>
 
@@ -148,7 +137,6 @@ Misc
 <tr>
 <th align=right>Unlinked Dir</th>
 <td><input type=text name=unlinked_dir size=10 value="[% program.unlinked_dir %]">
-<span style="font-weight: normal; margin-left: 2.5in;"><a href="#" onclick="javascript:popup('/static/help/shortcuts.html');">How?</a></span></td>
 </tr>
 
 <tr>
@@ -304,7 +292,6 @@ Misc
 <option value='[% t %]'[% IF t == program.cl_template %] selected[% END %]>[% t %]</option>
 [% END %]
 </select>
-<span style="font-weight: normal; margin-left: 3in;"><a href="#" onclick="javascript:popup('/static/help/shortcuts.html');">How?</a></span></td>
 </td>
 </tr>
 
