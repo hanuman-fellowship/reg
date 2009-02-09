@@ -211,6 +211,18 @@ Misc
 </tr>
 
 <tr>
+<th align=right valign=top>Web Description</th>
+<td colspan=5>[% program.webdesc %]</td>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Brochure Description</th>
+<td colspan=5>[% program.brdesc %]</td>
+</td>
+</tr>
+
+<tr>
 <th align=right>Footnotes</th>
 <td>[% program.footnotes %]</td>
 </tr>
@@ -228,18 +240,6 @@ Misc
 <tr>
 <th align=right>Unlinked Dir</th>
 <td>[% program.unlinked_dir %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Description</th>
-<td colspan=5>[% program.webdesc %]</td>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Brochure Description</th>
-<td colspan=5>[% program.brdesc %]</td>
-</td>
 </tr>
 
 <tr>

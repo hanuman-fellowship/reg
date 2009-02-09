@@ -120,6 +120,18 @@ Misc
 </tr>
 
 <tr>
+<th align=right valign=top>Web Description</th>
+<td colspan=5><textarea id=webdesc name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Brochure Description</th>
+<td colspan=5><textarea name=brdesc cols=60 rows=10>[% program.brdesc %]</textarea></td>
+</td>
+</tr>
+
+<tr>
 <th align=right>Footnotes</th>
 <td><input type=text name=footnotes value="[% program.footnotes %]" size=5></td>
 </tr>
@@ -137,18 +149,6 @@ Misc
 <tr>
 <th align=right>Unlinked Dir</th>
 <td><input type=text name=unlinked_dir size=10 value="[% program.unlinked_dir %]">
-</tr>
-
-<tr>
-<th align=right valign=top>Web Description</th>
-<td colspan=5><textarea id=webdesc name=webdesc cols=60 rows=10>[% program.webdesc %]</textarea>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Brochure Description</th>
-<td colspan=5><textarea name=brdesc cols=60 rows=10>[% program.brdesc %]</textarea></td>
-</td>
 </tr>
 
 <tr>
