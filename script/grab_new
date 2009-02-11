@@ -7,7 +7,7 @@ use FindBin;
 
 chdir "$FindBin::Bin/..";
 
-my $dbh = DBI->connect("dbi:SQLite:retreatcenter.db", "sahadev", "JonB")
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 my $sth = $dbh->prepare("
     select the_key, value
