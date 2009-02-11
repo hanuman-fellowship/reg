@@ -1,0 +1,8 @@
+# Get online registrations every 15 minutes during the work day.
+0,15,30,45 8-18 * 1-6 * /home/sahadev/RetreatCenter/grab
+
+# Get the rooms/campsites to be made up every morning at 1:00 am.
+0 1 * * * /home/sahadev/RetreatCenter/makeup
+
+# restart the Catalyst server on reboot
+@reboot /home/sahadev/RetreatCenter/x
