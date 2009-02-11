@@ -24,7 +24,7 @@ sub index : Local {
 }
 
 sub reconcile_deposit : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $source, $id) = @_;
 
     my ($date_start, $date_end);
     my $dep;
@@ -47,13 +47,17 @@ sub reconcile_deposit : Local {
     };
     my @payments;
     my ($cash, $check, $credit, $online, $total) = (0) x 5;
-    for my $src (qw/
-        RegPayment
-        XAccountPayment
-        RentalPayment
-        MMIPayment
-        Donation
-    /) {
+    my @sources = ($source eq 'mmc')? qw/
+                      RegPayment
+                      XAccountPayment
+                      RentalPayment
+                  /:
+                  qw/
+                      MMIPayment
+                  /;
+    # Donations are not included in deposits, no???
+    #
+    for my $src (@sources) {
         for my $p (model($c, $src)->search($cond)) {
             my $type = $p->type;
             my $amt  = $p->amount;
@@ -94,6 +98,7 @@ sub reconcile_deposit : Local {
     }
 
     stash($c,
+        source   => $source,
         payments => \@payments,
         again    => ! $id,
         cash     => $cash,
@@ -106,11 +111,11 @@ sub reconcile_deposit : Local {
 }
 
 #
-# the id  is passed in if we are viewing a past deposit.
+# the optional id is passed in if we are viewing a past deposit.
 # Without it we are creating a new one.
 #
 sub file_deposit : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $source, $id) = @_;
 
     my ($date_start, $date_end);
     my $dep;
@@ -133,13 +138,17 @@ sub file_deposit : Local {
         the_date => { between => [ $date_start, $date_end ] },
     };
     my @payments;
-    for my $src (qw/
-        RegPayment
-        XAccountPayment
-        RentalPayment
-        MMIPayment
-        Donation
-    /) {
+    my @sources = ($source eq 'mmc')? qw/
+                      RegPayment
+                      XAccountPayment
+                      RentalPayment
+                  /:
+                  qw/
+                      MMIPayment
+                  /;
+    # Donations are not included in deposits, no???
+    #
+    for my $src (@sources) {
         for my $p (model($c, $src)->search($cond)) {
             my $type = $p->type();
             my $amt  = $p->amount();
@@ -313,6 +322,7 @@ EOH
                 cash       => $gcash,
                 chk        => $gcheck,
                 credit     => $gcredit,
+                source     => $source,
             });
             $string{last_deposit_date} = $date_end;         # in memory
             model($c, 'String')->find('last_deposit_date')->update({  # on disk
@@ -325,10 +335,10 @@ EOH
 }
 
 sub deposits : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $source) = @_;
 
     my $dt;
-    if ($dt = $c->request->params->{date_start}) {
+    if ($dt = $c->request->params->{date_end}) {
         $dt = date($dt);
         if (! $dt) {
             $dt = today();
@@ -340,15 +350,24 @@ sub deposits : Local {
     stash($c,
         deposits => [ 
             model($c, 'Deposit')->search(
-                { date_start => { '<=', $dt->as_d8() } },
+                {
+                    source   => $source,
+                    date_end => { '<=', $dt->as_d8() },
+                },
                 {
                     rows => 10,
                     order_by => 'date_start desc'
                 },
             )
         ],
+        source   => $source,
         template => "finance/prior_deposits.tt2",
     );
+}
+
+sub month_end : Local {
+    my ($self, $c) = @_;
+    $c->stash->{template} = "finance/period_end.tt2";
 }
 
 1;

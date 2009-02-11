@@ -695,8 +695,8 @@ sub count {
     return scalar($self->reg_count);
 }
 sub meeting_places {
-    my ($self) = @_;
-    places($self);
+    my ($self, $breakout) = @_;
+    places($self, $breakout);
 }
 sub ceu_issued {
     my ($self) = @_;

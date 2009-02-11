@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+mkdir "iss" unless -d "iss";
+my @flds = ();
+
+my $sql = "select * from issue";
+my $sth = $dbh->prepare($sql) or die "oops\n";
+$sth->execute();
+open my $iss, ">", "iss/issues.txt" or die "issues.txt\n";
+while (@flds = $sth->fetchrow_array()) {
+    for my $f (@flds) {
+        $f = "" unless defined $f;
+    }
+    print {$iss} join('|', @flds), "\n";
+}
+close $iss;
+undef $sth;
+$dbh->disconnect();

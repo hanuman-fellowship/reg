@@ -90,8 +90,6 @@ ceu_lic_fee 10
 sponsor_nights 12
 rental_tentative Tentative
 rental_tentative_color 255,0,0
-rental_new New
-rental_new_color 255,150,150
 rental_sent Sent
 rental_sent_color 160,160,255
 rental_received Received

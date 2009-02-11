@@ -25,3 +25,5 @@ publish, verify
 re-enter sums
     copy, paste & wiki-ize
 enter free nights & free program status for members
+MMI payments need to be sorted out - following Brajesh's notes
+    on the printout?

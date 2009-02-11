@@ -6,9 +6,10 @@
 <p>
 Meal Lists
 <ul>
-<a href="/listing/meal_list">For Planning</a>
-<a href="/listing/meal_list?details=1&sdate=t&edate=t">Today With Names</a>
+<li><a href="/listing/meal_list">For Planning</a>
+<li><a href="/listing/meal_list?details=1&sdate=t&edate=t">Today With Names</a>
 <form action="listing/meal_list" method=POST>
+<li>Custom:
 <table cellpadding=2>
 
 <tr>
@@ -28,7 +29,7 @@ Meal Lists
 
 <tr>
 <td>&nbsp</td>
-<td><input type=submit value="Submit"></td>
+<td><input type=submit value="Go"></td>
 </tr>
 </table>
 
@@ -49,7 +50,7 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 Last date of contact before which<br>people should be marked inactive:
 <br>
 <input type=text name=date_last size=10 maxlength=10>
-<input type=submit value="Submit">
+<input type=submit value="Go">
 </form>
 <p>
 Purge Stale Addresses
@@ -59,13 +60,39 @@ Purge Stale Addresses
       enctype="multipart/form-data"
 >
 <input type=file name=stale_emails><br>
-<input type=submit value="Submit">
+<input type=submit value="Go">
 </form>
 </ul>
 </ul>
 </td><td valign=top>
 <ul>
 <a href=/report/list>General Reports</a><p>
+[% IF Catalyst.check_user_roles('mmi_admin') %]
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top>
+MMI Deposit
+</td>
+<td>
+<ol>
+<li><a href="/finance/reconcile_deposit/mmi">Reconcile</a>
+<li><a target=_blank href="/finance/file_deposit/mmi">File</a>
+</ol>
+</td>
+</tr>
+</table>
+<p>
+<a href="/finance/deposits/mmi">MMI Prior Deposits</a><p>
+MMI Period End Summary
+<table cellpadding=3>
+<tr>
+<form action="/finance/month_end">
+<td align=left>Start <input type=text name=sdate size=10>
+End <input type=text name=edate size=10>
+</td><td><input type=submit value="Go"></td></tr>
+</form>
+</table>
+[% ELSE %]
 <table border=0 cellspacing=0 cellpadding=0>
 <tr>
 <td valign=top>
@@ -73,14 +100,14 @@ Deposit
 </td>
 <td>
 <ol>
-<li><a href="/finance/reconcile_deposit">Reconcile</a>
-<li><a target=_blank href="/finance/file_deposit">File</a>
+<li><a href="/finance/reconcile_deposit/mmc">Reconcile</a>
+<li><a target=_blank href="/finance/file_deposit/mmc">File</a>
 </ol>
 </td>
 </tr>
 </table>
 <p>
-<a href="/finance/deposits">Prior Deposits</a><p>
+<a href="/finance/deposits/mmc">Prior Deposits</a><p>
 Period End Summary
 <table cellpadding=3>
 <tr>
@@ -90,6 +117,7 @@ End <input type=text name=edate size=10>
 </td><td><input type=submit value="Go"></td></tr>
 </form>
 </table>
+[% END %]
 <p>
 Phone Lists
 <ol>

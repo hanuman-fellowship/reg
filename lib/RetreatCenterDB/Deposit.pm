@@ -16,6 +16,7 @@ __PACKAGE__->add_columns(qw/
     cash
     chk
     credit
+    source
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

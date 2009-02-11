@@ -32,9 +32,9 @@ create table user_role (
 insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person', '', '', '');
 -- the above is used for legacy reg payments, etc.
 
-insert into user values (2, 'jane', 'p', 'jane@na.com', 'Jane', 'Doe', '', '', '');
-insert into user values (3, 'joe', 'p', 'joe@na.com', 'Joe', 'Blow', '', '', '');
-insert into user values (4, 'mary', 'p', 'mary@na.com', 'Mary', 'Smith', '', '', '');
+insert into user values (2, 'jane', 'passD', 'jane@na.com', 'Jane', 'Doe', '', '', '');
+insert into user values (3, 'joe', 'passB', 'joe@na.com', 'Joe', 'Blow', '', '', '');
+insert into user values (4, 'mary', 'passS', 'mary@na.com', 'Mary', 'Smith', '', '', '');
 insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou', '', '', '');
 insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg', '', '', '');
 insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan', '', '', '');
@@ -43,8 +43,9 @@ insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresk
 insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan', '', '', '');
 insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName', '', '', '');
 insert into user values (12, 'lori', 'march', 'lori_march@hotmail.com', 'Lori', 'March', '', '', '');
-insert into user values (13, 'charlie', 'p', 'jon@logicalpoetry.com', 'Charlie', 'Smith', '', '', '');
-insert into user values (14, 'jerry', 'p', 'jon@logicalpoetry.com', 'Jerry', 'Garcia', '', '', '');
+insert into user values (13, 'charlie', 'passA', 'jon@logicalpoetry.com', 'Charlie', 'Anderson', '', '', '');
+insert into user values (14, 'jerry', 'passG', 'jon@logicalpoetry.com', 'Jerry', 'Garcia', '', '', '');
+insert into user values (15, 'ringo', 'passS', 'jon@logicalpoetry.com', 'Ringo', 'Starr', '', '', '');
 --
 -- the roles - do not muck with the ids!
 --
@@ -113,3 +114,7 @@ insert into user_role values (14, 2);
 insert into user_role values (14, 3);
 insert into user_role values (14, 4);
 insert into user_role values (14, 5);
+-- ringo
+insert into user_role (values(15,2);
+insert into user_role (values(15,4);
+insert into user_role (values(15,5);

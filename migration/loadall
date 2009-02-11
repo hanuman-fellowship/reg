@@ -68,6 +68,8 @@ echo donations
 loaddon
 echo memberships
 loadmem
+echo issues
+loadiss
 
 # split the F08 PRs from the S08 ones
 # this is done before the regcount is done...

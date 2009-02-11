@@ -215,9 +215,12 @@ EOH
 }
 
 sub places {
-    my ($event) = @_;
+    my ($event, $breakout) = @_;
 
-    join ", ", map { $_->meeting_place->abbr } $event->bookings;
+    join ", ",
+         map { $_->meeting_place->abbr }
+         grep { $_->breakout() eq $breakout }
+         $event->bookings;
 }
 
 my @leaders;

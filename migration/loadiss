@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+$dbh->do("delete from issue");
+my $sql = "insert into issue values (?,?,?,?,?,?,?)";
+my $sth = $dbh->prepare($sql) or die "oops2 iss\n";
+open my $iss, "<", "iss/issues.txt" or die "issues.txt\n";
+while (<$iss>) {
+    chomp;
+    while (m{\cM$}) {
+        $_ .= <$iss>;
+        chomp;
+    }
+    my @flds = split /\|/, $_, -1;
+    $sth->execute(@flds);
+}
+close $iss;
+$sth = undef;
+$dbh->disconnect();

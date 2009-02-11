@@ -120,7 +120,7 @@ Web
 <td></td>
 <th># of<br>People</th>
 <th align=center valign=bottom>Attendance
-<span style="font-weight: normal; margin-left: .5in;"><a href="#" onclick="javascript:popup('/static/help/attendance.html', 450);">How?</a></span>
+<span style="font-weight: normal; margin-left: .5in;">(people x days)&nbsp;&nbsp;&nbsp;<a href="#" onclick="javascript:popup('/static/help/attendance.html', 450);">How?</a></span>
 </th>
 </tr>
 
@@ -131,7 +131,7 @@ Web
     <tr>
     <th align=right>[% string.$t %]</th>
     <td align=center><input tabindex=3 type=text size=3 name=[% n %] value='[% rental.$n %]'></td>
-    <td align=center><input tabindex=15 type=text size=30 name=[% att %] value='[% rental.$att %]'></td>
+    <td align=center><input tabindex=15 type=text size=50 name=[% att %] value='[% rental.$att %]'></td>
     </tr>
 [% END %]
 
@@ -148,8 +148,8 @@ Web
 </tr>
 
 <tr>
-<th align=right valign=top width=140>Comment</th>
-<td colspan=5><textarea name=comment cols=55 rows=4>[% rental.comment %]</textarea></td>
+<th align=right valign=top>Comment</th>
+<td colspan=5><textarea name=comment cols=60 rows=4>[% rental.comment %]</textarea></td>
 </tr>
 
 <tr>
@@ -194,10 +194,10 @@ Web
 
 <!-- Web div -->
 <div id="content4" class="tabcontent" style="display: none">
-<table>
+<table border=1>
 
 <tr>
-<td width=120></td>
+<td></td>
 <td colspan=2><input type=checkbox value="yes" name=linked [% check_linked %]> Linked</td>
 </tr>
 
@@ -229,7 +229,7 @@ Web
 
 <tr>
 <th align=right valign=top>Description</th>
-<td colspan=5><textarea name=webdesc cols=60 rows=6>[% rental.webdesc %]</textarea></td>
+<td><textarea name=webdesc cols=60 rows=6>[% rental.webdesc %]</textarea></td>
 </td>
 </tr>
 

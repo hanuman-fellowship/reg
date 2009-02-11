@@ -18,7 +18,9 @@
 <th align=center width=50>Id</th>
 <th align=center>Priority</th>
 <th align=left>Title</th>
-<th>Action</th>
+[% IF Catalyst.check_user_roles('super_admin') %]
+    <th>Action</th>
+[% END %]
 </tr>
 
 [% class = 'grayrow' %]
@@ -27,9 +29,11 @@
     <td align=center>[% i.id %]</td>
     <td align=center>[% i.priority %]</td>
     <td width=600><a href="/issue/update/[% i.id %]">[% i.title %]</a></td>
-    <td align=center>
-    <a href="[% '/issue/delete/' _ i.id %]" onclick="return confirm('Okay to Delete [% i.title %]?')">Del</a>
-    </td>
+    [% IF Catalyst.check_user_roles('super_admin') %]
+        <td align=center>
+        <a href="[% '/issue/delete/' _ i.id %]" onclick="return confirm('Okay to Delete [% i.title %]?')">Del</a>
+        </td>
+    [% END %]
     </tr>
     [% IF class == 'grayrow' %]
         [% class = '' %]
@@ -52,7 +56,9 @@
 <th align=center width=50>Id</th>
 <th align=center>Priority</th>
 <th align=left>Title</th>
-<th>Action</th>
+[% IF Catalyst.check_user_roles('super_admin') %]
+    <th>Action</th>
+[% END %]
 </tr>
 
 [% class = 'grayrow' %]
@@ -61,9 +67,11 @@
     <td align=center>[% i.id %]</td>
     <td align=center>[% i.priority %]</td>
     <td width=600><a href="/issue/update/[% i.id %]">[% i.title %]</a></td>
-    <td align=center>
-    <a href="[% '/issue/delete/' _ i.id %]" onclick="return confirm('Okay to Delete [% i.title %]?')">Del</a>
-    </td>
+    [% IF Catalyst.check_user_roles('super_admin') %]
+        <td align=center>
+        <a href="[% '/issue/delete/' _ i.id %]" onclick="return confirm('Okay to Delete [% i.title %]?')">Del</a>
+        </td>
+    [% END %]
     </tr>
     [% IF class == 'grayrow' %]
         [% class = '' %]

@@ -1,0 +1,143 @@
+<pre>
+For programs offered by Mount Madonna Institute (henceforward MMI)
+the 'sponsoring organization' of the program is not MMC.
+    It is either:
+        MMI College of Ayurvda
+        MMI School of Professional Massage
+        MMI School of Yoga
+        MMI School of Community Studies
+You then need to specify a level:
+    Diploma
+    Certificate
+    Masters
+    Course
+If it is not a Course then it is refered to as a DCM program.
+MMI Courses/DCMs are marked with a red star in the list of programs.
+
+Actually, to see current Personal Retreats and DCMs you must
+    choose "PR/DCM" on the list progs page OR
+    do a search for a program with a pattern (or season/year).
+    These are not normally included because they are
+    ever-present (or present for months at a time unlike
+    most programs that are typically just a weekend)
+    and become a kind of noise.
+
+MMI Programs, at this time, do not have web pages - and hence
+    no on-line registration.  People have to actually _apply_ to
+    be a student of the Institute - just like any accredited school.
+    Application forms _are_ available at the MMI web site.
+
+    Since MMI Programs have no web page be sure that the
+    "Web Ready" is NOT checked when creating/updating the program.
+
+Registrations for a MMI _course_ are facilitated by the "Import"
+    link on the course Program page.  You are presented with 
+    the DCM programs that are concurrent with the course date range.
+    You choose one or more DCM programs and everyone in
+    these programs is registered for the course.  The housing
+    type choice is assigned individually - based on the most recent
+    housing type they were assigned.  If the DCM course is in winter,
+    tenting choices are avoided.  Double is the default type.
+    The housing type is set but the registrar still needs to go through
+    and house everyone individually.
+
+People can register for only one DCM program at a time.
+    Such second registrations are prohibited.  When viewing
+    a registration in an MMI _course_ there is a link "To DCM"
+    with which you can jump to their DCM registration.
+
+Tuition for DCM Programs is quite flexible depending on
+    their ability to pay.  Various creative discounts for payment
+    in full, etc.  So ... we don't really record the tuition _charges_.
+    The comment field in the DCM program registration screen
+    is used extensively to detail the payment arrangements that
+    have been made.
+
+MMI Payments
+    We DO keep close track of the _payments_.  All MMI Payments
+    are linked directly to the person not to the registrations.
+    On any MMI program registration screen there
+    is a section at the bottom named "MMI Payments" with
+    links "New" and "List".
+    
+    Choosing "New" to create a new MMI payment
+    you supply a dollar amount, type (credit/check/cash), what the payment
+    is for (Tuition/Meals&Lodging/Fees/...) and an optional note.
+
+    For general ledger accounting purposes MMI Programs
+    do not really have a single GL number.  Each MMI payment has its _own_
+    6 digit GL number which is automatically computed thusly:
+
+        digit 1 - what for (1=Tuition, 2=Meals & Lodging, 3=Application Fee,
+                            4=Registration Fee, 5=Other)
+        digit 2 - school (1=Ayurveda, 2=Massage, 3=Yoga, 4=Community)
+        digit 3 - tens digit of year
+        digit 4 - units digit of year
+        digit 5 - month (1=Jan, ...  9=Sep, X=Oct, Y=Nov, Z=Dec)
+        digit 6 - level (D=Diploma, C=Certificate, M=Masters)
+
+    Each registrant making a payment is enrolled in just one DCM program.
+    That DCM program and its _end_ date are used to determine
+    digits 2-6 above.  Note that digit 5 could be a letter (X-Z)
+    and digit 6 is not a digit (0-9) at all but D, C, or M.
+
+    *Anyone* can register for a MMI _course_ - even people who
+    are not enrolled in a DCM program.  These are called "auditors".
+    When auditors make a payment (via "New" MMI Payment) 
+    the values in digits 2-6 are determined using the MMI _course_ itself.
+    Digit 6 is not D, C, or M but it is the _ordinal number_ of the
+    course within its month.   e.g. It will be 2 if it is the
+    second MMI course within the month of its _end_ date.
+
+    The program where you clicked on the "New" link will
+    be remembered with the payment itself.  This means you could
+    make a tuition payment on a course registration.  This raises
+    the question - are all tuition payments really attached
+    to the DCM program?  Auditors would pay a tuition I presume, yes?
+    And they have no DCM program.
+
+List of MMI Payments
+    On an MMI program registration there is a link named "List"
+    for displaying all of a person's MMI payments.   On the Person
+    screen the link is "MMI Payments".
+
+    These fields are listed from the payment records:
+        
+        amount, description, date, payment type,
+        program name, and an optional note.
+
+    You can optionally show the GL number as well, if you wish,
+    with the link "Show GL".
+
+    Note that the program where a payment was made
+    was not recorded before newReg began to be used.
+
+Calendar and DailyPic
+    DCM Programs (and Personal Retreats) are not shown on the
+    calendar (or the daily pic) as they would be annoyingly and
+    uselessly ever-present.
+
+There is a role 'mmi_admin'.  Only users with this role can _see_
+    MMI registrations or payments or modify MMI programs.
+    Normal program admins/staff can see the programs but not modify them.
+    They can see the names of the registrants but not the actual
+    registration.  This is enforced via _whatever way_ you might try to get
+    to the payments or registration or program.  A few examples:
+
+    - The MMI payments are viewable via the person record
+      of a person who is enrolled in an MMI program/course.
+
+    - Clicking on an MMI person's room in the DailyPic
+      or the ClusterView will show you their name but
+      not allow you to click through to their
+      registration - unless one of your roles is mmi_admin.
+
+    - Asking for the Early/Late registrations list from
+      a program screen.  You'll see different things depending
+      on your role.
+
+    - In the Listings area there will be a link to create MMI Deposits.
+        These are all MMI Payments made since the last time
+        an MMI Deposit was made.  These deposits are separate from
+        the MMC program/rental deposits.
+</pre>

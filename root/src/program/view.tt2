@@ -118,6 +118,8 @@ function cluster_down(cluster_id) {
 [% END %]
 <a href="/registration/list_reg_name/[% id %]">AllRegs</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/registration/list_online">Online ([% online %])</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/program/email_all/[% id %]">Email</a>
 <p>
 

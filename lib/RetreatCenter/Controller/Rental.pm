@@ -443,9 +443,6 @@ sub view : Local {
     if ($rental->tentative) {
         $status = "tentative";
     }
-    elsif (! ($rental->contract_sent())) {
-        $status = "new";
-    }
     elsif (! ($rental->contract_received() && $rental->payments() > 0)) {
         $status = "sent";
     }
@@ -1092,6 +1089,7 @@ sub contract : Local {
     $rental->update({
         contract_sent => today()->as_d8(),
         sent_by       => $c->user->obj->id,
+        status        => "sent",
     });
     my $html = "";
     my $tt = Template->new({

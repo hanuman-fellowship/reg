@@ -101,6 +101,9 @@ sub update_do : Local {
     $c->response->redirect($c->uri_for("/xaccount/view/$id"));
 }
 
+#
+# does this delete the payments???
+#
 sub delete : Local {
     my ($self, $c, $id) = @_;
 

@@ -1,5 +1,6 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <h2>Issues</h2>
-</head>
 <form action=[% '/issue/' _ form_action %] name=form>
 <table cellpadding=3 border=0>
 
@@ -10,13 +11,14 @@
 
 <tr>
 <td align=right>Priority</td>
-<td><input type=text name=priority value="[% issue.priority %]" size=2></td>
+<td><input type=text name=priority value="[% issue.priority %]" size=2>
+&nbsp;&nbsp;(1 highest, 5 lowest)</td>
 </tr>
 
 <tr>
 <td align=right valign=top>Notes</td>
 <td>
-<textarea name=notes cols=60 rows=5>
+<textarea name=notes cols=60 rows=20>
 [% issue.notes %]
 </textarea>
 </td>

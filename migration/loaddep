@@ -15,10 +15,11 @@ $dbh->do("delete from deposit");
 #  cash
 #  chk
 #  credit
+#  source
 #
 my $d_sql = "insert into deposit
 values (
-    ?, 2, ?, ?, '17:00', ?, ?, ?
+    ?, 2, ?, ?, '17:00', ?, ?, ?, 'mmc'
 )
 ";
 my $d_sth = $dbh->prepare($d_sql) or die "no prep deposit insert\n";

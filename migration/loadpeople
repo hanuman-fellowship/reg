@@ -122,6 +122,9 @@ while (<$people>) {
         last;
     }
 }
+$dbh->do("create index if not exists i_last on config(last)");
+$dbh->do("create index if not exists i_akey on config(akey)");
+$dbh->do("create index if not exists i_sps  on config(id_sps)");
 print "\n";
 close $people;
 __DATA__

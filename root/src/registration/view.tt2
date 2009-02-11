@@ -164,7 +164,26 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% END %]
 
 <tr><th align=right>Balance</th>
-<td><table><tr><td align=center>[% reg.balance %]</td><td align=center>[% IF reg.balance > 0 && ! reg.cancelled %]<a style="margin-left: .5in" href="/registration/pay_balance/[% reg.id %]/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>[% END %]</td></tr></table></td>
+<td>
+<table>
+<tr>
+<td align=center>[% reg.balance %]</td>
+
+<td align=center>[% IF reg.balance > 0 && ! reg.cancelled %]
+    [% IF reg.program.school == 0 %]
+    <a style="margin-left: .5in"
+       href="/registration/pay_balance/[% reg.id %]/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>
+    [% ELSE %]
+    <a style="margin-left: .5in"
+       href="/person/create_mmi_payment/[% reg.id %]/[% reg.person.id %]"><img src="/static/images/dollar.jpg" height=55 border=0></a>
+    [% END %]
+[% END %]
+</td>
+
+</tr>
+</table>
+</td>
+</tr>
 
 <tr>
 <th align=right valign=top>Comment</th>

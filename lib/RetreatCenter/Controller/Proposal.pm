@@ -11,9 +11,14 @@ use Util qw/
     tt_today
     nsquish
     empty
+    housing_types
+    stash
 /;
 use Date::Simple qw/
     date
+/;
+use Global qw/
+    %string
 /;
 
 my @mess;
@@ -210,27 +215,30 @@ sub approve : Local {
 
     # now we fill in the stash in preparation for
     # the creation of a rental.  code copied from Rental->create().
-    $c->stash->{check_linked}      = "";
-    $c->stash->{check_tentative}   = "checked";
-    $c->stash->{housecost_opts} =
-        [ model($c, 'HouseCost')->search(
-            undef,
-            { order_by => 'name' },
-        ) ];
-    $c->stash->{rental} = {     # double faked object
-        housecost => { name => "Default" },
-        name           => $proposal->group_name(),
-        coordinator_id => $person_id,
-        cs_person_id   => $cs_person_id,
-        max            => $proposal->max(),
-        deposit        => $proposal->deposit(),
-        start_hour     => $proposal->checkin_time(),
-        end_hour       => $proposal->checkout_time(),
-        # what else???
-    };
-    $c->stash->{section}     = 1;   # web
-    $c->stash->{template}    = "rental/create_edit.tt2";
-    $c->stash->{form_action} = "create_from_proposal/$id";
+    stash($c,
+        check_linked    => "",
+        check_tentative => "checked",
+        housecost_opts  =>
+            [ model($c, 'HouseCost')->search(
+                undef,
+                { order_by => 'name' },
+            ) ],
+        rental => {     # double faked object
+            housecost => { name => "Default" },
+            name           => $proposal->group_name(),
+            coordinator_id => $person_id,
+            cs_person_id   => $cs_person_id,
+            max            => $proposal->max(),
+            deposit        => $proposal->deposit(),
+            start_hour     => $proposal->checkin_time(),
+            end_hour       => $proposal->checkout_time(),
+        },
+        h_types     => [ housing_types(1) ],
+        string      => \%string,
+        section     => 1,   # web
+        template    => "rental/create_edit.tt2",
+        form_action => "create_from_proposal/$id",
+    );
 }
 
 #

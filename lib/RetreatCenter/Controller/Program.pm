@@ -356,7 +356,9 @@ sub view : Local {
     }
     my $s = _get_cluster_groups($c, $id);
     my ($UN, $sel) = split /XX/, $s;
+    my @files = <root/static/online/*>;
     stash($c,
+        online              => scalar(@files),
         UNselected_clusters => $UN,
         selected_clusters   => $sel,
         daily_pic_date      => $p->sdate(),
@@ -600,7 +602,7 @@ sub update : Local {
         school_opts => $sch_opts,
         level_opts  => $level_opts,
         show_level  => $p->school() == 0? "hidden": "visible",
-        edit_gl     => $c->check_user_roles('super_admin'),
+        edit_gl     => $c->check_user_roles('super_admin') || 0,
         form_action => "update_do/$id",
         template    => "program/create_edit.tt2",
     );

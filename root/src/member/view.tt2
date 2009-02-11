@@ -75,4 +75,3 @@ Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member
 </div>
 [% END %]
 </ul>
-<script type='text/javascript'>document.form.mkpay_date.focus()</script>

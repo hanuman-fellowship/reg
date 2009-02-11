@@ -20,6 +20,9 @@ use Date::Simple qw/
     date
     today
 /;
+use Global qw/
+    %string
+/;
 use USState;
 use LWP::Simple;
 use Template;
@@ -305,6 +308,9 @@ sub _get_data {
         deceased
     /) {
         $hash{$f} = "" unless exists $hash{$f};
+    }
+    if ($hash{deceased}) {
+        $hash{inactive} = 'yes';
     }
     @mess = ();
     $hash{akey} = nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post});
@@ -642,20 +648,19 @@ sub mkpartner : Local {
 sub register1 : Local {
     my ($self, $c, $id) = @_;
 
-    my $today = tt_today($c);
+    my $today = tt_today($c)->as_d8();
     my $person = model($c, 'Person')->find($id);
     my @programs = model($c, 'Program')->search(
         {
-            edate => { '>'       => $today->as_d8() },
+            edate => { '>'       => $today               },
             name  => { -not_like => '%personal%retreat%' },
         },
         { order_by => [ 'sdate', 'name' ] },
     );
-    my $jan1 = date($today->year(), 1, 1)->as_d8();
     my (@personal_retreats) = model($c, 'Program')->search(
         {
             name  => { like => '%personal%retreat%' },
-            sdate => { '>=', $jan1 },
+            edate => { '>=' => $today               },
         },
         { order_by => 'sdate' },
     );
@@ -904,7 +909,7 @@ sub create_mmi_payment_do : Local {
 
     my $edate = $program->edate_obj();
     my $m = $edate->month();
-    my $glnum = $c->request->params->{type}
+    my $glnum = $c->request->params->{for_what}
               . $program->school()
               . $edate->format("%y")
               . ((1 <= $m && $m <=  9)? $m
@@ -914,13 +919,16 @@ sub create_mmi_payment_do : Local {
                 )
               . $sixth
               ;
-
+    my $the_date = tt_today($c)->as_d8();
+    if ($the_date eq $string{last_deposit_date}) {
+        $the_date = (tt_today($c)+1)->as_d8();
+    }
     model($c, 'MMIPayment')->create({
         person_id => $person_id,
         amount    => $c->request->params->{amount},
-        cash      => $c->request->params->{cash},
+        type      => $c->request->params->{type},
         glnum     => $glnum,
-        the_date  => tt_today($c)->as_d8(),
+        the_date  => $the_date,
         reg_id    => $reg_id,
         note      => $c->request->params->{note},
     });

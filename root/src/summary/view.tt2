@@ -39,7 +39,7 @@ th {
 <table cellpadding=3 border=0>
 <tr>
 <th align=right width=180 valign=top>Contact Person</th>
-<td valign=top>
+<td valign=top colspan=2>
 [% coord = happening.coordinator %]
 <a href=/person/view/[% coord.id %]>[% coord.first %] [% coord.last %]</a>
 </td><td valign=top>
@@ -55,7 +55,7 @@ th {
 [% cs = happening.contract_signer %]
 <tr>
 <th align=right valign=top>Contract Signer</th>
-<td valign=top>
+<td valign=top colspan=2>
 <a href=/person/view/[% cs.id %]>[% cs.first %] [% cs.last %]</a>
 </td><td valign=top>
 <a href='mailto:[% cs.email %]'>[% cs.email %]</a>
@@ -68,21 +68,30 @@ th {
 [% END %]
 
 <tr>
-<th align=right>Start Hour</th><td>[% happening.start_hour %]&nbsp;&nbsp;<b>End Hour</b> [% happening.end_hour %]</td>
+<th align=right>Start Hour</th><td>[% happening.start_hour %]</td>
+<th align=right>Meeting Places</th>
+<td>[% happening.meeting_places('') %]</td>
 </tr>
+
+<tr>
+<th>End Hour</th><td>[% happening.end_hour %]</td>
+<th align=right>Breakout Places</th>
+<td>[% happening.meeting_places('yes') %]</td>
+</tr>
+
 </table>
 [% ELSE %]
 
 <table cellpadding=3 border=0>
 <tr>
 <th align=right valign=top width=180>Leaders</th>
-<td>
+<td colspan=4>
 <table>
 [% FOR l IN happening.leaders %]
     [% p = l.person %]
     <tr>
     <td><a href=/person/view/[% p.id %]>[% p.first %] [% p.last %]</a></td>
-    <td>[% IF p.email %]<a href='mailto:[% p.email %]'>[% p.email %]</a>[% END %]</td>
+    <td colspan=3>[% IF p.email %]<a href='mailto:[% p.email %]'>[% p.email %]</a>[% END %]</td>
     <td>
     [% IF p.tel_home %][% p.tel_home %] home[% END %]
     [% IF p.tel_work %][% p.tel_work %] work[% END %]
@@ -96,9 +105,13 @@ th {
 [% pr = happening %]
 <tr>
 <th align=right>Registration Start</th><td>[% pr.reg_start %]&nbsp;&nbsp;<b>End</b> [% pr.reg_end %]</td>
+<th align=right>Meeting Places</th>
+<td align=left>[% pr.meeting_places('') %]</td>
 </tr>
 <tr>
 <th align=right>Program Start</th><td>[% pr.prog_start %]&nbsp;&nbsp;<b>End</b> [% pr.prog_end %]</td>
+<th align=right>Breakout Places</th>
+<td align=left>[% pr.meeting_places('yes') %]</td>
 </tr>
 </table>
 [% END %]

@@ -7,6 +7,7 @@ use Global qw/%string/;
 use Util qw/
     expand
     tt_today
+    places
 /;
 use Date::Simple qw/
     date
@@ -146,6 +147,11 @@ sub webdesc_ex {
     my ($self) = @_;
     expand($self->webdesc());
 }
+sub meeting_places {
+    my ($self, $breakout) = @_;
+    places($self, $breakout);
+}
+# ??? dead code?  replaced with TinyMCE?
 sub comment_br {
     my ($self) = @_;
     my $comment = $self->comment;

@@ -39,5 +39,5 @@
 </table>
 [% IF again %]
 <p>
-If it reconciles <a target=_blank href=/finance/file_deposit>Generate it again for Filing</a>.
+If it reconciles <a target=_blank href=/finance/file_deposit/[% source %]>Generate it again for Filing</a>.
 [% END %]

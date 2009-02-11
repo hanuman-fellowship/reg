@@ -1,4 +1,4 @@
-<h2>Changing password for [% Catalyst.user.first _ ' ' _ Catalyst.user.last %]</h2>
+<h2>Changing Password for [% Catalyst.user.first _ ' ' _ Catalyst.user.last %]</h2>
 <form action=/user/pass_do name=form>
 <table cellpadding=3>
 <tr>

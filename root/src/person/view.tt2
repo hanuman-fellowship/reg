@@ -48,6 +48,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% ELSE %]
         <a href="/member/create/[% id %]" accesskey='m'>Make <span class=keyed>M</span>ember</a>
     [% END %]
+[% ELSE %]
+    [% IF person.member %]
+        &nbsp;&nbsp;&nbsp;
+        <a href="/member/view/[% person.member.id %]" accesskey='m'><span class=keyed>M</span>ember Info</a>
+    [% END %]
 [% END %]
 <p>
 <table cellpadding=3 border=0>
@@ -113,7 +118,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 [% IF person.deceased || person.inactive %]
 <tr>
 <th align=right>Status</th>
-<td align=left>[% IF person.inactive %]Inactive[% ELSE %]Deceased[% END %]</td>
+<td align=left>Inactive[% IF person.deceased %], Deceased[% END %]</td>
 </tr>
 [% END %]
 

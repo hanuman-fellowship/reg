@@ -1,3 +1,5 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <h3>Emailing Everyone in [% program.name %]</h3>
 <form name=form action=/program/email_all_do/[% program.id %]>
 <table cellpadding=3>

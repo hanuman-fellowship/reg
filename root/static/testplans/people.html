@@ -2,20 +2,22 @@
 Test Plan
 for People, Affiliations, Listings, Reports
 
-Log In
-    (jane, mypass)
-
 Search
-    enter pattern, press Submit
-    try sanskrit, zip, email, first, and home phone.
-        the numbers in home phone are not necessarily
-            sequential...  this is okay if you give the full 10 digits.
-            otherwise sort of weird - but useful nonetheless.
-            if the pattern is quoted:
+    Enter pattern after "Search For" and  press Submit.
+    The pattern is actually a 'prefix' of the last name.
+    You will be shown the first 15 people whose last names
+    match the pattern.  Upper/lower case does not matter
+    in the pattern.
+
+    Try searching by Sanskrit, Zip, Email, First, and Home Phone.
+        The numbers in home phone are not necessarily sequential.
+            This is okay if you give the full 10 digits
+            otherwise it is sort of weird - but useful nonetheless.
+            If the pattern is quoted:
                 '1432'
                 or
                 '460-'
-            then it will match exactly (either substring or prefix).
+            then it *will* match sequential digits.
 
     None found? You stay at the search screen.
         With your search pattern preserved so you can easily correct it.
@@ -33,17 +35,18 @@ Search
         shown immediately.  No separate step with
         a list containing just one person.
 
-    If searching by Last name you can give
+    If searching by Last Name you can give
         two strings separated by a space.  The first string
         will be matched against the last name field and the
         second will be matched against the first name field.
-        And vica versa if you're searching by First name.
-        As clear as mud?
-        or As clear as an azure sky of deepest summer?
-        This will speed the finding by a lot!
+        And vica versa if you're searching by First.
+        As clear as mud?  or As clear as an azure sky of deepest summer?
+        This can speed the finding by a lot!
 
-    If there is a star '*' in a pattern it will be a 'wildcard'.
-        Searching for '*ete' will find people whose last name
+    If there is a star '*' in a pattern it will be a 'wildcard'
+        so you can find people whose names _contain_ the pattern
+        but not necessarily as a prefix.
+        E.g. searching for '*ete' will find people whose last name
         is 'Peterson' and searching for '*ete *re' will find
         'Demeter, Karen'.  The '*' can be in the middle as
         well - 'r*z' will find a last name of 'Ratzenberger'.
@@ -60,8 +63,7 @@ Add a Person
     Leave sex unchosen - get error.
         Note that the gender is guessed at for you
         by consulting www.gpeters.com/names/baby-names.php.
-    Give a multiple lined comment and verify
-        it looks correct after creation.
+    Give a multiple lined comment and verify it looks correct after creation.
 
 Quick Access Keys    - for searching, editing, adding people
 
@@ -84,7 +86,7 @@ Quick Access Keys    - for searching, editing, adding people
     to the first name in the list.
 
 Affiliations
-    Click on Affiliations at the top
+    Click on Configuration/Affiliations at the top
     Edit one
     Create one
     Go to edit a person again and verify that
@@ -95,8 +97,8 @@ Affiliations
         And from the list when editing a person.
 
     One affiliation has a special name.
-        If an affiliation has the name "Pop Up Comment"
-        (actually just if it contains "pop up") then
+        If an affiliation has the name "Alert When Registering"
+        (actually just if it contains "alert") then
         when this person registers for a program
         their comment will popup for viewing at registration time.
 
@@ -306,7 +308,13 @@ After a search you may see several people who are
     the merged people will be added to the primary person.
     Any affiliation, leader or member information for the
     merged people will be completely deleted.   A partner of a merged
-    people will be unpartnered but preserved.
+    person will become unpartnered but preserved.
+
+    If you see the person and their potential partner on the same screen
+    you can partner them right here.  Put P and p next to their names.
+    The p person will be partnered with the P person taking their
+    address and home phone.  You can't do merging and partnering
+    at the same time.
 
     Searches by last name will reveal some possible duplicates.
     Also consider using email address.

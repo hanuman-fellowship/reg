@@ -18,9 +18,7 @@
 <td><a target=help href=/static/help/index.html>Help</a></td>
 <td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
 </td><td><a href=/logout>Logout</a></td>
-[% IF Catalyst.check_user_roles('super_admin') %]
-    <td align=right><a href=/static/testplans/index.html>TestPlans</a></td>
-[% END %]
+<td align=right><a href=/static/testplans/index.html>TestPlans</a></td>
 <td align=left><a href=/issue/list>Issues</a></td>
 </tr>
 

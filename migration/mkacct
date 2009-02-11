@@ -25,5 +25,6 @@ create table deposit (
     time        text,
     cash        integer,
     chk         integer,    -- can't have 'check' :(
-    credit      integer
+    credit      integer,
+    source      text        -- mmc, mmi, other
 );
