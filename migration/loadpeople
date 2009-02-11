@@ -122,8 +122,8 @@ while (<$people>) {
     }
 }
 if ($mysql) {
-    $dbh->do("create index i_last on people(last)");
-    $dbh->do("create index i_akey on people(akey)");
+    $dbh->do("create index i_last on people(last(30))");
+    $dbh->do("create index i_akey on people(akey(30))");
     $dbh->do("create index i_sps  on people(id_sps)");
 }
 else {
