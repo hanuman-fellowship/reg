@@ -38,7 +38,7 @@ rm -f 20*.png lo* lth* lb* po* pth* pb*
 cd ../../../migration
 
 echo people
-loadpeople
+loadpeople $MYSQL
 echo leaders, canpol, housecost, programs
 loadprog $howmuch
 echo registrations

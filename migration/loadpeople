@@ -7,8 +7,10 @@ use Util qw/
 /;
 use DBI;
 
-use Getopt::Easy;
-get_options("n-nrecs=");
+my $mysql = 0;
+if (shift) {
+    $mysql = 1;
+}
 
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "no connection\n";
@@ -118,13 +120,17 @@ while (<$people>) {
             $no_affil{$a} = 1;
         }
     }
-    if ($O{nrecs}  && $n >= $O{nrecs}) {
-        last;
-    }
 }
-$dbh->do("create index if not exists i_last on config(last)");
-$dbh->do("create index if not exists i_akey on config(akey)");
-$dbh->do("create index if not exists i_sps  on config(id_sps)");
+if ($mysql) {
+    $dbh->do("create index i_last on people(last)");
+    $dbh->do("create index i_akey on people(akey)");
+    $dbh->do("create index i_sps  on people(id_sps)");
+}
+else {
+    $dbh->do("create index if not exists i_last on people(last)");
+    $dbh->do("create index if not exists i_akey on people(akey)");
+    $dbh->do("create index if not exists i_sps  on people(id_sps)");
+}
 print "\n";
 close $people;
 __DATA__
