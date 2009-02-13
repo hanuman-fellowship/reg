@@ -68,8 +68,11 @@ sub _get_data {
             push @mess, "\u$k cannot be blank.";
         }
     }
-    if (length($hash{password}) < 5) {
-        push @mess, "Password must be at least 5 characters long.";
+    if (length($hash{password}) < 4) {
+        push @mess, "Password must be at least 4 characters long.";
+    }
+    if ($hash{password} =~ m{^[a-z]+$}) {
+        push @mess, "Password cannot be all lower case letters.";
     }
     if ($hash{email} && ! valid_email($hash{email})) {
         push @mess, "Invalid email: $hash{email}";
@@ -196,9 +199,12 @@ sub pass_do : Local {
     elsif ($new_pass ne $new_pass2) {
         $c->stash->{mess} = "New passwords do not match.";
     }
-    elsif (length($new_pass) < 5) {
+    elsif (length($new_pass) < 4) {
         # what other restrictions?
-        $c->stash->{mess} = "New password must be at least 5 characters.";
+        $c->stash->{mess} = "New password must be at least 4 characters.";
+    }
+    elsif ($new_pass =~ m{^[a-z]+$}) {
+        $c->stash->{mess} = "New password cannot be all lower case letters.";
     }
     else {
         $c->user->update({
