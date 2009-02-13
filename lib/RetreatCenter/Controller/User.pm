@@ -205,7 +205,7 @@ sub pass_do : Local {
             password => $new_pass,
         });
         $c->stash->{message} = "Password successfully changed.";
-        $c->stash->{template} = "person/search.tt2";
+        $c->stash->{template} = "configuration/index.tt2";
         return;
     }
     $c->stash->{template} = "gen_error.tt2";

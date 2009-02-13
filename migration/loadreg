@@ -6,12 +6,9 @@ use lib '../lib';
 use Util qw/
     nsquish
 /;
-use Getopt::Easy;
 use Date::Simple qw/
     date
 /;
-
-get_options("s-single");
 
 $|++;       # unbuffer output
 
@@ -41,19 +38,20 @@ close $prh;
 
 my @seasons;
 my $p = shift @ARGV;
-while ($p ne 's08') {
-    push @seasons, $p;
-    last if $O{single};
-    if ($p =~ m{^s}) {
-        $p =~ s{s}{f};
-    }
-    else {
-        my ($yr) = $p =~ m{(\d+)};
-        $yr = ($yr + 1) % 100;
-        $p = 's' . sprintf("%02d", $yr);
+if ($p ne 'cur') {
+    while ($p ne 's08') {
+        push @seasons, $p;
+        if ($p =~ m{^s}) {
+            $p =~ s{s}{f};
+        }
+        else {
+            my ($yr) = $p =~ m{(\d+)};
+            $yr = ($yr + 1) % 100;
+            $p = 's' . sprintf("%02d", $yr);
+        }
     }
 }
-push @seasons, 'cur' unless $O{single};
+push @seasons, 'cur';
 
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
@@ -78,6 +76,8 @@ values
 (?, ?, ?, ?, ?, ?)
 ";
 my $who_ins_sth = $dbh->prepare($who_ins_sql) or die "no who_ins_sql\n";
+# hash for cacheing user_ids
+my %user_id_for = ();
 
 my $p_sql = "select name, sdate, edate, extradays from program where id = ?";
 my $p_sth = $dbh->prepare($p_sql) or die "no p_sql\n";
@@ -517,20 +517,33 @@ sub processReg {
         if $hash{adj};
 
     # use letter_sent, date_add/who_add, can_date in a RegHist record
+    my $user_id = $unknown;
     if ($hash{date_add}) {
-        $who_sth->execute($hash{who_add});
-        my ($user_id) = $who_sth->fetchrow_array();
-        if (! $user_id) {
-            $who_ins_sth->execute(undef, $hash{who_add}, "-no login-",
-                'no@no.com',
-                ucfirst $hash{who_add}, "");
-            # again...
+        # who added it???
+        # first chop the errant r/ - /usr/ home dir and foxpro artifact
+        $hash{who_add} =~ s{^r/}{};
+        if (exists $user_id_for{$hash{who_add}}) {
+            $user_id = $user_id_for{$hash{who_add}};    # take from cache
+        }
+        else {
+            # see if user id is in database
             $who_sth->execute($hash{who_add});
             ($user_id) = $who_sth->fetchrow_array();
+            if (! $user_id) {
+                # create the user
+                $who_ins_sth->execute(undef, $hash{who_add}, "-no login-",
+                    'no@no.com',
+                    ucfirst $hash{who_add}, "");
+                # again...
+                $who_sth->execute($hash{who_add});
+                # get the just created user id
+                ($user_id) = $who_sth->fetchrow_array();
+            }
+            $user_id_for{$hash{who_add}} = $user_id;    # cache it
         }
         history($hash{date_add}, $user_id, "Registered")
     }
-    history($hash{letter_sent}, $unknown, "Confirmation Sent")
+    history($hash{letter_sent}, $user_id, "Confirmation Sent")
         if $hash{letter_sent};
     history($hash{can_date}, $unknown, "Cancelled")
         if $hash{can_date};
@@ -541,13 +554,6 @@ sub processReg {
 sub payment {
     my ($amt, $type, $date, $msg) = @_;
 
-    # we moved back to just D, C, S, and O.
-    #if (exists $type_map{$type}) {
-    #    $type = $type_map{$type};
-    #}
-    #else {
-    #    $type = "unknown";
-    #}
     $pay_ins_sth->execute(
         undef, $reg_id, $unknown,
         $date, "12:00", 

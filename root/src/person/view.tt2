@@ -118,7 +118,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 [% IF person.deceased || person.inactive %]
 <tr>
 <th align=right>Status</th>
-<td align=left>Inactive[% IF person.deceased %], Deceased[% END %]</td>
+<td align=left>[% IF person.deceased %]Deceased, [% END %]Inactive</td>
 </tr>
 [% END %]
 

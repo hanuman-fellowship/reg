@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+my $sth = $dbh->prepare("
+    select password, bg, fg, link
+      from user
+     where username = ?
+");
+
+mkdir "users" unless -d "users";
+open my $out, ">", "users/users.txt"
+    or die "cannot create users.txt: $!\n";
+
+# save these users' password and display colors
+# for later restoral during a loadall.
+my @users = qw/
+    sahadev
+    jamal
+    brajesh
+    adrienne
+    barnaby
+    sukhdev
+    tecla
+    laura
+    brajesh
+    shyama
+    rosemary
+    richard
+    lori
+    pratibha
+    soma
+    jayanti
+    tecla
+    sunanda
+    rebecca
+    felicia
+    nora
+/;
+
+for my $u (@users) {
+    $sth->execute($u);
+    my ($password, $bg, $fg, $link) = $sth->fetchrow_array();
+    if ($password) {
+        print {$out} join('|', $u, $password, $bg, $fg, $link), "\n";
+    }
+}

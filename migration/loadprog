@@ -3,30 +3,28 @@ use strict;
 use warnings;
 use DBI;
 use File::Copy;
-use Getopt::Easy;
 use lib "../lib";
 use Date::Simple qw/date/;
-
-get_options("s-single");
 
 open my $full, ">", "fullprog.txt"
     or die "cannot create full_prog.txt: $!\n";
 
 my @seasons;
 my $p = shift @ARGV;
-while ($p ne 's08') {
-    push @seasons, $p;
-    last if $O{single};
-    if ($p =~ m{^s}) {
-        $p =~ s{s}{f};
-    }
-    else {
-        my ($yr) = $p =~ m{(\d+)};
-        $yr = ($yr + 1) % 100;
-        $p = 's' . sprintf("%02d", $yr);
+if ($p ne 'cur') {
+    while ($p ne 's08') {
+        push @seasons, $p;
+        if ($p =~ m{^s}) {
+            $p =~ s{s}{f};
+        }
+        else {
+            my ($yr) = $p =~ m{(\d+)};
+            $yr = ($yr + 1) % 100;
+            $p = 's' . sprintf("%02d", $yr);
+        }
     }
 }
-push @seasons, 'cur' unless $O{single};
+push @seasons, 'cur';
 
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";

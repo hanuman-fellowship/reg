@@ -202,9 +202,32 @@ sub run : Local {
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
 
+    my $order = $report->rep_order();
+    my $fields = "first||' '||last as name, p.*";
+
+    # restrictions apply?
+    # have people said they want to be included?
+    my $restrict = "inactive != 'yes' and ";
+    if ($format == 1 || $format == 2 || $format == 4) {
+        $restrict .= "snail_mailings = 'yes' and ";
+    }
+    if ($format == 2 || $format == 5) {
+        $restrict .= "e_mailings = 'yes' and ";
+    }
+    if ($share) {
+        $restrict .= "share_mailings = 'yes' and ";
+    }
+
+    my $just_email = "";
+    if ($format == 5) {   # Just Email
+        # we only want non-blank emails
+        $just_email = "email != '' and ";
+        $order = "email";
+        $fields = "email";
+    }
+
     my $range_ref = parse_zips($report->zip_range);
     # cannot return a scalar... else the edit would have failed...
-
     my $zip_bool;
     if (@$range_ref) {
         for my $r (@$range_ref) {
@@ -227,33 +250,6 @@ sub run : Local {
         $ap = ", affil_people ap";
         $affil_bool = "and (ap.p_id = p.id and ap.a_id in ($affils))";
     }
-
-    my $order = $report->rep_order();
-    my $fields = "first||' '||last as name, p.*";
-
-    my $just_email = "";
-    if ($format == 5) {   # Just Email
-        # we only want non-blank emails
-        $just_email = "email != '' and ";
-        $order = "email";
-        $fields = "email";
-    }
-
-    # restrictions apply?
-    # have people said they want to be included?
-    my $restrict = "";
-    if ($format == 1 || $format == 2 || $format == 4) {
-        $restrict .= "snail_mailings = 'yes'";
-    }
-    if ($format == 2 || $format == 5) {
-        $restrict .= " and " if $restrict;
-        $restrict .= "e_mailings = 'yes'";
-    }
-    if ($share) {
-        $restrict .= " and " if $restrict;
-        $restrict .= "share_mailings = 'yes'";
-    }
-    $restrict .= " and " if $restrict;
 
 # ??? without the distinct below
 # we get a row for each person and each affil that matches

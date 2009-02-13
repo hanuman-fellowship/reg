@@ -1,5 +1,5 @@
 #!/bin/sh
-howmuch='s08'       # f89 or cur
+howmuch='cur'       # f89 or cur
 
 if [ `whoami` = 'sahadev' ]
 then
@@ -8,6 +8,7 @@ then
     perl -p -i -e 's/autoincrement/auto_increment/' mk*
     MYSQL=1
 else
+    rm retreatcenter.db
     db='sqlite3 retreatcenter.db'
     export DBI_DSN="dbi:SQLite:retreatcenter.db"
     MYSQL=
@@ -63,13 +64,17 @@ loadnote
 echo deposits
 loaddep
 
-# initialize the member and donation data
+# restore the issues and the user data
+echo issues
+loadiss
+echo users
+loadusers
+
+# restore the member and donation data after confirmation
 echo donations
 loaddon
 echo memberships
 loadmem
-echo issues
-loadiss
 
 # split the F08 PRs from the S08 ones
 # this is done before the regcount is done...

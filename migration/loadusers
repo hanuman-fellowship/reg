@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+open my $users, "<", "users/users.txt" or die "users.txt\n";
+my $sth = $dbh->prepare("
+    update user
+       set password = ?, bg = ?, fg = ?, link = ?
+     where username = ?
+") or die "oops1\n";
+while (<$users>) {
+    chomp;
+    my ($username, $password, $bg, $fg, $link) = split m{\|};
+    $sth->execute($password, $bg, $fg, $link, $username);
+}

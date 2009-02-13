@@ -3,7 +3,7 @@
 --
 drop table if exists user;
 create table user (
-    id          integer primary key auto_increment,
+    id          integer primary key autoincrement,
     username    text,
     password    text,
     email       text,
@@ -15,7 +15,7 @@ create table user (
 );
 drop table if exists role;
 create table role (
-    id          integer primary key auto_increment,
+    id          integer primary key autoincrement,
     role        text,
     fullname    text,
     descr       text
@@ -27,25 +27,31 @@ create table user_role (
     primary key (user_id, role_id)
 );
 --
--- Load up some initial test users
+-- Load up the initial users
 --
 insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person', '', '', '');
 -- the above is used for legacy reg payments, etc.
 
-insert into user values (2, 'jane', 'passD', 'jane@na.com', 'Jane', 'Doe', '', '', '');
-insert into user values (3, 'joe', 'passB', 'joe@na.com', 'Joe', 'Blow', '', '', '');
-insert into user values (4, 'mary', 'passS', 'mary@na.com', 'Mary', 'Smith', '', '', '');
+insert into user values (2, 'sahadev', 'hello', 'jon@logicalpoetry.com', 'Jon', 'Bjornstad', '', '', '');
+insert into user values (3, 'adrienne', 'hello', 'adrienne@mountmadonna.org', 'Adrienne', 'Bischoff', '', '', '');
+insert into user values (4, 'brajesh', 'hello', 'brajesh@mountmadonna.org', 'Brajesh', 'Friedberg', '', '', '');
 insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou', '', '', '');
 insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg', '', '', '');
 insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan', '', '', '');
-insert into user values (8, 'web_user', 'webby', 'web@user.com', 'Web', 'User', '', '', '');
+insert into user values (8, 'jayanti', 'hello', 'jayanti@mountmadonna.org', 'Jayanti', 'Peterson', '', '', '');
 insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky', '', '', '');
-insert into user values (10, 'rosemary', 'finance2', 'no@no.com', 'Rosemary', 'Griff-Sullivan', '', '', '');
-insert into user values (11, 'richard', 'donations', 'no@no.com', 'Richard', 'LastName', '', '', '');
+insert into user values (10, 'rosemary', 'finance2', 'rosemaryg@mountmadonna.org', 'Rosemary', 'Griffen-Sullivan', '', '', '');
+insert into user values (11, 'richard', 'donations', 'richardbuzzini@gmail.com', 'Richard', 'Buzzini', '', '', '');
 insert into user values (12, 'lori', 'march', 'lori_march@hotmail.com', 'Lori', 'March', '', '', '');
-insert into user values (13, 'charlie', 'passA', 'jon@logicalpoetry.com', 'Charlie', 'Anderson', '', '', '');
-insert into user values (14, 'jerry', 'passG', 'jon@logicalpoetry.com', 'Jerry', 'Garcia', '', '', '');
-insert into user values (15, 'ringo', 'passS', 'jon@logicalpoetry.com', 'Ringo', 'Starr', '', '', '');
+insert into user values (13, 'sukhdev', 'hello', 'sukhdev@mountmadonna.org', 'Sukhdev', 'Pettingill', '', '', '');
+insert into user values (14, 'laura', 'hello', 'lauras@mountmadonna.org', 'Laura', 'Scher', '', '', '');
+insert into user values (15, 'barnaby', 'hello', 'barnaby@mountmadonna.org', 'Barnaby', 'Stamm', '', '', '');
+insert into user values (16, 'savita', 'hello', 'savita@mountmadonna.org', 'Savita', 'Brownfield', '', '', '');
+insert into user values (17, 'sunanda', 'hello', 'sunanda@mountmadonna.org', 'Sunanda', 'Pacey', '', '', '');
+insert into user values (18, 'thecla', 'hello', 'thecla@mountmadonna.org', 'Thecla', '', '', '', '');
+insert into user values (19, 'rebecca', 'hello', 'rebecca@mountmadonna.org', 'Rebecca', '', '', '', '');
+insert into user values (20, 'felicia', 'hello', 'felicia@mountmadonna.org', 'Felicia', '', '', '', '');
+insert into user values (21, 'nora', 'hello', 'nora@mountmadonna.org', 'Nora', '', '', '', '');
 --
 -- the roles - do not muck with the ids!
 --
@@ -63,7 +69,10 @@ insert into role values (6, 'web_designer', 'Web Designer', 'Templates, web imag
 insert into role values (7, 'member_admin', 'Membership Admin', 'Maintain Memberships');
 insert into role values (8, 'field_staff', 'Field Staff', 'Room Makeup, Campsite Tidying');
 insert into role values (9, 'mmi_admin', 'MMI Admin', 'MMI Administration');
--- jane
+insert into role values (10, 'kitchen', 'Kitchen', 'Kitchen Admin');
+
+-- Two super admins
+-- sahadev
 insert into user_role values (2, 1);
 insert into user_role values (2, 2);
 insert into user_role values (2, 3);
@@ -71,6 +80,7 @@ insert into user_role values (2, 4);
 insert into user_role values (2, 5);
 insert into user_role values (2, 6);
 insert into user_role values (2, 7);
+insert into user_role values (2, 9);
 -- jamal
 insert into user_role values (5, 1);
 insert into user_role values (5, 2);
@@ -79,9 +89,8 @@ insert into user_role values (5, 4);
 insert into user_role values (5, 5);
 insert into user_role values (5, 6);
 insert into user_role values (5, 7);
--- joe, mary
-insert into user_role values (3, 4);
-insert into user_role values (4, 5);
+
+-- Several membership people
 -- shyama
 insert into user_role values (6, 3);
 insert into user_role values (6, 5);
@@ -106,15 +115,52 @@ insert into user_role values (11, 7);
 insert into user_role values (12, 3);
 insert into user_role values (12, 5);
 insert into user_role values (12, 7);
--- charlie
-insert into user_role values (13, 8);
--- jerry
-insert into user_role values (14, 9);
+
+-- Program admins
+-- adrienne
+insert into user_role values (3, 2);
+insert into user_role values (3, 3);
+insert into user_role values (3, 4);
+insert into user_role values (3, 5);
+-- jayanti
+insert into user_role values (8, 2);
+insert into user_role values (8, 3);
+insert into user_role values (8, 4);
+insert into user_role values (8, 5);
+-- laura
 insert into user_role values (14, 2);
 insert into user_role values (14, 3);
 insert into user_role values (14, 4);
 insert into user_role values (14, 5);
--- ringo
-insert into user_role values(15,2);
-insert into user_role values(15,4);
-insert into user_role values(15,5);
+-- sukhdev
+insert into user_role values (13, 2);
+insert into user_role values (13, 3);
+insert into user_role values (13, 4);
+insert into user_role values (13, 5);
+-- savita
+insert into user_role values (16, 2);
+insert into user_role values (16, 3);
+insert into user_role values (16, 4);
+insert into user_role values (16, 5);
+-- barnaby
+insert into user_role values (15, 2);
+insert into user_role values (15, 3);
+insert into user_role values (15, 4);
+insert into user_role values (15, 5);
+
+-- Program admin + MMI admin
+-- brajesh
+insert into user_role values (4, 2);
+insert into user_role values (4, 3);
+insert into user_role values (4, 4);
+insert into user_role values (4, 5);
+insert into user_role values (4, 9);
+
+-- Sunanda - kitchen
+insert into user_role values (17, 10);
+
+-- Tecla, Rebecca, Felicia, Nora - field staff
+insert into user_role values (18, 8);
+insert into user_role values (19, 8);
+insert into user_role values (20, 8);
+insert into user_role values (21, 8);

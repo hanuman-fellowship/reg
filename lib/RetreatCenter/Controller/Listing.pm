@@ -621,6 +621,7 @@ sub mark_inactive : Local {
 
 sub mark_inactive_do : Local {
     my ($self, $c, $date_last) = @_;
+    # ??? todo
 }
 
 sub comings_goings : Local {
