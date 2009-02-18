@@ -47,7 +47,9 @@ To add a Member add them as a Person first.
 [% m.lapsed %]
 </td>
 <td align=right>
+[% IF m.total_paid != 0 %]
 [% m.total_paid %]
+[% END %]
 </td>
 [% IF m.category == 'Sponsor' || m.category == 'Life' %]
 <td align=right>
