@@ -44,8 +44,8 @@ my @users = qw/
 
 for my $u (@users) {
     $sth->execute($u);
-    my ($password, $bg, $fg, $link) = $sth->fetchrow_array();
-    if ($password) {
-        print {$out} join('|', $u, $password, $bg, $fg, $link), "\n";
-    }
+    my ($first, $last, $email, $password, $bg, $fg, $link)
+        = $sth->fetchrow_array();
+    print {$out} join('|', $u, $first, $last, $email,
+                               $password, $bg, $fg, $link), "\n";
 }
