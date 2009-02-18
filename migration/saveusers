@@ -46,6 +46,9 @@ for my $u (@users) {
     $sth->execute($u);
     my ($first, $last, $email, $password, $bg, $fg, $link)
         = $sth->fetchrow_array();
+    for my $f ($first, $last, $email, $password, $bg, $fg, $link) {
+        $f ||= "";
+    }
     print {$out} join('|', $u, $first, $last, $email,
                                $password, $bg, $fg, $link), "\n";
 }
