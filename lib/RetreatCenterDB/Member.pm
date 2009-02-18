@@ -59,5 +59,15 @@ sub lapsed {
         return "";
     }
 }
+my %index = (
+    General  => 1,
+    Sponsor  => 2,
+    Life     => 3,
+    Inactive => 4,
+);
+sub category_id {
+    my ($self) = @_;
+    return $index{$self->category()};
+}
 
 1;

@@ -1,5 +1,23 @@
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <script type="text/javascript">
+function init(cat) {
+    var el = document.getElementById(cat);
+    el.style.fontSize = "20pt";
+    el.style.color = 'red';
+}
+function ff(x) {
+    for (var i = 1; i <= 4; ++i) {
+        var el = document.getElementById(i);
+        if (i == x) {
+            el.style.fontSize = "20pt";
+            el.style.color = 'red';
+        }
+        else {
+            el.style.fontSize = "12pt";
+            el.style.color = 'black';
+        }
+    }
+}
 function show_edit_delete() {
     var i = 1;
     while (true) {
@@ -19,6 +37,9 @@ h3 {
 }
 .hidden {
     display: none;
+}
+.cat {
+    font-size: 12pt;
 }
 </style>
 <h2>Members</h2>
@@ -47,17 +68,17 @@ h3 {
 </tr>
 
 <tr>
-<th align=left><input type=radio name=category value='General' [% category_general %]> General</th>
+<th align=left><input type=radio name=category value='General' [% category_general %] onclick="ff(1);"><span id=1 class=cat> General</span></th>
 <th align=right>Expires on</th><td><input type=text name=date_general value='[% member.date_general_obj.format("%D") %]' size=10 maxlength=10></th>
 </tr>
 
 <tr>
-<th align=left><input type=radio name=category value='Sponsor' [% category_sponsor %]> Sponsor</th>
+<th align=left><input type=radio name=category value='Sponsor' [% category_sponsor %] onclick="ff(2);"><span id=2 class=cat> Sponsor</span></th>
 <th align=right>Payment Due on</td><td><input type=text name=date_sponsor value="[% member.date_sponsor_obj.format("%D") %]" size=10 maxlength=10></td><th align=right>Total Paid</td><td>[% member.total_paid %]</th>
 </tr>
 
 <tr>
-<th align=left colspan=3><input type=radio name=category value='Life' [% category_life %]> Life</th>
+<th align=left colspan=3><input type=radio name=category value='Life' [% category_life %] onclick="ff(3);"><span id=3 class=cat> Life</span></th>
 <th align=right>Nights Left</th>
 [% IF Catalyst.check_user_roles('member_admin') %]
 <td><input type=text name=sponsor_nights value='[% member.sponsor_nights %]' size=2 maxlength=2></td>
@@ -74,7 +95,7 @@ h3 {
 </tr>
 
 <tr>
-<th align=left colspan=3><input type=radio name=category value='Inactive' [% category_inactive %]> Inactive</th>
+<th align=left colspan=3><input type=radio name=category value='Inactive' [% category_inactive %] onclick="ff(4);"><span id=4 class=cat> Inactive</span></th>
 </tr>
 
 <tr>
@@ -133,4 +154,7 @@ h3 {
 </div>
 [% END %]
 </ul>
-<script type='text/javascript'>document.form.mkpay_date.focus()</script>
+<script type='text/javascript'>
+document.form.mkpay_date.focus();
+init([% member.category_id %]);
+</script>

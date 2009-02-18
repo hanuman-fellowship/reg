@@ -1,9 +1,10 @@
 0 - Jon Bjornstad (jon@suecenter.org) is not a member.
 
 1 - Make Member, paid today, $25, General
-2 - see acknowledgment, List Person Info, Edit, Search
+    note red/large for current category
+2 - see acknowledgment, List, Person Info, Edit, Search
 3 - see email, check "here" link.
-4 - pay $35 (two days ago), still General, see email
+4 - pay $35, paid two days ago, still General, see email
 5 - pay $125 as Sponsor, see email
 
 6 - change Sponsor date to two weeks from now

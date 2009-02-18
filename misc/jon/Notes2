@@ -950,3 +950,9 @@ bcc - the to: line should be the leader's public email?
     or use fake_to?
     with bcc and without to it bombs!
         see why.
+
+javascript for form field checking
+    in membership for one.
+    program, rental - switching tabs for focus
+
+style for tinyMCE - so paragraphs have no bottom/top margin
