@@ -1,24 +1,30 @@
-<h2>Changing Password for [% Catalyst.user.first _ ' ' _ Catalyst.user.last %]</h2>
+<h2>Changing Password, Name, Email for [% Catalyst.user.first _ ' ' _ Catalyst.user.last %]</h2>
 <form action=/user/pass_do name=form>
 <table cellpadding=3>
 <tr>
 <th align=right>Current Password</th>
-<td><input type=password name=cur_pass></td>
+<td><input tabindex=1 type=password name=cur_pass></td>
+<th align=right width=200>First</th>
+<td><input tabindex=5 type=text name=first value='[% user.first %]'></td>
 </tr>
 
 <tr>
 <th align=right>New Password</th>
-<td><input type=password name=new_pass></td>
+<td><input tabindex=2 type=password name=new_pass></td>
+<th align=right>Last</th>
+<td><input tabindex=6 type=text name=last value='[% user.last %]'></td>
 </tr>
 
 <tr>
 <th align=right>Repeat New Password</th>
-<td><input type=password name=new_pass2></td>
+<td><input tabindex=3 type=password name=new_pass2></td>
+<th align=right>Email</th>
+<td><input tabindex=7 type=text name=email value='[% user.email %]'></td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<td><input tabindex=4 type=submit value="Submit"></td>
 </tr>
 
 </table>

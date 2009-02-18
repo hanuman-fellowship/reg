@@ -1,0 +1,24 @@
+0 - Jon Bjornstad (jon@suecenter.org) is not a member.
+
+1 - Make Member, paid today, $25, General
+2 - see acknowledgment, List Person Info, Edit, Search
+3 - see email, check "here" link.
+4 - pay $35 (two days ago), still General, see email
+5 - pay $125 as Sponsor, see email
+
+6 - change Sponsor date to two weeks from now
+7 - send Lapse Soon REAL letter
+8 - change Sponsor date to last week
+9 - send Lapsed REAL letter
+
+10 - remove email address from Jon
+11 - change to General member expiring two weeks from now
+12 - send Lapse in One Month REAL letter, choose name, print from browser
+     see margins, on letterhead?
+13 - change General date to last week
+14 - send Lapsed REAL letter
+
+15 - change to Sponsor member expiring two weeks from now
+16 - send Lapse in One Month REAL letter
+17 - change Sponsor date to last week
+18 - send Lapsed REAL letter, choose name, print from browser

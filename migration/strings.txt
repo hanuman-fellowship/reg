@@ -74,7 +74,8 @@ reg_end 7:00
 prog_start 7:00
 prog_end 12:30
 credit_amount 50
-smtp_server mail.logicalpoetry.com:50
+smtp_server mail.logicalpoetry.com
+smtp_port 50
 smtp_user jon@logicalpoetry.com
 smtp_pass hello!
 spons_tuit_disc 30
@@ -87,7 +88,6 @@ min_kid_age 2
 max_kid_age 12
 kid_disc 50
 ceu_lic_fee 10
-sponsor_nights 12
 rental_tentative Tentative
 rental_tentative_color 255,0,0
 rental_sent Sent
@@ -111,8 +111,10 @@ mem_email memberships@mountmadonna.org
 mem_site http://hanumanfellowship.org/NEW_HFS_Membership_App.pdf
 mem_credit_phone 408-847-0406
 mem_credit_hours M-F 9-5, Sat 11-5, and Sun 1-7
-mem_spons_pay_month 25
-mem_spons_pay_6 300 
+mem_gen_amt 25
+mem_sponsor_nights 12
+mem_spons_year 300
+mem_spons_semi_year 150
 sys_last_config_date 20080701
 house_width 8.75
 house_height 20
@@ -149,3 +151,4 @@ payment_O Online
 payment_C Check
 payment_D Credit
 payment_S Cash
+password_security 0

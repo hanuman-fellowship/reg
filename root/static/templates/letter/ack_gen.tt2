@@ -3,7 +3,12 @@
 <p>
 Thank you for the payment of $[% amount %]
 for General Membership in the Hanuman Fellowship
-which we received on [% pay_date->format("%D") %].
-Your dues are in effect until [% expire_date->format("%D") %]. 
+which we received on [% pay_date.format("%D") %].
+Your dues are in effect until [% expire_date.format("%D") %]. 
+[% IF toward_spons %]
+Your payment <i>will</i> be added to a Sponsor Membership total.
+[% END %]
+<p>
+Information about HFS membership can be found <a href='[% string.mem_site %]'>here</a>.
 <p>
 [% INCLUDE info.tt2 %]

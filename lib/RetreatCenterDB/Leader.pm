@@ -32,4 +32,10 @@ sub biography_ex {
     expand($self->biography());
 }
 
+sub name_public_email {
+    my ($self) = @_;
+    my $person = $self->person();
+    return $person->first() . " " . $person->last()
+         . " <" . $self->public_email() . ">";
+}
 1;

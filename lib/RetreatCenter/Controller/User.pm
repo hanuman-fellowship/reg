@@ -10,8 +10,9 @@ use Util qw/
     valid_email
     model
 /;
-
-use lib '../../';       # so you can do a perl -c here.
+use Global qw/
+    %string
+/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -68,12 +69,7 @@ sub _get_data {
             push @mess, "\u$k cannot be blank.";
         }
     }
-    #if (length($hash{password}) < 4) {
-    #    push @mess, "Password must be at least 4 characters long.";
-    #}
-    #if ($hash{password} =~ m{^[a-z]+$}) {
-    #    push @mess, "Password cannot be all lower case letters.";
-    #}
+    check_password($hash{password});
     if ($hash{email} && ! valid_email($hash{email})) {
         push @mess, "Invalid email: $hash{email}";
     }
@@ -81,6 +77,33 @@ sub _get_data {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "user/error.tt2";
     }
+}
+
+sub check_password {
+    my ($pass) = @_;
+
+    my $lev = $string{password_security};
+    if ($lev == 1) {
+        if (length($pass) < 4) {
+            push @mess, "Password must be at least 4 characters long.";
+        }
+        if ($pass =~ m{^[a-z]+$}) {
+            push @mess, "Password cannot be all lower case letters.";
+        }
+    }
+    elsif ($lev == 2) {
+        if (length($pass) < 6) {
+            push @mess, "Password must be at least 6 characters long.";
+        }
+        if (! (   $pass =~ m{[a-z]}
+               && $pass =~ m{[A-Z]}
+               && $pass =~ m{[0-9]}
+               && $pass =~ m{\W}
+        )) {
+            push @mess, "Password must contain a lower case letter, an upper case letter, a digit, and a punctuation character.";
+        }
+    }
+    # otherwise no restrictions
 }
 
 sub update_do : Local {
@@ -183,38 +206,43 @@ sub create_do : Local {
 sub pass : Local {
     my ($self, $c) = @_;
 
+    $c->stash->{user} = $c->user;
     $c->stash->{template} = "user/pass.tt2";
 }
 
 sub pass_do : Local {
     my ($self, $c) = @_;
 
-    my $good_pass = $c->user->password;
     my $cur_pass  = $c->request->params->{cur_pass};
+    my $good_pass = $c->user->password;
     my $new_pass  = $c->request->params->{new_pass};
     my $new_pass2 = $c->request->params->{new_pass2};
-    if ($good_pass ne $cur_pass) {
-        $c->stash->{mess} = "Current password is not correct.";
+    my @pass = ();
+    if ($cur_pass) {
+        @mess = ();
+        if ($good_pass ne $cur_pass) {
+            push @mess, "Current password is not correct.";
+        }
+        elsif ($new_pass ne $new_pass2) {
+            push @mess, "New passwords do not match.";
+        }
+        else {
+            check_password($new_pass);
+        }
+        if (@mess) {
+            $c->stash->{mess} = join "<br>\n", @mess;
+            $c->stash->{template} = "user/error.tt2";
+            return;
+        }
+        @pass = (password => $new_pass);
     }
-    elsif ($new_pass ne $new_pass2) {
-        $c->stash->{mess} = "New passwords do not match.";
-    }
-    #elsif (length($new_pass) < 4) {
-    #    # what other restrictions?
-    #    $c->stash->{mess} = "New password must be at least 4 characters.";
-    #}
-    #elsif ($new_pass =~ m{^[a-z]+$}) {
-    #    $c->stash->{mess} = "New password cannot be all lower case letters.";
-    #}
-    else {
-        $c->user->update({
-            password => $new_pass,
-        });
-        $c->stash->{message} = "Password successfully changed.";
-        $c->stash->{template} = "configuration/index.tt2";
-        return;
-    }
-    $c->stash->{template} = "gen_error.tt2";
+    $c->user->update({
+        @pass,
+        first    => $c->request->params->{first},
+        last     => $c->request->params->{last},
+        email    => $c->request->params->{email},
+    });
+    $c->stash->{template} = "configuration/index.tt2";
 }
 
 sub access_denied : Private {

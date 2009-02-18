@@ -850,11 +850,10 @@ sub create_do : Local {
             \$html,               # output
         );
         email_letter($c,
-               html       => $html, 
-               subject    => "Notification of Registration for " . $pr->title,
                to         => $pr->notify_on_reg,
-               from       => $string{from},
-               from_title => $string{from_title},
+               from       => "$string{from_title} <$string{from}>",
+               subject    => "Notification of Registration for " . $pr->title,
+               html       => $html, 
         );
         model($c, 'RegHistory')->create({
             @who_now,
@@ -1216,11 +1215,10 @@ sub send_conf : Local {
         return;
     }
     email_letter($c,
-           html       => $html, 
-           subject    => "Confirmation of Registration for " . $pr->title,
-           to         => $reg->person->email,
-           from       => $string{from},
-           from_title => $string{from_title},
+           to      => $reg->person->name_email(),
+           from    => "$string{from_title} <$string{from}>",
+           subject => "Confirmation of Registration for " . $pr->title(),
+           html    => $html, 
     );
     my @who_now = get_now($c, $id);
     if ($reg->confnote) {
@@ -1529,12 +1527,11 @@ sub cancel_do : Local {
     _reg_hist($c, $id, "Cancellation Letter sent");
     if ($reg->person->email) {
         email_letter($c,
-            html    => $html, 
+            to      => $reg->person->name_email(),
+            from    => "$string{from_title} <$string{from}>",
             subject => "Cancellation of Registration for "
                       . $reg->program->title,
-            to      => $reg->person->email,
-            from    => $string{from},
-            from_title => $string{from_title},
+            html    => $html, 
         );
         $c->response->redirect($c->uri_for("/registration/view/$id"));
     }
@@ -2100,7 +2097,7 @@ sub manual : Local {
         cabin_checked => "",
         room_checked  => "",
     );
-    _rest_of_reg($pr, $p, $c, tt_today($c), "dbl", "dbl");
+    _rest_of_reg($pr, $p, $c, tt_today($c), "dble", "dble");
 }
 
 sub delete : Local {
@@ -2166,21 +2163,6 @@ sub arrived : Local {
     });
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
-
-my %htype_exp = (
-    ot       => "Own Tent",
-    ct       => "Center Tent",
-    dbl      => "Double",
-    'dbl/ba' => "Double with Bath",
-    'sgl'    => "Single",
-    'sgl/ba' => "Single with Bath",
-    com      => "Commuting",
-    ov       => "Own Van",
-    dorm     => "Dormitory",
-    quad     => "Quad",
-    econ     => "Economy",
-    tpl      => "Triple",
-);
 
 sub lodge : Local {
     my ($self, $c, $id) = @_;
@@ -3275,18 +3257,19 @@ sub name_addr_do : Local {
     if ($email) {
         $email =~ s{, $}{};     # chop last comma
         email_letter($c,
-               html       => $html, 
+               to         => $email,
+               from       => "$string{from_title} <$string{from}>",
                subject    => "Participant List for "
                             . $program->name
                             . " from "
                             . $program->dates,
-               to         => $email,
-               from       => $string{from},
-               from_title => $string{from_title},
+               html       => $html, 
         );
+        my $email_entity = $email;
+        $email_entity =~ s{<([^>]*)>}{&lt;$1&gt;}g;
         stash($c,
             program  => $program,
-            email    => $email,
+            email    => $email_entity,
             template => "registration/name_addr_conf.tt2",
         );
     }

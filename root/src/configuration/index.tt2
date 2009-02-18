@@ -22,7 +22,7 @@
     <a href=/leader>Leaders</a><p>
     <a href=/meetingplace>Meeting Places</a><p>
 [% END %]
-<a href=/user/pass>Password</a><p>
+<a href=/user/pass>Password, Name, Email</a><p>
 [% IF ! Catalyst.check_user_roles('field_staff') %]
     <a href=/project/list>Projects</a><p>
 [% END %]

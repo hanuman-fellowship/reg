@@ -194,7 +194,7 @@ Web
 
 <!-- Web div -->
 <div id="content4" class="tabcontent" style="display: none">
-<table border=1>
+<table border=0>
 
 <tr>
 <td></td>
@@ -229,7 +229,7 @@ Web
 
 <tr>
 <th align=right valign=top>Description</th>
-<td><textarea name=webdesc cols=60 rows=6>[% rental.webdesc %]</textarea></td>
+<td><textarea name=webdesc cols=80 rows=6>[% rental.webdesc %]</textarea></td>
 </td>
 </tr>
 

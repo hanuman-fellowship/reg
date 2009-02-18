@@ -1,0 +1,40 @@
+<pre>
+Users log in to newReg with a name and password.
+
+If the user is inactive for 2 hours their session will be terminated and
+they will need to log in again.
+
+The password can be changed by choosing Configuration/Password, Name, Email.
+The dialog can also be used to change your first and last names
+and email address.  Your login name cannot be changed.
+
+The key to achieving some level of system security is
+having passwords that are hard to guess.
+Enforcing password complexity
+is a simple way to ensure a minimum level of security.
+The level of password complexity can be changed by the super_admin
+by modifying the String 'password_security'.
+It can be either 0, 1, or 2.
+
+0 - No restrictions at all on the password.
+1 - The password must be at least 4 characters
+    and not contain only lower case letters.
+2 - The password must be at least 6 characters and must
+    contain a lower case letter, an upper case letter,
+    a digit, and a punctuation character.
+
+After logging in successfully users assume a given role.
+Here are the names of the roles and a short description of what
+they are allowed to do:
+
+- Super Admin
+- Program Admin
+- Program Staff
+- MMI Admin
+- Mailing List Admin
+- Mailing List Staff
+- Field Staff
+- Kitchen Admin
+- Web Designer
+- Membership Admin
+</pre>

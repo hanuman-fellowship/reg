@@ -44,7 +44,6 @@ our @EXPORT_OK = qw/
     error
     payment_warning
 /;
-
 use POSIX   qw/ceil/;
 use Date::Simple qw/
     d8
@@ -52,10 +51,10 @@ use Date::Simple qw/
     today
 /;
 use Template;
-
 use Global qw/
     %string
 /;
+use Mail::Sender;
 
 my ($naffils, @affils, %checked);
 
@@ -604,48 +603,27 @@ my $mail_sender;
 sub email_letter {
     my ($c, %args) = @_;
 
-    # check args for keys letter, subject, to, from???
-
-    #
-    # convert the HTML letter to text with lynx
-    # ??? any way to do this without creating a tmp text file?
-    # keeping it all in memory?
-    # avoid the lynx call if not html???
-    # put this info in %args???
-    #
-    my @msg = ();
-    if (exists $args{html}) {
-        open my $lynx_dump, "|lynx -stdin -dump -width=95>/tmp/$$"
-            or die "cannot open |lynx: $!\n";
-        print {$lynx_dump} $args{html};
-        close $lynx_dump;
-        open my $text_in, "<", "/tmp/$$"
-            or die "cannot open /tmp/$$: $!\n";
-        my $text;
-        {
-            local $/;
-            $text = <$text_in>;
-            close $text_in;
-            unlink "/tmp/$$";
-        }
-        @msg = (msg => $text);
-    }
     if (! $mail_sender) {
         Global->init($c);
-        $mail_sender = Mail::SendEasy->new(
-            smtp => $string{smtp_server},
-            user => $string{smtp_user},
-            pass => $string{smtp_pass},
-        )
+        $mail_sender = Mail::Sender->new({
+            smtp    => $string{smtp_server},
+            port    => $string{smtp_port},
+            auth    => "LOGIN",
+            authid  => $string{smtp_user},
+            authpwd => $string{smtp_pass},
+            debug   => "/tmp/jonmail",
+        });
     }
-    my $status = $mail_sender->send(
-        %args,
-        @msg,
-    );
-    if (! $status) {
-        # what to do about this???
-        $c->log->info('mail error: ' . $mail_sender->error);
-    }
+    my $html = $args{html};
+    delete $args{html};
+    $mail_sender->Open({
+        from     => "$args{from_title} <$args{from}>",
+        ctype    => "text/html",
+        encoding => "7bit",
+        %args,      # last so can override the 'from' above
+    }) or die "no Mail::Sender->Open $Mail::Sender::error";
+    $mail_sender->SendLineEnc($html);
+    $mail_sender->Close() or die "no Mail::Sender->Close $Mail::Sender::Error";
 }
 
 sub lunch_table {

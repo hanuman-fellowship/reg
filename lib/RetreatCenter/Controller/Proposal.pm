@@ -101,6 +101,9 @@ sub create : Local {
     $c->stash->{proposal} = {
         checkin_time  => "4:00",
         checkout_time => "1:00",
+        first         => '',        # no idea why these are needed???
+        last          => '',        # otherwise it shows HASH(0x99999) ???
+                                    # I did see it.  Once, at least.
     };
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "proposal/create_edit.tt2";

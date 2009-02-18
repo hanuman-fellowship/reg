@@ -714,17 +714,18 @@ sub email_nameaddr {
     my $n = 1;
     for my $l (@leaders) { 
         if ($em = $l->public_email) {
-            $html .= _em_check($em, $n++);
+            $html .= _em_check($l->name_public_email(), $n++);
         }
-        if ($em = $l->person->email) {
-            $html .= _em_check($em, $n++);
+        if ($em = $l->person->email()) {
+            $html .= _em_check($l->person->name_email(), $n++);
         }
     } 
     $html;
 }
 sub _em_check {
     my ($em, $n) = @_;
-    return "<input type=checkbox name='email$n' value='$em'>$em<br>";
+    (my $em_entity = $em) =~ s{<(.*)>}{&lt;$1&gt;};
+    return "<input type=checkbox name='email$n' value='$em'>$em_entity<br>";
 }
 
 #

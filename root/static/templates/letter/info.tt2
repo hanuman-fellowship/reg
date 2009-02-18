@@ -1,14 +1,12 @@
-Information about HFS membership can be found <a href='[% string.mem_site %]'>here</a>.
-<p>
 Please note: 
 <ul>
-<li>We have initiated the use of Credit Cards
-for the convenience of our members.
-To make such a payment call the reception office at [% string.mem_credit_phone %] during normal office hours: [% string.mem_credit_hours %].
-The receptionist will take your payment information.
-<li>If paying by check, make it payable to MMC rather than Hanuman Fellowship and note that the payment is for [% category %] Membership.
-<li><span style="color: navy">We are communicating by Email primarily, so please make sure that we have your correct information.</span>
-<li><span style="color: navy">Please use this notice as your receipt.</span>
+<li><span style='color: navy'>To initiate the use of your Credit Card
+please call the Reception Office</span> at [% string.mem_credit_phone %]
+during regular office hours: [% string.mem_credit_hours %].
+The receptionist will take your payment information and pass it to Membership.
+<li>If paying by check, make it payable to MMC rather than Hanuman Fellowship and note that the payment is for Membership.
+<li><span style='color: navy'>We are communicating by Email primarily, so please make sure that we have your correct information.</span>
+<li>Please use this notice as your receipt.
 <li>To claim a Tax Deduction for this donation, you must deduct the value of any benefits you receive.
 </ul>
 Sincerely,<br>

@@ -3,8 +3,6 @@ use warnings;
 package RetreatCenter::Controller::Member;
 use base 'Catalyst::Controller';
 
-use Mail::SendEasy;
-
 use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     empty
@@ -18,7 +16,9 @@ use Date::Simple qw/
     date
     days_in_month
 /;
-use Global qw/%string/;
+use Global qw/
+    %string
+/;
 use Template;
 
 sub index : Private {
@@ -186,17 +186,23 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
+    my $pay_date = $hash{mkpay_date};
+    my $amount   = $hash{mkpay_amount};
+    delete $hash{mkpay_date};
+    delete $hash{mkpay_amount};
+
     my $member = model($c, 'Member')->find($id);
     my @who_now = get_now($c);
 
-    if ($hash{mkpay_date}) {
+    if ($pay_date) {
         # put payment in history, reset last paid
 
         model($c, 'SponsHist')->create({
             member_id    => $id,
-            date_payment => $hash{mkpay_date},
-            amount       => $hash{mkpay_amount},
-            general      => $hash{category} eq 'General'? 'yes': '',
+            date_payment => $pay_date,
+            amount       => $amount,
+            general      => $hash{category} eq 'General' 
+                            && $amount <= $string{mem_gen_amt}? 'yes': '',
             @who_now,
         });
     }
@@ -213,10 +219,6 @@ sub update_do : Local {
     $hash{total_paid} = $total;
 
     # update the member record
-    my $pay_date = $hash{mkpay_date};
-    my $amount   = $hash{mkpay_amount};
-    delete $hash{mkpay_date};
-    delete $hash{mkpay_amount};
     $member->update(\%hash);
 
     if ($member->sponsor_nights != $hash{sponsor_nights}) {
@@ -246,24 +248,24 @@ sub update_do : Local {
 
     Global->init($c);
     my $html = acknowledge($c, $member, $amount, $pay_date);
-    if (my $email = $member->person->email()) {
+    my $pers = $member->person();
+    if ($pers->email()) {
         email_letter($c,
-            subject    => "Hanuman Fellowship Membership Payment",
-            to         => $email,
-            from       => $string{mem_email},
-            from_title => "HFS Membership",
-            html       => $html,
+            to      => $pers->name_email(),
+            from    => "HFS Membership <$string{mem_email}>",
+            subject => "Hanuman Fellowship Membership Payment",
+            html    => $html,
         );
         $c->response->redirect($c->uri_for("/member/view/$id/1"));
     }
     else {
-        $c->res->output(no_here($html) . js_print());
+        $c->res->output(_no_here($html) . js_print());
     }
 }
 
-sub no_here {
+sub _no_here {
     my ($html) = @_;
-    $html =~ s{<a.*>here</a>.\n<p>}{ on the HFS website:<ul>www.hanumanfellowship.org</ul>};
+    $html =~ s{<a[^>]*>here</a>[.]\n<p>}{ on the HFS website:<ul>www.hanumanfellowship.org</ul>};
     $html;
 }
 
@@ -274,11 +276,6 @@ sub js_print {
 sub acknowledge {
     my ($c, $member, $amount, $pay_date) = @_;
 
-    my $tt = Template->new({
-        INCLUDE_PATH => 'root/static/templates/letter',
-        EVAL_PERL    => 0,
-    });
-    my $html     = "";
     my $person   = $member->person;
     my $category = $member->category;
     my $benefits = ($category eq 'Sponsor'
@@ -311,27 +308,33 @@ $addr
 EOA
     }
     my $stash = {
-        sanskrit    => ($person->sanskrit || $person->first),
-        amount      => $amount,
-        pay_date    => date($pay_date),
-        expire_date => date($member->date_general),
-        due_date    => ($benefits? six_prior(date($member->date_sponsor))
-                        :          month_after(date($pay_date))
-                       ),
-        total_paid  => $member->total_paid,
-        string      => \%string,
-        message     => $message,
-        category    => $category,
+        sanskrit     => ($person->sanskrit || $person->first),
+        amount       => $amount,
+        pay_date     => date($pay_date),
+        expire_date  => date($member->date_general),
+        due_date     => date($member->date_sponsor),
+        toward_spons => $category eq 'General'
+                        && $amount > $string{mem_gen_amt},
+        total_paid   => $member->total_paid(),
+        string       => \%string,
+        message      => $message,
+        category     => $category,
     };
-    $tt->process(
-        # template file:
+    my $html = "";
+
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    }) or $c->log->info("NO TEMPLATE NEW $Template::ERROR");
+    my $file = 
         "ack_"
             . ($category eq 'General'? 'gen': 'spons')
-            . (($category eq 'Sponsor' && ! $benefits)? "_pre": "")
-            . ".tt2",
-        $stash,                         # variables
-        \$html,                         # output
-    );
+            . ".tt2";
+    $tt->process(
+        $file,          # template file
+        $stash,         # variables
+        \$html,         # output
+    ) or $c->log->info("NO PROCESS $Template::ERROR");
     $html;
 }
 
@@ -400,9 +403,9 @@ sub create_do : Local {
 
     my $date = $hash{mkpay_date};
     my $amount = $hash{mkpay_amount};
-
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
+
     $hash{total_paid} = $amount;
 
     my $member = model($c, 'Member')->create({
@@ -451,18 +454,18 @@ sub create_do : Local {
     Global->init($c);
     my $html = acknowledge($c, $member, $amount, $date);
     
-    if (my $email = $member->person->email()) {
+    my $pers = $member->person();
+    if ($pers->email()) {
         email_letter($c,
-            subject    => "Hanuman Fellowship Membership Payment",
-            to         => $email,
-            from       => $string{mem_email},
-            from_title => "HFS Membership",
-            html       => $html,
+            to      => $pers->name_email(),
+            from    => "HFS Membership <$string{mem_email}>",
+            subject => "Hanuman Fellowship Membership Payment",
+            html    => $html,
         );
         $c->response->redirect($c->uri_for("/member/view/$id/1"));
     }
     else {
-        $c->res->output(no_here($html) . js_print());
+        $c->res->output(_no_here($html) . js_print());
     }
 }
 
@@ -576,11 +579,10 @@ sub email_lapsed : Local {
             \$html,           # output
         );
         email_letter($c,
-            subject    => "Hanuman Fellowship Membership Status",
-            to         => (($test)? $c->user->email: $email),
-            from       => $string{mem_email},
-            from_title => "HFS Membership",
-            html       => $html,
+            to      => (($test)? $c->user->email(): $per->name_email()),
+            from    => "HFS Membership <$string{mem_email}>",
+            subject => "Hanuman Fellowship Membership Status",
+            html    => $html,
         );
         ++$nsent;
     }
@@ -641,11 +643,10 @@ sub email_lapse_soon : Local {
             \$html,           # output
         );
         email_letter($c,
-            subject    => "Hanuman Fellowship Membership Status",
-            to         => (($test)? $c->user->email: $email),
-            html       => $html,
-            from       => $string{mem_email},
-            from_title => "HFS Membership",
+            to      => (($test)? $c->user->email(): $per->name_email()),
+            from    => "HFS Membership <$string{mem_email}>",
+            subject => "Hanuman Fellowship Membership Status",
+            html    => $html,
         );
         ++$nsent;
     }
@@ -683,7 +684,7 @@ sub reset_do : Local {
     model($c, 'Member')->search({
         category => { 'in' => [ 'Sponsor', 'Life' ] },
     })->update({
-        sponsor_nights  => $string{sponsor_nights},
+        sponsor_nights  => $string{mem_sponsor_nights},
         free_prog_taken => '',
     });
     $c->response->redirect($c->uri_for("/member/list"));
@@ -904,7 +905,7 @@ $addr
 <p>
 </div>
 EOA
-    $c->res->output(no_here($html) . js_print());
+    $c->res->output(_no_here($html) . js_print());
 }
 
 sub payment_delete : Local {
@@ -987,7 +988,8 @@ sub one_time : Local {
     });
     my @no_email;
     for my $m (@sponsors) {
-        if (empty($m->person->email())) {
+        my $pers = $m->person();
+        if (empty($pers->email())) {
             push @no_email, $m;
             next;
         }
@@ -998,11 +1000,10 @@ sub one_time : Local {
             \$html,               # output
         );
         email_letter($c,
-               html       => $html, 
-               subject    => "HFS Sponsor Memberships - New Guidelines",
-               to         => $m->person->email(),
-               from       => $string{mem_email},
-               from_title => "HFS Membership",
+            to      => $pers->name_email(),
+            from    => "HFS Membership <$string{mem_email}>",
+            subject => "HFS Sponsor Memberships - New Guidelines",
+            html    => $html, 
         );
     }
     my $html = "";

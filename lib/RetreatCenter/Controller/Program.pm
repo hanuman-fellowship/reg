@@ -1714,18 +1714,16 @@ sub email_all_do : Local {
             push @snails, $r->person();
         }
         else {
-            push @emails, $r->person->email();
+            push @emails, $r->person->name_email();
         }
     }
-    my $emails = join ", ", @emails;
     Global->init($c);
     email_letter($c,
-        msg     => $body,
+        to      => 'lala@nono.com',
+        bcc     => \@emails,
         subject => $subj,
-        to      => $emails,     # bcc??
-        cc      => $cc,         # okay even if empty? yes.
-        from       => $string{from},
-        from_title => $string{from_title},
+        from    => "$string{from_title} <$string{from}>",
+        html    => $body,
     );
     # sort by last, first
     @snails = map {

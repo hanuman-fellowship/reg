@@ -9,7 +9,7 @@ create table user (
     email       text,
     first       text,
     last        text,
-    bg          text,       -- rgb colors or blank
+    bg          text,       -- r,g,b colors or blank
     fg          text,
     link        text
 );
@@ -48,10 +48,10 @@ insert into user values (14, 'laura', 'hello', 'lauras@mountmadonna.org', 'Laura
 insert into user values (15, 'barnaby', 'hello', 'barnaby@mountmadonna.org', 'Barnaby', 'Stamm', '', '', '');
 insert into user values (16, 'savita', 'hello', 'savita@mountmadonna.org', 'Savita', 'Brownfield', '', '', '');
 insert into user values (17, 'sunanda', 'hello', 'sunanda@mountmadonna.org', 'Sunanda', 'Pacey', '', '', '');
-insert into user values (18, 'thecla', 'hello', 'thecla@mountmadonna.org', 'Thecla', '', '', '', '');
-insert into user values (19, 'rebecca', 'hello', 'rebecca@mountmadonna.org', 'Rebecca', '', '', '', '');
-insert into user values (20, 'felicia', 'hello', 'felicia@mountmadonna.org', 'Felicia', '', '', '', '');
-insert into user values (21, 'nora', 'hello', 'nora@mountmadonna.org', 'Nora', '', '', '', '');
+insert into user values (18, 'thecla', 'hello', 'thecla@mountmadonna.org', 'Thecla', 'Campbell', '', '', '');
+insert into user values (19, 'rebecca', 'hello', 'leonard_rebecca@hotmail.com', 'Rebecca', 'Leonard', '', '', '');
+insert into user values (20, 'felicia', 'hello', 'nucleus_prime@yahoo.com', 'Felicia', 'Thompson', '', '', '');
+insert into user values (21, 'nora', 'hello', 'Nora_aurelia@yahoo.com', 'Nora', 'Doyle', '', '', '');
 --
 -- the roles - do not muck with the ids!
 --

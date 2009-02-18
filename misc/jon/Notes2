@@ -912,3 +912,41 @@ users can edit their email address and name
 
 what password restrictions?
     at least 4 and not all small letters?
+
+forgotten password - have link to send to email.
+
+user attribute - inactive
+    also everyone could have access to Users
+    and see all active users and their full name
+    and whether or not they were logged in!
+    and be able to send them email or leave them a message.
+messages between users?  needed?
+checkboxes to choose which user to send to...
+    could choose all prog_admin or all field staff
+
+little messages within newReg
+    Message, message table:
+    id
+    from user_id
+    to   user_id
+    subject
+    body
+    date sent
+    time sent
+    status (unread, read)
+
+use tinymce compressor -gzip thingy
+    and use it everywhere a <textarea> occurs.
+
+PRs are fucked up - 140days???
+
+If membership payment as General - and it is more than $25
+(in string) then it DOES count towards the Sponsoring accumulation.
+The acknowledgment letter is AS IF they paid as a General member.
+Insert a note somewhere saying "Your payment _will_ count
+towards a Sponsor membership."
+
+bcc - the to: line should be the leader's public email?
+    or use fake_to?
+    with bcc and without to it bombs!
+        see why.

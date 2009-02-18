@@ -6,7 +6,8 @@ use DBI;
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 
-open my $ppl, "<", "mem/people.txt" or die "people.txt\n";
+open my $ppl, "<", "mem/people.txt"
+    or die "*** no people.txt\n";
 my $sql = "select last, first, addr1, addr2, city, st_prov, zip_post, date_updat from people where id = ?";
 my $sth = $dbh->prepare($sql) or die "oops1\n";
 while (<$ppl>) {
