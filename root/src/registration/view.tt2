@@ -187,7 +187,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td colspan=3>[% reg.comment %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
+<td colspan=3>[% reg.comment %]<a href="/registration/update_comment/[% reg.id %]"><br>Update</a></td>
 </tr>
 
 <tr>
