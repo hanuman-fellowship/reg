@@ -920,11 +920,11 @@ user attribute - inactive
     and see all active users and their full name
     and whether or not they were logged in!
     and be able to send them email or leave them a message.
-messages between users?  needed?
-checkboxes to choose which user to send to...
-    could choose all prog_admin or all field staff
 
 little messages within newReg
+    messages between users?  needed?
+    checkboxes to choose which user to send to...
+        could choose all prog_admin or all field staff
     Message, message table:
     id
     from user_id
@@ -935,24 +935,53 @@ little messages within newReg
     time sent
     status (unread, read)
 
-use tinymce compressor -gzip thingy
-    and use it everywhere a <textarea> occurs.
-
-PRs are fucked up - 140days???
+    no thanks
 
 If membership payment as General - and it is more than $25
-(in string) then it DOES count towards the Sponsoring accumulation.
-The acknowledgment letter is AS IF they paid as a General member.
-Insert a note somewhere saying "Your payment _will_ count
-towards a Sponsor membership."
-
+    (in string) then it DOES count towards the Sponsoring accumulation.
+    The acknowledgment letter is AS IF they paid as a General member.
+    Insert a note somewhere saying "Your payment _will_ count
+    towards a Sponsor membership."
+javascript for form field checking
+    in membership for one.
+    program, rental - switching tabs for focus
+upgrade Perl to 5.10???
+    avoid that warning about slowness for DBIx::Class???
+====
+use tinymce compressor -gzip thingy
+    and use it _everywhere_ a <textarea> occurs.
+PRs are fucked up - 140days???
 bcc - the to: line should be the leader's public email?
     or use fake_to?
     with bcc and without to it bombs!
         see why.
-
-javascript for form field checking
-    in membership for one.
-    program, rental - switching tabs for focus
-
 style for tinyMCE - so paragraphs have no bottom/top margin
+    can you hit return twice to get a blank line?
+member_admin does not need to see
+    Listings at all?   Perhaps General Reports?
+add total paid to member view, especially after a payment
+in any template loop see if role request is within the loop
+    set outside, use inside
+lapse_spons.tt2 replace <here> in printed letter.
+mail going out?
+    use localhost??? yes.
+    will need to poke kali's strings.  add smpt_auth
+transportation to a extra acct (newly created in mkacct)
+    with correct GL num.
+    textarea (with TinyMCE) for extra accts input what field
+    show last 10 payments only with link to see a date range
+comments in people - tinymce
+show comments on member info
+comments in reg should not go way to the edge
+    see Gail Rossiter PR
+    update on that field and on conf note should be below
+referral
+    word_of_mouth shows :(
+    not a choice online?
+submit twice on reg screen
+====
+
+email developers (role?) when issue is created
+email submitter when issue is closed
+    nice!
+    only a developer can close an issue

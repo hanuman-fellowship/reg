@@ -239,7 +239,7 @@ Web
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td colspan=5>[% rental.comment_br %]</td>
+<td colspan=5>[% rental.comment %]</td>
 </td>
 </tr>
 

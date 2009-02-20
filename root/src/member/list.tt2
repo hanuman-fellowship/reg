@@ -1,3 +1,4 @@
+[% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
 <a href="/member/membership_list">Category</a>
 &nbsp;&nbsp;&nbsp;
@@ -18,13 +19,13 @@
 <a href="/member/one_time">One Time</a> -->
 <ul>
 Click on Name to update member attributes.<br>
-Click on Sanskrit to see person attributes.<br>
+Click on First to see person attributes.<br>
 To add a Member add them as a Person first.
 <p>
 <table cellpadding=3 border=0>
 <tr>
 <th align=left valign=bottom>Name</th>
-<th align=left valign=bottom>Sanskrit</th>
+<th align=left valign=bottom>First</th>
 <th align=left valign=bottom>Category</th>
 <th align=center valign=bottom>Expiration<br>Date</th>
 <th align=left valign=bottom>Status</th>
@@ -33,9 +34,10 @@ To add a Member add them as a Person first.
 <th align=center>Free<br>Program</th>
 </tr>
 [% FOREACH m IN members %]
+[% per = m.person %]
 <tr>
-<td><a href="/member/update/[% m.id %]">[% m.person.last _ ', ' _ m.person.first %]</a></td>
-<td><a tabindex=1 href="/person/view/[% m.person.id %]">[% m.person.sanskrit || m.person.first %]</a></td>
+<td><a href="/member/update/[% m.id %]">[% per.last %], [% per.sanskrit || per.first %]</a></td>
+<td><a tabindex=1 href="/person/view/[% per.id %]">[% per.first %]</a></td>
 <td>[% m.category %]</td>
 <td>
 [% IF    m.category == 'General' %][% m.date_general_obj %]
@@ -63,7 +65,7 @@ To add a Member add them as a Person first.
 [% ELSE %]
 <td>&nbsp;</td><td>&nbsp;</td>
 [% END %]
-[% IF Catalyst.check_user_roles('super_admin') %]
+[% IF super_admin %]
 <td><a href="/member/delete/[% m.id %]" onclick="return confirm('Okay to Delete [% m.person.first _ ' ' _ m.person.last %] as member?');">Del</a></td>
 [% END %]
 </tr>

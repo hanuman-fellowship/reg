@@ -3,6 +3,8 @@ use strict;
 use warnings;
 use DBI;
 
+my $mysql = shift;
+
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 $dbh->do("delete from string");
@@ -25,3 +27,24 @@ use Date::Simple qw/
 /;
 # special case
 $sth->execute('last_deposit_date', today()->as_d8());
+
+# smtp settings differ from macbook to kali
+# use the mysql command line parameter to differentiate
+#
+if ($mysql) {
+    # on kali - use localhost
+    #
+    $sth->execute('smtp_server', 'localhost');
+    $sth->execute('smtp_port', '25');
+    $sth->execute('smpt_auth', '');
+}
+else {
+    # on macbook - use logicalpoetry.com smtp server
+    # it requires authentication and is at port 50.
+    #
+    $sth->execute('smtp_server', 'mail.logicalpoetry.com');
+    $sth->execute('smtp_port', '50');
+    $sth->execute('smpt_auth', 'LOGIN');
+    $sth->execute('smpt_user', 'jon@logicalpoetry.com');
+    $sth->execute('smpt_pass', 'hello!');
+}

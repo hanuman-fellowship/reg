@@ -6,13 +6,14 @@ h3 {
 }
 </style>
 <h2>Members</h2>
-<span class=larger>[% member.person.first %] [% member.person.last %]</span>
+[% per = member.per %]
+<span class=larger>[% per.sanskrit || per.first %] [% per.last %]</span>
 <span style="margin-left: 1in">
 [% IF Catalyst.check_user_roles('member_admin') %]
 <a href="/member/list" accesskey='l'><span class=keyed>L</span>ist</a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
-<a href="/person/view/[% member.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
+<a href="/person/view/[% per.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
 &nbsp;&nbsp;&nbsp;
 </span>
 [% IF Catalyst.check_user_roles('member_admin') %]
@@ -26,7 +27,7 @@ h3 {
 [% message %][% IF cat == 'General' %]
 General Member - Expires [% member.date_general_obj %]
 [% ELSIF cat == 'Sponsor' %]
-Sponsor Member - Expires [% member.date_sponsor_obj %], [% member.sponsor_nights %] Nights Left
+Sponsor Member - Expires [% member.date_sponsor_obj %], [% member.sponsor_nights %] Nights Left, Total Paid [% member.total_paid %]
 [% ELSIF cat == 'Inactive' %]
 Inactive Member
 [% ELSE %]

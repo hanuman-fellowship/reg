@@ -600,30 +600,40 @@ sub model {
 
 my $mail_sender;
 
+#
+# must have to, from, subject and html in the %args.
+# check for it!???
+#
 sub email_letter {
     my ($c, %args) = @_;
 
     if (! $mail_sender) {
         Global->init($c);
+        my @auth = ();
+        if ($string{smtp_auth}) {
+            @auth = (
+                auth    => $string{smtp_auth},
+                authid  => $string{smtp_user},
+                authpwd => $string{smtp_pass},
+            );
+        }
         $mail_sender = Mail::Sender->new({
-            smtp    => $string{smtp_server},
-            port    => $string{smtp_port},
-            auth    => "LOGIN",
-            authid  => $string{smtp_user},
-            authpwd => $string{smtp_pass},
-            debug   => "/tmp/jonmail",
+            smtp => $string{smtp_server},
+            port => $string{smtp_port},
+            @auth,
         });
     }
-    my $html = $args{html};
-    delete $args{html};
     $mail_sender->Open({
-        from     => "$args{from_title} <$args{from}>",
+        to       => $args{to},
+        from     => $args{from},
+        subject  => $args{subject},
         ctype    => "text/html",
         encoding => "7bit",
-        %args,      # last so can override the 'from' above
-    }) or die "no Mail::Sender->Open $Mail::Sender::error";
-    $mail_sender->SendLineEnc($html);
-    $mail_sender->Close() or die "no Mail::Sender->Close $Mail::Sender::Error";
+    })
+        or die "no Mail::Sender->Open $Mail::Sender::error";
+    $mail_sender->SendLineEnc($args{html});
+    $mail_sender->Close()
+        or die "no Mail::Sender->Close $Mail::Sender::Error";
 }
 
 sub lunch_table {

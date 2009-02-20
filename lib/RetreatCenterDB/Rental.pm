@@ -151,13 +151,6 @@ sub meeting_places {
     my ($self, $breakout) = @_;
     places($self, $breakout);
 }
-# ??? dead code?  replaced with TinyMCE?
-sub comment_br {
-    my ($self) = @_;
-    my $comment = $self->comment;
-    $comment =~ s{\r?\n}{<br>\n}g;
-    $comment;
-}
 sub extradays {     # see Program->dates()
     return 0;
 }

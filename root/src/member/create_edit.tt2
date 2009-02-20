@@ -49,7 +49,7 @@ h3 {
       name=form
 >
 
-<span class=larger>[% person.first %] [% person.last %]</span>
+<span class=larger>[% person.sanskrit || person.first %] [% person.last %]</span>
 <span style="margin-left: 1in"><a href="/person/view/[% person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a></span>
 <p>
 

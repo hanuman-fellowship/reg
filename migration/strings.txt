@@ -74,10 +74,6 @@ reg_end 7:00
 prog_start 7:00
 prog_end 12:30
 credit_amount 50
-smtp_server mail.logicalpoetry.com
-smtp_port 50
-smtp_user jon@logicalpoetry.com
-smtp_pass hello!
 spons_tuit_disc 30
 max_tuit_disc 125
 disc1days 7
@@ -108,7 +104,7 @@ fri_sun_color 255,240,240
 mem_team Shyama Friedberg (Secretary), Lori March
 mem_phone 408-847-0406 x334
 mem_email memberships@mountmadonna.org
-mem_site http://hanumanfellowship.org/NEW_HFS_Membership_App.pdf
+mem_site http://hanumanfellowship.org/index.php?option=com_content&task=view&id=249&Itemid=74
 mem_credit_phone 408-847-0406
 mem_credit_hours M-F 9-5, Sat 11-5, and Sun 1-7
 mem_gen_amt 25

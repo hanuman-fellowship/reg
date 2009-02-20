@@ -29,7 +29,7 @@ echo meet  ; $db <mkmeet
 echo house ; $db <mkhouse
 
 echo strings
-loadstr
+loadstr $MYSQL
 echo affils
 loadaf
 

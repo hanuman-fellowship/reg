@@ -9,5 +9,4 @@ You last paid $[% last_amount %] on [% last_paid.format("%D") %].
 [% END %]
 <p>
 [% INCLUDE spons.tt2 %]
-<p>
 [% INCLUDE info.tt2 %]
