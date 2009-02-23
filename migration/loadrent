@@ -5,6 +5,18 @@ use DBI;
 use lib "../lib";
 use Date::Simple qw/date/;
 
+my %save_rent;
+open my $rent, "<", "rent/rent.txt";
+while (<$rent>) {
+    chomp;
+    my ($name, @flds) = split m{\|};
+    for my $f (@flds) {
+        $f = "" unless defined $f;
+    }
+        # max, deposit, start, end
+    $save_rent{$name} = \@flds;
+}
+
 my @seasons;
 my $p = shift @ARGV;
 if ($p ne 'cur') {
@@ -57,6 +69,10 @@ my @fields = qw/
     lunches
     status
     summary_id
+    max
+    deposit
+    start_hour
+    end_hour
 /;
 my %lookup = qw/
     rname	name
@@ -121,16 +137,22 @@ sub processRental {
     }
     my $ndays = date($hash{edate}) - date($hash{sdate}) + 1;
     $hash{lunches} = '0' x $ndays;
-    $hash{id} = undef;
-    if ($hash{name} =~ s{\s*\*\s*$}{}) {
-        $hash{ceu} = 'yes';
-    }
+    $hash{id} = undef;      # next one that comes
+    $hash{name} =~ s{\s*\*\s*$}{};      # used to be for CEUs
     #print "rental $season - $hash{name}\n";
     $hash{housecost_id} = 1;        # Default
     $hash{status} = "tentative";
     $hash{summary_id} = $next_summary_id;
-    $hash{start_hour} = '4:00';
-    $hash{end_hour} = '1:00';
+    # saved data?
+    if (exists $save_rent{$hash{name}}) {
+        my ($max, $deposit, $start, $end) = @{$save_rent{$hash{name}}};
+        $hash{max} = $max;
+        $hash{deposit} = $deposit;
+        $hash{start_hour} = $start;
+        $hash{end_hour} = $end;
+    }
+    $hash{start_hour} ||= '4:00';
+    $hash{end_hour} ||= '1:00';
     $summary_sth->execute($next_summary_id);
     ++$next_summary_id;
     $r_sth->execute(@hash{@fields});

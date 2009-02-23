@@ -1,0 +1,3 @@
+#!/bin/sh
+kill 3413
+rm stop

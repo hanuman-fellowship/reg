@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+mkdir "rent" unless -d "rent";
+mkdir "meet" unless -d "meet";
+my @flds = ();
+
+my $book_sth = $dbh->prepare("select * from booking where rental_id = ?");
+
+
+my $sql = "select id, name, max, deposit, start_hour, end_hour from rental";
+my $sth = $dbh->prepare($sql) or die "oops\n";
+$sth->execute();
+open my $rent, ">", "rent/rent.txt" or die "no rent.txt\n";
+open my $meet, ">", "meet/meet.txt" or die "no meet.txt\n";
+while (@flds = $sth->fetchrow_array()) {
+    my $id = shift @flds;
+    my $name = $flds[0];
+    for my $f (@flds) {
+        $f = "" unless defined $f;
+    }
+    print {$rent} join('|', @flds), "\n";
+
+    $book_sth->execute($id);
+    while (@flds = $book_sth->fetchrow_array()) {
+        for my $f (@flds) {
+            $f = "" unless defined $f;
+        }
+        print {$meet} join('|', $name, @flds), "\n";
+    }
+}
+close $rent;
+close $meet;
+undef $sth;
+undef $book_sth;
+$dbh->disconnect();

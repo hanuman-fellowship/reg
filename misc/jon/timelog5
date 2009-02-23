@@ -130,3 +130,11 @@ Feb 18 10:00-3:30
     gathering reqts.  Sukhdev transport.
     smtp string settings
     fixing openvpn w/ Shantam
+Feb 20 1:45-
+    membership tweaks, outgoing mail on kali using localhost.
+Feb 21 10:30-1:30
+    mailto for issues - a quote escaping mess!
+    developer role, email them on issues
+    email submitter on close
+Feb 22 9:30-
+    saverent saveprog, modify loadrent, loadprog

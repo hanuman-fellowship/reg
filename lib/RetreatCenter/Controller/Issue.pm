@@ -8,6 +8,7 @@ use Util qw/
     empty
     model
     trim
+    email_letter
 /;
 use Date::Simple qw/
     today
@@ -69,12 +70,38 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     my %hash = %{ $c->request->params() };
-    # verify what???
-    my $dt = date($hash{date_closed});
-    $hash{date_closed} = $dt? $dt->as_d8()
-                         :    ""
-                         ;
-    model($c, 'Issue')->find($id)->update(\%hash);
+
+    # be careful with the date closed param
+    if ($hash{date_closed}) {
+        my $dt = date($hash{date_closed});
+        if ($dt) {
+            $hash{date_closed} = $dt->as_d8();
+        }
+        else {
+            delete $hash{date_closed};
+        }
+    }
+
+    my $issue = model($c, 'Issue')->find($id);
+    $issue->update(\%hash);
+    if ($hash{date_closed}) {
+        # send email to the submitter
+        my $submitter = $issue->user();
+        my $user = $c->user->obj();
+        email_letter($c,
+            to      => $submitter->first() . " " . $submitter->last()
+                     . "<" . $submitter->email() . ">",
+            from    => $user->first() . " " . $user->last()
+                     . "<" . $user->email() . ">",
+            subject => "Issue #" . $issue->id() . " " . $issue->title(),
+            html    => $issue->notes()
+                     . "<p><hr><p>This issue has been closed."
+                     . "<p>See it <a href='" 
+                     . $c->uri_for('/issue/update/' . $issue->id())
+                     . "'>here</a>."
+                     . "<p>Please verify that the issue actually <i>is</i> resolved."
+        );
+    }
     $c->response->redirect($c->uri_for('/issue/list'));
 }
 
@@ -91,8 +118,27 @@ sub create_do : Local {
     my %hash = %{ $c->request->params() };
     $hash{date_entered} = today()->as_d8();
     $hash{date_closed}  = '';
-    $hash{user_id} = $c->user->obj->id();
-    model($c, 'Issue')->create(\%hash);
+    my $user = $c->user->obj();
+    $hash{user_id} = $user->id();
+
+    my $issue = model($c, 'Issue')->create(\%hash);
+
+    my (@roles) = model($c, "Role")->search({
+        role => 'developer',
+    });
+    # should just be one role
+
+    email_letter($c,
+        to      => join(', ', map { $_->email() } $roles[0]->users()),
+        from    => $user->first() . " " . $user->last()
+                 . '<' . $user->email() . '>',
+        subject => "Issue #" . $issue->id() . " " . $issue->title(),
+        html    => $issue->notes()
+                 . "<p><hr><p>See it <a href='" 
+                 . $c->uri_for('/issue/update/' . $issue->id())
+                 . "'>here</a>."
+    );
+
     $c->response->redirect($c->uri_for('/issue/list'));
 }
 

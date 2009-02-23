@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+my @flds = ();
+
+my $book_sth = $dbh->prepare("select * from booking where program_id = ?");
+
+
+my $sql = "select id, name from program";
+my $sth = $dbh->prepare($sql) or die "oops\n";
+$sth->execute();
+open my $meet, ">>", "meet/meet.txt" or die "no meet.txt\n";
+while (my ($id, $name) = $sth->fetchrow_array()) {
+    $book_sth->execute($id);
+    while (@flds = $book_sth->fetchrow_array()) {
+        for my $f (@flds) {
+            $f = "" unless defined $f;
+        }
+        print {$meet} join('|', $name, @flds), "\n";
+    }
+}
+close $meet;
+undef $sth;
+undef $book_sth;
+$dbh->disconnect();

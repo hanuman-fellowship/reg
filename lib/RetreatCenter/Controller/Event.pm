@@ -835,7 +835,7 @@ EOH
 . qq! onclick="return overlib('<center>$day_name $month_name[$m-1] $d</center><p><table cellpadding=2>$pr_links</table>',!
                     # very cool to use $m-1 inside index inside ' inside " !!!
 . qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
-. qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2)"!
+. qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2, VAUTO)"!
 . qq! onmouseout="return nd();">\n!;
             }
         }

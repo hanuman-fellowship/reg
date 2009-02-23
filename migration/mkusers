@@ -70,6 +70,7 @@ insert into role values (7, 'member_admin', 'Membership Admin', 'Maintain Member
 insert into role values (8, 'field_staff', 'Field Staff', 'Room Makeup, Campsite Tidying');
 insert into role values (9, 'mmi_admin', 'MMI Admin', 'MMI Administration');
 insert into role values (10, 'kitchen', 'Kitchen', 'Kitchen Admin');
+insert into role values (11, 'developer', 'Software Developer', 'Those who create the software.');
 
 -- Two super admins
 -- sahadev
@@ -81,6 +82,7 @@ insert into user_role values (2, 5);
 insert into user_role values (2, 6);
 insert into user_role values (2, 7);
 insert into user_role values (2, 9);
+insert into user_role values (2, 11);
 -- jamal
 insert into user_role values (5, 1);
 insert into user_role values (5, 2);

@@ -985,3 +985,17 @@ email developers (role?) when issue is created
 email submitter when issue is closed
     nice!
     only a developer can close an issue
+
+on issues - the submitted by name should be a mailto: link.
+
+preserve the meeting places for rentals/programs
+    link by _name_ not id.
+    max, start, end, deposit as well?
+    why not.
+
+    default the start, end times for rentals to 4:00, 1:00
+    and use Time::Simple format in Rental & Program!
+
+rn -> RN online
+
+overlib at bottom of screen - UP!

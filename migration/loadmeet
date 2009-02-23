@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+my $sth = $dbh->prepare("select id, name from rental");
+my %rent_id;
+$sth->execute();
+while (my ($id, $name) = $sth->fetchrow_array()) {
+    $rent_id{$name} = $id;
+}
+$sth = $dbh->prepare("select id, name from program");
+my %prog_id;
+$sth->execute();
+while (my ($id, $name) = $sth->fetchrow_array()) {
+    $prog_id{$name} = $id;
+}
+
+$sth = $dbh->prepare("insert into booking values (?,?,?,?,?,?,?,?);");
+
+open my $meet, "<", "meet/meet.txt"
+    or die "cannot open meet.txt: $!\n";
+while (<$meet>) {
+    chomp;
+    my ($name, $id, $meet_id, $rental_id, $program_id, @flds)
+        = split m{\|}, $_, -1;
+    if ($rental_id) {
+        $rental_id = $rent_id{$name};
+    }
+    elsif ($program_id) {
+        $program_id = $prog_id{$name};
+    }
+    $sth->execute($id, $meet_id, $rental_id, $program_id, @flds);
+}
+close $meet;

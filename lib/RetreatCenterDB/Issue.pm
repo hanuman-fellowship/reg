@@ -32,6 +32,17 @@ sub date_closed_obj {
     return date($self->date_closed) || "";
 }
 
-sub notes_br { _br(shift->notes()); }
+sub title_dq { _dq(shift->title()); }
+sub title_esc_q { _esc_q(shift->title()); }
+sub _dq {
+    my ($s) = @_;
+    $s =~ s{"}{&quot;}g;
+    $s;
+}
+sub _esc_q {
+    my ($s) = @_;
+    $s =~ s{"}{\\"}g;
+    $s;
+}
 
 1;

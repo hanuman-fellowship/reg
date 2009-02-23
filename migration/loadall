@@ -1,5 +1,5 @@
 #!/bin/sh
-howmuch='cur'       # f89 or cur
+howmuch='s07'       # f89 or cur
 
 if [ `whoami` = 'sahadev' ]
 then
@@ -8,11 +8,13 @@ then
     perl -p -i -e 's/autoincrement/auto_increment/' mk*
     MYSQL=1
 else
-    rm retreatcenter.db
-    db='sqlite3 retreatcenter.db'
-    export DBI_DSN="dbi:SQLite:retreatcenter.db"
+    rm ../retreatcenter.db
+    db='sqlite3 ../retreatcenter.db'
+    export DBI_DSN="dbi:SQLite:../retreatcenter.db"
     MYSQL=
 fi
+
+saveall
 
 echo creating tables
 echo people; $db <mkpeople
@@ -46,6 +48,9 @@ echo registrations
 loadreg $howmuch
 echo rentals
 loadrent $howmuch
+
+echo meeting places
+loadmeet
 
 # load all mmi payments
 echo mmi
@@ -84,8 +89,3 @@ splitPR
 # update the reg_count field in all program records
 echo updating regcount
 regcount
-
-if [ `whoami` = 'jonbjornstad' ]
-then
-    cp retreatcenter.db ..
-fi
