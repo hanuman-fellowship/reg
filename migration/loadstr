@@ -36,7 +36,9 @@ if ($mysql) {
     #
     $sth->execute('smtp_server', 'localhost');
     $sth->execute('smtp_port', '25');
-    $sth->execute('smpt_auth', '');
+    $sth->execute('smtp_auth', '');
+    $sth->execute('smtp_user', '');
+    $sth->execute('smtp_pass', '');
 }
 else {
     # on macbook - use logicalpoetry.com smtp server
@@ -44,7 +46,7 @@ else {
     #
     $sth->execute('smtp_server', 'mail.logicalpoetry.com');
     $sth->execute('smtp_port', '50');
-    $sth->execute('smpt_auth', 'LOGIN');
-    $sth->execute('smpt_user', 'jon@logicalpoetry.com');
-    $sth->execute('smpt_pass', 'hello!');
+    $sth->execute('smtp_auth', 'LOGIN');
+    $sth->execute('smtp_user', 'jon@logicalpoetry.com');
+    $sth->execute('smtp_pass', 'hello!');
 }

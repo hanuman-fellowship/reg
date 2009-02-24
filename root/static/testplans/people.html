@@ -1,321 +1,326 @@
-<pre>
-Test Plan
-for People, Affiliations, Listings, Reports
+<head>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<h2>People, Affiliations, Unduplication, Reports</h2>
+<h3>Search</h3>
+Enter pattern after 'Search For' and  press Submit.
+The pattern is actually a 'prefix' of the last name.
+You will be shown the first 15 people whose last names
+match the pattern.  Upper/lower case does not matter
+in the pattern.
+<p>
+Try searching by Sanskrit, Zip, Email, First, and Home Phone.
+The numbers in home phone are not necessarily sequential.
+This is okay if you give the full 10 digits
+otherwise it is sort of weird - but useful nonetheless.
+If the pattern is quoted:
+<ul>
+'1432'<br>
+or<br>
+'460-'
+</ul>
+then it *will* match sequential digits.
+<p>
+None found? You stay at the search screen.
+Your search pattern is preserved so you can easily correct it.
+<p>
 
-Search
-    Enter pattern after "Search For" and  press Submit.
-    The pattern is actually a 'prefix' of the last name.
-    You will be shown the first 15 people whose last names
-    match the pattern.  Upper/lower case does not matter
-    in the pattern.
+If there are more search results than will fit on the
+page - Try 'Next' until there are no more.
+There is also 'Prev'.   Note that the position of the Next and Prev
+do not change so your mouse can stay in one place.
+<p>
+If you wish to see more than the default 15 records per page
+you can append a number to the pattern.  Like so:
+<ul>
+smith 30
+</ul>
+If there is only one person found that person will be
+shown immediately.  No separate step with
+a list containing just one person.
+<p>
+If searching by Last Name you can give
+two strings separated by a space.  The first string
+will be matched against the last name field and the
+second will be matched against the first name field.
+And vica versa if you're searching by First.
+This can speed the finding by a lot!
+<p>
+If there is a star '*' in a pattern it will be a 'wildcard'
+so you can find people whose names _contain_ the pattern
+but not necessarily as a prefix.
+E.g. searching for '*ete' will find people whose last name
+is 'Peterson' and searching for '*ete *re' will find
+'Demeter, Karen'.  The '*' can be in the middle as
+well - 'r*z' will find a last name of 'Ratzenberger'.
+<h3>Add a Person</h3>
+<ol>
+<li>Fill in all fields (country defaults to USA).
+<li>Choose a few affiliations.
+<li>Note the two submit buttons (for convenience's sake).
+<li>After creation there is a message in red with the person's name.
+<li>Click on it to return to their info.
+<li>Verify the date of entry.
+<li>Give an incorrect State (in the U.S.).
+<li>Leave sex unchosen - get error.
+Note that the gender is guessed at for you
+by consulting www.gpeters.com/names/baby-names.php.
+</ol>
+<h3>Quick Access Keys</h3>
+You can use the keyboard to invoke various functions
+rather than the mouse if you wish.  It might be faster for you.
+This is very browser dependent.
+On Firefox you press Shift-Alt and the letter key below.
+On Safari you press Control.
+<ul>
+<table cellpadding=3>
+<tr><td>A</td><td>Add</td></tr>
+<tr><td>D</td><td>Donation</td></tr>
+<tr><td>E</td><td>Edit</td></tr>
+<tr><td>L</td><td>Leader (make or info)</td></tr>
+<tr><td>M</td><td>Member (make or info)</td></tr>
+<tr><td>N</td><td>Next page of results (when viewing search results)</td></tr>
+<tr><td>P</td><td>Prev page of results (when viewing search results)</td></tr>
+<tr><td>P</td><td>make Payment</td></tr>
+<tr><td>W</td><td>Partner With (partner with or view partner)</td></tr>
+<tr><td>R</td><td>Register</td></tr>
+<tr><td>S</td><td>Search</td></tr>
+<tr><td>U</td><td>Undup</td></tr>
+</table>
+</ul>
+Note that these letters have a subtle light blue background.
+<p>
+Also note that after search results are shown the first person
+has the focus so you can just hit Return to see their information.
+In the list the Tab key will take you to subsequent names in the list.
+This is nice for the mouse-averse.
+<h3>Affiliations</h3>
+<ol>
+<li>Click on Configuration/Affiliations at the top.
+<li>Edit one.
+<li>Create one.
+<li>Go to edit a person again and verify that
+the edit and the new one are there.
+<li>Add the new affiliation to several people.
+<li>Go back to affiliation, delete the new one.
+<li>Verify it is gone from the people.
+<li>And from the list when editing a person.
+</ol>
+<h3>Miscellaneous People Items</h3>
+<ul>
+<li>Find someone to Delete.<br>
+See confirmation dialog.
+Verify they were deleted.
+<li>Find someone to Edit.<br>
+Make a change.
+Submit and see the 'updated' message.  Click on the person's name
+to see their info.
+Verify the date of updating
+<li>Map<br>
+There is a link at the top named 'Map'.
+It jumps to Google maps using the person's address.
+Cool?  Yes.  Useful?  Maybe.
+<li>Create a duplicate record.<br>
+See the warning about <i>possible</i> dups.
+It could be exactly same name
+or a similar address with first and last initials the same like this:
+<ul>
+Joe Smith   123 Orange St Tampa, FL 34510<br>
+Joseph Smith 123 Orange Street Tampa, FL 34510<br>
+</ul>
+<p>
+Similar dup checks are done after an update of an existing record
+(rather than a new creation).  Verify this.
+<li>Partners<br>
+Partners in this context are used mostly to reduce mailing costs.
+Any two people who want to be partnered can simply request it.
+Any one who does not want to be partnered any more can simply request
+it and it will be done - poof.
+<ol>
+<li>Choose a person (that is not partnered).
+<li>Note the link that says 'Partner With'.
+<li>Click on it.
+<li>You're asked for a first and last name.
+<li>Enter an existing person.  You must spell it exactly.
+The two are partnered and their records
+now say 'Partnered with ...' - You can click on the
+link to go to the partner.
+<li>Or enter a person's name that is not in the mailing list.
+You will be notified that it is new and will be asked to confirm
+the partnering.  If yes, it proceeds.  If not, it is cancelled.
+Note the message in either case.
+<li>Confirm that the new partner gets the mailing address and home
+phone of the original person.
+<li>There is 'Separate'.</li>
+<ol type=a>
+<li>Separate two partners - note the confirmation dialog.
+<li>Verify they are no longer partnered.
+<li>Delete one of a partnership and note that the undeleted partner
+is now no longer partnered.
+<li>Edit the address or home phone of a partnered person
+and verify that these fields of their partner are updated as well.
+and that each person's 'last updated' date is changed to today.
+</ol>
+</ol>
+</ul>
+<h3>Unduplication</h3>
+Under Listings you will find a link 'Unduplication File'.
+This gives a list of <i>possible</i> duplicates.  Since this
+list is quite long it is best to
+generate it once, save it, and use it to do research.
+It shows:<p>
+<ol>
+<li>Identical first/last names.<br>
+Click on one of the names to be taken to an unduplication dialog
+for the two people.
+If there are 3 or more people with the same name it is better
+to do a search for them by last/first name.  You'll know there
+are 3 or more if two names in a row in this undup
+list are the same.
+<li>Unpartnered people with addresses that are 'numerically' close.</li>
+For example:<p>
+<ul>
+123 Orange St Tampa, FL 12341<br>
+and<br>
+123 Ornge Street Tampa, FL 12341<br>
+</ul>
+are numerically close.
+Clicking on one of these people will also bring you to
+the unduplication dialog.
+<p>
+After a normal search you may see several people who are
+in actuality, the same person.  
+Searches by last name will reveal some possible duplicates.
+Also try using email address.
+The process of UNduplicating
+these people is tricky and there's a link 'Undup' to help.
+This brings you, again, to the unduplication dialog.
+<li>Unreported Gender</li>
+Also in the unduplication file listing are those with undetermined gender.
+(These are not dups but this is as good a place as any to
+show this information).  The names in the list
+are actually links - they'll take you to the person's
+screen.   The gender is guessed at using a special
+<a href="http://www.gpeters.com/names/baby-names.php">web site</a>.
+If it looks obvious which gender it should be you can click on the
+'Male' or 'Female' link and the gender will be changed.
+(Easier than doing edit, click, submit...).
+</ol>
+<h3>The Unduplication Dialog</h3>
+This dialog presents you with complete demographic information.
+This also includes the email address, home phone, last date of updating
+the person record, how many registrations this person has
+(after the name in parens), and whether they're a leader, partner or member.
+<p>
+You can <i>narrow down</i> which people you see in the dialog by putting 'n'
+(lower n for narrow) in the text field next to the people's
+names you wish to see.  Press Submit and the non-n people will
+be removed to make your decision process easier.
+The order of the people is not guaranteed to be the same on the next screen.
+<p>
+When you have identified who should be merged into whom
+put a 'P' (capital P for primary) on the person you want to keep
+and an 'm' (lower m for merge) on the people you want to merge
+into the primary.  Registrations, donations and credits from
+the merged people will be added to the primary person.
+Any affiliation, leader or member information for the
+merged people will be completely deleted.   A partner of a merged
+person will become unpartnered but will be preserved.
+<p>
+If you see the person and their potential <i>partner</i> on the same screen
+you can partner them right here.  Put P and p next to their names.
+The p person will be partnered with the P person taking their
+address and home phone.  You can't do merging and partnering
+at the same time.
+<h3>General Reports</h3>
+General Reports are found under 'Listings' at the top of the right column.
+This is where you can select a subset of all People and produce
+nice listings of selected attributes.
+<ol>
+<li>Create a report - giving a description and some zip code range.
+For 'Format' choose 'Name, Address, Email'.
+For 'Order By' choose 'Last Name' or 'Zip/Postal Code'.
+<li>Run the report.   See the rows on the screen. 
+The report can be printed directly or saved, if needed.
+<li>Change 'Format' to 'Email to VistaPrint' and re-run.
+<li>If you click on the 'Count' button rather than 'Run' you'll get
+a count of how many records <i>will</i> appear in the report
+when it is run.
+<li>Change 'Number of Records' to something less than the count.
+ReRun.   This is a random sample of the prior listing's rows.
+This is useful when we are selling our list to associated
+organizations and they don't want to pay for the whole thing.
+<li>Edit the report and select some affiliations.
+Now the listing is restricted to people who
+have at least one of the affiliations in their record.
+<li>Add one of the affiliations to a person not in the
+report and verify they now do appear in the rerunning of the report.
+If 'Mailings-Snail Mail' is UNchecked the person will not be
+included in any report where the postal address is included.
+If 'Mailings-Email' is UNchecked the person will similarily not be
+included in any report where the email address appears.
+<p>
+There is also the Person attribute 'Inactive'.
+No inactive people should be included in any Report regardless
+of their Mailings setting.
+Note that when someone is marked 'Deceased' they automatically
+become 'Inactive'.
+<li>Choose a format of 'Just Email'.
+Only people with non-blank emails will be included.
+Sorted by email.
+<li>Try an invalid zip code range.  Make some mistakes.
+Try several zip code ranges in the one field - like this:
+<ul>
+95060-95062, 89012-89450, 01234
+</ul>
+<li>Verify you can delete reports.
+<li>If you check 'Share' the report will only include
+people that have indicated they permit us to share
+their demographic information with business associates.
+This is the 'Mailings-Share' checkbox on the Person record.
+The count of these people is obviously less than without
+'Share' clicked.
+<li>In the formats other than 'Just Email' note that if both
+partners make it into the report
+then the partners will be coalesced/merged/joined
+into a single record.  Note the different name
+that is displayed - if the partners have the same
+last name it is not repeated:
+<ul>
+Mary Smith & John Doe<br>
+Penny & Charlie Trager
+</ul>
+A weakness I just noticed - Partners don't necessarily
+have the same work or cell number.
+In the Format listing where there are the 3 phone numbers
+there is only one work and cell number.
+Hmmm.  Not a big problem but not right, either.
+<li>If you click 'Collapse' and then 'Run Report'
+all people with the same address will be collapsed into one line
+whether they are partners or not.  One of the names will be 
+chosen to represent the others and this name will be suffixed with 'et. al.'
+<li>Try the other report formats.
+Try 'Name, Address, Link'
+and see the link on the person's name - it takes
+you to viewing that person's full record.
+</ol>
 
-    Try searching by Sanskrit, Zip, Email, First, and Home Phone.
-        The numbers in home phone are not necessarily sequential.
-            This is okay if you give the full 10 digits
-            otherwise it is sort of weird - but useful nonetheless.
-            If the pattern is quoted:
-                '1432'
-                or
-                '460-'
-            then it *will* match sequential digits.
-
-    None found? You stay at the search screen.
-        With your search pattern preserved so you can easily correct it.
-
-    If more per page than shown - Try "Next" until there are no more.
-    There is also Prev.   Note that the position of the Next and Prev
-        do not change so your mouse can stay in one place.
-
-    If you wish to see more than the default 15 records per page
-        you can append a number to the pattern.  Like so:
-
-        smith 30
-
-    If there is only one person found that person will be
-        shown immediately.  No separate step with
-        a list containing just one person.
-
-    If searching by Last Name you can give
-        two strings separated by a space.  The first string
-        will be matched against the last name field and the
-        second will be matched against the first name field.
-        And vica versa if you're searching by First.
-        As clear as mud?  or As clear as an azure sky of deepest summer?
-        This can speed the finding by a lot!
-
-    If there is a star '*' in a pattern it will be a 'wildcard'
-        so you can find people whose names _contain_ the pattern
-        but not necessarily as a prefix.
-        E.g. searching for '*ete' will find people whose last name
-        is 'Peterson' and searching for '*ete *re' will find
-        'Demeter, Karen'.  The '*' can be in the middle as
-        well - 'r*z' will find a last name of 'Ratzenberger'.
-
-Add a Person
-    fill in all fields (country defaults to USA)
-    choose a few affiliations
-    note the two submit buttons (for convenience's sake)
-    in 'created' message - click on person's name to return
-        to their info.
-        verify the date of entry
-
-    give incorrect State (in the U.S.)
-    Leave sex unchosen - get error.
-        Note that the gender is guessed at for you
-        by consulting www.gpeters.com/names/baby-names.php.
-    Give a multiple lined comment and verify it looks correct after creation.
-
-Quick Access Keys    - for searching, editing, adding people
-
-    control-A    =    Add
-    control-D    =    Donation
-    control-E    =    Edit
-    control-L    =    Leader (make or info)
-    control-M    =    Member (make or info)
-    control-N    =    Next page of results (when viewing search results)
-    control-P    =    Prev page of results (when viewing search results)
-    control-P    =    make Payment
-    control-W    =    Partner With (partner with or view partner)
-    control-R    =    Register
-    control-S    =    Search
-    control-U    =    Undup
-
-    Note that these letters have a subtle grey background.
-
-    And ... after search results are shown the Tab key will take you
-    to the first name in the list.
-
-Affiliations
-    Click on Configuration/Affiliations at the top
-    Edit one
-    Create one
-    Go to edit a person again and verify that
-        the edit and the new one are there.
-        Add the new affiliation to several people.
-    Go back to affiliation, delete the new one.
-        Verify it is gone from the people.
-        And from the list when editing a person.
-
-    One affiliation has a special name.
-        If an affiliation has the name "Alert When Registering"
-        (actually just if it contains "alert") then
-        when this person registers for a program
-        their comment will popup for viewing at registration time.
-
-Find someone to Delete
-    see confirmation dialog
-    Verify they were deleted
-
-Find someone to Edit
-    make a change
-    put in an invalid State
-    submit and see 'updated' message.  click on the person's name
-        to see their info.
-        verify the date of updating
-
-Map - there is a link at the top named "Map"
-    it jumps to Google maps using the person's address.
-    cool?
-
-Create a duplicate record, see the warning about _possible_ dups.
-    duplicate could be exactly same name
-    or similar address with first and last initials the same:
-        Joe Smith   123 Orange St Tampa, FL 34510
-        Joseph Smith 123 Orange Stree Tampa, FL 34510
-    similar dup checks are done after an update of an existing recrod
-        (rather than a new creation).  verify this.
-    If a duplicate is found with the checks above, the two (or more)
-        people involved will have their records marked "Ambiguous".
-        This is turned on automatically.  Turning it off
-        needs to be done manually if and when an ambiguity is resolved.
-        How about someone in the reception office contacting
-        each person with an ambiguous name and asking for
-        a middle initial to prepend to the first name?
-        Good idea but unlikely to happen. :(
-
-Partners
-    Choose a person (that is not partnered).
-    Note the link that says "Partner With".
-    Click on it.
-    You're asked for a first and last name.
-    - Enter an existing one - must be exact spelling.
-        The two are partnered and their records
-        now say "Partnered with ..." - You can click on the
-        link to go to the partner.
-        And you also have "Separate".
-    - Or enter a person's name that is not in the mailing list.
-        You will be notified that it is new and will be asked to confirm
-        the partnering.  If yes, it proceeds.  If not, it is cancelled.
-        Note the message in either case.
-    Confirm that the new partner gets the mailing address and home
-        phone of the original person.
-    Separate two partners - note the confirmation dialog.
-        Verify they are no longer partnered.
-    Delete one of a partnership and note that the undeleted partner
-        is now no longer partnered.
-    Edit the address or home phone of a partnered person
-        and verify that these fields of their partner are updated as well.
-        and that each person's 'last updated' date is changed to today.
-
-Listings
-    phone lists
-        3 different ones.
-        - all include only people with "Phone List" affiliation checked
-
-        #1 note that it is sorted by Sanskrit column
-           and that in the absence of a Sanskrit name, first is used.
-           no cell phone
-        #2 all in one line - not columns
-           if only one phone - no letter following, otherwise
-           a h, w or c (for home work cell).
-        #3 just phone numbers
-
-        in all cases you can print the page - or save it to a file.
-            no links at the top for navigation.
-        to continue you must use the 'Back' button on browser
-            or a bookmark to return to the home page of reg2.
-        alternatively you can open the phone list
-            in a separate tab or separate window - this is
-            browser dependent.  All users should be trained
-            in how to do this.  This knowledge is useful for ANY use of
-            the browser; not just reg.
-
-    Purge Stale Addresses
-        Upload a text file containing email addresses.
-        They will be removed from people's records.
-            (Not from rental, leaders, or users).
-        You'll see a count of how many email addresses
-            were detected in the file you uploaded.
-
-    Unduplication List
-        A list of _possible_ duplicates.
-        Generate it once and save it and use it to do research.
-        It shows:
-
-        - Identical first/last names.
-            Click on the names to be taken to an unduplication screen
-            for the two people.  See "UNDUPLICATION" below.
-            If there are 3 or more people with the same name it is better
-            to do a search for them by last/first name.  You'll know there
-            are 3 or more if two names in a row in this undup
-            list are the same.
-
-        - Unpartnered people with addresses that are 'numerically' close.
-            e.g.
-                123 Orange St Tampa, FL 12341
-            and
-                123 Ornge Street Tampa, FL 12341
-            are numerically close.
-        - Unreported Gender (not dups but this is as good place to
-            show this information it as any).  The names in the list
-            are actually links - they'll take you to the person's
-            screen.   The gender is guessed at using the site
-            www.gpeters.com/names/baby-names.php.  If it looks
-            obvious which gender it should be you can click on the
-            'Male' or 'Female' link there and the gender will be changed.
-            (Easier than doing edit, click, submit...).
-
-    Email check
-        this checks all records for invalid email addresses
-        and allows you to go directly to the record to edit it.
-
-Reports
-    Create a report - giving a description and a zip code range.
-    Format - choose "Name, Address, Email"
-    Sort - Last Name or Zip
-        Run the report.   See the rows on the screen. 
-        The report can be printed directly or saved if needed.
-    Change format to "Email to VistaPrint" and re-run.
-    Change "Number of Records" to something less than the count.
-        ReRun.   This is a random sample of the prior listing's rows.
-    Edit the report and select some affiliations.
-        Now the listing is restricted to people who
-            have at least one of the affiliations in their record.
-        Add one of the affiliations to a person not in the
-            report and verify they get into the rerunning of the report.
-    In no case should a person with "Mailings" UNchecked be included
-        in any report.
-    Choose a format of "Just Email".
-        Only people with non-blank emails will be included.
-        Sorted by email.
-
-    Try an invalid zip code range.  Make some mistakes.
-    Try several zip code ranges in the one field - like this:
-
-        95060-95062, 89012-89450, 01234
-
-    Verify you can delete reports.
-    If you check "Count" and choose "Run" you'll get
-         a count of how many records will appear in the report
-         when it is run.
-    If you check "Share" the report will only include
-        people that have indicated they permit us to share
-        their demographic information with business associates.
-        The count of these people is obviously less than without
-        'Share' clicked.
-
-    In the formats other than "Just Email" note that if both
-        partners make it into the report (affiliations match)
-        then the partners will be coalesced/merged/joined
-        into a single record.  Note the different name
-        that is displayed - if the partners have the same
-        last name it is not repeated:
-            
-            Mary Smith & John Doe
-            Penny & Charlie Trager
-
-        A weakness I just noticed - Partners don't necessarily
-        have the same work or cell number - and in the Format listing
-        the 3 phone numbers there is only one work and cell number.
-        Hmmm.  Not a big problem but not right, either.
-
-    Try the other report formats.
-    Try Name, Address, Link 
-        and see the link on the person's name which takes
-        you to viewing that person's full record.
-
-Add a Project and then people can Make Donations to it.
-    The donations a person has made are listed on their page.
-
+<h3>Extra Accounts & Payments</h3>
+Add an 'Extra Account' in Configuration.
+Go to a person's screen and make a 'Payment' into that extra account.
+See the list of payments on the person's screen near the bottom.
+<p>
+<h3>Projects & Donations</h3>
+Ditto the above with projects and donations.
+One difference between donations and payments
+is that payments are included in the deposit but donations are not.
+<h3>Registrations</h3>
 All of the person's Registrations are listed on the person's page
-    with the Program name and the start date.   Click on program
-    name to go to that person's registration for that program.
-    This is shown only if one of your roles is "Program Staff".
-
+with the Program name and the start date.   Click on program
+name to go to that person's registration for that program.
+This is shown only if one of your roles is 'Program Staff'.
+<p>
 If a person has cancelled a registration and received
-    a credit this, too, is listed on their page.
-
-UNDUPLICATION
-=============
-After a search you may see several people who are
-    in actuality, the same person.  The process of UNduplicating
-    these people is tricky and there's a link "Undup" to help.
-    This link brings up a dialog with complete demographic information
-    for all the people in the search result page.  There is
-    also email address, home phone, last date of updating the person record,
-    how many registrations this person has (after the name in parens),
-    and whether they're a leader, partner or member.
-
-    You can *narrow down* which people you see by putting 'n'
-    (lower n for narrow) in the text field next to the people's
-    names you wish to see.  The order is not guaranteed to be
-    the same on the next screen.
-
-    When you have identified who should be merged into whom
-    put a 'P' (capital P for primary) on the person you want to keep
-    and an 'm' (lower m for merge) on the people you want to merge
-    into the primary.  Registrations, donations and credits from
-    the merged people will be added to the primary person.
-    Any affiliation, leader or member information for the
-    merged people will be completely deleted.   A partner of a merged
-    person will become unpartnered but preserved.
-
-    If you see the person and their potential partner on the same screen
-    you can partner them right here.  Put P and p next to their names.
-    The p person will be partnered with the P person taking their
-    address and home phone.  You can't do merging and partnering
-    at the same time.
-
-    Searches by last name will reveal some possible duplicates.
-    Also consider using email address.
-</pre>
+a credit this, too, is listed on their page.
+</body>

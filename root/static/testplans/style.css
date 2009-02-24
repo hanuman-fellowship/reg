@@ -1,0 +1,23 @@
+body {
+    width: 800px;
+    margin-left: .5in;
+    margin-top: .5in;
+}
+body, td {
+    font-size: 13pt;
+    font-family: Verdana;
+}
+li {
+    margin-bottom: .2in;
+}
+ol, ul {
+    margin-bottom: .2in;
+    margin-top: .2in;
+}
+dl {
+    margin-left: .3in;
+}
+h2 {
+}
+h3 {
+}
