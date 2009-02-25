@@ -1,3 +1,5 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <script type="text/javascript">
 var newwin;
 function popup(url) {
@@ -19,15 +21,16 @@ function popup(url) {
 </style>
 <h2>Program Housing</h2>
 <form action="/registration/lodge_do/[% reg.id %]" name=form>
-<table cellpadding=3>
-<tr>
-<th align=right>Program</th>
-<td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td>
-</tr>
 
+<table cellpadding=3>
 <tr>
 <th align=right>Person</th>
 <td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
+</tr>
+
+<tr>
+<th align=right>Program</th>
+<td><a class=larger href="/program/view/[% reg.program.id %]">[% reg.program.name %]</a></td>
 </tr>
 </table>
 [% IF message1 %]

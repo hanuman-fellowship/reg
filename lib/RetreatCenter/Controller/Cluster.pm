@@ -250,18 +250,20 @@ sub show : Local {
     #
     my @house_ids = map { $_->id } @{$houses_in_cluster{$cur_clust}};
     my %config;
-    for my $cf (model($c, 'Config')->search({
-                    house_id => { -in => \@house_ids },
-                    the_date => {
-                                    between => [
-                                        $dt->as_d8(),
-                                        ($dt + $ndays - 1)->as_d8(),
-                                    ]
-                                },
-                    cur      => { '>', 0 },
-                })
-    ) {
-        $config{$cf->house_id}{$cf->the_date} = $cf;
+    if (@house_ids) {
+        for my $cf (model($c, 'Config')->search({
+                        house_id => { -in => \@house_ids },
+                        the_date => {
+                                        between => [
+                                            $dt->as_d8(),
+                                            ($dt + $ndays - 1)->as_d8(),
+                                        ]
+                                    },
+                        cur      => { '>', 0 },
+                    })
+        ) {
+            $config{$cf->house_id}{$cf->the_date} = $cf;
+        }
     }
     $y1 += 16;      # font height???
     $x1 = $space;

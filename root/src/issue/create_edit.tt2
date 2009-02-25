@@ -39,7 +39,7 @@
 <td align=right>Entered By</td>
 <td>
 <script type="text/javaScript">
-document.write("<a href=\"mailto:[% issue.user.email %]?subject="
+document.write("<a href=\"mailto:[% issue.user.email %]?subject=Issue #[% issue.id %] - "
    + encodeURIComponent("[% issue.title_esc_q %]")
    + "\">[% issue.user.username %]</a>");
 </script>

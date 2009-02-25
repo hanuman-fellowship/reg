@@ -1,3 +1,5 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
 <script type="text/javascript">
 var newwin;
 function popup(url) {
@@ -75,7 +77,7 @@ function popup(url) {
 [% h_type_opts %]
 </select>
 </td>
-<th align=right>Housing Preferences</th>
+<th align=right valign=top>Housing Preferences</th>
 <td colspan=3>
 <b>First</b>
 <select name=pref1>
@@ -131,5 +133,4 @@ function popup(url) {
 
 </table>
 </form>
-<!-- focus where??? -->
-<script type="text/javascript">document.form.h_name.focus()</script>
+<!-- focus on editor is tricky and maybe not desired -->

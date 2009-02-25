@@ -17,7 +17,7 @@
 <table cellpadding=2>
 <select name=program_id>
 [% FOR p IN programs %]
-<option value=[% p.id %]> [% p.name %] [% p.sdate_obj %]</option>
+<option value=[% p.id %]> [% p.name %] - [% p.sdate_obj %]</option>
 [% END %]
 </select>
 </table>

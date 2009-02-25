@@ -29,4 +29,7 @@ __PACKAGE__->has_many(programs => 'RetreatCenterDB::Program', 'housecost_id',
 __PACKAGE__->has_many(rentals => 'RetreatCenterDB::Rental', 'housecost_id', 
                       { order_by => 'sdate desc' });
 
+sub unknown    { my ($self) = @_; return 0; }
+sub not_needed { my ($self) = @_; return 0; }
+
 1;

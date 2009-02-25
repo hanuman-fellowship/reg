@@ -31,6 +31,10 @@ h3 {
     font-size: 14pt;
     font-weight: bold;
 }
+p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
 </style>
 <h2 style="margin-bottom: 0px">Registration</h2>
 <form name=form action=/registration/seek/[% program.id %]/[% reg.id %]>
@@ -150,7 +154,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% END %]
 </td></tr></table>
 </td>
-<th align=right valign=center>Housing Preferences</th><td valign=center>[% reg.pref1_sh %]<br>[% reg.pref2_sh %]</td>
+<th align=right valign=top>Housing Preferences</th><td valign=center>[% reg.pref1_sh %]<br>[% reg.pref2_sh %]</td>
 </tr>
 
 <tr>
@@ -187,12 +191,12 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td colspan=3>[% reg.comment %]<a href="/registration/update_comment/[% reg.id %]"><br>Update</a></td>
+<td colspan=3>[% reg.comment %]<a href="/registration/update_comment/[% reg.id %]">Update</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td colspan=3>[% reg.confnote_ex %]<a href="/registration/update_confnote/[% reg.id %]"><br>Update</a></td>[% IF reg.confnotes.1 %]<td align=left valign=top><a href="/registration/conf_history/[% reg.id %]">Note History</a></td>[% END %]
+<td colspan=3>[% reg.confnote %]<a href="/registration/update_confnote/[% reg.id %]">Update</a></td>[% IF reg.confnotes.1 %]<td align=left valign=top><a href="/registration/conf_history/[% reg.id %]">Note History</a></td>[% END %]
 </tr>
 </table>
 

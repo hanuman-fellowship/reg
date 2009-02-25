@@ -606,7 +606,7 @@ sub _get_data {
     my ($c) = @_;
 
     %P = %{ $c->request->params() };
-    my $pr = model($c, 'Program')->find($P{program_id});
+    my $prog = model($c, 'Program')->find($P{program_id});
 
     # BIG TIME messing with dates.
     # I'm reminded of a saying:
@@ -619,24 +619,41 @@ sub _get_data {
     #
     %dates = ();
     @mess = ();
+
+    # first make sure that personal retreats have reasonable dates.
+    my $PR = ($prog->name =~ m{personal retreat}i);
+    if ($PR) {
+        if (empty($P{date_start})) {
+            push @mess, "Missing Start Date for the Personal Retreat.";
+        }
+        if (empty($P{date_end})) {
+            push @mess, "Missing End Date for the Personal Retreat.";
+        }
+        if ($P{date_start} =~ m{^\s[+-]}) {
+            push @mess, "Start Date for Personal Retreats cannot be relative.";
+        }
+        return if @mess;
+    }
     $extra_days = 0;
-    my $sdate = date($pr->sdate);       # personal retreats???
-    my $edate = date($pr->edate);       # defaults to today???
+    my $sdate = date($prog->sdate);       # personal retreats???
+    my $edate = date($prog->edate);       # defaults to today???
     $tot_prog_days = $prog_days = $edate - $sdate;
 
     my $date_start;
     if ($P{date_start}) {
         # what about personal retreats???   - can't say +2 or -1?
-        Date::Simple->relative_date(date($pr->sdate));
+        Date::Simple->relative_date(date($prog->sdate));
         $date_start = date($P{date_start});
         Date::Simple->relative_date();
         if ($date_start) {
             $dates{date_start} = $date_start->as_d8();
             if ($date_start < $sdate) {
+                # they came before the program - so extra days
                 $extra_days += $sdate - $date_start;
             }
             else {
                 # they came after the program started
+                # so fewer program days.
                 $prog_days -= $date_start - $sdate;     # jeeez
             }
         }
@@ -651,11 +668,9 @@ sub _get_data {
     if ($P{date_end}) {
         # when scheduling a personal retreat
         # the "To Date" is relative to the start date
-        # not the end of the program!   ??? in doc, please.
-        Date::Simple->relative_date(
-            ($pr->name =~ m{personal retreat}i)? $date_start
-            :                                    date($pr->edate)
-        );
+        # not the end of the program!
+        Date::Simple->relative_date($PR? $date_start
+                                    :    date($prog->edate));
         $date_end = date($P{date_end});
         Date::Simple->relative_date();
         if ($date_end) {
@@ -666,16 +681,19 @@ sub _get_data {
             $dates{date_end} = $date_end->as_d8();
             if ($date_end > $edate) {
                 my $ndays = $date_end - $edate;
-                if ($ndays > $pr->extradays) {
-                    $prog_days += $pr->extradays;
-                    $extra_days += $ndays - $pr->extradays;
+                my $extra = $prog->extradays();
+                if ($ndays > $extra) {
+                    $prog_days += $extra;
+                    $extra_days += $ndays - $extra;
                 }
                 else {
                     $prog_days += $ndays;
                 }
             }
             else {
-                $prog_days = $date_end - $sdate;
+                # they left before the program finished
+                # so fewer prog_days.
+                $prog_days -= $edate - $date_end;
             }
         }
         else {
@@ -1844,27 +1862,16 @@ sub update : Local {
     my $h_type_opts1 = "";
     my $h_type_opts2 = "";
     Global->init($c);     # get %string ready.
-    my $cur_htype = $reg->h_type;
+    my $cur_htype = $reg->h_type();
     my $mon       = $reg->date_start_obj->month();
     HTYPE:
-    for my $htname (qw/
-        single_bath
-        single
-        dble_bath
-        dble
-        triple
-        quad
-        economy
-        dormitory
-        center_tent
-        own_tent
-        own_van
-        commuting
-    /) {
+    for my $htname (housing_types(2)) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
         next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
-        next HTYPE if $pr->housecost->$htname == 0;     # wow!
+        next HTYPE if    $htname ne "unknown"
+                      && $htname ne "not_needed"
+                      && $pr->housecost->$htname() == 0;     # wow!
         next HTYPE if $htname eq 'center_tent' && wintertime($mon);
 
         my $selected = ($htname eq $cur_htype)? " selected": "";
@@ -1877,16 +1884,6 @@ sub update : Local {
         $h_type_opts1 .= "<option value=$htname$selected1>$htdesc\n";
         $h_type_opts2 .= "<option value=$htname$selected2>$htdesc\n";
     }
-    # hacky :(  how else please?
-    $h_type_opts .= "<option value=unknown"
-                 .  ($cur_htype eq "unknown"? " selected"
-                     :                        ""         )
-                 .  ">Unknown\n";
-    $h_type_opts .= "<option value=not_needed"
-                 .  ($cur_htype eq "not_needed"? " selected"
-                     :                           ""         )
-                 .  ">Not Needed\n";
-
     my $status = $reg->status;      # status at time of first registration
     if ($status) {
         my $mem = $reg->person->member;

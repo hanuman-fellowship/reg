@@ -11,7 +11,6 @@ use Global qw/
 /;
 use Util qw/
     trim
-    _br
     expand
 /;
 
@@ -92,8 +91,6 @@ sub h_type_disp {
     return "Unknown" if ! defined $type || ! exists $string{$type};
     $type = $string{$type};
 }
-
-sub confnote_ex { expand(shift->confnote()); }
 
 sub room_site {
     my ($self) = @_;

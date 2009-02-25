@@ -1001,3 +1001,8 @@ rn -> RN online
 overlib at bottom of screen - UP!
 
 what if you forgot your login? or password?
+
+doc: individual start and end dates are required for
+    personal retreats.  the start date cannot be a relative date (+ or -)
+    and the end date is relative to the individual start date
+    not the end date of the program as is usual.
