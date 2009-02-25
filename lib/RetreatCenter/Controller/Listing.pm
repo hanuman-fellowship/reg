@@ -223,7 +223,8 @@ EOS
         $first = $p->{first};
         $id    = $p->{id};
         if ($last eq $prev_last && $first eq $prev_first) {
-            print {$out} "<a target=other href='/person/undup/$id-$prev_id'>$last, $first</a>\n";    
+            print {$out} "<a target=other href='/person/undup/$id-$prev_id'>"
+                        ."$last, $first</a>\n";    
             ++$n_same_name;
         }
         $prev_last  = $last;
@@ -257,7 +258,7 @@ EOS
             ) {
                 print {$out} "    $p->{addr1} $p->{zip_post}\n";
             }
-            print {$out} "<a target=other href='/person/search_do?field=akey&pattern=$prev->{akey}'>$prev->{last}, $prev->{first}</a>\n";    
+            print {$out} "<a target=other href='/person/undup_akey/$prev->{akey}'>$prev->{last}, $prev->{first}</a>\n";    
             print {$out} "    $prev->{addr1} $prev->{zip_post}\n";
             print {$out} "\n";
             ++$n_addr_dup;
