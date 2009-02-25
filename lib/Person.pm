@@ -22,7 +22,7 @@ sub search {
     my ($class, $sql) = @_;
 
     my $sth = $dbh->prepare($sql) or die "cannot prepare $sql: $DBI::errstr";
-    $sth->execute() or die "cannot execute";
+    $sth->execute() or die "cannot execute $DBI::errstr\n";
     my $a_ref = $sth->fetchall_arrayref({});
     for my $p (@{$a_ref}) {
         $p = Person->new($p);
@@ -38,9 +38,9 @@ sub search_start {
     my ($class, $sql) = @_;
 
     my $search_sth = $dbh->prepare($sql)
-        or die "cannot prepare $sql: $DBI::errstr";
+        or die "cannot prepare $sql: $DBI::errstr\n";
     $search_sth->execute()
-        or die "cannot execute";
+        or die "cannot execute: $DBI::errstr";
     return $search_sth;
 }
 
