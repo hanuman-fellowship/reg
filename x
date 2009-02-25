@@ -1,4 +1,8 @@
 #!/bin/sh
+if [ -e "stop" ]
+then
+    stop
+fi
 if [ `whoami` = 'sahadev' ]
 then
     export DBI_DSN="dbi:mysql:reg2"
