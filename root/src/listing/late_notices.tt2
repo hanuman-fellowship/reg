@@ -17,6 +17,9 @@ body {
     font-style: italic;
 }
 </style>
+[% IF ! late_arr.0 %]
+No late notices today.
+[% END %]
 [% FOR reg IN late_arr %]
 Late Notice for:
 <p class=large>
