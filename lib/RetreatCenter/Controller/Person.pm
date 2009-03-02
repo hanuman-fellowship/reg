@@ -644,18 +644,31 @@ sub mkpartner : Local {
     $c->response->redirect($c->uri_for("/person/search"));
 }
 
-# show all future (and current) programs and allow one to be chosen
+# show all future (and current) programs
+# in alphabetical order and allow one to be chosen.
+# if one of your roles is mmi_admin include
+# mmi programs otherwise not.
 sub register1 : Local {
     my ($self, $c, $id) = @_;
 
     my $today = tt_today($c)->as_d8();
     my $person = model($c, 'Person')->find($id);
+    my @cond = ();
+    if (! $c->check_user_roles('mmi_admin')) {
+        #
+        # not an mmi_admin so
+        # show only MMC sponsored programs.
+        @cond = (
+            school => 0,
+        );
+    }
     my @programs = model($c, 'Program')->search(
         {
-            edate => { '>'       => $today               },
-            name  => { -not_like => '%personal%retreat%' },
+            edate  => { '>'       => $today               },
+            name   => { -not_like => '%personal%retreat%' },
+            @cond,
         },
-        { order_by => [ 'sdate', 'name' ] },
+        { order_by => [ 'name' ] },
     );
     my (@personal_retreats) = model($c, 'Program')->search(
         {
