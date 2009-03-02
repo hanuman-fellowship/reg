@@ -36,11 +36,27 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 
 <tr>
 <th align=right valign=top>Meeting Places</th>
+<td valign=top width=250>
+[% FOR b IN event.bookings %]
+    [% IF b.breakout == '' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
+[% END %]
+</td>
+<th align=right valign=top>Breakout Places</th>
 <td valign=top>
 [% FOR b IN event.bookings %]
-    [% b.meeting_place.name %]<br>
+    [% IF b.breakout == 'yes' %]
+        [% b.meeting_place.name %]<br>
+    [% END %]
 [% END %]
+</td>
+</tr>
+<tr>
+<td></td>
+<td>
 <a href="/event/meetingplace_update/[% event.id %]">Update</a></td>
+</td>
 </tr>
 
 </table>

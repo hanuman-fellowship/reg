@@ -944,20 +944,33 @@ sub meetingplace_update_do : Local {
     my ($self, $c, $id) = @_;
 
     my $e = model($c, 'Event')->find($id);
-    my @cur_mps = grep {  s{^mp(\d+)}{$1}  }
-                     keys %{$c->request->params};
+    my @cur_mps;
+    my %seen = ();
+    for my $k (sort keys %{$c->request->params}) {
+        #
+        # keys are like this:
+        #     mp45
+        # or
+        #     mpbr23
+        # all mp come before any mpbr
+        #
+        my ($d) = $k =~ m{(\d+)};
+        my $br = ($k =~ m{br})? 'yes': '';
+        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
+    }
     # delete all old bookings and create the new ones.
     model($c, 'Booking')->search(
         { event_id => $id },
     )->delete();
     for my $mp (@cur_mps) {
         model($c, 'Booking')->create({
-            meet_id    => $mp,
+            meet_id    => $mp->[0],
             program_id => 0,
             rental_id  => 0,
             event_id   => $id,
-            sdate      => $e->sdate,
-            edate      => $e->edate,
+            sdate      => $e->sdate(),
+            edate      => $e->edate(),
+            breakout   => $mp->[1],
         });
     }
     # show the event again - with the updated meeting places

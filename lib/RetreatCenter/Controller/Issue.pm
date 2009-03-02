@@ -72,6 +72,8 @@ sub update_do : Local {
     my %hash = %{ $c->request->params() };
 
     # be careful with the date closed param
+    # for some reason if we put an undefined value
+    # into sqlite it can't see it and it doesn't compare equal to ''.
     if ($hash{date_closed}) {
         my $dt = date($hash{date_closed});
         if ($dt) {
@@ -79,7 +81,11 @@ sub update_do : Local {
         }
         else {
             delete $hash{date_closed};
+            $hash{date_closed} = '';
         }
+    }
+    else {
+        $hash{date_closed} = '';
     }
 
     my $issue = model($c, 'Issue')->find($id);

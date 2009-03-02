@@ -1,5 +1,10 @@
+<style type="text/css">
+p {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+</style>
 <h2>Leaders</h2>
-
 <h3>[% leader.person.first %] [% leader.person.last %]</h3>
 <p>
 [% IF Catalyst.check_user_roles('prog_admin') %]
@@ -10,11 +15,11 @@
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/person/view/[% leader.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
-<ul>
+<p>
 <table cellpadding=5 border=0>
 
 <tr>
-<th align=right>Public Email</th>
+<th align=right width=130>Public Email</th>
 <td><a href="mailto:[% leader.public_email %]">[% leader.public_email %]</a></td>
 </tr>
 
@@ -25,7 +30,7 @@
 
 <tr>
 <th align=right valign=top>Biography</th>
-<td>[% leader.biography_ex %]</td>
+<td>[% leader.biography %]</td>
 </tr>
 
 <tr>
@@ -64,4 +69,3 @@
 </tr>
 
 </table>
-</ul>

@@ -17,14 +17,20 @@ $sth->execute();
 while (my ($id, $name) = $sth->fetchrow_array()) {
     $prog_id{$name} = $id;
 }
+$sth = $dbh->prepare("select id, name from event");
+my %event_id;
+$sth->execute();
+while (my ($id, $name) = $sth->fetchrow_array()) {
+    $event_id{$name} = $id;
+}
 
 $sth = $dbh->prepare("insert into booking values (?,?,?,?,?,?,?,?);");
 
 open my $meet, "<", "meet/meet.txt"
-    or die "cannot open meet.txt: $!\n";
+    or die "cannot open meet/meet.txt: $!\n";
 while (<$meet>) {
     chomp;
-    my ($name, $id, $meet_id, $rental_id, $program_id, @flds)
+    my ($name, $id, $meet_id, $rental_id, $program_id, $event_id, @flds)
         = split m{\|}, $_, -1;
     if ($rental_id) {
         $rental_id = $rent_id{$name};
@@ -32,6 +38,9 @@ while (<$meet>) {
     elsif ($program_id) {
         $program_id = $prog_id{$name};
     }
-    $sth->execute($id, $meet_id, $rental_id, $program_id, @flds);
+    elsif ($event_id) {
+        $event_id = $event_id{$name};
+    }
+    $sth->execute($id, $meet_id, $rental_id, $program_id, $event_id, @flds);
 }
 close $meet;

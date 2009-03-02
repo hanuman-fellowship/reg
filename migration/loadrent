@@ -140,7 +140,7 @@ sub processRental {
     $hash{id} = undef;      # next one that comes
     $hash{name} =~ s{\s*\*\s*$}{};      # used to be for CEUs
     #print "rental $season - $hash{name}\n";
-    $hash{housecost_id} = 1;        # Default
+    $hash{housecost_id} = 8;        # not the Default
     $hash{status} = "tentative";
     $hash{summary_id} = $next_summary_id;
     # saved data?

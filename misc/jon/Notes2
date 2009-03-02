@@ -1006,3 +1006,14 @@ doc: individual start and end dates are required for
     personal retreats.  the start date cannot be a relative date (+ or -)
     and the end date is relative to the individual start date
     not the end date of the program as is usual.
+
+on import of registrations surround comment, confnote with <p> and </p>.
+other descr?
+
+need a move to live for staging2.
+
+Add program - default is Web Ready and Linked.
+    When choosing the School if you choose non MMC
+        it toggles the Web Ready checkbox to off.
+        Then linked doesn't matter.
+Loading MMI programs - ensure web ready is off.

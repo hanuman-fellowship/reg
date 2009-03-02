@@ -3,10 +3,6 @@ use warnings;
 package RetreatCenterDB::Leader;
 use base qw/DBIx::Class/;
 
-use Util qw/
-    expand
-/;
-
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('leader');
 __PACKAGE__->add_columns(qw/
@@ -26,11 +22,6 @@ __PACKAGE__->has_many(leader_program => 'RetreatCenterDB::LeaderProgram',
 __PACKAGE__->many_to_many(programs => 'leader_program', 'program',
                           { order_by => 'sdate desc' });
 __PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
-
-sub biography_ex {
-    my ($self) = @_;
-    expand($self->biography());
-}
 
 sub name_public_email {
     my ($self) = @_;

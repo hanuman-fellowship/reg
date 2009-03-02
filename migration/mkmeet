@@ -11,31 +11,31 @@ insert into meeting_place values (
     1, 'CC', 'CC Main', 500, 1, '150,180,240'
 );
 insert into meeting_place values (
-    2, 'SH', 'Seminar House', 75, 2, '180,150,210'
+    2, 'SH', 'Seminar House', 75, 2, '255,130,200'
 );
 insert into meeting_place values (
-    3, 'OH', 'Orchard House', 30, 3, '190,240,190'
+    3, 'OH', 'Orchard House', 30, 3, '150,230,150'
 );
 insert into meeting_place values (
     4, 'CB', 'CB Main', 250, 4, '210,240,195'
 );
 insert into meeting_place values (
-    5, 'CCL', 'CC Lounge', 20, 5, '170,210,230'
+    5, 'CCL', 'CC Lounge', 20, 5, '210,230,250'
 );
 insert into meeting_place values (
-    6, 'AR', 'Assembly Room', 250, 6, '170,170,230'
+    6, 'AR', 'Assembly Room', 250, 6, '255,185,85'
 );
 insert into meeting_place values (
-    7, 'WW', 'CB West Wing', 30, 7, '170,170,230'
+    7, 'WW', 'CB West Wing', 30, 7, '230,230,225'
 );
 insert into meeting_place values (
     8, 'FE', 'CB Far East', 40, 8, '170,170,230'
 );
 insert into meeting_place values (
-    9, 'KKWC', 'Kaya Kalpa', 10, 9, '170,170,230'
+    9, 'KKWC', 'Kaya Kalpa', 10, 9, '250,170,255'
 );
 insert into meeting_place values (
-    10, 'CCCR', 'CC Conference Room', 15, 10, '170,170,230'
+    10, 'CCCR', 'CC Conference Room', 15, 10, '200,80,255'
 );
 insert into meeting_place values (
     11, 'NW', 'No Where', 10, 11, '255,0,0'

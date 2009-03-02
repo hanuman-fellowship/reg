@@ -29,7 +29,7 @@
 <tr>
 <th align=right valign=top>Assistant</th>
 <td><input type=checkbox value=yes name=assistant [% check_assistant %]>
-</td>
+<input style="margin-left: 2in" type=submit value="Submit"></td>
 </tr>
 
 <tr>
@@ -47,10 +47,6 @@
 <td><input type=text name=l_order value="[% leader.l_order %]" size=2 maxlength=2></td>
 </tr>
 
-<tr>
-<td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
-</tr>
 
 </table>
 </form>

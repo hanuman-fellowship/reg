@@ -14,7 +14,9 @@ $|++;       # unbuffer output
 
 my $unknown = 1;        # fixed id for unknown user
 
-my %full_prog;          # program ids of full programs loaded in loadprog
+# program ids of full programs loaded in loadprog
+#
+my %full_prog;
 open my $full, "<", "fullprog.txt"
     or die "cannot open fullprog.txt\n";
 while (<$full>) {
@@ -22,6 +24,17 @@ while (<$full>) {
     $full_prog{$_} = 1;
 }
 close $full;
+
+# program ids of TRANSPORTATION programs
+#
+my %transp;
+open my $transp, "<", "transportation.txt"
+    or die "cannot open transportation.txt\n";
+while (<$transp>) {
+    chomp;
+    $transp{$_} = 1;
+}
+close $transp;
 
 #
 # program ids for personal retreat and hoffman programs
@@ -149,6 +162,24 @@ values
  ?, ?, ?, ?, ?, ?,
  ?, ?, ?, ?)";
 my $ins_reg_sth = $dbh->prepare($ins_reg_sql) or die "no ins_reg_sql\n";
+
+# a fixed xaccount id and a fixed user id (sukhdev).
+my $ins_xa_sth = $dbh->prepare("
+    insert into xaccount_payment
+    (
+        xaccount_id,
+        person_id, what,
+        amount, type, the_date,
+        user_id
+    )
+    values 
+    (
+        1,
+        ?, ?,
+        ?, ?, ?,
+        13
+    )
+");
 
 my %type_map = qw/
     O Online
@@ -282,7 +313,7 @@ for my $seas (@seasons) {
 
 $p_sth = $per_sth = $ins_per_sth = $upd_per_sth = $ins_reg_sth = undef;
 $who_sth = $who_ins_sth = $pay_ins_sth = $chg_ins_sth = $hist_ins_sth = undef;
-$upd_upd_sth = undef;
+$upd_upd_sth = $ins_xa_sth = undef;
 $dbh->disconnect();
 
 sub processReg {
@@ -317,10 +348,13 @@ sub processReg {
         $share_last = $2;
     }
     $hash{comment} =~ s{^\s*}{};     # only requests remain
+    $hash{comment} = "<p>$hash{comment}</p>";
 
     $hash{confnote} = "";
     $hash{confnote} .= "$hash{'1note'}\n" if $hash{'1note'};
     $hash{confnote} .= "$hash{'2note'}\n" if $hash{'2note'};
+    $hash{confnote} = "<p>$hash{confnote}</p>";
+
     $hash{referral} = $refmap{$hash{referral}};
     $hash{kids} = "";
     if ($hash{nkids}) {
@@ -349,7 +383,15 @@ sub processReg {
         $hash{$f} =~ s{(...)(...)(....)}{$1-$2-$3}g;
     }
     my ($name, $sdate, $edate, $edate2, $extradays);
-    if ($hash{program_id}) {
+    if ($hash{program_id} && $transp{$hash{program_id}}) {
+        # do nothing except set date_start, date_end, others to avoid warnings
+        $hash{date_start} = "";
+        $hash{date_end} = "";
+        $sdate = "";
+        $edate = "";
+        $edate2 = "";
+    }
+    elsif ($hash{program_id}) {
         my $pid = $hash{program_id};
         if ($pid == 69 || $pid == 886) {
             # personal retreat or hoffman
@@ -439,7 +481,7 @@ sub processReg {
         # we still need to update the date_updat with the end
         # date of the program - as long as the previous date_updat
         # is earlier...
-        if (!$upd_date || $upd_date < $hash{date_end}) {
+        if (!$upd_date || $upd_date le $hash{date_end}) {
             $upd_upd_sth->execute($hash{date_end}, $person_id);
         }
     }
@@ -465,6 +507,12 @@ sub processReg {
             $name,
             nsquish($hash{addr1}, $hash{addr2}, $hash{zip_post}),
         );
+    }
+    if ($transp{$hash{program_id}}) {
+        # create an extra account record instead of a reg record.
+        $ins_xa_sth->execute($person_id, $hash{comment},
+                             $hash{pmt1}, $hash{p1cash}, $hash{pmt1date});
+        return;
     }
     $ins_reg_sth->execute($reg_id,
                           $hash{program_id},

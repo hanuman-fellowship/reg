@@ -13,8 +13,7 @@ INSERT INTO cluster VALUES(5,'Oaks Own Tent','205,255,205','outdoors');
 INSERT INTO cluster VALUES(6,'Oaks Center Tent','155,255,110','outdoors');
 INSERT INTO cluster VALUES(7,'Madrone Own Tent','255,215,150','outdoors');
 INSERT INTO cluster VALUES(8,'Madrone Center Tent','225,145,90','outdoors');
-INSERT INTO cluster VALUES(9,'Knoll Own Tent','205,205,205','outdoors');
-INSERT INTO cluster VALUES(10,'Knoll Center Tent','165,165,165','outdoors');
+-- deleted Knoll Own, Knoll Center
 INSERT INTO cluster VALUES(11,'Oak Cabins','220,240,50','indoors');
 INSERT INTO cluster VALUES(12,'CB Terrace','255,185,185','outdoors');
 INSERT INTO cluster VALUES(13,'Miscellaneous','155,255,110','special');
@@ -148,11 +147,7 @@ INSERT INTO house VALUES(108,'MAD 8',1,'','yes','yes','',3,310,135,8,8,'','Lt');
 INSERT INTO house VALUES(109,'MAD 10',1,'','yes','yes','',3,310,160,8,10,'','Lt');
 INSERT INTO house VALUES(110,'MAD A',1,'','yes','yes','',3,350,160,8,11,'yes','Lt');
 INSERT INTO house VALUES(111,'MAD B',1,'','yes','yes','',3,390,160,8,12,'yes','Lt');
-INSERT INTO house VALUES(112,'KNOLL 10',1,'','yes','','',3,380,60,9,12,'','Lt');
-INSERT INTO house VALUES(113,'KNOLL 11',1,'','yes','','',3,380,85,9,12,'','Lt');
-INSERT INTO house VALUES(114,'KNOLL H2O',1,'','yes','','',3,380,110,9,12,'yes','Lt');
-INSERT INTO house VALUES(115,'KNOLL 9',1,'','yes','yes','',3,440,60,10,12,'','Lt');
-INSERT INTO house VALUES(116,'KNOLL 12',1,'','yes','yes','',3,440,85,10,12,'','Lt');
+-- deleted Knoll
 INSERT INTO house VALUES(117,'OC 1',2,'','','','yes',3,440,270,11,1,'','Lt');
 INSERT INTO house VALUES(118,'OC 2',2,'','','','yes',3,440,295,11,2,'','Lt');
 INSERT INTO house VALUES(119,'OC 3',2,'','','','yes',3,440,320,11,3,'','Lt');
@@ -264,7 +259,6 @@ INSERT INTO annotation VALUES(23,'outdoors','Center',290,37,NULL,NULL,NULL,NULL,
 INSERT INTO annotation VALUES(24,'outdoors','Madrone',257,17,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
 INSERT INTO annotation VALUES(25,'outdoors','Own',370,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
 INSERT INTO annotation VALUES(26,'outdoors','Center',415,37,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
-INSERT INTO annotation VALUES(27,'outdoors','Knoll',395,17,NULL,NULL,NULL,NULL,'none',NULL,NULL,'');
 INSERT INTO annotation VALUES(28,'outdoors','CB Terrace',300,188,NULL,NULL,NULL,NULL,'none',NULL,NULL,'yes');
 INSERT INTO annotation VALUES(29,'indoors','M',80,298,NULL,NULL,NULL,NULL,'none',NULL,'0,0,255','');
 INSERT INTO annotation VALUES(30,'indoors','F',80,348,NULL,NULL,NULL,NULL,'none',NULL,'255,0,0','');

@@ -1,0 +1,49 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my @flds = ();
+
+# no events come over from old reg
+# so we can just dump and restore the event table.
+#
+# the event bookings may get different ids.
+#
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+mkdir "event" unless -d "event";
+
+my $sth = $dbh->prepare("select * from event");
+
+$sth->execute();
+open my $event, ">", "event/event.txt" or die "no event/event.txt\n";
+while (@flds = $sth->fetchrow_array()) {
+    for my $f (@flds) {
+        $f = "" unless defined $f;
+    }
+    print {$event} join('|', @flds), "\n";
+}
+close $event;
+
+# get all event bookings
+my $book_sth = $dbh->prepare("
+
+select *
+from booking
+where event_id != 0
+
+");
+
+$book_sth->execute();
+open my $meet, ">", "event/meet.txt" or die "no event/meet.txt\n";
+while (@flds = $book_sth->fetchrow_array()) {
+    shift @flds;        # toss id
+    for my $f (@flds) {
+        $f = "" unless defined $f;
+    }
+    print {$meet} join('|', @flds), "\n";
+}
+close $meet;

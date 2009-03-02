@@ -17,6 +17,9 @@ while (<$iss>) {
         chomp;
     }
     my @flds = split /\|/, $_, -1;
+    for my $f (@flds) {
+        $f = "" unless defined $f;
+    }
     $sth->execute(@flds);
 }
 close $iss;

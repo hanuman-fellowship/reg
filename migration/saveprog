@@ -11,11 +11,14 @@ my @flds = ();
 my $book_sth = $dbh->prepare("select * from booking where program_id = ?");
 
 
-my $sql = "select id, name from program";
+my $sql = "select id, name, max from program";
 my $sth = $dbh->prepare($sql) or die "oops\n";
 $sth->execute();
+open my $prog, ">", "prog.txt" or die "no prog.txt: $!\n";
 open my $meet, ">>", "meet/meet.txt" or die "no meet.txt\n";
-while (my ($id, $name) = $sth->fetchrow_array()) {
+while (my ($id, $name, $max) = $sth->fetchrow_array()) {
+    $max = "" if ! $max;
+    print{$prog} "$name|$max\n";
     $book_sth->execute($id);
     while (@flds = $book_sth->fetchrow_array()) {
         for my $f (@flds) {

@@ -144,7 +144,16 @@ sub _get_data {
     %P = %{ $c->request->params() };
     #
     if ($P{school} == 0) {
+        # MMC
         $P{level} = ' ';
+    }
+    else {
+        # MMI
+        # force this. for now...
+        # MMI may have web pages someday?
+        $P{webready} = "";
+        $P{linked} = "";
+        $P{unlinked_dir} = "";
     }
     # since unchecked boxes are not sent...
     for my $f (qw/
@@ -162,7 +171,7 @@ sub _get_data {
     $P{url} =~ s{^\s*http://}{};
 
     @mess = ();
-    if (! $P{linked}) {
+    if ($P{webready} && ! $P{linked}) {
         if ($P{ptemplate} eq 'default') {
             push @mess, "Unlinked programs cannot use the standard template.";
         }

@@ -1,3 +1,5 @@
+transform the web descr, leader bio, etc
+    into tinyMCE syntax.
 undup - ongoing
 remove unused affils
 inactivate (after what point?)
@@ -21,9 +23,11 @@ delete bogus rentals/programs - used for accounting purposes?
     SECLUSION, MEMBERSHIP, MOTHERING MAG
     dup'ed INFINITE SMILE rental
 add anew reports for mailings
-publish, verify
+publish to web, verify, move to live.
 re-enter sums
-    copy, paste & wiki-ize
+    copy, paste & verify
 enter free nights & free program status for members
 MMI payments need to be sorted out - following Brajesh's notes
     on the printout?
+enter # of free nights left for Sponsor members
+    and free programs for Life members.

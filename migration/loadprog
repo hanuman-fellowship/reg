@@ -8,6 +8,17 @@ use Date::Simple qw/date/;
 
 open my $full, ">", "fullprog.txt"
     or die "cannot create full_prog.txt: $!\n";
+open my $transp, ">", "transportation.txt"
+    or die "cannot create transportation.txt: $!\n";
+
+my %max;
+open my $mxin, "<", "prog.txt" or die "cannot open prog.txt: $!\n";
+while (<$mxin>) {
+    chomp;
+    my ($name, $max) = split m{\|};
+    $max{$name} = $max;
+}
+close $mxin;
 
 my @seasons;
 my $p = shift @ARGV;
@@ -259,6 +270,7 @@ my @fields = qw/
     level
     summary_id
     notify_on_reg
+    max
 /;
 my $p_sql = "insert into program ("
     . (join ",", @fields)
@@ -290,9 +302,9 @@ my %lookup = reverse qw/
     ptemplate     template
 /;
 my %init = (
-    reg_start  => '4',
-    reg_end    => '7',
-    prog_start => '7',
+    reg_start  => '4:00',
+    reg_end    => '7:00',
+    prog_start => '7:00',
     prog_end   => '12:30',
 );
 # get affil ids
@@ -343,6 +355,12 @@ sub processProg {
             }
             $hash{name} .= " \U$season";
         }
+    }
+    if ($hash{name} =~ m{transport}i) {
+        # just save this program id in $transp
+        # do not create a program
+        print {$transp} "$hash{pid}\n";
+        return;
     }
     if ($hash{name} =~ m{ FULL$}) {
         print {$full} "$hash{pid}\n";
@@ -436,6 +454,17 @@ sub processProg {
     if ($hash{school} == 0) {
         $hash{level} = ' ';         # level does not apply to MMC programs
     }
+    else {
+        $hash{webready} = '';       # web ready, linked, and unlinked_dir
+        $hash{linked} = '';         # do not apply to non-MMC programs.
+        $hash{unlinked_dir} = '';   # just in case they were accidentally set.
+    }
+
+    # is there already a max for this program?
+    $hash{max} = 0;
+    if ($max{$hash{name}}) {
+        $hash{max} = $max{$hash{name}};
+    }
 
     $p_sth->execute(@hash{@fields}) or die "no exec";      # yay!
     if ($hash{pres1} != 0) {
@@ -496,4 +525,5 @@ for my $seas (@seasons) {
 $cp_sth = $hc_sth = $per_sth = $aper_sth = $le_sth = $p_sth = $lp_sth = $af_pr_sth = $summary_sth = undef;
 $dbh->disconnect();
 close $full;
+close $transp;
 close $pr_hoff;

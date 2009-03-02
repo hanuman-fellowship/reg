@@ -161,7 +161,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     <p>
     <span class=larger>Payments</span>
     <ul>
-    <table cellpadding=3>
+    <table cellpadding=3 width=800>
     <tr>
     <th align=right>Amount</th>
     <th align=left>What</th>
@@ -170,11 +170,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR p IN pays %]
         <tr>
-        <td align=right>[% p.amount %]</td>
-        <td align=right>[% p.what %]</td>
-        <td align=right><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
-        <td align=right>[% p.type_sh %]</td>
-        <td><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+        <td align=right valign=top>[% p.amount %]</td>
+        <td>[% p.what %]</td>
+        <td align=right valign=top><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
+        <td align=right valign=top>[% p.type_sh %]</td>
+        <td valign=top><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
         </tr>
     [% END %]
     </table>

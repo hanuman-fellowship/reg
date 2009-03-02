@@ -8,7 +8,6 @@ then
     perl -p -i -e 's/autoincrement/auto_increment/' mk*
     MYSQL=1
 else
-    rm ../retreatcenter.db
     db='sqlite3 ../retreatcenter.db'
     export DBI_DSN="dbi:SQLite:../retreatcenter.db"
     MYSQL=
@@ -74,6 +73,8 @@ echo issues
 loadiss
 echo users
 loadusers
+echo events
+loadevent
 
 # restore the member and donation data after confirmation
 echo donations

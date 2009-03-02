@@ -26,7 +26,8 @@ use Date::Simple qw/
     today
 /;
 # special case
-$sth->execute('last_deposit_date', today()->as_d8());
+my $ddt = today()-1;
+$sth->execute('last_deposit_date', $ddt->as_d8());
 
 # smtp settings differ from macbook to kali
 # use the mysql command line parameter to differentiate
