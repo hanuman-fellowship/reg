@@ -466,6 +466,9 @@ sub list : Local {
                 level => { 'not in'  => [qw/  D C M  /] },
         );
     }
+    if (! $c->check_user_roles('mmi_admin')) {
+        push @cond, (school => 0);      # only MMC no MMI
+    }
     stash($c,
         programs => [
             model($c, 'Program')->search(
@@ -519,7 +522,7 @@ sub listpat : Local {
             sdate => { 'between' => [ $d1, $d2 ] },
         };
     }
-    elsif ($pr_pat =~ m{((\d\d)?\d\d)}) {
+    elsif ($pr_pat =~ m{^((\d\d)?\d\d)$}) {
         my $year = $1;
         if ($year > 70 && $year <= 99) {
             $year += 1900;
