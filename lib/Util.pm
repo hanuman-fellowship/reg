@@ -622,6 +622,9 @@ sub email_letter {
             port => $string{smtp_port},
             @auth,
         });
+        if (! $mail_sender) {
+            # ???
+        }
     }
     $mail_sender->Open({
         to       => $args{to},
@@ -631,6 +634,7 @@ sub email_letter {
         encoding => "7bit",
     })
         or die "no Mail::Sender->Open $Mail::Sender::error";
+        # ??? better failure behavior?
     $mail_sender->SendLineEnc($args{html});
     $mail_sender->Close()
         or die "no Mail::Sender->Close $Mail::Sender::Error";

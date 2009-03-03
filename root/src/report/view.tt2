@@ -2,6 +2,9 @@
 <form action="/report/run/[% report.id %]">
 <table cellpadding=0>
 <tr>
+<td valign=top><a href="[% Catalyst.uri_for('/report/create/') %]">Add</a>
+&nbsp;&nbsp;&nbsp;
+</td>
 <td valign=top><a href="[% Catalyst.uri_for('/report/update/') _ report.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 </td>

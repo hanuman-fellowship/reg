@@ -40,7 +40,7 @@ create table program (
     school      integer,
     level       text,
 
-    max         integer,
+    max         text,
     notify_on_reg text,
     summary_id  integer
 );
