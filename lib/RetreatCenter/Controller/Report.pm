@@ -203,7 +203,7 @@ sub run : Local {
     my $format = $report->format();
 
     my $order = $report->rep_order();
-    my $fields = "first||' '||last as name, p.*";
+    my $fields = "p.*";
 
     # restrictions apply?
     # have people said they want to be included?
@@ -271,6 +271,9 @@ EOS
         $c->log->info($sql);
     }
     my @people = @{ Person->search($sql) };
+    for my $p (@people) {
+        $p->{name} = $p->{first} . " " . $p->{last};
+    }
     #
     # now to take care of two people in the report
     # who are partners.   this is tricky!  wake up.
@@ -371,7 +374,7 @@ EOS
     my $nrecs = $report->nrecs();
     if ($nrecs && $nrecs > 0 && $nrecs < @people) {
         my @nums = 0 .. $#people;
-        my @subset;
+        my @subset = ();
         for (1 .. $nrecs) {
             push @subset, splice(@nums, rand(@nums), 1);
         }
