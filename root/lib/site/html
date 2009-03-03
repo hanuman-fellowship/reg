@@ -6,7 +6,7 @@
 [% PROCESS ttsite.css %]
   </style>
  </head>
- <body>
+ <body onload="window.focus()">
  <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 [% content %]
  </body>

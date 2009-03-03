@@ -434,12 +434,20 @@ sub calendar : Local {
                 $ev_edate = $ev->edate_obj + $ev->extradays;
             }
         }
-        my $event_name = $ev->name;
-        my $ev_count = $ev->count;
+        my $event_name = $ev->name();
+        my $ev_count = $ev->count();
         my $count = $ev_count;
-        if (length $count) {
-            if ($ev_type eq 'rental') {
-                $count = $ev->max . "/$count";
+        my $max = $ev->max();
+        #
+        # try to accomodate all three types of happenings.
+        # some with mandatory maximums some without.
+        #
+        if (length $max) {
+            if (length $count) {
+                $count = $max . "/$count";
+            }
+            else {
+                $count = $max;
             }
         }
         my $ev_id = $ev->id;

@@ -461,8 +461,8 @@ sub processProg {
     }
 
     # is there already a max for this program?
-    $hash{max} = 0;
-    if ($max{$hash{name}}) {
+    $hash{max} = "";
+    if (length $max{$hash{name}}) {
         $hash{max} = $max{$hash{name}};
     }
 
