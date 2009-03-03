@@ -742,7 +742,7 @@ sub bulk_do : Local {
     ) {
         ++$n;
         my $p = $m->person;
-        if ($p->akey eq '44595076S') {
+        if ($p->akey eq '44595076SUM') {
             next if $mmc eq 'exclude';
         }
         else {
