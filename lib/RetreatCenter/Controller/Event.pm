@@ -375,6 +375,10 @@ sub calendar : Local {
     my $end_year  = $max_edate->year;
     my $end_month = $max_edate->month;
     my $max_ym = sprintf("%4d%02d", $end_year, $end_month);
+    if ($ym_param) {
+        # don't try to go to an 'extra' month
+        $max_ym = $ym_param;
+    }
 
     # get all relevant bookings
     my @bookings = model($c, 'Booking')->search({
