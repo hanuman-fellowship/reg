@@ -24,6 +24,12 @@ while (<$affils>) {
     next if $code =~ m{[d89Xqx]};;       # they have their own column now
     next if $value =~ m{member}i;        # superceded
     $af_sth->execute($n, $value);
+    if ($value =~ m{guru}i) {
+        open my $out, ">", "gurupurnima.txt"
+            or die "cannot open gurupurnima.txt: $!\n";
+        print {$out} "$n\n";
+        close $out;
+    }
     $affil_id{$code} = $n;
 }
 close $affils;

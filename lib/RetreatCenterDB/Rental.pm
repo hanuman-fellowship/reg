@@ -76,6 +76,8 @@ __PACKAGE__->add_columns(qw/
     status
     deposit
     summary_id
+
+    mmc_does_reg
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);

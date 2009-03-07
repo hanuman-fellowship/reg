@@ -112,7 +112,7 @@ Feb 13 11:40-12:30, 1:15-2:00, 3:20-5:00, 7:05-7:50
     helping with tunnelblick certificates
     password_security
     Membership acknowledgements.
-Feb 14 10:20-10:50, 11:05-
+Feb 14 10:20-10:50, 11:05-12:00
     vpn research, summarizing for sadanand
     edit name, email
 Feb 15 11:00-3:00
@@ -130,7 +130,7 @@ Feb 18 10:00-3:30
     gathering reqts.  Sukhdev transport.
     smtp string settings
     fixing openvpn w/ Shantam
-Feb 20 1:45-
+Feb 20 1:45-3:00
     membership tweaks, outgoing mail on kali using localhost.
 Feb 21 10:30-1:30
     mailto for issues - a quote escaping mess!
@@ -157,7 +157,43 @@ Mar 1 1:15-11:00
         it took some doing.
     fixing several reported issues.
     no mmi in default program list (unless mmi_admin)
-Mar 2 2:00-5:00, 1:00-
+Mar 2 2:00-5:00, 1:00-2:00
     met with Brajesh, gathered reqts, found bugs
     fixing problems Shyama and I found.
     poking a Rental booking that Brajesh messed up.
+Mar 3 7:30-9:00, 10:00-10:30
+    recording my great dream ideas for going "half-live" and
+    for online ride requests
+    responding to Brajesh.
+Mar 4 10:30-11:30, 2:00-4:00, 4:10-6:10
+    dealing with various issues, communications
+    user - office, cell, txt_msg_email
+    rides
+
+    MMC does Reg
+    month end, de-activate past a certain point
+Mar 5 1:00-5:30
+    up at center consulting with Sukh, Jayanti, Shyama, Felicia, Brajesh
+    Laura, Shantam
+Mar 6 2:10-5:20, 7:00-8:45, 10:50-12:45
+    adjusting mlist entries
+    states for canada, us, india in help
+    upper case zip, state
+    all members get Guru Purnima affil.
+        do this at loadmem time.
+    add new format to Report - First Sanskrit Last, Address to CMS
+        but no sanskrit if same as first.
+    DBH connect when needed not at BEGIN time.
+
+    fixing calendar when requested from indiv event.
+        eliminate the extra month - must be a way.
+        even generating it if you have to but not showing it!
+    two errors in calendar - one in middle, one at end (no PRs)
+    cabin/room at all times
+    messed with proposal editing
+
+    MMC does Reg - meeting place on rental not on program (for contract)
+        on calendar do not show programs that have no meeting place
+        but do have a rental with same name, same dates,
+        and with mmc_does_reg flag set.  just skip these events.
+    reload from oldreg, send email re: clobbered data.

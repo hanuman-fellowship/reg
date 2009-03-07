@@ -203,14 +203,14 @@ sub create_do : Local {
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
-sub pass : Local {
+sub profile : Local {
     my ($self, $c) = @_;
 
     $c->stash->{user} = $c->user;
-    $c->stash->{template} = "user/pass.tt2";
+    $c->stash->{template} = "user/profile.tt2";
 }
 
-sub pass_do : Local {
+sub profile_do : Local {
     my ($self, $c) = @_;
 
     my $cur_pass  = $c->request->params->{cur_pass};
@@ -241,6 +241,9 @@ sub pass_do : Local {
         first    => $c->request->params->{first},
         last     => $c->request->params->{last},
         email    => $c->request->params->{email},
+        office   => $c->request->params->{office},
+        cell     => $c->request->params->{cell},
+        txt_msg_email => $c->request->params->{txt_msg_email},
     });
     $c->stash->{template} = "configuration/index.tt2";
 }

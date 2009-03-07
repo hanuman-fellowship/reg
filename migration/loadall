@@ -1,5 +1,5 @@
 #!/bin/sh
-howmuch='s07'       # f89 or cur
+howmuch='cur'       # f89 or cur
 
 if [ `whoami` = 'sahadev' ]
 then
@@ -28,6 +28,7 @@ echo event ; $db <mkevent
 echo acct  ; $db <mkacct
 echo meet  ; $db <mkmeet
 echo house ; $db <mkhouse
+echo ride  ; $db <mkride
 
 echo strings
 loadstr $MYSQL

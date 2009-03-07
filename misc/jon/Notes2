@@ -1017,3 +1017,10 @@ Add program - default is Web Ready and Linked.
         it toggles the Web Ready checkbox to off.
         Then linked doesn't matter.
 Loading MMI programs - ensure web ready is off.
+
+Display Issue # when view/editing an issue.
+If type a number in the issue search box - bring up that issue.
+
+Guru Purnima affil auto for Members
+
+capitalize zip_post

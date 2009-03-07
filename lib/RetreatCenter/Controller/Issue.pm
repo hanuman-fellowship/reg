@@ -99,7 +99,7 @@ sub update_do : Local {
                      . "<" . $submitter->email() . ">",
             from    => $user->first() . " " . $user->last()
                      . "<" . $user->email() . ">",
-            subject => "Issue # - " . $issue->id() . " " . $issue->title(),
+            subject => "Issue #" . $issue->id() . " - " . $issue->title(),
             html    => $issue->notes()
                      . "<p><hr><p>This issue has been closed."
                      . "<p>See it <a href='" 
@@ -138,7 +138,7 @@ sub create_do : Local {
         to      => join(', ', map { $_->email() } $roles[0]->users()),
         from    => $user->first() . " " . $user->last()
                  . '<' . $user->email() . '>',
-        subject => "Issue # - " . $issue->id() . " " . $issue->title(),
+        subject => "Issue #" . $issue->id() . " - " . $issue->title(),
         html    => $issue->notes()
                  . "<p><hr><p>See it <a href='" 
                  . $c->uri_for('/issue/update/' . $issue->id())

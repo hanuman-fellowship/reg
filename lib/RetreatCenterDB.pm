@@ -67,6 +67,7 @@ __PACKAGE__->load_classes({
         MMIPayment
 
         Issue
+        Ride
     /]
 });
 

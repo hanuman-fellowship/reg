@@ -299,6 +299,9 @@ sub _get_data {
     for my $k (keys %hash) {
         delete $hash{$k} if $k =~ m{^aff\d+$};
     }
+    $hash{st_prov} = uc $hash{st_prov};
+    $hash{zip_post} = uc $hash{zip_post};
+
     # since unchecked checkboxes are not sent...
     for my $f (qw/
         e_mailings

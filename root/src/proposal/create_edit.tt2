@@ -123,6 +123,7 @@ th {
 <tr>
 <th><span class=required>*</span> Type of Rental</th>
 <td><input tabindex=3 type=text name=rental_type value="[% proposal.rental_type %]"></td>
+<td><a style="margin-left: 1in" href="#" onclick="show_no_show_cs()"; return false;">Contract Signer?</a></td>
 </tr>
 
 [% IF ! (proposal.person_id) %]
@@ -166,7 +167,6 @@ th {
 <tr>
 <th><span class=required>*</span> City</th>
 <td colspan=2><input tabindex=8 type=text id=city name=city value="[% proposal.city %]"></td>
-<td colspan=2><a href="#" onclick="show_no_show_cs()"; return false;">Contract Signer?</a><td>
 </tr>
 
 <tr>
@@ -197,7 +197,7 @@ th {
 <table cellpadding=2>
 [% IF ! proposal.cs_person_id %]
 <tr><td colspan=4><hr width=800></td></tr>
-<tr><th align=left style="color: green; font-size: 15pt">Contract Signer</th></tr>
+<tr><th style="text-align: left; color: green; font-size: 15pt" colspan=4>Contract Signer (needed only if not the contact person)</th></tr>
 
 <tr>
 <th style="min-width: 200px">First</th>
@@ -356,5 +356,11 @@ th {
 </table>
 <script type="text/javascript">
 document.form.date_of_call.focus();
-document.getElementById('cs').style.display = 'none';
+var el = document.getElementById('cs');
+if (document.getElementById('cs_first').value != '') {
+    el.style.display  = 'block';
+}
+else {
+    el.style.display  = 'none';
+}
 </script>

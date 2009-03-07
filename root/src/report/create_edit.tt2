@@ -22,6 +22,7 @@
 <option value="4" [% format_selected_4 %]> Email to VistaPrint
 <option value="5" [% format_selected_5 %]> Just Email
 <option value="6" [% format_selected_6 %]> Name, Address, Link
+<option value="7" [% format_selected_7 %]> First Sanskrit Email to CMS
 </select>
 </td>
 </tr>

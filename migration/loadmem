@@ -37,6 +37,23 @@ if ($ans !~ m{^y}i) {
     exit;
 }
 
+open my $gp, "<", "gurupurnima.txt"
+    or die "no gurupurnima.txt: $!\n";
+my $gp_id = <$gp>;
+chomp $gp_id;
+close $gp;
+
+my $search_gp = $dbh->prepare("
+    select *
+    from affil_people
+    where a_id = ?
+      and p_id = ?
+") or die "no search";
+my $ins_gp = $dbh->prepare("
+    insert into affil_people
+    values (?, ?)
+") or die ("no ins_gp");
+
 for my $tbl (qw/ member spons_hist night_hist /) {
     $dbh->do("delete from $tbl");
     my $q = "?,?,?,?,?,?,?,?";
@@ -47,8 +64,16 @@ for my $tbl (qw/ member spons_hist night_hist /) {
     while (<$mem>) {
         chomp;
         my @flds = split /\|/, $_, -1;
+        my $person_id = $flds[1];
         $sth->execute(@flds);
+        # make sure the person has guru purnima affil.
+        $search_gp->execute($gp_id, $person_id);
+        if (my ($x, $y) = $search_gp->fetchrow_array()) {
+            # okay
+        }
+        else {
+            $ins_gp->execute($gp_id, $person_id);
+        }
     }
     close $mem;
 }
-$dbh->disconnect();

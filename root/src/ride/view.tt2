@@ -1,0 +1,50 @@
+<h2>Ride</h2>
+<a href="/ride/delete/[% ride.id %]"
+ onclick="return confirm('Okay to Delete [% ride.name %]?');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
+<ul>
+<table cellpadding=5 border=0>
+
+<tr>
+<th align=right>Rider</th>
+<td><a href=/person/view/[% ride.rider.id %]>[% ride.rider.first %] [% ride.rider.last %]</a></td>
+</tr>
+
+<tr>
+<th align=right>Driver</th>
+<td><a href=/user/view/[% ride.driver.id %]>[% ride.driver.first %] [% ride.driver.last %]</a></td>
+</tr>
+
+<tr>
+<th align=right>Date</th>
+<td>[% ride.pickup_date_obj %]</td>
+</tr>
+
+<tr>
+<th align=right>Time</th>
+<td>[% ride.pickup_time %]</td>
+</tr>
+
+<tr>
+<th align=right>From</th>
+<td>[% ride.pickup_location %]</td>
+</tr>
+
+<tr>
+<th align=right>To</th>
+<td>[% ride.dropoff_location %]</td>
+</tr>
+
+<tr>
+<th align=right>Cost</th>
+<td>[% ride.cost %]</td>
+</tr>
+
+<tr>
+<th align=right>Type</th>
+<td>[% ride.type_sh %]</td>
+</tr>
+
+</table>
+</ul>

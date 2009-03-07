@@ -1,0 +1,12 @@
+drop table if exists ride;
+create table ride (
+    id  integer primary key autoincrement,
+    rider_id integer,           -- foreign key to People
+    driver_id integer,          -- foreign key to User
+    pickup_date text,
+    pickup_time text,
+    pickup_location text,
+    dropoff_location text,
+    cost integer,
+    type text       -- C, D, S check card cash
+);

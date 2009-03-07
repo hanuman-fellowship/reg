@@ -24,7 +24,7 @@ use Global qw/
 my @mess;
 my %hash;
 sub _get_data {
-    my ($c) = @_;
+    my ($c, $proposal) = @_;
 
     @mess = ();
     %hash = %{ $c->request->params() };
@@ -33,7 +33,7 @@ sub _get_data {
     }
 
     #
-    # required fields
+    # always required fields
     #
     for my $f (qw/
         date_of_call
@@ -45,31 +45,72 @@ sub _get_data {
         checkout_time
         program_meeting_date
         meeting_space
-
-        first
-        last
-        addr1
-        city
-        st_prov
-        zip_post
-        email
-
         deposit
     /) {
         if (empty($hash{$f})) {
             my $sf = $f;
             $sf =~ s{_}{ }g;
             $sf =~ s{(\w+)}{ucfirst $1}eg;
-            $sf = "State/Province" if $sf eq "St Prov";
-            $sf = "Zip/PostalCode" if $sf eq "Zip Post";
             push @mess, "Missing field: $sf";
         }
     }
-    if (   empty($hash{tel_home})
-        && empty($hash{tel_work})
-        && empty($hash{tel_cell})
+    #
+    # initially required fields.
+    #
+    if (! $proposal || $proposal->person_id() == 0) {
+        for my $f (qw/
+            first
+            last
+            addr1
+            city
+            st_prov
+            zip_post
+            email
+        /) {
+            if (empty($hash{$f})) {
+                my $sf = $f;
+                $sf =~ s{_}{ }g;
+                $sf =~ s{(\w+)}{ucfirst $1}eg;
+                $sf = "State/Province" if $sf eq "St Prov";
+                $sf = "Zip/PostalCode" if $sf eq "Zip Post";
+                push @mess, "Missing field for Contact Person: $sf";
+            }
+        }
+        if (   empty($hash{tel_home})
+            && empty($hash{tel_work})
+            && empty($hash{tel_cell})
+        ) {
+            push @mess, "Contact Person must have at least one phone number.";
+        }
+    }
+    # Contract signer
+    if ($proposal && $proposal->cs_person_id() == 0
+        && !empty($hash{cs_first})
     ) {
-        push @mess, "Must have at least one phone number.";
+        for my $f (qw/
+            cs_last
+            cs_addr1
+            cs_city
+            cs_st_prov
+            cs_zip_post
+            cs_email
+        /) {
+            if (empty($hash{$f})) {
+                my $sf = $f;
+                $sf =~ s{^cs_}{};
+                $sf =~ s{_}{ }g;
+                $sf =~ s{(\w+)}{ucfirst $1}eg;
+                $sf = "State/Province" if $sf eq "St Prov";
+                $sf = "Zip/PostalCode" if $sf eq "Zip Post";
+                push @mess, "Missing field for Contract Signer: $sf";
+            }
+        }
+        if (   empty($hash{cs_tel_home})
+            && empty($hash{cs_tel_work})
+            && empty($hash{cs_tel_cell})
+        ) {
+            push @mess, "Contract Signer must have at least one phone number.";
+        }
     }
     if (! @mess) {
         my $dt = date($hash{date_of_call});
@@ -112,7 +153,7 @@ sub create : Local {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    _get_data($c);
+    _get_data($c, 0);
     return if @mess;
     my $proposal = model($c, 'Proposal')->create(\%hash);
     my $id = $proposal->id();
@@ -150,7 +191,7 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     my $proposal = model($c, 'Proposal')->find($id);
-    _get_data($c);
+    _get_data($c, $proposal);
     return if @mess;
     $proposal->update(\%hash);
     $c->response->redirect($c->uri_for("/proposal/view/$id"));
@@ -245,13 +286,24 @@ sub approve : Local {
 }
 
 #
-# move the person from proposal to person
+# move the contact person from proposal to person
 # and put the person_id in the proposal.
 #
 sub transmit : Local {
     my ($self, $c, $id) = @_;
 
     _transmit($c, $id);
+    $c->response->redirect($c->uri_for("/proposal/view/$id"));
+}
+
+#
+# move the contract signer from proposal to person
+# and put the cs_person_id in the proposal.
+#
+sub cs_transmit : Local {
+    my ($self, $c, $id) = @_;
+
+    _cs_transmit($c, $id);
     $c->response->redirect($c->uri_for("/proposal/view/$id"));
 }
 

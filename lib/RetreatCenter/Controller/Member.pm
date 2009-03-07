@@ -18,6 +18,7 @@ use Date::Simple qw/
 /;
 use Global qw/
     %string
+    $guru_purnima
 /;
 use Template;
 
@@ -412,6 +413,14 @@ sub create_do : Local {
         person_id    => $person_id,
         %hash,
     });
+    #
+    # add Guru Purnima affiliation to the Person
+    #
+    model($c, 'AffilPerson')->create({
+        a_id => $guru_purnima,
+        p_id => $person_id,
+    });
+
     my $id = $member->id();
     my @who_now = get_now($c);
 

@@ -1,0 +1,18 @@
+<h2>Rides</h2>
+<ul>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>Rider</th>
+<th align=left>Driver</th>
+<th align=center>Date</th>
+<th align=center>Time</th>
+</tr>
+[% FOREACH r IN rides %]
+<tr>
+<td align=right><a href=/ride/update/[% r.id %]>[% r.rider.first %] [% r.rider.last %]</a></td>
+<td align=right>[% r.driver.first %] [% r.driver.last %]</td>
+<td align=right>[% r.pickup_date_obj %]</td>
+<td align=right>[% r.pickup_time %]</td>
+</tr>
+[% END %]
+</table>

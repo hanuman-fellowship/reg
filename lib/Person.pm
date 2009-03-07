@@ -21,12 +21,14 @@ sub new {
 sub search {
     my ($class, $sql) = @_;
 
+    DBH->init();
     my $sth = $dbh->prepare($sql) or die "cannot prepare $sql: $DBI::errstr";
     $sth->execute() or die "cannot execute $DBI::errstr\n";
     my $a_ref = $sth->fetchall_arrayref({});
     for my $p (@{$a_ref}) {
         $p = Person->new($p);
     }
+    DBH->finis();
     return $a_ref;
 }
 

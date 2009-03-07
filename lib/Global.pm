@@ -18,7 +18,11 @@ use warnings;
 # there must be a way to do this init() at
 # catalyst startup time.???
 #
+# why can't I do "use Util qw/ model /; here???
+#
 package Global;
+
+use Date::Simple;
 
 use base 'Exporter';
 our @EXPORT_OK = qw/
@@ -29,6 +33,8 @@ our @EXPORT_OK = qw/
     %houses_in_cluster
     %house_name_of
     %annotations_for
+    $alert
+    $guru_purnima
 /;
 
 our %string;
@@ -38,8 +44,8 @@ our %houses_in;     # house objects in cluster type
 our %houses_in_cluster;         # ??? better name?
 our %house_name_of;
 our %annotations_for;
-
-use Date::Simple;
+our $alert;
+our $guru_purnima;
 
 sub init {
     my ($class, $c, $force) = @_;
@@ -54,11 +60,11 @@ sub init {
     %houses_in_cluster = ();
     %house_name_of     = ();
     %annotations_for   = ();
-    for my $s ($c->model('RetreatCenterDB::String')->all()) {
+    for my $s (Util::model($c, 'String')->all()) {
         $string{$s->the_key} = $s->value;
     }
     my %clust_type;     # not exported - intermediate variable
-    for my $cl ($c->model('RetreatCenterDB::Cluster')->search(
+    for my $cl (Util::model($c, 'Cluster')->search(
         {},
         { order_by => 'name' })
     ) {
@@ -68,7 +74,7 @@ sub init {
         $houses_in_cluster{$id} = [];
         $clust_type{$id} = $cl->type();
     }
-    for my $h ($c->model('RetreatCenterDB::House')->search(
+    for my $h (Util::model($c, 'House')->search(
                   {
                       inactive => '',
                   },
@@ -81,12 +87,20 @@ sub init {
         push @{$houses_in{$clust_type{$h->cluster_id()}}}, $h;      # wow
         push @{$houses_in_cluster{$h->cluster_id()}},      $h;
     }
-    for my $a ($c->model('RetreatCenterDB::Annotation')->search({
+    for my $a (Util::model($c, 'Annotation')->search({
                    inactive => '',
                })
     ) {
         push @{$annotations_for{$a->cluster_type()}}, $a;           # yeah
     }
+    my @affils = Util::model($c, 'Affil')->search({
+        descrip => { like => '%alert%when%' },
+    });
+    $alert = $affils[0]->id();
+    @affils = Util::model($c, 'Affil')->search({
+        descrip => { like => '%guru%purnima%' },
+    });
+    $guru_purnima = $affils[0]->id();
     Date::Simple->default_format($string{default_date_format});
     #
     # create the stop script

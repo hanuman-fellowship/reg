@@ -147,4 +147,5 @@ payment_O Online
 payment_C Check
 payment_D Credit
 payment_S Cash
+payment_U Due
 password_security 0

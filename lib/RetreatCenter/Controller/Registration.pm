@@ -41,6 +41,7 @@ use Global qw/
     %house_name_of
     %houses_in
     %houses_in_cluster
+    $alert
 /;
 use Template;
 
@@ -516,8 +517,11 @@ sub _rest_of_reg {
     #
     # pop up comment?
     #
+    # better way of searching the ids???
+    #
     for my $a ($p->affils) {
-        if ($a->descrip =~ m{alert}i) {
+$c->log->info("alert? " . $a->id() . " = $alert?");
+        if ($a->id() == $alert) {
             my $s = $p->comment;
             $s =~ s{\r?\n}{\\n}g;
             stash($c, alert_comment => $s);

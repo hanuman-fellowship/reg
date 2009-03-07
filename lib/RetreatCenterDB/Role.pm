@@ -15,7 +15,8 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key(q/id/);
 
 __PACKAGE__->has_many(user_role => 'RetreatCenterDB::UserRole', 'role_id');
-__PACKAGE__->many_to_many(users => 'user_role', 'user');
+__PACKAGE__->many_to_many(users => 'user_role', 'user',
+                          { order_by => 'first' });
 
 sub descr_br {
     my ($self) = @_;

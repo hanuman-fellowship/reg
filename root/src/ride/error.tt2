@@ -1,0 +1,7 @@
+<h2>Rides</h2>
+The following errors were found:
+<ul>
+[% mess %]
+</ul>
+Please go <input id='back' type=button value="Back" onclick="history.go(-1)"> and fix them.
+<script type='text/javascript'>document.getElementById('back').focus();</script>

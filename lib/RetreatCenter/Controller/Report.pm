@@ -35,6 +35,7 @@ sub formats : Private {
         4 => 'Email to VistaPrint',
         5 => 'Just Email',
         6 => 'Name, Address, Link',
+        7 => 'First Sanskrit Email to CMS',
     };
 }
 
@@ -208,7 +209,7 @@ sub run : Local {
     # restrictions apply?
     # have people said they want to be included?
     my $restrict = "inactive != 'yes' and ";
-    if ($format == 1 || $format == 2 || $format == 4) {
+    if ($format == 1 || $format == 2 || $format == 4 || $format == 7) {
         $restrict .= "snail_mailings = 'yes' and ";
     }
     if ($format == 2 || $format == 5) {
@@ -272,7 +273,15 @@ EOS
     }
     my @people = @{ Person->search($sql) };
     for my $p (@people) {
-        $p->{name} = $p->{first} . " " . $p->{last};
+        if ($format == 7) {
+            $p->{name} = $p->{first} . " "
+                       . (($p->{sanskrit} && $p->{sanskrit} ne $p->{first})?
+                              $p->{sanskrit} . " " : "")
+                       . $p->{last};
+        }
+        else {
+            $p->{name} = $p->{first} . " " . $p->{last};
+        }
     }
     #
     # now to take care of two people in the report

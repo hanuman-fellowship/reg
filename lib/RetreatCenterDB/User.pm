@@ -16,6 +16,9 @@ __PACKAGE__->add_columns(qw/
     bg
     fg
     link
+    office
+    cell
+    txt_msg_email
 /);
 __PACKAGE__->set_primary_key('id');
 

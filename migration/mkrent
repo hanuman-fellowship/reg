@@ -59,7 +59,8 @@ create table rental (
     lunches           text,
     status            text,
     deposit           integer,
-    summary_id        integer
+    summary_id        integer,
+    mmc_does_reg      text
 );
 drop table if exists rental_payment;
 create table rental_payment (

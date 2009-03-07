@@ -17,9 +17,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <p>
 <a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/donation/create/[% id %]" accesskey='d'><span class=keyed>D</span>onate</a>
+<a href="/donation/create/[% id %]" accesskey='n'>Do<span class=keyed>n</span>ate</a>
 &nbsp;&nbsp;&nbsp;
 <a accesskey='p' href="/xaccount/pay_balance/[% id %]"><span class=keyed>P</span>ayment</a>
+&nbsp;&nbsp;&nbsp;
+<a accesskey='d' href="/ride/create/[% id %]">Ri<span class=keyed>d</span>e</a>
 [% IF person.partner %]
 &nbsp;&nbsp;&nbsp;
     Partnered <span class=keyed>W</span>ith <a href="/person/view/[% person.partner.id %]" accesskey='w'>[% person.partner.first _" "_ person.partner.last %]</a>
@@ -132,6 +134,24 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 [% END %]
 </ul>
 
+[% IF person.rides %]
+    <p>
+    <span class=larger>Rides</span>
+    <ul>
+    <table cellpadding=3>
+    <tr>
+    <th align=center>Date</th>
+    <th align=center>Time</th>
+    </tr>
+    [% FOR r IN person.rides %]
+        <tr>
+        <td><a href=/ride/update/[% r.id %]>[% r.pickup_date_obj %]</a></td>
+        <td>[% r.pickup_time %]</td>
+        </tr>
+    [% END %]
+    </table>
+    </ul>
+[% END %]
 [% IF person.donations %]
     <p>
     <span class=larger>Donations</span>

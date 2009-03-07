@@ -163,6 +163,11 @@ Web
 </tr>
 
 <tr>
+<td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=mmc_does_reg [% check_mmc_does_reg %]> MMC Does Registration</td>
+</tr>
+
+<tr>
 <th align=right>Contract Sent</th>
 <td><input type=text name=contract_sent value='[% rental.contract_sent_obj.format("%D") %]' size=10></td>
 </tr>

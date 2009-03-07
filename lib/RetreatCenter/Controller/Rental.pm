@@ -172,7 +172,8 @@ sub create : Local {
     my ($self, $c) = @_;
 
     stash($c,
-        check_linked     => "",
+        check_linked     => '',
+        check_mmc_does_reg => '',
         check_tentative  => "checked",
         form_action      => "create_do",
         section          => 1,   # web
@@ -581,6 +582,7 @@ sub update : Local {
         template    => "rental/create_edit.tt2",
         check_linked    => ($r->linked()   )? "checked": "",
         check_tentative => ($r->tentative())? "checked": "",
+        check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
         housecost_opts  =>
             [ model($c, 'HouseCost')->search(
                 undef,

@@ -1,0 +1,63 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
+<h2>Ride for [% ride.rider.first %] [% ride.rider.last %]</h2>
+<form name=form action=/ride/[% form_action %]>
+<ul>
+<table cellpadding=5 border=0>
+
+<tr>
+<th align=right>Date</th>
+<td><input type=text name=pickup_date value='[% ride.pickup_date_obj.format("%D") %]' size=10></td>
+<th align=right>Time</th>
+<td><input type=text name=pickup_time value='[% ride.pickup_time %]' size=10></td>
+</tr>
+
+<tr>
+<th align=right>Driver</th>
+<td>
+<select name=driver_id>
+[% driver_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Pickup</th>
+<td colspan=3>
+<textarea name=pickup_location>
+[% ride.pickup_location %]
+</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Dropoff</th>
+<td colspan=3>
+<textarea name=dropoff_location>
+[% ride.dropoff_location %]
+</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right>Cost</th>
+<td><input type=text name=cost value='[% ride.cost %]' size=4></td>
+<th align=right>Type</th>
+<td>
+<select name=type>
+[% type_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+</ul>
+<script type="text/javascript">
+document.form.pickup_date.focus();
+</script>
