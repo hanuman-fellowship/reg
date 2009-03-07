@@ -687,14 +687,17 @@ sub calendar : Local {
                         name  => { 'like' => "Personal Retreats%" },
                     },
                  );
-    my @pr_regs = model($c, 'Registration')->search(
-                      {
-                          program_id => { 'in', \@pr_ids },
-                          date_end   => { '>=', $the_first },
-                          cancelled  => '',
-                      },
-                      { order_by => 'date_start' }
-                  );
+    my @pr_regs = ();
+    if (@pr_ids) {
+        @pr_regs = model($c, 'Registration')->search(
+                       {
+                           program_id => { 'in', \@pr_ids },
+                           date_end   => { '>=', $the_first },
+                           cancelled  => '',
+                       },
+                       { order_by => 'date_start' }
+                   );
+    }
     for my $pr (@pr_regs) {
         my $sdate = $pr->date_start_obj;
         my $edate = $pr->date_end_obj;
