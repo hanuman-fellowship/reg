@@ -302,6 +302,7 @@ sub calendar : Local {
         $end_param = $the_end;
     }
     my @opt_end = ();
+    my $ym_param;
     if ($end_param) {
         # n months???
         my $end_date;
@@ -336,6 +337,7 @@ sub calendar : Local {
             $end_date = $start;
         }
         $end_param = $end_date->format("%D");
+        $ym_param = $end_date->format("%Y%m");
         if ($end_date) {
             @opt_end = (sdate => { '<=', $end_date->as_d8() });
         }
@@ -629,12 +631,21 @@ sub calendar : Local {
     # or is it a per image thing?
     BOOKING:
     for my $b (@bookings) {
+        DATE:
         for my $dt ($b->sdate, $b->edate) {
             my $key = $b->meet_id . '-' . $dt;
             if (exists $edges{$key} && $b != $edges{$key}) {
 
                 # we now know where to draw
                 my ($meet_id, $ym, $day) = $key =~ m{(\d+)-(\d{6})(\d\d)};
+                if (! exists $cals{$ym}) {
+                    # this IS an abuttment but it is 
+                    # not visible in our limited range of months
+                    # ideally we should limit our looking to just
+                    # the bookings in the month range we are concerned about.
+                    # but that's tricky, too.
+                    next DATE;
+                }
                 my $cal = $cals{$ym};
                 my $im = $cal->image;
                 my $red = $cal->red;
@@ -801,7 +812,18 @@ EOH
     my $lv_color  = sprintf $fmt, $string{lv_color}  =~ m{\d+}g;
     # ??? optimize - skip a $cals entirely if no PRs - have a flag
     # in the object.
+    CAL:
     for my $key (sort keys %cals) {
+        if ($ym_param && $key > $ym_param) {
+            #
+            # this month is an extra one - don't show it.
+            # this happens when we request just one month
+            # but an event in this month overlaps to the next one.
+            # we may have had to generate the extra month (to avoid an even
+            # uglier kludge) but we don't need to show it.
+            #
+            next CAL;
+        }
         my $ac = $cals{$key};
         my $m = substr($key, 4, 2);
         $m =~ s{^0}{};      # worry about octal constant???
