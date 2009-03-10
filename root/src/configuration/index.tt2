@@ -1,3 +1,8 @@
+<style type="text/css">
+p {
+    margin-top: .1in;
+}
+</style>
 <h2>Configuration</h2>
 [% super = Catalyst.check_user_roles('super_admin') %]
 [% prog = Catalyst.check_user_roles('prog_staff') %]
@@ -25,6 +30,7 @@
     <a href=/leader>Leaders</a><p>
     <a href=/meetingplace>Meeting Places</a><p>
 [% END %]
+<a href=/ride/list>Rides</a><p>
 [% IF ! field %]
     <a href=/project/list>Projects</a><p>
 [% END %]

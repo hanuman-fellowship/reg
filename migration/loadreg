@@ -348,12 +348,12 @@ sub processReg {
         $share_last = $2;
     }
     $hash{comment} =~ s{^\s*}{};     # only requests remain
-    $hash{comment} = "<p>$hash{comment}</p>";
+    $hash{comment} = "<p>$hash{comment}</p>" if $hash{comment} =~ m{\S};
 
     $hash{confnote} = "";
     $hash{confnote} .= "$hash{'1note'}\n" if $hash{'1note'};
     $hash{confnote} .= "$hash{'2note'}\n" if $hash{'2note'};
-    $hash{confnote} = "<p>$hash{confnote}</p>";
+    $hash{confnote} = "<p>$hash{confnote}</p>" if $hash{confnote} =~ m{\S};
 
     $hash{referral} = $refmap{$hash{referral}};
     $hash{kids} = "";

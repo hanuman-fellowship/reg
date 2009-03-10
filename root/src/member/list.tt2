@@ -9,7 +9,7 @@
 <a href="/member/lapsed">Lapsed</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/lapse_soon">Lapse in One Month</a>
-<p>
+<p class=p2>
 <a href="/member/list/1">Include All</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/non_email">Non-Email</a>
@@ -21,7 +21,7 @@
 Click on Name to update member attributes.<br>
 Click on First to see person attributes.<br>
 To add a Member add them as a Person first.
-<p>
+<p class=p2>
 <table cellpadding=3 border=0>
 <tr>
 <th align=left valign=bottom>Name</th>

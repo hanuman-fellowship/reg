@@ -1,0 +1,36 @@
+<style type="text/css">
+.cc td, .cc a, .cc th {
+    font-size: 18pt;
+}
+</style>
+<h2>Charging Credit Cards for Rides</h2>
+<form action=/ride/pay_do>
+<ul>
+<table cellpadding=5>
+<tr class=cc>
+<th align=left>Date</th>
+<th align=left>Airport</th>
+<th align=left>Name</th>
+<th align=left>Card Number</th>
+<th align=left>&nbsp;&nbsp;&nbsp;Expires</th>
+<th align=left>&nbsp;&nbsp;&nbsp;Code</th>
+<th align=right>Amount</th>
+<td></td>
+</tr>
+[% FOR r IN rides %]
+<tr class=cc>
+<td>[% r.pickup_date_obj %]</td>
+<td>&nbsp;&nbsp;&nbsp;[% r.airport %]</td>
+[% rider = r.rider %]
+<td><a href="/person/view/[% rider.id %]">[% rider.first %] [% rider.last %]</a></td>
+<td>[% rider.cc_number1 %]-[% rider.cc_number2 %]-[% rider.cc_number3 %]-[% rider.cc_number4 %]</td>
+<td>&nbsp;&nbsp;&nbsp;[% rider.cc_expire %]</td>
+<td>&nbsp;&nbsp;&nbsp;[% rider.cc_code %]</td>
+<td align=right>[% r.cost %]</td>
+<td><input type=checkbox name=r[% r.id %] value='yes'></td>
+</tr>
+[% END %]
+<tr><td></td><td><input type=submit value="Submit"></td></tr>
+</table>
+</ul>
+</form>

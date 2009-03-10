@@ -2,7 +2,7 @@
 <form action="/registration/manual" name=form>
 <input type=hidden name=person_id value=[% person.id %]>
 <span class=larger>[% person.first %] [% person.last %]</span>
-<p>
+<p class=p2>
 <table cellpadding=3>
 <tr><th align=right>Deposit</th><td><input type=text size=4 maxlength=4 name=deposit>
 <select style="margin-left: .5in" name=deposit_type>

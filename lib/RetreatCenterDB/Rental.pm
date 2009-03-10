@@ -12,6 +12,7 @@ use Util qw/
 use Date::Simple qw/
     date
 /;
+use Time::Simple;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
@@ -132,6 +133,10 @@ sub sdate_obj {
 sub edate_obj {
     my ($self) = @_;
     return date($self->edate) || "";
+}
+sub any_lunches {
+    my ($self) = @_;
+    return $self->lunches() =~ m{1};
 }
 sub contract_sent_obj {
     my ($self) = @_;
@@ -269,27 +274,13 @@ sub meeting_spaces {
     }
 }
 
-sub start_hour_disp {
+sub start_hour_obj {
     my ($self) = @_;
-    my $h = $self->start_hour;
-    $h ||= 4;
-    _hour_disp($h);
+    Time::Simple->new($self->start_hour());
 }
-sub end_hour_disp {
+sub end_hour_obj {
     my ($self) = @_;
-    my $h = $self->end_hour;
-    $h ||= 1;
-    _hour_disp($h);
-}
-
-sub _hour_disp {
-    my ($h) = @_;
-    my $ampm = "pm";
-    if (8 <= $h && $h <= 11) {
-        $ampm = "am";
-    }
-    return "$h:00 $ampm";
-
+    Time::Simple->new($self->end_hour());
 }
 
 #

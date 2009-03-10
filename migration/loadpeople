@@ -17,8 +17,8 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
 $dbh->do("delete from affil_people");
 $dbh->do("delete from people");
 
-my $ins_sql = "insert into people values(". ("?," x 24) . "'' )";
-                                                # last '' is for inactive
+my $ins_sql = "insert into people values(". ("?," x 24) . "'', '', '', '' )";
+                                   # last '' is for inactive, credit card #s
 my $ins_sth = $dbh->prepare($ins_sql)
     or die "no prep ins people\n";
 

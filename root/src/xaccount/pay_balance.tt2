@@ -1,7 +1,6 @@
-<h2>Extra Accounts Payment</h2>
+<h2>Payment for [% person.first %] [% person.last %]</h2>
 <form name=form action="/xaccount/pay_balance_do">
 <input type=hidden name=person_id value=[% person.id %]>
-Payment for [% person.last %], [% person.first %]
 <p>
 <table cellpadding=3>
 

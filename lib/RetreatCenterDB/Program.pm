@@ -8,6 +8,7 @@ use Date::Simple qw/
     date
     today
 /;
+use Time::Simple;
 use Util qw/
     slurp
     expand
@@ -172,6 +173,10 @@ sub sdate_obj {
 sub edate_obj {
     my ($self) = @_;
     date($self->edate) || "";
+}
+sub prog_start_obj {
+    my ($self) = @_;
+    Time::Simple->new($self->prog_start());
 }
 sub link {
     my ($self) = @_;

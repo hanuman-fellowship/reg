@@ -290,26 +290,6 @@ sub create_from_proposal : Local {
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/$section"));
 }
 
-sub _mins {
-    my ($s) = @_;
-
-    my ($h, $m) = $s =~ m{(\d+)(?::(\d+))?};
-    if ($h && 1 <= $h && $h <= 7) {
-        $h += 12;
-    }
-    $h*60+$m;
-}
-
-sub _hour_min {
-    my ($mins) = @_;
-    my $h = $mins/60;
-    if ($h > 12) {
-        $h -= 12;
-    }
-    my $m = $mins%60;
-    return sprintf("%d:%02d", $h, $m);
-}
-
 #
 # there are several things to compute for the display
 # update the balance in the record once you're done.
@@ -433,7 +413,7 @@ sub view : Local {
 
     # Lunches
     my $lunch_charge = 0;
-    my $lunches = $rental->lunches;
+    my $lunches = $rental->lunches();
     if ($lunches =~ /1/) {
         $lunch_charge = $tot_people
                       * $string{lunch_charge}
@@ -487,6 +467,7 @@ sub view : Local {
                               $rental->lunches(),
                               $rental->sdate_obj(),
                               $rental->edate_obj(),
+                              $rental->start_hour_obj(),
                           ),
         template       => "rental/view.tt2",
     );
@@ -901,8 +882,13 @@ sub update_lunch : Local {
 
     my $r = model($c, 'Rental')->find($id);
     $c->stash->{rental} = $r;
-    $c->stash->{lunch_table} = lunch_table(0, $r->lunches,
-                                          $r->sdate_obj, $r->edate_obj);
+    $c->stash->{lunch_table}
+        = lunch_table(0,
+                      $r->lunches,
+                      $r->sdate_obj,
+                      $r->edate_obj,
+                      $r->start_hour_obj(),
+          );
     $c->stash->{template} = "rental/update_lunch.tt2";
 }
 
@@ -1065,6 +1051,9 @@ sub contract : Local {
 
     my $rental = model($c, 'Rental')->find($id);
     my $cs = ($rental->contract_signer() || $rental->coordinator());
+    #
+    # check that the rental is ready for contract generation
+    #
     my @mess = ();
     if (! $cs) {
         push @mess, "Contracts need a coordinator or a contract signer.";
@@ -1077,8 +1066,15 @@ sub contract : Local {
     if (! @bookings) {
         push @mess, "There is no assigned meeting place.";
     }
-    if ($rental->housecost->name() eq "Default") {
+    my $hc_name = $rental->housecost->name();
+    if ($hc_name eq "Default") {
         push @mess, "The housing cost cannot be the default.";
+    }
+    if ($rental->lunches() =~ m{1} && $hc_name !~ m{lunch}i) {
+        push @mess, "Housing Cost must include Lunch";
+    }
+    if ($rental->lunches() !~ m{1} && $hc_name =~ m{lunch}i) {
+        push @mess, "Housing Cost includes Lunch but no lunches provided";
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>", @mess;
@@ -1099,6 +1095,8 @@ sub contract : Local {
         EVAL_PERL    => 0,
     });
     my %stash = (
+        today  => today(),
+        signer => $cs,
         rental => $rental,
     );
     $tt->process(
@@ -1378,20 +1376,20 @@ EOH
     $html .= "</ul>\n";
 
     my $extra_hours = 0;
-    my $start = Time::Simple->new($rental->start_hour());
-    my $end   = Time::Simple->new($rental->end_hour());
+    my $start = $rental->start_hour_obj();
+    my $end   = $rental->end_hour();
     my $extime = "";
     my $tr_extra = "";
-    my $diff = Time::Simple->new("4:00") - $start;
+    my $diff = Time::Simple->new("4") - $start;
     if ($diff > 0) {
         $extra_hours += $diff/60;
-        $extime .= "started at " . $start->format(2) . " (before 4:00)";
+        $extime .= "started at " . $start->format('ampm') . " (before 4:00)";
     }
-    $diff = $end - Time::Simple->new("1:00");
+    $diff = $end - Time::Simple->new("1");
     if ($diff > 0) {
         $extra_hours += $diff/60;
         $extime .= " and " if $extime;
-        $extime .= "ended at " . $end->format(2) . " (after 1:00)";
+        $extime .= "ended at " . $end->format('ampm') . " (after 1:00)";
     }
     my $extra_hours_charge = sprintf("%.2f", 
                                      $extra_hours

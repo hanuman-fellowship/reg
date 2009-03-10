@@ -1,6 +1,10 @@
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
-<h2>Issues</h2>
+[% IF issue %]
+<h2>Issue #[% issue.id %]</h2>
+[% ELSE %]
+<h2>New Issue</h2>
+[% END %]
 <form action=[% '/issue/' _ form_action %] name=form>
 <table cellpadding=3 border=0>
 

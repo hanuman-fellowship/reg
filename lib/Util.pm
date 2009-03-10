@@ -50,6 +50,7 @@ use Date::Simple qw/
     date
     today
 /;
+use Time::Simple;
 use Template;
 use Global qw/
     %string
@@ -641,8 +642,9 @@ sub email_letter {
 }
 
 sub lunch_table {
-    my ($view, $lunches, $sdate, $edate) = @_;
+    my ($view, $lunches, $sdate, $edate, $start_time) = @_;
 
+    my $one = Time::Simple->new("1:00");
     my @lunches = split //, $lunches;
     my $s = <<"EOH";
 <table border=1 cellpadding=5 cellspacing=2>
@@ -670,8 +672,14 @@ EOH
         my $lunch = $lunches[$d];
         my $color = ($lunch && $view)? '#99FF99': '#FFFFFF';
         $s .= "<td align=left bgcolor=$color>" . $cur->day;
-        if ($dow == 6) {
-            ;                # no lunch on Saturday
+        #
+        # no lunch on Saturday or on the
+        # first day if they start on or after 1:00.
+        #
+        if ($dow == 6
+            || ($d == 0 && $start_time >= $one)
+        ) {
+            ;
         }
         elsif ($view) {
             my $w = $lunch? '': 'w';

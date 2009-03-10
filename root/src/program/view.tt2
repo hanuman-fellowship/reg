@@ -96,7 +96,7 @@ function cluster_down(cluster_id) {
     &nbsp;&nbsp;&nbsp;
 [% END %]
 <a target=_blank href="[% program.web_addr %]">Web</a>
-<p style="margin-top: 2mm">
+<p class=p2>
 [% IF program.ceu_issued %]
 <a href="/program/ceu/[% id %]">CEUs</a>
 &nbsp;&nbsp;&nbsp;
@@ -121,7 +121,7 @@ function cluster_down(cluster_id) {
 <a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/program/email_all/[% id %]">Email</a>
-<p>
+<p class=p2>
 
 <b>Name</b>
 <span class=larger>[% program.name %]</span>

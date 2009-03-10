@@ -3,7 +3,7 @@
 <tr><td valign=top>
 <ul>
 <a href="/listing/late_notices">Late Notices for Today</a>
-<p>
+<p class=p2>
 Meal Lists
 <ul>
 <li><a href="/listing/meal_list">For Planning</a>
@@ -39,20 +39,20 @@ Meal Lists
 <form action="/listing/comings_goings" method=POST>
 On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 </form>
-<p>
+<p class=p2>
 <a target=_blank href="/listing/undup">Unduplication File</a>
-<p>
+<p class=p2>
 <a href="/listing/email_check">Email Check</a>
-<p>
+<p class=p2>
 <a href="/listing/activity_tally">Last Active Tally by Year</a>
-<p>
+<p class=p2>
 <form action="/listing/mark_inactive">
 Last date of contact before which<br>people should be marked inactive:
 <br>
 <input type=text name=date_last size=10 maxlength=10>
 <input type=submit value="Go">
 </form>
-<p>
+<p class=p2>
 Purge Stale Addresses
 <ul>
 <form action="[% Catalyst.uri_for('/listing/stale') %]"
@@ -66,7 +66,7 @@ Purge Stale Addresses
 </ul>
 </td><td valign=top>
 <ul>
-<a href=/report/list>General Reports</a><p>
+<a href=/report/list>General Reports</a><p class=p2>
 <table border=0 cellspacing=0 cellpadding=0>
 <tr>
 <td valign=top>
@@ -80,8 +80,8 @@ Deposit
 </td>
 </tr>
 </table>
-<p>
-<a href="/finance/deposits/mmc">Prior Deposits</a><p>
+<p class=p2>
+<a href="/finance/deposits/mmc">Prior Deposits</a><p class=p2>
 Period End Summary
 <table cellpadding=3>
 <tr>
@@ -92,7 +92,7 @@ End <input type=text name=edate size=10>
 </form>
 </table>
 [% IF Catalyst.check_user_roles('mmi_admin') %]
-<p>
+<p class=p2>
 <table border=0 cellspacing=0 cellpadding=0>
 <tr>
 <td valign=top>
@@ -106,8 +106,8 @@ MMI Deposit
 </td>
 </tr>
 </table>
-<p>
-<a href="/finance/deposits/mmi">MMI Prior Deposits</a><p>
+<p class=p2>
+<a href="/finance/deposits/mmi">MMI Prior Deposits</a><p class=p2>
 MMI Period End Summary
 <table cellpadding=3>
 <tr>
@@ -118,29 +118,29 @@ End <input type=text name=edate size=10>
 </form>
 </table>
 [% END %]
-<p>
+<p class=p2>
 Phone Lists
 <ol>
 <li><a href="/listing/phone_columns">In Columns</a>
 <li><a href="/listing/phone_line">In One Line</a>
 <li><a href="/listing/phone_noaddr">No Address</a>
-<p>
+<p class=p2>
 </ol>
 <a href="/listing/make_up">Room Make-Up List<a>
-<p>
+<p class=p2>
 <a href="/listing/make_up/1">Campsite Make-Up List<a>
-<p>
+<p class=p2>
 <a href="/listing/housekeeping/0">Today's Housekeeping Report</a>
 <form action="/listing/housekeeping/0" method=POST>
 On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
 </form>
-<p>
+<p class=p2>
 
 <a href="/listing/housekeeping/1">Today's Campground Report</a>
 <form action="/listing/housekeeping/1" method=POST>
 On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
 </form>
-<p>
+<p class=p2>
 <a href="/listing/field_plan?sdate=t13">Field Staff Planning Report</a>
 <form action="listing/field_plan" method=POST>
 <table cellpadding=3>

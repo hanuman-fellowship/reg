@@ -262,7 +262,7 @@ Misc
 
 <!-- Misc -->
 <div id="content4" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
+<table cellpadding=3 border=1>
 
 <tr>
 <th align=right>Kaya Kalpa</th>
@@ -297,8 +297,8 @@ Misc
 
 <tr>
 <th align=right valign=top>Conf Notes</th>
-<td colspan=4>
-<textarea name=confnote cols=55 rows=3>[% program.confnote %]</textarea>
+<td colspan=5>
+<textarea name=confnote cols=60 rows=10>[% program.confnote %]</textarea>
 </td>
 </tr>
 
@@ -309,15 +309,15 @@ Misc
 <table cellpadding=3>
 <tr>
 <th align=right>Registration Start</th>
-<td><input type=text size=10 maxlength=10 name=reg_start value='[% program.reg_start %]'></td>
+<td><input type=text size=5 name=reg_start value='[% program.reg_start %]'></td>
 <th align=right>Program Start</th>
-<td><input type=text size=10 maxlength=10 name=prog_start value='[% program.prog_start %]'></td>
+<td><input type=text size=5 name=prog_start value='[% program.prog_start %]'></td>
 </tr>
 <tr>
 <th align=right>End</th>
-<td><input type=text size=10 maxlength=10 name=reg_end value='[% program.reg_end %]'></td>
+<td><input type=text size=5 name=reg_end value='[% program.reg_end %]'></td>
 <th align=right>End</th>
-<td><input type=text size=10 maxlength=10 name=prog_end value='[% program.prog_end %]'></td>
+<td><input type=text size=5 name=prog_end value='[% program.prog_end %]'></td>
 </tr>
 </table>
 

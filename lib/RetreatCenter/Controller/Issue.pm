@@ -34,9 +34,16 @@ sub list : Local {
 sub search : Local {
     my ($self, $c) = @_;
 
+    my $pat = trim($c->request->params->{pat});
+    if ($pat =~ m{^\d+}) {
+        # they want a particular issue and have put the id
+        # in the Search pattern field.
+        __PACKAGE__->update($c, $pat);
+        return;
+    }
     $c->stash->{issues} = [ model($c, 'Issue')->search(
         {
-            title => { 'like' => "%".trim($c->request->params->{pat})."%" },
+            title => { 'like' => "%$pat%" },
             date_closed => '',
         },
         { order_by    => 'priority, date_entered' }

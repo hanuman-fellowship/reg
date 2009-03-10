@@ -76,6 +76,7 @@ insert into role values (9, 'mmi_admin', 'MMI Admin', 'MMI Administration');
 insert into role values (10, 'kitchen', 'Kitchen', 'Kitchen Admin');
 insert into role values (11, 'developer', 'Software Developer', 'Those who create the software.');
 insert into role values (12, 'driver', 'Driver', 'Give Rides To and From');
+insert into role values (13, 'ride_admin', 'Ride Admin', 'Arrange Rides To and From');
 
 -- Two super admins
 -- sahadev
@@ -88,6 +89,7 @@ insert into user_role values (2, 6);
 insert into user_role values (2, 7);
 insert into user_role values (2, 9);
 insert into user_role values (2, 11);
+insert into user_role values (2, 13);
 -- jamal
 insert into user_role values (5, 1);
 insert into user_role values (5, 2);
@@ -144,6 +146,7 @@ insert into user_role values (13, 2);
 insert into user_role values (13, 3);
 insert into user_role values (13, 4);
 insert into user_role values (13, 5);
+insert into user_role values (13, 13);
 -- savita
 insert into user_role values (16, 2);
 insert into user_role values (16, 3);

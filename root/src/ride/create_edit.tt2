@@ -1,15 +1,30 @@
+<!--
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
-<h2>Ride for [% ride.rider.first %] [% ride.rider.last %]</h2>
+-->
+<script type="text/javascript">
+function check(event, fld, n, next_id) {
+    // var c = String.fromCharCode(event.which);
+    // checking for digits is troublesome
+    if (fld.value.length == n-1) {
+if (n == 3) {
+    document.form.comment.focus();
+}
+else {
+        document.getElementById(next_id).focus();
+}
+    }
+    return true;
+}
+</script>
+<h2>Ride for [% person.first %] [% person.last %]</h2>
 <form name=form action=/ride/[% form_action %]>
 <ul>
-<table cellpadding=5 border=0>
+<table cellpadding=3 border=0>
 
 <tr>
 <th align=right>Date</th>
-<td><input type=text name=pickup_date value='[% ride.pickup_date_obj.format("%D") %]' size=10></td>
-<th align=right>Time</th>
-<td><input type=text name=pickup_time value='[% ride.pickup_time %]' size=10></td>
+<td><input type=text name=pickup_date value='[% ride.pickup_date_obj.format("%D") %]' size=10>
 </tr>
 
 <tr>
@@ -22,32 +37,113 @@
 </tr>
 
 <tr>
-<th align=right valign=top>Pickup</th>
-<td colspan=3>
-<textarea name=pickup_location>
-[% ride.pickup_location %]
-</textarea>
+<th align=right valign=top>Direction</th>
+<td>
+<input type=radio name=from_to value="To MMC">To MMC<br>
+<input type=radio name=from_to value="From MMC">From MMC<br>
 </td>
 </tr>
 
 <tr>
-<th align=right valign=top>Dropoff</th>
-<td colspan=3>
-<textarea name=dropoff_location>
-[% ride.dropoff_location %]
-</textarea>
-</td>
+<th align=right>Airport</th>
+<td><input type=text name=airport value='[% ride.airport %]' size=3></td>
+</tr>
+
+<tr>
+<th align=right>Carrier</th>
+<td><input type=text name=carrier value='[% ride.carrier %]' size=15></td>
+</tr>
+
+<tr>
+<th align=right>Flight #</th>
+<td><input type=text name=flight_num value='[% ride.flight_num %]' size=5></td>
+</tr>
+
+<tr>
+<th align=right>Flight Time</th>
+<td><input type=text name=flight_time value='[% ride.flight_time %]' size=5></td>
 </tr>
 
 <tr>
 <th align=right>Cost</th>
 <td><input type=text name=cost value='[% ride.cost %]' size=4></td>
-<th align=right>Type</th>
+</tr>
+
+[% IF Catalyst.check_user_roles('ride_admin') %]
+<tr>
+<th align=right>Credit Card Number</th>
 <td>
-<select name=type>
-[% type_opts %]
-</select>
+<input type=text 
+       onkeypress="return check(event, this, 4, 'cc_number2');"
+       name=cc_number1
+       value='[% person.cc_number1 %]'
+       size=4
+       maxlength=4
+>-<input type=text 
+       onkeypress="return check(event, this, 4, 'cc_number3');"
+       name=cc_number2
+       id=cc_number2
+       value='[% person.cc_number2 %]'
+       size=4
+       maxlength=4
+>-<input type=text 
+       onkeypress="return check(event, this, 4, 'cc_number4');"
+       name=cc_number3
+       id=cc_number3
+       value='[% person.cc_number3 %]'
+       size=4
+       maxlength=4
+>-<input type=text 
+       onkeypress="return check(event, this, 4, 'cc_expire');"
+       name=cc_number4
+       id=cc_number4
+       value='[% person.cc_number4 %]'
+       size=4
+       maxlength=4
+>
 </td>
+</tr>
+
+<tr>
+<th align=right>Expiration Date</th>
+<td>
+<input type=text
+       onkeypress="return check(event, this, 4, 'cc_code');"
+       name=cc_expire
+       id=cc_expire
+       value='[% person.cc_expire %]'
+       size=4
+       maxlength=4
+>
+</td>
+</tr>
+
+<tr>
+<th align=right>Security Code</th>
+<td>
+<input type=text
+       onkeypress="return check(event, this, 3, 'comment');"
+       name=cc_code
+       id=cc_code
+       value='[% person.cc_code %]'
+       size=3
+       maxlength=3
+>
+</td>
+</tr>
+
+[% END %]
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td>
+<textarea name=comment cols=40 rows=3>
+[% ride.comment %]
+</textarea>
+
+<tr>
+<td>Date Paid</td>
+<td><input type=text name=paid_date value ='[% ride.paid_date %]'></td>
 </tr>
 
 <tr>

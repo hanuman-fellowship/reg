@@ -1,141 +1,152 @@
+<html>
+<head>
 <title>Date Formats</title>
-<pre>
-    When specifying a new default_date_format in Configuration-Strings
-    you can place the following format characters in the string.
-    As an example,
-
-        %b %e '%y
-
-    will display January 2nd, 2009 like so:
-
-        Jan 2 '09
-
-    The default default is
-        
-        %D
-
-    which displays thusly:
-
+</head>
+<body>
+<h2>Date Formats</h2>
+Dates are much more complicated than we realize.
+<p>
+When specifying a new default_date_format in Configuration-Strings<br>
+you can place a varietry of format characters in the string.
+As an example,
+<ul>
+%b %e '%y
+</ul>
+will display January 2nd, 2009 like so:
+<ul>
+Jan 2 '09
+</ul>
+The default default is:
+<ul>
+%D
+</ul>
+which displays thusly:
+<ul>
         01/02/09
+</ul>
+So with this as an introduction here are the format characters
+and their meanings:
+<ul>
+<table width=600 cellpadding=3>
+<tr><td valign=top>%A</td><td>is replaced by national representation of the full weekday name.</td></tr>
 
+<tr><td valign=top>%a</td><td>    is replaced by national representation of the abbreviated weekday name.</td></tr>
 
-     %A    is replaced by national representation of the full weekday name.
+<tr><td valign=top>%B</td><td>    is replaced by national representation of the full month name.</td></tr>
 
-     %a    is replaced by national representation of the abbreviated weekday name.
+<tr><td valign=top>%b</td><td>    is replaced by national representation of the abbreviated month name.</td></tr>
 
-     %B    is replaced by national representation of the full month name.
+<tr><td valign=top>%C</td><td>    is replaced by (year / 100) as decimal number; single digits are preceded by a zero.</td></tr>
 
-     %b    is replaced by national representation of the abbreviated month name.
+<tr><td valign=top>%c</td><td>    is replaced by national representation of time and date.</td></tr>
 
-     %C    is replaced by (year / 100) as decimal number; single digits are
-           preceded by a zero.
+<tr><td valign=top>%D</td><td>    is equivalent to '%m/%d/%y'.</td></tr>
 
-     %c    is replaced by national representation of time and date.
+<tr><td valign=top>%d</td><td>    is replaced by the day of the month as a decimal number (01-31).</td></tr>
 
-     %D    is equivalent to '%m/%d/%y'.
-
-     %d    is replaced by the day of the month as a decimal number (01-31).
-
-     %E* %O*
+<tr><td valign=top>%E* %O*</td><td>
            POSIX locale extensions.  The sequences %Ec %EC %Ex %EX %Ey %EY %Od
            %Oe %OH %OI %Om %OM %OS %Ou %OU %OV %Ow %OW %Oy are supposed to
            provide alternate representations.
-
+<p>
            Additionally %OB is implemented to represent alternative month names.
-           (used standalone, without day mentioned).
+           (used standalone, without day mentioned).</td></tr>
 
-     %e    is replaced by the day of month as a decimal number (1-31); single
-           digits are preceded by a blank.
+<tr><td valign=top>%e </td><td>   is replaced by the day of month as a decimal number (1-31); single
+           digits are preceded by a blank.</td></tr>
 
-     %F    is equivalent to '%Y-%m-%d'.
+<tr><td valign=top>%F </td><td>   is equivalent to '%Y-%m-%d'.</td></tr>
 
-     %G    is replaced by a year as a decimal number with century.  This year
+<tr><td valign=top>%G   </td><td> is replaced by a year as a decimal number with century.  This year
            is the one that contains the greater part of the week (Monday as
-           the first day of the week).
+           the first day of the week).</td></tr>
 
-     %g    is replaced by the same year as in '%G', but as a decimal number
-           without century (00-99).
+<tr><td valign=top>%g   </td><td> is replaced by the same year as in '%G', but as a decimal number
+           without century (00-99).</td></tr>
 
-     %H    is replaced by the hour (24-hour clock) as a decimal number (00-23).
+<tr><td valign=top>%H   </td><td> is replaced by the hour (24-hour clock) as a decimal number (00-23).</td></tr>
 
-     %h    the same as %b.
+<tr><td valign=top>%h   </td><td> the same as %b.</td></tr>
 
-     %I    is replaced by the hour (12-hour clock) as a decimal number (01-12).
+<tr><td valign=top>%I   </td><td> is replaced by the hour (12-hour clock) as a decimal number (01-12).</td></tr>
 
-     %j    is replaced by the day of the year as a decimal number (001-366).
+<tr><td valign=top>%j  </td><td>  is replaced by the day of the year as a decimal number (001-366).</td></tr>
 
-     %k    is replaced by the hour (24-hour clock) as a decimal number (0-23);
-           single digits are preceded by a blank.
+<tr><td valign=top>%k  </td><td>  is replaced by the hour (24-hour clock) as a decimal number (0-23);
+           single digits are preceded by a blank.</td></tr>
 
-     %l    is replaced by the hour (12-hour clock) as a decimal number (1-12);
-           single digits are preceded by a blank.
+<tr><td valign=top>%l </td><td>   is replaced by the hour (12-hour clock) as a decimal number (1-12);
+           single digits are preceded by a blank.</td></tr>
 
-     %M    is replaced by the minute as a decimal number (00-59).
+<tr><td valign=top>%M   </td><td> is replaced by the minute as a decimal number (00-59).</td></tr>
 
-     %m    is replaced by the month as a decimal number (01-12).
+<tr><td valign=top>%m   </td><td> is replaced by the month as a decimal number (01-12).</td></tr>
 
-     %n    is replaced by a newline.
+<tr><td valign=top>%n  </td><td>  is replaced by a newline.</td></tr>
 
-     %O*   the same as %E*.
+<tr><td valign=top>%O* </td><td>  the same as %E*.</td></tr>
 
-     %p    is replaced by national representation of either "ante meridiem" or
-           "post meridiem" as appropriate.
+<tr><td valign=top>%p   </td><td> is replaced by national representation of either "ante meridiem" or
+           "post meridiem" as appropriate.</td></tr>
 
-     %Q    is the same as %Y if the date's year is not the current year.
-     %q    is the same as %y if the date's year is not the current year.
+<tr><td valign=top>%Q   </td><td> is the same as %Y if the date's year is not the current year.</td></tr>
+<tr><td valign=top>%q   </td><td> is the same as %y if the date's year is not the current year.</td></tr>
            
-           If the year IS the current year then these will yield
-           an empty string (and any blanks before them will be excised).
+           <tr><td></td><td>If the year IS the current year then %Q and %q will yield
+           an empty string (and any blanks before them will be excised).</td></tr>
 
-     %R    is equivalent to '%H:%M'.
+<tr><td valign=top>%R </td><td>   is equivalent to '%H:%M'.</td></tr>
 
-     %r    is equivalent to '%I:%M:%S %p'.
+<tr><td valign=top>%r  </td><td>  is equivalent to '%I:%M:%S %p'.</td></tr>
 
-     %S    is replaced by the second as a decimal number (00-60).
+<tr><td valign=top>%S   </td><td> is replaced by the second as a decimal number (00-60).</td></tr>
 
-     %s    is replaced by the number of seconds since the Epoch, UTC (see mktime(3)).
+<tr><td valign=top>%s  </td><td>  is replaced by the number of seconds since the Epoch, UTC (see mktime(3)).</td></tr>
 
-     %T    is equivalent to '%H:%M:%S'.
+<tr><td valign=top>%T  </td><td>  is equivalent to '%H:%M:%S'.</td></tr>
 
-     %t    is replaced by a tab.
+<tr><td valign=top>%t  </td><td>  is replaced by a tab.</td></tr>
 
-     %U    is replaced by the week number of the year (Sunday as the first day
-           of the week) as a decimal number (00-53).
+<tr><td valign=top>%U  </td><td>  is replaced by the week number of the year (Sunday as the first day
+           of the week) as a decimal number (00-53).</td></tr>
 
-     %u    is replaced by the weekday (Monday as the first day of the week) as
-           a decimal number (1-7).
+<tr><td valign=top>%u  </td><td>  is replaced by the weekday (Monday as the first day of the week) as
+           a decimal number (1-7).</td></tr>
 
-     %V    is replaced by the week number of the year (Monday as the first day
+<tr><td valign=top>%V </td><td>   is replaced by the week number of the year (Monday as the first day
            of the week) as a decimal number (01-53).  If the week containing
            January 1 has four or more days in the new year, then it is week 1;
            otherwise it is the last week of the previous year, and the next
-           week is week 1.
+           week is week 1.</td></tr>
 
-     %v    is equivalent to '%e-%b-%Y'.
+<tr><td valign=top>%v  </td><td>  is equivalent to '%e-%b-%Y'.</td></tr>
 
-     %W    is replaced by the week number of the year (Monday as the first day
-           of the week) as a decimal number (00-53).
+<tr><td valign=top>%W  </td><td>  is replaced by the week number of the year (Monday as the first day
+           of the week) as a decimal number (00-53).</td></tr>
 
-     %w    is replaced by the weekday (Sunday as the first day of the week) as
-           a decimal number (0-6).
+<tr><td valign=top>%w  </td><td>  is replaced by the weekday (Sunday as the first day of the week) as
+           a decimal number (0-6).</td></tr>
 
-     %X    is replaced by national representation of the time.
+<tr><td valign=top>%X </td><td>   is replaced by national representation of the time.</td></tr>
 
-     %x    is replaced by national representation of the date.
+<tr><td valign=top>%x   </td><td> is replaced by national representation of the date.</td></tr>
 
-     %Y    is replaced by the year with century as a decimal number.
+<tr><td valign=top>%Y   </td><td> is replaced by the year with century as a decimal number.</td></tr>
 
-     %y    is replaced by the year without century as a decimal number (00-99).
+<tr><td valign=top>%y   </td><td> is replaced by the year without century as a decimal number (00-99).</td></tr>
 
-     %Z    is replaced by the time zone name.
+<tr><td valign=top>%Z  </td><td>  is replaced by the time zone name.</td></tr>
 
-     %z    is replaced by the time zone offset from UTC; a leading plus sign
+<tr><td valign=top>%z   </td><td> is replaced by the time zone offset from UTC; a leading plus sign
            stands for east of UTC, a minus sign for west of UTC, hours and
            minutes follow with two digits each and no delimiter between them
-           (common form for RFC 822 date headers).
+           (common form for RFC 822 date headers).</td></tr>
 
-     %+    is replaced by national representation of the date and time (the
-           format is similar to that produced by date(1)).
+<tr><td valign=top>%+   </td><td> is replaced by national representation of the date and time (the
+           format is similar to that produced by date(1)).</td></tr>
 
-     %%    is replaced by '%'.
-</pre>
+<tr><td valign=top>%%  </td><td>  is replaced by '%'.</td></tr>
+</table>
+</ul>
+</body>
+</html>

@@ -39,7 +39,7 @@ p {
 <h2 style="margin-bottom: 0px">Registration</h2>
 <form name=form action=/registration/seek/[% program.id %]/[% reg.id %]>
 <table border=0>
-<tr><td></td><td>&nbsp;&nbsp;Registrant</td><td>&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td></tr>
+<tr><td></td><td>Registrant</td><td>&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td></tr>
 <tr><td valign=center>
 <a href="/registration/update/[% reg.id %]">Edit</a>
 &nbsp;&nbsp;
@@ -58,9 +58,14 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 [% END %]
 [% IF ! reg.cancelled %]
     [% IF reg.letter_sent %]
-    <a href="/registration/send_conf/[% reg.id %]">ReSend</a>
+    <a href="/registration/send_conf/[% reg.id %]"
+       onmouseover="return overlib('[% reg.person.email || 'Snail Mail' %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseout="return nd();">ReSend</a>
     [% ELSE %]
-    <a class=not_sent href="/registration/send_conf/[% reg.id %]">Send</a>
+    <a class=not_sent 
+       href="/registration/send_conf/[% reg.id %]"
+       onmouseover="return overlib('[% reg.person.email || 'Snail Mail' %], RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseout="return nd();">Send</a>
     [% END %]
     &nbsp;&nbsp;
 [% END %]

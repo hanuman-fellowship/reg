@@ -3,10 +3,13 @@ create table ride (
     id  integer primary key autoincrement,
     rider_id integer,           -- foreign key to People
     driver_id integer,          -- foreign key to User
+    from_to text,
     pickup_date text,
-    pickup_time text,
-    pickup_location text,
-    dropoff_location text,
+    airport text,
+    carrier text,
+    flight_num text,
+    flight_time text,
     cost integer,
-    type text       -- C, D, S check card cash
+    comment text,
+    paid_date text
 );

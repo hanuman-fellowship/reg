@@ -1,6 +1,6 @@
 <h2>People</h2>
 <a href="/person/create" accesskey='a'><span class=keyed>A</span>dd</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<p>
+<p class=p2>
 <div class=message>[% message || Catalyst.flash.message %]</div>
 <ul>
 <form action="/person/search_do" name=search>

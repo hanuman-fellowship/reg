@@ -1,6 +1,11 @@
 <html>
 <head>
 <style type="text/css">
+body {
+    width: 7in;
+    margin-left: .5in;
+    margin-top: 1in;
+}
 h3 {
     text-align: center;
     font-size: 20pt;
@@ -9,9 +14,6 @@ table {
     margin-left: .5in;
     margin-top: .1in;
     margin-bottom: .1in;
-}
-body {
-    width: 7in;
 }
 #sig {
     width: 500px;
@@ -26,7 +28,71 @@ body {
 </style>
 </head>
 <body>
-<h3>Facilities Use Contract</h3>
+[% today.format("%B %e, %Y") %]
+<p>
+[% signer.first %] [% signer.last %]<br>
+[% signer.addr1 %]<br>
+[% IF signer.addr2 %]
+[% signer.addr2 %]<br>
+[% END %]
+[% signer.city %], [% signer.st_prov %] [% signer.zip_post %]<br>
+[% IF signer.country %]
+[% signer.country %]<br>
+[% END %]
+<p>
+Dear [% signer.first %],
+<p>
+Here is the contract reflecting our agreement for your workshop
+on [% rental.dates %], [% rental.sdate_obj.format("%Y") %].  Please sign and return the original with your
+deposit, keeping the copy for your files. Note that the contract expires
+if not returned with the deposit within two weeks. Also, here is our
+standard confirmation sheet including a map, directions,
+and other information you may find useful.
+<p>
+Please note the contract provisions regarding housing procedure,
+especially the $5.00 to $10.00 charge for any changes or additions
+within the last week prior to the event. (You may want to set up a
+way to pass this cost on to participants who sign up after the
+one-week-prior date). We will be grateful if you can let us know,
+as your registration comes in, what the housing needs are shaping
+up to be, preferably sooner rather than later.
+It is also very helpful for us if you can send in advance
+both a schedule of your sessions and breaks and an alphabetical
+list of the participants.
+<p>
+We also offer, by appointment, through the Kaya Kalpa Wellness Center,
+various bodywork sessions. Appointments may be booked in advance by
+calling 408-847-3276. Kaya Kalpa’s office hours are Monday through
+Friday 11 am to 1 pm.  Bodywork appointments may also be made at the
+Community Building on Friday during dinner and Saturday
+during breakfast. You may want to pass this information
+on to your participants.
+<p>
+We suggest you tell your participants a bit about this Center
+before they arrive (e.g., that meals are vegetarian,
+the environment rural, we don’t provide towels, etc.)
+in addition to the items mentioned on our confirmation sheet.
+<p>
+We will need to know in advance if you have any special needs
+in terms of housing, equipment, setup, supplies, and other such
+necessities. As usual, we’ll check in with you several weeks
+before your event. Please note that we need to receive your
+requests no later than 10 days before your event.
+We cannot necessarily fill requests thereafter.  
+<p>
+We will do all we can to make your stay here a warmly supported
+and pleasant one. If you would like to consult about specific menus,
+for example, by all means be in touch with us as the date draws nearer.
+And if there are any other needs or ways we can help, please do let us know.
+<p>
+<p>
+All good wishes,<br>
+<div style="margin-top: .7in;">
+Jerry Brajesh Friedberg<br>
+Programs Director
+</div>
+<div style='page-break-after:always'></div>
+<h3 style="margin-top: 1in;">Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
 [% IF rental.contract_signer %]
     [% p = rental.contract_signer %]
@@ -35,23 +101,15 @@ Mount Madonna Center, hereafter called the Center, and
 [% END %]
 [% p.first %]
 [% p.last %]
-at
-[% p.addr1 %]
-[% IF p.addr2 %]
-[% p.addr2 %]
-[% END %]
-[% p.city %],
-[% p.st_prov %]
-[% p.zip_post %]
-[% IF p.country %]
-[% p.country %]
-[% END %]
-for '[% rental.name %]', hereafter called the Renter, hereby agree as follows:
+at [% p.addr1 %][% IF p.addr2 %] [% p.addr2 %][% END %],
+[% p.city %], [% p.st_prov %]
+[% p.zip_post %], [% IF p.country %][% p.country %][% END %]
+for &#145;[% rental.name %]&#146;, hereafter called the Renter, hereby agree as follows:
 <h2>Facilities</h2>
 The Center will provide workshop space in the [% rental.meeting_spaces %],
 or a comparable facility, and lodging for up to [% rental.max %]
-people from [% rental.start_hour_disp %] on [% rental.sdate_obj.format("%D") %] 
-to [% rental.end_hour_disp %] on [% rental.edate_obj.format("%D") %] at the following rates:
+people from [% rental.start_hour_obj.format('ampm') %] on [% rental.sdate_obj.format("%A %B %e, %Y") %] 
+to [% rental.end_hour_obj.format('ampm') %] on [% rental.edate_obj.format("%A %B %e, %Y") %] at the following rates:
 <h2>Rates</h2>
 The costs below are dollars per person per day.
 [% hc = rental.housecost %]
@@ -76,7 +134,14 @@ Children aged 2 to 12 staying in the room
 with a guest will pay 1/2 of the above rates.
 <p>
 <b>Please note all guest rooms must be vacated by 1 pm.</b>
-Room rates include accommodations, two meals and a snack per day,
+Room rates include accommodations,
+[% lunch = rental.any_lunches %]
+[% IF lunch %]
+three meals
+[% ELSE %]
+two meals and a snack
+[% END %]
+per day,
 applicable state and local taxes, insurance, meeting space,
 and use of grounds and recreational facilities.
 Charges are based on actual occupancy, not room capacity
@@ -89,9 +154,30 @@ $2/person/hour for any
 additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>
 <h2>Meals</h2>
-The Center will provide two vegetarian meals and a snack per
-day: Friday dinner 5:30 pm; Saturday brunch 10:00 am, snack 1:00 pm,
-dinner 5:00 pm; Sunday breakfast 8:30 am, snack 12:30 pm.
+The Center will provide
+[% IF lunch %]
+three vegetarian meals
+[% ELSE %]
+two vegetarian meals and a snack
+[% END %]
+per day:
+<ul>
+<table cellpadding=3>
+<tr><td>Breakfast</td><td>8:15 am</td></tr>
+<tr><td>[% IF lunch %]Lunch[% ELSE %]Snack[% END %]</td><td>12:30 pm</td></tr>
+<tr><td>Dinner</td><td>5:00 pm</td></tr>
+</table>
+</ul>
+with the following schedule on the weekend:
+<ul>
+<table cellpadding=3>
+<tr><td>Friday Dinner</td><td>5:30 pm</td></tr>
+<tr><td>Saturday Brunch</td><td>10:00 am</td></tr>
+<tr><td>Saturday Snack[% IF lunch %] (no Lunch)[% END %]</td><td>1:00 pm</td></tr>
+<tr><td>Saturday Dinner</td><td>5:00 pm</td></tr>
+<tr><td>Sunday Breakfast</td><td>8:30 am</td></tr>
+</table>
+</ul>
 To be assured of a complete, fresh, hot meal, guests must arrive
 within the first half-hour of mealtime. 
 Meals are at the Community Building for the renter,

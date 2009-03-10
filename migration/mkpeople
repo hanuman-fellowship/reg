@@ -24,7 +24,10 @@ create table people (
     snail_mailings text,
     share_mailings text,
     deceased text,
-    inactive text
+    inactive text,
+    cc_number text,
+    cc_expire text,
+    cc_code   text
 );
 drop table if exists affils;
 create table affils (

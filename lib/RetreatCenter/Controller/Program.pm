@@ -31,6 +31,7 @@ use Util qw/
 use Date::Simple qw/
     date
 /;
+use Time::Simple;
 use Net::FTP;
 use Global qw/
     %string
@@ -244,23 +245,10 @@ sub _get_data {
         prog_start
         prog_end
     /) {
-        my $time = trim($P{$t});
-        my ($hour, $min) = (-1, -1);
-        if ($time =~ m{^\d+$}) {
-            $hour = $time;
-            $min = 0;
+        my $time = Time::Simple->new($P{$t});
+        if (!time) {
+            push @mess, Time::Simple->error();
         }
-        elsif ($time =~ m{^(\d+):(\d+)$}) {
-            $hour = $1;
-            $min = $2;
-        }
-        if (! (   1 <= $hour && $hour <= 12
-               && 0 <= $min  && $min  <= 59)
-        ) {
-            push @mess, "Illegal time: $time";
-        }
-        # normalized:
-        $P{$t} = sprintf("%d:%02d", $hour, $min);
     }
     my @email = split m{[, ]+}, $P{notify_on_reg};
     for my $em (@email) {
@@ -355,12 +343,13 @@ sub view : Local {
 
     if ($p->name !~ m{personal retreats}i) {
         stash($c,
-            lunch_table => lunch_table(
-                               1,
-                               $p->lunches,
-                               $p->sdate_obj,
-                               $p->edate_obj + $p->extradays
-                           )
+              lunch_table => lunch_table(
+                                 1,
+                                 $p->lunches,
+                                 $p->sdate_obj,
+                                 $p->edate_obj + $p->extradays,
+                                 $p->prog_start_obj(),
+                             ),
         );
     }
     my $s = _get_cluster_groups($c, $id);
@@ -1375,7 +1364,8 @@ sub update_lunch : Local {
         lunch_table => lunch_table(0,
                                    $p->lunches,
                                    $p->sdate_obj,
-                                   $p->edate_obj + $p->extradays
+                                   $p->edate_obj + $p->extradays,
+                                   $p->prog_start_obj(),
                                   ),
         template    => "program/update_lunch.tt2",
     );

@@ -14,7 +14,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
 &nbsp;&nbsp;&nbsp;
 [% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]<a href="/person/list_mmi_payment/[% id %]">MMI Payments</a>[% END %]
-<p>
+<p class=p2>
 <a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/donation/create/[% id %]" accesskey='n'>Do<span class=keyed>n</span>ate</a>
@@ -56,7 +56,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         <a href="/member/view/[% person.member.id %]" accesskey='m'><span class=keyed>M</span>ember Info</a>
     [% END %]
 [% END %]
-<p>
+<p class=p2>
 <table cellpadding=3 border=0>
 
 <tr>
@@ -78,7 +78,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <th align=right valign=top>Sex</th><td>[% sex %]</td>
 </tr>
 
-<tr><th align=right>Address</th><td>[% person.addr1 %]</td>
+<tr><th align=right valign=top>Address</th><td>[% person.addr1 %][% IF person.addr2 %]<br>[% person.addr2 %][% END %]</td>
 <th align=right valign=top>Mailings</th>
 <td rowspan=3>
 <table>
@@ -89,7 +89,6 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 </td>
 </tr>
 
-<tr><th align=right>&nbsp;</th><td>[% person.addr2 %]</td></tr>
 
 <tr><th align=right>City</th><td>[% person.city %]</td>
 </tr>
@@ -126,7 +125,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 
 </table>
 
-<p>
+<p class=p2>
 <span class=larger>Affiliations</span>
 <ul>
 [% FOREACH a IN person.affils %]
@@ -135,25 +134,25 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 </ul>
 
 [% IF person.rides %]
-    <p>
+    <p class=p2>
     <span class=larger>Rides</span>
     <ul>
     <table cellpadding=3>
     <tr>
     <th align=center>Date</th>
-    <th align=center>Time</th>
+    <th align=left>Time</th>
     </tr>
     [% FOR r IN person.rides %]
         <tr>
-        <td><a href=/ride/update/[% r.id %]>[% r.pickup_date_obj %]</a></td>
-        <td>[% r.pickup_time %]</td>
+        <td><a href=/ride/view/[% r.id %]>[% r.pickup_date_obj %]</a></td>
+        <td>[% r.flight_time_obj.format('ampm') %]</td>
         </tr>
     [% END %]
     </table>
     </ul>
 [% END %]
 [% IF person.donations %]
-    <p>
+    <p class=p2>
     <span class=larger>Donations</span>
     <ul>
     <table cellpadding=3>
@@ -178,7 +177,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 
 [% pays = person.payments %]
 [% IF pays %]
-    <p>
+    <p class=p2>
     <span class=larger>Payments</span>
     <ul>
     <table cellpadding=3 width=800>
@@ -203,7 +202,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 
 [% progs = person.leader.programs %]
 [% IF Catalyst.check_user_roles('prog_staff') && progs %]
-    <p>
+    <p class=p2>
     <span class=larger>Programs Lead</span>
     <ul>
     <table cellpadding=3>
@@ -219,7 +218,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 
 [% regs = person.registrations %]
 [% IF Catalyst.check_user_roles('prog_staff') && regs %]
-    <p>
+    <p class=p2>
     <span class=larger>Registrations</span>
     <ul>
     <table cellpadding=3>
@@ -239,7 +238,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 [% END %]
 
 [% IF person.credits %]
-    <p>
+    <p class=p2>
     <span class=larger>Credits</span>
     <ul>
     <table cellpadding=3>
@@ -265,7 +264,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 
 [% proposals = person.proposals %]
 [% IF Catalyst.check_user_roles('prog_staff') && proposals %]
-    <p>
+    <p class=p2>
     <span class=larger>Proposals Submitted</span>
     <ul>
     <table cellpadding=3>
@@ -285,7 +284,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 
 [% rentals = person.rentals %]
 [% IF Catalyst.check_user_roles('prog_staff') && rentals %]
-    <p>
+    <p class=p2>
     <span class=larger>Rentals Coordinated</span>
     <ul>
     <table cellpadding=3>

@@ -1024,3 +1024,26 @@ If type a number in the issue search box - bring up that issue.
 Guru Purnima affil auto for Members
 
 capitalize zip_post
+
+Credit Cards are attributes of the Person
+    ride_admin only one to see/input them
+    input when scheduling a ride.
+    number, expiry date, security code
+    only visible when viewing/creating ride
+    stored with simple encryption (but fun)
+    decrypted on page by javascript not Perl
+    shown in list of unpaid rides in larger font with amount, name
+Rides
+    to/from MMC to/from airport
+    To/From, Airport Code (SJC, SFO, OAK), time, flight #, comment
+    sort list by date, airport, time
+    list is visible to all.
+    only ride_admin can edit/change/delete
+
+program, reg confnote_ex - obsolete?
+    loadreg must put '' in that field for no NOTES to appear?
+
+User editing,creation by super admin - office, cell, txt_msg
+
+display colors - put in User Profile
+make it all vertical - it's not just about passwords.

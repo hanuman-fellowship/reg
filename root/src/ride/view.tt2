@@ -1,19 +1,26 @@
 <h2>Ride</h2>
+[% IF Catalyst.check_user_roles('ride_admin') %]
+<a href="/ride/update/[% ride.id %]">Edit</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/ride/delete/[% ride.id %]"
  onclick="return confirm('Okay to Delete [% ride.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+[% END %]
 <a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
 <ul>
 <table cellpadding=5 border=0>
 
+[% rider = ride.rider %]
+[% driver = ride.driver %]
+
 <tr>
 <th align=right>Rider</th>
-<td><a href=/person/view/[% ride.rider.id %]>[% ride.rider.first %] [% ride.rider.last %]</a></td>
+<td><a href=/person/view/[% rider.id %]>[% rider.first %] [% rider.last %]</a></td>
 </tr>
 
 <tr>
 <th align=right>Driver</th>
-<td><a href=/user/view/[% ride.driver.id %]>[% ride.driver.first %] [% ride.driver.last %]</a></td>
+<td><a href=/user/view/[% driver.id %]>[% driver.first %] [% driver.last %]</a></td>
 </tr>
 
 <tr>
@@ -22,18 +29,28 @@
 </tr>
 
 <tr>
+<th align=right>Direction</th>
+<td>[% ride.from_to %]</td>
+</tr>
+
+<tr>
+<th align=right>Airport</th>
+<td>[% ride.airport %]</td>
+</tr>
+
+<tr>
+<th align=right>Carrier</th>
+<td>[% ride.carrier %]</td>
+</tr>
+
+<tr>
+<th align=right>Flight #</th>
+<td>[% ride.flight_num %]</td>
+</tr>
+
+<tr>
 <th align=right>Time</th>
-<td>[% ride.pickup_time %]</td>
-</tr>
-
-<tr>
-<th align=right>From</th>
-<td>[% ride.pickup_location %]</td>
-</tr>
-
-<tr>
-<th align=right>To</th>
-<td>[% ride.dropoff_location %]</td>
+<td>[% ride.flight_time_obj.format(24) %]</td>
 </tr>
 
 <tr>
@@ -41,9 +58,33 @@
 <td>[% ride.cost %]</td>
 </tr>
 
+[% IF Catalyst.check_user_roles('ride_admin') %]
+
 <tr>
-<th align=right>Type</th>
-<td>[% ride.type_sh %]</td>
+<th align=right>Credit Card Number</th>
+<td>[% rider.cc_number1 %]-[% rider.cc_number2 %]-[% rider.cc_number3 %]-[% rider.cc_number4 %]</td>
+</tr>
+
+<tr>
+<th align=right>Expiration Date</th>
+<td>[% rider.cc_expire %]</td>
+</tr>
+
+<tr>
+<th align=right>Security Code</th>
+<td>[% rider.cc_code %]</td>
+</tr>
+
+[% END %]
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td>[% ride.comment %]</td>
+</tr>
+
+<tr>
+<th align=right>Date Paid</th>
+<td>[% ride.paid_date_obj %]</td>
 </tr>
 
 </table>
