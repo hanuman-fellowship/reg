@@ -1,6 +1,6 @@
 <style type="text/css">
 .cc td, .cc a, .cc th {
-    font-size: 18pt;
+    font-size: 16pt;
 }
 </style>
 <h2>Charging Credit Cards for Rides</h2>
@@ -30,7 +30,7 @@
 <td><input type=checkbox name=r[% r.id %] value='yes'></td>
 </tr>
 [% END %]
-<tr><td></td><td><input type=submit value="Submit"></td></tr>
+<tr><td colspan=7></td><td><input type=submit value="Submit"></td></tr>
 </table>
 </ul>
 </form>

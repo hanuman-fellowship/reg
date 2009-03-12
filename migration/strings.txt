@@ -149,3 +149,4 @@ payment_D Credit
 payment_S Cash
 payment_U Due
 password_security 0
+ride_glnum 98765

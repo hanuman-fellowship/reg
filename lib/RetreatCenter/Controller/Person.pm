@@ -174,6 +174,8 @@ sub delete : Local {
     # what about registrations???  these, too.
     #
     if ($p->leader || $p->member) {
+        # ??? does this do repeated searches?  ask once, sent the
+        # answer to the template.
         $c->stash->{person} = $p;
         $c->stash->{conjunction} = " and a " if $p->leader && $p->member;
         $c->stash->{template} = "person/memberleader.tt2";

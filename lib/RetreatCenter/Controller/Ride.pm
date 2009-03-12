@@ -25,6 +25,7 @@ sub index : Private {
 
 #
 # show future rides
+# and ones that have not yet been paid for.
 #
 sub list : Local {
     my ($self, $c) = @_;
@@ -186,6 +187,26 @@ sub pay : Local {
     });
     $c->stash->{rides} = \@rides;
     $c->stash->{template} = "ride/pay.tt2";
+}
+
+sub pay_do : Local {
+    my ($self, $c) = @_;
+
+    my @paid_ids;
+    for my $p ($c->request->param()) {
+        if ($p =~ m{r(\d+)}) {
+            push @paid_ids, $1;
+        }
+    }
+    if (@paid_ids) {
+        my $today = today()->as_d8();
+        model($c, 'Ride')->search({
+            id => { -in => \@paid_ids },
+        })->update({
+            paid_date => $today,          
+        });
+    }
+    $c->forward('list');
 }
 
 sub access_denied : Private {

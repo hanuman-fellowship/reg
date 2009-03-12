@@ -203,11 +203,15 @@ Mar 8 8:40-10:40, 11:30-1:00, 1:20-1:50
 
     rides
     credit card info in Person
-Mar 9 9:40-10:30, 11:35-1:00, 2:40-5:10, 6:00-
+Mar 9 9:40-10:30, 11:35-1:00, 2:40-5:10, 6:00-7:10
     credit cards in Rides
     ride payment dialog
     ride_admin role
     Time::Simple input, output
+Mar 10 10:55-11:30, 10:50-12:00
+    responding to issues.
+    paying for rides, catching the payments in Deposits
+Mar 11
     MMC does Reg - meeting place on rental not on program (for contract)
         on calendar do not show programs that have no meeting place
         but do have a rental with same name, same dates,

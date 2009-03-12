@@ -46,5 +46,14 @@ sub type_sh {
     my ($self) = @_;
     return $string{"payment_" . $self->type()};
 }
+sub name {
+    my ($self) = @_;
+    my $rider = $self->rider;
+    return $rider->first() . " " . $rider->last();
+}
+sub link {
+    my ($self) = @_;
+    return "/ride/view/" . $self->id;
+}
 
 1;

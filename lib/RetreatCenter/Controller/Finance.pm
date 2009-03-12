@@ -87,6 +87,30 @@ sub reconcile_deposit : Local {
             };
         }
     }
+    if ($source eq 'mmc') {
+        # ride payments are handled differently
+        # and it is always a credit card payment.
+        #
+        for my $r (model($c, 'Ride')->search({
+                       paid_date => { between => [ $date_start, $date_end ] },
+                   })
+        ) {
+            my $amt = $r->cost();
+            push @payments, {
+                name => $r->name(),
+                link => $r->link(),
+                date => $r->paid_date_obj->format("%D"),
+                type => 'C',
+                cash => 0,
+                chk  => 0,
+                credit => $amt,
+                online => 0,
+                pname => "Ride",
+            };
+            $credit += $amt;
+            $total += $amt;
+        }
+    }
     @payments = sort {
                         $a->{name} cmp $b->{name}
                     }
@@ -113,6 +137,7 @@ sub reconcile_deposit : Local {
 #
 # the optional id is passed in if we are viewing a past deposit.
 # Without it we are creating a new one.
+# dup'ed code from above - DRY???
 #
 sub file_deposit : Local {
     my ($self, $c, $source, $id) = @_;
@@ -159,6 +184,24 @@ sub file_deposit : Local {
                 amt    => $amt,
                 glnum  => $p->glnum(),
                 pname  => $p->pname(),
+            };
+        }
+    }
+    if ($source eq 'mmc') {
+        # ride payments are handled differently
+        # and it is always a credit card payment.
+        #
+        for my $r (model($c, 'Ride')->search({
+                       paid_date => { between => [ $date_start, $date_end ] },
+                   })
+        ) {
+            push @payments, {
+                name => $r->name(),
+                date => $r->paid_date_obj->format("%D"),
+                type => 'C',
+                amt   => $r->cost(),
+                glnum => $string{ride_glnum},
+                pname => "Ride",
             };
         }
     }
