@@ -142,7 +142,7 @@ else {
 </textarea>
 
 <tr>
-<td>Date Paid</td>
+<th align=right>Date Paid</th>
 <td><input type=text name=paid_date value ='[% ride.paid_date %]' size=10></td>
 </tr>
 
