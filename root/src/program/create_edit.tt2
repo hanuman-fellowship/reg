@@ -262,7 +262,7 @@ Misc
 
 <!-- Misc -->
 <div id="content4" class="tabcontent" style="display: none">
-<table cellpadding=3 border=1>
+<table cellpadding=3 border=0>
 
 <tr>
 <th align=right>Kaya Kalpa</th>
