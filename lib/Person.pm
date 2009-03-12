@@ -39,6 +39,7 @@ sub search {
 sub search_start {
     my ($class, $sql) = @_;
 
+    DBH->init();
     my $search_sth = $dbh->prepare($sql)
         or die "cannot prepare $sql: $DBI::errstr\n";
     $search_sth->execute()
