@@ -7,8 +7,7 @@ else
 fi
 if [ $# = 0 ]
 then
-    nohup script/retreatcenter_server.pl &
-    tail -f nohup.out
+    script/retreatcenter_server.pl >cat.out 2>&1 &
 else
     script/retreatcenter_server.pl
 fi
