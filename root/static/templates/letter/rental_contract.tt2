@@ -4,7 +4,7 @@
 body {
     width: 7in;
     margin-left: .5in;
-    margin-top: 1in;
+    margin-top: 1.5in;
 }
 h3 {
     text-align: center;
@@ -113,7 +113,7 @@ to [% rental.end_hour_obj.format('ampm') %] on [% rental.edate_obj.format("%A %B
 <h2>Rates</h2>
 The costs below are dollars per person per day.
 [% hc = rental.housecost %]
-<table cellpadding=3>
+<table cellpadding=2>
 <tr><td>Commuting</th><td align=right>[% hc.commuting %]</td></tr>
 <tr><td>Own Tent</th><td align=right>[% hc.own_tent %]</td></tr>
 <tr><td>Own Van</th><td align=right>[% hc.own_van %]</td></tr>
@@ -161,23 +161,19 @@ three vegetarian meals
 two vegetarian meals and a snack
 [% END %]
 per day:
-<ul>
-<table cellpadding=3>
+<table cellpadding=2>
 <tr><td>Breakfast</td><td>8:15 am</td></tr>
 <tr><td>[% IF lunch %]Lunch[% ELSE %]Snack[% END %]</td><td>12:30 pm</td></tr>
 <tr><td>Dinner</td><td>5:00 pm</td></tr>
 </table>
-</ul>
 with the following schedule on the weekend:
-<ul>
-<table cellpadding=3>
+<table cellpadding=2>
 <tr><td>Friday Dinner</td><td>5:30 pm</td></tr>
 <tr><td>Saturday Brunch</td><td>10:00 am</td></tr>
 <tr><td>Saturday Snack[% IF lunch %] (no Lunch)[% END %]</td><td>1:00 pm</td></tr>
 <tr><td>Saturday Dinner</td><td>5:00 pm</td></tr>
 <tr><td>Sunday Breakfast</td><td>8:30 am</td></tr>
 </table>
-</ul>
 To be assured of a complete, fresh, hot meal, guests must arrive
 within the first half-hour of mealtime. 
 Meals are at the Community Building for the renter,
@@ -195,7 +191,7 @@ for y number of days, the Agreed Upon Revenue is
 (x)(y)(dormitory rate above). 
 <p>
 Cancellation charges shall be as follows:
-<table cellpadding=5>
+<table cellpadding=2>
 <tr>
 <th>
 If Written Notice Is Received in Advance
