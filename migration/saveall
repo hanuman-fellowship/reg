@@ -12,3 +12,5 @@ saveusers
 saverent
 saveprog
 saveevent
+tar cf backup.tar don mem iss users rent prog.txt meet event
+sendbackup

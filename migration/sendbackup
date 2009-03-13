@@ -1,0 +1,21 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+#
+# compute the current date
+# ftp backup.tar to logicalpoetry.com
+# under a dated name.
+#
+use lib "../lib";
+use Date::Simple qw/
+    today
+/;
+my $dname = "rc.backup.tar." . today()->format("%m-%d-%y");
+use Net::FTP;
+my $ftp = Net::FTP->new("logicalpoetry.com") or die "no ftp";
+$ftp->login("logicalpoetr", "bx42rg86") or die "no login";
+$ftp->cwd("backup") or die "no cwd";
+$ftp->binary() or die "no binary";
+$ftp->put("backup.tar", $dname) or die "no put";
+$ftp->quit();
