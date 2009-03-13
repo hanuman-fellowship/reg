@@ -481,20 +481,20 @@ sub housing_types {
 #
 sub parse_zips {
     my ($s) = @_;
-    $s =~ s/\s*,\s*/,/g;
 
+    $s = trim($s);
     # Check for zip range validity
-    if ($s =~ m/[^0-9,-]/) {
+    if ($s =~ m{[^0-9, -]}) {
         return "Only digits, commas, spaces and hyphen allowed"
               ." in the zip range field.";
     }
 
-    my @ranges = split /,/, $s, -1;
+    my @ranges = split m{\s*,\s*}, $s, -1;
 
     my $ranges_ref = [];
     for my $r (@ranges) {
         # Field must be either a zip range or a single zip
-        if ($r =~ m/^(\d{5})-(\d{5})$/) {
+        if ($r =~ m/^(\d{5})\s*-\s*(\d{5})$/) {
             my ($startzip, $endzip) = ($1, $2);
 
             if ($startzip > $endzip) {
