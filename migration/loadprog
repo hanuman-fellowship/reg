@@ -16,7 +16,7 @@ open my $mxin, "<", "prog.txt" or die "cannot open prog.txt: $!\n";
 while (<$mxin>) {
     chomp;
     my ($name, $max) = split m{\|};
-    $max{$name} = $max;
+    $max{$name} = $max || "";
 }
 close $mxin;
 
@@ -462,7 +462,7 @@ sub processProg {
 
     # is there already a max for this program?
     $hash{max} = "";
-    if (length $max{$hash{name}}) {
+    if (exists $max{$hash{name}} && length $max{$hash{name}}) {
         $hash{max} = $max{$hash{name}};
     }
 
