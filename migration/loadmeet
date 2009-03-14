@@ -33,13 +33,31 @@ while (<$meet>) {
     my ($name, $id, $meet_id, $rental_id, $program_id, $event_id, @flds)
         = split m{\|}, $_, -1;
     if ($rental_id) {
-        $rental_id = $rent_id{$name};
+        if (exists $rent_id{$name}) {
+            $rental_id = $rent_id{$name};
+        }
+        else {
+            print "no id for rental '$name'\n";
+            next;
+        }
     }
     elsif ($program_id) {
-        $program_id = $prog_id{$name};
+        if (exists $prog_id{$name}) {
+            $program_id = $prog_id{$name};
+        }
+        else {
+            print "no id for program '$name'\n";
+            next;
+        }
     }
     elsif ($event_id) {
-        $event_id = $event_id{$name};
+        if (exists $event_id{$name}) {
+            $event_id = $event_id{$name};
+        }
+        else {
+            print "no id for event '$name'\n";
+            next;
+        }
     }
     $sth->execute($id, $meet_id, $rental_id, $program_id, $event_id, @flds);
 }
