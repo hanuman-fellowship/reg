@@ -4,5 +4,8 @@
 # Get the rooms/campsites to be made up every morning at 1:00 am.
 0 1 * * * /home/sahadev/RetreatCenter/makeup
 
+# at 11:30 pm back up all the data in mysql and send it offsite
+30 23 * * * /home/sahadev/RetreatCenter/db_backup
+
 # restart the Catalyst server on reboot
 @reboot /home/sahadev/RetreatCenter/x

@@ -1,0 +1,8 @@
+#/bin/sh
+cd /home/sahadev/RetreatCenter
+day=`date +%a`
+f=rc.$day
+rm -f $f $f.gz
+mysqldump --user=root --add-drop-table --databases reg2 >$f
+gzip $f
+sendit $f.gz

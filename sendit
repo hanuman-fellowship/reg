@@ -1,0 +1,14 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $fname = shift;
+    
+use Net::FTP;
+my $ftp = Net::FTP->new("logicalpoetry.com") or die "no ftp";
+$ftp->login("logicalpoetr", "bx42rg86") or die "no login";
+$ftp->cwd("backup") or die "no cwd";
+$ftp->binary() or die "no binary";
+$ftp->put($fname) or die "no put";
+$ftp->quit();
+
