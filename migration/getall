@@ -10,5 +10,3 @@ echo uncompress
 gunzip -f dmpfile.tar.Z
 echo untar
 tar xvf dmpfile.tar
-
-#./loadall
