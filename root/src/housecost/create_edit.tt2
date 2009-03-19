@@ -79,6 +79,11 @@
 </tr>
 
 <tr>
+<th></th>
+<td><input type=checkbox value="yes" name=inactive [% checked_inactive %]>Inactive</td>
+</tr>
+
+<tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>
 </tr>

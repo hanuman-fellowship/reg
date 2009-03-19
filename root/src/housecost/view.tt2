@@ -3,12 +3,12 @@
 <a href="/housecost/update/[% housecost.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/housecost/create">Add</a>
-[% IF housecost.name != 'Default' %]
 &nbsp;&nbsp;&nbsp;
 <a href="/housecost/delete/[% housecost.id %]"
 onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
-[% END %]
-<p>
+&nbsp;&nbsp;&nbsp;
+<a href="/housecost/list">List</a>
+<p class=p2>
 [% END %]
 <table cellpadding=3 border=0>
 
@@ -19,7 +19,7 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Single Bath</th>
-<td align=right width=3>[% housecost.single_bath %]</td>
+<td align=right width=60>[% housecost.single_bath %]</td>
 <td></td>
 </tr>
 
@@ -81,6 +81,11 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 <tr>
 <th align=right>Type</th>
 <td colspan=2>[% housecost.type %]</td>
+</tr>
+
+<tr>
+<th align=right>Inactive</th>
+<td colspan=2>[% housecost.inactive %]</td>
 </tr>
 
 </table>

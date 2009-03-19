@@ -31,3 +31,4 @@ MMI payments need to be sorted out - following Brajesh's notes
     on the printout?
 enter # of free nights left for Sponsor members
     and free programs for Life members.
+need to create the parallel programs for mmc_does_reg rentals

@@ -1,4 +1,6 @@
 [% id = program.id %]
+[% prog_admin = Catalyst.check_user_roles('prog_admin') %]
+
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript">
@@ -77,7 +79,7 @@ function cluster_down(cluster_id) {
 </script>
 
 <h2>Programs</h2>
-[% IF Catalyst.check_user_roles('prog_admin') %]
+[% IF prog_admin %]
     <a href="/program/create">Add</a>
     [% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
         &nbsp;&nbsp;&nbsp;
@@ -90,6 +92,12 @@ function cluster_down(cluster_id) {
     &nbsp;&nbsp;&nbsp;
     <a href="/program/duplicate/[% program.id %]">Duplicate</a>
     &nbsp;&nbsp;&nbsp;
+[% END %]
+[% IF program.rental_id %]
+<a href=/rental/view/[% program.rental_id %]>To Rental</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
+[% IF prog_admin %]
     <a href="/program/brochure">Brochure</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish">Publish<a>
@@ -373,12 +381,14 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 <th align=right valign=top>Leaders</th>
 <td valign=top align=left colspan=3>
 [% leaders_house %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
+[% IF prog_admin %]
     <a href="/program/leader_update/[% id %]">Update</a>
 [% END %]
 <p>
 </td>
 </tr>
+
+[% IF program.rental_id == 0 %]     <!-- not for rental-programs -->
 
 <tr>
 <th align=right valign=top width=150>Meeting Places</th>
@@ -399,7 +409,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </td>
 </tr>
 
-[% IF Catalyst.check_user_roles('prog_admin') %]
+[% IF prog_admin %]
 <tr>
 <td></td>
 <td>
@@ -408,13 +418,15 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </tr>
 [% END %]
 
+[% END %]
+
 <tr>
 <th align=right valign=top>Affiliations</th>
 <td align=left valign=top colspan=2>
 [% FOR a IN program.affils %]
     [% a.descrip %]<br>
 [% END %]
-[% IF Catalyst.check_user_roles('prog_admin') %]
+[% IF prog_admin %]
     <a href="/program/affil_update/[% id %]">Update</a>
 [% END %]
 </td>

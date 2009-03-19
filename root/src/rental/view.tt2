@@ -1,4 +1,6 @@
 [% id = rental.id %]
+[% proposal = rental.proposal %]
+[% prog_admin = Catalyst.check_user_roles('prog_admin') %]
 
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <!-- include overlib.js only when needed -->
@@ -13,7 +15,7 @@ h3 {
 }
 </style>
 <h2>Rentals</h2>
-[% IF Catalyst.check_user_roles('prog_admin') %]
+[% IF prog_admin %]
 <a href="/rental/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
@@ -23,17 +25,24 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/duplicate/[% rental.id %]">Duplicate</a>
 &nbsp;&nbsp;&nbsp;
-[% proposal = rental.proposal %]
+[% END %]
 [% IF proposal %]
 <a href="/proposal/view/[% proposal.id %]">To Proposal</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
+
+[% IF rental.program_id %]
+<a href="/program/view/[% rental.program_id %]">To Program</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
+
+[% IF prog_admin %]
 <a href="/program/publish">Publish</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/contract/[% rental.id %]">Contract</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/invoice/[% rental.id %]">Invoice</a>
-<p>
+<p class=p2>
 [% END %]
 
 <table cellpadding=7>

@@ -60,8 +60,20 @@ sub index : Private {
 }
 
 sub create : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $rental) = @_;
+        # $rental is optional - see sub parallel().
 
+    my @name = ();
+    my @dates = ();
+    my $rental_id = 0;
+    if ($rental) {
+        push @name, name => $rental->name();
+        push @dates, 
+            sdate => $rental->sdate_obj->format("%D"),
+            edate => $rental->edate_obj->format("%D"),
+        ;
+        $rental_id = $rental->id();
+    }
     Global->init($c);
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
@@ -89,20 +101,24 @@ sub create : Local {
             full_tuition => 0,
             deposit      => 100,
             canpol       => { name => "Default" },  # a clever way to set default!
-            housecost    => { name => "Default" },  # fake an object!
+            # no more Default
+            # housecost    => { name => "Default" },  # fake an object!
             ptemplate    => 'default',
             cl_template  => 'default',
             reg_start    => $string{reg_start},
             reg_end      => $string{reg_end},
             prog_start   => $string{prog_start},
             prog_end     => $string{prog_end},
+            @name,
         },
         canpol_opts => [ model($c, 'CanPol')->search(
             undef,
             { order_by => 'name' },
         ) ],
         housecost_opts => [ model($c, 'HouseCost')->search(
-            undef,
+            {
+                inactive => { '!=' => 'yes' },
+            },
             { order_by => 'name' },
         ) ],
         template_opts => [
@@ -121,6 +137,8 @@ sub create : Local {
 <option value=M>Masters
 <option value=S>Course
 EOO
+        @dates,
+        rental_id   => $rental_id,
         show_level  => "hidden",
         form_action => "create_do",
         template    => "program/create_edit.tt2",
@@ -292,9 +310,21 @@ sub create_do : Local {
     my $p = model($c, 'Program')->create({
         summary_id => $sum->id,
         image      => $upload? "yes": "",
-        %P,
+        %P,         # this includes rental_id for a possible parallel rental
     });
     my $id = $p->id();
+
+    if ($P{rental_id}) {
+        # we just created a parallel program
+        # put its id in its corresponding parallel rental.
+        # this is all very tricky!
+        #
+        my $r = model($c, 'Rental')->find($P{rental_id});
+        $r->update({
+            program_id => $id,
+        });
+    }
+
     if ($upload) {
         $upload->copy_to("root/static/images/po-$id.jpg");
         Global->init($c);
@@ -341,7 +371,7 @@ sub view : Local {
         );
     }
 
-    if ($p->name !~ m{personal retreats}i) {
+    if (!($p->name() =~ m{personal retreats}i || $p->level() =~ m{[DCM]})) {
         stash($c,
               lunch_table => lunch_table(
                                  1,
@@ -588,7 +618,9 @@ sub update : Local {
         ) ],
         housecost_opts =>
             [ model($c, 'HouseCost')->search(
-                undef,
+                {
+                    inactive => { '!=' => 'yes' },
+                },
                 { order_by => 'name' },
             ) ],
         template_opts => [
@@ -1748,6 +1780,42 @@ sub email_all_do : Local {
         snails   => \@snails,
         template => "program/email_report.tt2",
     );
+}
+
+#
+# we have just created or updated a rental and
+# mmc_does_reg was set to true (yes) from either not being
+# set at all (creation) or from being not set.
+# put up a program creation dialog with name and dates taken
+# from the rental.
+#
+sub parallel : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $rental = model($c, 'Rental')->find($rental_id);
+    __PACKAGE__->create($c, $rental);
+}
+
+sub view_parallel : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $name = $rental->name();
+    my $sdate = $rental->sdate();
+    my $edate = $rental->edate();
+    my @programs = model($c, 'Program')->search({
+        name => $name,
+        sdate => $sdate,
+        edate => $edate,
+    });
+    if (@programs) {
+        my $prog_id = $programs[0]->id();
+        $c->response->redirect($c->uri_for("/program/view/$prog_id"));
+    }
+    else {
+        error($c,
+            "Sorry, No parallel Program for Rental '$name'.",
+            "program/error.tt2",
+        );
+    }
 }
 
 1;

@@ -159,7 +159,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% END %]
 </td></tr></table>
 </td>
-<th align=right valign=top>Housing Preferences</th><td valign=center>[% reg.pref1_sh %]<br>[% reg.pref2_sh %]</td>
+<th align=right>Housing Preferences</th><td valign=center>[% reg.pref1_sh %], [% reg.pref2_sh %]</td>
 </tr>
 
 <tr>

@@ -1,7 +1,18 @@
+<p class=p2>
 Sorry, the housing cost named '[% housecost.name %]'<br>
-cannot be deleted because it is being used in the following programs:
+cannot be deleted because it is being used in the following:
 <ul>
+[% IF programs %]
+<h3>Programs</h3>
 [% FOR p IN programs %]
     <a href="/program/view/[% p.id %]">[% p.name %]</a><br>
+[% END %]
+[% END %]
+<p class=p2>
+[% IF rentals %]
+<h3>Rentals</h3>
+[% FOR r IN rentals %]
+    <a href="/rental/view/[% r.id %]">[% r.name %]</a><br>
+[% END %]
 [% END %]
 </ul>

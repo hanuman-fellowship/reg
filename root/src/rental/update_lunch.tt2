@@ -2,7 +2,7 @@
 function toggle_all() {
     var form = document.form;
     for (var i = 0; i < form.length; ++i) {
-        if (form[i].type == 'checkbox') {
+        if (form[i].type == 'checkbox' && form[i].name != 'all') {
             form[i].checked = ! form[i].checked;
         }
     }

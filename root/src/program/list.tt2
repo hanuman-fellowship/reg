@@ -20,24 +20,32 @@
 <ul>
 <table border=0 cellpadding=3>
 <tr>
-<th></th>
+<td></td>   <!-- for marking rental-programs and mmi program -->
 <th align=left>Name</th>
 <th align=left>Start Date</th>
 <th align=right>Reg Count</th>
-<th align=left>Title</th>
+<th align=left>Actions</th>
 </tr>
+[% class = 'fl_row0' %]
 [% FOREACH p IN programs %]
-    <tr>
-    <td>[% IF p.school != 0 %]<span class=required>*</span>[% END %]</td>
-    <td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
-    <td>[% p.sdate_obj %]</td>
-    <td align=right>[% p.reg_count %]&nbsp;&nbsp;</td>
+    <tr class=[% class %]>
+    <td class=fl_row0>[% IF p.school != 0 %]<span class=required>*</span>[% ELSIF p.rental_id != 0 %]%[% END %]</td>
     [% IF p.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
-        <td><a href="/registration/first_reg/[% p.id %]">[% p.title %]</a></td>
+        <td><a href="/registration/first_reg/[% p.id %]">[% p.name %]</a></td>
     [% ELSE %]
-        <td>[% p.title %]</td>
+        <td>[% p.name %]</td>
     [% END %]
+    <td>[% p.sdate_obj %]</td>
+    <td align=right>[% p.reg_count %]&nbsp;&nbsp;&nbsp;</td>
+    <td width=40><a href="/program/view/[% p.id %]" title="[% p.title %]">Prog</a></td>
+    <td width=40><a href="/registration/list_reg_name/[% p.id %]">All</a></td>
+    <td width=40><a href="/summary/view/program/[% p.summary_id %]">Sum</a></td>
     </tr>
+    [% IF class == 'fl_row0' %]
+        [% class = 'fl_row1' %]
+    [% ELSE %]
+        [% class = 'fl_row0' %]
+    [% END %]
 [% END %]
 </table>
 </ul>

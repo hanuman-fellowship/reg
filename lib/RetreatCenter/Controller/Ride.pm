@@ -8,10 +8,12 @@ use Util qw/
     empty
     model
     trim
+    email_letter
 /;
 use Date::Simple qw/
     date
     today
+    days_in_month
 /;
 use Global qw/
     %string
@@ -68,12 +70,55 @@ sub _get_data {
             push @mess, "Invalid pick up date: $hash{pickup_date}";
         }
     }
+    if (   $hash{cc_number1} !~ m{\d{4}}
+        || $hash{cc_number2} !~ m{\d{4}}
+        || $hash{cc_number3} !~ m{\d{4}}
+        || $hash{cc_number4} !~ m{\d{4}}
+    ) {
+        push @mess, "Invalid credit card number";
+    }
+    if ($hash{cc_expire} !~ m{(\d\d)(\d\d)}) {
+        push @mess, "Invalid expiration date";
+    }
+    my $month = $1;
+    my $year = $2;
+    if (! (1 <= $month && $month <= 12)) {
+        push @mess, "Invalid month in expiration date";
+    }
+    else {
+        my $today = today();
+        my $cur_century = (int($today->year() / 100)) * 100;
+            # another way to just get the century?
+
+        my $exp_date = date($year + $cur_century,
+                            $month,
+                            days_in_month($year, $month)
+                       );
+        if ($today > $exp_date) {
+            push @mess, "Credit card has expired";
+        }
+    }
+    if ($hash{cc_code} !~ m{\d{3}}) {
+        push @mess, "Invalid security code";
+    }
     $hash{cc_number} = $hash{cc_number1} 
                      . $hash{cc_number2}
                      . $hash{cc_number3}
                      . $hash{cc_number4}
                      ;
     delete $hash{"cc_number$_"} for 1 .. 4;
+    if (empty($hash{paid_date})) {
+        $hash{paid_date} = '';      # to be sure???
+    }
+    else {
+        my $dt = date($hash{paid_date});
+        if ($dt) {
+            $hash{paid_date} = $dt->as_d8();
+        }
+        else {
+            push @mess, "Invalid paid date: $hash{paid_date}";
+        }
+    }
     # ...
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -168,6 +213,22 @@ sub create_do : Local {
     delete $hash{cc_code};
     $hash{paid_date} = '';
     my $ride = model($c, 'Ride')->create(\%hash);
+
+
+    # we have created the ride
+    # send email to driver and rider both with
+    # the appropriate details.
+    #
+    my $driver = model($c, 'User')->find($hash{driver_id});
+    # ??? check that there ARE email addresses...
+    my $html = "hi <i>there</i>";
+    email_letter($c,
+        to      => $p->email(),
+        cc      => $driver->email(),
+        from    => "$string{from_title} <$string{from}>",
+        subject => "Ride Scheduled",
+        html    => $html, 
+    );
     $c->response->redirect($c->uri_for("/ride/view/" . $ride->id()));
 }
 
@@ -214,6 +275,46 @@ sub access_denied : Private {
 
     $c->stash->{mess}  = "Authorization denied!";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub search : Local {
+    my ($self, $c) = @_;
+    
+    my @cond = (); 
+    my $start = $c->request->param('start');
+    $start = date($start);
+    if ($start) {
+        push @cond, pickup_date => { '>=' => $start->as_d8() };
+    }
+    my $end = $c->request->param('end');
+    $end = date($end);
+    if ($end) {
+        push @cond, pickup_date => { '<=' => $end->as_d8() };
+    }
+    my $name = $c->request->param('name');
+    $name =~ s{\*}{%}g;
+    if (! empty($name)) {
+        push @cond, 'rider.last' => { 'like' => "%$name%" };
+    }
+    if (! @cond) {
+        # same as list
+        #
+        push @cond, -or => [
+                        pickup_date => { '>=' => today()->as_d8() },
+                        paid_date   => '',
+                    ];
+    }
+    $c->stash->{rides} = [ model($c, 'Ride')->search(
+        {
+            @cond,
+        },
+        {
+            order_by => 'pickup_date, airport, flight_time',
+            join     => [qw/ rider /],
+            prefetch => [qw/ rider /],   
+        }
+    ) ];
+    $c->stash->{template} = "ride/list.tt2";
 }
 
 1;

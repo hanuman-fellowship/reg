@@ -68,6 +68,7 @@ __PACKAGE__->add_columns(qw/
     max
     notify_on_reg
     summary_id
+    rental_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

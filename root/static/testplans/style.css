@@ -21,3 +21,11 @@ h2 {
 }
 h3 {
 }
+a {
+    color: blue;
+    text-decoration: none;
+}
+a:hover {
+    color: white;
+    background: blue;
+}

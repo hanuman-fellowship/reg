@@ -2,7 +2,7 @@
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
 <script type="text/javascript">
 
 init_tabs(4, 0, 1);
@@ -345,6 +345,10 @@ Misc
 </div>
 
 </td></tr></table>
+
+[% IF rental_id %]
+<input type=hidden name=rental_id value="[% rental_id %]">
+[% END %]
 
 </form>
 

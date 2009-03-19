@@ -1,10 +1,43 @@
+<script type="text/javascript">
+// prepare for an Ajax call:
+var xmlhttp = false;
+var ua = navigator.userAgent.toLowerCase();
+if (!window.ActiveXObject)
+    xmlhttp = new XMLHttpRequest();
+else if (ua.indexOf('msie 5') == -1)
+    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+else
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+function getIt() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        document.form.sex[ xmlhttp.responseText == 'F'? 0: 1 ].checked = true;
+    }
+}
+
+// get the values in the first
+// and send off the Ajax request.
+// when the response to it is received,
+// it will be processed by getIt() above.
+function get_gender() {
+    var first = document.form.first.value;
+    var url = '[% Catalyst.uri_for("/person/get_gender/") %]' + first;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = getIt;
+    xmlhttp.send(null);
+    return true;
+}
+</script>
 <h2>People</h2>
 <!-- this form doubles as an update and as a create form. -->
 <form action=[% "/person/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
     <tr>
         <th align=right><span class="required">*</span> First</th>
-        <td><input tabindex=1 type=text name=first value="[% person.first %]"></td>
+        <td><input tabindex=1 type=text name=first value="[% person.first %]"
+                   onblur="get_gender();"
+            >
+        </td>
         <th align=right>Home</th>
         <td><input tabindex=15 type=text name=tel_home value="[% person.tel_home %]"></td>
     </tr>

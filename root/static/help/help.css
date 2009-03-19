@@ -1,7 +1,7 @@
 body {
     margin-left: .5in;
     margin-right: 1in;
-    font-size: 12pt;
+    font-size: 13pt;
     font-family: Verdana;
 }
 quote {
@@ -20,4 +20,12 @@ dt {
     color: brown;
 }
 dd {
+}
+a {
+    color: blue;
+    text-decoration: none;
+}
+a:hover {
+    color: white;
+    background: blue;
 }

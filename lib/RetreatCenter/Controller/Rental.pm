@@ -164,8 +164,11 @@ sub _get_data {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "rental/error.tt2";
     }
-    $P{linked}    = "" unless exists $P{linked};
-    $P{tentative} = "" unless exists $P{tentative};
+    # checkboxes are not sent at all if not checked
+    #
+    $P{linked}       = "" unless exists $P{linked};
+    $P{tentative}    = "" unless exists $P{tentative};
+    $P{mmc_does_reg} = "" unless exists $P{mmc_does_reg};
 }
 
 sub create : Local {
@@ -173,7 +176,6 @@ sub create : Local {
 
     stash($c,
         check_linked     => '',
-        check_mmc_does_reg => '',
         check_tentative  => "checked",
         form_action      => "create_do",
         section          => 1,   # web
@@ -182,14 +184,16 @@ sub create : Local {
         string           => \%string,
         housecost_opts   =>
             [ model($c, 'HouseCost')->search(
-                undef,
+                {
+                    inactive => { '!=' => 'yes' },
+                },
                 { order_by => 'name' },
             ) ],
         rental => {     # double faked object
-            housecost => { name => "Default" },
             start_hour => "4:00",
             end_hour   => "1:00",
         },
+        check_mmc_does_reg => '',
     );
 }
 
@@ -218,6 +222,7 @@ sub create_do : Local {
         time_updated => sprintf("%02d:%02d", (localtime())[2, 1]),
     });
     $P{summary_id} = $sum->id;
+    $P{status} = "tentative";
     my $r = model($c, 'Rental')->create(\%P);
     my $id = $r->id();
     #
@@ -225,7 +230,12 @@ sub create_do : Local {
     # out to the end date of this rental.
     #
     add_config($c, $P{edate});
-    $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
+    if ($P{mmc_does_reg}) {
+        $c->response->redirect($c->uri_for("/program/parallel/$id"));
+    }
+    else {
+        $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
+    }
 }
 
 sub create_from_proposal : Local {
@@ -270,6 +280,7 @@ sub create_from_proposal : Local {
     $P{summary_id}     = $sum->id();
     $P{coordinator_id} = $proposal->person_id();
     $P{cs_person_id}   = $proposal->cs_person_id();
+    $P{status}         = "tentative";       # it is new.
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
@@ -284,10 +295,19 @@ sub create_from_proposal : Local {
     # out to the end date of this rental.
     #
     add_config($c, $P{edate});
+
+    # are we done yet?
     #
-    # and show the newly created rental
-    #
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/$section"));
+    if ($P{mmc_does_reg}) {
+        # no, make the parallel program
+        #
+        $c->response->redirect($c->uri_for("/program/parallel/$rental_id"));
+    }
+    else {
+        # yes, so show the newly created rental
+        #
+        $c->response->redirect($c->uri_for("/rental/view/$rental_id/$section"));
+    }
 }
 
 #
@@ -566,7 +586,9 @@ sub update : Local {
         check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
         housecost_opts  =>
             [ model($c, 'HouseCost')->search(
-                undef,
+                {
+                    inactive => { '!=' => 'yes' },
+                },
                 { order_by => 'name' },
             ) ],
     );
@@ -633,6 +655,8 @@ sub update_do : Local {
         $P{received_by} = $c->user->obj->id;
     }
 
+    my $mmc_does_reg_b4 = $r->mmc_does_reg();      # before the update
+
     $r->update(\%P);
     if ($names || $lunches) {
         $c->stash->{names}    = $names;
@@ -640,10 +664,14 @@ sub update_do : Local {
         $c->stash->{rental}   = $r;
         $c->stash->{template} = "rental/mp_warn.tt2";
     }
-    else {
-        $c->response->redirect($c->uri_for("/rental/view/"
-                               . $r->id . "/$section"));
+    elsif (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
+        $c->response->redirect($c->uri_for("/program/parallel/$id"));
     }
+    else {
+        $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
+    }
+    # Note... if someone changes lunches, dates, and mmc_does_reg
+    # all at the same time they are asking for trouble!
 }
 
 # what about the proposal that gave rise to this rental???
@@ -1067,8 +1095,8 @@ sub contract : Local {
         push @mess, "There is no assigned meeting place.";
     }
     my $hc_name = $rental->housecost->name();
-    if ($hc_name eq "Default") {
-        push @mess, "The housing cost cannot be the default.";
+    if (! $hc_name =~ m{rental}i) {
+        push @mess, "The housing cost must have 'Rental' in its name.";
     }
     if ($rental->lunches() =~ m{1} && $hc_name !~ m{lunch}i) {
         push @mess, "Housing Cost must include Lunch";
@@ -1377,7 +1405,7 @@ EOH
 
     my $extra_hours = 0;
     my $start = $rental->start_hour_obj();
-    my $end   = $rental->end_hour();
+    my $end   = $rental->end_hour_obj();
     my $extime = "";
     my $tr_extra = "";
     my $diff = Time::Simple->new("4") - $start;
@@ -1391,11 +1419,15 @@ EOH
         $extime .= " and " if $extime;
         $extime .= "ended at " . $end->format('ampm') . " (after 1:00)";
     }
-    my $extra_hours_charge = sprintf("%.2f", 
-                                     $extra_hours
-                                     * $tot_people
-                                     * $string{extra_hours_charge}
-                                    );
+    my $eh = $extra_hours
+             * $tot_people
+             * $string{extra_hours_charge}
+             ;
+    my $extra_hours_charge = sprintf("%d", int($eh));
+    my $rounded = "";
+    if ($eh != int($eh)) {
+        $rounded = " (rounded down)";
+    }
     if ($extra_hours) {
         my $pl = ($extra_hours == 1)? "": "s";
         $extra_hours = sprintf("%.2f", $extra_hours);
@@ -1408,7 +1440,7 @@ Since the rental $extime
 there is an extra time charge for
 $extra_hours hour$pl for $tot_people people
 at \$$string{extra_hours_charge}
-per hour = \$$s.
+per hour = \$$s$rounded.
 </div>
 </ul>
 EOH

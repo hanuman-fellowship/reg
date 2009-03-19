@@ -58,26 +58,4 @@ sub help_upload : Local {
     $c->response->redirect($c->uri_for("/static/help/index.html"));
 }
 
-sub display : Local {
-    my ($self, $c) = @_;
-   
-    my $u = $c->user;
-    $c->stash->{user_bg} = $u->bg     || '255,255,255' ;
-    $c->stash->{user_fg} = $u->fg     || '0,0,0';
-    $c->stash->{user_link} = $u->link || '0,0,255';
-    $c->stash->{template} = "configuration/display.tt2";
-}
-
-sub display_do : Local {
-    my ($self, $c) = @_;
-
-    my $u = $c->user;
-    $u->update({
-        bg   => $c->request->params->{user_bg},
-        fg   => $c->request->params->{user_fg},
-        link => $c->request->params->{user_link},
-    });
-    $c->stash->{template} = "configuration/index.tt2";
-}
-
 1;

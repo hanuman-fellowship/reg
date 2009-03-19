@@ -31,13 +31,17 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $hc = model($c, 'HouseCost')->find($id);
-    if ($hc->name eq 'Default') {
-        $c->stash->{template} = "housecost/nodel_default.tt2";
-        return;
-    }
+    my $error = 0;
     if (my @programs = $hc->programs()) {
-        $c->stash->{housecost} = $hc;
         $c->stash->{programs} = \@programs;
+        $error = 1;
+    }
+    if (my @rentals = $hc->rentals()) {
+        $c->stash->{rentals} = \@rentals;
+        $error = 1;
+    }
+    if ($error) {
+        $c->stash->{housecost} = $hc;
         $c->stash->{template} = "housecost/cannot_del.tt2";
         return;
     }
@@ -53,6 +57,7 @@ sub update : Local {
     my $type = $hc->type();
     $c->stash->{checked_perday} = ($type eq "Per Day")? "checked": "";
     $c->stash->{checked_total}  = ($type eq "Total" )? "checked": "";
+    $c->stash->{checked_inactive}  = $hc->inactive()? "checked": "";
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "housecost/create_edit.tt2";
 }
@@ -68,10 +73,11 @@ sub _get_data {
         push @mess, "Missing housing cost name.";
     }
     for my $k (keys %hash) {
-        next if $k eq "name" || $k eq "type";
+        next if $k eq "name" || $k eq "type" || $k eq "inactive";
         next if empty($hash{$k}) || $hash{$k} =~ m{^\s*\d+\s*$};
         push @mess, "Invalid cost for \u$k: $hash{$k}";
     }
+    $hash{inactive} = "" unless exists $hash{inactive};
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template}    = "housecost/error.tt2";
@@ -99,6 +105,7 @@ sub create : Local {
 
     $c->stash->{checked_perday} = "checked";
     $c->stash->{checked_total}  = "";
+    $c->stash->{checked_inactive}  = "";
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "housecost/create_edit.tt2";
 }

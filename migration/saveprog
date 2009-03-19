@@ -15,7 +15,7 @@ my $sql = "select id, name, max from program";
 my $sth = $dbh->prepare($sql) or die "oops\n";
 $sth->execute();
 open my $prog, ">", "prog.txt" or die "no prog.txt: $!\n";
-open my $meet, ">>", "meet/meet.txt" or die "no meet.txt\n";
+open my $meet, ">>", "meet/meet.txt" or die "no meet.txt\n";    # append!
 while (my ($id, $name, $max) = $sth->fetchrow_array()) {
     $max = "" if ! $max;
     print{$prog} "$name|$max\n";

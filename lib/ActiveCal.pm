@@ -7,7 +7,9 @@ use Date::Simple qw/
     date
     days_in_month
 /;
-use Global qw/%string/;
+use Global qw/
+    %string
+/;
 use GD;
 
 my $day_width = 30;
@@ -51,6 +53,7 @@ sub new {
     my $black = $im->colorAllocate(0,    0,  0);
     my $mon_thu = $im->colorAllocate($string{mon_thu_color} =~ m{\d+}g);
     my $fri_sun = $im->colorAllocate($string{fri_sun_color} =~ m{\d+}g);
+    my $abutt   = $im->colorAllocate($string{abutt_color} =~ m{\d+}g);
     # surrounding border
     $im->rectangle(0, 0, $cal_width-1, $cal_height-1, $black);
 
@@ -96,6 +99,7 @@ sub new {
         black  => $black,
         white  => $white,
         red    => $red,
+        abutt  => $abutt,
         cal_width  => $cal_width,
         cal_height => $cal_height,
         counts => [],
@@ -110,6 +114,7 @@ sub edate { shift->{edate}; }
 sub black { shift->{black}; }
 sub white { $_[0]->{white}; }
 sub red   { $_[0]->{red  }; }
+sub abutt { $_[0]->{abutt}; }
 sub ndays { $_[0]->{ndays}; }
 
 # return an array of keys

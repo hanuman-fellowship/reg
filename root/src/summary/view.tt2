@@ -51,8 +51,8 @@ th {
 </td><td valign=top>
 <a href='mailto:[% coord.email %]'>[% coord.email %]</a>
 </td><td>
-[% IF coord.tel_home %][% coord.tel_home %] home [% END %]<br>
-[% IF coord.tel_work %][% coord.tel_work %] work [% END %]<br>
+[% IF coord.tel_home %][% coord.tel_home %] home<br>[% END %]
+[% IF coord.tel_work %][% coord.tel_work %] work<br>[% END %]
 [% IF coord.tel_cell %][% coord.tel_cell %] cell [% END %]
 </td>
 </tr>
@@ -66,8 +66,8 @@ th {
 </td><td valign=top>
 <a href='mailto:[% cs.email %]'>[% cs.email %]</a>
 </td><td valign=top>
-[% IF cs.tel_home %][% cs.tel_home %] home [% END %]<br>
-[% IF cs.tel_work %][% cs.tel_work %] work [% END %]<br>
+[% IF cs.tel_home %][% cs.tel_home %] home<br>[% END %]
+[% IF cs.tel_work %][% cs.tel_work %] work<br>[% END %]
 [% IF cs.tel_cell %][% cs.tel_cell %] cell [% END %]
 </td>
 </tr>
@@ -122,7 +122,7 @@ th {
 </table>
 [% END %]
 
-<p>
+<p class=p2>
 
 <table cellpadding=3 border=0>
 

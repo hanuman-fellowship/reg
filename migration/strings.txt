@@ -149,4 +149,8 @@ payment_D Credit
 payment_S Cash
 payment_U Due
 password_security 0
-ride_glnum 98765
+ride_glnum 00025
+
+abutt_color 0,0,0
+abutt_thickness 5
+abutt_style 

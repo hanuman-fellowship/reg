@@ -17,7 +17,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 [% ELSIF ! proposal.denied %]
     <a target=_blank href="/proposal/approve/[% id %]">Approve</a>
 [% END %]
-<p>
+<p class=p2>
 <table cellpadding=2 border=0>
 
 <tr>

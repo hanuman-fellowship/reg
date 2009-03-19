@@ -8,12 +8,14 @@
 <ul>
 <table border=0 cellpadding=3>
 <tr>
+<td></td>       <!-- for mmc_does_reg marking -->
 <th align=left>Name</th>
 <th align=left>Start Date</th>
 <th align=left>Status</th>
 </tr>
 [% FOREACH r IN rentals %]
     <tr>
+    <td>[% IF r.program_id %]%[% ELSE %]&nbsp;[% END %]</td>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
     <td>[% r.sdate_obj %]</td>
     [% r.status_td(1) %]

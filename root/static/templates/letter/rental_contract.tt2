@@ -92,7 +92,7 @@ Jerry Brajesh Friedberg<br>
 Programs Director
 </div>
 <div style='page-break-after:always'></div>
-<h3 style="margin-top: 1in;">Facilities Use Contract</h3>
+<h3 style="margin-top: 1.5in;">Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
 [% IF rental.contract_signer %]
     [% p = rental.contract_signer %]
@@ -153,6 +153,7 @@ Charges are based on actual occupancy, not room capacity
 $2/person/hour for any
 additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>
+<div style='page-break-after:always'></div>
 <h2>Meals</h2>
 The Center will provide
 [% IF lunch %]
@@ -205,6 +206,7 @@ Payment Due
 <tr><td>120 days to 61 days prior to arrival date</td><td>50% of Agreed Upon Revenue</td></tr>
 <tr><td>60 days to zero days prior to arrival date</td><td>75% of Agreed Upon Revenue</td></tr>
 </table>
+<div style='page-break-after:always'></div>
 These cancellation charges are effective even if the Center
 is able to arrange an alternative rental. The Center will do its
 best to offset cancellation fees with replacement revenue,
@@ -242,13 +244,14 @@ Anyone who does not abide by the rules will be asked to leave.
 Activities may continue during quiet hours so long as they proceed quietly.
 <li>Nudity is not permitted where visible to the public.
 <li>No pets, illegal drugs, or smoking allowed on the property,
-except that smoking is permitted on buildings' decks.
+except that smoking is permitted in specific areas.
 <li>No adjustments for missed meals or missed days in residence
 are made for periods less than one week at a time.
 <li>No food may be brought to the Center.
 If you have special requests, please speak with us and we
 will do our best to provide for your needs.
 </ol>
+<div style='page-break-after:always'></div>
 <h2>Housing Procedure</h2>
 No later than two weeks before the rental,
 renter will inform the Center of the guest list make-up

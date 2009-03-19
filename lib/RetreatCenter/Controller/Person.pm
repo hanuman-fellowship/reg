@@ -15,6 +15,7 @@ use Util qw/
     commify
     dcm_registration
     payment_warning
+    normalize
 /;
 use Date::Simple qw/
     date
@@ -430,6 +431,13 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
+    # If first, last, sanskrit are all the same case
+    # do a normalization to mixed case.
+    # Only do this on first creation, not update.
+    #
+    for my $n (qw/ first last sanskrit /) {
+        $hash{$n} = normalize($hash{$n});
+    }
     my $today_d8 = tt_today($c)->as_d8();
     my $p = model($c, 'Person')->create({
         %hash,
@@ -977,6 +985,41 @@ sub get_addr : Local {
                 ;
     }
     $c->res->output($addr);
+}
+
+#
+# toggle inactive on/off
+#
+sub inactive : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = model($c, 'Person')->find($id);
+    $p->update({
+        inactive => ($p->inactive())? '': 'yes',
+    });
+    $c->response->redirect($c->uri_for("/person/view/$id"));
+}
+
+sub get_gender : Local {
+    my ($self, $c, $name) = @_;
+
+    my $html = get("http://www.gpeters.com/names/baby-names.php?"
+                  ."name=" . $name);
+    my ($likelihood, $gender) =
+        $html =~ m{popular usage, it is <b>([\d.]+).*?to be a (\w+)'s};
+    my %name = qw(
+        girl F
+        boy  M
+    );
+    my $rc = 'F';
+    if ($gender) {
+        $rc = $name{$gender};
+    }
+    elsif (($gender) = $html =~ m{It's a (.*?)!}) {
+        $rc = $name{$gender};
+    }
+    $c->res->output($rc);
+    return;
 }
 
 1;

@@ -21,6 +21,7 @@ __PACKAGE__->add_columns(qw/
     single_bath
     dble_bath
     type
+    inactive
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

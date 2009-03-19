@@ -1,9 +1,12 @@
 <h2>Ride</h2>
-[% IF Catalyst.check_user_roles('ride_admin') %]
+[% admin = Catalyst.check_user_roles('ride_admin') %]
+[% IF admin %]
 <a href="/ride/update/[% ride.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/ride/delete/[% ride.id %]"
  onclick="return confirm('Okay to Delete [% ride.name %]?');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/ride/pay">Pay</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
@@ -15,12 +18,12 @@
 
 <tr>
 <th align=right>Rider</th>
-<td><a href=/person/view/[% rider.id %]>[% rider.first %] [% rider.last %]</a></td>
+<td><a href=/person/view/[% rider.id %]>[% rider.last %], [% rider.first %]</a></td>
 </tr>
 
 <tr>
 <th align=right>Driver</th>
-<td><a href=/user/view/[% driver.id %]>[% driver.first %] [% driver.last %]</a></td>
+<td>[% IF admin %]<a href=/user/view/[% driver.id %]>[% driver.first %]</a>[% ELSE %][% driver.first %][% END %]</td>
 </tr>
 
 <tr>

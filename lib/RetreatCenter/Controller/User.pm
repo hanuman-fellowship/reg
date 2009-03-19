@@ -206,7 +206,12 @@ sub create_do : Local {
 sub profile : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{user} = $c->user;
+    my $u = $c->user();
+    $c->stash->{user} = $u;
+    $c->stash->{user_bg}   = $u->bg     || '255,255,255' ;
+    $c->stash->{user_fg}   = $u->fg     || '0,0,0';
+    $c->stash->{user_link} = $u->link || '0,0,255';
+
     $c->stash->{template} = "user/profile.tt2";
 }
 
@@ -243,8 +248,12 @@ sub profile_do : Local {
         email    => $c->request->params->{email},
         office   => $c->request->params->{office},
         cell     => $c->request->params->{cell},
+        bg       => $c->request->params->{user_bg},
+        fg       => $c->request->params->{user_fg},
+        link     => $c->request->params->{user_link},
         txt_msg_email => $c->request->params->{txt_msg_email},
     });
+
     $c->stash->{template} = "configuration/index.tt2";
 }
 

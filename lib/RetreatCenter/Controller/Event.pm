@@ -343,6 +343,7 @@ sub calendar : Local {
         }
     }
 
+    # put this in Global???
     my ($no_where) = model($c, 'MeetingPlace')->search({
         name => 'No Where',
     });
@@ -415,6 +416,7 @@ sub calendar : Local {
     # a later event will overwrite one to its left
     #
     my $day_width  = ActiveCal->day_width;
+    EVENT:
     for my $ev (sort { $a->sdate <=> $b->sdate } @events) {
         my $ev_type = ref($ev);
         $ev_type =~ s{.*::}{};
@@ -480,8 +482,14 @@ sub calendar : Local {
             # if no meeting place assigned hopefully put it SOMEwhere.
             # to alert the user that it is dangling homeless.
             #
-            if (! @places && $no_where) {
-                push @places, $no_where;
+            if (! @places) {
+                if ($ev_type eq 'program' && $ev->rental_id()) {
+                    # this is a program with a parallel Rental
+                    next EVENT;     # skip it entirely
+                }
+                if ($no_where) {
+                    push @places, $no_where;
+                }
             }
             my $im = $cal->image;
             my $black = $cal->black;
@@ -628,7 +636,7 @@ sub calendar : Local {
     # and one that starts on the same date.
     # a single day event does not count as such.
     #
-    # Mark such with a dotted red line.
+    # Mark such with a solid line.
     #
     my %edges;
     # ??? is there a class method to get colors?
@@ -652,17 +660,40 @@ sub calendar : Local {
                 }
                 my $cal = $cals{$ym};
                 my $im = $cal->image;
-                my $red = $cal->red;
-                my $white = $cal->white;
 
+                # these tweakings of pixels were determined by trial and error
+                #
                 my $y1 = ($meeting_places{$meet_id}->disp_ord()) * 40 + 3;
                 my $y2 = $y1 + 20 - 2;
-                # these tweakings of pixels were determined by trial and error
-
                 my $x = ($day-1) * $day_width + $day_width/2 - 1;
-                $im->setThickness(3);
-                $im->setStyle($red, $red, $white, $white);
-                $im->line($x, $y1, $x, $y2, gdStyled);
+                $im->setThickness($string{abutt_thickness});
+
+                # two ways to mark it
+                #
+                if (! empty($string{abutt_style})) {
+                    # 'barber pole'
+                    my $red   = $cal->red();
+                    my $white = $cal->white();
+                    my $black = $cal->black();
+                    my $abutt = $cal->abutt();
+                    $im->setStyle(
+                        map {
+                            $_ eq 'r'? $red
+                           :$_ eq 'w'? $white
+                           :$_ eq 'a'? $abutt
+                           :           $black
+                        }
+                        split m{}, $string{abutt_style}
+                    );
+                    $im->line($x, $y1, $x, $y2, gdStyled);
+                }
+                else {
+                    # solid color
+                    $im->line($x, $y1, $x, $y2, $cal->abutt());
+                }
+
+
+
                 $im->setThickness(1);
                 next BOOKING;
             }

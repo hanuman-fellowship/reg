@@ -35,6 +35,13 @@ sub new {
             $mins  = substr($hours, 2, 2);
             $hours = substr($hours, 0, 2);
         }
+        elsif (length($hours) == 3) {
+            $mins = substr($hours, 1, 2);
+            $hours = substr($hours, 0, 1);
+            if (1 <= $hours && $hours <= 7) {
+                $hours += 12;
+            }
+        }
         elsif (1 <= $hours && $hours <= 7) {
             $hours += 12;
         }

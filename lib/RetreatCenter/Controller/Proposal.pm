@@ -13,6 +13,7 @@ use Util qw/
     empty
     housing_types
     stash
+    normalize
 /;
 use Date::Simple qw/
     date
@@ -155,6 +156,14 @@ sub create_do : Local {
 
     _get_data($c, 0);
     return if @mess;
+    for my $n (qw/
+        first
+        last
+        cs_first
+        cs_last
+    /) {
+        $hash{$n} = normalize($hash{$n});
+    }
     my $proposal = model($c, 'Proposal')->create(\%hash);
     my $id = $proposal->id();
     $c->response->redirect($c->uri_for("/proposal/view/$id"));
@@ -198,17 +207,17 @@ sub update_do : Local {
 }
 
 #
-# show proposals 30 days after the
-# date of the original call.
+# show proposals for which the program meeting date
+# has not happened more than 3 days ago.
 #
 sub list : Local {
     my ($self, $c) = @_;
 
     Global->init($c);
-    my $today = (tt_today($c)-3)->as_d8();
+    my $today3 = (tt_today($c)-3)->as_d8();
     $c->stash->{proposals} = [
         model($c, 'Proposal')->search(
-            { program_meeting_date => { '>=', $today } },
+            { program_meeting_date => { '>=', $today3 } },
             { order_by             => 'program_meeting_date' },
         )
     ];
@@ -313,6 +322,7 @@ sub _transmit {
     my $proposal = model($c, 'Proposal')->find($id);
 
     # first, find the id of the affiliation 'Proposal Submitter'
+    # put in Global???
     my $prop_sub_id = 0;
     my @prop_sub = model($c, 'Affil')->search({
                        descrip => { 'like' => '%proposal%submitter%' },

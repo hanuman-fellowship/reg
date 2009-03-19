@@ -627,8 +627,16 @@ sub email_letter {
             # ???
         }
     }
+    my @cc_bcc = ();
+    if (exists $args{cc}) {
+        push @cc_bcc, cc => $args{cc};
+    }
+    if (exists $args{bcc}) {
+        push @cc_bcc, bcc => $args{bcc};
+    }
     $mail_sender->Open({
         to       => $args{to},
+        @cc_bcc,
         from     => $args{from},
         subject  => $args{subject},
         ctype    => "text/html",
@@ -636,6 +644,7 @@ sub email_letter {
     })
         or die "no Mail::Sender->Open $Mail::Sender::error";
         # ??? better failure behavior?
+
     $mail_sender->SendLineEnc($args{html});
     $mail_sender->Close()
         or die "no Mail::Sender->Close $Mail::Sender::Error";

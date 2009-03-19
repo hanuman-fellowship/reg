@@ -1,7 +1,7 @@
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
 <script type="text/javascript">init_tabs(4, 0, 0);</script>
 <script type="text/javascript">
 function popup(url, height) {
@@ -234,7 +234,7 @@ Web
 
 <tr>
 <th align=right valign=top>Description</th>
-<td><textarea name=webdesc cols=80 rows=6>[% rental.webdesc %]</textarea></td>
+<td><textarea name=webdesc cols=60 rows=6>[% rental.webdesc %]</textarea></td>
 </td>
 </tr>
 
@@ -248,7 +248,7 @@ Web
 tabs([% section %]);
 [% IF form_action == 'create_do' %]
 document.form.name.focus();
-[% ELSE %]
+[% ELSIF form_action == 'update_do' %]
     [% IF section == 1 %]
         document.form.max.focus();
     [% ELSIF section == 3 %]
@@ -258,5 +258,8 @@ document.form.name.focus();
     [% ELSE %]
         document.form.comment.focus();
     [% END %]
+[% ELSE %]
+    <!-- create_from_proposal/45 -->
+document.form.sdate.focus();
 [% END %]
 </script>

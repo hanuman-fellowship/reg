@@ -19,7 +19,6 @@ p {
     <a href=/cluster>Clusters</a><p>
     <a href=/confnote>Confirmation Notes</a><p>
 [% END %]
-<a href=/configuration/display>Display Colors</a><p>
 [% IF Catalyst.check_user_roles('web_designer') %]
     <a href=/exception/list>Exceptions</a><p>
 [% END %]
@@ -30,7 +29,6 @@ p {
     <a href=/leader>Leaders</a><p>
     <a href=/meetingplace>Meeting Places</a><p>
 [% END %]
-<a href=/ride/list>Rides</a><p>
 [% IF ! field %]
     <a href=/project/list>Projects</a><p>
 [% END %]

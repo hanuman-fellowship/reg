@@ -1,5 +1,5 @@
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript" src="/static/js/tiny_mce/config.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
 <h2>Leaders</h2>
 <form action=[% '/leader/' _ form_action %]
       enctype="multipart/form-data"

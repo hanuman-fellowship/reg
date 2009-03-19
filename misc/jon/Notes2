@@ -1078,3 +1078,29 @@ times stored in 24 format.  displayed as needed.
 
 prohibit duplicate names in Programs, Rentals, and Events(?).
     at least for now when old reg still has its influence
+
+prohibit delete if rental/proposal contact signer or contact person. 
+
+no focus on username with FireFox at login?
+    also event??
+
+contract page br 
+    top margin on contract 1st page
+    <br>meals heading
+    <br>these cancellation
+    <br>housing procedure
+
+    & rule 3 edit
+
+flower list
+
+yes to foreign keys for parallel rental/programs
+    no meeting place update for programs with a parallel rental
+
+deleting a rental-program or a program-rental - delete the
+    parallel object too.   what if registrations?
+
+time::simple storage in db as hhmm 24 time
+
+doc: ride search - put "-10" in Start and hit return
+    to see all rides for the last 10 days.

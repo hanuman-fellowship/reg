@@ -1,5 +1,6 @@
 #!/bin/sh
-if [ `whoami` = 'sahadev' ]
+who=`whoami`
+if [ $who = 'sahadev' ]
 then
     export DBI_DSN="dbi:mysql:reg2"
 else
@@ -13,4 +14,7 @@ saverent
 saveprog
 saveevent
 tar cf backup.tar don mem iss users rent prog.txt meet event
-sendbackup
+if [ $who = 'sahadev' ]
+then
+    sendbackup
+fi

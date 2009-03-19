@@ -74,6 +74,7 @@ my @fields = qw/
     start_hour
     end_hour
     mmc_does_reg
+    program_id
 /;
 my %lookup = qw/
     rname	name
@@ -155,6 +156,7 @@ sub processRental {
     $hash{start_hour} ||= '4:00';
     $hash{end_hour} ||= '1:00';
     $hash{mmc_does_reg} = '';
+    $hash{program_id} = 0;
     $summary_sth->execute($next_summary_id);
     ++$next_summary_id;
     $r_sth->execute(@hash{@fields});

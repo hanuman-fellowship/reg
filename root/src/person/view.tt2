@@ -12,8 +12,9 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <a href="/person/register1/[% id %]" accesskey='r'><span class=keyed>R</span>egister</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
+[% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]&nbsp;&nbsp;&nbsp;<a href="/person/list_mmi_payment/[% id %]">MMI Payments</a>[% END %]
 &nbsp;&nbsp;&nbsp;
-[% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]<a href="/person/list_mmi_payment/[% id %]">MMI Payments</a>[% END %]
+<a href="/person/inactive/[% id %]">[% IF person.inactive %]Activate[% ELSE %]Inactivate[% END %]</a>
 <p class=p2>
 <a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
 &nbsp;&nbsp;&nbsp;
@@ -80,8 +81,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 
 <tr><th align=right valign=top>Address</th><td>[% person.addr1 %][% IF person.addr2 %]<br>[% person.addr2 %][% END %]</td>
 <th align=right valign=top>Mailings</th>
-<td rowspan=3>
-<table>
+<td rowspan=2>
+<table border=0>
 <tr><td align=right>Email</td><td>[% person.e_mailings %]</td></tr>
 <tr><td align=right>Snail Mail</td><td>[% person.snail_mailings %]</td></tr>
 <tr><td align=right>Share</td><td>[% person.share_mailings %]</td>

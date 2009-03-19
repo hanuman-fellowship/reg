@@ -79,7 +79,7 @@ $canpol_id{0} = $canpol_id{MMC} = $canpol_id{Default};
 
 # housing costs
 my $hc_sql = "insert into housecost values ("
-    . (join ",", ("?") x 15)
+    . (join ",", ("?") x 16)
     . ")";
 my $hc_sth = $dbh->prepare($hc_sql) or die "no prep cp";
 open my $hc, "<", "new/housing.txt"
@@ -99,7 +99,7 @@ for my $name (keys %data) {
     my ($hid) = $name =~ m{(\d+)};
     $hc_sth->execute(
         $hid+1,
-        ($name eq 'HC0')? "Default": $name,
+        ($name eq 'HC0')? "Programs 09": $name,
         $data{$name}{single} + $data{$name}{single_bath},
         $data{$name}{single},
         $data{$name}{dble} + $data{$name}{dble_bath},
@@ -112,7 +112,8 @@ for my $name (keys %data) {
         $data{$name}{own_tent},
         $data{$name}{own_van},
         $data{$name}{commuting},
-        ($hid == 0 || $hid >= 6)? 'Per Day': 'Total'
+        ($hid == 0 || $hid >= 6)? 'Per Day': 'Total',
+        ''
     );
 }
 
@@ -271,6 +272,7 @@ my @fields = qw/
     summary_id
     notify_on_reg
     max
+    rental_id
 /;
 my $p_sql = "insert into program ("
     . (join ",", @fields)
@@ -426,8 +428,16 @@ sub processProg {
             $hash{image} = "";
         }
     }
-    my $ndays = date($hash{edate}) - date($hash{sdate}) + 1;
-    $hash{lunches} = '0' x ($ndays + $hash{extradays});
+    if ($hash{name} =~ m{^(personal retreats|hoffman)$}i
+        || $hash{level} =~ m{[DCM]}
+    ) {
+        # no need to specify lunches
+        $hash{lunches} = '';
+    }
+    else {
+        my $ndays = date($hash{edate}) - date($hash{sdate}) + 1;
+        $hash{lunches} = '0' x ($ndays + $hash{extradays});
+    }
 
     $hash{summary_id} = $next_summary_id;
     $summary_sth->execute($next_summary_id);
@@ -465,6 +475,8 @@ sub processProg {
     if (exists $max{$hash{name}} && length $max{$hash{name}}) {
         $hash{max} = $max{$hash{name}};
     }
+
+    $hash{rental_id} = 0;
 
     $p_sth->execute(@hash{@fields}) or die "no exec";      # yay!
     if ($hash{pres1} != 0) {

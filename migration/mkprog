@@ -42,7 +42,8 @@ create table program (
 
     max         text,
     notify_on_reg text,
-    summary_id  integer
+    summary_id  integer,
+    rental_id   integer
 );
 drop table if exists canpol;
 create table canpol (
@@ -66,7 +67,8 @@ create table housecost (
     own_tent        integer,
     own_van         integer,
     commuting       integer,
-    type            text
+    type            text,
+    inactive        text
 );
 drop table if exists affil_program;
 create table affil_program (

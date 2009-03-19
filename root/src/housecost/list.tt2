@@ -8,7 +8,7 @@
 </tr>
 [% FOREACH hc IN housecosts %]
 <tr>
-<td><a href="/housecost/view/[% hc.id %]">[% hc.name %]</a><td>
+<td><a href="/housecost/view/[% hc.id %]">[% hc.name %]</a> [% IF hc.inactive == 'yes' %]*[% END %]<td>
 </tr>
 [% END %]
 </ul>
