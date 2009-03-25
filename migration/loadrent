@@ -146,7 +146,7 @@ sub processRental {
     $hash{status} = "tentative";
     $hash{summary_id} = $next_summary_id;
     # saved data?
-    if ($hash{sdate} = 20090301
+    if ($hash{sdate} > 20090301
         && exists $save_rent{$hash{name}}
     ) {
         my ($max, $deposit, $start, $end) = @{$save_rent{$hash{name}}};
