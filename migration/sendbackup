@@ -12,6 +12,8 @@ use Date::Simple qw/
     today
 /;
 my $dname = "rc.backup.tar." . today()->format("%m-%d-%y");
+my ($hour, $min, $sec) = (localtime())[2, 1, 0];
+$dname .= sprintf("%02d-%02d-%02d", $hour, $min, $sec);
 use Net::FTP;
 my $ftp = Net::FTP->new("logicalpoetry.com") or die "no ftp";
 $ftp->login("logicalpoetr", "bx42rg86") or die "no login";
