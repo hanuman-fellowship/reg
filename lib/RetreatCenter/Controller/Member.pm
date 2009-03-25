@@ -11,6 +11,7 @@ use Util qw/
     email_letter
     tt_today
     slurp
+    stash
 /;
 use Date::Simple qw/
     date
@@ -724,26 +725,41 @@ sub view : Local {
 sub bulk : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{template} = "member/bulk.tt2";
+    stash($c,
+        general_checked => "checked",
+        sponsor_checked => "checked",
+        life_checked    => "checked",
+        include_checked => "",
+        exclude_checked => "checked",
+        only_checked    => "",
+        email_checked   => "",
+        snail_checked   => "checked",
+        template => "member/bulk.tt2",
+    );
 }
 
 #
-# would a sql 'join' come in handy here???
+# would an sql 'join' come in handy here???
 # yes.
 #
 sub bulk_do : Local {
     my ($self, $c) = @_;
 
     my @memtypes;
+    my ($general, $sponsor, $life);
     if ($c->request->params->{general}) {
         push @memtypes, 'General';
+        $general = 1;
     }
     if ($c->request->params->{sponsor}) {
         push @memtypes, 'Sponsor';
+        $sponsor = 1;
     }
     if ($c->request->params->{life}) {
         push @memtypes, 'Life';
+        $life = 1;
     }
+    my $count = $c->request->params->{count};
     my $mmc = $c->request->params->{mmc};
     my $email = $c->request->params->{type} eq 'email';
     open my $list, ">", "root/static/memlist.txt"
@@ -754,7 +770,6 @@ sub bulk_do : Local {
                    category => { 'in', \@memtypes },
                })
     ) {
-        ++$n;
         my $p = $m->person;
         if ($p->akey eq '44595076SUM') {
             next if $mmc eq 'exclude';
@@ -766,6 +781,7 @@ sub bulk_do : Local {
             my $em = $p->email;
             if (! empty($em)) {
                 print {$list} $p->email . "\n";
+                ++$n;
             }
         }
         else {
@@ -775,7 +791,9 @@ sub bulk_do : Local {
     if (! $email) {
         # we need to join partners in @people and then print.
         # and sort it by zip.
-        # this is very complicated!
+        # we postpone determining $n until after this is done.
+        # very complicated!
+        # similar to Report running - but no collapsing.
         #
         my %partner = map { $_->id => $_ } @people;
         for my $p (@people) {
@@ -807,6 +825,7 @@ sub bulk_do : Local {
                   . $p->st_prov . "|"
                   . $p->zip_post
                   . "\n";
+            ++$n;
         }
     }
     if ($n == 0) {
@@ -814,7 +833,24 @@ sub bulk_do : Local {
         print {$list} "\n";
     }
     close $list;
-    $c->response->redirect($c->uri_for("/static/memlist.txt"));
+    if ($count) {
+        stash($c,
+            template => "member/bulk.tt2",
+            message         => "Count = $n",
+
+            general_checked => ($general)? "checked": "",
+            sponsor_checked => ($sponsor)? "checked": "",
+            life_checked    => ($life   )? "checked": "",
+            include_checked => ($mmc eq 'include')? "checked": "",
+            exclude_checked => ($mmc eq 'exclude')? "checked": "",
+            only_checked    => ($mmc eq 'only'   )? "checked": "",
+            email_checked   => ($email  )? "checked": "",
+            snail_checked   => (! $email)? "checked": "",
+        );
+    }
+    else {
+        $c->response->redirect($c->uri_for("/static/memlist.txt"));
+    }
 }
 
 sub non_email : Local {
