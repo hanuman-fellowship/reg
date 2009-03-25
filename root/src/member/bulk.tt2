@@ -6,33 +6,39 @@
 <tr>
 <th align=right>Categories</th>
 <td>
-<input type=checkbox name=general value='yes' checked> General
-<input type=checkbox name=sponsor value='yes' checked> Sponsor
-<input type=checkbox name=life value='yes' checked> Life
+<input type=checkbox name=general value='yes' [% general_checked %]> General
+<input type=checkbox name=sponsor value='yes' [% sponsor_checked %]> Sponsor
+<input type=checkbox name=life value='yes' [% life_checked %]> Life
 </td>
 </tr>
 
 <tr>
 <th align=right>MMC</th>
 <td>
-<input type=radio name=mmc value=include> Include
-<input type=radio name=mmc value=exclude checked> Exclude
-<input type=radio name=mmc value=only> Only
+<input type=radio name=mmc value=include [% include_checked %]> Include
+<input type=radio name=mmc value=exclude [% exclude_checked %]> Exclude
+<input type=radio name=mmc value=only [% only_checked %]> Only
 </td>
 </tr>
 
 <tr>
 <th align=right>Type</th>
 <td>
-<input type=radio name=type value=email checked> Email
-<input type=radio name=type value=snail> Snail
+<input type=radio name=type value=email [% email_checked %]> Email
+<input type=radio name=type value=snail [% snail_checked %]> Snail
 </td>
 </tr>
 
 <tr>
-<td>&nbsp;</th>
-<td><input type=submit value="Submit"></td>
+<td></td>
+<td>
+<input type=submit name=count value="Count">
+&nbsp;&nbsp;
+<input type=submit name=generate value="Generate">
+</td>
 </tr>
 </table>
+<p class=p2>
+[% message %]
 </form>
 </ul>
