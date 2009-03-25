@@ -6,6 +6,9 @@ use base 'Catalyst::Controller';
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
     trim
     empty
@@ -156,7 +159,7 @@ sub pay_balance_do : Local {
 
         user_id     => $c->user->obj->id,
         the_date    => $now_date,
-        time        => sprintf "%02d:%02d", (localtime())[2, 1],
+        time        => get_time()->t24(),
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }

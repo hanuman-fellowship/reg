@@ -199,6 +199,7 @@ sub run : Local {
     my $share    = $c->request->params->{share};
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
+    my $incl_mmc = $c->request->params->{incl_mmc};
 
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
@@ -217,6 +218,9 @@ sub run : Local {
     }
     if ($share) {
         $restrict .= "share_mailings = 'yes' and ";
+    }
+    if (! $incl_mmc) {
+        $restrict .= "akey != '44595076SUM' and ";
     }
 
     my $just_email = "";
@@ -394,6 +398,7 @@ EOS
         $c->stash->{message} = "Record count = " . scalar(@people);
         $c->stash->{share}    = $share;
         $c->stash->{collapse} = $collapse;
+        $c->stash->{incl_mmc} = $incl_mmc;
         view($self, $c, $id);
         return;
     }

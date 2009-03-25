@@ -11,7 +11,7 @@ my @flds = ();
 my $book_sth = $dbh->prepare("select * from booking where program_id = ?");
 
 
-my $sql = "select id, name, max from program";
+my $sql = "select id, name, max from program where sdate > 20090301";
 my $sth = $dbh->prepare($sql) or die "oops\n";
 $sth->execute();
 open my $prog, ">", "prog.txt" or die "no prog.txt: $!\n";

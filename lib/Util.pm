@@ -50,7 +50,9 @@ use Date::Simple qw/
     date
     today
 /;
-use Time::Simple;
+use Time::Simple qw/
+    get_time
+/;
 use Template;
 use Global qw/
     %string
@@ -653,7 +655,7 @@ sub email_letter {
 sub lunch_table {
     my ($view, $lunches, $sdate, $edate, $start_time) = @_;
 
-    my $one = Time::Simple->new("1:00");
+    my $one = get_time("1300");
     my @lunches = split //, $lunches;
     my $s = <<"EOH";
 <table border=1 cellpadding=5 cellspacing=2>

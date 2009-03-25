@@ -6,6 +6,9 @@ use base qw/DBIx::Class/;
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
 /;
@@ -82,6 +85,10 @@ sub date_end_obj {
 sub date_postmark_obj {
     my ($self) = @_;
     return date($self->date_postmark) || "";
+}
+sub time_postmark_obj {
+    my ($self) = @_;
+    return get_time($self->time_postmark());
 }
 
 sub h_type_disp {

@@ -247,7 +247,7 @@ The report can be printed directly or saved, if needed.
 <li>If you click on the 'Count' button rather than 'Run' you'll get
 a count of how many records <i>will</i> appear in the report
 when it is run.
-<li>Change 'Number of Records' to something less than the count.
+<li>Change 'Number of Records' to something non-zero and less than the count.
 ReRun.   This is a random sample of the prior listing's rows.
 This is useful when we are selling our list to associated
 organizations and they don't want to pay for the whole thing.
@@ -275,12 +275,6 @@ Try several zip code ranges in the one field - like this:
 95060-95062, 89012-89450, 01234
 </ul>
 <li>Verify you can delete reports.
-<li>If you check 'Share' the report will only include
-people that have indicated they permit us to share
-their demographic information with business associates.
-This is the 'Mailings-Share' checkbox on the Person record.
-The count of these people is obviously less than without
-'Share' clicked.
 <li>In the formats other than 'Just Email' note that if both
 partners make it into the report
 then the partners will be coalesced/merged/joined
@@ -296,10 +290,27 @@ have the same work or cell number.
 In the Format listing where there are the 3 phone numbers
 there is only one work and cell number.
 Hmmm.  Not a big problem but not right, either.
+<li>If you check 'Share' the report will only include
+people that have indicated they permit us to share
+their demographic information with business associates.
+This is the 'Mailings-Share' checkbox on the Person record.
+The count of these people is obviously less than without
+'Share' clicked.
 <li>If you click 'Collapse' and then 'Run Report'
 all people with the same address will be collapsed into one line
 whether they are partners or not.  One of the names will be 
 chosen to represent the others and this name will be suffixed with 'et. al.'
+<li>If you click 'Include MMC' (which is UNclicked by default)
+then people whose address is 445 Summit Rd, Watsonville, CA 95076
+<i>will</i> be included in the count and report - otherwise they
+will <i>not</i> be included.   This is useful for when
+you need a count to know how many items to have printed but
+do not want to send them through the mail because you want
+to put them in people's mailboxes at the center yourself.
+<p>
+Note that to find out which people at MMC are included
+you can run the report and do a search within the resultant 
+web page for "445 Sum". 
 <li>Try the other report formats.
 Try 'Name, Address, Link'
 and see the link on the person's name - it takes

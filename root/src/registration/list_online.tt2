@@ -12,8 +12,8 @@
 <tr>
 <td><a href="/registration/get_online/[% r.fname %]">[% r.last %], [% r.first %]</a></td>
 <td><a href="/program/view/[% r.pid %]">[% r.pname %]</a></td>
-<td>[% r.date %]</td>
-<td>[% r.time %]</td>
+<td>[% r.date.format("%m/%d") %]</td>
+<td>[% r.time.ampm %]</td>
 </tr>
 [% END %]
 </table>

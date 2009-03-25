@@ -11,5 +11,6 @@ create table ride (
     flight_time text,
     cost integer,
     comment text,
-    paid_date text
+    paid_date text,
+    sent_date
 );

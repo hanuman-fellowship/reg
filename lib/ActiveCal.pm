@@ -12,12 +12,12 @@ use Global qw/
 /;
 use GD;
 
-my $day_width = 30;
-my $day_height = 40;
+my $day_height = 40;    # 40
 
 sub new {
     my ($class, $year, $month, $events_ref, $no_where_ord) = @_;
 
+    my $day_width = $string{cal_day_width};
     my $today = today();
     if ($today->year == $year && $today->month == $month) {
         $today = $today->day;
@@ -51,9 +51,9 @@ sub new {
     my $white = $im->colorAllocate(255,255,255);    # 1st color = background
     my $red   = $im->colorAllocate(255,  0,  0);
     my $black = $im->colorAllocate(0,    0,  0);
-    my $mon_thu = $im->colorAllocate($string{mon_thu_color} =~ m{\d+}g);
-    my $fri_sun = $im->colorAllocate($string{fri_sun_color} =~ m{\d+}g);
-    my $abutt   = $im->colorAllocate($string{abutt_color} =~ m{\d+}g);
+    my $mon_thu = $im->colorAllocate($string{cal_mon_thu_color} =~ m{\d+}g);
+    my $fri_sun = $im->colorAllocate($string{cal_fri_sun_color} =~ m{\d+}g);
+    my $abutt   = $im->colorAllocate($string{cal_abutt_color} =~ m{\d+}g);
     # surrounding border
     $im->rectangle(0, 0, $cal_width-1, $cal_height-1, $black);
 
@@ -81,7 +81,7 @@ sub new {
         if ($d == $today) {
             $im->filledRectangle(
                 $x+1, 1, $x+$day_width, $day_height-1,
-                $im->colorAllocate($string{today_color} =~ m{\d+}g)
+                $im->colorAllocate($string{cal_today_color} =~ m{\d+}g)
             );
         }
         # these offsets depend on the day height/width somehow...???
@@ -90,7 +90,10 @@ sub new {
                     (1 <= $dow && $dow <= 4)? $black: $red);
         $dow = ($dow+1) % 7;
     }
-    $im->line(0, $day_height, $cal_width-1, $day_height, $black);
+    # line underneath the day names - needed/wanted?
+    if ($string{cal_day_line}) {
+        $im->line(0, $day_height, $cal_width-1, $day_height, $black);
+    }
     bless {
         image  => $im,
         sdate  => date($year, $month, 1),
@@ -134,12 +137,6 @@ sub keys {
     return @keys;
 }
 
-# return class constants
-sub day_width {
-    my ($class) = @_;
-    
-    $day_width;
-}
 sub cal_height {
     my ($self) = @_;
     

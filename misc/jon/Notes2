@@ -1104,3 +1104,31 @@ time::simple storage in db as hhmm 24 time
 
 doc: ride search - put "-10" in Start and hit return
     to see all rides for the last 10 days.
+
+no need to show or compute gl num for MMI programs.
+
+add checkbox to Reports - Include MMC - by default off.
+    for Guru Purnima - turn off to get a count, then back on again
+        when preparing the list for CMS.
+    then everyone at MMC should have Snail Mail set to 'yes'.
+
+add Count button to membership bulk mailings
+
+new members have guru purnima affil?
+
+be sure to recompute akey after update of person
+    the address might have changed
+
+to test post time mods:
+    xa payments, view in person
+    new deposit, past deposits
+    member payments, hist
+        registrations used
+    donations
+
+rides
+    proper confirmation letter
+        with costs ... perhaps less
+    email
+        if rider has no email put to screen ALSO.
+    airport <select> SJC, SFO, OAK, MRY

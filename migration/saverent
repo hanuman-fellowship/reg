@@ -13,7 +13,7 @@ my @flds = ();
 my $book_sth = $dbh->prepare("select * from booking where rental_id = ?");
 
 
-my $sql = "select id, name, max, deposit, start_hour, end_hour from rental";
+my $sql = "select id, name, max, deposit, start_hour, end_hour from rental where sdate > 20090301";
 my $sth = $dbh->prepare($sql) or die "oops\n";
 $sth->execute();
 open my $rent, ">", "rent/rent.txt" or die "no rent.txt\n";
@@ -30,6 +30,9 @@ while (@flds = $sth->fetchrow_array()) {
     while (@flds = $book_sth->fetchrow_array()) {
         for my $f (@flds) {
             $f = "" unless defined $f;
+        }
+        for my $i (4, 5) {
+            $flds[$i] =~ s{:}{};    # normalize the time
         }
         print {$meet} join('|', $name, @flds), "\n";
     }

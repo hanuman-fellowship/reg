@@ -16,6 +16,9 @@ use Date::Simple qw/
     date
     days_in_month
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
     $guru_purnima
@@ -173,7 +176,7 @@ sub get_now {
     return 
         user_id  => $c->user->obj->id,
         the_date => tt_today($c)->as_d8(),
-        time     => sprintf "%02d:%02d", (localtime())[2, 1];
+        time     => get_time()->t24(),
 }
 
 #
@@ -219,29 +222,31 @@ sub update_do : Local {
     }
     $hash{total_paid} = $total;
 
-    # update the member record
-    $member->update(\%hash);
-
     if ($member->sponsor_nights != $hash{sponsor_nights}) {
         # add NightHist record to reflect the change
         model($c, 'NightHist')->create({
-            member_id => $id,
-            reg_id => 0,
+            member_id  => $id,
+            reg_id     => 0,
             num_nights => $hash{sponsor_nights},
-            action => 1,    # set nights
+            action     => 1,    # set nights
             @who_now,
         });
     }
     if ($member->free_prog_taken ne $hash{free_prog_taken}) {
         # add NightHist record to reflect the change
         model($c, 'NightHist')->create({
-            member_id => $id,
-            reg_id => 0,
+            member_id  => $id,
+            reg_id     => 0,
             num_nights => 0,
-            action => ($hash{free_prog_taken})? 5: 3,  # set/clear free program
+            action     => ($hash{free_prog_taken})? 5: 3, 
+                # set/clear free program
             @who_now,
         });
     }
+
+    # finally, update the member record
+    $member->update(\%hash);
+
     if (!$amount) {
         $c->response->redirect($c->uri_for("/member/view/$id"));
         return;

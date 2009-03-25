@@ -65,6 +65,9 @@ for my $tbl (qw/ member spons_hist night_hist /) {
         chomp;
         my @flds = split /\|/, $_, -1;
         my $person_id = $flds[1];
+        if ($tbl =~ m{hist$}) {     # one time
+            $flds[-1] =~ s{:}{};
+        }
         $sth->execute(@flds);
         # make sure the person has guru purnima affil.
         $search_gp->execute($gp_id, $person_id);

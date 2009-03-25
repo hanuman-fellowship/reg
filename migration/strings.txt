@@ -69,10 +69,10 @@ ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0
 ftp_transactions www/cgi-bin/dreg_transactions
-reg_start 4:00
-reg_end 7:00
-prog_start 7:00
-prog_end 12:30
+reg_start 1600
+reg_end 1900
+prog_start 1900
+prog_end 1230
 credit_amount 50
 spons_tuit_disc 30
 max_tuit_disc 125
@@ -94,13 +94,8 @@ rental_due Due
 rental_due_color 200,200,200
 rental_done Done
 rental_done_color 255,0,255
-event_color 0,0,255
-pr_color 130,150,200
-today_color 130,200,150
 extra_hours_charge 2
 lunch_charge 9
-mon_thu_color 240,240,255
-fri_sun_color 255,240,240
 mem_team Shyama Friedberg (Secretary), Lori March
 mem_phone 408-847-0406 x334
 mem_email memberships@mountmadonna.org
@@ -118,8 +113,6 @@ house_let 10
 cov_less_color 255,0,0
 cov_more_color 0,255,0
 cov_okay_color 255,255,255
-arr_color 30,255,30
-lv_color 255,30,30
 house_sum_perfect_fit 5 
 house_sum_occupied 10
 house_sum_cabin 20
@@ -151,6 +144,16 @@ payment_U Due
 password_security 0
 ride_glnum 00025
 
-abutt_color 0,0,0
-abutt_thickness 5
-abutt_style 
+cal_abutt_color 0,0,0
+cal_abutt_thickness 5
+cal_abutt_style 
+cal_event_border 2
+cal_day_width 35
+cal_day_line 1
+cal_mon_thu_color 240,240,255
+cal_fri_sun_color 255,240,240
+cal_event_color 0,0,255
+cal_pr_color 130,150,200
+cal_today_color 130,200,150
+cal_arr_color 30,255,30
+cal_lv_color 255,30,30

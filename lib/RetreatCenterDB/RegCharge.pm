@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenterDB::RegCharge;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('reg_charge');
@@ -25,6 +30,10 @@ __PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
 sub the_date_obj {
     my ($self) = @_;
     return date($self->the_date);
+}
+sub time_obj {
+    my ($self) = @_;
+    return get_time($self->time());
 }
 
 1;

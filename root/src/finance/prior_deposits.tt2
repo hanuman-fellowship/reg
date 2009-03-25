@@ -18,7 +18,7 @@
 <tr>
 <td align=center>[% d.user.username %]</td>
 <td align=center>[% d.date_end_obj %]</td>
-<td align=center>[% d.time %]</td>
+<td align=right>[% d.time_obj %]</td>
 <td align=right>[% d.cash %]</td>
 <td align=right>[% d.chk %]</td>
 <td align=right>[% d.credit %]</td>

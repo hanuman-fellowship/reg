@@ -15,6 +15,12 @@ use Date::Simple qw/
     today
     days_in_month
 /;
+use Time::Simple qw/
+    get_time
+/;
+use Algorithm::LUHN qw/
+    is_valid
+/;
 use Global qw/
     %string
 /;
@@ -70,6 +76,18 @@ sub _get_data {
             push @mess, "Invalid pick up date: $hash{pickup_date}";
         }
     }
+    if (empty($hash{flight_time})) {
+        push @mess, "Missing flight time.";
+    }
+    else {
+        my $t = get_time($hash{flight_time});
+        if (! $t) {
+            push @mess, Time::Simple->error();
+        }
+        else {
+            $hash{flight_time} = $t->t24();
+        }
+    }
     if (   $hash{cc_number1} !~ m{\d{4}}
         || $hash{cc_number2} !~ m{\d{4}}
         || $hash{cc_number3} !~ m{\d{4}}
@@ -106,6 +124,9 @@ sub _get_data {
                      . $hash{cc_number3}
                      . $hash{cc_number4}
                      ;
+    if (! is_valid($hash{cc_number})) {
+        push @mess, "Credit card number is not valid.";
+    }
     delete $hash{"cc_number$_"} for 1 .. 4;
     if (empty($hash{paid_date})) {
         $hash{paid_date} = '';      # to be sure???
@@ -213,23 +234,30 @@ sub create_do : Local {
     delete $hash{cc_code};
     $hash{paid_date} = '';
     my $ride = model($c, 'Ride')->create(\%hash);
+    $c->response->redirect($c->uri_for("/ride/view/" . $ride->id()));
+}
 
+# send email to driver and rider with the appropriate details.
+#
+sub send : Local {
+    my ($self, $c, $id) = @_;
 
-    # we have created the ride
-    # send email to driver and rider both with
-    # the appropriate details.
-    #
-    my $driver = model($c, 'User')->find($hash{driver_id});
+    my $ride = model($c, 'Ride')->find($id);
+    my $driver = $ride->driver();
+    my $rider = $ride->rider();
     # ??? check that there ARE email addresses...
     my $html = "hi <i>there</i>";
     email_letter($c,
-        to      => $p->email(),
+        to      => $rider->email(),
         cc      => $driver->email(),
         from    => "$string{from_title} <$string{from}>",
         subject => "Ride Scheduled",
         html    => $html, 
     );
-    $c->response->redirect($c->uri_for("/ride/view/" . $ride->id()));
+    $ride->update({
+        sent_date => today()->as_d8(),
+    });
+    $c->response->redirect($c->uri_for("/ride/view/$id"));
 }
 
 sub view : Local {

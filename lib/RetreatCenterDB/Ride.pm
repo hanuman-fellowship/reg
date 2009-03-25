@@ -7,7 +7,9 @@ use base qw/DBIx::Class/;
 use Date::Simple qw/
     date
 /;
-use Time::Simple;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
 /;
@@ -27,6 +29,7 @@ __PACKAGE__->add_columns(qw/
     cost
     comment
     paid_date
+    sent_date
 /);
 __PACKAGE__->set_primary_key(q/id/);
 
@@ -39,8 +42,12 @@ sub pickup_date_obj {
 sub paid_date_obj {
     return date(shift->paid_date()) || "";
 }
+sub sent_date_obj {
+    return date(shift->sent_date()) || "";
+}
 sub flight_time_obj {
-    return Time::Simple->new(shift->flight_time()) || "";
+    my ($self) = @_;
+    return get_time($self->flight_time());
 }
 sub type_sh {
     my ($self) = @_;

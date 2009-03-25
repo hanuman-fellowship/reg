@@ -8,7 +8,9 @@ use Date::Simple qw/
     date
     today
 /;
-use Time::Simple;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
     slurp
     expand
@@ -146,7 +148,7 @@ sub future_programs {
     #
     for my $p (reverse @programs) {
         next unless $p->linked;
-        my $sd = $p->sdate_obj;
+        my $sd = $p->sdate_obj();
         $first_of_month{$sd->month . $sd->year} = $p;
     }
     @programs;
@@ -177,7 +179,19 @@ sub edate_obj {
 }
 sub prog_start_obj {
     my ($self) = @_;
-    Time::Simple->new($self->prog_start());
+    return get_time($self->prog_start());
+}
+sub prog_end_obj {
+    my ($self) = @_;
+    return get_time($self->prog_end());
+}
+sub reg_start_obj {
+    my ($self) = @_;
+    return get_time($self->reg_start());
+}
+sub reg_end_obj {
+    my ($self) = @_;
+    return get_time($self->reg_end());
 }
 sub link {
     my ($self) = @_;

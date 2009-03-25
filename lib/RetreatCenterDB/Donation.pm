@@ -6,6 +6,9 @@ use base qw/DBIx::Class/;
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
 /;
@@ -42,7 +45,11 @@ sub the_date_obj {
 }
 sub date_d_obj {
     my ($self) = @_;
-    date($self->date_d) || "";
+    return date($self->date_d) || "";
+}
+sub time_d_obj {
+    my ($self) = @_;
+    return get_time($self->time_d());
 }
 sub name {
     my ($self) = @_;

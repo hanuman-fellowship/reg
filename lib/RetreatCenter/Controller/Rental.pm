@@ -9,7 +9,9 @@ use Date::Simple qw/
     date
     today
 /;
-use Time::Simple;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
     trim
     empty
@@ -82,10 +84,13 @@ sub _get_data {
             $sn =~ s{_}{ };
             $sn =~ s{\b(\w)}{uc $1}eg;  # pretty good!
             push @mess, "Missing $sn";
+            next;
         }
-        elsif (! Time::Simple->new($t)) {
+        my $tm = get_time($t);
+        if (! $tm) {
             push @mess, Time::Simple->error();
         }
+        $P{$n} = $tm->t24();
     }
     if (!@mess && $P{sdate} > $P{edate}) {
         push @mess, "End date must be after the Start date";
@@ -219,7 +224,7 @@ sub create_do : Local {
     my $sum = model($c, 'Summary')->create({
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
-        time_updated => sprintf("%02d:%02d", (localtime())[2, 1]),
+        time_updated => get_time()->t24(),
     });
     $P{summary_id} = $sum->id;
     $P{status} = "tentative";
@@ -267,7 +272,7 @@ sub create_from_proposal : Local {
     my $sum = model($c, 'Summary')->create({
         date_updated   => tt_today($c)->as_d8(),
         who_updated    => $c->user->obj->id,
-        time_updated   => sprintf("%02d:%02d", (localtime())[2, 1]),
+        time_updated   => get_time()->t24(),
 
         special_needs  => $proposal->special_needs(),
         food_service   => $proposal->food_service(),
@@ -729,8 +734,7 @@ sub pay_balance_do : Local {
     if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
         $now_date = (tt_today($c)+1)->as_d8();
     }
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
+    my $now_time = get_time()->t24();
 
     model($c, 'RentalPayment')->create({
 
@@ -890,8 +894,7 @@ sub new_charge_do : Local {
 
     my $today = tt_today($c);
     my $now_date = $today->as_d8();
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
+    my $now_time = get_time()->t24();
 
     model($c, 'RentalCharge')->create({
         rental_id => $id,
@@ -1408,16 +1411,16 @@ EOH
     my $end   = $rental->end_hour_obj();
     my $extime = "";
     my $tr_extra = "";
-    my $diff = Time::Simple->new("4") - $start;
+    my $diff = get_time("1600") - $start;
     if ($diff > 0) {
         $extra_hours += $diff/60;
-        $extime .= "started at " . $start->format('ampm') . " (before 4:00)";
+        $extime .= "started at " . $start->ampm() . " (before 4:00 pm)";
     }
-    $diff = $end - Time::Simple->new("1");
+    $diff = $end - get_time("1300");
     if ($diff > 0) {
         $extra_hours += $diff/60;
         $extime .= " and " if $extime;
-        $extime .= "ended at " . $end->format('ampm') . " (after 1:00)";
+        $extime .= "ended at " . $end->ampm() . " (after 1:00 pm)";
     }
     my $eh = $extra_hours
              * $tot_people
@@ -1437,7 +1440,7 @@ EOH
 <div style="width: 500">
 <ul>
 Since the rental $extime
-there is an extra time charge for
+there is an extra time charge of
 $extra_hours hour$pl for $tot_people people
 at \$$string{extra_hours_charge}
 per hour = \$$s$rounded.

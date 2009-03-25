@@ -154,12 +154,12 @@ Web
 
 <tr>
 <th align=right>Start Hour</th>
-<td><input type=text name=start_hour value='[% rental.start_hour %]' size=5></td>
+<td><input type=text name=start_hour value='[% rental.start_hour_obj %]' size=8></td>
 </tr>
 
 <tr>
 <th align=right>End Hour</th>
-<td><input type=text name=end_hour value='[% rental.end_hour %]' size=5></td>
+<td><input type=text name=end_hour value='[% rental.end_hour_obj %]' size=8></td>
 </tr>
 
 <tr>

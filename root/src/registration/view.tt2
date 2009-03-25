@@ -127,7 +127,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right>Postmark</th>
-<td>[% reg.date_postmark_obj %] [% reg.time_postmark %]</td>
+<td>[% reg.date_postmark_obj %] [% reg.time_postmark_obj %]</td>
 <th align=right>Carpooling</th>
 <td>[% IF reg.carpool %]Wish to carpool.&nbsp;&nbsp;[% END %][% IF reg.hascar %]Has car.[% END %]</td>
 </tr>
@@ -222,7 +222,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td align=right>[% ch.amount %]</td>
 <td>[% ch.what %]</td>
 <td>
-<a href="javascript:void(0);" onclick="return overlib('[% ch.the_date_obj %]&nbsp;&nbsp;[% ch.time %]&nbsp;&nbsp;[% ch.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('[% ch.the_date_obj %]&nbsp;&nbsp;[% ch.time_obj %]&nbsp;&nbsp;[% ch.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
 </td>
 </tr>
 [% tot = tot + ch.amount %]
@@ -262,7 +262,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>[% py.what %]</td>
 <td>[% py.type_sh %]</td>
 <td>
-<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj %]&nbsp;&nbsp;[% py.time %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
 </td>
 </tr>
 [% tot = tot + py.amount %]
@@ -300,7 +300,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <tr>
 <td>[% h.what %]</td>
 <td>
-<a href="javascript:void(0);" onclick="return overlib('[% h.the_date_obj %]&nbsp;&nbsp;[% h.time %]&nbsp;&nbsp;[% h.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('[% h.the_date_obj %]&nbsp;&nbsp;[% h.time_obj %]&nbsp;&nbsp;[% h.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
 </td>
 </tr>
 [% END %]

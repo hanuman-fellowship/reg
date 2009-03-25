@@ -1,4 +1,6 @@
+[% super = Catalyst.check_user_roles('super_admin') %]
 <h2>Users</h2>
+[% IF super %]
 <a href="/user/update/[% user.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/user/create">Add</a>
@@ -7,6 +9,7 @@
  onclick="return confirm('Okay to Delete user [% user.first %] [% user.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/user/list">List</a>
+[% END %]
 <ul>
 <table cellpadding=3 border=0>
 
@@ -17,7 +20,7 @@
 
 <tr>
 <th align=right>First</th>
-<td>[% user.first %]</td>
+<td><span class=larger>[% user.first %]</span></td>
 </tr>
 
 <tr>
@@ -25,10 +28,12 @@
 <td>[% user.last %]</td>
 </tr>
 
+[% IF super %]
 <tr>
 <th align=right valign=top>Password</th>
 <td>[% user.password %]</td>
 </tr>
+[% END %]
 
 <tr>
 <th align=right>Email</th>
@@ -45,3 +50,21 @@
 
 </table>
 </ul>
+[% rides = user.rides %]
+[% IF rides %]
+<span class=larger>Rides</span>
+<table cellpadding=5>
+<tr>
+<th>Date</th>
+<th>Airport</th>
+<th align=left>Name</th>
+</tr>
+[% FOR r IN rides %]
+    <tr>
+    <td>[% r.pickup_date_obj %]</td>
+    <td>[% r.airport %]</td>
+    <td><a href=/ride/view/[% r.id %]>[% r.rider.first %] [% r.rider.last %]</a></td>
+<td>[% IF r.paid_date %]<img src=/static/images/checked.gif>[% END %]</td>
+    </tr>
+[% END %]
+[% END %]

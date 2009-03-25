@@ -12,7 +12,9 @@ use Util qw/
 use Date::Simple qw/
     date
 /;
-use Time::Simple;
+use Time::Simple qw/
+    get_time
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
@@ -277,11 +279,11 @@ sub meeting_spaces {
 
 sub start_hour_obj {
     my ($self) = @_;
-    Time::Simple->new($self->start_hour());
+    get_time($self->start_hour());
 }
 sub end_hour_obj {
     my ($self) = @_;
-    Time::Simple->new($self->end_hour());
+    get_time($self->end_hour());
 }
 
 #

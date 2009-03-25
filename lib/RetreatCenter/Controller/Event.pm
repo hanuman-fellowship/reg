@@ -18,7 +18,9 @@ use Util qw/
 use GD;
 use ActiveCal;
 use DateRange;      # imports overlap
-use Global qw/%string/;
+use Global qw/
+    %string
+/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -257,6 +259,8 @@ sub access_denied : Private {
 sub calendar : Local {
     my ($self, $c, $the_start, $the_end) = @_;
 
+    my $day_width  = $string{cal_day_width};
+    my $event_border = $string{cal_event_border};
     my @month_name = qw/
         Jan Feb Mar
         Apr May Jun
@@ -415,7 +419,6 @@ sub calendar : Local {
     # sort the events by start date so that
     # a later event will overwrite one to its left
     #
-    my $day_width  = ActiveCal->day_width;
     EVENT:
     for my $ev (sort { $a->sdate <=> $b->sdate } @events) {
         my $ev_type = ref($ev);
@@ -585,10 +588,10 @@ sub calendar : Local {
                 }
                 elsif ($ev_type eq 'event') {
                     $border = $im->colorAllocate(
-                            $string{event_color} =~ m{\d+}g);
+                            $string{cal_event_color} =~ m{\d+}g);
                 }
 
-                $im->setThickness(4);
+                $im->setThickness($event_border);
                 $im->rectangle($x1, $y1, $x2, $y2, $border);
                 $im->setThickness(1);
 
@@ -666,11 +669,11 @@ sub calendar : Local {
                 my $y1 = ($meeting_places{$meet_id}->disp_ord()) * 40 + 3;
                 my $y2 = $y1 + 20 - 2;
                 my $x = ($day-1) * $day_width + $day_width/2 - 1;
-                $im->setThickness($string{abutt_thickness});
+                $im->setThickness($string{cal_abutt_thickness});
 
                 # two ways to mark it
                 #
-                if (! empty($string{abutt_style})) {
+                if (! empty($string{cal_abutt_style})) {
                     # 'barber pole'
                     my $red   = $cal->red();
                     my $white = $cal->white();
@@ -683,7 +686,7 @@ sub calendar : Local {
                            :$_ eq 'a'? $abutt
                            :           $black
                         }
-                        split m{}, $string{abutt_style}
+                        split m{}, $string{cal_abutt_style}
                     );
                     $im->line($x, $y1, $x, $y2, gdStyled);
                 }
@@ -844,10 +847,10 @@ $jump_map
 EOH
     my $jump_img = $c->uri_for("/static/images/$jump_name");
     my $firstcal = 1;
-    my @pr_color  = $string{pr_color}  =~ m{\d+}g;
+    my @pr_color  = $string{cal_pr_color}  =~ m{\d+}g;
     my $fmt = "#%02x%02x%02x";
-    my $arr_color = sprintf $fmt, $string{arr_color} =~ m{\d+}g;
-    my $lv_color  = sprintf $fmt, $string{lv_color}  =~ m{\d+}g;
+    my $arr_color = sprintf $fmt, $string{cal_arr_color} =~ m{\d+}g;
+    my $lv_color  = sprintf $fmt, $string{cal_lv_color}  =~ m{\d+}g;
     # ??? optimize - skip a $cals entirely if no PRs - have a flag
     # in the object.
     CAL:

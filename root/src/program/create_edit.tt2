@@ -309,15 +309,15 @@ Misc
 <table cellpadding=3>
 <tr>
 <th align=right>Registration Start</th>
-<td><input type=text size=5 name=reg_start value='[% program.reg_start %]'></td>
+<td><input type=text size=8 name=reg_start value='[% program.reg_start_obj %]'></td>
 <th align=right>Program Start</th>
-<td><input type=text size=5 name=prog_start value='[% program.prog_start %]'></td>
+<td><input type=text size=8 name=prog_start value='[% program.prog_start_obj %]'></td>
 </tr>
 <tr>
 <th align=right>End</th>
-<td><input type=text size=5 name=reg_end value='[% program.reg_end %]'></td>
+<td><input type=text size=8 name=reg_end value='[% program.reg_end_obj %]'></td>
 <th align=right>End</th>
-<td><input type=text size=5 name=prog_end value='[% program.prog_end %]'></td>
+<td><input type=text size=8 name=prog_end value='[% program.prog_end_obj %]'></td>
 </tr>
 </table>
 

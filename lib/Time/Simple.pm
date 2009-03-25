@@ -2,60 +2,130 @@ use strict;
 use warnings;
 package Time::Simple;
 
+use base 'Exporter';
+our @EXPORT_OK = qw/
+    get_time
+/;
+
 use Carp; 
 use overload
-    '-'    => 'diff',
-    'bool' => sub { 1 },
+    '-'    => '_diff',      # minutes between two times
+    'bool' => sub { 1 },    # needed for some reason
     '<=>'  => '_compare',
-    '""'   => 'format',
+    '""'   => 'format',     # stringification using the current format
     ;
 
-my $error = "";
+our $error = "";
 
 #
-# input format:
-# no need for am/pm suffix
-# with 1 or 2 digits or with a colon you get normal times 8:00 am to 7:59 pm
-# otherwise 4 digits are required.
+# be very flexible in what you accept as a valid time.
+# all of these are okay:
 #
 # 0104      = 1:04 am
 # 2104      = 9:04 pm
 # 1         = 1:00 pm
+# 245       = 2:45 pm
 # 3:23      = 3:23 pm
 # 8:23      = 8:23 am
 # 7:23      = 7:23 pm
 # 9:04      = 9:04 am
+# 11:00 pm  = 11:00 pm
+# 2 a       = 2:00 am
+# 908pm     = 9:08 pm
+# 10:09 p.m. = 10:09 pm
+# (empty)    = current time - i.e. NOW
+# 1 3        = 1:03 pm
+# 2 34 p     = 2:34 pm
+# 2 mmmmm... = 2:00 pm
+# 2310 pm    = illegal
+#
+sub get_time {
+    my $class = (@_ == 2)? shift
+                :          'Time::Simple';
+    my $s = shift || "";
+    my $orig_s = $s;
 
-sub new {
-    my ($class, $s) = @_;
+    my ($hours, $mins);
+
     $s =~ s{^\s*|\s*$}{}g;
-    if ($s =~ m{^(\d+)(?::(\d+))?$}) {
-        my ($hours, $mins) = ($1, $2);
-        if (length($hours) == 4) {
-            $mins  = substr($hours, 2, 2);
-            $hours = substr($hours, 0, 2);
+    $s =~ s{\s*[m.]+$}{}i;
+    my $ampm = "";
+    if ($s =~ s{\s*([ap])$}{}i) {
+        $ampm = lc $1;
+    }
+    if ($s eq '') {
+        if ($ampm) {
+            $error = "Inappropriate am/pm suffix: $orig_s";
+            return;
         }
-        elsif (length($hours) == 3) {
-            $mins = substr($hours, 1, 2);
-            $hours = substr($hours, 0, 1);
+        ($hours, $mins) = (localtime())[2,1];
+    }
+    elsif ($s =~ m{^\d{4}$}) {
+        if ($ampm) {
+            $error = "No am/pm suffix allowed with 24 hour time: $orig_s";
+            return;
+        }
+        $hours = substr($s, 0, 2);
+        $mins  = substr($s, 2, 2);
+    }
+    else {
+        # not in 24 hour format so we need
+        # to wonder about am/pm...  $hours _may_
+        # need to have 12 added to it.
+        #
+        # first get the hours & minutes
+        #
+        if (   $s =~ m{^(\d+):(\d+)$}
+            || $s =~ m{^(\d+)\s+(\d+)$}
+        ) {
+            $hours = $1;
+            $mins = $2;
+        }
+        elsif ($s =~ m{^\d{3}$}) {
+            $hours = substr($s, 0, 1);
+            $mins  = substr($s, 1, 2);
+        }
+        elsif ($s =~ m{^\d{1,2}$}) {
+            $mins = 0;
+            $hours = $s;
+        }
+        else {
+            $error = "Illegal time format: $orig_s";
+            return;
+        }
+        if ($ampm eq 'a') {
+            if ($hours == 12) {
+                $hours = 0;
+            }
+        }
+        elsif ($ampm eq 'p') {
+            if (1 <= $hours && $hours <= 11) {
+                $hours += 12;
+            }
+        }
+        else {
+            # convenient syntax for the normal times
+            # of 8 am - 7 pm.
+            #
+            # one cannot achieve early morning
+            # or late evening times this way.
+            #
             if (1 <= $hours && $hours <= 7) {
                 $hours += 12;
             }
         }
-        elsif (1 <= $hours && $hours <= 7) {
-            $hours += 12;
-        }
-        $mins ||= 0;
-        if ($hours > 23 || $mins > 59) {
-            $error = "Invalid hours or minutes: $s";
-            return;
-        }
-        return bless {
-            minutes => $hours*60 + $mins,
-        }, $class;
     }
-    $error = "Illegal time syntax: $s";
-    return;
+    if ($hours > 23) {
+        $error = "Invalid hours: $orig_s";
+        return;
+    }
+    if ($mins > 59) {
+        $error = "Invalid minutes: $orig_s";
+        return;
+    }
+    return bless {
+        minutes => $hours*60 + $mins,
+    }, $class;
 }
 
 sub error {
@@ -63,15 +133,15 @@ sub error {
     return $error;
 }
 
-sub diff {
+sub _diff {
     my ($self, $time2) = @_;
-    if (ref($time2) ne "Time::Simple") {
+    if (! $time2->isa('Time::Simple')) {
         croak "Cannot subtract a non-Time::Simple object";
     }
     return $self->{minutes} - $time2->{minutes};
 }
 
-my $time_format = 12;
+my $time_format = 'ampm';       # normal in U.S.A.
 
 #
 # 24, 12 (default), or 'ampm'
@@ -85,17 +155,19 @@ sub set_format {
 #
 # output format:
 #
-# 0   24 hour time
-# 1   hours 1-7 are really 13-19
-#     hours 8-12 are a.m.
-#     13-23 are p.m.
-#     times are formatted in 12 hour syntax but without the a.m./p.m. suffix.
-# 2   12 hour time with a.m./p.m.
+# 24   24 hour time
+# 12   hours 1-7 are really 13-19
+#      hours 8-12 are a.m.
+#      13-23 are p.m.
+#      times are formatted in 12 hour syntax but without the a.m./p.m. suffix.
+#      early morning and late evening times cannot be shown unambiguously.
+# ampm 12 hour time with a.m./p.m.
 #
 sub format {
     my $self = shift;
     my $fmt = shift || $time_format;     # can override the set default
         # check it
+
     my $m = $self->{minutes};
     my $hours = int($m/60);
     my $mins  = $m % 60;
@@ -127,8 +199,21 @@ sub minutes {
 sub _compare {
     my ($left, $right, $reverse) = @_;
 
-    return ($reverse ? $right->{minutes} <=> $left->{minutes}
-           :           $left->{minutes}  <=> $right->{minutes});
+    return ($reverse ? $right->{minutes} <=>  $left->{minutes}
+           :            $left->{minutes} <=> $right->{minutes});
+}
+
+sub ampm {
+    my ($self) = @_;
+    return $self->format('ampm');
+}
+sub t12 {
+    my ($self) = @_;
+    return $self->format('12');
+}
+sub t24 {
+    my ($self) = @_;
+    return $self->format('24');
 }
 
 1;

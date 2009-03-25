@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenterDB::SponsHist;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('spons_hist');
@@ -29,6 +34,10 @@ sub date_payment_obj {
 sub the_date_obj {
     my ($self) = @_;
     date($self->the_date) || "";
+}
+sub time_obj {
+    my ($self) = @_;
+    return get_time($self->time());
 }
 
 1;

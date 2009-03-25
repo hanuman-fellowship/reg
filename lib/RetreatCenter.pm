@@ -59,7 +59,8 @@ __PACKAGE__->setup;
 
 # authorization rules
 # ??? deleting a person requires no authorization???
-for my $a (qw/ list view create create_do update update_do delete /) {
+# view is okay. - but not password for non-super admin.
+for my $a (qw/ list create create_do update update_do delete /) {
     __PACKAGE__->deny_access_unless("/user/$a", ['super_admin']);
 }
 for my $a (qw/ list view /) {

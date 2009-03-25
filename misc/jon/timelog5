@@ -236,3 +236,26 @@ Mar 18 10:00-10:30, 1:10-3:30, 4:30-7:10, 10:00-12:30
     new attrs for parallel rental/programs
     housing cost messing around
     gender ajax
+Mar 19 11:00-11:30
+    ride confirmation letter
+Mar 20 9:00-9:20
+    remedying $100 deposit fixation
+Mar 21 1:30-5:15
+    at center, consult with Brajesh, Sukhdev, Jayanti, Shyama
+    calendar tweaks (configurable)
+    new/old program alignment
+    rentals, too.
+    ride demo
+        no auto email - Send link
+        add "Choose Driver" to driver opts
+        mmi no credit card - what to do?
+        time entry - allow a/p (m)
+            flex it
+            display in am/pm format
+Mar 22 11:15-12:45, 1:15-2:40, 6:00-7:30
+    reworking Time::Simple - full formats, 3 display methods
+    using the above in Rental, Program and Ride
+    Rides - further development
+Mar 24 12:00-1:30, 7:00-9:00
+    maintenance, consultation - post rewiring.
+    rent synch, dumpall

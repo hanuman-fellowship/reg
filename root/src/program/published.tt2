@@ -1,16 +1,17 @@
+<p class=p2>
 [% IF pics %]
 All pictures were published.
 [% ELSE %]
 All future programs and rentals were published.
-<p>
+<p class=p2>
 If the pictures have changed, click <a href="/program/publish_pics">here</a> to publish them as well.
 [% END %]
-<p>
+<p class=p2>
 To see the published events in a new window click <a target=_blank href="http://www.mountmadonna.org/[% ftp_dir2 %]/events.html">here</a>.
-<p>
+<p class=p2>
 To see only the programs click <a target=_blank href="http://www.mountmadonna.org/[% ftp_dir2 %]/programs.html">here</a>.
 [% IF unlinked.0 %]
-<p>
+<p class=p2>
 Unlinked programs:
 <table cellpadding=3 style="margin-left: .3in">
 <tr>

@@ -13,6 +13,9 @@ use Date::Simple qw/
     date
     today
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
 /;
@@ -223,13 +226,17 @@ sub file_deposit : Local {
     my $indent = "&nbsp;" x 5;
 
     my $timestamp;
-    my $time;
     if ($id) {
-        $timestamp = date($date_end)->format("%D") . " " . $dep->time();
+        $timestamp = date($date_end)->format("%D")
+                   . " "
+                   . $dep->time_obj()->ampm()
+                   ;
     }
     else {
-        $time = sprintf("%02d:%02d", (localtime())[2, 1]),
-        $timestamp = tt_today($c)->format("%D") . " " . $time;
+        $timestamp = tt_today($c)->format("%D")
+                   . " "
+                   . get_time()->ampm()
+                   ;
     }
     my $html = <<"EOH";
 <style type="text/css">
@@ -359,7 +366,7 @@ EOH
             #
             model($c, 'Deposit')->create({
                 user_id    => $c->user->obj->id(),
-                time       => $time,
+                time       => get_time()->t24(),
                 date_start => $date_start,
                 date_end   => $date_end,
                 cash       => $gcash,

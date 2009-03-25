@@ -135,8 +135,20 @@ sub sex_disp {
 
 sub name_email {
     my ($self) = @_;
-
     return $self->first() . " " . $self->last() . "<" . $self->email() . ">";
+}
+
+#
+# Address Verification System
+#
+sub avs {
+    my ($self) = @_;
+    my $addr = $self->addr1();
+    my $zip  = $self->zip_post();
+    for ($addr, $zip) {
+        s{\D}{}g;
+    }
+    return "$addr $zip";
 }
 
 1;

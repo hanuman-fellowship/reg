@@ -19,7 +19,7 @@ $dbh->do("delete from deposit");
 #
 my $d_sql = "insert into deposit
 values (
-    ?, 2, ?, ?, '17:00', ?, ?, ?, 'mmc'
+    ?, 2, ?, ?, '1700', ?, ?, ?, 'mmc'
 )
 ";
 my $d_sth = $dbh->prepare($d_sql) or die "no prep deposit insert\n";

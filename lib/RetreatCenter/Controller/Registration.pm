@@ -9,6 +9,9 @@ use lib '../../';       # so you can do a perl -c here.
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
     nsquish
     digits
@@ -93,10 +96,10 @@ sub list_online : Local {
         my ($date, $time, $first, $last, $pid);
         while (<$in>) {
             if (m{x_date => (.*)}) {
-                $date = date($1)->format("%m/%d");
+                $date = date($1);
             }
             elsif (m{x_time => (.*)}) {
-                $time = $1;
+                $time = get_time($1);
             }
             elsif (m{x_fname => (.*)}) {
                 $first = normalize($1);
@@ -125,8 +128,8 @@ sub list_online : Local {
     }
     @online = sort {
                   $a->{pname} cmp $b->{pname} or
-                  $a->{date}  cmp $b->{date}  or
-                  $a->{time}  cmp $b->{time}
+                  $a->{date}  <=> $b->{date}  or
+                  $a->{time}  <=> $b->{time}
               }
               @online;
     stash($c,
@@ -457,6 +460,9 @@ sub get_online : Local {
 
     my $date = date($P{date});
 
+    $P{time} = get_time($P{time})->t24();       # convert to 24 hour time
+                                # could have just removed the colon but ...
+
     #
     # date_start and date_end are always present in the table record.
     # they are the program start/end dates unless overridden.
@@ -520,7 +526,6 @@ sub _rest_of_reg {
     # better way of searching the ids???
     #
     for my $a ($p->affils) {
-$c->log->info("alert? " . $a->id() . " = $alert?");
         if ($a->id() == $alert) {
             my $s = $p->comment;
             $s =~ s{\r?\n}{\\n}g;
@@ -739,7 +744,8 @@ sub get_now {
         reg_id   => $reg_id,
         user_id  => $c->user->obj->id,
         the_date => tt_today($c)->as_d8(),
-        time     => sprintf "%02d:%02d", (localtime())[2, 1];
+        time     => get_time()->t24()
+        ;
     # we return an array of 8 values perfect
     # for passing to a DBI insert/update.
 }
@@ -1575,15 +1581,13 @@ sub _reg_hist {
     });
     my $user_id = $u->id;
     my $now_date = tt_today($c)->as_d8();
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
+    my $now_time = get_time()->t24();
     model($c, 'RegHistory')->create({
         reg_id => $id,
         what => $what,
         user_id  => $user_id,
         the_date => $now_date,
         time     => $now_time,
-           
     });
 }
 
@@ -1628,8 +1632,7 @@ sub new_charge_do : Local {
 
     my $today = tt_today($c);
     my $now_date = $today->as_d8();
-    my ($hour, $min) = (localtime())[2, 1];
-    my $now_time = sprintf "%02d:%02d", $hour, $min;
+    my $now_time = get_time()->t24();
 
     model($c, 'RegCharge')->create({
         reg_id    => $id,
@@ -1734,7 +1737,7 @@ EOH
                    :($hid        )? $house_name_of{$hid}
                    :                "";
         my $date = date($reg->date_postmark);
-        my $time = $reg->time_postmark;
+        my $time = $reg->time_postmark_obj();
         my $ht = 20;
         my $mark = ($reg->cancelled)?
                        "<img src=/static/images/redX.gif height=$ht>"
@@ -2094,7 +2097,7 @@ sub manual : Local {
         deposit       => $deposit,
         deposit_type  => $deposit_type,
         date_postmark => $date_post->as_d8(),
-        time_postmark => "12:00",
+        time_postmark => "1200",        # good guess?
         cabin_checked => "",
         room_checked  => "",
     );

@@ -304,10 +304,10 @@ my %lookup = reverse qw/
     ptemplate     template
 /;
 my %init = (
-    reg_start  => '4:00',
-    reg_end    => '7:00',
-    prog_start => '7:00',
-    prog_end   => '12:30',
+    reg_start  => '1600',
+    reg_end    => '1900',
+    prog_start => '1900',
+    prog_end   => '1230',
 );
 # get affil ids
 my %affil_id;
@@ -472,7 +472,10 @@ sub processProg {
 
     # is there already a max for this program?
     $hash{max} = "";
-    if (exists $max{$hash{name}} && length $max{$hash{name}}) {
+    if ($hash{sdate} > 20090301 
+        && exists $max{$hash{name}}
+        && length $max{$hash{name}}
+    ) {
         $hash{max} = $max{$hash{name}};
     }
 

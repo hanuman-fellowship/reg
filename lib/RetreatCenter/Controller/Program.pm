@@ -31,7 +31,9 @@ use Util qw/
 use Date::Simple qw/
     date
 /;
-use Time::Simple;
+use Time::Simple qw/
+    get_time
+/;
 use Net::FTP;
 use Global qw/
     %string
@@ -263,9 +265,12 @@ sub _get_data {
         prog_start
         prog_end
     /) {
-        my $time = Time::Simple->new($P{$t});
+        my $time = get_time($P{$t});
         if (!time) {
             push @mess, Time::Simple->error();
+        }
+        else {
+            $P{$t} = $time->t24();
         }
     }
     my @email = split m{[, ]+}, $P{notify_on_reg};
@@ -305,7 +310,7 @@ sub create_do : Local {
     my $sum = model($c, 'Summary')->create({
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
-        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_updated => get_time()->t24(),
     });
     my $p = model($c, 'Program')->create({
         summary_id => $sum->id,
@@ -1516,7 +1521,7 @@ sub duplicate_do : Local {
         id => undef,                        # with a new id
         date_updated => tt_today($c)->as_d8(),   # and new update status info
         who_updated  => $c->user->obj->id,
-        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_updated => get_time()->t24(),
     });
 
     # the image takes special handling

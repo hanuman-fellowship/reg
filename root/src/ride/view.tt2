@@ -1,12 +1,19 @@
 <h2>Ride</h2>
 [% admin = Catalyst.check_user_roles('ride_admin') %]
+[% id = ride.id %]
 [% IF admin %]
-<a href="/ride/update/[% ride.id %]">Edit</a>
+<a href="/ride/update/[% id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/ride/delete/[% ride.id %]"
+<a href="/ride/delete/[% id %]"
  onclick="return confirm('Okay to Delete [% ride.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/ride/pay">Pay</a>
+&nbsp;&nbsp;&nbsp;
+[% IF ride.sent_date %]
+<a href="/ride/send/[% id %]">ReSend</a>
+[% ELSE %]
+<a href="/ride/send/[% id %]"><span style="color: red">Send</span></a>
+[% END %]
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
@@ -53,7 +60,7 @@
 
 <tr>
 <th align=right>Time</th>
-<td>[% ride.flight_time_obj.format(24) %]</td>
+<td>[% ride.flight_time_obj %]</td>
 </tr>
 
 <tr>
@@ -83,6 +90,11 @@
 <tr>
 <th align=right valign=top>Comment</th>
 <td>[% ride.comment %]</td>
+</tr>
+
+<tr>
+<th align=right>Date Sent</th>
+<td>[% ride.sent_date_obj %]</td>
 </tr>
 
 <tr>

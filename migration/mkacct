@@ -4,7 +4,7 @@ create table xaccount (
     descr       text,
     glnum       text
 );
-insert into xaccount values (1, "Transportation", "98765");
+insert into xaccount values (1, "Transportation", "00025");
 drop table if exists xaccount_payment;
 create table xaccount_payment (
     id          integer primary key autoincrement,

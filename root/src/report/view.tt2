@@ -1,6 +1,6 @@
 <h2>Reports</h2>
 <form action="/report/run/[% report.id %]">
-<table cellpadding=0>
+<table cellpadding=0 border=0>
 <tr>
 <td valign=top><a href="[% Catalyst.uri_for('/report/create/') %]">Add</a>
 &nbsp;&nbsp;&nbsp;
@@ -17,6 +17,10 @@ onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 </td>
 <td valign=top>
+<input type=checkbox name=incl_mmc value=yes [% IF incl_mmc %]checked[% END %]>Include MMC
+&nbsp;
+</td>
+<td valign=top>
 <input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]>Collapse
 &nbsp;
 </td>
@@ -25,7 +29,11 @@ onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;
 </td>
-<td valign=top>
+</tr>
+<tr><td>&nbsp;</td></tr>
+</tr>
+<td colspan=4></td>
+<td colspan=3 align=center>
 <input type=submit value="Count"      name=count>
 &nbsp;
 <input type=submit value="Run Report" name=report>
@@ -78,5 +86,5 @@ onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
         </td>
     </tr>
 </table>
-<p>
+<p class=p2>
 [% message %]

@@ -146,15 +146,17 @@ sub processRental {
     $hash{status} = "tentative";
     $hash{summary_id} = $next_summary_id;
     # saved data?
-    if (exists $save_rent{$hash{name}}) {
+    if ($hash{sdate} = 20090301
+        && exists $save_rent{$hash{name}}
+    ) {
         my ($max, $deposit, $start, $end) = @{$save_rent{$hash{name}}};
         $hash{max} = $max;
         $hash{deposit} = $deposit;
         $hash{start_hour} = $start;
         $hash{end_hour} = $end;
     }
-    $hash{start_hour} ||= '4:00';
-    $hash{end_hour} ||= '1:00';
+    $hash{start_hour} ||= '1600';
+    $hash{end_hour} ||= '1300';
     $hash{mmc_does_reg} = '';
     $hash{program_id} = 0;
     $summary_sth->execute($next_summary_id);

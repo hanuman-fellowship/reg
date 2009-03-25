@@ -13,6 +13,9 @@ use Util qw/
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -65,7 +68,7 @@ sub create_do : Local {
         the_date   => $the_date->as_d8(),
         who_d       => $c->user->obj->id,
         date_d      => tt_today($c)->as_d8(),
-        time_d      => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_d      => get_time()->t24(),
     });
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }

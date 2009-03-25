@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenterDB::Deposit;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('deposit');
@@ -24,11 +29,14 @@ __PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
 
 sub date_start_obj {
     my ($self) = @_;
-    return date($self->date_start);
+    return date($self->date_start());
 }
 sub date_end_obj {
     my ($self) = @_;
-    return date($self->date_end);
+    return date($self->date_end());
 }
-
+sub time_obj {
+    my ($self) = @_;
+    return get_time($self->time());
+}
 1;

@@ -468,12 +468,12 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 <table cellpadding=3>   <!-- for Times -->
 <tr>
-<th align=right>Registration Start</th><td>[% program.reg_start %]</td>
-<th align=right>Program Start</th><td>[% program.prog_start %]</td>
+<th align=right>Registration Start</th><td>[% program.reg_start_obj %]</td>
+<th align=right>Program Start</th><td>[% program.prog_start_obj %]</td>
 </tr>
 <tr>
-<th align=right>End</th><td>[% program.reg_end %]</td>
-<th align=right>End</th><td>[% program.prog_end %]</td>
+<th align=right>End</th><td>[% program.reg_end_obj %]</td>
+<th align=right>End</th><td>[% program.prog_end_obj %]</td>
 </tr>
 </table>                <!-- Times table -->
 

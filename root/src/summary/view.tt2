@@ -110,12 +110,12 @@ th {
 </tr>
 [% pr = happening %]
 <tr>
-<th align=right>Registration Start</th><td>[% pr.reg_start %]&nbsp;&nbsp;<b>End</b> [% pr.reg_end %]</td>
+<th align=right>Registration Start</th><td>[% pr.reg_start_obj %]&nbsp;&nbsp;<b>End</b> [% pr.reg_end_obj %]</td>
 <th align=right>Meeting Places</th>
 <td align=left>[% pr.meeting_places('') %]</td>
 </tr>
 <tr>
-<th align=right>Program Start</th><td>[% pr.prog_start %]&nbsp;&nbsp;<b>End</b> [% pr.prog_end %]</td>
+<th align=right>Program Start</th><td>[% pr.prog_start_obj %]&nbsp;&nbsp;<b>End</b> [% pr.prog_end_obj %]</td>
 <th align=right>Breakout Places</th>
 <td align=left>[% pr.meeting_places('yes') %]</td>
 </tr>
@@ -164,5 +164,5 @@ th {
 <tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup %]</td></tr>
 <tr><th>Sound Setup</th><td colspan=3>[% sum.sound_setup %]</td></tr>
 <tr><th>Feedback</th><td colspan=3>[% sum.feedback %]</td></tr>
-<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated %]</td></tr>
+<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj %]</td></tr>
 </table>

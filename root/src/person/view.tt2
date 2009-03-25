@@ -146,7 +146,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% FOR r IN person.rides %]
         <tr>
         <td><a href=/ride/view/[% r.id %]>[% r.pickup_date_obj %]</a></td>
-        <td>[% r.flight_time_obj.format('ampm') %]</td>
+        <td>[% r.flight_time_obj %]</td>
         </tr>
     [% END %]
     </table>
@@ -169,7 +169,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     <td>[% d.type_sh %]</td>
     <td><a href="/project/donations/[% d.project.id %]">[% d.project.descr %]</a></td>
     <td>[% d.the_date_obj %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <td><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d_obj %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
     [% END %]
     </table>
@@ -181,7 +181,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     <p class=p2>
     <span class=larger>Payments</span>
     <ul>
-    <table cellpadding=3 width=800>
+    <table cellpadding=5 border=0>
     <tr>
     <th align=right>Amount</th>
     <th align=left>What</th>
@@ -194,7 +194,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         <td>[% p.what %]</td>
         <td align=right valign=top><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
         <td align=right valign=top>[% p.type_sh %]</td>
-        <td valign=top><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+        <td valign=top><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
         </tr>
     [% END %]
     </table>
