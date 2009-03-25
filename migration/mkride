@@ -12,5 +12,5 @@ create table ride (
     cost integer,
     comment text,
     paid_date text,
-    sent_date
+    sent_date text
 );
