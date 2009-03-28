@@ -78,7 +78,7 @@ sub complete {
            && ! empty($self->carrier())
            && ! empty($self->flight_num())
            && ! empty($self->flight_time())
-           && ! empty($self->cost())
+           && $self->cost() != 0
            && ! empty($rider->cc_number()) 
            && ! empty($rider->cc_expire()) 
            && ! empty($rider->cc_code()) 
