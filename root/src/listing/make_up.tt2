@@ -30,8 +30,9 @@ function toggle_all(clust_num) {
 </script>
 </head>
 <form action=/listing/make_up_do/[% tent %]>
+<p class=p2>
 [% heading %]
-<p>
+<p class=p2>
 <input type=submit value="Submit">
 [% content %]
 <p>
