@@ -56,6 +56,8 @@ insert into user values (18, 'thecla', 'hello', 'thecla@mountmadonna.org', 'Thec
 insert into user values (19, 'rebecca', 'hello', 'leonard_rebecca@hotmail.com', 'Rebecca', 'Leonard', '', '', '', '', '', '');
 insert into user values (20, 'felicia', 'hello', 'nucleus_prime@yahoo.com', 'Felicia', 'Thompson', '', '', '', '', '', '');
 insert into user values (21, 'nora', 'hello', 'Nora_aurelia@yahoo.com', 'Nora', 'Doyle', '', '', '', '', '', '');
+insert into user values (22, 'calendar', 'hello', 'jon@logicalpoetry.com', 'cal_first', 'cal_last', '', '', '', '', '', '');
+
 --
 -- the roles - do not muck with the ids!
 --

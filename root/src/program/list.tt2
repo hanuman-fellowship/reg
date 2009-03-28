@@ -37,9 +37,9 @@
     [% END %]
     <td>[% p.sdate_obj %]</td>
     <td align=right>[% p.reg_count %]&nbsp;&nbsp;&nbsp;</td>
-    <td width=40><a href="/program/view/[% p.id %]" title="[% p.title %]">Prog</a></td>
-    <td width=40><a href="/registration/list_reg_name/[% p.id %]">All</a></td>
+    <td width=40><a href="/registration/list_reg_name/[% p.id %]">AllReg</a></td>
     <td width=40><a href="/summary/view/program/[% p.summary_id %]">Sum</a></td>
+    <td width=40><a href="/program/view/[% p.id %]" title="[% p.title %]">Prog</a></td>
     </tr>
     [% IF class == 'fl_row0' %]
         [% class = 'fl_row1' %]

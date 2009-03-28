@@ -972,7 +972,7 @@ var newwin;
 function popup(url) {
     newwin = window.open(
         url, 'reg_search_help',
-        'height=550,width=550, scrollbars'
+        'height=620,width=550, scrollbars'
     );
     if (window.focus) {
         newwin.focus();

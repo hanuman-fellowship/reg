@@ -1153,3 +1153,11 @@ put @airports from Ride.pm into strings.txt and extract them (into Global?)
 credit card clearing cron job.
 
 resize little icons - question, envelope, etc.
+
+tabindex for user edit.
+
+edit/proof the time help topic.
+    help <=> testplan
+
+why can't I see months on the calendar beyond where
+    there are events?
