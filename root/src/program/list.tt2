@@ -22,7 +22,7 @@
 <tr>
 <td></td>   <!-- for marking rental-programs and mmi program -->
 <th align=left>Name</th>
-<th align=center>Start</th>
+<th align=left>Start</th>
 <th align=right>Count</th>
 <th align=left>Actions</th>
 </tr>
