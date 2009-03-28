@@ -22,8 +22,8 @@
 <tr>
 <td></td>   <!-- for marking rental-programs and mmi program -->
 <th align=left>Name</th>
-<th align=left>Start Date</th>
-<th align=right>Reg Count</th>
+<th align=center>Start</th>
+<th align=right>Count</th>
 <th align=left>Actions</th>
 </tr>
 [% class = 'fl_row0' %]
