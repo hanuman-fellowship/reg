@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenter::Controller::Login;
 use base 'Catalyst::Controller';
 
-use Global qw/%string/;
+use Global qw/
+    %string
+/;
+use Date::Simple qw/
+    today
+/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -34,7 +39,8 @@ sub index : Private {
                 $c->response->redirect($c->uri_for('/ride/mine'));
             }
             elsif ($username eq 'calendar') {
-                $c->response->redirect($c->uri_for('/event/calendar'));
+                $c->response->redirect($c->uri_for('/event/calendar/'
+                    . today()->as_d8() . "/3"));
             }
             else {
                 $c->response->redirect($c->uri_for('/person/search'));
