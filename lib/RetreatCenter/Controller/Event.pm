@@ -953,6 +953,12 @@ EOH
                   . "</span>"
                   . "<img border=0 class=jmptable src=$jump_img usemap=#jump>";
         if ($firstcal) {
+            my $logout = "";
+            if ($c->user->username() eq 'calendar') {
+                $logout = <<"EOH";
+<span style="margin-left: 1in;"><a href=/logout>Logout</a></span>
+EOH
+            }
             my $go_form = <<"EOH";
 <style type="text/css">
 \@media print {
@@ -981,7 +987,7 @@ function popup(url) {
 <span class=datefld>Start</span> <input type=text name=start size=10 value='$start_param'>
 <span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
 <span class=datefld><input class=go type=submit value="Go"></span>
-<a href="javascript:popup('/static/help/calendar.html');">How?</a>
+<a href="javascript:popup('/static/help/calendar.html');">How?</a>$logout
 </form>
 </div>
 <p>
