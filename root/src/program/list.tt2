@@ -24,7 +24,7 @@
 <th align=left>Name</th>
 <th align=left>Start</th>
 <th align=right>Count</th>
-<th align=left>Actions</th>
+<th align=center colspan=3>Actions</th>
 </tr>
 [% class = 'fl_row0' %]
 [% FOREACH p IN programs %]
