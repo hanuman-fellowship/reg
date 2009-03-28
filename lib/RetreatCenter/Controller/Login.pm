@@ -30,6 +30,12 @@ sub index : Private {
             elsif ($c->check_user_roles('field_staff')) {
                 $c->response->redirect($c->uri_for('/listing/field'));
             }
+            elsif ($c->check_user_roles('driver')) {
+                $c->response->redirect($c->uri_for('/ride/mine'));
+            }
+            elsif ($username eq 'calendar') {
+                $c->response->redirect($c->uri_for('/event/calendar'));
+            }
             else {
                 $c->response->redirect($c->uri_for('/person/search'));
             }

@@ -40,7 +40,5 @@ p {
     <a href=/role/list>Roles</a><p>
 [% END %]
 <a href=/user/profile>User Profile</a><p>
-[% IF super %]
-    <a href=/user/list>Users</a><p>
-[% END %]
+<a href=/user/list>Users</a><p>
 </ul>

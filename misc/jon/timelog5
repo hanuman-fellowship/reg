@@ -256,6 +256,16 @@ Mar 22 11:15-12:45, 1:15-2:40, 6:00-7:30
     reworking Time::Simple - full formats, 3 display methods
     using the above in Rental, Program and Ride
     Rides - further development
-Mar 24 12:00-1:30, 7:00-9:00
+Mar 24 12:00-1:30, 7:00-9:00, 10:30-12:30
     maintenance, consultation - post rewiring.
     rent synch, dumpall
+    loadall, tweak it.
+Mar 25 10:00-11:00
+    consultation w/ Barnaby, Brajesh, Sukhdev, Shyama, Jayanti
+Mar 26 10:00-2:40, 4:00-6:30
+    rides - nearly complete
+    driver login - show their rides
+    testplan
+        todo: hovering email like with reg conf letters.
+Mar 27 11:00-
+    flower list

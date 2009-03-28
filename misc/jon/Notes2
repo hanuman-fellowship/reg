@@ -1113,6 +1113,7 @@ add checkbox to Reports - Include MMC - by default off.
     then everyone at MMC should have Snail Mail set to 'yes'.
 
 add Count button to membership bulk mailings
+    and change Submit to "Run Report".
 
 new members have guru purnima affil?
 
@@ -1132,3 +1133,23 @@ rides
     email
         if rider has no email put to screen ALSO.
     airport <select> SJC, SFO, OAK, MRY
+    hover Send show email address as in reg.
+    all view user info sans password
+    what to do about bad credit card?
+    for MMI all 1s?
+
+auto cap State, Zip in javascript.
+
+month end report - put * next to rentals
+
+leader_assistant reg attribute - make it visible? on reg page or on list?
+
+put @airports from Ride.pm into strings.txt and extract them (into Global?)
+    for use:
+        airport1 SJC - San Jose
+        airport2 SFO - San Francisco
+        airport3 OAK - Oakland
+
+credit card clearing cron job.
+
+resize little icons - question, envelope, etc.

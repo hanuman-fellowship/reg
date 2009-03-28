@@ -64,7 +64,7 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
     [% ELSE %]
     <a class=not_sent 
        href="/registration/send_conf/[% reg.id %]"
-       onmouseover="return overlib('[% reg.person.email || 'Snail Mail' %], RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseover="return overlib('[% reg.person.email || 'Snail Mail' %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
        onmouseout="return nd();">Send</a>
     [% END %]
     &nbsp;&nbsp;

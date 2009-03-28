@@ -16,21 +16,29 @@ Name <input type=text name=name size=10>
 <table cellpadding=5 border=0>
 <tr>
 <td></td>
+<th align=left>Rider</th>
 <th align=left>Date</th>
 <th align=left>Airport</th>
 <th align=center>Time</th>
 <th align=left>Driver</th>
-<th align=left>Rider</th>
 </tr>
 [% FOREACH r IN rides %]
-<tr>
-<td>[% IF r.paid_date %]<img src=/static/images/checked.gif>[% END %]</td>
-<td>[% r.pickup_date_obj %]</td>
-<td align=left>&nbsp;&nbsp;&nbsp;[% r.airport %]</td>
-<td align=right>[% r.flight_time_obj %]</td>
-<td><a href=/user/view/[% r.driver.id %]>[% r.driver.first %]</a></td>
-<td><a href=/ride/view/[% r.id %]>[% r.rider.last %], [% r.rider.first %]</a></td>
-</tr>
+    <tr>
+    <td>
+    [% IF !r.complete %]
+        <img src=/static/images/question.jpg height=20>
+    [% ELSIF ! r.sent_date %]
+        <img src=/static/images/envelope.jpg height=20>
+    [% ELSIF r.paid_date %]
+        <img src=/static/images/checked.gif>
+    [% END %]
+    </td>
+    <td><a href=/ride/view/[% r.id %]>[% r.rider.last %], [% r.rider.first %]</a></td>
+    <td>[% r.pickup_date_obj %]</td>
+    <td align=left>&nbsp;&nbsp;&nbsp;[% r.airport %]</td>
+    <td align=right>[% r.flight_time_obj %]</td>
+    <td><a href=/user/view/[% r.driver.id %]>[% r.driver.first %]</a></td>
+    </tr>
 [% END %]
 </table>
 <script type="text/javascript">

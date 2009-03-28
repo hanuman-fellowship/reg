@@ -5,6 +5,10 @@ use base qw/DBIx::Class/;
 
 use Date::Simple qw/date/;
 
+use Algorithm::LUHN qw/
+    is_valid
+/;
+
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('people');
 __PACKAGE__->add_columns(qw/
@@ -149,6 +153,11 @@ sub avs {
         s{\D}{}g;
     }
     return "$addr $zip";
+}
+
+sub bad_cc {
+    my ($self) = @_;
+    return ! is_valid($self->cc_number());
 }
 
 1;

@@ -1,36 +1,63 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
 <h2>Ride</h2>
 [% admin = Catalyst.check_user_roles('ride_admin') %]
 [% id = ride.id %]
-[% IF admin %]
-<a href="/ride/update/[% id %]">Edit</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/ride/delete/[% id %]"
- onclick="return confirm('Okay to Delete [% ride.name %]?');">Delete</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/ride/pay">Pay</a>
-&nbsp;&nbsp;&nbsp;
-[% IF ride.sent_date %]
-<a href="/ride/send/[% id %]">ReSend</a>
-[% ELSE %]
-<a href="/ride/send/[% id %]"><span style="color: red">Send</span></a>
-[% END %]
-&nbsp;&nbsp;&nbsp;
-[% END %]
-<a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
-<ul>
-<table cellpadding=5 border=0>
-
 [% rider = ride.rider %]
 [% driver = ride.driver %]
 
+[% IF admin %]
+    <a href="/ride/update/[% id %]">Edit</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/ride/delete/[% id %]"
+     onclick="return confirm('Okay to Delete [% ride.name %]?');">Delete</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/ride/pay">Pay</a>
+    &nbsp;&nbsp;&nbsp;
+    [% IF ride.complete %]
+        [% IF ride.sent_date %]
+            <a href="/ride/send/[% id %]"
+       onmouseover="return overlib('[% rider.email || 'Snail Mail' %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseout="return nd();"
+            >ReSend</a>
+        [% ELSE %]
+            <a href="/ride/send/[% id %]"
+       onmouseover="return overlib('[% rider.email || 'Snail Mail' %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseout="return nd();"
+            ><span style="color: red">Send</span></a>
+        [% END %]
+        &nbsp;&nbsp;&nbsp;
+    [% END %]
+    [% IF ride.from_to == 'To MMC' %]
+        <a href="/ride/create/[% rider.id %]/[% id %]">Return</a>
+        &nbsp;&nbsp;&nbsp;
+    [% END %]
+[% END %]
+<a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
+[% IF message %]&nbsp;&nbsp;&nbsp;<span style="color: red">[% message %]</span>[% END %]
+<ul>
+<table cellpadding=5 border=0>
 <tr>
 <th align=right>Rider</th>
 <td><a href=/person/view/[% rider.id %]>[% rider.last %], [% rider.first %]</a></td>
+<td><a href="mailto:[% rider.email %]">[% rider.email %]</a></td>
+<td>
+[% IF rider.tel_home %][% rider.tel_home %] h [% END %]
+[% IF rider.tel_work %][% rider.tel_work %] w [% END %]
+[% IF rider.tel_cell %][% rider.tel_cell %] c [% END %]
+</td>
 </tr>
 
 <tr>
 <th align=right>Driver</th>
-<td>[% IF admin %]<a href=/user/view/[% driver.id %]>[% driver.first %]</a>[% ELSE %][% driver.first %][% END %]</td>
+<td><a href=/user/view/[% driver.id %]>[% driver.first %]</a></td>
+<td><a href="mailto:[% driver.email %]">[% driver.email %]</a></td>
+<td>
+[% IF driver.office %][% driver.office %] w [% END %]
+[% IF driver.cell %][% driver.cell %] c [% END %]
+</td>
 </tr>
 
 <tr>
@@ -60,7 +87,7 @@
 
 <tr>
 <th align=right>Time</th>
-<td>[% ride.flight_time_obj %]</td>
+<td>[% IF ride.flight_time %][% ride.flight_time_obj %][% END %]</td>
 </tr>
 
 <tr>
@@ -72,7 +99,7 @@
 
 <tr>
 <th align=right>Credit Card Number</th>
-<td>[% rider.cc_number1 %]-[% rider.cc_number2 %]-[% rider.cc_number3 %]-[% rider.cc_number4 %]</td>
+<td colspan=3>[% rider.cc_number1 %]-[% rider.cc_number2 %]-[% rider.cc_number3 %]-[% rider.cc_number4 %] [% IF rider.bad_cc %]<img src=/static/images/unhappy1.gif>[% END %]</td>
 </tr>
 
 <tr>

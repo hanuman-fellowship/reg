@@ -30,7 +30,12 @@ __PACKAGE__->has_many('rides' => 'RetreatCenterDB::Ride', 'driver_id',
                       { order_by => 'pickup_date desc' },
                      );
 # ??? several tables have foreign keys
-# to user table - should we have relationships here
+# to this user table - should we have relationships here
 # reflecting that?  cascade deletes?
+
+sub name_email {
+    my ($self) = @_;
+    return $self->first() . " " . $self->last() . "<" . $self->email() . ">";
+}
 
 1;

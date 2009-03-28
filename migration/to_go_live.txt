@@ -1,6 +1,7 @@
 transform the web descr, leader bio, etc
     into tinyMCE syntax.
 undup - ongoing
+    and reformat the foreign addresses
 remove unused affils
 inactivate (after what point?)
 assign meeting places for rentals/programs
@@ -23,7 +24,8 @@ delete bogus rentals/programs - used for accounting purposes?
     SECLUSION, MEMBERSHIP, MOTHERING MAG
     dup'ed INFINITE SMILE rental
 add anew reports for mailings
-publish to web, verify, move to live.
+modify the names of the unlinked programs
+    then publish to web, verify, move to live.
 re-enter sums
     copy, paste & verify
 enter free nights & free program status for members

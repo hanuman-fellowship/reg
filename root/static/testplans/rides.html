@@ -1,0 +1,160 @@
+<head>
+<link rel="stylesheet" type="text/css" href="style.css" />
+</head>
+<body>
+<h2>Rides</h2>
+MMC is many things: a restaurant, a hotel, a campground
+a conference center.  It is also an <span style="color: red; font-weight: bold">Airporter Service</span>.
+We arrange rides between the center and the 4 local airports.
+<h3>Creating A Ride</h3>
+Only a person with the role of Ride Administrator can create a ride.
+Everyone can view them.
+This is how a ride is created:
+<ol>
+<li>Find a person or add them anew.
+<li>View that person and choose the 'Ride' link
+to create a ride <i>to</i> MMC.
+<li>Fill in whatever information you have about
+the person's flight and credit card information.
+<p>
+You can enter dates and times in a variety of convenient formats.
+Like '3' or '4 5' for dates or '123' or '0324' or '1:56 p' for times.
+See the other help topics for full details.
+<p>
+When entering credit card information the cursor will
+jump to the next field automatically when you have entered
+enough digits.  This should make entry easy and fast.
+<p>
+<li>Assign a driver when you can determine who it should be.
+</ol>
+This creates the ride.
+<p>
+You can view <i>all</i> rides by choosing the 'Rides' link at the top.
+This shows all current and future rides <i>and</i> all
+those that have not yet been paid.
+They are listed in order by date, time and airport - this helps
+in determining if rides can be shared.
+If you wish to see a ride that happened in the past or if you wish to search
+for a rider's last name there is a way to enter a date range
+and/or a name pattern - this will then display the rides you seek.
+<p>
+When a driver logs in they will first see only <i>their</i> future rides.
+The 'Rides' link at the top or a date range/name pattern search
+will include other drivers as well.
+<p>
+If some information about a ride is missing (like flight information
+or credit card data) the ride will be marked on the left with a little, round,
+blue question mark <img src=/static/images/question.jpg height=20>.
+<p>
+You can view a ride by clicking on the rider's name.
+Clicking on the drivers name will show you that driver's
+user information plus all of the rides they have given
+in reverse chronological order.
+<p>
+If you made a typo when entering the credit card number (swapped digits,
+mistyped digit) it will be marked with an unhappy face.
+This provides some minimal error checking but does not
+ensure that the card is actually valid.
+<p>
+You can edit the ride by choosing 'Edit'.
+<h3>The Return Ride</h3>
+When viewing a ride <i>to</i> MMC you can optionally create
+another ride for the person <i>from</i> MMC back to the airport.
+Choosing the 'Return' link will begin creating this return ride for the person
+setting the direction to 'From MMC' and 
+with the same airport and the same carrier as the To ride.
+<h3>Confirmation Letter</h3>
+When a ride is complete - all required information is present - then
+it will be marked with an envelope <img src=/static/images/envelope.jpg height=20> - meaning that you are now
+ready to send the confirmation letter.  Choose the ride (click on the
+rider's name) and select the red '<span style="color: red">Send</span>'.
+This will send an email
+to both the driver and the rider detailing the flight information.
+The letter includes telephone numbers for both the rider and the driver.
+The cost and cancellation policy is there as well.
+Here is a sample letter:
+<ul>
+Dear Charles,
+<p>
+This letter is to confirm that you have a ride scheduled
+from Mount Madonna Center to the Oakland airport.
+Here are the details of your flight:
+<p>
+<table cellpadding=3>
+<tr>
+<th align=right>Date</th><td>Tuesday April  7, 2009</td></tr>
+<th align=right>Airport</th><td>OAK</td></tr>
+<th align=right>Carrier</th><td>AA</td></tr>
+<th align=right>Flight #</th><td>45</td></tr>
+<th align=right>Time</th><td>1:03 pm</td></tr>
+</table>
+<p>
+Your driver will be Lila Ansell.
+They have been Cc'ed on this letter.
+Their phone numbers are:
+<p>
+<table cellpadding=3>
+<tr><th align=right>Office</th><td>123-456-9876</td></tr>
+<tr><th align=right>Cell</th><td>456-123-4321</td></tr>
+</table>
+<p>
+If the driver needs to contact you by telephone
+these are the numbers we have for you:
+<p>
+<table cellpadding=3>
+<tr><th align=right>Home</th><td>831-460-2649</td></tr>
+<tr><th align=right>Work</th><td>408-847-0406</td></tr>
+<tr><th align=right>Cell</th><td>415-246-6499</td></tr>
+</table>
+<p>
+This ride will cost $85 and will be charged to your credit card.<br>
+It may cost less if it can be arranged for you to share the ride with others.
+<p>
+If you cancel your flight and do not notify us in advance to cancel this ride
+a penalty of $25 will charged to your card.
+<p>
+If any of this information is in error please contact us as soon as possible.
+<p>
+Thank you,<br>
+Sukhdev Pettingill<br>
+408-846-4012<br>
+<a href="mailto:transportation@mountmadonna.org">transportation@mountmadonna.org</a><br>
+MMC Transportation Coordinator
+</ul>
+If the rider does not have an email address this letter will
+be displayed on the screen.   You can print it and then snail mail
+it to the person.
+<p>
+When the confirmation letter is sent the current date is put
+in the 'Date Sent' field of the ride.
+You can <i>RE</i>send the confirmation letter (after modifying the ride in
+some way, perhaps) by choosing 'ReSend'.
+<p>
+At this point it is the driver's responsibility to contact
+the rider and arrange for the exact pickup time and place.
+<h3>Payment</h3>
+After the ride has happened the driver is paid and the rider's credit
+card is charged.  This is done by choosing 'Pay' above the list of rides
+or when viewing a ride.  This brings up a list of all completed
+and unpaid rides.  The credit card information is in a very visible
+larger font.  The AVS (address verification system) data is shown as well.
+This consists the digits from the first address line and the zip code.
+This is used for authenticating the credit card and results in a slightly
+lower rate for MMC to pay for the charge service.
+<p>
+When you have finished charging the cards put a check by of the ones
+that you charged.  You can check 'All' to speed this up.
+Press Submit.  Now these rides will be marked with a green check mark
+<img src=/static/images/checked.gif height=20>
+to indicate 'paid'.  The date the payment was made is also
+recorded in the ride.
+<h3>Clearing Credit Cards, Sending Txt Msgs</h3>
+To Do: 
+<ol>
+<li>Once a day (at midnight or so) a process will run to clear out
+any credit card information that is no longer needed.
+<li>Once a day in the morning a txt msg is sent to drivers
+reminding them of their rides that day.  To make this happen
+the drivers have to put a text message email address in their user profile.
+The txt msg will contain the rider's name and flight information.
+</ol>

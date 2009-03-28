@@ -259,6 +259,7 @@ sub access_denied : Private {
 sub calendar : Local {
     my ($self, $c, $the_start, $the_end) = @_;
 
+    my $staff = $c->check_user_roles('prog_staff');
     my $day_width  = $string{cal_day_width};
     my $event_border = $string{cal_event_border};
     my @month_name = qw/
@@ -563,15 +564,23 @@ sub calendar : Local {
                 # tidy up the date_span for the printable row
                 $date_span =~ s{^([a-z]+)([\d\s-]+)$}{$2}i;
 
-                my $printable_row = join '',
-                                    map { "<td>$_</td>" }
-                                    $date_span,
-                                    "<a target=happening href='/$ev_type/view/"
-                                     . $ev->id
-                                     . "'>"
-                                     . $event_name
-                                     . "</a>",
-                                    places($ev);
+                my $printable_row
+                    = join '',
+                      map { "<td>$_</td>" }
+
+                      $date_span,
+
+                      ($staff? "<a target=happening href='/$ev_type/view/"
+                               . $ev->id
+                               . "'>"
+                               . $event_name
+                               . "</a>"
+
+                       :       $event_name),
+
+                      places($ev)
+                      ;
+
                 if ($ev_type eq 'rental') {
                     $printable_row .= "<td>&nbsp;</td>"
                                    .  "<td align=center>$count</td>";
@@ -621,10 +630,13 @@ sub calendar : Local {
                             $event_name, $black);
 
                 # add to the image map
-                $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n"
-                               .  "    target=happening\n"
-                               .  "    href='" . $ev->link . "'\n"
-    . qq!    onmouseover="return overlib('$disp',!
+                $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n";
+                if ($staff) {
+                    $imgmaps{$key} .= "    target=happening\n"
+                                   .  "    href='" . $ev->link . "'\n"
+                }
+                $imgmaps{$key} .=
+      qq!    onmouseover="return overlib('$disp',!
     . qq! MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333',!
     . qq! BORDER, 2, TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, $width * 20)"\n!
     . qq!    onmouseout="return nd();">\n!;
@@ -814,8 +826,8 @@ sub calendar : Local {
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <script>
-var det_state = 'block';
 var img_state = 'block';
+var det_state = 'none';
 var months = new Array($det_keys);
 function detail_toggle() {
     det_state = (det_state == 'block')? 'none': 'block';
@@ -889,9 +901,20 @@ EOH
                     my $bg = ($status eq 'lv' )? $lv_color
                             :($status eq 'arr')? $arr_color
                             :                    '#FFFFFF';
-                    $pr_links .= "<tr><td><a class=pr_links target=happening href="
-                               . $c->uri_for("/registration/view/$id")
-                               . ">$name</a></td><td bgcolor=$bg>$status</td></tr>";
+                    $pr_links .= "<tr>";
+                    if ($staff) {
+                        $pr_links
+                            .= "<td><a class=pr_links target=happening href="
+                            . $c->uri_for("/registration/view/$id")
+                            . ">$name</a></td><td bgcolor=$bg>$status"
+                            ;
+                    }
+                    else {
+                        # no access - just view
+                        $pr_links .= "<td>$name</td>"
+                                  .  "<td bgcolor=$bg>$status</td>";
+                    }
+                    $pr_links .= "</tr>";
                 }
                 my $x1 = $day_width*($d-1);
                 my $y1 = $ac->cal_height - 20 - 1;
@@ -954,7 +977,7 @@ function popup(url) {
 <div class=noprint>
 <form action='/event/calendar'>
 <span class=datefld>Images <input type=checkbox name=images checked onclick='image_toggle()'></span>
-<span class=datefld>Details <input type=checkbox name=detail checked onclick='detail_toggle()'></span>
+<span class=datefld>Details <input type=checkbox name=detail onclick='detail_toggle()'></span>
 <span class=datefld>Start</span> <input type=text name=start size=10 value='$start_param'>
 <span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
 <span class=datefld><input class=go type=submit value="Go"></span>
@@ -978,7 +1001,7 @@ $imgmaps{$key}</map>
 EOH
         if ($details{$key}) {
             $content .= <<"EOH";
-<div id=det$key>
+<div id=det$key style="display: none">
 <p>
 <ul>
 <table cellpadding=3>

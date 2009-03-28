@@ -157,3 +157,9 @@ cal_pr_color 130,150,200
 cal_today_color 130,200,150
 cal_arr_color 30,255,30
 cal_lv_color 255,30,30
+
+ride_cancel_penalty 35
+SJC San Jose
+SFO San Francisco
+OAK Oakland
+MRY Monterey

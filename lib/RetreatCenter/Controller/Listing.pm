@@ -13,6 +13,7 @@ use Util qw/
     tt_today
     commify
     housing_types
+    stash
 /;
 use Date::Simple qw/
     date
@@ -1184,5 +1185,90 @@ sub field_plan : Local {
     $c->stash->{template} = "listing/field_plan.tt2";
 }
 
+#
+# gather the flower section of
+# rental and program summaries.
+#
+# ??? we get start and end dates in several places.
+# can we unify this?  DRY?
+#
+sub flower : Local {
+    my ($self, $c) = @_;
+
+    my ($sdate, $edate);
+    $sdate = trim($c->request->params->{sdate});
+    if ($sdate eq "t13") {
+        # couldn't put sdate=t&edate=+13 or
+        #              sdate=t&edate=%2B13
+        # in listing/index.tt2 or listing/field.tt2
+        # for some reason.
+        $sdate = "t";
+        $edate = "+13";
+    }
+    else {
+        $edate = trim($c->request->params->{edate});
+    }
+
+    # validation
+    my $start = $sdate? date($sdate): tt_today($c);
+    if (! $start) {
+        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my $start_d8 = $start->as_d8();
+
+    Date::Simple->relative_date($start);
+    my $end = $edate? date($edate): $start + 13;
+    Date::Simple->relative_date();
+
+    if (! $end) {
+        $c->stash->{mess} = "Illegal end date: $end";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my $end_d8 = $end->as_d8();
+
+    if ($end < $start) {
+        $c->stash->{mess} = "End date must be after Start date.";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my @rentals = model($c, 'Rental')->search(
+        {
+            -or => [
+                sdate   => { between => [ $start_d8, $end_d8 ] },
+                edate   => { between => [ $start_d8, $end_d8 ] },
+            ],
+            'summary.flowers' => { '!=' => '' },
+        },
+        {
+            join     => [qw/ summary /],
+            prefetch => [qw/ summary /],   
+        }
+    );
+    my @programs = model($c, 'Program')->search(
+        {
+            -or => [
+                sdate   => { between => [ $start_d8, $end_d8 ] },
+                edate   => { between => [ $start_d8, $end_d8 ] },
+            ],
+            'summary.flowers' => { '!=' => '' },
+        },
+        {
+            join     => [qw/ summary /],
+            prefetch => [qw/ summary /],   
+        }
+    );
+    stash($c,
+        start  => $start,
+        end    => $end,
+        events => [
+            sort { $a->sdate <=> $b->sdate }
+            @rentals, @programs
+        ],
+    );
+    $c->stash->{template} = "listing/flowers.tt2";
+}
 
 1;

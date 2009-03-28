@@ -43,6 +43,7 @@ On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 <a target=_blank href="/listing/undup">Unduplication File</a>
 <p class=p2>
 <a href="/listing/email_check">Email Check</a>
+[% IF Catalyst.check_user_roles('super_admin') %]
 <p class=p2>
 <a href="/listing/activity_tally">Last Active Tally by Year</a>
 <p class=p2>
@@ -63,7 +64,7 @@ Purge Stale Addresses
 <input type=submit value="Go">
 </form>
 </ul>
-</ul>
+[% END %]
 </td><td valign=top>
 <ul>
 <a href=/report/list>General Reports</a><p class=p2>
@@ -75,7 +76,11 @@ Deposit
 <td>
 <ol>
 <li><a href="/finance/reconcile_deposit/mmc">Reconcile</a>
-<li><a target=_blank href="/finance/file_deposit/mmc">File</a>
+<li>
+<a target=_blank
+   href="/finance/file_deposit/mmc"
+   onclick="return confirm('Did it reconcile properly?');"
+>File</a>
 </ol>
 </td>
 </tr>
@@ -134,22 +139,34 @@ Phone Lists
 <form action="/listing/housekeeping/0" method=POST>
 On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
 </form>
-<p class=p2>
 
+<p class=p2>
 <a href="/listing/housekeeping/1">Today's Campground Report</a>
 <form action="/listing/housekeeping/1" method=POST>
 On <input type=text size=10 name=hs_date>&nbsp;<input type=submit value="Go">
 </form>
+
 <p class=p2>
 <a href="/listing/field_plan?sdate=t13">Field Staff Planning Report</a>
 <form action="listing/field_plan" method=POST>
 <table cellpadding=3>
 <tr><td align=left>Start <input type=text name=sdate size=10></td>
-
 <td>End <input type=text name=edate size=10></td>
 <td><input type=submit value="Go"></td>
 </tr>
 </table>
 </form>
+
+<p class=p2>
+<a href="/listing/flower?sdate=t13">Flower Report</a>
+<form action="listing/flower" method=POST>
+<table cellpadding=3>
+<tr><td align=left>Start <input type=text name=sdate size=10></td>
+<td>End <input type=text name=edate size=10></td>
+<td><input type=submit value="Go"></td>
+</tr>
+</table>
+</form>
+
 </ul>
 </td></tr></table>

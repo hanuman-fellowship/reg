@@ -197,7 +197,9 @@ sub link {
     my ($self) = @_;
     return "/program/view/" . $self->id;
 }
-
+sub event_type {
+    return "program";
+}
 sub webdesc_ex {
     my ($self) = @_;
     expand($self->webdesc());

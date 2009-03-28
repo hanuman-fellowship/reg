@@ -29,7 +29,7 @@
 [% class = 'fl_row0' %]
 [% FOREACH p IN programs %]
     <tr class=[% class %]>
-    <td class=fl_row0>[% IF p.school != 0 %]<span class=required>*</span>[% ELSIF p.rental_id != 0 %]%[% END %]</td>
+    <td class=fl_row0>[% IF p.school != 0 %]<span class=required>*</span>[% ELSIF p.rental_id > 0 %]%[% END %]</td>
     [% IF p.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
         <td><a href="/registration/first_reg/[% p.id %]">[% p.name %]</a></td>
     [% ELSE %]

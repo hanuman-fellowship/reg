@@ -1,16 +1,18 @@
 [% rider = ride.rider %]
 [% driver = ride.driver %]
+[% snail_address %]
 Dear [% rider.first %],
 <p>
-This letter is to confirm that you have a ride scheduled
-[% IF ride.direction == 'From MMC' %]
+This letter confirms that you have a ride scheduled
+[% IF ride.from_to == 'From MMC' %]
 from Mount Madonna Center to the [% airport %] airport.
 [% ELSE %]
 from the [% airport %] airport to Mount Madonna Center.
 [% END %]
+<br>
 Here are the details of your flight:
 <p>
-<table cellpadding=5>
+<table cellpadding=3>
 <tr>
 <th align=right>Date</th><td>[% ride.pickup_date_obj.format("%A %B %e, %Y") %]</td></tr>
 <th align=right>Airport</th><td>[% ride.airport %]</td></tr>
@@ -19,30 +21,34 @@ Here are the details of your flight:
 <th align=right>Time</th><td>[% ride.flight_time_obj.format('ampm') %]</td></tr>
 </table>
 <p>
-Your driver will be [% driver.first %] [% driver.last %]. They
-have been Cc'ed on this letter.  Their phone numbers are:
-<table cellpadding=5>
+Your driver will be [% driver.first %] [% driver.last %].
+[% IF has_email %]They have been Cc'ed on this letter.[% END %]
+Their phone numbers are:
+<p>
+<table cellpadding=3>
 [% IF driver.office %]<tr><th align=right>Office</th><td>[% driver.office %]</td></tr>[% END %]
 [% IF driver.cell %]<tr><th align=right>Cell</th><td>[% driver.cell %]</td></tr>[% END %]
 </table>
 <p>
 If the driver needs to contact you by telephone
 these are the numbers we have for you:
-<table cellpadding=5>
+<p>
+<table cellpadding=3>
 [% IF rider.tel_home %]<tr><th align=right>Home</th><td>[% rider.tel_home %]</td></tr>[% END %]
 [% IF rider.tel_work %]<tr><th align=right>Work</th><td>[% rider.tel_work %]</td></tr>[% END %]
 [% IF rider.tel_cell %]<tr><th align=right>Cell</th><td>[% rider.tel_cell %]</td></tr>[% END %]
 </table>
 <p>
-This ride will cost $[% ride.cost %] and will be charged to your credit card.
+This ride will cost $[% ride.cost %] and will be charged to your credit card.<br>
+It may cost less if it can be arranged for you to share the ride with others.
 <p>
-If you cancel your trip and do not notify us in advance to cancel this ride
+If you cancel your flight and do not notify us in advance to cancel this ride
 a penalty of $[% penalty %] will charged to your card.
 <p>
 If any of this information is in error please contact us as soon as possible.
 <p>
-Thank you,
+Thank you,<br>
 [% user.first %] [% user.last %]<br>
 [% user.office %]<br>
-[% user.email %]
+[% IF has_email %]<a href="mailto:[% user.email %]">[% user.email %]</a><br>[% END %]
 MMC Transportation Coordinator

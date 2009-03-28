@@ -8,8 +8,8 @@
 <a href="/user/delete/[% user.id %]"
  onclick="return confirm('Okay to Delete user [% user.first %] [% user.last %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/user/list">List</a>
 [% END %]
+<a href="/user/list">List</a>
 <ul>
 <table cellpadding=3 border=0>
 
@@ -21,11 +21,25 @@
 <tr>
 <th align=right>First</th>
 <td><span class=larger>[% user.first %]</span></td>
+<td width=150></td>
+<th align=right>Office Phone</th>
+<td>[% user.office %]</td>
 </tr>
 
 <tr>
 <th align=right>Last</th>
-<td>[% user.last %]</td>
+<td><span class=larger>[% user.last %]</span></td>
+<td></td>
+<th align=right>Cell Phone</th>
+<td>[% user.cell %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td><a href="mailto:[% user.email %]">[% user.email %]</a></td>
+<td></td>
+<th align=right>Txt Msg Email</th>
+<td>[% user.txt_msg_email %]</td>
 </tr>
 
 [% IF super %]
@@ -35,10 +49,6 @@
 </tr>
 [% END %]
 
-<tr>
-<th align=right>Email</th>
-<td><a href="mailto:[% user.email %]">[% user.email %]</a></td>
-</tr>
 
 <tr>
 <th align=right valign=top>Roles</th>
@@ -52,19 +62,28 @@
 </ul>
 [% rides = user.rides %]
 [% IF rides %]
-<span class=larger>Rides</span>
-<table cellpadding=5>
-<tr>
-<th>Date</th>
-<th>Airport</th>
-<th align=left>Name</th>
-</tr>
-[% FOR r IN rides %]
+    <span class=larger>Rides</span>
+    <table cellpadding=5>
     <tr>
-    <td>[% r.pickup_date_obj %]</td>
-    <td>[% r.airport %]</td>
-    <td><a href=/ride/view/[% r.id %]>[% r.rider.first %] [% r.rider.last %]</a></td>
-<td>[% IF r.paid_date %]<img src=/static/images/checked.gif>[% END %]</td>
+    <td></td>
+    <th align=left>Name</th>
+    <th>Date</th>
+    <th>Airport</th>
     </tr>
-[% END %]
+    [% FOR r IN rides %]
+        <tr>
+        <td>
+        [% IF !r.complete %]
+        <img src=/static/images/question.jpg height=20>
+        [% ELSIF ! r.sent_date %]
+        <img src=/static/images/envelope.jpg height=20>
+        [% ELSIF r.paid_date %]
+        <img src=/static/images/checked.gif>
+        [% END %]
+        </td>
+        <td><a href=/ride/view/[% r.id %]>[% r.rider.first %] [% r.rider.last %]</a></td>
+        <td>[% r.pickup_date_obj %]</td>
+        <td>[% r.airport %]</td>
+        </tr>
+    [% END %]
 [% END %]

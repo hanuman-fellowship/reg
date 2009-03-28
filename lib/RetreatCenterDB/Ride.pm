@@ -4,6 +4,10 @@ package RetreatCenterDB::Ride;
 
 use base qw/DBIx::Class/;
 
+use Util qw/
+    empty
+/;
+
 use Date::Simple qw/
     date
 /;
@@ -12,6 +16,9 @@ use Time::Simple qw/
 /;
 use Global qw/
     %string
+/;
+use Algorithm::LUHN qw/
+    is_valid
 /;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -61,6 +68,21 @@ sub name {
 sub link {
     my ($self) = @_;
     return "/ride/view/" . $self->id;
+}
+sub complete {
+    my ($self) = @_;
+    my $rider = $self->rider();
+    return    $self->driver_id() != 0
+           && ! empty($self->pickup_date())
+           && ! empty($self->from_to())
+           && ! empty($self->carrier())
+           && ! empty($self->flight_num())
+           && ! empty($self->flight_time())
+           && ! empty($self->cost())
+           && ! empty($rider->cc_number()) 
+           && ! empty($rider->cc_expire()) 
+           && ! empty($rider->cc_code()) 
+           && is_valid($rider->cc_number())
 }
 
 1;

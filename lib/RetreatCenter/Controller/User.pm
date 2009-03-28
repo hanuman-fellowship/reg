@@ -63,7 +63,13 @@ sub _get_data {
         }
     }
     @mess = ();
-    for my $k (keys %hash) {
+    for my $k (qw/
+        username
+        first
+        last
+        password
+        email
+    /) {
         $hash{$k} = trim($hash{$k});
         if (empty($hash{$k})) {
             push @mess, "\u$k cannot be blank.";

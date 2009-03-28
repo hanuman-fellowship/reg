@@ -39,19 +39,23 @@ function check(event, fld, n, next_id) {
 <tr>
 <th align=right valign=top>Direction</th>
 <td>
-<input type=radio name=from_to value="To MMC">To MMC<br>
-<input type=radio name=from_to value="From MMC">From MMC<br>
+<input type=radio name=from_to value="To MMC"   [% dir_to   %]>To MMC<br>
+<input type=radio name=from_to value="From MMC" [% dir_from %]>From MMC<br>
 </td>
 </tr>
 
 <tr>
 <th align=right>Airport</th>
-<td><input type=text name=airport value='[% ride.airport %]' size=3></td>
+<td>
+<select name=airport>
+[% airport_opts %]
+</select>
+</td>
 </tr>
 
 <tr>
 <th align=right>Carrier</th>
-<td><input type=text name=carrier value='[% ride.carrier %]' size=15></td>
+<td><input type=text name=carrier value='[% carrier %]' size=15></td>
 </tr>
 
 <tr>
@@ -61,7 +65,7 @@ function check(event, fld, n, next_id) {
 
 <tr>
 <th align=right>Flight Time</th>
-<td><input type=text name=flight_time value='[% ride.flight_time %]' size=8></td>
+<td><input type=text name=flight_time value='[% IF ride.flight_time %][% ride.flight_time_obj.ampm %][% END %]' size=8></td>
 </tr>
 
 <tr>

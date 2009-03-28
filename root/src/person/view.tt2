@@ -21,17 +21,23 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <a href="/donation/create/[% id %]" accesskey='n'>Do<span class=keyed>n</span>ate</a>
 &nbsp;&nbsp;&nbsp;
 <a accesskey='p' href="/xaccount/pay_balance/[% id %]"><span class=keyed>P</span>ayment</a>
-&nbsp;&nbsp;&nbsp;
-<a accesskey='d' href="/ride/create/[% id %]">Ri<span class=keyed>d</span>e</a>
+[% IF Catalyst.check_user_roles('ride_admin') %]
+    &nbsp;&nbsp;&nbsp;
+    <a accesskey='d' href="/ride/create/[% id %]">Ri<span class=keyed>d</span>e</a>
+[% END %]
 [% IF person.partner %]
-&nbsp;&nbsp;&nbsp;
-    Partnered <span class=keyed>W</span>ith <a href="/person/view/[% person.partner.id %]" accesskey='w'>[% person.partner.first _" "_ person.partner.last %]</a>
+    &nbsp;&nbsp;&nbsp;
+    Partnered
+    <span class=keyed>W</span>ith <a 
+          href="/person/view/[% person.partner.id %]" accesskey='w'
+    >[% person.partner.first _" "_ person.partner.last %]</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/person/separate/[% id %]"
-    onclick="return confirm('Okay to Separate?');">Separate</a>
+       onclick="return confirm('Okay to Separate?');">Separate</a>
 [% ELSE %]
-&nbsp;&nbsp;&nbsp;
-    <a href="/person/partner/[% id %]" accesskey='w'>Partner <span class=keyed>W</span>ith</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/person/partner/[% id %]"
+       accesskey='w'>Partner <span class=keyed>W</span>ith</a>
 [% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
     [% IF person.leader %]

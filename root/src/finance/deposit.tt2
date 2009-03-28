@@ -39,5 +39,10 @@
 </table>
 [% IF again %]
 <p>
-If it reconciles <a target=_blank href=/finance/file_deposit/[% source %]>Generate it again for Filing</a>.
+If it reconciles
+<a target=_blank 
+   href=/finance/file_deposit/[% source %]
+   onclick="return confirm('Did it reconcile properly?');"
+>
+Generate it again for Filing</a>.
 [% END %]

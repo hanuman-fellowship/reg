@@ -285,6 +285,9 @@ sub end_hour_obj {
     my ($self) = @_;
     get_time($self->end_hour());
 }
+sub event_type {
+    return "rental";
+}
 
 #
 # is the Seminar House one of the 

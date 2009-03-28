@@ -10,6 +10,7 @@ use Time::Simple qw/
 /;
 use Util qw/
     expand
+    ptrim
 /;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -56,6 +57,10 @@ __PACKAGE__->might_have(program => 'RetreatCenterDB::Program', 'summary_id');
 
 sub     date_updated_obj { date(shift->date_updated) || ""; }
 sub     time_updated_obj { get_time(shift->time_updated); }
+
+sub flowers_tr { ptrim(shift->flowers()) };
+
+# ??? no longer needed?
 sub    leader_housing_ex { expand(shift->leader_housing   ()); }
 sub           signage_ex { expand(shift->signage          ()); }
 sub     miscellaneous_ex { expand(shift->miscellaneous    ()); }

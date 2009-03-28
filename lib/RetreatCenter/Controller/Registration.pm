@@ -176,7 +176,7 @@ sub list_reg_name : Local {
         $pref_last = $pat;
         $pref_first = "";
     }
-    $pat =~ s{%}{*}g;
+    $pat =~ s{%}{*}g;       # put it back for display purposes
 
     my $pr = model($c, 'Program')->find($prog_id);
 
@@ -646,6 +646,7 @@ sub _get_data {
     $extra_days = 0;
     my $sdate = date($prog->sdate);       # personal retreats???
     my $edate = date($prog->edate);       # defaults to today???
+$c->log->info("sd $sdate ed $edate pd $prog_days");
     $tot_prog_days = $prog_days = $edate - $sdate;
 
     my $date_start;
@@ -910,6 +911,9 @@ sub create_do : Local {
 #
 # automatic charges - computed from the contents
 # of the registration record.
+# ??? we need to compute prog_days and extra_days and tot_prog_days
+# WITHIN this routine.  this is the only place
+# they are used.
 #
 sub _compute {
     my ($c, $reg, @who_now) = @_;
@@ -973,14 +977,18 @@ sub _compute {
                   || $h_type eq 'unknown')? 0
                  :                          $housecost->$h_type;
                                             # column name is correct, yes?
+$c->log->info("$h_type hc $h_cost");
+$c->log->info("pd $prog_days");
     my ($tot_h_cost, $what);
 	if ($housecost->type eq "Per Day") {
 		$tot_h_cost = $prog_days*$h_cost;
+$c->log->info("thc $tot_h_cost");
         my $plural = ($prog_days == 1)? "": "s";
         $what = "$prog_days day$plural Lodging at \$$h_cost per day";
     }
     else {
         $tot_h_cost = int($h_cost * ($prog_days/$tot_prog_days));
+$c->log->info("thc $tot_h_cost");
         $what = "Lodging - Total Cost";
         if ($prog_days != $tot_prog_days) {
             my $plural = ($prog_days == 1)? "": "s";
@@ -990,6 +998,7 @@ sub _compute {
     if ($lead_assist) {
         $tot_h_cost = 0;
     }
+$c->log->info("tot cost = $tot_h_cost");
     if ($tot_h_cost != 0) {
         model($c, 'RegCharge')->create({
             @who_now,
@@ -1624,6 +1633,7 @@ sub new_charge_do : Local {
         return;
     }
 
+    # another way to get the user data???
     my $username = $c->user->username();
     my ($u) = model($c, 'User')->search({
         username => $username,

@@ -43,6 +43,8 @@ our @EXPORT_OK = qw/
     stash
     error
     payment_warning
+    fillin_template
+    ptrim
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -221,7 +223,7 @@ sub places {
 
     join ", ",
          map { $_->meeting_place->abbr }
-         grep { $_->breakout() eq $breakout }
+         grep { (! defined $breakout) || ($_->breakout() eq $breakout) }
          $event->bookings;
 }
 
@@ -1124,6 +1126,32 @@ sub payment_warning {
              . "since a deposit has already been done today.";
     }
     return "";
+}
+
+sub fillin_template {
+    my ($tt2, $stash) = @_;
+
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static/templates/',
+        EVAL_PERL    => 0,
+    });
+    $tt->process(
+        $tt2,     # template
+        $stash,   # variables
+        \$html,   # output
+    );
+    return $html;
+}
+
+#
+# trim off unneeded paragraphs inserted by tinyMCE
+#
+sub ptrim {
+    my ($s) = @_;
+
+    $s =~ s{(<p>&nbsp;</p>\s*)+$}{}g;
+    $s;
 }
 
 1;
