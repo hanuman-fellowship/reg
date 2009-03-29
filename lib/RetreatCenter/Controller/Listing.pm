@@ -1271,4 +1271,21 @@ sub flower : Local {
     $c->stash->{template} = "listing/flowers.tt2";
 }
 
+sub financial : Local {
+    my ($self, $c) = @_;
+    $c->stash->{template} = "listing/financial.tt2";
+}
+sub people : Local {
+    my ($self, $c) = @_;
+    $c->stash->{template} = "listing/people.tt2";
+}
+sub field_staff : Local {
+    my ($self, $c) = @_;
+    $c->stash->{template} = "listing/field_staff.tt2";
+}
+sub kitchen : Local {
+    my ($self, $c) = @_;
+    $c->stash->{template} = "listing/kitchen.tt2";
+}
+
 1;

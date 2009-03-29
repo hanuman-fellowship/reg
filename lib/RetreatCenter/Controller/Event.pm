@@ -827,19 +827,31 @@ sub calendar : Local {
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <script>
 var img_state = 'block';
+// state of the checkbox named 'detail'
 var det_state = 'none';
 var months = new Array($det_keys);
-function detail_toggle() {
-    det_state = (det_state == 'block')? 'none': 'block';
-    for (var i = 0; i < months.length; ++i) {
-        var el = document.getElementById('det' + months[i]);
-        // may not be there - if Personal Retreat
-        if (el != null)
-            el.style.display = det_state;
+function detail_toggle(key) {
+    if (key == 0) {
+        det_state = (det_state == 'block')? 'none': 'block';
+        for (var i = 0; i < months.length; ++i) {
+            var el = document.getElementById('det' + months[i]);
+            // may not be there - if Personal Retreat??
+            if (el != null) {
+                el.style.display = det_state;
+            }
+            var checkbox = document.getElementById('detail' + months[i]);
+            if (checkbox) {
+                checkbox.checked = det_state == 'block';
+            }
+        }
+    }
+    else {
+        var checkbox = document.getElementById('detail' + key);
+        var el = document.getElementById('det' + key);
+        el.style.display = checkbox.checked? 'block': 'none';
     }
 }
 function image_toggle() {
-    //alert('image toggle');
     img_state = (img_state == 'block')? 'none': 'block';
     for (var i = 0; i < months.length; ++i) {
         var el = document.getElementById('img' + months[i]);
@@ -951,7 +963,8 @@ EOH
         $content .= "<a name=$key></a>\n<span class=hdr>"
                   . $month_name
                   . "</span>"
-                  . "<img border=0 class=jmptable src=$jump_img usemap=#jump>";
+                  . "<img border=0 class=jmptable src=$jump_img usemap=#jump>"
+                  . "<span class=datefld>Details <input type=checkbox id=detail$key onclick='detail_toggle($key)'></span>";
         if ($firstcal) {
             my $logout = "";
             if ($c->user->username() eq 'calendar') {
@@ -981,9 +994,9 @@ function popup(url) {
 }
 </script>
 <div class=noprint>
-<form action='/event/calendar'>
+<form action='/event/calendar' name=form>
 <span class=datefld>Images <input type=checkbox name=images checked onclick='image_toggle()'></span>
-<span class=datefld>Details <input type=checkbox name=detail onclick='detail_toggle()'></span>
+<span class=datefld>All Details <input type=checkbox name=detail onclick='detail_toggle(0)'></span>
 <span class=datefld>Start</span> <input type=text name=start size=10 value='$start_param'>
 <span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
 <span class=datefld><input class=go type=submit value="Go"></span>
@@ -1026,7 +1039,12 @@ $details{$key}
 EOH
         }
     }
-    $content .= "</body>\n";
+    $content .= <<"EOH";
+</body>
+<script type="text/javascript">
+document.form.end.focus();
+</script>
+EOH
     $c->res->output($content);
 }
 

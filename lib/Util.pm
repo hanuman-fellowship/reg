@@ -164,6 +164,7 @@ sub meetingplace_table {
                     { order_by => 'disp_ord' }
                 )
     ) {
+        next MEETING_PLACE if $mp->name() eq 'No Where';      # no no
         my $id = $mp->id;
         if (! ($checked{$id} || $br_checked{$id})) {
             # this meeting place is not currently assigned to
