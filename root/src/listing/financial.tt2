@@ -1,0 +1,60 @@
+<ul>
+<h3>Financial Listings</h3>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top>
+Deposit
+</td>
+<td>
+<ol>
+<li><a href="/finance/reconcile_deposit/mmc">Reconcile</a>
+<li>
+<a target=_blank
+   href="/finance/file_deposit/mmc"
+   onclick="return confirm('Did it reconcile properly?');"
+>File</a>
+</ol>
+</td>
+</tr>
+</table>
+<p class=p2>
+<a href="/finance/deposits/mmc">Prior Deposits</a><p class=p2>
+Period End Summary
+<table cellpadding=3>
+<tr>
+<form action="/finance/month_end">
+<td align=left>Start <input type=text name=sdate size=10>
+End <input type=text name=edate size=10>
+</td><td><input type=submit value="Go"></td></tr>
+</form>
+</table>
+[% IF Catalyst.check_user_roles('mmi_admin') %]
+<hr width=500 align=left>
+<h3>MMI Financial Listings</h3>
+<p class=p2>
+<table border=0 cellspacing=0 cellpadding=0>
+<tr>
+<td valign=top>
+Deposit
+</td>
+<td>
+<ol>
+<li><a href="/finance/reconcile_deposit/mmi">Reconcile</a>
+<li><a target=_blank href="/finance/file_deposit/mmi">File</a>
+</ol>
+</td>
+</tr>
+</table>
+<p class=p2>
+<a href="/finance/deposits/mmi">Prior Deposits</a><p class=p2>
+Period End Summary
+<table cellpadding=3>
+<tr>
+<form action="/finance/month_end">
+<td align=left>Start <input type=text name=sdate size=10>
+End <input type=text name=edate size=10>
+</td><td><input type=submit value="Go"></td></tr>
+</form>
+</table>
+[% END %]
+</ul>

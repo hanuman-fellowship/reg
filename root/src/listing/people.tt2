@@ -1,0 +1,36 @@
+<ul>
+<h3>People Listings</h3>
+<a href=/report/list>General Reports</a>
+<p class=p2>
+Phone Lists
+<ol>
+<li><a href="/listing/phone_columns">In Columns</a>
+<li><a href="/listing/phone_line">In One Line</a>
+<li><a href="/listing/phone_noaddr">No Address</a>
+</ol>
+<p class=p2>
+<a target=_blank href="/listing/undup">Unduplication File</a>
+<p class=p2>
+<a href="/listing/email_check">Email Check</a>
+[% IF Catalyst.check_user_roles('super_admin') %]
+<p class=p2>
+<a href="/listing/activity_tally">Last Active Tally by Year</a>
+<p class=p2>
+<form action="/listing/mark_inactive">
+Last date of contact before which<br>people should be marked inactive:
+<br>
+<input type=text name=date_last size=10 maxlength=10>
+<input type=submit value="Go">
+</form>
+<p class=p2>
+Purge Stale Addresses
+<p class=p2>
+<form action="[% Catalyst.uri_for('/listing/stale') %]"
+      method=POST
+      enctype="multipart/form-data"
+>
+<input type=file name=stale_emails><br>
+<input type=submit value="Go">
+</form>
+[% END %]
+</ul>

@@ -1,0 +1,20 @@
+<div style="margin-left: .5in">
+<h3>Kitchen Meal Lists</h3>
+<a href="/listing/meal_list">For Planning</a>
+<p class=p2>
+<a href="/listing/meal_list?details=1&sdate=t&edate=t">Today With Names</a>
+<p class=p2>
+<form action="listing/meal_list" method=POST>
+<table cellpadding=2>
+<tr>
+<td align=right>Start</td>
+<td><input type=text name=sdate size=10></td>
+<td align=right>End</td>
+<td><input type=text name=edate size=10></td>
+<td align=right>Details</td>
+<td><input type=checkbox name=details></td>
+<td><input type=submit value="Go"></td>
+</tr>
+</table>
+</form>
+</div>
