@@ -15,9 +15,16 @@ sub index : Private {
 
     # if already logged in ...
     if ($c->user_exists()) {
-        $c->response->redirect($c->uri_for('/person/search'));
+        if ($c->user->username() eq 'calendar') {
+            $c->response->redirect($c->uri_for('/event/calendar/'
+                . today()->as_d8() . "/3"));
+        }
+        else {
+            $c->response->redirect($c->uri_for('/person/search'));
+        }
         return;
     }
+
     # Get the username and password from form
     my $username = $c->request->params->{username} || "";
     my $password = $c->request->params->{password} || "";
