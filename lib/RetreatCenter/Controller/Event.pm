@@ -449,6 +449,7 @@ sub calendar : Local {
         my $event_name = $ev->name();
         $event_name =~ s{ \d\d/\d\d$}{}; # tidy up ending mm/yy
                                          # not really needed
+        $event_name =~ s{^MMI-}{};       # the front of MMI programs
         my $ev_count = $ev->count();
         my $count = $ev_count;
         my $max = $ev->max();
