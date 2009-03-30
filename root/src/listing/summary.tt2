@@ -1,0 +1,19 @@
+<h2>[% section %] Needs from [% start %] to [% end %]</h2>
+<table cellpadding=5>
+<tr>
+<th align=left>Event</th>
+<th>Start</th>
+<th>End</th>
+<th align=left>Place</th>
+<th align=left>[% section %] Needs</th>
+</tr>
+[% FOREACH ev IN events %]
+    <tr>
+    <td valign=top><a href=/[% ev.event_type %]/view/[% ev.id %]>[% ev.name %]</a></td>
+    <td valign=top>[% ev.sdate_obj.format('%a %b %e %q') %]</td>
+    <td valign=top>[% ev.edate_obj.format('%a %b %e %q') %]</td>
+    <td valign=top>[% ev.meeting_places %]</td>
+    <td valign=top>[% IF section == 'Flower' %][% ev.summary.flowers_tr %][% ELSE %][% ev.summary.field_staff_setup_tr %][% END %]</td>
+    </tr>
+[% END %]
+</table>

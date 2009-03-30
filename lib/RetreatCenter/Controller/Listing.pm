@@ -1186,14 +1186,14 @@ sub field_plan : Local {
 }
 
 #
-# gather the flower section of
+# gather the given section of
 # rental and program summaries.
 #
 # ??? we get start and end dates in several places.
 # can we unify this?  DRY?
 #
-sub flower : Local {
-    my ($self, $c) = @_;
+sub summary : Local {
+    my ($self, $c, $section) = @_;
 
     my ($sdate, $edate);
     $sdate = trim($c->request->params->{sdate});
@@ -1240,7 +1240,7 @@ sub flower : Local {
                 sdate   => { between => [ $start_d8, $end_d8 ] },
                 edate   => { between => [ $start_d8, $end_d8 ] },
             ],
-            'summary.flowers' => { '!=' => '' },
+            "summary.$section" => { '!=' => '' },
         },
         {
             join     => [qw/ summary /],
@@ -1253,7 +1253,7 @@ sub flower : Local {
                 sdate   => { between => [ $start_d8, $end_d8 ] },
                 edate   => { between => [ $start_d8, $end_d8 ] },
             ],
-            'summary.flowers' => { '!=' => '' },
+            "summary.$section" => { '!=' => '' },
         },
         {
             join     => [qw/ summary /],
@@ -1268,7 +1268,8 @@ sub flower : Local {
             @rentals, @programs
         ],
     );
-    $c->stash->{template} = "listing/flowers.tt2";
+    $c->stash->{section} = ($section eq 'flowers')? 'Flower': 'Set Up';
+    $c->stash->{template} = "listing/summary.tt2";
 }
 
 sub financial : Local {
