@@ -4,7 +4,7 @@
 body {
     width: 7in;
     margin-left: .5in;
-    margin-top: 1.5in;
+    margin-top: 2.0in;
 }
 h3 {
     text-align: center;
@@ -92,7 +92,7 @@ Jerry Brajesh Friedberg<br>
 Programs Director
 </div>
 <div style='page-break-after:always'></div>
-<h3 style="margin-top: 1.5in;">Facilities Use Contract</h3>
+<h3 style="margin-top: 2.5in;">Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
 [% IF rental.contract_signer %]
     [% p = rental.contract_signer %]
