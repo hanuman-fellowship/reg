@@ -4,7 +4,7 @@
 body {
     width: 7in;
     margin-left: .5in;
-    margin-top: 2.0in;
+    margin-top: 1.5in;
 }
 h3 {
     text-align: center;
@@ -14,10 +14,6 @@ table {
     margin-left: .5in;
     margin-top: .1in;
     margin-bottom: .1in;
-}
-#sig {
-    width: 500px;
-    border-bottom: thin solid;
 }
 #line {
     margin-top: .7in;
@@ -91,8 +87,9 @@ All good wishes,<br>
 Jerry Brajesh Friedberg<br>
 Programs Director
 </div>
-<div style='page-break-after:always'></div>
-<h3 style="margin-top: 2.5in;">Facilities Use Contract</h3>
+<div style="page-break-after:always"></div>
+<div style="height: 1.6in"></div>
+<h3>Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
 [% IF rental.contract_signer %]
     [% p = rental.contract_signer %]
@@ -206,7 +203,7 @@ Payment Due
 <tr><td>120 days to 61 days prior to arrival date</td><td>50% of Agreed Upon Revenue</td></tr>
 <tr><td>60 days to zero days prior to arrival date</td><td>75% of Agreed Upon Revenue</td></tr>
 </table>
-<div style='page-break-after:always'></div>
+<p>
 These cancellation charges are effective even if the Center
 is able to arrange an alternative rental. The Center will do its
 best to offset cancellation fees with replacement revenue,
@@ -226,6 +223,7 @@ per person per day rates under “Rates” above,
 or at the 75% of agreed upon revenue formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
+<div style='page-break-after:always'></div>
 <h2>Concurrent Workshops</h2>
 The Center may schedule other workshops and activities during
 this workshop, provided that such activities do not use facilities
@@ -251,7 +249,6 @@ are made for periods less than one week at a time.
 If you have special requests, please speak with us and we
 will do our best to provide for your needs.
 </ol>
-<div style='page-break-after:always'></div>
 <h2>Housing Procedure</h2>
 No later than two weeks before the rental,
 renter will inform the Center of the guest list make-up
@@ -270,6 +267,7 @@ later than two weeks out will be accepted.
 For housing requests received within the last week before the event,
 those that can be accepted will be surcharged $5.00 per
 outdoor accommodation and $10.00 per indoor accommodation.
+<div style='page-break-after:always'></div>
 <h2>Arbitration</h2>
 In the event that a dispute occurs between the parties with
 regard to the rights or duties created by this agreement,
@@ -292,12 +290,12 @@ of the date alongside the Program Director's signature.
 <p>
 <center>
 <table id=line border=0>
-<tr><td id=sig colspan=2></td></tr>
+<tr><td colspan=2><hr></td></tr>
 <tr><td id=name align=left>Brajesh (Jerry Friedberg, Ph.D.)</td><td>Date</td></tr>
 <tr><td id=name align=left>Program Director of the Center</td></tr>
 </table>
 <table id=line border=0>
-<tr><td id=sig colspan=2></td></tr>
+<tr><td colspan=2><hr></td></tr>
 <tr><td id=name align=left>[% p.first %] [% p.last %]</td><td>Date</td></tr>
 </table>
 </center>
