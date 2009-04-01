@@ -4,7 +4,7 @@
 <p class=p2>
 <a href="/listing/meal_list?details=1&sdate=t&edate=t">Today With Names</a>
 <p class=p2>
-<form action="listing/meal_list" method=POST>
+<form action="/listing/meal_list" method=POST>
 <table cellpadding=2>
 <tr>
 <td align=right>Start</td>
