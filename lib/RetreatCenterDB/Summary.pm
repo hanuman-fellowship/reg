@@ -58,8 +58,9 @@ __PACKAGE__->might_have(program => 'RetreatCenterDB::Program', 'summary_id');
 sub     date_updated_obj { date(shift->date_updated) || ""; }
 sub     time_updated_obj { get_time(shift->time_updated); }
 
-sub flowers_tr { ptrim(shift->flowers()) };
+sub flowers_tr           { ptrim(shift->flowers()          ) };
 sub field_staff_setup_tr { ptrim(shift->field_staff_setup()) };
+sub food_service_tr      { ptrim(shift->food_service()     ) };
 
 # ??? no longer needed?
 sub    leader_housing_ex { expand(shift->leader_housing   ()); }

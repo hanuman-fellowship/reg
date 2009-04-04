@@ -274,3 +274,20 @@ Mar 28 2:30-3:30, 10:00-12:30
     consulting, emailing, tweaking
     reworked listings categories
     calendar detail tweaking
+Mar 29 12:00-12:30
+    flowers => field staff setup needs - both merged
+Mar 30 3:45-5:45
+    nonzero balance listing
+    activity pruning - struggled with sqlite null fields.
+Apr 1 1:10-5:00
+    misc fixes
+    consulations with Laura, Sukhdev, Jayanti, Barnaby
+Apr 2 1:10-4:00, 5:30-6:00
+    descr of event not required
+    re_get prog_days, etc
+    extra_days at PR rate not Default rate
+    no dup regs
+Apr 3 2:35-5:20
+    carpool cron job
+        to whom when bcc'ing?  need to have a to, apparently.
+            may not need to be valid and can use fake_to

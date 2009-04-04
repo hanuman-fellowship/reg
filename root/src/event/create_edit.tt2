@@ -12,7 +12,7 @@
 </tr>
 
 <tr>
-<th align=right><span class="required">*</span> Description</th>
+<th align=right>Description</th>
 <td colspan=5><input type=text name=descr value="[% event.descr %]" size=60></td>
 </tr>
 

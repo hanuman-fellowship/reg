@@ -1,7 +1,13 @@
 <h2>Listings</h2>
-[% count %] new people will be marked InActive.
-<p>
+These [% npeople %] new people will be marked Inactive:
+<p class=p2>
+<ul>
+[% FOR p IN people %]
+<a target=person href="/person/view/[% p.id %]">[% p.last %], [% p.first %]</a><br>
+[% END %]
+<p class=p2>
 <form action="/listing/mark_inactive_do/[% date_last.as_d8 %]">
 <input type=submit name=no value="No">&nbsp;&nbsp;
 <input type=submit name=yes value="Yes">
 </form>
+</ul>

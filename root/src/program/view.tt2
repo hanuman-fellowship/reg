@@ -115,6 +115,8 @@ function cluster_down(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/tally/[% id %]/0">Tally</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/registration/nonzero/[% id %]">NonZero$</a>
+&nbsp;&nbsp;&nbsp;
 [% IF program.school != 0 && program.level == 'S' &&
    Catalyst.check_user_roles('mmi_admin') %]
 <a href="/registration/mmi_import/[% program.id %]">Import</a>

@@ -466,13 +466,8 @@ sub meal_list : Local {
     }
     my $css = $c->uri_for("/static/meal_list.css");
     my $list .= <<"EOL";
-<html>
-<head>
-<link rel="stylesheet" type="text/css" href="$css" />
-</head>
-<body>
+<h2>Meal List</h2>
 <table cellpadding=3>
-<caption>Meal List</caption>
 <tr>
 <th colspan=2 align=center>Date</th>
 <th>Breakfast</th>
@@ -489,14 +484,14 @@ EOL
         for my $m (qw/breakfast lunch dinner/) {
             $list .= "<td align=right>"
                       . ((defined $meals[$key]{$m})? $meals[$key]{$m}: "-")
-                      . "</td>\n";
+                      . "&nbsp;&nbsp;</td>\n";
         }
         $list .= "</tr>\n";
         ++$d;
     }
     $list .= "</table>\n";
     if ($details) {
-        $list .= "<p>\n";
+        $list .= "<p class=p2>\n";
         $d = $start;
         while ($d <= $end) {
             my $key = $d->as_d8();
@@ -511,11 +506,43 @@ EOL
         }
         
     }
-    $list .= <<"EOL";
-</body>
-</html>
-EOL
-    $c->res->output($list);
+    #
+    # any special food service needs within this date range?
+    #
+    my @programs = model($c, 'Program')->search(
+        {
+            sdate => { '<=' => $end_d8   },
+            edate => { '>=' => $start_d8 },
+            "summary.food_service" => { '!=' => '' },
+        },
+        {
+            join     => [qw/ summary /],
+            prefetch => [qw/ summary /],   
+        }
+    );
+    #
+    # get rentals again but only the ones with an
+    # entry in the summary for food_service.
+    #
+    @rentals = model($c, 'Rental')->search(
+        {
+            sdate => { '<=' => $end_d8   },
+            edate => { '>=' => $start_d8 },
+            "summary.food_service" => { '!=' => '' },
+        },
+        {
+            join     => [qw/ summary /],
+            prefetch => [qw/ summary /],   
+        }
+    );
+    stash($c,
+        daily_list => $list,
+        special    => [
+            sort { $a->sdate <=> $b->sdate }
+            @rentals, @programs
+        ],
+        template   => "listing/meal_list.tt2",
+    );
 }
 
 sub stale : Local {
@@ -563,8 +590,25 @@ sub email_check : Local {
 sub activity_tally : Local {
     my ($self, $c) = @_;
 
-    my $cur_year = today()->year();
+    
+    my $n_tot = model($c, 'Person')->all();
+    my $n_inact = model($c, 'Person')->search({
+        inactive => 'yes',
+    });
+    my $n_noupd = model($c, 'Person')->search({
+        -or => [
+            date_updat => '',
+            date_updat => undef,
+        ],
+    });
+    my $n_act = $n_tot - $n_inact;
+
     my $html = <<"EOH";
+Total $n_tot, InActive $n_inact, Active $n_act, No Last Update $n_noupd
+<p>
+EOH
+    my $cur_year = today()->year();
+    $html .= <<"EOH";
 <h3>Last Active Tally by Year</h3>
 <ul>
 <table cellpadding=2 border=0>
@@ -612,18 +656,43 @@ sub mark_inactive : Local {
         return;
     }
     my $dt8 = $dt->as_d8();
-    my $n = model($c, 'Person')->search({
-        inactive => '',
-        date_updat => { "<=", $dt8 },
-    })->count();
+    my @people = model($c, 'Person')->search(
+        {
+            inactive   => { '!=' => 'yes' },
+            -or => [
+                date_updat => { "<=", $dt8 },
+                date_updat => undef,
+            ],
+            akey       => { '!=' => '44595076SUM' },
+        },
+        {
+            order_by => [qw/ last first /],
+        });
     $c->stash->{date_last} = $dt;
-    $c->stash->{count} = $n;
+    $c->stash->{people} = \@people;
+    $c->stash->{npeople} = scalar(@people);
     $c->stash->{template} = "listing/inactive.tt2";
 }
 
 sub mark_inactive_do : Local {
     my ($self, $c, $date_last) = @_;
-    # ??? todo
+
+    if ($c->request->params->{no}) {
+        $c->response->redirect($c->uri_for('/listing/people'));
+        return;
+    }
+    my $dt8 = date($date_last)->as_d8();
+    model($c, 'Person')->search({
+        inactive   => { '!=' => 'yes' },
+        -or => [
+            date_updat => { "<=", $dt8 },
+            date_updat => undef,
+        ],
+        akey       => { '!=' => '44595076SUM' },
+    })->update({
+        inactive => 'yes',
+    });
+    $c->response->redirect($c->uri_for('/listing/people'));
 }
 
 sub comings_goings : Local {
@@ -985,10 +1054,7 @@ sub make_up : Local {
                         prefetch => {
                             house => 'cluster',
                         },
-                        order_by => [qw/
-                            cluster.name
-                            house.cluster_order
-                        /],
+                        order_by => [qw/ cluster.name house.cluster_order /],
                     }
                 )
     ) {
@@ -1236,10 +1302,8 @@ sub summary : Local {
     }
     my @rentals = model($c, 'Rental')->search(
         {
-            -or => [
-                sdate   => { between => [ $start_d8, $end_d8 ] },
-                edate   => { between => [ $start_d8, $end_d8 ] },
-            ],
+            sdate => { '<=' => $end_d8   },
+            edate => { '>=' => $start_d8 },
             "summary.$section" => { '!=' => '' },
         },
         {
@@ -1249,10 +1313,8 @@ sub summary : Local {
     );
     my @programs = model($c, 'Program')->search(
         {
-            -or => [
-                sdate   => { between => [ $start_d8, $end_d8 ] },
-                edate   => { between => [ $start_d8, $end_d8 ] },
-            ],
+            sdate => { '<=' => $end_d8   },
+            edate => { '>=' => $start_d8 },
             "summary.$section" => { '!=' => '' },
         },
         {
@@ -1267,9 +1329,9 @@ sub summary : Local {
             sort { $a->sdate <=> $b->sdate }
             @rentals, @programs
         ],
+        section  => ($section eq 'flowers')? 'Flower': 'Set Up',
+        template => "listing/summary.tt2",
     );
-    $c->stash->{section} = ($section eq 'flowers')? 'Flower': 'Set Up';
-    $c->stash->{template} = "listing/summary.tt2";
 }
 
 sub financial : Local {

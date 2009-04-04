@@ -13,24 +13,24 @@ Phone Lists
 <p class=p2>
 <a href="/listing/email_check">Email Check</a>
 [% IF Catalyst.check_user_roles('super_admin') %]
-<p class=p2>
-<a href="/listing/activity_tally">Last Active Tally by Year</a>
-<p class=p2>
-<form action="/listing/mark_inactive">
-Last date of contact before which<br>people should be marked inactive:
-<br>
-<input type=text name=date_last size=10 maxlength=10>
-<input type=submit value="Go">
-</form>
-<p class=p2>
-Purge Stale Addresses
-<p class=p2>
-<form action="[% Catalyst.uri_for('/listing/stale') %]"
-      method=POST
-      enctype="multipart/form-data"
->
-<input type=file name=stale_emails><br>
-<input type=submit value="Go">
-</form>
+    <p class=p2>
+    <a href="/listing/activity_tally">Last Active Tally by Year</a>
+    <p class=p2>
+    <form action="/listing/mark_inactive">
+    Last date of contact before which<br>people should be marked inactive:
+    <br>
+    <input type=text name=date_last size=10 maxlength=10>
+    <input type=submit value="Go">
+    </form>
+    <p class=p2>
+    Purge Stale Addresses
+    <p class=p2>
+    <form action="[% Catalyst.uri_for('/listing/stale') %]"
+          method=POST
+          enctype="multipart/form-data"
+    >
+    <input type=file name=stale_emails><br>
+    <input type=submit value="Go">
+    </form>
 [% END %]
 </ul>

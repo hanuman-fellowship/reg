@@ -53,9 +53,6 @@ sub _get_data {
     if (empty($hash{name})) {
         push @mess, "Name cannot be blank";
     }
-    if (empty($hash{descr})) {
-        push @mess, "Description cannot be blank";
-    }
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate /) {
         my $fld = $hash{$d};

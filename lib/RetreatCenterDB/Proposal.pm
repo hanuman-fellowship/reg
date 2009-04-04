@@ -5,6 +5,9 @@ use base qw/DBIx::Class/;
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
     expand
 /;
@@ -72,6 +75,10 @@ __PACKAGE__->belongs_to(cs_person => 'RetreatCenterDB::Person', 'cs_person_id');
 
 sub date_of_call_obj  { date(shift->date_of_call) || ""; }
 sub program_meeting_date_obj { date(shift->program_meeting_date) || ""; }
+
+sub checkin_time_obj  { get_time(shift->checkin_time());  }
+sub checkout_time_obj { get_time(shift->checkout_time()); }
+
 sub dates_requested_ex  { expand(shift->dates_requested()); }
 sub special_needs_ex    { expand(shift->special_needs  ()); }
 sub food_service_ex     { expand(shift->food_service   ()); }

@@ -30,14 +30,14 @@ function popup(url) {
 <th align=right>Person</th>
 <td><a class=larger href="/person/view/[% person.id %]"
 onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a></td>
-<td>From <input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"></td><td>To <input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></td>
+<th align=left>Arrive<br><input type=text name=date_start size=10 maxlength=10 value="[% date_start %]"></th><th align=left>Leave<br><input type=text name=date_end size=10 maxlength=10 value="[% date_end %]"></th>
 </tr>
 
 <tr>
 <th align=right>Program</th>
 <td><a class=larger href="/program/view/[% program.id %]"
 onclick='return confirm("This registration has not yet been completed.  Continue on to view the program [% program.name %]?");'>[% program.name %]</a></td>
-<td>From [% program.sdate_obj %]</td><td>to [% program.edate_obj %]</td>
+<td><b>From</b> [% program.sdate_obj %]</td><td><b>To</b> [% program.edate_obj %]</td>
 </tr>
 
 <tr>

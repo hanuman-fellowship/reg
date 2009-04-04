@@ -18,6 +18,9 @@ use Util qw/
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
 /;
@@ -112,6 +115,13 @@ sub _get_data {
         ) {
             push @mess, "Contract Signer must have at least one phone number.";
         }
+    }
+    for my $t (qw/checkin_time checkout_time/) {
+        my $tm = get_time($hash{$t});
+        if (! $tm) {
+            push @mess, Time::Simple->error();
+        }
+        $hash{$t} = $tm->t24();
     }
     if (! @mess) {
         my $dt = date($hash{date_of_call});
@@ -283,8 +293,8 @@ sub approve : Local {
             cs_person_id   => $cs_person_id,
             max            => $proposal->max(),
             deposit        => $proposal->deposit(),
-            start_hour     => $proposal->checkin_time(),
-            end_hour       => $proposal->checkout_time(),
+            start_hour_obj => $proposal->checkin_time_obj(),
+            end_hour_obj   => $proposal->checkout_time_obj(),
         },
         h_types     => [ housing_types(1) ],
         string      => \%string,

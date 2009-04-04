@@ -72,13 +72,21 @@ while (<$people>) {
                 $y = "19$y";
             }
             $dt = "$y$m$d";
+            if ($dt > 20090301) {
+                $dt = 20090301;
+            }
         }
     }
-    if ($flds[18] eq "") {
-        $flds[18] = $flds[19];
-        # date_updat = date_entrd if no last update
+    if (! $flds[18]) {
+        if ($flds[19]) {
+            # date_updat = date_entrd if no last update
+            $flds[18] = $flds[19];
+        }
+        else {
+            $flds[18] = '';
+        }
     }
-    if ($flds[19] eq "") {
+    if (! $flds[19]) {
         $flds[19] = $flds[18];
         # date_entrd = date_updat if no entry date
     }

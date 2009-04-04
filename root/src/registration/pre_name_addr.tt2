@@ -1,4 +1,8 @@
-<h2>Participant List for [% program.name %] from [% program.dates %]</h2>
+<h2>Lists for [% program.name %] from [% program.dates %]</h2>
+<a href=/program/view/[% program.id %]>Program</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/registration/carpool/[% program.id %]>CarPool</a>
+<h4>Participant List</h4>
 <form action="/registration/name_addr_do/[% program.id %]">
 <table cellpadding=5 border=0>
 
@@ -45,13 +49,5 @@ If none is checked, output is to the screen.
 <td><input type=submit value="Submit"></td>
 </tr>
 
-<tr>
-<td></td>
-<td>
-<a href=/program/view/[% program.id %]>To Program</a>
-</td>
-</tr>
-
 </table>
 </form>
-<p>

@@ -1,0 +1,27 @@
+<h2>Non Zero Balances for [% program.name %] -
+[% program.sdate_obj.format("%b %y") %]</h2>
+[% id = program.id %]
+<a href="/program/view/[% id %]">Program</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/list_reg_name/[% id %]">AllRegs</a>
+<ul>
+[% IF regs %]
+    <table cellpadding=3>
+    <tr>
+    <th align=left>Person</th>
+    <th align=right>Balance</th>
+    </tr>
+    [% FOR r IN regs %]
+        <tr>
+        <td align=left>
+        <a href=/registration/view/[% r.id %]>[% r.person.last %], [% r.person.first %]</a>
+        </td>
+        <td align=right>
+        [% r.balance %]
+        </td>
+        </tr>
+    [% END %]
+[% ELSE %]
+All paid up.
+[% END %]
+</ul>

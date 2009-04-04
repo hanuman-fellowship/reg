@@ -11,6 +11,7 @@
 <td></td>       <!-- for mmc_does_reg marking -->
 <th align=left>Name</th>
 <th align=left>Start Date</th>
+<th width=40>Sum</th>
 <th align=left>Status</th>
 </tr>
 [% FOREACH r IN rentals %]
@@ -18,6 +19,7 @@
     <td>[% IF r.program_id %]%[% ELSE %]&nbsp;[% END %]</td>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
     <td>[% r.sdate_obj %]</td>
+    <td align=center><a href=/summary/view/rental/[% r.summary_id %]>Sum</a></td>
     [% r.status_td(1) %]
     </tr>
 [% END %]

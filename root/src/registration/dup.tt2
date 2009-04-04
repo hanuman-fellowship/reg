@@ -1,0 +1,7 @@
+<h2>Registration</h2>
+<a href=/person/view/[% person.id %]
+>[% person.first %] [% person.last %]</a>
+is already registered for
+<a href=/program/view/[% program.id %]>[% program.name %]</a>.
+<p class=p2>
+See [% IF person.sex == 'M' %]his[% ELSE %]her[% END %] registration <a href=/registration/view/[% registration.id %]>here</a>.

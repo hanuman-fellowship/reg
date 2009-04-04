@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /home/sahadev/RetreatCenter
+export DBI_DSN="dbi:mysql:reg2"
+script/carpool >carpool.out 2>&1 &

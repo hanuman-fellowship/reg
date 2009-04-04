@@ -9,7 +9,9 @@ p {
 <a href=/summary/update/[% Type %]/[% happening.id %]>Edit</a>
 [% IF type == 'program' %]
 &nbsp;&nbsp;&nbsp;
-<a href=/registration/first_reg/[% happening.id %]>Registrations</a>
+<a href=/registration/first_reg/[% happening.id %]>1st Reg</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/registration/list_reg_name/[% happening.id %]>AllRegs</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/program/view/[% happening.id %]>To Program</a>
 [% ELSE %]
@@ -74,13 +76,13 @@ th {
 [% END %]
 
 <tr>
-<th align=right>Start Hour</th><td>[% happening.start_hour %]</td>
+<th align=right>Start Hour</th><td>[% happening.start_hour_obj.ampm %]</td>
 <th align=right>Meeting Places</th>
 <td>[% happening.meeting_places('') %]</td>
 </tr>
 
 <tr>
-<th>End Hour</th><td>[% happening.end_hour %]</td>
+<th>End Hour</th><td>[% happening.end_hour_obj.ampm %]</td>
 <th align=right>Breakout Places</th>
 <td>[% happening.meeting_places('yes') %]</td>
 </tr>
@@ -164,5 +166,5 @@ th {
 <tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup %]</td></tr>
 <tr><th>Sound Setup</th><td colspan=3>[% sum.sound_setup %]</td></tr>
 <tr><th>Feedback</th><td colspan=3>[% sum.feedback %]</td></tr>
-<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj %]</td></tr>
+<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj.ampm %]</td></tr>
 </table>

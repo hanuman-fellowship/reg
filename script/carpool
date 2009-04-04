@@ -1,0 +1,210 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use FindBin;
+use lib "$FindBin::Bin/../lib";
+use Date::Simple qw/
+    today
+    date
+/;
+use Mail::Sender;
+chdir "$FindBin::Bin/..";
+
+my $cur_date = (shift || today()->as_d8())
+    or die "gather_made yyyymmdd\n";
+
+my $cur_date7 = (date($cur_date) + 7)->as_d8();
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+#
+# gather ids of programs that begin on cur_date7
+#
+my $prog_sth = $dbh->prepare("
+    select id, name, sdate, edate, extradays
+    from program
+    where sdate = $cur_date7
+");
+$prog_sth->execute();
+my @progs;
+while (my ($id, $name, $sdate, $edate, $extradays)
+        = $prog_sth->fetchrow_array()) {
+    push @progs, [ $id, $name, date($sdate), date($edate), $extradays ];
+}
+
+if (! @progs) {
+    exit;
+}
+
+#
+# now find people in those programs who
+# requested a carpool list.
+#
+for my $p (@progs) {
+    my $let = "";
+    $let .= "<h3>Car Pool List for $p->[1] from "
+         .  short_dates($p->[2], $p->[3], $p->[4])
+         .  "</h3><ul>\n"
+         ;
+    my $reg_sth = $dbh->prepare("
+        select p.first, p.last,
+               p.addr1, p.addr2, p.city, p.st_prov, p.zip_post, p.country,
+               p.tel_home, p.tel_work, p.tel_cell,
+               p.email, r.carpool, r.hascar
+          from registration r, people p
+         where r.program_id = $p->[0]
+           and r.carpool = 'yes'
+           and r.person_id = p.id
+      order by p.zip_post
+    ");
+    $reg_sth->execute();
+    my (@emails, @no_emails);
+    while (my ($first, $last,
+               $addr1, $addr2, $city, $state, $zip, $country,
+               $home, $work, $cell,
+               $email, $carpool, $hascar)
+        = $reg_sth->fetchrow_array()
+    ) {
+        $let .= "$first $last";
+        if ($hascar) {
+            $let .= " - HAS CAR"
+        }
+        $let .= "<br>\n";
+        $let .= "$city, $state $zip<br>\n";
+        if ($country) {
+            $let .= "$country<br>\n";
+        }
+        if ($email) {
+            $let .= "<a href='mailto:$email'>$email</a><br>\n";
+            push @emails, [ $first, $last, $email ];
+        }
+        else {
+            push @no_emails, [ $first, $last, $addr1, $addr2,
+                               $city, $state, $zip, $country ];
+        }
+        if ($home) {
+            $let .= "$home home<br>\n";
+        }
+        if ($work) {
+            $let .= "$work work<br>\n";
+        }
+        if ($cell) {
+            $let .= "$cell cell<br>\n";
+        }
+        $let .= "<p>\n";
+    }
+    #
+    # must have a to, apparently.
+    # must be a valid to, even.
+    #
+    if (@emails) {
+        email_letter(
+            from    => 'me@nono.net',
+            fake_to => "Car Pool List",
+            to      => 'jon2.bjornstad@gmail.com',
+            bcc     => (join ", ",
+                        map { "$_->[0] $_->[1] <$_->[2]>" }
+                        @emails,
+                       ),
+            subject => "Carpool List for $p->[1]",
+            html    => $let,
+        );
+    }
+    if (@no_emails) {
+        my $let = "The following people do not have an email address<br>\n"
+                . "and need to be snail mailed the car pool list"
+                . " for $p->[1].<p><ul>\n";
+        for my $p (@no_emails) {
+            my ($first, $last, $addr1, $addr2,
+                $city, $state, $zip, $country) = @$p;
+            $let .= "$first $last<br>\n"
+                 .  "$addr1<br>";
+            if ($addr2) {
+                $let .= "$addr2<br>\n";
+            }
+            $let .= "$city, $state $zip<br>\n";
+            if ($country) {
+                $let .= "$country<br>\n";
+            }
+            $let .= "<p>\n";
+        }
+        $let .= "</ul>\n";
+        email_letter(
+            from    => 'me@nono.net',
+            to      => 'jon@logicalpoetry.com',
+            subject => "Carpool List for $p->[1] - non-email people",
+            html    => $let,
+        );
+    }
+}
+
+sub short_dates {
+    my ($sd, $ed, $extra) = @_;
+
+    my $dates = $sd->format("%B %e");
+    if ($sd->month == $ed->month) {
+        $dates .= "-" . $ed->format("%e");
+    }
+    else {
+        $dates .= " - " . $ed->format("%B %e");
+    }
+    if ($extra) {
+        $ed += $extra;
+        if ($ed->month == $sd->month) {
+            $dates .= ", " . $sd->day . "-";
+            $dates .= $ed->day;
+        } else {
+            $dates .= ", " . $sd->format("%B %e") . " - ";
+            $dates .= $ed->format("%B %e");
+        }
+    }
+    $dates;
+}
+
+my $mail_sender;
+my %string;
+
+sub email_letter {
+    my (%args) = @_;
+
+    if (! $mail_sender) {
+        my $sth = $dbh->prepare("
+            select the_key, value
+            from string
+            where the_key like 'smtp%';
+        ");
+        $sth->execute();
+        while (my ($key, $val) = $sth->fetchrow_array()) {
+            $string{$key} = $val;
+        }
+        my @auth = ();
+        if ($string{smtp_auth}) {
+            @auth = (
+                auth    => $string{smtp_auth},
+                authid  => $string{smtp_user},
+                authpwd => $string{smtp_pass},
+            );
+        }
+        $mail_sender = Mail::Sender->new({
+            smtp => $string{smtp_server},
+            port => $string{smtp_port},
+            @auth,
+        });
+        if (! $mail_sender) {
+            # ???
+        }
+    }
+    $mail_sender->Open({
+        %args,
+        ctype    => "text/html",
+        encoding => "7bit",
+    })
+        or die "no Mail::Sender->Open" . $Mail::Sender::Error;
+        # ??? better failure behavior?
+
+    $mail_sender->SendLineEnc($args{html});
+    $mail_sender->Close()
+        or die "no Mail::Sender->Close" . $Mail::Sender::Error;
+}

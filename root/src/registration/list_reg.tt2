@@ -60,7 +60,8 @@ function process(e) {
 <a href="/program/view/[% program.id %]">Program</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/[% other_sort %]/[% program.id %]">[% other_sort_name %]</a>
-
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/nonzero/[% program.id %]">NonZero$</a>
 [% END %]
 
 &nbsp;&nbsp;&nbsp;

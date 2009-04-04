@@ -502,6 +502,25 @@ sub _rest_of_reg {
     my ($pr, $p, $c, $today, $house1, $house2) = @_;
 
     #
+    # is this a dup reg?
+    # we have the person and the program.
+    # check if it is there already.
+    #
+    if (my @reg = model($c, 'Registration')->search({
+                           person_id  => $p->id(),
+                           program_id => $pr->id(),
+                       })
+    ) {
+        stash($c,
+            template => "registration/dup.tt2",
+            person   => $p,
+            program  => $pr,
+            registration => $reg[0],
+        );
+        return;
+    }
+
+    #
     # the person's affils get _added to_ according
     # to the program affiliations.
     # make a quick string table of the person's affil ids.
@@ -646,7 +665,6 @@ sub _get_data {
     $extra_days = 0;
     my $sdate = date($prog->sdate);       # personal retreats???
     my $edate = date($prog->edate);       # defaults to today???
-$c->log->info("sd $sdate ed $edate pd $prog_days");
     $tot_prog_days = $prog_days = $edate - $sdate;
 
     my $date_start;
@@ -731,6 +749,57 @@ $c->log->info("sd $sdate ed $edate pd $prog_days");
             push @mess,
                 "Only staying " . ($prog_days + $extra_days)
                ." night$plural so can't take $taken of them free!";
+        }
+    }
+}
+
+#
+# reset the globals $tot_prog_days, $prog_days, and $extra_days.
+# can't just do this in _get_data() because we may be calling
+# _compute() from relodge() without going through _get_data().
+#
+sub _re_get_days {
+    my ($reg) = @_;
+
+    my $pr = $reg->program();
+    my $sdate = $pr->sdate_obj();
+    my $edate = $pr->edate_obj();
+    my $date_start = $reg->date_start_obj();    # maybe undef
+    my $date_end   = $reg->date_end_obj();      # maybe undef
+
+    $tot_prog_days = $prog_days = $edate - $sdate;
+    $extra_days = 0;
+    if ($date_start) {
+        if ($date_start < $sdate) {
+            # they came before the program - so extra days
+            $extra_days += $sdate - $date_start;
+        }
+        else {
+            # they came after the program started
+            # so fewer program days.
+            $prog_days -= $date_start - $sdate;     # jeeez
+        }
+    }
+    if ($date_end) {
+        # be careful...
+        # the end date may be within 
+        # the extended part of normal-full program.
+        #
+        if ($date_end > $edate) {
+            my $ndays = $date_end - $edate;
+            my $extra = $pr->extradays();
+            if ($ndays > $extra) {
+                $prog_days += $extra;
+                $extra_days += $ndays - $extra;
+            }
+            else {
+                $prog_days += $ndays;
+            }
+        }
+        else {
+            # they left before the program finished
+            # so fewer prog_days.
+            $prog_days -= $edate - $date_end;
         }
     }
 }
@@ -912,15 +981,24 @@ sub create_do : Local {
 # automatic charges - computed from the contents
 # of the registration record.
 # ??? we need to compute prog_days and extra_days and tot_prog_days
-# WITHIN this routine.  this is the only place
-# they are used.
+# WITHIN this routine.  this is the only place they are used.
+#
+# worst case:
+# someone is a sponsor member who wants to take x # of free nights
+# they register for a program with extra days and
+# they come early and leave after the short program ends
+# but before the extended program ends.  wow.
+# AND the housing costs for the Personal Retreat and the program
+# are different.
 #
 sub _compute {
     my ($c, $reg, @who_now) = @_;
 
     Global->init($c);
-    my $pr  = $reg->program;
-    my $mem = $reg->person->member;
+    my $pr  = $reg->program();
+    my $mem = $reg->person->member();
+
+    _re_get_days($reg);
 
     # tuition
     my $tuition = $pr->tuition;
@@ -977,18 +1055,14 @@ sub _compute {
                   || $h_type eq 'unknown')? 0
                  :                          $housecost->$h_type;
                                             # column name is correct, yes?
-$c->log->info("$h_type hc $h_cost");
-$c->log->info("pd $prog_days");
     my ($tot_h_cost, $what);
 	if ($housecost->type eq "Per Day") {
 		$tot_h_cost = $prog_days*$h_cost;
-$c->log->info("thc $tot_h_cost");
         my $plural = ($prog_days == 1)? "": "s";
         $what = "$prog_days day$plural Lodging at \$$h_cost per day";
     }
     else {
         $tot_h_cost = int($h_cost * ($prog_days/$tot_prog_days));
-$c->log->info("thc $tot_h_cost");
         $what = "Lodging - Total Cost";
         if ($prog_days != $tot_prog_days) {
             my $plural = ($prog_days == 1)? "": "s";
@@ -998,7 +1072,6 @@ $c->log->info("thc $tot_h_cost");
     if ($lead_assist) {
         $tot_h_cost = 0;
     }
-$c->log->info("tot cost = $tot_h_cost");
     if ($tot_h_cost != 0) {
         model($c, 'RegCharge')->create({
             @who_now,
@@ -1008,28 +1081,50 @@ $c->log->info("tot cost = $tot_h_cost");
         });
     }
 
-    # extra days - at the default housecost rate
-    # but not for leaders/assistants???
-    my $def_h_cost = 0;
+    # extra days - at the current personal retreat housecost rate.
+    # but not for leaders/assistants???  right?
+    # show leader/asst on reg screen???   show footnotes differently?
+    #
+    my $extra_h_cost = 0;
     if ($extra_days && ! $lead_assist) {
-        my ($def_housecost) = model($c, 'HouseCost')->search({
-            name => 'Default',
+        #
+        # look for the personal retreat program
+        # that contains the start date of the registration.
+        # that is the program whose housing cost we will use.
+        #
+        # don't worry about other exceptions - like the registration
+        # straddles two personal retreat programs with differing
+        # housing costs!  that would be too much to worry about.
+        #
+        my $date_start = $reg->date_start();
+        my ($pers_ret) = model($c, 'Program')->search({
+            name  => { 'like' => '%personal%retreat%' },
+            sdate => { '<=' => $date_start },
+            edate => { '>=' => $date_start },
         });
-        $def_h_cost = ($h_type eq 'not_needed'
-                       || $h_type eq 'unknown')? 0
-                      :                          $def_housecost->$h_type;
-                                                 # column name is correct, yes?
-        $tot_h_cost += $extra_days*$def_h_cost;
-        my $plural = ($extra_days == 1)? "": "s";
-        if ($def_h_cost != 0) {
-            model($c, 'RegCharge')->create({
-                @who_now,
-                automatic => 'yes',
-                amount    => $extra_days*$def_h_cost,
-                what      => "$extra_days day$plural Lodging"
-                            ." at \$$def_h_cost per day",
-            });
+        if (! $pers_ret) {
+            # what to do???
+            # make it free!
+            # error reporting and recovery is too tricky.
+            #
+            $extra_h_cost = 0;
         }
+        else {
+            my $housecost = $pers_ret->housecost();
+            $extra_h_cost = ($h_type eq 'not_needed'
+                             || $h_type eq 'unknown')? 0
+                            :                          $housecost->$h_type;
+                                            # column name above is correct, yes?
+            $tot_h_cost += $extra_days*$extra_h_cost;
+        }
+        my $plural = ($extra_days == 1)? "": "s";
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => 'yes',
+            amount    => $extra_days*$extra_h_cost,
+            what      => "$extra_days day$plural Lodging"
+                        ." at \$$extra_h_cost per day",
+        });
     }
 
     my $life_free = 0;
@@ -1097,7 +1192,7 @@ $c->log->info("tot cost = $tot_h_cost");
 
         my @boxes = (
             [ $prog_days,  $h_cost     ],
-            [ $extra_days, $def_h_cost ],
+            [ $extra_days, $extra_h_cost ],
         );
         @boxes = sort { $b->[1] <=> $a->[1] } @boxes;
             # sorted most expensive nights(days) first
@@ -3541,6 +3636,48 @@ sub mmi_import_do : Local {
     }
     $c->response->redirect(
         $c->uri_for("/registration/list_reg_name/$program_id")
+    );
+}
+
+sub nonzero : Local {
+    my ($self, $c, $program_id) = @_;
+
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id => $program_id,
+            balance    => { '!=' => 0 },
+        },
+        {
+            join     => [qw/ person /],
+            prefetch => [qw/ person /],   
+            order_by => [qw/ person.last person.first /],
+        },
+    );
+    $c->stash->{program} = model($c, 'Program')->find($program_id);
+    $c->stash->{regs} = \@regs;
+    $c->stash->{template} = "registration/nonzero.tt2";
+}
+
+sub carpool : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $program = model($c, 'Program')->find($prog_id);
+    my @carpoolers = model($c, 'Registration')->search(
+        {
+            program_id => $prog_id,
+            carpool    => 'yes',
+        },
+        {
+            join     => [ qw/ person / ],
+            prefetch => [ qw/ person / ],
+            order_by => [ qw/ person.zip_post / ],
+        }
+    );
+    stash($c,
+        program    => $program,
+        carpoolers => \@carpoolers,
+        template   => 'registration/carpool.tt2',
+        cur_time   => scalar(localtime),
     );
 }
 

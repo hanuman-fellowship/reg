@@ -248,9 +248,9 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya
 <div class=addr>
 [% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
 [% IF p.country %][% p.country %][% END %]<br>
-[% IF p.tel_home %][% p.tel_home %] - home<br>[% END %]
-[% IF p.tel_work %][% p.tel_work %] - work<br>[% END %]
-[% IF p.tel_cell %][% p.tel_cell %] - cell<br>[% END %]
+[% IF p.tel_home %][% p.tel_home %] home<br>[% END %]
+[% IF p.tel_work %][% p.tel_work %] work<br>[% END %]
+[% IF p.tel_cell %][% p.tel_cell %] cell<br>[% END %]
 [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna Center">[% p.email %]</a>[% END %]
 </div>
 [% END %]<!-- FOR cp IN -->

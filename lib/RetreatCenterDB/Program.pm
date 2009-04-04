@@ -326,11 +326,11 @@ sub dates {
 
     my $sd = $self->sdate_obj;
     my $ed = $self->edate_obj;
-    my $dates = $sd->format("%B %e") . "-";
+    my $dates = $sd->format("%B %e");
     if ($ed->month == $sd->month) {
-        $dates .= $ed->day;
+        $dates .= "-" . $ed->day;
     } else {
-        $dates .= $ed->format("%B %e");
+        $dates .= " - " . $ed->format("%B %e");
     }
     my $extra = $self->extradays;
     if ($extra) {
@@ -339,7 +339,7 @@ sub dates {
             $dates .= ", " . $sd->day . "-";
             $dates .= $ed->day;
         } else {
-            $dates .= ", " . $sd->format("%B %e") . "-";
+            $dates .= ", " . $sd->format("%B %e") . " - ";
             $dates .= $ed->format("%B %e");
         }
     }
