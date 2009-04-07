@@ -120,7 +120,7 @@ sub future_programs {
     my ($class, $c) = @_;
     my @programs = $c->model('RetreatCenterDB::Program')->search(
         {
-            sdate    => { '>=',    tt_today($c)->as_d8() },
+            edate    => { '>=',    tt_today($c)->as_d8() },
             webready => 'yes',
         },
         { order_by => [ 'sdate', 'edate' ] },

@@ -300,9 +300,12 @@ Apr 4 11:30-4:00, 4:30-6:30, 11:50-12:30
         focus when dup'ing (on sdate), making parallel (on title)??
     next is dup proposal
         then doc it all.
-Apr 6 11:10-12:55, 1:15-5:10, 10:50-
+Apr 6 11:10-12:55, 1:15-5:10, 10:50-2:00
     proposal_id in rental
     dup Proposal
     link proposal -> transmit people
     month_end report, mmi too - almost done
-    mmi_glnum_desc() Util function for MMI period_end listing.
+    mmi_glnum() Util function for MMI period_end listing.
+    dumpall, loadall - adjust
+Apr 7 11:15-2:30
+    working with Laura, Brajesh, fixing fixing

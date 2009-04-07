@@ -40,6 +40,8 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 [% IF prog_admin %]
 <a href="/program/publish">Publish</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/rental/email_contract/[% id %]">EmailContract</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/rental/contract/[% id %]">Contract</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/invoice/[% id %]">Invoice</a>

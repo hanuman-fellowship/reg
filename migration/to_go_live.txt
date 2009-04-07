@@ -1,3 +1,5 @@
+choose colors for calendar, meeting places
+decide on dailypic chars for empty room, resize, etc etc
 review the confirmation letter for style, accuracy.
 transform the web descr, leader bio, etc
     into tinyMCE syntax.
@@ -18,7 +20,7 @@ delete bogus rentals/programs - used for accounting purposes?
     SECLUSION, MEMBERSHIP, MOTHERING MAG
     dup'ed INFINITE SMILE rental
 add anew reports for mailings
-modify the names of the unlinked programs
+modify the names of the directories for unlinked programs
     then publish to web, verify, move to live.
 re-enter sums
     copy, paste & verify

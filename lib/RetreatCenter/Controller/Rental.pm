@@ -28,6 +28,7 @@ use Util qw/
     commify
     stash
     payment_warning
+    email_letter
 /;
 use Global qw/
     %string
@@ -1096,10 +1097,22 @@ sub del_booking : Local {
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
-sub contract : Local {
-    my ($self, $c, $id) = @_;
+sub email_contract : Local {
+    my ($self, $c, $rental_id) = @_;
 
-    my $rental = model($c, 'Rental')->find($id);
+    my $rental = model($c, 'Rental')->find($rental_id);
+    if (! _contract_ready($c, $rental)) {
+        return;
+    }
+    stash($c,
+        rental   => $rental,
+        template => "rental/email_contract.tt2",
+    );
+}
+
+sub _contract_ready {
+    my ($c, $rental) = @_;
+
     my $cs = ($rental->contract_signer() || $rental->coordinator());
     #
     # check that the rental is ready for contract generation
@@ -1117,18 +1130,28 @@ sub contract : Local {
         push @mess, "There is no assigned meeting place.";
     }
     my $hc_name = $rental->housecost->name();
-    if (! $hc_name =~ m{rental}i) {
+    if ($hc_name !~ m{rental}i) {
         push @mess, "The housing cost must have 'Rental' in its name.";
     }
     if ($rental->lunches() =~ m{1} && $hc_name !~ m{lunch}i) {
-        push @mess, "Housing Cost must include Lunch";
+        push @mess, "The housing cost must have 'Lunch' in its name.";
     }
     if ($rental->lunches() !~ m{1} && $hc_name =~ m{lunch}i) {
-        push @mess, "Housing Cost includes Lunch but no lunches provided";
+        push @mess, "Housing Cost includes Lunch but no lunches provided.";
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>", @mess;
         $c->stash->{template} = "rental/error.tt2";
+        return 0;
+    }
+    return 1;
+}
+
+sub contract : Local {
+    my ($self, $c, $id, $email) = @_;
+
+    my $rental = model($c, 'Rental')->find($id);
+    if (! _contract_ready($c, $rental)) {
         return;
     }
     #
@@ -1146,7 +1169,7 @@ sub contract : Local {
     });
     my %stash = (
         today  => today(),
-        signer => $cs,
+        signer => ($rental->contract_signer() || $rental->coordinator()),
         rental => $rental,
     );
     $tt->process(
@@ -1154,7 +1177,30 @@ sub contract : Local {
         \%stash,          # variables
         \$html,           # output
     );
-    $c->res->output($html);
+    if ($email) {
+        my @to = ();
+        my @cc = ();
+        my $em;
+        if ($em = $c->request->params->{coord_email}) {
+            push @to, $em;
+        }
+        if ($em = $c->request->params->{cs_email}) {
+            push @to, $em;
+        }
+        @cc = split m{[\s,]+}, $c->request->params->{cc};
+        # check @to, empty @cc?
+        email_letter($c,
+            from    => "$string{from_title} <$string{from}>",
+            to      => \@to,
+            cc      => \@cc,
+            subject => "MMC Rental Contract with " . $rental->name(),
+            html    => $html,
+        );
+        $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+    }
+    else {
+        $c->res->output($html);
+    }
 }
 
 sub cluster_add : Local {
