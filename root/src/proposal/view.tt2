@@ -10,6 +10,8 @@
 onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
+<a href="/proposal/duplicate/[% id %]">Duplicate</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/proposal/list">List</a>
 &nbsp;&nbsp;&nbsp;
 [% IF proposal.rental_id %]
@@ -27,7 +29,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 
 <tr>
 <th align=right>Group Name</th>
-<td>[% proposal.group_name %]</td>
+<td><span class=larger>[% proposal.group_name %]</span></td>
 </tr>
 
 <tr>

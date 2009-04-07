@@ -1,3 +1,27 @@
+=comment
+Times
+
+They are more complex than they appear.
+Dates, too.
+
+- In the database they are stored in 4 digit 24 hour/military time.
+    This makes the SQL clause 'order by' possible.
+- To enter a time there is a variety of flexible formats:
+    1423
+    2:23
+    2:23 pm
+    223
+- For display there are 3 methods t24(), t12(), and ampm().
+    t12 and ampm take an optional parameter to say that
+    you want to truncate a possible :00.
+- The internal form of the object is in minutes since midnight
+    to facilitate time difference calculations.  Otherwise
+    determining the number of minutes between 11:30 am and
+    7:25 pm is tricky - or between 1130 and 1925.
+    Time comparisions would have been easy if we had stored in 24 hour time
+    but not differences.
+
+=cut
 use strict;
 use warnings;
 package Time::Simple;
@@ -204,12 +228,20 @@ sub _compare {
 }
 
 sub ampm {
-    my ($self) = @_;
-    return $self->format('ampm');
+    my ($self, $trunc) = @_;
+    my $s = $self->format('ampm');
+    if ($trunc) {
+        $s =~ s{:00}{};
+    }
+    $s;
 }
 sub t12 {
-    my ($self) = @_;
-    return $self->format('12');
+    my ($self, $trunc) = @_;
+    my $s = $self->format('12');
+    if ($trunc) {
+        $s =~ s{:00}{};
+    }
+    $s;
 }
 sub t24 {
     my ($self) = @_;

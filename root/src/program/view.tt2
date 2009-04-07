@@ -390,7 +390,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </td>
 </tr>
 
-[% IF program.rental_id == 0 %]     <!-- not for rental-programs -->
+[% IF ! program.rental_id > 0 %]     <!-- not for rental-programs -->
 
 <tr>
 <th align=right valign=top width=150>Meeting Places</th>

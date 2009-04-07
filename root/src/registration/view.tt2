@@ -205,7 +205,6 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 </table>
 
-[% IF reg.program.school == 0 %]
 <!-------- Charges --------->
 <div style="float: left; margin-right: .5in">
 <h3>Charges</h3>
@@ -244,6 +243,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </table>
 </div>
 
+[% IF program.school == 0 %]
 <!-------- Payments --------->
 <div style="float: left; margin-right: .5in">
 <h3>Payments</h3>

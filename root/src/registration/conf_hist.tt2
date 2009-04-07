@@ -5,8 +5,8 @@
 <tr><td></td></tr>
 <tr><th align=right valign=top>Notes</th><td>
 [% FOR n IN reg.confnotes %]
-[% n.the_date_obj %] [% n.time %]<br>
-[% n.note_br %]<p>
+[% n.the_date_obj %] [% n.time_obj.ampm %]<br>
+[% n.note %]<p class=p2>
 [% END %]
 </td></tr>
 </table>

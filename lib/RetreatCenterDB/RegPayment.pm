@@ -47,7 +47,12 @@ sub name {
 
 sub link {
     my ($self) = @_;
-    return "/registration/view/" . $self->reg_id;
+    return "/registration/view/" . $self->reg_id();
+}
+
+sub plink {
+    my ($self) = @_;
+    return "/program/view/" . $self->registration->program_id();
 }
 
 sub pname {

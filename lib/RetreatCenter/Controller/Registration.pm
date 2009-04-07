@@ -3058,11 +3058,12 @@ sub cf_expand {
     $s = etrim($s);
     return $s if empty($s);
     # ??? get these each time??? cache them!
+    # certainly!  in Global.
     my %note;
     for my $cf (model($c, 'ConfNote')->all()) {
         $note{$cf->abbr()} = etrim($cf->expansion());
     }
-    $s =~ s{^(\S+)$}{ $note{$1} || $1 }gem;
+    $s =~ s{<p>(\S+)</p>}{'<p>' . ($note{$1} || $1) . '</p>'}gem;
     $s;
 }
 

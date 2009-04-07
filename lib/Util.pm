@@ -45,6 +45,7 @@ our @EXPORT_OK = qw/
     payment_warning
     fillin_template
     ptrim
+    mmi_glnum
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1153,6 +1154,90 @@ sub ptrim {
 
     $s =~ s{(<p>&nbsp;</p>\s*)+$}{}g;
     $s;
+}
+
+#
+# return a description of and a link to the MMI account having
+# 'glnum' as its GL Number.  See the MMI testplan
+# for a description of what the various digits of
+# the GL Number mean.
+#
+sub mmi_glnum {
+    my ($c, $glnum) = @_;
+
+    my $d1 = substr($glnum, 0, 1);
+    my $purpose = ($d1 eq '1'? 'Tuition'
+                  :$d1 eq '2'? 'Meals & Lodging'
+                  :$d1 eq '3'? 'Application Fee'
+                  :$d1 eq '4'? 'Registration Fee'
+                  :            'Other');
+    $purpose .= " for ";
+    my $school = substr($glnum, 1, 1);
+    my $year10 = substr($glnum, 2, 2);
+    my $month  = substr($glnum, 4, 1);
+    if ($month =~ m{[XYZ]}) {
+        $month = 10 + ord($month) - ord('X');
+            # the above works because X, Y, Z
+            # are sequential in the ASCII table
+    }
+    my $d6 = substr($glnum, 5, 1);
+    if ($d6 =~ m{[DCM]}) {
+        # d6 is D, C, or M - the kind of MMI program.
+        # Diploma, Certificate, or Masters.
+        #
+        my @progs = model($c, 'Program')->search({
+            school => $school,
+            level  => $d6,
+        });
+        for my $p (@progs) {
+            my $edate = $p->edate_obj;
+            if (($edate->year() % 10) == $year10
+                && $edate->month() == $month
+            ) {
+                return ($purpose . $p->name(),
+                        "/program/view/" . $p->id);
+                # it is possible that we would get the wrong program.
+                # e.g. what if in July 2109 there is an Ayurveda
+                # Master's program like there was in July 2009.
+                # don't worry about it.
+            }
+        }
+        return ($purpose . "Unknown MMI DCM Program",
+                "/program/list/1");
+    }
+    else {
+        # digit 6 is the ordinal number of the MMI course
+        # in the year/month.
+        #
+        my @progs = model($c, 'Program')->search(
+            {
+                school => { '!=' => 0 },        # not MMC
+                level  => 'S',
+            },
+            {
+                order_by => 'edate',
+            }
+        );
+        # we want to look only at the ones in the above year10/month.
+        # we're not sure which century so we can't do it in the search above.
+        #
+        @progs = grep {
+            my $edate = $_->edate_obj();
+            ($edate->year() % 10) == $year10
+            &&
+            $edate->month() == $month;
+        }
+        @progs;
+        --$d6;      # 1 based => 0 based
+        if ($#progs <= $d6) {
+            return ($purpose . $progs[$d6]->name(),
+                    "/program/view/" . $progs[$d6]->id());
+        }
+        else {
+            return ($purpose . "Unknown MMI DCM Course",
+                    "/program/view/1");
+        }
+    }
 }
 
 1;

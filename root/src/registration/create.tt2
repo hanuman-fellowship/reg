@@ -74,6 +74,7 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 <tr>
 <th align=right>Ages of Kids</th>
 <td><input type=text name=kids size=20></td>
+<td><input type=submit value="Submit"></td>
 </tr>
 
 <tr>

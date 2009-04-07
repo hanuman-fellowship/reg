@@ -291,3 +291,18 @@ Apr 3 2:35-5:20
     carpool cron job
         to whom when bcc'ing?  need to have a to, apparently.
             may not need to be valid and can use fake_to
+Apr 4 11:30-4:00, 4:30-6:30, 11:50-12:30
+    A5 L12:35 in calendar
+    carpool finalizations
+    mmi charges
+    confirmation letter tweaks - kayakalpa
+    dup rental ... and a parallel program
+        focus when dup'ing (on sdate), making parallel (on title)??
+    next is dup proposal
+        then doc it all.
+Apr 6 11:10-12:55, 1:15-5:10, 10:50-
+    proposal_id in rental
+    dup Proposal
+    link proposal -> transmit people
+    month_end report, mmi too - almost done
+    mmi_glnum_desc() Util function for MMI period_end listing.

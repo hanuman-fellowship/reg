@@ -151,10 +151,11 @@ sub create : Local {
 
     # defaults
     $c->stash->{proposal} = {
-        checkin_time  => "4:00",
-        checkout_time => "1:00",
-        first         => '',        # no idea why these are needed???
-        last          => '',        # otherwise it shows HASH(0x99999) ???
+        checkin_time_obj  => $string{rental_start_hour},
+        checkout_time_obj => $string{rental_end_hour},
+            # see comment in Program.pm create()
+        first             => '',    # no idea why these are needed???
+        last              => '',    # otherwise it shows HASH(0x99999) ???
                                     # I did see it.  Once, at least.
     };
     $c->stash->{form_action} = "create_do";
@@ -279,6 +280,8 @@ sub approve : Local {
     # now we fill in the stash in preparation for
     # the creation of a rental.  code copied from Rental->create().
     stash($c,
+        dup_message => " - <span style='color: red'>From Proposal</span>",
+            # see comment in Program.pm
         check_linked    => "",
         check_tentative => "checked",
         housecost_opts  =>
@@ -490,6 +493,29 @@ sub _cs_transmit {
         # ???
     }
     return $person_id;
+}
+
+sub duplicate : Local {
+    my ($self, $c, $prop_id) = @_;
+
+    my $orig_p = model($c, 'Proposal')->find($prop_id);
+    $orig_p->set_columns({
+        id           => undef,
+        denied       => "",
+        rental_id    => 0,
+        person_id    => "",
+        cs_person_id => "",
+        date_of_call => "",
+        dates_requested => "",
+        program_meeting_date => "",
+    });
+    stash($c,
+        dup_message => " - <span style='color: red'>Duplication</span>",
+            # see comment in Program.pm
+        proposal    => $orig_p,
+        form_action => "create_do",
+        template    => "proposal/create_edit.tt2",
+    );
 }
 
 1;

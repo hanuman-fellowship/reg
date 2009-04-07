@@ -82,7 +82,11 @@ __PACKAGE__->add_columns(qw/
 
     mmc_does_reg
     program_id
+    proposal_id
 /);
+    # the last two above are just for jumping back and forth
+    # so no belongs_to relationship needed
+
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -117,9 +121,6 @@ __PACKAGE__->has_many(charges => 'RetreatCenterDB::RentalCharge',
 
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
-
-# proposal - maybe
-__PACKAGE__->might_have(proposal => 'RetreatCenterDB::Proposal', 'rental_id');
 
 sub future_rentals {
     my ($class, $c) = @_;

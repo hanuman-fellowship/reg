@@ -50,8 +50,12 @@ sub name {
 
 sub link {
     my ($self) = @_;
+    return "/person/view/" . $self->person_id();
+}
 
-    return "/person/view/" . $self->person_id;
+sub plink {
+    my ($self) = @_;
+    return "/xaccount/view/" . $self->xaccount_id();
 }
 
 sub pname {

@@ -1,4 +1,4 @@
-from_title MOUNT MADONNA Registration Office
+from_title MOUNT MADONNA CENTER Programs Office
 from reservations@mountmadonna.org
 heading  Total Cost Per Person<br>(including tuition, meals, lodging, and facilities use)
 typehdr  Housing Type
@@ -69,10 +69,6 @@ ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0
 ftp_transactions www/cgi-bin/dreg_transactions
-reg_start 1600
-reg_end 1900
-prog_start 1900
-prog_end 1230
 credit_amount 50
 spons_tuit_disc 30
 max_tuit_disc 125
@@ -163,3 +159,11 @@ SJC San Jose
 SFO San Francisco
 OAK Oakland
 MRY Monterey
+
+rental_start_hour 4:00 pm
+rental_end_hour 1:00 pm
+
+reg_start 4:00 pm
+reg_end 7:00 pm
+prog_start 7:00 pm
+prog_end 1:00 pm

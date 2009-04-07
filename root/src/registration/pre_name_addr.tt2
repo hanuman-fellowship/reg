@@ -38,7 +38,7 @@
 <th align=right valign=top>Email Leaders</th>
 <td valign=top>
 [% email %]
-<p>
+<p class=p2>
 If none is checked, output is to the screen.
 </td>
 </tr>

@@ -78,6 +78,11 @@ sub link {
     }
 }
 
+sub plink {
+    my ($self) = @_;
+    return "#";     # no where to go?
+}
+
 sub type_sh {
     my ($self) = @_;
     return $string{"payment_" . $self->type()};

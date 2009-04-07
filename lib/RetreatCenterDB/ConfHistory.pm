@@ -3,7 +3,12 @@ use warnings;
 package RetreatCenterDB::ConfHistory;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('conf_history');
@@ -25,14 +30,9 @@ sub the_date_obj {
     return date($self->the_date);
 }
 
-sub note_br {
+sub time_obj {
     my ($self) = @_;
-    my $note = $self->note;
-    $note =~ s{\r?\n}{<br>\n}g;
-    if ($note && $note !~ m{<br>$}) {
-        $note .= "<br>";
-    }
-    $note;
+    get_time($self->time());
 }
 
 1;

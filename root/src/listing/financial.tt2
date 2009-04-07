@@ -22,9 +22,9 @@ Deposit
 Period End Summary
 <table cellpadding=3>
 <tr>
-<form action="/finance/month_end">
-<td align=left>Start <input type=text name=sdate size=10>
-End <input type=text name=edate size=10>
+<form action="/finance/period_end/mmc" method=post>
+<td align=left>Start <input type=text name=sdate size=10 value='[% start %]'>
+End <input type=text name=edate size=10 value='[% end %]'>
 </td><td><input type=submit value="Go"></td></tr>
 </form>
 </table>
@@ -50,9 +50,9 @@ Deposit
 Period End Summary
 <table cellpadding=3>
 <tr>
-<form action="/finance/month_end">
-<td align=left>Start <input type=text name=sdate size=10>
-End <input type=text name=edate size=10>
+<form action="/finance/period_end/mmi" method=post>
+<td align=left>Start <input type=text name=sdate size=10 value='[% start %]'>
+End <input type=text name=edate size=10 value='[% end %]'>
 </td><td><input type=submit value="Go"></td></tr>
 </form>
 </table>

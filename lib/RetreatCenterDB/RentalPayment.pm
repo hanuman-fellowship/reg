@@ -50,7 +50,13 @@ sub name {
 
 sub link {
     my ($self) = @_;
-    return "/rental/view/" . $self->rental_id;
+    return "/rental/view/" . $self->rental_id();
+}
+
+# in Rentals link, plink are the same
+sub plink {
+    my ($self) = @_;
+    return "/rental/view/" . $self->rental_id();
 }
 
 # same as name???   Need a leader name instead?

@@ -105,7 +105,7 @@ th {
     background: lightgreen;
 }
 </style>
-<h2>Proposals</h2>
+<h2>Proposals[% dup_message %]</h2>
 <form action=[% "/proposal/" _ form_action %] name=form method=post>
 
 <table cellpadding=2>
@@ -160,33 +160,45 @@ th {
 
 <tr>
 <th></th>
-<td colspan=3><input type=text id=addr2 name=addr2 value="[% proposal.addr2 %]"></td>
+<td colspan=3>
+<input type=text id=addr2 name=addr2 value="[% proposal.addr2 %]">
+</td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> City</th>
-<td colspan=2><input type=text id=city name=city value="[% proposal.city %]"></td>
+<td colspan=2>
+<input type=text id=city name=city value="[% proposal.city %]">
+</td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> State/Province</th>
-<td colspan=3><input type=text id=st_prov name=st_prov value="[% proposal.st_prov %]"></td>
+<td colspan=3>
+<input type=text id=st_prov name=st_prov value="[% proposal.st_prov %]">
+</td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Zip/Postal Code</th>
-<td><input type=text id=zip_post name=zip_post value="[% proposal.zip_post %]"></td>
+<td>
+<input type=text id=zip_post name=zip_post value="[% proposal.zip_post %]">
+</td>
 <td><input id=sub type=submit value="Submit"></td>
 </tr>
 
 <tr>
 <th>Country</th>
-<td colspan=3><input type=text id=country name=country value="[% proposal.country %]"></td>
+<td colspan=3>
+<input type=text id=country name=country value="[% proposal.country %]">
+</td>
 </tr>
 
 <tr>
 <th><span class=required>*</span> Email</th>
-<td colspan=3><input type=text id=email name=email value="[% proposal.email %]" size=30></td>
+<td colspan=3>
+<input type=text id=email name=email value="[% proposal.email %]" size=30>
+</td>
 </tr>
 [% END %]
 
@@ -284,9 +296,9 @@ th {
 <tr>
 <th><span class=required>*</span> Check In</th>
 <td colspan=3>
-<input type=text name=checkin_time value="[% proposal.checkin_time_obj.ampm %]" size=8>
+<input type=text name=checkin_time value="[% proposal.checkin_time_obj %]" size=8>
 <span style="margin-left: .3in; font-weight: bold"><span class=required>*</span> Check Out</span>
-<input type=text name=checkout_time value="[% proposal.checkout_time_obj.ampm %]" size=8>
+<input type=text name=checkout_time value="[% proposal.checkout_time_obj %]" size=8>
 </td>
 </tr>
 

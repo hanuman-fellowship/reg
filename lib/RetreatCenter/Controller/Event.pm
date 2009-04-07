@@ -7,6 +7,9 @@ use Date::Simple qw/
     date
     days_in_month
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
     trim
     empty
@@ -267,6 +270,12 @@ sub calendar : Local {
     /;
 
     Global->init($c);
+
+    my $std_prog_arr = get_time($string{reg_start});
+    my $std_prog_lv  = get_time($string{prog_end});
+    my $std_rental_arr = get_time($string{rental_start_hour});
+    my $std_rental_lv  = get_time($string{rental_end_hour});
+
     my $start_param = trim($c->request->params->{start});
     if (!$start_param) {
         $start_param = $the_start;
@@ -450,6 +459,44 @@ sub calendar : Local {
         my $ev_count = $ev->count();
         my $count = $ev_count;
         my $max = $ev->max();
+
+        #
+        # is the program/rental arriving earlier or leaving later
+        # than the standard times?  We need to display this in
+        # various ways.   So simple to ask for, so complex to actually do!
+        #
+        my $arr_lv = "";
+        my $arr_lv_longer = "";
+        if ($ev_type eq "program") {
+            if ($ev->reg_start_obj() != $std_prog_arr) {
+                $arr_lv = "A" . $ev->reg_start_obj->t12(1);
+                $arr_lv_longer = $ev->reg_start_obj->ampm();
+            }
+            $arr_lv_longer .= "/";
+            if ($ev->prog_end_obj() != $std_prog_lv) {
+                $arr_lv .= " " if $arr_lv;
+                $arr_lv .= "L" . $ev->prog_end_obj->t12(1);
+                $arr_lv_longer .= $ev->prog_end_obj->ampm();
+            }
+        }
+        elsif ($ev_type eq "rental") {
+            if ($ev->start_hour_obj() != $std_rental_arr) {
+                $arr_lv = "A" . $ev->start_hour_obj->t12(1);
+                $arr_lv_longer = $ev->start_hour_obj->ampm();
+            }
+            $arr_lv_longer .= "/";
+            if ($ev->end_hour_obj() != $std_rental_lv) {
+                $arr_lv .= " " if $arr_lv;
+                $arr_lv .= "L" . $ev->end_hour_obj->t12(1);
+                $arr_lv_longer .= $ev->end_hour_obj->ampm();
+            }
+        }
+        if ($arr_lv_longer eq "/") {
+            $arr_lv_longer = "";
+        }
+        if ($arr_lv) {
+            $arr_lv = " $arr_lv";
+        }
         #
         # try to accomodate all three types of happenings.
         # some with mandatory maximums some without.
@@ -537,6 +584,9 @@ sub calendar : Local {
                 else {
                     $place_name = " ($place_name)";
                 }
+
+                # to display in the overlib popup:
+                #
                 my $disp = $event_name . $place_name;
                 if (length $count) {
                     $disp .= "[$count]";
@@ -544,6 +594,8 @@ sub calendar : Local {
                         $disp .= " " . ucfirst $ev->status;
                     }
                 }
+                $disp .= $arr_lv;
+
                 # which is longest?
                 my $ld = length($disp);
                 my $lt = length($title);
@@ -580,11 +632,17 @@ sub calendar : Local {
                       ;
 
                 if ($ev_type eq 'rental') {
-                    $printable_row .= "<td>&nbsp;</td>"
-                                   .  "<td align=center>$count</td>";
+                    $printable_row .= "<td>&nbsp;</td>"     # prog reg count
+                                   .  "<td align=center>$count</td>"
+                                   ;
+                                   # more below
                 }
                 elsif ($ev_type eq 'program') {
-                    $printable_row .= "<td align=right>$count</td>";
+                    $printable_row .= "<td align=right>$count&nbsp;&nbsp;</td>"
+                                   .  "<td></td><td></td>"
+                                             # no rental count/status
+                                   .  "<td align=center>$arr_lv_longer</td>"
+                                   ;
                 }
                 $disp =~ s{'}{\\'}g;    # what if name eq Mother's Day?
 
@@ -593,7 +651,8 @@ sub calendar : Local {
                     $border = $im->colorAllocate(
                         $string{"rental_" . $ev->status . "_color"} =~ m{\d+}g,
                     );
-                    $printable_row .= $ev->status_td();
+                    $printable_row .= $ev->status_td()
+                                   .  "<td align=center>$arr_lv_longer</td>"
                 }
                 elsif ($ev_type eq 'event') {
                     $border = $im->colorAllocate(
@@ -623,9 +682,9 @@ sub calendar : Local {
                 }
 
                 # print the event name in the rectangle,
-                # as much as will fit and then overflow it
+                # as much as will fit and then it will overflow.
                 $im->string(gdGiantFont, $x1 + 3, $y1 + 2,
-                            $event_name, $black);
+                            $event_name . $arr_lv, $black);
 
                 # add to the image map
                 $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n";
@@ -1026,8 +1085,9 @@ EOH
 <th align=left   valign=bottom>Date</th>
 <th align=left   valign=bottom>Name</th>
 <th align=left   valign=bottom>Place</th>
-<th align=right  valign=bottom>Reg<br>Count</th>
+<th align=center valign=bottom>Reg<br>Count</th>
 <th align=center  valign=bottom colspan=2>Rental<br>Max/Reserved&nbsp;&nbsp;Status</th>
+<th align=center valign=bottom>Arrive/Leave</th>
 </tr>
 $details{$key}
 </table>

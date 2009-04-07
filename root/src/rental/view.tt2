@@ -1,5 +1,4 @@
 [% id = rental.id %]
-[% proposal = rental.proposal %]
 [% prog_admin = Catalyst.check_user_roles('prog_admin') %]
 
 <link rel="stylesheet" type="text/css" href="/static/tabs.css" />
@@ -18,30 +17,32 @@ h3 {
 [% IF prog_admin %]
 <a href="/rental/create">Add</a>
 &nbsp;&nbsp;&nbsp;
-<span id=editlink><a href="/rental/update/[% rental.id %]/[% section %]">Edit</a></span>
+<span id=editlink><a href="/rental/update/[% id %]/[% section %]">Edit</a></span>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/delete/[% rental.id %]"
+<a href="/rental/delete/[% id %]"
 onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/duplicate/[% rental.id %]">Duplicate</a>
+[% END %]
+[% IF rental.proposal_id %]
+<a href="/proposal/view/[% rental.proposal_id %]">To Proposal</a>
+&nbsp;&nbsp;&nbsp;
+[% ELSIF link_proposal_id %]
+<a href="/rental/link_proposal/[% id %]/[% link_proposal_id %]">Link Proposal</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-[% IF proposal %]
-<a href="/proposal/view/[% proposal.id %]">To Proposal</a>
-&nbsp;&nbsp;&nbsp;
-[% END %]
-
 [% IF rental.program_id %]
 <a href="/program/view/[% rental.program_id %]">To Program</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
+<a href="/rental/duplicate/[% id %]">Duplicate</a>
+&nbsp;&nbsp;&nbsp;
 
 [% IF prog_admin %]
 <a href="/program/publish">Publish</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/contract/[% rental.id %]">Contract</a>
+<a href="/rental/contract/[% id %]">Contract</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/invoice/[% rental.id %]">Invoice</a>
+<a href="/rental/invoice/[% id %]">Invoice</a>
 <p class=p2>
 [% END %]
 
@@ -135,7 +136,7 @@ Web
 <td>[% rental.max %]</td>
 <td rowspan=5>
 <div style="margin-left: .3in;">
-<span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% rental.id %]">Update</a></span>
+<span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% id %]">Update</a></span>
 <div class=lunch>[% lunch_table %]</div>
 </div>
 </td>
@@ -148,7 +149,7 @@ Web
 
 <tr>
 <th>Reserved Clusters</th>
-<td><a href="/rental/cluster_add/[% rental.id %]">Add</a>[% clusters %]</td>
+<td><a href="/rental/cluster_add/[% id %]">Add</a>[% clusters %]</td>
 </tr>
 
 </table>
@@ -178,7 +179,7 @@ Web
     <td width=15 style="background: [% colcov.$t %]"></td>
     [% IF rental.$n || bookings.$t %]
         <td>
-        <a href="/rental/booking/[% rental.id %]/[% t %]"
+        <a href="/rental/booking/[% id %]/[% t %]"
             >Add</a>[% bookings.$t %]
         </td>
     [% ELSE %]
@@ -226,7 +227,7 @@ Web
 [% IF Catalyst.check_user_roles('prog_admin') %]
     <tr>
     <td></td>
-    <td align=left colspan=2><a href="/rental/meetingplace_update/[% rental.id %]">Update</a></td>
+    <td align=left colspan=2><a href="/rental/meetingplace_update/[% id %]">Update</a></td>
     </tr>
 [% END %]
 
@@ -237,7 +238,7 @@ Web
 [% coord = rental.coordinator %]
 <a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
 [% END %]
-<a href="/rental/coordinator_update/[% rental.id %]">Update</a>
+<a href="/rental/coordinator_update/[% id %]">Update</a>
 </td>
 <th valign=top align=right>Contract Signer</th>
 <td valign=top>
@@ -245,7 +246,7 @@ Web
 [% cs = rental.contract_signer %]
 <a href="/person/view/[% cs.id %]">[% cs.first %] [% cs.last %]</a><br>
 [% END %]
-<a href="/rental/contract_signer_update/[% rental.id %]">Update</a>
+<a href="/rental/contract_signer_update/[% id %]">Update</a>
 </td>
 </tr>
 
@@ -328,7 +329,7 @@ Other Charges
 </tr>
 <tr>
 <td>&nbsp;</td>
-<td><a href="/rental/new_charge/[% rental.id %]">New Charge</a></td>
+<td><a href="/rental/new_charge/[% id %]">New Charge</a></td>
 </tr>
 
 </table>

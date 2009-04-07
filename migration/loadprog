@@ -307,7 +307,7 @@ my %init = (
     reg_start  => '1600',
     reg_end    => '1900',
     prog_start => '1900',
-    prog_end   => '1230',
+    prog_end   => '1300',
 );
 # get affil ids
 my %affil_id;

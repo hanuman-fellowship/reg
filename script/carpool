@@ -11,21 +11,40 @@ use Date::Simple qw/
 use Mail::Sender;
 chdir "$FindBin::Bin/..";
 
-my $cur_date = (shift || today()->as_d8())
+my ($cmdline_date, $offset) = @ARGV;
+if ($cmdline_date && $cmdline_date eq '-') {
+    $cmdline_date = "";
+}
+if (!$offset) {
+    $offset = 7;
+}
+
+my $cur_date = ($cmdline_date || today()->as_d8())
     or die "gather_made yyyymmdd\n";
 
-my $cur_date7 = (date($cur_date) + 7)->as_d8();
+my $cur_date_off = (date($cur_date) + $offset)->as_d8();
 
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 
+my %string;
+my $sth = $dbh->prepare("
+    select the_key, value
+    from string
+    where the_key like 'smtp%' or the_key like 'from%';
+");
+$sth->execute();
+while (my ($key, $val) = $sth->fetchrow_array()) {
+    $string{$key} = $val;
+}
+
 #
-# gather ids of programs that begin on cur_date7
+# gather ids of programs that begin on cur_date_off
 #
 my $prog_sth = $dbh->prepare("
     select id, name, sdate, edate, extradays
     from program
-    where sdate = $cur_date7
+    where sdate = $cur_date_off
 ");
 $prog_sth->execute();
 my @progs;
@@ -97,11 +116,11 @@ for my $p (@progs) {
     }
     #
     # must have a to, apparently.
-    # must be a valid to, even.
+    # doesn't have to be valid.  we hide it with a fake_to.
     #
     if (@emails) {
         email_letter(
-            from    => 'me@nono.net',
+            from    => "$string{from_title} <$string{from}>",
             fake_to => "Car Pool List",
             to      => 'jon2.bjornstad@gmail.com',
             bcc     => (join ", ",
@@ -132,9 +151,9 @@ for my $p (@progs) {
         }
         $let .= "</ul>\n";
         email_letter(
-            from    => 'me@nono.net',
+            from    => "$string{from_title} <$string{from}>",
             to      => 'jon@logicalpoetry.com',
-            subject => "Carpool List for $p->[1] - non-email people",
+            subject => "Snail Mail People - Carpool List for $p->[1]",
             html    => $let,
         );
     }
@@ -164,21 +183,11 @@ sub short_dates {
 }
 
 my $mail_sender;
-my %string;
 
 sub email_letter {
     my (%args) = @_;
 
     if (! $mail_sender) {
-        my $sth = $dbh->prepare("
-            select the_key, value
-            from string
-            where the_key like 'smtp%';
-        ");
-        $sth->execute();
-        while (my ($key, $val) = $sth->fetchrow_array()) {
-            $string{$key} = $val;
-        }
         my @auth = ();
         if ($string{smtp_auth}) {
             @auth = (

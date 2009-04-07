@@ -195,8 +195,9 @@ sub create : Local {
                 { order_by => 'name' },
             ) ],
         rental => {     # double faked object
-            start_hour => "4:00",
-            end_hour   => "1:00",
+            start_hour_obj => $string{rental_start_hour},
+            end_hour_obj   => $string{rental_end_hour},
+                # see comment in Program.pm in create().
         },
         check_mmc_does_reg => '',
     );
@@ -286,6 +287,7 @@ sub create_from_proposal : Local {
     $P{coordinator_id} = $proposal->person_id();
     $P{cs_person_id}   = $proposal->cs_person_id();
     $P{status}         = "tentative";       # it is new.
+    $P{proposal_id}    = $proposal_id;      # to link back to Proposal
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
@@ -470,6 +472,23 @@ sub view : Local {
     $rental->update({
         status  => $status,
     });
+
+    #
+    # is there a proposal (as yet unlinked to a rental)
+    # with the exact same name as this rental?
+    # if so, we provide a link named "Link Proposal"
+    # with which we can connect the two.
+    #
+    my @proposals = model($c, 'Proposal')->search({
+        -or => [
+            rental_id => 0,
+            rental_id => undef,
+        ],
+        group_name => $rental->name(),
+    });
+    if (@proposals) {
+        $c->stash->{link_proposal_id} = $proposals[0]->id();
+    }
 
     stash($c,
         rental         => $rental,
@@ -1559,6 +1578,141 @@ EOH
         balance => $balance,
     });
     $c->res->output($html);
+}
+
+sub link_proposal : Local {
+    my ($self, $c, $rental_id, $proposal_id) = @_;
+    
+    # proposal id in rental
+    model($c, 'Rental')->find($rental_id)->update({
+        proposal_id => $proposal_id,
+    });
+    # rental id in proposal
+    my $prop = model($c, 'Proposal')->find($proposal_id);
+    $prop->update({
+        rental_id => $rental_id,
+    });
+    # ensure that the people on the proposal are transmitted
+    # hack it by reaching into Proposal :(!
+    # an acceptable exception to our discipline, yes?
+    #
+    if (! $prop->person_id()) {
+        RetreatCenter::Controller::Proposal::_transmit($c, $proposal_id);
+    }
+    if (! empty($prop->cs_last()) && ! $prop->cs_person_id()) {
+        RetreatCenter::Controller::Proposal::_cs_transmit($c, $proposal_id);
+    }
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
+}
+
+sub duplicate : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $orig_r = model($c, 'Rental')->find($rental_id);
+
+    #
+    # what should be cleared and entered differently?
+    #
+    # we will duplicate the summary (in duplicate_do).
+    #
+    $orig_r->set_columns({
+        id      => undef,
+        sdate   => "",
+        edate   => "",
+        glnum   => "", 
+        balance => 0,
+        status  => "",
+        lunches => "",
+
+        tentative  => "yes",
+        program_id => 0,
+        summary_id => 0,
+
+        contract_sent     => "",
+        contract_received => "",
+        sent_by           => "",
+        received_by       => "",
+    });
+    for my $ht (housing_types(1)) {
+        $orig_r->set_columns({
+            "n_$ht"   => "",
+            "att_$ht" => "",
+        });
+    }
+    stash($c,
+        dup_message => " - <span style='color: red'>Duplication</span>",
+            # see comment in Program.pm
+        rental => $orig_r,
+        section => 1,
+        housecost_opts =>
+            [ model($c, 'HouseCost')->search(
+                undef,
+                { order_by => 'name' },
+            ) ],
+        h_types            => [ housing_types(1) ],
+        string             => \%string,
+        check_tentative    => "checked",
+        check_linked       => ($orig_r->linked())? "checked": "",
+        form_action        => "duplicate_do/$rental_id",
+        template           => "rental/create_edit.tt2",
+        check_mmc_does_reg => ($orig_r->mmc_does_reg())? "checked": "",
+    );
+}
+
+sub duplicate_do : Local {
+    my ($self, $c, $old_id) = @_;
+
+    _get_data($c);
+    return if @mess;
+
+    my $section = $P{section};
+    delete $P{section};
+
+    $P{lunches} = "";
+
+    $P{glnum} = compute_glnum($c, $P{sdate});
+
+    # get the old rental and the old summary
+    # so we can duplicate the summary.  and get the
+    # contact person and contract signer ids.
+    #
+    my ($old_rental)    = model($c, 'Rental')->find($old_id);
+    my ($old_summary) = $old_rental->summary();
+
+    my $sum = model($c, 'Summary')->create({
+        $old_summary->get_columns(),        # to dup the old ...
+        id => undef,                        # with a new id
+        date_updated => tt_today($c)->as_d8(),   # and new update status info
+        who_updated  => $c->user->obj->id,
+        time_updated => get_time()->t24(),
+    });
+
+
+    # now we can create the new dup'ed rental
+    # with the coordinator and contract signer ids from the old.
+    #
+    my $new_r = model($c, 'Rental')->create({
+        summary_id => $sum->id,
+        %P,
+        coordinator_id => $old_rental->coordinator_id(),
+        cs_person_id   => $old_rental->cs_person_id(),
+    });
+    my $id = $new_r->id();
+
+    #
+    # we must ensure that we have config records
+    # out to the end of this rental + 30 days, say.
+    #
+    add_config($c, date($P{edate}) + 30);
+
+    if ($P{mmc_does_reg}) {
+        # we need to create a parallel program for the dup'ed rental.
+        #
+        $c->response->redirect($c->uri_for("/program/parallel/$id"));
+    }
+    else {
+        $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+    }
 }
 
 1;

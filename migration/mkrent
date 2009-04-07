@@ -61,7 +61,8 @@ create table rental (
     deposit           integer,
     summary_id        integer,
     mmc_does_reg      text,
-    program_id        integer
+    program_id        integer,
+    proposal_id       integer
 );
 drop table if exists rental_payment;
 create table rental_payment (

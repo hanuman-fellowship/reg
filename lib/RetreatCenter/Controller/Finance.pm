@@ -8,6 +8,7 @@ use Util qw/
     commify
     stash
     tt_today
+    mmi_glnum
 /;
 use Date::Simple qw/
     date
@@ -180,12 +181,13 @@ sub file_deposit : Local {
         for my $p (model($c, $src)->search($cond)) {
             my $type = $p->type();
             my $amt  = $p->amount();
+            my $glnum = $p->glnum();
             push @payments, {
                 name   => $p->name(),
                 date   => $p->the_date_obj->format("%D"),
                 type   => $type,
                 amt    => $amt,
-                glnum  => $p->glnum(),
+                glnum  => $glnum,
                 pname  => $p->pname(),
             };
         }
@@ -415,9 +417,142 @@ sub deposits : Local {
     );
 }
 
-sub month_end : Local {
-    my ($self, $c) = @_;
-    $c->stash->{template} = "finance/period_end.tt2";
+sub period_end : Local {
+    my ($self, $c, $source) = @_;
+
+    my $sdate = $c->request->params->{sdate};
+    my $edate = $c->request->params->{edate};
+
+    # validation
+    my $start = $sdate? date($sdate): "";
+    if (! $start) {
+        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+
+    Date::Simple->relative_date($start);
+    my $end = $edate? date($edate): "";
+    Date::Simple->relative_date();
+
+    if (! $end) {
+        $c->stash->{mess} = "Illegal end date: $edate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    if ($end < $start) {
+        $c->stash->{mess} = "End date must be after Start date.";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+
+    my $start_d8 = $start->as_d8();
+    my $end_d8   = $end->as_d8();
+
+    #
+    # key is general ledger number.
+    # value is {
+    #    name   => ,
+    #    link   => ,
+    #    amount => ,
+    #    cash   => ,
+    #    check. => ,
+    #    credit => ,
+    # }.
+    # then sort by name for display.
+    #
+    my %totals = ();
+
+    my $cond = {
+        the_date => { between => [ $start_d8, $end_d8 ] },
+    };
+
+    # copied from above :( DRY??? YES revisit.
+    my @sources = ($source eq 'mmc')? qw/
+                      RegPayment
+                      XAccountPayment
+                      RentalPayment
+                  /:
+                  qw/
+                      MMIPayment
+                  /;
+    # Donations are not included in deposits, no???
+    #
+    for my $src (@sources) {
+        for my $p (model($c, $src)->search($cond)) {
+            my $type = $p->type();
+            my $amt  = $p->amount();
+            my $glnum = $p->glnum();
+            if (! exists $totals{$glnum}) {
+                my ($name, $link);
+                if ($src eq 'MMIPayment') {
+                    ($name, $link) = mmi_glnum($c, $glnum);
+                }
+                else {
+                    $name = $p->pname();
+                    $link = $p->plink();
+                }
+                $totals{$p->glnum()} = {
+                    name   => $name,
+                    type  => ($src eq "RegPayment"     ? ' '
+                             :$src eq "RentalPayment"  ? '*'
+                             :$src eq "XAccountPayment"? 'x'
+                             :$src eq "MMIPayment"     ? ' '
+                             :                           ' '),
+                    link  => $link,
+                    glnum => $p->glnum(),
+                };
+            }
+            my $href = $totals{$glnum};
+            $href->{amount} += $amt;
+            $href->{
+                $type eq 'S'? 'cash'
+               :$type eq 'C'? 'check'
+               :              'credit'
+            } += $amt;
+        }
+    }
+    if ($source eq 'mmc') {
+        # ride payments are handled differently
+        # and it is always a credit card payment.
+        #
+        my $rgl = $string{ride_glnum};
+        for my $r (model($c, 'Ride')->search({
+                       paid_date => { between => [ $start_d8, $end_d8 ] },
+                   })
+        ) {
+            if (! exists $totals{$rgl}) {
+                $totals{$rgl} = {
+                    name  => 'Rides',
+                    type  => 'r',
+                    link  => "/ride/list",
+                    glnum => $rgl,
+                };
+            }
+            my $href = $totals{$rgl};
+            my $amt = $r->cost();
+            $href->{amount} += $amt;
+            $href->{credit} += $amt;
+        }
+    }
+    my %grand_total;
+    for my $t (keys %totals) {
+        for my $n (qw/ amount cash check credit /) {
+            $grand_total{$n} += $totals{$t}->{$n};
+            $totals{$t}->{$n} = commify($totals{$t}->{$n});
+        }
+    }
+    for my $n (keys %grand_total) {
+        $grand_total{$n} = commify($grand_total{$n});
+    }
+    stash($c,
+        which       => $source eq 'mmi'? "MMI": "",
+        start       => $start,
+        end         => $end,
+        totals      => [ sort { $a->{name} cmp $b->{name} } values %totals ],
+        grand_total => \%grand_total,
+        template    => "finance/period_end.tt2",
+    );
 }
 
 1;

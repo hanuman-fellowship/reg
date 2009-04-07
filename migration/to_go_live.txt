@@ -1,3 +1,4 @@
+review the confirmation letter for style, accuracy.
 transform the web descr, leader bio, etc
     into tinyMCE syntax.
 undup - ongoing
@@ -8,17 +9,10 @@ assign meeting places for rentals/programs
 add clusters for housing to programs
 complete rental records - coordinator,
     max, deposit, lunches, housing, etc.
-
-    actually... since the curReg rentals have
-    so little how about just deleting them entirely?
-    and re-entering the current and future ones
-    from the proposal stage?
-    deleting the ones brought over by migration
-    will also delete the summary we added.
-
+it is likely not worth entering past proposals, right?
 add any events - such as YSC, Ramayana, Babaji's comings/goings
-**Hi Res pictures for leaders/programs
-register leaders of programs if not already registered
+Hi Res pictures for leaders/programs
+register and house leaders of programs if not already registered/housed
 delete bogus rentals/programs - used for accounting purposes?
     like MISC, YTT 500, YTT 500 ADMIN.2, TRANSPORTATION
     SECLUSION, MEMBERSHIP, MOTHERING MAG
@@ -28,9 +22,9 @@ modify the names of the unlinked programs
     then publish to web, verify, move to live.
 re-enter sums
     copy, paste & verify
-enter free nights & free program status for members
+enter free nights & free program status for sponsor/life members
 MMI payments need to be sorted out - following Brajesh's notes
     on the printout?
-enter # of free nights left for Sponsor members
-    and free programs for Life members.
 need to create the parallel programs for mmc_does_reg rentals
+cron jobs - start carpool going.
+    after changing who the snail mail people email letters go to.

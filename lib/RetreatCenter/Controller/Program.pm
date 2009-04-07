@@ -75,6 +75,9 @@ sub create : Local {
             edate => $rental->edate_obj->format("%D"),
         ;
         $rental_id = $rental->id();
+        stash($c,
+            dup_message => " - <span style='color: red'>Parallel</span>",
+        );
     }
     Global->init($c);
     my $sch_opts = "";
@@ -85,6 +88,20 @@ sub create : Local {
                   ;
     }
     # set defaults by putting them in the stash
+    if ($rental) {
+        # no automatic web page for parallel program.
+        # it will likely be unlinked - e.g. AVI and Open Gate
+        stash($c,
+            check_webready => "",
+            check_linked   => "",
+        );
+    }
+    else {
+        stash($c,
+            check_webready => "checked",
+            check_linked   => "checked",
+        );
+    }
     stash($c,
         check_kayakalpa     => "checked",
         check_retreat       => "",
@@ -92,8 +109,6 @@ sub create : Local {
         check_quad          => "",
         check_collect_total => "",
         check_economy       => "",
-        check_webready      => "checked",
-        check_linked        => "checked",
         program_leaders     => [],
         program_affils      => [],
         section             => 1,   # Web (a required field)
@@ -107,10 +122,17 @@ sub create : Local {
             # housecost    => { name => "Default" },  # fake an object!
             ptemplate    => 'default',
             cl_template  => 'default',
-            reg_start    => $string{reg_start},
-            reg_end      => $string{reg_end},
-            prog_start   => $string{prog_start},
-            prog_end     => $string{prog_end},
+            reg_start_obj    => $string{reg_start},
+            reg_end_obj      => $string{reg_end},
+            prog_start_obj   => $string{prog_start},
+            prog_end_obj     => $string{prog_end},
+                # for updates [% program.reg_start_obj %] in the template
+                # will take the Program database object, make a method call
+                # to get the reg_start field, then
+                # objectify it, then stringify it for display.
+                # here for creates reg_start_obj is just a hash reference
+                # off of %program above.
+                # tricky!
             @name,
         },
         canpol_opts => [ model($c, 'CanPol')->search(
@@ -1446,6 +1468,10 @@ sub duplicate : Local {
     }
 
     # things that are different from the original:
+    # tricky!  we will duplicate the summary but
+    # not a parallel program.  the user will need to
+    # reset "MMC Does Registration" themselves.
+    #
     $orig_p->set_columns({
         id      => undef,
         sdate   => "",
@@ -1453,6 +1479,7 @@ sub duplicate : Local {
         lunches => "",
         glnum   => "",
         image   => "",      # not yet
+        rental_id => 0,
     });
     for my $w (qw/
         sbath collect_total kayakalpa retreat
@@ -1481,7 +1508,7 @@ sub duplicate : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
-        section     => 2,   # Web (a required field)
+        section     => 1,   # Web (a required field)
         edit_gl     => 0,
         program     => $orig_p,      # with modifed columns
         form_action => "duplicate_do/$id",

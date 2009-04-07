@@ -18,6 +18,7 @@ use Util qw/
 use Date::Simple qw/
     date
     today
+    days_in_month
 /;
 use DateRange;
 use Global qw/
@@ -377,7 +378,7 @@ sub meal_list : Local {
     Date::Simple->relative_date();
 
     if (! $end) {
-        $c->stash->{mess} = "Illegal end date: $end";
+        $c->stash->{mess} = "Illegal end date: $edate";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
@@ -1178,7 +1179,7 @@ sub field_plan : Local {
     Date::Simple->relative_date();
 
     if (! $end) {
-        $c->stash->{mess} = "Illegal end date: $end";
+        $c->stash->{mess} = "Illegal end date: $edate";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
@@ -1289,7 +1290,7 @@ sub summary : Local {
     Date::Simple->relative_date();
 
     if (! $end) {
-        $c->stash->{mess} = "Illegal end date: $end";
+        $c->stash->{mess} = "Illegal end date: $edate";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
@@ -1336,7 +1337,14 @@ sub summary : Local {
 
 sub financial : Local {
     my ($self, $c) = @_;
-    $c->stash->{template} = "listing/financial.tt2";
+    my $today = today();
+    my $y = $today->year();
+    my $m = $today->month();
+    stash($c,
+        start    => date($y, $m, 1)->format("%D"),
+        end      => date($y, $m, days_in_month($y, $m))->format("%D"),
+        template => "listing/financial.tt2",
+    );
 }
 sub people : Local {
     my ($self, $c) = @_;

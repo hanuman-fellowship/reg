@@ -67,7 +67,7 @@ sub name {
 }
 sub link {
     my ($self) = @_;
-    return "/ride/view/" . $self->id;
+    return "/ride/view/" . $self->id();
 }
 sub complete {
     my ($self) = @_;

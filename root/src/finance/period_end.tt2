@@ -1,1 +1,41 @@
-Not yet implemented.
+<h2>
+End of Month Summary for General Ledger<br>
+For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.format("%D") %].
+</h2>
+<ul>
+<table cellpadding=5>
+<tr>
+<th width=5></th>
+<th align=left>Name</th>
+<th align=center>Number</th>
+<th align=right>Amount</th>
+<th align=right>Cash</th>
+<th align=right>Check</th>
+<th align=right>Credit</th>
+</tr>
+[% FOREACH t IN totals %]
+<tr>
+<td>[% t.type %]</td>
+<td align=left><a target=_blank href='[% t.link %]'>[% t.name %]</a></td>
+<td align=center>[% t.glnum %]</td>
+<td align=right>[% t.amount %]</td>
+<td align=right>[% t.cash %]</td>
+<td align=right>[% t.check %]</td>
+<td align=right>[% t.credit %]</td>
+</tr>
+[% END %]
+
+<tr>
+<td colspan=3></td>
+<td colspan=4><hr height=2></td>
+</tr>
+
+<tr>
+<td colspan=3></td>
+<td align=right>[% grand_total.amount %]</td>
+<td align=right>[% grand_total.cash %]</td>
+<td align=right>[% grand_total.check %]</td>
+<td align=right>[% grand_total.credit %]</td>
+</tr>
+</table>
+</ul>
