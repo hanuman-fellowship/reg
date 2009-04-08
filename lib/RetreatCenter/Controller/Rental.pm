@@ -1381,7 +1381,7 @@ EOH
         my $n = $rental->$meth();
         $meth = "att_$type";
         my $att = $rental->$meth();
-        next H_TYPE if empty($n) && empty($att);
+        next H_TYPE if (empty($n) || $n == 0) && empty($att);
         $tot_people += $n;
         my @attendance = ();
         if (! empty($att)) {
