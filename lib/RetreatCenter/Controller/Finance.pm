@@ -9,6 +9,7 @@ use Util qw/
     stash
     tt_today
     mmi_glnum
+    accpacc
 /;
 use Date::Simple qw/
     date
@@ -30,6 +31,7 @@ sub index : Local {
 sub reconcile_deposit : Local {
     my ($self, $c, $source, $id) = @_;
 
+    my $host = ($source eq 'mmi')? "mmi_": "";
     my ($date_start, $date_end);
     my $dep;
     if ($id) {
@@ -38,7 +40,7 @@ sub reconcile_deposit : Local {
         $date_end   = $dep->date_end();
     }
     else {
-        $date_start = (date($string{last_deposit_date})+1)->as_d8();
+        $date_start = (date($string{"last_${host}deposit_date"})+1)->as_d8();
         $date_end   = tt_today($c)->as_d8();
     }
     if ($date_end < $date_start) {
@@ -122,7 +124,7 @@ sub reconcile_deposit : Local {
 
     if (! $id) {
         $string{reconciling} = $c->user->obj->username();
-        # on disk??  not needed?
+        # on disk???  not needed?
     }
 
     stash($c,
@@ -146,6 +148,7 @@ sub reconcile_deposit : Local {
 sub file_deposit : Local {
     my ($self, $c, $source, $id) = @_;
 
+    my $host = ($source eq 'mmi')? "mmi_": "";
     my ($date_start, $date_end);
     my $dep;
     if ($id) {
@@ -154,7 +157,7 @@ sub file_deposit : Local {
         $date_end   = $dep->date_end();
     }
     else {
-        $date_start = (date($string{last_deposit_date})+1)->as_d8();
+        $date_start = (date($string{"last_${host}deposit_date"})+1)->as_d8();
         $date_end   = tt_today($c)->as_d8();
     }
     if ($date_end < $date_start) {
@@ -364,7 +367,7 @@ EOH
     if (! $id) {
         if ($gtotal != 0) {
             #
-            # create a new deposit and update the last_deposit_date
+            # create a new deposit and update the "last_${host}deposit_date"
             #
             model($c, 'Deposit')->create({
                 user_id    => $c->user->obj->id(),
@@ -376,8 +379,12 @@ EOH
                 credit     => $gcredit,
                 source     => $source,
             });
-            $string{last_deposit_date} = $date_end;         # in memory
-            model($c, 'String')->find('last_deposit_date')->update({  # on disk
+
+            # in memory
+            $string{"last_${host}deposit_date"} = $date_end;         
+
+            # on disk
+            model($c, 'String')->find("last_${host}deposit_date")->update({
                 value => $date_end,
             });
         }
@@ -484,6 +491,8 @@ sub period_end : Local {
             my $amt  = $p->amount();
             my $glnum = $p->glnum();
             if (! exists $totals{$glnum}) {
+                # initialize this entry
+                #
                 my ($name, $link);
                 if ($src eq 'MMIPayment') {
                     ($name, $link) = mmi_glnum($c, $glnum);
@@ -492,7 +501,7 @@ sub period_end : Local {
                     $name = $p->pname();
                     $link = $p->plink();
                 }
-                $totals{$p->glnum()} = {
+                $totals{$glnum} = {
                     name   => $name,
                     type  => ($src eq "RegPayment"     ? ' '
                              :$src eq "RentalPayment"  ? '*'
@@ -500,15 +509,19 @@ sub period_end : Local {
                              :$src eq "MMIPayment"     ? ' '
                              :                           ' '),
                     link  => $link,
-                    glnum => $p->glnum(),
+                    glnum       => $glnum,
                 };
+                if ($src eq 'MMIPayment') {
+                    $totals{$glnum}{accpacc_num} = accpacc($glnum);
+                }
             }
             my $href = $totals{$glnum};
             $href->{amount} += $amt;
             $href->{
                 $type eq 'S'? 'cash'
                :$type eq 'C'? 'check'
-               :              'credit'
+               :$type eq 'D'? 'credit'
+               :              'online'
             } += $amt;
         }
     }
@@ -537,7 +550,7 @@ sub period_end : Local {
     }
     my %grand_total;
     for my $t (keys %totals) {
-        for my $n (qw/ amount cash check credit /) {
+        for my $n (qw/ amount cash check credit online /) {
             $grand_total{$n} += $totals{$t}->{$n};
             $totals{$t}->{$n} = commify($totals{$t}->{$n});
         }
@@ -551,6 +564,7 @@ sub period_end : Local {
         end         => $end,
         totals      => [ sort { $a->{name} cmp $b->{name} } values %totals ],
         grand_total => \%grand_total,
+        timestamp   => scalar(localtime),
         template    => "finance/period_end.tt2",
     );
 }

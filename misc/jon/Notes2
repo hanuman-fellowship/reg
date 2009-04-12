@@ -1188,4 +1188,40 @@ Kaya Kalpa - in conf letter
 improve labels - Notify on Reg
 
 set status to Tentative when first creating a rental
-    otherwise it is black
+    otherwise it shows as black
+
+mmi glnums
+    for auditors the 6th digit is the month ordinal
+    of the course.  consider all the mmi courses that _begin_
+    within the same month.  which is this one in that order?
+
+===
+
+auditors & massage school  - envelope yes - other MMI no.
+    and only on courses not dcm programs.
+
+???? for me: check in, reload from oldreg.
+???? for Brajesh;
+?? no housing needed for DCM programs, right?
+?? do MMI registrants pay a deposit?
+?? if you enroll in a DCM program in the college of Ayurveda
+??     can you take massage classes in the school of Massage?
+??     i.e. should Import consider the school?
+??     1 Ayurveda 2 Massage 3 Yoga 4 Comm Stud ? loadmmi old reg/glnum???
+??              and the sch_opts options <select>
+??              in Controller/Program.pm
+?? no >7 or >30 or member discount for MMI, right?
+??
+?? If MMI courses start on Friday morning where do people
+?? stay on Thursday night?   Or do they all fly in on Friday morning?
+????
+
+yes A/D/C/M in allregs - in addition to env or house
+
+MMI registrants: if they asked for discount
+    ( affil 'MMI Discount' $string{mmi_discount} = 20 ) then 
+
+    charge for the 2 nights at whatever housing rate they chose
+    plus a commuter's charge for the 3rd day.
+    then apply the discount to that total.
+    plus tuition for the course.

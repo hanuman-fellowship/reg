@@ -451,15 +451,17 @@ sub processProg {
     if ($hash{mmi} ne "yes") {
         $hash{school} = 0;
     }
-    # redo the school value
-    if ($hash{school} == 2) {
-        $hash{school} = 1;      # Ayurveda
-    }
-    if ($hash{school} == 3) {
-        $hash{school} = 2;      # Massage
-    }
+    # redo the school value?  no.
+    #if ($hash{school} == 2) {
+    #    $hash{school} = 1;      # Ayurveda
+    #}
+    #if ($hash{school} == 3) {
+    #    $hash{school} = 2;      # Massage
+    #}
     # 3 is Yoga, 4 is Community Studies
     # these values are hard-coded into the source.  is this okay?
+    #
+    # 1 Yoga, 2 Ayurveda, 3 Massage, 4 Community Studies
 
     if ($hash{school} == 0) {
         $hash{level} = ' ';         # level does not apply to MMC programs

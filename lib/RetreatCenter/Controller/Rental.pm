@@ -1381,7 +1381,8 @@ EOH
         my $n = $rental->$meth();
         $meth = "att_$type";
         my $att = $rental->$meth();
-        next H_TYPE if (empty($n) || $n == 0) && empty($att);
+        # Brajesh wants to show all options
+        # next H_TYPE if (empty($n) || $n == 0) && empty($att);
         $tot_people += $n;
         my @attendance = ();
         if (! empty($att)) {
@@ -1395,6 +1396,7 @@ EOH
         }
         my $type_shown = 0;
         my $cost = $hc->$type();
+        next H_TYPE if $cost == 0;
         my $show_cost = $cost;
         my $s = $string{$type};
         if (! @attendance) {

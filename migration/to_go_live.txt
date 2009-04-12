@@ -30,3 +30,5 @@ MMI payments need to be sorted out - following Brajesh's notes
 need to create the parallel programs for mmc_does_reg rentals
 cron jobs - start carpool going.
     after changing who the snail mail people email letters go to.
+some MMI people are registered for more than one D/C/M program
+    need to delete their registration for the old one.

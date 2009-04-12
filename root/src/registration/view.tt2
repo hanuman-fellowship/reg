@@ -75,7 +75,7 @@ onclick="return confirm('Okay to Delete registration for [% reg.person.first %] 
 [% END %]
 [% IF reg.program.school != 0 && reg.program.level == 'S' %]
     [% IF dcm_reg_id %]
-    <a href="/registration/view/[% dcm_reg_id %]">To DCM</a>
+    <a href="/registration/view/[% dcm_reg_id %]">To [% dcm_type %]</a>
     [% ELSE %]
     Auditor
     [% END %]

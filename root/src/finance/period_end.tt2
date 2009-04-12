@@ -1,41 +1,56 @@
+<style type="text/css">
+.timestamp {
+    font-size: 11pt;
+    margin-left: 10mm; 
+}
+</style>
+[% mmi = which == 'MMI' %]
 <h2>
 End of Month Summary for General Ledger<br>
 For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.format("%D") %].
 </h2>
-<ul>
 <table cellpadding=5>
 <tr>
 <th width=5></th>
-<th align=left>Name</th>
-<th align=center>Number</th>
-<th align=right>Amount</th>
-<th align=right>Cash</th>
-<th align=right>Check</th>
-<th align=right>Credit</th>
+<th align=left valign=bottom>Name</th>
+<th align=center valign=bottom>GL<br>Number</th>
+[% IF mmi %]
+    <th align=center valign=bottom>ACCPACC<br>Number</th>
+[% END %]
+<th align=right valign=bottom>Amount</th>
+<th align=right valign=bottom>Cash</th>
+<th align=right valign=bottom>Check</th>
+<th align=right valign=bottom>Credit</th>
+<th align=right valign=bottom>Online</th>
 </tr>
 [% FOREACH t IN totals %]
 <tr>
 <td>[% t.type %]</td>
 <td align=left><a target=_blank href='[% t.link %]'>[% t.name %]</a></td>
 <td align=center>[% t.glnum %]</td>
+[% IF mmi %]
+    <td align=center>[% t.accpacc_num %]</td>
+[% END %]
 <td align=right>[% t.amount %]</td>
 <td align=right>[% t.cash %]</td>
 <td align=right>[% t.check %]</td>
 <td align=right>[% t.credit %]</td>
+<td align=right>[% t.online %]</td>
 </tr>
 [% END %]
 
 <tr>
-<td colspan=3></td>
-<td colspan=4><hr height=2></td>
+<td colspan=[% IF mmi %][% 4 %][% ELSE %][% 3 %][% END %]></td>
+<td colspan=5><hr color=black></td>
 </tr>
 
 <tr>
-<td colspan=3></td>
+<td colspan=[% IF mmi %][% 4 %][% ELSE %][% 3 %][% END %]></td>
 <td align=right>[% grand_total.amount %]</td>
 <td align=right>[% grand_total.cash %]</td>
 <td align=right>[% grand_total.check %]</td>
 <td align=right>[% grand_total.credit %]</td>
+<td align=right>[% grand_total.online %]</td>
 </tr>
 </table>
-</ul>
+<span class=timestamp>As of [% timestamp %]</span>

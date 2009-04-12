@@ -71,10 +71,10 @@ sub pname {
 sub link {
     my ($self) = @_;
     if ($self->reg_id) {
-        return "/registration/view/" . $self->reg_id;
+        return "/registration/view/" . $self->reg_id();
     }
     else {
-        return "/person/view/" . $self->person_id;
+        return "/person/view/" . $self->person_id();
     }
 }
 

@@ -556,8 +556,10 @@ sub _rest_of_reg {
     # life member or current sponsor?  with nights left?
     # they must be in good standing if sponsor
     # and can't take free nights if the housing cost is not a Per Day type.
+    # and not if MMI program.
     #
-    if (my $mem = $p->member) {
+    my $mem = $p->member();
+    if ($pr->school() == 0 && $mem) {
         my $status = $mem->category;
         if ($status eq 'Life'
             || ($status eq 'Sponsor' && $mem->date_sponsor >= $today)
@@ -921,12 +923,20 @@ sub create_do : Local {
         });
     }
     # the payment (deposit)
-    model($c, 'RegPayment')->create({
-        @who_now,
-        amount  => $P{deposit},
-        type    => $P{deposit_type},
-        what    => 'Deposit',
-    });
+    if ($pr->school == 0 && $P{deposit}) {
+        # MMC program deposit
+        #
+        model($c, 'RegPayment')->create({
+            @who_now,
+            amount  => $P{deposit},
+            type    => $P{deposit_type},
+            what    => 'Deposit',
+        });
+    }
+    else {
+        # MMI deposit
+        #
+    }
 
     # add the automatic charges
     _compute($c, $reg, @who_now);
@@ -1006,16 +1016,19 @@ sub _compute {
         # they need to pay the full tuition amount
         $tuition = $pr->full_tuition;
     }
-    model($c, 'RegCharge')->create({
-        @who_now,
-        automatic => 'yes',
-        amount    => $tuition,
-        what      => 'Tuition',
-    });
+    if ($tuition > 0) {
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => 'yes',
+            amount    => $tuition,
+            what      => 'Tuition',
+        });
+    }
 
     # sponsor/life members get a discount on tuition
-    # up to a max.
-    if ($reg->status) {
+    # up to a max.  and only for MMC events, not MMI.
+    #
+    if ($pr->school() == 0 && $reg->status) {
         # Life members can take a free program ... so:
         if ($reg->free_prog_taken) {
             model($c, 'RegCharge')->create({
@@ -1049,8 +1062,8 @@ sub _compute {
     my $housecost = $pr->housecost;
 
     my $h_type = $reg->h_type;           # what housing type was assigned?
-    my $lead_assist = $reg->leader_assistant;   # no housing charge
-                                                # for these people
+    my $lead_assist = $reg->leader_assistant();   # no housing charge
+                                                  # for these people
     my $h_cost = ($h_type eq 'not_needed'
                   || $h_type eq 'unknown')? 0
                  :                          $housecost->$h_type;
@@ -1079,6 +1092,18 @@ sub _compute {
             amount    => $tot_h_cost,
             what      => $what,
         });
+    }
+    if ($pr->school() != 0 && ! $lead_assist) {
+        # MMI registrants have an extra day at the commuting rate.
+        #
+        my $commute_cost = $housecost->commuting();
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => 'yes',
+            amount    => $commute_cost,
+            what      => "1 day at commuting rate of \$$commute_cost",
+        });
+        $tot_h_cost += $commute_cost;
     }
 
     # extra days - at the current personal retreat housecost rate.
@@ -1128,7 +1153,7 @@ sub _compute {
     }
 
     my $life_free = 0;
-    if ($reg->free_prog_taken && $tot_h_cost) {
+    if ($reg->free_prog_taken() && $tot_h_cost) {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
@@ -1149,12 +1174,19 @@ sub _compute {
             @who_now,
         });
     }
-	if (!$life_free && !$lead_assist && $housecost->type eq "Per Day") {
+    #
+    # discounts - MMC and MMI
+    #
+	if ($pr->school() == 0      # not MMI
+        && !$life_free
+        && !$lead_assist
+        && $housecost->type eq "Per Day"
+    ) {
         if ($prog_days + $extra_days >= $string{disc1days}) {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
-                amount    => -1*(int(($string{disc1pct}/100)*$tot_h_cost)),
+                amount    => -1*(int(($string{disc1pct}/100)*$tot_h_cost + .5)),
                 what      => "$string{disc1pct}% Lodging discount for"
                             ." programs >= $string{disc1days} days",
             });
@@ -1163,7 +1195,7 @@ sub _compute {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
-                amount    => -1*(int(($string{disc2pct}/100)*$tot_h_cost)),
+                amount    => -1*(int(($string{disc2pct}/100)*$tot_h_cost + .5)),
                 what      => "$string{disc2pct}% Lodging discount for"
                             ." programs >= $string{disc2days} days",
             });
@@ -1228,6 +1260,26 @@ sub _compute {
             member_id  => $mem->id,
             num_nights => $ntaken,
             action     => 2,    # take nights
+        });
+    }
+
+    #
+    # MMI lodging discount - if requested
+    #
+    my $requested = 0;
+    AFFIL:
+    for my $af ($reg->person->affils()) {
+        if ($af->descrip() =~ m{mmi\s+discount}i) {
+            $requested = 1;
+            last AFFIL;
+        }
+    }
+    if ($requested) {
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => 'yes',
+            amount    => -1*(int(($string{mmi_discount}/100)*$tot_h_cost + .5)),
+            what      => "$string{mmi_discount}% MMI lodging discount",
         });
     }
    
@@ -1389,10 +1441,17 @@ sub _view {
     }
     # to DCM?
     my $dcm_reg_id = 0;
+    my $dcm_type = '';
     if ($prog->level() eq 'S') {
         my $dcm = dcm_registration($c, $reg->person->id());
         if (ref($dcm)) {
             $dcm_reg_id = $dcm->id();
+            my $lev = $dcm->program->level();
+            $dcm_type = $lev eq 'D'? 'Diploma'
+                       :$lev eq 'C'? 'Certificate'
+                       :$lev eq 'M'? 'Masters'
+                       :             'DCM'
+                       ;
         }
         # else if $dcm > 1 !!!! ???? give error
         # prohibit it from happening in the first place!
@@ -1460,6 +1519,7 @@ sub _view {
         cal_param      => $reg->date_start_obj->as_d8() . "/1",
         cur_cluster    => ($reg->house_id)? $reg->house->cluster_id: 1,
         dcm_reg_id     => $dcm_reg_id,
+        dcm_type       => $dcm_type,
         program        => $prog,
         template       => "registration/view.tt2",
     );
@@ -1804,6 +1864,8 @@ sub matchreg : Local {
 #
 sub _reg_table {
     my ($c, $reg_aref, %opt) = @_;
+
+    my $mmi_admin = $c->check_user_roles('mmi_admin');
     my $proghead = "";
     if ($opt{multiple}) {
         $proghead = "<th align=left>Program</th>\n";
@@ -1825,6 +1887,9 @@ $posthead
 EOH
     my $body = "";
     for my $reg (@$reg_aref) {
+        my $pr = $reg->program();
+        my $school = $pr->school();
+        my $level = $pr->level();
         my $per = $reg->person;
         my $id = $reg->id;
         my $name = $per->last . ", " . $per->first;
@@ -1848,7 +1913,7 @@ EOH
                        "<img src=/static/images/redX.gif height=$ht>"
                   :($need_house && !$hid)?
                        "<img src=/static/images/house.gif height=$ht>"
-                  :(!$reg->letter_sent)?
+                  :($level eq 'S' && !$reg->letter_sent)?
                        "<img src=/static/images/envelope.jpg height=$ht>"
                   :    "";
         if ($need_house && $hid) {
@@ -1860,9 +1925,35 @@ EOH
                 $mark = "<img src=/static/images/unhappy1.gif>&nbsp;$mark";
             }
         }
+        if ($school != 0 && $pr->level() eq 'S') {
+            #
+            # A/D/C/M marks for MMI _course_ registrations
+            # not registrants in the D/C/M programs themselves
+            #
+            my $dcm = dcm_registration($c, $reg->person->id());
+            my $type = 'A';
+            if (ref($dcm)) {
+                $type = $dcm->program->level();
+            }
+            elsif ($dcm) {
+                $type = '?';
+            }
+            if (!($type eq 'A' || $school == 3)
+                && $mark =~ m{envelope}
+            ) {
+                # Auditor and School of Massage (3 is hard coded :( )
+                # can have envelope for non-sent confirmation letters
+                # others no.
+                #
+                $mark = $type;
+            }
+            else {
+                $mark = $type . " " . $mark;
+            }
+        }
         my $program_td = "";
         if ($opt{multiple}) {
-            $program_td = "<td>" . $reg->program->name() . "</td>\n";
+            $program_td = "<td>" . $pr->name() . "</td>\n";
         }
         my $postmark_td = "";
         if ($opt{postmark}) {
@@ -1874,16 +1965,13 @@ EOH
         }
         my $pay_balance = $balance;
         if (! $reg->cancelled && $balance > 0
-            && ($reg->program->school() == 0
-                || $c->check_user_roles('mmi_admin'))
+            && ($school == 0 || $mmi_admin)
         ) {
             $pay_balance =
                 "<a href='/registration/pay_balance/$id/list_reg_name'>"
                ."$pay_balance</a>";
         }
-        if ($reg->program->school() == 0
-            || $c->check_user_roles('mmi_admin')
-        ) {
+        if ($school == 0 || $mmi_admin) {
             $name = "<a href='/registration/view/$id'>$name</a>";
         }
         $body .= <<"EOH";
@@ -3074,6 +3162,8 @@ sub cf_expand {
 sub who_is_there : Local {
     my ($self, $c, $sex, $house_id, $the_date) = @_;
 
+    my $mmi_admin = $c->check_user_roles('mmi_admin');
+
     # the sex parameter tells us whether
     # this house is booked to a rental or to registrants in programs.
     #
@@ -3140,9 +3230,7 @@ sub who_is_there : Local {
         my $pr = $r->program();
         my $name = $r->person->last() . ", " . $r->person->first();
         my $relodge = "";
-        if ($pr->school() == 0 
-            || $c->check_user_roles('mmi_admin')
-        ) {
+        if ($pr->school() == 0 || $mmi_admin) {
             $name = "<a target=happening href="
                   . $c->uri_for("/registration/view/$rid")
                   . ">"
@@ -3539,6 +3627,9 @@ sub mmi_import : Local {
     my $sdate = $p->sdate();
     my @progs = model($c, 'Program')->search({
         school => { '!=', 0      },
+        # should we only accept DCM people in the same school
+        # as the course we are importing into???
+        #
         level  => { '!=', 'S'    },
         sdate  => { '<=', $sdate },
         edate  => { '>=', $sdate },

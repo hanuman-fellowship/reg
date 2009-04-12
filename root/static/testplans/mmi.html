@@ -1,5 +1,11 @@
 <head>
 <link rel="stylesheet" type="text/css" href="style.css" />
+<style type="text/css">
+.glnum {
+    font-family: Courier;
+    font-size: 16pt;
+}
+</style>
 </head>
 <body>
 <h2>MMI Programs</h2>
@@ -7,9 +13,9 @@ For programs offered by Mount Madonna Institute (henceforward MMI)
 the 'sponsoring organization' of the program is not MMC.
 It is one of these:
 <ul>
-<li>MMI College of Ayurvda
-<li>MMI School of Professional Massage
 <li>MMI School of Yoga
+<li>MMI College of Ayurveda
+<li>MMI School of Professional Massage
 <li>MMI School of Community Studies
 </ul>
 You then need to specify a level:
@@ -20,7 +26,7 @@ You then need to specify a level:
 <li>Course
 </ul>
 If it is not a Course then it is refered to as a DCM program.
-MMI Courses/DCMs are marked with a red star in the list of programs.
+MMI Courses and DCMs are marked with a red star in the list of programs.
 <p>
 Actually, to see current Personal Retreats and DCMs you must
 choose "PR/DCM" on the program list page OR
@@ -53,7 +59,7 @@ and house everyone individually.
 <p>
 People can register for only one DCM program at a time.
 Such second registrations are prohibited.  When viewing
-a registration in an MMI <i>course</i> there is a link "To DCM"
+a registration in an MMI <i>course</i> there is a link &ldquo;To DCM&rdquo;
 with which you can jump to their DCM registration.
 <p>
 Tuition for DCM Programs is quite flexible depending on
@@ -63,6 +69,7 @@ The comment field in the DCM program registration screen
 is used extensively to detail the payment arrangements that
 have been made.
 <p>
+
 <h3>MMI Payments</h3>
 We DO, however, keep close track of the <i>payments</i>.  All MMI Payments
 are linked directly to the person not to the registrations.
@@ -74,37 +81,55 @@ Choosing "New" to create a new MMI payment
 you supply a dollar amount, type (credit/check/cash), what the payment
 is for (Tuition/Meals&Lodging/Fees/...) and an optional note.
 <p>
+The program where you clicked on the "New" link will
+be remembered with the payment itself.  This means you could
+make a tuition payment on a course registration.  This raises
+the question - are all tuition payments really attached
+to the DCM program?  
+<p>
 For general ledger accounting purposes MMI Programs
 do not really have a single GL number.  Each MMI payment has its <i>own</i>
-6 digit GL number which is automatically computed thusly:
+6 digit GL number which is computed automatically.
+<p>
+Each registrant making a payment is enrolled in just one DCM program.
+<i>That</i> DCM program and its <i>start</i> date are used to determine
+digits 2-6 below.  Note that digit 5 could be a letter (X-Z)
+and digit 6 is not a digit at all but D, C, or M.
 <ul>
-<li>digit 1 - what for (1=Tuition, 2=Meals & Lodging, 3=Application Fee,
-                    4=Registration Fee, 5=Other)
-<li>digit 2 - school (1=Ayurveda, 2=Massage, 3=Yoga, 4=Community)
+<li>digit 1 - what the payment is for:
+<p>
+    <table cellpadding=3>
+    <tr><td>1</td><td>Tuition</td></tr>
+    <tr><td>2</td><td>Meals & Lodging</td></tr>
+    <tr><td>3</td><td>Application Fee</td></tr>
+    <tr><td>4</td><td>Registration Fee</td></tr>
+    <tr><td>5</td><td>Other</td></tr>
+    </table>
+    <p>
+<li>digit 2 - the school/college of the DCM program:
+<p>
+<table cellpadding=3>
+<tr><td>1</td><td>Yoga</td></tr>
+<tr><td>2</td><td>Ayurveda</td></tr>
+<tr><td>3</td><td>Massage</td></tr>
+<tr><td>4</td><td>Community</td></tr>
+</table>
+<p>
 <li>digit 3 - tens digit of year
 <li>digit 4 - units digit of year
 <li>digit 5 - month (1=Jan, ...  9=Sep, X=Oct, Y=Nov, Z=Dec)
 <li>digit 6 - level (D=Diploma, C=Certificate, M=Masters)
 </ul>
-Each registrant making a payment is enrolled in just one DCM program.
-That DCM program and its <i>end</i> date are used to determine
-digits 2-6 above.  Note that digit 5 could be a letter (X-Z)
-and digit 6 is not a digit (0-9) at all but D, C, or M.
-<p>
-<i>Anyone</i> can register for an MMI <i>course</i> - even people who
-are not enrolled in a DCM program.  These are called "auditors".
+Actually, <i>anyone</i> can register for an MMI <i>course</i> - even people who
+are not enrolled in a DCM program.  These are called &lsquo;auditors&rsquo;.
 When auditors make a payment (via "New" MMI Payment) 
-the values in digits 2-6 are determined using the MMI <i>course</i> itself.
-Digit 6 is not D, C, or M but it is the <i>ordinal number</i> of the
-course within its month.   e.g. It will be 2 if it is the
-second MMI course within the month of its <i>end</i> date.
-<p>
-The program where you clicked on the "New" link will
-be remembered with the payment itself.  This means you could
-make a tuition payment on a course registration.  This raises
-the question - are all tuition payments really attached
-to the DCM program?  Auditors would pay a tuition I presume, yes?
-They have no DCM program.  Hmmm.  How did old reg handle this?
+the 6 digits of the GL Number of the MMI <i>course</i> itself is used
+for the payment - preceded by digit 1 above (1 or 2 for tuition or m&l).
+The GL Number of the <i>course</i> is input by the MMI admin.
+They will determine what it is: school #, yy year of the beginning
+date of the program of which this course is part followed by.
+the 3 digit course # from the syllabus.
+
 <h3>List of MMI Payments</h3>
 On an MMI program registration there is a link named "List"
 for displaying all of a person's MMI payments.   On the Person
@@ -123,13 +148,43 @@ You can optionally show the GL number as well, if you wish,
 with the link "Show GL".
 <p>
 Note that the program where a payment was made
-was not recorded before Reg began to be used.
+was not recorded before newReg began to be used.
+
+<h3>Financial Listings</h3>
+In the Listings-Financial area there is a link to create MMI Deposits.
+    These are all of the MMI Payments made since the last time
+    an MMI Deposit was made.  These deposits are separate from
+    the MMC program/rental deposits.
+    <p>
+    There is also a Period End Summary of MMI payments aggregated
+    by GL Number.  The period defaults to the current month.
+    In this listing there is a column headed 'ACCPACC Number'.
+    This number is used for entry into the ACCPACC program
+    used in the Financial Office.  It has this form:
+<pre class=glnum>
+    XXXX-0X-XXXX
+</pre>
+    The ACCPAC Number is derived from the GL Number thusly:
+<pre class=glnum>
+     GL Number: 1208XM
+     GL Number:    1  2 08XM
+ACCPACC Number: 4101-02-08XM
+<p>
+     GL Number: 340932
+     GL Number:    3  4 0932
+ACCPACC Number: 4203-04-0932
+</pre>
+If the last character of the GL Number is D, C, or M
+then the first 3 numbers of the ACCPACC Number is 410
+otherwise they are 420.
+
 <h3>Calendar and DailyPic</h3>
 DCM Programs (and Personal Retreats) are not shown on the
 calendar (or the daily pic) as they would be annoyingly and
-uselessly ever-present.
+uselessly ever-present. MMI Courses <i>are</i> shown.
+
 <h3>The MMI Admin</h3>
-Within Reg there is a role called 'mmi_admin'.
+Within newReg there is a role called 'mmi_admin'.
 Only users with this role can <i>see</i>
 MMI registrations or payments or modify MMI programs.
 Normal program admins/staff can see the programs but not modify them.
@@ -139,6 +194,7 @@ to the payments or registration or program.  A few examples:
 <ul>
 <li>The MMI payments are viewable via the person record
   of a person who is enrolled in an MMI program/course.
+  You can't see these payments unless you are an mmi_admin.
 <li>Clicking on an MMI person's room in the DailyPic
   or the ClusterView will show you their name but
   not allow you to click through to their
@@ -146,12 +202,35 @@ to the payments or registration or program.  A few examples:
 <li>Asking for the Early/Late registrations list from
   a program screen.  You'll see different things depending
   on your role.
-<li>In the Listings-Financial area there is a link to create MMI Deposits.
-    These are all of the MMI Payments made since the last time
-    an MMI Deposit was made.  These deposits are separate from
-    the MMC program/rental deposits.
-    <p>
-    There is also a Period End Summary of MMI payments aggregated
-    by GL Number.  The period defaults to the current month.
 </ul>
+
+<h3>Miscellaneous MMI Things</h3>
+In the list of registrants for DCM programs there are no markings
+for housing or for a confirmation letter that needs to be sent.
+There <i>is</i> still a 'cancelled' image.
+<p>
+In the list of registrants for an MMI <i>course</i> there <i>can</i> be
+several markings next to the name:
+<ul>
+<li>Envelope - confirmation letter has not been sent.
+<li>House - needs housing
+<li>Unhappy faces - didn't get first/second housing choice.
+<li>Red X - cancelled
+<li>D, C, M or A - Diploma, Certificate, Masters
+    or Auditor - The level of this student.
+</ul>
+The envelope is only used for auditors and for when the
+course is in the School of Massage.
+<p>
+Since MMI courses run from Friday morning to Sunday evening
+they are charged for two nights lodging (at whatever housing type
+rate they choose) <i>plus</i> one day at the commuting rate.
+<p>
+There is an affiliation named 'MMI Discount'.  If someone asks
+for this discount it is given to them.  This gives them a 20% reduction
+in lodging fees - but not tuition.
+MMI people do not get membership discounts or the 10% discounts
+for programs >= 7 or >= 30 days.
+<p>
+All these charges and discounts are enumerated on the registration screen.
 </body>

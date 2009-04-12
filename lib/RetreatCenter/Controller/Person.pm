@@ -911,15 +911,17 @@ sub create_mmi_payment_do : Local {
     }
     else {
         # this person is an auditor
-        # the 6th digit below is the 'month ordinal' of the current MMI course
+        # the 6th digit below is the 'month ordinal'
+        # of the current MMI course.
+        #
         $program = $reg->program();
-        my $yyyymm = $program->edate_obj->format("%Y%m");
+        my $yyyymm = $program->sdate_obj->format("%Y%m");
         my @progs = model($c, 'Program')->search(
                     {
                         school => { '!='   => 0          },
-                        edate  => { 'like' => "$yyyymm%" },
+                        sdate  => { 'like' => "$yyyymm%" },
                     },
-                    { order_by => 'edate asc' }
+                    { order_by => 'sdate asc' }
                     );
         my $cur_id = $program->id();
         $sixth = 1;         # just in case the loop below fails
@@ -933,11 +935,14 @@ sub create_mmi_payment_do : Local {
 
     # validate amount???
 
-    my $edate = $program->edate_obj();
-    my $m = $edate->month();
+    #
+    # figure the glnum for this payment
+    #
+    my $sdate = $program->sdate_obj();
+    my $m = $sdate->month();
     my $glnum = $c->request->params->{for_what}
               . $program->school()
-              . $edate->format("%y")
+              . $sdate->format("%y")
               . ((1 <= $m && $m <=  9)? $m
                  :          ($m == 10)? 'X'
                  :          ($m == 11)? 'Y'
@@ -946,7 +951,7 @@ sub create_mmi_payment_do : Local {
               . $sixth
               ;
     my $the_date = tt_today($c)->as_d8();
-    if ($the_date eq $string{last_deposit_date}) {
+    if ($the_date eq $string{last_mmi_deposit_date}) {
         $the_date = (tt_today($c)+1)->as_d8();
     }
     model($c, 'MMIPayment')->create({

@@ -57,6 +57,7 @@ insert into user values (19, 'rebecca', 'hello', 'leonard_rebecca@hotmail.com', 
 insert into user values (20, 'felicia', 'hello', 'nucleus_prime@yahoo.com', 'Felicia', 'Thompson', '', '', '', '', '', '');
 insert into user values (21, 'nora', 'hello', 'Nora_aurelia@yahoo.com', 'Nora', 'Doyle', '', '', '', '', '', '');
 insert into user values (22, 'calendar', 'hello', 'jon@logicalpoetry.com', 'cal_first', 'cal_last', '', '', '', '', '', '');
+insert into user values (23, 'lila', 'hello', 'lila@mountmadonna.org', 'Lila', 'Ansell', '', '', '', '', '', '');
 
 --
 -- the roles - do not muck with the ids!
@@ -167,6 +168,13 @@ insert into user_role values (4, 3);
 insert into user_role values (4, 4);
 insert into user_role values (4, 5);
 insert into user_role values (4, 9);
+
+-- lila - same as Brajesh
+insert into user_role values (23, 2);
+insert into user_role values (23, 3);
+insert into user_role values (23, 4);
+insert into user_role values (23, 5);
+insert into user_role values (23, 9);
 
 -- Sunanda - kitchen
 insert into user_role values (17, 10);

@@ -416,21 +416,22 @@ sub weburl {
 sub fee_table {
     my ($self) = @_;
 
-    my $sdate = $self->sdate_obj;
-    my $month = $sdate->month;
-    my $edate = $self->edate_obj;
-    my $extradays  = $self->extradays;
+    my $housecost = $self->housecost();
+    my $sdate = $self->sdate_obj();
+    my $month = $sdate->month();
+    my $edate = $self->edate_obj();
+    my $extradays  = $self->extradays();
     my $ndays = ($edate-$sdate) || 1;		# personal retreats exception
     my $fulldays = $ndays + $extradays;
     my $cols  = ($extradays)? 3: 2;
-	my $pr    = $self->name =~ m{personal retreat}i;
-	my $tent  = $self->name =~ m{tnt}i;
+	my $PR    = $self->name() =~ m{personal\s+retreat}i;
+	my $tent  = $self->name() =~ m{tnt}i;
 
     my $fee_table = <<EOH;
 <p>
 <table>
 EOH
-	$fee_table .= <<EOH unless $self->name =~ m{personal retreat}i;
+	$fee_table .= <<EOH unless $PR;
 <tr><th colspan=$cols>$string{heading}</th></tr>
 <tr><td colspan=$cols>&nbsp;</td></tr>
 EOH
@@ -453,11 +454,12 @@ EOH
 		next if $t =~ m{single_bath} && ! $self->sbath;
 
         next if $t =~ m{center_tent} && ! (5 <= $month and $month <= 10)
-									 && ! ($pr || $tent);
+									 && ! ($PR || $tent);
 										# ok for PR's - we don't
 										# know what month...
-		next if $pr and $t =~ m{triple|dormitory};
-		my $cost = $self->fees(0, $t);
+		next if $PR and $t =~ m{triple|dormitory};
+		my $cost = $PR? $housecost->$t()
+                  :     $self->fees(0, $t);
 		next unless $cost;		# this type of housing is not offered at all.
         $fee_table .= "<tr><td>" . $string{"long_$t"} . "</td>";
         $fee_table .= "<td align=right>$cost</td>\n";
@@ -479,10 +481,9 @@ sub fees {
     my ($self, $full, $type) = @_;
 
     $type =~ s{^\s*|\s*$}{}g;    # trim front and back
-    my $tuition = $full? $self->full_tuition: $self->tuition;
+    my $tuition = $full? $self->full_tuition(): $self->tuition();
     my $housecost = $self->housecost;
-    my $ndays = ($self->edate_obj - $self->sdate_obj) || 1;
-										# personal retreat exception
+    my $ndays = $self->edate_obj - $self->sdate_obj;
     $ndays += $self->extradays if $full;
     my $hcost = $housecost->$type;      # column name is correct, yes?
 	if ($housecost->type eq "Per Day") {
@@ -494,6 +495,7 @@ sub fees {
 	return 0 unless $hcost;		# don't offer this housing type if cost is zero
     return $tuition + $hcost;
 }
+
 sub firstprog_prevmonth {
     my ($self) = @_;
     my $sd = $self->sdate_obj;

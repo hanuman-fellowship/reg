@@ -43,9 +43,9 @@ use File::Copy;
 
 my @sch_opts = (
     'MMC',
+    'MMI School of Yoga',
     'MMI College of Ayurveda',
     'MMI School of Professional Massage',
-    'MMI School of Yoga',
     'MMI School of Community Studies',
 );
 my %mmi_levels = (
@@ -1367,7 +1367,8 @@ sub gen_regtable {
     open my $regt, ">", "gen_files/regtable"
         or die "cannot create regtable: $!\n";
     for my $p (@programs) {
-        my $ndays = ($p->edate_obj - $p->sdate_obj) || 1;	# personal retreats
+        my $PR = $p->name() =~ m{personal\s+retreat}i;
+        my $ndays = $p->edate_obj - $p->sdate_obj;
         my $fulldays = $ndays + $p->extradays;
 
         #
@@ -1398,12 +1399,12 @@ sub gen_regtable {
             next if $t =~ /economy/     && !$p->economy;
             next if $t =~ /single_bath/ && !$p->sbath;
             next if $t =~ /center_tent/
-                && !($p->name =~ m{personal\s+retreat}i
+                && !($PR
                      || $p->name =~ m{tnt}i
                      || (5 <= $month && $month <= 10));
-            next if $t =~ m{triple|dormitory}
-                    && $p->name =~ m{personal\s+retreat}i;
-            my $fees = $p->fees(0, $t);
+            next if $PR && $t =~ m{triple|dormitory};
+            my $fees = $PR? $housecost->$t()
+                      :     $p->fees(0, $t);
             next if $fees == 0;    # another way to eliminate a housing option 
             print {$regt} "basic $t\t$fees\n";
             if ($p->extradays) {

@@ -36,6 +36,8 @@ close $affils;
 
 ++$n;
 $af_sth->execute($n, 'Proposal Submitter');
+++$n;
+$af_sth->execute($n, 'MMI Discount');
 
 open my $af_id, ">", "affil_id.txt"
     or die "no affil_id.txt\n";

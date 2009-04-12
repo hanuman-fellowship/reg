@@ -46,6 +46,7 @@ our @EXPORT_OK = qw/
     fillin_template
     ptrim
     mmi_glnum
+    accpacc
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1171,7 +1172,7 @@ sub mmi_glnum {
                   :$d1 eq '3'? 'Application Fee'
                   :$d1 eq '4'? 'Registration Fee'
                   :            'Other');
-    $purpose .= " for ";
+    $purpose = " - $purpose";
     my $school = substr($glnum, 1, 1);
     my $year10 = substr($glnum, 2, 2);
     my $month  = substr($glnum, 4, 1);
@@ -1190,11 +1191,11 @@ sub mmi_glnum {
             level  => $d6,
         });
         for my $p (@progs) {
-            my $edate = $p->edate_obj;
-            if (($edate->year() % 10) == $year10
-                && $edate->month() == $month
+            my $sdate = $p->sdate_obj;
+            if (($sdate->year() % 10) == $year10
+                && $sdate->month() == $month
             ) {
-                return ($purpose . $p->name(),
+                return ($p->name() . $purpose,
                         "/program/view/" . $p->id);
                 # it is possible that we would get the wrong program.
                 # e.g. what if in July 2109 there is an Ayurveda
@@ -1202,7 +1203,7 @@ sub mmi_glnum {
                 # don't worry about it.
             }
         }
-        return ($purpose . "Unknown MMI DCM Program",
+        return ("Unknown MMI DCM Program" . $purpose,
                 "/program/list/1");
     }
     else {
@@ -1222,22 +1223,46 @@ sub mmi_glnum {
         # we're not sure which century so we can't do it in the search above.
         #
         @progs = grep {
-            my $edate = $_->edate_obj();
-            ($edate->year() % 10) == $year10
+            my $sdate = $_->sdate_obj();
+            ($sdate->year() % 10) == $year10
             &&
-            $edate->month() == $month;
+            $sdate->month() == $month;
         }
         @progs;
         --$d6;      # 1 based => 0 based
         if ($#progs <= $d6) {
-            return ($purpose . $progs[$d6]->name(),
+            return ($progs[$d6]->name() . $purpose,
                     "/program/view/" . $progs[$d6]->id());
         }
         else {
-            return ($purpose . "Unknown MMI DCM Course",
+            return ("Unknown MMI DCM Course" . $purpose,
                     "/program/view/1");
         }
     }
+}
+
+sub accpacc {
+    my ($gl) = @_;
+
+=comment
+one way:
+    return ((substr($gl, 5, 1) =~ m{[DCM]})? "410"
+            :                                "420")
+         . substr($gl, 0, 1)
+         . "-0"
+         . substr($gl, 1, 1)
+         . "-"
+         . substr($gl, 2, 4)
+         ;
+or another:
+=cut
+    $gl =~ s{^(.)(.)(...(.))$}
+            {
+                ((index('DCM', $4) >= 0)? "410"
+                 :                        "420")
+                . "$1-0$2-$3"
+            }e;
+    $gl;
 }
 
 1;
