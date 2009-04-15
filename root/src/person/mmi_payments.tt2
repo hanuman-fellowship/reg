@@ -6,7 +6,7 @@
 [% END %]
 <ul>
 <h2>MMI Payments for [% person.first %] [% person.last %]
-<span style="margin-left: 15mm; font-weight: normal; font-size: 10pt">As of [% today %], [% time %]</span>
+<span style="margin-left: 15mm; font-weight: normal; font-size: 10pt">As of [% time %]</span>
 </h2>
 [% IF ! mmi_print %]
 <p>
@@ -17,7 +17,7 @@
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/person/view/[% person.id %]">Person Info</a>
-<p>
+<p class=p2>
 [% END %]
 <table cellpadding=5>
 <tr>
@@ -41,7 +41,7 @@
     <td>[% p.the_date_obj %]
     <td align=center>[% p.type_sh %]
     [% IF show_gl %]
-    <td align=center>[% p.glnum %]</td>
+    <td align=left>[% p.glnum %]</td>
     [% END %]
     [% IF mmi_print %]
     <td>[% p.registration.program.name %]</td>

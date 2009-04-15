@@ -8,6 +8,7 @@ use DBIx::Class::ResultClass::HashRefInflator;      # ???
 use lib '../../';       # so you can do a perl -c here.
 use Date::Simple qw/
     date
+    today
 /;
 use Time::Simple qw/
     get_time
@@ -218,15 +219,19 @@ sub list_reg_name : Local {
     }
     Global->init($c);
     my @files = <root/static/online/*>;
+    my $sdate = $pr->sdate();
+    my $nmonths = date($pr->edate())->month()
+                - date($sdate)->month()
+                + 1;
     stash($c,
-        online          => scalar(@files),
-        pat             => $pat,
-        daily_pic_date  => $pr->sdate(),
-        cal_param       => $pr->sdate_obj->as_d8() . "/1",
         program         => $pr,
+        pat             => $pat,
+        daily_pic_date  => $sdate,
+        cal_param       => "$sdate/$nmonths",
         regs            => _reg_table($c, \@regs),
         other_sort      => "list_reg_post",
         other_sort_name => "By Postmark",
+        online          => scalar(@files),
         template        => "registration/list_reg.tt2",
     );
 }
@@ -1511,12 +1516,17 @@ sub _view {
             $share .= " - <span class=required>could not find</span>";
         }
     }
+    my $sdate = $prog->sdate();
+    my $nmonths = date($prog->edate())->month()
+                - date($sdate)->month()
+                + 1;
     stash($c,
         online         => scalar(@files),
         share          => $share,
         non_pr         => $prog->name !~ m{personal retreat}i,
-        daily_pic_date => $reg->date_start(),
-        cal_param      => $reg->date_start_obj->as_d8() . "/1",
+        daily_pic_date => $sdate,
+        cal_param      => "$sdate/$nmonths",
+        # ??? can get cluster id from Global settings, yes???
         cur_cluster    => ($reg->house_id)? $reg->house->cluster_id: 1,
         dcm_reg_id     => $dcm_reg_id,
         dcm_type       => $dcm_type,
@@ -2738,13 +2748,17 @@ sub lodge : Local {
 
     $h_type = _htrans($h_type);
 
+    my $p_sdate = $pr->sdate();
+    my $nmonths = date($pr->edate())->month()
+                - date($sdate)->month()
+                + 1;
     stash($c,
         reg           => $reg,
         note          => $cn,
         note_lines    => lines($cn) + 3,
         message2      => $message2,
         h_type        => $h_type,
-        cal_param     => $reg->date_start_obj->as_d8() . "/1",
+        cal_param     => "$p_sdate/$nmonths",
         h_type_opts   => $h_type_opts,
         house_opts    => join('', @h_opts),
         total_opts    => scalar(@h_opts), 
@@ -3771,6 +3785,42 @@ sub carpool : Local {
         template   => 'registration/carpool.tt2',
         cur_time   => scalar(localtime),
     );
+}
+
+#
+# find the alphabetically first registration in the
+# current Personal Retreat program.
+#
+sub pr : Local {
+    my ($self, $c) = @_;
+
+    my @prog = model($c, 'Program')->search({
+        name  => { 'like' => '%personal%retreat%' },
+        edate => { '>='   => today()->as_d8() },
+    });
+    if (! @prog) {
+        $c->response->redirect($c->uri_for("/program/list"));
+        return;
+    }
+    my $pr_id = $prog[0]->id();
+    my ($reg) = model($c, 'Registration')->search(
+        {
+            program_id => $pr_id,
+        },
+        {
+            rows     => 1,
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first /],
+            prefetch => [qw/ person /],
+        }
+    );
+    if ($reg) {
+        stash($c, reg => $reg);
+        _view($c, $reg);
+    }
+    else {
+        $c->response->redirect($c->uri_for("/program/view/$pr_id"));
+    }
 }
 
 1;

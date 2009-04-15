@@ -1,12 +1,15 @@
+MOVED to testplans dir 4/14
+
 choose colors for calendar, meeting places
 decide on dailypic chars for empty room, resize, etc etc
-review the confirmation letter for style, accuracy.
+review the confirmation letter (and cancellation letter) for style, accuracy.
 transform the web descr, leader bio, etc
     into tinyMCE syntax.
+    needed before we can publish again
 undup - ongoing
     and reformat the foreign addresses
 remove unused affils
-inactivate (after what point?)
+mass inactivate (after what point?)
 assign meeting places for rentals/programs
 add clusters for housing to programs
 complete rental records - coordinator,
@@ -18,7 +21,7 @@ register and house leaders of programs if not already registered/housed
 delete bogus rentals/programs - used for accounting purposes?
     like MISC, YTT 500, YTT 500 ADMIN.2, TRANSPORTATION
     SECLUSION, MEMBERSHIP, MOTHERING MAG
-    dup'ed INFINITE SMILE rental
+    dup'ed INFINITE SMILE rental, etc.
 add anew reports for mailings
 modify the names of the directories for unlinked programs
     then publish to web, verify, move to live.
@@ -27,7 +30,7 @@ re-enter sums
 enter free nights & free program status for sponsor/life members
 MMI payments need to be sorted out - following Brajesh's notes
     on the printout?
-need to create the parallel programs for mmc_does_reg rentals
+need to create the parallel programs for 'MMC Does Registration' rentals
 cron jobs - start carpool going.
     after changing who the snail mail people email letters go to.
 some MMI people are registered for more than one D/C/M program

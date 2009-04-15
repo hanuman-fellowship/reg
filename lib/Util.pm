@@ -47,6 +47,7 @@ our @EXPORT_OK = qw/
     ptrim
     mmi_glnum
     accpacc
+    highlight
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -734,13 +735,13 @@ sub clear_lunch {
     %lunch_cache = ();
 }
 sub get_lunch {
-    my ($c, $id) = @_;
+    my ($c, $id, $type) = @_;
 
-    if (! exists $lunch_cache{$id}) {
-        my $prog = model($c, 'Program')->find($id);
-        $lunch_cache{$id} = [ $prog->sdate_obj, $prog->lunches ];
+    if (! exists $lunch_cache{$type}{$id}) {
+        my $event = model($c, $type)->find($id);
+        $lunch_cache{$type}{$id} = [ $event->sdate_obj, $event->lunches ];
     }
-    return @{$lunch_cache{$id}};
+    return @{$lunch_cache{$type}{$id}};
 }
 
 #
@@ -864,9 +865,14 @@ sub max_type {
 
 sub lines {
     my ($s) = @_;
-    $s =~ tr/\n/\n/;
+
+    my @p = $s =~ m{<p>}gi;
+    return scalar(@p);
 }
 
+#
+# still needed with tinyMCE?
+#
 sub _br {
     my ($s) = @_;
  
@@ -1173,19 +1179,19 @@ sub mmi_glnum {
                   :$d1 eq '4'? 'Registration Fee'
                   :            'Other');
     $purpose = " - $purpose";
-    my $school = substr($glnum, 1, 1);
-    my $year10 = substr($glnum, 2, 2);
-    my $month  = substr($glnum, 4, 1);
-    if ($month =~ m{[XYZ]}) {
-        $month = 10 + ord($month) - ord('X');
-            # the above works because X, Y, Z
-            # are sequential in the ASCII table
-    }
     my $d6 = substr($glnum, 5, 1);
     if ($d6 =~ m{[DCM]}) {
         # d6 is D, C, or M - the kind of MMI program.
         # Diploma, Certificate, or Masters.
         #
+        my $school = substr($glnum, 1, 1);
+        my $year10 = substr($glnum, 2, 2);
+        my $month  = substr($glnum, 4, 1);
+        if ($month =~ m{[XYZ]}) {
+            $month = 10 + ord($month) - ord('X');
+                # the above works because X, Y, Z
+                # are sequential in the ASCII table
+        }
         my @progs = model($c, 'Program')->search({
             school => $school,
             level  => $d6,
@@ -1207,32 +1213,20 @@ sub mmi_glnum {
                 "/program/list/1");
     }
     else {
-        # digit 6 is the ordinal number of the MMI course
-        # in the year/month.
+        # This is a payment for an auditor.
+        # Digits in $glnum beyond the first are the glnum number
+        # of an MMI Course.  Search for it.  It will
+        # be there and it will be unique.  Right?
         #
         my @progs = model($c, 'Program')->search(
             {
                 school => { '!=' => 0 },        # not MMC
-                level  => 'S',
+                glnum  => substr($glnum, 1),
             },
-            {
-                order_by => 'edate',
-            }
         );
-        # we want to look only at the ones in the above year10/month.
-        # we're not sure which century so we can't do it in the search above.
-        #
-        @progs = grep {
-            my $sdate = $_->sdate_obj();
-            ($sdate->year() % 10) == $year10
-            &&
-            $sdate->month() == $month;
-        }
-        @progs;
-        --$d6;      # 1 based => 0 based
-        if ($#progs <= $d6) {
-            return ($progs[$d6]->name() . $purpose,
-                    "/program/view/" . $progs[$d6]->id());
+        if (@progs) {
+            return ($progs[0]->name() . $purpose,
+                    "/program/view/" . $progs[0]->id());
         }
         else {
             return ("Unknown MMI DCM Course" . $purpose,
@@ -1244,25 +1238,19 @@ sub mmi_glnum {
 sub accpacc {
     my ($gl) = @_;
 
-=comment
-one way:
-    return ((substr($gl, 5, 1) =~ m{[DCM]})? "410"
-            :                                "420")
-         . substr($gl, 0, 1)
-         . "-0"
-         . substr($gl, 1, 1)
-         . "-"
-         . substr($gl, 2, 4)
-         ;
-or another:
-=cut
-    $gl =~ s{^(.)(.)(...(.))$}
+    $gl =~ s{^(.)(.)(....?(.))$}
             {
                 ((index('DCM', $4) >= 0)? "410"
                  :                        "420")
                 . "$1-0$2-$3"
             }e;
     $gl;
+}
+
+sub highlight {
+    my ($s) = @_;
+    return ( $s =~ m{TBD|\?}? "<span class=highlight>$s</span>"
+            :                 $s                               );
 }
 
 1;

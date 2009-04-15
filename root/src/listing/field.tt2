@@ -38,7 +38,7 @@ On <input type=text size=10 name=hs_date>
 <form action="/listing/field_plan" method=POST>
 <tr>
 <td>
-<a href="/listing/field_plan?sdate=t13">Field Staff Planning Report</a>
+<a href="/listing/field_plan?sdate=t30">Field Staff Planning Report</a>
 </td>
 <td align=left>Start <input type=text name=sdate size=10>
 End <input type=text name=edate size=10>
@@ -50,7 +50,7 @@ End <input type=text name=edate size=10>
 <form action="/listing/summary/field_staff_setup" method=POST>
 <tr>
 <td>
-<a href="/listing/summary/field_staff_setup?sdate=t13">Set Up Report</a>
+<a href="/listing/summary/field_staff_setup?sdate=t30">Set Up Report</a>
 </td>
 <td align=left>
 Start <input type=text name=sdate size=10>
@@ -62,7 +62,19 @@ End <input type=text name=edate size=10>
 <form action="/listing/summary/flowers" method=POST>
 <tr>
 <td>
-<a href="/listing/summary/flowers?sdate=t13">Flower Report</a>
+<a href="/listing/summary/flowers?sdate=t30">Flower Report</a>
+</td>
+<td align=left>
+Start <input type=text name=sdate size=10>
+End <input type=text name=edate size=10>
+<input type=submit value="Go"></td>
+</tr>
+</form>
+
+<form action="/listing/summary/sound_setup" method=POST>
+<tr>
+<td>
+<a href="/listing/summary/sound_setup?sdate=t30">Sound Setup Report</a>
 </td>
 <td align=left>
 Start <input type=text name=sdate size=10>

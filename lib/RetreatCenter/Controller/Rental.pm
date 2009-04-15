@@ -223,11 +223,28 @@ sub create_do : Local {
     if ($P{contract_received}) {
         $P{received_by} = $c->user->obj->id;
     }
+    # create the summary from the template
+    #
+    my @prog = model($c, 'Program')->search({
+        name => "MMC Template",
+    });
+    my @dup_summ = ();
+    if (@prog) {
+        my $template_sum = model($c, 'Summary')->find($prog[0]->summary_id());
+        @dup_summ = $template_sum->get_columns(),
+    }
+    else {
+        # could find no template - just make a blank summary
+    }
     my $sum = model($c, 'Summary')->create({
+        @dup_summ,
+        # and then override the following:
+        id           => undef,          # new id
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
     });
+
     $P{summary_id} = $sum->id;
     $P{status} = "tentative";
     my $r = model($c, 'Rental')->create(\%P);
@@ -490,12 +507,15 @@ sub view : Local {
     if (@proposals) {
         $c->stash->{link_proposal_id} = $proposals[0]->id();
     }
-
+    my $sdate = $rental->sdate();
+    my $nmonths = date($rental->edate())->month()
+                - date($sdate)->month()
+                + 1;
     stash($c,
         rental         => $rental,
         non_att_days   => $tot_people*$ndays - $att_days,
-        daily_pic_date => $rental->sdate(),
-        cal_param      => $rental->sdate_obj->as_d8() . "/1",
+        daily_pic_date => $sdate,
+        cal_param      => "$sdate/$nmonths",
         colcov         => \%colcov,     # color of the coverage
         bookings       => \%bookings,
         clusters       => $clusters,
@@ -1062,8 +1082,8 @@ sub booking_do : Local {
             the_date => { 'between' => [ $sdate, $edate1 ] },
         })->update({
             sex        => 'R',
-            cur        => $max,
-            curmax     => $max,
+            cur        => type_max($h_type), 
+            curmax     => type_max($h_type),
             program_id => 0,
             rental_id  => $rental_id,
         });
@@ -1220,7 +1240,10 @@ sub cluster_add : Local {
     my @ok_clusters = ();
     CLUSTER:
     for my $cl (model($c, 'Cluster')->search(undef, { order_by => 'name' })) {
-        for my $h (model($c, 'House')->search({ cluster_id => $cl->id })) {
+        for my $h (model($c, 'House')->search({
+                       cluster_id => $cl->id,
+                   })
+        ) {
             for my $cf (model($c, 'Config')->search({
                             house_id => $h->id,
                             the_date => { 'between', => [ $sdate, $edate ] },
@@ -1242,7 +1265,7 @@ sub cluster_add : Local {
 #
 # for all chosen clusters:
 #    mark the cluster for the rental
-#    add all houses in that cluster to the rental bookings.
+#    add all active houses in that cluster to the rental bookings.
 #    and update all the config records appropriately
 #
 sub cluster_add_do : Local {
@@ -1260,6 +1283,7 @@ sub cluster_add_do : Local {
         });
         for my $h (model($c, 'House')->search({
                        cluster_id => $cl_id,
+                       inactive   => { '!=' => 'yes' },
                    })
         ) {
             my $h_id = $h->id();

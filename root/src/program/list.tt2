@@ -13,7 +13,9 @@
     <a href="/program/publish_pics">PublishPics<a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
-<a href="/program/list/1">PR/DCM<a>
+<a href="/program/list/1">MMI DCM<a>
+&nbsp;&nbsp;&nbsp;
+<a href="/registration/pr">Personal Retreats<a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value=[% pr_pat %]> <input type=submit value="Search"></form>

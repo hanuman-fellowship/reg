@@ -96,7 +96,7 @@ Each registrant making a payment is enrolled in just one DCM program.
 digits 2-6 below.  Note that digit 5 could be a letter (X-Z)
 and digit 6 is not a digit at all but D, C, or M.
 <ul>
-<li>digit 1 - what the payment is for:
+<li>digit 1 = what the payment is for:
 <p>
     <table cellpadding=3>
     <tr><td>1</td><td>Tuition</td></tr>
@@ -106,7 +106,7 @@ and digit 6 is not a digit at all but D, C, or M.
     <tr><td>5</td><td>Other</td></tr>
     </table>
     <p>
-<li>digit 2 - the school/college of the DCM program:
+<li>digit 2 = the school/college of the DCM program:
 <p>
 <table cellpadding=3>
 <tr><td>1</td><td>Yoga</td></tr>
@@ -115,20 +115,27 @@ and digit 6 is not a digit at all but D, C, or M.
 <tr><td>4</td><td>Community</td></tr>
 </table>
 <p>
-<li>digit 3 - tens digit of year
-<li>digit 4 - units digit of year
-<li>digit 5 - month (1=Jan, ...  9=Sep, X=Oct, Y=Nov, Z=Dec)
-<li>digit 6 - level (D=Diploma, C=Certificate, M=Masters)
+<li>digit 3 = tens digit of year
+<li>digit 4 = units digit of year
+<li>digit 5 = month (1=Jan, ...  9=Sep, X=Oct, Y=Nov, Z=Dec)
+<li>digit 6 = level (D=Diploma, C=Certificate, M=Masters)
 </ul>
 Actually, <i>anyone</i> can register for an MMI <i>course</i> - even people who
 are not enrolled in a DCM program.  These are called &lsquo;auditors&rsquo;.
 When auditors make a payment (via "New" MMI Payment) 
 the 6 digits of the GL Number of the MMI <i>course</i> itself is used
-for the payment - preceded by digit 1 above (1 or 2 for tuition or m&l).
-The GL Number of the <i>course</i> is input by the MMI admin.
-They will determine what it is: school #, yy year of the beginning
-date of the program of which this course is part followed by.
-the 3 digit course # from the syllabus.
+for the payment - preceded by digit 1 above (1 or 2 for
+tuition or meals & lodging).
+That makes for a 7 digit GL Number for auditors.
+The GL Number of the <i>course</i> is manually input by the MMI administrator.
+They will determine what it is:
+<ul>
+<li>digit 1 = school # (from above).
+<li>digit 2 = tens digit of year of the <i>beginning</i> date of the DCM program
+of which this course is part.  How this is determined is unknown at this time but is known to the MMI Admin.
+<li>digit 3 = units digit of that year.
+<li>digit 4, 5, 6 = the 3 digit course # from the syllabus.
+</ul>
 
 <h3>List of MMI Payments</h3>
 On an MMI program registration there is a link named "List"
@@ -165,14 +172,28 @@ In the Listings-Financial area there is a link to create MMI Deposits.
     XXXX-0X-XXXX
 </pre>
     The ACCPAC Number is derived from the GL Number thusly:
-<pre class=glnum>
-     GL Number: 1208XM
-     GL Number:    1  2 08XM
-ACCPACC Number: 4101-02-08XM
 <p>
-     GL Number: 340932
-     GL Number:    3  4 0932
-ACCPACC Number: 4203-04-0932
+Application Fee for Masters program:
+<pre class=glnum>
+     GL Number: 3208XM
+     GL Number:    3  2 08XM
+ACCPACC Number: 4103-02-08XM
+</pre>
+<p>
+Tuition for Diploma program:
+<pre class=glnum>
+     GL Number: 1208XD
+     GL Number:    3  2 08XD
+ACCPACC Number: 4103-02-08XD
+</pre>
+<p>
+And for the 7 digit GL number for auditor payments:
+<p>
+Auditor Meals and Lodging:
+<pre class=glnum>
+     GL Number: 2209104
+     GL Number:    2  2 09104
+ACCPACC Number: 4202-02-09104
 </pre>
 If the last character of the GL Number is D, C, or M
 then the first 3 numbers of the ACCPACC Number is 410
@@ -212,12 +233,14 @@ There <i>is</i> still a 'cancelled' image.
 In the list of registrants for an MMI <i>course</i> there <i>can</i> be
 several markings next to the name:
 <ul>
-<li>Envelope - confirmation letter has not been sent.
-<li>House - needs housing
-<li>Unhappy faces - didn't get first/second housing choice.
-<li>Red X - cancelled
-<li>D, C, M or A - Diploma, Certificate, Masters
-    or Auditor - The level of this student.
+<table cellpadding=5>
+<tr><td align=center><img src=/static/images/envelope.jpg height=25></td><td>Envelope - confirmation letter has not been sent.</td></tr>
+<tr><td align=center><img src=/static/images/house.gif height=25></td><td>House - needs housing.</td></tr>
+<tr><td align=center><img src=/static/images/unhappy1.gif height=15> <img src=/static/images/unhappy2.gif height=15></td><td>Unhappy faces - didn't get first/second housing choice.</td></tr>
+<tr><td align=center><img src=/static/images/redX.gif height=25></td><td>Red X - cancelled.</td></tr>
+<tr><td align=center>D C M A</td><td>Diploma, Certificate, Masters
+    or Auditor - The level of this student.</td></tr>
+</table>
 </ul>
 The envelope is only used for auditors and for when the
 course is in the School of Massage.

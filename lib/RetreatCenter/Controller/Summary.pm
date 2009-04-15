@@ -4,31 +4,55 @@ package RetreatCenter::Controller::Summary;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
 use Util qw/
     model
     lines
     etrim
     tt_today
-/;
-my @bools = qw/
-    school_spaces
-    vacate_early
-    need_books
-    participant_list
-    schedule
-    yoga_classes
-    work_study
+    highlight
+    stash
 /;
 
 sub view : Local {
     my ($self, $c, $type, $id) = @_;
 
     my $summary = model($c, 'Summary')->find($id);
-    $c->stash->{type} = $type;
-    $c->stash->{Type} = ucfirst $type;
-    $c->stash->{happening} = $summary->$type();
-    $c->stash->{sum} = $summary;
-    $c->stash->{template} = "summary/view.tt2";
+    for my $f (qw/
+        gate_code
+        alongside
+        registration_location
+        orientation
+        wind_up
+        alongside
+        back_to_back
+        leader_name
+        leader_arrival
+        leader_departure
+        leader_housing
+    /) {
+        $c->stash->{$f} = highlight($summary->$f());
+    }
+
+    my $happening = $summary->$type();
+    my $sdate = $happening->sdate();
+    my $nmonths = date($happening->edate())->month()
+                - date($sdate)->month()
+                + 1;
+
+    stash($c,
+        type      => $type,
+        Type      => ucfirst $type,
+        happening => $happening,
+        sum       => $summary,
+        cal_param => "$sdate/$nmonths",
+        template  => "summary/view.tt2",
+    );
 }
 
 sub update : Local {
@@ -52,11 +76,9 @@ sub update : Local {
         finances
         field_staff_setup
         sound_setup
+        check_list
     /) {
-        $c->stash->{"$f\_rows"} = lines($sum->$f()) + 3;    # 3 in strings?
-    }
-    for my $f (@bools) {
-        $c->stash->{"checked\_$f"} = $sum->$f()? "checked": "";
+        $c->stash->{"$f\_rows"} = lines($sum->$f()) + 5;    # 5 in strings?
     }
     $c->stash->{template} = "summary/edit.tt2";
 }
@@ -68,10 +90,6 @@ sub update_do : Local {
     for my $f (keys %hash) {
         $hash{$f} = etrim($hash{$f});
     }
-    for my $f (@bools) {
-        # since unchecked boxes are not sent...
-        $hash{$f} = "" unless exists $hash{$f};
-    }
     # delete ones that have not changed???
     # warn about ones that are different? we don't know what it was before
     # do we?  nope.
@@ -82,6 +100,43 @@ sub update_do : Local {
         time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });
     $c->response->redirect($c->uri_for("/summary/view/$type/$id"));
+}
+
+sub use_template : Local {
+    my ($self, $c, $type, $happening_id, $sum_id) = @_;
+
+    # $type is Program or Rental
+    # $happening_id is the id of the Program or Rental
+
+    # use the summary from the right template
+    #
+    my $prefix = "MMC";
+    if ($type eq 'Program') {
+        my $prog = model($c, $type)->find($happening_id);
+        if ($prog->school() != 0) {
+            $prefix = "MMI";
+        }
+    }
+    my @prog = model($c, 'Program')->search({
+        name => $prefix . " Template",
+    });
+    if (! @prog) {
+        $c->stash->{mess} = "Could not find '$prefix Template' program";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my $template_sum = model($c, 'Summary')->find($prog[0]->summary_id());
+    model($c, 'Summary')->find($sum_id)->update({
+        $template_sum->get_columns(),
+
+        # and then override the following:
+        id           => $sum_id,
+        date_updated => tt_today($c)->as_d8(),
+        who_updated  => $c->user->obj->id,
+        time_updated => get_time()->t24(),
+    });
+    $type = lc $type;       # Program to program
+    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
 
 1;

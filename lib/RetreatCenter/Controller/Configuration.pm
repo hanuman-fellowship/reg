@@ -3,12 +3,19 @@ use warnings;
 package RetreatCenter::Controller::Configuration;
 use base 'Catalyst::Controller';
 
+use Util qw/
+    stash
+/;
+
 use Global;
 
 sub index : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{template} = "configuration/index.tt2";
+    stash($c,
+        pg_title => "Configuration",
+        template => "configuration/index.tt2",
+    );
 }
 
 #

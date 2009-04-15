@@ -1225,3 +1225,17 @@ MMI registrants: if they asked for discount
     plus a commuter's charge for the 3rd day.
     then apply the discount to that total.
     plus tuition for the course.
+
+do a <link> file include of the ttsite.css rather than a copy everywhere
+    can't do this and have temple replacements in it as well.
+    oh well.
+
+different titles for different newReg pages
+    use pg_title in the stash
+
+in various reg listings, etc adjust cal_param for which
+    date to show the calendar for.
+
+***Dangerous to delete program!   all registrations vanish!
+    what about reg payments, charges???
+    HOW do registrations get deleted????

@@ -159,3 +159,6 @@ h1.title {
 .topbord {
     border-top: solid thin;
 }
+.highlight {
+    background: yellow;
+}

@@ -124,13 +124,7 @@ create table summary (
     feedback text,
     field_staff_setup text,
     sound_setup text,
-    school_spaces text,
-    vacate_early text,
-    need_books text,
-    participant_list text,
-    schedule text,
-    yoga_classes text,
-    work_study text
+    check_list text
 );
 drop table if exists confnote;
 create table confnote (

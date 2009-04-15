@@ -41,13 +41,7 @@ __PACKAGE__->add_columns(qw/
     feedback
     field_staff_setup
     sound_setup
-    school_spaces
-    vacate_early
-    need_books
-    participant_list
-    schedule
-    yoga_classes
-    work_study
+    check_list
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -59,8 +53,10 @@ sub     date_updated_obj { date(shift->date_updated) || ""; }
 sub     time_updated_obj { get_time(shift->time_updated); }
 
 sub flowers_tr           { ptrim(shift->flowers()          ) };
+sub signage_tr           { ptrim(shift->signage()          ) };
 sub field_staff_setup_tr { ptrim(shift->field_staff_setup()) };
 sub food_service_tr      { ptrim(shift->food_service()     ) };
+sub sound_setup_tr       { ptrim(shift->sound_setup()      ) };
 
 # ??? no longer needed?
 sub    leader_housing_ex { expand(shift->leader_housing   ()); }

@@ -2,13 +2,13 @@ body {
     background: #ffffff;
     margin-left: .3in;
     font-size: 13pt;
-    font-family: "Lucida Grande";
+    font-family: Lucida Grande, Verdana, Helvetica;
 }
 .jmptable {
     margin-left: .3in;
 }
 .details {
-    font-family: Verdana;
+    font-family: Lucida Grande, Verdana, Helvetica;
     margin-left: .3in;
     display: inline;
 }
@@ -16,13 +16,13 @@ body {
     font-size: 18pt;
 }
 .datefld {
-    font-family: "Lucida Grande";
+    font-family: Lucida Grande, Verdana, Helvetica;
     margin-left: .3in;
 }
 .hdr {
     font-weight: bold;
     font-size: 18pt;
-    font-family: "Lucida Grande";
+    font-family: Lucida Grande, Verdana, Helvetica;
 }
 .pr_links {
     text-decoration: none;

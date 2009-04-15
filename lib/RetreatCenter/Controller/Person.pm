@@ -16,6 +16,7 @@ use Util qw/
     dcm_registration
     payment_warning
     normalize
+    stash
 /;
 use Date::Simple qw/
     date
@@ -58,7 +59,10 @@ sub search : Local {
             $c->stash->{"$f\_selected"} = "selected";
         }
     }
-    $c->stash->{template} = "person/search.tt2";
+    stash($c,
+        pg_title => "People Search",
+        template => "person/search.tt2",
+    );
 }
 
 sub search_do : Local {
@@ -844,12 +848,13 @@ sub list_mmi_payment : Local {
     for my $pay ($person->mmi_payments()) {
         $tot += $pay->amount();
     }
-    $c->stash->{today} = today();
-    $c->stash->{time} = sprintf("%02d:%02d", (localtime())[2, 1]);
-    $c->stash->{mmi_print} = 0;
-    $c->stash->{show_gl} = $show_gl;
-    $c->stash->{tot} = commify($tot);
-    $c->stash->{template} = "person/mmi_payments.tt2";
+    stash($c,
+        time      => scalar(localtime),
+        mmi_print => 0,
+        show_gl   => $show_gl,
+        tot       => commify($tot),
+        template  => "person/mmi_payments.tt2",
+    );
 }
 
 sub list_mmi_payment_print : Local {
@@ -900,56 +905,45 @@ sub create_mmi_payment : Local {
 sub create_mmi_payment_do : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
 
+    my $for_what = $c->request->params->{for_what};
+    my $dcm_reg = dcm_registration($c, $person_id);
     my $reg = model($c, 'Registration')->find($reg_id);
-    my $dcm = dcm_registration($c, $person_id);
-    my $program;
-    my $sixth;
-    if (ref($dcm)) {
-        # this person has enrolled in a DCM program
-        $program = $dcm->program();
-        $sixth = $program->level();
+    my $glnum;
+    if (ref($dcm_reg)) {
+        # this person is enrolled in a DCM program
+        #
+        my $program = $dcm_reg->program();
+
+        my $sdate = $program->sdate_obj();
+        my $m = $sdate->month();
+        $glnum = $for_what
+               . $program->school()
+               . $sdate->format("%y")
+               . ((1 <= $m && $m <=  9)? $m
+                  :          ($m == 10)? 'X'
+                  :          ($m == 11)? 'Y'
+                  :                      'Z'
+                 )
+               . $program->level()
+               ;
     }
     else {
-        # this person is an auditor
-        # the 6th digit below is the 'month ordinal'
-        # of the current MMI course.
+        # this person is an auditor.
+        # (OR they are enrolled in more than one DCM program! :( )
         #
-        $program = $reg->program();
-        my $yyyymm = $program->sdate_obj->format("%Y%m");
-        my @progs = model($c, 'Program')->search(
-                    {
-                        school => { '!='   => 0          },
-                        sdate  => { 'like' => "$yyyymm%" },
-                    },
-                    { order_by => 'sdate asc' }
-                    );
-        my $cur_id = $program->id();
-        $sixth = 1;         # just in case the loop below fails
-        for my $i (0 .. $#progs) {
-            if ($progs[$i]->id() == $cur_id) {
-                $sixth = $i+1;      # +1 since we start at 0
-                last;
-            }
+        # we use the glnum of the program itself (plus 'for_what').
+        #
+        if ($for_what == 3 || $for_what == 4) {
+            $c->stash->{mess} = "Since this person is an Auditor the payment<br>cannot be a fee for Application or Registration.";
+            $c->stash->{template} = "gen_error.tt2";
+            return;
         }
+        $glnum = $c->request->params->{for_what}
+               . $reg->program->glnum();
     }
 
     # validate amount???
 
-    #
-    # figure the glnum for this payment
-    #
-    my $sdate = $program->sdate_obj();
-    my $m = $sdate->month();
-    my $glnum = $c->request->params->{for_what}
-              . $program->school()
-              . $sdate->format("%y")
-              . ((1 <= $m && $m <=  9)? $m
-                 :          ($m == 10)? 'X'
-                 :          ($m == 11)? 'Y'
-                 :                      'Z'
-                )
-              . $sixth
-              ;
     my $the_date = tt_today($c)->as_d8();
     if ($the_date eq $string{last_mmi_deposit_date}) {
         $the_date = (tt_today($c)+1)->as_d8();

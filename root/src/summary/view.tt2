@@ -7,6 +7,10 @@ p {
 <h2>[% Type %] Summary</h2>
 <div class=noprint>
 <a href=/summary/update/[% Type %]/[% happening.id %]>Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href='/summary/use_template/[% Type %]/[% happening.id %]/[% sum.id %]'
+   onclick="return confirm('Okay to replace this Summary with the Template?');"
+>Use Template</a>
 [% IF type == 'program' %]
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/first_reg/[% happening.id %]>1st Reg</a>
@@ -128,34 +132,34 @@ th {
 
 <table cellpadding=3 border=0>
 
-<tr><th width=180>Gate Code</th><td>[% sum.gate_code %]</td>
-<th>School Spaces?</th><td>[% sum.school_spaces %]</td></tr>
+<tr>
+<th width=180>Gate Code</th><td>[% gate_code %]</td>
+<th>Registration<br>Location</th><td valign=top>[% registration_location %]</td>
+</tr>
 
-<tr><th>Registration Location</th><td>[% sum.registration_location %]</td>
-<th>Vacate Early?</th><td>[% sum.vacate_early %]</td></tr>
+<tr>
+<th>Orientation</th><td>[% orientation %]</td>
+<th>Wind Up</th><td>[% wind_up %]</td>
+</tr>
 
-<tr><th>Orientation</th><td>[% sum.orientation %]</td>
-<th>Participant List?</th><td>[% sum.participant_list %]</td></tr>
+<tr>
+<th>Alongside</th><td>[% alongside %]</td>
+<th>Back-to-Back<td>[% back_to_back %]</td>
+</tr>
 
-<tr><th>Wind Up</th><td>[% sum.wind_up %]</td>
-<th>Schedule?</th><td>[% sum.schedule %]</td></tr>
+<tr>
+<td>&nbsp;</td>
+</tr>
 
-<tr><th>Alongside</th><td>[% sum.alongside %]</td>
-<th>Yoga Classes?</th><td>[% sum.yoga_classes %]</td></tr>
+<tr><th>Leader Name</th><td>[% leader_name %]</td>
+<th>Housing</th><td>[% leader_housing %]</td></tr>
 
-<tr><th>Back-to-Back<td>[% sum.back_to_back %]</td>
-<th>Work Study?</th><td>[% sum.work_study %]</td></tr>
-
-
-<tr><td colspan=2>&nbsp;</td><th>Need Books?</th><td>[% sum.need_books %]</td></tr>
-
-<tr><th>Leader Name</th><td colspan=3>[% sum.leader_name %]</td></tr>
-<tr><th>       Arrival</th><td>[% sum.leader_arrival %]</td>
-    <th>Staff Arrival</th><td>[% sum.staff_arrival %]</td></tr>
-<tr><th>       Departure</th><td colspan=3>[% sum.leader_departure %]</td></tr>
-<tr><th>Housing</th><td colspan=3>[% sum.leader_housing %]</td></tr>
+<tr><th>       Arrival</th><td>[% leader_arrival %]</td>
+    <th>Staff Arrival</th><td>[% staff_arrival %]</td></tr>
+<tr><th>       Departure</th><td colspan=3>[% leader_departure %]</td></tr>
 <tr><td colspan=4>&nbsp;</td></tr>
 
+<tr><th>Checklist</th><td colspan=3>[% sum.check_list %]</td></tr>
 <tr><th>Signage</th><td colspan=3>[% sum.signage %]</td></tr>
 <tr><th>Food Service</th><td colspan=3>[% sum.food_service %]</td></tr>
 <tr><th>Flowers</th><td colspan=3>[% sum.flowers %]</td></tr>

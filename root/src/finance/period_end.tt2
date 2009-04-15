@@ -27,9 +27,9 @@ For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.form
 <tr>
 <td>[% t.type %]</td>
 <td align=left><a target=_blank href='[% t.link %]'>[% t.name %]</a></td>
-<td align=center>[% t.glnum %]</td>
+<td align=left>[% t.glnum %]</td>
 [% IF mmi %]
-    <td align=center>[% t.accpacc_num %]</td>
+    <td align=left>[% t.accpacc_num %]</td>
 [% END %]
 <td align=right>[% t.amount %]</td>
 <td align=right>[% t.cash %]</td>

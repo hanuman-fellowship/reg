@@ -305,12 +305,14 @@ EOF
 # assume that they arrive after breakfast
 # and leave after lunch and before dinner.
 #
-my ($event_start, $lunches);
+# awkward globals - do better???
+#
+my ($event_start, $lunches, $len_lunches);
 sub lunch {
     my ($d) = @_;
 
     my $i = $d-$event_start;
-    return $i >= 0 && substr($lunches, $i, 1);
+    return $i >= 0 && $i < $len_lunches && substr($lunches, $i, 1);
 }
 
 # the details are mostly for testing purposes - maybe
@@ -374,7 +376,7 @@ sub meal_list : Local {
     $start->set_format($fmt);
 
     Date::Simple->relative_date($start);
-    my $end = $edate? date($edate, $fmt): $start + 13;
+    my $end = $edate? date($edate, $fmt): $start + 29;
     Date::Simple->relative_date();
 
     if (! $end) {
@@ -416,7 +418,9 @@ sub meal_list : Local {
                       $r->program->name
                     ];
         }
-        ($event_start, $lunches)  = get_lunch($c, $r->program_id);
+        ($event_start, $lunches)  = get_lunch($c, $r->program_id, 'Program');
+        $len_lunches = length($lunches);
+
         my $ol = $dr->overlap(DateRange->new($r->date_start_obj,
                                              $r->date_end_obj));
         my $sd = $ol->sdate;
@@ -447,6 +451,8 @@ sub meal_list : Local {
         if ($details) {
             $info = [ "$npeople People" , $r->name ];
         }
+        ($event_start, $lunches)  = get_lunch($c, $r->id(), 'Rental');
+        $len_lunches = length($lunches);
         my $ol = $dr->overlap(DateRange->new($event_start,
                                              $r->edate_obj));
         my $sd = $ol->sdate;
@@ -1096,6 +1102,11 @@ EOH
         else {
             $needed = "never";
         }
+
+        $needed =~ s{0 days}{Today};
+        $needed =~ s{-1 days}{Yesterday};
+        $needed =~ s{1 day}{Tomorrow};
+
         ++$house_num;
         $html .= "<tr><td><input type=checkbox id=$clust_num-$house_num name=h"
               .  $mu->house_id()
@@ -1153,13 +1164,13 @@ sub field_plan : Local {
 
     my ($sdate, $edate);
     $sdate = trim($c->request->params->{sdate});
-    if ($sdate eq "t13") {
-        # couldn't put sdate=t&edate=+13 or
-        #              sdate=t&edate=%2B13
+    if ($sdate eq "t30") {
+        # couldn't put sdate=t&edate=+30 or
+        #              sdate=t&edate=%2B30
         # in listing/index.tt2 or listing/field.tt2
         # for some reason.
         $sdate = "t";
-        $edate = "+13";
+        $edate = "+29";
     }
     else {
         $edate = trim($c->request->params->{edate});
@@ -1264,13 +1275,13 @@ sub summary : Local {
 
     my ($sdate, $edate);
     $sdate = trim($c->request->params->{sdate});
-    if ($sdate eq "t13") {
-        # couldn't put sdate=t&edate=+13 or
-        #              sdate=t&edate=%2B13
+    if ($sdate eq "t30") {
+        # couldn't put sdate=t&edate=+30 or
+        #              sdate=t&edate=%2B30
         # in listing/index.tt2 or listing/field.tt2
         # for some reason.
         $sdate = "t";
-        $edate = "+13";
+        $edate = "+29";
     }
     else {
         $edate = trim($c->request->params->{edate});
@@ -1330,7 +1341,10 @@ sub summary : Local {
             sort { $a->sdate <=> $b->sdate }
             @rentals, @programs
         ],
-        section  => ($section eq 'flowers')? 'Flower': 'Set Up',
+        section  => $section eq 'flowers'           ? 'Flower'
+                   :$section eq 'field_staff_setup' ? 'Field Staff Setup'
+                   :$section eq 'sound_setup'       ? 'Sound Set Up'
+                   :                                  'Set Up',
         template => "listing/summary.tt2",
     );
 }

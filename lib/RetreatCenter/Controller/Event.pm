@@ -17,6 +17,7 @@ use Util qw/
     meetingplace_table
     places
     tt_today
+    stash
 /;
 use GD;
 use ActiveCal;
@@ -104,10 +105,17 @@ sub create_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $ev = $c->stash->{event} = model($c, 'Event')->find($id);
-    $c->stash->{daily_pic_date} = $ev->sdate();
-    $c->stash->{cal_param}      = $ev->sdate_obj->as_d8() . "/1";
-    $c->stash->{template} = "event/view.tt2";
+    my $ev = model($c, 'Event')->find($id);
+    my $sdate = $ev->sdate();
+    my $nmonths = date($ev->edate())->month()
+                - date($sdate)->month()
+                + 1;
+    stash($c,
+        event          => $ev,
+        daily_pic_date => $ev->sdate(),
+        cal_param      => "$sdate/$nmonths",
+        template       => "event/view.tt2",
+    );
 }
 
 sub list : Local {

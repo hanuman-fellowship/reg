@@ -27,6 +27,7 @@ use Util qw/
     email_letter
     stash
     error
+    lines
 /;
 use Date::Simple qw/
     date
@@ -329,11 +330,33 @@ sub create_do : Local {
     $P{reg_count} = 0;       # otherwise it will not increment
 
     my $upload = $c->request->upload('image');
+
+    # create the summary from the right template
+    #
+    my @prog = model($c, 'Program')->search({
+        name => ($P{school} == 0? "MMC"
+                 :                "MMI")
+                . " Template",
+    });
+    my @dup_summ = ();
+    if (@prog) {
+        my $template_sum = model($c, 'Summary')->find($prog[0]->summary_id());
+        @dup_summ = $template_sum->get_columns(),
+    }
+    else {
+        # could find no template - just make a blank summary
+    }
     my $sum = model($c, 'Summary')->create({
+        @dup_summ,
+        # and then override the following:
+        id           => undef,          # new id
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
     });
+
+    # now we can create the program itself
+    #
     my $p = model($c, 'Program')->create({
         summary_id => $sum->id,
         image      => $upload? "yes": "",
@@ -412,12 +435,16 @@ sub view : Local {
     my $s = _get_cluster_groups($c, $id);
     my ($UN, $sel) = split /XX/, $s;
     my @files = <root/static/online/*>;
+    my $sdate = $p->sdate();
+    my $nmonths = date($p->edate())->month()
+                - date($sdate)->month()
+                + 1;
     stash($c,
         online              => scalar(@files),
         UNselected_clusters => $UN,
         selected_clusters   => $sel,
-        daily_pic_date      => $p->sdate(),
-        cal_param           => $p->sdate_obj->as_d8() . "/1",
+        daily_pic_date      => $sdate,
+        cal_param           => "$sdate/$nmonths",
         leaders_house       => $p->leaders_house($c),
         school              => $sch_opts[$p->school()],
         level               => $mmi_levels{$p->level()},
@@ -659,12 +686,14 @@ sub update : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
-        school_opts => $sch_opts,
-        level_opts  => $level_opts,
-        show_level  => $p->school() == 0? "hidden": "visible",
-        edit_gl     => $c->check_user_roles('super_admin') || 0,
-        form_action => "update_do/$id",
-        template    => "program/create_edit.tt2",
+        webdesc_rows => lines($p->webdesc()) + 5,
+        brdesc_rows  => lines($p->brdesc()) + 5,
+        school_opts  => $sch_opts,
+        level_opts   => $level_opts,
+        show_level   => $p->school() == 0? "hidden": "visible",
+        edit_gl      => $c->check_user_roles('super_admin') || 0,
+        form_action  => "update_do/$id",
+        template     => "program/create_edit.tt2",
     );
 }
 

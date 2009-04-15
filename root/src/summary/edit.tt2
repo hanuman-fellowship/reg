@@ -32,41 +32,52 @@ th {
 >
 <table cellpadding=3 border=0>
 
-<tr><th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=30></td>
-<th>School Spaces?</th><td><input type=checkbox name=school_spaces value='yes' [% checked_school_spaces %]></td></tr>
+<tr>
+<th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=30></td>
+<th align=right>Registration<br>Location</th>
+<td valign=top><input type=text name=registration_location value='[% sum.registration_location %]' size=30></td>
+</tr>
 
-<tr><th>Registration Location</th><td><input type=text name=registration_location value='[% sum.registration_location %]' size=30></td>
-<th>Vacate Early?</th><td><input type=checkbox name=vacate_early value='yes' [% checked_vacate_early %]></td></tr>
+<tr>
+<th>Orientation</th><td><input type=text name=orientation value='[% sum.orientation %]' size=30></td>
+<th>Wind Up</th><td><input type=text name=wind_up value='[% sum.wind_up %]' size=30></td>
+</tr>
 
-<tr><th>Orientation</th><td><input type=text name=orientation value='[% sum.orientation %]' size=30></td>
-<th>Participant List?</th><td><input type=checkbox name=participant_list value='yes' [% checked_participant_list %]></td></tr>
+<tr>
+<th>Alongside</th><td><input type=text name=alongside value='[% sum.alongside %]' size=30></td>
+<th>Back-to-Back<td><input type=text name=back_to_back value='[% sum.back_to_back %]' size=30></td>
+</tr>
 
-<tr><th>Wind Up</th><td><input type=text name=wind_up value='[% sum.wind_up %]' size=30></td>
-<th>Schedule?</th><td><input type=checkbox name=schedule value='yes' [% checked_schedule %]></td></tr>
+<tr>
+<td>&nbsp;</td>
+</tr>
 
-<tr><th>Alongside</th><td><input type=text name=alongside value='[% sum.alongside %]' size=30></td>
-<th>Yoga Classes?</th><td><input type=checkbox name=yoga_classes value='yes' [% checked_yoga_classes %]></td></tr>
+<tr><th>Leader Name</th><td><input type=text name=leader_name value='[% sum.leader_name %]' size=30></td>
+<th valign=top>Housing</th><td>
+<input type=text id=leader_housing name=leader_housing value="[% sum.leader_housing %]">
+</td>
+</tr>
 
-<tr><th>Back-to-Back<td><input type=text name=back_to_back value='[% sum.back_to_back %]' size=30></td>
-<th>Work Study?</th><td><input type=checkbox name=work_study value='yes' [% checked_work_study %]></td></tr>
-
-<tr><td colspan=2>&nbsp;</td>
-<th>Need Books?</th><td><input type=checkbox name=need_books value='yes' [% checked_need_books %]></td></tr>
-
-<tr><th>Leader Name</th><td colspan=2><input type=text name=leader_name value='[% sum.leader_name %]' size=30></td></tr>
 <tr><th>       Arrival</th><td><input type=text name=leader_arrival value='[% sum.leader_arrival %]' size=30></td>
     <th>Staff Arrival</th><td colspan=3><input type=text name=staff_arrival value='[% sum.staff_arrival %]'></td></tr>
 <tr><th>Departure</th><td><input type=text name=leader_departure value='[% sum.leader_departure %]' size=30></td>
 <td><input id=sub type=submit value="Submit"></td></tr>
 
-<tr><th valign=top>Housing</th><td colspan=3>
-<textarea id=leader_housing name=leader_housing rows=[% leader_housing_rows %] cols=60>
-[% sum.leader_housing %]
+<tr>
+<td>&nbsp;</td>
+</tr>
+
+<tr>
+<th valign=top>Check List</th>
+<td colspan=3>
+<textarea id=check_list name=check_list rows=[% check_list_rows %] cols=60>
+[% sum.check_list %]
 </textarea>
 </td>
 </tr>
 
-<tr><th valign=top>Signage</th>
+<tr>
+<th valign=top>Signage</th>
 <td colspan=3>
 <textarea id=signage name=signage rows=[% signage_rows %] cols=60>
 [% sum.signage %]
@@ -82,7 +93,10 @@ th {
 </td>
 </tr>
 
-<tr><th valign=top>Flowers</th>
+<tr>
+<th valign=top>Flowers<br><br>
+<input id=sub type=submit value="Submit">
+</th>
 <td colspan=3>
 <textarea id=flowers name=flowers rows=[% flowers_rows %] cols=60>
 [% sum.flowers %]
@@ -102,7 +116,6 @@ th {
 [% sum.special_needs %]
 </textarea>
 </td>
-<td valign=bottom><input id=sub type=submit value="Submit"><p>
 </tr>
 
 <tr><th valign=top>Finances</th>
@@ -112,7 +125,10 @@ th {
 </textarea>
 </td></tr>
 
-<tr><th valign=top>Miscellaneous</th>
+<tr>
+<th valign=top>Miscellaneous<br><br>
+<input id=sub type=submit value="Submit">
+</th>
 <td colspan=3>
 <textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
 [% sum.miscellaneous %]
