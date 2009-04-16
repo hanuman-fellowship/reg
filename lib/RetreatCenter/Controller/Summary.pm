@@ -32,9 +32,9 @@ sub view : Local {
         alongside
         back_to_back
         leader_name
-        leader_arrival
-        leader_departure
         leader_housing
+        staff_arrival
+        staff_departure
     /) {
         $c->stash->{$f} = highlight($summary->$f());
     }

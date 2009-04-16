@@ -151,14 +151,16 @@ th {
 <td>&nbsp;</td>
 </tr>
 
-<tr><th>Leader Name</th><td>[% leader_name %]</td>
-<th>Housing</th><td>[% leader_housing %]</td></tr>
+<tr>
+<th>Leader Name</th><td>[% leader_name %]</td>
+<th>Staff Arrival</th><td>[% staff_arrival %]</td>
+</tr>
 
-<tr><th>       Arrival</th><td>[% leader_arrival %]</td>
-    <th>Staff Arrival</th><td>[% staff_arrival %]</td></tr>
-<tr><th>       Departure</th><td colspan=3>[% leader_departure %]</td></tr>
-<tr><td colspan=4>&nbsp;</td></tr>
+<tr>
+<th>Staff Departure</th><td colspan=3>[% staff_departure %]</td>
+</tr>
 
+<tr><th>Leader Housing</th><td colspan=3>[% sum.leader_housing %]</td></tr>
 <tr><th>Checklist</th><td colspan=3>[% sum.check_list %]</td></tr>
 <tr><th>Signage</th><td colspan=3>[% sum.signage %]</td></tr>
 <tr><th>Food Service</th><td colspan=3>[% sum.food_service %]</td></tr>

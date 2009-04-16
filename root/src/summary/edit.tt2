@@ -33,38 +33,49 @@ th {
 <table cellpadding=3 border=0>
 
 <tr>
-<th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=30></td>
+<th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=20></td>
 <th align=right>Registration<br>Location</th>
-<td valign=top><input type=text name=registration_location value='[% sum.registration_location %]' size=30></td>
+<td valign=top><input type=text name=registration_location value='[% sum.registration_location %]' size=20></td>
 </tr>
 
 <tr>
-<th>Orientation</th><td><input type=text name=orientation value='[% sum.orientation %]' size=30></td>
-<th>Wind Up</th><td><input type=text name=wind_up value='[% sum.wind_up %]' size=30></td>
+<th>Orientation</th><td><input type=text name=orientation value='[% sum.orientation %]' size=20></td>
+<th>Wind Up</th><td><input type=text name=wind_up value='[% sum.wind_up %]' size=20></td>
 </tr>
 
 <tr>
-<th>Alongside</th><td><input type=text name=alongside value='[% sum.alongside %]' size=30></td>
-<th>Back-to-Back<td><input type=text name=back_to_back value='[% sum.back_to_back %]' size=30></td>
+<th>Alongside</th><td><input type=text name=alongside value='[% sum.alongside %]' size=20></td>
+<th>Back-to-Back<td><input type=text name=back_to_back value='[% sum.back_to_back %]' size=20></td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
 </tr>
 
-<tr><th>Leader Name</th><td><input type=text name=leader_name value='[% sum.leader_name %]' size=30></td>
-<th valign=top>Housing</th><td>
-<input type=text id=leader_housing name=leader_housing value="[% sum.leader_housing %]">
+<tr>
+<th>Leader Name</th>
+<td><input type=text name=leader_name value='[% sum.leader_name %]' size=20></td>
 </td>
+<th>Staff Arrival</th>
+<td><input type=text name=staff_arrival value='[% sum.staff_arrival %]' size=20></td>
 </tr>
 
-<tr><th>       Arrival</th><td><input type=text name=leader_arrival value='[% sum.leader_arrival %]' size=30></td>
-    <th>Staff Arrival</th><td colspan=3><input type=text name=staff_arrival value='[% sum.staff_arrival %]'></td></tr>
-<tr><th>Departure</th><td><input type=text name=leader_departure value='[% sum.leader_departure %]' size=30></td>
-<td><input id=sub type=submit value="Submit"></td></tr>
+<tr>
+<td colspan=2></td>
+<th>Staff Departure</th>
+<td><input type=text name=staff_departure value='[% sum.staff_departure %]' size=20></td>
+</tr>
+
 
 <tr>
-<td>&nbsp;</td>
+<th valign=top>Leader Housing
+<br><br><input id=sub type=submit value="Submit">
+</th>
+<td colspan=3>
+<textarea id=leader_housing name=leader_housing rows=[% leader_housing_rows %] cols=60>
+[% sum.leader_housing %]
+</textarea>
+</td>
 </tr>
 
 <tr>
@@ -85,7 +96,10 @@ th {
 </td>
 </tr>
 
-<tr><th valign=top>Food Service</th>
+<tr>
+<th valign=top>Food Service
+<br><br><input id=sub type=submit value="Submit">
+</th>
 <td colspan=3>
 <textarea id=food_service name=food_service rows=[% food_service_rows %] cols=60>
 [% sum.food_service %]
@@ -94,8 +108,7 @@ th {
 </tr>
 
 <tr>
-<th valign=top>Flowers<br><br>
-<input id=sub type=submit value="Submit">
+<th valign=top>Flowers
 </th>
 <td colspan=3>
 <textarea id=flowers name=flowers rows=[% flowers_rows %] cols=60>
@@ -110,7 +123,11 @@ th {
 </textarea>
 </td></tr>
 
-<tr><th valign=top>Special Needs</th>
+<tr>
+<th valign=top>Special Needs
+<br><br>
+<input id=sub type=submit value="Submit">
+</th>
 <td colspan=3>
 <textarea id=special_needs name=special_needs rows=[% special_needs_rows %] cols=60>
 [% sum.special_needs %]
@@ -126,8 +143,7 @@ th {
 </td></tr>
 
 <tr>
-<th valign=top>Miscellaneous<br><br>
-<input id=sub type=submit value="Submit">
+<th valign=top>Miscellaneous
 </th>
 <td colspan=3>
 <textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
@@ -135,7 +151,10 @@ th {
 </textarea>
 </td></tr>
 
-<tr><th valign=top>Field Staff Setup</th>
+<tr><th valign=top>Field Staff Setup
+<br><br>
+<input id=sub type=submit value="Submit">
+</th>
 <td colspan=3>
 <textarea id=field_staff_setup name=field_staff_setup rows=[% field_staff_setup_rows %] cols=60>
 [% sum.field_staff_setup %]
@@ -149,14 +168,18 @@ th {
 </textarea>
 </td></tr>
 
-<tr><th valign=top>Feedback</th>
+<tr>
+<th valign=top>Feedback
+<br><br>
+<input id=sub type=submit value="Submit">
+</th>
 <td colspan=3>
 <textarea id=feedback name=feedback rows=[% feedback_rows %] cols=60>
 [% sum.feedback %]
 </textarea>
-</td></tr>
+</td>
+</tr>
 
-<tr><th></th><td><input id=sub type=submit value="Submit"></td></tr>
 </table>
 </form>
 <script type="text/javascript">

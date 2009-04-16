@@ -28,15 +28,14 @@ __PACKAGE__->add_columns(qw/
     alongside
     back_to_back
     leader_name
-    leader_arrival
-    leader_departure
+    staff_arrival
+    staff_departure
     leader_housing
     food_service
     flowers
     lodging
     special_needs
     finances
-    staff_arrival
     miscellaneous
     feedback
     field_staff_setup
@@ -57,18 +56,5 @@ sub signage_tr           { ptrim(shift->signage()          ) };
 sub field_staff_setup_tr { ptrim(shift->field_staff_setup()) };
 sub food_service_tr      { ptrim(shift->food_service()     ) };
 sub sound_setup_tr       { ptrim(shift->sound_setup()      ) };
-
-# ??? no longer needed?
-sub    leader_housing_ex { expand(shift->leader_housing   ()); }
-sub           signage_ex { expand(shift->signage          ()); }
-sub     miscellaneous_ex { expand(shift->miscellaneous    ()); }
-sub          feedback_ex { expand(shift->feedback         ()); }
-sub      food_service_ex { expand(shift->food_service     ()); }
-sub           flowers_ex { expand(shift->flowers          ()); }
-sub           lodging_ex { expand(shift->lodging          ()); }
-sub     special_needs_ex { expand(shift->special_needs    ()); }
-sub          finances_ex { expand(shift->finances         ()); }
-sub field_staff_setup_ex { expand(shift->field_staff_setup()); }
-sub       sound_setup_ex { expand(shift->sound_setup      ()); }
 
 1;

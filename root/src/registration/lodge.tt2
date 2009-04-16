@@ -76,7 +76,6 @@ function popup(url) {
 <select name=htype onchange="form.submit();">
 [% h_type_opts %]
 </select>
-<span style="font-weight: normal; margin-left: 2.5in;"><a href="#" onclick="javascript:popup('/static/help/shortcuts.html');">How?</a></span></td>
 </td>
 </tr>
 
