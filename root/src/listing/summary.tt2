@@ -8,12 +8,13 @@
 <th align=left>[% section %] Needs</th>
 </tr>
 [% FOREACH ev IN events %]
+    [% sum = ev.summary %]
     <tr>
     <td valign=top><a href=/summary/view/[% ev.event_type %]/[% ev.summary_id %]>[% ev.name %]</a></td>
     <td valign=top>[% ev.sdate_obj.format('%a %b %e %q') %]</td>
     <td valign=top>[% ev.edate_obj.format('%a %b %e %q') %]</td>
     <td valign=top>[% ev.meeting_places %]</td>
-    <td valign=top>[% IF section == 'Flower' %][% ev.summary.flowers_tr %][% ELSIF section ==  'Field Staff Setup' %][% ev.summary.signage_tr %]<p class=p2>[% ev.summary.field_staff_setup_tr %][% ELSE %][% ev.summary.sound_setup_tr %][% END %]</td>
+    <td valign=top>[% IF section == 'Flower' %][% sum.leader_housing_tr %]<p class=p2>[% sum.flowers_tr %][% ELSIF section ==  'Field Staff Setup' %][% sum.leader_housing_tr %]<p class=p2>[% sum.signage_tr %]<p class=p2>[% sum.field_staff_setup_tr %][% ELSE %][% sum.sound_setup_tr %][% END %]</td>
     </tr>
 [% END %]
 </table>
