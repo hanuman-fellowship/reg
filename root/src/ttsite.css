@@ -68,6 +68,10 @@ body {
 .required {
     color: red;
 }
+.arrived_star {
+    color: red;
+    font-size: 19pt;
+}
 .dow {
     color: red;
     font-weight: bold;

@@ -518,25 +518,21 @@ sub _get_cluster_groups {
 # ??? order of display?   also end date???
 #
 sub list : Local {
-    my ($self, $c, $pr_dcm) = @_;
+    my ($self, $c, $dcm) = @_;
 
     # ??? how to include programs that are extended and not quite finished???
     # good enough to include programs that may have finished a week ago?
     my $cutoff = tt_today($c) - 7;
     $cutoff = $cutoff->as_d8();
     my @cond = ();
-    if ($pr_dcm) {
+    if ($dcm) {
         @cond = (
-            -or => [
-                name  => { like => '%personal%retreat%' },
-                level => { -in  => [qw/  D C M  /] },
-            ],
+            level => { -in  => [qw/  D C M  /] },
         );
     }
     else {
         @cond = (
-                name  => { -not_like => '%personal%retreat%' },
-                level => { 'not in'  => [qw/  D C M  /] },
+            level => { 'not in'  => [qw/  D C M  /] },
         );
         if (! $c->check_user_roles('mmi_admin')) {
             push @cond, (school => 0);      # only MMC no MMI

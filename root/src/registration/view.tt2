@@ -52,8 +52,11 @@ p {
 <a href="/registration/delete/[% reg.id %]"
 onclick="return confirm('Okay to Delete registration for [% reg.person.first %] [% reg.person.last %]?');">Delete</a>
 &nbsp;&nbsp;
-[% IF ! reg.arrived %]
+[% IF reg.arrived != 'yes' && reg.cancelled != 'yes' %]
 <a href="/registration/arrived/[% reg.id %]">Arrived</a>
+&nbsp;&nbsp;
+[% ELSIF reg.arrived == 'yes' %]
+<span style="color: red">Arrived!</span>
 &nbsp;&nbsp;
 [% END %]
 [% IF ! reg.cancelled %]

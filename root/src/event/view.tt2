@@ -6,8 +6,10 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/event/delete/[% event.id %]"
 onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
-<p>
+&nbsp;&nbsp;&nbsp;
+<a href="/event/list">List</a>
 [% END %]
+<p class=p2>
 <table cellpadding=3 border=0>
 
 <tr>
@@ -36,7 +38,7 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 
 <tr>
 <th align=right valign=top>Meeting Places</th>
-<td valign=top width=250>
+<td valign=top width=150>
 [% FOR b IN event.bookings %]
     [% IF b.breakout == '' %]
         [% b.meeting_place.name %]<br>

@@ -65,6 +65,9 @@ function process(e) {
 [% END %]
 
 &nbsp;&nbsp;&nbsp;
+<a href="/registration/list_reg_missing/[% program.id %]">Missing</a>
+
+&nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
 
 [% IF ! multiple_progs %]

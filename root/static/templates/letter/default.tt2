@@ -191,7 +191,7 @@ Program registration is from
 	[% END %]
     <p class=p2>
 	The office closes at 6:30 pm.<br>
-	If you will ARRIVE LATER than 6:00 pm please call to let us know.<br>
+	If you will <b>ARRIVE LATER</b> than 6:00 pm please call to let us know.<br>
     Notes are posted in the Community Building lobby for late arrivals.<br>
 	We will save dinner for you on request.
 [% END %]
@@ -247,10 +247,10 @@ Sincerely,<br>
 <b>Mount Madonna Center</b> - 445 Summit Rd, Watsonville, CA 95076<br>
 <p class=p2>
 <table cellpadding=3>
-<tr><th align=right>Phone</th><td>408-847-0406</td></tr>
+<tr><th align=right>Phone</th><td>408-846-4064 or 408-847-0406</td></tr>
 <tr><th align=right>Fax</th><td>408-847-2683</td></tr>
 <tr><th align=right>Email</th><td><a href="mailto:programs@mountmadonna.org">programs@mountmadonna.org</a></td></tr>
-<tr><th align=right valign=top>Business Hours</th><td>9-5 Monday, Wednesday, Thursday, and Friday<br>11-5 Tuesday and Saturday</td></tr>
+<tr><th align=right valign=top>Business Hours</th><td align=left>Monday-Thursday 9:00-5:00<br>Friday 9:00-5:30<br>Saturday 11:00-5:00</td></tr>
 </table>
 [% IF program.kayakalpa %]
 <p class=p2>
@@ -274,6 +274,10 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya
 [% END %]<!-- IF carpoolers -->
 <hr>
 <h2>Directions to Mount Madonna Center</h2>
+Do not use any GPS system or any directions from Mapquest, Yahoo or Google or
+any other outside source.
+Use <b>only</b> the directions below.
+<p>
 On the west coast of Central California approximately 2 hours driving 
 time south of San Francisco (more if traffic is heavy), Mount Madonna Center
 overlooks Monterey Bay from the Santa Cruz mountains between Santa Cruz and

@@ -33,6 +33,7 @@ use Util qw/
     error
     payment_warning
     housing_types
+    ptrim
 /;
 use POSIX qw/
     ceil
@@ -261,6 +262,37 @@ sub list_reg_post : Local {
         regs            => _reg_table($c, \@regs, postmark => 1),
         other_sort      => "list_reg_name",
         other_sort_name => "By Name",
+        template        => "registration/list_reg.tt2",
+    );
+}
+
+#
+# cancelled is not missing
+#
+sub list_reg_missing : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $pr = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id => $prog_id,
+            arrived    => { '!=' => 'yes' },
+            cancelled  => { '!=' => 'yes' },
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    Global->init($c);
+    my @files = <root/static/online/*>;
+    stash($c,
+        online          => scalar(@files),
+        program         => $pr,
+        regs            => _reg_table($c, \@regs, postmark => 0),
+        other_sort      => "list_reg_post",
+        other_sort_name => "By Postmark",
         template        => "registration/list_reg.tt2",
     );
 }
@@ -1351,14 +1383,17 @@ sub send_conf : Local {
     $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
     my $personal_retreat = $pr->title =~ m{personal\s*retreat}i;
     my $start = ($reg->date_start)? $reg->date_start_obj: $pr->sdate_obj;
-    my @carpoolers = model($c, 'Registration')->search({
-        program_id => $pr->id,
-        carpool    => 'yes',
-    });      # Join???
-    @carpoolers = sort {
-                      $a->person->zip_post cmp $b->person->zip_post
-                  }
-                  @carpoolers;
+    my @carpoolers = ();
+    if (! $personal_retreat) {
+        @carpoolers = model($c, 'Registration')->search({
+            program_id => $pr->id,
+            carpool    => 'yes',
+        });      # Join???
+        @carpoolers = sort {
+                          $a->person->zip_post cmp $b->person->zip_post
+                      }
+                      @carpoolers;
+    }
     my $stash = {
         user     => $c->user,
         person   => $reg->person,
@@ -1367,7 +1402,7 @@ sub send_conf : Local {
         personal_retreat => $personal_retreat,
         sunday   => $personal_retreat
                     && ($reg->date_start_obj->day_of_week() == 0),
-        friday   => $start->day_of_week() == 6,
+        friday   => $start->day_of_week() == 5,
         today    => tt_today($c),
         deposit  => $reg->deposit,
         htdesc   => $htdesc,
@@ -1877,8 +1912,20 @@ sub _reg_table {
 
     my $mmi_admin = $c->check_user_roles('mmi_admin');
     my $proghead = "";
+    my $show_missing = 0;
     if ($opt{multiple}) {
         $proghead = "<th align=left>Program</th>\n";
+    }
+    else {
+        # all in same program, shall we show the missing ones?
+        # only if the program is not in the past.
+        #
+        if (@$reg_aref) {
+            my $pr = $reg_aref->[0]->program();
+            if ($pr->sdate() <= today()->as_d8()) {
+                $show_missing = 1;
+            }
+        }
     }
     my $posthead = "";
     if ($opt{postmark}) {
@@ -1923,16 +1970,28 @@ EOH
                        "<img src=/static/images/redX.gif height=$ht>"
                   :($need_house && !$hid)?
                        "<img src=/static/images/house.gif height=$ht>"
-                  :($level eq 'S' && !$reg->letter_sent)?
+                  :(($level eq 'S' || $level eq ' ') && !$reg->letter_sent)?
                        "<img src=/static/images/envelope.jpg height=$ht>"
                   :    "";
         if ($need_house && $hid) {
             # no height= since it pixelizes it :(
+            my $unhappy = "";
             if ($h_type ne $pref1 && $h_type ne $pref2) {
-                $mark = "<img src=/static/images/unhappy2.gif>&nbsp;$mark";
+                $unhappy = "<img src=/static/images/unhappy2.gif>";
             }
             elsif ($h_type ne $pref1) {
-                $mark = "<img src=/static/images/unhappy1.gif>&nbsp;$mark";
+                $unhappy = "<img src=/static/images/unhappy1.gif>";
+            }
+            # pretty funky.   a better way to avoid unneeded spaces???
+            # could put icons in an array and at the end
+            # do a join with ' '.
+            if ($unhappy) {
+                if ($mark) {
+                    $mark = "$unhappy $mark";
+                }
+                else {
+                    $mark = $unhappy;
+                }
             }
         }
         if ($school != 0 && $pr->level() eq 'S') {
@@ -1958,8 +2017,14 @@ EOH
                 $mark = $type;
             }
             else {
-                $mark = $type . " " . $mark;
+                $mark = "$type $mark";
             }
+        }
+        if ($show_missing
+            && $reg->arrived() ne 'yes'
+            && $reg->cancelled() ne 'yes'
+        ) {
+            $mark = "<span class=arrived_star>*</span> $mark";
         }
         my $program_td = "";
         if ($opt{multiple}) {
@@ -2437,6 +2502,8 @@ sub lodge : Local {
         # look for them in the online files.
         #
         if ($message2 =~ m{Could not find|has not yet reg}) {
+            my $found = 0;
+            ONLINE:
             for my $f (<root/static/online/*>) {
                 open my $in, "<", $f
                     or die "cannot open $f: $!\n";
@@ -2454,6 +2521,25 @@ sub lodge : Local {
                 if ($found_first && $found_last) {
                     $message2 = "$share_first $share_last <b>has</b> registered"
                                ." online but has not yet been imported.";
+                    $found = 1;
+                    last ONLINE;
+                }
+            }
+            if (! $found) {
+                #
+                # make sure the confirmation note has a notice
+                # about their friend who has not yet registered.
+                #
+                if ($reg->confnote() !~ m{$share_first $share_last}) {
+                    my $cn = ptrim($reg->confnote());
+                    if ($cn) {
+                        $cn .= "<p></p>";
+                    }
+                    $reg->update({
+                        confnote => $cn
+                                  . "<p>$share_first $share_last still needs"
+                                  . " to register for this program!</p>",
+                    });
                 }
             }
         }
@@ -3392,7 +3478,7 @@ sub name_addr_do : Local {
     my (@regs) = model($c, 'Registration')->search(
         {
             program_id => $prog_id,
-            cancelled  => '',
+            cancelled  => { '!=' => 'yes' },
         },
         {
             join     => [qw/ person /],

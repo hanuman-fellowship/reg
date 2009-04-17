@@ -3,7 +3,13 @@ use warnings;
 
 package RetreatCenter::Controller::Exception;
 use base 'Catalyst::Controller';
-use Util qw/model/;
+
+use Util qw/
+    model
+/;
+use Date::Simple qw/
+    today
+/;
 
 #
 # a good list - complete?
@@ -104,8 +110,12 @@ sub create : Local {
     my ($self, $c) = @_;
 
     $c->stash->{programs} = [ model($c, 'Program')->search(
-        undef,
-        { order_by => 'name' },
+        {
+            sdate    => { '>=' => today()->as_d8() },
+        },
+        {
+            order_by => 'name'
+        },
     ) ];
     $c->stash->{tags} = \@tags;
     $c->stash->{form_action} = "create_do";

@@ -47,25 +47,25 @@ EOH
     $c->stash->{template}    = "event/create_edit.tt2";
 }
 
-my %hash;
+my %P;
 my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
+    %P = %{ $c->request->params() };
     @mess = ();
-    if (empty($hash{name})) {
+    if (empty($P{name})) {
         push @mess, "Name cannot be blank";
     }
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate /) {
-        my $fld = $hash{$d};
+        my $fld = $P{$d};
         if (! $fld =~ /\S/) {
             push @mess, "missing date field";
             next;
         }
         if ($d eq 'edate') {
-            Date::Simple->relative_date(date($hash{sdate}));
+            Date::Simple->relative_date(date($P{sdate}));
         }
         my $dt = date($fld);
         if ($d eq 'edate') {
@@ -76,13 +76,13 @@ sub _get_data {
             push @mess, "Invalid date: $fld";
             next;
         }
-        $hash{$d} = $dt? $dt->as_d8()
+        $P{$d} = $dt? $dt->as_d8()
                    :     "";
     }
-    if (!@mess && $hash{sdate} > $hash{edate}) {
+    if (!@mess && $P{sdate} > $P{edate}) {
         push @mess, "End date must be after the Start date";
     }
-    if (! empty($hash{max}) && $hash{max} !~ m{^\s*\d+\s*$}) {
+    if (! empty($P{max}) && $P{max} !~ m{^\s*\d+\s*$}) {
         push @mess, "Max must be an integer";
     }
     if (@mess) {
@@ -97,7 +97,25 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $p = model($c, 'Event')->create(\%hash);
+    #
+    # check for a duplicate event
+    #
+    my @events = model($c, 'Event')->search({
+        name => $P{name},
+        sdate => $P{sdate},
+        edate => $P{edate},
+    });
+    if (@events) {
+        stash($c,
+            mess     => "Duplicate event: <a href=/event/view/"
+                      . $events[0]->id()
+                      . ">$P{name}</a>",
+            template => "event/error.tt2",
+        );
+        return;
+    }
+
+    my $p = model($c, 'Event')->create(\%P);
     my $id = $p->id();
     $c->response->redirect($c->uri_for("/event/view/$id"));
 }
@@ -220,9 +238,9 @@ sub update_do : Local {
 
     my $e = model($c, 'Event')->find($id);
     my $names = "";
-    if (   $e->sdate ne $hash{sdate}
-        || $e->edate ne $hash{edate}
-        || $e->max   <  $hash{max}
+    if (   $e->sdate ne $P{sdate}
+        || $e->edate ne $P{edate}
+        || $e->max   <  $P{max}
     ) {
         # invalidate the bookings as the dates/max have changed
         my @bookings = model($c, 'Booking')->search({
@@ -233,7 +251,7 @@ sub update_do : Local {
             $b->delete();
         }
     }
-    $e->update(\%hash);
+    $e->update(\%P);
     if ($names) {
         $c->stash->{event} = $e;
         $c->stash->{names} = $names;
@@ -888,6 +906,7 @@ sub calendar : Local {
                    keys %details;
     my $content = <<"EOH";
 <head>
+<title>Calendar</title>
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <script>

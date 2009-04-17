@@ -855,13 +855,20 @@ sub coordinator_update_do : Local {
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
         return;
     }
-    my ($person) = model($c, 'Person')->search({
+    my @person = model($c, 'Person')->search({
                        first => $first,
                        last  => $last,
-                   });
-    if ($person) {
+                 });
+    if (@person) {
+        if (@person > 1) {
+            stash($c,
+                mess     => "More than one person named <a href='/person/search_do?pattern=$last+$first&field=last'>$first $last</a>!",
+                template => "rental/error.tt2",
+            );
+            return;
+        }
         $r->update({
-            coordinator_id => $person->id,
+            coordinator_id => $person[0]->id,
         });
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
@@ -889,13 +896,20 @@ sub contract_signer_update_do : Local {
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
         return;
     }
-    my ($person) = model($c, 'Person')->search({
+    my @person = model($c, 'Person')->search({
                        first => $first,
                        last  => $last,
-                   });
-    if ($person) {
+                 });
+    if (@person) {
+        if (@person > 1) {
+            stash($c,
+                mess     => "More than one person named <a href='/person/search_do?pattern=$last+$first&field=last'>$first $last</a>!",
+                template => "rental/error.tt2",
+            );
+            return;
+        }
         $r->update({
-            cs_person_id => $person->id,
+            cs_person_id => $person[0]->id,
         });
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
@@ -928,7 +942,7 @@ sub new_charge_do : Local {
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "registration/error.tt2";
+        $c->stash->{template} = "rental/error.tt2";
         return;
     }
 

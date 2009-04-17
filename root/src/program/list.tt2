@@ -1,6 +1,7 @@
 <h2>Programs</h2>
 <form action="/program/listpat" name=form>
 [% admin = Catalyst.check_user_roles('prog_admin') %]
+[% mmi_admin = Catalyst.check_user_roles('mmi_admin') %]
 [% IF admin %]
     <a href="/program/create">Add</a>
 [% END %]
@@ -13,9 +14,9 @@
     <a href="/program/publish_pics">PublishPics<a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
-<a href="/program/list/1">MMI DCM<a>
-&nbsp;&nbsp;&nbsp;
-<a href="/registration/pr">Personal Retreats<a>
+[% IF mmi_admin %]
+    <a href="/program/list/1">DCM<a>
+[% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value=[% pr_pat %]> <input type=submit value="Search"></form>
@@ -32,7 +33,7 @@
 [% FOREACH p IN programs %]
     <tr class=[% class %]>
     <td class=fl_row0>[% IF p.school != 0 %]<span class=required>*</span>[% ELSIF p.rental_id > 0 %]%[% END %]</td>
-    [% IF p.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
+    [% IF p.school == 0 || mmi_admin %]
         <td><a href="/registration/first_reg/[% p.id %]">[% p.name %]</a></td>
     [% ELSE %]
         <td>[% p.name %]</td>
