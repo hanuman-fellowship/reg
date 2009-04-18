@@ -3896,7 +3896,7 @@ sub pr : Local {
         {
             rows     => 1,
             join     => [qw/ person /],
-            order_by => [qw/ person.last person.first /],
+            order_by => [qw/ person.last person.first/],
             prefetch => [qw/ person /],
         }
     );
@@ -3906,6 +3906,51 @@ sub pr : Local {
     }
     else {
         $c->response->redirect($c->uri_for("/program/view/$pr_id"));
+    }
+}
+
+sub view_adj : Local {
+    my ($self, $c, $prog_id, $reg_id, $last, $first, $dir) = @_;
+
+    my $relation = ($dir eq 'next')? '>'  : '<';
+    my $ord      = ($dir eq 'next')? 'asc': 'desc';
+    #
+    # e.g. for previous registration:
+    #
+    # select *
+    # from registration r, people p
+    # where program_id = 2002 and 
+    # (p.last < 'Blum' or (p.last = 'Blum' and p.first < 'Gloria'))
+    # and p.id = r.person_id
+    # order by p.last desc, p.first desc limit 1;
+    #
+    # This worries about two people with the same last name.
+    #
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id => $prog_id,
+            -or => [
+                'person.last' => { $relation => $last },
+                -and => [
+                    'person.last'  => $last,
+                    'person.first' => { $relation => $first },
+                ],
+            ],
+        },
+        {
+            rows     => 1,
+            join     => [qw/ person /],
+            order_by => [ "person.last $ord", "person.first $ord" ],
+            prefetch => [qw/ person /],
+        }
+    );
+    if (@regs) {
+        $c->response->redirect($c->uri_for("/registration/view/" .
+                               $regs[0]->id()));
+    }
+    else {
+        # likely BOF beginning of file 
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
     }
 }
 
