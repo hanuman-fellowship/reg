@@ -41,20 +41,39 @@ sub search : Local {
         __PACKAGE__->update($c, $pat);
         return;
     }
-    $c->stash->{issues} = [ model($c, 'Issue')->search(
-        {
-            title => { 'like' => "%$pat%" },
-            date_closed => '',
-        },
-        { order_by    => 'priority, date_entered' }
-    ) ];
-    $c->stash->{closed_issues} = [ model($c, 'Issue')->search(
-        {
-            title => { 'like' => "%".trim($c->request->params->{pat})."%" },
-            date_closed => { '!=', '' },
-        },
-        { order_by    => 'priority, date_entered' }
-    ) ];
+    if ($pat eq 'my') {
+        my $uid = $c->user->obj->id();
+        $c->stash->{issues} = [ model($c, 'Issue')->search(
+            {
+                user_id     => $uid,
+                date_closed => '',
+            },
+            { order_by    => 'priority, date_entered' }
+        ) ];
+        $c->stash->{closed_issues} = [ model($c, 'Issue')->search(
+            {
+                user_id     => $uid,
+                date_closed => { '!=', '' },
+            },
+            { order_by    => 'priority, date_entered' }
+        ) ];
+    }
+    else {
+        $c->stash->{issues} = [ model($c, 'Issue')->search(
+            {
+                title => { 'like' => "%$pat%" },
+                date_closed => '',
+            },
+            { order_by    => 'priority, date_entered' }
+        ) ];
+        $c->stash->{closed_issues} = [ model($c, 'Issue')->search(
+            {
+                title => { 'like' => "%".trim($c->request->params->{pat})."%" },
+                date_closed => { '!=', '' },
+            },
+            { order_by    => 'priority, date_entered' }
+        ) ];
+    }
     $c->stash->{template} = "issue/list.tt2";
 }
 
