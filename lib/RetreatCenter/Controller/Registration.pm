@@ -983,7 +983,7 @@ sub create_do : Local {
             user_id => $c->user->obj->id,
             amount  => $P{deposit},
             type    => $P{deposit_type},
-            note    => 'Deposit',
+            what    => 'Deposit',
         });
     }
     else {
@@ -1074,7 +1074,7 @@ sub _compute {
     _re_get_days($reg);
 
     # tuition
-    my $tuition = $pr->tuition;
+    my $tuition = $pr->tuition();
     if ($pr->extradays && $reg->date_end > $pr->edate) {
         # they need to pay the full tuition amount
         $tuition = $pr->full_tuition;
@@ -1311,6 +1311,8 @@ sub _compute {
         }
         #
         # deduct these nights from the person's member record.
+        #
+        # Is this done twice in case of a relodge???
         #
         $mem->update({
             sponsor_nights => $mem->sponsor_nights - $ntaken,     # cool, eh?
@@ -2908,6 +2910,7 @@ sub lodge_do : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     my $new_htype = $c->request->params->{htype};
+    my @who_now = get_now($c, $id);
     if ($reg->h_type() ne $new_htype) {
         # the housing type was changed
         $reg->update({
@@ -2918,7 +2921,6 @@ sub lodge_do : Local {
             reg_id    => $id,
             automatic => 'yes',
         })->delete();
-        my @who_now = get_now($c, $id);
         _compute($c, $reg, @who_now);
 
         if ($new_htype =~ m{^(own_van|commuting|unknown|not_needed)$}) {
@@ -3038,6 +3040,14 @@ sub lodge_do : Local {
             program_id => $reg->program_id,
         });
     }
+    # recompute the automatic charges whether or not h_type changed
+    #
+    model($c, 'RegCharge')->search({
+        reg_id    => $id,
+        automatic => 'yes',
+    })->delete();
+    _compute($c, $reg, @who_now);
+
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
@@ -3985,7 +3995,7 @@ sub view_adj : Local {
                                $regs[0]->id()));
     }
     else {
-        # likely BOF beginning of file 
+        # likely BOF beginning of file or EOF.
         $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
     }
 }
