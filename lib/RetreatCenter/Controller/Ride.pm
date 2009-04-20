@@ -376,12 +376,16 @@ sub pay_do : Local {
             push @paid_ids, $1;
         }
     }
+    my $now_date = tt_today($c)->as_d8();
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        $now_date = (tt_today($c)+1)->as_d8();
+    }
     if (@paid_ids) {
         my $today = today()->as_d8();
         model($c, 'Ride')->search({
             id => { -in => \@paid_ids },
         })->update({
-            paid_date => $today,          
+            paid_date => $now_date,          
         });
     }
     $c->forward('list');
