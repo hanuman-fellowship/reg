@@ -61,7 +61,7 @@
 </tr>
 
 <tr>
-<th align=right>Date</th>
+<th align=right>Pickup Date</th>
 <td>[% ride.pickup_date_obj %]</td>
 </tr>
 

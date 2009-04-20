@@ -63,7 +63,7 @@ sub type_sh {
 sub name {
     my ($self) = @_;
     my $rider = $self->rider;
-    return $rider->first() . " " . $rider->last();
+    return $rider->last() . ", " . $rider->first();
 }
 sub link {
     my ($self) = @_;

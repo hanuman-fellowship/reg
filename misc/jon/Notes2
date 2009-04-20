@@ -1239,3 +1239,22 @@ in various reg listings, etc adjust cal_param for which
 ***Dangerous to delete program!   all registrations vanish!
     what about reg payments, charges???
     HOW do registrations get deleted????
+
+- Pickup Date - not just Date for Rides
+- Back not Prev
+- *Arrived* and stars for arrived people not for missing people
+- ride payments by last, first in deposit
+- from reconcile deposit link to rental payment - Finance tab
+- Add always
+- Parallel Programs - sum links to Rental sum
+- no PR event 
+- on PR reg - click calendar - don't show full 6 months!
+- approve does not transmit???  neither does transmit?
+    fails if there is more than one record :(
+- mmi deposits not a RegPayment - instead an MMIPayment.
+    no user_id or time in MMIPayment - so no 'info' icon. 
+
+- ??? scan
+- pay for ride at any time
+    later.
+

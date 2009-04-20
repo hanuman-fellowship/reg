@@ -129,7 +129,7 @@ dp_img_percent 120
 seen_lodge_opts 10
 max_lodge_opts 30
 tt_today 
-default_date_format %b %e %q
+default_date_format %b %e '%q
 make_up_urgent_days 4
 reconciling 0
 payment_O Online

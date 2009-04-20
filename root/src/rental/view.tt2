@@ -179,14 +179,7 @@ Web
     <th align=right>[% string.$t %]</th>
     <td align=center>[% rental.$n %]</td>
     <td width=15 style="background: [% colcov.$t %]"></td>
-    [% IF rental.$n || bookings.$t %]
-        <td>
-        <a href="/rental/booking/[% id %]/[% t %]"
-            >Add</a>[% bookings.$t %]
-        </td>
-    [% ELSE %]
-        <td></td>
-    [% END %]
+    <td><a href="/rental/booking/[% id %]/[% t %]">Add</a>[% bookings.$t %]</td>
     <td>[% rental.$att %]</td>
     </tr>
 [% END %]

@@ -771,6 +771,21 @@ sub _get_data {
         $dates{date_end} = '';
     }
 
+    if ($PR) {
+        #
+        # is there an event named "No PR" with some overlap with
+        # this registration?
+        #
+        my @prog = model($c, 'Event')->search({
+            name  => 'No PR',
+            sdate => { '<=', $dates{date_end} },
+            edate => { '>=', $dates{date_start} },
+        });
+        if (@prog) {
+            push @mess, "Sorry, no Personal Retreats at this time.";
+        }
+        return if @mess;
+    }
     $taken = 0;
     if ($P{nights_taken} && ! empty($P{nights_taken})) {
         $taken = trim($P{nights_taken});
@@ -964,15 +979,26 @@ sub create_do : Local {
         # MMC program deposit
         #
         model($c, 'RegPayment')->create({
-            @who_now,
+            reg_id  => $reg_id,
+            user_id => $c->user->obj->id,
             amount  => $P{deposit},
             type    => $P{deposit_type},
-            what    => 'Deposit',
+            note    => 'Deposit',
         });
     }
     else {
         # MMI deposit
         #
+        model($c, 'MMIPayment')->create({
+            reg_id    => $reg_id,
+            deleted   => '',
+            the_date  => tt_today($c)->as_d8(),
+            person_id => $P{person_id},
+            type      => $P{deposit_type},
+            amount    => $P{deposit},
+            glnum     => '5' . $pr->glnum(),    # 5 is 'Other'
+            note      => 'Deposit',
+        });
     }
 
     # add the automatic charges
@@ -1551,14 +1577,24 @@ sub _view {
             $share .= " - <span class=required>could not find</span>";
         }
     }
-    my $sdate = $prog->sdate();
-    my $nmonths = date($prog->edate())->month()
-                - date($sdate)->month()
-                + 1;
+    my $PR = $prog->name() =~ m{personal retreat}i;
+    my ($sdate, $nmonths);
+    if ($PR) {
+        $sdate = $reg->date_start();
+        $nmonths = date($reg->date_end())->month()
+                   - date($sdate)->month()
+                   + 1;
+    }
+    else {
+        $sdate = $prog->sdate();
+        $nmonths = date($prog->edate())->month()
+                   - date($sdate)->month()
+                   + 1;
+    }
     stash($c,
         online         => scalar(@files),
         share          => $share,
-        non_pr         => $prog->name !~ m{personal retreat}i,
+        non_pr         => ! $PR,
         daily_pic_date => $sdate,
         cal_param      => "$sdate/$nmonths",
         # ??? can get cluster id from Global settings, yes???
@@ -1912,18 +1948,18 @@ sub _reg_table {
 
     my $mmi_admin = $c->check_user_roles('mmi_admin');
     my $proghead = "";
-    my $show_missing = 0;
+    my $show_arrived = 1;
     if ($opt{multiple}) {
         $proghead = "<th align=left>Program</th>\n";
     }
     else {
-        # all in same program, shall we show the missing ones?
+        # all in same program, shall we show the arrived ones?
         # only if the program is not in the past.
         #
         if (@$reg_aref) {
             my $pr = $reg_aref->[0]->program();
             if ($pr->sdate() <= today()->as_d8()) {
-                $show_missing = 1;
+                $show_arrived = 0;
             }
         }
     }
@@ -2020,8 +2056,8 @@ EOH
                 $mark = "$type $mark";
             }
         }
-        if ($show_missing
-            && $reg->arrived() ne 'yes'
+        if ($show_arrived
+            && $reg->arrived() eq 'yes'
             && $reg->cancelled() ne 'yes'
         ) {
             $mark = "<span class=arrived_star>*</span> $mark";

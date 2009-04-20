@@ -144,7 +144,11 @@ function cluster_down(cluster_id) {
 &nbsp;
 &nbsp;
 &nbsp;
+[% IF program.rental_id %]
+<a href=/summary/view/rental/[% program.rental.summary_id %]>Summary</a>
+[% ELSE %]
 <a href=/summary/view/program/[% program.summary_id %]>Summary</a>
+[% END %]
 
 <p>
 

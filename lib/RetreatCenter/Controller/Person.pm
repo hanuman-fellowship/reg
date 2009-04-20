@@ -875,7 +875,7 @@ sub list_mmi_payment_print : Local {
         tot       => commify($tot),
         person    => $person,
         today     => today(),
-        time      => sprintf("%02d:%02d", (localtime())[2, 1]),
+        time      => scalar(localtime),
     };
     $tt->process(
         "person/mmi_payments.tt2",   # template

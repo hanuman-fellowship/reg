@@ -81,15 +81,15 @@ sub reconcile_deposit : Local {
             }
             $total += $amt;
             push @payments, {
-                name   => $p->name,
-                link   => $p->link,
+                name   => $p->name(),
+                link   => $p->link(),
                 date   => $p->the_date_obj->format("%D"),
                 type   => $type,
                 cash   => ($type eq 'S')? $amt: "",
                 chk    => ($type eq 'C')? $amt: "",
                 credit => ($type eq 'D')? $amt: "",
                 online => ($type eq 'O')? $amt: "",
-                pname  => $p->pname,
+                pname  => $p->pname(),
             };
         }
     }

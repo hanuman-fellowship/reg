@@ -41,7 +41,13 @@
     <td>[% p.sdate_obj %]</td>
     <td align=right>[% p.reg_count %]&nbsp;&nbsp;</td>
     <td width=40><a href="/registration/list_reg_name/[% p.id %]">AllRegs</a></td>
-    <td width=40><a href="/summary/view/program/[% p.summary_id %]">Sum</a></td>
+    <td width=40>
+    [% IF p.rental_id %]
+    <a href="/summary/view/rental/[% p.rental.summary_id %]">Sum</a>
+    [% ELSE %]
+    <a href="/summary/view/program/[% p.summary_id %]">Sum</a>
+    [% END %]
+    </td>
     <td width=40><a href="/program/view/[% p.id %]" title="[% p.title %]">Prog</a></td>
     </tr>
     [% IF class == 'fl_row0' %]

@@ -50,7 +50,8 @@ sub name {
 
 sub link {
     my ($self) = @_;
-    return "/rental/view/" . $self->rental_id();
+    return "/rental/view/" . $self->rental_id() . "/3";
+        # 3 above for the finance tab
 }
 
 # in Rentals link, plink are the same

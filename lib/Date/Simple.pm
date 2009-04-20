@@ -253,7 +253,7 @@ sub format {
             $format =~ s{%q}{sprintf("%02d", $y%100)}ge;
         }
         else {
-            $format =~ s{\s*%[Qq]}{}g;
+            $format =~ s{[\s']*%[Qq]}{}g;
         }
     }
 

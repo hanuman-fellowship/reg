@@ -76,6 +76,8 @@ __PACKAGE__->set_primary_key(qw/id/);
 
 # cancellation policy
 __PACKAGE__->belongs_to(canpol => 'RetreatCenterDB::CanPol', 'canpol_id');
+# rental - for parallel programs.
+__PACKAGE__->belongs_to(rental => 'RetreatCenterDB::Rental', 'rental_id');
 # housecost
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');

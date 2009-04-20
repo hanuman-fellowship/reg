@@ -152,7 +152,7 @@ sub contract_received_obj {
 }
 sub link {
     my ($self) = @_;
-    return "/rental/view/" . $self->id;
+    return "/rental/view/" . $self->id();
 }
 sub webdesc_ex {
     my ($self) = @_;
