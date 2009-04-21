@@ -98,7 +98,7 @@ Mount Madonna Center, hereafter called the Center, and
 [% END %]
 [% p.first %]
 [% p.last %]
-at [% p.addr1 %][% IF p.addr2 %] [% p.addr2 %][% END %],
+of [% p.addr1 %][% IF p.addr2 %] [% p.addr2 %][% END %],
 [% p.city %], [% p.st_prov %]
 [% p.zip_post %], [% IF p.country %][% p.country %][% END %]
 for &#145;[% rental.name %]&#146;, hereafter called the Renter, hereby agree as follows:
