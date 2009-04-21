@@ -75,7 +75,7 @@
 <td>&nbsp;</td>
 <td><input type=radio name=type value="Total" [% checked_total %]> Total
 &nbsp;&nbsp;&nbsp;
-<input type=radio name=type value="Perday" [% checked_perday %]> Per Day
+<input type=radio name=type value="Per Day" [% checked_perday %]> Per Day
 </tr>
 
 <tr>
