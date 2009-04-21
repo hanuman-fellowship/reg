@@ -13,11 +13,11 @@ use Time::Simple qw/
 /;
 use Util qw/
     slurp
-    expand
     housing_types
     places
     tt_today
     model
+    gptrim
 /;
 use Global qw/%string/;
 use Image::Size;
@@ -202,18 +202,6 @@ sub link {
 sub event_type {
     return "program";
 }
-sub webdesc_ex {
-    my ($self) = @_;
-    expand($self->webdesc());
-}
-sub brdesc_ex {
-    my ($self) = @_;
-    expand($self->brdesc());
-}
-sub confnote_ex  {
-    my ($self) = @_;
-    expand($self->confnote());
-}
 sub fname {
     my ($self) = @_;
 
@@ -390,7 +378,7 @@ sub prog_dates_style {
 }
 sub webdesc_plus {
     my ($self) = @_;
-    my $s = expand($self->webdesc);
+    my $s = gptrim($self->webdesc);
     my $barnacles = $self->footnotes;
 	if ($barnacles) {
 		$s .= "<ul>\n";
@@ -539,7 +527,7 @@ sub leader_bio {
     my ($self) = @_;
     my $bio = "";
     for my $l ($self->leaders) {
-        $bio .= "<p>" . expand($l->biography);
+        $bio .= "<p>" . gptrim($l->biography);
         if (my $email = $l->public_email) {
             my $first = $l->person->first;
             my $last  = $l->person->last;
@@ -682,7 +670,7 @@ EOH
 }
 sub cancellation_policy {
 	my ($self) = @_;
-	return expand($self->canpol->policy);
+	return gptrim($self->canpol->policy);
 }
 sub gen_popup {
     my ($pic_html, $pic) = @_;

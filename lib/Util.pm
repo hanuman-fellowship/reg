@@ -45,6 +45,7 @@ our @EXPORT_OK = qw/
     payment_warning
     fillin_template
     ptrim
+    gptrim
     mmi_glnum
     accpacc
     highlight
@@ -1150,12 +1151,22 @@ sub fillin_template {
 }
 
 #
-# trim off unneeded paragraphs inserted by tinyMCE
+# trim off unneeded trailing paragraphs inserted by tinyMCE
 #
 sub ptrim {
     my ($s) = @_;
 
     $s =~ s{(<p>&nbsp;</p>\s*)+$}{}g;
+    $s;
+}
+
+#
+# remove all unneeded paragraphs inserted by tinyMCE
+#
+sub gptrim {
+    my ($s) = @_;
+
+    $s =~ s{<p>&nbsp;</p>\s*}{}g;
     $s;
 }
 
