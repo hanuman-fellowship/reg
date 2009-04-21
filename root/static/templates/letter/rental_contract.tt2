@@ -152,29 +152,19 @@ additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>
 <div style='page-break-after:always'></div>
 <h2>Meals</h2>
-The Center will provide
 [% IF lunch %]
-three vegetarian meals
+The Center will provide three vegetarian meals per day:
+breakfast 8:15am, lunch 12:30 pm, and dinner 5:00 pm with the
+following exceptions: Friday dinner 5:30 pm;
+Saturday brunch 10:00 am, snack (no lunch) 1:00 pm; Sunday breakfast 8:30. 
 [% ELSE %]
-two vegetarian meals and a snack
+The Center will provide two vegetarian meals and a snack per day:
+Friday dinner 5:30pm; Saturday brunch 10:00am, snack 1:00pm,
+dinner 5:00pm; Sunday breakfast 8:30am, snack 12:30pm.
 [% END %]
-per day:
-<table cellpadding=2>
-<tr><td>Breakfast</td><td>8:15 am</td></tr>
-<tr><td>[% IF lunch %]Lunch[% ELSE %]Snack[% END %]</td><td>12:30 pm</td></tr>
-<tr><td>Dinner</td><td>5:00 pm</td></tr>
-</table>
-with the following schedule on the weekend:
-<table cellpadding=2>
-<tr><td>Friday Dinner</td><td>5:30 pm</td></tr>
-<tr><td>Saturday Brunch</td><td>10:00 am</td></tr>
-<tr><td>Saturday Snack[% IF lunch %] (no Lunch)[% END %]</td><td>1:00 pm</td></tr>
-<tr><td>Saturday Dinner</td><td>5:00 pm</td></tr>
-<tr><td>Sunday Breakfast</td><td>8:30 am</td></tr>
-</table>
 To be assured of a complete, fresh, hot meal, guests must arrive
-within the first half-hour of mealtime. 
-Meals are at the Community Building for the renter,
+within the first half-hour of mealtime. Meals are at the
+Community Building for the renter,
 other guests of the Center, and the Center community.
 <h2>Payment and Cancellation Policies</h2>
 The renter will pay a deposit of $[% rental.deposit %] amount
