@@ -37,6 +37,8 @@ p {
 }
 </style>
 [% id = reg.id %]
+[% person = reg.person %]
+[% snail = 'Snail Mail' %]
 <h2 style="margin-bottom: 0px">Registration</h2>
 <form name=form action=/registration/seek/[% program.id %]/[% id %]>
 <table border=0>
@@ -63,12 +65,12 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 [% IF ! reg.cancelled %]
     [% IF reg.letter_sent %]
     <a href="/registration/send_conf/[% id %]"
-       onmouseover="return overlib('[% person.email || 'Snail Mail' %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseover="return overlib('[% person.email || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
        onmouseout="return nd();">ReSend</a>
     [% ELSE %]
     <a class=not_sent 
        href="/registration/send_conf/[% id %]"
-       onmouseover="return overlib('[% person.email || 'Snail Mail' %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseover="return overlib('[% person.email || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
        onmouseout="return nd();">Send</a>
     [% END %]
     &nbsp;&nbsp;
@@ -96,7 +98,6 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 
 <table cellpadding=2 border=0>
 
-[% person = reg.person %]
 <tr>
 <th align=right>Person</th>
 <td colspan=3 width=700><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a>
