@@ -17,6 +17,7 @@ use Util qw/
     payment_warning
     normalize
     stash
+    error
 /;
 use Date::Simple qw/
     date
@@ -896,6 +897,13 @@ sub del_mmi_payment : Local {
 sub create_mmi_payment : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
     
+    if (tt_today($c)->as_d8() eq $string{last_mmi_deposit_date}) {
+        error($c,
+              'Since a deposit was just done for MMI'
+                  . ' please make this payment tomorrow instead.',
+              'gen_error.tt2');
+        return;
+    }
     $c->stash->{message}  = payment_warning($c);
     $c->stash->{person}   = model($c, 'Person')->find($person_id);
     $c->stash->{reg}      = model($c, 'Registration')->find($reg_id);

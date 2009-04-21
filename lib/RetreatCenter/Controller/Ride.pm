@@ -10,6 +10,8 @@ use Util qw/
     trim
     email_letter
     fillin_template
+    error
+    tt_today
 /;
 use Date::Simple qw/
     date
@@ -359,6 +361,14 @@ sub view : Local {
 
 sub pay : Local {
     my ($self, $c) = @_;
+
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        error($c,
+              'Since a deposit was just done'
+                  . ' please make these payments tomorrow instead.',
+              'gen_error.tt2');
+        return;
+    }
     my @rides = model($c, 'Ride')->search({
         pickup_date => { '<=', today()->as_d8() },
         paid_date   => '',

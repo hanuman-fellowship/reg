@@ -1130,10 +1130,6 @@ sub payment_warning {
     if ($string{reconciling}) {
         return "Warning! \u$string{reconciling} is doing a reconciliation!";
     }
-    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
-        return "This payment will be posted tomorrow<br>"
-             . "since a deposit has already been done today.";
-    }
     return "";
 }
 

@@ -1611,6 +1611,13 @@ sub _view {
 sub pay_balance : Local {
     my ($self, $c, $id, $from) = @_;
 
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        error($c,
+              'Since a deposit was just done'
+                  . ' please make this payment tomorrow instead.',
+              'gen_error.tt2');
+        return;
+    }
     my $reg = model($c, 'Registration')->find($id);
     stash($c,
         message  => payment_warning($c),
@@ -1950,7 +1957,7 @@ sub _reg_table {
 
     my $mmi_admin = $c->check_user_roles('mmi_admin');
     my $proghead = "";
-    my $show_arrived = 1;
+    my $show_arrived = 0;
     if ($opt{multiple}) {
         $proghead = "<th align=left>Program</th>\n";
     }
@@ -1961,7 +1968,7 @@ sub _reg_table {
         if (@$reg_aref) {
             my $pr = $reg_aref->[0]->program();
             if ($pr->sdate() <= today()->as_d8()) {
-                $show_arrived = 0;
+                $show_arrived = 1;
             }
         }
     }

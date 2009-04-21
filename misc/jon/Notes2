@@ -1254,6 +1254,7 @@ FINAL FIXES BEFORE GO LIVE
     fails if there is more than one record :(
 - mmi deposits not a RegPayment - instead an MMIPayment.
     no user_id or time in MMIPayment - so no 'info' icon. 
+- prohibit payments after a deposit for the rest of the day 
 
 - ??? scan
 - pay for ride at any time

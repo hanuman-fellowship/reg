@@ -29,6 +29,7 @@ use Util qw/
     stash
     payment_warning
     email_letter
+    error
 /;
 use Global qw/
     %string
@@ -753,6 +754,13 @@ sub access_denied : Private {
 sub pay_balance : Local {
     my ($self, $c, $id) = @_;
 
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        error($c,
+              'Since a deposit was just done'
+                  . ' please make this payment tomorrow instead.',
+              'gen_error.tt2');
+        return;
+    }
     my $r = model($c, 'Rental')->find($id);
     stash($c,
         message  => payment_warning($c),

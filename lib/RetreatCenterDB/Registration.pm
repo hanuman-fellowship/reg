@@ -108,13 +108,21 @@ sub room_site {
 
 sub pref1_sh {
     my ($self) = @_;
-    my $s = $string{$self->pref1()};
+    my $pref = $self->pref1();
+    if (! exists $string{$pref}) {
+        return "";
+    }
+    my $s = $string{$pref};
     $s =~ s{ \(.*}{};
     $s;
 }
 sub pref2_sh {
     my ($self) = @_;
-    my $s = $string{$self->pref2()};
+    my $pref = $self->pref2();
+    if (! exists $string{$pref}) {
+        return "";
+    }
+    my $s = $string{$pref};
     $s =~ s{ \(.*}{};
     $s;
 }

@@ -16,6 +16,7 @@ use Util qw/
     tt_today
     stash
     payment_warning
+    error
 /;
 use Global qw/
     %string
@@ -124,6 +125,13 @@ sub access_denied : Private {
 sub pay_balance : Local {
     my ($self, $c, $person_id) = @_;
 
+    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+        error($c,
+              'Since a deposit was just done'
+                  . ' please make this payment tomorrow instead.',
+              'gen_error.tt2');
+        return;
+    }
     stash($c,
         message  => payment_warning($c),
         person => model($c, 'Person')->find($person_id),
@@ -146,10 +154,6 @@ sub pay_balance_do : Local {
     my $what = $c->request->params->{what};
     my $type = $c->request->params->{type};
     my $now_date = tt_today($c)->as_d8();
-    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
-        $now_date = (tt_today($c)+1)->as_d8();
-    }
-
     model($c, 'XAccountPayment')->create({
         xaccount_id => $xaccount_id,
         person_id   => $person_id,
