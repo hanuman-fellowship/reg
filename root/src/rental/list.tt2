@@ -16,7 +16,7 @@
 </tr>
 [% FOREACH r IN rentals %]
     <tr>
-    <td>[% IF r.program_id %]H[% ELSE %]&nbsp;[% END %]</td>
+    <td align=right>[% IF r.program_id %]Hybrid[% END %]</td>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
     <td>[% r.sdate_obj %]</td>
     <td align=center><a href=/summary/view/rental/[% r.summary_id %]>Sum</a></td>

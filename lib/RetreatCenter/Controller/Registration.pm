@@ -2481,6 +2481,16 @@ sub arrived : Local {
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
+sub not_arrived : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Registration')->find($id);
+    $r->update({
+        arrived => '',
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+
 sub lodge : Local {
     my ($self, $c, $id) = @_;
 

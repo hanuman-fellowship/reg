@@ -56,10 +56,10 @@ p {
 onclick="return confirm('Okay to Delete registration for [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;
 [% IF reg.arrived != 'yes' && reg.cancelled != 'yes' %]
-<a href="/registration/arrived/[% id %]">Arrived</a>
+<a href="/registration/arrived/[% id %]">Not Arrived</a>
 &nbsp;&nbsp;
 [% ELSIF reg.arrived == 'yes' %]
-<span style="color: red">*Arrived*</span>
+<a href="/registration/not_arrived/[% id %]"><span style="color: red">* Arrived *</span></a>
 &nbsp;&nbsp;
 [% END %]
 [% IF ! reg.cancelled %]
@@ -106,9 +106,9 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 Cancelled
 </span>
 [% END %]
-[% IF reg.date_start != program.sdate %] Arriving [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span>
+[% IF reg.date_start != program.sdate %] <span class=arr_lv>Arriving [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
 [% END %]
-[% IF reg.date_end   != program.edate %] Leaving [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span>
+[% IF reg.date_end   != program.edate %] <span class=arr_lv>Leaving [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
 [% END %]
 </td>
 <td><a href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back">Back</a>&nbsp;&nbsp;&nbsp;<a href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next">Next</a></td>
