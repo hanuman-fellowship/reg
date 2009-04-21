@@ -25,7 +25,7 @@ onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>
 </table>
 
 <h3>Payments</h3>
-<table cellpadding=3 width=900>
+<table cellpadding=3 width=900 border=1>
 <tr>
 <th align=left width=25%>Person</th>
 <th align=right width=5%>Amount</th>

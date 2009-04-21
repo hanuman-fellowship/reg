@@ -60,26 +60,25 @@ function get_gender() {
             &nbsp;&nbsp;&nbsp;
             <input tabindex=4 type=radio name=sex value="M" [% sex_male %]>Male
         </td>
-        <th align=right valign=top rowspan=3>Comment</th>
-        <td rowspan=4><textarea tabindex=18 name=comment cols=40 rows=6>[% person.comment %]</textarea></td>
     </tr>
     <tr>
         <th align=right>Address</th>
-        <td><input tabindex=5 type=text name=addr1 value="[% person.addr1 %]"></td>
+        <td colspan=3><input tabindex=5 type=text name=addr1 value="[% person.addr1 %]" size=30></td>
     </tr>
     <tr>
         <td align=right>&nbsp;</td>
-        <td><input tabindex=6 type=text name=addr2 value="[% person.addr2 %]"></td>
+        <td colspan=3><input tabindex=6 type=text name=addr2 value="[% person.addr2 %]" size=30>
+        &nbsp;&nbsp;<input tabindex=19 type=submit value="Submit"></td>
     </tr>
     <tr>
         <th align=right>City</th>
         <td><input tabindex=7 type=text name=city value="[% person.city %]"></td>
+        <th align=left valign=top rowspan=4 colspan=2>Comment<br>
+        <textarea tabindex=18 name=comment cols=40 rows=5>[% person.comment %]</textarea></th>
     </tr>
     <tr>
         <th align=right>State/Province</th>
         <td><input tabindex=8 type=text name=st_prov value="[% person.st_prov %]"></td>
-        <td>&nbsp;</td>
-        <td><input tabindex=19 type=submit value="Submit"></td>
     </tr>
     <tr>
         <th align=right>Zip/Postal Code</th>

@@ -1070,51 +1070,56 @@ sub _compute {
     Global->init($c);
     my $pr  = $reg->program();
     my $mem = $reg->person->member();
+    my $lead_assist = $reg->leader_assistant();   # no housing or tuition charge
+                                                  # for these people
 
     _re_get_days($reg);
 
     # tuition
-    my $tuition = $pr->tuition();
-    if ($pr->extradays && $reg->date_end > $pr->edate) {
-        # they need to pay the full tuition amount
-        $tuition = $pr->full_tuition;
-    }
-    if ($tuition > 0) {
-        model($c, 'RegCharge')->create({
-            @who_now,
-            automatic => 'yes',
-            amount    => $tuition,
-            what      => 'Tuition',
-        });
-    }
-
-    # sponsor/life members get a discount on tuition
-    # up to a max.  and only for MMC events, not MMI.
     #
-    if ($pr->school() == 0 && $reg->status) {
-        # Life members can take a free program ... so:
-        if ($reg->free_prog_taken) {
+    if (! $lead_assist) {
+        my $tuition = $pr->tuition();
+        if ($pr->extradays() && $reg->date_end() > $pr->edate()) {
+            # they need to pay the full tuition amount
+            $tuition = $pr->full_tuition();
+        }
+        if ($tuition > 0) {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
-                amount    => -1*$tuition,
-                what      => "Life member - free program - tuition waived.",
+                amount    => $tuition,
+                what      => 'Tuition',
             });
         }
-        else {
-            my $amount = int(($string{spons_tuit_disc}/100)*$tuition);
-            my $maxed = "";
-            if ($amount > $string{max_tuit_disc}) {
-                $amount = $string{max_tuit_disc};
-                $maxed = " - to a max of \$$string{max_tuit_disc}";
+
+        # sponsor/life members get a discount on tuition
+        # up to a max.  and only for MMC events, not MMI.
+        #
+        if ($pr->school() == 0 && $reg->status) {
+            # Life members can take a free program ... so:
+            if ($reg->free_prog_taken) {
+                model($c, 'RegCharge')->create({
+                    @who_now,
+                    automatic => 'yes',
+                    amount    => -1*$tuition,
+                    what      => "Life member - free program - tuition waived.",
+                });
             }
-            model($c, 'RegCharge')->create({
-                @who_now,
-                automatic => 'yes',
-                amount    => -1*$amount,
-                what      => "$string{spons_tuit_disc}% Tuition discount for "
-                            . $reg->status . " member$maxed",
-            });
+            else {
+                my $amount = int(($string{spons_tuit_disc}/100)*$tuition);
+                my $maxed = "";
+                if ($amount > $string{max_tuit_disc}) {
+                    $amount = $string{max_tuit_disc};
+                    $maxed = " - to a max of \$$string{max_tuit_disc}";
+                }
+                model($c, 'RegCharge')->create({
+                    @who_now,
+                    automatic => 'yes',
+                    amount    => -1*$amount,
+                    what      => "$string{spons_tuit_disc}% Tuition discount for "
+                                . $reg->status . " member$maxed",
+                });
+            }
         }
     }
 
@@ -1125,8 +1130,6 @@ sub _compute {
     my $housecost = $pr->housecost;
 
     my $h_type = $reg->h_type;           # what housing type was assigned?
-    my $lead_assist = $reg->leader_assistant();   # no housing charge
-                                                  # for these people
     my $h_cost = ($h_type eq 'not_needed'
                   || $h_type eq 'unknown')? 0
                  :                          $housecost->$h_type;
@@ -2021,11 +2024,13 @@ EOH
         if ($need_house && $hid) {
             # no height= since it pixelizes it :(
             my $unhappy = "";
-            if ($h_type ne $pref1 && $h_type ne $pref2) {
-                $unhappy = "<img src=/static/images/unhappy2.gif>";
-            }
-            elsif ($h_type ne $pref1) {
-                $unhappy = "<img src=/static/images/unhappy1.gif>";
+            if ($pref1 || $pref2) {
+                if ($h_type ne $pref1 && $h_type ne $pref2) {
+                    $unhappy = "<img src=/static/images/unhappy2.gif>";
+                }
+                elsif ($h_type ne $pref1) {
+                    $unhappy = "<img src=/static/images/unhappy1.gif>";
+                }
             }
             # pretty funky.   a better way to avoid unneeded spaces???
             # could put icons in an array and at the end

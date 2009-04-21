@@ -52,7 +52,7 @@ function process(e) {
 </script>
 </head>
 
-<h2>Registrations[% IF ! multiple_progs %] for [% program.name %] - [% program.sdate_obj.format("%b %y") %][% END %]</h2>
+<h2>Registrations[% IF ! multiple_progs %] for [% program.name %] - [% program.dates %][% END %]</h2>
 
 [% IF ! multiple_progs %]
 <form name=form id= form action="/registration/list_reg_name/[% program.id %]">

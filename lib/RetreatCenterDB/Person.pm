@@ -133,7 +133,7 @@ sub sex_disp {
     my $sex = $self->sex;
     return ($sex eq 'M')? "Male"
           :($sex eq 'F')? "Female"
-          :               "Person of Indeterminate Gender"
+          :               "Person of Unreported Gender"
           ;
 }
 

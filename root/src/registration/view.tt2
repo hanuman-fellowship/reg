@@ -21,7 +21,7 @@ h3 {
     color: #338833;
 }
 .cancel {
-    margin-left: 1in;
+    margin-left: .5in;
     color: red;
     font-weight: bold;
     font-size: 17pt;
@@ -101,17 +101,16 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <tr>
 <th align=right>Person</th>
 <td colspan=3 width=700><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a>
+([% person.sex_disp %])
 [% IF reg.cancelled %]
-<span class=cancel>
-Cancelled
-</span>
+<span class=cancel>Cancelled</span>
 [% END %]
 [% IF reg.date_start != program.sdate %] <span class=arr_lv>Arriving [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
 [% END %]
 [% IF reg.date_end   != program.edate %] <span class=arr_lv>Leaving [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
 [% END %]
 </td>
-<td><a href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back">Back</a>&nbsp;&nbsp;&nbsp;<a href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next">Next</a></td>
+<td><a accesskey='B' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back"><span class=keyed>B</span>ack</a>&nbsp;&nbsp;&nbsp;<a accesskey='N' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next"><span class=keyed>N</span>ext</a></td>
 </tr>
 
 <tr>
