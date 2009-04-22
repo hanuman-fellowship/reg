@@ -567,6 +567,9 @@ sub prevprog {
 # open in new window easily closed, sized just right.
 # have little note saying "click to enlarge"?
 #
+# this routine can be uncommented to generate a
+# popup enlargement.  when we have better pictures, that is.
+#
 sub picture {
     my ($self) = @_;
 
@@ -609,21 +612,26 @@ sub picture {
     }
     if ($pic2) {
         my $pic1_html = "<img src='pics/$pic1' width=$half>";
-        $pic1_html = gen_popup($pic1_html, $pic1);
+        #$pic1_html = gen_popup($pic1_html, $pic1);
         my $pic2_html = "<img src='pics/$pic2' width=$half>";
-        $pic2_html = gen_popup($pic2_html, $pic2);
+        #$pic2_html = gen_popup($pic2_html, $pic2);
         return <<EOH;
 <table cellspacing=0>
 <tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
-<tr><td align=center colspan=2 class='click_enlarge'>$string{'click_enlarge'}</td></tr>
 </table>
 EOH
+# move the next line up above </table>
+#<tr><td align=center colspan=2 class='click_enlarge'>$string{'click_enlarge'}</td></tr>
     } else {
         my $pic_html = "<img src='pics/$pic1' width=$full>";
-        $pic_html = "<table><tr><td>" .
-					gen_popup($pic_html, $pic1) .
-			        "</td></tr><tr><td align=center class='click_enlarge'>".
-					"$string{click_enlarge}</td></tr></table>";
+        $pic_html = gen_popup($pic_html, $pic1);
+        $pic_html = "<table><tr><td>"
+					. $pic_html
+			        . "</td></tr>"
+                    #. "<tr><td align=center class='click_enlarge'>"
+					#. $string{click_enlarge}
+                    #. "</td></tr>
+                    . "</table>";
         return $pic_html;
     }
 }
