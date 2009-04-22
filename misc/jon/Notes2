@@ -1240,6 +1240,9 @@ in various reg listings, etc adjust cal_param for which
     what about reg payments, charges???
     HOW do registrations get deleted????
 
+***Referential integrity check
+    delete rental - what about the proposal?
+
 FINAL FIXES BEFORE GO LIVE
 - Pickup Date - not just Date for Rides
 - Back not Prev

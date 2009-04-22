@@ -938,10 +938,12 @@ sub delete : Local {
     my $p = model($c, 'Program')->find($id);
 
     if (my (@regs) = $p->registrations()) {
+        my $n = @regs;
+        my $pl = $n == 1? "": "s";
         error($c,
-            'You must first delete all '
+            'You must first delete the '
                 . scalar(@regs)
-                . ' registrations for this program.',
+                . ' registration$pl for this program.',
             'gen_error.tt2',
         );
         return;

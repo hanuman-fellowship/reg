@@ -36,5 +36,20 @@ Apr 20 9:00-12:40, 1:30-5:30, 11:30-12:40
     final fixes, thorough testing.
     consulting w Barnaby, Sukhdev
     beginning the go live process
-Apr 21 9:10-
+Apr 21 9:10-5:00, 6:00-7:50, 8:20-10:30, 10:45-11:30
     Go Live initializations and preliminaries
+    lots of testing, fixes, new feature requests
+    adjusting web desc, bios with tinyMCE editor
+        can't really paste from Word or Web content.
+        some way to just take text?
+        also - ul lists are in smaller font? why?
+    messed with it all.
+    reworked cgi-bin/admin
+    noticed many AVI programs got clobbered somehow - Brajesh?
+        no protection for deleting programs with regs.
+        cascade deletes?
+        could still be there?
+        search for regs linking to non-existent program.
+        mess.
+Apr 22 10:00-1:15
+    consult with newReg launch issues

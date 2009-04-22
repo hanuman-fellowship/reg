@@ -1,3 +1,8 @@
+<style type="text/css">
+.spacing {
+    margin-left: 3mm;
+}
+</style>
 <h2>Reconciling the Bank Deposit</h2>
 <table cellpadding=3 border=0>
 <tr>
@@ -7,7 +12,7 @@
 <th width=70 align=right>Check</th>
 <th width=70 align=right>Credit</th>
 <th width=70 align=right>Online</th>
-<th align=left>Account</th>
+<th align=left><span class=spacing>Account</span></th>
 </tr>
 [% FOR p IN payments %]
 <tr>
@@ -17,7 +22,7 @@
 <td align=right>[% p.chk %]</td>
 <td align=right>[% p.credit %]</td>
 <td align=right>[% p.online %]</td>
-<td>[% p.pname %]</td>
+<td><span class=spacing>[% p.pname %]</span></td>
 </tr>
 [% END %]
 <!-- the line above the totals: -->
@@ -27,14 +32,14 @@
 <td><hr color=black></td>
 <td><hr color=black></td>
 <td><hr color=black></td>
-<td><hr color=black></td>
+<td><hr class=spacing color=black></td>
 </tr>
 <tr>
 <td colspan=3 align=right>[% cash %]</td>
 <td align=right>[% check %]</td>
 <td align=right>[% credit %]</td>
 <td align=right>[% online %]</td>
-<td>Total = $[% total %]</td>
+<td><span class=spacing>Total = $[% total %]</span></td>
 </tr>
 </table>
 [% IF again %]

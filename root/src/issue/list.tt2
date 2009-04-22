@@ -7,7 +7,7 @@
 <form name=form action=/issue/search>
 <a href=/issue/create>Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href=/issue/list_mine>Mine</a>
+<a href=/issue/list_mine>My</a>
 <span style="margin-left: 1in">
 <input type=text size=10 name=pat>
 <input type=submit value="Search">

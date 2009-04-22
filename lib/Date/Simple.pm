@@ -175,9 +175,13 @@ sub new {
             @ymd = _three($1, $2, $3);
         }
         elsif ($x =~ m{^(\d+)\D+(\d+)$}) {
-            @ymd = (today()->year, $1, $2);
+            @ymd = _three($1, $2, today()->year);
         }
-        elsif ($x =~ m{^(\d+)$}) {
+        elsif ($x =~ m{^(\d\d)(\d\d)$}) {
+            my $t = today();
+            @ymd = _three($1, $2, $t->year);
+        }
+        elsif ($x =~ m{^(\d{1,2})$}) {
             my $t = today();
             @ymd = ($t->year, $t->month, $1);
         }
@@ -642,6 +646,8 @@ argument list can be one of these:
         If it is between 70 and 99 it is in the 20th century.
         The first two digits are either month/day or day/month
         depending on the European setting (default American).
+    MMDD (or DDMM if European)
+        4 digits represent the month and day of the current year.
 
 =over 4
 

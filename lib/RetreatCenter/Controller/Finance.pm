@@ -64,9 +64,11 @@ sub reconcile_deposit : Local {
     # Donations are not included in deposits, no???
     #
     for my $src (@sources) {
+        PAYMENT:
         for my $p (model($c, $src)->search($cond)) {
             my $type = $p->type;
             my $amt  = $p->amount;
+            next PAYMENT if $amt == 0;       # bogus payment
             if ($type eq 'D') {
                 $credit += $amt;
             }
@@ -181,9 +183,11 @@ sub file_deposit : Local {
     # Donations are not included in deposits, no???
     #
     for my $src (@sources) {
+        PAYMENT:
         for my $p (model($c, $src)->search($cond)) {
             my $type = $p->type();
             my $amt  = $p->amount();
+            next PAYMENT if $amt == 0;      # bogus payment
             my $glnum = $p->glnum();
             push @payments, {
                 name   => $p->name(),
