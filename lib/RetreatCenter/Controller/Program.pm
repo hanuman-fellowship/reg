@@ -1419,7 +1419,7 @@ sub gen_regtable {
         my $month        = $p->sdate_obj->month;
 
         my $housecost = $p->housecost;
-        for my $t (housing_types(1)) {
+        for my $t (reverse housing_types(1)) {
             next if $t =~ /quad/        && !$p->quad;
             next if $t =~ /economy/     && !$p->economy;
             next if $t =~ /single_bath/ && !$p->sbath;
