@@ -105,9 +105,9 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 [% IF reg.cancelled %]
 <span class=cancel>Cancelled</span>
 [% END %]
-[% IF reg.date_start != program.sdate %] <span class=arr_lv>Arriving [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
+[% IF reg.date_start != program.sdate %] <span class=arr_lv>Arrive [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
 [% END %]
-[% IF reg.date_end   != program.edate %] <span class=arr_lv>Leaving [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
+[% IF reg.date_end   != program.edate %] <span class=arr_lv>Leave [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
 [% END %]
 </td>
 <td><a accesskey='B' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back"><span class=keyed>B</span>ack</a>&nbsp;&nbsp;&nbsp;<a accesskey='N' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next"><span class=keyed>N</span>ext</a></td>
