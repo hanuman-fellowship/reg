@@ -522,7 +522,7 @@ sub get_online : Local {
         date_postmark   => $date->as_d8(),
         time_postmark   => $P{time},
         deposit         => int($P{amount}),
-        deposit_type    => "Online",
+        deposit_type    => 'O',
         ceu_license     => $P{ceu_license},
         "$P{howHeard}_checked" => "selected",
     );
