@@ -937,6 +937,16 @@ sub delete : Local {
 
     my $p = model($c, 'Program')->find($id);
 
+    if (my (@regs) = $p->registrations()) {
+        error($c,
+            'You must first delete all '
+                . scalar(@regs)
+                . ' registrations for this program.',
+            'gen_error.tt2',
+        );
+        return;
+    }
+
     # affiliation/programs
     model($c, 'AffilProgram')->search({
         p_id => $id,
@@ -954,6 +964,9 @@ sub delete : Local {
     model($c, 'Booking')->search({
         program_id => $id,
     })->delete();
+
+    # the summary
+    $p->summary->delete();
 
     # any image
     unlink <root/static/images/p*-$id.jpg>;

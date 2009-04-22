@@ -727,6 +727,14 @@ sub delete : Local {
 
     my $r = model($c, 'Rental')->find($id);
 
+    # first break any link from the Proposal to this Rental.
+    #
+    if (my $prop_id = $r->proposal_id()) {
+        model($c, 'Proposal')->find($prop_id)->update({
+            rental_id => 0,
+        });
+    }
+
     # multiple bookings
     model($c, 'Booking')->search({
         rental_id => $id,
