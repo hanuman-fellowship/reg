@@ -979,8 +979,7 @@ sub create_do : Local {
         # MMC program deposit
         #
         model($c, 'RegPayment')->create({
-            reg_id  => $reg_id,
-            user_id => $c->user->obj->id,
+            @who_now,
             amount  => $P{deposit},
             type    => $P{deposit_type},
             what    => 'Deposit',
