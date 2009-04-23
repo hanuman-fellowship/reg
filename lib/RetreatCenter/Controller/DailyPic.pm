@@ -316,6 +316,7 @@ EOT
     my $who_is_there = $c->uri_for("/registration/who_is_there");
     my $html = <<"EOH";
 <head>
+<title>Daily Picture</title>
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js">
 <!-- overLIB (c) Erik Bosrup -->

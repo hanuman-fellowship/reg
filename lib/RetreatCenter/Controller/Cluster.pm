@@ -363,6 +363,7 @@ sub show : Local {
     my $html = <<"EOH";
 <html>
 <head>
+<title>Cluster View</title>
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js">
 <!-- overLIB (c) Erik Bosrup -->

@@ -544,14 +544,17 @@ sub list : Local {
 
     Global->init($c);
     my $today = tt_today($c)->as_d8();
-    $c->stash->{rentals} = [
-        model($c, 'Rental')->search(
-            { edate => { '>=', $today } },
-            { order_by => 'sdate' },
-        )
-    ];
-    $c->stash->{rent_pat} = "";
-    $c->stash->{template} = "rental/list.tt2";
+    stash($c,
+        pg_title => "Rentals",
+        rentals  => [
+            model($c, 'Rental')->search(
+                { edate => { '>=', $today } },
+                { order_by => 'sdate' },
+            )
+        ],
+        rent_pat => "",
+        template => "rental/list.tt2",
+    );
 }
 
 sub listpat : Local {
@@ -605,14 +608,17 @@ sub listpat : Local {
             name => { 'like' => "${pat}%" },
         };
     }
-    $c->stash->{rentals} = [
-        model($c, 'Rental')->search(
-            $cond,
-            { order_by => 'sdate desc' },
-        )
-    ];
-    $c->stash->{rent_pat} = $rent_pat;
-    $c->stash->{template} = "rental/list.tt2";
+    stash($c,
+        pg_title => "Rentals",
+        rentals  => [
+            model($c, 'Rental')->search(
+                $cond,
+                { order_by => 'sdate desc' },
+            )
+        ],
+        rent_pat => $rent_pat,
+        template => "rental/list.tt2",
+    );
 }
 
 sub update : Local {

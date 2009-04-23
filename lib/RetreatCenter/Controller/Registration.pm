@@ -542,11 +542,15 @@ sub _rest_of_reg {
     # is this a dup reg?
     # we have the person and the program.
     # check if it is there already.
+    # we CAN register twice for the same
+    # personal retreat program.
     #
-    if (my @reg = model($c, 'Registration')->search({
+    my @reg;
+    if (($pr->name() !~ m{personal\s+retreat}i)
+        && (@reg = model($c, 'Registration')->search({
                            person_id  => $p->id(),
                            program_id => $pr->id(),
-                       })
+                       }))
     ) {
         stash($c,
             template => "registration/dup.tt2",
@@ -898,6 +902,9 @@ sub create_do : Local {
         );
         return;
     }
+    #
+    # is there a registration
+    #
     my $cabin_room = "";
     if ($P{cabin} && ! $P{room}) {
         $cabin_room = "cabin";
@@ -2433,7 +2440,7 @@ sub delete : Local {
     model($c, 'Program')->find($prog_id)->update({
         reg_count => \'reg_count - 1',
     });
-    $c->response->redirect($c->uri_for("/person/view/$person_id"));
+    $c->response->redirect($c->uri_for("/registration/list_reg_name/$prog_id"));
 }
 
 sub early_late : Local {

@@ -140,14 +140,17 @@ sub list : Local {
     my ($self, $c) = @_;
 
     my $today = tt_today($c)->as_d8();
-    $c->stash->{events} = [
-        model($c, 'Event')->search(
-            { sdate => { '>=', $today } },
-            { order_by => 'sdate' },
-        )
-    ];
-    $c->stash->{event_pat} = "";
-    $c->stash->{template} = "event/list.tt2";
+    stash($c,
+        pg_title  => "Events",
+        events    => [
+            model($c, 'Event')->search(
+                { sdate => { '>=', $today } },
+                { order_by => 'sdate' },
+            )
+        ],
+        event_pat => "",
+        template  => "event/list.tt2",
+    );
 }
 
 sub listpat : Local {
@@ -204,14 +207,17 @@ sub listpat : Local {
             ],
         };
     }
-    $c->stash->{events} = [
-        model($c, 'Event')->search(
-            $cond,
-            { order_by => 'sdate desc' },
-        )
-    ];
-    $c->stash->{event_pat} = $event_pat;
-    $c->stash->{template} = "event/list.tt2";
+    stash($c,
+        pg_title  => "Events",
+        events    => [
+            model($c, 'Event')->search(
+                $cond,
+                { order_by => 'sdate desc' },
+            )
+        ],
+        event_pat => $event_pat,
+        template  => "event/list.tt2",
+    );
 }
 
 sub update : Local {

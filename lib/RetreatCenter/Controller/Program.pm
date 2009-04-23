@@ -551,6 +551,7 @@ sub list : Local {
     );
     my @files = <root/static/online/*>;
     stash($c,
+        pg_title => "Programs",
         online   => scalar(@files),
         pr_pat   => "",
         template => "program/list.tt2",
@@ -612,11 +613,12 @@ sub listpat : Local {
     }
     my @files = <root/static/online/*>;
     stash($c,
+        pg_title => "Programs",
         online   => scalar(@files),
         programs => [
             model($c, 'Program')->search(
                 $cond,
-                { order_by => 'sdate' },
+                { order_by => 'sdate desc' },
             )
         ],
         pr_pat   => $pr_pat,

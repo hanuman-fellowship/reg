@@ -12,6 +12,7 @@ use Util qw/
     fillin_template
     error
     tt_today
+    stash
 /;
 use Date::Simple qw/
     date
@@ -48,14 +49,17 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{rides} = [ model($c, 'Ride')->search(
-        -or => [
-            pickup_date => { '>=' => today()->as_d8() },
-            paid_date   => '',
-        ],
-        { order_by => 'pickup_date, airport, flight_time' }
-    ) ];
-    $c->stash->{template} = "ride/list.tt2";
+    stash($c,
+        pg_title => "Rides",
+        rides => [ model($c, 'Ride')->search(
+            -or => [
+                pickup_date => { '>=' => today()->as_d8() },
+                paid_date   => '',
+            ],
+            { order_by => 'pickup_date, airport, flight_time' }
+        ) ],
+        template => "ride/list.tt2",
+    );
 }
 
 sub delete : Local {
@@ -435,17 +439,20 @@ sub search : Local {
                         paid_date   => '',
                     ];
     }
-    $c->stash->{rides} = [ model($c, 'Ride')->search(
-        {
-            @cond,
-        },
-        {
-            order_by => 'pickup_date, airport, flight_time',
-            join     => [qw/ rider /],
-            prefetch => [qw/ rider /],   
-        }
-    ) ];
-    $c->stash->{template} = "ride/list.tt2";
+    stash($c,
+        pg_title => "Rides",
+        rides    => [ model($c, 'Ride')->search(
+            {
+                @cond,
+            },
+            {
+                order_by => 'pickup_date, airport, flight_time',
+                join     => [qw/ rider /],
+                prefetch => [qw/ rider /],   
+            }
+        ) ],
+        template => "ride/list.tt2",
+    );
 }
 
 sub mine : Local {
