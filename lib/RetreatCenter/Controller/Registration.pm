@@ -2906,10 +2906,15 @@ sub lodge : Local {
     my $nmonths = date($pr->edate())->month()
                 - date($sdate)->month()
                 + 1;
+    $sdate  = date($sdate);
+    $edate1 = date($edate1);
+    my $n_nights = $edate1 - $sdate + 1;
+    my $pl = $n_nights == 1? "": "s";
     stash($c,
         reg           => $reg,
-        sdate         => date($sdate),
-        edate1        => date($edate1),
+        n_nights      => $n_nights . " night$pl",
+        sdate         => $sdate,
+        edate1        => $edate1,
         note          => $cn,
         note_lines    => lines($cn) + 3,
         message2      => $message2,
