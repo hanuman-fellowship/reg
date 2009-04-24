@@ -41,7 +41,8 @@ function popup(url) {
 <p>
 <span class=mess>[% message2 %]</span>
 [% END %]
-<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %].[% house_prefs %]</h3>
+<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %]
+for nights [% sdate %] to [% edate1 %].[% house_prefs %]</h3>
 <table border=0>
 <tr>
 [% IF total_opts == 0 %]

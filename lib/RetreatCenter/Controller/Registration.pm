@@ -75,11 +75,13 @@ sub transform_dates {
     my $edate = $pr->edate();
     my $edate2 = (date($pr->edate()) + $pr->extradays())->as_d8();
         # edate2 may be different in case this is an 'extended' program.
-    if ($dates{date_end}
-        && $dates{date_end} ne $edate
-        && $dates{date_end} ne $edate2
-    ) {
-        $dates{late} = 'yes';
+
+    if ($dates{date_end}) {
+        if (   $dates{date_end} ne $edate
+            && $dates{date_end} ne $edate2
+        ) {
+            $dates{late} = 'yes';
+        }
     }
     else {
         $dates{late}     = '';
@@ -2906,6 +2908,8 @@ sub lodge : Local {
                 + 1;
     stash($c,
         reg           => $reg,
+        sdate         => date($sdate),
+        edate1        => date($edate1),
         note          => $cn,
         note_lines    => lines($cn) + 3,
         message2      => $message2,
