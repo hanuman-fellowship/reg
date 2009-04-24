@@ -65,7 +65,7 @@ sub index : Private {
 sub transform_dates {
     my ($pr, %dates) = @_;
     
-    if ($dates{date_start}) {
+    if ($dates{date_start} && $dates{date_start} ne $pr->sdate()) {
         $dates{early} = 'yes';
     }
     else {

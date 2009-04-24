@@ -15,6 +15,7 @@ use Global qw/
 use Util qw/
     trim
     expand
+    ptrim
 /;
 
 # Load required DBIC stuff
@@ -74,6 +75,10 @@ __PACKAGE__->has_many(payments  => 'RetreatCenterDB::RegPayment',  'reg_id');
 __PACKAGE__->has_many(confnotes => 'RetreatCenterDB::ConfHistory', 'reg_id',
                       { order_by => 'the_date desc, time desc' });
 
+sub comment_tr {
+    my ($self) = @_;
+    return ptrim($self->comment());
+}
 sub date_start_obj {
     my ($self) = @_;
     return date($self->date_start) || "";

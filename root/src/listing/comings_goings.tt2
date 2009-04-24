@@ -4,10 +4,12 @@
 <a href=/listing/comings_goings/[% next_date %] accesskey='n'><span class=keyed>N</span>ext</a>
 <h3>Coming</h3>
 <ul>
-<table cellpadding=3>
+<table cellpadding=3 border=0>
 <tr>
-<th align=left width=170px>Name</th>
+<th align=left width=300>Name</th>
 <th align=left>Program/Rental</th>
+<th align=left>Housing</th>
+<td width=300></td>
 </tr>
 
 [% FOR r IN ind_coming %]
@@ -16,7 +18,16 @@
 <tr>
 <td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
 <td><a target=happening href="/program/view/[% pr.id %]">[% pr.name %]</a></td>
+<td align=left>[% r.house.name %]</td>
 </tr>
+[% IF r.comment %]
+<tr>
+<td></td>
+<td colspan=3>
+[% r.comment %]
+</td>
+</tr>
+[% END %]
 [% END %]
 
 [% FOR p IN prg_coming %]
@@ -40,7 +51,7 @@
 <ul>
 <table cellpadding=3>
 <tr>
-<th align=left width=170px>Name</th>
+<th align=left width=300>Name</th>
 <th align=left>Program/Rental</th>
 </tr>
 
