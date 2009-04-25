@@ -5,7 +5,6 @@ use base qw/DBIx::Class/;
 
 use Global qw/%string/;
 use Util qw/
-    expand
     tt_today
     places
     gptrim
@@ -154,10 +153,6 @@ sub contract_received_obj {
 sub link {
     my ($self) = @_;
     return "/rental/view/" . $self->id();
-}
-sub webdesc_ex {
-    my ($self) = @_;
-    expand($self->webdesc());
 }
 sub meeting_places {
     my ($self, $breakout) = @_;
