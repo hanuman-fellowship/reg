@@ -65,12 +65,12 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 [% IF ! reg.cancelled %]
     [% IF reg.letter_sent %]
     <a href="/registration/send_conf/[% id %]"
-       onmouseover="return overlib('[% person.email || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseover="return overlib('[% person.email_okay || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
        onmouseout="return nd();">ReSend</a>
     [% ELSE %]
     <a class=not_sent 
        href="/registration/send_conf/[% id %]"
-       onmouseover="return overlib('[% person.email || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseover="return overlib('[% person.email_okay || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
        onmouseout="return nd();">Send</a>
     [% END %]
     &nbsp;&nbsp;

@@ -8,6 +8,7 @@ use Util qw/
     expand
     tt_today
     places
+    gptrim
 /;
 use Date::Simple qw/
     date
@@ -167,9 +168,9 @@ sub extradays {     # see Program->dates()
 }
 sub desc {
 	my ($self) = @_;
-	my $desc = expand($self->webdesc);
+	my $desc = gptrim($self->webdesc);
 	return "" unless $desc;
-	"<span class='event_desc'>$desc</span><br>";
+	"<span class='event_desc'>$desc</span>";
 }
 sub weburl {
     my ($self) = @_;

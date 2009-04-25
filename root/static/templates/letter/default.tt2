@@ -170,11 +170,13 @@ kerosene lamps, etc.
 <p class=p2>
 [% IF personal_retreat %]
 Your retreat begins on the afternoon of 
+[% reg.date_start_obj.format("%A, %B %e") %].
 [% ELSE %]
 Program registration is from
 [% program.reg_start_obj %] to [% program.reg_end_obj %] on
+[% program.sdate_obj.format("%A, %B %e") %] in the Community Building.
 [% END %]
-[% program.sdate_obj.format("%A, %B %e") %][% IF personal_retreat %].[% ELSE %] in the Community Building.[% END %]<br>
+<br>
 [% IF personal_retreat && sunday %]
     Look for your housing information which will be posted
     in the Community Building lobby.

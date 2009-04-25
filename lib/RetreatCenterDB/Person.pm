@@ -3,10 +3,14 @@ use warnings;
 package RetreatCenterDB::Person;
 use base qw/DBIx::Class/;
 
-use Date::Simple qw/date/;
-
+use Date::Simple qw/
+    date
+/;
 use Algorithm::LUHN qw/
     is_valid
+/;
+use Util qw/
+    valid_email
 /;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -140,6 +144,13 @@ sub sex_disp {
 sub name_email {
     my ($self) = @_;
     return $self->first() . " " . $self->last() . "<" . $self->email() . ">";
+}
+
+sub email_okay {
+    my ($self) = @_;
+
+    my $email = $self->email();
+    return valid_email($email)? $email: "";
 }
 
 #
