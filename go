@@ -1,4 +1,5 @@
 #!/bin/sh
+export DBIC_TRACE=1
 if [ `whoami` = 'sahadev' ]
 then
     export DBI_DSN="dbi:mysql:reg2"
