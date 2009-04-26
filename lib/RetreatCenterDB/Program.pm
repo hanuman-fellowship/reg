@@ -438,7 +438,7 @@ EOH
     # I think we need them hardcoded.  To tie 'quad' in program to
     # 'quad' in housing_cost.
     #
-    for my $t (housing_types(1)) {
+    for my $t (reverse housing_types(1)) {
         next if $t =~ m{economy}     && ! $self->economy;
         next if $t =~ m{quad}        && ! $self->quad;
 		next if $t =~ m{single_bath} && ! $self->sbath;
