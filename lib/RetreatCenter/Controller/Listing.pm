@@ -396,11 +396,24 @@ sub meal_list : Local {
     my $start_d8 = $start->as_d8();
     my $end_d8   = $end->as_d8();
 
-    my @regs = model($c, 'Registration')->search({
-                   date_start => { '<=' => $end_d8   },
-                   date_end   => { '>=' => $start_d8 },
-                   cancelled  => '',
-               });
+    #
+    # people enrolled in a DCM program do not eat meals.
+    #
+    my @regs = model($c, 'Registration')->search(
+                   {
+                       date_start => { '<=' => $end_d8   },
+                       date_end   => { '>=' => $start_d8 },
+                       cancelled  => '',
+                       -or => [
+                           'program.level' => 'S',
+                           'program.level' => ' ',
+                       ],
+                   },
+                   {
+                       join     => [qw/ program /],
+                       prefetch => [qw/ program /],   
+                   }
+               );
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
