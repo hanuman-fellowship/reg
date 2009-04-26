@@ -261,6 +261,9 @@ sub show : Local {
                     ($ev->name() =~ m{personal.*retreats}i)
                     ||
                     ($ev->level() =~ m{[DCM]})
+                    ||
+                    ($ev->rental_id() != 0)     # a parallel program
+                                            # the rental will be there
                    )
             ) {
                 next EVENT;
