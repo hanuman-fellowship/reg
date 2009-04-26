@@ -483,7 +483,7 @@ sub get_online : Local {
         $comment = $P{request};
     }
     if ($P{progchoice} eq 'full') {
-        stash($c, date_end => "+" . $pr->extradays);
+        stash($c, date_end => $pr->edate_obj() + $pr->extradays);
     }
     for my $how (qw/ ad web brochure flyer word_of_mouth /) {
         stash($c, "$how\_checked" => "");
@@ -896,6 +896,29 @@ sub create_do : Local {
         return;
     }
     my $pr = model($c, 'Program')->find($P{program_id});
+    #
+    # is this a dup reg?
+    # we have the person and the program.
+    # check if it is there already.
+    # we CAN register twice for the same
+    # personal retreat program.
+    #
+    my @reg;
+    if (($pr->name() !~ m{personal\s+retreat}i)
+        && (@reg = model($c, 'Registration')->search({
+                           person_id  => $P{person_id},
+                           program_id => $pr->id(),
+                       }))
+    ) {
+        my $p = model($c, 'Person')->find($P{person_id});
+        stash($c,
+            template => "registration/dup.tt2",
+            person   => $p,
+            program  => $pr,
+            registration => $reg[0],
+        );
+        return;
+    }
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} > $dates{date_end}) {
         error($c,
