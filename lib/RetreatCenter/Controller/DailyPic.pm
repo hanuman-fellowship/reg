@@ -272,9 +272,16 @@ sub show : Local {
             my $ev_type = ref($ev);
             $ev_type =~ s{.*::}{};
             $ev_type = lc $ev_type;
+            my $ed;
+            if ($type eq 'Program' && $ev->extradays() != 0) {
+                $ed = date($ev->edate(), "%m/%d") + $ev->extradays();
+            }
+            else {
+                $ed = date($ev->edate, "%m/%d"),
+            }
             push @events, {
                 sdate => date($ev->sdate, "%m/%d"),
-                edate => date($ev->edate, "%m/%d"),
+                edate => $ed,
                 name  => $ev->name(),
                 type  => $ev_type,
                 id    => $ev->id(),
