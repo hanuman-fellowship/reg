@@ -109,10 +109,10 @@ sub reconcile_deposit : Local {
                 link => $r->link(),
                 date => $r->paid_date_obj->format("%D"),
                 type => 'C',
-                cash => 0,
-                chk  => 0,
+                cash => undef,
+                chk  => undef,
                 credit => $amt,
-                online => 0,
+                online => undef,
                 pname => "Ride",
             };
             $credit += $amt;
