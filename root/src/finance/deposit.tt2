@@ -2,7 +2,11 @@
 .spacing {
     margin-left: 3mm;
 }
+.reconcile {
+    font-size: 12pt;
+}
 </style>
+<div class=reconcile>
 <h2>Reconciling the Bank Deposit</h2>
 <table cellpadding=3 border=0>
 <tr>
@@ -51,3 +55,4 @@ If it reconciles
 >
 Generate it again for Filing</a>.
 [% END %]
+</div>
