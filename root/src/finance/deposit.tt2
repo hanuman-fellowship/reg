@@ -2,8 +2,8 @@
 .spacing {
     margin-left: 3mm;
 }
-.reconcile {
-    font-size: 12pt;
+.reconcile td, .reconcile a {
+    font-size: 11pt;
 }
 </style>
 <div class=reconcile>
@@ -12,10 +12,10 @@
 <tr>
 <th align=left>Name</th>
 <th>Date</th>
-<th width=70 align=right>Cash</th>
-<th width=70 align=right>Check</th>
-<th width=70 align=right>Credit</th>
-<th width=70 align=right>Online</th>
+<th width=50 align=right>Cash</th>
+<th width=50 align=right>Check</th>
+<th width=50 align=right>Credit</th>
+<th width=50 align=right>Online</th>
 <th align=left><span class=spacing>Account</span></th>
 </tr>
 [% FOR p IN payments %]
