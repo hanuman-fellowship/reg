@@ -148,7 +148,7 @@ Misc
 
 <tr>
 <th align=right>Unlinked Dir</th>
-<td><input type=text name=unlinked_dir size=10 value="[% program.unlinked_dir %]">
+<td><input type=text name=unlinked_dir size=20 value="[% program.unlinked_dir %]">
 </tr>
 
 <tr>
