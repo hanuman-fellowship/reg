@@ -99,7 +99,7 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <table cellpadding=2 border=0>
 
 <tr>
-<th align=right>Person</th>
+<th align=right>[% IF person.leader %][% IF person.leader.assistant %]Assistant[% ELSE %]Leader[% END %][% ELSE %]Person[% END %]</th>
 <td colspan=3 width=700><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a>
 ([% person.sex_disp %])
 [% IF reg.cancelled %]

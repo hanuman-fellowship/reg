@@ -2268,6 +2268,7 @@ sub update : Local {
         note_lines      => lines($reg->confnote()) + 3,
         comment_lines   => lines($reg->comment ()) + 3,
         template        => "registration/edit.tt2",
+        leader_assistant_checked => $P{leader_assistant}? "checked": "",
     );
 }
 

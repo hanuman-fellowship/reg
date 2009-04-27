@@ -822,6 +822,22 @@ sub leader_update_do : Local {
             });
             ++$new_regs;
         }
+        else {
+            # make sure they're marked as 'leader_assistant'
+            if (! $reg->leader_assistant()) {
+                $reg->update({
+                    leader_assistant => 'yes',
+                });
+            }
+            # awkward - no real easy way to UNmark someone
+            # as an assistant/leader except to delete their registration
+            # and then re-register them as a leader.
+            # oh well.
+            # in a similar way to recompute someone's finances
+            # you have to vacate and then rehouse them.
+            # oh well.  -  later.
+            # 
+        }
     }
     if ($new_regs) {
         $program->update({
