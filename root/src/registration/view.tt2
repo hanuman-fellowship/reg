@@ -184,7 +184,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <tr>
 <td align=center>[% reg.balance %]</td>
 
-<td align=center>[% IF reg.balance > 0 && ! reg.cancelled %]
+<td align=center>[% IF reg.balance != 0 %]
     [% IF reg.program.school == 0 %]
     <a style="margin-left: .5in"
        href="/registration/pay_balance/[% id %]/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>
