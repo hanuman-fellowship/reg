@@ -42,3 +42,15 @@ a:hover {
 .keyed {
     background: #ddeeee;
 }
+.updated {
+    font-size: 10pt;
+}
+.cal_head {
+    font-size: 20pt;
+    font-weight: bold;
+    margin-top: .5in;
+    margin-bottom: .5in;
+}
+.cal_help {
+    font-size: 13pt;
+}
