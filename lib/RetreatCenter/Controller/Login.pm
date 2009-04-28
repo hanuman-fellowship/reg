@@ -46,8 +46,14 @@ sub index : Private {
                 $c->response->redirect($c->uri_for('/ride/mine'));
             }
             elsif ($username eq 'calendar') {
-                $c->response->redirect($c->uri_for('/event/calendar/'
-                    . today()->as_d8()));
+                # tried a redirect - did not work when calling
+                # via LWP::Simple->get()
+                # so, instead we go direct:
+                #
+                RetreatCenter::Controller::Event->calendar(
+                    $c, today()->as_d8(), ""
+                );
+                return;
             }
             else {
                 $c->response->redirect($c->uri_for('/person/search'));
