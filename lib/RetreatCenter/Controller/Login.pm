@@ -47,7 +47,7 @@ sub index : Private {
             }
             elsif ($username eq 'calendar') {
                 $c->response->redirect($c->uri_for('/event/calendar/'
-                    . today()->as_d8() . "/3"));
+                    . today()->as_d8()));
             }
             else {
                 $c->response->redirect($c->uri_for('/person/search'));
@@ -73,6 +73,7 @@ sub _clear_images {
     for my $im (<root/static/images/im*.png>) {
         my $stamp = substr($im, -18, 14);
         if ($now - $stamp > 120) {
+            # that arithmetic is suspect. does it matter???
             unlink $im;
         }
     }

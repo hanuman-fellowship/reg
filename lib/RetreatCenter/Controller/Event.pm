@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use Date::Simple qw/
     date
     days_in_month
+    today
 /;
 use Time::Simple qw/
     get_time
@@ -292,6 +293,7 @@ sub calendar : Local {
     my ($self, $c, $the_start, $the_end) = @_;
 
     my $staff = $c->check_user_roles('prog_staff');
+    my $public = $c->user->username() eq 'calendar';
     my $day_width  = $string{cal_day_width};
     my $event_border = $string{cal_event_border};
     my @month_name = qw/
@@ -385,6 +387,28 @@ sub calendar : Local {
             @opt_end = (sdate => { '<=', $end_date->as_d8() });
         }
     }
+    # for non-public calendars
+    #
+    my $go_form = <<"EOH";
+<style type="text/css">
+\@media print {
+    .noprint {
+        display: none;
+    }
+}
+</style>
+<div class=noprint>
+<form action='/event/calendar' name=form>
+<span class=datefld>Images <input type=checkbox name=images checked onclick='image_toggle()'></span>
+<span class=datefld>All Details <input type=checkbox name=detail onclick='detail_toggle(0)'></span>
+<span class=datefld>Start</span> <input type=text name=start size=10 value='$start_param'>
+<span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
+<span class=datefld><input class=go type=submit value="Go"></span>
+<a href="javascript:popup('/static/help/calendar.html');">How?</a>
+</form>
+</div>
+<p>
+EOH
 
     # put this in Global???
     my ($no_where) = model($c, 'MeetingPlace')->search({
@@ -853,6 +877,7 @@ sub calendar : Local {
             $cal->add_pr($dr->sdate->day, $dr->edate->day, $pr);
         }
     }
+
     #
     # generate the jump image and map
     #
@@ -911,7 +936,21 @@ sub calendar : Local {
                    grep { $details{$_} }
                    keys %details;
     my $content = <<"EOH";
+<html>
 <head>
+<script type="text/javascript">
+var newwin;
+function popup(url) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=620,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
 <title>Calendar</title>
 <link rel="stylesheet" type="text/css" href="/static/cal.css" />
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
@@ -962,7 +1001,6 @@ $jump_map
 <p>
 EOH
     my $jump_img = $c->uri_for("/static/images/$jump_name");
-    my $firstcal = 1;
     my @pr_color  = $string{cal_pr_color}  =~ m{\d+}g;
     my $fmt = "#%02x%02x%02x";
     my $arr_color = sprintf $fmt, $string{cal_arr_color} =~ m{\d+}g;
@@ -1006,10 +1044,10 @@ EOH
                     $pr_links .= "<tr>";
                     if ($staff) {
                         $pr_links
-                            .= "<td><a class=pr_links target=happening href="
-                            . $c->uri_for("/registration/view/$id")
-                            . ">$name</a></td><td bgcolor=$bg>$status"
-                            ;
+                           .= "<td><a class=pr_links target=happening href="
+                           . $c->uri_for("/registration/view/$id")
+                           . ">$name</a></td><td bgcolor=$bg>$status"
+                           ;
                     }
                     else {
                         # no access - just view
@@ -1022,19 +1060,23 @@ EOH
                 my $y1 = $ac->cal_height - 20 - 1;
                 my $x2 = $x1 + $day_width;
                 my $y2 = $y1 + 20;
-                #$im->rectangle($x1, $y1, $x2, $y2, $black);
                 $im->line($x1, $y1, $x2, $y1, $black);
-                    # could just draw the upper line, yeah.
+                    # just draw the upper line, yeah.
                 $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
                                      $pr_color);
                 my $offset = ($n < 10)? 11: 7;
                 $im->string(gdGiantFont, $x1+$offset, $y1+3, $n, $black);
-                $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n"
-. qq! onclick="return overlib('<center>$day_name $month_name[$m-1] $d</center><p><table cellpadding=2>$pr_links</table>',!
-                    # very cool to use $m-1 inside index inside ' inside " !!!
+                # ??? rework this to use HEREDOC <<
+                $imgmaps{$key} .= "<area shape='rect' "
+                               .  "coords='$x1,$y1,$x2,$y2'\n"
+. qq! onclick="return overlib('<center>$day_name!
+. qq! $month_name[$m-1] $d</center><p><table cellpadding=2>!
+. qq!$pr_links</table>',!
+             # very cool to use $m-1 inside index inside ' inside " !!!
 . qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
 . qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2, VAUTO)"!
-. qq! onmouseout="return nd();">\n!;
+. qq! onmouseout="return nd();">\n!
+                    if ! $public;       # zowee! fun!
             }
         }
 
@@ -1043,61 +1085,21 @@ EOH
                        . $key 
                        . sprintf("%04d%02d%02d%02d%02d%02d", 
                                  (localtime())[reverse (0 .. 5)])
-                       . ".png";
+                       . ".png"
+                       ;
         open my $imf, ">", "root/static/images/$cal_name"
             or die "no $cal_name: $!\n"; 
         print {$imf} $im->png;
         close $imf;
 
         my $month_name = $ac->sdate->format("%B %Y");
+        # ??? rework using HEREDOC?
         $content .= "<a name=$key></a>\n<span class=hdr>"
                   . $month_name
                   . "</span>"
                   . "<img border=0 class=jmptable src=$jump_img usemap=#jump>"
                   . "<span class=datefld>Details <input type=checkbox id=detail$key onclick='detail_toggle($key)'></span>";
-        if ($firstcal) {
-            my $logout = "";
-            if ($c->user->username() eq 'calendar') {
-                $logout = <<"EOH";
-<span style="margin-left: 1in;"><a href=/logout>Logout</a></span>
-EOH
-            }
-            my $go_form = <<"EOH";
-<style type="text/css">
-\@media print {
-    .noprint {
-        display: none;
-    }
-}
-</style>
-<script type="text/javascript">
-var newwin;
-function popup(url) {
-    newwin = window.open(
-        url, 'reg_search_help',
-        'height=620,width=550, scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
-</script>
-<div class=noprint>
-<form action='/event/calendar' name=form>
-<span class=datefld>Images <input type=checkbox name=images checked onclick='image_toggle()'></span>
-<span class=datefld>All Details <input type=checkbox name=detail onclick='detail_toggle(0)'></span>
-<span class=datefld>Start</span> <input type=text name=start size=10 value='$start_param'>
-<span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
-<span class=datefld><input class=go type=submit value="Go"></span>
-<a href="javascript:popup('/static/help/calendar.html');">How?</a>$logout
-</form>
-</div>
-<p>
-EOH
-            $content = $go_form . $content;
-            $firstcal = 0;
-        }
+
         $content .= "<p>\n";
         my $image = $c->uri_for("/static/images/$cal_name");
         $content .= <<"EOH";
@@ -1132,11 +1134,68 @@ EOH
     }
     $content .= <<"EOH";
 </body>
+</html>
+EOH
+    if (! $public) {
+        $content .= <<"EOH";
 <script type="text/javascript">
 document.form.end.focus();
 </script>
 EOH
-    $c->res->output($content);
+    }
+    if ($public) {
+        # clear the user's state
+        $c->logout;
+
+        # fix up the content and then
+        # ftp it all to www.mountmadonna.org
+        #
+        $content =~ s{http://.*?/images/}{}g;
+        $content =~ s{/static/}{};
+        $content =~ s{/static/js/}{};
+        open my $cal, ">", "root/static/pubcal_index.html"
+            or die "cannot open index.html: $!";
+        my $updated = get_time()->ampm() . " " . today()->format("%b %e");
+        print {$cal} <<"EOH";
+<span class=cal_head>
+Future Events at Mount Madonna Center
+<span class=updated>Updated $updated</span>
+<span class=cal_help><a href="javascript:popup('pubcal_help.html');">Help</a></span>
+</span>
+EOH
+        print {$cal} $content;
+        close $cal;
+        my ($jmp_image)  = $content =~ m{src=(imJ\d+[.]png)};
+        my @cal_images = $content =~ m{src='(im\d+[.]png)'}g;
+        my $ftp = Net::FTP->new($string{ftp_site},
+                                Passive => $string{ftp_passive})
+            or die "cannot connect to ...";    # not die???
+        $ftp->login($string{ftp_login}, $string{ftp_password})
+            or die "cannot login ", $ftp->message; # not die???
+        $ftp->cwd($string{ftp_dir})
+            or die "cannot cwd ", $ftp->message; # not die???
+        $ftp->cwd("calendar")
+            or die "cannot cwd ", $ftp->message; # not die???
+        for my $f ($ftp->ls()) {
+            $ftp->delete($f);
+        }
+        $ftp->ascii();
+        $ftp->put("root/static/pubcal_index.html", "index.html");
+        $ftp->put("root/static/js/overlib.js",     "overlib.js");
+        $ftp->put("root/static/cal.css",           "cal.css");
+        $ftp->put("root/static/help/pubcal_help.html", "pubcal_help.html");
+        $ftp->binary();
+        for my $im (@cal_images, $jmp_image) {
+            $ftp->put("root/static/images/$im", $im);
+        }
+        $ftp->quit();
+        # tidy up
+        #
+        $c->res->output("sent");
+    }
+    else {
+        $c->res->output($go_form . $content);
+    }
 }
 
 #

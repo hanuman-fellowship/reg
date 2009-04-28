@@ -1105,21 +1105,20 @@ EOH
         if ($mu->date_needed()) {
             $needed = $mu->date_needed_obj() - $today;
             if ($needed <= $string{make_up_urgent_days}) {
-                my $pl = ($needed == 1)? "": "s";
-                $needed = "<span style='color: red'>$needed day$pl</span>";
+                $needed = $needed ==  0? 'Today'
+                         :$needed ==  1? 'Tomorrow'
+                         :$needed == -1? 'Yesterday'
+                         :               "$needed days"
+                         ;
+                $needed = "<span style='color: red'>$needed</span>";
             }
             else {
                 $needed .= " days";
             }
         }
         else {
-            $needed = "never";
+            $needed = "Never";
         }
-
-        $needed =~ s{0 days}{Today};
-        $needed =~ s{-1 days}{Yesterday};
-        $needed =~ s{1 day}{Tomorrow};
-
         ++$house_num;
         $html .= "<tr><td><input type=checkbox id=$clust_num-$house_num name=h"
               .  $mu->house_id()

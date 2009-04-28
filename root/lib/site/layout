@@ -3,11 +3,13 @@
 
 [% ride_admin = Catalyst.check_user_roles('ride_admin') %]
 [% driver = Catalyst.check_user_roles('driver') %]
+[% prog_staff = Catalyst.check_user_roles('prog_staff') %]
+[% field_staff = Catalyst.check_user_roles('field_staff') %]
 
 <div class=noprint>
 <table cellpadding=4 border=0 style="background-color: #eeeeee">
 <tr>
-[% IF Catalyst.check_user_roles('field_staff') %]
+[% IF field_staff %]
 <td><a href=/listing/field>Listings</a></td>
 [% ELSE %]
 <td><a href=/person/search>People</a></td>
@@ -27,7 +29,7 @@
 </tr>
 
 <tr>
-[% IF Catalyst.check_user_roles('prog_staff') %]
+[% IF prog_staff %]
     <td><a href=/program/list>Programs</a></td>
     <td><a href=/rental/list>Rentals</a></td>
     <td><a href=/event/list>Events</a></td>
@@ -37,11 +39,13 @@
 [% ELSE %]
     <td colspan=3></td>
 [% END %]
+[% IF prog_staff %]
 <td width=60><a href=/ride/list>Rides</a></td>
+[% END %]
 
 <td><a target=calendar href='/event/calendar/[% cal_param %]'>Calendar</a></td>
 
-[% IF Catalyst.check_user_roles('prog_staff') %]
+[% IF prog_staff || field_staff %]
     <td><a target=dailypic
            href=/dailypic/show/indoors/[% daily_pic_date %]
         >DailyPic</a></td>
