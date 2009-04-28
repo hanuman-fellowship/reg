@@ -102,7 +102,7 @@ function popup(url) {
 </tr>
 
 <tr>
-<td align=left valign=top>Sharing With
+<td align=left valign=top>Sharing With:
 First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.share_first %]" size=15> Last <input style="font-size: 10pt;" type=text name=share_last value="[% reg.share_last %]" size=15>
 </td>
 </tr>

@@ -113,7 +113,7 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 </tr>
 
 <tr>
-<th align=left>Sharing With</th>
+<th align=left>Sharing With:</th>
 <td>First <input type=text name=share_first value="[% share_first %]" size=15>&nbsp; Last <input type=text name=share_last value="[% share_last %]" size=15>
 </td>
 </tr>
