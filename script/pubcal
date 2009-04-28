@@ -3,5 +3,4 @@ use strict;
 use warnings;
 use LWP::Simple;
 my $rc = get("http://kali:3000/login?username=calendar&password=hello");
-print $rc;
 # that's it!
