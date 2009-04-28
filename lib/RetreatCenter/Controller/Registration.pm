@@ -3529,6 +3529,7 @@ sub ceu : Local {
 
 my $npeople;
 my @people;
+my @star;
 my $containing;
 
 sub _person_data {
@@ -3539,7 +3540,10 @@ sub _person_data {
     }
     my $p = $people[$i];
     if ($containing eq 'all') {
-        return "<b>" . $p->last . ", " . $p->first . "</b><br>"
+        return "<b>" . $p->last . ", " . $p->first . "</b>"
+             . ($star[$i]? '<span class=extended> *</span>'
+                :          '')
+             . "<br>"
              . $p->addr1 . "<br>"
              . ($p->addr2? $p->addr2 . "<br>": "")
              . $p->city . ", " . $p->st_prov . " " . $p->zip_post . "<br>"
@@ -3552,7 +3556,10 @@ sub _person_data {
              ;
     }
     elsif ($containing eq 'name') {
-        return $p->last . ", " . $p->first . "<br>";
+        return $p->last . ", " . $p->first
+             . ($star[$i]? '<span class=extended> *</span>'
+                :          '')
+             . "<br>";
     }
     elsif ($containing eq 'email') {
         # if no email return nothing.
@@ -3577,15 +3584,30 @@ sub name_addr : Local {
 
 sub name_addr_do : Local {
     my ($self, $c, $prog_id) = @_;
+
     my $program = model($c, 'Program')->find($prog_id);
+    my $edate = $program->edate();
 
     my $p_order = $c->request->params->{order};
     my $order = ($p_order eq 'name')? [qw/ person.last person.first /]
                 :                     [qw/ date_postmark time_postmark /];
+    my $including = $c->request->params->{including};
+    my @cond = ();
+    if ($including eq 'normal') {
+        @cond = (
+            date_end => { '>' => $edate },
+        );
+    }
+    elsif ($including eq 'extended') {
+        @cond = (
+            date_end => { '<=' => $edate },
+        );
+    }
     my (@regs) = model($c, 'Registration')->search(
         {
             program_id => $prog_id,
             cancelled  => { '!=' => 'yes' },
+            @cond,
         },
         {
             join     => [qw/ person /],
@@ -3593,8 +3615,14 @@ sub name_addr_do : Local {
             prefetch => [qw/ person /],   
         }
     );
-    # here we're only interested in the person information so...
-    #
+    @star = ();
+    if ($including eq 'both') {
+        @star = map {
+                    ($_->date_end() > $edate)? 1
+                    :                          0
+                }
+                @regs;
+    }
     @people = map { $_->person } @regs;     # not my - see above
     $npeople = @people;
 
@@ -3613,7 +3641,8 @@ sub name_addr_do : Local {
         }
         if ($containing eq "email") {
             $mailto =~ s{,$}{};
-            $mailto = "<a href='mailto:?bcc=$mailto'>Email All</a><p>\n";
+            $mailto = "<a href='mailto: ?bcc=$mailto'>Email All</a><p>\n";
+                # for some reason, we need the space after the :
         }
     }
     else {
@@ -3647,6 +3676,10 @@ sub name_addr_do : Local {
         program => $program,
         rows    => $info_rows,
         mailto  => $mailto,
+        type    => ($including eq 'both'    ? ''
+                   :$including eq 'normal'  ? 'Normal '
+                   :$including eq 'extended'? 'Extended '
+                   :                          ''),
     };
     $tt->process(
         "registration/name_addr.tt2",   # template

@@ -1,4 +1,9 @@
-<h2>Participant List for [% program.name %] from [% program.dates %]</h2>
+<style type="text/css">
+.extended {
+    color: red;
+}
+</style>
+<h2>[% type %]Participant List for [% program.name %] from [% program.dates %]</h2>
 [% mailto %]
 [% FOR r IN rows %]
 [% r %]

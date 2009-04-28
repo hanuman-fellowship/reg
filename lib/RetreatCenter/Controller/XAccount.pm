@@ -107,6 +107,7 @@ sub update_do : Local {
 
 #
 # does this delete the payments???
+# no.
 #
 sub delete : Local {
     my ($self, $c, $id) = @_;

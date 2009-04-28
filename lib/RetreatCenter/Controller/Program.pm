@@ -89,27 +89,16 @@ sub create : Local {
                   ;
     }
     # set defaults by putting them in the stash
-    if ($rental) {
-        # no automatic web page for parallel program.
-        # it will likely be unlinked - e.g. AVI and Open Gate
-        stash($c,
-            check_webready => "",
-            check_linked   => "",
-        );
-    }
-    else {
-        stash($c,
-            check_webready => "checked",
-            check_linked   => "checked",
-        );
-    }
+    #
     stash($c,
-        check_kayakalpa     => "checked",
-        check_retreat       => "",
-        check_sbath         => "checked",
-        check_quad          => "",
-        check_collect_total => "",
-        check_economy       => "",
+        check_webready      => '',
+        check_linked        => '',
+        check_kayakalpa     => 'checked',
+        check_retreat       => '',
+        check_sbath         => 'checked',
+        check_quad          => '',
+        check_collect_total => '',
+        check_economy       => '',
         program_leaders     => [],
         program_affils      => [],
         section             => 1,   # Web (a required field)
@@ -118,9 +107,7 @@ sub create : Local {
             extradays    => 0,
             full_tuition => 0,
             deposit      => 100,
-            canpol       => { name => "Default" },  # a clever way to set default!
-            # no more Default
-            # housecost    => { name => "Default" },  # fake an object!
+            canpol       => { name => "Default" },  # clever way to set default!
             ptemplate    => 'default',
             cl_template  => 'default',
             reg_start_obj    => $string{reg_start},

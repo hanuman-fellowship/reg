@@ -33,6 +33,17 @@
 </td>
 </tr>
 
+[% IF program.extradays %]
+<tr>
+<th align=right valign=top>Including</th>
+<td>
+<input type=radio name=including value="both" checked> Both<br>
+<input type=radio name=including value="normal"> Normal<br>
+<input type=radio name=including value="extended"> Extended
+</td>
+</tr>
+[% END %]
+
 [% IF email %]
 <tr>
 <th align=right valign=top>Email Leaders</th>
