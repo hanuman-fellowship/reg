@@ -1,5 +1,5 @@
 # Get online registrations every 15 minutes during the day.
-0,15,30,45 8-18 * 0-6 * /home/sahadev/RetreatCenter/grab
+0,15,30,45 8-18 * * * /home/sahadev/RetreatCenter/grab
 
 # Get the rooms/campsites to be made up every morning at 1:00 am.
 0 1 * * * /home/sahadev/RetreatCenter/makeup
@@ -10,6 +10,9 @@
 
 # at 11:30 pm back up all the data in mysql and send it offsite
 30 23 * * * /home/sahadev/RetreatCenter/db_backup
+
+# at noon and 6 pm republish the public version of the calendar
+0 12,18 * * * /home/sahadev/RetreatCenter/pubcal
 
 # restart the Catalyst server on reboot
 @reboot /home/sahadev/RetreatCenter/x
