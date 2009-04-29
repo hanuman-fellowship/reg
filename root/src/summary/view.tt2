@@ -84,7 +84,6 @@ th {
 [% ELSE %]
 [% cs.first %] [% cs.last %]
 [% END %]
-<a href=/person/view/[% cs.id %]>[% cs.first %] [% cs.last %]</a>
 </td><td valign=top>
 <a href='mailto:[% cs.email %]'>[% cs.email %]</a>
 </td><td valign=top>
