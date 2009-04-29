@@ -1126,7 +1126,7 @@ sub _compute {
         # sponsor/life members get a discount on tuition
         # up to a max.  and only for MMC events, not MMI.
         #
-        if ($pr->school() == 0 && $reg->status) {
+        if ($pr->school() == 0 && $reg->status() && $tuition > 0) {
             # Life members can take a free program ... so:
             if ($reg->free_prog_taken) {
                 model($c, 'RegCharge')->create({
@@ -3370,6 +3370,7 @@ sub who_is_there : Local {
     my ($self, $c, $sex, $house_id, $the_date) = @_;
 
     my $mmi_admin = $c->check_user_roles('mmi_admin');
+    my $prog_staff = $c->check_user_roles('prog_staff');
 
     # the sex parameter tells us whether
     # this house is booked to a rental or to registrants in programs.
@@ -3435,9 +3436,11 @@ sub who_is_there : Local {
     for my $r (@regs) {
         my $rid = $r->id();
         my $pr = $r->program();
+        my $mmi = $pr->school() != 0;
         my $name = $r->person->last() . ", " . $r->person->first();
+        my $pr_name = $pr->name();
         my $relodge = "";
-        if ($pr->school() == 0 || $mmi_admin) {
+        if ((!$mmi && $prog_staff) || ($mmi && $mmi_admin)) {
             $name = "<a target=happening href="
                   . $c->uri_for("/registration/view/$rid")
                   . ">"
@@ -3446,21 +3449,24 @@ sub who_is_there : Local {
                   ;
             $relodge = "<td width=30 align=center><a target=happening href="
                      . $c->uri_for("/registration/relodge/$rid")
-                     . "><img src=/static/images/move_arrow.gif border=0>"
+                     . qq# title="ReLodge!">#
+                     . "<img src=/static/images/move_arrow.gif border=0>"
                      . "</a></td>"
+                     ;
+            $pr_name = "<a target=happening href="
+                     . $c->uri_for("/program/view/")
+                     . $pr->id()
+                     . ">"
+                     . $pr_name
+                     . "</a>"
                      ;
         }
         $reg_names .= "<tr>"
                    . "<td>"
                    . $name
                    . _get_kids($r->kids())
-                   . "<td><a target=happening href="
-                   . $c->uri_for("/program/view/")
-                   . $pr->id()
-                   . ">"
-                   . $pr->name()
-                   . "</a></td>"
                    . "</td>"
+                   . "<td>$pr_name</td>"
                    . $relodge
                    . "</tr>";
     }

@@ -1,3 +1,4 @@
+[% prog_staff = Catalyst.check_user_roles('prog_staff') %]
 <style type="text/css">
 p {
     margin-top: 0px;
@@ -6,6 +7,7 @@ p {
 </style>
 <h2>[% Type %] Summary</h2>
 <div class=noprint>
+[% IF prog_staff %]
 <a href=/summary/update/[% Type %]/[% happening.id %]>Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href='/summary/use_template/[% Type %]/[% happening.id %]/[% sum.id %]'
@@ -22,6 +24,7 @@ p {
 &nbsp;&nbsp;&nbsp;
 <a href=/rental/view/[% happening.id %]>To Rental</a>
 [% END %]
+[% END %]
 <p>
 </div>
 <table cellpadding=7>
@@ -29,7 +32,11 @@ p {
 <tr>
 <td>
 <b>Name</b>
+[% IF prog_staff %]
 <a class=larger href=/[% type %]/view/[% happening.id %]>[% happening.name %]</a>
+[% ELSE %]
+<span class=larger>[% happening.name %]</span>
+[% END %]
 <b>From</b>
 [% happening.sdate_obj %] <span class=dow>[% happening.sdate_obj.format("%a") %]</span>
 <b>To</b>
@@ -53,7 +60,11 @@ th {
 <th align=right width=180 valign=top>Contact Person</th>
 <td valign=top colspan=2>
 [% coord = happening.coordinator %]
+[% IF prog_staff %]
 <a href=/person/view/[% coord.id %]>[% coord.first %] [% coord.last %]</a>
+[% ELSE %]
+[% coord.first %] [% coord.last %]
+[% END %]
 </td><td valign=top>
 <a href='mailto:[% coord.email %]'>[% coord.email %]</a>
 </td><td>
@@ -68,6 +79,11 @@ th {
 <tr>
 <th align=right valign=top>Contract Signer</th>
 <td valign=top colspan=2>
+[% IF prog_staff %]
+<a href=/person/view/[% cs.id %]>[% cs.first %] [% cs.last %]</a>
+[% ELSE %]
+[% cs.first %] [% cs.last %]
+[% END %]
 <a href=/person/view/[% cs.id %]>[% cs.first %] [% cs.last %]</a>
 </td><td valign=top>
 <a href='mailto:[% cs.email %]'>[% cs.email %]</a>
@@ -102,7 +118,13 @@ th {
 [% FOR l IN happening.leaders %]
     [% p = l.person %]
     <tr>
-    <td><a href=/person/view/[% p.id %]>[% p.first %] [% p.last %]</a></td>
+    <td>
+    [% IF prog_staff %]
+    <a href=/person/view/[% p.id %]>[% p.first %] [% p.last %]</a>
+    [% ELSE %]
+    [% p.first %] [% p.last %]
+    [% END %]
+    </td>
     <td colspan=3>[% IF p.email %]<a href='mailto:[% p.email %]'>[% p.email %]</a>[% END %]</td>
     <td>
     [% IF p.tel_home %][% p.tel_home %] home[% END %]

@@ -28,6 +28,7 @@ sub index : Local {
 sub show : Local {
     my ($self, $c, $type, $date) = @_;
 
+    my $prog_staff = $c->check_user_roles('prog_staff');
     Global->init($c);
     my $today = tt_today($c);
     my $last_date = date($string{sys_last_config_date});
@@ -289,9 +290,17 @@ sub show : Local {
         }
     }
     for my $ev (sort { $a->{sdate} <=> $b->{sdate} } @events) {
+        if ($prog_staff) {
+            $ev->{name} =
+                "<a target=happening href=/$ev->{type}/view/$ev->{id}>"
+              . $ev->{name}
+              . "</a>";
+        }
         $event_table .=
-            "<tr><td>$ev->{sdate}</td><td>$ev->{edate}</td>"
-          . "<td><a target=happening href=/$ev->{type}/view/$ev->{id}>$ev->{name}</td>"
+            "<tr>"
+          . "<td>$ev->{sdate}</td>"
+          . "<td>$ev->{edate}</td>"
+          . "<td>$ev->{name}</td>"
           . "</tr>\n";
     }
     if ($event_table) {
