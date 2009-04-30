@@ -289,7 +289,7 @@ sub _get_data {
             push @mess, "Illegal email address: $em";
         }
     }
-    $P{notify_on_reg} = "@email";
+    $P{notify_on_reg} = join ', ', @email;
 
     if (! empty($P{max}) && $P{max} !~ m{^\s*\d+\s*$}) {
         push @mess, "Max must be an integer";
