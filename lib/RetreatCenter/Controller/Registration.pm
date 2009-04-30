@@ -1667,7 +1667,7 @@ sub pay_balance_do : Local {
     my $reg = model($c, 'Registration')->find($id);
     my $amount = trim($c->request->params->{amount});
     my $type   = $c->request->params->{type};
-    if ($amount !~ m{^\d+$}) {
+    if ($amount !~ m{^-?\d+$}) {
         error($c,
             "Illegal amount: $amount",
             "registration/error.tt2",
