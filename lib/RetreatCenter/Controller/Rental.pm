@@ -136,10 +136,11 @@ sub _get_data {
                 $total_peeps += $t_npeople;
 
                 # we may not have a valid $rental_ndays so be careful
-                if (!@mess && $t_ndays > $rental_ndays) {
-                    push @mess, "$string{$t}:"
-                               ." Attendance > # days of rental: $t_ndays";
-                }
+                # someone MAY stay longer than the # of rental days.
+                # if (!@mess && $t_ndays > $rental_ndays) {
+                #     push @mess, "$string{$t}:"
+                #                ." Attendance > # days of rental: $t_ndays";
+                # }
             }
             # It IS okay to have more people in the 'attendance' field
             # than the '# of people' field.  Perhaps someone left early
@@ -374,7 +375,7 @@ sub view : Local {
     ) {
         my $h_name = $b->house->name;
         my $h_type = $b->h_type;
-        $bookings{$h_type} .= ("&nbsp;"x2)
+        $bookings{$h_type} .= '  '
                             . "<a href=/rental/del_booking/$id/"
                             . $b->house_id
                             . qq! onclick="return confirm('Okay to Delete booking of $h_name?');"!
@@ -514,6 +515,8 @@ sub view : Local {
                 - date($sdate)->month()
                 + 1;
     stash($c,
+        tot_people     => $tot_people,
+        ndays          => $ndays,
         rental         => $rental,
         non_att_days   => ($tot_people*$ndays - $att_days),
         daily_pic_date => $sdate,

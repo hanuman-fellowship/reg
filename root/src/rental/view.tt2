@@ -154,17 +154,22 @@ Web
 <td><a href="/rental/cluster_add/[% id %]">Add</a>[% clusters %]</td>
 </tr>
 
+<tr>
+<th>Number of Days</th>
+<td align=right>[% ndays %]</td>
+</tr>
+
 </table>
 
 <p>
 
 <table cellpadding=3 border=0>
 <tr>
-<td></td>
-<th># of<br>People</th>
-<th></th>
+<td width=100></td>
+<th width=30># of<br>People</th>
+<th width=20></th>
 <th align=left valign=bottom>Rooms</th>
-<th valign=bottom>Attendance</th>
+<th width=200 valign=bottom align=left>Attendance</th>
 </tr>
 
 <!-- 
@@ -177,16 +182,19 @@ Web
 
     <tr>
     <th align=right>[% string.$t %]</th>
-    <td align=center>[% rental.$n %]</td>
-    <td width=15 style="background: [% colcov.$t %]"></td>
-    <td><a href="/rental/booking/[% id %]/[% t %]">Add</a>[% bookings.$t %]</td>
-    <td>[% rental.$att %]</td>
+    <td align=right>[% rental.$n %]&nbsp;&nbsp;</td>
+    <td style="background: [% colcov.$t %]"></td>
+    <td valign=top><a href="/rental/booking/[% id %]/[% t %]">Add</a>[% bookings.$t %]</td>
+    <td valign=top>[% rental.$att %]</td>
     </tr>
 [% END %]
 
+<tr><td></td><td style="border-top: solid thin"></td></tr>
+
 <tr>
-<td></td><td></td>
-<td colspan=3 width=300><b>Days of Non-Attendance:</b> [% non_att_days %]</td>
+<th align=right>Total</th><td align=right>[% tot_people %]&nbsp;&nbsp;</td>
+<td></td>
+<td colspan=3><b>Days of Non-Attendance:</b> [% non_att_days %]</td>
 </tr>
 
 </table>
