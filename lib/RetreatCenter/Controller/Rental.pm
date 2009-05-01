@@ -290,12 +290,15 @@ sub create_from_proposal : Local {
         $misc =~ s{\s*$}{};      # trim the end
         $misc .= "\n\n$prov";
     }
+    if (my $sn = $proposal->special_needs()) {
+        $misc =~ s{\s*$}{};      # trim the end
+        $misc .= "\n\n$sn";
+    }
     my $sum = model($c, 'Summary')->create({
         date_updated   => tt_today($c)->as_d8(),
         who_updated    => $c->user->obj->id,
         time_updated   => get_time()->t24(),
 
-        special_needs  => $proposal->special_needs(),
         food_service   => $proposal->food_service(),
         miscellaneous  => $misc,
         leader_housing => $proposal->leader_housing(),
