@@ -127,7 +127,7 @@ sub _get_data {
             my $total_peeps = 0;
             TERM:
             for my $tm (@terms) {
-                if ($tm !~ m{^(\d+)\s*c?\s*x\s*(\d+)}i) {
+                if ($tm !~ m{^(\d+)\s*c?\s*x\s*(\d+)$}i) {
                     push @mess, "$string{$t}:"
                                ." Illegal attendance: " . $P{"att_$t"};
                     next H_TYPE;
@@ -162,8 +162,8 @@ sub _get_data {
             #
             if ($total_peeps < $P{"n_$t"}) {
                 push @mess, "$string{$t}: "
-                           ."Total people in non-blank attendance field"
-                           ." < # of people";
+                           ."Total people ($total_peeps) in non-blank attendance field"
+                           ." < # of people (" . $P{"n_$t"} . ")";
             }
         }
     }
@@ -432,13 +432,6 @@ sub view : Local {
             $actual_lodging += $hc->$t * $npeople;
         }
         my $t_max = type_max($t);
-        next TYPE if !$t_max;
-        my $needed = ceil($npeople/$t_max);
-        my $count = $booking_count{$t} || 0;
-        $colcov{$t} = ($needed < $count)? $less 
-                     :($needed > $count)? $more
-                     :                    $okay
-                     ;
         my $meth = "att_$t";
         my $att = $rental->$meth();
         if (empty($att)) {
@@ -453,6 +446,14 @@ sub view : Local {
                 $att_days += $np * $nd;
             }
         }
+        # now for the color of the coverage
+        next TYPE if !$t_max;
+        my $needed = ceil($npeople/$t_max);
+        my $count = $booking_count{$t} || 0;
+        $colcov{$t} = ($needed < $count)? $less 
+                     :($needed > $count)? $more
+                     :                    $okay
+                     ;
     }
     my $lodging = ($min_lodging > $actual_lodging)? $min_lodging
                 :                                   $actual_lodging;
@@ -514,7 +515,7 @@ sub view : Local {
                 + 1;
     stash($c,
         rental         => $rental,
-        non_att_days   => $tot_people*$ndays - $att_days,
+        non_att_days   => ($tot_people*$ndays - $att_days),
         daily_pic_date => $sdate,
         cal_param      => "$sdate/$nmonths",
         colcov         => \%colcov,     # color of the coverage
