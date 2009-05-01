@@ -1415,6 +1415,12 @@ sub invoice : Local {
     my $html = <<"EOH";
 <html>
 <head>
+<style type="text/css">
+body {
+    margin-top: 1.5in;
+    margin-left: .5in;
+}
+</style>
 </head>
 <body>
 EOH
