@@ -185,7 +185,7 @@ Web
     <td align=right valign=center>[% rental.$n %]&nbsp;&nbsp;</td>
     <td style="background: [% colcov.$t %]" valign=center></td>
     <td valign=center><a href="/rental/booking/[% id %]/[% t %]">Add</a>[% bookings.$t %]</td>
-    <td valign=top>[% rental.$att %]</td>
+    <td valign=center>[% rental.$att %]</td>
     </tr>
 [% END %]
 
