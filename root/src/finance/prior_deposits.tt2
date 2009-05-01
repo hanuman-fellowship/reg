@@ -11,6 +11,7 @@
 <th align=right>Cash</th>
 <th align=right>Check</th>
 <th align=right>Credit</th>
+<th align=right>Online</th>
 <th align=right>Total</th>
 <th align=center colspan=2>View</th>
 </tr>
@@ -22,7 +23,8 @@
 <td align=right>[% d.cash %]</td>
 <td align=right>[% d.chk %]</td>
 <td align=right>[% d.credit %]</td>
-<td align=right>[% d.cash + d.chk + d.credit  %]</td>
+<td align=right>[% d.online %]</td>
+<td align=right>[% d.cash + d.chk + d.credit + d.online %]</td>
 <td align=right><a href="/finance/reconcile_deposit/[% source %]/[% d.id %]">Reconcile</a></td>
 <td align=right><a href="/finance/file_deposit/[% source %]/[% d.id %]">File</a></td>
 </tr>
