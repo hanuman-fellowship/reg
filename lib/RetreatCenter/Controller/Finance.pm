@@ -210,7 +210,7 @@ sub file_deposit : Local {
             push @payments, {
                 name => $r->name(),
                 date => $r->paid_date_obj->format("%D"),
-                type => 'C',
+                type => 'D',
                 amt   => $r->cost(),
                 glnum => $string{ride_glnum},
                 pname => "Ride",
@@ -266,20 +266,22 @@ $timestamp<span style="font-size: 25pt; font-weight: bold; margin-left: 1in;">Ba
 <th align=right width=70>Cash</th>
 <th align=right width=70>Check</th>
 <th align=right width=70>Credit</th>
+<th align=right width=70>Online</th>
 <th align=right width=70>Total</th>
 </tr>
 <tr><td colspan=6><hr color=black></td></tr>
 EOH
     my $prev_glnum = "";
     my $prev_pname = "";     # needed for MMI programs
-    my ($cash, $check, $credit) = (0, 0, 0);
-    my ($gcash, $gcheck, $gcredit, $gtotal) = (0, 0, 0, 0);
+    my ($cash, $check, $credit, $online) = (0, 0, 0);
+    my ($gcash, $gcheck, $gcredit, $gonline, $gtotal) = (0, 0, 0, 0);
     for my $p (@payments) {
         if ($p->{glnum} ne $prev_glnum) {
             if ($prev_glnum || $prev_pname) {
-                my $total = $cash+$check+$credit;
+                my $total = $cash + $check + $credit + $online;
                 $html .= "<tr>"
                       .  "<td colspan=2></td>"
+                      .  "<td><hr color=black></td>"
                       .  "<td><hr color=black></td>"
                       .  "<td><hr color=black></td>"
                       .  "<td><hr color=black></td>"
@@ -288,6 +290,7 @@ EOH
                       .  "<td colspan=3 align=right>$cash</td>"
                       .  "<td align=right>$check</td>"
                       .  "<td align=right>$credit</td>"
+                      .  "<td align=right>$online</td>"
                       .  "<td align=right>"
                       .  commify($total)
                       .  "</td>"
@@ -297,8 +300,9 @@ EOH
                 $gcash   += $cash;
                 $gcheck  += $check;
                 $gcredit += $credit;
+                $gonline += $online;
                 $gtotal  += $total;
-                ($cash, $check, $credit) = (0, 0, 0);
+                ($cash, $check, $credit, $online) = (0, 0, 0, 0);
             }
             $html .= "<tr>"
                   .  "<td colspan=6 align=left><b>$p->{pname}</b> ($p->{glnum})</td>"
@@ -310,7 +314,8 @@ EOH
         my $type = $p->{type};
         my $n = ($type eq "S")? 1
                :($type eq "C")? 2
-               :                3       # Credit - includes Online
+               :($type eq "D")? 3       # Credit
+               :                4       # Online
                ;
         my $amt = $p->{amt};
         $html .= "<tr>"
@@ -325,13 +330,17 @@ EOH
         elsif ($n == 2) {
             $check += $amt;
         }
-        else {
+        elsif ($n == 3) {
             $credit += $amt;
         }
+        else {
+            $online += $amt;
+        }
     }
-    my $total = $cash+$check+$credit;
+    my $total = $cash + $check + $credit + $online;
     $html .= "<tr>"
           .  "<td colspan=2></td>"
+          .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
@@ -340,6 +349,7 @@ EOH
           .  "<td colspan=3 align=right>$cash</td>"
           .  "<td align=right>$check</td>"
           .  "<td align=right>$credit</td>"
+          .  "<td align=right>$online</td>"
           .  "<td align=right>"
           .  commify($total)
           .  "</td>"
@@ -349,8 +359,10 @@ EOH
     $gcash   += $cash;
     $gcheck  += $check;
     $gcredit += $credit;
+    $gonline += $online;
     $gtotal  += $total;
     $html .= "<tr><td colspan=2></td>"
+          .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
@@ -360,6 +372,7 @@ EOH
           .  "<td colspan=3 align=right>$gcash</td>"
           .  "<td align=right>$gcheck</td>"
           .  "<td align=right>$gcredit</td>"
+          .  "<td align=right>$gonline</td>"
           .  "<td align=right>\$"
           .  commify($gtotal)
           .  "</td>"
@@ -381,6 +394,7 @@ EOH
                 cash       => $gcash,
                 chk        => $gcheck,
                 credit     => $gcredit,
+                online     => $gonline,
                 source     => $source,
             });
 

@@ -593,7 +593,7 @@ sub compute_glnum {
 #
 sub valid_email {
     my ($s) = @_;
-    return $s =~ m{^\s*[-a-zA-Z0-9.&'+=_]+\@[-a-zA-Z0-9.]+\s*$};
+    return $s =~ m{^\s*[-a-zA-Z0-9._]+\@[-a-zA-Z0-9.]+\s*$};
 }
 
 # return only the digits
