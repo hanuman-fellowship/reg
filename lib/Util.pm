@@ -1256,8 +1256,8 @@ sub accpacc {
 
 sub highlight {
     my ($s) = @_;
-    return ( $s =~ m{TBD|\?}? "<span class=highlight>$s</span>"
-            :                 $s                               );
+    return ($s =~ m{TBD|\?|\*}? "<span class=highlight>$s</span>"
+            :                   $s                               );
 }
 
 1;
