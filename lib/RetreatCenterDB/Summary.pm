@@ -33,14 +33,12 @@ __PACKAGE__->add_columns(qw/
     leader_housing
     food_service
     flowers
-    lodging
-    special_needs
-    finances
     miscellaneous
     feedback
     field_staff_setup
     sound_setup
     check_list
+    converted_spaces
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

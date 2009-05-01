@@ -78,10 +78,14 @@ Search <input type=text size=15 name=pat id=pat
 document.form.pat.focus();
 </script>
 </form>
+<p>
+Count: [% program.reg_count %]
 [% END %]
 
 <ul>
 <div id=regs>
 [% regs %]
 </div>
+<p>
 </ul>
+Count: [% program.reg_count %]

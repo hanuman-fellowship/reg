@@ -43,7 +43,10 @@ create table registration (
     pref1 text,            -- 1st housing preference
     pref2 text,            -- 2nd
     share_first text,
-    share_last text
+    share_last text,
+    manual text,
+    work_study text,
+    work_study_comment text
 );
 drop table if exists reg_history;
 create table reg_history (

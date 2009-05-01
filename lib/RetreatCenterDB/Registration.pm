@@ -58,6 +58,9 @@ __PACKAGE__->add_columns(qw/
     pref2
     share_first
     share_last
+    manual
+    work_study
+    work_study_comment
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);

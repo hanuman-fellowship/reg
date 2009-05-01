@@ -116,14 +116,12 @@ create table summary (
     leader_housing text,
     food_service text,
     flowers text,
-    lodging text,
-    special_needs text,
-    finances text,
     miscellaneous text,
     feedback text,
     field_staff_setup text,
     sound_setup text,
-    check_list text
+    check_list text,
+    converted_spaces text
 );
 drop table if exists confnote;
 create table confnote (

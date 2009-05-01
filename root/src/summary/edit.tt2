@@ -49,7 +49,7 @@ th {
 </tr>
 
 <tr>
-<td>&nbsp;</td>
+<th>Converted Spaces</th><td><input type=text name=converted_spaces value='[% sum.converted_spaces %]'</td>
 </tr>
 
 <tr>
@@ -74,15 +74,6 @@ th {
 <td colspan=3>
 <textarea id=leader_housing name=leader_housing rows=[% leader_housing_rows %] cols=60>
 [% sum.leader_housing %]
-</textarea>
-</td>
-</tr>
-
-<tr>
-<th valign=top>Check List</th>
-<td colspan=3>
-<textarea id=check_list name=check_list rows=[% check_list_rows %] cols=60>
-[% sum.check_list %]
 </textarea>
 </td>
 </tr>
@@ -116,31 +107,6 @@ th {
 </textarea>
 </td>
 </tr>
-
-<tr><th valign=top>Lodging</th><td colspan=3>
-<textarea id=lodging name=lodging rows=[% lodging_rows %] cols=60>
-[% sum.lodging %]
-</textarea>
-</td></tr>
-
-<tr>
-<th valign=top>Special Needs
-<br><br>
-<input id=sub type=submit value="Submit">
-</th>
-<td colspan=3>
-<textarea id=special_needs name=special_needs rows=[% special_needs_rows %] cols=60>
-[% sum.special_needs %]
-</textarea>
-</td>
-</tr>
-
-<tr><th valign=top>Finances</th>
-<td colspan=3>
-<textarea id=finances name=finances rows=[% finances_rows %] cols=60>
-[% sum.finances %]
-</textarea>
-</td></tr>
 
 <tr>
 <th valign=top>Miscellaneous
@@ -176,6 +142,15 @@ th {
 <td colspan=3>
 <textarea id=feedback name=feedback rows=[% feedback_rows %] cols=60>
 [% sum.feedback %]
+</textarea>
+</td>
+</tr>
+
+<tr>
+<th valign=top>Check List</th>
+<td colspan=3>
+<textarea id=check_list name=check_list rows=[% check_list_rows %] cols=60>
+[% sum.check_list %]
 </textarea>
 </td>
 </tr>

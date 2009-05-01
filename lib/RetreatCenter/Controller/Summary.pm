@@ -35,6 +35,7 @@ sub view : Local {
         leader_housing
         staff_arrival
         staff_departure
+        converted_spaces
     /) {
         $c->stash->{$f} = highlight($summary->$f());
     }
@@ -44,11 +45,27 @@ sub view : Local {
     my $nmonths = date($happening->edate())->month()
                 - date($sdate)->month()
                 + 1;
+    my @opt = ();
+    if ($type eq 'program') {
+        my $extra = $happening->extradays();
+        if ($extra) {
+            my $edate2 = $happening->edate_obj() + $extra;
+            stash($c,
+                plus => "<b>Plus</b> $extra day"
+                      . ($extra > 1? "s": "")
+                      . " <b>To</b> " . $edate2
+                      . " <span class=dow>"
+                      . $edate2->format("%a")
+                      . "</span>"
+            );
+        }
+    }
 
     stash($c,
         type      => $type,
         Type      => ucfirst $type,
         happening => $happening,
+        @opt,
         sum       => $summary,
         cal_param => "$sdate/$nmonths",
         template  => "summary/view.tt2",
@@ -56,7 +73,7 @@ sub view : Local {
 }
 
 sub update : Local {
-    my ($self, $c, $type, $id) = @_;
+    my ($self, $c, $type, $id, $anchor) = @_;
  
     my $happening = model($c, $type)->find($id);
     $c->stash->{Type}      = $type;
@@ -71,12 +88,10 @@ sub update : Local {
         feedback
         food_service
         flowers
-        lodging
-        special_needs
-        finances
         field_staff_setup
         sound_setup
         check_list
+        converted_spaces
     /) {
         $c->stash->{"$f\_rows"} = lines($sum->$f()) + 5;    # 5 in strings?
     }

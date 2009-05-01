@@ -205,7 +205,10 @@ sub format {
     if ($fmt eq 'ampm') {
         $suffix = ($hours >= 12)? " pm": " am";
     }
-    if ($hours > 12) {
+    if ($hours == 0) {
+        $hours = 12;
+    }
+    elsif ($hours > 12) {
         $hours -= 12;
     }
     return sprintf("%d:%02d", $hours, $mins) . $suffix;
