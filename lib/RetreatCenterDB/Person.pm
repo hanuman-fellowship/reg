@@ -143,7 +143,7 @@ sub sex_disp {
 
 sub name_email {
     my ($self) = @_;
-    return $self->first() . " " . $self->last() . "<" . $self->email() . ">";
+    return $self->first() . " " . $self->last() . " <" . $self->email() . ">";
 }
 
 sub email_okay {

@@ -888,14 +888,28 @@ sub list_mmi_payment_print : Local {
 }
 
 sub del_mmi_payment : Local {
-    my ($self, $c, $person_id, $payment_id) = @_;
+    my ($self, $c, $payment_id, $from) = @_;
     
-    model($c, 'MMIPayment')->find($payment_id)->delete();
-    $c->response->redirect($c->uri_for("/person/list_mmi_payment/$person_id"));
+    my $pay = model($c, 'MMIPayment')->find($payment_id);
+    $pay->delete();
+    $pay->registration->calc_balance();
+    if ($from eq 'edit_dollar') {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/"
+                    . $pay->reg_id()
+            )
+        );
+    }
+    else {
+        $c->response->redirect(
+            $c->uri_for("/person/list_mmi_payment/"
+                        . $pay->person_id)
+        );
+    }
 }
 
 sub create_mmi_payment : Local {
-    my ($self, $c, $reg_id, $person_id) = @_;
+    my ($self, $c, $reg_id, $person_id, $from) = @_;
     
     if (tt_today($c)->as_d8() eq $string{last_mmi_deposit_date}) {
         error($c,
@@ -904,10 +918,13 @@ sub create_mmi_payment : Local {
               'gen_error.tt2');
         return;
     }
-    $c->stash->{message}  = payment_warning($c);
-    $c->stash->{person}   = model($c, 'Person')->find($person_id);
-    $c->stash->{reg}      = model($c, 'Registration')->find($reg_id);
-    $c->stash->{template} = "person/create_mmi_payment.tt2";
+    stash($c,
+        from     => $from,
+        message  => payment_warning($c),
+        person   => model($c, 'Person')->find($person_id),
+        reg      => model($c, 'Registration')->find($reg_id),
+        template => "person/create_mmi_payment.tt2",
+    );
 }
 
 sub create_mmi_payment_do : Local {
@@ -950,7 +967,14 @@ sub create_mmi_payment_do : Local {
                . $reg->program->glnum();
     }
 
-    # validate amount???
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^-?\d+$}) {
+        error($c,
+            "Illegal amount: $amount",
+            "registration/error.tt2",
+        );
+        return;
+    }
 
     my $the_date = tt_today($c)->as_d8();
     if ($the_date eq $string{last_mmi_deposit_date}) {
@@ -958,14 +982,104 @@ sub create_mmi_payment_do : Local {
     }
     model($c, 'MMIPayment')->create({
         person_id => $person_id,
-        amount    => $c->request->params->{amount},
+        amount    => $amount,
         type      => $c->request->params->{type},
         glnum     => $glnum,
         the_date  => $the_date,
         reg_id    => $reg_id,
         note      => $c->request->params->{note},
     });
-    $c->response->redirect($c->uri_for("/person/list_mmi_payment/$person_id"));
+    $reg->calc_balance();
+    if ($c->request->params->{from} eq 'edit_dollar') {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/$reg_id")
+        );
+    }
+    else {
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+    }
+}
+
+sub update_mmi_payment : Local {
+    my ($self, $c, $pay_id, $from) = @_;
+
+    my $pay = model($c, 'MMIPayment')->find($pay_id);
+    my $type = $pay->type();
+    my $type_opts = "";
+    for my $t (qw/ D C S /) {
+        $type_opts .= "<option value=$t"
+                   .  ($type eq $t? " selected"
+                      :             ""         )
+                   .  ">"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
+    my $for_what = substr($pay->glnum(), 0, 1);
+    my $for_what_opts = "";
+    my $n = 1;
+    for my $wh ('Tuition',
+                'Meals and Lodging',
+                'Application Fee',
+                'Registration Fee',
+                'Other',
+    ) {
+        $for_what_opts .= "<option value=$n"
+                       .  ($for_what == $n? " selected"
+                          :                 ""         )
+                       .  ">$wh\n"
+                       ;
+        ++$n;
+    }
+    stash($c,
+        from          => $from,
+        type_opts     => $type_opts,
+        for_what_opts => $for_what_opts,
+        pay           => $pay,
+        template      => 'person/update_mmi_payment.tt2',
+    );
+}
+
+sub update_mmi_payment_do : Local {
+    my ($self, $c, $pay_id) = @_;
+
+    my $pay = model($c, 'MMIPayment')->find($pay_id);
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^-?\d+$}) {
+        error($c,
+            "Illegal amount: $amount",
+            "registration/error.tt2",
+        );
+        return;
+    }
+    my $the_dt = trim($c->request->params->{the_date});
+    my $dt = date($the_dt);
+    if (! $dt) {
+        error($c,
+            "Illegal date: $the_dt",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    $pay->update({
+        amount   => $amount,
+        the_date => $dt->as_d8(),
+        type     => $c->request->params->{type},
+        glnum    => $c->request->params->{for_what}
+                  . substr($pay->glnum(), 1),
+        note     => $c->request->params->{note},
+    });
+    $pay->registration->calc_balance();
+    if ($c->request->params->{from} eq 'edit_dollar') {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/" . $pay->reg_id())
+        );;
+    }
+    else {
+        $c->response->redirect(
+            $c->uri_for("/person/list_mmi_payment/" . $pay->person_id())
+        );
+    }
 }
 
 sub get_addr : Local {

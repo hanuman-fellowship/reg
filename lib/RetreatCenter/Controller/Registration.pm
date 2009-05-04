@@ -927,9 +927,6 @@ sub create_do : Local {
         );
         return;
     }
-    #
-    # is there a registration
-    #
     my $cabin_room = "";
     if ($P{cabin} && ! $P{room}) {
         $cabin_room = "cabin";
@@ -1027,7 +1024,7 @@ sub create_do : Local {
             person_id => $P{person_id},
             type      => $P{deposit_type},
             amount    => $P{deposit},
-            glnum     => '5' . $pr->glnum(),    # 5 is 'Other'
+            glnum     => '1' . $pr->glnum(),    # 1 is 'Tuition'
             note      => 'Deposit',
         });
     }
@@ -1099,6 +1096,7 @@ sub _compute {
     my ($c, $reg, @who_now) = @_;
 
     Global->init($c);
+    my $auto = ! $reg->manual();
     my $pr  = $reg->program();
     my $mem = $reg->person->member();
     my $lead_assist = $reg->leader_assistant();   # no housing or tuition charge
@@ -1108,7 +1106,7 @@ sub _compute {
 
     # tuition
     #
-    if (! $lead_assist) {
+    if (! $lead_assist && $auto) {
         my $tuition = $pr->tuition();
         if ($pr->extradays() && $reg->date_end() > $pr->edate()) {
             # they need to pay the full tuition amount
@@ -1179,10 +1177,12 @@ sub _compute {
             $what .= " - $prog_days day$plural";
         }
     }
-    if ($lead_assist) {
+    if ($lead_assist && $pr->rental_id() == 0) {
+        # leaders of non-hybrid programs pay no housing
+        #
         $tot_h_cost = 0;
     }
-    if ($tot_h_cost != 0) {
+    if ($auto && $tot_h_cost != 0) {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
@@ -1190,7 +1190,7 @@ sub _compute {
             what      => $what,
         });
     }
-    if ($pr->school() != 0 && ! $lead_assist) {
+    if ($auto && $pr->school() != 0 && ! $lead_assist) {
         # MMI registrants have an extra day at the commuting rate.
         #
         my $commute_cost = $housecost->commuting();
@@ -1208,7 +1208,7 @@ sub _compute {
     # show leader/asst on reg screen???   show footnotes differently?
     #
     my $extra_h_cost = 0;
-    if ($extra_days && ! $lead_assist) {
+    if ($auto && $extra_days && ! $lead_assist) {
         #
         # look for the personal retreat program
         # that contains the start date of the registration.
@@ -1250,7 +1250,7 @@ sub _compute {
     }
 
     my $life_free = 0;
-    if ($reg->free_prog_taken() && $tot_h_cost) {
+    if ($auto && $reg->free_prog_taken() && $tot_h_cost) {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
@@ -1260,6 +1260,7 @@ sub _compute {
         $life_free = 1;
         #
         # finally, update the member record and add a NightHist record
+        # ??? check to see if it has already been done!!!
         #
         $mem->update({
             free_prog_taken => 'yes',
@@ -1274,7 +1275,8 @@ sub _compute {
     #
     # discounts - MMC and MMI
     #
-	if ($pr->school() == 0      # not MMI
+	if ($auto
+        && $pr->school() == 0      # not MMI
         && !$life_free
         && !$lead_assist
         && $housecost->type eq "Per Day"
@@ -1317,7 +1319,7 @@ sub _compute {
     # the least for the balance.  Are we being anally precise
     # or what??
     #
-	if (my $ntaken = $reg->nights_taken) {
+	if ($auto && (my $ntaken = $reg->nights_taken)) {
 
         my @boxes = (
             [ $prog_days,  $h_cost     ],
@@ -1373,7 +1375,7 @@ sub _compute {
             last AFFIL;
         }
     }
-    if ($requested) {
+    if ($auto && $requested) {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
@@ -1387,7 +1389,7 @@ sub _compute {
     # figure the kids cost from the initial UNdiscounted rate.
     # bringing your kids during your free program - they still pay.
     #
-    if (my $kids = $reg->kids) {
+    if ($auto && (my $kids = $reg->kids)) {
         my $min_age = $string{min_kid_age};
         my $max_age = $string{max_kid_age};
         my @ages = $kids =~ m{(\d+)}g;
@@ -1404,7 +1406,7 @@ sub _compute {
             });
         }
     }
-    if ($reg->ceu_license) {
+    if ($auto && $reg->ceu_license) {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
@@ -1413,18 +1415,27 @@ sub _compute {
         });
     }
 
+    _calc_balance($reg);
+    # phew!
+}
+
+sub _calc_balance {
+    my ($reg) = @_;
+
     # calculate the balance, update the reg record
     my $balance = 0;
     for my $ch ($reg->charges) {
         $balance += $ch->amount;
     }
-    for my $py ($reg->payments) {
+    my $payments = ($reg->program->school() != 0)? "mmi_payments"
+                  :                                "payments"
+                  ;
+    for my $py ($reg->$payments) {
         $balance -= $py->amount;
     }
     $reg->update({
         balance => $balance,
     });
-    # phew!
 }
 
 #
@@ -1526,6 +1537,7 @@ sub view : Local {
 
 sub _view {
     my ($c, $reg) = @_;
+    my $reg_id = $reg->id();
     my $prog = $reg->program();
     my $extra = $prog->extradays();
     if ($extra) {
@@ -1573,13 +1585,13 @@ sub _view {
                                last  => $share_last,
                            })
         ) {
-            if (my ($reg) = model($c, 'Registration')->search({
-                                person_id  => $person->id(),
-                                program_id => $reg->program_id(),
-                            })
+            if (my ($next_reg) = model($c, 'Registration')->search({
+                                     person_id  => $person->id(),
+                                     program_id => $reg->program_id(),
+                                 })
             ) {
-                my $id = $reg->id();
-                $share = "<a href=/registration/view/$id>$share</a>";
+                my $next_id = $next_reg->id();
+                $share = "<a href=/registration/view/$next_id>$share</a>";
             }
             else {
                 # not registered - but are they in the online list?
@@ -1662,9 +1674,9 @@ sub pay_balance : Local {
 }
 
 sub pay_balance_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $reg_id) = @_;
 
-    my $reg = model($c, 'Registration')->find($id);
+    my $reg = model($c, 'Registration')->find($reg_id);
     my $amount = trim($c->request->params->{amount});
     my $type   = $c->request->params->{type};
     if ($amount !~ m{^-?\d+$}) {
@@ -1682,7 +1694,7 @@ sub pay_balance_do : Local {
         );
         return;
     }
-    my @who_now = get_now($c, $id);
+    my @who_now = get_now($c, $reg_id);
     if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
         push @who_now, the_date => (tt_today($c)+1)->as_d8(),
     }
@@ -1705,13 +1717,21 @@ sub pay_balance_do : Local {
     }
     my $from = $c->request->params->{from};
     if ($from eq "list_reg_name") {
-        $c->response->redirect($c->uri_for("/registration/list_reg_name/"
-                               . $reg->program->id));
+        $c->response->redirect(
+            $c->uri_for("/registration/list_reg_name/". $reg->program->id())
+        );
+    }
+    elsif ($from eq "edit_dollar") {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/$reg_id")
+        );
     }
     else {
         # $from eq 'view'
         # view registration again
-        $c->response->redirect($c->uri_for("/registration/view/$id"));
+        $c->response->redirect(
+            $c->uri_for("/registration/view/$reg_id")
+        );
     }
 }
 
@@ -1880,16 +1900,17 @@ sub _reg_hist {
 }
 
 sub new_charge : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $from) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
     stash($c,
+        from     => $from,
         reg      => $reg,
         template => "registration/new_charge.tt2",
     );
 }
 sub new_charge_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $reg_id) = @_;
 
     my $amount = trim($c->request->params->{amount});
     my $what   = trim($c->request->params->{what});
@@ -1924,7 +1945,7 @@ sub new_charge_do : Local {
     my $now_time = get_time()->t24();
 
     model($c, 'RegCharge')->create({
-        reg_id    => $id,
+        reg_id    => $reg_id,
         user_id   => $user_id,
         the_date  => $now_date,
         time      => $now_time,
@@ -1933,11 +1954,16 @@ sub new_charge_do : Local {
         automatic => '',        # this charge will not be cleared
                                 # when editing a registration.
     });
-    my $reg = model($c, 'Registration')->find($id);
+    my $reg = model($c, 'Registration')->find($reg_id);
     $reg->update({
         balance => $reg->balance + $amount,
     });
-    $c->response->redirect($c->uri_for("/registration/view/$id"));
+    if ($c->request->params->{from} eq 'edit_dollar') {
+        $c->response->redirect($c->uri_for("/registration/edit_dollar/$reg_id"));
+    }
+    else {
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+    }
 }
 
 #
@@ -2261,14 +2287,15 @@ sub update : Local {
         h_type_opts     => $h_type_opts,
         h_type_opts1    => $h_type_opts1,
         h_type_opts2    => $h_type_opts2,
-        carpool_checked => $reg->carpool()? "checked": "",
-        hascar_checked  => $reg->hascar() ? "checked": "",
-        cabin_checked   => $c_r eq 'cabin'? "checked": "",
-        room_checked    => $c_r eq 'room' ? "checked": "",
+        carpool_checked => $reg->carpool()   ? "checked": "",
+        hascar_checked  => $reg->hascar()    ? "checked": "",
+        cabin_checked   => $c_r eq 'cabin'   ? "checked": "",
+        room_checked    => $c_r eq 'room'    ? "checked": "",
+        work_study_checked => $reg->work_study()? "checked": "",
         note_lines      => lines($reg->confnote()) + 3,
         comment_lines   => lines($reg->comment ()) + 3,
-        template        => "registration/edit.tt2",
         leader_assistant_checked => $P{leader_assistant}? "checked": "",
+        template        => "registration/edit.tt2",
     );
 }
 
@@ -2397,6 +2424,8 @@ sub update_do : Local {
         share_last    => $P{share_last},
         pref1         => $P{pref1},
         pref2         => $P{pref2},
+        work_study    => $P{work_study},
+        work_study_comment => $P{work_study_comment},
         %dates,         # optionally
     });
     _compute($c, $reg, @who_now);
@@ -2462,7 +2491,8 @@ sub delete : Local {
     my $prog_id   = $reg->program_id;
 
     _vacate($c, $reg) if $reg->house_id;
-    $reg->delete();
+    $reg->delete();     # does this cascade to charges, payments, history? etc.?
+                        # yes.  Thank you to DBIC!
     model($c, 'Program')->find($prog_id)->update({
         reg_count => \'reg_count - 1',
     });
@@ -2938,7 +2968,7 @@ sub lodge : Local {
         reg           => $reg,
         n_nights      => $n_nights . " night$pl",
         sdate         => $sdate,
-        edate1        => $edate1,
+        edate         => $reg->date_end_obj,
         note          => $cn,
         note_lines    => lines($cn) + 3,
         message2      => $message2,
@@ -3447,12 +3477,15 @@ sub who_is_there : Local {
                   . $name
                   . "</a>"
                   ;
-            $relodge = "<td width=30 align=center><a target=happening href="
-                     . $c->uri_for("/registration/relodge/$rid")
-                     . qq# title="ReLodge!">#
-                     . "<img src=/static/images/move_arrow.gif border=0>"
-                     . "</a></td>"
-                     ;
+            # a poor man's drag and drop relodging
+            # they didn't like it - too iconically cryptic
+            #
+            #$relodge = "<td width=30 align=center><a target=happening href="
+            #         . $c->uri_for("/registration/relodge/$rid")
+            #         . qq# title="ReLodge!">#
+            #         . "<img src=/static/images/move_arrow.gif border=0>"
+            #         . "</a></td>"
+            #         ;
             $pr_name = "<a target=happening href="
                      . $c->uri_for("/program/view/")
                      . $pr->id()
@@ -3467,7 +3500,7 @@ sub who_is_there : Local {
                    . _get_kids($r->kids())
                    . "</td>"
                    . "<td>$pr_name</td>"
-                   . $relodge
+                   #. $relodge
                    . "</tr>";
     }
     $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.
@@ -4098,6 +4131,175 @@ sub view_adj : Local {
         # likely BOF beginning of file or EOF.
         $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
     }
+}
+
+sub automatic : Local {
+    my ($self, $c, $reg_id, $mode) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    $reg->update({
+        manual => ($mode? 'yes': ''),
+    });
+    # clear automatic charges, if any
+    model($c, 'RegCharge')->search({
+        reg_id    => $reg_id,
+        automatic => 'yes',
+    })->delete();
+
+    my @who_now = get_now($c, $reg_id);
+    _compute($c, $reg, @who_now);
+    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+}
+
+sub edit_dollar : Local {
+    my ($self, $c, $reg_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $auto_total = 0;
+    for my $ch ($reg->charges()) {
+        if ($ch->automatic()) {
+            $auto_total += $ch->amount();
+        }
+    }
+    stash($c,
+        manual_charges => [
+            model($c, 'RegCharge')->search({
+                reg_id => $reg_id,
+                automatic => '',
+            })
+        ],
+        auto_total => $auto_total,
+        reg => $reg,
+        template => 'registration/edit_dollar.tt2',
+    );
+}
+
+sub charge_delete : Local {
+    my ($self, $c, $reg_id, $ch_id) = @_;
+
+    model($c, 'RegCharge')->find($ch_id)->delete();
+    _calc_balance(model($c, 'Registration')->find($reg_id));
+    $c->response->redirect($c->uri_for("/registration/edit_dollar/$reg_id"));
+}
+
+sub payment_delete : Local {
+    my ($self, $c, $reg_id, $pay_id) = @_;
+
+    model($c, 'RegPayment')->find($pay_id)->delete();
+    _calc_balance(model($c, 'Registration')->find($reg_id));
+    $c->response->redirect($c->uri_for("/registration/edit_dollar/$reg_id"));
+}
+
+sub payment_update : Local {
+    my ($self, $c, $pay_id) = @_;
+
+    my $pay = model($c, 'RegPayment')->find($pay_id);
+    my $type = $pay->type();
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t"
+                   .  ($type eq $t? " selected": "")
+                   .  ">"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
+    my $what = $pay->what();
+    stash($c,
+        pay         => $pay,
+        type_opts   => $type_opts,
+        dep_checked => ($what eq 'Deposit'? " checked": ""),
+        pay_checked => ($what eq 'Payment'? " checked": ""),
+        template    => "registration/edit_payment.tt2",
+    );
+}
+sub payment_update_do : Local {
+    my ($self, $c, $pay_id) = @_;
+
+    my $pay = model($c, 'RegPayment')->find($pay_id);
+    my $the_dt = trim($c->request->params->{the_date});
+    my $dt = date($the_dt);
+    if (! $dt) {
+        error($c,
+            "Illegal date: $the_dt",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^-?\d+$}) {
+        error($c,
+            "Illegal amount: $amount",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    $pay->update({
+        the_date => $dt->as_d8(),
+        # date changes but time remains the same ??? Okay?
+        amount   => $amount,
+        type     => $c->request->params->{type},
+        what     => $c->request->params->{what},
+    });
+    # ??? also update who, when
+    _calc_balance($pay->registration());
+    $c->response->redirect(
+        $c->uri_for("/registration/edit_dollar/"
+                    . $pay->reg_id())
+    );
+}
+sub charge_update : Local {
+    my ($self, $c, $chg_id) = @_;
+
+    stash($c,
+        chg => model($c, 'RegCharge')->find($chg_id),
+        template => 'registration/edit_charge.tt2',
+    );
+}
+sub charge_update_do : Local {
+    my ($self, $c, $chg_id) = @_;
+
+    my $chg = model($c, 'RegCharge')->find($chg_id);
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^-?\d+$}) {
+        error($c,
+            "Illegal amount: $amount",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    $chg->update({
+        amount => $amount,
+        what   => $c->request->params->{what},
+    });
+    _calc_balance($chg->registration());
+    # ??? also update who, when
+    $c->response->redirect(
+        $c->uri_for("/registration/edit_dollar/"
+                    . $chg->reg_id())
+    );
+}
+
+sub work_study : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $prog = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id => $prog_id,
+            work_study => 'yes',
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.first person.last /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    stash($c,
+        program  => $prog,
+        regs     => \@regs,
+        template => 'registration/work_study.tt2',
+    );
 }
 
 1;

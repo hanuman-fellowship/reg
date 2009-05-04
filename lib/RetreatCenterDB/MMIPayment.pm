@@ -41,11 +41,6 @@ sub name {
     return $per->last . ", " . $per->first;
 }
 
-sub type_disp {
-    my ($self) = @_;
-    return $string{"payment_" . $self->type()};
-}
-
 sub for_what {
     my ($self) = @_;
 

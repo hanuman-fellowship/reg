@@ -2,6 +2,8 @@
 <a href=/program/view/[% program.id %]>Program</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/carpool/[% program.id %]>CarPool</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/registration/work_study/[% program.id %]>Work Study</a>
 <h4>Participant List</h4>
 <form action="/registration/name_addr_do/[% program.id %]">
 <table cellpadding=5 border=0>

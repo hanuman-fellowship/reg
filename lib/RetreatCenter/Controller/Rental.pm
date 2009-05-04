@@ -372,6 +372,7 @@ sub view : Local {
                           * $hc->dormitory
                          );
     my (%bookings, %booking_count);
+    # can use $r->bookings??? no.
     for my $b (model($c, 'RentalBooking')->search({
                    rental_id => $id,
                })
@@ -1834,6 +1835,351 @@ sub duplicate_do : Local {
     else {
         $c->response->redirect($c->uri_for("/rental/view/$id/1"));
     }
+}
+
+sub stays : Local {
+    my ($self, $c, $rental_id) = @_;    
+
+    my $r = model($c, 'Rental')->find($rental_id);
+    my $sdate = $r->sdate_obj();
+    my $ndays = $r->edate_obj() - $sdate;
+    my @dow = map { ($sdate + $_ - 1)->format("%a") }
+              (1 .. $ndays);
+    stash($c,
+        rental   => $r,
+        ndays    => $ndays,
+        days     => [ 1 .. $ndays ],
+        dow      => \@dow,
+        template => 'rental/stays.tt2',
+    );
+}
+
+sub stay_add : Local {
+    my ($self, $c, $rental_id) = @_;    
+
+    my $r = model($c, 'Rental')->find($rental_id);
+    my $sdate = $r->sdate_obj();
+    my $ndays = $r->edate_obj() - $sdate;
+    my @dow = map { ($sdate + $_ - 1)->format("%a") }
+              (1 .. $ndays);
+    stash($c,
+        rental   => $r,
+        ndays    => $ndays,
+        days     => [ 1 .. $ndays ],
+        dow      => \@dow,
+        house_opts  => _house_opts($c, $rental_id),
+        form_action => "stay_add_do/$rental_id",
+        template    => 'rental/stay_create_edit.tt2',
+    );
+}
+
+sub stay_add_do : Local {
+    my ($self, $c, $rental_id) = @_;    
+
+    my $r = model($c, 'Rental')->find($rental_id);
+    my $name = $c->request->params->{name};
+    my $room = uc $c->request->params->{room};
+    if (empty($name)) {
+        $c->response->redirect($c->uri_for("/rental/stays/$rental_id"));
+        return;
+    }
+    my $sdate = $r->sdate_obj();
+    my $ndays = $r->edate_obj() - $sdate;
+    model($c, 'RentalStay')->create({
+        rental_id => $rental_id,
+        name      => $name,
+        house_id  => $c->request->params->{house},
+        nights    => (join ', ',
+                      map {
+                          my $s = $c->request->params->{"day$_"};
+                          empty($s)? 0: $s;
+                      }
+                      (1 .. $ndays)
+                     ),
+    });
+    my @dow = map { ($sdate + $_ - 1)->format("%a") }
+              (1 .. $ndays);
+    stash($c,
+        house_opts => _house_opts($c, $rental_id),
+        rental => $r,
+        ndays    => $ndays,
+        days     => [ 1 .. $ndays ],
+        dow      => \@dow,
+        form_action => "stay_add_do/$rental_id",
+        template => 'rental/stay_create_edit.tt2',
+    );
+}
+
+sub stay_update : Local {
+    my ($self, $c, $stay_id) = @_;    
+
+    my $stay = model($c, 'RentalStay')->find($stay_id);
+    my $r = $stay->rental();
+    my $rental_id = $r->id();
+    my $sdate = $r->sdate_obj();
+    my $ndays = $r->edate_obj() - $sdate;
+    my @dow = map { ($sdate + $_ - 1)->format("%a") }
+              (1 .. $ndays);
+    stash($c,
+        house_opts => _house_opts($c, $rental_id, $stay->house_id()),
+        stay     => $stay,
+        rental   => $r,
+        ndays    => $ndays,
+        days     => [ 1 .. $ndays ],
+        dow      => \@dow,
+        form_action => "stay_update_do/$stay_id",
+        template => 'rental/stay_create_edit.tt2',
+    );
+}
+
+sub stay_update_do : Local {
+    my ($self, $c, $stay_id) = @_;
+
+    my $stay = model($c, 'RentalStay')->find($stay_id);
+    my $r = $stay->rental();
+    my $rental_id = $r->id();
+    my $name = $c->request->params->{name};
+    my $room = uc $c->request->params->{room};
+    if (empty($name)) {
+        $c->response->redirect($c->uri_for("/rental/stays/$rental_id"));
+        return;
+    }
+    my $sdate = $r->sdate_obj();
+    my $ndays = $r->edate_obj() - $sdate;
+    $stay->update({
+        name      => $name,
+        house_id  => $c->request->params->{house},
+        nights    => (join ', ',
+                      map {
+                          my $s = $c->request->params->{"day$_"};
+                          empty($s)? 0: $s;
+                      }
+                      (1 .. $ndays)
+                     ),
+    });
+    my @dow = map { ($sdate + $_ - 1)->format("%a") }
+              (1 .. $ndays);
+    stash($c,
+        rental => $r,
+        ndays    => $ndays,
+        days     => [ 1 .. $ndays ],
+        dow      => \@dow,
+        template => 'rental/stays.tt2',
+    );
+}
+
+#
+# syntax check
+# see if rooms have too many people in them.
+# see if the reported number of people is correct.
+# figure the housing cost and total things up.
+#
+sub stays_check : Local {
+    my ($self, $c, $rental_id) = @_;    
+
+    my $r = model($c, 'Rental')->find($rental_id);
+    my $sdate = $r->sdate_obj();
+    my $ndays = $r->edate_obj() - $sdate;
+    my @dow = map { ($sdate + $_ - 1)->format("%a") }
+              (1 .. $ndays);
+    my (%cost, %count);
+    my %indiv_cost;
+    my %tally;      # hash of list of hashes
+                    # house_id, night, count/people
+                    # not for OV or COM
+    my %err;
+    my $hc = $r->housecost();
+    for my $t (housing_types(1)) {
+        $cost{$t} = $hc->$t();
+        $count{$t} = 0;
+    }
+    my $error = "";
+    my $gtotal = 0;
+    STAY:
+    for my $s ($r->stays()) {
+        my $sid = $s->id();
+        my @nums = $s->arr_nights();
+        my $hid = $s->house_id();
+        if ($hid == 1000) {
+            for my $n (@nums) {
+                if ($n != 0) {
+                    ++$count{own_van};
+                    $indiv_cost{$sid} += $cost{own_van};
+                }
+            }
+            $gtotal += $indiv_cost{$sid};
+            next STAY;
+        }
+        elsif ($hid == 2000) {
+            for my $n (@nums) {
+                if ($n != 0) {
+                    ++$count{commuting};
+                    $indiv_cost{$sid} += $cost{commuting};
+                }
+            }
+            $gtotal += $indiv_cost{$sid};
+            next STAY;
+        }
+        my $house = $s->house();
+        my $hname = $house->name();
+        my $max = $house->max();
+        my $tent = $house->tent();
+        my $center = $house->center();
+        my $bath = $house->bath();
+        NIGHT:
+        for my $i (0 .. $ndays-1) {
+            my $n = $nums[$i];
+            if ($n != 0) {
+                if (exists $tally{$hname}[$i]) {
+                    if ($tally{$hname}[$i]{count} != $n) {
+                        $error .= "In $hname the number for "
+                               .  $s->name()
+                               . " on "
+                               .  ($sdate + $i)->format("%a")
+                               .  " should not be $n?<br>\n";
+                        $err{$hname}[$i] = 1;
+                    }
+                }
+                $tally{$hname}[$i]{count} = $n;
+                push @{$tally{$hname}[$i]{people}}, $s->name();
+            }
+
+            next NIGHT if $n == 0;
+            if ($tent) {
+                my $key = $center? "center_tent"
+                      :         "own_tent"
+                      ;
+                ++$count{$key};
+                $indiv_cost{$sid} += $cost{$key};
+            }
+            else {
+                if ($n > $max) {
+                    $error .= "For "
+                           .  $s->name()
+                           .  " on "
+                           .  ($sdate + $i)->format("%a")
+                           . " $hname has $n but the maximum is $max.<br>";
+                }
+                my $key = ($n == 1)? "single"
+                         :($n == 2)? "dble"
+                         :($n == 3)? "triple"
+                         :($n == 4)? "quad"
+                         :($n <= 7)? "dormitory"
+                         :           "economy"
+                         ;
+                if ($bath) {
+                    $key .= "_bath";
+                }
+                ++$count{$key};
+                $indiv_cost{$sid} += $cost{$key};
+            }
+        }
+        $gtotal += $indiv_cost{$sid};
+    }
+    if ($error) {
+        $gtotal = 0;        # it is likely wrong...
+    }
+use Data::Dumper;
+$c->log->info("dumped: ". Dumper(\%tally));
+    for my $hname (keys %tally) {
+        for my $i (0 .. $ndays-1) {
+            if (exists $tally{$hname}[$i]{count}
+                && $tally{$hname}[$i]{count}
+                       != scalar(@{$tally{$hname}[$i]{people}})
+            ) {
+                $error .= "Something is wrong with $hname on "
+                       .  ($sdate + $i)->format("%a")
+                       .  ".  Check "
+                       .  (join ', ',
+                           @{$tally{$hname}[$i]{people}}
+                          )
+                       .  "."
+                       ;
+            }
+        }
+    }
+    my $message = "";
+    if (! $error) {
+        $message = <<"EOH";
+<table cellpadding=3>
+<tr>
+<th align=left valign=bottom>Housing Type</th>
+<th width=80 align=right>Cost per<br>Night</th>
+<th width=80 align=right>People<br>Nights</th>
+<th width=80 align=right valign=bottom>Total</th>
+</tr>
+EOH
+        my $total = 0;
+        for my $t (housing_types(1)) {
+            my $x = $cost{$t}*$count{$t};
+            $total += $x;
+            $message .= "<tr>"
+                     .  "<td align=left>$string{$t}</td>"
+                     .  "<td align=right>$cost{$t}&nbsp;&nbsp;</td>"
+                     .  "<td align=right>$count{$t}&nbsp;&nbsp;</td>"
+                     .  "<td align=right>$x</td>"
+                     .  "</tr>"
+                     ;
+        }
+        $message .= "<tr><td colspan=3></td><td><hr></td></tr>\n";
+        $message .= "<tr><td colspan=3></td><td align=right>$total</td></tr>\n";
+        $message .= "</table>\n";
+    }
+    stash($c,
+        rental   => $r,
+        ndays    => $ndays,
+        days     => [ 1 .. $ndays ],
+        dow      => \@dow,
+        gtotal   => $gtotal,
+        indiv_cost => \%indiv_cost,
+        message  => ($error || $message),
+        template => 'rental/stays.tt2',
+    );
+}
+
+sub stay_delete : Local {
+    my ($self, $c, $stay_id) = @_;
+
+    my $stay = model($c, 'RentalStay')->find($stay_id);
+    my $rental_id = $stay->rental_id();
+    $stay->delete();
+    $c->response->redirect($c->uri_for("/rental/stays/$rental_id"));
+}
+
+sub _house_opts {
+    my ($c, $rental_id, $cur_hid) = @_;
+
+    $cur_hid ||= 0;
+    my $house_opts = "";
+    # ??? should be able to put this in DB/Rental.pm
+    # and call $r->rental_bookings
+    for my $b (model($c, 'RentalBooking')->search(
+                   {
+                       rental_id => $rental_id,
+                   },
+                   {
+                       join     => [qw/ house / ],
+                       prefetch => [qw/ house / ],
+                       order_by => [qw/ house.name /],
+                   }
+              )
+    ) {
+        my $h = $b->house();
+        my $hid = $h->id();
+        $house_opts .= "<option value=$hid"
+                    .  ($hid == $cur_hid? " selected": "")
+                    .  ">"
+                    .  $h->name()
+                    .  "\n"
+                    ;
+    }
+    $house_opts .= "<option value=1000"
+                .  ($cur_hid == 1000? " selected": "")
+                .  ">Own Van\n";
+    $house_opts .= "<option value=2000"
+                .  ($cur_hid == 2000? " selected": "")
+                .  ">Commuting\n";
+    return $house_opts;
 }
 
 1;

@@ -22,6 +22,8 @@ h3 {
 <a href="/rental/delete/[% id %]"
 onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+<a href="/rental/duplicate/[% id %]">Duplicate</a>
+&nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF rental.proposal_id %]
 <a href="/proposal/view/[% rental.proposal_id %]">To Proposal</a>
@@ -34,11 +36,11 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <a href="/program/view/[% rental.program_id %]">To Program</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/rental/duplicate/[% id %]">Duplicate</a>
-&nbsp;&nbsp;&nbsp;
 
 [% IF prog_admin %]
 <a href="/program/publish">Publish</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/stays/[% id %]">Stays</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/email_contract/[% id %]">EmailContract</a>
 &nbsp;&nbsp;&nbsp;

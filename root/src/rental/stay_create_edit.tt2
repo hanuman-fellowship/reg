@@ -1,0 +1,51 @@
+<h2>Adding a Stay for [% rental.name %]
+[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
+</h2>
+[% id = rental.id %]
+<form action=/rental/[% form_action %]>
+<table cellpadding=3>
+
+<tr>
+<td colspan=2></td>
+<th align=center colspan=[% ndays %] style="border-bottom: solid thin"># in Room</th>
+</tr>
+<tr>
+<th>Name</th>
+<th>Room</th>
+[% FOR d IN dow %]
+    <th width=40 align=center>[% d %]</th>
+[% END %]
+<th>Code</th>
+</tr>
+
+<tr>
+<td><input type=text name=name id=name size=15 value='[% stay.name %]'></td>
+<td>
+<select name=house>
+[% house_opts %]
+</select>
+</td>
+[% FOR i IN days %]
+    [% j = i - 1 %]
+    <td align=center><input type=text name=day[% i %] size=1 maxlength=1 value='[% stay.arr_nights.$j %]'></td>
+[% END %]
+<td></td>
+<td><input type=submit value="Go"></td>
+</tr>
+[% FOR s IN rental.stays %]
+    <tr>
+    <td>[% s.name %]</td>
+    <td align=center>[% s.house_name %]</td>
+    [% FOR m IN s.arr_nights %]
+        <td align=center>[% m %]</td>
+    [% END %]
+    <td align=center>[% s.house_code %]</td>
+    </tr>
+[% END %]
+</table>
+</form>
+<script type="text/javascript">
+document.getElementById('name').focus();
+</script>

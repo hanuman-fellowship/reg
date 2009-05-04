@@ -1,0 +1,15 @@
+<h2>Work Study for [% program.name %] [% program.dates %]</h2>
+<ul>
+<table cellpadding=5>
+<tr>
+<th align=left>Name</th>
+<th align=left>Tasks</th>
+</tr>
+[% FOR r IN regs %]
+<tr>
+<td>[% r.person.first %] [% r.person.last %]</td>
+<td>[% r.work_study_comment %]</td>
+</tr>
+[% END %]
+</table>
+</ul>

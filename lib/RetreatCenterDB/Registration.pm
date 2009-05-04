@@ -73,8 +73,11 @@ __PACKAGE__->belongs_to(program  => 'RetreatCenterDB::Program','program_id');
 __PACKAGE__->belongs_to(house    => 'RetreatCenterDB::House',  'house_id');
 
 __PACKAGE__->has_many(history   => 'RetreatCenterDB::RegHistory',  'reg_id');
+
 __PACKAGE__->has_many(charges   => 'RetreatCenterDB::RegCharge',   'reg_id');
 __PACKAGE__->has_many(payments  => 'RetreatCenterDB::RegPayment',  'reg_id');
+__PACKAGE__->has_many(mmi_payments  => 'RetreatCenterDB::MMIPayment',
+                      'reg_id');
 __PACKAGE__->has_many(confnotes => 'RetreatCenterDB::ConfHistory', 'reg_id',
                       { order_by => 'the_date desc, time desc' });
 
@@ -135,4 +138,22 @@ sub pref2_sh {
     $s;
 }
 
+sub calc_balance {
+    my ($reg) = @_;
+
+    # calculate the balance, update the reg record
+    my $balance = 0;
+    for my $ch ($reg->charges) {
+        $balance += $ch->amount;
+    }
+    my $payments = ($reg->program->school() != 0)? "mmi_payments"
+                  :                                "payments"
+                  ;
+    for my $py ($reg->$payments) {
+        $balance -= $py->amount;
+    }
+    $reg->update({
+        balance => $balance,
+    });
+}
 1;

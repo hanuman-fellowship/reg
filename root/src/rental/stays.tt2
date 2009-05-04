@@ -1,0 +1,55 @@
+<h2>Stays for [% rental.name %]
+[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
+</h2>
+[% id = rental.id %]
+<a href=/rental/stay_add/[% id %]>Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/rental/stays_check/[% id %]>Check</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/rental/view/[% id %]/1>To Rental</a>
+<p>
+
+<table cellpadding=3>
+<tr>
+<td colspan=2></td>
+<th align=center colspan=[% ndays %] style="border-bottom: solid thin"># in Room</th>
+</tr>
+<tr>
+<th width=180 align=left>Name</th>
+<th width=100>Room</th>
+[% FOR d IN dow %]
+    <th width=40 align=center>[% d %]</th>
+[% END %]
+<th>Code</th>
+[% IF gtotal %]
+    <th>Cost</th>
+[% END %]
+</tr>
+
+[% FOR s IN rental.stays %]
+[% sid = s.id %]
+    <tr>
+    <td>[% s.name %]</td>
+    <td align=center>[% s.house_name %]</td>
+    [% FOR m IN s.arr_nights %]
+        <td align=center>[% m %]</td>
+    [% END %]
+    <td align=center>[% s.house_code %]</td>
+    [% IF gtotal %]
+        <td align=right>[% indiv_cost.$sid %]</td>
+    [% END %]
+    <td width=20></td>
+    <td><a href='/rental/stay_delete/[% s.id %]'><img src=/static/images/redX.gif height=20></a></td>
+    <td><a href='/rental/stay_update/[% s.id %]'><img src=/static/images/pencil.png height=20></a></td>
+    </tr>
+[% END %]
+[% IF gtotal %]
+    <tr><td colspan=[% ndays + 3 %]></td><td><hr></td></tr>
+    <tr><td colspan=[% ndays + 3 %]></td><td align=right>[% gtotal %]</td></tr>
+[% END %]
+</table>
+<ul>
+<span style="color: red">[% message %]</span>
+</ul>

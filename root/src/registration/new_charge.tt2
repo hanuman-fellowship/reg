@@ -1,5 +1,6 @@
 <h2>New Charge</h2>
 <form action="/registration/new_charge_do/[% reg.id %]" name=form>
+<input type=hidden name=from value=[% from %]>
 <table cellpadding=3>
 <tr>
 <th align=right>Program</th>

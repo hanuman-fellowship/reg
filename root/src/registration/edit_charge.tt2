@@ -1,0 +1,27 @@
+[% reg = chg.registration %]
+[% per = reg.person %]
+[% prog = reg.program %]
+<h2>Editing Charge for [% per.first %] [% per.last %] in [% prog.name %]</h2>
+<a href="/registration/view/[% reg.id %]">To Registration</a>
+<p class=p2>
+<form action="/registration/charge_update_do/[% chg.id %]" name=form>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount size=5 value='[% chg.amount %]'></td>
+</tr>
+
+<tr>
+<th align=right>For What</th>
+<td><input type=text name=what size=60 value='[% chg.what %]'></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.amount.focus();</script>

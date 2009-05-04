@@ -13,6 +13,12 @@ function popup(url) {
     newwin.moveTo(600, 0);
 }
 </script>
+<style type="text/css">
+#sub {
+    color: green;
+    background: lightgreen;
+}
+</style>
 <h2>Registration</h2>
 <form method=POST name=form action="/registration/update_do/[% reg.id %]">
 <table cellpadding=3 border=0>
@@ -32,48 +38,6 @@ function popup(url) {
 <th align=right>Program</th>
 <td colspan=2><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a></td>
 <input type=hidden name=program_id value="[% program.id %]">
-</tr>
-
-<tr>
-<th align=right>Referral</th>
-<td colspan=5>
-<select name=referral>
-<option value="ad"       [% ad_selected %]      >Advertisement</option>
-<option value="web"      [% web_selected %]     >Web</option>
-<option value="brochure" [% brochure_selected %]>Brochure</option>
-<option value="flyer"    [% flyer_selected %]   >Flyer</option>
-</select>
-<b>Ad Source</b>
-<input type=text name=adsource value="[% reg.adsource %]">
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Carpool</th>
-<td colspan=3>
-<input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
-<input type=checkbox name=hascar  value=yes [% hascar_checked  %]> Has Car
-<!-- need a slight adjustment here: font size will change it -->
-[% IF ceu %]
-<span style="margin-left: .5in; font-weight: bold" >CEU License #</span>
-<input type=text name=ceu_license value="[% reg.ceu_license %]">
-</td>
-[% END %]
-</tr>
-
-<tr>
-<th align=right>Ages of Kids</th>
-<td colspan=2><input type=text name=kids size=10 value="[% reg.kids %]"></td>
-<td><input type=submit value="Submit"></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Comment</th>
-<td colspan=3>
-<textarea rows=[% comment_lines %] cols=60 name=comment>
-[% reg.comment %]
-</textarea>
-</td>
 </tr>
 
 <tr>
@@ -110,6 +74,17 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 </tr>
 
 <tr>
+<th align=right valign=top>Comment
+<br>
+<input style="margin-top: .5in" id=sub type=submit value="Submit"></th>
+<td colspan=3>
+<textarea rows=[% comment_lines %] cols=60 name=comment>
+[% reg.comment %]
+</textarea>
+</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Confirmation Note</th>
 <td colspan=3><textarea rows=[% note_lines %] cols=60 name=confnote>
 [% reg.confnote %]
@@ -129,12 +104,50 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 [% END %]
 
 <tr>
-<td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
-
+<td colspan=2></td>
 <td>Click <a href="#" onclick="javascript:popup('/registration/conf_notes'); return false;">here</a> to see all quick notes.
 
 </tr>
+
+<tr>
+<th align=right>Referral</th>
+<td colspan=5>
+<select name=referral>
+<option value="ad"       [% ad_selected %]      >Advertisement</option>
+<option value="web"      [% web_selected %]     >Web</option>
+<option value="brochure" [% brochure_selected %]>Brochure</option>
+<option value="flyer"    [% flyer_selected %]   >Flyer</option>
+</select>
+<b>Ad Source</b>
+<input type=text name=adsource value="[% reg.adsource %]">
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Carpool</th>
+<td colspan=3>
+<input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
+<input type=checkbox name=hascar  value=yes [% hascar_checked  %]> Has Car
+<!-- need a slight adjustment here: font size will change it -->
+[% IF ceu %]
+<span style="margin-left: .5in; font-weight: bold" >CEU License #</span>
+<input type=text name=ceu_license value="[% reg.ceu_license %]">
+</td>
+[% END %]
+</tr>
+
+<tr>
+<th align=right>Ages of Kids</th>
+<td colspan=2><input type=text name=kids size=10 value="[% reg.kids %]"></td>
+<td><input id=sub type=submit value="Submit"></td>
+</tr>
+
+<tr>
+<th align=right>Work Study</td>
+<td align=left colspan=2><input type=checkbox value=yes name=work_study [% work_study_checked %]>
+&nbsp;<input type=text name=work_study_comment value='[% reg.work_study_comment %]' size=40></td>
+</tr>
+
 
 </table>
 </form>

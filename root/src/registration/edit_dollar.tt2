@@ -1,0 +1,132 @@
+<style type="text/css">
+/* so edit/delete linked images won't 'blink' */
+th a:hover {
+    background: white;
+}
+</style>
+[% reg_id = reg.id %]
+[% per = reg.person %]
+[% prog = reg.program %]
+[% mmi = prog.school != 0 %]
+<h2>Editing Charges and [% IF mmi %]MMI [% END %]Payments<br>
+For [% per.first %] [% per.last %] in [% prog.name %]</h2>
+<a href=/registration/view/[% reg_id %]>To Registration</a>
+<p class=p2>
+<ul>
+<h3>Balance</h3>
+$[% reg.balance %]
+<hr width=300 align=left>
+<h3>Charges</h3>
+[% tot_chg = 0 %]
+<table cellpadding=3>
+<tr>
+<th colspan=2 width=50></th>
+<th>Amount</th>
+<th align=left>What</th>
+</tr>
+[% FOR ch IN manual_charges %]
+[% amt = ch.amount %]
+[% tot_chg = tot_chg + amt %]
+<tr>
+<th><a title="Edit" href=/registration/charge_update/[% ch.id %]><img src=/static/images/pencil.png height=20 border=0></a></th>
+<th><a title="Delete" href=/registration/charge_delete/[% reg_id %]/[% ch.id %] onclick="return confirm('Delete Charge of $[% ch.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
+<td align=right>[% amt %]</td>
+<td align=left>[% ch.what %]</td>
+</tr>
+[% END %]
+[% IF auto_total != 0 %]
+[% tot_chg = tot_chg + auto_total %]
+<tr>
+<td colspan=2></td>
+<td align=right>[% auto_total %]</td>
+<td align=left>Total Automatic Charges</td>
+</tr>
+[% END %]
+<tr>
+<td colspan=2></td>
+<td><hr></td>
+</tr>
+<tr>
+<td colspan=2></td>
+<td align=right>[% tot_chg %]</td>
+<td align=left>Total</td>
+</tr>
+</table>
+<p class=p2>
+<a href=/registration/new_charge/[% reg_id %]/edit_dollar>New Charge</a>
+<hr width=300 align=left>
+[% IF ! mmi %]
+<h3>Payments</h3>
+<table cellpadding=3>
+<tr>
+<th colspan=2 width=50></th>
+<th>Amount</th>
+<th>Date</th>
+<th align=left>Type</th>
+<th align=left>What</th>
+</tr>
+[% tot_pay = 0 %]
+[% FOR pay IN reg.payments %]
+[% amt = pay.amount %]
+[% tot_pay = tot_pay + amt %]
+<tr>
+<th><a title="Edit" href=/registration/payment_update/[% pay.id %]><img src=/static/images/pencil.png height=20 border=0></a></th>
+<th><a title="Delete" href=/registration/payment_delete/[% reg_id %]/[% pay.id %] onclick="return confirm('Delete Payment of $[% pay.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
+<td align=right>[% amt %]</td>
+<td>[% pay.the_date_obj.format("%D") %]</td>
+<td>[% pay.type_sh %]</td>
+<td align=left>[% pay.what %]</td>
+</tr>
+[% END %]
+<tr>
+<td colspan=2></td>
+<td><hr></td>
+</tr>
+<tr>
+<td colspan=2></td>
+<td align=right>[% tot_pay %]</td>
+<td align=left>Total</td>
+</tr>
+</table>
+<p class=p2>
+<a href=/registration/pay_balance/[% reg_id %]/edit_dollar>New Payment</a>
+[% ELSE %]
+<h3>MMI Payments</h3>
+<table cellpadding=3>
+<tr>
+<th colspan=2 width=50></th>
+<th>Amount</th>
+<th>Date</th>
+<th align=left>Type</th>
+<th align=left>What</th>
+<th align=left>Note</th>
+</tr>
+[% tot_pay = 0 %]
+[% FOR pay IN reg.mmi_payments %]
+[% amt = pay.amount %]
+[% tot_pay = tot_pay + amt %]
+<tr>
+<th><a title="Edit" href=/person/update_mmi_payment/[% pay.id %]/edit_dollar><img src=/static/images/pencil.png height=20 border=0></a></th>
+<th><a title="Delete" href='/person/del_mmi_payment/[% pay.id %]/edit_dollar' onclick="return confirm('Delete MMI Payment of $[% pay.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
+<td align=right>[% pay.amount %]</td>
+<td>[% pay.the_date_obj.format("%D") %]</td>
+<td>[% pay.type_sh %]</td>
+<td align=left>[% pay.for_what %]</td>
+<td align=left>[% pay.note %]</td>
+</tr>
+[% END %]
+<tr>
+<td colspan=2></td>
+<td><hr></td>
+</tr>
+<tr>
+<td colspan=2></td>
+<td align=right>[% tot_pay %]</td>
+<td align=left>Total</td>
+</tr>
+</table>
+<p class=p2>
+<a href=/person/create_mmi_payment/[% reg_id %]/[% per.id %]/edit_dollar>New MMI Payment</a>
+[% END %]
+<hr width=300 align=left>
+</ul>

@@ -16,9 +16,10 @@ function popup(url) {
 }
 </script>
 <style>
-h3 {
-    margin-bottom: 1mm;
+.hdr {
+    display: inline;
     color: #338833;
+    font-size: 16pt;
 }
 .cancel {
     margin-left: .5in;
@@ -39,12 +40,12 @@ p {
 [% id = reg.id %]
 [% person = reg.person %]
 [% snail = 'Snail Mail' %]
-<h2 style="margin-bottom: 0px">Registration</h2>
-<form name=form action=/registration/seek/[% program.id %]/[% id %]>
-<table border=0>
-<tr><td></td><td>Registrant</td><td>&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td></tr>
-<tr><td valign=center>
-<a href="/registration/update/[% id %]">Edit</a>
+[% mmi = program.school != 0 %]
+<h2 style="margin-bottom: 9px">Registration</h2>
+<table border=0 cellpadding=0>
+<tr>
+<td valign=center>
+<a accesskey='E' href="/registration/update/[% id %]"><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;
 [% IF ! reg.cancelled %]
 <a href="/registration/cancel/[% id %]"
@@ -79,7 +80,7 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <a href="/registration/ceu/[% id %]">CEU</a>
 &nbsp;&nbsp;
 [% END %]
-[% IF reg.program.school != 0 && reg.program.level == 'S' %]
+[% IF mmi && reg.program.level == 'S' %]
     [% IF dcm_reg_id %]
     <a href="/registration/view/[% dcm_reg_id %]">To [% dcm_type %]</a>
     [% ELSE %]
@@ -91,10 +92,25 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 &nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;
+</td>
+<td>Registrant</td><td>&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td>
+</tr>
+<tr>
+<td>
+<a accesskey='B' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back"><span class=keyed>B</span>ack</a>&nbsp;&nbsp;&nbsp;<a accesskey='N' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next"><span class=keyed>N</span>ext</a>
+&nbsp;&nbsp;
+<a href=/registration/edit_dollar/[% id %]>Edit$</a>
+&nbsp;&nbsp;
+[% IF reg.manual %]
+<a href=/registration/automatic/[% id %]/0>Manual</a>
+[% ELSE %]
+<a href=/registration/automatic/[% id %]/1>Automatic</a>
+[% END %]
 </td><td valign=center>
+<form name=form action=/registration/seek/[% program.id %]/[% id %]>
 <input type=text name=reg_pat size=8 value='[% reg_pat %]'></td><td>&nbsp;&nbsp;<input type=text name=prog_pat size=8 value='[% prog_pat %]'></td><td><input type=submit value="Search">&nbsp;<a href="javascript:popup('/static/help/reg_search.html');">How?</a>
-</td></tr></table>
 </form>
+</td></tr></table>
 
 <table cellpadding=2 border=0>
 
@@ -110,7 +126,6 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 [% IF reg.date_end   != program.edate %] <span class=arr_lv>Leave [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
 [% END %]
 </td>
-<td><a accesskey='B' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back"><span class=keyed>B</span>ack</a>&nbsp;&nbsp;&nbsp;<a accesskey='N' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next"><span class=keyed>N</span>ext</a></td>
 </tr>
 
 <tr>
@@ -123,39 +138,22 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </td>
 </tr>
 
-<tr>
-<th align=right>Membership</th>
-<td>[% IF reg.status %][% reg.status %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free nights.[% ELSIF reg.free_prog_taken %]taking their free program.[% END %][% END %]</td>
-[% IF ceu %]
-<th align=right>CEU License</th><td>[% reg.ceu_license %]</td>
-[% END %]
-</tr>
-
-<tr>
-<th align=right>Postmark</th>
-<td>[% reg.date_postmark_obj %] [% reg.time_postmark_obj %]</td>
-<th align=right>Carpooling</th>
-<td>[% IF reg.carpool %]Wish to carpool.&nbsp;&nbsp;[% END %][% IF reg.hascar %]Has car.[% END %]</td>
-</tr>
-
-<tr>
-<th align=right>Referral</th>
-<td>[% reg.referral %] [% reg.adsource %]</td>
-<th align=right>Ages of Kids</th><td>[% reg.kids %]</td>
-</tr>
-
 [% type = reg.h_type_disp %]
-<tr><th align=right valign=center>Housing</th>
-<td valign=center><table><tr><td align=center>
+<tr>
+<th align=right valign=center rowspan=3>Housing</th>
+<td valign=center rowspan=3><table border=0><tr><td align=center>
+<span style="font-size: 18pt">
 [% type %]
+</span>
 </td><td align=center>
 [% IF type != 'Commuting'
    && type != 'Own Van'
    && type != 'Unknown'
    && type != 'Not Needed'
 %]
+<span style="font-size: 18pt">
     [% IF reg.house_id %]
-        <a href=/registration/relodge/[% id %]>[% reg.house.name %]</a>
+        <a style="font-size: 18pt;" href=/registration/relodge/[% id %]>[% reg.house.name %]</a>
     [% ELSE %]
         <a href=/registration/lodge/[% id %]>[% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.gif border=0>[% END %]</a>
     [% END %]
@@ -163,34 +161,37 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% IF reg.h_name %]
     ([% reg.h_name %])
 [% END %]
+</span>
 </td></tr></table>
 </td>
 <th align=right>Housing Preferences</th><td valign=center>[% reg.pref1_sh %], [% reg.pref2_sh %]</td>
 </tr>
 
 <tr>
-<th colspan=3 align=right>Cabin/Room</th>
+<th align=right>Cabin/Room</th>
 <td>[% reg.cabin_room %]
 </tr>
 
 [% IF reg.share_first %]
-<th colspan=3 align=right>Sharing With</th>
+<th align=right>Sharing With</th>
 <td>[% share %]</td>
+[% ELSE %]
+<td colspan=2></td>
 [% END %]
 
 <tr><th align=right>Balance</th>
 <td>
 <table>
 <tr>
-<td align=center>[% reg.balance %]</td>
+<td align=center style="font-size: 18pt">[% reg.balance %]</td>
 
 <td align=center>[% IF reg.balance != 0 %]
-    [% IF reg.program.school == 0 %]
-    <a style="margin-left: .5in"
-       href="/registration/pay_balance/[% id %]/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>
-    [% ELSE %]
+    [% IF mmi %]
     <a style="margin-left: .5in"
        href="/person/create_mmi_payment/[% id %]/[% person.id %]"><img src="/static/images/dollar.jpg" height=55 border=0></a>
+    [% ELSE %]
+    <a style="margin-left: .5in"
+       href="/registration/pay_balance/[% id %]/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>
     [% END %]
 [% END %]
 </td>
@@ -210,10 +211,14 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td colspan=3 width=700>[% reg.confnote %]<a href="/registration/update_confnote/[% id %]">Update</a></td>[% IF reg.confnotes.1 %]<td align=left valign=top><a href="/registration/conf_history/[% id %]">Note History</a></td>[% END %]
 </tr>
 </table>
+<p class=p2>
 
+<table cellpadding=5>
+<tr><td valign=top>
 <!-------- Charges --------->
-<div style="float: left; margin-right: .5in">
-<h3>Charges</h3>
+<span class=hdr>Charges</span>
+<a style="margin-left: .5in" href="/registration/new_charge/[% id %]">New Charge</a>
+<a style="margin-left: .5in" href=/registration/edit_dollar/[% id %]>Edit$</a>
 <table cellpadding=2>
 
 <tr>
@@ -240,19 +245,13 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>Total</td>
 </tr>
 
-<tr>
-<td></td>
-<td>
-<a href="/registration/new_charge/[% id %]">New Charge</a>
-</td>
-</tr>
 </table>
-</div>
 
-[% IF program.school == 0 %]
+</td><td valign=top>
+
+[% IF ! mmi %]
 <!-------- Payments --------->
-<div style="float: left; margin-right: .5in">
-<h3>Payments</h3>
+<span class=hdr>Payments</span><a style="margin-left: .5in" href=/registration/edit_dollar/[% id %]>Edit$</a>
 <table cellpadding=2>
 
 <tr>
@@ -281,21 +280,88 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>Total</td>
 </tr>
 </table>
-</div>
 [% ELSE %]
-<div style="float: left; margin-right: .5in">
-<h3>MMI Payments</h3>
-<ul>
-<a href="/person/create_mmi_payment/[% id %]/[% person.id %]">New</a>
-&nbsp;&nbsp;
-<a href="/person/list_mmi_payment/[% person.id %]">List</a>
-</ul>
-</div>
+<span class=hdr>MMI Payments</span><a style="margin-left: .5in" href=/registration/edit_dollar/[% id %]>Edit$</a>
+<p class=p2>
+<table cellpadding=2>
+<tr>
+<th align=right>Amount</th>
+<th align=left>What</th>
+<th align=left>Type</th>
+</tr>
+
+[% tot = 0 %]
+[% FOREACH py IN reg.mmi_payments %]
+<tr>
+<td align=right>[% py.amount %]</td>
+<td>[% py.for_what %]</td>
+<td>[% py.type_sh %]</td>
+<td>
+<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</td>
+</tr>
+[% tot = tot + py.amount %]
 [% END %]
 
+<tr><td style="border-top: solid thin"></td></tr>
+
+<tr>
+<td align=right>[% tot %]</td>
+<td>Total</td>
+</tr>
+</table>
+<a href="/person/list_mmi_payment/[% person.id %]">List All</a>
+&nbsp;&nbsp;
+<a href="/person/create_mmi_payment/[% id %]/[% person.id %]">New MMI Payment</a>
+[% END %]
+
+</td><tr>
+
+<tr><td valign=top>
+<span class=hdr>Information</span>
+<table cellpadding=2>
+
+<tr>
+<th align=right>Ages of Kids</th><td>[% reg.kids %]</td>
+</tr>
+
+<tr>
+<th align=right>Membership</th>
+<td>[% IF reg.status %][% reg.status %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free nights.[% ELSIF reg.free_prog_taken %]taking their free program.[% END %][% END %]</td>
+</tr>
+
+[% IF ceu %]
+<tr>
+<th align=right>CEU License</th><td>[% reg.ceu_license %]</td>
+</tr>
+[% END %]
+
+<tr>
+<th align=right>Postmark</th>
+<td>[% reg.date_postmark_obj %] [% reg.time_postmark_obj %]</td>
+</tr>
+
+<tr>
+<th align=right>Carpooling</th>
+<td>[% IF reg.carpool %]Wish to carpool.&nbsp;&nbsp;[% END %][% IF reg.hascar %]Has car.[% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Referral</th>
+<td>[% reg.referral %] [% reg.adsource %]</td>
+</tr>
+
+<tr>
+<th align=right>Work Study</th>
+<td>[% IF reg.work_study %]yes - [% reg.work_study_comment %][% END %]</td>
+</tr>
+
+</table>
+
+</td><td valign=top>
+
 <!-------- History --------->
-<div style="float: left; margin-right: .5in">
-<h3>History</h3>
+<span class=hdr>History</span>
 <table cellpadding=2>
 
 <tr>
@@ -310,8 +376,11 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </td>
 </tr>
 [% END %]
-</div>
 </table>
+
+</td></tr>
+</table>
+
 <script type="text/javascript">
 document.form.reg_pat.focus();
 </script>

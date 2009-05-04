@@ -1,3 +1,10 @@
+<style type="text/css">
+/* so edit/delete linked images won't 'blink' */
+/* th not td - clever! */
+th a:hover {
+    background: white;
+}
+</style>
 [% IF mmi_print %]
 <head>
 <link rel="stylesheet" type="text/css" href="/src/ttsite.css" />
@@ -50,9 +57,12 @@
     [% END %]
     <td>[% p.note %]</td>
     [% IF ! mmi_print %]
-    <td align=center><a href="/person/del_mmi_payment/[% person.id%]/[% p.id %]"
+    <th align=center>
+    <a title=Edit href="/person/update_mmi_payment/[% p.id %]"><img src=/static/images/pencil.png border=0 height=20></a>
+    <a title=Delete href="/person/del_mmi_payment/[% p.id %]"
     onclick="return confirm('Okay to Delete payment of $[% p.amount %]?');"
-    >Del</a></td>
+    ><img src=/static/images/redX.gif border=0 height=20></a>
+    </th>
     [% END %]
     </tr>
 [% END %]

@@ -1,0 +1,44 @@
+[% reg = pay.registration %]
+[% per = reg.person %]
+[% prog = reg.program %]
+<h2>Editing Payment for [% per.first %] [% per.last %] in [% prog.name %]</h2>
+<a href="/registration/view/[% reg.id %]">To Registration</a>
+<p class=p2>
+<form action=/registration/payment_update_do/[% pay.id %]>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount value='[% pay.amount %]' size=6></td>
+</tr>
+
+<tr>
+<th align=right>Date</th>
+<td><input type=text name=the_date value='[% pay.the_date_obj.format("%D") %]' size=10></td>
+</tr>
+
+<tr>
+<th align=right>Type</th>
+<td>
+<select name=type>
+[% type_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right>What</th>
+<td><input type=radio name=what value="Deposit" [% dep_checked %]>Deposit
+    <input type=radio name=what value="Payment" [% pay_checked %]>Payment</td>
+</tr>
+
+<tr>
+<th></th>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.amount.focus();
+</script>
