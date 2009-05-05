@@ -33,6 +33,8 @@ sub index : Local {
 
 #
 # better way to do this the DBIx::Class way???
+# must be a way.  join, prefetch.
+# no inactive people please???
 #
 sub _phone_list {
     my @people = @{ Person->search(<<"EOS") };

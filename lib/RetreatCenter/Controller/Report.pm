@@ -209,6 +209,7 @@ sub run : Local {
 
     # restrictions apply?
     # have people said they want to be included?
+    # ??? or is not null?
     my $restrict = "inactive != 'yes' and ";
     if ($format == 1 || $format == 2 || $format == 4 || $format == 7) {
         $restrict .= "snail_mailings = 'yes' and ";

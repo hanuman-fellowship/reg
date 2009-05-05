@@ -158,7 +158,7 @@ th {
 </tr>
 
 <tr>
-<th>Count</th><td>[% pr.reg_count %]</td></tr>
+<th>Count</th><td>[% pr.reg_count %][% IF pr.extradays %]/[% pr.full_count %][% END %]</td></tr>
 </tr>
 </table>
 [% END %]

@@ -3634,12 +3634,12 @@ sub name_addr_do : Local {
     my @cond = ();
     if ($including eq 'normal') {
         @cond = (
-            date_end => { '>' => $edate },
+            date_end => { '<=' => $edate },
         );
     }
     elsif ($including eq 'extended') {
         @cond = (
-            date_end => { '<=' => $edate },
+            date_end => { '>' => $edate },
         );
     }
     my (@regs) = model($c, 'Registration')->search(

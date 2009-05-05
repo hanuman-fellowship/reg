@@ -797,4 +797,16 @@ sub leaders_house {
     $html;
 }
 
+sub full_count {
+    my ($self) = @_;
+
+    my $count = 0;
+    for my $r ($self->registrations()) {
+        if ($r->date_end() > $self->edate()) {
+            ++$count;
+        }
+    }
+    $count;
+}
+
 1;
