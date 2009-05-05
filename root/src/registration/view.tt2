@@ -218,7 +218,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <!-------- Charges --------->
 <span class=hdr>Charges</span>
 <a style="margin-left: .5in" href="/registration/new_charge/[% id %]">New Charge</a>
-<a style="margin-left: .5in" href=/registration/edit_dollar/[% id %]>Edit$</a>
+<a style="margin-left: .2in" href=/registration/edit_dollar/[% id %]>Edit$</a>
 <table cellpadding=2>
 
 <tr>
