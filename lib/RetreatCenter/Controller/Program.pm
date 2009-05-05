@@ -320,10 +320,18 @@ sub create_do : Local {
 
     # create the summary from the right template
     #
+    my $prefix;
+    if ($P{name} =~ m{^MMI-([DCM])}) {
+        $prefix = "MMI-$1";
+    }
+    elsif ($P{school} != 0) {
+        $prefix = "MMI";
+    }
+    else {
+        $prefix = "MMC";
+    }
     my @prog = model($c, 'Program')->search({
-        name => ($P{school} == 0? "MMC"
-                 :                "MMI")
-                . " Template",
+        name => "$prefix Template",
     });
     my @dup_summ = ();
     if (@prog) {

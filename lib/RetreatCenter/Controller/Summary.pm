@@ -128,12 +128,15 @@ sub use_template : Local {
     my $prefix = "MMC";
     if ($type eq 'Program') {
         my $prog = model($c, $type)->find($happening_id);
-        if ($prog->school() != 0) {
+        if ($prog->name() =~ m{^MMI-([DCM])}) {
+            $prefix = "MMI-$1";
+        }
+        elsif ($prog->school() != 0) {
             $prefix = "MMI";
         }
     }
     my @prog = model($c, 'Program')->search({
-        name => $prefix . " Template",
+        name => "$prefix Template",
     });
     if (! @prog) {
         $c->stash->{mess} = "Could not find '$prefix Template' program";
