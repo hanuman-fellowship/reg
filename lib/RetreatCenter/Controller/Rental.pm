@@ -373,9 +373,16 @@ sub view : Local {
                          );
     my (%bookings, %booking_count);
     # can use $r->bookings??? no.
-    for my $b (model($c, 'RentalBooking')->search({
-                   rental_id => $id,
-               })
+    for my $b (model($c, 'RentalBooking')->search(
+                   {
+                       rental_id => $id,
+                   },
+                   {
+                       join     => [qw/ house /],
+                       prefetch => [qw/ house /],
+                       order_by => [qw/ house.name /],
+                   }
+              )
     ) {
         my $h_name = $b->house->name;
         my $h_type = $b->h_type;
