@@ -4140,11 +4140,16 @@ sub automatic : Local {
     $reg->update({
         manual => ($mode? 'yes': ''),
     });
-    # clear automatic charges, if any
-    model($c, 'RegCharge')->search({
-        reg_id    => $reg_id,
-        automatic => 'yes',
-    })->delete();
+    # if moving to manual convert automatic charges to manual.
+    #
+    if ($mode) {
+        model($c, 'RegCharge')->search({
+            reg_id    => $reg_id,
+            automatic => 'yes',
+        })->update({
+            automatic => '',
+        });
+    }
 
     my @who_now = get_now($c, $reg_id);
     _compute($c, $reg, @who_now);
