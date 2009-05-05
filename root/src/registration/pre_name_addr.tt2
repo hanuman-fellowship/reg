@@ -40,8 +40,8 @@
 <th align=right valign=top>Including</th>
 <td>
 <input type=radio name=including value="both" checked> Both<br>
-<input type=radio name=including value="normal"> Normal<br>
-<input type=radio name=including value="extended"> Extended
+<input type=radio name=including value="normal"> Weekend<br>
+<input type=radio name=including value="extended"> Full
 </td>
 </tr>
 [% END %]
