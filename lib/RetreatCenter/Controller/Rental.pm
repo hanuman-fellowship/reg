@@ -1496,8 +1496,8 @@ EOH
             $type_shown = 1;
         }
         if ($type_shown) {
-            $s = "";
-            $show_cost = "";
+            $s = "&nbsp;";
+            $show_cost = "&nbsp;";
         }
         #
         # now for the exceptions
