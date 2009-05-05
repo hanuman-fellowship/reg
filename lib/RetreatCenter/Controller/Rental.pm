@@ -1521,8 +1521,8 @@ EOH
                           )
                        );
             $tot_housing_charge += $subtot;
-            $s = "";
-            $show_cost = "";
+            $s = "&nbsp;";
+            $show_cost = "&nbsp;";
         }
     }
     $html .= Tr(th({ -align => 'right'}, [ "Total" ]),
