@@ -99,6 +99,7 @@ sub create : Local {
         check_quad          => '',
         check_collect_total => '',
         check_economy       => '',
+        check_dncc          => '',
         program_leaders     => [],
         program_affils      => [],
         section             => 1,   # Web (a required field)
@@ -196,6 +197,7 @@ sub _get_data {
         webready
         quad
         linked
+        do_not_compute_costs
     /) {
         $P{$f} = "" unless exists $P{$f};
     }
@@ -644,7 +646,7 @@ sub update : Local {
 
     for my $w (qw/
         sbath collect_total kayakalpa retreat
-        economy webready quad linked
+        economy webready quad linked do_not_compute_costs
     /) {
         stash($c,
             "check_$w" => ($p->$w)? "checked": ""
@@ -1427,20 +1429,27 @@ sub gen_regtable {
         #
         # pid should be first for looking up purposes.
         #
-        print {$regt} "pid\t",     $p->id, "\n";
-        print {$regt} "pname\t",   $p->name, "\n";
-        print {$regt} "desc\t",    $p->title, "\n";
-        print {$regt} "dates\t",   $p->dates, "\n";
-        print {$regt} "edate\t",   $p->edate, "\n";
-        print {$regt} "leaders\t", $p->leader_names, "\n";
-        print {$regt} "footnotes\t", $p->footnotes, "\n";
-        print {$regt} "ndays\t$ndays\n";
-        print {$regt} "fulldays\t$fulldays\n";
-        print {$regt} "deposit\t", $p->deposit, "\n";
-        print {$regt} "colltot\t", $p->collect_total, "\n";
+        printf {$regt} "pid\t%s\n",     $p->id();
+        printf {$regt} "pname\t%s\n",   $p->name();
+        printf {$regt} "desc\t%s\n",    $p->title();
+        printf {$regt} "dates\t%s\n",   $p->dates();
+        printf {$regt} "edate\t%s\n",   $p->edate();
+        printf {$regt} "leaders\t%s\n", $p->leader_names();
+        printf {$regt} "footnotes\t%s\n", $p->footnotes();
+        print  {$regt} "ndays\t$ndays\n";
+        print  {$regt} "fulldays\t$fulldays\n";
+        printf {$regt} "deposit\t%s\n", $p->deposit();
+        printf {$regt} "colltot\t%s\n", $p->collect_total();
+        printf {$regt} "do_not_compute_costs\t%s\n",
+                       $p->do_not_compute_costs();
+
+        my $why = $p->dncc_why();
+        $why =~ s/\n/NEWLINE/g;
+        printf {$regt} "dncc_why\t$why\n";
+
         my $pol = $p->cancellation_policy();
         $pol =~ s/\n/NEWLINE/g;
-        print {$regt} "canpol\t$pol\n";
+        printf {$regt} "canpol\t$pol\n";
 
         my $tuition      = $p->tuition;
         my $full_tuition = $p->full_tuition;
@@ -1461,7 +1470,7 @@ sub gen_regtable {
             next if $fees == 0;    # another way to eliminate a housing option 
             print {$regt} "basic $t\t$fees\n";
             if ($p->extradays) {
-                print {$regt} "full $t\t", $p->fees(1, $t), "\n";
+                printf {$regt} "full $t\t%s\n", $p->fees(1, $t);
             }
         }
     }

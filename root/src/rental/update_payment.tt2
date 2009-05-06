@@ -1,0 +1,34 @@
+[% rental = payment.rental %]
+<h2>Updating a Rental Payment for [% rental.name %]</h2>
+<form name=form action=/rental/update_payment_do/[% payment.id %]>
+<table cellpadding=5>
+
+<tr>
+<th align=right>Date</th>
+<td><input name=the_date type=text size=10 value=[% payment.the_date_obj.format("%D") %]></td>
+</tr>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount value=[% payment.amount %] size=6></td>
+</tr>
+
+<tr>
+<th align=right>Type</th>
+<td>
+<select name=type>
+[% type_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.the_date.focus();
+</script>

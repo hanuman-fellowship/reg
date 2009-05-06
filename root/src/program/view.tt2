@@ -373,7 +373,18 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 <tr>
 <th align=right>Cancellation Policy</th>
 <td><a href="/canpol/view/[% program.canpol.id %]">[% program.canpol.name %]</a></td>
-<td>&nbsp;</td><td>&nbsp;</td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Do Not Compute<br>Costs</th>
+<td valign=top>[% program.do_not_compute_costs %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Why?</th>
+<td>[% program.dncc_why %]</td>
 </tr>
 
 </table>

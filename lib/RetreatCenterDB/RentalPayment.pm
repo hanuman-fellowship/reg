@@ -6,6 +6,9 @@ use base qw/DBIx::Class/;
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
 /;
@@ -74,6 +77,11 @@ sub glnum {
 sub type_sh {
     my ($self) = @_;
     return $string{"payment_" . $self->type()};
+}
+
+sub time_obj {
+    my ($self) = @_;
+    return get_time($self->time());
 }
 
 1;

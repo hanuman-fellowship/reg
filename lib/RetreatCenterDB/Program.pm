@@ -71,6 +71,8 @@ __PACKAGE__->add_columns(qw/
     notify_on_reg
     summary_id
     rental_id
+    do_not_compute_costs
+    dncc_why
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

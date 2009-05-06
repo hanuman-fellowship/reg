@@ -341,7 +341,7 @@ sub create_from_proposal : Local {
 }
 
 #
-# there are several things to compute for the display
+# there are several things to compute for the display.
 # update the balance in the record once you're done.
 # and possibly reset the status.
 #
@@ -803,9 +803,17 @@ sub pay_balance : Local {
 sub pay_balance_do : Local {
     my ($self, $c, $id) = @_;
 
-    my $amt = $c->request->params->{amount};
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^-?\d+$}) {
+        error($c,
+            "Illegal Amount: $amount",
+            "rental/error.tt2",
+        );
+        return;
+    }
     my $type = $c->request->params->{type};
 
+    # ??? check amount
     my $today = tt_today($c);
     my $now_date = $today->as_d8();
     if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
@@ -816,7 +824,7 @@ sub pay_balance_do : Local {
     model($c, 'RentalPayment')->create({
 
         rental_id => $id,
-        amount    => $amt,
+        amount    => $amount,
         type      => $type,
 
         user_id  => $c->user->obj->id,
@@ -1412,7 +1420,7 @@ sub view_summary : Local {
 }
 
 #
-# provide a Back button at the bottom but
+# ???provide a Back button at the bottom but
 # exclude it when printing!
 #
 sub invoice : Local {
@@ -2187,6 +2195,117 @@ sub _house_opts {
                 .  ($cur_hid == 2000? " selected": "")
                 .  ">Commuting\n";
     return $house_opts;
+}
+
+sub del_charge : Local {
+    my ($self, $c, $charge_id) = @_;
+
+    my $charge = model($c, 'RentalCharge')->find($charge_id);
+    my $rental_id = $charge->rental_id();
+    $charge->delete();
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+sub del_payment : Local {
+    my ($self, $c, $payment_id) = @_;
+
+    my $payment = model($c, 'RentalPayment')->find($payment_id);
+    my $rental_id = $payment->rental_id();
+    $payment->delete();
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+sub update_charge : Local {
+    my ($self, $c, $charge_id) = @_;
+
+    my $charge = model($c, 'RentalCharge')->find($charge_id);
+    stash($c,
+        charge => $charge,
+        template => 'rental/update_charge.tt2',
+    );
+}
+
+sub update_charge_do : Local {
+    my ($self, $c, $charge_id) = @_;
+
+    my $charge = model($c, 'RentalCharge')->find($charge_id);
+    my $rental_id = $charge->rental_id();
+
+    my @mess = ();
+    my $amount = trim($c->request->params->{amount});
+    my $what   = trim($c->request->params->{what});
+    if (empty($amount)) {
+        push @mess, "Missing Amount";
+    }
+    if ($amount !~ m{^-?\d+$}) {
+        push @mess, "Illegal Amount: $amount";
+    }
+    if (empty($what)) {
+        push @mess, "Missing What";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "rental/error.tt2";
+        return;
+    }
+    $charge->update({
+        amount => $amount,
+        what   => $what,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+sub update_payment : Local {
+    my ($self, $c, $payment_id) = @_;
+
+    my $payment = model($c, 'RentalPayment')->find($payment_id);
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t"
+                   .  (($payment->type() eq $t)? " selected": "")
+                   .  ">"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
+    stash($c,
+        payment => $payment,
+        type_opts => $type_opts,
+        template => 'rental/update_payment.tt2',
+    );
+}
+
+sub update_payment_do : Local {
+    my ($self, $c, $payment_id) = @_;
+
+    my $payment = model($c, 'RentalPayment')->find($payment_id);
+    my $rental_id = $payment->rental_id();
+
+    my $the_date = trim($c->request->params->{the_date});
+    my $dt = date($the_date);
+    if (!$dt) {
+        error($c,
+            "Illegal Date: $the_date",
+            "rental/error.tt2",
+        );
+        return;
+    }
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^-?\d+$}) {
+        error($c,
+            "Illegal Amount: $amount",
+            "rental/error.tt2",
+        );
+        return;
+    }
+    my $type = $c->request->params->{type};
+    $payment->update({
+        the_date  => $dt->as_d8(),
+        amount    => $amount,
+        type      => $type,
+    });
+    # ??? does not update the time.  okay?
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
 
 1;

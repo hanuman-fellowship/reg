@@ -43,7 +43,9 @@ create table program (
     max         text,
     notify_on_reg text,
     summary_id  integer,
-    rental_id   integer
+    rental_id   integer,
+    do_not_compute_costs text,
+    dncc_why    text
 );
 drop table if exists canpol;
 create table canpol (

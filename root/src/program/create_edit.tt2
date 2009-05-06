@@ -257,6 +257,18 @@ Misc
 </td>
 </tr>
 
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Do Not Compute<br>Costs</th>
+<td valign=top><input type=checkbox value=yes name=do_not_compute_costs [% check_do_not_compute_costs %]></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Why?</th>
+<td><textarea name=dncc_why cols=60 rows=5>[% program.dncc_why %]</textarea></td>
+</tr>
+
 </table>
 </div>
 

@@ -12,6 +12,9 @@ h3 {
     margin-bottom: 1mm;
     color: #338833;
 }
+th a:hover {
+    background: white;
+}
 </style>
 <h2>Rentals</h2>
 [% IF prog_admin %]
@@ -322,9 +325,9 @@ Other Charges
 <tr>
 <td align=right>[% c.amount %]</td>
 <td>[% c.what %]</td>
-<td>
-<a href="javascript:void(0);" onclick="return overlib('#[% c.id %]&nbsp;&nbsp;[% c.the_date_obj %]&nbsp;&nbsp;[% c.time %]&nbsp;&nbsp;[% c.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
-</td>
+<th>
+<a href="javascript:void(0);" onclick="return overlib('#[% c.id %]&nbsp;&nbsp;[% c.the_date_obj.format("%D") %]&nbsp;&nbsp;[% c.time_obj %]&nbsp;&nbsp;[% c.user.username %] <a href=/rental/update_charge/[% c.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a href=/rental/del_charge/[% c.id %]><img src=/static/images/redX.gif height=20 border=0></a>', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, '430', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 height=20 src="/static/images/info.png"></a>
+</th>
 </tr>
 [% END %]
 <tr><td style="border-top: solid thin"></td><td></td></tr>
@@ -354,9 +357,9 @@ Payments
 <tr>
 <td align=right>[% p.amount %]</td>
 <td>[% p.type_sh %]</td>
-<td>
-<a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj %]&nbsp;&nbsp;[% p.time %]&nbsp;&nbsp;[% p.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
-</td>
+<th>
+<a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.user.username %] <a href=/rental/update_payment/[% p.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a href=/rental/del_payment/[% p.id %]><img src=/static/images/redX.gif height=20 border=0></a>', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, '430', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 height=20 src="/static/images/info.png"></a>
+</th>
 </tr>
 [% END %]
 <tr><td style="border-top: solid thin"></td><td></td></tr>
