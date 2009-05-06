@@ -102,9 +102,9 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <a href=/registration/edit_dollar/[% id %]>Edit$</a>
 &nbsp;&nbsp;
 [% IF reg.manual %]
-<a href=/registration/automatic/[% id %]/0>Manual</a>
+<a href=/registration/automatic/[% id %]/0>To Automatic</a>
 [% ELSE %]
-<a href=/registration/automatic/[% id %]/1>Automatic</a>
+<a href=/registration/automatic/[% id %]/1>To Manual</a>
 [% END %]
 </td><td valign=center>
 <form name=form action=/registration/seek/[% program.id %]/[% id %]>
