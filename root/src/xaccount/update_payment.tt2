@@ -1,0 +1,52 @@
+<h2>Editing Extra Account Payment for [% person.first %] [% person.last %]</h2>
+<form name=form action="/xaccount/update_payment_do/[% payment.id %]">
+<p>
+<table cellpadding=3>
+
+<tr>
+<th align=right>Date</th>
+<td><input type=input name=the_date size=10 value=[% payment.the_date_obj.format("%D") %]></td>
+</tr>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=input name=amount size=5 value=[% payment.amount %]></td>
+</tr>
+
+<tr>
+<th align=right>Type</th>
+<td>
+<select name=type>
+[% type_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right>Account</th>
+<td>
+<select name=xaccount_id>
+[% FOR xa IN xaccounts %]
+<option value=[% xa.id %]
+[% IF payment.xaccount_id == xa.id %] selected[% END %]
+>[% xa.descr %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right>What</th>
+<td colspan=2><input type=input name=what size=50 value=[% payment.what %]></td>
+</tr>
+
+<tr>
+<td>&nbsp;</td>
+<td valign=top><input type=submit name=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.the_date.focus();
+</script>

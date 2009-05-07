@@ -169,4 +169,73 @@ sub pay_balance_do : Local {
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }
 
+sub del_payment : Local {
+    my ($self, $c, $payment_id) = @_;
+
+    my $pay = model($c, 'XAccountPayment')->find($payment_id);
+    my $person_id = $pay->person_id();
+    $pay->delete();
+    $c->response->redirect($c->uri_for("/person/view/$person_id"));
+}
+
+sub update_payment : Local {
+    my ($self, $c, $payment_id) = @_;
+
+    my $payment = model($c, 'XAccountPayment')->find($payment_id);
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t"
+                   .  (($payment->type() eq $t)? " selected": "")
+                   .  ">"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
+    stash($c,
+        payment   => $payment,
+        type_opts => $type_opts,
+        person    => $payment->person(),
+        xaccounts => [ model($c, 'XAccount')->search(
+            undef,
+            { order_by => 'descr' }
+        ) ],
+        template  => "xaccount/update_payment.tt2",
+    );
+}
+
+sub update_payment_do : Local {
+    my ($self, $c, $payment_id) = @_;
+
+    my $payment = model($c, 'XAccountPayment')->find($payment_id);
+    my $the_date = trim($c->request->params->{the_date});
+    my $dt = date($the_date);
+    if (!$dt) {
+        error($c,
+            "Illegal Date: $the_date",
+            "rental/error.tt2",
+        );
+        return;
+    }
+    my $amount = trim($c->request->params->{amount});
+    if ($amount !~ m{^-?\d+$}) {
+        error($c,
+            "Illegal Amount: $amount",
+            "rental/error.tt2",
+        );
+        return;
+    }
+    my $type = $c->request->params->{type};
+    $payment->update({
+        the_date    => $dt->as_d8(),
+        amount      => $amount,
+        type        => $type,
+        what        => $c->request->params->{what},
+        xaccount_id => $c->request->params->{xaccount_id},
+    });
+    # ??? does not update the time.  okay?
+
+    my $person_id = $payment->person_id();
+    $c->response->redirect($c->uri_for("/person/view/$person_id"));
+}
+
 1;
