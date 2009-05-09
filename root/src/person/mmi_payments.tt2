@@ -4,6 +4,9 @@
 th a:hover {
     background: white;
 }
+body {
+    margin-top: 1.5in;
+}
 </style>
 [% IF mmi_print %]
 <head>
