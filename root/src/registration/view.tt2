@@ -36,6 +36,12 @@ p {
     margin-top: 0px;
     margin-bottom: 0px;
 }
+th a:hover {
+    background: white;
+}
+.nh a:hover {
+    background: white;
+}
 </style>
 [% id = reg.id %]
 [% person = reg.person %]
@@ -62,19 +68,6 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 [% ELSIF reg.arrived == 'yes' %]
 <a href="/registration/not_arrived/[% id %]"><span style="color: red">* Arrived *</span></a>
 &nbsp;&nbsp;
-[% END %]
-[% IF ! reg.cancelled %]
-    [% IF reg.letter_sent %]
-    <a href="/registration/send_conf/[% id %]"
-       onmouseover="return overlib('[% person.email_okay || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
-       onmouseout="return nd();">ReSend</a>
-    [% ELSE %]
-    <a class=not_sent 
-       href="/registration/send_conf/[% id %]"
-       onmouseover="return overlib('[% person.email_okay || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
-       onmouseout="return nd();">Send</a>
-    [% END %]
-    &nbsp;&nbsp;
 [% END %]
 [% IF reg.ceu_license %]
 <a href="/registration/ceu/[% id %]">CEU</a>
@@ -105,6 +98,21 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <a href=/registration/automatic/[% id %]/0>To Automatic</a>
 [% ELSE %]
 <a href=/registration/automatic/[% id %]/1>To Manual</a>
+[% END %]
+[% IF ! reg.cancelled %]
+    &nbsp;&nbsp;
+    [% IF reg.letter_sent %]
+    <a href="/registration/send_conf/[% id %]"
+       onmouseover="return overlib('[% person.email_okay || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseout="return nd();">ReSend</a>
+    [% ELSE %]
+    <a class=not_sent 
+       href="/registration/send_conf/[% id %]"
+       onmouseover="return overlib('[% person.email_okay || snail %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseout="return nd();">Send</a>
+    [% END %]
+    &nbsp;&nbsp;
+    <a href="/registration/send_conf/[% id %]/1">Preview</a>
 [% END %]
 </td><td valign=center>
 <form name=form action=/registration/seek/[% program.id %]/[% id %]>
@@ -218,7 +226,6 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <!-------- Charges --------->
 <span class=hdr>Charges</span>
 <a style="margin-left: .5in" href="/registration/new_charge/[% id %]">New Charge</a>
-<a style="margin-left: .2in" href=/registration/edit_dollar/[% id %]>Edit$</a>
 <table cellpadding=2>
 
 <tr>
@@ -231,9 +238,10 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <tr>
 <td align=right>[% ch.amount %]</td>
 <td>[% ch.what %]</td>
-<td>
-<a href="javascript:void(0);" onclick="return overlib('[% ch.the_date_obj %]&nbsp;&nbsp;[% ch.time_obj %]&nbsp;&nbsp;[% ch.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
-</td>
+<th>
+<a href="javascript:void(0);" onclick="return overlib('[% ch.the_date_obj.format("%D") %]&nbsp;&nbsp;[% ch.time_obj %]&nbsp;&nbsp;[% ch.user.username %][% IF ! ch.automatic %]&nbsp;<span class=nh><a title=Edit href=/registration/charge_update/[% ch.id %]><img src=/static/images/pencil.png height=20 border=0></a></span>&nbsp;<a title=Delete href=/registration/charge_delete/[% id %]/[% ch.id %]><img src=/static/images/redX.gif height=20 border=0></a>[% END %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, 450, OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</th>
+<td align=right>[% amt %]</td>
 </tr>
 [% tot = tot + ch.amount %]
 [% END %]
@@ -251,7 +259,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 [% IF ! mmi %]
 <!-------- Payments --------->
-<span class=hdr>Payments</span><a style="margin-left: .5in" href=/registration/edit_dollar/[% id %]>Edit$</a>
+<span class=hdr>Payments</span>
 <table cellpadding=2>
 
 <tr>
@@ -266,9 +274,9 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td align=right>[% py.amount %]</td>
 <td>[% py.what %]</td>
 <td>[% py.type_sh %]</td>
-<td>
-<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
-</td>
+<th>
+<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj.format("%D") %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;&nbsp;[% py.user.username %]&nbsp;<a title=Edit href=/registration/payment_update/[% py.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/payment_delete/[% id %]/[% py.id %]><img src=/static/images/redX.gif height=20 border=0></a>', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, 500, OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</th>
 </tr>
 [% tot = tot + py.amount %]
 [% END %]
@@ -281,13 +289,14 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 </table>
 [% ELSE %]
-<span class=hdr>MMI Payments</span><a style="margin-left: .5in" href=/registration/edit_dollar/[% id %]>Edit$</a>
+<span class=hdr>MMI Payments</span>
 <p class=p2>
 <table cellpadding=2>
 <tr>
 <th align=right>Amount</th>
 <th align=left>What</th>
 <th align=left>Type</th>
+<th align=left>Note</th>
 </tr>
 
 [% tot = 0 %]
@@ -296,9 +305,10 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td align=right>[% py.amount %]</td>
 <td>[% py.for_what %]</td>
 <td>[% py.type_sh %]</td>
-<td>
-<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;&nbsp;[% py.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
-</td>
+<td>[% py.note %]</td>
+<th>
+<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj.format("%D") %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;<a title=Edit href=/person/update_mmi_payment/[% py.id %]/reg><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/person/del_mmi_payment/[% py.id %]/reg><img src=/static/images/redX.gif height=20 border=0></a>', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, 300, OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</th>
 </tr>
 [% tot = tot + py.amount %]
 [% END %]
@@ -371,9 +381,9 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 [% FOREACH h IN reg.history %]
 <tr>
 <td>[% h.what %]</td>
-<td>
-<a href="javascript:void(0);" onclick="return overlib('[% h.the_date_obj %]&nbsp;&nbsp;[% h.time_obj %]&nbsp;&nbsp;[% h.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
-</td>
+<th>
+<a href="javascript:void(0);" onclick="return overlib('[% h.the_date_obj.format("%D") %]&nbsp;&nbsp;[% h.time_obj %]&nbsp;&nbsp;[% h.user.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, 400, OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+</th>
 </tr>
 [% END %]
 </table>
