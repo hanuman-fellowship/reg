@@ -217,7 +217,7 @@ Sincerely,<br>
 <h2>Charges</h2>
 <table cellpadding=3>
 <tr>
-<th align=right>Amount</th>
+<th align=right width=100>Amount</th>
 <th align=left>What</th>
 </tr>
 [% tot = 0 %]
@@ -228,21 +228,25 @@ Sincerely,<br>
 </tr>
 [% tot = tot + ch.amount %]
 [% END %]
-<tr><td align=right><span style="border-top: solid thin">[% tot %]</span></td><td>Total</td></tr>
+<tr><td align=right><span style="border-top: solid thin">$[% tot %]</span></td><td>Total</td></tr>
 </table>
 <p class=p2>
 <h2>Payments</h2>
 <table cellpadding=3>
 <tr>
-<th align=right>Amount</th>
+<th align=right width=100>Amount</th>
 <th align=left>What</th>
 </tr>
 [% FOR p IN reg.payments %]
 <tr>
-<td align=right>[% p.amount %]</td>
+<td align=right>$[% p.amount %]</td>
 <td>[% p.what %]</td>
 </tr>
 [% END %]
+</table>
+<h2>Balance Due</h2>
+<table>
+<tr><td width=100 align=right>$[% reg.balance %]</td></tr>
 </table>
 <hr>
 <h2>Address and Contact Information</h2>
@@ -260,26 +264,26 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya
 [% END %]
 <hr>
 [% IF carpoolers %]
-<h2>Carpool List</h2>
-[% FOR cp IN carpoolers %]
-[% p = cp.person %]
-<span class=name>[% p.first %] [% p.last %]</span>[% IF cp.hascar %] - <span class=hascar>HAS CAR</span>[% END %]<br>
-<div class=addr>
-[% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
-[% IF p.country %][% p.country %][% END %]<br>
-[% IF p.tel_home %][% p.tel_home %] home<br>[% END %]
-[% IF p.tel_work %][% p.tel_work %] work<br>[% END %]
-[% IF p.tel_cell %][% p.tel_cell %] cell<br>[% END %]
-[% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna Center">[% p.email %]</a>[% END %]
-</div>
-[% END %]<!-- FOR cp IN -->
-[% END %]<!-- IF carpoolers -->
-<hr>
+    <h2>Carpool List</h2>
+    [% FOR cp IN carpoolers %]
+        [% p = cp.person %]
+        <span class=name>[% p.first %] [% p.last %]</span>[% IF cp.hascar %] - <span class=hascar>HAS CAR</span>[% END %]<br>
+        <div class=addr>
+        [% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
+        [% IF p.country %][% p.country %]<br>[% END %]
+        [% IF p.tel_home %][% p.tel_home %] home<br>[% END %]
+        [% IF p.tel_work %][% p.tel_work %] work<br>[% END %]
+        [% IF p.tel_cell %][% p.tel_cell %] cell<br>[% END %]
+        [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna Center">[% p.email %]</a>[% END %]
+        </div>
+    [% END %]
+    <hr>
+[% END %]
 <h2>Directions to Mount Madonna Center</h2>
 Do not use any GPS system or any directions from Mapquest, Yahoo or Google or
 any other outside source.
 Use <b>only</b> the directions below.
-<p>
+<p class=p2>
 On the west coast of Central California approximately 2 hours driving 
 time south of San Francisco (more if traffic is heavy), Mount Madonna Center
 overlooks Monterey Bay from the Santa Cruz mountains between Santa Cruz and
