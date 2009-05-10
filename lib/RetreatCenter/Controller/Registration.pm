@@ -2525,12 +2525,12 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
+    my $prog_id   = $reg->program_id;
     if (! $reg->cancelled()) {
         model($c, 'Program')->find($prog_id)->update({
             reg_count => \'reg_count - 1',
         });
     }
-    my $prog_id   = $reg->program_id;
 
     _vacate($c, $reg) if $reg->house_id;
     $reg->delete();     # does this cascade to charges, payments, history? etc.?
