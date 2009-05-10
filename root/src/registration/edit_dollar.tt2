@@ -28,8 +28,8 @@ $[% reg.balance %]
 [% amt = ch.amount %]
 [% tot_chg = tot_chg + amt %]
 <tr>
-<th><a title="Edit" href=/registration/charge_update/[% ch.id %]><img src=/static/images/pencil.png height=20 border=0></a></th>
-<th><a title="Delete" href=/registration/charge_delete/[% reg_id %]/[% ch.id %] onclick="return confirm('Delete Charge of $[% ch.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
+<th><a title="Edit" href=/registration/charge_update/[% ch.id %]/edit_dollar><img src=/static/images/pencil.png height=20 border=0></a></th>
+<th><a title="Delete" href=/registration/charge_delete/[% reg_id %]/[% ch.id %]/edit_dollar onclick="return confirm('Delete Charge of $[% ch.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
 <td align=right>[% amt %]</td>
 <td align=left>[% ch.what %]</td>
 </tr>
@@ -70,8 +70,8 @@ $[% reg.balance %]
 [% amt = pay.amount %]
 [% tot_pay = tot_pay + amt %]
 <tr>
-<th><a title="Edit" href=/registration/payment_update/[% pay.id %]><img src=/static/images/pencil.png height=20 border=0></a></th>
-<th><a title="Delete" href=/registration/payment_delete/[% reg_id %]/[% pay.id %] onclick="return confirm('Delete Payment of $[% pay.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
+<th><a title="Edit" href=/registration/payment_update/[% pay.id %]/edit_dollar><img src=/static/images/pencil.png height=20 border=0></a></th>
+<th><a title="Delete" href=/registration/payment_delete/[% reg_id %]/[% pay.id %]/edit_dollar onclick="return confirm('Delete Payment of $[% pay.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
 <td align=right>[% amt %]</td>
 <td>[% pay.the_date_obj.format("%D") %]</td>
 <td>[% pay.type_sh %]</td>

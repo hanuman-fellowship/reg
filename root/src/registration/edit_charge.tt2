@@ -4,7 +4,9 @@
 <h2>Editing Charge for [% per.first %] [% per.last %] in [% prog.name %]</h2>
 <a href="/registration/view/[% reg.id %]">To Registration</a>
 <p class=p2>
-<form action="/registration/charge_update_do/[% chg.id %]" name=form>
+<form action="/registration/charge_update_do/[% chg.id %]"
+      name=form method=post>
+<input type=hidden name=from value=[% from %]>
 <table cellpadding=3>
 
 <tr>

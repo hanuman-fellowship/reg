@@ -5,6 +5,7 @@
 <a href="/registration/view/[% reg.id %]">To Registration</a>
 <p class=p2>
 <form action=/registration/payment_update_do/[% pay.id %]>
+<input type=hidden name=from value=[% from %]>
 <table cellpadding=3>
 
 <tr>
