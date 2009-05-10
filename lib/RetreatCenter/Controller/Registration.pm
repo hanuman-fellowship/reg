@@ -1761,6 +1761,12 @@ sub cancel : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
+    if ($reg->program->school() != 0) {
+        # when MMI students cancel no credit, no letter
+        #
+        cancel_do($self, $c, $id, 1);       # 1 => mmi
+        return;
+    }
     my $today = tt_today($c);
     Global->init($c);
     stash($c,
@@ -1773,7 +1779,7 @@ sub cancel : Local {
 }
 
 sub cancel_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $mmi) = @_;
 
     my $credit    = $c->request->params->{yes};
     my $amount    = $c->request->params->{amount};
@@ -1785,13 +1791,6 @@ sub cancel_do : Local {
 
     # return any assigned housing to the pool
     _vacate($c, $reg) if $reg->house_id;
-
-    # add reg history record
-    _reg_hist($c, $id,
-        "Cancelled - "
-        .  (($credit)? "Credit of \$$amount given."
-            :          "No credit given.")
-    );
 
     # put back free nights/program
     my $taken = $reg->nights_taken;
@@ -1824,27 +1823,37 @@ sub cancel_do : Local {
         }
     }
 
-    # give credit
     my $date_expire;
-    if ($credit) {
-        # credit record
-        my $sdate = $reg->program->sdate_obj();
-        $date_expire = date(
-            $sdate->year() + 1,
-            $sdate->month(),
-            $sdate->day(),
-        );
-        model($c, 'Credit')->create({
-            reg_id       => $id,
-            person_id    => $reg->person->id(),
-            amount       => $amount,
-            date_given   => tt_today($c)->as_d8(),
-            date_expires => $date_expire->as_d8(),
-            date_used    => "",
-            used_reg_id  => 0,
-            # How about who did this??? and what time?
-        });
+    if (! $mmi) {
+        # give credit
+        #
+        if ($credit) {
+            # credit record
+            my $sdate = $reg->program->sdate_obj();
+            $date_expire = date(
+                $sdate->year() + 1,
+                $sdate->month(),
+                $sdate->day(),
+            );
+            model($c, 'Credit')->create({
+                reg_id       => $id,
+                person_id    => $reg->person->id(),
+                amount       => $amount,
+                date_given   => tt_today($c)->as_d8(),
+                date_expires => $date_expire->as_d8(),
+                date_used    => "",
+                used_reg_id  => 0,
+                # How about who did this??? and what time?
+            });
+        }
     }
+    # add reg history record
+    _reg_hist($c, $id,
+        "Cancelled"
+        . ($mmi? ""
+          :      (($credit)? " - Credit of \$$amount given."
+                  :          " - No credit given."))
+    );
 
     # decrement the reg_count in the program record
     my $prog_id   = $reg->program_id;
@@ -1853,7 +1862,7 @@ sub cancel_do : Local {
         reg_count => \'reg_count - 1',
     });
 
-    if ($pr->school() == 0) {
+    if (! $mmi) {
         #
         # send the cancellation confirmation letter for MMC programs
         #
@@ -2511,19 +2520,21 @@ sub manual : Local {
     _rest_of_reg($pr, $p, $c, tt_today($c), "dble", "dble");
 }
 
+# ??? need to put back member nights/program
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    my $person_id = $reg->person_id;
+    if (! $reg->cancelled()) {
+        model($c, 'Program')->find($prog_id)->update({
+            reg_count => \'reg_count - 1',
+        });
+    }
     my $prog_id   = $reg->program_id;
 
     _vacate($c, $reg) if $reg->house_id;
     $reg->delete();     # does this cascade to charges, payments, history? etc.?
                         # yes.  Thank you to DBIC!
-    model($c, 'Program')->find($prog_id)->update({
-        reg_count => \'reg_count - 1',
-    });
     $c->response->redirect($c->uri_for("/registration/list_reg_name/$prog_id"));
 }
 
