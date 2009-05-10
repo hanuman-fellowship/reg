@@ -811,6 +811,9 @@ sub _get_data {
                ." night$plural so can't take $taken of them free!";
         }
     }
+    if ($P{hascar} && ! $P{carpool}) {
+        $P{carpool} = 'yes';
+    }
 }
 
 #
@@ -1346,9 +1349,23 @@ sub _compute {
             last BOX unless $left_to_take;
         }
         #
+        # members getting free nights still pay for meal costs
+        #
+        my $meal_cost = $string{member_meal_cost};
+        my $plural = ($ntaken == 1)? "": "s";
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => 'yes',
+            amount    => ($ntaken * $meal_cost),
+            what      => "$ntaken day$plural of meals"
+                       . " at \$$meal_cost per day for "
+                       . $reg->status() . " member",
+        });
+        #
         # deduct these nights from the person's member record.
         #
         # Is this done twice in case of a relodge???
+        #           Yes.  no good.
         #
         $mem->update({
             sponsor_nights => $mem->sponsor_nights - $ntaken,     # cool, eh?
@@ -1446,7 +1463,7 @@ sub _calc_balance {
 # create a ConfHistory record for this sending.
 #
 sub send_conf : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $preview) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
     my $pr = $reg->program;
@@ -1456,16 +1473,19 @@ sub send_conf : Local {
     $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
     my $personal_retreat = $pr->title =~ m{personal\s*retreat}i;
     my $start = ($reg->date_start)? $reg->date_start_obj: $pr->sdate_obj;
-    my @carpoolers = ();
-    if (! $personal_retreat) {
-        @carpoolers = model($c, 'Registration')->search({
-            program_id => $pr->id,
-            carpool    => 'yes',
-        });      # Join???
-        @carpoolers = sort {
-                          $a->person->zip_post cmp $b->person->zip_post
-                      }
-                      @carpoolers;
+    my $carpoolers = undef;
+    if ($reg->carpool() && ! $personal_retreat) {
+        $carpoolers = [ model($c, 'Registration')->search(
+            {
+                program_id => $pr->id,
+                carpool    => 'yes',
+            },
+            {
+                join     => [qw/ person /],
+                prefetch => [qw/ person /],
+                order_by => [qw/ person.zip_post /],
+            }
+        ) ];
     }
     my $stash = {
         user     => $c->user,
@@ -1480,7 +1500,7 @@ sub send_conf : Local {
         deposit  => $reg->deposit,
         htdesc   => $htdesc,
         article  => ($htdesc =~ m{^[aeiou]}i)? 'an': 'a',
-        carpoolers => \@carpoolers,
+        carpoolers => $carpoolers,
     };
     my $html = "";
     my $tt = Template->new({
@@ -1494,20 +1514,22 @@ sub send_conf : Local {
     );
     #
     # assume the letter will be successfully
-    # printed or sent.
+    # printed or sent - if you are not previewing, that is.
     #
-    _reg_hist($c, $id, "Confirmation Letter sent");
-    $reg->update({
-        letter_sent => 'yes',   # this duplicates the RegHistory record
-                                # above but is much easier accessed.
-    });
+    if (! $preview) {
+        _reg_hist($c, $id, "Confirmation Letter sent");
+        $reg->update({
+            letter_sent => 'yes',   # this duplicates the RegHistory record
+                                    # above but is much easier accessed.
+        });
+    }
     #
     # if no email put letter to screen for printing and snail mailing.
     # ??? needs some help here...  what to do after printing?
     # just go back.  or have a bookmark to go somewhere???
     # can we print it automatically?  don't know. better to not to.
     #
-    if (! $reg->person->email) {
+    if (! $reg->person->email || $preview) {
         $c->res->output($html);
         return;
     }
@@ -1826,54 +1848,60 @@ sub cancel_do : Local {
 
     # decrement the reg_count in the program record
     my $prog_id   = $reg->program_id;
-    model($c, 'Program')->find($prog_id)->update({
+    my $pr = model($c, 'Program')->find($prog_id);
+    $pr->update({
         reg_count => \'reg_count - 1',
     });
 
-    #
-    # send cancellation confirmation letter
-    #
-    my $html = "";
-    my $tt = Template->new({
-        INCLUDE_PATH => 'root/static/templates/letter',
-        EVAL_PERL    => 0,
-    });
-    my $template = $reg->program->cl_template . "_cancel.tt2";
-    if (! -f "root/static/templates/letter/$template") {
-        $template = "default_cancel.tt2";
-    }
-    my $stash = {
-        person      => $reg->person,
-        program     => $reg->program,
-        credit      => $credit,
-        amount      => $amount,
-        date_expire => $date_expire,
-        user        => $c->user,
-        today       => tt_today($c),
-    };
-    $tt->process(
-        $template,      # template
-        $stash,         # variables
-        \$html,         # output
-    );
-    #
-    # assume the letter will be successfully
-    # printed or sent.
-    #
-    _reg_hist($c, $id, "Cancellation Letter sent");
-    if ($reg->person->email) {
-        email_letter($c,
-            to      => $reg->person->name_email(),
-            from    => "$string{from_title} <$string{from}>",
-            subject => "Cancellation of Registration for "
-                      . $reg->program->title,
-            html    => $html, 
+    if ($pr->school() == 0) {
+        #
+        # send the cancellation confirmation letter for MMC programs
+        #
+        my $html = "";
+        my $tt = Template->new({
+            INCLUDE_PATH => 'root/static/templates/letter',
+            EVAL_PERL    => 0,
+        });
+        my $template = $reg->program->cl_template . "_cancel.tt2";
+        if (! -f "root/static/templates/letter/$template") {
+            $template = "default_cancel.tt2";
+        }
+        my $stash = {
+            person      => $reg->person,
+            program     => $reg->program,
+            credit      => $credit,
+            amount      => $amount,
+            date_expire => $date_expire,
+            user        => $c->user,
+            today       => tt_today($c),
+        };
+        $tt->process(
+            $template,      # template
+            $stash,         # variables
+            \$html,         # output
         );
-        $c->response->redirect($c->uri_for("/registration/view/$id"));
+        #
+        # assume the letter will be successfully
+        # printed or sent.
+        #
+        _reg_hist($c, $id, "Cancellation Letter sent");
+        if ($reg->person->email) {
+            email_letter($c,
+                to      => $reg->person->name_email(),
+                from    => "$string{from_title} <$string{from}>",
+                subject => "Cancellation of Registration for "
+                          . $reg->program->title,
+                html    => $html, 
+            );
+            # and fall through to the view
+        }
+        else {
+            $c->res->output($html);
+            return;
+        }
     }
-    else {
-        $c->res->output($html);
-    }
+    $c->response->redirect($c->uri_for("/registration/view/$id"));
+    return;
 }
 
 #
@@ -4180,23 +4208,37 @@ sub edit_dollar : Local {
 }
 
 sub charge_delete : Local {
-    my ($self, $c, $reg_id, $ch_id) = @_;
+    my ($self, $c, $reg_id, $ch_id, $from) = @_;
 
     model($c, 'RegCharge')->find($ch_id)->delete();
     _calc_balance(model($c, 'Registration')->find($reg_id));
-    $c->response->redirect($c->uri_for("/registration/edit_dollar/$reg_id"));
+    if ($from eq 'edit_dollar') {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/$reg_id")
+        );
+    }
+    else {
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+    }
 }
 
 sub payment_delete : Local {
-    my ($self, $c, $reg_id, $pay_id) = @_;
+    my ($self, $c, $reg_id, $pay_id, $from) = @_;
 
     model($c, 'RegPayment')->find($pay_id)->delete();
     _calc_balance(model($c, 'Registration')->find($reg_id));
-    $c->response->redirect($c->uri_for("/registration/edit_dollar/$reg_id"));
+    if ($from eq 'edit_dollar') {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/$reg_id")
+        );
+    }
+    else {
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+    }
 }
 
 sub payment_update : Local {
-    my ($self, $c, $pay_id) = @_;
+    my ($self, $c, $pay_id, $from) = @_;
 
     my $pay = model($c, 'RegPayment')->find($pay_id);
     my $type = $pay->type();
@@ -4211,6 +4253,7 @@ sub payment_update : Local {
     }
     my $what = $pay->what();
     stash($c,
+        from        => $from,
         pay         => $pay,
         type_opts   => $type_opts,
         dep_checked => ($what eq 'Deposit'? " checked": ""),
@@ -4248,15 +4291,22 @@ sub payment_update_do : Local {
     });
     # ??? also update who, when
     _calc_balance($pay->registration());
-    $c->response->redirect(
-        $c->uri_for("/registration/edit_dollar/"
-                    . $pay->reg_id())
-    );
+    if ($c->request->params->{from} eq 'edit_dollar') {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/" . $pay->reg_id())
+        );
+    }
+    else {
+        $c->response->redirect(
+            $c->uri_for("/registration/view/" . $pay->reg_id())
+        );
+    }
 }
 sub charge_update : Local {
-    my ($self, $c, $chg_id) = @_;
+    my ($self, $c, $chg_id, $from) = @_;
 
     stash($c,
+        from => $from,
         chg => model($c, 'RegCharge')->find($chg_id),
         template => 'registration/edit_charge.tt2',
     );
@@ -4279,10 +4329,16 @@ sub charge_update_do : Local {
     });
     _calc_balance($chg->registration());
     # ??? also update who, when
-    $c->response->redirect(
-        $c->uri_for("/registration/edit_dollar/"
-                    . $chg->reg_id())
-    );
+    if ($c->request->params->{from} eq 'edit_dollar') {
+        $c->response->redirect(
+            $c->uri_for("/registration/edit_dollar/" . $chg->reg_id())
+        );
+    }
+    else {
+        $c->response->redirect(
+            $c->uri_for("/registration/view/" . $chg->reg_id())
+        );
+    }
 }
 
 sub work_study : Local {
