@@ -55,7 +55,7 @@ th a:hover {
 &nbsp;&nbsp;
 [% IF ! reg.cancelled %]
 <a href="/registration/cancel/[% id %]"
-   onclick="return confirm('Okay to Cancel [% person.last %], [% person.first %]?');"
+   onclick="return confirm('Okay to Cancel [% person.first %] [% person.last %]?');"
 >Cancel</a>
 &nbsp;&nbsp;
 [% END %]
