@@ -216,7 +216,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td colspan=3 width=700>[% reg.confnote %]<a href="/registration/update_confnote/[% id %]">Update</a></td>[% IF reg.confnotes.1 %]<td align=left valign=top><a href="/registration/conf_history/[% id %]">Note History</a></td>[% END %]
+<td colspan=3 width=700>[% reg.confnote %]<a href="/registration/update_confnote/[% id %]">Update</a>[% IF reg.confnotes.1 %]<span style="margin-left: 1in"><a href="/registration/conf_history/[% id %]">Note History</a></span>[% END %]</td>
 </tr>
 </table>
 <p class=p2>
