@@ -892,11 +892,11 @@ sub del_mmi_payment : Local {
     
     my $pay = model($c, 'MMIPayment')->find($payment_id);
     $pay->delete();
-    $pay->registration->calc_balance();
-    if ($from eq 'edit_dollar') {
+    my $reg = $pay->registration();
+    $reg->calc_balance();
+    if ($from eq 'reg') {
         $c->response->redirect(
-            $c->uri_for("/registration/edit_dollar/"
-                    . $pay->reg_id()
+            $c->uri_for("/registration/view/" . $reg->id()
             )
         );
     }
@@ -1070,9 +1070,9 @@ sub update_mmi_payment_do : Local {
         note     => $c->request->params->{note},
     });
     $pay->registration->calc_balance();
-    if ($c->request->params->{from} eq 'edit_dollar') {
+    if ($c->request->params->{from} eq 'reg') {
         $c->response->redirect(
-            $c->uri_for("/registration/edit_dollar/" . $pay->reg_id())
+            $c->uri_for("/registration/view/" . $pay->reg_id())
         );;
     }
     else {
