@@ -9,7 +9,7 @@
 End of Month Summary for General Ledger<br>
 For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.format("%D") %].
 </h2>
-<table cellpadding=5>
+<table cellpadding=2>
 <tr>
 <th width=5></th>
 <th align=left valign=bottom>Name</th>
