@@ -1,5 +1,6 @@
 <style type="text/css">
 .timestamp {
+    display: block;
     font-size: 11pt;
     margin-left: 10mm; 
 }
@@ -17,15 +18,16 @@ For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.form
 [% IF mmi %]
     <th align=center valign=bottom>ACCPACC<br>Number</th>
 [% END %]
-<th align=right valign=bottom>Amount</th>
-<th align=right valign=bottom>Cash</th>
-<th align=right valign=bottom>Check</th>
-<th align=right valign=bottom>Credit</th>
-<th align=right valign=bottom>Online</th>
+<th align=right valign=bottom width=80>Amount</th>
+<th align=right valign=bottom width=80>Cash</th>
+<th align=right valign=bottom width=80>Check</th>
+<th align=right valign=bottom width=80>Credit</th>
+<th align=right valign=bottom width=80>Online</th>
 </tr>
+[% class= 'fl_row0' %]
 [% FOREACH t IN totals %]
-<tr>
-<td>[% t.type %]</td>
+<tr class=[% class %]>
+<td class=fl_row0>[% t.type %]</td>
 <td align=left><a target=_blank href='[% t.link %]'>[% t.name %]</a></td>
 <td align=left>[% t.glnum %]</td>
 [% IF mmi %]
@@ -37,6 +39,13 @@ For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.form
 <td align=right>[% t.credit %]</td>
 <td align=right>[% t.online %]</td>
 </tr>
+
+[% IF class == 'fl_row0' %]
+    [% class = 'fl_row1' %]
+[% ELSE %]
+    [% class = 'fl_row0' %]
+[% END %]
+
 [% END %]
 
 <tr>
@@ -53,4 +62,8 @@ For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.form
 <td align=right>[% grand_total.online %]</td>
 </tr>
 </table>
-<span class=timestamp>As of [% timestamp %]</span>
+<span class=timestamp>
+* - Rental<br>
+x - Extra Account<br>
+As of [% timestamp %]
+</span>
