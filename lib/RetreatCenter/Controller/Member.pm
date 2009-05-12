@@ -712,33 +712,6 @@ sub email_lapse_soon : Local {
     $c->stash->{template} = "member/sent.tt2";
 }
 
-sub reset : Local {
-    my ($self, $c) = @_;
-    $c->stash->{template} = "member/reset_confirm.tt2";
-}
-
-sub reset_do : Local {
-    my ($self, $c) = @_;
-
-    if ($c->request->params->{no}) {
-        $c->response->redirect($c->uri_for("/member/list"));
-        return;
-    }
-    if ($c->request->params->{password} ne "sita") {
-        $c->stash->{mess} = "Incorrect password";
-        $c->stash->{template} = "member/error.tt2";
-        return;
-    }
-    Global->init($c);
-    model($c, 'Member')->search({
-        category => { 'in' => [ 'Sponsor', 'Life' ] },
-    })->update({
-        sponsor_nights  => $string{mem_sponsor_nights},
-        free_prog_taken => '',
-    });
-    $c->response->redirect($c->uri_for("/member/list"));
-}
-
 sub access_denied : Private {
     my ($self, $c) = @_;
 
