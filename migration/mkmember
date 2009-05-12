@@ -15,6 +15,8 @@ create table spons_hist (
     id integer primary key autoincrement,
     member_id integer,
     date_payment text,
+    valid_from text,
+    valid_to text,
     amount integer,
     general text,
 

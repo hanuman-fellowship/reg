@@ -120,6 +120,18 @@ May 4 1:00-5:30
 May 5 1:00-3:00, 5:00-6:30
     working with Adrienne
     do_not_compute_costs
-May 6 12:45-
+May 6 12:45-5:00, 8:00-9:30
     rental finance edit/delete
     did not properly bring over April rental payments from oldreg...
+    Preview, carpool fixes.
+May 7 3:10-4:00
+    no Edit$ - but leave it there just in case.
+May 8 9:00-10:30
+    SMTP server experiments
+May 10 10:15-11:00, 1:10-3:20, 4:00-4:50
+    more STMP conversations
+    further development - check in current changes
+    conf letters sent since 25 was disabled 
+    MMI finance unduping
+May 11 11:00-
+    two more dates for membership payments - valid_from and valid_to

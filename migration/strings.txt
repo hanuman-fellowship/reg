@@ -169,3 +169,4 @@ prog_start 7:00 pm
 prog_end 1:00 pm
 
 mmi_discount 20
+member_meal_cost 14

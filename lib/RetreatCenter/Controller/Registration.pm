@@ -2240,7 +2240,7 @@ sub update_confnote_do : Local{
     $reg->update({
         confnote => cf_expand($c, $c->request->params->{confnote}),
     });
-    _reg_hist($c, $id, "Confirmation Note updated.");
+    _reg_hist($c, $id, "Confirmation Note updated");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 sub update_comment : Local {
@@ -2262,7 +2262,7 @@ sub update_comment_do : Local{
     $reg->update({
         comment => etrim($c->request->params->{comment}),
     });
-    _reg_hist($c, $id, "Comment updated.");
+    _reg_hist($c, $id, "Comment updated");
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 

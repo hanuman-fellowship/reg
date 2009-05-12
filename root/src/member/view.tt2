@@ -25,9 +25,9 @@ h3 {
 <div style="color: red; font-size: 14pt">
 [% cat = member.category %]
 [% message %][% IF cat == 'General' %]
-General Member - Expires [% member.date_general_obj %]
+General Member - Expires [% member.date_general_obj.format("%D") %]
 [% ELSIF cat == 'Sponsor' %]
-Sponsor Member - Expires [% member.date_sponsor_obj %], [% member.sponsor_nights %] Nights Left, Total Paid [% member.total_paid %]
+Sponsor Member - Expires [% member.date_sponsor_obj.format("%D") %], [% member.sponsor_nights %] Nights Left, Total Paid [% member.total_paid %]
 [% ELSIF cat == 'Inactive' %]
 Inactive Member
 [% ELSE %]
@@ -41,15 +41,20 @@ Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member
 <h3>Payments</h3>
 <table cellpadding=3>
 <tr>
-<th>Date</th>
-<th>Amount</th>
+<td></td>
+<th valign=bottom>Date</th>
+<th valign=bottom>Amount</th>
+<th>Valid<br>From</th>
+<th>Valid<br>To</th>
 </tr>
 [% FOR p IN pays %]
     <tr>
-    <td>[% p.date_payment_obj %]</td>
-    <td align=right>[% p.amount %]</td>
     <td align=center>[% IF p.general %]<img src=/static/images/checked.gif>[% END %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <td>[% p.date_payment_obj.format("%D") %]</td>
+    <td align=right>[% p.amount %]</td>
+    <td>[% p.valid_from_obj.format("%D") %]</td>
+    <td>[% p.valid_to_obj.format("%D") %]</td>
+    <td><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
 [% END %]
 </table>
@@ -73,7 +78,7 @@ Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member
     <td>[% IF reg.id %][% reg.date_start_obj %][% END %]</td>
     <td align=right>[% IF nh.num_nights %][% nh.num_nights %][% END %]</td>
     <td align=left>[% nh.action_str %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% nh.the_date_obj %]&nbsp;&nbsp;[% nh.time_obj %]&nbsp;&nbsp;[% nh.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <td><a href="javascript:void(0);" onclick="return overlib('[% nh.the_date_obj.format("%D") %]&nbsp;&nbsp;[% nh.time_obj %]&nbsp;&nbsp;[% nh.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
 [% END %]
 </table>

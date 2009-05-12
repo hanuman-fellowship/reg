@@ -126,7 +126,7 @@ sub _get_data {
     }
     # dates are either blank or converted to d8 format
     for my $f (keys %hash) {
-        next unless $f =~ m{date};
+        next unless $f =~ m{date|valid};
         next unless $hash{$f} =~ m{\S};
         # ??? what about " " for a date?
         my $dt = date($hash{$f});
@@ -144,11 +144,23 @@ sub _get_data {
         if (! $hash{mkpay_date}) {
             push @mess, "No payment date";
         }
+        if (! $hash{valid_from}) {
+            push @mess, "No valid from date";
+        }
+        if (! $hash{valid_to}) {
+            push @mess, "No valid to date";
+        }
     }
-    if ($hash{category} eq 'General' && ! $hash{date_general}) {
+    if ($hash{category} eq 'General'
+        && ! $hash{date_general}
+        && ! $hash{valid_to}
+    ) {
         push @mess, "Missing General date";
     }
-    if ($hash{category} eq 'Sponsor' && ! $hash{date_sponsor}) {
+    if ($hash{category} eq 'Sponsor'
+        && ! $hash{date_sponsor}
+        && ! $hash{valid_to}
+    ) {
         push @mess, "Missing Sponsor date";
     }
     if ($hash{category} eq 'General') {
@@ -193,8 +205,13 @@ sub update_do : Local {
 
     my $pay_date = $hash{mkpay_date};
     my $amount   = $hash{mkpay_amount};
+    my $valid_from = $hash{valid_from};
+    my $valid_to   = $hash{valid_to};
+
     delete $hash{mkpay_date};
     delete $hash{mkpay_amount};
+    delete $hash{valid_from};
+    delete $hash{valid_to};
 
     my $member = model($c, 'Member')->find($id);
     my @who_now = get_now($c);
@@ -205,6 +222,8 @@ sub update_do : Local {
         model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $pay_date,
+            valid_from   => $valid_from,
+            valid_to     => $valid_to,
             amount       => $amount,
             general      => $hash{category} eq 'General' 
                             && $amount <= $string{mem_gen_amt}? 'yes': '',
@@ -243,6 +262,21 @@ sub update_do : Local {
                 # set/clear free program
             @who_now,
         });
+    }
+
+    # fill in the general expiry/sponsor date_due dates based
+    # on the valid_to date - unless they have
+    # changed these dates directly.
+    # 
+    if ($hash{category} eq 'General'
+        && $hash{date_general} == $member->date_general()
+    ) {
+        $hash{date_general} = $valid_to;
+    }
+    if ($hash{category} eq 'Sponsor'
+        && $hash{date_sponsor} == $member->date_sponsor()
+    ) {
+        $hash{date_sponsor} = $valid_to;
     }
 
     # finally, update the member record
@@ -286,7 +320,7 @@ sub acknowledge {
     my $person   = $member->person;
     my $category = $member->category;
     my $benefits = ($category eq 'Sponsor'
-                    && date($member->date_sponsor) > tt_today($c));
+                    && date($member->date_sponsor()) > tt_today($c));
     my $message = "";
     if ( ! $person->email) {
         my $name = $person->first . " " . $person->last;
@@ -319,7 +353,7 @@ EOA
         amount       => $amount,
         pay_date     => date($pay_date),
         expire_date  => date($member->date_general),
-        due_date     => date($member->date_sponsor),
+        due_date     => date($member->date_sponsor()),
         toward_spons => $category eq 'General'
                         && $amount > $string{mem_gen_amt},
         total_paid   => $member->total_paid(),
@@ -565,8 +599,8 @@ sub email_lapsed : Local {
             push @no_email, $m;
             next MEMBER;
         }
-        my $exp_date = date($m->category eq 'General'? $m->date_general
-                            :                          $m->date_sponsor);
+        my $exp_date = date($m->category eq 'General'? $m->date_general()
+                            :                          $m->date_sponsor());
 
         my @payments = $m->payments();
         my $last_amount  = (@payments)? $payments[0]->amount: 0 ;
@@ -631,8 +665,8 @@ sub email_lapse_soon : Local {
             push @no_email, $m;
             next MEMBER;
         }
-        my $exp_date = date($m->category eq 'General'? $m->date_general
-                            :                          $m->date_sponsor);
+        my $exp_date = date($m->category eq 'General'? $m->date_general()
+                            :                          $m->date_sponsor());
         my $type = $m->category;
 
         my @payments = $m->payments();
@@ -990,10 +1024,14 @@ sub payment_update_do : Local {
     my ($self, $c, $payment_id) = @_;
 
     my @mess = ();
-    my $date_payment = $c->request->params->{date_payment};
-    my $dt = date($date_payment);
-    if (!$dt) {
-        push @mess, "Invalid date: $date_payment";
+    my %dates;
+    for my $f (qw/date_payment valid_from valid_to/) {
+        my $v = $c->request->params->{$f};
+        my $dt = date($v);
+        if (!$dt) {
+            push @mess, "Invalid date: $v";
+        }
+        $dates{$f} = $dt;
     }
     my $amount = trim($c->request->params->{amount});
     if ($amount !~ m{^\d+$}) {
@@ -1006,7 +1044,9 @@ sub payment_update_do : Local {
     }
     my $pmt = model($c, 'SponsHist')->find($payment_id);
     $pmt->update({
-        date_payment => $dt->as_d8(),
+        date_payment => $dates{date_payment}->as_d8(),
+        valid_from   => $dates{valid_from  }->as_d8(),
+        valid_to     => $dates{valid_to    }->as_d8(),
         amount       => $amount,
     });
 
