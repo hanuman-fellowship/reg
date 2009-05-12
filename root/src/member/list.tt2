@@ -38,9 +38,9 @@ To add a Member add them as a Person first.
 <td><a tabindex=1 href="/person/view/[% per.id %]">[% per.first %]</a></td>
 <td>[% m.category %]</td>
 <td>
-[% IF    m.category == 'General' %][% m.date_general_obj %]
-[% ELSIF m.category == 'Life'    %][% m.date_life_obj    %]
-[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj %]
+[% IF    m.category == 'General' %][% m.date_general_obj.format("%D") %]
+[% ELSIF m.category == 'Life'    %][% m.date_life_obj.format("%D")    %]
+[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj.format("%D") %]
 [% END %]
 </td>
 <td>
