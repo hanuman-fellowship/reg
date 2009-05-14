@@ -1,4 +1,13 @@
 <style type="text/css">
+h2 {
+    font-size: 14pt;
+}
+a {
+    font-size: 9.5pt;
+}
+td {
+    font-size: 9.5pt;
+}
 .timestamp {
     display: block;
     font-size: 11pt;
@@ -10,11 +19,11 @@
 End of Month Summary for General Ledger<br>
 For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.format("%D") %].
 </h2>
-<table cellpadding=2>
+<table cellpadding=0>
 <tr>
 <th width=5></th>
 <th align=left valign=bottom>Name</th>
-<th align=center valign=bottom>GL<br>Number</th>
+<th align=center valign=bottom>GL #</th>
 [% IF mmi %]
     <th align=center valign=bottom>ACCPACC<br>Number</th>
 [% END %]
