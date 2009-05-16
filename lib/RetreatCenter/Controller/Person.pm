@@ -279,9 +279,10 @@ sub view : Local {
     $c->stash->{sex} = ($sex eq "M")? "Male"
                       :($sex eq "F")? "Female"
                       :               "Not Reported";
-    if ($sex ne 'M' && $sex ne 'F') {
-            $c->stash->{sex} .= "<br>". _what_gender($p->first, $id);
-    }
+    # not really needed - hangs if no connection
+    # if ($sex ne 'M' && $sex ne 'F') {
+    #      $c->stash->{sex} .= "<br>". _what_gender($p->first, $id);
+    # }
     $c->stash->{template} = "person/view.tt2";
 }
 
@@ -349,8 +350,11 @@ sub _get_data {
         push @mess, "First name cannot be blank.";
     }
     if ($hash{sex} ne 'F' && $hash{sex} ne 'M') {
-        push @mess, "You must specify Male or Female: $hash{first} - "
-                  . _what_gender($hash{first});
+        push @mess, "You must specify Male or Female: $hash{first}"
+                  # not really needed - hangs if no connection
+                  # " - "
+                  # . _what_gender($hash{first})
+                  ;
     }
     if ($hash{addr1} && usa($hash{country}) && ! valid_state($hash{st_prov})) {
         push @mess, "Invalid state: $hash{st_prov}";

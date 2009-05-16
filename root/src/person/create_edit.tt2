@@ -20,6 +20,7 @@ function getIt() {
 // when the response to it is received,
 // it will be processed by getIt() above.
 function get_gender() {
+    return true;        // not really needed - hangs if no connection :(
     var first = document.form.first.value;
     var url = '[% Catalyst.uri_for("/person/get_gender/") %]' + first;
     xmlhttp.open('GET', url, true);
