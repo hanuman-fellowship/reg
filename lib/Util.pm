@@ -633,7 +633,7 @@ sub email_letter {
             @auth,
         });
         if (! $mail_sender) {
-            # ???
+            $c->log->info("could not create mail_sender");
         }
     }
     my @cc_bcc = ();
