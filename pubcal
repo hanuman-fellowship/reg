@@ -1,4 +1,4 @@
 #!/bin/sh
 cd /home/sahadev/RetreatCenter
 export DBI_DSN="dbi:mysql:reg2"
-script/pubcal >pubcal.out 2>&1 &
+./script/pubcal >pubcal.out 2>&1
