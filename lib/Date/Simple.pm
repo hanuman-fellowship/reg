@@ -260,6 +260,9 @@ sub format {
             $format =~ s{[\s']*%[Qq]}{}g;
         }
     }
+    if ($format =~ m{%s}) {
+        $format =~ s{%s}{qw/Su M Tu W Th F Sa/[$self->day_of_week]}ge;
+    }
 
     require POSIX;
     local $ENV{TZ} = 'UTC+0';
