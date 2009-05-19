@@ -573,7 +573,7 @@ sub stale : Local {
     my $upload = $c->request->upload('stale_emails');
     my $n = 0;
     if ($upload) {
-        my @emails = $upload->slurp =~ m{\S+\@\S+}g;
+        my @emails = $upload->slurp =~ m{[^'"\s]+\@[^'"\s]+}g;
         $n = @emails;
         model($c, 'Person')->search({
             email => { -in => \@emails },
