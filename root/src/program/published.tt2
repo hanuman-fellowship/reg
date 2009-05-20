@@ -30,3 +30,6 @@ Unlinked programs:
 [% END %]
 </table>
 [% END %]
+<p class=p2>
+Be sure to verify that the staging area looks correct and<br>
+then move staging to live by clicking <a target=_blank href=http://www.mountmadonna.org/cgi-bin/admin>here</a>.
