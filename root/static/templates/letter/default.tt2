@@ -198,11 +198,15 @@ Program registration is from
 	We will save dinner for you on request.
 [% END %]
 <p class=p2>
-[% IF ! personal_retreat %]
-Your program will begin at [% program.prog_start_obj %].<br>
+[% IF personal_retreat %]
+Your retreat will end at [% program.prog_end_obj %]
+on [% reg.date_end_obj.format("%A, %B %e") %].
+[% ELSE %]
+Your program will begin at [% program.prog_start_obj %] on
+[% program.sdate_obj.format("%A") %]
+and will end at [% program.prog_end_obj %] on
+[% program.edate_obj.format("%A, %B %e") %].
 [% END %]
-[% IF personal_retreat %]Your retreat[% ELSE %]The program [% END %]
-will end at [% program.prog_end_obj %] on [% program.edate_obj.format("%A, %B %e") %].
 <p class=p2>
 [% program.canpol.policy %]
 <p class=p2>
