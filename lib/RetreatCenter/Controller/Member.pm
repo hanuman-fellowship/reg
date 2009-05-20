@@ -114,67 +114,67 @@ sub update : Local {
     $c->stash->{template}    = "member/create_edit.tt2";
 }
 
-my %hash;
+my %P;
 my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
+    %P = %{ $c->request->params() };
     @mess = ();
-    if (! $hash{category}) {
+    if (! $P{category}) {
         push @mess, "You must select General, Sponsor, Life or Inactive";
     }
     # dates are either blank or converted to d8 format
-    for my $f (keys %hash) {
+    for my $f (keys %P) {
         next unless $f =~ m{date|valid};
-        next unless $hash{$f} =~ m{\S};
+        next unless $P{$f} =~ m{\S};
         # ??? what about " " for a date?
-        my $dt = date($hash{$f});
+        my $dt = date($P{$f});
         if (! $dt) {
             # tell them which date field is wrong???
-            push @mess, "Invalid date: $hash{$f}";
+            push @mess, "Invalid date: $P{$f}";
             next;
         }
-        $hash{$f} = $dt->as_d8();
+        $P{$f} = $dt->as_d8();
     }
-    if ($hash{mkpay_amount} || $hash{mkpay_date}) {
-        if ($hash{mkpay_amount} !~ m{^\s*-?\d+\s*$}) {
+    if ($P{mkpay_amount} || $P{mkpay_date}) {
+        if ($P{mkpay_amount} !~ m{^\s*-?\d+\s*$}) {
             push @mess, "No payment amount";
         }
-        if (! $hash{mkpay_date}) {
+        if (! $P{mkpay_date}) {
             push @mess, "No payment date";
         }
-        if (! $hash{valid_from}) {
+        if (! $P{valid_from}) {
             push @mess, "No valid from date";
         }
-        if (! $hash{valid_to}) {
+        if (! $P{valid_to}) {
             push @mess, "No valid to date";
         }
     }
-    if ($hash{category} eq 'General'
-        && ! $hash{date_general}
-        && ! $hash{valid_to}
+    if ($P{category} eq 'General'
+        && ! $P{date_general}
+        && ! $P{valid_to}
     ) {
         push @mess, "Missing General date";
     }
-    if ($hash{category} eq 'Sponsor'
-        && ! $hash{date_sponsor}
-        && ! $hash{valid_to}
+    if ($P{category} eq 'Sponsor'
+        && ! $P{date_sponsor}
+        && ! $P{valid_to}
     ) {
         push @mess, "Missing Sponsor date";
     }
-    if ($hash{category} eq 'General') {
-        $hash{sponsor_nights} = 0;
-        $hash{free_prog_taken} = '';
+    if ($P{category} eq 'General') {
+        $P{sponsor_nights} = 0;
+        $P{free_prog_taken} = '';
     }
     else {
-        $hash{sponsor_nights} = trim($hash{sponsor_nights});
-        if ($hash{sponsor_nights} !~ m{^\d*$}) {
-            push @mess, "Invalid Nights Left: $hash{sponsor_nights}";
+        $P{sponsor_nights} = trim($P{sponsor_nights});
+        if ($P{sponsor_nights} !~ m{^\d*$}) {
+            push @mess, "Invalid Nights Left: $P{sponsor_nights}";
         }
     }
-    if (! exists $hash{free_prog_taken}) {
-        $hash{free_prog_taken} = '';        # an unchecked field would not
+    if (! exists $P{free_prog_taken}) {
+        $P{free_prog_taken} = '';        # an unchecked field would not
                                             # be sent if I didn't do this...
     }
     if (@mess) {
@@ -203,15 +203,15 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $pay_date = $hash{mkpay_date};
-    my $amount   = $hash{mkpay_amount};
-    my $valid_from = $hash{valid_from};
-    my $valid_to   = $hash{valid_to};
+    my $pay_date = $P{mkpay_date};
+    my $amount   = $P{mkpay_amount};
+    my $valid_from = $P{valid_from};
+    my $valid_to   = $P{valid_to};
 
-    delete $hash{mkpay_date};
-    delete $hash{mkpay_amount};
-    delete $hash{valid_from};
-    delete $hash{valid_to};
+    delete $P{mkpay_date};
+    delete $P{mkpay_amount};
+    delete $P{valid_from};
+    delete $P{valid_to};
 
     my $member = model($c, 'Member')->find($id);
     my @who_now = get_now($c);
@@ -225,7 +225,7 @@ sub update_do : Local {
             valid_from   => $valid_from,
             valid_to     => $valid_to,
             amount       => $amount,
-            general      => $hash{category} eq 'General' 
+            general      => $P{category} eq 'General' 
                             && $amount <= $string{mem_gen_amt}? 'yes': '',
             @who_now,
         });
@@ -240,25 +240,25 @@ sub update_do : Local {
     ) {
         $total += $p->amount;
     }
-    $hash{total_paid} = $total;
+    $P{total_paid} = $total;
 
-    if ($member->sponsor_nights != $hash{sponsor_nights}) {
+    if ($member->sponsor_nights != $P{sponsor_nights}) {
         # add NightHist record to reflect the change
         model($c, 'NightHist')->create({
             member_id  => $id,
             reg_id     => 0,
-            num_nights => $hash{sponsor_nights},
+            num_nights => $P{sponsor_nights},
             action     => 1,    # set nights
             @who_now,
         });
     }
-    if ($member->free_prog_taken ne $hash{free_prog_taken}) {
+    if ($member->free_prog_taken ne $P{free_prog_taken}) {
         # add NightHist record to reflect the change
         model($c, 'NightHist')->create({
             member_id  => $id,
             reg_id     => 0,
             num_nights => 0,
-            action     => ($hash{free_prog_taken})? 5: 3, 
+            action     => ($P{free_prog_taken})? 5: 3, 
                 # set/clear free program
             @who_now,
         });
@@ -268,19 +268,19 @@ sub update_do : Local {
     # on the valid_to date - unless they have
     # changed these dates directly.
     # 
-    if ($hash{category} eq 'General'
-        && $hash{date_general} == $member->date_general()
+    if ($P{category} eq 'General'
+        && $P{date_general} == $member->date_general()
     ) {
-        $hash{date_general} = $valid_to;
+        $P{date_general} = $valid_to;
     }
-    if ($hash{category} eq 'Sponsor'
-        && $hash{date_sponsor} == $member->date_sponsor()
+    if ($P{category} eq 'Sponsor'
+        && $P{date_sponsor} == $member->date_sponsor()
     ) {
-        $hash{date_sponsor} = $valid_to;
+        $P{date_sponsor} = $valid_to;
     }
 
     # finally, update the member record
-    $member->update(\%hash);
+    $member->update(\%P);
 
     if (!$amount) {
         $c->response->redirect($c->uri_for("/member/view/$id"));
@@ -442,56 +442,78 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $date = $hash{mkpay_date};
-    my $amount = $hash{mkpay_amount};
-    delete $hash{mkpay_date};
-    delete $hash{mkpay_amount};
+    my $mkpay_date = $P{mkpay_date};
+    my $amount     = $P{mkpay_amount};
+    my $valid_from = $P{valid_from};
+    my $valid_to   = $P{valid_to};
 
-    $hash{total_paid} = $amount;
+    delete $P{mkpay_date};
+    delete $P{mkpay_amount};
+    delete $P{valid_from};
+    delete $P{valid_to};
+
+    if ($P{category} eq 'General' && ! $P{date_general}) {
+        $P{date_general} = $valid_to;
+    }
+    if ($P{category} eq 'Sponsor' && ! $P{date_sponsor}) {
+        $P{date_sponsor} = $valid_to;
+    }
+
+    $P{total_paid} = $amount;
 
     my $member = model($c, 'Member')->create({
         person_id    => $person_id,
-        %hash,
+        %P,
     });
+
     #
-    # add Guru Purnima affiliation to the Person
+    # add the Guru Purnima affiliation to the Person
+    # if it is not already there.
     #
-    model($c, 'AffilPerson')->create({
+    my @affils = model($c, 'AffilPerson')->search({
         a_id => $guru_purnima,
         p_id => $person_id,
     });
+    if (! @affils) {
+        model($c, 'AffilPerson')->create({
+            a_id => $guru_purnima,
+            p_id => $person_id,
+        });
+    }
 
     my $id = $member->id();
     my @who_now = get_now($c);
 
     # put any payment in history
-    if ($date) {
+    if ($mkpay_date) {
         model($c, 'SponsHist')->create({
             member_id    => $id,
-            date_payment => $date,
+            date_payment => $mkpay_date,
+            valid_from   => $valid_from,
+            valid_to     => $valid_to,
             amount       => $amount,
-            general      => $hash{category} eq 'General'? 'yes': '',
+            general      => $P{category} eq 'General'? 'yes': '',
             @who_now,
         });
     }
 
     # NightHist records
-    if ($hash{category} ne 'General') {
+    if ($P{category} ne 'General') {
         model($c, 'NightHist')->create({
             @who_now,
             member_id  => $id,
             reg_id     => 0,
-            num_nights => $hash{sponsor_nights},
+            num_nights => $P{sponsor_nights},
             action     => 1,
         });
     }
-    if ($hash{category} eq 'Life') {
+    if ($P{category} eq 'Life') {
         model($c, 'NightHist')->create({
             @who_now,
             member_id  => $id,
             reg_id     => 0,
             num_nights => 0,
-            action     => ($hash{free_prog_taken})? 5: 3,
+            action     => ($P{free_prog_taken})? 5: 3,
         });
     }
 
@@ -501,7 +523,7 @@ sub create_do : Local {
     }
 
     Global->init($c);
-    my $html = acknowledge($c, $member, $amount, $date);
+    my $html = acknowledge($c, $member, $amount, $mkpay_date);
     
     my $pers = $member->person();
     if ($pers->email()) {
