@@ -133,5 +133,28 @@ May 10 10:15-11:00, 1:10-3:20, 4:00-4:50
     further development - check in current changes
     conf letters sent since 25 was disabled 
     MMI finance unduping
-May 11 11:00-
+May 11 11:00-2:00
     two more dates for membership payments - valid_from and valid_to
+    no global resetting of nights
+    mm/dd/yy everywhere
+    new way of edit/del
+May 14 12:10-1:40, 7:55-8:40
+    selecting a cluster for a program reserves that
+        cluster - other overlapping programs/rentals cannnot
+        use it.  ditto for choosing cluster for a rental.
+        notes contain doc: exceptions/quirks
+    blocks
+        a good beginning!
+        next - on creation consult the config records
+            and change the config records (in the date range).
+        and - B in dailypic, clusterview x nbeds
+            on click - show the reason
+May 16 10:00-12:00
+    fixing this and that during NYC trip
+May 18 12:00-3:10, 3:30-4:10, 4:20-6:00
+    gathering requirements, talking to Jayanti re: reserving clusters
+    email purge regex
+    mlist activate 1/1/05
+    ride pay type
+    bank deposit - preliminary
+    reformatting file deposit

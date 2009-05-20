@@ -10,6 +10,7 @@ create table ride (
     flight_num text,
     flight_time text,
     cost integer,
+    type text,
     comment text,
     paid_date text,
     sent_date text

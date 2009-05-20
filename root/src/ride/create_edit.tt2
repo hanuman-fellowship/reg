@@ -73,6 +73,15 @@ function check(event, fld, n, next_id) {
 <td><input type=text name=cost value='[% ride.cost %]' size=4></td>
 </tr>
 
+<tr>
+<th align=right>Type</th>
+<td>
+<select name=type>
+[% type_opts %]
+</select>
+</td>
+</tr>
+
 [% IF Catalyst.check_user_roles('ride_admin') %]
 <tr>
 <th align=right>Credit Card Number</th>

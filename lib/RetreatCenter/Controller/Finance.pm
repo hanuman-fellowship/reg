@@ -29,7 +29,7 @@ sub index : Local {
 }
 
 sub reconcile_deposit : Local {
-    my ($self, $c, $source, $id) = @_;
+    my ($self, $c, $source, $id, $prelim) = @_;
 
     my $host = ($source eq 'mmi')? "mmi_": "";
     my ($date_start, $date_end);
@@ -98,25 +98,39 @@ sub reconcile_deposit : Local {
     if ($source eq 'mmc') {
         # ride payments are handled differently
         # and it is always a credit card payment.
+        # not any more!
         #
         for my $r (model($c, 'Ride')->search({
                        paid_date => { between => [ $date_start, $date_end ] },
                    })
         ) {
+            my $type = $r->type();
             my $amt = $r->cost();
-            push @payments, {
-                name => $r->name(),
-                link => $r->link(),
-                date => $r->paid_date_obj->format("%D"),
-                type => 'C',
-                cash => undef,
-                chk  => undef,
-                credit => $amt,
-                online => undef,
-                pname => "Ride",
-            };
-            $credit += $amt;
+            next PAYMENT if $amt == 0;       # bogus payment
+            if ($type eq 'D') {
+                $credit += $amt;
+            }
+            elsif ($type eq 'C') {
+                $check += $amt;
+            }
+            elsif ($type eq 'S') {
+                $cash += $amt;
+            }
+            elsif ($type eq 'O') {
+                $online += $amt;
+            }
             $total += $amt;
+            push @payments, {
+                name   => $r->name(),
+                link   => $r->link(),
+                date   => $r->paid_date_obj->format("%D"),
+                type   => $type,
+                cash   => ($type eq 'S')? $amt: "",
+                chk    => ($type eq 'C')? $amt: "",
+                credit => ($type eq 'D')? $amt: "",
+                online => ($type eq 'O')? $amt: "",
+                pname  => "Ride",
+            };
         }
     }
     @payments = sort {
@@ -125,14 +139,17 @@ sub reconcile_deposit : Local {
                     @payments;
 
     if (! $id) {
-        $string{reconciling} = $c->user->obj->username();
+        $string{"$source\_reconciling"} = ($prelim)? ""
+                                          :          $c->user->obj->username()
+                                          ;
         # on disk???  not needed?
     }
 
     stash($c,
-        source   => $source,
+        source   => uc $source,
         payments => \@payments,
-        again    => ! $id,
+        again    => (! $id && ! $prelim),
+        prelim   => $prelim,
         cash     => $cash,
         check    => $check,
         credit   => $credit,
@@ -202,15 +219,16 @@ sub file_deposit : Local {
     if ($source eq 'mmc') {
         # ride payments are handled differently
         # and it is always a credit card payment.
+        # not any more!
         #
         for my $r (model($c, 'Ride')->search({
                        paid_date => { between => [ $date_start, $date_end ] },
                    })
         ) {
             push @payments, {
-                name => $r->name(),
-                date => $r->paid_date_obj->format("%D"),
-                type => 'D',
+                name  => $r->name(),
+                date  => $r->paid_date_obj->format("%D"),
+                type  => $r->type(),
                 amt   => $r->cost(),
                 glnum => $string{ride_glnum},
                 pname => "Ride",
@@ -249,33 +267,40 @@ sub file_deposit : Local {
     }
     my $html = <<"EOH";
 <style type="text/css">
-body {
-    font-size: 13pt;
-    font-family: Helvetica;
-}
-td, th {
-    font-size: 15pt;
+body, td, th {
+    font-size: 12pt;
+    font-family: Courier;
 }
 </style>
-$timestamp<span style="font-size: 25pt; font-weight: bold; margin-left: 1in;">Bank Deposit</span>
+EOH
+my $heading = <<"EOH";
+$timestamp<span style="font-size: 25pt; font-weight: bold; margin-left: 1in;">\U$source\E Bank Deposit</span>
 <p>
-<table cellpadding=3>
+<table cellpadding=1>
 <tr valign=bottom>
 <th align=left><b>Account</b> (GL number)<br>${indent}Name</th>
 <th align=center>Date</th>
 <th align=right width=70>Cash</th>
 <th align=right width=70>Check</th>
 <th align=right width=70>Credit</th>
-<th align=right width=70>Online</th>
 <th align=right width=70>Total</th>
 </tr>
 <tr><td colspan=6><hr color=black></td></tr>
 EOH
+    my $newpage = <<"EOH";
+<div style='page-break-after:always'></div>
+EOH
+    $html .= $heading;
     my $prev_glnum = "";
     my $prev_pname = "";     # needed for MMI programs
-    my ($cash, $check, $credit, $online) = (0, 0, 0);
+    my ($cash, $check, $credit, $online) = (0, 0, 0, 0);
     my ($gcash, $gcheck, $gcredit, $gonline, $gtotal) = (0, 0, 0, 0);
+    my $nrows = 0;
     for my $p (@payments) {
+        if ($nrows > $string{deposit_lines_per_page}) {
+            $html .= "</table>" . $newpage . $heading;
+            $nrows = 0;
+        }
         if ($p->{glnum} ne $prev_glnum) {
             if ($prev_glnum || $prev_pname) {
                 my $total = $cash + $check + $credit + $online;
@@ -284,23 +309,21 @@ EOH
                       .  "<td><hr color=black></td>"
                       .  "<td><hr color=black></td>"
                       .  "<td><hr color=black></td>"
-                      .  "<td><hr color=black></td>"
                       .  "</tr>\n";
                 $html .= "<tr>"
                       .  "<td colspan=3 align=right>$cash</td>"
                       .  "<td align=right>$check</td>"
-                      .  "<td align=right>$credit</td>"
-                      .  "<td align=right>$online</td>"
+                      .  "<td align=right>" . ($credit + $online) . "</td>"
                       .  "<td align=right>"
                       .  commify($total)
                       .  "</td>"
                       .  "</tr>\n"
                       ;
                 $html .= "<tr><td>&nbsp;</td></tr>\n";
+                $nrows += 3;
                 $gcash   += $cash;
                 $gcheck  += $check;
-                $gcredit += $credit;
-                $gonline += $online;
+                $gcredit += $credit + $online;
                 $gtotal  += $total;
                 ($cash, $check, $credit, $online) = (0, 0, 0, 0);
             }
@@ -308,22 +331,27 @@ EOH
                   .  "<td colspan=6 align=left><b>$p->{pname}</b> ($p->{glnum})</td>"
                   .  "</tr>\n"
                   ;
+            ++$nrows;
         }
         $prev_glnum = $p->{glnum};
         $prev_pname = $p->{pname};
         my $type = $p->{type};
-        my $n = ($type eq "S")? 1
-               :($type eq "C")? 2
-               :($type eq "D")? 3       # Credit
-               :                4       # Online
+        my $n = ($type eq 'S')? 1
+               :($type eq 'C')? 2
+               :($type eq 'D')? 3       # Credit
+               :                3       # Online
                ;
         my $amt = $p->{amt};
         $html .= "<tr>"
               .  "<td align=left>$indent$p->{name}</td>"
               .  "<td align=center>$p->{date}</td>"
               .  "<td align=right colspan=$n>$amt</td>"
-              .  "</tr>\n"
               ;
+        if ($type eq 'O') {
+            $html .= "<td>*</td>";
+        }
+        $html .= "</tr>\n";
+        ++$nrows;
         if ($n == 1) {
             $cash += $amt;
         }
@@ -343,13 +371,11 @@ EOH
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
-          .  "<td><hr color=black></td>"
           .  "</tr>\n";
     $html .= "<tr>"
           .  "<td colspan=3 align=right>$cash</td>"
           .  "<td align=right>$check</td>"
-          .  "<td align=right>$credit</td>"
-          .  "<td align=right>$online</td>"
+          .  "<td align=right>" . ($credit + $online) .  "</td>"
           .  "<td align=right>"
           .  commify($total)
           .  "</td>"
@@ -366,13 +392,11 @@ EOH
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
           .  "<td><hr color=black></td>"
-          .  "<td><hr color=black></td>"
           .  "</tr>\n";
     $html .= "<tr>"
           .  "<td colspan=3 align=right>$gcash</td>"
           .  "<td align=right>$gcheck</td>"
-          .  "<td align=right>$gcredit</td>"
-          .  "<td align=right>$gonline</td>"
+          .  "<td align=right>" . ($gcredit + $gonline) . "</td>"
           .  "<td align=right>\$"
           .  commify($gtotal)
           .  "</td>"
@@ -406,7 +430,8 @@ EOH
                 value => $date_end,
             });
         }
-        $string{reconciling} = 0;   # only in memory???
+        $string{"$source\_reconciling"} = "";
+        # only in memory???
     }
     $c->res->output($html);
 }

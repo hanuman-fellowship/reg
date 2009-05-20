@@ -70,6 +70,7 @@ __PACKAGE__->load_classes({
         Ride
 
         RentalStay
+        Block
     /]
 });
 

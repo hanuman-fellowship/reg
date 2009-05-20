@@ -33,7 +33,7 @@ sub create : Local {
             { order_by => 'descr' },
         )
     ];
-    $c->stash->{message}     = payment_warning($c);
+    $c->stash->{message}     = payment_warning('mmc');
     $c->stash->{form_action} = "create_do/$person_id";
     $c->stash->{template}    = "donation/create_edit.tt2";
 }

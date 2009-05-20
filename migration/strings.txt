@@ -131,7 +131,8 @@ max_lodge_opts 30
 tt_today 
 default_date_format %b %e '%q
 make_up_urgent_days 4
-reconciling 0
+mmc_reconciling 0
+mmi_reconciling 0
 payment_O Online
 payment_C Check
 payment_D Credit
@@ -170,3 +171,5 @@ prog_end 1:00 pm
 
 mmi_discount 20
 member_meal_cost 14
+
+deposit_lines_per_page 5

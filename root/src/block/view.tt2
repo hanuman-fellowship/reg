@@ -95,11 +95,6 @@
 <td>[% ride.cost %]</td>
 </tr>
 
-<tr>
-<th align=right>Type</th>
-<td>[% ride.type_sh %]</td>
-</tr>
-
 [% IF Catalyst.check_user_roles('ride_admin') %]
 
 <tr>

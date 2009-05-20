@@ -924,7 +924,7 @@ sub create_mmi_payment : Local {
     }
     stash($c,
         from     => $from,
-        message  => payment_warning($c),
+        message  => payment_warning('mmi'),
         person   => model($c, 'Person')->find($person_id),
         reg      => model($c, 'Registration')->find($reg_id),
         template => "person/create_mmi_payment.tt2",

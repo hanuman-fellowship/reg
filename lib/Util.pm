@@ -1126,10 +1126,11 @@ sub error {
 }
 
 sub payment_warning {
-    my ($c) = @_;
+    my ($host) = @_;
 
-    if ($string{reconciling}) {
-        return "Warning! \u$string{reconciling} is doing a reconciliation!";
+    my $person = $string{"$host\_reconciling"};
+    if ($person) {
+        return "Warning! \u$person is doing a reconciliation!";
     }
     return "";
 }

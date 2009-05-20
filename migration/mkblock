@@ -1,0 +1,9 @@
+drop table if exists block;
+create table block (
+    id integer primary key autoincrement,
+    house_id integer,       -- foreign key to house
+    sdate text,
+    edate text,
+    nbeds integer,
+    reason text
+);

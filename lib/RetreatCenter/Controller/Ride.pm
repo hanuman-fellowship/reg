@@ -70,47 +70,47 @@ sub delete : Local {
     $c->response->redirect($c->uri_for('/ride/list'));
 }
 
-my %hash;
+my %P;
 my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
+    %P = %{ $c->request->params() };
     @mess = ();
-    if (! empty($hash{pickup_date})) {
-        my $dt = date($hash{pickup_date});
+    if (! empty($P{pickup_date})) {
+        my $dt = date($P{pickup_date});
         if ($dt) {
-            $hash{pickup_date} = $dt->as_d8();
+            $P{pickup_date} = $dt->as_d8();
         }
         else {
-            push @mess, "Invalid pick up date: $hash{pickup_date}";
+            push @mess, "Invalid pick up date: $P{pickup_date}";
         }
     }
-    if (! empty($hash{flight_time})) {
-        my $t = get_time($hash{flight_time});
+    if (! empty($P{flight_time})) {
+        my $t = get_time($P{flight_time});
         if (! $t) {
             push @mess, Time::Simple->error();
         }
         else {
-            $hash{flight_time} = $t->t24();
+            $P{flight_time} = $t->t24();
         }
     }
-    if (! (   empty($hash{cc_number1})
-           && empty($hash{cc_number2})
-           && empty($hash{cc_number3})
-           && empty($hash{cc_number4})
+    if (! (   empty($P{cc_number1})
+           && empty($P{cc_number2})
+           && empty($P{cc_number3})
+           && empty($P{cc_number4})
           )
     ) {
-        if (   $hash{cc_number1} !~ m{\d{4}}
-            || $hash{cc_number2} !~ m{\d{4}}
-            || $hash{cc_number3} !~ m{\d{4}}
-            || $hash{cc_number4} !~ m{\d{4}}
+        if (   $P{cc_number1} !~ m{\d{4}}
+            || $P{cc_number2} !~ m{\d{4}}
+            || $P{cc_number3} !~ m{\d{4}}
+            || $P{cc_number4} !~ m{\d{4}}
         ) {
             push @mess, "Invalid credit card number";
         }
     }
-    if (! empty($hash{cc_expire})) {
-        if ($hash{cc_expire} !~ m{(\d\d)(\d\d)}) {
+    if (! empty($P{cc_expire})) {
+        if ($P{cc_expire} !~ m{(\d\d)(\d\d)}) {
             push @mess, "Invalid expiration date";
         }
         else {
@@ -134,30 +134,30 @@ sub _get_data {
             }
         }
     }
-    if (! empty($hash{cc_code}) && $hash{cc_code} !~ m{\d{3}}) {
+    if (! empty($P{cc_code}) && $P{cc_code} !~ m{\d{3}}) {
         push @mess, "Invalid security code";
     }
-    $hash{cc_number} = $hash{cc_number1} 
-                     . $hash{cc_number2}
-                     . $hash{cc_number3}
-                     . $hash{cc_number4}
+    $P{cc_number} = $P{cc_number1} 
+                     . $P{cc_number2}
+                     . $P{cc_number3}
+                     . $P{cc_number4}
                      ;
     for my $i (1 .. 4) {
-        delete $hash{"cc_number$i"};
+        delete $P{"cc_number$i"};
     }
-    if (! empty($hash{cost}) && $hash{cost} !~ m{\s*\d+\s*}) {
+    if (! empty($P{cost}) && $P{cost} !~ m{\s*\d+\s*}) {
         push @mess, "Invalid cost";
     }
-    if (empty($hash{paid_date})) {
-        $hash{paid_date} = '';      # to be sure???
+    if (empty($P{paid_date})) {
+        $P{paid_date} = '';      # to be sure???
     }
     else {
-        my $dt = date($hash{paid_date});
+        my $dt = date($P{paid_date});
         if ($dt) {
-            $hash{paid_date} = $dt->as_d8();
+            $P{paid_date} = $dt->as_d8();
         }
         else {
-            push @mess, "Invalid paid date: $hash{paid_date}";
+            push @mess, "Invalid paid date: $P{paid_date}";
         }
     }
     if (@mess) {
@@ -169,8 +169,7 @@ sub _get_data {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $ride = $c->stash->{ride} = model($c, 'Ride')->find($id);
-    $c->stash->{person} = $ride->rider();
+    my $ride = model($c, 'Ride')->find($id);
 
     my (@roles) = model($c, "Role")->search({
         role => 'driver',
@@ -188,10 +187,6 @@ sub update : Local {
                      . "\n"
                      ;
     }
-    $c->stash->{driver_opts} = $driver_opts;
-
-    $c->stash->{dir_from} = ($ride->from_to() eq "From MMC")? "checked": "";
-    $c->stash->{dir_to  } = ($ride->from_to() eq "To MMC"  )? "checked": "";
 
     my $opts = "";
     my $airport = $ride->airport();
@@ -201,11 +196,30 @@ sub update : Local {
               .  "> $a - $string{$a}\n"
               ;
     }
-    $c->stash->{airport_opts} = $opts;
-    $c->stash->{carrier} = $ride->carrier();
 
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "ride/create_edit.tt2";
+    my $type = $ride->type();
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t"
+                   .  ($type eq $t? " selected": "")
+                   .  ">"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
+
+    stash($c,
+        ride         => $ride,
+        driver_opts  => $driver_opts,
+        dir_from     => (($ride->from_to() eq "From MMC")? "checked": ""),
+        dir_to       => (($ride->from_to() eq "To MMC"  )? "checked": ""),
+        airport_opts => $opts,
+        carrier      => $ride->carrier(),
+        type_opts    => $type_opts,
+        person       => $ride->rider(),
+        form_action  => "update_do/$id",
+        template     => "ride/create_edit.tt2",
+    );
 }
 
 sub update_do : Local {
@@ -216,12 +230,12 @@ sub update_do : Local {
     my $ride = model($c, 'Ride')->find($id);
     my $rider = $ride->rider();
     $rider->update({
-        cc_number => $hash{cc_number},
-        cc_expire => $hash{cc_expire},
-        cc_code   => $hash{cc_code},
+        cc_number => $P{cc_number},
+        cc_expire => $P{cc_expire},
+        cc_code   => $P{cc_code},
     });
-    delete @hash{qw/cc_number cc_expire cc_code/};
-    $ride->update(\%hash);
+    delete @P{qw/cc_number cc_expire cc_code/};
+    $ride->update(\%P);
     Global->init($c, 1);
     $c->response->redirect($c->uri_for("/ride/view/$id"));
 }
@@ -264,12 +278,23 @@ sub create : Local {
               .  (($a eq $airport)? " selected": "")
               .  "> $a - $string{$a}\n";
     }
-    $c->stash->{airport_opts} = $opts;
 
-    $c->stash->{driver_opts} = $driver_opts;
-    $c->stash->{person} = model($c, 'Person')->find($person_id);
-    $c->stash->{form_action} = "create_do/$person_id";
-    $c->stash->{template}    = "ride/create_edit.tt2";
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t>"
+                   .  $string{"payment_$t"}
+                   .  "\n"
+                   ;
+    }
+
+    stash($c,
+        airport_opts => $opts,
+        type_opts    => $type_opts,
+        driver_opts  => $driver_opts,
+        person       => model($c, 'Person')->find($person_id),
+        form_action  => "create_do/$person_id",
+        template     => "ride/create_edit.tt2",
+    );
 }
 
 sub create_do : Local {
@@ -277,18 +302,18 @@ sub create_do : Local {
 
     _get_data($c);
     return if @mess;
-    $hash{rider_id} = $person_id;
+    $P{rider_id} = $person_id;
     my $p = model($c, 'Person')->find($person_id);
     $p->update({
-        cc_number => $hash{cc_number},
-        cc_expire => $hash{cc_expire},
-        cc_code   => $hash{cc_code},
+        cc_number => $P{cc_number},
+        cc_expire => $P{cc_expire},
+        cc_code   => $P{cc_code},
     });
-    delete $hash{cc_number};
-    delete $hash{cc_expire};
-    delete $hash{cc_code};
-    $hash{paid_date} = '';
-    my $ride = model($c, 'Ride')->create(\%hash);
+    delete $P{cc_number};
+    delete $P{cc_expire};
+    delete $P{cc_code};
+    $P{paid_date} = '';
+    my $ride = model($c, 'Ride')->create(\%P);
     $c->response->redirect($c->uri_for("/ride/view/" . $ride->id()));
 }
 
@@ -355,8 +380,8 @@ EOS
 sub view : Local {
     my ($self, $c, $id, $sent) = @_;
 
-    $c->stash->{ride} = model($c, 'Ride')->find($id);
-    $c->stash->{string} = \%string;
+    my $ride = model($c, 'Ride')->find($id);
+    $c->stash->{ride} = $ride;
     if ($sent) {
         $c->stash->{message} = "Email was sent.";
     }

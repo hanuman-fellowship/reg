@@ -1,0 +1,52 @@
+<style type="text/css">
+.cc td, .cc a, .cc th {
+    font-size: 15pt;
+}
+</style>
+<script type="text/javascript">
+function toggle_all() {
+    var form = document.form;
+    for (var i = 0; i < form.length; ++i) {
+        if (form[i].type == 'checkbox' && form[i].name != 'all') {
+            form[i].checked = ! form[i].checked;
+        }
+    }
+}
+</script>
+<h2>Charging Credit Cards for Rides</h2>
+<form action=/ride/pay_do name=form>
+<table cellpadding=5>
+<tr class=cc>
+<th align=left>Date</th>
+<th align=left>Airport</th>
+<th align=left>Name</th>
+<th align=left>Card Number</th>
+<th align=left>&nbsp;&nbsp;&nbsp;Expires</th>
+<th align=left>&nbsp;&nbsp;&nbsp;Code</th>
+<th align=left>AVS</th>
+<th align=right>Amount</th>
+<td></td>
+</tr>
+[% FOR r IN rides %]
+<tr class=cc>
+<td>[% r.pickup_date_obj %]</td>
+<td>&nbsp;&nbsp;&nbsp;[% r.airport %]</td>
+[% rider = r.rider %]
+<td><a href="/person/view/[% rider.id %]">[% rider.last %], [% rider.first %]</a></td>
+<td>[% rider.cc_number1 %]-[% rider.cc_number2 %]-[% rider.cc_number3 %]-[% rider.cc_number4 %]</td>
+<td align=center>&nbsp;&nbsp;&nbsp;[% rider.cc_expire %]</td>
+<td align=center>&nbsp;&nbsp;&nbsp;[% rider.cc_code %]</td>
+<td align=left>[% rider.avs %]</td>
+<td align=right>[% r.cost %]&nbsp;&nbsp;</td>
+<td><input type=checkbox name=r[% r.id %] value='yes'></td>
+</tr>
+[% END %]
+
+<tr>
+<td colspan=8></td>
+<td><input type=checkbox onclick="toggle_all()" name=all>All</td>
+</tr>
+
+<tr><td colspan=8></td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>

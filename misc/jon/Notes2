@@ -1273,3 +1273,34 @@ Arpana Bordeaux came for 11 nights as a member.
 doc: when MMI students cancel they don't get credit or a letter
 
 members CAN take free nights for MMI courses
+
+doc:
+    1) UNselected clusters - houses/rooms in them can be selected
+    and then they're available for choosing/assigning when housing someone.
+    if you subsequently DEselect that cluster the housing
+    assignment still stands - COULD give a warning?
+
+    2) rental cluster assignment - only shows clusters that are
+    ENTIRELY free (no housing assignments, no program/rental clusters reserved)
+    in that date range.   choose one.   then
+    individually deselect all houses in that cluster - the cluster
+    assignment still stands.   when all houses are removed
+    one should also remove the cluster - otherwise it is not
+    available to other overlapping rentals or programs.
+
+    3) when FORCING an individual housing assignment - it can happen
+        as long as there is a bed there. - regardless of
+        cluster assignments.  FORCE means you are taking responsibility.
+
+    4) when looking for overlapping rentals/programs note that
+        abutting (back-to-back) is not overlapping.
+
+    5) when displaying available program clusters we only look
+        at other program clusters and rental clusters.  not
+        housing assignments - some other program may have selected
+        it, chosen a house from it, then de-selected it.  see
+        first item above.
+
+    6) what about PRs?
+
+doc: do not compute costs - and why.

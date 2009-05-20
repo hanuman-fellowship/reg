@@ -1688,7 +1688,7 @@ sub pay_balance : Local {
     }
     my $reg = model($c, 'Registration')->find($id);
     stash($c,
-        message  => payment_warning($c),
+        message  => payment_warning('mmc'),
         from     => $from,
         reg      => $reg,
         template => "registration/pay_balance.tt2",

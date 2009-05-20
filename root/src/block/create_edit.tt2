@@ -1,0 +1,41 @@
+<h2>Block</h2>
+<form name=form action=/block/[% form_action %]>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Start Date</th>
+<td><input type=text name=sdate value='[% block.sdate_obj.format("%D") %]' size=10>
+</tr>
+
+<tr>
+<th align=right>End Date</th>
+<td><input type=text name=edate value='[% block.edate_obj.format("%D") %]' size=10>
+</tr>
+
+<tr>
+<th align=right>House Name</th>
+<td><input type=text name=h_name value='[% block.house.name %]' size=15></td>
+</tr>
+
+<tr>
+<th align=right># of Beds</th>
+<td><input type=text name=nbeds value='[% block.nbeds %]' size=2></td>
+</tr>
+
+<tr>
+<th align=right>Reason</th>
+<td><input type=text name=reason value='[% block.reason %]' size=40></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+</ul>
+<script type="text/javascript">
+document.form.sdate.focus();
+</script>

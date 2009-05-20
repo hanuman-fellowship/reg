@@ -792,7 +792,7 @@ sub pay_balance : Local {
     }
     my $r = model($c, 'Rental')->find($id);
     stash($c,
-        message  => payment_warning($c),
+        message  => payment_warning('mmc'),
         amount   => (tt_today($c)->as_d8() >= $r->edate)? $r->balance()
                     :                                     $r->deposit(),
         rental   => $r,

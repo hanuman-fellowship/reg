@@ -34,6 +34,7 @@ __PACKAGE__->add_columns(qw/
     flight_num
     flight_time
     cost
+    type
     comment
     paid_date
     sent_date

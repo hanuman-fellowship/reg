@@ -134,7 +134,7 @@ sub pay_balance : Local {
         return;
     }
     stash($c,
-        message  => payment_warning($c),
+        message  => payment_warning('mmc'),
         person => model($c, 'Person')->find($person_id),
         xaccounts => [
             model($c, 'XAccount')->search(
