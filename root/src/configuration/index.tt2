@@ -42,4 +42,5 @@ p {
 [% END %]
 <a href=/user/profile>User Profile</a><p>
 <a href=/user/list>Users</a><p>
+<a target=_blank href=http://www.mountmadonna.org/cgi-bin/admin>Web Administration</a><p>
 </ul>
