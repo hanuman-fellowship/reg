@@ -10,7 +10,7 @@
 
 <tr>
 <th align=right>What</th>
-<td><input type=text name=what value=[% charge.what %] size=40></td>
+<td><input type=text name=what value="[% charge.what %]" size=40></td>
 </tr>
 
 <tr>
