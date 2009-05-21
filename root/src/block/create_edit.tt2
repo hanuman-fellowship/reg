@@ -1,5 +1,8 @@
 <h2>Block</h2>
-<form name=form action=/block/[% form_action %]>
+<form name=form
+      action=/block/[% form_action %]
+      method=post
+>
 <ul>
 <table cellpadding=3 border=0>
 
