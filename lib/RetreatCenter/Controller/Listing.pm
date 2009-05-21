@@ -443,6 +443,7 @@ sub meal_list : Local {
 
         my $r_start = $r->date_start_obj;
         my $r_end   = $r->date_end_obj;
+        my $mmi_prog = $r->program->school() != 0;
 
         # optimizations???
         # have a $n = day number?  so $d++; $n++; and then 'if lunch($n)'
@@ -451,7 +452,7 @@ sub meal_list : Local {
             $d8 = $d->as_d8();
             add('breakfast') if $d != $r_start;
             add('lunch')     if $d != $r_start && lunch($d);
-            add('dinner')    if $d != $r_end;
+            add('dinner')    if $d != $r_end || $mmi_prog;
         }
     }
     RENTAL:
