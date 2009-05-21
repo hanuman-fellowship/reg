@@ -16,6 +16,9 @@ use Date::Simple qw/
     date
     today
 /;
+use Time::Simple qw/
+    get_time
+/;
 use Global qw/
     %string
 /;
@@ -26,6 +29,20 @@ sub index : Private {
     $c->forward('list');
 }
 
+#
+# who is doing this?  and what's the current date/time?
+#
+sub _get_now {
+    my ($c) = @_;
+
+    return
+        user_id  => $c->user->obj->id,
+        the_date => tt_today($c)->as_d8(),
+        time     => get_time()->t24()
+        ;
+    # we return an array of 6 values perfect
+    # for passing to a DBI insert/update.
+}
 #
 # show future blocks
 #
@@ -49,6 +66,8 @@ sub list : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    # vacate first - config
+
     model($c, 'Block')->find($id)->delete();
     Global->init($c, 1);
     $c->response->redirect($c->uri_for('/block/list'));
@@ -56,6 +75,7 @@ sub delete : Local {
 
 my %P;
 my @mess;
+my $edate1;
 sub _get_data {
     my ($c) = @_;
 
@@ -92,15 +112,21 @@ sub _get_data {
         push @mess, "Missing End Date";
     }
     else {
+        Date::Simple->relative_date(date($P{sdate}));
         my $dt = date($P{edate});
+        Date::Simple->relative_date();
         if ($dt) {
             $P{edate} = $dt->as_d8();
+            $edate1 = ($dt-1)->as_d8();
         }
         else {
             push @mess, "Invalid End Date: $P{edate}";
         }
     }
-    if ($P{nbeds} !~ m{^\d+$}) {
+    if (! @mess && $P{sdate} > $P{edate}) {
+        push @mess, "Start date must be before the End date";
+    }
+    if ($P{nbeds} !~ m{^\d+$} && $P{nbeds} > 0) {
         push @mess, "Invalid Number of Beds: $P{nbeds}";
     }
     if (empty($P{reason})) {
@@ -126,7 +152,16 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
     my $block = model($c, 'Block')->find($id);
-    $block->update(\%P);
+
+    # if nothing changed - do nothing
+    # see if new space is available.
+    # vacate old, reconfig new
+    # else give error
+
+    $block->update({
+        %P,
+        _get_now($c),
+    });
     Global->init($c, 1);
     $c->response->redirect($c->uri_for("/block/list"));
 }
@@ -143,7 +178,39 @@ sub create_do : Local {
 
     _get_data($c);
     return if @mess;
-    model($c, 'Block')->create(\%P);
+    #
+    # is the space actually available?
+    # search for exceptions
+    #
+    my $s = "< cur + $P{nbeds}";
+    my @config = model($c, 'Config')->search({
+        house_id => $P{house_id},
+        the_date => { -between => [ $P{sdate}, $edate1 ] },
+        curmax   => \$s,
+    });
+    if (@config) {
+        error($c,
+            'That space is not entirely free.',
+            'gen_error.tt2',    
+        );
+        return;
+    }
+    
+    model($c, 'Block')->create({
+        %P,
+        _get_now($c),
+    });
+
+    my $t = "cur + $P{nbeds}";
+    model($c, 'Config')->search({
+        house_id => $P{house_id},
+        the_date => { -between => [ $P{sdate}, $edate1 ] },
+    })->update({
+        cur => \$t,
+        sex => 'B', #???
+    });
+    # sex attr???  B or leave as is?
+    #
     $c->response->redirect($c->uri_for("/block/list/"));
 }
 

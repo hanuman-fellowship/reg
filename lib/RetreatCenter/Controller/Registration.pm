@@ -3477,7 +3477,7 @@ sub who_is_there : Local {
         return;
     }
     #
-    # it must be one or more registrations
+    # it must be one or more registrations - or blocks
     #
     # the end date is strictly less because
     # we reserve housing up to the night before their end date.
@@ -3497,7 +3497,12 @@ sub who_is_there : Local {
             order_by => [qw/ person.last person.first /],
         }
     );
-    if (! @regs) {
+    my @blocks = model($c, 'Block')->search({
+        house_id   => $house_id,
+        sdate => { '<=', $the_date },
+        edate => { '>',  $the_date },
+    });
+    if (! @regs && ! @blocks) {
         $c->res->output("Unknown");     # shouldn't happen
         return;
     }
@@ -3544,6 +3549,17 @@ sub who_is_there : Local {
     }
     $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.
                                 # can't use &apos; :( why?
+    for my $b (@blocks) {
+        my $nbeds = $b->nbeds();
+        my $pl = ($nbeds == 1)? "": "s";
+        $reg_names .= "<tr><td colspan=2>"
+                   .  "<a target=happening href=/block/update/"
+                   .  $b->id()
+                   .  ">$nbeds bed$pl blocked</td><td>"
+                   .  $b->reason()
+                   .  "</a></td></tr>"
+                   ;
+    }
     $c->res->output("<center>"
                    . $house_name_of{$house_id}
                    . "</center>"
