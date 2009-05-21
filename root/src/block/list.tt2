@@ -26,6 +26,9 @@ Start&nbsp;<input type=text name=start size=10>&nbsp;<input type=submit value="G
     <td>[% b.edate_obj %]</td>
     <td align=center>[% b.nbeds %]</td>
     <td>[% b.reason %]</td>
+    <td>[% b.user.username %]</td>
+    <td>[% b.the_date_obj %]</td>
+    <td>[% b.time_obj %]</td>
     </tr>
 [% END %]
 </table>
