@@ -1017,6 +1017,17 @@ sub access_denied : Private {
 my @programs;
 my %except;
 
+sub _pub_err {
+    my ($c, $msg, $chdir) = @_;
+
+    chdir ".." if $chdir;
+    stash($c,
+        mess     => $msg,
+        template => "program/pub_error.tt2",
+    );
+    return;
+}
+
 #
 # shall we provide some entertainment while
 # the ftp'ing is happening???  how to do that?
@@ -1065,7 +1076,7 @@ sub publish : Local {
     for my $p (@programs) {
         my $fname = $p->fname();
         open my $out, ">", "gen_files/$fname"
-            or die "cannot create $fname: $!\n";
+            or return _pub_err($c, "cannot create $fname: $!");
         my $copy = $p->template_src();
         $copy =~ s{$tag_regexp}{
             $except{$p->id}{$1} || $p->$1()
@@ -1143,7 +1154,7 @@ sub publish : Local {
     my $s;
 
     open my $out, ">", "gen_files/events.html"
-        or die "cannot create events.html: $!\n";
+        or return _pub_err($c, "cannot create events.html: $!");
     $s = slurp "events";
     $s =~ s/<!--\s*T\s+eventlist.*-->/$events/;
     $s =~ s/$tag_regexp/ RetreatCenterDB::Program->$1() /xge;
@@ -1152,7 +1163,7 @@ sub publish : Local {
 
     undef $out;
     open $out, ">", "gen_files/programs.html"
-        or die "cannot create programs.html: $!\n";
+        or return _pub_err($c, "cannot create programs.html: $!");
     $s = slurp "programs";
     $s =~ s/<!--\s*T\s+programlist.*-->/$programs/;
     $s =~ s/$tag_regexp/ RetreatCenterDB::Program->$1() /xge;
@@ -1198,11 +1209,11 @@ sub publish : Local {
     # or whereever Global says, that is...
     #
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to ...";    # not die???
+        or return _pub_err($c, "cannot connect to ...");
     $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
+        or return _pub_err($c, "cannot login: " . $ftp->message);
     $ftp->cwd($string{ftp_dir})
-        or die "cannot cwd ", $ftp->message; # not die???
+        or return _pub_err($c, "cannot cwd: " . $ftp->message);
     $ftp->cwd($string{ftp_dir2});
     for my $f ($ftp->ls()) {
         $ftp->delete($f) if $f ne 'pics';
@@ -1220,19 +1231,19 @@ sub publish : Local {
             $ftp->mkdir("../$f");
             for my $hf (<$f/*.html>) {
                 $ftp->put($hf, "../$hf")
-                    or die "cannot put $hf to ../$hf";
+                    or return _pub_err($c, "cannot put $hf to ../$hf", 1);
             }
             $ftp->mkdir("../$f/pics");
             for my $p (<$f/pics/*>) {
                 $ftp->put($p, "../$p")
-                    or die "cannot put $p to ../$p";
+                    or return _pub_err($c, "cannot put $p to ../$p", 1);
             }
             $ftp->put("$f/regtable", "../$f/regtable")
-                    or die "cannot put $f/regtable to ../$f/regtable";
+                    or return _pub_err($c, "cannot put $f/regtable to ../$f/regtable", 1);
         }
         else {
             $ftp->put($f)
-                or die "cannot put $f: " . $ftp->message; # not die???
+                or return _pub_err($c, "cannot put $f: " . $ftp->message, 1);
         }
     }
     $ftp->quit();
@@ -1249,14 +1260,14 @@ sub publish_pics : Local {
 
     Global->init($c);
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to ...";    # not die???
+        or return _pub_err($c, "cannot connect to ...");
     $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
+        or return _pub_err($c, "cannot login: " . $ftp->message);
     #
     # this assumes pics/ is there...
     #
     $ftp->cwd("$string{ftp_dir}/$string{ftp_dir2}/pics")
-        or die "cannot cwd ", $ftp->message; # not die???
+        or return _pub_err($c, "cannot cwd " . $ftp->message);
     for my $f ($ftp->ls()) {
         $ftp->delete($f);
     }
@@ -1264,7 +1275,7 @@ sub publish_pics : Local {
     chdir "gen_files/pics";
     for my $f (<*.jpg>) {
         $ftp->put($f)
-            or die "cannot put $f"; # not die???
+            or return _pub_err($c, "cannot put $f", 1);
     }
     $ftp->quit();
     chdir "../..";
