@@ -5,5 +5,11 @@ create table block (
     sdate text,
     edate text,
     nbeds integer,
-    reason text
+    npeople integer,
+    reason text,
+    comment text,
+    allocated text,
+    user_id integer,        -- foreign key to user
+    the_date text,
+    time text
 );

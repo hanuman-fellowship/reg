@@ -324,8 +324,11 @@ sub lunch {
 my (@meals, @detls);
 my ($d8, $info, $npeople, $details);
 sub add {
-    my ($meal) = @_;
-    $meals[$d8]{$meal}++;
+    my ($meal, $n) = @_;
+    $n ||= 1;           # !!!??? amazing.   put a space between || and =
+                        # and all kinds of syntax errors are produced.
+                        # hard to find the origin.
+    $meals[$d8]{$meal} += $n;
     push @{$detls[$d8]{$meal}}, $info if $details;
 }
 sub sum {
@@ -354,10 +357,17 @@ sub detail_disp {
 # very tricky.  Pay Attention.
 # we consider the date range of the requested meal list.
 # breakfast does not happen on the arrival date - programs and rentals.
-# program lunches do not happen on the first day of the program
-# even if that day is selected.
-# rental lunches CAN happen on the first day - depending on the start time.
-# dinner does not happen on the departure date - programs and rentals.
+# program lunches could happen on the first day of the program
+#     if that day's lunch is selected (which it _could_ be if the program
+#     _start_ time is before 1:00 pm).
+# similarily rental lunches CAN happen on the first
+#   day - depending on the start time.
+# dinner does not happen on the departure date - for programs and rentals.
+# but for MMI _courses_ dinner IS served on the last day.
+# people in DCM programs do not eat at all.
+# PRs always have lunch except for their arrival day.
+# Blocks with people in them will eat as if they were in a PR
+#   for the date range.
 #
 sub meal_list : Local {
     my ($self, $c) = @_;
@@ -420,6 +430,12 @@ sub meal_list : Local {
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
                   });
+    my @blocks  = model($c, 'Block')->search({
+                      sdate   => { '<=' => $end_d8 },
+                      edate   => { '>=' => $start_d8 },
+                      npeople => { '>'  => 0 },
+                      allocated => 'yes',
+                  });
 
     @meals = ();   # hashrefs from $start to $end
     @detls = ();   # names, sources
@@ -436,23 +452,50 @@ sub meal_list : Local {
         ($event_start, $lunches)  = get_lunch($c, $r->program_id, 'Program');
         $len_lunches = length($lunches);
 
-        my $ol = $dr->overlap(DateRange->new($r->date_start_obj,
-                                             $r->date_end_obj));
+        my $r_start = $r->date_start_obj;
+        my $r_end   = $r->date_end_obj;
+
+        my $ol = $dr->overlap(DateRange->new($r_start,
+                                             $r_end   ));
         my $sd = $ol->sdate;
         my $ed = $ol->edate;
 
-        my $r_start = $r->date_start_obj;
-        my $r_end   = $r->date_end_obj;
-        my $mmi_prog = $r->program->school() != 0;
-
+        my $prog = $r->program();
+        my $mmi_prog = $prog->school() != 0;
+        my $PR = $prog->name() =~ m{personal\s*retreat}i;
         # optimizations???
         # have a $n = day number?  so $d++; $n++; and then 'if lunch($n)'
+        # then not so much date arithmetic!
 
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
             add('breakfast') if $d != $r_start;
-            add('lunch')     if $d != $r_start && lunch($d);
+            add('lunch')     if $d != $r_start && (lunch($d) || $PR);
             add('dinner')    if $d != $r_end || $mmi_prog;
+        }
+    }
+    for my $bl (@blocks) {
+        my $npeople = $bl->npeople();
+        my $bl_start = $bl->sdate_obj();
+        my $bl_end   = $bl->edate_obj();
+        my $ol = $dr->overlap(DateRange->new($bl_start,
+                                             $bl_end   ));
+        if ($details) {
+            $info = [
+                        "$npeople "
+                        . (($npeople == 1)? "person"
+                           :                "people"),
+                        "block - " . $bl->reason()
+                    ]
+                    ;
+        }
+        my $sd = $ol->sdate;
+        my $ed = $ol->edate;
+        for ($d = $sd; $d <= $ed; ++$d) {
+            $d8 = $d->as_d8();
+            add('breakfast', $npeople) if $d != $bl_start;
+            add('lunch',     $npeople) if $d != $bl_start;
+            add('dinner',    $npeople) if $d != $bl_end;
         }
     }
     RENTAL:
@@ -944,6 +987,25 @@ sub housekeeping : Local {
                 prefetch => [qw/ house /],   
             }
         );
+    push @arriving_houses,
+        grep {
+            !$seen{$_->id}++
+        }
+        map {
+            $_->house
+        }
+        model($c, 'Block')->search(
+            {
+                sdate        => $d8,
+                npeople      => { '>' => 0 },
+                'house.tent' => $bool_tent,
+                allocated    => 'yes',
+            },
+            {
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
+            }
+        );
     @arriving_houses =
         sort {
             $cluster_name{$a->cluster_id} cmp $cluster_name{$b->cluster_id}
@@ -987,6 +1049,24 @@ sub housekeeping : Local {
                     # the end date in RentalBooking is
                     # one less than edate in the Rental.
                     # this is different from Registrations.
+                'house.tent' => $bool_tent,
+            },
+            {
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
+            }
+        );
+    push @departing_houses,
+        grep {
+            !$seen{$_->id}++
+        }
+        map {
+            $_->house
+        }
+        model($c, 'Block')->search(
+            {
+                edate        => $d8,
+                npeople      => { '>' => 0 },
                 'house.tent' => $bool_tent,
             },
             {
@@ -1260,6 +1340,21 @@ sub field_plan : Local {
             else {
                 $beds{$ed} += $n;
             }
+        }
+    }
+    my @blocks  = model($c, 'Block')->search({
+                      sdate   => { '<=' => $end_d8 },
+                      edate   => { '>=' => $start_d8 },
+                      npeople => { '>'  => 0 },
+                  });
+    for my $bl (@blocks) {
+        my $ed = $bl->edate();
+        my $npeople = $bl->npeople();
+        if ($bl->house->tent()) {
+            $sites{$ed} += $npeople;
+        }
+        else {
+            $beds{$ed} += $npeople;
         }
     }
     $d = $start;

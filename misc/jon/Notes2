@@ -1304,3 +1304,6 @@ doc:
     6) what about PRs?
 
 doc: do not compute costs - and why.
+
+doc: to unmark someone as a leader of a program - but keep their registration
+    you need to delete and re-Add.

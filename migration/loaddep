@@ -15,11 +15,12 @@ $dbh->do("delete from deposit");
 #  cash
 #  chk
 #  credit
+#  online
 #  source
 #
 my $d_sql = "insert into deposit
 values (
-    ?, 2, ?, ?, '1700', ?, ?, ?, 'mmc'
+    ?, 2, ?, ?, '1700', ?, ?, ?, 0, 'mmc'
 )
 ";
 my $d_sth = $dbh->prepare($d_sql) or die "no prep deposit insert\n";
@@ -49,7 +50,8 @@ while (<$in>) {
                         $hash{date_end},
                         $hash{cash},
                         $hash{check},
-                        $hash{credit});
+                        $hash{credit},
+                       );
         %hash = ();
     }
 }

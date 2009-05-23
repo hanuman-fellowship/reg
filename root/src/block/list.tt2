@@ -1,34 +1,33 @@
 <h2>Blocks</h2>
 <table cellpadding=3>
+<form name=form action=/block/search>
 <tr>
 <td width=100 valign=center><a href=/block/create>Add</a></td>
 <td valign=center>
-<form name=form action=/block/search>
 Start&nbsp;<input type=text name=start size=10>&nbsp;<input type=submit value="Go">
-</form>
 </td></tr></table>
+</form>
 <p class=p2>
 <ul>
 <table cellpadding=5 border=0>
-<tr>
+<tr valign=bottom>
 <td></td>
 <th align=left>House</th>
 <th align=center>Start</th>
 <th align=center>End</th>
-<th align=center># Beds</th>
+<th align=center>#<br>Beds</th>
+<th align=center>#<br>People</th>
 <th align=left>Reason</th>
 </tr>
 [% FOREACH b IN blocks %]
     <tr>
-    <td>
-    <td>[% b.house.name %]</td>
+    <td>[% IF ! b.allocated %]<img src=/static/images/unhappy1.gif>[% END %]</td>
+    <td><a href=/block/view/[% b.id %]>[% b.house.name %]</a></td>
     <td>[% b.sdate_obj %]</td>
     <td>[% b.edate_obj %]</td>
     <td align=center>[% b.nbeds %]</td>
+    <td align=center>[% b.npeople %]</td>
     <td>[% b.reason %]</td>
-    <td>[% b.user.username %]</td>
-    <td>[% b.the_date_obj %]</td>
-    <td>[% b.time_obj %]</td>
     </tr>
 [% END %]
 </table>

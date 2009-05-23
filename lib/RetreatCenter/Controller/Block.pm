@@ -53,24 +53,64 @@ sub list : Local {
         pg_title => "Blocks",
         blocks => [ model($c, 'Block')->search(
             {
-                sdate => { '>=' => today()->as_d8() },
+                edate => { '>=' => today()->as_d8() },
             },
             {
-                order_by => 'sdate'
+                order_by => 'sdate',
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
             }
         ) ],
         template => "block/list.tt2",
     );
 }
 
+sub view : Local {
+    my ($self, $c, $block_id) = @_;
+
+    my $block = model($c, 'Block')->find($block_id);
+    stash($c,
+        pg_title => 'Block',
+        block    => $block,
+        template => "block/view.tt2",
+        daily_pic_date => $block->sdate,
+    );
+}
+
 sub delete : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $block_id) = @_;
 
-    # vacate first - config
-
-    model($c, 'Block')->find($id)->delete();
-    Global->init($c, 1);
+    my $block = model($c, 'Block')->find($block_id);
+    _vacate($c, $block);
+    $block->delete();
     $c->response->redirect($c->uri_for('/block/list'));
+}
+
+sub _vacate {
+    my ($c, $block) = @_;
+
+    my $hmax = $block->house->max();
+    my $edate1 = ($block->edate_obj() -1)->as_d8();
+    for my $cf (model($c, 'Config')->search({
+                    house_id => $block->house_id(),
+                    the_date => { -between => [ $block->sdate(), $edate1 ] },
+                })
+    ) {
+        my $nleft = $cf->cur() - $block->nbeds();
+        my @opts = ();
+        if ($nleft == 0) {
+            @opts = (
+                curmax     => $hmax,
+                sex        => 'U',
+                program_id => 0,
+            );
+
+        }
+        $cf->update({
+            cur => $nleft,
+            @opts,
+        });
+    }
 }
 
 my %P;
@@ -80,12 +120,16 @@ sub _get_data {
     my ($c) = @_;
 
     %P = %{ $c->request->params() };
+    for my $k (keys %P) {
+        $P{$k} = trim($P{$k});
+    }
     @mess = ();
+    my $house;
     if (empty($P{h_name})) {
         push @mess, "Missing House Name";
     }
     else {
-        my ($house) = model($c, 'House')->search({
+        ($house) = model($c, 'House')->search({
             name => $P{h_name},
         });
         if (! $house) {
@@ -126,8 +170,21 @@ sub _get_data {
     if (! @mess && $P{sdate} > $P{edate}) {
         push @mess, "Start date must be before the End date";
     }
-    if ($P{nbeds} !~ m{^\d+$} && $P{nbeds} > 0) {
-        push @mess, "Invalid Number of Beds: $P{nbeds}";
+    my $hmax = $house->max();
+    if (empty($P{nbeds})) {
+        $P{nbeds} = $hmax;
+    }
+    elsif (! ($P{nbeds} =~ m{^\d+$} && $P{nbeds} > 0)) {
+        push @mess, "Invalid # of Beds: $P{nbeds}";
+    }
+    elsif ($P{nbeds} > $hmax) {
+        push @mess, "There are not $P{nbeds} beds in " . $house->name();
+    }
+    if (empty($P{npeople})) {
+        $P{npeople} = 0;
+    }
+    elsif (! ($P{npeople} =~ m{^\d$} && $P{npeople} <= $P{nbeds})) {
+        push @mess, "Invalid # of People: $P{npeople}";
     }
     if (empty($P{reason})) {
         push @mess, "Missing Reason";
@@ -151,19 +208,33 @@ sub update_do : Local {
 
     _get_data($c);
     return if @mess;
+
     my $block = model($c, 'Block')->find($id);
 
-    # if nothing changed - do nothing
-    # see if new space is available.
-    # vacate old, reconfig new
-    # else give error
+    # we first vacate the old house - assuming it is allocated.
+    # If we don't vacate first it is too tricky to
+    # move a block of 4 days up by one day, yes?
+    # because there would be an overlap with itself.
+    #
+    _vacate($c, $block) if $block->allocated();
 
-    $block->update({
-        %P,
-        _get_now($c),
-    });
-    Global->init($c, 1);
-    $c->response->redirect($c->uri_for("/block/list"));
+    if (_available($c)) {
+        $block->update({
+            %P,
+            allocated => 'yes',
+            _get_now($c),
+        });
+        $c->response->redirect($c->uri_for("/block/list"));
+    }
+    else {
+        # some error occurred.  space not available.
+        # an error will be reported when this subroutine returns.
+        # mark the block as unallocated since we _did_ vacate it.
+        #
+        $block->update({
+            allocated => '',
+        });
+    }
 }
 
 sub create : Local {
@@ -178,10 +249,28 @@ sub create_do : Local {
 
     _get_data($c);
     return if @mess;
-    #
-    # is the space actually available?
-    # search for exceptions
-    #
+    if (_available($c)) {
+        model($c, 'Block')->create({
+            %P,
+            allocated => 'yes',
+            _get_now($c),
+        });
+        $c->response->redirect($c->uri_for("/block/list/"));
+    }
+}
+
+#
+# is the space actually available?
+# consult %P and $edate1 for the specifics
+#
+# search for exceptions
+#
+# if it is available actually reserve it by modifying
+# the config records.
+#
+sub _available {
+    my ($c) = @_;
+
     my $s = "< cur + $P{nbeds}";
     my @config = model($c, 'Config')->search({
         house_id => $P{house_id},
@@ -193,25 +282,26 @@ sub create_do : Local {
             'That space is not entirely free.',
             'gen_error.tt2',    
         );
-        return;
+        return 0;
     }
-    
-    model($c, 'Block')->create({
-        %P,
-        _get_now($c),
-    });
-
-    my $t = "cur + $P{nbeds}";
-    model($c, 'Config')->search({
-        house_id => $P{house_id},
-        the_date => { -between => [ $P{sdate}, $edate1 ] },
-    })->update({
-        cur => \$t,
-        sex => 'B', #???
-    });
-    # sex attr???  B or leave as is?
-    #
-    $c->response->redirect($c->uri_for("/block/list/"));
+    for my $cf (model($c, 'Config')->search({
+                    house_id => $P{house_id},
+                    the_date => { -between => [ $P{sdate}, $edate1 ] },
+                })
+    ) {
+        my @opt = ();
+        if ($cf->cur() == 0) {
+            @opt = (sex => 'B');
+        }
+        else {
+            # leave sex at M or F or X.
+        }
+        $cf->update({
+            cur => $cf->cur() + $P{nbeds},
+            @opt,
+        });
+    }
+    return 1;
 }
 
 sub access_denied : Private {
@@ -228,32 +318,25 @@ sub search : Local {
     my $start = $c->request->param('start');
     $start = date($start);
     if ($start) {
-        push @cond, pickup_date => { '>=' => $start->as_d8() };
+        push @cond, sdate => { '>=' => $start->as_d8() };
     }
-    my $end = $c->request->param('end');
-    $end = date($end);
-    if ($end) {
-        push @cond, pickup_date => { '<=' => $end->as_d8() };
-    }
-    my $name = $c->request->param('name');
     if (! @cond) {
         # same as list
         #
-        push @cond, -or => [
-                        pickup_date => { '>=' => today()->as_d8() },
-                        paid_date   => '',
-                    ];
+        $c->response->redirect($c->uri_for('/block/list'));
+        return;
     }
     stash($c,
-        pg_title => "Block",
+        pg_title => "Blocks",
         blocks    => [ model($c, 'Block')->search(
             {
                 @cond,
             },
             {
-                order_by => 'pickup_date, airport, flight_time',
-                join     => [qw/ blockr /],
-                prefetch => [qw/ blockr /],   
+                order_by => 'sdate',
+                join     => [qw/ house /],
+                prefetch => [qw/ house /],   
+                rows     => 10,
             }
         ) ],
         template => "block/list.tt2",

@@ -1661,7 +1661,18 @@ sub _view {
                    - date($sdate)->month()
                    + 1;
     }
+    #
+    # is this person a leader or assistant of this program?
+    #
+    my $pers_label = "Person";
+    if ($reg->leader_assistant()) {
+        $pers_label = $reg->person->leader->assistant()? "Assistant"
+                      :                                  "Leader"
+                      ;
+        $pers_label = "<span class=lead_asst>$pers_label</span>";
+    }
     stash($c,
+        pers_label     => $pers_label,
         online         => scalar(@files),
         share          => $share,
         non_pr         => ! $PR,
@@ -3501,6 +3512,7 @@ sub who_is_there : Local {
         house_id   => $house_id,
         sdate => { '<=', $the_date },
         edate => { '>',  $the_date },
+        allocated => 'yes',
     });
     if (! @regs && ! @blocks) {
         $c->res->output("Unknown");     # shouldn't happen
@@ -3552,12 +3564,12 @@ sub who_is_there : Local {
     for my $b (@blocks) {
         my $nbeds = $b->nbeds();
         my $pl = ($nbeds == 1)? "": "s";
-        $reg_names .= "<tr><td colspan=2>"
-                   .  "<a target=happening href=/block/update/"
+        $reg_names .= "<tr><td>"
+                   .  "<a target=happening href=/block/view/"
                    .  $b->id()
-                   .  ">$nbeds bed$pl blocked</td><td>"
+                   .  ">$nbeds bed$pl blocked</a></td><td>"
                    .  $b->reason()
-                   .  "</a></td></tr>"
+                   .  "</td></tr>"
                    ;
     }
     $c->res->output("<center>"

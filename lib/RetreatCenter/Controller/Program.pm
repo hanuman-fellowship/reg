@@ -832,7 +832,7 @@ sub leader_update_do : Local {
             # oh well.
             # in a similar way to recompute someone's finances
             # you have to vacate and then rehouse them.
-            # oh well.  -  later.
+            # oh well.  -  later???
             # 
         }
     }

@@ -3,6 +3,9 @@ use warnings;
 package RetreatCenterDB::Block;
 use base qw/DBIx::Class/;
 
+use Util qw/
+    ptrim
+/;
 use Date::Simple qw/
     date
 /;
@@ -18,7 +21,10 @@ __PACKAGE__->add_columns(qw/
     sdate
     edate
     nbeds
+    npeople
     reason
+    comment
+    allocated
     user_id
     the_date
     time
@@ -45,6 +51,10 @@ sub the_date_obj {
 sub time_obj {
     my ($self) = @_;
     return get_time($self->time()) || "";
+}
+sub comment_tr {
+    my ($self) = @_;
+    return ptrim($self->comment());
 }
 
 1;

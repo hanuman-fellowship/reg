@@ -59,6 +59,28 @@ while (my ($house_id) = $getrental_sth->fetchrow_array()) {
     push @house_ids, $house_id;
 }
 
+#
+# blocks
+#
+my $getblock_sth = $dbh->prepare("
+    select distinct house_id
+    from block
+    where npeople != 0
+      and edate = $cur_date
+      and allocated = 'yes'
+");
+$getblock_sth->execute();
+while (my ($house_id) = $getblock_sth->fetchrow_array()) {
+    push @house_ids, $house_id;
+}
+
+#
+# a block and a registration might leave on the same
+# day - so eliminate dups.
+#
+my %seen = ();
+@house_ids = grep { !$seen{$_}++ } @house_ids;
+
 my $ins_sth = $dbh->prepare("
     insert into make_up (
         house_id, date_vacated, date_needed
@@ -67,16 +89,24 @@ my $ins_sth = $dbh->prepare("
         ?, ?, ?
     );
 ");
-# can I combine these two sql statments?
+# can I combine these sql statments?
 # not sure.  the same column name 'date_start'
 # in the two tables makes for confusion.
 # so ...
+# and now we have blocks - sdate
 #
 my $nextreg_sth = $dbh->prepare("
     select date_start
     from registration
     where house_id = ? and date_end > $cur_date
     order by date_start
+    limit 1
+");
+my $nextblock_sth = $dbh->prepare("
+    select sdate
+    from block
+    where house_id = ? and edate > $cur_date
+    order by sdate
     limit 1
 ");
 my $nextrental_sth = $dbh->prepare("
@@ -90,7 +120,7 @@ my $nextrental_sth = $dbh->prepare("
 # eliminate the ones already there in the make up list.
 @house_ids = grep { !$already{$_} } @house_ids;
 
-my ($next, $next_reg_date, $next_rental_date);
+my ($next, $next_reg_date, $next_rental_date, $next_block_date);
 for my $house_id (@house_ids) {
 
     # when is this house next needed?
@@ -99,6 +129,12 @@ for my $house_id (@house_ids) {
     ($next_reg_date) = $nextreg_sth->fetchrow_array();
     if ($next_reg_date) {
         $next = $next_reg_date;
+    }
+
+    $nextblock_sth->execute($house_id);
+    ($next_block_date) = $nextblock_sth->fetchrow_array();
+    if ($next_block_date && $next_block_date < $next) {
+        $next = $next_block_date;
     }
 
     $nextrental_sth->execute($house_id);
