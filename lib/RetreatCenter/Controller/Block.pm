@@ -229,11 +229,26 @@ sub update_do : Local {
     else {
         # some error occurred.  space not available.
         # an error will be reported when this subroutine returns.
-        # mark the block as unallocated since we _did_ vacate it.
+        # restore the block as it was before we vacated it
+        # just in case the person abandons the edit.
         #
-        $block->update({
-            allocated => '',
-        });
+        $P{house_id} = $block->house_id();
+        $P{sdate}    = $block->sdate();
+        $edate1      = ($block->edate_obj() - 1)->as_d8();
+        $P{nbeds}    = $block->nbeds();
+
+        if (_available($c)) {
+            # housing restored
+        }
+        else {
+            # something happened in the split second
+            # between vacating and re-occupying
+            # very rare - but COULD happen, I guess.
+            #
+            $block->update({
+                allocated => '',
+            });
+        }
     }
 }
 
