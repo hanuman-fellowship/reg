@@ -666,7 +666,7 @@ sub mkpartner : Local {
     $c->response->redirect($c->uri_for("/person/search"));
 }
 
-# show all future (and current) programs
+# show all future (and current - up to today) programs
 # in alphabetical order and allow one to be chosen.
 # if one of your roles is mmi_admin include
 # mmi programs otherwise not.
@@ -686,7 +686,7 @@ sub register1 : Local {
     }
     my @programs = model($c, 'Program')->search(
         {
-            edate  => { '>'       => $today               },
+            edate  => { '>='      => $today               },
             name   => { -not_like => '%personal%retreat%' },
             @cond,
         },
