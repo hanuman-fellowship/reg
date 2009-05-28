@@ -619,11 +619,13 @@ sub stale : Local {
     if ($upload) {
         my @emails = $upload->slurp =~ m{[^'"\s]+\@[^'"\s]+}g;
         $n = @emails;
-        model($c, 'Person')->search({
-            email => { -in => \@emails },
-        })->update({
-            email => '',
-        });
+        if (@emails) {
+            model($c, 'Person')->search({
+                email => { -in => \@emails },
+            })->update({
+                email => '',
+            });
+        }
     }
     $c->stash->{mess} = "$n emails purged.";
     $c->stash->{template} = "gen_message.tt2";
@@ -1230,9 +1232,11 @@ sub make_up_do : Local {
         $hid =~ s{^h}{};
         push @ids, $hid;
     }
-    model($c, 'MakeUp')->search({
-        house_id => { -in => \@ids },
-    })->delete();
+    if (@ids) {
+        model($c, 'MakeUp')->search({
+            house_id => { -in => \@ids },
+        })->delete();
+    }
     if ($c->check_user_roles('field_staff')) {
         $c->stash->{template} = "listing/field.tt2";
     }

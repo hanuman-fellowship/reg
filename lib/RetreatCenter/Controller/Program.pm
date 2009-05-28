@@ -514,7 +514,7 @@ sub list : Local {
     }
     else {
         @cond = (
-            level => { 'not in'  => [qw/  D C M  /] },
+            level => { -not_in  => [qw/  D C M  /] },
         );
         if (! $c->check_user_roles('mmi_admin')) {
             push @cond, (school => 0);      # only MMC no MMI

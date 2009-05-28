@@ -2261,16 +2261,24 @@ sub _get_cluster_groups {
     # what distinct cluster ids are already taken by
     # these overlapping programs or rentals?
     #
-    my %cids = 
-        map {
-            $_->cluster_id() => 1
+    my %cids;
+    # better way to do this???
+    if (@ol_prog_ids) {
+        for my $pc (model($c, 'ProgramCluster')->search({
+                        program_id => { -in => \@ol_prog_ids },
+                    })
+        ) {
+            $cids{$pc->cluster_id()} = 1;
         }
-        model($c, 'ProgramCluster')->search({
-            program_id => { -in => \@ol_prog_ids },
-        }),
-        model($c, 'RentalCluster')->search({
-            rental_id  => { -in => \@ol_rent_ids },
-        });
+    }
+    if (@ol_rent_ids) {
+        for my $rc (model($c, 'RentalCluster')->search({
+                        rental_id  => { -in => \@ol_rent_ids },
+                    })
+        ) {
+            $cids{$rc->cluster_id()} = 1;
+        }
+    }
     #
     # and all this leaves what clusters as available?
     #
