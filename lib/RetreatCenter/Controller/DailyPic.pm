@@ -233,6 +233,13 @@ sub show : Local {
     print {$imf} $dp->png;
     close $imf;
     my $image = $c->uri_for("/static/images/$im_name");
+    my $oakspic = "";
+    if ($type eq 'outdoors') {
+        $oakspic = "<img border=0 src="
+                  . $c->uri_for("/static/images/oaks.gif")
+                  . ">"
+                  ;
+    }
     my $back = $dt - 1;
     # how far back can we go???
     #if ($back < $today) {
@@ -405,6 +412,7 @@ $links
 </form>
 <img height=$resize_height src=$image border=0 usemap=#dailypic>
 $event_table
+$oakspic
 <map name=dailypic>
 $dp_map</map>
 </body>
