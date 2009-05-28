@@ -49,6 +49,9 @@ our @EXPORT_OK = qw/
     mmi_glnum
     accpacc
     highlight
+    other_reserved_cids
+    PR_other_reserved_cids
+    reserved_clusters
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1259,6 +1262,111 @@ sub highlight {
     my ($s) = @_;
     return ($s =~ m{TBD|\?|\*}? "<span class=highlight>$s</span>"
             :                   $s                               );
+}
+
+sub other_reserved_cids {
+    my ($c, $event) = @_;
+
+    my $id    = $event->id();
+    my $sdate = $event->sdate();
+    my $edate = $event->edate();
+
+    my @optp = ();
+    my @optr = ();
+    if ($event->event_type() eq 'program') {
+        @optp = (id => { '!=' => $id });
+    }
+    else {
+        @optr = (id => { '!=' => $id });
+    }
+
+    # ol = overlapping
+    my @ol_prog_ids =
+        map {
+            $_->id()
+        }
+        model($c, 'Program')->search({
+            @optp,
+            level => { -not_in => [qw/ D C M /], },
+            name  => { -not_like => '%personal%retreat%' },
+            sdate => { '<' => $edate },       # and it overlaps
+            edate => { '>' => $sdate },       # with this program
+        });
+    my @ol_rent_ids =
+        map {
+            $_->id()
+        }
+        model($c, 'Rental')->search({
+            @optr,
+            sdate => { '<' => $edate },   # it overlaps
+            edate => { '>' => $sdate },   # with this program
+        });
+    return
+        map {
+            $_->cluster_id() => 1
+        }
+        model($c, 'ProgramCluster')->search({
+            program_id => { -in => \@ol_prog_ids },
+        }),
+        model($c, 'RentalCluster')->search({
+            rental_id  => { -in => \@ol_rent_ids },
+        });
+}
+
+#
+# could factor out common code with above sub???
+# but don't do too much refactoring - terribly refactored
+# code is quite unreadable and unmaintainable.
+#
+sub PR_other_reserved_cids {
+    my ($c, $date_start, $date_end) = @_;
+
+    # ol = overlapping
+    my @ol_prog_ids =
+        map {
+            $_->id()
+        }
+        model($c, 'Program')->search({
+            level => { -not_in => [qw/ D C M /], },
+            name  => { -not_like => '%personal%retreat%' },
+            sdate => { '<' => $date_end },       # and it overlaps
+            edate => { '>' => $date_start },     # with this PR registration
+        });
+    my @ol_rent_ids =
+        map {
+            $_->id()
+        }
+        model($c, 'Rental')->search({
+            sdate => { '<' => $date_end },       # it overlaps
+            edate => { '>' => $date_start },     # with this PR registration
+        });
+    return
+        map {
+            $_->cluster_id() => 1
+        }
+        model($c, 'ProgramCluster')->search({
+            program_id => { -in => \@ol_prog_ids },
+        }),
+        model($c, 'RentalCluster')->search({
+            rental_id  => { -in => \@ol_rent_ids },
+        });
+}
+
+sub reserved_clusters {
+    my ($c, $id, $type) = @_;
+    return map {
+               $_->cluster()
+           }
+           model($c, "${type}Cluster")->search(
+               {
+                   "${type}_id" => $id,
+               },
+               {
+                   prefetch => 'cluster',
+                   join     => 'cluster',
+                   order_by => 'cluster.name',
+               },
+           );
 }
 
 1;

@@ -1,0 +1,1 @@
+cat *timelog* >tl; tgr tl newReg; open newReg.png

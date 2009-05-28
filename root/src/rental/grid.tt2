@@ -1,0 +1,53 @@
+<ul>
+<h2>
+[% rental.name %] 
+<span style="font-size: 13pt">[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
+</span><br>
+Housing Assignment Grid
+</h2>
+<table cellpadding=5 border=1>
+<tr>
+<td colspan=2>&nbsp;</td>
+<th align=left width=300>Name</th>
+[% days %]
+</tr>
+[% FOR rb IN rental.rental_bookings %]
+    [% h = rb.house %]
+    [% max = h.max %]
+    [% i = 1 %]
+    [% WHILE i <= max %]
+        <tr>
+        [% IF i == 1 %]
+            <th rowspan=[% max %] align=center>[% h.name %]
+                <span style="font-weight: normal">
+                [% IF h.bath %] - b
+                [% ELSIF h.tent && h.center %] - c
+                [% ELSIF h.tent %] - o
+                [% END %]
+                </span>
+            </th>
+        [% END %]
+        <td align=right>[% i %]</td>
+        <td>&nbsp;</td>
+        [% n = 1 %]
+        [% WHILE n <= nnights %]
+            <td>&nbsp;</td>
+            [% n = n + 1 %]
+        [% END %]
+        </tr>
+        [% i = i + 1 %]
+    [% END %]
+[% END %]
+</table>
+<p class=p2>
+<ul>
+<p>
+<table>
+<tr><td>b</td><td> - bath</td></tr>
+<tr><td>c</td><td> - center tent</td></tr>
+<tr><td>o</td><td> - own tent</td></tr>
+</table>
+</ul>
+</ul>

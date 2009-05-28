@@ -21,7 +21,7 @@
 </tr>
 
 <tr>
-<th align=right>House Name</th>
+<th align=right>Room Name</th>
 <td><input type=text name=h_name value='[% block.house.name %]' size=15></td>
 </tr>
 

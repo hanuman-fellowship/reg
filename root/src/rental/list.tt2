@@ -10,18 +10,26 @@
 <tr>
 <td></td>       <!-- for mmc_does_reg marking -->
 <th align=left>Name</th>
-<th align=left>Start Date</th>
+<th align=left>Start</th>
+<th align=left>End</th>
 <th width=40>Sum</th>
 <th align=left>Status</th>
 </tr>
+[% class = 'fl_row1' %]
 [% FOREACH r IN rentals %]
-    <tr>
-    <td align=right>[% IF r.program_id %]Hybrid[% END %]</td>
+    <tr class=[% class %]>
+    <td align=right class='fl_row0'>[% IF r.program_id %]Hybrid[% END %]</td>
     <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
     <td>[% r.sdate_obj %]</td>
+    <td>[% r.edate_obj %]</td>
     <td align=center><a href=/summary/view/rental/[% r.summary_id %]>Sum</a></td>
     [% r.status_td(1) %]
     </tr>
+    [% IF class == 'fl_row0' %]
+        [% class = 'fl_row1' %]
+    [% ELSE %]
+        [% class = 'fl_row0' %]
+    [% END %]
 [% END %]
 </table>
 </ul>

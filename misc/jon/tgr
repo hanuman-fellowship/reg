@@ -1,0 +1,129 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $h = 600;
+my $w = 900;
+
+use lib "../../lib";
+use Date::Simple qw/
+    ymd
+    date
+/;
+use Time::Simple qw/
+    get_time
+/;
+use GD;
+
+my %m = qw(
+    Jan 1
+    Feb 2
+    Mar 3
+    Apr 4
+    May 5
+    Jun 6
+    Jul 7
+    Aug 8
+    Sep 9
+    Oct 10
+    Nov 11
+    Dec 12
+);
+
+my %tots;
+my $year;
+my $pic = pop @ARGV;
+if ($pic =~ m{timelog}) {
+    die "usage: tgr timelog ... out.png\n";
+}
+my @desc;
+for my $f (@ARGV) {
+    my $tot = 0;
+    open my $in, "<", $f or die "no $f\n";
+    LINE:
+    while (my $line = <$in>) {
+        next LINE if $line =~ m{^\s};
+        if ($line =~ m{^year (\d+)}) {
+            $year = $1;
+            next LINE;
+        }
+        if (my ($mon, $day, $times) = $line =~ m{^(...)\s+(\d+)\s*(.*)$}) {
+            if (! exists $m{$mon}) {
+                print "invalid month: $mon\n";
+                next LINE;
+            }
+            my $dt = ymd($year, $m{$mon}, $day)->as_d8();
+            my $tot = 0;
+            if ($times =~ m{^\s*(\D)\s+(.*)$}) {
+                push @desc, "$1 - $2";
+                $tots{$dt} = $1;
+                next LINE;
+            }
+            my @ranges = split m{\s*,\s*}, $times;
+            for my $r (@ranges) {
+                my ($start, $end) = split m{-}, $r;
+                my ($sh, $sm) = split /:/, $start;
+                my ($eh, $em) = split /:/, $end;
+                $eh += 12 if $eh < $sh;
+                $tot += (($eh*60+$em) - ($sh*60+$sm))/60;
+            }
+            $tots{$dt} += $tot;
+        }
+        else {
+            print "invalid line: $line\n";
+        }
+    }
+    close $in;
+}
+my $gtot = 0;
+my @dates = sort keys %tots;
+my $birth = date($dates[0]);
+my (@x, @gtot);
+DT:
+for my $d (@dates) {
+    my $n = date($d)-$birth;
+    if ($tots{$d} !~ m{^\d}) {
+        # we need placeholders
+        push @x, $n;
+        push @gtot, 0;
+        next DT;
+    }
+    my $tot = $tots{$d};
+    $gtot += $tot;
+    push @x, $n;
+    push @gtot, $gtot;
+}
+my $xmax = $x[-1];
+my $ymax = $gtot[-1];
+my $gd = GD::Image->new($w, $h);
+my $white = $gd->colorAllocate(255, 255, 255);
+my $black = $gd->colorAllocate(0, 0, 0);
+my $fmt = "%b %e, %Y";
+$gd->string(gdGiantFont, 100, 100, 
+            date($dates[0])->format($fmt) . " - "
+                .  date($dates[-1])->format($fmt),
+            $black);
+my $y = 110;
+my $incr = 20;
+for my $s (@desc) {
+    $y += $incr;
+    $gd->string(gdGiantFont, 100, $y, $s, $black);
+}
+my ($lastx, $lasty) = (0, $h);
+DATE:
+for my $d (0 .. $#dates) {
+    my $dt = $dates[$d];
+    my $x = $x[$d]*($w/$xmax);
+    if ($tots{$dt} !~ m{^\d}) {
+        # a note on this date
+        $gd->string(gdGiantFont, $x, $lasty, $tots{$dt}, $black);
+        next DATE;
+    }
+    my $y = $h-$gtot[$d]*($h/$ymax);
+    $gd->line($lastx, $lasty, $x, $y, $black);
+    $lastx = $x;
+    $lasty = $y;
+}
+open my $img, ">", "$pic.png" or die "no $pic.png";
+print {$img} $gd->png;
+close $img;

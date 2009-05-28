@@ -29,6 +29,7 @@ our @EXPORT_OK = qw/
     %string
     @clusters
     %clust_color
+    %cluster
     %houses_in
     %houses_in_cluster
     %house_name_of
@@ -39,6 +40,7 @@ our @EXPORT_OK = qw/
 
 our %string;
 our @clusters;
+our %cluster;
 our %clust_color;
 our %houses_in;     # house objects in cluster type
 our %houses_in_cluster;         # ??? better name?
@@ -70,6 +72,7 @@ sub init {
     ) {
         my $id = $cl->id();
         push @clusters, $cl;
+        $cluster{$id} = $cl;
         $clust_color{$id} = [ $cl->color =~ m{\d+}g ];
         $houses_in_cluster{$id} = [];
         $clust_type{$id} = $cl->type();

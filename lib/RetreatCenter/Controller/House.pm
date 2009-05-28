@@ -9,6 +9,7 @@ use Util qw/
     model
     trim
     add_config
+    stash
 /;
 use Global qw/%string/;
 
@@ -21,19 +22,45 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{rooms} = [ model($c, 'House')->search(
-        { tent   => '' },
-        { order_by => 'name' }
-    ) ];
-    $c->stash->{tents} = [ model($c, 'House')->search(
-        {
-            tent   => 'yes',
-        },
-        { order_by => 'name' }
-    ) ];
     my ($cbt1) = model($c, 'House')->search({ name => 'CBT 1' });
-    $c->stash->{cbt_activate} = ($cbt1->inactive())? "Activate": "Inactivate";
-    $c->stash->{template} = "house/list.tt2";
+    stash($c,
+        rooms => [ model($c, 'House')->search(
+            { tent   => '' },
+            { order_by => 'name' }
+        ) ],
+        tents => [ model($c, 'House')->search(
+            {
+                tent   => 'yes',
+            },
+            { order_by => 'name' }
+        ) ],
+        hdr          => "By Name",
+        cbt_activate => ($cbt1->inactive())? "Activate": "Inactivate",
+        other_sort   => "<a href=/house/by_type_priority>By Type/Priority</a>",
+        template     => "house/list.tt2",
+    );
+}
+
+sub by_type_priority : Local {
+    my ($self, $c) = @_;
+    
+    my ($cbt1) = model($c, 'House')->search({ name => 'CBT 1' });
+    stash($c,
+        rooms => [ model($c, 'House')->search(
+            { tent   => '' },
+            { order_by => 'inactive, max, bath desc, cabin desc, priority' }
+        ) ],
+        tents => [ model($c, 'House')->search(
+            {
+                tent   => 'yes',
+            },
+            { order_by => 'inactive, center desc, priority' }
+        ) ],
+        hdr          => "By Type/Priority",
+        other_sort   => "<a href=/house/list>By Name</a>",
+        cbt_activate => ($cbt1->inactive())? "Activate": "Inactivate",
+        template     => "house/list.tt2",
+    );
 }
 
 # ???referential integrity - watch out!

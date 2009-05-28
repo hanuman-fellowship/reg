@@ -34,6 +34,8 @@ use Util qw/
     payment_warning
     housing_types
     ptrim
+    other_reserved_cids
+    PR_other_reserved_cids
 /;
 use POSIX qw/
     ceil
@@ -47,6 +49,7 @@ use Global qw/
     %houses_in
     %houses_in_cluster
     $alert
+    @clusters
 /;
 use Template;
 
@@ -2613,7 +2616,16 @@ sub lodge : Local {
 
     my $reg        = model($c, 'Registration')->find($id);
     my $pr         = $reg->program();
+    my $PR         = $pr->name() =~ m{personal\s*retreats}i;
     my $program_id = $reg->program_id();
+
+    my %reserved_cids = 
+        map {
+            $_->cluster_id() => 1
+        }
+        model($c, 'ProgramCluster')->search({
+            program_id => $program_id,
+        });
 
     #
     # housed with a friend who is also registered for this program?
@@ -2737,19 +2749,27 @@ sub lodge : Local {
     my $selected = 0;
 
     #
+    # which clusters are NOT available?
+    #
+    my %or_cids;
+    if ($PR) {
+        %or_cids = PR_other_reserved_cids($c, $reg->date_start(),
+                                              $reg->date_end()   );
+    }
+    else {
+        %or_cids = other_reserved_cids($c, $pr);
+    }
+
+    #
     # which clusters (and in what order) have
     # been designated for this program?
     #
-    PROGRAM_CLUSTER:
-    for my $pc (model($c, 'ProgramCluster')->search(
-                { program_id => $program_id },
-                {
-                    join     => 'cluster',
-                    prefetch => 'cluster',
-                    order_by => 'seq',
-                }
-               )
-    ) {
+    CLUSTER:
+    for my $cl (@clusters) {
+        my $cl_id = $cl->id();
+        next CLUSTER if exists $or_cids{$cl_id};
+
+        #
         # Can we eliminate this entire cluster
         # due to the type of houses/sites in it?
         #
@@ -2757,7 +2777,7 @@ sub lodge : Local {
         # is not the best idea but hey ...
         # one _could_ put a tent and a room in the same cluster, right?
         #
-        my $cl_name = $pc->cluster->name();
+        my $cl_name = $cl->name();
         my $cl_tent   = $cl_name =~ m{tent|terrace}i;
         my $cl_center = $cl_name =~ m{center}i;
         if (($tent && !$cl_tent) ||
@@ -2767,12 +2787,10 @@ sub lodge : Local {
                 # watch out for the word center
                 # in indoor housing!
         ) {
-            next PROGRAM_CLUSTER;
+            next CLUSTER;
         }
-
         HOUSE:
-        for my $h (@{$houses_in_cluster{$pc->cluster_id()}}) {
-            # note no database access yet ... it is all in memory
+        for my $h (@{$houses_in_cluster{$cl_id}}) {
             # is the max of the house inconsistent with $max?
             # or the bath status
             #
@@ -2836,8 +2854,9 @@ sub lodge : Local {
             #
             # what are the attributes of the configuration records?
             #
-            # P - perfect size - no further resize needed
             # O - occupied (but there is space for more)
+            # F - a foreign program is already occupying this house
+            # P - perfect size - no further resize needed
             #
             my ($O, $F, $P) = (0, 0, 1);
             for my $cf (model($c, 'Config')->search({
@@ -2857,17 +2876,22 @@ sub lodge : Local {
             }
             if ($O) {
                 $codes .= "O";
-                $code_sum += $string{house_sum_occupied};        # string
+                $code_sum += $string{house_sum_occupied};
             }
             if ($F) {
                 $codes .= "F";
-                $code_sum -= 20;            # discourage this!
+                $code_sum += $string{house_sum_foreign};     # discourage this!
+                                                             # will be < 0.
             }
             if ($P) {
-                $code_sum += $string{house_sum_perfect_fit};     # string
+                $code_sum += $string{house_sum_perfect_fit};
             }
             else {
                 $codes .= "R";      # resize needed - not as good...
+            }
+            if ($reserved_cids{$cl_id}) {
+                $codes .= "r";
+                $code_sum += $string{house_sum_reserved};
             }
             if ($h->cabin) {
                 $codes .= "C";
@@ -2896,18 +2920,18 @@ sub lodge : Local {
                 $selected = 1;
             }
         }   # end of houses in this cluster
-    }   # end of PROGRAM_CLUSTER
+    }   # end of CLUSTER
     #
     # and now the big sort:
     #
     @h_opts = map {
                     $_->[0]
-                }
-                sort {
-                  $b->[1] <=> $a->[1] ||      # POC      - descending
-                  $a->[2] <=> $b->[2]         # priority - ascending
-                }
-                @h_opts;
+              }
+              sort {
+                  $b->[1] <=> $a->[1] ||      # 1st by code_sum - descending
+                  $a->[2] <=> $b->[2]         # 2nd by priority - ascending
+              }
+              @h_opts;
     if ($cabin && $h_opts[0] !~ m{-.*C}) {
         # they want a cabin and the first choice is not a cabin
         # get any cabins to the top and preserve the order
@@ -2924,11 +2948,12 @@ sub lodge : Local {
         @h_opts = (@cabins, @rooms);
     }
     #
-    # enforce the max_lodge_opts
+    # enforce the max_lodge_opts (if non-zero)
     # just truncate those beyond the stipulated max.
     #
-    if (@h_opts > $string{max_lodge_opts}) {
-        $#h_opts = $string{max_lodge_opts};
+    my $maxopts = $string{max_lodge_opts};
+    if ($maxopts && @h_opts > $maxopts) {
+        $#h_opts = $maxopts;
     }
     if ($share_house_id && ! $selected) {
         # male, female want to share

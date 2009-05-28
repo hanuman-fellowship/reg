@@ -20,13 +20,13 @@ else
 function Get() {
     if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
         var both = xmlhttp.responseText.split('XX');
-        document.getElementById('UNselected').innerHTML = both[0];
-        document.getElementById('selected')  .innerHTML = both[1];
+        document.getElementById('UNreserved').innerHTML = both[0];
+        document.getElementById('reserved')  .innerHTML = both[1];
     }
 }
 
-function select_cluster(cluster_id) {
-    var url = '[% Catalyst.uri_for("/program/select_cluster/") %]'
+function reserve_cluster(cluster_id) {
+    var url = '[% Catalyst.uri_for("/program/reserve_cluster/") %]'
             + [% id %]
             + '/'
             + cluster_id
@@ -38,34 +38,8 @@ function select_cluster(cluster_id) {
     return true;
 }
 
-function UNselect_cluster(cluster_id) {
-    var url = '[% Catalyst.uri_for("/program/UNselect_cluster/") %]'
-            + [% id %]
-            + '/'
-            + cluster_id
-            ;
-    xmlhttp.open('GET', url, true);
-    xmlhttp.onreadystatechange = Get;
-    xmlhttp.send(null);
-
-    return true;
-}
-
-function cluster_up(cluster_id) {
-    var url = '[% Catalyst.uri_for("/program/cluster_up/") %]'
-            + [% id %]
-            + '/'
-            + cluster_id
-            ;
-    xmlhttp.open('GET', url, true);
-    xmlhttp.onreadystatechange = Get;
-    xmlhttp.send(null);
-
-    return true;
-}
-
-function cluster_down(cluster_id) {
-    var url = '[% Catalyst.uri_for("/program/cluster_down/") %]'
+function UNreserve_cluster(cluster_id) {
+    var url = '[% Catalyst.uri_for("/program/UNreserve_cluster/") %]'
             + [% id %]
             + '/'
             + cluster_id
@@ -316,6 +290,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 <p>
 <!-- Cluster Selection -->
+<ul>
 <table cellspacing=5 border=0>
 
 <tr>
@@ -324,15 +299,16 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </tr>
 
 <tr>
-<td align=center valign=top>
-<div id=UNselected style="width: 250px">[% UNselected_clusters %]</div>
+<td align=left valign=top>
+<div id=UNreserved style="width: 200px">[% UNreserved_clusters %]</div>
 </td>
-<td align=center valign=top>
-<div id=selected style="width: 250px">[% selected_clusters %]</div>
+<td align=left valign=top>
+<div id=reserved style="width: 200px">[% reserved_clusters %]</div>
 </td>
 </tr>
 
 </table>
+</ul>
 
 </div>      <!-- end of content2 pane -->
 

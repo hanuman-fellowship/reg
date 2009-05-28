@@ -1307,3 +1307,6 @@ doc: do not compute costs - and why.
 
 doc: to unmark someone as a leader of a program - but keep their registration
     you need to delete and re-Add.
+
+doc: invoice for rentals - show all options even ones
+    for which the housing cost is 0 - i.e. not offered.

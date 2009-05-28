@@ -19,6 +19,7 @@ use Util qw/
     places
     tt_today
     stash
+    reserved_clusters
 /;
 use GD;
 use ActiveCal;
@@ -694,21 +695,38 @@ EOH
                                    # more below
                 }
                 elsif ($ev_type eq 'program') {
+                    my $clusters =
+                        join ', ',
+                         map {
+                             $_->name()
+                         }
+                         reserved_clusters($c, $ev_id, 'program')
+                         ;
                     $printable_row .= "<td align=right>$count&nbsp;&nbsp;</td>"
                                    .  "<td></td><td></td>"
                                              # no rental count/status
                                    .  "<td align=center>$arr_lv_longer</td>"
+                                   .  "<td align=left>$clusters</td>"
                                    ;
                 }
                 $disp =~ s{'}{\\'}g;    # what if name eq Mother's Day?
 
                 my $border = $black;
                 if ($ev_type eq 'rental') {
+                    my $clusters =
+                        join ', ',
+                        map {
+                            $_->name()
+                        }
+                        reserved_clusters($c, $ev_id, 'rental')
+                        ;
                     $border = $im->colorAllocate(
                         $string{"rental_" . $ev->status . "_color"} =~ m{\d+}g,
                     );
                     $printable_row .= $ev->status_td()
                                    .  "<td align=center>$arr_lv_longer</td>"
+                                   .  "<td align=left>$clusters</td>"
+                                   ;
                 }
                 elsif ($ev_type eq 'event') {
                     $border = $im->colorAllocate(
@@ -1123,6 +1141,7 @@ EOH
 <th align=center valign=bottom>Reg<br>Count</th>
 <th align=center  valign=bottom colspan=2>Rental<br>Max/Reserved&nbsp;&nbsp;Status</th>
 <th align=center valign=bottom>Arrive/Leave</th>
+<th align=left valign=bottom>Reserved Clusters</th>
 </tr>
 $details{$key}
 </table>

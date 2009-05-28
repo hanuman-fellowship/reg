@@ -16,6 +16,7 @@ use Date::Simple qw/
 use Global qw/
     %string
     %clust_color
+    %cluster
     %houses_in_cluster
     @clusters
 /;
@@ -152,7 +153,7 @@ sub access_denied : Private {
 # being all separate values.
 #
 sub show : Local {
-    my ($self, $c, $date, $cur_clust) = @_;
+    my ($self, $c, $date, $cur_clust, $ndays) = @_;
 
     Global->init($c);
     my $today = tt_today($c);
@@ -179,11 +180,95 @@ sub show : Local {
     }
     $dt->set_format("%D");      # ensure it is mm/dd/yy for input purposes
     my $d8 = $dt->as_d8();
-    my $ndays = 14;     # parameter?
+
+    # how many days?   messy.
+    my $param_ndays = $c->request->params->{ndays};
+    if ($param_ndays) {
+        $ndays = $param_ndays;
+    }
+    elsif (! $ndays) {
+        $ndays = 14;
+    }
+    if ($ndays !~ m{^\d+$}) {
+        $ndays = 14;
+    }
+
     if (!$cur_clust) {
         $cur_clust = $c->request->params->{cluster_id} || 1;
     }
+    my $cl_name = $cluster{$cur_clust}->name();
 
+
+    #
+    # which programs/rentals have reserved this cluster
+    # during this date range $dt => $dt+$ndays?
+    #
+    my $sdate = $d8;
+    my $edate = ($dt + $ndays - 1)->as_d8();
+    my $res_table = "";
+    my @progs = 
+        map {
+            $_->program()
+        }
+        model($c, 'ProgramCluster')->search(
+            {
+                cluster_id      => $cur_clust,
+                'program.sdate' => { '<=' => $edate },
+                'program.edate' => { '>'  => $sdate },
+            },
+            {
+                join     => 'program',
+                prefetch => 'program',
+            }
+        );
+    my @rents =
+        map {
+            $_->rental()
+        }
+        model($c, 'RentalCluster')->search(
+            {
+                cluster_id     => $cur_clust,
+                'rental.sdate' => { '<=' => $edate },
+                'rental.edate' => { '>'  => $sdate },
+            },
+            {
+                join     => 'rental',
+                prefetch => 'rental',
+            }
+        );
+    for my $ev (sort {
+                    $a->sdate() <=> $b->edate()
+                }
+                @progs, @rents
+    ) {
+        $res_table .= "<tr>"
+                   .  "<td>"
+                   .  $ev->sdate_obj->format("%b %e")
+                   .  "</td>"
+                   .  "<td>"
+                   .  $ev->edate_obj->format("%b %e")
+                   .  "</td>"
+                   .  "<td><a target=happening href=/"
+                   .  $ev->event_type()
+                   .  "/view/"
+                   .  $ev->id()
+                   .  ">"
+                   .  $ev->name()
+                   .  "</a></td>"
+                   .  "</tr>"
+                   ;
+    }
+    if ($res_table) {
+        $res_table = <<"EOH";
+<p>
+<table cellpadding=3>
+<tr>
+<th colspan=3 align=center>Reserved for these Events:</th>
+</tr>
+$res_table
+</table>
+EOH
+    }
     my ($height, $width) = (0, 0);
     my $hh = $string{house_height};
     my $hw = $string{house_width};
@@ -422,11 +507,13 @@ EOH
              @clusters;
     $html .= <<"EOH";
 </select>
-<a class=details href=/cluster/show/$back/$cur_clust accesskey='b'><span class=keyed>B</span>ack</a>
-<a class=details href=/cluster/show/$next/$cur_clust accesskey='n'><span class=keyed>N</span>ext</a>
-<span class=details><span class=keyed>D</span>ate<input type=text name=date size=10 value='$dt' accesskey='d'></span> <input class=go type=submit value="Go">
+<a class=details href=/cluster/show/$back/$cur_clust/$ndays accesskey='b'><span class=keyed>B</span>ack</a>
+<a class=details href=/cluster/show/$next/$cur_clust/$ndays accesskey='n'><span class=keyed>N</span>ext</a>
+<span class=details><span class=keyed>D</span>ate<input type=text name=date size=10 value='$dt' accesskey='d'></span>&nbsp;# of Da<span class=keyed>y</span>s <input accesskey='y' type=text name=ndays size=2 value=$ndays>&nbsp;<input class=go type=submit value="Go">
 </form>
+<h2>$cl_name</h2>
 <img src=$im_uri height=$resize_height border=0 usemap=#clusterview>
+$res_table
 <map name=clusterview>
 $cv_map</map>
 </body>

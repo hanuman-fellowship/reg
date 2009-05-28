@@ -109,9 +109,13 @@ house_let 10
 cov_less_color 255,0,0
 cov_more_color 0,255,0
 cov_okay_color 255,255,255
+
 house_sum_perfect_fit 5 
 house_sum_occupied 10
 house_sum_cabin 20
+house_sum_reserved 15
+house_sum_foreign -20
+
 dp_M_color 255,0,0
 dp_F_color 255,0,0
 dp_X_color 255,0,0
@@ -127,7 +131,7 @@ dp_type4 future use
 dp_type5 future use
 dp_img_percent 120
 seen_lodge_opts 10
-max_lodge_opts 30
+max_lodge_opts 0
 tt_today 
 default_date_format %b %e '%q
 make_up_urgent_days 4

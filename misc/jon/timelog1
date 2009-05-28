@@ -1,3 +1,5 @@
+year 2007
+Oct 24 10:00-10:00
 Oct 25 12:00-2:45
     people crud with full mlist data
 Oct 26 10:45-1:15
@@ -178,6 +180,7 @@ Dec 29 4:20-5:50, 10:10-12:00
     major tweaks on image uploads for leaders, programs
     templates - list, upload, delete, use them from publish
         pick from restricted list in Programs
+year 2008
 Jan 1 2:30-2:50, 3:35-5:50, 11:30-1:25
     design user/role crud, implemented users
     roles

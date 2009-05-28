@@ -19,6 +19,7 @@ use Util qw/
     model
     empty
     tt_today
+    reserved_clusters
 /;
 
 sub index : Local {
@@ -280,12 +281,21 @@ sub show : Local {
             else {
                 $ed = date($ev->edate, "%m/%d"),
             }
+            my $clusters = "";
+            if ($type ne 'Event') {
+                $clusters = join ', ',
+                            map {
+                                $_->name()
+                            }
+                            reserved_clusters($c, $ev->id, $ev_type);
+            }
             push @events, {
                 sdate => date($ev->sdate, "%m/%d"),
                 edate => $ed,
                 name  => $ev->name(),
                 type  => $ev_type,
                 id    => $ev->id(),
+                reserved_clusters => $clusters,
             };
         }
     }
@@ -301,12 +311,18 @@ sub show : Local {
           . "<td>$ev->{sdate}</td>"
           . "<td>$ev->{edate}</td>"
           . "<td>$ev->{name}</td>"
+          . "<td>$ev->{reserved_clusters}</td>"
           . "</tr>\n";
     }
     if ($event_table) {
         $event_table = <<EOT;
 <table cellpadding=3>
-<tr><th>Start</th><th>End</td><th align=left>Name</th></tr>
+<tr>
+<th>Start</th>
+<th>End</th>
+<th align=left>Name</th>
+<th align=left>Reserved Clusters</th>
+</tr>
 $event_table
 </table>
 EOT
@@ -387,7 +403,6 @@ function Send(sex, house_id) {
 <input class=go type=submit value="Go">
 $links
 </form>
-<p>
 <img height=$resize_height src=$image border=0 usemap=#dailypic>
 $event_table
 <map name=dailypic>

@@ -23,7 +23,7 @@
 </tr>
 
 <tr>
-<th align=right>House Name</th>
+<th align=right>Room Name</th>
 <td>[% block.house.name %]</td>
 </tr>
 

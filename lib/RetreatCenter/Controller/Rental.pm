@@ -30,9 +30,12 @@ use Util qw/
     payment_warning
     email_letter
     error
+    other_reserved_cids
 /;
 use Global qw/
     %string
+    %houses_in_cluster
+    @clusters
 /;
 use POSIX;
 use Template;
@@ -110,62 +113,9 @@ sub _get_data {
     if (! $P{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
     }
-    H_TYPE:
     for my $t (housing_types(1)) {
-        my $npeople;
         if ($P{"n_$t"} !~ m{^\d*$}) {
             push @mess, "$string{$t}: Illegal quantity: " . $P{"n_$t"};
-        }
-        else {
-            $npeople = $P{"h_$t"};
-        }
-        #
-        # Attendance
-        #
-        if ($P{"att_$t"}) {
-            my @terms = split m{\s*,\s*}, $P{"att_$t"};
-            my $total_peeps = 0;
-            TERM:
-            for my $tm (@terms) {
-                if ($tm !~ m{^(\d+)\s*c?\s*x\s*(\d+)$}i) {
-                    push @mess, "$string{$t}:"
-                               ." Illegal attendance: " . $P{"att_$t"};
-                    next H_TYPE;
-                }
-                my ($t_npeople, $t_ndays) = ($1, $2);
-                $total_peeps += $t_npeople;
-
-                # we may not have a valid $rental_ndays so be careful
-                # someone MAY stay longer than the # of rental days.
-                # if (!@mess && $t_ndays > $rental_ndays) {
-                #     push @mess, "$string{$t}:"
-                #                ." Attendance > # days of rental: $t_ndays";
-                # }
-            }
-            # It IS okay to have more people in the 'attendance' field
-            # than the '# of people' field.  Perhaps someone left early
-            # and this changed the attendance tallies.  Like this:
-            #
-            # 2 people in a double the entire 5 days.
-            # 3 people in triple.  1 leaves the 5 day program after 2 days.
-            # We need this:
-            #
-            # Double    2    2x5, 2x3
-            # Triple    3    1x2, 3x2
-            #
-            # If NO 'attendance' field at all - assume they stayed the
-            # whole time. If there IS an attendance field you'll need to
-            # specify even those who stayed the full time.
-            #
-            # the '# of people' field is used to determine the need
-            # for room reservations.  It in combination with the 'attendance'
-            # field is used for the invoice cost calculations.
-            #
-            if ($total_peeps < $P{"n_$t"}) {
-                push @mess, "$string{$t}: "
-                           ."Total people ($total_peeps) in non-blank attendance field"
-                           ." < # of people (" . $P{"n_$t"} . ")";
-            }
         }
     }
     if (@mess) {
@@ -177,6 +127,58 @@ sub _get_data {
     $P{linked}       = "" unless exists $P{linked};
     $P{tentative}    = "" unless exists $P{tentative};
     $P{mmc_does_reg} = "" unless exists $P{mmc_does_reg};
+}
+
+sub attendance : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my @h_types = housing_types(1);
+    stash($c,
+        rental   => $rental,
+        h_types  => \@h_types,
+        string   => \%string,
+        template => 'rental/attendance.tt2',
+    );
+}
+
+sub attendance_do : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $hc = $rental->housecost();
+    %P = %{ $c->request->params() };
+    $P{$_} = trim($P{$_}) for keys %P;
+
+    my @mess = ();
+    H_TYPE:
+    for my $t (housing_types(1)) {
+        if ($P{"att_$t"}) {
+            if ($hc->$t() == 0) {
+                push @mess, "$string{$t} housing is not available for this rental.";
+                next H_TYPE;
+            }
+            my @terms = split m{\s*,\s*}, $P{"att_$t"};
+            my $total_peeps = 0;
+            TERM:
+            for my $tm (@terms) {
+                if ($tm !~ m{^(\d+)\s*c?\s*x\s*(\d+)$}i) {
+                    push @mess, "$string{$t}:"
+                               ." Illegal attendance: " . $P{"att_$t"};
+                    next H_TYPE;
+                }
+                my ($t_npeople, $t_ndays) = ($1, $2);
+                $total_peeps += $t_npeople;
+            }
+        }
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>", @mess;
+        $c->stash->{template} = "rental/error.tt2";
+        return;
+    }
+    $rental->update(\%P);
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 sub create : Local {
@@ -346,11 +348,11 @@ sub create_from_proposal : Local {
 # and possibly reset the status.
 #
 sub view : Local {
-    my ($self, $c, $id, $section) = @_;
+    my ($self, $c, $rental_id, $section) = @_;
 
     Global->init($c);
     $section ||= 1;
-    my $rental = model($c, 'Rental')->find($id);
+    my $rental = model($c, 'Rental')->find($rental_id);
 
     my @payments = $rental->payments;
     my $tot_payments = 0;
@@ -365,100 +367,38 @@ sub view : Local {
     }
 
     my $ndays = date($rental->edate) - date($rental->sdate);
-    my $hc    = $rental->housecost(); 
-    my $min_lodging = int(0.75
-                          * $rental->max
-                          * $ndays
-                          * $hc->dormitory
-                         );
     my (%bookings, %booking_count);
-    # can use $r->bookings??? no.
-    for my $b (model($c, 'RentalBooking')->search(
-                   {
-                       rental_id => $id,
-                   },
-                   {
-                       join     => [qw/ house /],
-                       prefetch => [qw/ house /],
-                       order_by => [qw/ house.name /],
-                   }
-              )
-    ) {
+    for my $b ($rental->rental_bookings()) {
         my $h_name = $b->house->name;
         my $h_type = $b->h_type;
-        $bookings{$h_type} .= '  '
-                            . "<a href=/rental/del_booking/$id/"
-                            . $b->house_id
-                            . qq! onclick="return confirm('Okay to Delete booking of $h_name?');"!
-                            . ">"
-                            . $h_name
-                            . "</a>,"
-                            ;
+        $bookings{$h_type} .=
+            "<a href=/rental/del_booking/$rental_id/"
+            .  $b->house_id
+         .  qq! onclick="return confirm('Okay to Delete booking of $h_name?');"!
+            .  ">"
+            .  $h_name
+            .  "</a>, "
+            ;
         ++$booking_count{$h_type};
     }
     for my $t (keys %bookings) {
-        chop $bookings{$t};     # final comma
-        $bookings{$t} = ("&nbsp;"x3) . $bookings{$t};   # space after Add
-    }
-    #
-    # now which clusters are assigned to this rental?
-    #
-    my @clusters = model($c, 'RentalCluster')->search({
-                       rental_id => $id,
-                   });
-    my $clusters = "";
-    for my $cl (@clusters) {
-        my $cl_name = $cl->cluster->name;
-        $clusters .= ("&nbsp;"x2)
-                  .  "<a href=/rental/cluster_delete/$id/"
-                  .  $cl->cluster_id
-                  . qq! onclick="return confirm('Okay to Delete booking of cluster $cl_name?');"!
-                  .  ">"
-                  .  $cl_name
-                  .  "</a>,"
-                  ;
-    }
-    chop $clusters;     # final comma
-    if ($clusters) {
-        $clusters = ("&nbsp;"x3) . $clusters;   # space after Add
+        $bookings{$t} =~ s{, $}{};     # final comma
     }
     my %colcov;
-    my $actual_lodging = 0;
     my $tot_people = 0;
     my $fmt = "#%02x%02x%02x";
     my $less = sprintf($fmt, $string{cov_less_color} =~ m{(\d+)}g);
     my $more = sprintf($fmt, $string{cov_more_color} =~ m{(\d+)}g);
     my $okay = sprintf($fmt, $string{cov_okay_color} =~ m{(\d+)}g);
-    my $att_days = 0;
     my @h_types = housing_types(1);
     TYPE:
     for my $t (@h_types) {
         my $nt = "n_$t";
         my $npeople = $rental->$nt || 0;
         $tot_people += $npeople;
-        if ($hc->type eq 'Per Day') {
-            $actual_lodging += $hc->$t * $npeople * $ndays;
-        }
-        else {
-            # Total
-            $actual_lodging += $hc->$t * $npeople;
-        }
-        my $t_max = type_max($t);
-        my $meth = "att_$t";
-        my $att = $rental->$meth();
-        if (empty($att)) {
-            $att_days += $npeople * $ndays;
-        }
-        else {
-            my @terms = split m{\s*,\s*}, $att;
-            for my $term (@terms) {
-                my ($np, $nd) = split m{\s*x\s*}i, $term;
-                $np =~ s{\s}{};
-                my $children = $np =~ s{c}{}i;
-                $att_days += $np * $nd;
-            }
-        }
+
         # now for the color of the coverage
+        my $t_max = type_max($t);
         next TYPE if !$t_max;
         my $needed = ceil($npeople/$t_max);
         my $count = $booking_count{$t} || 0;
@@ -467,8 +407,6 @@ sub view : Local {
                      :                    $okay
                      ;
     }
-    my $lodging = ($min_lodging > $actual_lodging)? $min_lodging
-                :                                   $actual_lodging;
 
     # Lunches
     my $lunch_charge = 0;
@@ -525,16 +463,15 @@ sub view : Local {
     my $nmonths = date($rental->edate())->month()
                 - date($sdate)->month()
                 + 1;
+
     stash($c,
         tot_people     => $tot_people,
         ndays          => $ndays,
         rental         => $rental,
-        non_att_days   => ($tot_people*$ndays - $att_days),
         daily_pic_date => $sdate,
         cal_param      => "$sdate/$nmonths",
         colcov         => \%colcov,     # color of the coverage
         bookings       => \%bookings,
-        clusters       => $clusters,
         h_types        => \@h_types,
         string         => \%string,
         lunch_charge   => $lunch_charge,
@@ -551,6 +488,21 @@ sub view : Local {
                               $rental->start_hour_obj(),
                           ),
         template       => "rental/view.tt2",
+    );
+}
+
+sub clusters : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+
+    # clusters - available and reserved
+    my ($avail, $res) = split /XX/, _get_cluster_groups($c, $rental_id);
+    stash($c,
+        rental             => $rental,
+        available_clusters => $avail,
+        reserved_clusters  => $res,
+        template           => "rental/cluster.tt2",
     );
 }
 
@@ -764,8 +716,15 @@ sub delete : Local {
     # the summary
     $r->summary->delete();
 
+    model($c, 'RentalCluster')->search({
+        rental_id => $id,
+    })->delete();
+
     # and the rental itself
     # does this cascade to rental payments???
+    # - yes, because we have a relationship in place.
+    # but not RentalClusters so the above ...
+    #
     model($c, 'Rental')->search({
         id => $id,
     })->delete();
@@ -1051,12 +1010,18 @@ sub booking : Local {
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
     my $center = ($h_type =~ m{center})? "yes": "";
     my $max    = type_max($h_type);
+
+    my %or_cids = other_reserved_cids($c, $r);
+    my @or_cids = keys %or_cids;
+
     #
     # look at a list of _possible_ houses for h_type.
     # ??? what order to present them in?  priority/resized?
     # consider cluster???  other bookings for this rental???
     #
-    my @h_opts = ();
+    my $checks = "";
+    my $Rchecks = "";
+    my $nrooms = 0;
     HOUSE:
     for my $h (model($c, 'House')->search({
                    inactive => '',
@@ -1064,6 +1029,7 @@ sub booking : Local {
                    tent     => $tent,
                    center   => $center,
                    max      => { '>=', $max },
+                   cluster_id => { -not_in => \@or_cids },
                },
                { order_by => 'priority' }
               ) 
@@ -1080,22 +1046,25 @@ sub booking : Local {
         });
         next HOUSE if @cf;        # nope
 
-        push @h_opts,
-                 "<option value=" 
-                 . $h_id
-                 . ">"
-                 . $h->name
-                 . (($h->max == $max)? "": " - R")
-                 . "</option>\n"
-                 ;
+        my $s = "<input type=checkbox name=h$h_id value=$h_id> "
+              . $h->name()
+              ;
+        if ($h->max == $max) {
+            $checks .= "$s<br>";
+        }
+        else {
+            $Rchecks .= "$s<br>";
+        }
+        ++$nrooms;
     }
-    my @R_opts   = grep { /- R/ } @h_opts;
-    my @noR_opts = grep { ! /- R/ } @h_opts;
-    $c->stash->{house_opts} = join '', @noR_opts, @R_opts;
-    $h_type =~ s{_(.)}{ \u$1};
-    $c->stash->{disp_h_type} = (($h_type =~ m{^[aeiou]})? "an": "a")
-                             . " '\u$h_type'";
-    $c->stash->{template} = "rental/booking.tt2";
+    stash($c,
+        nrooms      => $nrooms,
+        checks      => $checks,
+        Rchecks     => $Rchecks,
+        disp_h_type => (($h_type =~ m{^[aeiou]})? "an": "a")
+                                . " '$string{$h_type}'",
+        template    => "rental/booking.tt2",
+    );
 }
 
 #
@@ -1106,18 +1075,7 @@ sub booking : Local {
 sub booking_do : Local {
     my ($self, $c, $rental_id, $h_type) = @_;
 
-    # since we could have multiple houses at once
-    # we have to mess around.
-    # the param could be either an array ref or a scalar.?
-    #
-    my @chosen_house_ids = ();
-    my $chid = $c->request->params->{chosen_house_id};
-    if (ref($chid)) {
-        @chosen_house_ids = @$chid;
-    }
-    else {
-        @chosen_house_ids = $chid;
-    }
+    my @chosen_house_ids = values %{$c->request->params()};
     if (! @chosen_house_ids) {
         $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
         return;
@@ -1282,101 +1240,57 @@ sub contract : Local {
     }
 }
 
-sub cluster_add : Local {
-    my ($self, $c, $id) = @_;
-
-    # get the date range from the rental
-    # get all clusters
-    # for each cluster:
-    #     for each house in that cluster:
-    #         for each config records of that house in the date range
-    #             if cur != 0 the cluster is out.
-    # all qualifying clusters go into the template
-    #
-    my $rental = model($c, 'Rental')->find($id);
-    my $sdate = $rental->sdate();
-    my $edate = $rental->edate();
-    my @ok_clusters = ();
-    CLUSTER:
-    for my $cl (model($c, 'Cluster')->search(undef, { order_by => 'name' })) {
-        for my $h (model($c, 'House')->search({
-                       cluster_id => $cl->id,
-                   })
-        ) {
-            for my $cf (model($c, 'Config')->search({
-                            house_id => $h->id,
-                            the_date => { 'between', => [ $sdate, $edate ] },
-                        })
-            ) {
-                if ($cf->cur() != 0) {
-                    next CLUSTER;
-                }
-            }
-        }
-        push @ok_clusters, $cl;
-    }
-    $c->stash->{rental}   = $rental;
-    $c->stash->{nclusters} = scalar(@ok_clusters);
-    $c->stash->{clusters} = \@ok_clusters;
-    $c->stash->{template} = "rental/cluster.tt2";
-}
-
 #
-# for all chosen clusters:
-#    mark the cluster for the rental
-#    add all active houses in that cluster to the rental bookings.
-#    and update all the config records appropriately
+# reserve all houses in a cluster.
+# this actually changes the config records
+# for each house in the cluster.
 #
-sub cluster_add_do : Local {
-    my ($self, $c, $rental_id) = @_;
+# then refresh the view
+#
+sub reserve_cluster : Local {
+    my ($self, $c, $rental_id, $cluster_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
     my $sdate = $rental->sdate();
     my $edate1 = (date($rental->edate()) - 1)->as_d8();
                                             # they don't stay the last day!
-    for my $cl_id (keys %{ $c->request->params()}) {
-        $cl_id =~ s{^cl}{};
-        model($c, 'RentalCluster')->create({
+    model($c, 'RentalCluster')->create({
+        rental_id  => $rental_id,
+        cluster_id => $cluster_id,
+    });
+    for my $h (@{$houses_in_cluster{$cluster_id}}) {
+        my $h_id = $h->id();
+        my $h_max = $h->max();
+        my $h_type = max_type($h_max, $h->bath(),
+                              $h->tent(), $h->center());
+        model($c, 'RentalBooking')->create({
             rental_id  => $rental_id,
-            cluster_id => $cl_id,
+            house_id   => $h_id,
+            date_start => $sdate,
+            date_end   => $edate1,
+            h_type     => $h_type,
         });
-        for my $h (model($c, 'House')->search({
-                       cluster_id => $cl_id,
-                       inactive   => { '!=' => 'yes' },
-                   })
-        ) {
-            my $h_id = $h->id();
-            my $h_max = $h->max();
-            my $h_type = max_type($h_max, $h->bath(),
-                                  $h->tent(), $h->center());
-            model($c, 'RentalBooking')->create({
-                rental_id  => $rental_id,
-                house_id   => $h_id,
-                date_start => $sdate,
-                date_end   => $edate1,
-                h_type     => $h_type,
-            });
-            model($c, 'Config')->search({
-                house_id   => $h_id,
-                the_date   => { 'between' => [ $sdate, $edate1 ] },
-            })->update({
-                sex        => 'R',
-                cur        => $h_max,
-                program_id => 0,
-                rental_id  => $rental_id,
-            });
-        }
+        model($c, 'Config')->search({
+            house_id   => $h_id,
+            the_date   => { 'between' => [ $sdate, $edate1 ] },
+        })->update({
+            sex        => 'R',
+            cur        => $h_max,
+            program_id => 0,
+            rental_id  => $rental_id,
+        });
     }
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
+    $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
 #
-# remove the indicated RentalClust record
-# for each house in the cluster
-#     remove the RentalBooking record
-#     adjust the config records for that house as well.
+# 1 - remove the indicated RentalClust record
+# 2 - for each house in the cluster
+#         remove the RentalBooking record
+#         adjust the config records for that house as well.
+# then refresh the view.
 #
-sub cluster_delete : Local {
+sub cancel_cluster : Local {
     my ($self, $c, $rental_id, $cluster_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
@@ -1387,10 +1301,7 @@ sub cluster_delete : Local {
         rental_id  => $rental_id,
         cluster_id => $cluster_id,
     })->delete();
-    for my $h (model($c, 'House')->search({
-                   cluster_id => $cluster_id,
-               })
-    ) {
+    for my $h (@{$houses_in_cluster{$cluster_id}}) {
         my $h_id = $h->id();
         model($c, 'RentalBooking')->search({
             rental_id => $rental_id,
@@ -1406,7 +1317,7 @@ sub cluster_delete : Local {
             program_id => 0,
         });
     }
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
+    $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
 sub view_summary : Local {
@@ -1467,12 +1378,8 @@ EOH
     H_TYPE:
     for my $type (housing_types(1)) {
         my $meth = "n_$type";
-        my $n = $rental->$meth();
         $meth = "att_$type";
         my $att = $rental->$meth();
-        # Brajesh wants to show all options
-        # next H_TYPE if (empty($n) || $n == 0) && empty($att);
-        $tot_people += $n;
         my @attendance = ();
         if (! empty($att)) {
             my @terms = split m{\s*,\s*}, $att;
@@ -1483,33 +1390,18 @@ EOH
                 push @attendance, [ $npeople, $ndays, $children ];
             }
         }
+        if (! @attendance) {
+            push @attendance, [ 0, 0, 0 ];
+        }
         my $type_shown = 0;
         my $cost = $hc->$type();
-        next H_TYPE if $cost == 0;
+        next H_TYPE if $cost == 0;    # but don't show ones not available at all
         my $show_cost = $cost;
         my $s = $string{$type};
-        if (! @attendance) {
-            #
-            # No special attendance - so use the '# of people'
-            # to determine the costs.  This is hopefully the normal case.
-            #
-            $html .= Tr(th({ -align => 'right'}, [ $s ]),
-                        td({ -align => 'right'},
-                           [ $show_cost, $n, $ndays,
-                             commify($n * $cost * $ndays)
-                           ]
-                          )
-                       );
-            $tot_housing_charge += $n * $cost * $ndays;
-            $type_shown = 1;
-        }
         if ($type_shown) {
             $s = "&nbsp;";
             $show_cost = "&nbsp;";
         }
-        #
-        # now for the exceptions
-        #
         for my $a (sort {
                        $b->[1] <=> $a->[1]
                    }
@@ -1535,7 +1427,7 @@ EOH
     }
     $html .= Tr(th({ -align => 'right'}, [ "Total" ]),
                 td({ -align => 'right'},
-                   [ "", $tot_people, "", '$' . commify($tot_housing_charge)
+                   [ "", "", "", '$' . commify($tot_housing_charge)
                    ]
                   )
                );
@@ -2306,6 +2198,125 @@ sub update_payment_do : Local {
     });
     # ??? does not update the time.  okay?
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
+}
+
+#
+# sort of wasteful to do this for each rental view...
+# put all this looking in a separate cluster assignment dialog?
+#
+sub _get_cluster_groups {
+    my ($c, $rental_id) = @_;
+
+    my @reserved = 
+        model($c, 'RentalCluster')->search(
+        { rental_id => $rental_id },
+        {
+            order_by => 'cluster.name',
+            join     => 'cluster',
+            prefetch => 'cluster',
+        },
+    );
+    my %my_reserved_ids = map { $_->cluster_id() => 1 } @reserved; # easy lookup
+    my $reserved = "<tr><th align=left>Reserved</th></tr>\n";
+    for my $rc (@reserved) {
+        my $cid = $rc->cluster_id();
+        $reserved .=
+           "<tr><td>"
+           . "<a href='/rental/cancel_cluster/$rental_id/$cid'>"
+           . $rc->cluster->name()
+           . "</a>"
+           . "</td></tr>\n"
+           ;
+    }
+
+    my $available = "<tr><th align=left>Available</th></tr>\n";
+    #
+    # find ids of overlapping programs AND rentals
+    #
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate();
+    my $edate = $rental->edate();
+    my $edate1 = (date($edate) - 1)->as_d8();
+
+    my @ol_prog_ids =
+        map {
+            $_->id()
+        }
+        model($c, 'Program')->search({
+            level => { -not_in => [qw/ D C M /], },
+            name  => { -not_like => '%personal%retreat%' },
+            sdate => { '<' => $edate },       # and it overlaps
+            edate => { '>' => $sdate },       # with this rental
+        });
+    my @ol_rent_ids =
+        map {
+            $_->id()
+        }
+        model($c, 'Rental')->search({
+            id    => { '!=' => $rental_id },  # not this rental
+            sdate => { '<' => $edate },       # and it overlaps
+            edate => { '>' => $sdate },       # with this rental
+        });
+    #
+    # what distinct cluster ids are already taken by
+    # these overlapping programs or rentals?
+    #
+    my %cids = 
+        map {
+            $_->cluster_id() => 1
+        }
+        model($c, 'ProgramCluster')->search({
+            program_id => { -in => \@ol_prog_ids },
+        }),
+        model($c, 'RentalCluster')->search({
+            rental_id  => { -in => \@ol_rent_ids },
+        });
+    #
+    # and all this leaves what clusters as available?
+    #
+    CLUSTER:
+    for my $cl (@clusters) {
+        my $cid = $cl->id();
+        next CLUSTER if exists $my_reserved_ids{$cid} || exists $cids{$cid};
+        #
+        # furthermore, are ALL houses in this cluster truely free?
+        #
+        for my $h (@{$houses_in_cluster{$cid}}) {
+            my @cf = model($c, 'Config')->search({
+                         house_id => $h->id,
+                         the_date => { 'between', => [ $sdate, $edate1 ] },
+                         cur      => { '!=' => 0 },
+                     });
+            next CLUSTER if @cf;
+        }
+        $available
+            .= "<tr><td>"
+            .  "<a href='/rental/reserve_cluster/$rental_id/$cid'>"
+            .  $cl->name()
+            .  "</a>"
+            .  "</td></tr>\n"
+            ;
+    }
+    return "<table>\n$available</table>XX<table>\n$reserved</table>";
+}
+
+sub grid : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my @days;
+    my $d = $rental->sdate_obj();
+    my $ed = $rental->edate_obj() - 1;
+    while ($d <= $ed) {
+        push @days, $d->format("%s");
+        ++$d;
+    }
+    stash($c,
+        days    => (join '', map { "<td align=center width=20>$_</td>" } @days),
+        rental  => $rental,
+        nnights => ($rental->edate_obj() - $rental->sdate_obj()),
+        template => 'rental/grid.tt2',
+    );
 }
 
 1;

@@ -2,24 +2,16 @@
 <h3>Adding [% disp_h_type %] booking for [% rental.name %]</h3>
 <form name=form action="/rental/booking_do/[% rental.id %]/[% h_type %]">
 <ul>
-[% IF house_opts %]
-<table border=0 cellpadding=3
-
-<tr>
-<td valign=top align=right>Available Rooms</td>
-<td>
-<select name=chosen_house_id size=15 multiple=1>
-[% house_opts %]
-</select>
-</td>
-<td valign=top>
-To speed things along you may choose multiple rooms.
-</td>
-</tr>
-
-<tr>
-<td></td><td><input type=submit value="Submit"></td></tr>
-</table>
+[% IF nrooms %]
+<input type=submit value="Submit">
+<p class=p2>
+[% checks %]
+[% IF Rchecks %]
+<h4>Resized Rooms</h4>
+[% Rchecks %]
+[% END %]
+<p class=p2>
+<input type=submit value="Submit">
 [% ELSE %]
 Sorry, there is no place in the inn.
 [% END %]

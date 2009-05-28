@@ -122,6 +122,15 @@ __PACKAGE__->has_many(charges => 'RetreatCenterDB::RentalCharge',
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
 
+# rental_bookings
+__PACKAGE__->has_many(rental_bookings => 'RetreatCenterDB::RentalBooking',
+                      'rental_id',
+                      { join     => 'house',
+                        prefetch => 'house',
+                        order_by => 'house.name'
+                      }
+                     );
+
 # stays
 __PACKAGE__->has_many(stays => 'RetreatCenterDB::RentalStay', 
                       'rental_id',

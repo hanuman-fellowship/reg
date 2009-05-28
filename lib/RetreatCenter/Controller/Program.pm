@@ -28,6 +28,8 @@ use Util qw/
     stash
     error
     lines
+    other_reserved_cids
+    reserved_clusters
 /;
 use Date::Simple qw/
     date
@@ -429,17 +431,18 @@ sub view : Local {
                              ),
         );
     }
-    my $s = _get_cluster_groups($c, $id);
-    my ($UN, $sel) = split /XX/, $s;
     my @files = <root/static/online/*>;
     my $sdate = $p->sdate();
     my $nmonths = date($p->edate())->month()
                 - date($sdate)->month()
                 + 1;
+
+    my ($UNres, $res) = split /XX/, _get_cluster_groups($c, $id);
+
     stash($c,
+        UNreserved_clusters => $UNres,
+        reserved_clusters   => $res,
         online              => scalar(@files),
-        UNselected_clusters => $UN,
-        selected_clusters   => $sel,
         daily_pic_date      => $sdate,
         cal_param           => "$sdate/$nmonths",
         leaders_house       => $p->leaders_house($c),
@@ -452,63 +455,45 @@ sub view : Local {
 sub _get_cluster_groups {
     my ($c, $program_id) = @_;
 
-    my @selected = model($c, 'ProgramCluster')->search(
-        { program_id => $program_id },
-        {
-            order_by => 'seq',
-            join     => 'cluster',
-            prefetch => 'cluster',
-        },
-    );
-    my $selected = "<tr><th align=center>Selected</th></tr>\n";
-    my %select_lookup;
-    my ($first_id, $last_id) = (-1, -1);
-    if (@selected) {
-        $first_id = $selected[ 0]->cluster_id();
-        $last_id  = $selected[-1]->cluster_id();
-    }
-    for my $pc (@selected) {
-        my $cid = $pc->cluster_id();
-        $selected .=
+    my @reserved = reserved_clusters($c, $program_id, 'program');
+    my %my_reserved_ids;
+    my $reserved = "<tr><th align=left>Reserved</th></tr>\n";
+    for my $cl (@reserved) {
+        my $cid = $cl->id();
+        $my_reserved_ids{$cid} = 1;
+        $reserved .=
            "<tr><td>"
-           . $pc->seq()
-           . ".&nbsp;"
-           . "<a href='#' onclick='UNselect_cluster($cid); return false;'>"
-           . $pc->cluster->name()
+           . "<a href='#' onclick='UNreserve_cluster($cid); return false;'>"
+           . $cl->name()
            . "</a>"
-           . "</td><td>"
-           . (
-                ($cid != $first_id)?
-                    "<a href='#' onclick='cluster_up($cid); return false'"
-                    . ">&nbsp;<img src=/static/images/green_up_arrow.gif border=0></a>"
-                :   "&nbsp;"
-             )
-           . "</td><td>"
-           . (
-                ($cid != $last_id )?
-                    "<a href='#' onclick='cluster_down($cid); return false'"
-                    . ">&nbsp;<img src=/static/images/red_down_arrow.gif border=0></a>"
-                :   "&nbsp;"
-             )
            . "</td></tr>\n"
            ;
-        $select_lookup{$cid} = 1;
     }
-    my $UNselected = "<tr><th align=center>Not Selected</th></tr>\n";
+    my $UNreserved = "<tr><th align=left>Available</th></tr>\n";
+
+    #
+    # what distinct cluster ids are already taken by
+    # other programs or rentals that overlap this program?
+    #
+    my $prog = model($c, 'Program')->find($program_id);
+    my %cids = other_reserved_cids($c, $prog, 'program');
+
+    #
+    # and that leaves what clusters as available?
+    #
+    CLUSTER:
     for my $cl (@clusters) {
-        next if exists $select_lookup{$cl->id()};
-        $UNselected .=
-                    "<tr><td>"
-                    . "<a href='#' onclick='select_cluster("
-                    . $cl->id()
-                    . "); return false;'"
-                    . ">"
-                    . $cl->name()
-                    . "</a>"
-                    . "</td></tr>\n"
-                    ;
+        my $id = $cl->id();
+        next CLUSTER if exists $my_reserved_ids{$id} || exists $cids{$id};
+        $UNreserved
+            .= "<tr><td>"
+            .  "<a href='#' onclick='reserve_cluster($id); return false;'>"
+            .  $cl->name()
+            .  "</a>"
+            .  "</td></tr>\n"
+            ;
     }
-    return "<table>\n$UNselected</table>XX<table>\n$selected</table>";
+    return "<table>\n$UNreserved</table>XX<table>\n$reserved</table>";
 }
 
 #
@@ -1686,80 +1671,25 @@ sub duplicate_do : Local {
     $c->response->redirect($c->uri_for("/program/view/$new_id"));
 }
 
-# AJAX call to select a cluster for this program
-sub select_cluster : Local {
+# AJAX call to reserve a cluster for this program
+sub reserve_cluster : Local {
     my ($self, $c, $program_id, $cluster_id) = @_;
 
-    # how many selected ones do we have now?
-    # how to do a simple count?
-    # scalar context?  _rs suffix?
-    my (@pc) = model($c, 'ProgramCluster')->search({
-        program_id => $program_id
-    });
     model($c, 'ProgramCluster')->create({
         program_id => $program_id,
         cluster_id => $cluster_id,
-        seq        => @pc + 1,
     });
     $c->res->output(_get_cluster_groups($c, $program_id));
 }
 
-# AJAX call to UNselect a cluster
-sub UNselect_cluster : Local {
+# AJAX call to UNreserve a cluster
+sub UNreserve_cluster : Local {
     my ($self, $c, $program_id, $cluster_id) = @_;
 
-    my ($p_cl) = model($c, 'ProgramCluster')->search({
-        program_id => $program_id,
-        cluster_id => $cluster_id,
-    });
-    my $seq = $p_cl->seq();
-    $p_cl->delete();
     model($c, 'ProgramCluster')->search({
         program_id => $program_id,
-        seq        => { '>', $seq },
-    })->update({
-        seq => \'seq-1',
-    });
-    $c->res->output(_get_cluster_groups($c, $program_id));
-}
-
-# AJAX call to move a cluster UP
-# e.g. if seq == 3 => swap 2 and 3.
-sub cluster_up : Local {
-    my ($self, $c, $program_id, $cluster_id) = @_;
-
-    my ($p_cl3) = model($c, 'ProgramCluster')->search({
-        program_id => $program_id,
         cluster_id => $cluster_id,
-    });
-    my $seq3 = $p_cl3->seq();
-    my $seq2 = $seq3 - 1;
-    my ($p_cl2) = model($c, 'ProgramCluster')->search({
-        program_id => $program_id,
-        seq        => $seq2,
-    });
-    $p_cl3->update({ seq => $seq2 });
-    $p_cl2->update({ seq => $seq3 });
-    $c->res->output(_get_cluster_groups($c, $program_id));
-}
-
-# AJAX call to move a cluster DOWN
-# e.g. if seq == 3 => swap 3 and 4.
-sub cluster_down : Local {
-    my ($self, $c, $program_id, $cluster_id) = @_;
-
-    my ($p_cl3) = model($c, 'ProgramCluster')->search({
-        program_id => $program_id,
-        cluster_id => $cluster_id,
-    });
-    my $seq3 = $p_cl3->seq();
-    my $seq4 = $seq3 + 1;
-    my ($p_cl4) = model($c, 'ProgramCluster')->search({
-        program_id => $program_id,
-        seq        => $seq4,
-    });
-    $p_cl3->update({ seq => $seq4 });
-    $p_cl4->update({ seq => $seq3 });
+    })->delete();
     $c->res->output(_get_cluster_groups($c, $program_id));
 }
 

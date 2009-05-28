@@ -30,7 +30,7 @@
 <th align=right>Count</th>
 <th align=center colspan=3>Actions</th>
 </tr>
-[% class = 'fl_row0' %]
+[% class = 'fl_row1' %]
 [% FOREACH p IN programs %]
     <tr class=[% class %]>
     <td class=fl_row0 align=right>[% IF p.school != 0 %]<span class=required>MMI</span>[% ELSIF p.rental_id > 0 %]Hybrid[% ELSIF ! p.linked %]Unlinked[% END %]</td>

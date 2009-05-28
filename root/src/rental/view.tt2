@@ -5,7 +5,11 @@
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <script type="text/javascript" src="/static/js/tabs.js"></script>
-<script type="text/javascript">init_tabs(4, [% id %], 0);</script>
+<script type="text/javascript">
+
+init_tabs(4, [% id %], 0);
+
+</script>
 
 <style>
 h3 {
@@ -44,6 +48,10 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <a href="/program/publish">Publish</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/stays/[% id %]">Stays</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/grid/[% id %]">Grid</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/attendance/[% id %]">Attendance</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/email_contract/[% id %]">EmailContract</a>
 &nbsp;&nbsp;&nbsp;
@@ -155,54 +163,80 @@ Web
 </tr>
 
 <tr>
-<th>Reserved Clusters</th>
-<td><a href="/rental/cluster_add/[% id %]">Add</a>[% clusters %]</td>
-</tr>
-
-<tr>
 <th>Number of Days</th>
 <td>[% ndays %]</td>
 </tr>
 
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td colspan=2 align=center><a href=/rental/clusters/[% id %]>Cluster Reservations</a></td>
+</tr>
 </table>
 
 <p>
 
 <table cellpadding=3 border=0>
 <tr>
-<td width=100></td>
+<td width=120></td>
 <th width=30># of<br>People</th>
 <th width=20></th>
+<td></td>
 <th align=left valign=bottom>Rooms</th>
-<th width=200 valign=bottom align=left>Attendance</th>
 </tr>
 
 <!-- 
     Some fancy Template Tooklit machinations here.
     To index a hash with a variable you need to precede it with a '$'.
 -->
+[% class = 'fl_row1' %]
+[% hc = rental.housecost %]
 [% FOREACH t IN h_types %]
     [% n = 'n_' _ t %]
-    [% att = 'att_' _ t %]
 
-    <tr>
-    <th align=right valign=center>[% string.$t %]</th>
+    <tr class=[% class %]>
+    [% IF hc.$t == 0 %]
+        <td align=right valign=center>[% string.$t %]</td>
+    [% ELSE %]
+        <th align=right valign=center>[% string.$t %]</th>
+    [% END %]
     <td align=right valign=center>[% rental.$n %]&nbsp;&nbsp;</td>
+    [% IF t != 'own_van' && t != 'commuting' %]
     <td style="background: [% colcov.$t %]" valign=center></td>
-    <td valign=center><a href="/rental/booking/[% id %]/[% t %]">Add</a>[% bookings.$t %]</td>
-    <td valign=center>[% rental.$att %]</td>
+
+    [% IF hc.$t == 0 %]
+    <td></td>
+    [% ELSE %]
+    <td valign=top><a href="/rental/booking/[% id %]/[% t %]">Add</a></td>
+    [% END %]
+
+    [% ELSE %]
+    <td colspan=2 class=fl_row0></td>
+    [% END %]
+    <td align=left>[% bookings.$t %]</td>
     </tr>
+    [% IF class == 'fl_row0' %]
+        [% class = 'fl_row1' %]
+    [% ELSE %]
+        [% class = 'fl_row0' %]
+    [% END %]
 [% END %]
 
 <tr><td></td><td style="border-top: solid thin"></td></tr>
 
 <tr>
 <th align=right>Total</th><td align=right>[% tot_people %]&nbsp;&nbsp;</td>
-<td></td>
-<td colspan=3><b>Days of Non-Attendance:</b> [% non_att_days %]</td>
 </tr>
 
 </table>
+<p>
+<!-- Cluster Selection -->
+<ul>
+<table cellspacing=5 border=0>
+
+</table>
+</ul>
+
 </div>      <!-- end Meals & Lodging div -->
 
 <!-- Misc -->

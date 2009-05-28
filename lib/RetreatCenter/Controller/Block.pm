@@ -170,15 +170,17 @@ sub _get_data {
     if (! @mess && $P{sdate} > $P{edate}) {
         push @mess, "Start date must be before the End date";
     }
-    my $hmax = $house->max();
-    if (empty($P{nbeds})) {
-        $P{nbeds} = $hmax;
-    }
-    elsif (! ($P{nbeds} =~ m{^\d+$} && $P{nbeds} > 0)) {
-        push @mess, "Invalid # of Beds: $P{nbeds}";
-    }
-    elsif ($P{nbeds} > $hmax) {
-        push @mess, "There are not $P{nbeds} beds in " . $house->name();
+    if ($house) {
+        my $hmax = $house->max();
+        if (empty($P{nbeds})) {
+            $P{nbeds} = $hmax;
+        }
+        elsif (! ($P{nbeds} =~ m{^\d+$} && $P{nbeds} > 0)) {
+            push @mess, "Invalid # of Beds: $P{nbeds}";
+        }
+        elsif ($P{nbeds} > $hmax) {
+            push @mess, "There are not $P{nbeds} beds in " . $house->name();
+        }
     }
     if (empty($P{npeople})) {
         $P{npeople} = 0;

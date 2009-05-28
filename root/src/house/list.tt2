@@ -4,8 +4,11 @@ h3 {
     margin-bottom: 1mm;
 }
 </style>
-<h2>Houses</h2>
+<h2>Houses - [% hdr %]</h2>
+[% by_priority = hdr == 'By Type/Priority' %]
 <a href="/house/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+[% other_sort %]
 &nbsp;&nbsp;&nbsp;
 <a href=/house/toggleCBT>[% cbt_activate %] CB Terrace</a>
 <h3>Rooms</h3>
@@ -14,17 +17,29 @@ h3 {
 <tr>
 <th align=left>Name</th>
 <th align=center>Max</th>
-<th align=center>Bath</th>
-<th align=center>Cabin</th>
-<th align=center>Inactive</th>
+[% IF by_priority %]
+<th colspan=2 align=right>Priority</th>
+[% END %]
 </tr>
+[% curmax = 0 %]
 [% FOREACH h IN rooms %]
+
+[% IF by_priority && curmax != 0 && h.max != curmax %]
+    <tr><td colspan=4><hr></td></tr>
+[% END %]
+[% curmax = h.max %]
+
 <tr>
 <td><a href="/house/view/[% h.id %]">[% h.name %]</a></td>
 <td align=right>[% h.max %]</td>
-<td align=center>[% IF h.bath %]<img src=/static/images/checked.gif>[% END %]</td>
-<td align=center>[% IF h.cabin %]<img src=/static/images/checked.gif>[% END %]</td>
-<td align=center>[% IF h.inactive %]<img src=/static/images/checked.gif>[% END %]</td>
+<td align=left>
+[% IF h.bath %]bath [% END %]
+[% IF h.cabin %]cabin [% END %]
+[% IF h.inactive %]inactive[% END %]
+</td>
+[% IF by_priority %]
+    <td align=right>[% h.priority %]</td>
+[% END %]
 </tr>
 [% END %]
 </table>
@@ -34,14 +49,14 @@ h3 {
 <table cellpadding=3 border=0>
 <tr>
 <th align=left>Name</th>
-<th align=center>Center</th>
-<th align=center>Inactive</th>
 </tr>
 [% FOREACH t IN tents %]
 <tr>
 <td><a href="/house/view/[% t.id %]">[% t.name %]</a></td>
-<td align=center>[% IF t.center %]<img src=/static/images/checked.gif>[% END %]</td>
-<td align=center>[% IF t.inactive %]<img src=/static/images/checked.gif>[% END %]</td>
+<td align=left>
+[% IF t.center %]center [% END %]
+[% IF t.inactive %]inactive[% END %]
+</td>
 </tr>
 [% END %]
 </table>

@@ -10,8 +10,9 @@ open IN, $fname or die "cannot open $fname: $!\n";
 while (<IN>) {
 	last if /^__END__/;
     chomp;
-    next if /^\s/;
+    next if /^\s/ || /^year/;
     s/^\w+\s\d+\s*//;
+    next unless /^\d/;
     for my $range (split /\s*,\s*/) {
         my ($start, $end) = split /-/, $range;
         my ($sh, $sm) = split /:/, $start;

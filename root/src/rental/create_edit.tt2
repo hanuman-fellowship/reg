@@ -3,19 +3,6 @@
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce_config_web.js"></script>
 <script type="text/javascript">init_tabs(4, 0, 0);</script>
-<script type="text/javascript">
-function popup(url, height) {
-    var newwin = window.open(
-        url, 'reg_search_help',
-        'height=' + height + ', width=550, scrollbars'
-    );
-    if (window.focus) {
-        newwin.focus();
-    }
-    newwin.moveTo(700, 0);
-}
-</script>
-</script>
 <h2>Rentals[% dup_message %]</h2>
 <form action="/rental/[% form_action %]" name=form method=post>
 <table cellpadding=3 border=0>
@@ -38,7 +25,7 @@ function popup(url, height) {
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Meals & Lodging
+Meals/Lodging
 </div>
 <span onclick="tabs(1); document.form.max.focus();">
 <div id="tab1ready" class="tab tabhold" style="display: none">
@@ -100,15 +87,16 @@ Web
 
 <tr>
 <th align=right width=100><span class="required">*</span> Maximum</th>
-<td><input tabindex=1 type=text size=3 name=max value='[% rental.max %]'></td>
+<td><input type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
+[% hc = rental.housecost %]
 <tr>
 <th align=right>Housing Cost</th>
 <td>
-<select tabindex=2 name=housecost_id>
+<select name=housecost_id>
 [% FOREACH h IN housecost_opts %]
-    <option value=[% h.id %][% IF h.name == rental.housecost.name %] selected[% END %]>[% h.name %]</option>
+    <option value=[% h.id %][% IF h.name == hc.name %] selected[% END %]>[% h.name %]</option>
 [% END %]
 </select>
 </td>
@@ -118,20 +106,19 @@ Web
 
 <tr>
 <td></td>
-<th># of<br>People</th>
-<th align=center valign=bottom>Attendance
-<span style="font-weight: normal; margin-left: .5in;">(people x days)&nbsp;&nbsp;&nbsp;<a href="#" onclick="javascript:popup('/static/help/attendance.html', 450);">How?</a></span>
-</th>
+<th align=left># of<br>People</th>
 </tr>
 
 [% FOREACH t IN h_types %]
     [% n = 'n_' _ t %]
-    [% att = 'att_' _ t %]
 
-    <tr>
+    <tr height=25>
+    [% IF hc.$t == 0 %]
+    <td align=right>[% string.$t %]</td>
+    [% ELSE %]
     <th align=right>[% string.$t %]</th>
-    <td align=center><input tabindex=3 type=text size=3 name=[% n %] value='[% rental.$n %]'></td>
-    <td align=center><input tabindex=15 type=text size=50 name=[% att %] value='[% rental.$att %]'></td>
+    <td align=left><input type=text size=3 name=[% n %] value='[% rental.$n %]'></td>
+    [% END %]
     </tr>
 [% END %]
 
@@ -248,7 +235,7 @@ Web
 tabs([% section %]);
 [% IF form_action == 'create_do' %]
 document.form.name.focus();
-[% ELSIF form_action == 'update_do' %]
+[% ELSIF form_action == ('update_do/' _ rental.id) %]
     [% IF section == 1 %]
         document.form.max.focus();
     [% ELSIF section == 3 %]
