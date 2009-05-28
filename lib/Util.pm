@@ -1301,16 +1301,26 @@ sub other_reserved_cids {
             sdate => { '<' => $edate },   # it overlaps
             edate => { '>' => $sdate },   # with this program
         });
-    return
+    my @cids = ();
+    if (@ol_prod_ids) {
+        push @cids,
         map {
             $_->cluster_id() => 1
         }
         model($c, 'ProgramCluster')->search({
             program_id => { -in => \@ol_prog_ids },
-        }),
+        });
+    }
+    if (@ol_rent_ids) {
+        push @cids,
+        map {
+            $_->cluster_id() => 1
+        }
         model($c, 'RentalCluster')->search({
             rental_id  => { -in => \@ol_rent_ids },
         });
+    }
+    return @cids;
 }
 
 #
