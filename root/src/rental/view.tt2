@@ -182,7 +182,7 @@ Web
 <th width=30># of<br>People</th>
 <th width=20></th>
 <td></td>
-<th align=left valign=bottom>Rooms</th>
+<th align=left valign=bottom width=550>Rooms</th>
 </tr>
 
 <!-- 
