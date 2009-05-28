@@ -1013,6 +1013,10 @@ sub booking : Local {
 
     my %or_cids = other_reserved_cids($c, $r);
     my @or_cids = keys %or_cids;
+    my @opt = ();
+    if (@or_cids) {
+        push @opt, cluster_id => { -not_in => \@or_cids };
+    }
 
     #
     # look at a list of _possible_ houses for h_type.
@@ -1029,7 +1033,7 @@ sub booking : Local {
                    tent     => $tent,
                    center   => $center,
                    max      => { '>=', $max },
-                   cluster_id => { -not_in => \@or_cids },
+                   @opt,
                },
                { order_by => 'priority' }
               ) 
