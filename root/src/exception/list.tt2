@@ -5,7 +5,7 @@
 
 <tr>
 <th align=center>Action&nbsp;&nbsp;</th>
-<th align=left>Program</th>
+<th align=left width=200>Program</th>
 <th align=left>Tag</th>
 <th align=left>Value</th>
 </tr>
@@ -15,10 +15,10 @@
 -->
 [% FOREACH e IN exceptions %]
 <tr>
-<td>[% x = e.program.name _ '-' _ e.tag %]<a href="[% Catalyst.uri_for('/exception/update/') _ e.prog_id _ "/" _ e.tag %]">Edit</a>&nbsp;&nbsp;<a href="[% Catalyst.uri_for('/exception/delete/') _ e.prog_id _ "/" _ e.tag %]" onclick="return confirm('Okay to Delete exception for [% x %]?');">Del</a>&nbsp;&nbsp;&nbsp;</td>
-<td><a href="[% Catalyst.uri_for('/program/view/') _ e.program.id %]">[% e.program.name %]</a></td>
-<td>[% e.tag %]</td>
-<td>[% e.value %]</td>
+<td valign=top>[% x = e.program.name _ '-' _ e.tag %]<a href="[% Catalyst.uri_for('/exception/update/') _ e.prog_id _ "/" _ e.tag %]">Edit</a>&nbsp;&nbsp;<a href="[% Catalyst.uri_for('/exception/delete/') _ e.prog_id _ "/" _ e.tag %]" onclick="return confirm('Okay to Delete exception for [% x %]?');">Del</a>&nbsp;&nbsp;&nbsp;</td>
+<td valign=top><a href="[% Catalyst.uri_for('/program/view/') _ e.program.id %]">[% e.program.name %]</a></td>
+<td valign=top>[% e.tag %]</td>
+<td valign=top>[% e.value %]</td>
 </tr>
 [% END %]
 
