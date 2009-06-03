@@ -1381,17 +1381,21 @@ EOH
     my $tot_people = 0;
     H_TYPE:
     for my $type (housing_types(1)) {
-        my $meth = "n_$type";
-        $meth = "att_$type";
-        my $att = $rental->$meth();
+        my $n_meth = "n_$type";
+        my $att_meth = "att_$type";
+
+        my $att = $rental->$att_meth();
         my @attendance = ();
-        if (! empty($att)) {
+        if (empty($att)) {
+            push @attendance, [ $rental->$n_meth(), $ndays, 0 ];
+        }
+        else {
             my @terms = split m{\s*,\s*}, $att;
             for my $term (@terms) {
-                my ($npeople, $ndays) = split m{\s*x\s*}i, $term;
-                $npeople =~ s{\s}{};
-                my $children = $npeople =~ s{c}{}i;
-                push @attendance, [ $npeople, $ndays, $children ];
+                my ($np, $nd) = split m{\s*x\s*}i, $term;
+                $np =~ s{\s}{};
+                my $children = $np =~ s{c}{}i;
+                push @attendance, [ $np, $nd, $children ];
             }
         }
         if (! @attendance) {
