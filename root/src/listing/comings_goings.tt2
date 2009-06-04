@@ -1,4 +1,5 @@
 <h2>For [% date.format("%A, %B %e") %]</h2>
+[% not_sunday = date.day_of_week != 0 %]
 <a href=/listing/comings_goings/[% prev_date %] accesskey='b'><span class=keyed>B</span>ack</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/listing/comings_goings/[% next_date %] accesskey='n'><span class=keyed>N</span>ext</a>
@@ -19,7 +20,7 @@
 [% p = r.person %]
 [% pr = r.program %]
 <tr>
-<td align=right>[% IF r.date_start_obj.day_of_week == 0 %]<span class=required>Sun</span>[% END %]</td>
+<td align=right>[% IF not_sunday && r.date_start_obj.day_of_week == 0 %]<span class=required>Sun</span>[% END %]</td>
 <td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
 <td><a target=happening href="/program/view/[% pr.id %]">[% pr.name %]</a></td>
 <td align=left>[% r.house.name %]</td>
@@ -36,7 +37,7 @@
 
 [% FOR p IN prg_coming %]
 <tr>
-<td align=right>[% IF p.dow == 0 %]<span class=required>Sun</span>[% END %]</td>
+<td align=right>[% IF not_sunday && p.dow == 0 %]<span class=required>Sun</span>[% END %]</td>
 <td>[% p.count %] [% p.noun %]</td>
 <td><a target=happening href="/program/view/[% p.id %]">[% p.name %]</a></td>
 </tr>
@@ -44,7 +45,7 @@
 
 [% FOR r IN rnt_coming %]
 <tr>
-<td align=right>[% IF r.sdate_obj.day_of_week == 0 %]<span class=required>Sun</span>[% END %]</td>
+<td align=right>[% IF not_sunday && r.sdate_obj.day_of_week == 0 %]<span class=required>Sun</span>[% END %]</td>
 <td>[% r.count %] people</td>
 <td><a target=happening href="/rental/view/[% r.id %]">[% r.name %]</a></td>
 </tr>
