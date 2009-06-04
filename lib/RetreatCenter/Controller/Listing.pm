@@ -767,7 +767,7 @@ sub comings_goings : Local {
     my ($self, $c, $date) = @_;
 
     my $cg_date = trim($c->request->params->{cg_date});
-    my $d8;
+    my $dt;
     if ($cg_date) {
         my $d = date($cg_date);
         if (! $d) {
@@ -775,19 +775,24 @@ sub comings_goings : Local {
             $c->stash->{template} = "gen_error.tt2";
             return;
         }
-        $d8 = $d->as_d8();
+        $dt = $d;
     }
     elsif ($date) {
-        $d8 = $date;
+        $dt = date($date);
     }
     else {
-        $d8 = tt_today($c)->as_d8();
+        $dt = tt_today($c);
     }
-    $c->stash->{prev_date} = (date($d8)-1)->as_d8();
-    $c->stash->{next_date} = (date($d8)+1)->as_d8();
+    my $edt = ($dt->day_of_week == 6)? $dt+1: $dt;
+
+    my $dt8  = $dt->as_d8();
+    my $edt8 = $edt->as_d8();
+
+    $c->stash->{prev_date} = ($dt-1)->as_d8();
+    $c->stash->{next_date} = ($dt+1)->as_d8();
 
     my @coming = model($c, 'Registration')->search({
-                     date_start => $d8,
+                     date_start => { 'between' => [ $dt8, $edt8 ] },
                      cancelled  => '',
                  });
     my (@ind_coming) = map {
@@ -809,9 +814,11 @@ sub comings_goings : Local {
     }
     @prg_coming = ();
     for my $p_id (keys %prg_coming) {
+        my $p = model($c, 'Program')->find($p_id);
         push @prg_coming, {
             id    => $p_id,
-            name  => model($c, 'Program')->find($p_id)->name,
+            dow   => $p->sdate_obj->day_of_week(),
+            name  => $p->name,
             count => $prg_coming{$p_id},
             noun  => ($prg_coming{$p_id} == 1)? "person": "people",
         };
@@ -824,12 +831,12 @@ sub comings_goings : Local {
                            $a->name cmp $b->name
                        }
                        model($c, 'Rental')->search({
-                           sdate => $d8,
+                           sdate => { 'between' => [ $dt8, $edt8 ] },
                        });
 
     my (@going) = model($c, 'Registration')->search({
-                      date_end => $d8,
-                      cancelled  => '',
+                      date_end  => $dt8,
+                      cancelled => '',
                   });
     my (@ind_going) = map {
                           $_->[1],
@@ -868,7 +875,7 @@ sub comings_goings : Local {
                           edate => $d8,
                       });
 
-    $c->stash->{date} = date($d8);
+    $c->stash->{date} = $dt;
     $c->stash->{ind_coming} = \@ind_coming;
     $c->stash->{ind_going}  = \@ind_going;
     $c->stash->{prg_coming} = \@prg_coming;

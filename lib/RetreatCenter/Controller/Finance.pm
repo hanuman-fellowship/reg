@@ -22,12 +22,6 @@ use Global qw/
     %string
 /;
 
-sub index : Local {
-    my ($self, $c) = @_;
-
-    $c->stash->{template} = "finance/index.tt2";
-}
-
 sub reconcile_deposit : Local {
     my ($self, $c, $source, $id, $prelim) = @_;
 

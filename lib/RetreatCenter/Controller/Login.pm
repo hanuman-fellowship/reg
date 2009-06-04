@@ -37,7 +37,14 @@ sub index : Private {
             Global->init($c);       # where else to put this???
             _clear_images();
             if ($c->check_user_roles('prog_staff')) {
-                $c->response->redirect($c->uri_for('/program/list'));
+                if (today()->as_d8() > $string{date_coming_going_printed}) {
+                    $c->response->redirect(
+                        $c->uri_for('/listing/comings_goings')
+                    );
+                }
+                else {
+                    $c->response->redirect($c->uri_for('/program/list'));
+                }
             }
             elsif ($c->check_user_roles('field_staff')) {
                 $c->response->redirect($c->uri_for('/listing/field'));

@@ -91,16 +91,11 @@ Programs Director
 <div style="height: 1.6in"></div>
 <h3>Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
-[% IF rental.contract_signer %]
-    [% p = rental.contract_signer %]
-[% ELSE %]
-    [% p = rental.coordinator %]
-[% END %]
-[% p.first %]
-[% p.last %]
-of [% p.addr1 %][% IF p.addr2 %] [% p.addr2 %][% END %],
-[% p.city %], [% p.st_prov %]
-[% p.zip_post %], [% IF p.country %][% p.country %][% END %]
+[% signer.first %]
+[% signer.last %]
+of [% signer.addr1 %][% IF signer.addr2 %] [% signer.addr2 %][% END %],
+[% signer.city %], [% signer.st_prov %]
+[% signer.zip_post %], [% IF signer.country %][% signer.country %][% END %]
 for &#145;[% rental.name %]&#146;, hereafter called the Renter, hereby agree as follows:
 <h2>Facilities</h2>
 The Center will provide workshop space in the [% rental.meeting_spaces %],

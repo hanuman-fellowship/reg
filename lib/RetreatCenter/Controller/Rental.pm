@@ -677,6 +677,10 @@ sub update_do : Local {
     my $mmc_does_reg_b4 = $r->mmc_does_reg();      # before the update
 
     $r->update(\%P);
+    _send_grid_data($r);        # relevant things may have changed
+
+    # now where?
+    #
     if ($names || $lunches) {
         $c->stash->{names}    = $names;
         $c->stash->{lunches}  = $lunches;
@@ -874,6 +878,7 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person[0]->id,
         });
+        _send_grid_data($r);
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
@@ -915,6 +920,7 @@ sub contract_signer_update_do : Local {
         $r->update({
             cs_person_id => $person[0]->id,
         });
+        _send_grid_data($r);
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
@@ -1079,6 +1085,7 @@ sub booking : Local {
 sub booking_do : Local {
     my ($self, $c, $rental_id, $h_type) = @_;
 
+    my $r = model($c, 'Rental')->find($rental_id);
     my @chosen_house_ids = values %{$c->request->params()};
     if (! @chosen_house_ids) {
         $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
@@ -1087,7 +1094,6 @@ sub booking_do : Local {
     for my $h_id (@chosen_house_ids) {
         my $h = model($c, 'House')->find($h_id);
         my $max = $h->max;
-        my $r = model($c, 'Rental')->find($rental_id);
         my $sdate = $r->sdate;
         my $edate1 = date($r->edate) - 1;
         $edate1 = $edate1->as_d8();
@@ -1109,17 +1115,18 @@ sub booking_do : Local {
             rental_id  => $rental_id,
         });
     }
+    _send_grid_data($r);
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 sub del_booking : Local {
     my ($self, $c, $rental_id, $house_id) = @_;
 
+    my $r = model($c, 'Rental')->find($rental_id);
     model($c, 'RentalBooking')->search({
         rental_id => $rental_id,
         house_id  => $house_id,
     })->delete();
-    my $r = model($c, 'Rental')->find($rental_id);
     my $sdate = $r->sdate;
     my $edate1 = date($r->edate) - 1;
     $edate1 = $edate1->as_d8();
@@ -1135,9 +1142,12 @@ sub del_booking : Local {
         program_id => 0,
         rental_id  => $rental_id,
     });
+    _send_grid_data($r);
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
+# different stash than sub contract???
+#
 sub email_contract : Local {
     my ($self, $c, $rental_id) = @_;
 
@@ -1154,7 +1164,11 @@ sub email_contract : Local {
 sub _contract_ready {
     my ($c, $rental) = @_;
 
-    my $cs = ($rental->contract_signer() || $rental->coordinator());
+    my $cs_id = ($rental->cs_person_id() || $rental->coordinator_id());
+    my $cs = undef;
+    if ($cs_id) {
+        $cs = model($c, 'Person')->find($cs_id);
+    }
     #
     # check that the rental is ready for contract generation
     #
@@ -1210,7 +1224,8 @@ sub contract : Local {
     });
     my %stash = (
         today  => today(),
-        signer => ($rental->contract_signer() || $rental->coordinator()),
+        signer => ($rental->cs_person_id()? $rental->contract_signer()
+                   :                        $rental->coordinator()),
         rental => $rental,
     );
     $tt->process(
@@ -1284,6 +1299,7 @@ sub reserve_cluster : Local {
             rental_id  => $rental_id,
         });
     }
+    _send_grid_data($rental);
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -1321,6 +1337,7 @@ sub cancel_cluster : Local {
             program_id => 0,
         });
     }
+    _send_grid_data($rental);
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -2333,6 +2350,61 @@ sub grid : Local {
         nnights => ($rental->edate_obj() - $rental->sdate_obj()),
         template => 'rental/grid.tt2',
     );
+}
+
+# like a hash but messier?
+# some unique (likely) number for a rental
+#
+sub _mash {
+    my ($rental) = @_;
+
+    my $sdate = $rental->sdate();
+    my $n = substr($sdate, 7, 1)        # units digit of day
+          . ($rental->id() % 100)       # last two digits of id
+          . substr($sdate, 3, 1)        # year digit
+          ;
+    $n = $n * $n;
+    return substr($n, 2, 4);
+}
+
+sub _send_grid_data {
+    my ($rental) = @_;
+
+    my $mash = _mash($rental) . ".txt";
+    open my $gd, ">", "/tmp/$mash"
+        or die "cannot create /tmp/$mash: $!\n";
+    print {$gd} "name " . $rental->name() . "\n";
+    print {$gd} "id " . $rental->id() . "\n";
+    my $coord = $rental->coordinator();
+    print {$gd} "first " . $coord->first() . "\n";
+    print {$gd} "last " . $coord->last() . "\n";
+    print {$gd} "sdate " . $rental->sdate() . "\n";
+    print {$gd} "edate " . $rental->edate() . "\n";
+    my $hc = $rental->housecost();
+    for my $t (housing_types(1)) {
+        print {$gd} "$t " . $hc->$t() . "\n";
+    }
+    for my $b ($rental->rental_bookings()) {
+        my $house = $b->house;
+        print {$gd} $house->name()
+            . "|" . $house->max()
+            . "|" . $house->id()
+            . "|" . ($house->bath()    eq 'yes'? 1: 0)
+            . "|" . ($house->tent()    eq 'yes'? 1: 0)
+            . "|" . ($house->center()  eq 'yes'? 1: 0)
+            . "\n"
+            ;
+    }
+    close $gd;
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd("www/cgi-bin/rental");
+    $ftp->ascii();
+    $ftp->put("/tmp/$mash", $mash);
+    $ftp->quit();
+    #unlink "/tmp/$mash";
 }
 
 1;

@@ -67,8 +67,10 @@ sub index : Private {
 #
 sub transform_dates {
     my ($pr, %dates) = @_;
+
+    my $PR = $pr->name() =~ m{personal\s+retreat}i;
     
-    if ($dates{date_start} && $dates{date_start} ne $pr->sdate()) {
+    if ($PR || ($dates{date_start} && $dates{date_start} ne $pr->sdate())) {
         $dates{early} = 'yes';
     }
     else {
@@ -80,8 +82,9 @@ sub transform_dates {
         # edate2 may be different in case this is an 'extended' program.
 
     if ($dates{date_end}) {
-        if (   $dates{date_end} ne $edate
-            && $dates{date_end} ne $edate2
+        if ($PR ||
+            ($dates{date_end} ne $edate
+             && $dates{date_end} ne $edate2)
         ) {
             $dates{late} = 'yes';
         }

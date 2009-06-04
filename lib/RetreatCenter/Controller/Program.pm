@@ -33,6 +33,7 @@ use Util qw/
 /;
 use Date::Simple qw/
     date
+    today
 /;
 use Time::Simple qw/
     get_time
@@ -500,14 +501,21 @@ sub _get_cluster_groups {
 # ??? order of display?   also end date???
 #
 sub list : Local {
-    my ($self, $c, $dcm) = @_;
+    my ($self, $c, $type) = @_;
 
+    if ($type == 2) {
+        my $today = today()->as_d8();
+        $string{date_coming_going_printed} = $today;
+        model($c, 'String')->find('date_coming_going_printed')->update({
+            value => $today,
+        });
+    }
     # ??? how to include programs that are extended and not quite finished???
     # good enough to include programs that may have finished a week ago?
     my $cutoff = tt_today($c) - 7;
     $cutoff = $cutoff->as_d8();
     my @cond = ();
-    if ($dcm) {
+    if ($type == 1) {
         @cond = (
             level => { -in  => [qw/  D C M  /] },
         );

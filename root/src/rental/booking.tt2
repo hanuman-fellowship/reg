@@ -8,7 +8,9 @@
 [% checks %]
 [% IF Rchecks %]
 <h4>Resized Rooms</h4>
+<span class=required>
 [% Rchecks %]
+</span>
 [% END %]
 <p class=p2>
 <input type=submit value="Submit">
