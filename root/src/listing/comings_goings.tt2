@@ -1,6 +1,7 @@
 <style>
 /* for tinyMCE <p> tags */
 p {
+    margin-top: 0in;
     margin-left: .5in;
 }
 </style>
@@ -13,7 +14,7 @@ p {
 <a accesskey='p' href=/program/list/2 onclick="javascript:window.print(); return true;"><span class=keyed>P</span>rint</a>
 <h3>Coming</h3>
 <ul>
-<table cellpadding=3 border=0>
+<table cellpadding=2 border=0>
 <tr>
 <td width=30></td>
 <th align=left width=250>Name</th>
