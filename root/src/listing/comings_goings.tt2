@@ -1,3 +1,9 @@
+<style>
+/* for tinyMCE <p> tags */
+p {
+    margin-left: .5in;
+}
+</style>
 <h2>For [% date.format("%A, %B %e") %]</h2>
 [% not_sunday = date.day_of_week != 0 %]
 <a href=/listing/comings_goings/[% prev_date %] accesskey='b'><span class=keyed>B</span>ack</a>
@@ -28,9 +34,7 @@
 [% IF r.comment %]
 <tr>
 <td></td>
-<td colspan=3>
-[% r.comment %]
-</td>
+<td colspan=3>[% r.comment %]</td>
 </tr>
 [% END %]
 [% END %]
