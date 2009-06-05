@@ -82,6 +82,9 @@ Mount Madonna Center
 [% IF reg.confnote %]
     [% reg.confnote %]
 [% END %]
+[% IF reg.early || reg.late %]
+You [% IF reg.early %]arrive on [% reg.date_start_obj.format("%A, %B %e") %][% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on [% reg.date_end_obj.format("%A, %B %e") %][% END %].
+[% END %]
 </ul>
 [% END %]
 <span class="on_right">Receipt #[% reg.id %]</span>
