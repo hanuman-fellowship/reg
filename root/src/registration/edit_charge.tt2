@@ -16,7 +16,7 @@
 
 <tr>
 <th align=right>For What</th>
-<td><input type=text name=what size=60 value='[% chg.what %]'></td>
+<td><input type=text name=what size=60 value="[% chg.what %]"></td>
 </tr>
 
 <tr>
