@@ -4430,4 +4430,31 @@ sub work_study : Local {
     );
 }
 
+sub find : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $prog = model($c, 'Program')->find($prog_id);
+    stash($c,
+        program  => $prog,
+        template => 'registration/find.tt2',
+    );
+}
+
+sub find_do : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $prog = model($c, 'Program')->find($prog_id);
+    my $pat = $c->request->params->{pat};
+    my @regs = model($c, 'Registration')->search({
+        program_id => $prog_id,
+        comment    => { 'like' => "%$pat%" },   
+    });
+    stash($c,
+        pat      => $pat,
+        program  => $prog,
+        regs     => \@regs,
+        template => 'registration/comments.tt2',
+    );
+}
+
 1;

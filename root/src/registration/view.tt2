@@ -94,6 +94,8 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 &nbsp;&nbsp;
 <a href=/registration/edit_dollar/[% id %]>Edit$</a>
 &nbsp;&nbsp;
+<a href=/registration/find/[% program.id %]>Find</a>
+&nbsp;&nbsp;
 [% IF reg.manual %]
 <a href=/registration/automatic/[% id %]/0>To Automatic</a>
 [% ELSE %]
