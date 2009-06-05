@@ -1,0 +1,8 @@
+<h2>Searching Comments in Registrations<br>for [% program.name %]</h2>
+<form action=/registration/find_do/[% program.id %]>
+<b>Pattern</b>
+<input type=text size=20 id=pat name=pat>
+<td><input type=submit value="Go"></td>
+<script type="text/javascript">
+document.getElementById('pat').select();
+</script>
