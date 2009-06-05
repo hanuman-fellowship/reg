@@ -321,6 +321,10 @@ EOH
                 $gcredit += $credit + $online;
                 $gtotal  += $total;
                 ($cash, $check, $credit, $online) = (0, 0, 0, 0);
+                if ($nrows+10 > $string{deposit_lines_per_page}) {
+                    $html .= "</table>" . $newpage . $heading;
+                    $nrows = 0;
+                }
             }
             $html .= "<tr>"
                   .  "<td colspan=6 align=left><b>$p->{pname}</b> ($p->{glnum})</td>"
