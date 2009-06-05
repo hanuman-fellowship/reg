@@ -239,8 +239,8 @@ sub file_deposit : Local {
     @payments = sort {
                         ($a->{pname} cmp $b->{pname}) ||
                         ($a->{glnum} cmp $b->{glnum}) ||
-                        ($a->{name}  cmp $b->{name} ) ||
                         ($a->{date}  cmp $b->{date} ) ||
+                        ($a->{name}  cmp $b->{name} ) ||
                         ($a->{amt}   cmp $b->{amt}  )
                     }
                     @payments;
@@ -263,13 +263,13 @@ sub file_deposit : Local {
     my $html = <<"EOH";
 <style type="text/css">
 body, td, th {
-    font-size: 12pt;
+    font-size: 11pt;
     font-family: Courier;
 }
 </style>
 EOH
 my $heading = <<"EOH";
-$timestamp<span style="font-size: 25pt; font-weight: bold; margin-left: 1in;">\U$source\E Bank Deposit</span>
+$timestamp<span style="font-size: 15pt; font-weight: bold; margin-left: 1in;">\U$source\E Bank Deposit</span>
 <p>
 <table cellpadding=1>
 <tr valign=bottom>
