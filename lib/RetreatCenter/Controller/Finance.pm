@@ -140,7 +140,8 @@ sub reconcile_deposit : Local {
     }
 
     stash($c,
-        source   => uc $source,
+        source   => $source,
+        SOURCE   => uc $source,
         payments => \@payments,
         again    => (! $id && ! $prelim),
         prelim   => $prelim,
