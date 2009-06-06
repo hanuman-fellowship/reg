@@ -6,12 +6,13 @@ p {
 <h2>Configuration</h2>
 [% super = Catalyst.check_user_roles('super_admin') %]
 [% prog = Catalyst.check_user_roles('prog_staff') %]
+[% prog_admin = Catalyst.check_user_roles('prog_admin') %]
 [% field = Catalyst.check_user_roles('field_staff') %]
 <ul>
 [% IF ! field %]
     <a href=/affil/list>Affiliations</a><p>
 [% END %]
-[% IF super %]
+[% IF prog_admin %]
     <a href=/annotation>Annotations</a><p>
 [% END %]
 [% IF prog %]
