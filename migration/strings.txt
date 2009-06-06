@@ -179,3 +179,6 @@ member_meal_cost 14
 deposit_lines_per_page 5
 
 date_coming_going_printed 20090603
+
+dp_margin_right 50
+dp_margin_bottom 25

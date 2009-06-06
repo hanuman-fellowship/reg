@@ -167,12 +167,11 @@ Web
 <td>[% ndays %]</td>
 </tr>
 
-<tr>
-<th align=right>Web Code</th>
-<td>[% mash %]&nbsp;&nbsp;<a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?mash=[% mash %]>Go</a></td>
-</tr>
-
 <tr><td>&nbsp;</td></tr>
+
+<tr>
+<td colspan=2 align=center><a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?code=[% code %]>Web Grid</a></td>
+</tr>
 
 <tr>
 <td colspan=2 align=center><a href=/rental/clusters/[% id %]>Cluster Reservations</a></td>

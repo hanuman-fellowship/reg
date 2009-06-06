@@ -2416,8 +2416,14 @@ sub grid : Local {
 
     my %data = ();
     if (open my $in, "<", $fgrid) {
+        LINE:
         while (my $line = <$in>) {
             chomp $line;
+            if ($line =~ m{^(own_van|commuting)\|(\d+)\|(\d+)$}) {
+                $data{$1} = $2;
+                $data{"c$1"} = $3;
+                next LINE;
+            }
             my ($id, $bed, $name, @nights) = split m{\|}, $line;
             my $cost = pop @nights;
             $data{"p$id\_$bed"} = $name;

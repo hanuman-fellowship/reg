@@ -53,7 +53,12 @@ Housing Assignment Grid
         [% i = i + 1 %]
     [% END %]
 [% END %]
-<tr><td colspan=3></td><td colspan=[% nnights %]><td align=right>[% tot %]</td></tr>
+[% x = nnights + 2 %]
+<tr><th colspan=[% x %] align=right>Own Van</th><td align=right>[% data.own_van %]</td><td align=right>[% data.cown_van %]</td></tr>
+[% tot = tot + data.cown_van %]
+<tr><th colspan=[% x %] align=right>Commuting</th><td align=right>[% data.commuting %]</td><td align=right>[% data.ccommuting %]</td></tr>
+[% tot = tot + data.ccommuting %]
+<tr><th colspan=[% x + 1 %] align=right>Total</th><td align=right>[% tot %]</td></tr>
 </table>
 <p class=p2>
 <ul>
