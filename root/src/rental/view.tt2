@@ -149,7 +149,7 @@ Web
 <tr>
 <th align=right>Maximum</th>
 <td>[% rental.max %]</td>
-<td rowspan=5>
+<td rowspan=6>
 <div style="margin-left: .3in;">
 <span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% id %]">Update</a></span>
 <div class=lunch>[% lunch_table %]</div>
@@ -165,6 +165,11 @@ Web
 <tr>
 <th>Number of Days</th>
 <td>[% ndays %]</td>
+</tr>
+
+<tr>
+<th align=right>Web Code</th>
+<td>[% mash %]&nbsp;&nbsp;<a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?mash=[% mash %]>Go</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>

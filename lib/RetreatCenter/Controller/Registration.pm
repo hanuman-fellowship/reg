@@ -1117,16 +1117,24 @@ sub _compute {
     #
     if (! $lead_assist && $auto) {
         my $tuition = $pr->tuition();
+        my $what = "Tuition";
         if ($pr->extradays() && $reg->date_end() > $pr->edate()) {
             # they need to pay the full tuition amount
             $tuition = $pr->full_tuition();
+        }
+        if ($pr->retreat()) {
+            # pro-rated tuition for retreats only
+            #
+            $tuition = int($tuition * ($prog_days/$tot_prog_days));
+            my $pl = ($prog_days == 1)? "": "s";
+            $what .= " - pro-rated for $prog_days day$pl";
         }
         if ($tuition > 0) {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
                 amount    => $tuition,
-                what      => 'Tuition',
+                what      => $what,
             });
         }
 

@@ -1310,3 +1310,6 @@ doc: to unmark someone as a leader of a program - but keep their registration
 
 doc: invoice for rentals - show all options even ones
     for which the housing cost is 0 - i.e. not offered.
+
+extra days - perhaps edate should be the last last
+    and you _substract_ extradays to get the first last?

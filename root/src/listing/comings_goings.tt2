@@ -72,7 +72,7 @@ p {
 [% p = r.person %]
 [% pr = r.program %]
 <tr>
-<td></td>
+<td align=right>[% IF not_sunday && r.date_end_obj.day_of_week == 0 %]<span class=required>Sun</span>[% END %]</td>
 <td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
 <td><a target=happening href="/program/view/[% pr.id %]">[% pr.name %]</a></td>
 </tr>
@@ -80,7 +80,7 @@ p {
 
 [% FOR p IN prg_going %]
 <tr>
-<td></td>
+<td align=right>[% IF not_sunday && p.edate_obj.day_of_week == 0 %]<span class=required>Sun</span>[% END %]</td>
 <td>[% p.count %] [% p.noun %]</td>
 <td><a target=happening href="/program/view/[% p.id %]">[% p.name %]</a></td>
 </tr>
@@ -88,7 +88,7 @@ p {
 
 [% FOR r IN rnt_going %]
 <tr>
-<td></td>
+<td align=right>[% IF not_sunday && r.edate_obj.day_of_week == 0 %]<span class=required>Sun</span>[% END %]</td>
 <td>[% r.count %] people</td>
 <td><a target=happening href="/rental/view/[% r.id %]">[% r.name %]</a></td>
 </tr>

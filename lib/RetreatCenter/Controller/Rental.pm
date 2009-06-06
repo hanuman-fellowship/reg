@@ -487,6 +487,7 @@ sub view : Local {
                               $rental->edate_obj(),
                               $rental->start_hour_obj(),
                           ),
+        mash           => _mash($rental),
         template       => "rental/view.tt2",
     );
 }
@@ -920,7 +921,6 @@ sub contract_signer_update_do : Local {
         $r->update({
             cs_person_id => $person[0]->id,
         });
-        _send_grid_data($r);
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
@@ -2337,17 +2337,49 @@ sub grid : Local {
     my ($self, $c, $rental_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
-    my @days;
+    my $mash = _mash($rental);
+    my $days = "";
     my $d = $rental->sdate_obj();
     my $ed = $rental->edate_obj() - 1;
     while ($d <= $ed) {
-        push @days, $d->format("%s");
+        $days .= "<th align=center width=20>"
+              .  $d->format("%s")
+              .  "</th>"
+              ;
         ++$d;
     }
+
+    # get the most recent edit from the global web
+    #
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd("www/cgi-bin/rental");
+    mkdir "root/static/grid" unless -d "root/static/grid";
+    $ftp->get("$mash-data.txt", "root/static/grid/$mash-data.txt");
+    $ftp->quit();
+
+    my %data = ();
+    if (open my $in, "<", "root/static/grid/$mash-data.txt") {
+        while (my $line = <$in>) {
+            chomp $line;
+            my ($id, $bed, $name, @nights) = split m{\|}, $line;
+            my $cost = pop @nights;
+            $data{"p$id\_$bed"} = $name;
+            for my $n (1 .. @nights) {
+                $data{"n$id\_$bed\_$n"} = $nights[$n-1];
+            }
+            $data{"c$id\_$bed"} = $cost;
+        }
+        close $in;
+    }
+
     stash($c,
-        days    => (join '', map { "<td align=center width=20>$_</td>" } @days),
-        rental  => $rental,
-        nnights => ($rental->edate_obj() - $rental->sdate_obj()),
+        days     => $days,
+        rental   => $rental,
+        nnights  => ($rental->edate_obj() - $rental->sdate_obj()),
+        data     => \%data,
         template => 'rental/grid.tt2',
     );
 }
@@ -2376,8 +2408,14 @@ sub _send_grid_data {
     print {$gd} "name " . $rental->name() . "\n";
     print {$gd} "id " . $rental->id() . "\n";
     my $coord = $rental->coordinator();
-    print {$gd} "first " . $coord->first() . "\n";
-    print {$gd} "last " . $coord->last() . "\n";
+    if ($coord) {
+        print {$gd} "first " . $coord->first() . "\n";
+        print {$gd} "last " . $coord->last() . "\n";
+    }
+    else {
+        print {$gd} "first Unknown\n";
+        print {$gd} "last Unknown\n";
+    }
     print {$gd} "sdate " . $rental->sdate() . "\n";
     print {$gd} "edate " . $rental->edate() . "\n";
     my $hc = $rental->housecost();
@@ -2386,12 +2424,15 @@ sub _send_grid_data {
     }
     for my $b ($rental->rental_bookings()) {
         my $house = $b->house;
-        print {$gd} $house->name()
+        my $h_name = $house->name();
+        $h_name =~ s{^(\d+)B$}{$1};
+        print {$gd}
+                    $house->id()
+            . "|" . $h_name
             . "|" . $house->max()
-            . "|" . $house->id()
             . "|" . ($house->bath()    eq 'yes'? 1: 0)
             . "|" . ($house->tent()    eq 'yes'? 1: 0)
-            . "|" . ($house->center()  eq 'yes'? 1: 0)
+            . "|" . ($house->center()  eq 'yes'? 0: 1)
             . "\n"
             ;
     }

@@ -1,10 +1,10 @@
 <ul>
 <h2>
 [% rental.name %] 
-<span style="font-size: 13pt">[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+<span style="font-size: 13pt; margin-left: .5in;">[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
 <b>To</b>
 [% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
-</span><br>
+</span><p class=p2>
 Housing Assignment Grid
 </h2>
 <table cellpadding=5 border=1>
@@ -12,7 +12,9 @@ Housing Assignment Grid
 <td colspan=2>&nbsp;</td>
 <th align=left width=300>Name</th>
 [% days %]
+<th>Cost</th>
 </tr>
+[% tot = 0 %]
 [% FOR rb IN rental.rental_bookings %]
     [% h = rb.house %]
     [% max = h.max %]
@@ -30,16 +32,26 @@ Housing Assignment Grid
             </th>
         [% END %]
         <td align=right>[% i %]</td>
-        <td>&nbsp;</td>
+        [% v = 'p' _ h.id _ '_' _ i %]
+        <td>[% data.$v %]</td>
         [% n = 1 %]
         [% WHILE n <= nnights %]
+            [% v = 'n' _ h.id _ '_' _ i _ '_' _ n %]
+            [% IF data.$v %]
+            <td bgcolor=green>&nbsp;</td>
+            [% ELSE %]
             <td>&nbsp;</td>
+            [% END %]
             [% n = n + 1 %]
         [% END %]
+        [% v = 'c' _ h.id _ '_' _ i %]
+        <td align=right>[% data.$v %]</td>
+        [% tot = tot + data.$v %]
         </tr>
         [% i = i + 1 %]
     [% END %]
 [% END %]
+<tr><td colspan=3></td><td colspan=[% nnights %]><td align=right>[% tot %]</td></tr>
 </table>
 <p class=p2>
 <ul>

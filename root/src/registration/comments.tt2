@@ -1,7 +1,7 @@
 <h2>Registrations in [% program.name %] with '[% pat %]'</h2>
 <table cellpadding=3>
 <tr>
-<th align=left>Name</th>
+<th align=left width=200>Name</th>
 <th align=left>Comment</th>
 </tr>
 [% FOR r IN regs %]

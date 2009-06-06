@@ -835,7 +835,7 @@ sub comings_goings : Local {
                        });
 
     my (@going) = model($c, 'Registration')->search({
-                      date_end  => $dt8,
+                      date_end => { 'between' => [ $dt8, $edt8 ] },
                       cancelled => '',
                   });
     my (@ind_going) = map {
@@ -872,7 +872,7 @@ sub comings_goings : Local {
                           $a->name cmp $b->name
                       }
                       model($c, 'Rental')->search({
-                          edate => $d8,
+                          edate => { 'between' => [ $dt8, $edt8 ] },
                       });
 
     $c->stash->{date} = $dt;
