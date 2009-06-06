@@ -81,8 +81,8 @@ sub show : Local {
         }
     }
     # margin???
-    $width += $string{house_height};
-    $height += $string{house_height};
+    $width += $string{dp_margin_right};
+    $height += $string{dp_margin_bottom};
 
     my $dp = GD::Image->new($width+1, $height+1);
     my $pct = $string{dp_img_percent}/100;
