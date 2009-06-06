@@ -66,7 +66,7 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     model($c, 'Ride')->find($id)->delete();
-    Global->init($c, 1);
+    Global->init($c);
     $c->response->redirect($c->uri_for('/ride/list'));
 }
 
@@ -236,7 +236,7 @@ sub update_do : Local {
     });
     delete @P{qw/cc_number cc_expire cc_code/};
     $ride->update(\%P);
-    Global->init($c, 1);
+    Global->init($c);
     $c->response->redirect($c->uri_for("/ride/view/$id"));
 }
 

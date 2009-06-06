@@ -1,10 +1,12 @@
 <ul>
 <h2>
 [% rental.name %] 
-<span style="font-size: 13pt; margin-left: .5in;">[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+<span style="font-size: 13pt; margin-left: 1in;">[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
 <b>To</b>
 [% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
-</span><p class=p2>
+</span>
+<span style="font-size: 15pt; margin-left: .5in;">[% coord_name %]</span>
+<p class=p2>
 Housing Assignment Grid
 </h2>
 <table cellpadding=5 border=1>
@@ -22,7 +24,7 @@ Housing Assignment Grid
     [% WHILE i <= max %]
         <tr>
         [% IF i == 1 %]
-            <th rowspan=[% max %] align=center>[% h.name %]
+            <th rowspan=[% max %] align=center>[% h.name_disp %]
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.center %] - c

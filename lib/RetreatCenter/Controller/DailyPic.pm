@@ -207,16 +207,18 @@ sub show : Local {
         else {
             $color = $black;
         }
-        if (! empty($a->label())) {
+        if ($a->shape() ne 'none') {
+            my $shape = $a->shape();
+            $dp->setThickness($a->thickness());
+            $dp->$shape($a->x1(), $a->y1(),
+                        $a->x2(), $a->y2(),
+                        $color);
+            $dp->setThickness(1);
+        }
+        else {
             $dp->string(gdGiantFont,
                         $a->x(), $a->y(),
                         $a->label(),
-                        $color);
-        }
-        elsif ($a->shape() ne 'none') {
-            my $shape = $a->shape();
-            $dp->$shape($a->x1(), $a->y1(),
-                        $a->x2(), $a->y2(),
                         $color);
         }
     }

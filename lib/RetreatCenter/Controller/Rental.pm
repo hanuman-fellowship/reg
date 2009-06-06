@@ -487,7 +487,7 @@ sub view : Local {
                               $rental->edate_obj(),
                               $rental->start_hour_obj(),
                           ),
-        mash           => _mash($rental),
+        code           => _code($rental),
         template       => "rental/view.tt2",
     );
 }
@@ -1224,6 +1224,8 @@ sub contract : Local {
     });
     my %stash = (
         today  => today(),
+        email  => $email,
+        code   => _code($rental),
         signer => ($rental->cs_person_id()? $rental->contract_signer()
                    :                        $rental->coordinator()),
         rental => $rental,
@@ -1351,39 +1353,12 @@ sub view_summary : Local {
     $c->stash->{template} = "rental/view_summary.tt2";
 }
 
-#
-# ???provide a Back button at the bottom but
-# exclude it when printing!
-#
-sub invoice : Local {
-    my ($self, $c, $id) = @_;
+sub _att_cost_table {
+    my ($rental, $ndays, $hc) = @_;
 
-    Global->init($c);
-    my $rental = model($c, 'Rental')->find($id);
-    my $ndays = $rental->edate_obj() - $rental->sdate_obj();
-    my $hc = $rental->housecost();
-    my $max = $rental->max();
-    my $html = <<"EOH";
-<html>
-<head>
-<style type="text/css">
-body {
-    margin-top: 1.5in;
-    margin-left: .5in;
-}
-</style>
-</head>
-<body>
-EOH
-    $html .= "<h1>Invoice for "
-          .  $rental->name()
-          .  "<br>"
-          .  $rental->sdate_obj->format("%b %e, %Y")
-          .  " to "
-          .  $rental->edate_obj->format("%b %e, %Y")
-          .  "</h1>\n";
-    $html .= <<"EOH";
-<h2>Housing Charges</h2>
+    my $tot_housing_charge = 0;
+    my $html = "";
+    $html = <<"EOH";
 <ul>
 <table cellpadding=8 border=1>
 <tr>
@@ -1394,7 +1369,6 @@ EOH
 <th>Total</th>
 </tr>
 EOH
-    my $tot_housing_charge = 0;
     my $tot_people = 0;
     H_TYPE:
     for my $type (housing_types(1)) {
@@ -1456,9 +1430,81 @@ EOH
                    ]
                   )
                );
-    $html .= <<"EOH";
-</table>
+    return "$html\n</table>\n", $tot_housing_charge, $tot_people;
+}
+
+#
+# ???provide a Back button at the bottom but
+# exclude it when printing!
+#
+sub invoice : Local {
+    my ($self, $c, $id) = @_;
+
+    Global->init($c);
+    my $rental = model($c, 'Rental')->find($id);
+    my $ndays = $rental->edate_obj() - $rental->sdate_obj();
+    my $hc = $rental->housecost();
+    my $max = $rental->max();
+
+    my $html = <<"EOH";
+<html>
+<head>
+<style type="text/css">
+body {
+    margin-top: 1.5in;
+    margin-left: .5in;
+}
+</style>
+</head>
+<body>
 EOH
+    $html .= "<h1>Invoice for "
+          .  $rental->name()
+          .  "<br>"
+          .  $rental->sdate_obj->format("%b %e, %Y")
+          .  " to "
+          .  $rental->edate_obj->format("%b %e, %Y")
+          .  "</h1>\n";
+
+    $html .= <<"EOH";
+<h2>Housing Charges</h2>
+<ul>
+EOH
+
+    my $tot_housing_charge = 0;
+    my $tot_people = 0;
+    my $fgrid = _get_grid_file($rental);
+    if (open my $in, "<", $fgrid) {
+        # parse the file and extract total cost, total people
+        #
+        while (my $line = <$in>) {
+            chomp $line;
+            my ($cost) = $line =~ m{(\d+)$};
+            my ($name) = $line =~ m{^\d+\|\d+\|([^|]*)\|};
+            my $np = $name =~ tr/&/&/;
+            $tot_housing_charge += $cost;
+            if ($cost != 0) {
+                $tot_people += $np + 1;
+            }
+        }
+        close $in;
+        my $ctot = commify($tot_housing_charge);
+        $html .= <<"EOH";
+From web housing grid: \$$ctot
+EOH
+    }
+    else {
+        # look at the attendance for total cost, total people.
+        # it also returns a nice table of costs.
+        #
+        my ($table, $cost, $tot_p) = _att_cost_table($rental, $ndays, $hc);
+        $html .= $table;
+        $tot_housing_charge = $cost;
+        $tot_people = $tot_p;
+    }
+   
+    # how does the total cost compare to the minimum?
+    #
     my $dorm_rate = $hc->dormitory();
     my $min_lodging = int(0.75
                           * $max
@@ -2333,11 +2379,26 @@ sub _get_cluster_groups {
     return "<table>\n$available</table>XX<table>\n$reserved</table>";
 }
 
+sub _get_grid_file {
+    my ($rental) = @_;
+
+    my $code = _code($rental);
+    my $fname = "root/static/grid/$code-data.txt";
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd("www/cgi-bin/rental");
+    mkdir "root/static/grid" unless -d "root/static/grid";
+    $ftp->get("$code-data.txt", $fname);    # it may be there, maybe not
+    $ftp->quit();
+    return $fname;
+}
+
 sub grid : Local {
     my ($self, $c, $rental_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
-    my $mash = _mash($rental);
     my $days = "";
     my $d = $rental->sdate_obj();
     my $ed = $rental->edate_obj() - 1;
@@ -2351,17 +2412,10 @@ sub grid : Local {
 
     # get the most recent edit from the global web
     #
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to $string{ftp_site}";    # not die???
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd("www/cgi-bin/rental");
-    mkdir "root/static/grid" unless -d "root/static/grid";
-    $ftp->get("$mash-data.txt", "root/static/grid/$mash-data.txt");
-    $ftp->quit();
+    my $fgrid = _get_grid_file($rental);
 
     my %data = ();
-    if (open my $in, "<", "root/static/grid/$mash-data.txt") {
+    if (open my $in, "<", $fgrid) {
         while (my $line = <$in>) {
             chomp $line;
             my ($id, $bed, $name, @nights) = split m{\|}, $line;
@@ -2374,37 +2428,58 @@ sub grid : Local {
         }
         close $in;
     }
+    my $coord = $rental->coordinator();
+    my $coord_name = "";
+    if ($coord) {
+        $coord_name = $coord->first() . " " . $coord->last();
+    }
+    else {
+        $coord_name = "Unknown Coordinator";
+    }
 
     stash($c,
         days     => $days,
         rental   => $rental,
         nnights  => ($rental->edate_obj() - $rental->sdate_obj()),
         data     => \%data,
+        coord_name => $coord_name,
         template => 'rental/grid.tt2',
     );
 }
 
 # like a hash but messier?
-# some unique (likely) number for a rental
+# some unique number/key/password for a rental
+# that is hard to guess.
 #
-sub _mash {
+sub _code {
     my ($rental) = @_;
 
     my $sdate = $rental->sdate();
-    my $n = substr($sdate, 7, 1)        # units digit of day
-          . ($rental->id() % 100)       # last two digits of id
-          . substr($sdate, 3, 1)        # year digit
+    my $coord = $rental->coordinator();
+    my ($f, $l);
+    if ($coord) {
+        $f = uc substr($coord->first(), 0, 1);
+        $l = uc substr($coord->last(), 0, 1);
+    }
+    else {
+        $f = uc substr($rental->name(), 0, 1);
+        $l = uc substr($rental->name(), 1, 1);
+    }
+    my $n = substr($sdate, 6, 2)
+          . $l
+          . substr($sdate, 2, 2)
+          . $f
+          . substr($sdate, 4, 2)
           ;
-    $n = $n * $n;
-    return substr($n, 2, 4);
+    return $n;
 }
 
 sub _send_grid_data {
     my ($rental) = @_;
 
-    my $mash = _mash($rental) . ".txt";
-    open my $gd, ">", "/tmp/$mash"
-        or die "cannot create /tmp/$mash: $!\n";
+    my $code = _code($rental) . ".txt";
+    open my $gd, ">", "/tmp/$code"
+        or die "cannot create /tmp/$code: $!\n";
     print {$gd} "name " . $rental->name() . "\n";
     print {$gd} "id " . $rental->id() . "\n";
     my $coord = $rental->coordinator();
@@ -2414,7 +2489,7 @@ sub _send_grid_data {
     }
     else {
         print {$gd} "first Unknown\n";
-        print {$gd} "last Unknown\n";
+        print {$gd} "last Coordinator\n";
     }
     print {$gd} "sdate " . $rental->sdate() . "\n";
     print {$gd} "edate " . $rental->edate() . "\n";
@@ -2424,11 +2499,9 @@ sub _send_grid_data {
     }
     for my $b ($rental->rental_bookings()) {
         my $house = $b->house;
-        my $h_name = $house->name();
-        $h_name =~ s{^(\d+)B$}{$1};
         print {$gd}
                     $house->id()
-            . "|" . $h_name
+            . "|" . $house->name_disp()
             . "|" . $house->max()
             . "|" . ($house->bath()    eq 'yes'? 1: 0)
             . "|" . ($house->tent()    eq 'yes'? 1: 0)
@@ -2443,9 +2516,9 @@ sub _send_grid_data {
         or die "cannot login ", $ftp->message; # not die???
     $ftp->cwd("www/cgi-bin/rental");
     $ftp->ascii();
-    $ftp->put("/tmp/$mash", $mash);
+    $ftp->put("/tmp/$code", $code);
     $ftp->quit();
-    #unlink "/tmp/$mash";
+    unlink "/tmp/$code";
 }
 
 1;

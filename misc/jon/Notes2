@@ -1313,3 +1313,7 @@ doc: invoice for rentals - show all options even ones
 
 extra days - perhaps edate should be the last last
     and you _substract_ extradays to get the first last?
+
+doc: web grid
+    for house names - chopped B's and BH's - but do mark them with - b 
+    108 is for handicapped.  just the one room - mark it somehow?

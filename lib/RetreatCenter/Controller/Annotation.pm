@@ -50,7 +50,7 @@ sub update : Local {
     }
     $c->stash->{cluster_type_opts} = $cluster_type_opts;
     my $shape_opts = "";
-    for my $s (qw/ none rectangle ellipse /) {
+    for my $s (qw/ none rectangle filledRectangle ellipse filledEllipse /) {
         my $selected = ($s eq $ann->shape())? "selected": "";
         $shape_opts .= "<option value=$s $selected>\u$s\n";
     }
@@ -65,8 +65,8 @@ sub update_do : Local {
 
     my $label = $c->request->params->{label};
     my $shape = $c->request->params->{shape};
-    if (empty($label) && empty($shape)) {
-        $c->stash->{mess} = "Annotation must have label or shape.";
+    if (empty($label)) {
+        $c->stash->{mess} = "Annotations must have a label.";
         $c->stash->{template} = "annotation/error.tt2";
         return;
     }
@@ -104,8 +104,8 @@ sub create_do : Local {
 
     my $label = $c->request->params->{label};
     my $shape = $c->request->params->{shape};
-    if (empty($label) && empty($shape)) {
-        $c->stash->{mess} = "Annotation must have label or shape.";
+    if (empty($label)) {
+        $c->stash->{mess} = "Annotations must have a label.";
         $c->stash->{template} = "annotation/error.tt2";
         return;
     }
