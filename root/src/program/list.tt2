@@ -40,7 +40,7 @@
         <td>[% p.name %]</td>
     [% END %]
     <td>[% p.sdate_obj %]</td>
-    <td>[% p.edate_obj %]</td>
+    <td>[% p.edate_obj %][% IF p.extradays %]<span style="color: green"> +[% p.extradays %]</span>[% END %]</td>
     <td align=right>[% p.reg_count %]&nbsp;&nbsp;</td>
     <td width=40><a href="/registration/list_reg_name/[% p.id %]">AllRegs</a></td>
     <td width=40>

@@ -22,7 +22,17 @@ function tabs(t) {
         var el = document.getElementById('editlink');
         if (el != null) {
             el.innerHTML = '<a href="/' + ((program)? 'program': 'rental')
-                + '/update/' + id + '/' + t + '">Edit</a>';
+                + '/update/' + id + '/' + t + '" accesskey=E><span class=keyed>E</span>dit</a>';
+        }
+        el = document.getElementById('backlink');
+        if (el != null) {
+            el.innerHTML = '<a href="/' + ((program)? 'program': 'rental')
+                + '/view_adj/' + id + '/back/' + t + '" accesskey=B><span class=keyed>B</span>ack</a>';
+        }
+        el = document.getElementById('nextlink');
+        if (el != null) {
+            el.innerHTML = '<a href="/' + ((program)? 'program': 'rental')
+                + '/view_adj/' + id + '/next/' + t + '" accesskey=N><span class=keyed>N</span>ext</a>';
         }
     }
     else {

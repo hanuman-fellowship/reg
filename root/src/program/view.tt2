@@ -57,7 +57,7 @@ function UNreserve_cluster(cluster_id) {
     <a href="/program/create">Add</a>
     [% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
         &nbsp;&nbsp;&nbsp;
-        <span id=editlink><a href="/program/update/[% id %]">Edit</a></span>
+        <span id=editlink><a accesskey=E href="/program/update/[% id %]"><span class=keyed>E</span>dit</a></span>
         &nbsp;&nbsp;&nbsp;
         <a href="/program/delete/[% id %]"
            onclick="return confirm('Okay to Delete [% program.name %]?');"
@@ -78,6 +78,10 @@ function UNreserve_cluster(cluster_id) {
     &nbsp;&nbsp;&nbsp;
 [% END %]
 <a target=_blank href="[% program.web_addr %]">Web</a>
+&nbsp;&nbsp;&nbsp;
+<span id=backlink><a href="/program/view_adj/[% id %]/back" accesskey='B'><span class=keyed>B</span>ack</a></span>
+&nbsp;&nbsp;&nbsp;
+<span id=nextlink><a href="/program/view_adj/[% id %]/next" accesskey='N'><span class=keyed>N</span>ext</a></span>
 <p class=p2>
 [% IF program.ceu_issued %]
 <a href="/program/ceu/[% id %]">CEUs</a>

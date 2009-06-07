@@ -535,7 +535,7 @@ sub list : Local {
                     edate => { '>=', $cutoff },
                     @cond,
                 },
-                { order_by => 'sdate' },
+                { order_by => [qw/ sdate me.id /] },
             )
         ]
     );
@@ -608,7 +608,7 @@ sub listpat : Local {
         programs => [
             model($c, 'Program')->search(
                 $cond,
-                { order_by => 'sdate desc' },
+                { order_by => ['sdate desc', 'me.id asc'] },
             )
         ],
         pr_pat   => $pr_pat,
@@ -1859,6 +1859,42 @@ sub view_parallel : Local {
             "Sorry, No parallel Program for Rental '$name'.",
             "program/error.tt2",
         );
+    }
+}
+
+#
+# does not exclude DCM programs nor MMI programs for a non mmi_admin.
+# should it???
+#
+sub view_adj : Local {
+    my ($self, $c, $prog_id, $dir, $section) = @_;
+
+    my $prog = model($c, 'Program')->find($prog_id);
+    my $sdate = $prog->sdate();
+    my $relation = ($dir eq 'next')? '>'  : '<';
+    my $ord      = ($dir eq 'next')? 'asc': 'desc';
+    my @progs = model($c, 'Program')->search(
+        {
+            -or => [
+                sdate => { $relation => $sdate },
+                -and => [
+                    sdate   => $sdate,
+                    'me.id' => { $relation => $prog_id },
+                ],
+            ],
+        },
+        {
+            rows => 1,
+            order_by => "sdate $ord",
+        }
+    );
+    if (@progs) {
+        $c->response->redirect($c->uri_for("/program/view/" .
+                               $progs[0]->id() . "/$section"));
+    }
+    else {
+        # likely BOF beginning of file or EOF.
+        $c->response->redirect($c->uri_for("/program/view/$prog_id/$section"));
     }
 }
 

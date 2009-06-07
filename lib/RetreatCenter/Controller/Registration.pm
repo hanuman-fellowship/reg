@@ -206,7 +206,7 @@ sub list_reg_name : Local {
         },
         {
             join     => [qw/ person /],
-            order_by => [qw/ person.last person.first /],
+            order_by => [qw/ person.last person.first me.id /],
             prefetch => [qw/ person /],   
         }
     );
@@ -4207,6 +4207,11 @@ sub view_adj : Local {
     # order by p.last desc, p.first desc limit 1;
     #
     # This worries about two people with the same last name.
+    # Yes, but with one person registered twice (or more) for a PR it fails.
+    #
+    # Need to sort by registration.id (like the AllRegs list is now)
+    # and include that in the condition.
+    # Much more complex than one at first imagines!
     #
     my @regs = model($c, 'Registration')->search(
         {
@@ -4217,12 +4222,21 @@ sub view_adj : Local {
                     'person.last'  => $last,
                     'person.first' => { $relation => $first },
                 ],
+                -and => [
+                    'person.last'  => $last,
+                    'person.first' => $first,
+                    'me.id'        => { $relation => $reg_id },
+                ],
             ],
         },
         {
             rows     => 1,
             join     => [qw/ person /],
-            order_by => [ "person.last $ord", "person.first $ord" ],
+            order_by => [
+                            "person.last  $ord",
+                            "person.first $ord",
+                            "me.id        $ord",
+                        ],
             prefetch => [qw/ person /],
         }
     );
