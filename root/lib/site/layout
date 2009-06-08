@@ -5,11 +5,12 @@
 [% driver = Catalyst.check_user_roles('driver') %]
 [% prog_staff = Catalyst.check_user_roles('prog_staff') %]
 [% field_staff = Catalyst.check_user_roles('field_staff') %]
+[% mail_staff = Catalyst.check_user_roles('mail_staff') %]
 
 <div class=noprint>
 <table cellpadding=4 border=0 style="background-color: #eeeeee">
 <tr>
-[% IF field_staff %]
+[% IF field_staff && ! mail_staff %]
 <td><a href=/listing/field>Listings</a></td>
 [% ELSE %]
 <td><a href=/person/search>People</a></td>

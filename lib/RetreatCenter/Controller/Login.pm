@@ -46,7 +46,8 @@ sub index : Private {
                     $c->response->redirect($c->uri_for('/program/list'));
                 }
             }
-            elsif ($c->check_user_roles('field_staff')) {
+            elsif ($c->check_user_roles('field_staff')
+                   && ! $c->check_user_roles('mail_staff')) {
                 $c->response->redirect($c->uri_for('/listing/field'));
             }
             elsif ($c->check_user_roles('driver')) {
