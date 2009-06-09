@@ -351,8 +351,11 @@ sub get_online : Local {
     # first extract all information from the file.
     #
     my %P;
-    open my $in, "<", "root/static/online/$fname"
-        or die "cannot open root/static/online/$fname: $!";
+    my $in;
+    if (! open $in, "<", "root/static/online/$fname") {
+        $c->response->redirect($c->uri_for("/registration/list_online"));
+        return;
+    }
     while (<$in>) {
         chomp;
         my ($key, $value) = m{^x_(\w+) => (.*)$};

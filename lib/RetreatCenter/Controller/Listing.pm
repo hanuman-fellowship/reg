@@ -99,7 +99,7 @@ EOH
 EOH
         $class = 1-$class;
     }
-print {$ph} <<"EOH";
+    print {$ph} <<"EOH";
 </table>
 </body>
 </html>
