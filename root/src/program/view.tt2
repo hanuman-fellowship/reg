@@ -135,22 +135,22 @@ function UNreserve_cluster(cluster_id) {
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Web
+Meals/Lodging
 </div>
 <span onclick="tabs(1)">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Web
+Meals/Lodging
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Meals/Lodging
+Misc
 </div>
 <span onclick="tabs(2)">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Meals/Lodging
+Misc
 </div>
 </span>
 </td>
@@ -168,11 +168,11 @@ Finance
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
 <span onclick="tabs(4)">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
@@ -185,79 +185,8 @@ Misc
 
 <tr><td colspan=5><!-- all the content panes -->
 
-<!-- Web -->
-<div id="content1" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right width=170>Title</th>
-<td colspan=5>[% program.title %]</td>
-</tr>
-
-<tr>
-<th align=right>SubTitle</th>
-<td colspan=5>[% program.subtitle %]</td>
-</tr>
-
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><a href="http://[% program.url %]">[% program.url %]</a></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Description</th>
-<td colspan=5>[% program.webdesc %]</td>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Brochure Description</th>
-<td colspan=5>[% program.brdesc %]</td>
-</td>
-</tr>
-
-<tr>
-<th align=right>Footnotes</th>
-<td>[% program.footnotes %]</td>
-</tr>
-
-<tr>
-<th align=right>Web Ready</th>
-<td>[% program.webready %]</td> 
-</tr>
-
-<tr>
-<th align=right>Linked</th>
-<td>[% program.linked %]</td> 
-</tr>
-
-<tr>
-<th align=right>Unlinked Dir</th>
-<td>[% program.unlinked_dir %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Program Image</th>
-<td colspan=2>
-[% IF program.image %]
-<img src="[% program.image_file %]" border=0><br>
-<a href="[% Catalyst.uri_for('/program/del_image/') _ id %]"
-onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete Image</a>
-[% ELSE %]
-&nbsp;
-[% END %]
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Page Template</th>
-<td>[% program.ptemplate %]</td>
-</tr>
-</table>
-</div>
-
 <!-- Meals/Lodging -->
-<div id="content2" class="tabcontent" style="display: none">
+<div id="content1" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -314,64 +243,10 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </table>
 </ul>
 
-</div>      <!-- end of content2 pane -->
-
-<!-- Finance -->
-<div id="content3" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right>Tuition</th>
-<td>[% program.tuition %]</td>
-</tr>
-
-<tr>
-<th align=right>Extra Days</th>
-<td>[% program.extradays %]</td>
-</tr>
-
-<tr>
-<th align=right>Full Tuition</th>
-<td>[% program.full_tuition %]</td>
-</tr>
-
-<tr>
-<th align=right>Online Deposit</th>
-<td>[% program.deposit %]</td>
-</tr>
-
-<tr>
-<th align=right>Collect Total</th>
-<td>[% program.collect_total %]</td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% program.glnum %]</td>
-</tr>
-
-<tr>
-<th align=right>Cancellation Policy</th>
-<td><a href="/canpol/view/[% program.canpol.id %]">[% program.canpol.name %]</a></td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<th align=right>Do Not Compute<br>Costs</th>
-<td valign=top>[% program.do_not_compute_costs %]</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Why?</th>
-<td>[% program.dncc_why %]</td>
-</tr>
-
-</table>
-</div>
+</div>      <!-- end of content1 pane -->
 
 <!-- Misc -->
-<div id="content4" class="tabcontent" style="display: none">
+<div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -492,6 +367,130 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </table>
 </div>
 
+<!-- Finance -->
+<div id="content3" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Tuition</th>
+<td>[% program.tuition %]</td>
+</tr>
+
+<tr>
+<th align=right>Extra Days</th>
+<td>[% program.extradays %]</td>
+</tr>
+
+<tr>
+<th align=right>Full Tuition</th>
+<td>[% program.full_tuition %]</td>
+</tr>
+
+<tr>
+<th align=right>Online Deposit</th>
+<td>[% program.deposit %]</td>
+</tr>
+
+<tr>
+<th align=right>Collect Total</th>
+<td>[% program.collect_total %]</td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% program.glnum %]</td>
+</tr>
+
+<tr>
+<th align=right>Cancellation Policy</th>
+<td><a href="/canpol/view/[% program.canpol.id %]">[% program.canpol.name %]</a></td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Do Not Compute<br>Costs</th>
+<td valign=top>[% program.do_not_compute_costs %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Why?</th>
+<td>[% program.dncc_why %]</td>
+</tr>
+
+</table>
+</div>
+
+<!-- Web -->
+<div id="content4" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right width=170>Title</th>
+<td colspan=5>[% program.title %]</td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5>[% program.subtitle %]</td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><a href="http://[% program.url %]">[% program.url %]</a></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Description</th>
+<td colspan=5>[% program.webdesc %]</td>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Brochure Description</th>
+<td colspan=5>[% program.brdesc %]</td>
+</td>
+</tr>
+
+<tr>
+<th align=right>Footnotes</th>
+<td>[% program.footnotes %]</td>
+</tr>
+
+<tr>
+<th align=right>Web Ready</th>
+<td>[% program.webready %]</td> 
+</tr>
+
+<tr>
+<th align=right>Linked</th>
+<td>[% program.linked %]</td> 
+</tr>
+
+<tr>
+<th align=right>Unlinked Dir</th>
+<td>[% program.unlinked_dir %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Program Image</th>
+<td colspan=2>
+[% IF program.image %]
+<img src="[% program.image_file %]" border=0><br>
+<a href="[% Catalyst.uri_for('/program/del_image/') _ id %]"
+onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete Image</a>
+[% ELSE %]
+&nbsp;
+[% END %]
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Page Template</th>
+<td>[% program.ptemplate %]</td>
+</tr>
+</table>
+</div>
 
 </td></tr><!-- end of content panes -->
 </table>

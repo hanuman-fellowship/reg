@@ -49,22 +49,22 @@ function set_level_visibility() {
 
 <td>
 <div id="tab1focus" class="tab tabfocus" style="display: none">
-Web
+Meals/Lodging
 </div>
-<span onclick="tabs(1); document.form.title.focus();">
+<span onclick="tabs(1); document.form.housecost_id.focus();">
 <div id="tab1ready" class="tab tabhold" style="display: none">
-Web
+Meals/Lodging
 </div>
 </span>
 </td>
 
 <td>
 <div id="tab2focus" class="tab tabfocus" style="display: none">
-Meals/Lodging
+Misc
 </div>
-<span onclick="tabs(2); document.form.housecost_id.focus();">
+<span onclick="tabs(2); document.form.confnote.focus();">
 <div id="tab2ready" class="tab tabhold" style="display: none">
-Meals/Lodging
+Misc
 </div>
 </span>
 </td>
@@ -82,11 +82,11 @@ Finance
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Misc
+Web
 </div>
-<span onclick="tabs(4); document.form.confnote.focus();">
+<span onclick="tabs(4); document.form.title.focus();">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Misc
+Web
 </div>
 </span>
 </td>
@@ -100,87 +100,8 @@ Misc
 
 <tr><td colspan=5><!-- all the content panes -->
 
-<!-- Web -->
-<div id="content1" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right><span class="required">*</span> Title</th>
-<td colspan=5><input type=text name=title value="[% program.title %]" size=60></td>
-</tr>
-
-<tr>
-<th align=right>SubTitle</th>
-<td colspan=5><input type=text name=subtitle value="[% program.subtitle %]" size=60></td>
-</tr>
-
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><input type=text name=url value="[% program.url %]" size=60></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Description</th>
-<td colspan=5><textarea id=webdesc name=webdesc cols=60 rows=[% webdesc_rows %]>[% program.webdesc %]</textarea>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Brochure Description</th>
-<td colspan=5><textarea name=brdesc cols=60 rows=[% brdesc_rows %]>[% program.brdesc %]</textarea></td>
-</td>
-</tr>
-
-<tr>
-<th align=right>Footnotes</th>
-<td><input type=text name=footnotes value="[% program.footnotes %]" size=5></td>
-</tr>
-
-<tr>
-<th align=right>Web Ready</th>
-<td><input type=checkbox value=yes name=webready [% check_webready %]></td>
-</tr>
-
-<tr>
-<th align=right>Linked</th>
-<td><input type=checkbox value=yes name=linked [% check_linked %]></td>
-</tr>
-
-<tr>
-<th align=right>Unlinked Dir</th>
-<td><input type=text name=unlinked_dir size=20 value="[% program.unlinked_dir %]">
-</tr>
-
-<tr>
-<th align=right valign=top>Program Image</th>
-<td colspan=2>
-[% IF program.image %]
-<img src="[% program.image_file %]" border=0><br>
-[% ELSE %]
-    [% IF dup_image %]
-        <img src=[% dup_image %] border=0><br>
-    [% END %]
-[% END %]
-<input type=file name=image>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Page<br>Template</th>
-<td valign=top>
-<select name=ptemplate>
-[% FOREACH t IN template_opts %]
-    <option value='[% t %]'[% IF t == program.ptemplate %] selected[% END %]>[% t %]</option>
-[% END %]
-</select>
-</td>
-</tr>
-
-</table>
-</div>
-
 <!-- Meals/Lodging -->
-<div id="content2" class="tabcontent" style="display: none">
+<div id="content1" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -212,68 +133,8 @@ Misc
 </table>
 </div>
 
-<!-- Finance -->
-<div id="content3" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right>Tuition</th>
-<td><input type=text name=tuition value="[% program.tuition %]" size=4></td>
-</tr>
-
-<tr>
-<th align=right>Extra Days</th>
-<td><input type=text name=extradays value="[% program.extradays %]" size=2></td>
-</tr>
-
-<tr>
-<th align=right>Full Tuition</th>
-<td><input type=text name=full_tuition value="[% program.full_tuition %]" size=4></td>
-</tr>
-
-<tr>
-<th align=right>Online Deposit</th>
-<td><input type=text name=deposit value="[% program.deposit %]" size=4></td>
-</tr>
-
-<tr>
-<th align=right>Collect Total</th>
-<td><input type=checkbox value=yes name=collect_total [% check_collect_total %]></td>
-</tr>
-
-<tr>
-<th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input type=text name=glnum value="[% program.glnum %]" size=7>[% ELSE %][% program.glnum %][% END %]</td>
-</tr>
-
-<tr>
-<th align=right>Cancellation Policy</th>
-<td>
-<select name=canpol_id>
-[% FOREACH c IN canpol_opts %]
-    <option value=[% c.id %][% IF c.name == program.canpol.name %] selected[% END %]>[% c.name %]</option>
-[% END %]
-</select>
-</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<th align=right>Do Not Compute<br>Costs</th>
-<td valign=top><input type=checkbox value=yes name=do_not_compute_costs [% check_do_not_compute_costs %]></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Why?</th>
-<td><textarea name=dncc_why cols=60 rows=5>[% program.dncc_why %]</textarea></td>
-</tr>
-
-</table>
-</div>
-
 <!-- Misc -->
-<div id="content4" class="tabcontent" style="display: none">
+<div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 <tr>
@@ -349,6 +210,145 @@ Misc
 <td>
 <select name=level>
 [% level_opts %]
+</select>
+</td>
+</tr>
+
+</table>
+</div>
+
+<!-- Finance -->
+<div id="content3" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Tuition</th>
+<td><input type=text name=tuition value="[% program.tuition %]" size=4></td>
+</tr>
+
+<tr>
+<th align=right>Extra Days</th>
+<td><input type=text name=extradays value="[% program.extradays %]" size=2></td>
+</tr>
+
+<tr>
+<th align=right>Full Tuition</th>
+<td><input type=text name=full_tuition value="[% program.full_tuition %]" size=4></td>
+</tr>
+
+<tr>
+<th align=right>Online Deposit</th>
+<td><input type=text name=deposit value="[% program.deposit %]" size=4></td>
+</tr>
+
+<tr>
+<th align=right>Collect Total</th>
+<td><input type=checkbox value=yes name=collect_total [% check_collect_total %]></td>
+</tr>
+
+<tr>
+<th align=right>GL Number</th>
+<td>[% IF edit_gl %]<input type=text name=glnum value="[% program.glnum %]" size=7>[% ELSE %][% program.glnum %][% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Cancellation Policy</th>
+<td>
+<select name=canpol_id>
+[% FOREACH c IN canpol_opts %]
+    <option value=[% c.id %][% IF c.name == program.canpol.name %] selected[% END %]>[% c.name %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Do Not Compute<br>Costs</th>
+<td valign=top><input type=checkbox value=yes name=do_not_compute_costs [% check_do_not_compute_costs %]></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Why?</th>
+<td><textarea name=dncc_why cols=60 rows=5>[% program.dncc_why %]</textarea></td>
+</tr>
+
+</table>
+</div>
+
+<!-- Web -->
+<div id="content4" class="tabcontent" style="display: none">
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right><span class="required">*</span> Title</th>
+<td colspan=5><input type=text name=title value="[% program.title %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>SubTitle</th>
+<td colspan=5><input type=text name=subtitle value="[% program.subtitle %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right>Web Address</th>
+<td colspan=5><input type=text name=url value="[% program.url %]" size=60></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Description</th>
+<td colspan=5><textarea id=webdesc name=webdesc cols=60 rows=[% webdesc_rows %]>[% program.webdesc %]</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Brochure Description</th>
+<td colspan=5><textarea name=brdesc cols=60 rows=[% brdesc_rows %]>[% program.brdesc %]</textarea></td>
+</td>
+</tr>
+
+<tr>
+<th align=right>Footnotes</th>
+<td><input type=text name=footnotes value="[% program.footnotes %]" size=5></td>
+</tr>
+
+<tr>
+<th align=right>Web Ready</th>
+<td><input type=checkbox value=yes name=webready [% check_webready %]></td>
+</tr>
+
+<tr>
+<th align=right>Linked</th>
+<td><input type=checkbox value=yes name=linked [% check_linked %]></td>
+</tr>
+
+<tr>
+<th align=right>Unlinked Dir</th>
+<td><input type=text name=unlinked_dir size=20 value="[% program.unlinked_dir %]">
+</tr>
+
+<tr>
+<th align=right valign=top>Program Image</th>
+<td colspan=2>
+[% IF program.image %]
+<img src="[% program.image_file %]" border=0><br>
+[% ELSE %]
+    [% IF dup_image %]
+        <img src=[% dup_image %] border=0><br>
+    [% END %]
+[% END %]
+<input type=file name=image>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Web Page<br>Template</th>
+<td valign=top>
+<select name=ptemplate>
+[% FOREACH t IN template_opts %]
+    <option value='[% t %]'[% IF t == program.ptemplate %] selected[% END %]>[% t %]</option>
+[% END %]
 </select>
 </td>
 </tr>
