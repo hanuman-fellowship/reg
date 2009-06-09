@@ -524,9 +524,9 @@ sub list : Local {
         @cond = (
             level => { -not_in  => [qw/  D C M  /] },
         );
-        if (! $c->check_user_roles('mmi_admin')) {
-            push @cond, (school => 0);      # only MMC no MMI
-        }
+        # if (! $c->check_user_roles('mmi_admin')) {
+        #     push @cond, (school => 0);      # only MMC no MMI
+        # }
     }
     stash($c,
         programs => [
