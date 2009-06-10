@@ -56,6 +56,7 @@ It is also very helpful for us if you can send in advance
 both a schedule of your sessions and breaks and an alphabetical
 list of the participants.
 <p>
+<!--
 [% IF email %]
 To assist you in your housing assignment and financial tallies
 we have created a customized web page for you here:
@@ -64,6 +65,7 @@ we have created a customized web page for you here:
 </ul>
 [% END %]
 <p>
+-->
 We also offer, by appointment, through the Kaya Kalpa Wellness Center,
 various bodywork sessions. Appointments may be booked in advance by
 calling 408-847-3276. Kaya Kalpa’s office hours are Monday through
