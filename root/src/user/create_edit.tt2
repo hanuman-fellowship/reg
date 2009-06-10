@@ -35,6 +35,11 @@
 </tr>
 
 <tr>
+<th align=right>Hide MMI</th>
+<td><input type=checkbox name=hide_mmi value=yes [% check_hide_mmi %]></td>
+</tr>
+
+<tr>
 <th align=right valign=top>Roles</th>
 <td>
 <table>

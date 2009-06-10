@@ -19,6 +19,7 @@ __PACKAGE__->add_columns(qw/
     office
     cell
     txt_msg_email
+    hide_mmi
 /);
 __PACKAGE__->set_primary_key('id');
 

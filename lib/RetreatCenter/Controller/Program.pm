@@ -503,6 +503,7 @@ sub _get_cluster_groups {
 sub list : Local {
     my ($self, $c, $type) = @_;
 
+    my $hide_mmi = $c->user->obj->hide_mmi();
     if ($type == 2) {
         my $today = today()->as_d8();
         $string{date_coming_going_printed} = $today;
@@ -524,9 +525,9 @@ sub list : Local {
         @cond = (
             level => { -not_in  => [qw/  D C M  /] },
         );
-        # if (! $c->check_user_roles('mmi_admin')) {
-        #     push @cond, (school => 0);      # only MMC no MMI
-        # }
+        if ($hide_mmi) {
+            push @cond, (school => 0);      # only MMC no MMI
+        }
     }
     stash($c,
         programs => [
@@ -1873,6 +1874,10 @@ sub view_adj : Local {
     my $sdate = $prog->sdate();
     my $relation = ($dir eq 'next')? '>'  : '<';
     my $ord      = ($dir eq 'next')? 'asc': 'desc';
+    my @cond = ();
+    if ($c->user->obj->hide_mmi()) {
+        push @cond, (school => 0);      # only MMC
+    }
     my @progs = model($c, 'Program')->search(
         {
             -or => [
@@ -1882,6 +1887,7 @@ sub view_adj : Local {
                     'me.id' => { $relation => $prog_id },
                 ],
             ],
+            @cond,
         },
         {
             rows => 1,

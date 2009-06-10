@@ -9,6 +9,7 @@ use Util qw/
     role_table
     valid_email
     model
+    stash
 /;
 use Global qw/
     %string
@@ -45,21 +46,26 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $u = $c->stash->{user} = model($c, 'User')->find($id);
-    $c->stash->{role_table} = role_table($c, $u->roles());
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "user/create_edit.tt2";
+    my $u = model($c, 'User')->find($id);
+    stash($c,
+        user           => $u,
+        check_hide_mmi => (($u->hide_mmi())? "checked"
+                           :                 ""       ),
+        role_table     => role_table($c, $u->roles()),
+        form_action    => "update_do/$id",
+        template       => "user/create_edit.tt2",
+    );
 }
 
-my %hash;
+my %P;
 my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{$c->request->params};
-    for my $k (keys %hash) {
+    %P = %{$c->request->params};
+    for my $k (keys %P) {
         if ($k =~ m{role\d+}) {
-            delete $hash{$k};
+            delete $P{$k};
         }
     }
     @mess = ();
@@ -70,14 +76,15 @@ sub _get_data {
         password
         email
     /) {
-        $hash{$k} = trim($hash{$k});
-        if (empty($hash{$k})) {
+        $P{$k} = trim($P{$k});
+        if (empty($P{$k})) {
             push @mess, "\u$k cannot be blank.";
         }
     }
-    check_password($hash{password});
-    if ($hash{email} && ! valid_email($hash{email})) {
-        push @mess, "Invalid email: $hash{email}";
+    $P{hide_mmi} = '' unless exists $P{hide_mmi};
+    check_password($P{password});
+    if ($P{email} && ! valid_email($P{email})) {
+        push @mess, "Invalid email: $P{email}";
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -119,7 +126,7 @@ sub update_do : Local {
     return if @mess;
 
     my $user =  model($c, 'User')->find($id);
-    $user->update(\%hash);
+    $user->update(\%P);
 
     #
     # delete all old and add new roles
@@ -140,17 +147,22 @@ sub update_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $u = $c->stash->{user}
-        = model($c, 'User')->find($id);
-    $c->stash->{template} = "user/view.tt2";
+    my $u = model($c, 'User')->find($id);
+    stash($c,
+        user     => $u,
+        template => "user/view.tt2",
+    );
 }
 
 sub create : Local {
     my ($self, $c, $user_id) = @_;
 
-    $c->stash->{role_table}  = role_table($c);
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "user/create_edit.tt2";
+    stash($c,
+        check_hide_mmi => '',
+        role_table     => role_table($c),
+        form_action    => "create_do",
+        template       => "user/create_edit.tt2",
+    );
 }
 
 #
@@ -196,7 +208,7 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $u = model($c, 'User')->create(\%hash);
+    my $u = model($c, 'User')->create(\%P);
     my $id = $u->id;
 
     for my $r (_get_roles($c)) {
@@ -213,12 +225,15 @@ sub profile : Local {
     my ($self, $c) = @_;
 
     my $u = $c->user();
-    $c->stash->{user} = $u;
-    $c->stash->{user_bg}   = $u->bg     || '255,255,255' ;
-    $c->stash->{user_fg}   = $u->fg     || '0,0,0';
-    $c->stash->{user_link} = $u->link || '0,0,255';
-
-    $c->stash->{template} = "user/profile.tt2";
+    stash($c,
+        user      => $u,
+        check_hide_mmi => ($u->hide_mmi()? "checked"
+                           :               ""       ),
+        user_bg   => $u->bg   || '255,255,255' ,
+        user_fg   => $u->fg   || '0,0,0',
+        user_link => $u->link || '0,0,255',
+        template  => "user/profile.tt2",
+    );
 }
 
 sub profile_do : Local {
@@ -257,6 +272,7 @@ sub profile_do : Local {
         bg       => $c->request->params->{user_bg},
         fg       => $c->request->params->{user_fg},
         link     => $c->request->params->{user_link},
+        hide_mmi => $c->request->params->{hide_mmi},
         txt_msg_email => $c->request->params->{txt_msg_email},
     });
 

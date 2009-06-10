@@ -15,7 +15,8 @@ create table user (
 -- and for drivers:
     office      text,
     cell        text,
-    txt_msg_email text
+    txt_msg_email text,
+    hide_mmi    text
 );
 drop table if exists role;
 create table role (

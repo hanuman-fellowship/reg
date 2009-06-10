@@ -86,7 +86,7 @@ function restore_default() {
 </script>
 <h2>User Profile for [% Catalyst.user.username %]</h2>
 <form action=/user/profile_do name=form>
-<table cellpadding=3>
+<table cellpadding=3 border=0>
 <tr>
 <th align=right>Current Password</th>
 <td><input type=password name=cur_pass></td>
@@ -116,7 +116,7 @@ function restore_default() {
 
 <tr>
 <th align=right>Email</th>
-<td><input type=text name=email value='[% user.email %]'></td>
+<td colspan=2><input type=text name=email value='[% user.email %]' size=40></td>
 </tr>
 
 <tr>
@@ -133,6 +133,11 @@ function restore_default() {
 <tr>
 <th align=right>Txt Msg Email</th>
 <td><input type=text name=txt_msg_email value='[% user.txt_msg_email %]'></td>
+</tr>
+
+<tr>
+<th align=right>Hide MMI</th>
+<td><input type=checkbox name=hide_mmi value=yes [% check_hide_mmi %]></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>

@@ -42,13 +42,17 @@
 <td>[% user.txt_msg_email %]</td>
 </tr>
 
+<tr>
+<th align=right>Hide MMI</th>
+<td>[% user.hide_mmi %]</td>
+</tr>
+
 [% IF super %]
 <tr>
 <th align=right valign=top>Password</th>
 <td>[% user.password %]</td>
 </tr>
 [% END %]
-
 
 <tr>
 <th align=right valign=top>Roles</th>
