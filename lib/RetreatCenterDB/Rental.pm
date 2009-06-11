@@ -131,11 +131,6 @@ __PACKAGE__->has_many(rental_bookings => 'RetreatCenterDB::RentalBooking',
                       }
                      );
 
-# stays
-__PACKAGE__->has_many(stays => 'RetreatCenterDB::RentalStay', 
-                      'rental_id',
-                      { order_by => 'name' });
-
 sub future_rentals {
     my ($class, $c) = @_;
     my @rentals = $c->model('RetreatCenterDB::Rental')->search(

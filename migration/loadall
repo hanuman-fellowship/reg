@@ -30,7 +30,6 @@ echo meet  ; $db <mkmeet
 echo house ; $db <mkhouse
 echo ride  ; $db <mkride
 echo block  ; $db <mkblock
-echo stay  ; $db <mkstay
 
 echo strings
 loadstr $MYSQL

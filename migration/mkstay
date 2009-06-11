@@ -1,8 +1,0 @@
-drop table if exists rental_stay;
-create table rental_stay (
-    id integer primary key autoincrement,
-    rental_id integer,
-    name text,
-    house_id integer,
-    nights text     -- 'bit' field (0 & 1 chars) for nights stayed
-);

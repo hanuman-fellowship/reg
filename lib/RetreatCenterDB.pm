@@ -69,7 +69,6 @@ __PACKAGE__->load_classes({
         Issue
         Ride
 
-        RentalStay
         Block
     /]
 });

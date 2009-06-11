@@ -59,6 +59,8 @@ sub search : Local {
     if ($pat =~ m{^\d+}) {
         # they want a particular issue and have put the id
         # in the Search pattern field.
+        # ??? what that issue # does not exist?
+        #
         __PACKAGE__->update($c, $pat);
         return;
     }
