@@ -33,7 +33,7 @@
 [% class = 'fl_row1' %]
 [% FOREACH p IN programs %]
     <tr class=[% class %]>
-    <td class=fl_row0 align=right>[% IF p.school != 0 %]<span class=required>MMI</span>[% ELSIF p.rental_id > 0 %]Hybrid[% ELSIF ! p.linked %]Unlinked[% END %]</td>
+    <td class=fl_row0 align=right>[% p.prog_type %]</td>
     [% IF p.school == 0 || mmi_admin %]
         <td><a href="/registration/first_reg/[% p.id %]">[% p.name %]</a></td>
     [% ELSE %]
