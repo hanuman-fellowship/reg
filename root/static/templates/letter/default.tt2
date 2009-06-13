@@ -195,7 +195,7 @@ Program registration is from
 		5:00 pm to 6:00 pm.
 	[% END %]
     <p class=p2>
-	The office closes at 6:30 pm.<br>
+	The office closes at [% program.reg_end_obj %]<br>
 	If you will <b>ARRIVE LATER</b> than 6:00 pm please call to let us know.<br>
     Notes are posted in the Community Building lobby for late arrivals.<br>
 	We will save dinner for you on request.
