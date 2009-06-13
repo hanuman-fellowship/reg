@@ -811,4 +811,22 @@ sub full_count {
     $count;
 }
 
+sub prog_type {
+    my ($self) = @_;
+
+    my $type = "";
+
+    if (! $self->linked()) {
+        $type .= "Unlinked ";
+    }
+    if ($self->school() != 0) {
+        $type .= "MMI ";
+    }
+    if ($self->rental_id()) {
+        $type .= "Hybrid ";
+    }
+    chop $type;
+    $type;
+}
+
 1;
