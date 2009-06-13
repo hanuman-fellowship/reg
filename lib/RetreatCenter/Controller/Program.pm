@@ -182,14 +182,15 @@ sub _get_data {
         # MMC
         $P{level} = ' ';
     }
-    else {
+    #else {
         # MMI
         # force this. for now...
         # MMI may have web pages someday?
-        $P{webready} = "";
-        $P{linked} = "";
-        $P{unlinked_dir} = "";
-    }
+        # yes.  today.
+    #    $P{webready} = "";
+    #    $P{linked} = "";
+    #    $P{unlinked_dir} = "";
+    #}
     # since unchecked boxes are not sent...
     for my $f (qw/
         collect_total
