@@ -20,7 +20,6 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value=[% pr_pat %]> <input type=submit value="Search"></form>
-<ul>
 <table border=0 cellpadding=3>
 <tr>
 <td></td>   <!-- for marking rental-programs and mmi program -->
@@ -59,5 +58,4 @@
     [% END %]
 [% END %]
 </table>
-</ul>
 <script type='text/javascript'>document.form.pr_pat.focus();</script>
