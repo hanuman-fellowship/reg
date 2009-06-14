@@ -1809,9 +1809,10 @@ sub cancel : Local {
 sub cancel_do : Local {
     my ($self, $c, $id, $mmi) = @_;
 
-    my $credit    = $c->request->params->{yes};
-    my $amount    = $c->request->params->{amount};
-    my $reg       = model($c, 'Registration')->find($id);
+    my $credit      = $c->request->params->{give_credit};
+    my $send_letter = $c->request->params->{send_letter};
+    my $amount      = $c->request->params->{amount};
+    my $reg         = model($c, 'Registration')->find($id);
 
     $reg->update({
         cancelled => 'yes',
@@ -1890,7 +1891,7 @@ sub cancel_do : Local {
         reg_count => \'reg_count - 1',
     });
 
-    if (! $mmi) {
+    if (! $mmi && $send_letter) {
         #
         # send the cancellation confirmation letter for MMC programs
         #
