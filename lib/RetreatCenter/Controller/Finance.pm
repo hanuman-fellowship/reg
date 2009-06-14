@@ -94,6 +94,7 @@ sub reconcile_deposit : Local {
         # and it is always a credit card payment.
         # not any more!
         #
+        PAYMENT:
         for my $r (model($c, 'Ride')->search({
                        paid_date => { between => [ $date_start, $date_end ] },
                    })
@@ -318,6 +319,7 @@ EOH
                 $nrows += 3;
                 $gcash   += $cash;
                 $gcheck  += $check;
+                $gonline += $online;
                 $gcredit += $credit + $online;
                 $gtotal  += $total;
                 ($cash, $check, $credit, $online) = (0, 0, 0, 0);
@@ -351,13 +353,13 @@ EOH
         }
         $html .= "</tr>\n";
         ++$nrows;
-        if ($n == 1) {
+        if ($type eq 'S') {
             $cash += $amt;
         }
-        elsif ($n == 2) {
+        elsif ($type eq 'C') {
             $check += $amt;
         }
-        elsif ($n == 3) {
+        elsif ($type eq 'D') {
             $credit += $amt;
         }
         else {
@@ -442,11 +444,11 @@ sub deposits : Local {
     if ($dt = $c->request->params->{date_end}) {
         $dt = date($dt);
         if (! $dt) {
-            $dt = today();
+            $dt = tt_today($c);
         }
     }
     else {
-        $dt = today();
+        $dt = tt_today($c);
     }
     stash($c,
         deposits => [ 
@@ -506,7 +508,7 @@ sub period_end : Local {
     #    amount => ,
     #    cash   => ,
     #    check. => ,
-    #    credit => ,
+    #    credit => ,            (includes online)
     # }.
     # then sort by name for display.
     #
@@ -562,8 +564,7 @@ sub period_end : Local {
             $href->{
                 $type eq 'S'? 'cash'
                :$type eq 'C'? 'check'
-               :$type eq 'D'? 'credit'
-               :              'online'
+               :              'credit'      # includes online
             } += $amt;
         }
     }
@@ -587,7 +588,12 @@ sub period_end : Local {
             my $href = $totals{$rgl};
             my $amt = $r->cost();
             $href->{amount} += $amt;
-            $href->{credit} += $amt;
+            my $type = $r->type();
+            $href->{
+                $type eq 'S'? 'cash'
+               :$type eq 'C'? 'check'
+               :              'credit'      # includes online
+            } += $amt;
         }
     }
     my %grand_total;

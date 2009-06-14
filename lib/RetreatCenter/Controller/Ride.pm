@@ -312,7 +312,6 @@ sub create_do : Local {
     delete $P{cc_number};
     delete $P{cc_expire};
     delete $P{cc_code};
-    $P{paid_date} = '';
     my $ride = model($c, 'Ride')->create(\%P);
     $c->response->redirect($c->uri_for("/ride/view/" . $ride->id()));
 }
