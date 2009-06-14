@@ -12,8 +12,11 @@ The cancellation policy is:
 </ul>
 <p>
 <form action="/registration/cancel_do/[% reg.id %]">
-Should a credit of $<input type=text size=3 name=amount value="[% amount %]"> be given?
-<p>
-<input type=submit name=yes value="Yes">&nbsp;&nbsp;&nbsp;
-<input type=submit name=no  value="No">
+Credit of $<input type=text size=3 name=amount value="[% amount %]">?
+<input type=checkbox name=give_credit value="yes" checked><br>
+[% IF reg.program.school == 0 %]
+Send cancellation letter? <input type=checkbox name=send_letter value="yes" checked>
+[% END %]
+<p class=p2>
+<input type=submit value="Submit">
 </form>
