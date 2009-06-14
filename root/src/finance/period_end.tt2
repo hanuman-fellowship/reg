@@ -31,7 +31,7 @@ For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.form
 <th align=right valign=bottom width=80>Cash</th>
 <th align=right valign=bottom width=80>Check</th>
 <th align=right valign=bottom width=80>Credit</th>
-<th align=right valign=bottom width=80>Online</th>
+<th align=right valign=bottom width=80>Total</th>
 </tr>
 [% class= 'fl_row0' %]
 [% FOREACH t IN totals %]
@@ -46,7 +46,7 @@ For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.form
 <td align=right>[% t.cash %]</td>
 <td align=right>[% t.check %]</td>
 <td align=right>[% t.credit %]</td>
-<td align=right>[% t.online %]</td>
+<td align=right>[% t.cash + t.check + t.credit %]</td>
 </tr>
 
 [% IF class == 'fl_row0' %]
