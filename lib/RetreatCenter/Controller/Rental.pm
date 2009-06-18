@@ -700,10 +700,26 @@ sub update_do : Local {
 
 # what about the proposal that gave rise to this rental???
 # at least make the rental_id field 0 in the proposal.
+#
+# prohibit a deletion if there are any existing
+# RentalClusters or RentalBookings
+#
 sub delete : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $rental_id) = @_;
 
-    my $r = model($c, 'Rental')->find($id);
+    my @clusters = model($c, 'RentalCluster')->search({
+        rental_id => $rental_id,
+    });
+    my @houses = model($c, 'RentalBooking')->search({
+        rental_id => $rental_id,
+    });
+    if (@clusters || @houses) {
+        error($c,
+              'You must first remove any assigned clusters and houses.',
+              'gen_error.tt2');
+        return;
+    }
+    my $r = model($c, 'Rental')->find($rental_id);
 
     # first break any link from the Proposal to this Rental.
     #
@@ -713,17 +729,13 @@ sub delete : Local {
         });
     }
 
-    # multiple bookings
+    # multiple bookings - for meeting places
     model($c, 'Booking')->search({
-        rental_id => $id,
+        rental_id => $rental_id,
     })->delete();
 
     # the summary
     $r->summary->delete();
-
-    model($c, 'RentalCluster')->search({
-        rental_id => $id,
-    })->delete();
 
     # and the rental itself
     # does this cascade to rental payments???
@@ -731,7 +743,7 @@ sub delete : Local {
     # but not RentalClusters so the above ...
     #
     model($c, 'Rental')->search({
-        id => $id,
+        id => $rental_id,
     })->delete();
 
     $c->response->redirect($c->uri_for('/rental/list'));
@@ -1027,6 +1039,7 @@ sub booking : Local {
     #
     # look at a list of _possible_ houses for h_type.
     # ??? what order to present them in?  priority/resized?
+    # no.   simple alphabetic sort.
     # consider cluster???  other bookings for this rental???
     #
     my $checks = "";
@@ -1041,7 +1054,7 @@ sub booking : Local {
                    max      => { '>=', $max },
                    @opt,
                },
-               { order_by => 'priority' }
+               { order_by => 'name' }
               ) 
     ) {
         my $h_id = $h->id;
