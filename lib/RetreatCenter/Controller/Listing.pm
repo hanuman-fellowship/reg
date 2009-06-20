@@ -913,6 +913,7 @@ sub late_notices : Local {
                            @date_bool,
                            arrived    => '',
                            cancelled  => '',
+                           'program.school' => 0,       # only MMC, not MMI
                        },
                        {
                            join     => [qw/ house program person /],
