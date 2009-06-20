@@ -660,6 +660,11 @@ sub email_letter {
     $mail_sender->SendLineEnc($args{html});
     $mail_sender->Close()
         or die "no Mail::Sender->Close $Mail::Sender::Error";
+    if (@cc_bcc) {
+        $mail_sender = undef;
+        # need to recreate or else the cc/bcc people
+        # will receive all email!
+    }
 }
 
 sub lunch_table {
