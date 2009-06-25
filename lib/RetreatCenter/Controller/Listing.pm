@@ -429,6 +429,10 @@ sub meal_list : Local {
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
+                      program_id => 0,      # non-hybrid rentals only
+                                # hybrid rental/programs are counted
+                                # on the program side by individual
+                                # registration
                   });
     my @blocks  = model($c, 'Block')->search({
                       sdate   => { '<=' => $end_d8 },
