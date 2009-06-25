@@ -598,9 +598,10 @@ sub period_end : Local {
     }
     my %grand_total;
     for my $t (keys %totals) {
+        my $href = $totals{$t};
         for my $n (qw/ amount cash check credit online /) {
-            $grand_total{$n} += $totals{$t}->{$n};
-            $totals{$t}->{$n} = commify($totals{$t}->{$n});
+            $grand_total{$n} += $href->{$n};
+            $href->{$n} = commify($href->{$n});
         }
     }
     for my $n (keys %grand_total) {
