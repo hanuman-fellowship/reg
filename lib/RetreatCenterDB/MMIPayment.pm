@@ -38,6 +38,9 @@ sub the_date_obj {
 sub name {
     my ($self) = @_;
     my $per = $self->person;
+    if (! $per) {
+        return "Unknown";
+    }
     return $per->last . ", " . $per->first;
 }
 
