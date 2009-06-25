@@ -4124,6 +4124,7 @@ sub nonzero : Local {
         {
             program_id => $program_id,
             balance    => { '!=' => 0 },
+            cancelled  => { '!=' => 'yes' },
         },
         {
             join     => [qw/ person /],
