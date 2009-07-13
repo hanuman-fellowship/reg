@@ -433,6 +433,8 @@ sub meal_list : Local {
                                 # hybrid rental/programs are counted
                                 # on the program side by individual
                                 # registration
+                                # BUT we look to the parallel rental
+                                # to see what days the program has lunches!
                   });
     my @blocks  = model($c, 'Block')->search({
                       sdate   => { '<=' => $end_d8 },
@@ -453,7 +455,13 @@ sub meal_list : Local {
                       $r->program->name
                     ];
         }
-        ($event_start, $lunches)  = get_lunch($c, $r->program_id, 'Program');
+        my $pr = $r->program();
+        if ($pr->rental_id()) {
+            ($event_start, $lunches) = get_lunch($c, $pr->rental_id, 'Rental');
+        }
+        else {
+            ($event_start, $lunches) = get_lunch($c, $r->program_id, 'Program');
+        }
         $len_lunches = length($lunches);
 
         my $r_start = $r->date_start_obj;
@@ -1453,6 +1461,8 @@ sub summary : Local {
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
+            rental_id => 0,             # ignore the summary of hybrid programs
+                                        # the rental side is the one we use.
             "summary.$section" => { '!=' => '' },
         },
         {

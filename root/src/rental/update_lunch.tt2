@@ -24,11 +24,11 @@ function toggle_all() {
 <td>[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span></td>
 </tr>
 </table>
-<p>
+<p class=p2>
 <form name=form action="/rental/update_lunch_do/[% rental.id %]">
 <ul class=lunch>
 [% lunch_table %]</span>
-<p>
+<p class=p2>
 <input type=submit value="Submit">
 <span style="margin-left: 1in">All <input type=checkbox name=all onclick="toggle_all();"></span>
 </ul>

@@ -422,7 +422,14 @@ sub view : Local {
         );
     }
 
-    if (!($p->name() =~ m{personal retreats}i || $p->level() =~ m{[DCM]})) {
+    #
+    # no lunches for personal retreat, DCM or hybrid programs.
+    #
+    if (! ($p->name() =~ m{personal retreats}i
+           || $p->level() =~ m{[DCM]}
+           || $p->rental_id()
+          )
+    ) {
         stash($c,
               lunch_table => lunch_table(
                                  1,

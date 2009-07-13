@@ -99,6 +99,9 @@ __PACKAGE__->belongs_to('summary' => 'RetreatCenterDB::Summary', 'summary_id');
 # coordinator
 __PACKAGE__->belongs_to(coordinator => 'RetreatCenterDB::Person',
                         'coordinator_id');
+# program (maybe)
+__PACKAGE__->belongs_to(program => 'RetreatCenterDB::Program', 'program_id');
+
 # contract signer
 __PACKAGE__->belongs_to(contract_signer => 'RetreatCenterDB::Person',
                         'cs_person_id');
@@ -227,6 +230,15 @@ sub dates_tr2 {
 }
 sub count {
     my ($self) = @_;
+
+    #
+    # for hybrid rentals the count comes from the program
+    # because we have individual registrations.
+    #
+    if ($self->program_id()) {
+        return $self->program->count();
+    }
+
     my $count = 0;
     for my $f (qw/
         n_single_bath

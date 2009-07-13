@@ -16,6 +16,7 @@ use Util qw/
 use Date::Simple qw/
     date
     days_in_month
+    today
 /;
 use Time::Simple qw/
     get_time
@@ -176,6 +177,56 @@ sub _get_data {
     if (! exists $P{free_prog_taken}) {
         $P{free_prog_taken} = '';        # an unchecked field would not
                                             # be sent if I didn't do this...
+    }
+    if (! (   empty($P{cc_number1})
+           && empty($P{cc_number2})
+           && empty($P{cc_number3})
+           && empty($P{cc_number4})
+          )
+    ) {
+        if (   $P{cc_number1} !~ m{\d{4}}
+            || $P{cc_number2} !~ m{\d{4}}
+            || $P{cc_number3} !~ m{\d{4}}
+            || $P{cc_number4} !~ m{\d{4}}
+        ) {
+            push @mess, "Invalid credit card number";
+        }
+    }
+    if (! empty($P{cc_expire})) {
+        if ($P{cc_expire} !~ m{(\d\d)(\d\d)}) {
+            push @mess, "Invalid expiration date";
+        }
+        else {
+            my $month = $1;
+            my $year = $2;
+            if (! (1 <= $month && $month <= 12)) {
+                push @mess, "Invalid month in expiration date";
+            }
+            else {
+                my $today = today();
+                my $cur_century = (int($today->year() / 100)) * 100;
+                    # another way to just get the century?
+
+                my $exp_date = date($year + $cur_century,
+                                    $month,
+                                    days_in_month($year, $month)
+                               );
+                if ($today > $exp_date) {
+                    push @mess, "Credit card has expired";
+                }
+            }
+        }
+    }
+    if (! empty($P{cc_code}) && $P{cc_code} !~ m{\d{3}}) {
+        push @mess, "Invalid security code";
+    }
+    $P{cc_number} = $P{cc_number1} 
+                     . $P{cc_number2}
+                     . $P{cc_number3}
+                     . $P{cc_number4}
+                     ;
+    for my $i (1 .. 4) {
+        delete $P{"cc_number$i"};
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;

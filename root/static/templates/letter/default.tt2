@@ -1,3 +1,4 @@
+[% mmi = program.school != 0 %]
 <html>
 <head>
 <style type='text/css'>
@@ -67,7 +68,7 @@ h4 {
 <img height=200 src="http://www.mountmadonna.org/programs/main_image/nov_sc_sunset.jpg">
 <p class=p2>
 <span style="font-weight: bold; font-size: 17pt;">
-Mount Madonna Center
+Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]
 </span>
 </center>
 <p class=p2>
@@ -195,7 +196,7 @@ Program registration is from
 		5:00 pm to 6:00 pm.
 	[% END %]
     <p class=p2>
-	The office closes at [% program.reg_end_obj %]<br>
+	The office closes at [% program.reg_end_obj %].<br>
 	If you will <b>ARRIVE LATER</b> than 6:00 pm please call to let us know.<br>
     Notes are posted in the Community Building lobby for late arrivals.<br>
 	We will save dinner for you on request.
@@ -257,12 +258,16 @@ Sincerely,<br>
 </table>
 <hr>
 <h2>Address and Contact Information</h2>
-<b>Mount Madonna Center</b> - 445 Summit Rd, Watsonville, CA 95076<br>
+<b>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</b> - 445 Summit Rd, Watsonville, CA 95076<br>
 <p class=p2>
 <table cellpadding=3>
-<tr><th align=right>Phone</th><td>408-846-4064 or 408-847-0406</td></tr>
+<tr><th align=right>Phone</th><td>[% IF mmi %]408-846-4060[% ELSE %]408-846-4064[% END %] or 408-847-0406</td></tr>
 <tr><th align=right>Fax</th><td>408-847-2683</td></tr>
+[% IF mmi %]
+<tr><th align=right>Email</th><td><a href="mailto:info@mountmadonnainstitute.org">info@mountmadonnainstitute.org</a></td></tr>
+[% ELSE %]
 <tr><th align=right>Email</th><td><a href="mailto:programs@mountmadonna.org">programs@mountmadonna.org</a></td></tr>
+[% END %]
 <tr><th align=right valign=top>Business Hours</th><td align=left>Monday-Thursday 9:00-5:00<br>Friday 9:00-5:30<br>Saturday 11:00-5:00</td></tr>
 </table>
 [% IF program.kayakalpa %]
@@ -281,18 +286,18 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya
         [% IF p.tel_home %][% p.tel_home %] home<br>[% END %]
         [% IF p.tel_work %][% p.tel_work %] work<br>[% END %]
         [% IF p.tel_cell %][% p.tel_cell %] cell<br>[% END %]
-        [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna Center">[% p.email %]</a>[% END %]
+        [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">[% p.email %]</a>[% END %]
         </div>
     [% END %]
     <hr>
 [% END %]
-<h2>Directions to Mount Madonna Center</h2>
+<h2>Directions to Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</h2>
 Do not use any GPS system or any directions from Mapquest, Yahoo or Google or
 any other outside source.
 Use <b>only</b> the directions below.
 <p class=p2>
 On the west coast of Central California approximately 2 hours driving 
-time south of San Francisco (more if traffic is heavy), Mount Madonna Center
+time south of San Francisco (more if traffic is heavy), Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]
 overlooks Monterey Bay from the Santa Cruz mountains between Santa Cruz and
 Watsonville, 3.5 miles off Highway 152.
 <p class=p2>
@@ -302,21 +307,21 @@ approximately 3 miles on Airport Blvd, then left onto Hwy 152 East.
 At the top of the mountain turn left just after Mount Madonna Inn,
 into Mt Madonna County Park (Pole Line Rd).   Follow the yellow line
 through the park and continue straight through the 4-way stop onto
-Summit Rd. The Center is 1.5 miles further on the left (445 Summit Rd).
+Summit Rd. The [% IF mmi %]Institute[% ELSE %]Center[% END %] is 1.5 miles further on the left (445 Summit Rd).
 <p class=p2>
 <span class=name>From Highway 101, INLAND:</span><br>
 Take Hwy 152 West at Gilroy.  Go approximately 10 miles through Gilroy 
 and up the mountain.  At the top of the mountain, turn right into Mt Madonna
 County Park (Pole Line Rd).  If you come to Mount Madonna Inn on your right,
 you've just missed your turn.  Follow the yellow line through the park and
-continue straight through the 4-way stop onto Summit Rd. The Center is 1.5 
+continue straight through the 4-way stop onto Summit Rd. The [% IF mmi %]Institute[% ELSE %]Center[% END %] is 1.5 
 miles further on the left (445 Summit Rd).
 <p class=p2>
 <center>
 <img height=400 src="http://www.mountmadonna.org/Gif/circlemap.gif">
 </center>
 <p class=p2>
-For information about other forms of transportation to the center click <a href=http://www.mountmadonna.org/directions>here</a>.
+For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <a href=http://www.mountmadonna.org/directions>here</a>.
 <a name=kaya></a>
 <p class=p2>
 <hr>
@@ -325,7 +330,7 @@ For information about other forms of transportation to the center click <a href=
 Kaya Kalpa means rejuvenation of body and spirit and our professionally
 trained practitioners are dedicated to your well-being. We offer a variety
 of Ayurveda therapies, traditional massage and other body therapies to
-enhance your stay at Mount Madonna Center. Nestled among majestic oak
+enhance your stay at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]. Nestled among majestic oak
 and redwood trees, on 355 acres overlooking Monterey Bay, Kaya Kalpa
 Wellness Center offers an oasis for relaxation, health and nurturing. 
 <ul>

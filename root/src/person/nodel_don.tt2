@@ -1,3 +1,5 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <h2>People</h2>
 [% person.first %] [% person.last %] has made these donations:
 <ul>
@@ -7,17 +9,17 @@
     <th align=left>Project</th>
     <th align=center>Date</th>
     </tr>
-    [% FOR d IN person.donations %]
+    [% FOR d IN donations %]
     <tr>
     <td align=right>[% d.amount %]</td>
     <td><a href="/project/donations/[% d.project.id %]">[% d.project.descr %]</a></td>
-    <td>[% d.date_donate_obj %]</td>
+    <td>[% d.the_date_obj %]</td>
     <td><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
     [% END %]
     </table>
 </ul>
 and cannot be deleted.
-<p>
+<p class=p2>
 Go <input type=button id="back" value="Back" onclick="history.go(-1)"> to the person.
 <script type='text/javascript'>document.getElementById('back').focus();</script>

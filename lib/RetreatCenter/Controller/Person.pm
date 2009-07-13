@@ -199,6 +199,12 @@ sub delete : Local {
         $c->stash->{template} = "person/nodel_don.tt2";
         return;
     }
+    if (my @p = $p->payments) {
+        $c->stash->{person} = $p;
+        $c->stash->{payments} = \@p;
+        $c->stash->{template} = "person/nodel_pay.tt2";
+        return;
+    }
 
     # affilation/persons
     model($c, 'AffilPerson')->search(
