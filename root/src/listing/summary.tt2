@@ -2,10 +2,9 @@
 <table cellpadding=5>
 <tr>
 <th align=left>Event</th>
-<th>Start</th>
-<th>End</th>
+<th align=left>Start</th>
+<th align=left>End</th>
 <th align=left>Place</th>
-<th align=left>[% section %] Needs</th>
 </tr>
 [% FOREACH ev IN events %]
     [% sum = ev.summary %]
@@ -14,7 +13,9 @@
     <td valign=top>[% ev.sdate_obj.format('%a %b %e %q') %]</td>
     <td valign=top>[% ev.edate_obj.format('%a %b %e %q') %]</td>
     <td valign=top>[% ev.meeting_places %]</td>
-    <td valign=top>[% IF section == 'Flower' %][% sum.leader_housing_tr %]<p class=p2>[% sum.flowers_tr %][% ELSIF section ==  'Field Staff Setup' %][% sum.leader_housing_tr %]<p class=p2>[% sum.signage_tr %]<p class=p2>[% sum.field_staff_setup_tr %][% ELSE %][% sum.sound_setup_tr %][% END %]</td>
+    </tr>
+    <tr><td></td>
+    <td valign=top colspan=3>[% IF section == 'Flower' %][% sum.leader_housing_tr %]<p class=p2>[% sum.flowers_tr %][% ELSIF section ==  'Field Staff Setup' %][% sum.leader_housing_tr %]<p class=p2>[% sum.signage_tr %]<p class=p2>[% sum.field_staff_setup_tr %][% ELSE %][% sum.sound_setup_tr %][% END %]<hr></td>
     </tr>
 [% END %]
 </table>
