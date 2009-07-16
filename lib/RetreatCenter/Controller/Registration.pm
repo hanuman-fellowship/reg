@@ -793,7 +793,7 @@ sub _get_data {
         #
         my @prog = model($c, 'Event')->search({
             name  => 'No PR',
-            sdate => { '<=', $dates{date_end} },
+            sdate => { '<', $dates{date_end} },
             edate => { '>=', $dates{date_start} },
         });
         if (@prog) {
