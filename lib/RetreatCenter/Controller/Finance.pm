@@ -64,7 +64,6 @@ sub reconcile_deposit : Local {
             if ($src eq 'XAccountPayment') {
                 my $type = ($p->xaccount->mmc()? 'mmc': 'mmi');
                 # perhaps I should have had $xa->mmc() =~ /mm[ci]/?
-$c->log->info("type $type and source $source");
                 if ($type ne $source) {
                     next;       # not for this reconciliation
                 }
