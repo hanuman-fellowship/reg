@@ -13,8 +13,5 @@ __PACKAGE__->add_columns(qw/
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
-__PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment',
-                      'xaccount_id',
-                      { order_by => 'id desc' });
 
 1;

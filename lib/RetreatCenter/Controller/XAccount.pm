@@ -70,11 +70,26 @@ sub create_do : Local {
 }
 
 sub view : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $by_person) = @_;
 
     my $xa = model($c, 'XAccount')->find($id);
-    $c->stash->{xaccount} = $xa;
-    $c->stash->{template} = "xaccount/view.tt2";
+    my @payments = model($c, 'XAccountPayment')->search(
+        {
+            xaccount_id => $id,
+        },
+        {
+            join     => 'person',
+            prefetch => 'person',
+            order_by => $by_person? [qw/ person.last person.first me.id /]
+                        :           'the_date desc',
+        }
+    );
+    stash($c,
+        by_person => $by_person,
+        payments  => \@payments,
+        xaccount  => $xa,
+        template  => "xaccount/view.tt2",
+    );
 }
 
 sub list : Local {

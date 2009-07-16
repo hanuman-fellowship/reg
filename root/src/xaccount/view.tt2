@@ -10,6 +10,12 @@
 onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/xaccount/list">List</a>
+&nbsp;&nbsp;&nbsp;
+[% IF by_person %]
+<a href="/xaccount/view/[% xaccount.id %]">By Date</a>
+[% ELSE %]
+<a href="/xaccount/view/[% xaccount.id %]/1">By Person</a>
+[% END %]
 <p class=p2>
 [% END %]
 <table cellpadding=3 border=0>
@@ -42,7 +48,7 @@ onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>
 </tr>
 
 [% tot = 0 %]
-[% FOREACH p IN xaccount.payments %]
+[% FOREACH p IN payments %]
 <tr>
 <td valign=top><a href="/person/view/[% p.person.id %]">[% p.person.last %], [% p.person.first %]</a></td>
 <td align=right valign=top>[% p.amount %]</td>
