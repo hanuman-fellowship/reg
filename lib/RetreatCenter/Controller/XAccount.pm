@@ -33,23 +33,25 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
+    $c->stash->{mmc_checked} = "checked";
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "xaccount/create_edit.tt2";
 }
 
-my %hash;
+my %P;
 my @mess;
 sub _get_data {
     my ($c) = @_;
 
-    %hash = %{ $c->request->params() };
+    %P = %{ $c->request->params() };
     @mess = ();
-    if (empty($hash{descr})) {
+    if (empty($P{descr})) {
         push @mess, "Description cannot be blank";
     }
-    if (empty($hash{glnum})) {
+    if (empty($P{glnum})) {
         push @mess, "GL Number cannot be blank";
     }
+    $P{mmc} = "" unless exists $P{mmc};
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "xaccount/error.tt2";
@@ -62,7 +64,7 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $xa = model($c, 'XAccount')->create(\%hash);
+    my $xa = model($c, 'XAccount')->create(\%P);
     my $id = $xa->id();
     $c->response->redirect($c->uri_for("/xaccount/list"));
 }
@@ -90,6 +92,8 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    my $xa = model($c, 'XAccount')->find($id);
+    $c->stash->{mmc_checked} = "checked" if $xa->mmc();
     $c->stash->{xaccount}    = model($c, 'XAccount')->find($id);
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "xaccount/create_edit.tt2";
@@ -101,7 +105,7 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    model($c, 'XAccount')->find($id)->update(\%hash);
+    model($c, 'XAccount')->find($id)->update(\%P);
     $c->response->redirect($c->uri_for("/xaccount/view/$id"));
 }
 

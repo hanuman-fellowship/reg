@@ -49,17 +49,26 @@ sub reconcile_deposit : Local {
     my ($cash, $check, $credit, $online, $total) = (0) x 5;
     my @sources = ($source eq 'mmc')? qw/
                       RegPayment
-                      XAccountPayment
                       RentalPayment
                   /:
                   qw/
                       MMIPayment
                   /;
+    push @sources, "XAccountPayment";
     # Donations are not included in deposits, no???
     #
+
     for my $src (@sources) {
         PAYMENT:
         for my $p (model($c, $src)->search($cond)) {
+            if ($src eq 'XAccountPayment') {
+                my $type = ($p->xaccount->mmc()? 'mmc': 'mmi');
+                # perhaps I should have had $xa->mmc() =~ /mm[ci]/?
+$c->log->info("type $type and source $source");
+                if ($type ne $source) {
+                    next;       # not for this reconciliation
+                }
+            }
             my $type = $p->type;
             my $amt  = $p->amount;
             next PAYMENT if $amt == 0;       # bogus payment

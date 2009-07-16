@@ -8,8 +8,9 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/xaccount/delete/[% xaccount.id %]"
 onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>
-
-<p>
+&nbsp;&nbsp;&nbsp;
+<a href="/xaccount/list">List</a>
+<p class=p2>
 [% END %]
 <table cellpadding=3 border=0>
 
@@ -22,6 +23,12 @@ onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>
 <th align=right>GL Number</th>
 <td>[% xaccount.glnum %]</td>
 </tr>
+
+<tr>
+<th align=right>MMC</th>
+<td>[% xaccount.mmc %]</td>
+</tr>
+
 </table>
 
 <h3>Payments</h3>

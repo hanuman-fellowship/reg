@@ -14,6 +14,11 @@
 </tr>
 
 <tr>
+<th align=right><span class=required>*</span> MMC</th>
+<td><input type=checkbox name=mmc value=yes [% mmc_checked %]></td>
+</tr>
+
+<tr>
 <td>&nbsp;</td>
 <td><input type=submit value="Submit"></td>
 </tr>

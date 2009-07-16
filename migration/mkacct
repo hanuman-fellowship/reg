@@ -2,7 +2,8 @@ drop table if exists xaccount;
 create table xaccount (
     id          integer primary key autoincrement,
     descr       text,
-    glnum       text
+    glnum       text,
+    mmc         text
 );
 insert into xaccount values (1, "Transportation", "00025");
 drop table if exists xaccount_payment;

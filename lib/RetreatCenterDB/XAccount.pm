@@ -9,6 +9,7 @@ __PACKAGE__->add_columns(qw/
     id
     descr
     glnum
+    mmc
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
