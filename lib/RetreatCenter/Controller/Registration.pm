@@ -791,9 +791,10 @@ sub _get_data {
         # is there an event named "No PR" with some overlap with
         # this registration?
         #
+        my $edate1 = (date($dates{date_end})-1)->as_d8();
         my @prog = model($c, 'Event')->search({
             name  => 'No PR',
-            sdate => { '<', $dates{date_end} },
+            sdate => { '<=', $edate1 },
             edate => { '>=', $dates{date_start} },
         });
         if (@prog) {
