@@ -1506,7 +1506,7 @@ EOH
 From web housing grid: \$$ctot
 EOH
     }
-    else {
+    if ($tot_people == 0) {
         # look at the attendance for total cost, total people.
         # it also returns a nice table of costs.
         #
