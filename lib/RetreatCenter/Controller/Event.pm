@@ -408,7 +408,7 @@ sub calendar : Local {
 &nbsp;&nbsp;
 <a href="javascript:popup('/static/help/calendar.html', 620);">How?</a>
 &nbsp;&nbsp;
-<a href="javascript:popup('/event/cal_colors', 640);">Colors?</a>
+<a href="javascript:popup('/event/cal_colors', 670);">Colors?</a>
 </form>
 </div>
 <p>
