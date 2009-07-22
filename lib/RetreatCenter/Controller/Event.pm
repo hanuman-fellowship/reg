@@ -406,9 +406,9 @@ sub calendar : Local {
 <span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
 <span class=datefld><input class=go type=submit value="Go"></span>
 &nbsp;&nbsp;
-<a href="javascript:popup('/static/help/calendar.html');">How?</a>
+<a href="javascript:popup('/static/help/calendar.html', 620);">How?</a>
 &nbsp;&nbsp;
-<a href="javascript:popup('/event/cal_colors');">Colors?</a>
+<a href="javascript:popup('/event/cal_colors', 640);">Colors?</a>
 </form>
 </div>
 <p>
@@ -961,10 +961,10 @@ EOH
 <head>
 <script type="text/javascript">
 var newwin;
-function popup(url) {
+function popup(url, height) {
     newwin = window.open(
         url, 'reg_search_help',
-        'height=620,width=550, scrollbars'
+        'height=' + height + ',width=550, scrollbars'
     );
     if (window.focus) {
         newwin.focus();
@@ -1182,7 +1182,7 @@ EOH
 <span class=cal_head>
 Future Events at Mount Madonna Center
 <span class=updated>Updated $updated</span>
-<span class=cal_help><a href="javascript:popup('pubcal_help.html');">Help</a></span>
+<span class=cal_help><a href="javascript:popup('pubcal_help.html', 620);">Help</a></span>
 </span>
 EOH
         print {$cal} $content;
@@ -1310,6 +1310,8 @@ EOF
     }
     $html .= <<"EOF";
 </table>
+<p>
+<a href='#' onclick="javascript:window.close();">Close</a>
 EOF
     $c->res->output($html);
 }
