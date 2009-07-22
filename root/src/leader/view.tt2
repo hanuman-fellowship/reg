@@ -15,7 +15,7 @@ p {
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/person/view/[% leader.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
-<p>
+<p class=p2>
 <table cellpadding=5 border=0>
 
 <tr>

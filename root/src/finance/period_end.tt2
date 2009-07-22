@@ -17,7 +17,7 @@ td {
 [% mmi = which == 'MMI' %]
 <h2>
 End of Month Summary for General Ledger<br>
-For [% which %] Receipts Issued between [% start.format("%D") %] and [% end.format("%D") %].
+For [% SPONSOR %] Receipts Issued between [% start.format("%D") %] and [% end.format("%D") %].
 </h2>
 <table cellpadding=0>
 <tr>

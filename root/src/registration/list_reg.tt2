@@ -68,7 +68,7 @@ function process(e) {
 <a href="/registration/list_reg_missing/[% program.id %]">Missing</a>
 
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/find/[% program.id %]">Find</a>
+<a href="/registration/search/[% program.id %]">Search</a>
 
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>

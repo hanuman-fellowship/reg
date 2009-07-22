@@ -302,7 +302,7 @@ EOH
     my $color = $cv->colorAllocate(@{$clust_color{$cur_clust}});
 
     my %char_color;
-    for my $c (qw/ M F X R empty_bed resize /) {
+    for my $c (qw/ M F X R B empty_bed resize /) {
         $char_color{$c} = $cv->colorAllocate(
                               $string{"dp_$c\_color"} =~ m{(\d+)}g);
     }

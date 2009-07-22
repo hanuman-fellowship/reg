@@ -9,9 +9,14 @@ __PACKAGE__->add_columns(qw/
     id
     descr
     glnum
-    mmc
+    sponsor
 /);
 # Set the primary key for the table
-__PACKAGE__->set_primary_key(qw/id/);
+__PACKAGE__->set_primary_key('id');
+
+sub SPONSOR {
+    my ($self) = @_;
+    uc $self->sponsor();
+}
 
 1;

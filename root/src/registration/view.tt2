@@ -51,17 +51,22 @@ th a:hover {
 <table border=0 cellpadding=0>
 <tr>
 <td valign=center>
+[% IF reg.cancelled %]
+<a href=/registration/uncancel/[% id %]>Uncancel</a>
+&nbsp;&nbsp;
+[% ELSE %]
 <a accesskey='E' href="/registration/update/[% id %]"><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;
-[% IF ! reg.cancelled %]
 <a href="/registration/cancel/[% id %]"
    onclick="return confirm('Okay to Cancel [% person.first %] [% person.last %]?');"
 >Cancel</a>
 &nbsp;&nbsp;
 [% END %]
+[% IF ! reg.cancelled %]
 <a href="/registration/delete/[% id %]"
 onclick="return confirm('Okay to Delete registration for [% person.first %] [% person.last %]?');">Delete</a>
 &nbsp;&nbsp;
+[% END %]
 [% IF reg.arrived != 'yes' && reg.cancelled != 'yes' %]
 <a href="/registration/arrived/[% id %]">Not Arrived</a>
 &nbsp;&nbsp;
@@ -92,14 +97,18 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <td>
 <a accesskey='B' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back"><span class=keyed>B</span>ack</a>&nbsp;&nbsp;&nbsp;<a accesskey='N' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next"><span class=keyed>N</span>ext</a>
 &nbsp;&nbsp;
+[% IF ! reg.cancelled %]
 <a href=/registration/edit_dollar/[% id %]>Edit$</a>
 &nbsp;&nbsp;
-<a href=/registration/find/[% program.id %]>Find</a>
+[% END %]
+<a href=/registration/search/[% program.id %]>Search</a>
 &nbsp;&nbsp;
+[% IF ! reg.cancelled %]
 [% IF reg.manual %]
 <a href=/registration/automatic/[% id %]/0>To Automatic</a>
 [% ELSE %]
 <a href=/registration/automatic/[% id %]/1>To Manual</a>
+[% END %]
 [% END %]
 [% IF ! reg.cancelled %]
     &nbsp;&nbsp;
@@ -127,7 +136,7 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <tr>
 <th align=right>[% pers_label %]</th>
 <td colspan=3 width=700><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a>
-([% person.sex_disp %])
+([% IF reg.status %]<span class=required>[% reg.status %]</span> member - [% END %][% person.sex_disp %])
 [% IF reg.cancelled %]
 <span class=cancel>Cancelled</span>
 [% END %]
@@ -339,7 +348,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right>Membership</th>
-<td>[% IF reg.status %][% reg.status %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free nights.[% ELSIF reg.free_prog_taken %]taking their free program.[% END %][% END %]</td>
+<td>[% IF reg.status %][% reg.status %] member [% IF reg.nights_taken %]using [% reg.nights_taken %] free night[% IF reg.nights_taken > 1 %]s[% END %].[% ELSIF reg.free_prog_taken %]taking their free program.[% END %][% END %]</td>
 </tr>
 
 [% IF ceu %]

@@ -23,9 +23,9 @@ use Global qw/
 /;
 
 sub reconcile_deposit : Local {
-    my ($self, $c, $source, $id, $prelim) = @_;
+    my ($self, $c, $sponsor, $id, $prelim) = @_;
 
-    my $host = ($source eq 'mmi')? "mmi_": "";
+    my $host = ($sponsor eq 'mmi')? "mmi_": "";
     my ($date_start, $date_end);
     my $dep;
     if ($id) {
@@ -47,27 +47,22 @@ sub reconcile_deposit : Local {
     };
     my @payments;
     my ($cash, $check, $credit, $online, $total) = (0) x 5;
-    my @sources = ($source eq 'mmc')? qw/
+    my @sources = ($sponsor eq 'mmc')? qw/
                       RegPayment
                       RentalPayment
                   /:
                   qw/
                       MMIPayment
                   /;
-    push @sources, "XAccountPayment";
+    push @sources, "XAccountPayment";       # for both
     # Donations are not included in deposits, no???
     #
 
     for my $src (@sources) {
         PAYMENT:
         for my $p (model($c, $src)->search($cond)) {
-            if ($src eq 'XAccountPayment') {
-                my $type = ($p->xaccount->mmc()? 'mmc': 'mmi');
-                # perhaps I should have had $xa->mmc() =~ /mm[ci]/?
-                if ($type ne $source) {
-                    next;       # not for this reconciliation
-                }
-            }
+            next PAYMENT if $src eq 'XAccountPayment'
+                            && $p->xaccount->sponsor() ne $sponsor;
             my $type = $p->type;
             my $amt  = $p->amount;
             next PAYMENT if $amt == 0;       # bogus payment
@@ -97,7 +92,7 @@ sub reconcile_deposit : Local {
             };
         }
     }
-    if ($source eq 'mmc') {
+    if ($sponsor eq 'mmc') {
         # ride payments are handled differently
         # and it is always a credit card payment.
         # not any more!
@@ -142,15 +137,15 @@ sub reconcile_deposit : Local {
                     @payments;
 
     if (! $id) {
-        $string{"$source\_reconciling"} = ($prelim)? ""
-                                          :          $c->user->obj->username()
-                                          ;
+        $string{"$sponsor\_reconciling"} = ($prelim)? ""
+                                           :          $c->user->obj->username()
+                                           ;
         # on disk???  not needed?
     }
 
     stash($c,
-        source   => $source,
-        SOURCE   => uc $source,
+        sponsor  => $sponsor,
+        SPONSOR  => uc $sponsor,
         payments => \@payments,
         again    => (! $id && ! $prelim),
         prelim   => $prelim,
@@ -169,9 +164,9 @@ sub reconcile_deposit : Local {
 # dup'ed code from above - DRY???
 #
 sub file_deposit : Local {
-    my ($self, $c, $source, $id) = @_;
+    my ($self, $c, $sponsor, $id) = @_;
 
-    my $host = ($source eq 'mmi')? "mmi_": "";
+    my $host = ($sponsor eq 'mmi')? "mmi_": "";
     my ($date_start, $date_end);
     my $dep;
     if ($id) {
@@ -193,19 +188,21 @@ sub file_deposit : Local {
         the_date => { between => [ $date_start, $date_end ] },
     };
     my @payments;
-    my @sources = ($source eq 'mmc')? qw/
+    my @sources = ($sponsor eq 'mmc')? qw/
                       RegPayment
-                      XAccountPayment
                       RentalPayment
                   /:
                   qw/
                       MMIPayment
                   /;
+    push @sources, "XAccountPayment";       # for both
     # Donations are not included in deposits, no???
     #
     for my $src (@sources) {
         PAYMENT:
         for my $p (model($c, $src)->search($cond)) {
+            next PAYMENT if $src eq 'XAccountPayment'
+                            && $p->xaccount->sponsor() ne $sponsor; 
             my $type = $p->type();
             my $amt  = $p->amount();
             next PAYMENT if $amt == 0;      # bogus payment
@@ -220,7 +217,7 @@ sub file_deposit : Local {
             };
         }
     }
-    if ($source eq 'mmc') {
+    if ($sponsor eq 'mmc') {
         # ride payments are handled differently
         # and it is always a credit card payment.
         # not any more!
@@ -278,7 +275,7 @@ body, td, th {
 </style>
 EOH
 my $heading = <<"EOH";
-$timestamp<span style="font-size: 15pt; font-weight: bold; margin-left: 1in;">\U$source\E Bank Deposit</span>
+$timestamp<span style="font-size: 15pt; font-weight: bold; margin-left: 1in;">\U$sponsor\E Bank Deposit</span>
 <p>
 <table cellpadding=1>
 <tr valign=bottom>
@@ -428,7 +425,7 @@ EOH
                 chk        => $gcheck,
                 credit     => $gcredit,
                 online     => $gonline,
-                source     => $source,
+                sponsor    => $sponsor,
             });
 
             # in memory
@@ -439,14 +436,14 @@ EOH
                 value => $date_end,
             });
         }
-        $string{"$source\_reconciling"} = "";
+        $string{"$sponsor\_reconciling"} = "";
         # only in memory???
     }
     $c->res->output($html);
 }
 
 sub deposits : Local {
-    my ($self, $c, $source) = @_;
+    my ($self, $c, $sponsor) = @_;
 
     my $dt;
     if ($dt = $c->request->params->{date_end}) {
@@ -462,7 +459,7 @@ sub deposits : Local {
         deposits => [ 
             model($c, 'Deposit')->search(
                 {
-                    source   => $source,
+                    sponsor   => $sponsor,
                     date_end => { '<=', $dt->as_d8() },
                 },
                 {
@@ -471,13 +468,14 @@ sub deposits : Local {
                 },
             )
         ],
-        source   => $source,
+        sponsor   => $sponsor,
+        SPONSOR   => uc $sponsor,
         template => "finance/prior_deposits.tt2",
     );
 }
 
 sub period_end : Local {
-    my ($self, $c, $source) = @_;
+    my ($self, $c, $sponsor) = @_;
 
     my $sdate = $c->request->params->{sdate};
     my $edate = $c->request->params->{edate};
@@ -527,18 +525,25 @@ sub period_end : Local {
     };
 
     # copied from above :( DRY??? YES revisit.
-    my @sources = ($source eq 'mmc')? qw/
+    my @sources = ($sponsor eq 'mmc')? qw/
                       RegPayment
-                      XAccountPayment
                       RentalPayment
                   /:
                   qw/
                       MMIPayment
                   /;
+    push @sources, 'XAccountPayment';       # for both
     # Donations are not included in deposits, no???
     #
+    PAYMENT:
     for my $src (@sources) {
         for my $p (model($c, $src)->search($cond)) {
+if ($src eq 'XAccountPayment') {
+$c->log->info("here glnum " . $p->glnum());
+$c->log->info("here sponsor $sponsor and " . $p->xaccount->sponsor());
+}
+            next PAYMENT if $src eq 'XAccountPayment'
+                            && $p->xaccount->sponsor() ne $sponsor;
             my $type = $p->type();
             my $amt  = $p->amount();
             my $glnum = $p->glnum();
@@ -576,9 +581,9 @@ sub period_end : Local {
             } += $amt;
         }
     }
-    if ($source eq 'mmc') {
+    if ($sponsor eq 'mmc') {
         # ride payments are handled differently
-        # and it is always a credit card payment.
+        # and it is always a credit card payment. - not any more.
         #
         my $rgl = $string{ride_glnum};
         for my $r (model($c, 'Ride')->search({
@@ -616,7 +621,7 @@ sub period_end : Local {
         $grand_total{$n} = commify($grand_total{$n});
     }
     stash($c,
-        which       => $source eq 'mmi'? "MMI": "",
+        SPONSOR     => uc $sponsor,
         start       => $start,
         end         => $end,
         totals      => [ sort { $a->{name} cmp $b->{name} } values %totals ],

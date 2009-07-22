@@ -31,8 +31,8 @@ onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>
 </tr>
 
 <tr>
-<th align=right>MMC</th>
-<td>[% xaccount.mmc %]</td>
+<th align=right>Sponsor</th>
+<td>[% xaccount.SPONSOR %]</td>
 </tr>
 
 </table>

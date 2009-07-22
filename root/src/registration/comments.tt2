@@ -1,14 +1,14 @@
 <h2>Registrations in [% program.name %] with '[% pat %]'</h2>
-<table cellpadding=3>
+<table cellpadding=5>
 <tr>
 <th align=left width=200>Name</th>
-<th align=left>Comment</th>
+<th align=left>Comment/ConfNote</th>
 </tr>
 [% FOR r IN regs %]
 [% pers = r.person %]
 <tr align=left valign=top>
 <td><a href=/registration/view/[% r.id %]>[% pers.last %], [% pers.first %]</a></td>
-<td>[% r.comment %]</td>
+<td>[% r.comment %]<hr width=30 align=left>[% r.confnote %]</td>
 </tr>
 [% END %]
 </table>

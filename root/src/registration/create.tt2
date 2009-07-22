@@ -29,7 +29,7 @@ function popup(url) {
 <tr>
 <th align=right>Person</th>
 <td><a class=larger href="/person/view/[% person.id %]"
-onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a></td>
+onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a>[% IF status %] (<span class=required>[% status %]</span> member)[% END %]</td>
 <th align=left>Arrive<br><input type=text name=date_start size=10 maxlength=10 value="[% date_start.format("%D") %]"></th><th align=left>Leave<br><input type=text name=date_end size=10 maxlength=10 value="[% date_end.format("%D") %]"></th>
 </tr>
 
@@ -39,6 +39,16 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 onclick='return confirm("This registration has not yet been completed.  Continue on to view the program [% program.name %]?");'>[% program.name %]</a></td>
 <td><b>From</b> [% program.sdate_obj %]</td><td><b>To</b> [% program.edate_obj %]</td>
 </tr>
+
+[% IF nights > 0 %]
+<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2>&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
+[% ELSIF program.housecost.type == 'Total' %]
+<tr><th></td><td colspan=3>Cannot taken free nights because housing cost for this program is a Total amount.</td></tr>
+[% END %]
+[% IF free_prog %]
+<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog value=yes></td></tr>
+[% END %]
+
 
 <tr>
 <th align=right>Referral</th>
@@ -113,7 +123,7 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 </tr>
 
 <tr>
-<th align=left>Sharing With:</th>
+<th align=right>Sharing With</th>
 <td>First <input type=text name=share_first value="[% share_first %]" size=15>&nbsp; Last <input type=text name=share_last value="[% share_last %]" size=15>
 </td>
 </tr>
@@ -128,16 +138,6 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 <td><span style="margin-left: 1in">Click <a href="#" onclick="javascript:popup('/registration/conf_notes'); return false;">here</a> to see all quick notes.
 </span></td>
 </tr>
-
-[% IF status %]
-<tr><t<td colspan=2 align=center class=larger>[% status %] member</td></tr>
-[% END %]
-[% IF nights > 0 %]
-<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2>&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
-[% END %]
-[% IF free_prog %]
-<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog value=yes></td></tr>
-[% END %]
 
 <tr>
 <td>&nbsp;</td>
@@ -164,7 +164,7 @@ if ("[% status %]" != "") {
         "\n" + pronoun + " has not taken a free program yet.\n"
         : "";
 
-    s = s + "\n" + name + " is a [% status %] member.";
+    s = s + "\n" + name + " is a [% status %] member.\n";
     if ("[% nights %]" != "") {
         s = s + "\n" + pronoun + " has [% nights %] night" + plural
               + " of free lodging left to use.\n";

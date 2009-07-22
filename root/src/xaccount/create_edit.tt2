@@ -14,8 +14,11 @@
 </tr>
 
 <tr>
-<th align=right><span class=required>*</span> MMC</th>
-<td><input type=checkbox name=mmc value=yes [% mmc_checked %]></td>
+<th align=right valign=top><span class=required>*</span> Sponsor</th>
+<td valign=top>
+<input type=radio name=sponsor value=mmc [% mmc_checked %]> Center<br>
+<input type=radio name=sponsor value=mmi [% mmi_checked %]> Institute
+</td>
 </tr>
 
 <tr>

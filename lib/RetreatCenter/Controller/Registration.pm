@@ -619,7 +619,7 @@ sub _rest_of_reg {
         ) {
             stash($c, status => $status);    # they always get a 30%
                                              # tuition discount.
-            my $nights = $mem->sponsor_nights;
+            my $nights = $mem->sponsor_nights();
             if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
                 stash($c, nights => $nights);
             }
@@ -1084,6 +1084,8 @@ sub create_do : Local {
     $pr->update({
         reg_count => $pr->reg_count + 1,
     });
+
+    # go on to lodging, if needed
     $c->response->redirect($c->uri_for("/registration/"
         . (($reg->h_type =~ m{own_van|commuting|unknown|not_needed})? "view"
            :                                                          "lodge")
@@ -1109,11 +1111,25 @@ sub _compute {
     my ($c, $reg, @who_now) = @_;
 
     Global->init($c);
+    my $reg_id = $reg->id();
     my $auto = ! $reg->manual();
     my $pr  = $reg->program();
     my $mem = $reg->person->member();
     my $lead_assist = $reg->leader_assistant();   # no housing or tuition charge
                                                   # for these people
+    # clear auto charges
+    model($c, 'RegCharge')->search({
+        reg_id    => $reg_id,
+        automatic => 'yes',
+    })->delete();
+
+    # clear member activity for this registration
+    if ($mem) {
+        model($c, 'NightHist')->search({
+            member_id => $mem->id,
+            reg_id    => $reg_id,
+        })->delete();
+    }
 
     _re_get_days($reg);
 
@@ -1281,16 +1297,15 @@ sub _compute {
         $life_free = 1;
         #
         # finally, update the member record and add a NightHist record
-        # ??? check to see if it has already been done!!!
         #
         $mem->update({
             free_prog_taken => 'yes',
         });
         model($c, 'NightHist')->create({
-            member_id  => $mem->id,
+            member_id  => $mem->id(),
             num_nights => 0,
             action     => 4,        # take free program
-            @who_now,
+            @who_now,               # includes reg_id
         });
     }
     #
@@ -1340,7 +1355,7 @@ sub _compute {
     # the least for the balance.  Are we being anally precise
     # or what??
     #
-	if ($auto && (my $ntaken = $reg->nights_taken)) {
+	if ($auto && (my $ntaken = $reg->nights_taken())) {
 
         my @boxes = (
             [ $prog_days,  $h_cost     ],
@@ -1379,20 +1394,10 @@ sub _compute {
                        . " at \$$meal_cost per day for "
                        . $reg->status() . " member",
         });
-        #
-        # deduct these nights from the person's member record.
-        #
-        # Is this done twice in case of a relodge???
-        #           Yes.  no good.
-        #
-        $mem->update({
-            sponsor_nights => $mem->sponsor_nights - $ntaken,     # cool, eh?
-        });
-        #
         # and add a NightHist record to specify what happened
         #
         model($c, 'NightHist')->create({
-            @who_now,
+            @who_now,       # includes reg_id
             member_id  => $mem->id,
             num_nights => $ntaken,
             action     => 2,    # take nights
@@ -1451,7 +1456,101 @@ sub _compute {
     }
 
     _calc_balance($reg);
+
+    if (! $mem) {
+        return;
+    }
+    reset_mem($c, $mem);
     # phew!
+}
+
+#
+# make sure the member information is correct
+# given the possible activity that affected it.
+#
+sub reset_mem {
+    my ($c, $mem) = @_;
+
+    my $mem_id = $mem->id();
+
+    # find number last set for the free nights
+    #
+    my @recs = model($c, 'NightHist')->search(
+        {
+            member_id => $mem_id,
+            action    => 1,         # set nights
+        },
+        {
+            order_by => 'the_date desc, time desc',
+        }
+    );
+    my $nnights = 0;
+    my $set_date = "";
+    my $set_time = "";
+    if (@recs) {
+        $nnights = $recs[0]->num_nights();
+        $set_date = $recs[0]->the_date();
+        $set_time = $recs[0]->time();
+    }
+    my $ntaken = 0;
+    if ($nnights != 0) {
+        # find takings of nights since the setting
+        # add em up.
+        #
+        @recs = model($c, 'NightHist')->search(
+            {
+                member_id => $mem_id,
+                action    => 2,     # take nights
+                -or => [
+                    the_date  => { '>', $set_date },
+                    -and => [
+                        the_date => $set_date,
+                        time     => { '>' => $set_time },
+                    ],
+                ],
+            },
+        );
+        for my $r (@recs) {
+            $ntaken += $r->num_nights();
+        }
+
+    }
+    # how about the free program?
+    # has a free program been taken since it was
+    # last cleared?
+    @recs = model($c, 'NightHist')->search(
+        {
+            member_id => $mem_id,
+            action    => 3,
+        },
+        {
+            order_by => 'the_date desc, time desc',
+        }
+    );
+    my $taken = '';
+    if (@recs) {
+        my $clear_date = $recs[0]->the_date();
+        my $clear_time = $recs[0]->time();
+        my @hist = model($c, 'NightHist')->search({
+            member_id => $mem_id,
+            action    => 4,     # take free program
+            -or => [
+                the_date  => { '>' => $clear_date },
+                -and => [
+                    the_date => $clear_date,
+                    time     => { '>=' => $clear_time },
+                ],
+            ]
+        });
+        if (@hist) {
+            $taken = 'yes';
+        }
+    }
+    $mem->update({
+        sponsor_nights  => $nnights - $ntaken,
+        free_prog_taken => $taken,
+    });
+
 }
 
 sub _calc_balance {
@@ -1790,8 +1889,9 @@ sub cancel : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
+
     if ($reg->program->school() != 0) {
-        # when MMI students cancel no credit, no letter
+        # when MMI students cancel, there is no credit, no letter
         #
         cancel_do($self, $c, $id, 1);       # 1 => mmi
         return;
@@ -1820,36 +1920,17 @@ sub cancel_do : Local {
     });
 
     # return any assigned housing to the pool
-    _vacate($c, $reg) if $reg->house_id;
+    _vacate($c, $reg) if $reg->house_id();
 
-    # put back free nights/program
-    my $taken = $reg->nights_taken;
-    my $free  = $reg->free_prog_taken;
-    if ($taken || $free) {
+    # clear any member activity for this registration
+    if ($reg->free_prog_taken() || $reg->nights_taken()) {
         my $mem = $reg->person->member();
-        my @who_now = get_now($c, $id);
-        if ($taken) {
-            my $new_nights = $mem->sponsor_nights + $taken;
-            $mem->update({
-                sponsor_nights => $new_nights,
-            });
-            model($c, 'NightHist')->create({
-                member_id  => $mem->id,
-                num_nights => $new_nights,
-                action     => 1,        # set nights
-                @who_now,
-            });
-        }
-        if ($free) {
-            $mem->update({
-                free_prog_taken => '',
-            });
-            model($c, 'NightHist')->create({
-                member_id  => $mem->id,
-                num_nights => 0,
-                action     => 3,        # clear free program
-                @who_now,
-            });
+        if ($mem) {
+            model($c, 'NightHist')->search({
+                member_id => $mem->id(),
+                reg_id    => $id,
+            })->delete();
+            reset_mem($c, $mem);
         }
     }
 
@@ -1948,18 +2029,18 @@ sub cancel_do : Local {
 # takes care of getting the current user, date and time.
 #
 sub _reg_hist {
-    my ($c, $id, $what) = @_;
+    my ($c, $reg_id, $what) = @_;
 
     my $username = $c->user->username();
     my ($u) = model($c, 'User')->search({
         username => $username,
     });
-    my $user_id = $u->id;
+    my $user_id = $u->id();
     my $now_date = tt_today($c)->as_d8();
     my $now_time = get_time()->t24();
     model($c, 'RegHistory')->create({
-        reg_id => $id,
-        what => $what,
+        reg_id   => $reg_id,
+        what     => $what,
         user_id  => $user_id,
         the_date => $now_date,
         time     => $now_time,
@@ -2341,7 +2422,7 @@ sub update : Local {
             stash($c, nights => $nights);
         }
         if ($status eq 'Life'
-            && (! $mem->free_prog_taken || $reg->free_prog_taken)
+            && (! $mem->free_prog_taken || $reg->free_prog_taken())
         ) {
             stash($c, free_prog => 1);
         }
@@ -2380,9 +2461,6 @@ sub conf_history : Local {
 # there's a lot to do.
 #
 # check the validity of the fields
-# clear all automatic charges
-# look carefully at any _changes_ in nights taken or free program
-#   and adjust the member record in advance of the recomputation.
 # update the reg record
 # recompute charges
 #
@@ -2397,47 +2475,11 @@ sub update_do : Local {
         );
         return;
     }
-    model($c, 'RegCharge')->search({
-        reg_id    => $id,
-        automatic => 'yes',
-    })->delete();
 
     my $reg = model($c, 'Registration')->find($id);
     my $pr  = model($c, 'Program'     )->find($reg->program_id);
 
     my @who_now = get_now($c, $id);
-
-    my $mem = $reg->person->member;
-    if ($reg->free_prog_taken && ! $P{free_prog}) {
-        # they changed their mind about taking a free program
-        # so clear it in the member area.  and add a NightHist record.
-        $mem->update({
-            free_prog_taken => '',
-        });
-        model($c, 'NightHist')->create({
-            member_id  => $mem->id,
-            reg_id     => $id,
-            num_nights => 0,
-            action     => 3,        # clear free program
-            @who_now,
-        });
-    }
-    my $taken_before = $reg->nights_taken();
-    if ($taken_before && $taken_before != $taken) {
-        # put the nights back so we can taken them again (or not).
-        # add a NightHist record
-        my $new_nights = $mem->sponsor_nights + $taken_before;
-        $mem->update({
-            sponsor_nights => $new_nights,
-        });
-        model($c, 'NightHist')->create({
-            member_id  => $mem->id,
-            reg_id     => $id,
-            num_nights => $new_nights,
-            action     => 1,        # set nights
-            @who_now,
-        });
-    }
 
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} > $dates{date_end}) {
@@ -2495,7 +2537,9 @@ sub update_do : Local {
         work_study_comment => $P{work_study_comment},
         %dates,         # optionally
     });
+
     _compute($c, $reg, @who_now);
+
     _reg_hist($c, $id, "Registration Updated.");
     if ($reg->house_id() || $reg->h_type() =~ m{van|commut|unk|need}) {
         $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -2550,12 +2594,24 @@ sub manual : Local {
     _rest_of_reg($pr, $p, $c, tt_today($c), "dble", "dble");
 }
 
-# ??? need to put back member nights/program
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
     my $prog_id   = $reg->program_id;
+
+    # clear any member activity for this registration
+    if ($reg->free_prog_taken() || $reg->nights_taken()) {
+        my $mem = $reg->person->member();
+        if ($mem) {
+            model($c, 'NightHist')->search({
+                member_id => $mem->id(),
+                reg_id    => $id,
+            })->delete();
+            reset_mem($c, $mem);
+        }
+    }
+
     if (! $reg->cancelled()) {
         model($c, 'Program')->find($prog_id)->update({
             reg_count => \'reg_count - 1',
@@ -2563,6 +2619,7 @@ sub delete : Local {
     }
 
     _vacate($c, $reg) if $reg->house_id;
+
     $reg->delete();     # does this cascade to charges, payments, history? etc.?
                         # yes.  Thank you to DBIC!
     $c->response->redirect($c->uri_for("/registration/list_reg_name/$prog_id"));
@@ -2627,6 +2684,11 @@ sub not_arrived : Local {
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
+#
+# choosing a house (given a housing type)
+# should not affect the costs - unless you change
+# housing type on the lodging screen, that is.
+#
 sub lodge : Local {
     my ($self, $c, $id) = @_;
 
@@ -3099,10 +3161,6 @@ sub lodge_do : Local {
             h_type => $new_htype,
         });
         # recompute the automatic charges since h_type changed
-        model($c, 'RegCharge')->search({
-            reg_id    => $id,
-            automatic => 'yes',
-        })->delete();
         _compute($c, $reg, @who_now);
 
         if ($new_htype =~ m{^(own_van|commuting|unknown|not_needed)$}) {
@@ -3222,14 +3280,6 @@ sub lodge_do : Local {
             program_id => $reg->program_id,
         });
     }
-    # recompute the automatic charges whether or not h_type changed
-    #
-    model($c, 'RegCharge')->search({
-        reg_id    => $id,
-        automatic => 'yes',
-    })->delete();
-    _compute($c, $reg, @who_now);
-
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
@@ -4275,7 +4325,9 @@ sub automatic : Local {
     }
 
     my @who_now = get_now($c, $reg_id);
+
     _compute($c, $reg, @who_now);
+
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
 
@@ -4458,7 +4510,7 @@ sub work_study : Local {
     );
 }
 
-sub find : Local {
+sub search : Local {
     my ($self, $c, $prog_id) = @_;
 
     my $prog = model($c, 'Program')->find($prog_id);
@@ -4468,14 +4520,17 @@ sub find : Local {
     );
 }
 
-sub find_do : Local {
+sub search_do : Local {
     my ($self, $c, $prog_id) = @_;
 
     my $prog = model($c, 'Program')->find($prog_id);
     my $pat = $c->request->params->{pat};
     my @regs = model($c, 'Registration')->search({
         program_id => $prog_id,
-        comment    => { 'like' => "%$pat%" },   
+        -or => [
+            comment  => { 'like' => "%$pat%" },   
+            confnote => { 'like' => "%$pat%" },   
+        ],
     });
     stash($c,
         pat      => $pat,
@@ -4483,6 +4538,46 @@ sub find_do : Local {
         regs     => \@regs,
         template => 'registration/comments.tt2',
     );
+}
+
+sub uncancel : Local {
+    my ($self, $c, $reg_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+
+    # unmark cancelled
+    $reg->update({
+        cancelled => '',
+    });
+
+    # was any credit given?
+    my ($cr) = model($c, 'Credit')->search({
+        reg_id => $reg_id,
+    });
+    if ($cr) {
+        if ($cr->used_reg_id() != 0) {
+            # cannot uncancel - the credit has been used.
+            error($c,
+                "Sorry, cannot uncancel this registration.  The credit was used.",
+                "registration/error.tt2",
+            );
+            return;
+        }
+        $cr->delete();
+    }
+
+    # add one to reg_count in the program
+    my $prog_id   = $reg->program_id;
+    my $pr = model($c, 'Program')->find($prog_id);
+    $pr->update({
+        reg_count => \'reg_count + 1',
+    });
+
+    # add reg history record
+    _reg_hist($c, $reg_id, "UNcancelled");
+
+    # do an update so the free nights, housing, etc can be set again.
+    $c->response->redirect($c->uri_for("/registration/update/$reg_id"));
 }
 
 1;

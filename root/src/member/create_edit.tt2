@@ -42,6 +42,10 @@ h3 {
 .nh a:hover {
     background: #CCCCFF;
 }
+#sub {
+    color: green;
+    background: lightgreen;
+}
 </style>
 <h2>Members</h2>
 <!-- need post for +1 in dates -->
@@ -106,84 +110,14 @@ h3 {
 [% END %]
 
 <tr>
-<th align=left colspan=3 height=40><input type=radio name=category value='Inactive' [% category_inactive %] onclick="ff(4);"><span id=4 class=cat> Inactive</span></th>
+<th align=left colspan=2 height=40><input type=radio name=category value='Inactive' [% category_inactive %] onclick="ff(4);"><span id=4 class=cat> Inactive</span></th>
+<td align=left><input id=sub type=submit id=submit value="Submit"></td>
 </tr>
 
 </table>
 
 <hr width=600 align=left>
 
-<h3>Credit Card</h3>
-<table>
-
-<tr>
-<th align=right>Number</th>
-<td>
-<input type=text 
-       onkeypress="return check(event, this, 4, 'cc_number2');"
-       name=cc_number1
-       value='[% member.cc_number1 %]'
-       size=4
-       maxlength=4
->-<input type=text 
-       onkeypress="return check(event, this, 4, 'cc_number3');"
-       name=cc_number2
-       id=cc_number2
-       value='[% member.cc_number2 %]'
-       size=4
-       maxlength=4
->-<input type=text 
-       onkeypress="return check(event, this, 4, 'cc_number4');"
-       name=cc_number3
-       id=cc_number3
-       value='[% member.cc_number3 %]'
-       size=4
-       maxlength=4
->-<input type=text 
-       onkeypress="return check(event, this, 4, 'cc_expire');"
-       name=cc_number4
-       id=cc_number4
-       value='[% member.cc_number4 %]'
-       size=4
-       maxlength=4
->
-</td>
-</tr>
-
-<tr>
-<th align=right>Expiration Date</th>
-<td>
-<input type=text
-       onkeypress="return check(event, this, 4, 'cc_code');"
-       name=cc_expire
-       id=cc_expire
-       value='[% member.cc_expire %]'
-       size=4
-       maxlength=4
->
-&nbsp;&nbsp;MMYY
-</td>
-</tr>
-
-<tr>
-<th align=right>Security Code</th>
-<td>
-<input type=text
-       onkeypress="return check(event, this, 3, 'submit');"
-       name=cc_code
-       id=cc_code
-       value='[% member.cc_code %]'
-       size=3
-       maxlength=3
->
-</td>
-</tr>
-
-</table>
-
-<hr width=600 align=left>
-
-<input type=submit id=submit value="Submit">
 
 </form>
 [% pays = member.payments %]

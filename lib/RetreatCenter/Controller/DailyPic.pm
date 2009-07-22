@@ -90,7 +90,7 @@ sub show : Local {
     my $white = $dp->colorAllocate(255,255,255);    # 1st color = background
     my $black = $dp->colorAllocate(  0,  0,  0);
     my %char_color;
-    for my $c (qw/ M F X R empty_bed resize /) {
+    for my $c (qw/ M F X R B empty_bed resize /) {
         $char_color{$c} = $dp->colorAllocate(
                               $string{"dp_$c\_color"} =~ m{(\d+)}g);
     }
@@ -169,6 +169,7 @@ sub show : Local {
             # to not make the women angry ...
             $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
         }
+$c->log->info("sex $sex color $char_color{$sex}");
         $dp->string(gdGiantFont, $x1+3, $y1+3,
                     $sexcode, $char_color{$sex})  if $cur;
         $dp->string(gdGiantFont, $x1+3 + $cw*$cur, $y1+3,

@@ -22,7 +22,7 @@ __PACKAGE__->add_columns(qw/
     chk
     credit
     online
-    source
+    sponsor
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

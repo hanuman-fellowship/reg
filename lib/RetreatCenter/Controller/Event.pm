@@ -405,7 +405,10 @@ sub calendar : Local {
 <span class=datefld>Start</span> <input type=text name=start size=10 value='$start_param'>
 <span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
 <span class=datefld><input class=go type=submit value="Go"></span>
+&nbsp;&nbsp;
 <a href="javascript:popup('/static/help/calendar.html');">How?</a>
+&nbsp;&nbsp;
+<a href="javascript:popup('/event/cal_colors');">Colors?</a>
 </form>
 </div>
 <p>
@@ -1265,6 +1268,50 @@ sub meetingplace_update_do : Local {
     # show the event again - with the updated meeting places
     view($self, $c, $id);
     $c->forward('view');
+}
+
+sub cal_colors : Local {
+    my ($self, $c) = @_;
+
+    my $html = <<"EOF";
+<h3>Meeting Places - Names and Colors</h3>
+<table cellpadding=5>
+EOF
+    my @mps = model($c, 'MeetingPlace')->search(
+        {
+        },
+        {
+            order_by => 'disp_ord asc',
+        }
+    );
+    my $fmt = "#%02x%02x%02x";
+    for my $mp (@mps) {
+        my $col = sprintf($fmt, $mp->color() =~ m{(\d+)}g);
+        $html .= "<tr>"
+              .  "<td>" . $mp->abbr() . "</td>"
+              .  "<td>" . $mp->name() . "</td>"
+              .  "<td bgcolor=$col width=40>&nbsp;</td>"
+              .  "</tr>\n"
+    }
+    $html .= <<"EOF";
+</table>
+<h3>Rental Status - Border Color</h3>
+<table cellpadding=5>
+EOF
+    for my $st (qw/
+        tentative
+        sent
+        received
+        due
+        done
+    /) {
+        my $col = sprintf($fmt, $string{"rental_${st}_color"} =~ m{(\d+)}g);
+        $html .= "<tr><td>\u$st</td><td bgcolor=$col width=40></td></tr>\n";
+    }
+    $html .= <<"EOF";
+</table>
+EOF
+    $c->res->output($html);
 }
 
 1;

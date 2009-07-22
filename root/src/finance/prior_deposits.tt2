@@ -1,6 +1,6 @@
-<h2>Bank Deposits</h2>
+<h2>[% SPONSOR %] Bank Deposits</h2>
 <ul>
-<form action=/finance/deposits/[% source %]>
+<form action=/finance/deposits/[% sponsor %]>
 <b>Date</b> <input type=text name=date_end size=10> <input type=submit value="Go">
 </form>
 <table cellpadding=5>
@@ -25,8 +25,8 @@
 <td align=right>[% d.credit %]</td>
 <td align=right>[% d.online %]</td>
 <td align=right>[% d.cash + d.chk + d.credit + d.online %]</td>
-<td align=right><a href="/finance/reconcile_deposit/[% source %]/[% d.id %]">Reconcile</a></td>
-<td align=right><a href="/finance/file_deposit/[% source %]/[% d.id %]">File</a></td>
+<td align=right><a href="/finance/reconcile_deposit/[% sponsor %]/[% d.id %]">Reconcile</a></td>
+<td align=right><a href="/finance/file_deposit/[% sponsor %]/[% d.id %]">File</a></td>
 </tr>
 [% END %]
 </table>

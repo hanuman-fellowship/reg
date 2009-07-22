@@ -178,56 +178,6 @@ sub _get_data {
         $P{free_prog_taken} = '';        # an unchecked field would not
                                             # be sent if I didn't do this...
     }
-    if (! (   empty($P{cc_number1})
-           && empty($P{cc_number2})
-           && empty($P{cc_number3})
-           && empty($P{cc_number4})
-          )
-    ) {
-        if (   $P{cc_number1} !~ m{\d{4}}
-            || $P{cc_number2} !~ m{\d{4}}
-            || $P{cc_number3} !~ m{\d{4}}
-            || $P{cc_number4} !~ m{\d{4}}
-        ) {
-            push @mess, "Invalid credit card number";
-        }
-    }
-    if (! empty($P{cc_expire})) {
-        if ($P{cc_expire} !~ m{(\d\d)(\d\d)}) {
-            push @mess, "Invalid expiration date";
-        }
-        else {
-            my $month = $1;
-            my $year = $2;
-            if (! (1 <= $month && $month <= 12)) {
-                push @mess, "Invalid month in expiration date";
-            }
-            else {
-                my $today = today();
-                my $cur_century = (int($today->year() / 100)) * 100;
-                    # another way to just get the century?
-
-                my $exp_date = date($year + $cur_century,
-                                    $month,
-                                    days_in_month($year, $month)
-                               );
-                if ($today > $exp_date) {
-                    push @mess, "Credit card has expired";
-                }
-            }
-        }
-    }
-    if (! empty($P{cc_code}) && $P{cc_code} !~ m{\d{3}}) {
-        push @mess, "Invalid security code";
-    }
-    $P{cc_number} = $P{cc_number1} 
-                     . $P{cc_number2}
-                     . $P{cc_number3}
-                     . $P{cc_number4}
-                     ;
-    for my $i (1 .. 4) {
-        delete $P{"cc_number$i"};
-    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "member/error.tt2";
@@ -254,8 +204,8 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
-    my $pay_date = $P{mkpay_date};
-    my $amount   = $P{mkpay_amount};
+    my $pay_date   = $P{mkpay_date};
+    my $amount     = $P{mkpay_amount};
     my $valid_from = $P{valid_from};
     my $valid_to   = $P{valid_to};
 
@@ -293,7 +243,7 @@ sub update_do : Local {
     }
     $P{total_paid} = $total;
 
-    if ($member->sponsor_nights != $P{sponsor_nights}) {
+    if ($member->sponsor_nights() != $P{sponsor_nights}) {
         # add NightHist record to reflect the change
         model($c, 'NightHist')->create({
             member_id  => $id,
@@ -315,19 +265,35 @@ sub update_do : Local {
         });
     }
 
+    # if a payment was made...
     # fill in the general expiry/sponsor date_due dates based
     # on the valid_to date - unless they have
     # changed these dates directly.
     # 
-    if ($P{category} eq 'General'
-        && $P{date_general} == $member->date_general()
-    ) {
-        $P{date_general} = $valid_to;
+    if ($valid_to) {
+        if ($P{category} eq 'General'
+            && $P{date_general} == $member->date_general()
+        ) {
+            $P{date_general} = $valid_to;
+        }
+        if ($P{category} eq 'Sponsor'
+            && $P{date_sponsor} == $member->date_sponsor()
+        ) {
+            $P{date_sponsor} = $valid_to;
+        }
     }
-    if ($P{category} eq 'Sponsor'
-        && $P{date_sponsor} == $member->date_sponsor()
-    ) {
-        $P{date_sponsor} = $valid_to;
+
+    if ($P{category} eq 'Life' && $member->category() ne 'Life') {
+        # a new Life member
+        # clear the free program taken
+        #
+        model($c, 'NightHist')->create({
+            member_id  => $id,
+            reg_id     => 0,
+            num_nights => 0,
+            action     => 3, # clear free program
+            @who_now,
+        });
     }
 
     # finally, update the member record
@@ -554,7 +520,7 @@ sub create_do : Local {
             @who_now,
             member_id  => $id,
             reg_id     => 0,
-            num_nights => $P{sponsor_nights},
+            num_nights => $P{sponsor_nights} || 0,
             action     => 1,
         });
     }
@@ -564,7 +530,7 @@ sub create_do : Local {
             member_id  => $id,
             reg_id     => 0,
             num_nights => 0,
-            action     => ($P{free_prog_taken})? 5: 3,
+            action     => 3,
         });
     }
 

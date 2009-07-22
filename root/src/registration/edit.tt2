@@ -25,7 +25,7 @@ function popup(url) {
 
 <tr>
 <th align=right>Person</th>
-<td colspan=2><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a></td>
+<td colspan=2><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a>[% IF reg.status %] (<span class=required>[% reg.status %]</span> member)[% END %]</td>
 <td rowspan=2>
 <table>
 <tr><td><b>Arrive</b><br><input type=text name=date_start size=10 maxlength=10 value="[% IF reg.date_start != program.sdate %][% reg.date_start_obj.format("%D") %][% END %]"></td><td><b>Leave</b><br><input type=text name=date_end size=10 maxlength=10 value="[% IF reg.date_end != program.edate %][% reg.date_end_obj.format("%D") %][% END %]"></td></tr>
@@ -39,6 +39,16 @@ function popup(url) {
 <td colspan=2><a class=larger href="/program/view/[% program.id %]">[% program.name %]</a></td>
 <input type=hidden name=program_id value="[% program.id %]">
 </tr>
+
+[% IF nights > 0 %]
+<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2 value="[% reg.nights_taken %]">&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
+[% ELSIF program.housecost.type == 'Total' %]
+<tr><th></td><td colspan=3>Cannot taken free nights because housing cost for this program is a Total amount.</td></tr>
+[% END %]
+
+[% IF free_prog %]
+<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog value=yes [% IF reg.free_prog_taken %]checked[% END %]></td></tr>
+[% END %]
 
 <tr>
 <th align=right valign=top>Housing Type</th>
@@ -90,18 +100,6 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 [% reg.confnote %]
 </textarea></td>
 </tr>
-
-[% IF reg.status %]
-<tr><t<td colspan=3 align=center class=larger>[% reg.status %] member</td></tr>
-[% END %]
-
-[% IF nights %]
-<tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2 value="[% reg.nights_taken %]">&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
-[% END %]
-
-[% IF free_prog %]
-<tr><th align=right>Use Free Program</th><td><input type=checkbox name=free_prog value=yes [% IF reg.free_prog_taken %]checked[% END %]></td></tr>
-[% END %]
 
 <tr>
 <td colspan=2></td>

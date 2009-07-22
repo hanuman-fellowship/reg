@@ -20,9 +20,6 @@ __PACKAGE__->add_columns(qw/
     date_life
     free_prog_taken
     total_paid
-    cc_number
-    cc_expire
-    cc_code
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -72,10 +69,5 @@ sub category_id {
     my ($self) = @_;
     return $index{$self->category()};
 }
-
-sub cc_number1 { substr(shift->cc_number(),  0, 4) }
-sub cc_number2 { substr(shift->cc_number(),  4, 4) }
-sub cc_number3 { substr(shift->cc_number(),  8, 4) }
-sub cc_number4 { substr(shift->cc_number(), 12, 4) }
 
 1;

@@ -33,9 +33,12 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{mmc_checked} = "checked";
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "xaccount/create_edit.tt2";
+    stash($c,
+        mmc_checked => 'checked',
+        mmi_checked => '',
+        form_action => "create_do",
+        template    => "xaccount/create_edit.tt2",
+    );
 }
 
 my %P;
@@ -51,7 +54,6 @@ sub _get_data {
     if (empty($P{glnum})) {
         push @mess, "GL Number cannot be blank";
     }
-    $P{mmc} = "" unless exists $P{mmc};
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "xaccount/error.tt2";
@@ -108,10 +110,14 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $xa = model($c, 'XAccount')->find($id);
-    $c->stash->{mmc_checked} = "checked" if $xa->mmc();
-    $c->stash->{xaccount}    = model($c, 'XAccount')->find($id);
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "xaccount/create_edit.tt2";
+    my $sponsor = $xa->sponsor();
+    stash($c,
+        mmc_checked => $sponsor eq 'mmc'? 'checked': '',
+        mmi_checked => $sponsor eq 'mmi'? 'checked': '',
+        xaccount    => model($c, 'XAccount')->find($id),
+        form_action => "update_do/$id",
+        template    => "xaccount/create_edit.tt2",
+    );
 }
 
 sub update_do : Local {

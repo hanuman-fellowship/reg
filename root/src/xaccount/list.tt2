@@ -7,13 +7,13 @@
 <tr>
 <th align=left>Description</th>
 <th align=left>GL Number</th>
-<th align=left>MMC</th>
+<th align=left>Sponsor</th>
 </tr>
 [% FOREACH xa IN xaccounts %]
     <tr>
     <td><a href="/xaccount/view/[% xa.id %]">[% xa.descr %]</a></td>
     <td>[% xa.glnum %]</a></td>
-    <td>[% IF xa.mmc %]<img src=/static/images/checked.gif>[% END %]</a></td>
+    <td>[% xa.SPONSOR %]</td>
     </tr>
 [% END %]
 </table>
