@@ -6,6 +6,7 @@
 <table cellpadding=3>
 <tr><th align=right>Deposit</th><td><input type=text size=4 maxlength=4 name=deposit>
 <select style="margin-left: .5in" name=deposit_type>
+<option value='O' selected>Online
 <option value='D' selected>Credit Card
 <option value='C'>Check
 <option value='S'>Cash
