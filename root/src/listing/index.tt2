@@ -10,8 +10,9 @@
 <div style="margin-top: .5in">
 <a href="/listing/late_notices">Late Notices for Today</a>
 <p class=p2>
-<a href="/listing/comings_goings">Today's Comings and Goings</a>
 <form action="/listing/comings_goings" method=POST>
+<a href="/listing/comings_goings">Today's Comings and Goings</a>
+&nbsp;&nbsp;
 On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 </form>
 </div>

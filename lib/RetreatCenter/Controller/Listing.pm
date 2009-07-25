@@ -775,6 +775,13 @@ sub mark_inactive_do : Local {
     $c->response->redirect($c->uri_for('/listing/people'));
 }
 
+#
+# Comings on Saturday include people who are coming on Sunday.
+# Goings are only for the day requested - even on Saturday.
+# PRs and people coming early to a program are listed by name.
+# For other people in programs and rentals we list just the number
+# in that program/rental.
+#
 sub comings_goings : Local {
     my ($self, $c, $date) = @_;
 
@@ -847,7 +854,7 @@ sub comings_goings : Local {
                        });
 
     my (@going) = model($c, 'Registration')->search({
-                      date_end => { 'between' => [ $dt8, $edt8 ] },
+                      date_end => $dt8,
                       cancelled => '',
                   });
     my (@ind_going) = map {
@@ -884,7 +891,7 @@ sub comings_goings : Local {
                           $a->name cmp $b->name
                       }
                       model($c, 'Rental')->search({
-                          edate => { 'between' => [ $dt8, $edt8 ] },
+                          edate => $dt8,
                       });
 
     $c->stash->{date} = $dt;
@@ -928,8 +935,8 @@ sub late_notices : Local {
                            'program.school' => 0,       # only MMC, not MMI
                        },
                        {
-                           join     => [qw/ house program person /],
-                           prefetch => [qw/ house program person /],   
+                           join     => [qw/ program person /],
+                           prefetch => [qw/ program person /],   
                            order_by => [qw/ person.last person.first /],
                        }
                    );
