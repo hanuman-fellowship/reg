@@ -159,10 +159,6 @@ sub grab_new : Local {
     $ftp->cwd($string{ftp_transactions})
         or die "cannot cwd to $string{ftp_transactions} ", $ftp->message;
     $ftp->ascii();
-    # don't do these mkdirs when things settle down???
-    mkdir "root/static/online"      unless -d "root/static/online";
-    mkdir "root/static/online_done" unless -d "root/static/online_done";
-
     for my $f ($ftp->ls()) {
         $ftp->get($f, "root/static/online/$f");
         $ftp->delete($f);
@@ -2635,15 +2631,15 @@ sub early_late : Local {
                  :                 $edate;
     my @regs = sort {
                    $a->{name} cmp $b->{name}
-               } map {
+               }
+               map {
                    my $p = $_->person;
                    {
                        id     => $_->id,
                        name   => $p->last . ", " . $p->first,
                        arrive => ($_->date_start eq $sdate)? ""
                                  :               $_->date_start_obj->format,
-                       leave  => ($_->date_end eq $edate
-                                  || $_->date_end eq $edate2)? ""
+                       leave  => ($_->date_end eq $edate)? ""
                                  :               $_->date_end_obj->format,
                    }
                }
