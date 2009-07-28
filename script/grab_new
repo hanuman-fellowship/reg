@@ -27,10 +27,6 @@ $ftp->login($string{ftp_login}, $string{ftp_password})
 $ftp->cwd($string{ftp_transactions})
     or die "cannot cwd to $string{ftp_transactions} ", $ftp->message;
 $ftp->ascii();
-# don't do these mkdirs when things settle down???
-mkdir "root/static/online"      unless -d "root/static/online";
-mkdir "root/static/online_done" unless -d "root/static/online_done";
-
 for my $f ($ftp->ls()) {
     $ftp->get($f, "root/static/online/$f");
     $ftp->delete($f);
