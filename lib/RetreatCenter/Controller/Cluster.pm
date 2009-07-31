@@ -477,17 +477,15 @@ EOH
                 $sex    = $cf->sex();
                 $cur    = $cf->cur();
                 $curmax = $cf->curmax();
-                if ($cf->program_id()) {
-                    my $col = $cf->program->color();
-                    if ($col) {
-                        $room_color = $cv->colorAllocate($col =~ m{(\d+)}g);
-                    }
+                # we may have a color different than the cluster.
+                #
+                if (my $pid = $cf->program_id()) {
+                    $room_color = cache_color($c, $dp,
+                                              'Program', $pid, $room_color);
                 }
-                elsif ($cf->rental_id()) {
-                    my $col = $cf->rental->color();
-                    if ($col) {
-                        $room_color = $cv->colorAllocate($col =~ m{(\d+)}g);
-                    }
+                elsif (my $rid = $cf->rental_id()) {
+                    $room_color = cache_color($c, $dp, 
+                                              'Rental', $rid, $room_color);
                 }
             }
             else {
@@ -632,6 +630,30 @@ $cv_map</map>
 </html>
 EOH
     $c->res->output($html);
+}
+
+#
+# a complex mechanism to avoid re-allocation of colors in a GD image.
+#
+my %cached_colors;
+sub clear_cache {
+    %cached_colors = ();
+}
+sub cache_color {
+    my ($c, $image, $type, $id, $def_color) = @_;
+
+    my $key = "$type-$id";
+    if (! exists $cached_colors{$key}) {
+        my $hap = model($c, $type)->find($id);
+        if ($hap && (my $col = $hap->color())) {
+            $cached_colors{$key}
+                = $image->colorAllocate($col =~ m{(\d+)}g);
+        }
+        else {
+            $cached_colors{$key} = $def_color;
+        }
+    }
+    return $cached_colors{$key};
 }
 
 1;
