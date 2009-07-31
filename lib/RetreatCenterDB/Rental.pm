@@ -83,6 +83,8 @@ __PACKAGE__->add_columns(qw/
     mmc_does_reg
     program_id
     proposal_id
+
+    color
 /);
     # the last two above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -305,6 +307,11 @@ sub end_hour_obj {
 }
 sub event_type {
     return "rental";
+}
+
+sub color_bg {
+    my ($self) = @_;
+    return sprintf("#%02x%02x%02x", $self->color() =~ m{(\d+)}g);
 }
 
 #

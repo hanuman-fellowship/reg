@@ -9,6 +9,7 @@ use Util qw/
     model
     trim
     tt_today
+    reserved_clusters
 /;
 use Date::Simple qw/
     date
@@ -100,9 +101,9 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{red  } = 255;
-    $c->stash->{green} = 255;
-    $c->stash->{blue } = 255;
+    $c->stash->{red  } = 127;
+    $c->stash->{green} = 127;
+    $c->stash->{blue } = 127;
     $c->stash->{type_opts} = <<"EOO";
 <option value="indoors">Indoors
 <option value="outdoors">Outdoors
@@ -192,13 +193,110 @@ sub show : Local {
     if ($ndays !~ m{^\d+$}) {
         $ndays = 14;
     }
+    my $ed8 = ($dt + $ndays - 1)->as_d8();
 
     if (!$cur_clust) {
         $cur_clust = $c->request->params->{cluster_id} || 1;
     }
     my $cl_name = $cluster{$cur_clust}->name();
 
+    #
+    # find everything that is happening in this date range.
+    # dup'ed code (almost) from DailyPic.  perhaps take
+    # it out into Util???
+    #
+    my $event_table = "";
+    my @events = ();
+    for my $type (qw/Event Rental Program/) {
+        EVENT:
+        for my $ev (model($c, $type)->search({
+                        sdate => { '<=', $ed8 },
+                        edate => { '>=', $d8  },
+                    })
+        ) {
+            if ($type eq 'Program'
+                && (
+                    ($ev->name() =~ m{personal.*retreats}i)
+                    ||
+                    ($ev->level() =~ m{[DCM]})
+                    ||
+                    ($ev->rental_id() != 0)     # a parallel program
+                                            # the rental will be there
+                   )
+            ) {
+                next EVENT;
+            }
 
+            my $ev_type = ref($ev);
+            $ev_type =~ s{.*::}{};
+            $ev_type = lc $ev_type;
+            my $ed;
+            if ($type eq 'Program' && $ev->extradays() != 0) {
+                $ed = date($ev->edate(), "%m/%d") + $ev->extradays();
+            }
+            else {
+                $ed = date($ev->edate, "%m/%d"),
+            }
+            my $clusters = "";
+            if ($type ne 'Event') {
+                $clusters = join ', ',
+                            map {
+                                $_->name()
+                            }
+                            reserved_clusters($c, $ev->id, $ev_type);
+            }
+            my $color = "white";        # default background for this user???
+            if ($type ne 'Event' && $ev->color()) {
+                $color = $ev->color_bg();
+            }
+            push @events, {
+                sdate => date($ev->sdate, "%m/%d"),
+                edate => $ed,
+                color => $color,
+                name  => $ev->name(),
+                type  => $ev_type,
+                id    => $ev->id(),
+                reserved_clusters => $clusters,
+            };
+        }
+    }
+    my $prog_staff = $c->check_user_roles('prog_staff');
+    for my $ev (sort { $a->{sdate} <=> $b->{sdate} } @events) {
+        if ($prog_staff) {
+            $ev->{name} =
+                "<a target=happening href=/$ev->{type}/view/$ev->{id}>"
+              . $ev->{name}
+              . "</a>";
+        }
+        $event_table .=
+            "<tr>"
+          . "<td>$ev->{sdate}</td>"
+          . "<td>$ev->{edate}</td>"
+          . "<td style='border: solid; border-width: thin;' bgcolor="
+          .       $ev->{color} . "></td>"
+          . "<td>$ev->{name}</td>"
+          . "<td>$ev->{reserved_clusters}</td>"
+          . "</tr>\n";
+    }
+    if ($event_table) {
+        $event_table = <<EOT;
+<p class=p2>
+<table cellpadding=3>
+<tr>
+<th>Start</th>
+<th>End</th>
+<th width=25></th>
+<th align=left>Name</th>
+<th align=left>Reserved Clusters</th>
+</tr>
+$event_table
+</table>
+EOT
+    }
+
+=comment
+this reserved table is
+no longer needed since we now have the event table.
     #
     # which programs/rentals have reserved this cluster
     # during this date range $dt => $dt+$ndays?
@@ -269,6 +367,7 @@ $res_table
 </table>
 EOH
     }
+=cut
     my ($height, $width) = (0, 0);
     my $hh = $string{house_height};
     my $hw = $string{house_width};
@@ -372,18 +471,31 @@ EOH
             $x2 = $x1 + $hwd;
             $y2 = $y1 + $hh;
             $cv->rectangle($x1, $y1, $x2, $y2, $black);
-            $cv->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $color);
 
+            my $room_color = $color;
             if (my $cf = $config{$hid}{$cur_dt->as_d8()}) {
                 $sex    = $cf->sex();
                 $cur    = $cf->cur();
                 $curmax = $cf->curmax();
+                if ($cf->program_id()) {
+                    my $col = $cf->program->color();
+                    if ($col) {
+                        $room_color = $cv->colorAllocate($col =~ m{(\d+)}g);
+                    }
+                }
+                elsif ($cf->rental_id()) {
+                    my $col = $cf->rental->color();
+                    if ($col) {
+                        $room_color = $cv->colorAllocate($col =~ m{(\d+)}g);
+                    }
+                }
             }
             else {
                 $sex = 'U';     # doesn't matter
                 $cur = 0;
                 $curmax = $h->max();
             }
+            $cv->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $room_color);
 
             my $cw = 9.2;      # char_width - seems to work, empirically derived
             # encode the config record in a string
@@ -513,7 +625,7 @@ EOH
 </form>
 <h2>$cl_name</h2>
 <img src=$im_uri height=$resize_height border=0 usemap=#clusterview>
-$res_table
+$event_table
 <map name=clusterview>
 $cv_map</map>
 </body>

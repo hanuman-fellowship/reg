@@ -1912,4 +1912,29 @@ sub view_adj : Local {
     }
 }
 
+sub color : Local {
+    my ($self, $c, $program_id) = @_;
+    my $program = model($c, 'Program')->find($program_id);
+    my ($r, $g, $b) = $program->color =~ m{\d+}g;
+    $r ||= 127;
+    $g ||= 127;
+    $b ||= 127;
+    stash($c,
+        program  => $program,
+        red      => $r,
+        green    => $g,
+        blue     => $b,
+        template => 'program/color.tt2',
+    );
+}
+
+sub color_do : Local {
+    my ($self, $c, $program_id) = @_;
+    my $program = model($c, 'Program')->find($program_id);
+    $program->update({
+        color => $c->request->params->{color},
+    });
+    $c->response->redirect($c->uri_for("/program/view/$program_id/2"));
+}
+
 1;

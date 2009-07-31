@@ -1,0 +1,31 @@
+.square {
+    width: 50; 
+    height: 50; 
+}
+#swatch {
+    height: 100;
+}
+#more_red {
+    background: #ff0000;
+}
+#more_green {
+    background: #00ff00;
+}
+#more_blue {
+    background: #0000ff;
+}
+#less_red {
+    background: #ff9999;
+}
+#less_green {
+    background: #99ff99;
+}
+#less_blue {
+    background: #9999ff;
+}
+#blacker {
+    background: #000000;
+}
+#whiter {
+    background: #ffffff;
+}

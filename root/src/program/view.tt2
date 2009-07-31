@@ -127,9 +127,7 @@ function UNreserve_cluster(cluster_id) {
 [% ELSE %]
 <a href=/summary/view/program/[% program.summary_id %]>Summary</a>
 [% END %]
-
-<p>
-
+<p class=p2>
 <table border=0 cellspacing=0 cellpadding=0>
 <tr>    <!-- tabs row -->
 
@@ -307,6 +305,15 @@ Web
 <tr>
 <th align=right>Kaya Kalpa</th>
 <td>[% program.kayakalpa %]</td>
+</tr>
+
+<tr>
+<th align=right>Color</th>
+[% IF program.color %]
+<td style="cursor: pointer; border: solid; border-width: thin;" width=100 bgcolor=[% program.color_bg %] onclick="window.location.href='/program/color/[% id %]'">
+[% ELSE %]
+<td><a href=/program/color/[% id %]>Update</a></td>
+[% END %]
 </tr>
 
 <tr>

@@ -15,7 +15,7 @@
     <td><a href="/meetingplace/view/[% mp.id %]">[% mp.name %]</a></td>
     <td align=right>[% mp.max %]</td>
     <td align=right>[% mp.disp_ord %]</td>
-    <td width=100 bgcolor=[% mp.bgcolor %]></td>
+    <td width=100 bgcolor=[% mp.bgcolor %] style="border: solid; border-width: thin;"></td>
     </tr>
 [% END %]
 </table>

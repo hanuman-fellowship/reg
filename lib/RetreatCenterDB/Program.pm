@@ -73,6 +73,7 @@ __PACKAGE__->add_columns(qw/
     rental_id
     do_not_compute_costs
     dncc_why
+    color
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -240,9 +241,18 @@ sub template_src {
           :                     $default_template;
 }
 
+#
+# find the largest non-breakout space
+#
 sub main_meeting_place {
     my ($self) = @_;
-    my @bookings = grep { $_->breakout() eq 'yes' } $self->bookings();
+        
+    # forget a Schwartzian Transform - too few to bother
+    my @bookings = sort {
+                       $b->meeting_place->max() <=> $a->meeting_place->max()
+                   }
+                   grep { $_->breakout() ne 'yes' }
+                   $self->bookings();
     @bookings? $bookings[0]->meeting_place()->name()
     :          "";
 }
@@ -827,6 +837,15 @@ sub prog_type {
     }
     chop $type;
     $type;
+}
+
+sub largest_meeting_place {
+    my ($self) = @_;
+}
+
+sub color_bg {
+    my ($self) = @_;
+    return sprintf("#%02x%02x%02x", $self->color() =~ m{(\d+)}g);
 }
 
 1;

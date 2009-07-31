@@ -14,7 +14,7 @@
 [% FOREACH cl IN clusters %]
     <tr>
     <td><a href="/cluster/update/[% cl.id %]">[% cl.name %]</a></td>
-    <td style="cursor: pointer" width=100 bgcolor=[% cl.color_bg %] onclick="window.location.href='/cluster/update/[% cl.id %]'">
+    <td style="cursor: pointer; border: solid; border-width: thin;" width=100 bgcolor=[% cl.color_bg %] onclick="window.location.href='/cluster/update/[% cl.id %]'">
     </td>
     [% IF padmin %]
         <td width=20></td>

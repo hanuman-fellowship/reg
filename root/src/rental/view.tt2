@@ -325,6 +325,15 @@ Web
 <td>[% rental.contract_received_obj %] [% IF rental.contract_received %]by [% rental.received_by.username %][% END %]</td>
 </tr>
 
+<tr>
+<th align=right>Color</th>
+[% IF rental.color %]
+<td style="cursor: pointer; border: solid; border-width: thin;" width=100 bgcolor=[% rental.color_bg %] onclick="window.location.href='/rental/color/[% id %]'">
+[% ELSE %]
+<td><a href=/rental/color/[% id %]>Update</a></td>
+[% END %]
+</tr>
+
 </table>
 <p>
 

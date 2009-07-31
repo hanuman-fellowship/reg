@@ -20,11 +20,23 @@ sub index : Private {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $colors) = @_;
 
+    my @colors = ();
+    if ($colors) {
+        push @colors, the_key => { -like => '%color%' };
+    }
+    else {
+        push @colors, the_key => { -not_like => '%color%' };
+    }
     $c->stash->{strings} = [ model($c, 'String')->search(
-        { the_key => { -not_like => 'sys_%' } },
-        { order_by => 'the_key' }
+        { 
+            the_key => { -not_like => 'sys_%' },
+            @colors,
+        },
+        {
+            order_by => 'the_key'
+        },
     ) ];
     $c->stash->{template} = "string/list.tt2";
 }
@@ -67,7 +79,12 @@ sub update_do : Local {
     if ($the_key eq 'default_date_format') {
         Date::Simple->default_format($value);
     }
-    $c->response->redirect($c->uri_for("/string/list#$the_key"));
+    if ($the_key =~ m{color}) {
+        $c->response->redirect($c->uri_for("/string/list/1"));
+    }
+    else {
+        $c->response->redirect($c->uri_for("/string/list#$the_key"));
+    }
 }
 
 sub access_denied : Private {

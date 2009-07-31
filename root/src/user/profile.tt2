@@ -1,52 +1,13 @@
-<style type="text/css">
-.square {
-    width: 50; 
-    height: 50; 
-}
-#swatch {
-    height: 100;
-}
-#more_red {
-    background: #ff0000;
-}
-#more_green {
-    background: #00ff00;
-}
-#more_blue {
-    background: #0000ff;
-}
-#less_red {
-    background: #ff9999;
-}
-#less_green {
-    background: #99ff99;
-}
-#less_blue {
-    background: #9999ff;
-}
-#blacker {
-    background: #000000;
-}
-#whiter {
-    background: #ffffff;
-}
-</style>
+<link rel="stylesheet" type="text/css" href="/static/color.css" 
+<script type="text/javascript" src="/static/js/color.js"></script>
 <script type="text/javascript">
-var red;
-var green;
-var blue;
-var incr = 10;
+// couldn't use the standard color scripts :(
+// ??? perhaps we can put the concept of curId
+// into the standard script.
+
 var curId = 'user_bg';
 
-function hex(n) {
-    var s = n.toString(16);
-    if (s.length == 1) {
-        s = '0' + s;
-    }
-    return s;
-}
-
-function adjust(r, g, b) {
+function adjust2(r, g, b) {
     red   = red + r;
     green = green + g;
     blue  = blue + b;
@@ -57,30 +18,30 @@ function adjust(r, g, b) {
         '#' + hex(red) + hex(green) + hex(blue);
     document.getElementById(curId).value =
         red + "," + green + "," + blue;
-                                         
+
 }
 
-function colorSet(r, g, b) {
+function colorSet2(r, g, b) {
     red = r;
     green = g;
     blue =  b;
-    adjust(0, 0, 0);
+    adjust2(0, 0, 0);
 }
 
 function setId(id) {
     curId = id;
     var nums = document.getElementById(curId).value;
     var colors = nums.split(",");
-    colorSet(parseInt(colors[0]), parseInt(colors[1]), parseInt(colors[2]));
+    colorSet2(parseInt(colors[0]), parseInt(colors[1]), parseInt(colors[2]));
 }
 
 function restore_default() {
     curId = 'user_bg'; 
-    colorSet(255, 255, 255);
+    colorSet2(255, 255, 255);
     curId = 'user_fg'; 
-    colorSet(0, 0, 0);
+    colorSet2(0, 0, 0);
     curId = 'user_link'; 
-    colorSet(0, 0, 255);
+    colorSet2(0, 0, 255);
     document.form.user_bg.focus();
 }
 </script>
@@ -168,16 +129,16 @@ function restore_default() {
     <td id=swatch colspan=4></td>
     </tr>
     <tr>
-    <td class=square id=more_red   onclick="adjust( incr,     0,     0);"></td>
-    <td class=square id=more_green onclick="adjust(    0,  incr,     0);"></td>
-    <td class=square id=more_blue  onclick="adjust(    0,     0,  incr);"></td>
-    <td class=square id=whiter     onclick="adjust( incr,  incr,  incr);"></td>
+    <td class=square id=more_red   onclick="adjust2( incr,     0,     0);"></td>
+    <td class=square id=more_green onclick="adjust2(    0,  incr,     0);"></td>
+    <td class=square id=more_blue  onclick="adjust2(    0,     0,  incr);"></td>
+    <td class=square id=whiter     onclick="adjust2( incr,  incr,  incr);"></td>
     </tr>
     <tr>
-    <td class=square id=less_red   onclick="adjust(-incr,     0,     0);"></td>
-    <td class=square id=less_green onclick="adjust(    0, -incr,     0);"></td>
-    <td class=square id=less_blue  onclick="adjust(    0,     0, -incr);"></td>
-    <td class=square id=blacker    onclick="adjust(-incr, -incr, -incr);"></td>
+    <td class=square id=less_red   onclick="adjust2(-incr,     0,     0);"></td>
+    <td class=square id=less_green onclick="adjust2(    0, -incr,     0);"></td>
+    <td class=square id=less_blue  onclick="adjust2(    0,     0, -incr);"></td>
+    <td class=square id=blacker    onclick="adjust2(-incr, -incr, -incr);"></td>
     </tr>
     <tr>
     </tr>

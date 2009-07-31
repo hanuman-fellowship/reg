@@ -29,6 +29,7 @@ sub index : Local {
 sub show : Local {
     my ($self, $c, $type, $date) = @_;
 
+    clear_cache();
     my $prog_staff = $c->check_user_roles('prog_staff');
     Global->init($c);
     my $today = tt_today($c);
@@ -139,8 +140,6 @@ sub show : Local {
         my $x2 = $x1 + $h->max * $string{house_width} + 6;
         my $y2 = $y1 + $string{house_height};
         $dp->rectangle($x1, $y1, $x2, $y2, $black);
-        $dp->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
-                             $clust_col{$h->cluster_id});
         # below we have a cool use of the ?: operator!  (what is its name?)
         $dp->string(gdGiantFont,
             ($code eq 'L')? ($x1-length($tname)*$string{house_let}-2,$y1+3)
@@ -150,17 +149,28 @@ sub show : Local {
            :                (0, 0),    # shouldn't happen
                     $tname, $black);
         my ($sex, $cur, $curmax);
+        my $color = $clust_col{$h->cluster_id};
         if (exists $config{$hid}) {
             my $cf = $config{$hid};
             $sex    = $cf->sex();
             $cur    = $cf->cur();
             $curmax = $cf->curmax();
+
+            # we may have a color different than the cluster.
+            #
+            if (my $pid = $cf->program_id()) {
+                $color = cache_color($c, $dp, 'Program', $pid, $color);
+            }
+            elsif (my $rid = $cf->rental_id()) {
+                $color = cache_color($c, $dp, 'Rental', $rid, $color);
+            }
         }
         else {
             $sex = 'U';     # doesn't matter
             $cur = 0;
             $curmax = $h->max();
         }
+        $dp->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $color);
         my $cw = 9.2;       # char_width - seems to work, empirically derived
         # encode the config record in a string
         my $sexcode = ($sex x $cur);
@@ -169,7 +179,6 @@ sub show : Local {
             # to not make the women angry ...
             $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
         }
-$c->log->info("sex $sex color $char_color{$sex}");
         $dp->string(gdGiantFont, $x1+3, $y1+3,
                     $sexcode, $char_color{$sex})  if $cur;
         $dp->string(gdGiantFont, $x1+3 + $cw*$cur, $y1+3,
@@ -306,9 +315,14 @@ $c->log->info("sex $sex color $char_color{$sex}");
                             }
                             reserved_clusters($c, $ev->id, $ev_type);
             }
+            my $color = "white";        # default background for this user???
+            if ($type ne 'Event' && $ev->color()) {
+                $color = $ev->color_bg();
+            }
             push @events, {
                 sdate => date($ev->sdate, "%m/%d"),
                 edate => $ed,
+                color => $color,
                 name  => $ev->name(),
                 type  => $ev_type,
                 id    => $ev->id(),
@@ -327,6 +341,8 @@ $c->log->info("sex $sex color $char_color{$sex}");
             "<tr>"
           . "<td>$ev->{sdate}</td>"
           . "<td>$ev->{edate}</td>"
+          . "<td style='border: solid; border-width: thin;' bgcolor="
+          .       $ev->{color} . "></td>"
           . "<td>$ev->{name}</td>"
           . "<td>$ev->{reserved_clusters}</td>"
           . "</tr>\n";
@@ -337,6 +353,7 @@ $c->log->info("sex $sex color $char_color{$sex}");
 <tr>
 <th>Start</th>
 <th>End</th>
+<th width=25></th>
 <th align=left>Name</th>
 <th align=left>Reserved Clusters</th>
 </tr>
@@ -428,6 +445,30 @@ $dp_map</map>
 </body>
 EOH
     $c->res->output($html);
+}
+
+#
+# a complex mechanism to avoid re-allocation of colors in a GD image.
+#
+my %cached_colors;
+sub clear_cache {
+    %cached_colors = ();
+}
+sub cache_color {
+    my ($c, $image, $type, $id, $def_color) = @_;
+
+    my $key = "$type-$id";
+    if (! exists $cached_colors{$key}) {
+        my $hap = model($c, $type)->find($id);
+        if ($hap && (my $col = $hap->color())) {
+            $cached_colors{$key}
+                = $image->colorAllocate($col =~ m{(\d+)}g);
+        }
+        else {
+            $cached_colors{$key} = $def_color;
+        }
+    }
+    return $cached_colors{$key};
 }
 
 1;

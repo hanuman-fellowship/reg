@@ -34,13 +34,13 @@ You are housed in the [% reg.house.cluster.name %] in [% reg.room_site %] [% reg
 Your housing location is highlighted on the attached map(s).
 [% ELSIF reg.h_type == 'own_van' %]
 <p>
-Please park your vehicle in one of the spots marked &lsquo;OV&rsquo; on the attached map.
+Please park your vehicle in one of the spots marked &ldquo;OV&rdquo; on the attached map.
 [% END %]
 <p>
 [% mp = reg.program.main_meeting_place %]
 [% IF mp %]
 Your program &ldquo;[% reg.program.title %]&rdquo; meets
-in the [% mp %] building.
+in the [% mp %].
 [% END %]
 <p>
 If you asked for a &ldquo;DINNER SAVE,&rdquo; a meal with your name

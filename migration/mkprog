@@ -45,7 +45,8 @@ create table program (
     summary_id  integer,
     rental_id   integer,
     do_not_compute_costs text,
-    dncc_why    text
+    dncc_why    text,
+    color       text
 );
 drop table if exists canpol;
 create table canpol (

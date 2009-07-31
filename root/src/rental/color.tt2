@@ -1,17 +1,12 @@
 <link rel="stylesheet" type="text/css" href="/static/color.css" 
 <script type="text/javascript" src="/static/js/color.js"></script>
-<h2>Clusters</h2>
-<form action=[% '/cluster/' _ form_action %] name=form>
+<h2>Color for Rental '[% rental.name %]'</h2>
+<form action=/rental/color_do/[% rental.id %] name=form>
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Name</th>
-<td><input type=text name=name value="[% cluster.name %]"></td>
-</tr>
-
-<tr>
 <th valign=top align=right><span class="required">*</span> Color</th>
-<td valign=top><input type=text id=color_val name=color value="[% cluster.color %]"></td>
+<td valign=top><input type=text id=color_val name=color value="[% rental.color %]"></td>
 <td rowspan=5>
     <table border=1>
     <tr>
@@ -45,15 +40,6 @@ Click the Submit button to finish.
 </tr>
 
 <tr>
-<th align=right valign=top>Type</th>
-<td>
-<select name=type>
-[% type_opts %]
-</select>
-</td>
-</tr>
-
-<tr>
 <td></td>
 <td valign=top><input type=submit value="Submit"></td>
 </tr>
@@ -61,8 +47,7 @@ Click the Submit button to finish.
 
 </table>
 
-
 <script type="text/javascript">
-document.form.name.focus();
+document.form.color.focus();
 colorSet([% red %], [% green %], [% blue %]);
 </script>

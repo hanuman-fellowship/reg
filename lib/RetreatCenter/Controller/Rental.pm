@@ -2231,4 +2231,29 @@ sub _send_grid_data {
     unlink "/tmp/$code";
 }
 
+sub color : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my ($r, $g, $b) = $rental->color =~ m{\d+}g;
+    $r ||= 127;
+    $g ||= 127;
+    $b ||= 127;
+    stash($c,
+        rental   => $rental,
+        red      => $r,
+        green    => $g,
+        blue     => $b,
+        template => 'rental/color.tt2',
+    );
+}
+
+sub color_do : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $rental = model($c, 'Rental')->find($rental_id);
+    $rental->update({
+        color => $c->request->params->{color},
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+}
+
 1;

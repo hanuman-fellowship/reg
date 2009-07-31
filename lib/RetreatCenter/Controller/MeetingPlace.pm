@@ -23,9 +23,9 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{red  } = 255;
-    $c->stash->{green} = 255;
-    $c->stash->{blue } = 255;
+    $c->stash->{red  } = 127;
+    $c->stash->{green} = 127;
+    $c->stash->{blue } = 127;
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "meetingplace/create_edit.tt2";
 }
