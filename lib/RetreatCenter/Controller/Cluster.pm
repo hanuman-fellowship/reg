@@ -156,6 +156,7 @@ sub access_denied : Private {
 sub show : Local {
     my ($self, $c, $date, $cur_clust, $ndays) = @_;
 
+    clear_cache();
     Global->init($c);
     my $today = tt_today($c);
     my $last_date = date($string{sys_last_config_date});
