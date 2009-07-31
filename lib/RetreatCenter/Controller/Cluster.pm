@@ -480,11 +480,11 @@ EOH
                 # we may have a color different than the cluster.
                 #
                 if (my $pid = $cf->program_id()) {
-                    $room_color = cache_color($c, $dp,
+                    $room_color = cache_color($c, $cv,
                                               'Program', $pid, $room_color);
                 }
                 elsif (my $rid = $cf->rental_id()) {
-                    $room_color = cache_color($c, $dp, 
+                    $room_color = cache_color($c, $cv, 
                                               'Rental', $rid, $room_color);
                 }
             }
