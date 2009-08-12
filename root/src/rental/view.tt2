@@ -325,6 +325,7 @@ Web
 <td>[% rental.contract_received_obj %] [% IF rental.contract_received %]by [% rental.received_by.username %][% END %]</td>
 </tr>
 
+[% IF ! rental.program_id %]
 <tr>
 <th align=right>Color</th>
 [% IF rental.color %]
@@ -333,6 +334,7 @@ Web
 <td><a href=/rental/color/[% id %]>Update</a></td>
 [% END %]
 </tr>
+[% END %]
 
 </table>
 <p>

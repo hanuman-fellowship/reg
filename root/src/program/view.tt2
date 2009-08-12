@@ -258,7 +258,7 @@ Web
 </td>
 </tr>
 
-[% IF ! program.rental_id > 0 %]     <!-- not for rental-programs -->
+[% IF ! program.rental_id %]     <!-- not for hybrid rental-programs -->
 
 <tr>
 <th align=right valign=top width=150>Meeting Places</th>

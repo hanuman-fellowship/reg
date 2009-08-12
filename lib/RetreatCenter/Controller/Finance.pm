@@ -538,10 +538,6 @@ sub period_end : Local {
     PAYMENT:
     for my $src (@sources) {
         for my $p (model($c, $src)->search($cond)) {
-if ($src eq 'XAccountPayment') {
-$c->log->info("here glnum " . $p->glnum());
-$c->log->info("here sponsor $sponsor and " . $p->xaccount->sponsor());
-}
             next PAYMENT if $src eq 'XAccountPayment'
                             && $p->xaccount->sponsor() ne $sponsor;
             my $type = $p->type();

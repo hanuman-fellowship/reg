@@ -3274,6 +3274,7 @@ sub lodge_do : Local {
                             || $csex eq $psex)? $psex
                            :                    'X'),
             program_id => $reg->program_id,
+            rental_id  => 0,
         });
     }
     $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -3324,7 +3325,7 @@ sub _vacate {
         #
         # and don't undo the program id, right?
         # well, if there is no one left in the room
-        # we might as well set the program id to 0.
+        # we might as well set the program id and rental_id to 0.
         #
         # if we're not back to one should we see
         # if all involved are of the same sex?  nah.
@@ -3333,10 +3334,11 @@ sub _vacate {
         my @opts = ();
         if ($cf->cur() == 1) {
             push @opts,
-                curmax     => $hmax,
-                sex        =>   'U',
-                program_id =>     0
-                ;
+                 curmax     => $hmax,
+                 sex        => 'U',
+                 program_id => 0,
+                 rental_id  => 0,
+                 ;
         }
         if ($cf->cur == 2 && $cf->sex eq 'X') {
             my $the_date = $cf->the_date;

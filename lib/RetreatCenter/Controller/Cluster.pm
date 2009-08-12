@@ -220,11 +220,12 @@ sub show : Local {
                     ($ev->name() =~ m{personal.*retreats}i)
                     ||
                     ($ev->level() =~ m{[DCM]})
-                    ||
-                    ($ev->rental_id() != 0)     # a parallel program
-                                            # the rental will be there
                    )
             ) {
+                next EVENT;
+            }
+            if ($type eq 'Rental' && $ev->program_id()) {
+                # skip this rental - the paralle program will be there
                 next EVENT;
             }
 
