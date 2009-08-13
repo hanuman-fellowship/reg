@@ -703,7 +703,7 @@ sub update_do : Local {
     my $section = $P{section};
     delete $P{section};
 
-    if (! $c->check_user_roles('super_admin')) {
+    if (! $c->check_user_roles('prog_admin')) {
         delete $P{glnum};
     }
     if (my $upload = $c->request->upload('image')) {
