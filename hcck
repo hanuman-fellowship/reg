@@ -17,6 +17,9 @@ requirements for the hcck (right?) program:
        this should match the sum of cur where program_id != 0
     6- in all config records curmax should not be > house->max
        and curmax should be a digit (not blank).
+    7- cannot have both rental_id != 0 and program_id != 0
+    8- if rental_id or program_id is non-zero then there
+       should be a valid rental or program with that id.
 =cut
 use warnings;
 use strict;
@@ -36,17 +39,24 @@ my $sth = $dbh->prepare("
 $sth->execute();
 my ($lfd) = $sth->fetchrow_array();
 print "    last is $lfd\n";
-my $dt = date($lfd);
 
 $sth = $dbh->prepare("select max(edate) from rental");
 $sth->execute();
 my ($rent_max) = $sth->fetchrow_array();
 print "rent max is $rent_max\n";
 
-$sth = $dbh->prepare("select max(edate) from program");
+$sth = $dbh->prepare("select edate, extradays from program");
 $sth->execute();
-my ($prog_max) = $sth->fetchrow_array();
-$dt = date($prog_max) + 30;
+my $prog_max = 0;
+while (my ($edate, $extra) = $sth->fetchrow_array()) {
+    my $dt = date($edate) + $extra;
+    my $dt8 = $dt->as_d8();
+    if ($prog_max < $dt8) {
+        $prog_max = $dt8;
+    }
+}
+
+my $dt = date($prog_max) + 30;
 $prog_max = $dt->as_d8();
 print "prog max is $prog_max\n";
 
@@ -264,4 +274,56 @@ while (my (@data) = $sth->fetchrow_array()) {
 }
 if (! $err) {
     print "no bad curmax\n";
+}
+# requirement #7 - no records with both program_id and rental_id being non-zero
+#
+$sth = $dbh->prepare("
+    select house_id, the_date, rental_id, program_id
+    from config
+    where rental_id != 0 and program_id != 0
+");
+$sth->execute();
+$err = 0;
+while (my ($house_id, $the_date, $rental_id, $program_id)
+    = $sth->fetchrow_array()
+) {
+    print "** both program and rental: $house_id, $the_date, $rental_id, $program_id\n";
+    ++$err;
+}
+if (! $err) {
+    print "no doubled program/rental\n";
+}
+
+# requirement #8 - good program_id, rental_id
+#
+my $sql = <<EOS;
+select house_id, h.name, the_date, cur, program_id
+from config c, house h
+where c.house_id = h.id
+  and program_id != 0
+  and (select count(*)
+       from program where id = program_id)
+      = 0
+order by c.house_id
+EOS
+$sth = $dbh->prepare($sql);
+$sth->execute();
+$err = 0;
+while (my ($hid, $hname, $date, $cur, $prog_id) = $sth->fetchrow_array()) {
+    ++$err;
+    print "** bad prog id: house $hid = $hname, $date, cur $cur, prog_id = $prog_id\n";
+}
+if (! $err) {
+    print "no bad prog id\n";
+}
+$sql =~ s{program}{rental}g;
+$sth = $dbh->prepare($sql);
+$sth->execute();
+$err = 0;
+while (my ($hid, $hname, $date, $cur, $rent_id) = $sth->fetchrow_array()) {
+    ++$err;
+    print "** bad rent id: house $hid = $hname, $date, cur $cur, rent_id = $rent_id\n";
+}
+if (! $err) {
+    print "no bad rent id\n";
 }
