@@ -688,7 +688,7 @@ sub update : Local {
         school_opts  => $sch_opts,
         level_opts   => $level_opts,
         show_level   => $p->school() == 0? "hidden": "visible",
-        edit_gl      => $c->check_user_roles('super_admin') || 0,
+        edit_gl      => $c->check_user_roles('prog_admin') || 0,
         form_action  => "update_do/$id",
         template     => "program/create_edit.tt2",
     );
