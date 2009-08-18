@@ -59,13 +59,13 @@ sub reconcile_deposit : Local {
     #
 
     for my $src (@sources) {
-        PAYMENT:
+        PAYMENT1:
         for my $p (model($c, $src)->search($cond)) {
-            next PAYMENT if $src eq 'XAccountPayment'
-                            && $p->xaccount->sponsor() ne $sponsor;
+            next PAYMENT1 if $src eq 'XAccountPayment'
+                             && $p->xaccount->sponsor() ne $sponsor;
             my $type = $p->type;
             my $amt  = $p->amount;
-            next PAYMENT if $amt == 0;       # bogus payment
+            next PAYMENT1 if $amt == 0;       # bogus payment
             if ($type eq 'D') {
                 $credit += $amt;
             }
@@ -97,14 +97,14 @@ sub reconcile_deposit : Local {
         # and it is always a credit card payment.
         # not any more!
         #
-        PAYMENT:
+        RIDE1:
         for my $r (model($c, 'Ride')->search({
                        paid_date => { between => [ $date_start, $date_end ] },
                    })
         ) {
             my $type = $r->type();
             my $amt = $r->cost();
-            next PAYMENT if $amt == 0;       # bogus payment
+            next RIDE1 if $amt == 0;       # bogus payment
             if ($type eq 'D') {
                 $credit += $amt;
             }
@@ -199,13 +199,13 @@ sub file_deposit : Local {
     # Donations are not included in deposits, no???
     #
     for my $src (@sources) {
-        PAYMENT:
+        PAYMENT2:
         for my $p (model($c, $src)->search($cond)) {
-            next PAYMENT if $src eq 'XAccountPayment'
-                            && $p->xaccount->sponsor() ne $sponsor; 
+            next PAYMENT2 if $src eq 'XAccountPayment'
+                             && $p->xaccount->sponsor() ne $sponsor; 
             my $type = $p->type();
             my $amt  = $p->amount();
-            next PAYMENT if $amt == 0;      # bogus payment
+            next PAYMENT2 if $amt == 0;      # bogus payment
             my $glnum = $p->glnum();
             push @payments, {
                 name   => $p->name(),
@@ -222,15 +222,18 @@ sub file_deposit : Local {
         # and it is always a credit card payment.
         # not any more!
         #
+        RIDE2:
         for my $r (model($c, 'Ride')->search({
                        paid_date => { between => [ $date_start, $date_end ] },
                    })
         ) {
+            my $amt = $r->cost();
+            next RIDE2 if $amt == 0;       # bogus payment
             push @payments, {
                 name  => $r->name(),
                 date  => $r->paid_date_obj->format("%D"),
                 type  => $r->type(),
-                amt   => $r->cost(),
+                amt   => $amt,
                 glnum => $string{ride_glnum},
                 pname => "Ride",
             };
@@ -535,11 +538,11 @@ sub period_end : Local {
     push @sources, 'XAccountPayment';       # for both
     # Donations are not included in deposits, no???
     #
-    PAYMENT:
     for my $src (@sources) {
+        PAYMENT3:
         for my $p (model($c, $src)->search($cond)) {
-            next PAYMENT if $src eq 'XAccountPayment'
-                            && $p->xaccount->sponsor() ne $sponsor;
+            next PAYMENT3 if $src eq 'XAccountPayment'
+                             && ($p->xaccount->sponsor() ne $sponsor);
             my $type = $p->type();
             my $amt  = $p->amount();
             my $glnum = $p->glnum();
@@ -556,13 +559,17 @@ sub period_end : Local {
                 }
                 $totals{$glnum} = {
                     name   => $name,
-                    type  => ($src eq "RegPayment"     ? ' '
-                             :$src eq "RentalPayment"  ? '*'
-                             :$src eq "XAccountPayment"? 'x'
-                             :$src eq "MMIPayment"     ? ' '
-                             :                           ' '),
-                    link  => $link,
-                    glnum       => $glnum,
+                    type   => ($src eq "RegPayment"     ? ' '
+                              :$src eq "RentalPayment"  ? '*'
+                              :$src eq "XAccountPayment"? 'x'
+                              :$src eq "MMIPayment"     ? ' '
+                              :                           ' '),
+                    link   => $link,
+                    glnum  => $glnum,
+                    amount => 0,
+                    cash   => 0,
+                    check  => 0,
+                    credit => 0,
                 };
                 if ($src eq 'MMIPayment') {
                     $totals{$glnum}{accpacc_num} = accpacc($glnum);
@@ -582,10 +589,14 @@ sub period_end : Local {
         # and it is always a credit card payment. - not any more.
         #
         my $rgl = $string{ride_glnum};
+        RIDE3:
         for my $r (model($c, 'Ride')->search({
                        paid_date => { between => [ $start_d8, $end_d8 ] },
                    })
         ) {
+            my $href = $totals{$rgl};
+            my $amt = $r->cost();
+            next RIDE3 if $amt == 0;        # bogus payment
             if (! exists $totals{$rgl}) {
                 $totals{$rgl} = {
                     name  => 'Rides',
@@ -594,8 +605,6 @@ sub period_end : Local {
                     glnum => $rgl,
                 };
             }
-            my $href = $totals{$rgl};
-            my $amt = $r->cost();
             $href->{amount} += $amt;
             my $type = $r->type();
             $href->{
@@ -609,7 +618,7 @@ sub period_end : Local {
     for my $t (keys %totals) {
         my $href = $totals{$t};
         for my $n (qw/ amount cash check credit online /) {
-            $grand_total{$n} += $href->{$n};
+            $grand_total{$n} += ($href->{$n} || 0);
             $href->{$n} = commify($href->{$n});
         }
     }
