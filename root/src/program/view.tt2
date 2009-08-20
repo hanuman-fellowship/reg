@@ -192,7 +192,7 @@ Web
 <td><a href="/housecost/view/[% program.housecost.id %]">[% program.housecost.name %]</a></td>
 
 [% IF lunch_table %]
-<td rowspan=4>
+<td rowspan=5>
 <!-- hacky CSS - please remedy -->
 <span class=head style="margin-left: .5in">Lunches</span>
 <span class=updlunch><a href="/program/update_lunch/[% id %]">Update</a></span>
@@ -205,6 +205,11 @@ Web
 <tr>
 <th align=right>Single Bath</th>
 <td>[% program.sbath %]</td>
+</tr>
+
+<tr>
+<th align=right>Single</th>
+<td>[% program.single %]</td>
 </tr>
 
 <tr>

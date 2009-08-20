@@ -56,6 +56,7 @@ __PACKAGE__->add_columns(qw/
     ptemplate
     cl_template
     sbath
+    single
     quad
     economy
     footnotes
@@ -451,15 +452,16 @@ EOH
     # 'quad' in housing_cost.
     #
     for my $t (reverse housing_types(1)) {
-        next if $t =~ m{economy}     && ! $self->economy;
-        next if $t =~ m{quad}        && ! $self->quad;
-		next if $t =~ m{single_bath} && ! $self->sbath;
+        next if $t eq 'economy'     && ! $self->economy;
+        next if $t eq 'quad'        && ! $self->quad;
+		next if $t eq 'single_bath' && ! $self->sbath;
+		next if $t eq 'single'      && ! $self->single;
 
-        next if $t =~ m{center_tent} && ! (5 <= $month and $month <= 10)
-									 && ! ($PR || $tent);
+        next if $t eq 'center_tent' && ! (5 <= $month and $month <= 10)
+								    && ! ($PR || $tent);
 										# ok for PR's - we don't
 										# know what month...
-		next if $PR and $t =~ m{triple|dormitory};
+		next if $PR and ($t eq 'triple' || $t eq 'dormitory');
 		my $cost = $PR? $housecost->$t()
                   :     $self->fees(0, $t);
 		next unless $cost;		# this type of housing is not offered at all.

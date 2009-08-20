@@ -121,6 +121,11 @@ Web
 </tr>
 
 <tr>
+<th align=right>Single</th>
+<td><input type=checkbox value=yes name=single [% check_single %]></td>
+</tr>
+
+<tr>
 <th align=right>Economy</th>
 <td><input type=checkbox value=yes name=economy [% check_economy %]></td>
 </tr>

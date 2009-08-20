@@ -648,6 +648,7 @@ sub _rest_of_reg {
     HTYPE:
     for my $ht (housing_types(2)) {
         next HTYPE if $ht eq "single_bath" && ! $pr->sbath;
+        next HTYPE if $ht eq "single"      && ! $pr->single;
         next HTYPE if $ht eq "quad"        && ! $pr->quad;
         next HTYPE if $ht eq "economy"     && ! $pr->economy;
         if ($ht !~ m{unknown|not_needed} && $pr->housecost->$ht == 0) {
@@ -2393,6 +2394,7 @@ sub update : Local {
     HTYPE:
     for my $htname (housing_types(2)) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
+        next HTYPE if $htname eq "single"      && ! $pr->single;
         next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
         next HTYPE if    $htname ne "unknown"
@@ -3082,6 +3084,7 @@ sub lodge : Local {
         commuting
     /) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
+        next HTYPE if $htname eq "single"      && ! $pr->single;
         next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
         next HTYPE if $pr->housecost->$htname == 0;     # wow!

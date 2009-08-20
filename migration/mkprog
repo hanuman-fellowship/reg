@@ -26,6 +26,7 @@ create table program (
     unlinked_dir text,
     ptemplate   text,
     cl_template text,
+    single      text,
     sbath       text,
     quad        text,
     economy     text,

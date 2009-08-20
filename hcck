@@ -66,12 +66,13 @@ my $today = today()->as_d8();
 my $ndays = date($max)-date($today) + 1;
 print "$today to $max = $ndays days\n";
 
-$sth = $dbh->prepare("select id, max from house");
+$sth = $dbh->prepare("select id, max, name from house");
 $sth->execute();
-my (@h_id, %h_max);
-while (my ($id, $max) = $sth->fetchrow_array()) {
+my (@h_id, %h_max, %h_name);
+while (my ($id, $max, $name) = $sth->fetchrow_array()) {
    push @h_id, $id;
     $h_max{$id} = $max;
+    $h_name{$id} = $name;
 }
 my $nhouses = @h_id;
 print "got $nhouses houses\n";
@@ -103,7 +104,7 @@ for my $id (@h_id) {
     $sth->execute($id);
     my $n = $sth->fetchrow_array();
     if ($n != $ndays) {
-        print "** mismatch $n vs $ndays for house id $id\n";
+        print "** mismatch $n vs $ndays for house $id = $h_name{$id}\n";
         ++$err;
     }
 }
@@ -228,7 +229,7 @@ else {
 
 # requirement #6
 $sth = $dbh->prepare("
-    select c.*, h.tent
+    select c.*, h.max, h.tent
     from config c, house h
     where c.house_id = h.id
       and (c.cur > h.max or c.curmax > h.max)
@@ -242,11 +243,11 @@ while (my (@data) = $sth->fetchrow_array()) {
             $d = "-";
         }
     }
-    if ($data[7] eq 'yes') {
-        print "++ curmax or max > house_max: @data - but tent so okay\n";
+    if ($data[8] eq 'yes') {
+        print "++ curmax or max > house_max: $h_name{$data[0]}: @data - but tent so okay\n";
     }
     else {
-        print "** curmax or max > house_max: @data\n";
+        print "** curmax or max > house_max: $h_name{$data[0]}: @data\n";
         ++$err;
     }
 }

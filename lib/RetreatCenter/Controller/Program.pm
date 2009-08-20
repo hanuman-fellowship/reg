@@ -99,6 +99,7 @@ sub create : Local {
         check_kayakalpa     => 'checked',
         check_retreat       => '',
         check_sbath         => 'checked',
+        check_single        => 'checked',
         check_quad          => '',
         check_collect_total => '',
         check_economy       => '',
@@ -196,6 +197,7 @@ sub _get_data {
         collect_total
         kayakalpa
         sbath
+        single
         retreat
         economy
         webready
@@ -647,7 +649,7 @@ sub update : Local {
     }
 
     for my $w (qw/
-        sbath collect_total kayakalpa retreat
+        sbath single collect_total kayakalpa retreat
         economy webready quad linked do_not_compute_costs
     /) {
         stash($c,
@@ -811,7 +813,7 @@ sub leader_update_do : Local {
                 comment    => $assist? "1-dbl assistant"
                               :        "1-sgl/ba leader",
                 house_id   => 0,
-                h_type     => $assist? "dble": "single_bath",
+                h_type     => $assist? 'dble': 'single_bath',
                 cancelled  => '',    # to be sure
                 arrived    => '',    # ditto
                 date_start => $program->sdate(),
@@ -1470,10 +1472,11 @@ sub gen_regtable {
 
         my $housecost = $p->housecost;
         for my $t (reverse housing_types(1)) {
-            next if $t =~ /quad/        && !$p->quad;
-            next if $t =~ /economy/     && !$p->economy;
-            next if $t =~ /single_bath/ && !$p->sbath;
-            next if $t =~ /center_tent/
+            next if $t eq 'quad'        && !$p->quad;
+            next if $t eq 'economy'     && !$p->economy;
+            next if $t eq 'single_bath' && !$p->sbath;
+            next if $t eq 'single'      && !$p->single;
+            next if $t eq 'center_tent'
                 && !($PR
                      || $p->name =~ m{tnt}i
                      || (5 <= $month && $month <= 10));
@@ -1558,7 +1561,7 @@ sub duplicate : Local {
         rental_id => 0,
     });
     for my $w (qw/
-        sbath collect_total kayakalpa retreat
+        sbath single collect_total kayakalpa retreat
         economy webready quad linked
     /) {
         stash($c,
