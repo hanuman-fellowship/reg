@@ -249,8 +249,9 @@ sub create_do : Local {
         time_updated => get_time()->t24(),
     });
 
-    $P{summary_id} = $sum->id;
+    $P{summary_id} = $sum->id();
     $P{status} = "tentative";
+    $P{program_id} = 0;         # so it isn't NULL
     my $r = model($c, 'Rental')->create(\%P);
     my $id = $r->id();
     #
