@@ -85,8 +85,9 @@ __PACKAGE__->add_columns(qw/
     proposal_id
 
     color
+    housing_note
 /);
-    # the last two above are just for jumping back and forth
+    # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
 
 # Set the primary key for the table

@@ -63,7 +63,8 @@ create table rental (
     mmc_does_reg      text,
     program_id        integer,
     proposal_id       integer,
-    color             text
+    color             text,
+    housing_note      text
 );
 drop table if exists rental_payment;
 create table rental_payment (

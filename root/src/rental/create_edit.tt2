@@ -83,6 +83,9 @@ Web
 
 <!-- Meals & Lodging div -->
 <div id="content1" class="tabcontent" style="display: none">
+
+<table><tr><td>     <!-- to accomodate the housing note -->
+
 <table border=0>
 
 <tr>
@@ -123,6 +126,18 @@ Web
 [% END %]
 
 </table>
+
+</td><td>               <!-- for the housing note -->
+
+<div style="margin-left: 5mm;">
+<h4>Housing Note</h4>
+<textarea name=housing_note>
+[% rental.housing_note %]
+</textarea>
+</div>
+
+</td></tr></table>      <!-- for the housing note -->
+
 </div>
 
 <!-- Misc div -->

@@ -212,10 +212,17 @@ Web
     <td valign=top><a href="/rental/booking/[% id %]/[% t %]">Add</a></td>
     [% END %]
 
-    [% ELSE %]
-    <td colspan=2 class=fl_row0></td>
     [% END %]
-    <td align=left>[% bookings.$t %]</td>
+
+    [% IF t == 'own_van' %]
+        <td class='fl_row0'></td>
+        <td colspan=3 rowspan=4 class='fl_row0' valign=top>
+        [% rental.housing_note %]
+        </td>
+    [% ELSE %]
+        <td align=left>[% bookings.$t %]</td>
+    [% END %]
+
     </tr>
     [% IF class == 'fl_row0' %]
         [% class = 'fl_row1' %]
