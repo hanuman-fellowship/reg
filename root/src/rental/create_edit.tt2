@@ -130,7 +130,7 @@ Web
 </td><td>               <!-- for the housing note -->
 
 <div style="margin-left: 5mm;">
-<h4>Housing Note</h4>
+<h4 style="margin-bottom: 2mm">Housing Note</h4>
 <textarea name=housing_note>
 [% rental.housing_note %]
 </textarea>
