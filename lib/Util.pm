@@ -52,6 +52,7 @@ our @EXPORT_OK = qw/
     other_reserved_cids
     PR_other_reserved_cids
     reserved_clusters
+    palette
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1392,6 +1393,24 @@ sub reserved_clusters {
                    order_by => 'cluster.name',
                },
            );
+}
+
+sub palette {
+    my $html = "<table style='margin-top: 6mm' border=1>\n";
+    for my $y (1 .. 4) {
+        $html .= "<tr>\n";
+        for my $x (1 .. 4) {
+            my $rgb = $string{"pal_$x$y\_color"};
+            $html .= "<td class=square"
+                  .  " onclick='colorSet($rgb)'"
+                  .  " style='background-color: rgb($rgb)'"
+                  .  "></td>\n"
+                  ;
+        }
+        $html .= "</tr>\n";
+    }
+    $html .= "</table>\n";
+    return $html;
 }
 
 1;

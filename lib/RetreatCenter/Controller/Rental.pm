@@ -31,6 +31,7 @@ use Util qw/
     email_letter
     error
     other_reserved_cids
+    palette
 /;
 use Global qw/
     %string
@@ -2235,16 +2236,21 @@ sub _send_grid_data {
 sub color : Local {
     my ($self, $c, $rental_id) = @_;
     my $rental = model($c, 'Rental')->find($rental_id);
-    my ($r, $g, $b) = $rental->color =~ m{\d+}g;
+    my ($r, $g, $b) = $rental->color() =~ m{\d+}g;
     $r ||= 127;
     $g ||= 127;
     $b ||= 127;
     stash($c,
-        rental   => $rental,
+        Type     => 'Rental',
+        type     => 'rental',
+        id       => $rental_id,
+        name     => $rental->name(),
         red      => $r,
         green    => $g,
         blue     => $b,
-        template => 'rental/color.tt2',
+        color    => "$r, $g, $b",
+        palette  => palette(),
+        template => 'color.tt2',
     );
 }
 

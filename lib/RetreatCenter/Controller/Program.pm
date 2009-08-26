@@ -30,6 +30,7 @@ use Util qw/
     lines
     other_reserved_cids
     reserved_clusters
+    palette
 /;
 use Date::Simple qw/
     date
@@ -1923,11 +1924,16 @@ sub color : Local {
     $g ||= 127;
     $b ||= 127;
     stash($c,
-        program  => $program,
+        Type     => 'Program',
+        type     => 'program',
+        id       => $program_id,
+        name     => $program->name(),
         red      => $r,
         green    => $g,
         blue     => $b,
-        template => 'program/color.tt2',
+        color    => "$r, $g, $b",
+        palette  => palette(),
+        template => 'color.tt2',
     );
 }
 

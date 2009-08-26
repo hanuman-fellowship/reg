@@ -1,0 +1,61 @@
+<link rel="stylesheet" type="text/css" href="/static/color.css" 
+<script type="text/javascript" src="/static/js/color.js"></script>
+<h2>Color for [% Type %] '[% name %]'</h2>
+<form action=/[% type %]/color_do/[% id %] name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<th valign=top align=right><span class="required">*</span> Color</th>
+<td valign=top><input type=text id=color_val name=color value="[% color %]"></td>
+<td rowspan=5>
+    <table border=1>
+    <tr>
+    <td id=swatch colspan=4></td>
+    </tr>
+    <tr>
+    <td class=square id=more_red   onclick="adjust( incr,     0,     0);"></td>
+    <td class=square id=more_green onclick="adjust(    0,  incr,     0);"></td>
+    <td class=square id=more_blue  onclick="adjust(    0,     0,  incr);"></td>
+    <td class=square id=whiter     onclick="adjust( incr,  incr,  incr);"></td>
+    </tr>
+    <tr>
+    <td class=square id=less_red   onclick="adjust(-incr,     0,     0);"></td>
+    <td class=square id=less_green onclick="adjust(    0, -incr,     0);"></td>
+    <td class=square id=less_blue  onclick="adjust(    0,     0, -incr);"></td>
+    <td class=square id=blacker    onclick="adjust(-incr, -incr, -incr);"></td>
+    </tr>
+    <tr>
+    </tr>
+    </table>
+
+    [% palette %]
+
+</td>
+<td rowspan=5 valign=top width=330>
+The 3 numbers in the Color field
+to the far left represent the red, green and blue
+components of the color.
+It appears in the <br>&larr; swatch area.
+<p class=p2>
+Adjust the color by clicking on the 8 squares below the swatch.
+Play with it.
+<p class=p2>
+You can also choose a color from the palette below and then,
+if you wish, adjust it.&nbsp;&nbsp;&nbsp;Fun, huh?
+<p class=p2>
+Click the Submit button to finish.
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td valign=top><input type=submit value="Submit"></td>
+</tr>
+</form>
+
+</table>
+
+<script type="text/javascript">
+document.form.color.focus();
+colorSet([% red %], [% green %], [% blue %]);
+</script>
