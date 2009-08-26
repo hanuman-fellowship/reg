@@ -80,7 +80,7 @@ sub update_do : Local {
         Date::Simple->default_format($value);
     }
     if ($the_key =~ m{color}) {
-        $c->response->redirect($c->uri_for("/string/list/1"));
+        $c->response->redirect($c->uri_for("/string/list/1/#$the_key"));
     }
     else {
         $c->response->redirect($c->uri_for("/string/list#$the_key"));

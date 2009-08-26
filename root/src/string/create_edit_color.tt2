@@ -38,13 +38,14 @@
     </table>
 </td>
 <!-- had to hack the table with the width ... sorry -->
-<td rowspan=4 valign=center width=330>
-The color that the numbers represent
-will appear in the swatch area to the left.
-<p>
+<td rowspan=4 valign=top width=330>
+The 3 numbers in the Value field above represent
+the red, green, and blue components of the color
+that appears in <br>&larr; the swatch area.
+<p class=p2>
 Adjust the color by clicking on the 8 squares below the swatch.
 Play with it.
-<p>
+<p class=p2>
 Click the Submit button to finish.
 </td>
 <td width=100></td>
