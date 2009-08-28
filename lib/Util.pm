@@ -1397,11 +1397,11 @@ sub reserved_clusters {
 
 sub palette {
     my $html = "<table style='margin-top: 6mm' border=1>\n";
-    for my $y (1 .. 4) {
+    for my $y (1 .. 6) {
         $html .= "<tr>\n";
-        for my $x (1 .. 4) {
+        for my $x (1 .. 6) {
             my $rgb = $string{"pal_$x$y\_color"};
-            $html .= "<td class=square"
+            $html .= "<td class=square6"
                   .  " onclick='colorSet($rgb)'"
                   .  " style='background-color: rgb($rgb)'"
                   .  "></td>\n"

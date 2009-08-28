@@ -1,6 +1,10 @@
 .square {
-    width: 50; 
-    height: 50; 
+    width: 51; 
+    height: 51; 
+}
+.square6 {
+    width: 8.5mm;
+    height: 8.5mm;
 }
 #swatch {
     height: 100;
