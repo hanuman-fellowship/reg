@@ -129,18 +129,37 @@ sub update_do : Local {
     $user->update(\%P);
 
     #
+    # user_admins who are not super_admins can see
+    # if a user has the following 3 roles but they
+    # cannot assign or delete those roles.   So
+    # we need some special handling...
+    #
+
+    my @extra_role_ids = ();
+    if (! $c->check_user_roles('super_admin')) {
+        for my $r ($user->roles()) {
+            my $role = $r->role();
+            if (   $role eq 'super_admin' 
+                || $role eq 'web_designer'
+                || $role eq 'developer'
+            ) {
+                push @extra_role_ids, $r->id();
+            }
+        }
+    }
+
+    #
     # delete all old and add new roles
     #
     model($c, 'UserRole')->search(
         { user_id => $id },
     )->delete();
-    for my $r (_get_roles($c)) {
+    for my $r (_get_roles($c), @extra_role_ids) {
         model($c, 'UserRole')->create({
             user_id => $id,
             role_id => $r,
         });
     }
-
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
