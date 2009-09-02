@@ -16,7 +16,6 @@ use Date::Simple qw/
 /;
 use Global qw/
     %string
-    %clust_color
     %cluster
     %houses_in_cluster
     @clusters
@@ -51,10 +50,6 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $cl = $c->stash->{cluster} = model($c, 'Cluster')->find($id);
-    my ($r, $g, $b) = $cl->color =~ m{\d+}g;
-    $c->stash->{red  } = $r;
-    $c->stash->{green} = $g;
-    $c->stash->{blue } = $b;
     my $opts = "";
     for my $t (1 .. 5) {
         my $s = $string{"dp_type$t"};
@@ -79,22 +74,16 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     my $name  = $c->request->params->{name};
-    my $color = $c->request->params->{color};
     my $type  = $c->request->params->{type};
-    for my $f (qw/name color/) {
-        if (empty($f)) {
-            $c->stash->{mess} = "\u$f cannot be blank.";
-            $c->stash->{template} = "cluster/error.tt2";
-            return;
-        }
+    if (empty($name)) {
+        $c->stash->{mess} = "Name cannot be blank.";
+        $c->stash->{template} = "cluster/error.tt2";
+        return;
     }
     model($c, 'Cluster')->find($id)->update({
         name  => $name,
-        color => $color,
         type  => $type,
     });
-    # and update the Global.  no need to reload it all.
-    $clust_color{$id} = [ $color =~ m{(\d+)}g ];
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
 
@@ -120,18 +109,14 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     my $name  = $c->request->params->{name};
-    my $color = $c->request->params->{color};
     my $type  = $c->request->params->{type};
-    for my $f (qw/name color/) {
-        if (empty($f)) {
-            $c->stash->{mess} = "\u$f cannot be blank.";
-            $c->stash->{template} = "cluster/error.tt2";
-            return;
-        }
+    if (empty($name)) {
+        $c->stash->{mess} = "Name cannot be blank.";
+        $c->stash->{template} = "cluster/error.tt2";
+        return;
     }
     model($c, 'Cluster')->create({
         name  => $name,
-        color => $color,
         type  => $type,
     });
     # no need to reload Configuration - creating clusters
@@ -400,7 +385,6 @@ EOH
 
     my $white = $cv->colorAllocate(255,255,255);    # 1st color = background
     my $black = $cv->colorAllocate(  0,  0,  0);
-    my $color = $cv->colorAllocate(@{$clust_color{$cur_clust}});
 
     my %char_color;
     for my $c (qw/ M F X R B empty_bed resize /) {
@@ -474,12 +458,13 @@ EOH
             $y2 = $y1 + $hh;
             $cv->rectangle($x1, $y1, $x2, $y2, $black);
 
-            my $room_color = $color;
+            my $room_color = $white;
             if (my $cf = $config{$hid}{$cur_dt->as_d8()}) {
                 $sex    = $cf->sex();
                 $cur    = $cf->cur();
                 $curmax = $cf->curmax();
-                # we may have a color different than the cluster.
+                #
+                # we may have a color different than white
                 #
                 if (my $pid = $cf->program_id()) {
                     $room_color = cache_color($c, $cv,

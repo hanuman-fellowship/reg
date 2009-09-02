@@ -8,14 +8,8 @@ __PACKAGE__->table('cluster');
 __PACKAGE__->add_columns(qw/
     id
     name
-    color
     type
 /);
 __PACKAGE__->set_primary_key(qw/id/);
-
-sub color_bg {
-    my ($self) = @_;
-    sprintf("#%02x%02x%02x", $self->color =~ m{\d+}g);
-}
 
 1;

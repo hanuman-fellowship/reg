@@ -11,7 +11,6 @@ use Date::Simple qw/
 /;
 use Global qw/
     %string
-    %clust_color
     %houses_in
     %annotations_for
 /;
@@ -97,13 +96,6 @@ sub show : Local {
     }
     $dp->rectangle(0, 0, $width, $height, $black);
 
-    # we have the array_ref of colors for each color
-    # no need to go to the database
-    # but each new GD::Image must allocate its own colors ...
-    # so ...
-    my %clust_col = map { $_ => $dp->colorAllocate(@{$clust_color{$_}}) }
-                    keys %clust_color;
-
     my $dp_map = "";    
     #
     # with one SQL request get all the needed config records
@@ -149,14 +141,14 @@ sub show : Local {
            :                (0, 0),    # shouldn't happen
                     $tname, $black);
         my ($sex, $cur, $curmax);
-        my $color = $clust_col{$h->cluster_id};
+        my $color = $white;
         if (exists $config{$hid}) {
             my $cf = $config{$hid};
             $sex    = $cf->sex();
             $cur    = $cf->cur();
             $curmax = $cf->curmax();
 
-            # we may have a color different than the cluster.
+            # we may have a color different than white.
             #
             if (my $pid = $cf->program_id()) {
                 $color = cache_color($c, $dp, 'Program', $pid, $color);

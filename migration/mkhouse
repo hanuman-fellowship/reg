@@ -2,22 +2,21 @@ drop table if exists cluster;
 CREATE TABLE cluster (
     id       integer primary key autoincrement,
     name     text,
-    color    text,           -- background - fg = black
     type     text
 );
-INSERT INTO cluster VALUES(1,'CC 1st','120,180,220','indoors');
-INSERT INTO cluster VALUES(2,'CC 2nd','220,180,120','indoors');
-INSERT INTO cluster VALUES(3,'Seminar House','180,220,120','indoors');
-INSERT INTO cluster VALUES(4,'RAM','255,165,255','indoors');
-INSERT INTO cluster VALUES(5,'Oaks Own Tent','205,255,205','outdoors');
-INSERT INTO cluster VALUES(6,'Oaks Center Tent','155,255,110','outdoors');
-INSERT INTO cluster VALUES(7,'Madrone Own Tent','255,215,150','outdoors');
-INSERT INTO cluster VALUES(8,'Madrone Center Tent','225,145,90','outdoors');
+INSERT INTO cluster VALUES(1,'CC 1st','indoors');
+INSERT INTO cluster VALUES(2,'CC 2nd','indoors');
+INSERT INTO cluster VALUES(3,'Seminar House','indoors');
+INSERT INTO cluster VALUES(4,'RAM','indoors');
+INSERT INTO cluster VALUES(5,'Oaks Own Tent','outdoors');
+INSERT INTO cluster VALUES(6,'Oaks Center Tent','outdoors');
+INSERT INTO cluster VALUES(7,'Madrone Own Tent','outdoors');
+INSERT INTO cluster VALUES(8,'Madrone Center Tent','outdoors');
 -- deleted Knoll Own, Knoll Center
-INSERT INTO cluster VALUES(11,'Oak Cabins','220,240,50','indoors');
-INSERT INTO cluster VALUES(12,'CB Terrace','255,185,185','outdoors');
-INSERT INTO cluster VALUES(13,'Miscellaneous','155,255,110','special');
-INSERT INTO cluster VALUES(14,'School','120,180,220','special');
+INSERT INTO cluster VALUES(11,'Oak Cabins','indoors');
+INSERT INTO cluster VALUES(12,'CB Terrace','outdoors');
+INSERT INTO cluster VALUES(13,'Miscellaneous','special');
+INSERT INTO cluster VALUES(14,'School','special');
 
 drop table if exists house;
 CREATE TABLE house (
