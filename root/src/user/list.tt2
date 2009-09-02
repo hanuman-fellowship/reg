@@ -1,5 +1,5 @@
 <h2>Users</h2>
-[% IF Catalyst.check_user_roles('super_admin') %]
+[% IF Catalyst.check_user_roles('user_admin') %]
 <a href="/user/create">Add</a>
 [% END %]
 <ul>

@@ -177,6 +177,11 @@ sub create : Local {
 # 7 membership admin
 # 8 field staff
 # 9 mmi admin
+# 10 kitchen
+# 11 developer
+# 12 driver
+# 13 ride admin
+# 14 user admin
 #
 sub _get_roles {
     my ($c) = @_;
@@ -185,7 +190,7 @@ sub _get_roles {
                     keys %{$c->request->params};
     # ensure additional roles are in place - don't dup code ???
     if ($cur_roles{1}) {
-        @cur_roles{ 2..7, 9 } = 1;
+        @cur_roles{ 2..7, 9, 13, 14 } = 1;
     }
     elsif ($cur_roles{6}) {
         @cur_roles{ 2..5 } = 1;

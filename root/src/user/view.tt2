@@ -1,6 +1,6 @@
-[% super = Catalyst.check_user_roles('super_admin') %]
+[% user_admin = Catalyst.check_user_roles('admin_admin') %]
 <h2>Users</h2>
-[% IF super %]
+[% IF user_admin %]
 <a href="/user/update/[% user.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/user/create">Add</a>
@@ -47,7 +47,7 @@
 <td>[% user.hide_mmi %]</td>
 </tr>
 
-[% IF super %]
+[% IF user_admin %]
 <tr>
 <th align=right valign=top>Password</th>
 <td>[% user.password %]</td>
