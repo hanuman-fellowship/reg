@@ -393,7 +393,7 @@ EOH
     $html .= "<tr><td>&nbsp;</td></tr>\n";
     $gcash   += $cash;
     $gcheck  += $check;
-    $gcredit += $credit;
+    $gcredit += $credit + $online;
     $gonline += $online;
     $gtotal  += $total;
     $html .= "<tr><td colspan=2></td>"
@@ -405,7 +405,7 @@ EOH
     $html .= "<tr>"
           .  "<td colspan=3 align=right>$gcash</td>"
           .  "<td align=right>$gcheck</td>"
-          .  "<td align=right>" . ($gcredit + $gonline) . "</td>"
+          .  "<td align=right>$gcredit</td>"
           .  "<td align=right>\$"
           .  commify($gtotal)
           .  "</td>"
