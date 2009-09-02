@@ -1,4 +1,4 @@
-[% user_admin = Catalyst.check_user_roles('admin_admin') %]
+[% user_admin = Catalyst.check_user_roles('user_admin') %]
 <h2>Users</h2>
 [% IF user_admin %]
 <a href="/user/update/[% user.id %]">Edit</a>

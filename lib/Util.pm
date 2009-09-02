@@ -126,6 +126,8 @@ sub role_table {
 
     my %checked = map { $_->id() => 'checked' } @_;
 
+    my $super = $c->check_user_roles('super_admin');
+
     join "\n",
     map {
         my $id = $_->id();
@@ -136,6 +138,11 @@ sub role_table {
     }
     sort {
         $a->fullname cmp $b->fullname
+    }
+    grep {
+        my $r = $_->role();
+        ($r ne 'super_admin' && $r ne 'web_designer' && $r ne 'developer')
+        || $super
     }
     model($c, 'Role')->all();
 }
