@@ -2121,6 +2121,7 @@ sub grid : Local {
     my $fgrid = _get_grid_file($rental);
 
     my %data = ();
+    my $total = 0;
     if (open my $in, "<", $fgrid) {
         LINE:
         while (my $line = <$in>) {
@@ -2143,6 +2144,7 @@ sub grid : Local {
                 $data{"n$id\_$bed\_$n"} = $nights[$n-1];
             }
             $data{"c$id\_$bed"} = $cost;
+            $total += $cost;
         }
         close $in;
     }
@@ -2161,6 +2163,7 @@ sub grid : Local {
         nnights  => ($rental->edate_obj() - $rental->sdate_obj()),
         data     => \%data,
         coord_name => $coord_name,
+        total    => commify($total),
         template => 'rental/grid.tt2',
     );
 }
