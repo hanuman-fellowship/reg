@@ -1,3 +1,9 @@
+<style>
+.special {
+    font-weight: bold;
+    color: red;
+}
+</style>
 <ul>
 <h2>
 [% rental.name %] 
@@ -34,8 +40,10 @@ Housing Assignment Grid
             </th>
         [% END %]
         <td align=right>[% i %]</td>
-        [% v = 'p' _ h.id _ '_' _ i %]
-        <td>[% data.$v %]</td>
+        [% vp = 'p' _ h.id _ '_' _ i %]
+        [% vc = 'c' _ h.id _ '_' _ i %]
+        [% vcl = 'cl' _ h.id _ '_' _ i %]
+        <td [% data.$vcl %]>[% data.$vp %]</td>
         [% n = 1 %]
         [% WHILE n <= nnights %]
             [% v = 'n' _ h.id _ '_' _ i _ '_' _ n %]
@@ -46,9 +54,8 @@ Housing Assignment Grid
             [% END %]
             [% n = n + 1 %]
         [% END %]
-        [% v = 'c' _ h.id _ '_' _ i %]
-        <td align=right>[% data.$v %]</td>
-        [% tot = tot + data.$v %]
+        <td align=right>[% data.$vc %]</td>
+        [% tot = tot + data.$vc %]
         </tr>
         [% i = i + 1 %]
     [% END %]
@@ -58,7 +65,7 @@ Housing Assignment Grid
 [% tot = tot + data.cown_van %]
 <tr><th colspan=[% x %] align=right>Commuting</th><td align=right>[% data.commuting %]</td><td align=right>[% data.ccommuting %]</td></tr>
 [% tot = tot + data.ccommuting %]
-<tr><th colspan=[% x + 1 %] align=right>Total</th><td align=right>[% tot %]</td></tr>
+<tr><th colspan=[% x + 1 %] align=right>Total</th><td align=right>$[% tot %]</td></tr>
 </table>
 <p class=p2>
 <ul>

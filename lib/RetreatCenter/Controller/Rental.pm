@@ -2133,6 +2133,12 @@ sub grid : Local {
             my ($id, $bed, $name, @nights) = split m{\|}, $line;
             my $cost = pop @nights;
             $data{"p$id\_$bed"} = $name;
+            $data{"cl$id\_$bed"}
+                = ($name =~ m{[&]}
+                   || $name =~ m{\bchild\b}
+                   || $name =~ m{-\s*[12347]\s*$})? "class=special"
+                  :                                 ""
+                  ;
             for my $n (1 .. @nights) {
                 $data{"n$id\_$bed\_$n"} = $nights[$n-1];
             }

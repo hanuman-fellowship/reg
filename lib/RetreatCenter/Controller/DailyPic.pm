@@ -307,7 +307,7 @@ sub show : Local {
                             }
                             reserved_clusters($c, $ev->id, $ev_type);
             }
-            my $color = "white";        # default background for this user???
+            my $color = "white";     # default background for this happening?
             if ($type ne 'Event' && $ev->color()) {
                 $color = $ev->color_bg();
             }
