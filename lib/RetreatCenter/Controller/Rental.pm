@@ -2129,6 +2129,7 @@ sub grid : Local {
             if ($line =~ m{^(own_van|commuting)\|(\d+)\|(\d+)$}) {
                 $data{$1} = $2;
                 $data{"c$1"} = $3;
+                $total += $3;
                 next LINE;
             }
             my ($id, $bed, $name, @nights) = split m{\|}, $line;
