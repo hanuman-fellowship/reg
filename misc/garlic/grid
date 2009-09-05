@@ -1,0 +1,223 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use lib 'lib';
+use Template;
+use CGI qw/:standard/;
+use CGI::Carp qw/fatalsToBrowser/;
+print header;
+use Date::Simple qw/
+    date
+/;
+Date::Simple->default_format("%B %e");
+
+sub commify {
+    my ($n) = @_;
+    $n = reverse $n;
+    $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+    return scalar reverse $n;
+}
+
+my $code = param('code');
+my $fname = "rental/$code.txt";
+my $dname = "rental/$code-data.txt";
+if (! -f $fname) {
+    print "Sorry, Could not find a rental for the code $code.";
+    # send an alert to the authorities!
+    exit;
+}
+my (%hash, @houses);
+open my $in, "<", $fname
+    or die "cannot open $fname: $!";
+while (my $line = <$in>) {
+    chomp $line;
+    if ($line =~ m{\|}) {
+        my ($id, $name, $max, $bath, $tent, $own) = split m{\|}, $line;
+        push @houses, {
+            id   => $id,
+            name => $name,
+            max  => $max,
+            bath => $bath,
+            tent => $tent,
+            own  => $own,
+        };
+    }
+    else {
+        my ($k, $v) = $line =~ m{^(\S+)\s+(.*)$};
+        $hash{$k} = $v;
+    }
+}
+close $in;
+my $sdate = date($hash{sdate});
+my $edate = date($hash{edate});
+my $nnights = $edate - $sdate;
+my @days;
+my $days = join '',
+           map { "<th align=center>" . ($sdate + $_)->format("%s") . "</th>" }
+           0 .. $nnights-1;
+
+if (param('process')) {
+    # get the input data
+    #
+    my %P;
+    for my $p (param()) {
+        $P{$p} = param($p);
+    }
+
+    # put it in a file while computing the costs
+    #
+    open my $out, ">", $dname
+        or die "cannot create $dname: $!";
+    my $gtotal = 0;
+    for my $h (@houses) {
+        my $id = $h->{id};
+        my $bath = ($h->{bath})? "_bath"
+                  :              ""
+                  ;
+        for my $bed (1 .. $h->{max}) {
+            my $override_np = 0;
+            if ($P{"p$id\_$bed"} =~ m{-\s*([12347])\s*$}) {
+                $override_np = $1;
+            }
+            print {$out} "$id|$bed|";
+            print {$out} $P{"p$id\_$bed"} . '|';
+            my $cost = 0;
+            NIGHT:
+            for my $n (1 .. $nnights) {
+                my $occ = $P{"n$id\_$bed\_$n"};
+                print {$out} "$occ|";
+                if ($occ) {
+                    if ($h->{tent}) {
+                        $cost += ($h->{own})? $hash{own_tent}
+                                :             $hash{center_tent}
+                                ;
+                        next NIGHT;
+                    }
+                    # how many people in this room this night?
+                    #
+                    my $np = 0;
+                    for my $b (1 .. $h->{max}) {
+                        if ($P{"n$id\_$b\_$n"}) {
+                            ++$np;
+                        }
+                    }
+                    if ($override_np) {
+                        $np = $override_np;
+                    }
+                    $cost += ($np == 1)? $hash{"single$bath"}
+                            :($np == 2)? $hash{"dble$bath"}
+                            :($np == 3)? $hash{triple}
+                            :($np == 4)? $hash{quad}
+                            :($np <= 7)? $hash{dormitory}
+                            :            $hash{economy}
+                            ;
+                }
+            }
+            #
+            # handle more than one person in a tent
+            # and children.
+            #
+            my $tot = 0;
+            my $name = $P{"p$id\_$bed"};
+            for my $p (split m{\&}, $name) {
+                $tot += ($p =~ m{\bchild\b})? $cost/2
+                       :                      $cost;
+            }
+            $cost = int($tot);
+            print {$out} $cost;
+            $gtotal += $cost;
+            if ($name !~ m{\S} && ! $cost) {
+                $cost = "";
+            }
+            $P{"c$id\_$bed"} = $cost;
+            if (($cost == 0 && $name)
+                || $override_np
+                || $name =~ m{\&}
+                || $name =~ m{\bchild\b}
+            ) {
+                $P{"cl$id\_$bed"} = 1;
+            }
+            else {
+                $P{"cl$id\_$bed"} = 0;
+            }
+            print {$out} "\n";
+        }
+    }
+    # own van, commuting
+    #
+    for my $t (qw/ own_van commuting /) {
+        my $cost = $P{$t} * $hash{$t};
+        $gtotal += $cost;
+        print {$out} "$t|$P{$t}|$cost\n";
+        $P{"c$t"} = $cost;
+    }
+    close $out;
+    # display it with costs
+    #
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'rental',
+        EVAL_PERL    => 0,
+    });
+    my $stash = {
+        sdate   => $sdate,
+        edate   => $edate,
+        data    => \%P,
+        hash    => \%hash,
+        houses  => \@houses,
+        nnights => $nnights,
+        days    => $days,
+        total   => commify($gtotal),
+        code    => $code,
+    };
+    $tt->process(
+        "sgrid.tt2",  # template
+        $stash,       # variables
+        \$html,       # output
+    );
+    print $html;
+    exit;
+}
+#
+# present input form populated with the data file, if present
+#
+my %data = ();
+if (open my $in, "<", $dname) {
+    LINE:
+    while (my $line = <$in>) {
+        chomp $line;
+        if ($line =~ m{^(own_van|commuting)\|(\d+)}) {
+            $data{$1} = $2;
+            next LINE;
+        }
+        my ($id, $bed, $name, @nights) = split m{\|}, $line;
+        $data{"p$id\_$bed"} = $name;
+        for my $n (1 .. $nnights) {
+            $data{"n$id\_$bed\_$n"} = $nights[$n-1];
+        }
+    }
+    close $in;
+}
+my $html = "";
+my $tt = Template->new({
+    INCLUDE_PATH => 'rental',
+    EVAL_PERL    => 0,
+});
+my $stash = {
+    code    => $code,
+    sdate   => $sdate,
+    edate   => $edate,
+    data    => \%data,
+    hash    => \%hash,
+    houses  => \@houses,
+    nnights => $nnights,
+    days    => $days,
+    hash    => \%hash,
+};
+$tt->process(
+    "grid.tt2",   # template
+    $stash,       # variables
+    \$html,       # output
+);
+print $html;
