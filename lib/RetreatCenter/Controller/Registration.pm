@@ -827,6 +827,7 @@ sub _get_data {
 # reset the globals $tot_prog_days, $prog_days, and $extra_days.
 # can't just do this in _get_data() because we may be calling
 # _compute() from relodge() without going through _get_data().
+# this is only called from _compute().
 #
 sub _re_get_days {
     my ($reg) = @_;
@@ -837,6 +838,11 @@ sub _re_get_days {
     my $date_start = $reg->date_start_obj();    # maybe undef
     my $date_end   = $reg->date_end_obj();      # maybe undef
 
+    if ($pr->PR()) {
+        $tot_prog_days = $prog_days = 0;
+        $extra_days = $date_end - $date_start;
+        return;
+    }
     $tot_prog_days = $prog_days = $edate - $sdate;
     $extra_days = 0;
     if ($date_start) {
