@@ -6,23 +6,28 @@ use DBI;
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 
-my $cnt_sql = <<"EOS";
+my $get_sth = $dbh->prepare("
+    select id, reg_count, name
+      from program
+     where sdate >= 20090401
+");
+my $cnt_sth = $dbh->prepare("
+    select count(*) 
+      from registration
+     where program_id = ?
+           and cancelled = ''
+");
+my $upd_sth = $dbh->prepare("
     update program
-    set reg_count = (select count(*) 
-                     from registration
-                     where program_id = ?
-                       and cancelled = ''
-                    )
-    where id = ?
-EOS
-my $cnt_sth = $dbh->prepare($cnt_sql);
-
-my $sql = "select id from program";
-my $sth = $dbh->prepare($sql);
-$sth->execute();
-while (my ($p_id) = $sth->fetchrow_array()) {
-    $cnt_sth->execute($p_id, $p_id) or die "oops $p_id";
+       set reg_count = ?
+     where id = ?
+");
+$get_sth->execute();
+while (my ($p_id, $count, $name) = $get_sth->fetchrow_array()) {
+    $cnt_sth->execute($p_id);    
+    my ($real_count) = $cnt_sth->fetchrow_array();
+    if ($real_count != $count) {
+        $upd_sth->execute($real_count, $p_id);
+        print "$name $count => $real_count\n";
+    }
 }
-$sth = undef;
-$cnt_sth = undef;
-$dbh->disconnect();
