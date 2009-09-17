@@ -5,7 +5,11 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 
-use Util qw/empty model/;
+use Util qw/
+    empty
+    model
+    slurp
+/;
 
 sub index : Private {
     my ( $self, $c ) = @_;

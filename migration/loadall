@@ -1,6 +1,4 @@
 #!/bin/sh
-howmuch='cur'       # f89 or cur
-
 if [ `whoami` = 'sahadev' ]
 then
     db='mysql -u sahadev -pJonB reg2'
@@ -13,27 +11,24 @@ else
     MYSQL=
 fi
 
-#saveall
-
 echo creating tables
-echo people; $db <mkpeople
-echo misc  ; $db <mkmisc
-echo prog  ; $db <mkprog
-echo rent  ; $db <mkrent
-echo rep   ; $db <mkrep
-echo users ; $db <mkusers
-echo member ; $db <mkmember
-echo reg   ; $db <mkreg
-echo event ; $db <mkevent
-echo acct  ; $db <mkacct
-echo meet  ; $db <mkmeet
-echo house ; $db <mkhouse
-echo ride  ; $db <mkride
+echo acct   ; $db <mkacct
 echo block  ; $db <mkblock
+echo event  ; $db <mkevent
+echo house  ; $db <mkhouse
+echo meet   ; $db <mkmeet
+echo member ; $db <mkmember
+echo misc   ; $db <mkmisc
+echo people ; $db <mkpeople
+echo prog   ; $db <mkprog
+echo reg    ; $db <mkreg
+echo rent   ; $db <mkrent
+echo rep    ; $db <mkrep
+echo ride   ; $db <mkride
+echo users  ; $db <mkusers
 
-echo strings
-loadstr $MYSQL
-echo affils
+echo strings; $db <ldstr
+
 loadaf
 
 echo clearing images
@@ -43,52 +38,9 @@ cd ../../../migration
 
 echo people
 loadpeople $MYSQL
+
 echo leaders, canpol, housecost, programs
-loadprog $howmuch
-echo registrations
-loadreg $howmuch
-echo rentals
-loadrent $howmuch
-
-echo meeting places
-loadmeet
-
-# load all mmi payments
-echo mmi
-loadmmi
+loadpr
 
 # add a LOT of config records
 loadconfig $MYSQL
-
-# now we can load future housing
-echo housing assignments
-loadhousing
-
-echo conf notes
-loadnote
-
-echo deposits
-loaddep
-
-# restore the issues and the user data
-echo issues
-loadiss
-echo users
-loadusers
-echo events
-loadevent
-
-# restore the member and donation data after confirmation
-echo donations
-loaddon
-echo memberships
-loadmem
-
-# split the F08 PRs from the S08 ones
-# this is done before the regcount is done...
-echo split F08 PRs from S08
-splitPR
-
-# update the reg_count field in all program records
-echo updating regcount
-regcount

@@ -43,7 +43,7 @@ function popup(url) {
 <span class=mess>[% message2 %]</span>
 [% END %]
 <h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %]
-for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].[% house_prefs %]</h3>
+for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</h3>
 <table border=0>
 <tr>
 [% IF total_opts == 0 %]
@@ -75,11 +75,8 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].[%
 
 <tr>
 <th align=right>Housing Type</th>
-<td>
-<select name=htype onchange="form.submit();">
-[% h_type_opts %]
-</select>
-</td>
+<td><select name=htype onchange="form.submit();">[% h_type_opts %]</select></td>
+<td>[% house_prefs %]</td>
 </tr>
 
 </table>

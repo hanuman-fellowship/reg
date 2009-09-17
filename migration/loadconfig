@@ -29,21 +29,7 @@ while (my ($id, $max) = $sth->fetchrow_array()) {
 }
 print "got ", scalar(@h_id), " houses\n";
 
-$sth = $dbh->prepare("select max(edate) from rental");
-$sth->execute();
-my ($rent_max) = $sth->fetchrow_array();
-print "rent max = $rent_max\n";
-
-$sth = $dbh->prepare("select max(edate) from program");
-$sth->execute();
-my ($prog_max) = $sth->fetchrow_array();
-my $dt = date($prog_max) + 30;
-$prog_max = $dt->as_d8();
-print "prog max = $prog_max\n";
-
-my $max = ($prog_max > $rent_max)? $prog_max: $rent_max;
-$max = date($max);
-print "  max = $max\n";
+my $max = today() + 30;
 my $today = today()-30;
 
 my $ins_config = $dbh->prepare("
@@ -52,7 +38,7 @@ my $ins_config = $dbh->prepare("
     values
     (?, ?, 'U', ?, 0, 0, 0)
 ");
-$dt = $today;
+my $dt = $today;
 my $d8;
 my $n = 0;
 while ($dt <= $max) {

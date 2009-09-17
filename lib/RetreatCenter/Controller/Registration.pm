@@ -40,6 +40,7 @@ use Util qw/
 use POSIX qw/
     ceil
 /;
+use HLog;
 
     # damn awkward to keep this Global thing initialized... :(
     # is there no way to do this better???
@@ -122,14 +123,24 @@ sub list_online : Local {
             }
         }
         close $in;
-        my $pr = model($c, 'Program')->find($pid);
-        # what if not found??? see below.
+        my $pname;
+        if ($pid == 0) {
+            $pname = "Personal Retreat";
+        }
+        else {
+            my $pr = model($c, 'Program')->find($pid);
+            if ($pr) {
+                $pname = $pr->name();
+            }
+            else {
+                $pname = "Unknown Program";
+            }
+        }
         (my $fname = $f) =~ s{root/static/online/}{};
         push @online, {
             first => $first,
             last  => $last,
-            pname => $pr? $pr->name
-                    :     "Unknown Program",
+            pname => $pname,
             pid   => $pid,
             date  => $date,
             time  => $time,
@@ -202,7 +213,7 @@ sub list_reg_name : Local {
         },
         {
             join     => [qw/ person /],
-            order_by => [qw/ person.last person.first me.id /],
+            order_by => [qw/ person.last person.first me.date_start /],
             prefetch => [qw/ person /],   
         }
     );
@@ -311,9 +322,9 @@ my %needed = map { $_ => 1 } qw/
     state
     zip
     country
-    dphone
-    ephone
-    cphone
+    home
+    work
+    cell
     ceu_license
     email
     house1
@@ -335,6 +346,7 @@ my %needed = map { $_ => 1 } qw/
     withwhom_first
     withwhom_last
     progchoice
+    green_amount
 /;
 
 #
@@ -375,7 +387,35 @@ sub get_online : Local {
     # first, find the program
     # without it we can do nothing!
     #
-    my ($pr) = model($c, 'Program')->find($P{pid});
+    my $pr;
+    if ($P{pid} == 0) {
+        # find the appropriate Personal Retreat given the start date
+        #
+        my $sdate = date($P{sdate})->as_d8();
+        ($pr) = model($c, 'Program')->search({
+            name  => { -like => '%personal%retreat%' },
+            sdate => { '<=' => $sdate },
+            edate => { '>=' => $sdate },
+        });
+        if ($pr) {
+            $P{pid} = $pr->id();
+        }
+        else {
+            error($c,
+                <<"EOH",
+There is no Personal Retreat Program for $P{sdate}.
+<p class=p2>
+Please add one by finding any other Personal Retreat Program,<br>
+choosing Duplicate, and changing the dates.
+EOH
+                "registration/error.tt2",
+            );
+            return;
+        }
+    }
+    else {
+        ($pr) = model($c, 'Program')->find($P{pid});
+    }
     if (! $pr) {
         error($c,
             "Unknown Program - cannot proceed",
@@ -415,9 +455,9 @@ sub get_online : Local {
             zip_post => $P{zip},
             country  => $P{country},
             akey     => nsquish($P{street1}, $P{street2}, $P{zip}),
-            tel_home => $P{ephone},
-            tel_work => $P{dphone},
-            tel_cell => $P{cphone},
+            tel_home => $P{home},
+            tel_work => $P{work},
+            tel_cell => $P{cell},
             email    => $P{email},
             sex      => ($P{gender} eq 'Male'? 'M': 'F'),
             id_sps   => 0,
@@ -437,7 +477,7 @@ sub get_online : Local {
             # disambiguate somehow???
             # cell first, then zip
             for my $q (@ppl) {
-                if (digits($q->tel_cell) eq digits($P{cphone})) {
+                if (digits($q->tel_cell) eq digits($P{cell})) {
                     $p = $q;
                 }
             }
@@ -465,9 +505,9 @@ sub get_online : Local {
             zip_post => $P{zip},
             country  => $P{country},
             akey     => nsquish($P{street1}, $P{street2}, $P{zip}),
-            tel_home => $P{ephone},
-            tel_work => $P{dphone},
-            tel_cell => $P{cphone},
+            tel_home => $P{home},
+            tel_work => $P{work},
+            tel_cell => $P{cell},
             email    => $P{email},
             sex      => ($P{gender} eq 'Male'? 'M': 'F'),
             e_mailings     => $P{e_mailings},
@@ -528,7 +568,8 @@ sub get_online : Local {
         hascar_checked  => $P{hascar }? "checked": "",
         date_postmark   => $date->as_d8(),
         time_postmark   => $P{time},
-        deposit         => int($P{amount}),
+        green_amount    => $P{green_amount},
+        deposit         => int($P{amount} - $P{green_amount}),
         deposit_type    => 'O',
         ceu_license     => $P{ceu_license},
         "$P{howHeard}_checked" => "selected",
@@ -549,11 +590,10 @@ sub _rest_of_reg {
     # is this a dup reg?
     # we have the person and the program.
     # check if it is there already.
-    # we CAN register twice for the same
-    # personal retreat program.
+    # we CAN register twice for some programs.
     #
     my @reg;
-    if (($pr->name() !~ m{personal\s+retreat}i)
+    if ((! $pr->allow_dup_regs())
         && (@reg = model($c, 'Registration')->search({
                            person_id  => $p->id(),
                            program_id => $pr->id(),
@@ -913,18 +953,18 @@ sub create_do : Local {
     }
     my $pr = model($c, 'Program')->find($P{program_id});
     #
+    # we CAN register twice for some programs.
     # is this a dup reg?
     # we have the person and the program.
     # check if it is there already.
-    # we CAN register twice for the same
-    # personal retreat program.
     #
     my @reg;
-    if (($pr->name() !~ m{personal\s+retreat}i)
+    if ((! $pr->allow_dup_regs())
         && (@reg = model($c, 'Registration')->search({
                            person_id  => $P{person_id},
                            program_id => $pr->id(),
-                       }))
+                  })
+           )
     ) {
         my $p = model($c, 'Person')->find($P{person_id});
         stash($c,
@@ -977,8 +1017,17 @@ sub create_do : Local {
         pref2         => $P{pref2},
         share_first   => $P{share_first},
         share_last    => $P{share_last},
+        manual        => $P{dup}? "yes": "",
         %dates,         # optionally
     });
+    # bump the reg_count in the program record
+    # 
+    if ($pr->PR() || ! $P{dup}) {
+        $pr->update({
+            reg_count => $pr->reg_count + 1,
+        });
+    }
+
     my $reg_id = $reg->id();
 
     # prepare for history records
@@ -1045,8 +1094,8 @@ sub create_do : Local {
         });
     }
 
-    # add the automatic charges
-    _compute($c, $reg, @who_now);
+    # add the automatic charges (only lodging if dup)
+    _compute($c, $reg, $P{dup}, @who_now);
 
     # notify those who want to know of each registration as it happens
     if ($pr->notify_on_reg) {
@@ -1079,15 +1128,63 @@ sub create_do : Local {
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
     if ($P{fname}) {
+        my $dir = "root/static/online_done/"
+                . substr($P{date_postmark}, 0, 4)
+                . '-'
+                . substr($P{date_postmark}, 4, 2)
+                ;
+        mkdir $dir unless -d $dir;
         rename "root/static/online/$P{fname}",
-               "root/static/online_done/$P{fname}";
+               "$dir/$P{fname}";
     }
 
-    # finally, bump the reg_count in the program record
-    $pr->update({
-        reg_count => $pr->reg_count + 1,
-    });
-
+    # was there an online donation to the green fund?
+    #
+    if ($P{green_amount}) {
+        # which XAccount id?
+        my ($xa) = model($c, 'XAccount')->search({
+            glnum => $string{green_glnum},
+        });
+        if ($xa) {
+            model($c, 'XAccountPayment')->create({
+                xaccount_id => $xa->id(),
+                person_id   => $P{person_id},
+                amount      => $P{green_amount},
+                type        => 'O',     # credit
+                what        => '',
+                @who_now[2..7],     # not reg_id => $reg_id
+            });
+            #
+            # send email thank you
+            #
+            my $per = $reg->person();
+            my $stash = {
+                amount     => $P{green_amount},
+                first      => $per->first(),
+                last       => $per->last(),
+                green_name => $string{green_name},
+            };
+            my $html = "";
+            my $tt = Template->new({
+                INCLUDE_PATH => 'root/static/templates/letter',
+                EVAL_PERL    => 0,
+            });
+            $tt->process(
+                "green.tt2",      # template
+                $stash,           # variables
+                \$html,           # output
+            );
+            email_letter($c,
+                to      => $reg->person->name_email(),
+                from    => "$string{green_name} <$string{green_from}>",
+                subject => $string{green_subj},
+                html    => $html,
+            );
+        }
+        else {
+            # error! - no glnum for green fund???
+        }
+    }
     # go on to lodging, if needed
     $c->response->redirect($c->uri_for("/registration/"
         . (($reg->h_type =~ m{own_van|commuting|unknown|not_needed})? "view"
@@ -1111,7 +1208,7 @@ sub create_do : Local {
 # are different.
 #
 sub _compute {
-    my ($c, $reg, @who_now) = @_;
+    my ($c, $reg, $dup, @who_now) = @_;
 
     Global->init($c);
     my $reg_id = $reg->id();
@@ -1226,6 +1323,16 @@ sub _compute {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
+            amount    => $tot_h_cost,
+            what      => $what,
+        });
+    }
+    elsif ($dup && $tot_h_cost != 0) {
+        # dup record - DO put a manual charge for the room
+        # even tho it is on manual financing.
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => '',
             amount    => $tot_h_cost,
             what      => $what,
         });
@@ -1680,6 +1787,10 @@ sub view : Local {
 sub _view {
     my ($c, $reg) = @_;
     my $reg_id = $reg->id();
+    my (@same_name_reg) = model($c, 'Registration')->search({
+                              person_id  => $reg->person_id(),
+                              program_id => $reg->program_id(),
+                          });
     my $prog = $reg->program();
     my $extra = $prog->extradays();
     if ($extra) {
@@ -1803,6 +1914,8 @@ sub _view {
         dcm_reg_id     => $dcm_reg_id,
         dcm_type       => $dcm_type,
         program        => $prog,
+        only_one       => (@same_name_reg == 1),
+        send_preview   => ($PR || $same_name_reg[0]->id() == $reg->id()),
         template       => "registration/view.tt2",
     );
 }
@@ -2151,7 +2264,7 @@ sub matchreg : Local {
         },
         {
             join     => [qw/ person /],
-            order_by => [qw/ person.last person.first /],
+            order_by => [qw/ person.last person.first me.date_start /],
             prefetch => [qw/ person /],   
         }
     );
@@ -2195,17 +2308,45 @@ $proghead
 <th align=right>Balance</th>
 <th align=left>House Type</th>
 <th align=left>House</th>
+<th align=left>Dates</th>
 $posthead
 </tr>
 EOH
     my $body = "";
+    my %progs = ();
+    my $class = "fl_row0";
+    my $prev_name = "";
     for my $reg (@$reg_aref) {
-        my $pr = $reg->program();
+        # look up the program record and remember it
+        # in a cache for the next time.
+        #
+        my $pr;
+        my $pid = $reg->program_id();
+        if (exists $progs{$pid}) {
+            $pr = $progs{$pid};
+        }
+        else {
+            $pr = $progs{$pid} = $reg->program();
+        }
         my $school = $pr->school();
         my $level = $pr->level();
         my $per = $reg->person;
         my $id = $reg->id;
         my $name = $per->last . ", " . $per->first;
+        #
+        # if there are duplicate names in the reg list
+        # then we need to determine if all can have confirmation
+        # letters.  PRs do.  Other allow_dup_regs programs do not.
+        # is this the first reg for this person?
+        #
+        my $first = $pr->PR();
+        if ($name ne $prev_name) {
+            $class = ($class eq "fl_row0")? "fl_row1"
+                     :                      "fl_row0"
+                     ;
+            $prev_name = $name;
+            $first = 1;
+        }
         my $balance = $reg->balance();
         my $type = $reg->h_type_disp();
 
@@ -2226,7 +2367,9 @@ EOH
                        "<img src=/static/images/redX.gif height=$ht>"
                   :($need_house && !$hid)?
                        "<img src=/static/images/house.gif height=$ht>"
-                  :(($level eq 'S' || $level eq ' ') && !$reg->letter_sent)?
+                  :($first
+                    && ($level eq 'S' || $level eq ' ')
+                    && !$reg->letter_sent)?
                        "<img src=/static/images/envelope.jpg height=$ht>"
                   :    "";
         if ($need_house && $hid) {
@@ -2288,6 +2431,18 @@ EOH
         if ($opt{multiple}) {
             $program_td = "<td>" . $pr->name() . "</td>\n";
         }
+        my $early_late_td;
+        if ($reg->early() || $reg->late()) {
+            $early_late_td = "<td>"
+                           . $reg->date_start_obj->format("%d")
+                           . "-"
+                           . $reg->date_end_obj->format("%d")
+                           . "</td>"
+                           ;
+        }
+        else {
+            $early_late_td = "<td></td>";
+        }
         my $postmark_td = "";
         if ($opt{postmark}) {
             $postmark_td = <<"EOH";
@@ -2308,10 +2463,10 @@ EOH
             $name = "<a href='/registration/view/$id'>$name</a>";
         }
         $body .= <<"EOH";
-<tr>
+<tr class=$class>
 
 $program_td
-<td align=right>$mark</td>
+<td align=right class=fl_row0>$mark</td>
 
 <td>    <!-- width??? -->
 $name
@@ -2320,6 +2475,7 @@ $name
 <td align=right>$pay_balance</td>
 <td>$type</td>
 <td>$house</td>
+$early_late_td
 $postmark_td
 
 </tr>
@@ -2542,7 +2698,7 @@ sub update_do : Local {
         %dates,         # optionally
     });
 
-    _compute($c, $reg, @who_now);
+    _compute($c, $reg, 0, @who_now);
 
     _reg_hist($c, $id, "Registration Updated.");
     if ($reg->house_id() || $reg->h_type() =~ m{van|commut|unk|need}) {
@@ -2602,6 +2758,11 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
+    my (@other_reg) = model($c, 'Registration')->search({
+                          person_id  => $reg->person_id(),
+                          program_id => $reg->program_id(),
+                          id         => { '!=' => $id },
+                      });
     my $prog_id   = $reg->program_id;
 
     # clear any member activity for this registration
@@ -2616,7 +2777,12 @@ sub delete : Local {
         }
     }
 
-    if (! $reg->cancelled()) {
+    #
+    # decrement the regcount
+    # unless this registration was cancelled
+    # or this is a duplicated registration (but not a PR).
+    #
+    if (!($reg->cancelled() || (@other_reg && ! $reg->program->PR()))) {
         model($c, 'Program')->find($prog_id)->update({
             reg_count => \'reg_count - 1',
         });
@@ -3062,7 +3228,7 @@ sub lodge : Local {
     if (my @ages = $reg->kids() =~ m{(\d+)}g) {
         stash($c, kids => " with child" . ((@ages > 1)? "ren":""));
     }
-    stash($c, house_prefs => "<br>Housing choices: "
+    stash($c, house_prefs => "Housing choices: "
                            . _htrans($reg->pref1())
                            . ", "
                            . _htrans($reg->pref2())
@@ -3166,7 +3332,7 @@ sub lodge_do : Local {
             h_type => $new_htype,
         });
         # recompute the automatic charges since h_type changed
-        _compute($c, $reg, @who_now);
+        _compute($c, $reg, 0, @who_now);
 
         if ($new_htype =~ m{^(own_van|commuting|unknown|not_needed)$}) {
                         # hash lookup instead?
@@ -3282,9 +3448,11 @@ sub lodge_do : Local {
             sex        => ((   $csex eq 'U'
                             || $csex eq $psex)? $psex
                            :                    'X'),
-            program_id => $reg->program_id,
+            program_id => $reg->program_id(),
             rental_id  => 0,
         });
+        hlog($c, "lodged in $house_id on " . $cf->the_date());
+            # add more details - carefully!
     }
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
@@ -3349,7 +3517,7 @@ sub _vacate {
                  rental_id  => 0,
                  ;
         }
-        if ($cf->cur == 2 && $cf->sex eq 'X') {
+        if ($cf->cur() == 2 && $cf->sex eq 'X') {
             my $the_date = $cf->the_date;
             my @reg = model($c, 'Registration')->search({
                 house_id   => $house_id,
@@ -3368,6 +3536,8 @@ sub _vacate {
             cur => $cf->cur() - 1,
             @opts,
         });
+        hlog($c, "vacated $house_id on " . $cf->the_date);
+            # add more details
     }
     $reg->update({
         house_id => 0,
@@ -3473,7 +3643,7 @@ sub seek : Local {
         },
         {
             join     => [qw/ person program /],
-            order_by => [qw/ person.last person.first /],
+            order_by => [qw/ person.last person.first me.date_start /],
             prefetch => [qw/ person /],
         }
     );
@@ -3603,7 +3773,7 @@ sub who_is_there : Local {
         {
             join     => [qw/ person program /],
             prefetch => [qw/ person program /],
-            order_by => [qw/ person.last person.first /],
+            order_by => [qw/ person.last person.first me.date_start /],
         }
     );
     my @blocks = model($c, 'Block')->search({
@@ -3819,6 +3989,16 @@ sub name_addr_do : Local {
             prefetch => [qw/ person /],   
         }
     );
+    #
+    # eliminate duplicates (via allow_dup_regs like AVI or PRs)
+    # not sure how to do the 'distinct' thing above in the SQL...
+    #
+    my %seen;
+    @regs = grep {
+                my $per = $_->person();
+                ! $seen{ $per->first() . $per->last() }++;
+            }
+            @regs;
     @star = ();
     if ($including eq 'both') {
         @star = map {
@@ -3956,8 +4136,9 @@ sub tally : Local {
 
     my $credit     = 0;
 
+    my %seen;
+    REG:
     for my $r (@regs) {
-        ++$registered;
         for my $rp ($r->payments()) {
             my $what   = $rp->what;
             my $amount = $rp->amount();
@@ -3978,25 +4159,6 @@ sub tally : Local {
         ) {
             $credit += $credit_rec->amount();
         }
-        if ($r->cancelled) {
-            ++$cancelled;
-            next;
-        }
-        if (! $r->arrived) {
-            ++$no_shows;
-            next;
-        }
-        ++$adults;
-        if ($r->person->sex eq 'F') {
-            ++$females;
-        }
-        else {
-            ++$males;
-        }
-        if (my $k = $r->kids) {
-            my @ages = $k =~ m{(\d+)}g;
-            $kids += @ages;
-        }
         # charges
         for my $rc ($r->charges()) {
             my $what   = $rc->what();
@@ -4012,6 +4174,34 @@ sub tally : Local {
             }
         }
         $balance += $r->balance();
+
+        # have we seen this person before?
+        # allow_dup_regs and AVI type programs will have dup regs.
+        #
+        my $per = $r->person();
+        if ($seen{$per->first() . $per->last()}++) {
+            next REG;
+        }
+        ++$registered;
+        if ($r->cancelled) {
+            ++$cancelled;
+            next REG;
+        }
+        if (! $r->arrived) {
+            ++$no_shows;
+            next REG;
+        }
+        ++$adults;
+        if ($r->person->sex() eq 'F') {
+            ++$females;
+        }
+        else {
+            ++$males;
+        }
+        if (my $k = $r->kids()) {
+            my @ages = $k =~ m{(\d+)}g;
+            $kids += @ages;
+        }
     }
     stash($c,
         program    => $pr,
@@ -4333,7 +4523,7 @@ sub automatic : Local {
 
     my @who_now = get_now($c, $reg_id);
 
-    _compute($c, $reg, @who_now);
+    _compute($c, $reg, 0, @who_now);
 
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
@@ -4585,6 +4775,29 @@ sub uncancel : Local {
 
     # do an update so the free nights, housing, etc can be set again.
     $c->response->redirect($c->uri_for("/registration/update/$reg_id"));
+}
+
+#
+# mostly for having multiple regs for housing purposes
+# but could be called for PRs.
+#
+sub duplicate : Local {
+    my ($self, $c, $reg_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $pr = $reg->program();
+    # ??? verify that allow_dup_regs is set for this program???
+    my $p  = $reg->person();
+
+    stash($c,
+        deposit       => 0,
+        date_postmark => tt_today($c)->as_d8(),
+        time_postmark => get_time()->t24(),
+        cabin_checked => "",
+        room_checked  => "",
+        dup           => ($pr->PR()? "": "yes"),
+    );
+    _rest_of_reg($pr, $p, $c, tt_today($c), "dble", "dble");
 }
 
 1;

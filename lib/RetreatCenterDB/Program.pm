@@ -75,6 +75,7 @@ __PACKAGE__->add_columns(qw/
     do_not_compute_costs
     dncc_why
     color
+    allow_dup_regs
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -427,7 +428,7 @@ sub fee_table {
     my $ndays = ($edate-$sdate) || 1;		# personal retreats exception
     my $fulldays = $ndays + $extradays;
     my $cols  = ($extradays)? 3: 2;
-	my $PR    = $self->name() =~ m{personal\s+retreat}i;
+	my $PR    = $self->PR();
 	my $tent  = $self->name() =~ m{tnt}i;
 
     my $fee_table = <<EOH;
@@ -679,7 +680,7 @@ sub cl_picture {
 
     if ($pic2) {
                                                     #       live2???
-        my $pic1_html = "<img src='http://$string{ftp_site}/staging2/{pics/$pic1' width=$half>";
+        my $pic1_html = "<img src='http://$string{ftp_site}/staging2/pics/$pic1' width=$half>";
         my $pic2_html = "<img src='http://$string{ftp_site}/staging2/pics/$pic2' width=$half>";
         return <<EOH;
 <table cellspacing=0>
@@ -848,6 +849,11 @@ sub largest_meeting_place {
 sub color_bg {
     my ($self) = @_;
     return sprintf("#%02x%02x%02x", $self->color() =~ m{(\d+)}g);
+}
+
+sub PR {
+    my ($self) = @_;
+    $self->name() =~ m{personal\s+retreat}i;
 }
 
 1;

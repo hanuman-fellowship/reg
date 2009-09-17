@@ -1,0 +1,87 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use File::Copy;
+use lib "../lib";
+use Date::Simple qw/date/;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+$dbh->do("delete from program");
+$dbh->do("delete from canpol");
+$dbh->do("delete from housecost");
+$dbh->do("delete from leader");
+$dbh->do("delete from leader_program");
+$dbh->do("delete from affil_program");
+
+# first cancellation policies
+my $cp_sql = "insert into canpol values (?, ?, ?)";
+my $cp_sth = $dbh->prepare($cp_sql) or die "no prep cp";
+open my $cp, "<", "new/canpol.txt"
+    or die "no canpol: !\n";
+my ($name, $policy);
+my $id = 1;
+my %canpol_id = ();
+while (<$cp>) {
+    s{\r?\n}{};
+    my ($k, $v) = split m{\t};
+    $v =~ s{^\s*|\s*$}{}g;
+    if ($k eq 'text') {
+        $policy = "";
+        while (<$cp>) {
+            s{\r?\n}{};
+            last if m{^[.]$};
+            $policy .= "$_\n";
+        }
+        # ready to insert
+        $cp_sth->execute($id, $name, $policy) or die "no cp exec";
+        $canpol_id{$name} = $id;
+        ++$id;
+    }
+    else {
+        $name = ($v eq 'MMC')? "Default": $v;
+    }
+}
+close $cp;
+$canpol_id{0} = $canpol_id{MMC} = $canpol_id{Default};
+
+# housing costs
+my $hc_sql = "insert into housecost values ("
+    . (join ",", ("?") x 16)
+    . ")";
+my $hc_sth = $dbh->prepare($hc_sql) or die "no prep cp";
+open my $hc, "<", "new/housing.txt"
+    or die "no housing: $!\n";
+my %data;
+while (<$hc>) {
+    s{\r?\n}{};
+    my ($n, $type, $cost) = split m{\t};
+    $type =~ s{[ ]}{_};
+    next                if $type eq 'unknown';
+    $type = "dble"      if $type eq "double";
+    $type = "dble_bath" if $type eq "double_bath";
+    $data{"HC$n"}{$type} = $cost;
+}
+close $hc;
+for my $name (keys %data) {
+    my ($hid) = $name =~ m{(\d+)};
+    $hc_sth->execute(
+        $hid+1,
+        ($name eq 'HC0')? "Programs 09": $name,
+        $data{$name}{single} + $data{$name}{single_bath},
+        $data{$name}{single},
+        $data{$name}{dble} + $data{$name}{dble_bath},
+        $data{$name}{dble},
+        $data{$name}{triple},
+        $data{$name}{quad},
+        $data{$name}{dormitory},
+        $data{$name}{economy},
+        $data{$name}{center_tent},
+        $data{$name}{own_tent},
+        $data{$name}{own_van},
+        $data{$name}{commuting},
+        ($hid == 0 || $hid >= 6)? 'Per Day': 'Total',
+        ''
+    );
+}

@@ -43,6 +43,7 @@ select p.*
  where a.descrip like '%phone list%'
        and ap.a_id = a.id
        and ap.p_id = p.id
+       and p.inactive != 'yes'
 EOS
     # if no sanskrit name take the first name
     # ??? okay poking inside object?   not really.

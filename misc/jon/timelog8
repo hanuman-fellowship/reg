@@ -1,0 +1,76 @@
+Sep 4 4:30-5:10
+    dealing with OOs.
+    planning revamp of online PRs.
+Sep 5 12:20-12:35, 1:30-2:15
+    remedying housing glitch - how did it get there?
+    fix grid total error
+Sep 7 10:10-11:50, 12:20-2:35, 4:55-5:15, 8:00-10:30
+    reg[12], relay2 rewrite with Template, Green Fund, Relay Response URL
+    a good start.  reg1.
+    continuing with reg2
+    cookies in CGI - continue tomorrow
+Sep 8 9:30-10:20
+    cookies - nice.  including Jamal's cookies.
+Sep 10 1:10-3:00, 6:50-7:00, 8:05-11:30
+    Green Fund, relay response url
+    it is working, yay!
+    more to do with email.
+Sep 11 10:00-11:40, 2:25-6:00, 8:40-11:30
+    consult with Thecla, Jamal, Adrienne
+    dup regs
+    continuing with new online reg
+Sep 12 12:55-4:10
+    PRs in the new way
+    remedying the issue of a person registering for
+    a PR and not fitting within the begin-end dates.
+Sep 13 10:50-12:50, 11:30-1:30
+    PR online reg into Reg
+    To install:
+        mysql add allow_dup_regs to program table
+            set it to 'yes' for Personal Retreats
+        add strings for green_
+            glnum
+            subj
+            name
+            from
+        need content help with green.tt2 for letter
+            More Info link on reg1.tt2
+        web templates to use reg1 not dreg1
+        do a publish & move to live, to put them in place
+        string for ftp_transactions is 'transactions' not dreg_transactions
+        move dreg_transactions, dreg_trans_archive, 
+            nreg_transactions, nreg_trans_archive aside to be deleted later
+            nreg_ out of relay2
+        relay2 => relay in cgi-bin
+        on Merchant Interface
+            no Silent Post URL
+            relay2 => relay for an allowable URL
+        staging2 => staging
+            cgi-bin/admin
+            strings
+        save admin, reg1, reg2, relay, tt2 templates in cvs
+    regcount update, report
+    dup regs
+        alternate color in reg list
+        manual finance by default
+        no deposit
+        house cost yes, no tuition
+        no incr of count
+        on delete no decr of count unless last
+        no cancel offered unless last
+    tomorrow:
+    no envelope, no Send/Preview if not first reg for a person
+        how to distinguish first from subsequent?
+    above - Dup, on delete, no cancel - does not apply to PRs - use $pr->PR
+    lists, tallies of programs - messed up with dup regs
+    housing activity log
+    ask about -Debug
+    Mechanize tests?
+    hcck on kali
+Sep 15 11:00-12:00, 2:00-3:30, 5:00-5:10, 6:00-7:20
+    called Ryder, asked for help.
+    informed people what was coming
+    consulted with Jamal
+    implementing changes we discussed
+Sep 16 1:30-
+    0, 1 or 2 pics for the progtable

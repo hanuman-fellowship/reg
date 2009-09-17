@@ -210,7 +210,7 @@ sub show : Local {
                 next EVENT;
             }
             if ($type eq 'Rental' && $ev->program_id()) {
-                # skip this rental - the paralle program will be there
+                # skip this rental - the parallel program will be there
                 next EVENT;
             }
 

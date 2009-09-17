@@ -74,7 +74,11 @@ function UNreserve_cluster(cluster_id) {
 [% IF prog_admin %]
     <a href="/program/brochure">Brochure</a>
     &nbsp;&nbsp;&nbsp;
-    <a href="/program/publish">Publish<a>
+    [% IF program.PR %]
+        <a href="/program/publishPR/[% id %]">PublishPR<a>
+    [% ELSE %]
+        <a href="/program/publish">Publish<a>
+    [% END %]
     &nbsp;&nbsp;&nbsp;
 [% END %]
 <a target=_blank href="[% program.web_addr %]">Web</a>
@@ -305,6 +309,11 @@ Web
     <a href="/program/affil_update/[% id %]">Update</a>
 [% END %]
 </td>
+</tr>
+
+<tr>
+<th align=right>Allow Dup Regs</th>
+<td>[% program.allow_dup_regs %]</td>
 </tr>
 
 <tr>

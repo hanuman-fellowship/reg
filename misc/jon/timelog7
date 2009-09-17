@@ -1,0 +1,117 @@
+Jun 9 11:20-12:20
+    hide MMI programs option in User Profile
+    respond to Brajesh, Lori
+Jun 10 8:45-10:10, 11:00-4:00
+    credit card info for members
+    removed stays
+Jun 11 11:00-5:00
+    consult with Susan, Shyama/Lori, Adrienne, Jamal, Jayanti 
+Jun 14 8:15-9:20, 10:00-11:10
+    on airplane, in vienna airport
+    merge credit, online in period end report
+    rides can be non-credit
+    dir=unlinked_dir param for unlinked programs web page
+    cancellation mail optional
+Jun 20 4:00-5:00
+    various tweaks while at Vlatko & Stankas
+Jun 25 4:30-5:00, 8:00-9:45
+    no cancelled people in nonzero$
+    tally for MMI programs counts MMI payments
+    misc other things
+Jul 14 11:00-4:50
+    gathering issues to address
+    library dbf files
+    hybrid rental/program issues
+    flower (etc) list reformat
+    mmi confirmation letter
+    can't delete a person if any payments
+    long person comment won't shift phone numbers
+Jul 16 9:30-10:15, 12:30-1:15, 11:30-11:45
+    xaccount attr for MMI/MMC
+    diff sort, show date for xaccounts.
+    mmc/mmi filing, too.
+Jul 17 10:00-11:00
+    extra account further
+Jul 20 10:45-11:15
+    lost OOs?
+        mari arnaud - others she shared with did come in
+        reyni racklin - No PR gets in way.
+Jul 21 4:00-5:30, 5:55-6:50, 8:40-11:00
+    member relodging - nights taken
+    cancel, delete a registration - restore nights, (free progs - to do!)
+    no payment just resetting # nights - don't clobber expiry dates
+    uncancel a registration
+Jul 22 1:30-5:15, 9:00-10:20
+    at the center, developing, consulting
+    relay for OOs
+Jul 23 9:30-12:00
+    Helping Susie get started.
+    recovering OOs.
+Jul 24 10:00-10:30
+    fixing prior deposit (column name change)
+    futzing with credits, issues
+Jul 25 3:30-5:00
+    fine tuning late notices, early/late listing, coming & going
+Jul 30 2:30-5:30, 11:00-12:30
+    consultation with Susie, Sukh, Adrienne
+    colors changeable by prog_admin
+    colors for Rentals/Programs in DailyPic, ClusterView
+Jul 31 11:00-12:00
+    resolving MMI payment issue for Brajesh, Lila.
+Aug 5 3:15-3:40
+    authorize.net issue
+Aug 10 1:00-2:30, 3:30-3:45
+    messing around with authorize.net support
+        trying to resolve the 'relay' issue.
+    the plan is this:
+        set a default 'Relay Response URL' to relay_response or somesuch.
+            don't have the hosted receipt page at all.
+        have a way of easily turning normal online reg to
+            "sorry, in maintenance mode".
+            but being able to call it anyway.
+            maybe with a special unlinked program only.
+        relay_response should at the least save the params() in a file
+            and have a simple response page.
+        ? does using the relay response URL still send an email receipt
+            to the user?
+        ? will it be called more reliably than the "Silent POST URL"?
+Aug 11 5:00-5:30
+    DNS down, needed to restart Kali.
+Aug 12 9:00-10:00, 2:40-5:10, 5:30-7:10
+    responding to issues, emails
+    colors of prog/rent in dailypic, clusterview - something wrong
+    futzing with flaws in config - why did they happen?
+        perhaps in part due to the things I just fixed
+        about program_id, rental_id
+    updated hcck - will need to fix several things
+Aug 17 2:50-4:40, 6:30-6:50
+    authorize.net futzings
+    mmi finance investigation
+        very confusing!
+        got it.  stupid mistake.
+Aug 18 12:15-12:30
+    misc queries
+Aug 19 4:00-6:30
+    consulting at center
+    color palette
+Aug 20 1:30-3:00
+    responding to queries
+    singles or not - in addition to singles with bath or not
+    getting Douillard deletions
+Aug 24 1:30-2:15
+    consultation, issue responses, etc yesterday, today
+Aug 25 1:15-5:15, 6:50-9:00, 9:30-9:50, 11:05-12:40
+    replying to queries
+    click & check on web grid
+    housing note in rentals
+    color palette
+    campground replacement
+    asking Jamal for photoshop help
+Aug 26 2:25-2:35
+    putting new campground maps in place
+Aug 27 5:15-6:15
+    consultations, 6x6 instead of 4x4
+Sep 2 10:00-5:45
+    consultations, fixing this and that
+    housing glitches - why do they happen?
+    web grid updates

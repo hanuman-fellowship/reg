@@ -31,6 +31,7 @@ use Util qw/
     other_reserved_cids
     reserved_clusters
     palette
+    esc_dquote
 /;
 use Date::Simple qw/
     date
@@ -96,7 +97,8 @@ sub create : Local {
     #
     stash($c,
         check_webready      => '',
-        check_linked        => '',
+        check_linked        => 'checked',
+        check_allow_dup_regs => '',
         check_kayakalpa     => 'checked',
         check_retreat       => '',
         check_sbath         => 'checked',
@@ -196,6 +198,7 @@ sub _get_data {
     # since unchecked boxes are not sent...
     for my $f (qw/
         collect_total
+        allow_dup_regs
         kayakalpa
         sbath
         single
@@ -410,7 +413,31 @@ sub view : Local {
     $section ||= 1;
     stash($c, section => $section);
 
-    my $p = model($c, 'Program')->find($id);
+    my $p;
+    if ($id == 0) {
+        # a personal retreat reg from online
+        # show the current Personal Retreat program
+        #
+        my $today = today()->as_d8();
+        ($p) = model($c, 'Program')->search({
+            name  => { -like => '%personal%retreat%' },
+            sdate => { '<=' => $today },
+            edate => { '>=' => $today },
+        });
+        if ($p) {
+            $id = $p->id();
+        }
+    }
+    else {
+        $p = model($c, 'Program')->find($id);
+    }
+    if (! $p) {
+        error($c,
+            "Program not found.",
+            "gen_error.tt2",
+        );
+        return;
+    }
     stash($c, program => $p);
     my $extra = $p->extradays();
     if ($extra) {
@@ -514,6 +541,7 @@ sub _get_cluster_groups {
 sub list : Local {
     my ($self, $c, $type) = @_;
 
+    $type ||= 0;
     my $hide_mmi = $c->user->obj->hide_mmi();
     if ($type == 2) {
         my $today = today()->as_d8();
@@ -650,7 +678,7 @@ sub update : Local {
     }
 
     for my $w (qw/
-        sbath single collect_total kayakalpa retreat
+        sbath single collect_total allow_dup_regs kayakalpa retreat
         economy webready quad linked do_not_compute_costs
     /) {
         stash($c,
@@ -811,8 +839,7 @@ sub leader_update_do : Local {
             model($c, 'Registration')->create({
                 person_id  => $person_id,
                 program_id => $prog_id,
-                comment    => $assist? "1-dbl assistant"
-                              :        "1-sgl/ba leader",
+                comment    => '',
                 house_id   => 0,
                 h_type     => $assist? 'dble': 'single_bath',
                 cancelled  => '',    # to be sure
@@ -821,6 +848,8 @@ sub leader_update_do : Local {
                 date_end   => $edate->as_d8(),
                 balance    => 0,
                 leader_assistant => 'yes',      # only way to set this
+                pref1      => $assist? 'dble': 'single_bath',
+                pref2      => $assist? 'dble': 'single_bath',
             });
             ++$new_regs;
         }
@@ -1060,7 +1089,7 @@ sub publish : Local {
     @programs = RetreatCenterDB::Program->future_programs($c);
 
     gen_month_calendars($c);
-    gen_regtable();
+    gen_progtable();
 
     #
     # get ALL the exceptions
@@ -1184,8 +1213,8 @@ sub publish : Local {
         mkdir "gen_files/$dir/pics";
         rename "gen_files/" . $ulp->fname,
                "gen_files/$dir/index.html";
-        copy "gen_files/regtable",
-             "gen_files/$dir/regtable";
+        copy "gen_files/progtable",
+             "gen_files/$dir/progtable";
         # now for the pictures and the associated html files...
         my $src = slurp("gen_files/$dir/index.html");
         my @img = $src =~ m{pics/(.*?(?:jpg|gif))}g;
@@ -1243,8 +1272,8 @@ sub publish : Local {
                 $ftp->put($p, "../$p")
                     or return _pub_err($c, "cannot put $p to ../$p", 1);
             }
-            $ftp->put("$f/regtable", "../$f/regtable")
-                    or return _pub_err($c, "cannot put $f/regtable to ../$f/regtable", 1);
+            $ftp->put("$f/progtable", "../$f/progtable")
+                    or return _pub_err($c, "cannot put $f/progtable to ../$f/progtable", 1);
         }
         else {
             $ftp->put($f)
@@ -1431,67 +1460,100 @@ EOH
     }
 }
 
-#
-# generate the regtable for online registration
-#
-sub gen_regtable {
-    open my $regt, ">", "gen_files/regtable"
-        or die "cannot create regtable: $!\n";
-    for my $p (@programs) {
-        my $PR = $p->name() =~ m{personal\s+retreat}i;
-        my $ndays = $p->edate_obj - $p->sdate_obj;
-        my $fulldays = $ndays + $p->extradays;
+sub _prt_data {
+    my ($progt, $p, $id) = @_;
+    my $PR = $p->name() =~ m{personal\s+retreat}i;
+    my $ndays = $p->edate_obj - $p->sdate_obj;
+    my $fulldays = $ndays + $p->extradays;
+    my $canpol = esc_dquote($p->canpol->policy());
+    print {$progt} $id, <<"EOD";
+=> {
+    ndays    => $ndays,
+    fulldays => $fulldays,
+    canpol   => "$canpol",
+EOD
+print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
+               . $p->fname()
+               . "',\n"
+               ;
+    for my $f (qw/
+        name
+        title
+        dates
+        edate
+        leader_names
+        footnotes
+        deposit
+        collect_total
+        do_not_compute_costs
+        dncc_why
+    /) {
+        print {$progt} qq!    $f => "!,
+                       esc_dquote($p->$f()),
+                       qq!",\n!
+                       ;
+    }
+    my $month     = $p->sdate_obj->month();
+    my $housecost = $p->housecost();
 
-        #
-        # pid should be first for looking up purposes.
-        #
-        printf {$regt} "pid\t%s\n",     $p->id();
-        printf {$regt} "pname\t%s\n",   $p->name();
-        printf {$regt} "desc\t%s\n",    $p->title();
-        printf {$regt} "dates\t%s\n",   $p->dates();
-        printf {$regt} "edate\t%s\n",   $p->edate();
-        printf {$regt} "leaders\t%s\n", $p->leader_names();
-        printf {$regt} "footnotes\t%s\n", $p->footnotes();
-        print  {$regt} "ndays\t$ndays\n";
-        print  {$regt} "fulldays\t$fulldays\n";
-        printf {$regt} "deposit\t%s\n", $p->deposit();
-        printf {$regt} "colltot\t%s\n", $p->collect_total();
-        printf {$regt} "do_not_compute_costs\t%s\n",
-                       $p->do_not_compute_costs();
-
-        my $why = $p->dncc_why();
-        $why =~ s/\n/NEWLINE/g;
-        printf {$regt} "dncc_why\t$why\n";
-
-        my $pol = $p->cancellation_policy();
-        $pol =~ s/\n/NEWLINE/g;
-        printf {$regt} "canpol\t$pol\n";
-
-        my $tuition      = $p->tuition;
-        my $full_tuition = $p->full_tuition;
-        my $month        = $p->sdate_obj->month;
-
-        my $housecost = $p->housecost;
-        for my $t (reverse housing_types(1)) {
-            next if $t eq 'quad'        && !$p->quad;
-            next if $t eq 'economy'     && !$p->economy;
-            next if $t eq 'single_bath' && !$p->sbath;
-            next if $t eq 'single'      && !$p->single;
-            next if $t eq 'center_tent'
-                && !($PR
-                     || $p->name =~ m{tnt}i
-                     || (5 <= $month && $month <= 10));
-            next if $PR && $t =~ m{triple|dormitory};
-            my $fees = $PR? $housecost->$t()
-                      :     $p->fees(0, $t);
-            next if $fees == 0;    # another way to eliminate a housing option 
-            print {$regt} "basic $t\t$fees\n";
-            if ($p->extradays) {
-                printf {$regt} "full $t\t%s\n", $p->fees(1, $t);
-            }
+    for my $t (reverse housing_types(1)) {
+        next if $t eq 'quad'        && !$p->quad;
+        next if $t eq 'economy'     && !$p->economy;
+        next if $t eq 'single_bath' && !$p->sbath;
+        next if $t eq 'single'      && !$p->single;
+        next if $t eq 'center_tent'
+            && !($PR
+                 || $p->name =~ m{tnt}i
+                 || (5 <= $month && $month <= 10));
+        next if $PR && $t =~ m{triple|dormitory};
+        my $fees = $PR? $housecost->$t()
+                  :     $p->fees(0, $t);
+        next if $fees == 0;    # another way to eliminate a housing option 
+        print {$progt} "    'basic $t' => $fees,\n";
+        if ($p->extradays()) {
+            print {$progt} "    'full $t' => ", $p->fees(1, $t), ",\n";
         }
     }
-    close $regt;
+
+    # pictures
+    #
+    my @leaders = $p->leaders();
+    my $nleaders = @leaders;
+    my ($pic1, $pic2);
+    my $url = "http://www.mountmadonna.org/live/pics";
+    if ($nleaders >= 1 && $leaders[0]->image) {
+        $pic1 = "$url/lth-" . $leaders[0]->id() . ".jpg";
+    }
+    if ($nleaders >= 2 && $leaders[1]->image) {
+        $pic2 = "$url/lth-" . $leaders[1]->id() . ".jpg";
+    }
+    if ($pic2 and ! $pic1) {
+        $pic1 = $pic2;
+        $pic2 = "";
+    }
+    if ($p->image()) {  # program pic, if present, overrides the leader pics
+        $pic1 = "$url/pth-" . $p->id() . ".jpg";
+        $pic2 = "";
+    }
+    print {$progt} "    image1 => '$pic1',\n";
+    print {$progt} "    image2 => '$pic2',\n";
+
+    # finalization
+    #
+    print {$progt} "},\n";
+}
+#
+# generate the progtable for online registration
+#
+sub gen_progtable {
+    open my $progt, ">", "gen_files/progtable"
+        or die "cannot create progtable: $!\n";
+    print {$progt} "{\n";       # the enclosing anonymous hash ref
+    for my $p (@programs) {
+        _prt_data($progt, $p, $p->id());
+    }
+    print {$progt} "};\n";
+    close $progt;
 }
 
 sub update_lunch : Local {
@@ -1562,7 +1624,7 @@ sub duplicate : Local {
         rental_id => 0,
     });
     for my $w (qw/
-        sbath single collect_total kayakalpa retreat
+        sbath single collect_total allow_dup_regs kayakalpa retreat
         economy webready quad linked
     /) {
         stash($c,
@@ -1944,6 +2006,68 @@ sub color_do : Local {
         color => $c->request->params->{color},
     });
     $c->response->redirect($c->uri_for("/program/view/$program_id/2"));
+}
+
+#
+# fill in the personal.html template
+# with the current program's housing cost
+# and publish it to www.mountmadonna.org/personal
+# as index.html.
+# the current program is likely a Personal Retreat program
+# for some range of dates - it could have web ready or not
+# also optional is unlinked dir = personal, template = personal.
+#
+# that personal.html template has a fixed id of 0 and dir of 'personal'.
+# the zero denotes a PR.
+# it will cause arrival/departure dates
+# to be prompted for in reg1 and when it is brought in
+# to Reg it will search for the appropriate PR program
+# to register for.
+# this also generates a 'progtable' file just for this PR.
+#
+sub publishPR : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $p = model($c, 'Program')->find($prog_id);
+
+    # clear the arena
+    #
+    system("rm -rf gen_files; mkdir gen_files; mkdir gen_files/pics");
+
+    # index.html
+    #
+    my $template = slurp("personal");
+    $template =~ s{<!--\s*T\s+(\w+)\s*-->}
+                  {$p->$1()}ge;      # fee table, current year/date only
+    open my $tmp, ">", "gen_files/index.html"
+        or die "no gen_files/index.html: $!\n";
+    print {$tmp} $template;
+    close $tmp;
+
+    # progtable
+    #
+    open my $progt, ">", "gen_files/progtable"
+        or die "no progtable: $!\n";
+    print {$progt} "{\n";       # the enclosing anonymous hash ref
+    _prt_data($progt, $p, 0);
+    print {$progt} "};\n";
+    close $progt;
+
+    # ftp
+    #
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or return _pub_err($c, "cannot connect to ...");
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or return _pub_err($c, "cannot login: " . $ftp->message);
+    $ftp->cwd($string{ftp_dir})
+        or return _pub_err($c, "cannot cwd: " . $ftp->message);
+    $ftp->cwd("personal2")
+        or return _pub_err($c, "cannot cwd: " . $ftp->message);
+    $ftp->ascii();
+    $ftp->put("gen_files/index.html", "index.html");
+    $ftp->put("gen_files/progtable",  "progtable");
+    $ftp->quit();
+    $c->response->redirect($c->uri_for("/program/view/$prog_id"));
 }
 
 1;

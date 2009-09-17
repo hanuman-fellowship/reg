@@ -34,31 +34,31 @@ create table user_role (
 --
 -- Load up the initial users
 --
-insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person', '', '', '', '', '', '');
+insert into user values (1, 'unknown', '-no login-', 'none@none.com', 'Unknown', 'Person', '', '', '', '', '', '', '');
 -- the above is used for legacy reg payments, etc.
 
-insert into user values (2, 'sahadev', 'hello', 'jon@logicalpoetry.com', 'Jon', 'Bjornstad', '', '', '', '', '', '');
-insert into user values (3, 'adrienne', 'hello', 'adrienne@mountmadonna.org', 'Adrienne', 'Bischoff', '', '', '', '', '', '');
-insert into user values (4, 'brajesh', 'hello', 'brajesh@mountmadonna.org', 'Brajesh', 'Friedberg', '', '', '', '', '', '');
-insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou', '', '', '', '', '', '');
-insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg', '', '', '', '', '', '');
-insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan', '', '', '', '', '', '');
-insert into user values (8, 'jayanti', 'hello', 'jayanti@mountmadonna.org', 'Jayanti', 'Peterson', '', '', '', '', '', '');
-insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky', '', '', '', '', '', '');
-insert into user values (10, 'rosemary', 'finance2', 'rosemaryg@mountmadonna.org', 'Rosemary', 'Griffen-Sullivan', '', '', '', '', '', '');
-insert into user values (11, 'richard', 'donations', 'richardbuzzini@gmail.com', 'Richard', 'Buzzini', '', '', '', '', '', '');
-insert into user values (12, 'lori', 'march', 'lori_march@hotmail.com', 'Lori', 'March', '', '', '', '', '', '');
-insert into user values (13, 'sukhdev', 'hello', 'sukhdev@mountmadonna.org', 'Sukhdev', 'Pettingill', '', '', '', '', '', '');
-insert into user values (14, 'laura', 'hello', 'lauras@mountmadonna.org', 'Laura', 'Scher', '', '', '', '', '', '');
-insert into user values (15, 'barnaby', 'hello', 'barnaby@mountmadonna.org', 'Barnaby', 'Stamm', '', '', '', '', '', '');
-insert into user values (16, 'savita', 'hello', 'savita@mountmadonna.org', 'Savita', 'Brownfield', '', '', '', '', '', '');
-insert into user values (17, 'sunanda', 'hello', 'sunanda@mountmadonna.org', 'Sunanda', 'Pacey', '', '', '', '', '', '');
-insert into user values (18, 'thecla', 'hello', 'thecla@mountmadonna.org', 'Thecla', 'Campbell', '', '', '', '', '', '');
-insert into user values (19, 'rebecca', 'hello', 'leonard_rebecca@hotmail.com', 'Rebecca', 'Leonard', '', '', '', '', '', '');
-insert into user values (20, 'felicia', 'hello', 'nucleus_prime@yahoo.com', 'Felicia', 'Thompson', '', '', '', '', '', '');
-insert into user values (21, 'nora', 'hello', 'Nora_aurelia@yahoo.com', 'Nora', 'Doyle', '', '', '', '', '', '');
-insert into user values (22, 'calendar', 'hello', 'jon@logicalpoetry.com', 'cal_first', 'cal_last', '', '', '', '', '', '');
-insert into user values (23, 'lila', 'hello', 'lila@mountmadonna.org', 'Lila', 'Ansell', '', '', '', '', '', '');
+insert into user values (2, 'sahadev', 'hello', 'jon@logicalpoetry.com', 'Jon', 'Bjornstad', '', '', '', '', '', '', '');
+insert into user values (3, 'adrienne', 'hello', 'adrienne@mountmadonna.org', 'Adrienne', 'Bischoff', '', '', '', '', '', '', '');
+insert into user values (4, 'brajesh', 'hello', 'brajesh@mountmadonna.org', 'Brajesh', 'Friedberg', '', '', '', '', '', '', '');
+insert into user values (5, 'jamal', 'hello', 'jamal@mountmadonna.org', 'Jamal', 'Killou', '', '', '', '', '', '', '');
+insert into user values (6, 'shyama', 'brajesh', 'shyama@mountmadonna.org', 'Shyama', 'Friedberg', '', '', '', '', '', '', '');
+insert into user values (7, 'pratibha', 'hello', 'pratibhas@comcast.net', 'Pratibha', 'Sharan', '', '', '', '', '', '', '');
+insert into user values (8, 'jayanti', 'hello', 'jayanti@mountmadonna.org', 'Jayanti', 'Peterson', '', '', '', '', '', '', '');
+insert into user values (9, 'soma', 'hello', 'somabr@gmail.com', 'Soma', 'Goresky', '', '', '', '', '', '', '');
+insert into user values (10, 'rosemary', 'finance2', 'rosemaryg@mountmadonna.org', 'Rosemary', 'Griffen-Sullivan', '', '', '', '', '', '', '');
+insert into user values (11, 'richard', 'donations', 'richardbuzzini@gmail.com', 'Richard', 'Buzzini', '', '', '', '', '', '', '');
+insert into user values (12, 'lori', 'march', 'lori_march@hotmail.com', 'Lori', 'March', '', '', '', '', '', '', '');
+insert into user values (13, 'sukhdev', 'hello', 'sukhdev@mountmadonna.org', 'Sukhdev', 'Pettingill', '', '', '', '', '', '', '');
+insert into user values (14, 'laura', 'hello', 'lauras@mountmadonna.org', 'Laura', 'Scher', '', '', '', '', '', '', '');
+insert into user values (15, 'barnaby', 'hello', 'barnaby@mountmadonna.org', 'Barnaby', 'Stamm', '', '', '', '', '', '', '');
+insert into user values (16, 'savita', 'hello', 'savita@mountmadonna.org', 'Savita', 'Brownfield', '', '', '', '', '', '', '');
+insert into user values (17, 'sunanda', 'hello', 'sunanda@mountmadonna.org', 'Sunanda', 'Pacey', '', '', '', '', '', '', '');
+insert into user values (18, 'thecla', 'hello', 'thecla@mountmadonna.org', 'Thecla', 'Campbell', '', '', '', '', '', '', '');
+insert into user values (19, 'rebecca', 'hello', 'leonard_rebecca@hotmail.com', 'Rebecca', 'Leonard', '', '', '', '', '', '', '');
+insert into user values (20, 'felicia', 'hello', 'nucleus_prime@yahoo.com', 'Felicia', 'Thompson', '', '', '', '', '', '', '');
+insert into user values (21, 'nora', 'hello', 'Nora_aurelia@yahoo.com', 'Nora', 'Doyle', '', '', '', '', '', '', '');
+insert into user values (22, 'calendar', 'hello', 'jon@logicalpoetry.com', 'cal_first', 'cal_last', '', '', '', '', '', '', '');
+insert into user values (23, 'lila', 'hello', 'lila@mountmadonna.org', 'Lila', 'Ansell', '', '', '', '', '', '', '');
 
 --
 -- the roles - do not muck with the ids!
@@ -81,6 +81,7 @@ insert into role values (10, 'kitchen', 'Kitchen', 'Kitchen Admin');
 insert into role values (11, 'developer', 'Software Developer', 'Those who create the software.');
 insert into role values (12, 'driver', 'Driver', 'Give Rides To and From');
 insert into role values (13, 'ride_admin', 'Ride Admin', 'Arrange Rides To and From');
+insert into role values (14, 'user_admin', 'User Admin', 'Create/Edit Users');
 
 -- Two super admins
 -- sahadev
@@ -94,6 +95,7 @@ insert into user_role values (2, 7);
 insert into user_role values (2, 9);
 insert into user_role values (2, 11);
 insert into user_role values (2, 13);
+insert into user_role values (2, 14);
 -- jamal
 insert into user_role values (5, 1);
 insert into user_role values (5, 2);

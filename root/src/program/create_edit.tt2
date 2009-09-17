@@ -143,6 +143,11 @@ Web
 <table cellpadding=3 border=0>
 
 <tr>
+<th align=right>Allow Dup Regs</th>
+<td colspan=2><input type=checkbox value=yes name=allow_dup_regs [% check_allow_dup_regs %]></td>
+</tr>
+
+<tr>
 <th align=right>Kaya Kalpa</th>
 <td colspan=2><input type=checkbox value=yes name=kayakalpa [% check_kayakalpa %]></td>
 </tr>
@@ -363,9 +368,10 @@ Web
 
 </td></tr></table>
 
-[% IF rental_id %]
+<!-- even if this is a non-hybrid rental include this
+     so that the rental_id does not become NULL.
+-->
 <input type=hidden name=rental_id value="[% rental_id %]">
-[% END %]
 
 </form>
 

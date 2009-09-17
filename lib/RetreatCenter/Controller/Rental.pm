@@ -1155,7 +1155,7 @@ sub del_booking : Local {
         cur        => 0,
         curmax     => $max,
         program_id => 0,
-        rental_id  => $rental_id,
+        rental_id  => 0,
     });
     _send_grid_data($r);
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
@@ -2197,6 +2197,7 @@ sub _code {
 }
 
 sub _send_grid_data {
+return;         # NO NO
     my ($rental) = @_;
 
     my $code = _code($rental) . ".txt";

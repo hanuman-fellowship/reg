@@ -20,9 +20,11 @@ function popup(url) {
 <input type=hidden name=date_postmark value='[% date_postmark %]'>
 <input type=hidden name=time_postmark value='[% time_postmark %]'>
 <input type=hidden name=deposit       value='[% deposit %]'>
+<input type=hidden name=green_amount  value='[% green_amount %]'>
 <input type=hidden name=deposit_type  value='[% deposit_type %]'>
 <input type=hidden name=fname         value='[% fname %]'>
 <input type=hidden name=status        value='[% status %]'>
+<input type=hidden name=dup           value='[% dup %]'>
 
 <table cellpadding=3 border=0>
 

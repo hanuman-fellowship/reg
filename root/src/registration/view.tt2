@@ -55,12 +55,14 @@ th a:hover {
 <a href=/registration/uncancel/[% id %]>Uncancel</a>
 &nbsp;&nbsp;
 [% ELSE %]
-<a accesskey='E' href="/registration/update/[% id %]"><span class=keyed>E</span>dit</a>
-&nbsp;&nbsp;
-<a href="/registration/cancel/[% id %]"
-   onclick="return confirm('Okay to Cancel [% person.first %] [% person.last %]?');"
->Cancel</a>
-&nbsp;&nbsp;
+    <a accesskey='E' href="/registration/update/[% id %]"><span class=keyed>E</span>dit</a>
+    &nbsp;&nbsp;
+    [% IF only_one %]
+        <a href="/registration/cancel/[% id %]"
+           onclick="return confirm('Okay to Cancel [% person.first %] [% person.last %]?');"
+        >Cancel</a>
+        &nbsp;&nbsp;
+    [% END %]
 [% END %]
 [% IF ! reg.cancelled %]
 <a href="/registration/delete/[% id %]"
@@ -72,6 +74,10 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 &nbsp;&nbsp;
 [% ELSIF reg.arrived == 'yes' %]
 <a href="/registration/not_arrived/[% id %]"><span style="color: red">* Arrived *</span></a>
+&nbsp;&nbsp;
+[% END %]
+[% IF reg.program.allow_dup_regs %]
+<a href="/registration/duplicate/[% id %]">Dup</a>
 &nbsp;&nbsp;
 [% END %]
 [% IF reg.ceu_license %]
@@ -110,7 +116,7 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <a href=/registration/automatic/[% id %]/1>To Manual</a>
 [% END %]
 [% END %]
-[% IF ! reg.cancelled %]
+[% IF send_preview %]
     &nbsp;&nbsp;
     [% IF reg.letter_sent %]
     <a href="/registration/send_conf/[% id %]"

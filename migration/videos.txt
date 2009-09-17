@@ -1,0 +1,7105 @@
+id	         1
+title	Barn Burning - #1
+author	
+publisher	
+location	V
+subj	Ageing
+desc	
+id	         2
+title	Inward Bound - #1
+author	
+publisher	
+location	V
+subj	Ageing
+desc	
+id	         3
+title	World without Walls - #1
+author	
+publisher	
+location	V
+subj	Ageing
+desc	
+id	         4
+title	Doris Lessing - #1
+author	
+publisher	
+location	V
+subj	Ageing
+desc	
+id	         5
+title	Hemingway -#2
+author	
+publisher	
+location	V MMS
+subj	Hemingway
+desc	
+id	         6
+title	Yours for the Revolution  #2
+author	
+publisher	
+location	V
+subj	Jack London
+desc	
+id	         7
+title	Saul Bellow: Profile  #2
+author	
+publisher	
+location	V
+subj	Saul Bellow
+desc	
+id	         8
+title	Yojimbo - #3
+author	
+publisher	
+location	V
+subj	Classic Samurai, Toshiro Mifure
+desc	
+id	         9
+title	Sanjuro - #3
+author	
+publisher	
+location	V
+subj	Classic Sanjuro, Toshiro Mifure
+desc	
+id	        10
+title	Best Boy - #4
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        11
+title	Hard Act to Follow, A - #6 - Bengal Tiger?
+author	
+publisher	
+location	V
+subj	Buster Keaton
+desc	
+id	        12
+title	General, The - #6 - Bengal Tiger?
+author	
+publisher	
+location	V
+subj	Buster Keaton
+desc	
+id	        13
+title	Monsieur Vincent - #7
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        14
+title	Gertrude Stein - #8
+author	
+publisher	
+location	V
+subj	Sophisticated entertainment
+desc	
+id	        15
+title	Daphne Laureola - #8
+author	
+publisher	
+location	V
+subj	Play - sophisticated entertainment
+desc	
+id	        16
+title	James Joyce - #8
+author	
+publisher	
+location	V
+subj	Sophisticated entertainment
+desc	
+id	        17
+title	Bobby McFerrin - #10
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        18
+title	American Tongues - #10
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        19
+title	China & Tibet - #10
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        20
+title	Kumbha Mela, etc. #91
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	        21
+title	Gift of Comedy - #11
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        22
+title	Nomads of Rain Forest - #12
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        23
+title	Nahanni River - #12
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        24
+title	Amazon - #12
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        25
+title	Annapurna - #12
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        26
+title	Spirit of Nukh Hiva, Cross So. Pacific - #13
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        27
+title	Soviet Arts & Glasnos - #13
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        28
+title	India's Caste System - #13
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        29
+title	Watering Hole - #13
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        30
+title	World Alive: Wolves - #13
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        31
+title	Ravi Shankar - #14
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        32
+title	Monk, The - #14
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        33
+title	Linus Pauling - #14
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        34
+title	Inside China - Pt. 1 - #14
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        35
+title	Echo of the Wild - #14
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        36
+title	Seven Samurai - #15
+author	Akira Kurosava
+publisher	
+location	V
+subj	Excellent adventure, great characters
+desc	
+id	        37
+title	Baka, People of the forest - #16
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        38
+title	Rauasthan Festival - #16
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        39
+title	Wolayan Wolf-wish - #16
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        40
+title	Nubia Africa - #16
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        41
+title	San Francisco - #16
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        42
+title	Buddhist Festival - #17
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        43
+title	Elephant, The - #17
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        44
+title	Lion, The, Supreme Regulator - #17
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        45
+title	Subdue the Earth, David Suzuki - #17
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        46
+title	Yawonamo Indian Village - #18
+author	
+publisher	
+location	V
+subj	Incas
+desc	
+id	        47
+title	Who Needs Nature, David Suzuki - #18
+author	
+publisher	
+location	V
+subj	Incas
+desc	
+id	        48
+title	Story of a Bushan - Waman (Kung) - #18
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        49
+title	Ultimate  & La Verx, David Suzuki - #18
+author	
+publisher	
+location	V
+subj	Incas
+desc	
+id	        50
+title	Stephen Hawking & John Maro - #18
+author	
+publisher	
+location	V
+subj	
+desc	
+id	        51
+title	Viva Mexico - #5
+author	Eisenstein
+publisher	
+location	V
+subj	Eisenstein
+desc	
+id	        52
+title	La Strada - #7
+author	Fellini
+publisher	
+location	V
+subj	Italian, travelling circus group
+desc	
+id	        53
+title	Day after the Fair - #4
+author	Hardy, Thomas
+publisher	
+location	V
+subj	Thomas Hardy
+desc	
+id	        54
+title	Priest of Love - #5
+author	Lawrence, DH
+publisher	
+location	V
+subj	DH Lawrence
+desc	
+id	        55
+title	Ayurveda # 1 - 9/88
+author	Dass, Baba Hari -with Dev Priya & Ashwin
+publisher	
+location	A
+subj	
+desc	
+id	        56
+title	Ayurveda # 2 - 9/20/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Dosha, dhatu, mala
+desc	
+id	        57
+title	Ayurveda # 3 - 9/27/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Review
+desc	
+id	        58
+title	Ayurveda # 4 - 10/4/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Prakriti
+desc	
+id	        59
+title	Ayurveda # 6 - 10/18/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	        60
+title	Ayurveda # 8 - 11/1/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	        61
+title	Ayurveda # 9 - 11/8/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Addictions - Food & transformation to equanimity
+desc	
+id	        62
+title	Ayurveda # 5 - 10/11/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	        63
+title	Ayurveda # 7 - 10/25/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	        64
+title	Ayurveda #15 - 12/20/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Causes of Desire
+desc	
+id	        65
+title	Ayurveda #11 - 11/22/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Optimal Nutrition - Vata
+desc	
+id	        66
+title	Listening Heart, The - Part I
+author	Dass, Ram
+publisher	Hanuman Tape Library
+location	A
+subj	Inner Tuning
+desc	Defining "Inner Tuning," finding balance, life decisions, inner voice vs. ego, confusion, finding meaning, listening
+id	        67
+title	Listening Heart, The - Part II
+author	Dass, Ram
+publisher	Hanuman Tape Library
+location	A
+subj	Inner tuning
+desc	Perfectionism vs impeccability, right effort; decision making & listening to the truth of each moment; intellect
+id	        68
+title	Ayurveda #10 - 11/15/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	        69
+title	Ayurveda #12 - 11/29/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Optimal Nutrition - Pita
+desc	
+id	        70
+title	Ayurveda #13 - 12/6/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	Optimal Nutrition - Pitta & Kapha
+desc	
+id	        71
+title	Ayurveda #14 - 12/13/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	        72
+title	Yoga Sutras Class; Book I, Vs. 1-4(b); 4/28/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Yoga Sutras class and group discussion, with Babaji and Dyanand.  Section I: Verses 1-4, continued.
+id	        73
+title	Yoga Sutras Class; Book I, Vs. 7(a); 5/19/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center
+location	A
+subj	Sutras
+desc	Yoga Sutras class and group discussion, with Babaji and Dyanand.  Book I: Verse 7 started.
+id	        74
+title	Yoga Sutras Class; Book I, Vs. 7(b); 6/1/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Yoga Sutras class and group discussion, with Babaji and Dyanand.  Book I: Verse 7 continued.
+id	        75
+title	Yoga Sutras Class; Book I, Vs. 8; 6/9/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Yoga Sutras class and group discussion, with Babaji and Dyanand.  Book I: Verse 8.
+id	        76
+title	Yoga Sutras Class; Book I, Vs. 9; 6/15/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Yoga Sutras class and group discussion, with Babaji and Dyanand.  Book I: Verse 9.
+id	        77
+title	Yoga Sutras Class; Book I, Vs.11; 6/30/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	Sutras
+desc	Class and group discussion with Babaji and Dyanand. Book I: Verse 11.
+id	        78
+title	Ageless Panel, YTT 1990, (July 21)
+author	MMC Staff
+publisher	
+location	A
+subj	YTT, Panel
+desc	
+id	        79
+title	Yoga Sutras Class; Book I, Vs. 1-4(a); 4/21/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	Sutras
+desc	Yoga Sutras class and group discussion, with Babaji and Dyanand.  Book 1, Verses 1-4 started.
+id	        80
+title	Yoga Sutras Class; Book I, Vs. 6; 5/12/92
+author	Patanjali (Taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	Yoga Sutras Class and group discussion with Babaji and Dyanand.  Book 1, Verse 6.
+id	        81
+title	Yoga Sutras Class; Book I, Vs.10; 6/23/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	Yoga Sutras class and group discussion with Babaji and Dyanand.  Book 1, Verse 10.
+id	        82
+title	Yoga Sutras Class; Book I, Vs. 5; 5/5/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	Yoga Sutras class and group discussion with Babaji and Dyanand.  Book 1, Verse 5.
+id	        83
+title	Adults and Their Parents, #1
+author	Dass, Ram
+publisher	Hanuman Foundation
+location	A
+subj	Parents; Adult Children
+desc	A lecture and meditation at the Lama Foundation, NM, on 7/10/86; #1 of 4.
+id	        84
+title	Adults and Their Parents, #2
+author	Dass, Ram
+publisher	Hanuman Foundation
+location	A
+subj	Parents; Adult Children
+desc	A lecture at the Lama Foundation, NM, on 7/11/86; #2 of 4.
+id	        85
+title	Adults and Their Parents, #3
+author	Dass, Ram
+publisher	Hanuman Foundation
+location	A
+subj	Parents; Adult Children
+desc	A lecture at the Lama Foundation, NM, on 7/12/86; #3 of 4.
+id	        86
+title	Adults and Their Parents, #4
+author	Dass, Ram
+publisher	Hanuman Foundation
+location	A
+subj	Parents; Adult Children
+desc	A lecture at the Lama Foundation, NM, on 7/13/86; #4 of 4.
+id	        87
+title	Peter Breslo in Tibet; Parent Loss
+author	Roth, Philip
+publisher	
+location	A
+subj	Parents; Death
+desc	An interview with Philip Roth
+id	        88
+title	Healing into Life and Death
+author	Levine, Stephen
+publisher	Sounds True
+location	A
+subj	Healing; Death
+desc	A recording of a Stephen Levine workshop; one of Sounds True's "Live from Planet Earth" Series.
+id	        89
+title	Mantra, Mudra, Visualization
+author	Traleg Rinpoche, Ven.
+publisher	Maitreya Institute
+location	A
+subj	
+desc	Taped at the Unitarian Church in San Francisco on September 13, 1988.  (#2)
+id	        90
+title	Ayurveda #10B - ll/15/88
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	Addiction, continued.  Optimal Nutrition, begun.
+id	        91
+title	Thich Nhat Hanh at MMC - 6/5/88
+author	Thich Nhat Hanh and Betsy Rose
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	
+id	        92
+title	Thich Nhat Hanh at MMC - 6/6/88
+author	Thich Nhat Hanh
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	
+id	        93
+title	Thich Nhat Hanh at MMC - 6/7/88
+author	Thich Nhat Hanh
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	
+id	        94
+title	Thich Nhat Hanh at MMC - 6/9/88
+author	Thich Nhat Hanh
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	
+id	        95
+title	Ayurveda Talk at New Year's Retreat, #1
+author	Dev Priya
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Talk recorded 12/30/88; #1 of 2.
+id	        96
+title	Ayurveda Talk at New Year's Retreat, #2
+author	Dev Priya
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Talk recorded 12/30/88; #2 of 2.
+id	        97
+title	Ayurveda: Digestion - Agni
+author	Dev Priya and Ashwin
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Recorded 5/9/89.
+id	        98
+title	Pranayam Theory
+author	Ma Renu
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Recorded at Salt Springs, July 28, 1989.
+id	        99
+title	Pranayam / Yamas & Niyamas
+author	Atma and Kalpana
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Recorded 7/1/89.
+id	       100
+title	Thich Nhat Hanh at MMC - 6/8/88
+author	Thich Nhat Hanh
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	
+id	       101
+title	Thich Nhat Hanh at RCNV Dinner, #1
+author	Thich Nhat Hanh
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Recorded:  April, l989.
+id	       102
+title	Thich Nhat Hanh at RCNV Dinner, #2
+author	Thich Nhat Hanh
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	Recorded:  April, 1989.
+id	       103
+title	Peter Pan #K-5
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       104
+title	Interview with Dr. Dean Black
+author	Jay Wagner
+publisher	KKUD
+location	A
+subj	natural healing
+desc	While being interviewed 12-1-88 on the radio program, "Food for the Thoughtful," Dr. Black explained the differences
+id	       105
+title	Yoga Sutras Class; Book I, Vs.12; 7/7/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	Sutras
+desc	Class and group discussion with Babaji and Dyanand. Book I: Verse 12.
+id	       106
+title	Sutras, I:30, 5/21/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       107
+title	Second Four Limbs of Ashtanga Yoga, The
+author	Dass, Baba Hari, with Badri Dass
+publisher	Mount Madonna Center
+location	A
+subj	
+desc	
+id	       108
+title	Healing Relationships, #1
+author	Sun, Patricia
+publisher	Patricia Sun Tapes
+location	A
+subj	
+desc	
+id	       109
+title	Bhagavad Gita; The Eternal Song of Truth, #1
+author	
+publisher	Sri Rama Foundation
+location	A
+subj	Chanting
+desc	Sanskrit verses from Chapters 1 and 2, chanted twice each, to encourage the traditional "call-response" participation.
+id	       110
+title	Healing Relationships, #2
+author	Sun, Patricia
+publisher	Patricia Sun Tapes
+location	A
+subj	
+desc	
+id	       111
+title	Healing Relationships, #3
+author	Sun, Patricia
+publisher	Patricia Sun Tapes
+location	A
+subj	
+desc	
+id	       112
+title	Healing Relationships, #4
+author	Sun, Patricia
+publisher	Patricia Sun Tapes
+location	A
+subj	
+desc	
+id	       117
+title	Tattva-Kaumudi, The
+author	Ganganatha Jha, Mahamahopadhyaya
+publisher	Poona Oriental Book Agency
+location	YPh
+subj	Samkhya
+desc	
+id	       119
+title	Bhagavad Gita; The Eternal Song of Truth, #2
+author	
+publisher	Sri Rama Foundation
+location	A
+subj	Chanting
+desc	Sanskrit verses from Chapters 3 & 4, each chanted twice to encourage the traditional "call-response" participation.
+id	       120
+title	Shiva Ratri Kirtan; Haridwar, 1989 (March 6)
+author	Karuna A.
+publisher	
+location	A
+subj	Chanting
+desc	
+id	       121
+title	Gita Chanting, # 1
+author	
+publisher	MMC
+location	A
+subj	
+desc	Taped in India
+id	       122
+title	Gita Chanting, # 2
+author	
+publisher	MMC
+location	A
+subj	
+desc	Taped in India
+id	       123
+title	Gita Chanting, # 3
+author	
+publisher	MMC
+location	A
+subj	
+desc	Taped in India
+id	       124
+title	Gita Chanting, # 4
+author	
+publisher	MMC
+location	A
+subj	
+desc	Taped in India
+id	       125
+title	Sutras, 1:29, 5/14/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       126
+title	Sutras, 1:28, 5/7/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       127
+title	Sutras, 1:27, 4/30/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       128
+title	Sutras, 1:26, 4/24/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       129
+title	Sutras, 1:25, 4/16/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       130
+title	Sutras, 1:23-24, 4/9/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       131
+title	Sutras, 1:23, 1/15/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       132
+title	Sutras, 1:21-22, 1/8/91
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       133
+title	Sutras, 1:20, 12/18/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       134
+title	Sutras, 1:19, 11/17/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       135
+title	Sutras, 1:18, 11/20/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       136
+title	Sutras, 1:17 (#8), 11/13/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	Final overview of verse 17 (8 of 8 on #17)
+id	       137
+title	Sutras, 1:17 (#7), 11/6/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	Tape 7 of 8, on verse 17
+id	       138
+title	Sutras, 1:17 (#6), 10/30/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	Tape 6 of 8 on verse 17; also includes #42.
+id	       139
+title	Sutras, 1:17 (#3), 9/25/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	Tape #3 of 8 on Verse 17.
+id	       140
+title	Sutras, 1:17 (#2), 9/18/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       141
+title	Sutras, 1:17 (#1), 9/11/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	Beginning tape (of 8) on verse 17.
+id	       142
+title	Sutras, 1:16, 8/7/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       143
+title	Sutras, 1:15, 7/31/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       144
+title	Sutras, 1:14, 7/24/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       145
+title	Sutras, 1:13, 7/17/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       146
+title	Sutras, 1:12, 7/10/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       147
+title	Sutras, 1:11, 6/26/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       148
+title	Sutras, 1:10, 6/19/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       149
+title	Sutras, 1: 9, 6/12/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       150
+title	Sutras, 1: 8, 5/28/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       151
+title	Sutras, 1: 7, 5/15/90 (Part 1)
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       152
+title	Sutras, 1: 6, 5/9/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       153
+title	Sutras, 1: 5, 5/1/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       154
+title	Sutras, 1: 4, 4/24/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       155
+title	Sutras, 1: 3, 4/17/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       156
+title	Sutras, 1: 2, 4/10/90
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       157
+title	Sutras, 1: 1-4, 4/3/90 (Part 1)
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       158
+title	Sutras, 1: 1-4, 4/3/90 (Part 2)
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       159
+title	Sutras, 1: 7, 5/22/90 (Part 2)
+author	Patanjali / Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	Paramesh's copy.
+id	       160
+title	Gita Class, Chap 1: 4-10, 11/17/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       161
+title	Gita Class, Chap 1: 1-3, 10/27/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       162
+title	Gita Class, Chap 1:11-17, 11/17/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       163
+title	Gita Class, Chap 1:17-30, 12/1/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       164
+title	Gita Class, Chap 1:31-47, 12/8/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       165
+title	Yoga Sutras Class; Book I, Vs.16; 9/15/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       166
+title	Yoga Sutras Class; Book I, Vs.17(a); 9/22/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	First of four tapes on Verse 17.
+id	       167
+title	Gita Class, Chap 2:27, 4/13/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       168
+title	Gita Class, Chap 2:22-26, 4/6/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       169
+title	Gita Class, Chap 2:1-10, 12/15/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       170
+title	Gita Class, Chap 2 (Part 1), 12/5/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       171
+title	Gita Class, Chap 2 (Part 2), 12/5/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       172
+title	Yoga Sutras Class; Book I, Vs.15; 8/25/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       173
+title	Yoga Sutras Class; Book I, Vs.17(b); 9/29/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       174
+title	Yoga Sutras Class; Book I, Vs.17(c); 10/6/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       175
+title	Gita Class, Chap 3:17-20, 8/17/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad Gita
+desc	
+id	       176
+title	Gita Class, Chap 3:13-16, 8/10/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad Gita
+desc	
+id	       177
+title	Gita Class, Chap 3: 9-12, 7/20/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad Gita, action and sacrifice
+desc	
+id	       178
+title	Gita Class, Chap 3: 5-8, 7/13/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad Gita
+desc	
+id	       179
+title	Gita Class, Chap 3: 1-4, 7/6/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad Gita
+desc	
+id	       180
+title	Gita Class, Chap 2:68-72, 6/29/89
+author	Dass, Baba Hari, (teacher)
+publisher	
+location	A
+subj	Bhagavad Gita
+desc	
+id	       181
+title	Upasana Retreat Gita Class, Chap  6:17-32, 5/28/88
+author	Dass, Baba Hari (teacher) with Prem Dass
+publisher	
+location	A
+subj	Bhagavad, Gita, Q&A, Babaji, Asanas, Upasana, Retreat
+desc	Partly duplicates Upasana Retreat Gita Class of 5/28/88.
+id	       182
+title	Upasana Retreat Gita Class, Chap  6:1-16, 5/27/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana, Retreat
+desc	Tape 1 of 3
+id	       183
+title	Upasana Retreat Gita Class, Chap  6:17-32, 5/28/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana, Retreat
+desc	Tape 2 of 3
+id	       184
+title	Upasana Retreat Gita Class, Chap  6:33-47, 5/29/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana Retreat
+desc	Tape 3 of 3; Verse 47 ends Chapter 6.
+id	       185
+title	Diet for a New America; Your Health, Your Planet
+author	Robbins, John
+publisher	KCET Video
+location	V
+subj	diet, vegetarianism, food, happiness
+desc	How your food choices affect your health, happiness, and the future of life on earth.
+id	       186
+title	Gita Class, Chap 2:31-37, 4/20/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       187
+title	Gita Class, Chap 2:38-41, 5/11/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       188
+title	Gita Class, Chap 2:47-50, 5/25/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       189
+title	Gita Class, Chap 2:51-54, 6/1/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       190
+title	Gita Class, Chap 2:55-58, 6/8/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       191
+title	Gita Class, Chap 2:59-63, 6/15/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       192
+title	Gita Class, Chap 2:64-67(a), 6/22/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       193
+title	Gita Class, Chap 2:64-67(b), 6/22/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       194
+title	Yoga Sutras Class; Book I, Vs.13; 7/21/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       195
+title	Yoga Sutras Class; Book I, Vs.14; 8/18/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       196
+title	Yoga Sutras Class; Book I, Vs.17(d); 10/20/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       197
+title	Tantra Retreat: Using Desires to Control Desires
+author	Dayanand - 10/12/92
+publisher	MMC
+location	A
+subj	Desire, Dayanand
+desc	
+id	       198
+title	Tantra Retreat: Mandalas and Yantras
+author	Janardan - 10/11/92
+publisher	MMC
+location	A
+subj	Mandalas, Yantras, Janardan
+desc	
+id	       199
+title	Tantra Retreat: Introduction to Tantra Yoga
+author	Janardan - 10/10/92
+publisher	MMC
+location	A
+subj	Retreat, talks
+desc	
+id	       200
+title	Yoga Sutras Class; Book I, Vs.18; 10/27/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       201
+title	Salt Springs Gita Class, Set B, #2; 5/5/87
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	
+id	       202
+title	Salt Springs Gita Class, Set B, #1; 5/4/87
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	
+id	       203
+title	Salt Springs Gita Class, Set B, #3; 5/6/87
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	
+id	       204
+title	Salt Springs Gita Class, Set B, #4; 5/7/87
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	
+id	       205
+title	Salt Springs Gita Class, Set B, #5; 5/9/87
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	
+id	       206
+title	Salt Springs Gita Class, Set B, #6; 5/10/87
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	
+id	       207
+title	Salt Springs Gita Class, Set A, #1; 7/26/86
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       208
+title	Salt Springs Gita Class, Set A, #2; 7/27/86
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       209
+title	Salt Springs Gita Class, Set A, #3; 7/28/86
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       210
+title	Salt Springs Gita Class, Set A, #4; 7/29/86
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       211
+title	Salt Springs Gita Class, Set A, #5; 7/30/86
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       212
+title	Elder Hostel Senior Panel, 11/3/92
+author	Dayama, Ma Renu, Vishnu Priya
+publisher	MMC
+location	A
+subj	
+desc	
+id	       213
+title	Yoga and Transpersonal Psychology Overview
+author	Brajesh
+publisher	MMC
+location	A
+subj	lifestyle, illness, health
+desc	
+id	       214
+title	Kirtan, Questions & Answers  3/3/85
+author	Dass, Baba Hari
+publisher	MMC
+location	A
+subj	
+desc	
+id	       215
+title	Salt Springs Gita Class, Set C, #2; 7/16/88
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 9: Verses 9 - 16.
+id	       216
+title	Salt Springs Gita Class, Set C, #1; 7/15/88
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 9: verses 1 - 8
+id	       217
+title	Salt Springs Gita Class, Set C, #3; 7/18/88
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 9: verses 17 - 24.
+id	       218
+title	Salt Springs Gita Class, Set C, #4; 7/19/88
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 9: verses 25 - 34 (end).
+id	       219
+title	Salt Springs Gita Class, Set C, #5; 7/20/88
+author	Dass, Baba Hari
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 10: verses 1 - 8.
+id	       220
+title	Salt Springs Gita Class, Set C, #6; 7/21/88
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 10: verses 9 - 22.
+id	       221
+title	Salt Springs Gita Class, Set C, #7; 7/21/88
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 10: verses 23 - 32.
+id	       222
+title	Salt Springs Gita Class, Set C, #8; 7/22/88
+author	Dass, Baba Hari (teacher)
+publisher	Salt Springs Center
+location	A
+subj	
+desc	Chapter 10: verses 33 - 42 (end).
+id	       225
+title	Yoga Sutras Class; Book I, Vs.19; 11/3/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	MMC
+location	A
+subj	
+desc	
+id	       226
+title	Gita Class, Chap 3:37-40, 9/28/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       227
+title	Gita Class, Chap 6:37-40, 7/26/90
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       228
+title	Gita Class, Chap 5:24-27, 5/10/90
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       229
+title	Gita Class, Chap 5:20-23, 5/3/90
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       230
+title	Gita Class, Chap 5:16-19, 4/25/90
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       231
+title	Gita Class, Chap 5:11-19, 12/30/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       232
+title	Gita Class, Chap 3:21-24, 8/24/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       233
+title	Gita Class, Chap 3:25-28, 9/7/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       234
+title	Gita Class, Chap 3:29-32, 9/14/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       235
+title	Gita Class, Chap 3:33-36, 9/21/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       236
+title	Gita Class, Chap 3:41-end, 10/5/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       237
+title	Gita Class, Chap 4: 1-4, 10/12/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhavagad Gita
+desc	
+id	       238
+title	Gita Class, Chap 4: 5-8, 11/2/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       239
+title	Gita Class, Chap 4:9-12, ll/9/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       240
+title	Gita Class, Chap 4:13-16, 11/16/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       241
+title	Gita Class, Chap 4:17-20, ll/30/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       242
+title	Gita Class, Chap 4:21-24, 12/7/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       243
+title	Gita Class, Chap 4:25-28, 12/14/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       244
+title	Gita Class, Chap 4:29-32, 12/21/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       245
+title	Gita Class, Chap 4:33-end, 12/28/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	
+desc	
+id	       246
+title	Gita Class, Chap 5: 1-10, 12/29/89 (Retreat)
+author	Dass, Baba Hari (teacher), with Mandira
+publisher	
+location	A
+subj	Bhavagad Gita, Kirtan, Retreat
+desc	
+id	       247
+title	Upasana Retreat Gita Class, Chap  3:1-16, 4/16/87
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana, Retreat
+desc	Tape 1 of 4
+id	       248
+title	Upasana Retreat Gita Class, Chap  3:17-24, 4/18/87
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana, Retreat
+desc	Tape 2 of 4
+id	       249
+title	Upasana Retreat Gita Class, Chap  3:25-28, 4/18/87
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana, Retreat
+desc	Tape 3 of 4
+id	       250
+title	Upasana Retreat Gita Class, Chap  3:29-end,4/30/87
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana, Retreat
+desc	Tape 4 of 4
+id	       251
+title	Upasana Retreat Gita Class, Chap 12: 1-7, 5/26/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhagavad, Gita, Upasana, Retreat
+desc	Tape 1 of 3
+id	       252
+title	Upasana Retreat Gita Class, Chap 12: 8-14, 5/27/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhavagad, Gita, Upasana, Retreat
+desc	Tape 2 of 3.
+id	       253
+title	Upasana Retreat Gita Class, Chap 12:15-end,5/28/88
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	Bhavagad, Gita, Upasana, Retreat
+desc	Tape 3 of 3
+id	       254
+title	Shiva Ratri, 1979, Sides  9 & 10
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 1 of 2
+id	       255
+title	Shiva Ratri, 1979, Sides 13 & 14 (2/26/79)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 2 of 2
+id	       256
+title	Shiva Ratri, 1980, Sides IV & V
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 1 of 5
+id	       257
+title	Shiva Ratri, 1980, Sides VI & VII
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 2 of 5
+id	       258
+title	Shiva Ratri, 1980, Sides VII & IX
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 3 of 5
+id	       259
+title	Shiva Ratri, 1980, Sides X & XI
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 4 of 5
+id	       260
+title	Shiva Ratri, 1980, Sides XII (2/17/80)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 5 of 5
+id	       261
+title	Shiva Ratri, 1981, Sides I & II (3/4/81)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 1 of 2
+id	       262
+title	Shiva Ratri, 1981, Sides III & IV (3/4/81)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 2 of 2
+id	       263
+title	Shiva Ratri, 1983, Tape I (2/10/83)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 1 of 4.
+id	       265
+title	Gita Class, Chap. 2: 22-26, 4/6/89
+author	Dass, Baba Hari (teacher)
+publisher	
+location	A
+subj	On qualities and characteristics of the soul
+desc	
+id	       266
+title	Satsang Kirtan 11/18/79
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       267
+title	Satsang Kirtan 4/22/79
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       268
+title	Satsang Kirtan 1/5/78
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       269
+title	Satsang Kirtan 12/11/77
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       270
+title	Satsang Kirtan 12/4/77
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       271
+title	Satsang Kirtan 12/3/77
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       272
+title	Satsang Kirtan 9/11/77,10/2/77
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       273
+title	Satsang Kirtan 9/19/82
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       274
+title	Satsang Kirtan 8/15/82
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       275
+title	Satsang and Stories 5/2/82
+author	MMC
+publisher	
+location	A
+subj	
+desc	
+id	       276
+title	Satsang Kirtan 5/10/81 (Mother's Day)
+author	
+publisher	MMC
+location	A
+subj	Mother's Day, Kirtan
+desc	
+id	       277
+title	Satsang Kirtan 7/7/80
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       278
+title	Satsang Kirtan 2/3/80
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       279
+title	Kirtan, Camp Swig 82-83, lll, lV
+author	MMC
+publisher	
+location	A
+subj	
+desc	
+id	       280
+title	Kirtan, Camp Swig 82-83, l, ll
+author	MMC
+publisher	
+location	A
+subj	
+desc	
+id	       281
+title	Yoga Sutras Class; Book I, Vs.20; 11/10/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	MMC
+location	A
+subj	Sutras
+desc	
+id	       282
+title	Yoga Sutras Class; Book I, Vs.21 & 22; 11/17/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	MMC
+location	A
+subj	Sutras
+desc	
+id	       283
+title	Shiva Ratri, 1983, Tape II (2/10/83)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 2 of 4
+id	       284
+title	Shiva Ratri, 1983, Tape III (2/11/83)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 3 of 4
+id	       285
+title	Shiva Ratri, 1983, Tape IV (2/11/83)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 4 of 4.
+id	       287
+title	Shiva Ratri Kirtan; Haridwar, 1987
+author	
+publisher	
+location	A
+subj	Kirtan, Hardiwar
+desc	
+id	       289
+title	Shiva Ratri Kirtan; Haridwar, 1990 (Feb. 24)
+author	
+publisher	
+location	A
+subj	Kirtan
+desc	Tape 3 of 3.
+id	       290
+title	Questions and Answers, with Babaji - 3/24/85
+author	Dass, Baba Hari
+publisher	
+location	A
+subj	
+desc	
+id	       291
+title	Radio Programs, #1 - 12/7/87 and 1/18/88
+author	
+publisher	
+location	A
+subj	Radio, Vonnegut, Moonstruck, Thirty Something, Peace Corps, Anna
+desc	Tape 1 of 6; special interest programs including Ice Skating Elvis & Mom,Sally Kirkland,Environ.Depression,Man's Origin
+id	       292
+title	Radio Programs, #2 - 1/19/88 and 1/24/88
+author	
+publisher	
+location	A
+subj	Black Writers, Cat Stevens, Parents, Cajun Music, Monuments
+desc	Tape 2 of 6; special progrms including Thornton Special,I.F. Stone Int. on Socrates; Moonstruck; Andre Tedescue, Lowend
+id	       293
+title	Radio Programs, #3 - 1/24/88
+author	
+publisher	
+location	A
+subj	Car Guys, Boys Next Door, Lacey, Jazz, Shakespeare, Larry King
+desc	Tape 3 of 6; special programs including Good Dictionary,T.V. and Poetry, Bread!, Linkletter, Black Vaudville, Paris Books
+id	       294
+title	Radio Programs, #4 - 5/13/88
+author	
+publisher	
+location	A
+subj	Kozinski, Elia Kazan, Bob Edwards, Djang, Indian Cooking
+desc	Tape 4 of 6.
+id	       295
+title	Radio Programs, #5 - 5/19/88
+author	
+publisher	
+location	A
+subj	Havana Tropicana, LSD, Dumas, Larry King, Pigeon, Cuba, Burroughs
+desc	Tape 5 of 6, special programs including POET:Richard Wilbur, Dolphins Teach kids
+id	       296
+title	Radio Programs, #6 - 10/31/88
+author	
+publisher	
+location	A
+subj	Cheaver, Feet Treat, Aging and Wellness, Harrington, Maro
+desc	Tape 6 of 6 includes Mike Harrington, Socialist;John Cheaver on his father; Susan Cheaver on her novel; John Maro on Educ
+id	       297
+title	Sanskrit Workshop, #1 - June 16, 1989
+author	Houston, Vyasa
+publisher	
+location	A
+subj	Language, Sanskrit
+desc	Tape 1 of 5. Opening at S.F., Writing and Speaking, Vowels and Consonants
+id	       298
+title	Sanskrit Workshop, #2 - June 16 & 17, 1989
+author	Houston, Vyasa
+publisher	
+location	A
+subj	Sanskrit
+desc	Tape 2 of 5.  Introduction, Consonants
+id	       299
+title	Sanskrit Workshop, #3 - June 17, 1989
+author	Houston, Vyasa
+publisher	
+location	A
+subj	Sanskrit
+desc	Tape 3 of 5. Vowels
+id	       300
+title	Sanskrit Workshop, #4 - June 1989
+author	Houston, Vyasa
+publisher	
+location	A
+subj	Sanskrit
+desc	Tape 4 of 5. Consonants, Semi-vowels (started).
+id	       301
+title	Sanskrit Workshop, #5 - June 1989
+author	Houston, Vyasa
+publisher	
+location	A
+subj	Sanskrit
+desc	Tape 5 of 5. Semi-vowels.
+id	       302
+title	Shiva Ratri Kirtan; Haridwar, 1990
+author	
+publisher	
+location	A
+subj	
+desc	Tape 1 of 3
+id	       303
+title	Shiva Ratri Kirtan; Haridwar, 1990
+author	
+publisher	
+location	A
+subj	
+desc	Tape 2 of 3
+id	       304
+title	Sanskrit, #2 of 5 - Alphabet
+author	Assim
+publisher	
+location	A
+subj	
+desc	
+id	       305
+title	Sanskrit, #1 of 5 - Alphabet (5/23/78)
+author	Assim
+publisher	
+location	A
+subj	
+desc	
+id	       306
+title	Sanskrit, #3 of 5
+author	Assim
+publisher	
+location	A
+subj	
+desc	
+id	       307
+title	Sanskrit, #4 of 5
+author	
+publisher	
+location	A
+subj	
+desc	
+id	       308
+title	Sanskrit, #5 of 5
+author	
+publisher	
+location	A
+subj	
+desc	One side empty.
+id	       309
+title	Satsang Kirtan & Sutras 01/12/86
+author	Dass, Baba Hari
+publisher	MMC
+location	A
+subj	
+desc	Last satsang before Babaji left for India in 1986. Includes singing by Radha
+id	       310
+title	Hindi, Lessons 1-6
+author	Chandra Prabha, teacher
+publisher	
+location	A
+subj	
+desc	
+id	       311
+title	Hindi, Lessons 7-10
+author	Chandra Prabha, teacher
+publisher	
+location	A
+subj	
+desc	
+id	       312
+title	Hindi, Lessons 13-15
+author	Chandra Prabha, teacher
+publisher	
+location	A
+subj	
+desc	
+id	       313
+title	Aging Panel, YTT 1987, #1 & 2  (July 18)
+author	
+publisher	
+location	A
+subj	YTT, Panel
+desc	
+id	       314
+title	Aging Panel, YTT 1987, #3 (July 18)
+author	
+publisher	
+location	A
+subj	YTT, Panel
+desc	Tape opens with the end of "Bhakti" discussion.
+id	       315
+title	Aging Panel, YTT 1988 (July 9)
+author	
+publisher	
+location	A
+subj	YTT, Panel
+desc	
+id	       316
+title	Aging Panel, YTT 1990, #3 (July 21)
+author	
+publisher	
+location	A
+subj	YTT, Panel
+desc	Numbers 1 & 2 missing.
+id	       317
+title	Aging Panel, Elder Hostel 1990, #1 & 2 (May)
+author	Ma Renu, Dayama, V.P., Tom
+publisher	
+location	A
+subj	Elder Hostel, Panel, Renu
+desc	first of two tapes. Meditate, Work Honestly, Meet People Without Fear, Play
+id	       318
+title	Aging Panel, Elder Hostel 1990, #3 (May)
+author	Ma Renu, Dayama, V.P., Tom
+publisher	
+location	A
+subj	Elder Hostel, Panel, Renu
+desc	Second of two tapes. Meditate, Work honestly, Meet People Without Fear, Play
+id	       319
+title	Aging Panel, Elder Hostel 1989, (Nov. 15)
+author	
+publisher	
+location	A
+subj	Elder Hostel, Panel
+desc	One of two tapes.  Aging as a Positive Process See "Aging" (Hridaya)
+id	       320
+title	Aging, Elder Hostel 1989, (Nov. 14)
+author	Hridaya
+publisher	
+location	A
+subj	Hridaya's talk, Aging, Elder Hostel
+desc	Second tape,"Aging Panel," taped on November 15, '89.
+id	       321
+title	Bhajans sung by Satya Sai Baba
+author	Sai Baba
+publisher	
+location	A
+subj	
+desc	One side only.
+id	       322
+title	Gandharva Veda Music, Tape 3
+author	Maharishi
+publisher	Maharishi's World Center
+location	A
+subj	
+desc	Tape 3 only. Instrumental, 4-10pm.
+id	       323
+title	Guru Gita
+author	Muktananda, Swami
+publisher	
+location	A
+subj	chanting, Muktananda
+desc	One individual chanting the Guru Gita taught by Muktananda.
+id	       324
+title	Ma's Kirtan, Vol. I
+author	Ma Anandamayee
+publisher	Shree Shree Ma Anandamayee Ashram
+location	A
+subj	Kirtan
+desc	
+id	       325
+title	Liberation Retreat 1990: "Guru" & Choir (July 2)
+author	Ma Renu and Josh
+publisher	
+location	A
+subj	Guru, Choir
+desc	Ma Renu reading on Guru; Josh's choir.
+id	       327
+title	Ramayana II, 10/15/83 (UCSC)
+author	
+publisher	
+location	A
+subj	
+desc	
+id	       328
+title	Ramayana I, 10/15/83 (UCSC)
+author	
+publisher	
+location	A
+subj	
+desc	
+id	       329
+title	Kirtan - Haridwar: Arya Niwas/Shiva Ratri 2/18/89
+author	
+publisher	Sri Ram Ashram
+location	A
+subj	Arya Niwas, Haridwar, Shiva Ratri
+desc	
+id	       333
+title	Kirtan - Satsang, Radha Krishna Temple
+author	
+publisher	MMC
+location	A
+subj	Satsang, Radha Krishna Temple, Santa Cruz
+desc	
+id	       334
+title	Satsang Kirtan, (no date)
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       335
+title	Liberation Retreat 1992: Singings & Readings (7/4)
+author	Mount Madonna Center
+publisher	V.P.
+location	A
+subj	
+desc	"Focus on Liberation" Retreat
+id	       336
+title	Satsang Kirtan 5/13/84 (Mother's Day)
+author	
+publisher	MMC
+location	A
+subj	Mother's Day, Kirtan
+desc	
+id	       337
+title	Satsang Kirtan 9/23/84
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       338
+title	Satsang Kirtan 8/9/87
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       339
+title	Satsang Kirtan 12/10/89
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       342
+title	Kirtan 3/17/90
+author	MMC
+publisher	
+location	A
+subj	
+desc	
+id	       343
+title	Satsang Kirtan & Sutras 08/14-15/88 (Chap 2:41-48)
+author	Dass, Baba Hari (teacher)
+publisher	MMC
+location	A
+subj	Sutras, Kirtan
+desc	Side 1, from 0 to 30: Sutras, 8/14/88, II:41-44; from 30 to end: Sutras, 8/15/88, II:45-48 + kirtan.    Side B: Kirtan.
+id	       344
+title	Satsang Kirtan & Sutras 09/11/88 (Chap. 2, Vs. 49)
+author	Dass, Baba Hari (teacher); w/ Badri Dass
+publisher	MMC
+location	A
+subj	Sutras, Kirtan
+desc	
+id	       345
+title	Satsang Kirtan & Sutras 10/02/88 (Chap. 3, Vs. 5)
+author	Dass, Baba Hari (teacher) w/ Badri Dass
+publisher	MMC
+location	A
+subj	Sutras, Kirtan
+desc	
+id	       346
+title	Satsang Kirtan & Sutras 10/16/88 & 10/25/88
+author	Dass, Baba Hari (teacher); Sita (leader)
+publisher	MMC
+location	A
+subj	Sutras, Kirtan
+desc	First side, first half is kirtan; rest is Yoga Sutras, Book III, starting w/ verse 9, with Dayanand. Second side, open.
+id	       347
+title	Satsang Kirtan & Sutras 10/30/88 (Chap 3:15-18)
+author	Dass, Baba Hari (teacher)
+publisher	MMC
+location	A
+subj	Sutras, Kirtan
+desc	
+id	       348
+title	Satsang Kirtan & Sutras 11/25/88,12/18/88,4/16/89
+author	Dass, Baba Hari (teacher)
+publisher	MMC
+location	A
+subj	Sutras, Kirtan, Thanksgiving
+desc	Book 3, Verses 36-44.
+id	       349
+title	Yoga Sutras Class; Book I, Vs.26; 12/15/92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center
+location	A
+subj	Sutras
+desc	
+id	       350
+title	Satsang Kirtan 1/16/83
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       351
+title	Satsang Kirtan 2/5/83
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       352
+title	Satsang Kirtan 4/17/83
+author	
+publisher	MMC
+location	A
+subj	Kirtan
+desc	
+id	       354
+title	Satsang Kirtan 5/29/83 & 10/25/87
+author	
+publisher	MMC
+location	A
+subj	
+desc	
+id	       355
+title	Ramayana III, 10/15/83 (UCSC)
+author	
+publisher	
+location	A
+subj	
+desc	
+id	       357
+title	Satsang - Ramayana Kirtan, 10/24/82
+author	
+publisher	
+location	A
+subj	
+desc	
+id	       358
+title	Hard Act to Follow - #6
+author	Keaton, Buster
+publisher	
+location	V
+subj	Buster Keaton
+desc	
+id	       359
+title	General, The - #6
+author	Keaton, Buster
+publisher	
+location	V
+subj	Buster Keaton
+desc	
+id	       360
+title	Wrath of God - #9
+author	Aguirre
+publisher	
+location	V
+subj	Amazon expedition to find ancient worship site
+desc	
+id	       361
+title	Browning Version - #9
+author	
+publisher	
+location	V
+subj	Touching story of Eng. School Master. Good acting
+desc	
+id	       362
+title	My Sweet Town - #20
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       363
+title	Adventure No. 4 - #20
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       364
+title	John Huston - #20
+author	Huston, John
+publisher	
+location	V
+subj	John Huston
+desc	
+id	       365
+title	Three Sisters - #21
+author	Chekov
+publisher	
+location	V
+subj	
+desc	
+id	       366
+title	Journeys into the Himalayas - #21
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       367
+title	Sherpas of Everest - #21
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       368
+title	Emily Dickenson - #23
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       369
+title	Bartleby - #23
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       370
+title	Bengal Tiger - #24
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       371
+title	Edward Albee, Profile - #23
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       373
+title	Ring of Fire - #24
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       374
+title	Forbidden Tibet Journey - #24
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       375
+title	Bengal Tiger ll - #24
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       376
+title	Robert Frost - #25
+author	 V
+publisher	
+location	
+subj	
+desc	
+id	       377
+title	Wild Nation - #25
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       378
+title	Sylvia Plath - #25
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       379
+title	Wallace Stevens - #25
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       380
+title	Shoot the Piano Player - #26
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       381
+title	Stones for Ibarra - #26
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       382
+title	Old Age - #26
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       383
+title	Wolf - #27
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       384
+title	Jungle Survival - #27
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       385
+title	Jungle Warriors - #27
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       386
+title	Wolves - #27
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       387
+title	Java - #27
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       388
+title	Canoeing the Himalayas - #27
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       389
+title	Spain's Extra Madura Forest - #27
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       390
+title	Whales Special - #28
+author	Carson, Johnny
+publisher	
+location	V MMS
+subj	Johnny Carson
+desc	
+id	       391
+title	Only One Earth - #28
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       392
+title	Two Leopards - #28
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       393
+title	Wild Horses - #28
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       394
+title	Taste of China - #28
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       395
+title	Primitive Tribe - #28
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       396
+title	Congo River Journey - #29
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       397
+title	God's Country - #29
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       398
+title	King of Hearts - #29
+author	
+publisher	
+location	V
+subj	Excellent satire of our materialistic culture
+desc	
+id	       399
+title	DeBolts - #30
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       400
+title	Woody Guthrie - #30
+author	Guthrie, Woody
+publisher	
+location	V MMS
+subj	Woody Guthrie
+desc	
+id	       403
+title	Brighton Beach - #31
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       405
+title	Quilambo - #32
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       407
+title	Adventure, Robert Perkins - #32
+author	
+publisher	
+location	V
+subj	Robert Perkins, poet, canoe solo in Northwest
+desc	
+id	       408
+title	Yoga Sutras Class; Book I, Vs.28(a); 12-29-92
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       410
+title	New Year's Retreat talk: Non-Duality; 1/2/93
+author	Badri Dass
+publisher	MMC
+location	A
+subj	Non-Duality
+desc	Last evening talk of the Retreat.
+id	       411
+title	Yoga Sutras Class; Book I, Vs.28(b) & 29; 01/5/93
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	Sutras, Patanjali
+desc	
+id	       412
+title	Yoga Sutras Class; Book I, Vs.29; 1/12/93
+author	Patanjali (taught by Baba Hari Dass)
+publisher	Mount Madonna Center (V.P.)
+location	A
+subj	
+desc	
+id	       418
+title	Meditation Retreat, #2; 10/31/87
+author	Kornfield, Jack
+publisher	MMC
+location	A
+subj	Kornfield, Meditation
+desc	Tape 2 of 4. Completion of 11:00am Session, plus 2:00pm Session, Oct. 31.
+id	       419
+title	Meditation Retreat, #1; 10/31/87
+author	Kornfield, Jack
+publisher	MMC
+location	A
+subj	Kornfield, Meditation
+desc	Tape 1 of 4. Beginning of 11:00am Session, Oct. 31.
+id	       420
+title	Meditation Retreat, #3; 11/1/87
+author	Kornfield, Jack
+publisher	MMC
+location	A
+subj	Kornfield, Loving, Kindness, Meditation
+desc	Tape 3 of 4, 10:00-12:30 Session, Nov. 1, plus Loving Kindness Meditation.
+id	       421
+title	Meditation Retreat, #4; 11/1/87
+author	Kornfield, Jack
+publisher	MMC
+location	A
+subj	Kornfield, Meditation
+desc	Tape 4 of 4.  12:00 Nov. 1; Last Session.
+id	       422
+title	Liberation Retreat 1988: Liberation (July 1)
+author	Brajesh
+publisher	MMC
+location	A
+subj	Liberation, Brajesh, Q&A
+desc	Includes Q&A with Babaji
+id	       423
+title	Liberation Retreat 1988: Subtle Body #1 (July 1)
+author	Dev Priya
+publisher	MMC
+location	A
+subj	Subtle, Body, Q&A, Retreat
+desc	Tape 1 of 2; includes Q&A with Babaji
+id	       424
+title	Liberation Retreat 1988: Subtle Body #2 (July 2)
+author	Dev Priya
+publisher	MMC
+location	A
+subj	Subtle, Body, Q&A, Retreat
+desc	Tape 2 of 2; includes Q&A with Babaji.
+id	       425
+title	Liberation Retreat 1992: Obstacles, (July)
+author	Chandra Prabha
+publisher	MMC
+location	A
+subj	Obstacles, Retreat, Prabha
+desc	
+id	       426
+title	Liberation Retreat 1991: Dharana, Dhyana, Samadhi
+author	Dayanand
+publisher	MMC
+location	A
+subj	Dharana, Dhyana, Samadhi, Retreat, Dayanand
+desc	Dayanand's class at the 4th of July Retreat.
+id	       427
+title	Liberation Retreat 1980: Yoga View of Liberation
+author	Ma Renu
+publisher	MMC
+location	A
+subj	Yoga, Retreat, Ma, Renu, Liberation
+desc	Date: July 5, 1980
+id	       428
+title	Liberation Retreat 1992: Prana, (July 2)
+author	Hridaya
+publisher	MMC
+location	A
+subj	Prana, Retreat, Hridaya
+desc	Includes Q&A with Babaji
+id	       429
+title	Upasana Retreat: Sutras Talk, #1; 5/23/92
+author	Dayanand
+publisher	MMC
+location	A
+subj	
+desc	
+id	       430
+title	Upasana Retreat: Sutras Talk, #2; 5/23/92
+author	Dayanand
+publisher	MMC
+location	A
+subj	
+desc	
+id	       431
+title	Upasana Retreat: Symbolism of Yajna; 5/89
+author	Janardan
+publisher	MMC
+location	A
+subj	
+desc	
+id	       432
+title	Upasana Retreat: Devotion in Daily Life; 5/92
+author	Sadanand
+publisher	MMC
+location	A
+subj	
+desc	
+id	       433
+title	Aging Panel, YTT 1992, July
+author	Dayama, Janet, Tom, Mandira, Ma Renu
+publisher	MMC
+location	A
+subj	Senior, YTT, Panel
+desc	
+id	       435
+title	YTT 1980, History of Yoga #2, (July 19)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	History, Yoga, Renu
+desc	0-5 is Kirtan of Bhakti Class; 5cm on is completion of Ma's talk; second side empty.
+id	       436
+title	YTT 1986, Guru #1 (July 19)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	Guru, Renu
+desc	#1 of 2.
+id	       437
+title	YTT 1986, Guru #2 (July 19)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	Guru, Renu
+desc	#2 of 2.
+id	       438
+title	Pir Vilayat Inayat-Khan #7, 1985
+author	
+publisher	Sufi Order
+location	A
+subj	Vilayat, Inayat, Khan, Sufi
+desc	Tape has initials CM and the date 8/87. Copyright is 1985.
+id	       439
+title	New Year's Retreat 1988: Sutras, Mantra
+author	Dayanand, Janardan
+publisher	MMC
+location	A
+subj	Retreat, Janardan, Sutras, Mantra, Kalpana, Yamas
+desc	Has wind-up of Kalpana's "Yamas & Niyamas" and also Kirtan as well as DN's "Sutras" & JD's "Mantra."
+id	       440
+title	Liberation Retreat 1992: Ashtanga Yoga (July 1)
+author	Atma
+publisher	MMC
+location	A
+subj	Retreat, Ashtanga, Yoga, Atma
+desc	
+id	       441
+title	YTT 1980, Microcosm #1 (July 24)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	Microcosm, Renu
+desc	1 of 2 tapes.
+id	       442
+title	YTT 1980, Microcosm #2 (July 24)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	Microcosm, Renu
+desc	Tape 2 of 2. Second side empty.
+id	       443
+title	Mantra Class #1, 5/6/80
+author	Mandira
+publisher	MMC
+location	A
+subj	
+desc	Tape 1 of 2.  Second side empty.
+id	       444
+title	YTT 1980, Sutras #1 (12/11/80)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	
+desc	Tape 1 of 2.  (Second tape missing)
+id	       445
+title	YTT 1980, Chakras #1 (12/13/80)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	
+desc	Tape 1 of 2.
+id	       446
+title	YTT 1980, Chakras #2 (12/16/80)
+author	Ma Renu
+publisher	MMC
+location	A
+subj	
+desc	Tape 2 of 2.
+id	       447
+title	Liberation Retreat 1991: Samkhya Yoga (July 4)
+author	Lad, Dr. Vasant
+publisher	MMC
+location	A
+subj	Samkhya, Retreat
+desc	
+id	       448
+title	Liberation Retreat 1992: Samkhya Philos. (July 1)
+author	Lad, Dr. Vasant
+publisher	MMC
+location	A
+subj	Samkhya, Retreat
+desc	
+id	       449
+title	Upasana Retreat 1991: Ishvara Pranidhan (May 26)
+author	Dayanand
+publisher	MMC
+location	A
+subj	Ishvara, Pranidhan, Retreat
+desc	
+id	       450
+title	Tantra Retreat 1991: Mantra Yoga (Oct. 12)
+author	Pratibha
+publisher	MMC
+location	A
+subj	
+desc	
+id	       451
+title	Tantra Retreat 1992: Desires to Control Desires
+author	Dayanand
+publisher	MMC
+location	A
+subj	Desires, Retreat
+desc	October 12, 1992
+id	       453
+title	YTT 1992: Senior Panel (July)
+author	
+publisher	MMC
+location	A
+subj	
+desc	
+id	       454
+title	Nutcracker, plus The Point; #46
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       455
+title	Sage of Arunachala
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       456
+title	Satsang With Papaji, #104
+author	H. W. L. Poonja
+publisher	
+location	vid
+subj	Spiritual
+desc	
+id	       457
+title	Children's Ramayana 1993  - #105
+author	MMC
+publisher	
+location	V MMS
+subj	Children's play at Cabrillo College
+desc	
+id	       458
+title	Patanjali Yoga Sutras Book 1, Vs. 28 - 29
+author	
+publisher	
+location	Audio
+subj	Yoga Sutras
+desc	
+id	       459
+title	Sutras I:30
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       460
+title	Patanjali Yoga Sutras, Book 1, Vs. 28
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       461
+title	The Sage of Arunachala, #102
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       462
+title	Sutras I:41(2nd x) July 6 '93
+author	
+publisher	
+location	audio
+subj	
+desc	
+id	       463
+title	Sutras I:42 7-13-93
+author	
+publisher	
+location	Audio
+subj	Sutras,
+desc	
+id	       464
+title	Sutras I:43  7-20-93
+author	
+publisher	MMC
+location	Audio
+subj	Sutras,
+desc	
+id	       465
+title	Gita: Salt Spring 2:1-10 Aug, 2 '91
+author	
+publisher	
+location	Audio
+subj	Gita,
+desc	
+id	       466
+title	Gita: Salt Spring 2:Vs 11-20
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       467
+title	Gita: Salt Spring 2:21-30  Aug, 5 '91
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       468
+title	Gita: Salt Spring 2:41-50  Aug, 7 '91
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       469
+title	Gita: Salt Spring 2:31-40  Aug, 6 '91
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       470
+title	Gita: Salt Spring 2:51-60  Aug, 8 '91
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       471
+title	Gita: Salt Spring 2:Vs 60-72  Aug, 9 '91
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       472
+title	Gita Talks, Salt Spring  Aug, 10 '91
+author	
+publisher	
+location	Audio
+subj	Gita,
+desc	
+id	       473
+title	L.A. STORY
+author	Steve Martin & Mick Jackson
+publisher	Carolco
+location	Video
+subj	comedy,
+desc	
+id	       474
+title	SISTER ACT   #114
+author	Emile Ardolino
+publisher	Tuchstone Video
+location	Video
+subj	comedy,
+desc	
+id	       475
+title	LADY IN WHITE  #110
+author	Frank Laloggia
+publisher	Virgin vision
+location	Video
+subj	mistery,
+desc	
+id	       476
+title	MAJOR LEAGUE  #117
+author	
+publisher	Paramount
+location	Video
+subj	comedy,
+desc	
+id	       477
+title	DEFENDING YOUR LIFE  #120
+author	Albert Brooks
+publisher	Warner Bros.
+location	Video
+subj	comedy
+desc	
+id	       478
+title	FRIED GREEN TOMATOES  #121
+author	Jon Avnet
+publisher	Universal
+location	Video
+subj	comedy
+desc	
+id	       479
+title	BULL DURHAM  #111
+author	Ron Shelton
+publisher	Orion
+location	Video
+subj	comedy
+desc	
+id	       480
+title	REGARDING HENRY  #115
+author	Mike Nichols
+publisher	Paramount
+location	Video
+subj	drama,
+desc	
+id	       481
+title	PRELUDE TO A KISS  #112
+author	Norman Rene
+publisher	20th Century Fox
+location	Video
+subj	drama
+desc	
+id	       482
+title	WAITING FOR THE LIGHT  #113
+author	Cristipher Monger
+publisher	Columbia
+location	Video
+subj	comedy,
+desc	
+id	       483
+title	Sutras I:31
+author	
+publisher	
+location	Audio
+subj	Yoga sutras,
+desc	
+id	       484
+title	Sutras I:32
+author	
+publisher	
+location	Audio
+subj	Yoga Sutras,
+desc	
+id	       485
+title	Sutras I:44  Aug 17. '93
+author	
+publisher	
+location	Audio
+subj	Sutras,
+desc	
+id	       486
+title	Sutra I: vs 36 - 40 Read By Dhyand
+author	
+publisher	MMC
+location	Audio
+subj	Sutras,
+desc	
+id	       487
+title	Obstacles by Chandra Brabha Liberation Ret. 1992
+author	Chandra Prabha
+publisher	
+location	Audio
+subj	
+desc	
+id	       488
+title	Hriday on Prama, Libaration Retreat 1992
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       489
+title	Shamkhya Yoga - Liberation retreat 7-4-91
+author	Dr Lad
+publisher	
+location	Audio
+subj	
+desc	
+id	       490
+title	Patanjali Yoga Sutras Book 1, vs 46
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       491
+title	Ashtangna Yoga Liberatin Retreat '92
+author	Atma
+publisher	
+location	Audio
+subj	
+desc	
+id	       492
+title	Sutras I:45    8-24-'93
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       493
+title	Sutras I,vs 49   10-5-93
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       494
+title	Awakening of Kundalini, Badri. Kirtan  10-10-'93
+author	
+publisher	MMC
+location	Audio
+subj	Tantra retreat,
+desc	
+id	       495
+title	Mind - Body Integration   #122
+author	Ilana Rubenfeld
+publisher	InnerWork
+location	Video
+subj	
+desc	
+id	       496
+title	Surrender  Toronto Retreat 9/'93
+author	Ma Renu
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       497
+title	Tantra Simbolism   Tantra retreat "93
+author	J.D. & Vidya Sagar
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       498
+title	Intoduction To Tantra Oct. 9 '93
+author	J.D.
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       499
+title	Surrender  w/Q/A-Bbji  7-30-'93
+author	Ma Renu
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       500
+title	Sutras I:50   oct. '93
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       501
+title	Living and Dying   Seatle '92-'93
+author	Sogyal Rimpoche
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       502
+title	Heart Sutra   Part 1
+author	Tich Nhat Hahn
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       503
+title	Heart Sutra  Part 2
+author	Tich Nhat Hahn
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       504
+title	Sutras I:51 and I: Review for Elder Hostel
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       505
+title	Salt Spring Gita Class with Babaji 10:33-42 7/1988
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       506
+title	Maharishi's Gandharva Veda
+author	
+publisher	
+location	Audio
+subj	Instrumental Music
+desc	
+id	       507
+title	Swami Mukatenanda  Guru Gita Chant
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       508
+title	Liberation Retreat  Singing and Readings 7-4-'92
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       510
+title	Sutras I:2    11-16-'93
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       511
+title	Patanjali Yoga Sutras Book2; vs.2  11/16/93
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       512
+title	Patanjali Yoga Sutras Book2; vs.1 11/9/93
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       513
+title	Patanjali Yoga Sutras Book2; vs.3 11/23/93
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       514
+title	Sutras  II:5   12-7-'93
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       515
+title	Sutras II:6   dec. 14 '93
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       516
+title	Viva Zapata   #127
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       517
+title	War And Peace  #126
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       518
+title	Secret Sharer,  Abraham Lincoln,  #125
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       519
+title	American Indian Artists, etc.  #124
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       520
+title	Yours To Keep  #123
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       521
+title	Sutras II:4   11-30-'93
+author	
+publisher	MMC
+location	Audio
+subj	
+desc	
+id	       522
+title	Sutras II:8   12-28-'93
+author	
+publisher	M.M.C.
+location	Audio
+subj	
+desc	
+id	       523
+title	Stanislov Grof, M.D.  #37
+author	Grof, Stanislov M.D.
+publisher	
+location	V MMS
+subj	
+desc	
+id	       524
+title	Baba Hari Dass Homestead Retreat 1974  #38
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       525
+title	Overcoming Differences  #39
+author	The Dala Lama
+publisher	
+location	Video
+subj	
+desc	
+id	       526
+title	Childrens Ramayana 1991  #40
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       527
+title	Out Of Africa
+author	Sidney Pollack
+publisher	MCA
+location	Video
+subj	
+desc	
+id	       528
+title	David Copperfield  #43
+author	Dickens, Charles, and George Cukor
+publisher	MGM/UA
+location	Video
+subj	
+desc	
+id	       529
+title	The Music Box,  (with) Helpmates  #44
+author	Laurel and Hardy
+publisher	Vido Treasures
+location	Video
+subj	Laurel and Hardy,
+desc	
+id	       530
+title	Red River  #45
+author	
+publisher	
+location	Video
+subj	John Wayne, Monty Cliff,
+desc	
+id	       531
+title	Mr. Hulot's Holiday  #45
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       532
+title	The Great Dictator  #45
+author	Charlie Chaplin,
+publisher	
+location	Video
+subj	
+desc	
+id	       535
+title	Gold Rush  #46
+author	Charlie Chaplin
+publisher	
+location	Video
+subj	
+desc	
+id	       536
+title	The Emigrants  #48
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       537
+title	Boat Trip Down Omo R. Ethiopia  #64
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       538
+title	Tibet - Land Of Nomads  #64
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       539
+title	Maya Civilization  #64
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       540
+title	Elephant Chalenge  #64
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       541
+title	The Amazon  #64
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       542
+title	Condor #66
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       543
+title	Safari Quest to Survive  #66
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       544
+title	Grizzly  #66
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       545
+title	Hang Glide Kilimanjaro  #66
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       546
+title	Marmots Of Europe #66
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       547
+title	Lion Forest  #67
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       548
+title	Silent Hunter  #67
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       549
+title	Leopards Of Cora  #67
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       550
+title	Prince of Predators #67
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       551
+title	Belgal Tiger  #67
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       552
+title	Couger  #67
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       553
+title	Elephant  #67
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       554
+title	Safari: Variation, Man and Cheetah  #68
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       555
+title	Safari: Jaws of Satan  #68
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       556
+title	The Wolf  #68
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       557
+title	Elephants of Thailand  #68
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       558
+title	Leningrad Circus  #69
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       559
+title	Nomads of the Rainforest  #69
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       560
+title	Return of the Wolves  #69
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       561
+title	The Man Who Loved Bears  #70
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       562
+title	Man Who Loved Bears    #70
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       563
+title	Hunter and Hunted on African Plains  #70
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       564
+title	Cross Over  #71
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       565
+title	Crossover, etc.  #71
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       566
+title	Shark Callers of Kontu  #71
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       567
+title	Journey to Hainan  #71
+author	
+publisher	
+location	video
+subj	
+desc	
+id	       568
+title	National Geographic's Massai Naming Ceremony  #72
+author	
+publisher	
+location	video
+subj	
+desc	
+id	       569
+title	Garrlson K. Live at Carnegie Hall  #72
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       570
+title	Woodland Warriors  #72
+author	
+publisher	
+location	video
+subj	
+desc	
+id	       571
+title	Writer Paul Bowls  #73
+author	
+publisher	
+location	video
+subj	
+desc	
+id	       572
+title	Pirandello  #73
+author	
+publisher	
+location	video
+subj	
+desc	
+id	       573
+title	Generation To Generation  #73
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       574
+title	Heart and Soul  #73
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       575
+title	Peter Brook  #74
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       576
+title	A Room of One's Own  #74
+author	Virginia Wolf
+publisher	
+location	Video
+subj	
+desc	
+id	       577
+title	Profile of David Lean Film Director  #74
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       578
+title	Ezra Pound - Poet  #75
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       579
+title	Tolstoy  #75
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       580
+title	Walt Whitman  #75
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       581
+title	Carlos Williams  #75
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       582
+title	Dylan Thomas  #76
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       583
+title	G.B. Shaw  #76
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       584
+title	Aboriginal Art  #76
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       585
+title	1000 Mile Mountain Top Expedition  #76
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       586
+title	Gathering of Men  #77
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       587
+title	Edith Wharton, A Portrait  #77
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       588
+title	T.S. Eliot: Profile  #77
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       589
+title	Wallace Stevens  #77
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       590
+title	Buster Keaton - A Hard Act To Follow Prt.1.2.3. #6
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       591
+title	Clown Prices Of Hollywood   #6
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       592
+title	The General  #6
+author	Buster Keaton
+publisher	
+location	Video
+subj	
+desc	
+id	       593
+title	A Walk In The Woods  #78
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       594
+title	Hat Full Of Rain   #78
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       595
+title	Under Milkwood   #79
+author	Dylan Thomas
+publisher	
+location	V MMS
+subj	
+desc	
+id	       596
+title	Dylan Thomas: Prfile  #79
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       597
+title	Toulouse Lautrec  #79
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       598
+title	Soldiers Home   #79
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       599
+title	Rocking Horse Winner  #80
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       600
+title	Round Midnight   #80
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       601
+title	Ben Hur   #81
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       602
+title	American Playhouse   #81
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       603
+title	Our Town   #83
+author	Thornton Wilder
+publisher	
+location	Video
+subj	
+desc	
+id	       604
+title	Monsieur Verdoux  #83
+author	Charlie Chaplin
+publisher	
+location	Video
+subj	
+desc	
+id	       605
+title	I Love You Alice B. Toklas  #84
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       606
+title	The Funeral   #84
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       607
+title	Metamorphosis   #84
+author	Frank Kafka
+publisher	
+location	Video
+subj	
+desc	
+id	       608
+title	The Great Rift Prt. 1.-4.  #86
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       609
+title	A Brief History Of Time
+author	Stephen Hawking
+publisher	
+location	Video
+subj	
+desc	
+id	       610
+title	Power Of Myth 1. & 2.   #49
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       611
+title	Bill Moyer Interview   #49
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       612
+title	Power of Myth 3. - 6.  #50
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       613
+title	Transformations 1. - 4.   #51
+author	Joseph Campbel
+publisher	
+location	Video
+subj	
+desc	
+id	       614
+title	Transformation Of Myth  9. - 12.  #53
+author	Joseph Campbel
+publisher	
+location	Video
+subj	
+desc	
+id	       615
+title	Transpormation of Myth  13. - 14.   #54
+author	Joseph Campbell
+publisher	
+location	Video
+subj	
+desc	
+id	       616
+title	T.S. Eliot  #54
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       617
+title	Walt Whitman  #54
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       618
+title	Power Of Myth, Death and Sacrifice   #55
+author	Joseph Campbell
+publisher	
+location	Video
+subj	
+desc	
+id	       619
+title	Romantic Love  #55
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       620
+title	Masks Of Eternity  #55
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       621
+title	Transformations  5.- 8.  #52
+author	Joseph Campbell
+publisher	
+location	Video
+subj	
+desc	
+id	       622
+title	Power of the Word  1.- 4.  #56
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       623
+title	Dim Sum    #100
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       624
+title	Ox Bow Incident   #100
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       625
+title	Review
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       626
+title	American Playhouse Yiddish Theater   #100
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       627
+title	Barging Through Europe   #99
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       628
+title	Barging Through Germany   #99
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       629
+title	China's Silk Road    #99
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       630
+title	Garden Of Finzi Contina   #98
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       631
+title	China Notebook   #98
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       632
+title	Roger Tory Peterson  #97
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       633
+title	China Notebook  #97
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       634
+title	Queen Of Sheba  #97
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       635
+title	Soviet Rafting With Yanks In Siberia   #97
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       636
+title	Inside Gorbacheve's U.S.S.R.  Prt. I.-III.  #96
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       637
+title	Looking East: Malasia Long House  #95
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       638
+title	Man's Slaves: The Animal Contract   #95
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       639
+title	What's Happening To Dolphins   #95
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       640
+title	A Russia Of One's Own   #94
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       641
+title	Largo Desolato   #94
+author	Vaclav Havel
+publisher	
+location	Video
+subj	
+desc	
+id	       642
+title	Tribute To Havel   #94
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       643
+title	In Russia Is It Easy To Be Young  #93
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       644
+title	Soviets  Prt. 2. - 4.   #93
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       645
+title	Dead Again  #138
+author	Keneth Branagh
+publisher	Pramount Pictures
+location	Video
+subj	Mystery, Past life,
+desc	
+id	       646
+title	Power of the Word #5    #57
+author	Stanley Kunitz
+publisher	
+location	Video
+subj	
+desc	
+id	       647
+title	Robert Lowell    #57
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       648
+title	Robert Bly    #57
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       649
+title	Gerard Manly Hopkins   #57
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       650
+title	Dark Circle   #59
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       651
+title	Polar Fox  #59
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       652
+title	Wilderness Journal   #59
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       653
+title	Johnny Clegg, White Zular    #59
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       654
+title	Tracking the Grizzly    #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       655
+title	The Great Red Ape   #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       656
+title	Dangerous Animals   #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       657
+title	Deadly African Snakes   #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       658
+title	Loners   #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       659
+title	Cry Wolf   #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       660
+title	Elephant  #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       661
+title	Owl   #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       662
+title	Wild Dogs    #60
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       663
+title	Patanjali Yoga Sutras  Book 2, Vs. 4   11/30/1993
+author	
+publisher	M.M.C.
+location	Audio
+subj	
+desc	
+id	       664
+title	The Guru  Pt.2  Y.T.T. 7-19-1986
+author	Ma Renu
+publisher	M.M.C.
+location	Audio
+subj	
+desc	
+id	       666
+title	Pir Valayat Inayat Khan  #7   08/1985
+author	
+publisher	M.M.C.
+location	Audio
+subj	
+desc	
+id	       667
+title	Jack Kornfield Meditation Retreat  #1 10/31/87
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       668
+title	Jack Kornfield Meditation Retreat #2  10/31/87
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       669
+title	Jack Kornfield Meditation Retreat #3  11/1/87
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       670
+title	Jack Kornfield Meditation Retreat #4  11/1/87
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       671
+title	Sutras  II:12       4-19-'94
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	       672
+title	Sutras  Inntro chap II vs.11    4-12-'94
+author	
+publisher	
+location	Audio
+subj	Sutras,
+desc	
+id	       673
+title	Sutras  Overview chap I & II      4-5-'94
+author	
+publisher	
+location	Audio
+subj	Sutras,
+desc	
+id	       674
+title	Sutras  II:13      4/26/1994
+author	
+publisher	M.M.C.
+location	Audio
+subj	Sutras,
+desc	
+id	       675
+title	Sutras  II:14   5-3-'94
+author	
+publisher	M.M.C.
+location	Audio
+subj	Sutras,
+desc	
+id	       676
+title	The Wizard Of Oz  #K-6
+author	Victor Fleming
+publisher	Metro-Goldwyn-Mayer
+location	Video
+subj	Classic movie version of the children's tale.
+desc	
+id	       677
+title	Pinocchio
+author	Walt Disney
+publisher	The Walt Disney Company
+location	Video
+subj	
+desc	
+id	       678
+title	Sutras  I:15    5-10'94
+author	
+publisher	M.M.C.
+location	Audio
+subj	
+desc	
+id	       679
+title	Lust For Life    #139
+author	Vincente Minnelli
+publisher	MGM/UA
+location	Video
+subj	Vincent Van Gogh
+desc	
+id	       680
+title	Brother Sun Sister Moon  #140
+author	Franco Zefirelli
+publisher	
+location	Video
+subj	St.Francis
+desc	
+id	       681
+title	Swimming To Cambodia   #118
+author	Spalding Gray & Jonathan Demme
+publisher	Lorimar
+location	Video
+subj	
+desc	
+id	       682
+title	Wings of Desire  #119
+author	Wim Wenders
+publisher	Orion
+location	Video
+subj	
+desc	
+id	       683
+title	Patanjali Yoga Sutras  Book 2, Vs. 16   5/17/94
+author	
+publisher	
+location	Audio
+subj	
+desc	
+id	         0
+title	The Good Life of Helen Nearing
+author	Helen Nearing--audio
+publisher	
+location	
+subj	
+desc	
+id	       684
+title	Tell Me A Riddle   #D-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       685
+title	Track Of Cat  #D-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       686
+title	Nature Osprey   #D-2
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       687
+title	Grizzly Tracking   #D-2
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       688
+title	Irish Horse  #D-2
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       689
+title	Trackin the Grey Whale  #D-2
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       690
+title	John Muir  #D-2
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       691
+title	Rocket To The Moon  #D-3
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       692
+title	Grown Ups  #D-3
+author	Feiffer, Jules
+publisher	
+location	Video
+subj	
+desc	
+id	       693
+title	The Wild Duck  #D-4
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       694
+title	Jaws, the True Story  #D-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       695
+title	Owls  #D-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       696
+title	Creatures Of Amazon  #D-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       697
+title	Bears  #D-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       698
+title	Dolphins  #D-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       699
+title	Kilimanjaro  #D-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       700
+title	Animal Language  #D-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       701
+title	Garrison Keillor  #D-6
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       702
+title	Stranger In Paradise  #D-6
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       703
+title	Miles Davis at Monterey Jazz Fest 1985  #D-6
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       704
+title	Heart Of Dragon  #C-7 & C-8
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       705
+title	Trading  #D-7
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       706
+title	Garrison Keillor  #D-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       707
+title	Billie Holliday  #D-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       708
+title	Alaska Grizzly  #D-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       709
+title	Marine Mamals, Dolphins, Whales  #D-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       710
+title	Bison  #D-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       711
+title	Rhino  #D-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       713
+title	G.B. Shaw  #D-9
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       714
+title	Marlene Dietrch  #D-9
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       715
+title	Rock Climb  #D-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       716
+title	Wild Lynx  #D-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       717
+title	Hillary and the Mt. Everest  #D-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       718
+title	To Be a Teacher  #D-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       719
+title	Tad  #D-10
+author	
+publisher	
+location	Viado
+subj	
+desc	
+id	       720
+title	Amazon Killer Tribe  #D-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       721
+title	39 Steps  #D-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       722
+title	Umberto D.  #D-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       723
+title	Prong Horn Deer  #D-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       724
+title	Mountain Goat, Master of High Slopes  #D-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       725
+title	Couger  #D-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       726
+title	Kulu Valley  #D-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       727
+title	Wild Water  #D-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       728
+title	Longest Wave  #D-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       729
+title	High Alaska  #D-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       730
+title	Rock Climbing  #D-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       731
+title	Hilary's Sherpa Hospital  #E-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       732
+title	Killer Whale  #E-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       733
+title	Tao Way and Power  #E-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       734
+title	The Dingo  #E-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       735
+title	Island Artist  #E-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       736
+title	Car of Gods  #E-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       737
+title	Story Of English  Pt. 1-3  #E-1
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       738
+title	Story Of English Pt. 5-8  #E-3
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       739
+title	Dead Of Night  #E-4
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       740
+title	Richard III.  (w. Olivier)  #E-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       741
+title	Thomas Eakins, Artist  #E-5
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       742
+title	Gandhi - #212
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       743
+title	Virgin Spring  #E-6
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       744
+title	Georgia O'Keefe  #E-7
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       745
+title	Lenny Bruce  #E-7
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       746
+title	Olatunji and the Grateful Dead  #E-7
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       747
+title	Alyeska  #E-7
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       748
+title	Bottle Nose Dolphin  #E-7
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       749
+title	How Then Shall We Live pt. 1 Opening to Grief #E-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       750
+title	Awakening to Life  #E-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       751
+title	Wisdom and Fear Of Death  #E-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       752
+title	How Then Shall We Live - Ellsberg/Ram Dass  #E-8
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       753
+title	Great Expectations  #E-9
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       754
+title	John Coltvan  #E-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       755
+title	Street Wise  #E-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       756
+title	Gods of Ceylon  #E-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       757
+title	Billy Holliday  #E-10
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       758
+title	Story Of English, Empire Strikes Back  #E-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       759
+title	Yanks and Reds  #E-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       760
+title	Golden Triangle  #E-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       761
+title	John Lennon  #E-11
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       762
+title	Wild Cats  #E-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       763
+title	Wolverine  #E-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       764
+title	Leopard  #E-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       765
+title	Grizzly  #E-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       766
+title	Elephants  #E-12
+author	Jason Robards
+publisher	
+location	Video
+subj	
+desc	
+id	       767
+title	Wild Dogs  #E-12
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       768
+title	Snows of Kilimanjaro   #127
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       769
+title	The Bank Dick    #46
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       771
+title	The Red Balloon   #46
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       772
+title	Cyrano de Bergerac   #3
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       773
+title	Jules and Jim   #130
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       774
+title	Beauty and teh Beast   #130
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       776
+title	Sivananda, Jesus in India, Amrit Desai, etc.
+author	
+publisher	
+location	#143
+subj	
+desc	
+id	       777
+title	Soylent Green
+author	Frontline: Pesticides and Children
+publisher	
+location	#144
+subj	
+desc	
+id	       778
+title	Children's Ramayana 1994 Act I  #145
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       779
+title	Children's Ramayana 1994 Act II  #146
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       780
+title	Jesus Christ Superstar
+author	
+publisher	
+location	#147
+subj	
+desc	
+id	       784
+title	Sutra
+author	
+publisher	Auto Music
+location	
+subj	
+desc	
+id	       785
+title	Jurassic Park #32
+author	
+publisher	
+location	Vidio
+subj	
+desc	
+id	       786
+title	Rashomon
+author	
+publisher	
+location	148
+subj	Four witnesses give different accounts of a rape-murder.
+desc	
+id	       787
+title	Green Grow The Rushes     #116
+author	
+publisher	
+location	V MMS
+subj	Villagers try to hide whiskey smuggling from government
+desc	
+id	       789
+title	The Fugitive Kind
+author	
+publisher	
+location	ll6
+subj	Marlan Brando
+desc	
+id	       790
+title	Between the Lines
+author	
+publisher	
+location	ll6
+subj	
+desc	
+id	       791
+title	Wuthering Heights
+author	    Video
+publisher	
+location	F 3
+subj	
+desc	
+id	       792
+title	a
+author	   Video
+publisher	
+location	 F 3
+subj	
+desc	
+id	       793
+title	a
+author	    Video
+publisher	
+location	 82
+subj	   Comedy
+desc	
+id	       794
+title	a
+author	     video
+publisher	
+location	 82
+subj	   comedy
+desc	
+id	       795
+title	Lower Depths (Kurasowa)
+author	  Video
+publisher	
+location	 A 9
+subj	   l l/2 hrs.
+desc	
+id	       796
+title	aa
+author	    Video
+publisher	
+location	 A-9
+subj	   3 hrs.
+desc	
+id	       797
+title	aa
+author	    Video
+publisher	
+location	 A-9
+subj	   l l/2 hrs.
+desc	aa a
+id	       800
+title	Summer & Earthquake Survival, etc.
+author	Video
+publisher	
+location	A3
+subj	Summer(french movie) Quake(survival doc.) Caneiones de mi Padre
+desc	(Linda Ronstadt) Moscow Night(Dave Brubeck)
+id	       801
+title	Civil War, part 1   A-4
+author	Video
+publisher	
+location	V MMS
+subj	Documentry five and a half hours
+desc	
+id	       802
+title	Natl.Geo.Legacy: China,Egypt,Central America
+author	Video
+publisher	
+location	F3
+subj	Documentry 2hrs
+desc	
+id	       803
+title	Land of the Eagle-a natural history of America
+author	Video
+publisher	
+location	G6
+subj	Documentry
+desc	
+id	       804
+title	Civil War,part 2  A-5
+author	video
+publisher	
+location	V MMS
+subj	Documentry
+desc	
+id	       805
+title	Queen of the Elephants,etc.
+author	Video
+publisher	
+location	H10
+subj	
+desc	Elephants,Llamas felines
+id	       806
+title	Portrait on Black Hill & Dodsworth
+author	Video
+publisher	
+location	H11
+subj	Movies
+desc	
+id	       807
+title	Pow Wow, etc. #58
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	       808
+title	Lions of the Night, etc. #61
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	       809
+title	Hyenn Story, etc. #62
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	       810
+title	Tibet, etc. #92
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	       811
+title	Alfredo Alfredo, etc. #87
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	       812
+title	Murmurs of the Heart, etc. #88
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	       813
+title	Alcatraz,etc. #89
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       814
+title	Salam Bombay,etc #90
+author	Video
+publisher	
+location	
+subj	
+desc	
+id	       815
+title	Sacred Verses, Healing Sounds
+author	audio
+publisher	
+location	
+subj	
+desc	
+id	       816
+title	Hindi Language Lessons
+author	discs
+publisher	
+location	
+subj	
+desc	
+id	       817
+title	Elephants of Tsavo, etc. #136
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       818
+title	Einstein,etc. #133
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       819
+title	Elephant, Lord of Jungle,etc. #135
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       820
+title	The River, Great Gatsby, #128
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       821
+title	Hinduism, The Wodaabe,etc. #129
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       822
+title	The Soviets Part1,etc. #132
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       823
+title	Cinema Paradiso,and Wages of Fear #149
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       824
+title	20 years after the Beatles, etc. #134
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       845
+title	Episodes 5, 6, 7, & 8
+author	Hindi: New Directions, New Peopl
+publisher	
+location	video
+subj	
+desc	
+id	       846
+title	Path of Transformation , The
+author	Gawain, Shakti
+publisher	
+location	Video
+subj	
+desc	
+id	       847
+title	Episodes  l, 2, 3, 4
+author	Hindi: New Directions, New People
+publisher	
+location	Video
+subj	
+desc	
+id	       848
+title	Dolphins  Music by  Carlos Alomar
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       849
+title	Acro Sage Technique, The
+author	Marantz, Benjamin
+publisher	
+location	Video
+subj	
+desc	
+id	       850
+title	Healing Mind, The
+author	Chopra, Deepak
+publisher	
+location	Video
+subj	
+desc	
+id	       851
+title	Heart of Tibet
+author	Dalai Lama
+publisher	
+location	Video
+subj	
+desc	
+id	       852
+title	Visit to Sri Ram Ashram, A
+author	Sadanand
+publisher	
+location	Video
+subj	
+desc	
+id	       854
+title	Children's Ramayana 1995 Part 1
+author	
+publisher	
+location	2
+subj	Children's Ramayana
+desc	
+id	       855
+title	Children's Ramayana 1995 Part 2
+author	
+publisher	
+location	2
+subj	Children's Ramayana 1995 Part 2
+desc	
+id	       856
+title	Fievel Goes West
+author	
+publisher	
+location	1
+subj	cartoons, history
+desc	Animated feature continuing the story of Fievel the mouse which started in An American Tail
+id	       857
+title	Elder Panel '95 for YTT
+author	Jyoti, Ma, Tom, Dayama, Vishnu Pria
+publisher	MMC
+location	Å
+subj	
+desc	
+id	       858
+title	A Room with a View, Salaam Bombay
+author	Movies
+publisher	
+location	M171
+subj	
+desc	
+id	       859
+title	The Good Life of Helen Nearing
+author	Nearing, Helen
+publisher	-
+location	Audio
+subj	
+desc	
+id	       860
+title	Guru Purnima, 1980, Prema Mudita, Hanuman Chalisa
+author	MMC
+publisher	-
+location	Audio
+subj	Guru Purnima, Prema Mudita, Hanuman Chalisa
+desc	
+id	       861
+title	Thich Nhat Hanh Being Peace
+author	Thich Nhat Hanh
+publisher	Mount Madonna Center
+location	A
+subj	Thich Nhat Hanh
+desc	
+id	       862
+title	So Much Love To Give #172
+author	Sadanand
+publisher	Sri Ram Foundation
+location	Video
+subj	Sri Ram Orphanage
+desc	
+id	       863
+title	Oliver! #173
+author	
+publisher	
+location	Video
+subj	Musical
+desc	
+id	       864
+title	Little Women #174
+author	
+publisher	
+location	Video
+subj	Women, Movies, Winona Ryder
+desc	A story of 4 girls growing up.
+id	       865
+title	Arthur #175
+author	
+publisher	
+location	Video
+subj	Comedy
+desc	A bonanza of laughs with the worlds richest drunk.
+id	       866
+title	Mother Theresa #176
+author	
+publisher	
+location	Video
+subj	Mother Theresa
+desc	
+id	       867
+title	Amadeus #177
+author	
+publisher	
+location	Video
+subj	Amadeus, Music, Piano, Mozart
+desc	Amadeus is the movie centered around Wolfgang Amadaeus Mozart's life and music.
+id	       868
+title	Forrest Gump #178
+author	
+publisher	
+location	Video
+subj	Drama
+desc	
+id	       869
+title	Apollo 13  #179
+author	
+publisher	
+location	Video
+subj	Apollo 13, Space
+desc	
+id	       870
+title	Anne of Green Gables #180
+author	Montgomery, Lucy Maude (based on novel)
+publisher	
+location	Video
+subj	
+desc	The life drama of Anne Shirley from her struggles as an adolescent to her triumphs as a young woman.
+id	       871
+title	Planet Earth   #181
+author	
+publisher	
+location	V MMS
+subj	Earth
+desc	A seven part series about the earth and its fate.
+id	       872
+title	Black Stallion, The  #K-9
+author	
+publisher	
+location	Video
+subj	Horses
+desc	The stirring tale of a shipwrecked boy, the horse that rescues him and the victory that awaits them both.
+id	       873
+title	Awaken to the Eternal #183
+author	Maharaj, Nisargadatta
+publisher	
+location	Video
+subj	Nisargadatta Maharaj
+desc	In the back lanes of Bombay, the contemporary sage met and talked with sincere seekers from all parts of the world.
+id	       874
+title	Player, The  #186
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       875
+title	To Kill A Mockingbird  #187
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       876
+title	Path of Service, The  #157
+author	Sadanand
+publisher	Sri Rama Foundation
+location	Video
+subj	
+desc	The Works of Baba Hari Dass.
+id	       877
+title	Seven Brides for Seven Brothers  #182
+author	
+publisher	MGM
+location	Video
+subj	movie, musical
+desc	
+id	       878
+title	Buddhist Religion
+author	Sacred Spirit Chants
+publisher	Sacred Spirit Chants
+location	A
+subj	
+desc	
+id	       879
+title	Baker's Wife, Harolod and Maude #101
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       880
+title	Goodbye, Mr. Chips, Pride and Predjudice #164
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       881
+title	Scarface, Front Page #165
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       882
+title	Presence of the Goddess, The #167
+author	
+publisher	
+location	Video
+subj	
+desc	How the role of women has shaped the concept of the deity and become aware of the consequent effect on the psyche.
+id	       883
+title	World Within, The #168
+author	C.J Jung
+publisher	
+location	Video
+subj	
+desc	Rarely seen footage of Jung in which he talks about his work on dreams, memory, archetypal figures and ritual.
+id	       884
+title	Fievel Goes West #K-8
+author	
+publisher	
+location	Video
+subj	
+desc	More adventures of Fievel the mouse in America.
+id	       885
+title	Celestine Prophecy, The
+author	Redfield, JAmes
+publisher	Time Warner Audio Books
+location	Audio
+subj	new age, enlightenment
+desc	A story about the search for parts of a manuscript, each part, when read, can take one further down the path.
+id	       886
+title	Green Mansions #50
+author	
+publisher	
+location	v
+subj	
+desc	1959 with Audrey Hepburn & Anthony Perkins
+id	       887
+title	Oklahoma
+author	
+publisher	
+location	49
+subj	
+desc	
+id	       888
+title	The Lion King
+author	
+publisher	Walt Disney
+location	
+subj	
+desc	
+id	       889
+title	Aura of Divinity
+author	
+publisher	
+location	189
+subj	Sathya Sai Baba, film by Richard Bock
+desc	
+id	       890
+title	Children's Ramayana 1997, Part I   #190
+author	
+publisher	MMC
+location	V MMS
+subj	
+desc	
+id	       891
+title	Children's Ramayana 1997, Part 2   #191
+author	
+publisher	MMC
+location	V MMS
+subj	
+desc	
+id	       892
+title	Presumed Innocent
+author	Video
+publisher	
+location	192
+subj	
+desc	
+id	       893
+title	Sound of Music
+author	Video
+publisher	
+location	V-194
+subj	
+desc	
+id	       894
+title	Close Encounters of the Third Kind
+author	Video
+publisher	
+location	V-193
+subj	
+desc	
+id	       895
+title	Chaplin, Vol 1-3, Vol 4-5(#198-199 for MMS)
+author	
+publisher	
+location	V MMS
+subj	
+desc	V195 = Vol. 1; V196 = Vol. 2; V197 = Vol. 3; V198 = Vol. 4; V199 = Vol. 5.
+id	       896
+title	Party, The (No. 131)
+author	Sellers, Peter
+publisher	
+location	V
+subj	
+desc	
+id	       897
+title	Being There
+author	Peter Sellers & Shirley McLaine
+publisher	
+location	#200
+subj	Missing  or Lost??   -1.31.03
+desc	
+id	       899
+title	Children's Ramayana 1998, Part 1    #202
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       900
+title	Children's Ramayana 1998, Part 2   #203
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	       901
+title	MMC 20th Anniversary Slide Show - #205
+author	SN Mailliard
+publisher	MMC
+location	V
+subj	
+desc	
+id	       902
+title	Baraka
+author	Video (#204)
+publisher	
+location	V
+subj	A World Beyond Words
+desc	
+id	       903
+title	Spirits of the Rainforest - #206
+author	Video
+publisher	
+location	V
+subj	Paradise Found
+desc	
+id	       904
+title	Neverstay, Tibet Village, Soul of India - #19
+author	Video
+publisher	
+location	V
+subj	Also: Bushmen of Kalahari and Leopard: Prince of Predators
+desc	
+id	       905
+title	Wild Africa, Mehinacu, Picasso, etc. - #22
+author	Video
+publisher	
+location	V
+subj	Also: Klvane National Park Yukon
+desc	
+id	       906
+title	Last Temptation of Christ, Explore Arabia - #33
+author	Video
+publisher	
+location	V
+subj	Also: Kremlin, R.D. LKaing's Glagow
+desc	
+id	       907
+title	Kundun - #208
+author	Video
+publisher	
+location	V
+subj	
+desc	
+id	       908
+title	Rumi: Poet of the Heart - #209
+author	
+publisher	
+location	Video
+subj	
+desc	
+id	       909
+title	Love is a Fire and I am Wood
+author	Vaughan-Lee, Llewellyn
+publisher	Sounds True
+location	A
+subj	Sufi Teachings: Awakening the Heart's Love for God
+desc	
+id	       910
+title	World of Buckminster Fuller, The  - #211
+author	
+publisher	Masters & Masterworks
+location	V
+subj	The definitive synthesized lecture-demonstration of one of the
+desc	great teachers of our time.
+id	       911
+title	Tibet: On the Edge of Change - #210
+author	
+publisher	Quest-R Video
+location	V
+subj	
+desc	
+id	       914
+title	Gandhi - #212 and #213 (2 vols.)
+author	Attenborough, Richard
+publisher	Columbia Tristar
+location	V
+subj	
+desc	A vision of the heart and soul of a man, Gandhi is a classic epic as timeless as Gandhi himself.
+id	       915
+title	Winnie the Pooh - K-12
+author	
+publisher	Walt Disney
+location	V
+subj	
+desc	
+id	       916
+title	Children's Ramayana - 1999 (part 2) #214
+author	
+publisher	Mt. Madonna School
+location	V MMS
+subj	
+desc	
+id	       917
+title	Children's Ramayana - 1999 (part 1) - #213
+author	
+publisher	Mt. Madonna School
+location	V MMS
+subj	
+desc	
+id	       920
+title	Tantra Play - #217
+author	Baba Hari Dass
+publisher	
+location	V
+subj	
+desc	
+id	       921
+title	Evita - #215
+author	Madonna & Antonio Banderas
+publisher	Hollywood Pictures
+location	V
+subj	True-life story of Eva Peron
+desc	
+id	       922
+title	Home Alone - #216
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       923
+title	Howard's End - #142
+author	
+publisher	
+location	V
+subj	
+desc	Anthony Hopkins and Vanessa Redgrave
+id	       924
+title	Pirates of Penzance - #218
+author	Gilbert & Sullivan
+publisher	Mt. Madonna Middle School
+location	V MMS
+subj	
+desc	
+id	       925
+title	India 1999 - Sri Ram Ashram  - #219
+author	Sadanand
+publisher	Mount Madonna Visions
+location	V
+subj	
+desc	
+id	       926
+title	Working Girl - #149
+author	Ford, Harrison, Melanie Griffith
+publisher	
+location	V
+subj	
+desc	
+id	       927
+title	Ghost - #188
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       928
+title	It's a Wonderful Life - A-12
+author	
+publisher	
+location	V
+subj	
+desc	Also includes "Chariots of Fire"
+id	       929
+title	Ramayana - #220
+author	
+publisher	
+location	V
+subj	
+desc	Salt Spring Center and School Production - 1999
+id	       930
+title	Land of the Tiger #1 - #34
+author	
+publisher	
+location	V
+subj	
+desc	The Tiger's Domain and Sacred Waters
+id	       931
+title	Land of the Tiger, The #2 - #35
+author	
+publisher	
+location	V
+subj	
+desc	Unknown Seas & Desert Kingdom
+id	       932
+title	Land of the Tiger, The #3 - #36
+author	
+publisher	
+location	V
+subj	
+desc	Mountains of the Gods & Monsoon Forests
+id	       933
+title	Inner Art of Meditation, The - #47
+author	Kornfield, Jack
+publisher	
+location	V
+subj	
+desc	Discover the treasure Meditation can bring to each moment
+id	       934
+title	Yoga with a Master
+author	Satchidananda, Sri Swami
+publisher	
+location	V
+subj	
+desc	an Integral Yoga Hatha Class taught by Sri Swami Satchidananda
+id	       935
+title	Sense and Sensibility
+author	Austen, Jane
+publisher	
+location	V
+subj	
+desc	Emma Thompson, Kate Winslet, Hugh Grant, Alan Rickman
+id	       936
+title	Trail of the Pink Panther - #154
+author	Sellers, Peter
+publisher	
+location	V
+subj	
+desc	
+id	       937
+title	Revenge of the Pink Panther - #153
+author	Sellers, Peter
+publisher	
+location	V
+subj	
+desc	
+id	       938
+title	Pink Panther Strikes Again - #152
+author	Seller, Peter
+publisher	
+location	V
+subj	
+desc	
+id	       939
+title	Shot in the Dark, A - #151
+author	Sellers, Peter
+publisher	
+location	V
+subj	
+desc	
+id	       940
+title	Pink Panther, The - #150
+author	Sellers, Peter
+publisher	
+location	V
+subj	
+desc	
+id	       941
+title	River of Love - #46
+author	
+publisher	
+location	V
+subj	
+desc	A documentary drama of the life of Ammachi
+id	       942
+title	West Side Story, #186
+author	Mt. Madonna High School, Jan 1999
+publisher	MMS
+location	V MMS
+subj	
+desc	
+id	       943
+title	Elizabeth, #155
+author	Cate Blanchett
+publisher	
+location	V
+subj	
+desc	
+id	       944
+title	On Our Own Terms: Bill Moyers on Dying
+author	Moyers, Bill
+publisher	Brajesh
+location	V
+subj	Modern advances in medicine have prolonged life and changed the
+desc	experience of dying. Talking about death is a taboo that has prevented us from meeting these changes in the way we want.
+id	       945
+title	To the Magic Mountain (Kailash) - #221
+author	
+publisher	
+location	V
+subj	
+desc	A pilgrimage and circumambulation of Mount Kailash
+id	       946
+title	Doing Time, Doing Vipassana, #174
+author	
+publisher	Karuna Films, Ltd.
+location	V
+subj	
+desc	A documentary about India's largest prison and the dramatic change brough about by the introduction of Vipassana med'n.
+id	       947
+title	Îalai Lama - Soul of Tibet - #201
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       948
+title	Tuesdays with Morrie - #121
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       949
+title	Children's Ramayana - 1991 (#40)
+author	
+publisher	MMS
+location	V
+subj	
+desc	
+id	       950
+title	Red Corner
+author	Gere, Richard
+publisher	
+location	V
+subj	suspense thriller about modern-day China
+desc	
+id	       951
+title	White Nights
+author	Baryshnikov, Mikhail
+publisher	
+location	V
+subj	world of dance and world politics collide
+desc	
+id	       952
+title	Jungle Fever
+author	Lee, Spike
+publisher	
+location	V
+subj	interracial relationships
+desc	
+id	       953
+title	Ma Renu (About Sri Ram & 80th Birthday) - #224
+author	Sadanand
+publisher	
+location	V
+subj	
+desc	
+id	       954
+title	Hook - #225
+author	Spielberg, Steven
+publisher	Columbia Tristar
+location	V
+subj	Robin Williams and Dustin Hoffman star in this classic tale of
+desc	Peter Pan.
+id	       955
+title	New Year's Play, 2002 - #226
+author	Dass, Baba Hari
+publisher	
+location	V
+subj	The Renunciation of Jhumku and Chiddhu
+desc	Reel #1
+id	       956
+title	New Year's Play, 2002 - #227
+author	Dass, Baba Hari
+publisher	
+location	V
+subj	Renunciation of Jhumku and Chiddhu
+desc	Reel #2
+id	       957
+title	Dracula - #230
+author	
+publisher	MCA-Universal
+location	V
+subj	Bela Lugosi as Dracula
+desc	
+id	       958
+title	Boycott-#229
+author	
+publisher	HBO
+location	V
+subj	Dramatization of Montgomery Bus Boycott-1955
+desc	
+id	       959
+title	ANTZ-K-13
+author	
+publisher	Dreamworks
+location	V
+subj	
+desc	\
+id	       960
+title	Bells of St.Mary's,The-228
+author	
+publisher	Republic Pictures
+location	V
+subj	
+desc	
+id	       961
+title	Jerry Maguire  #232
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       962
+title	Bell's of St. Mary's, The #228
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       963
+title	LIAR LIAR  #231
+author	
+publisher	
+location	V
+subj	
+desc	
+id	       964
+title	The Prince of Egypt  # K-14
+author	
+publisher	Dreamworks
+location	V
+subj	
+desc	
+id	       965
+title	New Years Play 2002 - Reel 1 - #226
+author	
+publisher	
+location	V
+subj	Play performed at New Years retreat 2002
+desc	
+id	       966
+title	New Years Play 2002  Reel 2   #227
+author	Hari Dass, Baba
+publisher	
+location	V
+subj	Play Performed New Years retreat 2002
+desc	
+id	       967
+title	brave heart G-10
+author	mel gibson
+publisher	
+location	v
+subj	
+desc	mel gibson plays a scotsman who leads his countrymen to freedom
+id	       968
+title	Mahabharata part. 1 The Game of Dice #236
+author	peter brook
+publisher	parabola video library entered 12/10/02
+location	v
+subj	scenes: beginnings, the pandavas and kauravas, king pandu's curse
+desc	youth; the archery contest, marriage and kingdom, threat of war, Krishna makes his appearance,the game of dice
+id	       969
+title	Mahabharata, the (part 3) The War #238
+author	peter brook
+publisher	parabola video library entered 12/10/02
+location	v
+subj	Amba's Ghost; Mother and Son; The death of Abhimanyu, the death
+desc	of Ghatotkacha; THe death of Drona,karna takes comand; dushasana's death; karna's death; duryodhana's death etc.
+id	       970
+title	Mahabharata, the (pt 2) Exile in the forest #237
+author	peter brook
+publisher	parabola video library entered 12/10/02
+location	v
+subj	the pandavas in Danger;The search for arms; The powerful hermit;
+desc	the court of king Virata;Yudhisthira's vision;A comic interlude;Masks fall;war approaches;the bhagavad Gita
+id	       971
+title	return of the jedi #234
+author	George Lucas
+publisher	
+location	V
+subj	The rebels prepare to attack the emperor's death star
+desc	
+id	       972
+title	nightmare before christmas #235
+author	TIm Burton
+publisher	entered 12/10/02
+location	v
+subj	"heart felt tales of Jack Skellington, the pumpkin king of
+desc	halloween town, Jack has a dream to fill santa's shoes
+id	       973
+title	Empire strikes, the #233
+author	George Lucas
+publisher	
+location	V
+subj	Luke searches for Yoda to learn to be a jedi
+desc	
+id	       974
+title	Do the right thing #101
+author	Spike Lee
+publisher	
+location	V
+subj	"The hottest day of the year. Takes place on one neighboorhood
+desc	block for a 24 hour period that changes the lives of its residents
+id	       976
+title	Indiana jones and the temple of doom H-7
+author	
+publisher	
+location	V
+subj	Indiana Jone's seeks the famous Ankara Stone and to save 100s
+desc	of children's lives
+id	       977
+title	Green Mansions
+author	
+publisher	
+location	v
+subj	1995 with Audrey Hepburn & Anthony Perkins
+desc	
+id	       978
+title	Brief History of Time #137
+author	Hawking, Stephen
+publisher	
+location	V
+subj	
+desc	
+id	       979
+title	One Hundred Years Of Solitude
+author	Marquez, Gabriel Garcia
+publisher	New York: Avon Books, 1971
+location	V
+subj	Winner of the 1982 Nobel Prize
+desc	missing? 12/11/02
+id	       980
+title	Chosen, The
+author	Potok Chaim
+publisher	New York: Fawcett Crest, 1968
+location	v
+subj	missing? 12/11/02
+desc	
+id	       981
+title	Gods Must Be Crazy, the #107
+author	N/A
+publisher	N/A entered 12/11/02
+location	V
+subj	
+desc	Funny film
+id	       982
+title	House Of Mirth, The #239
+author	Terence Davies
+publisher	 entered 12/11/02
+location	v
+subj	“heart breaking story of Lily Bart (Gilian Anderson). “ The woman
+desc	seeks a wealthy husband but ends up “disgraced and discarded
+id	       983
+title	Blue Hotel, the - Gold Rush (chaplin) #46
+author	
+publisher	missing as of 12/11/02
+location	v
+subj	
+desc	
+id	       984
+title	Soul of TIbet - Dalai Lama #201
+author	
+publisher	missing as of 12/11/02
+location	v
+subj	
+desc	
+id	       985
+title	Ossian #184
+author	
+publisher	
+location	v
+subj	
+desc	
+id	       986
+title	Black Beauty #185
+author	
+publisher	
+location	v
+subj	
+desc	
+id	       987
+title	Mind Walk #166
+author	
+publisher	
+location	
+subj	
+desc	
+id	       988
+title	Parent Hood   #244
+author	Howard, Ron
+publisher	entered 12/18/02
+location	V
+subj	"The Buckmans are a modern day family trying to raise childern
+desc	
+id	       989
+title	A Fistful of Dynamite #243
+author	Morsella, Fulvio
+publisher	entered 12/18/02
+location	V
+subj	
+desc	"action packed tale of power and polltics." An Irish and a mexican revolutionary team up to free political prisonners
+id	       990
+title	Thief of Baghdad, the #242
+author	
+publisher	entered 12/18/02
+location	V
+subj	
+desc	Irrestible thief helps king steal back his throne
+id	       991
+title	All of Me #245
+author	Davis, Ed
+publisher	entered 12/18/02
+location	V
+subj	A woman is given a second chance at life by having her soul
+desc	transported into another womans body. But a mistake occurred and her soul took over the entire right side of Steve Martin
+id	       992
+title	Splash #241
+author	Friedman, Bruce Jay
+publisher	entered 12/18/02
+location	V
+subj	“Allen Bauer(Tom Hanks) is a sucessful businessman” who is knock-
+desc	ed unconscious and falls in love with his rescuer who is actually a mermaid
+id	       993
+title	Hawaii Islands of the Fire Goddess #240
+author	
+publisher	entered 12/18/02
+location	video
+subj	Narrator George Page tells a tale of “fire and water, of geology,
+desc	biology and native legend that begins at the lava lake of Kilauea, where the island of Hawaii sistll being born.”
+id	       994
+title	Mists of Avalon, The #108
+author	Marion Zimmer Bradley
+publisher	entered 12/19/02
+location	V
+subj	
+desc	
+id	       995
+title	Star Wars #109
+author	George Lucas
+publisher	entered 12/19/02
+location	V
+subj	“Princess Leia is captured and held hostage by the evil imperial
+desc	imperial forces in their effort to take over the galactic Empire." Solo rescues Leia
+id	       996
+title	Fantasia K-15
+author	
+publisher	entered 12/19/02
+location	V
+subj	
+desc	“blend of magnificent music and classic Disney animation.”
+id	       997
+title	Doc.: Robot Technology, Israeli & palestinian
+author	                              Youth #246
+publisher	entered 1/3/03
+location	V
+subj	
+desc	
+id	       998
+title	Auntie Mamie #247
+author	
+publisher	entered 1/3/03
+location	V
+subj	
+desc	An orphaned 10-year old boy comes to live with her Aunt who is played by Rosalind Russell.
+id	       999
+title	All The Pretty Horses, The Patriot #248
+author	
+publisher	entered 1/3/03
+location	V
+subj	
+desc	
+id	      1000
+title	Close Encounters of the third kind #2
+author	
+publisher	entered 1.8.03
+location	DVD
+subj	Richard Dreyfuss gives up his usual role in life in pursuit of
+desc	understanding his visions; he uncovers a government conspir- acy for himself and discovers the existence of aliens.
+id	      1001
+title	Monty Python's Life of Brian #1
+author	
+publisher	entered 1.8.03
+location	DVD
+subj	A boy  born in Judea in  close proximity to Jesus Christ and
+desc	around the same time is mistaken to be the messiah by three wise men from the east.
+id	      1002
+title	Fellowship of the Ring #34
+author	
+publisher	entered 1.8.03
+location	DVD
+subj	Lord of the Rings, 1st episode
+desc	Frodo and his friends go out to destroy the One Ring.PG-13
+id	      1004
+title	Dersu Uzala
+author	
+publisher	
+location	V
+subj	
+desc	
+id	      1005
+title	relational yoga
+author	
+publisher	entered 3.7.03
+location	V
+subj	
+desc	Asanas, meditation, and pranayam “and the practice of the siddhis" is
+id	      1006
+title	Relational Yoga
+author	McAfee, John
+publisher	entered 3.12.03
+location	V
+subj	
+desc	Asanas, meditation, and pranayam “and the practice of the siddhis" is presented.
+id	      1007
+title	Relational Yoga #5
+author	McAfee, John
+publisher	entered 3.12.03
+location	DVD
+subj	
+desc	"Recovering the lost Art of Yoga"
+id	      1008
+title	Star Wars II - Attack of the Clones
+author	Lucas, George
+publisher	enterd 5.23.03
+location	DVD30
+subj	Star Wars
+desc	Anakin Skywalker is mastering the Jedi Art but now he has to decide between his duties and "forbidden love.
+id	      1009
+title	Beatles Yellow Submarine, The #8
+author	Minoff,Lee
+publisher	enterd 5.23.03
+location	DVD
+subj	Beatles
+desc	A unique form of cartooning. The Pepperland paradise is taken over by the "Blue Meanies". The beatles save the day.
+id	      1010
+title	E.T. The Extra-Terrestial #9
+author	Mathison, Melissa
+publisher	enterd 5.23.03
+location	DVD
+subj	E.T.
+desc	E.T. comes into a little boy's life and brings love into the hearts of many but some are afraid of his love.
+id	      1011
+title	Harry Potter And The Sorcerer's Stone #11
+author	Rowling, J.K.
+publisher	enterd 5.23.03
+location	DVD
+subj	Harry Potter
+desc	Harry Potter discovers his roots and puts a stop to Volte Mort for now.
+id	      1012
+title	Man who knew too little, The #10
+author	
+publisher	
+location	DVD
+subj	Comedy, Action
+desc	Bill Murray stars as a man who thinks he is playing a theat- rical game but he stumbles into "real" danger but not knowin
+id	      1014
+title	One flew over the cuckoo's nest B-1
+author	
+publisher	
+location	V
+subj	
+desc	
+id	      1015
+title	Enchanted April #252
+author	From the novel of Elizabeth Von Arnim
+publisher	enterd 9.17.03
+location	V
+subj	
+desc	Two Englishwomen, in "passionless marriages" decide to go "medieval villa" for a one-month vacation. There they grow out of their stagnancy and reawaken their love that had escaped them long ago.
+id	      1016
+title	The Little Buddha #251
+author	n/a
+publisher	enterd 9.17.03
+location	V
+subj	
+desc	n/a
+id	      1017
+title	Babe #K-16
+author	
+publisher	enterd 9.17.03
+location	V
+subj	
+desc	"This is a story of an unprejudiced heart and how it changed our valley forever."
+id	      1018
+title	Romeo and Juliet with Leonardo De Caprio
+author	
+publisher	enterd 10.14.03
+location	V
+subj	
+desc	The setting of this is in modern times and not in Shakespearan times.
+id	      1019
+title	Larger Than Life #256
+author	N/A
+publisher	entered 11.18.03
+location	V
+subj	
+desc	Bill Murray stars as Jack Corcoan, a successful businessman who's thrilled when his estranged father, a former circus clown, leave him a big inheritanceÖVera (The Elephant)Ö" Jack decides he wants to sell Vera to someone who is 3000 miles away so he sets out across the country. In the end he falls in "love" with Vera.
+id	      1020
+title	My Best Friend's Wedding #25
+author	
+publisher	enterd 11.19.03
+location	DVD
+subj	
+desc	"high spirited romantic comedy that serves up something wild, something new, something touching, and something truly hilarious."
+id	      1022
+title	Bridges Of Madison Country, The #20
+author	
+publisher	enterd 11.19.03
+location	DVD
+subj	
+desc	"World Traveling National Geographic photographer Robert Kincaid and Iowa housewife Francesca Johnson aren't looking to turn their lives upside down. Each is at a point in life where expectations are behind them. Yet four days after they won't want to lose the love they've found."
+id	      1023
+title	Timonthy Leary's Last Trip #21
+author	
+publisher	enterd 11.19.03
+location	DVD
+subj	
+desc	"This behind-the-scenes look at Dr. Timothy Leary, pioneer in psychology and consciousness raising of the 1960's, docu- ments the life of the man who led a 30-year struggle to have the youth of the nation "Tune In, Turn On, Drop Out." Diagnosed with terminal cancer in 1995, Leary chose to exit this planet with all the energy of his countless excursions
+id	      1024
+title	Singin' In The Rain #22
+author	
+publisher	enterd 11.19.03
+location	DVD
+subj	
+desc	Don "sets out to make musicals with the woman of his dreams but one thing stand in his way: his jealous co-star (Jean Hagen) who wants Don -leading role- all to herself!"
+id	      1027
+title	Fifth Element, The #18
+author	
+publisher	entered 11.22.03
+location	DVD
+subj	
+desc	"Bruce Willis, Mila Jovovich and Gary Oldman star in an outrageous sci-fi adventure, and extravagantly-styled tale of good against evil set in an unbelievable twenty-third century world. All aboard for "A futuristic, eye- popping adventure!"
+id	      1028
+title	As Good As It Gets #16
+author	
+publisher	enterd 11.22.03
+location	DVD
+subj	
+desc	Starring Jack Nicholson, Helen Hunt, Greg Kinnear and Cuba Gooding Jr. "Melvin Udall, an obsessive-compulsive novelist with Manhattan's meanest mouth. But when his neighbor Simon is hospitalized, Melvin is forced to baby-sit Simon's dog. And that unexpected act of kindness - along with waitress Carol Connelly - helps put Melvin back in the human race."
+id	      1029
+title	Little Princess, A #15
+author	
+publisher	enterd 11.22.03
+location	DVD
+subj	
+desc	Sara Crewe "shares a life of wonder in exotic India with her devoted father. But war draw Sara's father into the militar- y and Sara is sent to a New York boarding school run by the strict Miss Minchin, to whom exuberant Sara is a troublemake r But with courage, imagination and kindness, Sara overcomes her hardships - and changes her life" and others.
+id	      1030
+title	Lady and the Tramp #14
+author	
+publisher	entered 11.22.03
+location	DVD
+subj	
+desc	About "Lady, a lovingly pampered cocker spaniel, and Tramp, a roguish mutt from across the tracks."
+id	      1031
+title	Wing Chun #24
+author	
+publisher	entered 11.26.03
+location	DVD
+subj	
+desc	"Martial arts expert Wing Chun battles bandits, horse thieves, and men around her who simply can't handle a independent woman" She fights until the respect "for her remarkable skills is won."
+id	      1032
+title	Wizard of Oz, The #13
+author	
+publisher	enterd 11.26.03
+location	DVD
+subj	
+desc	Dorothy is whisked away from her Kansas home one day and magically appeared in this new fairyland world where she meets all kinds of friends and meets the wicked witch of west.
+id	      1033
+title	Assisi - Home of St. Francis #254
+author	
+publisher	enterd 11.26.03
+location	V
+subj	
+desc	"guided tour of the town of Assisi by Saint Francis himself This tour visits all the sites in Assisi that played a significant role in the life of Saint Francis."
+id	      1034
+title	Turning Point, The #255
+author	
+publisher	enterd 11.26.03
+location	V
+subj	
+desc	"partly based on the life of dancer Leslie Browne, who who portrays Shirley MacLaine's daughter."
+id	      1035
+title	Lives of the Saints, The
+author	Englebert, Omer
+publisher	penguin enterd 1.2.04
+location	WS
+subj	Fremantle, Ardennes
+desc	"Concise and inspiring biographies of the most revered saint s saints in history." Interesting facts and colorful setting s of the lives of the saints whom we speak about and to whom we speak about and to whom we pray, who have provided artist s with the subjects of their masterpieces, and whose names are born by our cities, our towns, and ourselves."
+id	      1046
+title	Ramayana #R 1-26
+author	
+publisher	entered 1.23.04
+location	V
+subj	Ramayana, Ram, Sita, Hanuman, Ravana
+desc	Directed by Ramanand Sagar NOTE: Given to Girls' Boarding (belongs to Babaji)
+id	      1047
+title	Pearl Harbor #257 (set of two)
+author	
+publisher	enterd 1.23.04
+location	V
+subj	
+desc	Directed by Michael Bay and Jerry Bruckheimer. Starring Ben Affleck , Josh Hartnett, and Kate Beckinsale. "focuses on the war's devastating impact on two daring young pilots, and a nurse.
+id	      1048
+title	Tibet's Stolen Child #258
+author	
+publisher	entered 1.23.04
+location	V
+subj	Desmond Tutu, Elie Wiesel, Jose Ramos-Horta, John Hume
+desc	"A young boy, the Panchen Lama, is the center of a swirling storm of international controversy. Identified by the Dalai Lama as the reincarnation of Tibet's second highest spiritua l leader, this young child was kidnapped by the Chinese gove rnment just days after the Dalai Lama's announcement."
+id	      1049
+title	Marvin's Room #259
+author	
+publisher	enterd 1.23.04
+location	V
+subj	
+desc	Starring Leonardo DiCaprio plays a "criminally rebellious so n in this funny and stirring tale of one family's humor and heartache. Seventeen years ago Lee (Meryl Streep) left behin d her sister (Diane Keaton) to care for their father, Marvin But Lee returns with her son. Also starring is Robert De Niro.
+id	      1050
+title	Godzilla DVD #12
+author	
+publisher	enterd 1.23.04
+location	DVD
+subj	
+desc	"Godzilla is back, bigger and much better than ever.. its si ze defies comprehension.. an expertly designed theme park ri de of a movie that packs nonstop thrillsÖone jaw-dropping sc ene after another, the file never loses either momentum or its human scale."
+id	      1051
+title	Starman DVD #17
+author	
+publisher	enterd 1.23.04
+location	DVD
+subj	
+desc	Directed by John Carpenter. "a romantic science fiction odys sey starring Jeff Bridges as  an innocent alien from a dista nt planet who learns what it means to be a man in love."
+id	      1052
+title	Meet Joe Black #260
+author	
+publisher	enterd 3.3.04
+location	V
+subj	Clare Forlani
+desc	Starring Brad Pitt & Anthony Hopkins. "Wealthy media tycoon (Hopkins)" had a good life until he met (Pitt) who offers a proposition- (Pitt) will "delay Hopkins imminent demise in exchange for a tour of  life." Pitt falls for Hopkins daugh ter and "threatens to change the rules." So Hopkins now has to fight for his future and for "those he loves."
+id	      1053
+title	Green Mile, The #261
+author	
+publisher	enterd 3.3.04
+location	V
+subj	Tom Hanks, Michael Clarke Duncan, Frank Darabont
+desc	John Coffey is on death-row as a prisoner, but he has "super natural powers, [and] brings a sense of spirit and humanity to his guards and fellow inmates."
+id	      1056
+title	Life Before Renunciation
+author	Dass, Baba Hari
+publisher	MMC, entered 3.24.04
+location	DVD
+subj	SP 1-4
+desc	MMC's New Year's Play 2004
+id	      1057
+title	2001: A Space Odyssey # 264
+author	n/a
+publisher	enterd 4.7.04
+location	V
+subj	Stanley Kubrick, Keir Dulea, Gary Lockwood,
+desc	"A compelling drama of man vs. machine" set in furturistic times.
+id	      1058
+title	Lawrence of Arabia #265
+author	N/A
+publisher	N/A enterd 4.7.04
+location	V
+subj	Peter O'Toole, David Lean,
+desc	"The heroic true-life exploits of famed British officer, T.E Lawrence. Assigned to Arabia during World War I, Lawrence co urageously unites the warring Arab factions into a strong gu erilla front that endures brilliant victories and eventual defeat against the Turkish Empire ruling this treacherous desert area."
+id	      1060
+title	Peace Pilgrim #262
+author	
+publisher	enterd 4.30.04
+location	V
+subj	Friends of Peace Pilgrim
+desc	"An American Sage Who Walked Her Talk. A documentary."
+id	      1061
+title	Opera Highlights  Venice Masquerade #263
+author	
+publisher	enterd 4.30.04
+location	V
+subj	Mozart, Bethoven, Bizet, Donizetti, Gluck, Gounod, Mascagni
+desc	"A grand display of colorful costumes and masks in the back backdrop of a city that boasts architectural beauty, histori cal monuments and romantic gondola rides."
+id	      1062
+title	
+author	
+publisher	
+location	
+subj	
+desc	
+id	      1063
+title	Sacrifice, the  #266
+author	Tarkovski, Andrei
+publisher	entered 5/12/04
+location	V
+subj	
+desc	
+id	      1064
+title	Hyena Story, etc.       #62
+author	
+publisher	
+location	V MMS
+subj	
+desc	
+id	      1065
+title	Whale Rider
+author	
+publisher	
+location	281
+subj	
+desc	
+id	      1066
+title	Beautiful Mind, A
+author	
+publisher	
+location	273
+subj	
+desc	Video
+id	      1067
+title	Men in Black
+author	
+publisher	
+location	272
+subj	
+desc	Video
+id	      1068
+title	Sixth Sense, The
+author	
+publisher	
+location	270
+subj	
+desc	Video
+id	      1069
+title	Sabrina
+author	
+publisher	
+location	269
+subj	
+desc	Video
+id	      1070
+title	Sleepless in Seattle
+author	
+publisher	
+location	268
+subj	
+desc	Video
+id	      1071
+title	Ghostbusters
+author	
+publisher	
+location	267
+subj	
+desc	Video
+id	      1072
+title	Yoga with Richard Freeman
+author	
+publisher	
+location	274
+subj	
+desc	Video
+id	      1073
+title	Titanic
+author	
+publisher	
+location	271
+subj	
+desc	Video
+id	      1074
+title	Yoga for Meditation
+author	
+publisher	
+location	275
+subj	
+desc	Video
+id	      1075
+title	Yoga for Meditation
+author	
+publisher	
+location	275
+subj	
+desc	Video
+id	      1076
+title	Yoga for Beginners
+author	
+publisher	
+location	276
+subj	
+desc	Video
+id	      1077
+title	Yoga for Flexibility
+author	
+publisher	
+location	277
+subj	
+desc	Video
+id	      1078
+title	Yoga for Strength
+author	
+publisher	
+location	278
+subj	
+desc	Video
+id	      1079
+title	Yoga for Relaxation
+author	
+publisher	
+location	280
+subj	
+desc	Video
+id	      1080
+title	Yoga for Energy
+author	
+publisher	
+location	280
+subj	
+desc	Video
+id	      1081
+title	Star Wars 1
+author	
+publisher	
+location	DVD29
+subj	
+desc	Subtitle: The Phantom Menace
+id	      1082
+title	Star Wars II
+author	
+publisher	
+location	DVD30
+subj	
+desc	Subtitle: Attack of the Clones
+id	      1083
+title	Star Wars IV
+author	
+publisher	
+location	DVD31
+subj	
+desc	Subtitle: A New Hope
+id	      1084
+title	Star Wars V
+author	
+publisher	
+location	DVD32
+subj	
+desc	Subtitle: The Empire Strikes Back
+id	      1085
+title	Star Wars VI
+author	
+publisher	
+location	DVD33
+subj	
+desc	Subtitle: Return of the Jedi
+id	      1086
+title	Snake and Crane Arts of Shaolin
+author	
+publisher	
+location	DVD19
+subj	Aventure, martial arts
+desc	Jackie Chan stars in murder/adventure
+id	      1087
+title	Two Towers, The    #35
+author	
+publisher	Entered 8/05
+location	DVD
+subj	Lord of the Rings, episode 2
+desc	Fantasy, Adventure, PG-13.
+id	      1088
+title	Return of the King, The    #36
+author	
+publisher	Entered 8/05
+location	DVD
+subj	Lord of the Rings, episode 3
+desc	Fantasy, Adventure, PG-13.
+id	      1089
+title	My Left Foot   #283
+author	
+publisher	entered 8/05
+location	video
+subj	courage, disability, inspiration
+desc	How a disabled man overcomes obstacles. Rated R.
+id	      1090
+title	Harry Potter and the Prisoner of Azakaban   #7
+author	
+publisher	Entered 8/05
+location	video
+subj	fantasy, adventure
+desc	Third film in the series. PG.
+id	      1091
+title	Monkey Trial #282
+author	
+publisher	Entered 8/05
+location	Video
+subj	Evolution, Trial
+desc	Presents the controversial subject of evolution and a trial that presented 2 different and opposing views.
+id	      1092
+title	Yoga In Health Care
+author	Stiles and Minor
+publisher	
+location	DVD 4
+subj	hatha yoga, health
+desc	Flexible strength and vitality through joint freeing Yoga series
+id	      1093
+title	Truth That Is Always Present
+author	Adyashanti
+publisher	Open Gate Publishing
+location	DV40
+subj	Satsang with Adyashanti
+desc	Inquiry into the conditioning of the mind with Zen teacher Adyashanti
+id	      1095
+title	Gift of Wanting
+author	Adyashanti
+publisher	Open Gate Publishing
+location	DV39
+subj	Satsang with Adyashanti
+desc	Inquiries into topics of fear of death, sex and ego, the hidden gift of wanting
+id	      1096
+title	What do you Really Want?
+author	Adyashanti
+publisher	Open Gate Publishing
+location	DV41
+subj	Satsang with Adyashanti
+desc	Inquiry into the Truth of Being
+id	      1097
+title	Turnaround of the Heart
+author	Adyashanti
+publisher	Open Gate Publishing
+location	DV42
+subj	Satsang with Adyashanti
+desc	Inquiry into looking at what actually is
+id	      1098
+title	Yoga and the Quest for the True Self
+author	Cope, Stephen
+publisher	Bantam Books
+location	YPh
+subj	Yoga, Liberation, Philosophy, Psychology
+desc	
+id	      1099
+title	Terms of Endearment  #284
+author	
+publisher	
+location	V
+subj	Jack Nicholson, Shirley MacLaine
+desc	Starring Jack Nicholson, Shirley MacLaine, Debra Winger, rated PG
+id	      1100
+title	Harry Potter and the Goblet of Fire
+author	
+publisher	
+location	DV43
+subj	Harry Potter
+desc	Episode 4 in the Potter Series
+id	      1101
+title	Lagaan
+author	
+publisher	
+location	DV3
+subj	India, cricket
+desc	A popular Indian musical about the power struggle between the Indians and the British colonial Empire. The battle takes place on a cricket field.
+id	      1102
+title	Adi Shankaracharya
+author	Film by G.V. Iyer
+publisher	
+location	DVD
+subj	SP 9
+desc	Based on the life of one of the Greatest thinkers of India Made in classical Sanskrit language
+id	      1103
+title	Kumbha Mela
+author	Devavision Productions
+publisher	Mandala Publ. 2003
+location	DVD
+subj	SP 10
+desc	The world's largest gathering of Pilgrims at this festival which takes place on the Ganges
+id	      1104
+title	Honey, I Shrunk the Kids
+author	Walt Disney Pictures
+publisher	
+location	V
+subj	v 286
+desc	Rated P-G

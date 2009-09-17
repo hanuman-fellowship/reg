@@ -36,7 +36,10 @@ function process(e) {
     if (keynum == 13) {     // they've hit Return
         var f = getElementById('form');
         f.submit();
-        return;
+        return true;
+    }
+    if (keynum == 91) {     // just a switch to this screen via the keyboard
+        return true;
     }
     keychar = String.fromCharCode(keynum);
     var s = document.getElementById('pat');

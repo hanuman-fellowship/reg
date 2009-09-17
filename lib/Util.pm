@@ -53,6 +53,7 @@ our @EXPORT_OK = qw/
     PR_other_reserved_cids
     reserved_clusters
     palette
+    esc_dquote
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -248,7 +249,7 @@ my $nleaders;
 
 sub _leader_elem {
     my ($i) = @_;
-    if ($i > $nleaders) {
+    if ($i >= $nleaders) {
         return "&nbsp;";
     }
     $leaders[$i];
@@ -645,6 +646,7 @@ sub email_letter {
         });
         if (! $mail_sender) {
             $c->log->info("could not create mail_sender");
+            return 0;
         }
     }
     my @cc_bcc = ();
@@ -654,25 +656,30 @@ sub email_letter {
     if (exists $args{bcc}) {
         push @cc_bcc, bcc => $args{bcc};
     }
-    $mail_sender->Open({
+    if (! $mail_sender->Open({
         to       => $args{to},
         @cc_bcc,
         from     => $args{from},
         subject  => $args{subject},
         ctype    => "text/html",
         encoding => "7bit",
-    })
-        or die "no Mail::Sender->Open $Mail::Sender::error";
-        # ??? better failure behavior?
-
+    })) {
+        $mail_sender = undef;
+        $c->log->info("no Mail::Sender->Open $Mail::Sender::Error");
+        return 0;
+    }
     $mail_sender->SendLineEnc($args{html});
-    $mail_sender->Close()
-        or die "no Mail::Sender->Close $Mail::Sender::Error";
+    if (! $mail_sender->Close()) {
+        $mail_sender = undef;
+        $c->info->log("no Mail::Sender->Close $Mail::Sender::Error");
+        return 0;
+    }
     if (@cc_bcc) {
         $mail_sender = undef;
         # need to recreate or else the cc/bcc people
         # will receive all email!
     }
+    return 1;
 }
 
 sub lunch_table {
@@ -1418,6 +1425,16 @@ sub palette {
     }
     $html .= "</table>\n";
     return $html;
+}
+
+sub esc_dquote {
+    my ($s) = @_;
+
+    if (! defined $s) {
+        return '';
+    }
+    $s =~ s{"}{\\"}g;
+    $s;
 }
 
 1;

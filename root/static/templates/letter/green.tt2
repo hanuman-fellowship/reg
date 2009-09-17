@@ -1,0 +1,13 @@
+Thank you.
+<p>
+Thank you, [% first %], for
+your generous contribution of $[% amount %]
+to our Green Fund.
+<p>
+Your funds will be used for eco-events and sustainable efforts
+at MMC.  See this web site for more details.
+<p>
+Your contribution <b>is</b> tax deductible.
+<p>
+[% green_name %]<br>
+Green Admin
