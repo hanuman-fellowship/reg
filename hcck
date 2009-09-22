@@ -1,28 +1,31 @@
 #!/usr/bin/perl
 
 =comment
-requirements for the hcck (right?) program:
+a careful read-only examination of the config table
+
+requirements for the hcck program:
     1- for every house id for every day from today to
         sys_last_config_date we have one and only one config record.
     2- there are the same number of distinct house_id's
         in config as there are houses.
     3- for every rental_booking record there is the proper config records
-        with max and cur = house->max, sex is R,
+        with curmax equal to cur and both <= house->max, sex is R,
         rental_id matches, program_id is 0 
     4- for config records with a non-zero cur and a program id
         of non-zero there are exactly cur registration records
         with different reg ids for that date and that house.
-    5- look at all reg records with house_id != 0
-            multiply by date_end-date_start
-       this should match the sum of cur where program_id != 0
-    6- in all config records curmax should not be > house->max
+        you may need to add blocks to the reg records.
+    5- in all config records curmax should not be > house->max
        and curmax should be a digit (not blank).
-    7- cannot have both rental_id != 0 and program_id != 0
-    8- if rental_id or program_id is non-zero then there
+    6- cannot have both rental_id != 0 and program_id != 0
+    7- if rental_id or program_id is non-zero then there
        should be a valid rental or program with that id.
+
 =cut
 use warnings;
 use strict;
+$|++;       # unbuffer STDOUT
+
 use lib "lib";
 use DBI;
 use Date::Simple qw/
@@ -147,10 +150,10 @@ while (my $rb_ref = $sth->fetchrow_hashref()) {
     while (my $cf_ref = $sth2->fetchrow_hashref()) {
         my $note = "for house $cf_ref->{house_id}, date $cf_ref->{the_date}";
         my $max = $h_max{$rb_ref->{house_id}};
-        if ($cf_ref->{curmax} != $max 
-            || $cf_ref->{cur} != $max
-        ) {
-            print "** curmax, max != $max $note\n";
+        if ($cf_ref->{curmax} != $cf_ref->{cur}
+            || $cf_ref->{curmax} > $max       )
+        {
+            print "** curmax != max or either > $max $note\n";
             ++$err;
         }
         if ($cf_ref->{sex} ne 'R') {
@@ -179,6 +182,7 @@ $sth = $dbh->prepare("
     from config
     where cur != 0
       and program_id != 0
+    order by the_date
 ");
 $sth->execute();
 $sth2 = $dbh->prepare("
@@ -188,12 +192,25 @@ $sth2 = $dbh->prepare("
       and date_start <= ?
       and date_end   >  ?
 ");
+my $sth3 = $dbh->prepare("
+    select nbeds
+      from block
+     where house_id = ?
+       and sdate <= ? and ? < edate
+");
 $err = 0;
 while (my ($cur, $house_id, $the_date) = $sth->fetchrow_array()) {
     $sth2->execute($house_id, $the_date, $the_date);     
     my ($count) = $sth2->fetchrow_array();
     if ($count != $cur) {
-        print "** reg mismatch ($count != $cur) for house $house_id date $the_date\n";
+        # could there be a block on this day to account
+        # for the difference?
+        $sth3->execute($house_id, $the_date, $the_date);
+        my ($nbeds) = $sth3->fetchrow_array();
+        $nbeds ||= 0;
+        if ($count + $nbeds != $cur) {
+            print "** reg/block mismatch ($count != $cur) for house $house_id date $the_date\n";
+        }
         ++$err;
     }
 }
@@ -202,32 +219,6 @@ if (! $err) {
 }
 
 # requirement #5
-$sth = $dbh->prepare("
-    select date_start, date_end
-    from registration
-    where house_id != 0
-");
-$sth->execute();
-my $reg_sum = 0;
-while (my ($start, $end) = $sth->fetchrow_array()) {
-    $reg_sum += date($end)-date($start);
-}
-$sth = $dbh->prepare("
-    select sum(cur)
-    from config
-    where program_id != 0
-");
-$sth->execute();
-my ($config_sum) = $sth->fetchrow_array();
-$config_sum ||= 0;
-if ($reg_sum != $config_sum) {
-    print "** reg_sum $reg_sum != config_sum $config_sum\n";
-}
-else {
-    print "reg sum matches config sum\n";
-}
-
-# requirement #6
 $sth = $dbh->prepare("
     select c.*, h.max, h.tent
     from config c, house h
@@ -243,8 +234,10 @@ while (my (@data) = $sth->fetchrow_array()) {
             $d = "-";
         }
     }
-    if ($data[8] eq 'yes') {
-        print "++ curmax or max > house_max: $h_name{$data[0]}: @data - but tent so okay\n";
+    #   h.tent                 c.cur
+    if ($data[8] eq 'yes' && $data[4] > 0) {
+        # okay. don't print at all, please.
+        # print "++ curmax or max > house_max: $h_name{$data[0]}: @data - but tent so okay\n";
     }
     else {
         print "** curmax or max > house_max: $h_name{$data[0]}: @data\n";
@@ -276,7 +269,8 @@ while (my (@data) = $sth->fetchrow_array()) {
 if (! $err) {
     print "no bad curmax\n";
 }
-# requirement #7 - no records with both program_id and rental_id being non-zero
+
+# requirement #6 - no records with both program_id and rental_id being non-zero
 #
 $sth = $dbh->prepare("
     select house_id, the_date, rental_id, program_id
@@ -288,14 +282,14 @@ $err = 0;
 while (my ($house_id, $the_date, $rental_id, $program_id)
     = $sth->fetchrow_array()
 ) {
-    print "** both program and rental: $house_id, $the_date, $rental_id, $program_id\n";
+    print "** both program and rental: $house_id, $the_date, $program_id, $rental_id\n";
     ++$err;
 }
 if (! $err) {
     print "no doubled program/rental\n";
 }
 
-# requirement #8 - good program_id, rental_id
+# requirement #7 - good program_id, rental_id
 #
 my $sql = <<EOS;
 select house_id, h.name, the_date, cur, program_id
