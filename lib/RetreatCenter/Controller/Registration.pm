@@ -608,6 +608,7 @@ sub _rest_of_reg {
     }
     if (@reg) {
         # duplicate registrations are okay but not overlapping ones
+        # TODO???
     }
 
     #
@@ -956,7 +957,7 @@ sub create_do : Local {
     my $pr = model($c, 'Program')->find($P{program_id});
     #
     # we CAN register twice for some programs.
-    # is this a dup reg?
+    # is this be a dup reg?
     # we have the person and the program.
     # check if it is there already.
     #
@@ -1096,11 +1097,11 @@ sub create_do : Local {
         });
     }
 
-    # add the automatic charges (only lodging if dup)
+    # add the automatic charges
     _compute($c, $reg, $P{dup}, @who_now);
 
     # notify those who want to know of each registration as it happens
-    if ($pr->notify_on_reg) {
+    if (!$P{dup} && $pr->notify_on_reg()) {
         my $html = "";
         my $tt = Template->new({
             INCLUDE_PATH => 'root/static/templates/letter',
@@ -1329,16 +1330,18 @@ sub _compute {
             what      => $what,
         });
     }
-    elsif ($dup && $tot_h_cost != 0) {
-        # dup record - DO put a manual charge for the room
-        # even tho it is on manual financing.
-        model($c, 'RegCharge')->create({
-            @who_now,
-            automatic => '',
-            amount    => $tot_h_cost,
-            what      => $what,
-        });
-    }
+    # elsif ($dup && $tot_h_cost != 0) {
+    #    # dup record - DO put a manual charge for the room
+    #    # even tho it is on manual financing.
+    #    # NO, don't do that.   the registrar will take care of it.
+    #
+    #    model($c, 'RegCharge')->create({
+    #        @who_now,
+    #        automatic => '',
+    #        amount    => $tot_h_cost,
+    #        what      => $what,
+    #    });
+    #}
     if ($auto && $pr->school() != 0 && ! $lead_assist) {
         # MMI registrants have an extra day at the commuting rate.
         #
