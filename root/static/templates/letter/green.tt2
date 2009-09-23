@@ -1,13 +1,28 @@
-Thank you.
 <p>
-Thank you, [% first %], for
-your generous contribution of $[% amount %]
-to our Green Fund.
+Dear [% first %],
 <p>
-Your funds will be used for eco-events and sustainable efforts
-at MMC.  See this web site for more details.
+Thank you for your contribution of $[% amount %] to the
+Mount Madonna Center Green Scene Fund! 
+Donations will be put towards our many &ldquo;green&rdquo;
+endeavors including: 
+<ul>
+<li>MMC's certification for 
+The Monterey Bay Area Green Business Program &mdash; a free program,
+though funds are needed for necessary improvements
+<li>Chlorine-alternative filtration for our hot tub
+<li>Community awareness events- Alternative Commuter Week,
+Solarbration, The Great Light Bulb Exchange
+<li>Improving our systems- timers for outlets and light switches,
+counter top water filters, and more
+<li>Ongoing energy monitoring displays and information kiosk
+<li>Sponsored speakers and day workshops
+</ul>
+We anticipate an ongoing webpage to keep you informed of upcoming events
+and our green status. Until this comes online we are happy to provide
+you with a general email which will include future events or opportunities.
+Please reply with "green mailing list" in the subject line if you wish
+to be added. 
 <p>
-Your contribution <b>is</b> tax deductible.
+With much appreciation and gratitude, 
 <p>
-[% green_name %]<br>
-Green Admin
+MMC Sustainability Council
