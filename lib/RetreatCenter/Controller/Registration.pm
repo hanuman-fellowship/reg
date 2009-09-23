@@ -36,6 +36,7 @@ use Util qw/
     ptrim
     other_reserved_cids
     PR_other_reserved_cids
+    invalid_amount
 /;
 use POSIX qw/
     ceil
