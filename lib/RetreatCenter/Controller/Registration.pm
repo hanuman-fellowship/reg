@@ -69,7 +69,7 @@ sub index : Private {
 sub transform_dates {
     my ($pr, %dates) = @_;
 
-    my $PR = $pr->name() =~ m{personal\s+retreat}i;
+    my $PR = $pr->PR();
     
     if ($PR || ($dates{date_start} && $dates{date_start} ne $pr->sdate())) {
         $dates{early} = 'yes';
@@ -325,6 +325,9 @@ my %needed = map { $_ => 1 } qw/
     home
     work
     cell
+    dphone
+    ephone
+    cphone
     ceu_license
     email
     house1
@@ -376,6 +379,19 @@ sub get_online : Local {
         }
     }
     close $in;
+
+    # legacy... can delete soon
+    if ($P{dphone}) {
+        $P{work} = $P{dphone};
+    }
+    if ($P{ephone}) {
+        $P{home} = $P{ephone};
+    }
+    if ($P{cphone}) {
+        $P{cell} = $P{cphone};
+    }
+    # legacy
+
     $P{green_amount} ||= 0;     # in case not set at all
 
     # save the filename so we can delete it when the registration is complete
@@ -516,7 +532,7 @@ EOH
             share_mailings => $P{share_mailings},
             date_updat => $today,
         });
-        my $person_id = $p->id;
+        my $person_id = $p->id();
     }
 
     #
@@ -743,7 +759,7 @@ sub _get_data {
     @mess = ();
 
     # first make sure that personal retreats have reasonable dates.
-    my $PR = ($prog->name =~ m{personal retreat}i);
+    my $PR = $prog->PR();
     if ($PR) {
         if (empty($P{date_start})) {
             push @mess, "Missing Start Date for the Personal Retreat.";
@@ -1703,10 +1719,10 @@ sub send_conf : Local {
     my $htdesc = $string{$reg->h_type};
     $htdesc =~ s{\s*\(.*\)}{};           # don't need this
     $htdesc =~ s{Mount Madonna }{};      # ... Center Tent
-    my $personal_retreat = $pr->title =~ m{personal\s*retreat}i;
+    my $PR = $pr->PR();
     my $start = ($reg->date_start)? $reg->date_start_obj: $pr->sdate_obj;
     my $carpoolers = undef;
-    if ($reg->carpool() && ! $personal_retreat) {
+    if ($reg->carpool() && ! $PR) {
         $carpoolers = [ model($c, 'Registration')->search(
             {
                 program_id => $pr->id,
@@ -1724,8 +1740,8 @@ sub send_conf : Local {
         person   => $reg->person,
         reg      => $reg,
         program  => $pr,
-        personal_retreat => $personal_retreat,
-        sunday   => $personal_retreat
+        personal_retreat => $PR,
+        sunday   => $PR
                     && ($reg->date_start_obj->day_of_week() == 0),
         friday   => $start->day_of_week() == 5,
         today    => tt_today($c),
@@ -1883,7 +1899,7 @@ sub _view {
             $share .= " - <span class=required>could not find</span>";
         }
     }
-    my $PR = $prog->name() =~ m{personal retreat}i;
+    my $PR = $prog->PR();
     my ($sdate, $nmonths);
     if ($PR) {
         $sdate = $reg->date_start();
@@ -2876,7 +2892,7 @@ sub lodge : Local {
 
     my $reg        = model($c, 'Registration')->find($id);
     my $pr         = $reg->program();
-    my $PR         = $pr->name() =~ m{personal\s*retreats}i;
+    my $PR         = $pr->PR();
     my $program_id = $reg->program_id();
 
     my %reserved_cids = 
