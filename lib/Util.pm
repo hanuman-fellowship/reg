@@ -1281,6 +1281,9 @@ sub accpacc {
 
 sub highlight {
     my ($s) = @_;
+    if (! defined $s) {
+        return "";
+    }
     return ($s =~ m{TBD|\?|\*}? "<span class=highlight>$s</span>"
             :                   $s                               );
 }

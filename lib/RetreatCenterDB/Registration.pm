@@ -121,7 +121,7 @@ sub room_site {
 sub pref1_sh {
     my ($self) = @_;
     my $pref = $self->pref1();
-    if (! exists $string{$pref}) {
+    if (! $pref || ! exists $string{$pref}) {
         return "";
     }
     my $s = $string{$pref};
@@ -131,7 +131,7 @@ sub pref1_sh {
 sub pref2_sh {
     my ($self) = @_;
     my $pref = $self->pref2();
-    if (! exists $string{$pref}) {
+    if (! $pref || ! exists $string{$pref}) {
         return "";
     }
     my $s = $string{$pref};
