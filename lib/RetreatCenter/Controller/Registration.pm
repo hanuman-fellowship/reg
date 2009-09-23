@@ -1326,12 +1326,15 @@ sub _compute {
         $what = "$prog_days day$plural Lodging at \$$h_cost per day";
     }
     else {
-        $tot_h_cost = int($h_cost * ($prog_days/$tot_prog_days));
+        # changed from pro-rating to not pro-rating
+        #
+        #$tot_h_cost = int($h_cost * ($prog_days/$tot_prog_days));
+        $tot_h_cost = $h_cost;
         $what = "Lodging - Total Cost";
-        if ($prog_days != $tot_prog_days) {
-            my $plural = ($prog_days == 1)? "": "s";
-            $what .= " - $prog_days day$plural";
-        }
+        #if ($prog_days != $tot_prog_days) {
+        #    my $plural = ($prog_days == 1)? "": "s";
+        #    $what .= " - $prog_days day$plural";
+        #}
     }
     if ($lead_assist && $pr->rental_id() == 0) {
         # leaders of non-hybrid programs pay no housing
