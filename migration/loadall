@@ -1,4 +1,6 @@
 #!/bin/sh
+echo You shouldn't be doing this!
+exit
 if [ `whoami` = 'sahadev' ]
 then
     db='mysql -u sahadev -pJonB reg2'
