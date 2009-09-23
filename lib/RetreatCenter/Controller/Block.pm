@@ -21,7 +21,9 @@ use Time::Simple qw/
 /;
 use Global qw/
     %string
+    %house_name_of
 /;
+use HLog;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -89,11 +91,17 @@ sub delete : Local {
 sub _vacate {
     my ($c, $block) = @_;
 
+    my $h_id   = $block->house_id();
+    my $hname  = $house_name_of{$h_id};
+    my $reason = $block->reason();
+
     my $hmax = $block->house->max();
+    my $sdate = $block->sdate();
     my $edate1 = ($block->edate_obj() -1)->as_d8();
+
     for my $cf (model($c, 'Config')->search({
-                    house_id => $block->house_id(),
-                    the_date => { -between => [ $block->sdate(), $edate1 ] },
+                    house_id => $h_id,
+                    the_date => { -between => [ $sdate, $edate1 ] },
                 })
     ) {
         my $nleft = $cf->cur() - $block->nbeds();
@@ -103,6 +111,7 @@ sub _vacate {
                 curmax     => $hmax,
                 sex        => 'U',
                 program_id => 0,
+                rental_id  => 0,
             );
 
         }
@@ -110,6 +119,15 @@ sub _vacate {
             cur => $nleft,
             @opts,
         });
+        if ($string{housing_log}) {
+            hlog($c,
+                 $hname, $cf->the_date(),
+                 "block_del",
+                 $h_id, $cf->curmax(), $nleft, $cf->sex(),
+                 0, 0,
+                 $reason,
+            );
+        }
     }
 }
 
@@ -289,8 +307,10 @@ sub _available {
     my ($c) = @_;
 
     my $s = "< cur + $P{nbeds}";
+    my $h_id = $P{house_id};
+    my $hname = $house_name_of{$h_id};
     my @config = model($c, 'Config')->search({
-        house_id => $P{house_id},
+        house_id => $h_id,
         the_date => { -between => [ $P{sdate}, $edate1 ] },
         curmax   => \$s,
     });
@@ -302,7 +322,7 @@ sub _available {
         return 0;
     }
     for my $cf (model($c, 'Config')->search({
-                    house_id => $P{house_id},
+                    house_id => $h_id,
                     the_date => { -between => [ $P{sdate}, $edate1 ] },
                 })
     ) {
@@ -315,8 +335,19 @@ sub _available {
         }
         $cf->update({
             cur => $cf->cur() + $P{nbeds},
+            program_id => 0,
+            rental_id  => 0,
             @opt,
         });
+        if ($string{housing_log}) {
+            hlog($c,
+                 $hname, $cf->the_date(),
+                 "block",
+                 $h_id, $cf->curmax(), $cf->cur(), $cf->sex(),
+                 0, 0,
+                 $P{reason},
+            );
+        }
     }
     return 1;
 }

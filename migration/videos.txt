@@ -6285,7 +6285,7 @@ location	v
 subj	
 desc	mel gibson plays a scotsman who leads his countrymen to freedom
 id	       968
-title	Mahabharata part. 1 The Game of Dice #236
+title	Mahabharata part. 1 The Game of Dice #236
 author	peter brook
 publisher	parabola video library entered 12/10/02
 location	v
@@ -6376,7 +6376,7 @@ location	V
 subj	
 desc	Funny film
 id	       982
-title	House Of Mirth, The #239
+title	House Of Mirth, The #239
 author	Terence Davies
 publisher	 entered 12/11/02
 location	v
@@ -6418,7 +6418,7 @@ location
 subj	
 desc	
 id	       988
-title	Parent Hood   #244
+title	Parent Hood   #244
 author	Howard, Ron
 publisher	entered 12/18/02
 location	V
@@ -6453,7 +6453,7 @@ location	V
 subj	“Allen Bauer(Tom Hanks) is a sucessful businessman” who is knock-
 desc	ed unconscious and falls in love with his rescuer who is actually a mermaid
 id	       993
-title	Hawaii Islands of the Fire Goddess #240
+title	Hawaii Islands of the Fire Goddess #240
 author	
 publisher	entered 12/18/02
 location	video
@@ -6479,7 +6479,7 @@ author
 publisher	entered 12/19/02
 location	V
 subj	
-desc	“blend of magnificent music and classic Disney animation.”
+desc	“blend of magnificent music and classic Disney animation.”
 id	       997
 title	Doc.: Robot Technology, Israeli & palestinian
 author	                              Youth #246

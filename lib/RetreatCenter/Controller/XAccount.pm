@@ -17,6 +17,7 @@ use Util qw/
     stash
     payment_warning
     error
+    invalid_amount
 /;
 use Global qw/
     %string
@@ -175,6 +176,13 @@ sub pay_balance_do : Local {
     my ($self, $c) = @_;
 
     my $amt = $c->request->params->{amount};
+    if (invalid_amount($amt)) {
+        error($c,
+            "Illegal Amount: $amt",
+            "xaccount/error.tt2",
+        );
+        return;
+    }
     my $xaccount_id = $c->request->params->{xaccount_id};
     my $person_id = $c->request->params->{person_id};
     my $what = $c->request->params->{what};
@@ -237,15 +245,15 @@ sub update_payment_do : Local {
     if (!$dt) {
         error($c,
             "Illegal Date: $the_date",
-            "rental/error.tt2",
+            "xaccount/error.tt2",
         );
         return;
     }
     my $amount = trim($c->request->params->{amount});
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         error($c,
             "Illegal Amount: $amount",
-            "rental/error.tt2",
+            "xaccount/error.tt2",
         );
         return;
     }

@@ -34,15 +34,10 @@
     <td><a href=/program/list>Programs</a></td>
     <td><a href=/rental/list>Rentals</a></td>
     <td><a href=/event/list>Events</a></td>
-[% ELSIF driver %]
-    <td colspan=2></td>
-    <td><a href=/ride/mine>My Rides</a></td>
 [% ELSE %]
     <td colspan=3></td>
 [% END %]
-[% IF prog_staff %]
-<td width=60><a href=/ride/list>Rides</a></td>
-[% END %]
+<td width=60><a href=/book/search>Books</a></td>
 
 <td><a target=calendar href='/event/calendar/[% cal_param %]'>Calendar</a></td>
 

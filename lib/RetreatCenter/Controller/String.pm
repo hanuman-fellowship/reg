@@ -12,6 +12,7 @@ use Util qw/
     model
 /;
 use Date::Simple;
+use HLog;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -79,6 +80,12 @@ sub update_do : Local {
     if ($the_key eq 'default_date_format') {
         Date::Simple->default_format($value);
     }
+    elsif ($the_key eq 'housing_log') {
+        hlog_toggle($c, $value);
+    }
+    #
+    # and where to go next?
+    #
     if ($the_key =~ m{color}) {
         $c->response->redirect($c->uri_for("/string/list/1/#$the_key"));
     }

@@ -9,6 +9,7 @@ use Util qw/
     model
     tt_today
     payment_warning
+    invalid_amount
 /;
 use Date::Simple qw/
     date
@@ -47,7 +48,7 @@ sub create_do : Local {
     my $type = $c->request->params->{type};
     my $the_date = date($dt);
     my @mess = ();
-    if ($amount !~ m{^\d+$}) {
+    if (invalid_amount($amount)) {
         push @mess, "Illegal amount: $amount";
     }
     if (! ref($the_date)) {

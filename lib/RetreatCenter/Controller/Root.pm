@@ -5,6 +5,7 @@ use base 'Catalyst::Controller';
 
 use Util qw/
     tt_today
+    email_letter
 /;
 
 #
@@ -44,6 +45,26 @@ sub end : ActionClass('RenderView') {
     if ($u) {
         # tt_today() needs a user.
         $c->stash->{today} = tt_today($c);
+    }
+    my @errs = @{$c->error()};
+    if (@errs) {
+        # something went wrong...
+        #
+        $c->stash->{template} = "fatal_error.tt2";
+        my $user = $c->user();
+        if ($user->username() ne 'sahadev') {
+            email_letter($c,
+                to      => 'Jon Bjornstad <jon@logicalpoetry.com>',
+                from    => $user->first() . " " . $user->last()
+                         . " <" . $user->email() . ">",
+                subject => 'Error from Reg',
+                html    => $errs[0],
+            );
+        }
+        else {
+            $c->stash->{error} = $errs[0];
+        }
+        $c->clear_errors();
     }
 }
 

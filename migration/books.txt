@@ -25108,7 +25108,7 @@ location	HL
 subj	An Ayurvedic Guide to Herbal Medicine
 desc	
 id	      4945
-title	Come Quickly, My Darling Children!
+title	Come Quickly, My Darling Children!
 author	Marty Cottler
 publisher	 Sierra Vista Publishing entered 12/4/02
 location	ES
@@ -25134,7 +25134,7 @@ author	James, Terry
 publisher	Nimbus publishing entered 12/11/02
 location	Tr
 subj	
-desc	Photographs from Nova Scotia
+desc	Photographs from Nova Scotia
 id	      4949
 title	Questions and Answers with Babaji - 1979
 author	Dass, Baba Hari
@@ -25197,7 +25197,7 @@ author	Stein, Eugene
 publisher	Rob Weisbach books entered 1.8.03
 location	SSMMS
 subj	
-desc	13 fictional short stories about life, desire,  and love.  
+desc	13 fictional short stories about life, desire,  and love.  
 id	      4959
 title	Fifth Sacred Thing, The
 author	Starhawk
@@ -25227,7 +25227,7 @@ location	Psy
 subj	It appears to be a fantasy story but it is also filled with “eso-
 desc	teric teachings, psychology, reincarnation...”  and more co- ming from both east and west
 id	      4963
-title	Sex in the light of reincarnation and Freedom
+title	Sex in the light of reincarnation and Freedom
 author	Howard, Alan
 publisher	RSC/St. George Publications , 1.15.03
 location	Psy
@@ -25260,21 +25260,21 @@ author	Tolkien, J.R.R.
 publisher	1995 Book of the Month Club 1.22.03
 location	SF
 subj	Fantasy
-desc	Frodo starts his journey to Mordor to destroy the One ring.
+desc	Frodo starts his journey to Mordor to destroy the One ring.
 id	      4968
 title	House At Pooh Corner, The
 author	Milne, A.A.
 publisher	Dell Publishing Co., INC. 1.23.03
 location	YP
 subj	
-desc	Pooh and his friends are joined by Tigger.
+desc	Pooh and his friends are joined by Tigger.
 id	      4969
 title	Going for the Max
 author	Cleland, Max
 publisher	Broadman and Holman entered 1.23.03
 location	Psy
 subj	Inspirational
-desc	12 Principles for living life to the fullest.
+desc	12 Principles for living life to the fullest.
 id	      4970
 title	Heart of Ice
 author	Caylus, de Comte
@@ -25295,16 +25295,16 @@ author	Grimm
 publisher	Bantam Books entered 1.23.03
 location	YP
 subj	fairy tales
-desc	Fairy Tales of Brothers Grimm, Jacob and Wilhelm.
+desc	Fairy Tales of Brothers Grimm, Jacob and Wilhelm.
 id	      4973
 title	A hatful of Seuss
 author	Seuss, Dr.
 publisher	Random House entered 1.24.03
 location	YP
 subj	seuss, rmyths
-desc	Five Favorite Dr. Seuss Stories
+desc	Five Favorite Dr. Seuss Stories
 id	      4974
-title	20th Century Children’s Book Treasury, The
+title	20th Century Children’s Book Treasury, The
 author	Schulman, Janet
 publisher	Alfred A. Knopf entered 1.24.03
 location	YP
@@ -25316,7 +25316,7 @@ author	Myst, Caroline
 publisher	Harmony Books entered 1.24.03
 location	Psy
 subj	spirituality, seven stages
-desc	The seven stages of power and healing
+desc	The seven stages of power and healing
 id	      4977
 title	Numbers in the Dark and Other Stories
 author	Calvino, Italo
@@ -25456,14 +25456,14 @@ author	Sweeney, A. Terrance
 publisher	Winston Press entered 2.12.03
 location	PHMMS
 subj	
-desc	Various celebrities’ thoughts about God 
+desc	Various celebrities’ thoughts about God 
 id	      4997
 title	Refugees of Tibet
 author	Dharma
 publisher	Dharma Publishing entered 2.12.03
 location	TB
 subj	
-desc	Refugee community life. (includes many photos) 
+desc	Refugee community life. (includes many photos) 
 id	      4998
 title	Vance Stance, The
 author	Bonner, Vance
@@ -25687,7 +25687,7 @@ author	Seuss, Dr.
 publisher	Random House Entered 5.7.03
 location	A
 subj	Art, cats, paintings
-desc	A large selection of his paintings
+desc	A large selection of his paintings
 id	      5031
 title	Photographs of the Southwest
 author	Adams, Ansel
@@ -25827,7 +25827,7 @@ author	Donner, Florinda
 publisher	Harper San Fran. Enterd 5.23.03
 location	NA
 subj	Lucid Dreaming, Castaneda, Sorcery
-desc	A “Feminine perspective on the Castaneda sorcery.”
+desc	A “Feminine perspective on the Castaneda sorcery.”
 id	      5051
 title	Sorcerers' Crossing, The
 author	Abelar, Taisha
@@ -25953,14 +25953,14 @@ author	Adams, Ansel
 publisher	Little Brown, enterd 7.3.03
 location	A
 subj	
-desc	Black & White photographs of U.S. parks all over. 
+desc	Black & White photographs of U.S. parks all over. 
 id	      5069
 title	Ishi
 author	Kroeber, Theodora
 publisher	Univ. Of California enterd 7.4.03
 location	NA
 subj	
-desc	“A biography of the last wild Indian in North America.”
+desc	“A biography of the last wild Indian in North America.”
 id	      5070
 title	Room with a view, A, Howards End, Maurice
 author	Forster, E.M.
@@ -25981,7 +25981,7 @@ author	Dalai Lama
 publisher	Arkana, enterd 7.4.03
 location	TB
 subj	
-desc	Small quotes for each day of the year.  
+desc	Small quotes for each day of the year.  
 id	      5073
 title	Moon is down, the
 author	Steinbeck, John
@@ -26002,7 +26002,7 @@ author	Bradbury, Ray
 publisher	Bantam enterd 7.8.03
 location	F
 subj	
-desc	18 natural and supernatural stories
+desc	18 natural and supernatural stories
 id	      5076
 title	Catcher In The Rye, the
 author	Salinger, J.D.

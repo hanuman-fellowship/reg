@@ -1114,18 +1114,21 @@ sub housekeeping : Local {
     my %next_needed;
     for my $h (@departing_houses) {
         my $hid = $h->id();
+
         # find the next day this house is needed.
-        my ($config) = model($c, 'Config')->search({
-            house_id => $hid,
-            the_date => { '>=', $d8 },
-            cur      => { '>', 0   },
-                # even if this bed is not needed...
-                # there may be someone else in the room so it would
-                # be nice to make up the bed for the tidyness of it all.
-        },
-        {
-            rows     => 1,
-        }
+        #
+        my ($config) = model($c, 'Config')->search(
+            {
+                house_id => $hid,
+                the_date => { '>=', $d8 },
+                cur      => { '>', 0   },
+                    # even if this bed is not needed...
+                    # there may be someone else in the room so it would
+                    # be nice to make up the bed for the tidyness of it all.
+            },
+            {
+                rows     => 1,
+            }
         );
         if ($config) {
             my $n = date($config->the_date()) - date($d8);

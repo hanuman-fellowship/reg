@@ -1,0 +1,17 @@
+drop table if exists book;
+create table book (
+    id          integer primary key autoincrement,
+    title       text,
+    author      text,
+    publisher   text,
+    description text,
+    location    text,
+    subject     text,
+    media       integer      -- 1 book, 2 VHS, 3 DVD
+);
+drop table if exists check_out;
+create table check_out (
+    book_id   integer,
+    person_id integer,
+    due_date  text
+);

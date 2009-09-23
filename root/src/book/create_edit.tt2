@@ -1,0 +1,55 @@
+<h2>Books</h2>
+<!-- this form doubles as an update and as a create form. -->
+<form action=[% "/book/" _ form_action %] name=form method=post>
+<table cellpadding=3 border=0>
+<tr>
+<th align=right><span class=required>* </span>Title</th>
+<td><input type=text name=title value="[% book.title %]" size=70></td>
+</tr>
+
+<tr>
+<th align=right>Author</th>
+<td><input type=text name=author value="[% book.author %]" size=70></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td>
+<textarea name=description rows=5 cols=70>
+[% book.description %]
+</textarea>
+</td>
+</tr>
+
+<tr>
+<th align=right>Subject</th>
+<td><input type=text name=subject value="[% book.subject %]" size=70></td>
+</tr>
+
+<tr>
+<th align=right>Publisher</th>
+<td><input type=text name=publisher value="[% book.publisher %]" size=70></td>
+</tr>
+
+<tr>
+<th align=right>Location</th>
+<td><input type=text name=location value="[% book.location %]" size=20></td>
+</tr>
+
+<tr>
+<th align=right>Media</th>
+<td>
+<select name=media>
+[% media_opts %]
+</select>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</div>
+</form>
+<script type="text/javascript">document.form.title.focus()</script>

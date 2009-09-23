@@ -54,6 +54,7 @@ our @EXPORT_OK = qw/
     reserved_clusters
     palette
     esc_dquote
+    invalid_amount
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1435,6 +1436,11 @@ sub esc_dquote {
     }
     $s =~ s{"}{\\"}g;
     $s;
+}
+
+sub invalid_amount {
+    my ($amt) = @_;
+    return $amt !~ m{^-?\d+([.]\d+)?$};
 }
 
 1;

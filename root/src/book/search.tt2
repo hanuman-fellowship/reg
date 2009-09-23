@@ -1,0 +1,19 @@
+<h2>Books</h2>
+[% IF Catalyst.check_user_roles('librarian') %]
+    <a href="/book/create" accesskey='a'><span class=keyed>A</span>dd</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[% END %]
+<p class=p2>
+<div class=message>[% message || Catalyst.flash.message %]</div>
+<ul>
+<form action="/book/search_do" name=search>
+Search for <input type=text id=pattern name=pattern size=20 value="[% pattern %]"> in 
+<select name=field>
+<option value=title [% title_selected %]> Title</option>
+<option value=author [% author_selected %]> Author</option>
+<option value=subject [% subject_selected %]> Subject</option>
+<option value=description [% description_selected %]> Description</option>
+</select>
+<input type=submit value="Go">
+</form>
+</ul>
+<script type="text/javascript">document.search.pattern.focus();</script>

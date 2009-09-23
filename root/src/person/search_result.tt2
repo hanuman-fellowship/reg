@@ -5,7 +5,7 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
 &nbsp;&nbsp;&nbsp;
-Searched for: [% pattern %]
+Searched [% field_desc %] for: [% pattern %]
 <ul>
 <table border=0 cellpadding=3>
 <tr>

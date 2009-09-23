@@ -26,6 +26,7 @@ echo rent   ; $db <mkrent
 echo rep    ; $db <mkrep
 echo ride   ; $db <mkride
 echo users  ; $db <mkusers
+echo book   ; $db <mkbook
 
 echo strings; $db <ldstr
 
@@ -44,3 +45,5 @@ loadpr
 
 # add a LOT of config records
 loadconfig $MYSQL
+
+loadbook

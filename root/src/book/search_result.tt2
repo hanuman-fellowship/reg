@@ -1,0 +1,37 @@
+<h2>Books</h2>
+[% IF Catalyst.check_user_roles('librarian') %]
+    <a href="/book/create" accesskey='a'><span class=keyed>A</span>dd</a>
+    &nbsp;&nbsp;&nbsp;
+[% END %]
+<a href="/book/search" accesskey='s'><span class=keyed>S</span>earch</a>
+&nbsp;&nbsp;&nbsp;
+Searched [% field %] for: [% pattern %]
+<ul>
+<table border=0 cellpadding=3>
+<tr>
+<th align=left>Title</th>
+<th align=left>Author</th>
+</tr>
+[% FOREACH b IN books %]
+<tr>
+<td><a id=title href="[% '/book/view/' _ b.id %]">[% b.title %]</a></td>
+<td><a id=author href="[% '/book/view/' _ b.id %]">[% b.author %]</a></td>
+</tr>
+[% END -%]
+</table>
+<p>
+<table cellpadding=2>
+<tr>
+[% IF prevN %]
+<td width=70><a href="[% prevN %]" accesskey='p'><span class=keyed>P</span>rev</a></td>
+[% ELSE %]
+<td width=70>&nbsp;</td>
+[% END %]
+[% IF nextN %]
+<td width=70><a href="[% nextN %]" accesskey='n'><span class=keyed>N</span>ext</a></td>
+[% ELSE %]
+<td width=70></td>
+[% END %]
+</tr>
+</table>
+</ul>

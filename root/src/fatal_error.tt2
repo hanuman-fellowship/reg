@@ -1,0 +1,9 @@
+<div style="margin-top: .5in; margin-left: .5in">
+Sorry.  A fatal error has occured.
+<p class=p2>
+[% IF error %]
+    [% error %]
+[% ELSE %]
+    Sahadev has been alerted.
+[% END %]
+</div>

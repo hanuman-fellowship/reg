@@ -70,6 +70,9 @@ __PACKAGE__->load_classes({
         Ride
 
         Block
+
+        Book
+        CheckOut
     /]
 });
 

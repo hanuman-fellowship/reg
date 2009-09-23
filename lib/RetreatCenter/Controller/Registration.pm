@@ -376,6 +376,7 @@ sub get_online : Local {
         }
     }
     close $in;
+    $P{green_amount} ||= 0;     # in case not set at all
 
     # save the filename so we can delete it when the registration is complete
     stash($c, fname => $fname);
@@ -592,13 +593,11 @@ sub _rest_of_reg {
     # check if it is there already.
     # we CAN register twice for some programs.
     #
-    my @reg;
-    if ((! $pr->allow_dup_regs())
-        && (@reg = model($c, 'Registration')->search({
-                           person_id  => $p->id(),
-                           program_id => $pr->id(),
-                       }))
-    ) {
+    my @reg = model($c, 'Registration')->search({
+                  person_id  => $p->id(),
+                  program_id => $pr->id(),
+              });
+    if (! $pr->allow_dup_regs() && @reg) {
         stash($c,
             template => "registration/dup.tt2",
             person   => $p,
@@ -606,6 +605,9 @@ sub _rest_of_reg {
             registration => $reg[0],
         );
         return;
+    }
+    if (@reg) {
+        # duplicate registrations are okay but not overlapping ones
     }
 
     #
@@ -1945,7 +1947,7 @@ sub pay_balance_do : Local {
     my $reg = model($c, 'Registration')->find($reg_id);
     my $amount = trim($c->request->params->{amount});
     my $type   = $c->request->params->{type};
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         error($c,
             "Illegal amount: $amount",
             "registration/error.tt2",
@@ -2031,6 +2033,13 @@ sub cancel_do : Local {
     my $amount      = $c->request->params->{amount};
     my $reg         = model($c, 'Registration')->find($id);
 
+    if (invalid_amount($amount)) {
+        error($c,
+            "Illegal amount: $amount",
+            'gen_error.tt2',
+        );
+        return;
+    }
     $reg->update({
         cancelled => 'yes',
     });
@@ -2183,7 +2192,7 @@ sub new_charge_do : Local {
     if (empty($amount)) {
         push @mess, "Missing Amount";
     }
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         push @mess, "Illegal Amount: $amount";
     }
     if (empty($what)) {
@@ -3378,7 +3387,15 @@ sub lodge_do : Local {
 
     my $sdate  = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
-    my $psex = $reg->person->sex;
+    my $person = $reg->person();
+    my $psex = $person->sex;
+
+    my $program = $reg->program();
+    my $note = $person->last()
+               . ", " . $person->first()
+               . " in " . $program->name()
+               ;
+
     my $cmax = type_max($reg->h_type);
     #
     # if we forced a request for a triple into a double
@@ -3451,8 +3468,15 @@ sub lodge_do : Local {
             program_id => $reg->program_id(),
             rental_id  => 0,
         });
-        hlog($c, "lodged in $house_id on " . $cf->the_date());
-            # add more details - carefully!
+        if ($string{housing_log}) {
+            hlog($c,
+                 $house_name_of{$house_id}, $cf->the_date(),
+                 "lodge",
+                 $house_id, $cmax, $cf->cur(), $cf->sex(),
+                 $reg->program_id(), 0,
+                 $note,
+            );
+        }
     }
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
@@ -3488,6 +3512,11 @@ sub _vacate {
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
     my $house_id = $reg->house_id;
     my $hmax = $reg->house->max;
+    my $person = $reg->person();
+    my $note = $person->last()
+               . ", " . $person->first()
+               . " in " . $reg->program->name()
+               ;
     for my $cf (model($c, 'Config')->search({
                     house_id => $house_id,
                     the_date => { 'between' => [ $sdate, $edate1 ] }
@@ -3536,8 +3565,15 @@ sub _vacate {
             cur => $cf->cur() - 1,
             @opts,
         });
-        hlog($c, "vacated $house_id on " . $cf->the_date);
-            # add more details
+        if ($string{housing_log}) {
+            hlog($c,
+                 $house_name_of{$house_id}, $cf->the_date(),
+                 "vacate",
+                 $house_id, $cf->curmax(), $cf->cur(), $cf->sex(),
+                 $cf->program_id(), $cf->rental_id(),
+                 $note,
+            );
+        }
     }
     $reg->update({
         house_id => 0,
@@ -4619,7 +4655,7 @@ sub payment_update_do : Local {
         return;
     }
     my $amount = trim($c->request->params->{amount});
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         error($c,
             "Illegal amount: $amount",
             'gen_error.tt2',
@@ -4660,7 +4696,7 @@ sub charge_update_do : Local {
 
     my $chg = model($c, 'RegCharge')->find($chg_id);
     my $amount = trim($c->request->params->{amount});
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         error($c,
             "Illegal amount: $amount",
             'gen_error.tt2',

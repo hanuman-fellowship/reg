@@ -13,6 +13,7 @@ use Util qw/
     error
     tt_today
     stash
+    invalid_amount
 /;
 use Date::Simple qw/
     date
@@ -145,7 +146,7 @@ sub _get_data {
     for my $i (1 .. 4) {
         delete $P{"cc_number$i"};
     }
-    if (! empty($P{cost}) && $P{cost} !~ m{\s*\d+\s*}) {
+    if (! empty($P{cost}) || invalid_amount($P{cost})) {
         push @mess, "Invalid cost";
     }
     if (empty($P{paid_date})) {

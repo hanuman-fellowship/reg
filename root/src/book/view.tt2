@@ -1,0 +1,51 @@
+[% id = book.id %]
+<h2>Books</h2>
+[% IF Catalyst.check_user_roles('librarian') %]
+    <a href="/book/create" accesskey='a'><span class=keyed>A</span>dd</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/book/update/[% id %]" accesskey='e'><span class=keyed>E</span>dit</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/book/delete/[% id %]"
+    onclick="return confirm('Okay to Delete \'[% book.title %]\'?');">Delete</a>
+    &nbsp;&nbsp;&nbsp;
+[% END %]
+<a href="/book/search" accesskey='s'><span class=keyed>S</span>earch</a>
+<p class=p2>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right valign=bottom>Title</th>
+<td valign=bottom><span class=larger>[% book.title %]</span></td>
+</tr>
+
+<tr>
+<th align=right valign=bottom>Author</th>
+<td valign=bottom><span class=larger>[% book.author %]</span></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Description</th>
+<td width=750>[% book.description %]</td>
+</tr>
+
+<tr>
+<th align=right>Subject</th>
+<td>[% book.subject %]</td>
+</tr>
+
+<tr>
+<th align=right>Publisher</th>
+<td>[% book.publisher %]</td>
+</tr>
+
+<tr>
+<th align=right>Location</th>
+<td>[% book.location %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Media</th>
+<td>[% media %]</td>
+</tr>
+
+</table>

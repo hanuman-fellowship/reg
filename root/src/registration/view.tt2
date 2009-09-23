@@ -57,7 +57,7 @@ th a:hover {
 [% ELSE %]
     <a accesskey='E' href="/registration/update/[% id %]"><span class=keyed>E</span>dit</a>
     &nbsp;&nbsp;
-    [% IF only_one %]
+    [% IF only_one || program.PR %]
         <a href="/registration/cancel/[% id %]"
            onclick="return confirm('Okay to Cancel [% person.first %] [% person.last %]?');"
         >Cancel</a>

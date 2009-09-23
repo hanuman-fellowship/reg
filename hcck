@@ -64,6 +64,9 @@ $prog_max = $dt->as_d8();
 print "prog max is $prog_max\n";
 
 my $max = ($prog_max > $rent_max)? $prog_max: $rent_max;
+if ($lfd > $max) {
+    $max = $lfd;
+}
 my $today = today()->as_d8();
 
 my $ndays = date($max)-date($today) + 1;

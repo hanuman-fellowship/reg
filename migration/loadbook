@@ -1,0 +1,57 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+$dbh->do("delete from book");
+
+my $ins = $dbh->prepare("
+    insert into book
+    values (?, ?, ?, ?,
+            ?, ?, ?, ?);
+")
+    or die "no prep insert\n";
+
+my %data;
+my ($key, $value);
+for my $b (qw/  books videos /) {
+    open my $book, "<", "$b.txt"
+        or die "cannot open $b.txt: $!\n";
+    while (my $line = <$book>) {
+        chomp $line;
+        next unless $line =~ m{\S};
+        ($key, $value) = $line =~ m{^(\S+)\s+(.*)$};
+        $data{$key} = $value; 
+        if ($key eq 'desc') {
+            $ins->execute(undef, 
+                          @data{qw/
+                              title
+                              author
+                              publisher
+                              desc
+                              location
+                              subj
+                           /},
+                           ($data{location} =~ m{dvd}i)? 3:
+                                        ($b eq 'books')? 1:
+                                                         2
+                          );
+            %data = ();
+        }
+    }
+    close $book;
+}
+__END__
+drop table if exists book;
+create table book (
+    id          integer primary key autoincrement,
+    title       text,
+    author      text,
+    publisher   text,
+    description text,
+    location    text,
+    subject     text,
+    media       integer      -- 1 book, 2 VHS, 3 DVD
+);

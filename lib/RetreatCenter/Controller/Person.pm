@@ -18,6 +18,7 @@ use Util qw/
     normalize
     stash
     error
+    invalid_amount
 /;
 use Date::Simple qw/
     date
@@ -101,7 +102,7 @@ sub search_do : Local {
         # intersperse % in the pattern - unless it was quoted
         $pattern =~ s{(\d)}{$1%}g;
         $search_ref = {
-            tel_home => { like => "$pattern" },
+            tel_home => { like => "%$pattern" },
         };
     }
     else {
@@ -160,6 +161,8 @@ sub search_do : Local {
     $c->stash->{field} = $field eq 'tel_home'? 'tel_home': 'email';
     $c->stash->{ids} = join '-', map { $_->id } @people;
     $c->stash->{people} = \@people;
+    $c->stash->{field_desc} = $field eq 'tel_home'? 'Home Phone'
+                              :                     ucfirst $field;
     $c->stash->{pattern} = $orig_pattern;
     $c->stash->{template} = "person/search_result.tt2";
 }
@@ -940,6 +943,14 @@ sub create_mmi_payment : Local {
 sub create_mmi_payment_do : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
 
+    my $amount = trim($c->request->params->{amount});
+    if (invalid_amount($amount)) {
+        error($c,
+            "Illegal amount: $amount",
+            "registration/error.tt2",
+        );
+        return;
+    }
     my $for_what = $c->request->params->{for_what};
     my $dcm_reg = dcm_registration($c, $person_id);
     my $reg = model($c, 'Registration')->find($reg_id);
@@ -975,15 +986,6 @@ sub create_mmi_payment_do : Local {
         }
         $glnum = $c->request->params->{for_what}
                . $reg->program->glnum();
-    }
-
-    my $amount = trim($c->request->params->{amount});
-    if ($amount !~ m{^-?\d+$}) {
-        error($c,
-            "Illegal amount: $amount",
-            "registration/error.tt2",
-        );
-        return;
     }
 
     my $the_date = tt_today($c)->as_d8();
@@ -1055,7 +1057,7 @@ sub update_mmi_payment_do : Local {
 
     my $pay = model($c, 'MMIPayment')->find($pay_id);
     my $amount = trim($c->request->params->{amount});
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         error($c,
             "Illegal amount: $amount",
             "registration/error.tt2",

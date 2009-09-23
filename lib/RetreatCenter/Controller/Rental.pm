@@ -32,12 +32,15 @@ use Util qw/
     error
     other_reserved_cids
     palette
+    invalid_amount
 /;
 use Global qw/
     %string
     %houses_in_cluster
     @clusters
+    %house_name_of
 /;
+use HLog;
 use POSIX;
 use Template;
 use CGI qw/:html/;      # for Tr, td
@@ -498,10 +501,16 @@ sub clusters : Local {
     my ($self, $c, $rental_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate();
+    my $nmonths = date($rental->edate())->month()
+                - date($sdate)->month()
+                + 1;
 
     # clusters - available and reserved
     my ($avail, $res) = split /XX/, _get_cluster_groups($c, $rental_id);
     stash($c,
+        daily_pic_date     => $sdate,
+        cal_param          => "$sdate/$nmonths",
         rental             => $rental,
         available_clusters => $avail,
         reserved_clusters  => $res,
@@ -782,7 +791,7 @@ sub pay_balance_do : Local {
     my ($self, $c, $id) = @_;
 
     my $amount = trim($c->request->params->{amount});
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         error($c,
             "Illegal Amount: $amount",
             "rental/error.tt2",
@@ -958,7 +967,7 @@ sub new_charge_do : Local {
     if (empty($amount)) {
         push @mess, "Missing Amount";
     }
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         push @mess, "Illegal Amount: $amount";
     }
     if (empty($what)) {
@@ -1101,17 +1110,28 @@ sub booking_do : Local {
     my ($self, $c, $rental_id, $h_type) = @_;
 
     my $r = model($c, 'Rental')->find($rental_id);
-    my @chosen_house_ids = values %{$c->request->params()};
+    my $rname = $r->name();
+
+    my $sdate = $r->sdate();
+    my $edate1 = date($r->edate()) - 1;
+    $edate1 = $edate1->as_d8();
+
+    my @dates = ();
+    if ($string{housing_log}) {
+        my $sd = date($sdate);
+        my $ed = date($edate1);
+        for (my $d = $sd; $d <= $ed; ++$d) {
+            push @dates, $d->as_d8();
+        }
+    }
+
+    my @chosen_house_ids = sort { $a <=> $b } values %{$c->request->params()};
     if (! @chosen_house_ids) {
         $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
         return;
     }
     for my $h_id (@chosen_house_ids) {
         my $h = model($c, 'House')->find($h_id);
-        my $max = $h->max;
-        my $sdate = $r->sdate;
-        my $edate1 = date($r->edate) - 1;
-        $edate1 = $edate1->as_d8();
         model($c, 'RentalBooking')->create({
             rental_id  => $rental_id,
             date_start => $sdate,
@@ -1119,16 +1139,33 @@ sub booking_do : Local {
             house_id   => $h_id,
             h_type     => $h_type,
         });
+        my $max = type_max($h_type);
         model($c, 'Config')->search({
             house_id => $h_id,
             the_date => { 'between' => [ $sdate, $edate1 ] },
         })->update({
             sex        => 'R',
-            cur        => type_max($h_type), 
-            curmax     => type_max($h_type),
+            curmax     => $max,
+            cur        => $max,
             program_id => 0,
             rental_id  => $rental_id,
         });
+        # in the above we set cur and curmax to the
+        # max of the type - so it looks like a resized room
+        # occupied by the rental.  no space for anyone else.
+
+        if ($string{housing_log}) {
+            my $hname = $house_name_of{$h_id};
+            for my $d (@dates) {
+                hlog($c,
+                     $hname, $d,
+                     "book",
+                     $h_id, $max, $max, 'R',
+                     0, $rental_id,
+                     $rname,
+                );
+            }
+        }
     }
     _send_grid_data($r);
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
@@ -1138,13 +1175,26 @@ sub del_booking : Local {
     my ($self, $c, $rental_id, $house_id) = @_;
 
     my $r = model($c, 'Rental')->find($rental_id);
+    my $rname = $r->name();
+
+    my $sdate = $r->sdate();
+    my $edate1 = date($r->edate()) - 1;
+    $edate1 = $edate1->as_d8();
+
+    my @dates = ();
+    if ($string{housing_log}) {
+        my $sd = date($sdate);
+        my $ed = date($edate1);
+        for (my $d = $sd; $d <= $ed; ++$d) {
+            push @dates, $d->as_d8();
+        }
+    }
+
     model($c, 'RentalBooking')->search({
         rental_id => $rental_id,
         house_id  => $house_id,
     })->delete();
-    my $sdate = $r->sdate;
-    my $edate1 = date($r->edate) - 1;
-    $edate1 = $edate1->as_d8();
+
     my $h = model($c, 'House')->find($house_id);
     my $max = $h->max;
     model($c, 'Config')->search({
@@ -1152,11 +1202,24 @@ sub del_booking : Local {
         the_date => { 'between' => [ $sdate, $edate1 ] },
     })->update({
         sex        => 'U',
-        cur        => 0,
         curmax     => $max,
+        cur        => 0,
         program_id => 0,
         rental_id  => 0,
     });
+
+    if ($string{housing_log}) {
+        my $hname = $house_name_of{$house_id};
+        for my $d (@dates) {
+            hlog($c,
+                 $hname, $d,
+                 "book_del",
+                 $house_id, $max, 0, 'U',
+                 0, 0,
+                 $rname,
+            );
+        }
+    }
     _send_grid_data($r);
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
@@ -1287,9 +1350,20 @@ sub reserve_cluster : Local {
     my ($self, $c, $rental_id, $cluster_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
+    my $rname = $rental->name();
+
     my $sdate = $rental->sdate();
     my $edate1 = (date($rental->edate()) - 1)->as_d8();
-                                            # they don't stay the last day!
+                                    # they don't stay the last day!
+    my @dates = ();
+    if ($string{housing_log}) {
+        my $sd = date($sdate);
+        my $ed = date($edate1);
+        for (my $d = $sd; $d <= $ed; ++$d) {
+            push @dates, $d->as_d8();
+        }
+    }
+
     model($c, 'RentalCluster')->create({
         rental_id  => $rental_id,
         cluster_id => $cluster_id,
@@ -1311,10 +1385,23 @@ sub reserve_cluster : Local {
             the_date   => { 'between' => [ $sdate, $edate1 ] },
         })->update({
             sex        => 'R',
+            curmax     => $h_max,
             cur        => $h_max,
             program_id => 0,
             rental_id  => $rental_id,
         });
+        if ($string{housing_log}) {
+            my $hname = $house_name_of{$h_id};
+            for my $d (@dates) {
+                hlog($c,
+                     $hname, $d,
+                     "clust",
+                     $h_id, $h_max, $h_max, 'R',
+                     0, $rental_id,
+                     $rname,
+                );
+            }
+        }
     }
     _send_grid_data($rental);
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
@@ -1331,28 +1418,58 @@ sub cancel_cluster : Local {
     my ($self, $c, $rental_id, $cluster_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
+    my $rname = $rental->name();
+
     my $sdate = $rental->sdate();
     my $edate1 = (date($rental->edate()) - 1)->as_d8();
-                                            # they don't stay the last day!
+                                    # they don't stay the last day!
+    my @dates = ();
+    if ($string{housing_log}) {
+        my $sd = date($sdate);
+        my $ed = date($edate1);
+        for (my $d = $sd; $d <= $ed; ++$d) {
+            push @dates, $d->as_d8();
+        }
+    }
+
     model($c, 'RentalCluster')->search({
         rental_id  => $rental_id,
         cluster_id => $cluster_id,
     })->delete();
+    HOUSE:
     for my $h (@{$houses_in_cluster{$cluster_id}}) {
         my $h_id = $h->id();
-        model($c, 'RentalBooking')->search({
+        my $h_max = $h->max();
+        my ($rb) = model($c, 'RentalBooking')->search({
             rental_id => $rental_id,
             house_id  => $h_id,
-        })->delete();
+        });
+        next HOUSE if ! $rb;        # it was already cancelled individually
+
+        $rb->delete();
+
         model($c, 'Config')->search({
             house_id => $h_id,
             the_date => { between => [ $sdate, $edate1 ] },
         })->update({
-            sex => 'U',
-            cur => 0,
+            sex    => 'U',
+            curmax => $h_max,
+            cur    => 0,
             rental_id  => 0,
             program_id => 0,
         });
+        if ($string{housing_log}) {
+            my $hname = $house_name_of{$h_id};
+            for my $d (@dates) {
+                hlog($c,
+                     $hname, $d,
+                     "clust_del",
+                     $h_id, $h_max, 0, 'U',
+                     0, 0,
+                     $rname,
+                );
+            }
+        }
     }
     _send_grid_data($rental);
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
@@ -1906,7 +2023,7 @@ sub update_charge_do : Local {
     if (empty($amount)) {
         push @mess, "Missing Amount";
     }
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         push @mess, "Illegal Amount: $amount";
     }
     if (empty($what)) {
@@ -1960,7 +2077,7 @@ sub update_payment_do : Local {
         return;
     }
     my $amount = trim($c->request->params->{amount});
-    if ($amount !~ m{^-?\d+$}) {
+    if (invalid_amount($amount)) {
         error($c,
             "Illegal Amount: $amount",
             "rental/error.tt2",
@@ -1980,6 +2097,7 @@ sub update_payment_do : Local {
 #
 # sort of wasteful to do this for each rental view...
 # put all this looking in a separate cluster assignment dialog?
+# yes.  did that.
 #
 sub _get_cluster_groups {
     my ($c, $rental_id) = @_;

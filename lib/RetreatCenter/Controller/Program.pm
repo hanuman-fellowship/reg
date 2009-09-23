@@ -32,6 +32,7 @@ use Util qw/
     reserved_clusters
     palette
     esc_dquote
+    invalid_amount
 /;
 use Date::Simple qw/
     date
@@ -1213,6 +1214,8 @@ sub publish : Local {
         mkdir "gen_files/$dir/pics";
         rename "gen_files/" . $ulp->fname,
                "gen_files/$dir/index.html";
+        copy "gen_files/regtable",
+             "gen_files/$dir/regtable";
         copy "gen_files/progtable",
              "gen_files/$dir/progtable";
         # now for the pictures and the associated html files...
@@ -1307,7 +1310,11 @@ sub publish_pics : Local {
     }
     $ftp->binary();
     chdir "gen_files/pics";
+    PIC:
     for my $f (<*.jpg>) {
+        if ($f =~ m{^[lp]b}) {      # skip the big ones for now
+            next PIC;
+        }
         $ftp->put($f)
             or return _pub_err($c, "cannot put $f", 1);
     }
@@ -1554,6 +1561,64 @@ sub gen_progtable {
     }
     print {$progt} "};\n";
     close $progt;
+    # also regtable, for now.
+    open my $regt, ">", "gen_files/regtable"
+        or die "cannot create regtable: $!\n";
+    for my $p (@programs) {
+        my $PR = $p->name() =~ m{personal\s+retreat}i;
+        my $ndays = $p->edate_obj - $p->sdate_obj;
+        my $fulldays = $ndays + $p->extradays;
+
+        #
+        # pid should be first for looking up purposes.
+        #
+        printf {$regt} "pid\t%s\n",     $p->id();
+        printf {$regt} "pname\t%s\n",   $p->name();
+        printf {$regt} "desc\t%s\n",    $p->title();
+        printf {$regt} "dates\t%s\n",   $p->dates();
+        printf {$regt} "edate\t%s\n",   $p->edate();
+        printf {$regt} "leaders\t%s\n", $p->leader_names();
+        printf {$regt} "footnotes\t%s\n", $p->footnotes();
+        print  {$regt} "ndays\t$ndays\n";
+        print  {$regt} "fulldays\t$fulldays\n";
+        printf {$regt} "deposit\t%s\n", $p->deposit();
+        printf {$regt} "colltot\t%s\n", $p->collect_total();
+        printf {$regt} "do_not_compute_costs\t%s\n",
+                       $p->do_not_compute_costs();
+
+        my $why = $p->dncc_why();
+        $why =~ s/\n/NEWLINE/g;
+        printf {$regt} "dncc_why\t$why\n";
+
+        my $pol = $p->cancellation_policy();
+        $pol =~ s/\n/NEWLINE/g;
+        printf {$regt} "canpol\t$pol\n";
+
+        my $tuition      = $p->tuition;
+        my $full_tuition = $p->full_tuition;
+        my $month        = $p->sdate_obj->month;
+
+        my $housecost = $p->housecost;
+        for my $t (reverse housing_types(1)) {
+            next if $t eq 'quad'        && !$p->quad;
+            next if $t eq 'economy'     && !$p->economy;
+            next if $t eq 'single_bath' && !$p->sbath;
+            next if $t eq 'single'      && !$p->single;
+            next if $t eq 'center_tent'
+                && !($PR
+                     || $p->name =~ m{tnt}i
+                     || (5 <= $month && $month <= 10));
+            next if $PR && $t =~ m{triple|dormitory};
+            my $fees = $PR? $housecost->$t()
+                      :     $p->fees(0, $t);
+            next if $fees == 0;    # another way to eliminate a housing option 
+            print {$regt} "basic $t\t$fees\n";
+            if ($p->extradays) {
+                printf {$regt} "full $t\t%s\n", $p->fees(1, $t);
+            }
+        }
+    }
+    close $regt;
 }
 
 sub update_lunch : Local {
