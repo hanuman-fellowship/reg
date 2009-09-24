@@ -30,7 +30,7 @@ sub search : Local {
     my ($self, $c, $pattern, $field, $nrecs) = @_;
 
     if ($pattern) {
-        $c->stash->{message}  = "No one found matching '$pattern'.";
+        $c->stash->{message}  = "No book found matching '$pattern'.";
     }
     $c->stash->{pattern} = $pattern;
     if (! $field) {

@@ -71,6 +71,7 @@ sub end : ActionClass('RenderView') {
 # Note that 'auto' runs after 'begin' but before your actions and that
 # 'auto' "chain" (all from application path to most specific class are run)
 # See the 'Actions' section of 'Catalyst::Manual::Intro' for more info.
+#
 sub auto : Private {
     my ($self, $c) = @_;
 

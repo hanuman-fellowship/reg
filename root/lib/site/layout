@@ -7,6 +7,8 @@
 [% field_staff = Catalyst.check_user_roles('field_staff') %]
 [% mail_staff = Catalyst.check_user_roles('mail_staff') %]
 
+[% IF Catalyst.user.username != 'library' %]
+
 <div class=noprint>
 <table cellpadding=4 border=0 style="background-color: #eeeeee">
 <tr>
@@ -59,3 +61,5 @@
 [% END %]   <!-- if user exists -->
 [% content %]
 </div>
+
+[% END %] <!-- not library -->

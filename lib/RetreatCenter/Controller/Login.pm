@@ -63,6 +63,9 @@ sub index : Private {
                 );
                 return;
             }
+            elsif ($username eq 'library') {
+                $c->response->redirect($c->uri_for('/book/search'));
+            }
             else {
                 $c->response->redirect($c->uri_for('/person/search'));
             }
