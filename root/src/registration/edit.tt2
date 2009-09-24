@@ -40,7 +40,7 @@ function popup(url) {
 <input type=hidden name=program_id value="[% program.id %]">
 </tr>
 
-[% IF nights > 0 %]
+[% IF nights %]
 <tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2 value="[% reg.nights_taken %]">&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
 [% ELSIF program.housecost.type == 'Total' %]
 <tr><th></td><td colspan=3>Cannot taken free nights because housing cost for this program is a Total amount.</td></tr>
