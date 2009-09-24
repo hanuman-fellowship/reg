@@ -337,7 +337,7 @@ Web
 
 <tr>
 <th align=right valign=top>Notify on Reg</th>
-<td>[% program.notify_on_reg %]</td>
+<td colspan=4>[% program.notify_on_reg %]</td>
 </tr>
 
 <tr>
