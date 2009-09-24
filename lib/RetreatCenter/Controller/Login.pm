@@ -16,7 +16,7 @@ sub index : Private {
     # if already logged in ...
     if ($c->user_exists()) {
         my $username = $c->user->username();
-        if ($username() eq 'calendar') {
+        if ($username eq 'calendar') {
             $c->response->redirect($c->uri_for('/event/calendar/'
                 . today()->as_d8() . "/3"));
         }
