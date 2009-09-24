@@ -2315,7 +2315,6 @@ sub _code {
 }
 
 sub _send_grid_data {
-return;         # NO NO
     my ($rental) = @_;
 
     my $code = _code($rental) . ".txt";
