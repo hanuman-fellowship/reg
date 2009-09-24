@@ -58,8 +58,8 @@
 </table>
 </div>
 <p></p>
+[% END %]   <!-- not library -->
 [% END %]   <!-- if user exists -->
 [% content %]
 </div>
 
-[% END %] <!-- not library -->
