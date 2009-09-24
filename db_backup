@@ -5,8 +5,8 @@ f=rc.$day
 rm -f $f $f.gz
 mysqldump --user=root --add-drop-table --databases reg2 >$f
 gzip $f
-ftp terastation.mmc-s1.mountmadonna.org <<EOF
-cd array1/UnixBackups
+ftp logicalpoetry.com <<EOF
+cd backup
 put $f.gz
 quit
 EOF
