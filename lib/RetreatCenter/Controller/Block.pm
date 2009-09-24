@@ -117,6 +117,8 @@ sub _vacate {
         }
         $cf->update({
             cur => $nleft,
+            program_id => 0,
+            rental_id  => 0,
             @opts,
         });
         if ($string{housing_log}) {
