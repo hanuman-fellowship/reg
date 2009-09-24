@@ -1,4 +1,4 @@
-<h2>Books</h2>
+<h2>Books at MMC</h2>
 <!-- this form doubles as an update and as a create form. -->
 <form action=[% "/book/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0>
