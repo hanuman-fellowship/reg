@@ -77,7 +77,7 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 &nbsp;&nbsp;
 [% END %]
 [% IF reg.program.allow_dup_regs %]
-<a href="/registration/duplicate/[% id %]">Dup</a>
+<a href="/registration/duplicate/[% id %]">Aux</a>
 &nbsp;&nbsp;
 [% END %]
 [% IF reg.ceu_license %]

@@ -312,7 +312,7 @@ Web
 </tr>
 
 <tr>
-<th align=right>Allow Dup Regs</th>
+<th align=right>Allow Aux Regs</th>
 <td>[% program.allow_dup_regs %]</td>
 </tr>
 

@@ -143,7 +143,7 @@ Web
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Allow Dup Regs</th>
+<th align=right>Allow Aux Regs</th>
 <td colspan=2><input type=checkbox value=yes name=allow_dup_regs [% check_allow_dup_regs %]></td>
 </tr>
 
