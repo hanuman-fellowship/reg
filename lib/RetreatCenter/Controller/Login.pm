@@ -19,6 +19,9 @@ sub index : Private {
             $c->response->redirect($c->uri_for('/event/calendar/'
                 . today()->as_d8() . "/3"));
         }
+        elsif ($username eq 'library') {
+            $c->response->redirect($c->uri_for('/book/search'));
+        }
         else {
             $c->response->redirect($c->uri_for('/person/search'));
         }
