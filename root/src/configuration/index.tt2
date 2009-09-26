@@ -42,6 +42,9 @@ p {
 [% IF ! field %]
     <a href=/project/list>Projects</a><p>
 [% END %]
+
+<a href=/ride/list>Rides</a><p>
+
 [% IF web_des %]
     <a href=/string/list>Strings</a><p>
     <a href=/template/list>Templates</a><p>
