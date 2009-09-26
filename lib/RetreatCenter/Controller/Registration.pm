@@ -602,8 +602,20 @@ EOH
 # and render the view.
 #
 sub _rest_of_reg {
-    my ($pr, $p, $c, $today, $house1, $house2) = @_;
+    my ($pr, $p, $c, $today, $house1, $house2, $cabin_room) = @_;
 
+    my $cabin_checked = "";
+    my $room_checked = "";
+    if ($cabin_room) {
+        # passed in when duplicating a reg
+        #
+        if ($cabin_room eq 'room') {
+            $room_checked = "checked";
+        }
+        elsif ($cabin_room eq 'cabin') {
+            $cabin_checked = "checked";
+        }
+    }
     #
     # is this a dup reg?
     # we have the person and the program.
@@ -721,12 +733,14 @@ sub _rest_of_reg {
         $h_type_opts2 .= "<option value=$ht$selected2>$string{$ht}\n";
     }
     stash($c,
-        program => $pr,
-        person => $p,
-        h_type_opts  => $h_type_opts,
-        h_type_opts1 => $h_type_opts,
-        h_type_opts2 => $h_type_opts2,
-        confnotes    => [
+        program       => $pr,
+        person        => $p,
+        h_type_opts   => $h_type_opts,
+        h_type_opts1  => $h_type_opts,
+        h_type_opts2  => $h_type_opts2,
+        cabin_checked => $cabin_checked,
+        room_checked  => $room_checked,
+        confnotes     => [
             model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
         ],
         template    => "registration/create.tt2",
@@ -1003,13 +1017,6 @@ sub create_do : Local {
         );
         return;
     }
-    my $cabin_room = "";
-    if ($P{cabin} && ! $P{room}) {
-        $cabin_room = "cabin";
-    }
-    elsif (!$P{cabin} && $P{room}) {
-        $cabin_room = "room";
-    }
     my $reg = model($c, 'Registration')->create({
         person_id     => $P{person_id},
         program_id    => $P{program_id},
@@ -1028,16 +1035,17 @@ sub create_do : Local {
         confnote      => cf_expand($c, $c->request->params->{confnote}),
         status        => $P{status},
         nights_taken  => $taken,
-        free_prog_taken => $P{free_prog},
         cancelled     => '',    # to be sure
         arrived       => '',    # ditto
-        cabin_room    => $cabin_room,
-        leader_assistant => '',
         pref1         => $P{pref1},
         pref2         => $P{pref2},
         share_first   => $P{share_first},
         share_last    => $P{share_last},
         manual        => $P{dup}? "yes": "",
+        cabin_room    => $P{cabin_room},
+        leader_assistant => '',
+        free_prog_taken  => $P{free_prog},
+
         %dates,         # optionally
     });
     # bump the reg_count in the program record
@@ -2466,9 +2474,9 @@ EOH
         my $early_late_td;
         if ($reg->early() || $reg->late()) {
             $early_late_td = "<td>"
-                           . $reg->date_start_obj->format("%d")
+                           . $reg->date_start_obj->format("%e")
                            . "-"
-                           . $reg->date_end_obj->format("%d")
+                           . $reg->date_end_obj->format("%e")
                            . "</td>"
                            ;
         }
@@ -2700,13 +2708,6 @@ sub update_do : Local {
                                     # see lodge.tt2 
         _vacate($c, $reg);
     }
-    my $cabin_room = "";
-    if ($P{cabin} && ! $P{room}) {
-        $cabin_room = "cabin";
-    }
-    elsif (!$P{cabin} && $P{room}) {
-        $cabin_room = "room";
-    }
     $reg->update({
         ceu_license   => $P{ceu_license},
         referral      => $P{referral},
@@ -2719,14 +2720,15 @@ sub update_do : Local {
         kids          => $P{kids},
         confnote      => cf_expand($c, $c->request->params->{confnote}),
         nights_taken  => $taken,
-        free_prog_taken => $P{free_prog},
-        cabin_room    => $cabin_room,
+        cabin_room    => $P{cabin_room},
         share_first   => $P{share_first},
         share_last    => $P{share_last},
         pref1         => $P{pref1},
         pref2         => $P{pref2},
         work_study    => $P{work_study},
+        free_prog_taken    => $P{free_prog},
         work_study_comment => $P{work_study_comment},
+
         %dates,         # optionally
     });
 
@@ -3020,7 +3022,7 @@ sub lodge : Local {
     my $center = ($h_type =~ m{center})? "yes": "";
     my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
-    my $cabin  = $reg->cabin_room eq 'cabin';
+    my $cabin  = $reg->cabin_room() eq 'cabin';
     my @kids   = ($reg->kids)? (cur => { '>', 0 })
                  :             ();
 
@@ -3173,7 +3175,7 @@ sub lodge : Local {
                 $codes .= "r";
                 $code_sum += $string{house_sum_reserved};
             }
-            if ($h->cabin) {
+            if ($h->cabin()) {
                 $codes .= "C";
                 if ($cabin) {
                     $code_sum += $string{house_sum_cabin};
@@ -4839,6 +4841,7 @@ sub uncancel : Local {
 #
 # mostly for having multiple regs for housing purposes
 # but could be called for PRs.
+# Dup renamed Aux but we'll keep the sub name.
 #
 sub duplicate : Local {
     my ($self, $c, $reg_id) = @_;
@@ -4850,13 +4853,12 @@ sub duplicate : Local {
 
     stash($c,
         deposit       => 0,
-        date_postmark => tt_today($c)->as_d8(),
-        time_postmark => get_time()->t24(),
-        cabin_checked => "",
-        room_checked  => "",
+        date_postmark => $reg->date_postmark(),
+        time_postmark => $reg->time_postmark(),
         dup           => ($pr->PR()? "": "yes"),
     );
-    _rest_of_reg($pr, $p, $c, tt_today($c), "dble", "dble");
+    _rest_of_reg($pr, $p, $c, tt_today($c),
+                 $reg->pref1(), $reg->pref2(), $reg->cabin_room());
 }
 
 1;
