@@ -128,10 +128,10 @@ h1.title {
 
 /* fl = fone list */
 .fl_row0 {
-    background: #FFFFFF
+    background: #ffffff
 }
 .fl_row1 {
-    background: #DDDDDD
+    background: #eeeeee
 }
 .fl_heading {
     display: block;
@@ -173,4 +173,9 @@ h1.title {
 .lead_asst {
     color: red;
     font-weight: bold;
+}
+.see_aux {
+    color: purple;
+    font-weight: bold;
+    font-size: 15pt;
 }
