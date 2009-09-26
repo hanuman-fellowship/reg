@@ -146,7 +146,7 @@ sub _get_data {
     for my $i (1 .. 4) {
         delete $P{"cc_number$i"};
     }
-    if (! (empty($P{cost}) || invalid_amount($P{cost}))) {
+    if ((! empty($P{cost})) && invalid_amount($P{cost})) {
         push @mess, "Invalid cost";
     }
     if (empty($P{paid_date})) {
