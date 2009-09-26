@@ -146,9 +146,12 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 [% IF reg.cancelled %]
 <span class=cancel>Cancelled</span>
 [% END %]
-[% IF reg.date_start != program.sdate %] <span class=arr_lv>Arrive [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
+[% IF program.PR || reg.date_start != program.sdate %] <span class=arr_lv>Arrive [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
 [% END %]
-[% IF reg.date_end   != program.edate %] <span class=arr_lv>Leave [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
+[% IF program.PR || reg.date_end   != program.edate %] <span class=arr_lv>Leave [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
+[% END %]
+[% IF ! only_one %]
+<span class=see_aux>- Aux Regs</span>
 [% END %]
 </td>
 </tr>

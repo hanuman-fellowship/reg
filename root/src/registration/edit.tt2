@@ -70,8 +70,8 @@ function popup(url) {
 
 <tr>
 <td align=left valign=top>
-<input type=checkbox name=cabin value=yes [% cabin_checked %]> Cabin
-<input type=checkbox name=room  value=yes [% room_checked  %]> Room
+<input type=radio name=cabin_room value=cabin [% cabin_checked %]> Cabin
+<input type=radio name=cabin_room value=room  [% room_checked  %]> Room
 </td>
 </tr>
 
