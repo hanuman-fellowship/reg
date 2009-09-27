@@ -1,9 +1,3 @@
-<style type="text/css">
-/* so edit/delete linked images won't 'blink' */
-th a:hover {
-    background: white;
-}
-</style>
 [% reg_id = reg.id %]
 [% per = reg.person %]
 [% prog = reg.program %]

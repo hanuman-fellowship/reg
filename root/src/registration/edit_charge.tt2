@@ -26,4 +26,6 @@
 
 </table>
 </form>
-<script type="text/javascript">document.form.amount.focus();</script>
+<script type="text/javascript">
+document.form.amount.focus();
+</script>

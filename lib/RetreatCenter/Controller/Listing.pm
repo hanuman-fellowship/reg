@@ -475,7 +475,8 @@ sub meal_list : Local {
 
         my $prog = $r->program();
         my $mmi_prog = $prog->school() != 0;
-        my $PR = $prog->name() =~ m{personal\s*retreat}i;
+        my $PR = $prog->PR();
+        #
         # optimizations???
         # have a $n = day number?  so $d++; $n++; and then 'if lunch($n)'
         # then not so much date arithmetic!

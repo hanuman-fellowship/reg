@@ -1,3 +1,4 @@
+<p class=p2>
 Sorry, <a href="/person/view/[% person.id %]">[% person.first %] [% person.last %]</a>, is a
 [% IF person.leader %]<a href="/leader/view/[% person.leader.id %]">leader</a>[% END %]
 [% conjunction %]

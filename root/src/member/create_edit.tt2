@@ -39,9 +39,6 @@ h3 {
 .cat {
     font-size: 12pt;
 }
-.nh a:hover {
-    background: #CCCCFF;
-}
 #sub {
     color: green;
     background: lightgreen;
@@ -140,7 +137,7 @@ h3 {
     <td align=right>[% p.amount %]</td>
     <td>[% p.valid_from_obj.format("%D") %]</td>
     <td>[% p.valid_to_obj.format("%D") %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.who.username %]&nbsp;&nbsp;<span class=nh><a href=/member/payment_update/[% p.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;&nbsp;<a href=/member/payment_delete/[% p.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, '450', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <th><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.who.username %]&nbsp;&nbsp;<span class=nh><a href=/member/payment_update/[% p.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;&nbsp;<a href=/member/payment_delete/[% p.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '450', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a></th>
     </tr>
     [% n = n + 1 %]
 [% END %]

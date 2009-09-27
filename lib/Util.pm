@@ -672,7 +672,7 @@ sub email_letter {
     $mail_sender->SendLineEnc($args{html});
     if (! $mail_sender->Close()) {
         $mail_sender = undef;
-        $c->info->log("no Mail::Sender->Close $Mail::Sender::Error");
+        $c->log->info("no Mail::Sender->Close $Mail::Sender::Error");
         return 0;
     }
     if (@cc_bcc) {

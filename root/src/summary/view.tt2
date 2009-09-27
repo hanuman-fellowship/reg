@@ -4,9 +4,6 @@ p {
     margin-top: 0px;
     margin-bottom: 0px;
 }
-th a:hover {
-    background: white;
-}
 </style>
 <h2>[% Type %] Summary</h2>
 <div class=noprint>

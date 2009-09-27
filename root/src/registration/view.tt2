@@ -36,12 +36,6 @@ p {
     margin-top: 0px;
     margin-bottom: 0px;
 }
-th a:hover {
-    background: white;
-}
-.nh a:hover {
-    background: #CCCCFF;
-}
 </style>
 [% id = reg.id %]
 [% person = reg.person %]
@@ -259,7 +253,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td align=right>[% ch.amount %]</td>
 <td>[% ch.what %]</td>
 <th>
-<a href="javascript:void(0);" onclick="return overlib('[% ch.the_date_obj.format("%D") %]&nbsp;&nbsp;[% ch.time_obj %]&nbsp;&nbsp;[% ch.user.username %][% IF ! ch.automatic %]&nbsp;<span class=nh><a title=Edit href=/registration/charge_update/[% ch.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/charge_delete/[% id %]/[% ch.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>[% END %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, 450, OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('[% ch.the_date_obj.format("%D") %]&nbsp;&nbsp;[% ch.time_obj %]&nbsp;&nbsp;[% ch.user.username %][% IF ! ch.automatic %]&nbsp;<span class=nh><a title=Edit href=/registration/charge_update/[% ch.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/charge_delete/[% id %]/[% ch.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>[% END %]', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 450, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
 </th>
 <td align=right>[% amt %]</td>
 </tr>
@@ -295,7 +289,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>[% py.what %]</td>
 <td>[% py.type_sh %]</td>
 <th>
-<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj.format("%D") %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;&nbsp;[% py.user.username %]&nbsp;<a title=Edit href=/registration/payment_update/[% py.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/payment_delete/[% id %]/[% py.id %]><img src=/static/images/redX.gif height=20 border=0></a>', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, 500, OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj.format("%D") %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;&nbsp;[% py.user.username %]&nbsp;<span class=nh><a title=Edit href=/registration/payment_update/[% py.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/payment_delete/[% id %]/[% py.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 500, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
 </th>
 </tr>
 [% tot = tot + py.amount %]
@@ -327,7 +321,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>[% py.type_sh %]</td>
 <td>[% py.note %]</td>
 <th>
-<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj.format("%D") %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;<a title=Edit href=/person/update_mmi_payment/[% py.id %]/reg><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/person/del_mmi_payment/[% py.id %]/reg><img src=/static/images/redX.gif height=20 border=0></a>', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '16pt', WIDTH, 300, OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#[% py.id %]&nbsp;&nbsp;[% py.the_date_obj.format("%D") %]&nbsp;&nbsp;[% py.time_obj %]&nbsp;<span class=nh><a title=Edit href=/person/update_mmi_payment/[% py.id %]/reg><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/person/del_mmi_payment/[% py.id %]/reg><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 300, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
 </th>
 </tr>
 [% tot = tot + py.amount %]

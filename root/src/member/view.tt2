@@ -54,7 +54,7 @@ Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member
     <td align=right>[% p.amount %]</td>
     <td>[% p.valid_from_obj.format("%D") %]</td>
     <td>[% p.valid_to_obj.format("%D") %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <th><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.who.username %]', RIGHT, STICKY, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a></th>
     </tr>
 [% END %]
 </table>

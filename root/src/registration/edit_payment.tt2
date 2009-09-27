@@ -4,7 +4,7 @@
 <h2>Editing Payment for [% per.first %] [% per.last %] in [% prog.name %]</h2>
 <a href="/registration/view/[% reg.id %]">To Registration</a>
 <p class=p2>
-<form action=/registration/payment_update_do/[% pay.id %]>
+<form name=form action=/registration/payment_update_do/[% pay.id %]>
 <input type=hidden name=from value=[% from %]>
 <table cellpadding=3>
 
@@ -41,5 +41,5 @@
 </table>
 </form>
 <script type="text/javascript">
-document.amount.focus();
+document.form.amount.focus();
 </script>

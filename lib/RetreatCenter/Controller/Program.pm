@@ -456,7 +456,7 @@ sub view : Local {
     #
     # no lunches for personal retreat, DCM or hybrid programs.
     #
-    if (! ($p->name() =~ m{personal retreats}i
+    if (! ($p->PR()
            || $p->level() =~ m{[DCM]}
            || $p->rental_id()
           )

@@ -14,7 +14,7 @@
     <td align=right>[% d.amount %]</td>
     <td><a href="/project/donations/[% d.project.id %]">[% d.project.descr %]</a></td>
     <td>[% d.the_date_obj %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '250', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <th><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d_obj %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a></th>
     </tr>
     [% END %]
     </table>
