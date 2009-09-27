@@ -679,22 +679,23 @@ sub cl_picture {
     return "" unless $pic1;          # no image at all
 
     if ($pic2) {
-                                                    #       live2???
-        my $pic1_html = "<img src='http://$string{ftp_site}/staging2/pics/$pic1' width=$half>";
-        my $pic2_html = "<img src='http://$string{ftp_site}/staging2/pics/$pic2' width=$half>";
+        my $pic1_html = "<img src='http://$string{ftp_site}/live/pics/$pic1' width=$half>";
+        my $pic2_html = "<img src='http://$string{ftp_site}/live/pics/$pic2' width=$half>";
         return <<EOH;
 <table cellspacing=0>
 <tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
 </table>
 EOH
     } else {
-        return "<img src='http://$string{ftp_site}/staging2/pics/$pic1' width=$full>";
+        return "<img src='http://$string{ftp_site}/live/pics/$pic1' width=$full>";
     }
 }
+
 sub cancellation_policy {
 	my ($self) = @_;
 	return gptrim($self->canpol->policy);
 }
+
 sub gen_popup {
     my ($pic_html, $pic) = @_;
     $pic =~ s{th}{b};
