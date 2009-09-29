@@ -380,6 +380,7 @@ sub get_online : Local {
         }
     }
     close $in;
+$c->log->info("cabinRoom = '$P{cabinRoom}'");
 
     # legacy... can delete soon
     if ($P{dphone}) {
@@ -610,12 +611,15 @@ sub _rest_of_reg {
         # passed in when duplicating a reg
         #
         if ($cabin_room eq 'room') {
-            $room_checked = "checked";
+            stash($c, 'room_checked' => "checked");
         }
         elsif ($cabin_room eq 'cabin') {
-            $cabin_checked = "checked";
+            stash($c, 'cabin_checked' => "checked");
         }
     }
+    # else leave the stash alone in this regard.
+    # it might have been initialized from an online file.
+
     #
     # is this a dup reg?
     # we have the person and the program.
@@ -738,8 +742,6 @@ sub _rest_of_reg {
         h_type_opts   => $h_type_opts,
         h_type_opts1  => $h_type_opts,
         h_type_opts2  => $h_type_opts2,
-        cabin_checked => $cabin_checked,
-        room_checked  => $room_checked,
         confnotes     => [
             model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
         ],
