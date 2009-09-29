@@ -380,7 +380,6 @@ sub get_online : Local {
         }
     }
     close $in;
-$c->log->info("cabinRoom = '$P{cabinRoom}'");
 
     # legacy... can delete soon
     if ($P{dphone}) {
