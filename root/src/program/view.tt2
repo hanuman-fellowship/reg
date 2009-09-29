@@ -222,8 +222,8 @@ Web
 </tr>
 
 <tr>
-<th align=right>Quad</th>
-<td>[% program.quad %]</td> 
+<th align=right>Commuting</th>
+<td>[% program.commuting %]</td>
 </tr>
 
 </table>

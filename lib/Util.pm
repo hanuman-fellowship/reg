@@ -485,7 +485,6 @@ sub housing_types {
 		dble_bath
 		dble
 		triple
-		quad
 		dormitory
 		economy
 		center_tent
@@ -687,7 +686,7 @@ sub lunch_table {
     my ($view, $lunches, $sdate, $edate, $start_time) = @_;
 
     my $one = get_time("1300");
-    my @lunches = split //, $lunches;
+    my @lunches = split //, ($lunches || "");
     my $s = <<"EOH";
 <table border=1 cellpadding=5 cellspacing=2>
 <tr>
@@ -837,14 +836,12 @@ sub add_config {
     });
 }
 
-# economy and dormitory???
 my %tmax = qw/
     single_bath 1
     single      1
     dble        2
     dble_bath   2
     triple      3
-    quad        4
     dormitory   7
     economy    20
     center_tent 1
@@ -877,9 +874,6 @@ sub max_type {
     elsif ($max == 3) {
         return "triple";
     }
-    elsif ($max == 4) {
-        return "quad";
-    }
     elsif ($max <= 7) {
         return "dormitory";
     }
@@ -891,6 +885,7 @@ sub max_type {
 sub lines {
     my ($s) = @_;
 
+    return 0 if ! defined $s;
     my @p = $s =~ m{<p>}gi;
     return scalar(@p);
 }

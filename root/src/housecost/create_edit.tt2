@@ -37,11 +37,6 @@
 </tr>
 
 <tr>
-<th align=right>Quad</th>
-<td><input type=text name=quad value="[% housecost.quad %]" size=4></td>
-</tr>
-
-<tr>
 <th align=right>Dormitory</th>
 <td><input type=text name=dormitory value="[% housecost.dormitory %]" size=4></td>
 </tr>

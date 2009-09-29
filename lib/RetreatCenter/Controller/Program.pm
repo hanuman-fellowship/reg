@@ -104,9 +104,9 @@ sub create : Local {
         check_retreat       => '',
         check_sbath         => 'checked',
         check_single        => 'checked',
-        check_quad          => '',
         check_collect_total => '',
         check_economy       => '',
+        check_commuting     => 'checked',
         check_dncc          => '',
         program_leaders     => [],
         program_affils      => [],
@@ -116,6 +116,7 @@ sub create : Local {
             extradays    => 0,
             full_tuition => 0,
             deposit      => 100,
+            max          => 0,
             canpol       => { name => "Default" },  # clever way to set default!
             ptemplate    => 'default',
             cl_template  => 'default',
@@ -205,8 +206,8 @@ sub _get_data {
         single
         retreat
         economy
+        commuting
         webready
-        quad
         linked
         do_not_compute_costs
     /) {
@@ -368,6 +369,7 @@ sub create_do : Local {
     my $p = model($c, 'Program')->create({
         summary_id => $sum->id,
         image      => $upload? "yes": "",
+        lunches    => "",
         %P,         # this includes rental_id for a possible parallel rental
     });
     my $id = $p->id();
@@ -680,7 +682,7 @@ sub update : Local {
 
     for my $w (qw/
         sbath single collect_total allow_dup_regs kayakalpa retreat
-        economy webready quad linked do_not_compute_costs
+        economy commuting webready linked do_not_compute_costs
     /) {
         stash($c,
             "check_$w" => ($p->$w)? "checked": ""
@@ -747,9 +749,10 @@ sub update_do : Local {
     my $p = model($c, 'Program')->find($id);
     my $names = "";
     my $lunches = 0;
+    $P{max} ||= 0;
     if (   $p->sdate ne $P{sdate}
         || $p->edate ne $P{edate}
-        || $p->max   < $P{max}
+        || $p->max   <  $P{max}
     ) {
         # invalidate the bookings as the dates/max have changed
         my @bookings = model($c, 'Booking')->search({
@@ -1504,7 +1507,7 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
     my $housecost = $p->housecost();
 
     for my $t (reverse housing_types(1)) {
-        next if $t eq 'quad'        && !$p->quad;
+        next if $t eq 'commuting'   && !$p->commuting;
         next if $t eq 'economy'     && !$p->economy;
         next if $t eq 'single_bath' && !$p->sbath;
         next if $t eq 'single'      && !$p->single;
@@ -1526,7 +1529,7 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
     #
     my @leaders = $p->leaders();
     my $nleaders = @leaders;
-    my ($pic1, $pic2);
+    my ($pic1, $pic2) = ("", "");
     my $url = "http://www.mountmadonna.org/live/pics";
     if ($nleaders >= 1 && $leaders[0]->image) {
         $pic1 = "$url/lth-" . $leaders[0]->id() . ".jpg";
@@ -1600,7 +1603,7 @@ sub gen_progtable {
 
         my $housecost = $p->housecost;
         for my $t (reverse housing_types(1)) {
-            next if $t eq 'quad'        && !$p->quad;
+            next if $t eq 'commuting'   && !$p->commuting;
             next if $t eq 'economy'     && !$p->economy;
             next if $t eq 'single_bath' && !$p->sbath;
             next if $t eq 'single'      && !$p->single;
@@ -1690,7 +1693,7 @@ sub duplicate : Local {
     });
     for my $w (qw/
         sbath single collect_total allow_dup_regs kayakalpa retreat
-        economy webready quad linked
+        commuting economy webready linked
     /) {
         stash($c,
             "check_$w" => ($orig_p->$w)? "checked": ""

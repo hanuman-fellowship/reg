@@ -39,7 +39,6 @@ __PACKAGE__->add_columns(qw/
     n_dble_bath
     n_dble
     n_triple
-    n_quad
     n_dormitory
     n_economy
     n_center_tent
@@ -52,7 +51,6 @@ __PACKAGE__->add_columns(qw/
     att_dble_bath
     att_dble
     att_triple
-    att_quad
     att_dormitory
     att_economy
     att_center_tent
@@ -249,7 +247,6 @@ sub count {
         n_dble_bath
         n_dble
         n_triple
-        n_quad
         n_dormitory
         n_economy
         n_center_tent

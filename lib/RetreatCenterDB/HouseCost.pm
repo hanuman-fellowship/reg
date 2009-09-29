@@ -11,7 +11,6 @@ __PACKAGE__->add_columns(qw/
     single
     dble
     triple
-    quad
     dormitory
     economy
     center_tent

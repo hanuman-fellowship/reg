@@ -131,8 +131,8 @@ Web
 </tr>
 
 <tr>
-<th align=right>Quad</th>
-<td><input type=checkbox value=yes name=quad [% check_quad %]></td>
+<th align=right>Commuting</th>
+<td><input type=checkbox value=yes name=commuting [% check_commuting %]></td>
 </tr>
 
 </table>

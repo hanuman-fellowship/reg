@@ -57,8 +57,8 @@ __PACKAGE__->add_columns(qw/
     cl_template
     sbath
     single
-    quad
     economy
+    commuting
     footnotes
     reg_start
     reg_end
@@ -449,12 +449,12 @@ EOH
     }
     # the hard coded column names below - another way?
     # somehow get them from HouseCost.pm???
-    # I think we need them hardcoded.  To tie 'quad' in program to
-    # 'quad' in housing_cost.
+    # I think we need them hardcoded.  To tie 'economy' in program to
+    # 'economy' in housing_cost.
     #
     for my $t (reverse housing_types(1)) {
+        next if $t eq 'commuting'   && ! $self->commuting;
         next if $t eq 'economy'     && ! $self->economy;
-        next if $t eq 'quad'        && ! $self->quad;
 		next if $t eq 'single_bath' && ! $self->sbath;
 		next if $t eq 'single'      && ! $self->single;
 
@@ -621,9 +621,9 @@ sub picture {
         }
         mkdir "gen_files/pics";
         copy("root/static/images/$p", "gen_files/pics/$p");
-        my $big = $p;
-        $big =~ s{th}{b};
-        copy("root/static/images/$big", "gen_files/pics/$big");
+        #my $big = $p;
+        #$big =~ s{th}{b};
+        #copy("root/static/images/$big", "gen_files/pics/$big");
     }
     if ($pic2) {
         my $pic1_html = "<img src='pics/$pic1' width=$half>";
@@ -639,7 +639,7 @@ EOH
 #<tr><td align=center colspan=2 class='click_enlarge'>$string{'click_enlarge'}</td></tr>
     } else {
         my $pic_html = "<img src='pics/$pic1' width=$full>";
-        $pic_html = gen_popup($pic_html, $pic1);
+        #$pic_html = gen_popup($pic_html, $pic1);
         $pic_html = "<table><tr><td>"
 					. $pic_html
 			        . "</td></tr>"

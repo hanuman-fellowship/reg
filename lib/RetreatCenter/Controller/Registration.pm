@@ -721,8 +721,8 @@ sub _rest_of_reg {
     for my $ht (housing_types(2)) {
         next HTYPE if $ht eq "single_bath" && ! $pr->sbath;
         next HTYPE if $ht eq "single"      && ! $pr->single;
-        next HTYPE if $ht eq "quad"        && ! $pr->quad;
         next HTYPE if $ht eq "economy"     && ! $pr->economy;
+        next HTYPE if $ht eq "commuting"   && ! $pr->commuting;
         if ($ht !~ m{unknown|not_needed} && $pr->housecost->$ht == 0) {
             next HTYPE;
         }
@@ -1042,7 +1042,7 @@ sub create_do : Local {
         share_first   => $P{share_first},
         share_last    => $P{share_last},
         manual        => $P{dup}? "yes": "",
-        cabin_room    => $P{cabin_room},
+        cabin_room    => $P{cabin_room} || "",
         leader_assistant => '',
         free_prog_taken  => $P{free_prog},
 
@@ -2597,8 +2597,8 @@ sub update : Local {
     for my $htname (housing_types(2)) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
         next HTYPE if $htname eq "single"      && ! $pr->single;
-        next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
+        next HTYPE if $htname eq "commuting"   && ! $pr->commuting;
         next HTYPE if    $htname ne "unknown"
                       && $htname ne "not_needed"
                       && $pr->housecost->$htname() == 0;     # wow!
@@ -2918,13 +2918,14 @@ sub lodge : Local {
     my $share_last  = $reg->share_last();
     my $name = "$share_first $share_last";
     my $message2 = "";
+    my $reg2;
     if ($share_first) {
         my ($person) = model($c, 'Person')->search({
             first => $share_first,
             last  => $share_last,
         });
         if ($person) {
-            my ($reg2) = model($c, 'Registration')->search({
+            ($reg2) = model($c, 'Registration')->search({
                 person_id => $person->id,
                 program_id => $program_id,
             });
@@ -3022,6 +3023,7 @@ sub lodge : Local {
     my $center = ($h_type =~ m{center})? "yes": "";
     my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
+    my $low_max = ($max == 7)? 4: $max;
     my $cabin  = $reg->cabin_room() eq 'cabin';
     my @kids   = ($reg->kids)? (cur => { '>', 0 })
                  :             ();
@@ -3076,7 +3078,10 @@ sub lodge : Local {
             # is the max of the house inconsistent with $max?
             # or the bath status
             #
-            if (($h->max < $max) ||
+            # quads are okay when looking for a dorm
+            # and this takes some fancy footwork.
+            #
+            if (($h->max < $low_max) ||
                 ($h->bath && !$bath) ||
                 (!$h->bath && $bath)
             ) {
@@ -3121,7 +3126,7 @@ sub lodge : Local {
                         sex => { '!=', $psex }, #   or put someone unsuspecting
                         sex => { '!=', 'U'   }, #   in an X room
                     ],
-                    curmax => { '<', $max },    # too small
+                    curmax => { '<', $low_max },    # too small
                     -and => [                   # can't resize - someone there
                         curmax => { '>', $max },
                         cur    => { '>', 0    },
@@ -3238,20 +3243,35 @@ sub lodge : Local {
         $#h_opts = $maxopts;
     }
     if ($share_house_id && ! $selected) {
-        # male, female want to share
+        # two people want to share a house.
         # one of them is already housed.
         # the room is not in the list because of the gender mismatch
-        # or a tent with nominally only one space.
+        # or a tent with nominally only one space
+        # or because the room is already full.
+        # yikes!
         #
-        unshift @h_opts,
-            "<option value=" 
-            . $share_house_id
-            . " selected>"
-            . $share_house_name
-            . " - S"
-            . "</option>\n"
-            ;
-        $selected = 1;
+        my @cf = model($c, 'Config')->search({
+            house_id => $share_house_id,
+            the_date => { 'between' => [ $sdate, $edate1 ] },
+            -or => [
+                \'cur >= curmax'
+                # could not put by itself!   a one item or clause is needed?
+            ],
+        });
+        if ($reg->h_type() !~ m{tent} && @cf) {
+            $message2 .= " - Yes, that would be nice but that room is already FULL!?";
+        }
+        else {
+            unshift @h_opts,
+                "<option value=" 
+                . $share_house_id
+                . " selected>"
+                . $share_house_name
+                . " - S"
+                . "</option>\n"
+                ;
+            $selected = 1;
+        }
     }
     if (@h_opts && ! $selected) {
         # no house is otherwise selected
@@ -3281,7 +3301,6 @@ sub lodge : Local {
         dble_bath
         dble
         triple
-        quad
         economy
         dormitory
         center_tent
@@ -3291,8 +3310,8 @@ sub lodge : Local {
     /) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
         next HTYPE if $htname eq "single"      && ! $pr->single;
-        next HTYPE if $htname eq "quad"        && ! $pr->quad;
         next HTYPE if $htname eq "economy"     && ! $pr->economy;
+        next HTYPE if $htname eq "commuting"   && ! $pr->commuting;
         next HTYPE if $pr->housecost->$htname == 0;     # wow!
         next HTYPE if $htname eq 'center_tent' && !$summer;
 
@@ -3408,7 +3427,6 @@ sub lodge_do : Local {
     else {
         ($house) = model($c, 'House')->find($house_id);
     }
-    my $house_max = $house->max;
 
     my $sdate  = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
@@ -3421,7 +3439,6 @@ sub lodge_do : Local {
                . " in " . $program->name()
                ;
 
-    my $cmax = type_max($reg->h_type);
     #
     # if we forced a request for a triple into a double
     # we can't set curmax in the config record to 3 - max is 2.
@@ -3440,7 +3457,10 @@ sub lodge_do : Local {
     # this will effectively resize the room so no one else
     # will be put there.
     #
-    if ($force_house && $cmax > $house_max) {
+    my $house_max = $house->max;
+    my $cmax = type_max($reg->h_type);
+
+    if ($cmax > $house_max) {
         $cmax = $house_max;
     }
     if ($force_house) {
