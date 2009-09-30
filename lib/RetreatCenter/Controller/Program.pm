@@ -290,7 +290,7 @@ sub _get_data {
         prog_end
     /) {
         my $time = get_time($P{$t});
-        if (!time) {
+        if (!$time) {
             push @mess, Time::Simple->error();
         }
         else {
