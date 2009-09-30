@@ -334,6 +334,7 @@ my %needed = map { $_ => 1 } qw/
     house1
     house2
     cabinRoom
+    cabin_room
     howHeard
     advertiserName
     gender
@@ -382,6 +383,7 @@ sub get_online : Local {
     close $in;
 
     # legacy... can delete soon
+    # remove the old names from the above %needed list as well
     if ($P{dphone}) {
         $P{work} = $P{dphone};
     }
@@ -390,6 +392,9 @@ sub get_online : Local {
     }
     if ($P{cphone}) {
         $P{cell} = $P{cphone};
+    }
+    if ($P{cabinRoom}) {
+        $P{cabin_room} = $P{cabinRoom};
     }
     # legacy
 
