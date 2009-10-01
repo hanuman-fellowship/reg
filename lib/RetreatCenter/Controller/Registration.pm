@@ -2070,7 +2070,7 @@ sub cancel_do : Local {
     my $amount      = $c->request->params->{amount};
     my $reg         = model($c, 'Registration')->find($id);
 
-    if (invalid_amount($amount)) {
+    if (!$mmi && defined $amount && invalid_amount($amount)) {
         error($c,
             "Illegal amount: $amount",
             'gen_error.tt2',
@@ -3645,7 +3645,7 @@ sub seek : Local {
     my ($self, $c, $prog_id, $reg_id) = @_;
 
     my $today_d8 = tt_today($c)->as_d8();
-    my $reg_pat = $c->request->params->{reg_pat} || "";
+    my $eg_pat = $c->request->params->{reg_pat} || "";
     my $oreg_pat = $reg_pat;
     $reg_pat =~ s{\*}{%}g if $reg_pat;
     $reg_pat = trim($reg_pat);
