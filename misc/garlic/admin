@@ -1,0 +1,178 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw/:standard/;
+
+my $dirname = param('dirname');
+$dirname =~ s/^\s*|\s*$//g if $dirname;
+
+my $ulfile  = param('ulfile') || "";
+
+sub slurp {
+	my ($fname) = @_;
+	open IN, $fname or die "cannot open $fname: $!<p>";
+	local $/;
+	my $s = <IN>;
+	close IN;
+	$s;
+}
+
+print header;
+if ((param('live') || param('stage') || param('purge'))
+    && param('password') ne "sita") {
+    print "Sorry, wrong password\n";
+    exit;
+}
+print <<EOH;
+<html>
+<body>
+<h2>Online Registration Admin Page</h2>
+<font color=red>
+EOH
+
+if (param('live')) {
+	#
+	# a shell file within perl:
+	#
+	chdir "/home/mmc/www";
+	my $cmds = <<EOC;
+	rm -rf live.00 2>/tmp/debug
+	mv -f live live.00 2>>/tmp/debug
+	mkdir live
+	chmod 777 live
+	mkdir live/pics
+	chmod 777 live/pics
+	cp staging/*.html staging/progtable live
+	cp staging/pics/* live/pics
+
+	# no longer test mode so...
+	perl -p -i -e 's{reg1\\?test=1&}{reg1?}' live/*.html;
+EOC
+	#
+	# execute these commands
+	#
+	for my $cmd (split /\n/, $cmds) {
+		next unless $cmd =~ /\S/;		# blank lines
+		next if $cmd =~ /^\s*#/;		# comments
+		system $cmd;
+	}
+	print "Staging moved to Live.<br>";
+	print scalar(localtime), "<p>";
+} elsif (param('stage')) {
+	chdir "/home/mmc/www";
+	if (-d "live.00") {
+		#
+		# a shell file within Perl
+		#
+		my $cmds = <<EOC;
+		rm -rf staging 2>/tmp/debug
+		mv live staging 2>>/tmp/debug
+
+		# back to test mode so...
+		perl -p -i -e 's{reg1\\?}{reg1?test=1&}' staging/*.html
+
+		mv live.00 live 2>>/tmp/debug
+EOC
+		#
+		# execute these commands
+		#
+		for my $cmd (split /\n/, $cmds) {
+			next unless $cmd =~ /\S/;		# blank lines
+			next if $cmd =~ /^\s*#/;		# comments
+			system $cmd;
+		}
+		print "Live pages moved back to Staging and original Live pages restored.<br>";
+		print scalar(localtime), "<p>";
+	} else {
+		print "No previous live pages.<p>"
+	}
+} elsif (param('purge')) {
+	my @dirs = split ':', param('expdirs');
+	#
+	# first verify that there are progtable files
+	# in each of the directories!  this is a gigantic
+	# security hole!
+	#
+	chdir "/home/mmc/www";
+	my $ok = 1;
+	for my $d (@dirs) {
+		$ok = 0 unless -f "$d/progtable";
+	}
+	if (! @dirs) {
+		print "Nothing to purge!<p>";
+	} elsif ($ok) {
+		system("rm -rf @dirs");
+		print join(', ', @dirs), " purged.<p>";
+	} else {
+		print "Something is fishy here!<p>";
+	}
+} else {
+	print "Choose an action below.<p>";
+}
+print "</font>\n";
+
+#
+# make a list of the currently active unlinked programs
+# how to find them?  we do not keep a separate record.
+# the file system knows where they are - they are directories
+# under www/ that have a progtable in them!  but not
+# staging, live, personal, live.00, or programs.
+#
+# note that the progtable below is not the same
+# as the progtable above - i'm not reading it twice!
+#
+my $unlinked = "";
+my @expdirs = ();
+chdir "/home/mmc/www";
+use Date::Simple qw/:all/;
+
+UNLINKED:
+for my $d (grep { ! m{staging|live|programs|personal} } <*/progtable>) {
+	$d =~ s#/progtable##;
+	my $s = slurp "$d/index.html";
+	my ($this_pid) = $s =~ /id=(\d+)/;
+    my $href = do "$d/progtable";
+    if (! exists $href->{$this_pid}) {
+        next UNLINKED;
+    }
+	my $ed = d8($href->{$this_pid}{edate});
+	my $expdate = $ed->format("%B %d, %Y");
+	if ($ed < today()) {
+		$expdate = "<font color=red>$expdate</font>";
+		push @expdirs, $d;
+	}
+	$unlinked .= <<EOH;
+<tr>
+<td><a target=_blank href='http://www.mountmadonna.org/$d'>$d</a></td>
+<td>$href->{$this_pid}{name} - $href->{$this_pid}{title}</td>
+<td>$expdate</td>
+</tr>
+EOH
+}
+my $expdirs = join ':', @expdirs;
+print <<EOH;
+<form name=form>
+Password: <input type=password name=password>
+<p>
+<ul>
+<li><input type=submit name="live" value="Move Staging to Live"><p>
+<li><input type=submit name="stage" value="Restore the Previous Live Pages"><p>
+<p>
+<li>Here are the currently active unlinked programs:
+<p>
+<table cellpadding=5 border=1>
+<tr><th align=left>Directory</th><th align=left>Description</th><th align=left>Expires</th></tr>
+$unlinked
+</table>
+<p>
+<input type=hidden name=expdirs value='$expdirs'>
+<input type=submit name="purge" value = "Purge the Expired Unlinked Programs">
+</ul>
+</form>
+<script type="text/javascript">
+document.form.password.focus();
+</script>
+</body>
+</html>
+EOH

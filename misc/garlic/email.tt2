@@ -1,0 +1,21 @@
+Thank you, [% x_fname %].
+<p>
+[% IF x_title == 'Personal Retreat' %]
+We have received your online registration for a Personal Retreat
+from [% x_sdate %] to [% x_edate %].
+[% ELSE %]
+We have received your online registration for the<br>
+[% x_title %] program[% IF x_leader_names %] with [% x_leader_names %][% END %].
+[% END %]
+<p>
+Your credit card has been charged $[% x_amount %]
+via an authorize.net transaction.<br>
+The id for this transaction is [% x_trans_id %].<br>
+<p>
+You will soon receive <i>another</i> letter from reservations@mountmadonna.org<br>
+with confirmation of your housing and all the details you will need to know<br>
+prior to coming to Mount Madonna Center.
+<p>
+<p>
+Do <b>not</b> make travel plans until you have received
+your housing confirmation letter.

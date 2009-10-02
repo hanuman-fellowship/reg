@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>MMC Online Registration - Errors</title>
+<link href="../regform.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="header"><img src="../Gif/navbar_home.gif" width="133" height="111" alt="logo" /></div>
+    
+    <div class="main">
+        <div class="top"></div>
+        
+        <div class="middle">
+		
+			 <div class="steps"><h1>Online Registration</h1>
+            <img src="../Gif/step_2.gif" width="797" height="43" />            </div>
+			<div class="notes">
+
+				
+
+			<h3>Problems were found in the form:</h3>
+			<ul>
+			[% err %]
+			</ul>
+			<p>
+			<form>
+			Please <INPUT TYPE="BUTTON" id=back VALUE="Go Back" ONCLICK="history.go(-1)"> and correct these things.
+			</form>
+			<script type='text/javascript'>
+			document.getElementById('back').focus();
+			</script>	</div>
+        </div>
+        
+        <div class="bot"></div>
+    </div>
+</div>
+</body>
+</html>

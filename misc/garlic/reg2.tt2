@@ -1,0 +1,265 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>MMC Online Registration - Step 2</title>
+<link href="../regform.css" rel="stylesheet" type="text/css">
+
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="header"><img src="../Gif/navbar_home.gif" width="133" height="111" alt="logo" /></div>
+    
+    <div class="main">
+        <div class="top"><!--Leave this empty--></div>
+        
+        <div class="middle">
+        
+            <div class="steps"><h1>Online Registration</h1>
+            <img src="../Gif/step_2.gif" width="797" height="43" />            </div>
+            
+            <div class="program">
+            
+            	<h2>You are registering for:</h2>
+                [% IF pr %]
+                
+                    <p>Personal Retreat</p>
+   
+                [% ELSE %]
+                    [% IF two_pics %]
+						<img src='[% image1 %]' width="75">
+						<img src='[% image2 %]' width="75">
+					[% ELSIF one_pic %]
+						<img src='[% image1 %]' width="100">
+					[% END %]
+                    <dl class="progList">
+                        <dt>Program:</dt>
+                        <dd>[% title %]</dd>
+    
+                        <dt>Dates:</dt>
+                        <dd>[% dates %]</dd>
+                    
+                        [% IF leader_names %]
+
+                        <dt>Presenter:</dt>
+                        <dd>[% leader_names %]</dd>
+                        [% END %]
+                    </dl>
+                [% END %]
+				
+								
+
+            <br style="clear:all;"/>        
+
+            </div>
+            
+            <div class="mainForm">
+			
+                    
+					
+					<div class="personal">
+                        
+                        <h2>Personal Information</h2> 
+                        
+                        <DL>
+                            <dt>Name:</dt>
+                            <dd>[% fname %] [% lname %]</dd>
+                        
+                        
+                       
+                            <dt>Gender:</dt>
+                            <dd>[% gender %]</dd>
+                       
+
+
+                     
+                            <dt>Address:</dt>
+                            <dd>[% street_addr %]<br>
+                                [% city %], [% state %] [% zip %]<br>
+                                [% country %]</dd>
+                      
+
+
+                       
+                            <dt>Phone:</dt>
+                            <dd>[% phone_info %]</dd>
+                       
+
+
+                        
+                            <dt>Email:</dt>
+                            <dd>[% email1 %]</dd>
+                        </DL>
+
+                    </div>
+
+
+			[% IF ceu %]
+			
+			
+                    <div class="ceu"> 
+
+                            <h2>Continuing Education Credits</h2>  
+							<dl>
+									<dt>License #:</dt>
+									<dd>[% ceu_license %]</dd>
+							</dl>		
+                    </div>
+
+			[% END %]
+
+            
+            
+            
+            
+            
+            		
+	
+					<div class="housing">
+					
+                            <h2>Housing Choice</h2>  
+                            <DL>
+                            <DT>First choice:</DT><DD>[% house1_verbose %]</DD>
+                            <DT>Second choice:</DT><DD>[% house2_verbose %]</DD>
+                            </DL>
+                            [% withwhom_verbose %]
+                            <p>
+                            You prefer a [% cabin_room %], if available, 
+                            instead of a [% other_cabin_room %].
+
+					</div>
+					
+
+
+
+
+					<div class="prefs">
+					
+						<h2>Preferences</h2>
+						
+                          [% carpool_verbose %]
+                          [% howheard_verbose %]
+                          [% mailings_verbose %]
+                          [% IF green_amount %]
+                          <P>You wish to contribute $[% green_amount %] to our Green Fund.</p>
+                          [% END %]
+					</div>
+					
+					
+					
+					[% IF request %]	
+					<div class="requests">										
+                          <p>[% request_verbose %]</p>
+					</div>
+					[% END %]
+
+
+
+					<div class="notes">
+						<h2>Payment</h2>
+						   [% payment %]
+					</div>
+	
+					<div class="submit">
+					
+						<FORM NAME="authorize"
+							  action="https://secure.authorize.net/gateway/transact.dll"
+							  method="POST"
+						>
+						<!-- Begin Authorize.net fields -->
+						[% fingerprint_html %]
+						
+						<INPUT type=hidden VALUE="TRUE"                  name="x_relay_response">
+						<INPUT type=hidden VALUE="http://www.mountmadonna.org/cgi-bin/relay"
+																		 name="x_relay_url">
+						
+						<INPUT type=hidden VALUE="[% x_description %]"   name="x_description">
+						<INPUT type=hidden VALUE="[% loginid %]"         name="x_login">
+						<INPUT type=hidden VALUE="[% x_amount %]"        name="x_amount">
+						<INPUT type=hidden VALUE="[% green_amount %]"    name="x_green_amount">
+						<INPUT type=hidden VALUE="PAYMENT_FORM"          name="x_show_form" >
+						<INPUT type=hidden VALUE="[% test %]"            name="x_test_request" >
+						<INPUT type=hidden VALUE="[% x_firstname %]"     name="x_first_name">
+						<INPUT type=hidden VALUE="[% x_lastname %]"      name="x_last_name">
+						<INPUT type=hidden VALUE="[% x_address %]"       name="x_address">
+						<INPUT type=hidden VALUE="[% x_firstname %] [% x_lastname %]"
+																		 name="x_invoice_num">
+						
+						<INPUT type=hidden VALUE="[% mmc_ip %]"          name="x_cust_id">
+						<INPUT type=hidden VALUE="[% mmc_code %]"        name="x_po_num">
+						<INPUT type=hidden VALUE="[% real_ip %]"         name="x_real_ip">
+						
+						<INPUT type=hidden VALUE="[% title %]"          name="x_title">
+						<INPUT type=hidden VALUE="[% leader_names %]"   name="x_leader_names">      
+						<INPUT type=hidden VALUE="[% sdate %]"          name="x_sdate">
+						<INPUT type=hidden VALUE="[% edate %]"          name="x_edate">
+						<INPUT type=hidden VALUE="[% lname %]"          name="x_lname">
+						<INPUT type=hidden VALUE="[% fname %]"          name="x_fname">
+						<INPUT type=hidden VALUE="[% gender %]"         name="x_gender">
+						<INPUT type=hidden VALUE="[% street1 %]"        name="x_street1">
+						<INPUT type=hidden VALUE="[% street2 %]"        name="x_street2">
+						<INPUT type=hidden VALUE="[% city %]"           name="x_city">
+						<INPUT type=hidden VALUE="[% state %]"          name="x_state">
+						<INPUT type=hidden VALUE="[% zip %]"            name="x_zip">
+						<INPUT type=hidden VALUE="[% country %]"        name="x_country">
+						<INPUT type=hidden VALUE="[% home %]"           name="x_home">
+						<INPUT type=hidden VALUE="[% work %]"           name="x_work">
+						<INPUT type=hidden VALUE="[% cell %]"           name="x_cell">
+						<INPUT type=hidden VALUE="[% phone %]"          name="x_phone">
+						<INPUT type=hidden VALUE="[% ceu_license %]"    name="x_ceu_license">
+						<INPUT type=hidden VALUE="[% email1 %]"         name="x_email">
+						<INPUT type=hidden VALUE="FALSE"                name="x_email_customer">
+						<INPUT type=hidden VALUE="[% howheard %]"       name="x_howHeard">
+						<INPUT type=hidden VALUE="[% advertisername %]" NAME="x_advertiserName">
+						<INPUT type=hidden VALUE="[% carpool %]"        name="x_carpool">
+						<INPUT type=hidden VALUE="[% hascar %]"         name="x_hascar">
+						<INPUT type=hidden VALUE="[% e_mailings %]"     name="x_e_mailings">
+						<INPUT type=hidden VALUE="[% snail_mailings %]" NAME="x_snail_mailings">
+						<INPUT type=hidden VALUE="[% share_mailings %]" NAME="x_share_mailings">
+						<INPUT type=hidden VALUE="[% house1 %]"         name="x_house1">
+						<INPUT type=hidden VALUE="[% house2 %]"         name="x_house2">
+						<INPUT type=hidden VALUE="[% withwhom_first %]" NAME="x_withwhom_first">
+						<INPUT type=hidden VALUE="[% withwhom_last %]"  name="x_withwhom_last">
+						<INPUT type=hidden VALUE="[% cabinroom %]"      name="x_cabinRoom">
+						<INPUT type=hidden VALUE="[% request %]"        name="x_request">
+						<INPUT type=hidden VALUE="[% name %]"           name="x_pname">
+						<INPUT type=hidden VALUE="[% progchoice %]"     name="x_progchoice">
+						<INPUT type=hidden VALUE="[% plink %]"          name="x_plink">
+						<INPUT type=hidden VALUE="[% pid %]"            name="x_pid">
+						<INPUT type=hidden 
+						VALUE="<style type='text/css' >@import url(http://www.mountmadonna.org/regform_authnet.css); </style><div class='wrapper'><div class='header'><img src='http://www.mountmadonna.org/Gif/navbar_home.gif' width='133' height='111' alt='logo' /></div><div class='top'><!--Leave this empty--></div><div class='middle'><div class='steps'><h1>Online Registration</h1><img src='http://www.mountmadonna.org/Gif/step_3.gif' width='797' height='43' />"
+						 name="x_header_html_payment_form">
+						 
+						<INPUT type=hidden 
+						VALUE="</div></div><div class='bot'></div></div>"            name="x_footer_html_payment_form">
+
+	
+						<div style="margin-top:17px;margin-bottom:60px; width:250px;float:left;">
+							<button TYPE="submit" name="back" value="Go Back and Make Changes" onclick="history.back(); return false;" class="btn_back_change">
+								<em>Go Back and Make Changes</em>
+							</button>
+						</div>
+
+						<div style="margin-left:255px;">
+							<button TYPE="submit" name="Accept Order" value="Pay Securely with your Credit Card" class="btn_to_payment">
+								<em>Proceed to Payment</em>
+							</button>
+							<IMG SRC="http://www.mountmadonna.org/Gif/secure90x72.gif" align=middle style="margin-left:20px;">
+							<P style="margin-bottom:30px;">
+							Housing is not always available. Do not finalize your travel plans until 
+							you have received a <STRONG>housing confirmation</STRONG> from Mount Madonna Center.</p>
+							<BR style="clear:both;" />
+						</div>
+						
+					</FORM>
+				</div>					
+            </div>
+        </div>
+    </div>        
+	
+	<div class="bot"></div>
+
+</div>
+</body>
+</html>

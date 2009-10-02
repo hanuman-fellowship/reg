@@ -1,0 +1,171 @@
+#!/usr/bin/perl
+#
+# maybe send $data as the stash hash ref?
+#
+
+use strict;
+use warnings;
+use lib 'lib';
+use Template;
+use CGI qw/:standard/;
+print header;
+use CGI::Carp qw/fatalsToBrowser/;
+
+use HousingNames qw/
+    %housing_name
+/;
+
+#
+# command line params
+#
+my $test = param('test') || 0;
+my $dir  = param('dir');
+my $pid  = param('id');
+
+my $progpath = "/home/mmc/www/" . ($dir ? $dir:
+                                   $test? "staging":
+                                          "live");
+
+=comment
+
+reg1 takes a program id on the command line.
+it looks it up in the regtable to get the 
+various attributes of a program with that id.
+it then fills in reg1.tt2 with
+these various attributes and presents
+it to the user.
+
+if there is cookie information, it will also be used.
+
+=cut
+
+my $href = do "$progpath/progtable";
+if ($@) {
+    print "error in progtable: $@\n";
+    exit;
+}
+if (! exists $href->{$pid}) {
+    print "Sorry, program not found.\n";
+    exit;
+}
+my $data = $href->{$pid};
+my %cookie = cookie(-name => 'user_data');
+
+# TODO: complain if you try to register for a program that has already happened.
+
+my %stash;
+$stash{test} = $test;
+$stash{dir}  = $dir;
+$stash{pid}  = $pid;
+for my $w (qw/
+    title dates leader_names name
+    canpol do_not_compute_costs dncc_why
+    plink
+/) {
+    $stash{$w} = $data->{$w};
+}
+$stash{pr} = $data->{title} =~ m{personal\s+retreat}i;
+if ($test) {
+    for my $i (1, 2) {
+        $data->{"image$i"} =~ s{live}{staging};
+    }
+}
+if ($data->{image1} && $data->{image2}) {
+    $stash{two_pics} = 1;
+    $stash{image1} = $data->{image1};
+    $stash{image2} = $data->{image2};
+}
+elsif ($data->{image1}) {
+    $stash{one_pic} = 1;
+    $stash{image1} = $data->{image1};
+}
+else {
+    $stash{zero_pics} = 1;
+}
+
+#
+# an exception for personal retreats
+#
+if ($stash{pr}) {
+    $stash{dates} = "";
+    $stash{leader_names} = "";
+}
+$stash{basicfull} = ($data->{ndays} != $data->{fulldays});
+$stash{bdays}     = $data->{ndays};
+$stash{fdays}     = $data->{fulldays};
+if ($stash{basicfull}) {
+    # muck with the dates
+    ($stash{bdates}, $stash{fdates}) = split m{,}, $data->{dates};
+    if ($stash{fdates} =~ m{^\s*\d}) {
+        my ($month) = $stash{bdates} =~ m{([a-z]+)}i;
+        $stash{fdates} = "$month " . $stash{fdates};
+    }
+}
+
+if ($cookie{gender} eq "male") {
+    $stash{male} = "checked";
+    $stash{female}   = "";
+}
+else {
+    $stash{female} = "checked";
+    $stash{male}   = "";
+}
+if ($cookie{cabinRoom} eq 'cabin') {
+    $stash{cabin} = "checked";
+    $stash{room}  = "";
+}
+else {
+    $stash{cabin} = "";
+    $stash{room}  = "checked";
+}
+$stash{carpool       } = $cookie{carpool       }? 'checked': '';
+$stash{hascar        } = $cookie{hascar        }? 'checked': '';
+$stash{e_mailings    } = $cookie{e_mailings    }? 'checked': '';
+$stash{snail_mailings} = $cookie{snail_mailings}? 'checked': '';
+$stash{share_mailings} = $cookie{share_mailings}? 'checked': '';
+$stash{withwhom_first} = $cookie{withwhom_first} || "";
+$stash{withwhom_last } = $cookie{withwhom_last }  || "";
+for my $w (qw/
+    fname lname street1 street2
+    city state zip country
+    home work cell
+    email1
+/) {
+    $stash{$w} = $cookie{$w} || "";
+}
+$stash{email2} = $cookie{email1} || "";
+
+$stash{mft} = $data->{footnotes} =~ m{[*][*]};
+$stash{ceu} = $data->{footnotes} =~ m{[*]};
+$stash{ceu_license} = $cookie{ceu_license};
+
+# housing
+#
+my @housekeys = grep { /^basic / } keys %$data;
+
+my $housing_fees = "";
+for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
+    my $nk = $k;
+    $nk =~ s{basic }{};
+    my $full = $k;
+    $full =~ s{basic}{full};
+    $housing_fees .= <<"EOH";
+<tr>
+<td><input type=radio name=house1 value='$nk'></td>
+<td><input type=radio name=house2 value='$nk'></td>
+<td>$housing_name{$nk}</td>
+EOH
+    if (! $stash{do_not_compute_costs}) {
+        $housing_fees .= "<td align=right width=50>$data->{$k}</td>\n";
+        if ($stash{basicfull}) {
+            $housing_fees .= "<td align=right width=70>$data->{$full}</td>\n";
+        }
+    }
+    $housing_fees .= "</tr>\n";
+}
+$stash{housing_fees} = $housing_fees;
+
+Template->new()->process(
+    "reg1.tt2",
+    \%stash,
+);
