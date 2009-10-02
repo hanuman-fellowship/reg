@@ -2070,7 +2070,7 @@ sub publishPR : Local {
         or return _pub_err($c, "cannot login: " . $ftp->message);
     $ftp->cwd($string{ftp_dir})
         or return _pub_err($c, "cannot cwd: " . $ftp->message);
-    $ftp->cwd("personal2")
+    $ftp->cwd("personal")
         or return _pub_err($c, "cannot cwd: " . $ftp->message);
     $ftp->ascii();
     $ftp->put("gen_files/index.html", "index.html");
