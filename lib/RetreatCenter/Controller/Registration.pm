@@ -326,14 +326,10 @@ my %needed = map { $_ => 1 } qw/
     home
     work
     cell
-    dphone
-    ephone
-    cphone
     ceu_license
     email
     house1
     house2
-    cabinRoom
     cabin_room
     howHeard
     advertiserName
@@ -381,22 +377,6 @@ sub get_online : Local {
         }
     }
     close $in;
-
-    # legacy... can delete soon
-    # remove the old names from the above %needed list as well
-    if ($P{dphone}) {
-        $P{work} = $P{dphone};
-    }
-    if ($P{ephone}) {
-        $P{home} = $P{ephone};
-    }
-    if ($P{cphone}) {
-        $P{cell} = $P{cphone};
-    }
-    if ($P{cabinRoom}) {
-        $P{cabin_room} = $P{cabinRoom};
-    }
-    # legacy
 
     $P{green_amount} ||= 0;     # in case not set at all
 
