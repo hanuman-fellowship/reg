@@ -1252,7 +1252,8 @@ sub publish : Local {
         or return _pub_err($c, "cannot login: " . $ftp->message);
     $ftp->cwd($string{ftp_dir})
         or return _pub_err($c, "cannot cwd: " . $ftp->message);
-    $ftp->cwd($string{ftp_dir2});
+    $ftp->cwd($string{ftp_dir2})
+        or return _pub_err($c, "cannot cwd: " . $ftp->message);
     for my $f ($ftp->ls()) {
         $ftp->delete($f) if $f ne 'pics';
     }
