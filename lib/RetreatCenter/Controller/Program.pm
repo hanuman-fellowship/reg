@@ -1599,6 +1599,7 @@ sub update_lunch_do : Local {
 
 # should duplicate ONLY ask for new dates?
 # no.   this is the time to change things from the old one.
+#
 sub duplicate : Local {
     my ($self, $c, $id) = @_;
     my $orig_p = model($c, 'Program')->find($id);
@@ -1640,6 +1641,20 @@ sub duplicate : Local {
             "check_$w" => ($orig_p->$w)? "checked": ""
         );
     }
+    my $sch_opts = "";
+    for my $i (0 .. $#sch_opts) {
+        $sch_opts .= "<option value=$i "
+                  .  ($i == $orig_p->school()? "selected": "")
+                  .  ">$sch_opts[$i]\n"
+                  ;
+    }
+    my $level_opts = "";
+    for my $l ('D', 'C', 'M', 'S') {
+        $level_opts .= "<option value=$l "
+                    .  ($l eq $orig_p->level()? "selected": "")
+                    .  ">$mmi_levels{$l}\n"
+                    ;
+    }
     stash($c,
         canpol_opts => [ model($c, 'CanPol')->search(
             undef,
@@ -1659,6 +1674,8 @@ sub duplicate : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
+        school_opts => $sch_opts,
+        level_opts  => $level_opts,
         section     => 1,   # Web (a required field)
         edit_gl     => 0,
         program     => $orig_p,      # with modifed columns
