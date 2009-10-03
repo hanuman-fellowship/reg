@@ -41,6 +41,7 @@ p {
 [% person = reg.person %]
 [% snail = 'Snail Mail' %]
 [% mmi = program.school != 0 %]
+[% PR = program.PR %]
 <h2 style="margin-bottom: 9px">Registration</h2>
 <table border=0 cellpadding=0>
 <tr>
@@ -51,7 +52,7 @@ p {
 [% ELSE %]
     <a accesskey='E' href="/registration/update/[% id %]"><span class=keyed>E</span>dit</a>
     &nbsp;&nbsp;
-    [% IF only_one || program.PR %]
+    [% IF only_one || PR %]
         <a href="/registration/cancel/[% id %]"
            onclick="return confirm('Okay to Cancel [% person.first %] [% person.last %]?');"
         >Cancel</a>
@@ -140,11 +141,11 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 [% IF reg.cancelled %]
 <span class=cancel>Cancelled</span>
 [% END %]
-[% IF program.PR || reg.date_start != program.sdate %] <span class=arr_lv>Arrive [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
+[% IF PR || reg.date_start != program.sdate %] <span class=arr_lv>Arrive [% reg.date_start_obj %] <span class=dow>[% reg.date_start_obj.format("%a") %]</span></span>
 [% END %]
-[% IF program.PR || reg.date_end   != program.edate %] <span class=arr_lv>Leave [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
+[% IF PR || reg.date_end   != program.edate %] <span class=arr_lv>Leave [% reg.date_end_obj %] <span class=dow>[% reg.date_end_obj.format("%a") %]</span></span>
 [% END %]
-[% IF ! only_one %]
+[% IF ! PR && ! only_one %]
 <span class=see_aux>- Aux Regs</span>
 [% END %]
 </td>
