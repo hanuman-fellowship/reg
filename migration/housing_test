@@ -1,0 +1,90 @@
+For a repeatable test to do after anything
+that might possibly affect the housing structure:
+
+In migration do % loadall.
+
+Choose a month (for example we'll choose July)
+in the future and add these programs and rentals:
+
+Program: 7/2 - 7/4 name = Celebration, title = Of life
+Program: 7/12 - 7/14, 3 extra days name = Party, title = For all
+PR: 7/1 - 7/31, name = Personal Retreats July, title = personal retreats
+Rental: 7/11 - 7/15, name = Yoga Stuff, title = Sit, stand, clear
+    max 10, deposit 1000
+
+Add meeting places for them.
+View the Calendar, Daily Pic, ClusterView.
+
+Choose a person (at random but sans email), register them
+for Celebration in a double (217).
+You should see several offered doubles.
+217, 117, 215, OC 1, OC 2, - the order depends on the priority
+
+View the DailyPic, see the person in 217.
+Change the color of their gender (configuration > colors),
+color of Celebration and re-view the DailyPic.
+Click on 217, see the reg, prog.  Click on the person
+to go to their registration.
+Rehouse them in 117. Review DailyPic.
+View ClusterView.
+
+Edit the registration, change housing type to Dorm.
+See new offered houses - including 110, 202, 204, SH 2, etc.
+
+Rehouse, change the housing type to double with bath on
+the housing screen, see the list change.  Choose 118B.
+
+Re-edit, change house type to double, choose Cabin preferred.
+See cabins at the top of the list.
+
+Re-house, choose Single, put in 217 and see the resized room.
+Re-house back in a double 217.
+
+Choose another person of the opposite gender,
+register them for Celebration in a double.
+Not that 217 is not offered.
+Re-edit the registration and put Share With as the person above.
+Get the offer of 217.
+See the "- S" suffix.  Consult DailyPic, ClusterView.
+See the "FM" and on refreshing the "MF" (at random).
+
+Try a share-with with a person of the same gender.
+Note that 217 is not offered (since it is full).
+See the MM (or FF).
+
+Try each of the many ways for the share-with to fail:
+
+- person does not exist in the People database at all
+- person exists but is not registered for the same program
+    in both of the above cases a note added to the confirmation note
+        saying that the person needs to register.
+- they are registered but not yet housed
+- they are registered but housed in a different housing type
+- registered online but has not yet been imported
+- registered and housed but in a room that is full.
+    if in a tent then you can cram as many as you wish in there
+    the tent will be offered without needing to do a FORCE.
+- registered but cancelled
+
+Register a triple in 110 (4 beds) - so resized.
+And another who wants a dorm - 110 is not a possiblity.
+
+Register someone for a PR 10/1 to 10/5
+housing type triple.   110 IS offered but lower
+down on the list and with a "- F" (foreign) suffix.
+
+Go to the Program 'Party'.  Reserve the cluster CC 2nd floor.
+In the Rental 'Yoga Stuff' reserve CC 1st floor and note
+that the 2nd floor is not available.
+
+Schedule a PR during the 'Party' program and see that no
+1st or 2nd floor rooms are offered even.
+Try forcing one and see it succeed.
+
+Remove one of the houses on the 1st floor - 111, e.g.
+Re-house the PR and see that 111 is still not offered.
+
+Verify all this in the DailyPic, ClusterView.
+
+Remove the 1st floor CC as Rental Cluster.
+See all the houses restored.

@@ -19,6 +19,7 @@ use Util qw/
     valid_email
     model
     meetingplace_table
+    meetingplace_book
     lunch_table
     add_config
     type_max
@@ -832,40 +833,9 @@ sub meetingplace_update : Local {
 }
 
 sub meetingplace_update_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $rental_id) = @_;
 
-    my $r = model($c, 'Rental')->find($id);
-    my @cur_mps;
-    my %seen = ();
-    for my $k (sort keys %{$c->request->params}) {
-        #
-        # keys are like this:
-        #     mp45
-        # or
-        #     mpbr23
-        # all mp come before any mpbr
-        #
-        my ($d) = $k =~ m{(\d+)};
-        my $br = ($k =~ m{br})? 'yes': '';
-        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
-    }
-    # delete all old bookings and create the new ones.
-    model($c, 'Booking')->search(
-        { rental_id => $id },
-    )->delete();
-    for my $mp (@cur_mps) {
-        model($c, 'Booking')->create({
-            meet_id    => $mp->[0],
-            program_id => 0,
-            rental_id  => $id,
-            event_id   => 0,
-            sdate      => $r->sdate,
-            edate      => $r->edate,
-            breakout   => $mp->[1],
-        });
-    }
-    # show the rental again - with the updated meeting places
-    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+    meetingplace_book($c, 'rental', $rental_id);
 }
 
 sub coordinator_update : Local {

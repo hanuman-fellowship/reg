@@ -32,7 +32,9 @@
 
 <tr>
 <th align=right># of Beds</th>
-<td><input type=text name=nbeds value='[% block.nbeds %]' size=2></td>
+<td><input type=text name=nbeds value='[% block.nbeds %]' size=2>
+<span style="margin-left: 1in">(Defaults to # of beds in the room)</span>
+</td>
 </tr>
 
 <tr>
@@ -49,9 +51,18 @@
 </td>
 </tr>
 
+[% IF hap %]
+<input type=hidden name=hap_type value=[% hap.event_type %]>
+<input type=hidden name=hap_id   value=[% hap.id %]>
+<tr>
+<th align=right>For [% hap.Event_type %]</th>
+<td><a href=/[% hap.event_type %]/view/[% hap.id %]>[% hap.name %]</a></td>
+</tr>
+[% END %]
+
 <tr>
 <td></td>
-<td><input type=submit value="Submit"></td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 
 </table>

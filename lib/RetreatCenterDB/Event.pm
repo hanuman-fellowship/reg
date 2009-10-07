@@ -21,6 +21,16 @@ __PACKAGE__->set_primary_key(qw/id/);
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'event_id');
 
+# blocks
+__PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
+                      'event_id',
+                      {
+                          join     => 'house',
+                          prefetch => 'house',
+                          order_by => 'house.name',
+                      }
+                     );
+
 sub sdate_obj {
     my ($self) = @_;
     return date($self->sdate);
@@ -29,11 +39,6 @@ sub edate_obj {
     my ($self) = @_;
     return date($self->edate);
 }
-sub link {
-    my ($self) = @_;
-    return "/event/view/" . $self->id;
-}
-
 sub the_date_obj {
     my ($self) = @_;
     return date($self->the_date);
@@ -63,6 +68,17 @@ sub count {
 sub title {
     my ($self) = @_;
     $self->descr;       # for the calendar
+}
+
+sub link {
+    my ($self) = @_;
+    return "/event/view/" . $self->id();
+}
+sub event_type {
+    return "event";
+}
+sub Event_type {
+    return "Event";
 }
 
 1;

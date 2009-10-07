@@ -10,6 +10,7 @@ use Util qw/
     trim
     empty
     model
+    stash
 /;
 
 use lib '../../';       # so you can do a perl -c here.
@@ -23,11 +24,14 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{red  } = 127;
-    $c->stash->{green} = 127;
-    $c->stash->{blue } = 127;
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "meetingplace/create_edit.tt2";
+    stash($c,
+        red             => 127,
+        green           => 127,
+        blue            => 127,
+        check_sleep_too => '',
+        form_action     => "create_do",
+        template        => "meetingplace/create_edit.tt2",
+    );
 }
 
 my %hash;
@@ -37,6 +41,9 @@ sub _get_data {
 
     %hash = %{ $c->request->params() };
     $hash{$_} =~ s{^\s*|\s*$}{}g for keys %hash;
+    if (! exists $hash{sleep_too}) {
+        $hash{sleep_too} = '';
+    }
     @mess = ();
     for my $f (qw/abbr name disp_ord color/) {
         if (empty($hash{$f})) {
@@ -93,11 +100,14 @@ sub update : Local {
 
     my $mp = $c->stash->{meetingplace} = model($c, 'MeetingPlace')->find($id);
     my ($r, $g, $b) = $mp->color =~ m{\d+}g;
-    $c->stash->{red  } = $r;
-    $c->stash->{green} = $g;
-    $c->stash->{blue } = $b;
-    $c->stash->{form_action}  = "update_do/$id";
-    $c->stash->{template}     = "meetingplace/create_edit.tt2";
+    stash($c,
+        red             => $r,
+        green           => $g,
+        blue            => $b,
+        check_sleep_too => ($mp->sleep_too()? "checked": ""),
+        form_action     => "update_do/$id",
+        template        => "meetingplace/create_edit.tt2",
+    );
 }
 
 sub update_do : Local {

@@ -5,7 +5,9 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/meetingplace/delete/[% mp.id %]"
 onclick="return confirm('Okay to Delete [% mp.name %]?');">Delete</a>
-<p>
+&nbsp;&nbsp;&nbsp;
+<a href="/meetingplace/list">List</a>
+<p class=p2>
 <table cellpadding=3 border=0>
 
 <tr>
@@ -26,6 +28,11 @@ onclick="return confirm('Okay to Delete [% mp.name %]?');">Delete</a>
 <tr>
 <th align=right>Display Order</th>
 <td>[% mp.disp_ord %]</td>
+</tr>
+
+<tr>
+<th align=right>For Sleeping</th>
+<td>[% mp.sleep_too %]</td>
 </tr>
 
 <tr>

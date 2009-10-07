@@ -8,6 +8,7 @@ use Util qw/
     leader_table
     affil_table
     meetingplace_table
+    meetingplace_book
     slurp 
     monthyear
     expand
@@ -116,6 +117,7 @@ sub create : Local {
             extradays    => 0,
             full_tuition => 0,
             deposit      => 100,
+            color        => '',
             max          => 0,
             canpol       => { name => "Default" },  # clever way to set default!
             ptemplate    => 'default',
@@ -946,43 +948,9 @@ sub meetingplace_update : Local {
 }
 
 sub meetingplace_update_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $program_id) = @_;
 
-    my $p = model($c, 'Program')->find($id);
-    my $edate = $p->edate;
-    if ($p->extradays) {
-        $edate += $p->extradays;
-    }
-    my @cur_mps;
-    my %seen = ();
-    for my $k (sort keys %{$c->request->params}) {
-        #
-        # keys are like this:
-        #     mp45
-        # or
-        #     mpbr23
-        # all mp come before any mpbr
-        #
-        my ($d) = $k =~ m{(\d+)};
-        my $br = ($k =~ m{br})? 'yes': '';
-        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
-    }
-    # delete all old bookings and create the new ones.
-    model($c, 'Booking')->search(
-        { program_id => $id },
-    )->delete();
-    for my $mp (@cur_mps) {
-        model($c, 'Booking')->create({
-            meet_id    => $mp->[0],
-            program_id => $id,
-            rental_id  => 0,
-            event_id   => 0,
-            sdate      => $p->sdate,
-            edate      => $edate,
-            breakout   => $mp->[1],
-        });
-    }
-    $c->response->redirect($c->uri_for("/program/view/$id/2"));
+    meetingplace_book($c, 'program', $program_id);
 }
 
 sub delete : Local {
@@ -2007,7 +1975,7 @@ sub view_adj : Local {
 sub color : Local {
     my ($self, $c, $program_id) = @_;
     my $program = model($c, 'Program')->find($program_id);
-    my ($r, $g, $b) = $program->color =~ m{\d+}g;
+    my ($r, $g, $b) = $program->color() =~ m{\d+}g;
     $r ||= 127;
     $g ||= 127;
     $b ||= 127;

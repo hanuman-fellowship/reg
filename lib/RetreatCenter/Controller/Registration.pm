@@ -1025,8 +1025,8 @@ sub create_do : Local {
         arrived       => '',    # ditto
         pref1         => $P{pref1},
         pref2         => $P{pref2},
-        share_first   => $P{share_first},
-        share_last    => $P{share_last},
+        share_first   => normalize($P{share_first}),
+        share_last    => normalize($P{share_last}),
         manual        => $P{dup}? "yes": "",
         cabin_room    => $P{cabin_room} || "",
         leader_assistant => '',
@@ -2707,8 +2707,8 @@ sub update_do : Local {
         confnote      => cf_expand($c, $c->request->params->{confnote}),
         nights_taken  => $taken,
         cabin_room    => $P{cabin_room},
-        share_first   => $P{share_first},
-        share_last    => $P{share_last},
+        share_first   => normalize($P{share_first}),
+        share_last    => normalize($P{share_last}),
         pref1         => $P{pref1},
         pref2         => $P{pref2},
         work_study    => $P{work_study},
@@ -2771,7 +2771,7 @@ sub manual : Local {
         cabin_checked => "",
         room_checked  => "",
     );
-    _rest_of_reg($pr, $p, $c, tt_today($c), "dble", "dble");
+    _rest_of_reg($pr, $p, $c, tt_today($c), 'dble', 'dble', 'room');
 }
 
 sub delete : Local {
@@ -2922,7 +2922,10 @@ sub lodge : Local {
             # if that room appears in the list (I can default it)
             # then they can choose it.
             if ($reg2) {
-                if ($reg2->house_id) {
+                if ($reg2->cancelled()) {
+                    $message2 = "$share_first $share_last has cancelled.";
+                }
+                elsif ($reg2->house_id) {
                     if ($reg2->h_type eq $reg->h_type) {
                         $share_house_name = $reg2->house->name;
                         $share_house_id   = $reg2->house_id;
@@ -2932,7 +2935,7 @@ sub lodge : Local {
                     else {
                         $message2 = "$name is housed in a '"
                                   . $reg2->h_type_disp
-                                  . "' not '"
+                                  . "' not a '"
                                   . $reg->h_type_disp
                                   . "'."
                                   ;
@@ -3308,6 +3311,9 @@ sub lodge : Local {
         $h_type_opts .= "<option value=$htname$selected>$htdesc\n";
     }
     # hacky :(  how else please?
+    # these two would never be selected (or else we would
+    # not be lodging them...
+    #
     $h_type_opts .= "<option value=unknown"
                  .  ($cur_htype eq "unknown"? " selected"
                      :                        ""         )

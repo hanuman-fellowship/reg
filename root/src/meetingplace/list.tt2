@@ -7,6 +7,7 @@
 <th align=left>Name</th>
 <th align=right>Max</th>
 <th align=right>Order</th>
+<th align=right>Sleeping</th>
 <th align=left>Color</th>
 </tr>
 [% FOREACH mp IN meetingplaces %]
@@ -15,6 +16,7 @@
     <td><a href="/meetingplace/view/[% mp.id %]">[% mp.name %]</a></td>
     <td align=right>[% mp.max %]</td>
     <td align=right>[% mp.disp_ord %]</td>
+    <td align=center>[% IF mp.sleep_too == 'yes' %]<img src=/static/images/checked.gif>[% END %]</td>
     <td width=100 bgcolor=[% mp.bgcolor %] style="border: solid; border-width: thin;"></td>
     </tr>
 [% END %]

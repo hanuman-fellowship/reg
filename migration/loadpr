@@ -48,7 +48,7 @@ $canpol_id{0} = $canpol_id{MMC} = $canpol_id{Default};
 
 # housing costs
 my $hc_sql = "insert into housecost values ("
-    . (join ",", ("?") x 16)
+    . (join ",", ("?") x 15)
     . ")";
 my $hc_sth = $dbh->prepare($hc_sql) or die "no prep cp";
 open my $hc, "<", "new/housing.txt"
@@ -74,7 +74,6 @@ for my $name (keys %data) {
         $data{$name}{dble} + $data{$name}{dble_bath},
         $data{$name}{dble},
         $data{$name}{triple},
-        $data{$name}{quad},
         $data{$name}{dormitory},
         $data{$name}{economy},
         $data{$name}{center_tent},

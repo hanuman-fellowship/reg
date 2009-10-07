@@ -61,4 +61,20 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 </td>
 </tr>
 
+<tr><td height=20></tr>
+
+<tr>
+<th align=right>Blocks</th>
+<td><a href=/block/bound_create/event/[% event.id %]>New Block</a></td>
+</tr>
+
+<tr>
+<th></th>
+<td>
+[% FOR bl IN event.blocks %]
+    <a href=/block/view/[% bl.id %]>[% bl.house.name %]</a><br>
+[% END %]
+</td>
+</tr>
+
 </table>

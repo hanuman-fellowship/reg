@@ -13,12 +13,6 @@ function popup(url) {
     newwin.moveTo(600, 0);
 }
 </script>
-<style type="text/css">
-#sub {
-    color: green;
-    background: lightgreen;
-}
-</style>
 <h2>Registration</h2>
 <form method=POST name=form action="/registration/update_do/[% reg.id %]">
 <table cellpadding=3 border=0>
@@ -43,7 +37,7 @@ function popup(url) {
 [% IF nights %]
 <tr><th align=right>Free Nights to Take</th><td><input type=text name=nights_taken size=2 value="[% reg.nights_taken %]">&nbsp;&nbsp;([% nights %] max)<input type=hidden name=max_nights value="[% nights %]"</tr>
 [% ELSIF program.housecost.type == 'Total' %]
-<tr><th></td><td colspan=3>Cannot taken free nights because housing cost for this program is a Total amount.</td></tr>
+<tr><th></td><td colspan=3>Cannot take free nights because housing cost for this program is a Total amount.</td></tr>
 [% END %]
 
 [% IF free_prog %]

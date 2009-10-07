@@ -144,7 +144,7 @@ Web
 <tr>
 <th align=right>Maximum</th>
 <td>[% rental.max %]</td>
-<td rowspan=6>
+<td rowspan=5 valign=top>
 <div style="margin-left: .3in;">
 <span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% id %]">Update</a></span>
 <div class=lunch>[% lunch_table %]</div>
@@ -170,14 +170,25 @@ Web
 
 <tr>
 <td colspan=2 align=center><a href=/rental/clusters/[% id %]>Cluster Reservations</a></td>
+<td><div style="margin-left: .3in">
+<span class=head>Blocks</span>
+<a style="margin-left: .3in"
+   href=/block/bound_create/rental/[% id %]
+>New Block</a>
+[% FOR bl IN rental.blocks %]
+    <span style="margin-left: .4in"><a href=/block/view/[% bl.id %]>[% bl.house.name %]</a></span>
+[% END %]
+</span>
+</p>
+</div></td>
 </tr>
 </table>
 
-<p>
+<p class=p2>
 
 <table cellpadding=3 border=0>
 <tr>
-<td width=120></td>
+<td width=120><span class=head>Houses</span></td>
 <th width=30># of<br>People</th>
 <th width=20></th>
 <td></td>

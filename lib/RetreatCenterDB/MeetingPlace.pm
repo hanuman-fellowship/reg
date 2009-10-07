@@ -13,6 +13,7 @@ __PACKAGE__->add_columns(qw/
     name
     max
     disp_ord
+    sleep_too
     color
 /);
 __PACKAGE__->set_primary_key(qw/id/);

@@ -28,13 +28,20 @@ __PACKAGE__->add_columns(qw/
     user_id
     the_date
     time
+    rental_id
+    program_id
+    event_id
 /);
 __PACKAGE__->set_primary_key(qw/
     id
 /);
 
-__PACKAGE__->belongs_to('house' => 'RetreatCenterDB::House', 'house_id');
-__PACKAGE__->belongs_to('user'  => 'RetreatCenterDB::User',  'user_id');
+__PACKAGE__->belongs_to('house'   => 'RetreatCenterDB::House', 'house_id');
+__PACKAGE__->belongs_to('user'    => 'RetreatCenterDB::User',  'user_id');
+
+__PACKAGE__->belongs_to('event'   => 'RetreatCenterDB::Event', 'event_id');
+__PACKAGE__->belongs_to('program' => 'RetreatCenterDB::User',  'program_id');
+__PACKAGE__->belongs_to('rental'  => 'RetreatCenterDB::User',  'rental_id');
 
 sub sdate_obj {
     my ($self) = @_;

@@ -21,10 +21,6 @@
 th {
     text-align: right;
 }
-#sub {
-    color: green;
-    background: lightgreen;
-}
 </style>
 <form action="/summary/update_do/[% type %]/[% sum.id %]"
       name=form

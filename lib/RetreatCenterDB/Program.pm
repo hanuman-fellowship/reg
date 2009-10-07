@@ -111,6 +111,16 @@ __PACKAGE__->has_many(exceptions => 'RetreatCenterDB::Exception', 'prog_id');
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'program_id');
 
+# blocks
+__PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
+                      'program_id',
+                      {
+                          join     => 'house',
+                          prefetch => 'house',
+                          order_by => 'house.name',
+                      },
+                    );
+
 #
 # we really can't call $self->{field}
 # but must call $self->field()

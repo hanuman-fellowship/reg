@@ -71,9 +71,25 @@ sub view : Local {
     my ($self, $c, $block_id) = @_;
 
     my $block = model($c, 'Block')->find($block_id);
+    my $ev = 0;
+    if ($block->rental_id()) {
+        $ev = model($c, 'Rental')->find($block->rental_id());
+    }
+    elsif ($block->program_id()) {
+        $ev = model($c, 'Program')->find($block->program_id());
+    }
+    elsif ($block->event_id()) {
+        $ev = model($c, 'Event')->find($block->event_id());
+    }
+    my $ev_type = $ev? ucfirst $ev->event_type(): "";
+    my $ev_link = $ev?         $ev->link()      : "";
+    my $ev_name = $ev?         $ev->name()      : "";
     stash($c,
         pg_title => 'Block',
         block    => $block,
+        ev_type  => $ev_type,
+        ev_link  => $ev_link,
+        ev_name  => $ev_name,
         template => "block/view.tt2",
         daily_pic_date => $block->sdate,
     );
@@ -83,9 +99,24 @@ sub delete : Local {
     my ($self, $c, $block_id) = @_;
 
     my $block = model($c, 'Block')->find($block_id);
+
+    my $redirect = "/block/list";
+    TYPE:
+    for my $t (qw/
+        event
+        program
+        rental
+    /) {
+        my $method = "$t\_id";
+        if ($block->$method()) {
+            $redirect = "/$t/view/" . $block->$method();
+            last TYPE;
+        }
+    }
+
     _vacate($c, $block);
     $block->delete();
-    $c->response->redirect($c->uri_for('/block/list'));
+    $c->response->redirect($c->uri_for($redirect));
 }
 
 sub _vacate {
@@ -281,18 +312,51 @@ sub create : Local {
     $c->stash->{template}    = "block/create_edit.tt2";
 }
 
+sub bound_create : Local {
+    my ($self, $c, $hap_type, $hap_id) = @_;
+
+    my $hap = model($c, ucfirst $hap_type)->find($hap_id);
+    stash($c,
+        hap         => $hap,
+        block       => {
+            sdate_obj => date($hap->sdate()),
+            edate_obj => date($hap->edate()),
+        },
+        form_action => "create_do",
+        template    => "block/create_edit.tt2",
+    );
+}
+
 sub create_do : Local {
     my ($self, $c) = @_;
 
     _get_data($c);
     return if @mess;
-    if (_available($c)) {
+    my @opt = ();
+    if ($P{hap_type}) {
+        @opt = ("$P{hap_type}_id" => $P{hap_id});
+        delete $P{hap_type};
+        delete $P{hap_id};
+    }
+    if (_available($c, @opt)) {
         model($c, 'Block')->create({
             %P,
+
+            event_id   => 0,
+            program_id => 0,
+            rental_id  => 0,
+            @opt,           # overrides above 3
+
             allocated => 'yes',
             _get_now($c),
         });
-        $c->response->redirect($c->uri_for("/block/list/"));
+        if (@opt) {
+            $opt[0] =~ s{_id}{};
+            $c->response->redirect($c->uri_for("/$opt[0]/view/$opt[1]"));
+        }
+        else {
+            $c->response->redirect($c->uri_for("/block/list/"));
+        }
     }
 }
 
@@ -306,8 +370,12 @@ sub create_do : Local {
 # the config records.
 #
 sub _available {
-    my ($c) = @_;
+    my ($c, $type, $id) = @_;
 
+    my @type_opt = ();
+    if ($type && $type ne "event_id") {
+        @type_opt = ($type => $id);
+    }
     my $s = "< cur + $P{nbeds}";
     my $h_id = $P{house_id};
     my $hname = $house_name_of{$h_id};
@@ -339,6 +407,7 @@ sub _available {
             cur => $cf->cur() + $P{nbeds},
             program_id => 0,
             rental_id  => 0,
+            @type_opt,
             @opt,
         });
         if ($string{housing_log}) {

@@ -100,10 +100,6 @@ function show_no_show_cs() {
 th {
     text-align: right;
 }
-#sub {
-    color: green;
-    background: lightgreen;
-}
 </style>
 <h2>Proposals[% dup_message %]</h2>
 <form action=[% "/proposal/" _ form_action %] name=form method=post>

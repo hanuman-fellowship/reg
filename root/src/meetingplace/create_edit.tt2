@@ -25,6 +25,12 @@
 </tr>
 
 <tr>
+<th align=right>For Sleeping</th>
+<td><input type=checkbox name=sleep_too value="yes" [% check_sleep_too %]></td>
+</tr>
+
+
+<tr>
 <th valign=top align=right><span class="required">*</span> Color</th>
 <td valign=top><input type=text id=color_val name=color value="[% meetingplace.color %]"></td>
 <td rowspan=2>

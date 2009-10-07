@@ -56,7 +56,7 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</
 </select>
 </td>
 [% END %]
-<td valign=top><input type=submit value="Submit">
+<td valign=top><input id=sub type=submit value="Submit">
 <p>
 <table style="margin-left: 1in">
 <tr><td>C</td><td> - cabin</td></tr>

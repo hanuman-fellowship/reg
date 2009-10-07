@@ -42,6 +42,13 @@
 <td>[% block.npeople %]</td>
 </tr>
 
+[% IF ev_type %]
+<tr>
+<th align=right>For [% ev_type %]</th>
+<td><a href=[% ev_link %]>[% ev_name %]</a></td>
+</tr>
+[% END %]
+
 <tr>
 <th align=right valign=top>Comment</th>
 <td>

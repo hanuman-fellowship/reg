@@ -6,6 +6,7 @@ use base 'Exporter';
 our @EXPORT_OK = qw/
     affil_table
     meetingplace_table
+    meetingplace_book
     places
     role_table
     leader_table
@@ -65,6 +66,7 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
+use HLog;
 use Template;
 use Global qw/
     %string
@@ -159,6 +161,10 @@ sub role_table {
 #
 # note: PRE = Program/Rental/Event
 #
+# AND worry about meeting places that are also sleeping places
+# and don't include those which are occupied by sleepers!
+# UNLESS they are actually used for meeting spaces as well.
+#
 sub meetingplace_table {
     my ($c, $max, $sdate, $edate, @cur_bookings) = @_;
 
@@ -175,7 +181,6 @@ sub meetingplace_table {
                      @cur_bookings;
     my $table = "";
     MEETING_PLACE:
-#                    { max => { '>=', $max } },
     for my $mp (model($c, 'MeetingPlace')->search(
                     {},
                     { order_by => 'disp_ord' }
@@ -183,6 +188,23 @@ sub meetingplace_table {
     ) {
         next MEETING_PLACE if $mp->name() eq 'No Where';      # no no
         my $id = $mp->id;
+        if (! ($checked{$id} || $br_checked{$id}) && $mp->sleep_too()) {
+            # is the space occupied by sleepers?
+            #
+            my ($house) = model($c, 'House')->search({
+                name => $mp->abbr(),
+            });
+            if ($house) {
+                my (@cf) = model($c, 'Config')->search({
+                    house_id => $house->id(),
+                    the_date => { 'between' => [ $sdate, $edate ] },
+                    cur      => { '>' => 0 },
+                });
+                if (@cf) {
+                    next MEETING_PLACE;
+                }
+            }
+        }
         if (! ($checked{$id} || $br_checked{$id})) {
             # this meeting place is not currently assigned to
             # the PRE in question.
@@ -234,6 +256,155 @@ $table
 EOH
     }
     $table;
+}
+
+#
+# check the form parameters and book
+# the meeting places for the given happening.
+#
+# if a meeting place can also be used for sleeping create
+# a Block for the time period of the happening.
+#
+# we clear out all of the prior meeting places first
+# to make sure that we have a clear arena.
+# this also necessitates clearing the above mentioned blocks.
+#
+sub meetingplace_book {
+    my ($c, $hap_type, $hap_id) = @_;
+
+    my $hap = model($c, "\u$hap_type")->find($hap_id);
+    my $sdate = $hap->sdate();
+    my $edate = $hap->edate();
+    if ($hap_type eq 'program') {
+        $edate += $hap->extradays();
+    }
+    my $edate1 = (date($edate) - 1)->as_d8();
+
+    my @cur_mps;
+    my %seen = ();
+    for my $k (sort keys %{$c->request->params}) {
+        #
+        # keys are like this:
+        #     mp45
+        # or
+        #     mpbr23
+        # all mp come before any mpbr
+        #
+        my ($d) = $k =~ m{(\d+)};
+        my $br = ($k =~ m{br})? 'yes': '';
+        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
+    }
+
+    # delete bookings
+    #
+    model($c, 'Booking')->search(
+        { "$hap_type\_id" => $hap_id },
+    )->delete();
+
+    # clear any automatic bound blocks (and the associated config records)
+    #
+    for my $bl (model($c, 'Block')->search({
+                    "$hap_type\_id" => $hap_id,
+                    reason => "Meeting Place for " . $hap->name(),
+                })
+    ) {
+        model($c, 'Config')->search({
+            house_id => $bl->house_id(),    
+            the_date => { between => [ $sdate, $edate1 ] },
+        })->update({
+            sex        => 'U',
+            cur        => 0,
+            program_id => 0,
+            rental_id  => 0,
+        });
+        $bl->delete();
+    }
+
+    MEETING_PLACE:
+    for my $mp (@cur_mps) {
+        my $mp_id = $mp->[0];
+        model($c, 'Booking')->create({
+            meet_id    => $mp_id,
+            program_id => 0,
+            rental_id  => 0,
+            event_id   => 0,
+            "$hap_type\_id" => $hap_id,     # overrides
+            sdate      => $sdate,
+            edate      => $edate,
+            breakout   => $mp->[1],
+        });
+        my $mplace = model($c, 'MeetingPlace')->find($mp_id);
+        if ($mplace->sleep_too()) {
+            my ($house) = model($c, 'House')->search({
+                name => $mplace->abbr(),
+            });
+            if (!$house) {
+                next MEETING_PLACE;
+            }
+            my $h_id = $house->id();
+            my $h_max = $house->max();
+            model($c, 'Block')->create({
+                house_id => $h_id,
+                sdate    => $sdate,
+                edate    => $edate,
+                nbeds    => $h_max,
+                npeople  => 0,
+                reason   => "Meeting Place for " . $hap->name(),
+                allocated  => 'yes',
+                rental_id  => 0,
+                program_id => 0,
+                event_id   => 0,
+                "$hap_type\_id" => $hap_id,     # overrides above
+                _get_now($c),
+            });
+            my @opt = ();
+            if ($hap_type ne 'event') {
+                @opt = ("$hap_type\_id" => $hap_id);
+            }
+            model($c, 'Config')->search({
+                house_id => $h_id,
+                the_date => { 'between' => [ $hap->sdate(), $edate1 ] },
+            })->update({
+                sex => 'B',
+                cur => $h_max,
+                rental_id  => 0,
+                program_id => 0,
+                @opt,
+            });
+            my @dates = ();
+            if ($string{housing_log}) {
+                my $sd = date($sdate);
+                my $ed = date($edate1);
+                for (my $d = $sd; $d <= $ed; ++$d) {
+                    push @dates, $d->as_d8();
+                }
+                for my $d (@dates) {
+                    hlog($c,
+                         $house->name(), $d,
+                         "block_",
+                         $h_id, $h_max, $h_max, 'B',
+                         0, $hap_id,
+                         $hap->name(),
+                    );
+                }
+            }
+        }
+    }
+    # show the happening again - with the updated meeting places and blocks.
+    $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
+        # 2 above does not apply to Events and is safely ignored
+}
+
+sub _get_now {
+    my ($c) = @_;
+
+    return
+        user_id  => $c->user->obj->id,
+        the_date => tt_today($c)->as_d8(),
+        time     => get_time()->t24()
+        ;
+    # we return an array of 6 values perfect
+    # for passing to a DBI insert/update.
 }
 
 sub places {
@@ -914,10 +1085,14 @@ sub _br {
 #
 sub normalize {
     my ($s) = @_;
-    join '-',
-         map { s{^Mc(.)}{Mc\u$1}; $_ }
-         map { ucfirst lc }
-         split m{-}, $s;
+    if (! $s) {
+        return "";
+    }
+    return join '-',
+           map { s{^Mc(.)}{Mc\u$1}; $_ }
+           map { ucfirst lc }
+           split m{-}, $s
+           ;
 }
 
 sub tt_today {
@@ -1147,6 +1322,7 @@ sub error {
 sub payment_warning {
     my ($host) = @_;
 
+    return "";
     my $person = $string{"$host\_reconciling"};
     if ($person) {
         return "Warning! \u$person is doing a reconciliation!";
@@ -1176,6 +1352,9 @@ sub fillin_template {
 sub ptrim {
     my ($s) = @_;
 
+    if (! defined $s) {
+        return "";
+    }
     $s =~ s{(<p>&nbsp;</p>\s*)+$}{}g;
     $s;
 }

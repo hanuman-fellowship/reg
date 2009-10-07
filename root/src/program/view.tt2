@@ -236,6 +236,11 @@ Web
 <tr>
 <td colspan=2 align=center class=head>Housing Clusters
 </td>
+<td>
+<span class=head>Blocks</span>
+<a style="margin-left: .3in"
+   href="/block/bound_create/program/[% id %]">New Block</a>
+</td>
 </tr>
 
 <tr>
@@ -244,6 +249,13 @@ Web
 </td>
 <td align=left valign=top>
 <div id=reserved style="width: 200px">[% reserved_clusters %]</div>
+</td>
+<td valign=top>
+<table>
+[% FOR bl IN program.blocks %]
+    <tr><td><a href=/block/view/[% bl.id %]>[% bl.house.name %]</a></td></tr>
+[% END %]
+</table>
 </td>
 </tr>
 

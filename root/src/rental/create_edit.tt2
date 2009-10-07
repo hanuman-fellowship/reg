@@ -69,7 +69,7 @@ Web
 
 <td class='emptytab' align=center>
 <span id=hid><input type=hidden name=section value=[% section %]></span>
-<input type=submit value="Submit">
+<input type=submit id=sub value="Submit">
 </td>
 
 <td class='emptytab'>

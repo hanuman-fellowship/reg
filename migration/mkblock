@@ -11,5 +11,8 @@ create table block (
     allocated text,
     user_id integer,        -- foreign key to user
     the_date text,
-    time text
+    time text,
+    program_id integer,     -- one or the other or neither but not both
+    rental_id integer,
+    event_id integer
 );

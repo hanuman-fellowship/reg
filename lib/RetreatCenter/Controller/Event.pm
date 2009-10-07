@@ -16,6 +16,7 @@ use Util qw/
     empty
     model
     meetingplace_table
+    meetingplace_book
     places
     tt_today
     stash
@@ -431,7 +432,7 @@ EOH
         push @events, model($c, $ev_kind)->search({
                           edate => { '>=', $the_first },
                           @opt_end,
-                          name  => { -not_like, "%personal%retreats%" },
+                          name  => { -not_like, "%personal%retreat%" },
                           @prog_opt,
                       });
     }
@@ -866,7 +867,7 @@ EOH
                  model($c, 'Program')->search(
                     {
                         edate => { '>=', $the_prev },
-                        name  => { 'like' => "Personal Retreats%" },
+                        name  => { 'like' => "personal retreat%" },
                     },
                  );
     my @pr_regs = ();
@@ -1233,41 +1234,9 @@ sub meetingplace_update : Local {
 }
 
 sub meetingplace_update_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $event_id) = @_;
 
-    my $e = model($c, 'Event')->find($id);
-    my @cur_mps;
-    my %seen = ();
-    for my $k (sort keys %{$c->request->params}) {
-        #
-        # keys are like this:
-        #     mp45
-        # or
-        #     mpbr23
-        # all mp come before any mpbr
-        #
-        my ($d) = $k =~ m{(\d+)};
-        my $br = ($k =~ m{br})? 'yes': '';
-        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
-    }
-    # delete all old bookings and create the new ones.
-    model($c, 'Booking')->search(
-        { event_id => $id },
-    )->delete();
-    for my $mp (@cur_mps) {
-        model($c, 'Booking')->create({
-            meet_id    => $mp->[0],
-            program_id => 0,
-            rental_id  => 0,
-            event_id   => $id,
-            sdate      => $e->sdate(),
-            edate      => $e->edate(),
-            breakout   => $mp->[1],
-        });
-    }
-    # show the event again - with the updated meeting places
-    view($self, $c, $id);
-    $c->forward('view');
+    meetingplace_book($c, 'event', $event_id);
 }
 
 sub cal_colors : Local {

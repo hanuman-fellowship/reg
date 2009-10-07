@@ -5,40 +5,41 @@ create table meeting_place (
     name text,
     max  integer,
     disp_ord integer,
-    color text
+    color text,
+    sleep_too text
 );
 insert into meeting_place values (
-    1, 'CC', 'CC Main', 500, 2, '150,180,240'
+    1, 'CC', 'CC Main', 500, 2, '150,180,240', ''
 );
 insert into meeting_place values (
-    2, 'SH', 'Seminar House', 75, 3, '255,130,200'
+    2, 'SH', 'Seminar House', 75, 3, '255,130,200', ''
 );
 insert into meeting_place values (
-    3, 'OH', 'Orchard House', 30, 4, '150,230,150'
+    3, 'OH', 'Orchard House', 30, 4, '150,230,150', ''
 );
 insert into meeting_place values (
-    4, 'CB', 'CB Main', 250, 5, '210,240,195'
+    4, 'CB', 'CB Main', 250, 5, '210,240,195', ''
 );
 insert into meeting_place values (
-    5, 'CCL', 'CC Lounge', 20, 6, '210,230,250'
+    5, 'CC L', 'CC Lounge', 20, 6, '210,230,250', 'yes'
 );
 insert into meeting_place values (
-    6, 'AR', 'Assembly Room', 250, 7, '255,185,85'
+    6, 'AR', 'Assembly Room', 250, 7, '255,185,85', ''
 );
 insert into meeting_place values (
-    7, 'WW', 'CB West Wing', 30, 8, '230,230,225'
+    7, 'WW', 'CB West Wing', 30, 8, '230,230,225', ''
 );
 insert into meeting_place values (
-    8, 'FE', 'CB Far East', 40, 9, '170,170,230'
+    8, 'FE', 'CB Far East', 40, 9, '170,170,230', ''
 );
 insert into meeting_place values (
-    9, 'KKWC', 'Kaya Kalpa', 10, 10, '250,170,255'
+    9, 'KKWC', 'Kaya Kalpa', 10, 10, '250,170,255', 'yes'
 );
 insert into meeting_place values (
-    10, 'CCCR', 'CC Conference Room', 15, 11, '200,80,255'
+    10, 'CC CR', 'CC Conference Room', 15, 11, '200,80,255', 'yes'
 );
 insert into meeting_place values (
-    11, 'NW', 'No Where', 10, 1, '255,0,0'
+    11, 'NW', 'No Where', 10, 1, '255,0,0', ''
 );
 
 drop table if exists booking;

@@ -126,12 +126,23 @@ __PACKAGE__->has_many(charges => 'RetreatCenterDB::RentalCharge',
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'rental_id');
 
+# blocks
+__PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
+                      'rental_id',
+                      {
+                          join     => 'house',
+                          prefetch => 'house',
+                          order_by => 'house.name'
+                      }
+                     );
+
 # rental_bookings
 __PACKAGE__->has_many(rental_bookings => 'RetreatCenterDB::RentalBooking',
                       'rental_id',
-                      { join     => 'house',
-                        prefetch => 'house',
-                        order_by => 'house.name'
+                      {
+                          join     => 'house',
+                          prefetch => 'house',
+                          order_by => 'house.name'
                       }
                      );
 
@@ -166,6 +177,9 @@ sub contract_received_obj {
 sub link {
     my ($self) = @_;
     return "/rental/view/" . $self->id();
+}
+sub event_type {
+    return "rental";
 }
 sub meeting_places {
     my ($self, $breakout) = @_;
@@ -303,10 +317,6 @@ sub end_hour_obj {
     my ($self) = @_;
     get_time($self->end_hour());
 }
-sub event_type {
-    return "rental";
-}
-
 sub color_bg {
     my ($self) = @_;
     return sprintf("#%02x%02x%02x", $self->color() =~ m{(\d+)}g);
