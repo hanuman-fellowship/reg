@@ -1270,11 +1270,12 @@ sub contract : Local {
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
-    my $ndays   = date($rental->edate()) - date($rental->sdate());
-    my $min_due = $rental->max()
-                  * $ndays
-                  * $rental->housecost->dormitory()
-                  ;
+    my $ndays  = date($rental->edate()) - date($rental->sdate());
+    my $agreed = $rental->max()
+                 * $ndays
+                 * $rental->housecost->dormitory()
+                 ;
+    my $min_due = int(.75* $agreed);
     my %stash = (
         today   => today(),
         email   => $email,
@@ -1283,6 +1284,7 @@ sub contract : Local {
                    :                        $rental->coordinator()),
         rental  => $rental,
         ndays   => $ndays,
+        agreed  => $agreed,
         min_due => $min_due,
     );
     $tt->process(

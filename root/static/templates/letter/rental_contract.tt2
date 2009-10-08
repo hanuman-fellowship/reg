@@ -185,7 +185,7 @@ for y number of days, the Agreed Upon Revenue is
 <p>
 In this particular case, x = [% rental.max %], y = [% ndays %],
 and the dormitory rate is $[% rental.housecost.dormitory %] per day.
-The Agreed Upon Revenue is thus $[% min_due %].
+The Agreed Upon Revenue is thus $[% agreed %].
 <p>
 Cancellation charges shall be as follows:
 <table cellpadding=2>
@@ -222,6 +222,8 @@ per person per day rates under “Rates” above,
 or at the 75% of Agreed Upon Revenue formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
+<p>
+<b>The minimum due for your workshop is 75% of $[% agreed %] = $[% min_due %].</b>
 <div style='page-break-after:always'></div>
 <h2>Concurrent Workshops</h2>
 The Center may schedule other workshops and activities during
