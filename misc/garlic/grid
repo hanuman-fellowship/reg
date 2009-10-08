@@ -120,9 +120,10 @@ if (param('process')) {
             #
             my $tot = 0;
             my $name = $P{"p$id\_$bed"};
-            for my $p (split m{\&}, $name) {
-                $tot += ($p =~ m{\bchild\b})? $cost/2
-                       :                      $cost;
+            for my $p (split m{\&|\band\b}i, $name) {
+                $tot += ($p =~ m{\bchild\b}i)? $cost/2
+                        :                      $cost
+                        ;
             }
             $cost = int($tot);
             print {$out} $cost;
