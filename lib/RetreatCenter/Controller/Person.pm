@@ -428,7 +428,7 @@ sub _get_dups {
     );
     my %seen;
     @dups = grep { !$seen{$_->id}++; } @dups;   # undup possible dup dups :)
-    my $dups;
+    my $dups = "";
     for my $d (@dups) {
         $dups .= _view_person($d) . ", ";
     }
