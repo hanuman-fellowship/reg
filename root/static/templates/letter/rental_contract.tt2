@@ -183,6 +183,10 @@ For example, if the reservation is for x number of attendees
 for y number of days, the Agreed Upon Revenue is 
 (x)(y)(dormitory rate above). 
 <p>
+In this particular case, x = [% rental.max %], y = [% ndays %],
+and the dormitory rate is $[% rental.housecost.dormitory %] per day.
+The Agreed Upon Revenue is thus $[% min_due %].
+<p>
 Cancellation charges shall be as follows:
 <table cellpadding=2>
 <tr>
@@ -215,7 +219,7 @@ Renter should not act in anticipation that a reduction is likely to be made.
 At the time of the event, payment due shall be paid within the
 first day of the rental period, and shall be computed at the
 per person per day rates under “Rates” above,
-or at the 75% of agreed upon revenue formula above,
+or at the 75% of Agreed Upon Revenue formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
 <div style='page-break-after:always'></div>
