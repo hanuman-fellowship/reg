@@ -105,12 +105,11 @@ if (param('process')) {
                     if ($override_np) {
                         $np = $override_np;
                     }
-                    $cost += ($np == 1)? $hash{"single$bath"}
-                            :($np == 2)? $hash{"dble$bath"}
-                            :($np == 3)? $hash{triple}
-                            :($np == 4)? $hash{quad}
-                            :($np <= 7)? $hash{dormitory}
-                            :            $hash{economy}
+                    $cost += ($np == 1            )? $hash{"single$bath"}
+                            :($np == 2            )? $hash{"dble$bath"}
+                            :($np == 3            )? $hash{triple}
+                            :(4 <= $np && $np <= 7)? $hash{dormitory}
+                            :                        $hash{economy}
                             ;
                 }
             }
