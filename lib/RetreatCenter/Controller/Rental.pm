@@ -2242,7 +2242,7 @@ sub grid : Local {
                 $data{"n$id\_$bed\_$n"} = $nights[$n-1];
             }
             $data{"c$id\_$bed"} = $cost || "";
-            $total += $cost;
+            $total += $cost || 0;
         }
         close $in;
     }
