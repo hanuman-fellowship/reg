@@ -156,8 +156,8 @@ put 6 people-nights.
 <td align=right>[% hash.triple %]</td>
 </tr>
 <tr>
-<td>Quad</td>
-<td align=right>[% hash.quad %]</td>
+<td>Dormitory</td>
+<td align=right>[% hash.dormitory %]</td>
 </tr>
 <tr>
 <td>Economy</td>

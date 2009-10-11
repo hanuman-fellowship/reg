@@ -2225,7 +2225,7 @@ sub grid : Local {
             chomp $line;
             if ($line =~ m{^(own_van|commuting)\|(\d+)\|(\d+)$}) {
                 $data{$1} = $2;
-                $data{"c$1"} = $3;
+                $data{"c$1"} = $3 || "";
                 $total += $3;
                 next LINE;
             }
@@ -2241,7 +2241,7 @@ sub grid : Local {
             for my $n (1 .. @nights) {
                 $data{"n$id\_$bed\_$n"} = $nights[$n-1];
             }
-            $data{"c$id\_$bed"} = $cost;
+            $data{"c$id\_$bed"} = $cost || "";
             $total += $cost;
         }
         close $in;
