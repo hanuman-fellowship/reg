@@ -1,5 +1,5 @@
 [% id = book.id %]
-<h2>Books at MMC<span style="margin-left: 4in; font-weight: normal"><a href=/logout>Logout</a></span></h2>
+<h2>Books at MMC[% IF Catalyst.user.username == 'library' %]<span style="margin-left: 4in; font-weight: normal"><a href=/logout>Logout</a></span>[% END %]</h2>
 [% IF Catalyst.check_user_roles('librarian') %]
     <a href="/book/create" accesskey='a'><span class=keyed>A</span>dd</a>
     &nbsp;&nbsp;&nbsp;
