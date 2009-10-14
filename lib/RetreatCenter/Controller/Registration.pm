@@ -3012,7 +3012,9 @@ sub lodge : Local {
     my $center = ($h_type =~ m{center})? "yes": "";
     my $psex   = $reg->person->sex;
     my $max    = type_max($h_type);
-    my $low_max = ($max == 7)? 4: $max;
+    my $low_max =  $max ==  7? 4
+                  :$max == 20? 8
+                  :            $max;
     my $cabin  = $reg->cabin_room() eq 'cabin';
     my @kids   = ($reg->kids)? (cur => { '>', 0 })
                  :             ();
