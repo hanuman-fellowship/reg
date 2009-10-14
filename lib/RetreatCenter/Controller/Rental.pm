@@ -1009,6 +1009,7 @@ sub booking : Local {
     my $tent   = ($h_type =~ m{tent}  )? "yes": "";
     my $center = ($h_type =~ m{center})? "yes": "";
     my $max    = type_max($h_type);
+    my $low_max = $max == 7? 4: $max;       # quads are dorms
 
     my %or_cids = other_reserved_cids($c, $r);
     my @or_cids = keys %or_cids;
@@ -1032,7 +1033,7 @@ sub booking : Local {
                    bath     => $bath,
                    tent     => $tent,
                    center   => $center,
-                   max      => { '>=', $max },
+                   max      => { '>=', $low_max },
                    @opt,
                },
                { order_by => 'name' }
@@ -1045,7 +1046,7 @@ sub booking : Local {
         #
         my @cf = model($c, 'Config')->search({
             house_id => $h_id,
-            the_date => { 'between' => [ $sdate, $edate1 ] },
+            the_date => { between => [ $sdate, $edate1 ] },
             cur      => { '>', 0 },
         });
         next HOUSE if @cf;        # nope
@@ -1053,7 +1054,7 @@ sub booking : Local {
         my $s = "<input type=checkbox name=h$h_id value=$h_id> "
               . $h->name()
               ;
-        if ($h->max == $max) {
+        if ($low_max <= $h->max() && $h->max() == $max) {
             $checks .= "$s<br>";
         }
         else {
@@ -1497,6 +1498,7 @@ EOH
                 my ($np, $nd) = split m{\s*x\s*}i, $term;
                 $np =~ s{\s}{};
                 my $children = $np =~ s{c}{}i;
+                $tot_people += $np;
                 push @attendance, [ $np, $nd, $children ];
             }
         }
