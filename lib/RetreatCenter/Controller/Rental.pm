@@ -1054,7 +1054,7 @@ sub booking : Local {
         my $s = "<input type=checkbox name=h$h_id value=$h_id> "
               . $h->name()
               ;
-        if ($low_max <= $h->max() && $h->max() == $max) {
+        if ($low_max <= $h->max() && $h->max() <= $max) {
             $checks .= "$s<br>";
         }
         else {
