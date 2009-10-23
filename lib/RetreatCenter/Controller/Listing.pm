@@ -359,8 +359,8 @@ sub detail_disp {
 # we consider the date range of the requested meal list.
 # breakfast does not happen on the arrival date - programs and rentals.
 # program lunches could happen on the first day of the program
-#     if that day's lunch is selected (which it _could_ be if the program
-#     _start_ time is before 1:00 pm).
+#     if that day's lunch is selected (which it _could_ be if the
+#     _program_ _start_ time is before 1:00 pm).
 # similarily rental lunches CAN happen on the first
 #   day - depending on the start time.
 # dinner does not happen on the departure date - for programs and rentals.
@@ -444,6 +444,7 @@ sub meal_list : Local {
                       allocated => 'yes',
                   });
 
+    my $lunch_end = 1300;       # 1:00 pm
     @meals = ();   # hashrefs from $start to $end
     @detls = ();   # names, sources
     clear_lunch();
@@ -484,7 +485,10 @@ sub meal_list : Local {
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
             add('breakfast') if $d != $r_start;
-            add('lunch')     if $d != $r_start && (lunch($d) || $PR);
+            add('lunch')     if ($d != $r_start
+                                 || $prog->prog_start() < $lunch_end)
+                                &&
+                                (lunch($d) || $PR);
             add('dinner')    if $d != $r_end || $mmi_prog;
         }
     }
@@ -533,6 +537,7 @@ sub meal_list : Local {
 
         my $r_start = $r->sdate_obj;
         my $r_end   = $r->edate_obj;
+        my $start_hour = $r->start_hour();
 
         # we assume all people in the rental
         # arrive and leave at the same time.
@@ -540,7 +545,8 @@ sub meal_list : Local {
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
             sum('breakfast') if $d != $r_start;
-            sum('lunch')     if $d != $r_start && lunch($d);
+            sum('lunch')     if ($d != $r_start || $start_hour < $lunch_end)
+                                && lunch($d);
             sum('dinner')    if $d != $r_end;
         }
     }

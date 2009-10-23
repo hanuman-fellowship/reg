@@ -3445,6 +3445,8 @@ sub lodge_do : Local {
     # many people into a room.  everyone must
     # have a bed.  this requires looking ahead.
     # except for tents, that is!!
+    # furthermore, you can't force into a space reserved
+    # for a rental.
     # so weird and so complicated.   jeez.
     #
     # if kids in this registration then we must set curmax = cur.
@@ -3460,6 +3462,7 @@ sub lodge_do : Local {
     if ($force_house) {
         # we need to verify that this forced house
         # is not plum full on some day.
+        # or that it is reserved for a rental on one of the days.
         #
         my @cf = model($c, 'Config')->search({
             house_id => $house_id,
@@ -3470,8 +3473,22 @@ sub lodge_do : Local {
         if (@cf && !$house->tent()) {
             error($c,
                 "Sorry, no beds left in $force_house"
-                     . " on " . date($cf[0]->the_date)
+                     . " on " . date($cf[0]->the_date())
                      . ".",
+                "registration/error.tt2",
+            );
+            return;
+        }
+        my @rental_cf = model($c, 'Config')->search({
+            house_id => $house_id,
+            the_date => { 'between' => [ $sdate, $edate1 ] },
+            sex      => 'R',
+        });
+        if (@rental_cf) {
+            error($c,
+                "Sorry, $force_house is reserved for a rental on "
+                    . date($rental_cf[0]->the_date())
+                    . ".",
                 "registration/error.tt2",
             );
             return;

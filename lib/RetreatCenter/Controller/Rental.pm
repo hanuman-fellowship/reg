@@ -34,6 +34,8 @@ use Util qw/
     other_reserved_cids
     palette
     invalid_amount
+    clear_lunch
+    get_lunch
 /;
 use Global qw/
     %string
@@ -636,6 +638,19 @@ sub update_do : Local {
     delete $P{section};
 
     my $r = model($c, 'Rental')->find($id);
+    if ($P{start_hour} >= 1300) {
+        # they won't be having lunch on their arrival day
+        # since they arrive after lunch ends
+        #
+        clear_lunch();
+        my ($event_start, $lunches) = get_lunch($c, $id, 'Rental');
+        if (substr($lunches, 0, 1) == 1) {
+            error($c,
+                  "Can't have lunch since arrival time is after 1:00 pm!",
+                  'gen_error.tt2');
+            return;
+        }
+    }
     my $names = "";
     my $lunches = "";
     if (  $r->sdate ne $P{sdate}

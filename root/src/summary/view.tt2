@@ -13,6 +13,14 @@ p {
 <a href='/summary/use_template/[% Type %]/[% happening.id %]/[% sum.id %]'
    onclick="return confirm('Okay to replace this Summary with the Template?');"
 >Use Template</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/summary/copy/[% Type %]/[% happening.id %]>Copy</a>
+[% IF paste_id %]
+&nbsp;&nbsp;&nbsp;
+    <a href=/summary/paste/[% Type %]/[% happening.id %]/[% paste_id %]
+           onclick="return confirm('Is it okay to OVERWRITE this Summary with the one from [% paste_name %]?');"
+    >Paste [% paste_name %]</a>
+[% END %]
 [% IF type == 'program' %]
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/first_reg/[% happening.id %]>1st Reg</a>

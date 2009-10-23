@@ -18,6 +18,9 @@ use Util qw/
     highlight
     stash
 /;
+use Global qw/
+    %string
+/;
 
 sub view : Local {
     my ($self, $c, $type, $id) = @_;
@@ -38,6 +41,14 @@ sub view : Local {
         converted_spaces
     /) {
         $c->stash->{$f} = highlight($summary->$f());
+    }
+    my $paste_id = "";
+    if ($string{sum_copy_id}) {
+        my ($paste_id, $paste_name) = $string{sum_copy_id} =~ m{^(\d+)\s+(.*)};
+        stash($c,
+            paste_id   => $paste_id,
+            paste_name => $paste_name,
+        );
     }
 
     my $happening = $summary->$type();
@@ -69,6 +80,22 @@ sub view : Local {
         sum       => $summary,
         cal_param => "$sdate/$nmonths",
         template  => "summary/view.tt2",
+    );
+}
+
+sub copy : Local {
+    my ($self, $c, $type, $id) = @_;
+
+    my $hap = model($c, $type)->find($id);
+    my $name = $hap->name();
+    my $s = $hap->summary_id() . " $name";
+    model($c, 'String')->find('sum_copy_id')->update({
+        value => $s,
+    });
+    $string{sum_copy_id} = $s;      # update Global %string as well
+    stash($c,
+        name     => $name,
+        template => "summary/copied.tt2",
     );
 }
 
@@ -153,6 +180,32 @@ sub use_template : Local {
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
     });
+    $type = lc $type;       # Program to program
+    $c->response->redirect($c->uri_for("/summary/view/$type/$happening_id"));
+}
+
+sub paste : Local {
+    my ($self, $c, $type, $id, $sum_copy_id) = @_;
+
+    my $hap = model($c, $type)->find($id);
+    my $hap_sum = $hap->summary();
+    my $sum_id = $hap_sum->id();
+    my $sum_to_copy = model($c, 'Summary')->find($sum_copy_id);
+    $hap_sum->update({
+        $sum_to_copy->get_columns(),             # copy all fields
+        id           => $sum_id,                 # except id
+        date_updated => tt_today($c)->as_d8(),   # and override
+        who_updated  => $c->user->obj->id,       # update status info
+        time_updated => get_time()->t24(),
+    });
+
+    # clear the string sum_copy_id
+    #
+    model($c, 'String')->find('sum_copy_id')->update({
+        value => '',
+    });
+    $string{sum_copy_id} = '';      # update Global %string as well
+
     $type = lc $type;       # Program to program
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }

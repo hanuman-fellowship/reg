@@ -271,13 +271,13 @@ sub main_meeting_place {
 
 sub title1 {
     my ($self) = @_;
-    return ($self->leader_names && $self->leader_names !~ m{staff}i)?
+    return ($self->leader_names && $self->leader_names !~ m{\bstaff\b}i)?
                 $self->leader_names:
                 $self->title;
 }
 sub title2 {
     my ($self) = @_;
-    if ($self->leader_names && $self->leader_names !~ m{staff}i) {
+    if ($self->leader_names && $self->leader_names !~ m{\bstaff\b}i) {
         if ($self->subtitle) {
             $self->title . " - " . $self->subtitle;
         } else {

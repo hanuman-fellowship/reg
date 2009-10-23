@@ -34,6 +34,8 @@ use Util qw/
     palette
     esc_dquote
     invalid_amount
+    clear_lunch
+    get_lunch
 /;
 use Date::Simple qw/
     date
@@ -298,6 +300,13 @@ sub _get_data {
         else {
             $P{$t} = $time->t24();
         }
+    }
+    if (!(
+            ($P{reg_start}  <= $P{reg_end})
+         && ($P{reg_end}    <= $P{prog_start})
+         )
+    ) {
+        push @mess, "Sequence error in the registration/program start/end times",
     }
     my @email = split m{[, ]+}, $P{notify_on_reg};
     for my $em (@email) {
@@ -736,6 +745,18 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
 
+    if ($P{prog_start} >= 1300) {
+        # can't have lunch on the first day
+        #
+        clear_lunch();
+        my ($event_start, $lunches) = get_lunch($c, $id, 'Program');
+        if (substr($lunches, 0, 1) == 1) {
+            error($c,
+                  "Can't have lunch since program start time is after 1:00 pm!",
+                  'gen_error.tt2');
+            return;
+        }
+    }
     my $section = $P{section};
     delete $P{section};
 

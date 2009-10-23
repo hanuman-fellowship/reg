@@ -182,3 +182,5 @@ date_coming_going_printed 20090603
 
 dp_margin_right 50
 dp_margin_bottom 25
+
+sum_copy_id 0
