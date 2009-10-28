@@ -699,11 +699,15 @@ sub _rest_of_reg {
     if ($pr->footnotes =~ m{[*]}) {
         stash($c, ceu => 1);
     }
+
     # the housing select list.
     # default is the first housing choice.
     # order is important:
+    #
     my $h_type_opts = "";
     my $h_type_opts2 = "";
+    my $mon = $pr->sdate_obj->month();
+
     Global->init($c);     # get %string ready.
     HTYPE:
     for my $ht (housing_types(2)) {
@@ -714,6 +718,7 @@ sub _rest_of_reg {
         if ($ht !~ m{unknown|not_needed} && $pr->housecost->$ht == 0) {
             next HTYPE;
         }
+        next HTYPE if $ht eq "center_tent" && wintertime($mon);
 
         my $selected = ($ht eq $house1 )? " selected": "";
         my $selected2 = ($ht eq $house2)? " selected": "";
@@ -3060,7 +3065,7 @@ sub lodge : Local {
             ($summer && (!$center && $cl_center ||
                          $center && !$cl_center   ))
                 # watch out for the word center
-                # in indoor housing!
+                # in indoor housing cluster names!
         ) {
             next CLUSTER;
         }

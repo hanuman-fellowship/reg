@@ -750,7 +750,7 @@ sub update_do : Local {
         #
         clear_lunch();
         my ($event_start, $lunches) = get_lunch($c, $id, 'Program');
-        if (substr($lunches, 0, 1) == 1) {
+        if ($lunches && substr($lunches, 0, 1) == 1) {
             error($c,
                   "Can't have lunch since program start time is after 1:00 pm!",
                   'gen_error.tt2');
@@ -1996,10 +1996,10 @@ sub view_adj : Local {
 sub color : Local {
     my ($self, $c, $program_id) = @_;
     my $program = model($c, 'Program')->find($program_id);
-    my ($r, $g, $b) = $program->color() =~ m{\d+}g;
-    $r ||= 127;
-    $g ||= 127;
-    $b ||= 127;
+    my ($r, $g, $b) = (127, 127, 127);
+    if ($program->color()) {
+        ($r, $g, $b) = $program->color() =~ m{\d+}g;
+    }
     stash($c,
         Type     => 'Program',
         type     => 'program',
