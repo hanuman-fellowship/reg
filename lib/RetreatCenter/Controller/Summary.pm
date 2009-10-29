@@ -42,13 +42,25 @@ sub view : Local {
     /) {
         $c->stash->{$f} = highlight($summary->$f());
     }
-    my $paste_id = "";
     if ($string{sum_copy_id}) {
-        my ($paste_id, $paste_name) = $string{sum_copy_id} =~ m{^(\d+)\s+(.*)};
-        stash($c,
-            paste_id   => $paste_id,
-            paste_name => $paste_name,
-        );
+        my ($timestamp, $paste_id, $paste_name)
+            = $string{sum_copy_id} =~ m{^(\d+)\s+(\d+)\s+(.*)};
+        if ($timestamp < time() - 5*60) {
+            #
+            # more than 5 minutes have passed since the copy
+            # so expire the copy id.
+            #
+            model($c, 'String')->find('sum_copy_id')->update({
+                value => '',
+            });
+            $string{sum_copy_id} = '';      # update Global %string as well
+        }
+        else {
+            stash($c,
+                paste_id   => $paste_id,
+                paste_name => $paste_name,
+            );
+        }
     }
 
     my $happening = $summary->$type();
@@ -88,7 +100,7 @@ sub copy : Local {
 
     my $hap = model($c, $type)->find($id);
     my $name = $hap->name();
-    my $s = $hap->summary_id() . " $name";
+    my $s = time() . " " . $hap->summary_id() . " $name";
     model($c, 'String')->find('sum_copy_id')->update({
         value => $s,
     });
