@@ -19,7 +19,9 @@ h3 {
 </style>
 <h2>Rentals</h2>
 [% IF prog_admin %]
-<a href="/rental/create">Add</a>
+<a href="/rental/create"
+       onclick="return confirm('If this new Rental has been at MMC before it would be better to use Duplicate.');"
+>Add</a>
 &nbsp;&nbsp;&nbsp;
 <span id=editlink><a href="/rental/update/[% id %]/[% section %]">Edit</a></span>
 &nbsp;&nbsp;&nbsp;

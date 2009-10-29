@@ -158,6 +158,10 @@ We suggest that you bring the following:
     [% END %]
 [% END %]
 <p class=p2>
+Please note that the rainy season in this part of California can begin
+as early as October 1, and end as late as May 1; make sure you pack
+waterproof clothing during that season.
+<p class=p2>
 You may wish to bring slippers, as shoes are not worn indoors.
 <p class=p2>
 Our food service is strictly vegetarian &ndash; no meat, fish, fowl, or eggs.
@@ -285,9 +289,12 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya
         <div class=addr>
         [% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
         [% IF p.country %][% p.country %]<br>[% END %]
+        [% p.carpool_telephone %]
+        <!--
         [% IF p.tel_home %][% p.tel_home %] home<br>[% END %]
         [% IF p.tel_work %][% p.tel_work %] work<br>[% END %]
         [% IF p.tel_cell %][% p.tel_cell %] cell<br>[% END %]
+        -->
         [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">[% p.email %]</a>[% END %]
         </div>
     [% END %]

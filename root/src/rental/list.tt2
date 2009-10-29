@@ -3,7 +3,9 @@
 <form action="/rental/listpat" name=form>
 <a href="/proposal/list">Proposals</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/create">Add</a>
+<a href="/rental/create"
+       onclick="return confirm('If this new Rental has been at MMC before it would be better to use Duplicate.');"
+>Add</a>
 <span style="margin-left: 1.5in"><input text name=rent_pat size=10 value=[% rent_pat %]> <input type=submit value="Search"></span></form>
 <ul>
 <table border=0 cellpadding=3>

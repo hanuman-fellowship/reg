@@ -106,10 +106,10 @@ for my $p (@progs) {
         if ($home) {
             $let .= "$home home<br>\n";
         }
-        if ($work) {
+        elsif ($work) {
             $let .= "$work work<br>\n";
         }
-        if ($cell) {
+        elsif ($cell) {
             $let .= "$cell cell<br>\n";
         }
         $let .= "<p>\n";

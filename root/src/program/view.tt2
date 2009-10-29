@@ -54,7 +54,9 @@ function UNreserve_cluster(cluster_id) {
 
 <h2>Programs</h2>
 [% IF prog_admin %]
-    <a href="/program/create">Add</a>
+    <a href="/program/create"
+       onclick="return confirm('If this new Program has been at MMC before it would be better to use Duplicate.');"
+    >Add</a>
     [% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
         &nbsp;&nbsp;&nbsp;
         <span id=editlink><a accesskey=E href="/program/update/[% id %]"><span class=keyed>E</span>dit</a></span>

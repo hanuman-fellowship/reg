@@ -1008,6 +1008,20 @@ sub create_do : Local {
         );
         return;
     }
+    #
+    # if this registration does not overlap with
+    # the program itself something is wrong, yes?
+    #
+    if ($dates{date_end} < $pr->sdate()
+        ||
+        $pr->edate()     < $dates{date_start}
+    ) {
+        error($c,
+            "The arrival/departure dates you have given\ndo not overlap with the Program at all!",
+            "registration/error.tt2",
+        );
+        return;
+    }
     my $reg = model($c, 'Registration')->create({
         person_id     => $P{person_id},
         program_id    => $P{program_id},

@@ -3,7 +3,9 @@
 [% admin = Catalyst.check_user_roles('prog_admin') %]
 [% mmi_admin = Catalyst.check_user_roles('mmi_admin') %]
 [% IF admin %]
-    <a href="/program/create">Add</a>
+    <a href="/program/create"
+       onclick="return confirm('If this new Program has been at MMC before it would be better to use Duplicate.');"
+    >Add</a>
 [% END %]
 [% IF admin %]
     &nbsp;&nbsp;&nbsp;

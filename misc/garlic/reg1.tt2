@@ -4,7 +4,19 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>MMC Online Registration - Step 1</title>
 <link href="../regform.css" rel="stylesheet" type="text/css">
-
+<script type="text/javascript">
+var newwin;
+function popup(url, height) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=' + height + ',width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
 </head>
 
 <body>
@@ -361,6 +373,7 @@
 										<li>
 											<INPUT type=checkbox name=carpool value=yes [% carpool %]>
 											<label for="carpool">I wish to carpool</label>
+                                            <span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215)">Privacy Concerns?</a></span>
 										</li>
 										<li>
 											<INPUT type=checkbox name=hascar value=yes [% hascar %]>
@@ -424,7 +437,7 @@
 								</ol>
 								
 							</fieldset>
-							<p class="green_blurb">Green Funds will be used for sustainable innovations and eco-events at MMC.<br /><A href='#'>More Info</A></p>
+							<p class="green_blurb">Green Funds will be used for sustainable innovations and eco-events at MMC.<br /><!-- <A href='#'>More Info</A> --></p>
 
 							
 					</div>

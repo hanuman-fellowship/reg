@@ -171,4 +171,16 @@ sub bad_cc {
     return ! is_valid($self->cc_number());
 }
 
+sub carpool_telephone {
+    my ($self) = @_;
+
+    for my $t (qw/ home work cell /) {
+        my $method = "tel_$t";
+        if (my $s = $self->$method()) {
+            return "$s $t<br>";
+        }
+    }
+    return "";
+}
+
 1;
