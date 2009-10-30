@@ -1262,10 +1262,12 @@ sub publish : Local {
                     or return _pub_err($c, "cannot put $hf to ../$hf", 1);
             }
             $ftp->mkdir("../$f/pics");
+            $ftp->binary();
             for my $p (<$f/pics/*>) {
                 $ftp->put($p, "../$p")
                     or return _pub_err($c, "cannot put $p to ../$p", 1);
             }
+            $ftp->ascii();
             $ftp->put("$f/progtable", "../$f/progtable")
                     or return _pub_err($c, "cannot put $f/progtable to ../$f/progtable", 1);
         }
