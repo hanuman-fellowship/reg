@@ -847,6 +847,7 @@ sub _get_data {
     else {
         $dates{date_end} = '';
     }
+    return if @mess;
 
     if ($PR) {
         #
@@ -1752,11 +1753,17 @@ sub send_conf : Local {
             }
         ) ];
     }
+    my $prog_end = date($pr->edate());
+    my $xdays = $pr->extradays();
+    if ($xdays && $reg->date_end() >= $pr->edate() + $xdays) {
+        $prog_end += $xdays;
+    }
     my $stash = {
         user     => $c->user,
         person   => $reg->person,
         reg      => $reg,
         program  => $pr,
+        prog_end => $prog_end,
         personal_retreat => $PR,
         sunday   => $PR
                     && ($reg->date_start_obj->day_of_week() == 0),
