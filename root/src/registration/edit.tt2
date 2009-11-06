@@ -22,7 +22,7 @@ function popup(url) {
 <td colspan=2><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a>[% IF reg.status %] (<span class=required>[% reg.status %]</span> member)[% END %]</td>
 <td rowspan=2>
 <table>
-<tr><td><b>Arrive</b><br><input type=text name=date_start size=10 maxlength=10 value="[% IF reg.date_start != program.sdate %][% reg.date_start_obj.format("%D") %][% END %]"></td><td><b>Leave</b><br><input type=text name=date_end size=10 maxlength=10 value="[% IF reg.date_end != program.edate %][% reg.date_end_obj.format("%D") %][% END %]"></td></tr>
+<tr><td><b>Early Arrival</b><br><input type=text name=date_start size=10 maxlength=10 value="[% IF reg.date_start != program.sdate %][% reg.date_start_obj.format("%D") %][% END %]"></td><td><b>Late Departure</b><br><input type=text name=date_end size=10 maxlength=10 value="[% IF reg.date_end != program.edate %][% reg.date_end_obj.format("%D") %][% END %]"></td></tr>
 <tr><td><b>From</b> [% program.sdate_obj %]</td><td><b>To</b> [% program.edate_obj %]</td></tr>
 </table>
 </td>
