@@ -215,7 +215,7 @@ on [% reg.date_end_obj.format("%A, %B %e") %].
 Your program will begin at [% program.prog_start_obj %] on
 [% program.sdate_obj.format("%A") %]
 and will end at [% program.prog_end_obj %] on
-[% program.edate_obj.format("%A, %B %e") %].
+[% prog_end.format("%A, %B %e") %].
 [% END %]
 <p class=p2>
 [% program.canpol.policy %]
@@ -290,11 +290,6 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya
         [% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
         [% IF p.country %][% p.country %]<br>[% END %]
         [% p.carpool_telephone %]
-        <!--
-        [% IF p.tel_home %][% p.tel_home %] home<br>[% END %]
-        [% IF p.tel_work %][% p.tel_work %] work<br>[% END %]
-        [% IF p.tel_cell %][% p.tel_cell %] cell<br>[% END %]
-        -->
         [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">[% p.email %]</a>[% END %]
         </div>
     [% END %]
