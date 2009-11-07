@@ -8,6 +8,7 @@ use Util qw/
     tt_today
     places
     gptrim
+    get_grid_file
 /;
 use Date::Simple qw/
     date
@@ -34,31 +35,8 @@ __PACKAGE__->add_columns(qw/
     comment
     housecost_id
 
-    n_single_bath
-    n_single
-    n_dble_bath
-    n_dble
-    n_triple
-    n_dormitory
-    n_economy
-    n_center_tent
-    n_own_tent
-    n_own_van
-    n_commuting
-
-    att_single_bath
-    att_single
-    att_dble_bath
-    att_dble
-    att_triple
-    att_dormitory
-    att_economy
-    att_center_tent
-    att_own_tent
-    att_own_van
-    att_commuting
-
     max
+    expected
 
     balance
 
@@ -84,6 +62,8 @@ __PACKAGE__->add_columns(qw/
 
     color
     housing_note
+
+    grid_code
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -243,35 +223,63 @@ sub dates_tr2 {
 	my ($self) = @_;
 	return RetreatCenterDB::Program::dates_tr2($self);
 }
-sub count {
+#
+# returns an array of counts for each day of the rental
+# if the web grid is not there or is empty use the
+# count (as below) or failing that, the maximum.
+#
+sub daily_counts {
     my ($self) = @_;
 
-    #
-    # for hybrid rentals the count comes from the program
-    # because we have individual registrations.
-    #
-    if ($self->program_id()) {
-        return $self->program->count();
+    my $ndays = $self->edate() - $self->sdate();
+    my $max = $self->count();       # expected || max
+    my $fname = get_grid_file($self->grid_code());
+    my $in;
+    if (! open($in, "<", $fname)) {
+        return (($max) x ($ndays+1));
     }
-
-    my $count = 0;
-    for my $f (qw/
-        n_single_bath
-        n_single
-        n_dble_bath
-        n_dble
-        n_triple
-        n_dormitory
-        n_economy
-        n_center_tent
-        n_own_tent
-        n_own_van
-        n_commuting
-    /) {
-        my $n = $self->$f;
-        $count += $n if $n;
+    #
+    # we take care of the final day below
+    # the web grid does not have a # for that last day
+    #
+    my @counts = (0) x $ndays;
+    my $tot_cost = 0;
+    LINE:
+    while (my $line = <$in>) {
+        chomp $line;
+        if ($line =~ s{(\d+)$}{}) {
+            my $cost = $1;
+            if (! $cost) {
+                next LINE;
+            }
+            $tot_cost += $cost;
+        }
+        my $name = "";
+        if ($line =~ s{^\d+\|\d+\|([^|]*)\|}{}) {
+            $name = $1;
+        }
+        my $np = $name =~ tr/&/&/;
+        ++$np;
+        my @nights = split m{\|}, $line;
+        for my $i (0 .. $#counts) {
+            $counts[$i] += $np * $nights[$i];
+        }
     }
-    $count;
+    close $in;
+    if ($tot_cost == 0) {
+        return (($max) x ($ndays+1));
+    }
+    #
+    # on the last day
+    # the people who slept the night before will have breakfast
+    # and maybe lunch.
+    #
+    push @counts, $counts[-1];
+    return @counts;
+}
+sub count {
+    my ($self) = @_;
+    return $self->expected() || $self->max();
 }
 sub status_td {
     my ($self) = @_;
@@ -320,6 +328,10 @@ sub end_hour_obj {
 sub color_bg {
     my ($self) = @_;
     return sprintf("#%02x%02x%02x", $self->color() =~ m{(\d+)}g);
+}
+sub housing_note_trim {
+    my ($self) = @_;
+    gptrim($self->housing_note());
 }
 
 #

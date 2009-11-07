@@ -5,16 +5,17 @@
 }
 </style>
 <ul>
-<h2>
-[% rental.name %] 
-<span style="font-size: 13pt; margin-left: 1in;">[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+<a style="font-size: 20pt;"
+   href=/rental/view/[% rental.id %]
+>[% rental.name %]</a>
+<span style="font-size: 13pt; margin-left: 1in; font-weight: bold">[% rental.sdate_obj.format("%B %e '%q") %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
 <b>To</b>
-[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
+[% rental.edate_obj.format("%B %e '%q") %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
 </span>
-<span style="font-size: 15pt; margin-left: .5in;">[% coord_name %]</span>
-<p class=p2>
+<span style="font-size: 15pt; font-weight: bold; margin-left: .5in;">[% coord_name %]</span>
+<p class=p2 style="font-size: 15pt; font-weight: bold">
 Housing Assignment Grid
-</h2>
+<p class=p2>
 <table cellpadding=5 border=1>
 <tr>
 <td colspan=2>&nbsp;</td>
@@ -24,12 +25,12 @@ Housing Assignment Grid
 </tr>
 [% FOR rb IN rental.rental_bookings %]
     [% h = rb.house %]
-    [% max = h.max %]
+    [% maxh = h.max %]
     [% i = 1 %]
-    [% WHILE i <= max %]
+    [% WHILE i <= maxh %]
         <tr>
         [% IF i == 1 %]
-            <th rowspan=[% max %] align=center>[% h.name_disp %]
+            <th rowspan=[% maxh %] align=center>[% h.name_disp %]
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.center %] - c
@@ -38,7 +39,7 @@ Housing Assignment Grid
                 </span>
             </th>
         [% END %]
-        <td align=right>[% i %]</td>
+        <td align=right width=20>[% i %]</td>
         [% vp = 'p' _ h.id _ '_' _ i %]
         [% vc = 'c' _ h.id _ '_' _ i %]
         [% vcl = 'cl' _ h.id _ '_' _ i %]
@@ -58,18 +59,107 @@ Housing Assignment Grid
         [% i = i + 1 %]
     [% END %]
 [% END %]
+
+[% FOR t = [ 1001, 1002 ] %]
+    [% i = 1 %]
+    [% WHILE i <= max.$t %]
+        <tr>
+        [% IF i == 1 %]
+            <th rowspan=[% max.$t %] align=center>[% IF t == 1001 %]Own Van[% ELSE %]Commuting[% END %]</th>
+        [% END %]
+        [% vp  = 'p'  _ t _ '_' _ i %]
+        [% vc  = 'c'  _ t _ '_' _ i %]
+        [% vcl = 'cl' _ t _ '_' _ i %]
+        <td align=right>[% i %]</td>
+        <td [% data.$vcl %]>[% data.$vp %]</td>
+        [% n = 1 %]
+        [% WHILE n <= nnights %]
+            [% v = 'n' _ t _ '_' _ i _ '_' _ n %]
+            [% IF data.$v %]
+            <td bgcolor=green>&nbsp;</td>
+            [% ELSE %]
+            <td>&nbsp;</td>
+            [% END %]
+            [% n = n + 1 %]
+        [% END %]
+        <td align=right>[% data.$vc %]</td>
+        </tr>
+        [% i = i + 1 %]
+    [% END %]
+[% END %]
+
 [% x = nnights + 2 %]
-<tr><th colspan=[% x %] align=right>Own Van</th><td align=right>[% data.own_van %]</td><td align=right>[% data.cown_van %]</td></tr>
-<tr><th colspan=[% x %] align=right>Commuting</th><td align=right>[% data.commuting %]</td><td align=right>[% data.ccommuting %]</td></tr>
 <tr><th colspan=[% x + 1 %] align=right>Total</th><td align=right>$[% total %]</td></tr>
 </table>
 <p class=p2>
 <ul>
 <p>
+
+<table><tr><td valign=top>
+
 <table>
+<tr><th colspan=2 align=left>Codes</th></tr>
 <tr><td>b</td><td> - bath</td></tr>
 <tr><td>c</td><td> - center tent</td></tr>
 <tr><td>o</td><td> - own tent</td></tr>
 </table>
+
+</td><td>
+
+<div style="margin-left: 1in;">
+<table cellpadding=3>
+<tr>
+<th align=left>Type</th><th align=center>Cost</th>
+</tr>
+[% hc = rental.housecost %]
+<tr>
+<td>Single w/ Bath</td>
+<td align=right>[% hc.single_bath %]</td>
+</tr>
+<tr>
+<td>Single</td>
+<td align=right>[% hc.single %]</td>
+</tr>
+<tr>
+<td>Double w/ Bath</td>
+<td align=right>[% hc.dble_bath %]</td>
+</tr>
+<tr>
+<td>Double</td>
+<td align=right>[% hc.dble %]</td>
+</tr>
+<tr>
+<td>Triple</td>
+<td align=right>[% hc.triple %]</td>
+</tr>
+<tr>
+<td>Dormitory</td>
+<td align=right>[% hc.dormitory %]</td>
+</tr>
+<tr>
+<td>Economy</td>
+<td align=right>[% hc.economy %]</td>
+</tr>
+<tr>
+<td>Center Tent</td>
+<td align=right>[% hc.center_tent %]</td>
+</tr>
+<tr>
+<td>Own Tent</td>
+<td align=right>[% hc.own_tent %]</td>
+</tr>
+<tr>
+<td>Own Van</td>
+<td align=right>[% hc.own_van %]</td>
+</tr>
+<tr>
+<td>Commuting</td>
+<td align=right>[% hc.commuting %]</td>
+</tr>
+<tr height=35></tr>
+</table>
+</div>
+
+</td></tr></table>
 </ul>
 </ul>

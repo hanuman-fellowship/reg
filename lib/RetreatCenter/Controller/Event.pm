@@ -312,7 +312,7 @@ sub calendar : Local {
     my $std_rental_arr = get_time($string{rental_start_hour});
     my $std_rental_lv  = get_time($string{rental_end_hour});
 
-    my $start_param = trim($c->request->params->{start});
+    my $start_param = trim($c->request->params->{start}) || "";
     if (!$start_param) {
         $start_param = $the_start;
     }
@@ -334,7 +334,20 @@ sub calendar : Local {
         }
     }
     else {
+        #
+        # we want the first of the previous month from 'today'.
+        # and 5 months hence.
+        #
         $start = tt_today($c);
+        my $y = $start->year();
+        my $m = $start->month();
+        --$m;
+        if ($m == 0) {
+            $m = 12;
+            --$y;
+        }
+        $start = date($y, $m, 1);
+        $the_end = 5;
     }
     $start_param = $start->format("%D");
     my $start_year = $start->year;
@@ -344,7 +357,7 @@ sub calendar : Local {
 
     # optional end date - otherwise it goes to the last happening date
     # unless, that is, we have a the_end method parameter
-    my $end_param = trim($c->request->params->{end});
+    my $end_param = trim($c->request->params->{end}) || "";
     if (!$end_param && $the_end) {
         $end_param = $the_end;
     }

@@ -36,6 +36,7 @@ use Util qw/
     invalid_amount
     clear_lunch
     get_lunch
+    get_grid_file
 /;
 use Global qw/
     %string
@@ -117,13 +118,16 @@ sub _get_data {
     if (! $P{max} =~ m{^\d+$}) {
         push @mess, "Invalid maximum.";
     }
+    elsif (! empty($P{expected})) {
+        if (! ($P{expected} =~ m{^\d+$})) {
+            push @mess, "Invalid expected: $P{expected}.";
+        }
+        elsif ($P{expected} > $P{max}) {
+            push @mess, "Expected $P{expected} but a maximum of $P{max}?";
+        }
+    }
     if (! $P{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
-    }
-    for my $t (housing_types(1)) {
-        if ($P{"n_$t"} !~ m{^\d*$}) {
-            push @mess, "$string{$t}: Illegal quantity: " . $P{"n_$t"};
-        }
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -134,58 +138,6 @@ sub _get_data {
     $P{linked}       = "" unless exists $P{linked};
     $P{tentative}    = "" unless exists $P{tentative};
     $P{mmc_does_reg} = "" unless exists $P{mmc_does_reg};
-}
-
-sub attendance : Local {
-    my ($self, $c, $rental_id) = @_;
-
-    my $rental = model($c, 'Rental')->find($rental_id);
-    my @h_types = housing_types(1);
-    stash($c,
-        rental   => $rental,
-        h_types  => \@h_types,
-        string   => \%string,
-        template => 'rental/attendance.tt2',
-    );
-}
-
-sub attendance_do : Local {
-    my ($self, $c, $rental_id) = @_;
-
-    my $rental = model($c, 'Rental')->find($rental_id);
-    my $hc = $rental->housecost();
-    %P = %{ $c->request->params() };
-    $P{$_} = trim($P{$_}) for keys %P;
-
-    my @mess = ();
-    H_TYPE:
-    for my $t (housing_types(1)) {
-        if ($P{"att_$t"}) {
-            if ($hc->$t() == 0) {
-                push @mess, "$string{$t} housing is not available for this rental.";
-                next H_TYPE;
-            }
-            my @terms = split m{\s*,\s*}, $P{"att_$t"};
-            my $total_peeps = 0;
-            TERM:
-            for my $tm (@terms) {
-                if ($tm !~ m{^(\d+)\s*c?\s*x\s*(\d+)$}i) {
-                    push @mess, "$string{$t}:"
-                               ." Illegal attendance: " . $P{"att_$t"};
-                    next H_TYPE;
-                }
-                my ($t_npeople, $t_ndays) = ($1, $2);
-                $total_peeps += $t_npeople;
-            }
-        }
-    }
-    if (@mess) {
-        $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "rental/error.tt2";
-        return;
-    }
-    $rental->update(\%P);
-    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 sub create : Local {
@@ -259,6 +211,8 @@ sub create_do : Local {
     $P{summary_id} = $sum->id();
     $P{status} = "tentative";
     $P{program_id} = 0;         # so it isn't NULL
+    $P{grid_code} = gen_code($P{sdate}, $P{name});
+
     my $r = model($c, 'Rental')->create(\%P);
     my $id = $r->id();
     #
@@ -272,6 +226,19 @@ sub create_do : Local {
     else {
         $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
     }
+}
+
+sub gen_code {
+    my ($sdate, $name) = @_;
+
+    my $l1 = uc substr($name, 0, 1);
+    my $l2 = uc substr($name, 1, 1);
+    return   substr($sdate, 6, 2)
+           . $l1
+           . substr($sdate, 2, 2)
+           . $l2
+           . substr($sdate, 4, 2)
+           ;
 }
 
 sub create_from_proposal : Local {
@@ -321,6 +288,9 @@ sub create_from_proposal : Local {
     $P{cs_person_id}   = $proposal->cs_person_id();
     $P{status}         = "tentative";       # it is new.
     $P{proposal_id}    = $proposal_id;      # to link back to Proposal
+    $P{program_id} = 0;                     # so it isn't NULL
+
+    $P{grid_code} = gen_code($P{sdate}, $P{name});
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
@@ -392,38 +362,6 @@ sub view : Local {
     for my $t (keys %bookings) {
         $bookings{$t} =~ s{, $}{};     # final comma
     }
-    my %colcov;
-    my $tot_people = 0;
-    my $fmt = "#%02x%02x%02x";
-    my $less = sprintf($fmt, $string{cov_less_color} =~ m{(\d+)}g);
-    my $more = sprintf($fmt, $string{cov_more_color} =~ m{(\d+)}g);
-    my $okay = sprintf($fmt, $string{cov_okay_color} =~ m{(\d+)}g);
-    my @h_types = housing_types(1);
-    TYPE:
-    for my $t (@h_types) {
-        my $nt = "n_$t";
-        my $npeople = $rental->$nt || 0;
-        $tot_people += $npeople;
-
-        # now for the color of the coverage
-        my $t_max = type_max($t);
-        next TYPE if !$t_max;
-        my $needed = ceil($npeople/$t_max);
-        my $count = $booking_count{$t} || 0;
-        $colcov{$t} = ($needed < $count)? $less 
-                     :($needed > $count)? $more
-                     :                    $okay
-                     ;
-    }
-
-    # Lunches
-    my $lunch_charge = 0;
-    my $lunches = $rental->lunches();
-    if ($lunches =~ /1/) {
-        $lunch_charge = $tot_people
-                      * $string{lunch_charge}
-                      * scalar($lunches =~ tr/1/1/);
-    }
 
     my $status;
     if ($rental->tentative || ! $rental->contract_sent) {
@@ -472,17 +410,16 @@ sub view : Local {
                 - date($sdate)->month()
                 + 1;
 
+    my @h_types = housing_types(0);
+
     stash($c,
-        tot_people     => $tot_people,
         ndays          => $ndays,
         rental         => $rental,
         daily_pic_date => $sdate,
         cal_param      => "$sdate/$nmonths",
-        colcov         => \%colcov,     # color of the coverage
         bookings       => \%bookings,
         h_types        => \@h_types,
         string         => \%string,
-        lunch_charge   => $lunch_charge,
         charges        => \@charges,
         tot_other_charges => $tot_other_charges,
         payments       => \@payments,
@@ -495,7 +432,6 @@ sub view : Local {
                               $rental->edate_obj(),
                               $rental->start_hour_obj(),
                           ),
-        code           => _code($rental),
         template       => "rental/view.tt2",
     );
 }
@@ -644,7 +580,7 @@ sub update_do : Local {
         #
         clear_lunch();
         my ($event_start, $lunches) = get_lunch($c, $id, 'Rental');
-        if (substr($lunches, 0, 1) == 1) {
+        if ($lunches && substr($lunches, 0, 1) == 1) {
             error($c,
                   "Can't have lunch since arrival time is after 1:00 pm!",
                   'gen_error.tt2');
@@ -1297,7 +1233,6 @@ sub contract : Local {
     my %stash = (
         today   => today(),
         email   => $email,
-        code    => _code($rental),
         signer  => ($rental->cs_person_id()? $rental->contract_signer()
                    :                        $rental->coordinator()),
         rental  => $rental,
@@ -1320,7 +1255,9 @@ sub contract : Local {
         if ($em = $c->request->params->{cs_email}) {
             push @to, $em;
         }
-        @cc = split m{[\s,]+}, $c->request->params->{cc};
+        if ($c->request->params->{cc}) {
+            @cc = split m{[\s,]+}, $c->request->params->{cc};
+        }
         # check @to, empty @cc?
         email_letter($c,
             from    => "$string{from_title} <$string{from}>",
@@ -1482,87 +1419,6 @@ sub view_summary : Local {
     $c->stash->{template} = "rental/view_summary.tt2";
 }
 
-sub _att_cost_table {
-    my ($rental, $ndays, $hc) = @_;
-
-    my $tot_housing_charge = 0;
-    my $html = "";
-    $html = <<"EOH";
-<ul>
-<table cellpadding=8 border=1>
-<tr>
-<th align=right>Type</th>
-<th>Cost<br>Per Night</th>
-<th># of<br>People</th>
-<th># of<br>Nights</th>
-<th>Total</th>
-</tr>
-EOH
-    my $tot_people = 0;
-    H_TYPE:
-    for my $type (housing_types(1)) {
-        my $n_meth = "n_$type";
-        my $att_meth = "att_$type";
-
-        my $att = $rental->$att_meth();
-        my @attendance = ();
-        if (empty($att)) {
-            push @attendance, [ $rental->$n_meth(), $ndays, 0 ];
-        }
-        else {
-            my @terms = split m{\s*,\s*}, $att;
-            for my $term (@terms) {
-                my ($np, $nd) = split m{\s*x\s*}i, $term;
-                $np =~ s{\s}{};
-                my $children = $np =~ s{c}{}i;
-                $tot_people += $np;
-                push @attendance, [ $np, $nd, $children ];
-            }
-        }
-        if (! @attendance) {
-            push @attendance, [ 0, 0, 0 ];
-        }
-        my $type_shown = 0;
-        my $cost = $hc->$type();
-        next H_TYPE if $cost == 0;    # but don't show ones not available at all
-        my $show_cost = $cost;
-        my $s = $string{$type};
-        if ($type_shown) {
-            $s = "&nbsp;";
-            $show_cost = "&nbsp;";
-        }
-        for my $a (sort {
-                       $b->[1] <=> $a->[1]
-                   }
-                   @attendance
-        ) {
-            my ($np, $nd, $children) = @$a;
-            my $factor = 1;
-            if ($children) {
-                $np = "$np child";
-                $np .= "ren" if $np > 1;
-                $factor = .5;
-            }
-            my $subtot = int($np * $cost * $factor * $nd);
-            $html .= Tr(th({ -align => 'right'}, [ $s ]),
-                        td({ -align => 'right'},
-                           [ $show_cost, $np, $nd, commify($subtot) ]
-                          )
-                       );
-            $tot_housing_charge += $subtot;
-            $s = "&nbsp;";
-            $show_cost = "&nbsp;";
-        }
-    }
-    $html .= Tr(th({ -align => 'right'}, [ "Total" ]),
-                td({ -align => 'right'},
-                   [ "", "", "", '$' . commify($tot_housing_charge)
-                   ]
-                  )
-               );
-    return "$html\n</table>\n", $tot_housing_charge, $tot_people;
-}
-
 #
 # ???provide a Back button at the bottom but
 # exclude it when printing!
@@ -1598,39 +1454,24 @@ EOH
 
     $html .= <<"EOH";
 <h2>Housing Charges</h2>
-<ul>
+<div style="margin-left: .3in">
 EOH
 
     my $tot_housing_charge = 0;
-    my $tot_people = 0;
-    my $fgrid = _get_grid_file($rental);
+    my $fgrid = get_grid_file($rental->grid_code());
     if (open my $in, "<", $fgrid) {
-        # parse the file and extract total cost, total people
+        # parse the file and extract total cost
         #
         while (my $line = <$in>) {
             chomp $line;
             my ($cost) = $line =~ m{(\d+)$};
-            my ($name) = $line =~ m{^\d+\|\d+\|([^|]*)\|};
-            my $np = $name =~ tr/&/&/;
             $tot_housing_charge += $cost;
-            if ($cost != 0) {
-                $tot_people += $np + 1;
-            }
         }
         close $in;
         my $ctot = commify($tot_housing_charge);
         $html .= <<"EOH";
 From web housing grid: \$$ctot
 EOH
-    }
-    if ($tot_people == 0) {
-        # look at the attendance for total cost, total people.
-        # it also returns a nice table of costs.
-        #
-        my ($table, $cost, $tot_p) = _att_cost_table($rental, $ndays, $hc);
-        $html .= $table;
-        $tot_housing_charge = $cost;
-        $tot_people = $tot_p;
     }
    
     # how does the total cost compare to the minimum?
@@ -1653,50 +1494,85 @@ of \$$dorm_rate per night which comes to a total of \$$s.
 EOH
         $tot_housing_charge = $min_lodging;
     }
-    $html .= "</ul>\n";
+    $html .= "</div>\n";
 
-    my $extra_hours = 0;
-    my $start = $rental->start_hour_obj();
-    my $end   = $rental->end_hour_obj();
-    my $extime = "";
+    # get attendance for the first, last days
+    my @counts = $rental->daily_counts();
+
+    my $ex_time = "";
+    my $extra_hours_charge = 0;
     my $tr_extra = "";
+
+    #
+    # repetitious.
+    # I can't bother to generalize the two cases at this time.
+    #
+    my $start = $rental->start_hour_obj();
     my $diff = get_time("1600") - $start;
     if ($diff > 0) {
-        $extra_hours += $diff/60;
-        $extime .= "started at " . $start->ampm() . " (before 4:00 pm)";
-    }
-    $diff = $end - get_time("1300");
-    if ($diff > 0) {
-        $extra_hours += $diff/60;
-        $extime .= " and " if $extime;
-        $extime .= "ended at " . $end->ampm() . " (after 1:00 pm)";
-    }
-    my $eh = $extra_hours
-             * $tot_people
-             * $string{extra_hours_charge}
-             ;
-    my $extra_hours_charge = sprintf("%d", int($eh));
-    my $rounded = "";
-    if ($eh != int($eh)) {
-        $rounded = " (rounded down)";
-    }
-    if ($extra_hours) {
+        my $extra_hours = $diff/60;
+        my $np = $rental->expected() || $counts[0];       # first day count
+        my $ec = $extra_hours
+                 * $np
+                 * $string{extra_hours_charge}
+                 ;
+        my $rounded = "";
+        if ($ec != int($ec)) {
+            $rounded = " (rounded down)";
+        }
+        $ec = int($ec);
+        my $s = commify($ec);
+        $extra_hours_charge += $ec;
+
         my $pl = ($extra_hours == 1)? "": "s";
         $extra_hours = sprintf("%.2f", $extra_hours);
-        my $s = commify($extra_hours_charge);
+        $tr_extra = "<tr><th align=right>Extra Time</th><td align=right>$s</td></tr>";
+        $ex_time .= "The rental started at "
+                 .  $start->ampm()
+                 .  " (before 4:00 pm)"
+                 .  " so there is an extra time charge of "
+                 .  " $extra_hours hour$pl for $np people"
+                 .  " at \$$string{extra_hours_charge} per hour"
+                 .  " = \$$s$rounded."
+                 ;
+    }
+    my $end = $rental->end_hour_obj();
+    $diff = $end - get_time("1300");
+    if ($diff > 0) {
+        my $extra_hours = $diff/60;
+        my $np = $rental->expected()|| $counts[-1];       # last day count
+        my $ec = $extra_hours
+                 * $np
+                 * $string{extra_hours_charge}
+                 ;
+        my $rounded = "";
+        if ($ec != int($ec)) {
+            $rounded = " (rounded down)";
+        }
+        $ec = int($ec);
+        my $s = commify($ec);
+        $extra_hours_charge += $ec;
+
+        my $pl = ($extra_hours == 1)? "": "s";
+        $extra_hours = sprintf("%.2f", $extra_hours);
+        $tr_extra .= "<tr><th align=right>Extra Time</th><td align=right>$s</td></tr>";
+        $ex_time .= "<p>\n" if $ex_time;
+        $ex_time .= "The rental ended at "
+                 .  $end->ampm()
+                 .  " (after 1:00 pm)"
+                 .  " so there is an extra time charge of "
+                 .  " $extra_hours hour$pl for $np people"
+                 .  " at \$$string{extra_hours_charge} per hour"
+                 .  " = \$$s$rounded."
+                 ;
+    }
+    if ($extra_hours_charge) {
         $html .= <<"EOH";
 <h2>Extra Time Charge</h2>
-<div style="width: 500">
-<ul>
-Since the rental $extime
-there is an extra time charge of
-$extra_hours hour$pl for $tot_people people
-at \$$string{extra_hours_charge}
-per hour = \$$s$rounded.
+<div style="width: 500; margin-left: .3in;">
+$ex_time
 </div>
-</ul>
 EOH
-        $tr_extra = "<tr><th align=right>Extra Time</th><td align=right>$s</td></tr>";
     }
 
     my @charges = $rental->charges();
@@ -1705,7 +1581,7 @@ EOH
     if (@charges) {
         $html .= <<"EOH";
 <h2>Other Charges</h2>
-<ul>
+<div style="margin-left: .3in">
 <table cellpadding=8 border=1>
 <tr>
 <th>Amount</th>
@@ -1735,22 +1611,24 @@ EOH
     my $st = commify($tot_charges);
     my $sh = commify($tot_housing_charge);
     $html .= <<"EOH";
+</table>
+</div>
 <h2>Total Charges</h2>
-<ul>
+<div style="margin-left: .3in">
 <table cellpadding=8 border=1>
 <tr><th align=right>Housing</th><td align=right>$sh</td></tr>
 $tr_extra
 $tr_other
 <tr><th align=right>Total</th><td>\$$st</td></tr>
 </table>
-</ul>
+</div>
 EOH
     my $tot_payments = 0;
     my @payments = $rental->payments();
     if (@payments) {
         $html .= <<"EOH";
 <h2>Total Payments</h2>
-<ul>
+<div style="margin-left: .3in">
 <table cellpadding=8 border=1>
 <tr>
 <th>Date</th>
@@ -1772,13 +1650,13 @@ EOH
 <td align=right>\$$s</td>
 </tr>
 </table>
-</ul>
+</div>
 EOH
     }
 
     my $balance = $tot_charges - $tot_payments;
     my $sb = commify($balance);
-    if ($sb == 0) {
+    if ($balance == 0) {
         $sb = "Paid in Full";
     }
     else {
@@ -1786,9 +1664,9 @@ EOH
     }
     $html .= <<"EOH";
 <h2>Balance</h2>
-<ul>
+<div style="margin-left: .3in">
     $sb
-</ul>
+</div>
 </body>
 </html>
 EOH
@@ -1863,12 +1741,6 @@ sub duplicate : Local {
         sent_by           => "",
         received_by       => "",
     });
-    for my $ht (housing_types(1)) {
-        $orig_r->set_columns({
-            "n_$ht"   => "",
-            "att_$ht" => "",
-        });
-    }
     stash($c,
         dup_message => " - <span style='color: red'>Duplication</span>",
             # see comment in Program.pm
@@ -2201,22 +2073,6 @@ sub _get_cluster_groups {
     return "<table>\n$available</table>XX<table>\n$reserved</table>";
 }
 
-sub _get_grid_file {
-    my ($rental) = @_;
-
-    my $code = _code($rental);
-    my $fname = "root/static/grid/$code-data.txt";
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to $string{ftp_site}";    # not die???
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd("www/cgi-bin/rental");
-    mkdir "root/static/grid" unless -d "root/static/grid";
-    $ftp->get("$code-data.txt", $fname);    # it may be there, maybe not
-    $ftp->quit();
-    return $fname;
-}
-
 sub grid : Local {
     my ($self, $c, $rental_id) = @_;
 
@@ -2234,25 +2090,23 @@ sub grid : Local {
 
     # get the most recent edit from the global web
     #
-    my $fgrid = _get_grid_file($rental);
+    my $fgrid = get_grid_file($rental->grid_code());
 
     my %data = ();
     my $total = 0;
+    my %max;
     if (open my $in, "<", $fgrid) {
         LINE:
         while (my $line = <$in>) {
             chomp $line;
-            if ($line =~ m{^(own_van|commuting)\|(\d+)\|(\d+)$}) {
-                $data{$1} = $2;
-                $data{"c$1"} = $3 || "";
-                $total += $3;
-                next LINE;
-            }
             my ($id, $bed, $name, @nights) = split m{\|}, $line;
+            if ($id >= 1000) {
+                $max{$id} = $bed;
+            }
             my $cost = pop @nights;
             $data{"p$id\_$bed"} = $name;
             $data{"cl$id\_$bed"}
-                = ($name =~ m{[&]}
+                = ($name =~ m{\&|\band\b}
                    || $name =~ m{\bchild\b}
                    || $name =~ m{-\s*[12347]\s*$})? "class=special"
                   :                                 ""
@@ -2271,51 +2125,24 @@ sub grid : Local {
         $coord_name = $coord->first() . " " . $coord->last();
     }
     else {
-        $coord_name = "Unknown Coordinator";
+        $coord_name = "";
     }
-
     stash($c,
         days     => $days,
         rental   => $rental,
         nnights  => ($rental->edate_obj() - $rental->sdate_obj()),
         data     => \%data,
+        max      => \%max,      # for own van, commuting
         coord_name => $coord_name,
         total    => commify($total),
         template => 'rental/grid.tt2',
     );
 }
 
-# like a hash but messier?
-# some unique number/key/password for a rental
-# that is hard to guess.
-#
-sub _code {
-    my ($rental) = @_;
-
-    my $sdate = $rental->sdate();
-    my $coord = $rental->coordinator();
-    my ($f, $l);
-    if ($coord) {
-        $f = uc substr($coord->first(), 0, 1);
-        $l = uc substr($coord->last(), 0, 1);
-    }
-    else {
-        $f = uc substr($rental->name(), 0, 1);
-        $l = uc substr($rental->name(), 1, 1);
-    }
-    my $n = substr($sdate, 6, 2)
-          . $l
-          . substr($sdate, 2, 2)
-          . $f
-          . substr($sdate, 4, 2)
-          ;
-    return $n;
-}
-
 sub _send_grid_data {
     my ($rental) = @_;
 
-    my $code = _code($rental) . ".txt";
+    my $code = $rental->grid_code() . ".txt";
     open my $gd, ">", "/tmp/$code"
         or die "cannot create /tmp/$code: $!\n";
     print {$gd} "name " . $rental->name() . "\n";
@@ -2326,8 +2153,8 @@ sub _send_grid_data {
         print {$gd} "last " . $coord->last() . "\n";
     }
     else {
-        print {$gd} "first Unknown\n";
-        print {$gd} "last Coordinator\n";
+        print {$gd} "first \n";     # just leave them blank
+        print {$gd} "last \n";
     }
     print {$gd} "sdate " . $rental->sdate() . "\n";
     print {$gd} "edate " . $rental->edate() . "\n";

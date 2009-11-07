@@ -318,23 +318,19 @@ sub lunch {
     return $i >= 0 && $i < $len_lunches && substr($lunches, $i, 1);
 }
 
-# the details are mostly for testing purposes - maybe
+# the details are mostly for testing purposes - maybe.
 # i'm not afraid of using global variables... it's simpler!
-# we have a complex structure here!
+# we have a complex structure here!  whatever it takes to
+# get the job done.
 #
 my (@meals, @detls);
-my ($d8, $info, $npeople, $details);
+my ($d8, $info, $details);
 sub add {
     my ($meal, $n) = @_;
     $n ||= 1;           # !!!??? amazing.   put a space between || and =
                         # and all kinds of syntax errors are produced.
                         # hard to find the origin.
     $meals[$d8]{$meal} += $n;
-    push @{$detls[$d8]{$meal}}, $info if $details;
-}
-sub sum {
-    my ($meal) = @_;
-    $meals[$d8]{$meal} += $npeople;
     push @{$detls[$d8]{$meal}}, $info if $details;
 }
 sub detail_disp {
@@ -369,6 +365,10 @@ sub detail_disp {
 # PRs always have lunch except for their arrival day.
 # Blocks with people in them will eat as if they were in a PR
 #   for the date range.
+# the number of rental people on any given day is determined
+#     by looking at the web grid - maintained by the rental coordinator.
+#     if that grid is empty we use the maximum specified in the rental
+#     for each day.
 #
 sub meal_list : Local {
     my ($self, $c) = @_;
@@ -466,13 +466,13 @@ sub meal_list : Local {
         }
         $len_lunches = length($lunches);
 
-        my $r_start = $r->date_start_obj;
-        my $r_end   = $r->date_end_obj;
+        my $r_start = $r->date_start_obj();
+        my $r_end   = $r->date_end_obj();
 
         my $ol = $dr->overlap(DateRange->new($r_start,
                                              $r_end   ));
-        my $sd = $ol->sdate;
-        my $ed = $ol->edate;
+        my $sd = $ol->sdate();
+        my $ed = $ol->edate();
 
         my $prog = $r->program();
         my $mmi_prog = $prog->school() != 0;
@@ -520,34 +520,31 @@ sub meal_list : Local {
     for my $r (@rentals) {
         # set globals
 
-        $event_start = $r->sdate_obj;
-        $lunches = $r->lunches;
-        $npeople = $r->count;
-        next RENTAL unless $npeople;
+        $event_start = $r->sdate_obj();
+        $lunches = $r->lunches();
+        my @counts = $r->daily_counts();
 
-        if ($details) {
-            $info = [ "$npeople People" , $r->name ];
-        }
         ($event_start, $lunches)  = get_lunch($c, $r->id(), 'Rental');
         $len_lunches = length($lunches);
-        my $ol = $dr->overlap(DateRange->new($event_start,
-                                             $r->edate_obj));
-        my $sd = $ol->sdate;
-        my $ed = $ol->edate;
 
-        my $r_start = $r->sdate_obj;
-        my $r_end   = $r->edate_obj;
+        my $r_start = $r->sdate_obj();
+        my $r_end   = $r->edate_obj();
+        my $r_name  = $r->name();
         my $start_hour = $r->start_hour();
 
-        # we assume all people in the rental
-        # arrive and leave at the same time.
-
+        my $ol = $dr->overlap(DateRange->new($r_start, $r_end));
+        my $sd = $ol->sdate();
+        my $ed = $ol->edate();
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            sum('breakfast') if $d != $r_start;
-            sum('lunch')     if ($d != $r_start || $start_hour < $lunch_end)
-                                && lunch($d);
-            sum('dinner')    if $d != $r_end;
+            my $n = $r->expected() || $counts[$d - $event_start];
+            if ($details) {
+                $info = [ "$n People" , $r_name ];
+            }
+            add('breakfast', $n) if $d != $r_start;
+            add('lunch',     $n) if ($d != $r_start || $start_hour < $lunch_end)
+                                    && lunch($d);
+            add('dinner',    $n) if $d != $r_end;
         }
     }
     my $css = $c->uri_for("/static/meal_list.css");

@@ -1,0 +1,30 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+my $sth = $dbh->prepare("select id, name, sdate, coordinator_id from rental");
+my $per = $dbh->prepare("select first, last from people where id = ?");
+my $upd = $dbh->prepare("update rental set grid_code = ? where id = ?");
+
+$sth->execute();
+while (my ($id, $name, $sdate, $coord_id) = $sth->fetchrow_array()) {
+    my $l1 = substr($name, 0, 1);
+    my $l2 = substr($name, 1, 1);
+    if ($coord_id) {
+        $per->execute($coord_id);
+        my ($first, $last) = $per->fetchrow_array();
+        $l1 = substr($first, 0, 1);
+        $l2 = substr($last,  0, 1);
+    }
+    my $code = substr($sdate, 6, 2)
+             . uc $l1
+             . substr($sdate, 2, 2)
+             . uc $l2
+             . substr($sdate, 4, 2)
+             ;
+    $upd->execute($code, $id);
+}

@@ -61,7 +61,7 @@ list of the participants.
 To assist you in your housing assignment and financial tallies
 we have created a customized web page for you here:
 <ul>
-<a href=http://www.mountmadonna.org/cgi-bin/grid?code=[% code %]>www.mountmadonna.org/cgi-bin/grid?code=[% code %]</a>
+<a href=http://www.mountmadonna.org/cgi-bin/grid?code=[% rental.grid_code %]>www.mountmadonna.org/cgi-bin/grid?code=[% rental.grid_code %]</a>
 </ul>
 [% END %]
 <p>

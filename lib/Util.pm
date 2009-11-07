@@ -56,6 +56,7 @@ our @EXPORT_OK = qw/
     palette
     esc_dquote
     invalid_amount
+    get_grid_file
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1618,6 +1619,21 @@ sub esc_dquote {
 sub invalid_amount {
     my ($amt) = @_;
     return $amt !~ m{^-?\d+([.]\d+)?$};
+}
+
+sub get_grid_file {
+    my ($code) = @_;
+
+    my $fname = "root/static/grid/$code-data.txt";
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd("www/cgi-bin/rental");
+    mkdir "root/static/grid" unless -d "root/static/grid";
+    $ftp->get("$code-data.txt", $fname);    # it may be there, maybe not
+    $ftp->quit();
+    return $fname;
 }
 
 1;

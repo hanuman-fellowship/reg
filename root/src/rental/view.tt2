@@ -48,8 +48,6 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/grid/[% id %]">Grid</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/attendance/[% id %]">Attendance</a>
-&nbsp;&nbsp;&nbsp;
 <a href="/rental/email_contract/[% id %]">EmailContract</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/contract/[% id %]">Contract</a>
@@ -146,12 +144,17 @@ Web
 <tr>
 <th align=right>Maximum</th>
 <td>[% rental.max %]</td>
-<td rowspan=5 valign=top>
+<td rowspan=6 valign=top>
 <div style="margin-left: .3in;">
 <span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% id %]">Update</a></span>
 <div class=lunch>[% lunch_table %]</div>
 </div>
 </td>
+</tr>
+
+<tr>
+<th align=right>Expected</th>
+<td>[% rental.expected %]</td>
 </tr>
 
 <tr>
@@ -167,7 +170,7 @@ Web
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td colspan=2 align=center><a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?code=[% code %]>Web Grid</a></td>
+<td colspan=2 align=center><a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?code=[% rental.grid_code %]>Web Grid</a></td>
 </tr>
 
 <tr>
@@ -191,30 +194,20 @@ Web
 <table cellpadding=3 border=0>
 <tr>
 <td width=120><span class=head>Houses</span></td>
-<th width=30># of<br>People</th>
-<th width=20></th>
 <td></td>
 <th align=left valign=bottom width=550>Rooms</th>
 </tr>
 
-<!-- 
-    Some fancy Template Tooklit machinations here.
-    To index a hash with a variable you need to precede it with a '$'.
--->
 [% class = 'fl_row1' %]
 [% hc = rental.housecost %]
 [% FOREACH t IN h_types %]
-    [% n = 'n_' _ t %]
-
     <tr class=[% class %]>
     [% IF hc.$t == 0 %]
         <td align=right valign=center>[% string.$t %]</td>
     [% ELSE %]
         <th align=right valign=center>[% string.$t %]</th>
     [% END %]
-    <td align=right valign=center>[% rental.$n %]&nbsp;&nbsp;</td>
     [% IF t != 'own_van' && t != 'commuting' %]
-    <td style="background: [% colcov.$t %]" valign=center></td>
 
     [% IF hc.$t == 0 %]
     <td></td>
@@ -224,14 +217,7 @@ Web
 
     [% END %]
 
-    [% IF t == 'own_van' %]
-        <td class='fl_row0'></td>
-        <td colspan=3 rowspan=4 class='fl_row0' valign=top>
-        [% rental.housing_note %]
-        </td>
-    [% ELSE %]
-        <td align=left>[% bookings.$t %]</td>
-    [% END %]
+    <td align=left>[% bookings.$t %]</td>
 
     </tr>
     [% IF class == 'fl_row0' %]
@@ -241,13 +227,12 @@ Web
     [% END %]
 [% END %]
 
-<tr><td></td><td style="border-top: solid thin"></td></tr>
-
-<tr>
-<th align=right>Total</th><td align=right>[% tot_people %]&nbsp;&nbsp;</td>
-</tr>
-
 </table>
+[% IF rental.housing_note_trim %]
+<p class=p2>
+<span class=head>Housing Note</span>
+[% rental.housing_note %]
+[% END %]
 <p>
 <!-- Cluster Selection -->
 <ul>

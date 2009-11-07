@@ -93,6 +93,11 @@ Web
 <td><input type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
+<tr>
+<th align=right width=100>Expected</th>
+<td><input type=text size=3 name=expected value='[% rental.expected %]'></td>
+</tr>
+
 [% hc = rental.housecost %]
 <tr>
 <th align=right>Housing Cost</th>
@@ -104,26 +109,6 @@ Web
 </select>
 </td>
 </tr>
-
-<tr><td style="height: 25px"></tr>
-
-<tr>
-<td></td>
-<th align=left># of<br>People</th>
-</tr>
-
-[% FOREACH t IN h_types %]
-    [% n = 'n_' _ t %]
-
-    <tr height=25>
-    [% IF hc.$t == 0 %]
-    <td align=right>[% string.$t %]</td>
-    [% ELSE %]
-    <th align=right>[% string.$t %]</th>
-    <td align=left><input type=text size=3 name=[% n %] value='[% rental.$n %]'></td>
-    [% END %]
-    </tr>
-[% END %]
 
 </table>
 
