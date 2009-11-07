@@ -21,9 +21,9 @@ while (my ($id, $name, $sdate, $coord_id) = $sth->fetchrow_array()) {
         $l2 = substr($last,  0, 1);
     }
     my $code = substr($sdate, 6, 2)
-             . uc $l1
-             . substr($sdate, 2, 2)
              . uc $l2
+             . substr($sdate, 2, 2)
+             . uc $l1
              . substr($sdate, 4, 2)
              ;
     $upd->execute($code, $id);
