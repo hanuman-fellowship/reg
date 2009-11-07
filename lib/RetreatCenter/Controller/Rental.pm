@@ -122,9 +122,6 @@ sub _get_data {
         if (! ($P{expected} =~ m{^\d+$})) {
             push @mess, "Invalid expected: $P{expected}.";
         }
-        elsif ($P{expected} > $P{max}) {
-            push @mess, "Expected $P{expected} but a maximum of $P{max}?";
-        }
     }
     if (! $P{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
