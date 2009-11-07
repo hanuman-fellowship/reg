@@ -90,17 +90,7 @@ Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=
     </tr>
 [% END %]
 <tr>
-[% x = nnights + 2 %]
-<th align=right colspan=[% x %]>Own Van</th>
-<td align=right>[% data.own_van %]
-<td align=right>[% data.cown_van %]
-</tr>
-<tr>
-<th align=right colspan=[% x %]>Commuting</th>
-<td align=right>[% data.commuting %]
-<td align=right>[% data.ccommuting %]
-</tr>
-<tr><th align=right colspan=[% x + 1 %]>Total</th><td align=right>$[% total %]</td></tr>
+<tr><th align=right colspan=[% nnights + 3 %]>Total</th><td align=right>$[% total %]</td></tr>
 </table>
 <p>
 <div style="float: left">

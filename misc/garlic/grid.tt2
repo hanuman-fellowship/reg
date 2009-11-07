@@ -25,6 +25,65 @@ function popup(url, height) {
     }
     newwin.moveTo(700, 0);
 }
+
+var the_max = new Array();
+function set_max(i, v) {
+    the_max[i] = v;
+}
+
+function add_more(id) {
+    var ind = id - 1000;
+    var m = the_max[ind];
+
+// my first attempt using an old style.
+// it works but in Safari/Firefox
+// it clears any text you have entered in existing fields.
+//
+//    var s = "";
+//    for (i = m + 1; i <= m + 3; ++i) {
+//        var name = 'p' + id + '_' + i;
+//        s += "<tr><td align=right>" + i + "</td>"
+//        s += "<td><input class=name type=text size=40 name=" + name 
+//          +  " id=" + name
+//          +  " value='' onkeyup='check(" + id
+//          +  "," + i 
+//          +  ", [% nnights %])'></td>";
+//        for (n = 1; n <= [% nnights %]; ++n) {
+//            var name = 'n' + id + '_' + i + '_' + n;
+//            s += "<td><input type=checkbox name=" + name
+//              +  " id=" + name
+//              +  " value=1></td>";
+//        }
+//        s += "</tr>";
+//    }
+//    the_max[ind] += 3;
+//    document.getElementById('t' + id).innerHTML += s;
+
+    var tbl = document.getElementById('t'+id).getElementsByTagName('tbody')[0];
+    for (i = m + 1; i <= m + 3; ++i) {
+        var name = 'p' + id + '_' + i;
+        var tr = tbl.appendChild(document.createElement('tr'));
+        var td1 = tr.appendChild(document.createElement('td'));
+        td1.setAttribute('align', 'right');
+        td1.innerHTML = i;
+        var td2 = tr.appendChild(document.createElement('td'));
+        var s = "<input class=name type=text size=40 name=" + name 
+              + " id=" + name
+              + " value='' onkeyup='check(" + id
+              + "," + i 
+              + ", [% nnights %])'>";
+        td2.innerHTML = s;
+        for (n = 1; n <= [% nnights %]; ++n) {
+            var td3 = tr.appendChild(document.createElement('td'));
+            var name = 'n' + id + '_' + i + '_' + n;
+            var s = "<input type=checkbox name=" + name
+                  + " id=" + name
+                  + " value=1>";
+            td3.innerHTML = s;
+        }
+    }
+    the_max[ind] += 3;
+}
 </script>
 <style type="text/css">
 body {
@@ -49,9 +108,9 @@ h2 {
 </style>
 </head>
 <body>
-<form action=http://www.mountmadonna.org/cgi-bin/grid method=post>
+<form action=http://www.mountmadonna.org/cgi-bin/grid method=post name=form>
 <h2>
-[% hash.name %] 
+[% hash.name %]
 <span style="margin-left: 1in;font-size: 13pt">[% sdate %] <span class=dow>[% sdate.format("%a") %]</span>
 <b>To</b>
 [% edate %] <span class=dow>[% edate.format("%a") %]</span>
@@ -71,6 +130,39 @@ Housing Assignment Grid
 [% days %]
 </tr>
 [% FOR h IN houses %]
+    [% IF h.id > 1000 %]
+
+        [% IF h.id == 1001 %]</table>[% END %]   <! -- end the house table -->
+
+        <script type="text/javascript">
+        set_max([% h.id - 1000 %], [% h.max %])
+        </script>
+
+
+        <p>
+        <table cellpadding=5 border=1 id=t[% h.id %]>
+        <tr><th colspan=4>[% h.name %] <a style="margin-left: 1in" href='#' onclick="add_more([% h.id %]); return false;">more</a></th></tr>
+        <tr><th>#</th><th align=left>Name</th>[% days %]</tr>
+        [% max = h.max %]
+        [% bed = 1 %]
+        [% WHILE bed <= max %]
+            <tr>
+            <td align=right width=20>[% bed %]</td>
+            [% v = 'p' _ h.id _ '_' _ bed %]
+            <td><input class=name type=text size=40 name=[% v %] id=[% v %] value="[% data.$v %]" onkeyup="check([% h.id %], [% bed %], [% nnights %])"></td>
+            [% n = 1 %]
+            [% WHILE n <= nnights %]
+                [% v = 'n' _ h.id _ '_' _ bed _ '_' _ n %]
+                <td><input type=checkbox name=[% v %] id=[% v %] value=1 [% IF data.$v %]checked[% END %]></td>
+                [% n = n + 1 %]
+            [% END %]
+            </tr>
+            [% bed = bed + 1 %]
+        [% END %]
+        </table>
+        [% NEXT %]     <!-- done with special cases of Own Van and Commuting -->
+    [% END %]
+
     [% max = h.max %]
     [% bed = 1 %]
     [% WHILE bed <= max %]
@@ -98,22 +190,8 @@ Housing Assignment Grid
         [% bed = bed + 1 %]
     [% END %]
 [% END %]
-<!-- Own Van and Commuting -->
-<tr>
-<th align=right>Own Van</th>
-<td><input class=name type=text name=own_van size=2 value=[% data.own_van %]></td>
-[% ncols = nnights + 3 %]
-<td rowspan=2 align=left colspan=[% ncols %]>
-In these two fields put the total number of people-nights.<br>
-For example, if 3 people stayed for 2 nights in their Own Van<br>
-put 6 people-nights.
-</td>
-</tr>
-<tr>
-<th align=right>Commuting</th>
-<td><input class=name type=text name=commuting size=2 value=[% data.commuting %]></td>
-</tr>
 </table>
+<a name=end></a>
 <p>
 <input class=submit type=submit value="Submit" name=process>
 <p>

@@ -10,7 +10,7 @@ print header;
 use Date::Simple qw/
     date
 /;
-Date::Simple->default_format("%B %e");
+Date::Simple->default_format("%B %e '%q");
 
 sub commify {
     my ($n) = @_;
@@ -33,6 +33,8 @@ open my $in, "<", $fname
 while (my $line = <$in>) {
     chomp $line;
     if ($line =~ m{\|}) {
+        # housing that has been assigned
+        #
         my ($id, $name, $max, $bath, $tent, $own) = split m{\|}, $line;
         push @houses, {
             id   => $id,
@@ -44,11 +46,49 @@ while (my $line = <$in>) {
         };
     }
     else {
+        # housing_type cost
+        # also info about the rental like
+        # name, id, first, last, sdate, edate
+        #
         my ($k, $v) = $line =~ m{^(\S+)\s+(.*)$};
         $hash{$k} = $v;
     }
 }
 close $in;
+#
+# pay attention... this is bizarre and tricky.
+#
+# Own Van and Commuting is not kept track of in $fname
+# since the maximum # of beds is dynamic - and it is controlled by the user
+# not Reg which writes $fname.   If the user has changed
+# the maximum # of beds they will appear in $dname.
+# So look there (if it exists) for the max and append to @houses.
+#
+my %max = ();
+$max{1001} = 5;
+$max{1002} = 5;
+if (-f $dname) {
+    open my $in, "<", $dname
+        or die "cannot open $dname: $!\n";
+    while (my $line = <$in>) {
+        if ($line =~ m{^(100[12])\|(\d+)}) {
+            $max{$1} = $2;
+        }
+    }
+    close $in;
+}
+for my $k (1001, 1002) {
+    push @houses,
+    {
+        id   => $k,
+        name => $k == 1001? 'Own Van'
+                :           'Commuting',
+        max  => $max{$k},
+        bath => 0,
+        tent => 0,
+        own  => 0,
+    };
+}
 my $sdate = date($hash{sdate});
 my $edate = date($hash{edate});
 my $nnights = $edate - $sdate;
@@ -64,14 +104,63 @@ if (param('process')) {
     for my $p (param()) {
         $P{$p} = param($p);
     }
-
     # put it in a file while computing the costs
     #
     open my $out, ">", $dname
         or die "cannot create $dname: $!";
     my $gtotal = 0;
+    HOUSE:
     for my $h (@houses) {
         my $id = $h->{id};
+        if ($id >= 1001) {      # own van/commuting
+            my $per_night = $hash{$id == 1001? "own_van": "commuting"};
+            my $bed = 1;
+            BED:
+            while (exists $P{"p$id\_$bed"}) {
+                my $name = $P{"p$id\_$bed"};
+                print {$out} "$id|$bed|";
+                $name ||= "";            # in case it is undef
+                print {$out} "$name|";
+                # how many people?
+                my @peeps = split m{\&|\band\b}i, $name;
+                my $npeeps = @peeps;
+                my $totn = 0;
+                for my $n (1 .. $nnights) {
+                    my $occ = $P{"n$id\_$bed\_$n"} || 0;
+                    print {$out} "$occ|";
+                    $totn += $occ;
+                }
+                my $cost = $totn * $per_night * $npeeps;
+                print {$out} "$cost\n";
+                $P{"c$id\_$bed"} = $cost || "";
+                $gtotal += $cost;
+                ++$bed;
+            }
+            --$bed;     # we went one beyond
+            #
+            # we have $bed 'beds' in this category
+            # this may be different from what is in $fname
+            # in case the user added 'more'.   so we need
+            # to update $fname appropriately.
+            #
+            if ($bed > $h->{max}) {
+                open my $in, "<", $fname
+                    or die "cannot open $fname: $!\n";
+                open my $out, ">", "/tmp/grid"
+                    or die "cannot open /tmp/grid: $!\n";
+                while (my $line = <$in>) {
+                    if ($line =~ m{^$id\|}) {
+                        $line =~ s{^($id\|[^\|]*)\|\d+}{$1|$bed};
+                    }
+                    print {$out} $line;
+                }
+                close $in;
+                close $out;
+                rename "/tmp/grid", $fname;
+                $h->{max} = $bed;       # don't forget this!
+            }
+            next HOUSE;
+        }
         my $bath = ($h->{bath})? "_bath"
                   :              ""
                   ;
@@ -85,7 +174,7 @@ if (param('process')) {
             my $cost = 0;
             NIGHT:
             for my $n (1 .. $nnights) {
-                my $occ = $P{"n$id\_$bed\_$n"};
+                my $occ = $P{"n$id\_$bed\_$n"} || 0;
                 print {$out} "$occ|";
                 if ($occ) {
                     if ($h->{tent}) {
@@ -118,14 +207,20 @@ if (param('process')) {
             # and children.
             #
             my $tot = 0;
+open JON, ">>/tmp/jon";
             my $name = $P{"p$id\_$bed"};
+print JON "name = $name\n";
             for my $p (split m{\&|\band\b}i, $name) {
+print JON "p = $p\n";
                 $tot += ($p =~ m{\bchild\b}i)? $cost/2
                         :                      $cost
                         ;
+print JON "tot = $tot\n";
             }
+close JON;
             $cost = int($tot);
-            print {$out} $cost;
+            print {$out} "$cost\n";
+
             $gtotal += $cost;
             if ($name !~ m{\S} && ! $cost) {
                 $cost = "";
@@ -141,16 +236,7 @@ if (param('process')) {
             else {
                 $P{"cl$id\_$bed"} = 0;
             }
-            print {$out} "\n";
         }
-    }
-    # own van, commuting
-    #
-    for my $t (qw/ own_van commuting /) {
-        my $cost = $P{$t} * $hash{$t};
-        $gtotal += $cost;
-        print {$out} "$t|$P{$t}|$cost\n";
-        $P{"c$t"} = $cost;
     }
     close $out;
     # display it with costs
@@ -172,7 +258,7 @@ if (param('process')) {
         code    => $code,
     };
     $tt->process(
-        "sgrid.tt2",  # template
+        "sgrid.tt2", # template
         $stash,       # variables
         \$html,       # output
     );
@@ -216,7 +302,7 @@ my $stash = {
     hash    => \%hash,
 };
 $tt->process(
-    "grid.tt2",   # template
+    "grid.tt2",  # template
     $stash,       # variables
     \$html,       # output
 );
