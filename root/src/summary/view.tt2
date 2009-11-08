@@ -118,7 +118,7 @@ th {
 
 <tr>
 <th>Maximum</th><td>[% happening.max %]</td>
-<th>Actual</th><td>[% happening.count %]</td>
+<th>Current Count</th><td>[% happening.count %]</td>
 </tr>
 
 </table>

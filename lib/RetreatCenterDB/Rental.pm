@@ -232,7 +232,7 @@ sub daily_counts {
     my ($self) = @_;
 
     my $ndays = $self->edate() - $self->sdate();
-    my $max = $self->count();       # expected || max
+    my $max = $self->expected() || $self->max();
     my $fname = get_grid_file($self->grid_code());
     my $in;
     if (! open($in, "<", $fname)) {
@@ -279,7 +279,17 @@ sub daily_counts {
 }
 sub count {
     my ($self) = @_;
-    return $self->expected() || $self->max();
+    if ($self->expected()) {
+        return $self->expected();
+    }
+    my @counts = $self->daily_counts();
+    my $top = 0;
+    for my $c (@counts) {
+        if ($top < $c) {
+            $top = $c;
+        }
+    }
+    return $top;
 }
 sub status_td {
     my ($self) = @_;
