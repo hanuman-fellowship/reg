@@ -25,7 +25,10 @@ close $jon;
 #
 # was it a failed transaction?
 #
-if (exists $P{x_response_code}  && $P{x_response_code} != 1) {
+if ((exists $P{x_response_code}  && $P{x_response_code} != 1)
+    ||
+    (! exists $P{x_trans_id})
+) {
     print <<"EOH";
 Sorry, the transaction failed for this reason:
 <p>
@@ -34,7 +37,7 @@ EOH
     exit;
 }
 
-my $id = $P{x_trans_id} || time();
+my $id = $P{x_trans_id};
 open my $out, ">", "temp$id"
 	or die "cannot create temp$id: $!\n";
 my ($min, $hour, $d, $m, $y) = (localtime)[ 1..5 ];
