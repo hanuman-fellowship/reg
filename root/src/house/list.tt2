@@ -10,7 +10,7 @@ h3 {
 &nbsp;&nbsp;&nbsp;
 [% other_sort %]
 &nbsp;&nbsp;&nbsp;
-<a href=/house/toggleCBT>[% cbt_activate %] CB Terrace</a>
+<a href=/house/toggleTCB>[% cbt_activate %] CB Terrace</a>
 <h3>Rooms</h3>
 <ul>
 <table cellpadding=3 border=0>

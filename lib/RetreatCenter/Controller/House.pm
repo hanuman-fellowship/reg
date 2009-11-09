@@ -22,7 +22,7 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    my ($cbt1) = model($c, 'House')->search({ name => 'CBT 1' });
+    my ($tcb1) = model($c, 'House')->search({ name => 'TCB 1' });
     stash($c,
         rooms => [ model($c, 'House')->search(
             { tent   => '' },
@@ -35,7 +35,7 @@ sub list : Local {
             { order_by => 'name' }
         ) ],
         hdr          => "By Name",
-        cbt_activate => ($cbt1->inactive())? "Activate": "Inactivate",
+        tcb_activate => ($tcb1->inactive())? "Activate": "Inactivate",
         other_sort   => "<a href=/house/by_type_priority>By Type/Priority</a>",
         template     => "house/list.tt2",
     );
@@ -44,7 +44,7 @@ sub list : Local {
 sub by_type_priority : Local {
     my ($self, $c) = @_;
     
-    my ($cbt1) = model($c, 'House')->search({ name => 'CBT 1' });
+    my ($tcb1) = model($c, 'House')->search({ name => 'TCB 1' });
     stash($c,
         rooms => [ model($c, 'House')->search(
             { tent   => '' },
@@ -58,7 +58,7 @@ sub by_type_priority : Local {
         ) ],
         hdr          => "By Type/Priority",
         other_sort   => "<a href=/house/list>By Name</a>",
-        cbt_activate => ($cbt1->inactive())? "Activate": "Inactivate",
+        tcb_activate => ($tcb1->inactive())? "Activate": "Inactivate",
         template     => "house/list.tt2",
     );
 }
@@ -196,12 +196,12 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
-sub toggleCBT : Local {
+sub toggleTCB : Local {
     my ($self, $c) = @_; 
     
-    my ($cbt1) = model($c, 'House')->search({ name => "CBT 1" });
-    my $new_val = ($cbt1->inactive())? "": "yes";
-    model($c, 'House')->search({ name => { 'like', "CBT %" }})
+    my ($tcb1) = model($c, 'House')->search({ name => "TCB 1" });
+    my $new_val = ($tcb1->inactive())? "": "yes";
+    model($c, 'House')->search({ name => { 'like', "TCB %" }})
         ->update({ inactive => $new_val });
     model($c, 'Annotation')->search({ label => { 'like', "%Terrace%" }})
         ->update({ inactive => $new_val });
