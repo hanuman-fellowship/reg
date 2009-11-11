@@ -105,7 +105,8 @@ sub list_online : Local {
     for my $f (<root/static/online/*>) {
         open my $in, "<", $f
             or die "cannot open $f: $!\n";
-        my ($date, $time, $first, $last, $pid);
+        my ($date, $time, $first, $last, $pid, $synthesized);
+        $synthesized = 0;
         while (<$in>) {
             if (m{x_date => (.*)}) {
                 $date = date($1);
@@ -121,6 +122,9 @@ sub list_online : Local {
             }
             elsif (m{x_pid => (.*)}) {
                 $pid = $1;
+            }
+            elsif (m{x_synthesized => 1}) {
+                $synthesized = 1;
             }
         }
         close $in;
@@ -146,6 +150,7 @@ sub list_online : Local {
             date  => $date,
             time  => $time,
             fname => $fname,
+            synth => $synthesized,
         };
     }
     @online = sort {
@@ -158,26 +163,6 @@ sub list_online : Local {
         online   => \@online,
         template => "registration/list_online.tt2",
     );
-}
-
-sub grab_new : Local {
-    my ($self, $c) = @_;
-
-    Global->init($c);
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to $string{ftp_site}";    # not die???
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd($string{ftp_transactions})
-        or die "cannot cwd to $string{ftp_transactions} ", $ftp->message;
-    $ftp->ascii();
-    for my $f ($ftp->ls()) {
-        $ftp->get($f, "root/static/online/$f");
-        $ftp->delete($f);
-    }
-
-    $ftp->quit();
-    $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 
 sub list_reg_name : Local {
@@ -3098,13 +3083,13 @@ sub lodge : Local {
             # quads are okay when looking for a dorm
             # and this takes some fancy footwork.
             #
+            my $h_id = $h->id;
             if (($h->max < $low_max) ||
                 ($h->bath && !$bath) ||
                 (!$h->bath && $bath)
             ) {
                 next HOUSE;
             }
-            my $h_id = $h->id;
             my ($codes, $code_sum) = ("", 0);
 
             #
@@ -3151,7 +3136,9 @@ sub lodge : Local {
                     @kids,                      # kids => cur > 0
                 ],
             });
-            next HOUSE if @cf;        # nope
+            if (@cf) {        # nope
+                next HOUSE;
+            }
 
             # we have a good house.
             # no problematic config records were found.
