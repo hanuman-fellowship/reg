@@ -318,20 +318,20 @@ sub calendar : Local {
     }
     my $start;
     if ($start_param) {
-        if (my ($m, $y) = $start_param =~ m{^(\d+)\D+(\d+)$}g) {
+        if (my ($m, $y) = $start_param =~ m{^(\d+)\D+(\d+)$}g
             # month year
-            $y += 2000 if $y < 1900;
-            $start = date($y, $m, 1);
+            $start_param = "$m/1/$y";
+        }
+        my $dt = date($start_param);
+        if ($dt) {
+            $start = $dt;
         }
         else {
-            my $dt = date($start_param);
-            if ($dt) {
-                $start = $dt;
-            }
-            else {
-                $start = tt_today($c);
-            }
+            # if error - default to today
+            #
+            $start = tt_today($c);
         }
+    }
     }
     else {
         #
