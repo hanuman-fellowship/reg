@@ -253,8 +253,24 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     print {$out} "x_zip => $zip\n";
     print {$out} "x_synthesized => 1\n";        # to mark it for Reg
     for my $l (@lines) {
-        if ($l =~ m{^x_}) {
+        if ($l =~ m{^x_(\w+)}) {
+            my $type = $1;
             $l =~ s{:}{=>};
+            if ($type =~ m{home|work|cell}) {
+                my ($phone) = $l =~ m{=> (.*)};
+                my $n = $phone =~ tr/0-9/0-9/;      # count digits
+                if ($n == 10 && $phone =~ m{^[0-9\(\)-. /]+$}) {
+                    #
+                    # an American phone number
+                    # reformat it in a standard way
+                    #
+                    $phone =~ s{[^0-9]}{}g;
+                    $phone = substr($phone, 0, 3) . "-"
+                           . substr($phone, 3, 3) . "-"
+                           . substr($phone, 6, 4);
+                    $l =~ s{=>.*}{=> $phone};
+                }
+            }
             print {$out} "$l\n";
         }
     }
