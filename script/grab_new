@@ -68,6 +68,7 @@ my $sth = $dbh->prepare("
     select the_key, value
     from string
     where the_key like 'ftp_%'
+       or the_key like 'smtp_%'
 ");
 $sth->execute();
 my %string;
@@ -103,7 +104,7 @@ for my $f ($ftp->ls()) {
 #
 INF_LOOP:
 while (1) {
-    sleep 60;
+    sleep 30;
     my $extra = 0;
     TRANS2:
     for my $f ($ftp->ls()) {
@@ -304,19 +305,31 @@ sub my_warn {
 sub dump_it {
     my ($i, $err) = @_;
 
-    $Msg .= "$err\n"; 
-    my $s = scalar($pop->HeadAndBody($i));
-    $s =~ s{\cM}{}g;
-    $Msg .= $s;
+    $Msg .= "$err\n\n" . scalar($pop->HeadAndBody($i));
     $pop->Delete($i);
 }
 
+use Mail::Sender;
 sub finalities {
     if ($Msg) {
         # write to a file (uniquely named) and send a letter to Jon.
         if (open my $out, ">", "error-" . time()) {
             print {$out} $Msg;
             close $out;
+        }
+        my $mail_sender = Mail::Sender->new({
+            smtp => $string{smtp_server},
+            port => $string{smtp_port},
+        });
+        if ($mail_sender && $mail_sender->Open({
+            to       => 'jon@logicalpoetry.com',
+            from     => 'Grab New <reservations@mountmadonna.org>',
+            subject  => "Grab New Failure",
+            ctype    => "text/html",
+            encoding => "7bit",
+        })) {
+            $mail_sender->SendLineEnc($Msg);
+            $mail_sender->Close();
         }
     }
     unlink $Run_File;
