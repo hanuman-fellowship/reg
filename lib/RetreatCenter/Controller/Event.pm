@@ -318,7 +318,7 @@ sub calendar : Local {
     }
     my $start;
     if ($start_param) {
-        if (my ($m, $y) = $start_param =~ m{^(\d+)\D+(\d+)$}g
+        if (my ($m, $y) = $start_param =~ m{^(\d+)\D+(\d+)$}g) {
             # month year
             $start_param = "$m/1/$y";
         }
@@ -331,7 +331,6 @@ sub calendar : Local {
             #
             $start = tt_today($c);
         }
-    }
     }
     else {
         #
