@@ -1,8 +1,7 @@
 <h2>Online Registrations</h2>
-<a href="/registration/grab_new">Grab New</a>
-<p class=p2>
 <table cellpadding=3>
 <tr>
+<td></td>
 <th align=left>Person</th>
 <th align=left>Program</th>
 <th>Date</th>
@@ -10,6 +9,7 @@
 </tr>
 [% FOR r IN online %]
 <tr>
+<td>[% IF r.synth %]<span class=required>*</span>[% END %]</td>
 <td><a href="/registration/get_online/[% r.fname %]">[% r.last %], [% r.first %]</a></td>
 <td><a href="/program/view/[% r.pid %]">[% r.pname %]</a></td>
 <td>[% r.date.format("%m/%d") %]</td>
