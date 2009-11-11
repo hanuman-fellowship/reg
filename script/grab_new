@@ -33,31 +33,8 @@ use FindBin;
 
 
 my $Msg = "";       # globals (capitalized to emphasize this)
-my $Run_File = "grab_running";
 
 chdir "$FindBin::Bin/..";
-
-
-if (-f $Run_File) {
-    my $t = (stat($Run_File))[9];
-    if (time() - $t > 5*60) {
-        #
-        # a stale run file (older than 5 minutes).
-        # it somehow got left behind from a previous run.
-        # remove it and continue.
-        #
-        unlink $Run_File;
-    }
-    else {
-        #
-        # we have been invoked via "Grab New" in Reg.
-        # but we are still validly running via cron!
-        #
-        exit;
-    }
-}
-open my $run, ">", $Run_File;
-close $run;
 
 # we need some values from the database
 # to know where to connect.
@@ -104,7 +81,7 @@ for my $f ($ftp->ls()) {
 #
 INF_LOOP:
 while (1) {
-    sleep 30;
+    sleep 60;
     my $extra = 0;
     TRANS2:
     for my $f ($ftp->ls()) {
