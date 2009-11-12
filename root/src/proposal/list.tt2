@@ -13,11 +13,11 @@
 </tr>
 [% FOREACH p IN proposals %]
     <tr>
-    <td><a href="/proposal/view/[% p.id %]">[% p.group_name %]</a></td>
-    <td align=center>[% p.program_meeting_date_obj %]</td>
-    <td>[% p.status %]</td>
-    <td>[% p.dates_requested %]</td>
-    <td align=right>[% p.max %]</td>
+    <td valign=top><a href="/proposal/view/[% p.id %]">[% p.group_name %]</a></td>
+    <td align=center valign=top>[% p.program_meeting_date_obj %]</td>
+    <td valign=top>[% p.status %]</td>
+    <td width=400>[% p.dates_requested %]</td>
+    <td align=right valign=top>[% p.max %]</td>
     </tr>
 [% END %]
 </table>
