@@ -38,10 +38,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 </tr>
 
 <tr><td colspan=4><hr></td></tr>
-<tr><th>
-<span style="font-size: 15pt; color: green">Contact Person</span>
-<a style="margin-left: 1in" href="/person/view/[% p.id %]">To Person</a>
-</th></tr>
+<tr><th style="font-size: 15pt; color: green">Contact Person</th></tr>
 [% IF proposal.person_id %]
 [% p = proposal.person %]
 <tr>
@@ -49,6 +46,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 <td>[% p.first %]</td>
 <th align=right>Home</th>
 <td>[% p.tel_home %]</td>
+<td><a href="/person/view/[% p.id %]">To Person</a></td>
 </tr>
 
 <tr>
