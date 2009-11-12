@@ -413,7 +413,7 @@ sub _available {
         if ($string{housing_log}) {
             hlog($c,
                  $hname, $cf->the_date(),
-                 "block",
+                 "block_create",
                  $h_id, $cf->curmax(), $cf->cur(), $cf->sex(),
                  0, 0,
                  $P{reason},
