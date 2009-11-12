@@ -3015,7 +3015,7 @@ sub lodge : Local {
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
 
     my $mon = $reg->date_start_obj->month();
-    my $summer = 5 <= $mon && $mon <= 10;
+    my $summer = ! wintertime($mon);
 
     my $h_type = $reg->h_type;
     my $bath   = ($h_type =~ m{bath}  )? "yes": "";
@@ -4903,6 +4903,12 @@ sub duplicate : Local {
     );
     _rest_of_reg($pr, $p, $c, tt_today($c),
                  $reg->pref1(), $reg->pref2(), $reg->cabin_room());
+}
+
+sub grab_new : Local {
+    my ($self, $c) = @_;
+    system("grab");
+    $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 
 1;
