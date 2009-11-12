@@ -263,8 +263,8 @@ EOH
 # check the form parameters and book
 # the meeting places for the given happening.
 #
-# if a meeting place can also be used for sleeping create
-# a Block for the time period of the happening.
+# if a meeting place can also be used for sleeping
+# create a Block for the time period of the happening.
 #
 # we clear out all of the prior meeting places first
 # to make sure that we have a clear arena.
@@ -382,7 +382,7 @@ sub meetingplace_book {
                 for my $d (@dates) {
                     hlog($c,
                          $house->name(), $d,
-                         "block_",
+                         "block_auto_create",
                          $h_id, $h_max, $h_max, 'B',
                          0, $hap_id,
                          $hap->name(),
@@ -1263,7 +1263,7 @@ sub commify {
 
 sub wintertime {
     my ($mon) = @_;
-    return(11 <= $mon || $mon <= 4);
+    return ($mon <= 4 || 11 <= $mon);
 }
 
 #
