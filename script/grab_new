@@ -6,38 +6,56 @@ use warnings;
 1) Ftp-get all transaction files from www.mountmadonna.org
 created by the 'relay' program.  The names of these files
 are the ids of the most recent authorize.net transactions.
-Ensure that at least one minute has passed since the last
-transaction file was created.  This will allow enough
-time for the matching email (in 2) below) to have been received.
+Put the files in root/static/online
 
 2) Get all email from authorize@hanumanfellowship.org.
 This address is one of the recipients of the "Merchant Email Receipts"
 sent by authorize.net after every transaction.
 
-A. If a transaction id found within the email in 2) is NOT
-among the transaction ids in 1) then synthesize
-a transaction file from the info in the email.
+A. If a transaction id found within the email is NOT
+among the transaction ids we got in 1) AND it is not in 
+root/static/online/<trans_id> (or the online_done/ dirs)
+THEN synthesize a transaction file from the info in the email
+and mark it as such.
 
 B. report the following untoward things via an email
 to jon@logicalpoetry.com:  
 
+    - unable to make a connection via ftp or pop3
     - misformatted emails
-    - transaction ids from 1) without an email.
-
-C. Ensure that this program is never executed in parallel.
 
 =cut
 use DBI;
 use Net::FTP;
 use FindBin;
-
-
-my $Msg = "";       # globals (capitalized to emphasize this)
-
 chdir "$FindBin::Bin/..";
 
+my $Msg = "";       # globals (capitalized to emphasize this)
+my $Run_File = "grab_running";
+
+if (-f $Run_File) {
+    my $t = (stat($Run_File))[9];
+    if (time() - $t > 5*60) {
+        #
+        # a stale run file (older than 5 minutes).
+        # it somehow got left behind from a previous run.
+        # remove it and continue.
+        #
+        unlink $Run_File;
+    }
+    else {
+        #
+        # we have been invoked via "Grab New" in Reg.
+        # but we are still validly running via cron!
+        #
+        exit;
+    }
+}
+open my $run, ">", $Run_File;
+close $run;
+
 # we need some values from the database
-# to know where to connect.
+# to know where to connect to mysql.
 #
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or my_die("oh no DBI");
@@ -71,32 +89,9 @@ for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
         next TRANSACTION;
     }
-    $ids{$f} = 0;
+    $ids{$f} = 1;
     $ftp->get($f, "root/static/online/$f") or my_warn("no get of $f");
     $ftp->delete($f);
-}
-
-# we need to ensure that there has been sufficient time
-# to receive the email from all transactions.
-#
-INF_LOOP:
-while (1) {
-    sleep 60;
-    my $extra = 0;
-    TRANS2:
-    for my $f ($ftp->ls()) {
-        if ($f eq '.' || $f eq '..') {
-            next TRANS2;
-        }
-        ++$extra;
-        $ids{$f} = 0;
-        $ftp->get($f, "root/static/online/$f") or my_warn("no get of $f");
-        $ftp->delete($f);
-    }
-    if ($extra == 0) {
-        last INF_LOOP;
-    }
-    $Msg .= "extra transactions: $extra\n";
 }
 $ftp->quit();
 
@@ -124,7 +119,9 @@ my $pop = new Mail::POP3Client(
     PASSWORD => "Ashtanga!",
     HOST     => "mail.hanumanfellowship.org"
 );
-my_die("no pop") unless $pop;
+if (! $pop) {
+    my_die("no pop")
+}
 LETTER:
 for (my $i = 1; $i <= $pop->Count(); ++$i) {
     my ($from, $subj) = ("", "");
@@ -150,7 +147,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     # First get the transaction id,
     # city, state, zip, country and the amount.
     # They're in a different section from the x_ vars.
-    # We do unnecessarily go through the @lines twice.  It could
+    # We DO unnecessarily go through the @lines twice.  It could
     # be optimized a little - but speed is not the issue here.
     #
     my ($trans_id, $city, $state, $zip, $country, $amount);
@@ -205,15 +202,33 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     }
 
     if (exists $ids{$trans_id}) {
-        $ids{$trans_id} = 1;
         #
-        # no problem - normal behavior
+        # already gotten above.
+        # no problem - normal behavior.
         # this is what we hope.
         #
         next LETTER;
     }
+    if (-f "root/static/online/$trans_id") {
+        #
+        # already gotten on a previous call to grab_new
+        #
+        next LETTER;
+    }
+    my ($now_mon, $now_year) = (localtime())[4, 5];
+    ++$now_mon;
+    $now_year += 1900;
+    if (-f "root/static/online/$now_year-$now_mon/$trans_id") {
+        #
+        # already gotten on a previous call to grab_new
+        # AND already processed and moved aside.
+        #
+        next LETTER;
+    }
     #
-    # synthesize a transaction file
+    # we have found a 'missing' online registration.
+    # without this email it would not have been seen at all.
+    # synthesize a transaction file.
     #
     my $fname = "root/static/online/$trans_id";
     my $out;
@@ -223,13 +238,13 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     }
     printf {$out} "x_date => %d/%d/%d\n", $mon, $day, $year;
     printf {$out} "x_time => %02d:%02d\n", $hour, $min;
-    print {$out} "x_trans_id => $trans_id\n";
-    print {$out} "x_amount => $amount\n";
-    print {$out} "x_state => $state\n";
-    print {$out} "x_city => $city\n";
-    print {$out} "x_country => $country\n";
-    print {$out} "x_zip => $zip\n";
-    print {$out} "x_synthesized => 1\n";        # to mark it for Reg
+    print  {$out} "x_trans_id => $trans_id\n";
+    print  {$out} "x_amount => $amount\n";
+    print  {$out} "x_state => $state\n";
+    print  {$out} "x_city => $city\n";
+    print  {$out} "x_country => $country\n";
+    print  {$out} "x_zip => $zip\n";
+    print  {$out} "x_synthesized => 1\n";        # to mark it for Reg
     for my $l (@lines) {
         if ($l =~ m{^x_(\w+)}) {
             my $type = $1;
@@ -254,11 +269,6 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     }
     close $out;
     $pop->Delete($i);
-}
-for my $k (keys %ids) {
-    if ($ids{$k} == 0) {
-        $Msg .= "no email for $k\n";
-    }
 }
 $pop->Close();
 finalities();
@@ -302,7 +312,7 @@ sub finalities {
             to       => 'jon@logicalpoetry.com',
             from     => 'Grab New <reservations@mountmadonna.org>',
             subject  => "Grab New Failure",
-            ctype    => "text/html",
+            ctype    => "text/plain",
             encoding => "7bit",
         })) {
             $mail_sender->SendLineEnc($Msg);
