@@ -2,6 +2,8 @@
 use strict;
 use warnings;
 
+open STDERR, ">>", "/home/mmc/www/cgi-bin/sutra_send_err";
+
 use FindBin;
 use lib "$FindBin::Bin";
 use Mail::Sender;
@@ -63,13 +65,16 @@ my $html = <<"EOH";
 <div class=sutra>
 $sutra
 </div>
+<div style="margin-top: 10mm;">
+To unsubscribe and for other sutra related activities<br>
+click here: <a href=http://www.mountmadonna.org/sutra>www.mountmadonna.org/sutra</a>.
+</div>
 </body>
 </html>
 EOH
 
 open my $addrs, "<", "$dir/addresses" or die "no addresses";
 my @addrs = <$addrs>;
-close $addrs;
 close $addrs;
 chomp @addrs;
 
@@ -78,7 +83,7 @@ my $ms = Mail::Sender->new({
     port => 25,
 });
 if (! $ms) {
-    die "no mail sender: ";
+    die "no mail sender";
 }
 for my $em (@addrs) {
     $ms->Open({
@@ -87,10 +92,12 @@ for my $em (@addrs) {
         subject  => "Daily Sutra from Babaji",
         ctype    => "text/html",
         encoding => "7bit",
-        # didn't seem to work :(
+        # the following didn't seem to work :(
         # headers  => 'Errors-To: jon@logicalpoetry.com',
     })
         or die "no Mail::Sender->Open $Mail::Sender::Error";
     $ms->SendLineEnc($html);
-    $ms->Close() or die "error: $Mail::Sender::Error";
+    $ms->Close() or warn "error sending to $em: $Mail::Sender::Error";
+        # no die above in case we got a bogus line
+        # in the addresses file...
 }

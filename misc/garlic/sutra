@@ -6,6 +6,8 @@ use CGI qw/:standard :cgi-lib/;
 use CGI::Carp qw/fatalsToBrowser/;
 use Mail::Sender;
 
+open STDERR, ">", "/home/mmc/www/cgi-bin/sutra_err";
+
 print header, <<"EOH";
 <html>
 <head>
@@ -79,10 +81,20 @@ sub log_it {
     print {$out} scalar(localtime()), " $s\n";
     close $out;
 }
+
+sub valid_email {
+    my ($em) = @_;
+    return $em =~ m{\@};
+}
+
 if ($P{sut_sub}) {
     my $email = trim($P{email});
     if (! $email) {
         print "Missing email address.";
+        exit;
+    }
+    if (! valid_email($email)) {
+        print "Invalid email address: $email";
         exit;
     }
     get_addrs();
@@ -100,6 +112,10 @@ elsif ($P{sut_unsub}) {
     my $email = trim($P{email});
     if (! $email) {
         print "Missing email address.";
+        exit;
+    }
+    if (! valid_email($email)) {
+        print "Invalid email address: $email";
         exit;
     }
     get_addrs();
@@ -169,7 +185,7 @@ elsif ($P{sug_sut}) {
         port => 25,
     });
     if (! $ms) {
-        die "no mail sender: ";
+        die "no mail sender";
     }
     $ms->Open({
         to       => 'Jon Bjornstad <jon@logicalpoetry.com>, ' 
