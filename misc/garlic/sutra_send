@@ -36,13 +36,6 @@ my $sutra;
     close $in;
 }
 #
-# plain text version here
-#
-open my $sent, ">", "$dir/sent" or die "no sent";
-print {$sent} $sutra;
-close $sent;
-
-#
 # html version for sending
 #
 $sutra =~ s{\n}{<br>\n}g;
@@ -50,6 +43,12 @@ if (substr($sutra, 0, 1) eq '^') {
     $sutra =~ s{^\^}{<pre>};
     $sutra .= "</pre>";
 }
+#
+# for the hanuman fellowship site
+#
+open my $sent, ">", "$dir/sent" or die "no sent";
+print {$sent} $sutra;
+close $sent;
 
 my $html = <<"EOH";
 <html>
