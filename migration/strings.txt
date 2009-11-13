@@ -68,7 +68,7 @@ ftp_password 1hello
 ftp_dir www
 ftp_dir2 staging2
 ftp_passive 0
-ftp_transactions www/cgi-bin/dreg_transactions
+ftp_transactions www/cgi-bin/transactions
 credit_amount 50
 spons_tuit_disc 30
 max_tuit_disc 125

@@ -1,0 +1,193 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw/:standard :cgi-lib/;
+use CGI::Carp qw/fatalsToBrowser/;
+use Mail::Sender;
+
+print header, <<"EOH";
+<html>
+<head>
+<style type="text/css">
+.sutra {
+    margin-left: 4mm;
+    margin-top: 4mm;
+    margin-bottom: 4mm;
+}
+</style>
+</head>
+<body>
+EOH
+my %P = Vars();
+
+
+my $dir = "../sutra";
+my %addrs;
+
+sub slurp {
+    my ($fname) = @_;
+    open my $in, "<", $fname or return "";
+    local $/;
+    my $t = <$in>;
+    close $in;
+    $t;
+}
+
+sub trim {
+    my ($s) = @_;
+    $s =~ s{^\s*|\s*$}{}g;
+    $s;
+}
+
+sub show {
+    my ($t) = @_;
+    if (substr($t, 0, 1) eq '^') {
+        $t =~ s{^\^}{<pre>};
+        $t .= "</pre>";
+    }
+    $t =~ s{\n}{<br>\n}g;
+    $t = <<"EOH";
+<div class=sutra>
+$t
+</div>
+EOH
+    $t;
+}
+
+sub get_addrs {
+    open my $addrs, "<", "$dir/addresses" or die "no addrs";
+    while (my $line = <$addrs>) {
+        chomp $line;
+        $addrs{$line} = 1;
+    }
+    close $addrs;
+}
+
+sub put_addrs {
+    open my $addrs, ">", "$dir/new-addrs" or die "no new_addrs";
+    for my $a (sort keys %addrs) {
+        print {$addrs} "$a\n";
+    }
+    close $addrs;
+    rename "$dir/new-addrs", "$dir/addresses";
+}
+
+sub log_it {
+    my ($s) = @_;
+    open my $out, ">>", "$dir/log" or return;
+    print {$out} scalar(localtime()), " $s\n";
+    close $out;
+}
+if ($P{sut_sub}) {
+    my $email = trim($P{email});
+    if (! $email) {
+        print "Missing email address.";
+        exit;
+    }
+    get_addrs();
+    if (exists $addrs{$email}) {
+        print "$email is <i>already</i> receiving the sutras."
+    }
+    else {
+        $addrs{$email} = 1;
+        put_addrs();
+        log_it("ADD $email");
+        print "$email will now receive the sutras.";
+    }
+}
+elsif ($P{sut_unsub}) {
+    my $email = trim($P{email});
+    if (! $email) {
+        print "Missing email address.";
+        exit;
+    }
+    get_addrs();
+    if (exists $addrs{$email}) {
+        delete $addrs{$email};
+        put_addrs();
+        log_it("DEL $email");
+        print "$email will no longer receive the sutras.";
+    }
+    else {
+        print "$email is <i>not</i> receiving the sutras."
+    }
+}
+elsif ($P{search}) {
+    my $pattern = trim($P{pattern});
+    my $substring = $P{substring};
+    my $pat = $substring? qr/$pattern/i
+              :           qr/\b$pattern\b/i
+              ;
+    my $n = 0;
+    for my $s (<$dir/sutras/[0-9]*>) {
+        my $t = slurp($s);
+        if ($t =~ $pat) {
+            ++$n;
+            $t =~ s{($pat)}{<span style="color: red">$1</span>}g;
+            print show($t);
+            print "<hr width=370 align=left>\n";
+        }
+    }
+    if ($n == 0) {
+        print "No sutra matched '$pattern'.";
+    }
+}
+elsif ($P{show_all}) {
+    for my $s (<$dir/sutras/[0-9]*>) {
+        print show(slurp($s));
+        print "<hr width=370 align=left>\n";
+    }
+}
+elsif ($P{rand_sut}) {
+    my @sutras = <$dir/sutras/[0-9]*>;
+    my @pics = <../Gif/bji?.*>;
+    my $pic = $pics[ rand @pics ];
+    my $t = show(slurp($sutras[ rand @sutras ]));
+    print <<"EOH";
+<table>
+<tr>
+<td>
+<img src=$pic>
+</td>
+<td>
+$t
+</td>
+</tr>
+</table>
+EOH
+}
+elsif ($P{sug_sut}) {
+    my $email = trim($P{email});
+    if (! $email) {
+        print "Missing email address.";
+        exit;
+    }
+    my $new_sutra = $P{new_sutra};
+    my $ms = Mail::Sender->new({
+        smtp => "localhost",
+        port => 25,
+    });
+    if (! $ms) {
+        die "no mail sender: ";
+    }
+    $ms->Open({
+        to       => 'Jon Bjornstad <jon@logicalpoetry.com>, ' 
+                  . 'Sukhdev Pettingill <sukhdev@mountmadonna.org>',
+        from     => $email,
+        subject  => "Suggestion for a New Sutra",
+        ctype    => "text/plain",
+        encoding => "7bit",
+    })
+        or die "no Mail::Sender->Open $Mail::Sender::Error";
+
+    $ms->SendLineEnc($new_sutra);
+    $ms->Close() or die "error: $Mail::Sender::Error";
+    print <<"EOH";
+Thank you.
+<p>
+Your suggestion for a new sutra was received.
+<p>
+We will promptly notify you whether or not it was accepted.
+EOH
+}
