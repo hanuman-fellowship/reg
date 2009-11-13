@@ -869,7 +869,8 @@ sub bulk_do : Local {
                   . $p->addrs . "|"
                   . $p->city . "|"
                   . $p->st_prov . "|"
-                  . $p->zip_post
+                  . $p->zip_post . "|"
+                  . $p->country
                   . "\n";
             ++$n;
         }
