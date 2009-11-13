@@ -193,7 +193,7 @@ sub use_template : Local {
         time_updated => get_time()->t24(),
     });
     $type = lc $type;       # Program to program
-    $c->response->redirect($c->uri_for("/summary/view/$type/$happening_id"));
+    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
 
 sub paste : Local {
