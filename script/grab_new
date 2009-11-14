@@ -221,7 +221,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     my ($now_mon, $now_year) = (localtime())[4, 5];
     ++$now_mon;
     $now_year += 1900;
-    my $now = sprintf("%d/%02d", $now_year, $now_mon);
+    my $now = sprintf("%d-%02d", $now_year, $now_mon);
     if (-f "root/static/online_done/$now/$trans_id") {
         #
         # already gotten on a previous call to grab_new
