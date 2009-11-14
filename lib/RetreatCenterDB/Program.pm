@@ -828,7 +828,9 @@ sub full_count {
 
     my $count = 0;
     for my $r ($self->registrations()) {
-        if ($r->date_end() > $self->edate()) {
+        if (! $r->cancelled()
+            && $r->date_end() > $self->edate()
+        ) {
             ++$count;
         }
     }
