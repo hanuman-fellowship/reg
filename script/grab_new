@@ -31,6 +31,7 @@ use FindBin;
 chdir "$FindBin::Bin/..";
 
 my $Msg = "";       # globals (capitalized to emphasize this)
+my $Error = 0;
 my $Run_File = "grab_running";
 
 if (-f $Run_File) {
@@ -90,7 +91,26 @@ for my $f ($ftp->ls()) {
         next TRANSACTION;
     }
     $ids{$f} = 1;
-    $ftp->get($f, "root/static/online/$f") or my_warn("no get of $f");
+    if (! $ftp->get($f, "root/static/online/$f")) {
+        my_warn("no get of $f");
+        next TRANSACTION;
+    }
+    my ($last, $first) = ("", "");
+    if (open my $in, "<", "root/static/online/$f") {
+        LINE:
+        while (my $line = <$in>) {
+            if ($line =~ m{x_fname => (.*)}) {
+                $first = $1;
+                last LINE if $last;
+            }
+            elsif ($line =~ m{x_lname => (.*)}) {
+                $last = $1;
+                last LINE if $first;
+            }
+        }
+        close $in;
+    }
+    $Msg = "  ftp: $f - $last, $first\n";
     $ftp->delete($f);
 }
 $ftp->quit();
@@ -146,11 +166,13 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     #
     # First get the transaction id, email,
     # city, state, zip, country and the amount.
+    # also get the last and first names for the status message.
     # They're in a different section from the x_ vars.
     # We DO unnecessarily go through the @lines twice.  It could
     # be optimized a little - but speed is not the issue here.
     #
     my ($trans_id, $email, $city, $state, $zip, $country, $amount);
+    my ($last, $first) = ("", "");
     my ($day, $mon, $year, $hour, $min, $sec, $ampm);
 
     for my $l (@lines) {
@@ -192,11 +214,17 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
                                     # shouldn't matter, right?
 
         }
+        elsif ($l =~ m{x_lname : (.*)}) {
+            $last = $1;
+        }
+        elsif ($l =~ m{x_fname : (.*)}) {
+            $first = $1;
+        }
     }
     for my $x (
         $trans_id, $email, $city, $state, $zip,
-        $country, $amount, $day, $mon,
-        $year, $hour, $min, $sec, $ampm
+        $country, $amount, $first, $last,
+        $day, $mon, $year, $hour, $min, $sec, $ampm
     ) {
         if (! defined $x) {
             dump_it($i, "flaw in format: $x");
@@ -210,12 +238,18 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         # no problem - normal behavior.
         # this is what we hope.
         #
+        $Msg .= "email: $trans_id - $last, $first"
+             .  " - just got above\n";
+        $pop->Delete($i);
         next LETTER;
     }
     if (-f "root/static/online/$trans_id") {
         #
         # already gotten on a previous call to grab_new
         #
+        $Msg .= "email: $trans_id - $last, $first"
+             .  " - gotten previously\n";
+        $pop->Delete($i);
         next LETTER;
     }
     my ($now_mon, $now_year) = (localtime())[4, 5];
@@ -227,6 +261,9 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         # already gotten on a previous call to grab_new
         # AND already processed and moved aside.
         #
+        $Msg .= "email: $trans_id - $last, $first"
+             .  " - gotten previously and processed\n";
+        $pop->Delete($i);
         next LETTER;
     }
     #
@@ -273,6 +310,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         }
     }
     close $out;
+    $Msg .= "email: $trans_id - $last, $first\n";
     $pop->Delete($i);
 }
 $pop->Close();
@@ -285,18 +323,21 @@ exit;
 #
 
 sub my_die {
+    $Error = 1;
     $Msg .= "@_\n";
     finalities();
     exit;
 }
 
 sub my_warn {
+    $Error = 1;
     $Msg .= "@_\n";
 }
 
 sub dump_it {
     my ($i, $err) = @_;
 
+    $Error = 1;
     $Msg .= "$err\n\n" . scalar($pop->HeadAndBody($i));
     $pop->Delete($i);
 }
@@ -316,7 +357,9 @@ sub finalities {
         if ($mail_sender && $mail_sender->Open({
             to       => 'jon@logicalpoetry.com',
             from     => 'Grab New <reservations@mountmadonna.org>',
-            subject  => "Grab New Failure",
+            subject  => "Grab New "
+                        . ($Error? "Failure"
+                           :       "Status"),
             ctype    => "text/plain",
             encoding => "7bit",
         })) {
