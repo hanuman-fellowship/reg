@@ -110,7 +110,7 @@ for my $f ($ftp->ls()) {
         }
         close $in;
     }
-    $Msg = "  ftp: $f - $last, $first\n";
+    $Msg .= "  ftp: $f - $last, $first\n";
     $ftp->delete($f);
 }
 $ftp->quit();
