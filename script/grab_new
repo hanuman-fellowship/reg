@@ -123,7 +123,6 @@ for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
         next GRID_FILE;
     }
-    print "get grid $f\n";
     if (! $ftp->get($f, "root/static/grid/$f")) {
         my_warn("no get of grid file $f");
         next GRID_FILE;
