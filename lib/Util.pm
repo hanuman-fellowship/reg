@@ -1621,19 +1621,13 @@ sub invalid_amount {
     return $amt !~ m{^-?\d+([.]\d+)?$};
 }
 
+#
+# any new changes are gotten by grab_new
+#
 sub get_grid_file {
     my ($code) = @_;
 
-    my $fname = "root/static/grid/$code-data.txt";
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to $string{ftp_site}";    # not die???
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd("www/cgi-bin/rental");
-    mkdir "root/static/grid" unless -d "root/static/grid";
-    $ftp->get("$code-data.txt", $fname);    # it may be there, maybe not
-    $ftp->quit();
-    return $fname;
+    return "root/static/grid/$code-data.txt";
 }
 
 1;
