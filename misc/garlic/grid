@@ -11,6 +11,7 @@ use Date::Simple qw/
     date
 /;
 Date::Simple->default_format("%B %e '%q");
+use File::Copy;
 
 sub commify {
     my ($n) = @_;
@@ -207,17 +208,12 @@ if (param('process')) {
             # and children.
             #
             my $tot = 0;
-open JON, ">>/tmp/jon";
             my $name = $P{"p$id\_$bed"};
-print JON "name = $name\n";
             for my $p (split m{\&|\band\b}i, $name) {
-print JON "p = $p\n";
                 $tot += ($p =~ m{\bchild\b}i)? $cost/2
                         :                      $cost
                         ;
-print JON "tot = $tot\n";
             }
-close JON;
             $cost = int($tot);
             print {$out} "$cost\n";
 
@@ -239,6 +235,11 @@ close JON;
         }
     }
     close $out;
+    #
+    # copy to the dir in which grab_new looks for changed data files
+    #
+    copy($dname, "rental/ftp_dir/$code-data.txt");
+
     # display it with costs
     #
     my $html = "";
@@ -265,6 +266,7 @@ close JON;
     print $html;
     exit;
 }
+
 #
 # present input form populated with the data file, if present
 #
