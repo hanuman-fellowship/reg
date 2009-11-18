@@ -1,12 +1,12 @@
-# Get online registrations every 15 minutes during the day.
-0,15,30,45 8-18 * * * /home/sahadev/RetreatCenter/grab
+# Get online registrations and rental grid files every 15 minutes
+0,15,30,45 * * * * /home/sahadev/RetreatCenter/grab
 
 # Get the rooms/campsites to be made up every morning at 1:00 am.
 0 1 * * * /home/sahadev/RetreatCenter/makeup
 
 # At 1:00 am send off the carpool lists - 7 and 14 days out
-#0 1 * * * /home/sahadev/RetreatCenter/carpool
-#0 1 * * * /home/sahadev/RetreatCenter/carpool - 14
+0 1 * * * /home/sahadev/RetreatCenter/carpool
+0 1 * * * /home/sahadev/RetreatCenter/carpool - 14
 
 # at 11:30 pm back up all the data in mysql and send it offsite
 30 23 * * * /home/sahadev/RetreatCenter/db_backup
