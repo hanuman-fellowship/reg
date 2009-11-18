@@ -1292,6 +1292,7 @@ sub field : Local {
 #
 # numbers of beds to make up - not rooms.
 # numbers of people that left a campsite - not sites.
+#   but for a rental we won't know the number of people - just sites.
 #
 sub field_plan : Local {
     my ($self, $c) = @_;
@@ -1369,15 +1370,21 @@ sub field_plan : Local {
     );
     for my $r (@rentals) {
         my $ed = $r->edate();
-        HTYPE:
-        for my $ht (housing_types()) {
-            my $method = "n_$ht";
-            my $n = $r->$method();
-            if ($ht =~ m{tent}) {
-                $sites{$ed} += $n;
+        #
+        # on the end date of this rental how
+        # many beds/sites will need to be tidied up?
+        # assume that all bookings are full - worst case scenario.
+        #
+        for my $rb (model($c, 'RentalBooking')->search({
+                       rental_id => $r->id(),
+                    })
+        ) {
+            my $h = $rb->house();
+            if ($h->tent()) {
+                ++$sites{$ed};
             }
             else {
-                $beds{$ed} += $n;
+                $beds{$ed} += $h->max();
             }
         }
     }
