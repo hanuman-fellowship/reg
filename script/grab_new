@@ -27,6 +27,7 @@ to jon@logicalpoetry.com:
 =cut
 use DBI;
 use Net::FTP;
+use Template;
 use FindBin;
 chdir "$FindBin::Bin/..";
 
@@ -214,7 +215,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
                 $country = "";
             }
         }
-        elsif ($l =~ m{Amount : (\d+)}) {
+        elsif ($l =~ m{Amount : ([\d.]+)}) {
             $amount = $1;
         }
         elsif ($l =~ m{Date/Time : (.*)}) {
@@ -304,9 +305,12 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     print  {$out} "x_zip => $zip\n";
     print  {$out} "x_email => $email\n";
     print  {$out} "x_synthesized => 1\n";        # to mark it for Reg
+    my %P;      # all other x_ named values
     for my $l (@lines) {
-        if ($l =~ m{^x_(\w+)}) {
+        if ($l =~ m{^(x_\w+) : (.*)}) {
             my $type = $1;
+            my $val = $2;
+            $P{$type} = $val;
             $l =~ s{:}{=>};
             if ($type =~ m{home|work|cell}) {
                 my ($phone) = $l =~ m{=> (.*)};
@@ -329,6 +333,40 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     close $out;
     $Msg .= "email: $trans_id - $last, $first\n";
     $pop->Delete($i);
+    #
+    # send an email with the info to assure the registrant.
+    #
+    my $ms = Mail::Sender->new({
+        smtp => $string{smtp_server},
+        port => $string{smtp_port},
+    });
+    if (! $ms) {
+        my_die("no mail sender");
+    }
+    $ms->Open({
+        to       => "$first $last <$email>",
+        from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
+        subject  => "Online registration for $P{x_title}",
+        ctype    => "text/html",
+        encoding => "7bit",
+    })
+        or my_die("no Mail::Sender->Open $Mail::Sender::Error");
+
+    my $html;
+    my $tt = Template->new()
+        or my_die("template new error: " . Template->error());
+    $tt->process(
+        'email.tt2',
+        {
+            first    => $first,
+            amount   => $amount,
+            trans_id => $trans_id,
+            %P,
+        },
+        \$html,
+    ) or my_die("template error: " . $tt->error());
+    $ms->SendLineEnc($html);
+    $ms->Close() or my_die("error: $Mail::Sender::Error");
 }
 $pop->Close();
 finalities();
