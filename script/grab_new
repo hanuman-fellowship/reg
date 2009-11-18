@@ -110,7 +110,7 @@ for my $f ($ftp->ls()) {
         }
         close $in;
     }
-    $Msg .= "  ftp: $f - $last, $first\n";
+    $Msg .= "ftp: $f - $last, $first\n";
     $ftp->delete($f);
 }
 #
@@ -128,6 +128,7 @@ for my $f ($ftp->ls()) {
         my_warn("no get of grid file $f");
         next GRID_FILE;
     }
+    $Msg .= "got rental file $f\n";
     $ftp->delete($f);
 }
 $ftp->quit();
