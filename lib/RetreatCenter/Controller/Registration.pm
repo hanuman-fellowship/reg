@@ -843,7 +843,7 @@ sub _get_data {
         my @prog = model($c, 'Event')->search({
             name  => 'No PR',
             sdate => { '<=', $edate1 },
-            edate => { '>=', $dates{date_start} },
+            edate => { '>', $dates{date_start} },
         });
         if (@prog) {
             push @mess, "Sorry, no Personal Retreats at this time.";
