@@ -159,23 +159,31 @@ sub pay_balance : Local {
               'gen_error.tt2');
         return;
     }
+    my @accts = model($c, 'XAccount')->search(
+                    undef,
+                    { order_by => 'descr' },
+                );
+    my $cr_misc_id = 0;
+    ACCT:
+    for my $a (@accts) {
+        if ($a->descr() eq 'Credit Card Misc') {
+            $cr_misc_id = $a->id();
+            last ACCT;
+        }
+    }
     stash($c,
-        message  => payment_warning('mmc'),
-        person => model($c, 'Person')->find($person_id),
-        xaccounts => [
-            model($c, 'XAccount')->search(
-                undef,
-                { order_by => 'descr' },
-            )
-        ],
-        template => "xaccount/pay_balance.tt2",
+        message   => payment_warning('mmc'),
+        person    => model($c, 'Person')->find($person_id),
+        xaccounts => \@accts,
+        credit_misc_id => $cr_misc_id,
+        template       => "xaccount/pay_balance.tt2",
     );
 }
 
 sub pay_balance_do : Local {
     my ($self, $c) = @_;
 
-    my $amt = $c->request->params->{amount};
+    my $amt = $c->request->params->{amount} || "";
     if (invalid_amount($amt)) {
         error($c,
             "Illegal Amount: $amt",

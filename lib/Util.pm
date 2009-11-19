@@ -1618,6 +1618,7 @@ sub esc_dquote {
 
 sub invalid_amount {
     my ($amt) = @_;
+    return 1 if ! defined $amt;
     return $amt !~ m{^-?\d+([.]\d+)?$};
 }
 

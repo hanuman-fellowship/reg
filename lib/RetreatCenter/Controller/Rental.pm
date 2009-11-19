@@ -361,7 +361,7 @@ sub view : Local {
     }
 
     my $status;
-    if ($rental->tentative || ! $rental->contract_sent) {
+    if ($rental->tentative() || ! $rental->contract_sent()) {
         $status = "tentative";
     }
     elsif (! ($rental->contract_received() && $rental->payments() > 0)) {

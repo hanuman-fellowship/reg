@@ -1,5 +1,15 @@
+<script type="text/javascript">
+function check() {
+    var id = document.getElementById('xa_id').value;
+    if (id == [% credit_misc_id %]) {
+        return confirm("Please cancel out of this and use the 'Misc' account instead.  "
+                     + "If you really do need to use 'Credit Card Misc', be sure to do all the follow-up required.");
+    }
+    return true;
+}
+</script>
 <h2>Payment for [% person.first %] [% person.last %]</h2>
-<form name=form action="/xaccount/pay_balance_do">
+<form name=form action="/xaccount/pay_balance_do" onsubmit="return check();">
 <input type=hidden name=person_id value=[% person.id %]>
 <p>
 <table cellpadding=3>
@@ -27,7 +37,7 @@
 <tr>
 <th align=right>Account</th>
 <td>
-<select name=xaccount_id>
+<select name=xaccount_id id=xa_id>
 [% FOR xa IN xaccounts %]
 <option value=[% xa.id %]>[% xa.descr %]</option>
 [% END %]
