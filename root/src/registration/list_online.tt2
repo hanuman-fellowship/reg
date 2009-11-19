@@ -6,8 +6,8 @@
 <td></td>
 <th align=left>Person</th>
 <th align=left>Program</th>
-<th>Date</th>
-<th>Time</th>
+<th align=left>Date</th>
+<th align=left>Time</th>
 </tr>
 [% FOR r IN online %]
 <tr>
