@@ -217,13 +217,13 @@ Flowers<br>
 <td colspan=3>[% sum.flowers %]</td>
 </tr>
 
-<tr><th>Miscellaneous</th><td colspan=3>[% sum.miscellaneous %]</td></tr>
 <tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup %]</td></tr>
 <tr><th>
 Sound Setup<br>
 <a href=/summary/update/[% Type %]/[% happening.id %]><img src=/static/images/pencil.png height=25 border=0></a>
 </th><td colspan=3>[% sum.sound_setup %]</td></tr>
 <tr><th>Feedback</th><td colspan=3>[% sum.feedback %]</td></tr>
+<tr><th>Miscellaneous</th><td colspan=3>[% sum.miscellaneous %]</td></tr>
 <tr><th>Checklist</th><td colspan=3>[% sum.check_list %]</td></tr>
 <tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj.ampm %]</td></tr>
 </table>

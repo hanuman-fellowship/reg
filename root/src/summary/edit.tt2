@@ -104,15 +104,6 @@ th {
 </td>
 </tr>
 
-<tr>
-<th valign=top>Miscellaneous
-</th>
-<td colspan=3>
-<textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
-[% sum.miscellaneous %]
-</textarea>
-</td></tr>
-
 <tr><th valign=top>Field Staff Setup
 <br><br>
 <input id=sub type=submit value="Submit">
@@ -150,6 +141,15 @@ th {
 </textarea>
 </td>
 </tr>
+
+<tr>
+<th valign=top>Miscellaneous
+</th>
+<td colspan=3>
+<textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
+[% sum.miscellaneous %]
+</textarea>
+</td></tr>
 
 </table>
 </form>
