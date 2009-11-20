@@ -354,6 +354,7 @@ sub detail_disp {
 # very tricky.  Pay Attention.
 # we consider the date range of the requested meal list.
 # breakfast does not happen on the arrival date - programs and rentals.
+#   well, unless the program start time is before 9:00 am.
 # program lunches could happen on the first day of the program
 #     if that day's lunch is selected (which it _could_ be if the
 #     _program_ _start_ time is before 1:00 pm).
@@ -444,7 +445,8 @@ sub meal_list : Local {
                       allocated => 'yes',
                   });
 
-    my $lunch_end = 1300;       # 1:00 pm
+    my $breakfast_end = '0900';    # 9:00 am
+    my $lunch_end     = '1300';    # 1:00 pm
     @meals = ();   # hashrefs from $start to $end
     @detls = ();   # names, sources
     clear_lunch();
@@ -484,7 +486,8 @@ sub meal_list : Local {
 
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            add('breakfast') if $d != $r_start;
+            add('breakfast') if ($d != $r_start
+                                 || $prog->prog_start() < $breakfast_end);
             add('lunch')     if ($d != $r_start
                                  || $prog->prog_start() < $lunch_end)
                                 &&
