@@ -3,14 +3,16 @@
     <h3>Special Food Needs</h3>
     <table cellpadding=3>
     <tr>
-    <th align=left>Event</th>
-    <th>Start</th>
-    <th>End</th>
+    <th align=left width=250>Event</th>
+    <th width=60>Count</th>
+    <th width=60>Start</th>
+    <th width=60>End</th>
     <th align=left>Needs</th>
     </tr>
     [% FOREACH s IN special %]
         <tr>
         <td valign=top><a href=/summary/view/[% s.event_type %]/[% s.summary_id %]>[% s.name %]</a></td>
+        <td valign=top align=right>[% IF s.PR %][% ELSE %][% s.count %][% END %]&nbsp;&nbsp;&nbsp;</td>
         <td valign=top>[% s.sdate_obj.format("%b %e") %]</td>
         <td valign=top>[% s.edate_obj.format("%b %e") %]</td>
         <td valign=top>[% s.summary.food_service_tr %]</td>
