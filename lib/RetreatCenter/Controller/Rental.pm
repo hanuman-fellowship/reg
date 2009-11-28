@@ -369,7 +369,7 @@ sub view : Local {
     elsif (! ($rental->contract_received() && $rental->payments() > 0)) {
         $status = "sent";
     }
-    elsif (tt_today($c)->as_d8() > $rental->edate()) {
+    elsif (tt_today($c)->as_d8() > $rental->sdate()) {
         if ($rental->balance() != 0) {
             $status = "due";
         }
