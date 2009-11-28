@@ -170,10 +170,10 @@ my @mess;
 sub _get_data {
     my ($c) = @_;
 
+    @mess = ();
     %hash = %{ $c->request->params() };
-
     if (empty($hash{title})) {
-        push @mess, "Title cannot be blank.";
+        push @mess, "Title cannot be blank: '$hash{title}'.";
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
