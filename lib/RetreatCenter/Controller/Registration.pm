@@ -523,6 +523,8 @@ EOH
     }
     # sdate/edate (in the hash from the online file)
     # are normally empty - except for personal retreats
+    # OR for programs with extra days.
+    #
     if ($P{sdate}) {
         stash($c, date_start => date($P{sdate}));
     }
@@ -4265,20 +4267,28 @@ sub tally : Local {
             $credit += $credit_rec->amount();
         }
         # charges
+        #
+        # cancellations don't tally charges or the balance at all.
+        # right?
+        #
         for my $rc ($r->charges()) {
             my $what   = $rc->what();
             my $amount = $rc->amount();
-            if ($what =~ m{tuition}i) {
-                $tuition += $amount;
-            }
-            elsif ($what =~ m{lodging}i) {
-                $lodging += $amount;
-            }
-            else {
-                $adjustment += $amount;
+            if (! $r->cancelled()) {
+                if ($what =~ m{tuition}i) {
+                    $tuition += $amount;
+                }
+                elsif ($what =~ m{lodging}i) {
+                    $lodging += $amount;
+                }
+                else {
+                    $adjustment += $amount;
+                }
             }
         }
-        $balance += $r->balance();
+        if (! $r->cancelled()) {
+            $balance += $r->balance();
+        }
 
         # have we seen this person before?
         # allow_dup_regs and AVI type programs will have dup regs.
@@ -4288,7 +4298,7 @@ sub tally : Local {
             next REG;
         }
         ++$registered;
-        if ($r->cancelled) {
+        if ($r->cancelled()) {
             ++$cancelled;
             next REG;
         }
