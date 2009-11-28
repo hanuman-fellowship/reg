@@ -20,7 +20,7 @@ The program's cancellation policy is:
 <p>
 [% IF credit %]
 You have been given a credit of $[% amount %] applicable
-towards future programs.<br>
+towards future MMC-sponsored programs.<br>
 This credit will expire on [% date_expire.format("%B %e, %Y") %].
 [% ELSE %]
 We're sorry but you have <strong>not</strong> been given a credit or refund.
