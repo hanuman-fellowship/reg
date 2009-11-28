@@ -1321,3 +1321,13 @@ doc: web grid
 authorize@mountmadonna.org/Ashtanga!
 
 authorize@hanumanfellowship.org/Ashtanga! mail.hanumanfellowship.org
+
+breakfast on first day - yes if program start time is before 9:00 am
+meal list - widen columns in special needs section
+    so no wrapping in first 3/4 columns
+add column after first (name) with count
+    reg count for programs
+    current count for rentals
+    blank for PR
+move miscellaneous after feedback
+    anchor to jump to Misc in view and edit modes

@@ -41,7 +41,8 @@ create table rental (
     proposal_id       integer,
     color             text,
     housing_note      text,
-    grid_code         text
+    grid_code         text,
+    staff_ok          text
 );
 drop table if exists rental_payment;
 create table rental_payment (
@@ -114,5 +115,6 @@ create table proposal (
     misc_notes text,
     rental_id integer,
     person_id integer,
-    cs_person_id integer
+    cs_person_id integer,
+    staff_ok text,
 );

@@ -66,6 +66,7 @@ __PACKAGE__->add_columns(qw/
     rental_id
     person_id
     cs_person_id
+    staff_ok
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

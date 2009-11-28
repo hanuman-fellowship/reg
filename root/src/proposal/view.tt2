@@ -345,6 +345,41 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 </tr>
 
 <tr>
+<td colspan=4 width=600>
+Our staff is mostly volunteers, and it often works well both
+for us and for you if you can accept one or two of them into
+your program on a complimentary basis.  Renters often find it
+helpful to have one or two of our staff members in their program.
+Can that work for you?
+</td>
+</tr>
+
+<tr>
+<th align=right>Staff Okay?</th>
+<td>[% proposal.staff_ok %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Special Needs</th>
+<td colspan=3>[% proposal.special_needs %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Food Service</th>
+<td colspan=3>[% proposal.food_service %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Other Requests</th>
+<td colspan=3>[% proposal.other_requests %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Provisos</th>
+<td colspan=3>[% proposal.provisos %]</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Miscellaneous Notes</th>
 <td colspan=3>[% proposal.misc_notes %]</td>
 </tr>

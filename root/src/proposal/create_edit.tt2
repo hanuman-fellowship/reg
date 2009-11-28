@@ -340,6 +340,21 @@ th {
 </tr>
 
 <tr>
+<td colspan=4 width=600>
+Our staff is mostly volunteers, and it often works well both
+for us and for you if you can accept one or two of them into
+your program on a complimentary basis.  Renters often find it
+helpful to have one or two of our staff members in their program.
+Can that work for you?
+</td>
+</tr>
+
+<tr>
+<th>Staff Okay?</th>
+<td><input type=checkbox value=yes name=staff_ok [% check_staff_ok %]></td>
+</tr>
+
+<tr>
 <th valign=top>Special Needs</th>
 <td colspan=3><textarea id=special_needs name=special_needs cols=60 rows=5>[% proposal.special_needs %]</textarea></td>
 </tr>

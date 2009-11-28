@@ -61,7 +61,7 @@ sub _get_data {
     #
     # initially required fields.
     #
-    if (! $proposal || $proposal->person_id() == 0) {
+    if (! $proposal || ! $proposal->person_id()) {
         for my $f (qw/
             first
             last
@@ -88,7 +88,7 @@ sub _get_data {
         }
     }
     # Contract signer
-    if ($proposal && $proposal->cs_person_id() == 0
+    if ($proposal && ! $proposal->cs_person_id()
         && !empty($hash{cs_first})
     ) {
         for my $f (qw/
@@ -138,7 +138,11 @@ sub _get_data {
         else {
             $hash{program_meeting_date} = $dt->as_d8();
         }
+        # since unchecked boxes are not sent...
+        #
         $hash{denied} = "" unless exists $hash{denied};
+        $hash{staff_ok} = "" unless exists $hash{staff_ok};
+
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -203,6 +207,8 @@ sub update : Local {
         $c->stash->{"$f\_rows"} = lines($proposal->$f()) + 3;    # 3 in strings?
     }
     $c->stash->{"check_denied"}  = ($proposal->denied())? "checked": "";
+    $c->stash->{"check_staff_ok"}  = ($proposal->staff_ok())? "checked": "";
+
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template} = "proposal/create_edit.tt2";
 }
@@ -284,6 +290,7 @@ sub approve : Local {
             # see comment in Program.pm
         check_linked    => "",
         check_tentative => "checked",
+        check_staff_ok => $proposal->staff_ok()? "checked": "",
         housecost_opts  =>
             [ model($c, 'HouseCost')->search(
                 undef,
