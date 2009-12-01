@@ -858,7 +858,8 @@ sub comings_goings : Local {
                            $a->name cmp $b->name
                        }
                        model($c, 'Rental')->search({
-                           sdate => { 'between' => [ $dt8, $edt8 ] },
+                           sdate      => { 'between' => [ $dt8, $edt8 ] },
+                           program_id => { '!=', 0 },
                        });
 
     my (@going) = model($c, 'Registration')->search({
@@ -899,7 +900,8 @@ sub comings_goings : Local {
                           $a->name cmp $b->name
                       }
                       model($c, 'Rental')->search({
-                          edate => $dt8,
+                          edate      => $dt8,
+                          program_id => { '!=', 0 },
                       });
 
     $c->stash->{date} = $dt;
