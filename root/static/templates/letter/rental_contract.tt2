@@ -2,9 +2,10 @@
 <head>
 <style type="text/css">
 body {
-    width: 7in;
-    margin-left: .5in;
-    margin-top: 1.5in;
+    width: 6.5in;
+    margin-left: .3in;
+    margin-top: 1.125in;
+    font-size: 12pt;
 }
 h3 {
     text-align: center;
@@ -14,6 +15,7 @@ table {
     margin-left: .5in;
     margin-top: .1in;
     margin-bottom: .1in;
+    font-size: 12pt;
 }
 #line {
     margin-top: .7in;
@@ -93,12 +95,12 @@ And if there are any other needs or ways we can help, please do let us know.
 <p>
 <p>
 All good wishes,<br>
-<div style="margin-top: .7in;">
+<div style="margin-top: .3in;">
 Jerry Brajesh Friedberg<br>
 Programs Director
 </div>
 <div style="page-break-after:always"></div>
-<div style="height: 1.6in"></div>
+<div style="height: 1.3in"></div>
 <h3>Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
 [% signer.first %]
