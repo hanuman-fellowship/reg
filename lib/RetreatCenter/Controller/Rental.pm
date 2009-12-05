@@ -1237,8 +1237,9 @@ sub contract : Local {
                    :                        $rental->coordinator()),
         rental  => $rental,
         ndays   => $ndays,
-        agreed  => $agreed,
-        min_due => $min_due,
+        agreed  => commify($agreed),
+        min_due => commify($min_due),
+        deposit => commify($rental->deposit()),
     );
     $tt->process(
         "rental_contract.tt2",# template
