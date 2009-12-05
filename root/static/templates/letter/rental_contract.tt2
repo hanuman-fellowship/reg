@@ -100,7 +100,7 @@ Jerry Brajesh Friedberg<br>
 Programs Director
 </div>
 <div style="page-break-after:always"></div>
-<div style="height: 1.3in"></div>
+<div style="height: 1.125in"></div>
 <h3>Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
 [% signer.first %]
@@ -158,6 +158,7 @@ $2/person/hour for any
 additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>
 <div style='page-break-after:always'></div>
+<div style="height: .25in"></div>
 <h2>Meals</h2>
 [% IF lunch %]
 The Center will provide three vegetarian meals per day:
@@ -174,7 +175,7 @@ within the first half-hour of mealtime. Meals are at the
 Community Building for the renter,
 other guests of the Center, and the Center community.
 <h2>Payment and Cancellation Policies</h2>
-The renter will pay a deposit of $[% rental.deposit %] amount
+The renter will pay a deposit of $[% deposit %] amount
 upon the signing of this contract.
 <p>
 “Agreed Upon Revenue” is equal to the number of people specified
@@ -225,8 +226,9 @@ or at the 75% of Agreed Upon Revenue formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
 <p>
-<b>The minimum due for your workshop is 75% of $[% agreed %] = $[% min_due %].</b>
+<b>The minimum due for your workshop is 75% of $[% agreed %]&nbsp;&nbsp;=&nbsp;&nbsp;$[% min_due %].</b>
 <div style='page-break-after:always'></div>
+<div style="height: .25in"></div>
 <h2>Concurrent Workshops</h2>
 The Center may schedule other workshops and activities during
 this workshop, provided that such activities do not use facilities
@@ -271,13 +273,14 @@ For housing requests received within the last week before the event,
 those that can be accepted will be surcharged $5.00 per
 outdoor accommodation and $10.00 per indoor accommodation.
 <div style='page-break-after:always'></div>
+<div style="height: .25in"></div>
 <h2>Arbitration</h2>
 In the event that a dispute occurs between the parties with
 regard to the rights or duties created by this agreement,
 or in the event of a breach of this agreement by either party,
 the parties hereto agree to binding arbitration to resolve any
 such disputes pursuant to the provisions of the 
-California Code of Civil Procedure, Sec. 128l1, et seq.
+California Code of Civil Procedure, Sec. 12811, et seq.
 Any such arbitration shall take place in the County of Santa Cruz,
 California.
 <h2>General Provisions</h2>
