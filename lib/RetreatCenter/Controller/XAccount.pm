@@ -138,6 +138,16 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
+    my @payments = model($c, 'XAccountPayment')->search({
+        xaccount_id => $id,
+    });
+    if (@payments) {
+        error($c,
+              'You must first remove all payments.',
+              'gen_error.tt2',
+        );
+        return;
+    }
     model($c, 'XAccount')->find($id)->delete();
     $c->response->redirect($c->uri_for('/xaccount/list'));
 }
