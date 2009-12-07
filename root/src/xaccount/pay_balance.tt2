@@ -1,9 +1,9 @@
 <script type="text/javascript">
 function check() {
     var id = document.getElementById('xa_id').value;
-    if (id == [% credit_misc_id %]) {
-        return confirm("Please cancel out of this and use the 'Misc' account instead.  "
-                     + "If you really do need to use 'Credit Card Misc', be sure to do all the follow-up required.");
+    if (id == [% credit_nonprog_id %]) {
+        return confirm("Please cancel out of this and use the 'Miscellaneous' account instead.  "
+                     + "If you really do need to use 'Credit Cards - Non Program related', be sure to do all the follow-up required.");
     }
     return true;
 }
