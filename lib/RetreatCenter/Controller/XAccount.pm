@@ -132,8 +132,7 @@ sub update_do : Local {
 }
 
 #
-# does this delete the payments???
-# no.
+# can't delete xaccount if any payments are present.
 #
 sub delete : Local {
     my ($self, $c, $id) = @_;
