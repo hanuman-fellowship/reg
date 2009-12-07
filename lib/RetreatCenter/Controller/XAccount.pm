@@ -172,11 +172,11 @@ sub pay_balance : Local {
                     undef,
                     { order_by => 'descr' },
                 );
-    my $cr_misc_id = 0;
+    my $cr_nonprog_id = 0;
     ACCT:
     for my $a (@accts) {
-        if ($a->descr() eq 'Credit Card Misc') {
-            $cr_misc_id = $a->id();
+        if ($a->descr() eq 'Credit Cards - Non Program related') {
+            $cr_nonprog_id = $a->id();
             last ACCT;
         }
     }
@@ -184,7 +184,7 @@ sub pay_balance : Local {
         message   => payment_warning('mmc'),
         person    => model($c, 'Person')->find($person_id),
         xaccounts => \@accts,
-        credit_misc_id => $cr_misc_id,
+        credit_nonprog_id => $cr_nonprog_id,
         template       => "xaccount/pay_balance.tt2",
     );
 }
