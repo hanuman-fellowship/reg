@@ -1095,6 +1095,10 @@ sub create_do : Local {
         #
         model($c, 'RegPayment')->create({
             @who_now,
+            the_date => $P{date_postmark},      # override 'now'
+            time     => $P{time_postmark},
+                    # the Deposit (via credit card for online regs
+                    # WAS made at the postmark date/time
             amount  => $P{deposit},
             type    => $P{deposit_type},
             what    => 'Deposit',
@@ -1148,7 +1152,7 @@ sub create_do : Local {
 
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
-    if ($P{fname}) {
+    if (exists $P{fname}) {
         my $dir = "root/static/online_done/"
                 . substr($P{date_postmark}, 0, 4)
                 . '-'
