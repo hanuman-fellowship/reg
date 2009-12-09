@@ -33,12 +33,12 @@ function popup(url, height) {
             
             <div class="program">
             
-            	<h2>You are registering for:</h2>
                 [% IF pr %]
-                
-                    <p>Personal Retreat</p>
-   
+
+            	<h2>You are registering for a Personal Retreat.</h2>
+
                 [% ELSE %]
+                    <h2>You are registering for:</h2>
                     [% IF two_pics %]
 						<img src='[% image1 %]' width="75">
 						<img src='[% image2 %]' width="75">
@@ -122,7 +122,7 @@ function popup(url, height) {
 					<input type=hidden name=progchoice value=basic>
 
 					<fieldset> 
-					<legend>Length of Program</legend>  
+					<legend>Length of Stay</legend>  
 					<ol>
 						<li>
 							<label for="arr_date"><span class="required">*</span> Arrival Date:</label>
@@ -319,12 +319,12 @@ function popup(url, height) {
                                     <ol>  
                                         <li>  
                                         <input type=radio name=cabin_room value=cabin [% cabin %]>
-                                        <label for="cabinRoom">Cabin - heat and electricity, but no indoor plumbing</label>  
+                                        <label for="cabin_room">Cabin - heat and electricity, but no indoor plumbing</label>  
                                         </li>  
 										
                                         <li>  
                                         <input type=radio name=cabin_room value=room [% room %]>  
-                                        <label for="cabinRoom">Room</label>  
+                                        <label for="cabin_room">Room</label>  
                                         </li>  
                                    </ol>
                                 </fieldset>

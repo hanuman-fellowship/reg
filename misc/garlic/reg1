@@ -11,9 +11,7 @@ use CGI qw/:standard/;
 print header;
 use CGI::Carp qw/fatalsToBrowser/;
 
-use HousingNames qw/
-    %housing_name
-/;
+use HousingNames;
 
 #
 # command line params
@@ -110,7 +108,7 @@ else {
     $stash{female} = "checked";
     $stash{male}   = "";
 }
-if ($cookie{cabinRoom} eq 'cabin') {
+if ($cookie{cabin_room} eq 'cabin') {
     $stash{cabin} = "checked";
     $stash{room}  = "";
 }

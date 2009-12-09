@@ -5,7 +5,9 @@ use CGI qw/:standard :cgi-lib/;
 use CGI::Carp qw/fatalsToBrowser/;
 use lib 'lib';
 use Template;
-use Date::Simple;
+use Date::Simple qw/
+    today
+/;
 
 use HousingNames qw/
     %housing_name
@@ -100,6 +102,9 @@ if ($form{name} =~ m{personal\s+retreat}i) {
         if ($ndays < 1) {
             $err .= "<li>Departure date is not after the arrival date!\n"
         }
+    }
+    if ($sdate < today()) {
+        $err .= "<li>Arrival date is in the past!";
     }
 }
 if ($data->{footnotes} =~ m{\*}
@@ -350,6 +355,7 @@ if ($form{street2} =~ /\S/) {
 $stash{street_addr} = $street_addr;
 
 if ($form{name} =~ m{personal\s+retreat}i) {
+    $stash{title} = "Personal Retreat";
 	$stash{sdate} = $sdate->format("%m/%d/%Y");
 	$stash{edate} = $edate->format("%m/%d/%Y");
 } else {

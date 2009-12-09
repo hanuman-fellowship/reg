@@ -221,7 +221,7 @@
 						<INPUT type=hidden VALUE="[% house2 %]"         name="x_house2">
 						<INPUT type=hidden VALUE="[% withwhom_first %]" NAME="x_withwhom_first">
 						<INPUT type=hidden VALUE="[% withwhom_last %]"  name="x_withwhom_last">
-						<INPUT type=hidden VALUE="[% cabinroom %]"      name="x_cabinRoom">
+						<INPUT type=hidden VALUE="[% cabin_room %]"     name="x_cabin_room">
 						<INPUT type=hidden VALUE="[% request %]"        name="x_request">
 						<INPUT type=hidden VALUE="[% name %]"           name="x_pname">
 						<INPUT type=hidden VALUE="[% progchoice %]"     name="x_progchoice">
