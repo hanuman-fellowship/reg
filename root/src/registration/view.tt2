@@ -97,7 +97,7 @@ onclick="return confirm('Okay to Delete registration for [% person.first %] [% p
 <a accesskey='B' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/back"><span class=keyed>B</span>ack</a>&nbsp;&nbsp;&nbsp;<a accesskey='N' href="/registration/view_adj/[% program.id %]/[% id %]/[% person.last %]/[% person.first %]/next"><span class=keyed>N</span>ext</a>
 &nbsp;&nbsp;
 [% IF ! reg.cancelled %]
-<a href=/registration/edit_dollar/[% id %]>Edit$</a>
+<a href=/registration/edit_dollar/[% id %]>Edit\$</a>
 &nbsp;&nbsp;
 [% END %]
 <a href=/registration/search/[% program.id %]>Search</a>
