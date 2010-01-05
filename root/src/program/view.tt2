@@ -432,7 +432,7 @@ Web
 </tr>
 
 <tr>
-<th align=right>M/L + % Tuition</th>
+<th align=right>% Tuition (+ M/L)</th>
 <td>[% program.percent_tuition %]</td>
 </tr>
 

@@ -257,7 +257,7 @@ Web
 </tr>
 
 <tr>
-<th align=right>M/L + % Tuition</th>
+<th align=right>% Tuition (+ M/L)</th>
 <td><input type=text name=percent_tuition size=3 value=$program.percent_tuition></td>
 </tr>
 
