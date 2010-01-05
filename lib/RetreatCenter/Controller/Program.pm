@@ -798,7 +798,7 @@ sub update_do : Local {
         for my $b (@bookings) {
             $b->delete();
         }
-        if ($p->max >= $P{max}) {
+        if ($p->max() >= $P{max}) {
             # must have been a date
             $P{lunches} = "";
         }

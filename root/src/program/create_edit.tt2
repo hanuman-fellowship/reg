@@ -376,7 +376,7 @@ Web
 <!-- even if this is a non-hybrid rental include this
      so that the rental_id does not become NULL.
 -->
-<input type=hidden name=rental_id value="[% rental_id %]">
+<input type=hidden name=rental_id value=$program.rental_id>
 
 </form>
 
