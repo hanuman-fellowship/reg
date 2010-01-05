@@ -7,8 +7,6 @@ use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     leader_table
     affil_table
-    meetingplace_table
-    meetingplace_book
     slurp 
     monthyear
     expand
@@ -36,6 +34,7 @@ use Util qw/
     invalid_amount
     clear_lunch
     get_lunch
+    avail_mps
 /;
 use Date::Simple qw/
     date
@@ -373,6 +372,7 @@ sub create_do : Local {
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        needs_verification => "yes",
     });
 
     # now we can create the program itself
@@ -949,6 +949,7 @@ sub affil_update_do : Local {
 
 #
 # how about a max for a program???
+# ??? obsoleted
 #
 sub meetingplace_update : Local {
     my ($self, $c, $id) = @_;
@@ -968,6 +969,7 @@ sub meetingplace_update : Local {
     );
 }
 
+# ??? obsoleted
 sub meetingplace_update_do : Local {
     my ($self, $c, $program_id) = @_;
 
@@ -1487,6 +1489,8 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
         collect_total
         do_not_compute_costs
         dncc_why
+        percent_tuition
+        tuition
     /) {
         print {$progt} qq!    $f => "!,
                        esc_dquote($p->$f()),
@@ -1708,6 +1712,7 @@ sub duplicate_do : Local {
         date_updated => tt_today($c)->as_d8(),   # and new update status info
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        needs_verification => "yes",
     });
 
     # the image takes special handling

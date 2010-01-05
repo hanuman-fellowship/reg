@@ -1,0 +1,9 @@
+<h2>${Hap_type}s</h2>
+These meeting places were deleted for <a href="/$hap_type/view/[% hap.id %]">[% hap.name %]</a>:
+<p>
+<ul>
+[% names %]
+</ul>
+[% IF lunches %]
+Any lunches were cleared.
+[% END %]

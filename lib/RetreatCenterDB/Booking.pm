@@ -37,4 +37,22 @@ sub edate_obj {
     return date($self->edate);
 }
 
+sub date_range {
+    my ($self) = @_;
+    my $sdate = $self->sdate_obj();
+    my $edate = $self->edate_obj();
+    if ($sdate == $edate) {
+        return $sdate->format("%b %e");
+    }
+    if ($sdate->month() eq $edate->month()) {
+        return   $sdate->format("%b %e")
+               . "-"
+               . $edate->day();
+    }
+    return   $sdate->format("%b %e")
+           . "-"
+           . $edate->format("%b %e")
+           ;
+}
+
 1;

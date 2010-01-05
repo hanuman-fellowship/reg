@@ -28,6 +28,13 @@ th {
 >
 <table cellpadding=3 border=0>
 
+[% IF type == 'rental' %]
+<tr>
+<th align=right>Event Coordinator</th>
+<td><input type=text name=prog_person value="$sum.prog_person"></td>
+</tr>
+[% END %]
+
 <tr>
 <th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=20></td>
 <th align=right>Registration<br>Location</th>
@@ -151,8 +158,15 @@ th {
 </textarea>
 </td></tr>
 
+[% IF sum.needs_verification %]
+<tr>
+<td></td>
+<td><input type=checkbox name=needs_verification value="yes" checked>Needs To Be Verified</td>
+</tr>
+[% END %]
+
 </table>
 </form>
 <script type="text/javascript">
-document.form.gate_code.focus();
+document.form.prog_person.focus();
 </script>

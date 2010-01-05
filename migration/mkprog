@@ -125,7 +125,9 @@ create table summary (
     field_staff_setup text,
     sound_setup text,
     check_list text,
-    converted_spaces text
+    converted_spaces text,
+    needs_verification text,
+    prog_person text
 );
 drop table if exists confnote;
 create table confnote (

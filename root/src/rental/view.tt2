@@ -257,7 +257,7 @@ Web
 <td align=left valign=top>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == '' %]
-        [% b.meeting_place.name %]<br>
+        <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
@@ -265,7 +265,7 @@ Web
 <td align=left valign=top>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == 'yes' %]
-        [% b.meeting_place.name %]<br>
+        <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
@@ -273,7 +273,7 @@ Web
 [% IF Catalyst.check_user_roles('prog_admin') %]
     <tr>
     <td></td>
-    <td align=left colspan=2><a href="/rental/meetingplace_update/[% id %]">Update</a></td>
+    <td align=left colspan=2><a href="/event/add_meeting_place/rental/$id">Add</a></td>
     </tr>
 [% END %]
 

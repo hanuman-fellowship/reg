@@ -225,16 +225,16 @@ sub update_do : Local {
 
 #
 # show proposals for which the program meeting date
-# has not happened more than 3 days ago.
+# has not happened more than 8 days ago.
 #
 sub list : Local {
     my ($self, $c) = @_;
 
     Global->init($c);
-    my $today3 = (tt_today($c)-3)->as_d8();
+    my $today8 = (tt_today($c)-8)->as_d8();
     $c->stash->{proposals} = [
         model($c, 'Proposal')->search(
-            { program_meeting_date => { '>=', $today3 } },
+            { program_meeting_date => { '>=', $today8 } },
             { order_by             => 'program_meeting_date' },
         )
     ];

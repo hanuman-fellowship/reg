@@ -1,0 +1,33 @@
+<h2>${Hap_type}s</h2>
+Which meeting places for the $hap_type <span class=larger>$hap.name</span><br>
+from $sdate to $edate?
+<p class=p2>
+<form action=/event/which_mp_do/$hap_type/$hap.id>
+<input type=hidden name=sdate value=$sdate.as_d8>
+<input type=hidden name=edate value=$edate.as_d8>
+<table cellpadding=5>
+<tr>
+<th align=left>Name</th>
+<th>Meeting</th>
+<th>Breakout</th>
+[% red = 0 %]
+</tr>
+[% FOR mp IN meeting_places %]
+<tr>
+<td>[% IF mp.max < hap.max %][% red = 1 %]<span style="color: red">$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
+<td align=center><input type=checkbox name=br$mp.id></td>
+</tr>
+[% END %]
+
+<tr>
+<td></td>
+<td colspan=2 align=center><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+<p class=p2>
+[% IF red %]
+Meeting places with names in <span style="color: red">red</span> have a maximum capacity<br>
+less than the maximum of $hap.max specified for the ${hap_type}.
+[% END %]
+</form>

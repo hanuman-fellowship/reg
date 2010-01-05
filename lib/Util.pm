@@ -5,8 +5,6 @@ package Util;
 use base 'Exporter';
 our @EXPORT_OK = qw/
     affil_table
-    meetingplace_table
-    meetingplace_book
     places
     role_table
     leader_table
@@ -57,6 +55,7 @@ our @EXPORT_OK = qw/
     esc_dquote
     invalid_amount
     get_grid_file
+    avail_mps
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -150,250 +149,6 @@ sub role_table {
         || $super
     }
     model($c, 'Role')->all();
-}
-
-#
-# which meeting places are available in the
-# date range sdate-edate?
-#
-# and worry about the max of rentals/programs as well.
-# highlight those > max in red.   Can't eliminate them
-# because breakout spaces don't need to respect the max.
-#
-# note: PRE = Program/Rental/Event
-#
-# AND worry about meeting places that are also sleeping places
-# and don't include those which are occupied by sleepers!
-# UNLESS they are actually used for meeting spaces as well.
-#
-sub meetingplace_table {
-    my ($c, $max, $sdate, $edate, @cur_bookings) = @_;
-
-    $max ||= 0;
-
-    # the other arguments are Bookings (which point to a
-    # meeting place currently assigned to this PRE in question)
-    my %checked    = map { $_->meet_id() => 'checked' }
-                     grep { ! $_->breakout() }
-                     @cur_bookings;
-    # br = breakout
-    my %br_checked = map { $_->meet_id() => 'checked' }
-                     grep { $_->breakout() }
-                     @cur_bookings;
-    my $table = "";
-    MEETING_PLACE:
-    for my $mp (model($c, 'MeetingPlace')->search(
-                    {},
-                    { order_by => 'disp_ord' }
-                )
-    ) {
-        next MEETING_PLACE if $mp->name() eq 'No Where';      # no no
-        my $id = $mp->id;
-        if (! ($checked{$id} || $br_checked{$id}) && $mp->sleep_too()) {
-            # is the space occupied by sleepers?
-            #
-            my ($house) = model($c, 'House')->search({
-                name => $mp->abbr(),
-            });
-            if ($house) {
-                my (@cf) = model($c, 'Config')->search({
-                    house_id => $house->id(),
-                    the_date => { 'between' => [ $sdate, $edate ] },
-                    cur      => { '>' => 0 },
-                });
-                if (@cf) {
-                    next MEETING_PLACE;
-                }
-            }
-        }
-        if (! ($checked{$id} || $br_checked{$id})) {
-            # this meeting place is not currently assigned to
-            # the PRE in question.
-            # are there any bookings for this place that overlap
-            # with this request?
-            # some way to do this search without the meet_id
-            # and cache the results???   yes.
-            my @bookings = model($c, 'Booking')->search({
-                              meet_id => $id,
-                              sdate => { '<' => $edate },
-                              edate => { '>' => $sdate },
-                           });
-            next MEETING_PLACE if @bookings;
-        }
-        my $mp_max = $mp->max();
-        my $color = ($mp_max < $max)? "red": "black";
-        # it should be included in the table
-        $table .= "<tr><td>"
-                  . $mp->name
-                  . "</td><td align=right>"
-                  . "<span style='color: $color'>$mp_max</span"
-                  . "</td>"
-                  . "<td></td>"     # spacer
-                  . "<td align=center>"
-                  . "<input type=checkbox name=mp$id  "
-                  . ($checked{$id} || '')
-                  . "> "
-                  . "</td><td align=center>"
-                  . "<input type=checkbox name=mpbr$id  "
-                  . ($br_checked{$id} || '')
-                  . "> "
-                  . "</td></tr>\n";
-    }
-    if (! $table) {
-        $table = "Sorry, there is no meeting place in the inn.";
-    }
-    else {
-        $table = <<"EOH";
-<table cellpadding=3>
-<tr>
-<th align=left>Name</th>
-<th align=right>Max</th>
-<td width=10></td>
-<th>Main</th>
-<th>Breakout</th>
-</tr>
-$table
-</table>
-EOH
-    }
-    $table;
-}
-
-#
-# check the form parameters and book
-# the meeting places for the given happening.
-#
-# if a meeting place can also be used for sleeping
-# create a Block for the time period of the happening.
-#
-# we clear out all of the prior meeting places first
-# to make sure that we have a clear arena.
-# this also necessitates clearing the above mentioned blocks.
-#
-sub meetingplace_book {
-    my ($c, $hap_type, $hap_id) = @_;
-
-    my $hap = model($c, "\u$hap_type")->find($hap_id);
-    my $sdate = $hap->sdate();
-    my $edate = $hap->edate();
-    if ($hap_type eq 'program') {
-        $edate += $hap->extradays();
-    }
-    my $edate1 = (date($edate) - 1)->as_d8();
-
-    my @cur_mps;
-    my %seen = ();
-    for my $k (sort keys %{$c->request->params}) {
-        #
-        # keys are like this:
-        #     mp45
-        # or
-        #     mpbr23
-        # all mp come before any mpbr
-        #
-        my ($d) = $k =~ m{(\d+)};
-        my $br = ($k =~ m{br})? 'yes': '';
-        push @cur_mps, [ $d, $br ] unless $seen{$d}++;
-    }
-
-    # delete bookings
-    #
-    model($c, 'Booking')->search(
-        { "$hap_type\_id" => $hap_id },
-    )->delete();
-
-    # clear any automatic bound blocks (and the associated config records)
-    #
-    for my $bl (model($c, 'Block')->search({
-                    "$hap_type\_id" => $hap_id,
-                    reason => "Meeting Place for " . $hap->name(),
-                })
-    ) {
-        model($c, 'Config')->search({
-            house_id => $bl->house_id(),    
-            the_date => { between => [ $sdate, $edate1 ] },
-        })->update({
-            sex        => 'U',
-            cur        => 0,
-            program_id => 0,
-            rental_id  => 0,
-        });
-        $bl->delete();
-    }
-
-    MEETING_PLACE:
-    for my $mp (@cur_mps) {
-        my $mp_id = $mp->[0];
-        model($c, 'Booking')->create({
-            meet_id    => $mp_id,
-            program_id => 0,
-            rental_id  => 0,
-            event_id   => 0,
-            "$hap_type\_id" => $hap_id,     # overrides
-            sdate      => $sdate,
-            edate      => $edate,
-            breakout   => $mp->[1],
-        });
-        my $mplace = model($c, 'MeetingPlace')->find($mp_id);
-        if ($mplace->sleep_too()) {
-            my ($house) = model($c, 'House')->search({
-                name => $mplace->abbr(),
-            });
-            if (!$house) {
-                next MEETING_PLACE;
-            }
-            my $h_id = $house->id();
-            my $h_max = $house->max();
-            model($c, 'Block')->create({
-                house_id => $h_id,
-                sdate    => $sdate,
-                edate    => $edate,
-                nbeds    => $h_max,
-                npeople  => 0,
-                reason   => "Meeting Place for " . $hap->name(),
-                allocated  => 'yes',
-                rental_id  => 0,
-                program_id => 0,
-                event_id   => 0,
-                "$hap_type\_id" => $hap_id,     # overrides above
-                _get_now($c),
-            });
-            my @opt = ();
-            if ($hap_type ne 'event') {
-                @opt = ("$hap_type\_id" => $hap_id);
-            }
-            model($c, 'Config')->search({
-                house_id => $h_id,
-                the_date => { 'between' => [ $hap->sdate(), $edate1 ] },
-            })->update({
-                sex => 'B',
-                cur => $h_max,
-                rental_id  => 0,
-                program_id => 0,
-                @opt,
-            });
-            my @dates = ();
-            if ($string{housing_log}) {
-                my $sd = date($sdate);
-                my $ed = date($edate1);
-                for (my $d = $sd; $d <= $ed; ++$d) {
-                    push @dates, $d->as_d8();
-                }
-                for my $d (@dates) {
-                    hlog($c,
-                         $house->name(), $d,
-                         "block_auto_create",
-                         $h_id, $h_max, $h_max, 'B',
-                         0, $hap_id,
-                         $hap->name(),
-                    );
-                }
-            }
-        }
-    }
-    # show the happening again - with the updated meeting places and blocks.
-    $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
-        # 2 above does not apply to Events and is safely ignored
 }
 
 sub _get_now {
@@ -1629,6 +1384,59 @@ sub get_grid_file {
     my ($code) = @_;
 
     return "root/static/grid/$code-data.txt";
+}
+
+#
+# dates come as objects
+#
+sub avail_mps {
+    my ($c, $sdate, $edate) = @_;
+
+    $sdate = $sdate->as_d8();
+    $edate = $edate->as_d8();
+    my @avail = ();
+    MEETING_PLACE:
+    for my $mp (model($c, 'MeetingPlace')->search(
+                    {},
+                    { order_by => 'disp_ord' }
+                )
+    ) {
+        next MEETING_PLACE if $mp->name() eq 'No Where';      # no no
+        my $id = $mp->id;
+        if ($mp->sleep_too()) {
+            # is the space occupied by sleepers?
+            #
+            my ($house) = model($c, 'House')->search({
+                name => $mp->abbr(),
+            });
+            if ($house) {
+                my (@cf) = model($c, 'Config')->search({
+                    house_id => $house->id(),
+                    the_date => { 'between' => [ $sdate, $edate ] },
+                    cur      => { '>' => 0 },
+                });
+                if (@cf) {
+                    next MEETING_PLACE;
+                }
+            }
+        }
+        # are there any bookings for this place that overlap
+        # with this request?
+        # some way to do this search without the meet_id
+        # and cache the results???
+        #
+        my @bookings = model($c, 'Booking')->search({
+                          meet_id => $id,
+                          sdate => { '<' => $edate },
+                          edate => { '>' => $sdate },
+                       });
+        next MEETING_PLACE if @bookings;
+        #
+        # it is okay
+        #
+        push @avail, $mp;
+    }
+    return @avail;
 }
 
 1;

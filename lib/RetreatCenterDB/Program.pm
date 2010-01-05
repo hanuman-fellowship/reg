@@ -76,6 +76,7 @@ __PACKAGE__->add_columns(qw/
     dncc_why
     color
     allow_dup_regs
+    percent_tuition
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

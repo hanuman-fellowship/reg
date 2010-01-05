@@ -3390,6 +3390,13 @@ sub lodge_do : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
+    if ($reg->house_id()) {
+        stash($c,
+            reg_id   => $id,
+            template => "registration/dblclick.tt2",
+        );
+        return;
+    }
     my $new_htype = $c->request->params->{htype};
     my @who_now = get_now($c, $id);
     if ($reg->h_type() ne $new_htype) {

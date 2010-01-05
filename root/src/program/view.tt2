@@ -288,7 +288,7 @@ Web
 <td align=left valign=top>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == '' %]
-        [% b.meeting_place.name %]<br>
+        <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
@@ -296,7 +296,7 @@ Web
 <td align=left valign=top>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == 'yes' %]
-        [% b.meeting_place.name %]<br>
+        <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
@@ -306,7 +306,7 @@ Web
 <tr>
 <td></td>
 <td>
-<a href="/program/meetingplace_update/[% id %]">Update</a>
+<a href="/event/add_meeting_place/program/$id">Add</a>
 </td>
 </tr>
 [% END %]
@@ -429,6 +429,11 @@ Web
 <tr>
 <th align=right>Collect Total</th>
 <td>[% program.collect_total %]</td>
+</tr>
+
+<tr>
+<th align=right>M/L + % Tuition</th>
+<td>[% program.percent_tuition %]</td>
 </tr>
 
 <tr>

@@ -1,0 +1,28 @@
+<h2>${Hap_type}s</h2>
+Adding a Meeting Place for the [% hap_type %] <span class=larger>[% hap.name %]</span>.
+<p class=p2>
+First, What Dates?
+<p class=p2>
+<form action=/event/which_mp/[% hap_type %]/[% hap.id %] name=form>
+<table cellpadding=5>
+
+<tr>
+<th align=right>Start Date</th>
+<td><input type=text name=sdate value="[% hap.sdate_obj.format("%D") %]"></td>
+</tr>
+
+<tr>
+<th align=right>End Date</th>
+<td><input type=text name=edate value="[% hap.edate_obj.format("%D") %]"></td>
+</tr>
+
+<tr>
+<th></th>
+<td><input type=submit value="Submit">
+</tr>
+
+</table>
+</form>
+<script type=text/javascript>
+form.sdate.focus();
+</script>

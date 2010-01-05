@@ -32,6 +32,12 @@ p {
 &nbsp;&nbsp;&nbsp;
 <a href=/rental/view/[% happening.id %]>To Rental</a>
 [% END %]
+[% IF sum.needs_verification %]
+&nbsp;&nbsp;
+<span style="background: yellow; font-weight: bold;">
+&nbsp;&nbsp;Needs To Be Verified&nbsp;&nbsp;
+</span>
+[% END %]
 [% END %]
 <p>
 </div>
@@ -50,7 +56,7 @@ p {
 <b>To</b>
 [% happening.edate_obj %] <span class=dow>[% happening.edate_obj.format("%a") %]</span>
 [% IF type == 'rental' %]
-[% happening.status_td %]
+$happening.status_td<td>$sum.prog_person</td>
 [% ELSIF happening.extradays %]
 [% plus %]    
 [% END %]
@@ -125,6 +131,7 @@ th {
 [% ELSE %]
 
 <table cellpadding=3 border=0>
+
 <tr>
 <th align=right valign=top width=180>Leaders</th>
 <td colspan=4>
@@ -205,25 +212,25 @@ th {
 Leader Housing<br>
 <a href=/summary/update/[% Type %]/[% happening.id %]><img src=/static/images/pencil.png height=25 border=0></a>
 </th>
-<td colspan=3>[% sum.leader_housing %]</td></tr>
-<tr><th>Signage</th><td colspan=3>[% sum.signage %]</td></tr>
-<tr><th>Food Service</th><td colspan=3>[% sum.food_service %]</td></tr>
+<td colspan=3 valign=top>[% sum.leader_housing %]</td></tr>
+<tr><th>Signage</th><td colspan=3 valign=top>[% sum.signage %]</td></tr>
+<tr><th>Food Service</th><td colspan=3 valign=top>[% sum.food_service %]</td></tr>
 
 <tr>
 <th>
 Flowers<br>
 <a href=/summary/update/[% Type %]/[% happening.id %]><img src=/static/images/pencil.png height=25 border=0></a>
 </th>
-<td colspan=3>[% sum.flowers %]</td>
+<td colspan=3 valign=top>[% sum.flowers %]</td>
 </tr>
 
-<tr><th>Field Staff Setup</th><td colspan=3>[% sum.field_staff_setup %]</td></tr>
+<tr><th>Field Staff Setup</th><td colspan=3 valign=top>[% sum.field_staff_setup %]</td></tr>
 <tr><th>
 Sound Setup<br>
 <a href=/summary/update/[% Type %]/[% happening.id %]><img src=/static/images/pencil.png height=25 border=0></a>
-</th><td colspan=3>[% sum.sound_setup %]</td></tr>
-<tr><th>Feedback</th><td colspan=3>[% sum.feedback %]</td></tr>
-<tr><th>Miscellaneous</th><td colspan=3>[% sum.miscellaneous %]</td></tr>
-<tr><th>Checklist</th><td colspan=3>[% sum.check_list %]</td></tr>
+</th><td colspan=3 valign=top>[% sum.sound_setup %]</td></tr>
+<tr><th>Feedback</th><td colspan=3 valign=top>[% sum.feedback %]</td></tr>
+<tr><th>Miscellaneous</th><td colspan=3 valign=top>[% sum.miscellaneous %]</td></tr>
+<tr><th>Checklist</th><td colspan=3 valign=top>[% sum.check_list %]</td></tr>
 <tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj.ampm %]</td></tr>
 </table>

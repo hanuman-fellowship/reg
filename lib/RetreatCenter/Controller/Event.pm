@@ -15,12 +15,12 @@ use Util qw/
     trim
     empty
     model
-    meetingplace_table
-    meetingplace_book
     places
     tt_today
     stash
     reserved_clusters
+    avail_mps
+    error
 /;
 use GD;
 use ActiveCal;
@@ -1233,24 +1233,6 @@ EOH
     }
 }
 
-#
-# what about a max for the event?
-#
-sub meetingplace_update : Local {
-    my ($self, $c, $id) = @_;
-
-    my $e = $c->stash->{event} = model($c, 'Event')->find($id);
-    $c->stash->{meetingplace_table}
-        = meetingplace_table($c, $e->max, $e->sdate, $e->edate, $e->bookings());
-    $c->stash->{template} = "event/meetingplace_update.tt2";
-}
-
-sub meetingplace_update_do : Local {
-    my ($self, $c, $event_id) = @_;
-
-    meetingplace_book($c, 'event', $event_id);
-}
-
 sub cal_colors : Local {
     my ($self, $c) = @_;
 
@@ -1295,6 +1277,89 @@ EOF
 <a href='#' onclick="javascript:window.close();">Close</a>
 EOF
     $c->res->output($html);
+}
+
+# remove the meeting place for the event (happening = hap)
+# and redisplay the event.
+#
+sub del_meeting_place : Local {
+    my ($self, $c, $hap_type, $booking_id) = @_;
+    my $booking = model($c, 'Booking')->find($booking_id);
+    my $method = $hap_type . "_id";
+    my $hap_id = $booking->$method();
+    $booking->delete();
+    $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
+        # the 2 above is the Misc tab - ignored for events
+}
+
+sub add_meeting_place : Local {
+    my ($self, $c, $hap_type, $hap_id) = @_;
+
+    my $hap = model($c, ucfirst $hap_type)->find($hap_id);
+    stash($c,
+        hap_type  => $hap_type,
+        Hap_type  => ucfirst $hap_type,
+        hap       => $hap,
+        template  => 'mp_get_date.tt2',
+    );
+}
+
+sub which_mp : Local {
+    my ($self, $c, $hap_type, $hap_id) = @_;
+
+    my $hap = model($c, ucfirst $hap_type)->find($hap_id);
+    my %P = %{ $c->request->params() };
+    # check dates for valid format, sdate <= edate
+    # don't worry about the happening's sdate, edate???
+    #
+    my $sdate = date($P{sdate});
+    my $edate = date($P{edate});
+    if (!$sdate || !$edate || $edate < $sdate) {
+        error($c,
+            'Invalid dates',
+            'gen_error.tt2',
+        );
+        return;
+    }
+    stash($c,
+        hap_type       => $hap_type,
+        Hap_type       => ucfirst $hap_type,
+        hap            => $hap,
+        sdate          => $sdate,
+        edate          => $edate,
+        meeting_places => [ avail_mps($c, $sdate, $edate) ],
+        template       => "get_mps.tt2",
+    );
+}
+
+sub which_mp_do : Local {
+    my ($self, $c, $hap_type, $hap_id) = @_;
+
+    my $hap = model($c, ucfirst $hap_type)->find($hap_id);
+    my %P = %{ $c->request->params() };
+    my $sdate = $P{sdate};
+    my $edate = $P{edate};
+    delete $P{sdate};
+    delete $P{edate};
+    my @mpids = map { my ($type, $id) = m{(mp|br)(\d+)}; [ $type, $id ] }
+                sort { $b cmp $a }      # so mp comes before br
+                keys %P;
+    my %seen = ();
+    @mpids = grep { ! $seen{$_->[1]}++ } @mpids;
+    for my $mpid (@mpids) {
+        model($c, 'Booking')->create({
+            meet_id    => $mpid->[1],
+            event_id   => 0,
+            rental_id  => 0,
+            program_id => 0,
+            $hap_type . "_id"   => $hap_id,     # overrides the above
+            breakout   => $mpid->[0] eq 'br'? 'yes': '',
+            sdate      => $sdate,
+            edate      => $edate,
+        });
+    }
+    $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
+        # the 2 above is the Misc tab - ignored for events
 }
 
 1;

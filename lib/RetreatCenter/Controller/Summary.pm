@@ -144,6 +144,9 @@ sub update_do : Local {
     for my $f (keys %hash) {
         $hash{$f} = etrim($hash{$f});
     }
+    if (! exists $hash{needs_verification}) {
+        $hash{needs_verification} = '';
+    }
     # delete ones that have not changed???
     # warn about ones that are different? we don't know what it was before
     # do we?  nope.
@@ -191,6 +194,7 @@ sub use_template : Local {
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        needs_verification => "yes",
     });
     $type = lc $type;       # Program to program
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
@@ -209,6 +213,7 @@ sub paste : Local {
         date_updated => tt_today($c)->as_d8(),   # and override
         who_updated  => $c->user->obj->id,       # update status info
         time_updated => get_time()->t24(),
+        needs_verification => "yes",
     });
 
     # clear the string sum_copy_id

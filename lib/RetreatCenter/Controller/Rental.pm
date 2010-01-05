@@ -18,8 +18,6 @@ use Util qw/
     compute_glnum
     valid_email
     model
-    meetingplace_table
-    meetingplace_book
     lunch_table
     add_config
     type_max
@@ -88,6 +86,12 @@ sub _get_data {
         }
         $P{$d} = $dt? $dt->as_d8()
                    :     "";
+    }
+    #
+    # if a contract has been sent the rental is no longer tentative, yes?
+    #
+    if ($P{contract_sent}) {
+        $P{tentative} = "";
     }
     TIME:
     for my $n (qw/start_hour end_hour/) {
@@ -205,6 +209,7 @@ sub create_do : Local {
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        needs_verification => "yes",
     });
 
     $P{summary_id} = $sum->id();
@@ -646,10 +651,14 @@ sub update_do : Local {
     # now where?
     #
     if ($names || $lunches) {
-        $c->stash->{names}    = $names;
-        $c->stash->{lunches}  = $lunches;
-        $c->stash->{rental}   = $r;
-        $c->stash->{template} = "rental/mp_warn.tt2";
+        stash($c,
+            hap      => $r,
+            hap_type => "rental",
+            Hap_type => "Rental",
+            names    => $names,
+            lunches  => $lunches,
+            template => "mp_warn.tt2",
+        );
     }
     elsif (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
         $c->response->redirect($c->uri_for("/program/parallel/$id"));
@@ -771,22 +780,6 @@ sub pay_balance_do : Local {
         time     => $now_time,
     });
     $c->response->redirect($c->uri_for("/rental/view/$id/3"));
-}
-
-sub meetingplace_update : Local {
-    my ($self, $c, $id) = @_;
-
-    my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
-    $c->stash->{meetingplace_table}
-        = meetingplace_table($c, $r->max, $r->sdate,
-                             $r->edate, $r->bookings());
-    $c->stash->{template} = "rental/meetingplace_update.tt2";
-}
-
-sub meetingplace_update_do : Local {
-    my ($self, $c, $rental_id) = @_;
-
-    meetingplace_book($c, 'rental', $rental_id);
 }
 
 sub coordinator_update : Local {
@@ -1789,6 +1782,7 @@ sub duplicate_do : Local {
         date_updated => tt_today($c)->as_d8(),   # and new update status info
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        needs_verification => "yes",
     });
 
 

@@ -7,7 +7,7 @@
 <a href="/xaccount/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/xaccount/delete/[% xaccount.id %]"
-onclick="return confirm('Okay to Delete [% xaccount.name %]?');">Delete</a>
+onclick="return confirm('Okay to Delete [% xaccount.descr %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/xaccount/list">List</a>
 &nbsp;&nbsp;&nbsp;

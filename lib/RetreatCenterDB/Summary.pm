@@ -39,6 +39,8 @@ __PACKAGE__->add_columns(qw/
     sound_setup
     check_list
     converted_spaces
+    needs_verification
+    prog_person
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

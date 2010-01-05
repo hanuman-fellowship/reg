@@ -5,6 +5,7 @@ use base 'Catalyst::View::TT';
 
 __PACKAGE__->config({
     CATALYST_VAR => 'Catalyst',
+    INTERPOLATE  => 1,
     INCLUDE_PATH => [
         RetreatCenter->path_to( 'root', 'src' ),
         RetreatCenter->path_to( 'root', 'lib' )

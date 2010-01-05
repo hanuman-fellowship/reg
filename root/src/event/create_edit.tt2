@@ -4,21 +4,24 @@
 
 <tr>
 <th align=right><span class="required">*</span> Name</th>
-<td><input type=text name=name value="[% event.name %]"></td>
+<td colspan=3><input type=text name=name value="[% event.name %]" size=40></td>
+</tr>
+
+<tr>
 <th align=right><span class="required">*</span> From</th>
-<td><input type=text name=sdate value="[% event.sdate_obj.format("%D") %]" size=10></td>
-<th align=right><span class="required">*</span> To</th>
+<td width=100><input type=text name=sdate value="[% event.sdate_obj.format("%D") %]" size=10></td>
+<th align=right width=50><span class="required">*</span> To</th>
 <td><input type=text name=edate value="[% event.edate_obj.format("%D") %]" size=10></td>
 </tr>
 
 <tr>
 <th align=right>Description</th>
-<td colspan=5><input type=text name=descr value="[% event.descr %]" size=60></td>
+<td colspan=3><input type=text name=descr value="[% event.descr %]" size=60></td>
 </tr>
 
 <tr>
 <th align=right><span class="required">*</span> Sponsor</th>
-<td>
+<td width=100>
 <select name=sponsor>
 [% sponsor_opts %]
 </select>
@@ -27,12 +30,12 @@
 
 <tr>
 <th align=right>Max</th>
-<td><input type=text name=max value="[% event.max %]" size=3></td>
+<td width=100><input type=text name=max value="[% event.max %]" size=3></td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<td width=100><input type=submit value="Submit"></td>
 </tr>
 
 </table>
