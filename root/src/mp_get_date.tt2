@@ -1,7 +1,9 @@
 <h2>${Hap_type}s</h2>
 Adding a Meeting Place for the [% hap_type %] <span class=larger>[% hap.name %]</span>.
 <p class=p2>
-First, What Dates?
+First, what dates?<p>
+The dates default to the start/end dates of ${hap.name}<br>
+which is what you will most often want.
 <p class=p2>
 <form action=/event/which_mp/[% hap_type %]/[% hap.id %] name=form>
 <table cellpadding=5>
