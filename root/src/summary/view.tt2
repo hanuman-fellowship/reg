@@ -41,26 +41,29 @@ p {
 [% END %]
 <p>
 </div>
-<table cellpadding=7>
+<table cellpadding=7 border=0>
 
 <tr>
-<td>
+<td valign=bottom>
 <b>Name</b>
 [% IF prog_staff %]
 <a class=larger href=/[% type %]/view/[% happening.id %]>[% happening.name %]</a>
 [% ELSE %]
 <span class=larger>[% happening.name %]</span>
 [% END %]
+</td>
+<td valign=bottom>
 <b>From</b>
 [% happening.sdate_obj %] <span class=dow>[% happening.sdate_obj.format("%a") %]</span>
 <b>To</b>
 [% happening.edate_obj %] <span class=dow>[% happening.edate_obj.format("%a") %]</span>
-[% IF type == 'rental' %]
-$happening.status_td<td>$sum.prog_person</td>
-[% ELSIF happening.extradays %]
-[% plus %]    
-[% END %]
 </td>
+[% IF type == 'rental' %]
+$happening.status_td
+[% ELSIF happening.extradays %]
+<td valign=bottom>[% plus %]</td>
+[% END %]
+<td valign=bottom>$sum.prog_person</td>
 </tr>
 
 </table>

@@ -28,12 +28,10 @@ th {
 >
 <table cellpadding=3 border=0>
 
-[% IF type == 'rental' %]
 <tr>
 <th align=right>Event Coordinator</th>
 <td><input type=text name=prog_person value="$sum.prog_person"></td>
 </tr>
-[% END %]
 
 <tr>
 <th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=20></td>
