@@ -170,10 +170,7 @@ sub use_template : Local {
     my $prefix = "MMC";
     if ($type eq 'Program') {
         my $prog = model($c, $type)->find($happening_id);
-        if ($prog->name() =~ m{^MMI-([DCM])}) {
-            $prefix = "MMI-$1";
-        }
-        elsif ($prog->school() != 0) {
+        if ($prog->school() != 0) {
             $prefix = "MMI";
         }
     }
