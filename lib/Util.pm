@@ -1427,8 +1427,8 @@ sub avail_mps {
         #
         my @bookings = model($c, 'Booking')->search({
                           meet_id => $id,
-                          sdate => { '<=' => $edate },
-                          edate => { '>=' => $sdate },
+                          sdate => { '<' => $edate },
+                          edate => { '>' => $sdate },
                        });
         next MEETING_PLACE if @bookings;
         #
