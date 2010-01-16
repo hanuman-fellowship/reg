@@ -186,3 +186,10 @@ dp_margin_bottom 25
 sum_copy_id 0
 
 ftp_rental_dir /www/cgi-bin/rental/ftp_dir
+
+disc_pr 20
+disc_pr_start 20100301
+disc_pr_end 201000531
+
+center_tent_start 0425
+center_tent_end   1031

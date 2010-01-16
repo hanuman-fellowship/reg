@@ -1016,9 +1016,14 @@ sub commify {
     return scalar reverse $n;
 }
 
+#
+# the date is in d8 format perfect for comparison.
+# we don't need the year
+#
 sub wintertime {
-    my ($mon) = @_;
-    return ($mon <= 4 || 11 <= $mon);
+    my ($d) = @_;
+    $d = substr($d, 4, 4);
+    return ($d < $string{center_tent_start} || $string{center_tent_end} < $d);
 }
 
 #

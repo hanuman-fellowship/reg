@@ -295,7 +295,7 @@ sub count {
 }
 sub status_td {
     my ($self) = @_;
-    my $status = $self->status;
+    my $status = $self->status();
     my $color = sprintf "#%02x%02x%02x",
                         $string{"rental_$status\_color"} =~ m{\d+}g;
     return "<td align=center bgcolor=$color>\u$status</td>";

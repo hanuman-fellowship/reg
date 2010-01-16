@@ -693,7 +693,6 @@ sub _rest_of_reg {
     #
     my $h_type_opts = "";
     my $h_type_opts2 = "";
-    my $mon = $pr->sdate_obj->month();
 
     Global->init($c);     # get %string ready.
     HTYPE:
@@ -705,7 +704,7 @@ sub _rest_of_reg {
         if ($ht !~ m{unknown|not_needed} && $pr->housecost->$ht == 0) {
             next HTYPE;
         }
-        next HTYPE if $ht eq "center_tent" && wintertime($mon);
+        next HTYPE if $ht eq "center_tent" && wintertime($pr->sdate());
 
         my $selected = ($ht eq $house1 )? " selected": "";
         my $selected2 = ($ht eq $house2)? " selected": "";
@@ -1323,10 +1322,10 @@ sub _compute {
     my $h_type = $reg->h_type;           # what housing type was assigned?
     my $h_cost = ($h_type eq 'not_needed'
                   || $h_type eq 'unknown')? 0
-                 :                          $housecost->$h_type;
+                 :                          $housecost->$h_type();
                                             # column name is correct, yes?
     my ($tot_h_cost, $what);
-	if ($housecost->type eq "Per Day") {
+	if ($housecost->type() eq "Per Day") {
 		$tot_h_cost = $prog_days*$h_cost;
         my $plural = ($prog_days == 1)? "": "s";
         $what = "$prog_days day$plural Lodging at \$$h_cost per day";
@@ -1334,13 +1333,8 @@ sub _compute {
     else {
         # changed from pro-rating to not pro-rating
         #
-        #$tot_h_cost = int($h_cost * ($prog_days/$tot_prog_days));
         $tot_h_cost = $h_cost;
         $what = "Lodging - Total Cost";
-        #if ($prog_days != $tot_prog_days) {
-        #    my $plural = ($prog_days == 1)? "": "s";
-        #    $what .= " - $prog_days day$plural";
-        #}
     }
     if ($lead_assist && $pr->rental_id() == 0) {
         # leaders of non-hybrid programs pay no housing
@@ -1355,18 +1349,6 @@ sub _compute {
             what      => $what,
         });
     }
-    # elsif ($dup && $tot_h_cost != 0) {
-    #    # dup record - DO put a manual charge for the room
-    #    # even tho it is on manual financing.
-    #    # NO, don't do that.   the registrar will take care of it.
-    #
-    #    model($c, 'RegCharge')->create({
-    #        @who_now,
-    #        automatic => '',
-    #        amount    => $tot_h_cost,
-    #        what      => $what,
-    #    });
-    #}
     if ($auto && $pr->school() != 0 && ! $lead_assist) {
         # MMI registrants have an extra day at the commuting rate.
         #
@@ -1476,6 +1458,45 @@ sub _compute {
             });
         }
 	}
+    #
+    # Personal Retreat discounts during special period
+    #
+    if ($pr->PR()
+        && $reg->date_start() <= $string{disc_pr_end}
+        && $reg->date_end()   >= $string{disc_pr_start}
+    ) {
+        # there is SOME overlap.
+        # so we need to figure
+        # how many days in the registration's range
+        # are Mon-Thu and in the discount period.
+        #
+        my $d          = date($reg->date_start());
+        my $end        = date($reg->date_end());
+        my $disc_start = date($string{disc_pr_start});
+        my $disc_end   = date($string{disc_pr_end});
+        my $ndays = 0;
+        while ($d < $end) {     # not <= because they leave on $end
+            my $dow = $d->day_of_week();
+            if (   1 <= $dow         && $dow <= 4        # Mon-Thu
+                && $disc_start <= $d && $d <= $disc_end  # in discount PR period
+            ) {
+                ++$ndays;
+            }
+            ++$d;
+        }
+        if ($ndays) {
+            my $pl = $ndays == 1? ""
+                     :            "s";
+            model($c, 'RegCharge')->create({
+                @who_now,
+                automatic => 'yes',
+                amount    => -1*(int(($string{disc_pr}/100)*$ndays*$h_cost+.5)),
+                what      => "$string{disc_pr}% Lodging discount for"
+                             . " $ndays day$pl Mon-Thu<br>"
+                             . " in the PR discount period.",
+            });
+        }
+    }
 
     #
     # sponsor/life members get free nights
@@ -2595,7 +2616,6 @@ sub update : Local {
     my $h_type_opts2 = "";
     Global->init($c);     # get %string ready.
     my $cur_htype = $reg->h_type();
-    my $mon       = $reg->date_start_obj->month();
     HTYPE:
     for my $htname (housing_types(2)) {
         next HTYPE if $htname eq "single_bath" && ! $pr->sbath;
@@ -2605,7 +2625,8 @@ sub update : Local {
         next HTYPE if    $htname ne "unknown"
                       && $htname ne "not_needed"
                       && $pr->housecost->$htname() == 0;     # wow!
-        next HTYPE if $htname eq 'center_tent' && wintertime($mon);
+        next HTYPE if $htname eq 'center_tent'
+                      && wintertime($reg->date_start());
 
         my $selected = ($htname eq $cur_htype)? " selected": "";
         my $selected1 = ($htname eq $reg->pref1())? " selected": "";
@@ -3020,8 +3041,7 @@ sub lodge : Local {
     my $sdate = $reg->date_start;
     my $edate1 = (date($reg->date_end) - 1)->as_d8();
 
-    my $mon = $reg->date_start_obj->month();
-    my $summer = ! wintertime($mon);
+    my $summer = ! wintertime($reg->date_start());
 
     my $h_type = $reg->h_type;
     my $bath   = ($h_type =~ m{bath}  )? "yes": "";
@@ -4453,9 +4473,7 @@ sub mmi_import_do : Local {
                   { order_by  => 'date_start desc' },
               );
         my $h_type = shift @h_types;
-        my $sdate = $program->sdate_obj();
-        my $m = $sdate->month();
-        if ($h_type =~ m{tent} && wintertime($m)) {
+        if ($h_type =~ m{tent} && wintertime($program->sdate())) {
             $h_type = "";
             H_TYPE:
             for my $ht (@h_types) {

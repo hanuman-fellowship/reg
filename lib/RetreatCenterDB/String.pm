@@ -15,8 +15,8 @@ __PACKAGE__->set_primary_key('the_key');
 
 sub value_td {
     my ($self) = @_;
-    my $v = $self->value();
     my $k = $self->the_key();
+    my $v = $self->value() || "";
     if ($k =~ m{_color$}) {
         my $color = sprintf "#%02x%02x%02x", $v =~ m{\d+}g;
         #return "<td><span style='background: $color'>"
