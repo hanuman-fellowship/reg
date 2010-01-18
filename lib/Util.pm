@@ -865,6 +865,7 @@ sub tt_today {
 }
 
 # given a Registration return the ceu_license
+#
 sub ceu_license {
     my ($reg, $override_hours) = @_;
     my $person = $reg->person;
@@ -897,26 +898,38 @@ sub ceu_license {
 						  "the course ends.<br>".
 		                  "Board of Behavioral Sciences, Provider #PCE632";
 	}
-    my $ndays = $program->edate - $program->sdate;
-    my $hours = ($program->retreat && $ndays == 4)? 18
-               :($program->name =~ m{YTT}        )? 120
-               :                                    $ndays*5
+    my $sdate = $reg->date_start_obj();
+    my $ps = $program->sdate_obj();
+    if ($sdate < $ps) {
+        # they came early
+        #
+        $sdate = $ps;
+    }
+    my $pe = $program->edate_obj() + $program->extradays();
+    my $edate = $reg->date_end_obj();
+    if ($edate > $pe) {
+        # they stayed afterwards
+        #
+        $edate = $pe;
+    }
+    my $ndays = $edate - $sdate;
+    my $hours = ($program->retreat() && $ndays == 4)? 18
+               :($program->name =~ m{YTT}          )? 120
+               :                                      $ndays*5
                ;
     if ($override_hours) {
         $hours = $override_hours;
     }
-    my $sdate = $program->sdate_obj;
-    my $edate = $program->edate_obj;
     my $date = $sdate->format("%B %e");
-    if (   $sdate->month == $edate->month 
-        && $sdate->year  == $sdate->year )
+    if (   $sdate->month() == $edate->month() 
+        && $sdate->year()  == $sdate->year() )
     {
         # February 4-6, 2005
         $date .= sprintf "-%d, %d",
-                         $edate->day,
+                         $edate->day(),
                          $sdate->format("%Y");
     }
-    elsif ($edate->year == $sdate->year) {
+    elsif ($edate->year() == $sdate->year()) {
         # February 4 - March 6, 2005
         $date .= $edate->format(" - %B&nbsp;%e, %Y");
     }
@@ -927,10 +940,10 @@ sub ceu_license {
                          $edate->format("%B %e, %Y");
     }
     my $stash = {
-        name          => $person->first . " " . $person->last,
-        topic         => $program->title,
+        name          => $person->first() . " " . $person->last(),
+        topic         => $program->title(),
         date          => $date,
-        instructor    => $program->leader_names,
+        instructor    => $program->leader_names(),
         license       => $license,
         has_completed => $has_completed,
         provider      => $provider,
