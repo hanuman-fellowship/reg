@@ -4753,6 +4753,7 @@ sub payment_update_do : Local {
     my ($self, $c, $pay_id) = @_;
 
     my $pay = model($c, 'RegPayment')->find($pay_id);
+    my $reg = $pay->registration();
     my $the_dt = trim($c->request->params->{the_date});
     my $dt = date($the_dt);
     if (! $dt) {
@@ -4770,13 +4771,22 @@ sub payment_update_do : Local {
         );
         return;
     }
+    my $type = $c->request->params->{type};
+    my $what = $c->request->params->{what};
     $pay->update({
         the_date => $dt->as_d8(),
         # date changes but time remains the same ??? Okay?
         amount   => $amount,
-        type     => $c->request->params->{type},
-        what     => $c->request->params->{what},
+        type     => $type,
+        what     => $what,
     });
+    if ($what eq 'Deposit') {
+        # need to update the deposit field in the reg record
+        #
+        $reg->update({
+            deposit => $amount,
+        });
+    }
     # ??? also update who, when
     _calc_balance($pay->registration());
     if ($c->request->params->{from} eq 'edit_dollar') {
