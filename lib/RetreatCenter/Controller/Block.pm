@@ -236,7 +236,7 @@ sub _get_data {
     if (empty($P{npeople})) {
         $P{npeople} = 0;
     }
-    elsif (! ($P{npeople} =~ m{^\d$} && $P{npeople} <= $P{nbeds})) {
+    elsif (! ($P{npeople} =~ m{^\d+$} && $P{npeople} <= $P{nbeds})) {
         push @mess, "Invalid # of People: $P{npeople}";
     }
     if (empty($P{reason})) {
