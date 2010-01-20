@@ -109,12 +109,12 @@ sub _ride_list {
         my $driver_name = ($r->driver_id()? $r->driver->first()
                            :                "Select Driver"    );
 
-        if ($prev_date && $r->pickup_date() != $prev_date) {
+        #if ($prev_date && $r->pickup_date() != $prev_date) {
             # a space between rows, please
             #
             $rows .= "<tr><td>&nbsp;</td></tr>\n";
             $class = "fl_row0";
-        }
+        #}
         if ($r->pickup_date() != $prev_date
             ||
             $r->shuttle()  != $prev_shuttle
@@ -228,8 +228,12 @@ $shuttle_list
 EOH
         $rows .= "</tr>";
     }
+    if ($errors) {
+        $errors .= "<p class=p2>\n";
+    }
     # return a bare string heredoc!
     <<"EOH";
+<span style="color: red">$errors</span>
 <table cellpadding=5 border=0>
 <tr>
 <td></td>
@@ -243,8 +247,6 @@ EOH
 </tr>
 $rows
 </table>
-<p class=p2>
-<span style="color: red">$errors</span>
 EOH
 }
 
