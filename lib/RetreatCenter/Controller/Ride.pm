@@ -108,13 +108,6 @@ sub _ride_list {
         my $driver_id = $r->driver_id();
         my $driver_name = ($r->driver_id()? $r->driver->first()
                            :                "Select Driver"    );
-
-        #if ($prev_date && $r->pickup_date() != $prev_date) {
-            # a space between rows, please
-            #
-            $rows .= "<tr><td>&nbsp;</td></tr>\n";
-            $class = "fl_row0";
-        #}
         if ($r->pickup_date() != $prev_date
             ||
             $r->shuttle()  != $prev_shuttle
