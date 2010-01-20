@@ -52,15 +52,200 @@ sub list : Local {
 
     stash($c,
         pg_title => "Rides",
-        rides => [ model($c, 'Ride')->search(
+        ride_list => _ride_list($c),
+        template => "ride/list.tt2",
+    );
+}
+
+sub _driver_list {
+    my ($c, $cur_dr_id) = @_;
+    my $opts = "<option value=0>Select Driver</option>\n";
+    my (@roles) = model($c, "Role")->search({
+        role => 'driver',
+    });
+    # should just be one role
+    my @drivers = $roles[0]->users();
+    for my $dr (@drivers) {
+        my $dr_id = $dr->id();
+        $opts .= "<option value="
+              .  $dr_id
+              .  ($cur_dr_id == $dr_id? " selected"
+                  :                     ""         )
+              .  ">"
+              .  $dr->first()
+              .  "</option>\n"
+              ;
+    }
+    $opts;
+}
+
+sub _ride_list {
+    my ($c, $aref_cond) = @_;
+    if (! $aref_cond) {
+        $aref_cond = [
             -or => [
                 pickup_date => { '>=' => today()->as_d8() },
                 paid_date   => '',
             ],
-            { order_by => 'pickup_date, airport, flight_time' }
-        ) ],
-        template => "ride/list.tt2",
+        ];
+    }
+    my @rides = model($c, 'Ride')->search(
+        @$aref_cond,
+        {
+            join       => [qw/ rider /],
+            prefetch   => [qw/ rider /],   
+            order_by => 'pickup_date, shuttle, flight_time',
+        },
     );
+    my $rows = "";
+    my $errors = "";
+    my %to_fro = ();
+    my %driver_for = ();
+    my $class = "fl_row0";
+    my ($prev_date, $prev_shuttle) = (0, 0);
+    for my $r (@rides) {
+        my $r_id = $r->id();
+        my $driver_id = $r->driver_id();
+        my $driver_name = ($r->driver_id()? $r->driver->first()
+                           :                "Select Driver"    );
+
+        if ($prev_date && $r->pickup_date() != $prev_date) {
+            # a space between rows, please
+            #
+            $rows .= "<tr><td>&nbsp;</td></tr>\n";
+            $class = "fl_row0";
+        }
+        if ($r->pickup_date() != $prev_date
+            ||
+            $r->shuttle()  != $prev_shuttle
+        ) {
+            $class = $class eq "fl_row0"? "fl_row1"
+                     :                    "fl_row0"
+                     ;
+        }
+        my $key = $r->shuttle() . "|" . $r->pickup_date();
+        if ($r->shuttle() != 0
+            && exists $to_fro{$key}
+            && $to_fro{$key} ne $r->from_to()
+        ) {
+            $errors .= "Shuttle #" . $r->shuttle()
+                    . " on " . $r->pickup_date_obj()
+                    . " cannot be both from AND to MMC.<br>"
+                    ;
+        }
+        else {
+            $to_fro{$key} = $r->from_to();
+        }
+        if ($r->shuttle() != 0
+            && $r->driver_id() != 0
+            && exists $driver_for{$key}
+            && $driver_for{$key} != $r->driver_id()
+        ) {
+            $errors .= "Shuttle #" . $r->shuttle()
+                    . " on " . $r->pickup_date_obj()
+                    . " has two different drivers.<br>"
+                    ;
+        }
+        else {
+            $driver_for{$key} = $r->driver_id();
+        }
+        $prev_date    = $r->pickup_date();
+        $prev_shuttle = $r->shuttle();
+        $rows .= "<tr class=$class>\n";
+
+        $rows .= "<td>";
+        if (!$r->complete()) {
+            $rows .= "<img src=/static/images/question.jpg height=20>";
+        }
+        elsif (! $r->sent_date()) {
+            $rows .= "<img src=/static/images/envelope.jpg height=20>";
+        }
+        elsif ($r->paid_date()) {
+            $rows .= "<img src=/static/images/checked.gif>";
+        }
+        $rows .= "</td>\n";
+
+        $rows .= "<td><a href=/ride/view/$r_id>"
+              .  $r->rider->last() . ", " . $r->rider->first()
+              .  "</a></td>\n"
+              ;
+        $rows .= "<td>"
+              .  $r->pickup_date_obj->format("%a %b %e")
+              .  "</td>\n"
+              ;
+        $rows .= "<td>"
+              .  $r->from_to()
+              .  "</td>\n"
+              ;
+        $rows .= "<td align=left>&nbsp;&nbsp;&nbsp;"
+              .  $r->airport()
+              .  "</td>\n"
+              ;
+        $rows .= "<td align=right>"
+              .  $r->flight_time_obj()
+              .  "</td>\n"
+              ;
+        my $driver_list = _driver_list($c, $driver_id);
+        $rows .= <<"EOH";
+
+<td valign=top>
+<div id=dr_n$r_id style="display: block">
+<a href="#" onclick="return choose_driver($r_id);">$driver_name</a>
+</div>
+<!------>
+<div id=dr_s$r_id style='display: none'>
+<select id=dr_sel$r_id onchange="return new_driver($r_id);">
+$driver_list
+</select>
+</div>
+</td>
+
+EOH
+        my $sh = $r->shuttle();
+        my $shuttle_name = ($sh == 0? "Select Shuttle"
+                            :         "#$sh"          );
+        my $shuttle_list = "<option value=0>Select Shuttle</option>\n";
+        for my $i (1 .. $string{max_shuttles}) {
+            $shuttle_list .= "<option value=$i"
+                          .  ($i == $sh? " selected"
+                              :          ""         )
+                          .  ">#$i</a>"
+                          .  "</option>\n"
+                          ;
+        }
+        $rows .= <<"EOH";
+<td valign=top align=center>
+<div id=sh_n$r_id style="display: block">
+<a href="#" onclick="return choose_shuttle($r_id);">$shuttle_name</a>
+</div>
+<!------>
+<div id=sh_s$r_id style='display: none'>
+<select id=sh_sel$r_id onchange="return new_shuttle($r_id);">
+$shuttle_list
+</select>
+</div>
+</td>
+EOH
+        $rows .= "</tr>";
+    }
+    # return a bare string heredoc!
+    <<"EOH";
+<table cellpadding=5 border=0>
+<tr>
+<td></td>
+<th align=left>Rider</th>
+<th align=left>Date</th>
+<th align=center>Direction</th>
+<th align=left>Airport</th>
+<th align=center>Time</th>
+<th align=left>Driver</th>
+<th align=left>Shuttle</th>
+</tr>
+$rows
+</table>
+<p class=p2>
+<span style="color: red">$errors</span>
+EOH
 }
 
 sub delete : Local {
@@ -138,11 +323,11 @@ sub _get_data {
     if (! empty($P{cc_code}) && $P{cc_code} !~ m{\d{3}}) {
         push @mess, "Invalid security code";
     }
-    $P{cc_number} = $P{cc_number1} 
-                     . $P{cc_number2}
-                     . $P{cc_number3}
-                     . $P{cc_number4}
-                     ;
+    $P{cc_number} = ($P{cc_number1} || "")
+                  . ($P{cc_number2} || "")
+                  . ($P{cc_number3} || "")
+                  . ($P{cc_number4} || "")
+                  ;
     for my $i (1 .. 4) {
         delete $P{"cc_number$i"};
     }
@@ -188,6 +373,13 @@ sub update : Local {
                      . "\n"
                      ;
     }
+    my $shuttle_opts = "<option value=0>Select Shuttle\n";
+    for my $sh (1 .. $string{max_shuttles}) {
+        $shuttle_opts .= "<option value=$sh"
+                      .  ($ride->shuttle() == $sh? " selected"
+                          :                        "")
+                      .  ">#$sh\n";
+    }
 
     my $opts = "";
     my $airport = $ride->airport();
@@ -212,6 +404,7 @@ sub update : Local {
     stash($c,
         ride         => $ride,
         driver_opts  => $driver_opts,
+        shuttle_opts => $shuttle_opts,
         dir_from     => (($ride->from_to() eq "From MMC")? "checked": ""),
         dir_to       => (($ride->from_to() eq "To MMC"  )? "checked": ""),
         airport_opts => $opts,
@@ -288,8 +481,13 @@ sub create : Local {
                    ;
     }
 
+    my $shuttle_opts = "<option value=0>Select Shuttle</option>\n";
+    for my $sh (1 .. $string{max_shuttles}) {
+        $shuttle_opts .= "<option value=$sh>#$sh</option>\n";
+    }
     stash($c,
         airport_opts => $opts,
+        shuttle_opts => $shuttle_opts,
         type_opts    => $type_opts,
         driver_opts  => $driver_opts,
         person       => model($c, 'Person')->find($person_id),
@@ -452,8 +650,8 @@ sub search : Local {
         push @cond, pickup_date => { '<=' => $end->as_d8() };
     }
     my $name = $c->request->param('name');
-    $name =~ s{\*}{%}g;
     if (! empty($name)) {
+        $name =~ s{\*}{%}g;
         push @cond, 'rider.last' => { 'like' => "%$name%" };
     }
     if (! @cond) {
@@ -465,18 +663,9 @@ sub search : Local {
                     ];
     }
     stash($c,
-        pg_title => "Rides",
-        rides    => [ model($c, 'Ride')->search(
-            {
-                @cond,
-            },
-            {
-                order_by => 'pickup_date, airport, flight_time',
-                join     => [qw/ rider /],
-                prefetch => [qw/ rider /],   
-            }
-        ) ],
-        template => "ride/list.tt2",
+        pg_title  => "Rides",
+        ride_list => _ride_list($c, \@cond),
+        template  => "ride/list.tt2",
     );
 }
 
@@ -492,4 +681,91 @@ sub mine : Local {
     $c->stash->{template} = "ride/list.tt2";
 }
 
+#
+# assign the driver_id to the ride.
+# other rides on that day with the same shuttle #
+# should get the new driver as well.
+#
+# return a whole new table for the list of rides.
+# called via AJAX from list.tt2 when choosing a new driver
+# directly from the list.
+#
+sub new_driver : Local {
+    my ($self, $c, $ride_id, $driver_id) = @_;
+    my $ride = model($c, 'Ride')->find($ride_id);
+    $ride->update({
+        driver_id => $driver_id,
+    });
+    model($c, 'Ride')->search({
+        pickup_date => $ride->pickup_date(),
+        shuttle     => $ride->shuttle(),
+        id          => { '!=' => $ride_id },
+    })->update({
+        driver_id => $driver_id,
+    });
+    $c->res->output(_ride_list($c));
+}
+#
+# similarily for a new shuttle number
+# but don't change other rides.
+# if there is another ride with this shuttle
+# on the same day with a driver, then take its
+# driver for this ride.
+#
+sub new_shuttle : Local {
+    my ($self, $c, $ride_id, $shuttle_num) = @_;
+    my $ride = model($c, 'Ride')->find($ride_id);
+    my @others = model($c, 'Ride')->search({
+        pickup_date => $ride->pickup_date(),
+        shuttle     => $shuttle_num,
+        driver_id   => { '>' => 0 },
+    });
+    my @opt;
+    if (@others) {
+        @opt = (driver_id => $others[0]->driver_id());
+    }
+    $ride->update({
+        shuttle => $shuttle_num,
+        @opt,
+    });
+    $c->res->output(_ride_list($c));
+}
+
 1;
+
+=comment
+simple test plan
+
+create 7 rides with 2 or 3 on a day
+    with varying times
+don't assign shuttle or driver on the create screen
+
+view the list
+note the order of rides
+    date, time
+note the spacing between days
+
+DOUBLE click on "Select Driver" and you can assign a new driver.
+similarily for "Select Shuttle"
+you can also change an existing driver or shuttle in the same way.
+
+if you change the driver of a ride then
+    other rides on that same day with the same
+    shuttle number will get that same newly assigned driver.
+if you change the shuttle number of a ride
+    and there are other rides with that shuttle number on that same day
+    which have a driver, that driver (the first one) will be used
+    for the ride you just changed.
+
+note that all rides in a shuttle have the same background color
+and the next shuttle in a day will have a different background
+note the order of the rides
+    date, shuttle, time
+
+- can't have a shuttle both from AND to MMC.
+- if you edit a ride individually and change
+    the driver or shuttle you can end up with
+    one shuttle having two different drivers.
+in both these cases you will see a red error message
+    below the table of rides.
+=cut

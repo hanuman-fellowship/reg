@@ -1,3 +1,54 @@
+<script type="text/javascript">
+
+// prepare for an Ajax call:
+var xmlhttp = false;
+var ua = navigator.userAgent.toLowerCase();
+if (!window.ActiveXObject)
+    xmlhttp = new XMLHttpRequest();
+else if (ua.indexOf('msie 5') == -1)
+    xmlhttp = new ActiveXObject("Msxml2.XMLHTTP");
+else
+    xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+
+function getIt() {
+    if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+        var resp = xmlhttp.responseText;
+        document.getElementById('ride_list').innerHTML = resp;
+    }
+}
+function choose_driver(id) {
+    document.getElementById('dr_n' + id).style.display = 'none';
+    document.getElementById('dr_s' + id).style.display = 'block';
+    document.getElementById('dr_sel' + id).focus();
+}
+function choose_shuttle(id) {
+    document.getElementById('sh_n' + id).style.display = 'none';
+    document.getElementById('sh_s' + id).style.display = 'block';
+    document.getElementById('sh_sel' + id).focus();
+}
+function new_driver(ride_id) {
+    var sel = document.getElementById('dr_sel' + ride_id);
+    var i = sel.selectedIndex;
+    var driver_id = sel.options[i].value;
+    var url = '[% Catalyst.uri_for("/ride/new_driver/") %]'
+              + ride_id + '/' + driver_id;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = getIt;
+    xmlhttp.send(null);
+    return true;
+}
+function new_shuttle(ride_id) {
+    var sel = document.getElementById('sh_sel' + ride_id);
+    var i = sel.selectedIndex;
+    var shuttle_id = sel.options[i].value;
+    var url = '[% Catalyst.uri_for("/ride/new_shuttle/") %]'
+              + ride_id + '/' + shuttle_id;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = getIt;
+    xmlhttp.send(null);
+    return true;
+}
+</script>
 <h2>Rides</h2>
 <form name=form action=/ride/search>
 [% IF Catalyst.check_user_roles('ride_admin') %]
@@ -8,39 +59,14 @@
 &nbsp;
 End <input type=text name=end size=10>
 &nbsp;
-Name <input type=text name=name size=10>
+Last Name <input type=text name=name size=10>
 &nbsp;
 <input type=submit value="Go">
 </form>
 <ul>
-<table cellpadding=5 border=0>
-<tr>
-<td></td>
-<th align=left>Rider</th>
-<th align=left>Date</th>
-<th align=left>Airport</th>
-<th align=center>Time</th>
-<th align=left>Driver</th>
-</tr>
-[% FOREACH r IN rides %]
-    <tr>
-    <td>
-    [% IF !r.complete %]
-        <img src=/static/images/question.jpg height=20>
-    [% ELSIF ! r.sent_date %]
-        <img src=/static/images/envelope.jpg height=20>
-    [% ELSIF r.paid_date %]
-        <img src=/static/images/checked.gif>
-    [% END %]
-    </td>
-    <td><a href=/ride/view/[% r.id %]>[% r.rider.last %], [% r.rider.first %]</a></td>
-    <td>[% r.pickup_date_obj %]</td>
-    <td align=left>&nbsp;&nbsp;&nbsp;[% r.airport %]</td>
-    <td align=right>[% r.flight_time_obj %]</td>
-    <td><a href=/user/view/[% r.driver.id %]>[% r.driver.first %]</a></td>
-    </tr>
-[% END %]
-</table>
+<div id=ride_list>
+$ride_list
+</div>
 <script type="text/javascript">
 document.form.start.focus();
 </script>

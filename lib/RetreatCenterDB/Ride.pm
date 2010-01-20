@@ -38,6 +38,7 @@ __PACKAGE__->add_columns(qw/
     comment
     paid_date
     sent_date
+    shuttle
 /);
 __PACKAGE__->set_primary_key(q/id/);
 
@@ -55,7 +56,9 @@ sub sent_date_obj {
 }
 sub flight_time_obj {
     my ($self) = @_;
-    return get_time($self->flight_time());
+    my $t = $self->flight_time();
+    return empty($t)? ""
+           :          get_time($t);
 }
 sub type_sh {
     my ($self) = @_;

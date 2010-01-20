@@ -61,6 +61,11 @@
 </tr>
 
 <tr>
+<th align=right>Shuttle</th>
+<td>$ride.shuttle</td>
+</tr>
+
+<tr>
 <th align=right>Pickup Date</th>
 <td>[% ride.pickup_date_obj %]</td>
 </tr>

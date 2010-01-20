@@ -13,5 +13,6 @@ create table ride (
     type text,
     comment text,
     paid_date text,
-    sent_date text
+    sent_date text,
+    shuttle integer
 );

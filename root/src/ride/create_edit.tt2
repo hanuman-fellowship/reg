@@ -37,6 +37,15 @@ function check(event, fld, n, next_id) {
 </tr>
 
 <tr>
+<th align=right>Shuttle</th>
+<td>
+<select name=shuttle>
+$shuttle_opts
+</select>
+</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Direction</th>
 <td>
 <input type=radio name=from_to value="To MMC"   [% dir_to   %]>To MMC<br>

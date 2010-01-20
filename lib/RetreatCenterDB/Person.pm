@@ -10,6 +10,7 @@ use Algorithm::LUHN qw/
     is_valid
 /;
 use Util qw/
+    empty
     valid_email
 /;
 
@@ -116,11 +117,30 @@ sub date_entrd_obj {
 
     return date($self->date_entrd);
 }
-sub cc_number1 { substr(shift->cc_number(),  0, 4) }
-sub cc_number2 { substr(shift->cc_number(),  4, 4) }
-sub cc_number3 { substr(shift->cc_number(),  8, 4) }
-sub cc_number4 { substr(shift->cc_number(), 12, 4) }
-
+sub cc_number1 {
+    my $cc = shift->cc_number();
+    return (defined($cc) && ! empty($cc))? substr($cc, 0, 4)
+           :                               ""
+           ;
+}
+sub cc_number2 {
+    my $cc = shift->cc_number();
+    return (defined($cc) && ! empty($cc))? substr($cc, 4, 4)
+           :                               ""
+           ;
+}
+sub cc_number3 {
+    my $cc = shift->cc_number();
+    return (defined($cc) && ! empty($cc))? substr($cc, 8, 4)
+           :                               ""
+           ;
+}
+sub cc_number4 {
+    my $cc = shift->cc_number();
+    return (defined($cc) && ! empty($cc))? substr($cc, 12, 4)
+           :                               ""
+           ;
+}
 sub addrs {
     my ($self) = @_;
 

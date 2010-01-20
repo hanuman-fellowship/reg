@@ -914,7 +914,7 @@ sub ceu_license {
     }
     my $ndays = $edate - $sdate;
     my $hours = ($program->retreat() && $ndays == 4)? 18
-               :($program->name =~ m{YTT}          )? 120
+               ##:($program->name =~ m{YTT}          )? 120
                :                                      $ndays*5
                ;
     if ($override_hours) {
