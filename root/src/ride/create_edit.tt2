@@ -28,6 +28,11 @@ function check(event, fld, n, next_id) {
 </tr>
 
 <tr>
+<th align=right>Pickup Time</th>
+<td><input type=text name=pickup_time value='[% IF ride.pickup_time %][% ride.pickup_time_obj.ampm %][% END %]' size=8></td>
+</tr>
+
+<tr>
 <th align=right>Driver</th>
 <td>
 <select name=driver_id>

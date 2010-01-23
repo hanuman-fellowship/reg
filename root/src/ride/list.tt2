@@ -1,5 +1,17 @@
 <script type="text/javascript">
 
+var newwin;
+function popup(url) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=550,width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(900, 0);
+}
+
 // prepare for an Ajax call:
 var xmlhttp = false;
 var ua = navigator.userAgent.toLowerCase();
@@ -31,7 +43,9 @@ function new_driver(ride_id) {
     var i = sel.selectedIndex;
     var driver_id = sel.options[i].value;
     var url = '[% Catalyst.uri_for("/ride/new_driver/") %]'
-              + ride_id + '/' + driver_id;
+              + ride_id + '/' + driver_id + 
+              '?name=$name&start=$start&end=$end'
+              ;
     xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = getIt;
     xmlhttp.send(null);
@@ -42,7 +56,9 @@ function new_shuttle(ride_id) {
     var i = sel.selectedIndex;
     var shuttle_id = sel.options[i].value;
     var url = '[% Catalyst.uri_for("/ride/new_shuttle/") %]'
-              + ride_id + '/' + shuttle_id;
+              + ride_id + '/' + shuttle_id +
+              '?name=$name&start=$start&end=$end'
+              ;
     xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = getIt;
     xmlhttp.send(null);
@@ -53,15 +69,20 @@ function new_shuttle(ride_id) {
 <form name=form action=/ride/search>
 [% IF Catalyst.check_user_roles('ride_admin') %]
 <a href="/ride/pay">Pay</a>
+&nbsp;&nbsp;&nbsp;
+<a href="javascript:popup('/ride/drivers');">Drivers</a>
 [% END %]
-<span style="margin-left: 1in">Start</span>
-<input type=text name=start size=10>
+<span style="margin-left: .5in">Start</span>
+<input type=text name=start size=10 value='$start'>
 &nbsp;
-End <input type=text name=end size=10>
+End <input type=text name=end size=10 value='$end'>
 &nbsp;
-Last Name <input type=text name=name size=10>
+Last Name <input type=text name=name size=10 value='$name'>
 &nbsp;
 <input type=submit value="Go">
+[% IF start || end || name %]
+&nbsp;&nbsp;&nbsp;<a href=/ride/list>All</a>
+[% END %]
 </form>
 <ul>
 <div id=ride_list>

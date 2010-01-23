@@ -71,6 +71,11 @@
 </tr>
 
 <tr>
+<th align=right>Pickup Time</th>
+<td>[% ride.pickup_time_obj %]</td>
+</tr>
+
+<tr>
 <th align=right>Direction</th>
 <td>[% ride.from_to %]</td>
 </tr>

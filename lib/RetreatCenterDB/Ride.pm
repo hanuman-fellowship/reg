@@ -29,6 +29,7 @@ __PACKAGE__->add_columns(qw/
     driver_id
     from_to
     pickup_date
+    pickup_time
     airport
     carrier
     flight_num
@@ -57,6 +58,12 @@ sub sent_date_obj {
 sub flight_time_obj {
     my ($self) = @_;
     my $t = $self->flight_time();
+    return empty($t)? ""
+           :          get_time($t);
+}
+sub pickup_time_obj {
+    my ($self) = @_;
+    my $t = $self->pickup_time();
     return empty($t)? ""
            :          get_time($t);
 }

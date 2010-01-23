@@ -195,3 +195,10 @@ center_tent_start 0425
 center_tent_end   1031
 
 max_shuttles 10
+
+OTH Other
+SJC_color 128,128,128
+SFO_color 128,128,128
+OAK_color 128,128,128
+MRY_color 128,128,128
+OTH_color 128,128,128

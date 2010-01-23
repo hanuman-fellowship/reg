@@ -35,6 +35,7 @@ my @airports = qw/
     SFO
     OAK
     MRY
+    OTH
 /;
 
 sub index : Private {
@@ -60,12 +61,7 @@ sub list : Local {
 sub _driver_list {
     my ($c, $cur_dr_id) = @_;
     my $opts = "<option value=0>Select Driver</option>\n";
-    my (@roles) = model($c, "Role")->search({
-        role => 'driver',
-    });
-    # should just be one role
-    my @drivers = $roles[0]->users();
-    for my $dr (@drivers) {
+    for my $dr (_get_drivers($c)) {
         my $dr_id = $dr->id();
         $opts .= "<option value="
               .  $dr_id
@@ -163,21 +159,28 @@ sub _ride_list {
               .  "</a></td>\n"
               ;
         $rows .= "<td>"
-              .  $r->pickup_date_obj->format("%a %b %e")
-              .  "</td>\n"
-              ;
-        $rows .= "<td>"
               .  $r->from_to()
               .  "</td>\n"
               ;
-        $rows .= "<td align=left>&nbsp;&nbsp;&nbsp;"
-              .  $r->airport()
+        my $airport = $r->airport();
+        $rows .= "<td align=left style='background: "
+              .  sprintf("#%02x%02x%02x",
+                         $string{"${airport}_color"} =~ m{(\d+)}g)
+              .  "'>&nbsp;&nbsp;&nbsp;"
+              .  $airport
+              .  "</td>\n"
+              ;
+        $rows .= "<td>"
+              .  $r->pickup_date_obj->format("%a %b %e")
               .  "</td>\n"
               ;
         $rows .= "<td align=right>"
               .  $r->flight_time_obj()
               .  "</td>\n"
               ;
+        $rows .= "<td>"
+              .  $r->pickup_time_obj()
+              .  "</td>";
         my $driver_list = _driver_list($c, $driver_id);
         $rows .= <<"EOH";
 
@@ -228,13 +231,14 @@ EOH
     <<"EOH";
 <span style="color: red">$errors</span>
 <table cellpadding=5 border=0>
-<tr>
+<tr valign=bottom>
 <td></td>
 <th align=left>Rider</th>
-<th align=left>Date</th>
 <th align=center>Direction</th>
 <th align=left>Airport</th>
-<th align=center>Time</th>
+<th align=center>Pickup<br>Date</th>
+<th align=center>Flight<br>Time</th>
+<th align=center>Pickup<br>Time</th>
 <th align=left>Driver</th>
 <th align=left>Shuttle</th>
 </tr>
@@ -274,6 +278,15 @@ sub _get_data {
         }
         else {
             $P{flight_time} = $t->t24();
+        }
+    }
+    if (! empty($P{pickup_time})) {
+        my $t = get_time($P{pickup_time});
+        if (! $t) {
+            push @mess, Time::Simple->error();
+        }
+        else {
+            $P{pickup_time} = $t->t24();
         }
     }
     if (! (   empty($P{cc_number1})
@@ -351,15 +364,8 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $ride = model($c, 'Ride')->find($id);
-
-    my (@roles) = model($c, "Role")->search({
-        role => 'driver',
-    });
-    # should just be one role
-
-    my @drivers = $roles[0]->users();
     my $driver_opts = "<option value=0>Choose Driver\n";
-    for my $d (@drivers) {
+    for my $d (_get_drivers($c)) {
         my $id = $d->id();
         $driver_opts .= "<option value=$id"
                      . (($ride->driver_id() == $id)? " selected": "")
@@ -424,7 +430,26 @@ sub update_do : Local {
         cc_code   => $P{cc_code},
     });
     delete @P{qw/cc_number cc_expire cc_code/};
+    my $changed = ($ride->pickup_time() ne $P{pickup_time});
     $ride->update(\%P);
+    if ($changed) {
+        #
+        # pickup time has changed.
+        # change other rides as well
+        #
+        my @cond = ();
+        if ($ride->from_to() eq 'To MMC') {
+            @cond = (airport => $ride->airport());
+        }
+        model($c, 'Ride')->search({
+            pickup_date => $ride->pickup_date(),
+            shuttle     => $ride->shuttle(),
+            id          => { '!=' => $id },
+            @cond,
+        })->update({
+            pickup_time => $P{pickup_time},
+        });
+    }
     Global->init($c);
     $c->response->redirect($c->uri_for("/ride/view/$id"));
 }
@@ -446,14 +471,8 @@ sub create : Local {
         #
         $c->stash->{dir_to} = "checked";
     }
-    my (@roles) = model($c, "Role")->search({
-        role => 'driver',
-    });
-    # should just be one role
-
-    my @drivers = $roles[0]->users();
     my $driver_opts = "<option value=0>Choose Driver\n";
-    for my $d (@drivers) {
+    for my $d (_get_drivers($c)) {
         $driver_opts .= "<option value="
                      . $d->id()
                      . "> "
@@ -630,10 +649,9 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
-sub search : Local {
-    my ($self, $c) = @_;
-    
-    my @cond = (); 
+sub _get_cond {
+    my ($c) = @_;
+    my @cond = ();
     my $start = $c->request->param('start');
     $start = date($start);
     if ($start) {
@@ -657,9 +675,24 @@ sub search : Local {
                         paid_date   => '',
                     ];
     }
+    return \@cond;
+}
+
+sub search : Local {
+    my ($self, $c) = @_;
+    
+    my $start = $c->request->param('start');
+    $start = date($start);
+    my $end = $c->request->param('end');
+    $end = date($end);
+    my $name = $c->request->param('name');
+
     stash($c,
         pg_title  => "Rides",
-        ride_list => _ride_list($c, \@cond),
+        start     => ($start? $start->format("%D"): ""),
+        end       => (  $end? $end->format("%D")  : ""),
+        name      => $name,
+        ride_list => _ride_list($c, _get_cond($c)),
         template  => "ride/list.tt2",
     );
 }
@@ -698,7 +731,7 @@ sub new_driver : Local {
     })->update({
         driver_id => $driver_id,
     });
-    $c->res->output(_ride_list($c));
+    $c->res->output(_ride_list($c, _get_cond($c)));
 }
 #
 # similarily for a new shuttle number
@@ -723,7 +756,40 @@ sub new_shuttle : Local {
         shuttle => $shuttle_num,
         @opt,
     });
-    $c->res->output(_ride_list($c));
+    $c->res->output(_ride_list($c, _get_cond($c)));
+}
+
+sub _get_drivers {
+    my ($c) = @_;
+
+    my (@roles) = model($c, "Role")->search({
+        role => 'driver',
+    });
+    # should just be one role
+    return $roles[0]->users();
+}
+
+sub drivers : Local {
+    my ($self, $c) = @_;
+    my $html = <<"EOH";
+<table cellpadding=5>
+<tr align=left>
+<th>Name</th>
+<th>Email</th>
+<th>Cell</th>
+</tr>
+EOH
+    for my $d (_get_drivers($c)) {
+        $html .= "<tr>"
+              . "<td>" . $d->first() . " " . $d->last() . "</td>"
+              . "<td><a href='mailto:" . $d->email()
+                   . "'>" . $d->email() . "</a></td>"
+              . "<td>" . $d->cell() . "</td>"
+              . "</tr>\n"
+              ;
+    }
+    $html .= "</table>\n";
+    $c->res->output($html);
 }
 
 1;

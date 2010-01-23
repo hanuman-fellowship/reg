@@ -1109,6 +1109,7 @@ sub fillin_template {
 
     my $html = "";
     my $tt = Template->new({
+        INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/static/templates/',
         EVAL_PERL    => 0,
     });

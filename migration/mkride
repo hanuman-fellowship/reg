@@ -5,6 +5,7 @@ create table ride (
     driver_id integer,          -- foreign key to User
     from_to text,
     pickup_date text,
+    pickup_time text,
     airport text,
     carrier text,
     flight_num text,

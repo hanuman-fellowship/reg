@@ -40,7 +40,10 @@ sub index : Private {
             # successful, let them use the application!
             Global->init($c);       # where else to put this???
             _clear_images();
-            if ($c->check_user_roles('prog_staff')) {
+            if ($c->check_user_roles('ride_admin')) {
+                $c->response->redirect($c->uri_for('/ride/list'));
+            }
+            elsif ($c->check_user_roles('prog_staff')) {
                 if (today()->as_d8() > $string{date_coming_going_printed}) {
                     $c->response->redirect(
                         $c->uri_for('/listing/comings_goings')
