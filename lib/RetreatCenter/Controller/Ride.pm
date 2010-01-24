@@ -622,7 +622,7 @@ sub pay_do : Local {
     my ($self, $c) = @_;
 
     my @paid_ids;
-    for my $p ($c->request->param()) {
+    for my $p ($c->request->params()) {
         if ($p =~ m{r(\d+)}) {
             push @paid_ids, $1;
         }
@@ -652,17 +652,26 @@ sub access_denied : Private {
 sub _get_cond {
     my ($c) = @_;
     my @cond = ();
-    my $start = $c->request->param('start');
+    my $start = $c->request->params->{start};
     $start = date($start);
     if ($start) {
         push @cond, pickup_date => { '>=' => $start->as_d8() };
     }
-    my $end = $c->request->param('end');
+    my $end = $c->request->params->{end};
     $end = date($end);
     if ($end) {
-        push @cond, pickup_date => { '<=' => $end->as_d8() };
+        if (@cond) {
+            @cond = ();     # start fresh
+            push @cond, -and => [
+                            pickup_date => { '>=' => $start->as_d8() },
+                            pickup_date => { '<=' => $end->as_d8() },
+                        ];
+        }
+        else {
+            push @cond, pickup_date => { '<=' => $end->as_d8() };
+        }
     }
-    my $name = $c->request->param('name');
+    my $name = $c->request->params->{name};
     if (! empty($name)) {
         $name =~ s{\*}{%}g;
         push @cond, 'rider.last' => { 'like' => "%$name%" };
@@ -681,11 +690,11 @@ sub _get_cond {
 sub search : Local {
     my ($self, $c) = @_;
     
-    my $start = $c->request->param('start');
+    my $start = $c->request->params->{start};
     $start = date($start);
-    my $end = $c->request->param('end');
+    my $end = $c->request->params->{end};
     $end = date($end);
-    my $name = $c->request->param('name');
+    my $name = $c->request->params->{name};
 
     stash($c,
         pg_title  => "Rides",
