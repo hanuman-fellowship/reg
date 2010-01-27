@@ -1,5 +1,7 @@
+<!--
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+-->
 <h2>Comment</h2>
 <form action="/registration/update_comment_do/[% reg.id %]" name=form>
 <table cellpadding=3>
@@ -10,12 +12,12 @@
 
 <tr>
 <th align=right>Person</th>
-<td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
+<td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]" id=to_reg>To Registration</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td><textarea rows=[% comment_lines %] cols=60 name=comment>
+<td><textarea id=mce_editor_0 rows=[% comment_lines + 3 %] cols=60 name=comment>
 [% comment %]
 </textarea></td>
 </tr>
@@ -27,4 +29,10 @@
 
 </table>
 </form>
-<script type="text/javascript">document.form.comment.focus();</script>
+<script type="text/javascript">
+// none of these work :(
+document.form.comment.focus();
+//var editor_id = tinyMCE.activeEditor.editorId;
+//tinyMCE.execInstanceCommand(editor_id, "mceFocus");
+//document.getElementById('to_reg').focus();
+</script>

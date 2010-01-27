@@ -2373,6 +2373,7 @@ $proghead
 <th align=left>House Type</th>
 <th align=left>House</th>
 <th align=left>Dates</th>
+<th align=left>Status</th>
 $posthead
 </tr>
 EOH
@@ -2495,17 +2496,24 @@ EOH
         if ($opt{multiple}) {
             $program_td = "<td>" . $pr->name() . "</td>\n";
         }
-        my $early_late_td;
+        my $early_late = "";
         if ($reg->early() || $reg->late()) {
-            $early_late_td = "<td>"
-                           . $reg->date_start_obj->format("%e")
-                           . "-"
-                           . $reg->date_end_obj->format("%e")
-                           . "</td>"
-                           ;
+            $early_late = $reg->date_start_obj->format("%e")
+                        . "-"
+                        . $reg->date_end_obj->format("%e")
+                        ;
         }
-        else {
-            $early_late_td = "<td></td>";
+        my $status = "";
+        if ($pr->extradays() && $reg->date_end() > $pr->edate()) {
+            # they stayed beyond the normal program end date so...
+            #
+            $status = "Full";
+        }
+        if (! empty($reg->ceu_license())) {
+            if ($status) {
+                $status .= ", ";
+            }
+            $status .= "CEU";
         }
         my $postmark_td = "";
         if ($opt{postmark}) {
@@ -2539,7 +2547,8 @@ $name
 <td align=right>$pay_balance</td>
 <td>$type</td>
 <td>$house</td>
-$early_late_td
+<td>$early_late</td>
+<td>$status</td>
 $postmark_td
 
 </tr>

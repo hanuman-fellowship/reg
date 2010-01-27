@@ -174,7 +174,11 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 %]
 <span style="font-size: 18pt">
     [% IF reg.house_id %]
-        <a style="font-size: 18pt;" href=/registration/relodge/[% id %]>[% reg.house.name %]</a>
+        <a style="font-size: 18pt;" href=/registration/relodge/[% id %]
+       onmouseover="return overlib('ReHouse or Vacate', WIDTH, 250, RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+       onmouseout="return nd();"
+        >[% reg.house.name %]
+        </a>
     [% ELSE %]
         <a href=/registration/lodge/[% id %]>[% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.gif border=0>[% END %]</a>
     [% END %]

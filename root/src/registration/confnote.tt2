@@ -1,5 +1,7 @@
+<!--
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+-->
 <script type="text/javascript">
 var newwin;
 function popup(url) {
@@ -29,7 +31,7 @@ function popup(url) {
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td colspan=3><textarea rows=[% note_lines %] cols=60 name=confnote>
+<td colspan=3><textarea rows=[% note_lines + 3 %] cols=60 name=confnote>
 [% note %]
 </textarea></td>
 </tr>

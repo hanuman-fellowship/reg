@@ -255,8 +255,9 @@ function popup(url, height) {
 									<p>If you are a nurse[% IF mft %], LMFT, or LCSW[% END %] and wish to receive a CEU certificate</p>
 									<label for="ceu_license">License #:</label>
 									<input type=text name=ceu_license id="" value='[% ceu_license %]' size=30>
-									<span class="help">Like this: RN98765[% IF mft %], MFT43210 or LSW31415[% END %]. 
-									If you only want a certificate of completion enter COMP for the license #.</span>
+									<span class="help" style="display: block; margin-top: 3mm; margin-left: 1in; width: 400px; color: black">Like this: RN98765[% IF mft %], MFT43210 or LSW31415[% END %].<br>
+									If you only want a certificate of completion enter COMP for the license #.
+                                    </span>
 								</li>
 							</ol>                       
 					    </fieldset>
@@ -504,5 +505,17 @@ function popup(url, height) {
         <div class="bot"></div>
     </div>
 </div>
+
+<!-- Google ANALYTICS Code for site tracking -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-303243-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
 </body>
 </html>

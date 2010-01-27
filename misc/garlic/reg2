@@ -120,7 +120,7 @@ if ($data->{footnotes} =~ m{\*}
     }
     else {
         if ($form{ceu_license} !~ m{^RN}) {
-            $err .= "$begin RN.";
+            $err .= "$begin RN.<br>If you only want a certificate of completion enter COMP for the license #.";
         }
     }
 }
@@ -149,7 +149,7 @@ if ($err) {
 #
 # how much to charge??
 # it depends on their house1 choice, progchoice, 
-# collect_total, and deposit values.
+# collect_total, percent_tution, and deposit values.
 #
 my ($x_prog_amount, $due);
 my $key = $form{progchoice} . " " . $form{house1};
@@ -163,6 +163,10 @@ if ($form{name} =~ m{personal\s+retreat}i) {
 }
 elsif ($data->{collect_total}) {
 	$x_prog_amount = $total;
+}
+elsif ($data->{percent_tuition}) {
+    my $pct = (100 - $data->{percent_tuition})/100;
+    $x_prog_amount = $total - int($data->{tuition} * $pct);
 }
 elsif ($data->{deposit}) {
 	$x_prog_amount = $data->{deposit};

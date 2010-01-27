@@ -1288,6 +1288,9 @@ sub del_meeting_place : Local {
     my $method = $hap_type . "_id";
     my $hap_id = $booking->$method();
     $booking->delete();
+    # and the blocks for sleeping place meeting places
+    # ???
+    #
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events
 }
@@ -1346,6 +1349,7 @@ sub which_mp_do : Local {
                 keys %P;
     my %seen = ();
     @mpids = grep { ! $seen{$_->[1]}++ } @mpids;
+    MP:
     for my $mpid (@mpids) {
         model($c, 'Booking')->create({
             meet_id    => $mpid->[1],
@@ -1357,6 +1361,32 @@ sub which_mp_do : Local {
             sdate      => $sdate,
             edate      => $edate,
         });
+        #
+        # and if this meeting place is for sleeping, too,
+        # we need to create a Block so it can't be reserved
+        # for lodging purposes.
+        #
+=comment
+        my $mp = model($c, 'MeetingPlace')->find($mpid->[1]);
+        if ($mp && $mp->sleep_too()) {
+            my ($house) = model($c, 'House')->search({
+                name => $mp->name(),
+            });
+            next MP unless $house;
+            model($c, 'Block')->create({
+                house_id   => $house->id(),
+                nbeds      => 
+                sdate      => $sdate,
+                edate      => $edate,
+                event_id   => 0,
+                program_id => 0,
+                rental_id  => 0,
+                $hap_type . "_id"   => $hap_id,     # overrides the above
+
+            allocated => 'yes',
+            });
+        }
+=cut
     }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events

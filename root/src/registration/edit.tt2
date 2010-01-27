@@ -1,5 +1,7 @@
+<!--
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+-->
 <script type="text/javascript">
 var newwin;
 function popup(url) {
@@ -79,10 +81,10 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 
 <tr>
 <th align=right valign=top>Comment
-<br>
-<input style="margin-top: .5in" id=sub type=submit value="Submit"></th>
+<br><br>
+<input id=sub type=submit value="Submit"></th>
 <td colspan=3>
-<textarea rows=[% comment_lines %] cols=60 name=comment>
+<textarea rows=[% comment_lines %] cols=60 name=comment valign=top>
 [% reg.comment %]
 </textarea>
 </td>
