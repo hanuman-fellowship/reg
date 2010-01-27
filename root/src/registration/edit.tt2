@@ -1,7 +1,5 @@
-<!--
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
--->
 <script type="text/javascript">
 var newwin;
 function popup(url) {
@@ -145,4 +143,3 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 
 </table>
 </form>
-<!-- focus on editor is tricky and maybe not desired -->
