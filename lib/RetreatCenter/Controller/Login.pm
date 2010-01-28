@@ -40,7 +40,10 @@ sub index : Private {
             # successful, let them use the application!
             Global->init($c);       # where else to put this???
             _clear_images();
-            if ($c->check_user_roles('ride_admin')) {
+            if ($c->check_user_roles('super_admin')) {
+                $c->response->redirect($c->uri_for('/person/search'));
+            }
+            elsif ($c->check_user_roles('ride_admin')) {
                 $c->response->redirect($c->uri_for('/ride/list'));
             }
             elsif ($c->check_user_roles('prog_staff')) {
