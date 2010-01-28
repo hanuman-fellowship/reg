@@ -622,7 +622,7 @@ sub pay_do : Local {
     my ($self, $c) = @_;
 
     my @paid_ids;
-    for my $p ($c->request->params()) {
+    for my $p ($c->request->param()) {
         if ($p =~ m{r(\d+)}) {
             push @paid_ids, $1;
         }
