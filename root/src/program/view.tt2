@@ -288,7 +288,7 @@ Web
 <td align=left valign=top>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == '' %]
-        <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
+        <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate2 %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>

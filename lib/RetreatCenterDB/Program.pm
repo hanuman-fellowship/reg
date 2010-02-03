@@ -195,6 +195,31 @@ sub edate_obj {
     my ($self) = @_;
     date($self->edate) || "";
 }
+#
+# to accomodate the end date for extended programs
+#
+sub edate2 {
+    my ($self) = @_;
+    my $extra = $self->extradays();
+    if ($extra) {
+        return (date($self->edate())+$extra)->as_d8();
+    }
+    else {
+        return $self->edate() || "";
+    }
+}
+sub edate2_obj {
+    my ($self) = @_;
+    my $extra = $self->extradays();
+    if ($extra) {
+        return date($self->edate())+$extra;
+            # looks awkward - why not consolidate???
+    }
+    else {
+        return date($self->edate) || "";
+    }
+    date($self->edate) || "";
+}
 sub prog_start_obj {
     my ($self) = @_;
     return get_time($self->prog_start());
