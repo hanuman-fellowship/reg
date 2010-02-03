@@ -528,7 +528,6 @@ EOH
             }
         }
         my $event_name = $ev->name();
-$c->log->info("name $event_name");
         $event_name =~ s{ \d\d/\d\d$}{}; # tidy up ending mm/yy
                                          # not really needed
         $event_name =~ s{^MMI-}{};       # the front of MMI programs
@@ -598,7 +597,6 @@ $c->log->info("name $event_name");
                 $cal = $cals{$start->format("%Y%m")};
             }
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
-$c->log->info("dr = " . $dr->show());
 
             # this does a get of the meeting place record???
             # yes, - replace it!!!  at some point, yes.
@@ -662,7 +660,6 @@ $c->log->info("dr = " . $dr->show());
                         next PLACE;
                     }
                 }
-$c->log->info("final_dr = " . $final_dr->show());
 
                 my $x1 = ($final_dr->sdate->day-1) * $day_width;
                 my $x2 = $final_dr->edate->day * $day_width;
