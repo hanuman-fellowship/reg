@@ -631,6 +631,7 @@ EOH
             # ??? multiple meeting places - in detail table???
             # ??? use abbrevs not full name???
             my $details_shown = 0;
+            PLACE:
             for my $pl (@places) {
                 my $mp = $pl->[0];
                 my $bk = $pl->[1];
@@ -651,6 +652,13 @@ EOH
                         DateRange->new($bk->sdate_obj(), $bk->edate_obj()),
                         $dr,
                     );
+                    if (! $final_dr) {
+                        # this event does not show at all
+                        # on this particular calendar image.
+                        # maybe the next.
+                        #
+                        next PLACE;
+                    }
                 }
 
                 my $x1 = ($final_dr->sdate->day-1) * $day_width;
@@ -676,7 +684,7 @@ EOH
                 my $y1 = $mp->disp_ord() * 40 + 2;
                         # +2 for the thick border not impeding the top line
                 my $y2 = $y1 + 20;
-                my $place_name = $pl->[0]->abbr();
+                my $place_name = $mp->abbr();
                 if ($place_name eq '-') {
                     $place_name = "";
                 }
