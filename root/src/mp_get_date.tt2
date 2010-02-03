@@ -1,5 +1,5 @@
 <h2>${Hap_type}s</h2>
-Adding a Meeting Place for the $hap_type <span class=larger>$hap.name</span>: $hap.sdate_obj - ${hap.edate_obj}.
+Adding a Meeting Place for the $hap_type <span class=larger>$hap.name</span>: $hap.sdate_obj - ${edate}.
 <p class=p2>
 First, what dates?<p>
 The dates default to the start/end dates of ${hap.name}<br>
@@ -15,7 +15,8 @@ which is what you will most often want.
 
 <tr>
 <th align=right>End Date</th>
-<td><input type=text name=edate value="${hap.edate_obj.format("%D")}"></td>
+<!-- not hap.edate_obj - for programs with extra days -->
+<td><input type=text name=edate value="${edate.format("%D")}"></td>
 </tr>
 
 <tr>

@@ -528,6 +528,7 @@ EOH
             }
         }
         my $event_name = $ev->name();
+$c->log->info("name $event_name");
         $event_name =~ s{ \d\d/\d\d$}{}; # tidy up ending mm/yy
                                          # not really needed
         $event_name =~ s{^MMI-}{};       # the front of MMI programs
@@ -597,6 +598,7 @@ EOH
                 $cal = $cals{$start->format("%Y%m")};
             }
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
+$c->log->info("dr = " . $dr->show());
 
             # this does a get of the meeting place record???
             # yes, - replace it!!!  at some point, yes.
@@ -660,6 +662,7 @@ EOH
                         next PLACE;
                     }
                 }
+$c->log->info("final_dr = " . $final_dr->show());
 
                 my $x1 = ($final_dr->sdate->day-1) * $day_width;
                 my $x2 = $final_dr->edate->day * $day_width;
@@ -1390,10 +1393,15 @@ sub add_meeting_place : Local {
     my ($self, $c, $hap_type, $hap_id) = @_;
 
     my $hap = model($c, ucfirst $hap_type)->find($hap_id);
+    my $edate = $hap->edate_obj();
+    if ($hap_type eq 'program' && $hap->extradays() > 0) {
+        $edate += $hap->extradays();
+    }
     stash($c,
         hap_type  => $hap_type,
         Hap_type  => ucfirst $hap_type,
         hap       => $hap,
+        edate     => $edate,
         template  => 'mp_get_date.tt2',
     );
 }
@@ -1417,6 +1425,9 @@ sub which_mp : Local {
     }
     my $hap_sdate = $hap->sdate_obj();
     my $hap_edate = $hap->edate_obj();
+    if ($hap_type eq 'program' && $hap->extradays() > 0) {
+        $hap_edate += $hap->extradays();
+    }
     if (   $sdate < $hap_sdate
         || $sdate > $hap_edate
         || $edate < $hap_sdate
