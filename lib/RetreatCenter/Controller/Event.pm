@@ -21,7 +21,9 @@ use Util qw/
     reserved_clusters
     avail_mps
     error
+    get_now
 /;
+use HLog;
 use GD;
 use ActiveCal;
 use DateRange;      # imports overlap
@@ -508,8 +510,8 @@ EOH
 
         # draw on the right image(s)
         #
-        my $ev_sdate = $ev->sdate_obj;
-        my $ev_edate = $ev->edate_obj;
+        my $ev_sdate = $ev->sdate_obj();
+        my $ev_edate = $ev->edate_obj();
 
         my ($full_begins, $ndays_in_normal, $normal_end_day);
 
@@ -597,9 +599,12 @@ EOH
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
 
             # this does a get of the meeting place record???
-            # yes, - replace it!!!
-            my @places = sort { $a->disp_ord <=> $b->disp_ord }
-                         map  { $_->meeting_place }
+            # yes, - replace it!!!  at some point, yes.
+            # can't readily optimize without a test suite for
+            # this complex beast!
+            #
+            my @places = sort { $a->[0]->disp_ord <=> $b->[0]->disp_ord }
+                         map  { [ $_->meeting_place(), $_ ] }
                          grep { $_->$ev_type_id == $ev_id }
                          @bookings;
             #
@@ -612,7 +617,8 @@ EOH
                     next EVENT;     # skip it entirely
                 }
                 if ($no_where) {
-                    push @places, $no_where;
+                    push @places, [ $no_where, undef ];
+                        # no corresponding booking so we use undef ...
                 }
             }
             my $im = $cal->image;
@@ -626,31 +632,51 @@ EOH
             # ??? use abbrevs not full name???
             my $details_shown = 0;
             for my $pl (@places) {
-                my ($r, $g, $b) = $pl->color =~ m{(\d+)}g;
+                my $mp = $pl->[0];
+                my $bk = $pl->[1];
+                my ($r, $g, $b) = $mp->color() =~ m{(\d+)}g;
                 my $color = $im->colorAllocate($r, $g, $b);
                     # ??? do the above once for all meeting places
                     # then index into a hash for the color.
 
-                my $x1 = ($dr->sdate->day-1) * $day_width;
-                my $x2 = $dr->edate->day * $day_width;
+                #
+                # now... $dr is the overlapping date range of
+                # the event and the calendar.
+                # the _booking_ may have other restrictions.
+                # it may not be for the entire time of the event.
+                #
+                my $final_dr = $dr;
+                if ($bk) {
+                    $final_dr = overlap(
+                        DateRange->new($bk->sdate_obj(), $bk->edate_obj()),
+                        $dr,
+                    );
+                }
+
+                my $x1 = ($final_dr->sdate->day-1) * $day_width;
+                my $x2 = $final_dr->edate->day * $day_width;
 
                 # shall we indent the left and right side?
                 # one day events are a special case.
-                if ($ev_sdate != $ev_edate) {
+                #
+                if ($bk && $bk->sdate != $bk->edate) {
+                    # there IS a booking (not a No Where event)
+                    # and it is not for one day.
+
                     # not overlapping from prior month?
-                    if ($dr->sdate == $ev_sdate) {
+                    if ($final_dr->sdate() == $bk->sdate()) {
                         $x1 += $day_width/2;
                     }
                     # not overflowing to the next month?
-                    if ($dr->edate == $ev_edate) {
+                    if ($final_dr->edate() == $bk->edate()) {
                         $x2 -= $day_width/2;
                     }
                 }
 
-                my $y1 = $pl->disp_ord * 40 + 2;
+                my $y1 = $mp->disp_ord() * 40 + 2;
                         # +2 for the thick border not impeding the top line
                 my $y2 = $y1 + 20;
-                my $place_name = $pl->abbr;
+                my $place_name = $pl->[0]->abbr();
                 if ($place_name eq '-') {
                     $place_name = "";
                 }
@@ -757,9 +783,9 @@ EOH
 
                 if ($full_begins) {
                     # does this date appear in this cal?
-                    if ($dr->sdate <= $full_begins
+                    if ($final_dr->sdate <= $full_begins
                         &&
-                        $full_begins <= $dr->edate
+                        $full_begins <= $final_dr->edate
                     ) {
                         $im->setStyle($white, $white, $white, $white,
                                       $color, $color, $color, $color,
@@ -1285,12 +1311,69 @@ EOF
 sub del_meeting_place : Local {
     my ($self, $c, $hap_type, $booking_id) = @_;
     my $booking = model($c, 'Booking')->find($booking_id);
+    my $sdate = $booking->sdate();
+    my $edate = $booking->edate();
+    my $edate1 = (date($edate)-1)->as_d8();
+
+    my $mplace = $booking->meeting_place();
+
     my $method = $hap_type . "_id";
     my $hap_id = $booking->$method();
+
     $booking->delete();
-    # and the blocks for sleeping place meeting places
-    # ???
+
+    # also remove any 'bound blocks' for meeting places
+    # that are also sleeping places.
     #
+    LOOP:
+    while (1) {
+        if (! $mplace->sleep_too()) {
+            last LOOP;
+        }
+        # find the corresponding house
+        my ($house) = model($c, 'House')->search({
+            name => $mplace->abbr(),
+        });
+        if (! $house) {
+            last LOOP;
+        }
+        my $h_id = $house->id();
+        my $hname = $house->name();
+        my @blocks = model($c, 'Block')->search({
+            house_id => $h_id,
+            sdate    => $sdate,
+            edate    => $edate,
+            reason   => { 'like' => '%Meeting Place for%' },
+        });
+        if (! @blocks) {
+            last LOOP;
+        }
+        for my $b (@blocks) {
+            $b->delete();       # probably just one...
+        }
+        for my $cf (model($c, 'Config')->search({
+                        house_id => $h_id,
+                        the_date => { -between => [ $sdate, $edate1 ] },
+                    })
+        ) {
+            $cf->update({
+                sex        => 'U',
+                curmax     => $house->max(),
+                cur        => 0,
+                program_id => 0,
+                rental_id  => 0,
+            });
+            if ($string{housing_log}) {
+                hlog($c,
+                     $hname, $cf->the_date(),
+                     "auto_block_del",
+                     $h_id, $cf->curmax(), 0, 'U',
+                     0, 0,
+                     'Delete Meeting Place',
+                );
+            }
+        }
+    }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events
 }
@@ -1324,6 +1407,23 @@ sub which_mp : Local {
         );
         return;
     }
+    my $hap_sdate = $hap->sdate_obj();
+    my $hap_edate = $hap->edate_obj();
+    if (   $sdate < $hap_sdate
+        || $sdate > $hap_edate
+        || $edate < $hap_sdate
+        || $edate > $hap_edate
+    ) {
+        error($c,
+            'The dates for the meeting place reservation<br>'
+                . 'cannot be outside the dates for '
+                . $hap->name()
+                . ": " . $hap_sdate . " - " . $hap_edate
+                . ".",
+            'gen_error.tt2',
+        );
+        return;
+    }
     stash($c,
         hap_type       => $hap_type,
         Hap_type       => ucfirst $hap_type,
@@ -1342,6 +1442,7 @@ sub which_mp_do : Local {
     my %P = %{ $c->request->params() };
     my $sdate = $P{sdate};
     my $edate = $P{edate};
+    my $edate1 = date($edate)->prev->as_d8();
     delete $P{sdate};
     delete $P{edate};
     my @mpids = map { my ($type, $id) = m{(mp|br)(\d+)}; [ $type, $id ] }
@@ -1349,7 +1450,7 @@ sub which_mp_do : Local {
                 keys %P;
     my %seen = ();
     @mpids = grep { ! $seen{$_->[1]}++ } @mpids;
-    MP:
+    MEETINGPLACE:
     for my $mpid (@mpids) {
         model($c, 'Booking')->create({
             meet_id    => $mpid->[1],
@@ -1366,27 +1467,66 @@ sub which_mp_do : Local {
         # we need to create a Block so it can't be reserved
         # for lodging purposes.
         #
-=comment
-        my $mp = model($c, 'MeetingPlace')->find($mpid->[1]);
-        if ($mp && $mp->sleep_too()) {
-            my ($house) = model($c, 'House')->search({
-                name => $mp->name(),
-            });
-            next MP unless $house;
-            model($c, 'Block')->create({
-                house_id   => $house->id(),
-                nbeds      => 
-                sdate      => $sdate,
-                edate      => $edate,
-                event_id   => 0,
-                program_id => 0,
-                rental_id  => 0,
-                $hap_type . "_id"   => $hap_id,     # overrides the above
-
-            allocated => 'yes',
-            });
+        my $mplace = model($c, 'MeetingPlace')->find($mpid->[1]);
+        if (! $mplace->sleep_too()) {
+            next MEETINGPLACE;
         }
-=cut
+        my ($house) = model($c, 'House')->search({
+            name => $mplace->abbr(),
+        });
+        if (!$house) {
+            # something is wrong with the naming convention.
+            # silently ignore it.
+            #
+            next MEETINGPLACE;
+        }
+        my $h_id = $house->id();
+        my $h_max = $house->max();
+        model($c, 'Block')->create({
+            house_id   => $h_id,
+            sdate      => $sdate,
+            edate      => $edate,
+            nbeds      => $h_max,
+            npeople    => 0,
+            reason     => "Meeting Place for " . $hap->name(),
+            allocated  => 'yes',
+            rental_id  => 0,
+            program_id => 0,
+            event_id   => 0,
+            "$hap_type\_id" => $hap_id,     # overrides above
+            get_now($c),
+        });
+        my @opt = ();
+        if ($hap_type ne 'event') {
+            @opt = ("$hap_type\_id" => $hap_id);
+        }
+        model($c, 'Config')->search({
+            house_id => $h_id,
+            the_date => { 'between' => [ $sdate, $edate1 ] },
+        })->update({
+            sex        => 'B',
+            cur        => $h_max,
+            rental_id  => 0,
+            program_id => 0,
+            @opt,
+        });
+        my @dates = ();
+        if ($string{housing_log}) {
+            my $sd = date($sdate);
+            my $ed = date($edate1);
+            for (my $d = $sd; $d <= $ed; ++$d) {
+                push @dates, $d->as_d8();
+            }
+            for my $d (@dates) {
+                hlog($c,
+                     $house->name(), $d,
+                     "block_auto_create",
+                     $h_id, $h_max, $h_max, 'B',
+                     0, $hap_id,
+                     $hap->name(),
+                );
+            }
+        }
     }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events

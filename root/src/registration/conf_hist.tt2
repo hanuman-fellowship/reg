@@ -1,12 +1,14 @@
 <h3>History of Registration Confirmation Notes</h3>
 <table cellpadding=3>
-<tr><th align=right valign=bottom>Program</th><td><span class=larger>[% reg.program.name %]</span></th></tr>
-<tr><th align=right valign=bottom>Person</th><td><span class=larger>[% reg.person.first %] [% reg.person.last %]</span></td></tr>
+<tr><th align=right valign=bottom>
+Program</th><td><a class=larger href=/program/view/$reg.program_id>$reg.program.name</a></th></tr>
+<tr><th align=right valign=bottom>
+Person</th><td><a class=larger href=/person/view/$reg.person_id>$reg.person.first $reg.person.last</a><span style="margin-left: 1in"><a href=/registration/view/$reg.id>To Registration</a></span></td></tr>
 <tr><td></td></tr>
 <tr><th align=right valign=top>Notes</th><td>
 [% FOR n IN reg.confnotes %]
-[% n.the_date_obj %] [% n.time_obj.ampm %]<br>
-[% n.note %]<p class=p2>
+$n.the_date_obj $n.time_obj.ampm<br>
+$n.note<p class=p2>
 [% END %]
 </td></tr>
 </table>

@@ -56,6 +56,7 @@ our @EXPORT_OK = qw/
     invalid_amount
     get_grid_file
     avail_mps
+    get_now
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -151,7 +152,7 @@ sub role_table {
     model($c, 'Role')->all();
 }
 
-sub _get_now {
+sub get_now {
     my ($c) = @_;
 
     return
@@ -1411,8 +1412,11 @@ sub get_grid_file {
 sub avail_mps {
     my ($c, $sdate, $edate) = @_;
 
+    my $edate1 = $edate->prev->as_d8();
+
     $sdate = $sdate->as_d8();
     $edate = $edate->as_d8();
+
     my @avail = ();
     MEETING_PLACE:
     for my $mp (model($c, 'MeetingPlace')->search(
@@ -1431,7 +1435,7 @@ sub avail_mps {
             if ($house) {
                 my (@cf) = model($c, 'Config')->search({
                     house_id => $house->id(),
-                    the_date => { 'between' => [ $sdate, $edate ] },
+                    the_date => { 'between' => [ $sdate, $edate1 ] },
                     cur      => { '>' => 0 },
                 });
                 if (@cf) {

@@ -2580,10 +2580,14 @@ sub update_confnote_do : Local{
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);
-    $reg->update({
-        confnote => cf_expand($c, $c->request->params->{confnote}),
-    });
-    _reg_hist($c, $id, "Confirmation Note updated");
+    my $newnote = cf_expand($c, $c->request->params->{confnote});
+    if ($reg->confnote() ne $newnote) {
+        $reg->update({
+            confnote    => $newnote,
+            letter_sent => '',
+        });
+        _reg_hist($c, $id, "Confirmation Note updated");
+    }
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 sub update_comment : Local {
@@ -2741,6 +2745,14 @@ sub update_do : Local {
                                     # see lodge.tt2 
         _vacate($c, $reg);
     }
+    my $newnote = cf_expand($c, $c->request->params->{confnote});
+    my @note_opt = ();
+    if ($reg->confnote() ne $newnote) {
+        @note_opt = (
+            confnote    => $newnote,
+            letter_sent => '',
+        );
+    }
     $reg->update({
         ceu_license   => $P{ceu_license},
         referral      => $P{referral},
@@ -2751,7 +2763,6 @@ sub update_do : Local {
         h_type        => $P{h_type},
         h_name        => $P{h_name},
         kids          => $P{kids},
-        confnote      => cf_expand($c, $c->request->params->{confnote}),
         nights_taken  => $taken,
         cabin_room    => $P{cabin_room},
         share_first   => normalize($P{share_first}),
@@ -2763,6 +2774,7 @@ sub update_do : Local {
         work_study_comment => $P{work_study_comment},
 
         %dates,         # optionally
+        @note_opt,           # ditto
     });
 
     _compute($c, $reg, 0, @who_now);
@@ -3438,6 +3450,7 @@ sub lodge_do : Local {
 
         if ($new_htype =~ m{^(own_van|commuting|unknown|not_needed)$}) {
                         # hash lookup instead?
+            _reg_hist($c, $id, "Lodged as $string{$new_htype}.");
             $c->response->redirect($c->uri_for("/registration/view/$id"));
             return;
         }
@@ -3447,14 +3460,19 @@ sub lodge_do : Local {
         return;
     }
 
+    my $newnote = cf_expand($c, $c->request->params->{confnote});
     #
     # settle on exactly which house we're using.
     #
     my ($house_id) = $c->request->params->{house_id};
     my ($force_house) = trim($c->request->params->{force_house});
-    if (! ($house_id || $force_house)) {
+    if (! ($house_id || $force_house) && $reg->confnote() ne $newnote) {
+        #
+        # no new house - but they did modify the conf note
+        #
         $reg->update({
-            confnote => cf_expand($c, $c->request->params->{confnote}),
+            confnote    => $newnote,
+            letter_sent => '',
         });
         $c->response->redirect($c->uri_for("/registration/view/$id"));
         return;
@@ -3552,11 +3570,19 @@ sub lodge_do : Local {
     #
     # we have passed all the hurdles.
     #
+    my @note_opt = ();
+    if ($reg->confnote() ne $newnote) {
+        @note_opt = (
+            confnote    => $newnote,
+            letter_sent => '',
+        );
+    }
     $reg->update({
         house_id => $house_id,
         h_name   => '',
-        confnote => cf_expand($c, $c->request->params->{confnote}),
+        @note_opt,
     });
+    _reg_hist($c, $id, "Lodged as $string{$new_htype} in $house_name_of{$house_id}.");
     my $kids = $reg->kids;
     for my $cf (model($c, 'Config')->search({
                     house_id => $house_id,
@@ -3689,6 +3715,7 @@ sub _vacate {
     $reg->update({
         house_id => 0,
     });
+    _reg_hist($c, $reg->id(), "Vacated $house_name_of{$house_id}.");
 }
 
 #
@@ -4389,7 +4416,7 @@ sub conf_notes : Local {
 Place the abbreviation alone on the line and it will be expanded.
 <p>
 <table cellpadding=3>
-<tr><th align=left>Abbr</th><th align=left>Expansion</th></tr>
+<tr><th align=right>Abbr</th><th align=left>Expansion</th></tr>
 EOH
     for my $n (@notes) {
         $html .= "<tr><th align=right valign=top>"
