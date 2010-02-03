@@ -405,21 +405,23 @@ sub finalities {
             print {$out} $Msg;
             close $out;
         }
-        my $mail_sender = Mail::Sender->new({
-            smtp => $string{smtp_server},
-            port => $string{smtp_port},
-        });
-        if ($mail_sender && $mail_sender->Open({
-            to       => 'jon@logicalpoetry.com',
-            from     => 'Grab New <reservations@mountmadonna.org>',
-            subject  => "Grab New "
-                        . ($Error? "Failure"
-                           :       "Status"),
-            ctype    => "text/plain",
-            encoding => "7bit",
-        })) {
-            $mail_sender->SendLineEnc($Msg);
-            $mail_sender->Close();
+        if (1) {            # 1 or 0 - okay?
+            my $mail_sender = Mail::Sender->new({
+                smtp => $string{smtp_server},
+                port => $string{smtp_port},
+            });
+            if ($mail_sender && $mail_sender->Open({
+                to       => 'jon@logicalpoetry.com',
+                from     => 'Grab New <reservations@mountmadonna.org>',
+                subject  => "Grab New "
+                            . ($Error? "Failure"
+                               :       "Status"),
+                ctype    => "text/plain",
+                encoding => "7bit",
+            })) {
+                $mail_sender->SendLineEnc($Msg);
+                $mail_sender->Close();
+            }
         }
     }
     unlink $Run_File;
