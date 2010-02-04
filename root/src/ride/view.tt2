@@ -38,7 +38,7 @@
 <a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
 [% IF message %]&nbsp;&nbsp;&nbsp;<span style="color: red">[% message %]</span>[% END %]
 <ul>
-<table cellpadding=5 border=0>
+<table cellpadding=5 border=1>
 <tr>
 <th align=right>Rider</th>
 <td><a href=/person/view/[% rider.id %]>[% rider.last %], [% rider.first %]</a></td>
@@ -131,7 +131,7 @@
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td>[% ride.comment %]</td>
+<td colspan=3>[% ride.comment %]</td>
 </tr>
 
 <tr>
