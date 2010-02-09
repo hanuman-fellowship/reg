@@ -43,7 +43,7 @@ body {
 </tr>
 [% FOREACH p IN person.mmi_payments %]
     <tr>
-    <td align=right>[% p.amount %]
+    <td align=right>[% p.amount_disp %]
     <td>[% p.for_what %]
     <td>[% p.the_date_obj %]
     <td align=center>[% p.type_sh %]
@@ -60,7 +60,7 @@ body {
     <th align=center>
     <a title=Edit href="/person/update_mmi_payment/[% p.id %]"><img src=/static/images/pencil.png border=0 height=20></a>
     <a title=Delete href="/person/del_mmi_payment/[% p.id %]"
-    onclick="return confirm('Okay to Delete payment of $[% p.amount %]?');"
+    onclick="return confirm('Okay to Delete payment of $[% p.amount_disp %]?');"
     ><img src=/static/images/redX.gif border=0 height=20></a>
     </th>
     [% END %]

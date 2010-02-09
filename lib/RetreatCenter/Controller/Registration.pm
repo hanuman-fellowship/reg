@@ -2412,7 +2412,7 @@ EOH
             $prev_name = $name;
             $first = 1;
         }
-        my $balance = $reg->balance();
+        my $balance = $reg->balance_disp();
         my $type = $reg->h_type_disp();
 
         my $h_type = $reg->h_type();
