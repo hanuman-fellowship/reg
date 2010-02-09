@@ -1,6 +1,6 @@
 drop table if exists ride;
 create table ride (
-    id  integer primary key auto_increment,
+    id  integer primary key autoincrement,
     rider_id integer,           -- foreign key to People
     driver_id integer,          -- foreign key to User
     from_to text,

@@ -1,6 +1,6 @@
 drop table if exists rental;
 create table rental (
-    id          integer primary key auto_increment,
+    id          integer primary key autoincrement,
     name        text,
     title       text,
     subtitle    text,
@@ -46,7 +46,7 @@ create table rental (
 );
 drop table if exists rental_payment;
 create table rental_payment (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     rental_id integer,
     amount integer,
     type text,       -- cc, check, cash, online
@@ -56,7 +56,7 @@ create table rental_payment (
 );
 drop table if exists rental_charge;
 create table rental_charge (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     rental_id integer,
     amount integer,
     what text,
@@ -66,7 +66,7 @@ create table rental_charge (
 );
 drop table if exists proposal;
 create table proposal (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     date_of_call text,
     group_name text,
     rental_type text,

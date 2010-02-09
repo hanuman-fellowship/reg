@@ -11,7 +11,7 @@ create table string (
 );
 drop table if exists issue;
 create table issue (
-    id   integer primary key auto_increment,
+    id   integer primary key autoincrement,
     priority text,
     title text,
     notes text,

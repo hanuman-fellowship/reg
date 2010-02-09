@@ -1,6 +1,6 @@
 drop table if exists registration;
 create table registration (
-    id  integer primary key auto_increment,
+    id  integer primary key autoincrement,
     person_id integer,
     program_id integer,
 
@@ -50,7 +50,7 @@ create table registration (
 );
 drop table if exists reg_history;
 create table reg_history (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     reg_id integer,
     user_id integer,
     the_date text,
@@ -59,7 +59,7 @@ create table reg_history (
 );
 drop table if exists reg_charge;
 create table reg_charge (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     reg_id integer,
     user_id integer,
     the_date text,
@@ -70,7 +70,7 @@ create table reg_charge (
 );
 drop table if exists reg_payment;
 create table reg_payment (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     reg_id integer,
     user_id integer,
     the_date text,
@@ -81,7 +81,7 @@ create table reg_payment (
 );
 drop table if exists mmi_payment;
 create table mmi_payment (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     person_id  integer,
     amount     integer,
     glnum      text,
@@ -93,7 +93,7 @@ create table mmi_payment (
 );
 drop table if exists credit;
 create table credit (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     person_id integer,
     reg_id integer,
     date_given text,
@@ -104,7 +104,7 @@ create table credit (
 );
 drop table if exists conf_history;
 create table conf_history (
-    id integer primary key auto_increment,
+    id integer primary key autoincrement,
     reg_id integer,
     note text,
     user_id integer,
