@@ -1,6 +1,6 @@
 drop table if exists member;
 create table member (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     person_id integer,
     category text,
     date_general text,
@@ -12,7 +12,7 @@ create table member (
 );
 drop table if exists spons_hist;
 create table spons_hist (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     member_id integer,
     date_payment text,
     valid_from text,
@@ -26,7 +26,7 @@ create table spons_hist (
 );
 drop table if exists night_hist;
 create table night_hist (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     member_id integer,  -- to Member
     num_nights integer,
     action text,        -- 1-set nights,     2-take nights,
@@ -39,13 +39,13 @@ create table night_hist (
 );
 drop table if exists project;
 create table project (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     descr text,
     glnum text
 );
 drop table if exists donation;
 create table donation (
-    id         integer primary key autoincrement,
+    id         integer primary key auto_increment,
     person_id  integer,      -- to Person
     project_id integer,     -- to Project
     the_date   text,

@@ -3,7 +3,7 @@
 --
 drop table if exists user;
 create table user (
-    id          integer primary key autoincrement,
+    id          integer primary key auto_increment,
     username    text,
     password    text,
     email       text,
@@ -20,7 +20,7 @@ create table user (
 );
 drop table if exists role;
 create table role (
-    id          integer primary key autoincrement,
+    id          integer primary key auto_increment,
     role        text,
     fullname    text,
     descr       text

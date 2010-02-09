@@ -1,6 +1,6 @@
 drop table if exists event;
 create table event (
-    id          integer primary key autoincrement,
+    id          integer primary key auto_increment,
     name        text,
     descr       text,
     sdate       text,

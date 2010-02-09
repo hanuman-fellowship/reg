@@ -198,7 +198,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR p IN pays %]
         <tr>
-        <td align=right valign=top>[% p.amount %]</td>
+        <td align=right valign=top>[% p.amount_disp %]</td>
         <td align=left>[% p.what %]</td>
         <td align=left valign=top><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
         <td align=right valign=top>[% p.type_sh %]</td>

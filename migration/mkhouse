@@ -1,6 +1,6 @@
 drop table if exists cluster;
 CREATE TABLE cluster (
-    id       integer primary key autoincrement,
+    id       integer primary key auto_increment,
     name     text,
     type     text
 );
@@ -20,7 +20,7 @@ INSERT INTO cluster VALUES(14,'School','special');
 
 drop table if exists house;
 CREATE TABLE house (
-    id       integer primary key autoincrement,
+    id       integer primary key auto_increment,
     name     text,
     max      integer,       -- i.e. number of beds
     bath     text,          -- (boolean) - bathroom in the room?
@@ -222,7 +222,7 @@ INSERT INTO house VALUES(188,'MMS C-16',7,'','','','',9,275,150,14,5,'','Lt');
 
 drop table if exists annotation;
 CREATE TABLE annotation (
-    id           integer primary key autoincrement,
+    id           integer primary key auto_increment,
     cluster_type text,
     label        text,
     x            integer,
@@ -287,7 +287,7 @@ create table rental_cluster (
 );
 drop table if exists make_up;
 create table make_up (
-    house_id     integer primary key,       -- not autoincrement
+    house_id     integer primary key,       -- not auto_increment
     date_vacated text,
     date_needed  text
 );

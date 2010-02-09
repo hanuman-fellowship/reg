@@ -1,6 +1,6 @@
 drop table if exists meeting_place;
 create table meeting_place (
-    id          integer primary key autoincrement,
+    id          integer primary key auto_increment,
     abbr text,
     name text,
     max  integer,
@@ -44,7 +44,7 @@ insert into meeting_place values (
 
 drop table if exists booking;
 create table booking (
-    id          integer primary key autoincrement,
+    id          integer primary key auto_increment,
     meet_id     integer,
     rental_id   integer,
     program_id  integer,

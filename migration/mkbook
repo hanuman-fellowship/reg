@@ -1,6 +1,6 @@
 drop table if exists book;
 create table book (
-    id          integer primary key autoincrement,
+    id          integer primary key auto_increment,
     title       text,
     author      text,
     publisher   text,

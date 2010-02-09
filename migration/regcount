@@ -9,7 +9,7 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
 my $get_sth = $dbh->prepare("
     select id, reg_count, name
       from program
-     where sdate >= 20090401
+     where sdate >= 20100101
 ");
 my $cnt_sth = $dbh->prepare("
     select count(*) 

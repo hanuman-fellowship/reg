@@ -1,6 +1,6 @@
 drop table if exists program;
 create table program (
-    id          integer primary key autoincrement,
+    id          integer primary key auto_increment,
     name        text,
     title       text,
     subtitle    text,
@@ -52,13 +52,13 @@ create table program (
 );
 drop table if exists canpol;
 create table canpol (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     name   text,
     policy text
 );
 drop table if exists housecost;
 create table housecost (
-    id              integer primary key autoincrement,
+    id              integer primary key auto_increment,
     name            text,
     single_bath     integer,
     single          integer,
@@ -81,7 +81,7 @@ create table affil_program (
 );
 drop table if exists leader;
 create table leader (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     person_id integer,
     public_email text,
     url text,
@@ -103,7 +103,7 @@ create table program_cluster (
 );
 drop table if exists summary;
 create table summary (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     date_updated text,
     time_updated text,
     who_updated integer,        -- foreign key to User
@@ -131,7 +131,7 @@ create table summary (
 );
 drop table if exists confnote;
 create table confnote (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     abbr      text,
     expansion text
 );

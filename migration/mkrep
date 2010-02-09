@@ -1,6 +1,6 @@
 drop table if exists reports;
 create table reports (
-    id integer primary key autoincrement,
+    id integer primary key auto_increment,
     descrip text,
     rep_order text,
     zip_range text,

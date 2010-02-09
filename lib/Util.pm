@@ -57,6 +57,7 @@ our @EXPORT_OK = qw/
     get_grid_file
     avail_mps
     get_now
+    penny
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1460,6 +1461,12 @@ sub avail_mps {
         push @avail, $mp;
     }
     return @avail;
+}
+
+sub penny {
+    my ($amt) = @_;
+    $amt =~ s{[.]00$}{};
+    $amt;
 }
 
 1;

@@ -1,23 +1,27 @@
 [% mmi = program.school != 0 %]
-<html>
-<head>
-<style type='text/css'>
+<HTML>
+<HEAD>
+<STYLE type='text/css'>
 /* for tinymce generated text: */
 p {
-    margin-top: 0px;
-    margin-bottom: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
 }
 /* other paragraphs */
 .p2 {
-    margin-top: .1in;
-    margin-bottom: .1in;
+	margin-top: 0.1in;
+	margin-bottom: 0.1in;
+}
+hr {
+	margin-bottom: 45px;
 }
 body, td, th {
-    font-family: Georgia, Times;
-    font-size: 14pt;
-    color: black;
-    background: ivory;
-    margin-right: 1in;
+	font-family: Georgia, Times;
+	font-size: 12pt;
+	color: #333333;
+	background: ivory;
+	margin-right: 1in;
+	line-height: 20px;
 }
 .on_right {
     display: block;
@@ -28,18 +32,26 @@ strong {
     font-weight: bold;
 }
 h2 {
-    color: #227722;
-    font-size: 18pt;
+	color: #660000;
+	font-size: 18pt;
 }
 h3 {
-    color: #4444dd;
-    font-size: 15pt;
-    margin-bottom: 1mm;
+	color: #663A3A;
+	font-size: 14pt;
+	margin-bottom: 1mm;
+}
+
+table, th, td {
+	background-color: #FFFFFF;
+}
+
+table {
+	padding: 10px;
 }
 h4 {
-    color: #7733ff;
-    font-size: 13pt;
-    margin-bottom: 1mm;
+	color: #CC9900;
+	font-size: 13pt;
+	margin-bottom: 1mm;
 }
 .name {
     font-weight: bold;
@@ -61,24 +73,51 @@ h4 {
     font-weight: bold;
     color: purple;
 }
-</style>
-</head>
-<body>
+
+.subhead {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 16px;
+	font-weight: bold;
+	color: #663A3A;
+	margin: 0px;
+	padding: 0px;
+}
+
+h1 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 25px;
+	color: #660000;
+}
+
+ul {
+	color: #333333;
+}
+
+
+
+.container {
+	background-color: #FFFFFF;
+	margin: 10px auto;
+	padding: 10px;
+	width: 720px;
+}
+</STYLE>
+</HEAD>
+<BODY>
 <center>
-<img height=200 src="http://www.mountmadonna.org/programs/main_image/nov_sc_sunset.jpg">
-<p class=p2>
-<span style="font-weight: bold; font-size: 17pt;">
-Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]
-</span>
-</center>
-<p class=p2>
-<span class="on_right">[% today.format("%A, %B %e, %Y") %]</span>
-<p class=p2>
-[% IF program.confnote || reg.confnote %]
-<b>NOTES:</b><br>
-<ul>
+<div class="container">
+<table width="700">
+<TR><TD align="center">
+<IMG height=200 SRC="http://www.mountmadonna.org/programs/main_image/nov_sc_sunset.jpg">
+<H1>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</H1>
+</TD></TR>
+<TR><TD>
+<P class=p2><SPAN CLASS="on_right">[% today.format("%A, %B %e, %Y") %]</SPAN></P>
+<P class=p2>[% IF program.confnote || reg.confnote %]
+<B>NOTES:</B><BR>
+<UL>
 [% IF program.confnote %]
-    [% program.confnote %]<br>
+    [% program.confnote %]<BR>
 [% END %]
 [% IF reg.confnote %]
     [% reg.confnote %]
@@ -86,12 +125,14 @@ Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]
 [% IF reg.early || reg.late %]
 You [% IF reg.early %]arrive on [% reg.date_start_obj.format("%A, %B %e") %][% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on [% reg.date_end_obj.format("%A, %B %e") %][% END %].
 [% END %]
-</ul>
+</UL>
 [% END %]
-<span class="on_right">Receipt #[% reg.id %]</span>
-<p class=p2>
+</P>
+<P><SPAN CLASS="on_right">Receipt #[% reg.id %]</SPAN></P>
+<P class=p2>
 Dear [% person.first %],
-<p class=p2>
+</P>
+<P class=p2>
 <!-- being careful of that comma before "as you requested" ... -->
 We have received your deposit/payment of $[% deposit %]
 and have scheduled you for
@@ -103,11 +144,13 @@ your personal retreat,
     the "[% program.title %]" program[% IF program.leaders %] with [% program.leader_names %][% END %],
 [% END %]
 as you requested.
-<p class=p2>
-<center>
+</P>
+<P class=p2>
+<CENTER>
 [% program.cl_picture %]
-</center>
-<p class=p2>
+</CENTER>
+</P>
+<P class=p2>
 [% IF htdesc == 'Your Van' %]
 No lodging was reserved for you since you will be staying in your own van.
 [% ELSIF htdesc == 'Commuting' %]
@@ -115,7 +158,8 @@ No lodging was reserved for you since you will be commuting.
 [% ELSE %]
 For lodging you have been given [% article %] "[% htdesc %]" reservation.
 [% END %]
-<p class=p2>
+</P>
+<P class=p2>
 [% IF reg.balance > 0 %]
     Your balance due on arrival is $[% reg.balance %] for meals,
     [% IF personal_retreat %]
@@ -123,7 +167,7 @@ For lodging you have been given [% article %] "[% htdesc %]" reservation.
 	[% ELSE %]
 	    lodging, facilities and program.
     [% END %]
-    <br>
+    <BR>
     We accept checks, money orders, Visa, MasterCard and cash.
 [% ELSIF reg.balance == 0 %]
     Your account is paid in full; there is no balance due.
@@ -134,50 +178,60 @@ For lodging you have been given [% article %] "[% htdesc %]" reservation.
 [% END %]
 [% staying = (htdesc != 'Commuting') %]
 [% camping = (htdesc == 'Your Tent' || htdesc == 'Center Tent') %]
-<p class=p2>
+</P>
+<P class=p2>
 We suggest that you bring the following:
-<ul>
+</P>
+<UL>
 [% IF staying %]
-    <li>towel (since towels are <i>not</i> provided)
-    <li>alarm clock
+    <LI>towel (since towels are <I>not</I> provided)</LI>
+    <LI>alarm clock</LI>
 [% END %]
-<li>flashlight
-<li>warm clothing for cool nights and mornings
-<li>comfortable clothes and shoes for a rural setting
-<li>a swimsuit for lake swimming or hot tubbing
+<LI>flashlight</LI>
+<LI>warm clothing for cool nights and mornings</LI>
+<LI>comfortable clothes and shoes for a rural setting</LI>
+<LI>a swimsuit for lake swimming or hot tubbing</LI>
 [% IF program.retreat %]
-    <li>loose clothing suitable for breathing practices and postures
-    <li>a blanket or mat for postures (optional)
+    <LI>loose clothing suitable for breathing practices and postures</LI>
+    <LI>a blanket or mat for postures (optional)</LI>
 [% END %]
-</ul>
+</UL>
 [% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
-    <p class=p2>
+    <P class=p2>
     Since you are camping remember to bring your own bedding.
     [% IF htdesc == 'Center Tent' %]
-        <br>Foam mattresses are provided in center tents.
+        <BR>Foam mattresses are provided in center tents.
     [% END %]
+    </P>
 [% END %]
-<p class=p2>
+<P class=p2>
 Please note that the rainy season in this part of California can begin
 as early as October 1, and end as late as May 1; make sure you pack
 waterproof clothing during that season.
-<p class=p2>
+</P>
+<P class=p2>
 You may wish to bring slippers, as shoes are not worn indoors.
-<p class=p2>
+</P>
+<P class=p2>
 Our food service is strictly vegetarian &ndash; no meat, fish, fowl, or eggs.
-<p class=p2>
-Please <strong>DO NOT</strong> bring the following onto the property:
-<ul>
-<li>food
-<li>drugs
-<li>alcohol
-<li>pets
-</ul>
-<span class=scent>DO NOT</span> wear scented body products.
-<p class=p2>
-Due to extreme fire precautions <span class=fire>DO NOT</span> bring or use incense, candles,
+</P>
+<P class=p2>
+Please <STRONG>DO NOT</STRONG> bring the following onto the property:
+</P>
+<UL>
+<LI>food</LI>
+<LI>drugs</LI>
+<LI>alcohol</LI>
+<LI>pets</LI>
+</UL>
+<P class=p2>
+<SPAN class=scent>DO NOT</SPAN> wear scented body products.
+</P>
+<P class=p2>
+Due to extreme fire precautions <SPAN class=fire>DO NOT</SPAN> bring or use incense, candles,
 kerosene lamps, etc.
-<p class=p2>
+</P>
+<P class=p2>
 [% IF personal_retreat %]
 Your retreat begins on the afternoon of 
 [% reg.date_start_obj.format("%A, %B %e") %].
@@ -186,14 +240,13 @@ Program registration is from
 [% program.reg_start_obj %] to [% program.reg_end_obj %] on
 [% program.sdate_obj.format("%A, %B %e") %] in the Community Building.
 [% END %]
-<br>
+</P>
 [% IF personal_retreat && sunday %]
-    Look for your housing information which will be posted
-    in the Community Building lobby.
-    <p class=p2>
-    Dinner is served from 5:00 pm to 6:00 pm.
+    <P class=p2>Look for your housing information which will be posted
+    in the Community Building lobby.</P>
+    <P class=p2>Dinner is served from 5:00 pm to 6:00 pm.</P>
 [% ELSE %]
-	Dinner is served from
+	<P class=p2>Dinner is served from
     [% IF program.retreat %]
 		6:00 pm to 7:00 pm.
     [% ELSIF friday %]
@@ -201,13 +254,15 @@ Program registration is from
 	[% ELSE %]
 		5:00 pm to 6:00 pm.
 	[% END %]
-    <p class=p2>
-	The office closes at [% program.reg_end_obj %].<br>
-	If you will <b>ARRIVE LATER</b> than 6:00 pm please call to let us know.<br>
-    Notes are posted in the Community Building lobby for late arrivals.<br>
+    </P>
+    <P class=p2>
+	The office closes at [% program.reg_end_obj %].<BR>
+	If you will <B>ARRIVE LATER</B> than 6:00 pm please call to let us know.<BR>
+    Notes are posted in the Community Building lobby for late arrivals.<BR>
 	We will save dinner for you on request.
+    </P>
 [% END %]
-<p class=p2>
+<P class=p2>
 [% IF personal_retreat %]
 Your retreat will end at [% program.prog_end_obj %]
 on [% reg.date_end_obj.format("%A, %B %e") %].
@@ -217,223 +272,144 @@ Your program will begin at [% program.prog_start_obj %] on
 and will end at [% program.prog_end_obj %] on
 [% prog_end.format("%A, %B %e") %].
 [% END %]
-<p class=p2>
+</P>
+<P class=p2>
 [% program.canpol.policy %]
-<p class=p2>
+</P>
+<P class=p2>
 We look forward to seeing you here soon.
-<p class=p2>
-<span style="margin-left: 3in; display: block">
-Sincerely,<br>
+</P>
+<P class=p2>
+<SPAN STYLE="margin-left: 3in; display: block">
+Sincerely,<BR>
 [% user.first %] [% user.last %]
-</span>
-<hr>
-<p class=p2>
-<h2>Charges</h2>
-<table cellpadding=3>
-<tr>
-<th align=right width=100>Amount</th>
-<th align=left>What</th>
-</tr>
+</SPAN>
+</P>
+<HR>
+<H2>Finances</H2>
+<H3>Charges</H3>
+<TABLE cellpadding=3>
+<TR>
+<TH align=right width=100>Amount</TH>
+<TH align=left>What</TH>
+</TR>
 [% tot = 0 %]
 [% FOR ch IN reg.charges %]
-<tr>
-<td align=right>[% ch.amount %]</td>
-<td>[% ch.what %]</td>
-</tr>
+<TR>
+<TD align=right>[% ch.amount %]</TD>
+<TD>[% ch.what %]</TD>
+</TR>
 [% tot = tot + ch.amount %]
 [% END %]
-<tr><td align=right><span style="border-top: solid thin">$[% tot %]</span></td><td>Total</td></tr>
-</table>
-<p class=p2>
-<h2>Payments</h2>
-<table cellpadding=3>
-<tr>
-<th align=right width=100>Amount</th>
-<th align=left>What</th>
-</tr>
+<TR><TD align=right><SPAN STYLE="border-top: solid thin">$[% tot %]</SPAN></TD><TD>Total</TD></TR>
+</TABLE>
+<P class=p2>
+<H3>Payments</H3>
+<TABLE cellpadding=3>
+<TR>
+<TH align=right width=100>Amount</TH>
+<TH align=left>What</TH>
+</TR>
 [% FOR p IN reg.payments %]
-<tr>
-<td align=right>$[% p.amount %]</td>
-<td>[% p.what %]</td>
-</tr>
+<TR>
+<TD align=right>$[% p.amount %]</TD>
+<TD>[% p.what %]</TD>
+</TR>
 [% END %]
-</table>
-<h2>Balance Due</h2>
-<table>
-<tr><td width=100 align=right>$[% reg.balance %]</td></tr>
-</table>
-<hr>
-<h2>Address and Contact Information</h2>
-<b>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</b> - 445 Summit Rd, Watsonville, CA 95076<br>
-<p class=p2>
-<table cellpadding=3>
-<tr><th align=right>Phone</th><td>[% IF mmi %]408-846-4060[% ELSE %]408-846-4064[% END %] or 408-847-0406</td></tr>
-<tr><th align=right>Fax</th><td>408-847-2683</td></tr>
+</TABLE>
+<H3>Balance Due</H3>
+<TABLE>
+<TR><TD width=100 align=right>$[% reg.balance %]</TD></TR>
+</TABLE>
+<HR>
+<H2>Address and Contact Information</H2>
+<P class=p2><B>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</B> - 445 Summit Rd, Watsonville, CA 95076<BR></P>
+
+<TABLE cellpadding=3>
+<TR><TH align=right>Phone</TH><TD>[% IF mmi %]408-846-4060[% ELSE %]408-846-4064[% END %] or 408-847-0406</TD></TR>
+<TR><TH align=right>Fax</TH><TD>408-847-2683</TD></TR>
 [% IF mmi %]
-<tr><th align=right>Email</th><td><a href="mailto:info@mountmadonnainstitute.org">info@mountmadonnainstitute.org</a></td></tr>
+<TR><TH align=right>Email</TH><TD><A HREF="mailto:info@mountmadonnainstitute.org">info@mountmadonnainstitute.org</A></TD></TR>
 [% ELSE %]
-<tr><th align=right>Email</th><td><a href="mailto:programs@mountmadonna.org">programs@mountmadonna.org</a></td></tr>
+<TR><TH align=right>Email</TH><TD><A HREF="mailto:programs@mountmadonna.org">programs@mountmadonna.org</A></TD></TR>
 [% END %]
-<tr><th align=right valign=top>Business Hours</th><td align=left>Monday-Thursday 9:00-5:00<br>Friday 9:00-5:30<br>Saturday 11:00-5:00</td></tr>
-</table>
+<TR><TH align=right valign=top>Business Hours</TH><TD align=left>Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 11:00-5:00</TD></TR>
+<TR>
+    <TH align=right valign=top>Map/Directions</TH>
+    <TD align=left>Use only <A HREF='http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q="mount+madonna+center"&sll=37.027182,-121.739212&sspn=0.407848,0.433273&ie=UTF8&hq="mount+madonna+center"&hnear=&ll=37.033803,-121.739502&spn=0.394108,0.433273&z=11&iwloc=A'>Google Maps</A> or directions <A HREF="#directions">below</A>. Do not use GPS, Mapquest or Yahoo Maps.</TD>
+</TR>
+</TABLE>
 [% IF program.kayakalpa %]
-<p class=p2>
-For massage and other procedures at Kaya Kalpa Wellness Center see <a href=#kaya>below</a>.
+<P class=p2>
+For massage and other procedures at Kaya Kalpa Wellness Center see <A href=#kaya>below</A>.
+</P>
 [% END %]
-<hr>
+<HR>
 [% IF carpoolers %]
-    <h2>Carpool List</h2>
+    <H2>Carpool List</H2>
     [% FOR cp IN carpoolers %]
         [% p = cp.person %]
-        <span class=name>[% p.first %] [% p.last %]</span>[% IF cp.hascar %] - <span class=hascar>HAS CAR</span>[% END %]<br>
-        <div class=addr>
-        [% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
-        [% IF p.country %][% p.country %]<br>[% END %]
+        <SPAN class=name>[% p.first %] [% p.last %]</SPAN>[% IF cp.hascar %] - <SPAN class=hascar>HAS CAR</SPAN>[% END %]<BR>
+        <DIV class=addr>
+        [% p.city %], [% p.st_prov %] [% p.zip_post %]<BR>
+        [% IF p.country %][% p.country %]<BR>[% END %]
         [% p.carpool_telephone %]
-        [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">[% p.email %]</a>[% END %]
-        </div>
+        [% IF p.email %]<A HREF="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">[% p.email %]</A>[% END %]
+        </DIV>
     [% END %]
-    <hr>
+    <HR>
 [% END %]
-<h2>Directions to Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</h2>
-Do not use any GPS system or any directions from Mapquest, Yahoo or Google or
+<H2><A NAME="directions"></A>Directions</H2>
+<P class=p2>
+Do not use any GPS system or any directions from Mapquest, or Yahoo  Maps or
 any other outside source.
-Use <b>only</b> the directions below.
-<p class=p2>
+Use <B>only</B> the directions below, or use <A HREF='http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q="mount+madonna+center"&sll=37.027182,-121.739212&sspn=0.407848,0.433273&ie=UTF8&hq="mount+madonna+center"&hnear=&ll=37.033803,-121.739502&spn=0.394108,0.433273&z=11&iwloc=A'>Google Maps</A>.
+</P>
+<P class=p2>
 On the west coast of Central California approximately 2 hours driving 
 time south of San Francisco (more if traffic is heavy), Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]
 overlooks Monterey Bay from the Santa Cruz mountains between Santa Cruz and
 Watsonville, 3.5 miles off Highway 152.
-<p class=p2>
-<span class=name>From Highway 1, THE COAST:</span><br>
+</P>
+<P class=p2>
+<SPAN class=name>From Highway 1, THE COAST:</SPAN><BR>
 Take Hwy 1 to Watsonville, then take the Airport Blvd exit.  Go
 approximately 3 miles on Airport Blvd, then left onto Hwy 152 East.
 At the top of the mountain turn left just after Mount Madonna Inn,
 into Mt Madonna County Park (Pole Line Rd).   Follow the yellow line
 through the park and continue straight through the 4-way stop onto
 Summit Rd. The [% IF mmi %]Institute[% ELSE %]Center[% END %] is 1.5 miles further on the left (445 Summit Rd).
-<p class=p2>
-<span class=name>From Highway 101, INLAND:</span><br>
+</P>
+<P class=p2>
+<SPAN class=name>From Highway 101, INLAND:</SPAN><BR>
 Take Hwy 152 West at Gilroy.  Go approximately 10 miles through Gilroy 
 and up the mountain.  At the top of the mountain, turn right into Mt Madonna
 County Park (Pole Line Rd).  If you come to Mount Madonna Inn on your right,
 you've just missed your turn.  Follow the yellow line through the park and
 continue straight through the 4-way stop onto Summit Rd. The [% IF mmi %]Institute[% ELSE %]Center[% END %] is 1.5 
 miles further on the left (445 Summit Rd).
-<p class=p2>
-<center>
-<img height=400 src="http://www.mountmadonna.org/Gif/circlemap.gif">
-</center>
-<p class=p2>
-For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <a href=http://www.mountmadonna.org/directions>here</a>.
-<a name=kaya></a>
-<p class=p2>
-<hr>
+</P>
+<CENTER>
+<IMG height=400 SRC="http://www.mountmadonna.org/Gif/circlemap.gif">
+</CENTER>
+<P class=p2>
+For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <A href=http://www.mountmadonna.org/directions>here</A>.
+</P>
+<A name=kaya></A>
+
+<HR>
 [% IF program.kayakalpa %]
-<h2>Kaya Kalpa Wellness Center</h2>
-Kaya Kalpa means rejuvenation of body and spirit and our professionally
-trained practitioners are dedicated to your well-being. We offer a variety
-of Ayurveda therapies, traditional massage and other body therapies to
-enhance your stay at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]. Nestled among majestic oak
-and redwood trees, on 355 acres overlooking Monterey Bay, Kaya Kalpa
-Wellness Center offers an oasis for relaxation, health and nurturing. 
-<ul>
-<li>We encourage you to schedule your appointment as far in advance as
-  possible to ensure a practitioner is available for your particular request.
-<li>Phone and email messages are checked daily.
-<li>A scheduler will be present during Friday evening dinner and Saturday
-  morning brunch in the lobby of the Community Building.
-<li>Please arrive 10 minutes before your appointment.
-<li>Inquire about contraindications when scheduling your appointment.
-</ul>
-To schedule bodywork:
-<p class=p2>
-<table cellpadding=3>
-<tr><td align=right>Office Phone</td><td>408-847-3276</td></tr>
-<tr><td align=right>Cell Phone</td><td>408-483-6326</td></tr>
-<tr><td align=right>e-mail</td><td><a href="mailto:kayakalpa@mountmadonna.org">kayakalpa@mountmadonna.org</a></td></tr>
-</table>
-<p class=p2>
-For more information see our web site:
-<a href="http://www.mountmadonna.org/projects/kayakalpa">www.mountmadonna.org/projects/kayakalpa</a>
-<p class=p2>
-We look forward to your visit!
-<p class=p2>
-Services are subject to practitioner availability.
-<h3>Ayurveda Services</h3>
-Ayurveda is the traditional Indian science of health and comes
-from the Sanskrit words, Ayur meaning life and veda meaning knowledge.
-We are pleased to offer these ancient healing techniques for
-bringing harmony, peace and balance to one's mind, body and spirit.
-<p class=p2>
-<h4>Swedana</h4>
-An oiling of the entire body using long, slow rhythmic techniques,
-followed by a rosemary and eucalyptus steam in our cedar steam cabinet.
-The treatment is completed with a body dusting, using organic barley
-flour and a dry brushing which exfoliates and refreshes the skin.
-Swedana helps the process of detoxification by inducing sweat,
-calming the mind and alleviating muscle and joint pain. 
-Ask us about contraindications.<br>
-$125 (75 min)
-<h4>Shirodhara</h4>
-A warm ginger pack is placed on the back while you enjoy a head, neck,
-shoulder, hand and foot massage. This is followed by a steady stream
-of warm organic oil over the forehead. Deeply relaxing, soothing and
-rejuvenating, this treatment calms the nervous system and helps
-relieve stress, headaches, insomnia and exhaustion.<br>
-$110 (60 min) or add-on to another treatment for $70 (30 min)
-<h4>Abhyanga</h4>
-A vigorous, warm oil massage, stimulating the lymphatic system.
-Deeply nourishing, Abhyanga style massage relaxes muscles and moves
-prana (life force energy).<br>
-$110 (60 min)
-<h4>Marma Point Face Massage Add-On</h4>
-Warm organic almond oil massaged over the vital facial points.
-A soothing addition to most treatments.<br>
-Add-on to any treatment for only $35 (30 min)
-<h3>Bodywork</h3>
-<h4>Swedish Massage</h4>
-Light to firm massage using warmed oils.<br>
-$85 (60 min), $125 (90 min)
-<h4>Stone Massage</h4>
-With warm, organic oil and warmed stones. The heat from the stones
-penetrates into the muscles for revitalization and groundedness.
-Ask about contraindications before scheduling.<br>
-$110 (60 min), $125 (70 min)
-<h4>Reiki</h4>
-A gentle hands-on approach to balance and harmonize one's subtle energies.
-Reiki is restorative and nurturing, calms emotional distress and relaxes 
-an over stressed body. It can be enjoyed alone or as a complement to 
-other services. Recipient is fully clothed.<br>
-$75 (60 min), $100 (75 min)
-<h3>Extras to add on ...</h3>
-<h4>Aromatherapy</h4>
-Aromatherapy can enhance your oil massage experience. We offer 
-eight aromatherapy oils at no additional charge, hand made from our 
-own 'Ayurveda World.' Please let your practitioner know if you would 
-like any of these aromatic scents added to your massage oil:
-geranium, jasmine, lavender, lotus, rose, sandalwood, tulsi and wintergreen.
-<h4>Herbal Steam</h4>
-Enhance the detoxification and cleansing process after a massage or
-abhyanga with the exquisite experience of an herbal steam with fresh
-organic herbs in our cedar steam cabinet. Ask about contraindications.<br>
-$25 (up to 11 minutes)
-<h4>Marma Point Face Massage</h4>
-Warm organic almond oil is massaged over the facial vital points 
-using an Ayurveda technique. Marma Point Massage can be enjoyed 
-after most treatments.<br>
-$35 (30 minutes)
-<h4>Therapeutic Oil</h4>
-Crafted on site by a resident herbalist using organic sesame oil
-and local herbs, these therapeutic oils enhance your experience.
-Choices include: rosemary (soothing, eases tired and overworked muscles),
-arnica (an anti-inflammatory to relieve bruising, strains, sprains 
-and muscle soreness) or rose geranium (strengthens muscles).<br>
-$5
-<h4>Shirodhara</h4>
-A steady stream of organic oil over the third eye.
-An excellent addition to a massage or Abhyanga.<br>
-$70 (30 min)
+<H2>Kaya Kalpa Wellness Center<BR>
+<SPAN CLASS="subhead">massage, ayurvedic therapy, bodywork</SPAN></H2>
+<P>Kaya Kalpa means rejuvenation of body and spirit and our professionally
+    trained practitioners are dedicated to your well-being. We offer a variety
+    of Ayurveda therapies, traditional massage and other body therapies to
+    enhance your stay at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]. Nestled among majestic oak
+    and redwood trees, on 355 acres overlooking Monterey Bay, Kaya Kalpa
+Wellness Center offers an oasis for relaxation, health and nurturing.</P>
+<P>&nbsp;</P>
+<P>For more information see our website: <A HREF="http://www.mountmadonna.org/kayakalpa">www.MountMadonna.org/kayakalpa</A></P>
+</TD></TR></TABLE></div></CENTER>
 [% END %]
-</body>
-</html>
+</BODY>
+</HTML>
