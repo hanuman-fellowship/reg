@@ -12,6 +12,9 @@ use Time::Simple qw/
 use Global qw/
     %string
 /;
+use Util qw/
+    penny
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('reg_payment');
@@ -68,6 +71,10 @@ sub glnum {
 sub type_sh {
     my ($self) = @_;
     return $string{"payment_" . $self->type() };
+}
+sub amount_disp {
+    my ($self) = @_;
+    penny($self->amount()); 
 }
 
 1;
