@@ -16,6 +16,7 @@ use Util qw/
     trim
     expand
     ptrim
+    penny
 /;
 
 # Load required DBIC stuff
@@ -156,5 +157,10 @@ sub calc_balance {
     $reg->update({
         balance => $balance,
     });
+}
+
+sub balance_disp {
+    my ($self) = @_;
+    penny($self->balance());
 }
 1;

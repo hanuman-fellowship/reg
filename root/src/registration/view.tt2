@@ -208,7 +208,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>
 <table>
 <tr>
-<td align=center style="font-size: 18pt">[% reg.balance %]</td>
+<td align=center style="font-size: 18pt">[% reg.balance_disp %]</td>
 
 <td align=center>[% IF reg.balance != 0 %]
     [% IF mmi %]
