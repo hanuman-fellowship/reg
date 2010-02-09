@@ -9,6 +9,7 @@ use Util qw/
     places
     gptrim
     get_grid_file
+    penny
 /;
 use Date::Simple qw/
     date
@@ -358,6 +359,11 @@ sub seminar_house {
         }
     }
     return 0;
+}
+
+sub balance_disp {
+    my ($self) = @_;
+    penny($self->balance());
 }
 
 1;

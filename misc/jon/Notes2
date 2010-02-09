@@ -616,6 +616,10 @@ if CVS is not working and you get an error like
 then do this as root:
     echo 0 > /selinux/enforce
 
+ALSO - if the date is wrong on kali
+    you will not be able to log in :(
+    set it properly and you can get in
+
 proposals 
     ?? summary first on clicking on rental list.
     xx on summary have "To Data" or some term

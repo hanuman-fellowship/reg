@@ -2799,7 +2799,7 @@ sub manual : Local {
 
     my @mess = ();
     my $deposit      = $c->request->params->{deposit};
-    if ($deposit !~ m{^\d+$}) {
+    if (invalid_amount($deposit)) {
         push @mess, "Illegal deposit: $deposit";
     }
     my $deposit_type = $c->request->params->{deposit_type};

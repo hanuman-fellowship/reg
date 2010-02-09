@@ -741,7 +741,7 @@ sub pay_balance : Local {
     my $r = model($c, 'Rental')->find($id);
     stash($c,
         message  => payment_warning('mmc'),
-        amount   => (tt_today($c)->as_d8() >= $r->edate)? $r->balance()
+        amount   => (tt_today($c)->as_d8() >= $r->edate)? $r->balance_disp()
                     :                                     $r->deposit(),
         rental   => $r,
         template => "rental/pay_balance.tt2",
@@ -1585,7 +1585,7 @@ EOH
         for my $ch (@charges) {
             $tot_other_charges += $ch->amount;
             $html .= "<tr>"
-                  .  "<td align=right>" . commify($ch->amount()) . "</td>"
+                  .  "<td align=right>" . commify($ch->amount_disp()) . "</td>"
                   .  "<td>" . $ch->what()   . "</td>"
                   .  "</tr>\n"
                   ;
@@ -1632,7 +1632,7 @@ EOH
         for my $p (@payments) {
             $html .= "<tr>"
                   .  "<td>" . $p->the_date_obj() . "</td>"
-                  .  "<td align=right>" . commify($p->amount()) . "</td>"
+                  .  "<td align=right>" . commify($p->amount_disp()) . "</td>"
                   .  "</tr>\n"
                   ;
             $tot_payments += $p->amount();

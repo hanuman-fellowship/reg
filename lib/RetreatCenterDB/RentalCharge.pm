@@ -9,6 +9,9 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
+use Util qw/
+    penny
+/;
 
 #
 # very similar to reg_charge
@@ -38,6 +41,11 @@ sub the_date_obj {
 sub time_obj {
     my ($self) = @_;
     return get_time($self->time());
+}
+
+sub amount_disp {
+    my ($self) = @_;
+    return penny($self->amount());
 }
 
 1;

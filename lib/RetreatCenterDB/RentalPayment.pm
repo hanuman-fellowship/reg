@@ -12,6 +12,9 @@ use Time::Simple qw/
 use Global qw/
     %string
 /;
+use Util qw/
+    penny
+/;
 
 #
 # very similar to reg_payment
@@ -82,6 +85,11 @@ sub type_sh {
 sub time_obj {
     my ($self) = @_;
     return get_time($self->time());
+}
+
+sub amount_disp {
+    my ($self) = @_;
+    return penny($self->amount());
 }
 
 1;

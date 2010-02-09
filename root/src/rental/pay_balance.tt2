@@ -13,7 +13,7 @@
 </table>
 <form name=form action="/rental/pay_balance_do/[% rental.id %]">
 <table cellpadding=3>
-<tr><th align=right>Amount</th><td><input type=input name=amount size=5 value='[% amount %]'></td>
+<tr><th align=right>Amount</th><td><input type=input name=amount size=10 value='[% amount %]'></td>
 [% IF message %]
 <td valign=top><span style="color: red; font-weight: bold; font-size: 15pt;">[% message %]</span></td>
 [% END %]
