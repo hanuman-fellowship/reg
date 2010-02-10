@@ -58,6 +58,7 @@ our @EXPORT_OK = qw/
     avail_mps
     get_now
     penny
+    avail_pic_num
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -393,12 +394,18 @@ sub resize {
 
     chdir "root/static/images";
     if (!$which || $which eq "imgwidth") {
-        system("convert -scale $string{imgwidth}x"
-              ." ${type}o-$id.jpg ${type}th-$id.jpg");
+        system("convert -scale "
+               . trim($string{imgwidth})
+               . "x"
+               . " ${type}o-$id.jpg ${type}th-$id.jpg"
+        );
     }
     if (!$which || $which eq "big_imgwidth") {
-        system("convert -scale $string{big_imgwidth}x"
-              ." ${type}o-$id.jpg ${type}b-$id.jpg");
+        system("convert -scale "
+               . trim($string{big_imgwidth})
+               . "x"
+               . " ${type}o-$id.jpg ${type}b-$id.jpg"
+        );
     }
     chdir "../../..";       # must cd back!   not stateless HTTP, exactly
 }
@@ -1471,6 +1478,15 @@ sub penny {
         $amt .= "0";
     }
     $amt;
+}
+
+sub avail_pic_num {
+    my ($type, $id) = @_;
+    my $n = 1;
+    while (-f "root/static/images/${type}o-$id-$n.jpg") {
+        ++$n;
+    }
+    return $n;
 }
 
 1;

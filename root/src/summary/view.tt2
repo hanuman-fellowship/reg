@@ -1,3 +1,10 @@
+<a name=top>
+<script type="text/javascript">
+var newwin;
+function popup(url) {
+    newwin = window.open(url, 'sum_pic');
+}
+</script>
 [% prog_staff = Catalyst.check_user_roles('prog_staff') %]
 <style type="text/css">
 p {
@@ -39,6 +46,7 @@ p {
 </span>
 [% END %]
 [% END %]
+&nbsp;&nbsp;<a href=#bottom>To Bottom</a>
 <p>
 </div>
 <table cellpadding=7 border=0>
@@ -235,5 +243,7 @@ Sound Setup<br>
 <tr><th>Feedback</th><td colspan=3 valign=top>[% sum.feedback %]</td></tr>
 <tr><th>Miscellaneous</th><td colspan=3 valign=top>[% sum.miscellaneous %]</td></tr>
 <tr><th>Checklist</th><td colspan=3 valign=top>[% sum.check_list %]</td></tr>
-<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj.ampm %]</td></tr>
+$sum.pictures
+<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj.ampm %]<a style="margin-left: 2in" href=#top>To Top</a></td></tr>
 </table>
+<a name=bottom>

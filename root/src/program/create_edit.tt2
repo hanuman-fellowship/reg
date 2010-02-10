@@ -326,6 +326,7 @@ Web
 <tr>
 <th align=right>Footnotes</th>
 <td><input type=text name=footnotes value="[% program.footnotes %]" size=5></td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 
 <tr>

@@ -17,6 +17,8 @@ use Util qw/
     tt_today
     highlight
     stash
+    avail_pic_num
+    resize
 /;
 use Global qw/
     %string
@@ -141,6 +143,17 @@ sub update_do : Local {
     my ($self, $c, $type, $id) = @_;
     my $sum = model($c, 'Summary')->find($id);
     my %hash = %{ $c->request->params() };
+
+    if (my $upload = $c->request->upload('newpic')) {
+        my $n = avail_pic_num('s', $id);
+        $upload->copy_to("root/static/images/so-$id-$n.jpg");
+        Global->init($c);
+        resize('s', "$id-$n");
+    }
+    if (exists $hash{newpic}) {
+        delete($hash{newpic});
+    }
+
     for my $f (keys %hash) {
         $hash{$f} = etrim($hash{$f});
     }
@@ -222,6 +235,41 @@ sub paste : Local {
 
     $type = lc $type;       # Program to program
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
+}
+
+sub del_pic : Local {
+    my ($self, $c, $id, $n) = @_;
+    my $sum = model($c, 'Summary')->find($id);
+    unlink <root/static/images/s*-$id-$n*>;
+    my $type = $sum->program()? "program"
+               :                "rental"
+               ;
+    $c->response->redirect($c->uri_for("/summary/view/$type/$id"));
+}
+
+sub view_pic : Local {
+    my ($self, $c, $id, $n, $which) = @_;
+    my $sum = model($c, 'Summary')->find($id);
+    my ($hap, $hap_type);
+    if ($hap = $sum->program()) {
+        $hap_type = 'program';
+    }
+    else {
+        $hap = $sum->rental();
+        $hap_type = 'rental';
+    }
+    my $type = $which? 'o': 'b';
+    stash($c,
+          template => 'summary/view_pic.tt2',
+          id       => $id,
+          n        => $n,
+          which    => !$which,
+          pic      => "/static/images/s$type-$id-$n.jpg",
+          hap_type => $hap_type,
+          Hap_type => ucfirst $hap_type,
+          hap_id   => $hap->id(),
+          hap_name => $hap->name(),
+    );
 }
 
 1;

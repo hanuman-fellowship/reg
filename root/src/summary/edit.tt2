@@ -1,5 +1,6 @@
 <script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
     <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+<a name=top>
 <h2>[% Type %] Summary</h2>
 <p>
 <table cellpadding=7>
@@ -15,6 +16,7 @@
 [% IF type == 'rental' %]
 [% happening.status_td %]
 [% END %]
+<td><a style="margin-left: 2in" href=#bottom>To Bottom</a></td>
 </tr>
 </table>
 <style type="text/css">
@@ -24,7 +26,8 @@ th {
 </style>
 <form action="/summary/update_do/[% type %]/[% sum.id %]"
       name=form
-      method=post
+      method=POST
+      enctype="multipart/form-data"
 >
 <table cellpadding=3 border=0>
 
@@ -139,6 +142,16 @@ th {
 </tr>
 
 <tr>
+<th valign=top>Miscellaneous
+</th>
+<td colspan=3>
+<textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
+[% sum.miscellaneous %]
+</textarea>
+</td>
+</tr>
+
+<tr>
 <th valign=top>Check List</th>
 <td colspan=3>
 <textarea id=check_list name=check_list rows=[% check_list_rows %] cols=60>
@@ -148,13 +161,12 @@ th {
 </tr>
 
 <tr>
-<th valign=top>Miscellaneous
-</th>
-<td colspan=3>
-<textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>
-[% sum.miscellaneous %]
-</textarea>
-</td></tr>
+<th>New Picture</th>
+<td colspan=3><input type=file name=newpic>
+<input id=sub type=submit value="Submit">
+<a style="margin-left: 1in" href=#top>To Top</a>
+</td>
+</tr>
 
 [% IF sum.needs_verification %]
 <tr>
@@ -165,6 +177,7 @@ th {
 
 </table>
 </form>
+<a name=bottom>
 <script type="text/javascript">
 document.form.prog_person.focus();
 </script>

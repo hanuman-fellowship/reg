@@ -58,4 +58,42 @@ sub field_staff_setup_tr { ptrim(shift->field_staff_setup()) };
 sub food_service_tr      { ptrim(shift->food_service()     ) };
 sub sound_setup_tr       { ptrim(shift->sound_setup()      ) };
 
+#
+# are there any pictures for this summary
+# in root/static/images??
+# if not return ""
+# else return <tr> rows
+# containing the <img> tags along
+# links to enlarge them in a new window and
+# links to delete them.
+#
+sub pictures {
+    my ($self) = @_;
+    my $id = $self->id();
+    my @pics = <root/static/images/sth-$id*>;
+    if (!@pics) {
+        return "";
+    }
+    my $pics1 = "";
+    my $pics2 = "";
+    for my $p (@pics) {
+        my $mp = $p;
+        $mp =~ s{^root}{};
+        my ($n) = $mp =~ m{(\d+)[.]};
+        $pics1 .= qq!<td align=center><a href="/summary/view_pic/$id/$n"><img src=$mp></a></td>!;
+        $pics2 .= "<td align=center><a href=/summary/del_pic/$id/$n>Del</a></td>";
+    }
+    return <<"EOH";
+<tr>
+<th align=right valign=top>Pictures</th>
+<td>
+<table>
+<tr>$pics1</tr>
+<tr>$pics2</tr>
+</table>
+</td>
+</tr>
+EOH
+}
+
 1;
