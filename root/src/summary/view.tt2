@@ -244,6 +244,13 @@ Sound Setup<br>
 <tr><th>Miscellaneous</th><td colspan=3 valign=top>[% sum.miscellaneous %]</td></tr>
 <tr><th>Checklist</th><td colspan=3 valign=top>[% sum.check_list %]</td></tr>
 $sum.pictures
-<tr><th>Last Updated</th><td colspan=3>[% sum.date_updated_obj %] by [% sum.who.username %] at [% sum.time_updated_obj.ampm %]<a style="margin-left: 2in" href=#top>To Top</a></td></tr>
+<tr>
+<th>Last Updated</th>
+<td colspan=3>
+$sum.date_updated_obj by $sum.who.username at $sum.time_updated_obj.ampm
+<a style="margin-left: 1in" href=/summary/update/$Type/$happening.id>Edit</a>
+<a style="margin-left: 1in" href=#top>To Top</a>
+</td>
+</tr>
 </table>
 <a name=bottom>
