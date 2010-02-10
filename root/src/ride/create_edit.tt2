@@ -84,7 +84,7 @@ $shuttle_opts
 
 <tr>
 <th align=right>Cost</th>
-<td><input type=text name=cost value='[% ride.cost %]' size=4></td>
+<td><input type=text name=cost value='$ride.cost_disp' size=4></td>
 </tr>
 
 <tr>

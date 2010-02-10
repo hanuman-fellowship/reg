@@ -22,10 +22,10 @@
 <tr>
 <td><a target=_blank href='[% p.link %]'>[% p.name %]</a></td>
 <td>[% p.date %]</td>
-<td align=right>[% p.cash %]</td>
-<td align=right>[% p.chk %]</td>
-<td align=right>[% p.credit %]</td>
-<td align=right>[% p.online %]</td>
+<td align=right>$p.cash</td>
+<td align=right>$p.chk</td>
+<td align=right>$p.credit</td>
+<td align=right>$p.online</td>
 <td><span class=spacing>[% p.pname %]</span></td>
 </tr>
 [% END %]

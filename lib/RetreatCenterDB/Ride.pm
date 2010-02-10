@@ -6,6 +6,7 @@ use base qw/DBIx::Class/;
 
 use Util qw/
     empty
+    penny
 /;
 
 use Date::Simple qw/
@@ -95,6 +96,11 @@ sub complete {
 #           && ! empty($rider->cc_expire()) 
 #           && ! empty($rider->cc_code()) 
 #           && is_valid($rider->cc_number())
+}
+
+sub cost_disp {
+    my ($self) = @_;
+    penny($self->cost());
 }
 
 1;

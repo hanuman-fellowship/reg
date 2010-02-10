@@ -48,7 +48,12 @@ sub name {
     my ($self) = @_;
 
     my $per = $self->person;
-    return $per->last . ", " . $per->first;
+    if ($per) {
+        return $per->last . ", " . $per->first;
+    }
+    else {
+        return "???";
+    }
 }
 
 sub link {

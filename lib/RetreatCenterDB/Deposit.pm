@@ -9,6 +9,9 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
+use Util qw/
+    penny
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('deposit');
@@ -39,5 +42,17 @@ sub date_end_obj {
 sub time_obj {
     my ($self) = @_;
     return get_time($self->time());
+}
+sub cash_disp {
+    penny(shift->cash());
+}
+sub chk_disp {
+    penny(shift->chk());
+}
+sub credit_disp {
+    penny(shift->credit());
+}
+sub online_disp {
+    penny(shift->online());
 }
 1;

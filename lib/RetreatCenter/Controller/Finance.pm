@@ -63,8 +63,8 @@ sub reconcile_deposit : Local {
         for my $p (model($c, $src)->search($cond)) {
             next PAYMENT1 if $src eq 'XAccountPayment'
                              && $p->xaccount->sponsor() ne $sponsor;
-            my $type = $p->type;
-            my $amt  = $p->amount;
+            my $type = $p->type();
+            my $amt  = $p->amount_disp();
             next PAYMENT1 if $amt == 0;       # bogus payment
             if ($type eq 'D') {
                 $credit += $amt;
@@ -103,7 +103,7 @@ sub reconcile_deposit : Local {
                    })
         ) {
             my $type = $r->type();
-            my $amt = $r->cost();
+            my $amt = $r->cost_disp();
             next RIDE1 if $amt == 0;       # bogus payment
             if ($type eq 'D') {
                 $credit += $amt;
@@ -204,7 +204,7 @@ sub file_deposit : Local {
             next PAYMENT2 if $src eq 'XAccountPayment'
                              && $p->xaccount->sponsor() ne $sponsor; 
             my $type = $p->type();
-            my $amt  = $p->amount();
+            my $amt  = $p->amount_disp();
             next PAYMENT2 if $amt == 0;      # bogus payment
             my $glnum = $p->glnum();
             push @payments, {
@@ -227,7 +227,7 @@ sub file_deposit : Local {
                        paid_date => { between => [ $date_start, $date_end ] },
                    })
         ) {
-            my $amt = $r->cost();
+            my $amt = $r->cost_disp();
             next RIDE2 if $amt == 0;       # bogus payment
             push @payments, {
                 name  => $r->name(),
@@ -544,7 +544,7 @@ sub period_end : Local {
             next PAYMENT3 if $src eq 'XAccountPayment'
                              && ($p->xaccount->sponsor() ne $sponsor);
             my $type = $p->type();
-            my $amt  = $p->amount();
+            my $amt  = $p->amount_disp();
             my $glnum = $p->glnum();
             if (! exists $totals{$glnum}) {
                 # initialize this entry
@@ -595,7 +595,7 @@ sub period_end : Local {
                    })
         ) {
             my $href = $totals{$rgl};
-            my $amt = $r->cost();
+            my $amt = $r->cost_disp();
             next RIDE3 if $amt == 0;        # bogus payment
             if (! exists $totals{$rgl}) {
                 $totals{$rgl} = {

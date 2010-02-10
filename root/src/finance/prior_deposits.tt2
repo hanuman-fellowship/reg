@@ -20,10 +20,10 @@
 <td align=center>[% d.user.username %]</td>
 <td align=center>[% d.date_end_obj %]</td>
 <td align=right>[% d.time_obj %]</td>
-<td align=right>[% d.cash %]</td>
-<td align=right>[% d.chk %]</td>
-<td align=right>[% d.credit %]</td>
-<td align=right>[% d.online %]</td>
+<td align=right>$d.cash_disp</td>
+<td align=right>$d.chk_disp</td>
+<td align=right>$d.credit_disp</td>
+<td align=right>$d.online_disp</td>
 <td align=right>[% d.cash + d.chk + d.credit + d.online %]</td>
 <td align=right><a href="/finance/reconcile_deposit/[% sponsor %]/[% d.id %]">Reconcile</a></td>
 <td align=right><a href="/finance/file_deposit/[% sponsor %]/[% d.id %]">File</a></td>
