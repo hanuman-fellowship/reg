@@ -46,7 +46,7 @@ p {
 </span>
 [% END %]
 [% END %]
-&nbsp;&nbsp;<a href=#bottom>To Bottom</a>
+&nbsp;&nbsp;&nbsp;<a href=#bottom>To Bottom</a>
 <p>
 </div>
 <table cellpadding=7 border=0>
