@@ -1,0 +1,8 @@
+<p class=p2>
+$Hap_type <a href=/$hap_type/view/$hap_id>$hap_name</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/summary/view/$hap_type/$id>To Summary</a>
+<p class=p2>
+<a href=/summary/view_pic/$id/$n/$which><img src=$pic></a>
+<p class=p2>
+Click picture to [% IF which %]enlarge[% ELSE %]shrink[% END %].
