@@ -134,6 +134,7 @@ sub create : Local {
                 # here for creates reg_start_obj is just a hash reference
                 # off of %program above.
                 # tricky!
+            rental_id   => $rental_id,
             @name,
         },
         canpol_opts => [ model($c, 'CanPol')->search(
@@ -163,7 +164,6 @@ sub create : Local {
 <option value=S>Course
 EOO
         @dates,
-        rental_id   => $rental_id,
         show_level  => "hidden",
         form_action => "create_do",
         template    => "program/create_edit.tt2",
@@ -381,7 +381,7 @@ sub create_do : Local {
         summary_id => $sum->id,
         image      => $upload? "yes": "",
         lunches    => "",
-        rental_id  => 0,
+        rental_id  => 0,        # overridden by hybrid
         %P,         # this includes rental_id for a possible parallel rental
     });
     my $id = $p->id();
@@ -988,7 +988,7 @@ sub delete : Local {
         error($c,
             'You must first delete the '
                 . scalar(@regs)
-                . ' registration$pl for this program.',
+                . " registration$pl for this program.",
             'gen_error.tt2',
         );
         return;

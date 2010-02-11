@@ -316,6 +316,7 @@ sub show : Local {
                 edate => $ed,
                 color => $color,
                 name  => $ev->name(),
+                count => $ev->count(),
                 type  => $ev_type,
                 id    => $ev->id(),
                 reserved_clusters => $clusters,
@@ -336,6 +337,7 @@ sub show : Local {
           . "<td style='border: solid; border-width: thin;' bgcolor="
           .       $ev->{color} . "></td>"
           . "<td>$ev->{name}</td>"
+          . "<td align=right>$ev->{count}&nbsp;&nbsp;</td>"
           . "<td>$ev->{reserved_clusters}</td>"
           . "</tr>\n";
     }
@@ -347,6 +349,7 @@ sub show : Local {
 <th>End</th>
 <th width=25></th>
 <th align=left>Name</th>
+<th align=left>Count</th>
 <th align=left>Reserved Clusters</th>
 </tr>
 $event_table

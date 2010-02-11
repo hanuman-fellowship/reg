@@ -282,6 +282,11 @@ sub daily_counts {
 }
 sub count {
     my ($self) = @_;
+    if ($self->program_id()) {
+        # Hybrid counts come from the program.
+        #
+        return $self->program->count();
+    }
     if ($self->expected()) {
         return $self->expected();
     }
