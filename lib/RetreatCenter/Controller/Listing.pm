@@ -1449,7 +1449,9 @@ sub field_plan : Local {
 # rental and program summaries.
 #
 # ??? we get start and end dates in several places.
-# can we unify this?  DRY?
+# can we unify this?  DRY? or not horribly refactored?
+#
+# do not include PR or MMI DCM programs
 #
 sub summary : Local {
     my ($self, $c, $section) = @_;
@@ -1517,6 +1519,13 @@ sub summary : Local {
             prefetch => [qw/ summary /],   
         }
     );
+    # a further limiting of the programs not so easily
+    # done above...   no biggie - don't worry about it.
+    #
+    @programs = grep {
+                    !($_->PR() || $_->level() =~ m{[DCM]})
+                }
+                @programs;
     stash($c,
         start  => $start,
         end    => $end,
