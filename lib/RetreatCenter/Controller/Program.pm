@@ -381,6 +381,7 @@ sub create_do : Local {
         summary_id => $sum->id,
         image      => $upload? "yes": "",
         lunches    => "",
+        rental_id  => 0,
         %P,         # this includes rental_id for a possible parallel rental
     });
     my $id = $p->id();
