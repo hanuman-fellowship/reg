@@ -20,17 +20,27 @@ Phone Lists
     Last date of contact before which<br>people should be marked inactive:
     <br>
     <input type=text name=date_last size=10 maxlength=10>
-    <input type=submit value="Go">
+    <input type=submit value="Mark Inactive">
     </form>
     <p class=p2>
-    Purge Stale Addresses
+    Purge Stale Email Addresses
     <p class=p2>
     <form action="[% Catalyst.uri_for('/listing/stale') %]"
           method=POST
           enctype="multipart/form-data"
     >
     <input type=file name=stale_emails><br>
-    <input type=submit value="Go">
+    <input type=submit value="Purge">
+    </form>
+    <p class=p2>
+    Unsubscribe Email Addresses
+    <p class=p2>
+    <form action="[% Catalyst.uri_for('/listing/unsubscribe') %]"
+          method=POST
+          enctype="multipart/form-data"
+    >
+    <input type=file name=unsub_emails><br>
+    <input type=submit value="Unsubscribe">
     </form>
 [% END %]
 </ul>

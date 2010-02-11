@@ -8,6 +8,8 @@ use Util qw/
     empty
     role_table
     valid_email
+    avail_pic_num
+    resize
     model
     stash
 /;
@@ -246,31 +248,141 @@ sub create_do : Local {
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
-sub profile : Local {
-    my ($self, $c) = @_;
+sub profile_view : Local {
+    my ($self, $c, $msg) = @_;
 
     my $u = $c->user();
     stash($c,
+        msg       => ($msg? "Password was changed.": ""),        # hack
         user      => $u,
-        check_hide_mmi => ($u->hide_mmi()? "checked"
-                           :               ""       ),
-        user_bg   => $u->bg   || '255,255,255' ,
-        user_fg   => $u->fg   || '0,0,0',
-        user_link => $u->link || '0,0,255',
-        template  => "user/profile.tt2",
+        user_bg   => sprintf("#%02x%02x%02x",
+                         ($u->bg()   || '255,255,255') =~ m{(\d+)}g),
+        user_fg   => sprintf("#%02x%02x%02x",
+                         ($u->fg()   || '0  ,0  ,0  ') =~ m{(\d+)}g),
+        user_link => sprintf("#%02x%02x%02x",
+                         ($u->link() || '0  ,0  ,255') =~ m{(\d+)}g),
+        pictures  => _pictures($u->obj->id()),
+        template  => "user/profile_view.tt2",
     );
 }
 
-sub profile_do : Local {
+sub _pictures {
+    my ($id) = @_;
+    my $pics = "";
+    my $dels = "";
+    my @pics = <root/static/images/uth-$id*>;
+    for my $p (@pics) {
+        my $mp = $p;
+        $mp =~ s{root}{};
+        my ($n) = $p =~ m{(\d+)[.]};
+        $pics .= "<td><img src=$mp></td>\n";
+        $dels .= "<td align=center><a href='/user/profile_pic_del/$id/$n'>Del</a></td>\n";
+    }
+    return <<"EOH";
+<tr>$pics</tr>
+<tr>$dels</tr>
+EOH
+}
+
+sub profile_pic_del : Local {
+    my ($self, $c, $id, $n) = @_;
+    unlink <root/static/images/u*$id-$n*>;
+    $c->response->redirect($c->uri_for('/user/profile_view'));
+}
+
+sub profile_edit : Local {
+    my ($self, $c) = @_;
+    my $u = $c->user();
+    stash($c,
+        user           => $u,
+        check_hide_mmi => ($u->hide_mmi()? "checked": ""),
+        template       => "user/profile_edit.tt2",
+    );
+}
+
+sub profile_edit_do : Local {
     my ($self, $c) = @_;
 
+    my %hash = %{ $c->request->params() };
+    $c->user->update(\%hash);
+    $c->response->redirect($c->uri_for('/user/profile_view'));
+}
+
+sub profile_new_pic : Local {
+    my ($self, $c) = @_;
+    if (my $upload = $c->request->upload('newpic')) {
+        my $id = $c->user->obj->id();
+        my $n = avail_pic_num('u', $id);
+        $upload->copy_to("root/static/images/uo-$id-$n.jpg");
+        Global->init($c);
+        resize('u', "$id-$n");
+        my $ftp = Net::FTP->new($string{ftp_site},
+                                Passive => $string{ftp_passive})
+            or return _pub_err($c, "cannot connect to $string{ftp_site}");
+        $ftp->login($string{ftp_login}, $string{ftp_password})
+            or return _pub_err($c, "cannot login: " . $ftp->message);
+        $ftp->cwd($string{ftp_userpics})
+            or return _pub_err($c, "cannot cwd: " . $ftp->message);
+        $ftp->binary();
+        $ftp->put("root/static/images/ub-$id-$n.jpg", "ub-$id-$n.jpg")
+            or return _pub_err($c, "cannot put: " . $ftp->message);
+        $ftp->quit();
+    }
+    $c->response->redirect($c->uri_for('/user/profile_view'));
+}
+
+sub _pub_err {
+    my ($c, $msg) = @_;
+
+    stash($c,
+        mess     => $msg,
+        template => "user/error.tt2",
+    );
+    return;
+}
+
+sub profile_color : Local {
+    my ($self, $c, $type) = @_;
+    my $u = $c->user();
+    my $value = $u->$type();
+    my ($r, $g, $b) = $value =~ m{(\d+)}g;
+    stash($c,
+        type  => $type,
+        name  => ($type eq 'bg'? "Background"
+                 :$type eq 'fg'? "Foreground"
+                 :               "Link"      ),
+        value => $value,
+        red   => $r,
+        green => $g,
+        blue  => $b,
+        template => "user/profile_color.tt2",
+    );
+}
+
+sub profile_color_do : Local {
+    my ($self, $c, $type) = @_;
+    $c->user->update({
+        $type => $c->request->params->{value},
+    });
+    $c->response->redirect($c->uri_for('/user/profile_view'));
+}
+
+sub profile_password : Local {
+    my ($self, $c) = @_;
+    stash($c,
+        template => 'user/profile_password.tt2',
+    );
+}
+
+sub profile_password_do : Local {
+    my ($self, $c) = @_;
+    my $u = $c->user;
     my $cur_pass  = $c->request->params->{cur_pass};
-    my $good_pass = $c->user->password;
+    my $good_pass = $u->password();
     my $new_pass  = $c->request->params->{new_pass};
     my $new_pass2 = $c->request->params->{new_pass2};
-    my @pass = ();
+    @mess = ();
     if ($cur_pass) {
-        @mess = ();
         if ($good_pass ne $cur_pass) {
             push @mess, "Current password is not correct.";
         }
@@ -280,28 +392,19 @@ sub profile_do : Local {
         else {
             check_password($new_pass);
         }
-        if (@mess) {
-            $c->stash->{mess} = join "<br>\n", @mess;
-            $c->stash->{template} = "user/error.tt2";
-            return;
-        }
-        @pass = (password => $new_pass);
     }
-    $c->user->update({
-        @pass,
-        first    => $c->request->params->{first},
-        last     => $c->request->params->{last},
-        email    => $c->request->params->{email},
-        office   => $c->request->params->{office},
-        cell     => $c->request->params->{cell},
-        bg       => $c->request->params->{user_bg},
-        fg       => $c->request->params->{user_fg},
-        link     => $c->request->params->{user_link},
-        hide_mmi => $c->request->params->{hide_mmi},
-        txt_msg_email => $c->request->params->{txt_msg_email},
+    else {
+        push @mess, "Missing current password.";
+    }
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "user/error.tt2";
+        return;
+    }
+    $u->update({
+        password => $new_pass,
     });
-
-    $c->stash->{template} = "configuration/index.tt2";
+    $c->response->redirect($c->uri_for('/user/profile_view/1'));
 }
 
 sub access_denied : Private {

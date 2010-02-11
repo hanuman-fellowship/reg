@@ -651,6 +651,26 @@ sub stale : Local {
     $c->stash->{template} = "gen_message.tt2";
 }
 
+sub unsubscribe : Local {
+    my ($self, $c) = @_;
+
+    my $upload = $c->request->upload('unsub_emails');
+    my $n = 0;
+    if ($upload) {
+        my @emails = $upload->slurp =~ m{[^'",\s]+\@[^'",\s]+}g;
+        $n = @emails;
+        if (@emails) {
+            model($c, 'Person')->search({
+                email => { -in => \@emails },
+            })->update({
+                e_mailings => '',
+            });
+        }
+    }
+    $c->stash->{mess} = "$n emails unsubscribed.";
+    $c->stash->{template} = "gen_message.tt2";
+}
+
 sub email_check : Local {
     my ($self, $c) = @_;
 

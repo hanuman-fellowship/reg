@@ -54,3 +54,4 @@ $user.first $user.last<br>
 $user.office<br>
 [% IF has_email %]<a href="mailto:$user.email">$user.email</a><br>[% END %]
 MMC Transportation Coordinator
+$pictures

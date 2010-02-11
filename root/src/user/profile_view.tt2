@@ -1,0 +1,107 @@
+<h2>User Profile for [% user.username %]</h2>
+<a href=/user/profile_edit>Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/user/profile_password>Password</a>
+<span style="margin-left: 2in; color: red;">$msg</span>
+<p class=p2>
+<table cellpadding=5 border=0>
+<tr>
+<th align=right>First</th>
+<td>$user.first</td>
+</tr>
+
+<tr>
+<th align=right>Last</th>
+<td>$user.last</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=2>$user.email</td>
+</tr>
+
+<tr>
+<th align=right>Office Phone</th>
+<td>$user.office</td>
+</tr>
+
+<tr>
+<th align=right>Cell Phone</th>
+<td>$user.cell</td>
+</tr>
+
+<tr>
+<th align=right>Txt Msg Email</th>
+<td>$user.txt_msg_email</td>
+</tr>
+
+<tr>
+<th align=right>Hide MMI</th>
+<td>$user.hide_mmi</td>
+</tr>
+
+<tr>
+<th align=right>Background</th>
+<td style="
+    background: $user_bg;
+    width: 100px;
+    cursor: pointer;
+    border: solid;
+    border-width: thin;
+"
+onclick="window.location.href='/user/profile_color/bg'"
+>&nbsp;</td>
+<td rowspan=3 valign=center>Click on each<br>of the 3 colors<br>to change them.</td>
+</tr>
+
+<tr>
+<th align=right>Foreground</th>
+<td style="
+    background: $user_fg;
+    width: 100px;
+    cursor: pointer;
+    border: solid;
+    border-width: thin;
+"
+onclick="window.location.href='/user/profile_color/fg'"
+>&nbsp;</td>
+</tr>
+
+<tr>
+<th align=right>Links</th>
+<td style="
+    background: $user_link;
+    width: 100px;
+    cursor: pointer;
+    border: solid;
+    border-width: thin;
+"
+onclick="window.location.href='/user/profile_color/link'"
+>&nbsp;</td>
+</tr>
+
+<tr>
+<th valign=top align=right>Pictures</th>
+<td colspan=2>
+<table>
+
+$pictures
+
+</table>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td colspan=2>
+<form action=/user/profile_new_pic
+      method=post
+      enctype="multipart/form-data"
+>
+<input type=file name=newpic><input type=submit value="Upload Picture">
+</form>
+</td>
+</tr>
+
+
+</table>

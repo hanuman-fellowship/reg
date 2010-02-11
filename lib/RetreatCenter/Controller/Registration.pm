@@ -4338,10 +4338,10 @@ sub tally : Local {
         # cancellations don't tally charges or the balance at all.
         # right?
         #
-        for my $rc ($r->charges()) {
-            my $what   = $rc->what();
-            my $amount = $rc->amount();
-            if (! $r->cancelled()) {
+        if (! $r->cancelled()) {
+            for my $rc ($r->charges()) {
+                my $what   = $rc->what();
+                my $amount = $rc->amount();
                 if ($what =~ m{tuition}i) {
                     $tuition += $amount;
                 }
@@ -4352,8 +4352,6 @@ sub tally : Local {
                     $adjustment += $amount;
                 }
             }
-        }
-        if (! $r->cancelled()) {
             $balance += $r->balance();
         }
 

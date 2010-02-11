@@ -1,0 +1,56 @@
+<link rel="stylesheet" type="text/css" href="/static/color.css" 
+<script type="text/javascript" src="/static/js/color.js"></script>
+<h2>User Profile $name Color</h2>
+<form action=/user/profile_color_do/$type name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<td colspan=4>
+<input type=text id=color_val name=value value="$value">
+</td>
+</tr>
+
+<tr>
+<td>
+    <table border=1>
+    <tr>
+    <td id=swatch colspan=4></td>
+    </tr>
+    <tr>
+    <td class=square id=more_red   onclick="adjust( incr,     0,     0);"></td>
+    <td class=square id=more_green onclick="adjust(    0,  incr,     0);"></td>
+    <td class=square id=more_blue  onclick="adjust(    0,     0,  incr);"></td>
+    <td class=square id=whiter     onclick="adjust( incr,  incr,  incr);"></td>
+    </tr>
+    <tr>
+    <td class=square id=less_red   onclick="adjust(-incr,     0,     0);"></td>
+    <td class=square id=less_green onclick="adjust(    0, -incr,     0);"></td>
+    <td class=square id=less_blue  onclick="adjust(    0,     0, -incr);"></td>
+    <td class=square id=blacker    onclick="adjust(-incr, -incr, -incr);"></td>
+    </table>
+</td>
+<!-- had to hack the table with the width ... sorry -->
+<td rowspan=4 valign=top width=330>
+The 3 numbers in the field above represent
+the red, green, and blue components of the color
+that appears in <br>&larr; the swatch area.
+<p class=p2>
+Adjust the color by clicking on the 8 squares below the swatch.
+Play with it.
+<p class=p2>
+Click the Submit button to finish.
+</td>
+<td width=100></td>
+    </tr>
+</tr>
+
+<tr>
+<td valign=top><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.value.focus();
+colorSet($red, $green, $blue);
+</script>

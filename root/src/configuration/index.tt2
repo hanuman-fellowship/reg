@@ -52,7 +52,7 @@ p {
 [% IF user_admin %]
     <a href=/role/list>Roles</a><p>
 [% END %]
-<a href=/user/profile>User Profile</a><p>
+<a href=/user/profile_view>User Profile</a><p>
 <a href=/user/list>Users</a><p>
 [% IF prog_admin %]
 <a target=_blank href=http://www.mountmadonna.org/cgi-bin/admin>Web Administration</a><p>

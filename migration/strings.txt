@@ -202,3 +202,5 @@ SFO_color 128,128,128
 OAK_color 128,128,128
 MRY_color 128,128,128
 OTH_color 128,128,128
+
+ftp_userpics www/userpics

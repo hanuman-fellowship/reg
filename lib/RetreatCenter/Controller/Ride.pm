@@ -565,6 +565,7 @@ EOS
         penalty   => $string{ride_cancel_penalty},
         airport   => $string{$ride->airport()},
         has_email => ! empty($rider->email()),
+        pictures  => _driver_pics($ride),
     });
     if ($snail) {
         $ride->update({
@@ -710,11 +711,9 @@ sub mine : Local {
     my ($self, $c) = @_;
 
     my $driver_id = $c->user->obj->id();
-
-    $c->stash->{rides} = [ model($c, 'Ride')->search(
-        { driver_id => $driver_id },
-        { order_by => 'pickup_date, airport, flight_time' }
-    ) ];
+    $c->stash->{ride_list} = _ride_list($c,
+        [ driver_id => $driver_id ],
+    );
     $c->stash->{template} = "ride/list.tt2";
 }
 
@@ -799,6 +798,31 @@ EOH
     }
     $html .= "</table>\n";
     $c->res->output($html);
+}
+
+sub _driver_pics {
+    my ($ride) = @_;
+    my $driver = $ride->driver();
+    my $id = $driver->id();
+    my @pics = <root/static/images/ub-$id*>;
+    if (!@pics) {
+        return "";
+    }
+    my $pics = "";
+    for my $p (@pics) {
+        my $mp = $p;
+        $mp =~ s{root/static/images/}{};
+        $pics .= "<p><img src=http://www.mountmadonna.org/userpics/$mp>";
+    }
+    my $pl = @pics > 1? "s": "";
+    my $first = $ride->driver->first();
+    return <<"EOH";
+<p>
+<hr style="width: 400px; margin-left: 0px; height: 1px">
+<p>
+Picture$pl of your driver, $first:
+$pics
+EOH
 }
 
 1;
