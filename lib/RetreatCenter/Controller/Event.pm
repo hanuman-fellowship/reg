@@ -578,7 +578,7 @@ EOH
         #
         if (length $max) {
             if (length $count) {
-                $count = $max . "/$count";
+                $count .= "/$max";
             }
             else {
                 $count = $max;
