@@ -91,11 +91,11 @@ for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
         next TRANSACTION;
     }
-    $ids{$f} = 1;
     if (! $ftp->get($f, "root/static/online/$f")) {
         my_warn("no get of online reg $f");
         next TRANSACTION;
     }
+    $ids{$f} = 1;
     my ($last, $first) = ("", "");
     if (open my $in, "<", "root/static/online/$f") {
         LINE:
