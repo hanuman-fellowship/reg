@@ -73,6 +73,14 @@
 </tr>
 <tr>
 
+<tr><td></td><td style="border-top: solid thin"></td></tr>
+
+<tr>
+<th align=right>Total Charges</td>
+<td align=right>[% tot_charge %]</td>
+</tr>
+<tr>
+
 <tr><td>&nbsp;</td></tr>
 
 <tr>
@@ -88,14 +96,38 @@
 <tr>
 
 <tr>
-<th align=right>Balance</td>
+<th align=right>Outstanding Balance</td>
 <td align=right>[% balance %]</td>
+</tr>
+<tr>
+
+<tr><td></td><td style="border-top: solid thin"></td></tr>
+
+<tr>
+<th align=right>Total Income</td>
+<td align=right>[% tot_inc %]</td>
+</tr>
+<tr>
+
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<th align=right>Cancelled Deposits</td>
+<td align=right>[% can_deposit %]</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Credit</td>
 <td align=right>[% credit %]</td>
+</tr>
+<tr>
+
+<tr><td></td><td style="border-top: solid thin"></td></tr>
+
+<tr>
+<th align=right>Net Cancelled</td>
+<td align=right>[% net_cancel %]</td>
 </tr>
 <tr>
 

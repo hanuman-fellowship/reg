@@ -4317,6 +4317,7 @@ sub tally : Local {
     my $adjustment = 0;
 
     my $deposit    = 0;
+    my $can_deposit = 0;
     my $payment    = 0;
     my $balance    = 0;
 
@@ -4329,7 +4330,12 @@ sub tally : Local {
             my $what   = $rp->what;
             my $amount = $rp->amount();
             if ($what =~ m{deposit}i) {
-                $deposit += $amount;
+                if ($r->cancelled()) {
+                    $can_deposit += $amount;
+                }
+                else {
+                    $deposit += $amount;
+                }
             }
             elsif ($what =~ m{payment}i) {
                 $payment += $amount;
@@ -4396,23 +4402,30 @@ sub tally : Local {
         }
     }
     stash($c,
-        program    => $pr,
-        id         => $prog_id,
-        registered => $registered,
-        cancelled  => $cancelled,
-        no_shows   => $no_shows,
-        males      => $males,
-        females    => $females,
-        adults     => $adults,
-        kids       => $kids,
-        tuition    => commify($tuition),
-        lodging    => commify($lodging),
-        adjustment => commify($adjustment),
-        deposit    => commify($deposit),
-        payment    => commify($payment),
-        credit     => commify($credit),
-        balance    => commify($balance),
-        template   => "registration/tally.tt2",
+        program     => $pr,
+        id          => $prog_id,
+        registered  => $registered,
+        cancelled   => $cancelled,
+        no_shows    => $no_shows,
+        males       => $males,
+        females     => $females,
+        adults      => $adults,
+        kids        => $kids,
+
+        tuition     => commify($tuition),
+        lodging     => commify($lodging),
+        adjustment  => commify($adjustment),
+        tot_charge  => commify($tuition + $lodging + $adjustment),
+
+        deposit     => commify($deposit),
+        payment     => commify($payment),
+        balance     => commify($balance),
+        tot_inc     => commify($deposit + $payment + $balance),
+
+        can_deposit => commify($can_deposit),
+        credit      => commify($credit),
+        net_cancel  => commify($can_deposit - $credit), 
+        template    => "registration/tally.tt2",
     );
 }
 
