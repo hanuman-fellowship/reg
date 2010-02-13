@@ -771,53 +771,33 @@ sub update_do : Local {
         $P{image} = "yes";
     }
     my $p = model($c, 'Program')->find($id);
-    my $names = "";
-    my $lunches = 0;
     $P{max} ||= 0;
     if (   $p->sdate ne $P{sdate}
         || $p->edate ne $P{edate}
-        || $p->max   <  $P{max}
     ) {
-        # invalidate the bookings as the dates/max have changed
+        # cannot change dates if there are any meeting place
+        # bookings in effect.   no registrations, either.
+        # 
         my @bookings = model($c, 'Booking')->search({
             program_id => $id,
         });
-        #
-        # if only the max changed then we can keep the bookings
-        # of meeting places that are still able to accomodate
-        # the new max.
-        #
-        if (   $p->sdate eq $P{sdate}
-            && $p->edate eq $P{edate}
-        ) {
-            @bookings = grep {
-                            $_->meeting_place->max < $P{max}
-                        }
-                        @bookings;
+        my @regs = model($c, 'Registration')->search({
+            program_id => $id,
+        });
+        if (@bookings || @regs) {
+            error($c,
+                'Cannot change the dates when there are'
+                . ' meeting place bookings or registrations.',
+                'gen_error.tt2',
+            );
+            return;
         }
-        $names = join '<br>', map { $_->meeting_place->name } @bookings;
-        for my $b (@bookings) {
-            $b->delete();
-        }
-        if ($p->max() >= $P{max}) {
-            # must have been a date
-            $P{lunches} = "";
-        }
+        $P{lunches} = '';
     }
     $p->update(\%P);
     add_config($c, date($P{edate}) + 30);
-    if ($names) {
-        stash($c,
-            program  => $p,
-            names    => $names,
-            lunches  => $lunches, 
-            template => "program/mp_warn.tt2",
-        );
-    }
-    else {
-        $c->response->redirect($c->uri_for("/program/view/"
-                               . $p->id . "/$section"));
-    }
+    $c->response->redirect($c->uri_for("/program/view/"
+                           . $p->id . "/$section"));
 }
 
 sub leader_update : Local {

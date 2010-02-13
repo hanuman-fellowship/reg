@@ -1890,49 +1890,54 @@ sub _view {
     my $share_last  = $reg->share_last();
     my $share = "$share_first $share_last";
     if ($share_first) {
-        if (my ($person) = model($c, 'Person')->search({
+        # there may be more than one person who matches :(
+        #
+        my (@people) = model($c, 'Person')->search({
                                first => $share_first,
                                last  => $share_last,
-                           })
-        ) {
-            if (my ($next_reg) = model($c, 'Registration')->search({
-                                     person_id  => $person->id(),
-                                     program_id => $reg->program_id(),
-                                 })
+                       });
+        my $next_reg;
+        PEOPLE:
+        for my $person (@people) {
+            if (($next_reg) = model($c, 'Registration')->search({
+                                  person_id  => $person->id(),
+                                  program_id => $reg->program_id(),
+                              })
             ) {
                 my $next_id = $next_reg->id();
                 $share = "<a href=/registration/view/$next_id>$share</a>";
-            }
-            else {
-                # not registered - but are they in the online list?
-                my ($found_first, $found_last) = (0, 0);
-                for my $f (<root/static/online/*>) {
-                    open my $in, "<", $f
-                        or die "cannot open $f: $!\n";
-                    # x_fname, x_lname - could be anywhere in the file
-                    while (<$in>) {
-                        if (m{x_fname => $share_first}i) {
-                            $found_first = 1;
-                        }
-                        elsif (m{x_lname => $share_last}i) {
-                            $found_last = 1;
-                        }
-                    }
-                    close $in;
-                    if ($found_first && $found_last) {
-                        last;
-                    }
-                }
-                if ($found_first && $found_last) {
-                    $share .= " - <span class=required><b>is</b> in the online list</span>";
-                }
-                else {
-                    $share .= " - <span class=required>not registered</span>";
-                }
+                last PEOPLE;
             }
         }
-        else {
+        if (! @people) {
             $share .= " - <span class=required>could not find</span>";
+        }
+        elsif (! $next_reg) {
+            # not registered - but are they in the online list?
+            my ($found_first, $found_last) = (0, 0);
+            for my $f (<root/static/online/*>) {
+                open my $in, "<", $f
+                    or die "cannot open $f: $!\n";
+                # x_fname, x_lname - could be anywhere in the file
+                while (<$in>) {
+                    if (m{x_fname => $share_first}i) {
+                        $found_first = 1;
+                    }
+                    elsif (m{x_lname => $share_last}i) {
+                        $found_last = 1;
+                    }
+                }
+                close $in;
+                if ($found_first && $found_last) {
+                    last;
+                }
+            }
+            if ($found_first && $found_last) {
+                $share .= " - <span class=required><b>is</b> in the online list</span>";
+            }
+            else {
+                $share .= " - <span class=required>not registered</span>";
+            }
         }
     }
     my $PR = $prog->PR();
@@ -2963,54 +2968,61 @@ sub lodge : Local {
     my $share_last  = $reg->share_last();
     my $name = "$share_first $share_last";
     my $message2 = "";
-    my $reg2;
+    my $reg2 = undef;
     if ($share_first) {
-        my ($person) = model($c, 'Person')->search({
+        my (@people) = model($c, 'Person')->search({
             first => $share_first,
             last  => $share_last,
         });
-        if ($person) {
+        # there may be more than one person matching :(
+        # find the one (hopefully not > 1!) that is registered
+        # for this program.
+        #
+        PEOPLE:
+        for my $person (@people) {
             ($reg2) = model($c, 'Registration')->search({
-                person_id => $person->id,
-                program_id => $program_id,
-            });
+                             person_id  => $person->id(),
+                             program_id => $program_id,
+                      });
+            if ($reg2) {
+                last PEOPLE;
+            }
+        }
+        if (! @people) {
+            $message2 = "Could not find a person named $name.";
+        }
+        elsif (!$reg2) {
+            $message2 = "$name has not yet registered for "
+                      . $reg->program->name . ".";
+        } else {
             # if space left, same dates, same h_type, etc etc.
             # oh jeez - I can't do everything.
             # the best, I guess, would be to simply inform
             # the registrar of where their friend is housed.
             # if that room appears in the list (I can default it)
             # then they can choose it.
-            if ($reg2) {
-                if ($reg2->cancelled()) {
-                    $message2 = "$share_first $share_last has cancelled.";
-                }
-                elsif ($reg2->house_id) {
-                    if ($reg2->h_type eq $reg->h_type) {
-                        $share_house_name = $reg2->house->name;
-                        $share_house_id   = $reg2->house_id;
-                        $message2 = "Share $share_house_name"
-                                   ." with $share_first $share_last?";
-                    }
-                    else {
-                        $message2 = "$name is housed in a '"
-                                  . $reg2->h_type_disp
-                                  . "' not a '"
-                                  . $reg->h_type_disp
-                                  . "'."
-                                  ;
-                    }
+            if ($reg2->cancelled()) {
+                $message2 = "$share_first $share_last has cancelled.";
+            }
+            elsif ($reg2->house_id) {
+                if ($reg2->h_type eq $reg->h_type) {
+                    $share_house_name = $reg2->house->name;
+                    $share_house_id   = $reg2->house_id;
+                    $message2 = "Share $share_house_name"
+                               ." with $share_first $share_last?";
                 }
                 else {
-                    $message2 = "$name has not yet been housed.";
+                    $message2 = "$name is housed in a '"
+                              . $reg2->h_type_disp
+                              . "' not a '"
+                              . $reg->h_type_disp
+                              . "'."
+                              ;
                 }
             }
             else {
-                $message2 = "$name has not yet registered for "
-                          . $reg->program->name . ".";
+                $message2 = "$name has not yet been housed.";
             }
-        }
-        else {
-            $message2 = "Could not find a person named $name.";
         }
         #
         # if the person hasn't yet registered for this program
@@ -3035,7 +3047,7 @@ sub lodge : Local {
                 close $in;
                 if ($found_first && $found_last) {
                     $message2 = "$share_first $share_last <b>has</b> registered"
-                               ." online but has not yet been imported.";
+                              . " online but has not yet been imported.";
                     $found = 1;
                     last ONLINE;
                 }

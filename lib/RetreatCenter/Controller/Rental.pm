@@ -587,45 +587,39 @@ sub update_do : Local {
         my ($event_start, $lunches) = get_lunch($c, $id, 'Rental');
         if ($lunches && substr($lunches, 0, 1) == 1) {
             error($c,
-                  "Can't have lunch since arrival time is after 1:00 pm!",
+                  "Cannot have lunch since arrival time is after 1:00 pm!",
                   'gen_error.tt2');
             return;
         }
     }
-    my $names = "";
-    my $lunches = "";
     if (  $r->sdate ne $P{sdate}
        || $r->edate ne $P{edate}
-       || $r->max   <  $P{max}
     ) {
-        # we have changed the dates of the rental or the max
-        # and need to invalidate/remove any bookings for meeting spaces.
-        # and lunches no longer apply...
-        my @bookings = model($c, 'Booking')->search({
-            rental_id => $id,
-        });
+        # we have tried to change the dates of the rental.
+        # prohibit this if there are ANY meeting place bookings
+        # or rental housing bookings.
         #
-        # if only the max changed then we can keep the bookings
-        # of meeting places that are still able to accomodate
-        # the new max.
+        # if there ARE none such clear the lunches.
         #
-        if (   $r->sdate eq $P{sdate}
-            && $r->edate eq $P{edate}
-        ) {
-            @bookings = grep {
-                            $_->meeting_place->max < $P{max}
-                        }
-                        @bookings;
+        my @b = model($c, 'Booking')->search({
+                    rental_id => $id,
+                });
+        if (@b) {
+            error($c,
+                  "Cannot change rental dates while any meeting places are reserved.",
+                  'gen_error.tt2');
+            return;
         }
-        $names = join '<br>', map { $_->meeting_place->name } @bookings;
-        for my $b (@bookings) {
-            $b->delete();
+        my @rb = model($c, 'RentalBooking')->search({
+                     rental_id => $id,
+                 });
+        if (@rb) {
+            error($c,
+                  "Can't change rental dates while any rooms are reserved.",
+                  'gen_error.tt2');
+            return;
         }
-        if ($r->max >= $P{max}) {
-            # must have been a date
-            $P{lunches} = "";
-            $lunches = 1;
-        }
+        $P{lunches} = "";
         #
         # and perhaps add a few more config records.
         #
@@ -648,19 +642,7 @@ sub update_do : Local {
     $r->update(\%P);
     _send_grid_data($r);        # relevant things may have changed
 
-    # now where?
-    #
-    if ($names || $lunches) {
-        stash($c,
-            hap      => $r,
-            hap_type => "rental",
-            Hap_type => "Rental",
-            names    => $names,
-            lunches  => $lunches,
-            template => "mp_warn.tt2",
-        );
-    }
-    elsif (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
+    if (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
         $c->response->redirect($c->uri_for("/program/parallel/$id"));
     }
     else {
