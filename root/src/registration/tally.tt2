@@ -118,6 +118,12 @@
 <tr>
 
 <tr>
+<th align=right>Cancelled Payments</td>
+<td align=right>[% can_payment %]</td>
+</tr>
+<tr>
+
+<tr>
 <th align=right>Credit</td>
 <td align=right>[% credit %]</td>
 </tr>

@@ -4338,7 +4338,12 @@ sub tally : Local {
                 }
             }
             elsif ($what =~ m{payment}i) {
-                $payment += $amount;
+                if ($r->cancelled()) {
+                    $can_payment += $amount;
+                }
+                else {
+                    $payment += $amount;
+                }
             }
             else {
                 # ??? what else?
@@ -4423,8 +4428,9 @@ sub tally : Local {
         tot_inc     => commify($deposit + $payment + $balance),
 
         can_deposit => commify($can_deposit),
+        can_payment => commify($can_payment),
         credit      => commify($credit),
-        net_cancel  => commify($can_deposit - $credit), 
+        net_cancel  => commify($can_deposit + $can_payment - $credit), 
         template    => "registration/tally.tt2",
     );
 }
