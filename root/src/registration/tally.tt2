@@ -1,8 +1,9 @@
 <h2>Program Summary for [% program.name %] from [% program.dates %]</h2>
 
 <div style="float: left; margin-left: 1in;">
-<h2>Attendance</h2>
 <table cellpadding=3>
+
+<tr><td colspan=2><h2>Attendance</h2></td></tr>
 
 <tr>
 <th align=right>Attended</td>
@@ -52,8 +53,9 @@
 </div>
 
 <div style="float: left; margin-left: 1in; margin-bottom: .7in;">
-<h2>Finances</h2>
 <table cellpadding=3>
+
+<tr><td colspan=2 align=center><h2>Finances</h2></td></tr>
 
 <tr>
 <th align=right>Tuition</td>
