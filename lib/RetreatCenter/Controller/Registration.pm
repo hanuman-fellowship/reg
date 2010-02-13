@@ -4318,6 +4318,7 @@ sub tally : Local {
 
     my $deposit    = 0;
     my $can_deposit = 0;
+    my $can_payment = 0;
     my $payment    = 0;
     my $balance    = 0;
 
