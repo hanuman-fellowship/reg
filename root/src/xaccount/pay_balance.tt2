@@ -1,14 +1,14 @@
 <script type="text/javascript">
 function check() {
     var id = document.getElementById('xa_id').value;
-    if (id == [% credit_nonprog_id %]) {
+    if (id == $credit_nonprog_id) {
         return confirm(
 "\n\nWARNING!\n\n" +
 "Use the account called 'Misc' instead of this one\n" +
 "unless you are making a non programs related credit card charge " +
 "[like Activity fees, donations, etc].\n\n" +
 "If you do use this account, you MUST email\n" +
-"Lila and Richard and tell them about this transaction:\n\n" +
+"$credit_nonprog_people and tell them about this transaction:\n\n" +
 "a) the person's name\n" +
 "b) the amount of the charge and the date of it\n" +
 "c) the reason for the charge [Art Project, Act Fee, etc].\n\n");

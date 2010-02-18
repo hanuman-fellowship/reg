@@ -132,7 +132,7 @@ sub reconcile_deposit : Local {
         }
     }
     @payments = sort {
-                        $a->{name} cmp $b->{name}
+                        lc $a->{name} cmp lc $b->{name}
                     }
                     @payments;
 
@@ -246,11 +246,11 @@ sub file_deposit : Local {
     # Online
 
     @payments = sort {
-                        ($a->{pname} cmp $b->{pname}) ||
-                        ($a->{glnum} cmp $b->{glnum}) ||
-                        ($a->{date}  cmp $b->{date} ) ||
-                        ($a->{name}  cmp $b->{name} ) ||
-                        ($a->{amt}   cmp $b->{amt}  )
+                        (lc $a->{pname} cmp lc $b->{pname}) ||
+                        (   $a->{glnum} cmp    $b->{glnum}) ||
+                        (   $a->{date}  cmp    $b->{date} ) ||
+                        (lc $a->{name}  cmp lc $b->{name} ) ||
+                        (   $a->{amt}   <=>    $b->{amt}  )
                     }
                     @payments;
 

@@ -175,7 +175,7 @@ sub pay_balance : Local {
     my $cr_nonprog_id = 0;
     ACCT:
     for my $a (@accts) {
-        if ($a->descr() eq 'Credit Cards - Non Program related') {
+        if ($a->descr() eq $string{credit_nonprog}) {
             $cr_nonprog_id = $a->id();
             last ACCT;
         }
@@ -185,6 +185,7 @@ sub pay_balance : Local {
         person    => model($c, 'Person')->find($person_id),
         xaccounts => \@accts,
         credit_nonprog_id => $cr_nonprog_id,
+        credit_nonprog_people => $string{credit_nonprog_people},
         template       => "xaccount/pay_balance.tt2",
     );
 }

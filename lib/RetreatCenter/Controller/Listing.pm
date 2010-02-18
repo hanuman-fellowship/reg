@@ -363,7 +363,8 @@ sub detail_disp {
 # dinner does not happen on the departure date - for programs and rentals.
 # but for MMI _courses_ dinner IS served on the last day.
 # people in DCM programs do not eat at all.
-# PRs always have lunch except for their arrival day.
+# PRs always have lunch except for their arrival day (but never
+#     on a Saturday).
 # Blocks with people in them will eat as if they were in a PR
 #   for the date range.
 # the number of rental people on any given day is determined
@@ -487,11 +488,15 @@ sub meal_list : Local {
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
             add('breakfast') if ($d != $r_start
-                                 || $prog->prog_start() < $breakfast_end);
-            add('lunch')     if ($d != $r_start
+                                 || $prog->prog_start() < $breakfast_end)
+                                ;
+            add('lunch')     if $d->day_of_week() != 6
+                                &&
+                                ($d != $r_start
                                  || $prog->prog_start() < $lunch_end)
                                 &&
-                                (lunch($d) || $PR);
+                                (lunch($d) || $PR)
+                                ;
             add('dinner')    if $d != $r_end || $mmi_prog;
         }
     }
