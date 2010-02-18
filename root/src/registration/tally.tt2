@@ -38,7 +38,7 @@
 <tr>
 
 <tr>
-<th align=right>Cancelled</td>
+<th align=right>Canceled</td>
 <td align=right>[% cancelled %]</td>
 </tr>
 <tr>
@@ -114,13 +114,13 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<th align=right>Cancelled Deposits</td>
+<th align=right>Canceled Deposits</td>
 <td align=right>[% can_deposit %]</td>
 </tr>
 <tr>
 
 <tr>
-<th align=right>Cancelled Payments</td>
+<th align=right>Canceled Payments</td>
 <td align=right>[% can_payment %]</td>
 </tr>
 <tr>
@@ -134,7 +134,7 @@
 <tr><td></td><td style="border-top: solid thin"></td></tr>
 
 <tr>
-<th align=right>Net Cancelled</td>
+<th align=right>Net Canceled</td>
 <td align=right>[% net_cancel %]</td>
 </tr>
 <tr>
