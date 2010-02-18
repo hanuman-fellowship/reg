@@ -772,8 +772,9 @@ sub update_do : Local {
     }
     my $p = model($c, 'Program')->find($id);
     $P{max} ||= 0;
-    if (   $p->sdate ne $P{sdate}
-        || $p->edate ne $P{edate}
+    if (   $p->sdate       ne $P{sdate}
+        || $p->edate       ne $P{edate}
+        || $p->extradays() != $P{extradays}
     ) {
         # cannot change dates if there are any meeting place
         # bookings in effect.   no registrations, either.
@@ -786,7 +787,7 @@ sub update_do : Local {
         });
         if (@bookings || @regs) {
             error($c,
-                'Cannot change the dates when there are'
+                'Cannot change the dates or add extra days when there are'
                 . ' meeting place bookings or registrations.',
                 'gen_error.tt2',
             );
