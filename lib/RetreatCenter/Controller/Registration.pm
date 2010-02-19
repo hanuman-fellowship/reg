@@ -37,6 +37,7 @@ use Util qw/
     other_reserved_cids
     PR_other_reserved_cids
     invalid_amount
+    penny
 /;
 use POSIX qw/
     ceil
@@ -1995,6 +1996,7 @@ sub pay_balance : Local {
     my $reg = model($c, 'Registration')->find($id);
     stash($c,
         message  => payment_warning('mmc'),
+        balance  => penny($reg->balance()),
         from     => $from,
         reg      => $reg,
         template => "registration/pay_balance.tt2",

@@ -1337,3 +1337,12 @@ move miscellaneous after feedback
     anchor to jump to Misc in view and edit modes
 
 annie && david martin adya 1/22
+
+check make up list when lodging a room
+    change date if date_start is between today and the needed date
+on lodging check to see if a room is on the make up list
+    if the date_start is less than two days from today
+add samara to listing - not just field staff
+move comings and goings to field staff or people?
+check days of week when a refresh is needed
+pennies excised when paying balance in reg
