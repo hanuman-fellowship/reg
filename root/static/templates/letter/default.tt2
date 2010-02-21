@@ -104,10 +104,10 @@ ul {
 </STYLE>
 </HEAD>
 <BODY>
-<center>
-<div class="container">
-<table width="700">
-<TR><TD align="center">
+<CENTER>
+<DIV CLASS="container">
+<TABLE WIDTH="700">
+<TR><TD ALIGN="center">
 <IMG height=200 SRC="http://www.mountmadonna.org/programs/main_image/nov_sc_sunset.jpg">
 <H1>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</H1>
 </TD></TR>
@@ -336,7 +336,7 @@ Sincerely,<BR>
 <TR><TH align=right valign=top>Business Hours</TH><TD align=left>Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 11:00-5:00</TD></TR>
 <TR>
     <TH align=right valign=top>Map/Directions</TH>
-    <TD align=left>Use only <A HREF='http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q="mount+madonna+center"&sll=37.027182,-121.739212&sspn=0.407848,0.433273&ie=UTF8&hq="mount+madonna+center"&hnear=&ll=37.033803,-121.739502&spn=0.394108,0.433273&z=11&iwloc=A'>Google Maps</A> or directions <A HREF="#directions">below</A>. Do not use GPS, Mapquest or Yahoo Maps.</TD>
+    <TD align=left>Use only <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>, or directions <A HREF="#directions">below</A>. Do not use GPS, Mapquest or Yahoo Maps.</TD>
 </TR>
 </TABLE>
 [% IF program.kayakalpa %]
@@ -363,8 +363,7 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <A href=#kaya
 <P class=p2>
 Do not use any GPS system or any directions from Mapquest, or Yahoo  Maps or
 any other outside source.
-Use <B>only</B> the directions below, or use <A HREF='http://maps.google.com/maps?f=q&source=s_q&hl=en&geocode=&q="mount+madonna+center"&sll=37.027182,-121.739212&sspn=0.407848,0.433273&ie=UTF8&hq="mount+madonna+center"&hnear=&ll=37.033803,-121.739502&spn=0.394108,0.433273&z=11&iwloc=A'>Google Maps</A>.
-</P>
+Use <B>only</B> the directions below, or see the <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>.</P>
 <P class=p2>
 On the west coast of Central California approximately 2 hours driving 
 time south of San Francisco (more if traffic is heavy), Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]
@@ -393,8 +392,7 @@ miles further on the left (445 Summit Rd).
 <IMG height=400 SRC="http://www.mountmadonna.org/Gif/circlemap.gif">
 </CENTER>
 <P class=p2>
-For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <A href=http://www.mountmadonna.org/directions>here</A>.
-</P>
+For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <A href=http://www.mountmadonna.org/directions/index.html>here</A>.</P>
 <A name=kaya></A>
 
 <HR>
@@ -409,7 +407,7 @@ For information about other forms of transportation to the [% IF mmi %]institute
 Wellness Center offers an oasis for relaxation, health and nurturing.</P>
 <P>&nbsp;</P>
 <P>For more information see our website: <A HREF="http://www.mountmadonna.org/kayakalpa">www.MountMadonna.org/kayakalpa</A></P>
-</TD></TR></TABLE></div></CENTER>
+</TD></TR></TABLE></DIV></CENTER>
 [% END %]
 </BODY>
 </HTML>
