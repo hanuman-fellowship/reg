@@ -1,0 +1,5 @@
+drop table if exists glossary;
+create table glossary (
+    term text,
+    definition text
+);
