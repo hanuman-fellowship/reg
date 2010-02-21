@@ -1337,12 +1337,57 @@ move miscellaneous after feedback
     anchor to jump to Misc in view and edit modes
 
 annie && david martin adya 1/22
+------ to do ------
+check make up list when lodging or vacating a room
+    rental/program/block (manual/auto)
+    would it alter the 'needed' date?
 
-check make up list when lodging a room
-    change date if date_start is between today and the needed date
+    normal blocks - create, delete, update
+    automatic bound blocks
+        booking/vacating a meeting space
+        that is also a sleeping space - by a rental/program or event.
+
 on lodging check to see if a room is on the make up list
     if the date_start is less than two days from today
+    and don't include it if it IS ...
+    OR mark it as needing cleaning - yes!
+
 add samara to listing - not just field staff
 move comings and goings to field staff or people?
+
+for programs (and rentals? yes)
 check days of week when a refresh is needed
-pennies excised when paying balance in reg
+    on that day the gather_made script will
+        add all occupied houses in that rental/program
+        to the make up list again marked differently (refresh)
+delete log?
+add price to Ride list column 
+    and make it directly changeable like pick up time (todo).
+resize - standard size for longest dimension
+users - see pics, allow clicking to see bigger
+SJX, SFX - ride to area not airport
+keep OTH
+    location in Carrier field
+    also comment
+    and rework confirmation letter
+Shuttle - centered on list heading
+
+TO INSTALL LATEST:
+several new strings:
+    make_up_clean_days 2
+    house_sum_clean -2
+    ride_email transportation@mountmadonna.org
+new column in program:
+    refresh_days text
+new column in rental:
+    refresh_days text
+new column in make_up:
+    refresh text
+new table:
+    glossary
+        term text
+        definition text
+new file Glossary.pm in db, Controller
+new files in tren/../glossary
+    list.tt2
+    create_edit.tt2

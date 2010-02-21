@@ -48,7 +48,8 @@ create table program (
     do_not_compute_costs text,
     dncc_why    text,
     color       text,
-    allow_dup_regs text
+    allow_dup_regs text,
+    refresh_days text
 );
 drop table if exists canpol;
 create table canpol (

@@ -207,3 +207,8 @@ ftp_userpics www/userpics
 
 credit_nonprog Credit Cards - Non Program related
 credit_nonprog_people Lila, Richard and Chenli
+
+make_up_clean_days 2
+house_sum_clean -2
+
+ride_email transportation@mountmadonna.org

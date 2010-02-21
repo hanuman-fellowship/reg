@@ -67,6 +67,7 @@ __PACKAGE__->add_columns(qw/
     grid_code
 
     staff_ok
+    refresh_days
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed

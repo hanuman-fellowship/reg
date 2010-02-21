@@ -35,6 +35,9 @@ use Util qw/
     clear_lunch
     get_lunch
     get_grid_file
+    check_makeup_new
+    check_makeup_vacate
+    refresh_table
 /;
 use Global qw/
     %string
@@ -180,6 +183,7 @@ sub create_do : Local {
     delete $P{section};
 
     $P{lunches} = "";
+    $P{refresh_days} = "";
 
     $P{glnum} = compute_glnum($c, $P{sdate});
 
@@ -257,6 +261,7 @@ sub create_from_proposal : Local {
     delete $P{section};
 
     $P{lunches} = "";
+    $P{refresh_days} = "";
 
     $P{glnum} = compute_glnum($c, $P{sdate});
 
@@ -435,6 +440,12 @@ sub view : Local {
                               $rental->sdate_obj(),
                               $rental->edate_obj(),
                               $rental->start_hour_obj(),
+                          ),
+        refresh_table    => refresh_table(
+                              1,
+                              $rental->refresh_days(),
+                              $rental->sdate_obj(),
+                              $rental->edate_obj(),
                           ),
         template       => "rental/view.tt2",
     );
@@ -620,6 +631,7 @@ sub update_do : Local {
             return;
         }
         $P{lunches} = "";
+        $P{refresh_days} = "";
         #
         # and perhaps add a few more config records.
         #
@@ -898,9 +910,9 @@ sub update_lunch : Local {
     $c->stash->{rental} = $r;
     $c->stash->{lunch_table}
         = lunch_table(0,
-                      $r->lunches,
-                      $r->sdate_obj,
-                      $r->edate_obj,
+                      $r->lunches(),
+                      $r->sdate_obj(),
+                      $r->edate_obj(),
                       $r->start_hour_obj(),
           );
     $c->stash->{template} = "rental/update_lunch.tt2";
@@ -1004,6 +1016,7 @@ sub booking : Local {
 # actually make the booking
 # add a RentalBooking record
 # and update the sequence of Config records.
+# also check the makeup list.
 #
 sub booking_do : Local {
     my ($self, $c, $rental_id, $h_type) = @_;
@@ -1065,8 +1078,10 @@ sub booking_do : Local {
                 );
             }
         }
+        check_makeup_new($c, $h_id, $sdate);
     }
     _send_grid_data($r);
+
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
@@ -1119,7 +1134,11 @@ sub del_booking : Local {
             );
         }
     }
+
     _send_grid_data($r);
+
+    check_makeup_vacate($c, $house_id, $sdate);
+
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
@@ -1707,6 +1726,7 @@ sub duplicate : Local {
         balance => 0,
         status  => "",
         lunches => "",
+        refresh_days => "",
 
         tentative  => "yes",
         program_id => 0,
@@ -1748,6 +1768,7 @@ sub duplicate_do : Local {
     delete $P{section};
 
     $P{lunches} = "";
+    $P{refresh_days} = "";
 
     $P{glnum} = compute_glnum($c, $P{sdate});
 
@@ -2192,6 +2213,36 @@ sub color_do : Local {
         color => $c->request->params->{color},
     });
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+}
+
+sub update_refresh : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Rental')->find($id);
+    $c->stash->{rental} = $r;
+    $c->stash->{refresh_table}
+        = refresh_table(0,
+              $r->refresh_days(),
+              $r->sdate_obj,
+              $r->edate_obj,
+          );
+    $c->stash->{template} = "rental/update_refresh.tt2";
+}
+
+sub update_refresh_do : Local {
+    my ($self, $c, $id) = @_;
+
+    %P = %{ $c->request->params() };
+    my $r = model($c, 'Rental')->find($id);
+    my $ndays = $r->edate_obj - $r->sdate_obj;
+    my $l = "";
+    for my $n (0 .. $ndays) {
+        $l .= (exists $P{"d$n"})? "1": "0";
+    }
+    $r->update({
+        refresh_days => $l,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }
 
 1;

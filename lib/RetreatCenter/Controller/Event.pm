@@ -22,6 +22,8 @@ use Util qw/
     avail_mps
     error
     get_now
+    check_makeup_new
+    check_makeup_vacate
 /;
 use HLog;
 use GD;
@@ -1333,6 +1335,10 @@ sub del_meeting_place : Local {
     # also remove any 'bound blocks' for meeting places
     # that are also sleeping places.
     #
+    # the loop below only loops once.
+    # we break out at various points if certain conditions arise.
+    # just a clever way to avoid a goto...
+    #
     LOOP:
     while (1) {
         if (! $mplace->sleep_too()) {
@@ -1381,6 +1387,7 @@ sub del_meeting_place : Local {
                 );
             }
         }
+        check_makeup_vacate($c, $h_id, $sdate);
     }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events
@@ -1543,6 +1550,8 @@ sub which_mp_do : Local {
                 );
             }
         }
+
+        check_makeup_new($c, $h_id, $sdate);
     }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events

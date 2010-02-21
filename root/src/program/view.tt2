@@ -264,6 +264,15 @@ Web
 </table>
 </ul>
 
+[% IF refresh_table %]
+    <p class=p2>
+    <!-- hacky CSS - please remedy -->
+    <span class=head style="margin-left: .5in">Days to Refresh Rooms</span>
+    <span class=updlunch><a href="/program/update_refresh/$id">Update</a></span>
+    <div class=lunch>[% refresh_table %]</div>
+[% END %]
+
+
 </div>      <!-- end of content1 pane -->
 
 <!-- Misc -->

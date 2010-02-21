@@ -77,6 +77,7 @@ __PACKAGE__->add_columns(qw/
     color
     allow_dup_regs
     percent_tuition
+    refresh_days
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

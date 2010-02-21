@@ -42,7 +42,8 @@ create table rental (
     color             text,
     housing_note      text,
     grid_code         text,
-    staff_ok          text
+    staff_ok          text,
+    refresh_days      text
 );
 drop table if exists rental_payment;
 create table rental_payment (

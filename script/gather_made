@@ -83,10 +83,10 @@ my %seen = ();
 
 my $ins_sth = $dbh->prepare("
     insert into make_up (
-        house_id, date_vacated, date_needed
+        house_id, date_vacated, date_needed, refresh
     )
     values (
-        ?, ?, ?
+        ?, ?, ?, ?
     );
 ");
 # can I combine these sql statments?
@@ -118,12 +118,17 @@ my $nextrental_sth = $dbh->prepare("
 ");
 
 # eliminate the ones already there in the make up list.
-@house_ids = grep { !$already{$_} } @house_ids;
+# adding the new ones while you're at it.
+#
+@house_ids = grep { !$already{$_}++ } @house_ids;
 
 my ($next, $next_reg_date, $next_rental_date, $next_block_date);
 for my $house_id (@house_ids) {
 
     # when is this house next needed?
+    # ??? Better - search the config records ???
+    # maybe not - if two in room, one leaves...
+    #
     $next = '';
     $nextreg_sth->execute($house_id);
     ($next_reg_date) = $nextreg_sth->fetchrow_array();
@@ -133,13 +138,13 @@ for my $house_id (@house_ids) {
 
     $nextblock_sth->execute($house_id);
     ($next_block_date) = $nextblock_sth->fetchrow_array();
-    if ($next_block_date && $next_block_date < $next) {
+    if ($next_block_date && $next && $next_block_date < $next) {
         $next = $next_block_date;
     }
 
     $nextrental_sth->execute($house_id);
     ($next_rental_date) = $nextrental_sth->fetchrow_array();
-    if ($next_rental_date && $next_rental_date < $next) {
+    if ($next_rental_date && $next && $next_rental_date < $next) {
         $next = $next_rental_date;
     }
 
@@ -150,8 +155,77 @@ for my $house_id (@house_ids) {
         $next = $cur_date;
     }
 
-    $ins_sth->execute($house_id, $cur_date, $next);
+    $ins_sth->execute($house_id, $cur_date, $next, '');
 }
+#
+# look for programs/rentals which are happening now
+# for which this day is a refresh room day.
+# all houses reserved by those programs/rentals need
+# to be refreshed.
+#
+
+# Rentals
+#
+my $r_rental_sth = $dbh->prepare("
+    select id, sdate, refresh_days
+    from rental
+    where sdate <= $cur_date and $cur_date <= edate
+      and refresh_days != ''
+");
+# find all rental_bookings for a rental
+# they all need refreshing.
+#
+my $rb_sth = $dbh->prepare("
+    select house_id
+      from rental_booking
+     where rental_id = ?
+");
+$r_rental_sth->execute();
+RENTAL:
+while (my ($r_id, $sdate, $refresh_days) = $r_rental_sth->fetchrow_array()) {
+    my $r = substr($refresh_days, date($cur_date)-date($sdate), 1);
+    next RENTAL unless $r;
+    $rb_sth->execute($r_id);
+    while (my ($h_id) = $rb_sth->fetchrow_array()) {
+        if (! exists $already{$h_id}) {
+            $ins_sth->execute($h_id, $cur_date, $cur_date, 'yes');
+        }
+    }
+}
+
+# Programs
+#
+my $r_program_sth = $dbh->prepare("
+    select id, sdate, refresh_days
+    from program
+    where sdate <= $cur_date and $cur_date <= edate
+      and refresh_days != ''
+");
+# find all registrations for this program which have
+# housing and which are here on this day.
+# the houses all need refreshing.
+#
+my $reg_sth = $dbh->prepare("
+    select house_id
+      from registration
+     where program_id = ?
+       and house_id != 0
+       and date_start <= $cur_date
+       and $cur_date  <= date_end
+");
+$r_program_sth->execute();
+PROGRAM:
+while (my ($p_id, $sdate, $refresh_days) = $r_program_sth->fetchrow_array()) {
+    my $r = substr($refresh_days, date($cur_date)-date($sdate), 1);
+    next PROGRAM unless $r;
+    $reg_sth->execute($p_id);
+    while (my ($h_id) = $reg_sth->fetchrow_array()) {
+        if (! exists $already{$h_id}) {
+            $ins_sth->execute($h_id, $cur_date, $cur_date, 'yes');
+        }
+    }
+}
+
 __END__
 one person in room
     - a reg is next use
@@ -163,7 +237,3 @@ two people in room
     - only one leaves.   the room should be made up right away
         for the comfort of the remaining person who leaves
         a few days later.
-room is not made up because there are no
-    subsequent reg or rental reservations.
-    then there IS a reservation/booking.
-    the make_up record should be modified.

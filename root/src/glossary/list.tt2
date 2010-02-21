@@ -1,0 +1,27 @@
+<style type="text/css">
+dl {
+    margin-left: 4mm;
+}
+dt a {
+    font-size: 16pt;
+    color: green;
+}
+dd {
+    font-size: 14pt;
+    margin-bottom: 5mm;
+}
+</style>
+<h2>Glossary<span style="margin-left: 4in; font-size: 13pt; font-weight: normal"><a href=/glossary/create>Add Term</a></span></h2>
+<p style="width: 600px">
+It is important that we all understand and agree
+on the terms we use.  Read through all of these terms
+and make sure that your understanding is in synchrony
+with others.
+If a definition is incomplete or wrong fix it!
+</p>
+<dl>
+[% FOR g IN glossary %]
+<dt><a href='/glossary/update/$g.term'>$g.term</a></dt>
+<dd>$g.definition</dd>
+[% END %]
+</dl>

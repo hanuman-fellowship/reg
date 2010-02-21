@@ -578,7 +578,7 @@ EOS
         email_letter($c,
             to      => $rider->name_email(),
             cc      => $driver->name_email(),
-            from    => "MMC Transportation <" . $c->user->email() . ">",
+            from    => "MMC Transportation <$string{ride_email}>",
             subject => "Ride Scheduled",
             html    => $html,
         );

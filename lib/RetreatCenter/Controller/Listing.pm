@@ -520,7 +520,8 @@ sub meal_list : Local {
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
             add('breakfast', $npeople) if $d != $bl_start;
-            add('lunch',     $npeople) if $d != $bl_start;
+            add('lunch')     if $d->day_of_week() != 6
+                                && $d != $bl_start;
             add('dinner',    $npeople) if $d != $bl_end;
         }
     }
@@ -1260,6 +1261,10 @@ EOH
                          :$needed == -1? 'Yesterday'
                          :               "$needed days"
                          ;
+                if ($mu->refresh()) {
+                    # most likely Today
+                    $needed .= " - Refresh";
+                }
                 $needed = "<span style='color: red'>$needed</span>";
             }
             else {

@@ -59,6 +59,9 @@ our @EXPORT_OK = qw/
     get_now
     penny
     avail_pic_num
+    check_makeup_new
+    check_makeup_vacate
+    refresh_table
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1487,6 +1490,123 @@ sub avail_pic_num {
         ++$n;
     }
     return $n;
+}
+
+# check the make up list and see
+# if the given house is currently on it.  
+# If it is will the new use of it on
+# $sdate alter the 'date_needed'?
+#
+sub check_makeup_new {
+    my ($c, $house_id, $sdate) = @_;
+
+    my ($makeup) = model($c, 'MakeUp')->search({
+        house_id => $house_id,
+    });
+    if ($makeup) {
+        my $needed = $makeup->date_needed();
+        if (empty($needed) || $needed > $sdate) {
+            $makeup->update({
+                date_needed => $sdate,
+            });
+        }
+    }
+}
+
+# a house has been vacated.
+# check the make_up list to see
+# if this vacating act alters a date_needed.
+#
+sub check_makeup_vacate {
+    my ($c, $house_id, $sdate) = @_;
+
+    my ($makeup) = model($c, 'MakeUp')->search({
+        house_id => $house_id,
+    });
+    if ($makeup && $makeup->date_needed() eq $sdate) {
+        # it does.
+        # so when is the next date this house is needed?
+        # look at the Config records. we can trust them, right?
+        #
+        my @configs = model($c, 'Config')->search(
+            {
+                house_id => $house_id,
+                the_date => { '>', $sdate },
+                cur      => { '>', 0 },
+            },
+            {
+                order_by => 'the_date',
+            }
+        );
+        $makeup->update({
+            date_needed => (@configs? $configs[0]->the_date()
+                            :         ""),
+        });
+    }
+}
+
+# duplicated from lunch table
+# DRY???
+#
+sub refresh_table {
+    my ($view, $refresh, $sdate, $edate) = @_;
+
+    my @refresh = split //, ($refresh || "");
+    my $s = <<"EOH";
+<table border=1 cellpadding=5 cellspacing=2>
+<tr>
+<td align=center>Sun</td>
+<td align=center>Mon</td>
+<td align=center>Tue</td>
+<td align=center>Wed</td>
+<td align=center>Thu</td>
+<td align=center>Fri</td>
+<td align=center>Sat</td>
+</tr>
+<tr>
+EOH
+    my $sdow = $sdate->day_of_week();
+    my $ndays = $edate - $sdate + 1;
+    my $dow = 0;
+    while ($dow < $sdow) {
+        $s .= "<td>&nbsp;</td>";
+        ++$dow;
+    }
+    my $d = 0;
+    my $cur = $sdate;
+    while ($d < $ndays) {
+        my $refresh = $refresh[$d];
+        my $color = ($refresh && $view)? '#99FF99': '#FFFFFF';
+        $s .= "<td align=left bgcolor=$color>" . $cur->day;
+        if ($view) {
+            my $w = $refresh? '': 'w';
+            $s .= "<img src='/static/images/${w}checked.gif' border=0>";
+        }
+        else {
+            $s .= " <input type=checkbox name=d$d"
+                . ($refresh? " checked": "")
+                . ">";
+        }
+        $s .= "</td>";
+        ++$cur;
+        ++$dow;
+        ++$d;
+        if ($dow == 7) {
+            $s .= "</tr>\n";
+            if ($d < $ndays) {
+                $s .= "<tr>\n";
+            }
+            $dow = 0;
+        }
+    }
+    if ($dow > 0) {
+        while ($dow <= 6) {
+            $s .= "<td>&nbsp;</td>";
+            ++$dow;
+        }
+    }
+    $s .= "</tr></table>\n";
+    $s;
 }
 
 1;

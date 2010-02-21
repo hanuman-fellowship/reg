@@ -38,6 +38,8 @@ use Util qw/
     PR_other_reserved_cids
     invalid_amount
     penny
+    check_makeup_new
+    check_makeup_vacate
 /;
 use POSIX qw/
     ceil
@@ -2961,6 +2963,9 @@ sub lodge : Local {
             program_id => $program_id,
         });
 
+    my $cutoff = (tt_today($c)+$string{make_up_clean_days})->as_d8();
+            # for makeup list checking
+
     #
     # housed with a friend who is also registered for this program?
     #
@@ -3208,7 +3213,13 @@ sub lodge : Local {
             #
             # O - occupied (but there is space for more)
             # F - a foreign program is already occupying this house
-            # P - perfect size - no further resize needed
+            # R - resize is needed
+            #
+            # another attribute of the house may be that
+            # it still needs to be cleaned.  only put this
+            # when the room is needed in 2 days or less.
+            #
+            # N - needs cleaning
             #
             my ($O, $F, $P) = (0, 0, 1);
             for my $cf (model($c, 'Config')->search({
@@ -3227,11 +3238,11 @@ sub lodge : Local {
                 }
             }
             if ($O) {
-                $codes .= "O";
+                $codes .= 'O';
                 $code_sum += $string{house_sum_occupied};
             }
             if ($F) {
-                $codes .= "F";
+                $codes .= 'F';
                 $code_sum += $string{house_sum_foreign};     # discourage this!
                                                              # will be < 0.
             }
@@ -3239,16 +3250,27 @@ sub lodge : Local {
                 $code_sum += $string{house_sum_perfect_fit};
             }
             else {
-                $codes .= "R";      # resize needed - not as good...
+                $codes .= 'R';      # resize needed - not as good...
             }
             if ($reserved_cids{$cl_id}) {
-                $codes .= "r";
+                $codes .= 'r';
                 $code_sum += $string{house_sum_reserved};
             }
             if ($h->cabin()) {
-                $codes .= "C";
+                $codes .= 'C';
                 if ($cabin) {
                     $code_sum += $string{house_sum_cabin};
+                }
+            }
+            # check makeup list for $h_id on $sdate
+            #
+            if ($sdate <= $cutoff) {
+                my ($makeup) = model($c, 'MakeUp')->search({
+                    house_id => $h_id,
+                });
+                if ($makeup) {
+                    $codes .= 'N';
+                    $code_sum += $string{house_sum_clean};  # negative
                 }
             }
             $codes = " - $codes" if $codes;
@@ -3629,6 +3651,7 @@ sub lodge_do : Local {
             );
         }
     }
+    check_makeup_new($c, $house_id, $sdate);
     $c->response->redirect($c->uri_for("/registration/view/$id"));
 }
 
@@ -3730,6 +3753,8 @@ sub _vacate {
         house_id => 0,
     });
     _reg_hist($c, $reg->id(), "Vacated $house_name_of{$house_id}.");
+
+    check_makeup_vacate($c, $house_id, $sdate);
 }
 
 #
@@ -3886,6 +3911,7 @@ sub seek : Local {
 
 sub cf_expand {
     my ($c, $s) = @_;
+    return "" if ! defined $s;
     $s = etrim($s);
     return $s if empty($s);
     # ??? get these each time??? cache them!

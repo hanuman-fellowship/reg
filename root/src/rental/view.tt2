@@ -146,7 +146,7 @@ Web
 <td>[% rental.max %]</td>
 <td rowspan=6 valign=top>
 <div style="margin-left: .3in;">
-<span class=head>Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% id %]">Update</a></span>
+<span class=head style="margin-left: .5in">Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% id %]">Update</a></span>
 <div class=lunch>[% lunch_table %]</div>
 </div>
 </td>
@@ -228,18 +228,16 @@ Web
 [% END %]
 
 </table>
+
 [% IF rental.housing_note_trim %]
 <p class=p2>
 <span class=head>Housing Note</span>
 [% rental.housing_note %]
 [% END %]
-<p>
-<!-- Cluster Selection -->
-<ul>
-<table cellspacing=5 border=0>
 
-</table>
-</ul>
+<p class=p2>
+<span class=head style="margin-left: .5in; margin-top: .5in">Days to Refresh Rooms</span><span class=updlunch><a href="/rental/update_refresh/[% id %]">Update</a></span>
+<div class=lunch>[% refresh_table %]</div>
 
 </div>      <!-- end Meals & Lodging div -->
 

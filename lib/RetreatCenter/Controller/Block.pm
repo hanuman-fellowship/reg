@@ -11,6 +11,8 @@ use Util qw/
     error
     tt_today
     stash
+    check_makeup_new
+    check_makeup_vacate
 /;
 use Date::Simple qw/
     date
@@ -162,6 +164,7 @@ sub _vacate {
             );
         }
     }
+    check_makeup_vacate($c, $h_id, $sdate);
 }
 
 my %P;
@@ -420,6 +423,7 @@ sub _available {
             );
         }
     }
+    check_makeup_new($c, $h_id, $P{sdate});
     return 1;
 }
 

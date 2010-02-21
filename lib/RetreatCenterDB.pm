@@ -73,6 +73,8 @@ __PACKAGE__->load_classes({
 
         Book
         CheckOut
+
+        Glossary
     /]
 });
 

@@ -1,0 +1,30 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config_web.js"></script>
+<h2>Glossary</h2>
+<form name=form action='/glossary/$form_action/$glossary.term'>
+<p class=p2>
+<table cellpadding=5>
+
+<tr>
+<th align=right>Term</th>
+<td><input type=text name=term value="$glossary.term"></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Definition</th>
+<td><textarea name=definition cols=60 rows=10>
+$glossary.definition
+</textarea>
+</td>
+</tr>
+
+<tr>
+<th></th>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.term.focus();
+</script>

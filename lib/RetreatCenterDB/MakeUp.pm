@@ -13,6 +13,7 @@ __PACKAGE__->add_columns(qw/
     house_id
     date_vacated
     date_needed
+    refresh
 /);
 __PACKAGE__->set_primary_key(qw/house_id/);
 

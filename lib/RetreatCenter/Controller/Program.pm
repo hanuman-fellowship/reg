@@ -35,6 +35,7 @@ use Util qw/
     clear_lunch
     get_lunch
     avail_mps
+    refresh_table
 /;
 use Date::Simple qw/
     date
@@ -381,6 +382,7 @@ sub create_do : Local {
         summary_id => $sum->id,
         image      => $upload? "yes": "",
         lunches    => "",
+        refresh_days => "",
         rental_id  => 0,        # overridden by hybrid
         %P,         # this includes rental_id for a possible parallel rental
     });
@@ -478,13 +480,24 @@ sub view : Local {
         stash($c,
               lunch_table => lunch_table(
                                  1,
-                                 $p->lunches,
-                                 $p->sdate_obj,
-                                 $p->edate_obj + $p->extradays,
+                                 $p->lunches(),
+                                 $p->sdate_obj(),
+                                 $p->edate_obj() + $p->extradays(),
                                  $p->prog_start_obj(),
                              ),
         );
     }
+    if (! $p->PR()) {
+        stash($c,
+            refresh_table => refresh_table(
+                                 1,
+                                 $p->refresh_days(),
+                                 $p->sdate_obj(),
+                                 $p->edate_obj() + $p->extradays(),
+                             ),
+        );
+    }
+
     my @files = <root/static/online/*>;
     my $sdate = $p->sdate();
     my $nmonths = date($p->edate())->month()
@@ -794,6 +807,7 @@ sub update_do : Local {
             return;
         }
         $P{lunches} = '';
+        $P{refresh_days} = '';
     }
     $p->update(\%P);
     add_config($c, date($P{edate}) + 30);
@@ -1606,6 +1620,7 @@ sub duplicate : Local {
         sdate   => "",
         edate   => "",
         lunches => "",
+        refresh_days => "",
         glnum   => "",
         image   => "",      # not yet
         rental_id => 0,
@@ -2072,6 +2087,37 @@ sub publishPR : Local {
     $ftp->put("gen_files/progtable",  "progtable");
     $ftp->quit();
     $c->response->redirect($c->uri_for("/program/view/$prog_id"));
+}
+
+sub update_refresh : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = model($c, 'Program')->find($id);
+    stash($c,
+        program     => $p,
+        refresh_table => refresh_table(0,
+                                   $p->refresh_days(),
+                                   $p->sdate_obj,
+                                   $p->edate_obj + $p->extradays,
+                                  ),
+        template    => "program/update_refresh.tt2",
+    );
+}
+
+sub update_refresh_do : Local {
+    my ($self, $c, $id) = @_;
+
+    %P = %{ $c->request->params() };
+    my $p = model($c, 'Program')->find($id);
+    my $ndays = $p->edate_obj - $p->sdate_obj + 1 + $p->extradays;
+    my $l = "";
+    for my $n (0 .. $ndays-1) {
+        $l .= (exists $P{"d$n"})? "1": "0";
+    }
+    $p->update({
+        refresh_days => $l,
+    });
+    $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }
 
 1;

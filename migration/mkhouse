@@ -289,5 +289,6 @@ drop table if exists make_up;
 create table make_up (
     house_id     integer primary key,       -- not autoincrement
     date_vacated text,
-    date_needed  text
+    date_needed  text,
+    refresh      text
 );
