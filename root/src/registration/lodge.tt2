@@ -61,6 +61,7 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</
 <table style="margin-left: 1in">
 <tr><td>C</td><td> - cabin</td></tr>
 <tr><td>F</td><td> - foreign program</td></tr>
+<tr><td>N</td><td> - needs cleaning</td></tr>
 <tr><td>O</td><td> - occupied already</td></tr>
 <tr><td>r</td><td> - in a reserved cluster</td></tr>
 <tr><td>R</td><td> - resize needed</td></tr>
