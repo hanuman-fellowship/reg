@@ -304,6 +304,7 @@ sub profile_edit_do : Local {
     my ($self, $c) = @_;
 
     my %hash = %{ $c->request->params() };
+    $hash{hide_mmi} = '' unless $hash{hide_mmi};
     $c->user->update(\%hash);
     $c->response->redirect($c->uri_for('/user/profile_view'));
 }
