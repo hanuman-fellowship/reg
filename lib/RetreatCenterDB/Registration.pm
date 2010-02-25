@@ -163,4 +163,27 @@ sub balance_disp {
     my ($self) = @_;
     penny($self->balance());
 }
+
+#
+# this sub is only called for non-PR programs.
+# return the dates of the program that this person is attending.
+# be careful of a program with extra days.
+#
+sub att_prog_dates {
+    my ($self) = @_;
+    my $prog = $self->program();
+    my $psdate = $prog->sdate_obj();
+    my $pedate = $prog->edate_obj();
+    if ($self->date_end() > $prog->edate() && $prog->extradays()) {
+        # this registration is attending the extra days of the program
+        # not just staying late after a program without extra days.
+        #
+        $pedate = $prog->edate_obj() + $prog->extradays();
+    }
+    return $psdate->format("%B %e - ")
+         . ($psdate->month() == $pedate->month()? $pedate->format("%e")
+            :                                     $pedate->format("%B %e"))
+         ;
+}
+
 1;

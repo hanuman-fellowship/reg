@@ -112,42 +112,42 @@ ul {
 <H1>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</H1>
 </TD></TR>
 <TR><TD>
-<P class=p2><SPAN CLASS="on_right">[% today.format("%A, %B %e, %Y") %]</SPAN></P>
+<P class=p2><SPAN CLASS="on_right">${today.format("%A, %B %e, %Y")}</SPAN></P>
 <P class=p2>[% IF program.confnote || reg.confnote %]
 <B>NOTES:</B><BR>
 <UL>
 [% IF program.confnote %]
-    [% program.confnote %]<BR>
+    $program.confnote<BR>
 [% END %]
 [% IF reg.confnote %]
-    [% reg.confnote %]
+    $reg.confnote
 [% END %]
 [% IF reg.early || reg.late %]
-You [% IF reg.early %]arrive on [% reg.date_start_obj.format("%A, %B %e") %][% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on [% reg.date_end_obj.format("%A, %B %e") %][% END %].
+You [% IF reg.early %]arrive on ${reg.date_start_obj.format("%A, %B %e")}[% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on ${reg.date_end_obj.format("%A, %B %e")}[% END %].
 [% END %]
 </UL>
 [% END %]
 </P>
-<P><SPAN CLASS="on_right">Receipt #[% reg.id %]</SPAN></P>
+<P><SPAN CLASS="on_right">Receipt #$reg.id</SPAN></P>
 <P class=p2>
-Dear [% person.first %],
+Dear $person.first,
 </P>
 <P class=p2>
 <!-- being careful of that comma before "as you requested" ... -->
-We have received your deposit/payment of $[% deposit %]
+We have received your deposit/payment of \$$deposit
 and have scheduled you for
 [% IF personal_retreat %]
 your personal retreat,
 [% ELSIF program.retreat %]
-    "[% program.title %]",
+    "$program.title", $reg.att_prog_dates,
 [% ELSE %]
-    the "[% program.title %]" program[% IF program.leaders %] with [% program.leader_names %][% END %],
+    the "$program.title" program, $reg.att_prog_dates,[% IF program.leaders %] with $program.leader_names,[% END %]
 [% END %]
 as you requested.
 </P>
 <P class=p2>
 <CENTER>
-[% program.cl_picture %]
+$program.cl_picture
 </CENTER>
 </P>
 <P class=p2>
@@ -156,12 +156,12 @@ No lodging was reserved for you since you will be staying in your own van.
 [% ELSIF htdesc == 'Commuting' %]
 No lodging was reserved for you since you will be commuting.
 [% ELSE %]
-For lodging you have been given [% article %] "[% htdesc %]" reservation.
+For lodging you have been given $article "$htdesc" reservation.
 [% END %]
 </P>
 <P class=p2>
 [% IF reg.balance > 0 %]
-    Your balance due on arrival is $[% reg.balance %] for meals,
+    Your balance due on arrival is \$$reg.balance for meals,
     [% IF personal_retreat %]
 		lodging and facilities.
 	[% ELSE %]
@@ -173,7 +173,7 @@ For lodging you have been given [% article %] "[% htdesc %]" reservation.
     Your account is paid in full; there is no balance due.
 [% ELSIF reg.balance < 0 %]
 	Because your first housing choice was not available
-	you are due a refund of $[% -1*reg.balance %].
+	you are due a refund of \$[% -1*reg.balance %].
 	We will issue you a refund when you check-in.
 [% END %]
 [% staying = (htdesc != 'Commuting') %]
@@ -234,11 +234,11 @@ kerosene lamps, etc.
 <P class=p2>
 [% IF personal_retreat %]
 Your retreat begins on the afternoon of 
-[% reg.date_start_obj.format("%A, %B %e") %].
+${reg.date_start_obj.format("%A, %B %e")}.
 [% ELSE %]
 Program registration is from
-[% program.reg_start_obj %] to [% program.reg_end_obj %] on
-[% program.sdate_obj.format("%A, %B %e") %] in the Community Building.
+$program.reg_start_obj to $program.reg_end_obj on
+${program.sdate_obj.format("%A, %B %e")} in the Community Building.
 [% END %]
 </P>
 [% IF personal_retreat && sunday %]
@@ -256,7 +256,7 @@ Program registration is from
 	[% END %]
     </P>
     <P class=p2>
-	The office closes at [% program.reg_end_obj %].<BR>
+	The office closes at ${program.reg_end_obj}.<BR>
 	If you will <B>ARRIVE LATER</B> than 6:00 pm please call to let us know.<BR>
     Notes are posted in the Community Building lobby for late arrivals.<BR>
 	We will save dinner for you on request.
@@ -264,17 +264,17 @@ Program registration is from
 [% END %]
 <P class=p2>
 [% IF personal_retreat %]
-Your retreat will end at [% program.prog_end_obj %]
-on [% reg.date_end_obj.format("%A, %B %e") %].
+Your retreat will end at $program.prog_end_obj
+on ${reg.date_end_obj.format("%A, %B %e")}.
 [% ELSE %]
-Your program will begin at [% program.prog_start_obj %] on
-[% program.sdate_obj.format("%A") %]
-and will end at [% program.prog_end_obj %] on
-[% prog_end.format("%A, %B %e") %].
+Your program will begin at $program.prog_start_obj on
+${program.sdate_obj.format("%A")}
+and will end at $program.prog_end_obj on
+${prog_end.format("%A, %B %e")}.
 [% END %]
 </P>
 <P class=p2>
-[% program.canpol.policy %]
+$program.canpol.policy
 </P>
 <P class=p2>
 We look forward to seeing you here soon.
@@ -282,7 +282,7 @@ We look forward to seeing you here soon.
 <P class=p2>
 <SPAN STYLE="margin-left: 3in; display: block">
 Sincerely,<BR>
-[% user.first %] [% user.last %]
+$user.first $user.last
 </SPAN>
 </P>
 <HR>
@@ -296,12 +296,12 @@ Sincerely,<BR>
 [% tot = 0 %]
 [% FOR ch IN reg.charges %]
 <TR>
-<TD align=right>[% ch.amount %]</TD>
-<TD>[% ch.what %]</TD>
+<TD align=right>$ch.amount</TD>
+<TD>$ch.what</TD>
 </TR>
 [% tot = tot + ch.amount %]
 [% END %]
-<TR><TD align=right><SPAN STYLE="border-top: solid thin">$[% tot %]</SPAN></TD><TD>Total</TD></TR>
+<TR><TD align=right><SPAN STYLE="border-top: solid thin">\$$tot</SPAN></TD><TD>Total</TD></TR>
 </TABLE>
 <P class=p2>
 <H3>Payments</H3>
@@ -312,14 +312,14 @@ Sincerely,<BR>
 </TR>
 [% FOR p IN reg.payments %]
 <TR>
-<TD align=right>$[% p.amount %]</TD>
-<TD>[% p.what %]</TD>
+<TD align=right>\$$p.amount</TD>
+<TD>$p.what</TD>
 </TR>
 [% END %]
 </TABLE>
 <H3>Balance Due</H3>
 <TABLE>
-<TR><TD width=100 align=right>$[% reg.balance %]</TD></TR>
+<TR><TD width=100 align=right>\$$reg.balance</TD></TR>
 </TABLE>
 <HR>
 <H2>Address and Contact Information</H2>
@@ -349,12 +349,12 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <A href=#kaya
     <H2>Carpool List</H2>
     [% FOR cp IN carpoolers %]
         [% p = cp.person %]
-        <SPAN class=name>[% p.first %] [% p.last %]</SPAN>[% IF cp.hascar %] - <SPAN class=hascar>HAS CAR</SPAN>[% END %]<BR>
+        <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - <SPAN class=hascar>HAS CAR</SPAN>[% END %]<BR>
         <DIV class=addr>
-        [% p.city %], [% p.st_prov %] [% p.zip_post %]<BR>
-        [% IF p.country %][% p.country %]<BR>[% END %]
-        [% p.carpool_telephone %]
-        [% IF p.email %]<A HREF="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">[% p.email %]</A>[% END %]
+        $p.city, $p.st_prov $p.zip_post<BR>
+        [% IF p.country %]$p.country<BR>[% END %]
+        $p.carpool_telephone
+        [% IF p.email %]<A HREF="mailto:$p.email?subject=Carpooling to '$cp.program.title' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">$p.email</A>[% END %]
         </DIV>
     [% END %]
     <HR>
