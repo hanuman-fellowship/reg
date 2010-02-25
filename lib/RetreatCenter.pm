@@ -14,9 +14,9 @@ use Catalyst::Runtime '5.70';
 #                 directory
 
     # we have not been looking at these so remove em!
+    #-Debug
+    #StackTrace
 use Catalyst qw/
-    -Debug
-    StackTrace
     ConfigLoader
     Static::Simple
 
