@@ -57,7 +57,7 @@ open my $run, ">", $Run_File;
 close $run;
 
 # we need some values from the database
-# to know where to connect to mysql.
+# to know where to connect to the web site.
 #
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or my_die("oh no DBI");
