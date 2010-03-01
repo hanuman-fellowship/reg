@@ -1,6 +1,4 @@
 #!/usr/bin/perl
-# TODO: revert personal2 here, and reg1a, dir in personal.tt2
-# and in reg1a.tt2, and reg2a and reg2a.tt2
 use strict;
 use warnings;
 use DBI;
@@ -78,7 +76,7 @@ HOUSE_COST:
 while (($sdate, $next_hc, $dev_null) = $sth->fetchrow_array()) {
     last HOUSE_COST if $next_hc != $curr_hc;
 }
-if ($next_hc == $curr_hc) {
+if (! $next_hc || $next_hc == $curr_hc) {
     # no increase in sight
     $next_hc = 0;
     $sdate = '';
@@ -105,6 +103,7 @@ if ($next_hc) {
 sub fees {
     my ($fees) = @_;
     my $s = <<"EOH";
+<ul>
 <table>
 <tr>
 <th align=left>Housing Type</th>
@@ -121,19 +120,22 @@ EOH
 </tr>
 EOH
     }
-    $s .= "</table>\n";
+    $s .= <<"EOH";
+</table>
+</ul>
+EOH
     return $s;
 }
 
 my $fee_table = "";
 if ($next_hc) {
     my $through = date($sdate)->prev()->format("%B %e, %Y");
-    $fee_table .= "Through $through:<p>\n";
+    $fee_table .= "Arriving on and before $through:<p>\n";
 }
 $fee_table .= fees($curr);
 if ($next_hc) {
     my $on_after = date($sdate)->format("%B %e, %Y");
-    $fee_table .= "<p>On and after $on_after:<p>\n";
+    $fee_table .= "<p>Arriving on and after $on_after:<p>\n";
     $fee_table .= fees($next);
 }
 
@@ -192,14 +194,14 @@ print {$prg} "}\n";
 close $prg;
 
 #
-# send index.html and progtable to mountmadonna.org/personal2
+# send index.html and progtable to mountmadonna.org/personal
 #
 my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
     or my_die("cannot connect to $string{ftp_site}");    # not die???
 $ftp->login($string{ftp_login}, $string{ftp_password})
     or my_die("cannot login " . $ftp->message);
-$ftp->cwd('www/personal2')
-    or my_die("cannot cwd to www/personal2 " . $ftp->message);
+$ftp->cwd('www/personal')
+    or my_die("cannot cwd to www/personal " . $ftp->message);
 $ftp->ascii();
 $ftp->put("index.html");
 $ftp->put("progtable");
