@@ -1451,15 +1451,16 @@ sub _compute {
                             ." programs >= $string{disc1days} days",
             });
         }
-        if ($prog_days + $extra_days >= $string{disc2days}) {
-            model($c, 'RegCharge')->create({
-                @who_now,
-                automatic => 'yes',
-                amount    => -1*(int(($string{disc2pct}/100)*$tot_h_cost + .5)),
-                what      => "$string{disc2pct}% Lodging discount for"
-                            ." programs >= $string{disc2days} days",
-            });
-        }
+        # not any more - 30 day PRs must go through personnel
+        #if ($prog_days + $extra_days >= $string{disc2days}) {
+        #    model($c, 'RegCharge')->create({
+        #        @who_now,
+        #        automatic => 'yes',
+        #        amount   => -1*(int(($string{disc2pct}/100)*$tot_h_cost + .5)),
+        #        what      => "$string{disc2pct}% Lodging discount for"
+        #                    ." programs >= $string{disc2days} days",
+        #    });
+        #}
 	}
     #
     # Personal Retreat discounts during special period
@@ -1795,13 +1796,11 @@ sub send_conf : Local {
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
-$c->log->info("template = " . $pr->cl_template());
     $tt->process(
         $pr->cl_template() . ".tt2",    # template
         $stash,                         # variables
         \$html,                         # output
     );
-$c->log->info("afterwards");
     #
     # assume the letter will be successfully
     # printed or sent - if you are not previewing, that is.
@@ -3471,6 +3470,8 @@ sub lodge_do : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     if ($reg->house_id()) {
+        # they somehow double clicked :(
+        #
         stash($c,
             reg_id   => $id,
             template => "registration/dblclick.tt2",

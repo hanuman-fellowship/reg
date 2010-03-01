@@ -1514,6 +1514,7 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
             print {$progt} "    'full $t' => ", $p->fees(1, $t), ",\n";
         }
     }
+    print {$progt} "    type => '", $housecost->type(), "',\n";
 
     # pictures
     #
