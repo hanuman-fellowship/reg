@@ -14,5 +14,8 @@
 # at noon and 6 pm republish the public version of the calendar
 0 12,18 * * * /home/sahadev/RetreatCenter/pubcal
 
+# 1 am on the 1st of every month publish the personal retreat page
+0 1 1 * * /home/sahadev/RetreatCenter/publish_pr
+
 # restart the Catalyst server on reboot
 @reboot /home/sahadev/RetreatCenter/x
