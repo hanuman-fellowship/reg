@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>MMC Online Registration - Success</title>
-<link href="http://www.mountmadonna.org/regform.css" rel="stylesheet" type="text/css">
+<link href="http://www.mountmadonna.org/regform_authnet.css" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -37,19 +37,21 @@
 				We have received your online registration for the<br>
 				[% x_title %] program[% IF x_leader_names %] with [% x_leader_names %][% END %].
 				[% END %]
-				<p>
-				Your credit card has been charged $[% x_amount %]
-				via an authorize.net transaction.<br>
-				The id for this transaction is [% x_trans_id %].<br>
-				<p>
-				The above information has been sent to you via an email to [% x_email %].<br>
-				You will soon receive <i>another</i> letter from reservations@mountmadonna.org<br>
-				with confirmation of your housing and all the details you will need to know<br>
-				prior to coming to Mount Madonna Center.
-				<p>
-				<p>
-				Do <b>not</b> make travel plans until you have received
-				your housing confirmation letter.
+<p>
+Your credit card has been charged $[% x_amount %]
+via an authorize.net transaction.<br>
+The id for this transaction is [% x_trans_id %].<br>
+<p>
+The above information has been sent to you via an email to [% x_email %].<br>
+You will soon receive <i>another</i> letter from reservations@mountmadonna.org<br>
+with confirmation of your housing and all the details you will need to know<br>
+prior to coming to Mount Madonna Center.
+<p>
+If you do not receive this other letter within 3 days check your
+spam/junk email folder.  If it is not there please call us at 408-846-4064.
+<p>
+Do <b>not</b> make travel plans until you have received
+your housing confirmation letter.
 				
 			</div>
 			
@@ -67,6 +69,38 @@
         <div class="bot"></div>
     </div>
 </div>
+
+
+<!-- Google ADWORDS Code for successful registration Conversion Page -->
+<script type="text/javascript">
+<!--
+var google_conversion_id = 1067523886;
+var google_conversion_language = "en";
+var google_conversion_format = "3";
+var google_conversion_color = "ffffff";
+var google_conversion_label = "77USCMaamgEQrr6E_QM";
+var google_conversion_value = 0;
+//-->
+</script>
+<script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
+</script>
+<noscript>
+<div style="display:inline;">
+<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1067523886/?label=77USCMaamgEQrr6E_QM&amp;guid=ON&amp;script=0"/>
+</div>
+</noscript>
+
+<!-- Google ANALYTICS Code for site tracking -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-303243-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
 </body>
 </html>
 

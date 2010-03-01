@@ -7,6 +7,7 @@ use lib 'lib';
 use Template;
 use Date::Simple qw/
     today
+    date
 /;
 
 use HousingNames qw/
@@ -141,24 +142,85 @@ if ($err) {
     exit;
 }
 
-#
 # all is well.
 # prepare the confirmation page.
 #
 
-#
 # how much to charge??
-# it depends on their house1 choice, progchoice, 
-# collect_total, percent_tution, and deposit values.
+# it depends on their house1 choice, progchoice (basic/full), 
+# collect_total, percent_tuition, and deposit values.
+#
+# AND for Personal Retreats there are current and next
+# housing costs and M-Th discount ranges.
+#
+# and discounts for 7 and 30 day long stays.
 #
 my ($x_prog_amount, $due);
-my $key = $form{progchoice} . " " . $form{house1};
-my $total = $data->{$key};
-if ($form{name} =~ m{personal\s+retreat}i) {
-	$total = $ndays*$total;
-	$total -= 0.10*$total if $ndays >= 7;
-	$total -= 0.10*$total if $ndays >= 30;
-	$total = int($total);
+my $key = ($data->{next_hc}
+           && $sdate >= date($data->{next_date})? "next"
+           :                                      $form{progchoice});
+my $key1 = $key . " " . $form{house1};
+my $key2 = $key . " " . $form{house2};
+my $h_cost = $data->{$key1};
+my $house1 = $data->{$key1};
+my $house2 = $data->{$key2};
+my $total;
+my $discount = "";
+my $PR = $form{name} =~ m{personal\s+retreat}i;
+if ($PR) {
+	$total = $ndays*$h_cost;
+
+    # PR discount for M-Th?
+    #
+    my $disc_start = date($data->{disc_pr_start});
+    my $disc_end   = date($data->{disc_pr_end});
+    if ($disc_start <= $edate && $sdate <= $disc_end) {
+        # there is some overlap
+        #
+        my $d = $sdate;
+        my $n_m_th_days = 0;
+        while ($d < $edate) {
+            my $dow = $d->day_of_week();
+            if (   1 <= $dow         && $dow <= 4        # Mon-Thu
+                && $disc_start <= $d && $d <= $disc_end  # in discount PR period
+            ) {
+                ++$n_m_th_days;
+            }
+            ++$d;
+        }
+        if ($n_m_th_days > 0) {
+            my $h_cost = $data->{$key1};
+            my $disc = int(($data->{disc_pr}/100)*$n_m_th_days*$h_cost+.5);
+            my $pl = ($n_m_th_days == 1)? "": "s";
+            $discount .= "a $data->{disc_pr}% discount for $n_m_th_days day$pl Monday-Thursday";
+            $total -= $disc;
+        }
+    }
+}
+else {
+    # the housing cost is not dependent on sdate, edate.
+    # we have the total amount.
+    #
+    $total = $h_cost;
+}
+
+# 7 day discounts for housing costs of 'per day'.
+#
+if ($data->{type} eq 'Per Day') {
+    if ($ndays >= 7) {
+        if ($discount) {
+            $discount .= "<br>and ";
+        }
+        $discount .= "a 10% discount for staying 7 days or more";
+        $total -= 0.10*$total;
+    }
+    $total = int($total);
+}
+$discount = "<p>You were given $discount.<p>" if $discount;
+
+# how much of this total is to be collected now?
+#
+if ($PR) {
 	$x_prog_amount = ($total <= 100)? $total: 100;
 }
 elsif ($data->{collect_total}) {
@@ -172,7 +234,7 @@ elsif ($data->{deposit}) {
 	$x_prog_amount = $data->{deposit};
 }
 else {
-	$x_prog_amount = 100;
+	$x_prog_amount = ($total <= 100)? $total: 100;
 }
 $due = $total - $x_prog_amount;
 my $x_amount = $x_prog_amount; 
@@ -328,7 +390,10 @@ $mv .= "<p>We will "
 $stash{mailings_verbose} = $mv;
 
 $stash{house1_verbose} = $housing_name{$form{house1}};
+$stash{house1_per_night} = $house1;
 $stash{house2_verbose} = $housing_name{$form{house2}};
+$stash{house2_per_night} = $house2;
+
 $stash{house1} = $form{house1};
 $stash{house2} = $form{house2};
 if ($form{withwhom_first} =~ /\S/) {
@@ -399,12 +464,14 @@ my $payment;
 if ($data->{collect_total}) {
     $payment = <<"EOH";
 For this program the total cost of \$$x_prog_amount needs to be collected up front.
+$discount
 EOH
 }
 else {
     my $dncc = $data->{do_not_compute_costs};
     if (! $dncc) {
         $payment .= "The total cost of this program is \$$total.<br>\n";
+        $payment .= $discount;
     }
     $payment .= "A deposit of \$$x_prog_amount is required.<br>\n";
     $payment .= "The balance"
@@ -441,7 +508,9 @@ my $cookie = cookie(
 # ready to output the page
 #
 print header(-cookie => $cookie);
-Template->new()->process(
+Template->new(
+    INTERPOLATE => 1,
+)->process(
     "reg2.tt2",
     \%stash,
 );

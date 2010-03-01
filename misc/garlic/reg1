@@ -12,6 +12,9 @@ print header;
 use CGI::Carp qw/fatalsToBrowser/;
 
 use HousingNames;
+use Date::Simple qw/
+    date
+/;
 
 #
 # command line params
@@ -141,16 +144,23 @@ $stash{ceu_license} = $cookie{ceu_license};
 #
 my @housekeys = grep { /^basic / } keys %$data;
 
+if (exists $data->{next_hc}) {
+    $stash{next_hc} = $data->{next_hc};
+    $stash{through_date} = date($data->{next_date})->prev->format("%b %e");
+    $stash{next_date} = date($data->{next_date})->format("%b %e");
+}
 my $housing_fees = "";
 for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
     my $nk = $k;
     $nk =~ s{basic }{};
     my $full = $k;
     $full =~ s{basic}{full};
+    my $next = $k;
+    $next =~ s{basic}{next};
     $housing_fees .= <<"EOH";
 <tr>
-<td><input type=radio name=house1 value='$nk'></td>
-<td><input type=radio name=house2 value='$nk'></td>
+<td style="text-align: center"><input type=radio name=house1 value='$nk'></td>
+<td style="text-align: center"><input type=radio name=house2 value='$nk'></td>
 <td>$housing_name{$nk}</td>
 EOH
     if (! $stash{do_not_compute_costs}) {
@@ -158,12 +168,17 @@ EOH
         if ($stash{basicfull}) {
             $housing_fees .= "<td align=right width=70>$data->{$full}</td>\n";
         }
+        elsif ($data->{next_hc}) {
+            $housing_fees .= "<td align=right width=70>$data->{$next}</td>\n";
+        }
     }
     $housing_fees .= "</tr>\n";
 }
 $stash{housing_fees} = $housing_fees;
 
-Template->new()->process(
+Template->new(
+    INTERPOLATE => 1,
+)->process(
     "reg1.tt2",
     \%stash,
 );
