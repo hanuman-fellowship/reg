@@ -1154,7 +1154,8 @@ sub create_do : Local {
 
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
-    if (exists $P{fname}) {
+    #
+    if (exists $P{fname} && $P{fname}) {
         my $dir = "root/static/online_done/"
                 . substr($P{date_postmark}, 0, 4)
                 . '-'
