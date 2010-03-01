@@ -73,7 +73,7 @@ function popup(url, height) {
             
                 <form
                     name=reg
-                    action="/cgi-bin/reg2a"
+                    action="/cgi-bin/reg2"
                     method="POST"
                     onsubmit="return validateOnSubmit()"
                 >
