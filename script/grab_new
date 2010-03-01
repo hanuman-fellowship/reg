@@ -91,6 +91,7 @@ for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
         next TRANSACTION;
     }
+    mkdir "root/static/online" unless -d "root/static/online";
     if (! $ftp->get($f, "root/static/online/$f")) {
         my_warn("no get of online reg $f");
         next TRANSACTION;
@@ -411,7 +412,8 @@ sub finalities {
                 port => $string{smtp_port},
             });
             if ($mail_sender && $mail_sender->Open({
-                to       => 'jon@logicalpoetry.com',
+                #to       => 'jon@logicalpoetry.com',
+                to       => 'jon@suecenter.org',
                 from     => 'Grab New <reservations@mountmadonna.org>',
                 subject  => "Grab New "
                             . ($Error? "Failure"
