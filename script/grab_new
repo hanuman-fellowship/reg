@@ -412,8 +412,8 @@ sub finalities {
                 port => $string{smtp_port},
             });
             if ($mail_sender && $mail_sender->Open({
-                #to       => 'jon@logicalpoetry.com',
-                to       => 'jon@suecenter.org',
+                to       => 'jon@logicalpoetry.com',
+                #to       => 'jon@suecenter.org',
                 from     => 'Grab New <reservations@mountmadonna.org>',
                 subject  => "Grab New "
                             . ($Error? "Failure"
