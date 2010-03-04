@@ -21,12 +21,12 @@
             
             <div class="program">
             
-                <h2>You are registering for:</h2>
                 [% IF pr %]
-                
-                    <p>Personal Retreat</p>
+
+                <h2>You are registering for a Personal Retreat.</h2>
    
                 [% ELSE %]
+                <h2>You are registering for:</h2>
                     [% IF two_pics %]
                         <img src='[% image1 %]' width="75">
                         <img src='[% image2 %]' width="75">
@@ -120,8 +120,8 @@
                     
                             <h2>Housing Choice</h2>  
                             <DL>
-                            <DT>First choice:</DT><DD>$house1_verbose (\$$house1_per_night per night)</DD>
-                            <DT>Second choice:</DT><DD>$house2_verbose (\$$house2_per_night per night)</DD>
+                            <DT>First choice:</DT><DD>$house1_verbose (\$$house1_cost[% IF pr %] per night[% END %])</DD>
+                            <DT>Second choice:</DT><DD>$house2_verbose (\$$house2_cost[% IF pr %] per night[% END %])</DD>
                             </DL>
                             [% withwhom_verbose %]
                             <p>

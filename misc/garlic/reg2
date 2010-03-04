@@ -390,9 +390,9 @@ $mv .= "<p>We will "
 $stash{mailings_verbose} = $mv;
 
 $stash{house1_verbose} = $housing_name{$form{house1}};
-$stash{house1_per_night} = $house1;
+$stash{house1_cost} = $house1;
 $stash{house2_verbose} = $housing_name{$form{house2}};
-$stash{house2_per_night} = $house2;
+$stash{house2_cost} = $house2;
 
 $stash{house1} = $form{house1};
 $stash{house2} = $form{house2};
@@ -455,6 +455,7 @@ elsif ($form{name} =~ m{personal retreat}i) {
 	$date .= " to ";
 	$date .= $edate->format("%A %B %e, %Y");
 	$stash{dates} = $date;
+    $stash{pr} = 1;
 }
 else {
     $stash{dates} = $form{dates};
