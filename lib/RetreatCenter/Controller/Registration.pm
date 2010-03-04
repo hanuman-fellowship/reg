@@ -1466,7 +1466,8 @@ sub _compute {
     #
     # Personal Retreat discounts during special period
     #
-    if ($pr->PR()
+    if ($auto
+        && $pr->PR()
         && $reg->date_start() <= $string{disc_pr_end}
         && $reg->date_end()   >= $string{disc_pr_start}
     ) {
