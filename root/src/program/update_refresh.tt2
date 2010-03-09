@@ -1,0 +1,37 @@
+<script type="text/javascript">
+var check_on = false;
+function toggle_all() {
+    check_on = ! check_on;
+    var form = document.form;
+    for (var i = 0; i < form.length; ++i) {
+        if (form[i].type == 'checkbox') {
+            form[i].checked = check_on;
+        }
+    }
+}
+</script>
+<style>
+.lunch td {
+    width: 50px;
+}
+</style>
+<h2>Programs - Updating Days to Refresh Rooms</h2>
+<table>
+<tr>
+<th align=right>Name</th>
+<td><span class=larger>$program.name</span></td>
+<th align=right>From</th>
+<td>$program.sdate_obj <span class=dow>${program.sdate_obj.format("%a")}</span></td>
+<th align=right>To</th>
+<td>$program.edate_obj <span class=dow>${program.edate_obj.format("%a")}</span></td>
+</tr>
+</table>
+<p>
+<form name=form action="/program/update_refresh_do/$program.id">
+<ul class=lunch>
+$refresh_table</span>
+<p>
+<input type=submit value="Submit">
+<span style="margin-left: 1in">All <input type=checkbox name=all onclick="toggle_all();"></span>
+</ul>
+</form>
