@@ -1,0 +1,35 @@
+<script type="text/javascript">
+function toggle_all() {
+    var form = document.form;
+    for (var i = 0; i < form.length; ++i) {
+        if (form[i].type == 'checkbox' && form[i].name != 'all') {
+            form[i].checked = ! form[i].checked;
+        }
+    }
+}
+</script>
+<style>
+.lunch td {
+    width: 50px;
+}
+</style>
+<h2>Rentals - Updating Days to Refresh Rooms</h2>
+<table>
+<tr>
+<th align=right>Name</th>
+<td><span class=larger>$rental.name</span></td>
+<th align=right>From</th>
+<td>$rental.sdate_obj <span class=dow>${rental.sdate_obj.format("%a")}</span></td>
+<th align=right>To</th>
+<td>$rental.edate_obj <span class=dow>${rental.edate_obj.format("%a")}</span></td>
+</tr>
+</table>
+<p class=p2>
+<form name=form action="/rental/update_refresh_do/$rental.id">
+<ul class=lunch>
+$refresh_table</span>
+<p class=p2>
+<input type=submit value="Submit">
+<span style="margin-left: 1in">All <input type=checkbox name=all onclick="toggle_all();"></span>
+</ul>
+</form>
