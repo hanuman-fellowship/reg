@@ -655,6 +655,7 @@ sub outstanding : Local {
     my @regs = model($c, 'Registration')->search({
         date_start => { 'between' => [ $since->as_d8(), $yesterday->as_d8() ] },
         balance    => { '!=' => 0 },
+        cancelled  => { '!=' => 'yes' }, 
     });
     for my $r (@regs) {
         push @outbals, {
