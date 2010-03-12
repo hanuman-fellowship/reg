@@ -1036,7 +1036,7 @@ sub create_do : Local {
         pref2         => $P{pref2},
         share_first   => normalize($P{share_first}),
         share_last    => normalize($P{share_last}),
-        manual        => $P{dup}? "yes": "",
+        manual        => ($P{dup} || $pr->school() != 0)? "yes": "",
         cabin_room    => $P{cabin_room} || "",
         leader_assistant => '',
         free_prog_taken  => $P{free_prog},

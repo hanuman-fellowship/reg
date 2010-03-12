@@ -18,17 +18,23 @@ Deposit
 </td>
 </tr>
 </table>
-<p class=p2>
+<p style="margin-top: 6mm">
 <a href="/finance/deposits/mmc">Prior Deposits</a><p class=p2>
+<p style="margin-top: 6mm">
 Period End Summary
 <table cellpadding=3>
 <tr>
 <form action="/finance/period_end/mmc" method=post>
-<td align=left>Start <input type=text name=sdate size=10 value='[% start %]'>
-End <input type=text name=edate size=10 value='[% end %]'>
+<td align=left>Start <input type=text name=sdate size=10 value='$start'>
+End <input type=text name=edate size=10 value='$end'>
 </td><td><input type=submit value="Go"></td></tr>
 </form>
 </table>
+<p style="margin-top: 6mm">
+<form action="/finance/outstanding" method=post>
+Outstanding Balances Since <input type=text name=since size=10 value='$since'>
+&nbsp;<input type=submit value="Go">
+</form>
 [% IF Catalyst.check_user_roles('mmi_admin') %]
 <hr width=500 align=left>
 <h3>MMI Financial Listings</h3>

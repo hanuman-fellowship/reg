@@ -10,6 +10,8 @@ use Util qw/
     tt_today
     mmi_glnum
     accpacc
+    error
+    penny
 /;
 use Date::Simple qw/
     date
@@ -633,6 +635,57 @@ sub period_end : Local {
         grand_total => \%grand_total,
         timestamp   => scalar(localtime),
         template    => "finance/period_end.tt2",
+    );
+}
+
+sub outstanding : Local {
+    my ($self, $c) = @_;
+
+    my $since_str = $c->request->params->{since};
+    my $since = date($since_str);
+    if (! $since) {
+        error($c,
+              "Illegal date: $since_str",
+              'gen_error.tt2',
+        );
+        return;
+    }
+    my $yesterday = today()-1;
+    my @outbals = ();
+    my @regs = model($c, 'Registration')->search({
+        date_start => { 'between' => [ $since->as_d8(), $yesterday->as_d8() ] },
+        balance    => { '!=' => 0 },
+    });
+    for my $r (@regs) {
+        push @outbals, {
+            date => $r->date_start_obj(),
+            name => $r->person->first() . " " . $r->person->last(),
+            program => $r->program->name(),
+            link => $c->uri_for("/registration/view/" . $r->id()),
+            balance => penny($r->balance()),
+        };
+    }
+    my @rentals = model($c, 'Rental')->search({
+        sdate   => { 'between' => [ $since->as_d8(), $yesterday->as_d8() ] },
+        balance => { '!=' => 0 },
+    });
+    for my $r (@rentals) {
+        push @outbals, {
+            date => $r->sdate_obj(),
+            name => $r->name(),
+            program => '',
+            link => $c->uri_for("/rental/view/" . $r->id() . "/3"),
+            balance => penny($r->balance()),
+        };
+    }
+    @outbals = sort {
+                   $b->{date} <=> $a->{date}
+               }
+               @outbals;
+    stash($c,
+        since    => $since,
+        outbals  => \@outbals,
+        template => 'finance/outstanding.tt2',
     );
 }
 

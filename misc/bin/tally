@@ -1,17 +1,29 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use lib "../../lib";
+use Date::Simple qw/
+    date
+/;
 
 die "usage: rate logfile\n" unless @ARGV == 2;
 my ($rate, $fname) = @ARGV;
 
 my $minutes = 0;
+my ($start, $end);
 open IN, $fname or die "cannot open $fname: $!\n";
 while (<IN>) {
 	last if /^__END__/;
     chomp;
     next if /^\s/ || /^year/;
-    s/^\w+\s\d+\s*//;
+    s/^(\w+\s\d+)\s*//;
+    my $date = $1;
+    if (! $start) {
+        $start = $date;
+    }
+    elsif ($date) {
+        $end = $1;
+    }
     next unless /^\d/;
     for my $range (split /\s*,\s*/) {
         my ($start, $end) = split /-/, $range;
@@ -25,3 +37,29 @@ close IN;
 my $hours = $minutes/60;
 printf "%.5f hours at \$$rate per hour = \$%.2f\n",
        $hours, $hours*$rate;
+print "$start to $end ";
+my @mon = qw/
+    Jan Feb Mar 
+    Apr May Jun
+    Jul Aug Sep
+    Oct Nov Dec
+/;
+my %mon;
+my $n = 1;
+for my $m (@mon) {
+    $mon{$m} = $n++;
+}
+$start =~ s{([a-z]+)}{$mon{$1}}i;
+my $sm = $mon{$1};
+$end   =~ s{([a-z]+)}{$mon{$1}}i;
+my $em = $mon{$1};
+my $yr = (localtime())[5] + 1900;
+$end .= " $yr";
+if ($sm > $em) {
+    $start .= " " . ($yr-1);
+}
+else {
+    $start .= " $yr";
+}
+my $ndays = date($end)-date($start);
+print "= $ndays days\n";

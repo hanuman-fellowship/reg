@@ -92,17 +92,6 @@ th {
 </tr>
 
 <tr>
-<th valign=top>Food Service
-<br><br><input id=sub type=submit value="Submit">
-</th>
-<td colspan=3>
-<textarea id=food_service name=food_service rows=[% food_service_rows %] cols=60>
-[% sum.food_service %]
-</textarea>
-</td>
-</tr>
-
-<tr>
 <th valign=top>Flowers
 </th>
 <td colspan=3>
@@ -130,9 +119,18 @@ th {
 </td></tr>
 
 <tr>
+<th valign=top>Food Service
+<br><br><input id=sub type=submit value="Submit">
+</th>
+<td colspan=3>
+<textarea id=food_service name=food_service rows=[% food_service_rows %] cols=60>
+[% sum.food_service %]
+</textarea>
+</td>
+</tr>
+
+<tr>
 <th valign=top>Feedback
-<br><br>
-<input id=sub type=submit value="Submit">
 </th>
 <td colspan=3>
 <textarea id=feedback name=feedback rows=[% feedback_rows %] cols=60>
@@ -143,6 +141,8 @@ th {
 
 <tr>
 <th valign=top>Miscellaneous
+<br><br>
+<input id=sub type=submit value="Submit">
 </th>
 <td colspan=3>
 <textarea id=miscellaneous name=miscellaneous rows=[% miscellaneous_rows %] cols=60>

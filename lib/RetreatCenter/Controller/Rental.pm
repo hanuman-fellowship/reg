@@ -38,6 +38,7 @@ use Util qw/
     check_makeup_new
     check_makeup_vacate
     refresh_table
+    penny
 /;
 use Global qw/
     %string
@@ -348,7 +349,7 @@ sub view : Local {
     }
 
     my $tot_other_charges = 0;
-    my @charges = $rental->charges;
+    my @charges = $rental->charges();
     for my $p (@charges) {
         $tot_other_charges += $p->amount;
     }
@@ -430,9 +431,9 @@ sub view : Local {
         h_types        => \@h_types,
         string         => \%string,
         charges        => \@charges,
-        tot_other_charges => $tot_other_charges,
+        tot_other_charges => penny($tot_other_charges),
         payments       => \@payments,
-        tot_payments   => $tot_payments,
+        tot_payments   => penny($tot_payments),
         section        => $section,
         lunch_table    => lunch_table(
                               1,

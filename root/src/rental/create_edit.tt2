@@ -135,11 +135,6 @@ Web
 </tr>
 
 <tr>
-<th align=right valign=top>Comment</th>
-<td colspan=5><textarea name=comment columns=60 rows=4>[% rental.comment %]</textarea></td>
-</tr>
-
-<tr>
 <th align=right>Start Hour</th>
 <td><input type=text name=start_hour value='[% rental.start_hour_obj %]' size=8></td>
 </tr>
@@ -184,6 +179,11 @@ Web
 <tr>
 <th align=right>GL Number</th>
 <td>[% IF edit_gl %]<input type=text name=glnum value="[% rental.glnum %]" size=7>[% END %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td colspan=5><textarea name=comment columns=60 rows=4>[% rental.comment %]</textarea></td>
 </tr>
 
 </table>

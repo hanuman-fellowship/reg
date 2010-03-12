@@ -1391,3 +1391,70 @@ new file Glossary.pm in db, Controller
 new files in tren/../glossary
     list.tt2
     create_edit.tt2
+
+MMI/MMC mailings
+    MMI web site contact form => reg
+        with affils for interests
+        is there one for MMC?
+
+        to People/Online w/affils (see below)
+
+        if First/Last are missing put in "Nameless #n _Person"
+
+        same email/snail checkboxes as in online reg
+        AND send me current brochure please
+
+        and send email about this form to MMI reception office
+
+    import Allison's spreadsheet data - one time
+
+    add two checkboxes on online reg form
+
+        Email MMC     Email MMI
+        Snail MMC     Snail MMI
+
+        with "What is MMI?" popup
+
+    when running reports - is it an MMI and/or an MMC report
+        and restrict by the person's checks
+
+    unsubscribe email - MMI or MMC
+
+MMC programs page
+    http://www.mountmadonna.org/programs/contactprog.html
+    http://www.mountmadonna.org/programs/mlist.html
+    more visible on front page?
+    what happens when form is submitted?
+        it is currently broken
+        recreate, add to CVS
+
+    same checkboxes as in online reg
+    AND send brochure please
+
+    bring it in to "Online" link on People page
+        and send email to reception office.
+        then someone in reception goes to the link
+        and brings em in - with undup process (zip/cell thingy).
+
+outstanding balance
+    go back a year by default - can change
+    move rental comment to Finance tab, add Balance
+    in general listing
+        go to reg screen or Finance tab of rental
+
+    order by date in reverse
+
+    sdate if rental - name + balance due
+    sdate if reg - name and program + balance due
+
+gate codes
+    put 4 digits in Sum. - verify - show #4532 MMC 12532 MMS
+    generate conf note about gate code automatically
+    have listing of future (4 months out) rental/programs sans gate codes
+        input fields to enter gate codes, submit
+    also listing of program/rental and their gate codes
+    every Friday send Sukhdev a letter with link to
+        the above listing
+    copy paste or duplicate - set gate code to blank
+
+copy pics when copying sum

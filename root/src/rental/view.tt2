@@ -295,12 +295,6 @@ Web
 </tr>
 
 <tr>
-<th align=right valign=top>Comment</th>
-<td colspan=5>[% rental.comment %]</td>
-</td>
-</tr>
-
-<tr>
 <th align=right>Start Hour</th>
 <td>[% rental.start_hour_obj %]</td>
 </tr>
@@ -348,8 +342,8 @@ Web
 
 <!-- Finance -->
 <div id="content3" class="tabcontent" style="display: none">
-<table cellpadding=3>
 
+<table cellpadding=3>
 <tr>
 <th align=right>Required Deposit</th>
 <td>[% rental.deposit %]</td>
@@ -359,6 +353,12 @@ Web
 <tr>
 <th align=right>GL Number</th>
 <td>[% rental.glnum %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td>[% rental.comment %]</td>
+</td>
 </tr>
 
 </table>
@@ -425,6 +425,13 @@ Payments
 <td><a href="/rental/pay_balance/[% id %]">New Payment</a></td>
 </tr>
 
+</table>
+</div>
+
+<div class=head>Balance</div>
+<div class=stuff>
+<table>
+<tr><td>\$$rental.balance_disp</td></tr>
 </table>
 </div>
 

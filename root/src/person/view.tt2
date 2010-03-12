@@ -69,8 +69,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right valign=bottom>First</th><td valign=bottom width=200><span class=larger>[% person.first %]</span></td>
-<th align=right>Home</td><td>[% person.tel_home %]</span></td>
+<th align=right valign=bottom>First</th><td valign=bottom width=200><span class=larger>$person.first</span></td>
+<th align=right>Home</td><td>$person.tel_home</span></td>
 </tr>
 
 <tr>
