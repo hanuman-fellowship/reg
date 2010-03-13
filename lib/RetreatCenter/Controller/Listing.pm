@@ -1610,6 +1610,10 @@ sub gate_codes : Local {
     EVENT:
     for my $ev (model($c, 'Program')->search({
                     sdate => { 'between' => [ $gc_from8, $gc_to8 ] },
+                    -or => [
+                        school => 0,
+                        level  => 'S',
+                    ],
                 }),
                 model($c, 'Rental')->search({
                     sdate => { 'between' => [ $gc_from8, $gc_to8 ] },

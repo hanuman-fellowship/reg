@@ -658,7 +658,10 @@ sub outstanding : Local {
                                            $yesterday->as_d8() ] },
             balance          => { '!=' => 0 },
             cancelled        => { '!=' => 'yes' }, 
-            'program.school' => 0,
+            -or => [
+                'program.school' => 0,
+                'program.level'  => 'S',
+            ],
         },
         {
             prefetch => ['program'],
