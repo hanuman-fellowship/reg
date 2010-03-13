@@ -1,0 +1,51 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use DBI;
+use FindBin;
+chdir "$FindBin::Bin/..";
+
+use lib "lib";
+use Date::Simple qw/
+    today
+/;
+
+my $today = today()->format("%D");
+my $four = (today()+120)->format("%D");
+
+# we need a value from the database
+#
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or my_die("oh no DBI");
+my $sth = $dbh->prepare("
+    select the_key, value
+    from string
+    where the_key = 'gate_code_email'
+       or the_key like 'smtp_%'
+");
+$sth->execute();
+my %string;
+while (my ($the_key, $value) = $sth->fetchrow_array()) {
+    $string{$the_key} = $value;
+}
+
+use Mail::Sender;
+my $mail_sender = Mail::Sender->new({
+    smtp => $string{smtp_server},
+    port => $string{smtp_port},
+});
+if ($mail_sender && $mail_sender->Open({
+    to       => $string{gate_code_email},
+    from     => 'Reminder <reservations@mountmadonna.org>',
+    subject  => "Gate Codes",
+    ctype    => "text/html",
+    encoding => "7bit",
+})) {
+    $mail_sender->SendLineEnc(<<"EOM");
+This is a reminder to set and program the gate codes!
+<p>
+Click <a href="http://kali:3000/listing/gate_codes?gc_from=$today&gc_to=$four&missing_only=on">here</a>.
+EOM
+    $mail_sender->Close();
+}
