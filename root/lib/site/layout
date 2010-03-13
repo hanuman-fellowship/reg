@@ -16,7 +16,7 @@
 <td><a href=/listing/field>Listings</a></td>
 [% ELSE %]
 <td><a href=/person/search>People</a></td>
-<td><a href=/listing>Listings</a></td>
+<td><a href=/listing/index>Listings</a></td>
 [% END %]
 <td><a href=/configuration>Configuration</a></td>
 [% IF Catalyst.check_user_roles('member_admin') %]

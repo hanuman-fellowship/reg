@@ -37,7 +37,7 @@ th {
 </tr>
 
 <tr>
-<th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=20></td>
+<th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=4></td>
 <th align=right>Registration<br>Location</th>
 <td valign=top><input type=text name=registration_location value='[% sum.registration_location %]' size=20></td>
 </tr>

@@ -1,0 +1,17 @@
+<h2>Gate Codes from $from to $to</h2>
+<table cellpadding=5
+<tr align=left>
+<th>Event</th>
+<th>From</th>
+<th>To</th>
+<th>Code</th>
+</tr>
+[% FOR c IN codes %]
+    <tr align=left>
+    <td><a target=event href=/summary/view/$c.type/$c.sum_id>$c.name</a></td>
+    <td>$c.sdate</td>
+    <td>$c.edate</td>
+    <td>$c.code</td>
+    </tr>
+[% END %]
+</table>

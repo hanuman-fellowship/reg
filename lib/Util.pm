@@ -1475,6 +1475,9 @@ sub avail_mps {
 
 sub penny {
     my ($amt) = @_;
+    if (! defined $amt) {
+        return "";
+    }
     $amt =~ s{[.]00$}{};
     # for sqlite we need:
     if ($amt =~ m{[.]\d$}) {

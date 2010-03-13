@@ -212,3 +212,5 @@ make_up_clean_days 2
 house_sum_clean -2
 
 ride_email transportation@mountmadonna.org
+
+gate_code_email sukhdev@mountmadonna.org

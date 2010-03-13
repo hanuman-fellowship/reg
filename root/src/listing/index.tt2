@@ -15,5 +15,16 @@
 &nbsp;&nbsp;
 On <input type=text size=10 name=cg_date>&nbsp;<input type=submit value="Go">
 </form>
+<p class=p2>
+<form action="/listing/gate_codes">
+Gate Codes - From 
+<input type=text size=10 name=gc_from value=$gc_from>
+&nbsp;
+To <input type=text size=10 name=gc_to value=$gc_to>
+&nbsp;
+Missing Only <input type=checkbox name=missing_only checked>
+&nbsp;
+<input type=submit value="Go">
+</form>
 </div>
 </ul>

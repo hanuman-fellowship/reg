@@ -113,9 +113,14 @@ ul {
 </TD></TR>
 <TR><TD>
 <P class=p2><SPAN CLASS="on_right">${today.format("%A, %B %e, %Y")}</SPAN></P>
-<P class=p2>[% IF program.confnote || reg.confnote %]
+[% gc = program.summary.gate_code %]
+<P class=p2>[% IF program.confnote || reg.confnote || gc %]
 <B>NOTES:</B><BR>
 <UL>
+[% IF gc %]
+If you arrive after dark, the main gate may be closed.<br>
+To open it, enter this code in the keypad: #${gc}. That's POUND ${gc}.<br>
+[% END %]
 [% IF program.confnote %]
     $program.confnote<BR>
 [% END %]

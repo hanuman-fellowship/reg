@@ -19,6 +19,7 @@ use Util qw/
     stash
     avail_pic_num
     resize
+    error
 /;
 use Global qw/
     %string
@@ -157,6 +158,14 @@ sub update_do : Local {
     for my $f (keys %hash) {
         $hash{$f} = etrim($hash{$f});
     }
+    if ($hash{gate_code} && $hash{gate_code} !~ m{^\d\d\d\d$}) {
+        error($c,
+            'Gate Code must be 4 digits.',
+            'gen_error.tt2',
+        );
+        return;
+    }
+
     if (! exists $hash{needs_verification}) {
         $hash{needs_verification} = '';
     }
@@ -204,6 +213,7 @@ sub use_template : Local {
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        gate_code => '',
         needs_verification => "yes",
     });
     $type = lc $type;       # Program to program
@@ -223,6 +233,7 @@ sub paste : Local {
         date_updated => tt_today($c)->as_d8(),   # and override
         who_updated  => $c->user->obj->id,       # update status info
         time_updated => get_time()->t24(),
+        gate_code => '',
         needs_verification => "yes",
     });
 

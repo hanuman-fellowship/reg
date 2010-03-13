@@ -1,0 +1,20 @@
+<h2>Missing Gate Codes from $from to $to</h2>
+<form action=/listing/gate_codes_do>
+<table cellpadding=5
+<tr align=left>
+<th>Event</th>
+<th>From</th>
+<th>To</th>
+<th>Code</th>
+</tr>
+[% FOR c IN codes %]
+    <tr align=left>
+    <td>$c.name</td>
+    <td>$c.sdate</td>
+    <td>$c.edate</td>
+    <td><input type=text size=4 name=sum$c.sum_id value='$c.code'></td>
+    </tr>
+[% END %]
+<tr><td colspan=3></td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>

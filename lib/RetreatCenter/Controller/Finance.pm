@@ -652,11 +652,19 @@ sub outstanding : Local {
     }
     my $yesterday = today()-1;
     my @outbals = ();
-    my @regs = model($c, 'Registration')->search({
-        date_start => { 'between' => [ $since->as_d8(), $yesterday->as_d8() ] },
-        balance    => { '!=' => 0 },
-        cancelled  => { '!=' => 'yes' }, 
-    });
+    my @regs = model($c, 'Registration')->search(
+        {
+            date_start       => { 'between' => [ $since->as_d8(),
+                                           $yesterday->as_d8() ] },
+            balance          => { '!=' => 0 },
+            cancelled        => { '!=' => 'yes' }, 
+            'program.school' => 0,
+        },
+        {
+            prefetch => ['program'],
+            join     => ['program'],
+        }
+    );
     for my $r (@regs) {
         push @outbals, {
             date => $r->date_start_obj(),

@@ -1,10 +1,10 @@
 # Get online registrations and rental grid files every 15 minutes
 0,15,30,45 * * * * /home/sahadev/RetreatCenter/grab
 
-# Get the rooms/campsites to be made up every morning at 1:00 am.
+# at 1 am get the rooms/campsites to be made up
 0 1 * * * /home/sahadev/RetreatCenter/makeup
 
-# At 1:00 am send off the carpool lists - 7 and 14 days out
+# at 1 am send off the carpool lists - 7 and 14 days out
 0 1 * * * /home/sahadev/RetreatCenter/carpool
 0 1 * * * /home/sahadev/RetreatCenter/carpool - 14
 
@@ -14,8 +14,11 @@
 # at noon and 6 pm republish the public version of the calendar
 0 12,18 * * * /home/sahadev/RetreatCenter/pubcal
 
-# 1 am on the 1st of every month publish the personal retreat page
+# at 1 am on the 1st of every month publish the personal retreat page
 0 1 1 * * /home/sahadev/RetreatCenter/publish_pr
+
+# at 1 am every Tuesday morning send Sukhdev a letter about gate codes.
+0 1 * * 2 /home/sahadev/RetreatCenter/gate
 
 # restart the Catalyst server on reboot
 @reboot /home/sahadev/RetreatCenter/x

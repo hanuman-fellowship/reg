@@ -14,6 +14,7 @@ use Util qw/
     commify
     housing_types
     stash
+    error
 /;
 use Date::Simple qw/
     date
@@ -28,7 +29,12 @@ use Global qw/
 sub index : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{template} = "listing/index.tt2";
+    my $today = today();
+    stash($c,
+        gc_from  => $today->format("%D"),
+        gc_to    => (today()+120)->format("%D"),
+        template => "listing/index.tt2",
+    );
 }
 
 #
@@ -1574,6 +1580,101 @@ sub field_staff : Local {
 sub kitchen : Local {
     my ($self, $c) = @_;
     $c->stash->{template} = "listing/kitchen.tt2";
+}
+
+sub gate_codes : Local {
+    my ($self, $c) = @_;
+
+    my $from = $c->request->params->{gc_from};
+    my $gc_from = date($from);
+    if (! $gc_from) {
+        error($c,
+            "Invalid From date for Gate Codes: $from",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $to = $c->request->params->{gc_to};
+    my $gc_to = date($to);
+    if (! $gc_to) {
+        error($c,
+            "Invalid To date for Gate Codes: $from",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $gc_from8 = $gc_from->as_d8();
+    my $gc_to8 = $gc_to->as_d8();
+    my $missing_only = $c->request->params->{missing_only};
+    my @codes;
+    EVENT:
+    for my $ev (model($c, 'Program')->search({
+                    sdate => { 'between' => [ $gc_from8, $gc_to8 ] },
+                }),
+                model($c, 'Rental')->search({
+                    sdate => { 'between' => [ $gc_from8, $gc_to8 ] },
+                })
+    ) {
+        my $sum = $ev->summary();
+        my $code  = $sum->gate_code();
+        if ($missing_only && $code) {
+            next EVENT;
+        }
+        push @codes, {
+            name   => $ev->name(),
+            sdate  => $ev->sdate_obj(),
+            edate  => $ev->edate_obj(),
+            type   => $ev->event_type(),
+            code   => $code,
+            sum_id => $sum->id(),
+        };
+    }
+    @codes = sort {
+                 $a->{sdate} <=> $b->{edate}
+             }
+             @codes;
+    stash($c,
+        from     => $gc_from,
+        to       => $gc_to,
+        codes    => \@codes,
+        template => 'listing/' . ($missing_only? 'miss_gate_code.tt2'
+                                  :              'gate_code.tt2'),
+    );
+}
+
+sub gate_codes_do : Local {
+    my ($self, $c) = @_;
+    my %codes = %{$c->request->params()};
+
+    # first check for valid codes
+    my @errs = ();
+    for my $id (keys %codes) {
+        if ($codes{$id} && $codes{$id} !~ m{^\d\d\d\d$}) {
+            push @errs, $codes{$id};
+        }
+    }
+    if (@errs) {
+        error($c,
+            "Invalid codes: " . join(", ", @errs),
+            'gen_error.tt2',
+        );
+        return;
+    }
+
+    CODE:
+    for my $id (keys %codes) {
+        if (!$codes{$id}) {
+            next CODE;
+        }
+        my ($sum_id) = $id =~ m{(\d+)};
+        my $sum = model($c, 'Summary')->find($sum_id);
+        if ($sum) {
+            $sum->update({
+                gate_code => $codes{$id},
+            });
+        }
+    }
+    $c->response->redirect($c->uri_for("/listing/index"));
 }
 
 1;

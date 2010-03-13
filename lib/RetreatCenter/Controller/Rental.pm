@@ -214,6 +214,7 @@ sub create_do : Local {
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        gate_code => '',
         needs_verification => "yes",
     });
 
@@ -1786,6 +1787,7 @@ sub duplicate_do : Local {
         date_updated => tt_today($c)->as_d8(),   # and new update status info
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
+        gate_code => '',
         needs_verification => "yes",
     });
 
