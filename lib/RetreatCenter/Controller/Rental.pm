@@ -1599,15 +1599,15 @@ EOH
               .  "</td><td>Total</td></tr>\n";
         $html .= "</table></ul>\n";
         $tr_other = "<tr><th align=right>Other</th><td align=right>"
-                  . commify($tot_other_charges)
+                  . commify(penny($tot_other_charges))
                   . "</td></tr>";
     }
     my $tot_charges = $tot_housing_charge
                     + $extra_hours_charge
                     + $tot_other_charges
                     ;
-    my $st = commify($tot_charges);
-    my $sh = commify($tot_housing_charge);
+    my $st = commify(penny($tot_charges));
+    my $sh = commify(penny($tot_housing_charge));
     $html .= <<"EOH";
 </table>
 </div>
