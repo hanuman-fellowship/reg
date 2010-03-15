@@ -235,9 +235,11 @@ Web
 [% rental.housing_note %]
 [% END %]
 
+[% IF ! rental.program_id %]
 <p class=p2>
 <span class=head style="margin-left: .5in; margin-top: .5in">Days to Refresh Rooms</span><span class=updlunch><a href="/rental/update_refresh/[% id %]">Update</a></span>
 <div class=lunch>[% refresh_table %]</div>
+[% END %]
 
 </div>      <!-- end Meals & Lodging div -->
 

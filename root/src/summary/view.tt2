@@ -191,7 +191,7 @@ th {
 <table cellpadding=3 border=0>
 
 <tr>
-<th width=180>Gate Code</th><td valign=top>[% gate_code %]</td>
+<th width=180>Gate Code</th><td valign=top>[% IF gate_code %]#$gate_code or 1$gate_code for the MMS entrance[% END %]</td>
 <th>Registration<br>Location</th><td valign=top>[% registration_location %]</td>
 </tr>
 

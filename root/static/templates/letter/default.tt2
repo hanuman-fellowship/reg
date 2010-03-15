@@ -118,8 +118,8 @@ ul {
 <B>NOTES:</B><BR>
 <UL>
 [% IF gc %]
-If you arrive after dark, the main gate may be closed.<br>
-To open it, enter this code in the keypad: #${gc}. That's POUND ${gc}.<br>
+If you arrive in the evening and the gate is closed you can open it<br>
+by entering this code in the keypad: #${gc}. That's POUND ${gc}.<br>
 [% END %]
 [% IF program.confnote %]
     $program.confnote<BR>

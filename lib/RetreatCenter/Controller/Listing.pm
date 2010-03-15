@@ -32,7 +32,7 @@ sub index : Local {
     my $today = today();
     stash($c,
         gc_from  => $today->format("%D"),
-        gc_to    => (today()+120)->format("%D"),
+        gc_to    => (today()+9*30)->format("%D"),
         template => "listing/index.tt2",
     );
 }
@@ -1609,14 +1609,16 @@ sub gate_codes : Local {
     my @codes;
     EVENT:
     for my $ev (model($c, 'Program')->search({
-                    sdate => { 'between' => [ $gc_from8, $gc_to8 ] },
+                    sdate => { '<=' => $gc_to8   },
+                    edate => { '>=' => $gc_from8 },
                     -or => [
                         school => 0,
                         level  => 'S',
                     ],
                 }),
                 model($c, 'Rental')->search({
-                    sdate => { 'between' => [ $gc_from8, $gc_to8 ] },
+                    sdate => { '<=' => $gc_to8   },
+                    edate => { '>=' => $gc_from8 },
                 })
     ) {
         my $sum = $ev->summary();

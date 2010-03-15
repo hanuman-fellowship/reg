@@ -138,7 +138,7 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <span class=larger>Affiliations</span>
 <ul>
 [% FOREACH a IN person.affils %]
-    [% a.descrip %]<br>
+    $a.descrip<br>
 [% END %]
 </ul>
 
