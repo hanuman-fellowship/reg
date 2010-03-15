@@ -435,6 +435,7 @@ sub view : Local {
         tot_other_charges => penny($tot_other_charges),
         payments       => \@payments,
         tot_payments   => penny($tot_payments),
+        balance        => commify($rental->balance()),
         section        => $section,
         lunch_table    => lunch_table(
                               1,
