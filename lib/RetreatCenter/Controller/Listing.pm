@@ -1636,7 +1636,7 @@ sub gate_codes : Local {
         };
     }
     @codes = sort {
-                 $a->{sdate} <=> $b->{edate}
+                 $a->{sdate} <=> $b->{sdate}
              }
              @codes;
     stash($c,
