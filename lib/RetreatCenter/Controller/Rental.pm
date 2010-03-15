@@ -1055,6 +1055,10 @@ sub booking_do : Local {
             h_type     => $h_type,
         });
         my $max = type_max($h_type);
+        if ($max > $h->max()) {
+            $max = $h->max();
+            # can't have more beds than there are beds, right?
+        }
         model($c, 'Config')->search({
             house_id => $h_id,
             the_date => { 'between' => [ $sdate, $edate1 ] },
