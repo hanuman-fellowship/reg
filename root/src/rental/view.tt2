@@ -433,7 +433,7 @@ Payments
 <div class=head>Balance</div>
 <div class=stuff>
 <table>
-<tr><td>\$$rental.balance_disp</td></tr>
+<tr><td>\$$balance</td></tr>
 </table>
 </div>
 
