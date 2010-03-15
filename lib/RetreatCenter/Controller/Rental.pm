@@ -1595,7 +1595,7 @@ EOH
                   ;
         }
         $html .= "<tr><td align=right>\$"
-              .  commify($tot_other_charges)
+              .  commify(penny($tot_other_charges))
               .  "</td><td>Total</td></tr>\n";
         $html .= "</table></ul>\n";
         $tr_other = "<tr><th align=right>Other</th><td align=right>"
@@ -1653,7 +1653,7 @@ EOH
     }
 
     my $balance = $tot_charges - $tot_payments;
-    my $sb = commify($balance);
+    my $sb = commify(penny($balance));
     if ($balance == 0) {
         $sb = "Paid in Full";
     }
