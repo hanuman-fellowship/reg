@@ -14,6 +14,7 @@ use Util qw/
     tt_today
     stash
     invalid_amount
+    penny
 /;
 use Date::Simple qw/
     date
@@ -178,8 +179,8 @@ sub _ride_list {
               .  $r->flight_time_obj()
               .  "</td>\n"
               ;
-        my $cost1 = $r->cost() || "Cost";
-        my $cost2 = $r->cost() || "";
+        my $cost1 = penny($r->cost()) || "Cost";
+        my $cost2 = penny($r->cost()) || "";
         $rows .= <<"EOH";
 <td align=right>
 <div id=c$r_id style="display: block">
