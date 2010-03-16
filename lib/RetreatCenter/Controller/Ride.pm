@@ -61,7 +61,7 @@ sub list : Local {
 
 sub _driver_list {
     my ($c, $cur_dr_id) = @_;
-    my $opts = "<option value=0>Select Driver</option>\n";
+    my $opts = "<option value=0>Driver</option>\n";
     for my $dr (_get_drivers($c)) {
         my $dr_id = $dr->id();
         $opts .= "<option value="
@@ -104,7 +104,7 @@ sub _ride_list {
         my $r_id = $r->id();
         my $driver_id = $r->driver_id();
         my $driver_name = ($r->driver_id()? $r->driver->first()
-                           :                "Select Driver"    );
+                           :                "Driver"           );
         if ($r->pickup_date() != $prev_date
             ||
             $r->shuttle()  != $prev_shuttle
@@ -222,9 +222,9 @@ $driver_list
 
 EOH
         my $sh = $r->shuttle();
-        my $shuttle_name = ($sh == 0? "Select Shuttle"
+        my $shuttle_name = ($sh == 0? "Shuttle"
                             :         "#$sh"          );
-        my $shuttle_list = "<option value=0>Select Shuttle</option>\n";
+        my $shuttle_list = "<option value=0>Shuttle</option>\n";
         for my $i (1 .. $string{max_shuttles}) {
             $shuttle_list .= "<option value=$i"
                           .  ($i == $sh? " selected"
@@ -389,7 +389,7 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $ride = model($c, 'Ride')->find($id);
-    my $driver_opts = "<option value=0>Choose Driver\n";
+    my $driver_opts = "<option value=0>Driver\n";
     for my $d (_get_drivers($c)) {
         my $id = $d->id();
         $driver_opts .= "<option value=$id"
@@ -399,7 +399,7 @@ sub update : Local {
                      . "\n"
                      ;
     }
-    my $shuttle_opts = "<option value=0>Select Shuttle\n";
+    my $shuttle_opts = "<option value=0>Shuttle\n";
     for my $sh (1 .. $string{max_shuttles}) {
         $shuttle_opts .= "<option value=$sh"
                       .  ($ride->shuttle() == $sh? " selected"
@@ -496,7 +496,7 @@ sub create : Local {
         #
         $c->stash->{dir_to} = "checked";
     }
-    my $driver_opts = "<option value=0>Choose Driver\n";
+    my $driver_opts = "<option value=0>Driver\n";
     for my $d (_get_drivers($c)) {
         $driver_opts .= "<option value="
                      . $d->id()
@@ -520,7 +520,7 @@ sub create : Local {
                    ;
     }
 
-    my $shuttle_opts = "<option value=0>Select Shuttle</option>\n";
+    my $shuttle_opts = "<option value=0>Shuttle</option>\n";
     for my $sh (1 .. $string{max_shuttles}) {
         $shuttle_opts .= "<option value=$sh>#$sh</option>\n";
     }
@@ -882,8 +882,8 @@ note the order of rides
     date, time
 note the spacing between days
 
-DOUBLE click on "Select Driver" and you can assign a new driver.
-similarily for "Select Shuttle"
+DOUBLE click on "Driver" and you can assign a new driver.
+similarily for "Shuttle"
 you can also change an existing driver or shuttle in the same way.
 
 if you change the driver of a ride then
