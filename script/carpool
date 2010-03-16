@@ -75,6 +75,7 @@ for my $p (@progs) {
           from registration r, people p
          where r.program_id = $p->[0]
            and r.carpool = 'yes'
+           and r.cancelled != 'yes'
            and r.person_id = p.id
       order by p.zip_post
     ");
