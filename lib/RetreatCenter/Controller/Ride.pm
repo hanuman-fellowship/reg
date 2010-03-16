@@ -178,9 +178,32 @@ sub _ride_list {
               .  $r->flight_time_obj()
               .  "</td>\n"
               ;
-        $rows .= "<td>"
-              .  $r->pickup_time_obj()
-              .  "</td>";
+        my $cost1 = $r->cost() || "Cost";
+        my $cost2 = $r->cost() || "";
+        $rows .= <<"EOH";
+<td align=right>
+<div id=c$r_id style="display: block">
+<a href='#' onclick="return edit_cost($r_id);">$cost1</a>
+</div>
+<!------>
+<div id=ci$r_id style="display: none">
+<input type=text size=3 id=cost$r_id onkeypress="return new_cost($r_id);" value='$cost2'>
+</div>
+</td>
+EOH
+        my $putime1 = $r->pickup_time_obj() || "Time";
+        my $putime2 = $r->pickup_time_obj() || "";
+        $rows .= <<"EOH";
+<td align=right>
+<div id=pu$r_id style="display: block">
+<a href='#' onclick="return edit_pu($r_id);">$putime1</a>
+</div>
+<!------>
+<div id=pui$r_id style="display: none">
+<input type=text size=8 id=putime$r_id onkeypress="return new_pickuptime($r_id);" value='$putime2'>
+</div>
+</td>
+EOH
         my $driver_list = _driver_list($c, $driver_id);
         $rows .= <<"EOH";
 
@@ -238,7 +261,8 @@ EOH
 <th align=left>Airport</th>
 <th align=center>Pickup<br>Date</th>
 <th align=center>Flight<br>Time</th>
-<th align=center>Pickup<br>Time</th>
+<th align=right width=50>Cost</th>
+<th align=center width=100>Pickup<br>Time</th>
 <th align=left>Driver</th>
 <th align=left>Shuttle</th>
 </tr>
@@ -763,6 +787,24 @@ sub new_shuttle : Local {
     $ride->update({
         shuttle => $shuttle_num,
         @opt,
+    });
+    $c->res->output(_ride_list($c, _get_cond($c)));
+}
+
+sub new_cost : Local {
+    my ($self, $c, $ride_id, $cost) = @_;
+    my $ride = model($c, 'Ride')->find($ride_id);
+    $ride->update({
+        cost => $cost,
+    });
+    $c->res->output(_ride_list($c, _get_cond($c)));
+}
+
+sub new_pickup_time : Local {
+    my ($self, $c, $ride_id, $putime) = @_;
+    my $ride = model($c, 'Ride')->find($ride_id);
+    $ride->update({
+        pickup_time => $putime,
     });
     $c->res->output(_ride_list($c, _get_cond($c)));
 }
