@@ -90,6 +90,27 @@ else {
 if ($stash{pr}) {
     $stash{dates} = "";
     $stash{leader_names} = "";
+    my $noPRfile = "../personal/noPR.txt";
+    if (-r $noPRfile) {
+        my $noPR = "";
+        open my $in, "<", $noPRfile;
+        while (my $line = <$in>) {
+            chomp $line;
+            my ($sdate, $edate) = split m{-}, $line;
+            $sdate = date($sdate);
+            $edate = date($edate)-1;
+            if ($sdate->month() == $edate->month()) {
+                $noPR .= $sdate->format("%B %e") . "-" . $edate->format("%e");
+            }
+            else {
+                $noPR .= $sdate->format("%B %e"). "-" . $edate->format("%B %e");
+            }
+            $noPR .= ", ";
+        }
+        close $in;
+        $noPR =~ s{, $}{};
+        $stash{noPR} = $noPR;
+    }
 }
 $stash{basicfull} = ($data->{ndays} != $data->{fulldays});
 $stash{bdays}     = $data->{ndays};

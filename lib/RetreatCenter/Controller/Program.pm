@@ -471,11 +471,10 @@ sub view : Local {
     }
 
     #
-    # no lunches for personal retreat, DCM or hybrid programs.
+    # no lunches for personal retreat or DCM
     #
     if (! ($p->PR()
            || $p->level() =~ m{[DCM]}
-           || $p->rental_id()
           )
     ) {
         stash($c,
@@ -1003,7 +1002,7 @@ sub delete : Local {
     # exceptions
     $p->exceptions()->delete();
 
-    # any bookings
+    # any bookings - and blocks???-? normal and auto for sleeping???
     model($c, 'Booking')->search({
         program_id => $id,
     })->delete();
@@ -1587,6 +1586,14 @@ sub update_lunch_do : Local {
     $p->update({
         lunches => $l,
     });
+    if (my $r_id = $p->rental_id()) {
+        my $r = model($c, 'Rental')->find($r_id);
+        if ($r) {
+            $r->update({
+                lunches => $l,
+            });
+        }
+    }
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }
 
@@ -2120,6 +2127,14 @@ sub update_refresh_do : Local {
     $p->update({
         refresh_days => $l,
     });
+    if (my $r_id = $p->rental_id()) {
+        my $r = model($c, 'Rental')->find($r_id);
+        if ($r) {
+            $r->update({
+                refresh_days => $l,
+            });
+        }
+    }
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }
 

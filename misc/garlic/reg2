@@ -82,9 +82,6 @@ check("email1", "Missing email address.");
 if ($form{email1} ne $form{email2}) {
     $err .= "<li>The two email addresses do not match.\n";
 }
-if (!$form{house1} && !$form{house2}) {
-    $err .= "<li>Please fill out both choices of housing.\n";
-} 
 my ($sdate, $edate, $ndays);		# only for Personal Retreats 
 if ($form{name} =~ m{personal\s+retreat}i) {
 	#
@@ -107,7 +104,34 @@ if ($form{name} =~ m{personal\s+retreat}i) {
     if ($sdate < today()) {
         $err .= "<li>Arrival date is in the past!";
     }
+    my $noPRfile = "$progpath/noPR.txt";
+    if (-r $noPRfile) {
+        open my $in, "<", $noPRfile;
+        DATES:
+        while (my $dateline = <$in>) {
+            chomp $dateline;
+            my ($sd, $ed) = split m{-}, $dateline;
+            $sd = date($sd);
+            $ed = date($ed)-1;
+            # is there overlap?
+            if ($edate > $sd && $sdate <= $ed) {
+                $err .= "<li>Sorry, you cannot stay the nights from ";
+                if ($sd->month() == $ed->month()) {
+                    $err .= $sd->format("%B %e") . "-" . $ed->format("%e");
+                }
+                else {
+                    $err .= $sd->format("%B %e") . "-" . $ed->format("%B %e");
+                }
+                $err .= "!\n";
+                last DATES;
+            }
+        }
+        close $in;
+    }
 }
+if (!$form{house1} && !$form{house2}) {
+    $err .= "<li>Please fill out both choices of housing.\n";
+} 
 if ($data->{footnotes} =~ m{\*}
     && $form{ceu_license}
     && $form{ceu_license} !~ m{^comp$}i

@@ -62,4 +62,5 @@ else {
     $start .= " $yr";
 }
 my $ndays = date($end)-date($start);
-print "= $ndays days\n";
+my $per_week = $hours/($ndays/7);
+printf "= $ndays days = %.1f hours per week\n", $per_week;

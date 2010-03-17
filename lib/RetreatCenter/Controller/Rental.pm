@@ -934,6 +934,14 @@ sub update_lunch_do : Local {
     $r->update({
         lunches => $l,
     });
+    if (my $p_id = $r->program_id()) {
+        my $p = model($c, 'Program')->find($p_id);
+        if ($p) {
+            $p->update({
+                lunches => $l,
+            });
+        }
+    }
     $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }
 
@@ -2250,6 +2258,14 @@ sub update_refresh_do : Local {
     $r->update({
         refresh_days => $l,
     });
+    if (my $p_id = $r->program_id()) {
+        my $p = model($c, 'Program')->find($p_id);
+        if ($p) {
+            $p->update({
+                refresh_days => $l,
+            });
+        }
+    }
     $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }
 

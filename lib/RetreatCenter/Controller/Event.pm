@@ -32,6 +32,7 @@ use DateRange;      # imports overlap
 use Global qw/
     %string
 /;
+use Net::FTP;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -122,8 +123,11 @@ sub create_do : Local {
         return;
     }
 
-    my $p = model($c, 'Event')->create(\%P);
-    my $id = $p->id();
+    my $e = model($c, 'Event')->create(\%P);
+    if ($e->name() eq 'No PR') {
+        _send_no_prs($c);
+    }
+    my $id = $e->id();
     $c->response->redirect($c->uri_for("/event/view/$id"));
 }
 
@@ -265,6 +269,9 @@ sub update_do : Local {
         }
     }
     $e->update(\%P);
+    if ($e->name() eq 'No PR') {
+        _send_no_prs($c);
+    }
     if ($names) {
         $c->stash->{event} = $e;
         $c->stash->{names} = $names;
@@ -275,12 +282,18 @@ sub update_do : Local {
     }
 }
 
+#
+# and meeting places and blocks - and config.
+#
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
-    model($c, 'Event')->search(
-        { id => $id }
-    )->delete();
+    my $e = model($c, 'Event')->find($id);
+    my $name = $e->name();
+    $e->delete();
+    if ($name eq 'No PR') {
+        _send_no_prs($c);
+    }
     $c->response->redirect($c->uri_for('/event/list'));
 }
 
@@ -1555,6 +1568,42 @@ sub which_mp_do : Local {
     }
     $c->response->redirect($c->uri_for("/$hap_type/view/$hap_id/2"));
         # the 2 above is the Misc tab - ignored for events
+}
+
+sub _send_no_prs {
+    my ($c) = @_;
+    my (@events) = model($c, 'Event')->search(
+        {
+            name => 'No PR',
+            sdate => { '>=' => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    open my $out, ">", "noPR.txt"
+        or die "cannot write noPR.txt: $!\n";
+    for my $ev (@events) {
+        print {$out} $ev->sdate() . "-" . $ev->edate() . "\n";
+    }
+    close $out;
+    #
+    # send index.html and progtable to mountmadonna.org/personal
+    #
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or return(my_die($c, "cannot connect to $string{ftp_site}"));
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or return(my_die($c, "cannot login " . $ftp->message));
+    $ftp->cwd('www/personal')
+        or return(my_die($c, "cannot cwd to www/personal " . $ftp->message));
+    $ftp->ascii();
+    $ftp->put("noPR.txt");
+    $ftp->quit();
+}
+
+sub my_die {
+    my ($c, $msg) = @_;
+    # tell Sahadev somehow
 }
 
 1;
