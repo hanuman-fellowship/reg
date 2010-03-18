@@ -4595,6 +4595,7 @@ sub mmi_import_do : Local {
             date_start => $program->sdate(),
             date_end   => $edate->as_d8(),
             balance    => 0,
+            manual     => 'yes',
         });
         # finances???
         ++$new_regs;
