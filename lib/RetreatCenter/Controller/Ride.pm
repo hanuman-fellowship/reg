@@ -179,8 +179,12 @@ sub _ride_list {
               .  $r->flight_time_obj()
               .  "</td>\n"
               ;
-        my $cost1 = penny($r->cost()) || "Cost";
-        my $cost2 = penny($r->cost()) || "";
+        my $cost1 = penny($r->cost());
+        my $cost2 = $cost1;
+        if ($cost1 == 0 && $r->comment() !=~ m{cancel}i) {
+            $cost1 = "Cost";
+            $cost2 = "";
+        }
         $rows .= <<"EOH";
 <td align=right>
 <div id=c$r_id style="display: block">
