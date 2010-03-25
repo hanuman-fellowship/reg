@@ -83,6 +83,9 @@ sub update_do : Local {
     elsif ($the_key eq 'housing_log') {
         hlog_toggle($c, $value);
     }
+    elsif ($the_key =~ m{^center_tent_}) {
+        _update_CT();
+    }
     #
     # and where to go next?
     #
@@ -92,6 +95,22 @@ sub update_do : Local {
     else {
         $c->response->redirect($c->uri_for("/string/list#$the_key"));
     }
+}
+
+# we need to update the www.mountmadonna.org/personal/CT.txt file
+#
+sub _update_CT {
+    open my $ct, ">", "/tmp/CT.txt" or return;
+    print {$ct} "$string{center_tent_start}-$string{center_tent_end}\n";
+    close $ct;
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive}) or return;;
+    $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
+    $ftp->cwd("www/personal") or return;
+    $ftp->ascii() or return;
+    $ftp->put("/tmp/CT.txt", "CT.txt") or return;
+    $ftp->quit();
+    unlink "/tmp/CT.txt";
 }
 
 sub access_denied : Private {
