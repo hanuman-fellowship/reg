@@ -132,6 +132,28 @@ if ($form{name} =~ m{personal\s+retreat}i) {
 if (!$form{house1} && !$form{house2}) {
     $err .= "<li>Please fill out both choices of housing.\n";
 } 
+elsif (!$err
+       && $form{name} =~ m{personal\s+retreat}i
+       && (   $form{house1} eq 'center_tent'
+           || $form{house2} eq 'center_tent')
+       && -r "$progpath/CT.txt"
+) {
+    # for a personal retreat one of their housing choices is 'center_tent'.
+    # we need to verify that center tents are available for the start date.
+    open my $ct, "<", "$progpath/CT.txt";
+    my $line = <$ct>;
+    close $ct;
+    chomp $line;
+    my ($ct_smd, $ct_emd) = split m{-}, $line;
+        # ct_smd = center tent start month day
+    my $pr_smd = $sdate->format("%m%d");
+    if (!($ct_smd <= $pr_smd && $pr_smd <= $ct_emd)) {
+        $err .= "<li>Mount Madonna Center tents are not available on "
+             .  $sdate->format("%B %e")
+             .  ".\n"
+             ;
+    }
+}
 if ($data->{footnotes} =~ m{\*}
     && $form{ceu_license}
     && $form{ceu_license} !~ m{^comp$}i
