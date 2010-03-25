@@ -179,9 +179,9 @@ sub _ride_list {
               .  $r->flight_time_obj()
               .  "</td>\n"
               ;
-        my $cost1 = penny($r->cost());
+        my $cost1 = penny($r->cost()) || 0;
         my $cost2 = $cost1;
-        if ($cost1 == 0 && $r->comment() !=~ m{cancel}i) {
+        if ($cost1 == 0 && $r->comment() !~ m{cancel}i) {
             $cost1 = "Cost";
             $cost2 = "";
         }
