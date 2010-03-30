@@ -192,7 +192,7 @@ sub _ride_list {
 </div>
 <!------>
 <div id=ci$r_id style="display: none">
-<input type=text size=3 id=cost$r_id onkeypress="return new_cost($r_id);" value='$cost2'>
+<input type=text size=3 id=cost$r_id onkeypress="return new_cost(event, $r_id);" value='$cost2'>
 </div>
 </td>
 EOH
@@ -205,7 +205,7 @@ EOH
 </div>
 <!------>
 <div id=pui$r_id style="display: none">
-<input type=text size=8 id=putime$r_id onkeypress="return new_pickuptime($r_id);" value='$putime2'>
+<input type=text size=8 id=putime$r_id onkeypress="return new_pickuptime(event, $r_id);" value='$putime2'>
 </div>
 </td>
 EOH
