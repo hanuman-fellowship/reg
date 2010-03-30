@@ -77,7 +77,7 @@ function new_shuttle(ride_id) {
     xmlhttp.send(null);
     return true;
 }
-function new_cost(ride_id) {
+function new_cost(e, ride_id) {
     var keycode;
     if (window.event)
         keycode = window.event.keyCode;
@@ -99,7 +99,7 @@ function new_cost(ride_id) {
     xmlhttp.send(null);
     return true;
 }
-function new_pickuptime(ride_id) {
+function new_pickuptime(e, ride_id) {
     var keycode;
     if (window.event)
         keycode = window.event.keyCode;
