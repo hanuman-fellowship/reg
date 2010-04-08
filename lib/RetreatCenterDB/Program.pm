@@ -121,7 +121,7 @@ __PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
                           prefetch => 'house',
                           order_by => 'house.name',
                       },
-                    );
+                     );
 
 #
 # we really can't call $self->{field}
@@ -247,36 +247,32 @@ sub event_type {
 sub fname {
     my ($self) = @_;
 
-	# was it computed before?
-	if (exists $self->{fname}) {
-		return $self->{fname}
-	}
     my $sd = $self->sdate_obj;
     my $name =
-		   substr($self->name,  0, 3) .
+           substr($self->name,  0, 3) .
            "-" .
            $sd->month .
            "-" .
            $sd->day;
-	if (-f "$name.html") {
-		# one extra should be enough, yes?
-		$name .= "a";
-	}
-	$name .= ".html";
+    if (-f "$name.html") {
+        # one extra should be enough, yes?
+        $name .= "a";
+    }
+    $name .= ".html";
     if (! $self->linked) {   # ul = unlinked
         $name = "ul_$name";
     }
-	$self->{fname} = $name;
-	system("touch gen_files/$name");		# tricky!
-			# we need the above or else the file will not
-			# exist when we do the -f check above.
+    $self->{fname} = $name;
+    system("touch gen_files/$name");        # tricky!
+            # we need the above or else the file will not
+            # exist when we do the -f check above.
             # ??? really?   isn't it created immediately after
             # getting it?
-	$name;
+    $name;
 }
 sub template_src {
-	my ($self) = @_;
-	return ($self->ptemplate)?  slurp($self->ptemplate)
+    my ($self) = @_;
+    return ($self->ptemplate)?  slurp($self->ptemplate)
           :                     $default_template;
 }
 
@@ -319,27 +315,25 @@ sub barnacles {
     my $b = $self->footnotes;
     $b =~ s/\+/&dagger;/g;
     $b =~ s/%/&sect;/g;
-	$b = "<span class='barnacles'><sup>$b</sup></span>" if $b;
+    $b = "<span class='barnacles'><sup>$b</sup></span>" if $b;
     $b;
 }
 sub title1_barnacles {
     my ($self) = @_;
-	return (($self->leader_names or $self->subtitle)?
-			   "":
-			   $self->barnacles);
+    return (($self->leader_names or $self->subtitle)?
+               "":
+               $self->barnacles);
 }
 sub title2_barnacles {
     my ($self) = @_;
-	return (($self->leader_names or $self->subtitle)?
-		       $self->barnacles:
-		       "");
+    return (($self->leader_names or $self->subtitle)?
+               $self->barnacles:
+               "");
 }
 
 sub leader_names {
     my ($self) = @_;
-    if ($self->{leader_names}) {
-        return $self->{leader_names};
-    }
+
     my $s = "";
     my @leaders = map {
                       $_->person->first . " " . $_->person->last
@@ -423,25 +417,25 @@ sub dates_tr2 {
 }
 sub prog_dates_style {
     my ($self) = @_;
-	return (($self->leader_names or $self->subtitle)?
-			   "":
-			   "style='vertical-align: bottom'");
+    return (($self->leader_names or $self->subtitle)?
+               "":
+               "style='vertical-align: bottom'");
 }
 sub webdesc_plus {
     my ($self) = @_;
     my $s = gptrim($self->webdesc);
     my $barnacles = $self->footnotes;
-	if ($barnacles) {
-		$s .= "<ul>\n";
-		if ($barnacles =~ /\*\*/) {
-			$s .= "<li>$string{'**'}\n";
-		} elsif ($barnacles =~ /\*/) {
-			$s .= "<li>$string{'*'}\n";
-		}
-		$s .= "<li>$string{'+'}\n" if $barnacles =~ /\+/;
-		$s .= "<li>$string{'%'}\n" if $barnacles =~ /%/;
-		$s .= "</ul>\n";
-	}
+    if ($barnacles) {
+        $s .= "<ul>\n";
+        if ($barnacles =~ /\*\*/) {
+            $s .= "<li>$string{'**'}\n";
+        } elsif ($barnacles =~ /\*/) {
+            $s .= "<li>$string{'*'}\n";
+        }
+        $s .= "<li>$string{'+'}\n" if $barnacles =~ /\+/;
+        $s .= "<li>$string{'%'}\n" if $barnacles =~ /%/;
+        $s .= "</ul>\n";
+    }
     $s;
 }
 sub weburl {
@@ -462,17 +456,17 @@ sub fee_table {
     my $month = $sdate->month();
     my $edate = $self->edate_obj();
     my $extradays  = $self->extradays();
-    my $ndays = ($edate-$sdate) || 1;		# personal retreats exception
+    my $ndays = ($edate-$sdate) || 1;        # personal retreats exception
     my $fulldays = $ndays + $extradays;
     my $cols  = ($extradays)? 3: 2;
-	my $PR    = $self->PR();
-	my $tent  = $self->name() =~ m{tnt}i;
+    my $PR    = $self->PR();
+    my $tent  = $self->name() =~ m{tnt}i;
 
     my $fee_table = <<EOH;
 <p>
 <table>
 EOH
-	$fee_table .= <<EOH unless $PR;
+    $fee_table .= <<EOH unless $PR;
 <tr><th colspan=$cols>$string{heading}</th></tr>
 <tr><td colspan=$cols>&nbsp;</td></tr>
 EOH
@@ -492,17 +486,17 @@ EOH
     for my $t (reverse housing_types(1)) {
         next if $t eq 'commuting'   && ! $self->commuting;
         next if $t eq 'economy'     && ! $self->economy;
-		next if $t eq 'single_bath' && ! $self->sbath;
-		next if $t eq 'single'      && ! $self->single;
+        next if $t eq 'single_bath' && ! $self->sbath;
+        next if $t eq 'single'      && ! $self->single;
 
         next if $t eq 'center_tent' && ! (5 <= $month and $month <= 10)
-								    && ! ($PR || $tent);
-										# ok for PR's - we don't
-										# know what month...
-		next if $PR and ($t eq 'triple' || $t eq 'dormitory');
-		my $cost = $PR? $housecost->$t()
+                                    && ! ($PR || $tent);
+                                        # ok for PR's - we don't
+                                        # know what month...
+        next if $PR and ($t eq 'triple' || $t eq 'dormitory');
+        my $cost = $PR? $housecost->$t()
                   :     $self->fees(0, $t);
-		next unless $cost;		# this type of housing is not offered at all.
+        next unless $cost;        # this type of housing is not offered at all.
         $fee_table .= "<tr><td>" . $string{"long_$t"} . "</td>";
         $fee_table .= "<td align=right>$cost</td>\n";
         if ($extradays) {
@@ -528,13 +522,13 @@ sub fees {
     my $ndays = $self->edate_obj - $self->sdate_obj;
     $ndays += $self->extradays if $full;
     my $hcost = $housecost->$type;      # column name is correct, yes?
-	if ($housecost->type eq "Per Day") {
-		$hcost = $ndays*$hcost;
-		$hcost -= 0.10*$hcost  if $ndays >= 7;      # Strings???
-		$hcost -= 0.10*$hcost  if $ndays >= 30;     # Strings???
-		$hcost = int($hcost);
-	}
-	return 0 unless $hcost;		# don't offer this housing type if cost is zero
+    if ($housecost->type eq "Per Day") {
+        $hcost = $ndays*$hcost;
+        $hcost -= 0.10*$hcost  if $ndays >= 7;      # Strings???
+        $hcost -= 0.10*$hcost  if $ndays >= 30;     # Strings???
+        $hcost = int($hcost);
+    }
+    return 0 unless $hcost;        # don't offer this housing type if cost is zero
     return $tuition + $hcost;
 }
 
@@ -543,18 +537,18 @@ sub firstprog_prevmonth {
     my $sd = $self->sdate_obj;
     my $m = $sd->month;
     my $y = $sd->year;
-	my $n = 0;
-	while (1) {
-		--$m;
-		if ($m == 0) {
-			$m = 12;
-			--$y;
-		}
-		my $x = $first_of_month{"$m$y"};
-		return $x->fname if $x;
-		last if $n++ > 5;
-	}
-	return $self->fname;
+    my $n = 0;
+    while (1) {
+        --$m;
+        if ($m == 0) {
+            $m = 12;
+            --$y;
+        }
+        my $x = $first_of_month{"$m$y"};
+        return $x->fname if $x;
+        last if $n++ > 5;
+    }
+    return $self->fname;
 }
 
 sub firstprog_nextmonth {
@@ -562,18 +556,18 @@ sub firstprog_nextmonth {
     my $sd = $self->sdate_obj;
     my $m = $sd->month;
     my $y = $sd->year;
-	my $n = 0;
-	while (1) {
-		++$m;
-		if ($m == 13) {
-			$m = 1;
-			++$y;
-		}
-    	my $x = $first_of_month{"$m$y"};
-		return $x->fname if $x;
-		last if $n++ > 5;
-	}
-	return $self->fname;
+    my $n = 0;
+    while (1) {
+        ++$m;
+        if ($m == 13) {
+            $m = 1;
+            ++$y;
+        }
+        my $x = $first_of_month{"$m$y"};
+        return $x->fname if $x;
+        last if $n++ > 5;
+    }
+    return $self->fname;
 }
 sub leader_bio {
     my ($self) = @_;
@@ -596,7 +590,7 @@ sub leader_bio {
 sub month_calendar {
     my ($self) = @_;
     my $m = $self->sdate_obj->month;
-	my $cal = slurp "cal$m";
+    my $cal = slurp "cal$m";
     $cal;
 }
 sub nextprog {
@@ -644,10 +638,10 @@ sub picture {
         $pic1 = $pic2;
         $pic2 = "";
     }
-	if ($self->image) {  # use program pic if present
-		$pic1 = "pth-" . $self->id . ".jpg";
-		$pic2 = "";
-	}
+    if ($self->image) {  # use program pic if present
+        $pic1 = "pth-" . $self->id . ".jpg";
+        $pic2 = "";
+    }
     return "" unless $pic1;          # no image at all
 
     # first copy the needed pictures to the 'holding area'
@@ -678,10 +672,10 @@ EOH
         my $pic_html = "<img src='pics/$pic1' width=$full>";
         #$pic_html = gen_popup($pic_html, $pic1);
         $pic_html = "<table><tr><td>"
-					. $pic_html
-			        . "</td></tr>"
+                    . $pic_html
+                    . "</td></tr>"
                     #. "<tr><td align=center class='click_enlarge'>"
-					#. $string{click_enlarge}
+                    #. $string{click_enlarge}
                     #. "</td></tr>
                     . "</table>";
         return $pic_html;
@@ -709,10 +703,10 @@ sub cl_picture {
         $pic1 = $pic2;
         $pic2 = "";
     }
-	if ($self->image) {  # use program pic if present
-		$pic1 = "pth-" . $self->id . ".jpg";
-		$pic2 = "";
-	}
+    if ($self->image) {  # use program pic if present
+        $pic1 = "pth-" . $self->id . ".jpg";
+        $pic2 = "";
+    }
     return "" unless $pic1;          # no image at all
 
     if ($pic2) {
@@ -729,8 +723,8 @@ EOH
 }
 
 sub cancellation_policy {
-	my ($self) = @_;
-	return gptrim($self->canpol->policy);
+    my ($self) = @_;
+    return gptrim($self->canpol->policy);
 }
 
 sub gen_popup {
@@ -741,12 +735,12 @@ sub gen_popup {
     my $ph = $h + 70;
     $pic_html = qq!<a target=_blank onclick='window.open("$pic.html","","width=$pw,height=$ph")'>$pic_html</a>!;
     my $fname = "gen_files/$pic.html";
-	open my $out, ">", $fname or die "cannot create $fname: $!\n";
-	my $copy = slurp("popup");
+    open my $out, ">", $fname or die "cannot create $fname: $!\n";
+    my $copy = slurp("popup");
     # used to have http://www.mountmadonna.org/staging/ in front
-	$copy =~ s{<!--\s*T\s+bigpic\s*-->}{<img src="pics/$pic" width=$w height=$h border=0>};
-	print {$out} $copy;
-	close $out;
+    $copy =~ s{<!--\s*T\s+bigpic\s*-->}{<img src="pics/$pic" width=$w height=$h border=0>};
+    print {$out} $copy;
+    close $out;
     $pic_html;
 }
 
