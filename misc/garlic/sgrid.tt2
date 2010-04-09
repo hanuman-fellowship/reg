@@ -135,11 +135,13 @@ Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=
 <td>Economy</td>
 <td align=right>[% hash.economy %]</td>
 </tr>
+[% IF hash.center_tent %]
 <tr>
 <td>Center Tent</td>
 <td align=right>[% hash.center_tent %]</td>
 </tr>
 <tr>
+[% END %]
 <td>Own Tent</td>
 <td align=right>[% hash.own_tent %]</td>
 </tr>

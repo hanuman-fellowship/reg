@@ -224,7 +224,7 @@ if (param('process')) {
             $P{"c$id\_$bed"} = $cost;
             if (($cost == 0 && $name)
                 || $override_np
-                || $name =~ m{\&}
+                || $name =~ m{\&|\band\b}
                 || $name =~ m{\bchild\b}
             ) {
                 $P{"cl$id\_$bed"} = 1;
