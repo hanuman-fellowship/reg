@@ -91,8 +91,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <th align=right valign=top>Mailings</th>
 <td rowspan=2>
 <table border=0>
-<tr><td align=right>Email</td><td>[% person.e_mailings %]</td></tr>
-<tr><td align=right>Snail Mail</td><td>[% person.snail_mailings %]</td></tr>
+<tr><td align=right>Email: </td><td>MMC [% person.e_mailings %]</td><td>&nbsp;&nbsp;MMI [% person.mmi_e_mailings %]</td></tr>
+<tr><td align=right>Snail Mail:</td><td>MMC [% person.snail_mailings %]</td></td><td>&nbsp;&nbsp;MMI [% person.mmi_snail_mailings %]</td></tr>
 <tr><td align=right>Share</td><td>[% person.share_mailings %]</td>
 </table>
 </td>
@@ -153,7 +153,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR r IN person.rides %]
         <tr>
+        [% IF r.pickup_date %]
         <td><a href=/ride/view/[% r.id %]>[% r.pickup_date_obj %]</a></td>
+        [% ELSE %]
+        <td><a href=/ride/view/[% r.id %]>Date</a></td>
+        [% END %]
         <td>[% r.flight_time_obj %]</td>
         </tr>
     [% END %]
