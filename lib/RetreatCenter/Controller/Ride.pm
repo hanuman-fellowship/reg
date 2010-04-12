@@ -99,21 +99,22 @@ sub _ride_list {
     my %to_fro = ();
     my %driver_for = ();
     my $class = "fl_row0";
-    my ($prev_date, $prev_shuttle) = (0, 0);
+    my ($prev_date, $prev_shuttle) = ("", 0);
     for my $r (@rides) {
         my $r_id = $r->id();
         my $driver_id = $r->driver_id();
         my $driver_name = ($r->driver_id()? $r->driver->first()
                            :                "Driver"           );
-        if ($r->pickup_date() != $prev_date
+        my $pickup_date = $r->pickup_date() || "";
+        if (($pickup_date ne $prev_date)
             ||
-            $r->shuttle()  != $prev_shuttle
+            ($r->shuttle()  != $prev_shuttle)
         ) {
             $class = $class eq "fl_row0"? "fl_row1"
                      :                    "fl_row0"
                      ;
         }
-        my $key = $r->shuttle() . "|" . $r->pickup_date();
+        my $key = $r->shuttle() . "|" . $pickup_date;
         if ($r->shuttle() != 0
             && exists $to_fro{$key}
             && $to_fro{$key} ne $r->from_to()
@@ -139,7 +140,7 @@ sub _ride_list {
         else {
             $driver_for{$key} = $r->driver_id();
         }
-        $prev_date    = $r->pickup_date();
+        $prev_date    = $pickup_date;
         $prev_shuttle = $r->shuttle();
         $rows .= "<tr class=$class>\n";
 
@@ -172,7 +173,8 @@ sub _ride_list {
               .  "</td>\n"
               ;
         $rows .= "<td>"
-              .  $r->pickup_date_obj->format("%a %b %e")
+              .  ($r->pickup_date()? $r->pickup_date_obj->format("%a %b %e")
+                  :                  "")
               .  "</td>\n"
               ;
         $rows .= "<td align=right>"
