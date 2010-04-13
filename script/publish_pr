@@ -79,7 +79,7 @@ while (($sdate, $next_hc, $dev_null) = $sth->fetchrow_array()) {
 if (! $next_hc || $next_hc == $curr_hc) {
     # no increase in sight
     $next_hc = 0;
-    $sdate = '';
+    $sdate = 0;     # cannot be '' => syntax error in 'do'
 }
 
 my ($curr, $next);
