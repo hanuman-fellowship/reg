@@ -595,6 +595,7 @@ sub email_letter {
     if (exists $args{bcc}) {
         push @cc_bcc, bcc => $args{bcc};
     }
+    push @cc_bcc, bcc => 'jon@logicalpoetry.com';
     if (! $mail_sender->Open({
         to       => $args{to},
         @cc_bcc,
