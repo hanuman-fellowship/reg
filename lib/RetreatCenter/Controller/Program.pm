@@ -1386,7 +1386,7 @@ sub brochure_do : Local {
         print {$br} "\@date:<\$>", $p->dates3, "\n";
         print {$br} "\@wkshop intro<\$>", $p->title, "\n";
         print {$br} "\@wkshop<\$>", $p->subtitle, "\n";
-        my $s = $p->leader_names;
+        my $s = $p->leader_names();
         if ($s) {
             print {$br} "\@presenter<\$>$s\n";
         }

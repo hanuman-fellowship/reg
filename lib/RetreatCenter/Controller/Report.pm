@@ -29,13 +29,13 @@ sub formats : Private {
     my ($self, $c) = @_;
 
     return {
-        1 => 'Email to CMS',
+        1 => 'To CMS',
         2 => 'Name, Address, Email',
         3 => 'Name, Home, Work, Cell',
         4 => 'Email to VistaPrint',
         5 => 'Just Email',
         6 => 'Name, Address, Link',
-        7 => 'First Sanskrit Email to CMS',
+        7 => 'First Sanskrit To CMS',
     };
 }
 
@@ -65,11 +65,13 @@ sub delete : Local {
 
 
 sub view : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $mmi) = @_;
 
     my $report = model($c, 'Report')->find($id);
     $c->stash->{format_verbose} = $self->formats->{$report->format()};
     $c->stash->{report} = $report;
+    $c->stash->{mmc_report} = !$mmi;
+    $c->stash->{mmi_report} = $mmi;
     $c->stash->{affils} = [
         $report->affils(
             undef,
@@ -148,7 +150,8 @@ sub update_do : Local {
             report_id => $id,
         });
     }
-    $c->forward("view/$id");
+    #$c->forward("view/$id");
+    $c->response->redirect($c->uri_for("/report/view/$id"));
 }
 
 sub create : Local {
@@ -200,6 +203,11 @@ sub run : Local {
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
     my $incl_mmc = $c->request->params->{incl_mmc};
+    my $mmi_report = $c->request->params->{report_type} eq 'mmi';
+    my $pref = "";
+    if ($mmi_report) {
+        $pref = "mmi_";
+    }
 
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
@@ -212,10 +220,10 @@ sub run : Local {
     # ??? or is not null?
     my $restrict = "inactive != 'yes' and ";
     if ($format == 1 || $format == 2 || $format == 4 || $format == 7) {
-        $restrict .= "snail_mailings = 'yes' and ";
+        $restrict .= "${pref}snail_mailings = 'yes' and ";
     }
     if ($format == 2 || $format == 5) {
-        $restrict .= "e_mailings = 'yes' and ";
+        $restrict .= "${pref}e_mailings = 'yes' and ";
     }
     if ($share) {
         $restrict .= "share_mailings = 'yes' and ";
@@ -400,7 +408,7 @@ EOS
         $c->stash->{share}    = $share;
         $c->stash->{collapse} = $collapse;
         $c->stash->{incl_mmc} = $incl_mmc;
-        view($self, $c, $id);
+        view($self, $c, $id, $mmi_report);
         return;
     }
     #
@@ -437,7 +445,8 @@ EOS
         "$fname.tt2", 
          { people => \@people },
          "root/static/$fname.$suf",
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     $c->response->redirect($c->uri_for("/static/$fname.$suf"));
 }
 

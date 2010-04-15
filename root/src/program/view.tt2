@@ -255,7 +255,7 @@ Web
 <td valign=top>
 <table>
 [% FOR bl IN program.blocks %]
-    <tr><td><a href=/block/view/[% bl.id %]>[% bl.house.name %]</a></td></tr>
+    <tr><td><a href=/block/view/$bl.id>$bl.house.name</a></td></tr>
 [% END %]
 </table>
 </td>

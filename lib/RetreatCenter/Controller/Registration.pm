@@ -329,6 +329,8 @@ my %needed = map { $_ => 1 } qw/
     time
     e_mailings
     snail_mailings
+    mmi_e_mailings
+    mmi_snail_mailings
     share_mailings
     sdate
     edate
@@ -452,9 +454,14 @@ EOH
             email    => $P{email},
             sex      => ($P{gender} eq 'Male'? 'M': 'F'),
             id_sps   => 0,
-            e_mailings     => $P{e_mailings},
-            snail_mailings => $P{snail_mailings},
+
+            e_mailings         => $P{e_mailings},
+            snail_mailings     => $P{snail_mailings},
+            mmi_e_mailings     => $P{mmi_e_mailings},
+            mmi_snail_mailings => $P{mmi_snail_mailings},
+
             share_mailings => $P{share_mailings},
+
             date_updat => $today,
             date_entrd => $today,
         });
@@ -501,9 +508,14 @@ EOH
             tel_cell => $P{cell},
             email    => $P{email},
             sex      => ($P{gender} eq 'Male'? 'M': 'F'),
-            e_mailings     => $P{e_mailings},
-            snail_mailings => $P{snail_mailings},
+
+            e_mailings         => $P{e_mailings},
+            snail_mailings     => $P{snail_mailings},
+            mmi_e_mailings     => $P{mmi_e_mailings},
+            mmi_snail_mailings => $P{mmi_snail_mailings},
+
             share_mailings => $P{share_mailings},
+
             date_updat => $today,
         });
         my $person_id = $p->id();
@@ -1824,9 +1836,12 @@ sub send_conf : Local {
         $c->res->output($html);
         return;
     }
+    my $user = $c->user->obj();
     email_letter($c,
            to      => $reg->person->name_email(),
-           from    => "$string{from_title} <$string{from}>",
+           from    => $string{from_title} 
+                      . " <" . $user->email() . ">",
+           replyto => "$string{from_title} <$string{from}>",
            subject => "Confirmation of Registration for " . $pr->title(),
            html    => $html, 
     );
@@ -2545,7 +2560,15 @@ EOH
                ."$pay_balance</a>";
         }
         if ($school == 0 || $mmi_admin) {
-            $name = "<a href='/registration/view/$id'>$name</a>";
+            $name = <<"EOH"
+<a href='/registration/view/$id'
+   onmouseover="overlib('$string{$pref1} | $string{$pref2}',
+                        RIGHT, MOUSEOFF, TEXTSIZE, '13pt',
+                        FGCOLOR, '#FFFFFF', DELAY, '600',
+                        CELLPAD, 10, WRAP);"
+   onmouseout="return nd();"
+>$name</a>
+EOH
         }
         $body .= <<"EOH";
 <tr class=$class>

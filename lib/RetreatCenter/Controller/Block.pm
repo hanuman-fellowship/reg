@@ -75,13 +75,13 @@ sub view : Local {
     my $block = model($c, 'Block')->find($block_id);
     my $ev = 0;
     if ($block->rental_id()) {
-        $ev = model($c, 'Rental')->find($block->rental_id());
+        $ev = $block->rental();
     }
     elsif ($block->program_id()) {
-        $ev = model($c, 'Program')->find($block->program_id());
+        $ev = $block->program();
     }
     elsif ($block->event_id()) {
-        $ev = model($c, 'Event')->find($block->event_id());
+        $ev = $block->event();
     }
     my $ev_type = $ev? ucfirst $ev->event_type(): "";
     my $ev_link = $ev?         $ev->link()      : "";

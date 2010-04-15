@@ -32,6 +32,7 @@ function get_gender() {
 <h2>People</h2>
 <!-- this form doubles as an update and as a create form. -->
 <form action=[% "/person/" _ form_action %] name=form method=post>
+<input type=hidden name=fname value=$fname>
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
     <tr>
         <th align=right><span class="required">*</span> First</th>
@@ -40,19 +41,19 @@ function get_gender() {
             >
         </td>
         <th align=right>Home</th>
-        <td><input tabindex=15 type=text name=tel_home value="[% person.tel_home %]"></td>
+        <td><input tabindex=17 type=text name=tel_home value="[% person.tel_home %]"></td>
     </tr>
     <tr>
         <th align=right><span class="required">*</span> Last</th>
         <td><input tabindex=2 type=text name=last value="[% person.last %]"></td>
         <th align=right>Work</th>
-        <td><input tabindex=16 type=text name=tel_work value="[% person.tel_work %]"></td>
+        <td><input tabindex=18 type=text name=tel_work value="[% person.tel_work %]"></td>
     </tr>
     <tr>
         <th align=right>Sanskrit</th>
         <td><input tabindex=3 type=text name=sanskrit value="[% person.sanskrit %]"></td>
         <th align=right>Cell</th>
-        <td><input tabindex=17 type=text name=tel_cell value="[% person.tel_cell %]"></td>
+        <td><input tabindex=19 type=text name=tel_cell value="[% person.tel_cell %]"></td>
     </tr>
     <tr>
         <th align=right><span class="required">*</span> Sex</th>
@@ -98,9 +99,17 @@ function get_gender() {
 <th align=right valign=top>Mailings</th>
 <td>
 <table>
-<tr><td><input tabindex=12 type=checkbox name=e_mailings     value='yes' [% e_mailings %]> Email</td></tr>
-<tr><td><input tabindex=13 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]> Snail Mail</td></tr>
-<tr><td><input tabindex=14 type=checkbox name=share_mailings value='yes' [% share_mailings %]> Share</td></tr>
+<tr>
+<td>Email</td><td><input tabindex=12 type=checkbox name=e_mailings value='yes' [% e_mailings %]>MMC</td>
+<td><input tabindex=13 type=checkbox name=mmi_e_mailings     value='yes' [% mmi_e_mailings %]>MMI</td>
+</tr>
+
+<tr>
+<td>Snail Mail</d><td><input tabindex=14 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]>MMC</td>
+<td><input tabindex=15 type=checkbox name=mmi_snail_mailings value='yes' [% mmi_snail_mailings %]>MMI</td>
+</tr>
+
+<tr><td><input tabindex=16 type=checkbox name=share_mailings value='yes' [% share_mailings %]> Share</td></tr>
 </table>
 </tr>
 

@@ -26,8 +26,11 @@ onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
 </td>
 <td valign=top>
 <input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share
-&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
+&nbsp;
+</td>
+<td>
+<input type=radio name=report_type value=mmc [% IF mmc_report %]checked[% END %]>MMC<br>
+<input type=radio name=report_type value=mmi [% IF mmi_report %]checked[% END %]>MMI<br>
 </td>
 </tr>
 <tr><td>&nbsp;</td></tr>

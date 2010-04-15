@@ -1,4 +1,7 @@
 <head>
+<script type="text/javascript" src="/static/js/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
 <script type="text/javascript">
 
 // prepare for an Ajax call:

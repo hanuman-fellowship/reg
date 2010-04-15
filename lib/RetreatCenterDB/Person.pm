@@ -39,6 +39,8 @@ __PACKAGE__->add_columns(qw/
     comment
     e_mailings
     snail_mailings
+    mmi_e_mailings
+    mmi_snail_mailings
     share_mailings
     deceased
     inactive

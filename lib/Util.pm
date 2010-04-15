@@ -568,6 +568,10 @@ my $mail_sender;
 sub email_letter {
     my ($c, %args) = @_;
 
+    open my $mlog, ">>", "mlog";
+    print {$mlog} localtime() . " $args{to}\n";
+    close $mlog;
+
     if (! $mail_sender) {
         Global->init($c);
         my @auth = ();
@@ -600,6 +604,7 @@ sub email_letter {
         to       => $args{to},
         @cc_bcc,
         from     => $args{from},
+        replyto  => ($args{replyto} || $args{from}),
         subject  => $args{subject},
         ctype    => "text/html",
         encoding => "7bit",

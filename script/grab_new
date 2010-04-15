@@ -6,9 +6,11 @@ use warnings;
 1) Ftp-get all transaction files from www.mountmadonna.org
 created by the 'relay' program.  The names of these files
 are the ids of the most recent authorize.net transactions.
-Put the files in root/static/online
+Put the files in root/static/online.
 
-2) Get all email from authorize@hanumanfellowship.org.
+2) Get mailing list requests into root/static/mlist.
+
+3) Get all email from authorize@hanumanfellowship.org.
 This address is one of the recipients of the "Merchant Email Receipts"
 sent by authorize.net after every transaction.
 
@@ -130,6 +132,20 @@ for my $f ($ftp->ls()) {
         next GRID_FILE;
     }
     $Msg .= "got rental file $f\n";
+    $ftp->delete($f);
+}
+mkdir "root/static/mlist" unless -d "root/static/mlist";
+$ftp->cwd($string{ftp_mlist_requests});
+MLIST_FILE:
+for my $f ($ftp->ls()) {
+    if ($f eq '.' || $f eq '..') {
+        next MLIST_FILE;
+    }
+    if (! $ftp->get($f, "root/static/mlist/$f")) {
+        my_warn("no get of mlist file $f");
+        next MLIST_FILE;
+    }
+    $Msg .= "got mlist file $f\n";
     $ftp->delete($f);
 }
 $ftp->quit();

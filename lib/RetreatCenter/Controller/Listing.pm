@@ -667,6 +667,8 @@ sub unsubscribe : Local {
     my ($self, $c) = @_;
 
     my $upload = $c->request->upload('unsub_emails');
+    my $type = $c->request->params->{unsub_type} eq 'mmi'? "mmi_"
+               :                                          "";
     my $n = 0;
     if ($upload) {
         my @emails = $upload->slurp =~ m{[^'",\s]+\@[^'",\s]+}g;
@@ -675,7 +677,7 @@ sub unsubscribe : Local {
             model($c, 'Person')->search({
                 email => { -in => \@emails },
             })->update({
-                e_mailings => '',
+                "${type}e_mailings" => '',
             });
         }
     }

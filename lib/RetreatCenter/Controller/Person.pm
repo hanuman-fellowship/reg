@@ -61,8 +61,10 @@ sub search : Local {
             $c->stash->{"$f\_selected"} = "selected";
         }
     }
+    my @files = <root/static/mlist/*>;
     stash($c,
         pg_title => "People Search",
+        online   => scalar(@files),
         template => "person/search.tt2",
     );
 }
@@ -298,14 +300,18 @@ sub view : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{e_mailings}     = "checked";
-    $c->stash->{snail_mailings} = "checked";
-    $c->stash->{share_mailings} = "checked";
-    $c->stash->{inactive} = "";
-    $c->stash->{deceased} = "";
-    $c->stash->{affil_table} = affil_table($c);
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "person/create_edit.tt2";
+    stash($c,
+        e_mailings         => "checked",
+        snail_mailings     => "checked",
+        mmi_e_mailings     => "checked",
+        mmi_snail_mailings => "checked",
+        share_mailings     => "checked",
+        inactive       => "",
+        deceased       => "",
+        affil_table    => affil_table($c),
+        form_action    => "create_do",
+        template       => "person/create_edit.tt2",
+    );
 }
 
 my %hash;
@@ -324,6 +330,8 @@ sub _get_data {
     for my $f (qw/
         e_mailings
         snail_mailings
+        mmi_e_mailings
+        mmi_snail_mailings
         share_mailings
         inactive
         deceased
@@ -457,11 +465,17 @@ sub create_do : Local {
         $hash{$n} = normalize($hash{$n});
     }
     my $today_d8 = tt_today($c)->as_d8();
+    my $fname = $hash{fname};
+    delete $hash{fname};
     my $p = model($c, 'Person')->create({
         %hash,
         date_updat => $today_d8,
         date_entrd => $today_d8,
     });
+    if ($fname) {
+        rename "root/static/mlist/$fname",
+               "root/static/mlist_done/$fname";
+    }
     my $id = $p->id();
     _get_affils($c, $id);
     $c->flash->{message} = "Created " . _view_person($p)
@@ -474,18 +488,22 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $p = model($c, 'Person')->find($id);
-    $c->stash->{person} = $p;
     my $sex = $p->sex();
-    $c->stash->{sex_female}  = ($sex eq "F")? "checked": "";
-    $c->stash->{sex_male}    = ($sex eq "M")? "checked": "";
-    $c->stash->{e_mailings}     = (    $p->e_mailings())? "checked": "";
-    $c->stash->{inactive}       = (      $p->inactive())? "checked": "";
-    $c->stash->{deceased}       = (      $p->deceased())? "checked": "";
-    $c->stash->{snail_mailings} = ($p->snail_mailings())? "checked": "";
-    $c->stash->{share_mailings} = ($p->share_mailings())? "checked": "";
-    $c->stash->{affil_table} = affil_table($c, $p->affils());
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "person/create_edit.tt2";
+    stash($c,
+        person         => $p,
+        sex_female     => ($sex eq "F")? "checked": "",
+        sex_male       => ($sex eq "M")? "checked": "",
+        inactive       => (      $p->inactive())? "checked": "",
+        deceased       => (      $p->deceased())? "checked": "",
+        e_mailings     => (    $p->e_mailings())? "checked": "",
+        snail_mailings => ($p->snail_mailings())? "checked": "",
+        mmi_e_mailings     => (    $p->mmi_e_mailings())? "checked": "",
+        mmi_snail_mailings => ($p->mmi_snail_mailings())? "checked": "",
+        share_mailings => ($p->share_mailings())? "checked": "",
+        affil_table    => affil_table($c, $p->affils()),
+        form_action    => "update_do/$id",
+        template       => "person/create_edit.tt2",
+    );
 }
 
 #
@@ -502,10 +520,16 @@ sub update_do : Local {
     return if @mess;
 
     my $p = model($c, 'Person')->find($id);
+    my $fname = $hash{fname};
+    delete $hash{fname};
     $p->update({
         %hash,
         date_updat => tt_today($c)->as_d8(),
     });
+    if ($fname) {
+        rename "root/static/mlist/$fname",
+               "root/static/mlist_done/$fname";
+    }
     # delete all old affiliations and create the new ones.
     model($c, 'AffilPerson')->search(
         { p_id => $id },
@@ -1153,6 +1177,144 @@ sub get_gender : Local {
     }
     $c->res->output($rc);
     return;
+}
+
+sub online : Local {
+    my ($self, $c) = @_;
+
+    my @requests = ();
+    for my $f (<root/static/mlist/*>) {
+        my $href = {};
+        ($href->{num}) = $f =~ m{(\d+)};
+        open my $in, "<", $f
+            or die "cannot open $f: $!\n";
+        while (my $line = <$in>) {
+            chomp $line;
+            my ($key, $val) = $line =~ m{^(\w+)\s+(.*)};
+            if ($key eq 'type') {
+                $val = uc $val;
+            }
+            $href->{$key} = $val;
+        }
+        close $in;
+        push @requests, $href;
+    }
+    stash($c,
+        requests => \@requests,
+        template => 'person/online.tt2',
+    );
+}
+
+sub online_add : Local {
+    my ($self, $c, $num) = @_;
+
+    my $fname = "root/static/mlist/$num";
+    my $in;
+    if (! open $in, "<", $fname) {
+        error($c,
+            "Cannot find online mlist file $num.",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my %P;
+    while (my $line = <$in>) {
+        chomp $line;
+        my ($key, $val) = $line =~ m{^(\w+)\s+(.*)};
+        $P{$key} = $val;
+    }
+    close $in;
+    $P{addr1} = $P{street};
+    my $type = $P{type};
+    my $interest = $P{interest};
+    my $send_brochure = $P{send_brochure_now};
+    for my $k (qw/ cell home work /) {
+        $P{"tel_$k"} = $P{$k};
+    }
+    $P{sex} = $P{gender} eq 'female'? 'F': 'M';
+    $P{comment} = $P{request};
+    $P{comment} =~ s{NEWLINE}{\n}g;
+    for my $k (qw/
+        street type interest
+        send_brochure_now
+        cell home work gender
+        request email2
+    /) {
+        delete $P{$k};
+    }
+
+    my @people = model($c, 'Person')->search({
+        first => $P{first},
+        last  => $P{last},
+    });
+    my @mmi_affils = ();
+    if ($type eq 'mmi') {
+        if ($interest eq 'All Schools') {
+            @mmi_affils = model($c, 'Affil')->search({
+                -and => [
+                    descrip => { 'like' => 'MMI%' },
+                    descrip => { 'not_like' => 'MMI Discount' },
+                ],
+            });
+        }
+        else {
+            @mmi_affils = model($c, 'Affil')->search({
+                descrip => { 'like' => "MMI $interest" },
+            });
+        }
+    }
+    if (@people == 0) {
+        stash($c,
+            e_mailings         => ($P{e_mailings}        )? "checked": "",
+            snail_mailings     => ($P{snail_mailings}    )? "checked": "",
+            mmi_e_mailings     => ($P{mmi_e_mailings}    )? "checked": "",
+            mmi_snail_mailings => ($P{mmi_snail_mailings})? "checked": "",
+            share_mailings     => ($P{share_mailings}    )? "checked": "",
+            fname          => $num,
+            person         => \%P,
+            sex_female     => ($P{sex} eq "F")? "checked": "",
+            sex_male       => ($P{sex} eq "M")? "checked": "",
+            inactive       => "",
+            deceased       => "",
+            affil_table    => affil_table($c, @mmi_affils),
+            form_action    => "create_do",
+            template       => "person/create_edit.tt2",
+        );
+    }
+    elsif (@people == 1) {
+        my $p = $people[0];
+        stash($c,
+            e_mailings         => ($P{e_mailings}        )? "checked": "",
+            snail_mailings     => ($P{snail_mailings}    )? "checked": "",
+            mmi_e_mailings     => ($P{mmi_e_mailings}    )? "checked": "",
+            mmi_snail_mailings => ($P{mmi_snail_mailings})? "checked": "",
+            share_mailings     => ($P{share_mailings}    )? "checked": "",
+            fname  => $num,
+            person => {
+                first     => $P{first},
+                last      => $P{last},
+                sanskrit  => $p->sanskrit(),
+                addr1     => $P{addr1} || $p->addr1(),
+                addr2     => $p->addr2(),
+                city      => $P{city} || $p->city(),
+                st_prov   => $P{st_prov} || $p->st_prov(),
+                zip_post  => $P{zip_post} || $p->zip_post(),
+                country   => $P{country} || $p->country(),
+                email     => $P{email} || $p->email(),
+                tel_cell  => $P{tel_cell} || $p->tel_cell(),
+                tel_home  => $P{tel_home} || $p->tel_home(),
+                tel_work  => $P{tel_work} || $p->tel_work(),
+                comment   => $P{comment} || $p->comment(),
+            },
+            sex_female => ($P{sex} eq "F")? "checked": "",
+            sex_male   => ($P{sex} eq "M")? "checked": "",
+            inactive   => "",
+            deceased   => "",
+            affil_table => affil_table($c, $p->affils(), @mmi_affils),
+            form_action => "update_do/" . $p->id(),
+            template    => "person/create_edit.tt2",
+        );
+    }
 }
 
 1;

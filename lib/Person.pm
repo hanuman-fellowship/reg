@@ -28,6 +28,7 @@ sub search {
     for my $p (@{$a_ref}) {
         $p = Person->new($p);
     }
+    $sth->finish();
     DBH->finis();
     return $a_ref;
 }

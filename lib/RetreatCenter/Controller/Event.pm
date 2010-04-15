@@ -834,7 +834,7 @@ EOH
                 $imgmaps{$key} .=
       qq!    onmouseover="return overlib('$disp',!
     . qq! MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333',!
-    . qq! BORDER, 2, TEXTFONT, 'Verdana', TEXTSIZE, 5, WIDTH, $width * 20)"\n!
+    . qq! BORDER, 2, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP)"\n!
     . qq!    onmouseout="return nd();">\n!;
                 if (! $details_shown) {
                     $details{$key} .= "<tr>$printable_row</tr>\n";
