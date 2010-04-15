@@ -304,7 +304,9 @@ my %stash;
 for my $name (qw/
     fname lname street1 street2 city state zip
     country home work cell email1 carpool hascar
-    e_mailings snail_mailings share_mailings
+    e_mailings snail_mailings
+    mmi_e_mailings mmi_snail_mailings
+    share_mailings
     house1 house2 request withwhom_first withwhom_last
     pid title leader_names name progchoice
     collect_total request green_amount plink
@@ -413,11 +415,11 @@ if ($form{carpool}) {
     $stash{carpool_verbose} = "";
 }
 
-my $mv;
+my $mv = "";
 if ($form{e_mailings} || $form{snail_mailings}) {
-     $mv = "<p>We will include you on occasional mailings via ";
+     $mv = "<p>We will include you on occasional mailings about MMC via ";
      if ($form{e_mailings}) {
-        $mv .= "email";
+        $mv .= "e-mail";
      }
      if ($form{snail_mailings}) {
         if ($form{e_mailings}) {
@@ -428,7 +430,23 @@ if ($form{e_mailings} || $form{snail_mailings}) {
      $mv .= ".";
 }
 else {
-    $mv = "<p>We will <b>not</b> include you on occasional mailings from MMC.";
+    $mv .= "<p>We will <b>not</b> include you on occasional mailings about MMC.";
+}
+if ($form{mmi_e_mailings} || $form{mmi_snail_mailings}) {
+     $mv .= "<p>We will include you on occasional mailings about MMI via ";
+     if ($form{mmi_e_mailings}) {
+        $mv .= "e-mail";
+     }
+     if ($form{mmi_snail_mailings}) {
+        if ($form{mmi_e_mailings}) {
+            $mv .= " and ";
+        }
+        $mv .= "snail mail";
+     }
+     $mv .= ".";
+}
+else {
+    $mv .= "<p>We will <b>not</b> include you on occasional mailings about MMI.";
 }
 $mv .= "<p>We will "
      . ($form{share_mailings}? "": "<b>not</b> ")

@@ -24,6 +24,12 @@
                 [% IF pr %]
 
                 <h2>You are registering for a Personal Retreat.</h2>
+                    <dl class="progList">
+    
+                        <dt>Dates:</dt>
+                        <dd>[% dates %]</dd>
+                    
+                    </dl>
    
                 [% ELSE %]
                 <h2>You are registering for:</h2>
@@ -216,6 +222,8 @@
                         <INPUT type=hidden VALUE="[% hascar %]"         name="x_hascar">
                         <INPUT type=hidden VALUE="[% e_mailings %]"     name="x_e_mailings">
                         <INPUT type=hidden VALUE="[% snail_mailings %]" NAME="x_snail_mailings">
+                        <INPUT type=hidden VALUE="[% mmi_e_mailings %]"     name="x_mmi_e_mailings">
+                        <INPUT type=hidden VALUE="[% mmi_snail_mailings %]" NAME="x_mmi_snail_mailings">
                         <INPUT type=hidden VALUE="[% share_mailings %]" NAME="x_share_mailings">
                         <INPUT type=hidden VALUE="[% house1 %]"         name="x_house1">
                         <INPUT type=hidden VALUE="[% house2 %]"         name="x_house2">

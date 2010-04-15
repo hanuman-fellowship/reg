@@ -144,6 +144,8 @@ $stash{carpool       } = $cookie{carpool       }? 'checked': '';
 $stash{hascar        } = $cookie{hascar        }? 'checked': '';
 $stash{e_mailings    } = $cookie{e_mailings    }? 'checked': '';
 $stash{snail_mailings} = $cookie{snail_mailings}? 'checked': '';
+$stash{mmi_e_mailings    } = $cookie{mmi_e_mailings    }? 'checked': '';
+$stash{mmi_snail_mailings} = $cookie{mmi_snail_mailings}? 'checked': '';
 $stash{share_mailings} = $cookie{share_mailings}? 'checked': '';
 $stash{withwhom_first} = $cookie{withwhom_first} || "";
 $stash{withwhom_last } = $cookie{withwhom_last }  || "";
@@ -165,7 +167,7 @@ $stash{ceu_license} = $cookie{ceu_license};
 #
 my @housekeys = grep { /^basic / } keys %$data;
 
-if (exists $data->{next_hc}) {
+if (exists $data->{next_hc} && $data->{next_hc}) {
     $stash{next_hc} = $data->{next_hc};
     $stash{through_date} = date($data->{next_date})->prev->format("%b %e");
     $stash{next_date} = date($data->{next_date})->format("%b %e");

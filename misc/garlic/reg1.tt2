@@ -72,9 +72,9 @@ function popup(url, height) {
             <div class="mainForm">
             
                 <form
+                    method=POST
                     name=reg
                     action="/cgi-bin/reg2"
-                    method="POST"
                     onsubmit="return validateOnSubmit()"
                 >
                 <input type=hidden name=test value="[% test %]">
@@ -140,6 +140,11 @@ function popup(url, height) {
                         </li>
                     </ol>    
                     </fieldset>
+                [% IF noPR %]
+                    <div style="margin-left: 1in; margin-top: 3mm;">
+                    Unfortunately, you cannot stay these nights: $noPR
+                    </div>
+                [% END %]
                 </div>
 
             [% ELSE %]
@@ -169,7 +174,7 @@ function popup(url, height) {
                             <li>
                                 <span class="help" id="msg_gender"></span>
                                 <fieldset>
-                                <p><span class="required">*</span>Gender:</p> 
+                                <p><span class="required">*</span> Gender:</p> 
 
                                     <ol>  
                                         <li>  
@@ -416,21 +421,30 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 
                         <li>
                             <fieldset>
-                                <p>Shall we keep you informed of events at Mount Madonna Center?</p>
-                                <ol>
-                                    <li>
-                                        <INPUT type=checkbox name=e_mailings value=yes [% e_mailings %]> 
-                                        <label for="e_mailings">Yes, send me occasional e-mail announcements</label>
-                                    </li>
-                                    <li>
-                                        <INPUT type=checkbox name=snail_mailings value=yes [% snail_mailings %]>
-                                        <label for="snail_mailings">Yes, send me postcards and brochures in the mail</label>
-                                    </li>
-                                    <li>
-                                        <INPUT type=checkbox name=share_mailings value=yes [% share_mailings %]>
-                                        <label for="share_mailings">You may share my address with MMC affiliates</label>
-                                    </li>
-                                </ol>
+<p>Shall we keep you informed of events at Mount Madonna Center?</p>
+<ol>
+<li>
+<INPUT type=checkbox name=e_mailings value=yes [% e_mailings %]> 
+<label for="e_mailings">Yes, send me occasional e-mail announcements about MMC.</label>
+</li>
+<li>
+<INPUT type=checkbox name=snail_mailings value=yes [% snail_mailings %]>
+<label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMC.</label>
+</li>
+<li>
+<INPUT type=checkbox name=mmi_e_mailings value=yes [% mmi_e_mailings %]> 
+<label for="e_mailings">Yes, send me occasional e-mail announcements about MMI.</label>
+</li>
+<li>
+<INPUT type=checkbox name=mmi_snail_mailings value=yes [% mmi_snail_mailings %]>
+<label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMI.</label>
+</li>
+<li>
+<INPUT type=checkbox name=share_mailings value=yes [% share_mailings %]>
+<label for="share_mailings">You may share my address with MMC affiliates.</label>
+</li>
+<li><span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215)">What is MMI?</a></span></li>
+</ol>
                             </fieldset>
                         </li>
                     </ol>
