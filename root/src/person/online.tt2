@@ -1,0 +1,13 @@
+<h2>Online Mailing List Requests</h2>
+<table cellpadding=5>
+<tr>
+<th align=left>Name</th>
+<th align=left>Source</th>
+</tr>
+[% FOREACH r IN requests %]
+<tr>
+<td><a href=/person/online_add/$r.num>$r.first $r.last</a></td>
+<td>$r.type</td>
+</tr>
+[% END %]
+</table>
