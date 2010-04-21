@@ -444,12 +444,13 @@ sub view : Local {
                               $rental->edate_obj(),
                               $rental->start_hour_obj(),
                           ),
-        refresh_table    => refresh_table(
-                              1,
-                              $rental->refresh_days(),
-                              $rental->sdate_obj(),
-                              $rental->edate_obj(),
-                          ),
+        refresh_table    => ($rental->edate()-$rental->sdate() >= 7)?
+                                refresh_table(
+                                              1,
+                                              $rental->refresh_days(),
+                                              $rental->sdate_obj(),
+                                              $rental->edate_obj(),
+                                ): "",
         template       => "rental/view.tt2",
     );
 }

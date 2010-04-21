@@ -211,11 +211,16 @@ sub leader_table {
     }
     map {
         my $p = $_->person();
-        [ $p->last() . ", " . $p->first, $_->id(), $_->assistant ]
+        [
+            ( $_->just_first()? $p->first()
+             :                  $p->last() . ", " . $p->first),
+            $_->id(),
+            $_->assistant
+        ]
     }
     model($c, 'Leader')->all();
     $nleaders = @leaders;
-    my $n = ceil($nleaders)/3;
+    my $n = ceil($nleaders/3);
     my $rows = "";
     for my $i (0 .. $n-1) {
         $rows .= "<tr>";
@@ -1562,7 +1567,7 @@ sub refresh_table {
 
     my @refresh = split //, ($refresh || "");
     my $s = <<"EOH";
-<table border=1 cellpadding=5 cellspacing=2>
+<table class=lunch border=1 cellpadding=5 cellspacing=2>
 <tr>
 <td align=center>Sun</td>
 <td align=center>Mon</td>
@@ -1614,7 +1619,9 @@ EOH
             ++$dow;
         }
     }
-    $s .= "</tr></table>\n";
+    $s .= <<"EOH";
+</tr></table>
+EOH
     $s;
 }
 

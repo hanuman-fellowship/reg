@@ -19,6 +19,10 @@ sub list : Local {
         undef,
         { order_by => 'descrip' }
     ) ];
+    $c->stash->{ok_del_edit} = sub {
+        my $descrip = shift;
+        return ! ($descrip =~ m{\b(mmi|alert|guru)\b}i);
+    };
     $c->stash->{template} = "affil/list.tt2";
 }
 

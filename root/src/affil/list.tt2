@@ -16,7 +16,7 @@
 [% FOREACH a IN affil %]
     <tr>
     <td>[% a.descrip %]</td>
-    [% IF madmin %]
+    [% IF madmin && ok_del_edit(a.descrip) %]
         <td>
         <a href="[% '/affil/update/' _ a.id %]">Edit</a>&nbsp;
         <a href="[% '/affil/delete/' _ a.id %]" onclick="return confirm('Okay to Delete [% a.descrip %]?')">Del</a>

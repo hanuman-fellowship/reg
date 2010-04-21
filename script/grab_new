@@ -58,6 +58,7 @@ if (-f $Run_File) {
 open my $run, ">", $Run_File;
 close $run;
 
+#
 # we need some values from the database
 # to know where to connect to the web site.
 #
@@ -68,6 +69,7 @@ my $sth = $dbh->prepare("
     from string
     where the_key like 'ftp_%'
        or the_key like 'smtp_%'
+       or the_key like 'reception_email'
 ");
 $sth->execute();
 my %string;
@@ -75,6 +77,9 @@ while (my ($the_key, $value) = $sth->fetchrow_array()) {
     $string{$the_key} = $value;
 }
 
+#
+# now we can connect
+#
 my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
     or my_die("cannot connect to $string{ftp_site}");    # not die???
 $ftp->login($string{ftp_login}, $string{ftp_password})
@@ -83,7 +88,43 @@ $ftp->cwd($string{ftp_transactions})
     or my_die("cannot cwd to $string{ftp_transactions} " . $ftp->message);
 $ftp->ascii();
 
+# 
+# get ready to send email
+#
+use Mail::Sender;
+sub email_letter {
+    my (%args) = @_;
+
+    my @auth = ();
+    if ($string{smtp_auth}) {
+        @auth = (
+            auth    => $string{smtp_auth},
+            authid  => $string{smtp_user},
+            authpwd => $string{smtp_pass},
+        );
+    }
+    my $mail_sender = Mail::Sender->new({
+        smtp => $string{smtp_server},
+        port => $string{smtp_port},
+        @auth,
+    }) or my_die("no mail sender");
+    $mail_sender->Open({
+        to       => $args{to},
+        from     => $args{from},
+        subject  => $args{subject},
+        ctype    => "text/html",
+        encoding => "7bit",
+    }) or my_die("no mail sender Open");
+    $mail_sender->SendLineEnc($args{html});
+    $mail_sender->Close() or my_die("no mail sender Close");
+}
+
 my %ids = ();
+
+my $online = "root/static/online";
+my $mlist = "root/static/mlist";
+mkdir $online unless -d $online;
+mkdir $mlist unless -d $mlist;
 
 #
 # get transaction files from www.mountmadonna.org/cgi-bin/transactions
@@ -93,14 +134,13 @@ for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
         next TRANSACTION;
     }
-    mkdir "root/static/online" unless -d "root/static/online";
-    if (! $ftp->get($f, "root/static/online/$f")) {
+    if (! $ftp->get($f, "$online/$f")) {
         my_warn("no get of online reg $f");
         next TRANSACTION;
     }
     $ids{$f} = 1;
     my ($last, $first) = ("", "");
-    if (open my $in, "<", "root/static/online/$f") {
+    if (open my $in, "<", "$online/$f") {
         LINE:
         while (my $line = <$in>) {
             if ($line =~ m{x_fname => (.*)}) {
@@ -117,6 +157,7 @@ for my $f ($ftp->ls()) {
     $Msg .= "ftp: $f - $last, $first\n";
     $ftp->delete($f);
 }
+
 #
 # get (and delete) any newly modified rental grid files
 #
@@ -134,21 +175,42 @@ for my $f ($ftp->ls()) {
     $Msg .= "got rental file $f\n";
     $ftp->delete($f);
 }
-mkdir "root/static/mlist" unless -d "root/static/mlist";
 $ftp->cwd($string{ftp_mlist_requests});
+my $nmlist = 0;
 MLIST_FILE:
 for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
         next MLIST_FILE;
     }
-    if (! $ftp->get($f, "root/static/mlist/$f")) {
+    if (! $ftp->get($f, "$mlist/$f")) {
         my_warn("no get of mlist file $f");
         next MLIST_FILE;
     }
+    if (open my $in, "<", "$mlist/$f") {
+        my %val = ();
+        while (my $line = <$in>) {
+            chomp $line;
+            if ($line =~ m{^(type|first|last)\s+(.*)}) {
+                $val{$1} = $2;
+            }
+        }
+        close $in;
+    }
+    ++$nmlist;
     $Msg .= "got mlist file $f\n";
     $ftp->delete($f);
 }
 $ftp->quit();
+
+if ($nmlist) {
+    email_letter(
+        to      => "MMC Reception <$string{reception_email}>",
+        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+        subject => "Online Mailing List Request",
+        html    => "There is an online mailing list request waiting"
+                 . " for you in Reg."
+    );
+}
 
 my %mnum = qw/
     Jan 1
@@ -278,7 +340,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         $pop->Delete($i);
         next LETTER;
     }
-    if (-f "root/static/online/$trans_id") {
+    if (-f "$online/$trans_id") {
         #
         # already gotten on a previous call to grab_new
         #
@@ -306,7 +368,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     # without this email it would not have been seen at all.
     # synthesize a transaction file.
     #
-    my $fname = "root/static/online/$trans_id";
+    my $fname = "$online/$trans_id";
     my $out;
     if (! open $out, ">", $fname) {
         dump_it($i, "could not open $fname");
@@ -353,22 +415,6 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     #
     # send an email with the info to assure the registrant.
     #
-    my $ms = Mail::Sender->new({
-        smtp => $string{smtp_server},
-        port => $string{smtp_port},
-    });
-    if (! $ms) {
-        my_die("no mail sender");
-    }
-    $ms->Open({
-        to       => "$first $last <$email>",
-        from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
-        subject  => "Online registration for $P{x_title}",
-        ctype    => "text/html",
-        encoding => "7bit",
-    })
-        or my_die("no Mail::Sender->Open $Mail::Sender::Error");
-
     my $html;
     my $tt = Template->new()
         or my_die("template new error: " . Template->error());
@@ -382,13 +428,16 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         },
         \$html,
     ) or my_die("template error: " . $tt->error());
-    $ms->SendLineEnc($html);
-    $ms->Close() or my_die("error: $Mail::Sender::Error");
+    email_letter(
+        to       => "$first $last <$email>",
+        from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
+        subject  => "Online registration for $P{x_title}",
+        html     => $html,
+    );
 }
 $pop->Close();
 finalities();
 exit;
-
 
 #
 # four utility functions
@@ -414,7 +463,6 @@ sub dump_it {
     $pop->Delete($i);
 }
 
-use Mail::Sender;
 sub finalities {
     if ($Msg) {
         # write to a file (uniquely named) and send a letter to Jon.

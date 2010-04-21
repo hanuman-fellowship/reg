@@ -1540,7 +1540,7 @@ sub which_mp_do : Local {
             house_id => $h_id,
             the_date => { 'between' => [ $sdate, $edate1 ] },
         })->update({
-            sex        => 'B',
+            sex        => 'S',
             cur        => $h_max,
             rental_id  => 0,
             program_id => 0,

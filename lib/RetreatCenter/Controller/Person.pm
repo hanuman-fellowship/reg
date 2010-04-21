@@ -473,8 +473,9 @@ sub create_do : Local {
         date_entrd => $today_d8,
     });
     if ($fname) {
-        rename "root/static/mlist/$fname",
-               "root/static/mlist_done/$fname";
+        my $done = "root/static/mlist_done";
+        mkdir $done unless -d $done;
+        rename "root/static/mlist/$fname", "$done/$fname";
     }
     my $id = $p->id();
     _get_affils($c, $id);
@@ -1188,6 +1189,7 @@ sub online : Local {
         ($href->{num}) = $f =~ m{(\d+)};
         open my $in, "<", $f
             or die "cannot open $f: $!\n";
+        my ($type, $send) = ("", 0);
         while (my $line = <$in>) {
             chomp $line;
             my ($key, $val) = $line =~ m{^(\w+)\s+(.*)};
@@ -1227,7 +1229,6 @@ sub online_add : Local {
     $P{addr1} = $P{street};
     my $type = $P{type};
     my $interest = $P{interest};
-    my $send_brochure = $P{send_brochure_now};
     for my $k (qw/ cell home work /) {
         $P{"tel_$k"} = $P{$k};
     }
@@ -1236,7 +1237,6 @@ sub online_add : Local {
     $P{comment} =~ s{NEWLINE}{\n}g;
     for my $k (qw/
         street type interest
-        send_brochure_now
         cell home work gender
         request email2
     /) {
@@ -1313,6 +1313,12 @@ sub online_add : Local {
             affil_table => affil_table($c, $p->affils(), @mmi_affils),
             form_action => "update_do/" . $p->id(),
             template    => "person/create_edit.tt2",
+        );
+    }
+    else {
+        error($c,
+              "$P{first} $P{last} needs unduplicating first!",
+              'gen_error.tt2'
         );
     }
 }

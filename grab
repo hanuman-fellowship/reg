@@ -1,6 +1,11 @@
 #!/bin/sh
+
 cd /home/sahadev/RetreatCenter
 export DBI_DSN="dbi:mysql:reg2"
-# or:
-#export DBI_DSN="dbi:SQLite:/Users/jonbjornstad/newReg/RetreatCenter/retreatcenter.db"
+
+# or
+
+#cd /Users/jonbjornstad/newReg/RetreatCenter
+#export DBI_DSN="dbi:SQLite:$HOME/newReg/RetreatCenter/retreatcenter.db"
+
 script/grab_new >grab.out 2>&1 &

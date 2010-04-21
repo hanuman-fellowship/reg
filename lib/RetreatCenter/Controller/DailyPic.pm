@@ -90,7 +90,7 @@ sub show : Local {
     my $white = $dp->colorAllocate(255,255,255);    # 1st color = background
     my $black = $dp->colorAllocate(  0,  0,  0);
     my %char_color;
-    for my $c (qw/ M F X R B empty_bed resize /) {
+    for my $c (qw/ M F X R B S empty_bed resize /) {
         $char_color{$c} = $dp->colorAllocate(
                               $string{"dp_$c\_color"} =~ m{(\d+)}g);
     }
@@ -432,7 +432,22 @@ function Send(sex, house_id) {
 <input class=go type=submit value="Go">
 $links
 </form>
+<table cellpadding=3>
+<tr><td>
 <img height=$resize_height src=$image border=0 usemap=#dailypic>
+</td><td valign=center>
+<table cellpadding=2>
+<tr><td>$string{dp_empty_bed_char}</td><td>empty bed</td></tr>
+<tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
+<tr><td>B</td><td>block</td></tr>
+<tr><td>F</td><td>female</td></tr>
+<tr><td>M</td><td>male</td></tr>
+<tr><td>R</td><td>rental</td></tr>
+<tr><td>S</td><td>meeting space</td></tr>
+<tr><td>X</td><td>mixed gender</td></tr>
+</table>
+</td>
+</tr></table>
 $event_table
 $campsites
 <map name=dailypic>

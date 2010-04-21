@@ -33,6 +33,11 @@
 </tr>
 
 <tr>
+<th align=right valign=top>Just First</th>
+<td><input type=checkbox value=yes name=just_first [% check_just_first %]></td>
+</tr>
+
+<tr>
 <th align=right valign=top>Image</th>
 <td>
 [% IF leader.image %]

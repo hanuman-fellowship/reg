@@ -310,7 +310,7 @@ $user.first $user.last
 [% tot = 0 %]
 [% FOR ch IN reg.charges %]
 <TR>
-<TD align=right>$ch.amount</TD>
+<TD align=right>[% penny(ch.amount) %]</TD>
 <TD>$ch.what</TD>
 </TR>
 [% tot = tot + ch.amount %]
@@ -325,12 +325,15 @@ $user.first $user.last
     <TH align=right width=100>Amount</TH>
     <TH align=left>What</TH>
     </TR>
+    [% tot = 0 %]
     [% FOR p IN reg.payments %]
     <TR>
-    <TD align=right>\$$p.amount</TD>
+    <TD align=right>[% penny(p.amount) %]</TD>
     <TD>$p.what</TD>
     </TR>
+    [% tot = tot + p.amount %]
     [% END %]
+    <TR><TD align=right><SPAN STYLE="border-top: solid thin">\$$tot</SPAN></TD><TD>Total</TD></TR>
     </TABLE>
 [% END %]
 <H3>Balance Due</H3>

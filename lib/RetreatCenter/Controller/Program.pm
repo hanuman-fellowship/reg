@@ -487,7 +487,7 @@ sub view : Local {
                              ),
         );
     }
-    if (! $p->PR()) {
+    if (! $p->PR() && ($p->edate()-$p->sdate()+1+$p->extradays() >= 7)) {
         stash($c,
             refresh_table => refresh_table(
                                  1,

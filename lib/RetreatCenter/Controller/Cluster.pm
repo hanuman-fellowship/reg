@@ -609,7 +609,22 @@ EOH
 <span class=details><span class=keyed>D</span>ate<input type=text name=date size=10 value='$dt' accesskey='d'></span>&nbsp;# of Da<span class=keyed>y</span>s <input accesskey='y' type=text name=ndays size=2 value=$ndays>&nbsp;<input class=go type=submit value="Go">
 </form>
 <h2>$cl_name</h2>
+<table cellpadding=3>
+<tr><td>
 <img src=$im_uri height=$resize_height border=0 usemap=#clusterview>
+</td><td valign=center>
+<table cellpadding=2>
+<tr><td>$string{dp_empty_bed_char}</td><td>empty bed</td></tr>
+<tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
+<tr><td>B</td><td>block</td></tr>
+<tr><td>F</td><td>female</td></tr>
+<tr><td>M</td><td>male</td></tr>
+<tr><td>R</td><td>rental</td></tr>
+<tr><td>S</td><td>meeting space</td></tr>
+<tr><td>X</td><td>mixed gender</td></tr>
+</table>
+</td>
+</tr></table>
 $event_table
 <map name=clusterview>
 $cv_map</map>

@@ -14,6 +14,7 @@ __PACKAGE__->add_columns(qw/
     biography
     assistant
     l_order
+    just_first
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

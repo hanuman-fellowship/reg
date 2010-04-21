@@ -214,3 +214,7 @@ house_sum_clean -2
 ride_email transportation@mountmadonna.org
 
 gate_code_email sukhdev@mountmadonna.org
+
+dp_B_color 255,0,0
+dp_S_color 255,0,0
+reception_email jon@suecenter.org

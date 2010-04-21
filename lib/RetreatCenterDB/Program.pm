@@ -336,7 +336,9 @@ sub leader_names {
 
     my $s = "";
     my @leaders = map {
-                      $_->person->first . " " . $_->person->last
+                      my $p = $_->person();
+                      $_->just_first()? $p->first()
+                      :                 $p->first . " " . $p->last
                   }
                   sort {
                       $a->person->last  cmp $b->person->last or
@@ -805,7 +807,9 @@ sub leaders_house {
     my $html = "<table>\n";
     for my $l ($self->leaders()) {
         my $person = $l->person;
-        my $name = $person->last . ", " . $person->first;
+        my $name = $l->just_first()? $person->first()
+                  :                  $person->last . ", " . $person->first
+                  ;
         $html .= "<tr>";
         $html .= "<td>"
               .  "<a href=/leader/view/" . $l->id() . ">$name</a>"

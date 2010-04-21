@@ -32,8 +32,8 @@ th {
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Event Coordinator</th>
-<td><input type=text name=prog_person value="$sum.prog_person"></td>
+<th align=right>MMC Arrangements<br>Coordinator</th>
+<td valign=top><input type=text name=prog_person value="$sum.prog_person"></td>
 </tr>
 
 <tr>
@@ -111,6 +111,14 @@ th {
 </textarea>
 </td></tr>
 
+<tr><th valign=top>Workshop Schedule</th>
+<td colspan=3>
+<textarea id=workshop_schedule name=workshop_schedule rows=[% workshop_schedule_rows %] cols=60>
+[% sum.workshop_schedule %]
+</textarea>
+</td></tr>
+
+
 <tr><th valign=top>Sound Setup</th>
 <td colspan=3>
 <textarea id=sound_setup name=sound_setup rows=[% sound_setup_rows %] cols=60>
@@ -119,7 +127,7 @@ th {
 </td></tr>
 
 <tr>
-<th valign=top>Food Service
+<th valign=top>CB Food Service
 <br><br><input id=sub type=submit value="Submit">
 </th>
 <td colspan=3>

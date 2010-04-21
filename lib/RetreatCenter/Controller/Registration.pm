@@ -1803,6 +1803,7 @@ sub send_conf : Local {
         htdesc   => $htdesc,
         article  => ($htdesc =~ m{^[aeiou]}i)? 'an': 'a',
         carpoolers => $carpoolers,
+        penny    => \&penny,
     };
     my $html = "";
     my $tt = Template->new({
@@ -4075,13 +4076,24 @@ sub who_is_there : Local {
     for my $b (@blocks) {
         my $nbeds = $b->nbeds();
         my $pl = ($nbeds == 1)? "": "s";
-        $reg_names .= "<tr><td>"
-                   .  "<a target=happening href=/block/view/"
-                   .  $b->id()
-                   .  ">$nbeds bed$pl blocked</a></td><td>"
-                   .  $b->reason()
-                   .  "</td></tr>"
-                   ;
+        my $reason = $b->reason();
+        if ($reason =~ m{meeting\s+place\s+for}i) {
+            $reg_names .= "<tr><td>"
+                       .  "<a target=happening href=/block/view/"
+                       .  $b->id()
+                       .  ">$reason</a>"
+                       .  "</td></tr>"
+                       ;
+        }
+        else {
+            $reg_names .= "<tr><td>"
+                       .  "<a target=happening href=/block/view/"
+                       .  $b->id()
+                       .  ">$nbeds bed$pl blocked</a></td><td>"
+                       .  $reason
+                       .  "</td></tr>"
+                       ;
+        }
     }
     $c->res->output("<center>"
                    . $house_name_of{$house_id}

@@ -76,6 +76,7 @@ sub _get_data {
         url
         biography
         assistant
+        just_first
     /) {
         $hash{$f} = trim($c->request->params->{$f});
     }
@@ -92,6 +93,7 @@ sub _get_data {
     }
     $hash{url} =~ s{^http://}{};
     $hash{assistant} = '' unless $hash{assistant};
+    $hash{just_first} = '' unless $hash{just_first};
             # since not sent if not checked...
 }
 
@@ -102,6 +104,7 @@ sub update : Local {
     $c->stash->{person} = $l->person();
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{"check_assistant"}  = ($l->assistant)? "checked": "";
+    $c->stash->{"check_just_first"}  = ($l->just_first)? "checked": "";
     $c->stash->{template}    = "leader/create_edit.tt2";
 }
 
@@ -139,6 +142,7 @@ sub create : Local {
     $c->stash->{leader}      = { l_order => 1 };  # fake a Leader object
                                                   # for this default
     $c->stash->{check_assistant} = '';
+    $c->stash->{just_first} = '';
     $c->stash->{template}    = "leader/create_edit.tt2";
 }
 

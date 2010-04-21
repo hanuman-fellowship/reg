@@ -5,7 +5,7 @@ p {
 }
 </style>
 <h2>Leaders</h2>
-<h3>[% leader.person.first %] [% leader.person.last %]</h3>
+<h3>[% leader.person.first %] [% IF ! leader.just_first %][% leader.person.last %][% END %]</h3>
 <p>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/leader/update/[% leader.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
@@ -36,6 +36,11 @@ p {
 <tr>
 <th align=right valign=top>Assistant</th>
 <td>[% leader.assistant %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Just First</th>
+<td>[% leader.just_first %]</td>
 </tr>
 
 <tr>

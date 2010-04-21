@@ -131,6 +131,7 @@ sub update : Local {
         food_service
         flowers
         field_staff_setup
+        workshop_schedule
         sound_setup
         check_list
         converted_spaces

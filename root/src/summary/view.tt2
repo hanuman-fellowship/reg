@@ -71,7 +71,6 @@ $happening.status_td
 [% ELSIF happening.extradays %]
 <td valign=bottom>[% plus %]</td>
 [% END %]
-<td valign=bottom>$sum.prog_person</td>
 </tr>
 
 </table>
@@ -142,6 +141,11 @@ th {
 [% ELSE %]
 
 <table cellpadding=3 border=0>
+
+<tr>
+<th align=right>MMC Arrangements<br>Coordinator</th>
+<td valign=top>$sum.prog_person</td>
+</tr>
 
 <tr>
 <th align=right valign=top width=180>Leaders</th>
@@ -235,11 +239,18 @@ Flowers<br>
 </tr>
 
 <tr><th>Field Staff Setup</th><td colspan=3 valign=top>[% sum.field_staff_setup %]</td></tr>
+
+<tr>
+<th>Workshop Schedule</th>
+<td colspan=3 valign=top>[% sum.workshop_schedule %]</td>
+</tr>
+
 <tr><th>
 Sound Setup<br>
 <a href=/summary/update/[% Type %]/[% happening.id %]><img src=/static/images/pencil.png height=25 border=0></a>
 </th><td colspan=3 valign=top>[% sum.sound_setup %]</td></tr>
-<tr><th>Food Service</th><td colspan=3 valign=top>[% sum.food_service %]</td></tr>
+
+<tr><th>CB Food Service</th><td colspan=3 valign=top>[% sum.food_service %]</td></tr>
 <tr><th>Feedback</th><td colspan=3 valign=top>[% sum.feedback %]</td></tr>
 <tr><th>Miscellaneous</th><td colspan=3 valign=top>[% sum.miscellaneous %]</td></tr>
 <tr><th>Checklist</th><td colspan=3 valign=top>[% sum.check_list %]</td></tr>

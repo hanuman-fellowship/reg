@@ -41,6 +41,7 @@ __PACKAGE__->add_columns(qw/
     converted_spaces
     needs_verification
     prog_person
+    workshop_schedule
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -50,13 +51,6 @@ __PACKAGE__->might_have(program => 'RetreatCenterDB::Program', 'summary_id');
 
 sub     date_updated_obj { date(shift->date_updated) || ""; }
 sub     time_updated_obj { get_time(shift->time_updated); }
-
-sub leader_housing_tr    { ptrim(shift->leader_housing()   ) };
-sub flowers_tr           { ptrim(shift->flowers()          ) };
-sub signage_tr           { ptrim(shift->signage()          ) };
-sub field_staff_setup_tr { ptrim(shift->field_staff_setup()) };
-sub food_service_tr      { ptrim(shift->food_service()     ) };
-sub sound_setup_tr       { ptrim(shift->sound_setup()      ) };
 
 #
 # are there any pictures for this summary
