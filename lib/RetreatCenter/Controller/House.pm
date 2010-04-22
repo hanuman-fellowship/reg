@@ -22,7 +22,7 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    my ($tcb1) = model($c, 'House')->search({ name => 'TCB 1' });
+    my ($tcb) = model($c, 'House')->search({ name => 'TCB 25' });
     stash($c,
         rooms => [ model($c, 'House')->search(
             { tent   => '' },
@@ -35,7 +35,7 @@ sub list : Local {
             { order_by => 'name' }
         ) ],
         hdr          => "By Name",
-        tcb_activate => ($tcb1->inactive())? "Activate": "Inactivate",
+        tcb_activate => ($tcb->inactive())? "Activate": "Inactivate",
         other_sort   => "<a href=/house/by_type_priority>By Type/Priority</a>",
         template     => "house/list.tt2",
     );
