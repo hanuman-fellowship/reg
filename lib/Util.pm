@@ -1286,8 +1286,8 @@ sub other_reserved_cids {
             @optp,
             level => { -not_in => [qw/ D C M /], },
             name  => { -not_like => '%personal%retreat%' },
-            sdate => { '<' => $edate },       # and it overlaps
-            edate => { '>' => $sdate1 },      # with this program
+            sdate => { '<' => $edate1 },     # and it overlaps
+            edate => { '>' => $edate },      # with this program
         });
     my @ol_rent_ids =
         map {
@@ -1295,8 +1295,8 @@ sub other_reserved_cids {
         }
         model($c, 'Rental')->search({
             @optr,
-            sdate => { '<' => $edate },   # it overlaps
-            edate => { '>' => $sdate1 },  # with this rental
+            sdate => { '<' => $edate1 }, # it overlaps
+            edate => { '>' => $sdate },  # with this rental
         });
     my @cids = ();
     if (@ol_prog_ids) {
