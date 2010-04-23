@@ -53,6 +53,16 @@ sub     date_updated_obj { date(shift->date_updated) || ""; }
 sub     time_updated_obj { get_time(shift->time_updated); }
 
 #
+# used in listing/summary.tt2
+#
+sub leader_housing_tr    { ptrim(shift->leader_housing()   ) };
+sub flowers_tr           { ptrim(shift->flowers()          ) };
+sub signage_tr           { ptrim(shift->signage()          ) };
+sub field_staff_setup_tr { ptrim(shift->field_staff_setup()) };
+sub food_service_tr      { ptrim(shift->food_service()     ) };
+sub sound_setup_tr       { ptrim(shift->sound_setup()      ) };
+
+#
 # are there any pictures for this summary
 # in root/static/images??
 # if not return ""
