@@ -82,6 +82,12 @@ th {
 </style>
 [% IF type == 'rental' %]
 <table cellpadding=3 border=0>
+
+<tr>
+<th align=right>MMC Arrangements<br>Coordinator</th>
+<td valign=top>$sum.prog_person</td>
+</tr>
+
 <tr>
 <th align=right width=180 valign=top>Contact Person</th>
 <td valign=top colspan=2>
