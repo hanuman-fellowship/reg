@@ -38,7 +38,7 @@ sub membership_list : Local {
     my ($self, $c, $no_money) = @_;
     
     my %stash;
-    for my $cat (qw/ general sponsor life /) {
+    for my $cat (qw/ general sponsor life inactive /) {
         $stash{lc $cat} = [
             map {
                 $_->[1]
@@ -53,13 +53,14 @@ sub membership_list : Local {
                 { category => ucfirst $cat },
             )
         ];
-        $stash{"n$cat"} = scalar(@{$stash{$cat}});
+        $stash{"n$cat"} = scalar(@{$stash{$cat}});  # fancy!
     }
     $stash{no_money} = $no_money;
     my $html = "";
     my $tt = Template->new({
-        INCLUDE_PATH => 'root/src/member',
-        EVAL_PERL    => 0,
+        INTERPOLATION => 1,
+        INCLUDE_PATH  => 'root/src/member',
+        EVAL_PERL     => 0,
     });
     $tt->process(
         "by_category.tt2",# template
@@ -70,28 +71,28 @@ sub membership_list : Local {
 }
 
 sub list : Local {
-    my ($self, $c, $all) = @_;
+    my ($self, $c) = @_;
 
-    # sort by sanskrit or first
-    my $cond = ($all)? undef
-               :        {
-                            -or => [
-                                category => 'General',
-                                category => 'Sponsor',
-                            ],
-                        }
-               ;
-    my @members =
-        map {
-            $_->[1]
-        }
-        sort {
-            $a->[0] cmp $b->[0]
-        }
-        map {
-            [ $_->person->last . ' ' . $_->person->first, $_ ]
-        }
-        model($c, 'Member')->search($cond);
+    my $pat = trim($c->request->params->{pat});
+    my @members = ();
+    if ($pat) {
+        $pat =~ s{\*}{%}g;
+        $pat = { like => "%$pat%" };
+        @members = 
+            model($c, 'Member')->search({
+                -or => [
+                    'person.last'     => $pat,
+                    'person.first'    => $pat,
+                    'person.sanskrit' => $pat,
+                ],
+            },
+            {
+                join     => ['person'],
+                prefetch => ['person'],
+                sort     => ['person.last', 'person.first' ],
+            }
+        );
+    }
     $c->stash->{members} = \@members;
     $c->stash->{template} = "member/list.tt2";
 }
@@ -381,6 +382,7 @@ EOA
     my $html = "";
 
     my $tt = Template->new({
+        INTERPOLATION => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     }) or $c->log->info("NO TEMPLATE NEW $Template::ERROR");
@@ -561,28 +563,25 @@ sub _lapsed_members {
     my ($c) = @_;
     my $today = tt_today($c)->as_d8();
     return [
-        map {
-            $_->[1]
-        }
-        sort {
-            $a->[0] cmp $b->[0]
-        }
-        map {
-            my $per = $_->person();
-            [ $per->last . $per->first, $_ ]
-        }
-        model($c, 'Member')->search({
-            -or => [
-                -and => [
-                    category => 'General',
-                    date_general => { '<', $today },
+        model($c, 'Member')->search(
+            {
+                -or => [
+                    -and => [
+                        category => 'General',
+                        date_general => { '<', $today },
+                    ],
+                    -and => [
+                        category => 'Sponsor',
+                        date_sponsor => { '<', $today },
+                    ],
                 ],
-                -and => [
-                    category => 'Sponsor',
-                    date_sponsor => { '<', $today },
-                ],
-            ],
-        })
+            },
+            {
+                join     => ['person'],
+                prefetch => ['person'],
+                sort     => ['person.last', 'person.first' ],
+            }
+        )
     ];
 }
 sub _soon_to_lapse_members {
@@ -594,19 +593,47 @@ sub _soon_to_lapse_members {
     $month = $month->as_d8();
 
     return [
-        model($c, 'Member')->search({
-            -or => [
-                -and => [
-                    category => 'General',
-                    date_general => { between => [ $today, $month ] },
+        model($c, 'Member')->search(
+            {
+                -or => [
+                    -and => [
+                        category => 'General',
+                        date_general => { between => [ $today, $month ] },
+                    ],
+                    -and => [
+                        category => 'Sponsor',
+                        date_sponsor => { between => [ $today, $month ] },
+                    ],
                 ],
-                -and => [
-                    category => 'Sponsor',
-                    date_sponsor => { between => [ $today, $month ] },
-                ],
-            ],
-        })
+            },
+            {
+                join     => ['person'],
+                prefetch => ['person'],
+                sort     => ['person.last', 'person.first' ],
+            }
+        )
     ];
+}
+
+sub _checked_members {
+    my ($c) = @_;
+
+    my @ids = ();
+    for my $p ($c->request->param()) {
+        if ($p =~ m{id(\d+)}) {
+            push @ids, $1;
+        }
+    }
+    model($c, 'Member')->search(
+        {
+            'me.id' => { in => \@ids },
+        },
+        {
+            join     => ['person'],
+            prefetch => ['person'],
+            sort     => ['person.last', 'person.first' ],
+        }
+    );
 }
 
 sub lapsed : Local {
@@ -624,16 +651,17 @@ sub lapse_soon : Local {
 }
 
 sub email_lapsed : Local {
-    my ($self, $c, $test) = @_;
+    my ($self, $c) = @_;
 
+    my $to_you = $c->request->params->{to_you};
     my @no_email;
     my $nsent = 0;
     my $mem_admin = $c->user->first . ' ' . $c->user->last;
     Global->init($c);
     MEMBER:
-    for my $m (@{_lapsed_members($c)}) {
-        my $per = $m->person;
-        my $email = $per->email;
+    for my $m (_checked_members($c)) {
+        my $per = $m->person();
+        my $email = $per->email();
         if (! $email) {
             push @no_email, $m;
             next MEMBER;
@@ -648,6 +676,7 @@ sub email_lapsed : Local {
 
         my $html = "";
         my $tt = Template->new({
+            INTERPOLATION => 1,
             INCLUDE_PATH => 'root/static/templates/letter',
             EVAL_PERL    => 0,
         });
@@ -667,7 +696,7 @@ sub email_lapsed : Local {
             \$html,           # output
         );
         email_letter($c,
-            to      => (($test)? $c->user->email(): $per->name_email()),
+            to      => (($to_you)? $c->user->email(): $per->name_email()),
             from    => "HFS Membership <$string{mem_email}>",
             subject => "Hanuman Fellowship Membership Status",
             html    => $html,
@@ -675,28 +704,31 @@ sub email_lapsed : Local {
         ++$nsent;
     }
 
-    $c->stash->{msg} = "$nsent email reminder letter"
-                     . (($nsent == 1)? " was sent."
-                        :              "s were sent.");
-    $c->stash->{status} = "expired";
-
-    $c->stash->{num_no_email} = (@no_email == 1)?
-                                      "was 1 member":
-                                      "were " . scalar(@no_email) . " members";
-    $c->stash->{no_email} = \@no_email;
-    $c->stash->{soon} = "0";
-    $c->stash->{template} = "member/sent.tt2";
+    stash($c,
+        msg    => "$nsent email reminder letter"
+                  . (($nsent == 1)? " was sent."
+                     :              "s were sent."),
+        status       => "expired",
+        num_no_email => (@no_email == 1)? "was 1 member"
+                        :                 "were "
+                                          . scalar(@no_email)
+                                          . " members",
+        no_email => \@no_email,
+        soon     => "0",
+        template => "member/sent.tt2",
+    );
 }
 
 sub email_lapse_soon : Local {
-    my ($self, $c, $test) = @_;
+    my ($self, $c) = @_;
 
+    my $to_you = $c->request->params->{to_you};
     my @no_email;
     my $nsent = 0;
     my $mem_admin = $c->user->first . ' ' . $c->user->last;
     Global->init($c);
     MEMBER:
-    for my $m (@{_soon_to_lapse_members($c)}) {
+    for my $m (_checked_members($c)) {
         my $per = $m->person;
         my $name = $per->first . ' ' . $per->last;
         my $email = $per->email;
@@ -713,6 +745,7 @@ sub email_lapse_soon : Local {
         my $last_paid    = (@payments)? $payments[0]->date_payment_obj: 0;
         my $html = "";
         my $tt = Template->new({
+            INTERPOLATION => 1,
             INCLUDE_PATH => 'root/static/templates/letter',
             EVAL_PERL    => 0,
         });
@@ -731,7 +764,7 @@ sub email_lapse_soon : Local {
             \$html,           # output
         );
         email_letter($c,
-            to      => (($test)? $c->user->email(): $per->name_email()),
+            to      => (($to_you)? $c->user->email(): $per->name_email()),
             from    => "HFS Membership <$string{mem_email}>",
             subject => "Hanuman Fellowship Membership Status",
             html    => $html,
@@ -739,16 +772,19 @@ sub email_lapse_soon : Local {
         ++$nsent;
     }
 
-    $c->stash->{status} = "will expire";
-    $c->stash->{msg} = "$nsent email reminder letter"
-                      . (($nsent == 1)? " was sent."
-                         :              "s were sent.");
-    $c->stash->{num_no_email} = (@no_email == 1)?
-                                      "was 1 member":
-                                      "were " . scalar(@no_email) . " members";
-    $c->stash->{no_email} = \@no_email;
-    $c->stash->{soon} = "1";
-    $c->stash->{template} = "member/sent.tt2";
+    stash($c,
+        status => "will expire",
+        msg    => "$nsent email reminder letter"
+                          . (($nsent == 1)? " was sent."
+                             :              "s were sent."),
+        num_no_email => (@no_email == 1)? "was 1 member":
+                                          "were "
+                                          . scalar(@no_email)
+                                          . " members",
+        no_email => \@no_email,
+        soon     => "1",
+        template => "member/sent.tt2",
+    );
 }
 
 sub access_denied : Private {
@@ -941,6 +977,7 @@ sub lapsed_letter : Local {
     }
     my $html = "";
     my $tt = Template->new({
+        INTERPOLATION => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
@@ -1086,6 +1123,7 @@ sub one_time : Local {
         category => 'Sponsor',
     });
     my $tt = Template->new({
+        INTERPOLATION => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });

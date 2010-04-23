@@ -1,26 +1,29 @@
 [% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
+<table cellpadding=5><tr><td>
 <a href="/member/membership_list">Category</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/member/membership_list/1">Category-$</a>
+<a href="/member/membership_list/1">Category-\$</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/lapsed">Lapsed</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/lapse_soon">Lapse in One Month</a>
 <p class=p2>
-<a href="/member/list/1">Include All</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/member/non_email">Non-Email</a>
+<a href="/member/non_email">Without Email</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/bulk">Bulk Mailings</a>
 <!-- &nbsp;&nbsp;&nbsp;
 <a href="/member/one_time">One Time</a> -->
+</td><td>
+<form action=/member/list>
+Search <input type=text name=pat id=pat size=12>
+</form>
+</td></tr></table>
 <ul>
 Click on Name to update member attributes.<br>
 Click on First to see person attributes.<br>
-To add a Member add them as a Person first.
 <p class=p2>
-<table cellpadding=3 border=0>
+<table cellpadding=5 border=0>
 <tr>
 <th align=left valign=bottom>Name</th>
 <th align=left valign=bottom>First</th>
@@ -68,3 +71,6 @@ To add a Member add them as a Person first.
 [% END %]
 </table>
 </ul>
+<script type="text/javascript">
+document.getElementById('pat').focus();
+</script>

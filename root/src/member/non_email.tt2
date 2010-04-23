@@ -1,17 +1,33 @@
+<div style="margin-top: 5mm">
 <table border=1 cellpadding=5>
-<tr><th colspan=4>Members Sans Email</th></tr>
+<tr><th colspan=7>Members Without Email</th></tr>
 <tr>
 <th>Name</th>
 <th>Home</th>
 <th>Work</th>
 <th>Cell</th>
+<th>Category</th>
+<th>Expiration</th>
+<th>Status</th>
 </tr>
 [% FOR p IN non_email %]
+[% m = p.member %]
 <tr>
-<td>[% IF p.member.lapsed %]<img src=/static/images/wchecked.gif>[% ELSE %]<img src=/static/images/checked.gif>[% END %] <a target=person href="/person/view/[% p.id %]">[% p.first %] [% p.last %]</a> [% IF p.sanskrit %]([% p.sanskrit %])[% END %]</td>
-<td>[% IF p.tel_home %][% p.tel_home %][% END %]</td>
-<td>[% IF p.tel_work %][% p.tel_work %][% END %]</td>
-<td>[% IF p.tel_cell %][% p.tel_cell %][% END %]</td>
+<td>[% IF m.lapsed %]<img src=/static/images/wchecked.gif>[% ELSE %]<img src=/static/images/checked.gif>[% END %] <a target=person href="/member/update/[% p.member.id %]">[% p.first %] [% p.last %]</a> [% IF p.sanskrit %]([% p.sanskrit %])[% END %]</td>
+<td>[% IF p.tel_home %][% p.tel_home %][% ELSE %]&nbsp;[% END %]</td>
+<td>[% IF p.tel_work %][% p.tel_work %][% ELSE %]&nbsp;[% END %]</td>
+<td>[% IF p.tel_cell %][% p.tel_cell %][% ELSE %]&nbsp;[% END %]</td>
+<td>$m.category</td>
+<td>
+[% IF    m.category == 'General' %][% m.date_general_obj.format("%D") %]
+[% ELSIF m.category == 'Life'    %][% m.date_life_obj.format("%D")    %]
+[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj.format("%D") %]
+[% END %]
+</td>
+<td>
+[% m.lapsed %]
+</td>
 </tr>
 [% END %]
 </table>
+</div>

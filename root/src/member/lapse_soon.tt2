@@ -1,10 +1,27 @@
+<script type="text/javascript">
+function toggle_all() {
+    var form = document.form;
+    for (var i = 0; i < form.length; ++i) {
+        if (form[i].type == 'checkbox'
+            && form[i].name != 'all'
+            && form[i].name != 'to_you'
+        ) {
+            form[i].checked = ! form[i].checked;
+        }
+    }
+}
+</script>
 <h2>Members Who Will Lapse Within A Month</h2>
-<a href="/member/email_lapse_soon">Send <span style="font-weight: bold; color: red">REAL</span> Email</a>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="/member/email_lapse_soon/1">Send Test Email (to yourself)</a>
+<form name=form action='/member/email_lapse_soon'>
+<input type=submit value="Email Reminder To All Checked">
+&nbsp; &nbsp; &nbsp;
+For testing to YOU<input type=checkbox name=to_you checked>
+&nbsp; &nbsp; &nbsp;
+Toggle All <input type=checkbox name=all onclick="toggle_all();">
 <ul>
-<table cellpadding=3>
+<table cellpadding=5>
 <tr>
+<td>&nbsp;</td>
 <th align=left>Sanskrit</th>
 <th align=left>Name</th>
 <th align=left>Category</th>
@@ -15,12 +32,13 @@
 [% FOREACH m IN members %]
 [% p = m.person %]
 <tr>
+<td><input type=checkbox name=id$m.id></td>
 <td><a href="/member/update/[% m.id %]">[% p.sanskrit || p.first %]</a></td>
 <td align=left>[% p.last %], [% p.first %]</td>
 <td align=left>[% m.category %]</td>
 <td align=center>
-[% IF    m.category == 'General' %][% m.date_general_obj %]
-[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj %]
+[% IF    m.category == 'General' %]${m.date_general_obj.format("%D")}
+[% ELSIF m.category == 'Sponsor' %]${m.date_sponsor_obj.format("%D")}
 [% ELSE %]                         unknown
 [% END %]
 </td>
@@ -30,3 +48,4 @@
 [% END %]
 </table>
 </ul>
+</form>

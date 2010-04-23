@@ -3,6 +3,7 @@
 <tr><td>General</td><td align=right>[% ngeneral %]</td></tr>
 <tr><td>Sponsor</td><td align=right>[% nsponsor %]</td></tr>
 <tr><td>Life</td><td align=right>[% nlife %]</td></tr>
+<tr><td>Inactive</td><td align=right>[% ninactive %]</td></tr>
 </table>
 <h2>General</h2>
 <table cellpadding=3>
@@ -18,7 +19,7 @@
 <td>[% IF m.lapsed %]*[% END %]</td>
 <td>[% p.last %], [% p.first %]</td>
 <td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
-<td align=center>[% m.date_general_obj %]</td>
+<td align=center>[% m.date_general_obj.format("%D") %]</td>
 </tr>
 [% END %]
 </table>
@@ -41,9 +42,9 @@
 <td>[% IF m.lapsed %]*[% END %]</td>
 <td>[% p.last %], [% p.first %]</td>
 <td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
-<td align=center>[% m.date_sponsor_obj %]</td>
+<td align=center>[% m.date_sponsor_obj.format("%D") %]</td>
 [% IF ! no_money %]
-<td align=center>[% m.payments.0.date_payment_obj %]</td>
+<td align=center>[% m.payments.0.date_payment_obj.format("%D") %]</td>
 <td align=right>[% m.total_paid %]</td>
 <td align=right>[% m.sponsor_nights %]</td>
 [% END %]
@@ -75,3 +76,23 @@
 [% END %]
 </table>
 
+<h2>Inactive</h2>
+<table cellpadding=3>
+<tr>
+<th valign=bottom align=left>Name</th>
+<th valign=bottom align=left>Sanskrit</th>
+[% IF ! no_money %]
+<th valign=bottom align=left>Total</th>
+[% END %]
+</tr>
+[% FOR m IN inactive %]
+[% p = m.person %]
+<tr>
+<td>[% p.last %], [% p.first %]</td>
+<td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
+[% IF ! no_money %]
+<td align=right>[% m.total_paid %]</td>
+[% END %]
+</tr>
+[% END %]
+</table>
