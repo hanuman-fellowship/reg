@@ -1259,7 +1259,7 @@ sub online_add : Local {
         }
         else {
             @mmi_affils = model($c, 'Affil')->search({
-                descrip => { 'like' => "MMI $interest" },
+                descrip => { 'like' => "MMI%$interest" },
             });
         }
     }
