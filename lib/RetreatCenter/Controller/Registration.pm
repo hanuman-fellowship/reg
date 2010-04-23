@@ -1589,7 +1589,7 @@ sub _compute {
     my $requested = 0;
     AFFIL:
     for my $af ($reg->person->affils()) {
-        if ($af->descrip() =~ m{mmi\s+discount}i) {
+        if ($af->descrip() =~ m{mmi.*discount}i) {
             $requested = 1;
             last AFFIL;
         }
