@@ -34,9 +34,15 @@ Click on First to see person attributes.<br>
 <th align=right>Free<br>Nights</th>
 <th align=center>Free<br>Program</th>
 </tr>
+[% color = 'fl_row1' %]
 [% FOREACH m IN members %]
+<tr class=$color>
+[% IF color == 'fl_row0' %]
+    [% color = 'fl_row1' %]
+[% ELSE %]
+    [% color = 'fl_row0' %]
+[% END %]
 [% per = m.person %]
-<tr>
 <td><a href="/member/update/[% m.id %]">[% per.last %], [% per.sanskrit || per.first %]</a></td>
 <td><a tabindex=1 href="/person/view/[% per.id %]">[% per.first %]</a></td>
 <td>[% m.category %]</td>
