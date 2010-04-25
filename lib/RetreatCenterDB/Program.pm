@@ -341,10 +341,6 @@ sub leader_names {
                       $_->just_first()? $p->first()
                       :                 $p->first . " " . $p->last
                   }
-                  sort {
-                      $a->person->last  cmp $b->person->last or
-                      $a->person->first cmp $b->person->first
-                  }
                   grep {
                     ! $_->assistant
                   }
