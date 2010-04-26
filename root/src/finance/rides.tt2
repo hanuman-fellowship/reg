@@ -16,7 +16,7 @@
 <!-- show subtot for prior driver -->
 <tr>
 <td>&nbsp;</td>
-<td>&nbsp;</td>
+<td>$nrides Ride[% IF nrides > 1 %]s[% END %]</td>
 <td align=right style="border-top: solid; border-width: 1px;">$subtot&nbsp;&nbsp;&nbsp;</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
@@ -46,7 +46,8 @@
 
 <!-- show subtot for prior driver -->
 <tr>
-<td colspan=2>&nbsp;</td>
+<td>&nbsp;</td>
+<td>$nrides Ride[% IF nrides > 1 %]s[% END %]</td>
 <td align=right style="border-top: solid; border-width: 1px;">$subtot&nbsp;&nbsp;&nbsp;</td>
 </tr>
 <tr><td>&nbsp;</td></tr>
