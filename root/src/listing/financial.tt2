@@ -35,6 +35,16 @@ End <input type=text name=edate size=10 value='$end'>
 Outstanding Balances Since <input type=text name=since size=10 value='$since'>
 &nbsp;<input type=submit value="Go">
 </form>
+<p style="margin-top: 6mm">
+<form action="/finance/glnum_list" method=post>
+General Ledger Numbers Since <input type=text name=since size=10 value='$since'>
+&nbsp;<input type=submit value="Go">
+</form>
+<p style="margin-top: 6mm">
+<form action="/finance/ride" method=post>
+Ride Financials Since <input type=text name=since_2months size=10 value='$since_2months'>
+&nbsp;<input type=submit value="Go">
+</form>
 [% IF Catalyst.check_user_roles('mmi_admin') %]
 <hr width=500 align=left>
 <h3>MMI Financial Listings</h3>
@@ -53,8 +63,9 @@ Deposit
 </td>
 </tr>
 </table>
-<p class=p2>
-<a href="/finance/deposits/mmi">Prior Deposits</a><p class=p2>
+<p style="margin-top: 6mm">
+<a href="/finance/deposits/mmi">Prior Deposits</a>
+<p style="margin-top: 6mm">
 Period End Summary
 <table cellpadding=3>
 <tr>
@@ -64,5 +75,10 @@ End <input type=text name=edate size=10 value='[% end %]'>
 </td><td><input type=submit value="Go"></td></tr>
 </form>
 </table>
+<p style="margin-top: 6mm">
+<form action="/finance/mmi_glnum_list" method=post>
+MMI General Ledger Numbers Since <input type=text name=since size=10 value='$since'>
+&nbsp;<input type=submit value="Go">
+</form>
 [% END %]
 </ul>

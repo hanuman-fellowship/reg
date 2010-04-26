@@ -1,0 +1,60 @@
+<h2>Ride Financials since $since</h2>
+<table cellpadding=5>
+<tr>
+<th align=left>Driver</th>
+<th align=left>Rider</th>
+<th align=right>Amount</th>
+<th align=left>Date Paid</th>
+</tr>
+[% cur_driver = '' %]
+[% subtot = 0 %]
+[% nrides = 0 %]
+[% tot = 0 %]
+[% FOREACH r IN rides %]
+
+[% IF cur_driver != '' && cur_driver != r.driver %]
+<!-- show subtot for prior driver -->
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td align=right style="border-top: solid; border-width: 1px;">$subtot&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+[% subtot = 0 %]
+[% nrides = 0 %]
+[% END %]
+
+<tr>
+
+[% IF cur_driver != r.driver %]
+<td><a target=driver href=/user/view/$r.driver_id>$r.driver</a></td>
+[% ELSE %]
+<td>&nbsp;</td>
+[% END %]
+
+<td><a target=ride href=/ride/view/$r.ride_id>$r.rider</a></td>
+<td align=right>$r.cost&nbsp;&nbsp;&nbsp;</td>
+<td>$r.date</td>
+</tr>
+
+[% subtot = subtot + r.cost %]
+[% nrides = nrides + 1 %]
+[% tot = tot + r.cost %]
+[% cur_driver = r.driver %]
+
+[% END %]
+
+<!-- show subtot for prior driver -->
+<tr>
+<td colspan=2>&nbsp;</td>
+<td align=right style="border-top: solid; border-width: 1px;">$subtot&nbsp;&nbsp;&nbsp;</td>
+</tr>
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td>&nbsp</td>
+<td align=right>Total</td>
+<td align=right style="border-top: double;">$tot&nbsp;&nbsp;&nbsp;</td>
+</tr>
+
+</table>

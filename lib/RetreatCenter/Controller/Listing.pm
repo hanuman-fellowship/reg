@@ -1566,6 +1566,7 @@ sub financial : Local {
     my $m = $today->month();
     stash($c,
         since    => date($y-1, $m, 1)->format("%D"),
+        since_2months => ($today-60)->format("%D"),
         start    => date($y, $m, 1)->format("%D"),
         end      => date($y, $m, days_in_month($y, $m))->format("%D"),
         template => "listing/financial.tt2",

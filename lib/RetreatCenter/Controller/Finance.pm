@@ -698,4 +698,193 @@ sub outstanding : Local {
     );
 }
 
+#
+# gather Extra Accounts and Programs (since $since) sponsored by MMC
+#
+sub glnum_list : Local {
+    my ($self, $c, $since_param, $psort, $xsort) = @_;
+
+    if (! defined $psort) {
+        $psort = 0;
+    }
+    if (! defined $xsort) {
+        $xsort = 0;
+    }
+    my $since_str = $since_param || $c->request->params->{since};
+    if (! $since_str) {
+        my $today = today();
+        my $y = $today->year();
+        my $m = $today->month();
+        $since_str = date($y-1, $m, 1)->as_d8();
+    }
+    my $since = date($since_str);
+    if (! $since) {
+        error($c,
+              "Illegal date: $since_str",
+              'gen_error.tt2',
+        );
+        return;
+    }
+    my $porder = $psort == 0? 'glnum'
+                :$psort == 1? 'name'
+                :             'sdate'
+                ;
+    my @progs = model($c, 'Program')->search(
+                    {
+                        sdate     => { '>=' => $since->as_d8() },
+                        school    => 0,
+                        rental_id => 0,     # no hybrid programs
+                                            # the finances are on the Rental
+                    },
+                    {
+                        order_by => [ $porder ],
+                    }
+                );
+    my @rents = model($c, 'Rental')->search(
+                    {
+                        sdate  => { '>=' => $since->as_d8() },
+                    },
+                    {
+                        order_by => [ $porder ],
+                    }
+                );
+    my @events = sort {
+                     $a->$porder cmp $b->$porder        # cool!
+                 }
+                 @progs, @rents;
+    my @projs = model($c, 'Project')->search(
+                    {
+                    },
+                    {
+                        order_by => [ 'glnum' ],
+                    }
+                );
+    my $xorder = $xsort == 0? 'glnum'
+                :             'descr'
+                ;
+    my @xaccts = model($c, 'XAccount')->search(
+                     {
+                        sponsor => 'mmc',
+                     },
+                     {
+                        order_by => [$xorder],
+                     },
+                 );
+    stash($c,
+        since    => $since,
+        psort    => $psort,
+        xsort    => $xsort,
+        events   => \@events,
+        projs    => \@projs,
+        xaccts   => \@xaccts,
+        ride_glnum  => $string{ride_glnum},
+        template => 'finance/glnum.tt2',
+    );
+}
+
+#
+# gather Extra Accounts and Programs (since $since) sponsored by MMI
+#
+sub mmi_glnum_list : Local {
+    my ($self, $c, $since_param, $psort, $xsort) = @_;
+
+    if (! defined $psort) {
+        $psort = 0;
+    }
+    if (! defined $xsort) {
+        $xsort = 0;
+    }
+    my $since_str = $since_param || $c->request->params->{since};
+    if (! $since_str) {
+        my $today = today();
+        my $y = $today->year();
+        my $m = $today->month();
+        $since_str = date($y-1, $m, 1)->as_d8();
+    }
+    my $since = date($since_str);
+    if (! $since) {
+        error($c,
+              "Illegal date: $since_str",
+              'gen_error.tt2',
+        );
+        return;
+    }
+    my $porder = $psort == 0? 'glnum'
+                :$psort == 1? 'name'
+                :             'sdate'
+                ;
+    my @progs = model($c, 'Program')->search(
+                    {
+                        sdate  => { '>=' => $since->as_d8() },
+                        school => { '!=' => 0 },
+                    },
+                    {
+                        order_by => [ $porder ],
+                    }
+                );
+    my $xorder = $xsort == 0? 'glnum'
+                :             'descr'
+                ;
+    my @xaccts = model($c, 'XAccount')->search(
+                     {
+                        sponsor => 'mmi',
+                     },
+                     {
+                        order_by => [$xorder],
+                     },
+                 );
+    stash($c,
+        since    => $since,
+        psort    => $psort,
+        xsort    => $xsort,
+        programs => \@progs,
+        xaccts   => \@xaccts,
+        template => 'finance/mmi_glnum.tt2',
+    );
+}
+
+sub ride : Local {
+    my ($self, $c) = @_;
+
+    my $since_str = $c->request->params->{since_2months};
+    my $since = date($since_str);
+    if (! $since) {
+        error($c,
+              "Illegal date: $since_str",
+              'gen_error.tt2',
+        );
+        return;
+    }
+    my @rides = model($c, 'Ride')->search(
+                    {
+                        paid_date => { '>=' => $since->as_d8() },
+                    },
+                );
+    #
+    # I don't know enough about DBIx::Class
+    # to join/prefetch the Drivers and Riders
+    # so we do it ourselves our own way:
+    #
+    @rides = sort {
+                 $a->{driver} cmp $b->{driver} ||
+                 $a->{rider}  cmp $b->{rider}
+             }
+             map {
+                 {
+                     driver    => $_->driver->first(),
+                     driver_id => $_->driver_id(),
+                     rider     => $_->rider->last() . ", " . $_->rider->first(),
+                     ride_id   => $_->id(),
+                     cost      => $_->cost,
+                     date      => $_->paid_date_obj
+                 }
+             }
+             @rides;
+    stash($c,
+        since    => $since,
+        rides    => \@rides,
+        template => "finance/rides.tt2",
+    );
+}
+
 1;

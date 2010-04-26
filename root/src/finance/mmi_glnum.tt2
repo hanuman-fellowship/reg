@@ -1,0 +1,32 @@
+<h2>MMI General Ledger Numbers since $since</h2>
+<h3>Programs</h3>
+<table cellpadding=5>
+<tr>
+<td align=left><a href=/finance/mmi_glnum_list/${since.as_d8}/0/$xsort>GL Number</a>[% IF psort == 0 %] &dagger;[% END %]</td>
+<td align=left><a href=/finance/mmi_glnum_list/${since.as_d8}/1/$xsort>Name</a>[% IF psort == 1 %] &dagger;[% END %]</td>
+<td align=left><a href=/finance/mmi_glnum_list/${since.as_d8}/2/$xsort>Start Date</a>[% IF psort == 2 %] &dagger;[% END %]</td>
+</tr>
+[% FOREACH p IN programs %]
+<tr>
+<td>$p.glnum</td>
+<td><a target=program href=/program/view/$p.id>$p.name</a></td>
+<td>$p.sdate_obj</td>
+</tr>
+[% END %]
+</table>
+<p style="margin-top: 6mm">
+<h3>Extra Accounts</h3>
+<table cellpadding=5>
+<tr>
+<td align=left><a href=/finance/mmi_glnum_list/$since.as_d8/$psort/0>GL Number</a>[% IF xsort == 0 %] &dagger;[% END %]</td>
+<td align=left><a href=/finance/mmi_glnum_list/$since.as_d8/$psort/1>Description</a>[% IF xsort == 1 %] &dagger;[% END %]</td>
+</tr>
+[% FOREACH a IN xaccts %]
+<tr>
+<td>$a.glnum</td>
+<td><a target=xaccount href=/xaccount/view/$a.id>$a.descr</a></td>
+</tr>
+[% END %]
+</table>
+
+
