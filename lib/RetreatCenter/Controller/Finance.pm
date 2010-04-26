@@ -871,11 +871,15 @@ sub ride : Local {
              }
              map {
                  {
-                     driver    => $_->driver->first(),
+                     driver    => $_->driver_id()? $_->driver->first()
+                                  :                "Unknown",
                      driver_id => $_->driver_id(),
-                     rider     => $_->rider->last() . ", " . $_->rider->first(),
+                     rider     =>
+                        $_->rider()?  $_->rider->last() . ", "
+                                      . $_->rider->first()
+                        :             "Unknown",
                      ride_id   => $_->id(),
-                     cost      => $_->cost,
+                     cost      => penny($_->cost),
                      date      => $_->paid_date_obj
                  }
              }
