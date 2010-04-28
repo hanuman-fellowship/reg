@@ -860,33 +860,34 @@ sub ride : Local {
                         paid_date => { '>=' => $since->as_d8() },
                     },
                 );
-    #
-    # I don't know enough about DBIx::Class
-    # to join/prefetch the Drivers and Riders
-    # so we do it ourselves our own way:
-    #
-    @rides = sort {
-                 $a->{driver} cmp $b->{driver} ||
-                 $a->{rider}  cmp $b->{rider}
-             }
-             map {
-                 {
-                     driver    => $_->driver_id()? $_->driver->first()
-                                  :                "Unknown",
-                     driver_id => $_->driver_id(),
-                     rider     =>
-                        $_->rider()?  $_->rider->last() . ", "
-                                      . $_->rider->first()
-                        :             "Unknown",
-                     ride_id   => $_->id(),
-                     cost      => penny($_->cost),
-                     date      => $_->paid_date_obj
-                 }
-             }
-             @rides;
+    my %nrides = ();
+    my %total = ();
+    my $gtot = 0;
+    for my $r (@rides) {
+        my $d_id = $r->driver_id();
+        ++$nrides{$d_id};
+        my $c = $r->cost();
+        $total{$d_id} += $c;
+        $gtot += $c;
+    }
+    my @drivers = model($c, 'User')->search(
+        {
+            id => { in => [keys %nrides] },
+        },
+        {
+            order_by => ['first'],
+        }
+    );
+    # to make it easier in the template:
+    for my $d (@drivers) {
+        my $d_id = $d->id();
+        $d->{nrides} = $nrides{$d_id};
+        $d->{total} = $total{$d_id};
+    }
     stash($c,
         since    => $since,
-        rides    => \@rides,
+        drivers  => \@drivers,
+        gtot     => $gtot,
         template => "finance/rides.tt2",
     );
 }
