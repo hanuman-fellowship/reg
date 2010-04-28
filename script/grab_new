@@ -74,7 +74,7 @@ my $sth = $dbh->prepare("
     where the_key like 'ftp_%'
        or the_key like 'smtp_%'
        or the_key like 'reception_email'
-       or the_key like 'ride_email'
+       or the_key like 'ride_%'
 ");
 $sth->execute();
 my %string;
