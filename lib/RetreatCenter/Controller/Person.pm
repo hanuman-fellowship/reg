@@ -1229,8 +1229,8 @@ sub online_add : Local {
         $P{$key} = $val;
     }
     close $in;
-    $P{fname} = normalize($P{fname});
-    $P{lname} = normalize($P{lname});
+    $P{first} = normalize($P{first});
+    $P{last} = normalize($P{last});
     $P{addr1} = $P{street};
     $P{addr2} = '';
     my $type = $P{type};
