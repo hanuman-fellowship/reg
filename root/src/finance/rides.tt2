@@ -15,8 +15,7 @@
 </tr>
 [% END %]
 <tr>
-<td>&nbsp</td>
-<td align=right>Total</td>
+<td colspan=2>&nbsp</td>
 <td align=right style="border-top: solid; border-top-width: 1px;">$gtot</td>
 </tr>
 </table>
