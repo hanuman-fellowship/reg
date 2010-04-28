@@ -941,8 +941,8 @@ sub get_online : Local {
     # first create/update the person
     # copied from Registration/get_online - DRY?
     #
-    $P{fname} = normalize($P{first});
-    $P{lname} = normalize($P{last});
+    $P{first} = normalize($P{first});
+    $P{last} = normalize($P{last});
     my @ppl = ();
     (@ppl) = model($c, 'Person')->search(
         {
@@ -960,8 +960,8 @@ sub get_online : Local {
         # or cell phone search???
         #
         $p = model($c, 'Person')->create({
-            first    => $P{fname},
-            last     => $P{lname},
+            first    => $P{first},
+            last     => $P{last},
             addr1    => $P{street},
             addr2    => '',
             city     => $P{city},
@@ -1019,8 +1019,8 @@ sub get_online : Local {
             addr1    => $P{street},
             addr2    => '',
             city     => $P{city},
-            st_prov  => $P{state},
-            zip_post => $P{zip},
+            st_prov  => $P{st_prov},
+            zip_post => $P{zip_post},
             country  => $P{country},
             akey     => nsquish($P{street}, $P{zip}),
             tel_home => $P{home},
