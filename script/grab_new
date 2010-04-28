@@ -214,7 +214,7 @@ if ($nmlist) {
 #
 # ride requests
 #
-$ftp->cwd($string{ftp_ride_requests});
+$ftp->cwd($string{ftp_ride_dir});
 my $nrides = 0;
 RIDE_FILE:
 for my $f ($ftp->ls()) {
