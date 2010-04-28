@@ -218,3 +218,5 @@ gate_code_email sukhdev@mountmadonna.org
 dp_B_color 255,0,0
 dp_S_color 255,0,0
 reception_email jon@suecenter.org
+ftp_mlist_dir /www/cgi-bin/mlist_requests
+ftp_ride_dir /www/cgi-bin/ride_requests

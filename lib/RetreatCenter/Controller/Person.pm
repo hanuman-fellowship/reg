@@ -473,9 +473,12 @@ sub create_do : Local {
         date_entrd => $today_d8,
     });
     if ($fname) {
-        my $done = "root/static/mlist_done";
-        mkdir $done unless -d $done;
-        rename "root/static/mlist/$fname", "$done/$fname";
+        my $dir = "root/static/mlist_done/"
+                . today()->format("%Y-%m")
+                ;
+        mkdir $dir unless -d $dir;
+        rename "root/static/mlist/$fname",
+               "$dir/$fname";
     }
     my $id = $p->id();
     _get_affils($c, $id);
@@ -1226,7 +1229,10 @@ sub online_add : Local {
         $P{$key} = $val;
     }
     close $in;
+    $P{fname} = normalize($P{fname});
+    $P{lname} = normalize($P{lname});
     $P{addr1} = $P{street};
+    $P{addr2} = '';
     my $type = $P{type};
     my $interest = $P{interest};
     for my $k (qw/ cell home work /) {

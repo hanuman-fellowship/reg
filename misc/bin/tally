@@ -62,6 +62,6 @@ if ($sm > $em) {
 else {
     $start .= " $yr";
 }
-my $ndays = date($end)-date($start);
+my $ndays = date($end)-date($start)+1;
 my $per_week = $hours/($ndays/7);
 printf "= $ndays days = %.1f hours per week\n", $per_week;

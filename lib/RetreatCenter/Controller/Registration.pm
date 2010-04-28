@@ -518,7 +518,6 @@ EOH
 
             date_updat => $today,
         });
-        my $person_id = $p->id();
     }
 
     #

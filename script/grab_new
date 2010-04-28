@@ -8,9 +8,13 @@ created by the 'relay' program.  The names of these files
 are the ids of the most recent authorize.net transactions.
 Put the files in root/static/online.
 
-2) Get mailing list requests into root/static/mlist.
+2) Get recently modified rental grid files.
 
-3) Get all email from authorize@hanumanfellowship.org.
+3) Get mailing list requests into root/static/mlist.
+
+4) Get ride requests into root/static/rides.
+
+5) Get all email from authorize@hanumanfellowship.org.
 This address is one of the recipients of the "Merchant Email Receipts"
 sent by authorize.net after every transaction.
 
@@ -70,6 +74,7 @@ my $sth = $dbh->prepare("
     where the_key like 'ftp_%'
        or the_key like 'smtp_%'
        or the_key like 'reception_email'
+       or the_key like 'ride_email'
 ");
 $sth->execute();
 my %string;
@@ -123,8 +128,10 @@ my %ids = ();
 
 my $online = "root/static/online";
 my $mlist = "root/static/mlist";
+my $rides = "root/static/rides";
 mkdir $online unless -d $online;
 mkdir $mlist unless -d $mlist;
+mkdir $rides unless -d $rides;
 
 #
 # get transaction files from www.mountmadonna.org/cgi-bin/transactions
@@ -175,6 +182,10 @@ for my $f ($ftp->ls()) {
     $Msg .= "got rental file $f\n";
     $ftp->delete($f);
 }
+
+#
+# mlist requests
+#
 $ftp->cwd($string{ftp_mlist_requests});
 my $nmlist = 0;
 MLIST_FILE:
@@ -186,22 +197,10 @@ for my $f ($ftp->ls()) {
         my_warn("no get of mlist file $f");
         next MLIST_FILE;
     }
-    if (open my $in, "<", "$mlist/$f") {
-        my %val = ();
-        while (my $line = <$in>) {
-            chomp $line;
-            if ($line =~ m{^(type|first|last)\s+(.*)}) {
-                $val{$1} = $2;
-            }
-        }
-        close $in;
-    }
     ++$nmlist;
     $Msg .= "got mlist file $f\n";
     $ftp->delete($f);
 }
-$ftp->quit();
-
 if ($nmlist) {
     email_letter(
         to      => "MMC Reception <$string{reception_email}>",
@@ -212,6 +211,38 @@ if ($nmlist) {
     );
 }
 
+#
+# ride requests
+#
+$ftp->cwd($string{ftp_ride_requests});
+my $nrides = 0;
+RIDE_FILE:
+for my $f ($ftp->ls()) {
+    if ($f eq '.' || $f eq '..') {
+        next RIDE_FILE;
+    }
+    if (! $ftp->get($f, "$rides/$f")) {
+        my_warn("no get of rides file $f");
+        next RIDE_FILE;
+    }
+    ++$nrides;
+    $Msg .= "got rides file $f\n";
+    $ftp->delete($f);
+}
+if ($nrides) {
+    email_letter(
+        to      => "MMC Reception <$string{ride_email}>",
+        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+        subject => "Online Ride Request",
+        html    => "There is an online ride request waiting"
+                 . " for you in Reg."
+    );
+}
+
+#
+# all done
+#
+$ftp->quit();
 my %mnum = qw/
     Jan 1
     Feb 2

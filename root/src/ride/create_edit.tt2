@@ -19,6 +19,7 @@ function check(event, fld, n, next_id) {
 </script>
 <h2>Ride for [% person.first %] [% person.last %]</h2>
 <form name=form action=/ride/[% form_action %]>
+<input type=hidden name=fname value=$fname>
 <ul>
 <table cellpadding=3 border=0>
 

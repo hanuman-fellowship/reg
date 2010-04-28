@@ -125,11 +125,15 @@ function new_pickuptime(e, ride_id) {
 <h2>Rides</h2>
 <form name=form action=/ride/search>
 [% IF Catalyst.check_user_roles('ride_admin') %]
-<a href="/ride/pay">Pay</a>
-&nbsp;&nbsp;&nbsp;
-<a href="javascript:popup('/ride/drivers');">Drivers</a>
+    <a href="/ride/pay">Pay</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="javascript:popup('/ride/drivers');">Drivers</a>
+    [% IF online %]
+        &nbsp;&nbsp;&nbsp;
+        <a href=/ride/online>Online($online)</a>
+    [% END %]
 [% END %]
-<span style="margin-left: .5in">Start</span>
+<span style="margin-left: .3in">Start</span>
 <input type=text name=start size=10 value='$start'>
 &nbsp;
 End <input type=text name=end size=10 value='$end'>
