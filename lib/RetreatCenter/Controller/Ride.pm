@@ -456,6 +456,7 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     _get_data($c);
+    delete $P{fname};       # only for create_do with an online ride.
     return if @mess;
     my $ride = model($c, 'Ride')->find($id);
     my $rider = $ride->rider();
