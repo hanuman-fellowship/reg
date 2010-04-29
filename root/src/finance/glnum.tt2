@@ -1,5 +1,18 @@
+<style>
+.dup {
+    color: red;
+    font-weight: bold;
+}
+</style>
 <h2>General Ledger Numbers since $since</h2>
 <h3>Programs & Rentals *</h3>
+[% IF ndups == 1 %]
+<span style="color: red">There was $ndups duplicate GL number.</span>
+<p class=p2>
+[% ELSIF ndups > 1 %]
+<span style="color: red">There were $ndups duplicate GL numbers.</span>
+<p class=p2>
+[% END %]
 <table cellpadding=5>
 <tr>
 <td align=left><a href=/finance/glnum_list/${since.as_d8}/0/$xsort>GL Number</a>[% IF psort == 0 %] &dagger;[% END %]</td>
@@ -8,7 +21,15 @@
 </tr>
 [% FOREACH e IN events %]
 <tr>
-<td>$e.glnum</td>
+
+<td>
+[% IF e.dup %]
+<span class=dup>$e.glnum</span>
+[% ELSE %]
+$e.glnum
+[% END %]
+</td>
+
 <td><a target=program href=/$e.event_type/view/$e.id>$e.name</a>[% IF e.event_type == 'rental' %]  *[% END %]</td>
 <td>$e.sdate_obj</td>
 </tr>
@@ -23,7 +44,15 @@
 </tr>
 [% FOREACH pr IN projs %]
 <tr>
-<td>$pr.glnum</td>
+
+<td>
+[% IF pr.dup %]
+<span class=dup>$pr.glnum</span>
+[% ELSE %]
+$pr.glnum
+[% END %]
+</td>
+
 <td><a target=xaccount href=/project/update/$pr.id>$pr.descr</a></td>
 </tr>
 [% END %]
@@ -37,7 +66,15 @@
 </tr>
 [% FOREACH xa IN xaccts %]
 <tr>
-<td>$xa.glnum</td>
+
+<td>
+[% IF xa.dup %]
+<span class=dup>$xa.glnum</span>
+[% ELSE %]
+$xa.glnum
+[% END %]
+</td>
+
 <td><a target=xaccount href=/xaccount/view/$xa.id>$xa.descr</a></td>
 </tr>
 [% END %]

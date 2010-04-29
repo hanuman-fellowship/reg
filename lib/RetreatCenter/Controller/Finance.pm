@@ -770,7 +770,22 @@ sub glnum_list : Local {
                         order_by => [$xorder],
                      },
                  );
+    my %glnum_count = ();
+    my $ndups = 0;
+    ITEM:
+    for my $item (@events, @projs, @xaccts) {
+        my $n = $item->glnum();
+        if (exists $glnum_count{$n}
+            && (!$item->can('name') || $item->name() !~ m{personal\s+retreat}i)
+        ) {
+            $item->{dup} = $glnum_count{$n}->{dup} = 1;
+            ++$ndups;
+            next ITEM;
+        }
+        $glnum_count{$n} = $item;
+    }
     stash($c,
+        ndups    => $ndups,
         since    => $since,
         psort    => $psort,
         xsort    => $xsort,
