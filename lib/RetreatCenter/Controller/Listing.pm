@@ -1333,8 +1333,8 @@ sub field : Local {
 }
 
 #
-# numbers of beds to make up - not rooms.
-# numbers of people that left a campsite - not sites.
+# on a given date how many beds will be needed?
+# numbers of people that are arriving at a campsite - not sites.
 #   but for a rental we won't know the number of people - just sites.
 #
 sub field_plan : Local {
@@ -1388,33 +1388,27 @@ sub field_plan : Local {
         $sites{$d8} = 0;
         ++$d;
     }
-    my @regs = model($c, 'Registration')->search(
-               {
-                   date_end   => { between => [ $start_d8, $end_d8 ] },
+    my @regs = model($c, 'Registration')->search({
+                   date_start => { between => [ $start_d8, $end_d8 ] },
                    house_id   => { '!='    => 0                      },
                    cancelled  => '',
-               },
-    );
+               });
     for my $r (@regs) {
-        my $ed = $r->date_end();
+        my $sd = $r->date_start();
         if ($r->h_type() =~ m{tent}) {
-            ++$sites{$ed};
+            ++$sites{$sd};
         }
         else {
-            ++$beds{$ed};
+            ++$beds{$sd};
         }
     }
-    # ??? is this right?   +1, -1???  or bookings?
-    # +/- 1 above in reg?
-    my @rentals = model($c, 'Rental')->search(
-                  {
-                      edate   => { between => [ $start_d8, $end_d8 ] },
-                  },
-    );
+    my @rentals = model($c, 'Rental')->search({
+                      sdate => { between => [ $start_d8, $end_d8 ] },
+                  });
     for my $r (@rentals) {
-        my $ed = $r->edate();
+        my $sd = $r->sdate();
         #
-        # on the end date of this rental how
+        # on the start date of this rental how
         # many beds/sites will need to be tidied up?
         # assume that all bookings are full - worst case scenario.
         #
@@ -1424,26 +1418,25 @@ sub field_plan : Local {
         ) {
             my $h = $rb->house();
             if ($h->tent()) {
-                ++$sites{$ed};
+                ++$sites{$sd};
             }
             else {
-                $beds{$ed} += $h->max();
+                $beds{$sd} += $h->max();
             }
         }
     }
     my @blocks  = model($c, 'Block')->search({
-                      sdate   => { '<=' => $end_d8 },
-                      edate   => { '>=' => $start_d8 },
+                      sdate   => { between => [ $start_d8, $end_d8 ] },
                       npeople => { '>'  => 0 },
                   });
     for my $bl (@blocks) {
-        my $ed = $bl->edate();
+        my $sd = $bl->sdate();
         my $npeople = $bl->npeople();
         if ($bl->house->tent()) {
-            $sites{$ed} += $npeople;
+            $sites{$sd} += $npeople;
         }
         else {
-            $beds{$ed} += $npeople;
+            $beds{$sd} += $npeople;
         }
     }
     $d = $start;
@@ -1457,9 +1450,11 @@ sub field_plan : Local {
         $rows .= "</tr>\n";
         ++$d;
     }
-    $c->stash->{time} = localtime();
-    $c->stash->{rows} = $rows;
-    $c->stash->{template} = "listing/field_plan.tt2";
+    stash($c,
+        time     => localtime(),
+        rows     => $rows,
+        template => "listing/field_plan.tt2",
+    );
 }
 
 #
