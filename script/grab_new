@@ -231,7 +231,7 @@ for my $f ($ftp->ls()) {
 }
 if ($nrides) {
     email_letter(
-        to      => "MMC Reception <$string{ride_email}>",
+        to      => "MMC Transportation <$string{ride_email}>",
         from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
         subject => "Online Ride Request",
         html    => "There is an online ride request waiting"

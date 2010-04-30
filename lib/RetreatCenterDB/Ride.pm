@@ -41,6 +41,8 @@ __PACKAGE__->add_columns(qw/
     paid_date
     sent_date
     shuttle
+    create_date
+    create_time
 /);
 __PACKAGE__->set_primary_key(q/id/);
 
@@ -65,6 +67,15 @@ sub flight_time_obj {
 sub pickup_time_obj {
     my ($self) = @_;
     my $t = $self->pickup_time();
+    return empty($t)? ""
+           :          get_time($t);
+}
+sub create_date_obj {
+    return date(shift->create_date()) || "";
+}
+sub create_time_obj {
+    my ($self) = @_;
+    my $t = $self->create_time();
     return empty($t)? ""
            :          get_time($t);
 }

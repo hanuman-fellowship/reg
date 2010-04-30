@@ -565,6 +565,11 @@ sub create_do : Local {
     my $fname = $P{fname};
     delete $P{fname};
 
+    if (! $P{create_date}) {
+        $P{create_date} = today()->as_d8();
+        $P{create_time} = get_time()->t24();
+    }
+
     my $ride = model($c, 'Ride')->create(\%P);
     if ($fname) {
         my $dir = "root/static/rides_done/"
@@ -1090,6 +1095,8 @@ sub get_online : Local {
             comment     => $P{request},
         },
         carrier      => $P{carrier},
+        create_date  => $P{create_date},
+        create_time  => $P{create_time},
         form_action  => "create_do/" . $p->id(),
         template     => "ride/create_edit.tt2",
     );
