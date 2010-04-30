@@ -770,6 +770,10 @@ sub glnum_list : Local {
                         order_by => [$xorder],
                      },
                  );
+    #
+    # we stuff a dup key in the object.
+    # very bad form... :)
+    #
     my %glnum_count = ();
     my $ndups = 0;
     ITEM:
@@ -885,14 +889,20 @@ sub ride : Local {
         $total{$d_id} += $c;
         $gtot += $c;
     }
-    my @drivers = model($c, 'User')->search(
-        {
-            id => { in => [keys %nrides] },
-        },
-        {
-            order_by => ['first'],
-        }
-    );
+    my @drivers = ();
+    if (%nrides) {
+        # must make it conditional - otherwise
+        # one gets an error in the sql
+        #
+        @drivers = model($c, 'User')->search(
+            {
+                id => { in => [keys %nrides] },
+            },
+            {
+                order_by => ['first'],
+            }
+        );
+    }
     # to make it easier in the template:
     for my $d (@drivers) {
         my $d_id = $d->id();
