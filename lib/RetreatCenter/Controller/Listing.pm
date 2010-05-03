@@ -1451,7 +1451,7 @@ sub field_plan : Local {
         ++$d;
     }
     stash($c,
-        time     => localtime(),
+        time     => scalar(localtime()),
         rows     => $rows,
         template => "listing/field_plan.tt2",
     );
