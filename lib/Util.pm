@@ -605,6 +605,10 @@ sub email_letter {
         push @cc_bcc, bcc => $args{bcc};
     }
     push @cc_bcc, bcc => 'jon@logicalpoetry.com';
+    # temporary adjustment of mountmadonna.org addresses:
+    for my $a ($args{to}, @cc_bcc) {
+        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org};
+    }
     if (! $mail_sender->Open({
         to       => $args{to},
         @cc_bcc,
