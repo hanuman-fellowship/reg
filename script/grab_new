@@ -73,14 +73,16 @@ my $sth = $dbh->prepare("
     from string
     where the_key like 'ftp_%'
        or the_key like 'smtp_%'
-       or the_key like 'reception_email'
        or the_key like 'ride_%'
+       or the_key like 'reception_email'
+       or the_key like 'mmi_email'
 ");
 $sth->execute();
 my %string;
 while (my ($the_key, $value) = $sth->fetchrow_array()) {
     $string{$the_key} = $value;
 }
+$string{mmc_email} = $string{reception_email};      # sorry - see below
 
 #
 # now we can connect
@@ -113,6 +115,7 @@ sub email_letter {
         port => $string{smtp_port},
         @auth,
     }) or my_die("no mail sender");
+    $args{to} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
     $mail_sender->Open({
         to       => $args{to},
         from     => $args{from},
@@ -188,6 +191,7 @@ for my $f ($ftp->ls()) {
 #
 $ftp->cwd($string{ftp_mlist_requests});
 my $nmlist = 0;
+my %for_whom;
 MLIST_FILE:
 for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
@@ -200,15 +204,28 @@ for my $f ($ftp->ls()) {
     ++$nmlist;
     $Msg .= "got mlist file $f\n";
     $ftp->delete($f);
+    # was it for mmi or mmc?
+    if (open my $in, "<", $f) {
+        while (my $line = <$in>) {
+            if ($line =~ m{^type (.*)}) {
+                $for_whom{$1} = 1;                
+            }
+        }
+        close $in;
+    }
 }
 if ($nmlist) {
-    email_letter(
-        to      => "MMC Reception <$string{reception_email}>",
-        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-        subject => "Online Mailing List Request",
-        html    => "There is an online mailing list request waiting"
-                 . " for you in Reg."
-    );
+    for my $k (keys %for_whom) {
+        my $uk = uc $k;
+        my $email = $string{$k . '_email'};
+        email_letter(
+            to      => "$uk Mail Admin <$email>",
+            from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+            subject => "Online Mailing List Request",
+            html    => "There is an online mailing list request waiting"
+                     . " for you in Reg."
+        );
+    }
 }
 
 #
