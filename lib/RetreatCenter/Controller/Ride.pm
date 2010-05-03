@@ -628,13 +628,18 @@ EOS
         return;
     }
     else {
-        email_letter($c,
+        if (!email_letter($c,
             to      => $rider->name_email(),
             cc      => $driver->name_email(),
             from    => "MMC Transportation <$string{ride_email}>",
             subject => "Ride Scheduled",
             html    => $html,
-        );
+        )) {
+            error($c,
+                  'Email did not send! :(',
+                  'gen_error.tt2');
+            return;
+        }
         # ??? did it send correctly?
         $ride->update({
             sent_date => today()->as_d8(),
