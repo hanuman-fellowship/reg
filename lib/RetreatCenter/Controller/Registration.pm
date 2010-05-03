@@ -1837,14 +1837,19 @@ sub send_conf : Local {
         return;
     }
     my $user = $c->user->obj();
-    email_letter($c,
+    if (!email_letter($c,
            to      => $reg->person->name_email(),
            from    => $string{from_title} 
                       . " <" . $user->email() . ">",
            replyto => "$string{from_title} <$string{from}>",
            subject => "Confirmation of Registration for " . $pr->title(),
            html    => $html, 
-    );
+    )) {
+        error($c,
+              'Email did not send! :(',
+              'gen_error.tt2');
+        return;
+    }
     my @who_now = get_now($c, $id);
     if ($reg->confnote) {
         model($c, 'ConfHistory')->create({
