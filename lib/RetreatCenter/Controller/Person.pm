@@ -1259,7 +1259,7 @@ sub online_add : Local {
             @mmi_affils = model($c, 'Affil')->search({
                 -and => [
                     descrip => { 'like' => 'MMI%' },
-                    descrip => { 'not_like' => 'MMI Discount' },
+                    descrip => { 'not_like' => '%Discount%' },
                 ],
             });
         }
