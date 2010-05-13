@@ -49,6 +49,7 @@ create table program (
     dncc_why    text,
     color       text,
     allow_dup_regs text,
+    percent_tuition integer,
     refresh_days text
 );
 drop table if exists canpol;
@@ -89,7 +90,8 @@ create table leader (
     image text,
     biography text,
     assistant text,
-    l_order integer     -- can't use 'order'
+    l_order integer,     -- can't use 'order'
+    just_first text
 );
 drop table if exists leader_program;
 create table leader_program (

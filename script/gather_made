@@ -35,11 +35,15 @@ my @house_ids;
 # the corresponding config record end date is actually
 # one day before since we reserve nights not days.
 #
+# PRs occuring before a rental don't require being put
+# on the make up list.  they will have 'rental_after' = 'yes'.
+#
 my $getreg_sth = $dbh->prepare("
     select distinct house_id
     from registration
     where house_id != 0
       and date_end = $cur_date
+      and (rental_after != 'yes' or rental_after is null);
 ");
 $getreg_sth->execute();
 while (my ($house_id) = $getreg_sth->fetchrow_array()) {
@@ -49,6 +53,25 @@ while (my ($house_id) = $getreg_sth->fetchrow_array()) {
 # rentals reserve the entire room.
 # the last night is a day before the cur_date.
 #
+# If a PR arrives in the same room as a rental
+# on the day the rental leaves and that PR has
+# the 'rental_before' attribute checked then do not put
+# that room on the make up list.   Note that 'rental_before'
+# can only be checked on PR registrations.
+#
+my $getpr_sth = $dbh->prepare("
+    select house_id
+    from registration
+    where date_start = $cur_date
+      and rental_before = 'yes';
+");
+$getpr_sth->execute();
+my %no_makeup_id = ();
+while (my ($h_id) = $getpr_sth->fetchrow_array()) {
+print "no make $h_id\n";
+    $no_makeup_id{$h_id} = 1;
+}
+
 my $getrental_sth = $dbh->prepare("
     select house_id
     from rental_booking
@@ -56,7 +79,9 @@ my $getrental_sth = $dbh->prepare("
 ");
 $getrental_sth->execute();
 while (my ($house_id) = $getrental_sth->fetchrow_array()) {
-    push @house_ids, $house_id;
+print "got $house_id\n";
+    push @house_ids, $house_id
+        unless exists $no_makeup_id{$house_id};
 }
 
 #

@@ -207,7 +207,7 @@ th {
 
 <tr>
 <th>Orientation</th><td>[% orientation %]</td>
-<th>Wind Up</th><td>[% wind_up %]</td>
+<th>Wind Up</th><td valign=top>[% wind_up %]</td>
 </tr>
 
 <tr>
@@ -221,7 +221,7 @@ th {
 
 <tr>
 <th>Leader Name</th><td>[% leader_name %]</td>
-<th>Staff Arrival</th><td>[% staff_arrival %]</td>
+<th>Staff Arrival</th><td valign=top>[% staff_arrival %]</td>
 </tr>
 
 <tr>

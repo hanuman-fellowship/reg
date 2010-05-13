@@ -17,7 +17,7 @@ while (<$strs>) {
     next if m{^#} || m{^\s*$};
     chomp;
     ($key, $value) = m{^\s*(\S+)\s+(.*)$};
-    $sth->execute($key, $value);
+    $sth->execute($key, $value) or die "no exec";
 }
 close $strs;
 
@@ -26,9 +26,10 @@ use Date::Simple qw/
     today
 /;
 # special case
-my $ddt = today()-1;
-$sth->execute('last_deposit_date', $ddt->as_d8());
-$sth->execute('last_mmi_deposit_date', $ddt->as_d8());
+my $ddt = (today()-1)->as_d8();
+$sth->execute('sys_last_config_date', $ddt);
+$sth->execute('last_deposit_date', $ddt);
+$sth->execute('last_mmi_deposit_date', $ddt);
 
 # smtp settings differ from macbook to kali
 # use the mysql command line parameter to differentiate

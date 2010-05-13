@@ -62,6 +62,8 @@ __PACKAGE__->add_columns(qw/
     manual
     work_study
     work_study_comment
+    rental_before
+    rental_after
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);

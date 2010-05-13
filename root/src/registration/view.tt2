@@ -347,6 +347,12 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <span class=hdr>Information</span>
 <table cellpadding=2>
 
+[% IF PR %]
+<tr>
+<th align=right>Adjacent Rental</th><td>[% IF reg.rental_before %]Before this PR[% ELSIF reg.rental_after %]After this PR[% END %]</td>
+</tr>
+[% END %]
+
 <tr>
 <th align=right>Ages of Kids</th><td>[% reg.kids %]</td>
 </tr>

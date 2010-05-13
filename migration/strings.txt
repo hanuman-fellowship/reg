@@ -102,7 +102,6 @@ mem_gen_amt 25
 mem_sponsor_nights 12
 mem_spons_year 300
 mem_spons_semi_year 150
-sys_last_config_date 20080701
 house_width 8.75
 house_height 20
 house_let 10
@@ -220,3 +219,4 @@ dp_S_color 255,0,0
 reception_email jon@suecenter.org
 ftp_mlist_dir /www/cgi-bin/mlist_requests
 ftp_ride_dir /www/cgi-bin/ride_requests
+mmi_email jon@suecenter.org

@@ -101,6 +101,23 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 
 </tr>
 
+[% IF program.PR %]
+<tr>
+<th align=right>Adjacent Rental</td>
+<td align=left colspan=2>
+Before <input type=checkbox value=yes name=rental_before [% rental_before_checked %]>
+&nbsp;&nbsp;
+After <input type=checkbox value=yes name=rental_after [% rental_after_checked %]>
+</td>
+</tr>
+[% END %]
+
+<tr>
+<th align=right>Ages of Kids</th>
+<td colspan=2><input type=text name=kids size=10 value="[% reg.kids %]"></td>
+<td><input id=sub type=submit value="Submit"></td>
+</tr>
+
 <tr>
 <th align=right>Referral</th>
 <td colspan=5>
@@ -126,12 +143,6 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 <input type=text name=ceu_license value="[% reg.ceu_license %]">
 </td>
 [% END %]
-</tr>
-
-<tr>
-<th align=right>Ages of Kids</th>
-<td colspan=2><input type=text name=kids size=10 value="[% reg.kids %]"></td>
-<td><input id=sub type=submit value="Submit"></td>
 </tr>
 
 <tr>

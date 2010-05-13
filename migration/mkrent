@@ -117,5 +117,5 @@ create table proposal (
     rental_id integer,
     person_id integer,
     cs_person_id integer,
-    staff_ok text,
+    staff_ok text
 );

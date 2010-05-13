@@ -70,13 +70,13 @@ function get_gender() {
     <tr>
         <td align=right>&nbsp;</td>
         <td colspan=3><input tabindex=6 type=text name=addr2 value="[% person.addr2 %]" size=30>
-        &nbsp;&nbsp;<input tabindex=19 type=submit value="Submit"></td>
+        &nbsp;&nbsp;<input tabindex=20 type=submit value="Submit"></td>
     </tr>
     <tr>
         <th align=right>City</th>
         <td><input tabindex=7 type=text name=city value="[% person.city %]"></td>
         <th align=left valign=top rowspan=4 colspan=2>Comment<br>
-        <textarea tabindex=18 name=comment cols=40 rows=5>[% person.comment %]</textarea></th>
+        <textarea tabindex=21 name=comment cols=40 rows=5>[% person.comment %]</textarea></th>
     </tr>
     <tr>
         <th align=right>State/Province</th>

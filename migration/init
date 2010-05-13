@@ -1,12 +1,22 @@
 #!/bin/sh
-sqlite3 retreatcenter.db <mkpeople
-sqlite3 retreatcenter.db <mkmisc
-sqlite3 retreatcenter.db <mkprog
-sqlite3 retreatcenter.db <mkrep
-sqlite3 retreatcenter.db <mkusers
+rm retreatcenter.db
+sqlite3 retreatcenter.db <mkacct
+sqlite3 retreatcenter.db <mkblock
+sqlite3 retreatcenter.db <mkbook
+sqlite3 retreatcenter.db <mkevent
+sqlite3 retreatcenter.db <mkgloss
+sqlite3 retreatcenter.db <mkhouse
+sqlite3 retreatcenter.db <mkmeet
 sqlite3 retreatcenter.db <mkmember
+sqlite3 retreatcenter.db <mkmisc
+sqlite3 retreatcenter.db <mkpeople
+sqlite3 retreatcenter.db <mkprog
 sqlite3 retreatcenter.db <mkreg
-load.pl
-loadstr.pl
-loadprog.pl
+sqlite3 retreatcenter.db <mkrent
+sqlite3 retreatcenter.db <mkrep
+sqlite3 retreatcenter.db <mkride
+sqlite3 retreatcenter.db <mkusers
+export DBI_DSN=dbi:SQLite:/Users/jonbjornstad/newReg/RetreatCenter/migration/retreatcenter.db
+
+loadstr
 cp retreatcenter.db ..

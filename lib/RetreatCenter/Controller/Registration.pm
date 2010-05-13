@@ -887,6 +887,9 @@ sub _get_data {
     if ($P{hascar} && ! $P{carpool}) {
         $P{carpool} = 'yes';
     }
+    if ($P{rental_before} && $P{rental_after}) {
+        $P{rental_after} = '';
+    }
 }
 
 #
@@ -2717,7 +2720,9 @@ sub update : Local {
         hascar_checked  => $reg->hascar()    ? "checked": "",
         cabin_checked   => $c_r eq 'cabin'   ? "checked": "",
         room_checked    => $c_r eq 'room'    ? "checked": "",
-        work_study_checked => $reg->work_study()? "checked": "",
+        work_study_checked    => $reg->work_study()? "checked": "",
+        rental_before_checked => $reg->rental_before()? "checked": "",
+        rental_after_checked  => $reg->rental_after()? "checked": "",
         note_lines      => lines($reg->confnote()) + 3,
         comment_lines   => lines($reg->comment ()) + 3,
         leader_assistant_checked => $P{leader_assistant}? "checked": "",
@@ -2811,6 +2816,8 @@ sub update_do : Local {
         pref1         => $P{pref1},
         pref2         => $P{pref2},
         work_study    => $P{work_study},
+        rental_before => $P{rental_before},
+        rental_after  => $P{rental_after},
         free_prog_taken    => $P{free_prog},
         work_study_comment => $P{work_study_comment},
 

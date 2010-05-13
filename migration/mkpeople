@@ -22,6 +22,8 @@ create table people (
     comment text,
     e_mailings text,
     snail_mailings text,
+    mmi_e_mailings text,
+    mmi_snail_mailings text,
     share_mailings text,
     deceased text,
     inactive text,
@@ -34,6 +36,8 @@ create table affils (
     id integer primary key autoincrement,
     descrip text
 );
+insert into affils values (1, 'Alert when registering');
+insert into affils values (2, 'Guru Purnima');
 drop table if exists affil_people;
 create table affil_people (
     a_id integer,

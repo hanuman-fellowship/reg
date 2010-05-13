@@ -52,28 +52,6 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 [% END %]
 
 
-<tr>
-<th align=right>Referral</th>
-<td>
-<select name=referral>
-<option value="ad"            [% ad_checked %]           >Advertisement</option>
-<option value="web"           [% web_checked %]          >Web</option>
-<option value="brochure"      [% brochure_checked %]     >Brochure</option>
-<option value="flyer"         [% flyer_checked %]        >Flyer</option>
-<option value="word_of_mouth" [% word_of_mouth_checked %]>Word of Mouth</option>
-</select>
-</td>
-<th align=right>Ad Source</th>
-<td><input type=text name=adsource value="[% adsource %]"></td>
-</tr>
-
-<tr>
-<th align=right valign=top>Carpool</th>
-<td>
-<input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
-<input type=checkbox name=hascar value=yes [% hascar_checked %]> Has Car
-</td>
-
 <!-- need a slight adjustment here: font size will change it -->
 [% IF ceu %]
 <th align=right valign=top><span style="display: block; margin-top: 1mm">CEU License #</span></th>
@@ -83,10 +61,21 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 [% END %]
 </tr>
 
+[% IF program.PR %]
+<tr>
+<th align=right>Adjacent Rental</th>
+<td>
+Before <input type=checkbox name=rental_before value=yes>
+&nbsp;&nbsp;
+After <input type=checkbox name=rental_after value=yes>
+</td>
+</tr>
+[% END %]
+
 <tr>
 <th align=right>Ages of Kids</th>
 <td><input type=text name=kids size=20></td>
-<td><input type=submit value="Submit"></td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 
 <tr>
@@ -142,9 +131,29 @@ onclick='return confirm("This registration has not yet been completed.  Continue
 </tr>
 
 <tr>
-<td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<th align=right>Referral</th>
+<td>
+<select name=referral>
+<option value="ad"            [% ad_checked %]           >Advertisement</option>
+<option value="web"           [% web_checked %]          >Web</option>
+<option value="brochure"      [% brochure_checked %]     >Brochure</option>
+<option value="flyer"         [% flyer_checked %]        >Flyer</option>
+<option value="word_of_mouth" [% word_of_mouth_checked %]>Word of Mouth</option>
+</select>
+</td>
+<th align=right>Ad Source</th>
+<td><input type=text name=adsource value="[% adsource %]"></td>
 </tr>
+
+<tr>
+<th align=right valign=top>Carpool</th>
+<td>
+<input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
+<input type=checkbox name=hascar value=yes [% hascar_checked %]> Has Car
+</td>
+<td><input type=submit id=sub value="Submit"></td>
+</tr>
+
 
 </table>
 [% IF credit %]

@@ -46,7 +46,10 @@ create table registration (
     share_last text,
     manual text,
     work_study text,
-    work_study_comment text
+    work_study_comment text,
+
+    rental_before text,
+    rental_after text
 );
 drop table if exists reg_history;
 create table reg_history (

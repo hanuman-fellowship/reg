@@ -2038,65 +2038,14 @@ sub color_do : Local {
 }
 
 #
-# fill in the personal.html template
-# with the current program's housing cost
-# and publish it to www.mountmadonna.org/personal
-# as index.html.
-# the current program is likely a Personal Retreat program
-# for some range of dates - it could have web ready or not
-# also optional is unlinked dir = personal, template = personal.
-#
-# that personal.html template has a fixed id of 0 and dir of 'personal'.
-# the zero denotes a PR.
-# it will cause arrival/departure dates
-# to be prompted for in reg1 and when it is brought in
-# to Reg it will search for the appropriate PR program
-# to register for.
-# this also generates a 'progtable' file just for this PR.
+# invoke the publish_pr program usually invoked
+# automatically on the 1st of the month at 1 am.
 #
 sub publishPR : Local {
-    my ($self, $c, $prog_id) = @_;
+    my ($self, $c, $id) = @_;
 
-    my $p = model($c, 'Program')->find($prog_id);
-
-    # clear the arena
-    #
-    system("rm -rf gen_files; mkdir gen_files; mkdir gen_files/pics");
-
-    # index.html
-    #
-    my $template = slurp("personal");
-    $template =~ s{<!--\s*T\s+(\w+)\s*-->}
-                  {$p->$1()}ge;      # fee table, current year/date only
-    open my $tmp, ">", "gen_files/index.html"
-        or die "no gen_files/index.html: $!\n";
-    print {$tmp} $template;
-    close $tmp;
-
-    # progtable
-    #
-    open my $progt, ">", "gen_files/progtable"
-        or die "no progtable: $!\n";
-    print {$progt} "{\n";       # the enclosing anonymous hash ref
-    _prt_data($progt, $p, 0);
-    print {$progt} "};\n";
-    close $progt;
-
-    # ftp
-    #
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or return _pub_err($c, "cannot connect to ...");
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return _pub_err($c, "cannot login: " . $ftp->message);
-    $ftp->cwd($string{ftp_dir})
-        or return _pub_err($c, "cannot cwd: " . $ftp->message);
-    $ftp->cwd("personal")
-        or return _pub_err($c, "cannot cwd: " . $ftp->message);
-    $ftp->ascii();
-    $ftp->put("gen_files/index.html", "index.html");
-    $ftp->put("gen_files/progtable",  "progtable");
-    $ftp->quit();
-    $c->response->redirect($c->uri_for("/program/view/$prog_id"));
+    system("publish_pr");
+    $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 
 sub update_refresh : Local {
