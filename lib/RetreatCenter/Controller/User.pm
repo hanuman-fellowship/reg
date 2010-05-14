@@ -270,7 +270,7 @@ sub _pictures {
     my ($id) = @_;
     my $pics = "";
     my $dels = "";
-    my @pics = <root/static/images/uth-$id*>;
+    my @pics = <root/static/images/uth-$id-*>;
     for my $p (@pics) {
         my $mp = $p;
         $mp =~ s{root}{};
