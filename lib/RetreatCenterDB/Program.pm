@@ -723,7 +723,8 @@ EOH
 
 sub cancellation_policy {
     my ($self) = @_;
-    return gptrim($self->canpol->policy);
+    my $s = gptrim($self->canpol->policy);
+    $s =~ s{^<p>|</p>$}{}g;     # no paragraphs at all, please.
 }
 
 sub gen_popup {
