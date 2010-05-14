@@ -585,7 +585,7 @@ sub create_do : Local {
 # send email to driver and rider with the appropriate details.
 #
 sub send : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $preview) = @_;
 
     my $ride = model($c, 'Ride')->find($id);
     my $driver = $ride->driver();
@@ -620,6 +620,10 @@ EOS
         has_email => ! empty($rider->email()),
         pictures  => _driver_pics($ride),
     });
+    if ($preview) {
+        $c->res->output($html);
+        return;
+    }
     if ($snail) {
         $ride->update({
             sent_date => today()->as_d8(),

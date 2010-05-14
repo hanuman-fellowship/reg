@@ -29,6 +29,8 @@
             ><span style="color: red">Send</span></a>
         [% END %]
         &nbsp;&nbsp;&nbsp;
+        <a href=/ride/send/$id/1>Preview</a>
+        &nbsp;&nbsp;&nbsp;
     [% END %]
     [% IF ride.from_to == 'To MMC' %]
         <a href="/ride/create/$rider.id/$id">Return</a>
