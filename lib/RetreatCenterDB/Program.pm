@@ -725,6 +725,7 @@ sub cancellation_policy {
     my ($self) = @_;
     my $s = gptrim($self->canpol->policy);
     $s =~ s{^<p>|</p>$}{}g;     # no paragraphs at all, please.
+    $s;
 }
 
 sub gen_popup {
