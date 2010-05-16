@@ -311,7 +311,7 @@ $user.first $user.last
 [% tot = 0 %]
 [% FOR ch IN reg.charges %]
 <TR>
-<TD align=right>[% penny(ch.amount) %]</TD>
+<TD align=right valign=top>[% penny(ch.amount) %]</TD>
 <TD>$ch.what</TD>
 </TR>
 [% tot = tot + ch.amount %]
