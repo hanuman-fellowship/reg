@@ -2387,13 +2387,10 @@ sub _reg_table {
     }
     else {
         # all in same program, shall we show the arrived ones?
-        # only if the program is not in the past.
         #
         if (@$reg_aref) {
             my $pr = $reg_aref->[0]->program();
-            if ($pr->sdate() <= today()->as_d8()) {
-                $show_arrived = 1;
-            }
+            $show_arrived = 1;
         }
     }
     my $posthead = "";
