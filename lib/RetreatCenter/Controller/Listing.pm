@@ -967,9 +967,12 @@ sub late_notices : Local {
         @date_bool = (
                          -or => [
                              date_start => $d8,
-                             date_start => (date($d8)+1)->as_d8(),
+                             -and => [
+                                date_start => (date($d8)+1)->as_d8(),
+                                'program.name' => 
+                                    { like => '%Personal Retreat%' },
+                             ],
                          ],
-                         'program.name' => { like => '%Personal Retreat%' },
                      );
     }
     else {
