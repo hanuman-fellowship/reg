@@ -11,6 +11,12 @@
 # at 11:30 pm back up all the data in mysql and send it offsite
 30 23 * * * /home/sahadev/RetreatCenter/db_backup
 
+# at 11:40 am back up all the rental grid data and send it offsite
+40 23 * * * /home/sahadev/RetreatCenter/grid_backup
+
+# at 11:50 am back up the entire CVS repository and sent it offsite
+50 23 * * * /home/sahadev/RetreatCenter/repo_backup
+
 # at noon and 6 pm republish the public version of the calendar
 0 12,18 * * * /home/sahadev/RetreatCenter/pubcal
 
