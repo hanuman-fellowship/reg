@@ -1,0 +1,18 @@
+#/bin/sh
+cd /home/sahadev/RetreatCenter
+day=`date +%a`
+f=/home/sahadev/RetreatCenter/repo.$day
+gz=repo.$day.gz
+rm -f $f $f.gz
+cd /usr/local/cvsroot
+tar cvf $f RetreatCenter >/home/sahadev/RetreatCenter/repo.out 2>&1
+gzip $f
+ftp logicalpoetry.com <<EOF
+cd backup
+put $f.gz $gz 
+quit
+#sftp sahadev@varuna <<EOF       # varuna
+#cd backup
+#put $f.gz $gz
+#quit
+#EOF
