@@ -6,10 +6,10 @@
 <link href="../regform.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 var newwin;
-function popup(url, height) {
+function popup(url, height, width) {
     newwin = window.open(
         url, 'reg_search_help',
-        'height=' + height + ',width=550, scrollbars'
+        'height=' + height + ',width=' + width +', scrollbars'
     );
     if (window.focus) {
         newwin.focus();
@@ -318,7 +318,7 @@ $housing_fees
 
 <br style="clear:all;"/>        
 
-<span class="help" id="msg_house1"> If you have a physical disability that limits where you can be housed, 
+<span class="help" id="msg_house1">If you have a physical disability that limits where you can be housed, 
 please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                     
 <br style="clear:all;"/>        
@@ -329,7 +329,7 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                 <li>
                                 <fieldset>
                                 <p>If given a choice, would you prefer a cabin or a room?<br>
-                                <a href='/programs/cabins_vs_rooms.html' target=_blank>What's the difference?</a></p> 
+                                <a href="javascript:popup('http://www.mountmadonna.org/programs/cabins_vs_rooms_snippet.html',500,700)">What's the difference?</a></p> 
                                 
                                     <ol>  
                                         <li>  
@@ -388,7 +388,7 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                         <li>
                                             <INPUT type=checkbox name=carpool value=yes [% carpool %]>
                                             <label for="carpool">I wish to carpool</label>
-                                            <span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215)">Privacy Concerns?</a></span>
+                                            <span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215,550)">Privacy Concerns?</a></span>
                                         </li>
                                         <li>
                                             <INPUT type=checkbox name=hascar value=yes [% hascar %]>
@@ -443,7 +443,7 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 <INPUT type=checkbox name=share_mailings value=yes [% share_mailings %]>
 <label for="share_mailings">You may share my address with MMC affiliates.</label>
 </li>
-<li><span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215)">What is MMI?</a></span></li>
+<li><span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215,550)">What is MMI?</a></span></li>
 </ol>
                             </fieldset>
                         </li>
