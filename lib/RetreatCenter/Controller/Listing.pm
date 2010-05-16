@@ -961,11 +961,15 @@ sub late_notices : Local {
     }
     my @date_bool = ();
     if (date($d8)->day_of_week() == 6) {    # Saturday
+        # also look for PRs arriving on Sunday
+        # not other programs.
+        #
         @date_bool = (
                          -or => [
                              date_start => $d8,
                              date_start => (date($d8)+1)->as_d8(),
-                         ]
+                         ],
+                         'program.name' => { like => '%Personal Retreat%' },
                      );
     }
     else {
