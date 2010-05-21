@@ -585,11 +585,19 @@ EOH
 #
 # the stash is partially filled in (from an online or manual reg).
 # fill in the rest of it by looking at the program and person
-# and render the view.
+# and render the view.  the program must have a GL number
+# or we give an error.
 #
 sub _rest_of_reg {
     my ($pr, $p, $c, $today, $house1, $house2, $cabin_room) = @_;
 
+    if (empty($pr->glnum())) {
+        error($c,
+            $pr->name() . " does not have a GL Number.  Please fix.",
+            "registration/error.tt2",
+        );
+        return;
+    }
     my $cabin_checked = "";
     my $room_checked = "";
     if ($cabin_room) {
@@ -2023,6 +2031,12 @@ sub pay_balance : Local {
         return;
     }
     my $reg = model($c, 'Registration')->find($id);
+    if (empty($reg->program->glnum())) {
+        error($c,
+              $reg->program->name() . " does not have a GL Number.  Please fix.",
+              'gen_error.tt2');
+        return;
+    }
     stash($c,
         message  => payment_warning('mmc'),
         balance  => penny($reg->balance()),
@@ -4546,8 +4560,15 @@ EOH
 sub mmi_import : Local {
     my ($self, $c, $program_id) = @_;
 
-    my $p = model($c, 'Program')->find($program_id);
-    my $sdate = $p->sdate();
+    my $pr = model($c, 'Program')->find($program_id);
+    if (empty($pr->glnum())) {
+        error($c,
+            $pr->name() . " does not have a GL Number.  Please fix.",
+            "registration/error.tt2",
+        );
+        return;
+    }
+    my $sdate = $pr->sdate();
     my @progs = model($c, 'Program')->search({
         school => { '!=', 0      },
         # should we only accept DCM people in the same school
@@ -4561,7 +4582,7 @@ sub mmi_import : Local {
         order_by => 'sdate asc, edate asc',
     });
     stash($c,
-        cur_prog  => $p,
+        cur_prog  => $pr,
         dcm_progs => \@progs,
         template  => "registration/mmi_import.tt2",
     );

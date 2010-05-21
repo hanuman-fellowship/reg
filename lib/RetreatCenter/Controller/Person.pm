@@ -959,11 +959,19 @@ sub create_mmi_payment : Local {
               'gen_error.tt2');
         return;
     }
+    my $reg = model($c, 'Registration')->find($reg_id);
+    if (empty($reg->program->glnum())) {
+        error($c,
+            $reg->program->name() . " does not have a GL Number.  Please fix.",
+            "gen_error.tt2",
+        );
+        return;
+    }
     stash($c,
         from     => $from,
         message  => payment_warning('mmi'),
         person   => model($c, 'Person')->find($person_id),
-        reg      => model($c, 'Registration')->find($reg_id),
+        reg      => $reg,
         template => "person/create_mmi_payment.tt2",
     );
 }
