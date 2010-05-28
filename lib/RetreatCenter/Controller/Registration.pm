@@ -3023,7 +3023,7 @@ sub lodge : Local {
     my $share_house_name = "";
     my $share_first = $reg->share_first();
     my $share_last  = $reg->share_last();
-    my $name = "$share_first $share_last";
+    my $share_name = "$share_first $share_last";
     my $message2 = "";
     my $reg2 = undef;
     if ($share_first) {
@@ -3046,10 +3046,10 @@ sub lodge : Local {
             }
         }
         if (! @people) {
-            $message2 = "Could not find a person named $name.";
+            $message2 = "Could not find a person named $share_name.";
         }
         elsif (!$reg2) {
-            $message2 = "$name has not yet registered for "
+            $message2 = "$share_name has not yet registered for "
                       . $reg->program->name . ".";
         } else {
             # if space left, same dates, same h_type, etc etc.
@@ -3059,17 +3059,27 @@ sub lodge : Local {
             # if that room appears in the list (I can default it)
             # then they can choose it.
             if ($reg2->cancelled()) {
-                $message2 = "$share_first $share_last has cancelled.";
+                $message2 = "$share_name has cancelled.";
             }
             elsif ($reg2->house_id) {
-                if ($reg2->h_type eq $reg->h_type) {
+                # sharing can happen only if both have
+                # a double (or double w/bath) housing type.
+                #
+                if ($reg2->h_type eq $reg->h_type
+                    && $reg2->h_type =~ m{dble}
+                ) {
                     $share_house_name = $reg2->house->name;
                     $share_house_id   = $reg2->house_id;
                     $message2 = "Share $share_house_name"
-                               ." with $share_first $share_last?";
+                               ." with $share_name?";
+                }
+                elsif ($reg2->h_type !~ m{dble}) {
+                    $message2 = "Cannot share with $share_name - "
+                              . "they're not in a double."
+                              ;
                 }
                 else {
-                    $message2 = "$name is housed in a '"
+                    $message2 = "$share_name is housed in a '"
                               . $reg2->h_type_disp
                               . "' not a '"
                               . $reg->h_type_disp
@@ -3078,7 +3088,7 @@ sub lodge : Local {
                 }
             }
             else {
-                $message2 = "$name has not yet been housed.";
+                $message2 = "$share_name has not yet been housed.";
             }
         }
         #
@@ -3103,7 +3113,7 @@ sub lodge : Local {
                 }
                 close $in;
                 if ($found_first && $found_last) {
-                    $message2 = "$share_first $share_last <b>has</b> registered"
+                    $message2 = "$share_name <b>has</b> registered"
                               . " online but has not yet been imported.";
                     $found = 1;
                     last ONLINE;
@@ -3114,14 +3124,14 @@ sub lodge : Local {
                 # make sure the confirmation note has a notice
                 # about their friend who has not yet registered.
                 #
-                if ($reg->confnote() !~ m{$share_first $share_last}) {
+                if ($reg->confnote() !~ m{$share_name}) {
                     my $cn = ptrim($reg->confnote());
                     if ($cn) {
                         $cn .= "<p></p>";
                     }
                     $reg->update({
                         confnote => $cn
-                                  . "<p>$share_first $share_last still needs"
+                                  . "<p>$share_name still needs"
                                   . " to register for this program!</p>",
                     });
                 }

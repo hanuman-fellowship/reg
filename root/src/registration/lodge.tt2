@@ -35,11 +35,11 @@ function popup(url) {
 </tr>
 </table>
 [% IF message1 %]
-<p>
+<p class=p2>
 <span class=mess>[% message1 %]</span>
 [% END %]
 [% IF message2 %]
-<p>
+<p class=p2>
 <span class=mess>[% message2 %]</span>
 [% END %]
 <h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %]

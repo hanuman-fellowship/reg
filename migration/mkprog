@@ -130,7 +130,8 @@ create table summary (
     check_list text,
     converted_spaces text,
     needs_verification text,
-    prog_person text
+    prog_person text,
+    workshop_schedule text
 );
 drop table if exists confnote;
 create table confnote (
