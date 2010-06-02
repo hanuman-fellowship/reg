@@ -438,7 +438,10 @@ sub meal_list : Local {
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
-                      program_id => 0,      # non-hybrid rentals only
+                      -or => [
+                          program_id => 0,      # non-hybrid rentals only
+                          program_id => undef,  # null
+                      ],
                                 # hybrid rental/programs are counted
                                 # on the program side by individual
                                 # registration
