@@ -1,0 +1,69 @@
+<h2>[% Type %] Summary</h2>
+<p>
+<table cellpadding=7>
+<tr>
+<td>
+<b>Name</b>
+<a class=larger href=/[% type %]/view/[% happening.id %]>[% happening.name %]</a>
+<b>From</b>
+[% happening.sdate_obj %] <span class=dow>[% happening.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% happening.edate_obj %] <span class=dow>[% happening.edate_obj.format("%a") %]</span>
+</td>
+</table>
+<p class=p2>
+<form action="/summary/update_top_do/[% type %]/[% sum.id %]"
+      name=form
+      method=POST
+>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>MMC Arrangements<br>Coordinator</th>
+<td valign=top><input type=text name=prog_person value="$sum.prog_person"></td>
+</tr>
+
+<tr>
+<th>Gate Code</th><td><input type=text name=gate_code value='[% sum.gate_code %]' size=4></td>
+<th align=right>Registration<br>Location</th>
+<td valign=top><input type=text name=registration_location value='[% sum.registration_location %]' size=20></td>
+</tr>
+
+<tr>
+<th>Orientation</th><td><input type=text name=orientation value='[% sum.orientation %]' size=20></td>
+<th>Wind Up</th><td><input type=text name=wind_up value='[% sum.wind_up %]' size=20></td>
+</tr>
+
+<tr>
+<th>Alongside</th><td><input type=text name=alongside value='[% sum.alongside %]' size=20></td>
+<th>Back-to-Back<td><input type=text name=back_to_back value='[% sum.back_to_back %]' size=20></td>
+</tr>
+
+<tr>
+<th>Converted Spaces</th><td><input type=text name=converted_spaces value='[% sum.converted_spaces %]'</td>
+</tr>
+
+<tr>
+<th>Leader Name</th>
+<td><input type=text name=leader_name value='[% sum.leader_name %]' size=20></td>
+</td>
+<th>Staff Arrival</th>
+<td><input type=text name=staff_arrival value='[% sum.staff_arrival %]' size=20></td>
+</tr>
+
+<tr>
+<td colspan=2></td>
+<th>Staff Departure</th>
+<td><input type=text name=staff_departure value='[% sum.staff_departure %]' size=20></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input id=sub type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.prog_person.focus();
+</script>

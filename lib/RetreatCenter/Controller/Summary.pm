@@ -115,14 +115,10 @@ sub copy : Local {
 }
 
 sub update : Local {
-    my ($self, $c, $type, $id, $anchor) = @_;
+    my ($self, $c, $type, $sum_id) = @_;
  
-    my $happening = model($c, $type)->find($id);
-    $c->stash->{Type}      = $type;
-    $c->stash->{type}      = lc $type;
-    $c->stash->{happening} = $happening;
-    my $sum = $happening->summary;
-    $c->stash->{sum}       = $sum;
+    my $sum = model($c, 'Summary')->find($sum_id);
+    my $happening = $sum->$type();
     for my $f (qw/
         leader_housing
         signage
@@ -138,19 +134,25 @@ sub update : Local {
     /) {
         $c->stash->{"$f\_rows"} = lines($sum->$f()) + 5;    # 5 in strings?
     }
-    $c->stash->{template} = "summary/edit.tt2";
+    stash($c,
+        Type      => ucfirst $type,
+        type      => lc $type,
+        happening => $happening,
+        sum       => $sum,
+        template  => "summary/edit.tt2",
+    );
 }
 
 sub update_do : Local {
-    my ($self, $c, $type, $id) = @_;
-    my $sum = model($c, 'Summary')->find($id);
+    my ($self, $c, $type, $sum_id) = @_;
+    my $sum = model($c, 'Summary')->find($sum_id);
     my %hash = %{ $c->request->params() };
 
     if (my $upload = $c->request->upload('newpic')) {
-        my $n = avail_pic_num('s', $id);
-        $upload->copy_to("root/static/images/so-$id-$n.jpg");
+        my $n = avail_pic_num('s', $sum_id);
+        $upload->copy_to("root/static/images/so-$sum_id-$n.jpg");
         Global->init($c);
-        resize('s', "$id-$n");
+        resize('s', "$sum_id-$n");
     }
     if (exists $hash{newpic}) {
         delete($hash{newpic});
@@ -179,7 +181,91 @@ sub update_do : Local {
         who_updated  => $c->user->obj->id,
         time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
     });
-    $c->response->redirect($c->uri_for("/summary/view/$type/$id"));
+    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
+}
+
+sub update_sect : Local {
+    my ($self, $c, $section, $type, $sum_id) = @_;
+ 
+    my $sum = model($c, 'Summary')->find($sum_id);
+    my $happening = $sum->$type();
+    stash($c,
+        Type      => ucfirst $type,
+        type      => $type,
+        happening => $happening,
+        sum       => $sum,
+        section   => $section,
+        section_disp   => _trans($section),
+        section_data => $sum->$section(),
+        rows      => lines($sum->$section()) + 5, 
+        template  => "summary/edit_section.tt2",
+    );
+}
+
+sub _trans {
+    my ($s) = @_;
+    $s =~ s{_}{ };
+    $s =~ s{\b(\w)}{\u$1}g;
+    if ($s =~ m{^Food}) {   # special case
+        $s = "CB $s";
+    }
+    $s;
+}
+
+sub update_section_do : Local {
+    my ($self, $c, $section, $type, $sum_id) = @_;
+
+    my $sum = model($c, 'Summary')->find($sum_id);
+    my $section_data = etrim($c->request->params->{section});
+    $sum->update({
+        $section     => $section_data,
+        date_updated => tt_today($c)->as_d8(),
+        who_updated  => $c->user->obj->id,
+        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+    });
+    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
+}
+
+sub update_top : Local {
+    my ($self, $c, $type, $sum_id) = @_;
+ 
+    my $sum = model($c, 'Summary')->find($sum_id);
+    my $happening = $sum->$type();
+    stash($c,
+        Type      => ucfirst $type,
+        type      => lc $type,
+        happening => $happening,
+        sum       => $sum,
+        template  => "summary/edit_top.tt2",
+    );
+}
+
+sub update_top_do : Local {
+    my ($self, $c, $type, $sum_id) = @_;
+    my $sum = model($c, 'Summary')->find($sum_id);
+    my %hash = %{ $c->request->params() };
+
+    for my $f (keys %hash) {
+        $hash{$f} = etrim($hash{$f});
+    }
+    if ($hash{gate_code} && $hash{gate_code} !~ m{^\d\d\d\d$}) {
+        error($c,
+            'Gate Code must be 4 digits.',
+            'gen_error.tt2',
+        );
+        return;
+    }
+
+    # delete ones that have not changed???
+    # warn about ones that are different? we don't know what it was before
+    # do we?  nope.
+    $sum->update({
+        %hash,
+        date_updated => tt_today($c)->as_d8(),
+        who_updated  => $c->user->obj->id,
+        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+    });
+    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
 
 sub use_template : Local {

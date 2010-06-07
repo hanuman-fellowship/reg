@@ -2050,6 +2050,7 @@ sub pay_balance_do : Local {
     my ($self, $c, $reg_id) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
+    my $arrived = $reg->arrived();
     my $amount = trim($c->request->params->{amount});
     my $type   = $c->request->params->{type};
     if (invalid_amount($amount)) {
@@ -2082,12 +2083,15 @@ sub pay_balance_do : Local {
         balance => $balance,
         arrived => 'yes',
     });
-    if ($balance == 0) {
-        model($c, 'RegHistory')->create({
-            @who_now,
-            what => 'Arrival and Payment of Balance',
-        });
-    }
+    my $arr = !$arrived? "Arrival and ": "";
+    my $bal = $balance == 0? " Balance": "";
+    _reg_hist($c, $reg_id,
+              $arr
+              . $string{'payment_' . $type}
+              . " payment of \$$amount"
+              . $bal
+              . "."
+             );
     my $from = $c->request->params->{from};
     if ($from eq "list_reg_name") {
         $c->response->redirect(
@@ -2125,7 +2129,8 @@ sub cancel : Local {
         today    => $today,
         ndays    => $reg->program->sdate_obj - $today,
         reg      => $reg,
-        amount   => $string{credit_amount},
+        credit_amount  => $string{credit_amount},
+        refund_amount  => $string{refund_amount},
         template => "registration/credit_confirm.tt2",
     );
 }
@@ -2133,26 +2138,85 @@ sub cancel : Local {
 sub cancel_do : Local {
     my ($self, $c, $id, $mmi) = @_;
 
-    my $credit      = $c->request->params->{give_credit};
-    my $send_letter = $c->request->params->{send_letter};
-    my $amount      = $c->request->params->{amount};
     my $reg         = model($c, 'Registration')->find($id);
+    my $send_letter = $c->request->params->{send_letter};
+    my $credit_amount = $c->request->params->{credit_amount};
+    my $refund_amount = $c->request->params->{refund_amount};
 
-    if (!$mmi && defined $amount && invalid_amount($amount)) {
-        error($c,
-            "Illegal amount: $amount",
-            'gen_error.tt2',
-        );
-        return;
+    if (!$mmi) {
+        if (defined $credit_amount && invalid_amount($credit_amount)) {
+            error($c,
+                "Illegal credit amount: $credit_amount",
+                'gen_error.tt2',
+            );
+            return;
+        }
+        if (defined $refund_amount && invalid_amount($refund_amount)) {
+            error($c,
+                "Illegal refund amount: $refund_amount",
+                'gen_error.tt2',
+            );
+            return;
+        }
+        if ($credit_amount && $refund_amount) {
+            error($c,
+                "Cannot give both a credit and a refund.",
+                'gen_error.tt2',
+            );
+            return;
+        }
     }
-    $reg->update({
-        cancelled => 'yes',
-    });
+    my $date_expire;
+    if ($reg->cancelled() ne 'yes') {
+        $reg->update({
+            cancelled => 'yes',
+        });
+        # decrement the reg_count in the program record
+        #
+        my $prog_id   = $reg->program_id;
+        my $pr = model($c, 'Program')->find($prog_id);
+        $pr->update({
+            reg_count => \'reg_count - 1',
+        });
+        # give credit
+        #
+        if (! $mmi && $credit_amount) {
+            my $sdate = $reg->program->sdate_obj();
+            $date_expire = date(
+                $sdate->year() + 1,
+                $sdate->month(),
+                $sdate->day(),
+            );
+            model($c, 'Credit')->create({
+                reg_id       => $id,
+                person_id    => $reg->person->id(),
+                amount       => $credit_amount,
+                date_given   => tt_today($c)->as_d8(),
+                date_expires => $date_expire->as_d8(),
+                date_used    => "",
+                used_reg_id  => 0,
+                # How about who did this??? and what time?
+            });
+        }
+
+        # add reg history record
+        #
+        _reg_hist($c, $id,
+            "Cancelled"
+            . (           $mmi? ""
+              :($credit_amount? " - Credit of \$$credit_amount given."
+              :($refund_amount? " - Refund of \$$refund_amount given."
+              :                 " - No credit given.")))
+        );
+    }
+
 
     # return any assigned housing to the pool
+    #
     _vacate($c, $reg) if $reg->house_id();
 
     # clear any member activity for this registration
+    #
     if ($reg->free_prog_taken() || $reg->nights_taken()) {
         my $mem = $reg->person->member();
         if ($mem) {
@@ -2164,51 +2228,13 @@ sub cancel_do : Local {
         }
     }
 
-    my $date_expire;
-    if (! $mmi) {
-        # give credit
-        #
-        if ($credit) {
-            # credit record
-            my $sdate = $reg->program->sdate_obj();
-            $date_expire = date(
-                $sdate->year() + 1,
-                $sdate->month(),
-                $sdate->day(),
-            );
-            model($c, 'Credit')->create({
-                reg_id       => $id,
-                person_id    => $reg->person->id(),
-                amount       => $amount,
-                date_given   => tt_today($c)->as_d8(),
-                date_expires => $date_expire->as_d8(),
-                date_used    => "",
-                used_reg_id  => 0,
-                # How about who did this??? and what time?
-            });
-        }
-    }
-    # add reg history record
-    _reg_hist($c, $id,
-        "Cancelled"
-        . ($mmi? ""
-          :      (($credit)? " - Credit of \$$amount given."
-                  :          " - No credit given."))
-    );
-
-    # decrement the reg_count in the program record
-    my $prog_id   = $reg->program_id;
-    my $pr = model($c, 'Program')->find($prog_id);
-    $pr->update({
-        reg_count => \'reg_count - 1',
-    });
-
     if (! $mmi && $send_letter) {
         #
         # send the cancellation confirmation letter for MMC programs
         #
         my $html = "";
         my $tt = Template->new({
+            INTERPOLATE  => 1,
             INCLUDE_PATH => 'root/static/templates/letter',
             EVAL_PERL    => 0,
         });
@@ -2219,8 +2245,8 @@ sub cancel_do : Local {
         my $stash = {
             person      => $reg->person,
             program     => $reg->program,
-            credit      => $credit,
-            amount      => $amount,
+            credit_amount => $credit_amount,
+            refund_amount => $refund_amount,
             date_expire => $date_expire,
             user        => $c->user,
             today       => tt_today($c),
@@ -2247,6 +2273,10 @@ sub cancel_do : Local {
         }
         else {
             $c->res->output($html);
+            # because the user may refresh this screen
+            # I was careful about any actions above
+            # being conditional on $reg->cancelled() ne 'yes'...
+            #
             return;
         }
     }
@@ -3051,45 +3081,52 @@ sub lodge : Local {
         elsif (!$reg2) {
             $message2 = "$share_name has not yet registered for "
                       . $reg->program->name . ".";
-        } else {
-            # if space left, same dates, same h_type, etc etc.
-            # oh jeez - I can't do everything.
-            # the best, I guess, would be to simply inform
-            # the registrar of where their friend is housed.
-            # if that room appears in the list (I can default it)
-            # then they can choose it.
-            if ($reg2->cancelled()) {
-                $message2 = "$share_name has cancelled.";
-            }
-            elsif ($reg2->house_id) {
-                # sharing can happen only if both have
-                # a double (or double w/bath) housing type.
-                #
-                if ($reg2->h_type eq $reg->h_type
-                    && $reg2->h_type =~ m{dble}
-                ) {
-                    $share_house_name = $reg2->house->name;
-                    $share_house_id   = $reg2->house_id;
-                    $message2 = "Share $share_house_name"
-                               ." with $share_name?";
-                }
-                elsif ($reg2->h_type !~ m{dble}) {
-                    $message2 = "Cannot share with $share_name - "
-                              . "they're not in a double."
-                              ;
-                }
-                else {
-                    $message2 = "$share_name is housed in a '"
-                              . $reg2->h_type_disp
-                              . "' not a '"
-                              . $reg->h_type_disp
-                              . "'."
-                              ;
-                }
-            }
-            else {
-                $message2 = "$share_name has not yet been housed.";
-            }
+        }
+        elsif ($reg2->cancelled()) {
+            $message2 = "$share_name has cancelled.";
+        }
+        elsif (! $reg2->house_id()) {
+            $message2 = "$share_name has not yet been housed.";
+        }
+        elsif ($reg2->h_type() ne $reg->h_type()) {
+            $message2 = "$share_name is housed in a '"
+                      . $reg2->h_type_disp
+                      . "' not a '"
+                      . $reg->h_type_disp
+                      . "'."
+                      ;
+        }
+        elsif ($reg2->person->sex() ne $reg->person->sex()
+               && $reg2->h_type() =~ m{triple|dormitory|economy}i
+        ) { 
+            # if they're of opposite genders there is a
+            # further condition that they can't be in 
+            # economy, dorm, or triple - because there may
+            # very well be strangers in there.
+            # If three (or more) people (not all of the same gender)
+            # wish to share a triple/dormitory/economy it can be
+            # FORCED for the unhoused person of a different gender
+            # than the person already housed.
+            #
+            $message2 = "Since "
+                      . $reg->person->first()
+                      . " and "
+                      . $reg2->person->first()
+                      . " are not of the same gender they cannot share<br>"
+                      . $reg2->h_type()
+                      . " housing in " 
+                      . $reg2->house->name()
+                      . "."
+                      . " This can be forced, if you wish."
+                      ;
+        }
+        else {
+            # okay!  we will permit them to share.
+            #
+            $share_house_name = $reg2->house->name;
+            $share_house_id   = $reg2->house_id;
+            $message2 = "Share $share_house_name"
+                       ." with $share_name?";
         }
         #
         # if the person hasn't yet registered for this program
@@ -3680,14 +3717,17 @@ sub lodge_do : Local {
         h_name   => '',
         @note_opt,
     });
-    _reg_hist($c, $id, "Lodged as $string{$new_htype} in $house_name_of{$house_id}.");
+    _reg_hist($c, $id, 
+        ($force_house? "FORCE ": "")
+        . "Lodged as $string{$new_htype} in $house_name_of{$house_id}.");
     my $kids = $reg->kids;
     for my $cf (model($c, 'Config')->search({
                     house_id => $house_id,
                     the_date => { 'between' => [ $sdate, $edate1 ] }
                 })
     ) {
-        my $csex = $cf->sex;
+        my $csex = $cf->sex;        # csex is the sex of the config record
+                                    # psex is the person's sex
         if ($cmax < $cf->cur + 1) {
             $cmax = $house_max;     # note **
         }
@@ -3698,8 +3738,15 @@ sub lodge_do : Local {
             curmax     => $cmax,
             cur        => $cf->cur + 1,
             sex        => ((   $csex eq 'U'
-                            || $csex eq $psex)? $psex
-                           :                    'X'),
+                            || $csex eq $psex  )? $psex
+                           :$new_htype !~ m{dbl}? $csex
+                           :                      'X'
+                          ),
+                            # the above middle condition
+                            # is for forcing a male into
+                            # a female dormitory.  It's still
+                            # female dorm, yes?  The force is
+                            # required.  Oh, the complexity!
             program_id => $reg->program_id(),
             rental_id  => 0,
         });
@@ -3761,9 +3808,11 @@ sub _vacate {
         # if we're back to empty.
         # set curmax and sex back
         #
-        # if we're back to one and the sex is 'X'
-        #    find out the gender of the remaining person.
-        #    VERY tricky, indeed.
+        # if we're back to one
+        #   find out the gender of the remaining person.
+        #   VERY tricky, indeed.
+        #   It may have been a dormitory where we had forced
+        #   a man.   And then all the women left.
         #
         # and don't undo the program id, right?
         # well, if there is no one left in the room
@@ -3782,7 +3831,7 @@ sub _vacate {
                  rental_id  => 0,
                  ;
         }
-        if ($cf->cur() == 2 && $cf->sex eq 'X') {
+        if ($cf->cur() == 2) {
             my $the_date = $cf->the_date;
             my @reg = model($c, 'Registration')->search({
                 house_id   => $house_id,
@@ -4888,9 +4937,28 @@ sub charge_delete : Local {
 sub payment_delete : Local {
     my ($self, $c, $reg_id, $pay_id, $from) = @_;
 
-    model($c, 'RegPayment')->find($pay_id)->delete();
-    _calc_balance(model($c, 'Registration')->find($reg_id));
-    if ($from eq 'edit_dollar') {
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $payment = model($c, 'RegPayment')->find($pay_id);
+    stash($c,
+        reg => $reg,
+        payment => $payment,
+        template => 'registration/reg_pay_del.tt2',
+    );
+}
+
+sub payment_delete_do : Local {
+    my ($self, $c, $reg_id, $pay_id, $from) = @_;
+
+    if ($c->request->params->{yes}) {
+        my $payment = model($c, 'RegPayment')->find($pay_id);
+        $payment->delete();
+        _calc_balance(model($c, 'Registration')->find($reg_id));
+        _reg_hist($c, $reg_id, "Deleted payment of \$"
+                               . $payment->amount()
+                               . "."
+                               );
+    }
+    if (defined $from && $from eq 'edit_dollar') {
         $c->response->redirect(
             $c->uri_for("/registration/edit_dollar/$reg_id")
         );
@@ -4955,6 +5023,10 @@ sub payment_update_do : Local {
         type     => $type,
         what     => $what,
     });
+
+    # add reg history record
+    _reg_hist($c, $reg->id(), "Updated $string{'payment_' . $type} payment of \$$amount.");
+
     if ($what eq 'Deposit') {
         # need to update the deposit field in the reg record
         #

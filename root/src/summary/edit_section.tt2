@@ -1,0 +1,37 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+    <script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
+<a name=top></a>
+<h2>[% Type %] Summary</h2>
+<p>
+<table cellpadding=7>
+<tr>
+<td>
+<b>Name</b>
+<a class=larger href=/[% type %]/view/[% happening.id %]>[% happening.name %]</a>
+<b>From</b>
+[% happening.sdate_obj %] <span class=dow>[% happening.sdate_obj.format("%a") %]</span>
+<b>To</b>
+[% happening.edate_obj %] <span class=dow>[% happening.edate_obj.format("%a") %]</span>
+</td>
+[% IF type == 'rental' %]
+[% happening.status_td %]
+[% END %]
+</tr>
+</table>
+<style type="text/css">
+th {
+    text-align: right;
+}
+</style>
+<form action="/summary/update_section_do/$section/$type/$sum.id"
+      method=POST
+>
+<ul>
+<h2>$section_disp</h2>
+<textarea name=section rows=$rows cols=60>
+$section_data
+</textarea>
+<p class=p2>
+<input type=submit value="Submit"></td></tr>
+</form>
+</ul>

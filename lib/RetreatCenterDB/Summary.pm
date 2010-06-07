@@ -74,7 +74,7 @@ sub sound_setup_tr       { ptrim(shift->sound_setup()      ) };
 sub pictures {
     my ($self) = @_;
     my $id = $self->id();
-    my @pics = <root/static/images/sth-$id*>;
+    my @pics = <root/static/images/sth-$id-*>;
     if (!@pics) {
         return "";
     }
