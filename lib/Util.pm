@@ -840,8 +840,8 @@ sub lines {
     my ($s) = @_;
 
     return 0 if ! defined $s;
-    my @p = $s =~ m{<p>}gi;
-    return scalar(@p);
+    my @items = $s =~ m{<(p|div|li)\b[^>]*>}gi;
+    return scalar(@items);
 }
 
 #

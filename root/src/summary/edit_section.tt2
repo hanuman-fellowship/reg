@@ -32,6 +32,6 @@ th {
 $section_data
 </textarea>
 <p class=p2>
-<input type=submit value="Submit"></td></tr>
+<input id=sub type=submit value="Submit"></td></tr>
 </form>
 </ul>

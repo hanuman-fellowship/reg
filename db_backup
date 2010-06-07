@@ -9,4 +9,8 @@ ftp logicalpoetry.com <<EOF
 cd backup
 put $f.gz
 quit
-EOF
+#sftp sahadev@varuna <<EOF       # varuna
+#cd backup
+#put $f.gz
+#quit
+#EOF
