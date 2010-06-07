@@ -1337,4 +1337,15 @@ sub online_add : Local {
     }
 }
 
+sub online_del : Local {
+    my ($self, $c, $num) = @_;
+    my $dir = "root/static/mlist_done/"
+            . today()->format("%Y-%m")
+            ;
+    mkdir $dir unless -d $dir;
+    rename "root/static/mlist/$num",
+           "$dir/$num";
+    $c->response->redirect($c->uri_for("/person/online"));
+}
+
 1;
