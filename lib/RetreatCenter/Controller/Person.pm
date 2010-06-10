@@ -821,8 +821,27 @@ sub undup_do : Local {
     # the primary person was ALSO a leader or member or if they
     # had the same affils.
     #
+    # actually, prohibit doing this at all if a merged person
+    # is a member.
+    #
     # then delete the merged person record.
     #
+    for my $mid (@merged) {
+        if (my ($member) = model($c, 'Member')->search({
+                               person_id => $mid,
+                           })
+        ) {
+            my ($person) = model($c, 'Person')->find($mid);
+            error($c,
+                "Cannot merge " . $person->first() . " " . $person->last()
+                . " because "
+                . ($person->sex() eq 'M'? "he": "she")
+                . " is a member.",
+                'gen_error.tt2',
+            );
+            return;
+        }
+    }
     for my $mid (@merged) {
         for my $table (qw/ Registration Credit Donation /) {
             model($c, $table)->search({

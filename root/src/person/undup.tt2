@@ -1,6 +1,8 @@
-<h2>People</h2>
+<h2>Unduplicating People</h2>
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
-<p>
+<p class=p2>
+<table>
+<tr><td>
 <form action="/person/undup_do">
 <table cellpadding=3>
 [% FOR p IN people %]
@@ -20,4 +22,13 @@
 </table>
 <input type=submit value="Submit">
 </form>
+</td><td valign=top>
+<style>p { margin-bottom: 4mm }</style>
+<div style="margin-left: 5mm; margin-top: 5mm;">
+<p>P - Primary
+<p>m - to be merged into the primary
+<p>p - to be partnered with the primary
+<p>n - for clarity, narrow down the list to just these
+</div>
+</td></tr></table>
 <script type='text/javascript'>document.getElementById('txtfld').focus();</script>

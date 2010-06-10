@@ -3,7 +3,7 @@ body {
     font-family: Georgia, Times;
     font-size: 14pt;
     color: black;
-    background: ivory;
+    width: 600px; 
 }
 strong {
     font-weight: bold;
@@ -13,20 +13,26 @@ Greetings $person.first,
 <p>
 Your registration for the $program.title program
 was cancelled on [% today.format("%B %e, %Y") %].<br>
+[% IF credit_amount %]
 The program's cancellation policy is:
 <ul>
 $program.canpol.policy_br
 </ul>
-<p>
+[% END %]
 [% IF credit_amount %]
+<p>
 You have been given a credit of \$$credit_amount applicable
 towards future MMC-sponsored programs.<br>
 This credit will expire on [% date_expire.format("%B %e, %Y") %].
 [% ELSIF refund_amount %]
-You are due a refund of \$${refund_amount}.<br>
-Please call 408-846-4064 with your credit card number<br>
-and expiration date so we can refund this amount on your card.
+<p>
+You are due a refund of \$${refund_amount}.
+We need your credit card information in order to issue the refund.
+Please call 408-846-4064 during normal business hours Monday-Saturday
+with your credit card number
+and expiration date.
 [% ELSE %]
+<p>
 We're sorry but you have <strong>not</strong> been given a credit or refund.
 [% END %]
 <p>
