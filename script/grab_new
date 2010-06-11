@@ -119,6 +119,7 @@ sub email_letter {
     $mail_sender->Open({
         to       => $args{to},
         from     => $args{from},
+        bcc      => 'jon@logicalpoetry.com',
         subject  => $args{subject},
         ctype    => "text/html",
         encoding => "7bit",
