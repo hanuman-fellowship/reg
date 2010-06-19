@@ -292,6 +292,7 @@ sub list_reg_missing : Local {
     Global->init($c);
     my @files = <root/static/online/*>;
     stash($c,
+        missing_count   => scalar(@regs) . " of ",
         online          => scalar(@files),
         program         => $pr,
         regs            => _reg_table($c, \@regs, postmark => 0),
@@ -676,7 +677,10 @@ sub _rest_of_reg {
     # and not if MMI program.
     #
     my $mem = $p->member();
-    if ($pr->school() == 0 && $mem) {
+    if ($pr->school() == 0
+        && $mem
+        && ($pr->PR() || $pr->retreat())     # only PR and MMC Retreats
+    ) {
         my $status = $mem->category;
         if ($status eq 'Life'
             || ($status eq 'Sponsor' && $mem->date_sponsor >= $today)
@@ -688,7 +692,7 @@ sub _rest_of_reg {
             if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
                 stash($c, nights => $nights);
             }
-            if ($status eq 'Life' && ! $mem->free_prog_taken) {
+            if (!$pr->PR() && $status eq 'Life' && ! $mem->free_prog_taken) {
                 stash($c, free_prog => 1);
             }
         }
@@ -1292,7 +1296,7 @@ sub _compute {
             # they need to pay the full tuition amount
             $tuition = $pr->full_tuition();
         }
-        if ($pr->retreat()) {
+        if ($pr->retreat() && $prog_days != $tot_prog_days) {
             # pro-rated tuition for retreats only
             #
             $tuition = int($tuition * ($prog_days/$tot_prog_days));
@@ -1321,6 +1325,8 @@ sub _compute {
                     what      => "Life member - free program - tuition waived.",
                 });
             }
+=comment
+            # no more - as of 6/11/10
             else {
                 my $amount = int(($string{spons_tuit_disc}/100)*$tuition);
                 my $maxed = "";
@@ -1336,6 +1342,7 @@ sub _compute {
                                 . $reg->status . " member$maxed",
                 });
             }
+=cut
         }
     }
 
@@ -1573,6 +1580,9 @@ sub _compute {
         #
         # members getting free nights still pay for meal costs
         #
+=comment
+# As of 6/11/10 they pay for meals with their meal ticket instead.
+#
         my $meal_cost = $string{member_meal_cost};
         my $plural = ($ntaken == 1)? "": "s";
         model($c, 'RegCharge')->create({
@@ -1583,6 +1593,7 @@ sub _compute {
                        . " at \$$meal_cost per day for "
                        . $reg->status() . " member",
         });
+=cut
         # and add a NightHist record to specify what happened
         #
         model($c, 'NightHist')->create({
@@ -2736,14 +2747,17 @@ sub update : Local {
         $h_type_opts1 .= "<option value=$htname$selected1>$htdesc\n";
         $h_type_opts2 .= "<option value=$htname$selected2>$htdesc\n";
     }
-    my $status = $reg->status;      # status at time of first registration
-    if ($status) {
-        my $mem = $reg->person->member;
-        my $nights = $mem->sponsor_nights + $reg->nights_taken;
-        if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
+    my $status = $reg->status();      # status at time of first registration
+    if ($status && 
+        ($pr->PR() || $pr->retreat())
+    ) {
+        my $mem = $reg->person->member();
+        my $nights = $mem->sponsor_nights() + $reg->nights_taken();
+        if ($pr->housecost->type() eq 'Per Day' && $nights > 0) {
             stash($c, nights => $nights);
         }
         if ($status eq 'Life'
+            && ! $pr->PR()
             && (! $mem->free_prog_taken || $reg->free_prog_taken())
         ) {
             stash($c, free_prog => 1);

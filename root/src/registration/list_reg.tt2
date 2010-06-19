@@ -88,7 +88,7 @@ document.form.pat.focus();
 </script>
 </form>
 <p>
-Count: [% program.reg_count %][% IF program.extradays %]/[% program.full_count %][% END %]
+Count: [% missing_count %][% program.reg_count %][% IF program.extradays %]/[% program.full_count %][% END %]
 [% END %]
 
 <ul>
@@ -97,4 +97,4 @@ Count: [% program.reg_count %][% IF program.extradays %]/[% program.full_count %
 </div>
 <p>
 </ul>
-Count: [% program.reg_count %][% IF program.extradays %]/[% program.full_count %][% END %]
+Count: [% missing_count %][% program.reg_count %][% IF program.extradays %]/[% program.full_count %][% END %]
