@@ -1,0 +1,10 @@
+<h2>Registration</h2>
+[% per = reg.person %]
+Deleting payment of \$$payment.amount for $per.first ${per.last} in ${reg.program.name}.
+<p class=p2>
+<form name=form action=/registration/payment_delete_do/$reg.id/$payment.id>
+Are you sure? <input type=submit name=yes value="Yes">
+&nbsp;&nbsp;&nbsp;
+<input type=submit name=no value="No">
+<form>
+<script type="text/javascript">document.form.no.focus();</script>
