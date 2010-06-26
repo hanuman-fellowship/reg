@@ -5217,7 +5217,7 @@ sub duplicate : Local {
 
 sub grab_new : Local {
     my ($self, $c) = @_;
-    system("grab");
+    system("grab wait");
     $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 
