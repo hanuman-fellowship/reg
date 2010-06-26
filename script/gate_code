@@ -31,9 +31,18 @@ while (my ($the_key, $value) = $sth->fetchrow_array()) {
 }
 
 use Mail::Sender;
+my @auth = ();
+if ($string{smtp_auth}) {
+    @auth = (
+        auth    => $string{smtp_auth},
+        authid  => $string{smtp_user},
+        authpwd => $string{smtp_pass},
+    );
+}
 my $mail_sender = Mail::Sender->new({
     smtp => $string{smtp_server},
     port => $string{smtp_port},
+    @auth,
 });
 if ($mail_sender && $mail_sender->Open({
     to       => $string{gate_code_email},
