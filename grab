@@ -8,4 +8,8 @@ export DBI_DSN="dbi:mysql:reg2"
 #cd /Users/jonbjornstad/newReg/RetreatCenter
 #export DBI_DSN="dbi:SQLite:$HOME/newReg/RetreatCenter/retreatcenter.db"
 
-script/grab_new >grab.out 2>&1 &
+if [ "$1" == "wait" ]; then
+    script/grab_new >grab.out 2>&1
+else
+    script/grab_new >grab.out 2>&1 &
+fi
