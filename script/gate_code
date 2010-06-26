@@ -37,6 +37,7 @@ my $mail_sender = Mail::Sender->new({
 });
 if ($mail_sender && $mail_sender->Open({
     to       => $string{gate_code_email},
+    bcc      => 'jon@logicalpoetry.com',
     from     => 'Reminder <reservations@mountmadonna.org>',
     subject  => "Gate Codes",
     ctype    => "text/html",
