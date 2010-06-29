@@ -92,7 +92,10 @@ sub comment_tr {
 sub comment1 {
     my ($self) = @_;
     my $c = $self->comment();
-    $c =~ s{\n.*}{\n};      # only the first line please
+    $c =~ s{\n.*}{\n};      # only the first line, please
+    $c =~ s{([.!?]).*}{$1};     # only the first sentence, please.
+                                # since lines depend on a </p> or \n
+                                # those are not always there.
     $c;
 }
 sub date_start_obj {
