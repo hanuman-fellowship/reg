@@ -89,6 +89,12 @@ sub comment_tr {
     my ($self) = @_;
     return ptrim($self->comment());
 }
+sub comment1 {
+    my ($self) = @_;
+    my $c = $self->comment();
+    $c =~ s{\n.*}{\n};      # only the first line please
+    $c;
+}
 sub date_start_obj {
     my ($self) = @_;
     return date($self->date_start) || "";

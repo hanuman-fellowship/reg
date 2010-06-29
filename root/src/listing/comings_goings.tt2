@@ -35,7 +35,7 @@ p {
 [% IF r.comment %]
 <tr>
 <td></td>
-<td colspan=3>[% r.comment %]</td>
+<td colspan=3>[% r.comment1 %]</td>
 </tr>
 [% END %]
 [% END %]

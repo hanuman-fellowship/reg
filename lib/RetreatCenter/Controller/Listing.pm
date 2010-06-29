@@ -852,9 +852,6 @@ sub comings_goings : Local {
     my $dt8  = $dt->as_d8();
     my $edt8 = $edt->as_d8();
 
-    $c->stash->{prev_date} = ($dt-1)->as_d8();
-    $c->stash->{next_date} = ($dt+1)->as_d8();
-
     my @coming = model($c, 'Registration')->search({
                      date_start => { 'between' => [ $dt8, $edt8 ] },
                      cancelled  => '',
@@ -941,15 +938,18 @@ sub comings_goings : Local {
                           program_id => 0,
                       });
 
-    $c->stash->{date} = $dt;
-    $c->stash->{ind_coming} = \@ind_coming;
-    $c->stash->{ind_going}  = \@ind_going;
-    $c->stash->{prg_coming} = \@prg_coming;
-    $c->stash->{prg_going}  = \@prg_going;
-    $c->stash->{rnt_coming} = \@rnt_coming;
-    $c->stash->{rnt_going}  = \@rnt_going;
-
-    $c->stash->{template} = "listing/comings_goings.tt2";
+    stash($c,
+        date       => $dt,
+        prev_date  => ($dt-1)->as_d8(),
+        next_date  => ($dt+1)->as_d8(),
+        ind_coming => \@ind_coming,
+        ind_going  => \@ind_going,
+        prg_coming => \@prg_coming,
+        prg_going  => \@prg_going,
+        rnt_coming => \@rnt_coming,
+        rnt_going  => \@rnt_going,
+        template   => "listing/comings_goings.tt2",
+    );
 }
 
 sub late_notices : Local {
