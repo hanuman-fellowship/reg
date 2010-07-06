@@ -1430,7 +1430,6 @@ sub invalid_amount {
 sub get_grid_file {
     my ($code) = @_;
 
-    system("grab wait");
     return "root/static/grid/$code-data.txt";
 }
 

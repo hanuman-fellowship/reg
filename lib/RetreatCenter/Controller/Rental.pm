@@ -1438,6 +1438,7 @@ sub invoice : Local {
     my ($self, $c, $id) = @_;
 
     Global->init($c);
+    system("grab wait");        # make sure the web grid is current
     my $rental = model($c, 'Rental')->find($id);
     my $ndays = $rental->edate_obj() - $rental->sdate_obj();
     my $hc = $rental->housecost();
