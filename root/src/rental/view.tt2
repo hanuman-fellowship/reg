@@ -158,13 +158,13 @@ Web
 </tr>
 
 <tr>
-<th align=right>Housing Cost</th>
+<th align=right valign=top>Housing Cost</th>
 <td><a href="/housecost/view/[% rental.housecost.id %]">[% rental.housecost.name %]</a></td>
 </tr>
 
 <tr>
 <th>Number of Days</th>
-<td>[% ndays %]</td>
+<td valign=top>[% ndays %]</td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
@@ -205,7 +205,7 @@ Web
     [% IF hc.$t == 0 %]
         <td align=right valign=center>[% string.$t %]</td>
     [% ELSE %]
-        <th align=right valign=center>[% string.$t %]</th>
+        <th align=right valign=top>[% string.$t %]</th>
     [% END %]
     [% IF t != 'own_van' && t != 'commuting' %]
 
