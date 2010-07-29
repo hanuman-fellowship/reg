@@ -90,9 +90,11 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
+# obsoleted???
     $c->stash->{red  } = 127;
     $c->stash->{green} = 127;
     $c->stash->{blue } = 127;
+
     $c->stash->{type_opts} = <<"EOO";
 <option value="indoors">Indoors
 <option value="outdoors">Outdoors

@@ -12,7 +12,10 @@ use Date::Simple qw/
 /;
 
 my $today = today()->format("%D");
-my $four = (today()+120)->format("%D");
+my $first_week = today()->day <= 7;
+my $today8 = today()->as_d8();
+my $six = (today()+6*30)->format("%D");
+my $six8 = (today()+6*30)->as_d8();
 
 # we need a value from the database
 #
@@ -21,7 +24,7 @@ my $dbh = DBI->connect(undef, "sahadev", "JonB")
 my $sth = $dbh->prepare("
     select the_key, value
     from string
-    where the_key = 'gate_code_email'
+    where the_key like 'gate_code_%'
        or the_key like 'smtp_%'
 ");
 $sth->execute();
@@ -29,6 +32,33 @@ my %string;
 while (my ($the_key, $value) = $sth->fetchrow_array()) {
     $string{$the_key} = $value;
 }
+
+#
+# how many programs and rentals in the next six months need a gate code?
+#
+my $count_prog_sth = $dbh->prepare("
+    select count(sum.gate_code)
+      from program prog, summary sum
+     where prog.sdate >= $today8 and prog.edate <= $six8
+       and not (prog.name like 'XL%')
+       and (prog.school == 0 or prog.level = 'S')
+       and prog.summary_id = sum.id
+       and (sum.gate_code = '' or sum.gate_code is null)
+");
+my $count_rent_sth = $dbh->prepare("
+    select count(sum.gate_code)
+      from rental rent, summary sum
+     where rent.sdate >= $today8 and rent.edate <= $six8
+       and not (rent.name like 'XL%')
+       and rent.summary_id = sum.id
+       and (sum.gate_code = '' or sum.gate_code is null)
+");
+$count_prog_sth->execute();
+$count_rent_sth->execute();
+my ($prog_count) = $count_prog_sth->fetchrow_array();
+my ($rent_count) = $count_rent_sth->fetchrow_array();
+my $prog_pl = ($prog_count > 1)? "s": "";
+my $rent_pl = ($rent_count > 1)? "s": "";
 
 use Mail::Sender;
 my @auth = ();
@@ -44,8 +74,13 @@ my $mail_sender = Mail::Sender->new({
     port => $string{smtp_port},
     @auth,
 });
+my @opt = ();
+if ($prog_count + $rent_count != 0 && $first_week) {
+    @opt = (cc => $string{gate_code_cc_email});
+}
 if ($mail_sender && $mail_sender->Open({
     to       => $string{gate_code_email},
+    @opt,
     bcc      => 'jon@logicalpoetry.com',
     from     => 'Reminder <reservations@mountmadonna.org>',
     subject  => "Gate Codes",
@@ -53,9 +88,10 @@ if ($mail_sender && $mail_sender->Open({
     encoding => "7bit",
 })) {
     $mail_sender->SendLineEnc(<<"EOM");
-This is a reminder to set and program the gate codes!
+This is a reminder to set and program the gate codes!<br>
+In the next 6 months there are $prog_count program${prog_pl} and $rent_count rental${rent_pl} without a gate code.
 <p>
-Click <a href="http://kali:3000/listing/gate_codes?gc_from=$today&gc_to=$four&missing_only=on">here</a>.
+Click <a href="http://kali:3000/listing/gate_codes?gc_from=$today&gc_to=$six&missing_only=on">here</a>.
 EOM
     $mail_sender->Close();
 }

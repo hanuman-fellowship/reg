@@ -117,6 +117,10 @@ ul {
 <P class=p2>[% IF program.confnote || reg.confnote || gc %]
 <B>NOTES:</B><BR>
 <UL>
+[% IF personal_retreat && sunday %]
+<b>Your housing information will be posted in the
+Community Building lobby.</b><br>
+[% END %]
 [% IF gc %]
 If you arrive in the evening and the gate is closed you can open it<br>
 by entering this code in the keypad: #${gc}. That's POUND ${gc}.<br>
@@ -252,8 +256,8 @@ on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
 [% END %]
 </P>
 [% IF personal_retreat && sunday %]
-    <P class=p2>Look for your housing information which will be posted
-    in the Community Building lobby.</P>
+    <P class=p2><b>Your housing information will be posted
+    in the Community Building lobby.</b></P>
     <P class=p2>Dinner is served from 5:00 pm to 6:00 pm.</P>
 [% ELSE %]
     [% IF ! mmi %]

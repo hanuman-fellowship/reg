@@ -1784,6 +1784,13 @@ sub send_conf : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     my $pr = $reg->program;
+    if (empty($pr->summary->gate_code())) {
+        error($c,
+              "Sorry, cannot send confirmation letter because<br>"
+              . $pr->name() . " needs a gate code!",
+              'gen_error.tt2');
+        return;
+    }
     Global->init($c);
     my $htdesc = $string{$reg->h_type};
     $htdesc =~ s{\s*\(.*\)}{};           # don't need this

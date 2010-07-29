@@ -1588,7 +1588,7 @@ sub _send_no_prs {
     }
     close $out;
     #
-    # send index.html and progtable to mountmadonna.org/personal
+    # send it to mountmadonna.org/personal
     #
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or return(my_die($c, "cannot connect to $string{ftp_site}"));

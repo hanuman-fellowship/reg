@@ -1051,9 +1051,11 @@ sub _spell {
 
 sub commify {
     my ($n) = @_;
+
     $n = reverse $n;
     $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
-    return scalar reverse $n;
+    $n = scalar reverse $n;
+    return penny($n);
 }
 
 #
