@@ -79,7 +79,6 @@ my $getrental_sth = $dbh->prepare("
 ");
 $getrental_sth->execute();
 while (my ($house_id) = $getrental_sth->fetchrow_array()) {
-print "got $house_id\n";
     push @house_ids, $house_id
         unless exists $no_makeup_id{$house_id};
 }
@@ -90,8 +89,7 @@ print "got $house_id\n";
 my $getblock_sth = $dbh->prepare("
     select distinct house_id
     from block
-    where npeople != 0
-      and edate = $cur_date
+    where edate = $cur_date
       and allocated = 'yes'
 ");
 $getblock_sth->execute();
