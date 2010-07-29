@@ -89,42 +89,6 @@ th {
 </tr>
 
 <tr>
-<th align=right width=180 valign=top>Contact Person</th>
-<td valign=top colspan=2>
-[% coord = happening.coordinator %]
-[% IF prog_staff %]
-<a href=/person/view/$coord.id>$coord.first $coord.last</a>
-[% ELSE %]
-$coord.first $coord.last
-[% END %]
-</td><td valign=top>
-<a href='mailto:$coord.email'>$coord.email</a><br>
-[% IF coord.tel_home %]$coord.tel_home home<br>[% END %]
-[% IF coord.tel_work %]$coord.tel_work work<br>[% END %]
-[% IF coord.tel_cell %]$coord.tel_cell cell [% END %]
-</td>
-</tr>
-
-[% IF happening.cs_person_id %]
-[% cs = happening.contract_signer %]
-<tr>
-<th align=right valign=top>Contract Signer</th>
-<td valign=top colspan=2>
-[% IF prog_staff %]
-<a href=/person/view/$cs.id>$cs.first $cs.last</a>
-[% ELSE %]
-$cs.first $cs.last
-[% END %]
-</td><td valign=top>
-<a href='mailto:$cs.email'>$cs.email</a><br>
-[% IF cs.tel_home %]$cs.tel_home home<br>[% END %]
-[% IF cs.tel_work %]$cs.tel_work work<br>[% END %]
-[% IF cs.tel_cell %]$cs.tel_cell cell [% END %]
-</td>
-</tr>
-[% END %]
-
-<tr>
 <th align=right>Start Hour</th><td>$happening.start_hour_obj.ampm</td>
 <th align=right>Meeting Places</th>
 <td>[% happening.meeting_places('') %]</td>
@@ -280,6 +244,41 @@ $cs.first $cs.last
 <td colspan=3 valign=top>$sum.miscellaneous</td>
 </tr>
 
+<tr>
+<th align=right width=180 valign=top>Contact Person</th>
+<td valign=top colspan=2>
+[% coord = happening.coordinator %]
+[% IF prog_staff %]
+<a href=/person/view/$coord.id>$coord.first $coord.last</a>
+[% ELSE %]
+$coord.first $coord.last
+[% END %]
+<br>
+<a href='mailto:$coord.email'>$coord.email</a><br>
+[% IF coord.tel_home %]$coord.tel_home home<br>[% END %]
+[% IF coord.tel_work %]$coord.tel_work work<br>[% END %]
+[% IF coord.tel_cell %]$coord.tel_cell cell [% END %]
+</td>
+</tr>
+
+[% IF happening.cs_person_id %]
+[% cs = happening.contract_signer %]
+<tr>
+<th align=right valign=top>Contract Signer</th>
+<td valign=top colspan=2>
+[% IF prog_staff %]
+<a href=/person/view/$cs.id>$cs.first $cs.last</a>
+[% ELSE %]
+$cs.first $cs.last
+[% END %]
+<br>
+<a href='mailto:$cs.email'>$cs.email</a><br>
+[% IF cs.tel_home %]$cs.tel_home home<br>[% END %]
+[% IF cs.tel_work %]$cs.tel_work work<br>[% END %]
+[% IF cs.tel_cell %]$cs.tel_cell cell [% END %]
+</td>
+</tr>
+[% END %]
 <a name=check_list></a>
 <tr>
 <td align=right valign=top><a href=/summary/update_sect/check_list/$type/$sum.id>Check List</a></th>
