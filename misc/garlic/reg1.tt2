@@ -354,7 +354,7 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                     <li>
                                         <label for="withwhom_first">First</label>
                                         <INPUT type=text NAME="withwhom_first" VALUE="[% withwhom_first %]" size=20>
-                                        <span class="help">Make sure that they register <I>separately</I>.</span>
+                                        <span class="helpRed"><-- Make sure that they register <I>separately</I>.</span>
                                     </li>
                                     <li>
                                         <label for="withwhom_last">Last</label>

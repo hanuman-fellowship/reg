@@ -462,7 +462,7 @@ $stash{house1} = $form{house1};
 $stash{house2} = $form{house2};
 if ($form{withwhom_first} =~ /\S/) {
     $stash{withwhom_verbose}
-        = "<p>Sharing housing with $form{withwhom_first} $form{withwhom_last}.";
+        = "<p>You have requested to share housing with $form{withwhom_first} $form{withwhom_last}.&nbsp;&nbsp;&nbsp;He/she needs to register separately.";
 }
 else {
     $stash{withwhom_verbose} = "";
