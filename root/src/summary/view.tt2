@@ -98,8 +98,7 @@ th {
 $coord.first $coord.last
 [% END %]
 </td><td valign=top>
-<a href='mailto:$coord.email'>$coord.email</a>
-</td><td>
+<a href='mailto:$coord.email'>$coord.email</a><br>
 [% IF coord.tel_home %]$coord.tel_home home<br>[% END %]
 [% IF coord.tel_work %]$coord.tel_work work<br>[% END %]
 [% IF coord.tel_cell %]$coord.tel_cell cell [% END %]
@@ -117,8 +116,7 @@ $coord.first $coord.last
 $cs.first $cs.last
 [% END %]
 </td><td valign=top>
-<a href='mailto:$cs.email'>$cs.email</a>
-</td><td valign=top>
+<a href='mailto:$cs.email'>$cs.email</a><br>
 [% IF cs.tel_home %]$cs.tel_home home<br>[% END %]
 [% IF cs.tel_work %]$cs.tel_work work<br>[% END %]
 [% IF cs.tel_cell %]$cs.tel_cell cell [% END %]
