@@ -57,8 +57,12 @@ $count_prog_sth->execute();
 $count_rent_sth->execute();
 my ($prog_count) = $count_prog_sth->fetchrow_array();
 my ($rent_count) = $count_rent_sth->fetchrow_array();
+if ($prog_count + $rent_count == 0) {
+    exit;       # don't bother anyone
+}
 my $prog_pl = ($prog_count > 1)? "s": "";
 my $rent_pl = ($rent_count > 1)? "s": "";
+
 
 use Mail::Sender;
 my @auth = ();
