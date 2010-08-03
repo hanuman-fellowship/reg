@@ -890,7 +890,7 @@ sub _driver_pics {
     my ($ride) = @_;
     my $driver = $ride->driver();
     my $id = $driver->id();
-    my @pics = <root/static/images/ub-$id*>;
+    my @pics = <root/static/images/ub-$id-*>;
     if (!@pics) {
         return "";
     }
