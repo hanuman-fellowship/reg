@@ -545,6 +545,7 @@ sub period_end : Local {
         for my $p (model($c, $src)->search($cond)) {
             next PAYMENT3 if $src eq 'XAccountPayment'
                              && ($p->xaccount->sponsor() ne $sponsor);
+            next PAYMENT3 if $p->amount() == 0;     # no need...
             my $type = $p->type();
             my $amt  = $p->amount_disp();
             my $glnum = $p->glnum();
