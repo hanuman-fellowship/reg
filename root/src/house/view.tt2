@@ -7,6 +7,10 @@
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/house/list" accesskey='l'><span class=keyed>L</span>ist</a>
+&nbsp;&nbsp;&nbsp;
+[% IF ! on_makeup %]
+<a href="/house/makeup/[% house.id %]">MakeUp</a>
+[% END %]
 <ul>
 <table cellpadding=5 border=0>
 

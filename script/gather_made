@@ -152,7 +152,7 @@ for my $house_id (@house_ids) {
     # ??? Better - search the config records ???
     # maybe not - if two in room, one leaves...
     #
-    $next = '';
+    $next = '29991231';
     $nextreg_sth->execute($house_id);
     ($next_reg_date) = $nextreg_sth->fetchrow_array();
     if ($next_reg_date) {
@@ -161,13 +161,13 @@ for my $house_id (@house_ids) {
 
     $nextblock_sth->execute($house_id);
     ($next_block_date) = $nextblock_sth->fetchrow_array();
-    if ($next_block_date && $next && $next_block_date < $next) {
+    if ($next_block_date && $next_block_date < $next) {
         $next = $next_block_date;
     }
 
     $nextrental_sth->execute($house_id);
     ($next_rental_date) = $nextrental_sth->fetchrow_array();
-    if ($next_rental_date && $next && $next_rental_date < $next) {
+    if ($next_rental_date && $next_rental_date < $next) {
         $next = $next_rental_date;
     }
 

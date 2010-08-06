@@ -11,6 +11,9 @@ use Util qw/
     add_config
     stash
 /;
+use Date::Simple qw/
+    today
+/;
 use Global qw/%string/;
 
 sub index : Private {
@@ -185,8 +188,14 @@ sub create_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    $c->stash->{house} = model($c, 'House')->find($id);
-    $c->stash->{template} = "house/view.tt2";
+    my ($makeup) = model($c, 'MakeUp')->search({
+                         house_id => $id,
+                   });
+    stash($c,
+        on_makeup => $makeup,
+        house     => model($c, 'House')->find($id),
+        template  => "house/view.tt2",
+    );
 }
 
 sub access_denied : Private {
@@ -207,6 +216,66 @@ sub toggleTCB : Local {
         ->update({ inactive => $new_val });
     $c->response->redirect($c->uri_for('/house/list'));
     Global->init($c, 1);    # force a reload
+}
+
+sub makeup : Local {
+    my ($self, $c, $id) = @_;
+
+    my $today = today()->as_d8(),
+
+    # the tricky part is knowing when the house
+    # is next needed - by a registrant, rental or block
+    #
+    my $needed = '29991231';        # way out there
+    my @items = ();
+    my ($reg) = model($c, 'Registration')->search(
+                {
+                    house_id => $id,
+                    date_end => { '>' => $today },
+                },
+                {
+                    order_by => 'date_start',
+                    rows     => 1,
+                });
+    if ($reg) {
+        $needed = $reg->date_end();
+    }
+    my ($rental) = model($c, 'RentalBooking')->search(
+                   {
+                      house_id => $id,
+                      date_end => { '>' => $today },
+                   },
+                   {
+                       order_by => 'date_start',
+                       rows     => 1,
+                   });
+    if ($rental && $rental->date_end() < $needed) {
+        $needed = $rental->date_end();
+    }
+    my ($block) = model($c, 'Block')->search(
+                  {
+                      house_id => $id,
+                      edate    => { '>' => $today },
+                  },
+                  {
+                      order_by => 'sdate',
+                      rows     => 1,
+                  });
+    if ($block && $block->edate() < $needed) {
+        $needed = $block->edate();
+    }
+    $needed = '' if $needed == '29991231';
+    model($c, 'MakeUp')->create({
+        house_id     => $id,
+        date_vacated => $today,
+        date_needed  => $needed,
+        refresh      => '',
+    });
+    stash($c,
+        on_makeup => 1,
+        house     => model($c, 'House')->find($id),
+        template  => "house/view.tt2",
+    );
 }
 
 1;
