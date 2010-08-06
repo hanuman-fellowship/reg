@@ -238,7 +238,7 @@ sub makeup : Local {
                     rows     => 1,
                 });
     if ($reg) {
-        $needed = $reg->date_end();
+        $needed = $reg->date_start();
     }
     my ($rental) = model($c, 'RentalBooking')->search(
                    {
@@ -250,7 +250,7 @@ sub makeup : Local {
                        rows     => 1,
                    });
     if ($rental && $rental->date_end() < $needed) {
-        $needed = $rental->date_end();
+        $needed = $rental->date_start();
     }
     my ($block) = model($c, 'Block')->search(
                   {
@@ -261,8 +261,8 @@ sub makeup : Local {
                       order_by => 'sdate',
                       rows     => 1,
                   });
-    if ($block && $block->edate() < $needed) {
-        $needed = $block->edate();
+    if ($block && $block->sdate() < $needed) {
+        $needed = $block->sdate();
     }
     $needed = '' if $needed == '29991231';
     model($c, 'MakeUp')->create({
