@@ -43,6 +43,7 @@ create table rental (
     housing_note      text,
     grid_code         text,
     staff_ok          text,
+    rental_follows    text,
     refresh_days      text
 );
 drop table if exists rental_payment;

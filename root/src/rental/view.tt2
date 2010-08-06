@@ -322,6 +322,11 @@ Web
 </tr>
 
 <tr>
+<th align=right>Rental Follows</th>
+<td>[% rental.rental_follows %]</td>
+</tr>
+
+<tr>
 <th align=right>Contract Sent</th>
 <td>[% rental.contract_sent_obj %] [% IF rental.contract_sent %]by [% rental.sent_by.username %][% END %]</td>
 </tr>

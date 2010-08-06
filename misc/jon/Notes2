@@ -1467,3 +1467,6 @@ To Install
     Email to CMS => To CMS ... rewording of option choice
         email address is not included!
     First Sanskrit To CMS was broken now fixed.
+
+To check our blacklisting status:
+    http://cbl.abuseat.org/lookup.cgi?ip=208.74.179.158

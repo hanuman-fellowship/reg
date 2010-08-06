@@ -155,6 +155,11 @@ Web
 </tr>
 
 <tr>
+<td>&nbsp;</td>
+<td colspan=2><input type=checkbox value="yes" name=rental_follows [% check_rental_follows %]> Rental Follows</td>
+</tr>
+
+<tr>
 <th align=right>Contract Sent</th>
 <td><input type=text name=contract_sent value='[% rental.contract_sent_obj.format("%D") %]' size=10></td>
 </tr>
