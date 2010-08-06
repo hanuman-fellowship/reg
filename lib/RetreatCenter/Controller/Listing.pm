@@ -438,6 +438,7 @@ sub meal_list : Local {
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
+                      name  => { -not_like => 'XL %' },
                       -or => [
                           program_id => 0,      # non-hybrid rentals only
                           program_id => undef,  # null
