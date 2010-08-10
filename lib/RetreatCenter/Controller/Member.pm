@@ -89,7 +89,7 @@ sub list : Local {
             {
                 join     => ['person'],
                 prefetch => ['person'],
-                sort     => ['person.last', 'person.first' ],
+                order_by => ['person.last', 'person.first' ],
             }
         );
     }
@@ -579,7 +579,7 @@ sub _lapsed_members {
             {
                 join     => ['person'],
                 prefetch => ['person'],
-                sort     => ['person.last', 'person.first' ],
+                order_by => ['person.last', 'person.first' ],
             }
         )
     ];
@@ -609,7 +609,7 @@ sub _soon_to_lapse_members {
             {
                 join     => ['person'],
                 prefetch => ['person'],
-                sort     => ['person.last', 'person.first' ],
+                order_by => ['person.last', 'person.first' ],
             }
         )
     ];
@@ -631,7 +631,7 @@ sub _checked_members {
         {
             join     => ['person'],
             prefetch => ['person'],
-            sort     => ['person.last', 'person.first' ],
+            order_by => ['person.last', 'person.first' ],
         }
     );
 }
