@@ -61,9 +61,10 @@ sub lapsed {
 }
 my %index = (
     General  => 1,
-    Sponsor  => 2,
-    Life     => 3,
-    Inactive => 4,
+    'Contributing Sponsor'  => 2,
+    Sponsor  => 3,
+    Life     => 4,
+    Inactive => 5,
 );
 sub category_id {
     my ($self) = @_;
