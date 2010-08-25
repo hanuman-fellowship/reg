@@ -30,10 +30,17 @@ to jon@logicalpoetry.com:
     - unable to make a connection via ftp or pop3
     - misformatted emails
 
+6) For registrations that indicated they would like
+to be contacted about massage send Kaya Kalpa a letter
+with their contact information and which program and when
+they'll be here.
+
 =cut
+use lib 'lib';
 use DBI;
 use Net::FTP;
 use Template;
+use Date::Simple qw/date/;
 use FindBin;
 chdir "$FindBin::Bin/..";
 
@@ -75,6 +82,7 @@ my $sth = $dbh->prepare("
        or the_key like 'smtp_%'
        or the_key like 'ride_%'
        or the_key like 'reception_email'
+       or the_key like 'kayakalpa_email'
        or the_key like 'mmi_email'
 ");
 $sth->execute();
@@ -129,6 +137,7 @@ sub email_letter {
 }
 
 my %ids = ();
+my @kayakalpa;
 
 my $online = "root/static/online";
 my $mlist = "root/static/mlist";
@@ -154,13 +163,14 @@ for my $f ($ftp->ls()) {
     if (open my $in, "<", "$online/$f") {
         LINE:
         while (my $line = <$in>) {
-            if ($line =~ m{x_fname => (.*)}) {
+            if ($line =~ m{x_kayakalpa => yes}) {
+                push @kayakalpa, $f;    
+            }
+            elsif ($line =~ m{x_fname => (.*)}) {
                 $first = $1;
-                last LINE if $last;
             }
             elsif ($line =~ m{x_lname => (.*)}) {
                 $last = $1;
-                last LINE if $first;
             }
         }
         close $in;
@@ -456,6 +466,9 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
                 }
             }
             print {$out} "$l\n";
+            if ($l =~ m{x_kayakalpa => yes}) {
+                push @kayakalpa, $trans_id;    
+            }
         }
     }
     close $out;
@@ -485,11 +498,12 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     );
 }
 $pop->Close();
+kayakalpa();
 finalities();
 exit;
 
 #
-# four utility functions
+# five utility functions
 #
 
 sub my_die {
@@ -512,31 +526,101 @@ sub dump_it {
     $pop->Delete($i);
 }
 
+sub kayakalpa {
+    return unless @kayakalpa;
+    my %needed = map { $_ => 1 } qw/
+        fname
+        lname
+        home
+        work
+        cell
+        pid
+        email
+        sdate
+        edate
+        progchoice
+    /;
+    my $fmt = "%A, %B %e";
+    my $getprog = $dbh->prepare(<<"EOS");
+
+    select title, sdate, edate, extradays
+      from program
+     where id = ?
+
+EOS
+    KK:
+    for my $k (@kayakalpa) {
+        my %vals;
+        open my $in, "<", "$online/$k" or next KK;
+        while (my $line = <$in>) {
+            my ($key, $val) = $line =~ m{x_(\w+) => (.*)};
+            if ($needed{$key}) {
+                $vals{$key} = $val;
+            }
+        }
+        close $in;
+        my ($program, $p_sdate, $p_edate, $extradays, $arrive, $leave);
+        if ($vals{pid} != 0) {
+            $getprog->execute($vals{pid});
+            ($program, $p_sdate, $p_edate, $extradays)
+                = $getprog->fetchrow_array();
+            $p_sdate = date($p_sdate);
+            $p_edate = date($p_edate);
+            if ($vals{progchoice} eq 'full') {
+                $p_edate += $extradays;
+            }
+            $arrive = $p_sdate->format($fmt);
+            $leave  = $p_edate->format($fmt);
+        }
+        else {
+            $program = "Personal Retreat";
+            $arrive = date($vals{sdate})->format($fmt);
+            $leave = date($vals{edate})->format($fmt);
+        }
+        my $html;
+        my $tt = Template->new()
+            or my_die("template new error: " . Template->error());
+        $tt->process(
+            'kayakalpa.tt2',
+            {
+                name    => "$vals{fname} $vals{lname}",
+                email   => $vals{email},
+                home    => $vals{home},
+                work    => $vals{work},
+                cell    => $vals{cell},
+                program => $program,
+                arrive  => $arrive,
+                leave   => $leave,
+            },
+            \$html,
+        ) or my_die("template error: " . $tt->error());
+        email_letter(
+            to       => $string{kayakalpa_email},
+            from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
+            subject  => "Massage/Bodywork Request",
+            html     => $html,
+        );
+    }
+}
+
 sub finalities {
     if ($Msg) {
         # write to a file (uniquely named) and send a letter to Jon.
-        if (open my $out, ">", "error-" . time()) {
-            print {$out} $Msg;
-            close $out;
-        }
+        #if (open my $out, ">", "error-" . time()) {
+        #    print {$out} $Msg;
+        #    close $out;
+        #}
         if (1) {            # 1 or 0 - okay?
-            my $mail_sender = Mail::Sender->new({
-                smtp => $string{smtp_server},
-                port => $string{smtp_port},
-            });
-            if ($mail_sender && $mail_sender->Open({
+            $Msg =~ s{\n}{<br>\n}g;
+            email_letter(
                 to       => 'jon@logicalpoetry.com',
-                #to       => 'jon@suecenter.org',
-                from     => 'Grab New <reservations@mountmadonna.org>',
+                from     =>
+                    'Mount Madonna Center <reservations@mountmadonna.org>',
                 subject  => "Grab New "
                             . ($Error? "Failure"
                                :       "Status"),
-                ctype    => "text/plain",
-                encoding => "7bit",
-            })) {
-                $mail_sender->SendLineEnc($Msg);
-                $mail_sender->Close();
-            }
+                html     => $Msg,
+            );
         }
     }
     unlink $Run_File;

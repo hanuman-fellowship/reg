@@ -218,7 +218,8 @@ gate_code_cc_email jon@suecenter.org
 dp_B_color 255,0,0
 dp_S_color 255,0,0
 reception_email jon@suecenter.org
-ftp_mlist_dir /www/cgi-bin/mlist_requests
+ftp_mlist_requests /www/cgi-bin/mlist_requests
 ftp_ride_dir /www/cgi-bin/ride_requests
 mmi_email jon@suecenter.org
 housing_log 1
+kayakalpa_email jon@suecenter.org

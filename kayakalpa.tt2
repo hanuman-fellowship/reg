@@ -1,0 +1,51 @@
+The person below requested that you contact them about massage or other bodywork.
+<p>
+<table cellpadding=5>
+
+<tr>
+<th align=right>Name</th>
+<td>[% name %]</td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td><a href="mailto:[% email %]">[% email %]</td>
+</tr>
+
+[% IF home %]
+<tr>
+<th align=right>Home</th>
+<td>[% home %]</td>
+</tr>
+[% END %]
+
+[% IF work %]
+<tr>
+<th align=right>Work</th>
+<td>[% work %]</td>
+</tr>
+[% END %]
+
+[% IF cell %]
+<tr>
+<th align=right>Cell</th>
+<td>[% cell %]</td>
+</tr>
+[% END %]
+
+<tr>
+<th align=right>Program</th>
+<td>[% program %]</td>
+</tr>
+
+<tr>
+<th align=right>Arrive</th>
+<td>[% arrive %]</td>
+</tr>
+
+<tr>
+<th align=right>Leave</th>
+<td>[% leave %]</td>
+</tr>
+
+</table>

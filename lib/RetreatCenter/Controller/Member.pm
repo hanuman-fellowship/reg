@@ -38,7 +38,7 @@ sub membership_list : Local {
     my ($self, $c, $no_money) = @_;
     
     my %stash;
-    for my $cat (qw/ general sponsor life inactive /) {
+    for my $cat (qw/ gene cont spon life inac /) {
         $stash{lc $cat} = [
             map {
                 $_->[1]
@@ -49,9 +49,9 @@ sub membership_list : Local {
             map {
                 [ $_->person->last . ' ' . $_->person->first, $_ ]
             }
-            model($c, 'Member')->search(
-                { category => ucfirst $cat },
-            )
+            model($c, 'Member')->search({
+                category => { -like => "$cat%" },
+            })
         ];
         $stash{"n$cat"} = scalar(@{$stash{$cat}});  # fancy!
     }
@@ -103,13 +103,20 @@ sub update : Local {
     my $m = $c->stash->{member} = model($c, 'Member')->find($id);
     for my $w (qw/
         general
+        contributing_sponsor
         sponsor
         life
         inactive
     /) {
-        $c->stash->{"category_$w"} = ($m->category eq ucfirst($w))? "checked": "";
+        my $cat = lc $m->category();
+        $c->stash->{"category_$w"} =
+            (substr($cat, 0, 3) eq substr($w, 0, 3))? "checked"
+            :                                         ""
+            ;
     }
-    $c->stash->{free_prog_checked} = ($m->free_prog_taken)? "checked": "";
+    $c->stash->{free_prog_checked} = ($m->free_prog_taken)? "checked"
+                                     :                      ""
+                                     ;
 
     $c->stash->{person}      = $m->person();
     $c->stash->{form_action} = "update_do/$id";
@@ -124,7 +131,7 @@ sub _get_data {
     %P = %{ $c->request->params() };
     @mess = ();
     if (! $P{category}) {
-        push @mess, "You must select General, Sponsor, Life or Inactive";
+        push @mess, "You must select General, Contributing Sponsor, Sponsor, Life or Inactive";
     }
     # dates are either blank or converted to d8 format
     for my $f (keys %P) {

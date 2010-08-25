@@ -1,10 +1,14 @@
 <h2>Counts</h2>
+
 <table>
-<tr><td>General</td><td align=right>[% ngeneral %]</td></tr>
-<tr><td>Sponsor</td><td align=right>[% nsponsor %]</td></tr>
+<tr><td>General</td><td align=right>[% ngene %]</td></tr>
+<tr><td>Contributing Sponsor</td><td align=right>[% ncont %]</td></tr>
+<tr><td>Sponsor</td><td align=right>[% nspon %]</td></tr>
 <tr><td>Life</td><td align=right>[% nlife %]</td></tr>
-<tr><td>Inactive</td><td align=right>[% ninactive %]</td></tr>
+<tr><td>Inactive</td><td align=right>[% ninac %]</td></tr>
+<tr><td>Total</td><td align=right>[% ngene+ncont+nspon+nlife+ninac %]</td></tr>
 </table>
+
 <h2>General</h2>
 <table cellpadding=3>
 <tr>
@@ -13,7 +17,7 @@
 <th align=left>Sanskrit</th>
 <th align=center>Expires</th>
 </tr>
-[% FOR m IN general %]
+[% FOR m IN gene %]
 [% p = m.person %]
 <tr>
 <td>[% IF m.lapsed %]*[% END %]</td>
@@ -23,8 +27,34 @@
 </tr>
 [% END %]
 </table>
+
+<h2>Contributing Sponsor</h2>
 <table cellpadding=3>
+<tr>
+<th></th>
+<th valign=bottom align=left>Name</th>
+<th valign=bottom align=left>Sanskrit</th>
+[% IF ! no_money %]
+<th valign=bottom align=center>Last<br>Paid</th>
+<th valign=bottom align=right>Total</th>
+[% END %]
+</tr>
+[% FOR m IN cont %]
+[% p = m.person %]
+<tr>
+<td>[% IF m.lapsed %]*[% END %]</td>
+<td>[% p.last %], [% p.first %]</td>
+<td>[% IF p.sanskrit %][% p.sanskrit %][% ELSE %][% p.first %][% END %]</td>
+[% IF ! no_money %]
+<td align=center>[% m.payments.0.date_payment_obj.format("%D") %]</td>
+<td align=right>[% m.total_paid %]</td>
+[% END %]
+</tr>
+[% END %]
+</table>
+
 <h2>Sponsor</h2>
+<table cellpadding=3>
 <tr>
 <th></th>
 <th valign=bottom align=left>Name</th>
@@ -36,7 +66,7 @@
 <th valign=bottom align=right>Nights<br>Left</th>
 [% END %]
 </tr>
-[% FOR m IN sponsor %]
+[% FOR m IN spon %]
 [% p = m.person %]
 <tr>
 <td>[% IF m.lapsed %]*[% END %]</td>
@@ -51,6 +81,7 @@
 </tr>
 [% END %]
 </table>
+
 <h2>Life</h2>
 <table cellpadding=3>
 <tr>
@@ -85,7 +116,7 @@
 <th valign=bottom align=left>Total</th>
 [% END %]
 </tr>
-[% FOR m IN inactive %]
+[% FOR m IN inac %]
 [% p = m.person %]
 <tr>
 <td>[% p.last %], [% p.first %]</td>

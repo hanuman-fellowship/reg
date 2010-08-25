@@ -1,9 +1,9 @@
 [% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
 <table cellpadding=5><tr><td>
-<a href="/member/membership_list">Category</a>
+<a href="/member/membership_list">Category w/\$</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/member/membership_list/1">Category-\$</a>
+<a href="/member/membership_list/1">Category</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/lapsed">Lapsed</a>
 &nbsp;&nbsp;&nbsp;

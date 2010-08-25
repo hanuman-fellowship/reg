@@ -49,9 +49,9 @@ sub date_life_obj {
 sub lapsed {
     my ($self) = @_;
     my $today = today()->as_d8();       # can't use tt_today - no $c :(
-    if (($self->category eq 'General' && $self->date_general < $today)
+    if (($self->category() eq 'General' && $self->date_general() < $today)
         ||
-        ($self->category eq 'Sponsor' && $self->date_sponsor < $today)
+        ($self->category() eq 'Sponsor' && $self->date_sponsor() < $today)
     ) {
         return "Lapsed";
     }

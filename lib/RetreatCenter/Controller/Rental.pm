@@ -1809,6 +1809,15 @@ sub duplicate_do : Local {
         gate_code => '',
         needs_verification => "yes",
     });
+    my @tprog = model($c, 'Program')->search({
+        name => "MMC Template",
+    });
+    if (@tprog) {
+        my $template_sum = model($c, 'Summary')->find($tprog[0]->summary_id());
+        $sum->update({
+            check_list => $template_sum->check_list(),
+        });
+    }
 
 
     # now we can create the new dup'ed rental

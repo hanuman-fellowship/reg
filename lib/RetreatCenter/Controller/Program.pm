@@ -1478,6 +1478,7 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
         name
         title
         dates
+        sdate
         edate
         leader_names
         footnotes
@@ -1721,6 +1722,15 @@ sub duplicate_do : Local {
         gate_code => '',
         needs_verification => "yes",
     });
+    my @tprog = model($c, 'Program')->search({
+        name => "MMC Template",
+    });
+    if (@tprog) {
+        my $template_sum = model($c, 'Summary')->find($tprog[0]->summary_id());
+        $sum->update({
+            check_list => $template_sum->check_list(),
+        });
+    }
 
     # the image takes special handling
     # if a new one is provided, take that.

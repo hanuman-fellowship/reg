@@ -323,6 +323,17 @@ sub paste : Local {
         gate_code => '',
         needs_verification => "yes",
     });
+    # now overwrite the Checklist with the one from the MMC Template
+    #
+    my @prog = model($c, 'Program')->search({
+        name => "MMC Template",
+    });
+    if (@prog) {
+        my $template_sum = model($c, 'Summary')->find($prog[0]->summary_id());
+        $hap_sum->update({
+            check_list => $template_sum->check_list(),
+        });
+    }
 
     # clear the string sum_copy_id
     #

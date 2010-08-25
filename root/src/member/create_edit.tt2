@@ -79,12 +79,16 @@ h3 {
 </tr>
 
 <tr>
-<th align=left height=40><input type=radio name=category value='Sponsor' [% category_sponsor %] onclick="ff(2);"><span id=2 class=cat> Sponsor</span></th>
+<th align=left height=40><input type=radio name=category value='Contributing Sponsor' [% category_contributing_sponsor %] onclick="ff(2);"><span id=2 class=cat> Contributing Sponsor</span></th>
+</tr>
+
+<tr>
+<th align=left height=40><input type=radio name=category value='Sponsor' [% category_sponsor %] onclick="ff(3);"><span id=3 class=cat> Sponsor</span></th>
 <th align=right>Payment Due on</td><td><input type=text name=date_sponsor value='[% member.date_sponsor_obj.format("%D") %]' size=10 maxlength=10></td><th align=right>Total Paid</td><td>[% member.total_paid %]</th>
 </tr>
 
 <tr>
-<th align=left colspan=3 height=40><input type=radio name=category value='Life' [% category_life %] onclick="ff(3);"><span id=3 class=cat> Life</span></th>
+<th align=left colspan=3 height=40><input type=radio name=category value='Life' [% category_life %] onclick="ff(4);"><span id=4 class=cat> Life</span></th>
 <th align=right>Nights Left</th>
 [% IF Catalyst.check_user_roles('member_admin') %]
 <td><input type=text name=sponsor_nights value='[% member.sponsor_nights %]' size=2 maxlength=2></td>
@@ -103,7 +107,7 @@ h3 {
 [% END %]
 
 <tr>
-<th align=left colspan=2 height=40><input type=radio name=category value='Inactive' [% category_inactive %] onclick="ff(4);"><span id=4 class=cat> Inactive</span></th>
+<th align=left colspan=2 height=40><input type=radio name=category value='Inactive' [% category_inactive %] onclick="ff(5);"><span id=5 class=cat> Inactive</span></th>
 <td align=left><input id=sub type=submit id=submit value="Submit"></td>
 </tr>
 
