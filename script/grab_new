@@ -540,7 +540,7 @@ sub kayakalpa {
         edate
         progchoice
     /;
-    my $fmt = "%A, %B %e %Y";
+    my $fmt = "%A, %B %e, %Y";
     my $getprog = $dbh->prepare(<<"EOS");
 
     select title, sdate, edate, extradays
