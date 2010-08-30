@@ -1625,6 +1625,7 @@ sub orient_windup : Local {
                     sdate => { '<=' => $ow_to8   },
                     edate => { '>=' => $ow_from8 },
                     name  => { -not_like => 'XL%'},
+                    name  => { -not_like => 'Personal Retreats%'},
                     -or => [
                         school => 0,
                         level  => 'S',
