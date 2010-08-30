@@ -30,9 +30,13 @@ sub index : Local {
     my ($self, $c) = @_;
 
     my $today = today();
+    my $from = $today->format("%D");
+    my $to   = (today()+6*30)->format("%D");
     stash($c,
-        gc_from  => $today->format("%D"),
-        gc_to    => (today()+6*30)->format("%D"),
+        gc_from  => $from,
+        gc_to    => $to,
+        ow_from  => $from,
+        ow_to    => $to,
         template => "listing/index.tt2",
     );
 }
@@ -1589,6 +1593,91 @@ sub field_staff : Local {
 sub kitchen : Local {
     my ($self, $c) = @_;
     $c->stash->{template} = "listing/kitchen.tt2";
+}
+
+sub orient_windup : Local {
+    my ($self, $c, $sortkey) = @_;
+
+    $sortkey ||= "sdate";
+    my $from = $c->request->params->{ow_from};
+    my $ow_from = date($from);
+    if (! $ow_from) {
+        error($c,
+            "Invalid From date for Orientation/Wind Up: $from",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $to = $c->request->params->{ow_to};
+    my $ow_to = date($to);
+    if (! $ow_to) {
+        error($c,
+            "Invalid To date for Orientation/Wind Up: $from",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $ow_from8 = $ow_from->as_d8();
+    my $ow_to8 = $ow_to->as_d8();
+    my @events;
+    EVENT:
+    for my $ev (model($c, 'Program')->search({
+                    sdate => { '<=' => $ow_to8   },
+                    edate => { '>=' => $ow_from8 },
+                    name  => { -not_like => 'XL%'},
+                    -or => [
+                        school => 0,
+                        level  => 'S',
+                    ],
+                }),
+                model($c, 'Rental')->search({
+                    sdate => { '<=' => $ow_to8   },
+                    edate => { '>=' => $ow_from8 },
+                    name  => { -not_like => 'XL%'},
+                })
+    ) {
+        my $sum = $ev->summary();
+        push @events, {
+            name   => $ev->name(),
+            sdate  => $ev->sdate_obj(),
+            sdate8 => $ev->sdate(),
+            edate  => $ev->edate_obj(),
+            edate8 => $ev->edate(),
+            orientation => $sum->orientation(),
+            wind_up => $sum->wind_up(),
+            sum_id => $sum->id(),
+        };
+    }
+    my (%dup_start, %dup_end);
+    for my $e (@events) {
+        ++$dup_start{$e->{sdate8}};
+        ++$dup_end  {$e->{edate8}};
+    }
+    for my $e (@events) {
+        if ($dup_start{$e->{sdate8}} > 1) {
+            $e->{or_class} = "red";
+        }
+        if ($dup_end{$e->{edate8}} > 1) {
+            $e->{wu_class} = "red";
+        }
+    }
+    @events = sort {
+                 $a->{$sortkey} <=> $b->{$sortkey}
+             }
+             @events;
+    my $params = "ow_from="
+               . $ow_from8
+               . "&"
+               . "ow_to="
+               . $ow_to8
+               ;
+    stash($c,
+        from     => $ow_from,
+        to       => $ow_to,
+        events   => \@events,
+        params   => $params,
+        template => 'listing/orient_windup.tt2',
+    );
 }
 
 sub gate_codes : Local {

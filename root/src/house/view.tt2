@@ -1,82 +1,87 @@
 <h2>Houses</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/house/update/[% house.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
+<a href="/house/update/$house.id" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/house/delete/[% house.id %]"
- onclick="return confirm('Okay to Delete [% house.name %]?');">Delete</a>
+<a href="/house/delete/$house.id"
+ onclick="return confirm('Okay to Delete $house.name?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/house/list" accesskey='l'><span class=keyed>L</span>ist</a>
 &nbsp;&nbsp;&nbsp;
 [% IF ! on_makeup %]
-<a href="/house/makeup/[% house.id %]">MakeUp</a>
+<a href="/house/makeup/$house.id">MakeUp</a>
 [% END %]
 <ul>
 <table cellpadding=5 border=0>
 
 <tr>
 <th align=right>Name</th>
-<td>[% house.name %]</td>
+<td>$house.name</td>
 </tr>
 
 <tr>
 <th align=right>Max</th>
-<td>[% house.max %]</td>
+<td>$house.max</td>
 </tr>
 
 <tr>
 <th align=right>Bath</th>
-<td>[% house.bath %]</td>
+<td>$house.bath</td>
 </tr>
 
 <tr>
 <th align=right>Tent</th>
-<td>[% house.tent %]</td>
+<td>$house.tent</td>
 </tr>
 
 <tr>
 <th align=right>Center Tent</th>
-<td>[% house.center %]</td>
+<td>$house.center</td>
 </tr>
 
 <tr>
 <th align=right>Cabin</th>
-<td>[% house.cabin %]</td>
+<td>$house.cabin</td>
 </tr>
 
 <tr>
 <th align=right>Priority</th>
-<td>[% house.priority %]</td>
+<td>$house.priority</td>
 </tr>
 
 <tr>
 <th align=right>Cluster</th>
-<td>[% house.cluster.name %]</td>
+<td>$house.cluster.name</td>
 </tr>
 
 <tr>
 <th align=right>Cluster Order</th>
-<td>[% house.cluster_order %]</td>
+<td>$house.cluster_order</td>
 </tr>
 
 <tr>
 <th align=right>X Coord</th>
-<td>[% house.x %]</td>
+<td>$house.x</td>
 </tr>
 
 <tr>
 <th align=right>Y Coord</th>
-<td>[% house.y %]</td>
+<td>$house.y</td>
 </tr>
 
 <tr>
 <th align=right>Display Code</th>
-<td>[% house.disp_code %]</td>
+<td>$house.disp_code</td>
 </tr>
 
 <tr>
 <th align=right>Inactive</th>
-<td>[% house.inactive %]</td>
+<td>$house.inactive</td>
+</tr>
+
+<tr>
+<th align=right>Comment</th>
+<td>$house.comment</td>
 </tr>
 
 </table>

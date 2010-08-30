@@ -5,22 +5,22 @@
 
 <tr>
 <th align=right>Name</th>
-<td><input type=text name=name value="[% house.name %]" size=20></td>
+<td><input type=text name=name value="$house.name" size=20></td>
 </tr>
 
 <tr>
 <th align=right>Max</th>
-<td><input type=text name=max value="[% house.max %]" size=2></td>
+<td><input type=text name=max value="$house.max" size=2></td>
 </tr>
 
-<tr><td></td><td><input type=checkbox name=bath value='yes' [% bath %]> Bath</td></tr>
-<tr><td></td><td><input type=checkbox name=tent value='yes' [% tent %]> Tent</td></tr>
-<tr><td></td><td><input type=checkbox name=center value='yes' [% center %]> Center Tent</td></tr>
-<tr><td></td><td><input type=checkbox name=cabin value='yes' [% cabin %]> Cabin</td></tr>
+<tr><td></td><td><input type=checkbox name=bath value='yes' $bath> Bath</td></tr>
+<tr><td></td><td><input type=checkbox name=tent value='yes' $tent> Tent</td></tr>
+<tr><td></td><td><input type=checkbox name=center value='yes' $center> Center Tent</td></tr>
+<tr><td></td><td><input type=checkbox name=cabin value='yes' $cabin> Cabin</td></tr>
 
 <tr>
 <th align=right>Priority</th>
-<td><input type=text name=priority value="[% house.priority %]" size=2></td>
+<td><input type=text name=priority value="$house.priority" size=2></td>
 </tr>
 
 <tr>
@@ -28,7 +28,7 @@
 <td>
 <select name=cluster_id %]>
 [% FOR cl IN cluster_opts %]
-<option value=[% cl.id %][% IF cl.id == house.cluster_id %] selected[% END %] %]>[% cl.name %]</option>
+<option value=$cl.id[% IF cl.id == house.cluster_id %] selected[% END %]>$cl.name</option>
 [% END %]
 </select>
 </td>
@@ -36,23 +36,23 @@
 
 <tr>
 <th align=right>Cluster Order</th>
-<td><input type=text name=cluster_order value="[% house.cluster_order %]" size=2 maxlength=2></td>
+<td><input type=text name=cluster_order value="$house.cluster_order" size=2 maxlength=2></td>
 </tr>
 
 <tr>
 <th align=right>X Coord</th>
-<td><input type=text name=x value="[% house.x %]" size=4></td>
+<td><input type=text name=x value="$house.x" size=4></td>
 </tr>
 
 <tr>
 <th align=right>Y Coord</th>
-<td><input type=text name=y value="[% house.y %]" size=4></td>
+<td><input type=text name=y value="$house.y" size=4></td>
 </tr>
 
 <tr>
 <th align=right>Display Code</th>
-<td><input type=text name=disp_code value="[% house.disp_code %]" size=4></td>
-<td rowspan=7>
+<td><input type=text name=disp_code value="$house.disp_code" size=4></td>
+<td>
 A - above<br>
 B - Below<br>
 L - Left<br>
@@ -60,7 +60,15 @@ R - Right<br>
 t - truncate name
 </tr>
 
-<tr><td></td><td><input type=checkbox name=inactive value='yes' [% inactive %]> Inactive</td></tr>
+<tr>
+<td></td>
+<td><input type=checkbox name=inactive value='yes' $inactive> Inactive</td>
+</tr>
+
+<tr>
+<td align=right>Comment</td>
+<td><input type=text name=comment value="$house.comment" size=40</td>
+</tr>
 
 <tr>
 <td>&nbsp;</td>

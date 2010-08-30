@@ -36,6 +36,7 @@ h3 {
 [% IF h.bath %]bath [% END %]
 [% IF h.cabin %]cabin [% END %]
 [% IF h.inactive %]inactive[% END %]
+[% IF h.comment %] - [% h.comment %][% END %]
 </td>
 [% IF by_priority %]
     <td align=right>[% h.priority %]</td>

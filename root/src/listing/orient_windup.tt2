@@ -1,0 +1,19 @@
+<h2>Orientation/Wind Up from $from to $to</h2>
+<table cellpadding=5
+<tr align=left>
+<th>Event</th>
+<td><a href=/listing/orient_windup/sdate?$params>From</a></td>
+<td><a href=/listing/orient_windup/edate?$params>To</a></td>
+<th>Orientation</th>
+<th>Wind Up</th>
+</tr>
+[% FOR e IN events %]
+    <tr align=left>
+    <td><a target=event href=/summary/view/$e.type/$e.sum_id>$e.name</a></td>
+    <td class=$e.or_class>$e.sdate</td>
+    <td class=$e.wu_class>$e.edate</td>
+    <td>$e.orientation</td>
+    <td>$e.wind_up</td>
+    </tr>
+[% END %]
+</table>

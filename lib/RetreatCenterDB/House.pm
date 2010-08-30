@@ -20,6 +20,7 @@ __PACKAGE__->add_columns(qw/
     cluster_order
     inactive
     disp_code
+    comment
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
