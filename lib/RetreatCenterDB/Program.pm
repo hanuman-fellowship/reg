@@ -588,8 +588,8 @@ sub leader_bio {
 }
 sub month_calendar {
     my ($self) = @_;
-    my $m = $self->sdate_obj->month;
-    my $cal = slurp "cal$m";
+    my $ym = $self->sdate_obj->format("%Y%m");
+    my $cal = slurp "cal$ym";
     $cal;
 }
 sub nextprog {
