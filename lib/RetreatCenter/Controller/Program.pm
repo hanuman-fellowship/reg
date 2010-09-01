@@ -1419,22 +1419,22 @@ sub brochure_do : Local {
 #
 sub gen_month_calendars {
     my ($c) = @_;
-    my $cur_month = 0;
+    my $cur_ym = 0;
     my $cal;
     for my $p (grep { $_->linked } @programs) {
-        my $m = $p->sdate_obj->month;
-        if ($m != $cur_month) {
+        my $ym = $p->sdate_obj->format("%Y%m");
+        if ($ym != $cur_ym) {
             # finish the prior calendar file, if any
-            if ($cur_month) {
+            if ($cur_ym) {
                 print {$cal} "</table>\n";
                 close $cal;
                 undef $cal;
             }
             # start a new calendar file
-            $cur_month = $m;
+            $cur_ym = $ym;
             undef $cal;
-            open $cal, ">", "root/static/templates/web/cal$m.html"
-                or die "cannot create cal$m.html: $!\n";
+            open $cal, ">", "root/static/templates/web/cal$ym.html"
+                or die "cannot create cal$ym.html: $!\n";
             my $my = monthyear($p->sdate_obj);
             print {$cal} <<EOH;
 <table class='caltable'>
@@ -1452,7 +1452,7 @@ EOH
                   "</span></td></tr>";
     }
     # finish the prior calendar file, if any
-    if ($cur_month) {
+    if ($cur_ym) {
         print {$cal} "</table>\n";
         close $cal;
     }
