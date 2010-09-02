@@ -658,6 +658,12 @@ sub update_do : Local {
 
     my $mmc_does_reg_b4 = $r->mmc_does_reg();      # before the update
 
+    if (! $r->grid_code()) {
+        # in case it did not get set properly on creation
+        #
+        $P{grid_code} = gen_code($P{sdate}, $P{name});
+    }
+
     $r->update(\%P);
     _send_grid_data($r);        # relevant things may have changed
 
