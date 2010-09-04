@@ -1,0 +1,22 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
+<h2>People</h2>
+[% person.first %] [% person.last %] has these rides:
+<ul>
+    <table cellpadding=3>
+    <tr>
+    <th align=right>Pickup Date</th>
+    <th align=left>Airport</th>
+    </tr>
+    [% FOR r IN rides %]
+    <tr>
+    <td align=right>$r.pickup_date_obj</td>
+    <td>$r.airport</td>
+    </tr>
+    [% END %]
+    </table>
+</ul>
+and cannot be deleted.
+<p class=p2>
+Go <input type=button id="back" value="Back" onclick="history.go(-1)"> to the person.
+<script type='text/javascript'>document.getElementById('back').focus();</script>
