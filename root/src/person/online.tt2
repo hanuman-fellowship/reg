@@ -3,13 +3,15 @@
 <tr>
 <th align=left>Name</th>
 <th align=left>Source</th>
+<th align=left>Date</th>
 </tr>
 [% FOREACH r IN requests %]
 <tr>
-<td><a href=/person/online_add/$r.num>$r.first $r.last</a></td>
+<td><a href=/person/online_add/$r.type/$r.num>$r.first $r.last</a></td>
 <td>$r.type</td>
-<th><a href=/person/online_del/$r.num
-onclick="return confirm('Okay to Delete $r.first $r.last?');"
+<td>${r.date.format("%b %e")}</td>
+<th><a href=/person/online_del/$r.type/$r.num
+     onclick="return confirm('Okay to Delete $r.first $r.last?');"
 ><img src=/static/images/redX.gif
 height=20></a></th>
 </tr>

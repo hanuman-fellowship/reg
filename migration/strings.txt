@@ -223,3 +223,8 @@ ftp_ride_dir /www/cgi-bin/ride_requests
 mmi_email jon@suecenter.org
 housing_log 1
 kayakalpa_email jon@suecenter.org
+
+ftp_hfs_site www.hanumanfellowship.org
+ftp_hfs_user hanum
+ftp_hfs_password ToolcaSe
+ftp_hfs_dir www/temple/_updates/users

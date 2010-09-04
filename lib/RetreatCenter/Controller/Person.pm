@@ -61,7 +61,7 @@ sub search : Local {
             $c->stash->{"$f\_selected"} = "selected";
         }
     }
-    my @files = <root/static/mlist/*>;
+    my @files = <root/static/mlist/* root/static/temple/*>;
     stash($c,
         pg_title => "People Search",
         online   => scalar(@files),
@@ -210,6 +210,12 @@ sub delete : Local {
         $c->stash->{template} = "person/nodel_pay.tt2";
         return;
     }
+    if (my @r = $p->rides) {
+        $c->stash->{person} = $p;
+        $c->stash->{rides} = \@r;
+        $c->stash->{template} = "person/nodel_ride.tt2";
+        return;
+    }
 
     # affilation/persons
     model($c, 'AffilPerson')->search(
@@ -287,9 +293,10 @@ sub view : Local {
     }
     $c->stash->{person} = $p;
     my $sex = $p->sex();
-    $c->stash->{sex} = ($sex eq "M")? "Male"
-                      :($sex eq "F")? "Female"
-                      :               "Not Reported";
+    $c->stash->{sex} = (!defined $sex || !$sex)? "Not Reported"
+                      :($sex eq "M"           )? "Male"
+                      :($sex eq "F"           )? "Female"
+                      :                          "Not Reported";
     # not really needed - hangs if no connection
     # if ($sex ne 'M' && $sex ne 'F') {
     #      $c->stash->{sex} .= "<br>". _what_gender($p->first, $id);
@@ -366,13 +373,16 @@ sub _get_data {
     if (empty($hash{first})) {
         push @mess, "First name cannot be blank.";
     }
-    if ($hash{sex} ne 'F' && $hash{sex} ne 'M') {
-        push @mess, "You must specify Male or Female: $hash{first}"
-                  # not really needed - hangs if no connection
-                  # " - "
-                  # . _what_gender($hash{first})
-                  ;
-    }
+    # for data from the temple we don't know the gender
+    # it's only needed when doing a register.
+    #
+    #if ($hash{sex} ne 'F' && $hash{sex} ne 'M') {
+    #    push @mess, "You must specify Male or Female: $hash{first}"
+    #              # not really needed - hangs if no connection
+    #              # " - "
+    #              # . _what_gender($hash{first})
+    #              ;
+    #}
     if ($hash{addr1} && usa($hash{country}) && ! valid_state($hash{st_prov})) {
         push @mess, "Invalid state: $hash{st_prov}";
     }
@@ -465,7 +475,7 @@ sub create_do : Local {
         $hash{$n} = normalize($hash{$n});
     }
     my $today_d8 = tt_today($c)->as_d8();
-    my $fname = $hash{fname};
+    my ($type, $fname) = split m{/}, $hash{fname};
     delete $hash{fname};
     my $p = model($c, 'Person')->create({
         %hash,
@@ -473,11 +483,11 @@ sub create_do : Local {
         date_entrd => $today_d8,
     });
     if ($fname) {
-        my $dir = "root/static/mlist_done/"
+        my $dir = "root/static/${type}_done/"
                 . today()->format("%Y-%m")
                 ;
         mkdir $dir unless -d $dir;
-        rename "root/static/mlist/$fname",
+        rename "root/static/$type/$fname",
                "$dir/$fname";
     }
     my $id = $p->id();
@@ -524,15 +534,19 @@ sub update_do : Local {
     return if @mess;
 
     my $p = model($c, 'Person')->find($id);
-    my $fname = $hash{fname};
+    my ($type, $fname) = split m{/}, $hash{fname};
     delete $hash{fname};
     $p->update({
         %hash,
         date_updat => tt_today($c)->as_d8(),
     });
     if ($fname) {
-        rename "root/static/mlist/$fname",
-               "root/static/mlist_done/$fname";
+        my $dir = "root/static/${type}_done/"
+                . today()->format("%Y-%m")
+                ;
+        mkdir $dir unless -d $dir;
+        rename "root/static/$type/$fname",
+               "$dir/$fname";
     }
     # delete all old affiliations and create the new ones.
     model($c, 'AffilPerson')->search(
@@ -712,6 +726,13 @@ sub register1 : Local {
 
     my $today = tt_today($c)->as_d8();
     my $person = model($c, 'Person')->find($id);
+    if ($person->sex() !~ m{[MF]}) {
+        error($c,
+            'Must set a gender before you can register for a program.',
+            'gen_error.tt2',
+        );
+        return;
+    }
     my @cond = ();
     if (! $c->check_user_roles('mmi_admin')) {
         #
@@ -1229,6 +1250,30 @@ sub online : Local {
             $href->{$key} = $val;
         }
         close $in;
+        my $mtime = (stat($f))[9];
+        my ($y, $m, $d) = (localtime($mtime))[5, 4, 3];
+        $y += 1900;
+        ++$m;
+        $href->{date} = date($y, $m, $d);
+        push @requests, $href;
+    }
+    for my $f (<root/static/temple/*>) {
+        my $href = {};
+        ($href->{num}) = $f =~ m{(\d+)};
+        open my $in, "<", $f
+            or die "cannot open $f: $!\n";
+        while (my $line = <$in>) {
+            my ($first, $last) = split m{\|}, $line;
+            $href->{first} = $first;
+            $href->{last} = $last;
+            $href->{type} = 'Temple';
+        }
+        close $in;
+        my $mtime = (stat($f))[9];
+        my ($y, $m, $d) = (localtime($mtime))[5, 4, 3];
+        $y += 1900;
+        ++$m;
+        $href->{date} = date($y, $m, $d);
         push @requests, $href;
     }
     stash($c,
@@ -1238,64 +1283,87 @@ sub online : Local {
 }
 
 sub online_add : Local {
-    my ($self, $c, $num) = @_;
+    my ($self, $c, $type, $num) = @_;
 
-    my $fname = "root/static/mlist/$num";
+    my $subdir = $type eq 'Temple'? 'temple'
+                 :                  'mlist'
+                 ;
+    my $fname = "root/static/$subdir/$num";
     my $in;
     if (! open $in, "<", $fname) {
         error($c,
-            "Cannot find online mlist file $num.",
+            "Cannot find online $subdir file $num.",
             'gen_error.tt2',
         );
         return;
     }
     my %P;
-    while (my $line = <$in>) {
+    my @affils = ();
+    if ($type eq 'Temple') {
+        my $line = <$in>;
         chomp $line;
-        my ($key, $val) = $line =~ m{^(\w+)\s+(.*)};
-        $P{$key} = $val;
+        my ($first, $last, $email, $phone, $addr1, $addr2, $city, $state, $zip)
+            = split m{\|}, $line;
+        $P{first} = normalize($first);
+        $P{last}  = normalize($last);
+        $P{email} = $email;
+        $P{tel_cell} = $phone;
+        $P{addr1} = $addr1;
+        $P{addr2} = $addr2;
+        $P{city}  = $city;
+        $P{st_prov}  = uc $state;
+        $P{zip_post} = $zip;
+        $P{sex} = '';           # gender is unknown - leave it unset
+        @affils = model($c, 'Affil')->search({
+            descrip => { 'like' => '%Temple%Guest%' },
+        });
     }
-    close $in;
-    $P{first} = normalize($P{first});
-    $P{last} = normalize($P{last});
-    $P{addr1} = $P{street};
-    $P{addr2} = '';
-    my $type = $P{type};
-    my $interest = $P{interest};
-    for my $k (qw/ cell home work /) {
-        $P{"tel_$k"} = $P{$k};
+    else {
+        while (my $line = <$in>) {
+            chomp $line;
+            my ($key, $val) = $line =~ m{^(\w+)\s+(.*)};
+            $P{$key} = $val;
+        }
+        close $in;
+        $P{first} = normalize($P{first});
+        $P{last} = normalize($P{last});
+        $P{addr1} = $P{street};
+        $P{addr2} = '';
+        my $type = $P{type};
+        my $interest = $P{interest};
+        for my $k (qw/ cell home work /) {
+            $P{"tel_$k"} = $P{$k};
+        }
+        $P{sex} = $P{gender} eq 'female'? 'F': 'M';
+        $P{comment} = $P{request};
+        $P{comment} =~ s{NEWLINE}{\n}g;
+        for my $k (qw/
+            street type interest
+            cell home work gender
+            request email2
+        /) {
+            delete $P{$k};
+        }
+        if ($type eq 'mmi') {
+            if ($interest eq 'All Schools') {
+                @affils = model($c, 'Affil')->search({
+                    -and => [
+                        descrip => { 'like' => 'MMI%' },
+                        descrip => { 'not_like' => '%Discount%' },
+                    ],
+                });
+            }
+            else {
+                @affils = model($c, 'Affil')->search({
+                    descrip => { 'like' => "MMI%$interest" },
+                });
+            }
+        }
     }
-    $P{sex} = $P{gender} eq 'female'? 'F': 'M';
-    $P{comment} = $P{request};
-    $P{comment} =~ s{NEWLINE}{\n}g;
-    for my $k (qw/
-        street type interest
-        cell home work gender
-        request email2
-    /) {
-        delete $P{$k};
-    }
-
     my @people = model($c, 'Person')->search({
         first => $P{first},
         last  => $P{last},
     });
-    my @mmi_affils = ();
-    if ($type eq 'mmi') {
-        if ($interest eq 'All Schools') {
-            @mmi_affils = model($c, 'Affil')->search({
-                -and => [
-                    descrip => { 'like' => 'MMI%' },
-                    descrip => { 'not_like' => '%Discount%' },
-                ],
-            });
-        }
-        else {
-            @mmi_affils = model($c, 'Affil')->search({
-                descrip => { 'like' => "MMI%$interest" },
-            });
-        }
-    }
     if (@people == 0) {
         stash($c,
             e_mailings         => ($P{e_mailings}        )? "checked": "",
@@ -1303,13 +1371,13 @@ sub online_add : Local {
             mmi_e_mailings     => ($P{mmi_e_mailings}    )? "checked": "",
             mmi_snail_mailings => ($P{mmi_snail_mailings})? "checked": "",
             share_mailings     => ($P{share_mailings}    )? "checked": "",
-            fname          => $num,
+            fname          => "$subdir/$num",
             person         => \%P,
             sex_female     => ($P{sex} eq "F")? "checked": "",
             sex_male       => ($P{sex} eq "M")? "checked": "",
             inactive       => "",
             deceased       => "",
-            affil_table    => affil_table($c, @mmi_affils),
+            affil_table    => affil_table($c, @affils),
             form_action    => "create_do",
             template       => "person/create_edit.tt2",
         );
@@ -1322,7 +1390,7 @@ sub online_add : Local {
             mmi_e_mailings     => ($P{mmi_e_mailings}    )? "checked": "",
             mmi_snail_mailings => ($P{mmi_snail_mailings})? "checked": "",
             share_mailings     => ($P{share_mailings}    )? "checked": "",
-            fname  => $num,
+            fname              => "$subdir/$num",
             person => {
                 first     => $P{first},
                 last      => $P{last},
@@ -1343,7 +1411,7 @@ sub online_add : Local {
             sex_male   => ($P{sex} eq "M")? "checked": "",
             inactive   => "",
             deceased   => "",
-            affil_table => affil_table($c, $p->affils(), @mmi_affils),
+            affil_table => affil_table($c, $p->affils(), @affils),
             form_action => "update_do/" . $p->id(),
             template    => "person/create_edit.tt2",
         );
@@ -1357,12 +1425,15 @@ sub online_add : Local {
 }
 
 sub online_del : Local {
-    my ($self, $c, $num) = @_;
-    my $dir = "root/static/mlist_done/"
+    my ($self, $c, $type, $num) = @_;
+    my $subdir = ($type eq 'Temple')? 'temple'
+                 :                    'mlist'
+                 ;
+    my $dir = "root/static/${subdir}_done/"
             . today()->format("%Y-%m")
             ;
     mkdir $dir unless -d $dir;
-    rename "root/static/mlist/$num",
+    rename "root/static/$subdir/$num",
            "$dir/$num";
     $c->response->redirect($c->uri_for("/person/online"));
 }

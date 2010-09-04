@@ -142,9 +142,11 @@ my @kayakalpa;
 my $online = "root/static/online";
 my $mlist = "root/static/mlist";
 my $rides = "root/static/rides";
+my $temple = "root/static/temple";
 mkdir $online unless -d $online;
 mkdir $mlist unless -d $mlist;
 mkdir $rides unless -d $rides;
+mkdir $temple unless -d $temple;
 
 #
 # get transaction files from www.mountmadonna.org/cgi-bin/transactions
@@ -268,7 +270,7 @@ if ($nrides) {
 }
 
 #
-# all done
+# all done with mmc
 #
 $ftp->quit();
 my %mnum = qw/
@@ -499,6 +501,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
 }
 $pop->Close();
 kayakalpa();
+temple();
 finalities();
 exit;
 
@@ -600,6 +603,29 @@ EOS
             subject  => "Massage/Bodywork Request",
             html     => $html,
         );
+    }
+}
+
+sub temple {
+    my $ftp = Net::FTP->new($string{ftp_hfs_site},
+                            Passive => $string{ftp_passive})
+        or my_die("cannot connect to $string{ftp_hfs_site}");    # not die???
+    $ftp->login($string{ftp_hfs_user}, $string{ftp_hfs_password})
+        or my_die("cannot login to hfs " . $ftp->message);
+    $ftp->cwd($string{ftp_hfs_dir})
+        or my_die("cannot cwd to $string{ftp_hfs_dir} " . $ftp->message);
+    $ftp->ascii();
+    TEMPLE_USER:
+    for my $f ($ftp->ls()) {
+        if ($f eq '.' || $f eq '..') {
+            next TEMPLE_USER;
+        }
+        if (! $ftp->get($f, "$temple/$f")) {
+            my_warn("no get of online temple user $f");
+            next TEMPLE_USER;
+        }
+        $Msg .= "temple: $f\n";
+        $ftp->delete($f);
     }
 }
 
