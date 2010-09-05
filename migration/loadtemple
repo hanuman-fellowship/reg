@@ -66,6 +66,7 @@ my $upd_sth = $dbh->prepare("
     snail_mailings = '',
     mmi_e_mailings = 'yes',
     mmi_snail_mailings = '',
+    share_mailings = 'yes',
     inactive = '',
     date_entrd = '20100904',
     akey = ?
