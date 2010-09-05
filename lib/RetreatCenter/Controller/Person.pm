@@ -1321,6 +1321,7 @@ sub online_add : Local {
         $P{snail_mailings} = '';
         $P{mmi_e_mailings} = 'yes';
         $P{mmi_snail_mailings} = '';
+        $P{share_mailings} = 'yes';     # why not
     }
     else {
         while (my $line = <$in>) {
