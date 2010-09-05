@@ -1317,6 +1317,10 @@ sub online_add : Local {
         @affils = model($c, 'Affil')->search({
             descrip => { 'like' => '%Temple%Guest%' },
         });
+        $P{e_mailings} = 'yes';
+        $P{snail_mailings} = '';
+        $P{mmi_e_mailings} = 'yes';
+        $P{mmi_snail_mailings} = '';
     }
     else {
         while (my $line = <$in>) {
