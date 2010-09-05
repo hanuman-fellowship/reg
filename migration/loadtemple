@@ -3,6 +3,16 @@ use strict;
 use warnings;
 use DBI;
 
+sub nsquish {
+    my ($addr1, $addr2, $zip) = @_;
+    my $s = uc($addr1 . $addr2 . $zip);
+    my $n = $s;
+    $n =~ s{\D}{}g;
+    $s =~ s{[^A-Z]}{}g;
+    $s = substr($s, 0, 3);
+    return ($n . $s);
+}
+
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 my $find_affil = $dbh->prepare("
@@ -32,9 +42,15 @@ my $find_sth = $dbh->prepare("
 #
 my $ins_sth = $dbh->prepare("
     insert into people
-    (first, last, email, tel_cell, addr1, addr2, city, st_prov, zip_post)
+    (first, last, email, tel_cell, addr1, addr2,
+     city, st_prov, zip_post,
+     e_mailings, snail_mailings,
+     mmi_e_mailings, mmi_snail_mailings,
+    )
     values
-    (?, ?, ?, ?, ?, ?, ?, ?, ?);
+    (?, ?, ?, ?, ?, ?, ?, ?, ?,
+     'yes', '',
+     'yes', '');
 ");
 my $upd_sth = $dbh->prepare("
     update people
@@ -45,7 +61,13 @@ my $upd_sth = $dbh->prepare("
     addr2 = ?,
     city = ?,
     st_prov = ?,
-    zip_post = ?
+    zip_post = ?,
+    e_mailings = 'yes',
+    snail_mailings = '',
+    mmi_e_mailings = 'yes',
+    mmi_snail_mailings = '',
+    inactive = '',
+    akey = ?
     where 
     id = ?
 ");
@@ -64,7 +86,11 @@ while (my $line = <$tmpl>) {
     $find_sth->execute(@flds[0, 1]) or die "no exec find";
     my ($id) = $find_sth->fetchrow_array();
     if ($id) {
-        $upd_sth->execute(@flds[2 .. 8], $id) or die "no exec upd";
+        $upd_sth->execute(@flds[2 .. 8],
+                          nsquish(@flds[4, 5, 8]),      # akey
+                                            # forgot it for inserts
+                                            # only a one time thing so ok?
+                          $id) or die "no exec upd";
     }
     else {
         $ins_sth->execute(@flds) or die "no exec ins";
