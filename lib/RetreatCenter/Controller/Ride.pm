@@ -961,8 +961,8 @@ sub get_online : Local {
     my @ppl = ();
     (@ppl) = model($c, 'Person')->search(
         {
-            first => $P{fname},
-            last  => $P{lname},
+            first => $P{first},
+            last  => $P{last},
         },
     );
     my $p;
