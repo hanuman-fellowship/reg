@@ -90,6 +90,7 @@ sub _get_data {
         tent
         center
         cabin
+        resident
         inactive
     /) {
         $hash{$f} = "" unless exists $hash{$f};
@@ -132,6 +133,7 @@ sub update : Local {
     $c->stash->{tent}     = $h->tent()    ? "checked": "";
     $c->stash->{center}   = $h->center()  ? "checked": "";
     $c->stash->{cabin}    = $h->cabin()   ? "checked": "";
+    $c->stash->{resident} = $h->resident()   ? "checked": "";
     $c->stash->{inactive} = $h->inactive()? "checked": "";
     $c->stash->{cluster_opts} =
         [ model($c, 'Cluster')->search(

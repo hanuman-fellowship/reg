@@ -2940,7 +2940,10 @@ sub manual : Local {
         cabin_checked => "",
         room_checked  => "",
     );
-    _rest_of_reg($pr, $p, $c, tt_today($c), 'dble', 'dble', 'room');
+    my @housing = ($pr->resident())? ('single', 'single', 'room')
+                  :                  ('dble', 'dble', 'room')
+                  ;
+    _rest_of_reg($pr, $p, $c, tt_today($c), @housing);
 }
 
 sub delete : Local {
@@ -3264,13 +3267,16 @@ sub lodge : Local {
             # is the max of the house inconsistent with $max?
             # or the bath status
             #
+            # or the house resident status != program resident status
+            #
             # quads are okay when looking for a dorm
             # and this takes some fancy footwork.
             #
             my $h_id = $h->id;
             if (($h->max < $low_max) ||
                 ($h->bath && !$bath) ||
-                (!$h->bath && $bath)
+                (!$h->bath && $bath) ||
+                ($pr->resident() ne $h->resident())
             ) {
                 next HOUSE;
             }

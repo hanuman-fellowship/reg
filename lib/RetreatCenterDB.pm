@@ -75,6 +75,8 @@ __PACKAGE__->load_classes({
         CheckOut
 
         Glossary
+
+        Resident
     /]
 });
 

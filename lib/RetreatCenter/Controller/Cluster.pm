@@ -99,6 +99,7 @@ sub create : Local {
 <option value="indoors">Indoors
 <option value="outdoors">Outdoors
 <option value="special">Special
+<option value="resident">Resident
 EOO
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "cluster/create_edit.tt2";
@@ -365,7 +366,9 @@ EOH
     $width = $space;
     for my $h (@{$houses_in_cluster{$cur_clust}}) {
         my $wd = $h->max * $hw + 6;
+
         # is the name of the house wider than the house rectangle itself?
+        #
         my $name = $h->name;
         if ($h->disp_code =~ m{t}) {
             $name =~ s{^\S*\s*}{};

@@ -502,7 +502,7 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $p = model($c, 'Person')->find($id);
-    my $sex = $p->sex();
+    my $sex = $p->sex() || "";
     stash($c,
         person         => $p,
         sex_female     => ($sex eq "F")? "checked": "",
@@ -721,24 +721,34 @@ sub mkpartner : Local {
 # in alphabetical order and allow one to be chosen.
 # if one of your roles is mmi_admin include
 # mmi programs otherwise not.
+#
+# if the person in question is a resident
+# then include resident programs - otherwise do not.
+#
 sub register1 : Local {
     my ($self, $c, $id) = @_;
 
     my $today = tt_today($c)->as_d8();
     my $person = model($c, 'Person')->find($id);
-    if ($person->sex() !~ m{[MF]}) {
+    if (!($person->sex() && $person->sex() =~ m{[MF]})) {
         error($c,
-            'Must set a gender before you can register for a program.',
+            'Sorry, you must set a gender for '
+                . $person->first() . " " . $person->last()
+                . ' before you can register them for a program.',
             'gen_error.tt2',
         );
         return;
     }
     my @cond = ();
+    if (! $person->resident()) {
+        @cond = (resident => '');
+    }
     if (! $c->check_user_roles('mmi_admin')) {
         #
         # not an mmi_admin so
         # show only MMC sponsored programs.
-        @cond = (
+        #
+        push @cond, (
             school => 0,
         );
     }

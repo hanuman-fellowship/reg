@@ -93,6 +93,8 @@ __PACKAGE__->has_many(credits => 'RetreatCenterDB::Credit', 'person_id',
 __PACKAGE__->might_have(member => 'RetreatCenterDB::Member', 'person_id');
 # leader - maybe
 __PACKAGE__->might_have(leader => 'RetreatCenterDB::Leader', 'person_id');
+# resident - maybe
+__PACKAGE__->might_have(resident => 'RetreatCenterDB::Resident', 'person_id');
 # partner - maybe
 __PACKAGE__->might_have(partner => 'RetreatCenterDB::Person', 'id_sps');
 
@@ -105,7 +107,7 @@ sub comment_br {
     my ($self) = @_;
 
     my $comment = $self->comment;
-    $comment =~ s{\r?\n}{<br>\n}g;
+    $comment =~ s{\r?\n}{<br>\n}g if $comment;
     $comment;
 }
 

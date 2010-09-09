@@ -21,6 +21,7 @@ __PACKAGE__->add_columns(qw/
     inactive
     disp_code
     comment
+    resident
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

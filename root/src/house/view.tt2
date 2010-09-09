@@ -45,6 +45,11 @@
 </tr>
 
 <tr>
+<th align=right>Resident</th>
+<td>$house.resident</td>
+</tr>
+
+<tr>
 <th align=right>Priority</th>
 <td>$house.priority</td>
 </tr>

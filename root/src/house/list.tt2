@@ -35,6 +35,7 @@ h3 {
 <td align=left>
 [% IF h.bath %]bath [% END %]
 [% IF h.cabin %]cabin [% END %]
+[% IF h.resident %]resident [% END %]
 [% IF h.inactive %]inactive[% END %]
 [% IF h.comment %] - [% h.comment %][% END %]
 </td>

@@ -105,6 +105,7 @@ sub create : Local {
         check_allow_dup_regs => '',
         check_kayakalpa     => 'checked',
         check_retreat       => '',
+        check_resident      => '',
         check_sbath         => 'checked',
         check_single        => 'checked',
         check_collect_total => '',
@@ -209,6 +210,7 @@ sub _get_data {
         sbath
         single
         retreat
+        resident
         economy
         commuting
         webready
@@ -706,7 +708,8 @@ sub update : Local {
     }
 
     for my $w (qw/
-        sbath single collect_total allow_dup_regs kayakalpa retreat
+        sbath single collect_total allow_dup_regs kayakalpa
+        retreat resident
         economy commuting webready linked do_not_compute_costs
     /) {
         stash($c,
@@ -1636,7 +1639,8 @@ sub duplicate : Local {
         rental_id => 0,
     });
     for my $w (qw/
-        sbath single collect_total allow_dup_regs kayakalpa retreat
+        sbath single collect_total allow_dup_regs kayakalpa
+        retreat resident
         commuting economy webready linked
     /) {
         stash($c,

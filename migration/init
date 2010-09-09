@@ -16,6 +16,7 @@ sqlite3 retreatcenter.db <mkrent
 sqlite3 retreatcenter.db <mkrep
 sqlite3 retreatcenter.db <mkride
 sqlite3 retreatcenter.db <mkusers
+sqlite3 retreatcenter.db <mkresident
 export DBI_DSN=dbi:SQLite:/Users/jonbjornstad/newReg/RetreatCenter/migration/retreatcenter.db
 
 loadstr

@@ -142,20 +142,23 @@ Web
 <div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
+<tr><td></td><td colspan=4><table cellpadding=5>
+
 <tr>
 <th align=right>Allow Aux Regs</th>
 <td colspan=2><input type=checkbox value=yes name=allow_dup_regs [% check_allow_dup_regs %]></td>
-</tr>
-
-<tr>
 <th align=right>Kaya Kalpa</th>
 <td colspan=2><input type=checkbox value=yes name=kayakalpa [% check_kayakalpa %]></td>
 </tr>
 
 <tr>
 <th align=right>Retreat</th>
-<td><input type=checkbox value=yes name=retreat [% check_retreat %]></td>
+<td colspan=2><input type=checkbox value=yes name=retreat [% check_retreat %]></td>
+<th align=right>Resident</th>
+<td colspan=2><input type=checkbox value=yes name=resident [% check_resident %]></td>
 </tr>
+
+</table></td></tr>
 
 <tr>
 <th align=right>Notify on Reg</th>

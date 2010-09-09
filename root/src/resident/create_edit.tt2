@@ -1,0 +1,37 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config_web.js"></script>
+<h2>Residents</h2>
+<form action=[% '/resident/' _ form_action %]
+      enctype="multipart/form-data"
+      name=form
+      method=POST
+>
+
+<h3>[% person.first %] [% person.last %]</h3>
+<p>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td><textarea rows=10 cols=60 name=comment>[% resident.comment %]</textarea></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Image</th>
+<td>
+[% IF resident.image %]
+<img src="[% Catalyst.uri_for('/static/images/rth-') _ resident.id _ '.jpg' %]"><br>
+[% END %]
+<input type=file name=image>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.comment.focus()</script>
+

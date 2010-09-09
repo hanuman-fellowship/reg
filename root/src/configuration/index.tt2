@@ -43,14 +43,15 @@ p {
     <a href=/project/list>Projects</a><p>
 [% END %]
 
+<a href=/resident/list>Residents</a><p>
 <a href=/ride/list>Rides</a><p>
 
+[% IF user_admin %]
+    <a href=/role/list>Roles</a><p>
+[% END %]
 [% IF web_des %]
     <a href=/string/list>Strings</a><p>
     <a href=/template/list>Templates</a><p>
-[% END %]
-[% IF user_admin %]
-    <a href=/role/list>Roles</a><p>
 [% END %]
 <a href=/user/profile_view>User Profile</a><p>
 <a href=/user/list>Users</a><p>

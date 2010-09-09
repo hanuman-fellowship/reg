@@ -65,6 +65,14 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         <a href="/member/view/[% person.member.id %]" accesskey='m'><span class=keyed>M</span>ember Info</a>
     [% END %]
 [% END %]
+[% IF Catalyst.check_user_roles('personnel_admin') %]
+    &nbsp;&nbsp;&nbsp;
+    [% IF person.resident %]
+        <a href="/resident/view/[% person.resident.id %]">Resident Info</a>
+    [% ELSE %]
+        <a href="/resident/create/[% id %]">Make Resident</a>
+    [% END %]
+[% END %]
 <p class=p2>
 <table cellpadding=3 border=0>
 

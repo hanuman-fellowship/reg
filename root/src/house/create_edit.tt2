@@ -17,6 +17,7 @@
 <tr><td></td><td><input type=checkbox name=tent value='yes' $tent> Tent</td></tr>
 <tr><td></td><td><input type=checkbox name=center value='yes' $center> Center Tent</td></tr>
 <tr><td></td><td><input type=checkbox name=cabin value='yes' $cabin> Cabin</td></tr>
+<tr><td></td><td><input type=checkbox name=resident value='yes' $resident> Resident</td></tr>
 
 <tr>
 <th align=right>Priority</th>

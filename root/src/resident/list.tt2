@@ -1,0 +1,28 @@
+[% personnel = Catalyst.check_user_roles('personnel_admin') %]
+<h2>Residents</h2>
+<ul>
+[% IF personnel %]
+    Click on Last to see Resident attributes.<br>
+[% END %]
+Click on First to see Person attributes.<br>
+[% IF personnel %]
+    To add a Resident add them as a Person first.
+[% END %]
+<p class=p2>
+<table cellpadding=3 border=0>
+<tr>
+<th align=left>Last</th>
+<th align=left>First</th>
+</tr>
+[% FOREACH r IN residents %]
+<tr>
+[% IF personnel %]
+    <td><a href="/resident/view/[% r.id %]">[% r.person.last %]</a></td>
+[% ELSE %]
+    <td>[% r.person.last %]</td>
+[% END %]
+<td><a href="/person/view/[% r.person.id %]">[% r.person.first %]</a></td>
+</tr>
+[% END %]
+</table>
+</ul>

@@ -269,14 +269,14 @@ sub show : Local {
     #
     my $event_table = "";
     my @events = ();
-    for my $type (qw/Event Rental Program/) {
+    for my $event_type (qw/Event Rental Program/) {
         EVENT:
-        for my $ev (model($c, $type)->search({
+        for my $ev (model($c, $event_type)->search({
                         sdate => { '<=', $d8 },
                         edate => { '>=', $d8 },
                     })
         ) {
-            if ($type eq 'Program'
+            if ($event_type eq 'Program'
                 && (
                     ($ev->name() =~ m{personal.*retreats}i)
                     ||
@@ -285,7 +285,7 @@ sub show : Local {
             ) {
                 next EVENT;
             }
-            if ($type eq 'Rental' && $ev->program_id()) {
+            if ($event_type eq 'Rental' && $ev->program_id()) {
                 # skip this rental - the parallel program will be there
                 next EVENT;
             }
@@ -293,14 +293,14 @@ sub show : Local {
             $ev_type =~ s{.*::}{};
             $ev_type = lc $ev_type;
             my $ed;
-            if ($type eq 'Program' && $ev->extradays() != 0) {
+            if ($event_type eq 'Program' && $ev->extradays() != 0) {
                 $ed = date($ev->edate(), "%m/%d") + $ev->extradays();
             }
             else {
                 $ed = date($ev->edate, "%m/%d"),
             }
             my $clusters = "";
-            if ($type ne 'Event') {
+            if ($event_type ne 'Event') {
                 $clusters = join ', ',
                             map {
                                 $_->name()
@@ -308,7 +308,7 @@ sub show : Local {
                             reserved_clusters($c, $ev->id, $ev_type);
             }
             my $color = "white";     # default background for this happening?
-            if ($type ne 'Event' && $ev->color()) {
+            if ($event_type ne 'Event' && $ev->color()) {
                 $color = $ev->color_bg();
             }
             push @events, {
@@ -374,6 +374,9 @@ EOT
         }
         elsif ($s eq "special") {
             $keylab = "accesskey='p'>S<span class=keyed>p</span>ecial</a>\n";
+        }
+        elsif ($s eq "resident") {
+            $keylab = "accesskey='r'><span class=keyed>R</span>esident</a>\n";
         }
         $links .= "<a class=details $style href='/dailypic/show/$s/$d8' $keylab\n";
     }

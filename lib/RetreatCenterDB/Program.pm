@@ -78,6 +78,7 @@ __PACKAGE__->add_columns(qw/
     allow_dup_regs
     percent_tuition
     refresh_days
+    resident
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -874,6 +875,9 @@ sub prog_type {
     }
     if ($self->rental_id()) {
         $type .= "Hybrid ";
+    }
+    if ($self->resident()) {
+        $type .= "Resident ";
     }
     chop $type;
     $type;

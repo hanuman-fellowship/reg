@@ -341,12 +341,17 @@ Web
 <tr>
 <th align=right>Allow Aux Regs</th>
 <td>[% program.allow_dup_regs %]</td>
-</tr>
-
-<tr>
 <th align=right>Kaya Kalpa</th>
 <td>[% program.kayakalpa %]</td>
 </tr>
+
+<tr>
+<th align=right>Retreat</th>
+<td>[% program.retreat %]</td>
+<th align=right>Resident</th>
+<td>[% program.resident %]</td>
+</tr>
+
 
 <tr>
 <th align=right>Color</th>
@@ -355,11 +360,6 @@ Web
 [% ELSE %]
 <td><a href=/program/color/[% id %]>Update</a></td>
 [% END %]
-</tr>
-
-<tr>
-<th align=right>Retreat</th>
-<td>[% program.retreat %]</td>
 </tr>
 
 <tr>
