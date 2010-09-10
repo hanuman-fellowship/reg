@@ -381,6 +381,10 @@ EOT
         $links .= "<a class=details $style href='/dailypic/show/$s/$d8' $keylab\n";
     }
     my $who_is_there = $c->uri_for("/registration/who_is_there");
+    my $cat_friendly = $type eq 'resident'?
+                           '<tr><td>*</td><td>cat friendly</td></tr>'
+                       :   q{}
+                       ;
     my $html = <<"EOH";
 <head>
 <title>Daily Picture</title>
@@ -448,6 +452,7 @@ $links
 <tr><td>R</td><td>rental</td></tr>
 <tr><td>S</td><td>meeting space</td></tr>
 <tr><td>X</td><td>mixed gender</td></tr>
+$cat_friendly
 </table>
 </td>
 </tr></table>
