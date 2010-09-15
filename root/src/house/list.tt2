@@ -36,6 +36,7 @@ h3 {
 [% IF h.bath %]bath [% END %]
 [% IF h.cabin %]cabin [% END %]
 [% IF h.resident %]resident [% END %]
+[% IF h.cat_abode %]cat [% END %]
 [% IF h.sq_foot %]$h.sq_foot [% END %]
 [% IF h.inactive %]inactive[% END %]
 [% IF h.comment %] - [% h.comment %][% END %]
