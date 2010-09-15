@@ -2940,8 +2940,8 @@ sub manual : Local {
         cabin_checked => "",
         room_checked  => "",
     );
-    my @housing = ($pr->resident())? ('single', 'single', 'room')
-                  :                  ('dble', 'dble', 'room')
+    my @housing = ($pr->category() != 0)? ('single', 'single', 'room')
+                  :                       ('dble', 'dble', 'room')
                   ;
     _rest_of_reg($pr, $p, $c, tt_today($c), @housing);
 }
@@ -3267,7 +3267,7 @@ sub lodge : Local {
             # is the max of the house inconsistent with $max?
             # or the bath status
             #
-            # or the house resident status != program resident status
+            # or the house resident status != program category status
             #
             # quads are okay when looking for a dorm
             # and this takes some fancy footwork.
@@ -3276,7 +3276,8 @@ sub lodge : Local {
             if (($h->max < $low_max) ||
                 ($h->bath && !$bath) ||
                 (!$h->bath && $bath) ||
-                ($pr->resident() ne $h->resident())
+                ($pr->category() == 0 && $h->resident()) ||
+                ($pr->category() != 0 && !$h->resident())
             ) {
                 next HOUSE;
             }
@@ -3386,6 +3387,9 @@ sub lodge : Local {
                     $code_sum += $string{house_sum_cabin};
                 }
             }
+            if ($h->cat_abode()) {
+                $codes .= 'c';
+            }
             # check makeup list for $h_id on $sdate
             #
             if ($sdate <= $cutoff) {
@@ -3408,11 +3412,11 @@ sub lodge : Local {
                       . (($h_id == $share_house_id)? " selected"
                         :                            "")
                       . ">"
-                      . $h->name
+                      . $h->name()
                       . $codes
                       . "</option>\n"
                       ;
-            push @h_opts, [ $opt, $code_sum, $h->priority ];
+            push @h_opts, [ $opt, $code_sum, $h->priority(), $h->name() ];
             ++$n;
             if ($h_id == $share_house_id) {
                 $selected = 1;
@@ -3422,14 +3426,25 @@ sub lodge : Local {
     #
     # and now the big sort:
     #
-    @h_opts = map {
-                    $_->[0]
-              }
-              sort {
-                  $b->[1] <=> $a->[1] ||      # 1st by code_sum - descending
-                  $a->[2] <=> $b->[2]         # 2nd by priority - ascending
-              }
-              @h_opts;
+    if ($pr->category() != 0) {
+        @h_opts = map {
+                        $_->[0]
+                  }
+                  sort {
+                      $a->[3] cmp $b->[3]   # by name
+                  }
+                  @h_opts;
+    }
+    else {
+        @h_opts = map {
+                        $_->[0]
+                  }
+                  sort {
+                      $b->[1] <=> $a->[1] ||      # 1st by code_sum - descending
+                      $a->[2] <=> $b->[2]         # 2nd by priority - ascending
+                  }
+                  @h_opts;
+    }
     if ($cabin && $h_opts[0] !~ m{-.*C}) {
         # they want a cabin and the first choice is not a cabin
         # get any cabins to the top and preserve the order

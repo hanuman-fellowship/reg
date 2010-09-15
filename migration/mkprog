@@ -51,7 +51,8 @@ create table program (
     allow_dup_regs text,
     percent_tuition integer,
     refresh_days text,
-    resident    text
+    resident    text,
+    category    integer
 );
 drop table if exists canpol;
 create table canpol (

@@ -18,6 +18,12 @@
 <tr><td></td><td><input type=checkbox name=center value='yes' $center> Center Tent</td></tr>
 <tr><td></td><td><input type=checkbox name=cabin value='yes' $cabin> Cabin</td></tr>
 <tr><td></td><td><input type=checkbox name=resident value='yes' $resident> Resident</td></tr>
+<tr><td></td><td><input type=checkbox name=cat_abode value='yes' $cat_abode> Cat Abode</td></tr>
+
+<tr>
+<th align=right>Square Footage</th>
+<td><input type=text name=sq_foot value='$house.sq_foot' size=3>
+</tr>
 
 <tr>
 <th align=right>Priority</th>

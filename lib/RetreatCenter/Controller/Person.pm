@@ -721,12 +721,10 @@ sub mkpartner : Local {
 # in alphabetical order and allow one to be chosen.
 # if one of your roles is mmi_admin include
 # mmi programs otherwise not.
-#
-# if the person in question is a resident
-# then include resident programs - otherwise do not.
+# do not include resident programs.
 #
 sub register1 : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $resident) = @_;
 
     my $today = tt_today($c)->as_d8();
     my $person = model($c, 'Person')->find($id);
@@ -740,9 +738,6 @@ sub register1 : Local {
         return;
     }
     my @cond = ();
-    if (! $person->resident()) {
-        @cond = (resident => '');
-    }
     if (! $c->check_user_roles('mmi_admin')) {
         #
         # not an mmi_admin so
@@ -752,22 +747,34 @@ sub register1 : Local {
             school => 0,
         );
     }
+    if ($resident) {
+        @cond = (
+            category => { '>' => 0},
+        );
+    }
+    else {
+        push @cond, (
+            category => 0,
+        );
+    }
     my @programs = model($c, 'Program')->search(
         {
-            edate  => { '>='      => $today               },
-            name   => { -not_like => '%personal%retreat%' },
+            edate    => { '>='      => $today               },
+            name     => { -not_like => '%personal%retreat%' },
             @cond,
         },
-        { order_by => [ 'name' ] },
+        { order_by => [ qw/ sdate name / ] },
     );
-    my (@personal_retreats) = model($c, 'Program')->search(
-        {
-            name  => { like => '%personal%retreat%' },
-            edate => { '>=' => $today               },
-        },
-        { order_by => 'sdate' },
-    );
-    unshift @programs, @personal_retreats;
+    if (!$resident) {
+        my (@personal_retreats) = model($c, 'Program')->search(
+            {
+                name  => { like => '%personal%retreat%' },
+                edate => { '>=' => $today               },
+            },
+            { order_by => 'sdate' },
+        );
+        unshift @programs, @personal_retreats;
+    }
     $c->stash->{person}   = $person;
     $c->stash->{programs} = \@programs;
     $c->stash->{template} = "person/register.tt2";

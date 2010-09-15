@@ -22,6 +22,8 @@ __PACKAGE__->add_columns(qw/
     disp_code
     comment
     resident
+    cat_abode
+    sq_foot
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

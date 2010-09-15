@@ -9,6 +9,7 @@ __PACKAGE__->add_columns(qw/
     id
     name
     type
+    cl_order
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

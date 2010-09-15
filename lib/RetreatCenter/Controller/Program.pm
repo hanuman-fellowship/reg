@@ -51,6 +51,15 @@ use Global qw/
 /;
 use File::Copy;
 
+my @cat_opts = (
+    'Normal',
+    'YSC 1',
+    'YSC 2',
+    'YSL',
+    'Resident',
+    'Intern',
+    'Temporary',
+);
 my @sch_opts = (
     'MMC',
     'MMI School of Yoga',
@@ -90,6 +99,13 @@ sub create : Local {
         );
     }
     Global->init($c);
+    my $cat_opts = "";
+    for my $i (0 .. $#cat_opts) {
+        $cat_opts .= "<option value=$i "
+                  .  ($i == 0? "selected": "")
+                  .  ">$cat_opts[$i]\n"
+                  ;
+    }
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
@@ -105,7 +121,6 @@ sub create : Local {
         check_allow_dup_regs => '',
         check_kayakalpa     => 'checked',
         check_retreat       => '',
-        check_resident      => '',
         check_sbath         => 'checked',
         check_single        => 'checked',
         check_collect_total => '',
@@ -158,6 +173,7 @@ sub create : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
+        cat_opts       => $cat_opts,
         school_opts    => $sch_opts,
         level_opts => <<"EOO",
 <option value=D>Diploma
@@ -210,7 +226,6 @@ sub _get_data {
         sbath
         single
         retreat
-        resident
         economy
         commuting
         webready
@@ -238,6 +253,30 @@ sub _get_data {
             push @mess, "$readable{$f} cannot be blank";
         }
     }
+    # naming conventions for Resident && MMI programs
+    #
+    if ($P{category} != 0
+        && $P{name} !~ m{^$cat_opts[$P{category}]}
+    ) {
+        push @mess, 'Name does not match the Category.';
+    }
+    if ($P{school} != 0
+        && $P{name} !~ m{MMI}
+    ) {
+        push @mess, 'Name must have MMI in it';
+    }
+    if ($P{school} != 0 && $P{level} ne 'S'
+        && $P{name} !~ m{$mmi_levels{$P{level}}}
+    ) {
+        push @mess, "Name must have $mmi_levels{$P{level}} in it.";
+    }
+    if ($P{school} != 0 && $P{level} eq 'S'
+        && $P{name} =~ m{Diploma|Certificate|Masters}
+    ) {
+        push @mess, 'Name must not have Diploma, Certificate,'
+                    . ' or Masters in it.';
+    }
+
     # dates are converted to d8 format
     my ($sdate, $edate);
     if (empty($P{sdate})) {
@@ -473,9 +512,10 @@ sub view : Local {
     }
 
     #
-    # no lunches for personal retreat or DCM
+    # no lunches for personal retreat, resident programs, or DCM.
     #
     if (! ($p->PR()
+           || $p->category() != 0
            || $p->level() =~ m{[DCM]}
           )
     ) {
@@ -515,6 +555,7 @@ sub view : Local {
         daily_pic_date      => $sdate,
         cal_param           => "$sdate/$nmonths",
         leaders_house       => $p->leaders_house($c),
+        category            => $cat_opts[$p->category()],
         school              => $sch_opts[$p->school()],
         level               => $mmi_levels{$p->level()},
         template            => "program/view.tt2",
@@ -571,9 +612,9 @@ sub _get_cluster_groups {
 sub list : Local {
     my ($self, $c, $type) = @_;
 
-    $type ||= 0;
+    $type ||= '';
     my $hide_mmi = $c->user->obj->hide_mmi();
-    if ($type == 2) {
+    if ($type eq '2') {
         my $today = today()->as_d8();
         $string{date_coming_going_printed} = $today;
         model($c, 'String')->find('date_coming_going_printed')->update({
@@ -585,13 +626,20 @@ sub list : Local {
     my $cutoff = tt_today($c) - 7;
     $cutoff = $cutoff->as_d8();
     my @cond = ();
-    if ($type == 1) {
+    if ($type eq 'dcm') {
         @cond = (
+            category => 0,
             level => { -in  => [qw/  D C M  /] },
+        );
+    }
+    elsif ($type eq 'yscl') {
+        @cond = (
+            category => { '>' => 0 },
         );
     }
     else {
         @cond = (
+            category => 0,
             level => { -not_in  => [qw/  D C M  /] },
         );
         if ($hide_mmi) {
@@ -691,6 +739,13 @@ sub update : Local {
 
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
+    my $cat_opts = "";
+    for my $i (0 .. $#cat_opts) {
+        $cat_opts .= "<option value=$i "
+                  .  ($i == $p->category()? "selected": "")
+                  .  ">$cat_opts[$i]\n"
+                  ;
+    }
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
@@ -709,7 +764,7 @@ sub update : Local {
 
     for my $w (qw/
         sbath single collect_total allow_dup_regs kayakalpa
-        retreat resident
+        retreat
         economy commuting webready linked do_not_compute_costs
     /) {
         stash($c,
@@ -747,6 +802,7 @@ sub update : Local {
         ],
         webdesc_rows => lines($p->webdesc()) + 5,
         brdesc_rows  => lines($p->brdesc()) + 5,
+        cat_opts     => $cat_opts,
         school_opts  => $sch_opts,
         level_opts   => $level_opts,
         show_level   => $p->school() == 0? "hidden": "visible",
@@ -1640,12 +1696,19 @@ sub duplicate : Local {
     });
     for my $w (qw/
         sbath single collect_total allow_dup_regs kayakalpa
-        retreat resident
+        retreat
         commuting economy webready linked
     /) {
         stash($c,
             "check_$w" => ($orig_p->$w)? "checked": ""
         );
+    }
+    my $cat_opts = "";
+    for my $i (0 .. $#cat_opts) {
+        $cat_opts .= "<option value=$i "
+                  .  ($i == $orig_p->category()? "selected": "")
+                  .  ">$cat_opts[$i]\n"
+                  ;
     }
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
@@ -1680,6 +1743,7 @@ sub duplicate : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
+        cat_opts    => $cat_opts,
         school_opts => $sch_opts,
         level_opts  => $level_opts,
         section     => 1,   # Web (a required field)

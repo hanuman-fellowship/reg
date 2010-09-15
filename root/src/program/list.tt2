@@ -15,10 +15,12 @@
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish_pics">PublishPics<a>
 [% END %]
-&nbsp;&nbsp;&nbsp;
 [% IF mmi_admin %]
-    <a href="/program/list/1">DCM<a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/list/dcm">DCM<a>
 [% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/program/list/yscl">YSCL<a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value=[% pr_pat %]> <input type=submit value="Search"></form>

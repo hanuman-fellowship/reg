@@ -75,6 +75,7 @@ sub update_do : Local {
 
     my $name  = $c->request->params->{name};
     my $type  = $c->request->params->{type};
+    my $cl_order  = $c->request->params->{cl_order};
     if (empty($name)) {
         $c->stash->{mess} = "Name cannot be blank.";
         $c->stash->{template} = "cluster/error.tt2";
@@ -83,6 +84,7 @@ sub update_do : Local {
     model($c, 'Cluster')->find($id)->update({
         name  => $name,
         type  => $type,
+        cl_order => $cl_order,
     });
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
@@ -113,6 +115,7 @@ sub create_do : Local {
 
     my $name  = $c->request->params->{name};
     my $type  = $c->request->params->{type};
+    my $cl_order = $c->request->params->{cl_order};
     if (empty($name)) {
         $c->stash->{mess} = "Name cannot be blank.";
         $c->stash->{template} = "cluster/error.tt2";
@@ -121,6 +124,7 @@ sub create_do : Local {
     model($c, 'Cluster')->create({
         name  => $name,
         type  => $type,
+        cl_order => $cl_order,
     });
     # no need to reload Configuration - creating clusters
     # is quite rare and houses would be added soon afterwards

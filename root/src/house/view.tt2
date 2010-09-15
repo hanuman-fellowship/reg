@@ -50,6 +50,16 @@
 </tr>
 
 <tr>
+<th align=right>Cat Abode</th>
+<td>$house.cat_abode</td>
+</tr>
+
+<tr>
+<th align=right>Square Footage</th>
+<td>$house.sq_foot</td>
+</tr>
+
+<tr>
 <th align=right>Priority</th>
 <td>$house.priority</td>
 </tr>

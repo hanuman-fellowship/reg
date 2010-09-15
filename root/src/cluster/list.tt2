@@ -8,15 +8,17 @@
 
 <tr>
 <th align=left>Name</th>
+<th align=left>Order</th>
 </tr>
 
 [% FOREACH cl IN clusters %]
     <tr>
-    <td><a href="/cluster/update/[% cl.id %]">[% cl.name %]</a></td>
+    <td><a href="/cluster/update/$cl.id">$cl.name</a></td>
+    <td>$cl.cl_order</a></td>
     [% IF padmin %]
         <td width=20></td>
         <td>
-        <a href="[% '/cluster/delete/' _ cl.id %]" onclick="return confirm('Okay to Delete [% cl.name %]?')">Del</a>
+        <a href="/cluster/delete/$cl.id" onclick="return confirm('Okay to Delete $cl.name?')">Del</a>
         </td>
     [% END %]
     </tr>

@@ -91,6 +91,7 @@ sub _get_data {
         center
         cabin
         resident
+        cat_abode
         inactive
     /) {
         $hash{$f} = "" unless exists $hash{$f};
@@ -129,12 +130,13 @@ sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $h = $c->stash->{house} = model($c, 'House')->find($id);
-    $c->stash->{bath}     = $h->bath()    ? "checked": "";
-    $c->stash->{tent}     = $h->tent()    ? "checked": "";
-    $c->stash->{center}   = $h->center()  ? "checked": "";
-    $c->stash->{cabin}    = $h->cabin()   ? "checked": "";
-    $c->stash->{resident} = $h->resident()   ? "checked": "";
-    $c->stash->{inactive} = $h->inactive()? "checked": "";
+    $c->stash->{bath}      = $h->bath()     ? "checked": "";
+    $c->stash->{tent}      = $h->tent()     ? "checked": "";
+    $c->stash->{center}    = $h->center()   ? "checked": "";
+    $c->stash->{cabin}     = $h->cabin()    ? "checked": "";
+    $c->stash->{resident}  = $h->resident() ? "checked": "";
+    $c->stash->{cat_abode} = $h->cat_abode()? "checked": "";
+    $c->stash->{inactive}  = $h->inactive() ? "checked": "";
     $c->stash->{cluster_opts} =
         [ model($c, 'Cluster')->search(
             undef,

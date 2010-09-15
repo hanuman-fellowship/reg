@@ -4,14 +4,19 @@
 
 <tr>
 <th align=right><span class="required">*</span> Name</th>
-<td><input type=text name=name value="[% cluster.name %]"></td>
+<td><input type=text name=name value="$cluster.name"></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Order</th>
+<td><input type=text name=cl_order value="$cluster.cl_order"></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Type</th>
 <td>
 <select name=type>
-[% type_opts %]
+$type_opts
 </select>
 </td>
 </tr>
