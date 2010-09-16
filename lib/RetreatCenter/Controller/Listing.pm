@@ -1000,7 +1000,7 @@ sub late_notices : Local {
                        }
                    );
     my $tt = Template->new({
-        INCLUDE_PATH => "root/src/listing",
+        INCLUDE_PATH => "root/static/templates/letter",
         EVAL_PERL    => 0,
     });
     my $html;
