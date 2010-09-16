@@ -561,9 +561,7 @@ sub view : Local {
 
     my @files = <root/static/online/*>;
     my $sdate = $p->sdate();
-    my $nmonths = date($p->edate())->month()
-                - date($sdate)->month()
-                + 1;
+    my $nmonths = int((date($p->edate()) - date($sdate))/30) + 1;
 
     my ($UNres, $res) = split /XX/, _get_cluster_groups($c, $id);
 
