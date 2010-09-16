@@ -548,7 +548,10 @@ sub view : Local {
                              ),
         );
     }
-    if (! $p->PR() && ($p->edate()-$p->sdate()+1+$p->extradays() >= 7)) {
+    if (! ($p->PR()
+           || $p->category->name() ne 'Normal')
+        && ($p->edate()-$p->sdate()+1+$p->extradays() >= 7)
+    ) {
         stash($c,
             refresh_table => refresh_table(
                                  1,
