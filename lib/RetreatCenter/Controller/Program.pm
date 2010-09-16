@@ -646,18 +646,18 @@ sub list : Local {
     my @cond = ();
     if ($type eq 'dcm') {
         @cond = (
-            category_id => 0,
+            category_id => 1,
             level       => { -in  => [qw/  D C M  /] },
         );
     }
     elsif ($type eq 'yscl') {
         @cond = (
-            category_id => { '>' => 0 },
+            category_id => { '>' => 1 },
         );
     }
     else {
         @cond = (
-            category_id => 0,
+            category_id => 1,
             level       => { -not_in  => [qw/  D C M  /] },
         );
         if ($hide_mmi) {
