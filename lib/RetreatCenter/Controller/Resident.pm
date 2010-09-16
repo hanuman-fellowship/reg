@@ -95,6 +95,7 @@ sub del_confirm : Local {
 sub _del {
     my ($c, $id) = @_;
     model($c, 'Resident')->search({id => $id})->delete();
+    model($c, 'ResidentNote')->search({resident_id => $id})->delete();
     unlink <root/static/images/r*-$id.jpg>;
 }
 
