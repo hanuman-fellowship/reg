@@ -572,7 +572,10 @@ sub view : Local {
         UNreserved_clusters => $UNres,
         reserved_clusters   => $res,
         online              => scalar(@files),
-        daily_pic_date      => $sdate,
+        daily_pic_date      => ($p->category->name() eq 'Normal'? "indoors"
+                                :                                 "resident")
+                                . "/$sdate",
+        cluster_date        => $sdate,
         cal_param           => "$sdate/$nmonths",
         leaders_house       => $p->leaders_house($c),
         school              => $sch_opts[$p->school()],
@@ -633,15 +636,16 @@ sub list : Local {
 
     $type ||= '';
     my $hide_mmi = $c->user->obj->hide_mmi();
-    if ($type eq '2') {
-        my $today = today()->as_d8();
-        $string{date_coming_going_printed} = $today;
-        model($c, 'String')->find('date_coming_going_printed')->update({
-            value => $today,
-        });
-    }
+    #if ($type eq '2') {
+    #    my $today = today()->as_d8();
+    #    $string{date_coming_going_printed} = $today;
+    #    model($c, 'String')->find('date_coming_going_printed')->update({
+    #        value => $today,
+    #    });
+    #}
     # ??? how to include programs that are extended and not quite finished???
     # good enough to include programs that may have finished a week ago?
+    #
     my $cutoff = tt_today($c) - 7;
     $cutoff = $cutoff->as_d8();
     my @cond = ();

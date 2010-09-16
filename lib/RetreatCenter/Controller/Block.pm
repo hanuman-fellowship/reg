@@ -74,11 +74,15 @@ sub view : Local {
 
     my $block = model($c, 'Block')->find($block_id);
     my $ev = 0;
+    my $type = "indoors";
     if ($block->rental_id()) {
         $ev = $block->rental();
     }
     elsif ($block->program_id()) {
         $ev = $block->program();
+        if ($ev->category->name() ne 'Normal') {
+            $type = "resident";
+        }
     }
     elsif ($block->event_id()) {
         $ev = $block->event();
@@ -93,7 +97,8 @@ sub view : Local {
         ev_link  => $ev_link,
         ev_name  => $ev_name,
         template => "block/view.tt2",
-        daily_pic_date => $block->sdate,
+        daily_pic_date => "$type/" . $block->sdate(),
+        cluster_date   => $block->sdate(),
     );
 }
 

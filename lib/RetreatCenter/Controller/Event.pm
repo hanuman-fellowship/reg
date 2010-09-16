@@ -141,7 +141,8 @@ sub view : Local {
                 + 1;
     stash($c,
         event          => $ev,
-        daily_pic_date => $ev->sdate(),
+        daily_pic_date => "indoors/" . $ev->sdate(),
+        cluster_date   => $ev->sdate(),
         cal_param      => "$sdate/$nmonths",
         template       => "event/view.tt2",
     );

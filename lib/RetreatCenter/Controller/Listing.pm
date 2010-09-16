@@ -1212,15 +1212,18 @@ sub housekeeping : Local {
             }
         }
     }
-    $c->stash->{tent}           = $tent;
-    $c->stash->{the_date}       = date($d8);
-    $c->stash->{daily_pic_date} = $d8;
-    $c->stash->{next_date}      = (date($d8)+1)->as_d8();
-    $c->stash->{prev_date}      = (date($d8)-1)->as_d8();
-    $c->stash->{arriving_houses}  = \@arriving_houses;
-    $c->stash->{departing_houses} = \@departing_houses;
-    $c->stash->{next_needed}    = \%next_needed;
-    $c->stash->{template}       = "listing/housekeeping.tt2";
+    stash($c,
+        tent             => $tent,
+        the_date         => date($d8),
+        daily_pic_date   => "indoors/$d8",
+        cluster_date     => $d8,
+        next_date        => (date($d8)+1)->as_d8(),
+        prev_date        => (date($d8)-1)->as_d8(),
+        arriving_houses  => \@arriving_houses,
+        departing_houses => \@departing_houses,
+        next_needed      => \%next_needed,
+        template         => "listing/housekeeping.tt2",
+    );
 }
 
 #

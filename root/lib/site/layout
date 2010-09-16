@@ -45,10 +45,10 @@
 
 [% IF prog_staff || field_staff %]
     <td><a target=dailypic
-           href=/dailypic/show/indoors/[% daily_pic_date %]
+           href=/dailypic/show/[% daily_pic_date %]
         >DailyPic</a></td>
     <td><a target=clusterview
-           href=/cluster/show/[% daily_pic_date %]/[% cur_cluster %]
+           href=/cluster/show/[% cluster_date %]/[% cur_cluster %]
         >ClusterView</a></td>
 [% ELSE %]
     <td colspan=3></td>

@@ -28,6 +28,7 @@ sub index : Local {
 sub show : Local {
     my ($self, $c, $type, $date) = @_;
 
+    $type ||= "indoors";
     clear_cache();
     my $prog_staff = $c->check_user_roles('prog_staff');
     Global->init($c);

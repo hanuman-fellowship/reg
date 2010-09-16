@@ -229,7 +229,10 @@ sub list_reg_name : Local {
     stash($c,
         program         => $pr,
         pat             => $pat,
-        daily_pic_date  => $sdate,
+        daily_pic_date  => ($pr->category->name() eq "Normal"? "indoors"
+                            :                                  "resident")
+                            . "/$sdate",
+        cluster_date    =>  $sdate,
         cal_param       => "$sdate/$nmonths",
         regs            => _reg_table($c, \@regs),
         other_sort      => "list_reg_post",
@@ -2023,7 +2026,10 @@ sub _view {
         online         => scalar(@files),
         share          => $share,
         non_pr         => ! $PR,
-        daily_pic_date => $sdate,
+        daily_pic_date => ($prog->category->name() eq "Normal"? "indoors"
+                           :                                    "resident")
+                           . "/$sdate",
+        cluster_date   => $sdate,
         cal_param      => "$sdate/$nmonths",
         # ??? can get cluster id from Global settings, yes???
         cur_cluster    => ($reg->house_id)? $reg->house->cluster_id: 1,
@@ -3583,7 +3589,11 @@ sub lodge : Local {
         total_opts    => scalar(@h_opts), 
         seen_opts     => $string{seen_lodge_opts},
         disp_h_type   => (($h_type =~ m{^[aeiou]})? "an": "a") . " '\u$h_type'",
-        daily_pic_date => $reg->date_start,
+        daily_pic_date => ($pr->category->name() eq "Normal"? "indoors"
+                           :                                  "resident")
+                           . "/"
+                           . $reg->date_start(),
+        cluster_date  => $reg->date_start(),
         template      => "registration/lodge.tt2",
     );
 }

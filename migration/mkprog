@@ -58,13 +58,13 @@ create table category (
     id integer primary key autoincrement,
     name text
 );
-insert into category values (0, 'Normal');
-insert into category values (1, 'YSC 1');
-insert into category values (2, 'YSC 2');
-insert into category values (3, 'YSL');
-insert into category values (4, 'Resident');
-insert into category values (5, 'Intern');
-insert into category values (6, 'Temporary');
+insert into category values (1, 'Normal');
+insert into category values (2, 'YSC 1');
+insert into category values (3, 'YSC 2');
+insert into category values (4, 'YSL');
+insert into category values (5, 'Resident');
+insert into category values (6, 'Intern');
+insert into category values (7, 'Temporary');
 
 drop table if exists canpol;
 create table canpol (
