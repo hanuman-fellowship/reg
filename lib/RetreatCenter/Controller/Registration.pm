@@ -225,9 +225,7 @@ sub list_reg_name : Local {
     Global->init($c);
     my @files = <root/static/online/*>;
     my $sdate = $pr->sdate();
-    my $nmonths = date($pr->edate())->month()
-                - date($sdate)->month()
-                + 1;
+    my $nmonths = int((date($pr->edate()) - date($sdate))/30) + 1;
     stash($c,
         program         => $pr,
         pat             => $pat,
