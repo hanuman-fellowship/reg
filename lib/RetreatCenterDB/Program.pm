@@ -78,19 +78,25 @@ __PACKAGE__->add_columns(qw/
     allow_dup_regs
     percent_tuition
     refresh_days
-    category
+    category_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
 # cancellation policy
 __PACKAGE__->belongs_to(canpol => 'RetreatCenterDB::CanPol', 'canpol_id');
+
 # rental - for parallel programs.
 __PACKAGE__->belongs_to(rental => 'RetreatCenterDB::Rental', 'rental_id');
+
 # housecost
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
+# category
+__PACKAGE__->belongs_to(category => 'RetreatCenterDB::Category',
+                        'category_id');
 # summary
 __PACKAGE__->belongs_to('summary' => 'RetreatCenterDB::Summary', 'summary_id');
+
 # affiliations
 __PACKAGE__->has_many(affil_program => 'RetreatCenterDB::AffilProgram',
                       'p_id');
@@ -231,6 +237,11 @@ sub prog_end_obj {
     return get_time($self->prog_end());
 }
 sub reg_start_obj {
+    my ($self) = @_;
+    return get_time($self->reg_start());
+}
+# same but different name to match Rental
+sub start_hour_obj {
     my ($self) = @_;
     return get_time($self->reg_start());
 }
@@ -876,7 +887,7 @@ sub prog_type {
     if ($self->rental_id()) {
         $type .= "Hybrid ";
     }
-    if ($self->category() != 0) {
+    if ($self->category->name() ne 'Normal') {
         $type .= "Resident ";
     }
     chop $type;

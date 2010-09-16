@@ -51,15 +51,6 @@ use Global qw/
 /;
 use File::Copy;
 
-my @cat_opts = (
-    'Normal',
-    'YSC 1',
-    'YSC 2',
-    'YSL',
-    'Resident',
-    'Intern',
-    'Temporary',
-);
 my @sch_opts = (
     'MMC',
     'MMI School of Yoga',
@@ -73,6 +64,21 @@ my %mmi_levels = (
     M => "Masters",
     S => "Course",
 );
+
+sub _cat_opts {
+    my ($c, $default) = @_;
+    my $cat_opts = "";
+    for my $cat (model($c, 'Category')->all()) {
+        my $index = $cat->id();
+        $cat_opts .= "<option value=$index "
+                  .  ($index == $default? "selected": "")
+                  .  ">"
+                  .  $cat->name()
+                  . "\n"
+                  ;
+    }
+    return $cat_opts;
+}
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -99,13 +105,6 @@ sub create : Local {
         );
     }
     Global->init($c);
-    my $cat_opts = "";
-    for my $i (0 .. $#cat_opts) {
-        $cat_opts .= "<option value=$i "
-                  .  ($i == 0? "selected": "")
-                  .  ">$cat_opts[$i]\n"
-                  ;
-    }
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
@@ -173,7 +172,7 @@ sub create : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
-        cat_opts       => $cat_opts,
+        cat_opts       => _cat_opts($c, 0),
         school_opts    => $sch_opts,
         level_opts => <<"EOO",
 <option value=D>Diploma
@@ -255,10 +254,30 @@ sub _get_data {
     }
     # naming conventions for Resident && MMI programs
     #
-    if ($P{category} != 0
-        && $P{name} !~ m{^$cat_opts[$P{category}]}
-    ) {
-        push @mess, 'Name does not match the Category.';
+    my $category = model($c, 'Category')->find($P{category_id});
+    if (! $category) {
+        push @mess, "Unknown Category!";
+    }
+    else {
+        my $name = $category->name();
+        if ($name ne 'Normal') {
+            if ($P{name} !~ m{^$name}) {
+                push @mess, 'Name does not match the Category.';
+            }
+        }
+        else {
+            my $cats = join '|',
+                       map {
+                           $_->name()        
+                       }
+                       model($c, 'Category')->search({
+                           name => { '!=', 'Normal' },
+                       })
+                       ;
+            if ($P{name} =~ m{^($cats)}) {
+                push @mess, 'Name does not match the Category.';
+            }
+        }
     }
     if ($P{school} != 0
         && $P{name} !~ m{MMI}
@@ -515,7 +534,7 @@ sub view : Local {
     # no lunches for personal retreat, resident programs, or DCM.
     #
     if (! ($p->PR()
-           || $p->category() != 0
+           || $p->category->name() ne 'Normal'
            || $p->level() =~ m{[DCM]}
           )
     ) {
@@ -555,7 +574,6 @@ sub view : Local {
         daily_pic_date      => $sdate,
         cal_param           => "$sdate/$nmonths",
         leaders_house       => $p->leaders_house($c),
-        category            => $cat_opts[$p->category()],
         school              => $sch_opts[$p->school()],
         level               => $mmi_levels{$p->level()},
         template            => "program/view.tt2",
@@ -628,19 +646,19 @@ sub list : Local {
     my @cond = ();
     if ($type eq 'dcm') {
         @cond = (
-            category => 0,
-            level => { -in  => [qw/  D C M  /] },
+            category_id => 0,
+            level       => { -in  => [qw/  D C M  /] },
         );
     }
     elsif ($type eq 'yscl') {
         @cond = (
-            category => { '>' => 0 },
+            category_id => { '>' => 0 },
         );
     }
     else {
         @cond = (
-            category => 0,
-            level => { -not_in  => [qw/  D C M  /] },
+            category_id => 0,
+            level       => { -not_in  => [qw/  D C M  /] },
         );
         if ($hide_mmi) {
             push @cond, (school => 0);      # only MMC no MMI
@@ -739,13 +757,6 @@ sub update : Local {
 
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
-    my $cat_opts = "";
-    for my $i (0 .. $#cat_opts) {
-        $cat_opts .= "<option value=$i "
-                  .  ($i == $p->category()? "selected": "")
-                  .  ">$cat_opts[$i]\n"
-                  ;
-    }
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
@@ -802,7 +813,7 @@ sub update : Local {
         ],
         webdesc_rows => lines($p->webdesc()) + 5,
         brdesc_rows  => lines($p->brdesc()) + 5,
-        cat_opts     => $cat_opts,
+        cat_opts     => _cat_opts($c, $p->category_id()),
         school_opts  => $sch_opts,
         level_opts   => $level_opts,
         show_level   => $p->school() == 0? "hidden": "visible",
@@ -1703,13 +1714,6 @@ sub duplicate : Local {
             "check_$w" => ($orig_p->$w)? "checked": ""
         );
     }
-    my $cat_opts = "";
-    for my $i (0 .. $#cat_opts) {
-        $cat_opts .= "<option value=$i "
-                  .  ($i == $orig_p->category()? "selected": "")
-                  .  ">$cat_opts[$i]\n"
-                  ;
-    }
     my $sch_opts = "";
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
@@ -1743,7 +1747,7 @@ sub duplicate : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
-        cat_opts    => $cat_opts,
+        cat_opts    => _cat_opts($c, $orig_p->category_id()),
         school_opts => $sch_opts,
         level_opts  => $level_opts,
         section     => 1,   # Web (a required field)

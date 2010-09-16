@@ -1558,7 +1558,10 @@ sub summary : Local {
         start  => $start,
         end    => $end,
         events => [
-            sort { $a->sdate <=> $b->sdate }
+            sort {
+                $a->sdate <=> $b->sdate ||
+                $a->name  cmp $b->name 
+            }
             @rentals, @programs
         ],
         section  => $section eq 'flowers'           ? 'Flower'

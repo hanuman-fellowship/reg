@@ -5,21 +5,23 @@ p {
 }
 </style>
 <h2>Residents</h2>
-<h3>[% resident.person.first %] [% IF ! resident.just_first %][% resident.person.last %][% END %]</h3>
+<h3>$resident.person.first [% IF ! resident.just_first %]$resident.person.last[% END %]</h3>
 <p>
-[% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/resident/update/[% resident.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
+[% IF Catalyst.check_user_roles('personnel_admin') %]
+<a href="/resident/update/$resident.id" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/resident/delete/[% resident.id %]"
- onclick="return confirm('Okay to Delete [% resident.person.first %] [% resident.person.last %] as resident?');">Delete</a>
+<a href="/resident/note/$resident.id" accesskey='n'><span class=keyed>N</span>ote</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/resident/delete/$resident.id"
+ onclick="return confirm('Okay to Delete $resident.person.first $resident.person.last as resident?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/person/view/[% resident.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
+<a href="/person/view/$resident.person.id" accesskey='p'><span class=keyed>P</span>erson Info</a>
 <p class=p2>
 <table cellpadding=5 border=0>
 
 <th align=right valign=top>Comment</th>
-<td>[% resident.comment %]</td>
+<td>$resident.comment</td>
 </tr>
 
 <tr>
@@ -27,9 +29,22 @@ p {
 <td>
 [% IF resident.image %]
 <img src="[% Catalyst.uri_for('/static/images/rth-') _ resident.id _ '.jpg' %]"><br>
-<a href="[% Catalyst.uri_for('/resident/del_image/') _ resident.id %]" onclick="return confirm('Okay to Delete image for [% resident.person.first %] [% resident.person.last %]?');" >Delete Image</a>
+<a href="[% Catalyst.uri_for('/resident/del_image/') _ resident.id %]" onclick="return confirm('Okay to Delete image for $resident.person.first $resident.person.last %]?');" >Delete Image</a>
 [% ELSE %]
 &nbsp;
+[% END %]
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Notes</th>
+<td>
+[% FOREACH rn IN resident.notes %]
+$rn.the_date_obj $rn.the_time_obj<br>
+<ul>
+$rn.note
+</ul>
+<hr>
 [% END %]
 </td>
 </tr>

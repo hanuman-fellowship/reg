@@ -5,6 +5,7 @@
     Click on Last to see Resident attributes.<br>
 [% END %]
 Click on First to see Person attributes.<br>
+Click on Category to view the registration.<br>
 [% IF personnel %]
     To add a Resident add them as a Person first.
 [% END %]
@@ -13,15 +14,24 @@ Click on First to see Person attributes.<br>
 <tr>
 <th align=left>Last</th>
 <th align=left>First</th>
+<th align=left>Category</th>
 </tr>
 [% FOREACH r IN residents %]
 <tr>
 [% IF personnel %]
-    <td><a href="/resident/view/[% r.id %]">[% r.person.last %]</a></td>
+    <td><a href="/resident/view/$r.id">$r.last</a></td>
 [% ELSE %]
-    <td>[% r.person.last %]</td>
+    <td>$r.person.last</td>
 [% END %]
-<td><a href="/person/view/[% r.person.id %]">[% r.person.first %]</a></td>
+<td><a href="/person/view/$r.person_id">$r.first</a></td>
+[% id = r.id %]
+<td>
+[% IF r.reg_id != 0 %]
+<a href="/registration/view/$r.reg_id">$r.category</a>
+[% ELSE %]
+$r.category
+[% END %]
+</td>
 </tr>
 [% END %]
 </table>

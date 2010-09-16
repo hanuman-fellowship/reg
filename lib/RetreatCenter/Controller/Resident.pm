@@ -9,6 +9,13 @@ use Util qw/
     resize
     valid_email
     model
+    stash
+/;
+use Date::Simple qw/
+    today
+/;
+use Time::Simple qw/
+    get_time
 /;
 use Global qw/%string/;     # resize needs this to have been done
 
@@ -21,16 +28,51 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{residents} = [
-        # how to sort like this in all()???
+    my @residents = ();
+    for my $r (
         sort {
             $a->person->last()  cmp $b->person->last()
             or
             $a->person->first() cmp $b->person->first()
         }
         model($c, 'Resident')->all()
-    ];
-    $c->stash->{template} = "resident/list.tt2";
+    ) {
+        # what category?
+        # current reg in resident program - yes
+        # past reg in resident program - ???
+        # no reg in a resident program - ???
+        #
+        my $cat = 'Not Yet';
+        my $reg_id = 0;
+        my $today = today()->as_d8();
+        REG:
+        for my $reg (sort {
+                         $b->program->sdate() <=> $a->program->sdate()
+                     }
+                     $r->person->registrations()
+        ) {
+            my $pcat = $reg->program->category->name();
+            next REG if $pcat eq 'Normal';
+            $cat = $pcat;
+            $reg_id = $reg->id();
+            if ($reg->program->edate() <= $today) {
+                $cat .= " - " . $reg->program->edate_obj->format("%b '%y");
+            }
+            last REG;
+        }
+        push @residents, {
+            id        => $r->id(),
+            person_id => $r->person->id(),
+            first     => $r->person->first(),
+            last      => $r->person->last(),
+            category  => $cat,
+            reg_id    => $reg_id,
+        };
+    }
+    stash($c,
+        residents => \@residents,
+        template  => "resident/list.tt2",
+    );
 }
 
 sub delete : Local {
@@ -111,18 +153,20 @@ sub update_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->stash->{resident} = model($c, 'Resident')->find($id);
-    $c->stash->{template} = "resident/view.tt2";
+    stash($c,
+        resident => model($c, 'Resident')->find($id),
+        template => 'resident/view.tt2',
+    );
 }
 
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->stash->{person}      = model($c, 'Person')->find($person_id);
-    $c->stash->{form_action} = "create_do/$person_id";
-    $c->stash->{resident}      = { l_order => 1 };  # fake a Resident object
-                                                  # for this default
-    $c->stash->{template}    = "resident/create_edit.tt2";
+    stash($c,
+        person      => model($c, 'Person')->find($person_id),
+        form_action => "create_do/$person_id",
+        template    => 'resident/create_edit.tt2',
+    );
 }
 
 sub create_do : Local {
@@ -163,6 +207,27 @@ sub access_denied : Private {
 
     $c->stash->{mess}  = "Authorization denied!";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub note : Local {
+    my ($self, $c, $id) = @_;
+
+    stash($c,
+        resident => model($c, 'Resident')->find($id),
+        template => 'resident/note.tt2',
+    );
+}
+
+sub note_do : Local {
+    my ($self, $c, $id) = @_;
+
+    model($c, 'ResidentNote')->create({
+        resident_id => $id,
+        the_date    => today->as_d8(),
+        the_time    => get_time()->t24(),
+        note        => $c->request->params->{note},
+    });
+    $c->response->redirect($c->uri_for("/resident/view/$id"));
 }
 
 1;

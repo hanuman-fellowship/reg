@@ -208,7 +208,7 @@ Web
 <tr>
 <th align=right valign=top>Category</th>
 <td valign=top>
-<select name=category>
+<select name=category_id>
 $cat_opts
 </select>
 </td>

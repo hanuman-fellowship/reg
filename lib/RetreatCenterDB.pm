@@ -77,6 +77,8 @@ __PACKAGE__->load_classes({
         Glossary
 
         Resident
+        Category
+        ResidentNote
     /]
 });
 

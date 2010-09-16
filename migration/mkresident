@@ -1,7 +1,15 @@
 drop table if exists resident;
 create table resident (
-    id integer primary key auto_increment,
+    id        integer primary key autoincrement,
     person_id integer,
-    comment text,
-    image text
+    comment   text,
+    image     text
+);
+drop table if exists resident_note;
+create table resident_note (
+    id          integer primary key autoincrement,
+    resident_id integer,
+    the_date    text,
+    the_time    text,
+    note        text
 );

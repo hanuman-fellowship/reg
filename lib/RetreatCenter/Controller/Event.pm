@@ -627,8 +627,11 @@ EOH
             # to alert the user that it is dangling homeless.
             #
             if (! @places) {
-                if ($ev_type eq 'program' && $ev->rental_id()) {
+                if ($ev_type eq 'program'
+                    && ($ev->rental_id() || $ev->category->name() ne 'Normal')
+                ) {
                     # this is a program with a parallel Rental
+                    # OR a Residental program (YSC, YSL, ...)
                     next EVENT;     # skip it entirely
                 }
                 if ($no_where) {
