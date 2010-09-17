@@ -749,12 +749,12 @@ sub register1 : Local {
     }
     if ($resident) {
         @cond = (
-            category => { '>' => 0},
+            category_id => { '>' => 1},        # 1 is 'Normal' - hard coded :(
         );
     }
     else {
         push @cond, (
-            category => 0,
+            category_id => 0,
         );
     }
     my @programs = model($c, 'Program')->search(
