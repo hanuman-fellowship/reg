@@ -754,7 +754,7 @@ sub register1 : Local {
     }
     else {
         push @cond, (
-            category_id => 0,
+            category_id => 1,
         );
     }
     my @programs = model($c, 'Program')->search(

@@ -2944,8 +2944,8 @@ sub manual : Local {
         cabin_checked => "",
         room_checked  => "",
     );
-    my @housing = ($pr->category() != 0)? ('single', 'single', 'room')
-                  :                       ('dble', 'dble', 'room')
+    my @housing = ($pr->category_id() != 1)? ('single', 'single', 'room')
+                  :                          ('dble', 'dble', 'room')
                   ;
     _rest_of_reg($pr, $p, $c, tt_today($c), @housing);
 }
@@ -3280,8 +3280,8 @@ sub lodge : Local {
             if (($h->max < $low_max) ||
                 ($h->bath && !$bath) ||
                 (!$h->bath && $bath) ||
-                ($pr->category() == 0 && $h->resident()) ||
-                ($pr->category() != 0 && !$h->resident())
+                ($pr->category_id() == 1 && $h->resident()) ||
+                ($pr->category_id() != 1 && !$h->resident())
             ) {
                 next HOUSE;
             }
@@ -3430,7 +3430,7 @@ sub lodge : Local {
     #
     # and now the big sort:
     #
-    if ($pr->category() != 0) {
+    if ($pr->category_id() != 1) {
         @h_opts = map {
                         $_->[0]
                   }

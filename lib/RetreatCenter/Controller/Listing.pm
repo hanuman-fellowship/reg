@@ -423,11 +423,13 @@ sub meal_list : Local {
 
     #
     # people enrolled in a DCM program do not eat meals.
+    # resident programs are considered community and not included.
     #
     my @regs = model($c, 'Registration')->search(
                    {
                        date_start => { '<=' => $end_d8   },
                        date_end   => { '>=' => $start_d8 },
+                       'program.category_id' => 1,    # must be 'normal' program
                        cancelled  => '',
                        -or => [
                            'program.level' => 'S',
