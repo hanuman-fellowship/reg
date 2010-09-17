@@ -430,6 +430,9 @@ sub meal_list : Local {
                        date_start => { '<=' => $end_d8   },
                        date_end   => { '>=' => $start_d8 },
                        'program.category_id' => 1,    # must be 'normal' program
+                            # could do some multi-step join 
+                            # do program.category.name => 'Normal'
+                            # but not now ...
                        cancelled  => '',
                        -or => [
                            'program.level' => 'S',

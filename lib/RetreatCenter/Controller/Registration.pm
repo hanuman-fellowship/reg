@@ -2944,8 +2944,9 @@ sub manual : Local {
         cabin_checked => "",
         room_checked  => "",
     );
-    my @housing = ($pr->category_id() != 1)? ('single', 'single', 'room')
-                  :                          ('dble', 'dble', 'room')
+    my @housing = ($pr->category->name() ne 'Normal')?
+                        ('single', 'single', 'room')
+                  :     ('dble',   'dble',   'room')
                   ;
     _rest_of_reg($pr, $p, $c, tt_today($c), @housing);
 }
@@ -3266,6 +3267,7 @@ sub lodge : Local {
         ) {
             next CLUSTER;
         }
+        my $pr_resident = $pr->category->name() ne 'Normal';
         HOUSE:
         for my $h (@{$houses_in_cluster{$cl_id}}) {
             # is the max of the house inconsistent with $max?
@@ -3280,8 +3282,8 @@ sub lodge : Local {
             if (($h->max < $low_max) ||
                 ($h->bath && !$bath) ||
                 (!$h->bath && $bath) ||
-                ($pr->category_id() == 1 && $h->resident()) ||
-                ($pr->category_id() != 1 && !$h->resident())
+                (!$pr_resident && $h->resident()) ||
+                ($pr_resident  && !$h->resident())
             ) {
                 next HOUSE;
             }
@@ -3430,7 +3432,7 @@ sub lodge : Local {
     #
     # and now the big sort:
     #
-    if ($pr->category_id() != 1) {
+    if ($pr->category->name() ne 'Normal') {
         @h_opts = map {
                         $_->[0]
                   }

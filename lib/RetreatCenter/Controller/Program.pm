@@ -628,9 +628,6 @@ sub _get_cluster_groups {
     return "<table>\n$UNreserved</table>XX<table>\n$reserved</table>";
 }
 
-#
-# ??? order of display?   also end date???
-#
 sub list : Local {
     my ($self, $c, $type) = @_;
 
@@ -651,19 +648,19 @@ sub list : Local {
     my @cond = ();
     if ($type eq 'dcm') {
         @cond = (
-            category_id => 1,
-            level       => { -in  => [qw/  D C M  /] },
+            'category.name' => 'Normal',
+            level           => { -in  => [qw/  D C M  /] },
         );
     }
     elsif ($type eq 'yscl') {
         @cond = (
-            category_id => { '>' => 1 },
+            'category.name' => { '!=' => 'Normal' },
         );
     }
     else {
         @cond = (
-            category_id => 1,
-            level       => { -not_in  => [qw/  D C M  /] },
+            'category.name' => 'Normal',
+            level           => { -not_in  => [qw/  D C M  /] },
         );
         if ($hide_mmi) {
             push @cond, (school => 0);      # only MMC no MMI
@@ -676,7 +673,11 @@ sub list : Local {
                     edate => { '>=', $cutoff },
                     @cond,
                 },
-                { order_by => [qw/ sdate me.id /] },
+                {
+                    join     => [qw/ category /],
+                    prefetch => [qw/ category /],
+                    order_by => [qw/ sdate me.name /]
+                },
             )
         ]
     );
