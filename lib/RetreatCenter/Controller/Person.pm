@@ -749,21 +749,29 @@ sub register1 : Local {
     }
     if ($resident) {
         @cond = (
-            category_id => { '>' => 1},        # 1 is 'Normal' - hard coded :(
+            'category.name' => { '!=' => 'Normal' },
         );
     }
     else {
         push @cond, (
-            category_id => 1,
+            'category.name' => 'Normal',
         );
     }
+    #
+    # fancy footwork needed (me instead of program below)
+    # because both program and category have a name column.
+    #
     my @programs = model($c, 'Program')->search(
         {
-            edate    => { '>='      => $today               },
-            name     => { -not_like => '%personal%retreat%' },
+            edate     => { '>='      => $today               },
+            'me.name' => { -not_like => '%personal%retreat%' },
             @cond,
         },
-        { order_by => [ qw/ sdate name / ] },
+        {
+            join     => [ qw/ category   / ],
+            prefetch => [ qw/ category   / ],
+            order_by => [ qw/ sdate me.name / ]
+        },
     );
     if (!$resident) {
         my (@personal_retreats) = model($c, 'Program')->search(
