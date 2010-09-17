@@ -21,7 +21,7 @@ Click on Category to view the registration.<br>
 [% IF personnel %]
     <td><a href="/resident/view/$r.id">$r.last</a></td>
 [% ELSE %]
-    <td>$r.person.last</td>
+    <td>$r.last</td>
 [% END %]
 <td><a href="/person/view/$r.person_id">$r.first</a></td>
 [% id = r.id %]
