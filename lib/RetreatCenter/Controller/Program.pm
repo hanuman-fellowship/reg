@@ -1709,6 +1709,7 @@ sub duplicate : Local {
         glnum   => "",
         image   => "",      # not yet
         rental_id => 0,
+        webready => 0,
     });
     for my $w (qw/
         sbath single collect_total allow_dup_regs kayakalpa
