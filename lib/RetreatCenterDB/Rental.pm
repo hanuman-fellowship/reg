@@ -10,6 +10,7 @@ use Util qw/
     gptrim
     get_grid_file
     penny
+    d3_to_hex
 /;
 use Date::Simple qw/
     date
@@ -304,8 +305,7 @@ sub count {
 sub status_td {
     my ($self) = @_;
     my $status = $self->status();
-    my $color = sprintf "#%02x%02x%02x",
-                        $string{"rental_$status\_color"} =~ m{\d+}g;
+    my $color = d3_to_hex($string{"rental_$status\_color"});
     return "<td align=center bgcolor=$color>\u$status</td>";
 }
 
@@ -347,7 +347,7 @@ sub end_hour_obj {
 }
 sub color_bg {
     my ($self) = @_;
-    return sprintf("#%02x%02x%02x", $self->color() =~ m{(\d+)}g);
+    return d3_to_hex($self->color());
 }
 sub housing_note_trim {
     my ($self) = @_;

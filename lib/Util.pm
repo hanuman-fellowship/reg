@@ -62,6 +62,7 @@ our @EXPORT_OK = qw/
     check_makeup_new
     check_makeup_vacate
     refresh_table
+    d3_to_hex
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1630,6 +1631,20 @@ EOH
 </tr></table>
 EOH
     $s;
+}
+
+sub d3_to_hex {
+    my ($d3) = @_;
+
+    my ($r, $g, $b) = (0, 0, 0);
+    if (defined $d3
+        && $d3 =~ m{^\D*(\d+)\D+(\d+)\D+(\d+)\D*$}
+    ) {
+        $r = $1;
+        $g = $2;
+        $b = $3;
+    }
+    return sprintf("#%02x%02x%02x", $r, $g, $b);
 }
 
 1;

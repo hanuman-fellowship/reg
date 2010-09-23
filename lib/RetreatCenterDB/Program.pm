@@ -18,6 +18,7 @@ use Util qw/
     tt_today
     model
     gptrim
+    d3_to_hex
 /;
 use Global qw/%string/;
 use Image::Size;
@@ -900,7 +901,7 @@ sub largest_meeting_place {
 
 sub color_bg {
     my ($self) = @_;
-    return sprintf("#%02x%02x%02x", $self->color() =~ m{(\d+)}g);
+    return d3_to_hex($self->color());
 }
 
 sub PR {

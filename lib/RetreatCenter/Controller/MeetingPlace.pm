@@ -11,6 +11,7 @@ use Util qw/
     empty
     model
     stash
+    d3_to_hex
 /;
 
 use lib '../../';       # so you can do a perl -c here.
@@ -76,7 +77,7 @@ sub view : Local {
     my ($self, $c, $id) = @_;
 
     my $mp = model($c, 'MeetingPlace')->find($id);
-    $mp->{bgcolor} = sprintf("#%02x%02x%02x", $mp->color =~ m{\d+}g);
+    $mp->{bgcolor} = d3_to_hex($mp->color);
     $c->stash->{mp} = $mp;
     $c->stash->{template}     = "meetingplace/view.tt2";
 }
@@ -89,7 +90,7 @@ sub list : Local {
                  { order_by => 'abbr' },
              );
     for my $mp (@mp) {
-        $mp->{bgcolor} = sprintf("#%02x%02x%02x", $mp->color =~ m{\d+}g);
+        $mp->{bgcolor} = d3_to_hex($mp->color);
     }
     $c->stash->{meetingplaces} = \@mp;
     $c->stash->{template} = "meetingplace/list.tt2";

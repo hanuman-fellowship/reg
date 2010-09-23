@@ -150,6 +150,9 @@ sub update : Local {
 # currently there's no way to know which fields changed
 # so assume they all did.
 #
+# ??? What if they change the max value of a house?
+# we do not update the Config records!
+#
 # check for dups???
 #
 sub update_do : Local {

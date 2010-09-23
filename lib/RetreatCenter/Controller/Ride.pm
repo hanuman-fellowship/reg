@@ -17,6 +17,7 @@ use Util qw/
     penny
     nsquish
     normalize
+    d3_to_hex
 /;
 use Date::Simple qw/
     date
@@ -170,8 +171,7 @@ sub _ride_list {
               ;
         my $airport = $r->airport();
         $rows .= "<td align=left style='background: "
-              .  sprintf("#%02x%02x%02x",
-                         $string{"${airport}_color"} =~ m{(\d+)}g)
+              .  d3_to_hex($string{"${airport}_color"})
               .  "'>&nbsp;&nbsp;&nbsp;"
               .  $airport
               .  "</td>\n"
@@ -928,8 +928,7 @@ sub online : Local {
         close $in;
         ($P{fname}) = $f =~ m{(\d+)};;
         $P{pickup_date} = date($P{pickup_date});
-        $P{airport_color} = sprintf("#%02x%02x%02x",
-                                    $string{"$P{airport}_color"} =~ m{(\d+)}g);
+        $P{airport_color} = d3_to_hex($string{"$P{airport}_color"});
         push @rides, \%P;
     }
     stash($c,

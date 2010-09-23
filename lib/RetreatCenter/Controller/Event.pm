@@ -24,6 +24,7 @@ use Util qw/
     get_now
     check_makeup_new
     check_makeup_vacate
+    d3_to_hex
 /;
 use HLog;
 use GD;
@@ -1089,9 +1090,8 @@ $jump_map
 EOH
     my $jump_img = $c->uri_for("/static/images/$jump_name");
     my @pr_color  = $string{cal_pr_color}  =~ m{\d+}g;
-    my $fmt = "#%02x%02x%02x";
-    my $arr_color = sprintf $fmt, $string{cal_arr_color} =~ m{\d+}g;
-    my $lv_color  = sprintf $fmt, $string{cal_lv_color}  =~ m{\d+}g;
+    my $arr_color = d3_to_hex($string{cal_arr_color});
+    my $lv_color  = d3_to_hex($string{cal_lv_color});
     # ??? optimize - skip a $cals entirely if no PRs - have a flag
     # in the object.
     CAL:
@@ -1300,9 +1300,8 @@ EOF
             order_by => 'disp_ord asc',
         }
     );
-    my $fmt = "#%02x%02x%02x";
     for my $mp (@mps) {
-        my $col = sprintf($fmt, $mp->color() =~ m{(\d+)}g);
+        my $col = d3_to_hex($mp->color());
         $html .= "<tr>"
               .  "<td>" . $mp->abbr() . "</td>"
               .  "<td>" . $mp->name() . "</td>"
@@ -1321,7 +1320,7 @@ EOF
         due
         done
     /) {
-        my $col = sprintf($fmt, $string{"rental_${st}_color"} =~ m{(\d+)}g);
+        my $col = d3_to_hex($string{"rental_${st}_color"});
         $html .= "<tr><td>\u$st</td><td bgcolor=$col width=40></td></tr>\n";
     }
     $html .= <<"EOF";

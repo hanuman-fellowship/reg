@@ -3256,7 +3256,8 @@ sub lodge : Local {
         # one _could_ put a tent and a room in the same cluster, right?
         #
         my $cl_name = $cl->name();
-        my $cl_tent   = $cl_name =~ m{tent|terrace}i;
+        my $cl_tent   = $cl_name =~ m{tent|terrace}i
+                                    && $cl_name !~ m{structure}i;
         my $cl_center = $cl_name =~ m{center}i;
         if (($tent && !$cl_tent) ||
             (!$tent && $cl_tent) ||

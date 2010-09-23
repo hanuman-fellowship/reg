@@ -12,6 +12,7 @@ use Util qw/
     resize
     model
     stash
+    d3_to_hex
 /;
 use Global qw/
     %string
@@ -255,12 +256,9 @@ sub profile_view : Local {
     stash($c,
         msg       => ($msg? "Password was changed.": ""),        # hack
         user      => $u,
-        user_bg   => sprintf("#%02x%02x%02x",
-                         ($u->bg()   || '255,255,255') =~ m{(\d+)}g),
-        user_fg   => sprintf("#%02x%02x%02x",
-                         ($u->fg()   || '0  ,0  ,0  ') =~ m{(\d+)}g),
-        user_link => sprintf("#%02x%02x%02x",
-                         ($u->link() || '0  ,0  ,255') =~ m{(\d+)}g),
+        user_bg   => d3_to_hex($u->bg()   || '255,255,255'),   # black
+        user_fg   => d3_to_hex($u->fg()   || '  0,  0,  0'),   # white
+        user_link => d3_to_hex($u->link() || '  0,  0,255'),   # blue
         pictures  => _pictures($u->obj->id()),
         template  => "user/profile_view.tt2",
     );

@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use Util qw/
     tt_today
     email_letter
+    d3_to_hex
 /;
 
 #
@@ -25,8 +26,7 @@ sub _set {
     my ($c, $u, $attr, $default) = @_;
     if ($u) {
         if (my $v = $u->$attr) {
-            $c->stash->{$attr} = sprintf "#%02x%02x%02x",
-                                         $v =~ m{(\d+)}g;
+            $c->stash->{$attr} = d3_to_hex($v);
         }
         else {
             $c->stash->{$attr} = $default;
