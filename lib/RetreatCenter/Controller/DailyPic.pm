@@ -610,7 +610,7 @@ EOH
             $html .= "<tr>\n";
 
             # name
-            $html .= "<td width=70>"
+            $html .= "<td width=100>"
                   .  $h->name()     # truncated?
                   .  "</td>\n"
                   ;
@@ -639,7 +639,7 @@ EOH
                   ;
 
             # square footage
-            $html .= "<td width=30>$sq_foot{$h_id}</td>\n";
+            $html .= "<td width=30 align=right>$sq_foot{$h_id}</td>\n";
 
             $html .= "</tr>";
         }
