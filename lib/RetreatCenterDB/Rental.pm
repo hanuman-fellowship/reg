@@ -237,7 +237,7 @@ sub dates_tr2 {
 sub daily_counts {
     my ($self) = @_;
 
-    my $ndays = $self->edate() - $self->sdate();
+    my $ndays = $self->edate_obj() - $self->sdate_obj();
     my $max = $self->expected() || $self->max();
     my $fname = get_grid_file($self->grid_code());
     my $in;
@@ -281,6 +281,10 @@ sub daily_counts {
     # and maybe lunch.
     #
     push @counts, $counts[-1];
+open JON, ">>", "/tmp/jon";
+print JON "final counts for " . $self->name() . 
+          "@counts\n";
+close JON;
     return @counts;
 }
 sub count {
