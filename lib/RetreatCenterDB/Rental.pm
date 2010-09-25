@@ -281,10 +281,6 @@ sub daily_counts {
     # and maybe lunch.
     #
     push @counts, $counts[-1];
-open JON, ">>", "/tmp/jon";
-print JON "final counts for " . $self->name() . 
-          "@counts\n";
-close JON;
     return @counts;
 }
 sub count {
