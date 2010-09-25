@@ -212,6 +212,8 @@ sub show : Local {
                     ($ev->name() =~ m{personal.*retreats}i)
                     ||
                     ($ev->level() =~ m{[DCM]})
+                    ||
+                    ($ev->category->name() ne 'Normal')
                    )
             ) {
                 next EVENT;
