@@ -398,7 +398,7 @@ EOH
     my $black = $cv->colorAllocate(  0,  0,  0);
 
     my %char_color;
-    for my $c (qw/ M F X R B empty_bed resize /) {
+    for my $c (qw/ M F X R B S empty_bed resize /) {
         $char_color{$c} = $cv->colorAllocate(
                               $string{"dp_$c\_color"} =~ m{(\d+)}g);
     }

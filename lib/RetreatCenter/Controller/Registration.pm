@@ -2518,7 +2518,7 @@ EOH
         my $pref1 = $reg->pref1();
         my $pref2 = $reg->pref2();
 
-        my $need_house = (defined $type)? $type !~ m{commut|van|unk}i
+        my $need_house = (defined $type)? $type !~ m{commut|van|unk|needed}i
                          :                0;
         my $hid = $reg->house_id;
         my $house = ($reg->h_name)? "(" . $reg->h_name . ")"
