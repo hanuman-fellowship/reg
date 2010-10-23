@@ -1,0 +1,64 @@
+Apr 1 4:45-5:40
+    continuing on online mlist and ride requests
+Apr 5 3:10-3:30
+    Guru Purnima list - checked in fix to error in report7.tt2
+Apr 6 11:50-4:00
+    start on making schema itemization
+    pretty good!
+Apr 8 4:30-6:30
+    consult with Barnaby
+    check on publish_pr
+    check on slow yoga multiple leader thing
+    center tents for a winter rental
+Apr 9 10:30-11:40
+    doc on the schema
+    consult with Barnaby re: link to googledoc cleaning schedule in summary
+Apr 12 9:20-10:10, 11:05-11:45
+    Ride without pickup date made for trouble.
+    Move GND 5, KKWC and LTL HSE to Indoors
+Apr 13 11:00-12:00, 3:50-6:30
+    glitch in PR registration
+    sendmail config
+    bcc to me for now
+    mmi_mailings implemented in reg, two email thingies
+Apr 14 10:30-11:00, 2:15-5:30, 6:15-7:30
+    respond to emails
+    consult with Lori, Jayanti, Barnaby, Alana
+Apr 15 10:00-10:20, 11:45-4:50
+    monitoring email, correcting glitches 
+    housing pref popup on reg list
+    putting mailings changes in place
+Apr 19 11:00-11:20
+    progfees.html page on mountmadonna.org has fees to update as well.
+Apr 20 12:00-12:30, 2:35-4:35, 5:10-7:00, 7:50-8:15
+    restoring Imagemagick somehow
+    several new requested features
+Apr 21 1:30-5:15, 6:00-7:00
+    consulting, implementing at MMC
+    with Lori, Jayanti, Shantam, Barnaby
+Apr 22 11:45-12:45, 5:00-6:35, 7:25-7:45, 9:10-10:40, 12:00-3:25
+    membership list - via search not all
+    responding to emergencies
+    membership development requests
+    sitting with/helping Ryder as he
+        went through the CBL unblacklisting thing.
+    also - offsetting time for the check I will write to Ryder (on 4/26)
+        he billed 2.25 hours - which is 3:25 for me
+Apr 23 7:30-8:00, 11:00-12:30, 2:10-5:20
+    minor tweaks on mlist file getting
+    responding to emails about this and that.
+    again tweaks here and there
+    resuming on membership
+Apr 25 4:15-7:30
+    email scanning, responding
+    glnum listings for MMC, MMI
+Apr 26 11:00-2:00, 2:10-2:25
+    responding to email re: blacklisting, etc
+    Ride financials
+    adjusting daily pic in consultation with Barnaby
+Apr 27 5:00-5:30, 6:00-8:15, 8:45-9:15, 10:20-12:15
+    undoing details in the Ride financial
+    Ride form online and getting them into Reg
+Apr 28 1:00-3:30, 11:20-12:40
+    at center consulting with Stephanie, Jamal, Jayanti, Pradeep
+    fixing Ride booboos, linking hybrid rental/program

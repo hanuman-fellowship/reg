@@ -1,0 +1,63 @@
+Jul 29
+    Housekeeping/Campground Report and Comings/Goings
+    should respect the Adjacent Rental flag and not give
+    information about someone leaving until they do
+    actually leave.
+    Before this PR and After this PR - modify the labels
+        on the Reg edit form.
+
+    Next/Back on John Gruber's PRs - not sorted right.
+Jul 31 1:00-1:30
+    talking with Akilesh re complex 3-part rental
+Aug 3 11:45-12:00, 1:15-1:30
+    mmi_payment zero amounts - mystery - i removed them.
+    photos in ride confirmation - dup'ed ids?
+Aug 6 11:15-11:45, 12:45-5:40
+    responding to emails
+    messing with access to krishna/kali, talking with Shantam
+    XL Rentals in meal list
+    Rental Follows - for multi-part rentals
+Aug 10 10:30-11:00
+    membership issues, responding to email
+Aug 18 5:00-5:40
+    Barnaby and Brajesh's issues - re Cluster Reservation for Zavieh
+        and Shrestra Consult being a Diploma not a Course.
+Aug 22 12:00-1:15
+    kaya kalpa in online reg
+Aug 23 6:05-6:30, 9:15-10:00
+    continuing with Kaya Kalpa
+Aug 24 4:00-4:20, 5:55-8:50
+    cancelling Asana, Pranayama, Mantra program, graphic link
+    kayakalpa done right
+Aug 29 10:00-5:00
+    at center, consulting with Shantam, Barnaby
+    implementing two of Barnaby's suggestions
+Aug 30 11:00-11:45
+    two items that Bhairab raised.
+Aug 31 9:15-11:55
+    Brajesh forcing two singles in one room.
+    No delete of a person with ride.
+    hanuman fellowship temple online imports
+    calendar year-month
+Sep 2 11:00-11:20
+    rentals without grid_code - remedied, prevented.
+Sep 3 11:00-11:30, 9:00-9:20, 12:45-2:00
+    at work answering Barnaby queries
+    at home further development on temple imports
+Sep 4 11:10-11:50, 10:30-2:00
+   finalize temple import 
+   tarball of /perl on kali => varuna
+   putting temple import in place on kali
+   and then grab_news gets the rest
+   rides online
+Sep 5 12:40-4:15
+    residents - quick development by the author of this program
+        another would take so so long...
+Sep 15 8:00-5:00
+Sep 16 8:00-5:00
+Sep 15 8:00-4:00
+Oct 16 8:00-8:20
+    restoring system after computer was stolen :(
+    I remember that the total was up to ~$3,000 so adding
+    the above fake entries for Sep 15-Sep 17 to add 25 hours more
+    AND I will put all the timelogs in the repository.

@@ -1,0 +1,58 @@
+Apr 29 2:45-3:05, 9:40-11:00
+    consulting with Barnaby
+    fixing error in Ride finances when no rides in date range
+    occupancy forecast with economy dorms?
+Apr 30 11:15-3:15
+    create date/time in Ride
+    consult with Shantam re: undo in the CAKE scheduler.
+        and about YSC[12L] being in Reg as it is nearly
+        already done.
+May 3 11:30-1:30
+    stephanie@mountmadonna.org - user unknown
+        what a mess.
+        ryder is helping.
+        alternative for now - modify outgoing to mountmadonnainstitute.org
+May 4 2:45-5:30
+    responding to email
+    rental web grid backup
+    reading a spreadsheet for people data import
+    MMI gl number mess investigation
+May 5 1:30-3:30, 11:00-11:30
+    consulting at center with Sukh, Richard, Barnaby, Jayanti, Jamal
+    figuring on # anchors within tables.
+May 7 3:45-4:00
+    consult with Barnaby re meeting places (WR, MR) which
+        are also sleeping spaces.
+May 12 11:20-1:50, 12:05-2:10
+    adjacent rental before/after
+    PublishPR to invoke the cron job script publish_pr
+    late notice mod
+    conf note mod
+    consult with Barnaby re: meal list for rental late arrivals
+    updating migration/init
+May 14 12:30-5:00
+    at center consulting - with Shantam as well.
+    preview letter for Ride
+May 15 9:20-11:30
+    late notice Sunday arrivals only PRs not other programs.
+    arrivals with red star always
+    switch smtp to logicalpoetry.com for the interim
+May 16 9:40-10:10
+    tweaked late notice on Saturday
+May 21 1:30-5:00
+    at center consulting with Jayanti, Bhairab, Shantam, Pradeep
+    no reg or payment for programs sans GL
+May 26 3:00-3:30
+    prevent sharing in a dorm
+May 28 4:00-4:40
+    check in sharing in a dorm
+    consult w/ Jayanti, Barnaby over phone
+Jun 2 4:00-5:30
+    consult with Jayanti, Jamal, Bhairab, Barnaby
+Jun 6 9:20-10:15, 10:50-12:00, 4:20-7:15
+    2 opposite gender people sharing - dorm?
+    delete payments require confirmation
+    add reg history records for payments
+Jun 7 3:10-4:50
+    continuing on editing summary improvements
+    delete bogus online requests

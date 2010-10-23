@@ -1,0 +1,56 @@
+Jun 10 2:00-3:00
+    undup members must be primary
+    refund letter no cancellation policy
+Jun 11 12:30-5:30
+    consult with Susan, Lori, Jayanti, Barnaby, Shantam
+        re: undups, membership, credits, scheduler rewrite
+Jun 18 5:20-5:55, 6:55-8:10
+    missing reg count
+    email about backup status to Jon
+Jun 19 11:50-12:20
+    investigating Colleen McCarthy YTT - single in Oaks 47
+Jun 21 11:00-11:30
+    checking on varuna access
+    checking in a forgotten template for reg payment deletion
+Jun 23 10:30-10:40, 11:15-12:00
+    PR registration quirk
+Jun 26 10:00-11:00
+    gate_code, grab new invoice changes
+Jun 28 1:00-5:45
+    consult with Shantam,
+    housing glitch reported by Karuna
+    one line of comment in comings/goings
+Jun 29 1:00-2:00
+    responding to email, checking statuses
+Jul 6 1:00-2:30
+    consulting, responding to email
+    no grab new wait for each rental on calendar
+Jul 10 1:00-2:00
+    checking, responding to email queries
+Jul 12 12:30-5:20
+    consulting with Shantam (re Reg/Sched), Lori
+Jul 13 2:30-3:50
+    writing email to Shantam about yesterday
+Jul 28 3:45-5:55, 11:00-11:30
+    After much time I begin again.   Job looms.
+    Jamal had trouble publishing.  Restarted, investigated.
+    *No gate code missing for rental prefix of "XL "
+    *gate code reminder email - only if within 6 months
+    *    to Sukh once a month
+    *the email details the # of programs/rentals that need gate code.
+    *missing gate code prevents confirmation letter sending
+    *PR on Sunday - note in confirmation at top, bold em all
+    *withwhom_verbose - be sure to reg separately
+    *before date on rental contract cover letter - more space
+    *    1.125 => 2
+    *pennies in Program tally - see Liberation 6/10
+Jul 29 1:45-4:00
+    consulting with Jamal, Barnaby, Akilesh, Karuna
+    *on sum phone numbers vertically beneath email
+    *make up list - blocks don't have to have a person
+        to qualify for being needed.
+
+    to do still:
+    on creating proposal update cell? - update person
+    Move a reg.
+    can blocks say 'B'?

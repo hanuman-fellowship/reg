@@ -1,0 +1,298 @@
+Oct 13 12:00-12:20, 12:40-1:20
+    responding to various requests of Adrienne, Jayanti
+Oct 14 10:00-11:10
+    responding to Adrienne's issues about Rental housing
+    and the contract
+Oct 15 2:15-3:05, 4:00-4:40
+    reconciliation glitch
+    undup issue
+    authorize.net missings - none!
+    helping Jayanti with publishing
+Oct 17 11:00-1:30
+    cgi-bin got clobbered! :( why?
+    took a while to restore.   more files in CVS.
+Oct 23 1:00-4:50
+    lunch on arrival day for rentals and lunches
+    no forcing a reg into a rental space/tent
+    copy, paste a sum
+Oct 28 3:20-4:30, 10:30-10:50
+    investigating housing glitch Whyte/Jan/Journey 205
+    offering center tents for own tent in winter
+    other responses to issues
+    timestamp on sum_copy_id
+Oct 29 1:45-3:40
+    various current issues, responding to email
+Oct 30 5:45-7:45
+    sitting with Ryder tuning up sendmail
+Oct 31 1:30-3:00, 11:00-11:45
+    responding to requests/needs
+    cabin_room now right
+    aux reg dup problem
+    checking oo's and other issues
+Nov 1 8:50-9:45
+    beginning on commuter, own van for grid
+Nov 2 9:30-1:50, 3:50-4:10, 5:50-7:15
+    continuing on grid2 work. tricky! got it!
+    now for a permanent code attribute in a rental - at create time only
+Nov 3 8:30-9:00, 11:45-12:00, 2:00-5:00, 9:50-12:30
+    grid data in meal list - it works
+    need to update the "Grid" link - a la "Web Grid" link
+        re: Own Van, Commuting lines
+
+    next is early/late charges and invoice?
+    and dropping of # of people and coverage in housing categories.
+
+    all done - what happens to current and past rentals
+        when I check stuff in?   invoice is not accurate?
+        has it been printed?
+Nov 4 2:00-4:30
+    demonstration and consultation at the center
+    backup grids on www.mountmadonna.org
+Nov 5 5:15-6:30
+    account for amita, changing a postmark
+    fixing this and that per request
+Nov 6 4:10-5:40
+    OOs, little fixes
+Nov 7 8:15-12:15, 1:00-1:45, 4:30-5:00
+    expected, putting rental updates in place
+    Expected field below Maximum
+        use as max (with grid) in meal list and early/late
+    calendar - instead of now to the end of time
+        one back plus 3 (5 in all).
+        when on a program/rental and click calendar you
+            only see the one
+    tweaks - rental current count
+    discussion re: KKWC.
+    manual registration - list programs order by name, then asc sdate
+Nov 9 11:00-11:30, 1:10-4:00, 9:00-10:30
+    CBT -> TCB
+    authorize stuff
+    center tents in May?
+    grab_new mod for stray OOs.
+Nov 10 6:15-7:30, 9:30-11:00
+    grab_new continuation.
+    it seems to work - yay!
+Nov 11 10:00-10:25, 2:00-2:45, 10:00-11:00
+    responding to queries - jamal re member mailings
+    fixing an error Adrienne found
+    consultation at the center
+    more tweaks to grab_new
+Nov 12 12:30-1:00, 3:05-7:55
+    consultation, coddling OOs
+    sutra restoration - done, I think/hope.
+    remedying messed up OOs due to my oversight
+        and delayed getting of email from MMC :(
+    use template fixed.
+
+    todo:
+    modify grid file getting - not each time.
+        slows the calendar down - count(), etc.
+        cron job - every 1/2 hour get all the current (2 months out) ones
+    send yourself a report from grab_new
+        whenever SOMEthing happened.
+        detail the person's names and how the trans file or email was handled.
+    the old online_done files - move them into year-month dirs
+Nov 13 8:00-8:45, 12:55-1:25, 10:15-11:50
+    final tweaks on sutras
+    include country code for mailing lists to CMS
+    more attention for grab_new - status report if ANYthing happened.
+Nov 15 11:00-11:45
+    investigating housing glitches
+    and occupancy forecast mods needed with no att_* and n_* vars in Rentals
+Nov 17 10:00-12:15
+    grid writes modified data file to separate dir to be gotten
+        by grab_new into rental/
+    also - sending assurance email to people missed by relay
+Nov 18 9:45-10:15, 11:45-12:40, 10:15-11:00
+    responding to requests
+    occupancy forecast - no n_ att_ RentalBooking instead.
+    a few other minor things - sending Barnaby blank campground images
+    Credit Card Misc warning
+Nov 19 2:00-3:00, 11:00-12:10
+    consulting with Jayanti, Barnaby
+    implementing Barnaby's requests
+Nov 20 12:30-1:00
+    futzing with this and that.
+    asking questions.  reviewing.
+Nov 22 4:00-4:30
+    responding to requests
+Nov 23 12:30-1:00
+    responding to email, queries, etc
+Nov 27 10:00-1:00
+    responding to a miscellany of email queries and issues
+    remaining: Rental Cancellations, sdate & edate for meeting place Bookings
+Dec 1 11:30-1:00
+    coming/going - not the rental part of a hybrid
+    messing with partial bookings
+Dec 3 4:45-6:00, 7:45-9:10
+    revamp bookings for programs, rentals and events
+        test with bookings of one day and a range of dates
+        that extend outside of the event itself.  even disjoint.
+Dec 4 11:00-12:00, 10:00-10:30
+    further work on meeting space revamp
+    responding to queries
+Dec 5 2:00-2:55
+    rental contract fine tuning
+Dec 6 10:00-11:15
+    restoring Credit Card Misc.
+    FV 1-9
+    no delete xaccount if payments are present
+Dec 7 2:30-4:00, 4:20-4:40
+    Credit card misc reborn
+    meeting place dates not always PRE dates - calendar mess!
+Dec 8 2:30-2:50, 3:00-4:00, 10:00-11:00
+    responding to queries
+    adjusting online reg for personal retreats
+    date/time of online deposit
+    35 -> 25, ride conf
+    housing glitch
+Dec 9 2:00-4:00
+    consulting with Stephanie, Jamal, Barnaby, Jayanti
+Dec 10 2:30-4:30, 11:30-11:50
+    turning off authorize.net email to me
+    prog_person in sum, verify checkbox
+    dated meeting places - unified
+    maximum in red note
+        remove unused templates update_meeting, warn mp...
+Dec 11 2:15-2:30
+    fine tuning tweaks of yesterday
+Dec 13 4:00-4:30
+    responding to queries
+Dec 16 5:35-5:45
+    restarting reg - Pradeep forgot how
+Jan 2 5:25-5:40
+    investigating housing glitch - room 103 over NY retreat
+        i need to protect against double-clicks?
+        check for house_id == 0
+Jan 5 10:35-2:25
+    AVI percent_tuition thingy
+    notifying of recent changes
+    calendar rework for meeting space bookings
+Jan 6 11:30-12:15
+    consult with Barnaby
+    responding to requests
+Jan 7 11:30-12:15
+    housing weirdness
+    remedying meeting place booking of 1 day
+Jan 9 3:00-4:00
+    resolving weird online reg issues
+Jan 12 11:45-12:00, 1:30-2:30
+    online reg mess-up recovery
+Jan 13 11:40-11:50
+    MMI Template adjustment
+Jan 14 2:45-4:45
+    requested tweaks
+    meal list item about extra tables
+    PR discount period
+Jan 15 3:30-5:00
+    consulting this and that
+    center tent config
+Jan 17 10:30-12:30
+    CEU dates and hours
+    editing a deposit, conf letter.
+Jan 18 9:45-1:00, 4:15-7:25
+    consulting with Lori
+    helping Sukhdev with time travel
+    rides, finally.
+        fancy and easy selecting of driver, shuttle!
+        ajax, dynamic HTML
+        it is coming out great!
+Jan 19 7:00-7:45
+    responding to requests, emails
+Jan 20 10:00-11:00, 2:45-4:45
+    demo Rides to Stephanie
+    help Barnaby
+    respond to emails
+    Jayanti's econ dorm mess
+Jan 21 5:30-5:55, 6:15-8:00
+    consulting with Barnaby
+    further work on the new things in Rides
+Jan 22 5:00-5:45
+    sans remote access - called Jamal to help figure out
+        what was causing the Calendar failure.
+        the rental "OGS 5/10" in Feb 2012 did not have a valid status.
+            how did that happen?
+        simply viewing it set the status correctly.
+Jan 23 3:35-4:20
+    putting new Rides stuff in place.
+Jan 26 8:30-5:25
+    long day of consulting (Shantam) and getting new
+        requests and implementing several of them.
+Jan 27 2:10-3:00
+    create Block for meeting place that is also sleeping place
+    and delete when deleting that meeting place.
+Jan 28 10:30-11:40
+    fixes here and there.
+    consult with Barnaby
+Feb 2 12:20-5:45
+    consultation
+    at center
+    calendar rework
+    sleeping space blocks
+Feb 3 9:10-10:45, 9:50-11:25
+    calendar tweaks - hard!
+    look for bookings that need rebooking - asked Barnaby for help
+Feb 9 12:15-3:55, 4:50-6:50
+    pennies, pictures
+Feb 10 12:15-1:10, 2:45-6:15, 9:25-12:00
+    pennies in Rides and financial reports
+
+    describing Program-Tally
+    mass unsubscribe - like purge
+    redid profile editing, added pics
+        next is using the pics for drivers
+        in the ride confirmation letter - done!
+Feb 11 10:05-12:10, 2:00-3:40, 6:00-7:30
+    consulting with Barnaby, fixing little but important things
+    max, expected, counts, etc, hybrids
+    consulting with Stephanie and Barnaby at MMC
+Feb 12 1:35-4:45
+    online got removed again :( WHY?
+    no date change for program/rental if meeting place or housing
+Feb 13 9:00-10:15
+    futzing with program tally for Brajesh
+Feb 16 1:00-1:25,
+    2 of sukh's requests
+Feb 18 1:10-5:25
+    at MMC, resolving openvpn, no lunch for PR on Saturday
+    consulting with Barnaby, Thecla, Jayanti
+    cancelled to canceled
+    heating grid
+    no pennies when paying balance
+    openvpn log - we are using expired files?
+        not sure
+Feb 19 12:35-4:30, 5:25-7:15
+    make up list - refined in several ways
+    refresh days
+Feb 20 2:15-5:55
+    glossary
+
+    TODO:
+        summer rental => ! winter from strings.
+        share with not connected? - dup person names
+        dup pics of sum when dup'ing rental/program
+        hcck
+        mysql, repository backed up to varuna
+Feb 22 5:00-5:15
+    replying to email, adjusting roles
+Feb 24 9:45-10:10, 11:20-12:35
+    responding to email, fixing a bug, closing issues
+    $reg->att_prog_dates()
+    tidied up default.tt2 - using interpolation
+Feb 25 4:00-6:30, 10:00-1:30
+    MMI confirmation letter
+    PR web site listing 3 months in advance for alternate costs
+        cron job to publish automatically
+        remove PublishPR - no leave it as is but the cron job
+        will push the 3 current housing costs to be used in reg1, reg2
+        rather than the costs in the progtable
+Feb 26 12:30-3:00
+    consultation at MMC with Alana, Jayanti
+Feb 28 11:40-1:50
+    finish up publish_pr
+Mar 4 1:00-3:00
+    Arrien rescheduling messing around
+Mar 7 10:00-10:30
+    monitoring grab_new, resolving a housing issue with Jayanti/Alana
+Mar 8 1:30-5:00
+    helping Shantam with PHP, Smarty, OO, Cake
