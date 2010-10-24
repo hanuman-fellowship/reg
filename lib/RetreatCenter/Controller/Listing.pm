@@ -1733,6 +1733,11 @@ sub gate_codes : Local {
                     name  => { -not_like => 'XL%'},
                 })
     ) {
+        if ($ev->event_type() eq 'program'
+            && $ev->category->name() ne 'Normal')
+        {
+            next EVENT;
+        }
         my $sum = $ev->summary();
         my $code  = $sum->gate_code();
         if ($missing_only && $code) {
