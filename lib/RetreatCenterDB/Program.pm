@@ -435,8 +435,19 @@ sub prog_dates_style {
 }
 sub webdesc_plus {
     my ($self) = @_;
-    my $s = gptrim($self->webdesc);
-    my $barnacles = $self->footnotes;
+    gptrim($self->webdesc) . _barnacles($self->footnotes);
+}
+sub webdesc {
+    my ($self) = @_;
+    gptrim($self->webdesc);
+}
+sub footnotes {
+    my ($self) = @_;
+    _barnacles($self->footnotes);
+}
+sub _barnacles {
+    my $barnacles = shift;
+    my $s = "";
     if ($barnacles) {
         $s .= "<ul>\n";
         if ($barnacles =~ /\*\*/) {
