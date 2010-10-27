@@ -1382,8 +1382,10 @@ sub publish_pics : Local {
         if ($f =~ m{^[lp]b}) {      # skip the big ones for now
             next PIC;
         }
-        $ftp->put($f)
-            or return _pub_err($c, "cannot put $f", 1);
+        if (! $ftp->put($f)) {
+            chdir "../..";
+            return _pub_err($c, "cannot put $f", 1);
+        }
     }
     $ftp->quit();
     chdir "../..";
