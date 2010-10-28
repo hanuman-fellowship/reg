@@ -10,6 +10,12 @@ h3 {
 &nbsp;&nbsp;&nbsp;
 [% other_sort %]
 &nbsp;&nbsp;&nbsp;
+[% IF resident %]
+<a href="/house/list/0">Program</a>
+[% ELSE %]
+<a href="/house/list/1">Resident</a>
+[% END %]
+&nbsp;&nbsp;&nbsp;
 <a href=/house/toggleTCB>[% tcb_activate %] Terrace below CB</a>
 <h3>Rooms</h3>
 <ul>

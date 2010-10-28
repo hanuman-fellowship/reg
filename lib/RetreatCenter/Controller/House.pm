@@ -23,21 +23,28 @@ sub index : Private {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $resident) = @_;
 
+    $resident = $resident? 'yes'
+                :          q{};
     my ($tcb) = model($c, 'House')->search({ name => 'TCB 25' });
     stash($c,
+        resident => $resident,
         rooms => [ model($c, 'House')->search(
-            { tent   => '' },
+            {
+                tent     => '',
+                resident => $resident,
+            },
             { order_by => 'name' }
         ) ],
         tents => [ model($c, 'House')->search(
             {
-                tent   => 'yes',
+                tent     => 'yes',
+                resident => $resident,
             },
             { order_by => 'name' }
         ) ],
-        hdr          => "By Name",
+        hdr          => $resident? 'Resident': 'By Name',
         tcb_activate => ($tcb->inactive())? "Activate": "Inactivate",
         other_sort   => "<a href=/house/by_type_priority>By Type/Priority</a>",
         template     => "house/list.tt2",
@@ -50,12 +57,16 @@ sub by_type_priority : Local {
     my ($tcb1) = model($c, 'House')->search({ name => 'TCB 1' });
     stash($c,
         rooms => [ model($c, 'House')->search(
-            { tent   => '' },
+            {
+                tent     => '',
+                resident => '',
+            },
             { order_by => 'inactive, max, bath desc, cabin desc, priority' }
         ) ],
         tents => [ model($c, 'House')->search(
             {
-                tent   => 'yes',
+                tent     => 'yes',
+                resident => '',
             },
             { order_by => 'inactive, center desc, priority' }
         ) ],

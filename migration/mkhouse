@@ -5,19 +5,19 @@ CREATE TABLE cluster (
     cl_order integer default 0,
     type     text
 );
-INSERT INTO cluster VALUES(1,'CC 1st','indoors');
-INSERT INTO cluster VALUES(2,'CC 2nd','indoors');
-INSERT INTO cluster VALUES(3,'Seminar House','indoors');
-INSERT INTO cluster VALUES(4,'RAM','indoors');
-INSERT INTO cluster VALUES(5,'Oaks Own Tent','outdoors');
-INSERT INTO cluster VALUES(6,'Oaks Center Tent','outdoors');
-INSERT INTO cluster VALUES(7,'Madrone Own Tent','outdoors');
-INSERT INTO cluster VALUES(8,'Madrone Center Tent','outdoors');
+INSERT INTO cluster VALUES(1,'CC 1st',0, 'indoors');
+INSERT INTO cluster VALUES(2,'CC 2nd',0, 'indoors');
+INSERT INTO cluster VALUES(3,'Seminar House',0,'indoors');
+INSERT INTO cluster VALUES(4,'RAM',0,'indoors');
+INSERT INTO cluster VALUES(5,'Oaks Own Tent',0,'outdoors');
+INSERT INTO cluster VALUES(6,'Oaks Center Tent',0,'outdoors');
+INSERT INTO cluster VALUES(7,'Madrone Own Tent',0,'outdoors');
+INSERT INTO cluster VALUES(8,'Madrone Center Tent',0,'outdoors');
 -- deleted Knoll Own, Knoll Center
-INSERT INTO cluster VALUES(11,'Oak Cabins','indoors');
-INSERT INTO cluster VALUES(12,'CB Terrace','outdoors');
-INSERT INTO cluster VALUES(13,'Miscellaneous','special');
-INSERT INTO cluster VALUES(14,'School','special');
+INSERT INTO cluster VALUES(11,'Oak Cabins',0,'indoors');
+INSERT INTO cluster VALUES(12,'CB Terrace',0,'outdoors');
+INSERT INTO cluster VALUES(13,'Miscellaneous',0,'special');
+INSERT INTO cluster VALUES(14,'School',0,'special');
 
 drop table if exists house;
 CREATE TABLE house (

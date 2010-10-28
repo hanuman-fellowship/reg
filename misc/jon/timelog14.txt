@@ -61,3 +61,10 @@ Oct 16 8:00-8:20
     I remember that the total was up to ~$3,000 so adding
     the above fake entries for Sep 15-Sep 17 to add 25 hours more
     AND I will put all the timelogs in the repository.
+Oct 23 11:00-1:00
+    restoring files from the CVS repository - succcessful, thank goodness.
+    various fixes - no gate codes for non-Normal program
+    tweaks to membership configuration vars
+    mmi dcm registration cancellations.
+Oct 27 10:55-
+    resident houses configuration on request
