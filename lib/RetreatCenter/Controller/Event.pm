@@ -667,6 +667,9 @@ EOH
                 # it may not be for the entire time of the event.
                 #
                 my $final_dr = $dr;
+                if (! $final_dr) {
+                    next PLACE;
+                }
                 if ($bk) {
                     $final_dr = overlap(
                         DateRange->new($bk->sdate_obj(), $bk->edate_obj()),
