@@ -1053,7 +1053,7 @@ sub create_do : Local {
         comment       => $P{comment},
         h_type        => $P{h_type},
         h_name        => $P{h_name},
-        kids          => $P{kids},
+        kids          => trim($P{kids}),
         confnote      => cf_expand($c, $c->request->params->{confnote}),
         status        => $P{status},
         nights_taken  => $taken,
@@ -2874,7 +2874,7 @@ sub update_do : Local {
         comment       => etrim($P{comment}),
         h_type        => $P{h_type},
         h_name        => $P{h_name},
-        kids          => $P{kids},
+        kids          => trim($P{kids}),
         nights_taken  => $taken,
         cabin_room    => $P{cabin_room},
         share_first   => normalize($P{share_first}),
@@ -3219,8 +3219,8 @@ sub lodge : Local {
                   :$max == 20? 8
                   :            $max;
     my $cabin  = $reg->cabin_room() eq 'cabin';
-    my @kids   = ($reg->kids)? (cur => { '>', 0 })
-                 :             ();
+    my @kids   = ($reg->kids() =~ m{\d})? (cur => { '>', 0 })
+                 :                        ();
 
     my @h_opts = ();
     my $n = 0;
