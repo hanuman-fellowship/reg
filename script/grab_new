@@ -35,6 +35,9 @@ to be contacted about massage send Kaya Kalpa a letter
 with their contact information and which program and when
 they'll be here.
 
+7) Get people that recently registered on the temple
+reservation site and import them directly into the People table.
+
 =cut
 use lib 'lib';
 use DBI;
@@ -92,6 +95,37 @@ while (my ($the_key, $value) = $sth->fetchrow_array()) {
 }
 $string{mmc_email} = $string{reception_email};      # sorry - see below
 
+my $sth_search_people = $dbh->prepare("
+    select id, tel_cell, email
+      from people
+     where first = ? and last = ?
+");
+my $sth_insert_people = $dbh->prepare("
+    insert into people (
+        first, last, email,
+        tel_cell, addr1, addr2,
+        city, st_prov, zip_post
+    )
+    values (
+        ?, ?, ?,
+        ?, ?, ?,
+        ?, ?, ?
+    )
+");
+my $sth_update_people = $dbh->prepare("
+    update people set
+        first = ?,
+        last  = ?,
+        email = ?,
+        tel_cell  = ?,
+        addr1 = ?,
+        addr2 = ?,
+        city  = ?,
+        st_prov = ?,
+        zip_post   = ?
+    where id = ?
+");
+
 #
 # now we can connect
 #
@@ -127,7 +161,7 @@ sub email_letter {
     $mail_sender->Open({
         to       => $args{to},
         from     => $args{from},
-        bcc      => 'jon@logicalpoetry.com',
+        #bcc      => 'jon@logicalpoetry.com',
         subject  => $args{subject},
         ctype    => "text/html",
         encoding => "7bit",
@@ -616,17 +650,97 @@ sub temple {
         or my_die("cannot cwd to $string{ftp_hfs_dir} " . $ftp->message);
     $ftp->ascii();
     TEMPLE_USER:
-    for my $f ($ftp->ls()) {
-        if ($f eq '.' || $f eq '..') {
+    for my $file ($ftp->ls()) {
+        if ($file eq '.' || $file eq '..') {
             next TEMPLE_USER;
         }
-        if (! $ftp->get($f, "$temple/$f")) {
-            my_warn("no get of online temple user $f");
+        if (! $ftp->get($file, "$temple/$file")) {
+            my_warn("no get of online temple user $file");
             next TEMPLE_USER;
         }
-        $Msg .= "temple: $f\n";
-        $ftp->delete($f);
+        # what to do with this record in $template/$file?
+        # search the people table for existing records by last/first.
+        # if none (the normal case) insert a new record
+        # if one update it.
+        # if more than one try to match cell phone and email address
+        # else leave it be.
+        #
+        # example:  join the two into one line:
+        #
+        # Sridhar|Dasika|suridasika@gmail.com|4082205399|
+        # 1529 timbercreek dr||San jose|CA|95131
+        #
+        my $action = "";
+        open my $in, '<', "$temple/$file";
+        my $line = <$in>;
+        close $in;
+        my ($first, $last, $email, $cell, $addr1, $addr2,
+            $city, $state, $zip) = split m{\|}, $line;
+        if ($cell =~ m{\A (\d\d\d) (\d\d\d) (\d\d\d\d) \z}msx) {
+            $cell = "$1-$2-$3";
+        }
+        $sth_search_people->execute($first, $last);
+        my @found = ();
+        while (my ($id, $cell, $email) = $sth_search_people->fetchrow_array()) {
+            push @found, {
+                id    => $id, 
+                cell  => $cell, 
+                email => $email,
+            };
+        }
+        if (!@found || @found == 0) {
+            # new
+            $sth_insert_people->execute(
+                $first, $last, $email,
+                $cell, $addr1, $addr2,
+                $city, $state, $zip,
+            );
+            $action = "new";
+            rename "$temple/$file", "$temple\_done/$file";
+        }
+        elsif (@found == 1) {
+            # one to update
+            $sth_update_people->execute(
+                $first, $last, $email,
+                $cell, $addr1, $addr2,
+                $city, $state, $zip,
+                $found[0]{id},
+            );
+            $action = "updated";
+            rename "$temple/$file", "$temple\_done/$file";
+        }
+        else {
+            # more than one duplicate first/last - which to update?
+            FOUND:
+            for my $f (@found) {
+                if (_digits($f->{cell}) eq _digits($cell) 
+                    ||
+                    $f->{email} eq $email
+                ) {
+                    $sth_update_people->execute(
+                        $first, $last, $email,
+                        $cell, $addr1, $addr2,
+                        $city, $state, $zip,
+                        $f->{id},
+                    );
+                    $action = "updated one of " . scalar(@found);
+                    rename "$temple/$file", "$temple\_done/$file";
+                    last FOUND;
+                }
+            }
+            # if no action was taken the record will remain
+            # in the $temple directory to be dealt with by reception.
+        }
+        $Msg .= "temple: $file $action\n";
+        $ftp->delete($file);
     }
+}
+
+# return only the digits
+sub _digits {
+    my ($s) = @_;
+    $s =~ s{\D}{}g;
+    $s;
 }
 
 sub finalities {
