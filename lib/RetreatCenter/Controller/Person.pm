@@ -24,6 +24,9 @@ use Date::Simple qw/
     date
     today
 /;
+use Time::Simple qw/
+    get_time    
+/;
 use Global qw/
     %string
 /;
@@ -1276,10 +1279,11 @@ sub online : Local {
         }
         close $in;
         my $mtime = (stat($f))[9];
-        my ($y, $m, $d) = (localtime($mtime))[5, 4, 3];
-        $y += 1900;
-        ++$m;
-        $href->{date} = date($y, $m, $d);
+        my ($min, $hour, $day, $mon, $year) = (localtime($mtime))[1 .. 5];
+        $year += 1900;
+        ++$mon;
+        $href->{date} = date($year, $mon, $day);
+        $href->{time} = get_time(sprintf("%02d%02d", $hour, $min));
         push @requests, $href;
     }
     for my $f (<root/static/temple/*>) {
@@ -1295,10 +1299,11 @@ sub online : Local {
         }
         close $in;
         my $mtime = (stat($f))[9];
-        my ($y, $m, $d) = (localtime($mtime))[5, 4, 3];
-        $y += 1900;
-        ++$m;
-        $href->{date} = date($y, $m, $d);
+        my ($min, $hour, $day, $mon, $year) = (localtime($mtime))[1 .. 5];
+        $year += 1900;
+        ++$mon;
+        $href->{date} = date($year, $mon, $day);
+        $href->{time} = get_time(sprintf("%02d%02d", $hour, $min));
         push @requests, $href;
     }
     stash($c,
@@ -1306,6 +1311,13 @@ sub online : Local {
         template => 'person/online.tt2',
     );
 }
+
+sub grab_new : Local {
+    my ($self, $c) = @_;
+    system("grab wait");
+    $c->response->redirect($c->uri_for("/person/online"));
+}
+
 
 sub online_add : Local {
     my ($self, $c, $type, $num) = @_;
