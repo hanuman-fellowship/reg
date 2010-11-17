@@ -693,9 +693,14 @@ sub delete : Local {
     my @houses = model($c, 'RentalBooking')->search({
         rental_id => $rental_id,
     });
-    if (@clusters || @houses) {
+    my @bookings = model($c, 'Booking')->search({
+        rental_id => $rental_id,
+    });
+
+    if (@clusters || @houses || @bookings) {
         error($c,
-              'You must first remove any assigned clusters and houses.',
+              'You must first remove any assigned clusters,'
+                  . ' houses, or meeting places.',
               'gen_error.tt2');
         return;
     }
@@ -708,11 +713,6 @@ sub delete : Local {
             rental_id => 0,
         });
     }
-
-    # multiple bookings - for meeting places
-    model($c, 'Booking')->search({
-        rental_id => $rental_id,
-    })->delete();
 
     # the summary
     $r->summary->delete();

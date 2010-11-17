@@ -1064,6 +1064,16 @@ sub delete : Local {
         );
         return;
     }
+    if (my (@bookings) = model($c, 'Booking')->search({
+                             program_id => $id,
+                         })
+    ) {
+        error($c,
+            'You must first delete any meeting places for this program.',
+            'gen_error.tt2',
+        );
+        return;
+    }
 
     # affiliation/programs
     model($c, 'AffilProgram')->search({
@@ -1077,11 +1087,6 @@ sub delete : Local {
 
     # exceptions
     $p->exceptions()->delete();
-
-    # any bookings - and blocks???-? normal and auto for sleeping???
-    model($c, 'Booking')->search({
-        program_id => $id,
-    })->delete();
 
     # the summary
     $p->summary->delete();
