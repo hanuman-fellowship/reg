@@ -43,7 +43,10 @@ use lib 'lib';
 use DBI;
 use Net::FTP;
 use Template;
-use Date::Simple qw/date/;
+use Date::Simple qw{
+    date
+    today
+};
 use FindBin;
 chdir "$FindBin::Bin/..";
 
@@ -688,6 +691,8 @@ sub temple {
                 email => $email,
             };
         }
+        my $year_mon_dir = today()->strftime("%Y-%m");
+        mkdir "$temple\_done/$year_mon_dir" unless -d $year_mon_dir; 
         if (!@found || @found == 0) {
             # new
             $sth_insert_people->execute(
@@ -696,10 +701,18 @@ sub temple {
                 $city, $state, $zip,
             );
             $action = "new";
-            rename "$temple/$file", "$temple\_done/$file";
+            rename "$temple/$file", "$temple\_done/$year_mon_dir/$file";
         }
-        elsif (@found == 1) {
-            # one to update
+        elsif (@found == 1
+               && (_digits($found[0]{cell}) eq _digits($cell)
+                   ||
+                    $found[0]{email} eq $email
+                  )
+
+        ) {
+            # one to update - it matches cell or email so it's
+            # not another person with the same first/last name.
+            #
             $sth_update_people->execute(
                 $first, $last, $email,
                 $cell, $addr1, $addr2,
@@ -707,7 +720,7 @@ sub temple {
                 $found[0]{id},
             );
             $action = "updated";
-            rename "$temple/$file", "$temple\_done/$file";
+            rename "$temple/$file", "$temple\_done/$year_mon_dir/$file";
         }
         else {
             # more than one duplicate first/last - which to update?
@@ -724,7 +737,7 @@ sub temple {
                         $f->{id},
                     );
                     $action = "updated one of " . scalar(@found);
-                    rename "$temple/$file", "$temple\_done/$file";
+                    rename "$temple/$file", "$temple\_done/$year_mon_dir/$file";
                     last FOUND;
                 }
             }
