@@ -1,0 +1,39 @@
+1.  We should first merge the MMI list, then the Campaigner list
+
+2.  If the contact does not exist in Reg, create a new Person
+    with the contact information available in the Excel list.
+
+3.  Affiliations
+
+    1.  MMI List: For newly created Persons in Reg, make sure
+        they are affiliated with "MMI-Ayurveda"
+
+    2.  Campaigner List: Merge affiliations using the "Receive_info_about"
+        column as follows:
+
+        1.  If the value is “all schools” or there is no value, affiliate
+            the Person in Reg with all the MMI affiliations (Ayurveda,
+            Community studies, consultations, massage, yoga)
+        2.   “ayurveda” maps to "MMI-Ayurveda" and "MMI-Consultations".
+        3.   "community studies" maps to "MMI - Community Studies"
+        4.   "massage" maps to "MMI – Massage"
+        5.  "yoga" maps to "MMI – Yoga"
+
+4.  Mailing preferences
+
+    1.  MMI List: For each contact in the MMI list, the corresponding
+        Person in Reg should be subscribed to the MMI email and snail
+        mail list.
+
+    2.  Campaigner List: Merge email preferences using the "Status" column
+        as follows:
+
+        1.  If a person is listed as "unsubscribe" or "hardbounced",
+            make sure the corresponding Person in Reg is unsubscribed
+            from the MMI email list.
+
+        2.  If a person is listed as "softbounced" or "available",
+             make sure they are subscribed to the MMI email list.
+
+
+

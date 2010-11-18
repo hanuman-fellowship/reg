@@ -1,0 +1,2166 @@
+E-mail	First_Name	Last Name	Street Address	City	State	Zip	Country	Phone
+	Resident		633 Washington St  Po Box 250	Red Bluff	CA	96080-0250	USA	
+	Resident		263 Ridge St	Newark	NJ	07102	USA	
+	Resident		106 N Main St	Cape May Court House	NJ	08210-2191	USA	609-465-4200
+	Jane 	Mayer	698 Bridgeton Pike	Mantua	NJ	08051 1351	USA	
+	Katrina		1198 Ne State Rd # 6	Madison	FL	32340	USA	
+	Kendall		Po Box 1000	Petersburg	VA	23804	USA	
+	Terri		645 Belle Terre Rd Apt 45	Prt Jefferson	NY	11777-1940	USA	
+	Thomas		116 Ne 21St St	Wilton Manors	FL	33305-1044	USA	
+	Angie	Abercrombie	11105 County Road 2300	Lubbock	TX	79423-7102	USA	
+	Maria	Abraham	1410 5Th St # 311	Santa Monica	CA	90401	USA	
+	Sandra Jean	Adams	1272 Breezy Ln Ne	Atlanta	GA	30329-3541	USA	
+	Phillip	Adkins	534 Grizzly Flat Rd	Corralitos	CA	95076-0197	USA	
+	Harry	Ahn	2100 Peabody Rd	Vacaville	CA	95687-6639	USA	
+	Tess	Alan	2326 N Hudson Dr	Florence	AZ	85132-6722	USA	
+	Angel	Alathis	3406 Goodman St	Phila	PA	19140	USA	
+	Angie	Allbee	1493 1/2 Sherman Ave	North Bend	OR	97459-3630	USA	
+	Tony	Allen	Po Box 759	Minersville	PA	17954-0759	USA	
+	Elisa L	Alshuwailey	7711 N 51St Ave Apt 2169	Glendale	AZ	85301-1423	USA	
+	Daniel	Anderson	285 Scout Run Rd	Ford City	PA	16226	USA	
+	Anastasia	Aourik	7419 Pine Cup Dr	Humble	TX	77346-2179	USA	281-812-2995
+	George	Ary	264 Fm 3478 Rd	Huntsville	TX	77320-3322	USA	
+	Sakat	Azi	2218 Aqueduct Ave	Bronx	NY	10453	USA	
+	Jesse	Banda	2101 Fm 369 N	Iowa Park	TX	76367	USA	
+	Stacey	Bangma	7334 W Minch Rd	Mears	MI	49436	USA	
+	K J	Baptiste	65 20 Austin St	New York City	NY	11374	USA	347-617-8179
+	Gregory	Barnett	1250 E Arica Rd	Eloy	AZ	85131 9622	USA	
+	Kathlyn	Bassham	825 Grover St Apt 9	Owosso	MI	48867	USA	
+	May	Batulo	206 Oriole Circle	Novato	CA	94949	USA	
+	A	Bell	1636 Cider Ln	Augusta	GA	30906-3861	USA	
+	Kathie	Bell	330 Island Dr Apt 3	Madison	WI	53705-4509	USA	608-308-9693
+	Nan	Bell	31215 Antonia	Tomball	TX	77375	USA	
+	Lawrence L	Bentley	700 Conley Lake Rd	Deer Lodge	MT	59722	USA	
+	A	Bertrand	845 Alabama	Lawrence	KS	66044	USA	
+	S	Bethune	03Bo1 38 Ccf P.O. Box 340	Collins	NY	14034	USA	
+	Teresa	Bickerstaff	2675 E 30Th	Cleveland	OH	44115	USA	
+	Teresa	Bickerstaff	2675 E 30Th St	Cleveland	OH	44115-3000	USA	
+	Charles	Bixby	Po Box 99	Pontiac	IL	61764-0099	USA	
+	J	Bobble	604 Columbia St # 2	Utica	NY	13502-3406	USA	
+	Tom	Bonesio	30384 Roan Dr	Evergreen	CO	80439	USA	
+	Eleazar A	Botero	805 N Ave F	Post	TX	79356	USA	
+	Roberta	Bowen	Po Box 80057	Akron	OH	44308-0057	USA	330-671-5322
+	Debbie	Boxerbaum	3076 Scioto Trace	Columbus	OH	43221	USA	
+	William Y	Boychuk	Po Box 600	Nashville	NC	27856-0600	USA	
+	Susan	Boyok	Po Box 5866	Reno	NV	89513-5866	USA	
+	Joyce A	Bradshaw	7438 Vatter Dr	Corpus Christi	TX	78413-5207	USA	
+	Maria	Branco	137 Brewer Ave	Hilltop	NJ	08012	USA	856-882-8169
+	Christopher	Brandlon	3600 Guard Rd	Lompoc	CA	93436	USA	
+	Kimberly	Braswell	2305 Ransom Rd.	Gatesville	TX	76528	USA	
+	Bruce A	Briggs	229 Urban Rd	Monticello	WI	53570	USA	
+	Wendy	Briggs	2058 Scout Rd	Eaton Rapids	MI	48827-8374	USA	517-285-7290
+	Patty	Brown	6 Upstone Ln	Derry	NH	03038-4200	USA	
+	Stephanie	Brown	Po Box 153189	Santa Rita	GU	96915-3189	USA	
+	Anthony Tony	Bruno	2237 Mason St # 6	San Francisco	CA	94133	USA	
+	Jason	Bryant	H 1 A  Po Box 4501	Lima	OH	45802	USA	
+	Antonio R	Burks	Po Box 3000	Anthony	TX	88021	USA	
+	Earnest	Burrus	Po Box 999	Rusk	TX	75785-0999	USA	
+	John	Busboom	120 E Rose Ave	Salina	KS	67401-8418	USA	
+	T	Byrd	2008 Pecan Hollow Ct	Keller	TX	76248-5499	USA	817-267-3121
+	Veronica	Campbell	417 S Homan Ave	Chicago	IL	60624	USA	773-722-8655
+	David	Cantu	715134 Wynne	Huntsville	TX	77349-0001	USA	
+	Penney	Caratachea	1528 Orange Ave	Ramona	CA	92065	USA	
+	Jeanette	Carbajal	851 Van Ness #815	Fresno	CA	93721	USA	
+	Diana	Caruso	507 Clark St	Throop	PA	18512-1003	USA	
+	Lindsay	Castleberry	105 E Colorado St	Millsap	TX	76066-2331	USA	
+	Nita	Causey	225 Roundtree Court	Brea	CA	92821	USA	
+	Barbara	Cavarro	11190 Mesquite Ave #B30	Desert Hot Springs	CA	92240	USA	
+	Kati	Challenger	179 Randolph St	Glencoe	IL	60022	USA	
+	Vinod	Chauha	7631 Hickman Rd. 235	Urbandale	IA	50322	USA	
+	Stephen	Chiara	826 4Th St	Eureka	CA	95501-0516	USA	
+	Gogi	Ching	1092 Box D	Johnstown	PA	15905	USA	
+	Leon	Choate	1112 Sierra Dr	Pampa	TX	79065 2630	USA	
+	Heather	Chottel	3 Bear Hill Rd	Limerick	ME	04048-3827	USA	207-793-2129
+	Hazel L	Clark	Po Box 562	Otis	MA	01253	USA	
+	Tirrell	Clemmons	Po Box 8500	Florence	CO	81226-8500	USA	
+	Denise	Clifton	1301 Barclay Ct	Randolph	NJ	07869	USA	
+	Christine D	Cloer	Po Box 1074	Manchester	VT	05254	USA	802-733-2541
+	Linalya	Coelho	118 Hart Rd	Cherry Hill	NJ	08034-1759	USA	
+	Jenni	Cole	110 Se Seneca St	Albion	IN	46701-1456	USA	260-636-7985
+	Angela	Collins	2294 Grange Ave N	Oakdale	MN	55128-4307	USA	
+	Vona	Colyer	5385 Horton Hwy	Greeneville	TN	37745	USA	
+	Alison	Costa	4333 California St	San Francisco	CA	92881-4031	USA	
+	R	Courson	Po Box 700	Wallkill	MA	01701-9007	USA	
+	Richard G	Cox	2095 Leblanc St	Lincoln Park	IN	46384-1533	USA	
+	Samuel	Cox	304 W North St Apt 192	Waukesha	SC	29210	USA	
+	Kimberly S	Coyle	163 Palace Dr	Winston Salem	TX	75852	USA	
+	Eugene	Cropper	1634 St Marrs Ave	Brooklyn	TX	76596-0001	USA	
+	Jose	Cruz Sanchez	1900 Simler Ave # Sr3	Big Spring	NY	11233	USA	718-485-3564
+	Laura	Cummings	2305 Ransom Rd	Gatesville	NY	11233-4820	USA	718-485-3564
+	Angela	Currie	45 Chelton Woods Ln Apt 302	Halifax	PR	00754	USA	
+	Mireya	Curry	189 Calle Jose Padin Apt 1	San Juan	TX	76528-2962	USA	
+	Amy L	D. Behel	1957 Krumroy Rd	Akron	NS	B3M 3Z7	CANADA	
+	Deborah A	Dage	84A Elmwood Ter	Elmwood Park	IL	62274-0999	USA	
+	Keith	Danham	Us Hwy 49 N	Tutwiler	NJ	07407-1756	USA	201-797-1955
+	Kelley Marie	Daniel	12774 Deer Mountain Blvd Apt 1603	Kamas	IA	52001-3555	USA	
+	Rehana	Daud	205 Nw 16Th Ave	Gainsbille	MS	38963	USA	
+	George	Davidson	Po Box 509001	San Diego	CA	92706-0355	USA	714-248-3229
+	Chrity	Davis	6004 Lewis Rd	Petersburg	TX	76661-4685	USA	
+	Dominique M	Davis	4569 Macarthur Blvd Nw Apt 202	Washington	PA	16354	USA	
+	Elvira	Davis	2245 Hoen Ave	Santa Rosa	FL	32220-1896	USA	
+	Annie	Del	920 Brooktree Ln	Vista	MA	02324	USA	
+	Tanya	Demas	897 Triggs Rd	Hattiesburg	TX	77351	USA	
+	Paul	Dermann	394 County Highway 102	Gloversville	IN	47834-7033	USA	
+	Deborah	Destefano	4025 E. Chandler	Phoenix	TX	76596	USA	
+	Lamont	Destefano	238-32 116Th Street	Elmont	GA	31598	USA	
+	Barbar A	Diamond	1503 Old Cowan Rd	Winchester	UT	84721	USA	
+	Tammy	Dills	952 Atlanta Hwy	Rockmart	FL	33493-7171	USA	
+	Mary	Dodge	2827 Hord Rd	York	GA	30324	USA	
+	Elisa	Dolan	"Orange Blossom Yoga, 15 The Hamlet"	Pelham	CA	93212	USA	
+	The Hall	Douglas	140 Beach 119Th St	Rockaway Park	SC	29745-6508	USA	
+	Bryan	Draves	127 Gualbert Ave	Buffalo	FL	34217-1108	USA	
+	Kathy	Duby	266 Miller Ave # 1	Mill Valley	MA	02071-0100	USA	
+	Ranchel	Duby	3019 Bryant Ave S Apt 204	Minneapolis	MA	02071	USA	
+	Kathleen	Duff	4979 Elizabeth Ave	Sarasota	TN	37091	USA	
+	R	Dunlap	529 Alameda Ave #18	Salinas	NY	14211-2722	USA	
+	Stephanie	Durity	Po Box 1553	West Covina	CT	06880-1429	USA	
+	Syata	Easten	4368 Snowcloud Ct.	Concord	TX	76464	USA	
+	Heather	Eiden	6521 N Sunny Point Rd	Milwaukee	NY	11003	USA	
+	Jonathan	Elliott	Po Box 618	Auburn	PA	15601-9103	USA	
+	Sherri	Elliott	291 Timber Laurel Ln	Lawrenceville	OH	44683-2350	USA	740-922-9606
+	Renie	Elsen	1278 Bennett Rd	Paradise	WV	25813	USA	
+	Julie	Elson	Po Box 8255	Canmore	WV	25813	USA	
+	Hersehl	Emerison	11610 Garnet Way	Auburn	OH	44060-7767	USA	216-420-6740
+	Atelier	Eno	8701 Chippenham Rd	Richmond	TX	78102	USA	
+	Geraldine	Estrada	3754 64Th St Apt 12A	Woodside	CA	91773-2008	USA	
+	Jennifer	Estrada	3802 Nasa Pkwy Apt 99	Seabrook	WA	98002-4327	USA	
+	Linda J	Evans	22754 Grouse Ave	Saint Olaf	NY	13024-0001	USA	
+	Clydine	Eve	5450 W Higgins Ave	Chicago	CA	95969-6420	USA	
+	Jacqueline	Fabey	2512 Elite Ter	Colorado Spgs	AL	72143	USA	
+	Ms Joanne	Falls	51 Mill St	Putnam Valley	OH	44203-9296	USA	
+	Stephanie	Felo			CO	80920-3856	USA	
+	Kirsten	Felts	2201 Mason Ct.	Clarksville	NH	03801-4871	USA	
+	Ashley	Ferguson	429 Maple St	Brookings	IA	52632-2816	USA	
+	Calvin	Fernandes			FL	33406	USA	561-386-3326
+	Berta	Fernandez	90 Laurel Hill Teri. #5I	New York	OH	44115	USA	
+	Alice	Forrest	7095 E Dominick St Trl 47	Rome	FL	33493-7171	USA	
+	Yvonne	Forrest	454 Sarrell St	Newaygo	TN	37341	USA	
+	Ricardo P	Fox	76 S Orange Ave Ste 100	South Orange	NJ	08060	USA	
+	Willie	Fracier	Po Box 1569	Lillington	NM	87501-1486	USA	
+	Danielle	Frodyma			AR	72046	USA	
+	Kat	G			NY	13440-6373	USA	
+	Guy	Gabriel	2921 N. Brighton St.	Burbank	NY	13440	USA	
+	Petey A	Galvan Sr	"Kvsp B 1 225 Low Po Box 5102"	Delano	NC	27546-1569	USA	
+	Catherine	Gammicchia	14 Buck Dr	Rose City	CA	93619-8683	USA	
+	Pam	Gangs - Lewis	856 James Pl	Uniondale	MS	39194-5000	USA	
+	Lara	Garrison	10340 Lakeway Dr	Bryan	CA	95818-3545	USA	
+	Delia	Gelinas	111 Glenn Pl	Aiken	HI	96740	USA	808-854-0783
+	Joseph 	Gepp	911 Chambers Dr. Nw	Conyers	CA	93216-5102	USA	
+	A M	Gianaras	39 Westons Mill Rd	E Brunswick	MN	56601	USA	218-209-3298
+	Sara	Gianola	6200 Franklin Ave Apt 301	Hollywood	TX	75146-6327	USA	972-441-6160
+	Amanda	Gibson	Po Box 141	Woodbourned	AL	35130-4253	USA	
+	Maria	Gil	Salas 207	Buenos Aires	UT	84634-0984	USA	
+	Ruthann	Glasgow	1407 W Hively Ave	Elkhart	CO	81226-8500	USA	
+	Anastacio	Gonzales Jr	Po Box 8501	Coalinga	NJ	08816	USA	732-247-1670
+	Monette	Gotwisner	20648 Woodside Way	Castro Valley	GA	31779-0648	USA	
+	Linda	Grace			NJ	08034-1740	USA	
+	Keith	Gramuglia	6200 Oregon Ct	Plano	HI	94746	USA	
+	Michelle	Gray	2516 Central Ave.	Alameda	OH	44030	USA	
+	Myra	Gray	830 Sw County Road 	Centerview	CA	93210	USA	
+	Mr Terry	Green	1366 New York Ave Apt 5E	Brooklyn	MA	02056-0043	USA	
+	Kari	Gregg	631 Cole St. Apt 4	San Francisco	NJ	07666-3418	USA	
+	William	Griffie	113 Pine St	Altamonte Springs	CA	94546	USA	
+	Bonita	Guesman	2335 Palm Beach Ave	Pittsburgh	NY	11590	USA	516-343-2980
+	G	Gullpy	6530 Independence Ave Apt 230	Canoga Park	MD	20743-5152	USA	202-704-4460
+	Yana O	Guseva	36 Scarborough Rd	Hilton Head Island	GA	30753	USA	
+	Jorge A	Habib	Po Box 630	Winton	TX	75570-5669	USA	
+	Nancy	Hale Jr	3362 Evans Mill Rd	Lithonia	OR	97076	USA	
+	Angela	Hall	Po Box 8064	Spokane	OR	97914-8335	USA	
+	Taylor 	Hall	70 Indian Broon	Garrison	AL	36117	USA	334-215-1730
+	Jeremiah Vincent	Halse	Estelle Unit 264 Fm 3478	Huntsville	FL	32233	USA	
+		Hamavati		Napa	SC	29512	USA	
+	Heidi	Hampe			MA	01876-3041	USA	
+	Kate	Handel	530 Eva St	Ventura	WI	53204-3642	USA	414-645-6113
+	Al	Hanko	1111 North Rd  Po Box 800	Mauston	NY	14228-2035	USA	
+	Dr Mark D	Harbour	9170 Willis Rd	Willis	NC	27606-2148	USA	
+	Rachel	Hardstaff	118 Gertrude Road	Norwich	NY	12110	USA	
+	C	Harper	108 Fairway Dr	Toms River	TX	76596-0001	USA	
+	Jacqueline	Harrington	7554 N Burlington Ave	Portland	NC	27986	USA	
+	Kelley	Harvey	1416 E Pike St	Wichita	NC	27509-1000	USA	
+	Steven B	Hassen	1762 Crown Point Rd Unit 581	West Deptford	TX	77320 3322	USA	
+	John	Hawke	27009 S Mooney Blvd	Visalia	WI	53948-0800	USA	
+	Catherine	Hawthorne	3055 Strong Dr.	Gallup	WI	53948-0800	USA	
+	Avril	Heath	1675 Cumberland Pkwy Se	Smyrna	OR	97355-3919	USA	
+	Ruby	Heinrich	4616 W 129Th St	Hawthorne	NJ	08034	USA	
+	Andrea	Henry	3687 11Th Ave	Wisconsin Dells	OR	97401-3652	USA	
+	Bennie	Henry	Rr 1 Box 239	Colliers	OR	97203-3747	USA	
+	Joan	Henry	59 Washington St # 215	Santa Clara	CT	06776-5222	USA	860-354-9815
+	Julie	Herron	1223 Wilshire Blvd Apt 592	Santa Monica	NJ	08034-1240	USA	
+	Hettie	Herzog	1057 Saint Matthews Rd	Chester Springs	GA	30022	USA	
+	Denise	Hickie	Box 643	Morris	SC	29697	USA	
+	Jody	Hoffses	73 Ridge Rd	Tenants Harbor	OH	44203	USA	
+	Jessie	Holland	3970 Piedmont Ave #4	Oakland	PA	19425-3101	USA	
+	Kathleen	Holmes	1725 E Hardwick St	Long Beach	MD	21202-4236	USA	
+	Portia	Holmes	515 S Hill Ave	Tyler	NC	27509	USA	
+	Elaine	Hoppock	515 S Hill Ave	Tyler	LA	71109	USA	318-564-3319
+	Ms Valerie	Horfon	19500 Pinehurst St	Detroit	IL	60628-1683	USA	
+	Zenoba	Houston	6448 York Meadows Apt C	Houston	CA	94123 1022	USA	415-298-5252
+	C	Howe	Po Box 41	Niland	AK	99654	USA	907-376-7224
+	Orenda M	Howe	655 N 3Rd St Apt 7	Laramie	AK	99654	USA	907-376-7224
+	Gertrude B	Huckaby	1272 Breezy Ln Ne	Atlanta	ME	04860-5832	USA	
+	John	Huey	824 Bryden Dr	Lewiston	WI	54230	USA	920-775-9702
+	Henry	Iglesias	2331 Roosevelt Ave	Redwood City	FL	33411	USA	
+	Jo Anne B	Indonesia	188 Dick Smith Rd	Kittrell	FL	34116	USA	234-455-8378
+	J L	Ivey	Po Box 437	Wakefield	ME	04048-3827	USA	207-293-2129
+	Sandra	Jackson	15 Second Level Dr Apt 74	Brattleboro	CA	92257	USA	
+	Pat	Janazo	120 Manor Ave	Elkhart	ID	83501	USA	
+	Deborah B	Janeway	Po Box 1406	Blowing Rock	OR	97838-9622	USA	
+	Joyce	Jang	6360 Wagon Loop	Placerville	CO	80937	USA	
+	Annie	Jansuy	120 Riverside Blvd Apt 12D	New York	CO	80937	USA	
+	Scott	Jenkins			NY	13078-9591	USA	
+	Ann	Johnson	4880 Ne 70Th Ave	Altoona	CA	95560	USA	
+	Shelly	Johnson Rn	3001 E 28Th St	Vancouver	PA	17837	USA	
+	Cherie	Johnston	Po Box 6804	Beaverton	NC	28462 2704	USA	
+	Kk	Jones	"3441 S. Leisure World Blvd 2A, #84"	Silver Spring	IL	60045	USA	
+	Brett	Kaman	Po Box 1205	Sandusky	CA	96160-0012	USA	
+	Sheri	Kao	722 W College Drive Apt 109	Brainerd	IA	50009	USA	
+	Joseph W	Karaffa	A D T  C 2 W 8 Production Way	Avenel	SC	29210-4012	USA	
+	Benoit	Kash	1537 Notre-Dame	Lachine	GA	31029-5849	USA	
+	Lars	Keel	2309B Ventura Dr	Austin	NY	10026-2109	USA	
+	Madelyn	Kelly	311 S Valley Forge Rd	Devon	OR	97007-0804	USA	
+	Rev Sir	Keniston	2921 Tres Logos Ln	Dallas	AR	72183	USA	
+	Therese	Kerr	6660 18Th Sideroad	Schomber	NC	27455 9252	USA	
+	R	Khalsa	4904 Bellevue St	Soquel	NY	13024-0001	USA	
+	Rama	Khalsa	4904 Bellevue St	Soquel	MD	20794	USA	
+	Melissa	Kilburg	1474 Joslyn Rd	Muskegon	UT	84401-1812	USA	801-671-0074
+	Ngan	Kim Chanez	2945 76Th Ave	Oakland	PA	16403-1238	USA	
+	Trisha	Kirkland	1916 N Hwy 36 Bypass	Gatesville	PA	15601	USA	
+	Mr Wizard	Kizemen	1659 Racepath St	Myrtle Beach	CA	93950	USA	831-657-9210
+	B	Knox	303 E Dilido Dr	Miami Beach	NJ	07001	USA	
+	Mike	Kolasa	8495 M 95	Republic	IL	60022-2102	USA	
+	Melody	Komurka	48 Jefferson Street	Nutley	NY	11235-8387	USA	
+	Liza	Kuboua	Po Box 63603	Phoenix	NY	13316-4020	USA	
+	Sarah	Kucera	Sage Integrative Therapies;1717 Wyandotte St	Kansas City	MD	21213-1202	USA	
+	Randall	Kusowski	4300 Nw 23Rd Ave # 470	Gainesville	FL	32724-2889	USA	
+	Russell	Laffey	408 Se Noble St Apt 233	Greenfield	CA	94605-2942	USA	
+	Cynthia	Lambert	1320 S Monroe St	Tacoma	TX	76596	USA	
+	Tiffani	Lambro			OR	97030-4002	USA	503-674-7815
+	Thomas William	Lampkin Iii	17320 New Kent Hwy	Barhamsville	WV	26003-5679	USA	304-281-9064
+	Lisa	Lang	Po Box 2	Springwater	WI	54985-0129	USA	920-426-4310
+	Glenda	Lara	1015 E Valley St	Red Oak	MI	49879	USA	
+	Susan	Latimore	"12 Chase Hall, Foxwood"	Newark	TX	76599-0001	USA	
+	Helen	Lautner-Muff	603 N 6Th St	Allentown	MI	48312	USA	
+	Darlene	Lawrence	6788 W. 580N	Otwell	MI	49707	USA	989-356-4849
+	Tonisha	Lawrence	419 Blossom St	Batesburg	CA	93720	USA	
+	Barbara	Leatherman	45 N Central Ave Apt 120	Chicago	OH	44203	USA	
+	Mrs Eva	Legare	619 Redstone Cir	Brunswick	MA	01077-9585	USA	
+	Pamela Cooley	Leonard	1401 State School Rd	Gatesville	NY	13144	USA	
+	Jo	Link	31513 Rocking Heart Ln	Auberry	VA	23011	USA	
+	Frank	Lobsiger			FL	33417	USA	561-640-1004
+	Mary 	Long	3921 Pleasant Run Rd #107	Irving	MN	55792-0733	USA	
+	Marie	Lopez	16 Sand Land Dr	Attica	CT	06071	USA	
+	Gwen	Lovelace	10351 Linn Station Rd	Louisville	NJ	07001	USA	
+	Marta	Lugarov	Ilocka 3	"Zagreb, Croatia"	AR	72183	USA	
+	Michaela M	Lukin	72 W Hope St	Saint George	OH	43222	USA	
+	Christine	Lundergreen	1640 Glacier Pkwy	Algonquin	TX	76599-0001	USA	
+	Dr. Ujwala Latin	Luthia	12 Sachem Circle #7	West Lebanon	KS	66226	USA	
+	Sandra	Macik	325 W. Capital Ave	Bellevue	TX	78542-9914	USA	
+	Michele A	Macnish	Po Box 186	Staatsburg	MO	64024-2260	USA	816-673-6574
+	Kathleen 	Maculley	118 River Bend Dr.	Dagsboro	ME	04983 4011	USA	
+	Kathleen	Magoto	7443 State Route 47	Versailles	ND	58208	USA	
+	Ms Doris E	Maier	6430 S Stony Island Ave Apt 1101	Chicago	NC	27986-0630	USA	
+	Nancy A	Maio	24 Jacklin Ct	Clifton	OR	97520-6701	USA	
+	Mary	Majors	519 Yukon Blvd	San Antonio	VA	24549-4924	USA	
+	Phill	Mallory	711 Stoney Point Rd	Kings Mountain	CO	81401-4441	USA	
+	Jennifer	Manville	4 Continental Dr	Middletown	CA	96093-2310	USA	
+	Greg	Marsolais	255 Crossroads Blvd #197	Carmel	FL	33967-2702	USA	
+	Leiko	Marvulli	5221 Bayshore Blvd Apt 23	Tampa	CA	93101-6907	USA	805-965-3599
+	Dr Rodney	Mayes	1400 N Albany Ave	Atlantic City	CA	95696-4000	USA	
+	Marlena	Mcclain	145 Baldwin St.	Santa Cruz	KS	66027-2304	USA	
+	Ilona	Mccurdy	23240 88Th Ave S Apt Aa203	Kent	ON	L0S 1B0	CANADA	289-321-2579
+	M	Mcgarrigle	415 Bryant St. #2	San Francisco	OH	45380-9438	USA	937-526-3798
+	Nancy	Mckenzie	249 N Euclid Ave Apt 309	Pasadena	NJ	07012 1018	USA	
+	F	Melcer	24 Bradshaw Rd	Lakewood	PA	18370	USA	
+	Marsha	Merillat	6624 Cypress Point Way Ne	Albuquerque	NJ	08724	USA	732-609-0225
+	Ayesha	Meriweather	315 Lindsay St Apt One	Chattanooga	NJ	08724	USA	732-609-0225
+	Tammy	Meyer	8828 Bergeson Dr	Indianapolis	PA	15226-2106	USA	412-224-9624
+	Ms Susan Ginn	Miers	814 1/2 Front St	Vanceburg	CT	06811	USA	
+	Jessica	Miller	4509 Pine Ridge Dr Apt 3	Stevens Point	PA	19403	USA	
+	Jimmy C	Miller	7901 Farrow Rd	Columbia	AZ	85009-6212	USA	430-361-4334
+	Leah	Miller	2265 Hubbard Rd	Macon	CA	92236-8503	USA	
+	Allen	Milner	Po Box 14	Boise	TX	76089	USA	
+	Anthony	Misner	Po Box 553	Andover	CO	80241-4316	USA	
+	Donna	Mitchell	Po Box 26582	Indian	WI	54985-0220	USA	
+	Nicole	Montanarelli	482 Hollow Rd	New Park	GA	30116-6427	USA	770-459-1424
+	Jody	Morrow	Po Box 240	Tucker	KS	67439-0107	USA	
+	Chasity	Mosser	77 Willow St	Wilkes Barre	PA	17066-8611	USA	
+	Monica	Motyka	1235 Pheasant Ridge Drive	Lake Zurich	CA	95062	USA	
+	Manny	Mrtinez	959 Cr 769	Devine	MI	48234-3320	USA	
+	Kori	Muhammad	Po Box 23811	Tucson	PA	18702	USA	
+	Bob	Mustafin	1737 W Evans Dr	Phoenix	SC	29203-3220	USA	
+	Patience	Mustafin	Po Box 751671	Las Vegas	WI	54985-0220	USA	
+	Camella	Nair			ID	83707-0014	USA	
+	Doane	Narron	1980 Crocker Ave	Flint	VA	23804	USA	
+	Lecy	Nechanicky	10820 Buttercup Pl Apt 101	Manassas	TX	77498	USA	
+	Dennis	Nelson	Po Box 4000	Stormville	AZ	85395	USA	
+	Bill	Neri	1006 Post Rd	Warwick	PA	17352-9331	USA	717-683-6284
+	M Renae	Newman	2012 Sadler St	Houston	IL	62621	USA	
+	Michael	Newman	80 Lafayette Circle	Lafayette	MS	39669	USA	
+	Bernice	Newson-Short	1606 E Hyde Park Blvd Apt 6D	Chicago	FL	32724	USA	
+	Victoria	Nguyen	2413 W Hickory St Apt 722	Denton	NY	11803	USA	
+	Bill	Nichols	Po Box 707	Martinez	CA	93033-6225	USA	805-240-9737
+	Christy Lynn	Nichols	166 Floraville Ln	Brunswick	CA	93033	USA	
+	Angela	Nielsen	130 Peacock Ct	Seymour	TN	37160-5402	USA	
+	Jennifer	Nieves	108 Newman St	Glasgow	GA	31001 0397	USA	
+	Mayra	Nissing	Po Box 541	Los Fresnos	AR	72168-0240	USA	
+	Monger	Nixon	700 Jenkisson Ave	Lake Bluff	MI	48204	USA	
+	Georgia	Noy	Po Box 1551	Thatcher	AZ	85734-3811	USA	
+	Inessa	Obenhuber	2312 Loma Prieta Ln	Menlo Park	AZ	85734-3811	USA	
+	Sybil Victoria	Oleal	4855 Nw Salishan Dr	Portland	VT	05602-2274	USA	
+	Misty B	Oligney	Po Box 1616	Winton	ME	04074	USA	
+	Renay	Oshop			CO	80246 3312	USA	
+	Ellen	Osorio	232 N Martha St	Lombard	CO	80246-7741	USA	
+	Mr David	Ottinger	47 W Polk St Apt 541	Chicago	CO	80246-3312	USA	
+	Ms Cassie	Page	274 Shannon Rd Se	Oldfort	NY	11901	USA	
+	Gary	Pagone	7671 E Tanque Verde Rd Apt 655	Tucson	TX	76877	USA	
+	D	Paige	400 Lee Ter	Talleyville	IL	60099-1600	USA	847-246-3343
+	Thelonious	Paige	Po Box 652	Bridgeport	CA	90007-2470	USA	
+	Regina	Painter	2390 E Vassar Ave	Denver	CA	90280-6440	USA	323-567-8111
+	Juan	Palacios	204 N Nix St	Kingsville	IA	51239-7337	USA	712-441-5894
+	Akil	Palanisamy			NY	12582-4000	USA	
+	Lisa	Pantone	8803 Mountain Valley Dr	Huntsville	RI	02888-3354	USA	
+	Mr William	Parente	583 S Main St	Chambersburg	NJ	07071-2613	USA	
+	Zina	Payman	256 Loucks Ave	Los Altos	TX	78566-0541	USA	
+	Candida	Payne	Po Box 268	New York	AR	72519	USA	
+	Hazel	Perkins	119 Fairview St	New Albany	FL	33166 5733	USA	
+	Christy	Pickett	9355 Chardlitige Rd	Mooringsport	MI	49801	USA	
+	Shermie	Pitt	6956 Oak Ln	Indianapolis	TX	79601-8749	USA	
+	Brenda Lee	Plaskett	311 W Karr Ave	Hoquiam	OR	97914	USA	
+	Shirley	Potasz	1330 Schooner St.	Foster City	DE	19803 1813	USA	302-478-3141
+	Kristina	Powell	1104 N Ave	La Grange	TX	78363-8900	USA	
+	Lindsey	Presnell	24718 Bombay Ave	Wilmington	NY	11566-3927	USA	516-623-6971
+	Julie	Prinze	33 V St	Springfield	TX	79549-8812	USA	
+	Jeanne-Marie	Puccio	199 Versa Pl	Sayville	CA	93210	USA	
+	Mamta 	Puri	2736 Shellgate Circle	Hayward	KS	66050-4114	USA	785-887-6810
+	Elisha 	Quintana	641 Windsor Dr. Se	Leland	MD	20602-2547	USA	240-219-9088
+	Mira	Rainey	451 Fullerton Ave	Cambridge Springs	NY	11563	USA	
+	Alka	Rao	1495 Marlin Ave.	Foster City	CA	90745-3223	USA	714-994-3255
+	Madhavi	Rathod	103 Liquid Sugar Dr.	Emeryville	MS	38652-8959	USA	
+	Mr James	Reddle	604 Columbia St # 2	Utica	WY	82721	USA	
+	Stephanie	Rentschler	119 S 3Rd St	Reading	SD	57709 0533	USA	615-394-9125
+	Jessica	Retskin	342 Washington St Ne	Albuquerque	CA	90247-0350	USA	
+	Mark	Richardson	Po Box 5000	Sheridan	TX	76134-1009	USA	
+	J	Ritchey	Po Box 92	Chowchilla	AR	72601-3117	USA	870-741-6957
+	Robert	Rivera	4064 S Francisco Ave	Chicago	OR	97850	USA	
+	Sarah	Rivera	Po Box 747 	Royston	NY	10528 4426	USA	
+	Lydia M	Robertson	674 Walbridge Ave # B	Toledo	TN	37914-5278	USA	865-525-5984
+	D A	Robirts	3249 W Riverside St	Springfield	NH	03264-3017	USA	
+	Joseph	Rodriguez	1516 Poppy Seed Ln	Austin	NJ	07974	USA	
+	Rachel	Rohe			PA	19403-1816	USA	
+	Cristina	Roman	90 Alton Rd # 1512	Miami Beach	PA	19425-2908	USA	
+	Susan	Rosen	3244 44Th Ave S	Minneapolis	GA	30733	USA	
+	Rhewth	Rosenbaum	2880 W Houston St # 3A	Jasper	IL	62959-7500	USA	
+	Rhuithy	Ross	2880 W Houston St Lot 41	Jasper	PA	16403-1238	USA	
+	Miri	Rowlson	6064 Linden St	Ridgewood	IL	60067	USA	
+	Lindsay	Rue	7000 Park Hts Ave Apt M4	Baltimore	IN	46970-3035	USA	765-473-3589
+	Shirley	Rutt	31 Echo Ave	Hendersonville	ON	L3K 3C3	CANADA	
+	Brittany	S	204 Meadville St	Edinboro	NY	13502-3406	USA	
+	Juanita	Sailas Abbott	11607 N 58Th Dr	Glendale	FL	32303	USA	
+	Rebecca	Salazar	123 Euclid Ave	Glencoe	FL	33868	USA	
+	Phyllis	Sanford	Box 5	Windsor	OR	97378 5001	USA	
+	William	Savigne	P.O.Box 25116	Chicago	TX	76599-0001	USA	
+	Carlene	Scheel	650 Warren St # 2	Brooklyn	NY	10963	USA	
+	Kara	Scheel	10265 Gandy Blvd N Apt 904	Saint Petersburg	CA	93610 0092	USA	
+	James	Schiavi	620 S. 3Rd Street	Porter	TX	78840-3904	USA	830-775-7518
+	Hannah	Schoenthal-Muse			NC	27614-6918	USA	
+	Jessica E	Schwartz	385 Peek Ave	Millville	AZ	85281-8745	USA	
+	Kelly	Schwegler	2510 Se Anchorage Cove Apt E 3	Port St Lucie	AR	72320-0180	USA	
+	Rozanne	Sciancalepore	2108 Ne 3Rd St	Ocala	TX	75159-9000	USA	
+	Gaspar	Sclafani	29 Van Cott Ave	Farmingdale	NY	11226	USA	718-859-5401
+	Ms Kerri	Sears	531 Vaughn Ave Apt C2	Toms River	NY	12582-4000	USA	
+	Jeanie	Sells	3734 Poly Dr	Billings	TX	78741-7523	USA	
+	David	Serraao	Po Box 77	Plattekill	CO	80501-1804	USA	
+	Sunita	Sethi	18655 Ne 63Rd Way	Redmond	PA	19425-1413	USA	
+	James	Shafranek	Po Box 206	Mount Holly Springs	UT	84050-9220	USA	
+	Mona 	Shans	1065 Summer Ave	Aptos	MN	55406-4317	USA	
+	Donna	Sharma	18 Eiler Ln	Irvington	PA	18914	USA	
+	Mr Vincent	Shaver	2826 Cedar St	Las Vegas	TX	77583-8602	USA	
+	Shannon D	Shaw	Po Box 98	Colfax	NY	11385	USA	
+	G Koro	Shazi	607 E Tuscarawas Ave	Barberton	MN	55444	USA	763-424-7901
+	Pamela	Sheidy	126 N Center St	Fredericksburg	PA	19425-1220	USA	
+	Tsong	Shih	Flat 1 52 Park St	Pimlico	NY	13502-3406	USA	
+	Romanda	Silva	960 Pflanz Dr # 3	Corydon	NY	11520-2702	USA	
+	Steven J	Silva	120 Garden St	Cranford	NJ	07001	USA	
+	Clifton	Skibicki	Po Box 222761	Chantilly	NS	B0N 2T0	CANADA	
+	Keith'S	Slaughter	Po Box 420387	San Francisco	NY	12582	USA	
+	Linda	Smith	1365 63Rd St Apt 9	Brooklyn	MN	55379-2213	USA	
+	M	Smith	3628 Camden St Se	Washington	FL	32327-4963	USA	
+	Mr Ryan	Smithers	63 Oak Hill Dr	Oakland	WI	54901-1140	USA	
+	Elisa	Soraya	4111 Walnut St	Kansas City	CA	96113	USA	
+	Linda	Sparrowe			FL	34470-6933	USA	
+	Paolo	Spiva	"Corso Dante, 46"	Torino	CA	95696-2000	USA	
+	Weigel Training	Stables	Po Box 332	Huntley	MA	01742-1069	USA	
+	Cheryl	Stalvey	923 N West St Apt C	Princeton	MT	59102-1139	USA	
+	Lois 	Stanko	479 Neal Trice Lane	Lorena	NY	12568-0077	USA	
+	B.R.	Stohl	1456 State Rd	Rock Creek	CA	95713	USA	530-346-7693
+	John	Stone	708 Barksdale Cir # A	Harriman	CA	95713-0098	USA	
+	Michelle	Strause	135 Section Line Rd 3Rd Fl	Hot Springs	CA	95713-0098	USA	530-246-7693
+	Teresa	Streedsten	615 Se California Ave	Topeka	OH	44203-3420	USA	
+	Heather	Streeter	10226 E 116Th Pl S	Bixby	GA	31211	USA	478-550-8161
+	Jay Lou	Striggles	1205 Kent St	Augusta	GA	31211 7206	USA	478-550-8161
+	Anita	Sullivan	Po Box 207	Bybee	WY	82240-7771	USA	
+	Quality Fitness	Systems	Po Box 1765	Mobile	IL	60617-5054	USA	
+	Nandi	Szabo	325 21St St.	Sacramento	NJ	07016-2506	USA	
+	Choon Boey	Tan			CA	95355-7957	USA	
+	Connie	Taylor	609 Hillborn Ave	Swarthmore	CO	81215-0999	USA	
+	Lacey	Temple	105 Oxford Dr	Greenville	TX	79404-7777	USA	
+	Sandy	Tesman	446 Nickmush Rd	Buskirk	DC	20020-1224	USA	
+	Irene	Theotokas	4304 60Th St	Woodside	AZ	85131	USA	
+	Mr Godfather	Torrone	1711 Cypress St	Waycross	PA	19046	USA	
+	Jason	Tosch	Fcc P.O. Box 9000	Forrest City	NY	11385	USA	
+	Jon	Tusak	Clemente  Po Box 1236	Avalon	KY	40962-4271	USA	
+	Alexandra	Uriarte	2810 Sw 106 Ave	Miami	OH	43616	USA	
+	Ms Joann	Vargas	192 N Wisconsin Ave	Massapequa	GA	30901-3427	USA	706-724-7971
+	Andy	Vasquez	36 Broadview Ave	Uncasville	MO	63382	USA	573-594-3815
+	Khadija	Veitch	2910 Meadowbrook Dr	Augusta	NJ	08759-3656	USA	732-750-8375
+	Ann 	Wagoner	7034 Se Clinton St	Portland	OH	44125-0112	USA	
+	Lisa	Watkins	6894 Wyman Way	Westminster	NY	12028	USA	518-753-7405
+	Samuel H	Watts	19225 Us Highway 27	Clermont	NY	10025-3259	USA	
+	David	Way	374 Stennis Industrial Park Rd	De Kalb	MI	48192-6321	USA	734-720-0138
+	Nadire	Waycaster	1132 Switchgrass Ln	Crowley	IA	50707-4106	USA	319-233-0674
+	Marsha	Weatherly	407 Malahat Pl.	Kamloops	NY	11377-4971	USA	
+	Laura	Webb	60 Juniper Ln	Tewksbury	OR	97914	USA	
+	Donna S	Webster	107 Edgell St	Beckley	NJ	08210-0161	USA	609-827-5468
+	Kirsten	Wedde			TN	37917-6404	USA	865-215-5870
+	Olive	Wendt			AR	72336	USA	
+	Khadija	White	2910 Meadowbrook Dr	Augusta	KY	40769-9726	USA	
+	Rebekah	White	Po Box 25	East Templeton	NJ	08640-0902	USA	
+	Emma	Williams	4720 Bedford Ave	Midland	CA	96122	USA	
+	Jaime	Williams	2933 River Bend Ct	Corpus Christi	CA	92251	USA	
+	Greg	Wirth			AK	99524-4586	USA	
+	Pamela	Wisner	Po Box 1349	Tuba City	WI	53038	USA	
+	P Marcus	Yoga Ranch	10147 Bellefontaine Rd	Saint Louis	GA	31126	USA	
+	Lavanya	Zierman	6 Catherine Ct	South Amboy	AZ	85131-9641	USA	
+	Betty		484 W 43Rd St Apt 23F	New York	TX	75570	USA	
+	Bonnie Jean		784 Austin Ave	Aurora	FL	34715-9025	USA	
+	Briksha				MS	39328-8048	USA	
+	Erika		5610 Ne County Line Rd	Erie	MA	01876	USA	
+	Robin				MT	59901	USA	406-212-2281
+	Emma	Quintana	4720 Bedford Ave	Midland				
+2HOTCOUPLE@AOL.COM	Maria	Lawson	1333 Star Bush Ln	San Jose	WV	26554-3342	USA	
+333caia@gmail.com	Kimberly	Jimenez	1720 Hollis Dr	Orlando	PA	19335	USA	215-439-8644
+579500@sccoast.net	Ruth A	Elliott	11345 Fancher Rd	Westerville	SC	29527-6352	USA	843-397-4494
+69ghia@sbcglobal.net	Candy	Duncan	11120 Nw Gainesville Rd	Ocala	OH	44446-2021	USA	330-652-6911
+abbygey@aol.com	Monika	Gold	1511 Se Malden St.	Portland				
+ABOOTHBY@GMAIL.COM	Andrea	Boothby	69 Main St Apt B	Belfast	ME	04915-6822	USA	207-899-8237
+ABRENLEE123@YAHOO.COM	Ma	Richardson	1110 Springside Ct	Louisville	WA	98550-1613	USA	
+activities@newagehealthspa.com	Debbie	Birch	Po Box254	Greenfield Park	NY	12435	USA	845-985-7600
+adakellar@hotmail.com	Lieselotte	Kotik	3755 Vista Campana N Unit 37	Oceanside	CA	95060	USA	707-849-6308
+ADONICABUDD@YAHOO.COM	Ms Adonica L	Brown	7715 Red Bud Rd Ne	Ranger	GA	30734-9515	USA	
+afisher@westvalley.com	Christopher	Franks	Po Box 5000	Yazoo City				
+agcall728@yahoo.com	Aileen	Call	321 Riollings Hills Ave	San Mafo	CA	94403	USA	
+agusia1988o@buziaczek.pl	Richard	Policastro	Po Box 6331	Kingston		32-410	POL	887318755
+akgretel@yahoo.com	Laura 	Peduto	P.O. Box 685	Capitola	AK	99712-2052	USA	
+aklesha@hotmail.com	Michele	Sisters Organic	380 9Th Avenue Dr Ne Apt 303	Hickory				
+ALADDINSANE@IOWATELECOM.NET	Ally	Lester	23207 W 45Th Terr	Shawnee	IA	50849-1497	USA	641-743-2372
+alemortfinance@aol.com	Debra	Williams	4015 W 65Th St Apt 313	Minneapolis	FL	33165	USA	306-229-1339
+alexandersanchez@comcast.net	Rolando	Silva	2843 E 97Th St	Chicago	MA	02301-6326	USA	508-510-4586
+ALIMARIEBURKE2003@YAHOO.COM	Alison	Budd	713 Sheridan Dr	Santa Rosa	CA	95405-6618	USA	
+alipcollins@live.com	Alicen	Collins	Po Box 951	Madisonville	TX	77864-0951	USA	
+alireno@gmail.com	John	Persaud	5201 Sw 9Th St Apt 75	Des Moines	VA	23666-6158	USA	
+alka_rao@yahoo.com	Amanda	Rudd	2708 Kendridge Ln	Aurora	CA	94404	USA	
+ALLKAT@EARTHLINK.NET	Allan	Adikes	Po Box 1143	Monrovia	CA	91017-1143	USA	
+almaluna13@sbcglobal.net	Leona	Rubin	18 Leimamo St	Hilo				831-332-0060
+altimera77@gmail.com	Prashanth	Shenoy				45322	LTU	7068634477
+ama7775@gmail.com	Amanda	Andeu	20704 N. 90Th Place	Scottsdale	AZ	85255	USA	786-287-2110
+amaera@baylaureldesign.com	Amaera	Baylaurel	P.O. Box 4456	Chico	CA	95927	USA	530-774-6677
+ambrogina@gmail.com	Barbara	Hobart	Hc 34   Po Box 2128	Wasilla	CA	95060		
+amg23@shaw.ca	Maureen	Hanner	330 Riverside Park Dr	Ben Lomond	AB	T6J 7C8	CANADA	780-238-9905
+amy.compton@rocher.com	Mila	Cona	343 Bluefish Ct	Foster City	NJ	08826-2205	USA	908-832-6062
+amy291@gmail.com	Ms Nancy	Taylor	188 Dickinson St	Rochester				
+ana@anacaldas.com	Ana	Caldas	202 Karel Doormanlaan	Hilversum		NT 1215	NETHERLANDS	00 34 628 30 26 42
+ANAIEDLB@YAHOO.COM	Danielle L	Buettner	7510 Garnett St Apt 4	Overland Park	KS	66214-1334	USA	816-200-9987
+ANA-MARIA.GALLO@EARTHLINK.NET	Lauren	Fernandes Rossa	433 7Th St Sw	Chisholm	CA	92126-5131	USA	
+anandalee@live.com	B	Lucia	537 Carlton Rd	Wyckoff	CA	95039	USA	831-741-6172
+anasdelalamo@gmail.com	Patricia	Depasque	4020 N Circle Dr	Hollywood	FL	33308	UNITED STATES	954-489-2236
+andrea.stjohn@hotmail.com	Rev Andrew W	Trivette	1310 Cleveland Ave # 2	Flint	OH	43616-3635	USA	000-000-0000
+ANDREA@THESMARTESTSNACKS.COM	Sandy	Watkins	1640 Marenda Dr	Dixon	TX	75006-5042	USA	
+angelarhall1109@gmail.com	Karen	Hartman	500 Forest Rd	Cherry Hill	WA	99203	USA	
+angelfatboy@yahoo.com	John S	Salisbury	301 Washington St	Garland	NY	13440-6373	USA	315-339-2088
+ann.wagoner@gmail.com	Betty	Yee	17608 Mayall St	Northridge	OR	97206	USA	
+annabrannen@hotmail.com	Anna	Brannen	9040 Paso Robles Way	Elk Grove	CA	95758	USA	
+annamariefresta@yahoo.com	Robert L	Garmon Jr	4812 Sharon Blvd Lot 4	Quinton	CA	91737-4255	USA	
+annebrody@comcast.net	Anne	Brody	1973 Rainier Cir	Petaluma	CA	94954	USA	707-778-6517
+aplumlay@cox.net	Mr.Jay	Richburg	150 Jbrs Solo-Indonesia	Solo	VA	23452	USA	
+artisharrison70@yahoo.com	Miss	Henson	30909 16Th Pl Sw Apt D	Federal Way	NC	28213-6677	USA	704-494-4832
+ash.palanisamy@gmail.com	Robert J	Prata	39 Henry Ave	Harrison				925-449-9262
+aspalb@yahoo.com	Linda M	Hatfield	235 Trounker Hill Dr	Bunker Hill	CA	94558	USA	707-477-7791
+astridsantana@hotmail.com	Betty	Smith	8604 Batavia Way	Knoxville	GA	30316-1845	USA	404-210-4752
+aur8@cox.net	Aurora	Araman	2212 W State Ave	Phoenix	AZ	85021-7763	USA	
+aurademare@hotmail.com	Salu	Devnani	785 N Bayshore Dr	Safty Harbor	CA	94041	USA	
+avallari@clarkson.edu	Katherine	Williams	905 Richardson Vista Rd Apt 265	Anchorage	NY	13676	USA	800-307-6494
+avmul@wellwithin.com	Mr Eric	Oconnor	202 E Poplar St	Mount Airy	MD	21093-4436	USA	917-686-3207
+avoninavalon@gmail.com	Jennifer	Wiest	950 Villa Way	Arcata	CA	90704-1236	USA	562-397-2036
+aya824@aol.com	Sarah	Elaine	25493 Highway 18	Parma	CA	92879-8099	USA	
+ayurkat@gmail.com	Carlton	Susanthan	2750 W 33Rd St Apt 2145	Brooklyn	CA	92260	USA	
+ayurveda@carlalevy.org	Ms J	Lynn	2414 Penbrook Ave	Harrisburg				760-268-0560
+ayurveda@maryalicequinn.com	Brian	Roos	1240 Kimberton Rd	Chester Springs	CA	90046	USA	323-394-1515
+bannjenk@newnorth.net	Vivian	Howard	26 Red Sable Dr	Spring	WI	54428-9581	USA	
+barbarasandarin@gmail.com	Lorraine	Sinclair	121 Sandpoint Ct	Sanford	MN	55110	USA	
+BARLEY.DOG@HOTMAIL.COM	Marjorie	Garcia	1301 Cedar Ln	Bemidji	NS	B0E 1B0	CAN	
+bbachoo@gmail.com	Beverly	Bacatos	18295 Bayview Dr.	Los Gatos	CA	95033	USA	408-355-5390
+bbidne@mwcommercial.com	Carla	Kennedy	120 Jalisco Pl	Davisville	NE	68135-1431	USA	
+bborsukoff@GMAIL.COM	Betty	Blyth	1288 Venetian Way	Naples	FL	34110-1518	USA	
+beachlore3@rocketmail.com	Tyra	Dworkiewicz	211 N Green St Apt 3	Cambridge City	CT	06880	USA	
+bebacqua245@aol.com	John	Bebacqua	1680 Strawberry Rd Apt 2B	Mohegan Lake	NY	10547	USA	914-528-3151
+beckyh@jde-inc.com	Ama	Immitt	Po Box 884	Redway	WV	26003-0610	USA	
+bellateleki@aol.com	Catherine	Warren	42520 Alex Ln	Ponchatoula	CA	94501	USA	510-338-8216
+bethanyfuller@yahoo.com	Jacqueline	Garrett	Po Box 441186	Fort Washington	CA	94114	USA	
+BEVACQUA245@AOL.COM	John	Bevacqua	1680 Strawberry Rd # 217	Mohegan Lake	NY	10547-1062	USA	914-528-3157
+BIOLOGYPAUL@GMAIL.COM	Susan	Ward	721 S West St	Findlay	TN	37212-3620	USA	
+blucia@chccnj.org	Christie	Mason	84493 Rodrejo St	Coachella	NJ	07481	USA	201-847-8178
+BOBBFHP@AOL.COM	M P	Misto	8 Pine Ridge Dr	Vicksburg	MA	01721-2510	USA	
+BOISTEROUSBEE@YAHOO.COM	Christina	Engel	199 Ridgewood Rd	Riverside	KY	41011-5566	USA	859-261-2724
+bonnie_cbc@yahoo.com	Thomas	Moore	2999 Us Hwy 61 N#K2870	Woodville	CO	81658-1064	USA	970-471-1010
+BONNIE134@CENTURYTEL.NET	Cheryl	Morgan	79 Snowden Ave.	Atherton	WI	54009-0285	USA	715-755-2703
+bra_ing1@hotmail.com	Juoles	Rassi	1141 Rosewood Dr.	Peru		232-5150	USA	506 26 54 41 23 ext.8515
+brandubh@gmail.com	Saavedra	Jorge	Po Box 30	Mc Rae	OH	44077-1856	USA	440-364-7576
+BRATTIESUNSHINE@YAHOO.COM	Stephanie	Giordano	Po Box 2138	Kapaa	NY	14738-9615	USA	
+briefs557@hotmail.com	Jennifer	Southerling	432 Leedom St	Jenkintown	AZ	85205-5966	USA	
+brittanypaigebarrett@gmail.com	Britt	Barrett	1222 Woodview Terr.	Los Altos	CA	94020	USA	650-868-4929
+buttercup-lp@hotmail.com	Jason	Gillham	"1231119 Fl 212T
+Po Box 648"	Pelham	NY	12601	USA	
+butterfly2656@love.com	Peter	Zimerman	2363 Chester Springs Rd	Chester Springs	CA	95453	USA	
+c_omacpherson@hotmail.com	Karen	Pitre	4740 Gardena Dr	Riverside	NS	B1H1E3	CAN	
+CAHETZLER@AOL.COM	Derrick Lamar	Holmes	332 Walnut St	Coatesville	TX	78242-2065	USA	
+CAHETZLER@AOL.COM	Christina G	Williams	19000 Sw 377Th St Ste 200	Florida City	TX	78242-2065	USA	
+calvinf@sbcglobal.net	Karuna	Fluhart-Negrek	Po Box 7325	Santa Cruz				
+camyoga@gmail.com	Sunshine	Packard	201 Floral Ave	Ithaca				
+carieholmland@gmail.com	Fernanda	Iglesias	11450 Sw 109Th Rd Apt Y	Miami				
+CARLA.POULIN@INTERIORHEALTH.CA	Clayton	Rivera	35 Fruit St Apt C41	Northampton	BC	V1Y 5L9	CAN	250-763-3036
+carlak@cal.net	Georganna C	Krenn	703 1/2 Hoult Rd	Fairmont	CA	95616	USA	530-792-0832
+CAROLEEVERITT@YAHOO.COM	Allison	Driscoll	2111 Gilpin Ave.	Wilmington	ME	04742-1159	USA	
+cathouse51@yahoo.com	Dolisa	Swirft	1125 Kelly Dr Lot 146	Hinesville	NC	27217-8840	USA	
+cathryn_palmer@yahoo.com	Joshua 	Prelas	1120 North Nopal St. #12	Santa Barbara				
+cbarczyk@yahoo.com	Catherine	Barczyk	1712 Thunderbird Dr	Mckinleyville	CA	95519-3912	USA	707-839-5660
+cbrown@sculpturefoundation.org	Claire	Brown	115 Shreve St	Mount Holly	NJ	08060-2111	USA	
+cccuisine1@aol.com	Resident		61 Windsor Ln	Ramsey	NJ	07446-2401	USA	
+cclaudettie@yahoo.com	Teresa	Kennedy	116 W. 23Rd St. Suite 500	New York	GA	30135-2978	USA	404-319-5507
+cclear@firstfitness.com	Craig	Clear	1813 Stewart Dr	Carrollton	TX	75010-6327	USA	214-564-2959
+cdecookmorgan@aol.com	Janelle	Nicholson	6079 Laurel Creek Dr	Pleasanton	CA	94027	USA	650-368-2684
+cetennery@hotmail.com	Linda	Warren	1721 Via Del Cabana St	Lakeport	CA	94103		801-520-9933
+CGIARDINA1@AOL.COM	Sandy	Fournier	519 Park St #B1	Hartford	MI	48341-2020	USA	
+cgweger@yahoo.com	Monica		340 S. 16Th St.	San Jose	IL	62427	USA	
+CHA_1@LIVE.COM	Jeanett	Holberton	1575 Indiana Ave	Virginia Beach	GA	31525-2469	USA	912-996-0844
+charlietheyogi@aol.com	Rose W	Richmond	204 Weatherford Pl	Macon	NY	11213-4336	USA	9084198705
+chcgcelina@gmail.com	Kay	Weir	1703 Lake Harbor Way Cir	Houston	IL	60804	USA	708-222-1885
+chefmnielsen@yahoo.com	Alvaro	Muller	2112 Ruschia Way # 3S	Oxnard	SC	29715	USA	
+chiaramk@sonic.net	Jojo	Kissinger	1659 Racepath St	Myrtle Beach	CA	94558	USA	707-477-7791
+chiggs@gmail.com	Marlene	Fisher	124 Hillcrest Dr	Bainbridge				
+choar@gmavt.net	Susan	Howardd	7838 Moody Ave	Burbank	VT	05443	USA	802 453 3490
+CHOLMESTNP@YAHOO.COM	Mr Arthur	Hetzler	7880 W Howard Rd	Bloomington	NC	27713-9749	USA	
+chrissy.lundgreen@comcast.net	Shondra	Maulden	6044 Greensboro Hwy	Quincy	IL	60102-4207	USA	224-678-9153
+christinakelly711@msn.com	Christina	Anderson	800 Mckee Rd	Decatur	MS	39327-8017	USA	
+christinecressieisoni@gmail.com	Mireya	Crowson	189 Calle Jose Padin Apt 1	San Juan	OH	45219	USA	513-560-1931
+christineoneal@hotmail.com	A	Pierson	Po Box 2350	Gardena	CA	94301	USA	520-440-8311
+chunt@summithealthcare.net	Bomsu	Jansuy	16058 36Th Ave Ne	Lake Forest Park	AZ	85937-5146	USA	
+CINDILYNN28@HOTMAIL.COM	Claire	Lewis	Po Box 488	Sandpoint	WA	98405-1447	USA	
+CINDYLYNN28@HOTMAIL.COM	Fernando	Ann	1320 S Monroe St	Tacoma	WA	98405-1447	USA	
+CINDYSURNEAR@YAHOO.COM	Nicole	Shipley	2620 Riverside Ave	Seaford	TX	76112-6427	USA	
+CINTIA420@LIVE.CA	Betty A	Haddock	340 W 32Nd St # 376	Yuma	AB	T5P 2H2	CAN	780-486-6127
+CINTIA420@LIVE.CA	Shirley	Wrenn	1400 Sloan St	Greensboro	AB	T5P 2H2	CAN	780-486-6127
+cjstaogirl@aol.com	Ana	Del Alamo	4521 Ne 22 Rd	Fort Lauderdale	NC	28110-8805	USA	704-296-2789
+CLAIBORNEJA@BELLSOUTH.NET	Joyce	Carrick	310 Harvestwood Ct	Madison	AL	35758-6637	USA	
+claude@mulitmediarisk.com	T	Fusco	154 Coleridge Dr	Fremont				866-975-1994
+clawson@fone.net	Janet	Clawson	Po Box 31	Durango	CO	81302-0031	USA	970-259-2929
+cliftonct_2@yahoo.com	Ms Amy	Taylor	111 N L St Apt 5	Lake Worth	VA	20153-2761	USA	
+CLLEDFORS@HOTMAIL.COM	Ms Susan	Lagerman	Po Box 596	Bronx	CA	92105-3644	USA	
+cnadlyte0222@yahoo.com	G	Gulino	6530 Independence Ave Apt 230	Canoga Park	NY	11757-5110	USA	
+connieburpee@msn.com	Connie	Budnik	12 Kilby St Apt 1	Somerville	MA	02143-2948	USA	
+conundrum7@mae.com	Karen	Lane	7319 Bridlespur Ln	Delaware	AR	72704-9312	USA	479-459-3949
+cowbelleru@sbcglobal.net	Mearia Tarver	Thenyger	1310 Entrada Dr	Oxnard	TX	75228-1744	USA	
+coyotedoc@earthlink.net	Vera M	High	2520 Lakeway Dr	Shreveport	NM	87301	USA	703-599-8846
+cspenella@yahoo.com	Lien	Tran Doan	2047 Yorkshire Ave Apt 201	Saint Paul	VA	24179-1831	UNITED STATES	540-815-4232
+cubanita49@yahoo.com	Beth	White	1227 Nw 14Th Ave	Cape Coral	FL	33558-4836	USA	813-952-6913
+CUTTZIEPIE@YAHOO.COM	Kara	Indonesia	3980 Oliver Rd	Moose Lake	TX	75702-7831	USA	
+cwallenberg@gmail.com	Summer Lynn	Ysasaga	40786 Indian Springs Rd	Oakhurst	OK	73012-6721	USA	405-301-4466
+cynthiamichaels88@yahoo.com	Sondra	Muscaro	5214 Palomar Cres	Mississauga	AZ	86409	USA	928-263-1447
+czechmate68@yahoo.com	Adel	Morris	18743 Center St	Castro Valley	CA	94107	USA	415-990-6353
+daffodil11111@aol.com	Rebecca	Cawley	Manor Road	Colts Neck	NJ	07722	USA	
+danahale@gmail.com	Alex	Hart	2125 1St Ave Apt 2504	Seattle	CA	94117	USA	917-697-7166
+DANIEL.SMITH33@ROCKETMAIL.COM	Annabelle	Teleki	1219 A Central Ave	Alameda	OH	44077-3264	USA	440-354-5344
+danielclark3340@yahoo.com	Daniel	Clark	11528 Abbey Ln Sw	Port Orchard	WA	98367-9415	USA	360-895-3606
+DANIELLE.FULLER@YAHOO.COM	Charlen	Feller	242 Sundance Trl	Wimauma	MD	21117-3826	USA	
+DANIELLE.SHIPLEY@ATT.NET	Glenda	Sugahara	Po Box 32757	Kansas City	IN	46222-2116	USA	317-407-4668
+daniellerottenberg@gmail.com	Shannon	Shaw	Po Box 98	Colfax				
+DAPONDERESTUDENTS.DAVENPORT.EDU	Betty	Page	484 W 43Rd St Apt 23F	New York	MI	48503-4008	USA	
+davidcmanfredi@gmail.com	R S	Mcneilly	8150 Yolanda St	Detroit	NY	13215-2300	USA	
+daviscircle@verizon.net	Daniel	Smith	117 Mentor Ave Apt 10	Painesville	MA	01590	USA	508-865-6802
+dawn123_90@yahoo.com	Verlon Elaine	Sifford	8220 N Florida Ave Apt 211	Tampa	TX	78881-0352	USA	
+dawn123_90@yahoo.com	Traci	Wilkerson	2250 W Glendale Ave	Phoenix	TX	78881-0352	USA	
+dawntstn@gmail.com	Jennifer	Week	2903 Valley Dr	Louisville	FL	32183-0644	USA	
+dbaronegg@yahoo.com	Doneen	Barone	1713 Rosamond St.	Opetaluma	CA	94954	USA	
+debbieandwalt@aol.com	Greg	Voorhees	333 Roosevelt St Apt 3	Missoula	NY	10512	USA	
+debra@debrariordan.com	Pattie Jo	Schafer	199 Everett St	Bryson City	CA	94912	USA	415-302-3962
+deedrany@msn.com	Deedra	Aldag	51 Tuthill Point Rd	East Moriches	NY	11940-1216	USA	631-591-1549
+dekilper@vt.edu	Rachel	Labranche	128 Feeding Hills Rd	Southwick	NJ	07740	USA	
+denisehickie@hotmail.com	Penny N	Honw	1735 Camp Horne Rd	Cottondale	MB	R0G 1K0	Canada	204-746-4116
+deniseveressence@gmail.com	Jackeline	Spahy	919 Linden Ave	Pleasantville	CA	95472	USA	707-829-9309
+dfrodyma@yahoo.com	Charlie	Garrett	Po Box 984	Gunnison				413-522-1867
+dharadaya@gmail.com	Claude	Forest			CA	94530	USA	810-734-6340
+dina_macwilliam@hotmail.com	A	Long	167 E 82Nd St # 9D	New York	DC	20009-6628	USA	
+director_all_saints@valornet.com	Bill	Hayes	Po Box 121	Sioux Falls	TX	75835-2228	USA	
+DISHER02X2@YAHOO.COM	Peggie H	Davis	3902 20Th Pl	Temple Hills	VA	23803-7428	USA	
+djbolin@hotmail.com	Debra	Bolin	4015 W 65Th St Apt 313	Minneapolis	MN	55435-1747	USA	
+djmart@dreamscape.com	Cynthia J	Michaels	3003 Mcvicar Ave	Kingman	NY	13304-1847	USA	315-896-5026
+djounina@hotmail.com	Elysa	Sardinha	2380 Stonecress St	Gilroy		25000	USA	
+dmitchell1211@comcast.net	Alina	Nelson	5277 Aldrich Rd	South Gate	IN	46226	USA	317-723-3698
+dmpackard@hotmail.com	Lola	Newman	Po Box 342	Wapanucka	VT	05452-4325	USA	
+dmuktevi@gmail.com	Bill	O'Brien	2724 N Hwy 17-92	Longwood	CA	94538	USA	650-995-6669
+donna6979@comcast.net	Donna	Agustynowicz	20 Laro Rd	Westfield	MA	01085-5016	USA	413 562-1366
+DORICEADAMS1@YAHOO.COM	Dorice	Adams	7150 S Constance Ave Apt 3A	Chicago	IL	60649-2349	USA	
+draconiamalfoy@hotmail.com	Jack & Debbie	Zilch	2342 Miller Rd	Chester Sprgs	KY	42001-3705	USA	270-559-6829
+DREADED.SMASH@GMAIL.COM	Mrs Priscilla A	Furnarotto	8027 S South Shore Dr	Chicago	OK	74110-5239	USA	
+drjain@mdiwellness.com	Richard	Jones	Po Box 618	Auburn				925-935-5425
+d-robirts@yahoo.com	Greg	Scott	Po Box 2000	Vacaville	MO	65807-8218	USA	417-893-8924
+dshaffer35@gmail.com	Mara	Stroud	86 Norwood Rd	West Hartford	FL	34744-2762	USA	407-446-7045
+dsquatriglia@aol.com	Msi	Tribble	2153 Ashland Ave # 3	Evanston	NY	11777-2041	USA	
+dulcinea-25@hotmail.com	Olya	Petrovich	3099 Brighton 6Th St # 404	Brooklyn	CA	95012	USA	619-757-8845
+eapetit@yahoo.com	Monica	Drakulic	2630 Erie St Unit 22	San Diego	NY	10803-3052	USA	678-644-5601
+EBSIPP37@YAHOO.COM	Christi	Rudolph	2363 Molokai Way	San Diego	NY	10116-7712	USA	
+ec_orchid@yahoo.com	Erica	Cambarare	828 Kenilworth Ave.	Sheffield Lake	OH	44054	USA	440-949-6741
+echan@btmg.com	Ellen	Chan	1049 Cortland Ave.	San Francisco	CA	94110		415-285-1703
+edharrisiii@comcast.net	Barb	Henson	274 E Ford Ave	Barberton	MD	21212	USA	
+ehalbert@verizon.net	Odum		4212 Quarry Lake Dr #102	Henrico	VA	23233	USA	
+ellenborengasser@yahoo.com	Ellen	Borengasser	2004 Pierce St. Apt #1 Rm #2	San Francisco 	CA	94115	USA	415-676-9609
+elviradidoni@yahoo.com	Sergio	De Lao			CA	95405	USA	
+EMARIE+0304@YAHOO.COM	Elizabeth	Pligh	4822 S. Quaker Ave	Tulsa	IL	60148-2015	USA	
+emmadsen@embarqmail.com	Michele Elizabeth T	Mcdonell	39 William St	Cambridge	NJ	07871	USA	973-670-5743
+emmakitty1@yahoo.com	Estelle	White	3419 Lovewood Rd	Marianna	LA	70065	USA	
+emstams@yahoo.com	Bill	Tuggle	Po Box 121	Sioux Falls	NM	97123	USA	781-608-9369
+equali@hotmail.com	Jackie	Hovy	3104 Collier Rd	Augusta		14000	MALAYSIA	+60164892143
+equali@yahoo.com	R G	Walker	1875 Merikoke Ave S	Wantagh				60164892143
+essentially_hair@yahoo.com	Sandra	Farmer	1304 Ne 11Th Street	Fort Lauderdale	CA	95437	USA	707-964-5808
+ESTMCD85@HOTMAIL.COM	George	Macdonald	1300 N Warehouse Rd	Fort Leavenworth	ON	M4K 1J3	CAN	
+evlayne@hotmail.com	Eric	Rothenberg	"String Fellow 1163385
+1200 Fm 655 Rd"	Rosharon	IN	46321-2835	USA	
+evSardinha@gmail.com	Lenia	Smith	12806 Pota Pl	Tampa	CA	95020	USA	408-607-7372
+fannthestylist@gmail.com	Roselyn	Faith	219 Essex Ave	Portsmouth	VA	23235-1911	USA	
+fantasia737@hotmail.co.uk	Matthew  E.	Hehn	1345 C St Apt 4	Lincoln		Nr3 4sf	GBR	
+fernidevi@yahoo.com	Won	Joe	1014 May St	Clarksdale	FL	33176-3109	USA	305-725-5474
+filippo.guarnieri@gmail.com	Courtney	Hanna	1315 E 5Th N	Mountain Home				cell: 415-606-3220
+FJBEAU@WEBTV.NET	L J	Bass	1004 N Lincoln St	Kennewick	WA	99336-7621	USA	
+FOOTSPHD@MSN.COM	Sarah	Walker	219 Cole Rd	Delanson	PA	19120-3703	USA	
+formlessfield@gmail.com	Chris	Harvey	288 Ossios Private Dr	Bristol	NY	10524		
+fozzysmith@comcast.net	Shauna	Gallardo	75 5708  Alahou St	Kailua Kona				510-481-7204
+franbove@gmail.com	Francesca	Bove	238 E 6Th Street	New York	NY	10003	USA	917 7219288
+frank.lobsiger@swissonline.ch	Nancy	Maio	24 Jacklin Ct	Clifton				
+froggy58_66@yahoo.com	Tina	Roland	923 Tony Pl	Longmont	FL	32958-4131	USA	
+g02cool@yahoo.com	Donna	Lazos	Po Box 204	New Hope	CA	94062	USA	408-799-0515
+gabenus@comcast.net	Billey	Olson	845645 Wynne Unit	Huntsville				
+GANDERSON@POLSHEK.COM	Gary	Ambrosino	74 Church St	Syosset	NY	11791-2505	USA	
+GAVENR@AOL.COM	A M	Fisher	39 Weston Pl	East Brunswick	FL	33598-7531	USA	
+gennixster@gmail.com	Jacquelyn	Schuller	6243 E Fairfield St	Mesa	MA	01842-1374	USA	
+gerridances@yahoo.com	Geralyn	Burke	743 N Milwaukee #C	Libertyville	IL	60048	USA	
+GESTAIN@ROBERS.COM	Jennie	Farley	106 E Shauner St	Gardner	ON	L4T 3B6	CAN	
+ggarrett@rkymtnhi.com	Sandy	Gil	2069 Woodpecker Ln	Elizabeth	CO	80401	USA	970-531-3372
+ghalge@gmail.com	Elaina M	Gwin	1916 Highway 36 Byp N # 560790	Gatesville	MA	01570-2125	USA	
+ghost.hunting.girl@gmail.com	Augustus & Ellen	Rubbo	1203 Nottingham Ln	Chester Springs	FL	33716	USA	
+giovanni_lenci_architect@yahoo.ca	Suzanne	Luke	240 W. Essex	Stockton	NS	B4B 1R9	CANADA	
+globalqual@aol.com	Dinesh	Chandra	2198 Bentley Ridge Dr.	San Jose	CA		USA	
+godenan@sbcglobal.net	Leslie	Darty	331 Bost Rd Apt 9C	Morganton	CA	94062	USA	650-299-1852
+GOFORTH214@YAHOO.COM	Trish	Baker	1440 Mowry Ave Apt 201	Fremont	CA	94538-1728	USA	
+GREATDANES3144@A0L.COM	Carrie	Brown	1074 W Genesee St	Syracuse	NY	13204-2243	USA	315-250-8282
+gseybold1@yahoo.com	Yael	Steinfeld			NC	28104-7411	UNITED STATES	704 443-1234
+guygabrielyoga@yahoo.com	Jenn	Geddie	4063 Main St	Anacoco	CA	91504	USA	818-439-4005
+gwang@jambajuice.com	Linda	Zawacki	27228 Seyburn Ave	Warren				
+gwen@rasayanaseattle.com	Holly	Padove			WA	98004	USA	206-499-9277
+GYPSYLADY1905@YAHOO.COM	Kevin	Hickey	847 Appleton Rd	Simi Valley	MI	48768-8706	USA	
+gypsyseabird@live.com	Stefani		691 Shelton Ave Ne	Renton				831-786-8982
+HAIRWITCH53@HOTMAIL.COM	Christopher	Robinson	Po Box 9000	Seagoville	CT	06770-5220	USA	
+hannahsm@gmail.com	Joann	Sommers	214 Freddie St	Indian Harbour Beach				
+happyjdishman@aol.com	Byron	De Weldon	30 Administration Rd	Bridgewater	TX	76040-7743	USA	
+haquinn@gmail.com	April	Michael	5091 Chatsworth St	Detroit	CA	93953	USA	831-626-4325
+haya84935005@yahoo.com.tw	Yi-Chin	Chen	84 Cabot St Apt 15	Beverly	MA	01915-5164	USA	408-218-7688
+HELTHYGRL@COX.NET	Freda	Sienkiewicz	627 Fernway Dr	Burlington	AZ	85304-3314	USA	
+HERBSTEW@PEOPLEPC.COM	Patti	Scruggs	2983 Corinth Rd	Gaffney	NJ	07081-3447	USA	
+HESS_JAMIE@YAHOO.COM	Andre	Holly Sr	28625 228Th Pl Se	Maple Valley	WI	53027-1303	USA	
+hhuiejung@aol.com	Christi L	Kingsland	4991 Auburn Dr Apt A	San Diego	MA	02145-3825	USA	
+hilary.claggett@gmail.com	Hilary	Claggett	4642 Creekrun Dr.	Mason	OH	45040	UNITED STATES	513-492-9998
+holayolanda123@netzero.com	Elizabeth A	Gilman	4 Wade Dr	Cherry Hill	OH	43110-8754	USA	
+hollandjessica@yahoo.com	Mila	Hunter	30909 16Th Pl Sw Apt D	Federal Way	CA	94611	USA	510-926-0577
+hollandjessica@yahoo.com	A	Hurley	5837 Invincible Dr	Jamesville	CA	94611	USA	510-926-0577
+home@vedichealing.com	Daiva	Ruseckiene	Upelio 30-3	Kaunas	CA	94608	USA	510-214-6108
+HONEY0064@ATT.NET	Carole	Dorcasellis	303 Main St Apt 36	Fort Fairfield	GA	30153-4226	USA	6787579177
+hpadove@hotmail.com	Guy	Ponder	310 N. Eirc	Lindenhurt				805-474-1431
+IJANIS51@YAHOO.COM	Sergio	Mccall	802 W Bailey Ave Apt A	Springdale	PA	16301-2770	USA	
+iknowitpoet2@yahoo.com	Donavin M	Sirnic	Po Box 999	Canon City	AL	35650-9217	USA	
+imbhoffman76@aol.com	Ms Patricia	Geremita	5410 Pecan Brook Dr	Austin	MI	48654-9616	UNITED STATES	989-685-2800
+indyy@hotmail.com	Debbie	Barber						
+inessaob@gmail.com	Samuel O American	Perez	21907 Grace Ave	Carson	CA	94025	USA	
+infin8yoga@yahoo.com	Ralph	Peduto	P.O. Box 685	Capitola	AK	99709	UNITED STATES	907-460-6610
+info@power-living.com	Gokul R	Krishnan	1737 Brewster Ave	Redwood City	NY	10011	USA	212-901-6913
+info@selaveda.com	Filippo	Guarnieri			CA	94501	USA	510-520-5083
+info@shivashaktiloka.com	Amber	Upton	61451 Verbena Rd Apt 9C	Joshua Tree				
+ingie5_6@yahoo.com	Richard	Pettit	20 Amherst St	Danvers	CA	94010	USA	650-504-5828
+IODINE1949@YAHOO.COM	Linda	Terrill	Po Box 470216	Miami	FL	33625-3981	USA	
+isabelle.grotte@gmail.com	Al	Hanko	1111 North Rd   Po Box 800	Mauston	CA	94117	USA	415-342-5010
+isabrenda@care2.com	Isabel	Castro	2913 Verdino Cir.	Corona	CA	92883	USA	360-393-7045
+J.DAVIS00@YAHOO.COM	A	Deak	1366 Ny Av 5E	Brooklyn	CA	92307-0831	USA	240-6044
+J.DAVIS00@YAHOO.COM	Lisa	Wood	11120 Nw Gainesville Rd	Ocala	CA	92307-0831	USA	
+JAA.JAA@VERIZON.NET	Jeanette	Allen	9 Chatham Village Rd	Worcester	MA	01606-3112	USA	508-852-0504
+jack.lucid@verizon.net	Anna	Massey	321 Robinson Rd	Saltsburg	NJ	08750-3223	USA	646-641-7860
+jahdharma@gmail.com	Katherine	Stevenson	905 Richardson Vista Rd Apt 265	Anchorage	CA	90804	USA	310-809-6581
+JAMFOOD9@AOL.COM	Ruth	Abigail	Po Box 271	Brookshire	TX	77423-0271	USA	
+JAMIE.CARRL@US.ARMY.MIL	Carol I	Levy	Po Box 954	Cloverdale	WI	53705-4867	USA	
+janelbaxter@yahoo.com	Janel	Baxter	1197 Bunker Dr Apt 205B	Baraboo	WI	53913	USA	608-477-0216
+JANICE_DEWBERRY@YAHOO.COM	April	Dobbs	85 Winooski Falls Way # 202	Winooski	OH	45405-1610	USA	937-278-7284
+JANICE_RICHBURG@YAHOO.COM	Kathleen	Pintozzi	1355 Juneau Ct	Tucker	SC	29150-2430	USA	
+jayantii01@yahoo.com	Lj	Loren	1169 Rebel Lane	Goodview	CA	95472		707-827-3456
+jbirdluthier@yahoo.com	Mitchell	Jennings	Po Box 230 	Los Angeles	MI	49107-9347	UNITED STATES	269-429-5776
+jd@suremail.info	Kerry N	Edelen Bey	Federal Correctional Institute  Po Box 0350	Beaver	CA	94708-1434	USA	510-524-4304
+jeannieatthelake@aol.com	Steve	Douglas	2600 Orchard St.	Soquel	SC	29686	USA	
+jeanpcarter@shaw.ca	Jean	Carter						
+jenblack1@mac.com	Jen	Black						
+jenngeddie.omshanti@gmail.com	Mary Beth	Gilliland	1550 S Douglas Blvd	Guthrie	LA	71403	USA	512-944-9363
+jennifermanville@hotmail.com	Rhonda	Meek	501 S Falcon St	Anaheim	RI	02842-7204	USA	401-835-5922
+jennorox@yahoo.com	Cecilia	Fernandez	1000 Arlington Blvd.	El Cerrito	KS	66030	USA	
+jerotes@aol.com	Carlos	Aquirre 	1902 Elder Way	Hayward	CA	94545		
+jessiek11@insightbb.com	David	Johnson	Po Box 5849	Forsyth	KY	40031-9311	USA	
+jezibella@msn.com	Devinson	Sanchez	85 N Long Beach Ave Apt 1J	Freeport	NM	87108	USA	
+jgexpress@univision.com	Ann	Fisher			FL	33014-0902	USA	
+jjwardwell@yahoo.com	Michelle	Ziegler	Po Box 24854	Minneapolis	MA	02362	USA	508-287-3161
+JKILBURG@PACBELL.NET	G	Jovich	910 Dennis Dr	Washington	CA	95667-8983	USA	
+jlbriggs@grm.net	Linda	Briggs	20566 W State Highway M	Eagleville	MO	64442-8146	UNITED STATES	660-867-5104
+jlm120@shaw.ca	Karen	Roth			ON	P6A 6J8	CAN	
+jmpuccio@optonline.net	Robyn	Robinson	9321 E Zayante Rd	Felton	NY	11782-2050	USA	631-244-3969
+jnelybely@gmail.com	Maya	Paul	1001 Pine St. #1103	San Francisco	CA	94588-4654	USA	
+JOANN@IRELAND.COM	Bethany	Tompkins	4 Blossomdale Cir	Hamlin	FL	32937-2724	USA	
+joannk8924@aol.coom	Carol	Kuntzelman	6124 N Christmas Tr Ln	Flagstaff	NJ	08816-2640	USA	732-238-2989
+johndotwish@gmail.com	Sherrie	Driver	222 Lake Road	Bridgeport	AL	35217	USA	205-556-6905
+jshill0430@yahoo.com	Artis	Harrison	4333 Cinderella Rd Apt 2	Charlotte	OH	43016-4199	USA	
+jshprls@yahoo.com	Joe	Riviera Jr	4001 Hillcrest Dr Apt 914	Hollywood	CA	93103	USA	805-637-4159
+jtessitore@hotmail.com	Norma E	Soares	16 Chestnut St # 18	Pawtucket	VT	05452-4378	USA	
+JTGREEN@AOL.COM	Pat	Spanfelner	1410 W 13Th Ave Apt 1	Spokane	NJ	08332-4240	USA	
+j-vojta@hotmail.com	Richard	Worthy	3810 Winding Oak Cir	Dayton	CA	96160	USA	530-414-4394
+kaayoode@yahoo.co.uk	Ilona	Mustafin	1225 S Bellaire St Apt 401	Denver	ON	m1b2l3	CAN	
+karalana@hotmail.com	William	Smith	5501 N La Palma Rd Za 216	Eloy	FL	33702-2332	USA	
+karenlroth@yahoo.com	Steven	Sharon	2101 Fm 369 N	Iowa Park				408-858-4320
+karenp211@gmail.com	Rev Dr Donald	Privett	1805 5Th St	Wausau				
+karenpitre@mac.com	Dawn & Ronnie	Rhodes	106 Sharon St	Conroe	CA	92506 2001	USA	951-369-3987
+karigregg@gmail.com	Darlene	Haas	7417 Winthrop St	Detroit	CA	94117		851-260-3203
+KARMADEUR@YAHOO.COM	Suzye	Wiggins	1122 24Th St S	Battle Creek	MO	64058-3206	USA	
+KARMADEUR@YAHOO.COM	Sissy	Williams	1306 Quail Dr	Garland	MO	64058-3206	USA	
+karuna-mft@att.net	Beth	Fuller	4472 24Th St.  	San Francisco	CA	95061	USA	831-535-8693
+kate.mulder@citizeneffect.org	M D	O'Domski	3822 Nw 58Th Pl	Miami Springs				310-849-3310
+Katewheels@aol.com	Alex	Valentine	Po Box 921 C6 169	Imperial	OH	44084-9753	USA	
+KATHLEEN.FARMER@YAHOO.COM	Joan	Eckert	5795 Kates Bay Hwy	Conway	FL	34233-3930	USA	
+kathy@mountainayurveda.com	Veronica	Ericksen	732 21St Ave	East Moline				831-234-2412
+katjaspostoffice@aol.com	Mark 	Stanford	1631 Haworth St	Philadelphia 	CA	94301	USA	650-906-7086
+katkathykat2006@yahoo.com	Kat	Bolin	105 Doleac Dr	Hattiesburg	MS	39401	USA	
+KatrynaItuarte@yahoo.com	Miss Petra	Johnson	36200 16Th Ave S	Federal Way	AZ	85301-9006	USA	
+katyayanirosa@gmail.com	Lynn	Gayno	79 S Gate Dr	Poughkeepsie				
+KAYMAJORS@SBCGLOBAL.NET	Diane L	Mclaughlin	3877 Floral Ct	Santa Cruz	TX	77084-4598	USA	
+KAYMAJORS@SBCGLOBAL.NET	Nalinakshi				TX	77084-4598	USA	
+kbearkins@hotmail.colm	Jseph R	Morrison	Po Box 397	Abbeville	WA		USA	
+kduby1@yahoo.com	Barbe Jo	Eberle	28 Finger Ave *9	Redwood City	CA	94941	USA	415-388-1970
+KEIFFER1947@YAHOO.COM	Bridget	Puchalsky	P.O. Box 9856	Breckenridge	KS	66044-3379	USA	
+kelleymdaniel@gmail.com	Celestial Joy	Davis	3976 Griffin Creek Rd	Medford	UT	84036-9351	USA	801-821-6967
+KENKAN47@AOL.COM	Julio	Ortiz	12071 Fm 3522	Abilene	FL	33647-2126	USA	
+kgpapers@yahoo.com	Pam	Gonzalez	12 Sylvan Oak Way	Nottingham	AL	35125	USA	
+kiazen000@yahoo.com	Suzette	Pangrle			AR	72903-3920	USA	
+kirarose1@hotmail.com	Gary	Seybold	1022 Lake Forest Dr	Weddington	WV	25159-9626	USA	304 755 1979
+kirsten.felts@ymail.com	Rosanna	Fishero	3524 Dover Rd	Columbus	TN	37043	USA	931-436-0011
+kirstenwedde@gmail.com	Innes						UNITED STATES	727-902-7499
+kisska28@yahoo.com	S	Reid	6117 S 237Th St Apt D304	Kent	NY	11235	USA	
+kittykitty74@comcast.net	Amy	Dellacca	11668 N County Road 400 E	Brazil	PA	15601	USA	
+kj3c@yahoo.com	Claudettie Y	Jones	2593 Plantation Way	Douglasville	WA	71119	USA	318-632-0902
+kmhkarina@hotmail.com	Dina	Lariviere	2400 16Th St Nw Apt 511	Washington	NJ	08816-1829	UNITED STATES	908 8758105
+KNOWLESD8@YAHOO.COM	Chiara Maria	Kae		Napa	NJ	08002-2625	USA	
+KOZKOZ@HOTMAIL.COM	Leah	Kaplan	634 Westminster Ave. #4	Venice	MI	49684-4317	USA	
+kpavelock@aol.com	Pratibha	Queen			TX	77861	UNITED STATES	936-399-2753
+kpintozzi@gmail.com	Sam	Rewer	2065 W 162Nd St	Torrance	GA	30084-8206	USA	678-481-4258
+krisatherton@comcast.net	Krista	Atherton	7437 Ne 121St	Kirkland	WA	98034	USA	425-821-1097
+kristie.hofelich@jefferson.kyschools.us	Marthann	Howes	P.O. Box 2104	Santa Cruz	KY	40207-3975	USA	
+kristie.hofelich@jefferson.kyschools.us	Kaily	Zaic	640 Ontario St Se	Minneapolis	KY	40207-3975	USA	
+ktlatigra@hotmail.com	Katie E	Brunton						
+Kumaroo@aol.com	M A	Khabir	3343 Belair Rd 2Nd Fl	Baltimore	MD	20906	USA	
+KUYOTE63@YAHOO.COM	A	Koszuta	Crain Unit - 1401 State School Rd	Gatesville	TX	78741-7064	USA	
+l.major@netscape.ca	Daniella	Lopez	8 S Deer Hill Run	Sparta	CO	J0K2W0	CAN	
+l_l_n@hotmail.com	Tina M	Patterson	787 N 1851St Diag Rd	Lecompton	SD	57501	UNITED STATES	605-661-0296
+LACEYDENIM69@PEOPLEPC.COM	Tom	Poley	219 Union St	Pottsville	ID	83318-1835	USA	208-219-8328
+landratlas@bigpond.com	Rebecca	Atlas	12 Nicole Court Bell Park Geelong	Victoria		3215	AUS	03 5277 1267
+laprellec@yahoo.com	La Prelle	Cocraft	4904 W Vliet St Apt 10	Milwaukee	WI	53208	USA	
+larrydwelch@mac.com	Raquel G		137 Loudoun Ave	Waynesboro	CT	06902-7046	USA	203-276-9868
+latasha.hicks18@yahoo.com	Rebecca	Hood	Po Box 6253	Wheeling	NC	27553	USA	2524562687
+laurapeduto@yahoo.com	Deborah	Rabon	707 Riverbend Rd Sw	Plainville	CA	95010	USA	831-818-5621
+LBUCHAR@HOTMAIL.COM	Leah	Buchar	Po Box 567	Patagonia	AZ	85624-0567	USA	
+lctaylor9@gmail.com	Kristie	Wallenberg	4215 N Church Way Apt 3	Louisville	NY	14580	USA	
+leah.joan.kaplan@gmail.com	Pam	Knowles	Po Box 14	Mascotte	CA	90291	USA	
+leahwashington@gmail.com	Carlene	Zinner	650 Warren St # 2	Brooklyn				
+lecabob@hotmail.com	Millie Sue	Lynn Keiser	3939 Fredericksburg Rd Apt D4	San Antonio	CA	95425-0954	USA	
+LEIKO.MUNFORD@YAHOO.COM	Kayode	Miller	5580-112 Sheppard Aveune East	Toronto	FL	33611-4160	USA	
+LENITARIOS@YAHOO.COM	Bonnie	Thaxton	1722 Newell St	Waterloo	CA	95982-2440	USA	
+les_darty@yahoo.com	John	Davis	16280 Quantico Rd	Apple Valley	NC	28655-6542	USA	828-260-9095
+les_darty@yahoo.com	Steven	Wiseman	Po Box 1000	Butner	NC	28655-6542	USA	828-260-9095
+levesquecudmore@hotmail.com	Nalya	Lutzker	2888 Sandy Land	Santa Cruz	NS	B0P 1R0	CAN	902-765-0755
+leyanetglz@yahoo.com	Catrina	Green	515 Lott Ln	Brenham	GA	30740-7004	UNITED STATES	706-618-5609
+lhgorecki@gmail.com	M	Grenier	14200 E 49Th St Apt 214	Kansas City	DC	20010	USA	
+lindabgrace@gmail.com	Michael	Griggs	777 Stanton Blvd	Ontario				
+LINDAMCCORMICK@BELLSOUTH.NET	Jin	Lutonsky	10 Ridgeline Ct	Spring	SC	29042-1944	USA	
+lisa@denversocialdogs.com	Lisa	Campbell	6894 Wyman Way	Westminster	CO	80030-5757	USA	303.621.6365
+lisa@denversocialdogs.com	Amanda	Zolano	1113 S 6Th Ave	Wausau	CO	80030-5757	USA	303.621.6365
+lisadaluna@hotmail.com	Karen	Livinggood	704 1/2 N Columbia	Grand Forks				
+lisamnewell@hotmail.com	Victor	Parente	Po Box 323	Hartly	IL	61362-2320	USA	
+LMANSAY@HOTMAIL.COM	Lisa Marie	Anglin	2185 44Th St Apt B	Los Alamos	NM	87544-1750	USA	
+lomascola@lomascola.com	Lisa	Major	113 Pollock Avenue	Cambridge 	OR	97071	USA	702-250-1552
+loracmurphy@gmail.com	Tamara	Oliver	1375 Cunat Ct Apt 3G	Lake In The Hills	CA	90502-1856	USA	3109779466
+lorieirwin@gmail.com	Inga	Johnson	1150 Brighton Beach Ave Apt 2K	Brooklyn	MN	55374	USA	763-898-3932
+lornasteele@live.com	Pamela	Turner	Po Box 1349	Tuba City	NY	11412-3826	USA	
+lrgirl06@yahoo.com	Bridget	Arnold	203 Elmwood St Apt 5	Springhill	LA	71075-2865	USA	
+lrooke@rogers.com	Burke	Roseman	137 N 250 E	Morgan	ON	M2N 5C9	CAN	416 809-8216
+lschoenstein@gmail.com	Theresa	Solo	2032 Falkenburg Road	Bracebridge				
+lucas0927@sbcglobal.net	Peter J	Martinick	2844 Ringneck Road	Eagleville	OH	44240	USA	
+luckyone4800@hotmail.com	Bill	Linney	1288 Salem Rd	Salem Twp	IN	46203-4184	USA	
+lugarov-marta@usa.net	Kelly	Mathew	18111 Sealth Ln	Savanish		10000	CROATIA	+385914327899
+LUNARCHILD1961@YAHOO.COM	Jamie	Hess	505 Fourth St	Hartford	KS	67211-2628	USA	
+lwh333@hotmail.com	Nadolyn	Flonkins	181 56Th St	Oakland	TX	78750-1714	USA	512-786-9169
+lylahf@sbcglobal.com	Julia	Garnica	5063 N. Winchester Ave	Chicago				
+lyn5@sbcglobal.net	Lyn	Ackley						
+lyrasilvertongue11@gmail.com	Laurie	Lagerman	7031 Lincoln Dr	Macungie	NM	87031	UNITED STATES	505-333-8796
+lyrickali@yahoo.com	Phyllis	Kjarval	718 Ne 16Th Ct	Gresham	NM	87501		850-294-0079
+m.motyka@comcast.net	E	Nolan	4 Brenda Dr	Hudson Falls	IL	60047	USA	847-830-7885
+macy2510@yahoo.com	Ms Ann	Maile Phelps	1300 Ocean Ave	Brigantine				
+mailbox02@earthlink.net	Luellen	Bossano	4516 Lovers Lane $125	Dallas	TX		USA	972-233-9612
+makburt@gmail.com	Makenzie	Burt	11676 Graton Rd.	Sebastopol	CA	95472	USA	707-758-7678
+malkinblog@gmail.com	John	Clark	160 John St	Brooklyn	NY	11201-1225	USA	718-297-4040
+mamtapurig@gmail.com	Louis	Rodrighgz	7110 Potomac Dr	Port Richey	CA	94545	USA	510-780-9468
+manny1382@yahoo.com	Bridgette	Mikel	1419 Academy St	Elroy	TX	78016-4422	USA	830-665-6000
+manny382@yahoo.com	Melissa	Norton	2411 Makiki Heights Dr	Honolulu	TX	78016	USA	210-374-4552
+MARAWHITMAN@HOTMAIL.COM	Cristal	Vance	66 Overhill Rd	East Brunswick	CA	95834-1610	USA	
+margaritacazorla@hotmail.com	Gilbert	Packer	657089 Coffield 2C-42	Tenn Colony	FL	33442	USA	954-428-9721
+mariagil@argentina.com	Linda	Good	1415 Mcdowell St Ne	Canton		1686	ARG	1561886686
+mariangreene04@yahoo.com	Mary	Gill	"7407 Fair Oaks Ave, #150"	Dallas	KY	40475-1018	USA	
+mariegrisdale@yahoo.ca	Michael	Tomko	Po Box 1000	Marion	ON	p1l-1x4	CAN	705-765-0233
+mariemac49@earthlink.net	Raia 	Manjula			MI	48412-9102	USA	
+marinewife8909@gmail.com	Anna	Newman	695 E County Road 1720	Nauvoo	NC	28547-0046	USA	251-680-5133
+maripositas@yahoo.com	Stefanie C	Naugles	1795 Osborne Ave Unit 36	Riverhead	PR	00969	USA	787-349-5513
+marlena_mcclain@hotmail.com	David	Montoya	1900 Simler Ave # R3	Big Spring	CA	95060	USA	805-459-4581
+marshamellow@live.ca	Davy	Lima	1734 Culver Ln	Glenview 	BC	V2E 2M8	CAN	
+marshamellow@live.ca	Erika				BC	V2E 2M8	CAN	
+marthannhowes@yahoo.com	Curtice	Jacoby	1198 Chester Ct.		CA	95063		
+marychaas@sbcglobal.net	Linda	Gorecki	1680 Irving St Nw # Base	Washington	TX	75231-5424	USA	
+marymachado@me.com	George	Mcclimans	30909 16Th Pl Sw Apt D	Federal Way				925-330-2520
+mathiculas@msn.com	Beth	Hiter	W11787 Outlet Dr	Elcho	NE	UNITED STATES	68502-1386	402-730-7330
+matra1@gmail.com	Barbara Asakti	Sandarin	2421 Mayfair Ave	White Bear Lake	CA	94301	USA	
+MAXN5374@COX.NPI	Dora	Toledo	3719 S 56Th Ct	Cicero	RI	02860-4421	USA	
+maya.paul@gmail.com	Patricia 	Putnam	P.O. Box 1722	Ann Arbor	CA	94109		415-533-1970
+mayasrirama@yahoo.com	J F	Tricocci	1686 Paradise Ln Apt A	Dunedin	CA	94107	USA	919-619-3799
+megancgould@gmail.com	Stacy	Griffin	24499 Sw Grahams Ferry Rd	Wilsonville	BC	V3M 1Z9	CAN	604-521-5005
+meganlipsett@gmail.com	Rachel	Madlo	110 Johnson St  Po Box 23	Longview	CA	94110	USA	415-632--6774
+mendospa@msn.com	Heather	Farleman	2675 E 30Th St	Cleveland	CA	95437	USA	707-357-3922
+MERCURIALGIRLKNITS@YAHOO.COM	Lauren	Taylor	1218 Stockbridge Rd	Webster	NC	28601-3822	USA	
+mg7115@hotmail.com	Joshua L	Stubblefield	2680 Hwy 301 S	Jesup				
+mgallagher1@charter.net	Ms Michelle	Geisler	1764 S Elmville Rd	Hillsboro	GA	30043	USA	404-395-4345
+mhenry@msn.com	Js	Haithcock	5804 Shannon Place Ln	Dublin	VT	05452-4346	USA	
+michelle@frrwtrust.com	Phyllis	Valz	Box 5	Windsor	AR	71913-6431	UNITED STATES	501 525 3130
+michelle_stucko@yahoo.com	Michael T	Doll	517 72Nd St	Holmes Beach	IN	46143-7255	USA	
+MICHELLEGEISLER2003@YAHOO.COM	E T	Ginn Noy	2615 Woodwild Drive	Houston	OH	45133-5609	USA	
+MICHELLESCION@YAHOO.COM	Peter J	Krstic	274 E Ford Ave	Barberton	OH	44107-4543	USA	
+miketomko@usa.net	Janet	Weisbard	147 Grange Ln	Carbondale	IL	62959	USA	757-235-9173
+mirandasaurus@yahoo.com	Brittany Rose	Sanders	Box 2209 200 Mullica Hill Rd	Glassboro	CA		USA	831-435-5183
+mjcuregrrl@msn.com	Ashley	King	06 Geraldine Ct	Los Lunas	FL	UNITED STATES	33993-6096	239-297-0520
+mkalia2000@yahoo.com	Cory	Klein	123 W Washington St	Marquette	CA	94610	USA	
+MLLY517@AOL.COM	Eva	Larracas	619 Redstone Cir	Brunswick	NJ	07110-3122	USA	
+MOBILEDSEW@TAHOE.COM	Chad	Dalton	11640 Sw Boones Ferry Road	Portland	CA	95157-0158	USA	
+moblofgrass@aol.com	Patti	Polanco-Ali	C-3 158Th Ave	Apo	MO	65807-8700	USA	417-353-8047
+mohan_sunita@hotmail.com	K A	Nelson	6732 Akron Rd Apt 23	Lockport				
+MONA94703@YAHOO.COM	Zaychik	Johnson	33404 26Th Pl Sw	Federal Way	CA	94801-3260	USA	
+monikagus@gmail.com	Crystal	Gray	22 Criscoe St	Toronto	OR	97202		503-235-9447
+moon_lark@hotmail.com	Willie	Magley	118 Fluitt Rd	Attapulgus	WY	82901-4365	USA	
+MOONLILGHT32@AOL.COM	Leon	Roberson	2221 Spruce Shadows Ln	Raleigh	GA	31510-7451	USA	
+MORSTLIVE7@YAHOO.COM	Vernice	Gil	301 S Caledonia Rd	Laurinburg	MD	20749-1186	USA	
+mossgirl10@hotmail.com	M B	Noke	17366 Indian	Redford	PA	18702-1508	USA	570-822-0000
+mountainfiber@gmail.com	Kim	Turner	1348 Adcox Sq	Stone Mountain				
+mozhgan@sbcglobal.net	Miss Pamela	Stevenson	1506 S Griswold St	Peoria	CA	95003	USA	831-688-5587
+mperrigin@comcast.net	Todd	Ray	6 Cherrywood	Aliso Viejo	TN	38017-7122	USA	901-854-8372
+MRSALU@AOL.COM	Karen	Davis	1 Crooked Creek Ct	Roanoke	FL	34695-3131	USA	
+mrstompetty@hotmail.com	Tom	Reed	343 Soquel Ave #115	Santa Cruz	CO	80012	USA	
+msdlienl@yahoo.com	Stella	Sikaffy	74 Sturgis Rd Apt 70	Monticello				
+msmith@mta.ca	Shawn	Tewelde	1401 Saint Edwards Dr Apt 133	Austin	NB	E4L3G3	CANADA	506-536-1718
+mudtomusic@gmail.com	Mia Renee	Lindners	Po Box 1000	Willits				831-421-2281
+MUSIL9@YAHOO.COM	Mrs David A	Montana	4518 Hixson Pike Apt A7	Hixson	AZ	85267-3475	USA	
+myfroggyrulz@yahoo.com	Dominic	Dejerolme	2122 Robbins Ave Apt 335	Niles	WI	54409-2838	USA	
+mystarlissa@cs.com	Judy	Mcintire	861 Boone Dr	Brentwood	NJ	07012-1018	USA	
+n2dobaddo@yahoo.com	Arlene	Fuller	8353 Shirley Ave	Northridge	CA	94608	USA	510-420-4596
+nadobaddo@yahoo.com	Barbara	Hauth	121 Temple Wood Ct	Williamston	CA	94608	USA	510-420-4596
+nancycaledo78@gmail.com	Nancy	Caledo	3358 Maine Ave	Baldwin Park	CA	91706-4930	USA	626-498-3374
+Nangeo50@sbcglobal.net	Nancy	Choern						
+naquinn@gmail.com	Pamela K.	Meyers	929 S. Main St. #103A	Lombard	CA	93923	USA	831-747-7442
+nata.84@hotmail.com	Astrid	Santana	1060 Glenwood Ave Se	Atlanta	LA	70454-8723	USA	
+nata.84@hotmail.com	Charles	Zigozag	1376 Union St	Brooklyn	LA	70454-8723	USA	
+nataliecoffman@hotmail.com	Natalie	Coffman	2849 Ne Davis St	Portland	OR	97232	USA	503-341-6229
+natrixchik@yahoo.com	Mcmoran	Campbell	Po Box 382	Greenbrier	AR	72058-0382	USA	
+nellie.shapiro@gmail.com	Miss Pamela	Stewart	2613 W Montana St Apt 47	Peoria	CO	80016	USA	303-667-7220
+NEOADAMZ@YAHOO.COM	Peggie H	Crawford	3902 20Th Pl	Temple Hills	WI	53188-5167	USA	262-470-2408
+nichellescoggin48@msn.com	Natalie	Spisak	5440 Cass Ave Apt 1002	Detroit	ID	83201-6366	USA	208-251-0286
+NICHOLJ615@YAHOO.COM	Christine	Paver	301 Dana Rd	Farmville	TN	37128-5354	USA	
+nicolee_d7@yahoo.com	John	Dotwish	6419 Woodrow Dr	Birmingham	PA	17032	UNITED STATES	717-512-3857
+Nievesb@pbso.org	A V	Mul	1900 Southbourne Rd	Lutherville Timonium	FL	33435-5649	USA	
+nikkiteresa74@yahoo.com	Charles L	M. Price	227 Settlers Pass	Waynesville	CT	06043	USA	860-977-6120
+njwaycaster@yahoo.com	Cari		1003 Valley Ct	Edmond	TX	76036-4319	USA	817-297-9232
+nkamboj@brocade.com	Cathryn	Klusmeier	4456 Jean Ln	Fayetteville	CA	95138	USA	408-833-9849
+norellpearl@yahoo.com	Erica	R	1015 Gordon Woods Rd	Wilmington	OH	44105-5911	USA	216-635-7776
+nspeez@yahoo.com	Sounia	Trass	4810 W Evergreen Ct	Visalia	MI	48202-3683	USA	248-672-3022
+oburke@coh.org	Owen	Burke						
+of_bliss@yahoo.com	Erin	Partridge	300 Juniper Ridge Blvd Apt 265	Coalinga	CA	94549	USA	720-670-0686
+of_energy@yahoo.com	Marissa	Baxter	513 Beall Ave	Rockville	MD	20850-2106	USA	301-424-8182
+OLEALDESIGN@AOL.COM	Susan	Peterson	6 So Sable Blvd Aa207	Aurora	OR	97229-2745	USA	503-645-7537
+orientalmedicineny@yahoo.com	Karina	Kolemba	117 Longfield Ct	East Brunswick	NY	11235-8387	USA	718-934-2211
+OYA_JOHANA@YAHOO.COM	Sandra	Fisher	6406 N Coolidge Ave	Tampa	KY	40218-4329	USA	
+P.WISNER@YAHOO.COM	Walden	Whitman	1050 Porter St	Detroit	AZ	86045-1349	USA	480-466-6484
+P12M34@AOL.COM	Carlo Manuel	Mitchell Jr	Hc 03 Box 15587	Aguas Buenas	TN	38107-4710	USA	901-274-6892
+pack@enbarq.com	Sean	Millu	12212 E Gail Rd	Scottsdale	WA	98392	USA	360-930-2027
+PAH55@comcast.net	Iretha	Green	1204 Clovis Ave	Capitol Heights	MD	21236-4700	USA	
+paigethelonious@yahoo.com	Joell	Potter	9715 Ne 91St Ave	Vancouver	CT	06601-0652	USA	812-272-0582
+painfree@lisabelisle.com	Lisa	Belisle	N8745 Rock River Rd.	Ixonia	WI	53036	USA	262-744-1553
+pamelaart@hotmail.com	Laura	Tewksbury	169 Manhattan Ave Apt 5G	New York	MO	64077-8135	USA	
+paolo.volta@gmail.com	Yoga Kula	Trapp	1700 Shattuck Street	Berkeley	PA	19446-1835	USA	
+pasaroots@yahoo.com	Polly	Hatfield	2231 Se Ivon St	Portland				707-888-3914
+pasaroots@yahoo.com	Shelby	Hatt	3480 Bradleyville Rd Apt 4	Vassar	CA	95436	USA	707-888-3914
+PASSIONSEXYWILD@YAHOO.COM	Sheri	Price	Rr 2 Box 215	Davisville	DE	19953-0323	USA	
+patricia.opatz@sothebysrealty.com	Kandace	Pirkel	Po Box 362	Dugger				707-433-6555
+patriciatheel@yahoo.com	Alex	Weakley	2125 1St Ave Apt 2504	Seattle	CA	94117	USA	415-309-0428
+PEDKMILE@AOL.COM	Ms	Didoni	5049 Bass Chapel Rd	Greensboro	NY	12078-7065	USA	
+peduto@jps.net	Michael	Ragsdale	Po Box 1000	Marion	CA	95010	USA	831-818-5615
+pegmichie@yahoo.com	Carol	Muse	Po Box 9007	Framingham	CA	95076		
+PERCH2BRIM2MUDD@YAHOO.COM	Alesia	Vallari	16 Garden St A4	Potsdam	MI 	48230-1344 	USA	
+PINKIELEAF1908@YAHOO.COM	Valerie	Knight	2900 S Quincy St #320	Arlington	TN	38128-3712	USA	
+PLUMBERGIRL200@HOTMAIL.COM	Debra	Houston	3456 East Ave	Livermore	NY	10950-6729	USA	
+po6lacm@hotmail.com	Abby M.	Geyer			NY	11553-2936	USA	516-850-2767
+popup40@aol.com	Nancy	Anstett	103 Master Ct	Cary	NC	27513-3311	USA	
+pratanaa@gmail.com	Pratana	Boonrasti	532 N Commonwealth Ave # 5	Los Angeles	CA	90004	USA	818-357-4242
+pratibhas@comcast.net	Sandra	Rogers	18922 Braeburn	Evansville				
+prodigypoole@rocketmail.com	Debra	Riordan	Po Box 10466	San Rafael	NC	27260-5120	USA	336-284-1775
+psjancski@yahoo.com	Claudia	Josie	1738 1/2 Skyline Dr	Topanga	NY	10538-1307	USA	
+pso@sti.net	Jaime	Perez	2933 River Bend Ct	Corpus Christi				729-742-3030
+pss29340@yahoo.com	Maya	Srirama	250 King Street #754	San Franisco	SC	29340	USA	864-490-6861
+purnima.satya@yahoo.com	Lisa	Smith	232 Park Ave	Huntington	CA	94521	USA	925-785-1412
+QUACKERJERK@YAHOO.COCM	Radslav	Kats	2995 Ocean Pkwy	Brooklyn	WI	54936-1142	USA	
+R_BARNGROVER@YAHOO.COM	Randi	Barngrover	314 S Meigs St	Fort Gibson	OK	74434-8307	USA	
+raiamanjula@yahoo.com	Ms Peggy	Meegan	154 Coleridge Ter	Fremont				415-680-4625
+rama_khalsa@yahoo.com	Kim	Kuczon	2135 Williams St	Palo Alto	CA	95073-2667	USA	
+rama_khalsa@yahoo.com	Mr Dennis	Kuhlman	32 E Muskegon Ave Apt 2	Muskegon	CA	95073-2667	USA	831-475-6047
+ranjana925@yahoo.com	Susan	Pulley	Tolstraat 88-111	Amsterdam	CA	94521	USA	
+rasrossetti@gmail.com	Cristal	Sharma	66 Overhill Rd	East Brunswick	NA	87106	USA	901-827-2394
+raven_scott@hotmail.com	Megan 	Lipsett	3424 26Th St.	San Fransico	FM	33875	USA	
+raven33777@yahoo.com	Robert	Yarter	4064 S Francisco Ave	Chicago	AZ	85139-2922	USA	859-816-8136
+raylov_lt@hotmail.com	Katja	Serang	"Language Arts, 405 Litton Ave."	Palo Alto				
+REBECCACASPER@GMAIL.COM	Rebecca	Casper	1684 N Jackson St	Milwaukee	WI	53202-2004	USA	
+rebeccahuber@yahoo.com	Dr. Subrashi	Jain						513-237-6395
+rebeccaviz@gmail.com	Cecil	Worten	4616 W 129Th St	Holly Park	CA	94123	USA	917-304-8646
+redgatefarm1550@aol.com	Megan	Gould	#223 1021 Howay St	New Westminster	OK	73044-9406	USA	405-282-5313
+renay@ayurastro.com	A Marie	Plevritis	2025 Bettibart St	Fort Worth				
+reneefrench@yahoo.com	Marilyn	Gardido	1515 N. 36Th Apt 3	Saint Joseph				
+revati.lisa@gmail.com	Andre	Leach	8 Production Way	Avenel	LA	70115	USA	504-782-6733
+RFARMER@NORANCLINIC.COM	Felix	Echevarria	165 Sci Ln	Greensburg	MN	55408-2824	USA	
+RHARPER447@HOTMAIL.COM	Juni	Gripp	1087 Beach Ave	Atlantic Beach	IN	47804	USA	
+ricki12@rock.com	Mauro R	Kearney	1729 W Rascher Ave	Chicago	IL	60457	USA	
+rising@sonic.net	Pamela Outersky	Smith	11417 Pettis Rd	Orrick	CA	94565	USA	707-874-9337
+RMOYER4740@MSN.COM	Tanya	Nolit	Po Box 2384	Lakeside	IN	46507-8998	USA	
+ROBEFELL8@AOL.COM	Stephen B	Edwards	W G Mcconnell 3001 S Emily Dr	Beeville	CA	93901-4023	USA	
+robert.bolyard@att.net	Robert M	Bolyard	108 Herrod St	Petal	MS	39456	USA	106-544-7398
+robinfutrell@hotmail.com	Robin	A Futrell	721 Blake Ave Apt 6F	Glenwood Springs	CO	81601-3429	USA	
+rochelle@japanintercultural.com	Emory 	Larsen	8309 Linton Blvd	Columbus	CA	94062	USA	
+rockoutloudsis@hotmail.com	Ron	Hrisstege	456 Rahway Ave # 214-2	Elizabeth	SD	57313	USA	605-946-5913
+romyne01@hotmail.com	Sarah	Allred	4566 Riggs Rd	Pikeville	TN	37367	USA	
+ronlyr@gmail.com	Ronly	Blau	10407 Sw 112Th St.	Vashon	WA	98070	USA	206-567-4140
+ROOFING@LAWMASTERSINC.COM	Lee	Andrews	23553 County Road 16	Elkhart	IN	46516-5837	USA	
+ROSEWOOD@RELAX.LA	Kathy	Eisenhart			CA	91793-1553	USA	
+rozzjaja@gmail.com	Robin	Graf	2401 N 16Th St	Terre Haute	NY	14012-0036	USA	716-474-7787
+rsmadle@yahoo.com	Ilona	Mcdonell	23240 88Th Ave S Apt Aa203	Kent	IL	61852-0023	USA	507-854-3376
+russdogg7882@aol.com	Tori	Watson	24067 Vista Corona	Dana Point	TX	78704-6503	USA	512-398-9848
+RVNRT4VJNNY@HOTMAIL.COM	Carrie	Holmland			CA	93065-5114	USA	
+ryandematteo@gmail.com	Janice	Dewberry	4032 N Main St Apt 1009	Dayton	CA	94117	USA	415-889-3465
+saavedrades@yahoo.es	Joann	Khoudary	10 Springfield Rd	East Brunswick	GA	31055-0030	USA	
+sadiec@hotmail.com	Sadie	Cardonn	36 Brickyard Rd Unit 20	Essex Junction	VT	05452-4324	USA	
+sagianola@aol.com	Andrew	Gonzalez	2415 Hanover Ave Nw	Roanoke	CA	90028-5240	USA	
+salliedouglas@yahoo.com	Rachel	Duge	3019 Bryant Ave S Apt 204	Minneapolis	NV	89012	USA	702-232-6076
+sandhiya2@yahoo.com	Devorah	Roth	Po Box 442	Chalfont				949-842-7504
+sandracoleman@mac.e.mail.com	Sandra	Cassie	12413 Kingsbrook Rd	Oklahoma City	OK	73142-5116	USA	
+santiago@drinktoplease.com	Santiago	Casanueva	6720 Sw Ranch House Rd	Terrebonne	OR	97760	USA	541-504-6914
+sarah@experiencesage.com	C T	Lee	400 Peppertree Cir Apt H	Jackson	MO	64108	USA	877.210.2904
+sarahbelle123@msn.com		Warnken	5501 N La Palma Rd	Eloy				
+scana30@yahoo.com	Amy	Masterson	241 S. Milwaukee Ave	Wheeling	CA	94956	USA	415-663-8390
+scstockton@hotmail.com	Rebecca A	Valdez	73200 Tumbleweed Ln Apt 17	Palm Desert	CT	06226-2739	USA	860-423-5555
+sdelaojr@hotmail.com	Kimberly	Dejesus	300 S Broadway Apt 1K	Tarrytown				
+seerakingu@yahoo.com	Tammy	Laman Gray	12928 Virginia Ct	Madison	NY	12053-3101	USA	
+seerakingu@yahoo.com	C	Young	Po Box 41	Niland	NY	12053-3101	USA	
+sendawgash@aol.com	George	Ash	3478 Birch St	Grove City	OH	43123-3811	USA	
+senlightenment@yahoo.com	Sarah-Enlightenment	Center	31 Highpoint Rd	Southbury	CT	06488-1941	USA	203-264-3014
+senlightenment@yahoo.com	Rebecca				CT	06488-1941	USA	203-264-3014
+sevayoga@earthlink.net	Andrea	Jones	1Bay # 3 P.O Box 1010	Wrightsville				916-348-6535
+severedsoul4@yahoo.com	Jeannie	Clevenger	1314 Muriel Ln	Excelsior Springs	MO	64024-2928	USA	816-507-2398
+SEXY250SHOES@AOL.COM	Mona	Fischer	825 Calle Mejia Apt 1131	Santa Fe	PA	19151-2241	USA	
+shannonottens@yahoo.com	Andia	Plumlay	412 Investors Pl #102	Virginia Beach	CA	95407	USA	707-889-1199
+sharicarnahan@yahoo.com	Shari	Carnaham	277 Fragrance St	Manteca	CA	95337	USA	713-494-5396
+sharon@houston-yoga-ayurveda.com	Teresa L	Knowlton	725 Indian Ridge Way	Sevierville	TX	77429	USA	832-349-0374
+sharongogan@me.com	Marion	Grasberger	1300 Spring Creek Rd	Chattanooga	MA	01938	USA	978-356-0547
+SHEJACKSON1@YAHOO.COM	Jessie	Holland	3009 Richmond	Oakland	CA	92359-1308	USA	
+shermie.schafer@sbcglobal.net	Cynthia	Rice	10131 W. Oak Rd	Cedar Hills	IN	46220-1036	USA	
+shibana_s@yahoo.com.co.uk	Karen	Tannenbaum	537 W Roosevelt Blvd	Philadelphia	CA	94555	USA	510-676-9147
+shirazeh@aol.com	Steven B	Waligora	1762 Crown Point Rd Unit 581	West Deptford	MD	21044-2107	USA	301-717-2905
+shondrarosa@yahoo.com	Ami	Mirsky	26 Sargon St	Springfield	FL	32351	USA	
+short.bernice@sbcglobal.net	Keith	Paster	1101 Vermont St	Lawrence	IL	60615-6127	USA	
+shrishjain@gmail.com	Robert	Jones	Po Box 760	Jessup				
+sidewaystree@gmail.com	Mark Hsiu Hua	Dansart	10692 Grayson Ct	Jacksonville	OR	97219	USA	
+silvergreendragon@gmail.com	J	Lapsker	107 Wellington B	West Palm Beach	OR	97376-9516	USA	541-563-2354
+singhj@dentistry.ucsf.edu	Dr Michael C	Tartaro	8306 Wilshire Blvd # 2	Beverly Hills	CA	94117	USA	415-505-6354
+snmangini@yahoo.com	Jewel	Lopez	3810 Buena Vista Rd #24	Columbus	DE	19711	USA	
+soleil2sky@aol.com	Kate	Sparr	3702 Camelot Dr Se Apt 2B	Grand Rapids	FL	34952	USA	772-528-4322
+soniyamystical@hotmail.com	Christine	O'Neal	730A Middlefield Rd	Palo Alto	ON	I5R2W9	CAN	
+SONJAFITZPATRICK@YAHOO.COM	Lyla	Friedman			CA	92201-8850	USA	760-774-6270
+soquelglen@prodigy.net	Joe	Duggan	1056 Cragmont Ave	Berkeley	CA	95073	USA	
+spangrle@gmail.com	Cain	Preston	141 Ben Bland Rd	Alma				
+spemberton94606@yahoo.com	Kandyda	Ramos	6322 Branch Hill Cir	Charlotte				815-260-3203
+spice777@aol.com	Jody	Beresford	7436 Hyde Park Dr	Minneapolis	MN	55439-1742	USA	612-669-9477
+spiritnip@yahoo.com	Kobi	Carminati	1503 Pearson Ave	Mckinney	TX	75069-3458	USA	214-592-5263
+sports_mom21@hotmail.com	Robert	Ferro	48 Cliff Rd W	Wading River	VT	05401		
+SRUDDPHQUEEN@HOTMAIL.COM	Evelyn 	Rasmassen	Po Box 7712	New York	WA	98402-2005	USA	
+STEPHISAM3@AOL.COM	Mr Herbert	Rodrighgz	835 Mountain Ave Apt 1	Springfield	NJ	07016-2506	USA	
+stevyr427@yahoo.com	Michael	Salien			PA	19602-2829	USA	610-396-0182
+stillstandin42@yahoo.com	Carla	Poulin	475 Glenwood Avenue	Kelowna	NV	89822-1054	USA	
+streetwise@cox.net	Bonnie	Vansock	282 Monroe St	Brooklyn	OK	74008-2833	USA	9183695874
+strongsven@yahoo.com	Marc	Pena	25 Fayann Ln	Staten Island				
+surjitmadan@hotmail.com	Gina	Tawes	157 English Station Rd	Rochester				
+susan@atma-ayurveda.com	Shawonda	Rockwell	Po Box 111571	Los Angeles		1073 SE	Netherlands	
+susanbartholomew@sbcglobal.net	Susan	Bartholmew	120 Morning Side Court	Shelton	CT	06484	USA	203-924-1251
+t_lu@mac.com	Esther	Lindeman	36 Tennis Cres	Toronto				
+ta2dqt@gmail.com	Elise A	Lockhart	500 Ymca Way Apt 106	Ashland	AK	99708-3287	USA	
+ta2dqt@gmail.com	Millie Sue	Williams	Po Box 5427	San Antonio	AK	99708-3287	USA	
+talya66yes@yahoo.com	Dr Paul S	Mayer	865 University St	Memphis	CA	95062	USA	408-529-6842
+tammys0420@yahoo.com	Cleora	Weger	"R,#2, Box 171A"	Flat Rock	MS	39047-7202	USA	
+TangelMartin@aol.com	Connie	Loretz	Po Box 2310	Weaverville	SC	29006-1205	USA	
+tanner6@aol.com	Chomo	Ainsworth						214-391-1081
+tatgdess09@gmail.com	Aura 	Demare	29 Church St. #9	Mountain View				
+tegdirb78@aol.com	Walden	Robinson	1050 Porter St	Detroit	CO	80424	USA	
+TERESA@TERESAJANDERSON.COM	Teresa	Anderson	447 W Walnut St Apt B2	Kalamazoo	MI	49007-5141	USA	
+TERESA@TERESAJANDERSON.COM	Linda M	Wollschleger	178 Northland Ave # Up	Rochester	MI	49007-5141	USA	
+thebouldermatcompany@yahoo.com	Seonhwa	Kirba	3743Westmeadow Drive Apt201	Colorado Springs				
+thedixongroup@yahoo.com	Resident		506 N Mount Shasta Blvd Apt 9	Mount Shasta	CA	96067-2277	USA	530-925-2231
+thegreenafrican@gmail.com	Donnalynn	Marino	Po Box 102	Swiftwater	CA	90019	USA	323-674-5360
+TISHINPR@HOTMAIL.COM	Patrice	Humke	Po Box 38923	Colorado Springs	VA	22150-4308	USA	703-909-2612
+tiyka@live.com	Kathy	Korickaja	6355 S Shore Dr	Bear Lake	NJ	07011-3411	USA	973-339-9051
+tmeyer@millermeyerllp.com	Zachary	Murphy	791 Sw Claudia Ave	Port Saint Lucie	IN	46278-1191	USA	317-879-9482
+tomreed_treed@yahoo.com	Lorita Gloria	Saeugling	3217 West 62Nd St	Chicago	CA	95062	USA	
+tophatgreg@yahoo.com	Jen	Wylie	305 Greely Ave	Vevay	MT	59801-4064	USA	406-546-1106
+transformation.yoga.ayurveda@gmail.com	Bita	Bitajian						
+truely.beautiful@rocketmail.com	Lady	J	222 Barrow Dr	Augusta	TX	77084	USA	
+tsscrapin@gmail.com	Theresa	Brown	1141 Lakeland Ave	Lincolnton	NC	28092-6317	USA	704-732-8978
+TUCHU@WMCONNECT.COM	Laura	Carrozza	18710 S Nevada St	Spangle	WA	99031-9529	USA	
+turbowoman61@aol.com	Kim	Pavelock	26003 Pleasant Grove Road	Iola	OR	97055	USA	503-668-6052
+TWO4EVER01@HOTMAIL.COM	Dawn	Ramsay	696 N Stephen Dr	Palatine	NY	10307-2208	USA	
+txbunny29@aol.com	Marci	Brown	508 Chinquapin Dr	Eglin Afb	FL	850-2402656	USA	
+tyler_5115@yahoo.com	Jamie	Allen	Po Box 287	Harford	PA	18823-0287	USA	570-280-5070
+TYLERCAT@COX.NET	W.	Oladogba	9209 N. Virginia Ave	Kansas City	AZ	85226-3154	USA	
+u2bhealthy@gmail.com	Jocylin	May	Po Box 1295	Lucerne	NH	03784	USA	323-637-4101
+untamedspirit95@aol.com	Rebecca	Wilson	3172 Blake St	Joplin	CT	6382	USA	860-367-5354
+ursularachel@frontier.com	Bernard	Gedleski	5134 Phillips Run	Canal Winchester	NY	12842-1502	USA	
+usasurtilala@gmail.com	Narendra	Chevli	10475 Gulf Shore Dr Apt 125	Naples	FL	34108	USA	239-597-2625
+v_ericksen@hotmail.com	Pata	Farbe	7116 West Lake Dr	Lake Clarke Shores	IL	61244	USA	309-755-2579
+valerie.knight@dss.virginia.gov	Melanie	Lane	5406 N Lake Huckleberry Dr.	Sebring	VA	22206	USA	703-578-6691
+Velvets_Vivid_Day_Dreams@msn.com	April	Wisner	323 State St	Charlotte	GA	30906-4434	USA	706-951-6589
+venicerules@hotmail.com	Miss Petra Kuba	Terwin	36200 16Th Ave S	Federal Way	NY	11743-2703	USA	631-549-6730
+vermontmovies@gmail.com	Jenn	Koz	112 Waterfall Ct	Bloomingdale	Vt	05255-4472	USA	
+VFAUST89@YAHOO.COM	Brenda	Fischer	722 Holly Ln	Mount Holly	NY	11373	USA	706-474-3170
+VICKINYOGI@HOTMAIL.COM	Sandra	Ehlers	18 Buckspark Ct	Potomac	CA	91331-1937	USA	
+Victor22772009@yandex.ru	Natalie	Johnson	4307 Main St	Homestead		660001	RUS	
+VICTORIA_QUIXNET@YAHOO.COM	Ranjana	Patel	964 Rosehedge Ct	Concord	TX	76201-5409	USA	
+VIKTORKIEV2002@YAHOO.COM	G	Brown	1500 N Angel St Trlr 39	Layton	UT	84041-1984	USA	801-682-8470
+VINCENTSPOCK2@COMCAST.NET	Erika	Townsend	5610 Ne County Line Rd	Erie	NJ	08232-1227	USA	
+VINNYLUTAR@PEOPLEPC.COM	Tracey	Bicki	Po Box 1002	Eagle River	WI	54521-1002	USA	
+vivianyoga@yahoo.com	Elizabeth	Jackowski	203 Baker Dr Sw	Supply	TX	77380-2693	USA	281-748-4026
+volznoah@hotmail.com	Jamie	Wubaal	505 Fourth St	Hartford	OR	97520	USA	541-513-7700
+VZEZ19H@VERIZON.NET	Jenny	Family	50 E Market St Apt 334	Salinas	NY	11216-1406	USA	718-544-2429
+VZEZ19H@VERIZON.NET	Joseph	Wilson	7819 Nw 228Th St	Raiford	NY	11216-1406	USA	718-544-2429
+WACOURSON@HOTMAIL.COM	William	Chusmir	109 N Fullerton Ave	Montclair	NJ	07042-3831	USA	
+wedelrodrick@msn.com	Jan				VA	23804-1000	USA	
+wendycoll1170@yahoo.com	Wendy	Coll	1170 E Brokenridge Rd	Ferndale	MI	48220	USA	
+whitewolf_6_72@yahoo.com	Jacqueline	Cox	4450 Broad River Rd	Columbia	NJ	08108-1625	USA	856-673-8522
+willsimple1@yahoo.com	Will	Bennett	27720 Stephenson Hwy Apt 210	Madison Hts	MI	48071-3154	USA	
+WITCHYTESS3@HOTMAIL.COM	Mike	Lankford	Po Box 485	Great Barrington	TN	37876-1889	USA	
+WMSTURINO@YAHOO.COM	Ted	Verges	N6269 Hilltop Ln	Johnson Creek	WI	53149-9420	USA	262-363-0615
+wonderlustyogini@gmail.com	Mr Benjamin		4303 Washington Ave Se	Charleston				541-979-6373
+wunderznevercese@yahoo.com	Sarah	Teets			TN	37923-5845	USA	865-249-7790
+xetahtica@hotmail.com	Graziela	Childers						
+xobrittanymarie@tampabay.rr.com	Catherine	Zaremba	1712 Thunderbird Dr	Mckinleyville	FL	33811	USA	863-648-4002
+yael1@ca.rr.com	Sunita	Turner	18655 Ne 63Rd Way	Redmond				
+Yakasena@hotmail.com	Lissa	Shuttle	21 Lyndenhurst Ln	Palm Coast	BC	V7J2N2	Canada	
+yan62@abv.bg	Mr Tim S	Johnson	Po Box 1142	Fond Du Lac		6607	BULGARIA	+359899227422
+yana@vladivostok.com	Tiffany	Hare	115 Ramble Rd	Cherry Hill	SC	29928	USA	843-415-2772
+yisrayl9494@yahoo.com	Miss Robin	Smith	5747 N Moody Ave	Chicago	IL	60625	USA	
+YOGA@NATURALBODY.COM	Darlene D	Hines	627 Marina Blvd	San Francisco	GA	30080-6359	USA	
+YOGADELIA@YAHOO.COM	Roz	Ginther	Po Box 36	Barker	SC	29803-5207	USA	803-270-1685
+yoginikate@gmail.com	Jules	Maugeri	711 Bahama St Ne	Palm Bay	CA	94107	USA	415-676-1741
+youniqueoils@yahoo.com	Adriana	Boas						
+yoyopapa@ymail.com	Mark	Bestys	215 Clinton St # 2	Penn Yan	NY	14527 1718	USA	315-694-7310
+zenofcat@gmail.com	Peggie	Cox	3902 20Th Place	Temple Hills	AZ	85009-5958	USA	
+payman@stanford.edu	Mary-Alice	Quinn	1285 N. Crescent Heights Bl	W. Hollywood	CA	94022	USA	408-757-5894
+zoefotoni@live.com	Noah	Volz	725 N. Laurel	Ashland	CA	95811	USA	916-529-1079
+	Elonk	A.	33404 26Th Pl Sw	Federal Way	WA	98023-2703	USA	
+	Mary	Aarmbruster	3909 Raff St	Pittsburgh	PA	15207-1013	USA	
+	Anna	Abreu	1925 N Kostner Ave	Chicago	IL	60639-5109	USA	
+	Kate	Ackerman	3603 Iris St N	St Petersburg	FL	33704-1113	USA	
+	Jennifer	Adams	Po Box 970082	Boca Raton	FL	33497-0082	USA	
+	Karin	Adams	3483 Lumpkin Ct	Douglasville	GA	30134-3044	USA	
+	Debi	Aden Rn Ohn	2125 Haining Rd	Vicksburg	MS	39183-9056	USA	
+	Tori	Adikes	24067 Vista Corona	Dana Point	CA	92629-1649	USA	
+	Joann	Agajanian	19 Beaver Dr	Eureka Springs	AR	72631-4512	USA	
+	Kim	Albro	104 Castro St	Browns Mills	NJ	08015-2052	USA	
+	Lola	Alexander	Po Box 342	Wapanucka	OK	73461-0342	USA	
+	Tiffany	Alexander	1914 Woodbrook Ln	Beachwood	OH	44122-1200	USA	
+	Elizabeth	Alimaras	5005 203Rd St	Oakland Gardens	NY	11364-1038	USA	
+	Alexander	Allen	369 Glendale St	Highland Park	MI	48203-4329	USA	
+	Brenda	Allen	3051 Morgans Mill Rd	Goodview	VA	24095-2809	USA	
+	D	Allen	2304 Olmo St	San Juan 	TX	78589-4159	USA	
+	Heather	Allen	364 Valley Rd	River Edge	NJ	07661-1136	USA	
+	Joan	Allen	34807 N 32Nd Dr Apt 3078	Phoenix	AZ	85086-4023	USA	
+	Karen	Allen	180 Caldwell Rd	Campobello	SC	29322-9631	USA	
+	Paulette	Allen	1643 Castro St. #6	San Francisco	CA	94114	USA	415-648-8044
+	Sue Ellen	Allen	Po Box 3600	Goodyear	AZ	85338-0908	USA	
+	Dorothy	Almaguer	3517 90Th St	Jackson Heights	NY	11372-5833	USA	
+	Joe	Amaral	639 Waverley Rd	North Andover	MA	01845-4214	USA	
+	Gerge	Amatuzio	30909 16Th Pl Sw Apt D	Federal Way	WA	98023-4398	USA	
+	Lindsey	Amrein	651 Vista Dr.	Redwood City	CA	94062	USA	
+	Divya	Anand	2083 Ornellas Dr.	Milpitas	CA	95035	USA	408-209-6075
+	Jermain H	Anatolivich	25 Lawrence St	Quincy	MA	02169-8715	USA	
+	Mrs Evird	Anderson	6681 Barnwell Rd	Blackville	SC	29817-4063	USA	
+	Gernita	Andersone	Po Box 341096	Los Angeles	CA	90034-9096	USA	
+	Sharilla	Andrwes	82 Crestwood	Crawfordville	FL	32327	USA	
+	Terri	Anglin	1342 Chestnut St	Alden	NY	14004-1424	USA	
+	Debra	Ansay	12170 Sproul St	Norwalk	CA	90650-3152	USA	
+	Lisa M	Aragon	222 Lee Ave	Horseheads	NY	14845-1952	USA	
+	Christy	Argust	2650 Springland Dr	Sparks	NV	89434-2641	USA	
+	Stacy	Armisto	4124 Foreman Ln Apt 3	Louisville	KY	40219-4345	USA	
+	Michele A	Arnold	11 Seneca Pl	Albany	NY	12208-1065	USA	
+	Carrie	Arrington	Po Box 1247	La Fayette	GA	30728-1247	USA	
+	Veronica	Ashe	2508 Nw 19Th St	Oklahoma City	OK	73107-3939	USA	
+	Michael	Ashley	41 Main St	Argyle	NY	12809-7761	USA	
+	Patricia	Avery	Po Box 1010	Wrightsville	AR	72183-1010	USA	
+	Eric	B	2911 Arthur Kill Rd	Staten Island	NY	10309-1101	USA	
+	Harvey	B	2305 W Mound Rd	Decatur	IL	62526-9369	USA	
+	Nancy	Bailey	1053 E Sample Ave	Fresno	CA	93710-5515	USA	
+	Sue Ann	Baker	795 Lake Nora South Ct Apt F	Indianapolis	IN	46240-1774	USA	
+	Elise M	Baldridge	1321 10Th Ave S	Fargo	ND	58103-3001	USA	
+		Bao	204 Montauk Hwy	Westhampton Beach	NY	11978-1709	USA	
+	J	Barczyk	604 Columbia St #2	Utica	NY	13502	USA	
+	Candie	Barile	4475 English Oak Ct	Mason	OH	45040-2531	USA	
+	Linda	Barker	2865 N Strawberry Dr	Fayetteville	AR	72703-6608	USA	
+	E	Barlet	Po Box 121	Wellersburg	PA	15564-0121	USA	
+	David	Barner	Rr 1 Box 6A	Rushville	IL	62681-9788	USA	
+	Sarita	Barnett	254 S 11Th St	Philadelphia	PA	19107-6735	USA	
+	Evelyn	Barrel	30488 St Hwy 64 Lot 11	Wills Point	TX	75169-9288	USA	
+	Jennifer	Bassettoin	Po Box 41	Suamico	WI	54173-0041	USA	
+	Venecia	Battaglie	416 Mott Ave	Santa Cruz	CA	95062	USA	
+	Susan	Battish	84 River St Apt 2	Jaffrey	NH	03452-6583	USA	
+	Jasmine	Baxter	2 Tower Pl	Albany	NY	12203-3735	USA	518-438-3585
+	David A	Beam	8667 Athena Ct	Lehigh Acres	FL	33971-3753	USA	
+	Mrs Barbara	Beauary	19 Graham St	Waterford	CT	06385-2028	USA	
+	Rob	Beauchamp	505 O St Nw Apt 3	Washington	DC	20001-3438	USA	
+	Billy	Beauregard	118 Gatewood St	North Charleston	SC	29418-3008	USA	
+	Ann Marie	Beckingham	11810 Sunset Trl	Minneapolis	MN	55441-5908	USA	
+	Ms Caren	Beecher	5316 8Th Ave Ne	Seattle	WA	98105-3615	USA	
+	Peter	Beecher	259 Shady Hollow Cir Se	Cleveland	TN	37323-7742	USA	
+	Ms Marie	Beeler	3223 Duke St # 32	San Diego	CA	92110-5401	USA	
+	Ms Marilyn	Beilfus	4406 10Th Ave	Brooklyn	NY	11219-1911	USA	
+	Billy	Belcher	1928 Maiden Ln Sw	Roanoke	VA	24015-2320	USA	
+	Teresa	Belcher	Po Box 855	Buchanan	VA	24066	USA	
+	Sheenam	Bell	2468 Stanford Way	Antioch	CA	94531-8263	USA	
+	Ragara	Belovarac	Po Box 195	North San Juan	CA	95960	USA	415-380-8381
+	Jacklyn	Belshe	708 Meadow Ct Apt A	Peculiar	MO	64078-2569	USA	
+	Theresa	Bendickson	229 Grove Ridge Dr	Winter Haven	FL	33880-1013	USA	
+	J	Benecz	4000 Westbrook Dr Apt 211	Cleveland	OH	44144-1249	USA	
+	Brenda	Bennett	17271 Hart Sough Rd	Laurelville	OH	43135-9523	USA	
+	Mr Chris	Berman	6322 Branch Hill Cir	Charlotte	NC	28213-6408	USA	
+	Kathleen	Berry	1605 E Epler Ave	Indianapolis	IN	46227-4601	USA	
+	Karen	Best	5615 Horse Farm Rd	Summerfield	NC	27358-9748	USA	
+	Karen	Bhatia	8131 Kirkham Ln	Humble	TX	77338-1806	USA	
+	Phil	Bianco	175 Southgate Cres	Massapequa Park	NY	11762-3818	USA	
+	Deborah	Bible	601 Walnut Hill Rd	North Yarmouth	ME	04097-6302	USA	
+	J	Bickenheuser	8 Mary St	Windham	NH	03087-1703	USA	
+	Bobbie	Biddle	2022 Hwy 126 Lot 4	Bristol	TN	37620	USA	
+	Mr James	Biehl	6423 Grace Ln	Pearland	TX	77584-2637	USA	
+	Richard	Biehl	3810 Winding Oak Cir	Dayton	OH	45424-4890	USA	937-825-1206
+	Brittany	Bilbrey	15555 S Calle Rinconado	Vail	AZ	85641-9487	USA	
+	Patrick	Billiot	"3440 E. Southern Ave, Unit 1183"	Mesa	AZ	85204-5663	USA	
+	Bobbi	Billman	800 Stine Hill Rd	Dallastown	PA	17313-9607	USA	
+	Amanda	Bin	615 3Rd St Sw	Cannon Falls	MN	55009-2541	USA	
+	Kristen	Bintliff	3906 Charlemagne Way Sw	Marietta	GA	30064-1587	USA	
+	Mandi	Black	Po Box 520005	Flushing	NY	11352-0005	USA	
+	Anna	Blackwood	5760 Pearson Rd	Patterson	GA	31557-5810	USA	
+	J	Blaedow	604 Columbia St Apt 2	Utica	NY	13502-3406	USA	
+	Julia	Blaylock	1208 Crescent St	Denton	TX	76201-2717	USA	
+	Mrs Kristal Kim	Blount	1808 21St St Apt A	Rock Island	IL	61201-3648	USA	
+	Murry Alfred	Bludworth	2138 W Morten Ave Apt B	Phoenix	AZ	85021-7047	USA	
+	Laurie	Blumenherst	901 Kimbro St	Taylor	TX	76574-2515	USA	
+	Helena	Boatright	14875 Sw 40Th St	Davie	FL	33331-2777	USA	
+	D	Bobble	144 E Helena St Apt 417	Dayton	OH	45404-1062	USA	
+	B C H	Bogart	4710 Rock Nettle	San Antonio	TX	78247-5537	USA	
+	Michael	Bomhoff	7 Pineview Dr	Toms River	NJ	08755-8026	USA	
+	Chris	Bond	2615 E 44Th St	Erie	PA	16510-3943	USA	
+	Diane	Bond	Po Box 86	Placerville	CA	95667-0086	USA	
+	Julie	Bonilla	17000 Soda Springs Rd	Los Gatos	CA	95033-8665	USA	
+	Larry 	Borkar	1811 12 St. Se	Decatur	AL	35601-5257	USA	
+	Mr Hemant	Borkar	Po Box 608	Spruce Pine	NC	28777-0608	USA	
+	Angela	Borsukoff	8003 Brookstone Ct	Severn	MD	21144-4409	USA	
+	Ervin P	Botero	1708 Malone Rd	Burlington	NC	27215-6352	USA	
+	Parnell	Boucha	9595 W Quincy Ave	Littleton	CO	80123-1159	USA	
+	Paula	Bowman	12313 Clarke Rd	Columbia Station	OH	44028-9659	USA	
+	Marca	Bowser	483 Whealton Rd	Hampton	VA	23666-2861	USA	757-681-3097
+	Felicia	Bradshaw	10915 Glencannon Dr	Whittier	CA	90606-1523	USA	
+	Ms Ledith R	Braithwaite	780 Saint Marks Ave Apt 7E	Brooklyn	NY	11213-6215	USA	
+	Sarah	Brandnew	100 Court Street	Belfast	MI	O4915	USA	617-257-6512
+	April	Brazzil	323 State St	Charlotte	NC	28208-4244	USA	
+	Bonnie	Brazzil	102 W Barnegat Way	Lavallette	NJ	08735-1903	USA	
+	Kathleen	Bremmer Capuano	14400 John Humphrey Dr	Orland Park	IL	60462-2897	USA	708-743-1755
+	Brenda	Brinkhous Hatch	150 Cognac Cir	Sacramento	CA	95835-2035	USA	
+	Mrs Laurie	Brinkhous Hatch	124 Penny Rd	High Point	NC	27260-2506	USA	
+	Sharon	Brisendine	10120 Brandywine Ln	Port Richey	FL	34668-3763	USA	
+	Chris	Brittain	406 Bruce Road	Cherry Hill	NJ	08034-1813	USA	
+	Al	Broux	H 68911 P.O. Box 8101	San Luis Obispo	CA	93409-0001	USA	
+	Denyse T	Brown	1036 County Road 53	Myrtle	MS	38650-9412	USA	
+	James	Brown	604 Columbia St	Utica	NY	13502-3406	USA	
+	Rowan	Brown	826 1St St	Prescott	AZ	86301-2511	USA	
+	Lillie 	Browne	Po Box 5462	Oracle	AZ	85623-5462	USA	
+	Charlotte	Broz	105 Bay Rdg	Chocowinity	NC	27817-8999	USA	
+	Krystal	Bruno 	251 E Walnut St Apt C	Nazareth	PA	18064-2251	USA	
+	Shay	Bryant	6304 S 10Th St Apt 2	Fort Smith	AR	72908-7275	USA	479-522-3121
+	Anna	Buck	8655 Jones Rd Apt 1728	Houston	TX	77065-5122	USA	
+	Antonio R	Budd	2600 Hwy 301 South	Jesup	GA	31599	USA	
+	Jackie	Budd	403 17Th Ave Apt 22	Columbus	GA	31901-3354	USA	
+	Lillie E	Buddle	Po Box 5462	Oracle	AZ	85623-5462	USA	
+	Jakie	Buffet	99 E Utica St	Buffalo	NY	14209-1927	USA	716-883-1685
+	Benjamin	Bullington	6406 N Coolidge Ave	Tampa	FL	33614-4841	USA	
+	Harry	Bupp	5175 Greg Pl	Riverside	CA	92509-3930	USA	
+	Maria	Burgett	275 41St St # S110	Oakland	CA	94611-5649	USA	
+	Rosemary	Burgott	"3828 2Nd St, Se Apt G2"	Washington	DC	20032-3058	USA	
+	C E	Burian	368 Cove Ln	Martinsburg	PA	16662	USA	
+	Gail	Burke	4421 Nw 41St Ln	Gainesville	FL	32606-4522	USA	
+	Mr Louis	Burke	6927 Simpson Ave Apt 5	North Hollywood	CA	91605-6139	USA	
+	Kelly	Burks	40 Lincoln Rd Apt 3A	Brooklyn	NY	11225-3735	USA	
+	Angela	Burnett	Po Box 1627	Millbrook	AL	36054-0034	USA	
+	Paul	Burpee	2732 Transit Rd	Buffalo	NY	14224-2523	USA	
+	Paul	Burton	Po Box 366	Lancaster	NY	14086-0366	USA	
+	Ms Rosemarie	Buser	408 Hoppen Dr # 4H	Central Islip	NY	11722-4525	USA	
+	Lisa	Butler	220 Waverly Rd	Scarsdale	NY	10583-6747	USA	
+	Liz 	Butler	11552 Nw 80Th Street	Medley	FL	33178-1434	USA	
+	John Ernest	Butts	406 Lang Rd Apt 801	Portland	TX	78374-2608	USA	
+	Arleen	Buzas	517 Phillip Dr	Sierra Vista	AZ	85635-1142	USA	
+	Sharon	Byrd	1015 Union Ave Apt 29	Bogalusa	LA	70427-2348	USA	
+	Charlene	Callahan	23381 Aurora Rd Trlr 302	Bedford	OH	44146-1782	USA	
+	Carol	Cammin	Po Box 3063	Sparks	NV	89432-3063	USA	
+	Cassy	Campbell	1913 Hay Ter # 1	Easton	PA	18042-4614	USA	
+	Karen	Campbell	Po Box 31064	Flagstaff	AZ	86003-1064	USA	
+	Dave	Candino	40 Nash Pl	Burlington	VT	05401-1420	USA	
+	Ms Eileen	Candino	645 49Th St	Grand Junction	MI	49056-9145	USA	
+	Ann	Capellini	1602 Gulf St	Connellsville	PA	15425-1721	USA	
+	Mr Donald	Capellini	C N 905	Avenel	NJ	07001	USA	
+	Lynda	Cappabianca	227 Hunter St	Battle Creek	MI	49017-4626	USA	
+	Dave	Caravia	1708 Linda House Way Apt 3	Louisville	KY	40213-1478	USA	
+	Fawn	Card	1111 6Th St # B	Clarkston	WA	99403-2676	USA	
+	Anna Marie	Carter	P.O. Box 431312	Los Angeles	CA	90043	USA	
+	Koote	Caskey	Po Box 10461	Jackson	WY	83002-0461	USA	
+	Rosemary	Caskey	Po Box 72266	Louisville	KY	40272-0266	USA	502-290-0015
+	Clag	Catino	3915 E Camelback Rd Apt 265	Phoenix	AZ	85018-2606	USA	
+	Tonya	Center	20 E A St # 204	Yakima	WA	98901-2606	USA	
+	Joe	Challa	42 Greenway E	New Hyde Park	NY	11040-2221	USA	
+	Lavanya	Challa	6 Catherine Ct	South Amboy	NJ	08879-2905	USA	
+	Jeanine	Chapman	3281 Old Naches Hwy	Naches	WA	98937-9231	USA	
+	Laura	Chapman	13109 E 59Th Ter	Kansas City	MO	64133-3679	USA	
+	Jennifer	Chase	2903 Valley Dr	Louisville	KY	40299-3135	USA	
+	Rick	Chase	2586 Henderson Rd	Redding	CA	96002-1829	USA	
+	Karol	Chavers	Po Box 1765	Mobile	AL	36633-1765	USA	
+	Ms Tammy	Chernok	505 W Camp Rd	Sanford	MI	48657-9432	USA	
+	Susan	Christensen	21 Newell Dr	Bloomfield	NJ	07003-3023	USA	
+	Mr Michael J	Chusmir	2303 Popkins Ln	Alexandria	VA	22306-2444	USA	
+	Joann	Citro	9037 Teal Dr	Murrells Inlet	SC	29576-9743	USA	
+	Steve	Citro	112 Auburn St	San Rafael	CA	94901-5206	USA	
+	Dena	Claiborne	4756 Smith Rd	Hamilton	OH	45011-8455	USA	
+	Daniel	Clark	441 New Karner Rd	Albany	NY	12205-3884	USA	
+	Jo	Clark	22415 Rue Canyon Ct	Katy	TX	77450-7683	USA	
+	Ramil	Clores	135 Williams Ave	Jersey City	NJ	07304-1128	USA	
+	Anthony	Cobb	Po Box 69	London	OH	43140-0069	USA	
+	Emily Lois	Codd	790 S Main St Apt 422	Lima	OH	45804-1560	USA	
+	Alice	Cohen	1555 Spring Harbor Dr Apt K	Delray Beach	FL	33445-6882	USA	
+	Miss	Cohen	2908 N Elmendorf St	San Antonio	TX	78201-4996	USA	
+	Heather	Colby	717 Field Ave	Fieldale	VA	24089-3298	USA	
+	Jennie	Coleman	9700 Dee Rd Apt 301	Des Plaines	IL	60016-1734	USA	
+	Judi	Coll	1850 Foster Dr	Conway	AR	72034-7292	USA	
+	Heather	Collins	1114 Main St	Shelbyville	KY	40065-1420	USA	
+	Amy	Compton	756 Backhus Estate Rd	Glen Gardner	PA	19120-1026	USA	
+	Maureen D	Conroy	23 Juniper Hill Dr	Coventry	CA	94404-1901	USA	
+	Scott	Cook	9380 Old Erie Pike	Clearfield	PA	18504-3207	USA	
+	Cleo	Cooper	820 S E St Apt 41	Oxnard	RI	02816-6437	USA	
+	Kimberly	Cordz	2269 County Road 1440	Alex	PA	16830-8423	USA	
+	Vincent	Cornelius	24720 Bombay Ave	Wilmington	CA	93030-7032	USA	
+	Julie	Cortez	1501 J T Eisley Dr	Corona	OK	73002-2203	USA	
+	A	Costa	4029 Harper Ave	Bronx	CA 	90744-1111	USA	
+	Cynthia	Costa	Po Box 9007	Framingham	MI	48324-1641	USA	
+	Sherry	Cote	3202 Wears Valley Rd	Sevierville	NY	10466-2403	USA	
+	S	Couris	425 Lincoln Ave	Collingswood	CA	94118	USA	
+	Yvonne	Cowen	Po Box 1533	Valparaiso	TN	37862-8393	USA	
+	Lonnie	Cox	12120 Savage Dr	Midway	NY	12589-0700	USA	
+	Robin	Cramer	646 Moonlight Stroll Street	Henderson 	MD	20748	USA	
+	Jessica	Crater	1916 N Hwy 36 Byp 1238727	Gatesville	MI	48146-3725	USA	
+	Jennifer	Craze	206 E Mcknight Dr	Murfreesboro	NC	27107-9112	USA	
+	Christine	Cressie Isoni	221 Bodmunn #9	Cincinnati	NV	89002	USA	
+	Eugene	Cropper	1634 Saint Marks Ave Apt 6C	Brooklyn	MD	20748-4316	USA	
+	L	Cross	3401 Powerline Rd	Fort Lauderdale	TN	37130-2550	USA	
+	Mireya	Curella	189 Calle Jose Padin Urb Huyke # 1	San Juan	FL	33309-5953	USA	
+	Rita	Curran	6338 Hardwood Ln	Cicero	PR	00918-2437	USA	
+	James	Curry	Po Box 999	Pinckneyville	TX	79720-7789	USA	
+	George R	Cydzukich	2432 N Neva Ave Ste 39	Chicago	PR	00918	USA	
+	Denise	D Onofrio	Po Box 9158	San Jose	NY	13039-8837	USA	
+	Diane	Dalrymple	117 W. 13Th St. #27	New York	PR	00918-2437	USA	
+	Kim	Dalrymple	1348 Adcox Sq	Stone Mountain	IL	60707-2007	USA	
+	Denise	Daly	1694 Cordilleres Rd	Red Wood City	OH	44312-4353	USA	
+	Elizabeth A	Damian	1131 N 7Th Ave Apt 4	Altoona	AZ	86001-4831	USA	
+	Crystala	Daniels	742 Fm 712	Marlin	NY	10011-7833	USA	
+	Virginia	Daniels	410 W Central Ave	Titusville	GA	30088-4545	USA	
+	Salu	Darty	785 N Bayshore Dr	Safety Harbor	PA	16601-6200	USA	
+	Karen E	Davis	2402 Se 9Th Ct	Gresham	FL	32601	USA	
+	Kathy	Davis	5540 Royal River Rd	Braham	CA	92150-9001	USA	
+	Melva	Davis	506 Plaza Dr	Woodbridge	TX	76367-6568	USA	
+	Ms Brenda	Davis	117 Macon St	Danville	OR	97501-8519	USA	
+	Sheila	Davis	916 Forrest Ave	Antigo	DC	20007-4278	USA	202-421-8171
+	Brandy	Deangelo	1105 Zephyr Cir	Monroe	TX	76262-5432	USA	
+	Catherine	Decordova	1917 Snyder Avenue	Greensburg	OR	97080-1325	USA	
+	Dave	Decordova	1413 Woodlawn Ave	Maryville	MN	55006-2761	USA	
+	Jerry	Decordova	1139 Campground Dr	Lawrenceburg	NJ	07095-1111	USA	
+	Cate	Decossy			VA	24540-2625	USA	
+	Lela M	Degress	353 Anns Blvd	Livingston	MD	20748-4316	USA	301-630-6284
+	Kathy	Del	266 Miller Ave Apt 1	Mill Valley	NY	11210	USA	
+	Shirley	Delossantus	1916 N Hwy 36 Bypasu	Gatesville	TN	37804-4167	USA	
+	June	Dels	Po Box 1416	Jesup	IN	47025-8481	USA	
+	Jenny	Demellopine	16224 N 28Th St	Phoenix	OH	44446-3970	USA	
+	Oliver	Demille	5296 N 1800 E	Cedar City	NY	10591-5309	USA	
+	Margaret	Denham	11489 Ogden St	Northglenn	CA	92081-8612	USA	
+	Suzanne 	Dennis	"7061 W. Vienna Road, Lot 11"	Clio	CA	94941-2883	USA	
+	Ms Helena	Devries	5027 N Mango Ave # 01	Chicago	MS	39401-9613	USA	
+	Dhaval	Dhru	2126 Sw 29Th Pl.	Federal Way	AZ	85032-3002	USA	
+	Page	Dickey	970 Sidney Marcus Blvd #1508	Atlanta	CO	80233-2138	USA	
+	Rex	Dickey	#C57416  Po Box 3481	Corcoran	MI	48420-9429	USA	
+	Michelle	Dickman	778 Shepherds Way	Greenwood	FL	33021-6726	USA	
+	Nella F	Disher	433 Lambdin Rd	Andersonville	AZ	85048-8829	USA	
+	William	Dishman	5011 Maple St Apt 1	Dearborn	NY	11003	USA	
+	Nicole	Ditty	793 N River Rd	Halifax	NY	12901-7324	USA	
+	Andy	Dixon	Po Box 60801	Palo Alto	FL	34695	USA	
+	Tina	Dixon	2265 Hubbard Rd	Macon	IL	60630-4608	USA	
+	Barbara	Dobkins	193 Parrish St	Canandaigua	WA	98023	USA	253-709-9818
+	Jeanne	Dobson	523 Sleepy Hollow Ct	Tamassee	TN	37398-1927	USA	
+	Rodney	Doll	900 Kings Hwy	Warwick	NC	27455-9252	USA	
+	Tom	Dorring	4 Tanner Hollow Dr	Albany	TN	37705-3815	USA	
+	Phlanda	Dorst	813 Harmeling St	Bristol	MI	48126-3241	USA	
+	Jeffrey	Doucette	Po Box 100	South Walpole	CA	94306	USA	
+	Jo	Doucette	P.O. Box 100 	South Walpole	GA	31217-5837	USA	
+	Kateline	Doud	1520 Glen Ave # G 2	Lewisburg	VT	05404-2243	USA	
+	Sallie	Douglas	714 Smokey Mtn. Ave	Henderson	NY	14424-1726	USA	
+	Stephanie	Drewitt Jerman	1418 67Th Ave # C	Philadelphia	NY	10990-3499	USA	
+	M	Driscoll	327 Wilton Rd	Westport	NY	12205-2959	USA	
+	Marita	Driscoll	327 Wilton Rd	Westport	VA	24201-4039	USA	
+	Max	Dumnell	1140 E Orange St Apt 212	Tempe	NY	11694-1953	USA	
+	Mr Ken	Dunford	117 Palmyra Dr	Vista	CA	92110-3354	USA	
+	Vicki Lisa	Durbin	12713 Gain St	Pacoima	PA	19126-2761	USA	
+	Lamont	Durity	238 32 116Th Ave	Elmont	DE	19806	USA	302-778-4870
+	Gail	Eckhardt	2000 Claymont Dr Apt 205	Uhrichsville	MN	55408-2824	USA	
+	Annette	Edwards	8040 Deepwood Blvd Apt A8	Mentor	AZ	85281-4160	USA	
+	Betsy	Edwards	702 Greenup St Apt 223	Covington	FL	34482-1479	USA	
+	Robin	Edwards	746 Emory Rd	Blaine	CA	92083-8019	USA	
+	Sonac	Egan	1770 Strathcona Dr	Detroit	CA	93924-9706	USA	
+	Ms	Elaine	5049 Bass Chapel Rd	Greensboro	WV	25438-1662	USA	
+	P	Elaine	Po Box 6133	East Saint Louis	IN	47327-1113	USA	
+	Marcos	Elizalde	440 W 4Th St	San Dimas	CA	94518	USA	925-787-4899
+	Mustafin	Ell	504 H St Ne	Auburn	CA	94062	USA	
+	Laura	English	592 Georgia Ridge Rd	Searcy	TN	37709-2426	USA	
+	Jery L	Eppinger Jr	Po Box 1296	Norton	MI	48203-1491	USA	
+	Bonnie	Epps	282 Monroe St	Brooklyn	MD	20854-4265	USA	
+	Jeffrey	Epps	121 Hemlock Rd	Pompton Lakes	WI	53217-4077	USA	
+	Jeffrey	Escobar	218 2Nd Ave Apt 103	Asbury Park	NC	27455-9252	USA	
+	Diana	Esser	Po Box 2182	Fort Bragg	IL	62202-6133	USA	
+	Giorgio	Estain	Box 237	Malton	ID	83660-7006	USA	
+	Sharon	Evans	9288 Innis Rd Ne	Alden	OH	43082-9713	USA	
+	Barbara	Eve	193 Farrish St	Canandigua	GA	30043-6504	USA	
+	Melissa	Evelyn	910 Mount Zion Rd Ne	Wesson	AB	T1W2T9	CAN	
+	Danielle	Everitt	22 Deerlodge Ct #22B	Owings Mills	CA	95602-2444	USA	
+	Mary	Ewert	4320 27Th Ave Ne	Naples	IL	60546-1922	USA	
+	Katalin	Farago	508 Burke St	Keokuk	NJ	07442-1319	USA	
+	Anamaria	Faria	7374 Dancy Road	San Diego	NJ	07712-6255	USA	
+	Kathryn	Farmer	261 Hildred Dr	Burlington	NY	11377-2757	USA	
+	Maria	Farmer	2048 W 159Th St	Torrance	TX	77586-6309	USA	
+	Silas	Farmer	7725 Nelson Loop Unit A	Fort George G Meade	IA	52072-8040	USA	
+	David	Farnell	427 Budlee Rd	Shongaloo	MI	49612-9666	USA	
+	Bonnie	Faulkner	12452 Strick Ln	Houston	NY	14427	USA	
+	Victoria	Faust	79 21 Calamus Ave	Elmhurst	IL	60630-2152	USA	
+	Shelly	Feagle	1348 Pennwood Rd	Philadelphia	MS	39191-7245	USA	
+	Jannett	Feller	Po Box 4902	Hialeah	FL	34120-8963	USA	
+	Diane	Fereig	7538 Wiseman	Montreal	NY	10579-3250	USA	
+	Amber	Ferguson	61451 Verbena Rd Apt 9C	Joshua Tree	CA	93901-3457	USA	
+	Patrick	Field	Po Box 7171	South Bay	CA	90504-1602	USA	
+	Betty	Fields	15700 Dogwood Dr	Fort Loudon	FL	333304-2216	USA	
+	Charissa	Fincher	9040 Leamon Rd	Harrison	MD	20755-4765	USA	
+	Heather	Fink	483 W Iroquois Rd	Pontiac	LA	71072	USA	318-846-2240
+	Shanika	Finley	2930 Grasselli Ave Apt 7	Cincinnati	TX	77015-6636	USA	
+	Ann	Fitch	47 Poplar St	Newburgh	QC	H3N 2N6	CAN	514-223-9395
+	Sonja	Fitzpatrick	49256 Escalante St	Indio	CA	92252-1933	USA	
+	Rose	Fletcher	403 E Nichols	England	OR	97415-9621	USA	
+	Susan	Folkes	814 1/2 Front St	Vanceburg	MN	55719-1939	USA	
+	Ashley	Ford	131 N Wheeling Ave	Tulsa	NY	10033	USA	
+	Alice	Forrest	7095 E Dominick St Trlr 47	Rome	NY	11792-1238	USA	
+	Kamala	Forrest	Po Box 357 	Harriman	PA	17224-9500	USA	
+	Mrs Theresa	Fox	96 Heckel St Apt 2L	Belleville	OH	45211-7808	USA	
+	K	Francique	9315 N Fowler Ave	Clovis	NJ	08816-1247	USA	
+	Leanne	Fraser	Box 732	Baddeck	GA	39817-8368	USA	
+	Cherry	Freeman	Po Box 586 	Pioneer	FL	33614-4841	USA	
+	Renee	French			OH	43204-1447	USA	
+	Annamarie	Fresta	10065 Black Oak St	Alta Loma	NY	12550-4043	USA	
+	Michelle	Fuller	2239 Marshall Way	Sacramento	KY	41179-1127	USA	
+	Christopher	Gallagher	109 W Main St	Indian Lake	NY	10926-0357	USA	
+	Monica	Gallagher	908 Falconcrest Drive	Lawrenceville	MI	49337-9770	USA	
+	Char	Gallegos	3049 W Alice Ave	Phoenix	CT	06106-1582	USA	
+	Stefani	Gallegos	691 Shelton Ave Ne	Renton	NJ	07109-1058	USA	
+	Maria A	Gallo	106 Bellgrove Dr Apt 3B	Mahwah	NJ	07079-1923	USA	
+	Patricia	Garden	200 Greene Rd	Lancaster	CA	92268	USA	
+	Gloria	Garrett	11896 W. 13 Ave	Lakewood	CA	91324-4146	USA	
+	Mar	Garrison	424 Letcher Ave	Richmond	IL	60617-1630	USA	
+	James	Gavens	2017 Jeff Ave 112	Birmingham	CA	94538	USA	
+	Sunny	Gellibert	12625 Brown Run Rd	Frewsburg	AZ	85051-3961	USA	
+	Paulette	Gemmell	3939 Victoria Dr	Baton Rouge	WA	98056-3907	USA	
+	Peter	Georgacarakos	Po Box 8500	Florence	NJ	07430-2268	USA	
+		Giardina	69 Yellow Barn Rd	Freeville	MO	64506-2335	USA	
+	Mr Theodore	Gignaras	220 S State St Ste 1205	Chicago	IL	60640-2696	USA	
+	Natasha	Gilkey-Wall	123 N Cayuga St	Frontenac	TX	77807-3418	USA	
+	Leandrea	Gillenwater	244 Donatello	Kyle	AL	35211	USA	
+	Yael	Gitai	2 Grattan St.	San Francisco	LA	70812-4328	USA	
+	Sharon	Gogan	7 Hodgkins Dr.	Ipswich	GA	30012-3401	USA	
+	Jim	Gold	Po Box 248	Mount Gilead	TX	78724-3340	USA	
+	Fred L	Golding	Po Box 8000	Conneaut	MI 	49444-2759	USA	
+	Leyanet	Gonzalez	203 Ina Cir	Rocky Face	NY	13068-9658	USA	
+	M	Gonzalez	116 S M St	Madera	NY	12788-0141	USA	
+	Robert C	Gonzalez	Po Box 43	Norfolk	IL	60604-2143	USA	
+	Gail	Gordon	103 W End Dr	Lawrenceburg	CO	80107-8558	USA	
+	Jonathan	Gordon	322 Cedar Ln	Teaneck	NC	28352-3811	USA	
+	Joyce	Gordon	411 W 29Th St Apt 3E	Anniston	KS	66763-2248	USA	
+	Teri	Gorsuch	1779 Moon Rd	Saint Germain	TX	78640-5860	USA	
+	Sabrina And Ray	Grace	1419 36Th Ave Ne	Olympia	NY	11798-4310	USA	
+	Monique	Graf	3 Holmgren Ct	Stratham	TX	77038-1637	USA	
+	Sandra	Grantz	Hc 80 Box 123	Cyclone	CA	94117	USA	
+	C	Grasberger	Po Box 3063	Sparks	IN	46517-4032	USA	
+	Bradley	Gray	5736 Owens Dr Apt 308	Pleasanton	NC	27306-0248	USA	
+	Bonnie	Green	261 Friends Ln	Westbury	VA	24017-3933	USA	
+	Dawn	Green	103 Bond St	Lindenhurst	CA	93637-4537	USA	
+	Lou	Greene	543 E Princeton Ave	Fresno	OH	44721-3144	USA	
+	Lynn	Greenhalge	11 Genevieve Ln	Webster	KY	40342-1370	USA	
+	Cintia	Grenier	#9 10131 154Th St	Edmonton	AL	36201-2717	USA	
+	Mickey	Grifen	70 Brickyard Rd Unit 16	Essex Junction	WI	54558-8892	USA	
+	Roy	Griggs	319 Benbow Court	Montgomery	WA	98506-2410		
+	Coriander	Grimm	440 N Winchester Blvd Apt 44	Santa Clara	NH	03885-2509	USA	
+	Eric	Grissett	Po Box 52020	Bennettsville	TX	75023-4312	USA	
+	Carol	Groezinger	504 South St	Tewksbury	WV	24827-9504	USA	
+	Zachariah	Gross	2049 S 25Th St	Milwaukee	NV	89432-3063	USA	
+	Dr Ruby	Grossbelch	10186 Dover Carriage Ln	Lake Worth	TN	37412-3918	USA	
+	Isabelle 	Grotte	157 Delmar St	San Francisco 	CA	94588-4668	USA	
+	N	Grzechowiak	330 N French Rd	Amherst	ON	M6N3Y9	CAN	
+	Angie	Guerreiro	"#205, 10421-42 Ave"	Edmonton	MO	64019-9265	USA	
+	Angel	Guevara	1300 Western Blvd	Raleigh	TX	77833-4445	USA	
+	Alka	Gupta	18 Ann Lee Court	Latham	NY	11210-6323	USA	
+	Faith	Guttenberg	1004 Foothill Ct # 1004	Nashville	CA	93704-5440	USA	
+	Emily	Hahn	824 Aeronca St	Middletown 	MO	64136-1368	USA	
+	V J	Hakanson	551 Willowgrove Ave	Glendora	FL	32714-1933	USA	
+	Dana	Hale	430 Baker St.	San Francisco	WI	54304-5731	USA	
+	Johnny	Hals	Po Box 1000	Butner	CA	95050-6334	USA	
+	Natalin 	Hankins	1081 56Th Street	Oakland	FL	33449-8116	USA	561-306-5881
+	Jenna	Hanson	108 N 63Rd Ave W	Duluth	PA	15216-3421	USA	
+	Shelly	Hardage-Wilkerson	1450 Hiatt St	Lebanon	CA	91303-2985	USA	
+	Ronald C	Harden	246 W 87Th Pl	Los Angeles	CA	91303-2985	USA	
+	Leshanda	Harman	1320 Oak St	Memphis	TN	37217-1435	USA	
+	Chris	Harrington	1158 Lawrence St Apt A	Eugene	MI	48228-3667	USA	
+	Carol Ann	Harris	16 Geiger Rd	New Milford	CA	95423-0227	USA	
+	Michelle	Harris	6916 Elk Rd	Lubbock	AZ	85364-8128	USA	
+	Edgar	Harris Jr Iii	521 Harwood Ave	Baltimore	OH	45042-3330	USA	
+	Le Shanda	Harrison	1320 Oak St	Memphis	CA	91741-2369	USA	
+	Connie	Hart	1320 Oak St	Memphis	GA	30038-3041	USA	
+	Thabiti	Hatt	217 Arrowood Dr. 	Newark	CA	93003-4718	USA	
+	Mr	Hayden	1218 3Rd Ave S	Texas City	ID	83647-2908	USA	
+	Ms Anita	Hayden	4270 Seebaldt St # 2	Detroit	CA	95005-9549	USA	
+	Mia	Hayes	322 W 27Th St	Sioux City	MN	55807-1927	USA	218-464-0040
+	Joanne	Heard	16390 Murray Rd	Byron	MI	48191-9701	USA	
+	Phyllis	Heath	229 Suttler Creek Rd	Kooskia	CA	90003-3318	USA	
+	Reina	Heinz	132 Laguna St	Santa Cruz	TN	38106-4724	USA	
+	Kim	Helm	9982 Waterside Dr	Noblesville	NJ	08757-5520	USA	
+	Ks	Hensley	Po Box 394	Weimar	TX	79407-8031	USA	
+	Gino	Herkimer	1719 Maryland Ave	West Mifflin	TN	38106-4724	USA	
+	Jody	Hernandez	145 Emanuel Farm Rd Lot 77	Brunswick	WA	98121-3111	USA	206-374-8765
+	Darrell 	Herner	8211 Prata Avenue	Bakesfield	TN	38106-4724	USA	
+	Valerie Marie	Hesburn	1365 Crafton Ave Apt 1042	Mentone	TN	10742	USA	
+	Mrs Claire B	Hess	5 Pomona W Apt 5	Pikesville	IL	60620-1539	USA	
+	Carol	Hetzler	6207 Pike Valley Dr	San Antonio	NJ	08086-9627	USA	609-420-3336
+	John	Hewkel	954 Forrest St	Baltimore	WV	25413	USA	
+	Thomas	Heyer	Po Box 1000	Butner	OR	97202-1256	USA	
+	Nancy	Hickey	223 Woodlands Way	Abington	DE	19713	USA	
+	Alex	Higbee	9801 W 118Th St Apt 9	Overland Park	CA	93277-9327	USA	
+	Sl	Hildreth	3000 Legacy Pointe Way Apt 513	Knoxville	TX	77590-8547	USA	
+	Joyce A	Hill	979 E 100Th Pl	Chicago	MI	48204-3772	USA	
+	Mr Justin	Hill	2826 Cedar St	Las Vegas	SD	57101-0121	USA	
+	Laron	Hiller	5570 Strathmoor Manor Cir	Lithonia	IA	51104-4034	USA	
+	Jessica	Hillman	16 Arbor Trl	Monroe	MI	48418-9041	USA	
+	Khor	Hing Sik	"2618, Jalan Maju, Pusat Perniagaan Maju Jaya,"	"Bukit Mertajam, Penang"	ID	83539-5044	USA	
+	Christine	Hoar	Bristol Yoga;Old High School	Bristol	CA	90250-5129	USA	
+	Barbara	Hobart	Hc 34  Po Box 2128	Wasilla	IN	46060-5645	USA	
+	Kristie	Hofelich	4215 N Church Way Apt 3	Louisville	WI	53965-8816	USA	
+	Patti	Hofelich	305 Pleasant Mnr	Mount Pleasant	WV	26035-9740	USA	
+	Audrea	Hoffman	39687 273Rd St	Armour	CA	95050-6138	USA	
+	Tami	Hoffman	3043 Golfhill Dr	Waterford	CA	95736	USA	530-878-0216
+	Cindy	Hofstra	16415 Clarks Mills Rd	Reedsville	WA	98023-4398	USA	
+	C	Hogan	2844 Michigan Ave	Saint Louis	PA	15122-4009	USA	
+	Leticia	Holberton	7301 Calamo St	Springfield	CA	93307-9534	USA	
+	Ms Deborah A	Holcomb	1026 W Main Rd	Portsmouth	CA	90403-5400	USA	
+	Cheryl	Holmes	4011 Eastside Calpella Rd	Ukiah	MD	21208-2937	USA	
+	Diane A	Holmes	46343 Durhin Rd	Tickfaw	IN	47404-9195	USA	
+	Janet  Blacky	Honarbakh	120 Sparrow Dr # 112	Royal Palm Beach	MA	02351-2594	USA	
+	Lindsey	Hoos	1215 Commonwealth Cir # D101	Naples	KS	66210-3167	USA	
+	Ms Kelley	Hoppock	1416 E Pike St	Wichita	TN	37921-2175	USA	
+	Natalie	Hortun Holmes	415 10Th Ave E Apt 4	Seattle	NV	89104-4405	USA	
+	Heather C	Hottel	3 Bear Hill Rd	Limerick	GA	30058-2624	USA	
+	Gracie	Hoye	210 Catalpa Rd Apt 1	Lexington	PA	15666-1119	USA	
+	Rebecca 	Huber			MI	48329-4516	USA	
+	Aaron	Huhn	1085 Juanita Ave	Hermiston	MO	63118-1217	USA	
+	P C	Humke	Po Box 38923	Colorado Springs	VA	23454-4751	USA	
+	Cheryl	Hunt	1116 E Greer Ave	Snowflake	RI	02871-1320	USA	
+	Carlos M	Hurt	56 Fdez Garcia Ave	Cayey	WA	98038-3330	USA	
+	B	Husein	750 E Joan D Arc Ave	Phoenix	CA	95482-9555	USA	
+	Melissa	Hutson	423 New York St	Scranton	PA	19320-3730	USA	
+	Jessica	Huycke	512 Freehling Rd	Buchanan	LA	70466	USA	
+	Christina 	Ibrahim	156 Concord Street	New Haven	CA	90807-1131	USA	
+	Kim	Iburg	172 Linden St Apt D	Needham	CA	92150-9001	USA	
+	Caia	Iglehart	1430 Crestmont Dr.	Downingtown	TX	75702-7831	USA	
+	Mike	Ilona	19619 E Kent Rd	Belle Rive	AL	35453-1224	USA	
+	Laura	Ingram	548 Lucas Ln	Forsyth	AL	36759	USA	
+	Jean	Irdi	3501 Sycamore Rd	La Grange	KS	67211-2628	USA	
+	Lorie	Irwin	21704 Rouillard Blvd N	Rogers	MI	48221-1426	USA	
+	Katryna	Ituarte	6802 N 67Th Ave Apt 23202	Glendale	IL	60680-4105	USA	
+	Yanko	Ivanov	"Jk""Vazrojdentzi"",Bl.3,Entr.V,Ap.95"	Kardjali	WA	98102-5053	USA	
+	Galina	Ivanova	"L. Keshoveli, 28-22"	Krasnoyarsk	CA	90250-5129	USA	
+	Jenny	J	113 Hewes St	Delaware	CA	94550-4746	USA	
+	Romen	Jacklin	Po Box 1000	Lewisburg	GA	30906	USA	
+	Sami	Jackson			IL	60459-1235	USA	
+	Lorrie	Jacobs	182 W Lakeshore Dr	Lincoln	WY	82072-2555	USA	
+	A	Jacques	Po Box 201	Center Sandwich	KY	40502-1971	USA	
+	J	Jahp	1045 Summerfield Dr.	Lake Forest	NJ	07202-2338	USA	
+	Shrish	Jain			GA	30329-3541	USA	
+	Robert	Jaite	204 Pepper Tree Ln	Painesville	WA	98023-2703	USA	
+	Bob	Jenkins	81 Main St	Essex Junction	WA	98023-4398	USA	
+	R P	Jenkinsmueller	1250 E Hallandale Beach Blvd Ste 901	Hallandale Beach	PR	00736	USA	
+	Donna	Jennings	1207 Hollis Ave	Cherry Hill	AZ	85022-5326	USA	
+	J	Jennings	70 Pearl St Apt 607	Brookline	PA	18509-2837	USA	
+	Ms Renee	Jesdale	1000 W Franklin Ave Apt 103	Minneapolis	CT	06512-4008	USA	
+	Sherry	Jewell	Po Box 12	Truckee	MA	02492-2160	USA	
+	Kristen	Johansen	1513 Morning Dove Way	Clover	CA	94061-2033	USA	
+	Mark	Johns	5809 Piping Rock Rd	Madison	IL	62810-3704	USA	
+	Becie	Johnson	2738 Boardman Lake Dr # D103	Traverse City	NC	27544-9190	USA	
+	Carol	Johnson	1914 Montrose St	Cincinnati	MN	55767-5001	USA	
+	Curtis T	Johnson	4460 Broad River Rd	Columbia	IL	62535-8977	USA	
+	Ray	Johnson	603 2Nd St. Sw	Cedar Rapids	NE	68784-0437	USA	
+	Ricki	Johnson	870181Court	Hickoryhills	OH	43015-5028	USA	
+	Shirley	Johnson	279 W 117Th St # Sm	New York	GA	30906-2016	USA	
+	Brian	Jones	17075 Weir St	Omaha	VT	05301-6844	USA	
+	E	Jones	5049 Bass Chapel Rd	Greensboro	NE	68528-1036	USA	
+	Elaine	Jones	5049 Bass Chapel Rd.	Greensboro			USA	707-827-3941
+	John	Jones	323 N Oakley St	Saginaw	NH	03227-0201	USA	
+	Malissa	Joseph	2250 Jackson Ave	Ogden	IN	46516-4451	USA	
+	Chackie	Jovich	23 Holly Hill Rd	Little Rock	NC	28605-1406	USA	
+	Kim	Joynes	451 Fullerton Ave	Cambridge Springs	NY	10069-0522	USA	
+	Brenda	Juan	112 S Market St # B	Girard	WA	98155-6624	USA	
+	Michelle	Judd	1020 Nw 9Th Pl	Cape Coral	WA	98003-7462	USA	
+	Henry	Jung	205 School St	Somerville	VT	05452-3211	USA	
+	Amber	K						
+	K	Kabasha	165 Sci Ln #Db7067	Greensburg	FL	33009-4643	USA	
+	Baba	Kali	230 Grove Acre Ave Apt 223	Pacific Grove	MA	02445-7206	USA	
+	Lyric	Kali	515 Alarid St. Apt B	Santa Fe	CA	90078-0230	USA	
+	Manu	Kalia	407 Orange St.	Oakland	MN	55405-3135	USA	
+	Neeraj	Kamboj	5630 Algonquin Way	San Jose	FL	32822-5920	USA	
+	Katie	Kaminsky	360 Glass Mountain Rd Trlr 5	Saint Helena	MS	38614-3323	USA	662-627-3357
+	Sonya	Kamiosley	3538 Arsenal St # 7	Memphis	SC	29710-6524	USA	
+	Stacey	Kansky	Po Box 813	Loyall	WI	53711-3420	USA	
+	Sharon	Kapp	16310 Madewood St.	Cypress	OH	45214-1168	USA	
+	Pamela	Kasper	445 Drexel Ave	Glencoe	NY	11235-5949	USA	
+	Dr. Radislav	Kats	2995 Ocean Pkwy	Brooklyn	WA	98003-7462	USA	
+	Marnie	Katzbeck	503 W 5Th St	Pennsburg	PA	15120-3329	USA	
+	Fatima	Kaya	80 Walman Ave Unit 2	Clifton	IA	52404-2112	USA	
+	Elane	Kelley	2506 Monterey Ave	Minneapolis	WA	98023-2703	USA	
+	Danue	Kelly	"23 Culver Lane, #C"	Manchester Center	WA	98661-4533	USA	
+	Rufus	Kelly	255 Mountainview Dr	Covington	NV	89002-9107	USA	
+	Sir	Kennel	2921 Tres Logos Ln	Dallas	NC	27455-9252	USA	
+	Crystal	Kessler	11038 Taberg Florence Rd	Camden	MI	48602-4131	USA	
+	Hisoo	Kim	301 W 57Th St Apt 22E	New York	CA	90290	USA	
+	Kamille	Kim	1576 Laurel Cir	Vista	AR	72204-3513	USA	
+	Tracy	Kim	Box 106	Inwood	MO	63090-4024	USA	
+	Jaimee	Kinard	400 N Williams St	York	OH	44420-2880	USA	
+	Robert	Klevins	8 Brook Ave Apt 201	Wheeling	OH	44871-1205	USA	
+	V	Knap	42 S Cherry St Apt 113	Wallingford	CA	94574-9607	USA	
+	Ronald A	Knipfer	1300 South Dr  Po Box 129	Winnebago	KY	40854-0813	USA	
+	Kate 	Knong	"3501 Paul St, Ste 129"	Baltimore	MN	56401	USA	
+	Janae	Knudsen	2942 N Beaver Creek Rd	Seal Rock	IL	60022-2106	USA	
+	Lsue	Koff	3852 Tulare Ave S	Salem	QC	H8S2E4	Canada	
+	Rochelle	Kopp	514 Live Oak Lane	Emerald Hills	PA	18073-1406	USA	267-221-2296
+	B B	Korte	61 Krupp Ave	Buffalo	IL	60640-1117	USA	
+	Cathie	Kovar	36540 Tulane Dr	Sterling Heights	MN	55416-3956	USA	
+	E T	Kozlowski	6921 French Rd	Alpena	PA	19333-1373	USA	
+	Alex	Kraft	8153 No Cedar Ave	Fresno	GA	30016-7175	USA	
+	C L	Krall	502 Palmetto St	Lancaster	TX	75228-1744	USA	
+	Revati	Kritikoc	1215 Milan St.	New Orleans	TX	75228-1744	USA	
+	Lisa	Krug	Po Box 230	Los Angeles	IN	47374-3238	USA	
+	Patricia	Kuba Kursovai	20714 Lee Ct	Grosse Pointe Woods	ON	L0G 1T0	CAN	
+	Yvette	L Bidne	6035 S Transit Rd Lot 80	Lockport	MI	49445-2634	USA	
+	Shelley	Labrecque	27 Rich St	Gardner	NY	10019-3176	USA	
+	Andria	Lacey	89 Salmon Run Rd	Richland	CA	92081-4548	USA	
+	Shannon	Lachance	61928 Lutz Rd	Constantine	MB	R0C1P0	CAN	
+	Sandy	Laffey	6 Grant Ln	Newport	PA	17404-5027	USA	
+	Jamie	Lamancusa	4941 Marathon Dr	Madison	CO	80906	USA	
+	Jaisri	Lambert	14358 Sunset Dr.	White Rock	SC	29577-4328	USA	
+	Marsha	Lambert	407 Malahat Pl.	Kamloops	SC	29577-4328	USA	
+	Tyra	Lamour	Po Box 203	Pershing	MI	49855-4319	USA	
+	Lynnette	Lane	1921 S State Ave	Indianapolis	CT	06492-3576	USA	
+	R	Langdon Adkins	534 Grizzly Flat Rd	Watsonville	MD	21218-2725	USA	
+	Lisa	Langevin			FL	34753-0014	USA	
+	Mr Thomas	Lapinoja	116 Ne 21St St	Wilton Manors	FL	33139-1231	USA	
+	Christina	Lara	Po Box 83287	Fairbanks	OR	97302-6046	USA	
+	Connie	Larson	Po Box 733	Virginia	MI	49614-9524	USA	
+	Linda	Laski	831 Principal	St-Leon Le Grand	NY	14212-1917	USA	
+	Eugene B	Laurel	Po Box 665	Somers	CA	92057-8117	USA	
+	Jayantii	Lawless	11196 1/2 Barnett Valley Rd.	Sebastopol	NJ	07403-1056	USA	
+	Danielle	Lawson	3312 S Holly St	Nampa	SC	29720-3643	USA	
+	Debra	Leautec Grace	9511 Mckevin Rd	Pine Bluff	CA	90078-0203	USA	
+	Annette	Lecocq	105 E. Boundary Street	Ely	MI	48236-1406	USA	
+	Greg	Ledfors	1125 Fairfield Ln	Sebastian	AZ	85082-3603	USA	
+	Courtney	Lee	243 E 51St St	San Bernardino	CA	94306-1417	USA	
+	Cynthia	Lee	229 W 97Th St Apt 4K	New York	MI	49440-1359	USA	
+	Hillary	Lee	447 Sugar Creek Ln	North Liberty	KS	66608-0311	USA	
+	M/M	Lee	1711 Cypress St	Waycross	WA	98502	USA	
+	Nancy	Lee	P.O. Box 352	Moss Landing	AZ	86004	USA	928-527-9121
+	Sandra	Lee	3635 Rue College	St. Hubert	FL	32606-6541	USA	
+	Vicki	Leete	273 Meadowview Ln	Buffalo	CA	95616-0455	USA	
+	Stacey	Leffingwell	Po Box 1010	Wrightsville	NY	14094-6322	USA	
+	A	Leonard	921 W Town	Columbus	MA	01440-2713	USA	
+	Sharon	Leonard	7212 190Th Ave E	Bonney Lake	MI	49042	USA	
+	Linda	Lethco	23 Furman St	Denmark	KY	41071-1039	USA	
+	Jacqueline	Levesque-Cudmore	1719 Katelyn Street 	Kingston	PA	18062-9243	USA	
+	Nicole	Levinsohn	550 Midway Rd	Rockingham	NY	10455-0596	USA	
+	Carla	Levy			AL	35756-3527	USA	
+	Nikki	Ligos	17 Brandy St	Bolton	BC	V4B2V5	Canada	408-378-2880
+	Joey	Lingard	1201 E El Cibolo Rd	Edinburg	IN	47370-0203	USA	
+	Rachelle	Linneman	103 W Broadway St Apt 4	Excelsior Springs	OH	43015-7992	USA	
+	Chris	Lisanti	4316 Palacio Way	Fair Oaks	NY	14560-0002	USA	
+	Meagan	Little	505 Deer Creek Dr	Rock Springs	CA	95076-0197	USA	
+	Jorge A	Llanas	Po Box 630	Winton	MA	01230-0485	USA	
+	Macy	Lo			FL	33305-1044	USA	
+	David	Lomascola	695 Filbert St.	Woodburn	IA	51566-2055	USA	
+	Erin	Long	8740 Franklin Tpke	Dry Fork	OH	44212-4355	USA	
+	Lindsay	Long	721 S 7Th St	Montrose	Oh	43235-8434	USA	
+	Rebecca A	Lopez	73200 Tumbleweed Ln Apt 17	Palm Desert	PA	18102-1667	USA	
+	Tammy	Loren	Po Box 164	Saint Helen	IN	47564-9625	USA	
+	King	Lotus	1642 S Orange Dr # 3	Los Angeles	ID	83686-4431	USA	
+	Robin	Louis	310 Songwood Dr	Spicewood	CA	95118-3544	USA	
+	Sandy	Love	11 Orchard	Old Saybrook	PA	18938-0204	USA	
+	Sue	Lowe	7431 Albany Rd	Fort Myers	IL	60644-3202	USA	
+	Amy	Lowery	3849 Glen Chambers Rd	Florala	AR	71603-1249	USA	
+	Mr Frank	Lowery	218 2Nd Ave Apt 103W	Asbury Park	MN	55731-1330	USA	
+	Nick	Lowery	81 Main St	Essex Junction	FL	32958-5965	USA	
+	Sonja	Loyd	245 Olin Ave	Girard	MI	49203-1181	USA	
+	C	Lozano	15514 Spring Coral	San Antonio	CA	92404-1109	USA	
+	Craig	Lucas	439 Cuyahoga St	Kent	NY	10025-5611	USA	
+	Michael	Lucas	3403 Pleasant Pl. 	Baltimore	IA	52317-9423	USA	
+	William Joseph	Lucas	315 W Carrillo St Apt 113	Santa Barbara	GA	31501-6872	USA	
+	Jack	Lucid	110 Seaside Pl	Sea Girt	QC	J3Y 5R9	CAN	
+	Sean	Luddy	P.O. Box 733	Pt. Reyes	NY	14221-3556	USA	716-207-0316
+	Lauren	Luhrs	1709 Riley Ave	Louisville	OH	44212-4355	USA	
+	Ernest	Luster	621 S 2Nd St	Millville	WA	98391-8528	USA	
+	Michael S	Lynch	Csp Solano   Po Box 4000	Vacaville	NC	28379-3518	USA	
+	Petra	Lyns	1709 Sw Morrison St. #406	Portland	ID	83864-0488	USA	
+	Janis	Macbeth	32 W 4Th St	Oil City	IL	60025-5032	USA	
+	Mary	Machado			CA	95490-1000	USA	
+	Jean	Macintyre	346 Rosewood Ave  Po Box 1138	Crystal Beach	CA	93602-9520	USA	
+	Elaine	Madsen	34 Rogers Ln	Sparta	CA	95628-6620	USA	
+	Kay	Majors	1703 Lake Harbor Way Cir	Houston	NY	10028-1856	USA	
+	David C	Manfredi	4968 Cornish Heights Pkwy	Syracuse	TX	75038-5827	USA	
+	Michelle S	Mangini	11120 Nw Gainesville Rd	Ocala	NJ	07871-2851	USA	
+	Jenny	Manjone	1211 E 13Th St	Des Moines	GA	31906-4346	USA	
+	Donna S	Mann	107 Edgell St	Beckley	CA	92260-4231	USA	760-776-9696
+	George	Mann	30909 16Th Pl Sw Apt D	Federal Way	VA	24095-3065	USA	
+	Ms Anita	Mann	4272 Seebaldt St	Detroit	MI	48656-0164	USA	
+	Dr.Timothy P	Markowski	4 1/2 E Trl Pinewood M H Pk	Brick	TX	78669-4076	USA	
+	Timothy	Markowski	442 E Trl Pinewood Mh Pk	Brick	CT	6475	USA	
+	Bobby	Marquez	1531 Woods Pike	Pleasureville	KY	40223-3816	USA	
+	Summer Lynn	Marquez	40786 Indian Springs Rd	Oakhurst	CT	06071-1044	USA	
+	Mary Adele	Marsili	936 Brookline Blvd 2Nd Fl	Pittsburgh	NY	12801-2724	USA	
+	Heidi	Marsolais	4071 Mora Ln	Pebble Beach	AL	36442-7208	USA	334-504-3009
+	Deborah	Martin	7461 Trenton Rd	Barneveld	NJ	07712-6259	USA	
+	Nicole	Martin	Rt 37	Danbury	VT	05452-3211	USA	
+	Manny	Martinez	959 County Road 769	Devine	PA	16417-1529	USA	
+	Theresa	Martinez	Po Box 2400	Riverview	TX	78247-1838	USA	
+	Jeffrey	Martinson	3127 W Gibson Ln 4B10	Phoenix	MD	21211-2425	USA	
+	Gail Lynn	Mattingly	700 E Ash Ln #3207	Euless	KY	40208-1736	USA	
+	George	Mattingly	81 Main St	Essex Junction	CA	95204-1943	USA	
+	Gregorio	Maugeri	1125 Fairfield Ln	Sebastian	UT	84770-2818	USA	
+	Julie	Maxson	13263 Holly St Unit E	Thornton	MS	38829-8232	USA	
+	Bobby F A	Maxwell	48 Grover Rd	Ashland	NJ	08332-4213	USA	
+	Reuben	May	Po Box 220	Winnebago	TX	77381-2527	USA	
+	Monica	Mazzadra	439 Westminster Ave Apt 206	Los Angeles	PA	17103-1739	USA	
+	Iloana	Mcaulay	30909 16Th Pl Sw Apt D	Federal Way	TX	78201-3241	USA	
+	Ms Michelle	Mccaffrey	Po Box 13475	Scottsdale	OR	97205	USA	503-830-5826
+	Michael C	Mccain	1000 Newnan Rd	Carrollton	MO	65583-3151	USA	
+	Ilonka	Mccormick	30909 16Th Pl Sw Apt D	Federal Way	MI	49021	USA	
+	Bonnie	Mcdonald	Po Box 1064	Vail	NY	12580-0186	USA	
+	Emily	Mcdonald	56 Parsons St # 1	Brighton	DE	19939-9715	USA	
+	Ilona	Mcdonald	30909 16Th Pl Sw Apt D	Federal Way	WA	98023-4398	USA	
+	Bonnie	Mcdonnell	Po Box 285	Dresser	GA	39815-2206	USA	
+	Rayne	Mcglasson	1140 19Th St Apt 25	Myrtle Point	NJ	08034-1827	USA	
+	Thomas F	Mcgowan	15 Quade St	Glens Falls	IL	60637-3851	USA	
+	Karlene	Mcinnis	2712 E South Riverton Apt 1	Spokane	CA	93955-4227	USA	
+	Harlan E	Mcintire	# 85807 P.O. Box 107	Ellsworth	NJ	08203-2114	USA	609-266-8910
+	Steven	Mckim	14714 Wrangletown Rd	Mount Union	ON	N1R 2B8	Canada	
+	Lola 	Mclean	Po Box 342	Wapanucka	TX	78221-4150	USA	
+	Odus	Mcleish	Po Box 342	Wapanucka	NC	28086-8567	USA	
+	Kathyryn	Mead	1154 Mayfield Ridge Rd	Cleveland	FL	34482-1479	USA	
+	Lawrence	Medghett	129 Blackman St	Wilkes Barre	IA	50316-2323	USA	
+	Brenda	Meehan	117 Se 7Th Ave	Boynton Beach	WV	25801-6918	USA	
+	Hunt	Meehan	10351 Linn Station Rd	Louisville	WA	98023-4398	USA	
+	Meredith	Meehan	8212 Long Branch Lane	Fort Mill	MI	48204-3772	USA	
+	Leslie	Meriweather	24 Lincoln Ln	Weatogue	KY	40057-9609	USA	
+	Zafus	Merritt	4111 Walnut St	Kansas City	CA	93644-9570	USA	559-658-8094
+	Alisa	Miller	35 Crawford Trl	Murray	FL	33568-2400	USA	
+	Ricci	Miller	16078 Cajon St	Hesperia	TX	75505-7000	USA	
+	Fouda	Miller Jr	Po Box 554	Lebanon	PA	15681-2459	USA	
+	Tyler	Mills	Po Box 220	Winnebago	IL	60090	USA	
+	Jackie	Minunni	704 V E Washington St	Lake Charles	VT	05452-3211	USA	
+	D	Miranda	Po Box 1000	Petersburg	FL	32958-5965	USA	
+	Cristina Rivera	Miro	Urb Apolo Atenas St 00 17	Guaynabo	FL	32905-5812	USA	
+	Raj	Mistry	10403 Sugarbridge Trail	Sugarland	CA	95458-1295	USA	
+	Tracey	Mixon	Aspc Perryville Santa Rosa Ia 42 P.O Box 3500	Goodyear	NJ	08401-1208	USA	6093437300 X2184
+	Sunita	Mohan			CA	90020-4641	USA	
+	Jennifer 	Moiles	964 White Cloud Dr	Morgan Hill	WA	98023-4398	USA	
+	Jan	Montgomery	2291 Gulf To Bay Blvd Lot 321	Clearwater	AR	72764-1230	USA	
+	Brandie	Moore	Po Box 9752	Camp Lejeune	WA	98023-4398	USA	
+	Donna	Moore	36 Brickyard Rd Unit 35	Essex Junction	WA	98023-4398	USA	
+	Laura A	Moore	19 Main St	Bluffs	WA	98031-2901	USA	
+	Nazir	Morbi	495 S Oyster Bay Rd	Plainview	MA	02135	USA	
+		Moreland	2540 Brenda Dr	Hamilton	WA	98023-4398	USA	
+	Susan	Moreno	237 James Ave	Oxnard	WA	98031-2901	USA	
+	Susan Kathleen	Moreno	237 James Ave	Oxnard	MA	02139-3833	USA	
+	Kenneth Lee	Morris	327 Pennsylvania Ave	Hampton	WA	98031-2901	USA	
+	Latwan L	Morris	217 Gilbert Ave Apt 203	Desoto	OR	97458-1575	USA	
+	Sarah	Morris	106 Cardinal Hill Rd	Shelbyville	NY	12801-2724	USA	
+	Madonna	Mosely	225 Hardwick Dr	Covington	CA	94513-8331	USA	
+	Anita	Mosley	4272 Seebaldt St	Detroit	CA	91101-1541	USA	
+	Nina	Moyer	53126 Pine Brook Dr	Bristol	OK	73461-0342	USA	
+	Camilla	Mr	13 High St # B	Stafford Springs	OK	73461-0342	USA	
+	Kori	Muhammad	Fci Tucson  Po Box 23811	Tucson	OH	44124-1535	USA	
+	Ramana	Muktevi	39900 Blalow Rd #23 	Fremont	CA	94538-5917	USA	
+	Kate	Mulder			KY	40223-3816	USA	502-326-3660
+	Michael	Mulligan	310 W 52Nd St Apt 12C	New York	CA	92804-2613	USA	
+	Michele A	Mullins	555 N Federal St Apt 2013	Chandler	AZ	85013-1350	USA	
+	Marcia	Munford	223 Main St	Sabin	NJ	08701-3126	USA	
+	Gayle	Munson	7 Summer St	Montpelier	NM	87111-6400	USA	
+	Donna	Murphy	359 Pleasant Hill Rd	Scarborough	TN	37403-1850	USA	
+	Jennifer	Murphy	954 Pleasant St. 1E	Oak Park	CT	06089-9780	USA	
+	Lora	Murphy	1227 Levinson St	Torrance	MO	64111-4929	USA	
+	Rose	Murtie	4105 Roselawn Dr	Waco	IL	60148	USA	630-495-8988
+	Joyce E	Muscari	208 Highland Ave	Punxsutawney	MI	48224-3261	USA	
+	Brenda	Mushala	1206 Franklin Ave	Lexington	KY	41179-1127	USA	
+	Dawn	Mushala	4818 Widnsor St Bsmnt	Vancouver	WI	53929-1009	USA	
+	Dr Paul	Mushala	865 University St	Memphis	IL	60922-9649	USA	
+	Robert	Musia	604 State Street #304	Schenectady 	KY	42071-8336	USA	
+	Ken	Musil	15427 Plantation Oaks Dr # A	Tampa	WI	54481-5031	USA	
+	Ilona	Mustafin	560 S Dahlia Cir Apt G-208	Denver	GA	31217-5837	USA	
+	Janelle	Mustafin	9350 Hillery Dr Apt 11204	San Diego	TX	78201-0427	USA	
+	Ms Pegy	Mustafin	12 Thames Ter	Crossville	CA	92345-3054	USA	
+	Nancy	Mustafin	24718 Bombay Ave	Wilmington	OR	97355-0554	USA	
+	Sharon	Mustafin	8312 252Nd Ave	Salem	AZ	85259-4208	USA	
+	Margarita	Nantel	216 Tilford K	Deerfield Beach	TX	78645-8724	USA	
+	Gwen	Naran	9910 Ne 34Th St.	Bellevue	LA	70601-4546	USA	
+	Victor	Nazario	206 S Wallace Creek Rd	San Saba	MA	01104-2204	USA	
+	Timothy L	Neal	2300 20Th St Apt 3	Zion	NJ	07821-0553	USA	
+	Rosa	Nealy	2600 S Hoover St	Los Angeles	MS	39180-5448	USA	
+	Brianna	Nelson	712 Main St	Hull	PR	00703	USA	
+	Monica	Nelson	3800 Inependence Ave	Bronx	CA	95037	USA	
+	T	Nelson	2301 S 65Th St	Fort Smith	TN	37343-5028	USA	
+	E	Newby	120 Page Ave	Lyndhurst	FL	33765-4010	USA	
+	Lisa	Newell	109 Oak St	Spring Valley	TX	79720-7789	USA	
+	Leanne	Nicholls	715 W Capitol Ave	Pierre	OH	45013-8529	USA	
+	Judy	Nicholson	915 Gordon Ave	Reno	CA	94546-2500	USA	
+	Sally	Nicholson	43385 Se Music Camp Rd	Sandy	VA	23661-2857	USA	
+	Vella	Nicholson	2620 New Salem Hwy # G210	Murfreesboro	TX	75115-3145	USA	
+	Mark	Niswonges	Hc 62  Po Box 300	Calico Rock	CA	95062	USA	831-455-5460
+	Alison	Nixan	607 8Th St	Boone	GA	30014-0822	USA	
+	Gretchen	Nolan	1755 Westwood Way	Fairbanks	PA	15748-6923	USA	
+	April	Norton	5091 Chatsworth St	Detroit	CT	06076-1280	USA	
+	Sven	Nostrand			CT	06459-0442	USA	
+	Hart	Of Tea	Po Box 451	Stafford	CA	93030-6096	USA	
+	Alicia	Ogletree	2000 Reef Ln Apt 102	Hampton	NY	10019-6292	USA	
+	Janetta Ann	Olazabal	3101 Winchester Ave Apt 965	Ashland	MN	56580-4138	USA	
+	Rebecca	Oliver	11401 Palmer St	Castroville	IL	60302-3148	USA	
+	Ingrid	Olsen	25 Melrose Ct	Hillsborough	FL	34953-6397	USA	
+	Cassandra	Olson	70200 Lowe Plank Rd	Richmond	TX	76710-7134	USA	
+	Heidi	Olson	404 E Main St	Iron Mountain	PA	15767-2416	USA	
+	Jan	O'Neill	106 Thomas Dr	Sumter	MA	01701-9007	USA	
+	Patricia 	Opatz			MO	64067-1338	USA	
+	Colleen	O'Rourke	536 Wendt Ave	East Dundee	BC	V5V 4R2	CAN	
+	Lori	Orsot	1001 Lake Gracie Dr	Eustis	TN	38107-4710	USA	901-326-6107
+	Carol	Orszak	58 May Street	Scotchtown	NY	12305-2109	USA	
+	Crystal 	Osborn	Po Box 172 	Amarillo	AZ	85023-5128	USA	
+	Johnney	Osborne	777 Stranton Blvd	Ontario	MO	64067-1338	USA	
+	Gregory	Owens	3050 W Farm Road 164 Apt E7	Springfield	CA	92126-8805	USA	
+	Jennifer	Owens	1226 Overland Ave	Burley	TN	38558-6896	USA	
+	Agnieszka	Ozga	Szkolan10	Dobczyce	CA	90744-1111	USA	
+	Andres	Packard	Po Box 149	Summerfield	NV	89136-1671	USA	
+	Stevy	Packard	685 Sunrise Blvd	Twin Falls	WI	53168-9405	USA	
+	Wendi 	Paige	Po Box 1054	Carlin	VA	20109-5619	USA	
+	Cathryn	Palmer			NY	14094-5363	USA	
+	Alice	Paltrowitz	2053 Narwood Ave	Merrick	NY	10463	USA	
+	Jillynn	Parker	P.O. Box 794	Holualoa	IL	62354-2425	USA	
+	Jeremy C	Parks	938 S Fm 1673	Snyder	CO	80013-6629	USA	
+	M	Parquette	8557 Little Fox St	Las Vegas	OK	73461-0342	USA	
+	Karen	Parrish			TX	77093-7929	USA	
+	Carolyne E	Pattison	1455 E Vernon Rd	Philadelphia	CA	94553-0070	USA	510-843-2228
+	Irene	Paul	9211 Regency Park Blvd	Port Richey	GA	31525-1052	USA	
+	Pat	Paulsen	808 S East St	Bloomington	NV	89509-1947	USA	
+	Danielle	Pavese	542 E 79Th St Apt 2S	New York	TN	37865-3915	USA	
+	Ms Joann	Pavese	192 N Wisconsin Ave	Massapequa	KY	42141-3150	USA	
+	Marian	Payne	3804 Light Arms Pl	Waldorf	IA	50036-2774	USA	
+	Robert	Payne			IL	60044-1618	USA	
+	Norell R	Pearl	8101 Connecticut Ave	Cleveland	MI	48240-2335	USA	
+	Wendy 	Peddicord	215 Baca Del Sol	Coralitos	NY	12839-1204	USA	518-747-5103
+	R	Pell	4 Corby Ln	Lynbrook	AZ	85929-2384	USA	
+	Bernard P	Pellagalle	222 Mill Rd	Buffalo	MI	48224-3261	USA	
+	Sheri	Pellagalle	465 Hamilton St	Gretna	HI	96822-2547	USA	
+	S	Pemberton			TX	77705-7635	USA	
+	Donald	Penrod	2432M N Neva Ave	Chicago	AZ	85552-1551	USA	
+	Sherry	Perez	1143 Tacoma Ave S	Tacoma	FL	32750	USA	
+	Ingrid	Perez Marin	Hotel Paradisus Playa Conchal	Guanacaste	NC	27030-3646	USA	
+	Michelle	Perrigin	648 Alexandria Dr	Collierville	VA	22555-0451	USA	
+	Sarah	Peters	Po Box 300	Lusk	MO	64155-2381	USA	
+	Julie	Peterson	P.O. Box 4008	Tulluride	KY	41101-2077	USA	
+	Susan	Petherick	6 S Sable Blvd Apt Aa207	Aurora	CA	95388-1616	USA	
+	Marilyn	Pettit	2165 E Aspen Dr	Tempe	IL	60156-6110	USA	
+	Gary	Phillips	Po Box 533	Rapid City	TX	77349	USA	
+	Rebecca	Phillips	23425 Farm 1995 Lot 109	Lindale	MI	48062-5346	USA	
+	Lisa	Pirkel	908 South St	Watertown	IL	60118-2424	USA	
+	Bernadette	Pitchford	2025 Vigil Way Apt 45	Alamosa	FL	32726-4666	USA	
+	Tammi	Pittit	1750 Howe Ave Ste 300	Sacramento	TX	79105-0172	USA	
+	M	Poirier	9204 Premier Way	Sacramento	IL	60605-2000	USA	
+	Charles	Polanco-Ali	1376 Union St	Brooklyn	UT	84321-5225	USA	
+	Jose	Pomales	2449 Hiawatha Dr. Ne	Albuquerque	FL	34492-0149	USA	
+	Bonnie	Pomeville	1630A 30Th St # 185	Boulder	ID	83301-7060	USA	
+	Ms Bobbi	Pomeville	920 Ne 172Nd St	Miami	NY	14850-5019	USA	
+	Sharon	Pomeville	8312 252Nd Ave	Salem	TX	75884	USA	
+	Kevin	Poole	417 Hobson St	High Point	NY	10036-6341	USA	212-868-9844
+	Marzetta	Poore	6508 Lucerne Ave	Louisville	TN	37362-5119	USA	
+	Sandi	Porter	412 Skyline Dr	Harrison	AZ	85715-3681	USA	
+	Lillie B	Pount	14355 Burbank Blvd Apt 17	Van Nuys	CO	80210-6120	USA	
+	Kristie	Pribish	4490 Hikey St	Dover	UT	84317-9765	USA	
+	Don 	Price	Po Box 48587	Los Angeles	PA	17201-3505	USA	
+	Malcolm	Pride	2727 E 5Th Ave Apt 2	Knoxville	HW	96725	USA	
+	B J	Pritchett	11 Hemlock Rd	Naugatuck	NV	89123-2711	USA	
+	Britta S	Puffer	158 Mayhew Tpke	Plymouth	PR	00963-3243	USA	
+	Steven J	Pursley	120 Garden St	Cranford	PA	19150-2119	USA	
+	Joan	Purtle	5852 Sea Forest Dr Apt 248	New Port Richey	FL	34668-5021	USA	727-842-7503
+	Kimberly	Quattrochi	13 Crest Rd	New Providence	IL	61701-6705	USA	
+	John	Quigg	625 Mourning Dove Rd	Audubon	VA	23901-4001	USA	
+	Tracy	Quinlin	322 Valencia St	Sebastian	NY	10075-1569	USA	
+	Edward	Quinn	1066 Bartlett Ln	Chester Springs	NY	11758-1734	USA	
+	N	Quinn	Po Box 40614	Redford	NY	10012-0005	USA	
+	Lia	R	194 Wilfred Ave	Toronto	CA	95076	USA	831-763-3812
+	Sandhiya	Ramaswamy			NY	14224-4151	USA	
+	Three	Ramey	"140 Case Road,"	Sault Ste. Marie	LA	70053-4741	USA	
+	John 	Rand Tcm	Po Box 1488 	Breckenridge	IL	60707-2007	USA	
+	Tonya	Randall	115 1112 Th Ave Ne  Apt 1025	St. Petersburg	TX	78415-5540	USA	
+	James	Reddle	604 Columbia St 2	Utica	IA	50315-7204	USA	
+	Andrew P	Reed	Po Box 3156	York	CO	81435	USA	970-708-0236
+	Wendy	Reeves	2071 Kalili Pl	Honolulu	CO	80012-6219	USA	
+	Sabrina M	Reisinger	1009 Pine Street	Tallahassee	AZ	85282-2963	USA	
+	Ray	Renrose	10800 Evans Rd	Polk City	MA	01923-2302	USA	
+	Current	Resident	7095 E Dominick St Trlr 47	Rome	TX	75771	USA	
+	Amber	Ress	Po Box 275	Apple Creek	LA	71060	USA	
+	Matra	Rey	450 Melville Ave.	Palo Alto	IN	47848-0362	USA	
+	Miranda	Reyna-Metzler	1011 Hidden Valley Rd	Soquel	WI	53094-7714	USA	
+	Sherry	Reynolds	16 Hemlock Rd	Sayre	CO	81101-2396	USA	
+	Ms Susan K	Rice	1606 W Peoria Ave Apt 116	Phoenix	CA	95825-3369	USA	
+	Sick	Richardson	5009 Se 64Th Ave	Portland	OK	74105	USA	
+	Catherine	Richmond	42520 Alex Ln	Ponchatoula	CA	95826-4216	USA	
+	Linda	Richter	415 Woodlawn Ave	Glencoe	AE	09378	USA	
+	Hamraoui	Rieckman	Chemin Des Dames Bat Cnas Appt N.5	Constantine	MI	49015-2809	USA	
+	Noemi	Riedel	6909 138Th St Apt 2D	Flushing	PA	17901-3444	USA	
+	Jodi	Rigby	2765 10Th Ave N Lot 19	Palm Springs	NY	12402-6331	USA	845-750-9788
+	Joy	Riggins	169 Nottingham Ct	Aston	NM	87412	USA	
+	Barbie	Rigor	5450 N Meadow Dr	Indianapolis	CO	80301-1014	USA	
+	Sonja	Rigsby	1401 St School Rd	Gatesville	FL	33162-2127	USA	
+	Justin	Rimkus	4692 N 300 W Ste 250	Provo	WI	53168-9405	USA	
+	Deborah	Ringueberg	27 Murphy Hwy	Blairsville	NY	11757	USA	
+	David Vazquez	Rios	Po Box 1000	Otisville	KY	40216-1040	USA	
+	David W	Riter	7821 Campbell St	Taylor	CA	94404	USA	650-344-0548
+	Catherine	Rivas	Po Box 10461	Jackson	WA	98662-1941	USA	
+	Julio H	Rivera	801 E 9Th St Apt 39	Del Rio	CA	91401-4821	USA	
+	Steven J	Rizzo	77 Craig Rd	Islip Terrace	CA	90744-1111	USA	
+	Ann	Roberson	2055 Pottery Ave Apt 112	Port Orchard	PA	18644-2028	USA	
+	Mike	Roberts	3083 Mcvay Trail Dr	Memphis	PA	17315-3493	USA	
+	Perla	Roberts	Po Box 674	Lawrence	CA	90048-0578	USA	
+	Cherri	Roberts Negus	2920 Coffeeville Rd	Jefferson	WV	26142-9738	USA	
+	Danae	Robinett	1026 S Ash Ave	Tempe	OR	97477-2159	USA	
+	Brian	Robinson	Po Box 180	Brickeys	VI	00804-0308	USA	
+	Kala	Robinson	650 E 21St Street 1 E	Brooklyn	WI	54403-3424	USA	
+	Georgianna	Rodriguez	16 Benham Rd # B	Groton	FL	34652-2053	USA	
+	Jose	Rodriguez	Po Box 4000	Stormville	MI	48106	USA	
+	Beth Ann	Rosas	7401 Fairway Two Ave Apt 7	Fair Oaks	MI	48240-0614	USA	
+	Juan	Rosas	4325 Lucerne Villas Ln	Lake Worth	NC	28451-9505	USA	
+	Kira	Rose	Rr 2 Box 42	Poca	TX	79703-4535	USA	432-699-2107
+	Julie	Roseborough	1715 Landing Dr	Vista	NC	28411-6501	USA	
+	Danielle	Rottenberg			NC	28213-6408	USA	
+	Vickie	Rubacki	9720 Oliver Ave N	Brooklyn Park	TX	76424-1488	USA	
+	J	Ruttle	604 Columbia St 2	Utica	CA	92656-1509	USA	
+	Cindy	S	5508 Greenlee St	Fort Worth	NY	13502-3406	USA	
+	Veronica	Sadowski	2732 Transit Rd	Buffalo	PA	17402-0156	USA	
+	S.	Saeugling	2363 Mountain Hwy	North Van 	HI	96813-1750	USA	
+	Helene 	Safer	Po Box 425 	Newtown	WA	98032-2911	USA	
+	Alex	Sanchez	267 Falconer Ave	Brockton	OH	44606-0275	USA	
+	John	Sanchez	Po Box 190	Avenel	CA	90504-1609	USA	
+	Melanie	Sanders	Po Box 1056	Waldorf	PA	18840-1453	USA	
+	Angela	Sandhir	2412 Sisters Court	Maperville	TX	77301-1426	USA	
+	Alana	Sandoval	20655 Al. Hwy.33	Moulton	UT	84062	USA	
+	Angel 	Sandoval			AZ	85029-5704	USA	
+	Phyllis	Sanford	Po Box 5	Windsor	KY	40223-3777	USA	
+	Snarkey	Sanford	Po Box 4000	Stormville	OR	97206-4643	USA	
+	Tara	Sanford	28 James Dr	Shalimar	MO	65564	USA	
+	A D	Santee	7 Davis Cir	Sutton	GA	31210-6129	USA	
+	Carla	Santos	2410 S Kirkwood Rd # Apt108	Houston	IL	60022-2123	USA	
+	Kellie	Sater	1010 6Th Ave W	Shakopee	NY	11367-1603	USA	
+	Annapoorna	Satyanarayana	4410 Smoke Tree Ct	Concord	FL	33461-3169	USA	
+	James Scott	Saumenig	110 Melaleuca Dr	Crawfordville	PA	19014-1256	USA	
+	Ruby	Saunders	1565 Dalbora Rd	Merritt Island	IN	46268-4033	USA	
+	Kristen	Scarlatos	3 New York Ave	Stony Brook	UT	84604-7758	USA	
+	Jennifer	Schafer	2317 N Oakley Ave # 1	Chicago	GA	30512-3071	USA	
+	S	Schenk	917 N. 26Th Ave.	Hollywood	MI	48180-2508	USA	
+	Scott	Schenk	1730 W Snell Rd	Oshkosh	WY	83002-0461	USA	
+	Elizabeth	Schiavi	4822 S Quaker Ave	Tulsa	MA	01060-4416	USA	
+	Jenny	Schilling	205 S Sunset St # B	Ridgecrest	IL	60632-1827	USA	
+	Susan	Schilling	721 S West St	Findlay	GA	30662-0747	USA	
+	Krista	Schneider	88 Linden Ave	Glencoe	FL	33021-7926	USA	
+	Jane	Schnell	87 Beech St	Essex Junction	NY	11752-1919	USA	
+	Linda	Schoenstein			WA	98366-2054	USA	
+	Larrison	Schroll	Po Box 800	Herlong	TN	38119-8721	USA	
+	S K	Schuppman	16722 Scott Rd	Altoona	TX	75657-3564	USA	
+	Denise	Schwalbe	5775 Vine Hill Rd.	Sebastopol	OH	43609-2771	USA	
+	Susan	Sclafani	2527 W Havenbrook St	West Covina	CA	95018-9037	USA	
+	Nichelle	Scoggin	"Breathe, 124 N 2Nd Ave Apt 2"	Pocatello	MI	48226-2405	USA	
+	Sarah	Scott	Po Box 176	Madison	CA	90011-9571	USA	
+	Susan F	Scott	Po Box 74	Candor	FL	34668-3860	USA	
+	Mr Benjamin	Sears	4303 Washington Ave Se	Charleston	CT	06340-4959	USA	
+	Kerri A	Semanek	9 Meadowlark Ln	Whiting	IN	46625-7809	USA	
+	Randy	Servaas	1941 N Liberty St	Jacksonville	FL	33139-6707	USA	
+	Tondria	Sethi	144 Shelton Rd	Surgoinsville	CA	95628-4639	USA	
+	Barb	Settes	Po Box 3000	Guayama	FL	33467-8890	USA	561-964-5007
+	Beth	Shafranek	1227 Nw 14Th Ave	Cape Coral	CA	92081-5479	USA	
+	Bonnie Jean	Shapa	784 Austin Ave	Aurora	TX	75951-9327	USA	
+	Cindy	Shapa	1458 Hawthorne Pl	Wellington	TX	75951-9327	USA	
+	Nellie	Shapiro	19173 E. Fair Dr.	Aurora	TX	75951-9327	USA	
+	Shannon P	Shaw	Po Box 98	Colfax	NJ	08401	USA	
+	Suzy	Shaw	1330 Sycamore St	Janesville	AL	35620-4626	USA	
+	Scarlet	Sheikholeslam	328 Chapman Rd	Macon	HI	96720-3741	USA	
+	Scarlet M	Sheikholeslam	328 Chapman Rd	Macon	IL	60502-9042	USA	
+	Ms Norma	Sheldon	Po Box 11942	Tucson	CA	92154-1561	USA	
+	Sarah	Shelton	2526 Christine Dr	Kissimmee	MD	21215-1618	USA	
+	Trumpet	Sheridan	702 N Pecan St	Breckenridge	NC	28739-7516	USA	
+	Danielle	Shipley	3224 W 29Th St	Indianapolis	PA	16412-2509	USA	
+	Martin	Shipman	7076 Road 55F	Torrington	NY	14224-2591	USA	716-712-2700
+	James	Shuford	1052 Lazio Ct	Greenwood	IL	60625	USA	
+	Kathleen	Shyptycki 	73-338 Hwy 111#6	Palm Desert	CT	06470-0425	USA	
+	James	Sikaffy	102 Stringtown Rd	Williamsburg	IL	60022-2106	USA	
+	Mr Steven	Silva	120 Garden St	Cranford	TX	75040-7830	USA	
+	Shivana	Singh	34595 Pueblo Terrace	Fremont	NJ	08028	USA	
+	Jyoti	Singh Madan	301 Parnassus Ave #303	San Francisco	MD	20604-1056	USA	
+	Surjit	Singh Madan			IL	60564	USA	
+	Amy	Skillicom			NS	B0N 2T0	CAN	902-798-2057
+	Richard A	Slaughter	685 E Arrow Hwy # 336	Azusa	FL	32579-1012	USA	
+	Irene	Smith	8415 Fairlight Dr	Waxhaw	TX	77077-6673	USA	
+	Marilyn	Smith	201 King Street	Sackville	FL	32953-7132	USA	
+	Patrice	Smith	1309 Lillian Dr	Flint	NY	11790-1805	USA	
+	Ronda	Smith	7580 Barrow St	Sutter	IL	60647-3237	USA	
+	Sandra Lee	Smith	Po Box 1167	Orchard Park	NC	28713	USA	
+	Sir	Smith	2921 Tres Logos Ln	Dallas	NY	11217-2017	USA	
+	Mary Ann	Smithers	201 N Garden Ave Apt 12	Sierra Vista	FL	33020-3301	USA	
+	James	Smithson	4767 Escalante Dr	North Port	OK	74105-4723	USA	918-746-5586
+	Brenda S	Smylie	7745 Farmsbury Dr	Reynoldsburg	OK	74454-1044	USA	
+	Glenda	Sneed	Po Box 819	Millville	CA	93555-4031	USA	
+	Jeanette	Snively	324 E 3Rd St Unit 201	Hialeah	OH	45840-3059	USA	419-306-1692
+	Tammy	Snook	5300 W Shirley Pl	Lakewood	IL	60022-2143	USA	
+	Tammy	Sonier	1535 7Th St N	Fargo	VT	05452-4378	USA	
+	Ceba	Spahic	61 14 68 Ave	Ridgewood	KS	66710-8540	USA	
+	Charlie	Spenella	1187 Ruddell Rd	Vinton	NY	11735-3659	USA	
+	Betty	Sperry	922 Wedgewood Dr	Lansdale	CA	91790-1926	USA	
+	Vernon	Sprague	Po Box 508	Verdi	ME	04950-0176	USA	
+	Dinarae	Squatriglia	350 Old Post Rd	Port Jefferson	NY	13743-0074	USA	
+	Jamie	St James	2644 Hampstead Dr. 	Lakeland	WV	25304-2527	USA	
+	Andrea	St John	2103 Maginnis Rd	Oregon	NJ	08753-5854	USA	
+	Emmie	Stamell	612 Vista Abajo Dr.	Albuquerque	NJ	08759-3748	USA	
+	Mr Danny	Staub	2908 N Elmendorf St Apt 2	San Antonio	FL	32206-3823	USA	954-389-0120
+	Isa	Stead			WA	98052-0530	USA	
+	Lorna	Steele	11930 203Rd St	Saint Albans	TN	37873-5239	USA	
+	Mrs Jada	Steele	352 Emeryville Rd	Gouverneur	PR	00785-3000	USA	
+	Wilma	Stepp	Po Box 1271	Manchester	FL	33993-6041	USA	
+	Brian	Sterrett	301 Morea Rd	Frackville	PA	17065-0206	USA	
+	Disty	Stewart	Po Box 1678	Hollister	IL	60505-2427	USA	630-615-1959
+	Luella M	Stewart	11 Hill St	Avella	FL	33414-8660	USA	
+	Mukunda	Stiles			NJ	08816-4212	USA	
+	Andrea M	Stjohn	2103 Maginnis Rd	Oregon	NY	10533-1104	USA	
+	Disty	Stockton	Po Box 1678	Hollister	TX	76367-6568	USA	
+	Sara	Stockton	72 Prospect St 2Nd Fl	Willimantic	NV	89104-4405	USA	
+	Erika	Streede	1224 E Lincoln Ave	Wellington	WI	53545-4227	USA	
+	Delephine	Streedz	3540 Pike Ave	Sacramento	PA	17026-9702	USA	
+	Linda	Stringer	Po Box 5	Vandalia	AZ	85734-1942	USA	
+	M	Stufano	44 Panda Ln	Whiting	TX	76424-2654	USA	
+	Wendy	Sturino	517 Valhalla Dr	Mukwonago	QLD	4812	AUSTRALIA	
+	Melissa	Sulita	333 Cayuga Creek Rd	Alden	NY	11783-3109	USA	
+	Ridley	Summey	1703 Se Alder St. Apt. 8	Portland	IN	46143-6351	USA	
+	Gus	Surnear	5209 Dorshire Dr. Apt. 3	Fairfield	FL	32137-9521	USA	
+	Rachel	Swones	1110 Maple Ave Apt C2	Fort Wayne	FL	33604-3026	USA	
+	Mitzie A	Syriphokha	32 Netcong Hts Apt 8	Netcong	KY	40769-9726	USA	
+	Ms Chanthara	Syriphokha	3205 Timberstone Dr	Canal Winchester	NY	12701-1263	USA	
+	Helen	Systems	100 15Th St Apt A209	Bay City	NJ	07016-2506	USA	
+	Gus	Szabo	5209 Dorshire Dr Apt 3	Fairfield	IN	47112-1449	USA	
+	Debra Anne	Szachacz	17 Colonel Glenn Dr	Carmel	VA	24124-2546	USA	
+	Thomas	T	Po Box 25112	Garfield Hts	MS	39203-1123	USA	
+	Shirazeh	Tabibi	10570 Twin Rivers Rd Apt D1	Columbia	FL	32773-5999	USA	
+	Paul	Taylor	2122 Fairfax Ave Apt 6	Nashville	CA	94142-0387	USA	
+	Sam	Taylor	27 Lakeside Blvd	North Reading	CA	91702-5802	USA	
+	Christy	Tennery	460 S. Van Ness Ave #19	San Francisco	NC	28173	USA	
+	William 	Terry	206 Monticello Dr	Syracuse	NY	11219-5323	USA	
+	Shawn	Tewelde	1401 St Edwards Dr # 133	Austin	IL	60646-6159	USA	
+	Thomas	Thaut	3540 18Th St	Wyandotte	MI	48505-2593	USA	
+	Patricia	Theel	863 Fell St	San Francisco	NY	14127-8167	USA	
+	Edward	Thomas	777 Stanton Blvd	Ontario	AZ	85635-3833	USA	
+	Karen	Thompson	Po Box 161	Cape May Ch	ME	04963-5002	USA	
+	Kaye E	Thompson	205 W Baxter Ave	Knoxville	FL	34287-2842	USA	941-426-5133
+	Michael David	Thompson	3550 Highway 468 W Bldg 43	Whitfield	OH	43068-8102	USA	
+	Dawn	Titus	Po Box 644	Ocklawaha	PA	17846-0819	USA	
+	Tammy	Todd	225 Holmar Dr	Brandon	FL	33010-6203	USA	
+	Diana	Todhunter	3030 56Th St	Lubbock	CO	80232-5975	USA	
+	Ms Jacqueline	Torrey	238 Nw E St Apt 4	Grants Pass	ND	58102-2230	USA	
+	G P	Torrone	3315 Wren Rd	Louisville	MO	64111-4929	USA	
+	Lilleth	Townsend	803 Hampton Dr	Atlanta	WA	99204-4016	USA	
+	Sharlene	Trager	82 Crestwood	Crawfordville	MI	49546-6020	USA	
+	7Th Heaven Yoga Center	Trainer	2820 7Th Street	Berkeley				303-565-2021
+	Berkeley Yoga Center	Trece	1250 Addison Street	Berkeley		10126	ITA	
+	Sylvia	Trejo	Po Box 7107	Erie	NV	89439-0508	USA	
+	Mr Michael J	Triola	2303 Popkins Ln	Alexandria	FL	33801-2815	USA	
+	Tammy	Truong	1729 Newport Pl Unit 4	Kenner	MT	59037-0332	USA	
+	Jenna	Tucker	108 N 63Rd Ave W	Duluth	IA	52574-8661	USA	
+	Suzanne	Tucker	590 Lower Landing Rd Unit 270	Blackwood	IN	47670-1415	USA	
+	James	Tuggle	102 Stringtown Rd	Williamsburg	PA	19124	USA	
+	Mary Ann	Tulnai	201 N Garden Ave Apt 12	Sierra Vista	TX	76655-3033	USA	
+	Brian	Turner	Po Box 2000	Fort Dix	SC	29577-4328	USA	
+	C	Turner	Po Box 3063	Sparks	TX	78201-4997	USA	
+	Rosemary	Turner	Po Box 72266	Louisville	NY	13642-3196	USA	
+	Erika	Uhlendorf	2719 N Twyman Rd	Independence	PA	17932-0001	USA	
+	Ms Kelley	Ultimate Lottery	1416 E Pike St	Wichita	AK	99501-1516	USA	
+	Kyra	Umanoff	57 Eastern Road	Ardsley	IL	61605-3215	USA	
+	Daisy	Uminowicz	Po Box 352	Sabinal	MO	65673-1678	USA	
+	Michele Elizabeth T	Unsell	39 William St	Cambridge	PA	15312-2745	USA	
+	Carol	Upchurch	6207 Pike Valley Dr	San Antonio	IL	61605-3091	USA	
+	Flaminia	Valdez	275 Green Way	Portola	MO	65673-1678	USA	
+	Nicole	Vallario	735 Sobrato Dr	Campbell	AR	71742	USA	
+	Christina	Vallone	Po Box 83287	Fairbanks	TN	37748-6210	USA	
+	Erika	Van Tuyl	2719 N Twyman Rd	Independence	KS	67152-2661	USA	
+	Nancy	Van Tuyl	223 Woodlands Way	Abington	KS	66607-2031	USA	
+	Rosemary	Vavrin	Po Box 244586	Anchorage	CT	06117-2236	USA	
+	Leslie	Vegel	331 Bost Rd Apt 9C	Morganton	GA	31599	USA	
+	Ann	Verhey	5091 Chatsworth St	Detroit	MO	64171-5757	USA	
+	Teresa	Vernile	447 W Walnut St Apt B2	Kalamazoo	NY	14004-8700	USA	
+	Lisa	Verrelli	908 South St	Watertown	TN	37713-0207	USA	
+	Ms Susan K	Vessles	1606 W Peoria Ave Apt 116	Phoenix	OR	97214-2755	USA	
+	Vadic	Vessles	3126 Parkwood Ave	Toledo	OH	45014-1569	USA	
+	John	Vidaurre	16280 Quantico Rd	Apple Valley	NY	11224-5008	USA	
+	Sonya	Vincent	480 Palm Ave	Seaside	GA	31313-5175	USA	
+	Bill	Vinette	Po Box 707	Martinez	IN	46807-1047	USA	
+	Ms Caren	Viriglio	5316 8Th Ave Ne	Seattle	NJ	07857-1732	USA	
+	Gary	Visco	118 Spear St	Charlotte	OH	43110-9690	USA	614-598-3549
+	Rebecca	Vizcarrondo	3316 Laguna St. 304	San Francisco	MI	48708-7061	USA	
+	Juniper	Vojta	P.O. Box 3150	Truckee	AL	36633-1765	USA	251-450-3686
+	Cintia	Volta	#9 10131 154Th St	Edmonton	OH	45014-1569	USA	
+	Harriot	Wallace	649 Reservoir Rd	Burnsville	CA	90211-2304	USA	
+	Madelyn	Wallace	311 S Valley Forge Rd	Devon	NY	14616-5511	USA	
+	Sissy	Wallace	1306 Quail Dr	Garland	PA	19081-1123	USA	
+	Cari	Wallenberg	1003 Valley Ct	Edmond	IN	46805-0329	USA	
+	Brittany	Walz	2237 Country Loop S.	Lakeland	FL	33460-3446	USA	
+	Genevieve	Wang			NY	14621-3958	USA	
+	Julie	Wardwell	16 Thistle Dr.	Centerville	MA	01864-1119	USA	
+	Kasey	Warren	2733 Trimble St 12	Paducah	OH	45331-2920	USA	
+	Mark	Warren	Po Box 9000	Seagoville	FL	33247-0216	USA	
+	Leah	Washington 			NY	13205-2449	USA	
+	Jo	Washington Jr	22415 Rue Canyon Ct	Katy	WA	98003-7462	USA	
+	Monty	Watson	Po Box 239	Roaring Springs	MT	59037-0332	USA	
+	Robert	Watts	3899 St Hwy 98 425931	New Boston	TX	78704	USA	512-398-9848
+	Rev Andrew W	Weakley	1310 Cleveland Ave # 2	Flint	CA	93030-2594	USA	805-966-7677
+	Ann	Week	5091 Chatsworth St	Detroit	MS	39193-5529	USA	
+	Natalie	Weinstein			TX	79413-4809	USA	
+	Brenda	Welch	150 Cognac Cir	Sacramento	NY	14464-9340	USA	
+	Larry	Welch	202 Soundview Ave Apt 53	Stamford	OR	97526-2056	USA	
+	Sarah-Enlightenment	Welch	31 Highpoint Rd	Southbury	KY	40213-1343	USA	
+	Gabrielle	Weller	1954 Dunmovin	Kalispell	GA	31501-6872	USA	
+	Heide	Wentworth			CO	80516-9310	USA	
+	John	Werner	415 Us Highway 49 N	Tutwiler	GA	30350-3907	USA	
+	Geraldine	Wesley	3754 64Th St Apt 12A	Woodside	FL	32327	USA	
+	P Marcus	Wesley	10147 Bellefontaine Rd	Saint Louis	CA	94710	USA	
+	Stella	West	74 Sturgis Rd Apt 70	Monticello	MN	55116-2531	USA	
+	Billy	Westerman	1928 Maiden Ln Sw	Roanoke	CA	94707	USA	
+	R G	Westerman	1875 Merikoke Ave S	Wantagh	CA	93277-5790	USA	
+	Jean	Wetzel	507 Mitchell Dr.	Los Osos	CA	94702	USA	
+	Mr Hemant	Wheeler King	Po Box 608	Spruce Pine	PA	16510-0107	USA	
+	Estelle	Whiddon	3419 Lovewood Rd	Marianna	IL	60201-3003	USA	
+	Lady	Whiddon	222 Barrow Dr	Augusta	FL	34698-9053	USA	
+	Joshue	Whitaker	Po Box 9000	Forrest City	VA	22306-2444	USA	
+	Ayesha	White	315 Lindsay St Apt One	Chattanooga	MI	48503-4854	USA	
+	Fernanda	White	11450 Sw 109Th Rd Apt Y	Miami	MN	55807-1927	USA	218-464-0040
+	Jessica	White	2211 Ne 37Th Ct	Lighthouse Point	NJ	08012-4135	USA	
+	Juan	White	4325 Lucerne Villas Ln	Lake Worth	SD	57101-0121	USA	
+	Megan T	White	Po Box 3000	Pine Knot	AZ	85635-3833	USA	
+	Alice D	Whitehurst	Po Box 2473	East Orange	NV	89432-3063	USA	
+	Nina	Whitley	53126 Pine Brook Dr	Bristol	GA	30088-4545	USA	
+	Shelby	Wickeo	3480 Bradleyville Rd Apt 4	Vassar	KY	40272-0266	USA	502-290-0015
+	Stephen D	Widing	3716 N Druid Hills Rd	Decatur	WA	98052-0530	USA	
+	Russell	Wilcox	408 Se Noble St Apt 233	Greenfield	KS	67211-2628	USA	
+	Mrs Ann	Wilk	268 Portsmouth Ave	Seabrook	NY	10502	USA	
+	Samuel	Wilkes	304 W North St Apt 192	Waukesha	MA	02139-3833	USA	
+	Courtney	Williams	243 E 51St St	San Bernardino	CA	92252-1933	USA	
+	Gilsdorf	Williams	5890 Bryant Ln	Inver Grove Heights	CA	92260-4231	USA	760-776-9696
+	Heather	Williams	364 Valley Rd	River Edge	CA	92024	USA	
+	Lance	Williams	136 St Paul St	Collingwood	CA	95008-4623	USA	
+	Polly	Williams	2231 Se Ivon St	Portland	NS	B0N 2T0	CAN	902-798-2057
+	Linda M	Williamson	178 Northland Ave # Up	Rochester	MA	02351-2594	USA	
+	Connie	Wilson	Po Box 408	Bronston	NJ	08816-4212	USA	
+	Leticia	Wilson	7301 Calamo St	Springfield	NY	11758-1734	USA	
+	Teresa 	Winte			PA	18062-9243	USA	
+	Joey	Woerly			MI	48224-3261	USA	
+	Louis	Wollschleger	7110 Potomac Dr	Port Richey	WI	53094-7714	USA	
+	Amanda	Wood	3220 Stanley Rd	Greenville	AZ	85029-5704	USA	
+	Keneth & Teresa	Wood	1025 Messner Rd	Chester Springs	OH	43610-1615	USA	419-255-5723
+	Quality Fitness	Woodring	Po Box 1765	Mobile	CA	93955-4227	USA	
+	Hunt	Woods	10351 Linn Station Rd	Louisville	CA	94553-0070	USA	510-843-2228
+	Ms Dawn Lee	Woods	26427 Beaconsfield St	Roseville	WA	98105-3615	USA	
+	Ms Chanthara	Wooten	3205 Timberstone Dr	Canal Winchester	VT	05445	USA	802-985-9325
+	Sheri	Yoho	465 Hamilton St	Gretna	NJ	08086-9627	USA	609-420-3336
+	Milton S	Yoshimoto	2563 Date St # 209	Honolulu	NY	11793-3343	USA	
+	Pinky	Young	4652 Hollywood Bl	Los Angeles	NC	28714-7160	USA	
+	Lisa	Youngblood	5032 Buffalo West Springs Hwy	Pauline	PA	19333-1373	USA	
+	Jennifer	Youngqust	2823 Victoria St	Abilene	TX	75040-8171	USA	
+	Jorge	Zea	170 Ocean Lane Dr Apt 708	Key Biscayne	OH	45840-3059	USA	419-306-1692
+	Alice	Zinner	1555 Spring Harbor Dr Apt K	Delray Beach	TX	75159-9000	USA	
+	Danielle	Zinner	3224 W 29Th St	Indianapolis	TX	77450-7683	USA	
+	April	Zorb	5091 Chatsworth St	Detroit	CA	95620-4243	USA	
+	Christina	Zullo	156 Concord St	New Haven	TX	79256-0239	USA	
+	Annie		920 Brooktree Ln	Vista	CA	92629-1649	USA	
+	Debi				WA	98121-3111	USA	206-374-8765
+	Diem				MI	48503-4854	USA	
+	Giselle				WV	25801-6918	USA	
+	Helena				NY	11219-5323	USA	
+	Jeffrey				MI	48224-3261	USA	
+	Lets All Be Healthy				KY	40299-3135	USA	
+	Natasha		12 Hoffman Ave Apt #3	San Francisco	CO	81623-9706	USA	970-963-2410
+	Nora				CA	95835-2035	USA	
