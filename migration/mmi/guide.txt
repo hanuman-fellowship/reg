@@ -28,12 +28,11 @@
     2.  Campaigner List: Merge email preferences using the "Status" column
         as follows:
 
-        1.  If a person is listed as "unsubscribe" or "hardbounced",
+        1.  If a person is listed as "unsubscribe"
             make sure the corresponding Person in Reg is unsubscribed
             from the MMI email list.
+            If a person is listed as "hardbounced" replace the email
+            with an empty string.
 
         2.  If a person is listed as "softbounced" or "available",
              make sure they are subscribed to the MMI email list.
-
-
-
