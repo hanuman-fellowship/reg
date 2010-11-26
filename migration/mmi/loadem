@@ -1,0 +1,100 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use English;
+
+my @mmi_affils = (54, 63, 64, 65);
+my $mmi_affils = join ',', @mmi_affils;
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no dbh\n";
+
+my $sth_search = $dbh->prepare("
+    select id, mmi_e_mailings, mmi_snail_mailings
+      from people
+     where email = ?
+") or die "no search";
+my $sth_update = $dbh->prepare("
+    update people
+       set email = ?, mmi_e_mailings = ?, mmi_snail_mailings = ?
+     where id = ?
+");
+my $sth_aff_search = $dbh->prepare("
+    select a_id
+      from affil_people
+     where p_id = ?
+       and a_id in ($mmi_affils)
+");
+my $sth_aff_insert = $dbh->prepare("
+    insert into affil_people
+           (a_id, p_id)
+    values (?, ?)
+");
+open my $in, '<', 'emails.txt' or die "no emails.txt: $OS_ERROR\n";
+open my $no_email, '>', 'no_emails.txt' or die "no no_emails.txt: $OS_ERROR\n";
+open my $mult_email, '>', 'mult_emails.txt' or die "no mult_emails.txt: $OS_ERROR\n";
+$|++;
+my $n = 0;
+my $nfound = 0;
+my $either = 0;
+my $n_no_email = 0;
+my ($hb, $sb, $unsub, $unk) = (0, 0, 0, 0);
+while (my $line = <$in>) {
+    ++$n;
+    print "$n\r";
+    chomp $line;
+    my ($email, $status) = (split m{\t}, $line)[0, 13];
+    # print "$email and $status\n";
+    $sth_search->execute($email);
+    my $got_it = 0;
+    while (my ($p_id, $em, $sn) = $sth_search->fetchrow_array()) {
+        ++$got_it;
+        ++$nfound;
+        $em ||= "";
+        $sn ||= "";
+        if ($em || $sn) {
+            ++$either;
+        }
+        if ($status eq 'hardbounced' || $status eq 'BlockedDomain') {
+            ++$hb;
+            #$sth_update->execute('', '', $sn, $p_id);
+        }
+        elsif ($status eq 'softbounced' || $status eq 'available') {
+            ++$sb;
+            #$sth_update->execute($email, 'yes', $sn, $p_id);
+
+            $sth_aff_search->execute($p_id);
+            if (my ($a_id) = $sth_aff_search->fetchrow_array()) {
+                # do nothing - they already have an MMI affil
+            }
+            else {
+                # add the 4 MMI affils
+                for my $aff_id (@mmi_affils) {
+                    $sth_aff_insert->execute($aff_id, $p_id);
+                }
+            }
+        }
+        elsif ($status eq 'unsubscribed') {
+            ++$unsub;
+            #$sth_update->execute($email, '', $sn, $p_id);
+        }
+        else {
+            ++$unk;
+            print "UNKNOWN status: $status\n";
+        }
+    }
+    if (! $got_it) {
+        ++$n_no_email;
+        print {$no_email} "$email\t$status\n";
+    }
+    elsif ($got_it > 1) {
+        print {$mult_email} "$email\n";
+    }
+}
+close $in;
+close $no_email;
+close $mult_email;
+print "\n";
+print "n $n nfound $nfound either $either no_email $n_no_email\n";
+print "hb $hb sb $sb unsub $unsub unk $unk\n";

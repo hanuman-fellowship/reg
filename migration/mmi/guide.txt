@@ -36,3 +36,10 @@
 
         2.  If a person is listed as "softbounced" or "available",
              make sure they are subscribed to the MMI email list.
+
+
+First import the other lists (with first last names)
+then go through the isolated emails again seeing which are
+in the database already.  For those with ANY MMI affil leave
+it be - for those with none at all set the 4 (Massage, Ayurveda, Community
+Studies, and Yoga). 
