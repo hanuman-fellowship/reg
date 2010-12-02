@@ -435,6 +435,7 @@ sub view : Local {
     stash($c,
         ndays          => $ndays,
         rental         => $rental,
+        pg_title       => $rental->name(),
         daily_pic_date => "indoors/$sdate",
         cluster_date   => $sdate,
         cal_param      => "$sdate/$nmonths",

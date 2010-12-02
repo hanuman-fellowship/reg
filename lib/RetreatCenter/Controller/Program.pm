@@ -516,7 +516,10 @@ sub view : Local {
         );
         return;
     }
-    stash($c, program => $p);
+    stash($c,
+        program  => $p,
+        pg_title => $p->name(),
+    );
     my $extra = $p->extradays();
     if ($extra) {
         my $edate2 = $p->edate_obj() + $extra;
@@ -1003,19 +1006,6 @@ sub affil_update_do : Local {
             p_id => $id,
         });
     }
-    my $p = model($c, 'Program')->find($id);
-    if ($p->extradays) {
-        # and ditto for the full program
-        model($c, 'AffilProgram')->search(
-            { p_id => $id + 1 },
-        )->delete();
-        for my $ca (@cur_affils) {
-            model($c, 'AffilProgram')->create({
-                a_id => $ca,
-                p_id => $id + 1,
-            });
-        }
-    }
     $c->response->redirect($c->uri_for("/program/view/$id/2"));
 }
 
@@ -1048,6 +1038,9 @@ sub meetingplace_update_do : Local {
     meetingplace_book($c, 'program', $program_id);
 }
 
+#
+# what if it is a hybrid???
+#
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
