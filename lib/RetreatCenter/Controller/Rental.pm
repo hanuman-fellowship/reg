@@ -344,6 +344,13 @@ sub view : Local {
     Global->init($c);
     $section ||= 1;
     my $rental = model($c, 'Rental')->find($rental_id);
+    if (! $rental) {
+        error($c,
+            "Rental not found.",
+            "gen_error.tt2",
+        );
+        return;
+    }
 
     my @payments = $rental->payments;
     my $tot_payments = 0;
