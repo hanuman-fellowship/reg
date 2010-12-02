@@ -294,17 +294,16 @@ sub view : Local {
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
-    $c->stash->{person} = $p;
     my $sex = $p->sex();
-    $c->stash->{sex} = (!defined $sex || !$sex)? "Not Reported"
-                      :($sex eq "M"           )? "Male"
-                      :($sex eq "F"           )? "Female"
-                      :                          "Not Reported";
-    # not really needed - hangs if no connection
-    # if ($sex ne 'M' && $sex ne 'F') {
-    #      $c->stash->{sex} .= "<br>". _what_gender($p->first, $id);
-    # }
-    $c->stash->{template} = "person/view.tt2";
+    stash($c,
+        person   => $p,
+        pg_title => $p->first() . ' ' . $p->last(),
+        sex      => (!defined $sex || !$sex)? "Not Reported"
+                          :($sex eq "M"           )? "Male"
+                          :($sex eq "F"           )? "Female"
+                          :                          "Not Reported",
+        template => "person/view.tt2",
+    );
 }
 
 sub create : Local {
