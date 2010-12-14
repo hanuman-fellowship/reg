@@ -1,0 +1,905 @@
+got MMI - Yoga = 65
+got MMI - Community Studies = 54
+got MMI - Discount = 58
+got MMI - Massage = 63
+got MMI - Ayurveda = 64
+got MMI - Consultations = 66
+mmi ayurveda = 64
+mmi comm stu = 54
+mmi consulta = 66
+mmi massage  = 63
+mmi yoga     = 65
+** Ashley Yuhouse
+not found - new record
+last id = 222634
+** Ashley Acquistapace
+not found - new record
+last id = 222635
+** Sonal Patel
+Sonal Patel
+found 1 records
+matched one of ahimsa.snp@gmail.com, 211776012TWE cmp 74308  214-492-9426 211776012TWE
+sql = *update people
+       set mmi_e_mailings = 'yes', email = 'ahimsa.snp@gmail.com', addr1 = '2117 Twelve Oaks Ct', city = 'Arlington', st_prov = 'TX', zip_post = '76012', akey = '211776012TWE', country = 'USA'
+ where id = 74308
+*
+** Sivani Marlene Alderman
+not found - new record
+last id = 222636
+** Bud Coyner
+not found - new record
+last id = 222637
+** Tasha Marks
+not found - new record
+last id = 222638
+** Leslie M. Moore
+not found - new record
+last id = 222639
+** Cami Greenfield
+not found - new record
+last id = 222640
+** Amber Burke
+not found - new record
+last id = 222641
+**  
+no first/last: , , ambikasayurveda@sbc.global.net
+** Darlene Tate
+Darlene Tate
+found 1 records
+matched one of analene@earthlink.net, 4121992627ETH cmp 61022 darleneann@hotmail.com  4121992627ETH
+sql = *update people
+       set mmi_e_mailings = 'yes', email = 'analene@earthlink.net', addr1 = '412 E.19th St', city = 'Costa Mesa', st_prov = 'Ca', zip_post = '92627', akey = '4121992627ETH', country = 'USA'
+ where id = 61022
+*
+** Ananda Lee
+not found - new record
+last id = 222642
+** Cecelia Tenner
+not found - new record
+last id = 222643
+** Kathileen Young
+not found - new record
+last id = 222644
+** Anne Hyle
+not found - new record
+last id = 222645
+** Annie Twist Lubke
+not found - new record
+last id = 222646
+** Anupama Kizhakkeveettil
+not found - new record
+last id = 222647
+** Ayse Saygin
+Ayse Saygin
+found 1 records
+matched one of apsaygin@gmail.com, 412292103BAC cmp 214233 asaygin@cogsci.ucsd.edu  412292103BAC
+sql = *update people
+       set mmi_e_mailings = '', email = 'apsaygin@gmail.com', addr1 = '4122 Bachman Pl', city = 'san Diego', st_prov = 'ca', zip_post = '92103', akey = '412292103BAC', country = 'USA'
+ where id = 214233
+*
+** Christine Devi
+not found - new record
+last id = 222648
+**  
+no first/last: , , ayurvedacathy@yahoo.com
+no addr email
+** Beth Wellik
+not found - new record
+last id = 222649
+** Babette Golden
+Babette Golden
+found 1 records
+matched one of bgolden22@comcast.net, 130134223BAY cmp 219457 bgolden22@verizon.net 941-270-2913 130134223BAY
+sql = *update people
+       set mmi_e_mailings = 'yes', email = 'bgolden22@comcast.net', addr1 = '1301 Bayshore Drive', city = 'Englewood', st_prov = 'Florida', zip_post = '34223', akey = '130134223BAY', country = 'USA'
+ where id = 219457
+*
+** Vijay Ashar
+not found - new record
+last id = 222650
+** Brian Harasha
+Brian Harasha
+found 1 records
+matched one of bharasha@sbcglobal.net, 756063130CAR cmp 215565 bharasha@sbcglobal.net 314-541-4786 756063130CAR
+sql = *update people
+       set mmi_e_mailings = '', email = 'bharasha@sbcglobal.net', addr1 = '7560 Carleton Ave.', city = 'St. Louis', st_prov = 'MO', zip_post = '63130', akey = '756063130CAR', country = 'USA'
+ where id = 215565
+*
+** Traci Gordon
+not found - new record
+last id = 222651
+** Breanna Wilde
+not found - new record
+last id = 222652
+** Katrina Hellbusch
+not found - new record
+last id = 222653
+**  
+no first/last: , , brajesh@mountmadonna.org
+** Barbara Tapella
+not found - new record
+last id = 222654
+** Roger Little
+Roger Little
+found 1 records
+matched one of burningviolin@yahoo.com, 67195039POB cmp 72999   67195039POB
+sql = *update people
+       set mmi_e_mailings = '', email = 'burningviolin@yahoo.com', addr1 = 'PO Box 671', city = 'Moss Landing', st_prov = 'CA', zip_post = '95039', akey = '67195039POB', country = 'United States'
+ where id = 72999
+*
+no addr email
+** Soles Candace
+not found - new record
+last id = 222655
+** Carmela Beck
+not found - new record
+last id = 222656
+** Catalina Peralta
+Catalina Peralta
+found 1 records
+matched one of catalinaperalta@mac.com, 52795062SBA cmp 100340 catalinaperalta@mac.com  52795062SOU
+sql = *update people
+       set mmi_e_mailings = '', email = 'catalinaperalta@mac.com', addr1 = '527 S Banciforte Ave Unit B', city = 'Santa Cruz', st_prov = 'CA', zip_post = '95062', akey = '52795062SBA', country = 'USA'
+ where id = 100340
+*
+** Catherine Dambrosio
+not found - new record
+last id = 222657
+** Chrissy Gruninger
+not found - new record
+last id = 222658
+no addr email
+** Clay Daulton
+Clay Daulton
+found 1 records
+matched one of claydaulton@vbbn.com, 476795405HIL cmp 67388 claydaulton@vbbn.com 707-547-7014 476795405HIL
+sql = *update people
+       set mmi_e_mailings = '', email = 'claydaulton@vbbn.com', addr1 = '4767 Hillsboro Circle', city = 'Santa Rosa', st_prov = 'CA', zip_post = '95405', akey = '476795405HIL', country = 'USA'
+ where id = 67388
+*
+** Christine Thompson
+not found - new record
+last id = 222659
+** Christina Lord
+not found - new record
+last id = 222660
+** Christopher Stark
+not found - new record
+last id = 222661
+** Claire Stuckey
+not found - new record
+last id = 222662
+** Channing Grivas
+not found - new record
+last id = 222663
+** Stephanie Esparza
+not found - new record
+last id = 222664
+**  
+no first/last: , , daxlumi@comcasst.net
+** Diana Belgin
+not found - new record
+last id = 222665
+** Diane Elizondo
+Diane Elizondo
+found 1 records
+no match - possible dup record!
+**  
+no first/last: , , diannacarrie@aol.com
+** Aurora Soria
+not found - new record
+last id = 222666
+** Diane McCarthy
+not found - new record
+last id = 222667
+** Dona McCall
+Dona McCall
+found 1 records
+matched one of donamccall@yahoo.com, 397794062JEF cmp 71990 donamccall@yahoo.com 650-302-3514 397794062JEF
+sql = *update people
+       set mmi_e_mailings = '', email = 'donamccall@yahoo.com', addr1 = '3977 Jefferson Ave', city = 'Emerald Hills', st_prov = 'CA', zip_post = '94062', akey = '397794062JEF', country = 'USA'
+ where id = 71990
+*
+** Smt Promodini Nayak
+not found - new record
+last id = 222668
+** April Chun
+April Chun
+found 1 records
+matched one of DRAPRILC@AOL.COM, 90214494404BEA cmp 70952 DRAPRILC@AOL.COM  90214494404BEA
+sql = *update people
+       set mmi_e_mailings = '', email = 'DRAPRILC@AOL.COM', addr1 = '902 BEACH PARK BLVD. #144', city = 'FOSTER CITY', st_prov = 'CA.', zip_post = '94404', akey = '90214494404BEA', country = 'USA'
+ where id = 70952
+*
+** Toronja Williams
+not found - new record
+last id = 222669
+** Gaia Mather
+not found - new record
+last id = 222670
+** Julie Bishop
+not found - new record
+last id = 222671
+** Abdur Rawoof
+not found - new record
+last id = 222672
+** Andrew Assalian
+not found - new record
+last id = 222673
+no addr email
+** Dinesh Vohra
+not found - new record
+last id = 222674
+** Pamela Brounstein
+not found - new record
+last id = 222675
+** Elmer Maggard
+not found - new record
+last id = 222676
+**  
+no first/last: , , elizabeth@aumedicine.com
+** Elizabeth Giufre
+not found - new record
+last id = 222677
+** Nikki Campbell
+not found - new record
+last id = 222678
+** Melissa Whittaker
+not found - new record
+last id = 222679
+** Emily Gupta
+not found - new record
+last id = 222680
+** Eric Infanti
+not found - new record
+last id = 222681
+** Erin Lyon
+Erin Lyon
+found 1 records
+no match - possible dup record!
+** Elizabeth Struckholz
+not found - new record
+last id = 222682
+** Eugena Garren
+not found - new record
+last id = 222683
+** Karen Parrish
+Karen Parrish
+found 1 records
+no match - possible dup record!
+** Fern Feto Spring
+not found - new record
+last id = 222684
+** Anumati Rachel Bryant
+not found - new record
+last id = 222685
+** Sarah Reaves
+not found - new record
+last id = 222686
+no addr email
+**  
+no first/last: , , fullcircleinsc@sbcglobal.net
+** Manohar Rao Gade
+not found - new record
+last id = 222687
+** Gabrielle Eagles
+not found - new record
+last id = 222688
+** Gigi Singer
+not found - new record
+last id = 222689
+** Rob Solomon
+not found - new record
+last id = 222690
+**  
+no first/last: , , HCHOU668@YAHOO.COM
+** Susan Hegstad
+not found - new record
+last id = 222691
+** Hester Sofranko
+not found - new record
+last id = 222692
+**  
+no first/last: , , heyraneh@yahoo.com
+no addr email
+** Olan Kaigel
+not found - new record
+last id = 222693
+** Hollie Hill
+not found - new record
+last id = 222694
+** Heather Grant
+not found - new record
+last id = 222695
+** Hwa Young Chong
+Hwa Young Chong
+found 1 records
+no match - possible dup record!
+** Mariska Siddiqui
+not found - new record
+last id = 222696
+** Sati Chmelar
+not found - new record
+last id = 222697
+** Val Poulos
+not found - new record
+last id = 222698
+** Aurora Ruwe
+not found - new record
+last id = 222699
+** Jodie Anderson
+not found - new record
+last id = 222700
+** Jasper Vasilinda
+not found - new record
+last id = 222701
+** John Boyd
+not found - new record
+last id = 222702
+** Julia Doherty
+not found - new record
+last id = 222703
+** Jeffrey Turnbull
+not found - new record
+last id = 222704
+** Jennifer Jaros
+not found - new record
+last id = 222705
+no addr email
+**  
+no first/last: , , jillooky@hotmail.com
+** James Ranney
+not found - new record
+last id = 222706
+** James Jarvis
+James Jarvis
+found 1 records
+matched one of jjarvis@lifeqwest.com, 75551295003SUN cmp 211368   75551295003SUN
+sql = *update people
+       set mmi_e_mailings = '', email = 'jjarvis@lifeqwest.com', addr1 = '7555 Sunset Way #12', city = 'Aptos', st_prov = 'CA', zip_post = '95003', akey = '75551295003SUN'
+ where id = 211368
+*
+no addr email
+** Jo Perron
+not found - new record
+last id = 222707
+** Joni Leung
+not found - new record
+last id = 222708
+** Joy Ravelli
+not found - new record
+last id = 222709
+no addr email
+** Jeff Mortlock
+Jeff Mortlock
+found 1 records
+no match - possible dup record!
+** Lisa Marie Gorman
+not found - new record
+last id = 222710
+** Kathleen Thompson
+not found - new record
+last id = 222711
+** Kara Potts
+not found - new record
+last id = 222712
+** Karin Doty
+not found - new record
+last id = 222713
+** Kate Ingersoll
+not found - new record
+last id = 222714
+** Kate Johnson
+not found - new record
+last id = 222715
+** Kathy Battistoni
+not found - new record
+last id = 222716
+** Kellene Mart
+not found - new record
+last id = 222717
+no addr email
+** Kay Hess
+Kay Hess
+found 1 records
+matched one of kikhess@yahoo.com, 548394552SON cmp 70187   548394552SON
+sql = *update people
+       set mmi_e_mailings = '', email = 'kikhess@yahoo.com', addr1 = '5483 Sontura Ct.', city = 'Castro Valley', st_prov = 'CA', zip_post = '94552', akey = '548394552SON', country = 'USA'
+ where id = 70187
+*
+** Kimberly Borowski
+not found - new record
+last id = 222718
+** Kim Ertelt
+not found - new record
+last id = 222719
+** Joseph Dimeglio
+not found - new record
+last id = 222720
+** Karla "oliveira, M.s.,r.d."
+not found - new record
+last id = 222721
+** Komala Lyra
+Komala Lyra
+found 1 records
+no match - possible dup record!
+**  
+no first/last: , , kritikos2@earthlink.net
+no addr email
+no addr email
+** Ambika Kumar
+not found - new record
+last id = 222722
+** Lauren Feece
+not found - new record
+last id = 222723
+** Lesley Ormiston
+Lesley Ormiston
+found 1 records
+matched one of lesley_ormiston@yahoo.ca,  cmp 73068 lesley_ormiston@yahoo.ca  17791973CEN
+sql = *update people
+       set mmi_e_mailings = '', email = 'lesley_ormiston@yahoo.ca', akey = ''
+ where id = 73068
+*
+** Lily Haley
+not found - new record
+last id = 222724
+** Kate Lindberg
+not found - new record
+last id = 222725
+** Lisa Levitt
+not found - new record
+last id = 222726
+**  
+no first/last: , , lisambordner@yahoo.com
+no addr email
+** Lisamarie Magyar
+not found - new record
+last id = 222727
+** Lori Putinta
+not found - new record
+last id = 222728
+** Loni Gordon
+not found - new record
+last id = 222729
+** Lori Ritso
+Lori Ritso
+found 1 records
+matched one of , 54895044POB cmp 59868   54895044POB
+sql = *update people
+       set mmi_e_mailings = '', addr1 = 'P.O.Box 548', city = 'Redwood Estates', st_prov = 'CA', zip_post = '95044', akey = '54895044POB', country = 'USA'
+ where id = 59868
+*
+** Lora-Lynne Cox
+not found - new record
+last id = 222730
+** Neysa Griffith
+not found - new record
+last id = 222731
+** Melissa Owens
+Melissa Owens
+found 1 records
+no match - possible dup record!
+** Mingo Durald
+not found - new record
+last id = 222732
+** Megan Munson
+not found - new record
+last id = 222733
+** Marlize Joubert
+not found - new record
+last id = 222734
+no addr email
+**  
+no first/last: , , masterfurny@gmail.com
+** Martha Billman
+not found - new record
+last id = 222735
+** Meghan McDonough
+not found - new record
+last id = 222736
+** Maria Diaz
+not found - new record
+last id = 222737
+** Michelle Butler
+not found - new record
+last id = 222738
+** Megan Sirr
+not found - new record
+last id = 222739
+** Meghan Maze
+Meghan Maze
+found 1 records
+matched one of meghan@saffronwellness.com, 3693940WEL cmp 67423 meghan@saffronwellness.com  18015295661EUR
+sql = *update people
+       set mmi_e_mailings = 'yes', email = 'meghan@saffronwellness.com', addr1 = '36 Wellings Place', city = 'Monterey', st_prov = 'CA', zip_post = '93940', akey = '3693940WEL', country = 'US'
+ where id = 67423
+*
+** Meghan Vaughn
+not found - new record
+last id = 222740
+**  
+no first/last: , , Menlogrowers1@aol.com
+** Marisa Fujinaka
+Marisa Fujinaka
+found 1 records
+no match - possible dup record!
+** Mitch Hamett
+not found - new record
+last id = 222741
+** Mitch Hamett
+Mitch Hamett
+found 1 records
+matched one of , 44594112ROL cmp 222741 mhamett@aol.com  44594112ROL
+sql = *update people
+       set mmi_e_mailings = '', addr1 = '445 rolph st', city = 'san francisco', st_prov = 'ca', zip_post = '94112', akey = '44594112ROL', country = 'usa'
+ where id = 222741
+*
+** Michela Baca
+not found - new record
+last id = 222742
+**  
+no first/last: , , michelle.palin@gmail.com
+** Mike Myers
+not found - new record
+last id = 222743
+** Nicole Wunderlin
+not found - new record
+last id = 222744
+** Morgan Hodul
+not found - new record
+last id = 222745
+** Jennifer Galvin
+not found - new record
+last id = 222746
+** Jody Wagner
+not found - new record
+last id = 222747
+no addr email
+** Mami Motegi
+not found - new record
+last id = 222748
+** Michele Kim
+not found - new record
+last id = 222749
+** Elizabeth Woods
+not found - new record
+last id = 222750
+no addr email
+** Marianne Doi
+not found - new record
+last id = 222751
+no addr email
+** Jennifer Odonnell
+not found - new record
+last id = 222752
+** Vanessa Beck
+not found - new record
+last id = 222753
+** Naomi Hegenbart
+not found - new record
+last id = 222754
+** Mischa Geracoulis
+not found - new record
+last id = 222755
+** Owen Burke
+Owen Burke
+found 1 records
+no match - possible dup record!
+no addr email
+** Taraka Strauss
+not found - new record
+last id = 222756
+** Colyn Inman
+not found - new record
+last id = 222757
+no addr email
+** Patricia Nicholson
+not found - new record
+last id = 222758
+**  
+no first/last: , , Patti@Blisskitchen.com
+** Trish Seggebruch
+not found - new record
+last id = 222759
+** Janet Perez
+Janet Perez
+found 1 records
+no match - possible dup record!
+** Phyllis Spradley
+not found - new record
+last id = 222760
+** Preston Foell
+not found - new record
+last id = 222761
+** Rachel Bridges
+Rachel Bridges
+found 1 records
+no match - possible dup record!
+** Ramesh Reddy
+Ramesh Reddy
+found 1 records
+no match - possible dup record!
+** Ralph Wolff
+Ralph Wolff
+found 1 records
+matched one of rawolff25@yahoo.com, 2794501ECL cmp 72689   2794501ECL
+sql = *update people
+       set mmi_e_mailings = '', email = 'rawolff25@yahoo.com', addr1 = '27 Eclipse Ct.', city = 'Alameda', st_prov = 'CA', zip_post = '94501', akey = '2794501ECL', country = 'USA'
+ where id = 72689
+*
+** Kelly Moores
+not found - new record
+last id = 222762
+**  
+no first/last: , , Roberta@TransFormativeAstrology.com
+** Robin Davis
+Robin Davis
+found 1 records
+matched one of robinanndavis@yahoo.com, 64689002MOO cmp 74283   64689002MOO
+sql = *update people
+       set mmi_e_mailings = '', email = 'robinanndavis@yahoo.com', addr1 = '646 moonlight stroll street', city = 'henderson', st_prov = 'nevada', zip_post = '89002', akey = '64689002MOO', country = 'clark'
+ where id = 74283
+*
+** Ron Pilato
+Ron Pilato
+found 1 records
+no match - possible dup record!
+** Rosalind Strong-Finch
+not found - new record
+last id = 222763
+** Rujni Arora
+not found - new record
+last id = 222764
+** N. Lim
+not found - new record
+last id = 222765
+** Jacquelyn Poulin
+not found - new record
+last id = 222766
+** Sharon Blewis
+not found - new record
+last id = 222767
+** Marcelle Crago
+not found - new record
+last id = 222768
+** Sandy Carmellini
+Sandy Carmellini
+found 1 records
+matched one of sandy@yogasandy.com, 20694513LAW cmp 70362 sandy@yogasandy.com  20694513LAW
+sql = *update people
+       set mmi_e_mailings = 'yes', email = 'sandy@yogasandy.com', addr1 = '206 Lawrence Lane', city = 'Brentwood', st_prov = 'Ca', zip_post = '94513', akey = '20694513LAW', country = 'USA'
+ where id = 70362
+*
+** Sarah Mitchell
+Sarah Mitchell
+found 1 records
+no match - possible dup record!
+** Yuri Sarita Watanabe
+not found - new record
+last id = 222769
+**  
+no first/last: , , sauravb7@gmail.com
+** Stephanie Baham
+not found - new record
+last id = 222770
+** Johnette Tye
+not found - new record
+last id = 222771
+** Jennifer Smith
+Jennifer Smith
+found 1 records
+no match - possible dup record!
+** Susan Haines
+not found - new record
+last id = 222772
+** Shannon Delaney
+not found - new record
+last id = 222773
+no addr email
+** Tamara Trujillo
+not found - new record
+last id = 222774
+no addr email
+** Troy Farwell
+not found - new record
+last id = 222775
+** Seema Lokre
+not found - new record
+last id = 222776
+** Kimberly Keyton
+not found - new record
+last id = 222777
+** April Wilson
+not found - new record
+last id = 222778
+** Suzete Salaz
+not found - new record
+last id = 222779
+** Sabra Zay
+not found - new record
+last id = 222780
+no addr email
+no addr email
+** Sudha Lundeen
+not found - new record
+last id = 222781
+** Sue Griffiths
+not found - new record
+last id = 222782
+** Sumitra Burton
+Sumitra Burton
+found 1 records
+matched one of , 44595076SUM cmp 205227 sumitra@earthlink.net  44595076SUM
+sql = *update people
+       set mmi_e_mailings = '', addr1 = '445 Summit Road', city = 'Watsonville', st_prov = 'CA', zip_post = '95076', akey = '44595076SUM', country = 'USA'
+ where id = 205227
+*
+** Rebecca Clark
+Rebecca Clark
+found 1 records
+no match - possible dup record!
+** Susan Alden
+not found - new record
+last id = 222783
+** Susan Pfau
+not found - new record
+last id = 222784
+no addr email
+no addr email
+** Asrael Zemenick
+not found - new record
+last id = 222785
+** Sylvia Diamantopoulou
+not found - new record
+last id = 222786
+** Diana Smith
+not found - new record
+last id = 222787
+**  
+no first/last: , , tebillings@yahoo.com
+** Tejinder Sidhu
+not found - new record
+last id = 222788
+no addr email
+no addr email
+** Joann Crown
+not found - new record
+last id = 222789
+** Abbey Meaker
+not found - new record
+last id = 222790
+** Tish Hegel
+not found - new record
+last id = 222791
+** Terrie Phillips
+Terrie Phillips
+found 1 records
+matched one of tlphillips@starband.net, 99098649LUE cmp 101802   99098649LUE
+sql = *update people
+       set mmi_e_mailings = 'yes', email = 'tlphillips@starband.net', addr1 = '990 Luebke Road', city = 'Toutle', st_prov = 'WA', zip_post = '98649', akey = '99098649LUE', country = 'United States'
+ where id = 101802
+*
+no addr email
+** Naseem Gulamhusein
+Naseem Gulamhusein
+found 1 records
+no match - possible dup record!
+** Trista Haycraft
+not found - new record
+last id = 222792
+** Vaness Saint-Louis
+not found - new record
+last id = 222793
+** Michelelynn Tetreault
+not found - new record
+last id = 222794
+** Adam Whitlock
+Adam Whitlock
+found 1 records
+matched one of whitlock_36542@yahoo.com, 932792119LAK cmp 71262 whitlock_36542@yahoo.com  932792119LAK
+sql = *update people
+       set mmi_e_mailings = '', email = 'whitlock_36542@yahoo.com', addr1 = '"9327 Lake Murray Blvd, #E"', city = 'San Diego', st_prov = 'CA', zip_post = '92119', akey = '932792119LAK', country = 'USA'
+ where id = 71262
+*
+** Willa Keizer
+not found - new record
+last id = 222795
+no addr email
+** Zoe Rowlandson
+not found - new record
+last id = 222796
+no addr email
+** Bill Bridges
+Bill Bridges
+found 1 records
+matched one of , 433245440FER cmp 220182 billbridges@mac.com  433245440FER
+sql = *update people
+       set mmi_e_mailings = '', addr1 = '4332 Fernmont Street', city = 'Kettering', st_prov = 'OH', zip_post = '45440', akey = '433245440FER', country = 'DDF 5924 SB00471'
+ where id = 220182
+*
+** Grace Meyer
+not found - new record
+last id = 222797
+no addr email
+** Jiwan Shakti Kaur Khalsa
+not found - new record
+last id = 222798
+** Linda Vreatt
+not found - new record
+last id = 222799
+** Nicole Ruskelle
+not found - new record
+last id = 222800
+** Sonja Cascino
+not found - new record
+last id = 222801
+** Pauline Sullivan
+not found - new record
+last id = 222802
+** Christine Cabral
+not found - new record
+last id = 222803
+** Rebecca Zenke
+not found - new record
+last id = 222804
+** Sherri Hammond
+Sherri Hammond
+found 1 records
+matched one of sblhammond@yahoo.com, 21595060ATH cmp 100928  610-982-3826 21595060ATH
+sql = *update people
+       set mmi_e_mailings = '', email = 'sblhammond@yahoo.com', addr1 = '215 atherley lane', city = 'santa cruz', st_prov = 'ca', zip_post = '95060', akey = '21595060ATH', country = 'us'
+ where id = 100928
+*
+** Sandra E Angulo
+not found - new record
+last id = 222805
+** Sophie Taggart
+not found - new record
+last id = 222806
+** Tara Dawn
+not found - new record
+last id = 222807
+** Bridget Puchalsky
+Bridget Puchalsky
+found 1 records
+matched one of tegdirb78@aol.com, 985680424POB cmp 215350 tegdirb78@aol.com 970-406-1704 101695060WES
+sql = *update people
+       set mmi_e_mailings = '', email = 'tegdirb78@aol.com', addr1 = 'POB 9856', city = 'Breckenridge', st_prov = 'CO', zip_post = '80424', akey = '985680424POB', country = 'USA'
+ where id = 215350
+*
+** Victoria Tolleson
+not found - new record
+last id = 222808
+** Lynda Maenius
+Lynda Maenius
+found 1 records
+matched one of , 410876109INW cmp 101037 lyndadolphins@yahoo.com 817-475-6872 410876109INW
+sql = *update people
+       set mmi_e_mailings = '', addr1 = '4108 Inwood Road', city = 'Fort Worth', st_prov = 'Texas', zip_post = '76109', akey = '410876109INW', country = 'United States of AMERICA'
+ where id = 101037
+*
+** Dougetta Oliver
+not found - new record
+last id = 222809
+** Deanna Derosa
+Deanna Derosa
+found 1 records
+matched one of jazz3@jps.net, 228095006POB cmp 100205 deanna_derosa@yahoo.com 408-438-3870 228095006POB
+sql = *update people
+       set mmi_e_mailings = 'yes', email = 'jazz3@jps.net', addr1 = 'PO Box 2280', city = 'Boulder Creek', st_prov = 'CA', zip_post = '95006', akey = '228095006POB', country = 'USA'
+ where id = 100205
+*
+** Natalie Leach
+not found - new record
+last id = 222810
+** Rochelle Hamilton
+not found - new record
+last id = 222811
+  272 lines
+  178 not found
+   19 no first last
+   17 not matched - dup
+   27 matched - updated
+   31 no addr/email
+email_only: 29
