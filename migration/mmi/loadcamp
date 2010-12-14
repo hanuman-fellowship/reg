@@ -122,7 +122,6 @@ my $no_addr_email = 0;
 my $email_only = 0;
 LINE:
 while (my $line = <$in>) {
-<STDIN>;
     chomp $line;
     ++$nlines;
     my ($email, $first, $last, $mail_pref, $addr, $city,
