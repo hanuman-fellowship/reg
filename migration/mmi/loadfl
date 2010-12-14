@@ -1,0 +1,243 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+
+my $for_real = 1;
+
+#
+# take the parameters, concatenate them,
+# extract the digits in order and suffix
+# them with the first letter.
+#
+# this is used during the efforts to locate
+# a duplicate entry.   If an address is
+# spelled differently or road instead of rd
+# it will have the same nsquished value.
+#
+# this is a poor man's MD5.
+# or an address-specific MD5.
+#
+sub nsquish {
+    my ($addr1, $addr2, $zip) = @_;
+    my $s = uc($addr1 . $addr2 . $zip);
+    my $n = $s;
+    $n =~ s{\D}{}gmsx;
+    $s =~ s{[^A-Z]}{}gmsx;
+    $s = substr($s, 0, 3);
+    return ($n . $s); 
+}
+
+sub sp_normalize {
+    my ($s) = @_;
+    $s =~ s{\A \s+ | \s+ \z}{}gmsx;
+    if (! $s) {
+        return "";
+    }
+    return join ' ',
+           map { normalize($_) }
+           split m{[ ]}msx, $s
+           ;
+}
+
+#
+# hyphenated names need an extra capital
+# SMITH-JOHNSON => Smith-Johnson
+# smith-johnson => Smith-Johnson
+# Mckenzie      => McKenzie
+#
+sub normalize {
+    my ($s) = @_;
+    if (! $s) {
+        return "";
+    }
+    return join '-',
+           map { s{^Mc(.)}{Mc\u$1}msx; $_ }
+           map { s{(.*)'(.*)}{\u$1'\u$2}msx; $_ }
+           map { ucfirst lc }
+           split m{[-]}msx, $s
+           ;
+}
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no dbh\n";
+my $sth_ma = $dbh->prepare("
+    select id from affils where descrip = 'MMI - Ayurveda'
+");
+$sth_ma->execute();
+my ($mmi_ayurveda) = $sth_ma->fetchrow_array();
+if (! $mmi_ayurveda) {
+    print "No MMI - Ayurveda affil!\n";
+    exit;
+}
+print "mmi_ayurveda: $mmi_ayurveda\n";
+
+my $sth_search = $dbh->prepare("
+    select id, email, tel_cell, akey
+      from people
+     where first = ? and last = ?
+");
+my $sth_insert = $dbh->prepare("
+    insert into people
+    (first, last, addr1, city, st_prov, zip_post,
+     email, country, tel_home, akey,
+     mmi_e_mailings, mmi_snail_mailings)
+    values
+    (?,     ?,    ?,     ?,    ?,       ?,
+     ?,     ?,       ?,        ?,
+     'yes',          'yes')
+");
+my $sth_ins_aff = $dbh->prepare("
+    insert into affil_people
+    (a_id, p_id)
+    values (?, ?)
+");
+
+open my $nofl, '>', 'no_first_last.txt' or die "no no_first_last.txt\n";
+open my $noae, '>', 'no_addr_email.txt' or die "no no_addr_email.txt\n";
+open my $dup, '>', 'dup.txt' or die "no dup.txt\n";
+
+open my $in, '<', 'MMIv2.txt' or die "no MMIv2.txt: $!\n";
+my $head = <$in>;
+my $nlines = 0;
+my $not_found = 0;
+my $no_first_last = 0;
+my $n_matched = 0;
+my $n_not_matched = 0;
+my $no_addr_email = 0;
+my $email_only = 0;
+LINE:
+while (my $line = <$in>) {
+    chomp $line;
+    ++$nlines;
+    my ($email, $first, $last, $addr, $city,
+        $state, $zip, $country, $phone) = split m{\t}msx, $line;
+    for my $f ($email, $first, $last, $addr, $city,
+               $state, $zip, $country, $phone)
+    {
+        $f ||= "";
+    }
+    print "** $first $last\n";
+
+    # normalize phone
+    my $tmp = $phone;
+    $tmp =~ s{\D}{}g;
+    if (length($tmp) == 10) {
+        $tmp = substr($tmp, 0, 3) . "-"
+              . substr($tmp, 3, 3) . "-"
+              . substr($tmp, 6, 4);
+        $phone = $tmp;
+    }
+
+    if (!$addr) {
+        if (!$email) {
+            print {$noae} "$line\n";
+            print "no addr email\n";
+            ++$no_addr_email;
+            next LINE;
+        }
+        else {
+            ++$email_only;
+        }
+    }
+    $zip =~ s{[-].*\z}{}msx;        # chop extended zip
+    $first = sp_normalize(normalize($first));
+    $last  = sp_normalize(normalize($last));
+    my $new_akey = nsquish($addr, $zip, "");
+    if ($first && $last) {
+        $sth_search->execute($first, $last);
+        my @recs;
+        while (my ($id, $email2, $cell, $akey)
+            = $sth_search->fetchrow_array())
+        {
+            $email2 ||= "";
+            $cell ||= "";
+            $akey ||= "";
+            push @recs, [ $id, $email2, $cell, $akey ];
+        }
+        if (@recs) {
+            print "$first $last\n";
+            print "found ", scalar(@recs), " records\n";
+            my $matched = 0;
+            for my $r (@recs) {
+                if (($email    && $email    eq $r->[1]) ||
+                    ($phone    && $phone    eq $r->[2]) ||
+                    ($new_akey && $new_akey eq $r->[3])   )
+                {
+                    print "matched one of $email, $phone, $new_akey cmp @$r\n";
+                    ++$n_matched;
+                    # need to do an update of the record with id = $r->[0]
+                    # when doing the 'set fld = val' in the update
+                    # do not set an empty value over a non-empty value
+                    #
+                    # $email, $addr, $city
+                    # $state, $zip, $country, $phone
+                    #
+                    my $set = "";
+                    if ($email) {
+                        $set .= "email = '$email',";
+                    }
+                    if ($addr) {
+                        $set .= "addr1 = '$addr',";
+                    }
+                    if ($city) {
+                        $set .= "city = '$city',";
+                    }
+                    if ($state) {
+                        $set .= "st_prov = '$state',";
+                    }
+                    if ($zip) {
+                        $set .= "zip_post = '$zip',";
+                    }
+                    if ($country) {
+                        $set .= "country = '$country',";
+                    }
+                    if ($phone) {
+                        $set .= "tel_home = '$phone',";
+                    }
+                    if ($set) {
+                        chop $set;      # final comma
+                        my $sql = <<"EOS";
+update people
+       set $set
+ where id = $r->[0]
+EOS
+print "sql = *$sql*\n";
+                        my $sth_upd = $dbh->prepare($sql);
+                        $sth_upd->execute() if $for_real;
+                    }
+                    next LINE;
+                }
+            }
+            print "no match - possible dup record!\n";
+            print {$dup} "$line\n";
+            ++$n_not_matched;
+        }
+        else {
+            print "not found - new record\n";
+            ++$not_found;
+            $sth_insert->execute(
+                $first, $last, $addr, $city, $state, $zip,
+                $email, $country, $phone, $new_akey,
+            ) if $for_real;
+            my $id = $dbh->last_insert_id(undef, undef, undef, undef);
+            print "last id = $id\n";
+            $sth_ins_aff->execute($mmi_ayurveda, $id) if $for_real;
+        }
+    }
+    else {
+        print "no first/last: $first, $last, $email\n";
+        print {$nofl} "$line\n";
+        ++$no_first_last;
+    }
+}
+close $nofl;
+close $noae;
+close $dup;
+printf "%5d lines\n", $nlines;
+printf "%5d not found\n", $not_found;
+printf "%5d no first last\n", $no_first_last;
+printf "%5d not matched - dup\n", $n_not_matched;
+printf "%5d matched - updated\n", $n_matched;
+printf "%5d no addr/email\n", $no_addr_email;
+printf "email_only: $email_only\n";
