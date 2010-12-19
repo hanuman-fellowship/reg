@@ -63,6 +63,7 @@ sub _get_data {
 
     %P = %{ $c->request->params() };
     @mess = ();
+    $P{name} = trim($P{name});
     if (empty($P{name})) {
         push @mess, "Name cannot be blank";
     }
@@ -1581,7 +1582,7 @@ sub _send_no_prs {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name => 'No PR',
+            name  => 'No PR',
             sdate => { '>=' => today()->as_d8() },
         },
         {
