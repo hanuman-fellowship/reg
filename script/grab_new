@@ -371,31 +371,31 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     my ($day, $mon, $year, $hour, $min, $sec, $ampm);
 
     for my $l (@lines) {
-        if ($l =~ m{Transaction ID : (.*)}) {
+        if ($l =~ m{Transaction\s+ID\s*:\s*(.*)}i) {
             $trans_id = $1;
         }
-        elsif ($l =~ m{E-Mail : (.*)}) {
+        elsif ($l =~ m{E-Mail\s*:\s*(.*)}i) {
             $email = $1;
         }
-        elsif ($l =~ m{City : (.*)}) {
+        elsif ($l =~ m{City\s*:\s*(.*)}i) {
             $city = $1;
         }
-        elsif ($l =~ m{State/Province : (.*)}) {
+        elsif ($l =~ m{State/Province\s*:\s*(.*)}i) {
             $state = $1;
         }
-        elsif ($l =~ m{Zip/Postal Code : (.*)}) {
+        elsif ($l =~ m{Zip/Postal\s+Code\s*:\s*(.*)}i) {
             $zip = $1;
         }
-        elsif ($l =~ m{Country : (.*)}) {
+        elsif ($l =~ m{Country\s*:\s*(.*)}i) {
             $country = $1;
             if ($country eq "USA") {
                 $country = "";
             }
         }
-        elsif ($l =~ m{Amount : ([\d.]+)}) {
+        elsif ($l =~ m{Amount\s*:\s*([\d.]+)}i) {
             $amount = $1;
         }
-        elsif ($l =~ m{Date/Time : (.*)}) {
+        elsif ($l =~ m{Date/Time\s*:\s*(.*)}i) {
             my $date_time = $1;
             ($day, $mon, $year) = $date_time =~ m{(\d+)-(...)-(\d+)};
             $mon = $mnum{$mon};
@@ -409,10 +409,10 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
                                     # shouldn't matter, right?
 
         }
-        elsif ($l =~ m{x_lname : (.*)}) {
+        elsif ($l =~ m{x_lname\s*:\s*(.*)}i) {
             $last = $1;
         }
-        elsif ($l =~ m{x_fname : (.*)}) {
+        elsif ($l =~ m{x_fname\s*:\s*(.*)}i) {
             $first = $1;
         }
     }
