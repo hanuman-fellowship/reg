@@ -743,6 +743,12 @@ sub temple {
             }
             # if no action was taken the record will remain
             # in the $temple directory to be dealt with by reception.
+
+            #
+            # ??? be smarter about matching address as well
+            # and append a '2' to the other person to make
+            # them unique.
+            #
         }
         $Msg .= "temple: $file $action\n";
         $ftp->delete($file);
