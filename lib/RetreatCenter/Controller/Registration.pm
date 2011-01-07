@@ -2021,8 +2021,11 @@ sub _view {
                       ;
         $pers_label = "<span class=lead_asst>$pers_label</span>";
     }
+    my $person = $reg->person();
+    my $name = $person->last() . ", " . $person->first();
     stash($c,
         pers_label     => $pers_label,
+        pg_title       => $name,
         online         => scalar(@files),
         share          => $share,
         non_pr         => ! $PR,
