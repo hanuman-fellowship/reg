@@ -2,13 +2,28 @@
 <ul>
 <table cellpadding=5>
 <tr>
+<th></th>
 <th align=left>Name</th>
 <th align=left>Tasks</th>
 </tr>
 [% FOR r IN regs %]
+[% safe = r.work_study_safety == 'yes' %]
 <tr>
-<td>[% r.person.first %] [% r.person.last %]</td>
-<td>[% r.work_study_comment %]</td>
+<td>
+[% IF safe %]
+<img src=/static/images/checked.gif>
+[% END %]
+</td>
+[% IF safe %]
+<td>
+<a href=/registration/view/$r.id>$r.person.first $r.person.last</a>
+</td>
+[% ELSE %]
+<td>
+<a style="color: red" href=/registration/view/$r.id>$r.person.first $r.person.last</a>
+</td>
+[% END %]
+<td>$r.work_study_comment</td>
 </tr>
 [% END %]
 </table>

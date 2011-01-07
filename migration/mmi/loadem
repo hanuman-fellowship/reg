@@ -31,6 +31,7 @@ my $sth_aff_insert = $dbh->prepare("
            (a_id, p_id)
     values (?, ?)
 ");
+# emails.txt ???
 open my $in, '<', 'emails.txt' or die "no emails.txt: $OS_ERROR\n";
 open my $no_email, '>', 'no_emails.txt' or die "no no_emails.txt: $OS_ERROR\n";
 open my $mult_email, '>', 'mult_emails.txt' or die "no mult_emails.txt: $OS_ERROR\n";
@@ -58,11 +59,11 @@ while (my $line = <$in>) {
         }
         if ($status eq 'hardbounced' || $status eq 'BlockedDomain') {
             ++$hb;
-            #$sth_update->execute('', '', $sn, $p_id);
+            $sth_update->execute('', '', $sn, $p_id);
         }
         elsif ($status eq 'softbounced' || $status eq 'available') {
             ++$sb;
-            #$sth_update->execute($email, 'yes', $sn, $p_id);
+            $sth_update->execute($email, 'yes', $sn, $p_id);
 
             $sth_aff_search->execute($p_id);
             if (my ($a_id) = $sth_aff_search->fetchrow_array()) {
@@ -77,7 +78,7 @@ while (my $line = <$in>) {
         }
         elsif ($status eq 'unsubscribed') {
             ++$unsub;
-            #$sth_update->execute($email, '', $sn, $p_id);
+            $sth_update->execute($email, '', $sn, $p_id);
         }
         else {
             ++$unk;

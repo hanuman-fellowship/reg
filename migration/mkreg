@@ -47,6 +47,7 @@ create table registration (
     manual text,
     work_study text,
     work_study_comment text,
+    work_study_safety text,
 
     rental_before text,
     rental_after text

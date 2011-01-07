@@ -385,7 +385,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right>Work Study</th>
-<td>[% IF reg.work_study %]yes - [% reg.work_study_comment %][% END %]</td>
+<td>[% IF reg.work_study %]yes - $reg.work_study_comment - $reg.work_study_safety [% END %]</td>
 </tr>
 
 </table>

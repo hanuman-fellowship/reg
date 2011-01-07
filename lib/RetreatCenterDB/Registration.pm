@@ -62,6 +62,7 @@ __PACKAGE__->add_columns(qw/
     manual
     work_study
     work_study_comment
+    work_study_safety
     rental_before
     rental_after
 /);
