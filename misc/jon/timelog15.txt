@@ -1,0 +1,22 @@
+Dec 11 1:20-2:15, 9:50-11:15, 12:00-2:40 
+    helping Barnaby upload images to a Sum
+    reminding Jayanti about Economy
+    beginning again on MMI import
+Dec 13 8:45-10:55, 11:40-12:50
+    finishing MMI import
+Dec 17 3:40-5:20
+    responding to email from Jayanti re: housing
+    fixing No PR trimming
+Dec 18 3:30-5:00
+    at MMC meeting with Jamal
+Dec 20 11:30-12:00
+    reinstating sutra_send crontab - it was forgotten when moving machines
+Dec 21 11:15-11:40
+    estimating MMI online payments
+Dec 31 2:00-3:00
+    dealing with messed up registrations that came in via
+    email rather than ftp.
+Jan 6 12:00-1:15
+    Work Study safety form
+    WR, MR max futzing
+    pg_title for Registration screen
