@@ -2897,6 +2897,11 @@ sub update_do : Local {
         %dates,         # optionally
         @note_opt,           # ditto
     });
+    if ($P{work_study_safety} && ! $reg->person->safety_form()) {
+        $reg->person->update({
+            safety_form => 'yes',
+        });
+    }
 
     _compute($c, $reg, 0, @who_now);
 
