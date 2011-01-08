@@ -2,14 +2,14 @@
 <ul>
 <table cellpadding=5>
 <tr>
-<th></th>
+<th>Safety<br>Form</th>
 <th align=left>Name</th>
 <th align=left>Tasks</th>
 </tr>
 [% FOR r IN regs %]
 [% safe = r.work_study_safety == 'yes' %]
 <tr>
-<td>
+<td align=center>
 [% IF safe %]
 <img src=/static/images/checked.gif>
 [% END %]
