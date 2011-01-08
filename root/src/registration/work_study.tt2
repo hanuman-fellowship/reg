@@ -3,8 +3,8 @@
 <table cellpadding=5>
 <tr>
 <th>Safety<br>Form</th>
-<th align=left>Name</th>
-<th align=left>Tasks</th>
+<th align=left valign=bottom>Name</th>
+<th align=left valign=bottom>Tasks</th>
 </tr>
 [% FOR r IN regs %]
 [% safe = r.work_study_safety == 'yes' %]
