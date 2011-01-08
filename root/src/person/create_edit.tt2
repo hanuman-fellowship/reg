@@ -34,82 +34,107 @@ function get_gender() {
 <form action=[% "/person/" _ form_action %] name=form method=post>
 <input type=hidden name=fname value=$fname>
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
-    <tr>
-        <th align=right><span class="required">*</span> First</th>
-        <td><input tabindex=1 type=text name=first value="[% person.first %]"
-                   onblur="get_gender();"
-            >
-        </td>
-        <th align=right>Home</th>
-        <td><input tabindex=17 type=text name=tel_home value="[% person.tel_home %]"></td>
-    </tr>
-    <tr>
-        <th align=right><span class="required">*</span> Last</th>
-        <td><input tabindex=2 type=text name=last value="[% person.last %]"></td>
-        <th align=right>Work</th>
-        <td><input tabindex=18 type=text name=tel_work value="[% person.tel_work %]"></td>
-    </tr>
-    <tr>
-        <th align=right>Sanskrit</th>
-        <td><input tabindex=3 type=text name=sanskrit value="[% person.sanskrit %]"></td>
-        <th align=right>Cell</th>
-        <td><input tabindex=19 type=text name=tel_cell value="[% person.tel_cell %]"></td>
-    </tr>
-    <tr>
-        <th align=right><span class="required">*</span> Sex</th>
-        <td>
-            <input tabindex=4 type=radio name=sex value="F" [% sex_female %] >Female
-            &nbsp;&nbsp;&nbsp;
-            <input tabindex=4 type=radio name=sex value="M" [% sex_male %]>Male
-        </td>
-    </tr>
-    <tr>
-        <th align=right>Address</th>
-        <td colspan=3><input tabindex=5 type=text name=addr1 value="[% person.addr1 %]" size=30></td>
-    </tr>
-    <tr>
-        <td align=right>&nbsp;</td>
-        <td colspan=3><input tabindex=6 type=text name=addr2 value="[% person.addr2 %]" size=30>
-        &nbsp;&nbsp;<input tabindex=20 type=submit value="Submit"></td>
-    </tr>
-    <tr>
-        <th align=right>City</th>
-        <td><input tabindex=7 type=text name=city value="[% person.city %]"></td>
-        <th align=left valign=top rowspan=4 colspan=2>Comment<br>
-        <textarea tabindex=21 name=comment cols=40 rows=5>[% person.comment %]</textarea></th>
-    </tr>
-    <tr>
-        <th align=right>State/Province</th>
-        <td><input tabindex=8 type=text name=st_prov value="[% person.st_prov %]"></td>
-    </tr>
-    <tr>
-        <th align=right>Zip/Postal Code</th>
-        <td><input tabindex=9 type=text name=zip_post value="[% person.zip_post %]"></td>
-    </tr>
-    <tr>
-        <th align=right>Country</th>
-        <td><input tabindex=10 type=text name=country value="[% person.country %]"></td>
-    </tr>
-    <tr>
-        <th align=right>Email</th>
-        <td colspan=3><input tabindex=11 type=text name=email size=40 value="[% person.email %]"></td>
-    </tr>
+
+<tr>
+<th align=right><span class="required">*</span> First</th>
+<td>
+<input tabindex=1 type=text name=first value="[% person.first %]"
+    onblur="get_gender();">
+</td>
+<th align=right>Home</th>
+<td><input tabindex=17 type=text name=tel_home
+           value="[% person.tel_home %]"></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Last</th>
+<td><input tabindex=2 type=text name=last value="[% person.last %]"></td>
+<th align=right>Work</th>
+<td>
+<input tabindex=18 type=text name=tel_work value="[% person.tel_work %]">
+</td>
+</tr>
+
+<tr>
+<th align=right>Sanskrit</th>
+<td>
+<input tabindex=3 type=text name=sanskrit value="[% person.sanskrit %]">
+</td>
+<th align=right>Cell</th>
+<td>
+<input tabindex=19 type=text name=tel_cell value="[% person.tel_cell %]">
+</td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Sex</th>
+<td>
+<input tabindex=4 type=radio name=sex value="F" [% sex_female %] >Female
+&nbsp;&nbsp;&nbsp;
+<input tabindex=4 type=radio name=sex value="M" [% sex_male %]>Male
+</td>
+</tr>
+
+<tr>
+<th align=right>Address</th>
+<td colspan=3><input tabindex=5 type=text
+    name=addr1 value="[% person.addr1 %]" size=30></td>
+</tr>
+
+<tr>
+<td align=right>&nbsp;</td>
+<td colspan=3><input tabindex=6 type=text name=addr2 value="[% person.addr2 %]" size=30>
+&nbsp;&nbsp;<input tabindex=20 type=submit value="Submit"></td>
+</tr>
+
+<tr>
+<th align=right>City</th>
+<td><input tabindex=7 type=text name=city value="[% person.city %]"></td>
+<th align=left valign=top rowspan=4 colspan=2>Comment<br>
+<textarea tabindex=21 name=comment cols=40 rows=5>[% person.comment %]</textarea></th>
+</tr>
+
+<tr>
+<th align=right>State/Province</th>
+<td><input tabindex=8 type=text name=st_prov value="[% person.st_prov %]"></td>
+</tr>
+
+<tr>
+<th align=right>Zip/Postal Code</th>
+<td><input tabindex=9 type=text name=zip_post value="[% person.zip_post %]"></td>
+</tr>
+
+<tr>
+<th align=right>Country</th>
+<td><input tabindex=10 type=text name=country value="[% person.country %]"></td>
+</tr>
+
+<tr>
+<th align=right>Email</th>
+<td colspan=3><input tabindex=11 type=text name=email size=40 value="[% person.email %]"></td>
+</tr>
+
+<tr>
+<th align=right>Safety Form</th>
+<td><input tabindex=12 type=checkbox name=safety_form
+           value="yes" $safety_form></td>
+</tr>
 
 <tr>
 <th align=right valign=top>Mailings</th>
 <td>
 <table>
 <tr>
-<td>Email</td><td><input tabindex=12 type=checkbox name=e_mailings value='yes' [% e_mailings %]>MMC</td>
-<td><input tabindex=13 type=checkbox name=mmi_e_mailings     value='yes' [% mmi_e_mailings %]>MMI</td>
+<td>Email</td><td><input tabindex=13 type=checkbox name=e_mailings value='yes' [% e_mailings %]>MMC</td>
+<td><input tabindex=14 type=checkbox name=mmi_e_mailings     value='yes' [% mmi_e_mailings %]>MMI</td>
 </tr>
 
 <tr>
-<td>Snail Mail</d><td><input tabindex=14 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]>MMC</td>
-<td><input tabindex=15 type=checkbox name=mmi_snail_mailings value='yes' [% mmi_snail_mailings %]>MMI</td>
+<td>Snail Mail</d><td><input tabindex=15 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]>MMC</td>
+<td><input tabindex=16 type=checkbox name=mmi_snail_mailings value='yes' [% mmi_snail_mailings %]>MMI</td>
 </tr>
 
-<tr><td><input tabindex=16 type=checkbox name=share_mailings value='yes' [% share_mailings %]> Share</td></tr>
+<tr><td><input tabindex=17 type=checkbox name=share_mailings value='yes' [% share_mailings %]> Share</td></tr>
 </table>
 </tr>
 

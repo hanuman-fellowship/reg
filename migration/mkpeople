@@ -29,7 +29,8 @@ create table people (
     inactive text,
     cc_number text,
     cc_expire text,
-    cc_code   text
+    cc_code   text,
+    safety_form text
 );
 drop table if exists affils;
 create table affils (

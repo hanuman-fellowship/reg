@@ -47,6 +47,7 @@ __PACKAGE__->add_columns(qw/
     cc_number
     cc_expire
     cc_code
+    safety_form
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

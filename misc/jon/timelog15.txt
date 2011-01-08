@@ -20,3 +20,5 @@ Jan 6 12:00-1:15
     Work Study safety form
     WR, MR max futzing
     pg_title for Registration screen
+Jan 8 12:35-
+    email online reg - diff format for city/state?

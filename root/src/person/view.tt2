@@ -137,6 +137,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 <td valign=top colspan=3>[% person.comment_br %]</td>
 </tr>
 
+<tr>
+<th align=right valign=top>Safety Form</th>
+<td valign=top colspan=3>$person.safety_form</td>
+</tr>
+
 [% IF person.deceased || person.inactive %]
 <tr>
 <th align=right>Status</th>

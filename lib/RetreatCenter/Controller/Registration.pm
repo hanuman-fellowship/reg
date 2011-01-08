@@ -2790,7 +2790,9 @@ sub update : Local {
         cabin_checked   => $c_r eq 'cabin'   ? "checked": "",
         room_checked    => $c_r eq 'room'    ? "checked": "",
         work_study_checked        => $reg->work_study()       ? "checked": "",
-        work_study_safety_checked => $reg->work_study_safety()? "checked": "",
+        work_study_safety_checked => $reg->work_study_safety() 
+                                     || $reg->person->safety_form()? "checked"
+                                                                     : "",
         rental_before_checked => $reg->rental_before()? "checked": "",
         rental_after_checked  => $reg->rental_after()? "checked": "",
         note_lines      => lines($reg->confnote()) + 3,
