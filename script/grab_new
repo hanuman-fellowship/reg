@@ -98,6 +98,21 @@ while (my ($the_key, $value) = $sth->fetchrow_array()) {
 }
 $string{mmc_email} = $string{reception_email};      # sorry - see below
 
+my $sth_gaff = $dbh->prepare("
+    select id
+      from affils
+     where descrip like '%temple%guest%'
+");
+$sth_gaff->execute();
+my ($temple_guest_affil_id) = $sth_gaff->fetchrow_array();
+
+my $sth_ins_aff = $dbh->prepare("
+    insert into affil_people
+    (a_id, p_id)
+    values
+    (?, ?)
+");
+
 my $sth_search_people = $dbh->prepare("
     select id, tel_cell, email
       from people
@@ -699,6 +714,11 @@ sub temple {
                 $first, $last, $email,
                 $cell, $addr1, $addr2,
                 $city, $state, $zip,
+            );
+            my $person_id = $dbh->last_insert_id(undef, undef, undef, undef);
+            $sth_ins_aff->execute(
+                $temple_guest_affil_id,
+                $person_id,
             );
             $action = "new";
             rename "$temple/$file", "$temple\_done/$year_mon_dir/$file";
