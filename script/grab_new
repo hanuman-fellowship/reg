@@ -123,13 +123,15 @@ my $sth_insert_people = $dbh->prepare("
         first, last, email,
         tel_cell, addr1, addr2,
         city, st_prov, zip_post,
-        e_mailings, mmi_e_mailings, share_mailings
+        akey,
+        e_mailings, mmi_e_mailings, share_mailings, inactive
     )
     values (
         ?, ?, ?,
         ?, ?, ?,
         ?, ?, ?,
-        'yes', 'yes', 'yes'
+        ?,
+        'yes', 'yes', 'yes', ''
     )
 ");
 my $sth_update_people = $dbh->prepare("
@@ -712,10 +714,12 @@ sub temple {
         mkdir "$temple\_done/$year_mon_dir" unless -d $year_mon_dir; 
         if (!@found || @found == 0) {
             # new
+            my ($akey) = nsquish($addr1, $addr2, $zip);
             $sth_insert_people->execute(
                 $first, $last, $email,
                 $cell, $addr1, $addr2,
                 $city, $state, $zip,
+                $akey,
             );
             my $person_id = $dbh->last_insert_id(undef, undef, undef, undef);
             $sth_ins_aff->execute(
@@ -805,4 +809,14 @@ sub finalities {
         }
     }
     unlink $Run_File;
+}
+
+sub nsquish {
+    my ($addr1, $addr2, $zip) = @_;
+    my $s = uc($addr1 . $addr2 . $zip);
+    my $n = $s;
+    $n =~ s{\D}{}g;
+    $s =~ s{[^A-Z]}{}g;
+    $s = substr($s, 0, 3);
+    return ($n . $s); 
 }
