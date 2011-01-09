@@ -122,12 +122,14 @@ my $sth_insert_people = $dbh->prepare("
     insert into people (
         first, last, email,
         tel_cell, addr1, addr2,
-        city, st_prov, zip_post
+        city, st_prov, zip_post,
+        e_mailings, mmi_e_mailings, share_mailings
     )
     values (
         ?, ?, ?,
         ?, ?, ?,
-        ?, ?, ?
+        ?, ?, ?,
+        'yes', 'yes', 'yes'
     )
 ");
 my $sth_update_people = $dbh->prepare("
