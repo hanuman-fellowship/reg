@@ -20,5 +20,13 @@ Jan 6 12:00-1:15
     Work Study safety form
     WR, MR max futzing
     pg_title for Registration screen
-Jan 8 12:35-
-    email online reg - diff format for city/state?
+Jan 8 12:35-4:00
+    email online reg - diff format for city/state? seems okay.
+    missing city/state list for jayanti
+Jan 8 4:00-4:30, 6:00-8:30
+    for project Temple
+    new temple guests get affil
+        retroactive - very troublesome
+Jan 8 8:45-9:20
+    for MMI
+    setting MMI snail mail on all imported names
