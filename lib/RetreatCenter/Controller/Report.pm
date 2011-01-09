@@ -292,7 +292,7 @@ EOS
                               $p->{sanskrit} . " " : "")
                        . $p->{last};
         }
-        else {
+        elsif ($format != 5) {      # not just email
             $p->{name} = $p->{first} . " " . $p->{last};
         }
     }
