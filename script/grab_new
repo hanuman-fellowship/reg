@@ -502,9 +502,13 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     print  {$out} "x_email => $email\n";
     print  {$out} "x_synthesized => 1\n";        # to mark it for Reg
     my %P;      # all other x_ named values
+    my $got_pid = 0;
     for my $l (@lines) {
         if ($l =~ m{^(x_\w+) : (.*)}) {
             my $type = $1;
+            if ($type eq 'x_pid') {
+                $got_pid = 1;
+            }
             my $val = $2;
             $P{$type} = $val;
             $l =~ s{:}{=>};
@@ -530,6 +534,12 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         }
     }
     close $out;
+    if (! $got_pid) {
+        unlink $fname;
+        $Msg .= "refund? transaction_id $trans_id amount $amount\n";
+        $pop->Delete($i);
+        next LETTER;
+    }
     $Msg .= "email: $trans_id - $last, $first\n";
     $pop->Delete($i);
     #
