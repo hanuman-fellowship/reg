@@ -862,7 +862,7 @@ sub undup_do : Local {
     #
     # for each person to merge, take their registrations
     # and modify the person_id field to be the primary id.
-    # do the same with donations and credits.
+    # do the same with donations and credits and rides.
     #
     # Unpartner the merged person and then any
     # affil_person, leader, member (and related) records connected
@@ -901,6 +901,11 @@ sub undup_do : Local {
                 person_id => $primary,
             });
         }
+        model($c, 'Ride')->search({
+            rider_id => $mid,
+        })->update({
+            rider_id => $primary,
+        });
         # partner, if any
         model($c, 'Person')->search({
             id_sps => $mid,
