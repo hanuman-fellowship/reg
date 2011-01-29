@@ -12,7 +12,7 @@
     <a href="/ride/update/$id">Edit</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/ride/delete/$id"
-     onclick="return confirm('Okay to Delete $ride.name?');">Delete</a>
+     onclick="return confirm('Okay to Delete ride for $ride.name?');">Delete</a>
     &nbsp;&nbsp;&nbsp;
     <a href="/ride/pay">Pay</a>
     &nbsp;&nbsp;&nbsp;
