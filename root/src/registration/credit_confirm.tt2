@@ -28,12 +28,12 @@ $<input type=text size=4 name=refund_amount value="[% refund_amount %]"
 onkeypress="document.getElementById('credit_amount').value = '';"
 >?
 </td>
-[% IF reg.transaction_id %]
 <td>
 Via authorize.net? <input type=checkbox name=via_authorize checked>
+[% IF reg.transaction_id %]
 Transaction $reg.transaction_id
-</td>
 [% END %]
+</td>
 </tr>
 
 </table>
