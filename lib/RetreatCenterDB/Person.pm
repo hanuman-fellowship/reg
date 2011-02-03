@@ -85,6 +85,10 @@ __PACKAGE__->has_many(rides => 'RetreatCenterDB::Ride',
 __PACKAGE__->has_many(mmi_payments => 'RetreatCenterDB::MMIPayment',
                                       'person_id',
                       { order_by => 'the_date desc'});
+__PACKAGE__->has_many(req_mmi_payments
+                                   => 'RetreatCenterDB::RequestedMMIPayment',
+                                      'person_id',
+                      { order_by => 'the_date desc'});
 
 # credits
 __PACKAGE__->has_many(credits => 'RetreatCenterDB::Credit', 'person_id',

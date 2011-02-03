@@ -65,6 +65,7 @@ __PACKAGE__->add_columns(qw/
     work_study_safety
     rental_before
     rental_after
+    transaction_id
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -82,6 +83,9 @@ __PACKAGE__->has_many(history   => 'RetreatCenterDB::RegHistory',  'reg_id',
 __PACKAGE__->has_many(charges   => 'RetreatCenterDB::RegCharge',   'reg_id');
 __PACKAGE__->has_many(payments  => 'RetreatCenterDB::RegPayment',  'reg_id');
 __PACKAGE__->has_many(mmi_payments  => 'RetreatCenterDB::MMIPayment',
+                      'reg_id');
+__PACKAGE__->has_many(req_mmi_payments =>
+                                    'RetreatCenterDB::RequestedMMIPayment',
                       'reg_id');
 __PACKAGE__->has_many(confnotes => 'RetreatCenterDB::ConfHistory', 'reg_id',
                       { order_by => 'the_date desc, time desc' });

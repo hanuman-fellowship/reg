@@ -80,6 +80,7 @@ __PACKAGE__->add_columns(qw/
     percent_tuition
     refresh_days
     category_id
+    facebook_event_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
