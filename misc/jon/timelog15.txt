@@ -30,3 +30,66 @@ Jan 8 4:00-4:30, 6:00-8:30
 Jan 8 8:45-9:20
     for MMI
     setting MMI snail mail on all imported names
+Jan 11 10:15-12:30
+    for MMI
+    online payments
+    Thinking out loud here about what would be required:
+    Creating the request in Reg - and sending the email to the
+    student with a link to click to bring them (by some more magic)
+    to the form that is already filled in with their demographic information
+    and the payment amount and what it is for and the program it is destined
+    for where all they have to do is put in their credit card number
+    (and expiration date).
+    Then that form is processed and another 'relay' program
+    takes that info and prepares a file for Reg to grab
+    and import into the right place in the student's MMI registration.
+    You'd be able to see a list of MMI payment requests that
+    have not yet been paid.   I could send you an email
+    whenever a payment was grabbed to alert you, if you wished.
+
+    It will take some doing.
+    An estimate of 8-10 hours is probably reasonable.
+    That's $400-$500 at $50 an hour.
+    Let's say I could finish it by the second week in January.
+Jan 15 12:30-12:50
+    for MMI
+    continuing online payments - code
+Jan 15 7:15-9:15
+    for MMI
+    continuing - ftp of a file, email of code & link
+        todo:
+            must have email address and phone
+            check returns of creation, ftp, email, abort/give message
+            need edit, resend, delete
+Jan 21 6:10-7:05, 12:15-1:25
+    for MMC
+    max for MR - further thinking on how to do it right
+    relay not handling refunds
+    unduplication relating to rides
+Jan 23 10:30-11:40, 11:55-12:10
+    for MMC
+    cancellation letter - refund via authorize.net
+Jan 23 12:15-2:00, 3:15-4:35
+    for MMI
+    continuing with online payment request
+    relay handling the call
+    started mod to grab_new
+Jan 29 1:30-2:30
+    for MMI
+    MMI Payment Request listing in Listing > Finance
+Jan 29 2:30-2:50
+    for MMC
+    retrieving CC info after an undup
+Jan 30 7:25-9:10
+    for MMI
+    continue with grab_new MMI payment request 
+        confused about MMI glnum, program attributed
+Feb 1 11:25-
+    for MMC
+    program.facebook_event_id on Web tab
+Feb 1 12:30-1:30
+    for MMI
+    struggling
+Feb 2 9:40-11:20
+    for MMI
+    finalizing

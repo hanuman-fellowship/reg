@@ -1,0 +1,76 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use lib 'lib';
+use CGI qw/:standard/;
+print header();
+use CGI::Carp qw/fatalsToBrowser/;
+use SimLib;
+use Template;
+
+sub commify {
+    my ($n) = @_;
+
+    $n = reverse $n;
+    $n =~ s{(\d\d\d)(?=\d)(?!\d*\.)}{$1,}gmsx;
+    $n = scalar reverse $n;
+    return $n;
+}
+
+
+my $test = 1;
+
+my $code = param('code');
+# -f ??
+my $href = do "req_mmi_dir/$code";
+if (! $href) {
+    print "Something is wrong with $code.\n";
+    exit;
+}
+my %data = %$href;
+
+#for my $k (keys %data) {
+#    print "$k => $data{$k}<br>\n";
+#}
+
+# Call subroutine from authorize.net that sets $fingerprint_html 
+#
+my $loginid = "x5aebjakm";          # MMC - diff for MMI?
+my $txnkey = "78QyCHfp69MP43bY";
+my $x_currency_code = "USD";
+my $fingerprint_html =
+    SimLib::InsertFP($loginid, $txnkey, $data{amount}, $x_currency_code);
+
+my %stash = (
+    description => "Payment for MMI Program '$data{program}'",
+    amount   => $data{amount},
+    test     => $test,
+    first    => $data{first},
+    last     => $data{last},
+    addr     => $data{addr},
+    city     => $data{city},
+    state    => $data{st_prov},
+    zip      => $data{zip_post},
+    country  => $data{country},
+    phone    => $data{phone},
+    email    => $data{email},
+    for_what => $data{for_what},
+    program  => $data{program},
+    note     => $data{note},
+    amount_disp => commify($data{amount}),
+    fingerprint => $fingerprint_html,
+    loginid     => $loginid,
+    req_mmi_id    => $data{id},
+    req_mmi_code  => $code,
+);
+
+# ip address for Jamal's purposes
+$stash{real_ip} = $ENV{REMOTE_ADDR};
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "req_mmi.tt2",
+    \%stash,
+);

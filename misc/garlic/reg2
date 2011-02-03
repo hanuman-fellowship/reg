@@ -306,7 +306,7 @@ for my $name (qw/
     country home work cell email1 carpool hascar
     e_mailings snail_mailings
     mmi_e_mailings mmi_snail_mailings
-    share_mailings
+    share_mailings kayakalpa
     house1 house2 request withwhom_first withwhom_last
     pid title leader_names name progchoice
     collect_total request green_amount plink
@@ -374,9 +374,9 @@ else {
 	$stash{ceu_license} = "";
 }
 
-$stash{cabin_room} = $form{cabin_room};
-$stash{other_cabin_room} = ($form{cabin_room} eq 'room')? 'cabin'
-                           :                              'room'
+$stash{cabin_room} = $form{cabin_room} || 'room';
+$stash{other_cabin_room} = ($stash{cabin_room} eq 'room')? 'cabin'
+                           :                               'room'
                            ;
 
 my $howHeardResponse = "";
@@ -451,7 +451,12 @@ else {
 $mv .= "<p>We will "
      . ($form{share_mailings}? "": "<b>not</b> ")
      . "share your contact information with MMC affiliates.";
-$stash{mailings_verbose} = $mv;
+
+if ($form{kayakalpa}) {
+    $mv .= "<p>We will contact you regarding massage or other bodywork during your stay.";
+}
+
+$stash{mailings_verbose} = $mv;		# plus kayakalpa
 
 $stash{house1_verbose} = $housing_name{$form{house1}};
 $stash{house1_cost} = $house1;

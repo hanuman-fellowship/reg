@@ -1,0 +1,3 @@
+Thank you, ${x_first_name}.
+<p>
+Your payment will be credited to the MMI program '${x_program}'.

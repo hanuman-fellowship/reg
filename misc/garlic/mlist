@@ -1,0 +1,91 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard :cgi-lib/;
+print header;
+
+my %P = Vars();
+for my $k (keys %P) {
+    $P{$k} =~ s{^\s*|\s*$}{}g;
+}
+for my $k (qw/
+    e_mailings
+    snail_mailings
+    mmi_e_mailings
+    mmi_snail_mailings
+    share_mailings
+/) {
+    $P{$k} = "" if ! exists $P{$k};
+}
+
+my $errs = "";
+for my $k (qw/
+    first
+    last
+    gender
+    street
+    city
+    st_prov
+    zip_post
+/) {
+    if (! $P{$k}) {
+        my $sk =  $k eq 'st_prov' ? 'State/Province'
+                 :$k eq 'zip_post'? 'Zip/Postal Code'
+                 :                  $k
+                 ;
+        $errs .= "Missing \u$sk<br>";
+    }
+}
+if ($errs) {
+    print <<"EOH";
+These errors were found:
+<ul>
+$errs
+</ul>
+Please go back and fix these errors.
+EOH
+    exit;
+}
+
+if ($P{email}) {
+    if ($P{email} ne $P{email2}) {
+        print <<"EOH";
+The two email addresses do not match.
+<p>
+Please go back and fix this.
+EOH
+        exit;
+    }
+    delete $P{email2};
+    if ($P{email} !~ m{[\w.-]+\@[\w.-]}) {
+        print <<"EOH";
+Invalid email address: $P{email}
+<p>
+Please go back and fix this.
+EOH
+        exit;
+    }
+}
+
+$P{request} =~ s{\cM?\n}{NEWLINE}g;
+
+# check for an email that is used by a spammer.
+if ($P{email} ne 'email@gmail.com') {
+    my $fname = "mlist_requests/" . time();
+    if (-f $fname) {
+        $fname .= "1";
+    }
+
+    open my $out, ">", $fname
+        or die "cannot create $fname: $!\n";
+    for my $k (sort keys %P) {
+        print {$out} "$k $P{$k}\n";
+    }
+    close $out;
+}
+
+open my $resp, "<", "mlist.tt2";
+while (my $line = <$resp>) {
+	print $line;
+}
+close $resp;
