@@ -50,7 +50,8 @@ create table registration (
     work_study_safety text,
 
     rental_before text,
-    rental_after text
+    rental_after text,
+    transaction_id text
 );
 drop table if exists reg_history;
 create table reg_history (

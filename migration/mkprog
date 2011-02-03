@@ -51,7 +51,8 @@ create table program (
     allow_dup_regs text,
     percent_tuition integer,
     refresh_days text,
-    category_id integer
+    category_id integer,
+    facebook_event_id text
 );
 drop table if exists category;
 create table category (

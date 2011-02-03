@@ -1,0 +1,11 @@
+drop table if exists req_mmi_payment;
+create table req_mmi_payment (
+    id integer primary key autoincrement,
+    person_id  integer       not null default 0,
+    amount     integer       not null default 0,
+    for_what   integer       not null default 0,
+    the_date   text          not null default '',
+    reg_id     integer       not null default 0,
+    note       text          not null default '',
+    code       text          not null default''
+);
