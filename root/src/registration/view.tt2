@@ -347,25 +347,28 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 <td>&nbsp;&nbsp;<a href="/person/request_mmi_payment/[% id %]/[% person.id %]">Request MMI Payment</a></td>
 </tr>
 </table>
-<p class=p2>
-<span class=hdr>Requested MMI Payments</span>
-<table cellpadding=2>
-<tr>
-<th align=right>Amount</th>
-<th align=left>For</th>
-<th align=left>Date</th>
-<th align=left>Note</th>
-</tr>
-[% FOREACH py IN reg.req_mmi_payments %]
-<tr>
-<td align=right>[% py.amount_disp %]</td>
-<td>[% py.for_what_disp %]</td>
-<td>[% py.the_date_obj %]</td>
-<td>[% py.note %]</td>
-</tr>
+[% payments = reg.req_mmi_payments %]
+[% IF payments.0 %]
+    <p class=p2>
+    <span class=hdr>Requested MMI Payments</span>
+    <table cellpadding=2>
+    <tr>
+    <th align=right>Amount</th>
+    <th align=left>For</th>
+    <th align=left>Date</th>
+    <th align=left>Note</th>
+    </tr>
+    [% FOREACH py IN payments %]
+        <tr>
+        <td align=right>[% py.amount_disp %]</td>
+        <td>[% py.for_what_disp %]</td>
+        <td>[% py.the_date_obj %]</td>
+        <td>[% py.note %]</td>
+        </tr>
+    [% END %]
+    </table>
 [% END %]
-</table>
-[% END %]
+[% END %]   <!-- mmi -->
 
 </td><tr>
 
