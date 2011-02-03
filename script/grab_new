@@ -38,6 +38,9 @@ they'll be here.
 7) Get people that recently registered on the temple
 reservation site and import them directly into the People table.
 
+8) Get MMI payment requests that have been paid and morph
+them into actual payments.
+
 =cut
 use lib 'lib';
 use DBI;
@@ -53,6 +56,13 @@ chdir "$FindBin::Bin/..";
 my $Msg = "";       # globals (capitalized to emphasize this)
 my $Error = 0;
 my $Run_File = "grab_running";
+
+my ($min, $hour, $now_mon, $now_year) = (localtime())[1, 2, 4, 5];
+++$now_mon;
+$now_year += 1900;
+my $now = sprintf("%d-%02d", $now_year, $now_mon);
+my $the_time = sprintf("%02d%02d", $hour, $min);
+my $today_d8 = today()->as_d8();
 
 if (-f $Run_File) {
     my $t = (stat($Run_File))[9];
@@ -90,6 +100,7 @@ my $sth = $dbh->prepare("
        or the_key like 'reception_email'
        or the_key like 'kayakalpa_email'
        or the_key like 'mmi_email'
+       or the_key like 'req_mmi_dir_paid'
 ");
 $sth->execute();
 my %string;
@@ -199,6 +210,7 @@ my $online = "root/static/online";
 my $mlist = "root/static/mlist";
 my $rides = "root/static/rides";
 my $temple = "root/static/temple";
+my $req_mmi_dir = "root/static/req_mmi";
 mkdir $online unless -d $online;
 mkdir $mlist unless -d $mlist;
 mkdir $rides unless -d $rides;
@@ -323,6 +335,74 @@ if ($nrides) {
         html    => "There is an online ride request waiting"
                  . " for you in Reg."
     );
+}
+
+#
+# MMI paid payment requests
+#
+my $mmi_pay_sth = $dbh->prepare("
+    insert into mmi_payment
+    (
+        person_id,
+        amount,
+        glnum,
+        the_date,
+        type,
+        reg_id,
+        note
+    )
+    values (
+        ?, ?, ?, $today_d8, 'O', ?, ?
+    );
+");
+my $req_mmi_del_sth = $dbh->prepare("
+    delete from req_mmi_payment
+     where id = ?
+");
+my $reg_hist_sth = $dbh->prepare("
+    insert into reg_history
+    (
+        reg_id,
+        the_date,
+        time,
+        user_id,
+        what
+    )
+    values (
+        ?, ?, ?, 0, ?
+    )
+");
+$ftp->cwd($string{req_mmi_dir_paid}) or my_die("no cd paid dir");
+REQ_MMI_FILE:
+for my $f ($ftp->ls()) {
+    if ($f eq '.' || $f eq '..') {
+        next REQ_MMI_FILE;
+    }
+    my $dir = "$req_mmi_dir/$now";
+    mkdir $dir if ! -d $dir;
+    if (! $ftp->get($f, "$dir/$f")) {
+        my_warn("no get of req_mmi file $f");
+        next REQ_MMI_FILE;
+    }
+    my %hash = %{ do "$dir/$f" };
+    $mmi_pay_sth->execute(
+        @hash{qw/
+            person_id
+            amount
+            glnum
+            reg_id
+            note
+        /},
+    );
+    $req_mmi_del_sth->execute($hash{request_id});
+    $reg_hist_sth->execute(
+        $hash{reg_id},
+        $today_d8,
+        $the_time,
+        "Got payment of $hash{amount} for $hash{for_what}"
+    );
+    $Msg .= "got req_mmi file $f\n";
+    $ftp->delete($f);
 }
 
 #
@@ -466,13 +546,10 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         $pop->Delete($i);
         next LETTER;
     }
-    my ($now_mon, $now_year) = (localtime())[4, 5];
-    ++$now_mon;
-    $now_year += 1900;
-    my $now = sprintf("%d-%02d", $now_year, $now_mon);
     if (-f "root/static/online_done/$now/$trans_id") {
         #
         # already gotten on a previous call to grab_new
+        # (within the same month)
         # AND already processed and moved aside.
         #
         $Msg .= "email: $trans_id - $last, $first"
