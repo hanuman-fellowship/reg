@@ -80,5 +80,7 @@ End <input type=text name=edate size=10 value='[% end %]'>
 MMI General Ledger Numbers Since <input type=text name=since size=10 value='$since'>
 &nbsp;<input type=submit value="Go">
 </form>
+<p>
+<a href=/finance/req_mmi_payment_list>MMI Payment Requests</a>
 [% END %]
 </ul>

@@ -79,6 +79,8 @@ __PACKAGE__->load_classes({
         Resident
         Category
         ResidentNote
+
+        RequestedMMIPayment
     /]
 });
 

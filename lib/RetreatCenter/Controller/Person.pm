@@ -19,6 +19,10 @@ use Util qw/
     stash
     error
     invalid_amount
+    req_code
+    email_letter
+    calc_mmi_glnum
+    get_now
 /;
 use Date::Simple qw/
     date
@@ -1024,6 +1028,149 @@ sub del_mmi_payment : Local {
     }
 }
 
+sub request_mmi_payment : Local {
+    my ($self, $c, $reg_id, $person_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    if (empty($reg->program->glnum())) {
+        error($c,
+            $reg->program->name() . " does not have a GL Number.  Please fix.",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    # ??? person must have an email address
+    stash($c,
+        message  => payment_warning('mmi'),
+        person   => model($c, 'Person')->find($person_id),
+        reg      => $reg,
+        dcm      => dcm_registration($c, $person_id),
+        template => "person/request_mmi_payment.tt2",
+    );
+}
+
+sub request_mmi_payment_do : Local {
+    my ($self, $c, $reg_id, $person_id) = @_;
+
+    my $person = model($c, 'Person')->find($person_id);
+    my $reg    = model($c, 'Registration')->find($reg_id);
+    # check returns above???
+
+    my $amount = trim($c->request->params->{amount});
+    if (invalid_amount($amount)) {
+        error($c,
+            "Illegal amount: $amount",
+            "registration/error.tt2",
+        );
+        return;
+    }
+    my $the_date = tt_today($c)->as_d8();
+    my $code = req_code();
+    my $note = $c->request->params->{note};
+    my $for_what = $c->request->params->{for_what};
+
+    my $req_payment = model($c, 'RequestedMMIPayment')->create({
+        person_id => $person_id,
+        amount    => $amount,
+        for_what  => $for_what,
+        the_date  => $the_date,
+        reg_id    => $reg_id,
+        note      => $note,
+        code      => $code,
+    });
+    # check return
+
+    my $name = $person->first() . ' ' . $person->last();
+    my $phone = $person->tel_home() || $person->tel_cell();
+    my $email = $person->email();
+    my $program_title = $reg->program->title();
+    my $glnum = calc_mmi_glnum($c, $person_id, $for_what,
+                               $reg->program->glnum());
+    my $for_what_disp = $req_payment->for_what_disp();
+
+    #
+    # create the file and ftp it to the mmc site
+    #
+    open my $out, '>', "/tmp/$code" or die "cannot create /tmp/$code: $!\n";
+    print {$out} "{\n";
+    sub put {
+        my ($out, $lab, $val) = @_;
+
+        $val =~ s{'}{\\'}gmsx;
+        print {$out} qq{$lab => '$val',\n};
+    }
+    put($out, 'first',     $person->first());
+    put($out, 'last',      $person->last());
+    put($out, 'addr',      trim($person->addr1() . " " . $person->addr2));
+    put($out, 'city',      $person->city());
+    put($out, 'st_prov',   $person->st_prov());
+    put($out, 'zip_post',  $person->zip_post());
+    put($out, 'country',   $person->country() || 'USA');
+    put($out, 'email',     $email);
+    put($out, 'phone',     $phone);
+    put($out, 'amount',    $amount);
+    put($out, 'type',      $for_what);
+    put($out, 'for_what',  $for_what_disp);
+    put($out, 'note',      $note);
+    put($out, 'program',   $program_title);
+    put($out, 'date',      $the_date);
+    put($out, 'code',      $code);
+    put($out, 'reg_id',    $reg_id);
+    put($out, 'request_id',$req_payment->id());
+    put($out, 'person_id', $person_id);
+    put($out, 'glnum',     $glnum);
+    print {$out} "};\n";
+    close $out;
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd($string{req_mmi_dir});
+    $ftp->ascii();
+    $ftp->put("/tmp/$code", $code);
+    $ftp->quit();
+    unlink "/tmp/$code";
+
+    #
+    # send email to the person with the code
+    #
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/static',
+        EVAL_PERL    => 0,
+        INTERPOLATE  => 1,
+    });
+    my $stash = {
+        name     => $name,
+        amount   => commify($amount),
+        req_code => $code,
+        for_what => $for_what_disp,
+        note     => $note,
+        program  => $program_title,
+    };
+    my $html;
+    $tt->process(
+        "templates/letter/req_mmi_payment.tt2",   # template
+        $stash,               # variables
+        \$html,               # output
+    );
+    email_letter($c,
+        to      => $email,
+        from    => 'Mount Madonna Institute <info@mountmadonnainstitute.org>',
+                        # correct???
+        subject => "Requested Payment for MMI Program '$program_title'",
+        html    => $html,
+    );
+
+    # Reg History record
+    my @who_now = get_now($c);
+    model($c, 'RegHistory')->create({
+        reg_id   => $reg_id,
+        what     => "Requested Payment of $amount for $for_what_disp",
+        @who_now,
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+}
+
 sub create_mmi_payment : Local {
     my ($self, $c, $reg_id, $person_id, $from) = @_;
     
@@ -1063,47 +1210,20 @@ sub create_mmi_payment_do : Local {
         return;
     }
     my $for_what = $c->request->params->{for_what};
-    my $dcm_reg = dcm_registration($c, $person_id);
     my $reg = model($c, 'Registration')->find($reg_id);
-    my $glnum;
-    if (ref($dcm_reg)) {
-        # this person is enrolled in a DCM program
-        #
-        my $program = $dcm_reg->program();
-
-        my $sdate = $program->sdate_obj();
-        my $m = $sdate->month();
-        $glnum = $for_what
-               . $program->school()
-               . $sdate->format("%y")
-               . ((1 <= $m && $m <=  9)? $m
-                  :          ($m == 10)? 'X'
-                  :          ($m == 11)? 'Y'
-                  :                      'Z'
-                 )
-               . $program->level()
-               ;
+    my $glnum = calc_mmi_glnum($c, $person_id, $for_what,
+                               $reg->program->glnum());
+    if ($glnum eq 'illegal') {
+        $c->stash->{mess} = "Since this person is an Auditor the payment<br>"
+                          . "cannot be a fee for Application or Registration.";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
     }
-    else {
-        # this person is an auditor.
-        # (OR they are enrolled in more than one DCM program! :( )
-        #
-        # we use the glnum of the program itself (plus 'for_what').
-        #
-        if ($for_what == 3 || $for_what == 4) {
-            $c->stash->{mess} = "Since this person is an Auditor the payment<br>cannot be a fee for Application or Registration.";
-            $c->stash->{template} = "gen_error.tt2";
-            return;
-        }
-        $glnum = $c->request->params->{for_what}
-               . $reg->program->glnum();
-    }
-
     my $the_date = tt_today($c)->as_d8();
     if ($the_date eq $string{last_mmi_deposit_date}) {
         $the_date = (tt_today($c)+1)->as_d8();
     }
-    model($c, 'MMIPayment')->create({
+    my $payment = model($c, 'MMIPayment')->create({
         person_id => $person_id,
         amount    => $amount,
         type      => $c->request->params->{type},
@@ -1112,8 +1232,17 @@ sub create_mmi_payment_do : Local {
         reg_id    => $reg_id,
         note      => $c->request->params->{note},
     });
+    # Reg History record
+    my @who_now = get_now($c);
+    model($c, 'RegHistory')->create({
+        reg_id => $reg_id,
+        what   => "Payment of $amount for " . $payment->for_what(),
+        @who_now,
+    });
     $reg->calc_balance();
-    if ($c->request->params->{from} eq 'edit_dollar') {
+    if ($c->request->params->{from} 
+        && $c->request->params->{from} eq 'edit_dollar')
+    {
         $c->response->redirect(
             $c->uri_for("/registration/edit_dollar/$reg_id")
         );

@@ -918,4 +918,19 @@ sub ride : Local {
     );
 }
 
+sub req_mmi_payment_list : Local {
+    my ($self, $c) = @_;
+
+    my @payments = model($c, 'RequestedMMIPayment')->search(
+        {},
+        {
+            order_by => 'the_date desc',
+        }
+    );
+    stash($c,
+        pg_title => 'MMI Payment Requests',
+        template => "finance/req_mmi_payments.tt2",
+        payments => \@payments,
+    );
+}
 1;

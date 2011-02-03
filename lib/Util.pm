@@ -63,6 +63,8 @@ our @EXPORT_OK = qw/
     check_makeup_vacate
     refresh_table
     d3_to_hex
+    req_code
+    calc_mmi_glnum
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1645,6 +1647,63 @@ sub d3_to_hex {
         $b = $3;
     }
     return sprintf("#%02x%02x%02x", $r, $g, $b);
+}
+
+my @alphanum = (
+    0 .. 9,
+    'a' .. 'z',
+    'A' .. 'Z',
+);
+#
+# return 6 random alphanumerics
+#
+sub req_code {
+    my $s = '';
+    for (1 .. 6) {
+        $s .= $alphanum[ rand 62 ];
+    }
+    return $s;
+}
+
+#
+# calculate a glnum for an MMI payment
+#
+sub calc_mmi_glnum {
+    my ($c, $person_id, $for_what, $reg_program_glnum) = @_;
+
+    my $glnum;
+    my $dcm_reg = dcm_registration($c, $person_id);
+    if (ref($dcm_reg)) {
+        # this person is enrolled in a DCM program
+        #
+        my $program = $dcm_reg->program();
+
+        my $sdate = $program->sdate_obj();
+        my $m = $sdate->month();
+        $glnum = $for_what
+               . $program->school()
+               . $sdate->format("%y")
+               . ((1 <= $m && $m <=  9)? $m
+                  :          ($m == 10)? 'X'
+                  :          ($m == 11)? 'Y'
+                  :                      'Z'
+                 )
+               . $program->level()
+               ;
+    }
+    else {
+        # this person is an auditor.
+        # (OR they are enrolled in more than one DCM program! :( )
+        #
+        # we use the glnum of the program itself (plus 'for_what').
+        #
+        if ($for_what == 3 || $for_what == 4) {
+            # shouldn't be allowed to happen
+            return 'illegal';
+        }
+        $glnum = $for_what . $reg_program_glnum;
+    }
+    return $glnum;
 }
 
 1;

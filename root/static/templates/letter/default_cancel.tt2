@@ -11,8 +11,8 @@ strong {
 </style>
 Greetings $person.first,
 <p>
-Your registration for the $program.title program
-was cancelled on [% today.format("%B %e, %Y") %].<br>
+Your registration for the '$program.title' program
+was cancelled on [% today.format("%B %e, %Y") %].
 [% IF credit_amount %]
 The program's cancellation policy is:
 <ul>
@@ -20,20 +20,23 @@ $program.canpol.policy_br
 </ul>
 [% END %]
 [% IF credit_amount %]
-<p>
-You have been given a credit of \$$credit_amount applicable
-towards future MMC-sponsored programs.<br>
-This credit will expire on [% date_expire.format("%B %e, %Y") %].
+    <p>
+    You have been given a credit of \$$credit_amount applicable
+    towards future MMC-sponsored programs.
+    This credit will expire on [% date_expire.format("%B %e, %Y") %].
 [% ELSIF refund_amount %]
-<p>
-You are due a refund of \$${refund_amount}.
-We need your credit card information in order to issue the refund.
-Please call 408-846-4064 during normal business hours Monday-Saturday
-with your credit card number
-and expiration date.
+    <p>
+    [% IF via_authorize %]
+        We have refunded \$$refund_amount to your credit card.
+    [% ELSE %]
+        You are due a refund of \$${refund_amount}.
+        We need your credit card information in order to issue the refund.
+        Please call 408-846-4064 during normal business hours Monday-Saturday
+        with your credit card number and expiration date.
+    [% END %]
 [% ELSE %]
-<p>
-We're sorry but you have <strong>not</strong> been given a credit or refund.
+    <p>
+    We're sorry but you have been given neither a credit nor a refund.
 [% END %]
 <p>
 Sincerely,<br>

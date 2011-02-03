@@ -529,6 +529,11 @@ Web
 </tr>
 
 <tr>
+<th align=right>Facebook Event Id</th>
+<td>[% program.facebook_event_id %]</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Program Image</th>
 <td colspan=2>
 [% IF program.image %]

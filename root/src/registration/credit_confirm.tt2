@@ -1,4 +1,4 @@
-<h2>Registration Cancellation Credit</h2>
+<h2>Registration Cancellation Credit/Refund</h2>
 The registration for [% reg.person.first%] [% reg.person.last %]
 in [% reg.program.name %] will be cancelled.
 <p>
@@ -12,9 +12,31 @@ The cancellation policy is:
 </ul>
 <p>
 <form action="/registration/cancel_do/[% reg.id %]">
-Credit of $<input type=text size=4 name=credit_amount value="[% credit_amount %]">?
-&nbsp;&nbsp;&nbsp;
-Refund of $<input type=text size=4 name=refund_amount value="[% refund_amount %]">?
+<table cellpadding=5 border=0>
+
+<tr>
+<td align=right>Credit of</td>
+<td>
+$<input type=text size=4 name=credit_amount id=credit_amount value="[% credit_amount %]">?
+</td>
+</tr>
+
+<tr>
+<td align=right>Refund of</td>
+<td>
+$<input type=text size=4 name=refund_amount value="[% refund_amount %]"
+onkeypress="document.getElementById('credit_amount').value = '';"
+>?
+</td>
+[% IF reg.transaction_id %]
+<td>
+Via authorize.net? <input type=checkbox name=via_authorize checked>
+Transaction $reg.transaction_id
+</td>
+[% END %]
+</tr>
+
+</table>
 [% IF reg.program.school == 0 %]
 <p class=p2>
 Send cancellation letter? <input type=checkbox name=send_letter value="yes" checked>
@@ -22,3 +44,6 @@ Send cancellation letter? <input type=checkbox name=send_letter value="yes" chec
 <p class=p2>
 <input type=submit value="Submit">
 </form>
+<script type="text/javascript">
+document.getElementById('credit_amount').focus();
+</script>

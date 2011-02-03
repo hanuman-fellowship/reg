@@ -40,6 +40,7 @@ use Util qw/
     penny
     check_makeup_new
     check_makeup_vacate
+    get_now
 /;
 use POSIX qw/
     ceil
@@ -962,22 +963,6 @@ sub _re_get_days {
     }
 }
 
-#
-# who is doing this?  and what's the current date/time?
-#
-sub get_now {
-    my ($c, $reg_id) = @_;
-
-    return
-        reg_id   => $reg_id,
-        user_id  => $c->user->obj->id,
-        the_date => tt_today($c)->as_d8(),
-        time     => get_time()->t24()
-        ;
-    # we return an array of 8 values perfect
-    # for passing to a DBI insert/update.
-}
-
 # now we actually create the registration
 # if from an online source there will be a filename
 # in the %P which needs deleting.
@@ -1063,10 +1048,11 @@ sub create_do : Local {
         pref2         => $P{pref2},
         share_first   => normalize($P{share_first}),
         share_last    => normalize($P{share_last}),
-        manual        => ($P{dup} || $pr->school() != 0)? "yes": "",
-        cabin_room    => $P{cabin_room} || "",
+        manual        => ($P{dup} || $pr->school() != 0)? 'yes': '',
+        cabin_room    => $P{cabin_room} || '',
         leader_assistant => '',
         free_prog_taken  => $P{free_prog},
+        transaction_id => $P{fname} || '',
 
         %dates,         # optionally
     });
@@ -1081,7 +1067,8 @@ sub create_do : Local {
     my $reg_id = $reg->id();
 
     # prepare for history records
-    my @who_now = get_now($c, $reg_id);
+    my @who_now = get_now($c);
+    push @who_now, reg_id => $reg_id;
 
     # first, we have some PAST history
     model($c, 'RegHistory')->create({
@@ -1095,8 +1082,8 @@ sub create_do : Local {
 
     # now current history
     model($c, 'RegHistory')->create({
-        @who_now,
         what    => 'Registration Created',
+        @who_now,
     });
 
     # credit, if any
@@ -1881,10 +1868,11 @@ sub send_conf : Local {
         return;
     }
     my @who_now = get_now($c, $id);
+    push @who_now, reg_id => $id;
     if ($reg->confnote) {
         model($c, 'ConfHistory')->create({
-            @who_now,
             note => $reg->confnote,
+            @who_now,
         });
     }
     $c->response->redirect($c->uri_for("/registration/view/$id"));
@@ -1945,7 +1933,7 @@ sub _view {
     my @files = <root/static/online/*>;
     my $share_first = $reg->share_first();
     my $share_last  = $reg->share_last();
-    my $share = "$share_first $share_last";
+    my $share = $share_first? "$share_first $share_last": '';
     if ($share_first) {
         # there may be more than one person who matches :(
         #
@@ -2093,11 +2081,12 @@ sub pay_balance_do : Local {
         );
         return;
     }
-    my @who_now = get_now($c, $reg_id);
+    my @who_now = get_now($c);
     if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
         push @who_now, the_date => (tt_today($c)+1)->as_d8(),
     }
     model($c, 'RegPayment')->create({
+        reg_id => $reg_id,
         @who_now,
         amount => $amount,
         type   => $type,
@@ -2149,14 +2138,17 @@ sub cancel : Local {
         return;
     }
     my $today = tt_today($c);
+    my $person = $reg->person();
+    my $name = $person->last() . ", " . $person->first();
     Global->init($c);
     stash($c,
-        today    => $today,
-        ndays    => $reg->program->sdate_obj - $today,
-        reg      => $reg,
+        pg_title       => "Cancel $name",
+        today          => $today,
+        ndays          => $reg->program->sdate_obj - $today,
+        reg            => $reg,
         credit_amount  => $string{credit_amount},
         refund_amount  => $string{refund_amount},
-        template => "registration/credit_confirm.tt2",
+        template       => "registration/credit_confirm.tt2",
     );
 }
 
@@ -2167,6 +2159,7 @@ sub cancel_do : Local {
     my $send_letter = $c->request->params->{send_letter};
     my $credit_amount = $c->request->params->{credit_amount};
     my $refund_amount = $c->request->params->{refund_amount};
+    my $via_authorize = $c->request->params->{via_authorize};
 
     if (!$mmi) {
         if (defined $credit_amount && invalid_amount($credit_amount)) {
@@ -2184,11 +2177,7 @@ sub cancel_do : Local {
             return;
         }
         if ($credit_amount && $refund_amount) {
-            error($c,
-                "Cannot give both a credit and a refund.",
-                'gen_error.tt2',
-            );
-            return;
+            $credit_amount = 0;
         }
     }
     my $date_expire;
@@ -2230,7 +2219,11 @@ sub cancel_do : Local {
             "Cancelled"
             . (           $mmi? ""
               :($credit_amount? " - Credit of \$$credit_amount given."
-              :($refund_amount? " - Refund of \$$refund_amount given."
+              :($refund_amount? " - Refund of \$$refund_amount given"
+                    . ($via_authorize? ' via authorize.net '
+                                       . $reg->transaction_id()
+                                       . '.'
+                      :                '.')
               :                 " - No credit given.")))
         );
     }
@@ -2268,13 +2261,14 @@ sub cancel_do : Local {
             $template = "default_cancel.tt2";
         }
         my $stash = {
-            person      => $reg->person,
-            program     => $reg->program,
+            person        => $reg->person,
+            program       => $reg->program,
             credit_amount => $credit_amount,
             refund_amount => $refund_amount,
-            date_expire => $date_expire,
-            user        => $c->user,
-            today       => tt_today($c),
+            date_expire   => $date_expire,
+            user          => $c->user,
+            today         => tt_today($c),
+            via_authorize => $via_authorize,
         };
         $tt->process(
             $template,      # template
@@ -2834,7 +2828,8 @@ sub update_do : Local {
     my $reg = model($c, 'Registration')->find($id);
     my $pr  = model($c, 'Program'     )->find($reg->program_id);
 
-    my @who_now = get_now($c, $id);
+    my @who_now = get_now($c);
+    push @who_now, reg_id => $id;
 
     %dates = transform_dates($pr, %dates);
     if ($dates{date_start} > $dates{date_end}) {
@@ -2952,7 +2947,7 @@ sub manual : Local {
         deposit       => $deposit,
         deposit_type  => $deposit_type,
         date_postmark => $date_post->as_d8(),
-        time_postmark => "1200",        # good guess?
+        time_postmark => "0000",        # good guess?
         cabin_checked => "",
         room_checked  => "",
     );
@@ -3094,7 +3089,7 @@ sub lodge : Local {
     my $share_house_name = "";
     my $share_first = $reg->share_first();
     my $share_last  = $reg->share_last();
-    my $share_name = "$share_first $share_last";
+    my $share_name = $share_first? "$share_first $share_last": '';
     my $message2 = "";
     my $reg2 = undef;
     if ($share_first) {
@@ -3639,7 +3634,9 @@ sub lodge_do : Local {
         return;
     }
     my $new_htype = $c->request->params->{htype};
-    my @who_now = get_now($c, $id);
+    my @who_now = get_now($c);
+    push @who_now, reg_id => $id;
+
     if ($reg->h_type() ne $new_htype) {
         # the housing type was changed
         $reg->update({
@@ -4954,7 +4951,8 @@ sub automatic : Local {
         });
     }
 
-    my @who_now = get_now($c, $reg_id);
+    my @who_now = get_now($c);
+    push @who_now, reg_id => $reg_id;
 
     _compute($c, $reg, 0, @who_now);
 

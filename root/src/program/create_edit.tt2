@@ -355,6 +355,11 @@ $cat_opts
 </tr>
 
 <tr>
+<th align=right>Facebook Event Id</th>
+<td><input type=text name=facebook_event_id size=20 value="[% program.facebook_event_id %]">
+</tr>
+
+<tr>
 <th align=right valign=top>Program Image</th>
 <td colspan=2>
 [% IF program.image %]
