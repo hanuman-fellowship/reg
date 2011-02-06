@@ -4,7 +4,7 @@ You are requested to pay \$$amount for the MMI program '$program'.<br>
 You can do this by clicking
 <a href=http://www.mountmadonna.org/cgi-bin/req_mmi?code=$req_code>here</a>.
 <p>
-This payment is for: ${for_what_disp}.
+This payment is for: ${for_what}.
 [% IF note %]
 <p>
 Note: $note
