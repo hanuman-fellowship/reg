@@ -348,7 +348,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 </table>
 [% payments = reg.req_mmi_payments %]
-[% IF payments.amount %]
+[% IF payments.0 %]
     <p class=p2>
     <span class=hdr>Requested MMI Payments</span>
     <table cellpadding=2>
