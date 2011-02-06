@@ -6,6 +6,11 @@ for [% person.first %] [% person.last %] in [% reg.program.name %]</h2>
 <table cellpadding=5 border=0>
 
 <tr>
+<th align=right>Program Title</th>
+<td>$reg.program.title</td>
+</tr>
+
+<tr>
 <th align=right>Amount</th>
 <td><input type=text name=amount size=6></td>
 [% IF message %]
