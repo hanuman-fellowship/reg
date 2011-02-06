@@ -344,7 +344,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 <tr>
 <td></td>
-<td>&nbsp;&nbsp;<a href="/person/request_mmi_payment/[% id %]/[% person.id %]">Request MMI Payment</a></td>
+<td>&nbsp;&nbsp;<a href="/person/request_mmi_payment/[% id %]/[% person.id %]">Request Online Payment</a></td>
 </tr>
 </table>
 [% payments = reg.req_mmi_payments %]
