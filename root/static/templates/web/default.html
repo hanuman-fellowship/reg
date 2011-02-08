@@ -8,7 +8,6 @@ $facebook = new Facebook(array(
   'cookie' => true,
 ));
 
-$num_pics=7;
 
 // We may or may not have this data based on a $_GET or $_COOKIE based session.
 //
@@ -167,6 +166,14 @@ echo 'http://www.mountmadonna.org' . $result_uri;
                               </TABLE>
                               <!--T month_calendar -->
                         </CENTER></TD></TR></TBODY></TABLE>
+                        
+<?php 
+$eid = "<!--T facebook_event_id -->";
+if (!empty($eid)) {
+$_GET['eid']=$eid;
+	include("/home/mmc/domains/mountmadonna.org/public_html/includes/fb_activity.php");  
+}
+?>
                 
 
   </DIV><DIV CLASS=sidebarBottom><DIV></DIV></DIV></DIV>
