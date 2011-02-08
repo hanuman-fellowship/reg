@@ -1194,7 +1194,7 @@ sub create_do : Local {
                 amount      => $P{green_amount},
                 type        => 'O',     # credit
                 what        => '',
-                @who_now[2..7],     # not reg_id => $reg_id
+                @who_now[0..5],     # not reg_id => $reg_id
             });
             #
             # send email thank you
