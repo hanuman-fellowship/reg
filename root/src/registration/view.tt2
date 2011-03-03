@@ -306,7 +306,6 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </table>
 [% ELSE %]
 <span class=hdr>MMI Payments</span>
-<p class=p2>
 <table cellpadding=2>
 <tr>
 <th align=right>Amount</th>
@@ -348,11 +347,17 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 </tr>
 </table>
 [% payments = reg.req_mmi_payments %]
-[% IF payments.0 %]
+[% IF payments %]
     <p class=p2>
     <span class=hdr>Requested MMI Payments</span>
+    [% IF send_requests %]
+    <span style="margin-left: 5mm">
+    <a class=not_sent href=/person/send_requests/$reg.id>Send Requests</a>
+    </span>
+    [% END %]
     <table cellpadding=2>
     <tr>
+    <th>Sent</th>
     <th align=right>Amount</th>
     <th align=left>For</th>
     <th align=left>Date</th>
@@ -360,6 +365,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
     </tr>
     [% FOREACH py IN payments %]
         <tr>
+        <td align=center>[% IF py.code %]<img src=/static/images/checked.gif>[% ELSE %]<span class=required>**</span>[% END %]</td>
         <td align=right>[% py.amount_disp %]</td>
         <td>[% py.for_what_disp %]</td>
         <td>[% py.the_date_obj %]</td>

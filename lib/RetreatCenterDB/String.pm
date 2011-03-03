@@ -20,7 +20,9 @@ __PACKAGE__->set_primary_key('the_key');
 sub value_td {
     my ($self) = @_;
     my $k = $self->the_key();
-    my $v = $self->value() || "";
+    my $v = defined($self->value())? $self->value()
+            :                        ""
+            ;
     if ($k =~ m{_color$}) {
         my $color = d3_to_hex($v);
         return <<"EOH";

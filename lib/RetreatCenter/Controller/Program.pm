@@ -284,6 +284,11 @@ sub _get_data {
     ) {
         push @mess, 'Name must have MMI in it';
     }
+    if ($P{school} == 0
+        && $P{name} =~ m{MMI}
+    ) {
+        push @mess, 'Name has MMI in it but the program is not an MMI program.';
+    }
     if ($P{school} != 0 && $P{level} ne 'S'
         && $P{name} !~ m{$mmi_levels{$P{level}}}
     ) {

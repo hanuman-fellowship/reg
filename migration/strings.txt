@@ -229,5 +229,9 @@ ftp_hfs_user hanum
 ftp_hfs_password ToolcaSe
 ftp_hfs_dir www/temple/_updates/users
 
-req_mmi_dir /www/cgi-bin/req_mmi_dir
-req_mmi_dir_paid /www/cgi-bin/req_mmi_dir/paid
+ftp_mmi_site www.mountmadonna.org
+ftp_mmi_login mmc
+ftp_mmi_password 1hello
+ftp_mmi_passive 0
+req_mmi_dir /home/mmi/domains/mountmadonnainstitute.org/public_html/cgi-bin/req_mmi_dir
+req_mmi_dir_paid /home/mmi/domains/mountmadonnainstitute.org/public_html/cgi-bin/req_mmi_dir/paid

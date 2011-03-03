@@ -1,14 +1,13 @@
 Greetings $name,
 <p>
-You are requested to pay \$$amount for the MMI program '$program'.<br>
+You are requested to pay \$$total for the MMI program '$program'.<br>
+<p>
 You can do this by clicking
-<a href=http://www.mountmadonna.org/cgi-bin/req_mmi?code=$req_code>here</a>.
+<a href=http://www.mountmadonnainstitute.org/cgi-bin/req_mmi?code=$req_code>HERE</a>.
 <p>
-This payment is for: ${for_what}.
-[% IF note %]
-<p>
-Note: $note
-[% END %]
-<p>
+Description of charges:
+<ul>
+$tbl_py_desc
+</ul>
 Thank you,<br>
 Brajesh

@@ -1,6 +1,7 @@
 <h2>MMI Payment Requests</h2>
 <table cellpadding=5>
 <tr>
+<th align=center>Sent</th>
 <th align=left>Person</th>
 <th align=right>Amount</th>
 <th align=left>Program</th>
@@ -8,6 +9,7 @@
 </tr>
 [% FOREACH p IN payments %]
 <tr>
+<td align=center>[% IF p.code %]<img src=/static/images/checked.gif>[% ELSE %]<span class=required>**</span>[% END %]</td>
 <td><a href=/registration/view/$p.reg_id>$p.person.first $p.person.last</a></td>
 <td align=right>$p.amount_disp</td>
 <td><a href=/program/view/$p.registration.program_id>$p.registration.program.name</a></td>

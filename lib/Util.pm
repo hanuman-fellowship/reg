@@ -1658,7 +1658,7 @@ my @alphanum = (
 # return 6 random alphanumerics
 #
 sub req_code {
-    my $s = '';
+    my $s = q{};
     for (1 .. 6) {
         $s .= $alphanum[ rand 62 ];
     }

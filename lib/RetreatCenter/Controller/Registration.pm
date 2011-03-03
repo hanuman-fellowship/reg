@@ -2011,7 +2011,19 @@ sub _view {
     }
     my $person = $reg->person();
     my $name = $person->last() . ", " . $person->first();
+    #
+    # are there any unsent MMI requests?
+    #
+    my $send_requests = 0;
+    REQS:
+    for my $req ($reg->req_mmi_payments()) {
+        if (! $req->code()) {
+            $send_requests = 1;
+            last REQS;
+        }
+    }
     stash($c,
+        send_requests  => $send_requests,
         pers_label     => $pers_label,
         pg_title       => $name,
         online         => scalar(@files),
@@ -2385,7 +2397,9 @@ sub new_charge_do : Local {
     $reg->update({
         balance => $reg->balance + $amount,
     });
-    if ($c->request->params->{from} eq 'edit_dollar') {
+    if (exists $c->request->params->{from}
+            && $c->request->params->{from} eq 'edit_dollar')
+    {
         $c->response->redirect($c->uri_for("/registration/edit_dollar/$reg_id"));
     }
     else {

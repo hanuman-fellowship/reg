@@ -84,12 +84,26 @@ Jan 30 7:25-9:10
     for MMI
     continue with grab_new MMI payment request 
         confused about MMI glnum, program attributed
-Feb 1 11:25-
+Feb 1 11:25-12:00
     for MMC
     program.facebook_event_id on Web tab
 Feb 1 12:30-1:30
     for MMI
     struggling
-Feb 2 9:40-11:20
+Feb 2 9:40-11:20, 12:10-2:30
     for MMI
     finalizing
+    sending letter
+Feb 6 12:45-1:15
+    for MMI
+    tweaking req_mmi_payments
+Feb 13 9:50-11:20
+    for MMI
+    redesign req_mmi_payments for multiple requests
+Feb 15 10:10-11:00
+    for MMI
+    new design on garlic
+Feb 18 6:40-8:40
+    for MMI
+    move to mountmadonnainstitute.org
+    unsuccessfully :(

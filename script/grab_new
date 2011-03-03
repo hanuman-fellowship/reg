@@ -336,6 +336,10 @@ if ($nrides) {
                  . " for you in Reg."
     );
 }
+#
+# all done with mmc
+#
+$ftp->quit();
 
 #
 # MMI paid payment requests
@@ -343,21 +347,19 @@ if ($nrides) {
 my $mmi_pay_sth = $dbh->prepare("
     insert into mmi_payment
     (
-        person_id,
-        amount,
-        glnum,
-        the_date,
-        type,
-        reg_id,
-        note
+        the_date, type,
+        person_id, reg_id,
+        amount, glnum, note
     )
     values (
-        ?, ?, ?, $today_d8, 'O', ?, ?
+        $today_d8, 'O',
+        ?, ?,
+        ?, ?, ?
     );
 ");
 my $req_mmi_del_sth = $dbh->prepare("
     delete from req_mmi_payment
-     where id = ?
+     where code = ?
 ");
 my $reg_hist_sth = $dbh->prepare("
     insert into reg_history
@@ -372,7 +374,12 @@ my $reg_hist_sth = $dbh->prepare("
         ?, ?, ?, 0, ?
     )
 ");
-$ftp->cwd($string{req_mmi_dir_paid}) or my_die("no cd paid dir");
+$ftp = Net::FTP->new($string{ftp_mmi_site}, Passive => $string{ftp_mmi_passive})
+    or my_die("cannot connect to $string{ftp_mmi_site}");    # not die???
+$ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
+    or my_die("cannot login to mmi " . $ftp->message);
+$ftp->cwd($string{req_mmi_dir_paid})
+    or my_die("no cd paid dir $string{req_mmi_dir_paid}");
 REQ_MMI_FILE:
 for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
@@ -385,30 +392,38 @@ for my $f ($ftp->ls()) {
         next REQ_MMI_FILE;
     }
     my %hash = %{ do "$dir/$f" };
-    $mmi_pay_sth->execute(
-        @hash{qw/
-            person_id
-            amount
-            glnum
-            reg_id
-            note
-        /},
-    );
-    $req_mmi_del_sth->execute($hash{request_id});
+    for my $py (split m{~}, $hash{py_desc}) {
+        my ($amount, $note, $glnum) = split m{\|}, $py;
+        $amount =~ s{,}{}gxms;
+        $mmi_pay_sth->execute(
+            $hash{person_id},
+            $hash{reg_id},
+            $amount,
+            $glnum,
+            $note,
+        );
+    }
+    $req_mmi_del_sth->execute($hash{code});     # remove all requests
+    # History record
     $reg_hist_sth->execute(
         $hash{reg_id},
         $today_d8,
         $the_time,
-        "Got payment of $hash{amount} for $hash{for_what}"
+        "Got total payment of \$" . commify($hash{total}) . '.',
     );
+
+    # adjust the balance
+    my $sth_balance = $dbh->prepare("
+        update registration
+        set balance = balance - $hash{total}
+        where id = $hash{reg_id}
+    ");
+    $sth_balance->execute();
+
     $Msg .= "got req_mmi file $f\n";
     $ftp->delete($f);
 }
 
-#
-# all done with mmc
-#
-$ftp->quit();
 my %mnum = qw/
     Jan 1
     Feb 2
@@ -906,4 +921,13 @@ sub nsquish {
     $s =~ s{[^A-Z]}{}g;
     $s = substr($s, 0, 3);
     return ($n . $s); 
+}
+
+sub commify {
+    my ($n) = @_;
+
+    $n = reverse $n;
+    $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
+    $n = scalar reverse $n;
+    return $n;
 }

@@ -1039,10 +1039,17 @@ sub request_mmi_payment : Local {
         );
         return;
     }
-    # ??? person must have an email address
+    my $person = model($c, 'Person')->find($person_id);
+    if (empty($person->email())) {
+        error($c,
+            $person->first() . " does not have an email address.  Please fix.",
+            "gen_error.tt2",
+        );
+        return;
+    }
     stash($c,
         message  => payment_warning('mmi'),
-        person   => model($c, 'Person')->find($person_id),
+        person   => $person,
         reg      => $reg,
         dcm      => dcm_registration($c, $person_id),
         template => "person/request_mmi_payment.tt2",
@@ -1051,10 +1058,6 @@ sub request_mmi_payment : Local {
 
 sub request_mmi_payment_do : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
-
-    my $person = model($c, 'Person')->find($person_id);
-    my $reg    = model($c, 'Registration')->find($reg_id);
-    # check returns above???
 
     my $amount = trim($c->request->params->{amount});
     if (invalid_amount($amount)) {
@@ -1065,8 +1068,7 @@ sub request_mmi_payment_do : Local {
         return;
     }
     my $the_date = tt_today($c)->as_d8();
-    my $code = req_code();
-    my $note = $c->request->params->{note};
+    my $note = $c->request->params->{note} || '';
     my $for_what = $c->request->params->{for_what};
 
     my $req_payment = model($c, 'RequestedMMIPayment')->create({
@@ -1076,20 +1078,72 @@ sub request_mmi_payment_do : Local {
         the_date  => $the_date,
         reg_id    => $reg_id,
         note      => $note,
-        code      => $code,
     });
-    # check return
+    # Reg History record
+    my @who_now = get_now($c);
+    model($c, 'RegHistory')->create({
+        reg_id   => $reg_id,
+        what     => "Payment request of \$" . commify($amount)
+                  . " for "
+                  . $req_payment->for_what_disp(),
+        @who_now,
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+}
 
+sub send_requests : Local {
+    my ($self, $c, $reg_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $person = $reg->person();
+    my $person_id = $person->id();
     my $name = $person->first() . ' ' . $person->last();
     my $phone = $person->tel_home() || $person->tel_cell();
     my $email = $person->email();
     my $program_title = $reg->program->title();
-    my $glnum = calc_mmi_glnum($c, $person_id, $for_what,
-                               $reg->program->glnum());
-    my $for_what_disp = $req_payment->for_what_disp();
 
+    my $code = req_code();
+    my $total = 0;
+    my $py_desc = q{};
+    my $tbl_py_desc = <<"EOH";
+<table cellpadding=5>
+<tr>
+<th align=right>Amount</th>
+<th align=left>For</th>
+<th align=left>Note</th>
+</tr>
+EOH
+    my $prog_glnum = $reg->program->glnum();
+    PAYMENT:
+    for my $py ($reg->req_mmi_payments()) {
+        next PAYMENT if $py->code();        # already sent but not yet gotten
+        my $amt = commify($py->amount());
+        my $note = $py->note();
+        my $for  = $py->for_what_disp();
+        $total += $py->amount();
+        $py_desc .= join('|', $amt,
+                              $note,
+                              calc_mmi_glnum($c, $person_id,
+                                             $py->for_what(), $prog_glnum))
+                 .  '~'
+                 ;
+        $tbl_py_desc .= <<"EOH";
+<tr>
+<td align=right>$amt</td>
+<td>$for</td>
+<td>$note</td>
+</tr>
+EOH
+    }
+    my $comma_total = commify($total);
+    $tbl_py_desc .= <<"EOH";
+<tr>
+<td style='border-top: solid thin' align=right>\$$comma_total</td>
+</tr>
+</table>
+EOH
     #
-    # create the file and ftp it to the mmc site
+    # create the file and ftp it to the mmi (not mmc) site
     #
     open my $out, '>', "/tmp/$code" or die "cannot create /tmp/$code: $!\n";
     print {$out} "{\n";
@@ -1098,6 +1152,11 @@ sub request_mmi_payment_do : Local {
 
         $val =~ s{'}{\\'}gmsx;
         print {$out} qq{$lab => '$val',\n};
+    }
+    sub _strip_nl {
+        my ($s) = @_;
+        $s =~ s{\n}{}gxms;
+        $s;
     }
     put($out, 'first',     $person->first());
     put($out, 'last',      $person->last());
@@ -1108,27 +1167,33 @@ sub request_mmi_payment_do : Local {
     put($out, 'country',   $person->country() || 'USA');
     put($out, 'email',     $email);
     put($out, 'phone',     $phone);
-    put($out, 'amount',    $amount);
-    put($out, 'type',      $for_what);
-    put($out, 'for_what',  $for_what_disp);
-    put($out, 'note',      $note);
+    put($out, 'total',     $total);
+    put($out, 'py_desc',   $py_desc);
+    put($out, 'tbl_py_desc', _strip_nl($tbl_py_desc));
     put($out, 'program',   $program_title);
-    put($out, 'date',      $the_date);
     put($out, 'code',      $code);
     put($out, 'reg_id',    $reg_id);
-    put($out, 'request_id',$req_payment->id());
     put($out, 'person_id', $person_id);
-    put($out, 'glnum',     $glnum);
     print {$out} "};\n";
     close $out;
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to $string{ftp_site}";    # not die???
-    $ftp->login($string{ftp_login}, $string{ftp_password})
+    my $ftp = Net::FTP->new($string{ftp_mmi_site},
+                            Passive => $string{ftp_mmi_passive})
+        or die "cannot connect to $string{ftp_mmi_site}";    # not die???
+    $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
         or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd($string{req_mmi_dir});
+    $ftp->cwd($string{req_mmi_dir}) or die "cannot chdir to $string{req_mmi_dir}";
     $ftp->ascii();
     $ftp->put("/tmp/$code", $code);
     $ftp->quit();
+
+    # now mark the payment requests as sent
+    PAYMENT:
+    for my $py ($reg->req_mmi_payments()) {
+        next PAYMENT if $py->code();        # already sent but not gotten yet
+        $py->update({
+            code => $code,
+        });
+    }
     unlink "/tmp/$code";
 
     #
@@ -1140,12 +1205,11 @@ sub request_mmi_payment_do : Local {
         INTERPOLATE  => 1,
     });
     my $stash = {
-        name     => $name,
-        amount   => commify($amount),
-        req_code => $code,
-        for_what => $for_what_disp,
-        note     => $note,
-        program  => $program_title,
+        name        => $name,
+        total       => $comma_total,
+        req_code    => $code,
+        tbl_py_desc => $tbl_py_desc,
+        program     => $program_title,
     };
     my $html;
     $tt->process(
@@ -1156,16 +1220,14 @@ sub request_mmi_payment_do : Local {
     email_letter($c,
         to      => $email,
         from    => 'Mount Madonna Institute <info@mountmadonnainstitute.org>',
-                        # correct???
         subject => "Requested Payment for MMI Program '$program_title'",
         html    => $html,
     );
-
     # Reg History record
     my @who_now = get_now($c);
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
-        what     => "Requested Payment of $amount for $for_what_disp",
+        what     => "Sent requests totaling \$" . commify($total),
         @who_now,
     });
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
