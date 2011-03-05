@@ -669,7 +669,7 @@ sub outstanding : Local {
     for my $r (@regs) {
         push @outbals, {
             date => $r->date_start_obj(),
-            name => $r->person->first() . " " . $r->person->last(),
+            name => $r->person->name(),
             program => $r->program->name(),
             link => $c->uri_for("/registration/view/" . $r->id()),
             balance => penny($r->balance()),

@@ -1207,7 +1207,7 @@ sub _contract_ready {
         push @mess, "Contracts need a coordinator or a contract signer.";
     }
     elsif (empty($cs->addr1())) {
-        push @mess, $cs->first() . " " . $cs->last()
+        push @mess, $cs->name()
                     . " does not have an address.";
     }
     my @bookings = $rental->bookings();
@@ -2167,7 +2167,7 @@ sub grid : Local {
     my $coord = $rental->coordinator();
     my $coord_name = "";
     if ($coord) {
-        $coord_name = $coord->first() . " " . $coord->last();
+        $coord_name = $coord->name();
     }
     else {
         $coord_name = "";

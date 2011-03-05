@@ -107,3 +107,15 @@ Feb 18 6:40-8:40
     for MMI
     move to mountmadonnainstitute.org
     unsuccessfully :(
+Feb 22 10:00-10:30
+    for MMI and MMC - authorize.net form fields
+Mar 1 10:00-12:00
+    for MMC moving to new account
+    MMI - trying to get it working
+Mar 2 12:00-12:30, 10:00-1:30
+    For MMI
+    called authorize.net about the 99 - they pointed me
+        to a trouble shooting page.
+    final tweaking - took a long time!
+Mar 4 9:10-
+    for MMI more tweaks - deletion, colors

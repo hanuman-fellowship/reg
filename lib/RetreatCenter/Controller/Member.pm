@@ -348,7 +348,7 @@ sub acknowledge {
                     && date($member->date_sponsor()) > tt_today($c));
     my $message = "";
     if ( ! $person->email) {
-        my $name = $person->first . " " . $person->last;
+        my $name = $person->name();
         my $addr = $person->addr1 . "<br>\n";
         if (my $addr2 = $person->addr2) {
             $addr .= $addr2 . "<br>\n";
@@ -663,7 +663,7 @@ sub email_lapsed : Local {
     my $to_you = $c->request->params->{to_you};
     my @no_email;
     my $nsent = 0;
-    my $mem_admin = $c->user->first . ' ' . $c->user->last;
+    my $mem_admin = $c->user->name();
     Global->init($c);
     MEMBER:
     for my $m (_checked_members($c)) {
@@ -732,12 +732,12 @@ sub email_lapse_soon : Local {
     my $to_you = $c->request->params->{to_you};
     my @no_email;
     my $nsent = 0;
-    my $mem_admin = $c->user->first . ' ' . $c->user->last;
+    my $mem_admin = $c->user->name();
     Global->init($c);
     MEMBER:
     for my $m (_checked_members($c)) {
         my $per = $m->person;
-        my $name = $per->first . ' ' . $per->last;
+        my $name = $per->name();
         my $email = $per->email;
         if (! $email) {
             push @no_email, $m;
@@ -890,12 +890,14 @@ sub bulk_do : Local {
                 if ($sps->last eq $p->last) {
                     $sps->{name} = $sps->first
                              . " & "
-                             . $p->first   . " " . $p->last;
+                             . $p->name()
+                             ;
                 }
                 else {
-                    $sps->{name} = $sps->first . " " . $sps->last
+                    $sps->{name} = $sps->name()
                                  . " & "
-                                 . $p->first   . " " . $p->last;
+                                 . $p->name()
+                                 ;
                 }
                 delete $partner{$p->id};
                 $p = 0;     # clobber this person
@@ -908,7 +910,7 @@ sub bulk_do : Local {
                    @people
         ) {
             print {$list} 
-                  ($p->{name} || ($p->first . " " . $p->last)) . "|"
+                  ($p->{name} || ($p->name())) . "|"
                   . $p->addrs . "|"
                   . $p->city . "|"
                   . $p->st_prov . "|"
@@ -988,7 +990,7 @@ sub lapsed_letter : Local {
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
-    my $name = $per->first . " " . $per->last;
+    my $name = $per->name();
     my $addr = $per->addr1 . "<br>\n";
     if (my $addr2 = $per->addr2) {
         $addr .= $addr2 . "<br>\n";
@@ -1156,7 +1158,7 @@ sub one_time : Local {
     }
     my $html = "";
     for my $m (@no_email) {
-        $html .= $m->person->first . " " . $m->person->last . "<br>"
+        $html .= $m->person->name() . "<br>"
               .  $m->person->addr1 . "<br>"
               .  (empty($m->person->addr2)? "": ($m->person->addr2 . "<br>"))
               .  $m->person->city . ", "

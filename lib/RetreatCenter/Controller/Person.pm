@@ -47,7 +47,7 @@ sub index : Private {
 sub _view_person {
     my ($p) = @_;
     "<a href='/person/view/" . $p->id . "'>"
-    . $p->first . " " . $p->last
+    . $p->name()
     . "</a>";
 }
 
@@ -241,7 +241,7 @@ sub delete : Local {
     # for one, it deletes the partner record rather than updating it as above.
     # ??? some other way aside from reSearching?
     #
-    my $name = $p->first() . " " . $p->last();
+    my $name = $p->name();
     model($c, 'Person')->search(
         { id => $id }
     )->delete();
@@ -301,7 +301,7 @@ sub view : Local {
     my $sex = $p->sex();
     stash($c,
         person   => $p,
-        pg_title => $p->first() . ' ' . $p->last(),
+        pg_title => $p->name(),
         sex      => (!defined $sex || !$sex)? "Not Reported"
                           :($sex eq "M"           )? "Male"
                           :($sex eq "F"           )? "Female"
@@ -634,7 +634,7 @@ sub partner_with : Local {
     if (@people == 1) {
         my $p2 = $people[0];
         if ($p2->partner) {
-            $c->flash->{message} = $p2->first . " " . $p2->last
+            $c->flash->{message} = $p2->name()
                                  . " is already partnered!";
             $c->response->redirect($c->uri_for("/person/search"));
         }
@@ -740,7 +740,7 @@ sub register1 : Local {
     if (!($person->sex() && $person->sex() =~ m{[MF]})) {
         error($c,
             'Sorry, you must set a gender for '
-                . $person->first() . " " . $person->last()
+                . $person->name()
                 . ' before you can register them for a program.',
             'gen_error.tt2',
         );
@@ -888,7 +888,7 @@ sub undup_do : Local {
         ) {
             my ($person) = model($c, 'Person')->find($mid);
             error($c,
-                "Cannot merge " . $person->first() . " " . $person->last()
+                "Cannot merge " . $person->name()
                 . " because "
                 . ($person->sex() eq 'M'? "he": "she")
                 . " is a member.",
@@ -1097,7 +1097,7 @@ sub send_requests : Local {
     my $reg = model($c, 'Registration')->find($reg_id);
     my $person = $reg->person();
     my $person_id = $person->id();
-    my $name = $person->first() . ' ' . $person->last();
+    my $name = $person->name();
     my $phone = $person->tel_home() || $person->tel_cell();
     my $email = $person->email();
     my $program_title = $reg->program->title();
@@ -1228,6 +1228,77 @@ EOH
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
         what     => "Sent requests totaling \$" . commify($total),
+        @who_now,
+    });
+    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+}
+
+sub delete_req_mmi : Local {
+    my ($self, $c, $req_pay_id) = @_;
+    my $req_pay = model($c, 'RequestedMMIPayment')->find($req_pay_id);
+    my $program_title = $req_pay->registration->program->title();
+    my $person = $req_pay->registration->person;
+    my $email = $person->email();
+    my $reg_id = $req_pay->reg_id();
+    my $tot = 0;
+    my $word = '';
+    if (my $code = $req_pay->code()) {
+        for my $req (model($c, 'RequestedMMIPayment')->search({
+                         code => $code,
+                     }))
+        {
+            $tot += $req->amount();
+            $req->delete();
+        }
+        $tot = commify($tot);
+        #
+        # delete the code file on the mmi web site.
+        my $ftp = Net::FTP->new($string{ftp_mmi_site},
+                                Passive => $string{ftp_mmi_passive})
+            or die "cannot connect to $string{ftp_mmi_site}";    # not die???
+        $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
+            or die "cannot login ", $ftp->message; # not die???
+        $ftp->cwd($string{req_mmi_dir})
+            or die "cannot chdir to $string{req_mmi_dir}";
+        $ftp->delete($code);
+        $ftp->quit();
+        # 
+        # send email notifying the person to ignore the request
+        #
+        my $tt = Template->new({
+            INCLUDE_PATH => 'root/static',
+            EVAL_PERL    => 0,
+            INTERPOLATE  => 1,
+        });
+        my $stash = {
+            name        => $person->name(),
+            total       => $tot,
+            program     => $program_title,
+        };
+        my $html;
+        $tt->process(
+            "templates/letter/ignore_req_mmi_payment.tt2",   # template
+            $stash,               # variables
+            \$html,               # output
+        );
+        email_letter($c,
+            to      => $email,
+            from    => 'Mount Madonna Institute <info@mountmadonnainstitute.org>',
+            subject => "Requested Payment for MMI Program '$program_title'",
+            html    => $html,
+        );
+        $word = 'totaling';
+    }
+    else {
+        $tot = commify($req_pay->amount());
+        $word = 'of';
+        $req_pay->delete();
+    }
+    # Reg History record
+    my @who_now = get_now($c);
+    model($c, 'RegHistory')->create({
+        reg_id   => $reg_id,
+        what     => "Cancelled request $word \$$tot",
         @who_now,
     });
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));

@@ -1925,7 +1925,7 @@ sub _view {
         # else if $dcm > 1 !!!! ???? give error
         # prohibit it from happening in the first place!
         # my $person = model($c, 'Person')->find($person_id);
-        # my $name = $person->first() . " " . $person->last();
+        # my $name = $person->name();
         # $c->stash->{mess}
         #   = (@dcm)? "$name is enrolled in <i>more than one</i> D/C/M program!"
         #   :       "$name is not enrolled in <i>any</i> D/C/M program!";
@@ -2015,14 +2015,24 @@ sub _view {
     # are there any unsent MMI requests?
     #
     my $send_requests = 0;
+    my @req_payments = $reg->req_mmi_payments();
+    my %group_totals;
     REQS:
-    for my $req ($reg->req_mmi_payments()) {
+    for my $req (@req_payments) {
         if (! $req->code()) {
             $send_requests = 1;
-            last REQS;
+        }
+        else {
+            $group_totals{$req->code()} += $req->amount();
+        }
+    }
+    for my $req (@req_payments) {
+        if ($req->code()) {
+            $req->{group_total} = commify($group_totals{$req->code()});
         }
     }
     stash($c,
+        req_payments   => \@req_payments,
         send_requests  => $send_requests,
         pers_label     => $pers_label,
         pg_title       => $name,

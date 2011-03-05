@@ -55,8 +55,7 @@ sub end : ActionClass('RenderView') {
         if ($user->username() ne 'sahadev') {
             email_letter($c,
                 to      => 'Jon Bjornstad <jon@logicalpoetry.com>',
-                from    => $user->first() . " " . $user->last()
-                         . " <" . $user->email() . ">",
+                from    => $user->name_email(),
                 subject => 'Error from Reg',
                 html    => $errs[0],
             );

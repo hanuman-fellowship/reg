@@ -405,7 +405,7 @@ sub update : Local {
         $driver_opts .= "<option value=$id"
                      . (($ride->driver_id() == $id)? " selected": "")
                      . "> "
-                     . $d->first() . " " . $d->last()
+                     . $d->name()
                      . "\n"
                      ;
     }
@@ -512,7 +512,7 @@ sub create : Local {
         $driver_opts .= "<option value="
                      . $d->id()
                      . "> "
-                     . $d->first() . " " . $d->last()
+                     . $d->name()
                      . "\n"
                      ;
     }
@@ -602,7 +602,7 @@ body {
 }
 </style>
 EOS
-                        . $rider->first() . " " . $rider->last() . "<br>"
+                        . $rider->name() . "<br>"
                         . $rider->addr1() . "<br>"
                         . ((! empty($rider->addr2()))? $rider->addr2(): "")
                         . $rider->city() . ", "
@@ -875,7 +875,7 @@ sub drivers : Local {
 EOH
     for my $d (_get_drivers($c)) {
         $html .= "<tr>"
-              . "<td>" . $d->first() . " " . $d->last() . "</td>"
+              . "<td>" . $d->name() . "</td>"
               . "<td><a href='mailto:" . $d->email()
                    . "'>" . $d->email() . "</a></td>"
               . "<td>" . $d->cell() . "</td>"
@@ -1063,7 +1063,7 @@ sub get_online : Local {
         $driver_opts .= "<option value="
                      . $d->id()
                      . "> "
-                     . $d->first() . " " . $d->last()
+                     . $d->name()
                      . "\n"
                      ;
     }

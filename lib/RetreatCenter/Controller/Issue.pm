@@ -125,10 +125,8 @@ sub update_do : Local {
         my $submitter = $issue->user();
         my $user = $c->user->obj();
         email_letter($c,
-            to      => $submitter->first() . " " . $submitter->last()
-                     . " <" . $submitter->email() . ">",
-            from    => $user->first() . " " . $user->last()
-                     . " <" . $user->email() . ">",
+            to      => $submitter->name_email(),
+            from    => $user->name_email(),
             subject => "Issue #" . $issue->id() . " - " . $issue->title(),
             html    => $issue->notes()
                      . "<p><hr><p>This issue has been closed."
@@ -166,8 +164,7 @@ sub create_do : Local {
 
     email_letter($c,
         to      => join(', ', map { $_->email() } $roles[0]->users()),
-        from    => $user->first() . " " . $user->last()
-                 . ' <' . $user->email() . '>',
+        from    => $user->name_email(),
         subject => "Issue #" . $issue->id() . " - " . $issue->title(),
         html    => $issue->notes()
                  . "<p><hr><p>See it <a href='" 
