@@ -36,7 +36,12 @@ __PACKAGE__->has_many('rides' => 'RetreatCenterDB::Ride', 'driver_id',
 
 sub name_email {
     my ($self) = @_;
-    return $self->first() . " " . $self->last() . "<" . $self->email() . ">";
+    return $self->name() . ' <' . $self->email() . '>';
+}
+
+sub name {
+    my ($self) = @_;
+    return $self->first() . ' ' . $self->last();
 }
 
 1;
