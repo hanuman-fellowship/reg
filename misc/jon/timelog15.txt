@@ -119,8 +119,11 @@ Mar 2 12:00-12:30, 10:00-1:30
     final tweaking - took a long time!
 Mar 4 10:10-12:25
     for MMI more tweaks - deletion
-Mar 9 10:20-10:35, 11:05-
+Mar 9 10:20-10:35, 11:05-11:40
     for MMC
     special blocks for KKWC and SH Main
     sum Schedule - report
     Workshop Description - new sum field, report
+Mar 9 11:40-12:10
+    for MMI
+    add charge when making mmi payment request - and recompute balance

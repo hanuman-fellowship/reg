@@ -1079,8 +1079,24 @@ sub request_mmi_payment_do : Local {
         reg_id    => $reg_id,
         note      => $note,
     });
-    # Reg History record
+    model($c, 'RegCharge')->create({
+        reg_id    => $reg_id,
+        user_id   => $c->user->obj->id(),
+        the_date  => tt_today($c)->as_d8(),
+        time      => get_time()->t24(),
+        amount    => $amount,
+        what      => $req_payment->for_what_disp()
+                     . ($note? ' - ' . $note
+                       :       q{}          ),
+        automatic => '',        # this charge will not be cleared
+                                # when editing a registration.
+    });
     my @who_now = get_now($c);
+    my $reg = model($c, 'Registration')->find($reg_id);
+    RetreatCenter::Controller::Registration::_compute($c, $reg, 0, @who_now);
+        # the above full qualifier indicates
+        # that this sub should have been in Registration.pm instead. :(
+    # Reg History record
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
         what     => "Payment request of \$" . commify($amount)

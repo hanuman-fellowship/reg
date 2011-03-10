@@ -5011,7 +5011,7 @@ sub charge_delete : Local {
 
     model($c, 'RegCharge')->find($ch_id)->delete();
     _calc_balance(model($c, 'Registration')->find($reg_id));
-    if ($from eq 'edit_dollar') {
+    if (defined $from && $from eq 'edit_dollar') {
         $c->response->redirect(
             $c->uri_for("/registration/edit_dollar/$reg_id")
         );

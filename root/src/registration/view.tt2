@@ -362,7 +362,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
     <th align=left>Date</th>
     <th align=left>Note</th>
     </tr>
-    [% class = 'fl_row0' %]
+    [% class = 'fl_row1' %]
     [% prev_code = '' %]
     [% FOREACH py IN req_payments %]
         [% IF py.code != prev_code %]
