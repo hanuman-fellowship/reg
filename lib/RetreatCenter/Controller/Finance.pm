@@ -924,7 +924,7 @@ sub req_mmi_payment_list : Local {
     my @payments = model($c, 'RequestedMMIPayment')->search(
         {},
         {
-            order_by => 'the_date desc',
+            order_by => 'the_date desc, person_id',
         }
     );
     stash($c,
