@@ -15,7 +15,7 @@
     <td valign=top>[% ev.meeting_places %]</td>
     </tr>
     <tr><td></td>
-    <td valign=top colspan=3>[% IF section == 'Flower' %][% sum.leader_housing_tr %]<p class=p2>[% sum.flowers_tr %][% ELSIF section ==  'Field Staff Setup' %][% sum.leader_housing_tr %]<p class=p2>[% sum.signage_tr %]<p class=p2>[% sum.field_staff_setup_tr %][% ELSE %][% sum.sound_setup_tr %][% END %]<hr></td>
+    <td valign=top colspan=3>[% IF section == 'Flower' %][% sum.leader_housing_tr %]<p class=p2>[% sum.flowers_tr %][% ELSIF section ==  'Field Staff Setup' %][% sum.leader_housing_tr %]<p class=p2>[% sum.signage_tr %]<p class=p2>[% sum.field_staff_setup_tr %][% ELSIF section == 'Workshop Schedule' %][% sum.workshop_schedule_tr %][% ELSIF section == 'Workshop Description' %][% sum.workshop_description_tr %][% ELSE %][% sum.sound_setup_tr %][% END %]<hr></td>
     </tr>
 [% END %]
 </table>

@@ -117,5 +117,10 @@ Mar 2 12:00-12:30, 10:00-1:30
     called authorize.net about the 99 - they pointed me
         to a trouble shooting page.
     final tweaking - took a long time!
-Mar 4 9:10-
-    for MMI more tweaks - deletion, colors
+Mar 4 10:10-12:25
+    for MMI more tweaks - deletion
+Mar 9 10:20-10:35, 11:05-
+    for MMC
+    special blocks for KKWC and SH Main
+    sum Schedule - report
+    Workshop Description - new sum field, report

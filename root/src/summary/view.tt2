@@ -244,6 +244,11 @@ th {
 <td colspan=3 valign=top>$sum.miscellaneous</td>
 </tr>
 
+<tr>
+<td align=right valign=top><a href=/summary/update_sect/workshop_description/$type/$sum.id>Workshop Description</a></td>
+<td colspan=3 valign=top>$sum.workshop_description</td>
+</tr>
+
 [% IF type == 'rental' %]
 <tr>
 <th align=right width=180 valign=top>Contact Person</th>

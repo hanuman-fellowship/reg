@@ -83,5 +83,29 @@ End <input type=text name=edate size=10>
 </tr>
 </form>
 
+<form action="/listing/summary/workshop_schedule" method=POST>
+<tr>
+<td>
+<a href="/listing/summary/workshop_schedule?sdate=t30">Workshop Schedule Report</a>
+</td>
+<td align=left>
+Start <input type=text name=sdate size=10>
+End <input type=text name=edate size=10>
+<input type=submit value="Go"></td>
+</tr>
+</form>
+
+<form action="/listing/summary/workshop_description" method=POST>
+<tr>
+<td>
+<a href="/listing/summary/workshop_description?sdate=t30">Workshop Description Report</a>
+</td>
+<td align=left>
+Start <input type=text name=sdate size=10>
+End <input type=text name=edate size=10>
+<input type=submit value="Go"></td>
+</tr>
+</form>
+
 </table>
 </ul>

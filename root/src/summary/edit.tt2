@@ -159,6 +159,13 @@ th {
 </td>
 </tr>
 
+<tr><th valign=top>Workshop Description</th>
+<td colspan=3>
+<textarea id=workshop_description name=workshop_description rows=[% workshop_description_rows %] cols=60>
+[% sum.workshop_description %]
+</textarea>
+</td></tr>
+
 <tr>
 <th valign=top>Check List</th>
 <td colspan=3>

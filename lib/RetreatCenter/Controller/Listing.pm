@@ -1572,10 +1572,13 @@ sub summary : Local {
             }
             @rentals, @programs
         ],
-        section  => $section eq 'flowers'           ? 'Flower'
-                   :$section eq 'field_staff_setup' ? 'Field Staff Setup'
-                   :$section eq 'sound_setup'       ? 'Sound Set Up'
-                   :                                  'Set Up',
+        section  =>
+            $section eq 'flowers'              ? 'Flower'
+           :$section eq 'field_staff_setup'    ? 'Field Staff Setup'
+           :$section eq 'sound_setup'          ? 'Sound Set Up'
+           :$section eq 'workshop_description' ? 'Workshop Description'
+           :$section eq 'workshop_schedule'    ? 'Workshop Schedule'
+           :                                     'Set Up',
         template => "listing/summary.tt2",
     );
 }

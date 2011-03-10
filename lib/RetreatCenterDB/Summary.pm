@@ -42,6 +42,7 @@ __PACKAGE__->add_columns(qw/
     needs_verification
     prog_person
     workshop_schedule
+    workshop_description
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -61,6 +62,8 @@ sub signage_tr           { ptrim(shift->signage()          ) };
 sub field_staff_setup_tr { ptrim(shift->field_staff_setup()) };
 sub food_service_tr      { ptrim(shift->food_service()     ) };
 sub sound_setup_tr       { ptrim(shift->sound_setup()      ) };
+sub workshop_description_tr { ptrim(shift->workshop_description()) };
+sub workshop_schedule_tr { ptrim(shift->workshop_schedule()) };
 
 #
 # are there any pictures for this summary
