@@ -1,0 +1,17 @@
+<div style="margin-left: .5in; margin-top: .5in">
+<h2>Uploading a Yoga Journal Spreadsheet</h2>
+<form action="[% Catalyst.uri_for('/listing/upload_yj_sheet_do') %]"
+      enctype="multipart/form-data"
+      method=POST>
+<h3>Spreadsheet to Upload <input type=file name=spreadsheet>
+<input type=submit value="Submit">
+</h3>
+<p class=p2>
+<h3>Affiliations to Apply to Each Person Uploaded:</h3>
+<table cellpadding=5>
+$affil_table
+</table>
+<p class=p2>
+<input type=submit value="Submit">
+</form>
+</div>
