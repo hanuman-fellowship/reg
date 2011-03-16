@@ -873,11 +873,16 @@ sub normalize {
     if (! $s) {
         return "";
     }
-    return join '-',
-           map { s{^Mc(.)}{Mc\u$1}; $_ }
-           map { ucfirst lc }
-           split m{-}, $s
-           ;
+    my $t = "";
+    my @words = split m{[ ]}xms, $s;
+    for my $w (@words) {
+        $w = join '-',
+             map { s{^Mc(.)}{Mc\u$1}; $_ }
+             map { ucfirst lc }
+             split m{-}, $w
+             ;
+    }
+    return join ' ', @words;
 }
 
 sub tt_today {

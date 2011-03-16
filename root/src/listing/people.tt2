@@ -1,29 +1,34 @@
 <ul>
 <h3>People Listings</h3>
-<a href=/report/list>General Reports</a>
+<ul>
+<li><a href=/report/list>General Reports</a>
 <p class=p2>
-Phone Lists
+<li>Phone Lists
 <ol>
 <li><a href="/listing/phone_columns">In Columns</a>
 <li><a href="/listing/phone_line">In One Line</a>
 <li><a href="/listing/phone_noaddr">No Address</a>
 </ol>
 <p class=p2>
-<a target=_blank href="/listing/undup">Unduplication File</a>
+<li><a target=_blank href="/listing/undup">Unduplication File</a>
 <p class=p2>
-<a href="/listing/email_check">Email Check</a>
+<li><a href="/listing/email_check">Email Check</a>
+[% IF Catalyst.check_user_roles('mmi_admin') %]
+<p class=p2>
+<li><a href=/listing/upload_yj_sheet>Upload Yoga Journal Spreadsheet</a>
+[% END %]
 [% IF Catalyst.check_user_roles('super_admin') %]
     <p class=p2>
-    <a href="/listing/activity_tally">Last Active Tally by Year</a>
+    <li><a href="/listing/activity_tally">Last Active Tally by Year</a>
     <p class=p2>
     <form action="/listing/mark_inactive">
-    Last date of contact before which<br>people should be marked inactive:
+    <li>Last date of contact before which<br>people should be marked inactive:
     <br>
     <input type=text name=date_last size=10 maxlength=10>
     <input type=submit value="Mark Inactive">
     </form>
     <p class=p2>
-    Purge Stale Email Addresses
+    <li>Purge Stale Email Addresses
     <p class=p2>
     <form action="[% Catalyst.uri_for('/listing/stale') %]"
           method=POST
@@ -33,7 +38,7 @@ Phone Lists
     <input type=submit value="Purge">
     </form>
     <p class=p2>
-    Unsubscribe Email Addresses
+    <li>Unsubscribe Email Addresses
     <p class=p2>
     <form action="[% Catalyst.uri_for('/listing/unsubscribe') %]"
           method=POST
@@ -56,4 +61,5 @@ Phone Lists
     </table>
     </form>
 [% END %]
+</ul>
 </ul>

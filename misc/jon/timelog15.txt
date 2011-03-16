@@ -124,6 +124,15 @@ Mar 9 10:20-10:35, 11:05-11:40
     special blocks for KKWC and SH Main
     sum Schedule - report
     Workshop Description - new sum field, report
-Mar 9 11:40-12:10
+Mar 9 11:40-12:15
     for MMI
     add charge when making mmi payment request - and recompute balance
+Mar 10 7:40-8:00
+    for MMI
+    responding to email queries
+Mar 12 9:25-11:10
+    for MMI
+    Spreadsheet::ParseExcel - download, make yourself
+Mar 15 11:45-
+    for MMI
+    Spreadsheet import with Affiliations

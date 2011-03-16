@@ -15,6 +15,8 @@ use Util qw/
     housing_types
     stash
     error
+    normalize
+    affil_table
 /;
 use Date::Simple qw/
     date
@@ -1542,13 +1544,17 @@ sub summary : Local {
             prefetch => [qw/ summary /],   
         }
     );
+    my @opt = ();
+    if ($section !~ m{workshop}xms) {
+        @opt = ("summary.$section" => { '!=' => '' });
+    }
     my @programs = model($c, 'Program')->search(
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
             rental_id => 0,             # ignore the summary of hybrid programs
                                         # the rental side is the one we use.
-            "summary.$section" => { '!=' => '' },
+            @opt,
         },
         {
             join     => [qw/ summary /],
@@ -1801,6 +1807,139 @@ sub gate_codes_do : Local {
         }
     }
     $c->response->redirect($c->uri_for("/listing/index"));
+}
+
+use Spreadsheet::ParseExcel;
+
+sub upload_yj_sheet : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        affil_table => affil_table($c),
+        template    => 'listing/yj_upload.tt2',
+    );
+}
+
+sub upload_yj_sheet_do : Local {
+    my ($self, $c) = @_;
+
+    my @cur_affils = grep { s/^aff(\d+)/$1/ }
+                     $c->request->param;
+    my $sname = $c->request->upload('spreadsheet');
+    my $content = $sname->slurp();
+    my $parser   = Spreadsheet::ParseExcel->new();
+    my $workbook = $parser->parse(\$content);
+    if ( !defined $workbook ) {
+        error($c,
+            "Could not parse spreadsheet: " . $parser->error(),
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $today_d8 = tt_today($c)->as_d8();
+    my $n = 0;
+    my $got_people = "";
+    for my $worksheet ($workbook->worksheets()) {
+        my ($row_min, $row_max) = $worksheet->row_range();
+        my ($col_min, $col_max) = $worksheet->col_range();
+        for my $row ($row_min .. $row_max) {
+            my @fields;
+            for my $col ($col_min .. $col_max) {
+ 
+                my $cell = $worksheet->get_cell($row, $col);
+                next unless $cell;
+ 
+                $fields[$col] = $cell->value();
+            }
+            if ($row == $row_min) {
+                # first row is the header - naming the columns
+                # it must be correct or else we abandon this import.
+                #
+                if ("@fields"
+                    ne "FIRST_NAME LAST_NAME ADDRESS CITY STATE COUNTRY"
+                      ." ZIPCODE PHONE EMAIL")
+                {
+                    error($c,
+                        "This is not a Yoga Journal spreadsheet: @fields",
+                        'gen_error.tt2',
+                    );
+                    return;
+                }
+            }
+            else {
+                my ($first, $last, $addr, $city, $state, $country, $zip,
+                    $phone, $email) = @fields;
+                if ($country eq 'USA') {
+                    $country = q{};
+                }
+                $zip =~ s{-.*}{}xms;
+                for my $f ($first, $last, $addr, $city, $country) {
+                    $f = normalize($f);
+                }
+                my @people = model($c, 'Person')->search({
+                    first => { like => "$first%" },
+                    last  => $last,
+                });
+                if (@people) {
+                    my @firsts = map { $_->first() } @people;
+                    my $n = 2;
+                    NUM:
+                    while (1) {
+                        for my $f (@firsts) {
+                            if ($f eq "$first $n") {
+                                ++$n;
+                                next NUM;
+                            }
+                        }
+                        last NUM;
+                    }
+                    # a better way to do the above with List::Utils???
+                    $first .= " $n";
+                }
+                my $p = model($c, 'Person')->create({
+                    first    => $first,
+                    last     => $last,
+                    addr1    => $addr,
+                    city     => $city,
+                    st_prov  => $state,
+                    country  => $country,
+                    tel_home => $phone,
+                    zip_post => $zip,
+                    email    => $email,
+
+                    date_updat => $today_d8,
+                    date_entrd => $today_d8,
+                    e_mailings         => 'yes',
+                    snail_mailings     => 'yes',
+                    mmi_e_mailings     => 'yes',
+                    mmi_snail_mailings => 'yes',
+                    share_mailings     => 'yes',
+                    safety_form        => q{},
+                    inactive           => q{},
+                    deceased           => q{},
+                });
+                my $id = $p->id();
+                for my $ca (@cur_affils) {
+                    model($c, 'AffilPerson')->create({
+                        a_id => $ca,
+                        p_id => $id,
+                    });
+                }
+                ++$n;
+                $got_people .= "$first $last<br>";
+            }
+        }
+    }
+    stash($c,
+        mess       => <<"EOH",
+Got these $n people from the spreadsheet:
+<p class=p2>
+<ul>
+$got_people
+</ul>
+EOH
+        template   => 'gen_message.tt2',
+    );
 }
 
 1;
