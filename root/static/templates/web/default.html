@@ -45,7 +45,7 @@ $sidebar ='template';//defines which sidebar to use
 
 
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1" />
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" />
 
 <TITLE><!--T title1 --> <!--T title2 -->
 </TITLE>
@@ -82,6 +82,11 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 <LINK HREF="/styles/text.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/programs.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/facebook.css" REL="stylesheet" TYPE="text/css" />
+<link HREF="/styles/tipsy.css" rel="stylesheet" type="text/css" />
+
+<SCRIPT TYPE="text/javascript" SRC="/javascript/jquery-1.4.2.min.js"></SCRIPT>
+<script type="text/javascript" src="/javascript/jquery.tipsy.js"></script>
+
 <!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
 
 <!--[if IE 5]>
@@ -106,6 +111,27 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 </HEAD>
 
 <BODY CLASS="twoColFixLtHdr">
+<script type='text/javascript'>
+  $(function() {
+    
+    $('#name1').tipsy({gravity: 'nw'});
+    $('#name2').tipsy({gravity: 'nw'});
+    $('#name3').tipsy({gravity: 'nw'});
+    $('#name4').tipsy({gravity: 'nw'});
+    $('#name5').tipsy({gravity: 'nw'});
+    $('#name6').tipsy({gravity: 'nw'});
+    $('#name7').tipsy({gravity: 'nw'});
+    $('#name8').tipsy({gravity: 'nw'});
+    $('#name9').tipsy({gravity: 'nw'});
+    $('#name10').tipsy({gravity: 'nw'});
+    $('#name11').tipsy({gravity: 'nw'});
+    $('#name12').tipsy({gravity: 'nw'});
+    $('#name13').tipsy({gravity: 'nw'});
+    $('#name14').tipsy({gravity: 'nw'});
+    $('#name15').tipsy({gravity: 'nw'});
+    $('#name16').tipsy({gravity: 'nw'});
+  });
+</script>
 
 <div id="fb-root"></div>
 <!-- Facebook SDK loader -->
@@ -170,7 +196,7 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 <?php 
 $eid = "<!--T facebook_event_id -->";
 if (!empty($eid)) {
-$_GET['eid']=$eid;
+	$_GET['eid']=$eid;
 	include("/home/mmc/domains/mountmadonna.org/public_html/includes/fb_activity.php");  
 }
 ?>
