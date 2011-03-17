@@ -17,6 +17,8 @@ use Util qw/
     error
     normalize
     affil_table
+    empty
+    nsquish
 /;
 use Date::Simple qw/
     date
@@ -1855,10 +1857,7 @@ sub upload_yj_sheet_do : Local {
                 # first row is the header - naming the columns
                 # it must be correct or else we abandon this import.
                 #
-                if ("@fields"
-                    ne "FIRST_NAME LAST_NAME ADDRESS CITY STATE COUNTRY"
-                      ." ZIPCODE PHONE EMAIL")
-                {
+                if ("@fields" !~ m{\A MAGAZINE \s* MAGAZINE \s* MAGAZINE}xms) {
                     error($c,
                         "This is not a Yoga Journal spreadsheet: @fields",
                         'gen_error.tt2',
@@ -1867,13 +1866,23 @@ sub upload_yj_sheet_do : Local {
                 }
             }
             else {
-                my ($first, $last, $addr, $city, $state, $country, $zip,
-                    $phone, $email) = @fields;
-                if ($country eq 'USA') {
+                my ($first, $last, $company,
+                    $addr1, $addr2, $city, $state, $country, $zip,
+                    $phone, $email) = @fields[
+                        7, 8, 10,
+                        11 .. 16,
+                        17, 30,
+                    ];
+                if (empty($first) && empty($last) && !empty($company)) {
+                    $first = $company;
+                }
+                if ($country eq 'USA' || $country eq 'UNITED STATES') {
                     $country = q{};
                 }
                 $zip =~ s{-.*}{}xms;
-                for my $f ($first, $last, $addr, $city, $country) {
+                for my $f ($first, $last, $company,
+                           $addr1, $addr2, $city, $country)
+                {
                     $f = normalize($f);
                 }
                 my @people = model($c, 'Person')->search({
@@ -1899,13 +1908,15 @@ sub upload_yj_sheet_do : Local {
                 my $p = model($c, 'Person')->create({
                     first    => $first,
                     last     => $last,
-                    addr1    => $addr,
+                    addr1    => $addr1,
+                    addr2    => $addr2,
                     city     => $city,
                     st_prov  => $state,
                     country  => $country,
                     tel_home => $phone,
                     zip_post => $zip,
                     email    => $email,
+                    akey     => nsquish($addr1, $addr2, $zip),
 
                     date_updat => $today_d8,
                     date_entrd => $today_d8,
