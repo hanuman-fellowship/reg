@@ -1418,6 +1418,9 @@ sub palette {
     return $html;
 }
 
+#
+# escape double quotes - and dollar signs
+#
 sub esc_dquote {
     my ($s) = @_;
 
@@ -1425,6 +1428,7 @@ sub esc_dquote {
         return '';
     }
     $s =~ s{"}{\\"}g;
+    $s =~ s{$}{\\$}g;
     $s;
 }
 
