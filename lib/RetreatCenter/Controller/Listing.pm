@@ -1822,6 +1822,44 @@ sub upload_yj_sheet : Local {
     );
 }
 
+my @chosen;
+
+# look in the passed header fields for the indices of ones you need.
+# these are needed in this precise order:
+#
+# first, last, company,
+# address, address2, city, state, country, zip,
+# phone, email
+#
+# company and address2 are optional
+# if they're not found put 100 for the index.
+#
+sub init_chosen {
+    my (@headers) = @_;
+    
+    @chosen = ();
+    NEEDED:
+    for my $w (qw/
+        first last company
+        address address2 city state country zip
+        phone email
+    /) {
+        for my $i (0 .. $#headers) {
+            if (defined $headers[$i]
+                && $headers[$i] =~ m{$w}xmsi)
+            {
+                push @chosen, $i;
+                next NEEDED;
+            }
+        }
+        if ($w eq 'address2' || $w eq 'company') {
+            push @chosen, 100;
+            next NEEDED;
+        }
+        return "could not find column for $w";
+    }
+    return;
+}
 sub upload_yj_sheet_do : Local {
     my ($self, $c) = @_;
 
@@ -1845,6 +1883,7 @@ sub upload_yj_sheet_do : Local {
         my ($row_min, $row_max) = $worksheet->row_range();
         my ($col_min, $col_max) = $worksheet->col_range();
         for my $row ($row_min .. $row_max) {
+
             my @fields;
             for my $col ($col_min .. $col_max) {
  
@@ -1853,13 +1892,16 @@ sub upload_yj_sheet_do : Local {
  
                 $fields[$col] = $cell->value();
             }
+            $fields[100] = '';      # for missing address2 or company
+
             if ($row == $row_min) {
-                # first row is the header - naming the columns
+                # first row is the header - naming the columns.
                 # it must be correct or else we abandon this import.
                 #
-                if ("@fields" !~ m{\A MAGAZINE \s* MAGAZINE \s* MAGAZINE}xms) {
+                my $status = init_chosen(@fields);
+                if ($status) {
                     error($c,
-                        "This is not a Yoga Journal spreadsheet: @fields",
+                        $status,
                         'gen_error.tt2',
                     );
                     return;
@@ -1868,11 +1910,8 @@ sub upload_yj_sheet_do : Local {
             else {
                 my ($first, $last, $company,
                     $addr1, $addr2, $city, $state, $country, $zip,
-                    $phone, $email) = @fields[
-                        7, 8, 10,
-                        11 .. 16,
-                        17, 30,
-                    ];
+                    $phone, $email) = @fields[ @chosen ];
+
                 if (empty($first) && empty($last) && !empty($company)) {
                     $first = $company;
                 }
@@ -1943,6 +1982,8 @@ sub upload_yj_sheet_do : Local {
     }
     stash($c,
         mess       => <<"EOH",
+Fields: @chosen
+<p class=p2>
 Got these $n people from the spreadsheet:
 <p class=p2>
 <ul>
