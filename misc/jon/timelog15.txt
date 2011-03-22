@@ -133,6 +133,16 @@ Mar 10 7:40-8:00
 Mar 12 9:25-11:10
     for MMI
     Spreadsheet::ParseExcel - download, make yourself
-Mar 15 11:45-
+Mar 15 11:45-2:00, 2:00-2:50
     for MMI
     Spreadsheet import with Affiliations
+    for MMC
+    miscellaneous things
+Mar 16 4:30-6:00, 6:00-7:30
+    for MMI
+    adjust the spreadsheet upload
+    for MMC
+    several other miscellaneous things
+Mar 18 11:30-12:00
+    for MMC
+    flexible column headings for spreadsheet upload
