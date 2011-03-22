@@ -45,6 +45,7 @@ my $prog_sth = $dbh->prepare("
     select id, name, sdate, edate, extradays
     from program
     where sdate = $cur_date_off
+      and name not like '%personal%retreat%'
 ");
 $prog_sth->execute();
 my @progs;

@@ -91,6 +91,17 @@ if ($form{name} =~ m{personal\s+retreat}i) {
     if (!$sdate) {
         $err .= "<li>Illegal date for arrival date.\n";
     }
+    my $hour = (localtime())[2];
+    my $today = today();
+    if ($sdate
+        && ($today == $sdate
+            || ($today == $sdate-1 && $hour >= 16))
+    ) {
+        $err .= "<li>We are sorry, but registrations for Personal Retreats"
+             .  " are not accepted after 4 p.m. on the day prior to arrival."
+             .  " Please register for a later date. Thank you."
+             ;
+    }
     $edate = Date::Simple->new($form{dep_date});
     if (!$edate) {
         $err .= "<li>Illegal date for departure date.\n";
@@ -101,7 +112,7 @@ if ($form{name} =~ m{personal\s+retreat}i) {
             $err .= "<li>Departure date is not after the arrival date!\n"
         }
     }
-    if ($sdate < today()) {
+    if ($sdate < $today) {
         $err .= "<li>Arrival date is in the past!";
     }
     my $noPRfile = "$progpath/noPR.txt";
@@ -294,8 +305,15 @@ if ($form{green_amount}) {
 # Call subroutine from authorize.net that sets $fingerprint_html 
 #
 use SimLib;
-my $loginid = "x5aebjakm";
-my $txnkey = "78QyCHfp69MP43bY";
+
+# old account
+#my $loginid = 'x5aebjakm';
+#my $txnkey = '78QyCHfp69MP43bY';
+
+# new account
+my $loginid = '7bq2Ch2Hf3';
+my $txnkey = '2y4cKZp797y34Cks';
+
 my $x_currency_code = "USD";
 my $fingerprint_html =
     SimLib::InsertFP($loginid, $txnkey, $x_amount, $x_currency_code);

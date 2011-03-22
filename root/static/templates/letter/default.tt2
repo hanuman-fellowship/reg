@@ -127,8 +127,14 @@ You [% IF reg.early %]arrive on ${reg.date_start_obj.format("%A, %B %e")}[% END 
     $program.confnote<BR>
 [% END %]
 [% IF personal_retreat && sunday %]
-<b>Your housing information will be posted in the
-Community Building lobby.</b><br>
+<b>Please note that the Programs Office is not open on Sunday.</b><br>
+Upon arrival, please go to the Community Building lobby, where you will
+find an arrival package containing all you need to find your way to
+your lodging, a meal and yoga class schedule, and maps of the Center.
+If other concerns arise on Sunday, you can find a contact phone number
+on the door of the Programs Office. Someone will answer your call
+and give you the help you need.
+<p class=p2>
 [% END %]
 [% IF gc %]
 If you arrive in the evening and the gate is closed you can open it<br>
