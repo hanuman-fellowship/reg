@@ -3,7 +3,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>MMC Online Registration - Step 1</title>
-<link href="../regform.css" rel="stylesheet" type="text/css">
+<link href="/styles/regform.css" rel="stylesheet" type="text/css">
+<link href="/styles/header.css" rel="stylesheet" type="text/css">
 <script type="text/javascript">
 var newwin;
 function popup(url, height, width) {
@@ -17,13 +18,28 @@ function popup(url, height, width) {
     newwin.moveTo(700, 0);
 }
 </script>
+
+<script type="text/javascript">
+function ltrim(stringToTrim) {
+	return stringToTrim.replace(/^\s+/,"");
+	}
+	
+function confirm() {
+	var fname = ltrim(document.reg.withwhom_first.value);
+	var lname = ltrim(document.reg.withwhom_last.value);
+	console.log(fname);
+	 if ( (fname.length > 0) || (lname.length > 0))
+		{
+			alert("This registration is for YOU ONLY and does not reserve space for '" + fname + " " + lname + "'. You understand that you are making this reservation for yourself only. Please make sure the person you wish to room with is registered separately.");
+		}
+}
+</script>
 </head>
 
 <body>
 <div class="wrapper">
-    <div class="header">
-    <img src="../Gif/navbar_home.gif" width="133" height="111" alt="logo" />
-    </div>
+    <div class="header"><a href="/index.html" border="0"><img src="/Gif/navbar_home.gif" width="133" height="111" alt="logo" border="0"/></a></div>
+
     
     <div class="main">
         <div class="top"></div>
@@ -31,10 +47,14 @@ function popup(url, height, width) {
         <div class="middle">
         
             <div class="steps"><h1>Online Registration</h1>
-            <img src="../Gif/step_1.gif" width="797" height="43" />
+            <img src="/Gif/step_1.gif" width="797" height="43" />
             </div>
-            
-            <div class="program">
+			
+			<!-- use this announcement div for special announcements 
+			<div class="announcement"></div>
+            -->
+			
+			            <div class="program">
             
                 [% IF pr %]
 
@@ -75,16 +95,16 @@ function popup(url, height, width) {
                     method=POST
                     name=reg
                     action="/cgi-bin/reg2"
-                    onsubmit="return validateOnSubmit()"
+                    onSubmit="return confirm();"
                 >
-                <input type=hidden name=test value="[% test %]">
-                <input type=hidden name=dir  value="[% dir %]">
-                <input type=hidden value="[% title %]"   name=title>
-                <input type=hidden value="[% dates %]"   name=dates>
+                <input type=hidden value="[% test %]" name=test >
+                <input type=hidden value="[% dir %]" name=dir>
+                <input type=hidden value="[% title %]" name=title>
+                <input type=hidden value="[% dates %]" name=dates>
                 <input type=hidden value="[% leader_names %]" name=leader_names>
-                <input type=hidden value="[% name %]"    name=name>
-                <input type=hidden value="[% plink %]"   name=plink>
-                <input type=hidden value="[% pid %]"     name=pid>
+                <input type=hidden value="[% name %]" name=name>
+                <input type=hidden value="[% plink %]" name=plink>
+                <input type=hidden value="[% pid %]" name=pid>
 
                 
 
@@ -157,7 +177,7 @@ function popup(url, height, width) {
                     <div class="personal">
                         
                         <fieldset> 
-                        <legend>Personal Information</legend>  
+                        <legend>Registrant Information</legend>  
                         
                         <ol>
                             <li>
@@ -290,7 +310,8 @@ function popup(url, height, width) {
 <li class="housing_choice">
 <label><span class="required">*</span>
 Please indicate your <em>first</em> <strong>and</strong>
-<em>second</em> choices for housing:</label>
+<em>second</em> choices for housing:<BR><BR>
+<span style="font-size:12px;font-style:oblique;font-color:#999999;">We will do our best to honor your first and second preferences. If neither is available, we will assign the next best option, and waitlist you for your choices.</span></label>
 
 <table border=0>
 <tr>
@@ -333,12 +354,12 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                 
                                     <ol>  
                                         <li>  
-                                        <input type=radio name=cabin_room value=cabin [% cabin %]>
+                                        <input type=radio name=cabin_room value=cabin [% CABIN %]>
                                         <label for="cabin_room">Cabin - heat and electricity, but no indoor plumbing</label>  
                                         </li>  
                                         
                                         <li>  
-                                        <input type=radio name=cabin_room value=room [% room %]>  
+                                        <input type=radio name=cabin_room value=room [% ROOM %]>  
                                         <label for="cabin_room">Room</label>  
                                         </li>  
                                    </ol>
@@ -348,17 +369,18 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                             
                             <li>
                             
+                            <p style="margin-top: .3in">
                             <fieldset>
                                 <p>If you wish to share your housing with someone, put their name here:</p>
                                 <ol>
                                     <li>
                                         <label for="withwhom_first">First</label>
-                                        <INPUT type=text NAME="withwhom_first" VALUE="[% withwhom_first %]" size=20>
-                                        <span class="helpRed"><-- Make sure that they register <I>separately</I>.</span>
+                                        <input type=text name="withwhom_first" value="[% withwhom_first %]" size=20>
+                                        <span class="helpRed">&larr; Make sure that they register <i>separately</i>.</span>
                                     </li>
                                     <li>
                                         <label for="withwhom_last">Last</label>
-                                        <INPUT type=text NAME="withwhom_last" VALUE="[% withwhom_last %]" size=20>
+                                        <input type=text name="withwhom_last" value="[% withwhom_last %]" size=20>
                                     </li>
                                  </ol>
                              </fieldset>
@@ -381,38 +403,40 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                         
                         <ol>
 
+                            [% IF ! pr %]
                             <li>
                                 <fieldset>
                                     <p>Carpooling</p>
                                     <ol>
                                         <li>
-                                            <INPUT type=checkbox name=carpool value=yes [% carpool %]>
+                                            <input type=checkbox name=carpool value=yes [% CARPOOL %]>
                                             <label for="carpool">I wish to carpool</label>
                                             <span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215,550)">Privacy Concerns?</a></span>
                                         </li>
                                         <li>
-                                            <INPUT type=checkbox name=hascar value=yes [% hascar %]>
+                                            <input type=checkbox name=hascar value=yes [% HASCAR %]>
                                             <label for="hascar">I can drive</label>
                                         <li>
                                     </ol>
                                 </fieldset>
                             </li>
+                            [% END %]
     
                         <li>
                             <fieldset>
                                 <p>How did you first hear about this program?</p>
                                 <ol>
                                     <li>
-                                        <INPUT type=radio name=howHeard    value=ad>
+                                        <input type=radio name=howHeard    value=ad>
                                         <label for="howHeard">Advertisement in </label>
-                                        <INPUT name=advertiserName type=text size=30 >
+                                        <input name=advertiserName type=text size=30 >
                                     </li>
                                     <li>
-                                        <INPUT type=radio name=howHeard value=brochure>
+                                        <input type=radio name=howHeard value=brochure>
                                         <label for="howHeard">MMC Program Brochure</label>
                                     </li>
                                     <li>
-                                        <INPUT type=radio name=howHeard value=flyer>
+                                        <input type=radio name=howHeard value=flyer>
                                         <label for="howHeard">Flyer or Postcard</label>
                                     </li>
                                 </ol>
@@ -424,23 +448,23 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 <p>Shall we keep you informed of events at Mount Madonna Center?</p>
 <ol>
 <li>
-<INPUT type=checkbox name=e_mailings value=yes [% e_mailings %]> 
+<input type=checkbox name=e_mailings value=yes [% E_MAILINGS %]> 
 <label for="e_mailings">Yes, send me occasional e-mail announcements about MMC.</label>
 </li>
 <li>
-<INPUT type=checkbox name=snail_mailings value=yes [% snail_mailings %]>
+<input type=checkbox name=snail_mailings value=yes [% SNAIL_MAILINGS %]>
 <label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMC.</label>
 </li>
 <li>
-<INPUT type=checkbox name=mmi_e_mailings value=yes [% mmi_e_mailings %]> 
+<input type=checkbox name=mmi_e_mailings value=yes [% MMI_E_MAILINGS %]> 
 <label for="e_mailings">Yes, send me occasional e-mail announcements about MMI.</label>
 </li>
 <li>
-<INPUT type=checkbox name=mmi_snail_mailings value=yes [% mmi_snail_mailings %]>
+<input type=checkbox name=mmi_snail_mailings value=yes [% MMI_SNAIL_MAILINGS %]>
 <label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMI.</label>
 </li>
 <li>
-<INPUT type=checkbox name=share_mailings value=yes [% share_mailings %]>
+<input type=checkbox name=share_mailings value=yes [% SHARE_MAILINGS %]>
 <label for="share_mailings">You may share my address with MMC affiliates.</label>
 </li>
 <li><span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215,550)">What is MMI?</a></span></li>
@@ -448,13 +472,30 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                             </fieldset>
                         </li>
                     </ol>
+
+					 <div class="kaya_kalpa">
+                            <fieldset>
+                                <p>Please contact me regarding<br>
+								<a href="http://www.mountmadonna.org/kayakalpa">massage or other bodywork</a>
+								during my stay.</p>
+                                <ol>
+                                    <li>
+                                        <input type=checkbox name=kayakalpa value='yes'>
+                                    </li>
+                                    
+                                </ol>
+                                
+                            </fieldset>
+                    </div>
+
+
                     <div class="green_scene">
                             <fieldset>
-                                <p>Would you like to contribute to our <br /><SPAN class=green>Green Fund</SPAN>?
+                                <p>Would you like to contribute to our <br /><span class=green>Green Fund</span>?
                                 </p>
                                 <ol>
                                     <li>
-                                        <INPUT type=text name=green_amount size=6> 
+                                        <input type=text name=green_amount size=6> 
                                         <label for="green_amount">\$ Amount</label>
                                     </li>
                                     
@@ -475,15 +516,15 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                         <fieldset> 
                                 <legend>Additional Requests</legend>  
                                 <p>Include the following in your additional requests:</p>
-                                <UL>
-                                    <LI>The ages of children you are bringing, if any.
-                                    <LI>Arrival and/or departure dates if they differ from your program's.
-                                </UL>
+                                <ul>
+                                    <li>The ages of children you are bringing, if any.
+                                    <li>Arrival and/or departure dates if they differ from your program's.
+                                </ul>
 
                                 
                                 <ol>
                                     <li>
-                                        <TEXTAREA NAME="request" rows=10 cols=70 wrap=VIRTUAL></TEXTAREA>
+                                        <textarea name="request" rows=10 cols=70 wrap=VIRTUAL></textarea>
                                     </li>
                                 </ol>
                         </fieldset>            
@@ -499,22 +540,22 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                             <li>This form does not automatically reserve your spot for the program.
                             You are not registered until we receive your deposit. If the program is full,
                             your deposit will be refunded.</li>
-                            <li CLASS="style5">
-                            Housing is not always available. <STRONG>Do not finalize your travel plans</STRONG>
+                            <li class="style5">
+                            Housing is not always available. <strong>Do not finalize your travel plans</strong>
                             until you have received a housing confirmation
-                            from Mount Madonna Center.
-                            </li>
+                            from Mount Madonna Center.                            </li>
+                            <li class="style5">We will be sending you a confirmation email. Don't let it end up in your spam folder. Add the following addresses to your list of acceptable emails: <em>reservations@mountmadonna.org</em> and  <em>programs@mountmadonna.org</em>. </li>
                         </ul>
                     </div>
     
                     <div class="submit">
                     
-                        <button TYPE="submit" name="back" value="Back to Program" onclick="history.back(); return false;" class="btn_back_prog">
+                        <button type="button" name="back" value="Back to Program" onclick="history.back(); return false;" class="btn_back_prog">
                                 <em>Back to Program</em>
                             </button>
 
                     
-                        <button TYPE="submit" NAME="Submit" VALUE="Continue to Next Step" class="btn_submit">
+                        <button type="submit" name="Submit" value="Continue to Next Step" class="btn_submit" >
                             <em>Submit Information</em>
                         </button>
                     
@@ -526,7 +567,33 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
         </div>
         
         <div class="bot"></div>
+
     </div>
+	
+	<DIV ID="footer">
+<center>
+    <p>&nbsp;</p>
+</center>
+<center>
+    <p>Mount Madonna Center &bull; 445 Summit Rd, Watsonville, CA 95076<br />
+        Direct Line to Programs Office: (408) 846-4064 &bull; Phone
+        (408) 847-0406 &bull; Fax (408) 847-2683<br />
+        e-mail <a href="mailto:programs@mountmadonna.org" class="style2">programs@mountmadonna.org</a>         Webmaster: <a href="mailto:webmaster@mountmadonna.org" class="style2">webmaster@mountmadonna.org</a> <br />
+        A Project of<br />
+        <a href="http://www.hanumanfellowship.org" target="_blank"><img src="/Gif/logoHF.jpg" width="150" height="43" border="0" /></a></p>
+
+</center>
+<div id="menu_footer_wrapper">
+        <ul id="menu_footer">
+            <li><a href="/legal.html#terms">Terms and Conditions</a></li>
+            <li><a href="/legal.html#privacy">Privacy Policy</a></li>
+            <li><a href="/legal.html#refunds">Refund Policy</a></li>
+            <li><a href="/programs/contactprog.html">Contact Us</a></li>
+    </ul>
+</div>
+
+	</DIV><!-- end #footer -->
+
 </div>
 
 <!-- Google ANALYTICS Code for site tracking -->
