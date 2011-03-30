@@ -4,6 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>MMC Online Registration - Step 2</title>
 <link href="/styles/regform.css" rel="stylesheet" type="text/css">
+<link href="/styles/header.css" rel="stylesheet" type="text/css">
 
 </head>
 
@@ -272,6 +273,28 @@
     </div>        
     
     <div class="bot"></div>
+	
+	<DIV ID="footer">
+<center>
+    <p>&nbsp;</p>
+</center>
+<center>
+    <p>Mount Madonna Center &bull; 445 Summit Rd, Watsonville, CA 95076<br />
+        Direct Line to Programs Office: (408) 846-4064 &bull; Phone
+        (408) 847-0406 &bull; Fax (408) 847-2683<br />
+        e-mail <a href="mailto:programs@mountmadonna.org" class="style2">programs@mountmadonna.org</a>         Webmaster: <a href="mailto:webmaster@mountmadonna.org" class="style2">webmaster@mountmadonna.org</a> <br />
+        A Project of<br />
+        <a href="http://www.hanumanfellowship.org" target="_blank"><img src="/Gif/logoHF.jpg" width="150" height="43" border="0" /></a></p>
+
+</center>
+<div id="menu_footer_wrapper">
+        <ul id="menu_footer">
+            <li><a href="/legal.html#terms">Terms and Conditions</a></li>
+            <li><a href="/legal.html#privacy">Privacy Policy</a></li>
+            <li><a href="/legal.html#refunds">Refund Policy</a></li>
+            <li><a href="/programs/contactprog.html">Contact Us</a></li>
+    </ul>
+</div></DIV><!-- end #footer -->
 
 </div>
 

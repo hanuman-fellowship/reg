@@ -354,12 +354,12 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                 
                                     <ol>  
                                         <li>  
-                                        <input type=radio name=cabin_room value=cabin [% CABIN %]>
+                                        <input type=radio name=cabin_room value=cabin [% cabin %]>
                                         <label for="cabin_room">Cabin - heat and electricity, but no indoor plumbing</label>  
                                         </li>  
                                         
                                         <li>  
-                                        <input type=radio name=cabin_room value=room [% ROOM %]>  
+                                        <input type=radio name=cabin_room value=room [% room %]>  
                                         <label for="cabin_room">Room</label>  
                                         </li>  
                                    </ol>
@@ -409,12 +409,12 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                     <p>Carpooling</p>
                                     <ol>
                                         <li>
-                                            <input type=checkbox name=carpool value=yes [% CARPOOL %]>
+                                            <input type=checkbox name=carpool value=yes [% carpool %]>
                                             <label for="carpool">I wish to carpool</label>
                                             <span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215,550)">Privacy Concerns?</a></span>
                                         </li>
                                         <li>
-                                            <input type=checkbox name=hascar value=yes [% HASCAR %]>
+                                            <input type=checkbox name=hascar value=yes [% hascar %]>
                                             <label for="hascar">I can drive</label>
                                         <li>
                                     </ol>
@@ -448,23 +448,23 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 <p>Shall we keep you informed of events at Mount Madonna Center?</p>
 <ol>
 <li>
-<input type=checkbox name=e_mailings value=yes [% E_MAILINGS %]> 
+<input type=checkbox name=e_mailings value=yes [% e_mailings %]> 
 <label for="e_mailings">Yes, send me occasional e-mail announcements about MMC.</label>
 </li>
 <li>
-<input type=checkbox name=snail_mailings value=yes [% SNAIL_MAILINGS %]>
+<input type=checkbox name=snail_mailings value=yes [% snail_mailings %]>
 <label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMC.</label>
 </li>
 <li>
-<input type=checkbox name=mmi_e_mailings value=yes [% MMI_E_MAILINGS %]> 
+<input type=checkbox name=mmi_e_mailings value=yes [% mmi_e_mailings %]> 
 <label for="e_mailings">Yes, send me occasional e-mail announcements about MMI.</label>
 </li>
 <li>
-<input type=checkbox name=mmi_snail_mailings value=yes [% MMI_SNAIL_MAILINGS %]>
+<input type=checkbox name=mmi_snail_mailings value=yes [% mmi_snail_mailings %]>
 <label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMI.</label>
 </li>
 <li>
-<input type=checkbox name=share_mailings value=yes [% SHARE_MAILINGS %]>
+<input type=checkbox name=share_mailings value=yes [% share_mailings %]>
 <label for="share_mailings">You may share my address with MMC affiliates.</label>
 </li>
 <li><span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215,550)">What is MMI?</a></span></li>

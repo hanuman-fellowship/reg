@@ -172,12 +172,12 @@ if ($data->{footnotes} =~ m{\*}
     my $begin = "<li>To qualify for a CEU certificate for this program"
               . " you must have a license number beginning with";
     if ($data->{footnotes} =~ m{\*\*}) {
-        if ($form{ceu_license} !~ m{^(RN|LSW|MFT)}) {
+        if ($form{ceu_license} !~ m{^(RN|LSW|MFT)}i) {
             $err .= "$begin RN, LSW or MFT.";
         }
     }
     else {
-        if ($form{ceu_license} !~ m{^RN}) {
+        if ($form{ceu_license} !~ m{^RN}i) {
             $err .= "$begin RN.<br>If you only want a certificate of completion enter COMP for the license #.";
         }
     }
@@ -585,12 +585,31 @@ $stash{mmc_ip}   = cookie(-name => 'mmc_ip');
 $stash{real_ip} = $ENV{REMOTE_ADDR};
 
 # prepare the cookie with the form values
-# to include in the header.
+# to include in the header.  First delete the
+# special requests - it could be too long
+# and make trouble.
 #
+delete @form{qw/
+    request
+    plink
+    name
+    test
+    dates
+    progchoice
+    pid
+    title
+    Submit
+    advertiserName
+    dir
+    leader_names
+    green_amount
+    email2
+/};
 my $cookie = cookie(
-    -name => 'user_data',
-    -value => \%form,
+    -name    => 'user_data',
+    -value   => \%form,
     -expires => '+10y',     # i.e. don't expire
+    -domain  => '.mountmadonna.org',
 );
 
 # ready to output the page

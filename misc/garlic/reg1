@@ -140,15 +140,15 @@ else {
     $stash{cabin} = "";
     $stash{room}  = "checked";
 }
-$stash{carpool       } = $cookie{carpool       }? 'checked': '';
-$stash{hascar        } = $cookie{hascar        }? 'checked': '';
-$stash{e_mailings    } = $cookie{e_mailings    }? 'checked': '';
+$stash{carpool}        = $cookie{carpool}? 'checked': '';
+$stash{hascar}         = $cookie{hascar}? 'checked': '';
+$stash{e_mailings}     = $cookie{e_mailings}? 'checked': '';
 $stash{snail_mailings} = $cookie{snail_mailings}? 'checked': '';
-$stash{mmi_e_mailings    } = $cookie{mmi_e_mailings    }? 'checked': '';
+$stash{mmi_e_mailings} = $cookie{mmi_e_mailings}? 'checked': '';
 $stash{mmi_snail_mailings} = $cookie{mmi_snail_mailings}? 'checked': '';
 $stash{share_mailings} = $cookie{share_mailings}? 'checked': '';
 $stash{withwhom_first} = $cookie{withwhom_first} || "";
-$stash{withwhom_last } = $cookie{withwhom_last }  || "";
+$stash{withwhom_last}  = $cookie{withwhom_last}  || "";
 for my $w (qw/
     fname lname street1 street2
     city state zip country
@@ -180,10 +180,19 @@ for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
     $full =~ s{basic}{full};
     my $next = $k;
     $next =~ s{basic}{next};
+    my $select1 = $cookie{house1} eq $nk? 'checked': '';
+    my $select2 = $cookie{house2} eq $nk? 'checked': '';
     $housing_fees .= <<"EOH";
 <tr>
-<td style="text-align: center"><input type=radio name=house1 value='$nk'></td>
-<td style="text-align: center"><input type=radio name=house2 value='$nk'></td>
+
+<td style="text-align: center">
+<input type=radio name=house1 value='$nk' $select1>
+</td>
+
+<td style="text-align: center">
+<input type=radio name=house2 value='$nk' $select2>
+</td>
+
 <td>$housing_name{$nk}</td>
 EOH
     if (! $stash{do_not_compute_costs}) {
