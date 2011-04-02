@@ -1733,6 +1733,7 @@ sub gate_codes : Local {
                     sdate => { '<=' => $gc_to8   },
                     edate => { '>=' => $gc_from8 },
                     name  => { -not_like => 'XL%'},
+                    rental_id => 0,     # not a hybrid
                     -or => [
                         school => 0,
                         level  => 'S',
