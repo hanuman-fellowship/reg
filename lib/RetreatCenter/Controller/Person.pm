@@ -1407,7 +1407,7 @@ sub update_mmi_payment : Local {
     my $pay = model($c, 'MMIPayment')->find($pay_id);
     my $type = $pay->type();
     my $type_opts = "";
-    for my $t (qw/ D C S /) {
+    for my $t (qw/ D C S O /) {
         $type_opts .= "<option value=$t"
                    .  ($type eq $t? " selected"
                       :             ""         )
