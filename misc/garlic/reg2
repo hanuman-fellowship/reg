@@ -108,8 +108,8 @@ if ($form{name} =~ m{personal\s+retreat}i) {
     }
     if ($sdate && $edate) {
         $ndays = $edate-$sdate;
-        if ($ndays < 1) {
-            $err .= "<li>Departure date is not after the arrival date!\n"
+        if ($ndays < 0) {
+            $err .= "<li>Departure date is not on or after the arrival date!\n"
         }
     }
     if ($sdate < $today) {
@@ -143,6 +143,13 @@ if ($form{name} =~ m{personal\s+retreat}i) {
 if (!$form{house1} && !$form{house2}) {
     $err .= "<li>Please fill out both choices of housing.\n";
 } 
+elsif ($ndays == 0
+       && ($form{house1} ne 'commuting'
+           || $form{house2} ne 'commuting')
+) {
+    $err .= "<li>For same day Personal Retreats both housing choices"
+         .  " must be 'commuting'.";
+}
 elsif (!$err
        && $form{name} =~ m{personal\s+retreat}i
        && (   $form{house1} eq 'center_tent'
@@ -224,6 +231,7 @@ my $house2 = $data->{$key2};
 my $total;
 my $discount = "";
 my $PR = $form{name} =~ m{personal\s+retreat}i;
+$ndays ||= 1;
 if ($PR) {
 	$total = $ndays*$h_cost;
 
