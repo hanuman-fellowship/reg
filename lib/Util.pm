@@ -864,9 +864,10 @@ sub _br {
 
 #
 # hyphenated names need an extra capital
-# SMITH-JOHNSON => Smith-Johnson
-# smith-johnson => Smith-Johnson
-# Mckenzie      => McKenzie
+# SMITH-JOHNSON    => Smith-Johnson
+# smith-johnson    => Smith-Johnson
+# Mckenzie         => McKenzie
+# mary jane-louise => Mary Jane-Louise
 #
 sub normalize {
     my ($s) = @_;

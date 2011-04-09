@@ -1497,3 +1497,5 @@ personnel admin can not edit programs
 t => today, as well
 
 update comment - focus on comment field
+
+When unduping - merge affiliations from merged people into Primary

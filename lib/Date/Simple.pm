@@ -185,7 +185,7 @@ sub new {
             my $t = today();
             @ymd = ($t->year, $t->month, $1);
         }
-        elsif ($x eq 't') {
+        elsif ($x eq 't' || $x eq 'today') {
             return today();
         }
         elsif ($x =~ m{^\s*-(\d+)\s*}) {      # days before

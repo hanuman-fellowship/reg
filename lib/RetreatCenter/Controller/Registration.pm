@@ -861,6 +861,12 @@ sub _get_data {
     else {
         $dates{date_end} = '';
     }
+    if ($dates{date_start} == $dates{date_end}
+        && $P{h_type} ne 'commuting')
+    {
+        push @mess, "Housing type must be Commuting when"
+                  . " start date = end date.";
+    }
     return if @mess;
 
     if ($PR) {
@@ -924,6 +930,7 @@ sub _re_get_days {
     if ($pr->PR()) {
         $tot_prog_days = $prog_days = 0;
         $extra_days = $date_end - $date_start;
+        $extra_days ||= 1;      # since end may be = start
         return;
     }
     $tot_prog_days = $prog_days = $edate - $sdate;

@@ -12,7 +12,7 @@
 <option value='S'>Cash
 </select>
 </td></tr>
-<tr><th>Postmark Date</th><td><input type=text size=10 maxlength=10 name=date_post value="t">
+<tr><th>Postmark Date</th><td><input type=text size=10 maxlength=10 name=date_post value="today">
 <tr><th align=right valign=top>Program</th>
 <td>
 <table cellpadding=2>
