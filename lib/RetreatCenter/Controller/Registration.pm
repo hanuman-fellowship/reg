@@ -861,12 +861,6 @@ sub _get_data {
     else {
         $dates{date_end} = '';
     }
-    if ($dates{date_start} == $dates{date_end}
-        && $P{h_type} ne 'commuting')
-    {
-        push @mess, "Housing type must be Commuting when"
-                  . " start date = end date.";
-    }
     return if @mess;
 
     if ($PR) {
@@ -1010,6 +1004,16 @@ sub create_do : Local {
         return;
     }
     %dates = transform_dates($pr, %dates);
+    if ($dates{date_start} == $dates{date_end}
+        && $P{h_type} ne 'commuting')
+    {
+        error($c,
+            "Housing type must be Commuting when"
+                . " start date = end date.",
+            "registration/error.tt2",
+        );
+        return;
+    }
     if ($dates{date_start} > $dates{date_end}) {
         error($c,
             "Start date is after the end date.",
@@ -2863,6 +2867,16 @@ sub update_do : Local {
     push @who_now, reg_id => $id;
 
     %dates = transform_dates($pr, %dates);
+    if ($dates{date_start} == $dates{date_end}
+        && $P{h_type} ne 'commuting')
+    {
+        error($c,
+            "Housing type must be Commuting when"
+                . " start date = end date.",
+            "registration/error.tt2",
+        );
+        return;
+    }
     if ($dates{date_start} > $dates{date_end}) {
         error($c,
             "Start date is after the end date.",
