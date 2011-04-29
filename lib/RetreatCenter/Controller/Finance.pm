@@ -12,6 +12,8 @@ use Util qw/
     accpacc
     error
     penny
+    empty
+    trim
 /;
 use Date::Simple qw/
     date
@@ -866,29 +868,42 @@ sub mmi_glnum_list : Local {
 sub ride : Local {
     my ($self, $c) = @_;
 
-    my $since_str = $c->request->params->{since_2months};
-    my $since = date($since_str);
-    if (! $since) {
+    my $start_str = trim($c->request->params->{start});
+    my $start = date($start_str);
+    if (! $start) {
         error($c,
-              "Illegal date: $since_str",
+              "Illegal Start Date: $start_str",
               'gen_error.tt2',
         );
         return;
     }
-    my @rides = model($c, 'Ride')->search(
-                    {
-                        paid_date => { '>=' => $since->as_d8() },
-                    },
-                );
+    my $end_str = trim($c->request->params->{end});
+    my $end;
+    my @opt = ();
+    my $cond = { paid_date => { '>=' => $start->as_d8() } };
+    if (! empty($end_str)) {
+        $end = date($end_str);
+        if (! $end) {
+            error($c,
+                  "Illegal End Date: $end_str",
+                  'gen_error.tt2',
+            );
+            return;
+        }
+        $cond = {
+            paid_date => { between => [ $start->as_d8(), $end->as_d8() ] },
+        };
+    }
+    my @rides = model($c, 'Ride')->search($cond);
     my %nrides = ();
     my %total = ();
     my $gtot = 0;
     for my $r (@rides) {
         my $d_id = $r->driver_id();
         ++$nrides{$d_id};
-        my $c = $r->cost();
-        $total{$d_id} += $c;
-        $gtot += $c;
+        my $cost = $r->cost();
+        $total{$d_id} += $cost;
+        $gtot += $cost;
     }
     my @drivers = ();
     if (%nrides) {
@@ -911,7 +926,8 @@ sub ride : Local {
         $d->{total} = $total{$d_id};
     }
     stash($c,
-        since    => $since,
+        start    => $start,
+        end      => $end,
         drivers  => \@drivers,
         gtot     => $gtot,
         template => "finance/rides.tt2",

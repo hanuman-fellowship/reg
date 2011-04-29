@@ -1,4 +1,8 @@
-<h2>Ride Financials since $since</h2>
+[% IF end %]
+<h2>Ride Financials between $start and $end</h2>
+[% ELSE %]
+<h2>Ride Financials since $start</h2>
+[% END %]
 <ul>
 <table cellpadding=5>
 <tr>

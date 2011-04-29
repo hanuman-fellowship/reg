@@ -42,8 +42,7 @@ General Ledger Numbers Since <input type=text name=since size=10 value='$since'>
 </form>
 <p style="margin-top: 6mm">
 <form action="/finance/ride" method=post>
-Ride Financials Since <input type=text name=since_2months size=10 value='$since_2months'>
-&nbsp;<input type=submit value="Go">
+Ride Financials Start <input type=text name=start size=10 value='$since_2months'> End <input type=text name=end size=10>&nbsp;<input type=submit value="Go">
 </form>
 [% IF Catalyst.check_user_roles('mmi_admin') %]
 <hr width=500 align=left>
