@@ -18,6 +18,21 @@ use Template;
 #
 my %P = Vars();
 
+#
+# was it a failed transaction?
+#
+if ((exists $P{x_response_code}  && $P{x_response_code} != 1)
+    ||
+    (! exists $P{x_trans_id})
+) {
+    print <<"EOH";
+Sorry, the transaction failed for this reason:
+<p>
+$P{x_response_reason_text}
+EOH
+    exit;
+}
+
 if (exists $P{x_req_mmi_id}) {
     rename "req_mmi_dir/$P{x_req_mmi_code}", "req_mmi_dir/paid/$P{x_trans_id}";
     my $message;
@@ -37,21 +52,6 @@ if (! exists $P{x_pid}) {
 open my $jon, ">>", "relaylog";
 print {$jon} localtime() . " $P{x_fname} $P{x_lname} - $P{x_response_code}\n";
 close $jon;
-
-#
-# was it a failed transaction?
-#
-if ((exists $P{x_response_code}  && $P{x_response_code} != 1)
-    ||
-    (! exists $P{x_trans_id})
-) {
-    print <<"EOH";
-Sorry, the transaction failed for this reason:
-<p>
-$P{x_response_reason_text}
-EOH
-    exit;
-}
 
 my $id = $P{x_trans_id};
 open my $out, ">", "temp$id"
