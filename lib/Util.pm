@@ -1721,8 +1721,10 @@ sub main_mmi_affil {
     my ($descrip) = @_;
 
     return $descrip =~ m{
+        \A \s*
         MMI \s+ - \s+
         (Ayurveda|Community[ ]Studies|Massage|Yoga)
+        \s* \z
     }xms;
 }
 
