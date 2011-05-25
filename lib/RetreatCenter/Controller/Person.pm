@@ -23,6 +23,7 @@ use Util qw/
     email_letter
     calc_mmi_glnum
     get_now
+    main_mmi_affil
 /;
 use Date::Simple qw/
     date
@@ -1673,12 +1674,15 @@ sub online_add : Local {
         }
         if ($type eq 'mmi') {
             if ($interest eq 'All Schools') {
-                @affils = model($c, 'Affil')->search({
-                    -and => [
-                        descrip => { 'like' => 'MMI%' },
-                        descrip => { 'not_like' => '%Discount%' },
-                    ],
-                });
+                @affils =
+                    grep {
+                        main_mmi_affil($_->descrip())
+                    }
+                    model($c, 'Affil')->search({
+                        -and => [
+                            descrip => { 'like' => 'MMI%' },
+                        ],
+                    });
             }
             else {
                 @affils = model($c, 'Affil')->search({

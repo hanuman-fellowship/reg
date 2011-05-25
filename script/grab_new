@@ -897,7 +897,7 @@ sub finalities {
         #    print {$out} $Msg;
         #    close $out;
         #}
-        if (1) {            # 1 or 0 - okay?
+        if ($Error) {            # 1 or 0 - okay?
             $Msg =~ s{\n}{<br>\n}g;
             email_letter(
                 to       => 'jon@logicalpoetry.com',

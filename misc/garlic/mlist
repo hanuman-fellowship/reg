@@ -69,8 +69,13 @@ EOH
 
 $P{request} =~ s{\cM?\n}{NEWLINE}g;
 
-# check for an email that is used by a spammer.
-if ($P{email} ne 'email@gmail.com') {
+# check for an email that is used by a spammer
+# and for an html link in the request.
+#
+if ($P{email} ne 'email@gmail.com'
+    &&
+    $P{request} !~ m{<\s*a\s+.*href}ixms
+) {
     my $fname = "mlist_requests/" . time();
     if (-f $fname) {
         $fname .= "1";

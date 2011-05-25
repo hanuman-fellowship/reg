@@ -65,6 +65,7 @@ our @EXPORT_OK = qw/
     d3_to_hex
     req_code
     calc_mmi_glnum
+    main_mmi_affil
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1714,6 +1715,15 @@ sub calc_mmi_glnum {
         $glnum = $for_what . $reg_program_glnum;
     }
     return $glnum;
+}
+
+sub main_mmi_affil {
+    my ($descrip) = @_;
+
+    return $descrip =~ m{
+        MMI \s+ - \s+
+        (Ayurveda|Community[ ]Studies|Massage|Yoga)
+    }xms;
 }
 
 1;

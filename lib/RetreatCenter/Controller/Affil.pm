@@ -4,7 +4,11 @@ package RetreatCenter::Controller::Affil;
 use base 'Catalyst::Controller';
 
 use lib '../..';
-use Util qw/empty model/;
+use Util qw/
+    empty
+    model
+    main_mmi_affil
+/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -21,7 +25,10 @@ sub list : Local {
     ) ];
     $c->stash->{ok_del_edit} = sub {
         my $descrip = shift;
-        return ! ($descrip =~ m{\b(mmi|alert|guru)\b}i);
+        return ! ($descrip =~ m{\b(alert|guru)\b}ixms
+                  ||
+                  main_mmi_affil($descrip)
+                 );
     };
     $c->stash->{template} = "affil/list.tt2";
 }
