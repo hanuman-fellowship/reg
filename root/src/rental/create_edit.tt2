@@ -28,40 +28,40 @@
 Meals/Lodging
 </div>
 <span onclick="tabs(1); document.form.max.focus();">
-<div id="tab1ready" class="tab tabhold" style="display: none">
+<div id="tab1ready" class='tab tabhold' style="display: none">
 Meals & Lodging
 </div>
 </span>
 </td>
 
 <td>
-<div id="tab2focus" class="tab tabfocus" style="display: none">
+<div id="tab2focus" class='tab tabfocus' style="display: none">
 Misc
 </div>
 <span onclick="tabs(2); document.form.comment.focus();">
-<div id="tab2ready" class="tab tabhold" style="display: none">
+<div id="tab2ready" class='tab tabhold' style="display: none">
 Misc
 </div>
 </span>
 </td>
 
 <td>
-<div id="tab3focus" class="tab tabfocus" style="display: none">
+<div id="tab3focus" class='tab tabfocus' style="display: none">
 Finance
 </div>
 <span onclick="tabs(3); document.form.deposit.focus();">
-<div id="tab3ready" class="tab tabhold" style="display: none">
+<div id="tab3ready" class='tab tabhold' style="display: none">
 Finance
 </div>
 </span>
 </td>
 
 <td>
-<div id="tab4focus" class="tab tabfocus" style="display: none">
+<div id="tab4focus" class='tab tabfocus' style="display: none">
 Web
 </div>
 <span onclick="tabs(4); document.form.title.focus();">
-<div id="tab4ready" class="tab tabhold" style="display: none">
+<div id="tab4ready" class='tab tabhold' style="display: none">
 Web
 </div>
 </span>
