@@ -92,3 +92,5 @@ is($d, date("8/30/2007"), "relative days before");
 #Date::Simple->relative_date(date("9/2/2007"));
 $d = date("+5");
 is($d, date("9/7/2007"), "relative days after");
+$d = date('e');
+is($d, date("12/31/2999"), "end of time");

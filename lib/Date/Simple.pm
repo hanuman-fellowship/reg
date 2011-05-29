@@ -124,7 +124,8 @@ sub relative_date {
 # then return "today" with that parameter as a format.
 #
 # additionally:
-# a parameter of 't' will return today.
+# a parameter of 't' (or 'today') will return today.
+# a parameter of 'e' will return 'end of time' = 29991231
 # "11 8" will supply the year from today's date.
 # "8" will supply the month and year from today.
 #
@@ -187,6 +188,9 @@ sub new {
         }
         elsif ($x eq 't' || $x eq 'today') {
             return today();
+        }
+        elsif ($x eq 'e' || $x eq 'end of time') {
+            @ymd = (2999, 12, 31);
         }
         elsif ($x =~ m{^\s*-(\d+)\s*}) {      # days before
             my $n = $1;
