@@ -1539,24 +1539,26 @@ sub summary : Local {
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
-            "summary.$section" => { '!=' => '' },
+# don't require that the section have any content
+#            "summary.$section" => { '!=' => '' },
         },
         {
             join     => [qw/ summary /],
             prefetch => [qw/ summary /],   
         }
     );
-    my @opt = ();
-    if ($section !~ m{workshop}xms) {
-        @opt = ("summary.$section" => { '!=' => '' });
-    }
+    # don't require any content in the reports
+    #my @opt = ();
+    #if ($section !~ m{workshop}xms) {
+    #    @opt = ("summary.$section" => { '!=' => '' });
+    #}
     my @programs = model($c, 'Program')->search(
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
             rental_id => 0,             # ignore the summary of hybrid programs
                                         # the rental side is the one we use.
-            @opt,
+    #        @opt,
         },
         {
             join     => [qw/ summary /],
