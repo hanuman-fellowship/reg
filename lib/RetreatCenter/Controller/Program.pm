@@ -1569,6 +1569,10 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
         dncc_why
         percent_tuition
         tuition
+        reg_start
+        reg_end
+        prog_start
+        prog_end
     /) {
         print {$progt} qq!    $f => "!,
                        esc_dquote($p->$f()),
