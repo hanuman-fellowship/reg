@@ -64,7 +64,7 @@ $stash{pid}  = $pid;
 for my $w (qw/
     title dates leader_names name
     canpol do_not_compute_costs dncc_why
-    plink
+    plink deposit
 /) {
     $stash{$w} = $data->{$w};
 }
