@@ -15,6 +15,9 @@ use HousingNames;
 use Date::Simple qw/
     date
 /;
+use Time::Simple qw/
+    get_time 
+/;
 
 #
 # command line params
@@ -64,6 +67,14 @@ for my $w (qw/
     plink
 /) {
     $stash{$w} = $data->{$w};
+}
+for my $t (qw/
+    reg_start
+    reg_end
+    prog_start
+    prog_end
+/) {
+    $stash{$t} = get_time($data->{$t})->ampm();
 }
 $stash{pr} = $data->{title} =~ m{personal\s+retreat}i;
 if ($test) {
