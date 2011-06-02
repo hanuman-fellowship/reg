@@ -430,12 +430,12 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 <input type=checkbox name=hascar id=ride value=yes [% hascar %]
        onchange="toggle_from_where()"
 >
-<label for="hascar">I can drive</label>
+<label for="hascar">I wish to offer a ride.</label>
 <li>
 <input type=checkbox name=carpool id=pool value=yes [% carpool %]
        onchange="toggle_from_where()"
 >
-<label for="carpool">I wish to carpool</label>
+<label for="carpool">I wish to carpool.</label>
 <span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215,550)">Privacy Concerns?</a></span>
 <div id=from_where_id
      style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm;
