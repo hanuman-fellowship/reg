@@ -1,6 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<style>
+.fw {
+    margin-bottom: 2mm;
+}
+</style>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>MMC Online Registration - Step 1</title>
 <link href="/styles/regform.css" rel="stylesheet" type="text/css">
@@ -416,6 +421,10 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                             <li>
                                 <fieldset>
                                     <p>Carpooling</p>
+<!-- Hi Jamal.   This is formatted by the amateur web
+     designer Sahadev.   I had trouble styling the carpool choices.
+     Please fix as you wish.
+-->
 <ol>
 <li>
 <input type=checkbox name=hascar id=ride value=yes [% hascar %]
@@ -431,9 +440,9 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 <div id=from_where_id
      style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm;
             margin-bottom: 2mm;">
-<input type=radio name=from_where value='Home' $home_checked>From Home<br>
-<input type=radio name=from_where value='SJC' $sjc_checked>From SJC<br>
-<input type=radio name=from_where value='SFO' $sfo_checked>From SFO
+<div class=fw><input type=radio name=from_where value='Home' $home_checked>From Home</div>
+<div class=fw><input type=radio name=from_where value='SJC' $sjc_checked>From the SJC airport</div>
+<div class=fw><input type=radio name=from_where value='SFO' $sfo_checked>From the SFO airport</div>
 </div>
 </li>
 <li>
