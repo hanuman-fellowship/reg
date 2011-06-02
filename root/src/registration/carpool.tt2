@@ -3,8 +3,13 @@
 [% FOR cp IN carpoolers %]
     [% p = cp.person %]
     <span class=name>[% p.first %] [% p.last %]</span>[% IF cp.hascar %] - <span class=hascar>HAS CAR</span>[% END %]<br>
-    [% p.city %], [% p.st_prov %] [% p.zip_post %]<br>
-    [% IF p.country %][% p.country %]<br>[% END %]
+    $p.from_where
+    [% IF cp.from_where == 'Home' %]
+        $p.city, $p.st_prov $p.zip_post<br>
+        [% IF p.country %]$p.country<br>[% END %]
+    [% ELSE %]
+        From the $cp.from_where airport.<br>
+    [% END %]
     [% p.carpool_telephone %]
     [% IF p.email %]<a href="mailto:[% p.email %]?subject=Carpooling to '[% cp.program.title %]' at Mount Madonna Center">[% p.email %]</a>[% END %]
     <p class=p2>

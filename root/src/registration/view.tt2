@@ -435,7 +435,7 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.f
 
 <tr>
 <th align=right>Carpooling</th>
-<td>[% IF reg.carpool %]Wish to carpool.&nbsp;&nbsp;[% END %][% IF reg.hascar %]Has car.[% END %]</td>
+<td>[% IF reg.carpool %]Wish to carpool from ${reg.from_where}.  [% END %][% IF reg.hascar %]Wish to offer ride.[% END %]</td>
 </tr>
 
 <tr>

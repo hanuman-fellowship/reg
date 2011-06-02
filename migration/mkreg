@@ -15,6 +15,7 @@ create table registration (
     h_name text,
     carpool text,
     hascar text,  -- 15
+    from_where text,
 
     arrived text,
     cancelled text,

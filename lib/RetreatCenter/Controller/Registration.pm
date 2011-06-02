@@ -327,6 +327,7 @@ my %needed = map { $_ => 1 } qw/
     gender
     carpool
     hascar
+    from_where
     amount
     date
     time
@@ -572,7 +573,9 @@ EOH
         room_checked    => $P{cabin_room} eq 'room' ? "checked": "",
         adsource        => $P{advertiserName},
         carpool_checked => $P{carpool}? "checked": "",
-        hascar_checked  => $P{hascar }? "checked": "",
+        hascar_checked  => $P{hascar}? "checked": "",
+        from_where      => $P{from_where},
+        from_where_display => ($P{hascar} || $P{carpool})? 'block': 'none',
         date_postmark   => $date->as_d8(),
         time_postmark   => $P{time},
         green_amount    => $P{green_amount},
@@ -904,6 +907,9 @@ sub _get_data {
     if ($P{rental_before} && $P{rental_after}) {
         $P{rental_after} = '';
     }
+    if (! $P{cabin_room}) {
+        $P{cabin_room} = 'room';
+    }
 }
 
 #
@@ -1046,6 +1052,7 @@ sub create_do : Local {
         adsource      => $P{adsource},
         carpool       => $P{carpool},
         hascar        => $P{hascar},
+        from_where    => $P{from_where},
         comment       => $P{comment},
         h_type        => $P{h_type},
         h_name        => $P{h_name},
@@ -2814,8 +2821,11 @@ sub update : Local {
         h_type_opts     => $h_type_opts,
         h_type_opts1    => $h_type_opts1,
         h_type_opts2    => $h_type_opts2,
+
         carpool_checked => $reg->carpool()   ? "checked": "",
         hascar_checked  => $reg->hascar()    ? "checked": "",
+        from_where_display => $reg->carpool()? "block"  : "none",
+
         cabin_checked   => $c_r eq 'cabin'   ? "checked": "",
         room_checked    => $c_r eq 'room'    ? "checked": "",
         work_study_checked        => $reg->work_study()       ? "checked": "",
@@ -2917,6 +2927,7 @@ sub update_do : Local {
         adsource      => $P{adsource},
         carpool       => $P{carpool},
         hascar        => $P{hascar},
+        from_where    => $P{from_where},
         comment       => etrim($P{comment}),
         h_type        => $P{h_type},
         h_name        => $P{h_name},

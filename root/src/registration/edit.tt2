@@ -12,6 +12,15 @@ function popup(url) {
     }
     newwin.moveTo(600, 0);
 }
+function toggle_from_where() {
+    var ride = document.getElementById('ride').checked;
+    if (ride) {
+        document.getElementById('pool').checked = 1;
+    }
+    var pool = document.getElementById('pool').checked;
+    var fwi = document.getElementById('from_where_id');
+    fwi.style.display = (ride || pool)? 'block': 'none';
+}
 </script>
 <h2>Registration</h2>
 <form method=POST name=form action="/registration/update_do/[% reg.id %]">
@@ -135,17 +144,34 @@ After <input type=checkbox value=yes name=rental_after [% rental_after_checked %
 </tr>
 
 <tr>
-<th align=right valign=top>Carpool</th>
-<td colspan=3>
-<input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
-<input type=checkbox name=hascar  value=yes [% hascar_checked  %]> Has Car
-<!-- need a slight adjustment here: font size will change it -->
+<th align=right valign=top>Carpooling</th>
+<td>
+<input type=checkbox name=hascar id=ride value=yes [% hascar_checked %]
+       onchange="toggle_from_where()"
+> I wish to offer a ride.<p class=p2>
+<input type=checkbox name=carpool id=pool value=yes [% carpool_checked %]
+       onchange="toggle_from_where()"
+> I wish to carpool.<br>
+<div id=from_where_id
+     style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm;
+            margin-bottom: 2mm;">
+<input type=radio name=from_where value='Home' checked>From Home<br>
+<input type=radio name=from_where value='SJC'>From SJC<br>
+<input type=radio name=from_where value='SFO'>From SFO
+</div>
+</td>
+</tr>
+
 [% IF ceu %]
+<tr>
+<td>
 <span style="margin-left: .5in; font-weight: bold" >CEU License #</span>
+</td>
+<td>
 <input type=text name=ceu_license value="[% reg.ceu_license %]">
 </td>
-[% END %]
 </tr>
+[% END %]
 
 <tr>
 <th align=right>Work Study</th>

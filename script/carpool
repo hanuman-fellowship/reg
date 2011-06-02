@@ -19,8 +19,7 @@ if (!$offset) {
     $offset = 7;
 }
 
-my $cur_date = ($cmdline_date || today()->as_d8())
-    or die "gather_made yyyymmdd\n";
+my $cur_date = $cmdline_date || today()->as_d8();
 
 my $cur_date_off = (date($cur_date) + $offset)->as_d8();
 
@@ -72,7 +71,7 @@ for my $p (@progs) {
         select p.first, p.last,
                p.addr1, p.addr2, p.city, p.st_prov, p.zip_post, p.country,
                p.tel_home, p.tel_work, p.tel_cell,
-               p.email, r.carpool, r.hascar
+               p.email, r.hascar, r.from_where
           from registration r, people p
          where r.program_id = $p->[0]
            and r.carpool = 'yes'
@@ -85,7 +84,7 @@ for my $p (@progs) {
     while (my ($first, $last,
                $addr1, $addr2, $city, $state, $zip, $country,
                $home, $work, $cell,
-               $email, $carpool, $hascar)
+               $email, $hascar, $from_where)
         = $reg_sth->fetchrow_array()
     ) {
         $let .= "$first $last";
@@ -93,9 +92,14 @@ for my $p (@progs) {
             $let .= " - HAS CAR"
         }
         $let .= "<br>\n";
-        $let .= "$city, $state $zip<br>\n";
-        if ($country) {
-            $let .= "$country<br>\n";
+        if ($from_where eq 'Home') {
+            $let .= "$city, $state $zip<br>\n";
+            if ($country) {
+                $let .= "$country<br>\n";
+            }
+        }
+        else {
+            $let .= "From the $from_where airport.<br>\n";
         }
         if ($email) {
             $let .= "<a href='mailto:$email'>$email</a><br>\n";

@@ -66,6 +66,7 @@ __PACKAGE__->add_columns(qw/
     rental_before
     rental_after
     transaction_id
+    from_where
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);

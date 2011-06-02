@@ -13,3 +13,15 @@ Apr 9 9:30-11:00
     sending letter re: backup machine
 Apr 28 8:00-9:00
     hybrid glitch, kid housing issue
+May 20 11:00-12:00
+    investigating MMI payment issues
+May 24 10:00-11:30
+    MMI affil editing
+    responding to letter
+May 28 1:00-2:30
+    miscellaneous tweaks
+    summary reports for all even no content
+    mlist spam check
+    check in Jamal's changes
+Jun 1 3:20-
+    prog/reg start/end tags in reg1.tt2

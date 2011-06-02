@@ -12,6 +12,15 @@ function popup(url) {
     }
     newwin.moveTo(600, 0);
 }
+function toggle_from_where() {
+    var ride = document.getElementById('ride').checked;
+    if (ride) {
+        document.getElementById('pool').checked = 1;
+    }
+    var pool = document.getElementById('pool').checked;
+    var fwi = document.getElementById('from_where_id');
+    fwi.style.display = (ride || pool)? 'block': 'none';
+}
 </script>
 <h2>Registration</h2>
 <form method=POST name=form action="/registration/create_do">
@@ -146,10 +155,21 @@ After <input type=checkbox name=rental_after value=yes>
 </tr>
 
 <tr>
-<th align=right valign=top>Carpool</th>
+<th align=right valign=top>Carpooling</th>
 <td>
-<input type=checkbox name=carpool value=yes [% carpool_checked %]> Carpool<br>
-<input type=checkbox name=hascar value=yes [% hascar_checked %]> Has Car
+<input type=checkbox name=hascar id=ride value=yes [% hascar_checked %]
+       onchange="toggle_from_where()"
+> I wish to offer a ride.<p class=p2>
+<input type=checkbox name=carpool id=pool value=yes [% carpool_checked %]
+       onchange="toggle_from_where()"
+> I wish to carpool.<br>
+<div id=from_where_id
+     style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm;
+            margin-bottom: 2mm;">
+<input type=radio name=from_where value='Home' checked>From Home<br>
+<input type=radio name=from_where value='SJC'>From SJC<br>
+<input type=radio name=from_where value='SFO'>From SFO
+</div>
 </td>
 <td><input type=submit id=sub value="Submit"></td>
 </tr>
