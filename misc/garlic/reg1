@@ -151,8 +151,21 @@ else {
     $stash{cabin} = "";
     $stash{room}  = "checked";
 }
+# Carpooling
 $stash{carpool}        = $cookie{carpool}? 'checked': '';
 $stash{hascar}         = $cookie{hascar}? 'checked': '';
+my $fw = $cookie{from_where};
+if ($fw eq 'SJC') {
+    $stash{sjc_checked} = 'checked';
+}
+elsif ($fw eq 'SFO') {
+    $stash{sfo_checked} = 'checked';
+}
+else {
+    $stash{home_checked} = 'checked';
+}
+$stash{from_where_display} = $stash{carpool}? 'block': 'none';
+
 $stash{e_mailings}     = $cookie{e_mailings}? 'checked': '';
 $stash{snail_mailings} = $cookie{snail_mailings}? 'checked': '';
 $stash{mmi_e_mailings} = $cookie{mmi_e_mailings}? 'checked': '';

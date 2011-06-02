@@ -27,6 +27,9 @@ my %form = Vars();
 for my $w (keys %form) {
     $form{$w} =~ s{^\s*|\s*$}{}g;       # trim the fields
 }
+if (! ($form{hascar} || $form{carpool})) {
+    $form{from_where} = 'Home';
+}
 #
 # get the id of the program and fill in the $data hashref
 #
@@ -143,12 +146,12 @@ if ($form{name} =~ m{personal\s+retreat}i) {
 if (!$form{house1} && !$form{house2}) {
     $err .= "<li>Please fill out both choices of housing.\n";
 } 
-elsif ($ndays == 0
+elsif ($sdate && $edate && $ndays == 0
        && ($form{house1} ne 'commuting'
            || $form{house2} ne 'commuting')
 ) {
     $err .= "<li>For same day Personal Retreats both housing choices"
-         .  " must be 'commuting'.";
+         .  " must be 'Commuting'.";
 }
 elsif (!$err
        && $form{name} =~ m{personal\s+retreat}i
@@ -329,7 +332,7 @@ my $fingerprint_html =
 my %stash;
 for my $name (qw/
     fname lname street1 street2 city state zip
-    country home work cell email1 carpool hascar
+    country home work cell email1 carpool hascar from_where
     e_mailings snail_mailings
     mmi_e_mailings mmi_snail_mailings
     share_mailings kayakalpa
@@ -431,11 +434,11 @@ if ($howHeardResponse) {
 if ($form{carpool}) {
     if ($form{hascar}) {
         $stash{carpool_verbose} =
-            "<p>You wish to carpool and can offer a ride.";
+            "<p>You wish to carpool from $form{from_where} and can offer a ride.";
     }
     else {
         $stash{carpool_verbose} = 
-            "<p>You wish to carpool and would like a ride.";
+            "<p>You wish to carpool from $form{from_where} and would like a ride.";
     }
 } else {
     $stash{carpool_verbose} = "";

@@ -17,6 +17,15 @@ function popup(url, height, width) {
     }
     newwin.moveTo(700, 0);
 }
+function toggle_from_where() {
+    var ride = document.getElementById('ride').checked;
+    if (ride) {
+        document.getElementById('pool').checked = 1;
+    }
+    var pool = document.getElementById('pool').checked;
+    var fwi = document.getElementById('from_where_id');
+    fwi.style.display = (ride || pool)? 'block': 'none';
+}
 </script>
 
 <script type="text/javascript">
@@ -407,17 +416,28 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                             <li>
                                 <fieldset>
                                     <p>Carpooling</p>
-                                    <ol>
-                                        <li>
-                                            <input type=checkbox name=carpool value=yes [% carpool %]>
-                                            <label for="carpool">I wish to carpool</label>
-                                            <span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215,550)">Privacy Concerns?</a></span>
-                                        </li>
-                                        <li>
-                                            <input type=checkbox name=hascar value=yes [% hascar %]>
-                                            <label for="hascar">I can drive</label>
-                                        <li>
-                                    </ol>
+<ol>
+<li>
+<input type=checkbox name=hascar id=ride value=yes [% hascar %]
+       onchange="toggle_from_where()"
+>
+<label for="hascar">I can drive</label>
+<li>
+<input type=checkbox name=carpool id=pool value=yes [% carpool %]
+       onchange="toggle_from_where()"
+>
+<label for="carpool">I wish to carpool</label>
+<span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/privacy.html',215,550)">Privacy Concerns?</a></span>
+<div id=from_where_id
+     style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm;
+            margin-bottom: 2mm;">
+<input type=radio name=from_where value='Home' $home_checked>From Home<br>
+<input type=radio name=from_where value='SJC' $sjc_checked>From SJC<br>
+<input type=radio name=from_where value='SFO' $sfo_checked>From SFO
+</div>
+</li>
+<li>
+</ol>
                                 </fieldset>
                             </li>
                             [% END %]

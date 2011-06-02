@@ -225,6 +225,7 @@
                         <INPUT type=hidden VALUE="$advertisername" NAME="x_advertiserName">
                         <INPUT type=hidden VALUE="$carpool"        name="x_carpool">
                         <INPUT type=hidden VALUE="$hascar"         name="x_hascar">
+                        <INPUT type=hidden VALUE="$from_where"     name="x_from_where">
                         <INPUT type=hidden VALUE="$e_mailings"     name="x_e_mailings">
                         <INPUT type=hidden VALUE="$snail_mailings" NAME="x_snail_mailings">
                         <INPUT type=hidden VALUE="$mmi_e_mailings"     name="x_mmi_e_mailings">
