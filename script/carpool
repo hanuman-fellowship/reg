@@ -125,6 +125,8 @@ for my $p (@progs) {
     # doesn't have to be valid.  we hide it with a fake_to.
     #
     if (@emails) {
+        push @emails, 'jayanti@mountmadonna.org',
+                      'jon@suecenter.org';
         email_letter(
             from    => "$string{from_title} <$string{from}>",
             fake_to => "Car Pool List",

@@ -2828,9 +2828,9 @@ sub update : Local {
 
         carpool_checked => $reg->carpool()   ? "checked": "",
         hascar_checked  => $reg->hascar()    ? "checked": "",
-        sfo_checked     => $fw eq 'SFO'? 'checked': '',
-        sjc_checked     => $fw eq 'SJC'? 'checked': '',
         home_checked    => $fw eq 'Home'? 'checked': '',
+        sjc_checked     => $fw eq 'SJC'? 'checked': '',
+        sfo_checked     => $fw eq 'SFO'? 'checked': '',
         from_where_display => $reg->carpool()? "block"  : "none",
 
         cabin_checked   => $c_r eq 'cabin'   ? "checked": "",

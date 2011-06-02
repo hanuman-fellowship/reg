@@ -166,9 +166,9 @@ After <input type=checkbox name=rental_after value=yes>
 <div id=from_where_id
      style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm;
             margin-bottom: 2mm;">
-<input type=radio name=from_where value='Home' checked>From Home<br>
-<input type=radio name=from_where value='SJC'>From SJC<br>
-<input type=radio name=from_where value='SFO'>From SFO
+<input type=radio name=from_where value='Home' $home_checked>From Home<br>
+<input type=radio name=from_where value='SJC'  $sjc_checked>From SJC<br>
+<input type=radio name=from_where value='SFO'  $sfo_checked>From SFO
 </div>
 </td>
 <td><input type=submit id=sub value="Submit"></td>
