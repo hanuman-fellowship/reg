@@ -440,9 +440,9 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 <div id=from_where_id
      style="display: $from_where_display; margin-left: 10mm; margin-top: 2mm;
             margin-bottom: 2mm;">
-<div class=fw><input type=radio name=from_where value='Home' $home_checked>From Home</div>
-<div class=fw><input type=radio name=from_where value='SJC' $sjc_checked>From the SJC airport</div>
-<div class=fw><input type=radio name=from_where value='SFO' $sfo_checked>From the SFO airport</div>
+<div class=fw><input type=radio name=from_where value='Home' $home_checked> From Home</div>
+<div class=fw><input type=radio name=from_where value='SJC' $sjc_checked> From the SJC airport</div>
+<div class=fw><input type=radio name=from_where value='SFO' $sfo_checked> From the SFO airport</div>
 </div>
 </li>
 <li>
