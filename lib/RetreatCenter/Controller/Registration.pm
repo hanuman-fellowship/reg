@@ -565,6 +565,7 @@ EOH
     # the database.
     #
 
+    my $fw = $P{from_where};
     stash($c,
         comment         => $comment,
         share_first     => normalize($P{withwhom_first}),
@@ -572,9 +573,11 @@ EOH
         cabin_checked   => $P{cabin_room} eq 'cabin'? "checked": "",
         room_checked    => $P{cabin_room} eq 'room' ? "checked": "",
         adsource        => $P{advertiserName},
-        carpool_checked => $P{carpool}? "checked": "",
-        hascar_checked  => $P{hascar}? "checked": "",
-        from_where      => $P{from_where},
+        carpool_checked => $P{carpool}? 'checked': '',
+        hascar_checked  => $P{hascar}? 'checked': '',
+        home_checked    => $fw eq 'Home'? 'checked': '',
+        sjc_checked     => $fw eq 'SJC'? 'checked': '',
+        sfo_checked     => $fw eq 'SFO'? 'checked': '',
         from_where_display => ($P{hascar} || $P{carpool})? 'block': 'none',
         date_postmark   => $date->as_d8(),
         time_postmark   => $P{time},
