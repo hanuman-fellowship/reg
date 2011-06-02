@@ -2814,6 +2814,7 @@ sub update : Local {
         }
     }
     my $c_r = $reg->cabin_room();
+    my $fw = $reg->from_where();
     stash($c,
         person          => $reg->person,
         reg             => $reg,
@@ -2824,6 +2825,9 @@ sub update : Local {
 
         carpool_checked => $reg->carpool()   ? "checked": "",
         hascar_checked  => $reg->hascar()    ? "checked": "",
+        sfo_checked     => $fw eq 'SFO'? 'checked': '',
+        sjc_checked     => $fw eq 'SJC'? 'checked': '',
+        home_checked    => $fw eq 'Home'? 'checked': '',
         from_where_display => $reg->carpool()? "block"  : "none",
 
         cabin_checked   => $c_r eq 'cabin'   ? "checked": "",
