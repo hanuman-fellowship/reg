@@ -1812,6 +1812,7 @@ sub send_conf : Local {
             {
                 program_id => $pr->id,
                 carpool    => 'yes',
+                cancelled  => { '!=' => 'yes' },
             },
             {
                 join     => [qw/ person /],
@@ -4886,6 +4887,7 @@ sub carpool : Local {
         {
             program_id => $prog_id,
             carpool    => 'yes',
+            cancelled  => { '!=' => 'yes' },
         },
         {
             join     => [ qw/ person / ],
