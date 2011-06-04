@@ -258,7 +258,7 @@ function confirm() {
                             <li>
                                 <label for="home"><span class="required">*</span> Home Phone:</label>
                                 <input type="text" name="home" id="home" value="[% home %]" size="30"  />
-                                <span class="help" id="msg_home">Home or Work phone is required</span>
+                                <span class="help" id="msg_home">At least one phone number is required</span>
                             </li>
                             <li>
                                 <label for="work"> Work Phone:</label>

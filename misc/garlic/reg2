@@ -78,8 +78,8 @@ if (!$form{street1} && !$form{street2}) {
 check("city", "Missing city.");
 check("state", "Missing state.");
 check("zip", "Missing zip code.");
-if (!$form{home} && !$form{work}) {
-    $err .= "<li>Please fill out either the home or work phone.\n";
+if (! ($form{home} || $form{work} || $form{cell})) {
+    $err .= "<li>Please provide at least one phone number.\n";
 } 
 check("email1", "Missing email address.");
 if ($form{email1} ne $form{email2}) {
