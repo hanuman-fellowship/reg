@@ -3,7 +3,6 @@
 [% FOR cp IN carpoolers %]
     [% p = cp.person %]
     <span class=name>[% p.first %] [% p.last %]</span>[% IF cp.hascar %] - <span class=hascar>HAS CAR</span>[% END %]<br>
-    $p.from_where
     [% IF cp.from_where == 'Home' %]
         $p.city, $p.st_prov $p.zip_post<br>
         [% IF p.country %]$p.country<br>[% END %]

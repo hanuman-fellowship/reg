@@ -402,8 +402,12 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <A href=#kaya
         [% p = cp.person %]
         <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - <SPAN class=hascar>HAS CAR</SPAN>[% END %]<BR>
         <DIV class=addr>
-        $p.city, $p.st_prov $p.zip_post<BR>
-        [% IF p.country %]$p.country<BR>[% END %]
+        [% IF cp.from_where == 'Home' %]
+            $p.city, $p.st_prov $p.zip_post<br>
+            [% IF p.country %]$p.country<br>[% END %]
+        [% ELSE %]
+            From the $cp.from_where airport.<br>
+        [% END %]
         $p.carpool_telephone
         [% IF p.email %]<A HREF="mailto:$p.email?subject=Carpooling to '$cp.program.title' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">$p.email</A>[% END %]
         </DIV>
