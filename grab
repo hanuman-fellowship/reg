@@ -1,8 +1,8 @@
 #!/bin/sh
 
-if [ -d /home/sahadev/RetreatCenter ]; then
+if [ -d /home/sahadev/Reg ]; then
 
-    cd /home/sahadev/RetreatCenter
+    cd /home/sahadev/Reg
     export DBI_DSN="dbi:mysql:reg2"
 
 else 

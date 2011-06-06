@@ -1,5 +1,5 @@
 #/bin/sh
-cd /home/sahadev/RetreatCenter
+cd /home/sahadev/Reg
 day=`date +%a`
 f=rc.$day
 rm -f $f $f.gz
@@ -9,8 +9,3 @@ ftp logicalpoetry.com <<EOF
 cd backup
 put $f.gz
 quit
-#sftp sahadev@varuna <<EOF       # varuna
-#cd backup
-#put $f.gz
-#quit
-#EOF

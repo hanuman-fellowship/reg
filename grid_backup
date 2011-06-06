@@ -1,7 +1,7 @@
 #/bin/sh
-cd /home/sahadev/RetreatCenter
+cd /home/sahadev/Reg
 day=`date +%a`
-f=/home/sahadev/RetreatCenter/grid.$day
+f=/home/sahadev/Reg/grid.$day
 gz=grid.$day.gz
 rm -f $f $f.gz
 cd root/static/grid
@@ -11,8 +11,3 @@ ftp logicalpoetry.com <<EOF
 cd backup
 put $f.gz $gz 
 quit
-#sftp sahadev@varuna <<EOF       # varuna
-#cd backup
-#put $f.gz $gz
-#quit
-#EOF

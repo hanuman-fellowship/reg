@@ -1,4 +1,4 @@
 #!/bin/sh
-cd /home/sahadev/RetreatCenter
+cd /home/sahadev/Reg
 export DBI_DSN="dbi:mysql:reg2"
 script/publish_pr >publish_pr.out 2>&1 &

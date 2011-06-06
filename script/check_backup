@@ -6,7 +6,7 @@ use warnings;
 
 It is now just after midnight.
 Assign $dayname the 3 letter name of yesterday.
-The current directory is /home/sahadev/RetreatCenter/.
+The current directory is /home/sahadev/Reg
 The files grid.$dayname.gz, rc.$dayname.gz and repo.$dayname.gz
 have just been transfered to the offsite backup machine.
 Check that they made it there properly and 
