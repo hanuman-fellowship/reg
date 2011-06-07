@@ -398,6 +398,11 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <A href=#kaya
 <HR>
 [% IF carpoolers %]
     <H2>Carpool List</H2>
+This carpool list includes all the people who have requested carpool
+information as of today. You will be sent a more complete list 14 days
+prior to the beginning of the program, and again 7 days prior
+to the program.
+<p class=p2>
     [% FOR cp IN carpoolers %]
         [% p = cp.person %]
         <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - <SPAN class=hascar>HAS CAR</SPAN>[% END %]<BR>
