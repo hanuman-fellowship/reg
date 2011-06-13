@@ -36,6 +36,9 @@ sub formats : Private {
         5 => 'Just Email',
         6 => 'Name, Address, Link',
         7 => 'First Sanskrit To CMS',
+        8 => 'Raw',
+        9 => 'To CMS - Those sans Email',
+        10 => 'Last, First, Email',
     };
 }
 
@@ -219,10 +222,15 @@ sub run : Local {
     # have people said they want to be included?
     # ??? or is not null?
     my $restrict = "inactive != 'yes' and ";
-    if ($format == 1 || $format == 2 || $format == 4 || $format == 7) {
+    if (   $format == 1
+        || $format == 2
+        || $format == 4
+        || $format == 7
+        || $format == 9
+    ) {
         $restrict .= "${pref}snail_mailings = 'yes' and ";
     }
-    if ($format == 2 || $format == 5) {
+    if ($format == 2 || $format == 5 || $format == 10) {
         $restrict .= "${pref}e_mailings = 'yes' and ";
     }
     if ($share) {
@@ -238,6 +246,15 @@ sub run : Local {
         $just_email = "email != '' and ";
         $order = "email";
         $fields = "email";
+    }
+    elsif ($format == 9) {
+        $just_email = "email = '' and ";    # sans Email (misnamed oh well)
+    }
+    elsif ($format == 10) {   # Last, First, Email
+        # we only want non-blank emails
+        $just_email = "email != '' and ";
+        $order = "last";
+        $fields = "last, first, email";
     }
 
     my $range_ref = parse_zips($report->zip_range);
@@ -438,6 +455,7 @@ EOS
     }
     # use the template toolkit outside of the Catalyst mechanism
     my $tt = Template->new({
+        INTERPOLATE => 1,
         INCLUDE_PATH => 'root/src/report',
         EVAL_PERL    => 0,
     });

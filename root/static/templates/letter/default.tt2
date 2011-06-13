@@ -56,10 +56,12 @@ h4 {
 .name {
     font-weight: bold;
 }
-.hascar {
+.addr {
+    font-weight: normal;
+    margin-left: .25in;
     color: red;
 }
-.addr {
+.contact {
     font-weight: normal;
     margin-left: .25in;
     margin-bottom: .2in;
@@ -405,14 +407,16 @@ to the program.
 <p class=p2>
     [% FOR cp IN carpoolers %]
         [% p = cp.person %]
-        <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - <SPAN class=hascar>HAS CAR</SPAN>[% END %]<BR>
+        <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - HAS CAR[% END %]
         <DIV class=addr>
         [% IF cp.from_where == 'Home' %]
             $p.city, $p.st_prov $p.zip_post<br>
-            [% IF p.country %]$p.country<br>[% END %]
+            [% IF p.country %]$p.country[% END %]
         [% ELSE %]
             From the $cp.from_where airport.<br>
         [% END %]
+        </div>
+        <div class=contact>
         $p.carpool_telephone
         [% IF p.email %]<A HREF="mailto:$p.email?subject=Carpooling to '$cp.program.title' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">$p.email</A>[% END %]
         </DIV>

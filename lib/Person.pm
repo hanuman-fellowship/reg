@@ -79,6 +79,26 @@ sub addrs {
     $addr;
 }
 
+sub raw_pipe {
+    my ($self) = @_;
+    my $s = "";
+    for my $f (qw/
+        last first addr1 addr2 city st_prov zip_post country
+        tel_home tel_work tel_cell
+        email sex
+        snail_mailings
+        mmi_snail_mailings
+        e_mailings
+        mmi_e_mailings
+        share_mailings
+    /) {
+        $s .= $self->$f() . '|';
+    }
+    chop $s;
+    $s .= "\n";
+    return $s;
+}
+
 our $AUTOLOAD;
 sub AUTOLOAD {
     my ($self) = @_;

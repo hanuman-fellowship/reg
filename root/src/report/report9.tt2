@@ -1,0 +1,2 @@
+[% FOREACH p IN people %]$p.name|$p.addrs|$p.city$|$p.st_prov|$p.zip_post|$p.country
+[% END %]

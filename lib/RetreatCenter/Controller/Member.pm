@@ -58,9 +58,9 @@ sub membership_list : Local {
     $stash{no_money} = $no_money;
     my $html = "";
     my $tt = Template->new({
-        INTERPOLATION => 1,
-        INCLUDE_PATH  => 'root/src/member',
-        EVAL_PERL     => 0,
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => 'root/src/member',
+        EVAL_PERL    => 0,
     });
     $tt->process(
         "by_category.tt2",# template
@@ -389,7 +389,7 @@ EOA
     my $html = "";
 
     my $tt = Template->new({
-        INTERPOLATION => 1,
+        INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     }) or $c->log->info("NO TEMPLATE NEW $Template::ERROR");
@@ -683,7 +683,7 @@ sub email_lapsed : Local {
 
         my $html = "";
         my $tt = Template->new({
-            INTERPOLATION => 1,
+            INTERPOLATE   => 1,
             INCLUDE_PATH => 'root/static/templates/letter',
             EVAL_PERL    => 0,
         });
@@ -752,7 +752,7 @@ sub email_lapse_soon : Local {
         my $last_paid    = (@payments)? $payments[0]->date_payment_obj: 0;
         my $html = "";
         my $tt = Template->new({
-            INTERPOLATION => 1,
+            INTERPOLATE  => 1,
             INCLUDE_PATH => 'root/static/templates/letter',
             EVAL_PERL    => 0,
         });
@@ -986,7 +986,7 @@ sub lapsed_letter : Local {
     }
     my $html = "";
     my $tt = Template->new({
-        INTERPOLATION => 1,
+        INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
@@ -1132,7 +1132,7 @@ sub one_time : Local {
         category => 'Sponsor',
     });
     my $tt = Template->new({
-        INTERPOLATION => 1,
+        INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
