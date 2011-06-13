@@ -413,7 +413,7 @@ to the program.
             $p.city, $p.st_prov $p.zip_post<br>
             [% IF p.country %]$p.country[% END %]
         [% ELSE %]
-            From the $cp.from_where airport.<br>
+            From the $cp.from_where_verbose airport.<br>
         [% END %]
         </div>
         <div class=contact>

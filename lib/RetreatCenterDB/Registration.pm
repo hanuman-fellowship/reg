@@ -181,6 +181,20 @@ sub balance_disp {
     penny($self->balance());
 }
 
+sub from_where_verbose {
+    my ($self) = @_;
+    my $fw = $self->from_where();
+    if ($fw eq 'SJC') {
+        return 'San Jose';
+    }
+    elsif ($fw eq 'SFO') {
+        return 'San Francisco';
+    }
+    else {
+        return $fw;
+    }
+}
+
 #
 # this sub is only called for non-PR programs.
 # return the dates of the program that this person is attending.
