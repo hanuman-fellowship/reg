@@ -132,6 +132,13 @@ if (param('process')) {
                     $totn += $occ;
                 }
                 my $cost = $totn * $per_night * $npeeps;
+
+                # very special handling of a housing cost of type Total
+                #
+                if ($npeeps && $hash{housecost_type} eq 'Total') {
+                    $cost = $hash{single};
+                }
+
                 print {$out} "$cost\n";
                 $P{"c$id\_$bed"} = $cost || "";
                 $gtotal += $cost;
@@ -215,6 +222,13 @@ if (param('process')) {
                         ;
             }
             $cost = int($tot);
+
+            # very special handling of a housing cost of type Total
+            #
+            if ($cost && $hash{housecost_type} eq 'Total') {
+                $cost = $hash{single};
+            }
+
             print {$out} "$cost\n";
 
             $gtotal += $cost;

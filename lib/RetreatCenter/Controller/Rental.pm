@@ -2207,6 +2207,7 @@ sub _send_grid_data {
     my $winter = ! (   $string{center_tent_start} <= $sd
                     && $sd                        <= $string{center_tent_end});
     my $hc = $rental->housecost();
+    print {$gd} "housecost_type " . $hc->type() . "\n";
     HTYPE:
     for my $t (housing_types(1)) {
         if ($winter && $t eq 'center_tent') {
