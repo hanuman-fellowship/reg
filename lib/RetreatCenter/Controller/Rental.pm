@@ -1512,7 +1512,7 @@ EOH
                           * $ndays
                           * $dorm_rate
                          );
-    if ($tot_housing_charge < $min_lodging) {
+    if ($hc->type() ne 'Total' && $tot_housing_charge < $min_lodging) {
         my $s = commify($min_lodging);
         $html .= <<"EOH";
 <div style="width: 500">
