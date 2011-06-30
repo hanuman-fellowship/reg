@@ -5222,6 +5222,7 @@ sub work_study : Local {
         {
             program_id => $prog_id,
             work_study => 'yes',
+            cancelled  => { '!=' => 'yes' },
         },
         {
             join     => [qw/ person /],

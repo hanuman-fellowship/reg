@@ -37,5 +37,6 @@ Jun 6 11:30-12:15
 Jun 11 4:45-5:15
     at center consulting re: carpool
     carpool list tweaks - in 3 places
-Jun 12 9:50-
-    report - raw format
+Jun 12 9:50-12:00
+    report - raw format, 2 others
+    car pool tweaks
