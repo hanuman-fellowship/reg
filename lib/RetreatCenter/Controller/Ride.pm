@@ -34,8 +34,6 @@ use Global qw/
     %string
 /;
 
-use URI::Escape;
-
 my @airports = qw/
     SJC
     SFO
@@ -152,7 +150,7 @@ sub _ride_list {
         $rows .= "<tr class=$class>\n";
 
         my $status = $r->status();
-        my $status2 = uri_escape($status);
+        my $status2 = $status;
         if (empty($status)) {
             $status = "";       # blank on purpose
             $status2 = "";
