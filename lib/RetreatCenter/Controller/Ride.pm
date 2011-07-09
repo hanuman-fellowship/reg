@@ -34,6 +34,8 @@ use Global qw/
     %string
 /;
 
+use URI::Escape;
+
 my @airports = qw/
     SJC
     SFO
@@ -96,7 +98,7 @@ sub _ride_list {
         {
             join       => [qw/ rider /],
             prefetch   => [qw/ rider /],   
-            order_by => 'pickup_date, shuttle, pickup_time',
+            order_by => 'pickup_date, shuttle, pickup_time, flight_time',
         },
     );
     my $rows = "";
@@ -150,7 +152,7 @@ sub _ride_list {
         $rows .= "<tr class=$class>\n";
 
         my $status = $r->status();
-        my $status2 = $status;
+        my $status2 = uri_escape($status);
         if (empty($status)) {
             $status = "";       # blank on purpose
             $status2 = "";
@@ -162,11 +164,13 @@ $status
 </div>
 <!------>
 <div id=si$r_id style="display: none">
-<input type=text size=3 id=status$r_id onkeypress="return new_status(event, $r_id);" value='$status2'>
+<input type=text size=15 id=status$r_id onkeypress="return new_status(event, $r_id);" value='$status2'>
 </div>
 </td>
 EOH
 
+=comment
+# no longer needed
         $rows .= "<td>";
         if (!$r->complete()) {
             $rows .= "<img src=/static/images/question.jpg height=20>";
@@ -178,6 +182,7 @@ EOH
             $rows .= "<img src=/static/images/checked.gif>";
         }
         $rows .= "</td>\n";
+=cut
 
         $rows .= "<td><a href=/ride/view/$r_id>"
               .  $r->rider->last() . ", " . $r->rider->first()

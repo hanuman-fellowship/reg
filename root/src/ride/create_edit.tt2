@@ -27,17 +27,17 @@ function check(event, fld, n, next_id) {
 
 <tr>
 <th align=right>Status</th>
-<td><input type=text name=status value='[% ride.status %]' size=20>
+<td><input type=text name=status value="[% ride.status %]" size=20>
 </tr>
 
 <tr>
 <th align=right>Pickup Date</th>
-<td><input type=text name=pickup_date value='[% ride.pickup_date_obj.format("%D") %]' size=10>
+<td><input type=text name=pickup_date value="[% ride.pickup_date_obj.format("%D") %]" size=10>
 </tr>
 
 <tr>
 <th align=right>Pickup Time</th>
-<td><input type=text name=pickup_time value='[% IF ride.pickup_time %][% ride.pickup_time_obj.ampm %][% END %]' size=8></td>
+<td><input type=text name=pickup_time value="[% IF ride.pickup_time %][% ride.pickup_time_obj.ampm %][% END %]" size=8></td>
 </tr>
 
 <tr>
@@ -77,22 +77,22 @@ $shuttle_opts
 
 <tr>
 <th align=right>Carrier</th>
-<td><input type=text name=carrier value='[% carrier %]' size=15></td>
+<td><input type=text name=carrier value="[% carrier %]" size=15></td>
 </tr>
 
 <tr>
 <th align=right>Flight #</th>
-<td><input type=text name=flight_num value='[% ride.flight_num %]' size=5></td>
+<td><input type=text name=flight_num value="[% ride.flight_num %]" size=5></td>
 </tr>
 
 <tr>
 <th align=right>Flight Time</th>
-<td><input type=text name=flight_time value='[% IF ride.flight_time %][% ride.flight_time_obj.ampm %][% END %]' size=8></td>
+<td><input type=text name=flight_time value="[% IF ride.flight_time %][% ride.flight_time_obj.ampm %][% END %]" size=8></td>
 </tr>
 
 <tr>
 <th align=right>Cost</th>
-<td><input type=text name=cost value='$ride.cost_disp' size=6></td>
+<td><input type=text name=cost value="$ride.cost_disp" size=6></td>
 </tr>
 
 <tr>
@@ -104,35 +104,35 @@ $shuttle_opts
 </td>
 </tr>
 
-[% IF Catalyst.check_user_roles('ride_admin') %]
+[% IF Catalyst.check_user_roles("ride_admin") %]
 <tr>
 <th align=right>Credit Card Number</th>
 <td>
 <input type=text 
-       onkeypress="return check(event, this, 4, 'cc_number2');"
+       onkeypress="return check(event, this, 4, "cc_number2");"
        name=cc_number1
-       value='[% person.cc_number1 %]'
+       value="[% person.cc_number1 %]"
        size=4
        maxlength=4
 >-<input type=text 
-       onkeypress="return check(event, this, 4, 'cc_number3');"
+       onkeypress="return check(event, this, 4, "cc_number3");"
        name=cc_number2
        id=cc_number2
-       value='[% person.cc_number2 %]'
+       value="[% person.cc_number2 %]"
        size=4
        maxlength=4
 >-<input type=text 
-       onkeypress="return check(event, this, 4, 'cc_number4');"
+       onkeypress="return check(event, this, 4, "cc_number4");"
        name=cc_number3
        id=cc_number3
-       value='[% person.cc_number3 %]'
+       value="[% person.cc_number3 %]"
        size=4
        maxlength=4
 >-<input type=text 
-       onkeypress="return check(event, this, 4, 'cc_expire');"
+       onkeypress="return check(event, this, 4, "cc_expire");"
        name=cc_number4
        id=cc_number4
-       value='[% person.cc_number4 %]'
+       value="[% person.cc_number4 %]"
        size=4
        maxlength=4
 >
@@ -143,10 +143,10 @@ $shuttle_opts
 <th align=right>Expiration Date</th>
 <td>
 <input type=text
-       onkeypress="return check(event, this, 4, 'cc_code');"
+       onkeypress="return check(event, this, 4, "cc_code");"
        name=cc_expire
        id=cc_expire
-       value='[% person.cc_expire %]'
+       value="[% person.cc_expire %]"
        size=4
        maxlength=4
 >
@@ -157,10 +157,10 @@ $shuttle_opts
 <th align=right>Security Code</th>
 <td>
 <input type=text
-       onkeypress="return check(event, this, 3, 'comment');"
+       onkeypress="return check(event, this, 3, "comment");"
        name=cc_code
        id=cc_code
-       value='[% person.cc_code %]'
+       value="[% person.cc_code %]"
        size=3
        maxlength=3
 >
@@ -178,7 +178,7 @@ $shuttle_opts
 
 <tr>
 <th align=right>Date Paid</th>
-<td><input type=text name=paid_date value ='[% ride.paid_date_obj.format("%D") %]' size=10></td>
+<td><input type=text name=paid_date value ="[% ride.paid_date_obj.format("%D") %]" size=10></td>
 </tr>
 
 <tr>
