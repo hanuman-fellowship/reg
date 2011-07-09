@@ -26,6 +26,11 @@ function check(event, fld, n, next_id) {
 <table cellpadding=3 border=0>
 
 <tr>
+<th align=right>Status</th>
+<td><input type=text name=status value='[% ride.status %]' size=20>
+</tr>
+
+<tr>
 <th align=right>Pickup Date</th>
 <td><input type=text name=pickup_date value='[% ride.pickup_date_obj.format("%D") %]' size=10>
 </tr>
@@ -185,5 +190,5 @@ $shuttle_opts
 </form>
 </ul>
 <script type="text/javascript">
-document.form.pickup_date.focus();
+document.form.status.focus();
 </script>

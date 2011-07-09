@@ -43,6 +43,7 @@ __PACKAGE__->add_columns(qw/
     shuttle
     create_date
     create_time
+    status
 /);
 __PACKAGE__->set_primary_key(q/id/);
 

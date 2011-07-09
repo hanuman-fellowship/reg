@@ -17,5 +17,6 @@ create table ride (
     sent_date text,
     shuttle integer,
     create_date text,
-    create_time text
+    create_time text,
+    status text
 );

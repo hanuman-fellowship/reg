@@ -46,6 +46,11 @@ function edit_cost(id) {
     get('ci' + id).style.display = 'block';
     get('cost' + id).focus();
 }
+function edit_status(id) {
+    get('s' + id).style.display = 'none';
+    get('si' + id).style.display = 'block';
+    get('status' + id).focus();
+}
 function edit_pu(id) {
     get('pu' + id).style.display = 'none';
     get('pui' + id).style.display = 'block';
@@ -92,6 +97,28 @@ function new_cost(e, ride_id) {
     var cost = get('cost' + ride_id).value;
     var url = '[% Catalyst.uri_for("/ride/new_cost/") %]'
               + ride_id + '/' + cost +
+              '?name=$name&start=$start&end=$end'
+              ;
+    xmlhttp.open('GET', url, true);
+    xmlhttp.onreadystatechange = getIt;
+    xmlhttp.send(null);
+    return true;
+}
+function new_status(e, ride_id) {
+    var keycode;
+    if (window.event)
+        keycode = window.event.keyCode;
+    else if (e)
+        keycode = e.which;
+    else
+        return true;
+    if (keycode != 13) {
+         return true;;
+    }
+    // they pressed enter
+    var status = get('status' + ride_id).value;
+    var url = '[% Catalyst.uri_for("/ride/new_status/") %]'
+              + ride_id + '/' + status +
               '?name=$name&start=$start&end=$end'
               ;
     xmlhttp.open('GET', url, true);

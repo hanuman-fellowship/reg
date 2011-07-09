@@ -96,7 +96,7 @@ sub _ride_list {
         {
             join       => [qw/ rider /],
             prefetch   => [qw/ rider /],   
-            order_by => 'pickup_date, shuttle, flight_time',
+            order_by => 'pickup_date, shuttle, pickup_time',
         },
     );
     my $rows = "";
@@ -148,6 +148,24 @@ sub _ride_list {
         $prev_date    = $pickup_date;
         $prev_shuttle = $r->shuttle();
         $rows .= "<tr class=$class>\n";
+
+        my $status = $r->status();
+        my $status2 = $status;
+        if (empty($status)) {
+            $status = "";       # blank on purpose
+            $status2 = "";
+        }
+        $rows .= <<"EOH";
+<td align=right onclick="return edit_status($r_id);">
+<div id=s$r_id style="display: block">
+$status
+</div>
+<!------>
+<div id=si$r_id style="display: none">
+<input type=text size=3 id=status$r_id onkeypress="return new_status(event, $r_id);" value='$status2'>
+</div>
+</td>
+EOH
 
         $rows .= "<td>";
         if (!$r->complete()) {
@@ -266,7 +284,7 @@ EOH
 <span style="color: red">$errors</span>
 <table cellpadding=5 border=0>
 <tr valign=bottom>
-<td></td>
+<th align=left>Status</th>
 <th align=left>Rider</th>
 <th align=center>Direction</th>
 <th align=left>Airport</th>
@@ -844,8 +862,26 @@ sub new_cost : Local {
     $c->res->output(_ride_list($c, _get_cond($c)));
 }
 
+sub new_status : Local {
+    my ($self, $c, $ride_id, $status) = @_;
+    my $ride = model($c, 'Ride')->find($ride_id);
+    $ride->update({
+        status => $status,
+    });
+    $c->res->output(_ride_list($c, _get_cond($c)));
+}
+
 sub new_pickup_time : Local {
     my ($self, $c, $ride_id, $putime) = @_;
+    if (! empty($putime)) {
+        my $t = get_time($putime);
+        if ($t) {
+            $putime = $t->t24();
+        }
+        else {
+            $putime = '';
+        }
+    }
     my $ride = model($c, 'Ride')->find($ride_id);
     $ride->update({
         pickup_time => $putime,

@@ -57,6 +57,11 @@
 </tr>
 
 <tr>
+<th align=right>Status</th>
+<td>$ride.status</td>
+</tr>
+
+<tr>
 <th align=right>Driver</th>
 <td><a href=/user/view/$driver.id>$driver.first</a></td>
 <td><a href="mailto:$driver.email">$driver.email</a></td>
