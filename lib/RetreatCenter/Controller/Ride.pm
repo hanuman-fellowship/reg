@@ -336,6 +336,9 @@ sub _get_data {
             $P{flight_time} = $t->t24();
         }
     }
+    else {
+        $P{flight_time} = "";
+    }
     if (! empty($P{pickup_time})) {
         my $t = get_time($P{pickup_time});
         if (! $t) {
@@ -344,6 +347,9 @@ sub _get_data {
         else {
             $P{pickup_time} = $t->t24();
         }
+    }
+    else {
+        $P{pickup_time} = "";
     }
     if (! (   empty($P{cc_number1})
            && empty($P{cc_number2})
