@@ -405,7 +405,7 @@ sub show : Local {
                      }
                      qw/
                          oaks.gif
-                         mad.jpg
+                         mad.gif
                      /;
                    ;
     }
