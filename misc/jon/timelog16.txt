@@ -43,3 +43,11 @@ Jun 12 9:50-12:00
 Jun 29 3:00-4:30
     Rental housing cost of type Total
     cancelled people do not appear on the work study list
+Jul 8 11:30-12:00
+    deleting a bogus payment
+Jul 9 1:00-3:30
+    at MMC - Rides mods, looking at Members
+
+    TODO: Can't inactivate a house if any bookings in the future.
+    Can't book a house for same reason.  And tell the person
+    when the problem occurs.
