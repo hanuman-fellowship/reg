@@ -1203,7 +1203,9 @@ sub publish : Local {
     my $e_rentalRow = slurp "e_rentalRow";
 
     my $cur_event_month = 0;
+    my $cur_event_year = 0;
     my $cur_prog_month = 0;
+    my $cur_prog_year = 0;
     my ($rental);
     my @rentals  = RetreatCenterDB::Rental->future_rentals($c);
     for my $e (sort {
@@ -1220,14 +1222,19 @@ sub publish : Local {
         $rental = (ref($e) =~ m{Rental$});
         my $sdate = $e->sdate_obj;
         my $smonth = $sdate->month;
+        my $syear = $sdate->year;
         my $my = monthyear($sdate);
-        if ($cur_event_month != $smonth) {
+        if ($cur_event_month != $smonth || $cur_event_year != $syear) {
             $events .= "<tr><td class='event_my_row' colspan=2>$my</td></tr>\n";
             $cur_event_month = $smonth;
+            $cur_event_year = $smonth;
         }
-        if (not $rental and $cur_prog_month != $smonth) {
+        if (not $rental
+            and ($cur_prog_month != $smonth || $cur_prog_year != $syear)
+        ) {
             $programs .= "<tr><td class='prog_my_row' colspan=2>$my</td></tr>\n";
             $cur_prog_month = $smonth;
+            $cur_prog_year = $syear;
         }
         if ($rental) {
             my $copy = $e_rentalRow;
