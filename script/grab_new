@@ -800,6 +800,7 @@ sub temple {
         my $action = "";
         open my $in, '<', "$temple/$file";
         my $line = <$in>;
+        chomp $line;
         close $in;
         my ($first, $last, $email, $cell, $addr1, $addr2,
             $city, $state, $zip) = split m{\|}, $line;
