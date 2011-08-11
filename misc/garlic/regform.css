@@ -1,0 +1,387 @@
+@charset "ISO-8859-1";
+body {
+	background-color: #6E989A;
+}
+dl {
+	margin-left:20px;
+	position:relative;
+}
+dt {
+	font-family: "Times New Roman", Times, serif;
+	font-size: 15px;
+	float:left;
+	font-weight: bold;
+	text-align: right;
+	width: 10em; 
+	margin-right:10px;
+ 
+}
+dd { 
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	margin-left: 200px;
+	margin-bottom:10px;
+ 
+}
+
+h1 {
+	font-size: 18px;
+	font-weight: bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	padding: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+h2 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	margin: 0px;
+	padding: 0px;
+}
+
+form {
+	position:relative;
+}
+	
+td, th {
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size:12px;
+	padding:3px;
+}
+
+th {
+text-align:left;
+}
+
+label {  
+	float: left;  
+	width: 10em;  
+	margin-right: 3em;  
+	text-align: right; 
+}
+
+fieldset {  
+	margin: 0;  
+	padding: 0; 
+	border-style: none; 
+
+} 
+legend {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 15px;
+	font-weight: bold;
+	margin: 0px;
+	padding: 0px;
+} 
+fieldset ol {  
+	padding: 1em 1em 0 1em;  
+list-style: none; 
+} 
+fieldset li {  
+	padding-bottom: .5em;
+} 
+fieldset.submit {  
+	border-style: none; 
+}
+
+fieldset fieldset {
+	border-style: none;
+	background-color: transparent;
+	background-image: none;
+	clear: both;
+} 
+fieldset fieldset legend {  
+	margin-left: 0;  
+	font-weight: normal; 
+} 
+fieldset fieldset ol {
+	margin: 0 0 5px 12.5em;
+	padding: 0;
+} 
+fieldset fieldset label {  
+	float: none;  
+	width: auto;  
+	margin-right: auto; 
+}
+fieldset fieldset p {
+	width: 160px;
+	text-align: right;
+	float: left;
+	margin: 0px;
+}
+
+
+.wrapper {
+	margin: 0px auto;
+	width: 840px;
+}
+
+
+.top {
+	background-image: url(/Gif/whitebox_top_reg.gif);
+	background-repeat: no-repeat;
+	width: 840px;
+	height: 15px;
+	background-position: bottom;
+}
+
+.bot {
+	background-image: url(/Gif/whitebox_bot_reg.gif);
+	background-repeat: no-repeat;
+	height: 15px;
+	width: 840px;
+}
+
+.middle {
+	background-color: #FFFFFF;
+	width: 838px;
+	border-right: 1px solid #999999;
+	border-left: 1px solid #999999;
+}
+
+.steps {
+	border-bottom: 1px dotted #6E989A;
+	padding: 10px 20px 20px;
+	background-color: #f6f6f6;
+}
+
+.program {
+	background-color: #eeeeef;
+	border-bottom: 1px dotted #6E989A;
+	padding: 20px;
+	background-image: url(/Gif/program_header.jpg);
+	background-repeat: repeat-x;
+}
+
+
+
+.program img {
+	margin: 15px 15px 15px 0px;
+	float: left;
+}
+
+.program p {
+	position: absolute;
+	left: 240px;
+	top: 4px;
+}
+
+.program_length {
+	border-bottom: 1px dotted #6E989A;
+	padding: 20px;
+	position: relative;
+}
+.personal {
+	padding: 20px;
+	border-bottom: 1px dotted #6E989A;
+}
+.ceu {
+	padding: 20px;
+	border-bottom: 1px dotted #6E989A;
+}
+
+.housing {
+	padding: 20px;
+	border-bottom: 1px dotted #6E989A;
+	position:relative;
+}
+
+.housing table {
+	margin-left:0px;
+	width: 350px;
+}
+
+.housing .help {
+	left: 255px;
+	width: 350px;
+}
+
+.housing_choice{
+	margin-bottom: 30px;
+}
+
+.prefs {
+	padding: 20px;
+	border-bottom: 1px dotted #6E989A;
+	position:relative;
+
+}
+
+.requests {
+	padding: 20px;
+	border-bottom: 1px dotted #6E989A;
+}
+
+.notes {
+	padding: 50px 20px 20px;
+	border-bottom: 1px dotted #6E989A;
+	background-color:#FFFFCC;
+	background-image: url(/Gif/notes_header.png);
+	background-repeat: repeat-x;
+}
+.notes h2 {
+	margin-bottom:15px;
+	}
+
+.submit {
+	padding: 20px 20px 0px 50px;
+}
+
+.receipt {
+	padding: 20px;
+	border-bottom: 1px dotted #6E989A;
+}
+
+.links {
+	padding: 20px;
+}
+.links ul {
+	list-style-type: none;
+	margin:0 0 20;
+}
+.links li {
+	float:left;
+	padding-right: 30px;
+}
+
+.required {
+	color: #FF0000;
+}
+
+.help {
+	font-style: italic;
+	color: #444444;
+	font-size: 13px;
+	width: 300px;
+	margin-left:50px;
+}
+
+.helpRed {
+	font-size: 15px;
+	width: 300px;
+	margin-left:30px;
+	color:#FF0000;
+}
+
+
+
+
+.dncc_why {
+}
+
+.kaya_kalpa {
+	background-image: url(/Gif/kaya_kalpa_reg_bkg.jpg);
+	background-repeat: no-repeat;
+	height: 131px;
+	width: 767px;
+	margin-top: 25px;
+	margin-left:10px;
+}
+
+.kaya_kalpa fieldset {
+	padding-top: 38px;
+	float:left;
+}
+
+.kaya_kalpa fieldset ol {
+	margin:0 0 5px 13.5em;
+}
+
+.kaya_kalpa fieldset p {
+	width:200px;
+}
+
+.green_scene {
+	background-image: url(/Gif/green_scene_reg_bkg.jpg);
+	background-repeat: no-repeat;
+	height: 131px;
+	width: 767px;
+	margin-top: 20px;
+	margin-left:10px;
+}
+
+
+.green {
+	font-weight: bold;
+	color: #8B9758;
+}
+
+.green_blurb {
+	height: 131px;
+	width: 200px;
+	float: right;
+	margin-right: 15px;
+	text-align: left;
+	margin-top: 30px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	color: #8b9758;
+}
+
+.green_scene fieldset {
+	padding-top: 40px;
+	float:left;
+}
+
+.notes li {
+margin-bottom: 10px;
+}
+
+
+.success img {
+	float:left;
+	margin-right: 15px;
+}
+
+.success h2 {
+	margin: 0px;
+	padding: 0px;
+}
+
+.success h3 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #999999;	
+	margin: 0px;
+	padding: 0px;
+
+}
+
+.success_text {
+	padding-top:30px;
+}
+
+button {
+	overflow:hidden;
+	background-position: top;
+	height: 28px;
+	width: 209px;
+	border-width: 0px;
+	border-style: none;
+	background-repeat: no-repeat;
+	margin-right:15px;
+}
+
+button em {visibility: hidden;}
+
+button:hover {
+	background-position: bottom;
+}
+
+.btn_to_payment {background-image: url(/Gif/button_reg_toPayment.gif);}
+.btn_back_change {background-image: url(/Gif/button_reg_backToChange.gif);}
+.btn_back_prog {background-image: url(/Gif/button_reg_backToProg.gif);}
+.btn_submit {background-image: url(/Gif/button_reg_submit.gif);}
+	
+.indent {
+	margin-left:35px;
+	}
+	
+	
+.announcement { background-color:#FFCCFF;
+padding:40px;
+	background-image: url(/Gif/notes_header.png);
+	background-repeat: repeat-x;
+}

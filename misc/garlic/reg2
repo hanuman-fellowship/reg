@@ -90,9 +90,11 @@ if ($form{name} =~ m{personal\s+retreat}i) {
 	#
 	# check dates for personal retreat
 	#
-    $sdate = Date::Simple->new($form{arr_date});
+    eval {
+        $sdate = Date::Simple->new($form{arr_date});
+    };
     if (!$sdate) {
-        $err .= "<li>Illegal date for arrival date.\n";
+        $err .= "<li>Illegal date format for arrival date: $form{arr_date}\n";
     }
     my $hour = (localtime())[2];
     my $today = today();
@@ -105,9 +107,11 @@ if ($form{name} =~ m{personal\s+retreat}i) {
              .  " Please register for a later date. Thank you."
              ;
     }
-    $edate = Date::Simple->new($form{dep_date});
+    eval {
+        $edate = Date::Simple->new($form{dep_date});
+    };
     if (!$edate) {
-        $err .= "<li>Illegal date for departure date.\n";
+        $err .= "<li>Illegal date for departure date: $form{dep_date}\n";
     }
     if ($sdate && $edate) {
         $ndays = $edate-$sdate;
@@ -115,7 +119,7 @@ if ($form{name} =~ m{personal\s+retreat}i) {
             $err .= "<li>Departure date is not on or after the arrival date!\n"
         }
     }
-    if ($sdate < $today) {
+    if (!$err && $sdate < $today) {
         $err .= "<li>Arrival date is in the past!";
     }
     my $noPRfile = "$progpath/noPR.txt";
@@ -128,7 +132,7 @@ if ($form{name} =~ m{personal\s+retreat}i) {
             $sd = date($sd);
             $ed = date($ed)-1;
             # is there overlap?
-            if ($edate > $sd && $sdate <= $ed) {
+            if (!$err && $edate > $sd && $sdate <= $ed) {
                 $err .= "<li>Sorry, you cannot stay the nights from ";
                 if ($sd->month() == $ed->month()) {
                     $err .= $sd->format("%B %e") . "-" . $ed->format("%e");

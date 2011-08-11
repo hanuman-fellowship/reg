@@ -51,3 +51,7 @@ Jul 9 1:00-3:30
     TODO: Can't inactivate a house if any bookings in the future.
     Can't book a house for same reason.  And tell the person
     when the problem occurs.
+Jul 23 1:00-3:00
+    at land, consulting, fixing this and that
+Aug 10 11:30-12:45
+    fixing various things.   chomp newline for temple, recover data I clobbered.
