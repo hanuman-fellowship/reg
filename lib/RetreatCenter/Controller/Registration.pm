@@ -2818,7 +2818,7 @@ sub update : Local {
         }
     }
     my $c_r = $reg->cabin_room();
-    my $fw = $reg->from_where();
+    my $fw = $reg->from_where() || "";
     stash($c,
         person          => $reg->person,
         reg             => $reg,
@@ -2844,7 +2844,6 @@ sub update : Local {
         rental_after_checked  => $reg->rental_after()? "checked": "",
         note_lines      => lines($reg->confnote()) + 3,
         comment_lines   => lines($reg->comment ()) + 3,
-        leader_assistant_checked => $P{leader_assistant}? "checked": "",
         template        => "registration/edit.tt2",
     );
 }

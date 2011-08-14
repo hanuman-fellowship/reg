@@ -27,6 +27,33 @@ use overload
 my $european = 0;       # default is month/day/year the American way
 my $default_format = "%Y-%m-%d";     # default default format is ISO-8601
 
+my %mon_num = qw{
+    jan  1
+    feb  2
+    mar  3
+    apr  4
+    may  5
+    jun  6
+    jul  7
+    aug  8
+    sep  9
+    oct 10
+    nov 11
+    dec 12
+    january   1
+    february  2
+    march     3
+    april     4
+    may       5
+    june      6
+    july      7
+    august    8
+    september 9
+    october  10
+    november 11
+    december 12
+};
+
 sub european {
     my ($self) = @_;
     $european = 1;
@@ -171,6 +198,19 @@ sub new {
         }
         elsif ($x =~ m{%}) {        # a format
             return today($x);
+        }
+        elsif ($x =~ m{\A \s* ([a-z]+) \s* (\d+) \s* (\d+)? \s* \z }xmsi) {
+            # Aug 4
+            # september 5, 2012
+            my ($mon, $d, $y) = ($1, $2, $3);
+            if (! $y) {
+                $y = today->year();
+            }
+            $mon = lc $mon;
+            if (! exists $mon_num{$mon}) {
+                return;     # illegal month name/abbreviation
+            }
+            @ymd = _three($mon_num{$mon}, $d, $y);
         }
         elsif ($x =~ m{^(\d+)\D+(\d+)\D+(\d+)$}) {
             @ymd = _three($1, $2, $3);
