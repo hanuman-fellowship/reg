@@ -199,7 +199,11 @@ sub new {
         elsif ($x =~ m{%}) {        # a format
             return today($x);
         }
-        elsif ($x =~ m{\A \s* ([a-z]+) \s* (\d+) \s* (\d+)? \s* \z }xmsi) {
+        elsif ($x =~ m{
+            \A \s*
+            ([a-z]+) \s* (\d+) \s* ,? \s* (\d+)?
+            \s* \z
+        }xmsi) {
             # Aug 4
             # september 5, 2012
             my ($mon, $d, $y) = ($1, $2, $3);
