@@ -55,3 +55,5 @@ Jul 23 1:00-3:00
     at land, consulting, fixing this and that
 Aug 10 11:30-12:45
     fixing various things.   chomp newline for temple, recover data I clobbered.
+Aug 13 3:30-4:30
+    new date format, poking at web grid
