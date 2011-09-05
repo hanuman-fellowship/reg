@@ -1,4 +1,4 @@
-<h2>Registering for a Program</h2>
+<h2>[% IF resident %]Enrolling in a Residential Program[% ELSE %]Registering for a Program[% END %]</h2>
 <form action="/registration/manual" name=form>
 <input type=hidden name=person_id value=[% person.id %]>
 <span class=larger>[% person.first %] [% person.last %]</span>

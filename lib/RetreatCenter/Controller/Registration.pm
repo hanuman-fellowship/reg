@@ -3350,11 +3350,13 @@ sub lodge : Local {
             # and this takes some fancy footwork.
             #
             my $h_id = $h->id;
-            if (($h->max < $low_max) ||
-                ($h->bath && !$bath) ||
-                (!$h->bath && $bath) ||
-                (!$pr_resident && $h->resident()) ||
-                ($pr_resident  && !$h->resident())
+            if (($h->max < $low_max)
+                || ($h->bath && !$bath)
+                || (!$h->bath && $bath)
+                || (!$pr_resident && $h->resident())
+                # 9/4 Brajesh requests that all houses offered
+                # to Residential enrollees.
+                # || ($pr_resident  && !$h->resident())
             ) {
                 next HOUSE;
             }

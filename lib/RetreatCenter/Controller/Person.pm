@@ -793,9 +793,12 @@ sub register1 : Local {
         );
         unshift @programs, @personal_retreats;
     }
-    $c->stash->{person}   = $person;
-    $c->stash->{programs} = \@programs;
-    $c->stash->{template} = "person/register.tt2";
+    stash($c,
+        template => "person/register.tt2",
+        person   => $person,
+        programs => \@programs,
+        resident => $resident,
+    );
 }
 
 sub undup : Local {
