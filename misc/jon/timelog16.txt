@@ -57,5 +57,5 @@ Aug 10 11:30-12:45
     fixing various things.   chomp newline for temple, recover data I clobbered.
 Aug 13 3:30-4:30
     new date format, poking at web grid
-Sep 4 11:00-
+Sep 4 11:00-11:40
     YSCL changes - allow any house, anyone to enroll

@@ -45,7 +45,12 @@ sub time_obj {
 sub name {
     my ($self) = @_;
     my $per = $self->registration->person;
-    return $per->last . ", " . $per->first;
+    if ($per) {
+        return $per->last . ", " . $per->first;
+    }
+    else {
+        return "??";
+    }
 }
 
 sub link {
