@@ -61,3 +61,7 @@ Sep 4 11:00-11:40
     YSCL changes - allow any house, anyone to enroll
 Sep 14 11:30-12:15
     chasing a deleted person causing double reg, reconciling list breakage
+Oct 2 3:00-6:00
+    beginning the installation of new Kali.
+Oct 5 11:30-12:30
+    YSC replies, confirmation letter replies
