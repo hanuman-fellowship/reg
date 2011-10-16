@@ -93,6 +93,7 @@ sub create : Local {
     my @name = ();
     my @dates = ();
     my $rental_id = 0;
+    my $summary_id = 0;
     if ($rental) {
         push @name, name => $rental->name();
         push @dates, 
@@ -100,6 +101,7 @@ sub create : Local {
             edate => $rental->edate_obj->format("%D"),
         ;
         $rental_id = $rental->id();
+        $summary_id = $rental->summary_id();
         stash($c,
             dup_message => " - <span style='color: red'>Parallel</span>",
         );
@@ -151,6 +153,7 @@ sub create : Local {
                 # off of %program above.
                 # tricky!
             rental_id   => $rental_id,
+            summary_id  => $summary_id,
             @name,
         },
         canpol_opts => [ model($c, 'CanPol')->search(
@@ -408,49 +411,57 @@ sub create_do : Local {
 
     my $upload = $c->request->upload('image');
 
-    # create the summary from the right template
-    #
-    my $prefix;
-    if ($P{name} =~ m{^MMI-([DCM])}) {
-        $prefix = "MMI-$1";
+    if (! $P{summary_id}) {
+        # we do not have a summary already from
+        # a parallel rental
+
+        # create the summary from the right template
+        #
+        my $prefix;
+        if ($P{name} =~ m{^MMI-([DCM])}) {
+            $prefix = "MMI-$1";
+        }
+        elsif ($P{school} != 0) {
+            $prefix = "MMI";
+        }
+        else {
+            $prefix = "MMC";
+        }
+        my @prog = model($c, 'Program')->search({
+            name => "$prefix Template",
+        });
+        my @dup_summ = ();
+        if (@prog) {
+            my $template_sum
+                = model($c, 'Summary')->find($prog[0]->summary_id());
+            @dup_summ = $template_sum->get_columns(),
+        }
+        else {
+            # could find no template - just make a blank summary
+        }
+        my $sum = model($c, 'Summary')->create({
+            @dup_summ,
+            # and then override the following:
+            id           => undef,          # new id
+            date_updated => tt_today($c)->as_d8(),
+            who_updated  => $c->user->obj->id,
+            time_updated => get_time()->t24(),
+            gate_code => '',
+            needs_verification => "yes",
+        });
+        $P{summary_id} = $sum->id();
     }
-    elsif ($P{school} != 0) {
-        $prefix = "MMI";
-    }
-    else {
-        $prefix = "MMC";
-    }
-    my @prog = model($c, 'Program')->search({
-        name => "$prefix Template",
-    });
-    my @dup_summ = ();
-    if (@prog) {
-        my $template_sum = model($c, 'Summary')->find($prog[0]->summary_id());
-        @dup_summ = $template_sum->get_columns(),
-    }
-    else {
-        # could find no template - just make a blank summary
-    }
-    my $sum = model($c, 'Summary')->create({
-        @dup_summ,
-        # and then override the following:
-        id           => undef,          # new id
-        date_updated => tt_today($c)->as_d8(),
-        who_updated  => $c->user->obj->id,
-        time_updated => get_time()->t24(),
-        gate_code => '',
-        needs_verification => "yes",
-    });
 
     # now we can create the program itself
     #
     my $p = model($c, 'Program')->create({
-        summary_id => $sum->id,
         image      => $upload? "yes": "",
         lunches    => "",
         refresh_days => "",
         rental_id  => 0,        # overridden by hybrid
         %P,         # this includes rental_id for a possible parallel rental
+                    # and also a summary_id for the parallel rental
+                    # OR a freshly created summary id.
     });
     my $id = $p->id();
 

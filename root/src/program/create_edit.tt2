@@ -393,6 +393,7 @@ $cat_opts
      so that the rental_id does not become NULL.
 -->
 <input type=hidden name=rental_id value=$program.rental_id>
+<input type=hidden name=summary_id value=$program.summary_id>
 
 </form>
 
