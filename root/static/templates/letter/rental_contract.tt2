@@ -151,9 +151,10 @@ and use of grounds and recreational facilities.
 Charges are based on actual occupancy, not room capacity
 – e.g., a room with 3 beds occupied by 2 people is charged as a double.
 [% IF rental.seminar_house %]
-<b>Renter agrees to house a minimum of 15 guests in the Seminar House.</b>
+<b>Renter agrees to house a minimum of 14 guests in the Seminar House.</b>
 [% END %]
 <i>There will be an additional charge of
+$9.00/person/day if lunches are requested for the group and
 $2/person/hour for any
 additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>

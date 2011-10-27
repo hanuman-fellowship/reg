@@ -235,3 +235,7 @@ ftp_mmi_password 1hello
 ftp_mmi_passive 0
 req_mmi_dir /home/mmi/domains/mountmadonnainstitute.org/public_html/cgi-bin/req_mmi_dir
 req_mmi_dir_paid /home/mmi/domains/mountmadonnainstitute.org/public_html/cgi-bin/req_mmi_dir/paid
+green_from jon@suecenter.org
+green_glnum 00004
+green_name Sustainability Council
+green_subj Green Scene

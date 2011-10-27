@@ -892,11 +892,15 @@ sub update_do : Local {
         });
         my @regs = model($c, 'Registration')->search({
             program_id => $id,
+            -or => [
+                date_start => { '!=' => $P{sdate} },
+                date_end   => { '!=' => $P{edate} },
+            ],
         });
         if (@bookings || @regs) {
             error($c,
                 'Cannot change the dates or add extra days when there are'
-                . ' meeting place bookings or registrations.',
+                . ' meeting place bookings or outlying registrations.',
                 'gen_error.tt2',
             );
             return;

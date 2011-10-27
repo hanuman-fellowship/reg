@@ -1216,6 +1216,12 @@ sub create_do : Local {
                 type        => 'O',     # credit
                 what        => '',
                 @who_now[0..5],     # not reg_id => $reg_id
+
+                the_date => $P{date_postmark},      # override 'now'
+                time     => $P{time_postmark},
+                        # the Deposit (via credit card for online regs
+                        # WAS made at the postmark date/time
+                        # and the green scene amount was part of that.
             });
             #
             # send email thank you
