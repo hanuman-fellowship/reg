@@ -151,10 +151,10 @@ and use of grounds and recreational facilities.
 Charges are based on actual occupancy, not room capacity
 – e.g., a room with 3 beds occupied by 2 people is charged as a double.
 [% IF rental.seminar_house %]
-<b>Renter agrees to house a minimum of 14 guests in the Seminar House.</b>
+<b>Renter agrees to house a minimum of 15 guests in the Seminar House.</b>
 [% END %]
 <i>There will be an additional charge of
-$9.00/person/day if lunches are requested for the group and
+$11.00/person/day if lunches are requested for the group and
 $2/person/hour for any
 additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>
@@ -287,6 +287,15 @@ California.
 <h2>General Provisions</h2>
 This agreement is not a lease and it is agreed by the
 parties that no tenancy is created hereby.
+<p>
+Renter shall indemnify, defend and hold the Center harmless from any claims,
+actions, damages, liabilities, costs and expenses (including attorneys' fees
+and costs) resulting from the loss of life, injury or damage to property
+arising from any occurrence related to Renter’s activities on the Center’s
+premises, or caused wholly or in part by any act or omission of Renter
+or its representatives.  Renter waives any potential claim by Renter
+against the Center in the event of any such occurrence.
+<p>
 This agreement is intended to be a complete statement of the
 terms and conditions of the rental, and for the protection of both parties,
 any modification of this agreement is required to be in writing
