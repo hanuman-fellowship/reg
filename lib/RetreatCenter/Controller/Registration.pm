@@ -656,7 +656,11 @@ sub _rest_of_reg {
     #
     my %cur_affils = map { $_->id => 1 }
                      $p->affils;
-    for my $pr_affil_id (map { $_->id } $pr->affils) {
+    my @pr_affil_ids = map  { $_->id }
+                       grep { $_->descrip() ne 'None' }
+                       $pr->affils
+                       ;
+    for my $pr_affil_id (@pr_affil_ids) {
         if (! exists $cur_affils{$pr_affil_id}) {
             model($c, 'AffilPerson')->create({
                 a_id => $pr_affil_id,

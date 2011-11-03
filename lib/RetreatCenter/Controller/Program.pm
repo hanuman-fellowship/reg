@@ -1173,6 +1173,19 @@ sub publish : Local {
     #
     @programs = RetreatCenterDB::Program->future_programs($c);
 
+    # ensure that all of these programs have at least one affiliation set
+    #
+    for my $pr (@programs) {
+        my @affils = $pr->affils();
+        unless (@affils) {
+            error($c,
+                "Program " . $pr->name . " has no affiliations!",
+                "program/error.tt2",
+            );
+            return;
+        }
+    }
+
     gen_month_calendars($c);
     gen_progtable();
 
