@@ -1,4 +1,4 @@
-<link rel="stylesheet" type="text/css" href="/static/color.css" 
+<link rel="stylesheet" type="text/css" href="/static/color.css">
 <script type="text/javascript" src="/static/js/color.js"></script>
 <h2>Meeting Places</h2>
 <form action=[% "/meetingplace/" _ form_action %] name=form method=post>
