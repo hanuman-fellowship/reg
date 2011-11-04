@@ -249,17 +249,18 @@ Please <STRONG>DO NOT</STRONG> bring the following onto the property:
 </UL>
 <P class=p2>
 <SPAN class=scent>DO NOT</SPAN> wear scented body products.
-[% IF program.single %]
 <p>
-If you are a <span style="color: blue">snorer</span>, please request a single room or cabin;
-however, most of our accommodations are shared.
-If you are worried about someone in your room who might snore,
+[% IF program.single %]
+If you are a <span style="color: blue">snorer</span>,
+please request a single room or cabin.
+[% END %]
+If you are worried about someone in your room who might
+<span style="color: blue">snore</span>
 we suggest wearing earplugs (provided), or waking the snorer.
 We will make an attempt to change your lodging the next day if you
 find yourself in a room with a snorer, but cannot guarantee
-that it would be possible; no changes can be made in the
-middle of the night.
-[% END %]
+that it will be possible; no changes can be made in the
+middle of the night. 
 </P>
 <P class=p2>
 Due to extreme fire precautions <SPAN class=fire>DO NOT</SPAN> bring or use incense, candles,

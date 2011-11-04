@@ -77,3 +77,9 @@ Nov 2 12:30-1:15
     html links in tinyMCE, color adjusting broke with more
     stringent browser failing on incomplete <link>, rental contract
     cover letter page size adjusted.
+Nov 2 9:00-10:30
+    affiliation required when publishing
+    color missing > in all places
+    snoring tweak in conf letter - if single
+Nov 4 12:00-12:20
+    final snoring tweak - if single
