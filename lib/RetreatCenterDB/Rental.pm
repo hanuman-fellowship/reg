@@ -14,6 +14,7 @@ use Util qw/
 /;
 use Date::Simple qw/
     date
+    today
 /;
 use Time::Simple qw/
     get_time
@@ -307,6 +308,11 @@ sub status_td {
     my $status = $self->status();
     my $color = d3_to_hex($string{"rental_$status\_color"});
     return "<td align=center bgcolor=$color>\u$status</td>";
+}
+
+sub ndays_sent {
+    my ($self) = @_;
+    return today() - $self->contract_sent_obj();
 }
 
 #

@@ -25,7 +25,8 @@
     <td>[% r.sdate_obj %]</td>
     <td>[% r.edate_obj %]</td>
     <td align=center><a href=/summary/view/rental/[% r.summary_id %]>Sum</a></td>
-    [% r.status_td(1) %]
+    [% r.status_td %]
+    [% IF r.status == 'sent' %]<td>[% r.ndays_sent %]</td>[% END %]
     </tr>
     [% IF class == 'fl_row0' %]
         [% class = 'fl_row1' %]
