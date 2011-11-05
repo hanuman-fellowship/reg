@@ -59,7 +59,7 @@ p {
 [% END %]
 [% IF ! reg.cancelled %]
 <a href="/registration/delete/[% id %]"
-onclick="return confirm('Okay to Delete registration for [% person.first %] [% person.last %]?');">Delete</a>
+onclick="return confirm('\n\nAbout to delete the registration and payments and history and charges for [% person.first %] [% person.last %].\n\nAre you SURE?\n\n');">Delete</a>
 &nbsp;&nbsp;
 [% END %]
 [% IF reg.arrived != 'yes' && reg.cancelled != 'yes' %]
