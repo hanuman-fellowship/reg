@@ -83,3 +83,5 @@ Nov 2 9:00-10:30
     snoring tweak in conf letter - if single
 Nov 4 12:00-12:20
     final snoring tweak - if single
+Nov 5 12:20-
+    investigating member issues

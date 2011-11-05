@@ -694,7 +694,7 @@ sub _rest_of_reg {
         && ($pr->PR() || $pr->retreat())     # only PR and MMC Retreats
     ) {
         my $status = $mem->category;
-        if ($status eq 'Life'
+        if ($status eq 'Life' || $status eq 'Founding Life'
             || ($status eq 'Sponsor' && $mem->date_sponsor >= $today)
                                     # member in good standing
         ) {
@@ -704,7 +704,7 @@ sub _rest_of_reg {
             if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
                 stash($c, nights => $nights);
             }
-            if (!$pr->PR() && $status eq 'Life' && ! $mem->free_prog_taken) {
+            if (!$pr->PR() && $status =~ m{Life} && ! $mem->free_prog_taken) {
                 stash($c, free_prog => 1);
             }
         }
@@ -1341,7 +1341,8 @@ sub _compute {
                     @who_now,
                     automatic => 'yes',
                     amount    => -1*$tuition,
-                    what      => "Life member - free program - tuition waived.",
+                    what      => $reg->status
+                                 . " member - free program - tuition waived.",
                 });
             }
 =comment
@@ -1466,7 +1467,8 @@ sub _compute {
             @who_now,
             automatic => 'yes',
             amount    => -$tot_h_cost,
-            what      => "Life member - free program - lodging waived",
+            what      => $reg->status
+                         . " member - free program - lodging waived",
         });
         $life_free = 1;
         #
@@ -2820,7 +2822,7 @@ sub update : Local {
         if ($pr->housecost->type() eq 'Per Day' && $nights > 0) {
             stash($c, nights => $nights);
         }
-        if ($status eq 'Life'
+        if (($status eq 'Life' || $status eq 'Founding Life')
             && ! $pr->PR()
             && (! $mem->free_prog_taken || $reg->free_prog_taken())
         ) {

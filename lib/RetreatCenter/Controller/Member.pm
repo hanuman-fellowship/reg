@@ -38,7 +38,7 @@ sub membership_list : Local {
     my ($self, $c, $no_money) = @_;
     
     my %stash;
-    for my $cat (qw/ gene cont spon life inac /) {
+    for my $cat (qw/ gene cont spon life found inac /) {
         $stash{lc $cat} = [
             map {
                 $_->[1]
@@ -106,6 +106,7 @@ sub update : Local {
         contributing_sponsor
         sponsor
         life
+        founding_life
         inactive
     /) {
         my $cat = lc $m->category();
@@ -131,7 +132,7 @@ sub _get_data {
     %P = %{ $c->request->params() };
     @mess = ();
     if (! $P{category}) {
-        push @mess, "You must select General, Contributing Sponsor, Sponsor, Life or Inactive";
+        push @mess, "You must select General, Contributing Sponsor, Sponsor, Life Founding Life or Inactive";
     }
     # dates are either blank or converted to d8 format
     for my $f (keys %P) {
@@ -291,7 +292,7 @@ sub update_do : Local {
         }
     }
 
-    if ($P{category} eq 'Life' && $member->category() ne 'Life') {
+    if ($P{category} =~ m{Life} && $member->category() !~ m{Life}) {
         # a new Life member
         # clear the free program taken
         #
@@ -533,7 +534,7 @@ sub create_do : Local {
             action     => 1,
         });
     }
-    if ($P{category} eq 'Life') {
+    if ($P{category} eq 'Life' || $P{category} eq 'Founding Life') {
         model($c, 'NightHist')->create({
             @who_now,
             member_id  => $id,
@@ -845,7 +846,7 @@ sub bulk_do : Local {
         $sponsor = 1;
     }
     if ($c->request->params->{life}) {
-        push @memtypes, 'Life';
+        push @memtypes, 'Life', 'Founding Life';
         $life = 1;
     }
     my $count = $c->request->params->{count};
@@ -959,6 +960,7 @@ sub non_email : Local {
         }
         model($c, 'Member')->search({
             category => { '!=' => 'Life'     },
+            category => { '!=' => 'Founding Life' },
             category => { '!=' => 'Inactive' }
         })
     ];
