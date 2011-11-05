@@ -9,7 +9,7 @@ use Util qw/
     places
     gptrim
     get_grid_file
-    penny
+    commify
     d3_to_hex
 /;
 use Date::Simple qw/
@@ -385,7 +385,7 @@ sub seminar_house {
 
 sub balance_disp {
     my ($self) = @_;
-    penny($self->balance());
+    commify($self->balance());
 }
 
 1;
