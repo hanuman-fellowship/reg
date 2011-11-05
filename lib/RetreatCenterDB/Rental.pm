@@ -312,7 +312,16 @@ sub status_td {
 
 sub ndays_sent {
     my ($self) = @_;
-    return today() - $self->contract_sent_obj();
+    my $ndays = today() - $self->contract_sent_obj();
+    if ($ndays == 0) {
+        return "today";
+    }
+    elsif ($ndays == 1) {
+        return "1 day ago";
+    }
+    else {
+        return "$ndays days ago";
+    }
 }
 
 #

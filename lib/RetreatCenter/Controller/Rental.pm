@@ -495,10 +495,18 @@ sub list : Local {
     stash($c,
         pg_title => "Rentals",
         rentals  => [
+            # past due ones first
+            model($c, 'Rental')->search(
+                {   
+                    edate => { '<', $today },
+                    status => 'due',
+                },
+                { order_by => 'sdate' },
+            ),
             model($c, 'Rental')->search(
                 { edate => { '>=', $today } },
                 { order_by => 'sdate' },
-            )
+            ),
         ],
         rent_pat => "",
         template => "rental/list.tt2",
