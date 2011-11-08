@@ -339,7 +339,7 @@ sub _get_data {
     }
     # ensure that the program name has mm/yy that matches the start date
     #
-    if (!@mess) {
+    if (!@mess && $P{name} !~ m{personal\s+retreat}i) {
         $P{name} = ensure_mmyy($P{name}, $sdate);
     }
     # check for numbers
