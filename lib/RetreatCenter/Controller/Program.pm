@@ -36,6 +36,7 @@ use Util qw/
     get_lunch
     avail_mps
     refresh_table
+    ensure_mmyy
 /;
 use Date::Simple qw/
     date
@@ -335,6 +336,11 @@ sub _get_data {
 
     if (!@mess && $sdate && $sdate > $edate) {
         push @mess, "End Date must be after the Start Date";
+    }
+    # ensure that the program name has mm/yy that matches the start date
+    #
+    if (!@mess) {
+        $P{name} = ensure_mmyy($P{name}, $sdate);
     }
     # check for numbers
     for my $f (qw/

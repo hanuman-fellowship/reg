@@ -39,6 +39,7 @@ use Util qw/
     check_makeup_vacate
     refresh_table
     penny
+    ensure_mmyy
 /;
 use Global qw/
     %string
@@ -91,6 +92,10 @@ sub _get_data {
         $P{$d} = $dt? $dt->as_d8()
                    :     "";
     }
+    # ensure the Rental name has mm/yy that matches the start date
+    #
+    $P{name} = ensure_mmyy($P{name}, date($P{sdate}));
+
     #
     # if a contract has been sent the rental is no longer tentative, yes?
     #

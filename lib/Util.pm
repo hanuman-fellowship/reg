@@ -66,6 +66,7 @@ our @EXPORT_OK = qw/
     req_code
     calc_mmi_glnum
     main_mmi_affil
+    ensure_mmyy
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1727,5 +1728,21 @@ sub main_mmi_affil {
         \s* \z
     }xms;
 }
+
+sub ensure_mmyy {
+    my ($name, $date) = @_;
+
+    my $d_mm = $date->month;
+    my $d_yy = $date->year % 100;
+    my ($mm, $yy) = $name =~ m{(\d\d?)/(\d\d)}xms;
+    if (!$mm || !$yy) {
+        $name .= "  $d_mm/$d_yy";
+    }
+    elsif ($mm != $d_mm || $yy != $d_yy) {
+        $name =~ s{\s*\d\d?/\d\d}{  $d_mm/$d_yy}xms;
+    }
+    return $name;
+}
+
 
 1;

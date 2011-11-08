@@ -83,6 +83,9 @@ Nov 2 9:00-10:30
     snoring tweak in conf letter - if single
 Nov 4 12:00-12:20
     final snoring tweak - if single
-Nov 5 12:20-1:20, 2:15-
+Nov 5 12:20-1:20, 2:15-5:20
     investigating member issues, Founding Life
     at center, Rentals - Sent ndays, due on top
+    compiling the todo list
+Nov 7 11:15-11:45
+    ensure_mmyy for programs and rentals
