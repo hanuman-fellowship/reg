@@ -89,3 +89,17 @@ Nov 5 12:20-1:20, 2:15-5:20
     compiling the todo list
 Nov 7 11:15-11:45
     ensure_mmyy for programs and rentals
+Nov 12 11:10-12:30
+    No PR adjustments
+Nov 13 10:15-11:40
+    figuring out how to do the DBIC ORM thingy outside of Reg.
+    yay!
+Nov 15 10:35-12:30
+    auto post-program email for Yelp and Facebook comments
+    a good beginning!
+Nov 18 11:00-11:30
+    reformatting the create table statements for Patrick
+        for the Erwin images.
+Nov 20 1:15-2:00
+    MMI Payment requests - clobbered on mountmadonnainstitute.org
+    many outstanding requests - what's happening?

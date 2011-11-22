@@ -25,6 +25,7 @@ use Util qw/
     check_makeup_new
     check_makeup_vacate
     d3_to_hex
+    email_letter
 /;
 use HLog;
 use GD;
@@ -66,6 +67,13 @@ sub _get_data {
     $P{name} = trim($P{name});
     if (empty($P{name})) {
         push @mess, "Name cannot be blank";
+    }
+    # enforce the No PR constant string thingy
+    # this probably indicates that we need another
+    # attribute of an event... but we'll do this for now
+    #
+    if ($P{name} =~ m{ no \s* pr }xmsi) {
+        $P{name} = "No PR";
     }
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate /) {
@@ -261,7 +269,7 @@ sub update_do : Local {
     my $names = "";
     if (   $e->sdate ne $P{sdate}
         || $e->edate ne $P{edate}
-        || $e->max   <  $P{max}
+        || (! empty($P{max}) && ! empty($e->max) && $e->max <  $P{max})
     ) {
         # invalidate the bookings as the dates/max have changed
         my @bookings = model($c, 'Booking')->search({
@@ -1611,7 +1619,18 @@ sub _send_no_prs {
 
 sub my_die {
     my ($c, $msg) = @_;
-    # tell Sahadev somehow
+
+    # tell the developer(s) of the problem
+    my (@roles) = model($c, "Role")->search({
+        role => 'developer',
+    });
+    # should just be one role so index 0
+    email_letter($c,
+        to      => join(', ', map { $_->email() } $roles[0]->users()),
+        from    => $string{from},
+        subject => "Could not send 'No PRs' :(",
+        html    => $msg,
+    );
 }
 
 1;

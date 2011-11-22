@@ -45,8 +45,14 @@ sub the_date_obj {
 sub name {
     my ($self) = @_;
     my $r = $self->rental;
+    my $p;
     if ($r->coordinator_id) {
-        my $p = $r->coordinator;
+        $p = $r->coordinator;
+    }
+    elsif ($r->cs_person_id) {
+        $p = $r->contract_signer;
+    }
+    if ($p) {
         return $p->last . ", " . $p->first;
     }
     else {
