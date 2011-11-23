@@ -128,7 +128,7 @@ EOH
 my $fee_table = "";
 if ($next_hc) {
     my $through = date($sdate)->prev()->format("%B %e, %Y");
-    $fee_table .= "Arriving on and before <b>$through</b>:<p>\n";
+    $fee_table .= "<p>Arriving on and before <b>$through</b>:<p>\n";
 }
 $fee_table .= fees($curr);
 if ($next_hc) {
