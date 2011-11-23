@@ -106,7 +106,7 @@ sub fees {
 <table style="margin-bottom: .25in; margin-left: .5in;">
 <tr>
 <th align=left>Housing Type</th>
-<th align=right>Cost</th>
+<th class=fee>Cost</th>
 </tr>
 EOH
     TYPE:
@@ -115,7 +115,7 @@ EOH
         $s .= <<"EOH";
 <tr>
 <td>$string{"long_$type"}</td>
-<td align=right>$fees->{$type}</td>
+<td class=fee>$fees->{$type}</td>
 </tr>
 EOH
     }
