@@ -1,0 +1,74 @@
+/* CSS Document */
+
+/* -------facebook stuff------- */
+
+
+.fb_message_block {
+	margin: 10px;
+	border-bottom: 1px solid #ededed;
+	padding-bottom:15px;
+	min-height:50px;
+}
+
+.fb_image {
+	float: left;
+	margin-right: 10px;
+}
+
+.fb_message p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	margin-left: 60px;
+	line-height:normal
+}
+
+.fb_widget {
+	width: 170px;
+	position: absolute;
+	left:10px;
+	background-color:#FFFFFF;
+	border:solid 1px #94a3c4;
+	text-align: left;	
+	margin-top:35px;
+	
+}
+.fb_widget h3 {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size:12px;
+	color:#3b5998;
+}
+.fb_widget h3 a{
+text-decoration:none;
+
+}
+.fb_widget h3 a:hover{
+text-decoration:underline;
+
+}
+
+.fb_widget .fb_header { 	
+	background-color:#eceff5;
+	padding:10px;
+}
+
+.fb_facepile {
+	margin-right:3px;
+	width:20px;
+	height:20px;
+	}
+
+.fb_iuTooltip a:hover{
+	background-color:#000000;
+	padding:3px;
+}	
+.fb_message_block p {
+	margin:0;
+	padding:0;
+}
+.fb_widget h4 {
+	padding:0 0 5px 0;
+	font-family:Arial, Helvetica, sans-serif;
+	font-size:12px;
+	font-weight:normal;
+	color:#777777;
+}

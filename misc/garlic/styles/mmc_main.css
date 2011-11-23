@@ -1,0 +1,35 @@
+@charset "ISO-8859-1";
+#header {
+	width: 880px;
+}
+
+#main {
+}
+
+#sidebar {
+	width: 205px;
+	float: left;
+	margin-right: 10px;
+	-moz-border-radius-bottomleft:4px;
+	-moz-border-radius-bottomright:4px;
+	-moz-border-radius-topleft:4px;
+	-moz-border-radius-topright:4px;
+	background-color: #C3D7D6;
+	-moz-background-clip:border;
+	-moz-background-inline-policy:continuous;
+	-moz-background-origin:padding;
+	-moz-box-shadow:0 1px 3px rgba(0, 0, 0, 0.3);
+	background:#FFFFFF none repeat scroll 0 0;
+}
+#main #sidebar IMG {
+	width: 205px;
+	overflow: hidden;
+}
+
+
+#content {
+	width: 665px;
+}
+
+#footer {
+}

@@ -1,0 +1,110 @@
+@charset "ISO-8859-1";
+body {
+	background-color: #6E989A;
+}
+
+
+
+.wrapper {
+	margin: 0px auto;
+	width: 840px;
+}
+
+
+.top {
+	background-image: url(/Gif/whitebox_top_reg.gif);
+	background-repeat: no-repeat;
+	width: 840px;
+	height: 15px;
+	background-position: bottom;
+}
+
+.bot {
+	background-image: url(/Gif/whitebox_bot_reg.gif);
+	background-repeat: no-repeat;
+	height: 15px;
+	width: 840px;
+}
+
+.middle {
+	background-color: #FFFFFF;
+	width: 838px;
+	border-right: 1px solid #999999;
+	border-left: 1px solid #999999;
+}
+
+.steps {
+	border-bottom: 1px dotted #6E989A;
+	padding: 10px 20px 20px;
+	background-color: #f6f6f6;
+}
+
+
+.Page {
+	width: 840px;
+	border:none;
+
+	}
+.HeaderFooter1 {
+text-align:left;
+}
+
+form {margin:0px;}
+
+h1 {
+	font-size: 18px;
+	font-weight: bold;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	padding: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+}
+
+.SectionHeadingBorder .Label {
+	padding-left:25px;
+	}
+	
+	.success img {
+	float:left;
+	margin-right: 15px;
+}
+
+.success h2 {
+	margin: 0px;
+	padding: 0px;
+}
+
+.success h3 {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #999999;	
+	margin: 0px;
+	padding: 0px;
+
+}
+
+.success_text {
+	padding-top:30px;
+}
+.receipt {
+	padding: 20px;
+	border-bottom: 1px dotted #6E989A;
+}
+
+.links {
+	padding: 20px;
+}
+.links ul {
+	list-style-type: none;
+	margin:0 0 20;
+}
+.links li {
+	float:left;
+	padding-right: 30px;
+}
+.announcement { background-color:#FFCCFF;
+padding:40px;
+	background-image: url(/Gif/notes_header.png);
+	background-repeat: repeat-x;
+}

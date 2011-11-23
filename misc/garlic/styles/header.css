@@ -1,0 +1,148 @@
+#logo {
+	float:left;
+	margin-right: 42px;
+	margin-left: 26px;
+}
+
+#headers {
+	height:111px;
+	background-color: #6E989A;
+	margin: 0px;
+	padding: 0px 0px 20px;
+}
+
+#quickLinksWrapper {
+	display:inline-block;
+	margin-right: 5px;
+	margin-top: 9px;
+	right: 10px;
+}
+
+#quickLinksWrapper a:hover {
+color:#FFFFFF;
+}
+
+
+#quickLinks li {
+	display: inline;
+	float: left;
+	margin: 0px 0px 0px 15px;
+}
+
+#quickLinks a {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: normal;
+	color: #dddddd;
+	text-decoration: none;
+	}
+	
+#menuBarWrapper {
+	margin-top: 20px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+#menuBar{
+	display: block;
+	padding-left:0px;
+	margin-left:0px;
+}
+#menuBar li {
+	display: inline;
+	list-style: none;
+	-moz-background-clip:border !important;
+	-moz-background-inline-policy:continuous !important;
+	-moz-background-origin:padding !important;
+	background:transparent none repeat scroll 0 0 !important;
+	margin:0;
+	padding:0;
+	}
+
+#menuBar li a {
+	background-image: url(/Gif/navbar_all.gif);
+	float:left;
+	overflow:hidden;
+	text-indent:-999px;
+	height:43px;
+}
+
+
+li#menuBar_programs a {
+	background-position:0 0;
+	width: 117px;
+}
+li#menuBar_rentals a {
+	background-position:-117px 0;
+	width:152px;	
+}	
+li#menuBar_personal a {
+	background-position:-269px 0;
+	width:149px;
+}	
+li#menuBar_community a {
+	background-position:-418px 0;
+	width:110px;
+}
+li#menuBar_yoga a {
+	background-position:-528px 0;
+	width:119px;
+}
+	
+li#menuBar_programs a:hover {
+	background-position:0 -43px;
+}
+li#menuBar_rentals a:hover {
+	background-position:-117px -43px;
+}
+li#menuBar_personal a:hover {
+	background-position:-269px -43px;
+}
+li#menuBar_community a:hover {
+	background-position:-418px -43px;
+}
+li#menuBar_yoga a:hover {
+	background-position:-528px -43px;
+}
+
+li#menuBar_programs a.selected {
+	background-position:0 -86px;
+}
+li#menuBar_rentals a.selected {
+	background-position:-117px -86px;
+}
+li#menuBar_personal a.selected {
+	background-position:-269px -86px;
+}
+li#menuBar_community a.selected {
+	background-position:-418px -86px;
+}
+li#menuBar_yoga a.selected{
+	background-position:-528px -86px;
+}
+.icon {
+	vertical-align: baseline;
+	margin-right: 5px;
+}
+#menu_footer li {
+	display: block;
+	float: left;
+	margin: 0px 0px 0px 15px;
+	right:50%;
+	position:relative;
+}
+#menu_footer_wrapper ul{
+padding:20px;
+clear:left;
+float:left;
+left:50%;
+position:relative;
+text-align:center;
+}
+
+#menu_footer_wrapper {
+float:left;
+width:100%;
+overflow:hidden;
+position:relative;
+}

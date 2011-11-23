@@ -1,0 +1,73 @@
+/* CSS Document */
+
+h1 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 20pt;
+	font-weight: bold;
+	color: #660000;
+	padding-top: 15px;
+	padding-bottom: 10px;
+}
+p, p strong, p a {
+	font-family: Georgia, serif;
+	font-size: 10pt;
+	line-height: 14pt;
+	color: #555555;
+	padding-bottom: 15px;
+}
+td, th, dd, dt {
+	font-family: Georgia, serif;
+	font-size: 10pt;
+	line-height: 14pt;
+	color: #555555;
+}
+th {
+	font-weight: bold;
+}
+#content li {
+	list-style-type: circle;
+	list-style-position: outside;
+	display: list-item;
+	margin-left: 17px;
+	padding:3px;
+	font-family: Georgia, serif;
+	font-size: 10pt;
+	line-height: 13pt;
+	color: #555555;
+}
+
+
+h2 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 13pt;
+	font-weight: bold;
+	color: #660000;
+	padding-top: 15px;
+	padding-bottom: 13px;
+}
+h3 {
+	font-family: Georgia, "Times New Roman", Times, serif;
+	font-size: 14px;
+	font-weight: bold;
+	color: #333333;
+	margin-top: 10px;
+	margin-bottom: 5px;
+}
+
+.centered  {
+	text-align: center;
+}
+a:link {
+	color: #0066FF;
+}
+a:visited {
+	text-decoration: none;
+	color: #0066FF;
+}
+a:hover {
+	text-decoration: underline;
+	color: #0000FF;
+}
+a:active {
+    text-decoration: none;
+}

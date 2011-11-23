@@ -1,0 +1,75 @@
+.sidebarContainer {
+	width: 190px;
+	background-image:url(/Gif/greenbackground.gif);
+	background-color: #6E989A;
+	margin: 0px;
+	padding: 0px;
+}
+
+.sidebarContent {
+	float: none;
+	display: block;
+	text-align: center;
+}
+
+.sidebarContent p {
+	margin:10px;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+.sidebarList{
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border-top: thin dotted #333333;
+	list-style-type: none;
+	margin: 0px;
+	padding: 0px;
+}
+
+.sidebarItem {
+	border-bottom: thin dotted #333333;
+	display: block;
+	list-style-type: none;
+	padding: 10px;
+}
+
+.sidebarItem a {
+	display:block;
+	text-decoration: none;
+	color: #000033	
+
+}
+
+.sidebarItem a:link a:visited {
+	text-decoration: none;
+}
+
+.sidebarList li:hover {
+	background: #D6EDED
+}
+.sidebarSection {
+	padding-top: 15px;
+	padding-bottom: 5px;
+	font-weight: bolder;
+}
+
+.sidebarTop 		{background: url(/Gif/sidebar_upper_right.gif) no-repeat top right;}
+.sidebarTop div 	{background: url(/Gif/sidebar_upper_left.gif) no-repeat top left;}
+.sidebarBottom 		{
+}
+.sidebarBottom div	{
+margin: 0;
+}
+
+.sidebarTop div, .sidebarTop, .sidebarBottom div, .sidebarBottom {
+	width: 100%;
+	height: 9px;
+	display: block;
+}
+
+.divider {
+	border-bottom: thin dotted #333333;
+	margin-top: 25px;
+	margin-bottom: 25px;
+}
