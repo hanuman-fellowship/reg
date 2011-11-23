@@ -103,8 +103,7 @@ if ($next_hc) {
 sub fees {
     my ($fees) = @_;
     my $s = <<"EOH";
-<ul>
-<table>
+<table style="margin-bottom: .25in; margin-left: .5in;">
 <tr>
 <th align=left>Housing Type</th>
 <th align=right>Cost</th>
@@ -122,7 +121,6 @@ EOH
     }
     $s .= <<"EOH";
 </table>
-</ul>
 EOH
     return $s;
 }
@@ -130,12 +128,12 @@ EOH
 my $fee_table = "";
 if ($next_hc) {
     my $through = date($sdate)->prev()->format("%B %e, %Y");
-    $fee_table .= "Arriving on and before $through:<p>\n";
+    $fee_table .= "Arriving on and before <b>$through</b>:<p>\n";
 }
 $fee_table .= fees($curr);
 if ($next_hc) {
     my $on_after = date($sdate)->format("%B %e, %Y");
-    $fee_table .= "<p>Arriving on and after $on_after:<p>\n";
+    $fee_table .= "<p>Arriving on and after <b>$on_after</b>:<p>\n";
     $fee_table .= fees($next);
 }
 
