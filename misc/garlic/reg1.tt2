@@ -46,6 +46,7 @@ function confirm() {
 		{
 			alert("This registration is for YOU ONLY and does not reserve space for '" + fname + " " + lname + "'. You understand that you are making this reservation for yourself only. Please make sure the person you wish to room with is registered separately.");
 		}
+    return true;
 }
 </script>
 </head>
