@@ -1,0 +1,100 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+use Global qw/
+    %string
+/;
+use RegMail qw/
+    email_letter
+/;
+use Date::Simple qw/
+    date
+    today
+/;
+use Template;
+my $dir = 'root/static/templates/letter';
+my $tt = Template->new({
+    INCLUDE_PATH => $dir,
+    INTERPOLATE  => 1,
+    EVAL_PERL    => 0,
+});
+
+open my $letter, '<', "$dir/faceyelp.tt2"
+    or die "cannot open faceyelp.tt2: $!\n";
+my $html;
+{
+    local $/;
+    $html = <$letter>;
+    close $letter;
+}
+my ($from_email) = $html =~ m{([\w.]+\@[\w.]+)}xms;
+
+my $date = shift || today()->as_d8();
+my $day_before = date($date)->prev->as_d8();
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN});
+
+my @programs = $schema->resultset('Program')->search({
+    edate => $day_before,
+});
+for my $pr (@programs) {
+    my @leaders = $pr->leaders;
+    my $leader_name = $leaders[0]->person->name;
+    for my $reg ($pr->registrations) {
+        my $per = $reg->person;
+        my $html = "";
+        my $stash = {
+            program     => 1,
+            first       => $per->first,
+            title       => $pr->title,
+            leader_name => $leader_name,
+        };
+        $tt->process(
+            "faceyelp.tt2",
+            $stash,               # variables
+            \$html,               # output
+        );
+        email_letter(
+            schema  => $schema,
+            from    => $from_email,
+            to      => $per->email,
+            subject => "Your Time At Mount Madonna Center",
+            html    => $html,
+        );
+    }
+}
+my @rentals = $schema->resultset('Rental')->search({
+    edate => $day_before,
+});
+for my $r (@rentals) {
+    my $title = $r->name;
+    $title =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
+    my @people;
+    if ($r->coordinator) {
+        push @people, $r->coordinator->person;
+    }
+    if ($r->contract_signer) {
+        push @people, $r->contract_signer->person;
+    }
+    for my $per (@people) {
+        my $html = "";
+        my $stash = {
+            program     => 0,
+            first       => $per->first,
+            title       => $title,
+        };
+        $tt->process(
+            "faceyelp.tt2",
+            $stash,               # variables
+            \$html,               # output
+        );
+        email_letter(
+            schema  => $schema,
+            from    => $from_email,
+            to      => $per->email,
+            subject => "Your Time At Mount Madonna Center",
+            html    => $html,
+        );
+    }
+}
