@@ -1,0 +1,39 @@
+<style>
+body {
+    width: 5in;
+}
+</style>
+Dear ${first},
+<p>
+[% IF program %]
+Thank you for your participation in the '${title}' program at
+Mount Madonna Center with ${leader_name}.
+[% ELSE %]
+Thank you for renting our facilities for '${title}'.
+[% END %]
+<p>
+I've read the evaluations and appreciate the energy 
+that was put into giving that feedback.  We will follow up on the
+good suggestions.  If you think of anything else that needs attention,
+please don't hesitate to let me know personally.  And if you care
+to enter comments on your Mount Madonna Center experience on Facebook
+or Yelp, that will help spread the word.  You can simply click on
+either or both of these two links:
+<p>
+<a href=http://www.facebook.com/MountMadonnaCenter>http://www.facebook.com/MountMadonnaCenter</a>
+<p>
+<a href=http://www.yelp.com/biz/mount-madonna-center-watsonville>http://www.yelp.com/biz/mount-madonna-center-watsonville</a>
+<p>
+We look forward to seeing you back at Mount Madonna Center.
+<p>
+all good wishes,
+<p>
+Brajesh
+<p>
+Program Director<br>
+Mount Madonna Center<br>
+445 Summit Road<br>
+Watsonville, CA 95076<br>
+(408) 846-4009<br>
+<a href=http://www.mountmadonna.org>www.mountmadonna.org</a><br>
+<a href=mailto:brajesh@mountmadonna.org>brajesh@mountmadonna.org</a>
