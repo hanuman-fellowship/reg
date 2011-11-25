@@ -12,4 +12,4 @@ else
 
 fi
 
-script/faceyelp 20111111 >faceyelp.out 2>&1
+script/faceyelp >faceyelp.out 2>&1

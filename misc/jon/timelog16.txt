@@ -103,3 +103,10 @@ Nov 18 11:00-11:30
 Nov 20 1:15-2:00
     MMI Payment requests - clobbered on mountmadonnainstitute.org
     many outstanding requests - what's happening?
+Nov 22 11:00-12:30
+    restoring req mmi payment
+    publish PR tweaks
+    no PR pushed out
+    no coordinator for Rental messed up reconciliation listing
+Nov 24 6:50-
+    faceyelp finalizations

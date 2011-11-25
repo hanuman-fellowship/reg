@@ -29,5 +29,9 @@
 # at 1 am every Tuesday morning send Sukhdev a letter about gate codes.
 0 1 * * 2 /home/sahadev/Reg/gate
 
+# at noon every day see if any events ended the day before
+# and send a request to comment on Facebook and Yelp
+0 12 * * * /home/sahadev/Reg/faceyelp
+
 # restart the Catalyst server on reboot
 @reboot /home/sahadev/Reg/x

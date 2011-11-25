@@ -30,10 +30,13 @@ my $html;
     close $letter;
 }
 my ($from_email) = $html =~ m{([\w.]+\@[\w.]+)}xms;
+$from_email = "MMC Program Director <$from_email>";
 
 my $date = shift || today()->as_d8();
 my $day_before = date($date)->prev->as_d8();
 my $schema = RetreatCenterDB->connect($ENV{DBI_DSN});
+my $msg = "";
+my $tot = 0;
 
 my @programs = $schema->resultset('Program')->search({
     edate => $day_before,
@@ -41,13 +44,17 @@ my @programs = $schema->resultset('Program')->search({
 for my $pr (@programs) {
     my @leaders = $pr->leaders;
     my $leader_name = $leaders[0]->person->name;
+    my $title = $pr->title;
+    my $n = 0;
+    REG:
     for my $reg ($pr->registrations) {
+        next REG if $reg->leader_assistant;     # skip leaders & assistants
         my $per = $reg->person;
         my $html = "";
         my $stash = {
             program     => 1,
             first       => $per->first,
-            title       => $pr->title,
+            title       => $title,
             leader_name => $leader_name,
         };
         $tt->process(
@@ -62,7 +69,10 @@ for my $pr (@programs) {
             subject => "Your Time At Mount Madonna Center",
             html    => $html,
         );
+        ++$n;
     }
+    $msg .= "$n people for program $title<br>\n";
+    $tot += $n;
 }
 my @rentals = $schema->resultset('Rental')->search({
     edate => $day_before,
@@ -72,11 +82,13 @@ for my $r (@rentals) {
     $title =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
     my @people;
     if ($r->coordinator) {
-        push @people, $r->coordinator->person;
+        push @people, $r->coordinator;
     }
     if ($r->contract_signer) {
-        push @people, $r->contract_signer->person;
+        push @people, $r->contract_signer;
     }
+    my $n = @people;
+    $tot += $n;
     for my $per (@people) {
         my $html = "";
         my $stash = {
@@ -97,4 +109,15 @@ for my $r (@rentals) {
             html    => $html,
         );
     }
+    my $who = ($n == 1)? "person": "people";
+    $msg .= "$n $who for rental $title<br>\n";
+}
+if ($tot) {
+    email_letter(
+        schema  => $schema,
+        from    => 'jon@logicalpoetry.com',
+        to      => 'jon@suecenter.org, brajesh@mountmadonna.org',
+        subject => "Post-Event emailings",
+        html    => $msg,
+    );
 }
