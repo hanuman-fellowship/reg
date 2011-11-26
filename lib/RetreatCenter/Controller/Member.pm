@@ -332,7 +332,7 @@ sub update_do : Local {
 
 sub _no_here {
     my ($html) = @_;
-    $html =~ s{<a[^>]*>here</a>[.]\n<p>}{ on the HFS website:<ul>www.hanumanfellowship.org</ul>};
+    $html =~ s{<a[^>]*>here</a>[.]}{ on the HFS website:<ul>www.hanumanfellowship.org</ul>};
     $html;
 }
 
@@ -1002,23 +1002,8 @@ EOA
         $stash,           # variables
         \$html,           # output
     ) or die $tt->error;
-    $message = <<"EOA";
-<style>
-body {
-    margin-left: .5in;
-}
-#addr {
-    margin-top: 2in;
-    margin-bottom: .5in;
-}
-</style>
-<div id=addr.
-$name<br>
-$addr
-<p>
-</div>
-EOA
-    $c->res->output(_no_here($html) . js_print());
+    $html = _no_here($html);
+    $c->res->output($html . js_print());
 }
 
 sub payment_delete : Local {

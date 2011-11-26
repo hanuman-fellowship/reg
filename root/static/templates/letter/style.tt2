@@ -1,6 +1,13 @@
 <style>
 body {
-    width: 500px;
+    width: 800px;
+    font-family: Georgia, Times;
+    font-size: 14pt;
+    margin-left: 6mm;
+}
+td {
+    font-family: Georgia, Times;
+    font-size: 14pt;
 }
 li {
     margin-bottom: 3mm;
