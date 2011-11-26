@@ -1,0 +1,46 @@
+<html>
+<head>
+<style>
+body {
+    width: 800px;
+    font-family: Georgia, Times;
+    font-size: 14pt;
+    margin-left: 6mm;
+}
+li {
+    margin-bottom: 2mm;
+}
+</style>
+</head>
+<body>
+<img style="margin-left: 6in"
+     height=150
+     src="http://www.hanumanfellowship.org/images/hanuman_logo.png">
+<br>
+Dear $sanskrit, 
+<p>
+We are reaching out to you as a former member of the
+Hanuman Fellowship to ask you to consider rejoining the Fellowship
+for the coming year. Whether your membership recently expired or
+expired long ago, we sincerely value our relationship with all members
+of the Fellowship satsang and respectfully request your continued
+commitment as a member of the Hanuman Fellowship.
+<p>
+The Fellowship is a self supportive community dedicated to the
+attainment of peace. We recognize that in order to attain this mission
+and carry forward the teachings of Baba Hari Dass through sadhana,
+satsang, and karma yoga, a membership based on commitment and service
+is essential. Your membership dues provide the needed funding and pledge
+of support to projects inspired by the guidance of Babaji such as
+Mount Madonna Center, Pacific Cultural Center,
+Sankat Mochan Hanuman Temple and Mount Madonna Institute.
+<p>
+We look forward to welcoming you back as a member of the Hanuman Fellowship. 
+<p>
+The HFS Membership application form and information about the levels
+of membership can be found <a href=http://www.hanumanfellowship.org/HFS_Membership_Application.pdf>here</a>.
+Please return the application form with your payment to renew your membership.
+<p>
+[% INCLUDE info.tt2 %]
+</body>
+</html>

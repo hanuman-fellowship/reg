@@ -1,14 +1,14 @@
 [% INCLUDE style.tt2 %]
-[% message %]Dear [% sanskrit %],
+${message}Dear $sanskrit,
 <p>
-Thank you for the payment of $[% amount %]
+Thank you for the payment of \$$amount
 for Sponsor Membership in the Hanuman Fellowship
 which we received on [% pay_date.format("%D") %].
 Your benefits are now in effect.
 Your next Payment Due date will be due on [% due_date.format("%D") %].
-Through today you have paid a total of $[% total_paid %] toward your
+Through today you have paid a total of \$$total_paid toward your
 Sponsor Membership.
 <p>
-[% INCLUDE spons.tt2 %]
+Information about HFS membership can be found <a href=${string.mem_site}>here</a>.
 <p>
 [% INCLUDE info.tt2 %]

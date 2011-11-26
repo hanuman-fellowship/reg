@@ -1,17 +1,18 @@
-Please note: 
+Please note:
 <ul>
-<li><span style='color: navy'>To initiate the use of your Credit Card
-please call the Reception Office</span> at [% string.mem_credit_phone %]
-during regular office hours: [% string.mem_credit_hours %].
-The receptionist will take your payment information and pass it to Membership.
-<li>If paying by check, make it payable to MMC rather than Hanuman Fellowship and note that the payment is for Membership.
-<li><span style='color: navy'>We are communicating by Email primarily, so please make sure that we have your correct information.</span>
-<li>Please use this notice as your receipt.
-<li>To claim a Tax Deduction for this donation, you must deduct the value of any benefits you receive.
+<li>To initiate the use of your Credit Card please call the
+HFS Membership Secretary at ${string.mem_phone}.
+<li>If paying by check, make it payable to the Hanuman Fellowship
+and note that the payment is for Membership. 
+<li>We are attempting to communicate primarily by email,
+so please make sure that we have your current email address
+and other contact information. 
+<li>To claim a Tax Deduction for this donation,
+you must deduct the value of any benefits you receive.
 </ul>
-Sincerely,<br>
-Membership Team<br>
-[% string.mem_team %]
+In Peace,
 <p>
-[% string.mem_phone %]<br>
-<a href='mailto:[% string.mem_email %]'>[% string.mem_email %]</a>
+The Hanuman Fellowship<br>
+Membership Secretary<br>
+<a href=mailto:$string.mem_email>$string.mem_email</a><br>
+$string.mem_phone

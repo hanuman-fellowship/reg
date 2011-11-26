@@ -1,11 +1,47 @@
-[% INCLUDE style.tt2 %]
-[% message %]Dear [% sanskrit %],
+<html>
+<head>
+<style>
+body {
+    width: 800px;
+    font-family: Georgia, Times;
+    font-size: 14pt;
+    margin-left: 6mm;
+}
+li {
+    margin-bottom: 2mm;
+}
+</style>
+</head>
+<body>
+<img style="margin-left: 6in"
+     height=150
+     src="http://www.hanumanfellowship.org/images/hanuman_logo.png">
+<br>
+Dear $sanskrit,
 <p>
-Your next Sponsor Membership Payment Due date is [% exp_date.format("%D") %].
-Your benefits will expire unless your payment is received by then.
-[% IF last_amount %]
-You last paid $[% last_amount %] on [% last_paid.format("%D") %].
-[% END %]
+Thank you for your on-going generous commitment to the Hanuman
+Fellowship over this past year.  Your annual Sponsoring Membership
+in the Fellowship is due to expire on December 31, ${exp_year}.
+We respectfully ask you to renew your membership and continue to be
+part of our supportive community. 
 <p>
-[% INCLUDE spons.tt2 %]
+The Fellowship is a self-sustaining community dedicated to the
+attainment of peace. Your membership dues provide the needed funding
+and pledge of support to the projects, inspired by the guidance of Babaji,
+which foster that ideal. 
+<p>
+Your payment of dues in the amount of \$$string.mem_spons_year
+by December 31, $exp_year
+will assure that your benefits do not expire and that amount
+will be applied toward a Life Membership goal of \$${string.mem_life_total}.
+Sponsor payments may also be paid at a semiannually rate of \$$string.mem_spons_semi_year
+by December 31st and June 30th by special arrangement with the
+Membership Secretary.
+<p>
+The HFS Membership application form and information about the levels
+of membership can be found <a href=${string.mem_site}>here</a>.
+Please return the application form with your payment to renew your membership.
+<p>
 [% INCLUDE info.tt2 %]
+</body>
+</html>

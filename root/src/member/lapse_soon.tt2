@@ -11,7 +11,7 @@ function toggle_all() {
     }
 }
 </script>
-<h2>Members Who Will Lapse Within A Month</h2>
+<h2>Members Who Will Lapse Soon</h2>
 <form name=form action='/member/email_lapse_soon'>
 <input type=submit value="Email Reminder To All Checked">
 &nbsp; &nbsp; &nbsp;

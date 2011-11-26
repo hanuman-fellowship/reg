@@ -110,3 +110,5 @@ Nov 22 11:00-12:30
     no coordinator for Rental messed up reconciliation listing
 Nov 24 6:50-
     faceyelp finalizations
+Nov 26 11:15-
+    at MMC working with membership people

@@ -66,7 +66,7 @@ sub membership_list : Local {
         "by_category.tt2",# template
         \%stash,          # variables
         \$html,           # output
-    );
+    ) or die $tt->error;
     $c->res->output($html);
 }
 
@@ -596,7 +596,7 @@ sub _soon_to_lapse_members {
     my ($c) = @_;
 
     my $today = tt_today($c);
-    my $month = $today + 30;
+    my $month = $today + 60;
     $today = $today->as_d8();
     $month = $month->as_d8();
 
@@ -674,12 +674,6 @@ sub email_lapsed : Local {
             push @no_email, $m;
             next MEMBER;
         }
-        my $exp_date = date($m->category eq 'General'? $m->date_general()
-                            :                          $m->date_sponsor());
-
-        my @payments = $m->payments();
-        my $last_amount  = (@payments)? $payments[0]->amount: 0 ;
-        my $last_paid    = (@payments)? $payments[0]->date_payment_obj: 0;
         my $type = $m->category;
 
         my $html = "";
@@ -690,19 +684,14 @@ sub email_lapsed : Local {
         });
         my $stash = {
             sanskrit    => ($per->sanskrit || $per->first),
-            exp_date    => $exp_date,
-            last_amount => $last_amount,
-            last_paid   => $last_paid,
             string      => \%string,
         };
         $tt->process(
             # template
-            "lapse_"
-                . ($type eq 'General'? 'gen': 'spons')
-                . ".tt2",
+            "lapse.tt2",
             $stash,           # variables
             \$html,           # output
-        );
+        ) or die $tt->error;
         email_letter($c,
             to      => (($to_you)? $c->user->email(): $per->name_email()),
             from    => "HFS Membership <$string{mem_email}>",
@@ -744,13 +733,7 @@ sub email_lapse_soon : Local {
             push @no_email, $m;
             next MEMBER;
         }
-        my $exp_date = date($m->category eq 'General'? $m->date_general()
-                            :                          $m->date_sponsor());
         my $type = $m->category;
-
-        my @payments = $m->payments();
-        my $last_amount  = (@payments)? $payments[0]->amount: 0 ;
-        my $last_paid    = (@payments)? $payments[0]->date_payment_obj: 0;
         my $html = "";
         my $tt = Template->new({
             INTERPOLATE  => 1,
@@ -759,9 +742,7 @@ sub email_lapse_soon : Local {
         });
         my $stash = {
             sanskrit    => ($per->sanskrit || $per->first),
-            exp_date    => $exp_date,
-            last_amount => $last_amount,
-            last_paid   => $last_paid,
+            exp_year    => tt_today()->year,
             string      => \%string,
         };
         $tt->process(
@@ -770,7 +751,7 @@ sub email_lapse_soon : Local {
                 . "_soon.tt2", # template
             $stash,           # variables
             \$html,           # output
-        );
+        ) or die $tt->error;
         email_letter($c,
             to      => (($to_you)? $c->user->email(): $per->name_email()),
             from    => "HFS Membership <$string{mem_email}>",
@@ -973,19 +954,6 @@ sub lapsed_letter : Local {
     my $member = model($c, 'Member')->find($id);
     my $per = $member->person;
     my $category = $member->category;
-    my $exp_date;
-    if ($category eq 'General') {
-        $exp_date = $member->date_general_obj;
-    }
-    else {
-        $exp_date = $member->date_sponsor_obj;
-    }
-    my @payments = $member->payments;
-    my ($last_amount, $last_paid) = (0, 0);
-    if ($payments[0]) {
-        $last_amount = $payments[0]->amount;
-        $last_paid = $payments[0]->date_payment_obj;
-    }
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -1019,22 +987,22 @@ EOA
     Global->init($c);
     my $stash = {
         sanskrit    => ($per->sanskrit || $per->first),
-        exp_date    => $exp_date,
-        last_amount => $last_amount,
-        last_paid   => $last_paid,
+        exp_year    => tt_today()->year(),
         string      => \%string,
         message     => $message,
     };
+    my $template = "lapse";
+    if ($soon) {
+         $template .= $category eq 'General'? '_gen': '_spons';
+         $template .= "_soon";
+    }
+    $template .= ".tt2";
     $tt->process(
-        # template
-        "lapse_"
-            . ($category eq 'General'? 'gen': 'spons')
-            . ($soon? "_soon": "")
-            . ".tt2",
+        $template,
         $stash,           # variables
         \$html,           # output
-    );
-        $message = <<"EOA";
+    ) or die $tt->error;
+    $message = <<"EOA";
 <style>
 body {
     margin-left: .5in;
@@ -1150,7 +1118,7 @@ sub one_time : Local {
             "one_time.tt2",       # template
             { member => $m },     # variables
             \$html,               # output
-        );
+        ) or die $tt->error;
         email_letter($c,
             to      => $pers->name_email(),
             from    => "HFS Membership <$string{mem_email}>",
