@@ -31,7 +31,7 @@ Sponsor Member - Expires [% member.date_sponsor_obj.format("%D") %], [% member.s
 [% ELSIF cat == 'Inactive' %]
 Inactive Member
 [% ELSE %]
-Life Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member.free_prog_taken %]was taken.[% ELSE %]not yet taken.[% END %]
+$cat Member - [% member.sponsor_nights %] Nights Left, Free Program [% IF member.free_prog_taken %]was taken.[% ELSE %]not yet taken.[% END %]
 [% END %]
 </div>
 <ul>

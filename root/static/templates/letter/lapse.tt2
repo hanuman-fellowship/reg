@@ -18,7 +18,7 @@ li {
 </head>
 <body>
 [% IF message %]
-<table cellpadding=0 width=100%>
+<table cellpadding=0 width=100% border=0>
 <tr>
 <td width=300pt>
 ${message}

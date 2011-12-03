@@ -132,7 +132,7 @@ sub _get_data {
     %P = %{ $c->request->params() };
     @mess = ();
     if (! $P{category}) {
-        push @mess, "You must select General, Contributing Sponsor, Sponsor, Life Founding Life or Inactive";
+        push @mess, "You must select General, Contributing Sponsor, Sponsor, Life, Founding Life or Inactive";
     }
     # dates are either blank or converted to d8 format
     for my $f (keys %P) {
@@ -292,7 +292,7 @@ sub update_do : Local {
         }
     }
 
-    if ($P{category} =~ m{Life} && $member->category() !~ m{Life}) {
+    if ($P{category} eq 'Life' && $member->category() ne 'Life') {
         # a new Life member
         # clear the free program taken
         #
@@ -363,7 +363,7 @@ body {
     margin-left: .5in;
 }
 #addr {
-    margin-top: 2in;
+    margin-top: 1in;
     margin-bottom: .5in;
 }
 </style>
@@ -568,8 +568,13 @@ sub create_do : Local {
 }
 
 sub _lapsed_members {
-    my ($c) = @_;
+    my ($c, $include_inactive) = @_;
+
     my $today = tt_today($c)->as_d8();
+    my @opt;
+    if ($include_inactive) {
+        @opt = (category => 'Inactive');
+    }
     return [
         model($c, 'Member')->search(
             {
@@ -582,6 +587,7 @@ sub _lapsed_members {
                         category => 'Sponsor',
                         date_sponsor => { '<', $today },
                     ],
+                    @opt,
                 ],
             },
             {
@@ -645,10 +651,13 @@ sub _checked_members {
 }
 
 sub lapsed : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $include_inactive) = @_;
 
-    $c->stash->{members} = _lapsed_members($c);
-    $c->stash->{template} = "member/lapsed.tt2";
+    stash($c,
+        members  => _lapsed_members($c, $include_inactive),
+        inactive => $include_inactive,
+        template => "member/lapsed.tt2",
+    );
 }
 
 sub lapse_soon : Local {

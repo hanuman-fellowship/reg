@@ -2,8 +2,10 @@
 [% msg %]
 </div>
 There [% num_no_email %] without an email address.<br>
+[% IF scalar(no_email) %]
 Click on each of the names below to print their letter.<br>
 Close the window after printing.
+[% END %]
 <ol>
 [% FOR m IN no_email %]
 [% p = m.person %]
