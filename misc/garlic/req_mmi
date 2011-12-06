@@ -36,15 +36,15 @@ my %data = %$href;
 
 # Call subroutine from authorize.net that sets $fingerprint_html 
 #
-my $loginid = "x5aebjakm";          # MMC - diff for MMI?
-my $txnkey = "78QyCHfp69MP43bY";
+my $loginid = "8b3m8M43c4Gp";
+my $txnkey = "728CN5buK7jg793R";
 my $x_currency_code = "USD";
 my $fingerprint_html =
-    SimLib::InsertFP($loginid, $txnkey, $data{amount}, $x_currency_code);
+    SimLib::InsertFP($loginid, $txnkey, $data{total}, $x_currency_code);
 
 my %stash = (
     description => "Payment for MMI Program '$data{program}'",
-    amount   => $data{amount},
+    amount   => $data{total},
     test     => $test,
     first    => $data{first},
     last     => $data{last},
@@ -58,7 +58,7 @@ my %stash = (
     for_what => $data{for_what},
     program  => $data{program},
     note     => $data{note},
-    amount_disp => commify($data{amount}),
+    amount_disp => commify($data{total}),
     fingerprint => $fingerprint_html,
     loginid     => $loginid,
     req_mmi_id    => $data{id},

@@ -1,3 +1,115 @@
-Thank you, ${x_first_name}.
-<p>
-Your payment will be credited to the MMI program '${x_program}'.
+<?php 
+require_once ('includes/variable_definitions.php');
+
+// ======== VARIABLE DECLARATION ==========
+$header			= 'home';	// define which header include file to use
+$active_navbar 	= 'institute';	// defines which button on the navbar should be down
+$sidebar 		= 'institute';	// defines which sidebar to use
+$pagemenu		= 'home';	// defines which page menu to use
+
+$this_page		= ''; 		// defines which sidebar and page_menu item is highlighted
+// acceptable values for ayurveda pages:
+// home, aboutus, overview, campus, history, faculty, programs, counselor, practitioner, masters, seminars, public, admissions, curriculum, fees, aid, application, faq, students, future, current, feedback, events, archives, alumni, contactus, clinic, apothecary, wellness.
+
+// ========================================
+
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><!-- InstanceBegin template="/Templates/ayurveda_one_column.dwt" codeOutsideHTMLIsLocked="false" -->
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<title>Untitled Document</title>
+<!-- InstanceEndEditable -->
+<!-- InstanceBeginEditable name="head" -->
+
+<link href="/styles/reset.css" rel="stylesheet" type="text/css" />
+<link href="/styles/layout.css" rel="stylesheet" type="text/css" />
+<link href="/styles/header.css" rel="stylesheet" type="text/css" />
+<link href="/styles/sidebar.css" rel="stylesheet" type="text/css" />
+<link href="/styles/text.css" rel="stylesheet" type="text/css" />
+<link href="/styles/regform.css" rel="stylesheet" type="text/css" />
+
+<!-- InstanceEndEditable -->
+<!--[if IE 5]>
+<style type="text/css"> 
+/* place css box model fixes for IE 5* in this conditional comment */
+.twoColFixLtHdr #sidebar1 { width: 230px; }
+</style>
+<![endif]--><!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixLtHdr #sidebar1 { padding-top: 30px; }
+.twoColFixLtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]--></head>
+
+<body class="twoColFixLtHdr">
+
+    <div id="container">
+        <div id="header">
+            <!-- BEGIN HEADER -->
+            <?php include("$CGI_BASE_URL/includes/header_$header.php");?>   
+            <!-- END HEADER -->
+        </div> <!-- end #header -->
+        
+        <div id="menubar">
+            <!-- BEGIN MENUBAR -->
+            <?php include("$CGI_BASE_URL/includes/menubar.php");?>    
+            <!-- END MENUBAR -->
+		</div> <!-- end #menubar -->
+        
+  
+        <div id="sidebar1">
+        
+            <!-- BEGIN SIDEBAR -->
+            <?php include("$CGI_BASE_URL/includes/sidebar_$sidebar.php");?>    
+            <!-- END SIDEBAR -->  
+        
+        </div>
+        
+        <div id="mainContent">
+		
+		<!-- InstanceBeginEditable name="content_top" -->
+        
+		
+		<!-- InstanceEndEditable -->		
+		
+		
+		<!-- InstanceBeginEditable name="body" -->
+		<div class="middle">
+        
+            <div class="receipt">
+                    <div class="success">
+                        <img src="http://www.mountmadonnainstitute.org/images/success.jpg">
+                        <div class="success_text">
+                            <h2>Thank you, ${x_first_name}.</h2>
+                            <h3>Your payment will be credited to the MMI program '${x_program}'.</h3>
+							<p>&nbsp;</p>
+							<p>&nbsp;</p>
+							<p><a href="http://www.mountmadonnainstitute.org">MMI Home Page</a></p>
+                        </div>
+                    </div>
+        
+           </div> 
+                    
+
+                                    
+        </div>
+        <!-- InstanceEndEditable --></div>
+        <!-- end #mainContent -->
+        
+        <br class="clearfloat" /><!-- This clearing element should immediately follow the #mainContent div in order to force the #container div to contain all child floats -->
+        
+        <div id="footer">
+        
+            <!-- BEGIN FOOTER -->
+            <?php include("$CGI_BASE_URL/includes/footer.php");?>
+            <!-- END FOOTER -->
+            
+        </div><!-- end #footer -->
+    </div><!-- end #container -->
+</body>
+<!-- InstanceEnd --></html>
