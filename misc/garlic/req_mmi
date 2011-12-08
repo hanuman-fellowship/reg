@@ -19,7 +19,7 @@ sub commify {
 }
 
 
-my $test = 1;
+my $test = 0;
 
 my $code = param('code');
 # -f ??
