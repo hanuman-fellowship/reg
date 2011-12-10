@@ -1,41 +1,5 @@
-<html>
-<head>
-<style>
-body {
-    width: 800px;
-    font-family: Georgia, Times;
-    font-size: 14pt;
-    margin-left: 6mm;
-}
-td {
-    font-family: Georgia, Times;
-    font-size: 14pt;
-}
-li {
-    margin-bottom: 2mm;
-}
-</style>
-</head>
-<body>
-[% IF message %]
-<table cellpadding=0 width=100% border=0>
-<tr>
-<td width=300pt>
-${message}
-</td>
-<td align=right valign=bottom>
-<img height=150
-     src="http://www.hanumanfellowship.org/images/hanuman_logo.png">
-</td>
-</tr>
-</table>
-[% ELSE %]
-<img style="margin-left: 6in"
-     height=150
-     src="http://www.hanumanfellowship.org/images/hanuman_logo.png">
-<br>
-[% END %]
-Dear $sanskrit, 
+[% INCLUDE lapse_top.tt2 %]
+Dear $sanskrit,
 <p>
 We are reaching out to you as a former member of the
 Hanuman Fellowship to ask you to consider rejoining the Fellowship
