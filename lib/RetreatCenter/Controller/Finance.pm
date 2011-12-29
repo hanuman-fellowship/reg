@@ -556,7 +556,7 @@ sub period_end : Local {
                 #
                 my ($name, $link);
                 if ($src eq 'MMIPayment') {
-                    ($name, $link) = mmi_glnum($c, $glnum);
+                    ($name, $link) = mmi_glnum($c, $glnum, $start_d8, $end_d8);
                 }
                 else {
                     $name = $p->pname();
@@ -641,6 +641,22 @@ sub period_end : Local {
     );
 }
 
+sub mmi_dig : Local {
+    my ($self, $c, $glnum, $start_d8, $end_d8) = @_;
+
+    my @payments = model($c, 'MMIPayment')->search({
+        glnum    => $glnum,
+        the_date => { between => [ $start_d8, $end_d8 ] },
+    });
+    stash($c,
+        glnum    => $glnum, 
+        start    => date($start_d8), 
+        end      => date($end_d8),
+        penny    => \&penny,
+        payments => \@payments,
+        template => "finance/mmi_dig.tt2",
+    );
+}
 sub outstanding : Local {
     my ($self, $c) = @_;
 
