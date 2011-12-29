@@ -1,0 +1,29 @@
+<h2>MMI Payments to GL Number $glnum from $start to $end</h2>
+<table cellpadding=5>
+<tr>
+<th align=left>Program Name</th>
+<th align=left>Program GL #</th>
+<th align=left>Person</th>
+<th align=right>Amount</th>
+</tr>
+[% tot = 0 %]
+[% FOREACH pay IN payments %]
+[% reg = pay.registration %]
+[% pr = reg.program %]
+[% per = reg.person %]
+[% amount = pay.amount %]
+<tr>
+<td><a target=_blank href=/program/view/$pr.id/3>$pr.name</a></td>
+<td align=center>$pr.glnum</td>
+<td><a target=_blank href=/registration/view/$reg.id>$per.first $per.last</a></td>
+<td align=right>[% penny(amount) %]</td>
+</tr>
+[% tot = tot + amount %]
+[% END %]
+<tr>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td align=right>Total</td>
+<td align=right>$tot</td>
+</tr>
+</table>
