@@ -1190,8 +1190,12 @@ sub gptrim {
 # for a description of what the various digits of
 # the GL Number mean.
 #
+# if we cannot find the glnum return a link
+# that will dig deeper into the payments and reveal
+# their source.  For this we pass the date range.
+#
 sub mmi_glnum {
-    my ($c, $glnum) = @_;
+    my ($c, $glnum, $start_d8, $end_d8) = @_;
 
     my $d1 = substr($glnum, 0, 1);
     my $purpose = ($d1 eq '1'? 'Tuition'
@@ -1223,15 +1227,15 @@ sub mmi_glnum {
                 && $sdate->month() == $month
             ) {
                 return ($p->name() . $purpose,
-                        "/program/view/" . $p->id);
+                        "/program/view/" . $p->id . "/3");
                 # it is possible that we would get the wrong program.
                 # e.g. what if in July 2109 there is an Ayurveda
                 # Master's program like there was in July 2009.
                 # don't worry about it.
             }
         }
-        return ("Unknown MMI DCM Program" . $purpose,
-                "/program/list/1");
+        return ("Unknown - Click for List " . $purpose,
+                "/finance/mmi_dig/$glnum/$start_d8/$end_d8");
     }
     else {
         # This is a payment for an auditor.
@@ -1247,11 +1251,11 @@ sub mmi_glnum {
         );
         if (@progs) {
             return ($progs[0]->name() . $purpose,
-                    "/program/view/" . $progs[0]->id());
+                    "/program/view/" . $progs[0]->id() . "/3");
         }
         else {
             return ("Unknown MMI DCM Course" . $purpose,
-                    "/program/view/1");
+                    "/program/view/3");
         }
     }
 }
