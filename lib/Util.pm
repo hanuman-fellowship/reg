@@ -1223,7 +1223,7 @@ sub mmi_glnum {
         });
         for my $p (@progs) {
             my $sdate = $p->sdate_obj;
-            if (($sdate->year() % 10) == $year10
+            if (($sdate->year() % 100) == $year10
                 && $sdate->month() == $month
             ) {
                 return ($p->name() . $purpose,
