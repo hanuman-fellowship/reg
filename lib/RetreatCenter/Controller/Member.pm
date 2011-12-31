@@ -17,6 +17,7 @@ use Date::Simple qw/
     date
     days_in_month
     today
+    ymd
 /;
 use Time::Simple qw/
     get_time
@@ -91,6 +92,9 @@ sub list : Local {
                 prefetch => ['person'],
                 order_by => ['person.last', 'person.first' ],
             }
+            # ??? the above join/prefetch could be put everywhere
+            # there is a search for multiple members.
+            # it is currently 12/31/11 not done this way.
         );
     }
     $c->stash->{members} = \@members;
@@ -281,12 +285,14 @@ sub update_do : Local {
     # 
     if ($valid_to) {
         if ($P{category} eq 'General'
-            && $P{date_general} == $member->date_general()
+            && (!$P{date_general}
+                || $P{date_general} == $member->date_general())
         ) {
             $P{date_general} = $valid_to;
         }
         if ($P{category} eq 'Sponsor'
-            && $P{date_sponsor} == $member->date_sponsor()
+            && (!$P{date_sponsor}
+                || $P{date_sponsor} == $member->date_sponsor())
         ) {
             $P{date_sponsor} = $valid_to;
         }
@@ -345,8 +351,6 @@ sub acknowledge {
 
     my $person   = $member->person;
     my $category = $member->category;
-    my $benefits = ($category eq 'Sponsor'
-                    && date($member->date_sponsor()) > tt_today($c));
     my $message = "";
     if ( ! $person->email) {
         my $name = $person->name();
@@ -378,11 +382,11 @@ EOA
         sanskrit     => ($person->sanskrit || $person->first),
         amount       => $amount,
         pay_date     => date($pay_date),
-        expire_date  => date($member->date_general),
-        due_date     => date($member->date_sponsor()),
-        toward_spons => $category eq 'General'
-                        && $amount > $string{mem_gen_amt},
-        total_paid   => $member->total_paid(),
+        due_date     => date($P{date_sponsor}),     # not needed for General
+        next         => $amount,
+        year         => $category eq 'General'? date($P{date_general})->year()
+                        :                       date($P{date_sponsor})->year(),
+        subtot       => $member->total_paid(),
         string       => \%string,
         message      => $message,
         category     => $category,
@@ -1089,50 +1093,148 @@ sub payment_update_do : Local {
     $c->response->redirect($c->uri_for("/member/update/" . $pmt->member_id));
 }
 
-sub one_time : Local {
+sub just_expired : Local {
     my ($self, $c) = @_;
 
-    my @sponsors = model($c, 'Member')->search({
-        category => 'Sponsor',
+    # get the date of last year's Dec 31
+    my $last_dec31 = ymd(today->year()-1, 12, 31)->as_d8();
+
+    # find members with date_general or date_sponsor == $last_dec31
+    my @members = model($c, 'Member')->search({
+        -or => [
+            -and => [
+                category     => 'General',
+                date_general => $last_dec31,
+            ],
+            -and => [
+                category     => 'Sponsor',
+                date_sponsor => $last_dec31,
+            ],
+        ],
     });
+    stash($c,
+        members  => \@members,
+        template => "member/just_expired.tt2",
+    );
+}
+
+#
+# copied this from email_lapsed_soon
+# factor common code out?
+#
+sub email_just_expired : Local {
+    my ($self, $c) = @_;
+
+    my $to_you = $c->request->params->{to_you};
+    my @no_email;
+    my $nsent = 0;
+    my $mem_admin = $c->user->name();
+    Global->init($c);
+    MEMBER:
+    for my $m (_checked_members($c)) {
+        my $per = $m->person;
+        my $name = $per->name();
+        my $email = $per->email;
+        if (! $email) {
+            push @no_email, $m;
+            next MEMBER;
+        }
+        my $type = $m->category;
+        my $html = "";
+        my $tt = Template->new({
+            INTERPOLATE  => 1,
+            INCLUDE_PATH => 'root/static/templates/letter',
+            EVAL_PERL    => 0,
+        });
+        my $stash = {
+            sanskrit    => ($per->sanskrit || $per->first),
+            year    => tt_today()->year-1,
+            string      => \%string,
+        };
+        $tt->process(
+            ($type eq 'General'? 'gen': 'spons') . "_exp.tt2", # template
+            $stash,           # variables
+            \$html,           # output
+        ) or die $tt->error;
+        email_letter($c,
+            to      => (($to_you)? $c->user->email(): $per->name_email()),
+            from    => "HFS Membership <$string{mem_email}>",
+            subject => "Hanuman Fellowship Membership Status",
+            html    => $html,
+        );
+        ++$nsent;
+    }
+
+    stash($c,
+        status => "just expired",
+        msg    => "$nsent email reminder letter"
+                          . (($nsent == 1)? " was sent."
+                             :              "s were sent."),
+        num_no_email => (@no_email == 1)? "was 1 member":
+                                          "were "
+                                          . scalar(@no_email)
+                                          . " members",
+        no_email => \@no_email,
+        template => "member/just_expired_sent.tt2",
+    );
+}
+
+#
+# copied from lapsed_letter
+# factor out common code?
+#
+sub just_expired_letter : Local {
+    my ($self, $c, $id) = @_;
+
+    my $member = model($c, 'Member')->find($id);
+    my $per = $member->person;
+    my $category = $member->category;
+    my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
-    my @no_email;
-    for my $m (@sponsors) {
-        my $pers = $m->person();
-        if (empty($pers->email())) {
-            push @no_email, $m;
-            next;
-        }
-        my $html = "";
-        $tt->process(
-            "one_time.tt2",       # template
-            { member => $m },     # variables
-            \$html,               # output
-        ) or die $tt->error;
-        email_letter($c,
-            to      => $pers->name_email(),
-            from    => "HFS Membership <$string{mem_email}>",
-            subject => "HFS Sponsor Memberships - New Guidelines",
-            html    => $html, 
-        );
+    my $name = $per->name();
+    my $addr = $per->addr1 . "<br>\n";
+    if (my $addr2 = $per->addr2) {
+        $addr .= $addr2 . "<br>\n";
     }
-    my $html = "";
-    for my $m (@no_email) {
-        $html .= $m->person->name() . "<br>"
-              .  $m->person->addr1 . "<br>"
-              .  (empty($m->person->addr2)? "": ($m->person->addr2 . "<br>"))
-              .  $m->person->city . ", "
-              .  $m->person->st_prov . " "
-              .  $m->person->zip_post . "<br>"
-              .  (empty($m->person->country)? "": ($m->person->country."<br>"))
-              .  $m->date_sponsor_obj->format("%D") . "<p>\n"
-              ;
-    }
-    $c->res->output($html);
+    $addr .= $per->city . ", "
+           . $per->st_prov . " "
+           . $per->zip_post;
+    my $message = <<"EOA";
+<style>
+body {
+    margin-left: .5in;
+}
+#addr {
+    margin-top: 2in;
+    margin-bottom: .5in;
+}
+</style>
+<div id=addr>
+$name<br>
+$addr
+<p>
+</div>
+EOA
+    Global->init($c);
+    my $stash = {
+        sanskrit => ($per->sanskrit || $per->first),
+        year     => tt_today()->year-1,
+        string   => \%string,
+        message  => $message,
+    };
+     my $template .= $category eq 'General'? 'gen': 'spons';
+     $template .= "_exp.tt2";
+    $tt->process(
+        $template,
+        $stash,           # variables
+        \$html,           # output
+    ) or die $tt->error;
+    $html = _no_here($html);
+    $c->res->output($html . js_print());
 }
 
 1;

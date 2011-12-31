@@ -1,0 +1,11 @@
+[% INCLUDE top.tt2 %]
+Dear $sanskrit,
+<p>
+We noticed that your General Membership in the Hanuman Fellowship expired
+on December 31, $year and we respectfully request that you renew your
+membership and continue to be part of our supportive community.
+General Membership is maintained by an annual payment of dues in the
+amount of \$${string.mem_gen_amt}. Please make your payment today
+to renew your membership and reinstate your benefits. 
+<p>
+[% INCLUDE bot.tt2 %]

@@ -1,0 +1,15 @@
+[% INCLUDE top.tt2 %]
+Dear $sanskrit,
+<p>
+We noticed that your Sponsor Membership in the Hanuman Fellowship expired on
+December 31, $year and we respectfully request that you renew your membership
+and continue to be part of our supportive community.
+<p>
+Sponsor Membership is maintained by an annual payment of dues in the
+amount of \$${string.mem_spons_year}. Please make your payment today to
+reinstate your benefits and to have that amount applied toward the
+Life Membership goal of \$${string.mem_life_total}. Sponsors may also make two
+semiannual payments of \$$string.mem_spons_semi_year by special
+arrangement with the Membership Secretary. 
+<p>
+[% INCLUDE bot.tt2 %]

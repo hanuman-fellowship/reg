@@ -1,0 +1,42 @@
+<script type="text/javascript">
+function toggle_all() {
+    var form = document.form;
+    for (var i = 0; i < form.length; ++i) {
+        if (form[i].type == 'checkbox'
+            && form[i].name != 'all'
+            && form[i].name != 'to_you'
+        ) {
+            form[i].checked = ! form[i].checked;
+        }
+    }
+}
+</script>
+<h2>Just Expired Members</h2>
+<form name=form action=/member/email_just_expired>
+<input type=submit value="Email Reminder to All Checked">
+&nbsp; &nbsp; &nbsp;
+For testing to YOU<input type=checkbox name=to_you checked>
+&nbsp; &nbsp; &nbsp;
+Toggle All <input type=checkbox name=all onclick="toggle_all()";>
+<ul>
+<table cellpadding=5>
+<tr>
+<td>&nbsp;</td>
+<th align=left>Sanskrit</th>
+<th align=left>Name</th>
+<th align=left>Category</th>
+<th align=left>Email</th>
+</tr>
+[% FOREACH m IN members %]
+[% per = m.person %]
+<tr>
+<td><input type=checkbox name=id$m.id></td>
+<td><a href="/member/update/$m.id">[% per.sanskrit || per.first %]</a></td>
+<td align=left>$per.last, $per.first</td>
+<td align=left>$m.category</td>
+<td>[% per.email %]</td>
+</tr>
+[% END %]
+</table>
+</ul>
+</form>

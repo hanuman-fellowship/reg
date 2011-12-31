@@ -116,3 +116,12 @@ Nov 27 3:25-3:45
     fiddling with member category - founding life wrinkles
 Dec 2 10:00-11:00
     program/confirmation letter/member fiddlings
+Dec 27 9:00-10:00
+    MMI GL number mess investigation
+Dec 28 9:30-11:30
+    making mmi_dig listing - to maybe help
+Dec 29 10:30-11:15
+    finally solving the mystery - % 100 not % 10.
+    and initial gl numbers for MMI courses changed later.
+Dec 31 8:20-12:00
+    membership letters

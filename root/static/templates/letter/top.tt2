@@ -1,24 +1,6 @@
-<html>
-<head>
-<style>
-body {
-    width: 800px;
-    font-family: Georgia, Times;
-    font-size: 14pt;
-    margin-left: 6mm;
-}
-td {
-    font-family: Georgia, Times;
-    font-size: 14pt;
-}
-li {
-    margin-bottom: 2mm;
-}
-</style>
-</head>
-<body>
+[% INCLUDE style.tt2 %]
 [% IF message %]
-<table cellpadding=0 width=100% border=0>
+<table cellpadding=0 width=100%>
 <tr>
 <td width=300pt>
 ${message}

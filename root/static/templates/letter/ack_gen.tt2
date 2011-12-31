@@ -1,29 +1,10 @@
-[% INCLUDE style.tt2 %]
-[% IF message %]
-<table cellpadding=0 width=100%>
-<tr>
-<td width=300pt>
-${message}
-</td>
-<td align=right valign=bottom>
-<img height=150
-     src="http://www.hanumanfellowship.org/images/hanuman_logo.png">
-</td>
-</tr>
-</table>
-[% ELSE %]
-<img style="margin-left: 6in"
-     height=150
-     src="http://www.hanumanfellowship.org/images/hanuman_logo.png">
-<br>
-[% END %]
+[% INCLUDE top.tt2 %]
 Dear $sanskrit,
 <p>
-Thank you for the payment of \$$amount
-for General Membership in the Hanuman Fellowship
-which we received on [% pay_date.format("%D") %].
-Your dues are in effect until [% expire_date.format("%D") %]. 
+Thank you for your generous commitment to the Hanuman Fellowship
+as a General Member and for being part of our supportive community.
+We received your payment of dues in the amount of \$$amount
+on [% pay_date.format("%D") %] and activated your benefits for the
+$year membership year.
 <p>
-Information about HFS membership can be found <a href=${string.mem_site}>here</a>.
-<p>
-[% INCLUDE info.tt2 %]
+[% INCLUDE bot.tt2 %]

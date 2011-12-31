@@ -1,4 +1,4 @@
-[% INCLUDE lapse_top.tt2 %]
+[% INCLUDE top.tt2 %]
 Dear $sanskrit,
 <p>
 We are reaching out to you as a former member of the
@@ -24,5 +24,3 @@ of membership can be found <a href=http://www.hanumanfellowship.org/HFS_Membersh
 Please return the application form with your payment to renew your membership.
 <p>
 [% INCLUDE info.tt2 %]
-</body>
-</html>
