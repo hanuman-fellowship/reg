@@ -34,7 +34,7 @@ $from_email = "MMC Program Director <$from_email>";
 
 my $date = shift || today()->as_d8();
 my $day_before = date($date)->prev->as_d8();
-my $schema = RetreatCenterDB->connect($ENV{DBI_DSN});
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
 my $msg = "";
 my $tot = 0;
 
