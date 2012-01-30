@@ -7,7 +7,9 @@ Dear ${first},
 <p>
 [% IF program %]
 Thank you for your participation in the '${title}' program at
-Mount Madonna Center with ${leader_name}.
+Mount Madonna Center[% IF leader_name %] with ${leader_name}[% END %].
+[% ELSIF pr %]
+Thank you for taking a personal retreat at Mount Madonna Center.
 [% ELSE %]
 Thank you for renting our facilities for '${title}'.
 [% END %]

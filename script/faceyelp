@@ -21,6 +21,8 @@ my $tt = Template->new({
     EVAL_PERL    => 0,
 });
 
+my $testing = 1;
+
 open my $letter, '<', "$dir/faceyelp.tt2"
     or die "cannot open faceyelp.tt2: $!\n";
 my $html;
@@ -38,18 +40,28 @@ my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
 my $msg = "";
 my $tot = 0;
 
+# programs
+#
 my @programs = $schema->resultset('Program')->search({
-    edate => $day_before,
+    edate  => $day_before,
+    school => 0, 
+    name   => { -not_like => '%personal%retreat%' },
 });
 for my $pr (@programs) {
     my @leaders = $pr->leaders;
-    my $leader_name = $leaders[0]->person->name;
+    my $leader_name;
+    if (@leaders) {
+        $leader_name = $leaders[0]->person->name;
+    }
     my $title = $pr->title;
     my $n = 0;
     REG:
     for my $reg ($pr->registrations) {
         next REG if $reg->leader_assistant;     # skip leaders & assistants
+        next REG if $reg->cancelled;
         my $per = $reg->person;
+        next REG if ! $per->email;
+
         my $html = "";
         my $stash = {
             program     => 1,
@@ -62,10 +74,11 @@ for my $pr (@programs) {
             $stash,               # variables
             \$html,               # output
         );
+print $per->first, ' ', $per->last, " of program $title\n";
         email_letter(
             schema  => $schema,
             from    => $from_email,
-            to      => $per->email,
+            to      => $testing? 'jon@suecenter.org': $per->email,
             subject => "Your Time At Mount Madonna Center",
             html    => $html,
         );
@@ -74,6 +87,9 @@ for my $pr (@programs) {
     $msg .= "$n people for program $title<br>\n";
     $tot += $n;
 }
+
+# rentals
+#
 my @rentals = $schema->resultset('Rental')->search({
     edate => $day_before,
 });
@@ -86,6 +102,9 @@ for my $r (@rentals) {
     }
     if ($r->contract_signer) {
         push @people, $r->contract_signer;
+    }
+    if (@people == 2 && $people[0]->email eq $people[1]->email) {
+        shift @people;
     }
     my $n = @people;
     $tot += $n;
@@ -101,10 +120,11 @@ for my $r (@rentals) {
             $stash,               # variables
             \$html,               # output
         );
+print $per->first, " ", $per->last, " of rental $title\n";
         email_letter(
             schema  => $schema,
             from    => $from_email,
-            to      => $per->email,
+            to      => $testing? 'jon@suecenter.org': $per->email,
             subject => "Your Time At Mount Madonna Center",
             html    => $html,
         );
@@ -112,6 +132,51 @@ for my $r (@rentals) {
     my $who = ($n == 1)? "person": "people";
     $msg .= "$n $who for rental $title<br>\n";
 }
+
+# personal retreatants
+#
+my @prog_pr = $schema->resultset('Program')->search({
+    name => { -like => '%personal%retreat%' },
+    sdate => { '<=' => $day_before },
+    edate => { '>=' => $day_before },
+});
+if (@prog_pr) {
+    my $pr_id = $prog_pr[0]->id();
+    my @pers_retr = $schema->resultset('Registration')->search({
+        program_id => $pr_id,
+        date_end   => $day_before,
+    });
+    my $n = 0;
+    REG:
+    for my $reg (@pers_retr) {
+        next REG if $reg->cancelled;
+        my $per = $reg->person;
+        next REG if ! $per->email;
+
+        my $html = "";
+        my $stash = {
+            pr          => 1,
+            first       => $per->first,
+        };
+        $tt->process(
+            "faceyelp.tt2",
+            $stash,               # variables
+            \$html,               # output
+        );
+print $per->first, " ", $per->last, " for PR\n";
+        email_letter(
+            schema  => $schema,
+            from    => $from_email,
+            to      => $per->email,
+            subject => "Your Time At Mount Madonna Center",
+            html    => $html,
+        );
+        ++$n;
+    }
+    $msg .= "$n people for personal retreats<br>\n";
+    $tot += $n;
+}
+
 if ($tot) {
     email_letter(
         schema  => $schema,
@@ -121,3 +186,10 @@ if ($tot) {
         html    => $msg,
     );
 }
+email_letter(
+    schema  => $schema,
+    from    => 'jon@logicalpoetry.com',
+    to      => 'jon@suecenter.org',
+    subject => "Post-Event emailings",
+    html    => 'It did run!',
+);
