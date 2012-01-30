@@ -21,7 +21,7 @@ my $tt = Template->new({
     EVAL_PERL    => 0,
 });
 
-my $testing = 1;
+my $testing = 0;
 
 open my $letter, '<', "$dir/faceyelp.tt2"
     or die "cannot open faceyelp.tt2: $!\n";
@@ -167,7 +167,7 @@ print $per->first, " ", $per->last, " for PR\n";
         email_letter(
             schema  => $schema,
             from    => $from_email,
-            to      => $per->email,
+            to      => $testing? 'jon@suecenter.org': $per->email,
             subject => "Your Time At Mount Madonna Center",
             html    => $html,
         );
