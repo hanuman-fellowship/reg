@@ -35,26 +35,31 @@ function choose_driver(id) {
     get('dr_n' + id).style.display = 'none';
     get('dr_s' + id).style.display = 'block';
     get('dr_sel' + id).focus();
+    return false;
 }
 function choose_shuttle(id) {
     get('sh_n' + id).style.display = 'none';
     get('sh_s' + id).style.display = 'block';
     get('sh_sel' + id).focus();
+    return false;
 }
 function edit_cost(id) {
     get('c' + id).style.display = 'none';
     get('ci' + id).style.display = 'block';
     get('cost' + id).focus();
+    return false;
 }
 function edit_status(id) {
     get('s' + id).style.display = 'none';
     get('si' + id).style.display = 'block';
     get('status' + id).focus();
+    return false;
 }
 function edit_pu(id) {
     get('pu' + id).style.display = 'none';
     get('pui' + id).style.display = 'block';
     get('putime' + id).focus();
+    return false;
 }
 function new_driver(ride_id) {
     var sel = get('dr_sel' + ride_id);

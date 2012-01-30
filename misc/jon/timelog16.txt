@@ -108,7 +108,7 @@ Nov 22 11:00-12:30
     publish PR tweaks
     no PR pushed out
     no coordinator for Rental messed up reconciliation listing
-Nov 24 6:50-
+Nov 24 6:50-7:30
     faceyelp finalizations
 Nov 26 11:15-4:45
     at MMC working with membership people
@@ -125,3 +125,7 @@ Dec 29 10:30-11:15
     and initial gl numbers for MMI courses changed later.
 Dec 31 8:20-12:00
     membership letters
+Jan 3 10:50-11:30
+    faceyelp finally
+Jan 12 1:00-1:15
+    sex got NULL somehow for Dan Brown
