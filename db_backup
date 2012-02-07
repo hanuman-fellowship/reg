@@ -1,6 +1,6 @@
 #/bin/sh
 cd /home/sahadev/Reg
-day=`date +%a`
+day=`date +%d`
 f=rc.$day
 rm -f $f $f.gz
 mysqldump --user=root --add-drop-table --databases reg2 >$f
