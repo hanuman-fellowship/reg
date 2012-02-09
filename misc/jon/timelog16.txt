@@ -139,5 +139,15 @@ Feb 1 10:00-10:15, 11:00-12:00
     calendar crash on rental sans status
     installing CentOS 6.2 for backup machine
         configured dev tools, ssh, sudo
-Feb 6 11:50-
+Feb 6 11:50-12:30
     reconciliation fatal
+    missing program?   1/27/12?
+    enlarged the backup days from 7 to 31
+Feb 7 10:30-11:50
+    restoring Lasater 1/12 - how did it get clobbered?
+    From Duplicate?  Unlikely.
+    Shall we write a self-referential integrity checker?
+    hcck does some of that.  but it is rarely run!
+Feb 8 10:35-
+    role for Event Scheduler - only show Events, Calendar, MasterCal
+        merge testplans, help
