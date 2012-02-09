@@ -8,6 +8,7 @@ p {
 [% prog = Catalyst.check_user_roles('prog_staff') %]
 [% prog_admin = Catalyst.check_user_roles('prog_admin') %]
 [% field = Catalyst.check_user_roles('field_staff') %]
+[% mail_staff = Catalyst.check_user_roles('mail_staff') %]
 [% mail_admin = Catalyst.check_user_roles('mail_admin') %]
 [% user_admin = Catalyst.check_user_roles('user_admin') %]
 [% web_des = Catalyst.check_user_roles('web_designer') %]
