@@ -6,6 +6,7 @@
 [% prog_staff = Catalyst.check_user_roles('prog_staff') %]
 [% field_staff = Catalyst.check_user_roles('field_staff') %]
 [% mail_staff = Catalyst.check_user_roles('mail_staff') %]
+[% event_scheduler = Catalyst.check_user_roles('event_scheduler') %]
 
 [% IF Catalyst.user.username != 'library' %]
 
@@ -14,9 +15,11 @@
 <tr>
 [% IF field_staff && ! mail_staff %]
 <td><a href=/listing/field>Listings</a></td>
-[% ELSE %]
+[% ELSIF mail_staff %]
 <td><a href=/person/search>People</a></td>
 <td><a href=/listing/index>Listings</a></td>
+[% ELSE %]
+<td></td><td></td>
 [% END %]
 <td><a href=/configuration>Configuration</a></td>
 [% IF Catalyst.check_user_roles('member_admin') %]
@@ -36,10 +39,18 @@
     <td><a href=/program/list>Programs</a></td>
     <td><a href=/rental/list>Rentals</a></td>
     <td><a href=/event/list>Events</a></td>
+[% ELSIF event_scheduler %]
+    <td></td>
+    <td></td>
+    <td><a href=/event/list>Events</a></td>
 [% ELSE %]
     <td colspan=3></td>
 [% END %]
+[% IF mail_staff %]
 <td width=60><a href=/book/search>Books</a></td>
+[% ELSE %]
+<td></td>
+[% END %]
 
 <td><a target=calendar href='/event/calendar/[% cal_param %]'>Calendar</a></td>
 

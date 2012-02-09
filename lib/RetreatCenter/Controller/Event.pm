@@ -1617,6 +1617,13 @@ sub _send_no_prs {
     $ftp->quit();
 }
 
+sub mastercal :Local {
+    my ($self, $c) = @_;
+    stash($c,
+        template => "event/mastercal.tt2",
+    );
+}
+
 sub my_die {
     my ($c, $msg) = @_;
 

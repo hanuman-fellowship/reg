@@ -39,12 +39,13 @@ p {
     <a href=/leader>Leaders</a><p>
     <a href=/meetingplace>Meeting Places</a><p>
 [% END %]
-[% IF ! field %]
+[% IF prog %]
     <a href=/project/list>Projects</a><p>
+    <a href=/resident/list>Residents</a><p>
 [% END %]
-
-<a href=/resident/list>Residents</a><p>
-<a href=/ride/list>Rides</a><p>
+[% IF prog_staff %]
+    <a href=/ride/list>Rides</a><p>
+[% END %]
 
 [% IF user_admin %]
     <a href=/role/list>Roles</a><p>
@@ -54,7 +55,9 @@ p {
     <a href=/template/list>Templates</a><p>
 [% END %]
 <a href=/user/profile_view>User Profile</a><p>
+[% IF mail_staff %]
 <a href=/user/list>Users</a><p>
+[% END %]
 [% IF prog_admin %]
 <a target=_blank href=http://www.mountmadonna.org/cgi-bin/admin>Web Administration</a><p>
 [% END %]
