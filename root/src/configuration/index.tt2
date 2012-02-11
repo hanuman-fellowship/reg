@@ -44,7 +44,7 @@ p {
     <a href=/project/list>Projects</a><p>
     <a href=/resident/list>Residents</a><p>
 [% END %]
-[% IF prog_staff %]
+[% IF prog %]
     <a href=/ride/list>Rides</a><p>
 [% END %]
 

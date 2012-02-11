@@ -151,3 +151,4 @@ Feb 7 10:30-11:50
 Feb 8 10:35-
     role for Event Scheduler - only show Events, Calendar, MasterCal
         merge testplans, help
+    next step - add organizations, use it in Events
