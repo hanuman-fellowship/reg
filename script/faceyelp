@@ -74,7 +74,6 @@ for my $pr (@programs) {
             $stash,               # variables
             \$html,               # output
         );
-print $per->first, ' ', $per->last, " of program $title\n";
         email_letter(
             schema  => $schema,
             from    => $from_email,
@@ -93,7 +92,10 @@ print $per->first, ' ', $per->last, " of program $title\n";
 my @rentals = $schema->resultset('Rental')->search({
     edate => $day_before,
 });
+RENTAL:
 for my $r (@rentals) {
+    next RENTAL if $r->program_id;      # skip hybrid rentals
+                                        # the program will suffice
     my $title = $r->name;
     $title =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
     my @people;
@@ -173,7 +175,10 @@ print $per->first, " ", $per->last, " for PR\n";
         );
         ++$n;
     }
-    $msg .= "$n people for personal retreats<br>\n";
+    my $pe = $n == 1? "person"
+            :         "people"
+            ;
+    $msg .= "$n $pe for personal retreats<br>\n";
     $tot += $n;
 }
 
