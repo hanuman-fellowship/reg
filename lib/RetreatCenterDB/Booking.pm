@@ -16,6 +16,7 @@ __PACKAGE__->add_columns(qw/
     sdate
     edate
     breakout
+    dorm
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

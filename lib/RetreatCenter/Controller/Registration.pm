@@ -1913,15 +1913,15 @@ sub send_conf : Local {
 }
 
 sub view : Local {
-    my ($self, $c, $reg_id) = @_;
+    my ($self, $c, $reg_id, $alert) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
     stash($c, reg => $reg);
-    _view($c, $reg);
+    _view($c, $reg, $alert);
 }
 
 sub _view {
-    my ($c, $reg) = @_;
+    my ($c, $reg, $alert) = @_;
     my $reg_id = $reg->id();
     my (@same_name_reg) = model($c, 'Registration')->search({
                               person_id  => $reg->person_id(),
@@ -2085,6 +2085,7 @@ sub _view {
         program        => $prog,
         only_one       => (@same_name_reg == 1),
         send_preview   => ($PR || $same_name_reg[0]->id() == $reg->id()),
+        alert          => $alert,
         template       => "registration/view.tt2",
     );
 }
@@ -3899,8 +3900,9 @@ sub lodge_do : Local {
             );
         }
     }
+    my $alert = CORE::index($string{house_alert}, "~$house_name_of{$house_id}~") >= 0;
     check_makeup_new($c, $house_id, $sdate);
-    $c->response->redirect($c->uri_for("/registration/view/$id"));
+    $c->response->redirect($c->uri_for("/registration/view/$id/$alert"));
 }
 
 #

@@ -51,5 +51,6 @@ create table booking (
     event_id    integer,
     sdate       text,
     edate       text,
-    breakout    text
+    breakout    text,
+    dorm        text
 );

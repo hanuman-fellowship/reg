@@ -1358,6 +1358,7 @@ sub del_meeting_place : Local {
 
     my $method = $hap_type . "_id";
     my $hap_id = $booking->$method();
+    my $dorm   = $booking->dorm();
 
     $booking->delete();
 
@@ -1367,12 +1368,12 @@ sub del_meeting_place : Local {
     # the loop below only loops once.
     # we break out at various points if certain conditions arise.
     # just a clever way to avoid a goto...
+    # later ... could have just used a bare block.
     #
     LOOP:
     while (1) {
-        if (! $mplace->sleep_too()) {
-            last LOOP;
-        }
+        last LOOP if ! $mplace->sleep_too() || $dorm;
+
         # find the corresponding house
         my ($house) = model($c, 'House')->search({
             name => $mplace->abbr(),
@@ -1497,8 +1498,8 @@ sub which_mp_do : Local {
     my $edate1 = date($edate)->prev->as_d8();
     delete $P{sdate};
     delete $P{edate};
-    my @mpids = map { my ($type, $id) = m{(mp|br)(\d+)}; [ $type, $id ] }
-                sort { $b cmp $a }      # so mp comes before br
+    my @mpids = map { my ($type, $id) = m{(mp|br|adorm)(\d+)}; [ $type, $id ] }
+                sort { $b cmp $a }      # so mp > br > adorm
                 keys %P;
     my %seen = ();
     @mpids = grep { ! $seen{$_->[1]}++ } @mpids;
@@ -1511,16 +1512,18 @@ sub which_mp_do : Local {
             program_id => 0,
             $hap_type . "_id"   => $hap_id,     # overrides the above
             breakout   => $mpid->[0] eq 'br'? 'yes': '',
+            dorm       => $mpid->[0] eq 'adorm'? 'yes': '',
             sdate      => $sdate,
             edate      => $edate,
         });
         #
         # and if this meeting place is for sleeping, too,
+        # AND it is not designated for a dorm
         # we need to create a Block so it can't be reserved
         # for lodging purposes.
         #
         my $mplace = model($c, 'MeetingPlace')->find($mpid->[1]);
-        if (! $mplace->sleep_too()) {
+        if (! $mplace->sleep_too() || $mpid->[0] eq 'adorm') {
             next MEETINGPLACE;
         }
         my ($house) = model($c, 'House')->search({

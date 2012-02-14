@@ -474,5 +474,8 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.f
 </table>
 
 <script type="text/javascript">
+[% IF alert %]
+alert('$reg.house.name' + ' is on the housing alert list!');
+[% END %]
 document.form.reg_pat.focus();
 </script>
