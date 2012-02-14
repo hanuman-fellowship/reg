@@ -148,7 +148,11 @@ Feb 7 10:30-11:50
     From Duplicate?  Unlikely.
     Shall we write a self-referential integrity checker?
     hcck does some of that.  but it is rarely run!
-Feb 8 10:35-
+Feb 8 10:35-12:00
     role for Event Scheduler - only show Events, Calendar, MasterCal
         merge testplans, help
     next step - add organizations, use it in Events
+Feb 11 3:00-3:15
+    rides in configuration, faceyelp - no rental hybrids
+Feb 12 6:00-6:20
+    Katie's request about SH Main being unavailable.

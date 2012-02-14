@@ -15,11 +15,9 @@
 <tr>
 [% IF field_staff && ! mail_staff %]
 <td><a href=/listing/field>Listings</a></td>
-[% ELSIF mail_staff %]
+[% ELSE %]
 <td><a href=/person/search>People</a></td>
 <td><a href=/listing/index>Listings</a></td>
-[% ELSE %]
-<td></td><td></td>
 [% END %]
 <td><a href=/configuration>Configuration</a></td>
 [% IF Catalyst.check_user_roles('member_admin') %]
