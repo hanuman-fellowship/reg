@@ -296,8 +296,10 @@ on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
 	[% END %]
     </P>
 
-    <P class=p2>Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  Check with 
-       the Programs Office if you plan to arrive before 4:00 pm.</p>
+    <P class=p2>Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  
+    Your first meal is dinner. If you wish to arrive earlier and have lunch (12:30-1:30),
+    you will need to make a lunch reservation by phoning 408-846-4065.
+    </p>
 
     <P class=p2>Check-out time is 1:00 pm on the day of your departure.  Please be sure to vacate your room 
        prior to the check-out time.</p>
