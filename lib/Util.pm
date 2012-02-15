@@ -1474,23 +1474,6 @@ sub avail_mps {
     ) {
         next MEETING_PLACE if $mp->name() eq 'No Where';      # no no
         my $id = $mp->id;
-        if ($mp->sleep_too()) {
-            # is the space occupied by sleepers?
-            #
-            my ($house) = model($c, 'House')->search({
-                name => $mp->abbr(),
-            });
-            if ($house) {
-                my (@cf) = model($c, 'Config')->search({
-                    house_id => $house->id(),
-                    the_date => { 'between' => [ $sdate, $edate1 ] },
-                    cur      => { '>' => 0 },
-                });
-                if (@cf) {
-                    next MEETING_PLACE;
-                }
-            }
-        }
         # are there any bookings for this place that overlap
         # with this request?
         # some way to do this search without the meet_id

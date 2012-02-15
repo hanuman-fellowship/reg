@@ -24,7 +24,7 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Description</th>
-<td colspan=5>[% event.descr %]</td>
+<td colspan=7>[% event.descr %]</td>
 </tr>
 
 <tr>
@@ -36,33 +36,6 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 <th align=right>Max</th>
 <td>[% event.max %]</td>
 </tr>
-
-<tr>
-<th align=right valign=top>Meeting Places</th>
-<td valign=top width=300>
-[% FOR b IN event.bookings %]
-    [% IF b.breakout == '' %]
-        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
-    [% END %]
-[% END %]
-</td>
-<th align=right valign=top>Breakout Places</th>
-<td valign=top>
-[% FOR b IN event.bookings %]
-    [% IF b.breakout == 'yes' %]
-        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
-    [% END %]
-[% END %]
-</td>
-</tr>
-<tr>
-<td></td>
-<td>
-<a href="/event/add_meeting_place/event/$event.id">Add</a></td>
-</td>
-</tr>
-
-<tr><td height=20></tr>
 
 <tr>
 <th align=right>Blocks</th>
@@ -78,4 +51,37 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 </td>
 </tr>
 
+</table>
+
+<p style="margin-top: 7mm">
+
+<table border=0 cellpadding=5><tr>
+
+<th align=right valign=top>Meeting Places</th>
+<td valign=top>
+[% FOR b IN event.bookings %]
+    [% IF b.breakout == '' && b.dorm == '' %]
+        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
+    [% END %]
+[% END %]
+</td>
+<th align=right valign=top>Breakout Places</th>
+<td valign=top>
+[% FOR b IN event.bookings %]
+    [% IF b.breakout == 'yes' %]
+        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
+    [% END %]
+[% END %]
+</td>
+<th align=right valign=top>Dorms</th>
+<td valign=top>
+[% FOR b IN event.bookings %]
+    [% IF b.dorm == 'yes' %]
+        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
+    [% END %]
+[% END %]
+</td>
+
+</tr>
+<tr><td><a href="/event/add_meeting_place/event/$event.id">Add</a></td></tr>
 </table>

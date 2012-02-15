@@ -1913,15 +1913,15 @@ sub send_conf : Local {
 }
 
 sub view : Local {
-    my ($self, $c, $reg_id, $alert) = @_;
+    my ($self, $c, $reg_id, $alert, $who) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
     stash($c, reg => $reg);
-    _view($c, $reg, $alert);
+    _view($c, $reg, $alert, $who);
 }
 
 sub _view {
-    my ($c, $reg, $alert) = @_;
+    my ($c, $reg, $alert, $who) = @_;
     my $reg_id = $reg->id();
     my (@same_name_reg) = model($c, 'Registration')->search({
                               person_id  => $reg->person_id(),
@@ -2086,6 +2086,7 @@ sub _view {
         only_one       => (@same_name_reg == 1),
         send_preview   => ($PR || $same_name_reg[0]->id() == $reg->id()),
         alert          => $alert,
+        who            => $who,
         template       => "registration/view.tt2",
     );
 }
@@ -3900,9 +3901,13 @@ sub lodge_do : Local {
             );
         }
     }
-    my $alert = CORE::index($string{house_alert}, "~$house_name_of{$house_id}~") >= 0;
+    my ($alert, $who) = (0, '');
+    if ($string{house_alert} =~ m{~$house_name_of{$house_id}=(\w+)~}ms) {
+        $alert = 1;
+        $who = $1;
+    }
     check_makeup_new($c, $house_id, $sdate);
-    $c->response->redirect($c->uri_for("/registration/view/$id/$alert"));
+    $c->response->redirect($c->uri_for("/registration/view/$id/$alert/$who"));
 }
 
 #

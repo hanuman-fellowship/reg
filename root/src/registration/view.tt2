@@ -475,7 +475,7 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.f
 
 <script type="text/javascript">
 [% IF alert %]
-alert('$reg.house.name' + ' is on the housing alert list!');
+alert("Tell $who that someone was housed in '$reg.house.name'.");
 [% END %]
 document.form.reg_pat.focus();
 </script>
