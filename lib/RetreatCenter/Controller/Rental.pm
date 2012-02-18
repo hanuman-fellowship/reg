@@ -1852,8 +1852,8 @@ sub duplicate_do : Local {
     # with the coordinator and contract signer ids from the old.
     #
     my $new_r = model($c, 'Rental')->create({
+        %P,         # this comes first so summary_id can override
         summary_id => $sum->id,
-        %P,
         coordinator_id => $old_rental->coordinator_id(),
         cs_person_id   => $old_rental->cs_person_id(),
     });

@@ -1869,9 +1869,9 @@ sub duplicate_do : Local {
 
     # now we can create the new dup'ed program
     my $new_p = model($c, 'Program')->create({
+        %P,     # this comes first so summary_id can override
         summary_id => $sum->id,
         image      => ($upload || $old_prog->image())? "yes": "",
-        %P,
     });
 
     my $new_id = $new_p->id();
