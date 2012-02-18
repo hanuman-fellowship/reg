@@ -44,7 +44,7 @@
 [% ELSE %]
     <td colspan=3></td>
 [% END %]
-[% IF mail_staff %]
+[% IF mail_staff || Catalyst.check_user_roles('librarian') %]
 <td width=60><a href=/book/search>Books</a></td>
 [% ELSE %]
 <td></td>

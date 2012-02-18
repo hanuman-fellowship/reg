@@ -163,3 +163,6 @@ Feb 14 11:00-
     dorms in rentals and events as well
     another confirmation letter edit
     OH 3 alert customized
+Feb 17 5:40-6:15, 7:00-8:00
+    duplicate program and rental copy summary but does not change summary_id
+    calendar sidebars
