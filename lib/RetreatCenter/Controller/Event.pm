@@ -803,6 +803,12 @@ EOH
                         }
                         reserved_clusters($c, $ev_id, 'rental')
                         ;
+                    if (!$ev->status) {
+                        # how did the Rental status get unset???
+                        $ev->update({
+                            status => 'tentative',
+                        });
+                    }
                     $border = $im->colorAllocate(
                         $string{"rental_" . $ev->status . "_color"} =~ m{\d+}g,
                     );
