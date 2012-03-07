@@ -166,3 +166,7 @@ Feb 14 11:00-
 Feb 17 5:40-6:15, 7:00-8:00
     duplicate program and rental copy summary but does not change summary_id
     calendar sidebars
+Feb 23 12:30-12:50
+    Rental status giving errors.  Protecting against it.
+Fev 28 11:30-12:00
+    berch 3/12 got clobbered somehow

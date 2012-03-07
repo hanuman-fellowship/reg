@@ -148,6 +148,7 @@ sub view : Local {
     $c->stash->{book} = $b;
     $c->stash->{media} =  $b->media() == 1? "Book"
                          :$b->media() == 2? "VHS"
+                         :$b->media() == 3? "CD"
                          :                  "DVD"
                          ;
     $c->stash->{template} = "book/view.tt2";
@@ -160,6 +161,7 @@ sub create : Local {
 <option value=1>Book
 <option value=2>VHS
 <option value=3>DVD
+<option value=3>CD
 EOO
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "book/create_edit.tt2";
