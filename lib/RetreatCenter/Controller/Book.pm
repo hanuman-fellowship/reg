@@ -148,8 +148,8 @@ sub view : Local {
     $c->stash->{book} = $b;
     $c->stash->{media} =  $b->media() == 1? "Book"
                          :$b->media() == 2? "VHS"
-                         :$b->media() == 3? "CD"
-                         :                  "DVD"
+                         :$b->media() == 3? "DVD"
+                         :                  "CD"
                          ;
     $c->stash->{template} = "book/view.tt2";
 }
@@ -161,7 +161,7 @@ sub create : Local {
 <option value=1>Book
 <option value=2>VHS
 <option value=3>DVD
-<option value=3>CD
+<option value=4>CD
 EOO
     $c->stash->{form_action} = "create_do";
     $c->stash->{template}    = "book/create_edit.tt2";
@@ -206,7 +206,8 @@ sub update : Local {
     my $b = model($c, 'Book')->find($id);
     my $cur_media = ($b->media() == 1)? "Book"
                    :($b->media() == 2)? "VHS"
-                   :                    "DVD"
+                   :($b->media() == 3)? "DVD"
+                   :                    "CD"
                    ;
     my $opts = "";
     my $n = 1;
