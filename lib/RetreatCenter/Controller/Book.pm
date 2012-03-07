@@ -215,6 +215,7 @@ sub update : Local {
         Book
         VHS
         DVD
+        CD
     /) {
         $opts .= "<option value=$n"
               .  (($cur_media eq $m)? " selected": "")
