@@ -1,0 +1,16 @@
+<h2>Undoing an $sponsor Deposit</h2>
+From $deposit.date_start_obj to $deposit.date_end_obj,
+Cash \$$deposit.cash + Checks \$$deposit.chk + Credit \$$deposit.credit + Online \$$deposit.online = Total \$$total
+<p class=p2>
+Shall this deposit be undone?<br>
+Type the secret financial password to confirm this undoing.
+<p>
+<form name=form action=/finance/undo_deposit_do/$deposit.id>
+<table>
+<tr><td>Password:</td><td><input type=password name=password size=10></td></tr>
+<tr><td></td><td><input type=submit value="Submit"></td></tr>
+</table>
+</form>
+<script>
+document.form.password.focus();
+</script>

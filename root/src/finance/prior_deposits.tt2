@@ -6,7 +6,8 @@
 <table cellpadding=5>
 <tr>
 <th align=center>Who</th>
-<th align=center>Date</th>
+<th align=left>From</th>
+<th align=left>To</th>
 <th align=center>Time</th>
 <th align=right>Cash</th>
 <th align=right>Check</th>
@@ -14,11 +15,14 @@
 <th align=right>Online</th>
 <th align=right>Total</th>
 <th align=center colspan=2>View</th>
+<th></th>
 </tr>
+[% first = 1 %]
 [% FOR d IN deposits %]
 <tr>
 <td align=center>[% d.user.username %]</td>
-<td align=center>[% d.date_end_obj %]</td>
+<td align=left>[% d.date_start_obj %]</td>
+<td align=left>[% d.date_end_obj %]</td>
 <td align=right>[% d.time_obj %]</td>
 <td align=right>$d.cash_disp</td>
 <td align=right>$d.chk_disp</td>
@@ -27,6 +31,10 @@
 <td align=right>[% d.cash + d.chk + d.credit + d.online %]</td>
 <td align=right><a href="/finance/reconcile_deposit/[% sponsor %]/[% d.id %]">Reconcile</a></td>
 <td align=right><a href="/finance/file_deposit/[% sponsor %]/[% d.id %]">File</a></td>
+[% IF first %]
+    <td><a href=/finance/undo_deposit/$d.id>Undo</a></td>
+    [% first = 0 %]
+[% END %]
 </tr>
 [% END %]
 </table>

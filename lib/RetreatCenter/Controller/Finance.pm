@@ -965,4 +965,48 @@ sub req_mmi_payment_list : Local {
         payments => \@payments,
     );
 }
+
+sub undo_deposit : Local {
+    my ($self, $c, $id) = @_;
+
+    my $deposit = model($c, 'Deposit')->find($id);
+    stash($c,
+        deposit  => $deposit,
+        total    => $deposit->cash
+                  + $deposit->chk
+                  + $deposit->credit
+                  + $deposit->online,
+        sponsor  => uc $deposit->sponsor,
+        template => "finance/undo_deposit.tt2",
+    );
+}
+
+sub undo_deposit_do : Local {
+    my ($self, $c, $id) = @_;
+    if ($c->request->params->{password} ne 'sitaRam') {
+        error($c,
+              "Incorrect Password",
+              'gen_error.tt2',
+        );
+        return;
+    }
+    my $deposit = model($c, 'Deposit')->find($id);
+    my $start = $deposit->date_start_obj();
+    my $sponsor = $deposit->sponsor();
+    my $date_end = $start - 1;
+    $date_end = $date_end->as_d8();
+    my $host = ($sponsor eq 'mmi')? "mmi_": "";
+
+    $deposit->delete();
+
+    # in memory
+    $string{"last_${host}deposit_date"} = $date_end;
+
+    # on disk
+    model($c, 'String')->find("last_${host}deposit_date")->update({
+        value => $date_end,
+    });
+    $c->response->redirect($c->uri_for("/finance/deposits/$sponsor"));
+}
+
 1;

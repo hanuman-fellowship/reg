@@ -159,7 +159,7 @@ Feb 12 6:00-6:20
 Feb 13 1:00-3:00
     responding to requests
     OH 3 alert, Dorms as meeting places
-Feb 14 11:00-
+Feb 14 11:00-12:30
     dorms in rentals and events as well
     another confirmation letter edit
     OH 3 alert customized
@@ -170,3 +170,7 @@ Feb 23 12:30-12:50
     Rental status giving errors.  Protecting against it.
 Fev 28 11:30-12:00
     berch 3/12 got clobbered somehow
+Mar 6 11:30-11:50
+    CD for Books
+Mar 11 10:00-10:15
+    looking for payments that Brajesh thinks were/were not entered.
