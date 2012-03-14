@@ -182,6 +182,8 @@ print $per->first, " ", $per->last, " for PR\n";
     $tot += $n;
 }
 
+exit;       # no need for mailings any more
+
 if ($tot) {
     email_letter(
         schema  => $schema,
