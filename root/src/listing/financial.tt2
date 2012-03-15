@@ -19,7 +19,8 @@ Deposit
 </tr>
 </table>
 <p style="margin-top: 6mm">
-<a href="/finance/deposits/mmc">Prior Deposits</a><p class=p2>
+<a href="/finance/deposits/mmc">Prior Deposits</a>
+<span style="margin-left: 1in">Last deposit $last_mmc</span>
 <p style="margin-top: 6mm">
 Period End Summary
 <table cellpadding=3>
@@ -64,6 +65,7 @@ Deposit
 </table>
 <p style="margin-top: 6mm">
 <a href="/finance/deposits/mmi">Prior Deposits</a>
+<span style="margin-left: 1in">Last deposit $last_mmi</span>
 <p style="margin-top: 6mm">
 Period End Summary
 <table cellpadding=3>

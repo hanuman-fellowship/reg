@@ -18,6 +18,8 @@ use Util qw/
 use Date::Simple qw/
     date
     today
+    ymd
+    days_in_month
 /;
 use Time::Simple qw/
     get_time
@@ -38,8 +40,17 @@ sub reconcile_deposit : Local {
         $date_end   = $dep->date_end();
     }
     else {
-        $date_start = (date($string{"last_${host}deposit_date"})+1)->as_d8();
-        $date_end   = tt_today($c)->as_d8();
+        $date_start = date($string{"last_${host}deposit_date"})+1;
+        $date_end   = tt_today($c);
+        if (   $date_start->month() != $date_end->month()
+            || $date_start->year()  != $date_end->year()
+        ) {
+            my $y = $date_start->year();
+            my $m = $date_start->month();
+            $date_end = ymd($y, $m, days_in_month($y, $m));
+        }
+        $date_start = $date_start->as_d8();
+        $date_end   = $date_end->as_d8();
     }
     if ($date_end < $date_start) {
         # we just made a deposit and are asking again
@@ -148,6 +159,8 @@ sub reconcile_deposit : Local {
     }
 
     stash($c,
+        start    => date($date_start),
+        end      => date($date_end),
         sponsor  => $sponsor,
         SPONSOR  => uc $sponsor,
         payments => \@payments,
@@ -179,15 +192,23 @@ sub file_deposit : Local {
         $date_end   = $dep->date_end();
     }
     else {
-        $date_start = (date($string{"last_${host}deposit_date"})+1)->as_d8();
-        $date_end   = tt_today($c)->as_d8();
+        $date_start = date($string{"last_${host}deposit_date"})+1;
+        $date_end   = tt_today($c);
+        if (   $date_start->month() != $date_end->month()
+            || $date_start->year()  != $date_end->year()
+        ) {
+            my $y = $date_start->year();
+            my $m = $date_start->month();
+            $date_end = ymd($y, $m, days_in_month($y, $m));
+        }
+        $date_start = $date_start->as_d8();
+        $date_end   = $date_end->as_d8();
     }
     if ($date_end < $date_start) {
         # we just made a deposit and are asking again
         stash($c, template => "finance/already.tt2");
         return;
     }
-
     my $cond = {
         the_date => { between => [ $date_start, $date_end ] },
     };
@@ -273,6 +294,8 @@ sub file_deposit : Local {
                    . get_time()->ampm()
                    ;
     }
+    my $start = date($date_start);
+    my $end   = date($date_end);
     my $html = <<"EOH";
 <style type="text/css">
 body, td, th {
@@ -282,7 +305,7 @@ body, td, th {
 </style>
 EOH
 my $heading = <<"EOH";
-$timestamp<span style="font-size: 15pt; font-weight: bold; margin-left: 1in;">\U$sponsor\E Bank Deposit</span>
+$timestamp<span style="font-size: 15pt; font-weight: bold; margin-left: 1in;">\U$sponsor\E Bank Deposit from $start to $end</span>
 <p>
 <table cellpadding=1>
 <tr valign=bottom>
