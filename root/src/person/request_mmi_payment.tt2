@@ -28,6 +28,8 @@ for [% person.first %] [% person.last %] in [% reg.program.name %]</h2>
     <option value='3'>Application Fee
     <option value='4'>Registration Fee
 [% END %]
+<option value='6'>STRF
+<option value='7'>Recording
 <option value='5'>Other
 </select>
 </td>
