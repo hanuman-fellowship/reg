@@ -1,0 +1,57 @@
+<head>
+<link rel="stylesheet" type="text/css" href="help.css" />
+</head>
+<body>
+<h2>Entering Dates</h2>
+Since MMC is a happening place (totally!) there are gobs of dates in Reg.
+<p>
+You can enter dates in a variety of formats:
+<ul>
+<table cellpadding=3>
+<tr><td>    mmddyy</td></tr>
+<tr><td>    yyyymmdd</td></tr>
+<tr><td>    mm/dd/yy</td></tr>
+<tr><td>    Aug 3</td><td>(year is the current one)</td></tr>
+<tr><td>    september 3, 2014</td></tr>
+<tr><td>    m/d/y</td><td>(no need for leading zeros)</td></tr>
+<tr><td>    m/d</td><td>  (year is the current one)</td></tr>
+<tr><td>    m d</td><td>  (year is the current one)</td></tr>
+<tr><td>    mmdd</td><td> (year is the current one)</td></tr>
+<tr><td>    d</td><td>    (month and year are the current ones)</td></tr>
+<tr><td>    t</td><td>    (that's just a 't' meaning 'today')</td></tr>
+<tr><td>today</td><td>    (ditto)</td></tr>
+<tr><td>e</td><td>(end of time = 12/31/2999)</td></tr>
+<tr><td>end of time</td><td>(ditto)</td></tr>
+<tr><td>    -2</td></tr>
+<tr><td>    +3</td></tr>
+</table>
+</ul> 
+The last two are tricky but quite convenient.
+They are relative date offsets to either 'today'
+or a start date - depending on context.  For example,
+when creating a Program or Rental you enter both a Start Date
+and an End Date.  The Start Date can be +4 meaning 4 days from 'today'.
+The End Date can be +3 meaning 3 days from the Start Date (whatever
+it is).  When creating a Registration you can specify -2 for the
+Start Date if someone is coming 2 days early to the program.
+i.e. the Registration Start Date is relative to the Program Start Date.
+<p>
+(At some point we'll have a popup monthly calendar to enable choosing
+dates visually - like when you book a flight on travelocity.com).
+<p>
+In most places dates are displayed like so:
+<ul>
+    Jan 8<br>
+    Oct 10<br>
+    Dec 3 '10
+</ul>
+To explain ... If the year of the date is the same as the
+current year it is not shown.
+This should hopefully make for a clearer display.
+When an existing date is to be changed it is displayed in mm/dd/yy format.
+<p>
+The default date display format used by everyone can be changed
+by the super_admin.  This is not easy but it IS possible.
+See the string 'default_date_format' in Configuration/Strings.
+There is a Help topic on what the date format characters can be.
+</body>
