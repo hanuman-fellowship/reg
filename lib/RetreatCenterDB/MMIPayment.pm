@@ -55,6 +55,8 @@ sub for_what {
           :($type eq '2')? "Meals and Lodging"
           :($type eq '3')? "Application Fee"
           :($type eq '4')? "Registration Fee"
+          :($type eq '6')? "STRF"
+          :($type eq '7')? "Recording"
           :                "Other"
           ;
 }

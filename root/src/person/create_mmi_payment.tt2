@@ -32,6 +32,8 @@
 <option value='2'>Meals and Lodging
 <option value='3'>Application Fee
 <option value='4'>Registration Fee
+<option value='6'>STRF
+<option value='7'>Recording
 <option value='5'>Other
 </select>
 </td>

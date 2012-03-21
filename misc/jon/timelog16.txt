@@ -174,3 +174,7 @@ Mar 6 11:30-11:50
     CD for Books
 Mar 11 10:00-10:15
     looking for payments that Brajesh thinks were/were not entered.
+Mar 14 11:00-12:30
+    futzing with deposits - allowing an Undo.
+Mar 15 1:00-2:00
+    Sukhdev's requests around deposits

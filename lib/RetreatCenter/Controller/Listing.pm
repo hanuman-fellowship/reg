@@ -980,15 +980,23 @@ sub late_notices : Local {
     if (date($d8)->day_of_week() == 6) {    # Saturday
         # also look for PRs arriving on Sunday
         # not other programs.
+        # 
+        # this was how it worked for a good while.
+        # until some program (Berch 3/16-3/18 plus 3) had
+        # a person arriving in the middle of it - on a Sunday.
+        #
+        # now we look for all programs (including PRs)
         #
         @date_bool = (
                          -or => [
                              date_start => $d8,
-                             -and => [
-                                date_start => (date($d8)+1)->as_d8(),
-                                'program.name' => 
-                                    { like => '%Personal Retreat%' },
-                             ],
+                             date_start => (date($d8)+1)->as_d8(),
+                             #date_start => 
+                             #-and => [
+                             #    date_start => (date($d8)+1)->as_d8(),
+                             #    'program.name' => 
+                             #        { like => '%Personal Retreat%' },
+                             #],
                          ],
                      );
     }
