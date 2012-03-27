@@ -2078,8 +2078,6 @@ sub _view {
                            . "/$sdate",
         cluster_date   => $sdate,
         cal_param      => "$sdate/$nmonths",
-        # ??? can get cluster id from Global settings, yes???
-        cur_cluster    => ($reg->house_id)? $reg->house->cluster_id: 1,
         dcm_reg_id     => $dcm_reg_id,
         dcm_type       => $dcm_type,
         program        => $prog,

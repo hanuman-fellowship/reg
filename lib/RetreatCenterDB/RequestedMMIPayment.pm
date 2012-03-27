@@ -54,6 +54,8 @@ sub for_what_disp {
           :($what eq '2')? "Meals and Lodging"
           :($what eq '3')? "Application Fee"
           :($what eq '4')? "Registration Fee"
+          :($what eq '6')? "STRF"
+          :($what eq '7')? "Recordings"
           :                "Other"
           ;
 }

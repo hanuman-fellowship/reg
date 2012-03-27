@@ -55,6 +55,9 @@ sub _get_data {
     if (empty($P{glnum})) {
         push @mess, "GL Number cannot be blank";
     }
+    if ($P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
+        push @mess, "GL Number must be digits and A-Z only";
+    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "xaccount/error.tt2";
@@ -101,10 +104,32 @@ sub list : Local {
     $c->stash->{xaccounts} = [
         model($c, 'XAccount')->search(
             undef,
-            { order_by => 'descr' },
+            { order_by => 'sponsor, descr' },
         )
     ];
     $c->stash->{template} = "xaccount/list.tt2";
+}
+
+sub export : Local {
+    my ($self, $c) = @_;
+
+    my $csv;
+    if (!open $csv, '>', 'root/static/xaccounts.csv') {
+        error($c,
+              'Cannot open xaccounts.csv',
+              'gen_error.tt2',
+        );
+        return;
+    }
+    for my $xa (model($c, 'XAccount')->search(
+                    undef,
+                    { order_by => 'sponsor, descr' },
+                )
+    ) {
+        print {$csv} join(', ', uc $xa->sponsor, '"'.$xa->descr.'"', $xa->glnum), "\n";
+    }
+    close $csv;
+    $c->response->redirect($c->uri_for('/static/xaccounts.csv'));
 }
 
 sub update : Local {

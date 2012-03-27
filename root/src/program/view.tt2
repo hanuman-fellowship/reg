@@ -565,3 +565,10 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </table>
 
 <script type="text/javascript">tabs([% section %]);</script>
+[% IF glnum_popup %]
+<script>
+alert("IMPORTANT!!\n\n"
+    + "Remember to edit and correct the GL Number for this MMI Course!\n\n"
+    + "Consult with Lila in the Finance office!");
+</script>
+[% END %]

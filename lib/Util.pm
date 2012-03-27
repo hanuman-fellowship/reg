@@ -1668,11 +1668,11 @@ sub req_code {
 # calculate a glnum for an MMI payment
 #
 sub calc_mmi_glnum {
-    my ($c, $person_id, $for_what, $reg_program_glnum) = @_;
+    my ($c, $person_id, $stand_alone, $for_what, $reg_program_glnum) = @_;
 
     my $glnum;
     my $dcm_reg = dcm_registration($c, $person_id);
-    if (ref($dcm_reg)) {
+    if (! $stand_alone && ref($dcm_reg)) {
         # this person is enrolled in a DCM program
         #
         my $program = $dcm_reg->program();
@@ -1691,7 +1691,7 @@ sub calc_mmi_glnum {
                ;
     }
     else {
-        # this person is an auditor.
+        # this person is an auditor or a student in a stand alone program.
         # (OR they are enrolled in more than one DCM program! :( )
         #
         # we use the glnum of the program itself (plus 'for_what').

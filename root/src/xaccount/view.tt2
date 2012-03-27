@@ -1,7 +1,7 @@
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 <h2>Extra Accounts</h2>
-[% IF Catalyst.check_user_roles('prog_admin') %]
+[% IF Catalyst.check_user_roles('account_admin') %]
 <a href="/xaccount/update/[% xaccount.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/xaccount/create">Add</a>
@@ -9,6 +9,7 @@
 <a href="/xaccount/delete/[% xaccount.id %]"
 onclick="return confirm('Okay to Delete [% xaccount.descr %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+[% END %]
 <a href="/xaccount/list">List</a>
 &nbsp;&nbsp;&nbsp;
 [% IF by_person %]
@@ -17,7 +18,6 @@ onclick="return confirm('Okay to Delete [% xaccount.descr %]?');">Delete</a>
 <a href="/xaccount/view/[% xaccount.id %]/1">By Person</a>
 [% END %]
 <p class=p2>
-[% END %]
 <table cellpadding=3 border=0>
 
 <tr>

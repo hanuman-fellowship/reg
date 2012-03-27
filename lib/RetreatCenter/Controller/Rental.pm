@@ -143,6 +143,9 @@ sub _get_data {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "rental/error.tt2";
     }
+    if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
+        push @mess, "The GL Number must only contain digits and upper case letters.";
+    }
     # checkboxes are not sent at all if not checked
     #
     $P{linked}       = "" unless exists $P{linked};

@@ -33,15 +33,16 @@
 <option value='3'>Application Fee
 <option value='4'>Registration Fee
 <option value='6'>STRF
-<option value='7'>Recording
+<option value='7'>Recordings
 <option value='5'>Other
 </select>
 </td>
+<td><div style="margin-left: 10mm"><span style="color: red">Note!</span> For Observations, Donations and Consultations<br>add an Extra Account payment instead.  Do not use Other here.</div></td>
 </tr>
 
 <tr>
 <th align=right>Note</th>
-<td colspan=2><input type=text name=note size=40></td>
+<td colspan=3><input type=text name=note size=40></td>
 </tr>
 
 <tr>

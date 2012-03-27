@@ -1,19 +1,21 @@
 <h2>Extra Accounts</h2>
-[% IF Catalyst.check_user_roles('prog_admin') %]
+[% IF Catalyst.check_user_roles('account_admin') %]
 <a href="/xaccount/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/xaccount/export">Export</a>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>
 <tr>
+<th align=left>Sponsor</th>
 <th align=left>Description</th>
 <th align=left>GL Number</th>
-<th align=left>Sponsor</th>
 </tr>
 [% FOREACH xa IN xaccounts %]
     <tr>
+    <td>[% xa.SPONSOR %]</td>
     <td><a href="/xaccount/view/[% xa.id %]">[% xa.descr %]</a></td>
     <td>[% xa.glnum %]</a></td>
-    <td>[% xa.SPONSOR %]</td>
     </tr>
 [% END %]
 </table>

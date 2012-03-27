@@ -3,6 +3,14 @@
 <table cellpadding=3 border=0>
 
 <tr>
+<th align=right valign=top><span class=required>*</span> Sponsor</th>
+<td valign=top>
+<input type=radio name=sponsor value=mmc [% mmc_checked %]> Center<br>
+<input type=radio name=sponsor value=mmi [% mmi_checked %]> Institute
+</td>
+</tr>
+
+<tr>
 <th align=right valign=top><span class=required>*</span> Description</th>
 <td><input type=text name=descr value='[% xaccount.descr %]' size=50></td>
 </td>
@@ -11,14 +19,6 @@
 <tr>
 <th align=right><span class=required>*</span> GL Number</th>
 <td><input type=text name=glnum value="[% xaccount.glnum %]" size=7></td>
-</tr>
-
-<tr>
-<th align=right valign=top><span class=required>*</span> Sponsor</th>
-<td valign=top>
-<input type=radio name=sponsor value=mmc [% mmc_checked %]> Center<br>
-<input type=radio name=sponsor value=mmi [% mmi_checked %]> Institute
-</td>
 </tr>
 
 <tr>

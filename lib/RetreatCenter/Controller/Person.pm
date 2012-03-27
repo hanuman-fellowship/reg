@@ -1115,6 +1115,7 @@ sub send_requests : Local {
     my ($self, $c, $reg_id) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
+    my $stand_alone = $reg->program->level() eq 'A';
     my $person = $reg->person();
     my $person_id = $person->id();
     my $name = $person->name();
@@ -1143,7 +1144,7 @@ EOH
         $total += $py->amount();
         $py_desc .= join('|', $amt,
                               $note,
-                              calc_mmi_glnum($c, $person_id,
+                              calc_mmi_glnum($c, $person_id, $stand_alone,
                                              $py->for_what(), $prog_glnum))
                  .  '~'
                  ;
@@ -1364,7 +1365,9 @@ sub create_mmi_payment_do : Local {
     }
     my $for_what = $c->request->params->{for_what};
     my $reg = model($c, 'Registration')->find($reg_id);
-    my $glnum = calc_mmi_glnum($c, $person_id, $for_what,
+    my $stand_alone = $reg->program->level() eq 'A';
+    my $glnum = calc_mmi_glnum($c, $person_id, $stand_alone,
+                               $for_what,
                                $reg->program->glnum());
     if ($glnum eq 'illegal') {
         $c->stash->{mess} = "Since this person is an Auditor the payment<br>"

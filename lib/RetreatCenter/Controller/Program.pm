@@ -64,6 +64,7 @@ my %mmi_levels = (
     C => "Certificate",
     M => "Masters",
     S => "Course",
+    A => "Stand Alone Course (non DCM)"
 );
 
 sub _cat_opts {
@@ -183,6 +184,7 @@ sub create : Local {
 <option value=C>Certificate
 <option value=M>Masters
 <option value=S>Course
+<option value=A>Stand Alone Course (non DCM)
 EOO
         @dates,
         show_level  => "hidden",
@@ -293,12 +295,14 @@ sub _get_data {
     ) {
         push @mess, 'Name has MMI in it but the program is not an MMI program.';
     }
-    if ($P{school} != 0 && $P{level} ne 'S'
+    if ($P{school} != 0 
+        && $P{level} ne 'S'
+        && $P{level} ne 'A'
         && $P{name} !~ m{$mmi_levels{$P{level}}}
     ) {
         push @mess, "Name must have $mmi_levels{$P{level}} in it.";
     }
-    if ($P{school} != 0 && $P{level} eq 'S'
+    if ($P{school} != 0 && ($P{level} eq 'S' || $P{level} eq 'A')
         && $P{name} =~ m{Diploma|Certificate|Masters}
     ) {
         push @mess, 'Name must not have Diploma, Certificate,'
@@ -392,6 +396,9 @@ sub _get_data {
 
     if (! empty($P{max}) && $P{max} !~ m{^\s*\d+\s*$}) {
         push @mess, "Max must be an integer";
+    }
+    if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
+        push @mess, "The GL Number must only contain digits and upper case letters.";
     }
     if (@mess) {
         error($c,
@@ -487,6 +494,7 @@ sub create_do : Local {
         Global->init($c);
         resize('p', $id);
     }
+    my $glnum_popup = $P{school} != 0 && $P{level} =~ m{\A [SA] \z}xms;
     #
     # we must ensure that we have config records
     # out to the end of this program + 30 days.
@@ -494,7 +502,7 @@ sub create_do : Local {
     # may extend beyond the last day of the season.
     #
     add_config($c, date($P{edate}) + $P{extradays} + 30);
-    $c->response->redirect($c->uri_for("/program/view/$id"));
+    $c->response->redirect($c->uri_for("/program/view/$id/1/$glnum_popup"));
 }
 
 my @day_name = qw/
@@ -507,10 +515,11 @@ my @day_name = qw/
     Sat
 /;
 sub view : Local {
-    my ($self, $c, $id, $section) = @_;
+    my ($self, $c, $id, $section, $glnum_popup) = @_;
 
     Global->init($c);       # for web_addr if nothing else.
     $section ||= 1;
+    $glnum_popup ||= 0;
     stash($c, section => $section);
 
     my $p;
@@ -594,6 +603,7 @@ sub view : Local {
     my ($UNres, $res) = split /XX/, _get_cluster_groups($c, $id);
 
     stash($c,
+        glnum_popup         => $glnum_popup,
         UNreserved_clusters => $UNres,
         reserved_clusters   => $res,
         online              => scalar(@files),
@@ -674,7 +684,7 @@ sub list : Local {
     if ($type eq 'dcm') {
         @cond = (
             'category.name' => 'Normal',
-            level           => { -in  => [qw/  D C M  /] },
+            level           => { -in  => [qw/ D C M /] },
         );
     }
     elsif ($type eq 'yscl') {
@@ -685,7 +695,7 @@ sub list : Local {
     else {
         @cond = (
             'category.name' => 'Normal',
-            level           => { -not_in  => [qw/  D C M  /] },
+            level           => { -not_in  => [qw/ D C M /] },
         );
         if ($hide_mmi) {
             push @cond, (school => 0);      # only MMC no MMI
@@ -797,7 +807,7 @@ sub update : Local {
     }
     # order matters here
     my $level_opts = "";
-    for my $l ('D', 'C', 'M', 'S') {
+    for my $l (qw/ D C M S A /) {
         $level_opts .= "<option value=$l "
                     .  ($l eq $p->level()? "selected": "")
                     .  ">$mmi_levels{$l}\n"
@@ -1779,7 +1789,7 @@ sub duplicate : Local {
                   ;
     }
     my $level_opts = "";
-    for my $l ('D', 'C', 'M', 'S') {
+    for my $l (qw/ D C M S A /) {
         $level_opts .= "<option value=$l "
                     .  ($l eq $orig_p->level()? "selected": "")
                     .  ">$mmi_levels{$l}\n"
