@@ -4,75 +4,75 @@
 <h2>People</h2>
 <a href="/person/create" accesskey='a'><span class=keyed>A</span>dd</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/update/[% id %]" accesskey='e'><span class=keyed>E</span>dit</a>
+<a href="/person/update/$id" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/person/delete/[% id %]"
-onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');">Delete</a>
+<a href="/person/delete/$id"
+onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 [% IF Catalyst.check_user_roles('prog_staff') %]
-<a href="/person/register1/[% id %]" accesskey='r'><span class=keyed>R</span>egister</a>
+<a href="/person/register1/$id" accesskey='r'><span class=keyed>R</span>egister</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF Catalyst.check_user_roles('personnel_admin') %]
-<a href="/person/register1/[% id %]/1">Enroll</a>
+<a href="/person/register1/$id/1">Enroll</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
-[% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]&nbsp;&nbsp;&nbsp;<a href="/person/list_mmi_payment/[% id %]">MMI Payments</a>[% END %]
+[% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]&nbsp;&nbsp;&nbsp;<a href="/person/list_mmi_payment/$id">MMI Payments</a>[% END %]
 &nbsp;&nbsp;&nbsp;
-<a href="/person/inactive/[% id %]">[% IF person.inactive %]Activate[% ELSE %]Inactivate[% END %]</a>
+<a href="/person/inactive/$id">[% IF person.inactive %]Activate[% ELSE %]Inactivate[% END %]</a>
 <p class=p2>
-<a accesskey='p' href="/xaccount/prep_pay_balance"><span class=keyed>P</span>ayment</a>
+<a accesskey='p' href="/xaccount/prep_pay_balance/$id"><span class=keyed>P</span>ayment</a>
 &nbsp;&nbsp;&nbsp;
-<a target=_blank href="http://maps.google.com/maps?near=[% person.addr1 %] [% person.addr2 %] [% person.city %] [% person.st_prov %] [% person.zip_post %] [% person.country %]">Map</a>
+<a target=_blank href="http://maps.google.com/maps?near=$person.addr1 $person.addr2 $person.city $person.st_prov $person.zip_post $person.country">Map</a>
 [% IF Catalyst.check_user_roles('ride_admin') %]
     &nbsp;&nbsp;&nbsp;
-    <a accesskey='d' href="/ride/create/[% id %]">Ri<span class=keyed>d</span>e</a>
+    <a accesskey='d' href="/ride/create/$id">Ri<span class=keyed>d</span>e</a>
 [% END %]
 [% IF person.partner %]
     &nbsp;&nbsp;&nbsp;
     Partnered
     <span class=keyed>W</span>ith <a 
-          href="/person/view/[% person.partner.id %]" accesskey='w'
-    >[% person.partner.first _" "_ person.partner.last %]</a>
+          href="/person/view/$person.partner.id" accesskey='w'
+    >$person.partner.first $person.partner.last</a>
     &nbsp;&nbsp;&nbsp;
-    <a href="/person/separate/[% id %]"
+    <a href="/person/separate/$id"
        onclick="return confirm('Okay to Separate?');">Separate</a>
 [% ELSE %]
     &nbsp;&nbsp;&nbsp;
-    <a href="/person/partner/[% id %]"
+    <a href="/person/partner/$id"
        accesskey='w'>Partner <span class=keyed>W</span>ith</a>
 [% END %]
 [% IF Catalyst.check_user_roles('prog_staff') %]
     [% IF person.leader %]
         &nbsp;&nbsp;&nbsp;
-        <a href="/leader/view/[% person.leader.id %]" accesskey='l'><span class=keyed>L</span>eader Info</a>
+        <a href="/leader/view/$person.leader.id" accesskey='l'><span class=keyed>L</span>eader Info</a>
     [% ELSE %]
         [% IF Catalyst.check_user_roles('prog_admin') %]
             &nbsp;&nbsp;&nbsp;
-            <a href="/leader/create/[% id %]" accesskey='l'>Make <span class=keyed>L</span>eader</a>
+            <a href="/leader/create/$id" accesskey='l'>Make <span class=keyed>L</span>eader</a>
         [% END %]
     [% END %]
 [% END %]
 [% IF Catalyst.check_user_roles('member_admin') %]
     &nbsp;&nbsp;&nbsp;
     [% IF person.member %]
-        <a href="/member/update/[% person.member.id %]" accesskey='m'><span class=keyed>M</span>ember Info</a>
+        <a href="/member/update/$person.member.id" accesskey='m'><span class=keyed>M</span>ember Info</a>
     [% ELSE %]
-        <a href="/member/create/[% id %]" accesskey='m'>Make <span class=keyed>M</span>ember</a>
+        <a href="/member/create/$id" accesskey='m'>Make <span class=keyed>M</span>ember</a>
     [% END %]
 [% ELSE %]
     [% IF person.member %]
         &nbsp;&nbsp;&nbsp;
-        <a href="/member/view/[% person.member.id %]" accesskey='m'><span class=keyed>M</span>ember Info</a>
+        <a href="/member/view/$person.member.id" accesskey='m'><span class=keyed>M</span>ember Info</a>
     [% END %]
 [% END %]
 [% IF Catalyst.check_user_roles('personnel_admin') %]
     &nbsp;&nbsp;&nbsp;
     [% IF person.resident %]
-        <a href="/resident/view/[% person.resident.id %]">Resident Info</a>
+        <a href="/resident/view/$person.resident.id">Resident Info</a>
     [% ELSE %]
-        <a href="/resident/create/[% id %]">Make Resident</a>
+        <a href="/resident/create/$id">Make Resident</a>
     [% END %]
 [% END %]
 <p class=p2>
@@ -84,55 +84,55 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
 </tr>
 
 <tr>
-<th align=right valign=bottom>Last</th><td valign=bottom><span class=larger>[% person.last %]</span></td>
-<th align=right>Work</td><td>[% person.tel_work %]</td>
+<th align=right valign=bottom>Last</th><td valign=bottom><span class=larger>$person.last</span></td>
+<th align=right>Work</td><td>$person.tel_work</td>
 </tr>
 
 <tr>
-<th align=right>Sanskrit</th><td>[% person.sanskrit %]</td>
-<th align=right>Cell</td><td>[% person.tel_cell %]</td>
+<th align=right>Sanskrit</th><td>$person.sanskrit</td>
+<th align=right>Cell</td><td>$person.tel_cell</td>
 </tr>
 
 <tr>
-<th align=right valign=top>Sex</th><td>[% sex %]</td>
+<th align=right valign=top>Sex</th><td>$sex</td>
 </tr>
 
-<tr><th align=right valign=top>Address</th><td>[% person.addr1 %][% IF person.addr2 %]<br>[% person.addr2 %][% END %]</td>
+<tr><th align=right valign=top>Address</th><td>$person.addr1[% IF person.addr2 %]<br>$person.addr2[% END %]</td>
 <th align=right valign=top>Mailings</th>
 <td rowspan=2>
 <table border=0>
-<tr><td align=right>Email: </td><td>MMC [% person.e_mailings %]</td><td>&nbsp;&nbsp;MMI [% person.mmi_e_mailings %]</td></tr>
-<tr><td align=right>Snail Mail:</td><td>MMC [% person.snail_mailings %]</td></td><td>&nbsp;&nbsp;MMI [% person.mmi_snail_mailings %]</td></tr>
-<tr><td align=right>Share</td><td>[% person.share_mailings %]</td>
+<tr><td align=right>Email: </td><td>MMC $person.e_mailings</td><td>&nbsp;&nbsp;MMI $person.mmi_e_mailings</td></tr>
+<tr><td align=right>Snail Mail:</td><td>MMC $person.snail_mailings</td></td><td>&nbsp;&nbsp;MMI $person.mmi_snail_mailings</td></tr>
+<tr><td align=right>Share</td><td>$person.share_mailings</td>
 </table>
 </td>
 </tr>
 
 
-<tr><th align=right>City</th><td>[% person.city %]</td>
+<tr><th align=right>City</th><td>$person.city</td>
 </tr>
 
 <tr>
-<th align=right>State/Province</th><td>[% person.st_prov %]</td>
-<th align=right>Date Entered</td><td>[% person.date_entrd_obj %]</td>
+<th align=right>State/Province</th><td>$person.st_prov</td>
+<th align=right>Date Entered</td><td>$person.date_entrd_obj</td>
 </tr>
 
 <tr>
-<th align=right>Zip/Postal Code</th><td>[% person.zip_post %]</td>
-<th align=right>Date Updated</td><td>[% person.date_updat_obj %]</td>
+<th align=right>Zip/Postal Code</th><td>$person.zip_post</td>
+<th align=right>Date Updated</td><td>$person.date_updat_obj</td>
 </tr>
 
 <tr>
-<th align=right>Country</th><td>[% person.country %]</td>
+<th align=right>Country</th><td>$person.country</td>
 </tr>
 
 <tr>
-<th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:[% person.email %]">[% person.email %]</td>
+<th align=right>Email</th><td colspan=3 style="width: 2.5in"><a href="mailto:$person.email">$person.email</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td valign=top colspan=3>[% person.comment_br %]</td>
+<td valign=top colspan=3>$person.comment_br</td>
 </tr>
 
 <tr>
@@ -169,11 +169,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     [% FOR r IN person.rides %]
         <tr>
         [% IF r.pickup_date %]
-        <td><a href=/ride/view/[% r.id %]>[% r.pickup_date_obj %]</a></td>
+        <td><a href=/ride/view/$r.id>$r.pickup_date_obj</a></td>
         [% ELSE %]
-        <td><a href=/ride/view/[% r.id %]>Date</a></td>
+        <td><a href=/ride/view/$r.id>Date</a></td>
         [% END %]
-        <td>[% r.flight_time_obj %]</td>
+        <td>$r.flight_time_obj</td>
         </tr>
     [% END %]
     </table>
@@ -192,11 +192,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR d IN person.donations %]
     <tr>
-    <td align=right>[% d.amount %]</td>
-    <td>[% d.type_sh %]</td>
-    <td><a href="/project/donations/[% d.project.id %]">[% d.project.descr %]</a></td>
-    <td>[% d.the_date_obj %]</td>
-    <th><a href="javascript:void(0);" onclick="return overlib('[% d.date_d_obj %]&nbsp;&nbsp;[% d.time_d_obj %]&nbsp;&nbsp;[% d.who.username %]', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a></th>
+    <td align=right>$d.amount</td>
+    <td>$d.type_sh</td>
+    <td><a href="/project/donations/$d.project.id">$d.project.descr</a></td>
+    <td>$d.the_date_obj</td>
+    <th><a href="javascript:void(0);" onclick="return overlib('$d.date_d_obj&nbsp;&nbsp;$d.time_d_obj&nbsp;&nbsp;$d.who.username', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a></th>
     </tr>
     [% END %]
     </table>
@@ -217,11 +217,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR p IN pays %]
         <tr>
-        <td align=right valign=top>[% p.amount_disp %]</td>
-        <td align=left>[% p.what %]</td>
-        <td align=left valign=top><a href="/xaccount/view/[% p.xaccount.id %]">[% p.xaccount.descr %]</a></td>
-        <td align=right valign=top>[% p.type_sh %]</td>
-        <th valign=top><a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.user.username %] <span class=nh><a href=/xaccount/update_payment/[% p.id %]><img src=/static/images/pencil.png border=0 height=20></a>&nbsp;<a href=/xaccount/del_payment/[% p.id %]><img src=/static/images/redX.gif border=0 height=20></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '460', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 height=20 src="/static/images/info.png"></a></th>
+        <td align=right valign=top>$p.amount_disp</td>
+        <td align=left>$p.what</td>
+        <td align=left valign=top><a href="/xaccount/view/$p.xaccount.id">$p.xaccount.descr</a></td>
+        <td align=right valign=top>$p.type_sh</td>
+        <th valign=top><a href="javascript:void(0);" onclick="return overlib('#$p.id&nbsp;&nbsp;${p.the_date_obj.format("%D")}&nbsp;&nbsp;$p.time_obj&nbsp;&nbsp;$p.user.username <span class=nh><a href=/xaccount/update_payment/$p.id><img src=/static/images/pencil.png border=0 height=20></a>&nbsp;<a href=/xaccount/del_payment/$p.id><img src=/static/images/redX.gif border=0 height=20></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '460', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 height=20 src="/static/images/info.png"></a></th>
         </tr>
     [% END %]
     </table>
@@ -236,8 +236,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     <table cellpadding=3>
     [% FOREACH p IN progs %]
         <tr>
-        <td><a href="/program/view/[% p.id %]">[% p.name %]</a><td>
-        <td>[% p.sdate_obj %]<td>
+        <td><a href="/program/view/$p.id">$p.name</a><td>
+        <td>$p.sdate_obj<td>
         </tr>
     [% END %]
     </table>
@@ -254,11 +254,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
         <tr>
         <td>[% IF r.program.school != 0 %]<span class=required>*</span>[% END %]</td>
         [% IF r.program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
-        <td><a href="/registration/view/[% r.id %]">[% r.program.name %]</a></td>
+        <td><a href="/registration/view/$r.id">$r.program.name</a></td>
         [% ELSE %]
-        <td>[% r.program.name %]</td>
+        <td>$r.program.name</td>
         [% END %]
-        <td>[% IF r.date_start %][% r.date_start_obj %][% ELSE %][% r.program.sdate_obj %][% END %]</td>
+        <td>[% IF r.date_start %]$r.date_start_obj[% ELSE %]$r.program.sdate_obj[% END %]</td>
         </tr>
     [% END %]
     </table>
@@ -279,11 +279,11 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR cr IN person.credits %]
         <tr>
-        <td align=right>[% cr.amount %]</td>
-        <td>[% cr.date_expires_obj %]</td>
-        <td align=left><a href="/registration/view/[% cr.reg_given.id %]">[% cr.reg_given.program.name %]</a></td>
-        <td align=left><a href="/registration/view/[% cr.reg_used.id %]">[% cr.reg_used.program.name %]</a></td>
-        <td>[% cr.date_used_obj %]</td>
+        <td align=right>$cr.amount</td>
+        <td>$cr.date_expires_obj</td>
+        <td align=left><a href="/registration/view/$cr.reg_given.id">$cr.reg_given.program.name</a></td>
+        <td align=left><a href="/registration/view/$cr.reg_used.id">$cr.reg_used.program.name</a></td>
+        <td>$cr.date_used_obj</td>
         </tr>
     [% END %]
     </table>
@@ -302,8 +302,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR p IN proposals %]
         <tr>
-        <td><a href="/proposal/view/[% p.id %]">[% p.group_name %]</a></td>
-        <td>[% p.date_of_call_obj %]</td>
+        <td><a href="/proposal/view/$p.id">$p.group_name</a></td>
+        <td>$p.date_of_call_obj</td>
         </tr>
     [% END %]
     </table>
@@ -322,8 +322,8 @@ onclick="return confirm('Okay to Delete [% person.first %] [% person.last %]?');
     </tr>
     [% FOR r IN rentals %]
         <tr>
-        <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
-        <td>[% r.sdate_obj %]</td>
+        <td><a href="/rental/view/$r.id">$r.name</a></td>
+        <td>$r.sdate_obj</td>
         </tr>
     [% END %]
     </table>
