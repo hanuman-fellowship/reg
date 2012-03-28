@@ -2077,6 +2077,7 @@ sub _view {
                            :                                    "resident")
                            . "/$sdate",
         cluster_date   => $sdate,
+        cur_cluster    => ($reg->house_id && $reg->house)? $reg->house->cluster_id: 1,
         cal_param      => "$sdate/$nmonths",
         dcm_reg_id     => $dcm_reg_id,
         dcm_type       => $dcm_type,

@@ -1,23 +1,27 @@
 <h2>Extra Accounts</h2>
 <form action=[% "/xaccount/" _ form_action %] name=form method=post>
-<table cellpadding=3 border=0>
+<table cellpadding=5 border=0>
 
 <tr>
-<th align=right valign=top><span class=required>*</span> Sponsor</th>
-<td valign=top>
-<input type=radio name=sponsor value=mmc [% mmc_checked %]> Center<br>
-<input type=radio name=sponsor value=mmi [% mmi_checked %]> Institute
+<th align=right valign=top>Sponsor</th>
+<td>
+<input type=radio name=sponsor value=mmc [% mmc_checked %]>MMC
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<input type=radio name=sponsor value=mmi [% mmi_checked %]>MMI
 </td>
 </tr>
 
 <tr>
-<th align=right valign=top><span class=required>*</span> Description</th>
+<th align=right valign=top>Description</th>
 <td><input type=text name=descr value='[% xaccount.descr %]' size=50></td>
 </td>
 </tr>
 
 <tr>
-<th align=right><span class=required>*</span> GL Number</th>
+<th align=right>GL Number</th>
 <td><input type=text name=glnum value="[% xaccount.glnum %]" size=7></td>
 </tr>
 

@@ -602,8 +602,17 @@ sub view : Local {
 
     my ($UNres, $res) = split /XX/, _get_cluster_groups($c, $id);
 
+    my @acct_adm_name;
+    if ($glnum_popup) {
+        my ($role) = model($c, 'Role')->search({
+                         role => 'account_admin',
+                     });
+        my @users = $role->users;
+        @acct_adm_name = (acct_adm_name => $users[0]->first());
+    }
     stash($c,
         glnum_popup         => $glnum_popup,
+        @acct_adm_name,
         UNreserved_clusters => $UNres,
         reserved_clusters   => $res,
         online              => scalar(@files),

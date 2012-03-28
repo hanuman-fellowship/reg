@@ -5,6 +5,8 @@ use base 'Catalyst::Controller';
 
 use Date::Simple qw/
     date
+    today
+    ymd
 /;
 use Time::Simple qw/
     get_time
@@ -183,6 +185,15 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
+sub prep_pay_balance : Local {
+    my ($self, $c, $person_id) = @_;
+
+    stash($c,
+        person    => model($c, 'Person')->find($person_id),
+        template  => 'xaccount/prep_pay_balance.tt2',
+    );
+}
+
 sub pay_balance : Local {
     my ($self, $c, $person_id) = @_;
 
@@ -193,10 +204,30 @@ sub pay_balance : Local {
               'gen_error.tt2');
         return;
     }
-    my @accts = model($c, 'XAccount')->search(
-                    undef,
+    my $sponsor   = $c->request->params->{sponsor}   || "mmc";
+    my $timeframe = $c->request->params->{timeframe} || "current";
+    my $st_label  = uc($sponsor) . " " . ucfirst $timeframe;
+
+    my @spons_accts = model($c, 'XAccount')->search(
+                    { sponsor => $sponsor },
                     { order_by => 'descr' },
                 );
+    # now to eliminate the accounts outside the timeframe
+    my @accts;
+    my $today = today();
+    my $now = ymd($today->year(), $today->month, 1);
+    my $year_ago = ymd($today->year() - 1, $today->month, 1);
+    for my $a (@spons_accts) {
+        my ($m, $y) = $a->descr() =~ m{(\d+)/(\d+)}xms;
+        my $acct_date = $y? ymd(2000 + $y, $m, 1): $now;
+        my $acct_is_past = $acct_date < $year_ago;
+        if ($acct_is_past && $timeframe eq 'past'
+            ||
+            !$acct_is_past && $timeframe eq 'current'
+        ) {
+            push @accts, $a;
+        }
+    }
     my $cr_nonprog_id = 0;
     ACCT:
     for my $a (@accts) {
@@ -207,6 +238,7 @@ sub pay_balance : Local {
     }
     stash($c,
         message   => payment_warning('mmc'),
+        st_label  => $st_label,
         person    => model($c, 'Person')->find($person_id),
         xaccounts => \@accts,
         credit_nonprog_id => $cr_nonprog_id,

@@ -569,6 +569,6 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 <script>
 alert("IMPORTANT!!\n\n"
     + "Remember to edit and correct the GL Number for this MMI Course!\n\n"
-    + "Consult with Lila in the Finance office!");
+    + "Consult with $acct_adm_name in the Finance office!");
 </script>
 [% END %]

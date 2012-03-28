@@ -50,6 +50,11 @@ function check() {
 <option value=[% xa.id %]>[% xa.descr %]</option>
 [% END %]
 </select>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+$st_label
 </td>
 </tr>
 

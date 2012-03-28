@@ -24,12 +24,13 @@ You then need to specify a level:
 <li>Certificate
 <li>Masters
 <li>Course
+<li>Stand Alone Course (non DCM)
 </ul>
 If it is not a Course then it is refered to as a DCM program.
-MMI Courses and DCMs are marked with a red star in the list of programs.
+MMI Courses and DCMs are marked with 'MMI' in the list of programs.
 <p>
-Actually, to see current Personal Retreats and DCMs you must
-choose "PR/DCM" on the program list page OR
+Actually, to see the DCM programs you must
+choose "DCM" on the program list page OR
 do a search for a program with a pattern (or season/year).
 These are not normally included because they are
 ever-present (or present for months at a time unlike
@@ -46,7 +47,8 @@ Since MMI Programs have no web page
 "Web Ready" is forced to be off when creating/updating the program.
 This goes for "Linked" and "Unlinked Dir" as well.
 <p>
-Registrations for an MMI <i>course</i> are facilitated by the "Import"
+Registrations for an MMI <i>Course</i> (but not a
+Stand Alone Course) are facilitated by the "Import"
 link on the course Program page.  You are presented with 
 the DCM programs that are concurrent with the course date range.
 You choose one or more DCM programs and everyone in
@@ -130,15 +132,24 @@ That makes for a 7 digit GL Number for auditors.
 The GL Number of the <i>course</i> is <b>manually</b> input by the MMI administrator.
 This must be done after the Program is created - a popup window will remind
 the creator that this must be done and that they should confirm the
-GL Number with the Accounting office.
-They and the accounting office will determine what it is thusly:
+GL Number with the person in the Accounting office who has the role
+'account_admin' within Reg.   
 <ul>
-<li>digit 1 = school # (from above).
-<li>digit 2 = tens digit of year of the <i>beginning</i> date of the DCM program
+<li>digit 2 = school # (from above).
+<li>digit 3 = tens digit of year of the <i>beginning</i> date of the DCM program
 of which this course is part.  How this is determined is unknown at this time but is known to the MMI Admin.
-<li>digit 3 = units digit of that year.
-<li>digit 4, 5, 6 = the 3 digit course # from the syllabus.
+<li>digit 4 = units digit of that year.
+<li>digit 5, 6, 7 = the 3 digit course # from the syllabus.
 </ul>
+
+<h3>Stand Alone Courses (non DCM)</h3>
+If an MMI program is a 'Stand Alone Course (not DCM)' then 
+everyone registering for it is treated as an 'auditor'.  The GL Number
+of any payments is composed of a 1 or 2 (tuition or meals & lodging)
+followed by the GL Number of the course - whatever it is decided
+to be.  It may simply be the automatically generated GL number
+that was first assigned by Reg.  Again, consult with the person in
+the Accounting office who has the role 'account_admin' in Reg.
 
 <h3>List of MMI Payments</h3>
 On an MMI program registration there is a link named "List"

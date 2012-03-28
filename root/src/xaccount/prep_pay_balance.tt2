@@ -1,0 +1,33 @@
+<h2>Payment for [% person.first %] [% person.last %]</h2>
+<form name=form action="/xaccount/pay_balance/$person.id">
+First we determine what accounts to choose from:
+<p class=p2>
+<table cellpadding=5>
+
+<tr>
+<th align=right>Sponsor</th>
+<td>
+<input type=radio name=sponsor value=mmc checked> MMC
+</td>
+<td>
+<input type=radio name=sponsor value=mmi> MMI
+</td>
+</tr>
+
+<tr>
+<th>Time Frame</th>
+<td>
+<input type=radio name=timeframe value=current checked>Current
+</td>
+<td>
+<input type=radio name=timeframe value=past> Past
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
