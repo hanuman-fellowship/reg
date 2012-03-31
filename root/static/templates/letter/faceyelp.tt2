@@ -14,9 +14,12 @@ Thank you for taking a personal retreat at Mount Madonna Center.
 Thank you for renting our facilities for '${title}'.
 [% END %]
 <p>
+[% IF ! pr %]
 I've read the evaluations and appreciate the energy 
 that was put into giving that feedback.  We will follow up on the
-good suggestions.  If you think of anything else that needs attention,
+good suggestions.
+[% END %]
+If you think of anything else that needs attention,
 please don't hesitate to let me know personally.  And if you care
 to enter comments on your Mount Madonna Center experience on Facebook
 or Yelp, that will help spread the word.  You can simply click on
