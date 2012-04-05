@@ -148,6 +148,7 @@ sub future_programs {
     my ($class, $c) = @_;
     my @programs = $c->model('RetreatCenterDB::Program')->search(
         {
+            school   => 0,
             edate    => { '>=',    tt_today($c)->as_d8() },
             webready => 'yes',
         },
