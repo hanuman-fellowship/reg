@@ -1172,13 +1172,6 @@ sub _pub_err {
     return;
 }
 
-#
-# shall we provide some entertainment while
-# the ftp'ing is happening???  how to do that?
-# some Javascript and some way of not using
-# a template at the end with the results
-# but to show the incremental progress.
-#
 sub publish : Local {
     my ($self, $c) = @_;
 
@@ -1419,6 +1412,40 @@ sub publish : Local {
         ftp_dir2 => $string{ftp_dir2},
         unlinked => \@unlinked,
         template => "program/published.tt2",
+    );
+}
+
+sub mmi_publish : Local {
+    my ($self, $c) = @_;
+
+    # clear the arena
+    system("rm -rf gen_files; mkdir gen_files");
+
+    # and make sure we have initialized %string.
+    Global->init($c);
+
+    # fill @programs with all future MMI stand alone courses
+    #
+    @programs = model($c, 'Program')->search({
+                    sdate  => { '>=', tt_today($c)->as_d8() },
+                    school => { '!=', 0 },      # not MMC
+                    level  => 'A',              # stand alone course
+                    webready => 'yes',
+                });
+    gen_progtable();
+    # send to mountmadonnainstitute.org/courses
+    my $ftp = Net::FTP->new($string{ftp_mmi_site},
+                            Passive => $string{ftp_mmi_passive})
+        or return _pub_err($c, "cannot connect to ...");
+    $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
+        or return _pub_err($c, "cannot login: " . $ftp->message);
+    $ftp->cwd($string{ftp_mmi_dir})
+        or return _pub_err($c, "cannot cwd " . $ftp->message);
+    $ftp->put('gen_files/progtable');
+    $ftp->quit();
+    stash($c,
+        programs => \@programs,
+        template => "program/mmi_published.tt2",
     );
 }
 
@@ -1689,6 +1716,7 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
     #
     print {$progt} "},\n";
 }
+
 #
 # generate the progtable for online registration
 #

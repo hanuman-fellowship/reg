@@ -241,3 +241,4 @@ green_name Sustainability Council
 green_subj Green Scene
 mem_life_total 12000
 house_alert 
+ftp_mmi_dir domains/mountmadonnainstitute.org/public_html/courses

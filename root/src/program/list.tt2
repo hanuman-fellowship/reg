@@ -18,6 +18,8 @@
 [% IF mmi_admin %]
     &nbsp;&nbsp;&nbsp;
     <a href="/program/list/dcm">DCM<a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/mmi_publish">MMI Publish<a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/program/list/yscl">YSCL<a>

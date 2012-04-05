@@ -1,0 +1,11 @@
+<div style="margin-top: .5in; margin-left: .5in">
+These Stand Alone MMI Courses were published:
+<p class=p2>
+<ul>
+[% FOR p IN programs %]
+    <li>$p.name - $p.title<br>
+[% END %]
+</ul>
+You can now test this by registering for the courses online at 
+<a target=_blank href=http://www.mountmadonnainstitute.org/ayurveda/classes.html>www.mountmadonnainstitute.org</a>.
+</div>
