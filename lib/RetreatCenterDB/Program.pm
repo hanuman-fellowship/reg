@@ -895,11 +895,11 @@ sub prog_type {
     if ($self->level() eq 'A') {
         $type .= "Course ";
     }
-    elsif (! $self->linked()) {
-        $type .= "Unlinked ";
-    }
     if ($self->school() != 0) {
         $type .= "MMI ";
+    }
+    elsif (! $self->linked()) {
+        $type .= "Unlinked ";
     }
     if ($self->rental_id()) {
         $type .= "Hybrid ";
