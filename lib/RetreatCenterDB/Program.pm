@@ -892,7 +892,10 @@ sub prog_type {
 
     my $type = "";
 
-    if (! $self->linked()) {
+    if ($self->level() eq 'A') {
+        $type .= "Course ";
+    }
+    elsif (! $self->linked()) {
         $type .= "Unlinked ";
     }
     if ($self->school() != 0) {
