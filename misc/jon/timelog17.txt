@@ -8,10 +8,12 @@ Mar 31 10:15-10:30, 1:30-2:00
     yelp letter edit for PR
     phone discussion with Brajesh and Jamal about 
         MMI stand alone course online registration
-Apr 4 10:50-
+Apr 4 10:50-1:20
     generating progtable for future MMI stand alone courses
     and sending it to mountmadonnainstitute.org/courses
     putting reg1, reg2, reg1.tt2, reg2.tt2, etc on mmi.org
     making copy of the course page, adding registration buttons
     testing, modifying grab_new to get registrations from
     mmi.org, marking them as MMI rather than MMC
+Apr 6 10:50-
+    continuing with mmi online

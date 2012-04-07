@@ -1,11 +1,27 @@
-<div style="margin-top: .5in; margin-left: .5in">
+<div style="margin-top: .5in; margin-left: 5mm">
 These Stand Alone MMI Courses were published:
-<p class=p2>
 <ul>
+<table border=1 cellpadding=10>
+<tr align=left>
+<th>Name</th>
+<th>Title</th>
+<th>Course Id</th>
+</tr>
 [% FOR p IN programs %]
-    <li>$p.name - $p.title<br>
+    <tr>
+    <td>$p.name</td>
+    <td>$p.title</td>
+    <td>$p.id</td>
+    </tr>
 [% END %]
+</table>
 </ul>
-You can now test this by registering for the courses online at 
+http://www.mountmadonnainstitute.org/cgi-bin/reg1?dir=courses&id=
+<p class=p2>
+Copy and paste the above URL and append the id for each course.
+<p class=p2>
+That link will begin the online registration for the indicated course.<br>
+<p class=p2>
+You can test this by registering for the courses online at 
 <a target=_blank href=http://www.mountmadonnainstitute.org/ayurveda/classes.html>www.mountmadonnainstitute.org</a>.
 </div>
