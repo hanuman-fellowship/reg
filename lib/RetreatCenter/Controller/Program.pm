@@ -1425,14 +1425,18 @@ sub mmi_publish : Local {
     # and make sure we have initialized %string.
     Global->init($c);
 
-    # fill @programs with all future MMI stand alone courses
+    # fill the global @programs with all future MMI stand alone courses
+    # ordered by start date.
     #
-    @programs = model($c, 'Program')->search({
-                    sdate  => { '>=', tt_today($c)->as_d8() },
-                    school => { '!=', 0 },      # not MMC
-                    level  => 'A',              # stand alone course
-                    webready => 'yes',
-                });
+    @programs = model($c, 'Program')->search(
+                    {
+                        sdate  => { '>=', tt_today($c)->as_d8() },
+                        school => { '!=', 0 },      # not MMC
+                        level  => 'A',              # stand alone course
+                        webready => 'yes',
+                    },
+                    { order_by => 'sdate', },
+                );
     gen_progtable();
     # send to mountmadonnainstitute.org/courses
     my $ftp = Net::FTP->new($string{ftp_mmi_site},
