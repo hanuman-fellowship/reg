@@ -432,8 +432,9 @@ for my $f ($ftp->ls()) {
 #
 # get transaction files from www.mountmadonnainstitute.org/cgi-bin/transactions
 #
-$ftp->cwd($string{ftp_mmi_transactions})
-    or my_die("no cd paid dir $string{ftp_mmi_transactions}");
+if (! $ftp->cwd($string{ftp_mmi_transactions})) {
+    my_die("no cd paid dir $string{ftp_mmi_transactions}");
+}
 TRANSACTION:
 for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
