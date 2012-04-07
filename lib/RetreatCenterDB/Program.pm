@@ -898,7 +898,7 @@ sub prog_type {
     if ($self->school() != 0) {
         $type .= "MMI ";
     }
-    elsif (! $self->linked()) {
+    elsif (! $self->PR && ! $self->linked()) {
         $type .= "Unlinked ";
     }
     if ($self->rental_id()) {
