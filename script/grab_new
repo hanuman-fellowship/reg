@@ -41,6 +41,8 @@ reservation site and import them directly into the People table.
 8) Get MMI payment requests that have been paid and morph
 them into actual payments.
 
+9) Get MMI standalone course registations
+
 =cut
 use lib 'lib';
 use DBI;
@@ -163,7 +165,7 @@ my $sth_update_people = $dbh->prepare("
 ");
 
 #
-# now we can connect
+# now we can connect to mountmadonna.org
 #
 my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
     or my_die("cannot connect to $string{ftp_site}");    # not die???
@@ -426,6 +428,46 @@ for my $f ($ftp->ls()) {
     $Msg .= "got req_mmi file $f\n";
     $ftp->delete($f);
 }
+
+#
+# get transaction files from www.mountmadonnainstitute.org/cgi-bin/transactions
+#
+$ftp->cwd($string{ftp_mmi_transactions})
+    or my_die("no cd paid dir $string{ftp_mmi_transactions}");
+TRANSACTION:
+for my $f ($ftp->ls()) {
+    if ($f eq '.' || $f eq '..') {
+        next TRANSACTION;
+    }
+    if (! $ftp->get($f, "$online/$f")) {
+        my_warn("no get of online reg $f");
+        next TRANSACTION;
+    }
+    $ids{$f} = 1;
+    my ($last, $first) = ("", "");
+    if (open my $in, "<", "$online/$f") {
+        LINE:
+        while (my $line = <$in>) {
+            if ($line =~ m{x_kayakalpa => yes}) {
+                push @kayakalpa, $f;    
+            }
+            elsif ($line =~ m{x_fname => (.*)}) {
+                $first = $1;
+            }
+            elsif ($line =~ m{x_lname => (.*)}) {
+                $last = $1;
+            }
+        }
+        close $in;
+    }
+    $Msg .= "ftp: $f - $last, $first\n";
+    $ftp->delete($f);
+}
+#
+# all done with mmi
+#
+$ftp->quit();
+
 
 my %mnum = qw/
     Jan 1
