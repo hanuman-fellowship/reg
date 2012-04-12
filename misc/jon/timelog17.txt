@@ -15,5 +15,12 @@ Apr 4 10:50-1:20
     making copy of the course page, adding registration buttons
     testing, modifying grab_new to get registrations from
     mmi.org, marking them as MMI rather than MMC
-Apr 6 10:50-
+Apr 6 10:50-1:30
     continuing with mmi online
+    pretty much done.   jamal needs to do some graphic help.
+    testing.   perhaps a different email and From address, phone.
+    wait on Brajesh.
+Apr 8 12:10-1:00, 12:00-12:30
+    final touches on mmi online reg
+    aligning Register Now took some fiddling
+    responding to Jamal re: po_num, mmireservations@, etc.

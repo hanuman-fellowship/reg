@@ -1888,11 +1888,19 @@ sub send_conf : Local {
         return;
     }
     my $user = $c->user->obj();
+    my ($title, $from);
+    if ($pr->school == 0) {
+        $title = $string{from_title};
+        $from  = $string{from};
+    }
+    else {
+        $title = "MOUNT MADONNA INSTITUTE Program Office";
+        $from  = 'MMIreservations@mountmadonnainstitute.org';
+    }
     if (!email_letter($c,
            to      => $reg->person->name_email(),
-           from    => $string{from_title} 
-                      . " <" . $user->email() . ">",
-           replyto => "$string{from_title} <$string{from}>",
+           from    => $title . " <" . $user->email() . ">",
+           replyto => "$title <$from>",
            subject => "Confirmation of Registration for " . $pr->title(),
            html    => $html, 
     )) {
