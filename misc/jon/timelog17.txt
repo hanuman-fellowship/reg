@@ -24,3 +24,5 @@ Apr 8 12:10-1:00, 12:00-12:30
     final touches on mmi online reg
     aligning Register Now took some fiddling
     responding to Jamal re: po_num, mmireservations@, etc.
+Apr 14 11:00-11:45
+    final tweaks for MMI registration

@@ -1486,6 +1486,12 @@ body {
     margin-top: 1.5in;
     margin-left: .5in;
 }
+h1 {
+    font-size: 18pt;
+}
+h2 {
+    font-size: 14pt;
+}
 </style>
 </head>
 <body>
@@ -1628,7 +1634,7 @@ EOH
         $html .= <<"EOH";
 <h2>Other Charges</h2>
 <div style="margin-left: .3in">
-<table cellpadding=8 border=1>
+<table cellpadding=3 border=1>
 <tr>
 <th>Amount</th>
 <th align=left>What</th>
@@ -1661,7 +1667,7 @@ EOH
 </div>
 <h2>Total Charges</h2>
 <div style="margin-left: .3in">
-<table cellpadding=8 border=1>
+<table cellpadding=3 border=1>
 <tr><th align=right>Housing</th><td align=right>$sh</td></tr>
 $tr_extra
 $tr_other
@@ -1675,7 +1681,7 @@ EOH
         $html .= <<"EOH";
 <h2>Total Payments</h2>
 <div style="margin-left: .3in">
-<table cellpadding=8 border=1>
+<table cellpadding=3 border=1>
 <tr>
 <th>Date</th>
 <th>Amount</th>
