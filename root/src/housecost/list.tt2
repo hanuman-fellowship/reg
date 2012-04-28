@@ -2,13 +2,22 @@
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/housecost/create">Add</a>
 [% END %]
-<ul>
-<table cellpadding=3 border=0>
-<tr>
-</tr>
-[% FOREACH hc IN housecosts %]
-<tr>
-<td><a href="/housecost/view/[% hc.id %]">[% hc.name %]</a> [% IF hc.inactive == 'yes' %]*[% END %]<td>
-</tr>
+&nbsp;&nbsp;&nbsp;
+[% IF inc_inactive %]
+    <a href="/housecost/list">Hide Active</a>
+[% ELSE %]
+    <a href="/housecost/list/1">Show Inactive</a>
 [% END %]
+<ul>
+<table cellpadding=5 border=0>
+[% FOREACH hc IN housecosts %]
+    [% IF hc.inactive && ! inc_inactive %]
+        [% NEXT %]
+    [% END %]
+    <tr>
+    <td><a href="/housecost/view/[% hc.id %]">[% hc.name %]</a></td>
+    <td>[% IF hc.inactive == 'yes' %]inactive[% END %]<td>
+    </tr>
+[% END %]
+</table>
 </ul>

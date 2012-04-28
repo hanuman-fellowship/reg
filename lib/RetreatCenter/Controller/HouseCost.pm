@@ -9,6 +9,7 @@ use Util qw/
     empty
     model
     slurp
+    stash
 /;
 
 sub index : Private {
@@ -18,7 +19,7 @@ sub index : Private {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $inc_inactive) = @_;
 
     $c->stash->{housecosts} = [
         model($c, 'HouseCost')->search(
@@ -28,7 +29,10 @@ sub list : Local {
             },
         )
     ];
-    $c->stash->{template} = "housecost/list.tt2";
+    stash($c,
+        inc_inactive => $inc_inactive,
+        template     => "housecost/list.tt2",
+    );
 }
 
 sub delete : Local {
@@ -59,11 +63,13 @@ sub update : Local {
     my $hc = $c->stash->{housecost} = 
         model($c, 'HouseCost')->find($id);
     my $type = $hc->type();
-    $c->stash->{checked_perday} = ($type eq "Per Day")? "checked": "";
-    $c->stash->{checked_total}  = ($type eq "Total" )? "checked": "";
-    $c->stash->{checked_inactive}  = $hc->inactive()? "checked": "";
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "housecost/create_edit.tt2";
+    stash($c,
+        checked_perday   => ($type eq "Per Day")? "checked": "",
+        checked_total    => ($type eq "Total" )? "checked": "",
+        checked_inactive => $hc->inactive()? "checked": "",
+        form_action      => "update_do/$id",
+        template         => "housecost/create_edit.tt2",
+    );
 }
 
 my %hash;
@@ -94,6 +100,11 @@ sub update_do : Local {
     _get_data($c);
     return if @mess;
     model($c, 'HouseCost')->find($id)->update(\%hash);
+    for my $r (model($c, 'Rental')->search({
+        housecost_id => $id,
+    })) {
+        $r->send_grid_data();
+    }
     $c->response->redirect($c->uri_for('/housecost/list'));
 }
 
@@ -107,11 +118,13 @@ sub view : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{checked_perday} = "checked";
-    $c->stash->{checked_total}  = "";
-    $c->stash->{checked_inactive}  = "";
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "housecost/create_edit.tt2";
+    stash($c,
+        checked_perday   => "checked",
+        checked_total    => "",
+        checked_inactive => "",
+        form_action      => "create_do",
+        template         => "housecost/create_edit.tt2",
+    );
 }
 
 sub create_do : Local {

@@ -15,6 +15,7 @@
 <span style="font-size: 15pt; font-weight: bold; margin-left: .5in;">[% coord_name %]</span>
 <p class=p2 style="font-size: 15pt; font-weight: bold">
 Housing Assignment Grid
+<span style="margin-left: 4in"><a href=/registration/grab_new>Grab New</a></span>
 <p class=p2>
 <table cellpadding=5 border=1>
 <tr>

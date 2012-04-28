@@ -234,6 +234,7 @@ sub create_do : Local {
     $P{grid_code} = gen_code($P{sdate}, $P{name});
 
     my $r = model($c, 'Rental')->create(\%P);
+    $r->send_grid_data();
     my $id = $r->id();
     #
     # we must ensure that there are config records
@@ -690,7 +691,7 @@ sub update_do : Local {
     }
 
     $r->update(\%P);
-    _send_grid_data($r);        # relevant things may have changed
+    $r->send_grid_data();        # relevant things may have changed
 
     if (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
         $c->response->redirect($c->uri_for("/program/parallel/$id"));
@@ -848,7 +849,7 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person[0]->id,
         });
-        _send_grid_data($r);
+        $r->send_grid_data();
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
@@ -1130,7 +1131,7 @@ sub booking_do : Local {
         }
         check_makeup_new($c, $h_id, $sdate);
     }
-    _send_grid_data($r);
+    $r->send_grid_data();
 
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
@@ -1185,7 +1186,7 @@ sub del_booking : Local {
         }
     }
 
-    _send_grid_data($r);
+    $r->send_grid_data();
 
     check_makeup_vacate($c, $house_id, $sdate);
 
@@ -1382,7 +1383,7 @@ sub reserve_cluster : Local {
             }
         }
     }
-    _send_grid_data($rental);
+    $rental->send_grid_data();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -1450,7 +1451,7 @@ sub cancel_cluster : Local {
             }
         }
     }
-    _send_grid_data($rental);
+    $rental->send_grid_data();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -2204,71 +2205,6 @@ sub grid : Local {
         total    => commify($total),
         template => 'rental/grid.tt2',
     );
-}
-
-sub _send_grid_data {
-    my ($rental) = @_;
-
-    my $code = $rental->grid_code() . ".txt";
-    open my $gd, ">", "/tmp/$code"
-        or die "cannot create /tmp/$code: $!\n";
-    print {$gd} "name " . $rental->name() . "\n";
-    print {$gd} "id " . $rental->id() . "\n";
-    my $coord = $rental->coordinator();
-    if ($coord) {
-        print {$gd} "first " . $coord->first() . "\n";
-        print {$gd} "last " . $coord->last() . "\n";
-    }
-    else {
-        print {$gd} "first \n";     # just leave them blank
-        print {$gd} "last \n";
-    }
-    print {$gd} "sdate " . $rental->sdate() . "\n";
-    print {$gd} "edate " . $rental->edate() . "\n";
-    my $sd = substr($rental->sdate(), 4, 4);        # MMDD
-    my $winter = ! (   $string{center_tent_start} <= $sd
-                    && $sd                        <= $string{center_tent_end});
-    my $hc = $rental->housecost();
-    print {$gd} "housecost_type " . $hc->type() . "\n";
-    HTYPE:
-    for my $t (housing_types(1)) {
-        if ($winter && $t eq 'center_tent') {
-            next HTYPE;
-            # see comment below about center_tent sites
-            # being used during the winter.
-        }
-        print {$gd} "$t " . $hc->$t() . "\n";
-    }
-    for my $b ($rental->rental_bookings()) {
-        my $house = $b->house;
-        print {$gd}
-                    $house->id()
-            . "|" . $house->name_disp()
-            . "|" . $house->max()
-            . "|" . ($house->bath()    eq 'yes'? 1: 0)
-            . "|" . ($house->tent()    eq 'yes'? 1: 0)
-            . "|" . ((!$winter && $house->center()  eq 'yes')? 0: 1)
-            . "\n"
-            ;
-            # the trickyness with $winter and center tents
-            # was needed because of this:
-            # for a BIG rental in April we may want to use
-            # tent sites that are normally reserved for own tents.
-            # we permit this - and, when sending the grid to
-            # www.mountmadonna.org we morph center tent sites to own tent sites.
-            # clear?
-            #
-    }
-    close $gd;
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or die "cannot connect to $string{ftp_site}";    # not die???
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd("www/cgi-bin/rental");
-    $ftp->ascii();
-    $ftp->put("/tmp/$code", $code);
-    $ftp->quit();
-    unlink "/tmp/$code";
 }
 
 sub color : Local {
