@@ -27,3 +27,5 @@ Apr 8 12:10-1:00, 12:00-12:30
 Apr 14 11:00-12:00
     final tweaks for MMI registration
     rental invoice style changes
+Apr 28 3:30-4:15
+    rental housing cost and grid changes per Barnaby

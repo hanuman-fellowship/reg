@@ -174,12 +174,20 @@ sub get_now {
     # for passing to a DBI insert/update.
 }
 
+#
+# type is 'meeting', 'breakout', 'dorm', or 'all'
+#
 sub places {
-    my ($event, $breakout) = @_;
+    my ($event, $type) = @_;
 
     join ", ",
          map { $_->meeting_place->abbr }
-         grep { (! defined $breakout) || ($_->breakout() eq $breakout) }
+         grep {
+             $type eq 'all'
+             || ($type eq 'meeting'  && ! $_->breakout && ! $_->dorm)
+             || ($type eq 'breakout' && $_->breakout)
+             || ($type eq 'dorm'     && $_->dorm)
+         }
          $event->bookings;
 }
 

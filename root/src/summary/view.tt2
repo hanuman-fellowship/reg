@@ -91,17 +91,22 @@ th {
 <tr>
 <th align=right>Start Hour</th><td>$happening.start_hour_obj.ampm</td>
 <th align=right>Meeting Places</th>
-<td>[% happening.meeting_places('') %]</td>
+<td>[% happening.meeting_places('meeting') %]</td>
 </tr>
 
 <tr>
 <th>End Hour</th><td>$happening.end_hour_obj.ampm</td>
 <th align=right>Breakout Places</th>
-<td>[% happening.meeting_places('yes') %]</td>
+<td>[% happening.meeting_places('breakout') %]</td>
 </tr>
 
 <tr>
 <th>Maximum</th><td>$happening.max</td>
+<th align=right>Dorms</th>
+<td>[% happening.meeting_places('dorm') %]</td>
+</tr>
+
+<tr>
 <th>Current Count</th><td>$happening.count</td>
 </tr>
 
@@ -144,16 +149,18 @@ th {
 <tr>
 <th align=right>Registration Start</th><td>$pr.reg_start_obj&nbsp;&nbsp;<b>End</b> $pr.reg_end_obj</td>
 <th align=right>Meeting Places</th>
-<td align=left>[% pr.meeting_places('') %]</td>
+<td align=left>[% pr.meeting_places('meeting') %]</td>
 </tr>
 <tr>
 <th align=right>Program Start</th><td>$pr.prog_start_obj&nbsp;&nbsp;<b>End</b> $pr.prog_end_obj</td>
 <th align=right>Breakout Places</th>
-<td align=left>[% pr.meeting_places('yes') %]</td>
+<td align=left>[% pr.meeting_places('breakout') %]</td>
 </tr>
 
 <tr>
-<th>Count</th><td>$pr.reg_count[% IF pr.extradays %]/$pr.full_count[% END %]</td></tr>
+<th>Count</th><td>$pr.reg_count[% IF pr.extradays %]/$pr.full_count[% END %]</td>
+<th align=right>Dorms</th>
+<td align=left>[% pr.meeting_places('dorm') %]</td>
 </tr>
 </table>
 [% END %]
