@@ -1213,7 +1213,7 @@ sub mmi_glnum {
                   :            'Other');
     $purpose = " - $purpose";
     my $d6 = substr($glnum, 5, 1);
-    if ($d6 =~ m{[DCM]}) {
+    if ($d6 =~ m{[DCM]} && length($glnum) == 6) {
         # d6 is D, C, or M - the kind of MMI program.
         # Diploma, Certificate, or Masters.
         #
