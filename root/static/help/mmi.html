@@ -106,6 +106,8 @@ and digit 6 is not a digit at all but D, C, or M.
     <tr><td>3</td><td>Application Fee</td></tr>
     <tr><td>4</td><td>Registration Fee</td></tr>
     <tr><td>5</td><td>Other</td></tr>
+    <tr><td>6</td><td>Recording</td></tr>
+    <tr><td>7</td><td>STRF</td></tr>
     </table>
     <p>
 <li>digit 2 = the school/college of the DCM program:
@@ -146,10 +148,34 @@ of which this course is part.  How this is determined is unknown at this time bu
 If an MMI program is a 'Stand Alone Course (not DCM)' then 
 everyone registering for it is treated as an 'auditor'.  The GL Number
 of any payments is composed of a 1 or 2 (tuition or meals & lodging)
-followed by the GL Number of the course - whatever it is decided
-to be.  It may simply be the automatically generated GL number
-that was first assigned by Reg.  Again, consult with the person in
-the Accounting office who has the role 'account_admin' in Reg.
+followed by the GL Number of the course.  This number should be as follows.
+If a 3-digit course number is being used, follow the instructions
+for assigning a Course number.  If no 3-digit course number is used,
+edit the GL number as follows:
+<ul>
+<li>digit 2 = school # (from above)
+<li>digit 3 = tens digit of the year in which the course is held
+<li>digit 4 = units digit of the year
+<li>digit 5 = month (1-Jan, ...9=Sep, X=Oct, Y=Nov, Z=Dec)
+<li>digit 6, 7 = two letters representing the name of the course (e.g. Spiritual Dimensions could be SD)
+</ul>
+Again, consult with the person in the Accounting office who has the
+role 'account_admin' in Reg.
+
+<h3>Extra Accounts</h3>
+For Revenue from activities which are not part of the Programs Calendar,
+use Extra Accounts.  This includes the static accounts Observations
+(GL 524300), Donations (GL 524450), and Consultations.
+Consultation GL Numbers are assigned as follows:
+ 
+<ul>
+<li>digit 1 = C
+<li>digit 2 = school # (from above)
+<li>digit 3 = tens digit of the year in which the course is held
+<li>digit 4 = units digit of the year
+<li>digit 5 = month (1-Jan, ...9=Sep, X=Oct, Y=Nov, Z=Dec)
+<li>digit 6,7 = the first and second letters of the Faculty name (exception--Shrestha = SR) 
+</ul>
 
 <h3>List of MMI Payments</h3>
 On an MMI program registration there is a link named "List"
@@ -179,8 +205,8 @@ In the Listings-Financial area there is a link to create MMI Deposits.
     <p>
     There is also a Period End Summary of MMI payments aggregated
     by GL Number.  The period defaults to the current month.
-    In this listing there is a column headed 'ACCPACC Number'.
-    This number is used for entry into the ACCPACC program
+    In this listing there is a column headed 'ACCPAC Number'.
+    This number is used for entry into the ACCPAC program
     used in the Financial Office.  It has this form:
 <pre class=glnum>
     XXXX-0X-XXXX

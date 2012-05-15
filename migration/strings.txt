@@ -243,3 +243,4 @@ mem_life_total 12000
 house_alert 
 ftp_mmi_dir /home/mmi/domains/mountmadonnainstitute.org/public_html/cgi-bin/req_mmi_dir/paid
 ftp_mmi_transactions /home/mmi/domains/mountmadonnainstitute.org/public_html/cgi-bin/transactions
+green_glnum_mmi 00005

@@ -1209,8 +1209,12 @@ sub create_do : Local {
     #
     if ($P{green_amount}) {
         # which XAccount id?
+        my $key = 'green_glnum';
+        if ($pr->school() != 0) {
+            $key .= "_mmi";
+        }
         my ($xa) = model($c, 'XAccount')->search({
-            glnum => $string{green_glnum},
+            glnum => $string{$key},
         });
         if ($xa) {
             model($c, 'XAccountPayment')->create({
@@ -1255,7 +1259,10 @@ sub create_do : Local {
             );
         }
         else {
-            # error! - no glnum for green fund???
+            error($c,
+                  "Sorry, cannot find Green Scene extra account!",
+                  'gen_error.tt2');
+            return;
         }
     }
     # go on to lodging, if needed

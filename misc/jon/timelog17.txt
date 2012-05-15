@@ -29,3 +29,7 @@ Apr 14 11:00-12:00
     rental invoice style changes
 Apr 28 3:30-4:15
     rental housing cost and grid changes per Barnaby
+May 2 11:30-11:50
+    consultation with Barnaby
+    meetings places broken out in 3 types in sums
+
