@@ -146,8 +146,9 @@ sub role_table {
     join "\n",
     map {
         my $id = $_->id();
+        my $checked = $checked{$id} || "";
           "<tr><td>"
-        . "<input type=checkbox name=role$id  $checked{$id}> "
+        . "<input type=checkbox name=role$id $checked> "
         . $_->fullname
         . "</td></tr>"
     }

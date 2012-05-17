@@ -35,5 +35,9 @@ May 2 11:30-11:50
 May 14 10:00-11:30
     Sukhdev, Green MMI donation
     Lila - responding to email confusion
-May 15 12:00-
+May 15 12:00-12:45
     Lila consultation
+May 17 9:25-
+    only account_admin can edit the glnum of programs
+    initial glnum for MMI programs is XX
+    no mmi monies can be received if glnum contains XX

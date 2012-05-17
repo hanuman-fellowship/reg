@@ -993,6 +993,13 @@ sub create_do : Local {
         return;
     }
     my $pr = model($c, 'Program')->find($P{program_id});
+    if ($pr->glnum() =~ m{XX}xms) {
+        error($c,
+            "The GL Number has not yet been assigned.",
+            "registration/error.tt2",
+        );
+        return;
+    }
     #
     # we CAN register twice for some programs.
     # is this be a dup reg?

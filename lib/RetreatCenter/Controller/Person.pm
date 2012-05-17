@@ -1036,9 +1036,10 @@ sub request_mmi_payment : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
-    if (empty($reg->program->glnum())) {
+    my $glnum = $reg->program->glnum();
+    if (empty($glnum) || $glnum =~ m{XX}xms) {
         error($c,
-            $reg->program->name() . " does not have a GL Number.  Please fix.",
+            "The GL Number has not yet been assigned.",
             "gen_error.tt2",
         );
         return;
@@ -1369,6 +1370,13 @@ sub create_mmi_payment_do : Local {
     my $glnum = calc_mmi_glnum($c, $person_id, $stand_alone,
                                $for_what,
                                $reg->program->glnum());
+    if ($glnum =~ m{XX}xms) {
+        error($c,
+            "The GL Number has not yet been assigned.",
+            "registration/error.tt2",
+        );
+        return;
+    }
     if ($glnum eq 'illegal') {
         $c->stash->{mess} = "Since this person is an Auditor the payment<br>"
                           . "cannot be a fee for Application or Registration.";
