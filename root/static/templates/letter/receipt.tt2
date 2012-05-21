@@ -1,0 +1,96 @@
+<html>
+<head>
+<style type='text/css'>
+body {
+    margin-top: .5in;
+    margin-left: .5in;
+    font-family: Times;
+    font-size: 17pt;
+}
+.header {
+    font-size: 21pt;
+    margin-bottom: 5mm;
+}
+td, th {
+    font-size: 17pt;
+}
+h3 {
+    margin-top: 9mm;
+    margin-bottom: 2mm;
+}
+</style>
+</head>
+<body>
+[% pers = reg.person %]
+[% prog = reg.program %]
+[% mmi = prog.school != 0 %]
+<div class=header>
+Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]<br>
+415 Summit Rd<br>
+Watsonville, CA 95076
+</div>
+${today.format("%B %e, %Y")}
+<p>
+$pers.first $pers.last<br>
+$pers.addr1<br>
+$pers.city, $pers.st_prov, $pers.zip_post<br>
+$pers.carpool_telephone
+<h3>Program</h3>
+$prog.title, $reg.att_prog_dates
+<p>
+<h3>Charges</h3>
+<table cellpadding=5 border=1>
+<tr align=left>
+<th align=right>Amount</th>
+<th>Type</th>
+</tr>
+[% FOREACH ch IN reg.charges %]
+<tr>
+<td align=right>$ch.amount_disp</td>
+<td>$ch.what</td>
+</tr>
+[% END %]
+</table>
+
+<h3>Payments</h3>
+<table cellpadding=5 border=1>
+<tr valign=bottom align=left>
+<th align=right>Amount</th>
+<th>Type</th>
+<th align=center>Date</th>
+<th align=right>Receipt #</th>
+<th>What</th>
+<th>Authorize.net Transaction Id</th>
+</tr>
+[% IF mmi %]
+    [% method = 'mmi_payments' %]
+[% ELSE %]
+    [% method = 'payments' %]
+[% END %]
+[% tot = 0 %]
+[% FOREACH py IN reg.$method %]
+    <tr>
+    <td align=right>$py.amount_disp</td>
+    [% tot = tot + py.amount %]
+    <td>$py.type_sh</td>
+    <td>${py.the_date_obj.format("%D")}</td>
+    <td align=right>$py.id</td>
+    [% IF mmi %]
+        <td>$py.note</td>
+    [% ELSE %]
+        <td>$py.what</td>
+    [% END %]
+    <td>$py.transaction_id</td>
+    </tr>
+[% END %]
+<tr>
+<td align=right>$tot</t>
+<td>Total</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+</body>
+</html>

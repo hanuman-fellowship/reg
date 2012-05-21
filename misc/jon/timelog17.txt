@@ -37,7 +37,27 @@ May 14 10:00-11:30
     Lila - responding to email confusion
 May 15 12:00-12:45
     Lila consultation
-May 17 9:25-
+May 17 9:25-10:50
     only account_admin can edit the glnum of programs
     initial glnum for MMI programs is XX
     no mmi monies can be received if glnum contains XX
+    next - all future MMI non-standalone courses - put XX in the GL Num.
+    so that no one can audit it until Lila does her thing.
+    3 digits of course number... in the GL Number.
+        there ARE current auditors - what GL Number was used for them???
+May 18 8:45-10:15, 11:00-1:10
+    continuing with MMI GL Nums.
+    Receipts beginning
+    " continuing
+    connection problem to mountmadonna.org - called garlic to no avail
+    need to do reg.attended_dates with year.
+May 19 11:30-1:00
+    mountmadonna.org got moved to a new server that was incompatible
+    with the Perl modules I had loaded.
+    adjusting the Template, AppConfig modules.  Couldn't get the XS stuff
+    working for Template. Not sure why.  Reverted to PurePerl.
+    called garlic.com again - the time was off.
+    still some problem with authorize.net calling 'relay'.
+    will need to ask them on Monday.
+May 21 9:15-
+    finalizing receipts

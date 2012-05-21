@@ -5377,4 +5377,27 @@ sub grab_new : Local {
     $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 
+sub receipt : Local {
+    my ($self, $c, $reg_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $html = "";
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $stash = {
+        today => today(),
+        reg => $reg,
+    };
+    $tt->process(
+        "receipt.tt2",  # template
+        $stash,         # variables
+        \$html,         # output
+    );
+    $c->res->output($html);
+    return;
+}
+
 1;
