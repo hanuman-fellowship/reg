@@ -60,7 +60,6 @@ $prog.title, $reg.att_prog_dates
 <th align=center>Date</th>
 <th align=right>Receipt #</th>
 <th>What</th>
-<th>Authorize.net Transaction Id</th>
 </tr>
 [% IF mmi %]
     [% method = 'mmi_payments' %]
@@ -80,7 +79,6 @@ $prog.title, $reg.att_prog_dates
     [% ELSE %]
         <td>$py.what</td>
     [% END %]
-    <td>$py.transaction_id</td>
     </tr>
 [% END %]
 <tr>
