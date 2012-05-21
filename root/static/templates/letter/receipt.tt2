@@ -10,6 +10,7 @@ body {
 .header {
     font-size: 21pt;
     margin-bottom: 5mm;
+    font-weight: bold;
 }
 td, th {
     font-size: 17pt;
