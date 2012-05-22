@@ -5378,9 +5378,9 @@ sub grab_new : Local {
 }
 
 sub receipt : Local {
-    my ($self, $c, $reg_id) = @_;
+    my ($self, $c, $id, $type) = @_;
 
-    my $reg = model($c, 'Registration')->find($reg_id);
+    my $reg = model($c, 'Registration')->find($id);
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -5396,16 +5396,40 @@ sub receipt : Local {
         $presenter = '';
     }
     my $stash = {
-        today => today(),
-        reg => $reg,
+        today     => today(),
+        reg       => $reg,
         presenter => $presenter,
+        print     => $type eq 'print',
     };
     $tt->process(
         "receipt.tt2",  # template
         $stash,         # variables
         \$html,         # output
     );
-    $c->res->output($html);
+    my $from = ($reg->program->school() == 0)?
+        "$string{from_title} <$string{from}>":
+        'Mount Madonna Institute <MMIreservations@mountmadonnainstitute.org>'
+        ;
+    if ($type eq 'email') {
+        email_letter($c,
+            to      => $reg->person->email,
+            from    => $from,
+            subject => "Receipt for " . $reg->program->title,
+            html    => $html, 
+        );
+    }
+    my @who_now = get_now($c);
+    push @who_now, reg_id => $id;
+    model($c, 'RegHistory')->create({
+        @who_now,
+        what    => "Receipt ${type}ed",
+    });
+    if ($type eq 'print') {
+        $c->res->output($html);
+    }
+    else {
+        $c->response->redirect($c->uri_for("/registration/view/$id"));
+    }
     return;
 }
 

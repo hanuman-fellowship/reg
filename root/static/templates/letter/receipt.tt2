@@ -40,13 +40,22 @@ h3 {
 [% mmi = prog.school != 0 %]
 [% IF mmi %]
 <div class=mmi_header>
-<img src=/static/images/mmi_logo.png><br>
+[% IF print %]
+<img src=/static/images/mmi_logo.png>
+[% ELSE %]
+<img src="http://mountmadonnainstitute.org/images2/header_home.png">
+[% END %]
+<br>
 415 Summit Rd Watsonville, CA 95076
 </div>
 [% ELSE %]
 <table cellpadding=2>
 <tr>
+[% IF print %]
 <td><img src=/static/images/mmc_logo.gif></td>
+[% ELSE %]
+<td><img src="http://mountmadonna.org/Gif/navbar_home.gif"></td>
+[% END %]
 <td class=header>Mount Madonna Center<br>
 <div class=addr>
 415 Summit Rd Watsonville, CA 95076
@@ -127,3 +136,8 @@ $pers.carpool_telephone
 </table>
 </body>
 </html>
+[% IF print %]
+<script>
+window.print();
+</script>
+[% END %]
