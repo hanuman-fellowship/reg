@@ -56,7 +56,7 @@ h3 {
 [% END %]
 ${today.format("%B %e, %Y")}
 <p>
-$pers.first $pers.last<br>
+<h3>$pers.first $pers.last</h3>
 $pers.addr1<br>
 $pers.city, $pers.st_prov, $pers.zip_post<br>
 $pers.carpool_telephone
