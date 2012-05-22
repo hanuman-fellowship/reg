@@ -5387,9 +5387,18 @@ sub receipt : Local {
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
+    my @leaders = $reg->program->leaders;
+    my $presenter;
+    if (@leaders) {
+        $presenter = $leaders[0]->person->name;
+    }
+    else {
+        $presenter = '';
+    }
     my $stash = {
         today => today(),
         reg => $reg,
+        presenter => $presenter,
     };
     $tt->process(
         "receipt.tt2",  # template

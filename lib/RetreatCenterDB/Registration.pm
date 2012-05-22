@@ -217,4 +217,16 @@ sub att_prog_dates {
          ;
 }
 
+sub receipt_dates {
+    my ($self) = @_;
+    my $prog = $self->program();
+    my $psdate = $prog->sdate_obj();
+    my $pedate = $prog->edate_obj();
+    my $diff_mon = $psdate->month() != $pedate->month();
+    my $diff_yr = $psdate->year() != $pedate->year();
+    my $s = $psdate->format("%B %e" . ($diff_yr? ", %Y": ""));
+    my $e = $pedate->format(($diff_mon? "%B %e": "%e") . ", %Y");
+    return $s . " - " . $e;
+}
+
 1;

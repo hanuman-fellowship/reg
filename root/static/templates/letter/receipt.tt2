@@ -2,15 +2,28 @@
 <head>
 <style type='text/css'>
 body {
+    width: 600px;
     margin-top: .5in;
     margin-left: .5in;
     font-family: Times;
     font-size: 17pt;
 }
 .header {
-    font-size: 21pt;
-    margin-bottom: 5mm;
+    font-size: 31pt;
+    text-align: center;
+    margin-bottom: 1mm;
     font-weight: bold;
+}
+.mmi_header {
+    width: 900px;
+    text-align: center;
+    margin-bottom: 3mm;
+}
+.addr {
+    font-size: 14pt;
+    font-weight: normal;
+    text-align: center;
+    margin-bottom: 4mm;
 }
 td, th {
     font-size: 17pt;
@@ -25,11 +38,22 @@ h3 {
 [% pers = reg.person %]
 [% prog = reg.program %]
 [% mmi = prog.school != 0 %]
-<div class=header>
-Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]<br>
-415 Summit Rd<br>
-Watsonville, CA 95076
+[% IF mmi %]
+<div class=mmi_header>
+<img src=/static/images/mmi_logo.png><br>
+415 Summit Rd Watsonville, CA 95076
 </div>
+[% ELSE %]
+<table cellpadding=2>
+<tr>
+<td><img src=/static/images/mmc_logo.gif></td>
+<td class=header>Mount Madonna Center<br>
+<div class=addr>
+415 Summit Rd Watsonville, CA 95076
+</div>
+</td>
+</table>
+[% END %]
 ${today.format("%B %e, %Y")}
 <p>
 $pers.first $pers.last<br>
@@ -37,24 +61,35 @@ $pers.addr1<br>
 $pers.city, $pers.st_prov, $pers.zip_post<br>
 $pers.carpool_telephone
 <h3>Program</h3>
-$prog.title, $reg.att_prog_dates
+<table cellpadding=6 border=1>
+<tr><th align=right>Title</th><td>$prog.title</td></tr>
+[% IF presenter %]
+<tr><th align=right>Presenter</th><td>$presenter</td></tr>
+[% END %]
+<tr><th align=right>Dates</th><td>$reg.receipt_dates</td></tr>
+</table>
 <p>
 <h3>Charges</h3>
-<table cellpadding=5 border=1>
+<table cellpadding=6 border=1>
 <tr align=left>
 <th align=right>Amount</th>
 <th>Type</th>
 </tr>
+[% tot = 0 %]
 [% FOREACH ch IN reg.charges %]
+[% tot = tot + ch.amount %]
 <tr>
 <td align=right>$ch.amount_disp</td>
 <td>$ch.what</td>
 </tr>
 [% END %]
+<tr>
+<td align=right>$tot</td><td>Total</td>
+</tr>
 </table>
 
 <h3>Payments</h3>
-<table cellpadding=5 border=1>
+<table cellpadding=6 border=1>
 <tr valign=bottom align=left>
 <th align=right>Amount</th>
 <th>Type</th>
