@@ -3923,7 +3923,7 @@ sub lodge_do : Local {
         }
     }
     my ($alert, $who) = (0, '');
-    if ($string{house_alert} =~ m{~$house_name_of{$house_id}=(\w+)~}ms) {
+    if ($string{house_alert} =~ m{~$house_name_of{$house_id}=([^~]+)~}ms) {
         $alert = 1;
         $who = $1;
     }

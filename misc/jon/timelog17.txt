@@ -61,3 +61,18 @@ May 19 11:30-1:00
     will need to ask them on Monday.
 May 21 9:15-10:00, 11:15-12:30
     finalizing receipts
+May 22 8:00-9:30
+    receipts are done - it was hard!
+May 23 1:00-1:30, 9:00-9:40
+    investigating calendar mishap - a program started on
+    10/12/1029 instead of 10/21/2012!!
+    backup dir - to lp/backup/mmc, to kali2
+    TODO: backup check, rsync of other dirs, 
+        are the backup scripts in git?
+        git push kali also does kali2?
+    TODO: date check for certain dates for events, programs, rentals
+        1 year back, 5 years ahead
+May 24 1:00-1:30
+    responding to various emails, fixing check_backup
+May 16 11:25-11:45
+    man rsync - tutorial: http://everythinglinux.org/rsync/
