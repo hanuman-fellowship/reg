@@ -74,5 +74,9 @@ May 23 1:00-1:30, 9:00-9:40
         1 year back, 5 years ahead
 May 24 1:00-1:30
     responding to various emails, fixing check_backup
-May 16 11:25-11:45
+May 26 11:25-11:45
     man rsync - tutorial: http://everythinglinux.org/rsync/
+May 27 1:30-2:15
+    calling garlic about stmp at localhost
+    responding to Barbaby about house_alert
+

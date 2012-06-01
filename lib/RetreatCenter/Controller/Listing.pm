@@ -440,6 +440,7 @@ sub meal_list : Local {
                        cancelled  => '',
                        -or => [
                            'program.level' => 'S',
+                           'program.level' => 'A',
                            'program.level' => ' ',
                        ],
                    },
