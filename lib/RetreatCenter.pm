@@ -66,7 +66,7 @@ for my $a (qw/ create create_do update update_do delete /) {
     __PACKAGE__->deny_access_unless("/user/$a", ['user_admin']);
 }
 for my $a (qw/ list view /) {
-    __PACKAGE__->deny_access_unless("/role/$a", ['super_admin']);
+    __PACKAGE__->deny_access_unless("/role/$a", ['user_admin']);
 }
 
 for my $a (qw/ create create_do update update_do delete view /) {
