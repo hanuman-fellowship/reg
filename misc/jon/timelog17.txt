@@ -81,3 +81,5 @@ May 27 1:30-2:15
     responding to Barbaby about house_alert
 May 31 12:30-1:00
     responding to Barnaby and Ashley
+Jun 4 9:30-10:00
+    messing around with sutra_send, smtp at suecenter.org

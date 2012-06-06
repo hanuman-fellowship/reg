@@ -393,6 +393,11 @@ Web
 </tr>
 
 <tr>
+<th align=right>Not on Calendar</th>
+<td>[% program.not_on_calendar %]</td>
+</tr>
+
+<tr>
 <th align=right>Times</th>
 <td colspan=4>
 

@@ -467,7 +467,8 @@ EOH
         my @prog_opt = ();
         if ($ev_kind eq "Program") {
             @prog_opt = (
-                level => { 'not in',  [qw/ D C M /] },
+                level           => { 'not in',  [qw/ D C M /] },
+                not_on_calendar => '',
             );
         }
         push @events, model($c, $ev_kind)->search({

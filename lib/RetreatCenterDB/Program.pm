@@ -81,6 +81,7 @@ __PACKAGE__->add_columns(qw/
     refresh_days
     category_id
     facebook_event_id
+    not_on_calendar
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

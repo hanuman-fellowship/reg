@@ -52,7 +52,8 @@ create table program (
     percent_tuition integer,
     refresh_days text,
     category_id integer,
-    facebook_event_id text
+    facebook_event_id text,
+    not_on_calendar text
 );
 drop table if exists category;
 create table category (
