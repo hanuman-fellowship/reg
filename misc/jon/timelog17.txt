@@ -83,3 +83,8 @@ May 31 12:30-1:00
     responding to Barnaby and Ashley
 Jun 4 9:30-10:00
     messing around with sutra_send, smtp at suecenter.org
+Jun 5 11:00-12:00
+    KKWC 7 not 6 rooms
+    not_on_calendar
+Jun 10 3:00-4:00
+    messing around with sutra_send

@@ -70,6 +70,7 @@ For [% SPONSOR %] Receipts Issued between [% start.format("%D") %] and [% end.fo
 </table>
 <span class=timestamp>
 * - Rental<br>
+r - Rides<br>
 x - Extra Account<br>
 As of [% timestamp %]
 </span>
