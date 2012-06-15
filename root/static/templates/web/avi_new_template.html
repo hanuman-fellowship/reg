@@ -1,0 +1,123 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+<HEAD>
+
+<?php 
+//VARIABLE DECLARATION
+$active_navbar = 'programs';//defines which button on the navbar should be down
+$sidebar ='template';//defines which sidebar to use
+?>
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" />
+
+<TITLE><!--T title1 --> <!--T title2 --></TITLE>
+
+<META NAME="keywords" CONTENT="<!--T leader_names -->, <!--T title1 -->, <!--T title2 -->">
+<LINK HREF="/styles/reset.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/layout.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/header.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/sidebar.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/text.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/programs.css" REL="stylesheet" TYPE="text/css" />
+
+<!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
+
+<!--[if IE 5]>
+<style type="text/css"> 
+.twoColFixLtHdr #sidebar1 { margin-right: 7px; }
+.twoColFixLtHdr #contentHeader { margin-left: 197px;}
+</style>
+<![endif]-->
+<!--[if IE 6]>
+<style type="text/css"> 
+.twoColFixLtHdr #sidebar1 { width: 187px; }
+.twoColFixLtHdr #contentHeader { margin-left: 197px;}
+</style>
+<![endif]-->
+<!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixLtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
+</HEAD>
+
+<BODY CLASS="twoColFixLtHdr">
+
+    <DIV ID="container">
+        <DIV ID="header"><?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/header.php');?></DIV>
+        <DIV ID="mainWrapper">
+            <DIV ID="sidebar1"><DIV CLASS="sidebarContainer"><DIV CLASS="sidebarTop"><DIV></DIV></DIV>
+	<DIV CLASS="sidebarContent" STYLE="margin-right:auto;margin-left:auto;width:170px;">
+        <DIV><!--T picture --></DIV>
+                
+
+  </DIV><DIV CLASS=sidebarBottom><DIV></DIV></DIV></DIV>
+  </DIV>
+      
+            <DIV ID="contentHeader" CLASS="p<!--T id-->"><!-- put 650 px width image here or leave &nbsp; if no header image-->
+
+
+                <DIV CLASS="ptop">
+                    <H1 CLASS="ptitle"><!--T title1 --></H1>
+                    <H2 CLASS="psubtitle"><!--T title2 --></H2>
+                    <P CLASS="pdates"><!--T dates --></P>
+                    <SPAN><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?id=<!--T id -->&dir=<!--T unlinked_dir -->"><IMG SRC="/Gif/register_button.gif" ALT="Register for this program" BORDER="0"></A></SPAN>
+                
+                </DIV>
+                
+            </DIV><!-- end #contentHeader -->
+          
+         
+            <DIV ID="content">
+                
+                
+                
+                <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PROGRAM DESCRIPTION</SPAN><SPAN STYLE="float:right;">&nbsp;</SPAN></DIV>
+                
+                <DIV CLASS="pdesc">
+                    <!--T webdesc_plus -->
+                    <!--T weburl -->
+                </DIV>
+
+                
+                <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">REGISTRATION</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
+                
+                <DIV CLASS="preg">
+                
+                <P STYLE="margin-top:25px;"><STRONG>Cost:</STRONG></P>
+
+                    <CENTER>
+                        <UL>
+                            <!--T fee_table -->
+                        </UL>
+                    <P><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?&id=<!--T id -->&dir=<!--T unlinked_dir -->"><IMG SRC="/Gif/register_button.gif" STYLE="padding-top:25px;" ALT="Register for this program" BORDER="0"></A></P>
+                    </CENTER>
+                </DIV>
+                
+                <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PROGRAM NOTES</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
+
+                <DIV CLASS="pnotes">
+                    <UL>
+						<LI><!-- T cancellation_policy --></LI>
+						<LI>Mount Madonna Center program registration begins at 4:00 pm.</LI>
+						<LI>Dinner is served from 5:30-6:30 on Friday and 5:00-6:00 on other days.</LI>
+						<LI>If you will be arriving late, please ask us to save a dinner for you.</LI>
+						<LI>Orientation begins at 7:00 pm.</LI>
+                    </UL>
+                </DIV>
+                
+              
+                <P>&nbsp;</P>
+             <!-- end #Content --></DIV>
+           <DIV ID="contentFooter" CLASS="clearfloat"><!-- end #ContentFooter --></DIV>
+        <!-- end #mainWrapper --></DIV>
+        
+
+        <DIV ID="footer">
+        <?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/footer.php'); ?>
+        </DIV><!-- end #footer -->
+    </DIV><!-- end #container -->
+</BODY>
+</HTML>
