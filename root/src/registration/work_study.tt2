@@ -7,7 +7,7 @@
 <th align=left valign=bottom>Tasks</th>
 </tr>
 [% FOR r IN regs %]
-[% safe = r.work_study_safety == 'yes' %]
+[% safe = r.work_study_safety == 'yes'  || r.person.safety_form == 'yes'  %]
 <tr>
 <td align=center>
 [% IF safe %]
