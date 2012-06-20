@@ -1266,6 +1266,7 @@ sub contract : Local {
     });
     my $html = "";
     my $tt = Template->new({
+        INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
