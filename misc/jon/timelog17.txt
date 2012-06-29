@@ -99,3 +99,5 @@ Jun 22 1:00-1:20
 Jun 24 3:00-4:00
     figured out my mistake with boolean fields in sqlite3 and mysql
         made a plan to remedy it.
+Jun 28 11:00-11:15
+    adjusting permisssion for who can inactive people
