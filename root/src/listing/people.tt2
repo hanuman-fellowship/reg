@@ -1,4 +1,4 @@
-<ul>
+ul>
 <h3>People Listings</h3>
 <ul>
 <li><a href=/report/list>General Reports</a>
@@ -17,7 +17,7 @@
 <p class=p2>
 <li><a href=/listing/upload_yj_sheet>Upload Yoga Journal Spreadsheet</a>
 [% END %]
-[% IF Catalyst.check_user_roles('super_admin') %]
+[% IF Catalyst.check_user_roles('mail_admin') %]
     <p class=p2>
     <li><a href="/listing/activity_tally">Last Active Tally by Year</a>
     <p class=p2>

@@ -90,3 +90,12 @@ Jun 10 3:00-4:00
     messing around with sutra_send
 Jun 14 12:30-1:45
     checking Rental status, getting Jamal's changes to templates
+Jun 19 11:00-12:00
+    saftey form, rental contract
+Jun 20 10:00-10:30
+    more tweaks to contract
+Jun 22 1:00-1:20
+    hybrid hybrid housing snafu
+Jun 24 3:00-4:00
+    figured out my mistake with boolean fields in sqlite3 and mysql
+        made a plan to remedy it.
