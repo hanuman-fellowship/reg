@@ -1,9 +1,10 @@
 <!-- Login form -->
 <form method="post" name=form action=" [% Catalyst.uri_for('/login') %] ">
-<table>
+<table border=0 cellpadding=3>
 
 <tr>
-<td colspan=2 align=center><h2>Reg for MMC</h2></td>
+<td colspan=2 align=center valign=center><span style="font-size: 20pt; font-weight: bold">Reg for MMC</span></td>
+<td valign=center>$time</td>
 <tr>
 
 <tr>
@@ -18,7 +19,7 @@
 
 <tr>
 <td>&nbsp;</td>
-<td><input type="submit" value="Login"></td>
+<td><input id=sub type="submit" value="Login"></td>
 </tr>
 
 </table>

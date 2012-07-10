@@ -9,6 +9,12 @@ use Global qw/
 use Date::Simple qw/
     today
 /;
+use Util qw/
+    stash
+/;
+use Time::Simple qw/
+    get_time
+/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -85,8 +91,11 @@ sub index : Private {
             $c->stash->{error_msg} = "Bad username or password.";
         }
     }
-    # If either of above don't work out, send to the login page
-    $c->stash->{template} = 'login.tt2';
+    # If either of the above don't work out, send to the login page
+    stash($c,
+        time     => get_time()->format(12),
+        template => 'login.tt2',
+    );
 }
 
 #

@@ -45,6 +45,7 @@ sub end : ActionClass('RenderView') {
     if ($u) {
         # tt_today() needs a user.
         $c->stash->{today} = tt_today($c);
+        $c->stash->{time} = "hi";
     }
     my @errs = @{$c->error()};
     if (@errs) {
