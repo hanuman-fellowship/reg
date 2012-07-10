@@ -769,7 +769,7 @@ EOH
 
                        :       $event_name),
 
-                      places($ev)
+                      places($ev, 'all')
                       ;
 
                 if ($ev_type eq 'rental') {
