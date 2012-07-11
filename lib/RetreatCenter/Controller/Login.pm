@@ -93,7 +93,7 @@ sub index : Private {
     }
     # If either of the above don't work out, send to the login page
     stash($c,
-        time     => get_time()->format(12),
+        time     => get_time(),
         template => 'login.tt2',
     );
 }

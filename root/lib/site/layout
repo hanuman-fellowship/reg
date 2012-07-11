@@ -62,7 +62,7 @@
 [% ELSE %]
     <td colspan=3></td>
 [% END %]
-<td colspan=3>[% today.format("%A %B %e, %Y") %] $time</td>
+<td colspan=3>[% today.format("%A %B %e, %Y") %]</td>
 </tr>
 </table>
 </div>
