@@ -3774,6 +3774,11 @@ sub lodge_do : Local {
         $c->response->redirect($c->uri_for("/registration/view/$id"));
         return;
     }
+    if (! $house_id) {
+        # no house was chosen - perhaps no room in the inn
+        $c->response->redirect($c->uri_for("/registration/view/$id"));
+        return;
+    }
     my $house;
     if ($force_house) {
         ($house) = model($c, 'House')->search({
