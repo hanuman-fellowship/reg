@@ -287,13 +287,14 @@ sub daily_counts {
 }
 sub count {
     my ($self) = @_;
+    my $prog_count = 0;
     if ($self->program_id()) {
         # Hybrid counts come from the program.
         #
-        return $self->program->count();
+        $prog_count = $self->program->count();
     }
     if ($self->expected()) {
-        return $self->expected();
+        return $self->expected() + $prog_count;
     }
     my @counts = $self->daily_counts();
     my $top = 0;
@@ -302,7 +303,7 @@ sub count {
             $top = $c;
         }
     }
-    return $top;
+    return $top + $prog_count;
 }
 sub status_td {
     my ($self) = @_;

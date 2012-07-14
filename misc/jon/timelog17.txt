@@ -104,3 +104,6 @@ Jun 28 11:00-11:15
 Jul 3 11:00-
     granting permissions
     helping Barnaby with some housing issues
+Jul 13 10:40-
+    hybrid where both program regs and rental web grid - both
+    in the total on the summary and in the kitchen meal count
