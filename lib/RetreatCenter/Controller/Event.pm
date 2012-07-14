@@ -645,6 +645,13 @@ EOH
                 ) {
                     # this is a program with a parallel Rental
                     # OR a Residental program (YSC, YSL, ...)
+                    #
+                    # we _could_ have filtered out the programs with
+                    # a parallel rental much earlier.  Was there a reason
+                    # that we didn't?   We prohibit the scheduling of
+                    # meeting places on the Program side so @places
+                    # _will_ be empty.
+                    #
                     next EVENT;     # skip it entirely
                 }
                 if ($no_where) {

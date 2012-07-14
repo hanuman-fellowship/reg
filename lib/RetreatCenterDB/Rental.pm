@@ -289,13 +289,16 @@ sub count {
     my ($self) = @_;
     my $prog_count = 0;
     if ($self->program_id()) {
-        # Hybrid counts come from the program.
+        # Hybrid counts come from the program and also the web grid.
         #
         $prog_count = $self->program->count();
     }
     if ($self->expected()) {
         return $self->expected() + $prog_count;
     }
+    # the count is the population count when
+    # the maximum number of people were present.
+    #
     my @counts = $self->daily_counts();
     my $top = 0;
     for my $c (@counts) {
