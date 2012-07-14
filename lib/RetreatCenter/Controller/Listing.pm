@@ -453,10 +453,15 @@ sub meal_list : Local {
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
                       name  => { -not_like => 'XL %' },
-                      -or => [
-                          program_id => 0,      # non-hybrid rentals only
-                          program_id => undef,  # null
-                      ],
+                      #
+                      # update: we now can both have people register
+                      # on the program side AND also have a web grid
+                      # for the rental side.  zoweee.
+                      #
+                      #-or => [
+                      #    program_id => 0,      # non-hybrid rentals only
+                      #    program_id => undef,  # null
+                      #],
                                 # hybrid rental/programs are counted
                                 # on the program side by individual
                                 # registration
