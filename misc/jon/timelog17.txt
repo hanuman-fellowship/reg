@@ -104,6 +104,9 @@ Jun 28 11:00-11:15
 Jul 3 11:00-
     granting permissions
     helping Barnaby with some housing issues
-Jul 13 10:40-11:20
+Jul 13 10:40-11:20, 11:40-11:55
     hybrid where both program regs and rental web grid - both
-    in the total on the summary and in the kitchen meal count
+    in the total on the summary AND in the kitchen meal count
+Jul 18 3:30-5:00
+    getting newkali source git synch'ed and the mysql server running
+    with a little help from Ryder and Shantam
