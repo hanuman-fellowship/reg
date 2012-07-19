@@ -1,11 +1,9 @@
-#/bin/sh
+#!/bin/sh
 cd /home/sahadev/Reg
 day=`date +%d`
-f=rc.$day
+f=backup/rc.$day
 rm -f $f $f.gz
 mysqldump --user=root --add-drop-table --databases reg2 >$f
 gzip $f
-ftp logicalpoetry.com <<EOF
-cd backup
-put $f.gz
-quit
+scp $f.gz logicalpoetr@logicalpoetry.com:backup/mmc
+scp $f.gz newkali:Reg/backup

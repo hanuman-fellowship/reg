@@ -14,9 +14,6 @@
 # at 11:40 am back up all the rental grid data and send it offsite
 40 23 * * * /home/sahadev/Reg/grid_backup
 
-# at 11:50 am back up the entire CVS repository and send it offsite
-50 23 * * * /home/sahadev/Reg/repo_backup
-
 # at midnight check that the backups actually worked properly
 0 0 * * * /home/sahadev/Reg/check_backup
 
@@ -34,4 +31,4 @@
 0 12 * * * /home/sahadev/Reg/faceyelp
 
 # restart the Catalyst server on reboot
-@reboot /home/sahadev/Reg/x
+@reboot /home/sahadev/Reg/go
