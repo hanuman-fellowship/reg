@@ -1,4 +1,4 @@
-#/bin/sh
+#!/bin/sh
 r=/home/sahadev/Reg
 day=`date +%a`
 f=$r/backup/grid.$day

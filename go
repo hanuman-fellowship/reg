@@ -7,7 +7,7 @@ else
 fi
 if [ $# = 0 ]
 then
-    script/retreatcenter_server.pl >cat.out 2>&1 &
+    script/retreatcenter_server.pl >output/cat.out 2>&1 &
 else
     script/retreatcenter_server.pl
 fi

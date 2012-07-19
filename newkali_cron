@@ -1,0 +1,7 @@
+REG=/home/sahadev/Reg
+
+# at 12:15, 3:15, and 7:15 synchronize newkali's database with kali's
+# note that the script synch_db will exit if it is not on newkali
+15 19 * * * $REG/synch_db      >$REG/output/synch_db.out     2>&1
+15 12 * * * $REG/synch_db      >$REG/output/synch_db.out     2>&1
+15 15 * * * $REG/synch_db      >$REG/output/synch_db.out     2>&1

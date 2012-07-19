@@ -1,4 +1,4 @@
 #!/bin/sh
 cd /home/sahadev/Reg
 export DBI_DSN="dbi:mysql:reg2"
-script/carpool $* >carpool.out 2>&1 &
+script/carpool $*

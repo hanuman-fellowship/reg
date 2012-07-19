@@ -1,37 +1,39 @@
+REG=/home/sahadev/Reg
+
 # Get online registrations and rental grid files every 15 minutes
-0,15,30,45 * * * * /home/sahadev/Reg/grab
+0,15,30,45 * * * * $REG/grab   >$REG/output/grab.out         2>&1
 
 # at 1 am get the rooms/campsites to be made up
-0 1 * * * /home/sahadev/Reg/makeup
+0 1 * * * $REG/makeup          >$REG/output/makeup.out       2>&1
 
 # at 1 am send off the carpool lists - 7 and 14 days out
-0 1 * * * /home/sahadev/Reg/carpool
-0 1 * * * /home/sahadev/Reg/carpool - 14
+0 1 * * * $REG/carpool         >$REG/output/carpool.out      2>&1
+0 1 * * * $REG/carpool - 14    >$REG/output/carpool.out      2>&1
 
-# at noon, 3:00 pm and 11:30 pm back up all the data in mysql
-# and send it offsite
-30 23 * * * /home/sahadev/Reg/db_backup
- 0 12 * * * /home/sahadev/Reg/db_backup
- 0 15 * * * /home/sahadev/Reg/db_backup
+# at noon, 3:00, and 7:00 pm back up all the data in mysql
+# and send it offsite.
+0 19 * * * $REG/db_backup     >$REG/output/db_backup.out    2>&1
+0 12 * * * $REG/db_backup     >$REG/output/db_backup.out    2>&1
+0 15 * * * $REG/db_backup     >$REG/output/db_backup.out    2>&1
 
-# at 11:40 am back up all the rental grid data and send it offsite
-40 23 * * * /home/sahadev/Reg/grid_backup
+# at 11:40 pm back up all the rental grid data and send it offsite
+40 23 * * * $REG/grid_backup   >$REG/output/db_backup.out    2>&1
 
 # at midnight check that the backups actually worked properly
-0 0 * * * /home/sahadev/Reg/check_backup
+0 0 * * * $REG/check_backup    >$REG/output/check_backup.out 2>&1
 
 # at noon and 6 pm republish the public version of the calendar
-0 12,18 * * * /home/sahadev/Reg/pubcal
+0 12,18 * * * $REG/pubcal      >$REG/output/pubcal.out       2>&1
 
 # at 1 am on the 1st of every month publish the personal retreat page
-0 1 1 * * /home/sahadev/Reg/publish_pr
+0 1 1 * * $REG/publish_pr      >$REG/output/publish_pr.out   2>&1
 
 # at 1 am every Tuesday morning send Sukhdev a letter about gate codes.
-0 1 * * 2 /home/sahadev/Reg/gate
+0 1 * * 2 $REG/gate            >$REG/output/gate.out         2>&1
 
 # at noon every day see if any events ended the day before
 # and send a request to comment on Facebook and Yelp
-0 12 * * * /home/sahadev/Reg/faceyelp
+0 12 * * * $REG/faceyelp       >$REG/output/faceyelp.out     2>&1
 
 # restart the Catalyst server on reboot
-@reboot /home/sahadev/Reg/go
+@reboot $REG/go
