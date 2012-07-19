@@ -6,8 +6,9 @@ use warnings;
 
 It is now just after midnight.
 Assign $dayname the 3 letter name of yesterday.
+Assign $daynum the day number of yesterday.
 The current directory is /home/sahadev/Reg
-The files grid.$dayname.gz, rc.$dayname.gz and repo.$dayname.gz
+The files grid.$dayname.gz, rc.$daynum.gz
 have just been transfered to the offsite backup machine.
 Check that they made it there properly and 
 send Sahadev email about the status.
@@ -23,29 +24,27 @@ use Date::Simple qw/
 
 my $day = today()->prev();
 my $dayname = $day->format("%a");
+my $daynum  = sprintf "%02d", $day->day();
 my $full_dayname = $day->format("%A");
 
-my @names = qw/
-    grid
-    rc
-    repo
-/;
 my %local_size;
-for my $n (@names) {
-    $local_size{$n} = (-s "$n.$dayname.gz") || 0;
-}
+$local_size{grid} = (-s "backup/grid.$dayname.gz") || 0;
+$local_size{rc}   = (-s "backup/rc.$daynum.gz") || 0;
+
+my %remote_size;
 
 use Net::FTP;
 my $ftp = Net::FTP->new('logicalpoetry.com');
 $ftp->login('logicalpoetr', 'bx42rg86');
-$ftp->cwd('backup');
+$ftp->cwd('backup/mmc');
 my $msg = "";
 my $err = 0;
-for my $l (grep { m{[.]$dayname[.]gz$} } $ftp->dir(".")) {
-    my ($size, $name) = (split m{\s+}, $l)[4, 8];
-    $name =~ s{[.]$dayname[.]gz}{};
-    if ($local_size{$name} != $size) {
-        $msg .= "$dayname $name: backup $size != local $local_size{$name}\n";
+$remote_size{grid} = $ftp->size("grid.$dayname.gz");
+$remote_size{rc}   = $ftp->size("rc.$daynum.gz");
+for my $name (qw/  grid  rc  /) {
+    if ($remote_size{$name} != $local_size{$name}) {
+        $msg .= "$name backup failed:"
+             .  " $remote_size{$name} != $local_size{$name}\n";
         $err = 1;
     }
 }
