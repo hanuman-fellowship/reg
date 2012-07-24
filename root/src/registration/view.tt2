@@ -42,6 +42,7 @@ p {
 [% snail = 'Snail Mail' %]
 [% mmi = program.school != 0 %]
 [% PR = program.PR %]
+[% ev_type = (PR? 'PR': 'program') %]
 <h2 style="margin-bottom: 9px">Registration</h2>
 <table border=0 cellpadding=0>
 <tr>
@@ -411,11 +412,9 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.f
 <span class=hdr>Information</span>
 <table cellpadding=2>
 
-[% IF PR %]
 <tr>
-<th align=right>Adjacent Rental</th><td>[% IF reg.rental_before %]Before this PR[% ELSIF reg.rental_after %]After this PR[% END %]</td>
+<th align=right>Adjacent Rental</th><td>[% IF reg.rental_before %]Before this $ev_type[% ELSIF reg.rental_after %]After this $ev_type[% END %]</td>
 </tr>
-[% END %]
 
 <tr>
 <th align=right>Ages of Kids</th><td>[% reg.kids %]</td>

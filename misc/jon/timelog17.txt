@@ -107,6 +107,14 @@ Jul 3 11:00-
 Jul 13 10:40-11:20, 11:40-11:55
     hybrid where both program regs and rental web grid - both
     in the total on the summary AND in the kitchen meal count
-Jul 18 3:30-5:00
+Jul 18 3:30-5:00, 7:00-11:00
     getting newkali source git synch'ed and the mysql server running
     with a little help from Ryder and Shantam
+    lots of fiddling with the backup and securing new kali for
+    when kali dies.
+    tomorrow rsync and writing a protocol for disaster planning.
+Jul 23 10:00-
+    puzzling over adjacent rentals for all programs not just PRs 
+    understanding rsync for synchronizing online(_done),
+        grid, mlist(_done), rides(_done), temple(_done), 
+        req_mmi, templates.

@@ -75,7 +75,7 @@ my $getrental_sth = $dbh->prepare("
     select house_id
     from rental_booking rb, rental r
     where rb.date_end = $cur_date1
-      and r.rental_follows != 'yes'
+      and (r.rental_follows != 'yes' or r.rental_follows is null)
 ");
 $getrental_sth->execute();
 while (my ($house_id) = $getrental_sth->fetchrow_array()) {

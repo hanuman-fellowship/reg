@@ -112,7 +112,6 @@ First <input style="font-size: 10pt;" type=text name=share_first value="[% reg.s
 
 </tr>
 
-[% IF PR %]
 <tr>
 <th align=right>Adjacent Rental</td>
 <td align=left colspan=2>
@@ -121,7 +120,6 @@ Before <input type=checkbox value=yes name=rental_before [% rental_before_checke
 After <input type=checkbox value=yes name=rental_after [% rental_after_checked %]>
 </td>
 </tr>
-[% END %]
 
 <tr>
 <th align=right>Ages of Kids</th>
