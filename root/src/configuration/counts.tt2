@@ -1,0 +1,9 @@
+<h1>Table Counts</h1>
+<table cellpadding=3 style="margin-left: 10mm">
+[% FOREACH c IN classes %]
+<tr>
+<td>$c.name</td>
+<td>$c.count</td>
+</tr>
+[% END %]
+</table>
