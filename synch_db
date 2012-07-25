@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+# find the most recent database dump from kali, uncompress it,
+# and give it to mysql to replace all the data.
+#
+my @files = sort {
+                $a->[0] <=> $b->[0]
+            }
+            map {
+                [ -M $_, $_ ]
+            }
+            <$ENV{HOME}/Reg/backup/rc.*.gz>;
+system("gunzip -c $files[0]->[1]"
+     . "|"
+     . "mysql --user=sahadev --password=JonB --database=reg2");
