@@ -86,7 +86,7 @@ sub switch_do : Local {
     unlink "$ENV{HOME}/Reg/INACTIVE";
     my $sb = stat("$ENV{HOME}/Reg/latest_synch");
     stash($c,
-        latest   => scalar localtime $sb‐>mtime,
+        latest   => scalar localtime $sb->mtime,
         template => 'configuration/switch_done.tt2',
     );
 }
