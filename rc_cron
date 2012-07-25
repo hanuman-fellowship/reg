@@ -23,7 +23,7 @@ REG=/home/sahadev/Reg
 # Get online registrations and rental grid files (etc) every 15 minutes
 0,15,30,45 * * * * test -f $REG/INACTIVE || $REG/grab >$REG/output/grab.out 2>&1
 # rsync various directories two minutes after the above grab
-2, 17, 32, 47 * * * * test -f $REG/INACTIVE || $REG/do_rsync >$REG/output/rsync.out 2>&1
+2,17,32,47 * * * * test -f $REG/INACTIVE || $REG/do_rsync >$REG/output/rsync.out 2>&1
 
 # at 1 am get the rooms/campsites to be made up
 0 1 * * * test -f $REG/INACTIVE || $REG/makeup >$REG/output/makeup.out 2>&1
