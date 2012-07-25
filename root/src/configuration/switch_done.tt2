@@ -1,0 +1,7 @@
+The switch from kali to newkali is complete.
+<p class=p2>
+Until further notice you should now login to Reg at http://newkali:3000/login.
+<p class=p2>
+If that doesn't work use 192.168.0.72 in place of 'newkali' above.
+<p class=p2>
+Note that the last database backup from kali to newkali was done at ${latest}.

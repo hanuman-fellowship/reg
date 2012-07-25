@@ -9,6 +9,7 @@ use Util qw/
 /;
 
 use Global;
+use File::stat;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -83,9 +84,11 @@ sub switch_do : Local {
     my ($self, $c) = @_;
 
     unlink "$ENV{HOME}/Reg/INACTIVE";
-    $c->flash->{message} = "The back up machine for Reg at http://vishnu:3000 is now active."
-                         . "<p>You should login there until further notice.";
-    $c->response->redirect($c->uri_for("/person/search"));
+    my $sb = stat("$ENV{HOME}/Reg/latest_synch");
+    stash($c,
+        latest   => scalar localtime $sb‐>mtime,
+        template => 'configuration/switch_done.tt2',
+    );
 }
 
 sub counts : Local {

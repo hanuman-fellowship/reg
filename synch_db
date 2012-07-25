@@ -15,3 +15,4 @@ my @files = sort {
 system("gunzip -c $files[0]->[1]"
      . "|"
      . "mysql --user=sahadev --password=JonB --database=reg2");
+system("touch $ENV{HOME}/Reg/latest_synch");
