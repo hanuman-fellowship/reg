@@ -5,6 +5,7 @@ use base 'Catalyst::Controller';
 
 use Util qw/
     stash
+    model
 /;
 
 use Global;
@@ -13,6 +14,7 @@ sub index : Local {
     my ($self, $c) = @_;
 
     stash($c,
+        switch   => -f "$ENV{HOME}/Reg/INACTIVE",
         pg_title => "Configuration",
         template => "configuration/index.tt2",
     );
@@ -36,8 +38,10 @@ sub mark_inactive : Local {
     my ($date_last) = $c->request->params->{date_last};
     my $dt = date($date_last);
     if (! $dt) {
-        $c->stash->{mess} = "Invalid date: $date_last";
-        $c->stash->{template} = "listing/error.tt2";
+        stash($c,
+            mess     => "Invalid date: $date_last",
+            template => 'listing/error.tt2',
+        );
         return;
     }
     my $dt8 = $dt->as_d8();
@@ -45,9 +49,11 @@ sub mark_inactive : Local {
         inactive => '',
         date_updat => { "<=", $dt8 },
     })->count();
-    $c->stash->{date_last} = $dt;
-    $c->stash->{count} = $n;
-    $c->stash->{template} = "listing/inactive.tt2";
+    stash($c,
+        date_last => $dt,
+        count     => $n,
+        template  => 'listing/inactive.tt2',
+    );
 }
 
 sub mark_inactive_do : Local {
@@ -63,6 +69,40 @@ sub help_upload : Local {
         $upload->copy_to("root/static/help/$name");
     }
     $c->response->redirect($c->uri_for("/static/help/index.html"));
+}
+
+sub switch : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        template => 'configuration/switch.tt2',
+    );
+}
+
+sub switch_do : Local {
+    my ($self, $c) = @_;
+
+    unlink "$ENV{HOME}/Reg/INACTIVE";
+    $c->flash->{message} = "The back up machine for Reg at http://vishnu:3000 is now active."
+                         . "<p>You should login there until further notice.";
+    $c->response->redirect($c->uri_for("/person/search"));
+}
+
+sub counts : Local {
+    my ($self, $c) = @_;
+
+    my @classes = map {
+                      +{
+                          name  => $_,
+                          count => scalar(model($c, $_)->search),   # gives count?
+                      }
+                  }
+                  sort
+                  @{RetreatCenterDB->classes()};
+    stash($c,
+        classes  => \@classes,
+        template => 'configuration/counts.tt2',
+    );
 }
 
 1;

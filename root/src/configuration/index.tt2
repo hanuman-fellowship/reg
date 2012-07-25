@@ -30,6 +30,9 @@ p {
 [% IF prog %]
     <a href=/confnote>Confirmation Notes</a><p>
 [% END %]
+[% IF super %]
+    <a href=/configuration/counts>Counts</a><p>
+[% END %]
 [% IF web_des %]
     <a href=/exception/list>Exceptions</a><p>
 [% END %]
@@ -61,5 +64,8 @@ p {
 [% END %]
 [% IF prog_admin %]
 <a target=_blank href=http://www.mountmadonna.org/cgi-bin/admin>Web Administration</a><p>
+[% END %]
+[% IF switch %]
+<a href=/configuration/switch>Emergency Switch</a><p>
 [% END %]
 </ul>

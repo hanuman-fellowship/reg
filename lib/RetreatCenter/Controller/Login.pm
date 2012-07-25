@@ -94,6 +94,7 @@ sub index : Private {
     # If either of the above don't work out, send to the login page
     stash($c,
         time     => get_time(),
+        inactive => -f "$ENV{HOME}/Reg/INACTIVE",
         template => 'login.tt2',
     );
 }

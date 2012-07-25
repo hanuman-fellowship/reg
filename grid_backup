@@ -7,4 +7,4 @@ cd $r/root/static/grid
 tar cvf $f *data.txt >$r/grid.out 2>&1
 gzip $f
 scp $f.gz logicalpoetr@logicalpoetry.com:backup/mmc
-scp  $f.gz newkali:Reg/backup
+test -f $r/INACTIVE || scp $f.gz newkali:Reg/backup

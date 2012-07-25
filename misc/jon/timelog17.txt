@@ -98,7 +98,7 @@ Jun 22 1:00-1:20
     hybrid hybrid housing snafu
 Jun 24 3:00-4:00
     figured out my mistake with boolean fields in sqlite3 and mysql
-        made a plan to remedy it.
+        made a plan to remedy it.  Where is that plan?  in migration/todo
 Jun 28 11:00-11:15
     adjusting permisssion for who can inactive people
 Jul 3 11:00-
@@ -113,8 +113,21 @@ Jul 18 3:30-5:00, 7:00-11:00
     lots of fiddling with the backup and securing new kali for
     when kali dies.
     tomorrow rsync and writing a protocol for disaster planning.
-Jul 23 10:00-
+Jul 23 10:00-11:00, 11:30-12:45
     puzzling over adjacent rentals for all programs not just PRs 
     understanding rsync for synchronizing online(_done),
         grid, mlist(_done), rides(_done), temple(_done), 
         req_mmi, templates.
+    further work on establishing the protocol for the emergency switch
+        to vishnu.
+        - ensure that the .72 machine is named vishnu
+        - rename newkali to vishnu in your /etc/hosts on kali and your local MacBookPro
+            and in the pk script, and in nka, etc.
+        - and in the scp commands?  
+        - test it!!
+        - rsync - but not if on vishnu (-f NEWKALI/VISHNU)
+Jul 24 7:45-8:00
+    Configuration Counts - useful?  fun at least.
+        next - get the counts when doing a synch_db on vishnu
+            (use the schema thingy)
+        put it in a file, scp it to kali somewhere
