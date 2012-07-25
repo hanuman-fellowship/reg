@@ -8,5 +8,5 @@ for d in               \
     temple temple_done \
     templates
 do
-    rsync -avz $rst/$d newkali:$rst/$d
+    rsync -avz --delete-after $rst/$d newkali:$rst/$d
 done
