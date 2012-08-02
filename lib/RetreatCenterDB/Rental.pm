@@ -244,6 +244,9 @@ sub daily_counts {
     my $fname = get_grid_file($self->grid_code());
     my $in;
     if (! open($in, "<", $fname)) {
+        if ($self->program_id) {
+            return (0 x ($ndays+1));
+        }
         return (($max) x ($ndays+1));
     }
     #
@@ -276,12 +279,10 @@ sub daily_counts {
     close $in;
     if ($tot_cost == 0) {
         if ($self->program_id) {
-            # the count is solely from the program registrations
+            # for hybrids the count is solely from the program registrations
             return (0 x ($ndays+1));
         }
-        else {
-            return (($max) x ($ndays+1));
-        }
+        return (($max) x ($ndays+1));
     }
     #
     # on the last day

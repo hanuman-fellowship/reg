@@ -496,7 +496,7 @@ sub meal_list : Local {
         else {
             ($event_start, $lunches) = get_lunch($c, $r->program_id, 'Program');
         }
-        $len_lunches = length($lunches);
+        $len_lunches = length($lunches || "");
 
         my $r_start = $r->date_start_obj();
         my $r_end   = $r->date_end_obj();
