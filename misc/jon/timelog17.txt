@@ -135,5 +135,10 @@ Jul 24 7:45-8:00
 Jul 25 12:00-2:00
     completing the kali backup mechanism and testing it
     and mailing about it.
-Aug 2 2:00-
-    meal count wrong - due to messed up foreign key pointers?
+Aug 2 2:00-3:00, 3:30-4:15, 5:30-
+    meal count wrong - hybrid daily counts thingy
+        I'll just keep plugging the leaks in the dike.
+    unduping did not take care of mmi_payments. another leak.
+    messed up foreign key pointers?
+    rental before/after - not working quite right?
+        generate makeup list on demand instead of only at 1 a.m.?

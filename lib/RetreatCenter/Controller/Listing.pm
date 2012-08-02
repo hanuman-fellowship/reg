@@ -1302,7 +1302,7 @@ EOH
             $prev_clust = $clust;
         }
         my $needed;
-        if ($mu->date_needed()) {
+        if ($mu->date_needed() && $mu->date_needed != 29991231) {
             $needed = $mu->date_needed_obj() - $today;
             if ($needed <= $string{make_up_urgent_days}) {
                 $needed = $needed ==  0? 'Today'
@@ -1362,6 +1362,14 @@ sub make_up_do : Local {
     else {
         $c->response->redirect($c->uri_for("/listing/"));
     }
+}
+
+sub regen_make_up : Local {
+    my ($self, $c) = @_;
+
+    my $today = tt_today($c)->as_d8();
+    system("makeup $today");
+    $c->response->redirect($c->uri_for("/listing/field"));
 }
 
 #

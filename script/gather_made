@@ -57,7 +57,8 @@ while (my ($house_id) = $getreg_sth->fetchrow_array()) {
 # on the day the rental leaves and that PR has
 # the 'rental_before' attribute checked then do not put
 # that room on the make up list.   Note that 'rental_before'
-# can only be checked on PR registrations.
+# can only be checked on PR registrations.   Not any more.
+# It can be checked on all program registrations.
 #
 my $getpr_sth = $dbh->prepare("
     select house_id
@@ -74,7 +75,8 @@ while (my ($h_id) = $getpr_sth->fetchrow_array()) {
 my $getrental_sth = $dbh->prepare("
     select house_id
     from rental_booking rb, rental r
-    where rb.date_end = $cur_date1
+    where rb.rental_id = r.id
+      and rb.date_end = $cur_date1
       and (r.rental_follows != 'yes' or r.rental_follows is null)
 ");
 $getrental_sth->execute();
@@ -193,7 +195,7 @@ my $r_rental_sth = $dbh->prepare("
     select id, sdate, refresh_days
     from rental
     where sdate <= $cur_date and $cur_date <= edate
-      and refresh_days != ''
+      and (refresh_days != '' and refresh_days is not null)
 ");
 # find all rental_bookings for a rental
 # they all need refreshing.
@@ -222,7 +224,7 @@ my $r_program_sth = $dbh->prepare("
     select id, sdate, refresh_days
     from program
     where sdate <= $cur_date and $cur_date <= edate
-      and refresh_days != ''
+      and (refresh_days != '' and refresh_days is not null)
 ");
 # find all registrations for this program which have
 # housing and which are here on this day.

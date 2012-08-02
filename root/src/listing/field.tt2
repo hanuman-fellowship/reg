@@ -2,9 +2,12 @@
 <ul>
 <table cellpadding=5 border=0>
 
-<tr><td>
+<tr>
+<td>
 <a href="/listing/make_up">Room Make-Up List<a>
-</td></tr>
+</td>
+<td align=right><a href=/listing/regen_make_up>Regenerate</a></td>
+</tr>
 
 <tr>
 <td>
