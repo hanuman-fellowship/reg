@@ -902,7 +902,7 @@ sub undup_do : Local {
         }
     }
     for my $mid (@merged) {
-        for my $table (qw/ Registration Credit Donation /) {
+        for my $table (qw/ Registration Credit Donation MMIPayment /) {
             model($c, $table)->search({
                 person_id => $mid,
             })->update({
