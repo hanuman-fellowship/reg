@@ -121,8 +121,9 @@ Jul 23 10:00-11:00, 11:30-12:45
     further work on establishing the protocol for the emergency switch
         to vishnu.
         - ensure that the .72 machine is named vishnu
-        - rename newkali to vishnu in your /etc/hosts on kali and your local MacBookPro
-            and in the pk script, and in nka, etc.
+        - rename newkali to vishnu in your /etc/hosts on kali
+        - and your local MacBookPro
+        - and in the pk script, and in nka, etc.
         - and in the scp commands?  
         - test it!!
         - rsync - but not if on vishnu (-f NEWKALI/VISHNU)
@@ -131,3 +132,8 @@ Jul 24 7:45-8:00
         next - get the counts when doing a synch_db on vishnu
             (use the schema thingy)
         put it in a file, scp it to kali somewhere
+Jul 25 12:00-2:00
+    completing the kali backup mechanism and testing it
+    and mailing about it.
+Aug 2 2:00-
+    meal count wrong - due to messed up foreign key pointers?

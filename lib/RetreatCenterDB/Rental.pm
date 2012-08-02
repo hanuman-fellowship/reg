@@ -275,7 +275,13 @@ sub daily_counts {
     }
     close $in;
     if ($tot_cost == 0) {
-        return (($max) x ($ndays+1));
+        if ($self->program_id) {
+            # the count is solely from the program registrations
+            return (0 x ($ndays+1));
+        }
+        else {
+            return (($max) x ($ndays+1));
+        }
     }
     #
     # on the last day
