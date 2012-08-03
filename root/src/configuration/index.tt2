@@ -43,6 +43,9 @@ p {
     <a href=/leader>Leaders</a><p>
     <a href=/meetingplace>Meeting Places</a><p>
 [% END %]
+[% IF prog_admin %]
+    <a href=/organization/list>Organizations</a><p>
+[% END %]
 [% IF prog %]
     <a href=/project/list>Projects</a><p>
     <a href=/resident/list>Residents</a><p>

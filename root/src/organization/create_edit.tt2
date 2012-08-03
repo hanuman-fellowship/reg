@@ -1,0 +1,28 @@
+[% o = organization %]
+<h2>Organizations</h2>
+<form action=/organization/$form_action/$o.id name=form>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right><span class="required">*</span> Name</span></th>
+<td><input type=text name=name value="$o.name"></td>
+</tr>
+
+<tr>
+<th align=right><span class="required">*</span> Abbrev</span></th>
+<td><input type=text name=abbrev value="$o.abbrev"></td>
+</tr>
+
+<tr>
+<th align=right>On Prog Cal</span></th>
+<td><input type=checkbox name=on_prog_cal value='yes' [% IF o.on_prog_cal %]checked[% END %]></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input id=sub type=submit value="Submit"></td>
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">document.form.name.focus()</script>

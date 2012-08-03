@@ -1,0 +1,26 @@
+<h2>Organizations</h2>
+<a href=/organization/create>Add</a>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr valign=bottom>
+<th align=left>Name</th>
+<th align=left>Abbrev</th>
+<th align=center>On<br>Prog Cal</th>
+<th>Action</th>
+</tr>
+
+[% FOREACH o IN organizations %]
+    <tr>
+    <td>[% o.name %]</td>
+    <td>[% o.abbrev %]</td>
+    <td align=center>[% o.on_prog_cal %]</td>
+    <td>
+        <a href=/organization/update/$o.id>Edit</a>&nbsp;
+        <a href=/organization/delete/$o.id onclick="return confirm('Okay to Delete the Organization named \'[% o.name %]?\'')">Del</a>
+    </td>
+    </tr>
+[% END %]
+
+</table>
+</ul>

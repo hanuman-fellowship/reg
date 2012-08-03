@@ -80,6 +80,8 @@ my @classes = qw/
     ResidentNote
 
     RequestedMMIPayment
+
+    Organization
 /;
 
 __PACKAGE__->load_classes({
