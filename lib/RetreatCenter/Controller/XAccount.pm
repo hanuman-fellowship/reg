@@ -103,13 +103,19 @@ sub view : Local {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{xaccounts} = [
-        model($c, 'XAccount')->search(
-            undef,
-            { order_by => 'sponsor, descr' },
-        )
-    ];
-    $c->stash->{template} = "xaccount/list.tt2";
+    my ($role) = model($c, 'Role')->search({
+                     role => 'account_admin',
+                 });
+    my @users = $role->users;
+    stash($c,
+        acct_admin => @users? $users[0]->first: 'No Account Admin :(!',
+        xaccounts  => [ model($c, 'XAccount')->search(
+                            undef,
+                            { order_by => 'sponsor, descr' },
+                        )
+                      ],
+        template   => "xaccount/list.tt2",
+    );
 }
 
 sub export : Local {

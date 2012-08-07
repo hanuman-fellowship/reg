@@ -98,7 +98,7 @@ sub _get_data {
 sub check_password {
     my ($pass) = @_;
 
-    my $lev = $string{password_security};
+    my $lev = $string{password_security} || 0;
     if ($lev == 1) {
         if (length($pass) < 4) {
             push @mess, "Password must be at least 4 characters long.";
