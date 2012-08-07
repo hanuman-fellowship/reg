@@ -1,21 +1,24 @@
 <h2>Events</h2>
 <form action="/event/listpat" name=form>
 [% IF Catalyst.check_user_roles('prog_admin') || Catalyst.check_user_roles('event_scheduler') %]
-<a href="/event/create">Add</a>
-<span style="margin-left: 1.5in"><input text name=event_pat size=10 value=[% event_pat %]></span> <input type=submit value="Search"></form>
+<a href=/event/create>Add</a>
+<span style="margin-left: 1.5in"><input text name=event_pat size=10 value=$event_pat></span>
+<input type=submit id=sub value="Search"></form>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>
 <tr>
 <th align=left>Name</th>
 <th align=left>Start Date</th>
+<th align=left>Sponsor</th>
 <th align=left>Description</th>
 </tr>
 [% FOREACH e IN events %]
     <tr>
     <td><a href="/event/view/[% e.id %]">[% e.name %]</a></td>
-    <td>[% e.sdate_obj %]</a></td>
-    <td>[% e.descr %]</a></td>
+    <td>$e.sdate_obj</a></td>
+    <td>$e.organization.abbrev</td>
+    <td>$e.descr</a></td>
     </tr>
 [% END %]
 </table>

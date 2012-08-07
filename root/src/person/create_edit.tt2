@@ -84,7 +84,7 @@ function get_gender() {
 <tr>
 <td align=right>&nbsp;</td>
 <td colspan=3><input tabindex=6 type=text name=addr2 value="[% person.addr2 %]" size=30>
-&nbsp;&nbsp;<input tabindex=20 type=submit value="Submit"></td>
+&nbsp;&nbsp;<input tabindex=20 type=submit id=sub value="Submit"></td>
 </tr>
 
 <tr>
@@ -149,7 +149,7 @@ function get_gender() {
 [% affil_table %]
 </table>
 
-<input type=submit value="Submit">
+<input type=submit id=sub value="Submit">
 </div>
 </form>
 <script type="text/javascript">document.form.first.focus()</script>

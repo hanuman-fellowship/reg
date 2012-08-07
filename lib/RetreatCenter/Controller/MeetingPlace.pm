@@ -99,9 +99,10 @@ sub list : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $mp = $c->stash->{meetingplace} = model($c, 'MeetingPlace')->find($id);
+    my $mp = model($c, 'MeetingPlace')->find($id);
     my ($r, $g, $b) = $mp->color =~ m{\d+}g;
     stash($c,
+        meetingplace    => $mp,
         red             => $r,
         green           => $g,
         blue            => $b,

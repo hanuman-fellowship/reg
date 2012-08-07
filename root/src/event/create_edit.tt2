@@ -22,7 +22,7 @@
 <tr>
 <th align=right><span class="required">*</span> Sponsor</th>
 <td width=100>
-<select name=sponsor>
+<select name=organization_id>
 [% sponsor_opts %]
 </select>
 </td>

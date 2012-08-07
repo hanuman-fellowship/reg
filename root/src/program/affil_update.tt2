@@ -8,7 +8,7 @@
 <table>
 [% affil_table %]
 </table>
-<p>
-<input type=submit value="Submit">
+<p class=p2>
+<input type=submit id=sub value="Submit">
 </ul>
 </form>

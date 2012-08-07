@@ -1,10 +1,10 @@
 <h2>Meeting Place</h2>
-<a href="/meetingplace/update/[% mp.id %]">Edit</a>
+<a href="/meetingplace/update/$mp.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/meetingplace/create">Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/meetingplace/delete/[% mp.id %]"
-onclick="return confirm('Okay to Delete [% mp.name %]?');">Delete</a>
+<a href="/meetingplace/delete/$mp.id"
+onclick="return confirm('Okay to Delete $mp.name?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/meetingplace/list">List</a>
 <p class=p2>
@@ -12,32 +12,32 @@ onclick="return confirm('Okay to Delete [% mp.name %]?');">Delete</a>
 
 <tr>
 <th align=right>Abbrevation</th>
-<td>[% mp.abbr %]</td>
+<td>$mp.abbr</td>
 </tr>
 
 <tr>
 <th align=right>Name</th>
-<td>[% mp.name %]</td>
+<td>$mp.name</td>
 </tr>
 
 <tr>
 <th align=right>Max</th>
-<td align=left>[% mp.max %]</td>
+<td align=left>$mp.max</td>
 </tr>
 
 <tr>
 <th align=right>Display Order</th>
-<td>[% mp.disp_ord %]</td>
+<td>$mp.disp_ord</td>
 </tr>
 
 <tr>
 <th align=right>For Sleeping</th>
-<td>[% mp.sleep_too %]</td>
+<td>$mp.sleep_too</td>
 </tr>
 
 <tr>
 <th align=right>Color</th>
-<td width=100 bgcolor=[% mp.bgcolor %]></td>
+<td id=color width=100 bgcolor=$mp.bgcolor></td>
 </tr>
 
 </table>

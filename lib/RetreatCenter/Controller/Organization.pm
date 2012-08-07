@@ -39,8 +39,13 @@ sub delete : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
+    my $o = model($c, 'Organization')->find($id);
+    my ($r, $g, $b) = $o->color =~ m{(\d+)}g;
     stash($c,
-        organization => model($c, 'Organization')->find($id),
+        organization    => $o,
+        red             => $r,
+        green           => $g,
+        blue            => $b,
         form_action  => "update_do/$id",
         template     => "organization/create_edit.tt2",
     );
@@ -50,7 +55,7 @@ sub update_do : Local {
     my ($self, $c, $id) = @_;
 
     my %data;
-    for my $f (qw/ name abbrev /) {
+    for my $f (qw/ name color /) {
         $data{$f} = $c->request->params->{$f};
         if (empty($data{$f})) {
             error($c,
@@ -62,8 +67,8 @@ sub update_do : Local {
     }
     my $on_prog_cal = $c->request->params->{on_prog_cal} || '';
     model($c, 'Organization')->find($id)->update({
+        color       => $data{color},
         name        => $data{name},
-        abbrev      => $data{abbrev},
         on_prog_cal => $on_prog_cal,
     });
     $c->response->redirect($c->uri_for('/organization/list'));
@@ -73,6 +78,9 @@ sub create : Local {
     my ($self, $c) = @_;
 
     stash($c,
+        red         => 127,
+        green       => 127,
+        blue        => 127,
         form_action => "create_do",
         template    => "organization/create_edit.tt2",
     );
@@ -82,7 +90,7 @@ sub create_do : Local {
     my ($self, $c) = @_;
 
     my %data;
-    for my $f (qw/ name abbrev /) {
+    for my $f (qw/ name color /) {
         $data{$f} = $c->request->params->{$f};
         if (empty($data{$f})) {
             error($c,
@@ -94,8 +102,8 @@ sub create_do : Local {
     }
     my $on_prog_cal = $c->request->params->{on_prog_cal} || '';
     model($c, 'Organization')->create({
+        color       => $data{color},
         name        => $data{name},
-        abbrev      => $data{abbrev},
         on_prog_cal => $on_prog_cal,
     });
     $c->response->redirect($c->uri_for('/organization/list'));

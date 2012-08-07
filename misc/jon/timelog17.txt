@@ -142,7 +142,20 @@ Aug 2 2:00-3:00, 3:30-4:15, 5:30-6:45
     messed up foreign key pointers?
     rental before/after - not working quite right?
         generate makeup list on demand instead of only at 1 a.m.?
-Aug 3 3:15-3:40, 3:45-
+Aug 3 3:15-3:40, 3:45-4:30,
     adding new table - Organization
         and configuration link to lists, add, edit
     alter event table so there is a foreign key to organization
+    when installing I'll need to alter the event table to 
+        add column organization_id and write some sql
+        update statements to populate it from sponsor
+Aug 4 8:10-8:30, 5:15-6:20, 6:40-7:00
+    continuing with organizations and master calendar
+Aug 5 2:10-7:00
+    continuing with master calendar
+    great progress - including colors for Organizations
+        next step: take organization color for MMC, MMI for Programs, Rentals
+    name, abbrev for Meeting Places, Organizations - needed or not?
+        if so, which to use where?
+Aug 6 5:30-
+    removing abbrev from organization

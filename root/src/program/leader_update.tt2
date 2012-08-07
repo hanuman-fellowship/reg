@@ -10,6 +10,6 @@
 [% leader_table %]
 </table>
 <p class=p2>
-<input type=submit value="Submit">
+<input type=submit id=sub value="Submit">
 <span style="margin-left: 4in">* means assistant</span><br>
 </form>

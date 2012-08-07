@@ -6,5 +6,6 @@ create table event (
     sdate       text,
     edate       text,
     sponsor     text,
+    organization_id integer not null,
     max         text
 );

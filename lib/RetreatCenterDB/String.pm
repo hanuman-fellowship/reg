@@ -26,7 +26,7 @@ sub value_td {
     if ($k =~ m{_color$}) {
         my $color = d3_to_hex($v);
         return <<"EOH";
-<td style="cursor: pointer; border: solid; border-width: thin;"
+<td id=color
  width=100 bgcolor=$color
  onclick="window.location.href='/string/update/$k'"
 >

@@ -1,38 +1,38 @@
 <link rel="stylesheet" type="text/css" href="/static/color.css">
 <script type="text/javascript" src="/static/js/color.js"></script>
 <h2>Meeting Places</h2>
-<form action=[% "/meetingplace/" _ form_action %] name=form method=post>
+<form action=/meetingplace/$form_action name=form method=post>
 <table cellpadding=3 border=0>
 
 <tr>
 <th align=right><span class="required">*</span> Abbreviation</th>
-<td><input type=text name=abbr value="[% meetingplace.abbr %]"></td>
+<td><input type=text name=abbr value=$meetingplace.abbr></td>
 </tr>
 
 <tr>
 <th align=right><span class="required">*</span> Name</th>
-<td><input type=text name=name value="[% meetingplace.name %]"></td>
+<td><input type=text name=name value=$meetingplace.name></td>
 </tr>
 
 <tr>
 <th align=right><span class="required">*</span> Max</th>
-<td><input type=text name=max value="[% meetingplace.max %]"></td>
+<td><input type=text name=max value=$meetingplace.max></td>
 </tr>
 
 <tr>
 <th align=right><span class="required">*</span> Display Order</th>
-<td><input type=text name=disp_ord value="[% meetingplace.disp_ord %]"></td>
+<td><input type=text name=disp_ord value=$meetingplace.disp_ord></td>
 </tr>
 
 <tr>
 <th align=right>For Sleeping</th>
-<td><input type=checkbox name=sleep_too value="yes" [% check_sleep_too %]></td>
+<td><input type=checkbox name=sleep_too value="yes" $check_sleep_too></td>
 </tr>
 
 
 <tr>
 <th valign=top align=right><span class="required">*</span> Color</th>
-<td valign=top><input type=text id=color_val name=color value="[% meetingplace.color %]"></td>
+<td valign=top><input type=text id=color_val name=color value=$meetingplace.color></td>
 <td rowspan=2>
     <table border=1>
     <tr>
@@ -67,12 +67,12 @@ Click the Submit button to finish.
 
 <tr>
 <td>&nbsp;</td>
-<td valign=top><input type=submit value="Submit"></td>
+<td valign=top><input type=submit id=sub value="Submit"></td>
 </tr>
 
 </table>
 </form>
 <script type="text/javascript">
 document.form.name.focus();
-colorSet([% red %], [% green %], [% blue %]);
+colorSet($red, $green, $blue);
 </script>

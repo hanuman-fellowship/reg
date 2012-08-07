@@ -7,7 +7,7 @@
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript">
 
-init_tabs(4, [% id %], 1);
+init_tabs(4, $id, 1);
 
 // prepare for an Ajax call:
 var xmlhttp = false;
@@ -28,11 +28,7 @@ function Get() {
 }
 
 function reserve_cluster(cluster_id) {
-    var url = '[% Catalyst.uri_for("/program/reserve_cluster/") %]'
-            + [% id %]
-            + '/'
-            + cluster_id
-            ;
+    var url = '/program/reserve_cluster/$id/' + cluster_id;
     xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = Get;
     xmlhttp.send(null);
@@ -41,11 +37,7 @@ function reserve_cluster(cluster_id) {
 }
 
 function UNreserve_cluster(cluster_id) {
-    var url = '[% Catalyst.uri_for("/program/UNreserve_cluster/") %]'
-            + [% id %]
-            + '/'
-            + cluster_id
-            ;
+    var url = '/program/UNreserve_cluster/$id/' + cluster_id;
     xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = Get;
     xmlhttp.send(null);
@@ -56,89 +48,89 @@ function UNreserve_cluster(cluster_id) {
 
 <h2>Programs</h2>
 [% IF prog_admin %]
-    <a href="/program/create"
+    <a href=/program/create
        onclick="return confirm('If this new Program has been at MMC before it would be better to use Duplicate.');"
     >Add</a>
     [% IF program.school == 0 || mmi_admin %]
         &nbsp;&nbsp;&nbsp;
-        <span id=editlink><a accesskey=E href="/program/update/[% id %]"><span class=keyed>E</span>dit</a></span>
+        <span id=editlink><a accesskey=E href=/program/update/$id><span class=keyed>E</span>dit</a></span>
         &nbsp;&nbsp;&nbsp;
-        <a href="/program/delete/[% id %]"
-           onclick="return confirm('Okay to Delete [% program.name %]?');"
+        <a href=/program/delete/$id
+           onclick="return confirm('Okay to Delete \'$program.name]\'?');"
               >Delete</a>
     [% END %]
     &nbsp;&nbsp;&nbsp;
-    <a href="/program/duplicate/[% program.id %]">Duplicate</a>
+    <a href=/program/duplicate/$id>Duplicate</a>
     &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF program.rental_id %]
-<a href=/rental/view/[% program.rental_id %]>To Rental</a>
+<a href=/rental/view/$program.rental_id>To Rental</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF web_designer %]
-    <a href="/program/brochure">Brochure</a>
+    <a href=/program/brochure>Brochure</a>
     &nbsp;&nbsp;&nbsp;
     [% IF program.PR %]
-        <a href="/program/publishPR/$id">PublishPR<a>
+        <a href=/program/publishPR/$id>PublishPR<a>
         &nbsp;&nbsp;&nbsp;
     [% END %]
 [% END %]
 [% IF prog_admin %]
-    <a href="/program/publish">Publish<a>
+    <a href=/program/publish>Publish<a>
     &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF program.school != 0 && program.level == 'A' && mmi_admin %]
-    <a href="/program/mmi_publish">MMI Publish<a>
+    <a href=/program/mmi_publish>MMI Publish<a>
     &nbsp;&nbsp;&nbsp;
 [% END %]
-<a target=_blank href="[% program.web_addr %]">Web</a>
+<a target=_blank href=$program.web_addr>Web</a>
 &nbsp;&nbsp;&nbsp;
-<span id=backlink><a href="/program/view_adj/[% id %]/back" accesskey='B'><span class=keyed>B</span>ack</a></span>
+<span id=backlink><a href=/program/view_adj/$id/back accesskey='B'><span class=keyed>B</span>ack</a></span>
 &nbsp;&nbsp;&nbsp;
-<span id=nextlink><a href="/program/view_adj/[% id %]/next" accesskey='N'><span class=keyed>N</span>ext</a></span>
+<span id=nextlink><a href=/program/view_adj/$id/next accesskey='N'><span class=keyed>N</span>ext</a></span>
 <p class=p2>
 [% IF program.ceu_issued %]
-<a href="/program/ceu/[% id %]">CEUs</a>
+<a href=/program/ceu/$id>CEUs</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/registration/early_late/[% id %]">Early/Late</a>
+<a href=/registration/early_late/$id>Early/Late</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/name_addr/[% id %]">Lists</a>
+<a href=/registration/name_addr/$id>Lists</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/tally/[% id %]/0">Tally</a>
+<a href=/registration/tally/$id/0">Tally</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/nonzero/[% id %]">NonZero$</a>
+<a href=/registration/nonzero/$id>NonZero\$</a>
 &nbsp;&nbsp;&nbsp;
 [% IF program.school != 0 && program.level == 'S' && mmi_admin %]
-<a href="/registration/mmi_import/[% program.id %]">Import</a>
+<a href=/registration/mmi_import/$id>Import</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
-    <a href="/registration/first_reg/[% id %]">1st Reg</a>
+    <a href=/registration/first_reg/$id>1st Reg</a>
     &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/registration/list_reg_name/[% id %]">AllRegs</a>
+<a href=/registration/list_reg_name/$id>AllRegs</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/list_online">Online ([% online %])</a>
+<a href=/registration/list_online>Online ($online$)</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/program/email_all/[% id %]">Email</a>
+<a href=/program/email_all/$id>Email</a>
 <p class=p2>
 
 <b>Name</b>
-<span class=larger>[% program.name %]</span>
+<span class=larger>$program.name</span>
 <b>From</b>
-[% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %]</span>
+$program.sdate_obj <span class=dow>${program.sdate_obj.format("%a")}</span>
 <b>To</b>
-[% program.edate_obj %] <span class=dow>[% program.edate_obj.format("%a") %]</span>
-[% plus %]
+$program.edate_obj <span class=dow>${program.edate_obj.format("%a")}</span>
+$plus
 &nbsp;
 &nbsp;
 &nbsp;
 &nbsp;
 [% IF program.rental_id %]
-<a href=/summary/view/rental/[% program.rental.summary_id %]>Summary</a>
+<a href=/summary/view/rental/$program.rental.summary_id>Summary</a>
 [% ELSE %]
-<a href=/summary/view/program/[% program.summary_id %]>Summary</a>
+<a href=/summary/view/program/$program.summary_id>Summary</a>
 [% END %]
 <p class=p2>
 <table border=0 cellspacing=0 cellpadding=0>
@@ -202,14 +194,14 @@ Web
 
 <tr>
 <th align=right>Housing Cost</th>
-<td><a href="/housecost/view/[% program.housecost.id %]">[% program.housecost.name %]</a></td>
+<td><a href=/housecost/view/$program.housecost.id>$program.housecost.name</a></td>
 
 [% IF lunch_table %]
 <td rowspan=5>
 <!-- hacky CSS - please remedy -->
 <span class=head style="margin-left: .5in">Lunches</span>
-<span class=updlunch><a href="/program/update_lunch/[% id %]">Update</a></span>
-<div class=lunch>[% lunch_table %]</div>
+<span class=updlunch><a href=/program/update_lunch/$id>Update</a></span>
+<div class=lunch>$lunch_table</div>
 </td>
 [% END %]
 
@@ -217,22 +209,22 @@ Web
 
 <tr>
 <th align=right>Single Bath</th>
-<td>[% program.sbath %]</td>
+<td>$program.sbath</td>
 </tr>
 
 <tr>
 <th align=right>Single</th>
-<td>[% program.single %]</td>
+<td>$program.single</td>
 </tr>
 
 <tr>
 <th align=right>Economy</th>
-<td>[% program.economy %]</td>
+<td>$program.economy</td>
 </tr>
 
 <tr>
 <th align=right>Commuting</th>
-<td>[% program.commuting %]</td>
+<td>$program.commuting</td>
 </tr>
 
 </table>
@@ -248,16 +240,16 @@ Web
 <td>
 <span class=head>Blocks</span>
 <a style="margin-left: .3in"
-   href="/block/bound_create/program/[% id %]">New Block</a>
+   href=/block/bound_create/program/$id>New Block</a>
 </td>
 </tr>
 
 <tr>
 <td align=left valign=top>
-<div id=UNreserved style="width: 200px">[% UNreserved_clusters %]</div>
+<div id=UNreserved style="width: 200px">$UNreserved_clusters</div>
 </td>
 <td align=left valign=top>
-<div id=reserved style="width: 200px">[% reserved_clusters %]</div>
+<div id=reserved style="width: 200px">$reserved_clusters</div>
 </td>
 <td valign=top>
 <table>
@@ -275,9 +267,9 @@ Web
     <p class=p2>
     <!-- hacky CSS - please remedy -->
     <span class=head style="margin-left: .5in">Days to Refresh Rooms</span>
-    <span class=updlunch><a href="/program/update_refresh/$id">Update</a></span> 
+    <span class=updlunch><a href=/program/update_refresh/$id>Update</a></span> 
     <span style="margin-left: 8mm; font-size: 12pt; font-weight: bold;">Confirm with Field Staff!</span>
-    <div class=lunch>[% refresh_table %]</div>
+    <div class=lunch>$refresh_table</div>
 [% END %]
 
 
@@ -289,10 +281,10 @@ Web
 
 <tr>
 <th align=right valign=top>Leaders</th>
-<td valign=top align=left colspan=3>
-[% leaders_house %]
+<td valign=top align=left colspan=3 width=300>
+$leaders_house
 [% IF prog_admin %]
-    <a href="/program/leader_update/[% id %]">Update</a>
+    <a href=/program/leader_update/$id>Update</a>
 [% END %]
 <p>
 </td>
@@ -342,59 +334,59 @@ Web
 <th align=right valign=top>Affiliations</th>
 <td align=left valign=top colspan=2>
 [% FOR a IN program.affils %]
-    [% a.descrip %]<br>
+    $a.descrip<br>
 [% END %]
 [% IF prog_admin %]
-    <a href="/program/affil_update/[% id %]">Update</a>
+    <a href=/program/affil_update/$id>Update</a>
 [% END %]
 </td>
 </tr>
 
 <tr>
 <th align=right>Allow Aux Regs</th>
-<td>[% program.allow_dup_regs %]</td>
+<td>$program.allow_dup_regs</td>
 <th align=right>Kaya Kalpa</th>
-<td>[% program.kayakalpa %]</td>
+<td>$program.kayakalpa</td>
 </tr>
 
 <tr>
 <th align=right>Retreat</th>
-<td>[% program.retreat %]</td>
+<td>$program.retreat</td>
 </tr>
 
 
 <tr>
 <th align=right>Color</th>
 [% IF program.color %]
-<td style="cursor: pointer; border: solid; border-width: thin;" width=100 bgcolor=[% program.color_bg %] onclick="window.location.href='/program/color/[% id %]'">
+<td id=color width=100 bgcolor=$program.color_bg onclick="window.location.href=/program/color/$id">
 [% ELSE %]
-<td><a href=/program/color/[% id %]>Update</a></td>
+<td><a href=/program/color/$id>Update</a></td>
 [% END %]
 </tr>
 
 <tr>
 <th align=right valign=top>Notify on Reg</th>
-<td colspan=4>[% program.notify_on_reg %]</td>
+<td colspan=4>$program.notify_on_reg</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Max</th>
-<td>[% program.max %]</td>
+<td>$program.max</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Conf Template</th>
-<td valign=top>[% program.cl_template %]</td>
+<td valign=top>$program.cl_template</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Conf Notes</th>
-<td colspan=5 valign=top>[% program.confnote %]</td>
+<td colspan=5 valign=top>$program.confnote</td>
 </tr>
 
 <tr>
 <th align=right>Not on Calendar</th>
-<td>[% program.not_on_calendar %]</td>
+<td>$program.not_on_calendar</td>
 </tr>
 
 <tr>
@@ -403,12 +395,12 @@ Web
 
 <table cellpadding=3>   <!-- for Times -->
 <tr>
-<th align=right>Registration Start</th><td>[% program.reg_start_obj %]</td>
-<th align=right>Program Start</th><td>[% program.prog_start_obj %]</td>
+<th align=right>Registration Start</th><td>$program.reg_start_obj</td>
+<th align=right>Program Start</th><td>$program.prog_start_obj</td>
 </tr>
 <tr>
-<th align=right>End</th><td>[% program.reg_end_obj %]</td>
-<th align=right>End</th><td>[% program.prog_end_obj %]</td>
+<th align=right>End</th><td>$program.reg_end_obj</td>
+<th align=right>End</th><td>$program.prog_end_obj</td>
 </tr>
 </table>                <!-- Times table -->
 
@@ -422,13 +414,13 @@ Web
 
 <tr>
 <th align=right valign=top>Sponsoring<br>Organization</th>
-<td valign=top>[% school %]</td>
+<td valign=top>$school</td>
 </tr>
 
 [% IF program.school != 0 %]
 <tr>
 <th align=right>Level</th>
-<td>[% level %]</td>
+<td>$level</td>
 </tr>
 [% END %]
 
@@ -441,54 +433,54 @@ Web
 
 <tr>
 <th align=right>Tuition</th>
-<td>[% program.tuition %]</td>
+<td>$program.tuition</td>
 </tr>
 
 <tr>
 <th align=right>Extra Days</th>
-<td>[% program.extradays %]</td>
+<td>$program.extradays</td>
 </tr>
 
 <tr>
 <th align=right>Full Tuition</th>
-<td>[% program.full_tuition %]</td>
+<td>$program.full_tuition</td>
 </tr>
 
 <tr>
 <th align=right>Online Deposit</th>
-<td>[% program.deposit %]</td>
+<td>$program.deposit</td>
 </tr>
 
 <tr>
 <th align=right>Collect Total</th>
-<td>[% program.collect_total %]</td>
+<td>$program.collect_total</td>
 </tr>
 
 <tr>
 <th align=right>% Tuition (+ M/L)</th>
-<td>[% program.percent_tuition %]</td>
+<td>$program.percent_tuition</td>
 </tr>
 
 <tr>
 <th align=right>GL Number</th>
-<td>[% program.glnum %]</td>
+<td>$program.glnum</td>
 </tr>
 
 <tr>
 <th align=right>Cancellation Policy</th>
-<td><a href="/canpol/view/[% program.canpol.id %]">[% program.canpol.name %]</a></td>
+<td><a href=/canpol/view/$program.canpol.id>$program.canpol.name</a></td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
 <tr>
 <th align=right>Do Not Compute<br>Costs</th>
-<td valign=top>[% program.do_not_compute_costs %]</td>
+<td valign=top>$program.do_not_compute_costs</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Why?</th>
-<td>[% program.dncc_why %]</td>
+<td>$program.dncc_why</td>
 </tr>
 
 </table>
@@ -500,63 +492,63 @@ Web
 
 <tr>
 <th align=right width=170>Title</th>
-<td colspan=5>[% program.title %]</td>
+<td colspan=5>$program.title</td>
 </tr>
 
 <tr>
 <th align=right>SubTitle</th>
-<td colspan=5>[% program.subtitle %]</td>
+<td colspan=5>$program.subtitle</td>
 </tr>
 
 <tr>
 <th align=right>Web Address</th>
-<td colspan=5><a href="http://[% program.url %]">[% program.url %]</a></td>
+<td colspan=5><a href="http://$program.url">$program.url</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Web Description</th>
-<td colspan=5>[% program.webdesc %]</td>
+<td colspan=5>$program.webdesc</td>
 </td>
 </tr>
 
 <tr>
 <th align=right valign=top>Brochure Description</th>
-<td colspan=5>[% program.brdesc %]</td>
+<td colspan=5>$program.brdesc</td>
 </td>
 </tr>
 
 <tr>
 <th align=right>Footnotes</th>
-<td>[% program.footnotes %]</td>
+<td>$program.footnotes</td>
 </tr>
 
 <tr>
 <th align=right>Web Ready</th>
-<td>[% program.webready %]</td> 
+<td>$program.webready</td> 
 </tr>
 
 <tr>
 <th align=right>Linked</th>
-<td>[% program.linked %]</td> 
+<td>$program.linked</td> 
 </tr>
 
 <tr>
 <th align=right>Unlinked Dir</th>
-<td>[% program.unlinked_dir %]</td>
+<td>$program.unlinked_dir</td>
 </tr>
 
 <tr>
 <th align=right>Facebook Event Id</th>
-<td>[% program.facebook_event_id %]</td>
+<td>$program.facebook_event_id</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Program Image</th>
 <td colspan=2>
 [% IF program.image %]
-<img src="[% program.image_file %]" border=0><br>
-<a href="[% Catalyst.uri_for('/program/del_image/') _ id %]"
-onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete Image</a>
+<img src=$program.image_file border=0><br>
+<a href=/program/del_image/$id
+onclick="return confirm('Okay to Delete image for \'$program.name\'?');">Delete Image</a>
 [% ELSE %]
 &nbsp;
 [% END %]
@@ -565,7 +557,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 
 <tr>
 <th align=right valign=top>Web Page Template</th>
-<td>[% program.ptemplate %]</td>
+<td>$program.ptemplate</td>
 </tr>
 </table>
 </div>
@@ -573,7 +565,7 @@ onclick="return confirm('Okay to Delete image for [% program.name %]?');">Delete
 </td></tr><!-- end of content panes -->
 </table>
 
-<script type="text/javascript">tabs([% section %]);</script>
+<script type="text/javascript">tabs($section);</script>
 [% IF glnum_popup %]
 <script>
 alert("IMPORTANT!!\n\n"

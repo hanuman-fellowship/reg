@@ -1,52 +1,52 @@
+[% e = event %]
 <h2>Events</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/event/update/[% event.id %]">Edit</a>
+<a href=/event/update/$e.id>Edit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/event/create">Add</a>
+<a href=/event/create>Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/event/delete/[% event.id %]"
-onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
+<a href=/event/delete/$e.id onclick="return confirm('Okay to Delete $e.name?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/event/list">List</a>
+<a href=/event/list>List</a>
 [% END %]
 <p class=p2>
 <table cellpadding=3 border=0>
 
 <tr>
 <th align=right>Name</th>
-<td><span class=larger>[% event.name %]</span></td>
+<td><span class=larger>$e.name</span></td>
 </tr>
 
 <tr>
 <th align=right>From</th>
-<td>[% event.sdate_obj %] <span class=dow>[% event.sdate_obj.format("%a") %]</span> To [% event.edate_obj %] <span class=dow>[% event.edate_obj.format("%a") %]</span></td>
+<td>$e.sdate_obj <span class=dow>${e.sdate_obj.format("%a")}</span> To $e.edate_obj <span class=dow>${e.edate_obj.format("%a")}</span></td>
 </tr>
 
 <tr>
 <th align=right>Description</th>
-<td colspan=7>[% event.descr %]</td>
+<td colspan=7>$e.descr</td>
 </tr>
 
 <tr>
 <th align=right>Sponsor</th>
-<td>[% event.sponsor %]</td>
+<td>$e.organization.name</td>
 </tr>
 
 <tr>
 <th align=right>Max</th>
-<td>[% event.max %]</td>
+<td>$e.max</td>
 </tr>
 
 <tr>
 <th align=right>Blocks</th>
-<td><a href=/block/bound_create/event/[% event.id %]>New Block</a></td>
+<td><a href=/block/bound_create/event/$e.id>New Block</a></td>
 </tr>
 
 <tr>
 <th></th>
 <td>
-[% FOR bl IN event.blocks %]
-    <a href=/block/view/[% bl.id %]>[% bl.house.name %]</a><br>
+[% FOR bl IN e.blocks %]
+    <a href=/block/view/$bl.id>$bl.house.name</a><br>
 [% END %]
 </td>
 </tr>
@@ -59,29 +59,29 @@ onclick="return confirm('Okay to Delete [% event.name %]?');">Delete</a>
 
 <th align=right valign=top>Meeting Places</th>
 <td valign=top>
-[% FOR b IN event.bookings %]
+[% FOR b IN e.bookings %]
     [% IF b.breakout == '' && b.dorm == '' %]
-        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
+        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != e.sdate || b.edate != e.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
 <th align=right valign=top>Breakout Places</th>
 <td valign=top>
-[% FOR b IN event.bookings %]
+[% FOR b IN e.bookings %]
     [% IF b.breakout == 'yes' %]
-        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
+        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != e.sdate || b.edate != e.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
 <th align=right valign=top>Dorms</th>
 <td valign=top>
-[% FOR b IN event.bookings %]
+[% FOR b IN e.bookings %]
     [% IF b.dorm == 'yes' %]
-        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != event.sdate || b.edate != event.edate %] $b.date_range[% END %]<br>
+        <a href=/event/del_meeting_place/event/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != e.sdate || b.edate != e.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
 
 </tr>
-<tr><td><a href="/event/add_meeting_place/event/$event.id">Add</a></td></tr>
+<tr><td><a href="/event/add_meeting_place/event/$e.id">Add</a></td></tr>
 </table>

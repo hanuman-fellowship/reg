@@ -2,13 +2,13 @@ drop table if exists organization;
 create table organization (
     id integer primary key autoincrement,
     name varchar(30) not null,
-    abbrev varchar(12) not null,
-    on_prog_cal varchar(3) default '' not null
+    on_prog_cal varchar(3) default '' not null,
+    color varchar(12) default '255,255,255' not null
 );
-insert into organization values(1, 'Mount Madonna Center', 'MMC', 'yes');
-insert into organization values(2, 'Mount Madonna School', 'MMS', 'yes');
-insert into organization values(3, 'Mount Madonna Institute', 'MMI', 'yes');
-insert into organization values(4, 'Temple', 'Temple', '');
-insert into organization values(5, 'SALT', 'SALT', '');
-insert into organization values(6, 'HF Board', 'Board', '');
-insert into organization values(7, 'Maintenance', 'Maint', '');
+insert into organization values(1, 'MMC', 'yes', '255,255,255');
+insert into organization values(2, 'MMS', 'yes', '255,255,255');
+insert into organization values(3, 'MMI', 'yes', '255,255,255');
+insert into organization values(4, 'Temple', '', '255,255,255');
+insert into organization values(5, 'SALT', '', '255,255,255');
+insert into organization values(6, 'HF Board', '', '255,255,255');
+insert into organization values(7, 'Maintenance', '', '255,255,255');

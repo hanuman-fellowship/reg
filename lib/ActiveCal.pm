@@ -7,15 +7,19 @@ use Date::Simple qw/
     date
     days_in_month
 /;
+use DateRange;  # imports overlap
 use Global qw/
     %string
+/;
+use List::Util qw/
+    max
 /;
 use GD;
 
 my $day_height = 40;    # 40
 
 sub new {
-    my ($class, $year, $month, $events_ref, $no_where_ord) = @_;
+    my ($class, $year, $month, $events_ref, $no_where_ord, $master_cal) = @_;
 
     my $day_width = $string{cal_day_width};
     my $today = today();
@@ -30,19 +34,45 @@ sub new {
     my $last  = date($year, $month, $ndays);
     my $cal_width = $ndays*$day_width + 1;
         # we use +1 in the above line for the last vertical line
+    #
+    # we need to determine the height of the calendar
+    #
     my $max = 3;        # always a certain height...
-    for my $ev (@$events_ref) {
-        if ($first <= $ev->edate && $ev->sdate <= $last) {
-            my $nbookings = 0;
-            for my $bk ($ev->bookings) {
-                ++$nbookings;
-                my $ord = $bk->meeting_place->disp_ord;
-                if ($ord > $max) {
-                    $max = $ord;
+    if ($master_cal) {
+        # events do not overlap, they stack.
+        # the meeting places (i.e. bookings) do not matter.
+        # we want to stack only when we must.
+        #
+        my $dr_cal = DateRange->new($first, $last);
+        my @days = (0) x $ndays;
+        for my $ev (@$events_ref) {
+            if (my $dr = overlap($ev, $dr_cal)) {
+                for my $d (date($dr->sdate)->day .. date($dr->edate)->day) {
+                    ++$days[$d];
                 }
             }
-            if (!$nbookings && $no_where_ord > $max) {
-                $max = $no_where_ord;
+        }
+        $max = max($max, @days) - 1;
+            # -1 for some reason - empirically derived.
+            # many opportunities for off-by-one errors here
+            # so I just keep fiddling until it works and then stop.
+    }
+    else {
+        # meeting places help arrange the vertical
+        #
+        for my $ev (@$events_ref) {
+            if ($first <= $ev->edate && $ev->sdate <= $last) {
+                my $nbookings = 0;
+                for my $bk ($ev->bookings) {
+                    ++$nbookings;
+                    my $ord = $bk->meeting_place->disp_ord;
+                    if ($ord > $max) {
+                        $max = $ord;
+                    }
+                }
+                if (!$nbookings && $no_where_ord > $max) {
+                    $max = $no_where_ord;
+                }
             }
         }
     }

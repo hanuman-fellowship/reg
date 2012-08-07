@@ -1,11 +1,14 @@
 <h2>Affiliations</h2>
-<form action=[% '/affil/' _ form_action %] name=form>
+<form action=/affil/$form_action name=form>
 <table cellpadding=3 border=0>
 <tr>
-<td align=right><span class="required">*</span> Description</span></td>
-<td><input type=text name=descrip value="[% affil.descrip %]"></td>
+<th align=right><span class="required">*</span> Description</span></th>
+<td><input type=text name=descrip value="$affil.descrip"></td>
+</tr>
+<tr>
+<td></td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 </table>
-<input type=submit value="Submit">
 </form>
 <script type="text/javascript">document.form.descrip.focus()</script>

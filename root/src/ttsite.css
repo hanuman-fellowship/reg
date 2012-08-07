@@ -189,3 +189,7 @@ th a:hover {
     color: green;
     background: lightgreen;
 }
+#color {
+    border: solid;
+    border-width: thin;
+}

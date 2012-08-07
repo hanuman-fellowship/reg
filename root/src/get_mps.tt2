@@ -17,7 +17,7 @@ from $sdate to $edate?
 </tr>
 [% FOR mp IN meeting_places %]
 <tr>
-<td>[% IF mp.max < hap.max %][% red = 1 %]<span style="color: red">$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
+<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span style="color: red">$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
 <td align=center><input type=checkbox name=br$mp.id></td>
 [% IF hap_type != 'Event' && mp.sleep_too %]
 <td align=center><input type=checkbox name=adorm$mp.id></td>

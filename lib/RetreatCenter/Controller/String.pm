@@ -10,6 +10,7 @@ use Global qw/
 use Util qw/
     resize
     model
+    stash
 /;
 use Date::Simple;
 use HLog;
@@ -39,7 +40,10 @@ sub list : Local {
             order_by => 'the_key'
         },
     ) ];
-    $c->stash->{template} = "string/list.tt2";
+    stash($c,
+        colors   => $colors,
+        template => "string/list.tt2",
+    );
 }
 
 use URI::Escape;

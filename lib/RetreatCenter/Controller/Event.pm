@@ -35,6 +35,9 @@ use Global qw/
     %string
 /;
 use Net::FTP;
+use RetreatCenter::Controller::MasterCal qw/
+    do_mastercal
+/;
 
 use lib '../../';       # so you can do a perl -c here.
 
@@ -47,14 +50,23 @@ sub index : Private {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{sponsor_opts} = <<"EOH";
-<option value="Center">Center
-<option value="School">School
-<option value="Institute">Institute
-<option value="Other">Other
-EOH
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "event/create_edit.tt2";
+    my $sponsor_opts = "";
+    for my $o (model($c, 'Organization')->search(
+                   undef,
+                   { order_by => 'name' }
+               )
+    ) {
+        $sponsor_opts .= "<option value="
+                      .  $o->id
+                      .  ">"
+                      .  $o->name
+                      .  "</option>\n";
+    }
+    stash($c,
+        sponsor_opts => $sponsor_opts,
+        form_action  => "create_do",
+        template     => "event/create_edit.tt2",
+    );
 }
 
 my %P;
@@ -246,17 +258,26 @@ sub listpat : Local {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $p = model($c, 'Event')->find($id);
-    $c->stash->{event} = $p;
+    my $e = model($c, 'Event')->find($id);
     my $sponsor_opts = "";
-    for my $s (qw/Center School Institute Other/) {
-        $sponsor_opts .= "<option value='$s'"
-                       . (($s eq $p->sponsor)? " selected": "")
-                       . ">$s\n";
+    for my $o (model($c, 'Organization')->search(
+                   undef,
+                   { order_by => 'name' }
+               )
+    ) {
+        $sponsor_opts .= "<option value="
+                      .  $o->id
+                      . (($o->id eq $e->organization_id)? " selected": "")
+                      .  ">"
+                      .  $o->name
+                      .  "</option>\n";
     }
-    $c->stash->{sponsor_opts} = $sponsor_opts;
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "event/create_edit.tt2";
+    stash($c,
+        event        => $e,
+        sponsor_opts => $sponsor_opts,
+        form_action  => "update_do/$id",
+        template     => "event/create_edit.tt2",
+    );
 }
 
 sub update_do : Local {
@@ -285,9 +306,11 @@ sub update_do : Local {
         _send_no_prs($c);
     }
     if ($names) {
-        $c->stash->{event} = $e;
-        $c->stash->{names} = $names;
-        $c->stash->{template} = "event/mp_warn.tt2";
+        stash($c,
+            event    => $e,
+            names    => $names,
+            template => "event/mp_warn.tt2",
+        );
     }
     else {
         $c->response->redirect($c->uri_for("/event/view/" . $e->id));
@@ -462,19 +485,34 @@ EOH
     });
     my $no_where_ord = ($no_where)? $no_where->disp_ord(): 0;
 
+    # which organization sponsored events should appear
+    # on the calendar?
+    my @on_prog_cal_org_ids
+        = map {
+              $_->id,
+          }
+          model($c, 'Organization')->search({
+              on_prog_cal => 'yes',
+          });
+
     my @events;
     for my $ev_kind (qw/Event Program Rental/) {
         my @prog_opt = ();
         if ($ev_kind eq "Program") {
             @prog_opt = (
                 level           => { 'not in',  [qw/ D C M /] },
+                name            => { -not_like, "%personal%retreat%" },
                 not_on_calendar => '',
+            );
+        }
+        elsif ($ev_kind eq 'Event') {
+            @prog_opt = (
+                organization_id => { 'in', \@on_prog_cal_org_ids },
             );
         }
         push @events, model($c, $ev_kind)->search({
                           edate => { '>=', $the_first },
                           @opt_end,
-                          name  => { -not_like, "%personal%retreat%" },
                           @prog_opt,
                       });
     }
@@ -515,7 +553,7 @@ EOH
     my $month = $start_month;
     while ($year < $end_year || ($year == $end_year && $month <= $end_month)) {
         my $key = sprintf("%04d%02d", $year, $month);
-        $cals{$key} = ActiveCal->new($year, $month, \@events, $no_where_ord);
+        $cals{$key} = ActiveCal->new($year, $month, \@events, $no_where_ord, 0);
         $imgmaps{$key} = "";
         $details{$key} = "";
         ++$month;
@@ -744,10 +782,6 @@ EOH
                 }
                 $disp .= $arr_lv;
 
-                # which is longest?
-                my $ld = length($disp);
-                my $lt = length($title);
-                my $width = ($ld > $lt)? $ld: $lt;
                 $disp .= "<br>$title<br>";
                 my $date_span = $ev_sdate->format("%b %e");
                 if ($ev_sdate->month == $ev_edate->month) {
@@ -1634,11 +1668,18 @@ sub _send_no_prs {
     $ftp->quit();
 }
 
-sub mastercal :Local {
-    my ($self, $c) = @_;
-    stash($c,
-        template => "event/mastercal.tt2",
-    );
+#
+# Tons of duplicate code from sub calendar.
+# Yes, it is horrible.   I didn't want to risk
+# messing up the existing calendar.
+# If any of this requires much maintenance
+# it will then be time to refactor.
+#
+# I moved it all to another file so that I wouldn't
+# get confused which calendar I was editing.
+#
+sub mastercal : Local {
+    do_mastercal(@_);
 }
 
 sub my_die {

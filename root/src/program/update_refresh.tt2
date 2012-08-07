@@ -27,11 +27,11 @@ function toggle_all() {
 </tr>
 </table>
 <p>
-<form name=form action="/program/update_refresh_do/$program.id">
+<form name=form action=/program/update_refresh_do/$program.id>
 <ul class=lunch>
 $refresh_table</span>
-<p>
-<input type=submit value="Submit">
+<p class=p2>
+<input type=submit id=sub value="Submit">
 <span style="margin-left: 1in">All <input type=checkbox name=all onclick="toggle_all();"></span>
 <div style="margin-top: 3mm; font-size: 12pt; font-weight: bold;">Confirm with Field Staff!</div>
 </ul>

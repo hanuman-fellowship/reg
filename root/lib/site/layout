@@ -25,7 +25,7 @@
 [% ELSE %]
 <td>&nbsp;</td>
 [% END %]
-<td><a target=help href=/event/mastercal>MasterCal</a></td>
+<td><a target=help href=/event/mastercal/$cal_param>MasterCal</a></td>
 <td align=left><a target=help href=/static/help/index.html>Help</a></td>
 <td align=left><a href=/issue/list>Issues</a></td>
 <td><a href=/logout>Logout</a></td>
@@ -50,25 +50,25 @@
 <td></td>
 [% END %]
 
-<td><a target=calendar href='/event/calendar/[% cal_param %]'>Calendar</a></td>
+<td><a target=calendar href=/event/calendar/$cal_param>Calendar</a></td>
 
 [% IF prog_staff || field_staff %]
     <td><a target=dailypic
-           href=/dailypic/show/[% daily_pic_date %]
+           href=/dailypic/show/$daily_pic_date
         >DailyPic</a></td>
     <td><a target=clusterview
-           href=/cluster/show/[% cluster_date %]/[% cur_cluster %]
+           href=/cluster/show/$cluster_date/$cur_cluster
         >ClusterView</a></td>
 [% ELSE %]
     <td colspan=3></td>
 [% END %]
-<td colspan=3>[% today.format("%A %B %e, %Y") %]</td>
+<td colspan=3>${today.format("%A %B %e, %Y")}</td>
 </tr>
 </table>
 </div>
 <p></p>
 [% END %]   <!-- not library -->
 [% END %]   <!-- if user exists -->
-[% content %]
+$content
 </div>
 
