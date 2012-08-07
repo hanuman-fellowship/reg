@@ -101,7 +101,7 @@ Jun 24 3:00-4:00
         made a plan to remedy it.  Where is that plan?  in migration/todo
 Jun 28 11:00-11:15
     adjusting permisssion for who can inactive people
-Jul 3 11:00-
+Jul 3 11:00-11:30
     granting permissions
     helping Barnaby with some housing issues
 Jul 13 10:40-11:20, 11:40-11:55
@@ -157,7 +157,7 @@ Aug 5 2:10-7:00
         next step: take organization color for MMC, MMI for Programs, Rentals
     name, abbrev for Meeting Places, Organizations - needed or not?
         if so, which to use where?
-Aug 6 5:30-
+Aug 6 5:30-6:25, 11:55-12:15
     removing abbrev from organization
     adding note about who to ask for adding an Extra Account
     to install after 'pk':
@@ -166,3 +166,8 @@ Aug 6 5:30-
             populate the column from sponsor
             drop the sponsor column
         % start server over, make a variety of colors for organizations
+        % try the MasterCal hope hope
+Aug 7 11:00-12:30
+    putting the master calendar code in place - had a case
+        I had not tested.   overlap, DateRange issues.
+    telling about it

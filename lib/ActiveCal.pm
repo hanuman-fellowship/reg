@@ -47,7 +47,12 @@ sub new {
         my @days = (0) x $ndays;
         for my $ev (@$events_ref) {
             if (my $dr = overlap($ev, $dr_cal)) {
-                for my $d (date($dr->sdate)->day .. date($dr->edate)->day) {
+                # needs some rethinking?
+                my $d1 = $dr->sdate;
+                my $d = ref $d1? $d1->day: date($d1)->day;
+                my $e1 = $dr->edate;
+                my $e = ref $e1? $e1->day: date($e1)->day;
+                for my $d ($d .. $e) {
                     ++$days[$d];
                 }
             }
