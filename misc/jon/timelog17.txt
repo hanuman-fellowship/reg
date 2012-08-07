@@ -159,3 +159,10 @@ Aug 5 2:10-7:00
         if so, which to use where?
 Aug 6 5:30-
     removing abbrev from organization
+    adding note about who to ask for adding an Extra Account
+    to install after 'pk':
+        % my <mkorg after auto => auto_
+        % my - add column organization_id to table event.
+            populate the column from sponsor
+            drop the sponsor column
+        % start server over, make a variety of colors for organizations
