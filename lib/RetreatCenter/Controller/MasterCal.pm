@@ -303,6 +303,9 @@ EOH
         my $count = $ev_count;
         my $max = $ev->max();
 
+=pod
+
+comment this code out - only in program calendar
         #
         # is the program/rental arriving earlier or leaving later
         # than the standard times?  We need to display this in
@@ -340,6 +343,9 @@ EOH
         if ($arr_lv) {
             $arr_lv = " $arr_lv";
         }
+
+=cut
+
         #
         # try to accomodate all three types of happenings.
         # some with mandatory maximums some without.
