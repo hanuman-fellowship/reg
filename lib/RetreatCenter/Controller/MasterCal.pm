@@ -374,8 +374,8 @@ EOH
                              $ev->organization->color =~ m{\d+}g,
                          );
             }
-            elsif ($event_name =~ m{MMI}) {
-                $color = $im->colorAllocate(
+            elsif ($ev->name =~ m{MMI}) {       # not $event_name
+                $color = $im->colorAllocate(    # it has had MMI- stripped
                              @mmi_colors,
                          );
             }
