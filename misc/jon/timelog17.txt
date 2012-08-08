@@ -171,3 +171,5 @@ Aug 7 11:00-12:30
     putting the master calendar code in place - had a case
         I had not tested.   overlap, DateRange issues.
     telling about it
+    something is wrong with setting colors and with using them
+        in the kali mastercal.

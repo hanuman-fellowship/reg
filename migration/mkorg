@@ -3,7 +3,7 @@ create table organization (
     id integer primary key autoincrement,
     name varchar(30) not null,
     on_prog_cal varchar(3) default '' not null,
-    color varchar(12) default '255,255,255' not null
+    color varchar(13) default '255,255,255' not null
 );
 insert into organization values(1, 'MMC', 'yes', '255,255,255');
 insert into organization values(2, 'MMS', 'yes', '255,255,255');
