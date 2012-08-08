@@ -548,7 +548,8 @@ EOH
             # as much as will fit and then it will overflow.
             #
             $im->string(gdGiantFont, $x1 + 3, $y1 + 2,
-                        $event_name . $arr_lv, $black);
+                        $event_name, $black);
+                            # removed $arr_lv above - only in program calendar
 
             # add to the image map
             #
