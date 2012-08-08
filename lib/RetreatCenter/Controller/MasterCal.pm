@@ -237,6 +237,18 @@ EOH
 
     }
     #
+    # prepare color numbers for MMC, MMI
+    #
+    my ($org) = model($c, 'Organization')->search(
+                    name => 'MMC',
+                );
+    my @mmc_colors = $org->color =~ m{(\d+)}xmsg;
+    ($org) = model($c, 'Organization')->search(
+                 name => 'MMI',
+             );
+    my @mmi_colors = $org->color =~ m{(\d+)}xmsg;
+
+    #
     # sort the events by start date so that
     # later ones will be below earlier ones.
     #
@@ -360,6 +372,17 @@ EOH
             if ($ev_type eq 'event') {
                 $color = $im->colorAllocate(
                              $ev->organization->color =~ m{\d+}g,
+                         );
+            }
+            elsif ($event_name =~ m{MMI}) {
+                $color = $im->colorAllocate(
+                             @mmi_colors,
+                         );
+            }
+            else {
+                # rentals and MMC programs
+                $color = $im->colorAllocate(
+                             @mmc_colors,
                          );
             }
 
