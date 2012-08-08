@@ -303,9 +303,6 @@ EOH
         my $count = $ev_count;
         my $max = $ev->max();
 
-=pod
-
-comment this code out - only in program calendar
         #
         # is the program/rental arriving earlier or leaving later
         # than the standard times?  We need to display this in
@@ -343,8 +340,6 @@ comment this code out - only in program calendar
         if ($arr_lv) {
             $arr_lv = " $arr_lv";
         }
-
-=cut
 
         #
         # try to accomodate all three types of happenings.
@@ -434,7 +429,8 @@ comment this code out - only in program calendar
                     $disp .= " " . ucfirst $ev->status;
                 }
             }
-            $disp .= $arr_lv;
+            # only in program calendar
+            # $disp .= $arr_lv;
 
             my $places = places($ev, 'all');
             my $sponsor = ($ev_type eq 'event' )? $ev->organization->name
