@@ -1885,12 +1885,18 @@ sub duplicate : Local {
 # should we?   let's not worry about that for now.
 # there are several extra things that a duplication requires.
 #
+# The title of a personal retreat will be taken directly
+# from the name.
+#
 sub duplicate_do : Local {
     my ($self, $c, $old_id) = @_;
     _get_data($c);
     return if @mess;
     delete $P{section};      # irrelevant
 
+    if ($P{name} =~ m{ personal \s+ retreat }xmsi) {
+        $P{title} = $P{name};
+    }
     # gl num is computed not gotten
     $P{glnum} = ($P{name} =~ m{personal\s+retreat}i)?
                         '99999': compute_glnum($c, $P{sdate});
