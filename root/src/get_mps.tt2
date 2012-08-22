@@ -27,7 +27,30 @@ from $sdate to $edate?
 
 <tr>
 <td></td>
-<td colspan=2 align=center><input type=submit value="Submit"></td>
+<td colspan=2 align=left><input id=sub type=submit value="Submit"></td>
+</tr>
+
+[% IF red %]
+<tr>
+<td colspan=10>
+Meeting places with names in <span style="color: red">red</span> have a maximum capacity<br>
+less than the maximum of $hap.max specified for the ${hap_type}.
+</td>
+[% END %]
+
+<tr>
+<th colspan=2 align=left>Other Places</th>
+</tr>
+
+[% FOR mp IN meeting_0_places %]
+<tr>
+<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span style="color: red">$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
+</tr>
+[% END %]
+
+<tr>
+<td></td>
+<td colspan=2 align=left><input id=sub type=submit value="Submit"></td>
 </tr>
 
 </table>

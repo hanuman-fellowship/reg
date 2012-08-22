@@ -1464,10 +1464,11 @@ sub get_grid_file {
 }
 
 #
+# available meeting places with/without a zero disp_ord
 # dates come as objects
 #
 sub avail_mps {
-    my ($c, $sdate, $edate) = @_;
+    my ($c, $sdate, $edate, $zero) = @_;
 
     my $edate1 = $edate->prev->as_d8();
 
@@ -1475,10 +1476,22 @@ sub avail_mps {
     $edate = $edate->as_d8();
 
     my @avail = ();
+    my @param;
+    if ($zero) {
+        @param = (
+             { disp_ord => 0 },
+             { order_by => 'name' },
+        );
+    }
+    else {
+        @param = (
+            { disp_ord => { '!=' => 0 } },
+            { order_by => 'disp_ord' },
+        );
+    }
     MEETING_PLACE:
     for my $mp (model($c, 'MeetingPlace')->search(
-                    {},
-                    { order_by => 'disp_ord' }
+                    @param,
                 )
     ) {
         next MEETING_PLACE if $mp->name() eq 'No Where';      # no no

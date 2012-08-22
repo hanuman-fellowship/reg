@@ -534,13 +534,20 @@ EOH
     }
 
     # get all relevant bookings
-    my @bookings = model($c, 'Booking')->search({
+    # ???perhaps have another limit here to restrict the bookings?
+    # we eliminate the bookings in meeting places with 
+    # disp_ord of zero.
+    #
+    my @bookings = grep { $_->meeting_place->disp_ord != 0 }
+                   model($c, 'Booking')->search({
                        edate => { '>=', $the_first },
                    });
 
     # get all meeting places in a hash indexed by id
-    # cache this?
-    my %meeting_places = map { $_->id => $_ }
+    # cache this?   do not include those with a disp_order of 0.
+    #
+    my %meeting_places = map  { $_->id => $_      }
+                         grep { $_->disp_ord != 0 }
                          model($c, 'MeetingPlace')->all();
 
     my %cals;       # a hash of ActiveCal objects indexed by yearmonth
@@ -666,14 +673,13 @@ EOH
             }
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
 
-            # this does a get of the meeting place record???
-            # yes, - replace it!!!  at some point, yes.
-            # can't readily optimize without a test suite for
-            # this complex beast!
+            # ???maybe optimize so we don't get the meeting_place
+            # record?   We skip meeting places that have a disp_ord
+            # of zero.
             #
             my @places = sort { $a->[0]->disp_ord <=> $b->[0]->disp_ord }
                          map  { [ $_->meeting_place(), $_ ] }
-                         grep { $_->$ev_type_id == $ev_id }
+                         grep { $_->$ev_type_id == $ev_id   }
                          @bookings;
             #
             # if no meeting place assigned hopefully put it SOMEwhere.
@@ -1533,7 +1539,8 @@ sub which_mp : Local {
         hap            => $hap,
         sdate          => $sdate,
         edate          => $edate,
-        meeting_places => [ avail_mps($c, $sdate, $edate) ],
+        meeting_places   => [ avail_mps($c, $sdate, $edate, 0) ],
+        meeting_0_places => [ avail_mps($c, $sdate, $edate, 1) ],
         template       => "get_mps.tt2",
     );
 }

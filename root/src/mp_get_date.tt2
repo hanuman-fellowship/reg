@@ -21,7 +21,7 @@ which is what you will most often want.
 
 <tr>
 <th></th>
-<td><input type=submit value="Submit">
+<td><input id=sub type=submit value="Submit">
 </tr>
 
 </table>

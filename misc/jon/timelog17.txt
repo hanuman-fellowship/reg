@@ -175,3 +175,19 @@ Aug 7 11:00-12:30
         in the kali mastercal.
 Aug 7 10:00-12:30
     finalizing the master calendar and sending a letter about it.
+Aug 8 9:30-10:15
+    addressing two issues in the email.
+    PR titles not changed when duplicating and the confirmation letter
+        having it wrong.
+    jdsita@yahoo.com is email address for many people - probably
+        want to change this.
+Aug 13 9:45-11:30
+    restoring Template.pm on mountmadonnainstitute.org
+        went smoothly
+    understood Danielle's new arrangement.  did MMI Publish.
+Aug 21 9:30-10:00, 1:00-1:20
+    responding to email, requests
+Aug 22 12:50-1:45
+    disp order of 0 means do not display on Program Calendar
+        but do include on the list of meeting places for that event
+    when choosing a mp the zero disp ord ones are below in alpha order

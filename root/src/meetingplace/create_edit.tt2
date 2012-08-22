@@ -73,6 +73,6 @@ Click the Submit button to finish.
 </table>
 </form>
 <script type="text/javascript">
-document.form.name.focus();
+document.form.abbr.focus();
 colorSet($red, $green, $blue);
 </script>
