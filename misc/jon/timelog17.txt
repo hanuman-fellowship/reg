@@ -191,3 +191,5 @@ Aug 22 12:50-1:45
     disp order of 0 means do not display on Program Calendar
         but do include on the list of meeting places for that event
     when choosing a mp the zero disp ord ones are below in alpha order
+Aug 27 11:45-
+    XL Rentals and programs - no meal count, no rental attendance

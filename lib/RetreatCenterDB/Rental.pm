@@ -294,6 +294,11 @@ sub daily_counts {
 }
 sub count {
     my ($self) = @_;
+
+    if ($self->name =~ m{ \A XL }xms) {
+        # it has been cancelled - ignore the web grid
+        return 0;
+    }
     my $prog_count = 0;
     if ($self->program_id()) {
         # Hybrid counts come from the program and also the web grid.
