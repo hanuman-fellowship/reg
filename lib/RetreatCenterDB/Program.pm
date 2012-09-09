@@ -149,7 +149,10 @@ sub future_programs {
     my ($class, $c) = @_;
     my @programs = $c->model('RetreatCenterDB::Program')->search(
         {
-            school   => 0,
+            -or => [
+                school => 0,        # MMC
+                level  => 'A',      # MMI standalone course
+            ],
             edate    => { '>=',    tt_today($c)->as_d8() },
             webready => 'yes',
         },
@@ -183,6 +186,7 @@ sub future_programs {
     }
     @programs;
 }
+
 sub web_addr {
     my ($self) = @_;
 
@@ -191,6 +195,7 @@ sub web_addr {
     return ($self->linked)? "$dir$string{ftp_dir2}/" . $self->fname
           :                 $dir . $self->unlinked_dir             ;
 }
+
 #
 # a few convenience methods to transform the contents
 # of a table column into something easily viewable

@@ -1189,12 +1189,8 @@ sub publish : Local {
     Global->init($c);
 
     #
-    # get all the programs into an array
+    # get all the future programs destined for the web into an array
     # sorted by start date and then end date.
-    # ???this seems to work but I suspect there is
-    # a better way to do this???  
-    # Can I do model($c, 'Program')->future_programs()???
-    # No.
     #
     @programs = RetreatCenterDB::Program->future_programs($c);
 
@@ -1215,7 +1211,7 @@ sub publish : Local {
     gen_progtable();
 
     #
-    # get ALL the exceptions
+    # get the exceptions
     #
     for my $e (model($c, 'Exception')->all()) {
         $except{$e->prog_id}{$e->tag} = expand($e->value);
@@ -1230,7 +1226,9 @@ sub publish : Local {
     #
     my @unlinked;
     my $tag_regexp = '<!--\s*T\s+(\w+)\s*-->';
+    PROGRAM:
     for my $p (@programs) {
+        next PROGRAM if $p->school != 0;    # skip MMI standalone courses
         my $fname = $p->fname();
         open my $out, ">", "gen_files/$fname"
             or return _pub_err($c, "cannot create $fname: $!");
@@ -1247,6 +1245,15 @@ sub publish : Local {
 
     #
     # generate the program and event calendars
+    # each program (MMC and MMI standalone courses) and each rental
+    # will appear EITHER on the program OR the event calendar
+    # not both.
+    #
+    # Only MMC programs will appear on the program calendar.
+    # Rentals and MMI standalone courses appear on the event calendar.
+    # Unlinked MMC programs appear on neither.
+    # It's okay to require that MMI standalone courses have linked checked.
+    # Yes?
     #
     my $events = "";
     my $programs = "";
@@ -1259,7 +1266,6 @@ sub publish : Local {
     my $cur_event_year = 0;
     my $cur_prog_month = 0;
     my $cur_prog_year = 0;
-    my ($rental);
     my @rentals  = RetreatCenterDB::Rental->future_rentals($c);
     for my $e (sort {
                    $a->sdate <=> $b->sdate
@@ -1272,38 +1278,44 @@ sub publish : Local {
                @programs,
                @rentals
     ) {
-        $rental = (ref($e) =~ m{Rental$});
+        my $rental = (ref($e) =~ m{Rental$});
+        my $for_event_calendar = $rental || $e->school != 0;
+
         my $sdate = $e->sdate_obj;
         my $smonth = $sdate->month;
         my $syear = $sdate->year;
         my $my = monthyear($sdate);
-        if ($cur_event_month != $smonth || $cur_event_year != $syear) {
-            $events .= "<tr><td class='event_my_row' colspan=2>$my</td></tr>\n";
-            $cur_event_month = $smonth;
-            $cur_event_year = $smonth;
-        }
-        if (not $rental
-            and ($cur_prog_month != $smonth || $cur_prog_year != $syear)
-        ) {
-            $programs .= "<tr><td class='prog_my_row' colspan=2>$my</td></tr>\n";
-            $cur_prog_month = $smonth;
-            $cur_prog_year = $syear;
-        }
-        if ($rental) {
-            my $copy = $e_rentalRow;
-            $copy =~ s/$tag_regexp/
-                $e->$1()        # no exception for rentals here - okay???
-            /xge;
-            $events .= $copy;
+
+        if ($for_event_calendar) {
+            if ($cur_event_month != $smonth || $cur_event_year != $syear) {
+                $events
+                    .= "<tr><td class='event_my_row' colspan=2>$my</td></tr>\n";
+                $cur_event_month = $smonth;
+                $cur_event_year = $syear;
+            }
+            if ($rental) {
+                my $copy = $e_rentalRow;
+                $copy =~ s/$tag_regexp/
+                    $e->$1()        # no exceptions for rentals here - okay???
+                /xge;
+                $events .= $copy;
+            }
+            else {
+                my $copy = $e_progRow;
+                $copy =~ s/$tag_regexp/
+                    $except{$e->id}{$1} || $e->$1()
+                /xge;
+                $events .= $copy;
+            }
         }
         else {
-            my $copy = $e_progRow;
-            $copy =~ s/$tag_regexp/
-                $except{$e->id}{$1} || $e->$1()
-            /xge;
-            $events .= $copy;
-
-            $copy = $progRow;
+            if ($cur_prog_month != $smonth || $cur_prog_year != $syear) {
+                $programs
+                    .= "<tr><td class='prog_my_row' colspan=2>$my</td></tr>\n";
+                $cur_prog_month = $smonth;
+                $cur_prog_year = $syear;
+            }
+            my $copy = $progRow;
             $copy =~ s/$tag_regexp/
                 $except{$e->id}{$1} || $e->$1()
             /xge;

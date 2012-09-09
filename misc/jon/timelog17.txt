@@ -27,6 +27,21 @@ Apr 8 12:10-1:00, 12:00-12:30
 Apr 14 11:00-12:00
     final tweaks for MMI registration
     rental invoice style changes
+Apr 22 10:00-4:00
+    spent a long time this Sunday (8 hours total) with Ryder
+        working on configuring the new machine that is a kali death replacement
+    I put 6 hours above for my time for installing Catalyst, etc on newkali
+        this amount is actually to cover the taxes on Ryder's payment
+        because I paid him directly from my own account - a cost of $1050.
+        14 hours at $75/hour total including his previous assistance
+        with networking issues.  I'll put a time range for Apr 23-24 below
+        that covers his payment in my hourly rate.   $1050/$50 = 21 hours
+        I do have a formal invoice from Ryder which I can submit.
+        I won't charge for the 8 hours I spent that day (which would be $400).
+Apr 23 1:00-11:00
+    see above - 10 hours
+Apr 24 1:00-11:00, 2:00-3:00
+    see above - 10 hours + 1 hour - total = 21 hours for paying Ryder
 Apr 28 3:30-4:15
     rental housing cost and grid changes per Barnaby
 May 2 11:30-11:50
@@ -193,3 +208,11 @@ Aug 22 12:50-1:45
     when choosing a mp the zero disp ord ones are below in alpha order
 Aug 27 11:45-12:10
     XL Rentals and programs - no meal count, no rental attendance
+Aug 30 1:05-1:30
+    tweaks for event list
+    responding to email about master calendar
+Sep 4 9:45-11:15
+    event calendar reformatting - only MMI programs
+    began - will finish tomorrow night
+Sep 8 10:00-11:00, 12:25-1:25
+    continuing event calendar reformatting

@@ -186,8 +186,8 @@ if ($data->{footnotes} =~ m{\*}
     my $begin = "<li>To qualify for a CEU certificate for this program"
               . " you must have a license number beginning with";
     if ($data->{footnotes} =~ m{\*\*}) {
-        if ($form{ceu_license} !~ m{^(RN|LSW|MFT)}i) {
-            $err .= "$begin RN, LSW or MFT.";
+        if ($form{ceu_license} !~ m{^(RN|LSW|MFT|LCS)}i) {
+            $err .= "$begin RN, LSW, MFT, or LCS.";
         }
     }
     else {

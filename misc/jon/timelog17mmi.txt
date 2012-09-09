@@ -1,0 +1,47 @@
+Mar 26 11:00-1:30
+    many changes after discussion with Lila and Brajesh
+Mar 27 10:30-1:30
+    popup about GL Num for MMI course has the first name
+    of the first account_admin.
+    finalizations of all the things Lila, Brajesh asked for
+Mar 31 1:30-2:00
+    phone discussion with Brajesh and Jamal about 
+        MMI stand alone course online registration
+Apr 4 10:50-1:20
+    generating progtable for future MMI stand alone courses
+    and sending it to mountmadonnainstitute.org/courses
+    putting reg1, reg2, reg1.tt2, reg2.tt2, etc on mmi.org
+    making copy of the course page, adding registration buttons
+    testing, modifying grab_new to get registrations from
+    mmi.org, marking them as MMI rather than MMC
+Apr 6 10:50-1:30
+    continuing with mmi online
+    pretty much done.   jamal needs to do some graphic help.
+    testing.   perhaps a different email and From address, phone.
+    wait on Brajesh.
+Apr 8 12:10-1:00, 12:00-12:30
+    final touches on mmi online reg
+    aligning Register Now took some fiddling
+    responding to Jamal re: po_num, mmireservations@, etc.
+Apr 14 11:00-12:00
+    final tweaks for MMI registration
+    rental invoice style changes
+May 14 10:00-11:30
+    Sukhdev, Green MMI donation
+    Lila - responding to email confusion
+May 15 12:00-12:45
+    Lila consultation
+May 17 9:25-10:50
+    only account_admin can edit the glnum of programs
+    initial glnum for MMI programs is XX
+    no mmi monies can be received if glnum contains XX
+    next - all future MMI non-standalone courses - put XX in the GL Num.
+    so that no one can audit it until Lila does her thing.
+    3 digits of course number... in the GL Number.
+        there ARE current auditors - what GL Number was used for them???
+May 18 8:45-10:15, 11:00-1:10
+    continuing with MMI GL Nums.
+    Receipts beginning
+    " continuing
+    connection problem to mountmadonna.org - called garlic to no avail
+    need to do reg.attended_dates with year.
