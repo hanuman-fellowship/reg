@@ -190,6 +190,7 @@ EOH
         }
         push @events, model($c, $ev_kind)->search({
                           edate => { '>=', $the_first },
+                          name  => { not_like => 'XL%' },
                           @opt_end,
                           @prog_opt,
                       });
