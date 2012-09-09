@@ -239,13 +239,13 @@ EOH
     #
     # prepare color numbers for MMC, MMI
     #
-    my ($org) = model($c, 'Organization')->search(
-                    name => 'MMC',
-                );
+    my ($org) = model($c, 'Organization')->search({
+                    name => { like => '%MMC Programs%' },
+                });
     my @mmc_colors = $org->color =~ m{(\d+)}xmsg;
-    ($org) = model($c, 'Organization')->search(
-                 name => 'MMI',
-             );
+    ($org) = model($c, 'Organization')->search({
+                 name => { like => '%MMI%' },
+             });
     my @mmi_colors = $org->color =~ m{(\d+)}xmsg;
 
     #
