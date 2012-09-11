@@ -348,7 +348,7 @@ Web
 <tr>
 <th align=right>Color</th>
 [% IF rental.color %]
-<td style="cursor: pointer; border: solid; border-width: thin;" width=100 bgcolor=[% rental.color_bg %] onclick="window.location.href='/rental/color/[% id %]'">
+<td id=color style="cursor: pointer" width=100 bgcolor=[% rental.color_bg %] onclick="window.location.href='/rental/color/[% id %]'">
 [% ELSE %]
 <td><a href=/rental/color/[% id %]>Update</a></td>
 [% END %]

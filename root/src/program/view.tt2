@@ -358,7 +358,7 @@ $leaders_house
 <tr>
 <th align=right>Color</th>
 [% IF program.color %]
-<td id=color width=100 bgcolor=$program.color_bg onclick="window.location.href='/program/color/$id'">
+<td id=color style="cursor: pointer" width=100 bgcolor=$program.color_bg onclick="window.location.href='/program/color/$id'">
 [% ELSE %]
 <td><a href=/program/color/$id>Update</a></td>
 [% END %]
