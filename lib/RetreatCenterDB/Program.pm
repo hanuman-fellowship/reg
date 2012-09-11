@@ -149,12 +149,18 @@ sub future_programs {
     my ($class, $c) = @_;
     my @programs = $c->model('RetreatCenterDB::Program')->search(
         {
+            edate    => { '>=', tt_today($c)->as_d8() },
+            webready => 'yes',
             -or => [
                 school => 0,        # MMC
-                level  => 'A',      # MMI standalone course
+                -or => [
+                    level => 'A',      # MMI standalone course
+                    -and => [
+                        level => 'S',
+                        name  => { like => '%-D%' },    # Diploma courses
+                    ],
+                ],
             ],
-            edate    => { '>=',    tt_today($c)->as_d8() },
-            webready => 'yes',
         },
         { order_by => [ 'sdate', 'edate' ] },
     );

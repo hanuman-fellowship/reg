@@ -1,429 +1,112 @@
-<html>
-<head>
-<meta name="keywords" content="bay area yoga, bay area conference center, bay area retreat center, baba hari dass, vegetarian, meditation">
-<script language="JavaScript" type="text/javascript">
-<!--
-<!-- Hiding script from old browsers
+<?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/referral.php'); ?> 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML><!-- InstanceBegin template="../Sites/mmc/www/Templates/csstemplate_general.dwt" codeOutsideHTMLIsLocked="false" --><HEAD>
+
+<!-- InstanceBeginEditable name="variables" -->
+<?php 
+//VARIABLE DECLARATION
+$active_navbar = 'programs';//defines which button on the navbar should be down
+$sidebar ='programs';//defines which sidebar to use
+?>
+<!-- InstanceEndEditable -->
 
 
 
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<TITLE>Programs at Mount Madonna Center</TITLE>
+<!-- InstanceEndEditable -->
+
+<!-- InstanceBeginEditable name="head" -->
+<LINK HREF="/styles/reset.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/layout.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/header.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/sidebar.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/text.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/programs.css" REL="stylesheet" TYPE="text/css" />
+<SCRIPT TYPE="text/javascript" SRC="http://code.jquery.com/jquery-1.1.3.1.pack.js"></SCRIPT>
+
+<SCRIPT TYPE="text/javascript">
+$(document).ready(function() {
+  $('.event_details').hide();
+  $('.hide_link').hide();
+  $('.event_row_spacing').hide();
+});
+</SCRIPT>
+
+<!-- InstanceEndEditable -->
+
+<!--[if IE 5]>
+<style type="text/css"> 
+.twoColFixLtHdr #sidebar1 { margin-right: 7px; }
+.twoColFixLtHdr #contentHeader { margin-left: 197px;}
+</style>
+<![endif]-->
+<!--[if IE 6]>
+<style type="text/css"> 
+.twoColFixLtHdr #sidebar1 { width: 187px; }
+.twoColFixLtHdr #contentHeader { margin-left: 197px;}
+</style>
+<![endif]-->
+<!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixLtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
+</HEAD>
+
+<BODY CLASS="twoColFixLtHdr">
 
 
-browserName = navigator.appName;
-
-browserVer = parseInt(navigator.appVersion);
-
-
-
-    if (browserName == "Netscape" && browserVer >= 3) version = "n3";
-
-    else version = "n2";
-
-
-
-    if (version == "n3") {
-
-        toc1on = new Image();
-
-        toc1on.src = "/Gif/yoga.sel.gif";
-
-        toc2on = new Image();
-
-        toc2on.src = "/Gif/community.sel.gif";
-
-        toc3on = new Image();
-
-        toc3on.src = "/Gif/school.sel.gif";
-
-        toc4on = new Image();
-
-        toc4on.src = "/Gif/programs.sel.gif";
-
-        toc5on = new Image();
-
-        toc5on.src = "/Gif/projects.sel.gif";
-
-        toc6on = new Image();
-
-        toc6on.src = "/Gif/renting.sel.gif";
-
-
-
-        toc1off = new Image();
-
-        toc1off.src = "/Gif/yoga.grn.gif";
-
-        toc2off = new Image();
-
-        toc2off.src = "/Gif/community.grn.gif";
-
-        toc3off = new Image();
-
-        toc3off.src = "/Gif/school.grn.gif";
-
-        toc4off = new Image();
-
-        toc4off.src = "/Gif/programs.grn.gif";
-
-        toc5off = new Image();
-
-        toc5off.src = "/Gif/projects.grn.gif";
-
-        toc6off = new Image();
-
-        toc6off.src = "/Gif/renting.grn.gif";
-
-    }
-
-
-
-function img_act(imgName) {
-
-    if (version == "n3") {
-
-        imgOn = eval(imgName + "on.src");
-
-        document [imgName].src = imgOn;
-
-    }
-
-}
-
-
-
-function img_inact(imgName) {
-
-    if (version == "n3") {
-
-    imgOff = eval(imgName + "off.src");
-
-    document [imgName].src = imgOff;
-
-    }
-
-}
-
-
-
-// End hiding JavaScript -->
-
-function MM_preloadImages() { //v3.0
-  var d=document; if(d.images){ if(!d.MM_p) d.MM_p=new Array();
-    var i,j=d.MM_p.length,a=MM_preloadImages.arguments; for(i=0; i<a.length; i++)
-    if (a[i].indexOf("#")!=0){ d.MM_p[j]=new Image; d.MM_p[j++].src=a[i];}}
-}
-
-function MM_findObj(n, d) { //v4.01
-  var p,i,x;  if(!d) d=document; if((p=n.indexOf("?"))>0&&parent.frames.length) {
-    d=parent.frames[n.substring(p+1)].document; n=n.substring(0,p);}
-  if(!(x=d[n])&&d.all) x=d.all[n]; for (i=0;!x&&i<d.forms.length;i++) x=d.forms[i][n];
-  for(i=0;!x&&d.layers&&i<d.layers.length;i++) x=MM_findObj(n,d.layers[i].document);
-  if(!x && d.getElementById) x=d.getElementById(n); return x;
-}
-
-function MM_nbGroup(event, grpName) { //v6.0
-  var i,img,nbArr,args=MM_nbGroup.arguments;
-  if (event == "init" && args.length > 2) {
-    if ((img = MM_findObj(args[2])) != null && !img.MM_init) {
-      img.MM_init = true; img.MM_up = args[3]; img.MM_dn = img.src;
-      if ((nbArr = document[grpName]) == null) nbArr = document[grpName] = new Array();
-      nbArr[nbArr.length] = img;
-      for (i=4; i < args.length-1; i+=2) if ((img = MM_findObj(args[i])) != null) {
-        if (!img.MM_up) img.MM_up = img.src;
-        img.src = img.MM_dn = args[i+1];
-        nbArr[nbArr.length] = img;
-    } }
-  } else if (event == "over") {
-    document.MM_nbOver = nbArr = new Array();
-    for (i=1; i < args.length-1; i+=3) if ((img = MM_findObj(args[i])) != null) {
-      if (!img.MM_up) img.MM_up = img.src;
-      img.src = (img.MM_dn && args[i+2]) ? args[i+2] : ((args[i+1])? args[i+1] : img.MM_up);
-      nbArr[nbArr.length] = img;
-    }
-  } else if (event == "out" ) {
-    for (i=0; i < document.MM_nbOver.length; i++) {
-      img = document.MM_nbOver[i]; img.src = (img.MM_dn) ? img.MM_dn : img.MM_up; }
-  } else if (event == "down") {
-    nbArr = document[grpName];
-    if (nbArr)
-      for (i=0; i < nbArr.length; i++) { img=nbArr[i]; img.src = img.MM_up; img.MM_dn = 0; }
-    document[grpName] = nbArr = new Array();
-    for (i=2; i < args.length-1; i+=2) if ((img = MM_findObj(args[i])) != null) {
-      if (!img.MM_up) img.MM_up = img.src;
-      img.src = img.MM_dn = (args[i+1])? args[i+1] : img.MM_up;
-      nbArr[nbArr.length] = img;
-  } }
-}
-//-->
-</script>
-<meta content="text/html; charset=iso-8859-1">
-<title>Upcoming Events at Mount Madonna Center</title>
-<link href="/mmc.css" rel="stylesheet" type="text/css">
-<meta http-equiv="Content-Type" content="text/html; charset=">
-</head>
-<!-- Begin Menu Bar -->
-<body onload=
-"MM_preloadImages(/Gif/navbar_home_f3.gif,/Gif/navbar_home_f2.gif,/Gif/navbar_programs_f3.gif,/Gif/navbar_programs_f2.gif,/Gif/navbar_rentals_f3.gif,/Gif/navbar_rentals_f2.gif,/Gif/navbar_community_f3.gif,/Gif/navbar_community_f2.gif,/Gif/navbar_yoga_f3.gif,/Gif/navbar_yoga_f2.gif,/Gif/navbar_links_f3.gif,/Gif/navbar_links_f2.gif,'/Gif/new_navbar/navbar_home_f3.gif','/Gif/new_navbar/navbar_home_f2.gif','/Gif/new_navbar/navbar_programs_f3.gif','/Gif/new_navbar/navbar_programs_f2.gif','/Gif/new_navbar/navbar_rentals_f3.gif','/Gif/new_navbar/navbar_rentals_f2.gif','/Gif/new_navbar/navbar_personal_retreats_f3.gif','/Gif/new_navbar/navbar_personal_retreats_f2.gif','/Gif/new_navbar/navbar_community_f3.gif','/Gif/new_navbar/navbar_community_f2.gif','/Gif/new_navbar/navbar_yoga_f3.gif','/Gif/new_navbar/navbar_yoga_f2.gif')">
-<table width="825" align="center" cellpadding="0">
-  <tr>
-    <td><table border="0" cellpadding="0" cellspacing="0" width="825">
-        <!-- fwtable fwsrc="navbar.png" fwbase="navbar_new.gif" -->
-        <tr>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="133" height="1" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="130" height="1" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="152" height="1" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="149" height="1" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="110" height="1" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="119" height="1" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="32" height="1" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="1" height="1" border="0"></td>
-        </tr>
-        <tr>
-          <td rowspan="3"><div align="right"><a href="/index.html" target="_top" onClick="MM_nbGroup(down,navbar1,navbar_home,/Gif/navbar_home_f3.gif,1);" onmouseover=
-"MM_nbGroup(over,navbar_home,/Gif/navbar_home_f2.gif,/Gif/navbar_home_f3.gif,1);" onMouseOut="MM_nbGroup(out);"><img name="navbar_home" src="/Gif/navbar_home.gif" width="133" height="111"
-border="0"></a></div></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="1" height="36" border="0"></td>
-        </tr>
-        <tr>
-          <td><a href="programs.html" target="_top"  onClick="MM_nbGroup('down','navbar1','navbar_programs','/Gif/new_navbar/navbar_programs_f3.gif',1)"  onMouseOver="MM_nbGroup('over','navbar_programs','/Gif/new_navbar/navbar_programs_f2.gif','/Gif/new_navbar/navbar_programs_f3.gif',1)" onMouseOut="MM_nbGroup('out');" ><img name="navbar_programs" src="/Gif/new_navbar/navbar_programs.gif" width="130" height="43" border="0" alt="Programs"></a></td>
-          <td><a href="/programs/rental.html" target="_top"  onClick="MM_nbGroup('down','navbar1','navbar_rentals','/Gif/new_navbar/navbar_rentals_f3.gif',1)"  onMouseOver="MM_nbGroup('over','navbar_rentals','/Gif/new_navbar/navbar_rentals_f2.gif','/Gif/new_navbar/navbar_rentals_f3.gif',1)" onMouseOut="MM_nbGroup('out');" ><img name="navbar_rentals" src="/Gif/new_navbar/navbar_rentals.gif" width="152" height="43" border="0" alt="Rent our Facilities"></a></td>
-          <td><a href="/personal" target="_top"  onClick="MM_nbGroup('down','navbar1','navbar_personal_retreats','/Gif/new_navbar/navbar_personal_retreats_f3.gif',1)"  onMouseOver="MM_nbGroup('over','navbar_personal_retreats','/Gif/new_navbar/navbar_personal_retreats_f2.gif','/Gif/new_navbar/navbar_personal_retreats_f3.gif',1)" onMouseOut="MM_nbGroup('out');" ><img name="navbar_personal_retreats" src="/Gif/new_navbar/navbar_personal_retreats.gif" width="149" height="43" border="0" alt="Personal Retreats"></a></td>
-          <td><a href="/community/index.html" target="_top"  onClick="MM_nbGroup('down','navbar1','navbar_community','/Gif/new_navbar/navbar_community_f3.gif',1)"  onMouseOver="MM_nbGroup('over','navbar_community','/Gif/new_navbar/navbar_community_f2.gif','/Gif/new_navbar/navbar_community_f3.gif',1)" onMouseOut="MM_nbGroup('out');" ><img name="navbar_community" src="/Gif/new_navbar/navbar_community.gif" width="110" height="43" border="0" alt="Community"></a></td>
-          <td><a href="/yoga/index.html" target="_top"  onClick="MM_nbGroup('down','navbar1','navbar_yoga','/Gif/new_navbar/navbar_yoga_f3.gif',1)"  onMouseOver="MM_nbGroup('over','navbar_yoga','/Gif/new_navbar/navbar_yoga_f2.gif','/Gif/new_navbar/navbar_yoga_f3.gif',1)" onMouseOut="MM_nbGroup('out');" ><img name="navbar_yoga" src="/Gif/new_navbar/navbar_yoga.gif" width="119" height="43" border="0" alt="Yoga"></a></td>
-          <td rowspan="2"><img src="/Gif/new_navbar/spacer.gif" width="32" height="75" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="1" height="43" border="0"></td>
-        </tr>
-        <tr>
-          <td colspan="5"><img src="/Gif/new_navbar/spacer.gif" width="660" height="32" border="0"></td>
-          <td><img src="/Gif/new_navbar/spacer.gif" width="1" height="32" border="0"></td>
-        </tr>
-      </table></td>
-  </tr>
-  <tr>
-    <td width="825"><div align="left">
-        <table width="825" align="left" cellpadding="0" cellspacing="0">
-          <tr>
-            <td width="205" align="left" valign="top"><table width="100%"   border="0" cellpadding="0" cellspacing="0">
-                <tr>
-                  <td><img src="/Gif/greenbox_upper_left.gif" width="10" height="18"></td>
-                  <td background="/Gif/greenbox_top.gif">&nbsp;</td>
-                  <td><img src="/Gif/greenbox_upper_right.gif" width="10" height="18"></td>
-                </tr>
-                <tr>
-                  <td background="/Gif/greenbox_left.gif"></td>
-                  <td bgcolor="#C3D7D6"><table width="185 align="left"  cellpadding="10">
-                      <tr>
-                        <td  valign="top"><p align="center"><a href="/programs/ysc.html"><img src="/Gif/ysc_button.gif" alt="Yoga, Service &amp; Community" width="130" height="130" border="0"></a></p>
-                          <p><span>Interested in a yogic lifestyle? Consider
-                              our <a href="/programs/ysc.html">Yoga, Service,
-                              and Community</a> program, or look at our list
-                              of <a href="/yoga/index.html#lifestyle">yoga programs</a>. </span> </p>
-                          <p><font> <img src="/Gif/underline.jpg" width="150" height="1"></font> </p>
-                          <p align="left" ><b>To register for a program: </b></p>
-                          <p> Go to the <a href="programs.html">programs calendar</a> and
-                            select the program for which you wish to register.
-                            Click on the &quot; Register for this program&quot; button,
-                            and follow the instructions</p>
-                          <table width="150" align="center">
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/yoga/yoga_classes.html"  >Ongoing
-                                  Classes</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/personal"  >Personal
-                                  Retreats</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/programs/ysc.html"  >Yoga, Service,
-                                  and Community</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/ytt/ytt.html" >Yoga Teacher Training <br>
-                                200-hour Certificate Program</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/ytt/ytt500.html" >Yoga Teacher Training <br>
-                                500-hour Certificate Program</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/projects/kayakalpa/index.html"  >Kaya
-                                  Kalpa<br>
-                                Wellness Center</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="http://www.ayurveda-world.com/"  >The
-                                  Ayurvedic Store</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td align="center"><a href="/Gif/Photos/Facilities/index.html"  >Facilities
-                                  Photos</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/programs/progfees.html"  >Housing
-                                  and Fees</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/directions/index.html"  >Transportation
-                                  and Directions</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><a href="/yoga/ashtanga_yoga.html" target="_top" >Ashtanga
-                                  Yoga</a></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                            <tr>
-                              <td 
-	 align="center" valign="middle"  ><span><strong>CAUTION! <br>
-                                Do NOT use Yahoo or MapQuest for Directions to
-                                      MMC!!</strong></span></td>
-                            </tr>
-                            <tr>
-                              <td align="center" valign="middle"  ><font> <img src="/Gif/underline.jpg" width="150" height="1"></font></td>
-                            </tr>
-                          </table></td>
-                      </tr>
-                    </table></td>
-                  <td background="/Gif/greenbox_right.gif"></td>
-                </tr>
-                <tr>
-                  <td><img src="/Gif/greenbox_lower_left.gif" width="10" height="10"></td>
-                  <td background="/Gif/greenbox_bottom.gif" height="10"></td>
-                  <td><img src="/Gif/greenbox_lower_right.gif" width="10" height="10"></td>
-                </tr>
-              </table></td>
-            <td width="620" align="left" valign="top"><table width="580"  border="0" cellspacing="0" cellpadding="0">
-                <tr>
-                  <td><img src="/Gif/whitebox_upper_left.gif" width="20" height="18"></td>
-                  <td height="18"><img src="/Gif/whitebox_top.gif"  width="580" height="18"></td>
-                  <td><img src="/Gif/whitebox_upper_right.gif" width="20" height="18"></td>
-                </tr>
-                <tr>
-                  <td background="/Gif/whitebox_left.gif">&nbsp;</td>
-                  <td><table cellpadding="6" bgcolor="#FFFFFF">
-                      <tr>
-                        <td colspan="2" valign="middle"><div align="center">
-                            <p class="ptitle" >Calendar of Events</p>
-                            <p><img src="/Gif/mmc_logo.gif" width="30" height="21" alt="MMC Sponsored Program" border="0" align=TOP> 				Indicates a Program sponsored by Mount Madonna Center. <br>
-                              For full program information, click on the <span style="color: #660000">presenter's
-                              name.</span></p>
-                            <p><img src="/Gif/underline.jpg" width="150" height="1"></p>
-                            <p>Programs sponsored by other organizations
-                                  list contact information. </p>
-                            <p><img src="/Gif/underline.jpg" width="150" height="1"></p>
-                            <p align="left"><span class="barnacles">*</span> These
-                              programs have Continuing Education Credit available
-                              for nurses<br>
-                              <span class="barnacles">**</span> and also for
-                              LMFT's and LCSW's.<br>
-                              <span class="barnacles">&dagger;</span> Fulfills
-                              the spiritual practice prerequisite for John F.
-                              Kennedy University's Graduate School for Holistic
-                              Studies. <br>
-                              <span class="barnacles">&sect;</span> May be used
-                              as an elective for YTT 500</p>
-                            <p align="center"><img src="/Gif/underline.jpg" width="150" height="1"> </p>
-                          </div></td>
-                      </tr>
+    <DIV ID="container">
+        <DIV ID="header"><?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/header.php');?></DIV>
+        <DIV ID="mainWrapper">
+            <DIV ID="sidebar1"><?php include("/home/mmc/domains/mountmadonna.org/public_html/includes/sidebar_$sidebar.php");?></DIV>
+      
+            <DIV ID="contentHeader"><!-- put 650 px width image here or leave &nbsp; if no header image-->
+                <!-- InstanceBeginEditable name="contentHeader" -->
+                
+                &nbsp;
+                
+                <!-- InstanceEndEditable -->
+            </DIV><!-- end #contentHeader -->
+          
+         
+            <DIV ID="content">
+                <!-- InstanceBeginEditable name="content" -->
+                <?php include("/home/mmc/www/banners/rotate_banners2.php");?>
+                <TABLE CELLPADDING="6" BGCOLOR="#FFFFFF" width="100%">
+                    <TR VALIGN="top">
+                        <TD COLSPAN=2>
+                                <H1 ALIGN="center" class="calendar_head">Upcoming Rentals<BR>
+                                <SPAN CLASS="calendar_subhead">at Mount Madonna Center</SPAN></H1>
+                                <p align="center">&gt;&gt; see also <a href="/live/programs.html">programs sponsored by Mount Madonna Center</a></p>
+                            <A NAME="calendar"></A></TD>
+                    </TR>
+                    
                       <!--T eventlist -->
-                      <tr valign="top">
-                        <td colspan="2"><br>
-                          <span class="barnacles">*</span> These programs have
-                          Continuing Education Credit available for nurses<br>
-                          <span class="barnacles">**</span> and also for LMFT's
-                          and LCSW's.<br>
-                          <span class="barnacles">&dagger;</span> Fulfills the
-                          spiritual practice prerequisite for John F. Kennedy
-                          University's Graduate School for Holistic Studies. <br>
-                          <span class="barnacles">&sect;</span> May be used as
-                          an elective for YTT 500</td>
-                      </tr>
-                    </table></td>
-                  <td background="/Gif/whitebox_right.gif">&nbsp;</td>
-                </tr>
-                <tr>
-                  <td><img src="/Gif/whitebox_lower_left.gif" width="20" height="18"></td>
-                  <td><img src="/Gif/whitebox_bottom.gif" width="580" height="18"></td>
-                  <td><img src="/Gif/whitebox_lower_right.gif" width="20" height="18"></td>
-                </tr>
-              </table></td>
-            <!-- Begin Menu Bar -->
-          </tr>
-          <tr>
-            <td width="205" align="left" valign="top"></td>
-            <td width="620" align="left" valign="top" class="style1"><center>
-                <p><br>
-                </p>
-              </center>
-              <hr align="center" width="80%" noshade>
-              <center>
-                <p>Mount Madonna Center &bull; 445 Summit Rd, Watsonville, CA
-                  95076 &bull; Phone (408) 847-0406 &bull;Fax (408) 847-2683<br>
-                  e-mail <a href="mailto:programs@mountmadonna.org" class="style2">programs@mountmadonna.org</a><br>
-                  Webmaster: <a href="mailto:webmaster@mountmadonna.org" class="style2">webmaster@mountmadonna.org</a> <br>
-                  A Project of<br>
-                  <a href="http://www.hanumanfellowship.org" target="_blank"><img src="/Gif/logoHF.jpg" width="150" height="43" border="0"></a><br>
-                  Copyright <!-- T current_year -->, Hanuman Fellowship. All rights reserved. &bull; Last updated <!-- T current_date -->
-                </p>
-                <p>&nbsp; </p>
-              </center></td>
-          </tr>
-        </table>
-      </div></td>
-  </tr>
-</table>
+                    <TR>
+                        <TD VALIGN="middle">&nbsp;</TD>
+                        <TD VALIGN="top"><P>&nbsp; </P></TD>
+                    </TR>
+                    <TR>
+                        <TD VALIGN="middle">&nbsp;</TD>
+                        <TD VALIGN="top">&nbsp;</TD>
+                    </TR>
 
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-</script>
-<script type="text/javascript">
-_uacct = "UA-303243-2";
-urchinTracker();
-</script>
+                </TABLE>
+                <H1>&nbsp;</H1>
+                <!-- InstanceEndEditable -->
+             <!-- end #Content --></DIV>
+           <DIV ID="contentFooter" CLASS="clearfloat"><!-- end #ContentFooter --></DIV>
+        <!-- end #mainWrapper --></DIV>
+        
 
-
-</body>
-</html>
+        <DIV ID="footer">
+        <?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/footer.php'); ?>
+        </DIV><!-- end #footer -->
+    </DIV><!-- end #container -->
+</BODY>
+<!-- InstanceEnd --></HTML>
