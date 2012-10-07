@@ -57,6 +57,13 @@ my $html = <<"EOH";
 .sutra {
     margin-left: 8mm;
     margin-top: 8mm;
+    font-size: 16pt;
+    font-family: Times;
+}
+.footnote {
+    margin-top: 1in;
+    font-size: 13pt;
+    font-family: Times;
 }
 </style>
 </head>
@@ -64,7 +71,7 @@ my $html = <<"EOH";
 <div class=sutra>
 $sutra
 </div>
-<div style="margin-top: 10mm;">
+<div class=footnote>
 To unsubscribe and for other sutra related activities<br>
 click here: <a href=http://www.mountmadonna.org/sutra>www.mountmadonna.org/sutra</a>.
 </div>
@@ -77,26 +84,38 @@ my @addrs = <$addrs>;
 close $addrs;
 chomp @addrs;
 
+#@addrs = ('jon@logicalpoetry.com');
+
 my $ms = Mail::Sender->new({
-    smtp => "localhost",
-    port => 25,
+    smtp    => 'mail.suecenter.org',
+    port    => 50,
+    auth    => 'LOGIN',
+    authid  => 'test@suecenter.org',
+    authpwd => 'ABCdef108',
 });
 if (! $ms) {
     die "no mail sender";
 }
+ADDR:
 for my $em (@addrs) {
-    $ms->Open({
-        to       => $em,
-        from     => 'Daily Sutra <no_reply@mountmadonna.org>',
-        subject  => "Daily Sutra from Babaji",
-        ctype    => "text/html",
-        encoding => "7bit",
-        # the following didn't seem to work :(
-        # headers  => 'Errors-To: jon@logicalpoetry.com',
-    })
-        or die "no Mail::Sender->Open $Mail::Sender::Error";
-    $ms->SendLineEnc($html);
-    $ms->Close() or warn "error sending to $em: $Mail::Sender::Error";
-        # no die above in case we got a bogus line
-        # in the addresses file...
+    warn "sending to $em";
+    while (1) {
+        $ms->Open({
+            to       => $em,
+            from     => 'Daily Sutra <no_reply@mountmadonna.org>',
+            subject  => "Daily Sutra from Babaji",
+            ctype    => "text/html",
+            encoding => "7bit",
+            # the following didn't seem to work :(
+            # headers  => 'Errors-To: jon@logicalpoetry.com',
+        })
+            or die "no Mail::Sender->Open $Mail::Sender::Error";
+        $ms->SendLineEnc($html);
+        my $ret = $ms->Close();
+        if (ref($ret)) {
+            next ADDR;
+        }
+        warn "error sending to $em: $Mail::Sender::Error - sleeping an hour+";
+        sleep 3610;
+    }
 }
