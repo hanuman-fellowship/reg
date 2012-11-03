@@ -1,14 +1,5 @@
-<script>
-$on_prog_cal
-function check_prog_cal() {
-    var o_id = document.getElementById('org_id').value;
-    var on_pcal = on_prog_cal[o_id];
-    document.getElementById('opc_div').innerHTML = on_pcal? ""
-        : "<th align=right>On Prog Cal</th><td><input type=checkbox></td>";
-}
-</script>
 <h2>Events</h2>
-<form action=/event/$form_action name=form method=post>
+<form action="/event/$form_action" name=form method=post>
 <table cellpadding=3 border=0>
 
 <tr>
@@ -31,13 +22,11 @@ function check_prog_cal() {
 <tr>
 <th align=right><span class="required">*</span> Sponsor</th>
 <td width=100>
-<select id=org_id name=organization_id onchange="check_prog_cal()">
+<select name=organization_id>
 $sponsor_opts
 </select>
 </td>
 </tr>
-
-<tr id=opc_div></tr>
 
 <tr>
 <th align=right>Max</th>
@@ -51,7 +40,4 @@ $sponsor_opts
 
 </table>
 </form>
-<script type="text/javascript">
-document.form.name.focus();
-check_prog_cal();
-</script>
+<script type="text/javascript">document.form.name.focus();</script>
