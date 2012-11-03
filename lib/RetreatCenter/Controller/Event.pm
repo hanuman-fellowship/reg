@@ -64,6 +64,7 @@ sub create : Local {
     }
     stash($c,
         sponsor_opts => $sponsor_opts,
+        on_prog_cal  => on_prog_cal_hash($c),
         form_action  => "create_do",
         template     => "event/create_edit.tt2",
     );
@@ -255,6 +256,20 @@ sub listpat : Local {
     );
 }
 
+sub on_prog_cal_hash {
+    my ($c) = @_;
+    my $on_prog_cal = "var on_prog_cal = new Object();\n";
+    for my $o (model($c, 'Organization')->search()) {
+        $on_prog_cal .= "on_prog_cal["
+                     .  $o->id
+                     .  "] = "
+                     .  ((defined $o->on_prog_cal && $o->on_prog_cal eq 'yes')?
+                            1: 0)
+                     . ";\n";
+    }
+    return $on_prog_cal;
+}
+
 sub update : Local {
     my ($self, $c, $id) = @_;
 
@@ -275,6 +290,7 @@ sub update : Local {
     stash($c,
         event        => $e,
         sponsor_opts => $sponsor_opts,
+        on_prog_cal  => on_prog_cal_hash($c),
         form_action  => "update_do/$id",
         template     => "event/create_edit.tt2",
     );

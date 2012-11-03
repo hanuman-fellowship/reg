@@ -498,22 +498,47 @@ sub fee_table {
     my $cols  = ($extradays)? 3: 2;
     my $PR    = $self->PR();
     my $tent  = $self->name() =~ m{tnt}i;
+    my $dncc  = $self->do_not_compute_costs();
+    my $tuition = $self->tuition();
 
+    # I had trouble getting the proper alignment of various
+    # table elements.  When I opened the gen_files/*.html file
+    # in Safari it showed proper alignment when I used the
+    # align property of the <td> or <th>.   But there was
+    # some interaction with the other style sheets that were loaded.
+    # So I tried forcing a style on each <td> and <th>.
+    # Seems to work so I celebrate.
+    #
     my $fee_table = <<EOH;
 <p>
 <table>
 EOH
-    $fee_table .= <<EOH unless $PR;
+    if ($dncc) {
+        $fee_table .= <<"EOH";
+<tr><th colspan=$cols style="text-align: center">
+TUITION \$$tuition<br>
+plus<br>
+MEALS and LODGING FEES:<br>
+<br>
+Note that because housing availability may vary for the duration<br>
+of this program per-day fees are shown below.<br>
+<br>
+</th></tr>
+EOH
+    }
+    elsif (! $PR) {
+        $fee_table .= <<"EOH";
 <tr><th colspan=$cols>$string{heading}</th></tr>
 <tr><td colspan=$cols>&nbsp;</td></tr>
 EOH
-    $fee_table .= "<tr><th align=left valign=bottom>$string{typehdr}</th>";
+    }
+    $fee_table .= "<tr><th style='text-align: left' valign=bottom>$string{typehdr}</th>";
     if ($extradays) {
         my $plural = ($ndays > 1)? "s": "";
-        $fee_table .= "<th align=right width=70>$ndays Day$plural</th>".
-                      "<th align=right width=70>$fulldays Days</th></tr>\n";
+        $fee_table .= "<th style='text-align: right' width=70>$ndays Day$plural</th>".
+                      "<th style='text-align: right' width=70>$fulldays Days</th></tr>\n";
     } else {
-        $fee_table .= "<th align=right>$string{costhdr}</th></tr>\n";
+        $fee_table .= "<th style='text-align: right'>$string{costhdr}</th></tr>\n";
     }
     # the hard coded column names below - another way?
     # somehow get them from HouseCost.pm???
@@ -531,13 +556,13 @@ EOH
                                         # ok for PR's - we don't
                                         # know what month...
         next if $PR and ($t eq 'triple' || $t eq 'dormitory');
-        my $cost = $PR? $housecost->$t()
-                  :     $self->fees(0, $t);
+        my $cost = $dncc || $PR? $housecost->$t()
+                  :              $self->fees(0, $t);
         next unless $cost;        # this type of housing is not offered at all.
         $fee_table .= "<tr><td>" . $string{"long_$t"} . "</td>";
-        $fee_table .= "<td align=right>$cost</td>\n";
+        $fee_table .= "<td style='text-align: right'>$cost</td>\n";
         if ($extradays) {
-            $fee_table .= "<td align=right>" .
+            $fee_table .= "<td style='text-align: right'>" .
              $self->fees(1, $t) .
              "</td>\n";
         }

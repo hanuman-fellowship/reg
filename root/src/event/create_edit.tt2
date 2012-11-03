@@ -1,43 +1,57 @@
+<script>
+$on_prog_cal
+function check_prog_cal() {
+    var o_id = document.getElementById('org_id').value;
+    var on_pcal = on_prog_cal[o_id];
+    document.getElementById('opc_div').innerHTML = on_pcal? ""
+        : "<th align=right>On Prog Cal</th><td><input type=checkbox></td>";
+}
+</script>
 <h2>Events</h2>
-<form action=[% "/event/" _ form_action %] name=form method=post>
+<form action=/event/$form_action name=form method=post>
 <table cellpadding=3 border=0>
 
 <tr>
 <th align=right><span class="required">*</span> Name</th>
-<td colspan=3><input type=text name=name value="[% event.name %]" size=40></td>
+<td colspan=3><input type=text name=name value="$event.name" size=40></td>
 </tr>
 
 <tr>
 <th align=right><span class="required">*</span> From</th>
-<td width=100><input type=text name=sdate value="[% event.sdate_obj.format("%D") %]" size=10></td>
+<td width=100><input type=text name=sdate value='${event.sdate_obj.format("%D")}' size=10></td>
 <th align=right width=50><span class="required">*</span> To</th>
-<td><input type=text name=edate value="[% event.edate_obj.format("%D") %]" size=10></td>
+<td><input type=text name=edate value='${event.edate_obj.format("%D")}' size=10></td>
 </tr>
 
 <tr>
 <th align=right>Description</th>
-<td colspan=3><input type=text name=descr value="[% event.descr %]" size=60></td>
+<td colspan=3><input type=text name=descr value="$event.descr" size=60></td>
 </tr>
 
 <tr>
 <th align=right><span class="required">*</span> Sponsor</th>
 <td width=100>
-<select name=organization_id>
-[% sponsor_opts %]
+<select id=org_id name=organization_id onchange="check_prog_cal()">
+$sponsor_opts
 </select>
 </td>
 </tr>
 
+<tr id=opc_div></tr>
+
 <tr>
 <th align=right>Max</th>
-<td width=100><input type=text name=max value="[% event.max %]" size=3></td>
+<td width=100><input type=text name=max value="$event.max" size=3></td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
-<td width=100><input type=submit value="Submit"></td>
+<td width=100><input id=sub type=submit value="Submit"></td>
 </tr>
 
 </table>
 </form>
-<script type="text/javascript">document.form.name.focus();</script>
+<script type="text/javascript">
+document.form.name.focus();
+check_prog_cal();
+</script>
