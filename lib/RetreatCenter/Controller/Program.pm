@@ -1213,6 +1213,9 @@ sub publish : Local {
     #
     # get the exceptions
     #
+    %except = ();       # clear any existing ones
+                    # we may have deleted an exception
+                    # between publishings ...
     for my $e (model($c, 'Exception')->all()) {
         $except{$e->prog_id}{$e->tag} = expand($e->value);
     }

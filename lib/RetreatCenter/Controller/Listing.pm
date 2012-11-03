@@ -634,6 +634,7 @@ EOL
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
+            'program.category_id'  => 1,    # must be 'normal' program
             "summary.food_service" => { '!=' => '' },
         },
         {
