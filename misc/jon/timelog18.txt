@@ -1,0 +1,25 @@
+Sep 9 1:30-2:00
+    replying to Barnaby's email re XL programs
+    master calendar issues
+Sep 10 9:00-10:00
+    further tweaks for the event calendar - MMI Diploma courses
+Oct 16 10:00-10:45
+    registering someone in a past program so a payment can be entered
+Oct 25 1:00-1:30
+    online registration for an MMI program stand alone course
+Oct 31 2:00-2:30
+    figuring out why publishing failed - adya vs ogs_template
+    for a program that is not linked.
+Nov 2 11:00-11:20
+    responding to Jayanti re registration with kid
+    responding to Jamal re do_not_compute_costs
+Nov 3 10:50-12:30
+    working on Jamal's request
+    then Amita's request re the meal list - did I do this already?
+Nov 12 11:00-11:30
+    resolving meeting space/dorm glitch
+Nov 14 4:30-9:00
+    key card note in late notice
+    help for spreadsheet upload
+    kids count in meal list
+    affiliation merge
