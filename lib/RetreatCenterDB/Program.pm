@@ -561,9 +561,9 @@ EOH
                   :              $self->fees(0, $t);
         next unless $cost;        # this type of housing is not offered at all.
         $fee_table .= "<tr><td>" . $string{"long_$t"} . "</td>";
-        $fee_table .= "<td style='text-align: right'>$cost</td>\n";
+        $fee_table .= "<td style='text-align: right'>\$$cost</td>\n";
         if ($extradays) {
-            $fee_table .= "<td style='text-align: right'>" .
+            $fee_table .= "<td style='text-align: right'>\$" .
              $self->fees(1, $t) .
              "</td>\n";
         }
