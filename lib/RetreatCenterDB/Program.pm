@@ -463,6 +463,7 @@ sub expand_footnotes {
     my $barnacles = shift;
     my $s = "";
     if ($barnacles) {
+        $s = "<P><STRONG>Credits:</STRONG></P>";
         $s .= "<ul>\n";
         if ($barnacles =~ /\*\*/) {
             $s .= "<li>$string{'**'}\n";
