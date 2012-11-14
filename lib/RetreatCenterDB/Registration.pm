@@ -17,6 +17,7 @@ use Util qw/
     expand
     ptrim
     penny
+    model
 /;
 
 # Load required DBIC stuff
@@ -132,8 +133,25 @@ sub h_type_disp {
 sub room_site {
     my ($self) = @_;
 
-    ($self->h_type =~ m{tent}i)? 'site'
-    :                            'room'
+    ($self->h_type =~ m{tent}ixms)? 'site'
+    :                               'room'
+    ;
+}
+
+# How to pass $c from a template????
+# See Listing->late_notice()
+#
+sub key_card {
+    my ($self, $c) = @_;
+
+    if ($self->h_type =~ m{single|dble|triple}ixms) {
+        return 1;
+    }
+    if ($self->h_type eq 'dormitory') {
+        my ($house) = model($c, 'House')->find($self->house_id);
+        return $house->max() == 4;
+    }
+    return 0;
 }
 
 sub pref1_sh {

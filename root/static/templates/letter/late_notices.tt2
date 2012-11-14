@@ -30,10 +30,14 @@ and hope you had a pleasant journey!!
 </p>
 [% IF reg.house_id %]
 <p>
-You are housed in the [% reg.house.cluster.name %] in [% reg.room_site %] [% reg.house.name_disp %].
-</p>
-<p>
-Your housing location is highlighted on the attached map(s).
+You are housed in the [% reg.house.cluster.name %] in [% reg.room_site %] [% reg.house.name_disp %].<br>
+Your housing location is highlighted on the attached map(s).<br>
+[% IF reg.key_card_needed %]
+We have included your room key-card in this packet.<br>
+<b>
+To use the key-card, insert with blank side up and the arrow forward.
+</b>
+[% END %]
 </p>
 [% ELSIF reg.h_type == 'own_van' %]
 <p>

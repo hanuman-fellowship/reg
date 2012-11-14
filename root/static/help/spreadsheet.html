@@ -1,0 +1,23 @@
+<br>
+The first row of the spreadsheet needs to be a header row.<br>
+These column headers are required to be present (but not necessarily in this order):
+<ul>
+first, last, address, city, state, zip, country, phone, email
+</ul>
+These are optional:
+<ul>
+address2, company
+</ul>
+If a required header is missing the upload will be abandoned with an error message.
+<p>
+The letter case of the header string is ignored so<br>
+<ul>
+First, first, or FIRST
+</ul>
+are all okay.
+<p>
+We only look for a substring that matches so
+<ul>
+Zipcode
+</ul>
+will be accepted for 'zip'.

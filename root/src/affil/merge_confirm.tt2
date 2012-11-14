@@ -1,0 +1,17 @@
+<h2>Affiliation Merge</h2>
+Shall we merge the affiliation '$affil.descrip' into '$into_affil.descrip'???
+<p class=p2>
+This table shows how often '$affil.descrip' is currently used:
+<ul>
+<table cellpadding=5>
+<tr><td>People</td><td align=right>$npeople</td></tr>
+<tr><td>Programs</td><td align=right>$nprograms</td></tr>
+<tr><td>Reports</td><td align=right>$nreports</td></tr>
+</table>
+</ul>
+<a href=/affil/merge_do/$affil.id/$into_affil.id>Yes, do this merge</a>
+&nbsp;
+&nbsp;
+&nbsp;
+&nbsp;
+<a href=/affil/list>No, cancel this merge</a>

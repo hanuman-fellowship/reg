@@ -29,6 +29,7 @@ use DateRange;
 use Global qw/
     %string
 /;
+use Template;
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -483,11 +484,21 @@ sub meal_list : Local {
     my $d;      # to loop through days
     for my $r (@regs) {
 
+        my @ages = $r->kids =~ m{(\d+)}xmsg;
+        my $nkids = @ages;
+        my $np = 1 + $nkids;
+
         if ($details) {
             my $person = $r->person;
-            $info = [ $person->last . ", " . $person->first,
-                      $r->program->name
-                    ];
+            my $name = $person->last . ", " . $person->first;
+            if ($nkids) {
+                $name .= " (with $nkids kid";
+                if ($nkids > 1) {
+                    $name .= 's';
+                }
+                $name .= ")";
+            }
+            $info = [ $name, $r->program->name ];
         }
         my $pr = $r->program();
         if ($pr->rental_id()) {
@@ -516,17 +527,17 @@ sub meal_list : Local {
 
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            add('breakfast') if ($d != $r_start
-                                 || $prog->prog_start() < $breakfast_end)
-                                ;
-            add('lunch')     if $d->day_of_week() != 6
-                                &&
-                                ($d != $r_start
-                                 || $prog->prog_start() < $lunch_end)
-                                &&
-                                (lunch($d) || $PR)
-                                ;
-            add('dinner')    if $d != $r_end || $mmi_prog;
+            add('breakfast', $np) if ($d != $r_start
+                                     || $prog->prog_start() < $breakfast_end)
+                                     ;
+            add('lunch', $np)     if $d->day_of_week() != 6
+                                     &&
+                                     ($d != $r_start
+                                      || $prog->prog_start() < $lunch_end)
+                                     &&
+                                     (lunch($d) || $PR)
+                                     ;
+            add('dinner', $np)    if $d != $r_end || $mmi_prog;
         }
     }
     for my $bl (@blocks) {
@@ -577,7 +588,7 @@ sub meal_list : Local {
             $d8 = $d->as_d8();
             my $n = $r->expected() || $counts[$d - $event_start];
             if ($details) {
-                $info = [ "$n People" , $r_name ];
+                $info = [ "$n people" , $r_name ];
             }
             add('breakfast', $n) if $d != $r_start;
             add('lunch',     $n) if ($d != $r_start || $start_hour < $lunch_end)
@@ -634,7 +645,7 @@ EOL
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
-            'program.category_id'  => 1,    # must be 'normal' program
+            category_id  => 1,    # must be 'normal' program
             "summary.food_service" => { '!=' => '' },
         },
         {
@@ -1023,10 +1034,21 @@ sub late_notices : Local {
                            order_by => [qw/ person.last person.first /],
                        }
                    );
+    #
+    # tricky - don't know how to access the Catalyst context
+    # in a template ... so I do this.
+    # I'd like to do this:
+    # [% IF reg.key_card(Catalyst) %] ...
+    #
+    for my $r (@late_arr) {
+        $r->{key_card_needed} = $r->key_card($c);
+    }
+    # For some reason I was not able to specify INTERPOLATE => 1.
+    # Why?   I can elsewhere - like in Registration.pm.
     my $tt = Template->new({
-        INCLUDE_PATH => "root/static/templates/letter",
+        INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
-    });
+    }) or die Template->error;
     my $html;
     $tt->process(
         "late_notices.tt2",             # template
@@ -1894,6 +1916,13 @@ sub upload_yj_sheet_do : Local {
     my @cur_affils = grep { s/^aff(\d+)/$1/ }
                      $c->request->param;
     my $sname = $c->request->upload('spreadsheet');
+    if (! $sname) {
+        error($c,
+            'Cannot load the spreadsheet.',
+            'gen_error.tt2',
+        );
+        return;
+    }
     my $content = $sname->slurp();
     my $parser   = Spreadsheet::ParseExcel->new();
     my $workbook = $parser->parse(\$content);

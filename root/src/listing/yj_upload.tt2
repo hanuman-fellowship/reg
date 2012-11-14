@@ -1,10 +1,27 @@
+<script type="text/javascript">
+var newwin;
+function popup(url, height) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=' + height + ',width=550, scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
 <div style="margin-left: .5in; margin-top: .5in">
-<h2>Uploading a Yoga Journal Spreadsheet</h2>
+<h2>Uploading a Spreadsheet of People
+<span style="font-size: 10pt; margin-left: 1.5in">
+<a href="javascript:popup('/static/help/spreadsheet.html', 350);">Help</a>
+</span>
+</h2>
 <form action="[% Catalyst.uri_for('/listing/upload_yj_sheet_do') %]"
       enctype="multipart/form-data"
       method=POST>
 <h3>Spreadsheet to Upload <input type=file name=spreadsheet>
-<input type=submit value="Submit">
+<input type=submit id=sub value="Submit">
 </h3>
 <p class=p2>
 <h3>Affiliations to Apply to Each Person Uploaded:</h3>

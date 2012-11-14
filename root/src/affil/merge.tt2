@@ -1,0 +1,11 @@
+<h2>Affiliation Merge</h2>
+Merging affiliation '$affil.descrip' into which other?<br>
+Please choose just one.
+<p class=p2>
+<form action=/affil/merge_confirm/$affil.id>
+<input type=submit id=sub value="Submit">
+<p class=p2>
+<table>
+$affil_table
+</table>
+</form>

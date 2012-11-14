@@ -1392,8 +1392,8 @@ sub _compute {
                  :                          $housecost->$h_type();
                                             # column name is correct, yes?
     my ($tot_h_cost, $what);
-	if ($housecost->type() eq "Per Day") {
-		$tot_h_cost = $prog_days*$h_cost;
+    if ($housecost->type() eq "Per Day") {
+        $tot_h_cost = $prog_days*$h_cost;
         my $plural = ($prog_days == 1)? "": "s";
         $what = "$prog_days day$plural Lodging at \$$h_cost per day";
     }
@@ -1501,7 +1501,7 @@ sub _compute {
     #
     # discounts - MMC and MMI
     #
-	if ($auto
+    if ($auto
         && $pr->school() == 0      # not MMI
         && !$life_free
         && !$lead_assist
@@ -1526,7 +1526,7 @@ sub _compute {
         #                    ." programs >= $string{disc2days} days",
         #    });
         #}
-	}
+    }
     #
     # Personal Retreat discounts during special period
     #
@@ -1586,7 +1586,7 @@ sub _compute {
     # the least for the balance.  Are we being anally precise
     # or what??
     #
-	if ($auto && (my $ntaken = $reg->nights_taken())) {
+    if ($auto && (my $ntaken = $reg->nights_taken())) {
 
         my @boxes = (
             [ $prog_days,  $h_cost     ],

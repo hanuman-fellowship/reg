@@ -8,6 +8,9 @@ use Util qw/
     empty
     model
     main_mmi_affil
+    stash
+    affil_table
+    error
 /;
 
 sub index : Private {
@@ -19,18 +22,21 @@ sub index : Private {
 sub list : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{affil} = [ model($c, 'Affil')->search(
-        undef,
-        { order_by => 'descrip' }
-    ) ];
-    $c->stash->{ok_del_edit} = sub {
-        my $descrip = shift;
-        return ! ($descrip =~ m{\b(alert|guru)\b}ixms
-                  ||
-                  main_mmi_affil($descrip)
-                 );
-    };
-    $c->stash->{template} = "affil/list.tt2";
+    stash($c,
+        affil => [ model($c, 'Affil')->search(
+                       undef,
+                       { order_by => 'descrip' }
+                   )
+        ],
+        ok_del_edit => sub {
+            my $descrip = shift;
+            return ! ($descrip =~ m{\b(alert|guru)\b}ixms
+                   ||
+                   main_mmi_affil($descrip)
+                   );
+        },
+        template => "affil/list.tt2",
+    );
 }
 
 sub delete : Local {
@@ -131,11 +137,81 @@ sub create_do : Local {
     $c->response->redirect($c->uri_for('/affil/list'));
 }
 
+sub merge : Local {
+    my ($self, $c, $id) = @_;
+
+    stash($c,
+        affil       => model($c, 'Affil')->find($id),
+        affil_table => affil_table($c),
+        template    => 'affil/merge.tt2',
+    );
+}
+sub merge_confirm : Local {
+    my ($self, $c, $id) = @_;
+
+    my @cur_affils = grep { s/^aff(\d+)/$1/ }
+                     $c->request->param;
+    if (@cur_affils == 0) {
+        error($c,
+            'You did not choose an affiliation to merge into!',
+            'gen_error.tt2',
+        );
+        return;
+    }
+    if (@cur_affils > 1) {
+        error($c,
+            'You chose more than one!',
+            'gen_error.tt2',
+        );
+        return;
+    }
+    if ($cur_affils[0] == $id) {
+        error($c,
+            'It makes no sense to merge an affiliation into itself!',
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $affil = model($c, 'Affil')->find($id);
+    stash($c,
+        affil      => $affil,
+        into_affil => model($c, 'Affil')->find($cur_affils[0]),
+        npeople    => scalar($affil->people),
+        nprograms  => scalar($affil->programs),
+        nreports   => scalar($affil->reports),
+        template    => 'affil/merge_confirm.tt2',
+    );
+}
+sub merge_do : Local {
+    my ($self, $c, $id, $into_id) = @_;
+
+    model($c, 'AffilPerson')->search({
+        a_id => $id,
+    })->update({
+        a_id => $into_id,
+    });
+    model($c, 'AffilProgram')->search({
+        a_id => $id,
+    })->update({
+        a_id => $into_id,
+    });
+    model($c, 'AffilReport')->search({
+        affiliation_id => $id,
+    })->update({
+        affiliation_id => $into_id,
+    });
+    model($c, 'Affil')->find($id)->delete();
+
+    $c->forward('list');
+}
+
 sub access_denied : Private {
     my ($self, $c) = @_;
 
-    $c->stash->{mess}  = "Authorization denied!";
-    $c->stash->{template} = "gen_error.tt2";
+    stash($c,
+        mess     => "Authorization denied!",
+        template => "gen_error.tt2",
+    );
 }
 
 1;
