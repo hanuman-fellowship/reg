@@ -217,15 +217,15 @@ for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
 <input type=radio name=house2 value='$nk' $select2>
 </td>
 
-<td>$housing_name{$nk}</td>
+<td>\$$housing_name{$nk}</td>
 EOH
     if (! $stash{do_not_compute_costs}) {
-        $housing_fees .= "<td align=right width=50>$data->{$k}</td>\n";
+        $housing_fees .= "<td align=right width=50>\$$data->{$k}</td>\n";
         if ($stash{basicfull}) {
-            $housing_fees .= "<td align=right width=70>$data->{$full}</td>\n";
+            $housing_fees .= "<td align=right width=70>\$$data->{$full}</td>\n";
         }
         elsif ($data->{next_hc}) {
-            $housing_fees .= "<td align=right width=70>$data->{$next}</td>\n";
+            $housing_fees .= "<td align=right width=70>\$$data->{$next}</td>\n";
         }
     }
     $housing_fees .= "</tr>\n";
