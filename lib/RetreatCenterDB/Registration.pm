@@ -149,7 +149,10 @@ sub key_card {
     }
     if ($self->h_type eq 'dormitory') {
         my ($house) = model($c, 'House')->find($self->house_id);
-        return $house->max() == 4;
+        return $house->max() == 4 || $house->name() =~ m{ \A SH[ ]\d }xms;
+                                            # not SH MAIN
+        # we couldn't just say max == 7 because KKWC has room for 7 beds
+        # and it doesn't have a key card.
     }
     return 0;
 }

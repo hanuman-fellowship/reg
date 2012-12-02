@@ -183,24 +183,50 @@ sub merge_confirm : Local {
     );
 }
 sub merge_do : Local {
-    my ($self, $c, $id, $into_id) = @_;
+    my ($self, $c, $from_id, $into_id) = @_;
 
-    model($c, 'AffilPerson')->search({
-        a_id => $id,
-    })->update({
-        a_id => $into_id,
-    });
-    model($c, 'AffilProgram')->search({
-        a_id => $id,
-    })->update({
-        a_id => $into_id,
-    });
-    model($c, 'AffilReport')->search({
-        affiliation_id => $id,
-    })->update({
-        affiliation_id => $into_id,
-    });
-    model($c, 'Affil')->find($id)->delete();
+    for my $model ('AffilPerson', 'AffilProgram') {
+        for my $ap (model($c, $model)->search({
+                       a_id => $from_id,
+                    })
+        ) {
+            # the list vs scalar context matters for when 
+            # you are doing a search...  It returns different
+            # things.
+            #
+            my @ap = model($c, $model)->search({
+                         a_id => $into_id,
+                         p_id => $ap->p_id,
+                     }); 
+            if (@ap) {
+                $ap->delete();
+            }
+            else {
+                $ap->update({
+                    a_id => $into_id,
+                });
+            }
+        }
+    }
+    # Unfortunately the report table has affiliation_id not a_id so ...
+    for my $ar (model($c, 'AffilReport')->search({
+                   a_id => $from_id,
+                })
+    ) {
+        my @ar = model($c, 'AffilReport')->search({
+                     affiliation_id => $into_id,
+                     report_id      => $ar->report_id,
+                 }); 
+        if (@ar) {
+            $ar->delete();
+        }
+        else {
+            $ar->update({
+                affiliation_id => $into_id,
+            });
+        }
+    }
+    model($c, 'Affil')->find($from_id)->delete();
 
     $c->forward('list');
 }

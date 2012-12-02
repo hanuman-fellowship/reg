@@ -18,7 +18,7 @@ Nov 3 10:50-12:30
     then Amita's request re the meal list - did I do this already?
 Nov 12 11:00-11:30
     resolving meeting space/dorm glitch
-Nov 14 4:30-9:00, 10:00-11:30, 2:45-
+Nov 14 4:30-9:00, 10:00-11:30, 2:45-4:15
     key card note in late notice
     help for spreadsheet upload
     kids count in meal list
@@ -27,3 +27,10 @@ Nov 14 4:30-9:00, 10:00-11:30, 2:45-
     shantam, wilson demo
 
     jamal's requests
+    no credits => no credit section
+    dollar sign on all costs
+Nov 28 12:00-4:00
+    sitting with Shantam - perl, vmware, ubuntu
+Dec 1 3:00-
+    submitting changes so far
+    ride conf letter update

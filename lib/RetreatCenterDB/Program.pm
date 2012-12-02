@@ -538,7 +538,8 @@ EOH
         my $plural = ($ndays > 1)? "s": "";
         $fee_table .= "<th style='text-align: right' width=70>$ndays Day$plural</th>".
                       "<th style='text-align: right' width=70>$fulldays Days</th></tr>\n";
-    } else {
+    }
+    else {
         $fee_table .= "<th style='text-align: right'>$string{costhdr}</th></tr>\n";
     }
     # the hard coded column names below - another way?

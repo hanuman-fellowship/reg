@@ -44,4 +44,11 @@ sub name {
     return $self->first() . ' ' . $self->last();
 }
 
+sub numbers {
+    my ($self) = @_;
+    return ($self->office && $self->cell)? "s are"
+          :                                " is"
+          ;
+}
+
 1;

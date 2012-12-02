@@ -217,4 +217,16 @@ sub carpool_telephone {
     return "";
 }
 
+sub numbers {
+    my ($self) = @_;
+
+    my $n = 0;
+    ++$n if $self->tel_home;
+    ++$n if $self->tel_work;
+    ++$n if $self->tel_cell;
+    return $n == 1? "this is the number"
+          :         "these are the numbers"
+          ;
+}
+
 1;

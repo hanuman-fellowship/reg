@@ -1,6 +1,17 @@
 [% rider = ride.rider %]
 [% driver = ride.driver %]
 [% snail_address %]
+<style>
+body {
+    width: 600px;
+}
+</style>
+** Please review the following, and contact the transportation coordinator as
+soon as possible if any of the information is in error.
+We recommend that you print this letter and carry it with you on
+the day you travel. If there are changes or delays on the day you travel,
+you must immediately notify your driver directly.
+<p>
 Dear $rider.first,
 <p>
 This letter confirms that you have a ride scheduled
@@ -9,8 +20,7 @@ from Mount Madonna Center to the $airport airport.
 [% ELSE %]
 from the $airport airport to Mount Madonna Center.
 [% END %]
-<br>
-Here are the details of your flight:
+Here are the details of your transport:
 <p>
 <table cellpadding=3>
 <tr>
@@ -20,12 +30,13 @@ Here are the details of your flight:
 <th align=right>Flight #</th><td>$ride.flight_num</td></tr>
 <th align=right>Time</th><td>${ride.flight_time_obj.format('ampm')}</td></tr>
 </table>
-<p>
-You will be picked up at ${ride.pickup_time_obj.format('ampm')}.
-<p>
+<p style="font-weight: bold; font-size: 15pt">
+You will be picked up at ${ride.pickup_time_obj.format('ampm')},
+curbside, at the arrivals area for ${ride.carrier}.
+</p>
 Your driver will be $driver.first ${driver.last}.
-[% IF has_email %]They have been Cc'ed on this letter.[% END %]
-Their phone numbers are:
+[% IF has_email %]They have been copied on this letter.[% END %]
+Their phone number${driver.numbers}:
 <p>
 <table cellpadding=3>
 [% IF driver.office %]<tr><th align=right>Office</th><td>$driver.office</td></tr>[% END %]
@@ -33,7 +44,8 @@ Their phone numbers are:
 </table>
 <p>
 If the driver needs to contact you by telephone
-these are the numbers we have for you:
+$rider.numbers
+we have for you:
 <p>
 <table cellpadding=3>
 [% IF rider.tel_home %]<tr><th align=right>Home</th><td>$rider.tel_home</td></tr>[% END %]
@@ -41,8 +53,10 @@ these are the numbers we have for you:
 [% IF rider.tel_cell %]<tr><th align=right>Cell</th><td>$rider.tel_cell</td></tr>[% END %]
 </table>
 <p>
-This ride will cost \$$ride.cost and will be charged to your credit card.<br>
-It may cost less if it can be arranged for you to share the ride with others.
+This ride will cost \$$ride.cost and will be charged to your credit card
+after the transport is completed.
+<p>
+Keep this letter as a record of your payment.
 <p>
 Cancellation of this reservation will result in a \$25
 charge to your credit card.
