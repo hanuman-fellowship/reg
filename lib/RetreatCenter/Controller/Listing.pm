@@ -1034,15 +1034,6 @@ sub late_notices : Local {
                            order_by => [qw/ person.last person.first /],
                        }
                    );
-    #
-    # tricky - don't know how to access the Catalyst context
-    # in a template ... so I do this.
-    # I'd like to do this:
-    # [% IF reg.key_card(Catalyst) %] ...
-    #
-    for my $r (@late_arr) {
-        $r->{key_card_needed} = $r->key_card($c);
-    }
     # For some reason I was not able to specify INTERPOLATE => 1.
     # Why?   I can elsewhere - like in Registration.pm.
     my $tt = Template->new({
