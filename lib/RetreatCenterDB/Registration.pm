@@ -138,25 +138,6 @@ sub room_site {
     ;
 }
 
-# How to pass $c from a template????
-# See Listing->late_notice()
-#
-sub key_card {
-    my ($self, $c) = @_;
-
-    if ($self->h_type =~ m{single|dble|triple}ixms) {
-        return 1;
-    }
-    if ($self->h_type eq 'dormitory') {
-        my ($house) = model($c, 'House')->find($self->house_id);
-        return $house->max() == 4 || $house->name() =~ m{ \A SH[ ]\d }xms;
-                                            # not SH MAIN
-        # we couldn't just say max == 7 because KKWC has room for 7 beds
-        # and it doesn't have a key card.
-    }
-    return 0;
-}
-
 sub pref1_sh {
     my ($self) = @_;
     my $pref = $self->pref1();
