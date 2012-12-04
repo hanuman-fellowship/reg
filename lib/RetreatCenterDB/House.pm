@@ -24,6 +24,7 @@ __PACKAGE__->add_columns(qw/
     resident
     cat_abode
     sq_foot
+    key_card
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 

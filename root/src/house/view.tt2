@@ -27,36 +27,29 @@
 <tr>
 <th align=right>Bath</th>
 <td>$house.bath</td>
-</tr>
-
-<tr>
-<th align=right>Tent</th>
-<td>$house.tent</td>
-</tr>
-
-<tr>
-<th align=right>Center Tent</th>
-<td>$house.center</td>
-</tr>
-
-<tr>
-<th align=right>Cabin</th>
-<td>$house.cabin</td>
-</tr>
-
-<tr>
 <th align=right>Resident</th>
 <td>$house.resident</td>
 </tr>
 
 <tr>
+<th align=right>Tent</th>
+<td>$house.tent</td>
 <th align=right>Cat Abode</th>
 <td>$house.cat_abode</td>
 </tr>
 
 <tr>
-<th align=right>Square Footage</th>
-<td>$house.sq_foot</td>
+<th align=right>Center Tent</th>
+<td>$house.center</td>
+<th align=right>Inactive</th>
+<td>$house.inactive</td>
+</tr>
+
+<tr>
+<th align=right>Cabin</th>
+<td>$house.cabin</td>
+<th align=right>Key Card</th>
+<td>$house.key_card</td>
 </tr>
 
 <tr>
@@ -75,6 +68,13 @@
 </tr>
 
 <tr>
+<th align=right>Square Footage</th>
+<td>$house.sq_foot</td>
+</tr>
+
+<tr><td colspan=4><hr></td></tr>
+
+<tr>
 <th align=right>X Coord</th>
 <td>$house.x</td>
 </tr>
@@ -87,11 +87,6 @@
 <tr>
 <th align=right>Display Code</th>
 <td>$house.disp_code</td>
-</tr>
-
-<tr>
-<th align=right>Inactive</th>
-<td>$house.inactive</td>
 </tr>
 
 <tr>

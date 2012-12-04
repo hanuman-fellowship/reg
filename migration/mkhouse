@@ -38,7 +38,8 @@ CREATE TABLE house (
     comment text,
     resident text,
     cat_abode text,
-    sq_foot text
+    sq_foot text,
+    key_card text
 );
 INSERT INTO house VALUES(1,'101',2,'','','','',18,20,75,1,1,'','A', '', '', 100);
 INSERT INTO house VALUES(2,'102B',2,'yes','','','',10,20,30,1,2,'yes','A5', '', '', 100);

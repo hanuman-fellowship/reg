@@ -72,8 +72,8 @@ my $html = <<"EOH";
 $sutra
 </div>
 <div class=footnote>
-To unsubscribe and for other sutra related activities<br>
-click here: <a href=http://www.mountmadonna.org/sutra>www.mountmadonna.org/sutra</a>.
+To unsubscribe and for other sutra related activities click here:<br>
+<a href=http://www.mountmadonna.org/sutra>www.mountmadonna.org/sutra</a>.
 </div>
 </body>
 </html>

@@ -30,9 +30,9 @@ and hope you had a pleasant journey!!
 </p>
 [% IF reg.house_id %]
 <p>
-You are housed in the [% reg.house.cluster.name %] in [% reg.room_site %] [% reg.house.name_disp %].<br>
+You are housed in the <b>[% reg.house.cluster.name %]</b> in [% reg.room_site %] <b>[% reg.house.name_disp %]</b>.<br>
 Your housing location is highlighted on the attached map(s).<br>
-[% IF reg.key_card_needed %]
+[% IF reg.house.key_card %]
 We have included your room key-card in this packet.<br>
 <b>
 To use the key-card, insert with blank side up and the arrow forward.
@@ -71,7 +71,7 @@ Check-out time is 1:00 pm on the day of your departure.  Please be sure to vacat
 course is available upon request.  Please come to the Program Office
 with special food needs, rather than to the kitchen staff.
 And note: we are a strictly vegetarian community (no meat, fish, poultry,
-eggs to be consumed on the property).</p>
+or eggs are to be consumed on the property).</p>
 <p>
 <b>PARKING:</b> Only as marked &ndash; not right in front of
 the Community Building.

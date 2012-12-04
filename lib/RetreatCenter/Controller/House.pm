@@ -104,6 +104,7 @@ sub _get_data {
         resident
         cat_abode
         inactive
+        key_card
     /) {
         $hash{$f} = "" unless exists $hash{$f};
     }
@@ -140,21 +141,25 @@ sub _get_data {
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $h = $c->stash->{house} = model($c, 'House')->find($id);
-    $c->stash->{bath}      = $h->bath()     ? "checked": "";
-    $c->stash->{tent}      = $h->tent()     ? "checked": "";
-    $c->stash->{center}    = $h->center()   ? "checked": "";
-    $c->stash->{cabin}     = $h->cabin()    ? "checked": "";
-    $c->stash->{resident}  = $h->resident() ? "checked": "";
-    $c->stash->{cat_abode} = $h->cat_abode()? "checked": "";
-    $c->stash->{inactive}  = $h->inactive() ? "checked": "";
-    $c->stash->{cluster_opts} =
-        [ model($c, 'Cluster')->search(
-            undef,
-            { order_by => 'name' },
-        ) ];
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "house/create_edit.tt2";
+    my $h = model($c, 'House')->find($id);
+    stash($c,
+        house     => $h,
+        bath      => $h->bath()     ? "checked": "",
+        tent      => $h->tent()     ? "checked": "",
+        center    => $h->center()   ? "checked": "",
+        cabin     => $h->cabin()    ? "checked": "",
+        resident  => $h->resident() ? "checked": "",
+        cat_abode => $h->cat_abode()? "checked": "",
+        inactive  => $h->inactive() ? "checked": "",
+        key_card  => $h->key_card() ? "checked": "",
+        cluster_opts => [ model($c, 'Cluster')->search(
+                              undef,
+                              { order_by => 'name' },
+                          )
+                        ],
+        form_action => "update_do/$id",
+        template    => "house/create_edit.tt2",
+    );
 }
 
 #

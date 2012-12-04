@@ -5,7 +5,7 @@
 
 <tr>
 <th align=right>Name</th>
-<td><input type=text name=name value="$house.name" size=20></td>
+<td colspan=2><input type=text name=name value="$house.name" size=20></td>
 </tr>
 
 <tr>
@@ -13,17 +13,34 @@
 <td><input type=text name=max value="$house.max" size=2></td>
 </tr>
 
-<tr><td></td><td><input type=checkbox name=bath value='yes' $bath> Bath</td></tr>
-<tr><td></td><td><input type=checkbox name=tent value='yes' $tent> Tent</td></tr>
-<tr><td></td><td><input type=checkbox name=center value='yes' $center> Center Tent</td></tr>
-<tr><td></td><td><input type=checkbox name=cabin value='yes' $cabin> Cabin</td></tr>
-<tr><td></td><td><input type=checkbox name=resident value='yes' $resident> Resident</td></tr>
-<tr><td></td><td><input type=checkbox name=cat_abode value='yes' $cat_abode> Cat Abode</td></tr>
+<tr>
+<td></td>
+<td colspan=2>
+<table cellpadding=5 border=0>
+<tr><td>
+<tr>
+<td><input type=checkbox name=bath value='yes' $bath> Bath</td>
+<td><input type=checkbox name=resident value='yes' $resident> Resident</td>
+</tr>
 
 <tr>
-<th align=right>Square Footage</th>
-<td><input type=text name=sq_foot value='$house.sq_foot' size=3>
+<td><input type=checkbox name=tent value='yes' $tent> Tent</td>
+<td><input type=checkbox name=cat_abode value='yes' $cat_abode> Cat Abode</td>
 </tr>
+
+<tr>
+<td><input type=checkbox name=center value='yes' $center> Center Tent</td>
+<td><input type=checkbox name=inactive value='yes' $inactive> Inactive</td>
+</tr>
+
+<tr>
+<td><input type=checkbox name=cabin value='yes' $cabin> Cabin</td>
+<td><input type=checkbox name=key_card value='yes' $key_card> Key Card</td>
+</tr>
+
+</table>
+</td></tr>
+
 
 <tr>
 <th align=right>Priority</th>
@@ -32,7 +49,7 @@
 
 <tr>
 <th align=right>Cluster</th>
-<td>
+<td colspan=2>
 <select name=cluster_id %]>
 [% FOR cl IN cluster_opts %]
 <option value=$cl.id[% IF cl.id == house.cluster_id %] selected[% END %]>$cl.name</option>
@@ -47,6 +64,14 @@
 </tr>
 
 <tr>
+<th align=right>Square Footage</th>
+<td><input type=text name=sq_foot value='$house.sq_foot' size=3>
+</tr>
+
+<tr><td colspan=3><hr></td></tr>
+
+
+<tr>
 <th align=right>X Coord</th>
 <td><input type=text name=x value="$house.x" size=4></td>
 </tr>
@@ -58,28 +83,25 @@
 
 <tr>
 <th align=right>Display Code</th>
-<td><input type=text name=disp_code value="$house.disp_code" size=4></td>
+<td><input type=text name=disp_code value="$house.disp_code" size=4>
+</td>
 <td>
 A - above<br>
 B - Below<br>
 L - Left<br>
 R - Right<br>
 t - truncate name
-</tr>
-
-<tr>
-<td></td>
-<td><input type=checkbox name=inactive value='yes' $inactive> Inactive</td>
+</td>
 </tr>
 
 <tr>
 <td align=right>Comment</td>
-<td><input type=text name=comment value="$house.comment" size=40</td>
+<td colspan=2><input type=text name=comment value="$house.comment" size=40</td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<td><input id=sub type=submit value="Submit"></td>
 </tr>
 
 </table>
