@@ -18,5 +18,8 @@ create table ride (
     shuttle integer,
     create_date text,
     create_time text,
-    status text
+    status text,
+    luggage text,
+    intl text default '',
+    customs text default ''
 );

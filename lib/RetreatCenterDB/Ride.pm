@@ -44,6 +44,9 @@ __PACKAGE__->add_columns(qw/
     create_date
     create_time
     status
+    luggage
+    intl
+    customs
 /);
 __PACKAGE__->set_primary_key(q/id/);
 

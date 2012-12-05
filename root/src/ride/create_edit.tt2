@@ -17,8 +17,8 @@ function check(event, fld, n, next_id) {
     return true;
 }
 </script>
-<h2>Ride for [% person.first %] [% person.last %]</h2>
-<form name=form action=/ride/[% form_action %]>
+<h2>Ride for $person.first $person.last</h2>
+<form name=form action=/ride/$form_action>
 <input type=hidden name=fname value=$fname>
 <input type=hidden name=create_date value=$create_date>
 <input type=hidden name=create_time value=$create_time>
@@ -27,24 +27,24 @@ function check(event, fld, n, next_id) {
 
 <tr>
 <th align=right>Status</th>
-<td><input type=text name=status value="[% ride.status %]" size=20>
+<td><input type=text name=status value="$ride.status" size=20>
 </tr>
 
 <tr>
 <th align=right>Pickup Date</th>
-<td><input type=text name=pickup_date value="[% ride.pickup_date_obj.format("%D") %]" size=10>
+<td><input type=text name=pickup_date value="${ride.pickup_date_obj.format("%D")}" size=10>
 </tr>
 
 <tr>
 <th align=right>Pickup Time</th>
-<td><input type=text name=pickup_time value="[% IF ride.pickup_time %][% ride.pickup_time_obj.ampm %][% END %]" size=8></td>
+<td><input type=text name=pickup_time value="[% IF ride.pickup_time %]${ride.pickup_time_obj.ampm}[% END %]" size=8></td>
 </tr>
 
 <tr>
 <th align=right>Driver</th>
 <td>
 <select name=driver_id>
-[% driver_opts %]
+$driver_opts
 </select>
 </td>
 </tr>
@@ -61,8 +61,8 @@ $shuttle_opts
 <tr>
 <th align=right valign=top>Direction</th>
 <td>
-<input type=radio name=from_to value="To MMC"   [% dir_to   %]>To MMC<br>
-<input type=radio name=from_to value="From MMC" [% dir_from %]>From MMC<br>
+<input type=radio name=from_to value="To MMC"   $dir_to>To MMC<br>
+<input type=radio name=from_to value="From MMC" $dir_from>From MMC<br>
 </td>
 </tr>
 
@@ -70,24 +70,40 @@ $shuttle_opts
 <th align=right>Airport</th>
 <td>
 <select name=airport>
-[% airport_opts %]
+$airport_opts
 </select>
 </td>
 </tr>
 
 <tr>
 <th align=right>Carrier</th>
-<td><input type=text name=carrier value="[% carrier %]" size=15></td>
+<td><input type=text name=carrier value="$carrier" size=15></td>
 </tr>
 
 <tr>
 <th align=right>Flight #</th>
-<td><input type=text name=flight_num value="[% ride.flight_num %]" size=5></td>
+<td><input type=text name=flight_num value="$ride.flight_num" size=5></td>
 </tr>
 
 <tr>
 <th align=right>Flight Time</th>
-<td><input type=text name=flight_time value="[% IF ride.flight_time %][% ride.flight_time_obj.ampm %][% END %]" size=8></td>
+<td><input type=text name=flight_time value="[% IF ride.flight_time %]${ride.flight_time_obj.ampm}[% END %]" size=8></td>
+<td><input type=submit id=sub value="Submit"></td>
+</tr>
+
+<tr>
+<th align=right>Luggage</th>
+<td><input type=text name=luggage value="$ride.luggage" size=20></td>
+</tr>
+
+<tr>
+<th align=right>International?</th>
+<td><input type=checkbox name=intl value=yes $check_intl></td>
+</tr>
+
+<tr>
+<th align=right>Customs?</th>
+<td><input type=checkbox name=customs value=yes $check_customs></td>
 </tr>
 
 <tr>
@@ -99,7 +115,7 @@ $shuttle_opts
 <th align=right>Type</th>
 <td>
 <select name=type>
-[% type_opts %]
+$type_opts
 </select>
 </td>
 </tr>
@@ -111,28 +127,28 @@ $shuttle_opts
 <input type=text 
        onkeypress="return check(event, this, 4, "cc_number2");"
        name=cc_number1
-       value="[% person.cc_number1 %]"
+       value="$person.cc_number1"
        size=4
        maxlength=4
 >-<input type=text 
        onkeypress="return check(event, this, 4, "cc_number3");"
        name=cc_number2
        id=cc_number2
-       value="[% person.cc_number2 %]"
+       value="$person.cc_number2"
        size=4
        maxlength=4
 >-<input type=text 
        onkeypress="return check(event, this, 4, "cc_number4");"
        name=cc_number3
        id=cc_number3
-       value="[% person.cc_number3 %]"
+       value="$person.cc_number3"
        size=4
        maxlength=4
 >-<input type=text 
        onkeypress="return check(event, this, 4, "cc_expire");"
        name=cc_number4
        id=cc_number4
-       value="[% person.cc_number4 %]"
+       value="$person.cc_number4"
        size=4
        maxlength=4
 >
@@ -146,7 +162,7 @@ $shuttle_opts
        onkeypress="return check(event, this, 4, "cc_code");"
        name=cc_expire
        id=cc_expire
-       value="[% person.cc_expire %]"
+       value="$person.cc_expire"
        size=4
        maxlength=4
 >
@@ -160,7 +176,7 @@ $shuttle_opts
        onkeypress="return check(event, this, 3, "comment");"
        name=cc_code
        id=cc_code
-       value="[% person.cc_code %]"
+       value="$person.cc_code"
        size=3
        maxlength=3
 >
@@ -171,19 +187,19 @@ $shuttle_opts
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td>
+<td colspan=2>
 <textarea name=comment cols=40 rows=3>
-[% ride.comment %]
+$ride.comment
 </textarea>
 
 <tr>
 <th align=right>Date Paid</th>
-<td><input type=text name=paid_date value ="[% ride.paid_date_obj.format("%D") %]" size=10></td>
+<td><input type=text name=paid_date value ="${ride.paid_date_obj.format("%D")}" size=10></td>
 </tr>
 
 <tr>
 <td></td>
-<td><input type=submit value="Submit"></td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 
 </table>

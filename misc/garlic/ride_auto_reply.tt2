@@ -1,0 +1,60 @@
+<style>
+body {
+    font-size: 14pt;
+    font-family: Georgia, Arial;
+    margin-left: .5in;
+    margin-top: .5in;
+    width: 650px;
+}
+th, td {
+    font-size: 14pt;
+    font-family: Georgia, Arial;
+}
+</style>
+Hello $fname $lname,
+<p>
+We have received your ride request.
+<p>
+Please note that shuttle coordination usually begins about 2 weeks prior to the
+requested transport date (or 4 weeks for larger retreats),
+so you can expect to hear back from our staff within that time frame.
+[% IF late %]
+Since you are making a request for a transport which is
+<span style="color: red">less than a week away</span>,
+our staff will respond to you as soon as possible,
+but please note that we may not be able to accommodate you at this late date.
+[% END %]
+<p>
+Here are the details of your request:
+<p>
+<table cellpadding=5>
+<tr><th align=right>Name</th><td>$fname $lname</td></tr>
+[% IF home %]
+<tr><th align=right>Home Phone</th><td>$home</td></tr>
+[% END %]
+[% IF work %]
+<tr><th align=right>Work Phone</th><td>$work</td></tr>
+[% END %]
+[% IF cell %]
+<tr><th align=right>Cell Phone</th><td>$cell</td></tr>
+[% END %]
+<tr><th align=right>Pickup Date</th><td>$pickup_date</td></tr>
+<tr><th align=right>Direction</th><td>$from_to</td></tr>
+[% IF airport != 'OTH' %]
+<tr><th align=right>Airport</th><td>$airport</td></tr>
+<tr><th align=right>Carrier</th><td>$carrier</td></tr>
+<tr><th align=right>Flight Number</th><td>$flight_num</td></tr>
+<tr><th align=right>Flight Time</th><td>$flight_time</td></tr>
+    [% IF intl %]
+    <tr><th align=right></th><td>This flight is international.</td></tr>
+        [% IF customs %]
+        <tr><th align=right></th><td>You will be clearing customs.</td></tr>
+        [% END %]
+    [% END %]
+[% END %]
+<tr><th align=right>Luggage</th><td>$luggage</td></tr>
+<tr><th align=right valign=top>Comments</th><td>$request</td></tr>
+</table>
+<p>
+Thank you,<br>
+Transportation Coordinator at MMC

@@ -107,8 +107,23 @@
 </tr>
 
 <tr>
-<th align=right>Time</th>
+<th align=right>Flight Time</th>
 <td>[% IF ride.flight_time %]$ride.flight_time_obj[% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Luggage</th>
+<td>$ride.luggage</td>
+</tr>
+
+<tr>
+<th align=right>International?</th>
+<td>$ride.intl</td>
+</tr>
+
+<tr>
+<th align=right>Customs?</th>
+<td>$ride.customs</td>
 </tr>
 
 <tr>

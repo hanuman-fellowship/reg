@@ -317,6 +317,13 @@ sub _get_data {
     my ($c) = @_;
 
     %P = %{ $c->request->params() };
+    # since unchecked boxes are not sent...
+    for my $f (qw/
+        intl
+        customs
+    /) {
+        $P{$f} = "" unless exists $P{$f};
+    }
     @mess = ();
     if (! empty($P{pickup_date})) {
         my $dt = date($P{pickup_date});
@@ -462,6 +469,14 @@ sub update : Local {
                    .  $string{"payment_$t"}
                    .  "\n";
                    ;
+    }
+    for my $w (qw/
+        intl
+        customs
+    /) {
+        stash($c,
+            "check_$w" => ($ride->$w)? "checked": ""
+        );
     }
 
     stash($c,
@@ -1142,11 +1157,14 @@ sub get_online : Local {
         dir_from     => $P{from_to} eq 'From MMC'? "checked": "",
         ride         => {
             pickup_date_obj => date($P{pickup_date}),
-            flight_num  => $P{flight_num},
-            flight_time => $P{flight_time},
+            flight_num      => $P{flight_num},
+            flight_time     => $P{flight_time},
             flight_time_obj => get_time($P{flight_time}),
-            comment     => $P{request},
+            luggage         => $P{luggage},
+            comment         => $P{request},
         },
+        check_intl    => $P{intl}? 'checked': '',
+        check_customs => $P{customs}? 'checked': '',
         carrier      => $P{carrier},
         create_date  => $P{create_date},
         create_time  => $P{create_time},
