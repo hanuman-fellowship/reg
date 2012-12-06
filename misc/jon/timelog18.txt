@@ -37,5 +37,5 @@ Dec 1 3:00-5:00
     ride request form beginning - ride1a and ridea.tt2
 Dec 3 9:20-12:25
     add key_card to house table and use it
-Dec 5 10:35-
+Dec 5 10:35-3:30
     continuing with Rides enhancements
