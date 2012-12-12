@@ -1,0 +1,22 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>AffilProgram
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: affil_program
+<dl>
+<dt>a_id</dt>
+<dd>foreign key to <a href=Affil.html>affil</a></dd>
+<dt>p_id</dt>
+<dd>foreign key to <a href=Program.html>program</a></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>affil</td><td><a href=Affil.html>Affil</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>Program</a></td><td>belongs_to</td></tr>
+</table>
+</body>
+</html>

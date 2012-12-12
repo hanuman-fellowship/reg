@@ -74,3 +74,13 @@ sub type_sh {
 }
 
 1;
+__END__
+amount - 
+date_d - 
+id - unique id
+person_id - foreign key to person
+project_id - foreign key to project
+the_date - 
+time_d - 
+type - 
+who_d - 

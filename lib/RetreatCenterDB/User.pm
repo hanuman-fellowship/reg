@@ -52,3 +52,17 @@ sub numbers {
 }
 
 1;
+__END__
+bg - 
+cell - 
+email - 
+fg - 
+first - 
+hide_mmi - 
+id - unique id
+last - 
+link - 
+office - 
+password - 
+txt_msg_email - 
+username - 

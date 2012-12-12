@@ -31,3 +31,13 @@ sub name_public_email {
          . " <" . $self->public_email() . ">";
 }
 1;
+__END__
+assistant - 
+biography - 
+id - unique id
+image - 
+just_first - 
+l_order - 
+person_id - foreign key to person
+public_email - 
+url - 

@@ -1,0 +1,62 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Ride
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: ride
+<dl>
+<dt>airport</dt>
+<dd></dd>
+<dt>carrier</dt>
+<dd></dd>
+<dt>comment</dt>
+<dd></dd>
+<dt>cost</dt>
+<dd></dd>
+<dt>create_date</dt>
+<dd></dd>
+<dt>create_time</dt>
+<dd></dd>
+<dt>customs</dt>
+<dd></dd>
+<dt>driver_id</dt>
+<dd>foreign key to <a href=User.html>user</a></dd>
+<dt>flight_num</dt>
+<dd></dd>
+<dt>flight_time</dt>
+<dd></dd>
+<dt>from_to</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>intl</dt>
+<dd></dd>
+<dt>luggage</dt>
+<dd></dd>
+<dt>paid_date</dt>
+<dd></dd>
+<dt>pickup_date</dt>
+<dd></dd>
+<dt>pickup_time</dt>
+<dd></dd>
+<dt>rider_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>sent_date</dt>
+<dd></dd>
+<dt>shuttle</dt>
+<dd></dd>
+<dt>status</dt>
+<dd></dd>
+<dt>type</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>driver</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+<tr><td>rider</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+</table>
+</body>
+</html>

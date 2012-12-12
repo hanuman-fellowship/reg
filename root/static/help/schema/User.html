@@ -1,0 +1,44 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>User
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: user
+<dl>
+<dt>bg</dt>
+<dd></dd>
+<dt>cell</dt>
+<dd></dd>
+<dt>email</dt>
+<dd></dd>
+<dt>fg</dt>
+<dd></dd>
+<dt>first</dt>
+<dd></dd>
+<dt>hide_mmi</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>last</dt>
+<dd></dd>
+<dt>link</dt>
+<dd></dd>
+<dt>office</dt>
+<dd></dd>
+<dt>password</dt>
+<dd></dd>
+<dt>txt_msg_email</dt>
+<dd></dd>
+<dt>username</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>roles</td><td>user_role => role</td><td>many_to_many</td></tr>
+<tr><td>user_role</td><td><a href=Userrole.html>UserRole</a></td><td>has_many</td></tr>
+</table>
+</body>
+</html>

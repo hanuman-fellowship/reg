@@ -1,0 +1,26 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Role
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: role
+<dl>
+<dt>descr</dt>
+<dd></dd>
+<dt>fullname</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>role</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>user_role</td><td><a href=Userrole.html>UserRole</a></td><td>has_many</td></tr>
+<tr><td>users</td><td>user_role => user</td><td>many_to_many</td></tr>
+</table>
+</body>
+</html>

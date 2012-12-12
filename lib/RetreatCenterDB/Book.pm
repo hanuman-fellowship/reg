@@ -20,3 +20,12 @@ __PACKAGE__->set_primary_key(qw/
 /);
 
 1;
+__END__
+author - 
+description - 
+id - unique id
+location - 
+media - 
+publisher - 
+subject - 
+title - 

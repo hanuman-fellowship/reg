@@ -20,3 +20,6 @@ __PACKAGE__->belongs_to(affil  => 'RetreatCenterDB::Affil',  'affiliation_id');
 
 
 1;
+__END__
+affiliation_id - foreign key to affil
+report_id - foreign key to report

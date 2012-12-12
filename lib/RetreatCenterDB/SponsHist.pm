@@ -51,3 +51,14 @@ sub time_obj {
 }
 
 1;
+__END__
+amount - 
+date_payment - 
+general - 
+id - unique id
+member_id - foreign key to member
+the_date - 
+time - 
+user_id - foreign key to user
+valid_from - 
+valid_to - 

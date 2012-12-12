@@ -38,3 +38,23 @@ sub name_disp {
 }
 
 1;
+__END__
+bath - 
+cabin - 
+cat_abode - 
+center - 
+cluster_id - foreign key to cluster
+cluster_order - 
+comment - 
+disp_code - 
+id - unique id
+inactive - 
+key_card - 
+max - 
+name - 
+priority - 
+resident - 
+sq_foot - 
+tent - 
+x - 
+y - 

@@ -21,3 +21,9 @@ __PACKAGE__->belongs_to('rental' => 'RetreatCenterDB::Rental', 'rental_id');
 __PACKAGE__->belongs_to('house'  => 'RetreatCenterDB::House',  'house_id');
 
 1;
+__END__
+date_end - 
+date_start - 
+h_type - 
+house_id - foreign key to house
+rental_id - foreign key to rental

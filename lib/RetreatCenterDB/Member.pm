@@ -73,3 +73,13 @@ sub category_id {
 }
 
 1;
+__END__
+category - 
+date_general - 
+date_life - 
+date_sponsor - 
+free_prog_taken - 
+id - unique id
+person_id - foreign key to person
+sponsor_nights - 
+total_paid - 

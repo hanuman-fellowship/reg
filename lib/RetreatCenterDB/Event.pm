@@ -86,3 +86,12 @@ sub Event_type {
 }
 
 1;
+__END__
+descr - 
+edate - 
+id - unique id
+max - 
+name - 
+organization_id - foreign key to organization
+sdate - 
+sponsor - 

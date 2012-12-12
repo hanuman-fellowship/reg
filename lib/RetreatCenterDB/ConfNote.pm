@@ -23,3 +23,7 @@ sub expansion_br {
 }
 
 1;
+__END__
+abbr - 
+expansion - 
+id - unique id

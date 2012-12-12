@@ -33,3 +33,19 @@ sub unknown    { my ($self) = @_; return 0; }
 sub not_needed { my ($self) = @_; return 0; }
 
 1;
+__END__
+center_tent - 
+commuting - 
+dble - 
+dble_bath - 
+dormitory - 
+economy - 
+id - unique id
+inactive - 
+name - 
+own_tent - 
+own_van - 
+single - 
+single_bath - 
+triple - 
+type - 

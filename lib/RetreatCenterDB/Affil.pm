@@ -22,3 +22,6 @@ __PACKAGE__->has_many(affil_report => 'RetreatCenterDB::AffilReport',
 __PACKAGE__->many_to_many(reports => 'affil_report', 'report');
 
 1;
+__END__
+descrip - 
+id - unique id

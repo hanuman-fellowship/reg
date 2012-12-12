@@ -1,0 +1,36 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Leader
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: leader
+<dl>
+<dt>assistant</dt>
+<dd></dd>
+<dt>biography</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>image</dt>
+<dd></dd>
+<dt>just_first</dt>
+<dd></dd>
+<dt>l_order</dt>
+<dd></dd>
+<dt>person_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>public_email</dt>
+<dd></dd>
+<dt>url</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>leader_program</td><td><a href=Leaderprogram.html>LeaderProgram</a></td><td>has_many</td></tr>
+<tr><td>programs</td><td>leader_program => program</td><td>many_to_many</td></tr>
+</table>
+</body>
+</html>

@@ -23,3 +23,8 @@ sub bgcolor {
 }
 
 1;
+__END__
+color - 
+id - unique id
+name - 
+on_prog_cal - 

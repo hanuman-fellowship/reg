@@ -92,3 +92,13 @@ sub amount_disp {
 }
 
 1;
+__END__
+amount - 
+id - unique id
+person_id - foreign key to person
+the_date - 
+time - 
+type - 
+user_id - foreign key to user
+what - 
+xaccount_id - foreign key to xaccount

@@ -26,3 +26,8 @@ sub descr_br {
 }
 
 1;
+__END__
+descr - 
+fullname - 
+id - unique id
+role - 

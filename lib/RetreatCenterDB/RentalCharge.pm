@@ -49,3 +49,11 @@ sub amount_disp {
 }
 
 1;
+__END__
+amount - 
+id - unique id
+rental_id - foreign key to rental
+the_date - 
+time - 
+user_id - foreign key to user
+what - 

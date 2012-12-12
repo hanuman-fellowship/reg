@@ -14,3 +14,8 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key(qw/id/);
 
 1;
+__END__
+cl_order - 
+id - unique id
+name - 
+type - 

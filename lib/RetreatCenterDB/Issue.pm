@@ -46,3 +46,11 @@ sub _esc_q {
 }
 
 1;
+__END__
+date_closed - 
+date_entered - 
+id - unique id
+notes - 
+priority - 
+title - 
+user_id - foreign key to user

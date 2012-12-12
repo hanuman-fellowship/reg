@@ -1,0 +1,170 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $line;
+sub get_col {
+    my ($in) = @_;
+
+    my ($name, $doc);
+    if (! $line) {
+        $line = <$in>;
+        if (! $line) {
+            return;
+        }
+        chomp $line;
+    }
+    if ($line =~ m{\A(\w+) \s+ - \s+ (.*) \z}xms) {
+        $name = $1;
+        $doc = $2;
+    }
+    while ($line = <$in>) {
+        chomp $line;
+        if ($line =~ m{\A \S}xms) {
+            return ($name, $doc);
+        }
+        chomp $line;
+        $line =~ s{\A \s+}{ }xms;
+        $doc .= $line;
+    }
+    return ($name, $doc);
+}
+
+sub link_to {
+    my ($name) = @_;
+    return "<a href=\u$name.html>$name</a>";
+}
+
+my @files = sort
+            map { s/[.]pm$//; $_ }
+            <*.pm>;
+for my $f (@files) {
+    open my $in, '<', "$f.pm"
+        or die "no $f.pm: $!\n";
+    my $table;
+    my @relations;
+    PRE:
+    while (my $line = <$in>) {
+        if ($line =~ m{table\('(\w+)}xms) {
+            $table = $1;
+        }
+        if ($line =~ m{
+                        (has_many|belongs_to|might_have)
+                        \(
+                        (\w+)
+                        \s* => \s*
+                        'RetreatCenterDB::
+                        (\w+)
+                     }xms
+        ) {
+            push @relations, {
+                relation => $1,
+                name     => $2,
+                model    => $3,
+            };
+        }
+        elsif ($line =~ m{(many_to_many)\(
+                          (\w+)         # name
+                          \s*=>\s* '
+                          (\w+)         # rel1
+                          '\s*,\s*'
+                          (\w+)         # rel2
+                          '}xms
+        ) {
+            push @relations, {
+                relation => $1,
+                name     => $2,
+                model    => "$3 => $4",
+            };
+        }
+        elsif ($line =~ m{\A__END__}xms) {
+            last PRE;
+        }
+    }
+    open my $out, '>', "../../root/static/help/schema/$f.html"
+        or die "can't create $f.html\n";
+    print {$out} <<"EOH";
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>$f
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: $table
+<dl>
+EOH
+    while (my ($name, $doc) = get_col($in)) {
+        print {$out} "<dt>$name</dt>\n";
+        $doc =~ s{(foreign[ ]key[ ]to[ ])(\w+)}{ $1 . link_to($2) }xmse;
+        print {$out} "<dd>$doc</dd>\n";
+    }
+    print {$out} "</dl>\n";
+    if (@relations) {
+        @relations = sort { $a->{name} cmp $b->{name} } @relations;
+        print {$out} "<h2>Relations</h2>\n";
+        print {$out} "<table cellpadding=5>\n";
+        for my $r (@relations) {
+            print {$out}
+                  "<tr>",
+                  "<td>$r->{name}</td>";
+            if ($r->{relation} eq 'many_to_many') {
+                print {$out}
+                      "<td>$r->{model}</td>";
+            }
+            else {
+                print {$out}
+                      "<td><a href=", ucfirst lc $r->{model} . ".html", ">",
+                      "$r->{model}</a></td>";
+            }
+            print {$out}
+                  "<td>$r->{relation}</td>",
+                  "</tr>\n";
+        }
+        print {$out} "</table>\n";
+    }
+    print {$out} <<'EOH';
+</body>
+</html>
+EOH
+    close $in;
+}
+
+# now generate the top level page
+my $nfiles = @files;
+my $npercol = int($nfiles/4 + 1);
+open my $out, '>', '../../root/static/help/schema.html'
+    or die "no schema.html: $!\n";
+print {$out} <<'EOH';
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="help.css" />
+<style>
+td {
+    font-size: 13pt;
+}
+</style>
+</head>
+<body>
+<h2>Database Schema</h2>
+<table cellpadding=5>
+EOH
+for my $i (0 .. $npercol-1) {
+    print {$out} "<tr>\n";
+    for my $j (0 .. 3) {
+        my $f = $files[$i+$j*$npercol];
+        if (defined $f) {
+            print {$out} "<td><a href=schema/$f.html>$f</a></td>\n";
+        }
+        else {
+            print {$out} "<td>&nbsp;</td>\n";
+        }
+    }
+    print {$out} "</tr>\n\n";
+}
+print {$out} <<'EOH';
+</table>
+</body>
+</html>
+EOH

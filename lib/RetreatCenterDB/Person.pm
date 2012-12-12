@@ -85,8 +85,7 @@ __PACKAGE__->has_many(rides => 'RetreatCenterDB::Ride',
 __PACKAGE__->has_many(mmi_payments => 'RetreatCenterDB::MMIPayment',
                                       'person_id',
                       { order_by => 'the_date desc'});
-__PACKAGE__->has_many(req_mmi_payments
-                                   => 'RetreatCenterDB::RequestedMMIPayment',
+__PACKAGE__->has_many(req_mmi_payments => 'RetreatCenterDB::RequestedMMIPayment',
                                       'person_id',
                       { order_by => 'the_date desc'});
 
@@ -230,3 +229,39 @@ sub numbers {
 }
 
 1;
+__END__
+addr1 - 
+addr2 - 
+akey - 
+cc_code - 
+cc_expire - 
+cc_number - 
+city - 
+comment - 
+country - 
+date_entrd - 
+date_updat - 
+deceased - 
+e_mailings - 
+email - 
+first - 
+id - unique id
+id_sps - 
+inactive - 
+last - 
+mmi_e_mailings - 
+mmi_snail_mailings - 
+safety_form - 
+sanskrit - Sanskrit name - if any.
+    one can search for a person by their Sanskrit name
+sex - gender - M or F or '' (as yet indetermined)
+    this matters for housing purposes
+share_mailings - 
+snail_mailings - 
+st_prov - state or province
+tel_cell - cell phone
+tel_home - home phone
+tel_work - work phone
+    These phone numbers are used all over the place.
+    Especially in the phone list.
+zip_post - zip (or postal) code

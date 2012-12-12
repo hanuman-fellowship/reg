@@ -23,3 +23,7 @@ sub policy_br {
 }
 
 1;
+__END__
+id - unique id
+name - 
+policy - 

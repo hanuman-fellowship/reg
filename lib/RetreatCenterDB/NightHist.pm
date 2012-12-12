@@ -49,3 +49,12 @@ sub action_str {
 }
 
 1;
+__END__
+action - 
+id - unique id
+member_id - foreign key to member
+num_nights - 
+reg_id - foreign key to registration
+the_date - 
+time - 
+user_id - foreign key to user

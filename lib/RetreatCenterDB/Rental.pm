@@ -472,3 +472,43 @@ sub send_grid_data {
 
 
 1;
+__END__
+balance - 
+color - 
+comment - 
+contract_received - 
+contract_sent - 
+coordinator_id - foreign key to person
+cs_person_id - foreign key to person
+deposit - 
+edate - 
+email - 
+end_hour - 
+expected - 
+glnum - 
+grid_code - 
+housecost_id - foreign key to housecost
+housing_note - 
+id - unique id
+linked - 
+lunches - 
+max - 
+mmc_does_reg - 
+name - 
+phone - 
+program_id - foreign key to program
+proposal_id - foreign key to proposal
+received_by - 
+refresh_days - 
+rental_follows - 
+sdate - 
+sent_by - 
+staff_ok - 
+start_hour - 
+status - 
+subtitle - 
+summary_id - foreign key to summary
+tentative - 
+title - 
+url - 
+webdesc - 

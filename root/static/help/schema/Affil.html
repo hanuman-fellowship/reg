@@ -1,0 +1,26 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Affil
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: affils
+<dl>
+<dt>descrip</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>affil_person</td><td><a href=Affilperson.html>AffilPerson</a></td><td>has_many</td></tr>
+<tr><td>affil_program</td><td><a href=Affilprogram.html>AffilProgram</a></td><td>has_many</td></tr>
+<tr><td>affil_report</td><td><a href=Affilreport.html>AffilReport</a></td><td>has_many</td></tr>
+<tr><td>people</td><td>affil_person => person</td><td>many_to_many</td></tr>
+<tr><td>programs</td><td>affil_program => program</td><td>many_to_many</td></tr>
+<tr><td>reports</td><td>affil_report => report</td><td>many_to_many</td></tr>
+</table>
+</body>
+</html>

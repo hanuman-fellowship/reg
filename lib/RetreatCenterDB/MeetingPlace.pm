@@ -21,3 +21,11 @@ __PACKAGE__->set_primary_key(qw/id/);
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'meet_id');
 
 1;
+__END__
+abbr - 
+color - 
+disp_ord - 
+id - unique id
+max - 
+name - 
+sleep_too - 

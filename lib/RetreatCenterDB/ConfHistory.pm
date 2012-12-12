@@ -36,3 +36,10 @@ sub time_obj {
 }
 
 1;
+__END__
+id - unique id
+note - 
+reg_id - foreign key to registration
+the_date - 
+time - 
+user_id - foreign key to user

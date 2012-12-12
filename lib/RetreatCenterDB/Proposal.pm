@@ -102,3 +102,53 @@ sub status {
 }
 
 1;
+__END__
+addr1 - 
+addr2 - 
+checkin_time - 
+checkout_time - 
+city - 
+country - 
+cs_addr1 - 
+cs_addr2 - 
+cs_city - 
+cs_country - 
+cs_email - 
+cs_first - 
+cs_last - 
+cs_person_id - foreign key to person
+cs_st_prov - 
+cs_tel_cell - 
+cs_tel_home - 
+cs_tel_work - 
+cs_zip_post - 
+date_of_call - 
+dates_requested - 
+denied - 
+deposit - 
+email - 
+first - 
+food_service - 
+group_name - 
+housing_space - 
+id - unique id
+last - 
+leader_housing - 
+max - 
+meeting_space - 
+min - 
+misc_notes - 
+other_requests - 
+other_things - 
+person_id - foreign key to person
+program_meeting_date - 
+provisos - 
+rental_id - foreign key to rental
+rental_type - 
+special_needs - 
+st_prov - 
+staff_ok - 
+tel_cell - 
+tel_home - 
+tel_work - 
+zip_post - 

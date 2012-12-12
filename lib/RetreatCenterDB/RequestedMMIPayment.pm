@@ -91,3 +91,12 @@ sub amount_disp {
 }
 
 1;
+__END__
+amount - 
+code - 
+for_what - 
+id - unique id
+note - 
+person_id - foreign key to person
+reg_id - foreign key to registration
+the_date - 

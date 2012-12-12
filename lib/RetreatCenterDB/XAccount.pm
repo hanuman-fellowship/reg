@@ -20,3 +20,8 @@ sub SPONSOR {
 }
 
 1;
+__END__
+descr - 
+glnum - 
+id - unique id
+sponsor - 

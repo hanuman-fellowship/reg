@@ -120,3 +120,26 @@ sub cost_disp {
 }
 
 1;
+__END__
+airport - 
+carrier - 
+comment - 
+cost - 
+create_date - 
+create_time - 
+customs - 
+driver_id - foreign key to user
+flight_num - 
+flight_time - 
+from_to - 
+id - unique id
+intl - 
+luggage - 
+paid_date - 
+pickup_date - 
+pickup_time - 
+rider_id - foreign key to person
+sent_date - 
+shuttle - 
+status - 
+type - 

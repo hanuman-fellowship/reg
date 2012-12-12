@@ -97,3 +97,13 @@ sub amount_disp {
 }
 
 1;
+__END__
+amount - 
+deleted - 
+glnum - 
+id - unique id
+note - 
+person_id - foreign key to person
+reg_id - foreign key to registration
+the_date - 
+type - 

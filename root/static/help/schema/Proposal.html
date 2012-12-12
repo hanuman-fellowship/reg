@@ -1,0 +1,117 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Proposal
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: proposal
+<dl>
+<dt>addr1</dt>
+<dd></dd>
+<dt>addr2</dt>
+<dd></dd>
+<dt>checkin_time</dt>
+<dd></dd>
+<dt>checkout_time</dt>
+<dd></dd>
+<dt>city</dt>
+<dd></dd>
+<dt>country</dt>
+<dd></dd>
+<dt>cs_addr1</dt>
+<dd></dd>
+<dt>cs_addr2</dt>
+<dd></dd>
+<dt>cs_city</dt>
+<dd></dd>
+<dt>cs_country</dt>
+<dd></dd>
+<dt>cs_email</dt>
+<dd></dd>
+<dt>cs_first</dt>
+<dd></dd>
+<dt>cs_last</dt>
+<dd></dd>
+<dt>cs_person_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>cs_st_prov</dt>
+<dd></dd>
+<dt>cs_tel_cell</dt>
+<dd></dd>
+<dt>cs_tel_home</dt>
+<dd></dd>
+<dt>cs_tel_work</dt>
+<dd></dd>
+<dt>cs_zip_post</dt>
+<dd></dd>
+<dt>date_of_call</dt>
+<dd></dd>
+<dt>dates_requested</dt>
+<dd></dd>
+<dt>denied</dt>
+<dd></dd>
+<dt>deposit</dt>
+<dd></dd>
+<dt>email</dt>
+<dd></dd>
+<dt>first</dt>
+<dd></dd>
+<dt>food_service</dt>
+<dd></dd>
+<dt>group_name</dt>
+<dd></dd>
+<dt>housing_space</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>last</dt>
+<dd></dd>
+<dt>leader_housing</dt>
+<dd></dd>
+<dt>max</dt>
+<dd></dd>
+<dt>meeting_space</dt>
+<dd></dd>
+<dt>min</dt>
+<dd></dd>
+<dt>misc_notes</dt>
+<dd></dd>
+<dt>other_requests</dt>
+<dd></dd>
+<dt>other_things</dt>
+<dd></dd>
+<dt>person_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>program_meeting_date</dt>
+<dd></dd>
+<dt>provisos</dt>
+<dd></dd>
+<dt>rental_id</dt>
+<dd>foreign key to <a href=Rental.html>rental</a></dd>
+<dt>rental_type</dt>
+<dd></dd>
+<dt>special_needs</dt>
+<dd></dd>
+<dt>st_prov</dt>
+<dd></dd>
+<dt>staff_ok</dt>
+<dd></dd>
+<dt>tel_cell</dt>
+<dd></dd>
+<dt>tel_home</dt>
+<dd></dd>
+<dt>tel_work</dt>
+<dd></dd>
+<dt>zip_post</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>cs_person</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+<tr><td>person</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>Rental</a></td><td>belongs_to</td></tr>
+</table>
+</body>
+</html>

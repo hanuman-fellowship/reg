@@ -1,0 +1,132 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Program
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: program
+<dl>
+<dt>allow_dup_regs</dt>
+<dd></dd>
+<dt>brdesc</dt>
+<dd></dd>
+<dt>canpol_id</dt>
+<dd>foreign key to <a href=Canpol.html>canpol</a></dd>
+<dt>category_id</dt>
+<dd>foreign key to <a href=Category.html>category</a></dd>
+<dt>cl_template</dt>
+<dd></dd>
+<dt>collect_total</dt>
+<dd></dd>
+<dt>color</dt>
+<dd></dd>
+<dt>commuting</dt>
+<dd></dd>
+<dt>confnote</dt>
+<dd></dd>
+<dt>deposit</dt>
+<dd></dd>
+<dt>dncc_why</dt>
+<dd></dd>
+<dt>do_not_compute_costs</dt>
+<dd></dd>
+<dt>economy</dt>
+<dd></dd>
+<dt>edate</dt>
+<dd></dd>
+<dt>extradays</dt>
+<dd></dd>
+<dt>facebook_event_id</dt>
+<dd>an id referencing the event on facebook</dd>
+<dt>footnotes</dt>
+<dd></dd>
+<dt>full_tuition</dt>
+<dd></dd>
+<dt>glnum</dt>
+<dd></dd>
+<dt>housecost_id</dt>
+<dd>foreign key to <a href=Housecost.html>housecost</a></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>image</dt>
+<dd></dd>
+<dt>kayakalpa</dt>
+<dd></dd>
+<dt>level</dt>
+<dd></dd>
+<dt>linked</dt>
+<dd></dd>
+<dt>lunches</dt>
+<dd></dd>
+<dt>max</dt>
+<dd></dd>
+<dt>name</dt>
+<dd></dd>
+<dt>not_on_calendar</dt>
+<dd></dd>
+<dt>notify_on_reg</dt>
+<dd></dd>
+<dt>percent_tuition</dt>
+<dd></dd>
+<dt>prog_end</dt>
+<dd></dd>
+<dt>prog_start</dt>
+<dd></dd>
+<dt>ptemplate</dt>
+<dd></dd>
+<dt>refresh_days</dt>
+<dd></dd>
+<dt>reg_count</dt>
+<dd></dd>
+<dt>reg_end</dt>
+<dd></dd>
+<dt>reg_start</dt>
+<dd></dd>
+<dt>rental_id</dt>
+<dd>foreign key to <a href=Rental.html>rental</a></dd>
+<dt>retreat</dt>
+<dd></dd>
+<dt>sbath</dt>
+<dd></dd>
+<dt>school</dt>
+<dd></dd>
+<dt>sdate</dt>
+<dd></dd>
+<dt>single</dt>
+<dd></dd>
+<dt>subtitle</dt>
+<dd></dd>
+<dt>summary_id</dt>
+<dd>foreign key to <a href=Summary.html>summary</a></dd>
+<dt>title</dt>
+<dd></dd>
+<dt>tuition</dt>
+<dd></dd>
+<dt>unlinked_dir</dt>
+<dd></dd>
+<dt>url</dt>
+<dd></dd>
+<dt>webdesc</dt>
+<dd></dd>
+<dt>webready</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>affil_program</td><td><a href=Affilprogram.html>AffilProgram</a></td><td>has_many</td></tr>
+<tr><td>affils</td><td>affil_program => affil</td><td>many_to_many</td></tr>
+<tr><td>blocks</td><td><a href=Block.html>Block</a></td><td>has_many</td></tr>
+<tr><td>bookings</td><td><a href=Booking.html>Booking</a></td><td>has_many</td></tr>
+<tr><td>canpol</td><td><a href=Canpol.html>CanPol</a></td><td>belongs_to</td></tr>
+<tr><td>category</td><td><a href=Category.html>Category</a></td><td>belongs_to</td></tr>
+<tr><td>exceptions</td><td><a href=Exception.html>Exception</a></td><td>has_many</td></tr>
+<tr><td>housecost</td><td><a href=Housecost.html>HouseCost</a></td><td>belongs_to</td></tr>
+<tr><td>leader_program</td><td><a href=Leaderprogram.html>LeaderProgram</a></td><td>has_many</td></tr>
+<tr><td>leaders</td><td>leader_program => leader</td><td>many_to_many</td></tr>
+<tr><td>registrations</td><td><a href=Registration.html>Registration</a></td><td>has_many</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>Rental</a></td><td>belongs_to</td></tr>
+</table>
+</body>
+</html>

@@ -104,3 +104,31 @@ EOH
 }
 
 1;
+__END__
+alongside - 
+back_to_back - 
+check_list - 
+converted_spaces - 
+date_updated - 
+feedback - 
+field_staff_setup - 
+flowers - 
+food_service - 
+gate_code - 
+id - unique id
+leader_housing - 
+leader_name - 
+miscellaneous - 
+needs_verification - 
+orientation - 
+prog_person - 
+registration_location - 
+signage - 
+sound_setup - 
+staff_arrival - 
+staff_departure - 
+time_updated - 
+who_updated - 
+wind_up - 
+workshop_description - 
+workshop_schedule - 

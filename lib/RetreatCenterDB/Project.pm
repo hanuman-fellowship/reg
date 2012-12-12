@@ -16,3 +16,7 @@ __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'project_id',
                           { order_by => 'the_date desc'});
 
 1;
+__END__
+descr - 
+glnum - 
+id - unique id

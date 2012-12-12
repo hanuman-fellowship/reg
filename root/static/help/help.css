@@ -2,8 +2,10 @@ body {
     margin-left: .5in;
     margin-top: .5in;
     margin-right: 1in;
-    font-size: 13pt;
     font-family: Verdana;
+}
+body, td {
+    font-size: 13pt;
 }
 quote {
     display: block;
@@ -21,6 +23,7 @@ dt {
     color: brown;
 }
 dd {
+    color: green;
 }
 a {
     color: blue;

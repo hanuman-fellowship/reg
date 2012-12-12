@@ -1,0 +1,35 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Event
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: event
+<dl>
+<dt>descr</dt>
+<dd></dd>
+<dt>edate</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>max</dt>
+<dd></dd>
+<dt>name</dt>
+<dd></dd>
+<dt>organization_id</dt>
+<dd>foreign key to <a href=Organization.html>organization</a></dd>
+<dt>sdate</dt>
+<dd></dd>
+<dt>sponsor</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>blocks</td><td><a href=Block.html>Block</a></td><td>has_many</td></tr>
+<tr><td>bookings</td><td><a href=Booking.html>Booking</a></td><td>has_many</td></tr>
+<tr><td>organization</td><td><a href=Organization.html>Organization</a></td><td>belongs_to</td></tr>
+</table>
+</body>
+</html>

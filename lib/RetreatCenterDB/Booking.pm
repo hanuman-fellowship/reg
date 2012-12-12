@@ -57,3 +57,13 @@ sub date_range {
 }
 
 1;
+__END__
+breakout - 
+dorm - 
+edate - 
+event_id - foreign key to event
+id - unique id
+meet_id - foreign key to meeting_place
+program_id - foreign key to program
+rental_id - foreign key to rental
+sdate - 

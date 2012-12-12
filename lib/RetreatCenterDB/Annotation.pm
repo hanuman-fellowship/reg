@@ -24,3 +24,17 @@ __PACKAGE__->add_columns(qw/
 __PACKAGE__->set_primary_key('id');
 
 1;
+__END__
+cluster_type - 
+color - 
+id - unique id
+inactive - 
+label - 
+shape - 
+thickness - 
+x - 
+x1 - 
+x2 - 
+y - 
+y1 - 
+y2 - 

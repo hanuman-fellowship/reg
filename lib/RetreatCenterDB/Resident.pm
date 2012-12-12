@@ -23,3 +23,8 @@ sub category {
 }
 
 1;
+__END__
+comment - 
+id - unique id
+image - 
+person_id - foreign key to person

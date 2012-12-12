@@ -965,3 +965,56 @@ sub PR {
 }
 
 1;
+__END__
+allow_dup_regs - 
+brdesc - 
+canpol_id - foreign key to canpol
+category_id - foreign key to category
+cl_template - 
+collect_total - 
+color - 
+commuting - 
+confnote - 
+deposit - 
+dncc_why - 
+do_not_compute_costs - 
+economy - 
+edate - 
+extradays - 
+facebook_event_id - an id referencing the event on facebook
+footnotes - 
+full_tuition - 
+glnum - 
+housecost_id - foreign key to housecost
+id - unique id
+image - 
+kayakalpa - 
+level - 
+linked - 
+lunches - 
+max - 
+name - 
+not_on_calendar - 
+notify_on_reg - 
+percent_tuition - 
+prog_end - 
+prog_start - 
+ptemplate - 
+refresh_days - 
+reg_count - 
+reg_end - 
+reg_start - 
+rental_id - foreign key to rental
+retreat - 
+sbath - 
+school - 
+sdate - 
+single - 
+subtitle - 
+summary_id - foreign key to summary
+title - 
+tuition - 
+unlinked_dir - 
+url - 
+webdesc - 
+webready - 

@@ -29,3 +29,11 @@ sub the_date_obj {
 }
 
 1;
+__END__
+cur - 
+curmax - 
+house_id - foreign key to house
+program_id - foreign key to program
+rental_id - foreign key to rental
+sex - 
+the_date - 

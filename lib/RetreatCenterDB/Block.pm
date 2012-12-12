@@ -65,3 +65,19 @@ sub comment_tr {
 }
 
 1;
+__END__
+allocated - 
+comment - 
+edate - 
+event_id - foreign key to event
+house_id - foreign key to house
+id - unique id
+nbeds - 
+npeople - 
+program_id - foreign key to program
+reason - 
+rental_id - foreign key to rental
+sdate - 
+the_date - 
+time - 
+user_id - foreign key to user

@@ -1,0 +1,85 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+my $num_cols;
+my $num_nodoc;
+
+FILE:
+for my $f (<*.pm>) {
+    my @cols;
+    open my $in, '<', $f
+        or die "cannot open $f: $!\n";
+    PRE_ADD:
+    while (my $line = <$in>) {
+        # __PACKAGE__->table('req_mmi_payment');
+        if ($line =~ m{->table\('(\w+)}xms) {
+            my $table = $1;
+            my $file = $f;
+            $file =~ s{[.]pm\z}{}xms;
+            $file =~ s{([a-z])([A-Z])}{$1_\u$2}xmsg;
+            $file = lc $file;
+            if ($table ne $file) {
+                print "file $file <!> table $table\n";
+            }
+        }
+        if ($line =~ m{add_columns}xms) {
+            last PRE_ADD;
+        }
+    }
+    COLS:
+    while (my $line = <$in>) {
+        next unless $line =~ m{\S}xms;
+        if ($line =~ m{\A /}xms) {
+            last COLS;
+        }
+        chomp $line;
+        $line =~ s{\A \s*}{}xms;
+        push @cols, $line;
+    }
+    @cols = sort @cols;
+
+    TO_END:
+    while (my $line = <$in>) {
+        if ($line =~ m{\A __END__}xms) {
+            last TO_END;
+        }
+    }
+    my @doc_cols;
+    DOC:
+    while (my $line = <$in>) {
+        next DOC if $line =~ m{\A \s}xms;   # doc continuation
+        ++$num_cols;
+        if ($line =~ m{\A \w+ \s+ - \s+ \z}xms) {
+            ++$num_nodoc;
+        }
+        if ($line =~ m{foreign[ ]key[ ]to[ ](\w+)}xms) {
+            my $pm = ucfirst $1;
+            $pm =~ s{_(.)}{\u$1}xms;
+            $pm .= ".pm";
+            if (! -e $pm) {
+                print "$f: no such file: $pm\n";
+            }
+        }
+        $line =~ s{[ ]-.*}{}xms;
+        push @doc_cols, $line;
+    }
+    close $in;
+    if (scalar(@cols) != scalar(@doc_cols)) {
+        print "mismatch in doc cols for $f\n";
+    }
+    my %cols = map { $_ => 1 } @cols;
+    my %doc_cols = map { $_ => 1 } @doc_cols;
+    for my $c (@cols) {
+        if (! exists $doc_cols{$c}) {
+            print "no documentation for column $c\n";
+        }
+    }
+    for my $c (@doc_cols) {
+        if (! exists $cols{$c}) {
+            print "no table column for doc column $c\n";
+        }
+    }
+}
+print "$num_cols columns\n";
+print "$num_nodoc without documentation\n";

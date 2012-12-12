@@ -39,3 +39,12 @@ sub date_used_obj {
 }
 
 1;
+__END__
+amount - 
+date_expires - 
+date_given - 
+date_used - 
+id - unique id
+person_id - foreign key to person
+reg_id - foreign key to registration
+used_reg_id - foreign key to registration

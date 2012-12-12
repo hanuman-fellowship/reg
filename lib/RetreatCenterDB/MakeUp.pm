@@ -29,3 +29,8 @@ sub date_needed_obj {
 }
 
 1;
+__END__
+date_needed - 
+date_vacated - 
+house_id - foreign key to house
+refresh - 

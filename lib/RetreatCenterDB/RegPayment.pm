@@ -83,3 +83,12 @@ sub amount_disp {
 }
 
 1;
+__END__
+amount - 
+id - unique id
+reg_id - foreign key to registration
+the_date - 
+time - 
+type - 
+user_id - foreign key to user
+what - 

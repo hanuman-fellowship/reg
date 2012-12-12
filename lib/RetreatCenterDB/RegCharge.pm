@@ -44,3 +44,12 @@ sub amount_disp {
 }
 
 1;
+__END__
+amount - 
+automatic - 
+id - unique id
+reg_id - foreign key to registration
+the_date - 
+time - 
+user_id - foreign key to user
+what - 

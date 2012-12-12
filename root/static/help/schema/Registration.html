@@ -1,0 +1,109 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Registration
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: registration
+<dl>
+<dt>adsource</dt>
+<dd></dd>
+<dt>arrived</dt>
+<dd></dd>
+<dt>balance</dt>
+<dd></dd>
+<dt>cabin_room</dt>
+<dd></dd>
+<dt>cancelled</dt>
+<dd></dd>
+<dt>carpool</dt>
+<dd></dd>
+<dt>ceu_license</dt>
+<dd></dd>
+<dt>comment</dt>
+<dd></dd>
+<dt>confnote</dt>
+<dd></dd>
+<dt>date_end</dt>
+<dd></dd>
+<dt>date_postmark</dt>
+<dd></dd>
+<dt>date_start</dt>
+<dd></dd>
+<dt>deposit</dt>
+<dd></dd>
+<dt>early</dt>
+<dd></dd>
+<dt>free_prog_taken</dt>
+<dd></dd>
+<dt>from_where</dt>
+<dd></dd>
+<dt>h_name</dt>
+<dd></dd>
+<dt>h_type</dt>
+<dd></dd>
+<dt>hascar</dt>
+<dd></dd>
+<dt>house_id</dt>
+<dd>foreign key to <a href=House.html>house</a></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>kids</dt>
+<dd></dd>
+<dt>late</dt>
+<dd></dd>
+<dt>leader_assistant</dt>
+<dd></dd>
+<dt>letter_sent</dt>
+<dd></dd>
+<dt>manual</dt>
+<dd></dd>
+<dt>nights_taken</dt>
+<dd></dd>
+<dt>person_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>pref1</dt>
+<dd></dd>
+<dt>pref2</dt>
+<dd></dd>
+<dt>program_id</dt>
+<dd>foreign key to <a href=Program.html>program</a></dd>
+<dt>referral</dt>
+<dd></dd>
+<dt>rental_after</dt>
+<dd></dd>
+<dt>rental_before</dt>
+<dd></dd>
+<dt>share_first</dt>
+<dd></dd>
+<dt>share_last</dt>
+<dd></dd>
+<dt>status</dt>
+<dd></dd>
+<dt>time_postmark</dt>
+<dd></dd>
+<dt>transaction_id</dt>
+<dd>Authorize.net transaction id</dd>
+<dt>work_study</dt>
+<dd></dd>
+<dt>work_study_comment</dt>
+<dd></dd>
+<dt>work_study_safety</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>charges</td><td><a href=Regcharge.html>RegCharge</a></td><td>has_many</td></tr>
+<tr><td>confnotes</td><td><a href=Confhistory.html>ConfHistory</a></td><td>has_many</td></tr>
+<tr><td>history</td><td><a href=Reghistory.html>RegHistory</a></td><td>has_many</td></tr>
+<tr><td>house</td><td><a href=House.html>House</a></td><td>belongs_to</td></tr>
+<tr><td>mmi_payments</td><td><a href=Mmipayment.html>MMIPayment</a></td><td>has_many</td></tr>
+<tr><td>payments</td><td><a href=Regpayment.html>RegPayment</a></td><td>has_many</td></tr>
+<tr><td>person</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>Program</a></td><td>belongs_to</td></tr>
+<tr><td>req_mmi_payments</td><td><a href=Requestedmmipayment.html>RequestedMMIPayment</a></td><td>has_many</td></tr>
+</table>
+</body>
+</html>

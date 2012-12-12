@@ -39,3 +39,5 @@ Dec 3 9:20-12:25
     add key_card to house table and use it
 Dec 5 10:35-3:30
     continuing with Rides enhancements
+Dec 11 7:50-
+    making doc for all columns in all tables

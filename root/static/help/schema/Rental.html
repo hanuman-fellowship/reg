@@ -1,0 +1,105 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Rental
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: rental
+<dl>
+<dt>balance</dt>
+<dd></dd>
+<dt>color</dt>
+<dd></dd>
+<dt>comment</dt>
+<dd></dd>
+<dt>contract_received</dt>
+<dd></dd>
+<dt>contract_sent</dt>
+<dd></dd>
+<dt>coordinator_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>cs_person_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>deposit</dt>
+<dd></dd>
+<dt>edate</dt>
+<dd></dd>
+<dt>email</dt>
+<dd></dd>
+<dt>end_hour</dt>
+<dd></dd>
+<dt>expected</dt>
+<dd></dd>
+<dt>glnum</dt>
+<dd></dd>
+<dt>grid_code</dt>
+<dd></dd>
+<dt>housecost_id</dt>
+<dd>foreign key to <a href=Housecost.html>housecost</a></dd>
+<dt>housing_note</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>linked</dt>
+<dd></dd>
+<dt>lunches</dt>
+<dd></dd>
+<dt>max</dt>
+<dd></dd>
+<dt>mmc_does_reg</dt>
+<dd></dd>
+<dt>name</dt>
+<dd></dd>
+<dt>phone</dt>
+<dd></dd>
+<dt>program_id</dt>
+<dd>foreign key to <a href=Program.html>program</a></dd>
+<dt>proposal_id</dt>
+<dd>foreign key to <a href=Proposal.html>proposal</a></dd>
+<dt>received_by</dt>
+<dd></dd>
+<dt>refresh_days</dt>
+<dd></dd>
+<dt>rental_follows</dt>
+<dd></dd>
+<dt>sdate</dt>
+<dd></dd>
+<dt>sent_by</dt>
+<dd></dd>
+<dt>staff_ok</dt>
+<dd></dd>
+<dt>start_hour</dt>
+<dd></dd>
+<dt>status</dt>
+<dd></dd>
+<dt>subtitle</dt>
+<dd></dd>
+<dt>summary_id</dt>
+<dd>foreign key to <a href=Summary.html>summary</a></dd>
+<dt>tentative</dt>
+<dd></dd>
+<dt>title</dt>
+<dd></dd>
+<dt>url</dt>
+<dd></dd>
+<dt>webdesc</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>blocks</td><td><a href=Block.html>Block</a></td><td>has_many</td></tr>
+<tr><td>bookings</td><td><a href=Booking.html>Booking</a></td><td>has_many</td></tr>
+<tr><td>charges</td><td><a href=Rentalcharge.html>RentalCharge</a></td><td>has_many</td></tr>
+<tr><td>contract_signer</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+<tr><td>coordinator</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+<tr><td>housecost</td><td><a href=Housecost.html>HouseCost</a></td><td>belongs_to</td></tr>
+<tr><td>payments</td><td><a href=Rentalpayment.html>RentalPayment</a></td><td>has_many</td></tr>
+<tr><td>program</td><td><a href=Program.html>Program</a></td><td>belongs_to</td></tr>
+<tr><td>received_by</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+<tr><td>rental_bookings</td><td><a href=Rentalbooking.html>RentalBooking</a></td><td>has_many</td></tr>
+<tr><td>sent_by</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+</table>
+</body>
+</html>

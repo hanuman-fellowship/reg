@@ -19,3 +19,7 @@ __PACKAGE__->belongs_to('program' => 'RetreatCenterDB::Program', 'program_id');
 __PACKAGE__->belongs_to('cluster' => 'RetreatCenterDB::Cluster', 'cluster_id');
 
 1;
+__END__
+cluster_id - foreign key to cluster
+program_id - foreign key to program
+seq - 

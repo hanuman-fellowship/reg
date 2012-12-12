@@ -1,0 +1,37 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Donation
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: donation
+<dl>
+<dt>amount</dt>
+<dd></dd>
+<dt>date_d</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>person_id</dt>
+<dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>project_id</dt>
+<dd>foreign key to <a href=Project.html>project</a></dd>
+<dt>the_date</dt>
+<dd></dd>
+<dt>time_d</dt>
+<dd></dd>
+<dt>type</dt>
+<dd></dd>
+<dt>who_d</dt>
+<dd></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>person</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+<tr><td>project</td><td><a href=Project.html>Project</a></td><td>belongs_to</td></tr>
+<tr><td>who</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+</table>
+</body>
+</html>

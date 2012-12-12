@@ -35,3 +35,9 @@ sub the_time_obj {
 }
 
 1;
+__END__
+id - unique id
+note - 
+resident_id - foreign key to resident
+the_date - 
+the_time - 

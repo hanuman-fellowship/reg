@@ -1,0 +1,93 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Person
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+</h2>
+Table: people
+<dl>
+<dt>addr1</dt>
+<dd></dd>
+<dt>addr2</dt>
+<dd></dd>
+<dt>akey</dt>
+<dd></dd>
+<dt>cc_code</dt>
+<dd></dd>
+<dt>cc_expire</dt>
+<dd></dd>
+<dt>cc_number</dt>
+<dd></dd>
+<dt>city</dt>
+<dd></dd>
+<dt>comment</dt>
+<dd></dd>
+<dt>country</dt>
+<dd></dd>
+<dt>date_entrd</dt>
+<dd></dd>
+<dt>date_updat</dt>
+<dd></dd>
+<dt>deceased</dt>
+<dd></dd>
+<dt>e_mailings</dt>
+<dd></dd>
+<dt>email</dt>
+<dd></dd>
+<dt>first</dt>
+<dd></dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>id_sps</dt>
+<dd></dd>
+<dt>inactive</dt>
+<dd></dd>
+<dt>last</dt>
+<dd></dd>
+<dt>mmi_e_mailings</dt>
+<dd></dd>
+<dt>mmi_snail_mailings</dt>
+<dd></dd>
+<dt>safety_form</dt>
+<dd></dd>
+<dt>sanskrit</dt>
+<dd>Sanskrit name - if any. one can search for a person by their Sanskrit name</dd>
+<dt>sex</dt>
+<dd>gender - M or F or '' (as yet indetermined) this matters for housing purposes</dd>
+<dt>share_mailings</dt>
+<dd></dd>
+<dt>snail_mailings</dt>
+<dd></dd>
+<dt>st_prov</dt>
+<dd>state or province</dd>
+<dt>tel_cell</dt>
+<dd>cell phone</dd>
+<dt>tel_home</dt>
+<dd>home phone</dd>
+<dt>tel_work</dt>
+<dd>work phone These phone numbers are used all over the place. Especially in the phone list.</dd>
+<dt>zip_post</dt>
+<dd>zip (or postal) code</dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>affil_person</td><td><a href=Affilperson.html>AffilPerson</a></td><td>has_many</td></tr>
+<tr><td>affils</td><td>affil_person => affil</td><td>many_to_many</td></tr>
+<tr><td>credits</td><td><a href=Credit.html>Credit</a></td><td>has_many</td></tr>
+<tr><td>donations</td><td><a href=Donation.html>Donation</a></td><td>has_many</td></tr>
+<tr><td>leader</td><td><a href=Leader.html>Leader</a></td><td>might_have</td></tr>
+<tr><td>member</td><td><a href=Member.html>Member</a></td><td>might_have</td></tr>
+<tr><td>mmi_payments</td><td><a href=Mmipayment.html>MMIPayment</a></td><td>has_many</td></tr>
+<tr><td>partner</td><td><a href=Person.html>Person</a></td><td>might_have</td></tr>
+<tr><td>payments</td><td><a href=Xaccountpayment.html>XAccountPayment</a></td><td>has_many</td></tr>
+<tr><td>proposals</td><td><a href=Proposal.html>Proposal</a></td><td>has_many</td></tr>
+<tr><td>registrations</td><td><a href=Registration.html>Registration</a></td><td>has_many</td></tr>
+<tr><td>rentals</td><td><a href=Rental.html>Rental</a></td><td>has_many</td></tr>
+<tr><td>req_mmi_payments</td><td><a href=Requestedmmipayment.html>RequestedMMIPayment</a></td><td>has_many</td></tr>
+<tr><td>resident</td><td><a href=Resident.html>Resident</a></td><td>might_have</td></tr>
+<tr><td>rides</td><td><a href=Ride.html>Ride</a></td><td>has_many</td></tr>
+</table>
+</body>
+</html>

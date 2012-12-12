@@ -86,8 +86,7 @@ __PACKAGE__->has_many(charges   => 'RetreatCenterDB::RegCharge',   'reg_id');
 __PACKAGE__->has_many(payments  => 'RetreatCenterDB::RegPayment',  'reg_id');
 __PACKAGE__->has_many(mmi_payments  => 'RetreatCenterDB::MMIPayment',
                       'reg_id');
-__PACKAGE__->has_many(req_mmi_payments =>
-                      'RetreatCenterDB::RequestedMMIPayment', 'reg_id',
+__PACKAGE__->has_many(req_mmi_payments => 'RetreatCenterDB::RequestedMMIPayment', 'reg_id',
                       { order_by => 'id desc' });
 __PACKAGE__->has_many(confnotes => 'RetreatCenterDB::ConfHistory', 'reg_id',
                       { order_by => 'the_date desc, time desc' });
@@ -232,3 +231,46 @@ sub receipt_dates {
 }
 
 1;
+__END__
+adsource - 
+arrived - 
+balance - 
+cabin_room - 
+cancelled - 
+carpool - 
+ceu_license - 
+comment - 
+confnote - 
+date_end - 
+date_postmark - 
+date_start - 
+deposit - 
+early - 
+free_prog_taken - 
+from_where - 
+h_name - 
+h_type - 
+hascar - 
+house_id - foreign key to house
+id - unique id
+kids - 
+late - 
+leader_assistant - 
+letter_sent - 
+manual - 
+nights_taken - 
+person_id - foreign key to person
+pref1 - 
+pref2 - 
+program_id - foreign key to program
+referral - 
+rental_after - 
+rental_before - 
+share_first - 
+share_last - 
+status - 
+time_postmark - 
+transaction_id - Authorize.net transaction id
+work_study - 
+work_study_comment - 
+work_study_safety - 

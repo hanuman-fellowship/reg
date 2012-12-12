@@ -28,3 +28,7 @@ sub due_date_obj {
 }
 
 1;
+__END__
+book_id - foreign key to book
+due_date - 
+person_id - foreign key to person

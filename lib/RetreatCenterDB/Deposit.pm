@@ -56,3 +56,14 @@ sub online_disp {
     penny(shift->online());
 }
 1;
+__END__
+cash - 
+chk - 
+credit - 
+date_end - 
+date_start - 
+id - unique id
+online - 
+sponsor - 
+time - 
+user_id - foreign key to user

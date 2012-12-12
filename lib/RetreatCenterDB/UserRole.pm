@@ -15,3 +15,6 @@ __PACKAGE__->belongs_to(user => 'RetreatCenterDB::User', 'user_id');
 __PACKAGE__->belongs_to(role => 'RetreatCenterDB::Role', 'role_id');
 
 1;
+__END__
+role_id - foreign key to role
+user_id - foreign key to user
