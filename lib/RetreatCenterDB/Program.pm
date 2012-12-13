@@ -515,7 +515,7 @@ sub fee_table {
 <table>
 EOH
     if ($dncc) {
-        $fee_table .= <<"EOH";
+    $fee_table .= <<"EOH";
 <tr><th colspan=$cols style="text-align: center">
 TUITION \$$tuition<br>
 plus<br>
@@ -526,16 +526,19 @@ of this program per-day fees are shown below.<br>
 <br>
 </th></tr>
 EOH
-    }
-    elsif (! $PR) {
-        $fee_table .= <<"EOH";
-<tr><th colspan=$cols>$string{heading}</th></tr>
-<tr><td colspan=$cols>&nbsp;</td></tr>
-EOH
-    }
-    $fee_table .= "<tr><th style='text-align: left' valign=bottom>$string{typehdr}</th>";
-    if ($extradays) {
-        my $plural = ($ndays > 1)? "s": "";
+}
+elsif (! $PR) {
+    my $heading = ($tuition)?
+        "Cost Per Person<br>(including tuition, meals, lodging, and facilities use)"
+       :"Cost Per Person<br>(including meals, lodging, and facilities use - does NOT include tuition)"
+       ;
+    $heading = "<center>$heading</center>";
+    $fee_table .= "<tr><th colspan=$cols>$heading</th></tr>\n";
+    $fee_table .= "<tr><td colspan=$cols>&nbsp;</td></tr>\n";
+}
+$fee_table .= "<tr><th style='text-align: left' valign=bottom>$string{typehdr}</th>";
+if ($extradays) {
+    my $plural = ($ndays > 1)? "s": "";
         $fee_table .= "<th style='text-align: right' width=70>$ndays Day$plural</th>".
                       "<th style='text-align: right' width=70>$fulldays Days</th></tr>\n";
     }

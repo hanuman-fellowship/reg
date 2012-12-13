@@ -39,5 +39,8 @@ Dec 3 9:20-12:25
     add key_card to house table and use it
 Dec 5 10:35-3:30
     continuing with Rides enhancements
-Dec 11 7:50-
+Dec 11 7:50-12:45
     making doc for all columns in all tables
+Dec 12 9:00-10:30
+    Danielle's request - MMI programs on the web
+    Jamal's request - different headings for fee tables
