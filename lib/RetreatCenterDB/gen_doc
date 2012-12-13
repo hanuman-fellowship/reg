@@ -32,7 +32,8 @@ sub get_col {
 
 sub link_to {
     my ($name) = @_;
-    return "<a href=\u$name.html>$name</a>";
+    my $lname = ($name eq 'meeting_place')? 'meetingplace': $name;
+    return "<a href=\u$lname.html>$name</a>";
 }
 
 my @files = sort
