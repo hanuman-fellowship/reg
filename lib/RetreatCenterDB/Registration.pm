@@ -232,46 +232,71 @@ sub receipt_dates {
 
 1;
 __END__
-overview - 
-adsource - 
-arrived - 
-balance - 
-cabin_room - 
-cancelled - 
-carpool - 
-ceu_license - 
-comment - 
-confnote - 
-date_end - 
-date_postmark - 
-date_start - 
-deposit - 
-early - 
-free_prog_taken - 
-from_where - 
-h_name - 
-h_type - 
-hascar - 
+overview - A registration is created when a Person signs up for a Program.
+    This is a central record that has many relations to other tables (i.e. Models/Objects).
+adsource - how did they find out about the program?
+arrived - have they arrived at MMC?
+balance - balance due
+cabin_room - do they prefer a cabin or a room?  the value is cabin, room, or empty
+cancelled - has this registration been cancelled?
+carpool - do they want to carpool?
+ceu_license - a text field with the license number, if any - for CEU certificates.
+comment - a free text field for a variety of purposes to describe
+    issues with this registration
+confnote - A free text note to insert at the top of the confirmation letter.
+date_end - when will the person leave?
+date_postmark - when was the registration taken?
+date_start - when will the person arrive?
+deposit - How much was paid in the deposit?
+    This value is duplicated in a RegPayment record.
+early - will this person come before the program starts?
+free_prog_taken - was this person a Member and they took this program as
+    their free program?
+from_where - Home, SJC, SFO, or empty.   Where do you want to car pool from?
+h_name - House name.  Used in old reg.   Now obsolete.
+h_type - housing type - one of:
+    <ul>
+    <li>unknown
+    <li>commuting
+    <li>own_tent
+    <li>dormitory
+    <li>economy
+    <li>center_tent
+    <li>triple
+    <li>own_van
+    <li>single
+    <li>dble
+    <li>single_bath
+    <li>dble_bath
+    <li>unknown_bath
+    <li>quad
+    <li>triple_bath
+    <li>not_needed
+    </ul>
+hascar - do they have a car?  (for car pooling)
 house_id - foreign key to house
 id - unique id
-kids - 
-late - 
-leader_assistant - 
-letter_sent - 
-manual - 
-nights_taken - 
+kids - ages of kids accompanying the registrant.
+late - will this person leave on the day the program ends?
+leader_assistant - is this person a leader or assistant?
+letter_sent - was the confirmation letter sent?  old record have a date.
+    it is now a boolean field.
+manual - should the finances not be done automatically?
+nights_taken - How many member benefit nights were taken?
 person_id - foreign key to person
-pref1 - 
-pref2 - 
+pref1 - housing preference #1 - see h_type
+pref2 - housing preference #2 - see h_type
 program_id - foreign key to program
-referral - 
-rental_after - 
-rental_before - 
-share_first - 
-share_last - 
-status - 
-time_postmark - 
+referral - advertisement, web, brochure, or flyer.
+    if ad then the ad_source is also filled in.
+rental_after - is this person staying for a rental after this program?  (usually a personal retreat)
+rental_before - was this person here for a rental before this program?  (usually a personal retreat)
+share_first - first name of the person they want to share a room with
+share_last - last name of the person they want to share a room with
+status - membership status - empty, Sponsor, Life, Founding Life
+time_postmark - what time did the initial registration happen?
 transaction_id - Authorize.net transaction id
-work_study - 
-work_study_comment - 
-work_study_safety - 
+work_study - do they want to do work study?
+work_study_comment - what kind of work do they want to do?
+work_study_safety - have they filled in a safety form?  This is in synchrony with
+    the safety_form field of Person.

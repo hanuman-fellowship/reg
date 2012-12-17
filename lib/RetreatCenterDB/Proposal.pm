@@ -103,53 +103,62 @@ sub status {
 
 1;
 __END__
-overview - 
-addr1 - 
-addr2 - 
-checkin_time - 
-checkout_time - 
-city - 
-country - 
-cs_addr1 - 
-cs_addr2 - 
-cs_city - 
-cs_country - 
-cs_email - 
-cs_first - 
-cs_last - 
+overview - When people call to ask about renting the space at MMC 
+    a Proposal is created.  Information is gathered and the proposal
+    is considered at the next Program admin meeting.   Creating a proposal
+    awkwardly creates People records.
+    <p>
+    If a proposal is approved there is an Approved link on the proposal
+    screen that creates a Rental from the Proposal - copying the information
+    from the proposal to the rental.
+addr1 - coordinator address 1
+addr2 - coordinator address 2
+checkin_time - when will they check in?  default 4:00 pm
+checkout_time - when will they check out?  default 1:00 pm
+city - coordinator city
+country - coordinator country
+cs_addr1 - contract signer address 1
+cs_addr2 - contract signer address 2
+cs_city - contract signer city
+cs_country - contract signer country
+cs_email - contract signer email address
+cs_first - contract signer first name
+cs_last - contract signer last name
 cs_person_id - foreign key to person
-cs_st_prov - 
-cs_tel_cell - 
-cs_tel_home - 
-cs_tel_work - 
-cs_zip_post - 
-date_of_call - 
-dates_requested - 
-denied - 
-deposit - 
-email - 
-first - 
-food_service - 
-group_name - 
-housing_space - 
+cs_st_prov - contract signer state/province
+cs_tel_cell - contract signer cell phone
+cs_tel_home - contract signer home phone
+cs_tel_work - contract signer work phone
+cs_zip_post - contract signer zip/postal code
+date_of_call - when did the call come in?
+dates_requested - a free text field describing dates and/or date ranges
+denied - was the proposal was denied?
+deposit - the required deposit
+email - coordinator email address
+first - coordinator first name
+food_service - free text describing food needs
+group_name - name of the group requesting the rental
+housing_space - what housing is needed?
 id - unique id
-last - 
-leader_housing - 
-max - 
-meeting_space - 
-min - 
-misc_notes - 
-other_requests - 
-other_things - 
+last - coordinator last name
+leader_housing - where will the leader be housed?
+max - maximum # of people to be housed.  this number is used
+    to calculate the contractual financial obligation.
+meeting_space - what kind of meeting space is needed?
+min - minimum # of people to be housed.
+misc_notes - free text of other notes
+other_requests - free text describing other requests
+other_things - free text describing miscellaneous other things
 person_id - foreign key to person
-program_meeting_date - 
-provisos - 
+program_meeting_date - when will this proposal be considered? 
+provisos - free text describing any provisos
 rental_id - foreign key to rental
-rental_type - 
-special_needs - 
-st_prov - 
-staff_ok - 
-tel_cell - 
-tel_home - 
-tel_work - 
-zip_post - 
+rental_type - what type of organization is requesting the rental?
+    like psychology, yoga, sound healing, social justice, movement, etc.
+special_needs - free text describing any special needs
+st_prov - coordinator state/province
+staff_ok - did the staff okay this proposal?
+tel_cell - coordinator cell phone
+tel_home - coordinator home phone
+tel_work - coordinator work phone
+zip_post - coordinator zip/postal code

@@ -50,11 +50,11 @@ sub amount_disp {
 
 1;
 __END__
-overview - 
-amount - 
+overview - A charge for a rental.
+amount - dollar amount
 id - unique id
 rental_id - foreign key to rental
-the_date - 
-time - 
-user_id - foreign key to user
-what - 
+the_date - date the charge was added
+time - time the charge was added
+user_id - foreign key to user - the person who added the charge
+what - a brief description of the charge

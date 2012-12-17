@@ -37,6 +37,10 @@ EOH
 
 1;
 __END__
-overview - 
-the_key - 
-value - 
+overview - strings are the way that Reg keeps its configuration data.
+    They're just a key-value pair.
+    The records are read into an exported global hash (named %string)
+    by the Global::init function.
+    This function is called (if needed) on login.
+the_key - key
+value - value

@@ -30,8 +30,10 @@ sub date_needed_obj {
 
 1;
 __END__
-overview - 
-date_needed - 
-date_vacated - 
+overview - Records indicating which rooms/tent sites need to be cleaned/made-up.
+    And by when.
+date_needed - When is the space next needed?
+date_vacated - When was the space vacated?
 house_id - foreign key to house
-refresh - 
+refresh - Does this space need to be refreshed now?  This is for programs/rentals
+    that are longer than a week - the beds need fresh linen periodically.

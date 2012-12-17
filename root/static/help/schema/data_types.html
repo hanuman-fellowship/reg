@@ -1,0 +1,26 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+General comments on data types in Reg.
+<span style="margin-left: 2in"><a href=../schema.html>To Schema</a></span>
+<p>
+<h2>Booleans</h2>
+Boolean fields are either the string 'yes' or the empty string ''.
+This may seem odd and wasteful of space.   It does allow one to simply
+display the string next to a label without translation.
+Space is very cheap and getting cheaper all the time.
+<h2>Dates</h2>
+Date fields contain 8 digits yyyymmdd.
+This allows for easy sorting of records by date.
+For internal operations date fields are converted into Date::Simple
+objects.  See that module's perldoc for details.
+We do not store timezone or locale information.
+We really don't need the full generality (and massive complexity) of DateTime.
+<h2>Times</h2>
+Time fields are stored in 24 hour time hhmm.  No seconds.
+For internal operations time fields are converted into Time::Simple objects.
+See that module's perldoc for details.
+</body>
+</html>

@@ -17,6 +17,6 @@ __PACKAGE__->set_primary_key(qw/term/);
 
 1;
 __END__
-overview - 
-definition - 
-term - 
+overview - This is a user-editable collection of terms and definitions.   A mini wiki.
+definition - A long explanation of the term.
+term - A short term needing a definitive authoritative definition.

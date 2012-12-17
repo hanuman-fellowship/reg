@@ -22,9 +22,9 @@ __PACKAGE__->belongs_to(house  => 'RetreatCenterDB::House',  'house_id');
 
 1;
 __END__
-overview - 
-date_end - 
-date_start - 
-h_type - 
+overview - A rental booking reserves a house (all beds) for the rental.
+date_end - date house first needed
+date_start - date house last needed (the day before the end date of the rental)
+h_type - housing type - see the h_type field of Registration
 house_id - foreign key to house
 rental_id - foreign key to rental

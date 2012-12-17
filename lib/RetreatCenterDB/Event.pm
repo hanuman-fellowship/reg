@@ -90,7 +90,7 @@ __END__
 overview - Something is happening at the center/school/institute that is not a Program or Rental.
     Events appear on the Calendar (or the Master calendar).  Events can reserve Meeting Spaces
     and can have Blocks to reserve Houses.
-descr - longer description of the event, please.
+descr - longer description of the event
 edate - end date
 id - unique id
 max - Max number of people (used for choosing a Meeting Place).

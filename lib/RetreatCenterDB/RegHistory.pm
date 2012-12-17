@@ -36,10 +36,10 @@ sub time_obj {
 
 1;
 __END__
-overview - 
+overview - any time anything is done to/in/on a registration a history record is added.
 id - unique id
 reg_id - foreign key to registration
-the_date - 
-time - 
+the_date - what day did this event happen?
+time - what time did this event happen?
 user_id - foreign key to user
-what - 
+what - a brief description of the event

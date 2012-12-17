@@ -121,26 +121,26 @@ sub cost_disp {
 
 1;
 __END__
-overview - 
-airport - 
-carrier - 
-comment - 
-cost - 
-create_date - 
-create_time - 
-customs - 
+overview - People can request Rides to and/or from MMC.
+airport - Which airport? SJC, SFO, OAK, or OTH (some non-airport place)
+carrier - Which airline?
+comment - free text
+cost - dollar amount for the service
+create_date - date the Ride was created
+create_time - time the Ride was created
+customs - are they going through Customs (for international flights)?
 driver_id - foreign key to user
-flight_num - 
-flight_time - 
-from_to - 
+flight_num - Flight number
+flight_time - Flight arrival/departure time
+from_to - "From MMC" or "To MMC"
 id - unique id
-intl - 
-luggage - 
-paid_date - 
-pickup_date - 
-pickup_time - 
+intl - Is this an international flight?
+luggage - a description of the number and size of the person's luggage
+paid_date - date the ride was paid for
+pickup_date - date to be picked up
+pickup_time - time to be picked up
 rider_id - foreign key to person
-sent_date - 
-shuttle - 
-status - 
-type - 
+sent_date - date the confirmation letter was sent
+shuttle - which shuttle?  They are numbered from 1 to 10.
+status - a short free text field describing the status of the ride (complete, need to pay, cancelled, etc)
+type - payment type - D (Credit) C (Check) S (Cash) O (Online)

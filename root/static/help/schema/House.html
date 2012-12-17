@@ -6,48 +6,48 @@
 <h2>House
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+Each room and tent site has a House record. The name is a misnomer because there are usually more than one room in a house.
 <p>
 Table: house
 <dl>
 <dt>bath</dt>
-<dd></dd>
+<dd>does the room have a bathroom?</dd>
 <dt>cabin</dt>
-<dd></dd>
+<dd>is it a test cabin structure?</dd>
 <dt>cat_abode</dt>
-<dd></dd>
+<dd>are cats allowed?</dd>
 <dt>center</dt>
-<dd></dd>
+<dd>center tent?</dd>
 <dt>cluster_id</dt>
 <dd>foreign key to <a href=Cluster.html>cluster</a></dd>
 <dt>cluster_order</dt>
-<dd></dd>
+<dd>where should this house be displayed in the ClusterView?</dd>
 <dt>comment</dt>
-<dd></dd>
+<dd>a longer description of the space</dd>
 <dt>disp_code</dt>
-<dd></dd>
+<dd>A above, B below, L left, or R right with an optional t to truncate name</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>inactive</dt>
-<dd></dd>
+<dd>no longer habitable?</dd>
 <dt>key_card</dt>
-<dd></dd>
+<dd>does the door require an electronic key card?</dd>
 <dt>max</dt>
-<dd></dd>
+<dd>how many beds?</dd>
 <dt>name</dt>
-<dd></dd>
+<dd>short name of the space</dd>
 <dt>priority</dt>
-<dd></dd>
+<dd>a number from 1 to 10 indicating how desirable the space is (1 is the most desirable).</dd>
 <dt>resident</dt>
-<dd></dd>
+<dd>is this Resident housing?</dd>
 <dt>sq_foot</dt>
-<dd></dd>
+<dd>room square footage - for resident housing</dd>
 <dt>tent</dt>
-<dd></dd>
+<dd>is it a tent?</dd>
 <dt>x</dt>
-<dd></dd>
+<dd>X coordinate for the DailyPic image</dd>
 <dt>y</dt>
-<dd></dd>
+<dd>Y coordinate for the DailyPic image</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

@@ -24,8 +24,9 @@ sub bgcolor {
 
 1;
 __END__
-overview - 
-color - 
+overview - An organization that creates Events.  Like MMC, MMI, HFS, SALT, Temple, etc.
+color - RGB values for the calendar display.
 id - unique id
-name - 
-on_prog_cal - 
+name - a short descriptive name of the organization
+on_prog_cal - Should events for this organization also appear on the Program Calendar
+    or only on the Master Calendar?

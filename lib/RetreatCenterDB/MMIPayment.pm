@@ -98,13 +98,13 @@ sub amount_disp {
 
 1;
 __END__
-overview - 
-amount - 
-deleted - 
-glnum - 
+overview - A payment by a person to a registration in an MMI program.
+amount - how much $?
+deleted - an obsolete attribute?  was it ever used?
+glnum - A General Ledger number for this payment - calculated by Util::calc_mmi_glnum().
 id - unique id
-note - 
+note - a few words describing the purpose of the payment
 person_id - foreign key to person
 reg_id - foreign key to registration
-the_date - 
-type - 
+the_date - when was it entered?
+type - cash/credit/check/online

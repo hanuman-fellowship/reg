@@ -100,11 +100,11 @@ sub amount_disp {
 
 1;
 __END__
-overview - 
-amount - 
+overview - A payment to a Rental.
+amount - dollar amount
 id - unique id
 rental_id - foreign key to rental
-the_date - 
-time - 
-type - 
-user_id - foreign key to user
+the_date - date the payment was made
+time - time the payment was made
+type - D (credit), C (check), S (cash)
+user_id - foreign key to user - the user who entered the payment

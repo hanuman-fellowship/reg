@@ -17,7 +17,9 @@ __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'project_id',
 
 1;
 __END__
-overview - 
-descr - 
-glnum - 
+overview - At one time people could make Donations to Projects.
+    This function has been removed but the table and historical data remains.
+    It can be seen by choosing Configuration > Projects.
+descr - short description of the project
+glnum - a General Ledger number assigned by an account_admin
 id - unique id

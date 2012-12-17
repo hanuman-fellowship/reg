@@ -6,54 +6,54 @@
 <h2>Ride
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+People can request Rides to and/or from MMC.
 <p>
 Table: ride
 <dl>
 <dt>airport</dt>
-<dd></dd>
+<dd>Which airport? SJC, SFO, OAK, or OTH (some non-airport place)</dd>
 <dt>carrier</dt>
-<dd></dd>
+<dd>Which airline?</dd>
 <dt>comment</dt>
-<dd></dd>
+<dd>free text</dd>
 <dt>cost</dt>
-<dd></dd>
+<dd>dollar amount for the service</dd>
 <dt>create_date</dt>
-<dd></dd>
+<dd>date the Ride was created</dd>
 <dt>create_time</dt>
-<dd></dd>
+<dd>time the Ride was created</dd>
 <dt>customs</dt>
-<dd></dd>
+<dd>are they going through Customs (for international flights)?</dd>
 <dt>driver_id</dt>
 <dd>foreign key to <a href=User.html>user</a></dd>
 <dt>flight_num</dt>
-<dd></dd>
+<dd>Flight number</dd>
 <dt>flight_time</dt>
-<dd></dd>
+<dd>Flight arrival/departure time</dd>
 <dt>from_to</dt>
-<dd></dd>
+<dd>"From MMC" or "To MMC"</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>intl</dt>
-<dd></dd>
+<dd>Is this an international flight?</dd>
 <dt>luggage</dt>
-<dd></dd>
+<dd>a description of the number and size of the person's luggage</dd>
 <dt>paid_date</dt>
-<dd></dd>
+<dd>date the ride was paid for</dd>
 <dt>pickup_date</dt>
-<dd></dd>
+<dd>date to be picked up</dd>
 <dt>pickup_time</dt>
-<dd></dd>
+<dd>time to be picked up</dd>
 <dt>rider_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>sent_date</dt>
-<dd></dd>
+<dd>date the confirmation letter was sent</dd>
 <dt>shuttle</dt>
-<dd></dd>
+<dd>which shuttle?  They are numbered from 1 to 10.</dd>
 <dt>status</dt>
-<dd></dd>
+<dd>a short free text field describing the status of the ride (complete, need to pay, cancelled, etc)</dd>
 <dt>type</dt>
-<dd></dd>
+<dd>payment type - D (Credit) C (Check) S (Cash) O (Online)</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

@@ -969,56 +969,76 @@ sub PR {
 
 1;
 __END__
-overview - 
-allow_dup_regs - 
-brdesc - 
+overview - Programs are MMC (and MMI) sponsored events for which we do registrations of individuals.
+    They have many attributes and many relations to other tables.  
+allow_dup_regs - Can a person sign up more than once?  Personal Retreats have this field set to 'yes'.
+    Other programs could have it set as well.  If not set we prohibit a duplicate registration.
+brdesc - A lengthy description of the program for the brochure.  If empty
+    we take the webdesc field.
 canpol_id - foreign key to canpol
 category_id - foreign key to category
-cl_template - 
-collect_total - 
-color - 
-commuting - 
-confnote - 
-deposit - 
-dncc_why - 
-do_not_compute_costs - 
-economy - 
-edate - 
-extradays - 
-facebook_event_id - an id referencing the event on facebook
-footnotes - 
-full_tuition - 
-glnum - 
+cl_template - confirmation letter template file name.  Mostly it is 'default' but can vary.
+    It lives in root/static/templates/letter.
+collect_total - Should we collect the total amount due when registering online?
+color - RGB values for the color of the program in the DailyPic.
+commuting - Are people allowed to commute for this program?
+confnote - A note that is included in ALL confirmation notes.
+deposit - the amount required to deposit when registering.
+dncc_why - an obsolete field
+do_not_compute_costs - Should we not compute the costs of this program?
+economy - Is Economy housing available?
+edate - end date of the program
+extradays - How many extra days after the end date for the extended version
+    of this program?
+facebook_event_id - an id referencing the event on facebook.  not a foreign key.
+footnotes - A field containing *, **, +, or % - denoting what kind of CEU credits
+    are available for this program.  Rather cryptic!  This was inherited directly from
+    old reg.
+full_tuition - For extended programs what is the tuition for the full length?
+glnum - General Ledger number for this program for accounting purposes.
+    This is computed based on the start date.
 housecost_id - foreign key to housecost
 id - unique id
-image - 
-kayakalpa - 
-level - 
-linked - 
-lunches - 
-max - 
-name - 
-not_on_calendar - 
-notify_on_reg - 
-percent_tuition - 
-prog_end - 
-prog_start - 
-ptemplate - 
-refresh_days - 
-reg_count - 
-reg_end - 
-reg_start - 
-rental_id - foreign key to rental
-retreat - 
-sbath - 
-school - 
-sdate - 
-single - 
-subtitle - 
+image - A boolean - do we have an image for the web page of this program?
+    Naming conventions lead us to the actual filename.
+kayakalpa - Shall we include a note about Kaya Kalpa information in the confirmation letter?
+level - For MMI programs this indicates the type of course.
+    D (Diploma), C (Certificate), M (Masters), S (Course), A (Stand-alone Course)
+linked - Shall this program's web page be linked to the others?
+lunches - An encoded (essentially binary) field describing which days of the program have lunch.
+max - What is the expected maximum registrations for the program?
+name - A name for the program - used internally for identification.
+not_on_calendar - Should this program not be included on the calendar?
+    Default no (meaning yes include).
+notify_on_reg - A list of email addresses to email when people register for the program.
+percent_tuition - What percentage of the tuition should be collected
+    when someone registers online?  Default is 0.   This would be in addition
+    to the specified deposit.
+prog_end - Time the program ends on the last day.
+prog_start - Time the program begins on the first day.
+ptemplate - the template file to be used for generating the program web page.
+    Defaults to default.tt2 in root/static/templates/web.
+refresh_days - a binary encoded field to indicate which days that
+    the rooms should be refreshed (new linen).  Mostly for programs longer
+    than a week.  It is used when creating the 'make up' list.
+reg_count - The number of current registrants.
+    This field keeps changing as people sign up and cancel.
+    Too difficult and time consuming to keep recomputing it.
+reg_end - Time that registration ends on the first day.
+reg_start - Time that registration begins on the first day.
+rental_id - foreign key to rental - if the program is a 'hybrid'.
+retreat - Is this an MMC yoga retreat?
+sbath - Are singles with bath allowed?
+school - 0 for MMC programs.   1-4 for programs sponsored by MMI - Yoga, Ayurveda, Massage and Community Studies.
+sdate - start date of the program.
+single - Are singles allowed for this program?
+subtitle - A secondary description of the program.  For the web page.
 summary_id - foreign key to summary
-title - 
-tuition - 
-unlinked_dir - 
-url - 
-webdesc - 
-webready - 
+title - A short description of the program for the web page.
+tuition - A charge for the program - mostly for the presenter.
+unlinked_dir - For unlinked programs (see the linked attribute) this is
+    a directory name on www.mountmadonna.org that will contain the program.
+url - A web URL containing further information about the program.
+webdesc - A long description of the program.
+webready - Is this program ready to be published to the web (at least to
+    the staging area)? 

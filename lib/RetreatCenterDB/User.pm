@@ -53,17 +53,18 @@ sub numbers {
 
 1;
 __END__
-overview - 
-bg - 
-cell - 
-email - 
-fg - 
-first - 
-hide_mmi - 
+overview - This contains the information for users of Reg.
+    Username, password, personal colors, etc.
+bg - RGB values for background
+cell - cell phone number
+email - email address
+fg - RGB values for foreground
+first - first name
+hide_mmi - should MMI programs be hidden from you?
 id - unique id
-last - 
-link - 
-office - 
-password - 
-txt_msg_email - 
-username - 
+last - last name
+link - RGB values for links
+office - office phone number
+password - password - in clear text :(
+txt_msg_email - email address to send a text message to this person
+username - the login name

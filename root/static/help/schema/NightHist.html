@@ -6,24 +6,24 @@
 <h2>NightHist
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+This table records actions that affect a member's free nights and free program.
 <p>
 Table: night_hist
 <dl>
 <dt>action</dt>
-<dd></dd>
+<dd>a number from 1 to 5 indicating the action <ol> <li>Set Nights <li>Take Nights <li>Clear Free Program <li>Take Free Program <li>Set Free Program </ol></dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>member_id</dt>
 <dd>foreign key to <a href=Member.html>member</a></dd>
 <dt>num_nights</dt>
-<dd></dd>
+<dd>how many nights?</dd>
 <dt>reg_id</dt>
-<dd>foreign key to <a href=Registration.html>registration</a></dd>
+<dd>foreign key to <a href=Registration.html>registration</a> - i.e. for which program the nights were taken.</dd>
 <dt>the_date</dt>
-<dd></dd>
+<dd>date this record was created</dd>
 <dt>time</dt>
-<dd></dd>
+<dd>time this record was created</dd>
 <dt>user_id</dt>
 <dd>foreign key to <a href=User.html>user</a></dd>
 </dl>

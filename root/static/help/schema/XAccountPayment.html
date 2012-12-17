@@ -6,26 +6,26 @@
 <h2>XAccountPayment
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+People can make Payments to XAccounts.  An XAccountPayment record is created.
 <p>
 Table: xaccount_payment
 <dl>
 <dt>amount</dt>
-<dd></dd>
+<dd>dollar amount</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>the_date</dt>
-<dd></dd>
+<dd>date of the payment</dd>
 <dt>time</dt>
-<dd></dd>
+<dd>time of the payment</dd>
 <dt>type</dt>
-<dd></dd>
+<dd>C (Check) D (Credit) O (Online) S (Cash)</dd>
 <dt>user_id</dt>
 <dd>foreign key to <a href=User.html>user</a></dd>
 <dt>what</dt>
-<dd></dd>
+<dd>optional description of what the payment was for</dd>
 <dt>xaccount_id</dt>
 <dd>foreign key to <a href=Xaccount.html>xaccount</a></dd>
 </dl>

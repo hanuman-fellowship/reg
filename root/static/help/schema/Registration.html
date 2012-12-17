@@ -6,94 +6,94 @@
 <h2>Registration
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+A registration is created when a Person signs up for a Program. This is a central record that has many relations to other tables (i.e. Models/Objects).
 <p>
 Table: registration
 <dl>
 <dt>adsource</dt>
-<dd></dd>
+<dd>how did they find out about the program?</dd>
 <dt>arrived</dt>
-<dd></dd>
+<dd>have they arrived at MMC?</dd>
 <dt>balance</dt>
-<dd></dd>
+<dd>balance due</dd>
 <dt>cabin_room</dt>
-<dd></dd>
+<dd>do they prefer a cabin or a room?  the value is cabin, room, or empty</dd>
 <dt>cancelled</dt>
-<dd></dd>
+<dd>has this registration been cancelled?</dd>
 <dt>carpool</dt>
-<dd></dd>
+<dd>do they want to carpool?</dd>
 <dt>ceu_license</dt>
-<dd></dd>
+<dd>a text field with the license number, if any - for CEU certificates.</dd>
 <dt>comment</dt>
-<dd></dd>
+<dd>a free text field for a variety of purposes to describe issues with this registration</dd>
 <dt>confnote</dt>
-<dd></dd>
+<dd>A free text note to insert at the top of the confirmation letter.</dd>
 <dt>date_end</dt>
-<dd></dd>
+<dd>when will the person leave?</dd>
 <dt>date_postmark</dt>
-<dd></dd>
+<dd>when was the registration taken?</dd>
 <dt>date_start</dt>
-<dd></dd>
+<dd>when will the person arrive?</dd>
 <dt>deposit</dt>
-<dd></dd>
+<dd>How much was paid in the deposit? This value is duplicated in a RegPayment record.</dd>
 <dt>early</dt>
-<dd></dd>
+<dd>will this person come before the program starts?</dd>
 <dt>free_prog_taken</dt>
-<dd></dd>
+<dd>was this person a Member and they took this program as their free program?</dd>
 <dt>from_where</dt>
-<dd></dd>
+<dd>Home, SJC, SFO, or empty.   Where do you want to car pool from?</dd>
 <dt>h_name</dt>
-<dd></dd>
+<dd>House name.  Used in old reg.   Now obsolete.</dd>
 <dt>h_type</dt>
-<dd></dd>
+<dd>housing type - one of: <ul> <li>unknown <li>commuting <li>own_tent <li>dormitory <li>economy <li>center_tent <li>triple <li>own_van <li>single <li>dble <li>single_bath <li>dble_bath <li>unknown_bath <li>quad <li>triple_bath <li>not_needed </ul></dd>
 <dt>hascar</dt>
-<dd></dd>
+<dd>do they have a car?  (for car pooling)</dd>
 <dt>house_id</dt>
 <dd>foreign key to <a href=House.html>house</a></dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>kids</dt>
-<dd></dd>
+<dd>ages of kids accompanying the registrant.</dd>
 <dt>late</dt>
-<dd></dd>
+<dd>will this person leave on the day the program ends?</dd>
 <dt>leader_assistant</dt>
-<dd></dd>
+<dd>is this person a leader or assistant?</dd>
 <dt>letter_sent</dt>
-<dd></dd>
+<dd>was the confirmation letter sent?  old record have a date. it is now a boolean field.</dd>
 <dt>manual</dt>
-<dd></dd>
+<dd>should the finances not be done automatically?</dd>
 <dt>nights_taken</dt>
-<dd></dd>
+<dd>How many member benefit nights were taken?</dd>
 <dt>person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>pref1</dt>
-<dd></dd>
+<dd>housing preference #1 - see h_type</dd>
 <dt>pref2</dt>
-<dd></dd>
+<dd>housing preference #2 - see h_type</dd>
 <dt>program_id</dt>
 <dd>foreign key to <a href=Program.html>program</a></dd>
 <dt>referral</dt>
-<dd></dd>
+<dd>advertisement, web, brochure, or flyer. if ad then the ad_source is also filled in.</dd>
 <dt>rental_after</dt>
-<dd></dd>
+<dd>is this person staying for a rental after this program?  (usually a personal retreat)</dd>
 <dt>rental_before</dt>
-<dd></dd>
+<dd>was this person here for a rental before this program?  (usually a personal retreat)</dd>
 <dt>share_first</dt>
-<dd></dd>
+<dd>first name of the person they want to share a room with</dd>
 <dt>share_last</dt>
-<dd></dd>
+<dd>last name of the person they want to share a room with</dd>
 <dt>status</dt>
-<dd></dd>
+<dd>membership status - empty, Sponsor, Life, Founding Life</dd>
 <dt>time_postmark</dt>
-<dd></dd>
+<dd>what time did the initial registration happen?</dd>
 <dt>transaction_id</dt>
 <dd>Authorize.net transaction id</dd>
 <dt>work_study</dt>
-<dd></dd>
+<dd>do they want to do work study?</dd>
 <dt>work_study_comment</dt>
-<dd></dd>
+<dd>what kind of work do they want to do?</dd>
 <dt>work_study_safety</dt>
-<dd></dd>
+<dd>have they filled in a safety form?  This is in synchrony with the safety_form field of Person.</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

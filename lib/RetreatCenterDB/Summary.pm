@@ -105,31 +105,34 @@ EOH
 
 1;
 __END__
-overview - 
-alongside - 
-back_to_back - 
-check_list - 
-converted_spaces - 
-date_updated - 
-feedback - 
-field_staff_setup - 
-flowers - 
-food_service - 
-gate_code - 
+overview - The summary contains all kinds of information that enable the MMC staff
+    to be gracious and attentive hosts - for both rentals and programs.
+    Lots of free text fields.
+alongside - which other activities are alongside this event?
+back_to_back - does another activity abutt this one?
+check_list - things to not forget
+converted_spaces - meeting rooms that become dorms
+date_updated - when was this summary last updated?
+feedback - free text
+field_staff_setup - free text
+flowers - free text
+food_service - free text
+gate_code - the gate code
 id - unique id
-leader_housing - 
-leader_name - 
-miscellaneous - 
-needs_verification - 
-orientation - 
-prog_person - 
-registration_location - 
-signage - 
-sound_setup - 
-staff_arrival - 
-staff_departure - 
-time_updated - 
-who_updated - 
-wind_up - 
-workshop_description - 
-workshop_schedule - 
+leader_housing - free text
+leader_name - free text
+miscellaneous - free text
+needs_verification - does this summary need to be verified?
+    useful for when a template is copied into a new program/rental.
+orientation - free text
+prog_person - which person in the program office is in charge of this event?
+registration_location - free text
+signage - free text
+sound_setup - free text
+staff_arrival - free text
+staff_departure - free text
+time_updated - time last updated
+who_updated - which user last updated - foreign key to user
+wind_up - free text
+workshop_description - free text
+workshop_schedule - free text

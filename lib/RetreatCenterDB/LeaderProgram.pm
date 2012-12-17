@@ -21,6 +21,6 @@ __PACKAGE__->belongs_to(leader  => 'RetreatCenterDB::Leader',  'l_id');
 
 1;
 __END__
-overview - 
+overview - A mapping table allowing more than one Leader per Program.
 l_id - foreign key to leader
 p_id - foreign key to program

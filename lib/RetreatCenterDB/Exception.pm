@@ -16,7 +16,9 @@ __PACKAGE__->belongs_to(program => 'RetreatCenterDB::Program', 'prog_id');
 
 1;
 __END__
-overview - 
+overview - When a program web page is generated you may want to
+    make an exception for a particular program and a particular tag
+    within the web page template.
 prog_id - foreign key to program
-tag - 
-value - 
+tag - the tag name
+value - the replacement value

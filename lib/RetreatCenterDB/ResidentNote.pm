@@ -36,9 +36,10 @@ sub the_time_obj {
 
 1;
 __END__
-overview - 
+overview - This table allows the personnel committed to keep a timestamped
+    series of notes on a resident.
 id - unique id
-note - 
+note - free text
 resident_id - foreign key to resident
-the_date - 
-the_time - 
+the_date - date of the note
+the_time - time of the note

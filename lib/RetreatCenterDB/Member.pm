@@ -74,13 +74,13 @@ sub category_id {
 
 1;
 __END__
-overview - 
-category - 
-date_general - 
-date_life - 
-date_sponsor - 
-free_prog_taken - 
+overview - People can become Members of the Hanuman Fellowship by paying dues.
+category - General, Contributing Sponsor, Sponsor, Life, Founding Life, or Inactive.
+date_general - date the General membership began
+date_life - date the Life membership began
+date_sponsor - date the Sponsor membership began
+free_prog_taken - was this year's free program taken?
 id - unique id
 person_id - foreign key to person
-sponsor_nights - 
-total_paid - 
+sponsor_nights - how many sponsor free nights remain?
+total_paid - total dollars paid towards a sponsor membership

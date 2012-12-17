@@ -6,114 +6,114 @@
 <h2>Program
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+Programs are MMC (and MMI) sponsored events for which we do registrations of individuals. They have many attributes and many relations to other tables.  
 <p>
 Table: program
 <dl>
 <dt>allow_dup_regs</dt>
-<dd></dd>
+<dd>Can a person sign up more than once?  Personal Retreats have this field set to 'yes'. Other programs could have it set as well.  If not set we prohibit a duplicate registration.</dd>
 <dt>brdesc</dt>
-<dd></dd>
+<dd>A lengthy description of the program for the brochure.  If empty we take the webdesc field.</dd>
 <dt>canpol_id</dt>
 <dd>foreign key to <a href=Canpol.html>canpol</a></dd>
 <dt>category_id</dt>
 <dd>foreign key to <a href=Category.html>category</a></dd>
 <dt>cl_template</dt>
-<dd></dd>
+<dd>confirmation letter template file name.  Mostly it is 'default' but can vary. It lives in root/static/templates/letter.</dd>
 <dt>collect_total</dt>
-<dd></dd>
+<dd>Should we collect the total amount due when registering online?</dd>
 <dt>color</dt>
-<dd></dd>
+<dd>RGB values for the color of the program in the DailyPic.</dd>
 <dt>commuting</dt>
-<dd></dd>
+<dd>Are people allowed to commute for this program?</dd>
 <dt>confnote</dt>
-<dd></dd>
+<dd>A note that is included in ALL confirmation notes.</dd>
 <dt>deposit</dt>
-<dd></dd>
+<dd>the amount required to deposit when registering.</dd>
 <dt>dncc_why</dt>
-<dd></dd>
+<dd>an obsolete field</dd>
 <dt>do_not_compute_costs</dt>
-<dd></dd>
+<dd>Should we not compute the costs of this program?</dd>
 <dt>economy</dt>
-<dd></dd>
+<dd>Is Economy housing available?</dd>
 <dt>edate</dt>
-<dd></dd>
+<dd>end date of the program</dd>
 <dt>extradays</dt>
-<dd></dd>
+<dd>How many extra days after the end date for the extended version of this program?</dd>
 <dt>facebook_event_id</dt>
-<dd>an id referencing the event on facebook</dd>
+<dd>an id referencing the event on facebook.  not a foreign key.</dd>
 <dt>footnotes</dt>
-<dd></dd>
+<dd>A field containing *, **, +, or % - denoting what kind of CEU credits are available for this program.  Rather cryptic!  This was inherited directly from old reg.</dd>
 <dt>full_tuition</dt>
-<dd></dd>
+<dd>For extended programs what is the tuition for the full length?</dd>
 <dt>glnum</dt>
-<dd></dd>
+<dd>General Ledger number for this program for accounting purposes. This is computed based on the start date.</dd>
 <dt>housecost_id</dt>
 <dd>foreign key to <a href=Housecost.html>housecost</a></dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>image</dt>
-<dd></dd>
+<dd>A boolean - do we have an image for the web page of this program? Naming conventions lead us to the actual filename.</dd>
 <dt>kayakalpa</dt>
-<dd></dd>
+<dd>Shall we include a note about Kaya Kalpa information in the confirmation letter?</dd>
 <dt>level</dt>
-<dd></dd>
+<dd>For MMI programs this indicates the type of course. D (Diploma), C (Certificate), M (Masters), S (Course), A (Stand-alone Course)</dd>
 <dt>linked</dt>
-<dd></dd>
+<dd>Shall this program's web page be linked to the others?</dd>
 <dt>lunches</dt>
-<dd></dd>
+<dd>An encoded (essentially binary) field describing which days of the program have lunch.</dd>
 <dt>max</dt>
-<dd></dd>
+<dd>What is the expected maximum registrations for the program?</dd>
 <dt>name</dt>
-<dd></dd>
+<dd>A name for the program - used internally for identification.</dd>
 <dt>not_on_calendar</dt>
-<dd></dd>
+<dd>Should this program not be included on the calendar? Default no (meaning yes include).</dd>
 <dt>notify_on_reg</dt>
-<dd></dd>
+<dd>A list of email addresses to email when people register for the program.</dd>
 <dt>percent_tuition</dt>
-<dd></dd>
+<dd>What percentage of the tuition should be collected when someone registers online?  Default is 0.   This would be in addition to the specified deposit.</dd>
 <dt>prog_end</dt>
-<dd></dd>
+<dd>Time the program ends on the last day.</dd>
 <dt>prog_start</dt>
-<dd></dd>
+<dd>Time the program begins on the first day.</dd>
 <dt>ptemplate</dt>
-<dd></dd>
+<dd>the template file to be used for generating the program web page. Defaults to default.tt2 in root/static/templates/web.</dd>
 <dt>refresh_days</dt>
-<dd></dd>
+<dd>a binary encoded field to indicate which days that the rooms should be refreshed (new linen).  Mostly for programs longer than a week.  It is used when creating the 'make up' list.</dd>
 <dt>reg_count</dt>
-<dd></dd>
+<dd>The number of current registrants. This field keeps changing as people sign up and cancel. Too difficult and time consuming to keep recomputing it.</dd>
 <dt>reg_end</dt>
-<dd></dd>
+<dd>Time that registration ends on the first day.</dd>
 <dt>reg_start</dt>
-<dd></dd>
+<dd>Time that registration begins on the first day.</dd>
 <dt>rental_id</dt>
-<dd>foreign key to <a href=Rental.html>rental</a></dd>
+<dd>foreign key to <a href=Rental.html>rental</a> - if the program is a 'hybrid'.</dd>
 <dt>retreat</dt>
-<dd></dd>
+<dd>Is this an MMC yoga retreat?</dd>
 <dt>sbath</dt>
-<dd></dd>
+<dd>Are singles with bath allowed?</dd>
 <dt>school</dt>
-<dd></dd>
+<dd>0 for MMC programs.   1-4 for programs sponsored by MMI - Yoga, Ayurveda, Massage and Community Studies.</dd>
 <dt>sdate</dt>
-<dd></dd>
+<dd>start date of the program.</dd>
 <dt>single</dt>
-<dd></dd>
+<dd>Are singles allowed for this program?</dd>
 <dt>subtitle</dt>
-<dd></dd>
+<dd>A secondary description of the program.  For the web page.</dd>
 <dt>summary_id</dt>
 <dd>foreign key to <a href=Summary.html>summary</a></dd>
 <dt>title</dt>
-<dd></dd>
+<dd>A short description of the program for the web page.</dd>
 <dt>tuition</dt>
-<dd></dd>
+<dd>A charge for the program - mostly for the presenter.</dd>
 <dt>unlinked_dir</dt>
-<dd></dd>
+<dd>For unlinked programs (see the linked attribute) this is a directory name on www.mountmadonna.org that will contain the program.</dd>
 <dt>url</dt>
-<dd></dd>
+<dd>A web URL containing further information about the program.</dd>
 <dt>webdesc</dt>
-<dd></dd>
+<dd>A long description of the program.</dd>
 <dt>webready</dt>
-<dd></dd>
+<dd>Is this program ready to be published to the web (at least to the staging area)? </dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

@@ -1020,14 +1020,12 @@ sub del_mmi_payment : Local {
     $reg->calc_balance();
     if ($from eq 'reg') {
         $c->response->redirect(
-            $c->uri_for("/registration/view/" . $reg->id()
-            )
+            $c->uri_for("/registration/view/" . $reg->id())
         );
     }
     else {
         $c->response->redirect(
-            $c->uri_for("/person/list_mmi_payment/"
-                        . $pay->person_id)
+            $c->uri_for("/person/list_mmi_payment/" . $pay->person_id)
         );
     }
 }

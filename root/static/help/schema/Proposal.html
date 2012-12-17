@@ -6,108 +6,108 @@
 <h2>Proposal
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+When people call to ask about renting the space at MMC  a Proposal is created.  Information is gathered and the proposal is considered at the next Program admin meeting.   Creating a proposal awkwardly creates People records. <p> If a proposal is approved there is an Approved link on the proposal screen that creates a Rental from the Proposal - copying the information from the proposal to the rental.
 <p>
 Table: proposal
 <dl>
 <dt>addr1</dt>
-<dd></dd>
+<dd>coordinator address 1</dd>
 <dt>addr2</dt>
-<dd></dd>
+<dd>coordinator address 2</dd>
 <dt>checkin_time</dt>
-<dd></dd>
+<dd>when will they check in?  default 4:00 pm</dd>
 <dt>checkout_time</dt>
-<dd></dd>
+<dd>when will they check out?  default 1:00 pm</dd>
 <dt>city</dt>
-<dd></dd>
+<dd>coordinator city</dd>
 <dt>country</dt>
-<dd></dd>
+<dd>coordinator country</dd>
 <dt>cs_addr1</dt>
-<dd></dd>
+<dd>contract signer address 1</dd>
 <dt>cs_addr2</dt>
-<dd></dd>
+<dd>contract signer address 2</dd>
 <dt>cs_city</dt>
-<dd></dd>
+<dd>contract signer city</dd>
 <dt>cs_country</dt>
-<dd></dd>
+<dd>contract signer country</dd>
 <dt>cs_email</dt>
-<dd></dd>
+<dd>contract signer email address</dd>
 <dt>cs_first</dt>
-<dd></dd>
+<dd>contract signer first name</dd>
 <dt>cs_last</dt>
-<dd></dd>
+<dd>contract signer last name</dd>
 <dt>cs_person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>cs_st_prov</dt>
-<dd></dd>
+<dd>contract signer state/province</dd>
 <dt>cs_tel_cell</dt>
-<dd></dd>
+<dd>contract signer cell phone</dd>
 <dt>cs_tel_home</dt>
-<dd></dd>
+<dd>contract signer home phone</dd>
 <dt>cs_tel_work</dt>
-<dd></dd>
+<dd>contract signer work phone</dd>
 <dt>cs_zip_post</dt>
-<dd></dd>
+<dd>contract signer zip/postal code</dd>
 <dt>date_of_call</dt>
-<dd></dd>
+<dd>when did the call come in?</dd>
 <dt>dates_requested</dt>
-<dd></dd>
+<dd>a free text field describing dates and/or date ranges</dd>
 <dt>denied</dt>
-<dd></dd>
+<dd>was the proposal was denied?</dd>
 <dt>deposit</dt>
-<dd></dd>
+<dd>the required deposit</dd>
 <dt>email</dt>
-<dd></dd>
+<dd>coordinator email address</dd>
 <dt>first</dt>
-<dd></dd>
+<dd>coordinator first name</dd>
 <dt>food_service</dt>
-<dd></dd>
+<dd>free text describing food needs</dd>
 <dt>group_name</dt>
-<dd></dd>
+<dd>name of the group requesting the rental</dd>
 <dt>housing_space</dt>
-<dd></dd>
+<dd>what housing is needed?</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>last</dt>
-<dd></dd>
+<dd>coordinator last name</dd>
 <dt>leader_housing</dt>
-<dd></dd>
+<dd>where will the leader be housed?</dd>
 <dt>max</dt>
-<dd></dd>
+<dd>maximum # of people to be housed.  this number is used to calculate the contractual financial obligation.</dd>
 <dt>meeting_space</dt>
-<dd></dd>
+<dd>what kind of meeting space is needed?</dd>
 <dt>min</dt>
-<dd></dd>
+<dd>minimum # of people to be housed.</dd>
 <dt>misc_notes</dt>
-<dd></dd>
+<dd>free text of other notes</dd>
 <dt>other_requests</dt>
-<dd></dd>
+<dd>free text describing other requests</dd>
 <dt>other_things</dt>
-<dd></dd>
+<dd>free text describing miscellaneous other things</dd>
 <dt>person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>program_meeting_date</dt>
-<dd></dd>
+<dd>when will this proposal be considered? </dd>
 <dt>provisos</dt>
-<dd></dd>
+<dd>free text describing any provisos</dd>
 <dt>rental_id</dt>
 <dd>foreign key to <a href=Rental.html>rental</a></dd>
 <dt>rental_type</dt>
-<dd></dd>
+<dd>what type of organization is requesting the rental? like psychology, yoga, sound healing, social justice, movement, etc.</dd>
 <dt>special_needs</dt>
-<dd></dd>
+<dd>free text describing any special needs</dd>
 <dt>st_prov</dt>
-<dd></dd>
+<dd>coordinator state/province</dd>
 <dt>staff_ok</dt>
-<dd></dd>
+<dd>did the staff okay this proposal?</dd>
 <dt>tel_cell</dt>
-<dd></dd>
+<dd>coordinator cell phone</dd>
 <dt>tel_home</dt>
-<dd></dd>
+<dd>coordinator home phone</dd>
 <dt>tel_work</dt>
-<dd></dd>
+<dd>coordinator work phone</dd>
 <dt>zip_post</dt>
-<dd></dd>
+<dd>coordinator zip/postal code</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

@@ -69,7 +69,7 @@ __END__
 overview - Blocks reserve housing space.  They can be linked to a program/rental/event
     but not a particular person.   Blocks can reserve one bed in a double room
     just like a registration can.
-allocated - 
+allocated - has the space for this block been allocated? (i.e. config records created)
 comment - a long reason
 edate - end date
 event_id - foreign key to event

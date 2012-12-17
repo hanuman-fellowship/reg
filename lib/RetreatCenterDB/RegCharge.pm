@@ -45,12 +45,12 @@ sub amount_disp {
 
 1;
 __END__
-overview - 
-amount - 
-automatic - 
+overview - charges for a registration are recorded in these records
+amount - dollar amount
+automatic - was this charge a result of an automatic calculation?
 id - unique id
 reg_id - foreign key to registration
-the_date - 
-time - 
-user_id - foreign key to user
-what - 
+the_date - what day was this charge added?
+time - what time was the charge added?
+user_id - foreign key to user - the person who added it
+what - a brief description of the charge

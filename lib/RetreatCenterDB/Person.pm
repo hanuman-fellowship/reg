@@ -230,39 +230,52 @@ sub numbers {
 
 1;
 __END__
-overview - 
-addr1 - 
-addr2 - 
-akey - 
-cc_code - 
-cc_expire - 
-cc_number - 
-city - 
-comment - 
-country - 
-date_entrd - 
-date_updat - 
-deceased - 
-e_mailings - 
-email - 
-first - 
+overview - The person record contains all the personal information
+    that we need to know about people in our database.  
+    Many other tables have a foreign key into person.
+    See the many Relations below.
+    <p>
+    For people requesting Rides we keep their
+    credit card information in the person record.  This may be a
+    violation of federal rules.  It's worth asking about.
+    <p>The table name is people but the model name is Person.
+    We don't have a strict naming convention for table/model names
+    like Ruby on Rails does.
+addr1 - first line of address
+addr2 - optional second line of address
+akey - a computed key used for address unduplication
+cc_code - credit card security code
+cc_expire - credit card expiration date
+cc_number - credit card #
+city - city
+comment - arbitrary length comment about the person
+country - country
+date_entrd - date this person's record was first entered
+date_updat - last date the record was updated
+deceased - the person has passed
+e_mailings - I want MMC emailings
+email - email address
+first - first name
 id - unique id
-id_sps - 
-inactive - 
-last - 
-mmi_e_mailings - 
-mmi_snail_mailings - 
-safety_form - 
+id_sps - foreign key to person - the partner, if partnered
+inactive - This record is no longer active - for whatever reason.
+    Do not include it in any mailings.
+last - last name
+mmi_e_mailings - I want MMI emailings
+mmi_snail_mailings - I want MMI snail mailings
+safety_form - this person has filled out a safety form
 sanskrit - Sanskrit name - if any.
     one can search for a person by their Sanskrit name
-sex - gender - M or F or '' (as yet indetermined)
-    this matters for housing purposes
-share_mailings - 
-snail_mailings - 
+sex - gender - M or F.
+    for people that have as yet not specified their gender
+    this field could be either blank ' ' or C (not sure why old reg had a C - couple?).
+    this field matters for housing purposes.
+share_mailings - it is okay to share my information with other organizations
+snail_mailings - I want MMC snail mailings
 st_prov - state or province
 tel_cell - cell phone
 tel_home - home phone
 tel_work - work phone
-    These phone numbers are used all over the place.
-    Especially in the phone list.
+    These phone numbers are used in many places.
+    Especially in the phone list, of course.
 zip_post - zip (or postal) code

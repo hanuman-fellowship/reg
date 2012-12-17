@@ -6,26 +6,26 @@
 <h2>RegCharge
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+charges for a registration are recorded in these records
 <p>
 Table: reg_charge
 <dl>
 <dt>amount</dt>
-<dd></dd>
+<dd>dollar amount</dd>
 <dt>automatic</dt>
-<dd></dd>
+<dd>was this charge a result of an automatic calculation?</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>reg_id</dt>
 <dd>foreign key to <a href=Registration.html>registration</a></dd>
 <dt>the_date</dt>
-<dd></dd>
+<dd>what day was this charge added?</dd>
 <dt>time</dt>
-<dd></dd>
+<dd>what time was the charge added?</dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=User.html>user</a></dd>
+<dd>foreign key to <a href=User.html>user</a> - the person who added it</dd>
 <dt>what</dt>
-<dd></dd>
+<dd>a brief description of the charge</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

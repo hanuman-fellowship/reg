@@ -47,11 +47,13 @@ sub _esc_q {
 
 1;
 __END__
-overview - 
-date_closed - 
-date_entered - 
+overview - This is a kind of bug tracking database so we don't forget
+    what needs to be fixed.  It was used at first - until the issues grew too numerous.
+    Email to the developer serves almost as well.
+date_closed - date the issue was resolved
+date_entered - date it was first logged
 id - unique id
-notes - 
-priority - 
-title - 
+notes - Full explanation of what needs attention.
+priority - 1 to 10 with 1 the most urgent.
+title - Short description of the issue.
 user_id - foreign key to user

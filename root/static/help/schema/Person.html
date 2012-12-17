@@ -6,62 +6,62 @@
 <h2>Person
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+The person record contains all the personal information that we need to know about people in our database.   Many other tables have a foreign key into person. See the many Relations below. <p> For people requesting Rides we keep their credit card information in the person record.  This may be a violation of federal rules.  It's worth asking about. <p>The table name is people but the model name is Person. We don't have a strict naming convention for table/model names like Ruby on Rails does.
 <p>
 Table: people
 <dl>
 <dt>addr1</dt>
-<dd></dd>
+<dd>first line of address</dd>
 <dt>addr2</dt>
-<dd></dd>
+<dd>optional second line of address</dd>
 <dt>akey</dt>
-<dd></dd>
+<dd>a computed key used for address unduplication</dd>
 <dt>cc_code</dt>
-<dd></dd>
+<dd>credit card security code</dd>
 <dt>cc_expire</dt>
-<dd></dd>
+<dd>credit card expiration date</dd>
 <dt>cc_number</dt>
-<dd></dd>
+<dd>credit card #</dd>
 <dt>city</dt>
-<dd></dd>
+<dd>city</dd>
 <dt>comment</dt>
-<dd></dd>
+<dd>arbitrary length comment about the person</dd>
 <dt>country</dt>
-<dd></dd>
+<dd>country</dd>
 <dt>date_entrd</dt>
-<dd></dd>
+<dd>date this person's record was first entered</dd>
 <dt>date_updat</dt>
-<dd></dd>
+<dd>last date the record was updated</dd>
 <dt>deceased</dt>
-<dd></dd>
+<dd>the person has passed</dd>
 <dt>e_mailings</dt>
-<dd></dd>
+<dd>I want MMC emailings</dd>
 <dt>email</dt>
-<dd></dd>
+<dd>email address</dd>
 <dt>first</dt>
-<dd></dd>
+<dd>first name</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>id_sps</dt>
-<dd></dd>
+<dd>foreign key to <a href=Person.html>person</a> - the partner, if partnered</dd>
 <dt>inactive</dt>
-<dd></dd>
+<dd>This record is no longer active - for whatever reason. Do not include it in any mailings.</dd>
 <dt>last</dt>
-<dd></dd>
+<dd>last name</dd>
 <dt>mmi_e_mailings</dt>
-<dd></dd>
+<dd>I want MMI emailings</dd>
 <dt>mmi_snail_mailings</dt>
-<dd></dd>
+<dd>I want MMI snail mailings</dd>
 <dt>safety_form</dt>
-<dd></dd>
+<dd>this person has filled out a safety form</dd>
 <dt>sanskrit</dt>
 <dd>Sanskrit name - if any. one can search for a person by their Sanskrit name</dd>
 <dt>sex</dt>
-<dd>gender - M or F or '' (as yet indetermined) this matters for housing purposes</dd>
+<dd>gender - M or F. for people that have as yet not specified their gender this field could be either blank ' ' or C (not sure why old reg had a C - couple?). this field matters for housing purposes.</dd>
 <dt>share_mailings</dt>
-<dd></dd>
+<dd>it is okay to share my information with other organizations</dd>
 <dt>snail_mailings</dt>
-<dd></dd>
+<dd>I want MMC snail mailings</dd>
 <dt>st_prov</dt>
 <dd>state or province</dd>
 <dt>tel_cell</dt>
@@ -69,7 +69,7 @@ Table: people
 <dt>tel_home</dt>
 <dd>home phone</dd>
 <dt>tel_work</dt>
-<dd>work phone These phone numbers are used all over the place. Especially in the phone list.</dd>
+<dd>work phone These phone numbers are used in many places. Especially in the phone list, of course.</dd>
 <dt>zip_post</dt>
 <dd>zip (or postal) code</dd>
 </dl>

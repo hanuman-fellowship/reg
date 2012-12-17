@@ -20,7 +20,11 @@ __PACKAGE__->belongs_to(cluster => 'RetreatCenterDB::Cluster', 'cluster_id');
 
 1;
 __END__
-overview - 
+overview - A mapping table between cluster and program
+    by which programs can reserve housing clusters so that
+    other programs and rentals can't access the houses
+    in those clusters.  Or at least, they won't be offered them.
+    A lodging FORCE or a Block can always get at them.
 cluster_id - foreign key to cluster
 program_id - foreign key to program
-seq - 
+seq - obsolete?  I don't see it used anywhere.

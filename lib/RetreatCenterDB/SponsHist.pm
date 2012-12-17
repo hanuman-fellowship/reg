@@ -52,14 +52,14 @@ sub time_obj {
 
 1;
 __END__
-overview - 
-amount - 
-date_payment - 
-general - 
+overview - These records chronicle events in the life of a Sponsor member.
+amount - dollar amount
+date_payment - date the payment was made
+general - was the payment for a general membership?
 id - unique id
 member_id - foreign key to member
-the_date - 
-time - 
-user_id - foreign key to user
-valid_from - 
-valid_to - 
+the_date - date the event happened
+time - time the event happened
+user_id - foreign key to user - the one who created the event
+valid_from - what date is the payment valid from?
+valid_to - what date is the payment valid to?

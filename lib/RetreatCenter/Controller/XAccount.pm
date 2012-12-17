@@ -81,6 +81,12 @@ sub view : Local {
     my ($self, $c, $id, $by_person) = @_;
 
     my $xa = model($c, 'XAccount')->find($id);
+
+    # We could add a relationship to the XAccount model
+    # that does the code below for us.
+    # This is a task for a future refactorer.
+    # Or perhaps we need this code to enable the by_person feature?
+    #
     my @payments = model($c, 'XAccountPayment')->search(
         {
             xaccount_id => $id,

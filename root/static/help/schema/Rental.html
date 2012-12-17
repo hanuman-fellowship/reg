@@ -6,56 +6,56 @@
 <h2>Rental
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
-
+A rental is created when some other organization wants to rent the meeting space and housing at MMC.  These events are not sponsored nor advertised by the center.  Housing assignments are made by the coordinator by filling in a form on the global web. This information is brought into Reg periodically.
 <p>
 Table: rental
 <dl>
 <dt>balance</dt>
-<dd></dd>
+<dd>the outstanding balance</dd>
 <dt>color</dt>
-<dd></dd>
+<dd>RGB values for the DailyPic display.</dd>
 <dt>comment</dt>
-<dd></dd>
+<dd>free text describing the rental</dd>
 <dt>contract_received</dt>
-<dd></dd>
+<dd>date the contract was received</dd>
 <dt>contract_sent</dt>
-<dd></dd>
+<dd>date the contract was sent out</dd>
 <dt>coordinator_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>cs_person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>deposit</dt>
-<dd></dd>
+<dd>how much deposit is required?</dd>
 <dt>edate</dt>
-<dd></dd>
+<dd>date the rental ends</dd>
 <dt>email</dt>
-<dd></dd>
+<dd>email address for the rental to put on the little web page (if desired)</dd>
 <dt>end_hour</dt>
-<dd></dd>
+<dd>time the rental will end (and people will leave)</dd>
 <dt>expected</dt>
-<dd></dd>
+<dd>how many people are expected?</dd>
 <dt>glnum</dt>
-<dd></dd>
+<dd>a General Ledger number computed from the sdate</dd>
 <dt>grid_code</dt>
-<dd></dd>
+<dd>a hard to guess code for the grid URL</dd>
 <dt>housecost_id</dt>
 <dd>foreign key to <a href=Housecost.html>housecost</a></dd>
 <dt>housing_note</dt>
-<dd></dd>
+<dd>free text describing any issues with the rental housing</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>linked</dt>
-<dd></dd>
+<dd>should this rental be included on the online Event calendar?</dd>
 <dt>lunches</dt>
-<dd></dd>
+<dd>an encoded (essentially binary) field for when lunches are requested.</dd>
 <dt>max</dt>
-<dd></dd>
+<dd>the maximum number of people expected.  this is used to determine the financial obligation of the renter.</dd>
 <dt>mmc_does_reg</dt>
-<dd></dd>
+<dd>will we be doing registration for this event? if so, a parallel hybrid program will be created.</dd>
 <dt>name</dt>
-<dd></dd>
+<dd>a brief name of the rental for internal purposes</dd>
 <dt>phone</dt>
-<dd></dd>
+<dd>phone number for the web page, if wanted</dd>
 <dt>program_id</dt>
 <dd>foreign key to <a href=Program.html>program</a></dd>
 <dt>proposal_id</dt>
@@ -63,31 +63,31 @@ Table: rental
 <dt>received_by</dt>
 <dd>foreign key to <a href=User.html>user</a></dd>
 <dt>refresh_days</dt>
-<dd></dd>
+<dd>what days should the bedding be refreshed? This is an encoded field similar to lunches. This is used for longer term rentals.</dd>
 <dt>rental_follows</dt>
-<dd></dd>
+<dd>does another rental follow this one? used in generating the make up list.</dd>
 <dt>sdate</dt>
-<dd></dd>
+<dd>date the rental starts</dd>
 <dt>sent_by</dt>
 <dd>foreign key to <a href=User.html>user</a></dd>
 <dt>staff_ok</dt>
-<dd></dd>
+<dd>has the staff okayed this rental?</dd>
 <dt>start_hour</dt>
-<dd></dd>
+<dd>time the rental begins</dd>
 <dt>status</dt>
-<dd></dd>
+<dd>tentative, sent, received, due, done</dd>
 <dt>subtitle</dt>
-<dd></dd>
+<dd>secondary description of the rental for the web</dd>
 <dt>summary_id</dt>
 <dd>foreign key to <a href=Summary.html>summary</a></dd>
 <dt>tentative</dt>
-<dd></dd>
+<dd>has this rental not been confirmed yet? checked at first, unchecked automatically when a contract is sent out.</dd>
 <dt>title</dt>
-<dd></dd>
+<dd>primary description of the rental for the web</dd>
 <dt>url</dt>
-<dd></dd>
+<dd>a URL of the rental for the web</dd>
 <dt>webdesc</dt>
-<dd></dd>
+<dd>a longer description of the rental for the web.</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

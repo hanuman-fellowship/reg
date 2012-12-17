@@ -84,12 +84,12 @@ sub amount_disp {
 
 1;
 __END__
-overview - 
-amount - 
+overview - this table records payments to a registration
+amount - dollar amount
 id - unique id
 reg_id - foreign key to registration
-the_date - 
-time - 
-type - 
-user_id - foreign key to user
-what - 
+the_date - what day?
+time - what time?
+type - C (check), S (cash), D (credit), O(online)
+user_id - foreign key to user - who took the payment?
+what - a brief description of the payment

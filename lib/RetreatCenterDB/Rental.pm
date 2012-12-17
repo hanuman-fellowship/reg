@@ -473,43 +473,53 @@ sub send_grid_data {
 
 1;
 __END__
-overview - 
-balance - 
-color - 
-comment - 
-contract_received - 
-contract_sent - 
+overview - A rental is created when some other organization wants
+    to rent the meeting space and housing at MMC.  These events are not
+    sponsored nor advertised by the center.  Housing assignments are
+    made by the coordinator by filling in a form on the global web.
+    This information is brought into Reg periodically.
+balance - the outstanding balance
+color - RGB values for the DailyPic display.
+comment - free text describing the rental
+contract_received - date the contract was received
+contract_sent - date the contract was sent out
 coordinator_id - foreign key to person
 cs_person_id - foreign key to person
-deposit - 
-edate - 
-email - 
-end_hour - 
-expected - 
-glnum - 
-grid_code - 
+deposit - how much deposit is required?
+edate - date the rental ends
+email - email address for the rental to put on the little web page (if desired)
+end_hour - time the rental will end (and people will leave)
+expected - how many people are expected?
+glnum - a General Ledger number computed from the sdate
+grid_code - a hard to guess code for the grid URL
 housecost_id - foreign key to housecost
-housing_note - 
+housing_note - free text describing any issues with the rental housing
 id - unique id
-linked - 
-lunches - 
-max - 
-mmc_does_reg - 
-name - 
-phone - 
+linked - should this rental be included on the online Event calendar?
+lunches - an encoded (essentially binary) field for when lunches are requested.
+max - the maximum number of people expected.  this is used
+    to determine the financial obligation of the renter.
+mmc_does_reg - will we be doing registration for this event?
+    if so, a parallel hybrid program will be created.
+name - a brief name of the rental for internal purposes
+phone - phone number for the web page, if wanted
 program_id - foreign key to program
 proposal_id - foreign key to proposal
 received_by - foreign key to user
-refresh_days - 
-rental_follows - 
-sdate - 
+refresh_days - what days should the bedding be refreshed?
+    This is an encoded field similar to lunches.
+    This is used for longer term rentals.
+rental_follows - does another rental follow this one?
+    used in generating the make up list.
+sdate - date the rental starts
 sent_by - foreign key to user
-staff_ok - 
-start_hour - 
-status - 
-subtitle - 
+staff_ok - has the staff okayed this rental?
+start_hour - time the rental begins
+status - tentative, sent, received, due, done
+subtitle - secondary description of the rental for the web
 summary_id - foreign key to summary
-tentative - 
-title - 
-url - 
-webdesc - 
+tentative - has this rental not been confirmed yet?
+    checked at first, unchecked automatically when a contract is sent out.
+title - primary description of the rental for the web
+url - a URL of the rental for the web
+webdesc - a longer description of the rental for the web.

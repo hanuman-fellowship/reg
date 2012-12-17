@@ -2,8 +2,8 @@
 use strict;
 use warnings;
 
-my $num_cols;
-my $num_nodoc;
+my $num_cols = 0;
+my $num_nodoc = 0;
 
 FILE:
 for my $f (<*.pm>) {
@@ -51,6 +51,8 @@ for my $f (<*.pm>) {
         next DOC if $line =~ m{\A \s}xms;   # doc continuation
         ++$num_cols;
         if ($line =~ m{\A \w+ \s+ - \s+ \z}xms) {
+            chomp $line;
+            print "** missing doc for '$line' in $f\n";
             ++$num_nodoc;
         }
         if ($line =~ m{foreign[ ]key[ ]to[ ](\w+)}xms) {
@@ -65,7 +67,7 @@ for my $f (<*.pm>) {
         push @doc_cols, $line;
     }
     close $in;
-    if (scalar(@cols) != scalar(@doc_cols)) {
+    if ((scalar(@cols)+1) != scalar(@doc_cols)) {
         print "mismatch in doc cols for $f\n";
     }
     my %cols = map { $_ => 1 } @cols;
@@ -76,7 +78,7 @@ for my $f (<*.pm>) {
         }
     }
     for my $c (@doc_cols) {
-        if (! exists $cols{$c}) {
+        if ($c ne 'overview' && ! exists $cols{$c}) {
             print "no table column for doc column $c\n";
         }
     }

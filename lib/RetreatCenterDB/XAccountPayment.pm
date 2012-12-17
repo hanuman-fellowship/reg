@@ -93,13 +93,13 @@ sub amount_disp {
 
 1;
 __END__
-overview - 
-amount - 
+overview - People can make Payments to XAccounts.  An XAccountPayment record is created.
+amount - dollar amount
 id - unique id
 person_id - foreign key to person
-the_date - 
-time - 
-type - 
+the_date - date of the payment
+time - time of the payment
+type - C (Check) D (Credit) O (Online) S (Cash)
 user_id - foreign key to user
-what - 
+what - optional description of what the payment was for
 xaccount_id - foreign key to xaccount

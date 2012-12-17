@@ -19,6 +19,7 @@ __PACKAGE__->belongs_to(cluster => 'RetreatCenterDB::Cluster', 'cluster_id');
 
 1;
 __END__
-overview - 
+overview - A mapping table - that allows for Rentals to reserve housing clusters.
+    This prevents other Programs and other Rentals from being offered these houses.
 cluster_id - foreign key to cluster
 rental_id - foreign key to rental

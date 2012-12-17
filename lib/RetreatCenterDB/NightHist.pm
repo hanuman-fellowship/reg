@@ -50,12 +50,19 @@ sub action_str {
 
 1;
 __END__
-overview - 
-action - 
+overview - This table records actions that affect a member's free nights and free program.
+action - a number from 1 to 5 indicating the action
+    <ol>
+    <li>Set Nights
+    <li>Take Nights
+    <li>Clear Free Program
+    <li>Take Free Program
+    <li>Set Free Program
+    </ol>
 id - unique id
 member_id - foreign key to member
-num_nights - 
-reg_id - foreign key to registration
-the_date - 
-time - 
+num_nights - how many nights?
+reg_id - foreign key to registration - i.e. for which program the nights were taken.
+the_date - date this record was created
+time - time this record was created
 user_id - foreign key to user

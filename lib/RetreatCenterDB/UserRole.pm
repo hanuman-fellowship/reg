@@ -16,6 +16,6 @@ __PACKAGE__->belongs_to(role => 'RetreatCenterDB::Role', 'role_id');
 
 1;
 __END__
-overview - 
+overview - A mapping table to enable Users to have multiple Roles.
 role_id - foreign key to role
 user_id - foreign key to user

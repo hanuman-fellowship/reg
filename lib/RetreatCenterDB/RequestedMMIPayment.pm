@@ -92,12 +92,14 @@ sub amount_disp {
 
 1;
 __END__
-overview - 
-amount - 
-code - 
-for_what - 
+overview - Payments for MMI programs can be sent to the registrant so
+    they can pay online via authorize.net.  When the payment is made
+    at authorize.net it is brought in automatically by Reg.
+amount - dollar amount
+code - a generated code sent to the person to identify the payment request
+for_what - Tuition, Meals and Lodging, STRF, Recordings, Other
 id - unique id
-note - 
+note - the reason for the charge
 person_id - foreign key to person
 reg_id - foreign key to registration
-the_date - 
+the_date - the date the request was sent

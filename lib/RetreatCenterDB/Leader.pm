@@ -32,13 +32,13 @@ sub name_public_email {
 }
 1;
 __END__
-overview - 
-assistant - 
-biography - 
+overview - People can become Leaders of programs.
+assistant - Is this person an assistant to another leader?
+biography - Full bio.
 id - unique id
-image - 
-just_first - 
-l_order - 
+image - is there a JPG of the person?  Naming conventions help locate the file.
+just_first - Does this leader only use their first name?  e.g. Adyashanti
+l_order - If a program has multiple leaders what order should they appear in?
 person_id - foreign key to person
-public_email - 
-url - 
+public_email - an email address for the leader that can be made public.
+url - a web URL for the person

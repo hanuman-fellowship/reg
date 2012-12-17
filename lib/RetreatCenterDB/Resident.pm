@@ -24,8 +24,10 @@ sub category {
 
 1;
 __END__
-overview - 
-comment - 
+overview - People can become residents of MMC by registering (or being "enrolled"
+    by someone authorized to do so) for a program with a Category of YSC, YSL, Intern, etc.
+    They are then assigned resident housing.
+comment - free text
 id - unique id
-image - 
+image - is there a picture?   a naming convention finds the file.
 person_id - foreign key to person

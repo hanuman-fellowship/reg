@@ -34,19 +34,21 @@ sub not_needed { my ($self) = @_; return 0; }
 
 1;
 __END__
-overview - 
-center_tent - 
-commuting - 
-dble - 
-dble_bath - 
-dormitory - 
-economy - 
+overview - Rentals and Programs have a named house cost schedule.  This specifies
+    a cost for each type of housing.  The type attribute says whether the cost
+    is for each day or for the entire event.
+center_tent - $ for center tents
+commuting - $ for commuting
+dble - $ for doubles
+dble_bath - $ for doubles with bath
+dormitory - $ for dormitories
+economy - $ for economy housing
 id - unique id
-inactive - 
-name - 
-own_tent - 
-own_van - 
-single - 
-single_bath - 
-triple - 
-type - 
+inactive - is it no longer to be used?
+name - The name of the HouseCost
+own_tent - $ for people bringing their own tent
+own_van - $ for people sleeping in their vehicle
+single - $ for singles
+single_bath - $ for singles with bath
+triple - $ for triples
+type - Per Day or Total

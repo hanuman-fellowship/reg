@@ -21,8 +21,9 @@ sub SPONSOR {
 
 1;
 __END__
-overview - 
-descr - 
-glnum - 
+overview - An extra account is a place to put miscellaneous monies that come into the center.
+    Monies are put into these accounts by creating a XAccountPayment (which has a foreign key to XAccount).
+descr - A brief description of the account.
+glnum - A General Ledger number assigned by an account_admin.
 id - unique id
-sponsor - 
+sponsor - "mmc" or "mmi"

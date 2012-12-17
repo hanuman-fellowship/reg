@@ -27,8 +27,8 @@ sub descr_br {
 
 1;
 __END__
-overview - 
-descr - 
-fullname - 
+overview - Users have a variety of roles which grant them access to areas of Reg.
+descr - A longer description of purpose of the role.
+fullname - a display version of the role column
 id - unique id
-role - 
+role - a short key describing the role

@@ -39,23 +39,25 @@ sub name_disp {
 
 1;
 __END__
-overview - 
-bath - 
-cabin - 
-cat_abode - 
-center - 
+overview - Each room and tent site has a House record.
+    The name is a misnomer because there are usually more than
+    one room in a house.
+bath - does the room have a bathroom?
+cabin - is it a test cabin structure?
+cat_abode - are cats allowed?
+center - center tent?
 cluster_id - foreign key to cluster
-cluster_order - 
-comment - 
-disp_code - 
+cluster_order - where should this house be displayed in the ClusterView?
+comment - a longer description of the space
+disp_code - A above, B below, L left, or R right with an optional t to truncate name
 id - unique id
-inactive - 
-key_card - 
-max - 
-name - 
-priority - 
-resident - 
-sq_foot - 
-tent - 
-x - 
-y - 
+inactive - no longer habitable?
+key_card - does the door require an electronic key card?
+max - how many beds?
+name - short name of the space
+priority - a number from 1 to 10 indicating how desirable the space is (1 is the most desirable).
+resident - is this Resident housing?
+sq_foot - room square footage - for resident housing
+tent - is it a tent?
+x - X coordinate for the DailyPic image
+y - Y coordinate for the DailyPic image
