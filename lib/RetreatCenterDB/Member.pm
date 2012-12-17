@@ -23,13 +23,13 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
+__PACKAGE__->belongs_to(person => 'RetreatCenterDB::Person', 'person_id');
 
 # sponsor history payments - maybe
-__PACKAGE__->has_many('payments' => 'RetreatCenterDB::SponsHist', 'member_id',
+__PACKAGE__->has_many(payments => 'RetreatCenterDB::SponsHist', 'member_id',
                       { order_by => 'date_payment desc, time desc' },
                      );
-__PACKAGE__->has_many('nighthist' => 'RetreatCenterDB::NightHist', 'member_id',
+__PACKAGE__->has_many(nighthist => 'RetreatCenterDB::NightHist', 'member_id',
                       { order_by => 'the_date desc, time desc, id desc' },
                       #  need id as well in case the date/time is the same...
                      );
@@ -74,6 +74,7 @@ sub category_id {
 
 1;
 __END__
+overview - 
 category - 
 date_general - 
 date_life - 

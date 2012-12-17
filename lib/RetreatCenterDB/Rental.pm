@@ -83,7 +83,7 @@ __PACKAGE__->set_primary_key(qw/id/);
 __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
                         'housecost_id');
 # summary
-__PACKAGE__->belongs_to('summary' => 'RetreatCenterDB::Summary', 'summary_id');
+__PACKAGE__->belongs_to(summary => 'RetreatCenterDB::Summary', 'summary_id');
 
 # coordinator
 __PACKAGE__->belongs_to(coordinator => 'RetreatCenterDB::Person',
@@ -473,6 +473,7 @@ sub send_grid_data {
 
 1;
 __END__
+overview - 
 balance - 
 color - 
 comment - 
@@ -498,11 +499,11 @@ name -
 phone - 
 program_id - foreign key to program
 proposal_id - foreign key to proposal
-received_by - 
+received_by - foreign key to user
 refresh_days - 
 rental_follows - 
 sdate - 
-sent_by - 
+sent_by - foreign key to user
 staff_ok - 
 start_hour - 
 status - 

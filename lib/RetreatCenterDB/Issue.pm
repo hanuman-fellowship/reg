@@ -20,7 +20,7 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
+__PACKAGE__->belongs_to(user => 'RetreatCenterDB::User', 'user_id');
 
 sub date_entered_obj {
     my ($self) = @_;
@@ -47,6 +47,7 @@ sub _esc_q {
 
 1;
 __END__
+overview - 
 date_closed - 
 date_entered - 
 id - unique id

@@ -6,14 +6,16 @@
 <h2>Booking
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+A record here reserves a meeting space for a program, rental, or event. All bookings take place in the Event controller.  A meeting space may be designated for sleeping as well - in which case there is a house with the same name as the abbreviation for the meeting place. If a booking is made for such a meeting space an automatic block on the similarily named house is created to prevent that housing from being used for sleeping.  And to confuse matters ... this block is not created if the booking is marked as a Dorm.
+<p>
 Table: booking
 <dl>
 <dt>breakout</dt>
-<dd></dd>
+<dd>for a breakout space?</dd>
 <dt>dorm</dt>
-<dd></dd>
+<dd>for a dorm?</dd>
 <dt>edate</dt>
-<dd></dd>
+<dd>end date</dd>
 <dt>event_id</dt>
 <dd>foreign key to <a href=Event.html>event</a></dd>
 <dt>id</dt>
@@ -25,7 +27,14 @@ Table: booking
 <dt>rental_id</dt>
 <dd>foreign key to <a href=Rental.html>rental</a></dd>
 <dt>sdate</dt>
-<dd></dd>
+<dd>start date</dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>event</td><td><a href=Event.html>Event</a></td><td>belongs_to</td></tr>
+<tr><td>meeting_place</td><td><a href=Meetingplace.html>MeetingPlace</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>Program</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>Rental</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

@@ -24,6 +24,8 @@ sub policy_br {
 
 1;
 __END__
+overview - What is the MMC policy for cancellation of a registration?  This
+    can vary depending on the program.
 id - unique id
-name - 
-policy - 
+name - policy name hopefully descriptive
+policy - A full description of the policy.

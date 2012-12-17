@@ -21,5 +21,6 @@ __PACKAGE__->belongs_to(affil  => 'RetreatCenterDB::Affil',  'a_id');
 
 1;
 __END__
+overview - A mapping table between affiliations and programs.
 a_id - foreign key to affil
 p_id - foreign key to program

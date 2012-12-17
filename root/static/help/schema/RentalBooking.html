@@ -6,6 +6,8 @@
 <h2>RentalBooking
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+
+<p>
 Table: rental_booking
 <dl>
 <dt>date_end</dt>
@@ -19,5 +21,10 @@ Table: rental_booking
 <dt>rental_id</dt>
 <dd>foreign key to <a href=Rental.html>rental</a></dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>house</td><td><a href=House.html>House</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>Rental</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

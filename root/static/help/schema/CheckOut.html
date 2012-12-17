@@ -3,17 +3,24 @@
 <link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
-<h2>CheckOut
+<h2>Checkout
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+A record here represents a book checked out to a person.
+<p>
 Table: check_out
 <dl>
 <dt>book_id</dt>
 <dd>foreign key to <a href=Book.html>book</a></dd>
 <dt>due_date</dt>
-<dd></dd>
+<dd>When is the book due?</dd>
 <dt>person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>book</td><td><a href=Book.html>Book</a></td><td>belongs_to</td></tr>
+<tr><td>person</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

@@ -17,11 +17,12 @@ __PACKAGE__->set_primary_key(qw/
     house_id
 /);
 
-__PACKAGE__->belongs_to('rental' => 'RetreatCenterDB::Rental', 'rental_id');
-__PACKAGE__->belongs_to('house'  => 'RetreatCenterDB::House',  'house_id');
+__PACKAGE__->belongs_to(rental => 'RetreatCenterDB::Rental', 'rental_id');
+__PACKAGE__->belongs_to(house  => 'RetreatCenterDB::House',  'house_id');
 
 1;
 __END__
+overview - 
 date_end - 
 date_start - 
 h_type - 

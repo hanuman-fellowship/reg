@@ -21,11 +21,13 @@ __PACKAGE__->set_primary_key(qw/
 
 1;
 __END__
-author - 
-description - 
+overview - Books describe items in the MMC library.  Most columns below
+    are self explanatory (marked se).
+author - se (self-explanatory)
+description - What's the book/video about?
 id - unique id
-location - 
-media - 
-publisher - 
-subject - 
-title - 
+location - Where in the MMC library can this item be found?
+media - Book, VHS, DVD, or CD
+publisher - se
+subject - se
+title - se

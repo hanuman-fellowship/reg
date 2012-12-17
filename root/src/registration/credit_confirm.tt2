@@ -17,14 +17,14 @@ The cancellation policy is:
 <tr>
 <td align=right>Credit of</td>
 <td>
-$<input type=text size=4 name=credit_amount id=credit_amount value="[% credit_amount %]">?
+\$<input type=text size=4 name=credit_amount id=credit_amount value="[% credit_amount %]">?
 </td>
 </tr>
 
 <tr>
 <td align=right>Refund of</td>
 <td>
-$<input type=text size=4 name=refund_amount value="[% refund_amount %]"
+\$<input type=text size=4 name=refund_amount value=''
 onkeypress="document.getElementById('credit_amount').value = '';"
 >?
 </td>

@@ -15,7 +15,12 @@ __PACKAGE__->set_primary_key(qw/id/);
 
 1;
 __END__
-cl_order - 
+overview - Houses are grouped into Clusters (via the cluster_id on House).
+    There is a DailyPic view for each cluster type.
+    The view only includes houses whose cluster is of that type.
+    See the Global.pm module - it initializes global hashes for accessing the clusters
+    and houses within them.
+cl_order - What order should this cluster be presented in the Cluster View?
 id - unique id
-name - 
-type - 
+name - a descriptive name for category
+type - indoors, outdoors, special, resident

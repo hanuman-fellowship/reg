@@ -24,9 +24,9 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('member' => 'RetreatCenterDB::Member', 'member_id');
-__PACKAGE__->belongs_to('registration' => 'RetreatCenterDB::Registration', 'reg_id');
-__PACKAGE__->belongs_to('who'    => 'RetreatCenterDB::User',   'user_id');
+__PACKAGE__->belongs_to(member => 'RetreatCenterDB::Member', 'member_id');
+__PACKAGE__->belongs_to(registration => 'RetreatCenterDB::Registration', 'reg_id');
+__PACKAGE__->belongs_to(who    => 'RetreatCenterDB::User',   'user_id');
 
 sub the_date_obj {
     my ($self) = @_;
@@ -50,6 +50,7 @@ sub action_str {
 
 1;
 __END__
+overview - 
 action - 
 id - unique id
 member_id - foreign key to member

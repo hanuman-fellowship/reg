@@ -98,7 +98,7 @@ __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
 __PACKAGE__->belongs_to(category => 'RetreatCenterDB::Category',
                         'category_id');
 # summary
-__PACKAGE__->belongs_to('summary' => 'RetreatCenterDB::Summary', 'summary_id');
+__PACKAGE__->belongs_to(summary => 'RetreatCenterDB::Summary', 'summary_id');
 
 # affiliations
 __PACKAGE__->has_many(affil_program => 'RetreatCenterDB::AffilProgram',
@@ -969,6 +969,7 @@ sub PR {
 
 1;
 __END__
+overview - 
 allow_dup_regs - 
 brdesc - 
 canpol_id - foreign key to canpol

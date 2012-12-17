@@ -19,8 +19,8 @@ __PACKAGE__->set_primary_key(qw/
     person_id
 /);
 
-__PACKAGE__->belongs_to('book'   => 'RetreatCenterDB::Book',   'book_id');
-__PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
+__PACKAGE__->belongs_to(book   => 'RetreatCenterDB::Book',   'book_id');
+__PACKAGE__->belongs_to(person => 'RetreatCenterDB::Person', 'person_id');
 
 sub due_date_obj {
     my ($self) = @_;
@@ -29,6 +29,7 @@ sub due_date_obj {
 
 1;
 __END__
+overview - A record here represents a book checked out to a person.
 book_id - foreign key to book
-due_date - 
+due_date - When is the book due?
 person_id - foreign key to person

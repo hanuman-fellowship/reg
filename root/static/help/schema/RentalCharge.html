@@ -6,6 +6,8 @@
 <h2>RentalCharge
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+
+<p>
 Table: rental_charge
 <dl>
 <dt>amount</dt>
@@ -23,5 +25,10 @@ Table: rental_charge
 <dt>what</dt>
 <dd></dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>rental</td><td><a href=Rental.html>Rental</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

@@ -26,8 +26,8 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('member' => 'RetreatCenterDB::Member', 'member_id');
-__PACKAGE__->belongs_to('who'    => 'RetreatCenterDB::User',   'user_id');
+__PACKAGE__->belongs_to(member => 'RetreatCenterDB::Member', 'member_id');
+__PACKAGE__->belongs_to(who    => 'RetreatCenterDB::User',   'user_id');
 
 sub date_payment_obj {
     my ($self) = @_;
@@ -52,6 +52,7 @@ sub time_obj {
 
 1;
 __END__
+overview - 
 amount - 
 date_payment - 
 general - 

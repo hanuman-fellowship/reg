@@ -2226,7 +2226,6 @@ sub cancel : Local {
         ndays          => $reg->program->sdate_obj - $today,
         reg            => $reg,
         credit_amount  => $string{credit_amount},
-        refund_amount  => $string{refund_amount},
         template       => "registration/credit_confirm.tt2",
     );
 }

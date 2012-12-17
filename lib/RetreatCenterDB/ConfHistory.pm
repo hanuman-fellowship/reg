@@ -22,8 +22,8 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('registration' => 'RetreatCenterDB::Registration', 'reg_id');
-__PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
+__PACKAGE__->belongs_to(registration => 'RetreatCenterDB::Registration', 'reg_id');
+__PACKAGE__->belongs_to(user => 'RetreatCenterDB::User', 'user_id');
 
 sub the_date_obj {
     my ($self) = @_;
@@ -37,9 +37,12 @@ sub time_obj {
 
 1;
 __END__
+overview - This table keeps track of the confirmation notes
+    that were sent to a registrant.  Good for knowing what and when
+    they were informed via the confirmation letter.
 id - unique id
-note - 
+note - The text of the note that was sent in a confirmation letter.
 reg_id - foreign key to registration
-the_date - 
-time - 
+the_date - the date the history item was added
+time - the time the history item was added
 user_id - foreign key to user

@@ -27,9 +27,9 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('person'       => 'RetreatCenterDB::Person',
+__PACKAGE__->belongs_to(person       => 'RetreatCenterDB::Person',
                         'person_id');
-__PACKAGE__->belongs_to('registration' => 'RetreatCenterDB::Registration',
+__PACKAGE__->belongs_to(registration => 'RetreatCenterDB::Registration',
                         'reg_id');
 
 sub the_date_obj {
@@ -92,6 +92,7 @@ sub amount_disp {
 
 1;
 __END__
+overview - 
 amount - 
 code - 
 for_what - 

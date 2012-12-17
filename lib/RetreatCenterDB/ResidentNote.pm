@@ -21,7 +21,7 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('resident' => 'RetreatCenterDB::Resident',
+__PACKAGE__->belongs_to(resident => 'RetreatCenterDB::Resident',
                         'resident_id');
 
 sub the_date_obj {
@@ -36,6 +36,7 @@ sub the_time_obj {
 
 1;
 __END__
+overview - 
 id - unique id
 note - 
 resident_id - foreign key to resident

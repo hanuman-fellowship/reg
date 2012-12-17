@@ -35,9 +35,9 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('xaccount' => 'RetreatCenterDB::XAccount', 'xaccount_id');
-__PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
-__PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
+__PACKAGE__->belongs_to(xaccount => 'RetreatCenterDB::XAccount', 'xaccount_id');
+__PACKAGE__->belongs_to(person   => 'RetreatCenterDB::Person', 'person_id');
+__PACKAGE__->belongs_to(user     => 'RetreatCenterDB::User', 'user_id');
 
 sub the_date_obj {
     my ($self) = @_;
@@ -93,6 +93,7 @@ sub amount_disp {
 
 1;
 __END__
+overview - 
 amount - 
 id - unique id
 person_id - foreign key to person

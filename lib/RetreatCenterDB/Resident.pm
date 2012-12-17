@@ -13,7 +13,7 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
+__PACKAGE__->belongs_to(person => 'RetreatCenterDB::Person', 'person_id');
 __PACKAGE__->has_many(notes => 'RetreatCenterDB::ResidentNote', 'resident_id',
                       { order_by => 'the_date desc, the_time desc' });
 
@@ -24,6 +24,7 @@ sub category {
 
 1;
 __END__
+overview - 
 comment - 
 id - unique id
 image - 

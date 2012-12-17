@@ -24,6 +24,8 @@ sub expansion_br {
 
 1;
 __END__
-abbr - 
-expansion - 
+overview - These records provide a short alias for a commonly used long piece of text in
+    the confirmation letter notes.
+abbr - the short
+expansion - the long
 id - unique id

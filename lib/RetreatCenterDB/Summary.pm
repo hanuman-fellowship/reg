@@ -46,7 +46,7 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('who'   => 'RetreatCenterDB::User',    'who_updated');
+__PACKAGE__->belongs_to(who     => 'RetreatCenterDB::User',    'who_updated');
 __PACKAGE__->might_have(rental  => 'RetreatCenterDB::Rental',  'summary_id');
 __PACKAGE__->might_have(program => 'RetreatCenterDB::Program', 'summary_id');
 
@@ -105,6 +105,7 @@ EOH
 
 1;
 __END__
+overview - 
 alongside - 
 back_to_back - 
 check_list - 

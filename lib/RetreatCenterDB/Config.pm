@@ -30,10 +30,19 @@ sub the_date_obj {
 
 1;
 __END__
-cur - 
-curmax - 
+overview - This is a critical table (somewhat misnamed) that keeps track of housing configuration.
+    There is a record for each house (aka room/site) and each day.
+    The sex attribute tells what gender is occupying the space.
+    We must do our best to keep the different genders apart!
+    The foreign keys to program and rental are filled in only if 
+    the housing reservation came from such.  Blocks and Meeting Space reservations
+    associated with an Event have no such foreign keys.
+    <p>Config records are added with Util::add_config() as needed.
+cur - The # of people that are currently in this space.
+curmax - Max capacity of the space.
 house_id - foreign key to house
 program_id - foreign key to program
 rental_id - foreign key to rental
-sex - 
-the_date - 
+sex - U (As yet Undefined), M (Male), F (Female), X (Mixed), R (Rental), B (Block), S (meeting Space),
+    or C (Unreported Gender).
+the_date - The date.

@@ -6,28 +6,34 @@
 <h2>Deposit
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+A summary of a bank deposit listing totals in 4 categories.
+<p>
 Table: deposit
 <dl>
 <dt>cash</dt>
-<dd></dd>
+<dd>total monies received in cash</dd>
 <dt>chk</dt>
-<dd></dd>
+<dd>total monies received by check</dd>
 <dt>credit</dt>
-<dd></dd>
+<dd>total monies received by credit card</dd>
 <dt>date_end</dt>
-<dd></dd>
+<dd>last day monies were received for this deposit</dd>
 <dt>date_start</dt>
-<dd></dd>
+<dd>first day monies were received for this deposit</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>online</dt>
-<dd></dd>
+<dd>total monies received online</dd>
 <dt>sponsor</dt>
-<dd></dd>
+<dd>MMC or MMI</dd>
 <dt>time</dt>
-<dd></dd>
+<dd>time of day the deposit was done</dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=User.html>user</a></dd>
+<dd>foreign key to <a href=User.html>user</a> - who did the deposit</dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>user</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

@@ -29,7 +29,7 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('user' => 'RetreatCenterDB::User', 'user_id');
+__PACKAGE__->belongs_to(user => 'RetreatCenterDB::User', 'user_id');
 
 sub date_start_obj {
     my ($self) = @_;
@@ -57,13 +57,14 @@ sub online_disp {
 }
 1;
 __END__
-cash - 
-chk - 
-credit - 
-date_end - 
-date_start - 
+overview - A summary of a bank deposit listing totals in 4 categories.
+cash - total monies received in cash
+chk - total monies received by check
+credit - total monies received by credit card
+date_end - last day monies were received for this deposit
+date_start - first day monies were received for this deposit
 id - unique id
-online - 
-sponsor - 
-time - 
-user_id - foreign key to user
+online - total monies received online
+sponsor - MMC or MMI
+time - time of day the deposit was done
+user_id - foreign key to user - who did the deposit

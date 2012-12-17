@@ -22,7 +22,7 @@ __PACKAGE__->has_many(leader_program => 'RetreatCenterDB::LeaderProgram',
                       'l_id');
 __PACKAGE__->many_to_many(programs => 'leader_program', 'program',
                           { order_by => 'sdate desc' });
-__PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
+__PACKAGE__->belongs_to(person => 'RetreatCenterDB::Person', 'person_id');
 
 sub name_public_email {
     my ($self) = @_;
@@ -32,6 +32,7 @@ sub name_public_email {
 }
 1;
 __END__
+overview - 
 assistant - 
 biography - 
 id - unique id

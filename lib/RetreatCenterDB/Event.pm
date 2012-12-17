@@ -87,11 +87,15 @@ sub Event_type {
 
 1;
 __END__
-descr - 
-edate - 
+overview - Something is happening at the center/school/institute that is not a Program or Rental.
+    Events appear on the Calendar (or the Master calendar).  Events can reserve Meeting Spaces
+    and can have Blocks to reserve Houses.
+descr - longer description of the event, please.
+edate - end date
 id - unique id
-max - 
-name - 
-organization_id - foreign key to organization
-sdate - 
-sponsor - 
+max - Max number of people (used for choosing a Meeting Place).
+name - short name of the event
+organization_id - foreign key to organization.
+    The organization determines which calendar the event appears on.
+sdate - start date
+sponsor - obsolete - superceded by organization

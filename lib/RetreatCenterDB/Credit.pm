@@ -19,10 +19,10 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to('person' => 'RetreatCenterDB::Person', 'person_id');
-__PACKAGE__->belongs_to('reg_given' => 'RetreatCenterDB::Registration',
+__PACKAGE__->belongs_to(person => 'RetreatCenterDB::Person', 'person_id');
+__PACKAGE__->belongs_to(reg_given => 'RetreatCenterDB::Registration',
                         'reg_id');
-__PACKAGE__->belongs_to('reg_used' => 'RetreatCenterDB::Registration',
+__PACKAGE__->belongs_to(reg_used => 'RetreatCenterDB::Registration',
                         'used_reg_id');
 
 sub date_given_obj {
@@ -40,11 +40,14 @@ sub date_used_obj {
 
 1;
 __END__
-amount - 
-date_expires - 
-date_given - 
-date_used - 
+overview - When a registration is cancelled (within the limit) the person
+    gets a credit.   The process of giving a credit entails setting an amount.
+    Credits are no longer valid one year after the program start date.
+amount - in dollars
+date_expires - date after which the credit is no longer available
+date_given - self-explanatory
+date_used - self-explanatory
 id - unique id
 person_id - foreign key to person
-reg_id - foreign key to registration
-used_reg_id - foreign key to registration
+reg_id - foreign key to registration for which the credit was given
+used_reg_id - foreign key to registration for which the credit was taken

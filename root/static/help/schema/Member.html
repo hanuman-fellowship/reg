@@ -6,6 +6,8 @@
 <h2>Member
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+
+<p>
 Table: member
 <dl>
 <dt>category</dt>
@@ -27,5 +29,11 @@ Table: member
 <dt>total_paid</dt>
 <dd></dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>nighthist</td><td><a href=Nighthist.html>NightHist</a></td><td>has_many</td></tr>
+<tr><td>payments</td><td><a href=Sponshist.html>SponsHist</a></td><td>has_many</td></tr>
+<tr><td>person</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

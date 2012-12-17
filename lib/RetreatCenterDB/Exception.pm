@@ -12,10 +12,11 @@ __PACKAGE__->add_columns(qw/
     value
 /);
 
-__PACKAGE__->belongs_to('program' => 'RetreatCenterDB::Program', 'prog_id');
+__PACKAGE__->belongs_to(program => 'RetreatCenterDB::Program', 'prog_id');
 
 1;
 __END__
+overview - 
 prog_id - foreign key to program
 tag - 
 value - 

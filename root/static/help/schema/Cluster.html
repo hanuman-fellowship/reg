@@ -6,16 +6,18 @@
 <h2>Cluster
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+Houses are grouped into Clusters (via the cluster_id on House). There is a DailyPic view for each cluster type. The view only includes houses whose cluster is of that type. See the Global.pm module - it initializes global hashes for accessing the clusters and houses within them.
+<p>
 Table: cluster
 <dl>
 <dt>cl_order</dt>
-<dd></dd>
+<dd>What order should this cluster be presented in the Cluster View?</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>name</dt>
-<dd></dd>
+<dd>a descriptive name for category</dd>
 <dt>type</dt>
-<dd></dd>
+<dd>indoors, outdoors, special, resident</dd>
 </dl>
 </body>
 </html>

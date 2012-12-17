@@ -6,34 +6,36 @@
 <h2>Annotation
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+Annotations are markings on the DailyPic of various shapes and colors. There are 4 hard coded cluster types: Indoors, Outdoors, Special, and Resident. The X/Y coordinates determine where the drawing will take place and the size. The annotations are loaded in lib/Global.pm and used in Controller/DailyPic.pm.
+<p>
 Table: annotation
 <dl>
 <dt>cluster_type</dt>
-<dd></dd>
+<dd>Which daily pic?</dd>
 <dt>color</dt>
-<dd></dd>
+<dd>The RGB values for the color.</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>inactive</dt>
-<dd></dd>
+<dd>active or not?</dd>
 <dt>label</dt>
-<dd></dd>
+<dd>Text to display.</dd>
 <dt>shape</dt>
-<dd></dd>
+<dd>None (text), Rectangle, or Ellipse</dd>
 <dt>thickness</dt>
-<dd></dd>
+<dd>of the line</dd>
 <dt>x</dt>
-<dd></dd>
+<dd>for the text</dd>
 <dt>x1</dt>
-<dd></dd>
+<dd>for the rectangle/ellipse</dd>
 <dt>x2</dt>
-<dd></dd>
+<dd>for the rectangle/ellipse</dd>
 <dt>y</dt>
-<dd></dd>
+<dd>for the text</dd>
 <dt>y1</dt>
-<dd></dd>
+<dd>for the rectangle/ellipse</dd>
 <dt>y2</dt>
-<dd></dd>
+<dd>for the rectangle/ellipse</dd>
 </dl>
 </body>
 </html>

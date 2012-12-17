@@ -6,12 +6,14 @@
 <h2>Donation
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+Monies received from a person for a particular project. This is mostly obsolete - instead we are using Payments to Extra Accounts (XAccount).
+<p>
 Table: donation
 <dl>
 <dt>amount</dt>
-<dd></dd>
+<dd>dollar amount</dd>
 <dt>date_d</dt>
-<dd></dd>
+<dd>entry date</dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>person_id</dt>
@@ -19,13 +21,13 @@ Table: donation
 <dt>project_id</dt>
 <dd>foreign key to <a href=Project.html>project</a></dd>
 <dt>the_date</dt>
-<dd></dd>
+<dd>donation date</dd>
 <dt>time_d</dt>
-<dd></dd>
+<dd>entry time</dd>
 <dt>type</dt>
-<dd></dd>
+<dd>Check, Cash, Credit</dd>
 <dt>who_d</dt>
-<dd></dd>
+<dd>who entered it - foreign key to <a href=User.html>user</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>

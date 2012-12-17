@@ -6,6 +6,8 @@
 <h2>User
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+
+<p>
 Table: user
 <dl>
 <dt>bg</dt>
@@ -37,6 +39,7 @@ Table: user
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
+<tr><td>rides</td><td><a href=Ride.html>Ride</a></td><td>has_many</td></tr>
 <tr><td>roles</td><td>user_role => role</td><td>many_to_many</td></tr>
 <tr><td>user_role</td><td><a href=Userrole.html>UserRole</a></td><td>has_many</td></tr>
 </table>

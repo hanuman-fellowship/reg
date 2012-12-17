@@ -22,10 +22,12 @@ __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'meet_id');
 
 1;
 __END__
-abbr - 
-color - 
-disp_ord - 
+overview - A place reserved by a Program, Rental or Event for group gatherings.
+    The reservations are made by creating Booking records.
+abbr - A short name for the place.
+color - RGB values for displaying the Meeting Place on the Calendar.
+disp_ord - What vertical space in the calendar?
 id - unique id
-max - 
-name - 
-sleep_too - 
+max - Maximum # of people that can be accomodated.
+name - Long name for the place.
+sleep_too - Can this place be converted into a dorm for sleeping?

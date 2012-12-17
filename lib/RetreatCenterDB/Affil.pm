@@ -23,5 +23,9 @@ __PACKAGE__->many_to_many(reports => 'affil_report', 'report');
 
 1;
 __END__
-descrip - 
+overview - Affiliations are used to describe a person's interests -
+    the way that they are connected to the center.   Programs have affiliations
+    that are assigned to everyone registering for the program.  Reports 
+    search for everyone that has an affiliation.
+descrip - the description of the affiliation
 id - unique id

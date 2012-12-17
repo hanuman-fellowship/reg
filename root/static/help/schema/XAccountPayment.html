@@ -6,6 +6,8 @@
 <h2>XAccountPayment
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+
+<p>
 Table: xaccount_payment
 <dl>
 <dt>amount</dt>
@@ -27,5 +29,11 @@ Table: xaccount_payment
 <dt>xaccount_id</dt>
 <dd>foreign key to <a href=Xaccount.html>xaccount</a></dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>person</td><td><a href=Person.html>Person</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+<tr><td>xaccount</td><td><a href=Xaccount.html>XAccount</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

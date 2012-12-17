@@ -75,12 +75,14 @@ sub type_sh {
 
 1;
 __END__
-amount - 
-date_d - 
+overview - Monies received from a person for a particular project.
+    This is mostly obsolete - instead we are using Payments to Extra Accounts (XAccount).
+amount - dollar amount
+date_d - entry date
 id - unique id
 person_id - foreign key to person
 project_id - foreign key to project
-the_date - 
-time_d - 
-type - 
-who_d - 
+the_date - donation date
+time_d - entry time
+type - Check, Cash, Credit
+who_d - who entered it - foreign key to user

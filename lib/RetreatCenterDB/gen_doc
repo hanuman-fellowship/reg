@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 my $line;
+my $fname;
 sub get_col {
     my ($in) = @_;
 
@@ -14,9 +15,13 @@ sub get_col {
         }
         chomp $line;
     }
-    if ($line =~ m{\A(\w+) \s+ - \s+ (.*) \z}xms) {
+    if ($line =~ m{\A (\w+) \s+ - \s* (.*) \z}xms) {
         $name = $1;
-        $doc = $2;
+        $doc = $2 || '';
+    }
+    else {
+        print "$fname: no - in '$line'\n";
+        $name = $doc = '';
     }
     while ($line = <$in>) {
         chomp $line;
@@ -42,6 +47,7 @@ my @files = sort
 for my $f (@files) {
     open my $in, '<', "$f.pm"
         or die "no $f.pm: $!\n";
+    $fname = "$f.pm";
     my $table;
     my @relations;
     PRE:
@@ -52,7 +58,7 @@ for my $f (@files) {
         if ($line =~ m{
                         (has_many|belongs_to|might_have)
                         \(
-                        (\w+)
+                        '?(\w+)'?
                         \s* => \s*
                         'RetreatCenterDB::
                         (\w+)
@@ -82,6 +88,7 @@ for my $f (@files) {
             last PRE;
         }
     }
+    my ($name, $overview) = get_col($in);
     open my $out, '>', "../../root/static/help/schema/$f.html"
         or die "can't create $f.html\n";
     print {$out} <<"EOH";
@@ -93,6 +100,8 @@ for my $f (@files) {
 <h2>$f
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+$overview
+<p>
 Table: $table
 <dl>
 EOH

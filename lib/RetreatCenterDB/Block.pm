@@ -36,12 +36,12 @@ __PACKAGE__->set_primary_key(qw/
     id
 /);
 
-__PACKAGE__->belongs_to('house'   => 'RetreatCenterDB::House', 'house_id');
-__PACKAGE__->belongs_to('user'    => 'RetreatCenterDB::User',  'user_id');
+__PACKAGE__->belongs_to(house   => 'RetreatCenterDB::House', 'house_id');
+__PACKAGE__->belongs_to(user    => 'RetreatCenterDB::User',  'user_id');
 
-__PACKAGE__->belongs_to('event'   => 'RetreatCenterDB::Event',   'event_id');
-__PACKAGE__->belongs_to('program' => 'RetreatCenterDB::Program', 'program_id');
-__PACKAGE__->belongs_to('rental'  => 'RetreatCenterDB::Rental',  'rental_id');
+__PACKAGE__->belongs_to(event   => 'RetreatCenterDB::Event',   'event_id');
+__PACKAGE__->belongs_to(program => 'RetreatCenterDB::Program', 'program_id');
+__PACKAGE__->belongs_to(rental  => 'RetreatCenterDB::Rental',  'rental_id');
 
 sub sdate_obj {
     my ($self) = @_;
@@ -66,18 +66,21 @@ sub comment_tr {
 
 1;
 __END__
+overview - Blocks reserve housing space.  They can be linked to a program/rental/event
+    but not a particular person.   Blocks can reserve one bed in a double room
+    just like a registration can.
 allocated - 
-comment - 
-edate - 
+comment - a long reason
+edate - end date
 event_id - foreign key to event
 house_id - foreign key to house
 id - unique id
-nbeds - 
-npeople - 
+nbeds - how many beds from this room do you wish to block?
+npeople - how many people will occupy this space - for the meal count
 program_id - foreign key to program
-reason - 
+reason - a brief note describing the reason for the block
 rental_id - foreign key to rental
-sdate - 
-the_date - 
-time - 
+sdate - start date
+the_date - when was this block created?
+time - what time was this block created?
 user_id - foreign key to user

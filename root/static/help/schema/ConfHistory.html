@@ -6,20 +6,27 @@
 <h2>ConfHistory
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+This table keeps track of the confirmation notes that were sent to a registrant.  Good for knowing what and when they were informed via the confirmation letter.
+<p>
 Table: conf_history
 <dl>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>note</dt>
-<dd></dd>
+<dd>The text of the note that was sent in a confirmation letter.</dd>
 <dt>reg_id</dt>
 <dd>foreign key to <a href=Registration.html>registration</a></dd>
 <dt>the_date</dt>
-<dd></dd>
+<dd>the date the history item was added</dd>
 <dt>time</dt>
-<dd></dd>
+<dd>the time the history item was added</dd>
 <dt>user_id</dt>
 <dd>foreign key to <a href=User.html>user</a></dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>registration</td><td><a href=Registration.html>Registration</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

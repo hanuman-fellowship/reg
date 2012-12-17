@@ -6,6 +6,8 @@
 <h2>NightHist
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
 </h2>
+
+<p>
 Table: night_hist
 <dl>
 <dt>action</dt>
@@ -25,5 +27,11 @@ Table: night_hist
 <dt>user_id</dt>
 <dd>foreign key to <a href=User.html>user</a></dd>
 </dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>member</td><td><a href=Member.html>Member</a></td><td>belongs_to</td></tr>
+<tr><td>registration</td><td><a href=Registration.html>Registration</a></td><td>belongs_to</td></tr>
+<tr><td>who</td><td><a href=User.html>User</a></td><td>belongs_to</td></tr>
+</table>
 </body>
 </html>

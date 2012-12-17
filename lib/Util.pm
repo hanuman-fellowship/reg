@@ -1399,6 +1399,11 @@ sub PR_other_reserved_cids {
     return @cids;
 }
 
+#
+# Something tells me that reserved clusters could
+# have been specified as a relationship in the Program model.
+# This is a task for a future refactorer.
+#
 sub reserved_clusters {
     my ($c, $id, $type) = @_;
     return map {

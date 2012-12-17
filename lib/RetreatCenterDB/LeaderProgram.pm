@@ -21,5 +21,6 @@ __PACKAGE__->belongs_to(leader  => 'RetreatCenterDB::Leader',  'l_id');
 
 1;
 __END__
+overview - 
 l_id - foreign key to leader
 p_id - foreign key to program
