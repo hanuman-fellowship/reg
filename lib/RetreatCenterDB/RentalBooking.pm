@@ -23,6 +23,8 @@ __PACKAGE__->belongs_to(house  => 'RetreatCenterDB::House',  'house_id');
 1;
 __END__
 overview - A rental booking reserves a house (all beds) for the rental.
+    The table name probably should have been 'rental_house' and the
+    model RentalHouse.
 date_end - date house first needed
 date_start - date house last needed (the day before the end date of the rental)
 h_type - housing type - see the h_type field of Registration
