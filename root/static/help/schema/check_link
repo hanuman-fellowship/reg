@@ -14,7 +14,7 @@ for my $f (<*.html>) {
         }xmsg
     ) {
         if (! -f $link) {
-            print "no such file: $link\n";
+            print "$f: no such file: $link\n";
         }
     }
     close $in;

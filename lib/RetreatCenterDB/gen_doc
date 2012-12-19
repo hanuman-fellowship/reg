@@ -151,8 +151,9 @@ EOH
             }
             else {
                 print {$out}
-                      "<td><a href=", ucfirst lc $r->{model} . ".html", ">",
-                      "$r->{model}</a></td>";
+                      "<td>"
+                      . link_to($r->{model})
+                      . "</td>";
             }
             print {$out}
                   "<td>$r->{relation}</td>",
