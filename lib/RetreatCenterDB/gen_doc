@@ -11,6 +11,7 @@ my %rename = qw/
     confhistory     ConfHistory
     housecost       HouseCost
     leaderprogram   LeaderProgram
+    meetingplace    MeetingPlace
     meeting_place   MeetingPlace
     mmipayment      MMIPayment
     nighthist       NightHist
@@ -93,7 +94,7 @@ for my $f (@files) {
             push @relations, {
                 relation => $1,
                 name     => $2,
-                model    => $3,
+                model    => lc $3,
             };
         }
         elsif ($line =~ m{(many_to_many)\(
