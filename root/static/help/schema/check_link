@@ -1,0 +1,21 @@
+for my $f (<*.html>) {
+    open $in, '<', $f
+        or die "no $f\n";
+    my $html;
+    {
+        local $/;
+        $html = <$in>;
+    }
+    for my $link ($html =~ m{
+            <a \s+href=["']?
+            (.*?)
+            ["']?
+            >
+        }xmsg
+    ) {
+        if (! -f $link) {
+            print "no such file: $link\n";
+        }
+    }
+    close $in;
+}

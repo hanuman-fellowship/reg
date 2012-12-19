@@ -2,6 +2,32 @@
 use strict;
 use warnings;
 
+# naming quirks remedied
+my %rename = qw/
+    affilperson     AffilPerson
+    affilprogram    AffilProgram
+    affilreport     AffilReport
+    canpol          CanPol
+    confhistory     ConfHistory
+    housecost       HouseCost
+    leaderprogram   LeaderProgram
+    meeting_place   MeetingPlace
+    mmipayment      MMIPayment
+    nighthist       NightHist
+    regcharge       RegCharge
+    reghistory      RegHistory
+    regpayment      RegPayment
+    rentalbooking   RentalBooking
+    rentalcharge    RentalCharge
+    rentalpayment   RentalPayment
+    requestedmmipayment RequestedMMIPayment
+    residentnote    ResidentNote
+    sponshist       SponsHist
+    userrole        UserRole
+    xaccount        XAccount
+    xaccountpayment XAccountPayment
+/;
+
 my $line;
 my $fname;
 sub get_col {
@@ -37,8 +63,8 @@ sub get_col {
 
 sub link_to {
     my ($name) = @_;
-    my $lname = ($name eq 'meeting_place')? 'meetingplace': $name;
-    return "<a href=\u$lname.html>$name</a>";
+    my $lname = $rename{$name} || ucfirst $name;
+    return "<a href=$lname.html>$name</a>";
 }
 
 my @files = sort
