@@ -1,24 +1,79 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
+use DBI;
+use Data::Dumper;
+use Test::More;
 
+# naming quirks remedied
+my %repl_file = qw/
+    affil        affils
+    affil_person affil_people
+    affil_report affil_reports
+    can_pol      canpol
+    checkout     check_out
+    conf_note    confnote
+    house_cost   housecost
+    mmipayment   mmi_payment
+    person       people
+    report       reports
+    requested_mmipayment req_mmi_payment
+/;
+my %repl_pm = qw/
+    Canpol      CanPol
+    Housecost   HouseCost
+    Xaccount    XAccount
+/;
+
+
+my $database;
+my $mysql = -d "/home/sahadev";
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+my @tables = grep { ! m{\Asqlite}xms }
+             map  { substr($_, 1, -1) }     # chop quotes front and back.
+             $dbh->tables;                  #   why are they there?
+my $ntables = @tables;
+for my $t (@tables) {
+    my @cols;
+    if ($mysql) {
+        my $sth = $dbh->column_info(undef, 'reg2', $t, '%');
+        while (my @arr = $sth->fetchrow_array()) {
+           push @cols, $arr[3]
+        }
+    }
+    else {
+        my $sth = $dbh->prepare("pragma table_info($t)");
+        $sth->execute();
+        while (my @arr = $sth->fetchrow_array()) {
+            push @cols, $arr[1]
+                unless $t eq 'program' && $arr[1] eq 'resident';
+        }
+    }
+    @cols = sort @cols;
+    $database->{$t} = \@cols;
+}
 my $num_cols = 0;
 my $num_nodoc = 0;
 
+my $model;
 FILE:
 for my $f (<*.pm>) {
     my @cols;
+    my $table;
     open my $in, '<', $f
         or die "cannot open $f: $!\n";
     PRE_ADD:
     while (my $line = <$in>) {
         # __PACKAGE__->table('req_mmi_payment');
         if ($line =~ m{->table\('(\w+)}xms) {
-            my $table = $1;
+            $table = $1;
             my $file = $f;
             $file =~ s{[.]pm\z}{}xms;
             $file =~ s{([a-z])([A-Z])}{$1_\u$2}xmsg;
             $file = lc $file;
+            $file = $repl_file{$file} if exists $repl_file{$file};
+
             if ($table ne $file) {
                 print "file $file <!> table $table\n";
             }
@@ -34,10 +89,11 @@ for my $f (<*.pm>) {
             last COLS;
         }
         chomp $line;
-        $line =~ s{\A \s*}{}xms;
+        $line =~ s{\A \s* | \s* \z}{}xmsg;
         push @cols, $line;
     }
     @cols = sort @cols;
+    $model->{$table} = \@cols;
 
     TO_END:
     while (my $line = <$in>) {
@@ -58,6 +114,7 @@ for my $f (<*.pm>) {
         if ($line =~ m{foreign[ ]key[ ]to[ ](\w+)}xms) {
             my $pm = ucfirst $1;
             $pm =~ s{_(.)}{\u$1}xms;
+            $pm = $repl_pm{$pm} if exists $repl_pm{$pm};
             $pm .= ".pm";
             if (! -e $pm) {
                 print "$f: no such file: $pm\n";
@@ -68,13 +125,14 @@ for my $f (<*.pm>) {
     }
     close $in;
     if ((scalar(@cols)+1) != scalar(@doc_cols)) {
+        # +1 above for the 'overview'
         print "mismatch in doc cols for $f\n";
     }
     my %cols = map { $_ => 1 } @cols;
     my %doc_cols = map { $_ => 1 } @doc_cols;
     for my $c (@cols) {
         if (! exists $doc_cols{$c}) {
-            print "no documentation for column $c\n";
+            print "$table: no documentation for column $c\n";
         }
     }
     for my $c (@doc_cols) {
@@ -83,5 +141,8 @@ for my $f (<*.pm>) {
         }
     }
 }
+print "$ntables tables\n";
 print "$num_cols columns\n";
-print "$num_nodoc without documentation\n";
+plan tests => 2;
+is_deeply($database, $model, 'the database matches the model exactly');
+is($num_nodoc, 0, 'all columns have documentation');

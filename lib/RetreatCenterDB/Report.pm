@@ -6,7 +6,7 @@ use base qw/DBIx::Class/;
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('reports');
 __PACKAGE__->add_columns(qw/
-    id 
+    id
     descrip
     format
     zip_range
@@ -24,7 +24,7 @@ overview - Reports are used to select a subset of People for mailing list purpos
     A variety of formats can be generated - including snail mail address and or email address.
 descrip - an identifier for the report
 format - 10 different ones
-id  - a unique id
+id - unique id
 last_run - last date this report was run
 nrecs - how many records do you want?  a random selection will be made for you
     to achieve this many.

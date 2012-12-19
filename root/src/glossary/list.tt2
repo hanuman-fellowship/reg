@@ -17,8 +17,8 @@ It is important that we all understand and agree
 on the terms we use.  Read through all of these terms
 and make sure that your understanding is in synchrony
 with others.
-If you think a definition is incomplete or wrong
-it is your responsibility to fix it!
+If you think a term is missing or a definition is incomplete or wrong
+<b>it is your responsibility to fix it</b>!
 </p>
 <dl>
 [% FOR g IN glossary %]

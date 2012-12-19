@@ -47,5 +47,5 @@ Dec 12 9:00-10:30
 Dec 16 11:00-3:00
     over the last few days - writing doc for the models
     made it through Organization
-Dec 17 8:30-9:50, 10:45-
+Dec 17 8:30-9:50, 10:45-1:20
     continuing with doc of schema

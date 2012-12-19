@@ -176,7 +176,8 @@ for my $i (0 .. $npercol-1) {
 print {$out} <<'EOH';
 </table>
 <p>
-<a href=schema/data_types.html>Data Types in Reg</a>
+<a href=schema/data_types.html>Data Types in Reg</a><p>
+<a href=schema/schema1.png>Overview Schema Diagram</a>
 </body>
 </html>
 EOH
