@@ -15,6 +15,7 @@ __PACKAGE__->add_columns(qw/
     last_run
 /);
 __PACKAGE__->set_primary_key(qw/id/);
+__PACKAGE__->has_many(affil_report => 'RetreatCenterDB::AffilReport', 'report_id');
 __PACKAGE__->many_to_many(affils => 'affil_report', 'affil');
 
 1;
