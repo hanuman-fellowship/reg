@@ -65,7 +65,7 @@ sub get_col {
 sub link_to {
     my ($name) = @_;
     my $lname = $rename{$name} || ucfirst $name;
-    return "<a href=$lname.html>$name</a>";
+    return "<a href=/static/help/schema/$lname.html>$name</a>";
 }
 
 my @files = sort
@@ -121,11 +121,11 @@ for my $f (@files) {
     print {$out} <<"EOH";
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>$f
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 $overview
 <p>
@@ -172,12 +172,12 @@ EOH
 # now generate the top level page
 my $nfiles = @files;
 my $npercol = int($nfiles/4 + 1);
-open my $out, '>', '../../root/static/help/schema.html'
+open my $out, '>', '../../root/static/help/schema/index.html'
     or die "no schema.html: $!\n";
 print {$out} <<'EOH';
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 <style>
 td {
     font-size: 13pt;
@@ -193,7 +193,7 @@ for my $i (0 .. $npercol-1) {
     for my $j (0 .. 3) {
         my $f = $files[$i+$j*$npercol];
         if (defined $f) {
-            print {$out} "<td><a href=schema/$f.html>$f</a></td>\n";
+            print {$out} "<td><a href=/static/help/schema/$f.html>$f</a></td>\n";
         }
         else {
             print {$out} "<td>&nbsp;</td>\n";
@@ -204,8 +204,8 @@ for my $i (0 .. $npercol-1) {
 print {$out} <<'EOH';
 </table>
 <p>
-<a href=schema/data_types.html>Data Types in Reg</a><p>
-<a href=schema/schema1.png>Overview Schema Diagram</a>
+<a href=/static/help/schema/data_types.html>Data Types in Reg</a><p>
+<a href=/static/help/schema/schema1.png>Overview Schema Diagram</a>
 </body>
 </html>
 EOH

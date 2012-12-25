@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>RentalPayment
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 A payment to a Rental.
 <p>
@@ -15,7 +15,7 @@ Table: rental_payment
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>rental_id</dt>
-<dd>foreign key to <a href=Rental.html>rental</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Rental.html>rental</a></dd>
 <dt>the_date</dt>
 <dd>date the payment was made</dd>
 <dt>time</dt>
@@ -23,12 +23,12 @@ Table: rental_payment
 <dt>type</dt>
 <dd>D (credit), C (check), S (cash)</dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=User.html>user</a> - the user who entered the payment</dd>
+<dd>foreign key to <a href=/static/help/schema/User.html>user</a> - the user who entered the payment</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>belongs_to</td></tr>
-<tr><td>user</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=/static/help/schema/Rental.html>rental</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body>
 </html>

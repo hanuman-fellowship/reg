@@ -49,3 +49,5 @@ Dec 16 11:00-3:00
     made it through Organization
 Dec 17 8:30-9:50, 10:45-1:20
     continuing with doc of schema
+Dec 23 2:00-2:30
+    restoring a DBIC relationship line that I mistakenly took out

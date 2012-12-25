@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>Block
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 Blocks reserve housing space.  They can be linked to a program/rental/event but not a particular person.   Blocks can reserve one bed in a double room just like a registration can.
 <p>
@@ -17,9 +17,9 @@ Table: block
 <dt>edate</dt>
 <dd>end date</dd>
 <dt>event_id</dt>
-<dd>foreign key to <a href=Event.html>event</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Event.html>event</a></dd>
 <dt>house_id</dt>
-<dd>foreign key to <a href=House.html>house</a></dd>
+<dd>foreign key to <a href=/static/help/schema/House.html>house</a></dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>nbeds</dt>
@@ -27,11 +27,11 @@ Table: block
 <dt>npeople</dt>
 <dd>how many people will occupy this space - for the meal count</dd>
 <dt>program_id</dt>
-<dd>foreign key to <a href=Program.html>program</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Program.html>program</a></dd>
 <dt>reason</dt>
 <dd>a brief note describing the reason for the block</dd>
 <dt>rental_id</dt>
-<dd>foreign key to <a href=Rental.html>rental</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Rental.html>rental</a></dd>
 <dt>sdate</dt>
 <dd>start date</dd>
 <dt>the_date</dt>
@@ -39,15 +39,15 @@ Table: block
 <dt>time</dt>
 <dd>what time was this block created?</dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=User.html>user</a></dd>
+<dd>foreign key to <a href=/static/help/schema/User.html>user</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>event</td><td><a href=Event.html>event</a></td><td>belongs_to</td></tr>
-<tr><td>house</td><td><a href=House.html>house</a></td><td>belongs_to</td></tr>
-<tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>
-<tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>belongs_to</td></tr>
-<tr><td>user</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>event</td><td><a href=/static/help/schema/Event.html>event</a></td><td>belongs_to</td></tr>
+<tr><td>house</td><td><a href=/static/help/schema/House.html>house</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=/static/help/schema/Rental.html>rental</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body>
 </html>

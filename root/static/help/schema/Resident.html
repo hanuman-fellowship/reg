@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>Resident
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 People can become residents of MMC by registering (or being "enrolled" by someone authorized to do so) for a program with a Category of YSC, YSL, Intern, etc. They are then assigned resident housing.
 <p>
@@ -17,12 +17,12 @@ Table: resident
 <dt>image</dt>
 <dd>is there a picture?   a naming convention finds the file.</dd>
 <dt>person_id</dt>
-<dd>foreign key to <a href=Person.html>person</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Person.html>person</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>notes</td><td><a href=ResidentNote.html>residentnote</a></td><td>has_many</td></tr>
-<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>notes</td><td><a href=/static/help/schema/ResidentNote.html>residentnote</a></td><td>has_many</td></tr>
+<tr><td>person</td><td><a href=/static/help/schema/Person.html>person</a></td><td>belongs_to</td></tr>
 </table>
 </body>
 </html>

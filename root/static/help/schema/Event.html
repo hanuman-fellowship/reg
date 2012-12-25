@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>Event
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 Something is happening at the center/school/institute that is not a Program or Rental. Events appear on the Calendar (or the Master calendar).  Events can reserve Meeting Spaces and can have Blocks to reserve Houses.
 <p>
@@ -21,7 +21,7 @@ Table: event
 <dt>name</dt>
 <dd>short name of the event</dd>
 <dt>organization_id</dt>
-<dd>foreign key to <a href=Organization.html>organization</a>. The organization determines which calendar the event appears on.</dd>
+<dd>foreign key to <a href=/static/help/schema/Organization.html>organization</a>. The organization determines which calendar the event appears on.</dd>
 <dt>sdate</dt>
 <dd>start date</dd>
 <dt>sponsor</dt>
@@ -29,9 +29,9 @@ Table: event
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>blocks</td><td><a href=Block.html>block</a></td><td>has_many</td></tr>
-<tr><td>bookings</td><td><a href=Booking.html>booking</a></td><td>has_many</td></tr>
-<tr><td>organization</td><td><a href=Organization.html>organization</a></td><td>belongs_to</td></tr>
+<tr><td>blocks</td><td><a href=/static/help/schema/Block.html>block</a></td><td>has_many</td></tr>
+<tr><td>bookings</td><td><a href=/static/help/schema/Booking.html>booking</a></td><td>has_many</td></tr>
+<tr><td>organization</td><td><a href=/static/help/schema/Organization.html>organization</a></td><td>belongs_to</td></tr>
 </table>
 </body>
 </html>

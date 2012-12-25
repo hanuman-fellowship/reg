@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>Donation
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 Monies received from a person for a particular project. This is mostly obsolete - instead we are using Payments to Extra Accounts (XAccount).
 <p>
@@ -17,9 +17,9 @@ Table: donation
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>person_id</dt>
-<dd>foreign key to <a href=Person.html>person</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Person.html>person</a></dd>
 <dt>project_id</dt>
-<dd>foreign key to <a href=Project.html>project</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Project.html>project</a></dd>
 <dt>the_date</dt>
 <dd>donation date</dd>
 <dt>time_d</dt>
@@ -27,13 +27,13 @@ Table: donation
 <dt>type</dt>
 <dd>Check, Cash, Credit</dd>
 <dt>who_d</dt>
-<dd>who entered it - foreign key to <a href=User.html>user</a></dd>
+<dd>who entered it - foreign key to <a href=/static/help/schema/User.html>user</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
-<tr><td>project</td><td><a href=Project.html>project</a></td><td>belongs_to</td></tr>
-<tr><td>who</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>person</td><td><a href=/static/help/schema/Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>project</td><td><a href=/static/help/schema/Project.html>project</a></td><td>belongs_to</td></tr>
+<tr><td>who</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body>
 </html>

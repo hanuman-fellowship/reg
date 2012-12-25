@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>Ride
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 People can request Rides to and/or from MMC.
 <p>
@@ -25,7 +25,7 @@ Table: ride
 <dt>customs</dt>
 <dd>are they going through Customs (for international flights)?</dd>
 <dt>driver_id</dt>
-<dd>foreign key to <a href=User.html>user</a></dd>
+<dd>foreign key to <a href=/static/help/schema/User.html>user</a></dd>
 <dt>flight_num</dt>
 <dd>Flight number</dd>
 <dt>flight_time</dt>
@@ -45,7 +45,7 @@ Table: ride
 <dt>pickup_time</dt>
 <dd>time to be picked up</dd>
 <dt>rider_id</dt>
-<dd>foreign key to <a href=Person.html>person</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Person.html>person</a></dd>
 <dt>sent_date</dt>
 <dd>date the confirmation letter was sent</dd>
 <dt>shuttle</dt>
@@ -57,8 +57,8 @@ Table: ride
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>driver</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
-<tr><td>rider</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>driver</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>rider</td><td><a href=/static/help/schema/Person.html>person</a></td><td>belongs_to</td></tr>
 </table>
 </body>
 </html>

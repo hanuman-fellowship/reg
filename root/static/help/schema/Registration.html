@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>Registration
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 A registration is created when a Person signs up for a Program. This is a central record that has many relations to other tables (i.e. Models/Objects).
 <p>
@@ -49,7 +49,7 @@ Table: registration
 <dt>hascar</dt>
 <dd>do they have a car?  (for car pooling)</dd>
 <dt>house_id</dt>
-<dd>foreign key to <a href=House.html>house</a></dd>
+<dd>foreign key to <a href=/static/help/schema/House.html>house</a></dd>
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>kids</dt>
@@ -65,13 +65,13 @@ Table: registration
 <dt>nights_taken</dt>
 <dd>How many member benefit nights were taken?</dd>
 <dt>person_id</dt>
-<dd>foreign key to <a href=Person.html>person</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Person.html>person</a></dd>
 <dt>pref1</dt>
 <dd>housing preference #1 - see h_type</dd>
 <dt>pref2</dt>
 <dd>housing preference #2 - see h_type</dd>
 <dt>program_id</dt>
-<dd>foreign key to <a href=Program.html>program</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Program.html>program</a></dd>
 <dt>referral</dt>
 <dd>advertisement, web, brochure, or flyer. if ad then the ad_source is also filled in.</dd>
 <dt>rental_after</dt>
@@ -97,15 +97,15 @@ Table: registration
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>charges</td><td><a href=RegCharge.html>regcharge</a></td><td>has_many</td></tr>
-<tr><td>confnotes</td><td><a href=ConfHistory.html>confhistory</a></td><td>has_many</td></tr>
-<tr><td>history</td><td><a href=RegHistory.html>reghistory</a></td><td>has_many</td></tr>
-<tr><td>house</td><td><a href=House.html>house</a></td><td>belongs_to</td></tr>
-<tr><td>mmi_payments</td><td><a href=MMIPayment.html>mmipayment</a></td><td>has_many</td></tr>
-<tr><td>payments</td><td><a href=RegPayment.html>regpayment</a></td><td>has_many</td></tr>
-<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
-<tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>
-<tr><td>req_mmi_payments</td><td><a href=RequestedMMIPayment.html>requestedmmipayment</a></td><td>has_many</td></tr>
+<tr><td>charges</td><td><a href=/static/help/schema/RegCharge.html>regcharge</a></td><td>has_many</td></tr>
+<tr><td>confnotes</td><td><a href=/static/help/schema/ConfHistory.html>confhistory</a></td><td>has_many</td></tr>
+<tr><td>history</td><td><a href=/static/help/schema/RegHistory.html>reghistory</a></td><td>has_many</td></tr>
+<tr><td>house</td><td><a href=/static/help/schema/House.html>house</a></td><td>belongs_to</td></tr>
+<tr><td>mmi_payments</td><td><a href=/static/help/schema/MMIPayment.html>mmipayment</a></td><td>has_many</td></tr>
+<tr><td>payments</td><td><a href=/static/help/schema/RegPayment.html>regpayment</a></td><td>has_many</td></tr>
+<tr><td>person</td><td><a href=/static/help/schema/Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
+<tr><td>req_mmi_payments</td><td><a href=/static/help/schema/RequestedMMIPayment.html>requestedmmipayment</a></td><td>has_many</td></tr>
 </table>
 </body>
 </html>

@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="../help.css" />
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
 </head>
 <body>
 <h2>NightHist
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=../schema.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
 </h2>
 This table records actions that affect a member's free nights and free program.
 <p>
@@ -15,23 +15,23 @@ Table: night_hist
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>member_id</dt>
-<dd>foreign key to <a href=Member.html>member</a></dd>
+<dd>foreign key to <a href=/static/help/schema/Member.html>member</a></dd>
 <dt>num_nights</dt>
 <dd>how many nights?</dd>
 <dt>reg_id</dt>
-<dd>foreign key to <a href=Registration.html>registration</a> - i.e. for which program the nights were taken.</dd>
+<dd>foreign key to <a href=/static/help/schema/Registration.html>registration</a> - i.e. for which program the nights were taken.</dd>
 <dt>the_date</dt>
 <dd>date this record was created</dd>
 <dt>time</dt>
 <dd>time this record was created</dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=User.html>user</a></dd>
+<dd>foreign key to <a href=/static/help/schema/User.html>user</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>member</td><td><a href=Member.html>member</a></td><td>belongs_to</td></tr>
-<tr><td>registration</td><td><a href=Registration.html>registration</a></td><td>belongs_to</td></tr>
-<tr><td>who</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>member</td><td><a href=/static/help/schema/Member.html>member</a></td><td>belongs_to</td></tr>
+<tr><td>registration</td><td><a href=/static/help/schema/Registration.html>registration</a></td><td>belongs_to</td></tr>
+<tr><td>who</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body>
 </html>
