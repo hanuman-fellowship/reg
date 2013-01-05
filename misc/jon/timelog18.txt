@@ -51,3 +51,5 @@ Dec 17 8:30-9:50, 10:45-1:20
     continuing with doc of schema
 Dec 23 2:00-2:30
     restoring a DBIC relationship line that I mistakenly took out
+Jan 5 12:50-1:05
+    double quotes in comment and alert when registering

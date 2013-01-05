@@ -678,6 +678,7 @@ sub _rest_of_reg {
         if ($a->id() == $alert) {
             my $s = $p->comment;
             $s =~ s{\r?\n}{\\n}g;
+            $s =~ s{"}{\\"}g;
             stash($c, alert_comment => $s);
             last;
         }
