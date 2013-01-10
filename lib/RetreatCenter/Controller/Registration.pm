@@ -1205,7 +1205,7 @@ sub create_do : Local {
     if (exists $P{fname}) {
         if ($P{fname} eq '0') {
             # from a staging online registration
-            unlink "root/static/online/$P{name}";
+            unlink "root/static/online/$P{fname}";
         }
         else {
             my $dir = "root/static/online_done/"
