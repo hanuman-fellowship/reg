@@ -1202,15 +1202,21 @@ sub create_do : Local {
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
     #
-    if (exists $P{fname} && $P{fname}) {
-        my $dir = "root/static/online_done/"
-                . substr($P{date_postmark}, 0, 4)
-                . '-'
-                . substr($P{date_postmark}, 4, 2)
-                ;
-        mkdir $dir unless -d $dir;
-        rename "root/static/online/$P{fname}",
-               "$dir/$P{fname}";
+    if (exists $P{fname}) {
+        if ($P{fname} eq '0') {
+            # from a staging online registration
+            unlink "root/static/online/$P{name}";
+        }
+        else {
+            my $dir = "root/static/online_done/"
+                    . substr($P{date_postmark}, 0, 4)
+                    . '-'
+                    . substr($P{date_postmark}, 4, 2)
+                    ;
+            mkdir $dir unless -d $dir;
+            rename "root/static/online/$P{fname}",
+                   "$dir/$P{fname}";
+        }
     }
 
     # was there an online donation to the green fund?
