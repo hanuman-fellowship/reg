@@ -140,7 +140,8 @@ my $sth_insert_people = $dbh->prepare("
         e_mailings, mmi_e_mailings,
         snail_mailings, mmi_snail_mailings,
         share_mailings,
-        inactive
+        inactive,
+        date_entrd, date_updat
     )
     values (
         ?, ?, ?,
@@ -160,7 +161,8 @@ my $sth_update_people = $dbh->prepare("
         addr2 = ?,
         city  = ?,
         st_prov = ?,
-        zip_post   = ?
+        zip_post   = ?,
+        date_updat = ?
     where id = ?
 ");
 
@@ -869,6 +871,7 @@ sub temple {
                 $cell, $addr1, $addr2,
                 $city, $state, $zip,
                 $akey,
+                $today_d8, $today_d8
             );
             my $person_id = $dbh->last_insert_id(undef, undef, undef, undef);
             $sth_ins_aff->execute(
@@ -892,6 +895,7 @@ sub temple {
                 $first, $last, $email,
                 $cell, $addr1, $addr2,
                 $city, $state, $zip,
+                $today_d8,
                 $found[0]{id},
             );
             $action = "updated";
@@ -909,6 +913,7 @@ sub temple {
                         $first, $last, $email,
                         $cell, $addr1, $addr2,
                         $city, $state, $zip,
+                        $today_d8,
                         $f->{id},
                     );
                     $action = "updated one of " . scalar(@found);

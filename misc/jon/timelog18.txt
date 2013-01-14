@@ -53,3 +53,6 @@ Dec 23 2:00-2:30
     restoring a DBIC relationship line that I mistakenly took out
 Jan 5 12:50-1:05
     double quotes in comment and alert when registering
+Jan 14 11:00-12:00
+    messing with people - inactive, date_entrd, date_updat
+    temple and other

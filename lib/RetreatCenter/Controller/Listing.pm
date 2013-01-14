@@ -816,10 +816,7 @@ sub mark_inactive : Local {
     my @people = model($c, 'Person')->search(
         {
             inactive   => { '!=' => 'yes' },
-            -or => [
-                date_updat => { "<=", $dt8 },
-                date_updat => undef,
-            ],
+            date_updat => { "<=", $dt8 },
             akey       => { '!=' => '44595076SUM' },
         },
         {
@@ -839,15 +836,26 @@ sub mark_inactive_do : Local {
         return;
     }
     my $dt8 = date($date_last)->as_d8();
+
+    # people that whose date_updat date is
+    # older than or equal to $dt8 should be marked INactive.
+    #
     model($c, 'Person')->search({
         inactive   => { '!=' => 'yes' },
-        -or => [
-            date_updat => { "<=", $dt8 },
-            date_updat => undef,
-        ],
+        date_updat => { "<=", $dt8 },
         akey       => { '!=' => '44595076SUM' },
     })->update({
         inactive => 'yes',
+    });
+    # and people that whose date_updat date is
+    # NEWER than $dt8 should be marked active.
+    #
+    model($c, 'Person')->search({
+        inactive   => 'yes',
+        date_updat => { '>', $dt8 },
+        akey       => { '!=' => '44595076SUM' },
+    })->update({
+        inactive => '',
     });
     $c->response->redirect($c->uri_for('/listing/people'));
 }
