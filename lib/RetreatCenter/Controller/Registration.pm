@@ -371,6 +371,8 @@ sub get_online : Local {
         }
     }
     close $in;
+    $P{request} =~ s{\xa0}{ }xmsg;      # space out stray non-ASCII chars
+                                        # don't know the source
 
     $P{green_amount} ||= 0;     # in case not set at all
 
