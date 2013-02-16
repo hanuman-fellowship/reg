@@ -390,6 +390,11 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right>Hot Tub/Lake Swimming<br>in Confirmation Letter</th>
+<td>$program.tub_swim</td>
+</tr>
+
+<tr>
 <th align=right>Times</th>
 <td colspan=4>
 

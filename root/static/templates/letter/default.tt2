@@ -207,8 +207,11 @@ We suggest that you bring the following:
 <LI>flashlight</LI>
 <LI>warm clothing for cool nights and mornings</LI>
 <LI>comfortable clothes and shoes for a rural setting</LI>
+[% IF program.tub_swim %]
 <LI>a swimsuit for lake swimming or hot tubbing</LI>
+[% END %]
 <LI>water bottle</LI>
+<LI>your own mug for tea (optional)</LI>
 [% IF program.retreat %]
     <LI>loose clothing suitable for breathing practices and postures</LI>
     <LI>a blanket or mat for postures (optional)</LI>

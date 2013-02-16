@@ -82,6 +82,7 @@ __PACKAGE__->add_columns(qw/
     category_id
     facebook_event_id
     not_on_calendar
+    tub_swim
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -1034,6 +1035,7 @@ sdate - start date of the program.
 single - Are singles allowed for this program?
 subtitle - A secondary description of the program.  For the web page.
 summary_id - foreign key to summary
+tub_swim - should we mention the hot tub and lake swimming in the conf letter?
 title - A short description of the program for the web page.
 tuition - A charge for the program - mostly for the presenter.
 unlinked_dir - For unlinked programs (see the linked attribute) this is

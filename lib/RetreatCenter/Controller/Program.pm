@@ -131,6 +131,7 @@ sub create : Local {
         check_commuting     => 'checked',
         check_dncc          => '',
         check_not_on_calendar => '',
+        check_tub_swim      => 'checked',
         program_leaders     => [],
         program_affils      => [],
         section             => 1,   # Web (a required field)
@@ -238,6 +239,7 @@ sub _get_data {
         linked
         do_not_compute_costs
         not_on_calendar
+        tub_swim
     /) {
         $P{$f} = "" unless exists $P{$f};
     }
@@ -833,7 +835,7 @@ sub update : Local {
         sbath single collect_total allow_dup_regs kayakalpa
         retreat
         economy commuting webready linked do_not_compute_costs
-        not_on_calendar
+        not_on_calendar tub_swim
     /) {
         stash($c,
             "check_$w" => ($p->$w)? "checked": ""
@@ -1839,7 +1841,7 @@ sub duplicate : Local {
         sbath single collect_total allow_dup_regs kayakalpa
         retreat
         commuting economy webready linked
-        not_on_calendar
+        not_on_calendar tub_swim
     /) {
         stash($c,
             "check_$w" => ($orig_p->$w)? "checked": ""

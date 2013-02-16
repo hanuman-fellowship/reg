@@ -192,6 +192,11 @@ Web
 </tr>
 
 <tr>
+<th align=right>Hot Tub/Lake Swimming<br>in Confirmation Letter</th>
+<td><input type=checkbox value=yes name=tub_swim [% check_tub_swim %]></td>
+</tr>
+
+<tr>
 <th align=right>Times</th>
 <td colspan=3>
 
