@@ -56,3 +56,8 @@ Jan 5 12:50-1:05
 Jan 14 11:00-12:00
     messing with people - inactive, date_entrd, date_updat
     temple and other
+Feb 28 12:00-1:00
+    restoring a web grid after removing a rental
+    cluster reservation
+Mar 8 3:30-4:15
+    MMI standalone course publishing

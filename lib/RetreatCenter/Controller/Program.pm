@@ -1234,6 +1234,10 @@ sub publish : Local {
     PROGRAM:
     for my $p (@programs) {
         next PROGRAM if $p->school != 0;    # skip MMI standalone courses
+                # not sure why future_programs sends along
+                # MMI programs if we're going to ignore them...
+                # we do include them in the prog_table for some reason
+                # see mmi_publish.
         my $fname = $p->fname();
         open my $out, ">", "gen_files/$fname"
             or return _pub_err($c, "cannot create $fname: $!");
