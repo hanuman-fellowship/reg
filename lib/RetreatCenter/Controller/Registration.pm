@@ -2152,6 +2152,7 @@ sub pay_balance_do : Local {
 
     my $reg = model($c, 'Registration')->find($reg_id);
     my $arrived = $reg->arrived();
+    my $arriving_today = $reg->date_start <= tt_today($c)->as_d8() ? 'yes' : 'no';
     my $amount = trim($c->request->params->{amount});
     my $type   = $c->request->params->{type};
     if (invalid_amount($amount)) {
@@ -2183,7 +2184,7 @@ sub pay_balance_do : Local {
     $balance -= $amount;
     $reg->update({
         balance => $balance,
-        arrived => 'yes',
+        arrived => $arriving_today,
     });
     my $arr = !$arrived? "Arrival and ": "";
     my $bal = $balance == 0? " Balance": "";
