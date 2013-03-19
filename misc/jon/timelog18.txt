@@ -64,3 +64,6 @@ Mar 8 3:30-4:15
 Mar 9 3:30-5:30
     setting up Shantam with a hacked version of the dev environment
     later we'll do it proper with Ubuntu
+Mar 16 10:00-10:45
+    Shantam and I together got the Arrived setting correct.
+Mar 18 8:45-

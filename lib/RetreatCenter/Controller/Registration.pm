@@ -1088,6 +1088,8 @@ sub create_do : Local {
         leader_assistant => '',
         free_prog_taken  => $P{free_prog},
         transaction_id => $P{fname} || '',
+        rental_before => $P{rental_before},
+        rental_after  => $P{rental_after},
 
         %dates,         # optionally
     });
