@@ -95,6 +95,7 @@ sub index : Private {
     stash($c,
         time     => get_time(),
         inactive => -f "$ENV{HOME}/Reg/INACTIVE",
+        pg_title => "Reg for MMC",
         template => 'login.tt2',
     );
 }
