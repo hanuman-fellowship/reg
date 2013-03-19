@@ -66,4 +66,5 @@ Mar 9 3:30-5:30
     later we'll do it proper with Ubuntu
 Mar 16 10:00-10:45
     Shantam and I together got the Arrived setting correct.
-Mar 18 8:45-10:10, 10:55-
+Mar 18 8:45-10:10, 10:55-11:30
+    various requests
