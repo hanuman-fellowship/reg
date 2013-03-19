@@ -36,6 +36,7 @@ $sponsor_opts
 <tr>
 <td>&nbsp;</td>
 <td width=100><input id=sub type=submit value="Submit"></td>
+<td style="color: red; font-size: 15pt">Inform Field Staff of this Event!!</td>
 </tr>
 
 </table>
