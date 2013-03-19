@@ -686,6 +686,21 @@ sub _rest_of_reg {
         }
     }
     #
+    # outstanding balance?
+    #
+    for my $r ($p->registrations) {
+        if ($r->date_end < $today && $r->balance != 0) {
+            my $s = $p->first() . " "
+                  . "has an outstanding balance of "
+                  . '$' . $r->balance()
+                  . " in ". $r->program->name() . "."
+                  ;
+            stash($c, outstanding => 1);
+            stash($c, outstanding_balance => $s);
+        }
+    }
+
+    #
     # life member or current sponsor?  with nights left?
     # they must be in good standing if sponsor
     # and can't take free nights if the housing cost is not a Per Day type.

@@ -181,11 +181,14 @@ After <input type=checkbox name=rental_after value=yes>
 [% END %]
 </form>
 
-<!-- is there an alert? -->
+<!-- is there an alert and/or an outstanding balance? -->
 <script type="text/javascript">
 var s = "";
 if ("[% alert_comment %]" != "") {
-    s = "[% alert_comment %]\n";
+    s = "$alert_comment\n";
+}
+if ("[% outstanding %]" != "") {
+    s = s + "$outstanding_balance\n";
 }
 if ("[% status %]" != "") {
     var name = "[% person.first %] [% person.last %]";
