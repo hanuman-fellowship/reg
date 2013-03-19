@@ -193,82 +193,6 @@ For lodging you have been given $article "$htdesc" reservation.
 	you are due a refund of \$[% -1*reg.balance %].
 	We will issue you a refund when you check-in.
 [% END %]
-[% staying = (htdesc != 'Commuting') %]
-[% camping = (htdesc == 'Your Tent' || htdesc == 'Center Tent') %]
-</P>
-<P class=p2>
-We suggest that you bring the following:
-</P>
-<UL>
-[% IF staying %]
-    <LI>towel (since towels are <I>not</I> provided)</LI>
-    <LI>alarm clock</LI>
-[% END %]
-<LI>flashlight</LI>
-<LI>warm clothing for cool nights and mornings</LI>
-<LI>comfortable clothes and shoes for a rural setting</LI>
-[% IF program.tub_swim %]
-<LI>a swimsuit for lake swimming or hot tubbing</LI>
-[% END %]
-<LI>water bottle</LI>
-<LI>your own mug for tea (optional)</LI>
-[% IF program.retreat %]
-    <LI>loose clothing suitable for breathing practices and postures</LI>
-    <LI>a blanket or mat for postures (optional)</LI>
-[% END %]
-</UL>
-[% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
-    <P class=p2>
-    Since you are camping remember to bring your own bedding.
-    [% IF htdesc == 'Center Tent' %]
-        <BR>Foam mattresses are provided in center tents.
-    [% END %]
-    </P>
-[% END %]
-<P class=p2>
-Please note that the rainy season in this part of California can begin
-as early as October 1, and end as late as May 1; make sure you pack
-waterproof clothing during that season.
-</P>
-<P class=p2>
-You may wish to bring slippers, as shoes are not worn indoors.
-</P>
-<P class=p2>
-We provide shampoo, conditioner, body wash, and lotion in all shower facilities.
-</P>
-<P class=p2>
-Our food service is strictly vegetarian &ndash; no meat, fish, fowl, or eggs.
-At each meal there are non-dairy and non-gluten options, and foods
-containing dairy and gluten are clearly marked.
-</P>
-<P class=p2>
-Please <STRONG>DO NOT</STRONG> bring the following onto the property:
-</P>
-<UL>
-<LI>food</LI>
-<LI>drugs</LI>
-<LI>alcohol</LI>
-<LI>pets</LI>
-</UL>
-<P class=p2>
-<SPAN class=scent>DO NOT</SPAN> wear scented body products.
-<p>
-[% IF program.single %]
-If you are a <span style="color: blue">snorer</span>,
-please request a single room or cabin.
-[% END %]
-If you are worried about someone in your room who might
-<span style="color: blue">snore</span>
-we suggest wearing earplugs (provided), or waking the snorer.
-We will make an attempt to change your lodging the next day if you
-find yourself in a room with a snorer, but cannot guarantee
-that it will be possible; no changes can be made in the
-middle of the night. 
-</P>
-<P class=p2>
-Due to extreme fire precautions <SPAN class=fire>DO NOT</SPAN> bring or use incense, candles,
-kerosene lamps, etc.
-</P>
 <P class=p2>
 [% IF personal_retreat %]
 Your retreat begins on the afternoon of 
@@ -328,6 +252,83 @@ on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
     and will end at $program.prog_end_obj on
     ${prog_end.format("%A, %B %e")}.
 [% END %]
+</P>
+[% staying = (htdesc != 'Commuting') %]
+[% camping = (htdesc == 'Your Tent' || htdesc == 'Center Tent') %]
+</P>
+<P class=p2>
+We suggest that you bring the following:
+</P>
+<UL>
+[% IF staying %]
+    <LI>towel (since towels are <I>not</I> provided)</LI>
+    <LI>alarm clock</LI>
+[% END %]
+<LI>flashlight</LI>
+<LI>warm clothing for cool nights and mornings</LI>
+<LI>comfortable clothes and shoes for a rural setting</LI>
+[% IF program.tub_swim %]
+<LI>a swimsuit for lake swimming or hot tubbing</LI>
+[% END %]
+<LI>water bottle</LI>
+<LI>your own mug for tea (optional)</LI>
+[% IF program.retreat %]
+    <LI>loose clothing suitable for breathing practices and postures</LI>
+    <LI>a blanket or mat for postures (optional)</LI>
+[% END %]
+</UL>
+[% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
+    <P class=p2>
+    Since you are camping remember to bring your own bedding.
+    [% IF htdesc == 'Center Tent' %]
+        <BR>Foam mattresses are provided in center tents.
+    [% END %]
+    </P>
+[% END %]
+<P class=p2>
+Please note that the rainy season in this part of California can begin
+as early as October 1, and end as late as May 1; make sure you pack
+waterproof clothing during that season.
+</P>
+<P class=p2>
+You may wish to bring slippers, as shoes are not worn indoors.
+</P>
+<P class=p2>
+We provide shampoo, conditioner, body wash, and lotion in all shower facilities.
+</P>
+<P class=p2>
+Our food service is strictly vegetarian &ndash; no meat, fish, fowl, or eggs.
+At each meal there are non-dairy and non-gluten options, and foods
+containing dairy and gluten are clearly marked.
+Please note that Saturday breakfast is at 10:00 a.m., but fruit, tea, and milks of various kinds are available 24/7.
+</P>
+<P class=p2>
+Please <STRONG>DO NOT</STRONG> bring the following onto the property:
+</P>
+<UL>
+<LI>food</LI>
+<LI>drugs</LI>
+<LI>alcohol</LI>
+<LI>pets</LI>
+</UL>
+<P class=p2>
+<SPAN class=scent>DO NOT</SPAN> wear scented body products.
+<p>
+[% IF program.single %]
+If you are a <span style="color: blue">snorer</span>,
+please request a single room or cabin.
+[% END %]
+If you are worried about someone in your room who might
+<span style="color: blue">snore</span>
+we suggest wearing earplugs (provided), or waking the snorer.
+We will make an attempt to change your lodging the next day if you
+find yourself in a room with a snorer, but cannot guarantee
+that it will be possible; no changes can be made in the
+middle of the night. 
+</P>
+<P class=p2>
+Due to extreme fire precautions <SPAN class=fire>DO NOT</SPAN> bring or use incense, candles,
+kerosene lamps, etc.
 </P>
 <P class=p2>
 $program.canpol.policy
