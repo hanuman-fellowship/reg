@@ -68,3 +68,5 @@ Mar 16 10:00-10:45
     Shantam and I together got the Arrived setting correct.
 Mar 18 8:45-10:10, 10:55-11:30
     various requests
+Mar 19 11:35-
+    tweaks to previous fixes

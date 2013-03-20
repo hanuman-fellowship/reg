@@ -688,7 +688,10 @@ sub _rest_of_reg {
     #
     # outstanding balance?
     #
+    REG:
     for my $r ($p->registrations) {
+        next REG if $r->cancelled();
+        next REG if $today - $r->date_end_obj > 365*$string{nyears_forgiven};
         if ($r->date_end < $today && $r->balance != 0) {
             my $s = $p->first() . " "
                   . "has an outstanding balance of "
@@ -697,6 +700,7 @@ sub _rest_of_reg {
                   ;
             stash($c, outstanding => 1);
             stash($c, outstanding_balance => $s);
+            last REG;
         }
     }
 
