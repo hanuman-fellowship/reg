@@ -2062,6 +2062,7 @@ sub ceu : Local {
     for my $r (model($c, 'Registration')->search({
                    program_id  => $prog_id,
                    ceu_license => { "!=", "" },
+                   cancelled => { "!=", "yes" },
                }) 
     ) {
         $html .= ceu_license($r, $override_hours)
