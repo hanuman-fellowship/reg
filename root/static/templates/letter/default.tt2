@@ -215,7 +215,7 @@ on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
     [% IF ! mmi %]
 	<P class=p2>Dinner is served from
     [% IF program.retreat %]
-		6:00 pm to 7:00 pm.
+		5:00 pm to 6:00 pm.
     [% ELSIF friday %]
 		5:30 pm to 6:30 pm.
 	[% ELSE %]
