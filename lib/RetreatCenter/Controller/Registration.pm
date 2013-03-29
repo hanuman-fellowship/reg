@@ -436,7 +436,8 @@ EOH
         },
     );
     my $p;
-    my $today = tt_today($c)->as_d8();
+    my $today = tt_today($c);
+    my $today_d8 = $today->as_d8();
     if (! @ppl || @ppl == 0) {
         #
         # no match so create a new person
@@ -468,8 +469,8 @@ EOH
 
             share_mailings => $P{share_mailings},
 
-            date_updat => $today,
-            date_entrd => $today,
+            date_updat => $today_d8,
+            date_entrd => $today_d8,
         });
     }
     else {
@@ -522,7 +523,7 @@ EOH
 
             share_mailings => $P{share_mailings},
 
-            date_updat => $today,
+            date_updat => $today_d8,
         });
     }
 
@@ -691,8 +692,8 @@ sub _rest_of_reg {
     REG:
     for my $r ($p->registrations) {
         next REG if $r->cancelled();
-        next REG if $today - $r->date_end_obj > 365*$string{nyears_forgiven};
-        if ($r->date_end < $today && $r->balance != 0) {
+        next REG if ($today - $r->date_end_obj) > 365*$string{nyears_forgiven};
+        if ($r->balance != 0) {
             my $s = $p->first() . " "
                   . "has an outstanding balance of "
                   . '$' . $r->balance()
@@ -717,7 +718,7 @@ sub _rest_of_reg {
     ) {
         my $status = $mem->category;
         if ($status eq 'Life' || $status eq 'Founding Life'
-            || ($status eq 'Sponsor' && $mem->date_sponsor >= $today)
+            || ($status eq 'Sponsor' && $mem->date_sponsor_obj >= $today)
                                     # member in good standing
         ) {
             stash($c, status => $status);    # they always get a 30%
@@ -736,7 +737,7 @@ sub _rest_of_reg {
     if ($p->credits()) {
         CREDIT:
         for my $cr ($p->credits()) {
-            if (! $cr->date_used && $cr->date_expires > $today) {
+            if (! $cr->date_used && $cr->date_expires_obj > $today) {
                 stash($c, credit => $cr);
                 last CREDIT;
             }
