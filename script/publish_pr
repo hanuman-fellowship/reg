@@ -26,6 +26,7 @@ my $sth = $dbh->prepare("
        or the_key like 'smtp_%'
        or the_key like 'long_%'
        or the_key like 'disc_pr%'
+       or the_key like 'personal_template'
 ");
 $sth->execute();
 my %string;
@@ -37,7 +38,7 @@ while (my ($the_key, $value) = $sth->fetchrow_array()) {
 # the personal retreat template is fixed - 'personal.html'
 # it has only 3 tags to fill in: fee_table, current_date, current_year.
 #
-my $html = slurp('root/static/templates/web/personal.html');
+my $html = slurp("root/static/templates/web/$string{personal_template}.html");
 my $today = today();
 my $fom = $today - $today->day() + 1;     # first of month
 my $fom_d8 = $fom->as_d8();
@@ -137,12 +138,17 @@ if ($next_hc) {
     $fee_table .= fees($next);
 }
 
-$html =~ s{<!-- T current_year -->}
-          {$today->year()}e;
+my $start_month = date($string{disc_pr_start})->format("%B");
+my $end_month   = date($string{disc_pr_end})->format("%B");
+my $disc_pct    = $string{disc_pr};
 
-$html =~ s{<!-- T current_date -->}
-          {$today->format("%B %e, %Y")}e;
-
+# should be using Template::Toolkit!
+$html =~ s{<!-- T disc_pct -->}
+          {$disc_pct}g;     # note the g
+$html =~ s{<!-- T start_month -->}
+          {$start_month};
+$html =~ s{<!-- T end_month -->}
+          {$end_month};
 $html =~ s{<!-- T fee_table -->}
           {$fee_table};
 

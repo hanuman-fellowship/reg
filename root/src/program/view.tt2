@@ -56,7 +56,7 @@ function UNreserve_cluster(cluster_id) {
         <span id=editlink><a accesskey=E href=/program/update/$id><span class=keyed>E</span>dit</a></span>
         &nbsp;&nbsp;&nbsp;
         <a href=/program/delete/$id
-           onclick="return confirm('Okay to Delete \'$program.name]\'?');"
+           onclick="return confirm('Okay to Delete \'$program.name\'?');"
               >Delete</a>
     [% END %]
     &nbsp;&nbsp;&nbsp;

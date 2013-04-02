@@ -77,3 +77,70 @@ Mar 28 10:00-11:30
 Mar 29 11:00-11:45
     responding to Jayanti requests
     cancellation policy and error on bringing in online regs
+Mar 30 11:45-1:30
+    consulting with Swapna and Jamal and Lori
+
+    PROGRAM CANCELLATION PROJECT
+    ============================
+    Use the program id for the name of the program's web .hmtl page
+        instead of crafting it from pname.
+    Cancelling a program - add an attribute that is set with a
+        menu link (not a form input element) after confirmation.
+        Can't cancel if any registrations are present.
+    On the program list mark cancelled programs differently.
+    Don't include them in the list of programs to register for.
+    Cancelled programs still have web pages - perhaps you
+        choose a different template.
+        But these are not 'linked'.  still live in the staging/
+        or live/ dir.  Can't register for them - the template
+        could/should omit the 'Register Now' links.
+        If they are included don't let the registration proceed.
+
+    MEMBERSHIP PROJECT
+    ==================
+    entering a membership payment (in Member area) should
+        also automatically enter a payment for the person
+        to the Membership extra account (for accounting purposes)
+    must be sent by DEADLINE 4/19
+    Swapna is leaving for India 4/9 
+    Lori will take over during that time.
+    members can pay online and the payments come in the usual way
+        and are listed like "Online (5)" on the initial membership
+        page.   Click on the name and you go to the payment page
+        to fill in a few dates, etc - as if you're entering
+        it manually.  Can some of those dates be pre-filled?
+
+        the online form could include General ($50) and Sponsor ($600).
+        by default they'll be offered their current status.
+        they can change that to the other.  perhaps include
+        their current total (sponsor) towards a Life membership.
+        we could include the date of their last payment and how much.
+
+        We could also have a place there for an extra amount of a 
+        payment/donation to an extra account named "Donation--MMC General"?
+        Or "Temple" or "The Green Scene" or "Miscellaneous" (not this).
+
+    MAILING LIST UPDATE PROJECT
+    ===========================
+    Jamal - automatic emailing to everyone with an email address
+    to allow them to update their contact info on a web form.  including
+    choosing which affiliations they want.  and mailing list prefs.
+    security?  a random code that is unguessable.
+    the sending of the letters will upload a lot of data (keys are the codes
+    and values are the person's info simply encrypted somehow) to
+    mountmadonna.org that is referenced when the online form is filled in.
+    the data file is in a subdir of cgi-bin
+
+    FOR DEVELOPERS
+    ==============
+    add dispatch, tt, DBIx::Class, adding new table/column
+    strings, Perl Best Practices
+
+    reg history from logicalpoetry site, email thread
+
+    BARNABY
+    =======
+    prevent oversight of lunch thingy
+Apr 1 8:20-12:15
+    PublishPR for discount period
+        done completely and correctly - not easy!

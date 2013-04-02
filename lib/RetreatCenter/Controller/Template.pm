@@ -21,6 +21,7 @@ sub list : Local {
                 delete => ! sys_template($_),
             }
         }
+        grep { ! m/\A cal \d+ \z/xms }
         map { s{^.*templates/web/(.*)[.]html$}{$1}; $_ }
         <root/static/templates/web/*.html>
     ];

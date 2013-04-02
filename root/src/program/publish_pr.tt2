@@ -1,0 +1,32 @@
+<h2>Publishing the Personal Retreat Web Site</h2>
+
+<form action=/program/publishPR_do/$id>
+<table cellpadding=3>
+
+<tr>
+<th align=right>PR Discount %</th>
+<td><input type=text name=discount value='$discount'></td>
+</tr>
+
+<tr>
+<th align=right>Discount Period Start</th>
+<td><input type=text name=start value='$start'>
+<span style="margin-left: 5mm">(only the months really matter)</span>
+</td>
+</tr>
+
+<tr>
+<th align=right>End</td>
+<td><input type=text name=end value='$end'></td>
+</tr>
+
+<tr><th align=right>With Discount Get Away Offer</th>
+<td><input type=radio name=publish_type value='getaway' [% 'checked' IF getaway == 'getaway' %]></td>
+</tr>
+
+<tr><th align=right>No Discount Offer</th>
+<td><input type=radio name=publish_type value='plain' [% 'checked' IF getaway != 'getaway' %]></td>
+</tr>
+<tr><th></th><td><input type=submit value="Submit" id=sub></td></tr>
+</table>
+</form>

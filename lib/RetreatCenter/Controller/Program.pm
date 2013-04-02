@@ -2263,13 +2263,75 @@ sub color_do : Local {
     $c->response->redirect($c->uri_for("/program/view/$program_id/2"));
 }
 
+sub publishPR : Local {
+    my ($self, $c, $id) = @_;
+
+    Global->init($c);
+    stash($c,
+        id       => $id,
+        discount => $string{disc_pr},
+        start    => date($string{disc_pr_start}),
+        end      => date($string{disc_pr_end}),
+        getaway  => $string{personal_template} eq 'personal_getaway'?
+                        'getaway': 'plain',
+        template => "program/publish_pr.tt2",
+    );
+}
+
 #
 # invoke the publish_pr program usually invoked
 # automatically on the 1st of the month at 1 am.
 #
-sub publishPR : Local {
+sub publishPR_do : Local {
     my ($self, $c, $id) = @_;
 
+    my $pct = trim($c->request->params->{discount});
+    if ($pct !~ m{\A \d+ \z}xms) {
+        error($c,
+            "Illegal discount percentage",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    model($c, 'String')->find('disc_pr')->update({
+        value => $pct,
+    });
+    $string{disc_pr} = $pct;
+
+    my $start = date($c->request->params->{start});
+    if (! $start) {
+        error($c,
+            "Invalid start date",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    my $d8 = $start->as_d8();
+    model($c, 'String')->find('disc_pr_start')->update({
+        value => $d8,
+    });
+    $string{disc_pr_start} = $d8;
+
+    my $end = date($c->request->params->{end});
+    if (! $end) {
+        error($c,
+            "Invalid end date",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    $d8 = $end->as_d8();
+    model($c, 'String')->find('disc_pr_end')->update({
+        value => $d8,
+    });
+    $string{disc_pr_end} = $d8;
+
+    my $value = ($c->request->params->{publish_type} eq 'getaway')?
+        'personal_getaway': 'personal';
+    model($c, 'String')->find('personal_template')->update({
+        value => $value,
+    });
+    $string{personal_template} = $value;
     system("publish_pr");
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
