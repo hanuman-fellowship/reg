@@ -1059,6 +1059,9 @@ sub get_online : Local {
             date_updat => $today,
             date_entrd => $today,
         });
+        $p->update({
+            secure_code => $p->id . rand6(),
+        });
     }
     else {
         if (@ppl == 1) {

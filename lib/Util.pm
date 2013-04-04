@@ -67,6 +67,7 @@ our @EXPORT_OK = qw/
     calc_mmi_glnum
     main_mmi_affil
     ensure_mmyy
+    rand6
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1756,6 +1757,15 @@ sub ensure_mmyy {
         $name =~ s{\s*\d\d?/\d\d}{  $d_mm/$d_yy}xms;
     }
     return $name;
+}
+
+#
+# 6 random letters
+#
+sub rand6 {
+    my $lets = '';
+    $lets .= ('a' .. 'z', 'A' .. 'Z')[rand 52] for 1 .. 6;
+    $lets;
 }
 
 

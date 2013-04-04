@@ -24,6 +24,7 @@ use Util qw/
     calc_mmi_glnum
     get_now
     main_mmi_affil
+    rand6
 /;
 use Date::Simple qw/
     date
@@ -491,6 +492,9 @@ sub create_do : Local {
         date_updat => $today_d8,
         date_entrd => $today_d8,
     });
+    $p->update({
+        secure_code => $p->id . rand6(),
+    });
     if ($fname) {
         my $dir = "root/static/${type}_done/"
                 . today()->format("%Y-%m")
@@ -713,6 +717,9 @@ sub mkpartner : Local {
         id_sps   => $p1->id,
         date_entrd => $today,
         date_updat => $today,
+    });
+    $p2->update({
+        secure_code => $p2->id . rand6(),
     });
     $p1->update({
         id_sps     => $p2->id,

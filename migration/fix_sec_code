@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use lib '../lib';
+use Util 'rand6';
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die "oh no\n";
+
+my $per = $dbh->prepare("select id from people");
+my $upd = $dbh->prepare("update people set secure_code = ? where id = ?");
+
+$per->execute();
+while (my ($id) = $per->fetchrow_array()) {
+    $upd->execute($id . rand6(), $id);
+}

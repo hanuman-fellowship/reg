@@ -48,6 +48,7 @@ __PACKAGE__->add_columns(qw/
     cc_expire
     cc_code
     safety_form
+    secure_code
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -266,6 +267,9 @@ mmi_snail_mailings - I want MMI snail mailings
 safety_form - this person has filled out a safety form
 sanskrit - Sanskrit name - if any.
     one can search for a person by their Sanskrit name
+secure_code - generated at record creation time - id + 6 random letters
+    Used for sending in email for online member payment and also
+    for having people update their own People entry.
 sex - gender - M or F.
     for people that have as yet not specified their gender
     this field could be either blank ' ' or C (not sure why old reg had a C - couple?).

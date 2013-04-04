@@ -2024,6 +2024,9 @@ sub upload_yj_sheet_do : Local {
                     inactive           => q{},
                     deceased           => q{},
                 });
+                $p->update({
+                    secure_code => $p->id . rand6(),
+                });
                 my $id = $p->id();
                 for my $ca (@cur_affils) {
                     model($c, 'AffilPerson')->create({

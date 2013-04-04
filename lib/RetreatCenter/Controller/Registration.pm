@@ -472,6 +472,9 @@ EOH
             date_updat => $today_d8,
             date_entrd => $today_d8,
         });
+        $p->update({
+            secure_code => $p->id . rand6(),
+        });
     }
     else {
         if (@ppl == 1) {

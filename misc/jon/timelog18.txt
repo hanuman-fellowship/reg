@@ -144,3 +144,5 @@ Mar 30 11:45-1:30
 Apr 1 8:20-12:15
     PublishPR for discount period
         done completely and correctly - not easy!
+Apr 3 10:30-
+    begin member online payments

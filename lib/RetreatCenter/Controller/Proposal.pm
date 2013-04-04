@@ -418,6 +418,9 @@ sub _transmit {
                                 $proposal->zip_post()
                         ),
         });
+        $person->update({
+            secure_code => $person->id . rand6(),
+        });
         $person_id = $person->id();
         model($c, 'AffilPerson')->create({
             a_id => $prop_sub_id,
@@ -489,6 +492,9 @@ sub _cs_transmit {
                                 $proposal->cs_addr2(),
                                 $proposal->cs_zip_post()
                         ),
+        });
+        $person->update({
+            secure_code => $person->id . rand6(),
         });
         $person_id = $person->id();
         $proposal->update({
