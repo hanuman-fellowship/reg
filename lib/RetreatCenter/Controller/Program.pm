@@ -2385,9 +2385,9 @@ sub cancel : Local {
         });
     }
     else {
-        if (my @regs = $p->registrations) {
+        if (my @regs = grep { ! $_->cancelled } $p->registrations) {
             error($c,
-                "Cannot cancel a program with registrations.",
+                "Cannot cancel a program with active registrations.  Cancel them first.",
                 "gen_error.tt2",
             );
             return;
