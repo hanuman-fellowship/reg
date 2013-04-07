@@ -214,6 +214,8 @@ sub show : Local {
                     ($ev->level() =~ m{[DCM]})
                     ||
                     ($ev->category->name() ne 'Normal')
+                    ||
+                    $ev->cancelled()
                    )
             ) {
                 next EVENT;

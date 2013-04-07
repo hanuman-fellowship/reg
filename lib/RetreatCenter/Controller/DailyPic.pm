@@ -100,6 +100,8 @@ sub event_table {
                     ($ev->level() =~ m{[DCM]})
                     ||
                     ($ev->category->name() ne 'Normal')
+                    ||
+                    $ev->cancelled()
                    )
             ) {
                 next EVENT;

@@ -115,6 +115,8 @@ Mar 30 11:45-1:30
     the list to make sure that all are either PRs or with a w until
     the next season comes.
 
+    No cancelled programs in DailyPic or ClusterView.
+
     MEMBERSHIP PROJECT
     ==================
     entering a membership payment (in Member area) should
