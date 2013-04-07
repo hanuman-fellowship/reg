@@ -505,6 +505,7 @@ my %sys_template = map { $_ => 1 } qw/
 
 sub sys_template {
     my ($file) = @_;
+    return 1 if $file =~ m{\A cal \d{6} }xms;
     return exists $sys_template{$file};
 }
 

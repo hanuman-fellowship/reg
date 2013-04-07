@@ -8,4 +8,6 @@ General Membership is maintained by an annual payment of dues in the
 amount of \$${string.mem_gen_amt}. Please make your payment today
 to renew your membership and reinstate your benefits. 
 <p>
+To claim a Tax Deduction for this donation, you must deduct the
+value of any benefits you receive.
 [% INCLUDE bot.tt2 %]

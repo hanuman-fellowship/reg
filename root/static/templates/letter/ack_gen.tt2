@@ -4,7 +4,17 @@ Dear $sanskrit,
 Thank you for your generous commitment to the Hanuman Fellowship
 as a General Member and for being part of our supportive community.
 We received your payment of dues in the amount of \$$amount
-on [% pay_date.format("%D") %] and activated your benefits for the
-$year membership year.
+on ${pay_date.format("%D")}.
 <p>
+In order to become a voting member, your name will be voted on at the
+annual general meeting, held in May/June.  You are welcome to attend
+this meeting and after approval you will be eligible to vote in
+the election for Board of Directors, which is also held at that time.
+<p>
+In order to receive the 20% discount on meals at MMC,
+kindly fill out the green meal ticket form, located in the back of
+binders found on the table near the entry to the dining room.
+<p>
+To claim a Tax Deduction for this donation, you must deduct the
+value of any benefits you receive.
 [% INCLUDE bot.tt2 %]

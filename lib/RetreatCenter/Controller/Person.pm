@@ -780,6 +780,7 @@ sub register1 : Local {
     #
     my @programs = model($c, 'Program')->search(
         {
+            cancelled => '',        # not cancelled, please
             edate     => { '>='      => $today               },
             'me.name' => { -not_like => '%personal%retreat%' },
             @cond,

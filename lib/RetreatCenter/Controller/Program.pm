@@ -1282,7 +1282,7 @@ sub publish : Local {
                    $a->edate <=> $b->edate
                }
                grep {
-                   $_->linked
+                   $_->linked && ! $_->cancelled
                }
                @programs,
                @rentals
@@ -1621,7 +1621,7 @@ sub gen_month_calendars {
     my ($c) = @_;
     my $cur_ym = 0;
     my $cal;
-    for my $p (grep { $_->linked } @programs) {
+    for my $p (grep { $_->linked && ! $_->cancelled } @programs) {
         my $ym = $p->sdate_obj->format("%Y%m");
         if ($ym != $cur_ym) {
             # finish the prior calendar file, if any
@@ -1756,7 +1756,7 @@ sub gen_progtable {
     open my $progt, ">", "gen_files/progtable"
         or die "cannot create progtable: $!\n";
     print {$progt} "{\n";       # the enclosing anonymous hash ref
-    for my $p (@programs) {
+    for my $p (grep { ! $_->cancelled } @programs) {
         _prt_data($progt, $p, $p->id());
     }
     print {$progt} "};\n";
@@ -2371,6 +2371,37 @@ sub update_refresh_do : Local {
                 refresh_days => $l,
             });
         }
+    }
+    $c->response->redirect($c->uri_for("/program/view/$id/1"));
+}
+
+sub cancel : Local {
+    my ($self, $c, $id) = @_;
+
+    my $p = model($c, 'Program')->find($id);
+    if ($p->cancelled) {
+        $p->update({
+            cancelled => '',
+        });
+    }
+    else {
+        if (my @regs = $p->registrations) {
+            error($c,
+                "Cannot cancel a program with registrations.",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        if (my @bookings = $p->bookings) {
+            error($c,
+                "Cannot cancel a program with meeting place bookings.",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        $p->update({
+            cancelled => 'yes',
+        });
     }
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }

@@ -86,15 +86,34 @@ Mar 30 11:45-1:30
         instead of crafting it from pname.
     Cancelling a program - add an attribute that is set with a
         menu link (not a form input element) after confirmation.
-        Can't cancel if any registrations are present.
+        Can't cancel if any registrations or bookings are present.
     On the program list mark cancelled programs differently.
     Don't include them in the list of programs to register for.
     Cancelled programs still have web pages - perhaps you
-        choose a different template.
-        But these are not 'linked'.  still live in the staging/
+        choose a different template - no.
+        These are not 'linked'.  Still live in the staging/
         or live/ dir.  Can't register for them - the template
         could/should omit the 'Register Now' links.
-        If they are included don't let the registration proceed.
+        It uses the standard default.html template and
+        replaces the Register Now links with a Registration Closed image.
+        The registration_closed.html template was removed.
+        Also template.html was removed - obsolete.
+        No easy way to register for these programs - only by concocting
+        a URL or messing with the address bar in Reg.
+        Such pages do not have navigation to next/prev prog/month. Okay?
+        They are there simply to provide a landing page for
+        the links that may have been sent out.   The change of name to
+        the unique id could be taken care of by 
+        a link in the dir until we get beyond this point.
+        On the Reg calendar we have Cancelled programs (on the
+        top in red since no Meeting Place).  Their popup has
+        Cancelled in red.  The details row has Cancelled in red
+        after the name.
+    I put a green w in the status column to denote programs
+    that are Web Ready.   Okay or too cryptic?  What else?
+    I think it is useful.   Can omit MMI and then scan down
+    the list to make sure that all are either PRs or with a w until
+    the next season comes.
 
     MEMBERSHIP PROJECT
     ==================
@@ -144,5 +163,38 @@ Mar 30 11:45-1:30
 Apr 1 8:20-12:15
     PublishPR for discount period
         done completely and correctly - not easy!
-Apr 3 10:30-
+Apr 3 10:30-12:00
     begin member online payments
+    secure_code, analysis of letters, deciding on path forward
+Apr 4 11:30-12:30
+    affirm that everyone's expiration date is 12/31, right?
+    what if someone first pays in November or July? - manually adjust
+    to following year?  where is boundary?
+
+    formatting letters for new way - online payment form
+        both with and without email present
+
+    7 letters in all - times 2 for email or not
+        so 14 cases to test.  Shantam to test, please?
+        Lori, Shantam to work together if Swapna has left for India.
+        letters 3-7 test TO YOU and to the member's email.
+
+    1 - ack_gen - After payment - either create anew or another payment
+    2 - ack_spons
+        
+    -- done --
+
+    3 - lapse - Lapse, Lapse + Inactive = lapsed()
+
+    4 - gen_exp - Expire 12/31 = just_expired()
+    5 - spons_exp
+
+    6 - lapse_gen_soon - Lapse Soon = lapse_soon()
+    7 - lapse_spons_soon
+Apr 7 11:40-
+    cancelled programs done right
+
+    to push to kali:
+    add the field secure_code to table people default ''
+        and run fix_sec_code in /mig.
+    add the field cancelled to table program text not null default ''

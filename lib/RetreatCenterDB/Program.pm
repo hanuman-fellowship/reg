@@ -83,6 +83,7 @@ __PACKAGE__->add_columns(qw/
     facebook_event_id
     not_on_calendar
     tub_swim
+    cancelled
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -167,13 +168,13 @@ sub future_programs {
     );
     #
     # go through the programs in order
-    # skipping the unlinked programs
+    # skipping the unlinked and cancelled programs
     # setting the prev and next links.
     # and assigning a sequential program number.
     # these are used in subsequent methods.
     #
     my ($prev_prog);
-    for my $p (grep { $_->linked } @programs) {
+    for my $p (grep { $_->linked && ! $_->cancelled } @programs) {
         $p->{prev}   = $prev_prog || $p;
         $prev_prog->{"next"} = $p;
         $prev_prog = $p;
@@ -187,7 +188,7 @@ sub future_programs {
     # so the last one overwritten will be the first of the month!
     #
     for my $p (reverse @programs) {
-        next unless $p->linked;
+        next unless $p->linked || $p->cancelled;
         my $sd = $p->sdate_obj();
         $first_of_month{$sd->month . $sd->year} = $p;
     }
@@ -275,6 +276,8 @@ sub event_type {
 sub fname {
     my ($self) = @_;
 
+    return $self->id . ".html";
+    # delete everything below, right?
     my $sd = $self->sdate_obj;
     my $name =
            substr($self->name,  0, 3) .
@@ -602,6 +605,7 @@ sub fees {
 
 sub firstprog_prevmonth {
     my ($self) = @_;
+    return "#" if $self->cancelled;
     my $sd = $self->sdate_obj;
     my $m = $sd->month;
     my $y = $sd->year;
@@ -621,6 +625,7 @@ sub firstprog_prevmonth {
 
 sub firstprog_nextmonth {
     my ($self) = @_;
+    return "#" if $self->cancelled;
     my $sd = $self->sdate_obj;
     my $m = $sd->month;
     my $y = $sd->year;
@@ -663,10 +668,12 @@ sub month_calendar {
 }
 sub nextprog {
     my ($self) = @_;
+    return "#" if $self->cancelled;
     $self->{"next"}->fname;
 }
 sub prevprog {
     my ($self) = @_;
+    return "#" if $self->cancelled;
     $self->{prev}->fname;
 }
 
@@ -935,6 +942,9 @@ sub prog_type {
 
     my $type = "";
 
+    if ($self->cancelled) {
+        $type = "<span style='color: red'>Cancelled</span> ";
+    }
     if ($self->level() eq 'A') {
         $type .= "Course ";
     }
@@ -949,6 +959,9 @@ sub prog_type {
     }
     if ($self->category->name() ne 'Normal') {
         $type .= "Resident ";
+    }
+    if ($self->webready) {
+        $type .= "<span style='color: green'>w</span> ";
     }
     chop $type;
     $type;
@@ -968,6 +981,28 @@ sub PR {
     $self->name() =~ m{personal\s+retreat}i; 
 }
 
+#
+# not good to put this HTML and styling in the code
+# need to move the <!-- T xxx --> mechanism into the template toolkit
+# and all styles to a .css file.  But what about Exceptions?
+# this is a maintenance of legacy software issue...
+#
+sub reg_link {
+    my ($self) = @_;
+
+    if ($self->cancelled) {
+        return <<'EOS';
+<IMG SRC="/Gif/registration_closed.png" STYLE="padding-top:25px;" ALT="Registration Closed" BORDER="0">
+EOS
+    }
+    else {
+        my $id = $self->id;
+        return <<"EOS";
+<A HREF="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=$id"><IMG SRC="/Gif/register_button.gif" ALT="Register for this program" BORDER="0"></A>
+EOS
+    }
+}
+
 1;
 __END__
 overview - Programs are MMC (and MMI) sponsored events for which we do registrations of individuals.
@@ -976,6 +1011,7 @@ allow_dup_regs - Can a person sign up more than once?  Personal Retreats have th
     Other programs could have it set as well.  If not set we prohibit a duplicate registration.
 brdesc - A lengthy description of the program for the brochure.  If empty
     we take the webdesc field.
+cancelled - boolean - Has this program been cancelled?  Set/Unset via a menu link.
 canpol_id - foreign key to canpol
 category_id - foreign key to category
 cl_template - confirmation letter template file name.  Mostly it is 'default' but can vary.

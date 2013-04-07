@@ -1,12 +1,9 @@
-To claim a Tax Deduction for this donation, you must deduct the
-<a href="http://www.mountmadonna.org/programs/progfees.html">value</a>
-of any benefits you receive.
 <p>
 In Peace,
 <p>
 The Hanuman Fellowship<br>
 Membership Secretary<br>
-<a href=mailto:memberships@mountmadonna.org>memberships@mountmadonna.org</a><br>
+<a href=mailto:${string.mem_email}>${string.mem_email}</a><br>
 $string.mem_phone
 </body>
 </html>

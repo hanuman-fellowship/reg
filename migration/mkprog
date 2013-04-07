@@ -54,7 +54,8 @@ create table program (
     category_id integer,
     facebook_event_id text,
     not_on_calendar text,
-    tub_swim text default 'yes'
+    tub_swim text default 'yes',
+    cancelled text not null default ''
 );
 drop table if exists category;
 create table category (

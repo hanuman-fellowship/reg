@@ -400,6 +400,12 @@ sub seminar_house {
     return 0;
 }
 
+# we had 'cancelled' in Programs first - soon in Rentals?
+sub cancelled {
+    my ($self) = @_;
+    return 0;
+}
+
 sub balance_disp {
     my ($self) = @_;
     commify($self->balance());

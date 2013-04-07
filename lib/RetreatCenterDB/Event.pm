@@ -74,6 +74,12 @@ sub title {
     $self->descr;       # for the calendar
 }
 
+# will we have cancelled events?  that attr appeared in programs first.
+sub cancelled {
+    my ($self) = @_;
+    return 0;
+}
+
 sub link {
     my ($self) = @_;
     return "/event/view/" . $self->id();

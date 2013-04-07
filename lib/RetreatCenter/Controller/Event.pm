@@ -356,6 +356,7 @@ sub calendar : Local {
         Jul Aug Sep
         Oct Nov Dec
     /;
+    my $cancelled = " <span style='background-color: red'>Cancelled</span>";
 
     Global->init($c);
 
@@ -601,7 +602,7 @@ EOH
             }
         }
         my $event_name = $ev->name();
-        $event_name =~ s{ \d?\d/\d\d\s* \z }{}xms;
+        $event_name =~ s{ \s* \d?\d/\d\d\s* \z }{}xms;
                                             # tidy up ending mm/yy or m/yy
                                             # not really needed
         $event_name =~ s{ \A MMI- }{}xms;   # tidy up the front of MMI programs
@@ -781,7 +782,11 @@ EOH
 
                 # to display in the overlib popup:
                 #
-                my $disp = $event_name . $place_name;
+                my $disp = $event_name;
+                if ($ev->cancelled) {
+                    $disp .= $cancelled;
+                }
+                $disp .= $place_name;
                 if (length $count) {
                     $disp .= "[$count]";
                     if ($ev_type eq 'rental') {
@@ -816,7 +821,7 @@ EOH
                                . $event_name
                                . "</a>"
 
-                       :       $event_name),
+                       :       $event_name) . ($ev->cancelled? $cancelled: ''),
 
                       places($ev, 'all')
                       ;

@@ -165,19 +165,19 @@ sub _get_data {
             push @mess, "No valid to date";
         }
     }
-    if ($P{category} eq 'General'
+    if ($P{category} && $P{category} eq 'General'
         && ! $P{date_general}
         && ! $P{valid_to}
     ) {
         push @mess, "Missing General date";
     }
-    if ($P{category} eq 'Sponsor'
+    if ($P{category} && $P{category} eq 'Sponsor'
         && ! $P{date_sponsor}
         && ! $P{valid_to}
     ) {
         push @mess, "Missing Sponsor date";
     }
-    if ($P{category} eq 'General') {
+    if ($P{category} && $P{category} eq 'General') {
         $P{sponsor_nights} = 0;
         $P{free_prog_taken} = '';
     }

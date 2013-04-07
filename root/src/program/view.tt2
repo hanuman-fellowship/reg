@@ -62,6 +62,12 @@ function UNreserve_cluster(cluster_id) {
     &nbsp;&nbsp;&nbsp;
     <a href=/program/duplicate/$id>Duplicate</a>
     &nbsp;&nbsp;&nbsp;
+[% cmd = 'Cancel' %]
+[% SET cmd = 'UnCancel' IF program.cancelled %]
+    <a href=/program/cancel/$id
+       onclick="return confirm('Are you sure you wish to $cmd \'$program.name\'');"
+    >$cmd</a>
+    &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF program.rental_id %]
 <a href=/rental/view/$program.rental_id>To Rental</a>
@@ -118,6 +124,9 @@ function UNreserve_cluster(cluster_id) {
 
 <b>Name</b>
 <span class=larger>$program.name</span>
+[% IF program.cancelled %]
+<span class=larger style="background-color: red">Cancelled</span>
+[% END %]
 <b>From</b>
 $program.sdate_obj <span class=dow>${program.sdate_obj.format("%a")}</span>
 <b>To</b>
