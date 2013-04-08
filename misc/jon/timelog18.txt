@@ -193,10 +193,26 @@ Apr 4 11:30-12:30
 
     6 - lapse_gen_soon - Lapse Soon = lapse_soon()
     7 - lapse_spons_soon
-Apr 7 11:40-4:00
+Apr 7 11:40-4:00, 6:50-
     cancelled programs done right
 
     to push to kali:
     add the field secure_code to table people default ''
         and run fix_sec_code in /mig.
     add the field cancelled to table program text not null default ''
+    tweaks to remedy all the changes
+
+    membership
+        defaults of t ^2, 12/31 ^3 Right?
+    added payment type credit, check, cash
+    automatic payment to Membership xaccount
+    condition in ack_gen letter on new member or not
+        who keeps track of which general members can
+            vote and which cannot? :)
+            another flag on membership record?
+    Members w/$   and Members   lists only members that are
+                                not lapsed or inactive
+        can see all incl Inactive by entering * in search box
+    screwy - can change Inactive to General without entering
+        an amount and they are automatically not lapsed any more
+        because of the default 12/31 of this year....

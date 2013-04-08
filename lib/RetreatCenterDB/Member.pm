@@ -20,6 +20,7 @@ __PACKAGE__->add_columns(qw/
     date_life
     free_prog_taken
     total_paid
+    voter
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -84,3 +85,4 @@ id - unique id
 person_id - foreign key to person
 sponsor_nights - how many sponsor free nights remain?
 total_paid - total dollars paid towards a sponsor membership
+voter - Can the General member vote for the Board of Directors?

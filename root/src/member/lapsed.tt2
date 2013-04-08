@@ -11,7 +11,7 @@ function toggle_all() {
     }
 }
 </script>
-<h2>Lapsed [% IF inactive %]and Inactive[% END %] Members</h2>
+<h2>Lapsed Members</h2>
 <form name=form action=/member/email_lapsed>
 <input type=submit value="Email Reminder to All Checked">
 &nbsp; &nbsp; &nbsp;

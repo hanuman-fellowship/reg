@@ -8,7 +8,8 @@ create table member (
     sponsor_nights integer,
     date_life text,
     free_prog_taken text,
-    total_paid integer
+    total_paid integer,
+    voter text not null default ''
 );
 drop table if exists spons_hist;
 create table spons_hist (

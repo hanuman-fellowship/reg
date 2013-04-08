@@ -39,7 +39,7 @@ sub membership_list : Local {
     my ($self, $c, $no_money) = @_;
     
     my %stash;
-    for my $cat (qw/ gene cont spon life found inac /) {
+    for my $cat (qw/ gene cont spon life found /) {
         $stash{lc $cat} = [
             map {
                 $_->[1]
@@ -50,6 +50,7 @@ sub membership_list : Local {
             map {
                 [ $_->person->last . ' ' . $_->person->first, $_ ]
             }
+            grep { ! $_->lapsed }
             model($c, 'Member')->search({
                 category => { -like => "$cat%" },
             })
@@ -124,6 +125,7 @@ sub update : Local {
                                      ;
 
     $c->stash->{person}      = $m->person();
+    $c->stash->{voter_checked} = $m->voter()? "checked": "";
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template}    = "member/create_edit.tt2";
 }
@@ -134,6 +136,7 @@ sub _get_data {
     my ($c) = @_;
 
     %P = %{ $c->request->params() };
+    $P{voter} = "" unless exists $P{voter};
     @mess = ();
     if (! $P{category}) {
         push @mess, "You must select General, Contributing Sponsor, Sponsor, Life, Founding Life or Inactive";
@@ -151,7 +154,7 @@ sub _get_data {
         }
         $P{$f} = $dt->as_d8();
     }
-    if ($P{mkpay_amount} || $P{mkpay_date}) {
+    if ($P{mkpay_amount} && $P{mkpay_date}) {
         if ($P{mkpay_amount} !~ m{^\s*-?\d+\s*$}) {
             push @mess, "No payment amount";
         }
@@ -218,11 +221,13 @@ sub update_do : Local {
     return if @mess;
 
     my $pay_date   = $P{mkpay_date};
+    my $pay_type   = $P{mkpay_type};
     my $amount     = $P{mkpay_amount};
     my $valid_from = $P{valid_from};
     my $valid_to   = $P{valid_to};
 
     delete $P{mkpay_date};
+    delete $P{mkpay_type};
     delete $P{mkpay_amount};
     delete $P{valid_from};
     delete $P{valid_to};
@@ -230,7 +235,7 @@ sub update_do : Local {
     my $member = model($c, 'Member')->find($id);
     my @who_now = get_now($c);
 
-    if ($pay_date) {
+    if ($amount && $pay_date) {
         # put payment in history, reset last paid
 
         model($c, 'SponsHist')->create({
@@ -243,6 +248,8 @@ sub update_do : Local {
                             && $amount <= $string{mem_gen_amt}? 'yes': '',
             @who_now,
         });
+        _xaccount_mem_pay($c, $member->person_id,
+                          $amount, $pay_date, $P{category}, $pay_type);
     }
 
     # recompute the total
@@ -256,7 +263,9 @@ sub update_do : Local {
     }
     $P{total_paid} = $total;
 
-    if ($member->sponsor_nights() != $P{sponsor_nights}) {
+    if ($P{sponsor_nights}
+        && $member->sponsor_nights() != $P{sponsor_nights}
+    ) {
         # add NightHist record to reflect the change
         model($c, 'NightHist')->create({
             member_id  => $id,
@@ -320,7 +329,7 @@ sub update_do : Local {
     }
 
     Global->init($c);
-    my $html = acknowledge($c, $member, $amount, $pay_date);
+    my $html = acknowledge($c, $member, $amount, $pay_date, 0);
     my $pers = $member->person();
     if ($pers->email()) {
         email_letter($c,
@@ -347,7 +356,7 @@ sub js_print {
 }
 
 sub acknowledge {
-    my ($c, $member, $amount, $pay_date) = @_;
+    my ($c, $member, $amount, $pay_date, $new_member) = @_;
 
     my $person   = $member->person;
     my $category = $member->category;
@@ -379,6 +388,7 @@ $addr
 EOA
     }
     my $stash = {
+        new_member   => $new_member,
         sanskrit     => ($person->sanskrit || $person->first),
         amount       => $amount,
         pay_date     => date($pay_date),
@@ -464,6 +474,7 @@ sub create : Local {
 
     $c->stash->{person} = model($c, 'Person')->find($person_id);
     $c->stash->{form_action} = "create_do/$person_id";
+    $c->stash->{voter_checked} = '';
     $c->stash->{template}    = "member/create_edit.tt2";
 }
 
@@ -474,11 +485,13 @@ sub create_do : Local {
     return if @mess;
 
     my $mkpay_date = $P{mkpay_date};
+    my $pay_type = $P{mkpay_type};
     my $amount     = $P{mkpay_amount};
     my $valid_from = $P{valid_from};
     my $valid_to   = $P{valid_to};
 
     delete $P{mkpay_date};
+    delete $P{mkpay_type};
     delete $P{mkpay_amount};
     delete $P{valid_from};
     delete $P{valid_to};
@@ -516,7 +529,7 @@ sub create_do : Local {
     my @who_now = get_now($c);
 
     # put any payment in history
-    if ($mkpay_date) {
+    if ($amount && $mkpay_date) {
         model($c, 'SponsHist')->create({
             member_id    => $id,
             date_payment => $mkpay_date,
@@ -526,6 +539,8 @@ sub create_do : Local {
             general      => $P{category} eq 'General'? 'yes': '',
             @who_now,
         });
+        _xaccount_mem_pay($c, $person_id,
+                          $amount, $mkpay_date, $P{category}, $pay_type);
     }
 
     # NightHist records
@@ -554,7 +569,7 @@ sub create_do : Local {
     }
 
     Global->init($c);
-    my $html = acknowledge($c, $member, $amount, $mkpay_date);
+    my $html = acknowledge($c, $member, $amount, $mkpay_date, 1);
     
     my $pers = $member->person();
     if ($pers->email()) {
@@ -572,13 +587,10 @@ sub create_do : Local {
 }
 
 sub _lapsed_members {
-    my ($c, $include_inactive) = @_;
+    my ($c) = @_;
 
     my $today = tt_today($c)->as_d8();
     my @opt;
-    if ($include_inactive) {
-        @opt = (category => 'Inactive');
-    }
     return [
         model($c, 'Member')->search(
             {
@@ -655,11 +667,10 @@ sub _checked_members {
 }
 
 sub lapsed : Local {
-    my ($self, $c, $include_inactive) = @_;
+    my ($self, $c) = @_;
 
     stash($c,
-        members  => _lapsed_members($c, $include_inactive),
-        inactive => $include_inactive,
+        members  => _lapsed_members($c),
         template => "member/lapsed.tt2",
     );
 }
@@ -1235,6 +1246,28 @@ EOA
     ) or die $tt->error;
     $html = _no_here($html);
     $c->res->output($html . js_print());
+}
+
+sub _xaccount_mem_pay {
+    my ($c, $person_id, $amount, $pay_date, $category, $pay_type) = @_;
+
+    my ($xacct) = model($c, 'XAccount')->search({
+        descr => "Membership",
+    });
+    # The above will work, right?
+    # Too much trouble to return an error.
+    #
+    model($c, 'XAccountPayment')->create({
+        xaccount_id => $xacct->id,
+        person_id   => $person_id,
+        amount      => $amount,
+        type        => $pay_type,
+        what        => "$category Membership",
+
+        user_id     => $c->user->obj->id,
+        the_date    => today()->as_d8(),
+        time        => get_time()->t24(),
+    });
 }
 
 1;

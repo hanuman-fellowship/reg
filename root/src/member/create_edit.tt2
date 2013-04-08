@@ -43,12 +43,12 @@ h3 {
 <h2>Members</h2>
 <!-- need post for +1 in dates -->
 <form method=post
-      action=[% '/member/' _ form_action %]
+      action='/member/$form_action'
       name=form
 >
 
-<span class=larger>[% person.sanskrit || person.first %] [% person.last %]</span>
-<span style="margin-left: 1in"><a href="/person/view/[% person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a></span>
+<span class=larger>[% person.sanskrit || person.first %] $person.last</span>
+<span style="margin-left: 1in"><a href="/person/view/$person.id" accesskey='p'><span class=keyed>P</span>erson Info</a></span>
 <p>
 
 <ul>
@@ -59,6 +59,14 @@ h3 {
 <td><input type=text name=mkpay_amount size=5></td>
 <th align=right>Payment Date</th>
 <td><input type=text name=mkpay_date size=10 maxlength=10 value="t">
+<th>Payment Type</th>
+<td>
+<select name=mkpay_type>
+<option value=D>Credit Card
+<option value=C>Check
+<option value=S>Cash
+</select>
+</td>
 </tr>
 
 <tr>
@@ -74,26 +82,28 @@ h3 {
 <table>
 
 <tr>
-<th align=left width=200 height=40><input type=radio name=category value='General' [% category_general %] onclick="ff(1);"><span id=1 class=cat> General</span></th>
-<th align=right>Expires on</th><td><input type=text name=date_general value='[% member.date_general_obj.format("%D") || "12/31" %]' size=10 maxlength=10></td>
+<th align=left width=200 height=40><input type=radio name=category value='General' $category_general onclick="ff(1);"><span id=1 class=cat> General</span></th>
+<th align=right>Expires on</th><td><input type=text name=date_general value='12/31' size=10 maxlength=10></td>
+<th align=right>Voter</th>
+<td><input type=checkbox name=voter value=yes $voter_checked></td>
 </tr>
 
 <tr>
-<th align=left height=40><input type=radio name=category value='Contributing Sponsor' [% category_contributing_sponsor %] onclick="ff(2);"><span id=2 class=cat> Contributing Sponsor</span></th>
+<th align=left height=40><input type=radio name=category value='Contributing Sponsor' $category_contributing_sponsor onclick="ff(2);"><span id=2 class=cat> Contributing Sponsor</span></th>
 </tr>
 
 <tr>
-<th align=left height=40><input type=radio name=category value='Sponsor' [% category_sponsor %] onclick="ff(3);"><span id=3 class=cat> Sponsor</span></th>
-<th align=right>Payment Due on</td><td><input type=text name=date_sponsor value='[% member.date_sponsor_obj.format("%D") || "12/31" %]' size=10 maxlength=10></td><th align=right>Total Paid</td><td>[% member.total_paid %]</th>
+<th align=left height=40><input type=radio name=category value='Sponsor' $category_sponsor onclick="ff(3);"><span id=3 class=cat> Sponsor</span></th>
+<th align=right>Payment Due on</td><td><input type=text name=date_sponsor value='12/31' size=10 maxlength=10></td><th align=right>Total Paid</td><td>$member.total_paid</th>
 </tr>
 
 <tr>
-<th align=left colspan=3 height=40><input type=radio name=category value='Life' [% category_life %] onclick="ff(4);"><span id=4 class=cat> Life</span></th>
+<th align=left colspan=3 height=40><input type=radio name=category value='Life' $category_life onclick="ff(4);"><span id=4 class=cat> Life</span></th>
 <th align=right>Nights Left</th>
 [% IF Catalyst.check_user_roles('member_admin') %]
-<td><input type=text name=sponsor_nights value='[% member.sponsor_nights %]' size=2 maxlength=2></td>
+<td><input type=text name=sponsor_nights value='$member.sponsor_nights' size=2 maxlength=2></td>
 [% ELSE %]
-<td>[% member.sponsor_nights %]</td>
+<td>$member.sponsor_nights</td>
 [% END %]
 </tr>
 
@@ -101,17 +111,17 @@ h3 {
 <tr>
 <td colspan=3>&nbsp;</td>
 <td colspan=2>
-<input type=checkbox name=free_prog_taken [% free_prog_checked %] value=yes> <b>Free Program Taken</b>
+<input type=checkbox name=free_prog_taken $free_prog_checked value=yes> <b>Free Program Taken</b>
 </td>
 </tr>
 [% END %]
 
 <tr>
-<th align=left colspan=2 height=40><input type=radio name=category value='Founding Life' [% category_founding_life %] onclick="ff(5);"><span id=5 class=cat> Founding Life</span></th>
+<th align=left colspan=2 height=40><input type=radio name=category value='Founding Life' $category_founding_life onclick="ff(5);"><span id=5 class=cat> Founding Life</span></th>
 </tr>
 
 <tr>
-<th align=left colspan=2 height=40><input type=radio name=category value='Inactive' [% category_inactive %] onclick="ff(6);"><span id=6 class=cat> Inactive</span></th>
+<th align=left colspan=2 height=40><input type=radio name=category value='Inactive' $category_inactive onclick="ff(6);"><span id=6 class=cat> Inactive</span></th>
 <td align=left><input id=sub type=submit id=submit value="Submit"></td>
 </tr>
 
@@ -137,15 +147,15 @@ h3 {
 [% FOR p IN pays %]
     <tr>
     <td align=center>[% IF p.general %]<img src=/static/images/checked.gif>[% END %]</td>
-    <td>[% p.date_payment_obj.format("%D") %]</td>
+    <td>${p.date_payment_obj.format("%D")}</td>
     <td align=right>[% p.amount %]</td>
-    <td>[% p.valid_from_obj.format("%D") %]</td>
-    <td>[% p.valid_to_obj.format("%D") %]</td>
-    <th><a href="javascript:void(0);" onclick="return overlib('[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.who.username %]&nbsp;&nbsp;<span class=nh><a href=/member/payment_update/[% p.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;&nbsp;<a href=/member/payment_delete/[% p.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '450', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a></th>
+    <td>${p.valid_from_obj.format("%D")}</td>
+    <td>${p.valid_to_obj.format("%D")}</td>
+    <th><a href="javascript:void(0);" onclick="return overlib('${p.the_date_obj.format("%D")}&nbsp;&nbsp;$p.time_obj&nbsp;&nbsp;$p.who.username&nbsp;&nbsp;<span class=nh><a href=/member/payment_update/$p.id><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;&nbsp;<a href=/member/payment_delete/$p.id><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '450', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a></th>
     </tr>
     [% n = n + 1 %]
 [% END %]
-    <td><span id="ed[% n %]" class=hidden><a href="/member/payment_update/[% p.id %]">Edit</a> <a href="/member/payment_delete/[% p.id %]" onclick="return confirm('Okay to Delete this payment of $[% p.amount %] on [% p.date_payment_obj %]?');">Delete</a></span></td>
+    <td><span id="ed$n" class=hidden><a href="/member/payment_update/$p.id">Edit</a> <a href="/member/payment_delete/$p.id" onclick="return confirm('Okay to Delete this payment of \$$p.amount on $p.date_payment_obj?');">Delete</a></span></td>
 </table>
 <p>
 </div>
@@ -168,7 +178,7 @@ h3 {
     <td>[% IF reg.id %][% reg.date_start_obj %][% END %]</td>
     <td align=right>[% IF nh.num_nights %][% nh.num_nights %][% END %]</td>
     <td align=left>[% nh.action_str %]</td>
-    <td><a href="javascript:void(0);" onclick="return overlib('[% nh.the_date_obj.format("%D") %]&nbsp;&nbsp;[% nh.time_obj %]&nbsp;&nbsp;[% nh.who.username %]', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
+    <td><a href="javascript:void(0);" onclick="return overlib('${nh.the_date_obj.format("%D")}&nbsp;&nbsp;$nh.time_obj&nbsp;&nbsp;$nh.who.username', RIGHT, STICKY, MOUSEOFF, TEXTSIZE, '12pt', WIDTH, '350', OFFSETX, '23', OFFSETY, '-13');" onmouseout="return nd();"><img border=0 width=20 src="/static/images/info.png"></a></td>
     </tr>
 [% END %]
 </table>
@@ -177,5 +187,5 @@ h3 {
 </ul>
 <script type='text/javascript'>
 document.form.mkpay_amount.focus();
-init([% member.category_id %]);
+init($member.category_id);
 </script>
