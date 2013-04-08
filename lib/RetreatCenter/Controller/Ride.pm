@@ -18,6 +18,7 @@ use Util qw/
     nsquish
     normalize
     d3_to_hex
+    rand6
 /;
 use Date::Simple qw/
     date

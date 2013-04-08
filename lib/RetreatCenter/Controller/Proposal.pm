@@ -14,6 +14,7 @@ use Util qw/
     housing_types
     stash
     normalize
+    rand6
 /;
 use Date::Simple qw/
     date

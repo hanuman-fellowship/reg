@@ -41,6 +41,7 @@ use Util qw/
     check_makeup_new
     check_makeup_vacate
     get_now
+    rand6
 /;
 use POSIX qw/
     ceil

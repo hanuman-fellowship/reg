@@ -68,7 +68,7 @@ Mar 16 10:00-10:45
     Shantam and I together got the Arrived setting correct.
 Mar 18 8:45-10:10, 10:55-11:30
     various requests
-Mar 19 11:35-
+Mar 19 11:35-12:00
     tweaks to previous fixes
 Mar 28 10:00-11:30
     responding to various things.
@@ -193,7 +193,7 @@ Apr 4 11:30-12:30
 
     6 - lapse_gen_soon - Lapse Soon = lapse_soon()
     7 - lapse_spons_soon
-Apr 7 11:40-
+Apr 7 11:40-4:00
     cancelled programs done right
 
     to push to kali:

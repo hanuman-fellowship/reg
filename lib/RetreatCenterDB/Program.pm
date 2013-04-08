@@ -998,7 +998,7 @@ EOS
     else {
         my $id = $self->id;
         return <<"EOS";
-<A HREF="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=$id"><IMG SRC="/Gif/register_button.gif" ALT="Register for this program" BORDER="0"></A>
+<A HREF="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=$id"><IMG SRC="/Gif/register_button.png" ALT="Register for this program" BORDER="0"></A>
 EOS
     }
 }

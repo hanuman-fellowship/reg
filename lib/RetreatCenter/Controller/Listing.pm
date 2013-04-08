@@ -19,6 +19,7 @@ use Util qw/
     affil_table
     empty
     nsquish
+    rand6
 /;
 use Date::Simple qw/
     date
@@ -1033,7 +1034,7 @@ sub late_notices : Local {
                        {
                            @date_bool,
                            arrived    => '',
-                           cancelled  => '',
+                           registration.cancelled  => '',
                            'program.school' => 0,       # only MMC, not MMI
                        },
                        {
