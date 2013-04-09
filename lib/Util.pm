@@ -1100,8 +1100,8 @@ sub dcm_registration {
 
     my @regs = model($c, 'Registration')->search(
         {
-            person_id => $person_id,
-            cancelled => { '!=' => 'yes' },
+            person_id      => $person_id,
+            'me.cancelled' => { '!=' => 'yes' },
         },
         {
             prefetch => [qw/program/],
