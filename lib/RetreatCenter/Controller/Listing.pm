@@ -1034,7 +1034,7 @@ sub late_notices : Local {
                        {
                            @date_bool,
                            arrived    => '',
-                           'registration.cancelled'  => '',
+                           'me.cancelled'  => '',
                            'program.school' => 0,       # only MMC, not MMI
                        },
                        {
