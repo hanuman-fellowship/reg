@@ -699,7 +699,7 @@ sub outstanding : Local {
             date_start       => { 'between' => [ $since->as_d8(),
                                            $yesterday->as_d8() ] },
             balance          => { '!=' => 0 },
-            cancelled        => { '!=' => 'yes' }, 
+            'me.cancelled'   => { '!=' => 'yes' }, 
             'program.school' => 0,      # no MMI
         },
         {

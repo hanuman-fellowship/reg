@@ -439,7 +439,7 @@ sub meal_list : Local {
                             # could do some multi-step join 
                             # do program.category.name => 'Normal'
                             # but not now ...
-                       cancelled  => '',
+                       'me.cancelled'  => '',
                        -or => [
                            'program.level' => 'S',
                            'program.level' => 'A',
