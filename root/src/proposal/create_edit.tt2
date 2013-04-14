@@ -107,17 +107,17 @@ th {
 <table cellpadding=2>
 
 <tr>
-<th style="min-width: 200px"><span class=required>*</span> Date of Call</th>
+<th style="min-width: 200px"><span class=red>*</span> Date of Call</th>
 <td><input type=text name=date_of_call value="[% proposal.date_of_call_obj.format("%D") %]" size=10></td>
 </tr>
 
 <tr>
-<th><span class=required>*</span> Group Name</th>
+<th><span class=red>*</span> Group Name</th>
 <td><input type=text name=group_name value="[% proposal.group_name %]"></td>
 </tr>
 
 <tr>
-<th><span class=required>*</span> Type of Rental</th>
+<th><span class=red>*</span> Type of Rental</th>
 <td><input type=text name=rental_type value="[% proposal.rental_type %]"></td>
 <td><a style="margin-left: 1in" href="#" onclick="show_no_show_cs()"; return false;">Contract Signer?</a></td>
 </tr>
@@ -127,14 +127,14 @@ th {
 <tr><th align=left style="color: green; font-size: 15pt">Contact Person</th></tr>
 
 <tr>
-<th><span class=required>*</span> First</th>
+<th><span class=red>*</span> First</th>
 <td><input type=text id=first name=first value="[% proposal.first %]"></td>
 <th>Home</th>
 <td><input type=text id=tel_home name=tel_home value="[% proposal.tel_home %]"></td>
 </tr>
 
 <tr>
-<th><span class=required>*</span> Last</th>
+<th><span class=red>*</span> Last</th>
 <td>
 <input type=text
        id=last
@@ -148,7 +148,7 @@ th {
 </tr>
 
 <tr>
-<th><span class=required>*</span> Address</th>
+<th><span class=red>*</span> Address</th>
 <td><input type=text id=addr1 name=addr1 value="[% proposal.addr1 %]"></td>
 <th>Cell</th>
 <td><input type=text id=tel_cell name=tel_cell value="[% proposal.tel_cell %]"></td>
@@ -162,21 +162,21 @@ th {
 </tr>
 
 <tr>
-<th><span class=required>*</span> City</th>
+<th><span class=red>*</span> City</th>
 <td colspan=2>
 <input type=text id=city name=city value="[% proposal.city %]">
 </td>
 </tr>
 
 <tr>
-<th><span class=required>*</span> State/Province</th>
+<th><span class=red>*</span> State/Province</th>
 <td colspan=3>
 <input type=text id=st_prov name=st_prov value="[% proposal.st_prov %]">
 </td>
 </tr>
 
 <tr>
-<th><span class=required>*</span> Zip/Postal Code</th>
+<th><span class=red>*</span> Zip/Postal Code</th>
 <td>
 <input type=text id=zip_post name=zip_post value="[% proposal.zip_post %]">
 </td>
@@ -191,7 +191,7 @@ th {
 </tr>
 
 <tr>
-<th><span class=required>*</span> Email</th>
+<th><span class=red>*</span> Email</th>
 <td colspan=3>
 <input type=text id=email name=email value="[% proposal.email %]" size=30>
 </td>
@@ -275,7 +275,7 @@ th {
 <th style="min-width: 228px">Min</th>
 <td colspan=3>
 <input type=text name=min value="[% proposal.min %]" size=3>
-<span style="margin-left: .3in; font-weight: bold;"><span class=required>*</span> Max
+<span style="margin-left: .3in; font-weight: bold;"><span class=red>*</span> Max
 <input type=text
        name=max
        value="[% proposal.max %]"
@@ -285,15 +285,15 @@ th {
 </tr>
 
 <tr>
-<th valign=top><span class=required>*</span> Dates Requested</th>
+<th valign=top><span class=red>*</span> Dates Requested</th>
 <td colspan=3><textarea id=dates_requested name=dates_requested cols=60 rows=2>[% proposal.dates_requested %]</textarea></td>
 </tr>
 
 <tr>
-<th><span class=required>*</span> Check In</th>
+<th><span class=red>*</span> Check In</th>
 <td colspan=3>
 <input type=text name=checkin_time value="[% proposal.checkin_time_obj %]" size=8>
-<span style="margin-left: .3in; font-weight: bold"><span class=required>*</span> Check Out</span>
+<span style="margin-left: .3in; font-weight: bold"><span class=red>*</span> Check Out</span>
 <input type=text name=checkout_time value="[% proposal.checkout_time_obj %]" size=8>
 </td>
 </tr>
@@ -304,7 +304,7 @@ th {
 </tr>
 
 <tr>
-<th><span class=required>*</span> Meeting Space</th>
+<th><span class=red>*</span> Meeting Space</th>
 <td colspan=3><input type=text name=meeting_space value="[% proposal.meeting_space %]"></td>
 </tr>
 
@@ -320,7 +320,7 @@ th {
 </tr>
 
 <tr>
-<th><span class=required>*</span> Program Meeting Date</th>
+<th><span class=red>*</span> Program Meeting Date</th>
 <td colspan=3>
 <input type=text name=program_meeting_date value="[% proposal.program_meeting_date_obj.format("%D") %]" size=10>
 <span style="margin-left: .3in; font-weight: bold">Denied</span>
@@ -329,7 +329,7 @@ th {
 </tr>
 
 <tr>
-<th><span class=required>*</span> Deposit</th>
+<th><span class=red>*</span> Deposit</th>
 <td colspan=3>
 <input type=text
        name=deposit

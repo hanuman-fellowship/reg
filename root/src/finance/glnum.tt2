@@ -7,10 +7,10 @@
 <h2>General Ledger Numbers since $since</h2>
 <h3>Programs & Rentals *</h3>
 [% IF ndups == 1 %]
-<span style="color: red">There was $ndups duplicate GL number.</span>
+<span class=red>There was $ndups duplicate GL number.</span>
 <p class=p2>
 [% ELSIF ndups > 1 %]
-<span style="color: red">There were $ndups duplicate GL numbers.</span>
+<span class=red>There were $ndups duplicate GL numbers.</span>
 <p class=p2>
 [% END %]
 <table cellpadding=5>

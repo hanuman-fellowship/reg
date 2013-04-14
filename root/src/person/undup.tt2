@@ -8,7 +8,7 @@
 [% FOR p IN people %]
 <tr><td valign=top><input tabindex=1 id=txtfld type=text name=[% p.id %] size=2 maxlength=1></td>
 <td valign=top>
-<span style="font-weight: bold"><a href="/person/view/[% p.id %]">[% p.last %], [% p.first %]</a></span>[% IF p.sanskrit %] (<span style="color: green; font-weight: bold">[% p.sanskrit %]</span>) [% END %]<span style="color: red;"> [% p.registrations_rs.count %][% IF p.partner %] partner [% END %][% IF p.member %] member [% END %][% IF p.leader %] leader [% END %]</span><br>
+<span style="font-weight: bold"><a href="/person/view/[% p.id %]">[% p.last %], [% p.first %]</a></span>[% IF p.sanskrit %] (<span style="color: green; font-weight: bold">[% p.sanskrit %]</span>) [% END %]<span class=red> [% p.registrations_rs.count %][% IF p.partner %] partner [% END %][% IF p.member %] member [% END %][% IF p.leader %] leader [% END %]</span><br>
 [% IF p.addr1 %]
 [% p.addr1 %]<br>
 [% IF p.addr2 %][% p.addr2 %]<br>[% END %]

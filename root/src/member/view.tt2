@@ -22,7 +22,7 @@ h3 {
 [% END %]
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
 <p class=p2>
-<div style="color: red; font-size: 14pt">
+<div class=red style="font-size: 14pt">
 [% cat = member.category %]
 [% message %][% IF cat == 'General' %]
 General Member - Expires [% member.date_general_obj.format("%D") %]

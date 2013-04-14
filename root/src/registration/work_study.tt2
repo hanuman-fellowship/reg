@@ -20,7 +20,7 @@
 </td>
 [% ELSE %]
 <td>
-<a style="color: red" href=/registration/view/$r.id>$r.person.first $r.person.last</a>
+<a class=red href=/registration/view/$r.id>$r.person.first $r.person.last</a>
 </td>
 [% END %]
 <td>$r.work_study_comment</td>

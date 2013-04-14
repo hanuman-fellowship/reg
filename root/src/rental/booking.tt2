@@ -8,7 +8,7 @@
 [% checks %]
 [% IF Rchecks %]
 <h4>Resized Rooms</h4>
-<span class=required>
+<span class=red>
 [% Rchecks %]
 </span>
 [% END %]

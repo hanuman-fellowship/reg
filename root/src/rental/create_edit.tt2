@@ -8,11 +8,11 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Name</th>
+<th align=right><span class=red>*</span> Name</th>
 <td><input type=text name=name value="[% rental.name %]"></td>
-<th align=right><span class="required">*</span> From</th>
+<th align=right><span class=red>*</span> From</th>
 <td><input type=text name=sdate value="[% rental.sdate_obj.format("%D") %]" size=10></td>
-<th align=right><span class="required">*</span> To</th>
+<th align=right><span class=red>*</span> To</th>
 <td><input type=text name=edate value="[% rental.edate_obj.format("%D") %]" size=10></td>
 </tr>
 
@@ -89,7 +89,7 @@ Web
 <table border=0>
 
 <tr>
-<th align=right width=100><span class="required">*</span> Maximum</th>
+<th align=right width=100><span class=red>*</span> Maximum</th>
 <td><input type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
@@ -177,7 +177,7 @@ Web
 <table>
 
 <tr>
-<th align=right><span class="required">*</span> Required Deposit</th>
+<th align=right><span class=red>*</span> Required Deposit</th>
 <td><input type=text name=deposit value="[% rental.deposit %]" size=5></td>
 </tr>
 

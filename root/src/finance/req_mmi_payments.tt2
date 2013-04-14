@@ -21,7 +21,7 @@
     [% END %]
 
     <tr class=$class>
-    <td align=center>[% IF p.code %]<img src=/static/images/checked.gif>[% ELSE %]<span class=required>**</span>[% END %]</td>
+    <td align=center>[% IF p.code %]<img src=/static/images/checked.gif>[% ELSE %]<span class=red>**</span>[% END %]</td>
     <td><a href=/registration/view/$p.reg_id>$p.person.first $p.person.last</a></td>
     <td align=right>$p.amount_disp</td>
     <td><a href=/program/view/$p.registration.program_id>$p.registration.program.name</a></td>

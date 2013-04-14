@@ -4,7 +4,7 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/xaccount/export">Export</a>
 [% ELSE %]
-<span style="color: red">To add a new Extra Account ask ${acct_admin}.</span>
+<span class=red>To add a new Extra Account ask ${acct_admin}.</span>
 [% END %]
 <ul>
 <table border=0 cellpadding=3>

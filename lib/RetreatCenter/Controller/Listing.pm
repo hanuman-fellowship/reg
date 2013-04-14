@@ -454,7 +454,7 @@ sub meal_list : Local {
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },
-                      name  => { -not_like => 'XL %' },
+                      cancelled => '',
                       #
                       # update: we now can both have people register
                       # on the program side AND also have a web grid
@@ -1584,6 +1584,7 @@ sub summary : Local {
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
+            cancelled => '',
 # don't require that the section have any content
 #            "summary.$section" => { '!=' => '' },
         },
@@ -1601,6 +1602,7 @@ sub summary : Local {
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
+            cancelled => '',
             rental_id => 0,             # ignore the summary of hybrid programs
                                         # the rental side is the one we use.
     #        @opt,
@@ -1695,7 +1697,7 @@ sub orient_windup : Local {
     for my $ev (model($c, 'Program')->search({
                     sdate => { '<=' => $ow_to8   },
                     edate => { '>=' => $ow_from8 },
-                    name  => { -not_like => 'XL%'},
+                    cancelled => '',
                     name  => { -not_like => 'Personal Retreats%'},
                     -or => [
                         school => 0,
@@ -1705,7 +1707,7 @@ sub orient_windup : Local {
                 model($c, 'Rental')->search({
                     sdate => { '<=' => $ow_to8   },
                     edate => { '>=' => $ow_from8 },
-                    name  => { -not_like => 'XL%'},
+                    cancelled => '',
                 })
     ) {
         my $sum = $ev->summary();
@@ -1781,7 +1783,7 @@ sub gate_codes : Local {
     for my $ev (model($c, 'Program')->search({
                     sdate => { '<=' => $gc_to8   },
                     edate => { '>=' => $gc_from8 },
-                    name  => { -not_like => 'XL%'},
+                    cancelled => '',
                     rental_id => 0,     # not a hybrid
                     -or => [
                         school => 0,
@@ -1791,7 +1793,7 @@ sub gate_codes : Local {
                 model($c, 'Rental')->search({
                     sdate => { '<=' => $gc_to8   },
                     edate => { '>=' => $gc_from8 },
-                    name  => { -not_like => 'XL%'},
+                    cancelled => '',
                 })
     ) {
         if ($ev->event_type() eq 'program'

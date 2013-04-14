@@ -30,12 +30,12 @@ function set_level_visibility() {
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Name</th>
+<th align=right><span class=red>*</span> Name</th>
 <td><input type=text name=name value="[% program.name %]" size=50></td>
-<th align=right><span class="required">*</span> From
+<th align=right><span class=red>*</span> From
 <input type=text name=sdate value="[% sdate %]" size=10>
 </th>
-<th align=right><span class="required">*</span> To
+<th align=right><span class=red>*</span> To
 <input type=text name=edate value="[% edate %]" size=10>
 </th>
 </tr>
@@ -317,7 +317,7 @@ $cat_opts
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Title</th>
+<th align=right><span class=red>*</span> Title</th>
 <td colspan=5><input type=text name=title value="[% program.title %]" size=60></td>
 </tr>
 

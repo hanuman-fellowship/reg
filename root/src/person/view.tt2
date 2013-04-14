@@ -252,7 +252,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
     <table cellpadding=3>
     [% FOREACH r IN regs %]
         <tr>
-        <td>[% IF r.program.school != 0 %]<span class=required>*</span>[% END %]</td>
+        <td>[% IF r.program.school != 0 %]<span class=red>*</span>[% END %]</td>
         [% IF r.program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
         <td><a href="/registration/view/$r.id">$r.program.name</a></td>
         [% ELSE %]

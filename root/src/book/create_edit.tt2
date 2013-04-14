@@ -3,7 +3,7 @@
 <form action=[% "/book/" _ form_action %] name=form method=post>
 <table cellpadding=3 border=0>
 <tr>
-<th align=right><span class=required>* </span>Title</th>
+<th align=right><span class=red>* </span>Title</th>
 <td><input type=text name=title value="[% book.title %]" size=70></td>
 </tr>
 

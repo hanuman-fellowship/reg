@@ -11,7 +11,7 @@
 </tr>
 [% FOR r IN online %]
 <tr>
-<td>[% IF r.synth %]<span class=required>*</span>[% END %]</td>
+<td>[% IF r.synth %]<span class=red>*</span>[% END %]</td>
 <td><a href="/registration/get_online/[% r.fname %]">[% r.last %], [% r.first %]</a></td>
 <td><a href="/program/view/[% r.pid %]">[% r.pname %]</a></td>
 <td>[% r.date.format("%m/%d") %]</td>

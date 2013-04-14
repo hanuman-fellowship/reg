@@ -17,7 +17,7 @@ from $sdate to $edate?
 </tr>
 [% FOR mp IN meeting_places %]
 <tr>
-<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span style="color: red">$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
+<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
 <td align=center><input type=checkbox name=br$mp.id></td>
 [% IF hap_type != 'Event' && mp.sleep_too %]
 <td align=center><input type=checkbox name=adorm$mp.id></td>
@@ -33,7 +33,7 @@ from $sdate to $edate?
 [% IF red %]
 <tr>
 <td colspan=10>
-Meeting places with names in <span style="color: red">red</span> have a maximum capacity<br>
+Meeting places with names in <span class=red>red</span> have a maximum capacity<br>
 less than the maximum of $hap.max specified for the ${hap_type}.
 </td>
 [% END %]
@@ -44,7 +44,7 @@ less than the maximum of $hap.max specified for the ${hap_type}.
 
 [% FOR mp IN meeting_0_places %]
 <tr>
-<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span style="color: red">$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
+<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
 </tr>
 [% END %]
 
@@ -56,7 +56,7 @@ less than the maximum of $hap.max specified for the ${hap_type}.
 </table>
 <p class=p2>
 [% IF red %]
-Meeting places with names in <span style="color: red">red</span> have a maximum capacity<br>
+Meeting places with names in <span class=red>red</span> have a maximum capacity<br>
 less than the maximum of $hap.max specified for the ${hap_type}.
 [% END %]
 </form>

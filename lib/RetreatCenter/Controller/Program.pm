@@ -502,7 +502,42 @@ sub create_do : Local {
         Global->init($c);
         resize('p', $id);
     }
+    _finalize_program_creation($c, $id);
+}
+
+sub _finalize_program_creation {
+    my ($c, $id) = @_;
+
     my $glnum_popup = $P{school} != 0 && $P{level} =~ m{\A [SA] \z}xms;
+    if ($glnum_popup) {
+        #
+        # send email to all of the account admins
+        # that they need to concoct a GL number for this program
+        #
+        my ($role) = model($c, 'Role')->search({
+                         role => 'account_admin',
+                     });
+        my @users = $role->users;
+        my $acct_admin_names = join ', ', map { $_->first } @users;
+        my $cur_user = $c->user->first;
+        email_letter($c,
+            to      => (join ', ', map { $_->email } @users),
+            cc      => $c->user->email,
+            subject => "$P{name} needs a GL Number",
+            from    => $c->user->email,
+            html    => <<"EOH",
+Greetings $acct_admin_names,
+<p>
+A new program has been added that needs a GL number.<br>
+Its name is:
+<ul>
+$P{name}
+</ul>
+Thank you,<br>
+$cur_user
+EOH
+        );
+    }
     #
     # we must ensure that we have config records
     # out to the end of this program + 30 days.
@@ -615,8 +650,9 @@ sub view : Local {
         my ($role) = model($c, 'Role')->search({
                          role => 'account_admin',
                      });
-        my @users = $role->users;
-        @acct_adm_name = (acct_adm_name => $users[0]->first());
+        @acct_adm_name = (acct_adm_name => join ' and ',
+                                           map { $_->first }
+                                           $role->users);
     }
     stash($c,
         glnum_popup         => $glnum_popup,
@@ -1905,6 +1941,7 @@ sub duplicate : Local {
 # duplicated code here from create_do - can we not repeat ourself - DRY???
 # should we?   let's not worry about that for now.
 # there are several extra things that a duplication requires.
+# We did put some common ending things in sub _finalize_program_creation as a start...
 #
 # The title of a personal retreat will be taken directly
 # from the name.
@@ -1920,7 +1957,10 @@ sub duplicate_do : Local {
     }
     # gl num is computed not gotten
     $P{glnum} = ($P{name} =~ m{personal\s+retreat}i)?
-                        '99999': compute_glnum($c, $P{sdate});
+                                   '99999'
+               :($P{school} != 0)? 'XX'     # MMI programs/courses
+               :                   compute_glnum($c, $P{sdate})
+               ;
 
     $P{reg_count} = 0;       # otherwise it will not increment
 
@@ -1977,15 +2017,6 @@ sub duplicate_do : Local {
                  "$path/p$let-$new_id.$suf";
         }
     }
-
-    #
-    # we must ensure that we have config records
-    # out to the end of this program + 30 days.
-    # we add 30 days because registrations for Personal Retreats
-    # may extend beyond the last day of the season.
-    #
-    add_config($c, date($P{edate}) + $P{extradays} + 30);
-
     # copy the leaders and affils
     my @leader_programs = model($c, 'LeaderProgram')->search({
         p_id => $old_id,
@@ -2005,7 +2036,8 @@ sub duplicate_do : Local {
             p_id => $new_id,
         });
     }
-    $c->response->redirect($c->uri_for("/program/view/$new_id"));
+
+    _finalize_program_creation($c, $new_id);
 }
 
 # AJAX call to reserve a cluster for this program
@@ -2402,6 +2434,20 @@ sub cancel : Local {
         $p->update({
             cancelled => 'yes',
         });
+        if (my @blocks = $p->blocks) {
+            error($c,
+                "Cannot cancel a program with blocks.",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        if (my @res_clust = reserved_clusters($c, $id, 'Program')) {
+            error($c,
+                "Cannot cancel a program with reserved clusters.",
+                "gen_error.tt2",
+            );
+            return;
+        }
     }
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }

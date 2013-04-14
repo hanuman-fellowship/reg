@@ -3,7 +3,7 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Name</th>
+<th align=right><span class=red>*</span> Name</th>
 [% IF housecost.name == 'Default' %]
 <td>[% housecost.name %]<input type=hidden name=name value="[% housecost.name %]"></td>
 [% ELSE %]

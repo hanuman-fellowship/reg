@@ -2046,7 +2046,7 @@ sub _view {
             }
         }
         if (! @people) {
-            $share .= " - <span class=required>could not find</span>";
+            $share .= " - <span class=red>could not find</span>";
         }
         elsif (! $next_reg) {
             # not registered - but are they in the online list?
@@ -2069,10 +2069,10 @@ sub _view {
                 }
             }
             if ($found_first && $found_last) {
-                $share .= " - <span class=required><b>is</b> in the online list</span>";
+                $share .= " - <span class=red><b>is</b> in the online list</span>";
             }
             else {
-                $share .= " - <span class=required>not registered</span>";
+                $share .= " - <span class=red>not registered</span>";
             }
         }
     }

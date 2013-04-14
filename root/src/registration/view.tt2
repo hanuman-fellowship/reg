@@ -67,7 +67,7 @@ onclick="return confirm('\n\nAbout to delete the registration and payments and h
 <a href="/registration/arrived/$id">Not Arrived</a>
 &nbsp;&nbsp;
 [% ELSIF reg.arrived == 'yes' %]
-<a href="/registration/not_arrived/$id"><span style="color: red">* Arrived *</span></a>
+<a href="/registration/not_arrived/$id"><span class=red>* Arrived *</span></a>
 &nbsp;&nbsp;
 [% END %]
 [% IF reg.program.allow_dup_regs %]
@@ -91,7 +91,7 @@ onclick="return confirm('\n\nAbout to delete the registration and payments and h
 <a href="/registration/list_online">Online ([% online %])</a>
 &nbsp;&nbsp;
 </td>
-<td>Registrant</td><td>&nbsp;&nbsp;Program</td><td><span style="color: red">[% message %]</span></td>
+<td>Registrant</td><td>&nbsp;&nbsp;Program</td><td><span class=red>[% message %]</span></td>
 </tr>
 <tr>
 <td>
@@ -145,7 +145,7 @@ onmouseover="return overlib('<a href=/registration/receipt/$id/email>Send to $pe
 <tr>
 <th align=right>[% pers_label %]</th>
 <td colspan=3 width=700><a class=larger href="/person/view/[% person.id %]">[% person.last %], [% person.first %]</a>
-([% IF reg.status %]<span class=required>[% reg.status %]</span> member - [% END %][% person.sex_disp %])
+([% IF reg.status %]<span class=red>[% reg.status %]</span> member - [% END %][% person.sex_disp %])
 [% IF reg.cancelled %]
 <span class=cancel>Canceled</span>
 [% END %]
@@ -383,7 +383,7 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
             [% END %]
         [% END %]
         <tr class=$class>
-        <td align=center>[% IF py.code %]<img src=/static/images/checked.gif>[% ELSE %]<span class=required>**</span>[% END %]</td>
+        <td align=center>[% IF py.code %]<img src=/static/images/checked.gif>[% ELSE %]<span class=red>**</span>[% END %]</td>
         <td align=right>[% py.amount_disp %]</td>
         <td>[% py.for_what_disp %]</td>
         <td>[% py.the_date_obj %]</td>

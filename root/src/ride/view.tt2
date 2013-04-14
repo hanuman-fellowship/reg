@@ -26,7 +26,7 @@
             <a href="/ride/send/$id"
        onmouseover="return overlib('[% rider.email || 'Snail Mail' %]', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
        onmouseout="return nd();"
-            ><span style="color: red">Send</span></a>
+            ><span class=red>Send</span></a>
         [% END %]
         &nbsp;&nbsp;&nbsp;
         <a href=/ride/send/$id/1>Preview</a>
@@ -42,7 +42,7 @@
     &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/ride/list" accesskey='l'><span class=keyed>L</span>ist</a>
-[% IF message %]&nbsp;&nbsp;&nbsp;<span style="color: red">$message</span>[% END %]
+[% IF message %]&nbsp;&nbsp;&nbsp;<span class=red>$message</span>[% END %]
 <ul>
 <table cellpadding=5 border=0>
 <tr>

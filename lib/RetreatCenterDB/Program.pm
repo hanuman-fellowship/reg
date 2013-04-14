@@ -943,7 +943,7 @@ sub prog_type {
     my $type = "";
 
     if ($self->cancelled) {
-        $type = "<span style='color: red'>Cancelled</span> ";
+        $type = "<span class=red>Cancelled</span> ";
     }
     if ($self->level() eq 'A') {
         $type .= "Course ";

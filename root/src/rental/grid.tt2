@@ -8,12 +8,12 @@
 <a style="font-size: 20pt;"
    href=/rental/view/[% rental.id %]
 >[% rental.name %]</a>
-<span style="font-size: 13pt; margin-left: 1in; font-weight: bold">[% rental.sdate_obj.format("%B %e '%q") %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
-<b>To</b>
+<span class=f13b style="margin-left: 1in;">[% rental.sdate_obj.format("%B %e '%q") %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+to
 [% rental.edate_obj.format("%B %e '%q") %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
 </span>
-<span style="font-size: 15pt; font-weight: bold; margin-left: .5in;">[% coord_name %]</span>
-<p class=p2 style="font-size: 15pt; font-weight: bold">
+<span class=f15b style="margin-left: .5in;">[% coord_name %]</span>
+<p class="p2 f15b">
 Housing Assignment Grid
 <span style="margin-left: 4in"><a href=/registration/grab_new>Grab New</a></span>
 <p class=p2>

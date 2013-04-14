@@ -6,7 +6,7 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Name</span></th>
+<th align=right><span class=red>*</span> Name</span></th>
 <td><input type=text name=name value="$o.name"></td>
 </tr>
 
@@ -16,7 +16,7 @@
 </tr>
 
 <tr>
-<th valign=top align=right><span class="required">*</span> Color</th>
+<th valign=top align=right><span class=red>*</span> Color</th>
 <td valign=top><input type=text id=color_val name=color value="[% meetingplace.color %]"></td>
 <td rowspan=2>
     <table border=1>

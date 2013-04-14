@@ -4,7 +4,7 @@ The email was sent to [% nemail %] in the <a href=/program/view/[% program.id %]
 [% nsnail %] did not have an email address:
 <ul>
 [% FOREACH p IN snails %]
-<span style="font-weight: bold; font-size: 15pt">[% p.last %], [% p.first %]</span><br>
+<span class=f15b>[% p.last %], [% p.first %]</span><br>
 [% p.addr1 %]<br>
 [% IF p.addr2 %][% p.addr2 %]<br>[% END %]
 [% p.city %], [% p.st_prov %] [% p.zip_post %]

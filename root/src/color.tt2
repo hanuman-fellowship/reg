@@ -5,7 +5,7 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th valign=top align=right><span class="required">*</span> Color</th>
+<th valign=top align=right><span class=red>*</span> Color</th>
 <td valign=top><input type=text id=color_val name=color value="[% color %]"></td>
 <td rowspan=5>
     <table border=1>

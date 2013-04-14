@@ -26,7 +26,7 @@ function check() {
 <th align=right>Amount</th>
 <td><input type=input name=amount size=6></td>
 [% IF message %]
-<td valign=top><span style="color: red; font-weight: bold; font-size: 15pt;">[% message %]</span></td>
+<td valign=top><span class="red f15b">[% message %]</span></td>
 [% END %]
 </tr>
 

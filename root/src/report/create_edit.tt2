@@ -3,7 +3,7 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<td align=right><span class="required">*</span> Description</td>
+<td align=right><span class=red>*</span> Description</td>
 <td><input type=text name=descrip size=30 value="[% report.descrip %]"></td>
 </tr>
 

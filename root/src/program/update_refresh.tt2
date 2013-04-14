@@ -33,6 +33,6 @@ $refresh_table</span>
 <p class=p2>
 <input type=submit id=sub value="Submit">
 <span style="margin-left: 1in">All <input type=checkbox name=all onclick="toggle_all();"></span>
-<div style="margin-top: 3mm; font-size: 12pt; font-weight: bold;">Confirm with Field Staff!</div>
+<div class=f12b style="margin-top: 3mm;">Confirm with Field Staff!</div>
 </ul>
 </form>

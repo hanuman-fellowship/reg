@@ -30,6 +30,7 @@ use Util qw/
     email_letter
     error
     other_reserved_cids
+    reserved_clusters
     palette
     invalid_amount
     clear_lunch
@@ -2272,6 +2273,51 @@ sub update_refresh_do : Local {
                 refresh_days => $l,
             });
         }
+    }
+    $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+}
+
+sub cancel : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = model($c, 'Rental')->find($id);
+    if ($r->cancelled) {
+        $r->update({
+            cancelled => '',
+        });
+    }
+    else {
+        if (my @bookings = $r->bookings) {
+            error($c,
+                "Cannot cancel a rental with meeting place bookings.",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        if (my @rental_bookings = $r->rental_bookings) {
+            error($c,
+                "Cannot cancel a rental with room bookings.",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        if (my @blocks = $r->blocks) {
+            error($c,
+                "Cannot cancel a rental with blocks.",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        if (my @res_clust = reserved_clusters($c, $id, 'Rental')) {
+            error($c,
+                "Cannot cancel a rental with reserved clusters.",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        $r->update({
+            cancelled => 'yes',
+        });
     }
     $c->response->redirect($c->uri_for("/rental/view/$id/1"));
 }

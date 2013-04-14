@@ -3,14 +3,14 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Name</th>
+<th align=right><span class=red>*</span> Name</th>
 <td colspan=3><input type=text name=name value="$event.name" size=40></td>
 </tr>
 
 <tr>
-<th align=right><span class="required">*</span> From</th>
+<th align=right><span class=red>*</span> From</th>
 <td width=100><input type=text name=sdate value='${event.sdate_obj.format("%D")}' size=10></td>
-<th align=right width=50><span class="required">*</span> To</th>
+<th align=right width=50><span class=red>*</span> To</th>
 <td><input type=text name=edate value='${event.edate_obj.format("%D")}' size=10></td>
 </tr>
 
@@ -20,7 +20,7 @@
 </tr>
 
 <tr>
-<th align=right><span class="required">*</span> Sponsor</th>
+<th align=right><span class=red>*</span> Sponsor</th>
 <td width=100>
 <select name=organization_id>
 $sponsor_opts
@@ -36,7 +36,7 @@ $sponsor_opts
 <tr>
 <td>&nbsp;</td>
 <td width=100><input id=sub type=submit value="Submit"></td>
-<td style="color: red; font-size: 15pt">Inform Field Staff of this Event!!</td>
+<td class=red style="font-size: 15pt">Inform Field Staff of this Event!!</td>
 </tr>
 
 </table>

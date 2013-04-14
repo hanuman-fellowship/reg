@@ -25,10 +25,16 @@ h3 {
 &nbsp;&nbsp;&nbsp;
 <span id=editlink><a href="/rental/update/[% id %]/[% section %]">Edit</a></span>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/delete/[% id %]"
-onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
+<a href="/rental/delete/$id"
+onclick="return confirm('Okay to Delete $rental.name?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/duplicate/[% id %]">Duplicate</a>
+<a href="/rental/duplicate/$id">Duplicate</a>
+&nbsp;&nbsp;&nbsp;
+[% cmd = 'Cancel' %]
+[% SET cmd = 'UnCancel' IF rental.cancelled %]
+    <a href=/rental/cancel/$id
+       onclick="return confirm('Are you sure you wish to $cmd \'$rental.name\'');"
+    >$cmd</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF rental.proposal_id %]
@@ -60,7 +66,7 @@ onclick="return confirm('Okay to Delete [% rental.name %]?');">Delete</a>
 <tr>
 <td>
 <b>Name</b>
-<span class=larger>[% rental.name %]</span>
+<span class=larger>[% rental.name %][% IF rental.cancelled %] <span class=bred>Cancelled</span>[% END %]</span>
 <b>From</b>
 [% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
 <b>To</b>
@@ -241,7 +247,7 @@ Web
          >Days to Refresh Rooms</span>
     <span class=updlunch><a href="/rental/update_refresh/[% id %]"
         >Update</a></span>
-    <span style="margin-left: 8mm; font-size: 12pt; font-weight: bold;"
+    <span class=f12b style="margin-left: 8mm;"
         >Confirm with Field Staff!</span>
     <div class=lunch>[% refresh_table %]</div>
 [% END %]

@@ -72,6 +72,7 @@ __PACKAGE__->add_columns(qw/
     staff_ok
     rental_follows
     refresh_days
+    cancelled
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -295,7 +296,7 @@ sub daily_counts {
 sub count {
     my ($self) = @_;
 
-    if ($self->name =~ m{ \A XL }xms) {
+    if ($self->cancelled()) {
         # it has been cancelled - ignore the web grid
         return 0;
     }
@@ -400,12 +401,6 @@ sub seminar_house {
     return 0;
 }
 
-# we had 'cancelled' in Programs first - soon in Rentals?
-sub cancelled {
-    my ($self) = @_;
-    return 0;
-}
-
 sub balance_disp {
     my ($self) = @_;
     commify($self->balance());
@@ -485,6 +480,7 @@ overview - A rental is created when some other organization wants
     made by the coordinator by filling in a form on the global web.
     This information is brought into Reg periodically.
 balance - the outstanding balance
+cancelled - boolean - was this rental cancelled?  Set/Unset by a menu link.
 color - RGB values for the DailyPic display.
 comment - free text describing the rental
 contract_received - date the contract was received

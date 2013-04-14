@@ -53,6 +53,7 @@ sub do_mastercal {
         Jul Aug Sep
         Oct Nov Dec
     /;
+    my $cancelled = " <span style='background-color: red'>Cancelled</span>";
 
     Global->init($c);
 
@@ -190,7 +191,6 @@ EOH
         }
         push @events, model($c, $ev_kind)->search({
                           edate => { '>=', $the_first },
-                          name  => { not_like => 'XL%' },
                           @opt_end,
                           @prog_opt,
                       });
@@ -424,6 +424,9 @@ EOH
             # what to display in the overlib popup?
             #
             my $disp = $event_name;
+            if ($ev->cancelled) {
+                $disp .= $cancelled;
+            }
             if (length $count) {
                 $disp .= "[$count]";
                 if ($ev_type eq 'rental') {
@@ -466,7 +469,7 @@ EOH
                            . $event_name
                            . "</a>"
 
-                   :       $event_name),
+                   :       $event_name) . ($ev->cancelled? $cancelled: ''),
 
                   places($ev, 'all')
                   ;

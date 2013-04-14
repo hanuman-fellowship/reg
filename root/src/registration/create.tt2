@@ -40,7 +40,7 @@ function toggle_from_where() {
 <tr>
 <th align=right>Person</th>
 <td><a class=larger href="/person/view/[% person.id %]"
-onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a>[% IF status %] (<span class=required>[% status %]</span> member)[% END %]</td>
+onclick='return confirm("This registration has not yet been completed.  Continue on to view [% person.last %], [% person.first %]?");'>[% person.last %], [% person.first %]</a>[% IF status %] (<span class=red>[% status %]</span> member)[% END %]</td>
 <th align=left>[% IF program.PR %]Arrive[% ELSE %]Early Arrival[% END %]<br><input type=text name=date_start size=10 maxlength=10 value="[% date_start.format("%D") %]"></th><th align=left>[% IF program.PR %]Leave[% ELSE %]Late Departure[% END %]<br><input type=text name=date_end size=10 maxlength=10 value="[% date_end.format("%D") %]"></th>
 </tr>
 

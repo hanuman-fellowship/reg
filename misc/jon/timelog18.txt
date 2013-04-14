@@ -193,7 +193,7 @@ Apr 4 11:30-12:30
 
     6 - lapse_gen_soon - Lapse Soon = lapse_soon()
     7 - lapse_spons_soon
-Apr 7 11:40-4:00, 6:50-
+Apr 7 11:40-4:00, 6:50-8:00
     cancelled programs done right
 
     to push to kali:
@@ -216,3 +216,11 @@ Apr 7 11:40-4:00, 6:50-
     screwy - can change Inactive to General without entering
         an amount and they are automatically not lapsed any more
         because of the default 12/31 of this year....
+Apr 12 4:50-6:10
+    cancelling Rentals, removing XL everywhere
+    reworking styles, classes
+Apr 13 2:40-4:20
+    continuing - program cancellation - blocks, reserved clusters
+Apr 14 8:30-9:30, 1:40-
+    program creation finalization refactoring, sending email
+        for GL number to account_admins.

@@ -5,7 +5,7 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Name</th>
+<th align=right><span class=red>*</span> Name</th>
 [% IF canpol.name == 'Default' %]
 <td>[% canpol.name %]<input type=hidden name=name value="[% canpol.name %]"></td>
 [% ELSE %]
@@ -14,7 +14,7 @@
 </tr>
 
 <tr>
-<th align=right valign=top><span class="required">*</span> Policy</th>
+<th align=right valign=top><span class=red>*</span> Policy</th>
 <td><textarea cols=60 rows=5 name=policy>[% canpol.policy %]</textarea></td>
 </tr>
 

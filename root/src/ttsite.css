@@ -65,9 +65,6 @@ body {
     font-weight: bold;
     color: darkgreen;
 }
-.required, .red {
-    color: red;
-}
 .arrived_star {
     color: red;
     font-size: 19pt;
@@ -192,4 +189,31 @@ th a:hover {
 #color {
     border: solid;
     border-width: thin;
+}
+.red {
+    color: red;
+}
+.bred {
+    background-color: red;
+}
+
+.f12b {
+    font-weight: bold;
+    font-size: 12pt;
+}
+.f13b {
+    font-weight: bold;
+    font-size: 13pt;
+}
+.f15b {
+    font-weight: bold;
+    font-size: 15pt;
+}
+.f18b {
+    font-weight: bold;
+    font-size: 18pt;
+}
+.f20b {
+    font-weight: bold;
+    font-size: 20pt;
 }

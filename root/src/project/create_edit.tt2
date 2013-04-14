@@ -3,12 +3,12 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right><span class="required">*</span> Description</span></th>
+<th align=right><span class=red>*</span> Description</span></th>
 <td><input type=text name=descr value="[% project.descr %]"></td>
 </tr>
 
 <tr>
-<th align=right><span class="required">*</span> GL Number</span></th>
+<th align=right><span class=red>*</span> GL Number</span></th>
 <td><input type=text name=glnum value="[% project.glnum %]"></td>
 </tr>
 

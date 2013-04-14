@@ -36,7 +36,7 @@ function get_gender() {
 <table cellpadding=3 border=0 style="float: left; margin-bottom: .3in">
 
 <tr>
-<th align=right><span class="required">*</span> First</th>
+<th align=right><span class=red>*</span> First</th>
 <td>
 <input tabindex=1 type=text name=first value="[% person.first %]"
     onblur="get_gender();">
@@ -47,7 +47,7 @@ function get_gender() {
 </tr>
 
 <tr>
-<th align=right><span class="required">*</span> Last</th>
+<th align=right><span class=red>*</span> Last</th>
 <td><input tabindex=2 type=text name=last value="[% person.last %]"></td>
 <th align=right>Work</th>
 <td>
@@ -67,7 +67,7 @@ function get_gender() {
 </tr>
 
 <tr>
-<th align=right><span class="required">*</span> Sex</th>
+<th align=right><span class=red>*</span> Sex</th>
 <td>
 <input tabindex=4 type=radio name=sex value="F" [% sex_female %] >Female
 &nbsp;&nbsp;&nbsp;

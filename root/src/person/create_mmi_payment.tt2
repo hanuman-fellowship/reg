@@ -9,7 +9,7 @@
 <th align=right>Amount</th>
 <td><input type=text name=amount size=6></td>
 [% IF message %]
-<td valign=top><span style="color: red; font-weight: bold; font-size: 15pt;">[% message %]</span></td>
+<td valign=top><span class="red f15b">[% message %]</span></td>
 [% END %]
 </tr>
 
@@ -37,7 +37,7 @@
 <option value='5'>Other
 </select>
 </td>
-<td><div style="margin-left: 10mm"><span style="color: red">Note!</span> For Observations, Donations and Consultations<br>add an Extra Account payment instead.  Do not use Other here.</div></td>
+<td><div style="margin-left: 10mm"><span class=red>Note!</span> For Observations, Donations and Consultations<br>add an Extra Account payment instead.  Do not use Other here.</div></td>
 </tr>
 
 <tr>

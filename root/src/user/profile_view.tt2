@@ -2,7 +2,7 @@
 <a href=/user/profile_edit>Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/user/profile_password>Password</a>
-<span style="margin-left: 2in; color: red;">$msg</span>
+<span class=red style="margin-left: 2in;">$msg</span>
 <p class=p2>
 <table cellpadding=5 border=0>
 <tr>
