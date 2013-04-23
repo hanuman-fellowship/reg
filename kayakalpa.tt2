@@ -1,11 +1,12 @@
 <html>
 <head>
 <style>
-body {
+body, p {
     width: 600px;
     font-size: 14pt;
     font-family: Arial;
     background-color: #FFFF99;
+    margin-left: 5mm;
 }
 th, td {
     font-size: 14pt;
@@ -17,7 +18,7 @@ th, td {
 <img src=http://www.mountmadonna.org/Gif/contentHeader_kayakalpa.jpg>
 <p>
 Greetings $first,
-
+<p>
 We just received your request for a massage or other bodywork.
 Two to three weeks before you arrive we will be in touch via phone and email
 to set up an appointment during your stay.  Here is the information
@@ -72,7 +73,7 @@ we have for you:
 </tr>
 
 </table>
-
+<p>
 Kaya Kalpa Wellness Center<br>
 408-847-3276<br>
 <a href="http:www.mountmadonna.org/kayakalpa">www.mountmadonna.org/kayakalpa</a>
