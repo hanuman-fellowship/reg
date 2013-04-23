@@ -6,7 +6,8 @@ body, p {
     font-size: 14pt;
     font-family: Arial;
     background-color: #FFFF99;
-    margin-left: 5mm;
+    margin-top: 10mm;
+    margin-left: 10mm;
 }
 th, td {
     font-size: 14pt;
@@ -73,7 +74,7 @@ we have for you:
 </tr>
 
 </table>
-<p>
+<p style="margin-bottom: 10mm">
 Kaya Kalpa Wellness Center<br>
 408-847-3276<br>
 <a href="http:www.mountmadonna.org/kayakalpa">www.mountmadonna.org/kayakalpa</a>
