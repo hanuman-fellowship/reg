@@ -812,7 +812,7 @@ EOS
         ) or my_die("template error: " . $tt->error());
         email_letter(
             to       => $vals{email},
-            from     => "Kaya Kalpa Wellness Center <$vals{kayakalpa_email}>",
+            from     => "Kaya Kalpa Wellness Center <$string{kayakalpa_email}>",
             subject  => "Massage/Bodywork Request",
             html     => $html,
         );
