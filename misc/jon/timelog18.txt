@@ -221,6 +221,11 @@ Apr 12 4:50-6:10
     reworking styles, classes
 Apr 13 2:40-4:20
     continuing - program cancellation - blocks, reserved clusters
-Apr 14 8:30-9:30, 1:40-
+Apr 14 8:30-9:30, 1:40-4:00
     program creation finalization refactoring, sending email
         for GL number to account_admins.
+Apr 15 9:20-10:00
+    KKWC reply, Lila reply,
+    Back to Membership online payments.
+Apr 22 11:00-
+    KKWC simple reply to checking the box

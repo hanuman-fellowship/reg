@@ -1,51 +1,80 @@
-The person below requested that you contact them about massage or other bodywork.
+<html>
+<head>
+<style>
+body {
+    width: 600px;
+    font-size: 14pt;
+    font-family: Arial;
+    background-color: #FFFF99;
+}
+th, td {
+    font-size: 14pt;
+    font-family: Arial;
+}
+</style>
+</head>
+<body>
+<img src=http://www.mountmadonna.org/Gif/contentHeader_kayakalpa.jpg>
+<p>
+Greetings $first,
+
+We just received your request for a massage or other bodywork.
+Two to three weeks before you arrive we will be in touch via phone and email
+to set up an appointment during your stay.  Here is the information
+we have for you:
 <p>
 <table cellpadding=5>
 
 <tr>
 <th align=right>Name</th>
-<td>[% name %]</td>
+<td>$name</td>
 </tr>
 
 <tr>
 <th align=right>Email</th>
-<td><a href="mailto:[% email %]">[% email %]</td>
+<td>$email</td>
 </tr>
 
 [% IF home %]
 <tr>
 <th align=right>Home</th>
-<td>[% home %]</td>
+<td>$home</td>
 </tr>
 [% END %]
 
 [% IF work %]
 <tr>
 <th align=right>Work</th>
-<td>[% work %]</td>
+<td>$work</td>
 </tr>
 [% END %]
 
 [% IF cell %]
 <tr>
 <th align=right>Cell</th>
-<td>[% cell %]</td>
+<td>$cell</td>
 </tr>
 [% END %]
 
 <tr>
 <th align=right>Program</th>
-<td>[% program %]</td>
+<td>$program</td>
 </tr>
 
 <tr>
 <th align=right>Arrive</th>
-<td>[% arrive %]</td>
+<td>$arrive</td>
 </tr>
 
 <tr>
 <th align=right>Leave</th>
-<td>[% leave %]</td>
+<td>$leave</td>
 </tr>
 
 </table>
+
+Kaya Kalpa Wellness Center<br>
+408-847-3276<br>
+<a href="http:www.mountmadonna.org/kayakalpa">www.mountmadonna.org/kayakalpa</a>
+</body>
+</html>

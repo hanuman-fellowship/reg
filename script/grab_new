@@ -35,6 +35,11 @@ to be contacted about massage send Kaya Kalpa a letter
 with their contact information and which program and when
 they'll be here.
 
+Also send the registrant a letter (actually it's the same letter
+that they are Cc'ed on) saying that they will
+be contacted by someone at Kaya Kalpa two to three weeks
+before the program to arrange for the bodywork.
+
 7) Get people that recently registered on the temple
 reservation site and import them directly into the People table.
 
@@ -787,11 +792,13 @@ EOS
             $leave = date($vals{edate})->format($fmt);
         }
         my $html;
-        my $tt = Template->new()
-            or my_die("template new error: " . Template->error());
+        my $tt = Template->new(
+            INTERPOLATE => 1,
+        ) or my_die("template new error: " . Template->error());
         $tt->process(
             'kayakalpa.tt2',
             {
+                first   => $vals{fname},
                 name    => "$vals{fname} $vals{lname}",
                 email   => $vals{email},
                 home    => $vals{home},
@@ -804,8 +811,8 @@ EOS
             \$html,
         ) or my_die("template error: " . $tt->error());
         email_letter(
-            to       => $string{kayakalpa_email},
-            from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
+            to       => $vals{email},
+            from     => "Kaya Kalpa Wellness Center <$vals{$kayakalpa_email>",
             subject  => "Massage/Bodywork Request",
             html     => $html,
         );
