@@ -205,7 +205,7 @@ sub email_letter {
     $args{to} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
     my @cc;
     if ($args{cc}) {
-        push @cc, cc => $args{cc};
+        push @cc, cc => $args{kayakalpa_email};
     }
     $mail_sender->Open({
         to       => $args{to},
