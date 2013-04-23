@@ -206,6 +206,7 @@ sub email_letter {
     $mail_sender->Open({
         to       => $args{to},
         from     => $args{from},
+        (exists $args{cc}? cc => $argc{cc}: ()),
         #bcc      => 'jon@logicalpoetry.com',
         subject  => $args{subject},
         ctype    => "text/html",
