@@ -203,9 +203,10 @@ sub email_letter {
         @auth,
     }) or my_die("no mail sender");
     $args{to} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
+    $args{cc} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
     my @cc;
     if ($args{cc}) {
-        push @cc, cc => $args{kayakalpa_email};
+        push @cc, cc => $args{cc};
     }
     $mail_sender->Open({
         to       => $args{to},
@@ -817,8 +818,8 @@ EOS
         ) or my_die("template error: " . $tt->error());
         email_letter(
             to       => $vals{email},
-            from     => "Kaya Kalpa <$string{kayakalpa_email}>",
             cc       => "Kaya Kalpa <$string{kayakalpa_email}>",
+            from     => "Kaya Kalpa <$string{kayakalpa_email}>",
             subject  => "Massage/Bodywork Request",
             html     => $html,
         );
