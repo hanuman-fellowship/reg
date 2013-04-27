@@ -824,6 +824,10 @@ sub listpat : Local {
             sdate => { 'between' => [ "${year}0101", "${year}1231" ] },
         };
     }
+    elsif ($pr_pat =~ m{id=(\d+)}xms) {
+        $c->response->redirect($c->uri_for("/program/view/$1/1"));
+        return;
+    }
     else {
         my $pat = $pr_pat;
         $pat =~ s{\*}{%}g;
