@@ -392,9 +392,13 @@ sub dates {
     my $sd = $self->sdate_obj;
     my $ed = $self->edate_obj;
     my $dates = $sd->format("%B %e");
-    if ($ed->month == $sd->month) {
+    if ($ed == $sd) {
+        ; # the dates are fine already - it is a one day program
+    }
+    elsif ($ed->month == $sd->month) {
         $dates .= "-" . $ed->day;
-    } else {
+    }
+    else {
         $dates .= " - " . $ed->format("%B %e");
     }
     my $extra = $self->extradays;
@@ -403,7 +407,8 @@ sub dates {
         if ($ed->month == $sd->month) {
             $dates .= ", " . $sd->day . "-";
             $dates .= $ed->day;
-        } else {
+        }
+        else {
             $dates .= ", " . $sd->format("%B %e") . " - ";
             $dates .= $ed->format("%B %e");
         }

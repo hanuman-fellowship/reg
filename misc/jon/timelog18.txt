@@ -231,5 +231,13 @@ Apr 22 11:00-12:30
     KKWC simple reply to checking the box
     took longer than I billed - the mmc vs mmi condundrum
         should have used the email_letter in Util.pm :(!
-Apr 27 1:30-
-    id in search box
+Apr 27 1:30-1:55
+    id in search box for Jamal
+May 2 8:30-8:45
+    restoring online regs that mysteriously got moved to online_done
+    they had not been brought it so how in the world did they
+    get moved???
+May 5 3:20-4:00
+    checking MMI Course creation - is there a warning?
+May 7 11:15-
+    dealing with weirdnesses of MMI online reg.

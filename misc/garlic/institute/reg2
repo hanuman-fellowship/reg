@@ -1,0 +1,644 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard :cgi-lib/;
+use CGI::Carp qw/fatalsToBrowser/;
+use lib '/home/mmi/public_html/cgi-bin/lib/share/perl5';
+use Template;
+use Date::Simple qw/
+    today
+    date
+/;
+
+use HousingNames qw/
+    %housing_name
+/;
+
+my $test = param('test') || 0;
+my $dir  = param('dir');
+my $progpath = "/home/mmi/public_html/" . ($dir ? $dir:
+								           $test? 'staging':
+								                  "live");
+
+#
+# gather all the form elements into a hash
+#
+my %form = Vars();
+for my $w (keys %form) {
+    $form{$w} =~ s{^\s*|\s*$}{}g;       # trim the fields
+}
+if (! ($form{hascar} || $form{carpool})) {
+    $form{from_where} = 'Home';
+}
+#
+# get the id of the program and fill in the $data hashref
+#
+my %info;
+my $href = do "$progpath/progtable";
+use Data::Dumper;
+if ($@) {
+    print header;
+    print "error in progtable: $@\n";
+    exit;
+}
+if (! exists $href->{$form{pid}}) {
+    print header;
+    print "Sorry, program not found.\n";
+    exit;
+}
+my $data = $href->{$form{pid}};
+
+# form defaults
+#
+if ($form{hascar}) {
+    $form{carpool} = "yes";
+}
+if ($form{country} !~ /\S/) {
+    $form{country} = "USA";     # default
+}
+
+#
+# look in the form elements for errors.
+#
+my $err;
+
+sub check {
+    my ($field, $message) = @_;
+    if (! exists $form{$field} || $form{$field} !~ /\S/) {
+        $err .= "<li>$message\n";
+    }
+}
+
+check("progchoice", "Please choose how many days you want to attend.");
+check("fname", "Missing first name");
+check("lname", "Missing last name");
+check("gender", "For housing purposes please specify whether you are male or female.");
+if (!$form{street1} && !$form{street2}) {
+    $err .= "<li>Missing street address.\n";
+} 
+check("city", "Missing city.");
+check("state", "Missing state.");
+check("zip", "Missing zip code.");
+if (! ($form{home} || $form{work} || $form{cell})) {
+    $err .= "<li>Please provide at least one phone number.\n";
+} 
+check("email1", "Missing email address.");
+if ($form{email1} ne $form{email2}) {
+    $err .= "<li>The two email addresses do not match.\n";
+}
+my ($sdate, $edate, $ndays);		# only for Personal Retreats 
+if ($form{name} =~ m{personal\s+retreat}i) {
+	#
+	# check dates for personal retreat
+	#
+    eval {
+        $sdate = Date::Simple->new($form{arr_date});
+    };
+    if (!$sdate) {
+        $err .= "<li>Illegal date format for arrival date: $form{arr_date}\n";
+    }
+    my $hour = (localtime())[2];
+    my $today = today();
+    if ($sdate
+        && ($today == $sdate
+            || ($today == $sdate-1 && $hour >= 16))
+    ) {
+        $err .= "<li>We are sorry, but registrations for Personal Retreats"
+             .  " are not accepted after 4 p.m. on the day prior to arrival."
+             .  " Please register for a later date. Thank you."
+             ;
+    }
+    eval {
+        $edate = Date::Simple->new($form{dep_date});
+    };
+    if (!$edate) {
+        $err .= "<li>Illegal date for departure date: $form{dep_date}\n";
+    }
+    if ($sdate && $edate) {
+        $ndays = $edate-$sdate;
+        if ($ndays < 0) {
+            $err .= "<li>Departure date is not on or after the arrival date!\n"
+        }
+    }
+    if (!$err && $sdate < $today) {
+        $err .= "<li>Arrival date is in the past!";
+    }
+    my $noPRfile = "$progpath/noPR.txt";
+    if (-r $noPRfile) {
+        open my $in, "<", $noPRfile;
+        DATES:
+        while (my $dateline = <$in>) {
+            chomp $dateline;
+            my ($sd, $ed) = split m{-}, $dateline;
+            $sd = date($sd);
+            $ed = date($ed)-1;
+            # is there overlap?
+            if (!$err && $edate > $sd && $sdate <= $ed) {
+                $err .= "<li>Sorry, you cannot stay the nights from ";
+                if ($sd->month() == $ed->month()) {
+                    $err .= $sd->format("%B %e") . "-" . $ed->format("%e");
+                }
+                else {
+                    $err .= $sd->format("%B %e") . "-" . $ed->format("%B %e");
+                }
+                $err .= "!\n";
+                last DATES;
+            }
+        }
+        close $in;
+    }
+}
+if ($data->{"basic commuting"} && !$form{house1} && !$form{house2}) {
+    $err .= "<li>Please fill out both choices of housing.\n";
+} 
+elsif ($sdate && $edate && $ndays == 0
+       && ($form{house1} ne 'commuting'
+           || $form{house2} ne 'commuting')
+) {
+    $err .= "<li>For same day Personal Retreats both housing choices"
+         .  " must be 'Commuting'.";
+}
+elsif (!$err
+       && $form{name} =~ m{personal\s+retreat}i
+       && (   $form{house1} eq 'center_tent'
+           || $form{house2} eq 'center_tent')
+       && -r "$progpath/CT.txt"
+) {
+    # for a personal retreat one of their housing choices is 'center_tent'.
+    # we need to verify that center tents are available for the start date.
+    open my $ct, "<", "$progpath/CT.txt";
+    my $line = <$ct>;
+    close $ct;
+    chomp $line;
+    my ($ct_smd, $ct_emd) = split m{-}, $line;
+        # ct_smd = center tent start month day
+    my $pr_smd = $sdate->format("%m%d");
+    if (!($ct_smd <= $pr_smd && $pr_smd <= $ct_emd)) {
+        $err .= "<li>Mount Madonna Center tents are not available on "
+             .  $sdate->format("%B %e")
+             .  ".\n"
+             ;
+    }
+}
+if ($data->{footnotes} =~ m{\*}
+    && $form{ceu_license}
+    && $form{ceu_license} !~ m{^comp$}i
+) {
+    my $begin = "<li>To qualify for a CEU certificate for this program"
+              . " you must have a license number beginning with";
+    if ($data->{footnotes} =~ m{\*\*}) {
+        if ($form{ceu_license} !~ m{^(RN|LSW|MFT)}i) {
+            $err .= "$begin RN, LSW or MFT.";
+        }
+    }
+    else {
+        if ($form{ceu_license} !~ m{^RN}i) {
+            $err .= "$begin RN.<br>If you only want a certificate of completion enter COMP for the license #.";
+        }
+    }
+}
+my $gr = $form{green_amount};
+if ($gr && $gr !~ m{^\s*\$?\s*\d+([.]\d\d)?\s*$}) {
+    $err .= "<li>Illegal amount for Green Fund: $gr";
+}
+$form{green_amount} =~ s{[\s\$]}{}g;
+
+if ($err) {
+    print header;
+    Template->new()->process(
+        "err.tt2",
+        {
+            err => $err,
+        },
+    );
+    exit;
+}
+
+# all is well.
+# prepare the confirmation page.
+#
+
+# how much to charge??
+# it depends on their house1 choice, progchoice (basic/full), 
+# collect_total, percent_tuition, and deposit values.
+#
+# AND for Personal Retreats there are current and next
+# housing costs and M-Th discount ranges.
+#
+# and discounts for 7 and 30 day long stays.
+#
+my ($x_prog_amount, $due);
+my $key = ($data->{next_hc}
+           && $sdate >= date($data->{next_date})? "next"
+           :                                      $form{progchoice});
+my $key1 = $key . " " . $form{house1};
+my $key2 = $key . " " . $form{house2};
+my $h_cost = $data->{$key1};
+my $house1 = $data->{$key1};
+my $house2 = $data->{$key2};
+my $total;
+my $discount = "";
+my $PR = $form{name} =~ m{personal\s+retreat}i;
+$ndays ||= 1;
+if ($PR) {
+	$total = $ndays*$h_cost;
+
+    # PR discount for M-Th?
+    #
+    my $disc_start = date($data->{disc_pr_start});
+    my $disc_end   = date($data->{disc_pr_end});
+    if ($disc_start <= $edate && $sdate <= $disc_end) {
+        # there is some overlap
+        #
+        my $d = $sdate;
+        my $n_m_th_days = 0;
+        while ($d < $edate) {
+            my $dow = $d->day_of_week();
+            if (   1 <= $dow         && $dow <= 4        # Mon-Thu
+                && $disc_start <= $d && $d <= $disc_end  # in discount PR period
+            ) {
+                ++$n_m_th_days;
+            }
+            ++$d;
+        }
+        if ($n_m_th_days > 0) {
+            my $h_cost = $data->{$key1};
+            my $disc = int(($data->{disc_pr}/100)*$n_m_th_days*$h_cost+.5);
+            my $pl = ($n_m_th_days == 1)? "": "s";
+            $discount .= "a $data->{disc_pr}% discount for $n_m_th_days day$pl Monday-Thursday";
+            $total -= $disc;
+        }
+    }
+}
+else {
+    # the housing cost is not dependent on sdate, edate.
+    # we have the total amount.
+    #
+    $total = $h_cost;
+}
+
+# 7 day discounts for housing costs of 'per day'.
+#
+if ($data->{type} eq 'Per Day') {
+    if ($ndays >= 7) {
+        if ($discount) {
+            $discount .= "<br>and ";
+        }
+        $discount .= "a 10% discount for staying 7 days or more";
+        $total -= 0.10*$total;
+    }
+    $total = int($total);
+}
+if (!$data->{"basic commuting"}) {
+    $total = $data->{tuition};
+}
+$discount = "<p>You were given $discount.<p>" if $discount;
+
+# how much of this total is to be collected now?
+#
+if ($PR) {
+	$x_prog_amount = ($total <= 100)? $total: 100;
+}
+elsif ($data->{collect_total}) {
+	$x_prog_amount = $total;
+}
+elsif ($data->{percent_tuition}) {
+    my $pct = (100 - $data->{percent_tuition})/100;
+    $x_prog_amount = $total - int($data->{tuition} * $pct);
+}
+elsif ($data->{deposit}) {
+	$x_prog_amount = $data->{deposit};
+}
+else {
+	$x_prog_amount = ($total <= 100)? $total: 100;
+}
+$due = $total - $x_prog_amount;
+my $x_amount = $x_prog_amount; 
+if ($form{green_amount}) {
+    $x_amount += $form{green_amount};
+    if (int($x_amount) != $x_amount) {
+        $x_amount = sprintf("%.2f", $x_amount);
+    }
+}
+
+# Call subroutine from authorize.net that sets $fingerprint_html 
+#
+use SimLib;
+
+# MMC
+#my $loginid = '7bq2Ch2Hf3';
+#my $txnkey = '2y4cKZp797y34Cks';
+
+# MMI
+my $loginid = "8b3m8M43c4Gp";
+my $txnkey = "728CN5buK7jg793R";
+my $x_currency_code = "USD";
+my $fingerprint_html =
+    SimLib::InsertFP($loginid, $txnkey, $x_amount, $x_currency_code);
+
+my %stash;
+for my $name (qw/
+    fname lname street1 street2 city state zip
+    country home work cell email1 carpool hascar from_where
+    e_mailings snail_mailings
+    mmi_e_mailings mmi_snail_mailings
+    share_mailings kayakalpa
+    house1 house2 request withwhom_first withwhom_last
+    pid title leader_names name progchoice
+    collect_total request green_amount
+/) {
+    $stash{$name} = $form{$name};
+}
+if ($test) {
+    for my $i (1, 2) {
+        $data->{"image$i"} =~ s{live}{staging};
+    }
+}
+if ($data->{image1} && $data->{image2}) {
+    $stash{two_pics} = 1;
+    $stash{image1} = $data->{image1};
+    $stash{image2} = $data->{image2};
+}
+elsif ($data->{image1}) {
+    $stash{one_pic} = 1;
+    $stash{image1} = $data->{image1};
+}
+else {
+    $stash{zero_pics} = 1;
+}
+$stash{test} = $test? "TRUE"
+               :      "FALSE";
+$stash{fingerprint_html} = $fingerprint_html;
+$stash{x_description} = $form{name};
+$stash{loginid} = $loginid;
+$stash{x_amount} = $x_amount;
+$stash{x_firstname} = $form{fname};
+$stash{x_lastname} = $form{lname};
+$stash{x_address} = "$form{street1} $form{street2}";
+
+#
+# create a readable description for the user
+#
+if ($form{gender} eq "female") {
+    $stash{gender} = "Female";
+}
+elsif ($form{gender} eq "male") {
+    $stash{gender} = "Male";
+}
+my @phones;
+for my $f (qw/ home work cell /) {
+    if ($form{$f}) {
+        push @phones, "\u$f: $form{$f}";
+    }
+}
+$stash{phone_info} = join "<br />", @phones;
+$stash{phone} = $form{home}? $form{home}
+               :$form{cell}? $form{cell}
+               :             $form{work}
+               ;
+if ($form{ceu_license}) {
+    $stash{ceu} = <<"EOH";
+<tr>
+<th align=right>License #:</th>
+<td>$form{ceu_license}<span style="margin-left: 50mm">For a CEU certificate.</span></td>
+</tr>
+EOH
+	$stash{ceu_license} = $form{ceu_license};		# for passing on to reg...
+}
+else {
+    $stash{ceu} = "";
+	$stash{ceu_license} = "";
+}
+
+$stash{cabin_room} = $form{cabin_room} || 'room';
+$stash{other_cabin_room} = ($stash{cabin_room} eq 'room')? 'cabin'
+                           :                               'room'
+                           ;
+
+my $howHeardResponse = "";
+if ($form{howHeard} eq "web") {
+     $howHeardResponse = "the web";
+} elsif ($form{howHeard} eq "ad") {
+     $howHeardResponse = "an ad";
+     if ($form{advertiserName}) {
+         $howHeardResponse .= " in " . $form{advertiserName};
+     } 
+} elsif ($form{howHeard} eq "brochure") {
+     $howHeardResponse = "the Mount Madonna Center Brochure";
+} elsif ($form{howHeard} eq "flyer") {
+     $howHeardResponse = "a flyer";
+} 
+
+$stash{howheard} = $form{howHeard};
+$stash{advertisername} = $form{advertiserName};
+if ($howHeardResponse) {
+    $stash{howheard_verbose}
+        = "<p>You heard about this program through $howHeardResponse.";
+} else {
+    $stash{howheard_verbose} = "";
+}
+
+if ($form{carpool}) {
+    if ($form{hascar}) {
+        $stash{carpool_verbose} =
+            "<p>You wish to carpool from $form{from_where} and can offer a ride.";
+    }
+    else {
+        $stash{carpool_verbose} = 
+            "<p>You wish to carpool from $form{from_where} and would like a ride.";
+    }
+} else {
+    $stash{carpool_verbose} = "";
+}
+
+my $mv = "";
+if ($form{e_mailings} || $form{snail_mailings}) {
+     $mv = "<p>We will include you on occasional mailings about MMC via ";
+     if ($form{e_mailings}) {
+        $mv .= "e-mail";
+     }
+     if ($form{snail_mailings}) {
+        if ($form{e_mailings}) {
+            $mv .= " and ";
+        }
+        $mv .= "snail mail";
+     }
+     $mv .= ".";
+}
+else {
+    $mv .= "<p>We will <b>not</b> include you on occasional mailings about MMC.";
+}
+if ($form{mmi_e_mailings} || $form{mmi_snail_mailings}) {
+     $mv .= "<p>We will include you on occasional mailings about MMI via ";
+     if ($form{mmi_e_mailings}) {
+        $mv .= "e-mail";
+     }
+     if ($form{mmi_snail_mailings}) {
+        if ($form{mmi_e_mailings}) {
+            $mv .= " and ";
+        }
+        $mv .= "snail mail";
+     }
+     $mv .= ".";
+}
+else {
+    $mv .= "<p>We will <b>not</b> include you on occasional mailings about MMI.";
+}
+$mv .= "<p>We will "
+     . ($form{share_mailings}? "": "<b>not</b> ")
+     . "share your contact information with MMC affiliates.";
+
+if ($form{kayakalpa}) {
+    $mv .= "<p>We will contact you regarding massage or other bodywork during your stay.";
+}
+
+$stash{mailings_verbose} = $mv;		# plus kayakalpa
+
+$stash{house1_verbose} = $housing_name{$form{house1}};
+$stash{house1_cost} = $house1;
+$stash{house2_verbose} = $housing_name{$form{house2}};
+$stash{house2_cost} = $house2;
+
+$stash{house1} = $form{house1};
+$stash{house2} = $form{house2};
+if ($form{withwhom_first} =~ /\S/) {
+    $stash{withwhom_verbose}
+        = "<p>You have requested to share housing with $form{withwhom_first} $form{withwhom_last}.&nbsp;&nbsp;&nbsp;He/she needs to register separately.";
+}
+else {
+    $stash{withwhom_verbose} = "";
+}
+
+if ($form{request}) {
+    my $s = $form{request};
+    $s =~ s{\n}{<br>\n}g;
+    $stash{request_verbose}
+        = "<h2>Additional Requests</h2><ul>$s</ul>";
+} else {
+    $stash{request_verbose} = "";
+}
+#
+# in addition to the street1, street2 above
+# which are for the hidden fields we also have
+# street_addr which is a special case.
+#
+my $street_addr = $form{street1};
+if ($form{street2} =~ /\S/) {
+    $street_addr .= "<br>$form{street2}";
+}
+$stash{street_addr} = $street_addr;
+
+if ($form{name} =~ m{personal\s+retreat}i) {
+    $stash{title} = "Personal Retreat";
+	$stash{sdate} = $sdate->format("%m/%d/%Y");
+	$stash{edate} = $edate->format("%m/%d/%Y");
+} else {
+	$stash{sdate} = "";
+	$stash{edate} = "";
+}
+#
+# what dates?
+#
+if ($form{dates} =~ m{,}) {
+    #
+    # we need to look at the choice of program
+    #
+    my ($bdate, $fdate) = split m{,}, $form{dates};
+    $bdate =~ s{^\s*|\s*$}{}g;
+    $fdate =~ s{^\s*|\s*$}{}g;
+    if ($fdate =~ m{^\d}) {
+        my ($month) = $bdate =~ m{^(\w+)}; 
+        $fdate = $month . " " . $fdate;
+    }
+    $stash{dates} = ($form{progchoice} eq "basic")? $bdate
+                    :                               $fdate;
+}
+elsif ($form{name} =~ m{personal retreat}i) {
+	my $date = "$ndays day" . (($ndays > 1)? "s": "");
+	$date .= " from ";
+	$date .= $sdate->format("%A %B %e, %Y");
+	$date .= " to ";
+	$date .= $edate->format("%A %B %e, %Y");
+	$stash{dates} = $date;
+    $stash{pr} = 1;
+}
+else {
+    $stash{dates} = $form{dates};
+}
+# what if it is a one day program - no housing, etc
+if ($stash{dates} !~ m{-}xms) {
+    $stash{one_day} = 1;
+}
+
+my $payment;
+if ($data->{collect_total}) {
+    $payment = <<"EOH";
+For this program the total cost of \$$x_prog_amount needs to be collected up front.
+$discount
+EOH
+}
+else {
+    my $dncc = $data->{do_not_compute_costs};
+    if (! $dncc) {
+        $payment .= "The total cost of this program is \$$total.<br>\n";
+        $payment .= $discount;
+    }
+    $payment .= "A deposit of \$$x_prog_amount is required.<br>\n";
+    $payment .= "The balance"
+                . ((!$dncc)? " of \$$due": "")
+                . " is due on arrival.\n";
+}
+if ($form{green_amount}) {
+    $payment .= <<"EOP";
+<p>
+Since you wish to contribute \$$form{green_amount} to the Green Fund<br>
+your total payment today will be \$$x_amount.
+EOP
+}
+$stash{payment} = $payment;
+
+# get 2 cookies set by user accessing a redirected page
+#
+$stash{mmi_code} = cookie(-name => 'mmi_code');
+$stash{mmi_ip}   = cookie(-name => 'mmi_ip');
+
+# ip address for Jamal's purposes
+#
+$stash{real_ip} = $ENV{REMOTE_ADDR};
+
+# prepare the cookie with the form values
+# to include in the header.  First delete the
+# special requests - it could be too long
+# and make trouble.
+#
+delete @form{qw/
+    request
+    name
+    test
+    dates
+    progchoice
+    pid
+    title
+    Submit
+    advertiserName
+    dir
+    leader_names
+    green_amount
+    email2
+/};
+my $cookie = cookie(
+    -name    => 'user_data',
+    -value   => \%form,
+    -expires => '+10y',     # i.e. don't expire
+    -domain  => '.mountmadonnainstitute.org',
+);
+
+# ready to output the page
+#
+print header(-cookie => $cookie);
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "reg2.tt2",
+    \%stash,
+);
