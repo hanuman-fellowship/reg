@@ -98,6 +98,10 @@ elsif ($data->{image1}) {
 else {
     $stash{zero_pics} = 1;
 }
+# force no pics at all - for now
+$stash{two_pics} = 0;
+$stash{one_pic} = 0;
+$stash{zero_pics} = 1;
 
 #
 # an exception for personal retreats
