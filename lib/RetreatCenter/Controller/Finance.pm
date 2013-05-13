@@ -622,7 +622,6 @@ sub period_end : Local {
                        paid_date => { between => [ $start_d8, $end_d8 ] },
                    })
         ) {
-            my $href = $totals{$rgl};
             my $amt = $r->cost_disp();
             next RIDE3 if $amt == 0;        # bogus payment
             if (! exists $totals{$rgl}) {
@@ -631,8 +630,13 @@ sub period_end : Local {
                     type  => 'r',
                     link  => "/ride/list",
                     glnum => $rgl,
+                    amount => 0,
+                    cash   => 0,
+                    check  => 0,
+                    credit => 0,
                 };
             }
+            my $href = $totals{$rgl};
             $href->{amount} += $amt;
             my $type = $r->type();
             $href->{

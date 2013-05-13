@@ -239,5 +239,9 @@ May 2 8:30-8:45
     get moved???
 May 5 3:20-4:00
     checking MMI Course creation - is there a warning?
-May 7 11:15-
+May 7 11:15-2:00
     dealing with weirdnesses of MMI online reg.
+    shall we generate the pages?
+May 13 10:45-
+    consult with Shantam, Jamal, Sukh
+    fix weirdness with period end for Rides
