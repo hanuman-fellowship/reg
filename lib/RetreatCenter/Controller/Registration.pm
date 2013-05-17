@@ -4508,7 +4508,7 @@ sub name_addr_do : Local {
     my $p_order = $c->request->params->{order};
     my $order = ($p_order eq 'name')? [qw/ person.last person.first /]
                 :                     [qw/ date_postmark time_postmark /];
-    my $including = $c->request->params->{including};
+    my $including = $c->request->params->{including} || "";
     my @cond = ();
     if ($including eq 'normal') {
         @cond = (
@@ -4542,7 +4542,7 @@ sub name_addr_do : Local {
                 ! $seen{ $per->first() . $per->last() }++;
             }
             @regs;
-    @star = ();
+    @star = ();     # see above - _person_data()
     if ($including eq 'both') {
         @star = map {
                     ($_->date_end() > $edate)? 1
@@ -4581,11 +4581,14 @@ sub name_addr_do : Local {
         $info_rows = "<table cellpadding=3>\n";
         for my $i (0 .. $n-1) {
             $info_rows .= "<tr>";
-
-            $info_rows .= "<td valign=top>" . _person_data($i) . "</td>";
-            $info_rows .= "<td valign=top>" . _person_data($i+$n) . "</td>";
-            $info_rows .= "<td valign=top>" . _person_data($i+2*$n) . "</td>";
-
+            for my $offset (0, $n, 2*$n) {
+                my $s = _person_data($i+$offset);
+                $info_rows .= "<td valign=top>$s</td>";
+                if ($containing eq "email") {
+                    $s =~ s{<br>}{};
+                    $mailto .= "$s," if $s;
+                }
+            }
             $info_rows .= "</tr>\n";
         }
         $info_rows .= "</table>\n";

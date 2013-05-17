@@ -738,6 +738,8 @@ sub list : Local {
         @cond = (
             'category.name' => 'Normal',
             level           => { -in  => [qw/ D C M /] },
+            edate => { },       # all programs not just current.
+                                # this overrides the cutoff one below
         );
     }
     elsif ($type eq 'yscl') {
