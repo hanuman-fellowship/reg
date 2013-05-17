@@ -25,7 +25,7 @@
 <a href="/program/list/yscl">YSCL<a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ([% online %])</a>
-&nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value=[% pr_pat %]> <input type=submit value="Search"></form>
+&nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value='[% pr_pat %]'> <input type=submit value="Search"></form>
 <table border=0 cellpadding=3>
 <tr>
 <td></td>   <!-- for marking rental-programs and mmi program -->

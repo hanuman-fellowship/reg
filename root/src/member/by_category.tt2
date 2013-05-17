@@ -6,7 +6,7 @@
 <tr><td>Sponsor</td><td align=right>[% nspon %]</td></tr>
 <tr><td>Life</td><td align=right>[% nlife %]</td></tr>
 <tr><td>Founding Life</td><td align=right>[% nfound %]</td></tr>
-<tr><td>Total</td><td align=right>[% ngene+ncont+nspon+nlife %]</td></tr>
+<tr><td>Total</td><td align=right>[% ngene+ncont+nspon+nlife+nfound %]</td></tr>
 </table>
 
 <h2>General</h2>

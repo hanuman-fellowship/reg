@@ -60,7 +60,7 @@ Click on First to see person attributes.<br>
 [% m.total_paid %]
 [% END %]
 </td>
-[% IF m.category == 'Sponsor' || m.category == 'Life' %]
+[% IF m.category == 'Sponsor' || m.category == 'Life'  || m.category == 'Founding Life' %]
 <td align=right>
 [% m.sponsor_nights %]
 </td>

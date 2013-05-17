@@ -1088,13 +1088,32 @@ sub affil_update : Local {
 sub affil_update_do : Local {
     my ($self, $c, $id) = @_;
 
-    my @cur_affils = grep {  s{^aff(\d+)}{$1}  }
+    my @new_affils = grep {  s{^aff(\d+)}{$1}  }
                      keys %{$c->request->params};
+
+    # make sure that all existing registrants have
+    # all of the new affiliations.
+    #
+    my $prog = model($c, 'Program')->find($id);
+    for my $person (map { $_->person } $prog->registrations) {
+        my $person_id = $person->id;
+        my %cur_affils = map { $_->id => 1 }
+                         grep { $_->descrip() ne 'None' }
+                         $person->affils;
+        for my $new_pr_affil_id (@new_affils) {
+            if (! exists $cur_affils{$new_pr_affil_id}) {
+                model($c, 'AffilPerson')->create({
+                    a_id => $new_pr_affil_id,
+                    p_id => $person_id,
+                });
+            }
+        }
+    }
     # delete all old affils and create the new ones.
     model($c, 'AffilProgram')->search(
         { p_id => $id },
     )->delete();
-    for my $ca (@cur_affils) {
+    for my $ca (@new_affils) {
         model($c, 'AffilProgram')->create({
             a_id => $ca,
             p_id => $id,
