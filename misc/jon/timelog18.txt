@@ -252,6 +252,19 @@ May 14 3:20-4:40
     next: auto assign of free nights (4, 4, 12) on 1/1 1:00 am
     and - allow free nights for retreats with total cost
         and figure the ratio
-May 17 1:40-1:55, 2:05-
+May 17 1:40-1:55, 2:05-4:10
     affil update on program with existing regs - those people
         get any new affils
+    DCM link gives all
+    Program Lists Email All works in 3 column mode.
+May 24 11:20-12:35
+    faciliate the inactivation of users
+    kayakalpa request within a month - we'll contact you soon
+    no login for users with password of -no login-
+May 28 11:00-11:30
+    fiddling with MMI web pages and finances
+Jun 4 11:00-11:45
+    responding to email from Jayanti, Emily, Brajesh
+    fiddling with housing and financial issues
+Jun 6 11:25-
+    removing extra commuting day for MMI

@@ -42,7 +42,7 @@ sub index : Private {
     # If the username and password values were found in form
     if ($username && $password) {
         # Attempt to log the user in
-        if ($c->login($username, $password)) {
+        if ($password ne '-no login-' && $c->login($username, $password)) {
             # successful, let them use the application!
             Global->init($c);       # where else to put this???
             _clear_images();

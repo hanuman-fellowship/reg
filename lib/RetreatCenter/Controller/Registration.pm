@@ -1451,18 +1451,6 @@ sub _compute {
             what      => $what,
         });
     }
-    if ($auto && $pr->school() != 0 && ! $lead_assist) {
-        # MMI registrants have an extra day at the commuting rate.
-        #
-        my $commute_cost = $housecost->commuting();
-        model($c, 'RegCharge')->create({
-            @who_now,
-            automatic => 'yes',
-            amount    => $commute_cost,
-            what      => "1 day at commuting rate of \$$commute_cost",
-        });
-        $tot_h_cost += $commute_cost;
-    }
 
     # extra days - at the current personal retreat housecost rate.
     # but not for leaders/assistants???  right?

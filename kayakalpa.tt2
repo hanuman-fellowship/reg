@@ -21,7 +21,12 @@ th, td {
 Greetings $first,
 <p>
 We just received your request for a massage or other bodywork.
-Two to three weeks before you arrive we will be in touch via phone and email
+[% IF soon %]
+We will contact you very soon
+[% ELSE %]
+Two to three weeks before you arrive we will be in touch
+[% END %]
+via phone and email
 to set up an appointment during your stay.  Here is the information
 we have for you:
 <p>

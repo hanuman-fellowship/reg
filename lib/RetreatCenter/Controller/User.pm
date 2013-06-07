@@ -25,15 +25,18 @@ sub index : Private {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $inactive) = @_;
 
     $c->stash->{users} = [
         model($c, 'User')->search(
-            undef,
+            { password => { $inactive? '==': '!=' => '-no login-' } },
             { order_by => 'username' }
         )
     ];
-    $c->stash->{template} = "user/list.tt2";
+    stash($c,
+        inactive => $inactive,
+        template => "user/list.tt2",
+    );
 }
 
 sub delete : Local {
@@ -411,6 +414,18 @@ sub access_denied : Private {
 
     $c->stash->{mess}  = "Authorization denied!";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub inactivate : Local {
+    my ($self, $c, $id) = @_;
+    my $u = model($c, 'User')->find($id);
+    $u->update({
+        password => '-no login-',
+    });
+    model($c, 'UserRole')->search(
+        { user_id => $id }
+    )->delete();
+    $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
 1;

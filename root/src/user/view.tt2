@@ -1,12 +1,15 @@
 [% user_admin = Catalyst.check_user_roles('user_admin') %]
 <h2>Users</h2>
 [% IF user_admin %]
-<a href="/user/update/[% user.id %]">Edit</a>
+<a href="/user/update/$user.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/user/create">Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/user/delete/[% user.id %]"
- onclick="return confirm('Okay to Delete user [% user.first %] [% user.last %]?');">Delete</a>
+<a href="/user/delete/$user.id"
+ onclick="return confirm('Okay to Delete user $user.first $user.last?\n\nIt is very likely better to just Inactivate them!');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/user/inactivate/$user.id"
+ onclick="return confirm('Okay to Inactivate user $user.first $user.last?');">Inactivate</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/user/list">List</a>
@@ -15,42 +18,42 @@
 
 <tr>
 <th align=right>User Name</th>
-<td>[% user.username %]</td>
+<td>$user.username</td>
 </tr>
 
 <tr>
 <th align=right>First</th>
-<td><span class=larger>[% user.first %]</span></td>
+<td><span class=larger>$user.first</span></td>
 <td width=150></td>
 <th align=right>Office Phone</th>
-<td>[% user.office %]</td>
+<td>$user.office</td>
 </tr>
 
 <tr>
 <th align=right>Last</th>
-<td><span class=larger>[% user.last %]</span></td>
+<td><span class=larger>$user.last</span></td>
 <td></td>
 <th align=right>Cell Phone</th>
-<td>[% user.cell %]</td>
+<td>$user.cell</td>
 </tr>
 
 <tr>
 <th align=right>Email</th>
-<td><a href="mailto:[% user.email %]">[% user.email %]</a></td>
+<td><a href="mailto:$user.email">$user.email</a></td>
 <td></td>
 <th align=right>Txt Msg Email</th>
-<td>[% user.txt_msg_email %]</td>
+<td>$user.txt_msg_email</td>
 </tr>
 
 <tr>
 <th align=right>Hide MMI</th>
-<td>[% user.hide_mmi %]</td>
+<td>$user.hide_mmi</td>
 </tr>
 
 [% IF user_admin %]
 <tr>
 <th align=right valign=top>Password</th>
-<td>[% user.password %]</td>
+<td>$user.password</td>
 </tr>
 [% END %]
 
@@ -58,7 +61,7 @@
 <th align=right valign=top>Roles</th>
 <td>
 [% FOREACH r IN user.roles %]
-[% r.fullname %]<br>
+$r.fullname<br>
 [% END %]
 </td>
 
@@ -85,9 +88,9 @@
         <img src=/static/images/checked.gif>
         [% END %]
         </td>
-        <td><a href=/ride/view/[% r.id %]>[% r.rider.first %] [% r.rider.last %]</a></td>
-        <td>[% r.pickup_date_obj %]</td>
-        <td>[% r.airport %]</td>
+        <td><a href=/ride/view/$r.id>$r.rider.first $r.rider.last</a></td>
+        <td>$r.pickup_date_obj</td>
+        <td>$r.airport</td>
         </tr>
     [% END %]
 [% END %]

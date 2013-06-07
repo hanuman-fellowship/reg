@@ -779,7 +779,7 @@ EOS
             }
         }
         close $in;
-        my ($program, $p_sdate, $p_edate, $extradays, $arrive, $leave);
+        my ($program, $p_sdate, $p_edate, $extradays, $arrive_dt, $soon, $arrive, $leave);
         if ($vals{pid} != 0) {
             $getprog->execute($vals{pid});
             ($program, $p_sdate, $p_edate, $extradays)
@@ -789,14 +789,16 @@ EOS
             if ($vals{progchoice} eq 'full') {
                 $p_edate += $extradays;
             }
-            $arrive = $p_sdate->format($fmt);
+            $arrive_dt = $p_sdate;
             $leave  = $p_edate->format($fmt);
         }
         else {
             $program = "Personal Retreat";
-            $arrive = date($vals{sdate})->format($fmt);
+            $arrive_dt = date($vals{sdate});
             $leave = date($vals{edate})->format($fmt);
         }
+        $arrive = $arrive_dt->format($fmt);
+        $soon = ($arrive_dt - today()) < 30;
         my $html;
         my $tt = Template->new(
             INTERPOLATE => 1,
@@ -813,6 +815,7 @@ EOS
                 program => $program,
                 arrive  => $arrive,
                 leave   => $leave,
+                soon    => $soon,
             },
             \$html,
         ) or my_die("template error: " . $tt->error());
