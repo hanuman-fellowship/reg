@@ -1,0 +1,67 @@
+<head>
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+</head>
+<h2>Adding a New Column
+<span class=to_schema><a href=/static/help/schema/index.html>To Schema</a></span>
+</h2>
+For demonstration purposes, let's add a boolean field named
+'status' to the table 'program'.
+<ol>
+<li>Add the column to the database on the local system where we use sqlite:
+<pre class=code>
+% cd $HOME/Reg
+% sqlite3 retreatcenter.db
+sqlite> alter table program add column status text default '' not null;
+sqlite> .quit
+</pre>
+<li>Update the sql script 'mkprog' in case we need to
+recreate the 'program' table from scratch (unlikely):
+<pre class=code>
+% cd $HOME/Reg/migration
+% vi mkprog
+  and add the above alter table line at the bottom
+  of the 'create table program'.
+</pre>
+<li>Update the appropriate Catalyst Model class:
+<pre class=code>
+% cd $HOME/Reg/lib/RetreatCenterDB
+% vi Program.pm
+
+There will be a line like this:
+
+__PACKAGE__->add_columns(qw/
+
+at the bottom of that statement add:
+
+    status
+</pre>
+<li>In the same model .pm file as above
+add documentation of the new column.
+Add 'status' and its definition (and usage)
+to the bottom (after __END__) in alphabetical order.
+If the definition spans more than one line
+the second and subsequent lines should be indented with 4 spaces.
+</pre>
+<p>
+<li>Check that the new model matches the database and generate
+the new schema doc:
+<pre class=code>
+% cd $HOME/Reg/lib/RetreatCenterDB
+% check_doc
+% gen_doc
+</pre>
+<p>
+<li>If the new column is a foreign key to another table
+you will likely want to add a relationship (belongs_to or has_many or ...).
+See the other model classes, find a similar situation, and mimic that.
+<p>
+<li>This should complete the addition of the column.   Now to use
+it in the Controller classes.
+<p>
+<li>Before pushing all of these changes to kali we need to log in to
+kali and alter the 'program' table in the MySQL database there.
+Use the same alter table line as above.
+<p>
+There is no need alter the mysql table on newkali.
+The entire schema and data will soon be copied from kali to newkali.
+</ol>

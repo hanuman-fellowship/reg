@@ -29,7 +29,7 @@ sub list : Local {
 
     $c->stash->{users} = [
         model($c, 'User')->search(
-            { password => { $inactive? '==': '!=' => '-no login-' } },
+            { password => { $inactive? '=': '!=' => '-no login-' } },
             { order_by => 'username' }
         )
     ];

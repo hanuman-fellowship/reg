@@ -266,5 +266,7 @@ May 28 11:00-11:30
 Jun 4 11:00-11:45
     responding to email from Jayanti, Emily, Brajesh
     fiddling with housing and financial issues
-Jun 6 11:25-
+Jun 6 11:25-11:45
     removing extra commuting day for MMI
+Jun 9 4:00-5:00
+    doc for developers about adding a new column

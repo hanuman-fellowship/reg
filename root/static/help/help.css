@@ -34,3 +34,11 @@ a:hover {
     color: white;
     background: blue;
 }
+.code {
+    color: blue;
+}
+.to_schema {
+    margin-left: 2in;
+    font-size: 14pt;
+    font-weight: normal;
+}
