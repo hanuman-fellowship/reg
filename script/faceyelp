@@ -73,7 +73,8 @@ for my $pr (@programs) {
             "faceyelp.tt2",
             $stash,               # variables
             \$html,               # output
-        );
+        ) or die "error in processing template: "
+                 . $tt->error();
         email_letter(
             schema  => $schema,
             from    => $from_email,
@@ -121,8 +122,8 @@ for my $r (@rentals) {
             "faceyelp.tt2",
             $stash,               # variables
             \$html,               # output
-        );
-print $per->first, " ", $per->last, " of rental $title\n";
+        ) or die "error in processing template: "
+                 . $tt->error();
         email_letter(
             schema  => $schema,
             from    => $from_email,
@@ -164,8 +165,8 @@ if (@prog_pr) {
             "faceyelp.tt2",
             $stash,               # variables
             \$html,               # output
-        );
-print $per->first, " ", $per->last, " for PR\n";
+        ) or die "error in processing template: "
+                 . $tt->error();
         email_letter(
             schema  => $schema,
             from    => $from_email,

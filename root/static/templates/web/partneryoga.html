@@ -12,7 +12,7 @@ aa {text-decoration: none; }
 
 <META CONTENT="text/html; charset=iso-8859-1">
 <TITLE>
-<!--T title1 --> <!--T title2 -->
+[% program.title1 %] [% program.title2 %]
 </TITLE>
 
 <LINK HREF="/mmc.css" REL="stylesheet" TYPE="text/css">
@@ -78,7 +78,7 @@ border="0"></A></DIV></TD>
                   <TABLE WIDTH="100%" align=center cellpadding=10>
                     <TBODY>
                     <TR>
-                      <TD valign=top><CENTER><!--T picture --></CENTER></TD>
+                      <TD valign=top><CENTER>[% program.picture %]</CENTER></TD>
                     </TR></TBODY></TABLE></TD>
                 <TD background=/Gif/greenbox_right.gif></TD></TR>
               <TR>
@@ -117,26 +117,26 @@ border=0>
                             background=/Gif/whitebox_left.gif>&nbsp;</TD>
                             <TD bgcolor=#ffffff>
                               <P>
-							  <SPAN CLASS="ptitle"><!--T title1 --></SPAN><BR>
-                              <SPAN CLASS="psubtitle"><!--T title2 --></SPAN><BR>
-							  <SPAN CLASS="pdates"><!--T dates --></SPAN>
+							  <SPAN CLASS="ptitle">[% program.title1 %]</SPAN><BR>
+                              <SPAN CLASS="psubtitle">[% program.title2 %]</SPAN><BR>
+							  <SPAN CLASS="pdates">[% program.dates %]</SPAN>
 							  </P>
                               <P><A 
-                              href="http://www.mountmadonna.org/cgi-bin/reg1?id=<!--T id -->&dir=<!--T unlinked_dir -->"><IMG 
+                              href="http://www.mountmadonna.org/cgi-bin/reg1?id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG 
                               alt="Register for this program" 
 src="/Gif/register_button.png" width=207 height=32 border=0></A></P>
-			      <!--T webdesc_plus -->
-			      <!--T weburl -->
-			      <!--T leader_bio -->
-			     <UL><!--T fee_table --></UL>
+			      [% program.webdesc_plus %]
+			      [% program.weburl %]
+			      [% program.leader_bio %]
+			     <UL>[% program.fee_table %]</UL>
                               <P align=left>
-<A HREF="http://www.mountmadonna.org/cgi-bin/reg1?id=<!--T id -->&dir=<!--T unlinked_dir -->"><IMG 
+<A HREF="http://www.mountmadonna.org/cgi-bin/reg1?id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG 
                               alt="Register for this program"
                               src="/Gif/register_button.png" 
                               width=207 height=32 border=0 
                               ></A></P>
 <UL>
-<LI><!-- T cancellation_policy --></LI>
+<LI>[% program.cancellation_policy %]</LI>
 <LI>Mount Madonna Center program registration begins at 4:00 pm.</LI>
 <LI>Dinner is served from 5:30-6:30 on Friday and 5:00-6:00 on other days.</LI>
 <LI>If you will be arriving late, please ask us to save a dinner for you.</LI>
@@ -178,7 +178,7 @@ urchinTracker();
           <BR>
           A Project of<BR>
                   <A HREF="http://www.hanumanfellowship.org" TARGET="_blank"><IMG SRC="/Gif/logoHF.jpg" WIDTH="150" HEIGHT="43" BORDER="0"></A><BR>
-                  Copyright <!-- T current_year -->, Hanuman Fellowship. All rights reserved. &bull; Last updated <!-- T current_date -->
+                  Copyright [% program.current_year %], Hanuman Fellowship. All rights reserved. &bull; Last updated [% program.current_date %]
                   <BR>
 </CENTER>
             </TD></TR>

@@ -1214,7 +1214,8 @@ sub create_do : Local {
             "onreg_notify.tt2",   # template
             $stash,               # variables
             \$html,               # output
-        );
+        ) or die "error in processing template: "
+                 . $tt->error();
         email_letter($c,
                to         => $pr->notify_on_reg,
                from       => "$string{from_title} <$string{from}>",
@@ -1292,7 +1293,8 @@ sub create_do : Local {
                 "green.tt2",      # template
                 $stash,           # variables
                 \$html,           # output
-            );
+            ) or die "error in processing template: "
+                     . $tt->error();
             email_letter($c,
                 to      => $reg->person->name_email(),
                 from    => "$string{green_name} <$string{green_from}>",
@@ -1902,7 +1904,8 @@ sub send_conf : Local {
         $pr->cl_template() . ".tt2",    # template
         $stash,                         # variables
         \$html,                         # output
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     #
     # assume the letter will be successfully
     # printed or sent - if you are not previewing, that is.
@@ -2376,7 +2379,8 @@ sub cancel_do : Local {
             $template,      # template
             $stash,         # variables
             \$html,         # output
-        );
+        ) or die "error in processing template: "
+                 . $tt->error();
         #
         # assume the letter will be successfully
         # printed or sent.
@@ -5441,7 +5445,8 @@ sub receipt : Local {
         "receipt.tt2",  # template
         $stash,         # variables
         \$html,         # output
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     my $from = ($reg->program->school() == 0)?
         "$string{from_title} <$string{from}>":
         'Mount Madonna Institute <MMIreservations@mountmadonnainstitute.org>'

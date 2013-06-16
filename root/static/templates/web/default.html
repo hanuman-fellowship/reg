@@ -230,7 +230,7 @@ if (!empty($eid)) {
                 <DIV CLASS="pdesc">
                     [% program.webdesc %]
                     [% IF program.documents %]
-                        <ul>
+                        <ul class=doc_ul>
                         [% FOR d IN  program.documents %]
                             <li><a href="docs/pdoc[% d.id %].[% d.suffix %]">[% d.title %]</a>        
                         [% END %]
@@ -239,10 +239,12 @@ if (!empty($eid)) {
                     [% program.weburl %]
                 </DIV>
                 
+                [% IF program.leader_bio %]
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PRESENTER BIO</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
                 <DIV CLASS="pbio">
                     [% program.leader_bio %]
                 </DIV>
+                [% END %]
                 
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">REGISTRATION</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
                 

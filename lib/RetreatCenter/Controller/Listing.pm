@@ -1054,7 +1054,8 @@ sub late_notices : Local {
         "late_notices.tt2",             # template
         { late_arr => \@late_arr },     # variables
         \$html,                         # output
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     $c->res->output($html);
 }
 

@@ -1292,7 +1292,8 @@ sub contract : Local {
         "rental_contract.tt2",# template
         \%stash,          # variables
         \$html,           # output
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     if ($email) {
         my @to = ();
         my @cc = ();

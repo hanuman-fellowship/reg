@@ -292,3 +292,5 @@ Jun 14 4:00-5:15
 Jun 15 12:30-2:30, 10:40-11:30
     converting program template to TT, dealing with exceptions
         for fee_table, dates, title1
+Jun 16 12:35-
+    exceptions - just a few

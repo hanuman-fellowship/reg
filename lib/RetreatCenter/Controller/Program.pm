@@ -1311,7 +1311,8 @@ sub publish : Local {
             \$copy,
             { program => $p },
             "gen_files/$fname",
-        );
+        ) or die "error in processing template: "
+             . $tt->error();
         for my $d ($p->documents) {
             my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
             copy("root/static/images/$pdoc", "gen_files/docs/$pdoc");
@@ -1376,7 +1377,8 @@ sub publish : Local {
                 $rental? \$e_rentalRow: \$e_progRow,
                 { event => $e },
                 \$s,
-            );
+            ) or die "error in processing template: "
+                 . $tt->error();
             $events .= $s;
         }
         else {
@@ -1391,7 +1393,8 @@ sub publish : Local {
                 \$progRow,
                 { event => $e },
                 \$s,
-            );
+            ) or die "error in processing template: "
+                     . $tt->error();
             $programs .= $s;
         }
     }
@@ -1405,13 +1408,15 @@ sub publish : Local {
         \$event_template,
         { eventlist => $events },
         "gen_files/events.html",
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     my $program_template = slurp "programs";
     $tt->process(
         \$program_template,
         { programlist => $programs },
         "gen_files/programs.html",
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
 
     #
     # schmush around the unlinked programs

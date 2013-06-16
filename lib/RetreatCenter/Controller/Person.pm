@@ -1014,7 +1014,8 @@ sub list_mmi_payment_print : Local {
         "person/mmi_payments.tt2",   # template
         $stash,               # variables
         \$html,               # output
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     $c->res->output($html);
     return;
 }
@@ -1244,7 +1245,8 @@ EOH
         "templates/letter/req_mmi_payment.tt2",   # template
         $stash,               # variables
         \$html,               # output
-    );
+    ) or die "error in processing template: "
+             . $tt->error();
     email_letter($c,
         to      => $email,
         from    => 'Mount Madonna Institute <info@mountmadonnainstitute.org>',
@@ -1308,7 +1310,8 @@ sub delete_req_mmi : Local {
             "templates/letter/ignore_req_mmi_payment.tt2",   # template
             $stash,               # variables
             \$html,               # output
-        );
+        ) or die "error in processing template: "
+                 . $tt->error();
         email_letter($c,
             to      => $email,
             from    => 'Mount Madonna Institute <info@mountmadonnainstitute.org>',

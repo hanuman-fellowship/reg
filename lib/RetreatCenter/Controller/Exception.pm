@@ -11,34 +11,14 @@ use Date::Simple qw/
     today
 /;
 
-#
-# a good list - complete?
-#
+# Only these.   Could add others.
+# 
 my @tags = sort qw/
-    cancellation_policy
-    current_year
-    current_date
     dates
-    dates3
-    dates_tr
-    dates_tr2
     fee_table
-    firstprog_nextmonth
-    firstprog_prevmonth
-    fname
-    leader_bio
     leader_names
-    month_calendar
-    nextprog
-    picture
-    prevprog
-    prog_dates_style
     title1
-    title1_barnacles
     title2
-    title2_barnacles
-    webdesc_plus
-    weburl
 /;
 
 sub index : Private {

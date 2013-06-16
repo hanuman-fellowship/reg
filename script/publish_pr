@@ -12,6 +12,7 @@ use Util qw/
     slurp
     housing_types
 /;
+use Template;
 use FindBin;
 chdir "$FindBin::Bin/..";
 
@@ -37,6 +38,10 @@ while (my ($the_key, $value) = $sth->fetchrow_array()) {
 #
 # the personal retreat template is fixed - 'personal.html'
 # it has only 3 tags to fill in: fee_table, current_date, current_year.
+# the above is not quite true anymore.   no more 'current_date' or 'current_year'.
+# the template could be personal_getaway.html and
+# it also has these tags: disc_pct, start_month, end_month.
+# fee_table is in both.
 #
 my $html = slurp("root/static/templates/web/$string{personal_template}.html");
 my $today = today();
@@ -142,18 +147,23 @@ my $start_month = date($string{disc_pr_start})->format("%B");
 my $end_month   = date($string{disc_pr_end})->format("%B");
 my $disc_pct    = $string{disc_pr};
 
-# should be using Template::Toolkit!
-$html =~ s{<!-- T disc_pct -->}
-          {$disc_pct}g;     # note the g
-$html =~ s{<!-- T start_month -->}
-          {$start_month};
-$html =~ s{<!-- T end_month -->}
-          {$end_month};
-$html =~ s{<!-- T fee_table -->}
-          {$fee_table};
+
+my $tt = Template->new();
+my $out_html;
+$tt->process(
+    \$html,
+    {
+        fee_table   => $fee_table,
+        disc_pct    => $disc_pct,
+        start_month => $start_month,
+        end_month   => $end_month,
+    },
+    \$out_html,
+) or die "error in processing template: "
+         . $tt->error();
 
 open my $ind, ">", "index.html" or die "no index.html: $!\n";
-print {$ind} $html;
+print {$ind} $out_html;
 close $ind;
 
 #

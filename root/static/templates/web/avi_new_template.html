@@ -10,9 +10,9 @@ $sidebar ='template';//defines which sidebar to use
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" />
 
-<TITLE><!--T title1 --> <!--T title2 --></TITLE>
+<TITLE>[% program.title1 %] [% program.title2 %]</TITLE>
 
-<META NAME="keywords" CONTENT="<!--T leader_names -->, <!--T title1 -->, <!--T title2 -->">
+<META NAME="keywords" CONTENT="[% program.leader_names %], [% program.title1 %], [% program.title2 %]">
 <LINK HREF="/styles/reset.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/layout.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/header.css" REL="stylesheet" TYPE="text/css" />
@@ -50,20 +50,20 @@ $sidebar ='template';//defines which sidebar to use
         <DIV ID="mainWrapper">
             <DIV ID="sidebar1"><DIV CLASS="sidebarContainer"><DIV CLASS="sidebarTop"><DIV></DIV></DIV>
 	<DIV CLASS="sidebarContent" STYLE="margin-right:auto;margin-left:auto;width:170px;">
-        <DIV><!--T picture --></DIV>
+        <DIV>[% program.picture %]</DIV>
                 
 
   </DIV><DIV CLASS=sidebarBottom><DIV></DIV></DIV></DIV>
   </DIV>
       
-            <DIV ID="contentHeader" CLASS="p<!--T id-->"><!-- put 650 px width image here or leave &nbsp; if no header image-->
+            <DIV ID="contentHeader" CLASS="p[% program.id %]"><!-- put 650 px width image here or leave &nbsp; if no header image-->
 
 
                 <DIV CLASS="ptop">
-                    <H1 CLASS="ptitle"><!--T title1 --></H1>
-                    <H2 CLASS="psubtitle"><!--T title2 --></H2>
-                    <P CLASS="pdates"><!--T dates --></P>
-                    <SPAN><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?id=<!--T id -->&dir=<!--T unlinked_dir -->"><IMG SRC="/Gif/register_button.gif" ALT="Register for this program" BORDER="0"></A></SPAN>
+                    <H1 CLASS="ptitle">[% program.program.title1 %]</H1>
+                    <H2 CLASS="psubtitle">[% program.title2 %]</H2>
+                    <P CLASS="pdates">[% program.dates %]</P>
+                    <SPAN><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG SRC="/Gif/register_button.gif" ALT="Register for this program" BORDER="0"></A></SPAN>
                 
                 </DIV>
                 
@@ -77,8 +77,8 @@ $sidebar ='template';//defines which sidebar to use
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PROGRAM DESCRIPTION</SPAN><SPAN STYLE="float:right;">&nbsp;</SPAN></DIV>
                 
                 <DIV CLASS="pdesc">
-                    <!--T webdesc_plus -->
-                    <!--T weburl -->
+                    [% program.webdesc_plus %]
+                    [% program.weburl %]
                 </DIV>
 
                 
@@ -90,9 +90,9 @@ $sidebar ='template';//defines which sidebar to use
 
                     <CENTER>
                         <UL>
-                            <!--T fee_table -->
+                            [% program.fee_table %]
                         </UL>
-                    <P><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?&id=<!--T id -->&dir=<!--T unlinked_dir -->"><IMG SRC="/Gif/register_button.gif" STYLE="padding-top:25px;" ALT="Register for this program" BORDER="0"></A></P>
+                    <P><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?&id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG SRC="/Gif/register_button.gif" STYLE="padding-top:25px;" ALT="Register for this program" BORDER="0"></A></P>
                     </CENTER>
                 </DIV>
                 
@@ -100,7 +100,7 @@ $sidebar ='template';//defines which sidebar to use
 
                 <DIV CLASS="pnotes">
                     <UL>
-						<LI><!-- T cancellation_policy --></LI>
+						<LI>[% program.cancellation_policy %]</LI>
 						<LI>Mount Madonna Center program registration begins at 4:00 pm.</LI>
 						<LI>Dinner is served from 5:30-6:30 on Friday and 5:00-6:00 on other days.</LI>
 						<LI>If you will be arriving late, please ask us to save a dinner for you.</LI>
