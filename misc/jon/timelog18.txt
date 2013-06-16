@@ -289,7 +289,6 @@ Jun 12 3:45-6:10, 2:00-2:10
 Jun 14 4:00-5:15
     responding to email queries
     fixing program Lists re: email, inactive
-Jun 15 12:30-2:30, 10:40-
+Jun 15 12:30-2:30, 10:40-11:30
     converting program template to TT, dealing with exceptions
         for fee_table, dates, title1
-    leader update undef?  popups? (obsolete?)

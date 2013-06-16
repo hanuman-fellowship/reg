@@ -692,9 +692,10 @@ sub prevprog {
 # what about clicking on the pic for a large one?
 # open in new window easily closed, sized just right.
 # have little note saying "click to enlarge"?
-#
-# this routine can be uncommented to generate a
+# yes, the above used to work okay.   but we removed it.
+# there are lines below that can be uncommented to generate a
 # popup enlargement.  when we have better pictures, that is.
+# take a look at sub gen_popup as well.
 #
 sub picture {
     my ($self) = @_;
@@ -820,6 +821,7 @@ sub gen_popup {
     open my $out, ">", $fname or die "cannot create $fname: $!\n";
     my $copy = slurp("popup");
     # used to have http://www.mountmadonna.org/staging/ in front
+    # this is not right - need to rework using Template Toolkit.
     $copy =~ s{<!--\s*T\s+bigpic\s*-->}{<img src="pics/$pic" width=$w height=$h border=0>};
     print {$out} $copy;
     close $out;
