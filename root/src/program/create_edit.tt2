@@ -384,6 +384,25 @@ $cat_opts
 </tr>
 
 <tr>
+<th align=right valign=top>Web Documents</th>
+<td colspan=2>
+    <table cellpadding=5>
+    [% IF program.documents %]
+        [% FOR d IN program.documents %]
+            <tr>
+            <td>$d.title</td>
+            </tr>
+        [% END %]
+    [% END %]
+    <tr>
+    <td><b>Title</b> <input type=text name=doc_title></td>
+    <td><input type=file name=new_web_doc></td>
+    </tr>
+    </table>
+</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Web Page<br>Template</th>
 <td valign=top>
 <select name=ptemplate>

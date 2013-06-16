@@ -82,6 +82,7 @@ my @classes = qw/
     RequestedMMIPayment
 
     Organization
+    ProgramDoc
 /;
 
 __PACKAGE__->load_classes({

@@ -40,7 +40,6 @@ create table program (
     -- for regi:
     school      integer,
     level       text,
-
     max         text,
     notify_on_reg text,
     summary_id  integer,
@@ -157,4 +156,11 @@ create table confnote (
     id integer primary key autoincrement,
     abbr      text,
     expansion text
+);
+drop table if exists program_doc;
+create table program_doc (
+    id integer primary key autoincrement,
+    program_id integer not null,
+    title     text,
+    suffix    text
 );

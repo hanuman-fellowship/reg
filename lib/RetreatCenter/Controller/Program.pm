@@ -472,6 +472,8 @@ sub create_do : Local {
         });
         $P{summary_id} = $sum->id();
     }
+    delete $P{doc_title};       # so they aren't referenced below
+    delete $P{new_web_doc};
 
     # now we can create the program itself
     #
@@ -954,6 +956,19 @@ sub update_do : Local {
         resize('p', $id);
         $P{image} = "yes";
     }
+    if (my $doc_upload = $c->request->upload('new_web_doc')) {
+        my ($suffix) = $doc_upload->filename =~ m{ [.] (\w+) \z }xms;
+        my $pdoc = model($c, 'ProgramDoc')->create({
+            program_id => $id,
+            title      => $P{doc_title},
+            suffix     => $suffix,
+        });
+        $doc_upload->copy_to("root/static/images/pdoc"
+                           . $pdoc->id()
+                           . ".$suffix");
+    }
+    delete $P{doc_title};       # so they aren't referenced below
+    delete $P{new_web_doc};
     my $p = model($c, 'Program')->find($id);
     $P{max} ||= 0;
     if (   $p->sdate       ne $P{sdate}
@@ -1216,7 +1231,7 @@ sub del_image : Local {
         image => "",
     });
     unlink <root/static/images/p*-$id.jpg>;
-    $c->response->redirect($c->uri_for("/program/view/$id/1"));
+    $c->response->redirect($c->uri_for("/program/view/$id/4"));
 }
 
 sub access_denied : Private {
@@ -1229,7 +1244,6 @@ sub access_denied : Private {
 }
 
 my @programs;
-my %except;
 
 sub _pub_err {
     my ($c, $msg, $chdir) = @_;
@@ -1246,7 +1260,7 @@ sub publish : Local {
     my ($self, $c) = @_;
 
     # clear the arena
-    system("rm -rf gen_files; mkdir gen_files; mkdir gen_files/pics");
+    system("rm -rf gen_files; mkdir gen_files; mkdir gen_files/pics; mkdir gen_files/docs");
 
     # and make sure we have initialized %string.
     Global->init($c);
@@ -1273,41 +1287,35 @@ sub publish : Local {
     gen_month_calendars($c);
     gen_progtable();
 
-    #
-    # get the exceptions
-    #
-    %except = ();       # clear any existing ones
-                    # we may have deleted an exception
-                    # between publishings ...
-    for my $e (model($c, 'Exception')->all()) {
-        $except{$e->prog_id}{$e->tag} = expand($e->value);
-    }
-
     # 
     # generate each of the program pages
     #
     # a side effect will be to copy the pictures of
-    # the leaders or the program picture
-    # to the holding area.
+    # the leaders or the program picture to the holding area.
+    # (see RetreatCenterDB::Program->picture)
+    #
+    # the docs, if any, we copy ourselves here.
     #
     my @unlinked;
-    my $tag_regexp = '<!--\s*T\s+(\w+)\s*-->';
+    my $tt = Template->new();
     PROGRAM:
     for my $p (@programs) {
         next PROGRAM if $p->school != 0;    # skip MMI standalone courses
                 # not sure why future_programs sends along
                 # MMI programs if we're going to ignore them...
-                # we do include them in the prog_table for some reason
+                # we do include them in the prog_table for some reason.
                 # see mmi_publish.
         my $fname = $p->fname();
-        open my $out, ">", "gen_files/$fname"
-            or return _pub_err($c, "cannot create $fname: $!");
         my $copy = $p->template_src();
-        $copy =~ s{$tag_regexp}{
-            $except{$p->id}{$1} || $p->$1()
-        }xge;
-        print {$out} $copy;
-        close $out;
+        $tt->process(
+            \$copy,
+            { program => $p },
+            "gen_files/$fname",
+        );
+        for my $d ($p->documents) {
+            my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
+            copy("root/static/images/$pdoc", "gen_files/docs/$pdoc");
+        }
         if (! $p->linked) {
             push @unlinked, $p;
         }
@@ -1363,20 +1371,13 @@ sub publish : Local {
                 $cur_event_month = $smonth;
                 $cur_event_year = $syear;
             }
-            if ($rental) {
-                my $copy = $e_rentalRow;
-                $copy =~ s/$tag_regexp/
-                    $e->$1()        # no exceptions for rentals here - okay???
-                /xge;
-                $events .= $copy;
-            }
-            else {
-                my $copy = $e_progRow;
-                $copy =~ s/$tag_regexp/
-                    $except{$e->id}{$1} || $e->$1()
-                /xge;
-                $events .= $copy;
-            }
+            my $s;
+            $tt->process(
+                $rental? \$e_rentalRow: \$e_progRow,
+                { event => $e },
+                \$s,
+            );
+            $events .= $s;
         }
         else {
             if ($cur_prog_month != $smonth || $cur_prog_year != $syear) {
@@ -1385,11 +1386,13 @@ sub publish : Local {
                 $cur_prog_month = $smonth;
                 $cur_prog_year = $syear;
             }
-            my $copy = $progRow;
-            $copy =~ s/$tag_regexp/
-                $except{$e->id}{$1} || $e->$1()
-            /xge;
-            $programs .= $copy;
+            my $s;
+            $tt->process(
+                \$progRow,
+                { event => $e },
+                \$s,
+            );
+            $programs .= $s;
         }
     }
     #
@@ -1397,24 +1400,18 @@ sub publish : Local {
     # now to insert it in the templates and output
     # the .html files for the program and event lists.
     #
-    my $s;
-
-    open my $out, ">", "gen_files/events.html"
-        or return _pub_err($c, "cannot create events.html: $!");
-    $s = slurp "events";
-    $s =~ s/<!--\s*T\s+eventlist.*-->/$events/;
-    $s =~ s/$tag_regexp/ RetreatCenterDB::Program->$1() /xge;
-    print {$out} $s;
-    close $out;
-
-    undef $out;
-    open $out, ">", "gen_files/programs.html"
-        or return _pub_err($c, "cannot create programs.html: $!");
-    $s = slurp "programs";
-    $s =~ s/<!--\s*T\s+programlist.*-->/$programs/;
-    $s =~ s/$tag_regexp/ RetreatCenterDB::Program->$1() /xge;
-    print {$out} $s;
-    close $out;
+    my $event_template = slurp "events";
+    $tt->process(
+        \$event_template,
+        { eventlist => $events },
+        "gen_files/events.html",
+    );
+    my $program_template = slurp "programs";
+    $tt->process(
+        \$program_template,
+        { programlist => $programs },
+        "gen_files/programs.html",
+    );
 
     #
     # schmush around the unlinked programs
@@ -1473,18 +1470,23 @@ sub publish : Local {
     FILE:
     for my $f (<*>) {
         if (-d $f) {
-            next FILE if $f eq 'pics';
+            next FILE if $f eq 'pics' || $f eq 'docs';
             # an unlinked program directory
             $ftp->mkdir("../$f");
             for my $hf (<$f/*.html>) {
                 $ftp->put($hf, "../$hf")
                     or return _pub_err($c, "cannot put $hf to ../$hf", 1);
             }
-            $ftp->mkdir("../$f/pics");
             $ftp->binary();
+            $ftp->mkdir("../$f/pics");
             for my $p (<$f/pics/*>) {
                 $ftp->put($p, "../$p")
                     or return _pub_err($c, "cannot put $p to ../$p", 1);
+            }
+            $ftp->mkdir("../$f/docs");
+            for my $d (<$f/docs/*>) {
+                $ftp->put($d, "../$d")
+                    or return _pub_err($c, "cannot put $d to ../$d", 1);
             }
             $ftp->ascii();
             $ftp->put("$f/progtable", "../$f/progtable")
@@ -1565,6 +1567,22 @@ sub publish_pics : Local {
         if ($f =~ m{^[lp]b}) {      # skip the big ones for now
             next PIC;
         }
+        if (! $ftp->put($f)) {
+            chdir "../..";
+            return _pub_err($c, "cannot put $f", 1);
+        }
+    }
+    #
+    # this assumes docs/ is there...
+    #
+    $ftp->cwd("../docs")
+        or return _pub_err($c, "cannot cwd " . $ftp->message);
+    for my $f ($ftp->ls()) {
+        $ftp->delete($f);
+    }
+    $ftp->binary();
+    chdir "../docs";
+    for my $f (<*>) {
         if (! $ftp->put($f)) {
             chdir "../..";
             return _pub_err($c, "cannot put $f", 1);
@@ -1709,7 +1727,7 @@ EOH
                   $p->fname, "'>",
                   $p->title1, 
                   "</a><br><span class='subtitle'>",
-                  $except{$p->id}{title2} || $p->title2,
+                  $p->title2,
                   "</span></td></tr>";
     }
     # finish the prior calendar file, if any
@@ -2475,6 +2493,27 @@ sub cancel : Local {
         }
     }
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
+}
+
+sub del_doc : Local {
+    my ($self, $c, $program_id, $doc_id) = @_;
+
+    my ($prog_doc) = model($c, 'ProgramDoc')->search({
+        program_id => $program_id,
+        id         => $doc_id,
+    });
+    if ($prog_doc) {
+        $prog_doc->delete();
+        unlink "root/static/images/pdoc$doc_id." . $prog_doc->suffix();
+    }
+    else {
+        error($c,
+            "Could not find the document you requested.",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    $c->response->redirect($c->uri_for("/program/view/$program_id/4"));
 }
 
 1;

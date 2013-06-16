@@ -1,38 +1,38 @@
 <TR CLASS="prog_row_spacing">
 	<TD CLASS="event_dates">
-		<!--T dates_tr2 -->
+		[% event.dates_tr2 %] 
 	</TD>
 	<TD>
 		<DIV CLASS="event_titles">
-			<SPAN class="event_title1"><!--T title1 --></SPAN><BR />
-			<SPAN class="event_title2"><SPAN CLASS="event_subtitle"><!--T title2 --></SPAN></SPAN><BR />
+			<SPAN class="event_title1">[% event.title1 %]</SPAN><BR />
+			<SPAN class="event_title2"><SPAN CLASS="event_subtitle">[% event.title2 %]</SPAN></SPAN><BR />
 		</DIV>		   
 
 		<DIV CLASS="event_type">
-			<A HREF="#" ID="detail_show<!--T id-->" CLASS="show_hide_link<!--T id--> show_link">show details</A><A HREF="#" ID="detail_hide<!--T id-->" CLASS="show_hide_link<!--T id--> hide_link">hide details</A>
+			<A HREF="#" ID="detail_show[% event.id %]" CLASS="show_hide_link[% event.id %] show_link">show details</A><A HREF="#" ID="detail_hide[% event.id %]" CLASS="show_hide_link[% event.id %] hide_link">hide details</A>
 		</DIV>
 	</TD>
 </TR>
 		
 <TR>
 	<TD COLSPAN=2>
-		<DIV CLASS="event_details" ID="event_details<!--T id-->">
+		<DIV CLASS="event_details" ID="event_details[% event.id %]">
 			<SPAN CLASS="event_desc">
-				<!--T desc -->
+				[% event.desc %] 
 			</SPAN>
 			
-			<SPAN class="event_phone"><!--T phone_str --></SPAN><BR />
-			<SPAN class="event_website"><!--T weburl --></SPAN><BR />
-			<SPAN class="event_email"><!--T email_str --></SPAN><BR />
+			<SPAN class="event_phone">[% event.phone_str %]</SPAN><BR />
+			<SPAN class="event_website">[% event.weburl %]</SPAN><BR />
+			<SPAN class="event_email">[% event.email_str %]</SPAN><BR />
 		</DIV>
 	</TD>
 </TR>
 
 <SCRIPT TYPE="text/javascript"> 
-	$('.show_hide_link<!--T id-->').click(function() { 
-			$('#event_details<!--T id-->').toggle('fast');
-			$('#detail_show<!--T id-->').toggle('fast');
-			$('#detail_hide<!--T id-->').toggle('fast');
+	$('.show_hide_link[% event.id %]').click(function() { 
+			$('#event_details[% event.id %]').toggle('fast');
+			$('#detail_show[% event.id %]').toggle('fast');
+			$('#detail_hide[% event.id %]').toggle('fast');
 			return false;				
 	});
 </SCRIPT>

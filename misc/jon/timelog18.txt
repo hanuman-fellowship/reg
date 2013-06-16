@@ -270,3 +270,26 @@ Jun 6 11:25-11:45
     removing extra commuting day for MMI
 Jun 9 4:00-5:00
     doc for developers about adding a new column
+Jun 11 12:30-1:15
+    committing changes and notifying everyone
+Jun 11 11:00-12:00
+    investigating a misplaced online reg
+    responding to various emails
+    TODO:
+    need to keep a log that traces these files
+        from grab_new to online_done along with timestamps
+        and user names.
+    when generating a list from Lists on the program page
+        do not include inactive people.
+        the MMC/MMI sharing links do not apply.
+Jun 12 3:45-6:10, 2:00-2:10
+    multiple web documents - with titles, links on generated web page
+    eliminating webdesc method in Program.pm - ignored because
+    it is a column in the table.
+Jun 14 4:00-5:15
+    responding to email queries
+    fixing program Lists re: email, inactive
+Jun 15 12:30-2:30, 10:40-
+    converting program template to TT, dealing with exceptions
+        for fee_table, dates, title1
+    leader update undef?  popups? (obsolete?)

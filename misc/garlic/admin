@@ -42,9 +42,12 @@ if (param('live')) {
 	mkdir live
 	chmod 777 live
 	mkdir live/pics
+	mkdir live/docs
 	chmod 777 live/pics
+	chmod 777 live/docs
 	cp staging/*.html staging/progtable live
 	cp staging/pics/* live/pics
+	cp staging/docs/* live/docs
 
 	# no longer test mode so...
 	perl -p -i -e 's{reg1\\?test=1&}{reg1?}' live/*.html;

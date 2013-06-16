@@ -4497,6 +4497,7 @@ sub name_addr_do : Local {
     my $order = ($p_order eq 'name')? [qw/ person.last person.first /]
                 :                     [qw/ date_postmark time_postmark /];
     my $including = $c->request->params->{including} || "";
+    $containing = $c->request->params->{containing};
     my @cond = ();
     if ($including eq 'normal') {
         @cond = (
@@ -4510,8 +4511,9 @@ sub name_addr_do : Local {
     }
     my (@regs) = model($c, 'Registration')->search(
         {
-            program_id => $prog_id,
-            cancelled  => { '!=' => 'yes' },
+            program_id        => $prog_id,
+            cancelled         => { '!=' => 'yes' },
+            'person.inactive' => { '!=' => 'yes' },
             @cond,
         },
         {
@@ -4520,6 +4522,10 @@ sub name_addr_do : Local {
             prefetch => [qw/ person /],   
         }
     );
+    # ensure that each person has a non-blank email address
+    if ($containing eq 'email') {
+        @regs = grep { $_->person->email } @regs;
+    }
     #
     # eliminate duplicates (via allow_dup_regs like AVI or PRs)
     # not sure how to do the 'distinct' thing above in the SQL...
@@ -4543,7 +4549,6 @@ sub name_addr_do : Local {
 
     my $info_rows;
     my $mailto = "";
-    $containing = $c->request->params->{containing};
     if ($c->request->params->{format} eq 'linear') {
         $info_rows = "";
         for my $i (0 .. $#people) {

@@ -219,7 +219,8 @@ sub leader_table {
         my $name = $_->[0];
         my $id = $_->[1];
         my $assistant = ($_->[2])? " * ": "";
-        "<input type=checkbox name=lead$id $checked{$id}> $name$assistant"
+        my $checked = $checked{$id} || "";
+        "<input type=checkbox name=lead$id $checked> $name$assistant"
     }
     sort {
         $a->[0] cmp $b->[0]

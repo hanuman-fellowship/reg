@@ -108,6 +108,10 @@ __PACKAGE__->has_many(affil_program => 'RetreatCenterDB::AffilProgram',
 __PACKAGE__->many_to_many(affils => 'affil_program', 'affil',
                           { order_by => 'descrip' },
                          );
+# web documents
+__PACKAGE__->has_many(documents => 'RetreatCenterDB::ProgramDoc',
+                      'program_id');
+
 # registrations
 __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
                       'program_id');
@@ -459,10 +463,6 @@ sub prog_dates_style {
 sub webdesc_plus {
     my ($self) = @_;
     gptrim($self->webdesc) . expand_footnotes($self->footnotes);
-}
-sub webdesc {
-    my ($self) = @_;
-    gptrim($self->webdesc);
 }
 sub long_footnotes {
     my ($self) = @_;
