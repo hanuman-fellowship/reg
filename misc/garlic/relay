@@ -10,7 +10,7 @@ use CGI::Carp qw/fatalsToBrowser/;
 use File::Copy;
 
 use Mail::Sender;
-use lib 'lib';
+use lib 'mylib/lib/perl5';
 use Template;
 
 # form parameters to a hash
@@ -48,10 +48,6 @@ if (exists $P{x_req_mmi_id}) {
 if (! exists $P{x_pid}) {
     exit;       # must be a refund - silently ignore it
 }
-
-open my $jon, ">>", "relaylog";
-print {$jon} localtime() . " $P{x_fname} $P{x_lname} - $P{x_response_code}\n";
-close $jon;
 
 my $id = $P{x_trans_id};
 open my $out, ">", "temp$id"
@@ -130,6 +126,11 @@ my $dir = sprintf "trans_archive/$y-%02d", $m;
 mkdir $dir unless -d $dir;
 copy("transactions/$id", "$dir/$id");
 
+# log the event for tracking purposes
+open my $log, '>>', 'relay_log';
+print {$log} scalar(localtime), " $id, $P{x_fname} $P{x_lname}, $P{x_email}, $P{x_title}\n";
+close $log;
+
 my $message;
 Template->new()->process(
     'message.tt2',
@@ -145,14 +146,18 @@ fork and exit;
 # send an email with the info.
 #
 my $ms = Mail::Sender->new({
-    smtp => "localhost",
-    port => 25,
+    smtp    => 'mail.suecenter.org',
+    port    => 50,
+    auth    => 'LOGIN',
+    authid  => 'test@suecenter.org',
+    authpwd => 'ABCdef108',
 });
 if (! $ms) {
     die "no mail sender: ";
 }
 $ms->Open({
     to       => "$P{x_fname} $P{x_lname} <$P{x_email}>",
+    bcc => 'jon@suecenter.org, jayanti@mountmadonna.org, emily@mountmadonna.org, jeremy@mountmadonna.org',
     from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
     subject  => "Online registration for $P{x_title}",
     ctype    => "text/html",

@@ -237,6 +237,7 @@ mkdir $temple unless -d $temple;
 #
 # get transaction files from www.mountmadonna.org/cgi-bin/transactions
 #
+open my $log, '>>', 'grab_new_log';
 TRANSACTION:
 for my $f ($ftp->ls()) {
     if ($f eq '.' || $f eq '..') {
@@ -247,7 +248,7 @@ for my $f ($ftp->ls()) {
         next TRANSACTION;
     }
     $ids{$f} = 1;
-    my ($last, $first) = ("", "");
+    my ($last, $first, $title) = ("", "", "");
     if (open my $in, "<", "$online/$f") {
         LINE:
         while (my $line = <$in>) {
@@ -260,12 +261,17 @@ for my $f ($ftp->ls()) {
             elsif ($line =~ m{x_lname => (.*)}) {
                 $last = $1;
             }
+            elsif ($line =~ m{x_title => (.*)}) {
+                $title = $1;
+            }
         }
         close $in;
     }
     $Msg .= "ftp: $f - $last, $first\n";
+    print {$log} scalar(localtime), " $f, $first $last, $title\n";
     $ftp->delete($f);
 }
+close $log;
 
 #
 # get (and delete) any newly modified rental grid files

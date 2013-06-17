@@ -372,8 +372,10 @@ sub get_online : Local {
         }
     }
     close $in;
-    $P{request} =~ s{\xa0}{ }xmsg;      # space out stray non-ASCII chars
-                                        # don't know the source
+    if ($P{request}) {
+        $P{request} =~ s{\xa0}{ }xmsg;      # space out stray non-ASCII chars
+                                            # don't know the source
+    }
 
     $P{green_amount} ||= 0;     # in case not set at all
 
@@ -383,6 +385,8 @@ sub get_online : Local {
     # verify that we have a pid, first, and last. and an amount.
     # ...???
 
+    open my $log, '>>', 'online_log';
+    print {$log} scalar(localtime), " $fname $P{fname} $P{lname}, ";
     #
     # first, find the program
     # without it we can do nothing!
@@ -423,6 +427,8 @@ EOH
         );
         return;
     }
+    print {$log} $pr->name, ", ", $c->user->username(), "\n";
+    close $log;
 
     #
     # find or create a person object.
@@ -684,8 +690,10 @@ sub _rest_of_reg {
     for my $a ($p->affils) {
         if ($a->id() == $alert) {
             my $s = $p->comment;
-            $s =~ s{\r?\n}{\\n}g;
-            $s =~ s{"}{\\"}g;
+            if ($s) {
+                $s =~ s{\r?\n}{\\n}g;
+                $s =~ s{"}{\\"}g;
+            }
             stash($c, alert_comment => $s);
             last;
         }
@@ -1245,6 +1253,13 @@ sub create_do : Local {
             mkdir $dir unless -d $dir;
             rename "root/static/online/$P{fname}",
                    "$dir/$P{fname}";
+            open my $log, '>>', 'online_log';
+            my $person = $reg->person;
+            print {$log} scalar(localtime), " $P{fname} ",
+                         $person->first, " ", $person->last, ", ",
+                         $pr->name, ", ",
+                         $c->user->username, " moved\n";
+            close $log;
         }
     }
 
