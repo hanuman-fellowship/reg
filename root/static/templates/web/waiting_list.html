@@ -212,9 +212,18 @@ Economy dorm and commuting options only.</P>
 			    <p><img src="/Gif/section_desc.gif" border="0"></P>
 	
 				  [% program.webdesc_plus %]
+                  [% IF program.documents %]
+                      <ul class=doc_ul>
+                      [% FOR d IN  program.documents %]
+                          <li><a href="docs/pdoc[% d.id %].[% d.suffix %]">[% d.title %]</a>
+                      [% END %]
+                  </ul>
+                  [% END %]
 			      [% program.weburl %]
-				  <p><img src="/Gif/section_bio.gif" border="0" usemap="#section_bioMap"></P>
-			      [% program.leader_bio %]
+                  [% IF program.leader_bio %]
+                      <p><img src="/Gif/section_bio.gif" border="0" usemap="#section_bioMap"></P>
+                      [% program.leader_bio %]
+                  [% END %]
 				  <p><img src="/Gif/section_reg.gif" border="0"usemap="#section_regMap"></P>
 			     <CENTER><ul>[% program.fee_table %]</ul>
 <p class="pdates"> REGISTRATION

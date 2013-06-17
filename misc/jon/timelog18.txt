@@ -292,5 +292,8 @@ Jun 14 4:00-5:15
 Jun 15 12:30-2:30, 10:40-11:30
     converting program template to TT, dealing with exceptions
         for fee_table, dates, title1
-Jun 16 12:35-
+Jun 16 12:35-3:00
+    editing further template files
     exceptions - just a few
+Jun 17 9:20-
+    check_doc, gen_doc after adding program documents.

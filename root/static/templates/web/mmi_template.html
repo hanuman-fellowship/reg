@@ -133,6 +133,13 @@ border=0>
                               alt="Register for this program" 
 src="/Gif/register_button.png" width=207 height=32 border=0></A></P>
 			      [% program.webdesc_plus %]
+                  [% IF program.documents %]
+                      <ul class=doc_ul>
+                      [% FOR d IN  program.documents %]
+                          <li><a href="docs/pdoc[% d.id %].[% d.suffix %]">[% d.title %]</a>
+                      [% END %]
+                  </ul>
+                  [% END %]
 			      [% program.weburl %]
 			      [% program.leader_bio %]
 			     <ul>[% program.fee_table %]</ul>
