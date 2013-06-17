@@ -3350,9 +3350,9 @@ sub lodge : Local {
     my $low_max =  $max ==  7? 4
                   :$max == 20? 8
                   :            $max;
-    my $cabin  = $reg->cabin_room() eq 'cabin';
-    my @kids   = ($reg->kids() =~ m{\d})? (cur => { '>', 0 })
-                 :                        ();
+    my $cabin  = $reg->cabin_room() && $reg->cabin_room() eq 'cabin';
+    my @kids   = ($reg->kids() && $reg->kids() =~ m{\d})? (cur => { '>', 0 })
+                 :                                        ();
 
     my @h_opts = ();
     my $n = 0;
@@ -3646,8 +3646,10 @@ sub lodge : Local {
         $h_opts[0] =~ s{>}{ selected>};
     }
     # include kids and housing prefs
-    if (my @ages = $reg->kids() =~ m{(\d+)}g) {
-        stash($c, kids => " with child" . ((@ages > 1)? "ren":""));
+    if ($reg->kids()) {
+        if (my @ages = $reg->kids() =~ m{(\d+)}g) {
+            stash($c, kids => " with child" . ((@ages > 1)? "ren":""));
+        }
     }
     stash($c, house_prefs => "Housing choices: "
                            . _htrans($reg->pref1())
@@ -3900,7 +3902,7 @@ sub lodge_do : Local {
     # we have passed all the hurdles.
     #
     my @note_opt = ();
-    if ($reg->confnote() ne $newnote) {
+    if ($reg->confnote() && $reg->confnote() ne $newnote) {
         @note_opt = (
             confnote    => $newnote,
             letter_sent => '',

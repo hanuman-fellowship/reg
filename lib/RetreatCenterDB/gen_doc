@@ -171,7 +171,7 @@ EOH
 
 # now generate the top level page
 my $nfiles = @files;
-my $npercol = int($nfiles/4 + 1);
+my $npercol = int($nfiles/4);
 open my $out, '>', '../../root/static/help/schema/index.html'
     or die "no schema.html: $!\n";
 print {$out} <<'EOH';

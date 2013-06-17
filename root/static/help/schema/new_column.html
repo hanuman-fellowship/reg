@@ -19,8 +19,8 @@ recreate the 'program' table from scratch (unlikely):
 <pre class=code>
 % cd $HOME/Reg/migration
 % vi mkprog
-  and add the above alter table line at the bottom
-  of the 'create table program'.
+  and add: status text not null default ''
+  at the bottom of the 'create table program ('.
 </pre>
 <li>Update the appropriate Catalyst Model class:
 <pre class=code>
@@ -47,8 +47,8 @@ the second and subsequent lines should be indented with 4 spaces.
 the new schema doc:
 <pre class=code>
 % cd $HOME/Reg/lib/RetreatCenterDB
-% check_doc
-% gen_doc
+% ./check_doc
+% ./gen_doc
 </pre>
 <p>
 <li>If the new column is a foreign key to another table

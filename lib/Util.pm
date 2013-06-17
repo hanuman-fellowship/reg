@@ -1193,6 +1193,7 @@ sub gptrim {
     my ($s) = @_;
 
     $s =~ s{<p>&nbsp;</p>\s*}{}g;
+    $s =~ s{<p><br mce_bogus="1"></p>}{}g;
     $s;
 }
 

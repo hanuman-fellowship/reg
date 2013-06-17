@@ -402,8 +402,10 @@ sub leader_names {
 sub dates {
     my ($self) = @_;
 
-    if (my $value = $self->_exception_for('dates')) {
-        return $value;
+    if (ref($self) =~ /Program/) {
+        if (my $value = $self->_exception_for('dates')) {
+            return $value;
+        }
     }
     my $sd = $self->sdate_obj;
     my $ed = $self->edate_obj;
@@ -674,7 +676,10 @@ sub leader_bio {
     my ($self) = @_;
     my $bio = "";
     for my $l ($self->leaders) {
-        $bio .= "<p>" . gptrim($l->biography);
+        my $s = gptrim($l->biography);
+        if ($s) {
+            $bio .= "<p>" . $s;
+        }
         if (my $email = $l->public_email) {
             my $first = $l->person->first;
             my $last  = $l->person->last;

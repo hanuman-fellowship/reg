@@ -290,7 +290,7 @@ Web
 
 <tr>
 <th align=right valign=top>Leaders</th>
-<td valign=top align=left colspan=3 width=300>
+<td valign=top align=left colspan=5 width=300>
 $leaders_house
 [% IF prog_admin %]
     <a href=/program/leader_update/$id>Update</a>

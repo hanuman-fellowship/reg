@@ -3,7 +3,7 @@
 [% program.title %]
 <p class=p2>
 <form action="/program/leader_update_do/[% program.id %]">
-<input type=submit value="Submit">
+<input type=submit id=sub value="Submit">
 <span style="margin-left: 4in">* means assistant</span><br>
 <p class=p2>
 <table>

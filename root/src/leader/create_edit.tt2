@@ -29,7 +29,7 @@
 <tr>
 <th align=right valign=top>Assistant</th>
 <td><input type=checkbox value=yes name=assistant [% check_assistant %]>
-<input style="margin-left: 2in" type=submit value="Submit"></td>
+<input style="margin-left: 2in" type=submit id=sub value="Submit"></td>
 </tr>
 
 <tr>
