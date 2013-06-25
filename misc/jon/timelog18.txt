@@ -295,5 +295,11 @@ Jun 15 12:30-2:30, 10:40-11:30
 Jun 16 12:35-3:00
     editing further template files
     exceptions - just a few
-Jun 17 9:20-
-    check_doc, gen_doc after adding program documents.
+Jun 17 9:20-2:00
+    check_doc, gen_doc after adding program documents table.
+    talking with Jamal about the changes
+    pushing all to Kali, dealing with aftermath
+Jun 19 1:00-5:00
+    consultation with Genevieve, Jayanti, Emily, Jeremy
+Jun 24 11:00-
+    fixing issues introduced with program uploaded docs

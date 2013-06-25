@@ -93,6 +93,7 @@ sub raw_pipe {
         share_mailings
     /) {
         $s .= $self->$f() . '|';
+        # need to protect against undefs here
     }
     chop $s;
     $s .= "\n";

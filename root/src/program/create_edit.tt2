@@ -384,6 +384,17 @@ $cat_opts
 </tr>
 
 <tr>
+<th align=right valign=top>Web Page<br>Template</th>
+<td valign=top>
+<select name=ptemplate>
+[% FOREACH t IN template_opts %]
+    <option value='[% t %]'[% IF t == program.ptemplate %] selected[% END %]>[% t %]</option>
+[% END %]
+</select>
+</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Web Documents</th>
 <td colspan=2>
     <table cellpadding=5>
@@ -399,17 +410,6 @@ $cat_opts
     <td><input type=file name=new_web_doc></td>
     </tr>
     </table>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Page<br>Template</th>
-<td valign=top>
-<select name=ptemplate>
-[% FOREACH t IN template_opts %]
-    <option value='[% t %]'[% IF t == program.ptemplate %] selected[% END %]>[% t %]</option>
-[% END %]
-</select>
 </td>
 </tr>
 

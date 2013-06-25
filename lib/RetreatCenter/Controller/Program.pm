@@ -69,11 +69,11 @@ my %mmi_levels = (
 
 sub _cat_opts {
     my ($c, $default) = @_;
-    my $cat_opts = "";
+    my $cat_opts = '';
     for my $cat (model($c, 'Category')->all()) {
         my $index = $cat->id();
         $cat_opts .= "<option value=$index "
-                  .  ($index == $default? "selected": "")
+                  .  ($index == $default? "selected": '')
                   .  ">"
                   .  $cat->name()
                   . "\n"
@@ -109,10 +109,10 @@ sub create : Local {
         );
     }
     Global->init($c);
-    my $sch_opts = "";
+    my $sch_opts = '';
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
-                  .  ($i == 0? "selected": "")
+                  .  ($i == 0? "selected": '')
                   .  ">$sch_opts[$i]\n"
                   ;
     }
@@ -221,9 +221,9 @@ sub _get_data {
         # force this. for now...
         # MMI may have web pages someday?
         # yes.  today.
-    #    $P{webready} = "";
-    #    $P{linked} = "";
-    #    $P{unlinked_dir} = "";
+    #    $P{webready} = '';
+    #    $P{linked} = '';
+    #    $P{unlinked_dir} = '';
     #}
     # since unchecked boxes are not sent...
     for my $f (qw/
@@ -241,7 +241,7 @@ sub _get_data {
         not_on_calendar
         tub_swim
     /) {
-        $P{$f} = "" unless exists $P{$f};
+        $P{$f} = '' unless exists $P{$f};
     }
     $P{url} =~ s{^\s*http://}{};
 
@@ -430,7 +430,14 @@ sub create_do : Local {
 
     $P{reg_count} = 0;       # otherwise it will not increment
 
-    my $upload = $c->request->upload('image');
+    my $upload     = $c->request->upload('image');
+    if ($upload) {
+        $P{image} = 'yes';
+    }
+    my $doc_upload = $c->request->upload('new_web_doc');
+    my $doc_title = $P{doc_title};
+    delete $P{doc_title};       # so they aren't referenced below
+    delete $P{new_web_doc};
 
     if (! $P{summary_id}) {
         # we do not have a summary already from
@@ -468,19 +475,16 @@ sub create_do : Local {
             who_updated  => $c->user->obj->id,
             time_updated => get_time()->t24(),
             gate_code => '',
-            needs_verification => "yes",
+            needs_verification => 'yes',
         });
         $P{summary_id} = $sum->id();
     }
-    delete $P{doc_title};       # so they aren't referenced below
-    delete $P{new_web_doc};
-
     # now we can create the program itself
     #
     my $p = model($c, 'Program')->create({
-        image      => $upload? "yes": "",
-        lunches    => "",
-        refresh_days => "",
+        image      => $upload? 'yes': '',
+        lunches    => '',
+        refresh_days => '',
         rental_id  => 0,        # overridden by hybrid
         %P,         # this includes rental_id for a possible parallel rental
                     # and also a summary_id for the parallel rental
@@ -498,11 +502,21 @@ sub create_do : Local {
             program_id => $id,
         });
     }
-
     if ($upload) {
         $upload->copy_to("root/static/images/po-$id.jpg");
         Global->init($c);
         resize('p', $id);
+    }
+    if ($doc_upload) {
+        my ($suffix) = $doc_upload->filename =~ m{ [.] (\w+) \z }xms;
+        my $pdoc = model($c, 'ProgramDoc')->create({
+            program_id => $id,
+            title      => $doc_title,
+            suffix     => $suffix,
+        });
+        $doc_upload->copy_to("root/static/images/pdoc"
+                           . $pdoc->id()
+                           . ".$suffix");
     }
     _finalize_program_creation($c, $id);
 }
@@ -601,7 +615,7 @@ sub view : Local {
         my $edate2 = $p->edate_obj() + $extra;
         stash($c,
             plus => "<b>Plus</b> $extra day"
-                  . ($extra > 1? "s": "")
+                  . ($extra > 1? "s": '')
                   . " <b>To</b> " . $edate2
                   . " <span class=dow>"
                   . $edate2->format("%a")
@@ -777,7 +791,7 @@ sub list : Local {
     stash($c,
         pg_title => "Programs",
         online   => scalar(@files),
-        pr_pat   => "",
+        pr_pat   => '',
         template => "program/list.tt2",
     );
 }
@@ -859,18 +873,18 @@ sub update : Local {
 
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
-    my $sch_opts = "";
+    my $sch_opts = '';
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
-                  .  ($i == $p->school()? "selected": "")
+                  .  ($i == $p->school()? "selected": '')
                   .  ">$sch_opts[$i]\n"
                   ;
     }
     # order matters here
-    my $level_opts = "";
+    my $level_opts = '';
     for my $l (qw/ D C M S A /) {
         $level_opts .= "<option value=$l "
-                    .  ($l eq $p->level()? "selected": "")
+                    .  ($l eq $p->level()? "selected": '')
                     .  ">$mmi_levels{$l}\n"
                     ;
     }
@@ -882,12 +896,12 @@ sub update : Local {
         not_on_calendar tub_swim
     /) {
         stash($c,
-            "check_$w" => ($p->$w)? "checked": ""
+            "check_$w" => ($p->$w)? "checked": ''
         );
     }
     for my $w (qw/ sdate edate /) {
         stash($c,
-            $w => date($p->$w)->format("%D") || ""
+            $w => date($p->$w)->format("%D") || ''
         );
     }
 
@@ -954,7 +968,7 @@ sub update_do : Local {
         $upload->copy_to("root/static/images/po-$id.jpg");
         Global->init($c);
         resize('p', $id);
-        $P{image} = "yes";
+        $P{image} = 'yes';
     }
     if (my $doc_upload = $c->request->upload('new_web_doc')) {
         my ($suffix) = $doc_upload->filename =~ m{ [.] (\w+) \z }xms;
@@ -1176,23 +1190,29 @@ sub delete : Local {
 
     my $p = model($c, 'Program')->find($id);
 
-    if (my (@regs) = $p->registrations()) {
+    if (my @regs = $p->registrations()) {
         my $n = @regs;
-        my $pl = $n == 1? "": "s";
+        my $pl = $n == 1? '': "s";
         error($c,
-            'You must first delete the '
-                . scalar(@regs)
-                . " registration$pl for this program.",
+            "You must first delete the $n registration$pl for this program.",
             'gen_error.tt2',
         );
         return;
     }
-    if (my (@bookings) = model($c, 'Booking')->search({
-                             program_id => $id,
-                         })
-    ) {
+    if (my @bookings = $p->bookings()) {
+        my $n = @bookings;
+        my $pl = $n == 1? '': "s";
         error($c,
-            'You must first delete any meeting places for this program.',
+            "You must first delete the $n meeting place$pl for this program.",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    if (my @docs = $p->documents()) {
+        my $n = @docs;
+        my $pl = $n == 1? '': "s";
+        error($c,
+            "You must first delete the $n document$pl attached to this program.",
             'gen_error.tt2',
         );
         return;
@@ -1228,7 +1248,7 @@ sub del_image : Local {
 
     my $p = $c->stash->{program} = model($c, 'Program')->find($id);
     $p->update({
-        image => "",
+        image => '',
     });
     unlink <root/static/images/p*-$id.jpg>;
     $c->response->redirect($c->uri_for("/program/view/$id/4"));
@@ -1334,8 +1354,8 @@ sub publish : Local {
     # It's okay to require that MMI standalone courses have linked checked.
     # Yes?
     #
-    my $events = "";
-    my $programs = "";
+    my $events = '';
+    my $programs = '';
 
     my $progRow     = slurp "progRow";
     my $e_progRow   = slurp "e_progRow";
@@ -1809,7 +1829,7 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
     #
     my @leaders = $p->leaders();
     my $nleaders = @leaders;
-    my ($pic1, $pic2) = ("", "");
+    my ($pic1, $pic2) = ('', '');
     my $url = "http://www.mountmadonna.org/live/pics";
     if ($nleaders >= 1 && $leaders[0]->image) {
         $pic1 = "$url/lth-" . $leaders[0]->id() . ".jpg";
@@ -1819,11 +1839,11 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
     }
     if ($pic2 and ! $pic1) {
         $pic1 = $pic2;
-        $pic2 = "";
+        $pic2 = '';
     }
     if ($p->image()) {  # program pic, if present, overrides the leader pics
         $pic1 = "$url/pth-" . $p->id() . ".jpg";
-        $pic2 = "";
+        $pic2 = '';
     }
     print {$progt} "    image1 => '$pic1',\n";
     print {$progt} "    image2 => '$pic2',\n";
@@ -1869,7 +1889,7 @@ sub update_lunch_do : Local {
     %P = %{ $c->request->params() };
     my $p = model($c, 'Program')->find($id);
     my $ndays = $p->edate_obj - $p->sdate_obj + 1 + $p->extradays;
-    my $l = "";
+    my $l = '';
     for my $n (0 .. $ndays-1) {
         $l .= (exists $P{"d$n"})? "1": "0";
     }
@@ -1916,12 +1936,12 @@ sub duplicate : Local {
     #
     $orig_p->set_columns({
         id      => undef,
-        sdate   => "",
-        edate   => "",
-        lunches => "",
-        refresh_days => "",
-        glnum   => "",
-        image   => "",      # not yet
+        sdate   => '',
+        edate   => '',
+        lunches => '',
+        refresh_days => '',
+        glnum   => '',
+        image   => '',      # not yet
         rental_id => 0,
         webready => 0,
     });
@@ -1932,20 +1952,20 @@ sub duplicate : Local {
         not_on_calendar tub_swim
     /) {
         stash($c,
-            "check_$w" => ($orig_p->$w)? "checked": ""
+            "check_$w" => ($orig_p->$w)? "checked": ''
         );
     }
-    my $sch_opts = "";
+    my $sch_opts = '';
     for my $i (0 .. $#sch_opts) {
         $sch_opts .= "<option value=$i "
-                  .  ($i == $orig_p->school()? "selected": "")
+                  .  ($i == $orig_p->school()? "selected": '')
                   .  ">$sch_opts[$i]\n"
                   ;
     }
-    my $level_opts = "";
+    my $level_opts = '';
     for my $l (qw/ D C M S A /) {
         $level_opts .= "<option value=$l "
-                    .  ($l eq $orig_p->level()? "selected": "")
+                    .  ($l eq $orig_p->level()? "selected": '')
                     .  ">$mmi_levels{$l}\n"
                     ;
     }
@@ -1971,6 +1991,7 @@ sub duplicate : Local {
         cat_opts    => _cat_opts($c, $orig_p->category_id()),
         school_opts => $sch_opts,
         level_opts  => $level_opts,
+        show_level   => $orig_p->school() == 0? "hidden": "visible",
         section     => 1,   # Web (a required field)
         edit_gl     => 0,
         program     => $orig_p,      # with modifed columns
@@ -1998,7 +2019,14 @@ sub duplicate_do : Local {
     my ($self, $c, $old_id) = @_;
     _get_data($c);
     return if @mess;
+
     delete $P{section};      # irrelevant
+    my $doc_upload = $c->request->upload('new_web_doc');
+    my $doc_title = $P{doc_title};
+    delete $P{doc_title};       # so they aren't referenced below
+    delete $P{new_web_doc};
+    # documents from the original program are not copied forward.
+    # hope this is okay.
 
     if ($P{name} =~ m{ personal \s+ retreat }xmsi) {
         $P{title} = $P{name};
@@ -2023,7 +2051,7 @@ sub duplicate_do : Local {
         who_updated  => $c->user->obj->id,
         time_updated => get_time()->t24(),
         gate_code => '',
-        needs_verification => "yes",
+        needs_verification => 'yes',
     });
     my @tprog = model($c, 'Program')->search({
         name => "MMC Template",
@@ -2045,7 +2073,7 @@ sub duplicate_do : Local {
     my $new_p = model($c, 'Program')->create({
         %P,     # this comes first so summary_id can override
         summary_id => $sum->id,
-        image      => ($upload || $old_prog->image())? "yes": "",
+        image      => ($upload || $old_prog->image())? 'yes': '',
     });
 
     my $new_id = $new_p->id();
@@ -2064,6 +2092,17 @@ sub duplicate_do : Local {
             copy "$path/p$let-$old_id.$suf",
                  "$path/p$let-$new_id.$suf";
         }
+    }
+    if ($doc_upload) {
+        my ($suffix) = $doc_upload->filename =~ m{ [.] (\w+) \z }xms;
+        my $pdoc = model($c, 'ProgramDoc')->create({
+            program_id => $new_id,
+            title      => $doc_title,
+            suffix     => $suffix,
+        });
+        $doc_upload->copy_to("root/static/images/pdoc"
+                           . $pdoc->id()
+                           . ".$suffix");
     }
     # copy the leaders and affils
     my @leader_programs = model($c, 'LeaderProgram')->search({
@@ -2138,11 +2177,11 @@ sub cur_prog : Local {
 sub ceu : Local {
     my ($self, $c, $prog_id, $override_hours) = @_;    
 
-    my $html = "";
+    my $html = '';
     for my $r (model($c, 'Registration')->search({
                    program_id  => $prog_id,
-                   ceu_license => { "!=", "" },
-                   cancelled => { "!=", "yes" },
+                   ceu_license => { "!=", '' },
+                   cancelled => { "!=", 'yes' },
                }) 
     ) {
         $html .= ceu_license($r, $override_hours)
@@ -2437,7 +2476,7 @@ sub update_refresh_do : Local {
     %P = %{ $c->request->params() };
     my $p = model($c, 'Program')->find($id);
     my $ndays = $p->edate_obj - $p->sdate_obj + 1 + $p->extradays;
-    my $l = "";
+    my $l = '';
     for my $n (0 .. $ndays-1) {
         $l .= (exists $P{"d$n"})? "1": "0";
     }

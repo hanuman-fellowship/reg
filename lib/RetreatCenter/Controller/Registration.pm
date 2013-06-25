@@ -4534,7 +4534,9 @@ sub name_addr_do : Local {
         {
             program_id        => $prog_id,
             cancelled         => { '!=' => 'yes' },
-            'person.inactive' => { '!=' => 'yes' },
+            # inactive is a mailing list attribute - not appropriate
+            # to include here...
+            #'person.inactive' => { '!=' => 'yes' },
             @cond,
         },
         {
