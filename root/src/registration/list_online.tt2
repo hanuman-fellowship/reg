@@ -1,3 +1,7 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
 <h2>Online Registrations</h2>
 <a href=/registration/grab_new>Grab New</a>
 <p class=p2>
@@ -12,10 +16,17 @@
 [% FOR r IN online %]
 <tr>
 <td>[% IF r.synth %]<span class=red>*</span>[% END %]</td>
-<td><a href="/registration/get_online/[% r.fname %]">[% r.last %], [% r.first %]</a></td>
-<td><a href="/program/view/[% r.pid %]">[% r.pname %]</a></td>
-<td>[% r.date.format("%m/%d") %]</td>
-<td>[% r.time.ampm %]</td>
+<td><a 
+    href="/registration/get_online/$r.fname"
+[% IF r.comment %]
+    onmouseover="return overlib('$r.comment', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10, WRAP);"
+    onmouseout="return nd();"
+[% END %]
+>$r.last, $r.first</a></td>
+<td><a href="/program/view/$r.pid">$r.pname</a></td>
+<td>${r.date.format("%m/%d")}</td>
+<td>${r.time.ampm}</td>
+<td>$r.arr_lv</td>
 </tr>
 [% END %]
 </table>

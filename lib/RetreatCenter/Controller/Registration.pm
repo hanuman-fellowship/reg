@@ -110,11 +110,18 @@ sub list_online : Local {
     for my $f (<root/static/online/*>) {
         open my $in, "<", $f
             or die "cannot open $f: $!\n";
-        my ($date, $time, $first, $last, $pid, $synthesized);
+        my ($date, $time, $first, $last, $pid, $synthesized,
+            $sdate, $edate, $comment);
         $synthesized = 0;
         while (<$in>) {
             if (m{x_date => (.*)}) {
                 $date = date($1);
+            }
+            elsif (m{x_sdate => (.*)}) {
+                $sdate = date($1);
+            }
+            elsif (m{x_edate => (.*)}) {
+                $edate = date($1);
             }
             elsif (m{x_time => (.*)}) {
                 $time = get_time($1);
@@ -131,8 +138,15 @@ sub list_online : Local {
             elsif (m{x_synthesized => 1}) {
                 $synthesized = 1;
             }
+            elsif (m{x_request\d+ => (.*)}) {
+                $comment .= "$1<br>";
+            }
         }
         close $in;
+
+        # space out any stray non-ASCII chars - source unknown
+        $comment =~ s{\xa0}{ }xmsg if $comment;
+
         my $pname;
         if ($pid == 0) {
             $pname = "Personal Retreat";
@@ -146,16 +160,32 @@ sub list_online : Local {
                 $pname = "Unknown Program";
             }
         }
+        my $arr_lv = "";
+        if ($sdate && $edate) {
+            # don't worry about the year, okay?
+            if ($sdate->month == $edate->month) {
+                # Jul 4-8
+                $arr_lv = $sdate->format("%b %e") . "-" . $edate->day;
+            }
+            else {
+                # Jul 30 - Aug 2
+                $arr_lv = $sdate->format("%b %e") . " - " . $edate->format("%b %e");
+            }
+            $arr_lv = ("&nbsp;" x 4) . $arr_lv;     # space on left
+                                                    # rather than hacking CSS
+        }
         (my $fname = $f) =~ s{root/static/online/}{};
         push @online, {
-            first => $first,
-            last  => $last,
-            pname => $pname,
-            pid   => $pid,
-            date  => $date,
-            time  => $time,
-            fname => $fname,
-            synth => $synthesized,
+            first   => $first,
+            last    => $last,
+            pname   => $pname,
+            pid     => $pid,
+            date    => $date,
+            arr_lv  => $arr_lv,
+            time    => $time,
+            fname   => $fname,
+            synth   => $synthesized,
+            comment => $comment,
         };
     }
     @online = sort {
