@@ -139,7 +139,9 @@ sub list_online : Local {
                 $synthesized = 1;
             }
             elsif (m{x_request\d+ => (.*)}) {
-                $comment .= "$1<br>";
+                my $req = $1;
+                $req =~ s{'}{\\'}g;
+                $comment .= "$req<br>";
             }
         }
         close $in;
