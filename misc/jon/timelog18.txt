@@ -304,16 +304,19 @@ Jun 19 1:00-5:00
 Jun 24 11:00-12:00
     fixing issues introduced with program uploaded docs
     tidied up a few other things as well
-Jul 1 12:55-2:00, 2:30-
+Jul 1 12:55-2:00, 2:30-7:15
     online move mysteries probed
     tried to put a tinymce spellchecker in place - failed
 
     addressed Jamal's needs.
     Reports have new field: Last Contact Cutoff
-    tally by year DOES bifurcate - inactive before, active after
-        it now has two subtotals
-    active/inactive is not related to opt in, opt out
-        it is our way of saying You are opted out because
+    mark inactive DOES bifurcate - inactive before, active after the given date
+    tally by year shows inactive count and it now has two subtotals
+    note: active/inactive is not related to the individual opt in, opt out
+        it is our way of saying You Are Opted Out of our mailings because
             we haven't heard from you in so long.
     Touch
     date of last contact rather than date Updated
+
+    shall I do an auto email distributed update thingy?
+        to get updated phone, address, affils, opt in prefs?
