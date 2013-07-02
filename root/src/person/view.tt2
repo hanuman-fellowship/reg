@@ -121,7 +121,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 
 <tr>
 <th align=right>Zip/Postal Code</th><td>$person.zip_post</td>
-<th align=right>Date Updated</td><td>$person.date_updat_obj</td>
+<th align=right>Date of Last Contact</td><td>$person.date_updat_obj</td>
 </tr>
 
 <tr>
