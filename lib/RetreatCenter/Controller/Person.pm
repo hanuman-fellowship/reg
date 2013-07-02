@@ -753,6 +753,10 @@ sub register1 : Local {
 
     my $today = tt_today($c)->as_d8();
     my $person = model($c, 'Person')->find($id);
+    $person->update({
+        date_updat => today()->as_d8(),
+    });
+
     if (!($person->sex() && $person->sex() =~ m{[MF]})) {
         error($c,
             'Sorry, you must set a gender for '

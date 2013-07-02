@@ -3114,7 +3114,6 @@ sub manual : Local {
 
     my $pr = model($c, 'Program')->find($program_id);
     my $p  = model($c, 'Person')->find($person_id);
-
     stash($c,
         deposit       => $deposit,
         deposit_type  => $deposit_type,
