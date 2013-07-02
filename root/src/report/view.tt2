@@ -55,7 +55,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
         <td>$report.zip_range</td>
     </tr>
     <tr>
-        <th align=right>Last Update Cutoff</td>
+        <th align=right>Last Contact Cutoff</td>
         <td>$report.update_cutoff_obj</td>
     </tr>
     <tr>

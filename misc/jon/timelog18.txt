@@ -307,3 +307,13 @@ Jun 24 11:00-12:00
 Jul 1 12:55-2:00, 2:30-
     online move mysteries probed
     tried to put a tinymce spellchecker in place - failed
+
+    addressed Jamal's needs.
+    Reports have new field: Last Contact Cutoff
+    tally by year DOES bifurcate - inactive before, active after
+        it now has two subtotals
+    active/inactive is not related to opt in, opt out
+        it is our way of saying You are opted out because
+            we haven't heard from you in so long.
+    Touch
+    date of last contact rather than date Updated
