@@ -304,5 +304,6 @@ Jun 19 1:00-5:00
 Jun 24 11:00-12:00
     fixing issues introduced with program uploaded docs
     tidied up a few other things as well
-Jul 1 12:55-
+Jul 1 12:55-2:00, 2:30-
     online move mysteries probed
+    tried to put a tinymce spellchecker in place - failed

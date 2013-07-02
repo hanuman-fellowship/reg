@@ -312,6 +312,14 @@ sub view : Local {
     );
 }
 
+sub touch : Local {
+    my ($self, $c, $id) = @_;
+    model($c, 'Person')->find($id)->update({
+        date_updat => today->as_d8(),
+    });
+    $c->response->redirect($c->uri_for("/person/view/$id"));
+}
+
 sub create : Local {
     my ($self, $c) = @_;
 

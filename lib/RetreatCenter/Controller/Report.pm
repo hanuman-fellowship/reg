@@ -114,7 +114,15 @@ sub _get_data {
     if (! ref($zips)) {
         push @mess, $zips;
     }
-    unless ($hash{nrecs} =~ m{^\s*\d*\s*$}) {
+    my $dt;
+    if ($hash{update_cutoff}) {
+        $dt = date($hash{update_cutoff});   
+        if (!$dt) {
+            push @mess, "illegal cutoff date: $hash{update_cutoff}";
+        }
+    }
+    $hash{update_cutoff} = $dt? $dt->as_d8(): '';
+    if ($hash{nrecs} && $hash{nrecs} !~ m{^\s*\d*\s*$}) {
         push @mess, "illegal Number of Records: $hash{nrecs}";
     }
     if (@mess) {
@@ -222,6 +230,9 @@ sub run : Local {
     # have people said they want to be included?
     # ??? or is not null?
     my $restrict = "inactive != 'yes' and ";
+    if ($report->update_cutoff) {
+        $restrict .= "date_updat >= " . $report->update_cutoff . " and ";
+    }
     if (   $format == 1
         || $format == 2
         || $format == 4

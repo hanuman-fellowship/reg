@@ -21,6 +21,8 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 [% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]&nbsp;&nbsp;&nbsp;<a href="/person/list_mmi_payment/$id">MMI Payments</a>[% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/person/inactive/$id">[% IF person.inactive %]Activate[% ELSE %]Inactivate[% END %]</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/person/touch/$id">Touch</a>
 <p class=p2>
 <a accesskey='p' href="/xaccount/prep_pay_balance/$id"><span class=keyed>P</span>ayment</a>
 &nbsp;&nbsp;&nbsp;

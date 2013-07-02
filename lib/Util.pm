@@ -463,6 +463,7 @@ sub housing_types {
 sub parse_zips {
     my ($s) = @_;
 
+    $s ||= "";
     $s = trim($s);
     # Check for zip range validity
     if ($s =~ m{[^0-9, -]}) {

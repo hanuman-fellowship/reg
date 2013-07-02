@@ -6,6 +6,7 @@ create table reports (
     zip_range text,
     format integer,
     nrecs integer,
+    update_cutoff text not null default '',
     last_run text
 );
 insert into reports values (
@@ -15,6 +16,7 @@ insert into reports values (
     '95060-95062, 95076',
     5,
     NULL,
+    '',
     ''
 );
 drop table if exists affil_reports;

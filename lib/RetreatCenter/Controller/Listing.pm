@@ -767,28 +767,52 @@ Total $n_tot, InActive $n_inact, Active $n_act, No Last Update $n_noupd
 EOH
     my $cur_year = today()->year();
     $html .= <<"EOH";
-<h3>Last Active Tally by Year</h3>
+<h3>Date of Last Contact - Tally by Year</h3>
 <ul>
 <table cellpadding=2 border=0>
-<tr>
+<tr valign=bottom align=right>
 <th>Year</th>
-<th align=right>Number</th>
-<th align=right>SubTotal</th>
+<th>Number</th>
+<th>Marked<br>Inactive</th>
+<th>SubTotal</th>
+<th>Reverse<br>SubTotal</th>
 </tr>
 EOH
-    my $subtot = 0;
-    for my $y (1980 .. $cur_year) {
+    my %tally;
+    my @years = 1980 .. $cur_year;
+    for my $y (@years) {
         my $n = model($c, 'Person')->search({
             date_updat => { between => [ $y."0101", $y."1231" ] },
         })->count();
-        $subtot += $n;
-        my $cn = commify($n);
-        my $csubtot = commify($subtot);
+        my $in = model($c, 'Person')->search({
+            date_updat => { between => [ $y."0101", $y."1231" ] },
+            inactive => 'yes',
+        })->count();
+        $tally{$y}{count} = $n;
+        $tally{$y}{inactive_count} = $in;
+    }
+    my $sub = 0;
+    for my $y (@years) {
+        $sub += $tally{$y}{count};
+        $tally{$y}{sub} = $sub;
+    }
+    my $revsub = 0;
+    for my $y (reverse @years) {
+        $revsub += $tally{$y}{count};
+        $tally{$y}{revsub} = $revsub;
+    }
+    for my $y (@years) {
+        my $cn = commify($tally{$y}{count});
+        my $cin = commify($tally{$y}{inactive_count});
+        my $csub = commify($tally{$y}{sub});
+        my $crevsub = commify($tally{$y}{revsub});
         $html .= <<"EOH";
 <tr>
 <td>$y</td>
 <td align=right>$cn</td>
-<td align=right>$csubtot</td>
+<td align=right>$cin</td>
+<td align=right>$csub</td>
+<td align=right>$crevsub</td>
 </tr>
 EOH
     }
@@ -838,11 +862,10 @@ sub mark_inactive_do : Local {
     }
     my $dt8 = date($date_last)->as_d8();
 
-    # people that whose date_updat date is
+    # people whose date_updat date is
     # older than or equal to $dt8 should be marked INactive.
     #
     model($c, 'Person')->search({
-        inactive   => { '!=' => 'yes' },
         date_updat => { "<=", $dt8 },
         akey       => { '!=' => '44595076SUM' },
     })->update({
@@ -852,7 +875,6 @@ sub mark_inactive_do : Local {
     # NEWER than $dt8 should be marked active.
     #
     model($c, 'Person')->search({
-        inactive   => 'yes',
         date_updat => { '>', $dt8 },
         akey       => { '!=' => '44595076SUM' },
     })->update({

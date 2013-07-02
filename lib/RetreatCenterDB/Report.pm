@@ -3,6 +3,11 @@ use warnings;
 package RetreatCenterDB::Report;
 use base qw/DBIx::Class/;
 
+use lib "..";       # so can do perl -c
+use Date::Simple qw/
+    date
+/;
+
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('reports');
 __PACKAGE__->add_columns(qw/
@@ -12,11 +17,17 @@ __PACKAGE__->add_columns(qw/
     zip_range
     rep_order
     nrecs
+    update_cutoff
     last_run
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 __PACKAGE__->has_many(affil_report => 'RetreatCenterDB::AffilReport', 'report_id');
 __PACKAGE__->many_to_many(affils => 'affil_report', 'affil');
+
+sub update_cutoff_obj {
+    my ($self) = @_;
+    date($self->update_cutoff) || "";
+}
 
 1;
 __END__
@@ -30,4 +41,5 @@ last_run - last date this report was run
 nrecs - how many records do you want?  a random selection will be made for you
     to achieve this many.
 rep_order - what order should the people records be in?  Zip Code or Last Name
+update_cutoff - on or after what date of last update should people be included in the report
 zip_range - a free text field describing a zip code range - like "95060, 94050-94090"

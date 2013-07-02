@@ -19,10 +19,10 @@
 [% END %]
 [% IF Catalyst.check_user_roles('mail_admin') %]
     <p class=p2>
-    <li><a href="/listing/activity_tally">Last Active Tally by Year</a>
+    <li><a href="/listing/activity_tally">Date of Last Contact - Tally by Year</a>
     <p class=p2>
     <form action="/listing/mark_inactive">
-    <li>Last date of contact before which<br>people should be marked inactive:
+    <li>Date of last contact on or before which<br>people should be marked INactive:
     <br>
     <input type=text name=date_last size=10 maxlength=10>
     <input type=submit value="Mark Inactive">

@@ -1,18 +1,18 @@
 <h2>Reports</h2>
-<form action="/report/run/[% report.id %]">
+<form action="/report/run/$report.id">
 <table cellpadding=0 border=0>
 <tr>
-<td valign=top><a href="[% Catalyst.uri_for('/report/create/') %]">Add</a>
+<td valign=top><a href="/report/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 </td>
-<td valign=top><a href="[% Catalyst.uri_for('/report/update/') _ report.id %]">Edit</a>
+<td valign=top><a href="/report/update/$report.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
 </td>
-<td valign=top><a href="[% Catalyst.uri_for('/report/delete/') _ report.id %]"
-onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
+<td valign=top><a href="/report/delete/$report.id"
+onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 </td>
-<td valign=top><a href="[% Catalyst.uri_for('/report/list') %]">List</a>
+<td valign=top><a href="/report/list">List</a>
 &nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;
 </td>
@@ -48,20 +48,24 @@ onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
 <table cellpadding=3 border=0>
     <tr>
         <th align=right>Description</td>
-        <td>[% report.descrip %]</td>
+        <td>$report.descrip</td>
     </tr>
     <tr>
         <th align=right>Zip Ranges</td>
-        <td>[% report.zip_range %]</td>
+        <td>$report.zip_range</td>
+    </tr>
+    <tr>
+        <th align=right>Last Update Cutoff</td>
+        <td>$report.update_cutoff_obj</td>
     </tr>
     <tr>
         <th align=right>Format</td>
-        <td>[% format_verbose %]</td>
+        <td>$format_verbose</td>
     </tr>
     <tr>
         <th align=right>Order by</td>
         <!-- translate to more readable form???
-        <td>[% report.rep_order %]</td>
+        <td>$report.rep_order</td>
              first => First Name
              as in create_edit.tt2 -->
         <td>[%
@@ -74,20 +78,20 @@ onclick="return confirm('Okay to Delete [% report.descrip %]?');">Delete</a>
     </tr>
     <tr>
         <th align=right>Number of Records</td>
-        <td>[% report.nrecs %]</td>
+        <td>$report.nrecs</td>
     </tr>
     <tr>
         <th align=right>Last Run</td>
-        <td>[% last_run %]</td>
+        <td>$last_run</td>
     </tr>
     <tr>
         <th align=right valign=top>Affiliations</td>
         <td>
             [% FOREACH a IN affils %]
-                [% a.descrip %]<br>
+                $a.descrip<br>
             [% END -%]
         </td>
     </tr>
 </table>
 <p class=p2>
-[% message %]
+$message
