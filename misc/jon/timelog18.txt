@@ -320,3 +320,6 @@ Jul 1 12:55-2:00, 2:30-7:15
 
     shall I do an auto email distributed update thingy?
         to get updated phone, address, affils, opt in prefs?
+Jul 2 11:00-12:00
+    discussed all this with Jamal.
+    He is excited about the email distributed update demographic thingy

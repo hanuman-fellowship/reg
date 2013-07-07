@@ -1395,6 +1395,8 @@ sub reserve_cluster : Local {
 # 2 - for each house in the cluster
 #         remove the RentalBooking record
 #         adjust the config records for that house as well.
+# NO NO - don't remove the rentalbooking records for each house
+#         those houses may have already been reserved.
 # then refresh the view.
 #
 sub cancel_cluster : Local {
@@ -1419,6 +1421,9 @@ sub cancel_cluster : Local {
         rental_id  => $rental_id,
         cluster_id => $cluster_id,
     })->delete();
+    $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
+    return;
+    # NO NO don't do the below
     HOUSE:
     for my $h (@{$houses_in_cluster{$cluster_id}}) {
         my $h_id = $h->id();
