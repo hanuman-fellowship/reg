@@ -18,6 +18,10 @@ use Template;
 #
 my %P = Vars();
 
+# ensure the first and last names look okay.
+$P{x_fname} = normalize($P{x_fname});
+$P{x_lname} = normalize($P{x_lname});
+
 #
 # was it a failed transaction?
 #
@@ -157,7 +161,6 @@ if (! $ms) {
 }
 $ms->Open({
     to       => "$P{x_fname} $P{x_lname} <$P{x_email}>",
-    bcc => 'jon@suecenter.org, jayanti@mountmadonna.org, emily@mountmadonna.org, jeremy@mountmadonna.org',
     from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
     subject  => "Online registration for $P{x_title}",
     ctype    => "text/html",
@@ -173,3 +176,40 @@ Template->new()->process(
 );
 $ms->SendLineEnc($email);
 $ms->Close() or die "error: $Mail::Sender::Error";
+
+# and inform the program office of this online registration
+my $msg = "Online registration - $P{x_fname} $P{x_lname} in $P{x_title}";
+$ms->Open({
+    to       => 'jon@suecenter.org, emily@mountmadonna.org',
+    from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
+    subject  => $msg,
+    ctype    => "text/html",
+    encoding => "7bit",
+})
+    or die "no Mail::Sender->Open $Mail::Sender::Error";
+$ms->SendLineEnc($msg);
+$ms->Close() or die "error: $Mail::Sender::Error";
+
+#
+# hyphenated names need an extra capital
+# SMITH-JOHNSON    => Smith-Johnson
+# smith-johnson    => Smith-Johnson
+# Mckenzie         => McKenzie
+# mary jane-louise => Mary Jane-Louise
+#
+sub normalize {
+    my ($s) = @_;
+    if (! $s) {
+        return "";
+    }
+    my $t = "";
+    my @words = split m{[ ]}xms, $s;
+    for my $w (@words) {
+        $w = join '-',
+             map { s{^Mc(.)}{Mc\u$1}; $_ }
+             map { ucfirst lc }
+             split m{-}, $w
+             ;
+    }
+    return join ' ', @words;
+}
