@@ -20,7 +20,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <a href="/person/search" accesskey='s'><span class=keyed>S</span>earch</a>
 [% IF person.mmi_payments && Catalyst.check_user_roles('mmi_admin') %]&nbsp;&nbsp;&nbsp;<a href="/person/list_mmi_payment/$id">MMI Payments</a>[% END %]
 &nbsp;&nbsp;&nbsp;
-<a href="/person/inactive/$id">[% IF person.inactive %]Activate[% ELSE %]Inactivate[% END %]</a>
+<a href="/person/no_mailings/$id" onclick="return confirm('Okay to clear all mailings for $person.first $person.last?');" >NoMailings</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/person/touch/$id">Touch</a>
 <p class=p2>
@@ -102,7 +102,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <tr><th align=right valign=top>Address</th><td>$person.addr1[% IF person.addr2 %]<br>$person.addr2[% END %]</td>
 <th align=right valign=top>Mailings</th>
 <td rowspan=2>
-<table border=0>
+<table border=0 cellpadding=6>
 <tr><td align=right>Email: </td><td>MMC $person.e_mailings</td><td>&nbsp;&nbsp;MMI $person.mmi_e_mailings</td></tr>
 <tr><td align=right>Snail Mail:</td><td>MMC $person.snail_mailings</td></td><td>&nbsp;&nbsp;MMI $person.mmi_snail_mailings</td></tr>
 <tr><td align=right>Share</td><td>$person.share_mailings</td>

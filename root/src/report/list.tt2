@@ -1,15 +1,15 @@
 <h2>Reports</h2>
 <a href=/report/create>Add</a>
 <ul>
-<table cellpadding=3 border=0>
-    <tr>
+<table cellpadding=3 border=0 width=900>
+    <tr align=left>
     <th>Description</th>
     <th>Zip Range</th>
     </tr>
 
     [% FOREACH report IN reports %]
     <tr>
-        <td><a href="[% Catalyst.uri_for('/report/view/') _ report.id %]">[% report.descrip %]</a></td>
+        <td width=500 valign=top><a href="[% Catalyst.uri_for('/report/view/') _ report.id %]">[% report.descrip %]</a></td>
         <td>[% report.zip_range %]</td>
     </tr>
     [% END -%]

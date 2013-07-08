@@ -18,6 +18,7 @@ __PACKAGE__->add_columns(qw/
     rep_order
     nrecs
     update_cutoff
+    end_update_cutoff
     last_run
 /);
 __PACKAGE__->set_primary_key(qw/id/);
@@ -28,6 +29,21 @@ sub update_cutoff_obj {
     my ($self) = @_;
     date($self->update_cutoff) || "";
 }
+sub end_update_cutoff_obj {
+    my ($self) = @_;
+    date($self->end_update_cutoff) || "";
+}
+sub update_cutoff_range {
+    my ($self) = @_;
+    my $s = '';
+    if ($self->update_cutoff) {
+        $s = date($self->update_cutoff)->format("%D");
+        if ($self->end_update_cutoff) {
+            $s .= " to " . date($self->end_update_cutoff)->format("%D");
+        }
+    }
+    return $s;
+}
 
 1;
 __END__
@@ -35,6 +51,8 @@ overview - Reports are used to select a subset of People for mailing list purpos
     The selection is based on zip code and affiliation.
     A variety of formats can be generated - including snail mail address and or email address.
 descrip - an identifier for the report
+end_update_cutoff - on or before what date of last update should people be included in the report.
+    defaults to 'today'.
 format - 10 different ones
 id - unique id
 last_run - last date this report was run

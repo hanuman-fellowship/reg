@@ -1546,14 +1546,18 @@ sub get_addr : Local {
 }
 
 #
-# toggle inactive on/off
+# no mailings at all
 #
-sub inactive : Local {
+sub no_mailings : Local {
     my ($self, $c, $id) = @_;
 
     my $p = model($c, 'Person')->find($id);
     $p->update({
-        inactive => ($p->inactive())? '': 'yes',
+        snail_mailings     => '',
+        mmi_snail_mailings => '',
+        e_mailings         => '',
+        mmi_e_mailings     => '',
+        share_mailings     => '',
     });
     $c->response->redirect($c->uri_for("/person/view/$id"));
 }

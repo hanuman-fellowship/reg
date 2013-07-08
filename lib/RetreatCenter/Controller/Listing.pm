@@ -873,10 +873,12 @@ sub mark_inactive_do : Local {
     });
     # and people that whose date_updat date is
     # NEWER than $dt8 should be marked active.
+    # EXCEPT, of course, those who are Deceased.
     #
     model($c, 'Person')->search({
         date_updat => { '>', $dt8 },
         akey       => { '!=' => '44595076SUM' },
+        deceased   => '',
     })->update({
         inactive => '',
     });

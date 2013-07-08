@@ -7,6 +7,7 @@ create table reports (
     format integer,
     nrecs integer,
     update_cutoff text not null default '',
+    end_update_cutoff text not null default '',
     last_run text
 );
 insert into reports values (

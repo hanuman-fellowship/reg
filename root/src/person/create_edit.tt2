@@ -123,7 +123,7 @@ function get_gender() {
 <tr>
 <th align=right valign=top>Mailings</th>
 <td>
-<table>
+<table cellpadding=6>
 <tr>
 <td>Email</td><td><input tabindex=13 type=checkbox name=e_mailings value='yes' [% e_mailings %]>MMC</td>
 <td><input tabindex=14 type=checkbox name=mmi_e_mailings     value='yes' [% mmi_e_mailings %]>MMI</td>

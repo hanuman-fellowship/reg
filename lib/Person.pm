@@ -29,6 +29,7 @@ sub search {
         $p = Person->new($p);
     }
     $sth->finish();
+    undef $sth;
     DBH->finis();
     return $a_ref;
 }

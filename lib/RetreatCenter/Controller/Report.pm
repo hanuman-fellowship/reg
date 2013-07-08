@@ -68,13 +68,19 @@ sub delete : Local {
 
 
 sub view : Local {
-    my ($self, $c, $id, $mmi) = @_;
+    my ($self, $c, $id, $opt_inout) = @_;
 
     my $report = model($c, 'Report')->find($id);
     $c->stash->{format_verbose} = $self->formats->{$report->format()};
     $c->stash->{report} = $report;
-    $c->stash->{mmc_report} = !$mmi;
-    $c->stash->{mmi_report} = $mmi;
+    if (defined $opt_inout) {
+        $c->stash->{mmc_report} = $opt_inout eq 'mmc';
+        $c->stash->{mmi_report} = $opt_inout eq 'mmi';
+        $c->stash->{none_report} = $opt_inout eq 'none';
+    }
+    else {
+        $c->stash->{mmc_report} = 1;
+    }
     $c->stash->{affils} = [
         $report->affils(
             undef,
@@ -114,6 +120,7 @@ sub _get_data {
     if (! ref($zips)) {
         push @mess, $zips;
     }
+
     my $dt;
     if ($hash{update_cutoff}) {
         $dt = date($hash{update_cutoff});   
@@ -122,6 +129,15 @@ sub _get_data {
         }
     }
     $hash{update_cutoff} = $dt? $dt->as_d8(): '';
+
+    if ($hash{end_update_cutoff}) {
+        $dt = date($hash{end_update_cutoff});   
+        if (!$dt) {
+            push @mess, "illegal end_cutoff date: $hash{end_update_cutoff}";
+        }
+    }
+    $hash{end_update_cutoff} = $dt? $dt->as_d8(): '';
+
     if ($hash{nrecs} && $hash{nrecs} !~ m{^\s*\d*\s*$}) {
         push @mess, "illegal Number of Records: $hash{nrecs}";
     }
@@ -214,10 +230,13 @@ sub run : Local {
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
     my $incl_mmc = $c->request->params->{incl_mmc};
-    my $mmi_report = $c->request->params->{report_type} eq 'mmi';
-    my $pref = "";
-    if ($mmi_report) {
+    my $opt_inout = $c->request->params->{report_type};
+    my $pref = "none";
+    if ($opt_inout eq 'mmi') {
         $pref = "mmi_";
+    }
+    elsif ($opt_inout eq 'mmc') {
+        $pref = "";
     }
 
     my $report = model($c, 'Report')->find($id);
@@ -233,15 +252,25 @@ sub run : Local {
     if ($report->update_cutoff) {
         $restrict .= "date_updat >= " . $report->update_cutoff . " and ";
     }
-    if (   $format == 1
-        || $format == 2
-        || $format == 4
-        || $format == 7
-        || $format == 9
+    if ($report->end_update_cutoff) {
+        $restrict .= "date_updat <= " . $report->end_update_cutoff . " and ";
+    }
+    if ($pref ne 'none' &&
+        (   $format == 1
+         || $format == 2
+         || $format == 4
+         || $format == 7
+         || $format == 9
+        )
     ) {
         $restrict .= "${pref}snail_mailings = 'yes' and ";
     }
-    if ($format == 2 || $format == 5 || $format == 10) {
+    if ($pref ne 'none' &&
+        (   $format == 2
+         || $format == 5
+         || $format == 10
+        )
+    ) {
         $restrict .= "${pref}e_mailings = 'yes' and ";
     }
     if ($share) {
@@ -436,7 +465,7 @@ EOS
         $c->stash->{share}    = $share;
         $c->stash->{collapse} = $collapse;
         $c->stash->{incl_mmc} = $incl_mmc;
-        view($self, $c, $id, $mmi_report);
+        view($self, $c, $id, $opt_inout);
         return;
     }
     #
