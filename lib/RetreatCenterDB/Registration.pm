@@ -212,10 +212,12 @@ sub att_prog_dates {
         #
         $pedate = $prog->edate_obj() + $prog->extradays();
     }
-    return $psdate->format("%B %e - ")
-         . ($psdate->month() == $pedate->month()? $pedate->format("%e")
-            :                                     $pedate->format("%B %e"))
-         ;
+    if ($psdate->month == $pedate->month) {
+        return $psdate->format("%B %e-") . $pedate->format("%e");
+    }
+    else {
+        return $psdate->format("%B %e - ") . $pedate->format("%B %e");
+    }
 }
 
 sub receipt_dates {

@@ -90,6 +90,22 @@ sub update_do : Local {
     elsif ($the_key =~ m{^center_tent_}) {
         _update_CT();
     }
+    elsif ($the_key eq 'online_notify') {
+        # need to send this string up to mountmadonna.org
+        BLOCK: {
+        open my $out, '>', '/tmp/online_notify.txt' or last BLOCK;
+        print {$out} "$value\n";
+        close $out;
+        my $ftp = Net::FTP->new($string{ftp_site},
+                                Passive => $string{ftp_passive}) or last BLOCK;
+        $ftp->login($string{ftp_login}, $string{ftp_password})   or last BLOCK;
+        $ftp->cwd("www/cgi-bin") or last BLOCK;
+        $ftp->ascii()            or last BLOCK;
+        $ftp->put("/tmp/online_notify.txt", "online_notify.txt") or last BLOCK;
+        $ftp->quit();
+        unlink "/tmp/online_notify.txt";
+        }
+    }
     #
     # and where to go next?
     #

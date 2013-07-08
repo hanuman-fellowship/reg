@@ -1067,9 +1067,8 @@ sub late_notices : Local {
                            order_by => [qw/ person.last person.first /],
                        }
                    );
-    # For some reason I was not able to specify INTERPOLATE => 1.
-    # Why?   I can elsewhere - like in Registration.pm.
     my $tt = Template->new({
+        INTERPOLATE => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     }) or die Template->error;

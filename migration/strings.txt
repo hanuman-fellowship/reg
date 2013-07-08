@@ -246,3 +246,4 @@ ftp_mmi_transactions /home/mmi/domains/mountmadonnainstitute.org/public_html/cgi
 green_glnum_mmi 00005
 nyears_forgiven 5
 personal_template personal
+online_notify jon@suecenter.org

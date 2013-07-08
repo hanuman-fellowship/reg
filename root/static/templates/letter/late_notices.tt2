@@ -23,14 +23,25 @@ No late notices today.
 [% FOR reg IN late_arr %]
 Late Notice for:
 <p class=large>
-[% reg.person.first %] [% reg.person.last %]
+$reg.person.first $reg.person.last
 <p>
 Welcome to Mount Madonna Center!  We&rsquo;re glad that you have arrived,
 and hope you had a pleasant journey!!
-</p>
+<p>
+You are registered for
+[% IF reg.program.PR %]
+a Personal Retreat.
+[% ELSE %]
+${reg.program.title}.
+[% END %]
+<p>
+[% mp = reg.program.main_meeting_place %]
+[% IF mp %]
+Your program meets in the ${mp}.
+[% END %]
 [% IF reg.house_id %]
 <p>
-You are housed in the <b>[% reg.house.cluster.name %]</b> in [% reg.room_site %] <b>[% reg.house.name_disp %]</b>.<br>
+You are housed in the <b>$reg.house.cluster.name </b> in $reg.room_site <b>$reg.house.name_disp </b>.<br>
 Your housing location is highlighted on the attached map(s).<br>
 [% IF reg.house.key_card %]
 We have included your room key-card in this packet.<br>
@@ -38,18 +49,9 @@ We have included your room key-card in this packet.<br>
 To use the key-card, insert with blank side up and the arrow forward.
 </b>
 [% END %]
-</p>
 [% ELSIF reg.h_type == 'own_van' %]
 <p>
 Please park your vehicle in one of the spots marked &ldquo;OV&rdquo; on the attached map.
-</p>
-[% END %]
-<p>
-[% mp = reg.program.main_meeting_place %]
-[% IF mp %]
-Your program &ldquo;[% reg.program.title %]&rdquo; meets
-in the [% mp %].
-</p>
 [% END %]
 <p>
 If you asked for a &ldquo;DINNER SAVE,&rdquo; a meal with your name
@@ -57,10 +59,8 @@ on it can be found on a shelf across from the silverware table
 on the way to the kitchen (go through the double doors and turn
 left in the carpeted lobby).  If you cannot find a plate with your
 name on it, take one marked &ldquo;GUEST.&rdquo;
-</p>
 <p>
 PLEASE READ THIS PAGE AND THE ENCLOSED GUIDELINES.  THANK YOU!
-</p>
 <p>
 Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  Check with the Programs Office if you plan to arrive before 4:00 pm.
 </p>

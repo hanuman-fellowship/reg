@@ -735,8 +735,11 @@ sub _rest_of_reg {
     #
     REG:
     for my $r ($p->registrations) {
+        # skip registrations that were cancelled, that were
+        # a long time ago, or are in the future.
         next REG if $r->cancelled();
         next REG if ($today - $r->date_end_obj) > 365*$string{nyears_forgiven};
+        next REG if $r->date_start_obj >= $today;
         if ($r->balance != 0) {
             my $s = $p->first() . " "
                   . "has an outstanding balance of "
@@ -1988,7 +1991,10 @@ sub send_conf : Local {
            to      => $reg->person->name_email(),
            from    => $title . " <" . $user->email() . ">",
            replyto => "$title <$from>",
-           subject => "Confirmation of Registration for " . $pr->title(),
+           subject => "Confirmation of Registration for "
+                      . $reg->person->name
+                      . " in "
+                      . $pr->title(),
            html    => $html, 
     )) {
         error($c,
