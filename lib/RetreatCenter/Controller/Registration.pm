@@ -733,6 +733,7 @@ sub _rest_of_reg {
     #
     # outstanding balance?
     #
+    my $outstand = "";
     REG:
     for my $r ($p->registrations) {
         # skip registrations that were cancelled, that were
@@ -748,6 +749,10 @@ sub _rest_of_reg {
                   ;
             stash($c, outstanding => 1);
             stash($c, outstanding_balance => $s);
+            $outstand = '<span style="background-color: #ff0000;">Outstanding balance of $'
+                      . $r->balance
+                      . " in " . $r->program->name
+                      . "</span><br>";
             last REG;
         }
     }
@@ -828,6 +833,7 @@ sub _rest_of_reg {
         confnotes     => [
             model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
         ],
+        outstand      => $outstand,
         template    => "registration/create.tt2",
     );
 }

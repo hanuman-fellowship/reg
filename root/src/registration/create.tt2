@@ -90,7 +90,7 @@ After <input type=checkbox name=rental_after value=yes>
 <tr>
 <th align=right valign=top>Comment</th>
 <td colspan=3>
-<textarea rows=4 cols=60 name=comment>[% comment %]</textarea>
+<textarea rows=4 cols=60 name=comment>$outstand$comment</textarea>
 </td>
 </tr>
 
