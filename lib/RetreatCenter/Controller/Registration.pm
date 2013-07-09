@@ -2694,6 +2694,10 @@ EOH
                     && !$reg->letter_sent)?
                        "<img src=/static/images/envelope.jpg height=$ht>"
                   :    "";
+        if ($reg->leader_assistant || $reg->comment =~ /STAFF/) {
+            my $pref = ($reg->person->sex eq 'F'? "fe": "");
+            $mark = "$mark <img src=/static/images/${pref}male_leader.png>";
+        }
         if ($need_house && $hid) {
             # no height= since it pixelizes it :(
             my $unhappy = "";
