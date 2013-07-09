@@ -395,7 +395,13 @@ $user.first $user.last
 [% ELSE %]
 <TR><TH align=right>Email</TH><TD><A HREF="mailto:programs@mountmadonna.org">programs@mountmadonna.org</A></TD></TR>
 [% END %]
-<TR><TH align=right valign=top>Business Hours</TH><TD align=left>Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 11:00-5:00</TD></TR>
+<TR><TH align=right valign=top>Business Hours</TH><TD align=left>
+[% IF mmi %]
+Tuesday-Thursday 9:00-5:00<BR>Friday 9:30-5:30<BR>Saturday 11:00-5:00
+[% ELSE %]
+Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 11:00-5:00
+[% END %]
+</TD></TR>
 <TR>
     <TH align=right valign=top>Map/Directions</TH>
     <TD align=left>Use only <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>, or directions <A HREF="#directions">below</A>. Do not use GPS, Mapquest or Yahoo Maps.</TD>
