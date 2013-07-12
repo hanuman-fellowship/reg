@@ -1,0 +1,34 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use lib 'mylib/lib/perl5';
+use Template;
+use CGI qw/:standard/;
+
+print header;
+
+my %cookie = cookie(-name => 'user_data');
+
+my %stash = ();
+for my $w (qw/
+    fname lname street1 street2
+    city state zip country
+    home work cell
+    email1
+/) {
+    $stash{$w} = $cookie{$w} || "";
+}
+if ($cookie{gender} eq "male") {
+    $stash{male} = "checked";
+    $stash{female}   = "";
+}
+else {
+    $stash{female} = "checked";
+    $stash{male}   = "";
+}
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "ride.tt2",
+    \%stash,
+);

@@ -1,0 +1,190 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use lib 'mylib/lib/perl5';
+use Template;
+use CGI qw/:standard :cgi-lib/;
+use CGI::Carp qw/fatalsToBrowser/;
+use Date::Simple qw/ date today /;
+use Time::Simple qw/get_time/;
+
+# take the vars and rewrite the cookies
+# in case someone comes without having gone
+# through the registration process to create
+# a ride TO MMC and again wants to make a ride
+# FROM MMC.
+#
+my %P = Vars();
+for my $k (keys %P) {
+    $P{$k} =~ s{^\s*|\s*$}{}g;
+}
+$P{request} =~ s{\cM?\n}{NEWLINE}g;
+
+# prepare the cookie with the form values to include in the header.
+# due to historical naming schemes we need to futz a bit... :(
+#
+$P{fname} = $P{first};
+$P{lname} = $P{last};
+$P{street1} = $P{street};
+$P{state} = $P{st_prov};
+$P{zip} = $P{zip_post};
+$P{email1} = $P{email};
+my $cookie = cookie(
+    -name => 'user_data',
+    -value => \%P,
+    -expires => '+10y',     # i.e. don't expire
+);
+# output the page header with the cookie
+#
+print header(-cookie => $cookie);
+
+#
+# error checking
+# missing fields
+# date/time formats
+# email vs email2?
+#
+my $mess = "";
+if ($P{email} ne $P{email2}) {
+    $mess .= "The email addresses do not match.<br>\n";
+}
+FIELD:
+for my $f (qw/
+    email
+    first
+    last
+    gender
+    street
+    city
+    st_prov
+    zip_post
+    pickup_date
+    carrier
+    flight_num
+    flight_time
+    luggage
+/) {
+    next FIELD if $P{$f} =~ m{\S};
+    next FIELD if $P{airport} eq 'OTH' &&
+                  (   $f eq 'flight_time'
+                   || $f eq 'flight_num'
+                   || $f eq 'carrier');
+
+    my $sf = ucfirst $f;
+    if ($sf eq "St_prov") {
+        $sf = "State/Province";
+    }
+    if ($sf eq "Zip_post") {
+        $sf = "Zip/Postal Code";
+    }
+    if ($sf eq "Pickup_date") {
+        $sf = "Flight Date";
+    }
+    if ($sf eq "Flight_time") {
+        $sf = "Flight Time";
+    }
+    if ($sf eq "Flight_num") {
+        $sf = "Flight #";
+    }
+    $mess .= "Missing $sf<br>\n";
+}
+if (   $P{home} !~ m{\S}
+    && $P{work} !~ m{\S}
+    && $P{cell} !~ m{\S}
+) {
+    $mess .= "Missing home, work, or cell phone number.<br>";
+}
+if ($P{pickup_date} && !date($P{pickup_date})) {
+    $mess .= "Illegal Flight Date: $P{pickup_date}<br>\n";
+}
+if ($P{flight_time} && !get_time($P{flight_time})) {
+    $mess .= "Illegal Flight Time: $P{flight_time}<br>\n";
+}
+if ($mess) {
+    print <<"EOH";
+<style>
+body {
+    background-color: #6E989A;
+    font-size: 16pt;
+    margin-top: .5in;
+    margin-left: .5in;
+}
+</style>
+<div class="header"><a href="/index.html" border="0"><img src="../Gif/navbar_home.gif" width="133" height="111" alt="logo" border="0"/></a></div>
+These errors were found:
+<ul>$mess</ul>
+Please go <input style="font-size: 28pt;" id='back' type=button value="Back" onclick="history.go(-1)"> and fix them.
+<script type='text/javascript'>document.getElementById('back').focus();</script>
+EOH
+    exit;
+}
+delete $P{email2};
+delete $P{Submit};
+
+my $fname = "ride_requests/" . time();
+if (-f $fname) {
+    $fname .= "1";
+}
+open my $out, ">", $fname
+    or die "cannot create $fname: $!\n";
+KEYS:
+for my $k (keys %P) {
+    next KEYS if $k =~ m{^(fname|lname|street1|state|zip|email1)$};
+    print {$out} "$k $P{$k}\n";
+}
+print {$out} "create_date " . today->as_d8() . "\n";
+print {$out} "create_time " . get_time->t24() . "\n";
+close $out;
+
+use Mail::Sender;
+#
+# send an email with the info.
+#
+my $ms = Mail::Sender->new({
+    smtp    => 'mail.suecenter.org',
+    port    => 50,
+    auth    => 'LOGIN',
+    authid  => 'test@suecenter.org',
+    authpwd => 'ABCdef108',
+});
+if (! $ms) {
+    die "no mail sender: ";
+}
+my $from_to = $P{from_to} eq 'To MMC'? "to": "from";
+$ms->Open({
+    to       => "$P{fname} $P{lname} <$P{email1}>",
+    from     => 'Mount Madonna Center <transportation@mountmadonna.org>',
+    subject  => "Ride Requested $from_to Mount Madonna Center",
+    ctype    => "text/html",
+    encoding => "7bit",
+})
+    or die "no Mail::Sender->Open $Mail::Sender::Error";
+
+my $email;
+my $tt = Template->new(INTERPOLATE => 1)
+    or die "cannot initialize Template: $Template::ERROR";
+$P{request} =~ s{NEWLINE}{<br>}xmsg;
+$P{late} = date($P{pickup_date}) - today() < 7;
+$tt->process(
+    'ride_auto_reply.tt2',
+    \%P,
+    \$email,
+) or die $tt->error;
+$ms->SendLineEnc($email);
+$ms->Close() or die "error: $Mail::Sender::Error";
+
+# Confirmation on the browser screen
+print <<'EOH';
+<style>
+body {
+    background-color: #6E989A;
+    font-size: 16pt;
+    margin-top: .5in;
+    margin-left: .5in;
+}
+</style>
+<div class="header"><a href="/index.html" border="0"><img src="../Gif/navbar_home.gif" width="133" height="111" alt="logo" border="0"/></a></div>
+Thank you.  Your ride request was received.
+<p>
+Check your email for a letter summarizing your request.
+EOH

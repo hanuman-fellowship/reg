@@ -1,0 +1,61 @@
+<html>
+
+<head>
+<style>
+th {
+    text-align: right;
+}
+body, th, td {
+    font-family: Arial;
+    font-size: 14pt;
+}
+</style>
+</head>
+
+<body>
+Your data now looks like:
+<table cellpadding=5>
+
+<tr>
+<th>First</th>
+<td>$p.first</td>
+</tr>
+
+<tr>
+<th>Last Name</th>
+<td>$p.last</td>
+</tr>
+
+<tr>
+<th>Address</th>
+<td>$p.addr1</td>
+</tr>
+
+<tr>
+<th></th>
+<td>$p.addr2</td>
+</tr>
+
+<tr>
+<th>City</th>
+<td>$p.city</td>
+</tr>
+
+<tr>
+<th>State/Province</th>
+<td>$p.st_prov</td>
+</tr>
+
+<tr>
+<th>Zip/Postal Code</th>
+<td>$p.zip_post</td>
+</tr>
+
+<tr>
+<th></th>
+<td><a href="http://www.mountmadonna.org/cgi-bin/update?code=$p.secure_code">Re-Edit</a></td>
+</tr>
+
+</table>
+</body>
+</html>

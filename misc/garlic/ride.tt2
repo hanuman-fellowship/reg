@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Untitled Document</title>
+<link href="../styles/regform.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+<div class="wrapper">
+    <div class="header"><a href="/index.html" border="0"><img src="../Gif/navbar_home.gif" width="133" height="111" alt="logo" border="0"/></a></div>
+    <div class="main">
+        <div class="top"></div>
+        <div class="middle">
+            <div class="steps">
+                <h1>Ride Request</h1>
+                <p>To or From Mount Madonna Center</p>
+                <p><span class="required">*</span> indicates a required field.</p>
+            </div>
+            <div class="mainForm">
+                <form action="/cgi-bin/ride2" method="post">
+                    <div class="personal">
+                        <fieldset>
+                        <legend>Personal Information</legend>
+                        <ol>
+                            <li>
+                                <label for="first"><span class="required">*</span> First Name:</label>
+                                <input type=text name=first size=15 maxlength=15 value='$fname' />
+                                <span class="help" id="msg_first"></span> </li>
+                            <li>
+                                <label for="last"><span class="required">*</span> Last Name:</label>
+                                <input type=text name=last size=15 maxlength=15 value='$lname' />
+                                <span class="help" id="msg_lname"></span> </li>
+                            <li> <span class="help" id="msg_gender"></span>
+                                <fieldset>
+                                <p><span class="required">*</span>Gender:</p>
+                                <ol>
+                                    <li>
+                                        <input type=radio name="gender" $female value="female" />
+                                        <label for="gender">Female</label>
+                                    </li>
+                                    <li>
+                                        <input type=radio name="gender" $male value="male" />
+                                        <label for="gender">Male</label>
+                                    </li>
+                                </ol>
+                                </fieldset>
+                            </li>
+                            <li>
+                                <label for="street"><span class="required">*</span> Street:</label>
+                                <input type=text name=street size=50 value='$street1 $street2'>
+                                <span class="help" id="msg_street"></span> </li>
+                            </li>
+                            <li>
+                                <label for="city"><span class="required">*</span> City:</label>
+                                <input type=text name=city size=24 maxlength=24 value='$city' >
+                                <span class="help" id="msg_city"></span> </li>
+                            <li>
+                                <label for="st_prov"><span class="required">*</span> State/Province:</label>
+                                <input type=text name=st_prov size=5 maxlength=5 value='$state'>
+                                <span class="help" id="msg_st_prov"></span> </li>
+                            </li>
+                            <li>
+                                <label for="zip_post"><span class="required">*</span> Zip/Postal Code:</label>
+                                <input type=text name=zip_post size=7 maxlength=7 value='$zip'>
+                                <span class="help" id="msg_zip_post"></span> </li>
+                            </li>
+                            <li>
+                                <label for="country"> Country:</label>
+                                <input type=text name=country size=20 maxlength=20 value='$country'>
+                                <span class="help" id="msg_country">Defaults to USA</span> </li>
+                            <li>
+                                <label for="home"><span class="required">*</span> Home Phone:</label>
+                                <input type=text name=home size=20 maxlength=20 value='$home'>
+                                <span class="help" id="msg_home">At least one phone number</span> </li>
+                            <li>
+                                <label for="work"> Work Phone:</label>
+                                <input type=text name=work size=20 maxlength=20 value='$work'>
+                                <span class="help" id="msg_work"></span> </li>
+                            <li>
+                                <label for="cell"> Cell Phone:</label>
+                                <input type=text name=cell size=20 maxlength=20 value='$cell'>
+                                <span class="help" id="msg_cell"></span> </li>
+                            <li>
+                                <label for="email"><span class="required">*</span> Email:</label>
+                                <input type=text name=email size=40 maxlength=40 value='$email1'>
+                                <span class="help" id="msg_email"></span> </li>
+                            <li>
+                                <label for="email2"><span class="required">*</span> Email Again:</label>
+                                <input type=text name=email2 size=40 maxlength=40 value='$email1'>
+                                <span class="help" id="msg_email2">Repeated to be sure it is right</span> </li>
+                        </ol>
+                        </fieldset>
+                    </div>
+                    <div class="ceu">
+                        <fieldset>
+                        <legend>Ride Info</legend>
+                        <ol>
+                        If you are requesting a ride to or from a location that is <b>not</b> an airport
+                        please choose 'Other' in the Airport field.<br>Then enter a pick up date in the Flight Date field, your Luggage information, and provide any other necesary details in the Comments section.
+                        <p>
+                            <li>
+                                <fieldset>
+                                <p><span class="required">*</span>Direction of Ride:</p>
+                                <ol>
+                                    <li>
+                                        <input type=radio name="from_to"  value="To MMC" CHECKED/>
+                                        <label for="from_to">To MMC</label>
+                                    </li>
+                                    <li>
+                                        <input type=radio name="from_to"  value="From MMC" />
+                                        <label for="from_to">From MMC</label>
+                                    </li>
+                                </ol>
+                                </fieldset>
+                            </li>
+                            <li>
+                                <label for="pickup_date"><span class="required">*</span>Flight Date:</label>
+                                <input type=text name=pickup_date value='' size=10>
+                                <span class="help" id="msg_pickup_date">mm/dd/yy</span> </li>
+                            <li>
+                                <label for="airport"><span class="required">*</span>Airport:</label>
+                                <select name=airport>
+                                    <option value=SJC SELECTED> SJC - San Jose
+                                    <option value=SFO> SFO - San Francisco
+                                    <option value=OAK> OAK - Oakland
+                                    <option value=MRY> MRY - Monterey
+                                    <option value=OTH> OTH - Other
+                                </select>
+                                <span class="help" id="msg_airport"></span> </li>
+                            <li>
+                                <label for="carrier"><span class="required">*</span>Carrier:</label>
+                                <input type=text name=carrier value='' size=15>
+                                <span class="help" id="msg_carrier"></span> </li>
+                            <li>
+                                <label for="flight_num"><span class="required">*</span>Flight Number:</label>
+                                <input type=text name=flight_num value='' size=5>
+                                <span class="help" id="msg_flight_num"></span> </li>
+                            <li>
+                                <label for="flight_time"><span class="required">*</span>Flight Time:</label>
+                                <input type=text name=flight_time value='' size=8>
+                                <span class="help" id="msg_flight_time">e.g. 1:45 pm or 10:30 am</span></li>
+                            <li>
+                                <label for="luggage"><span class="required">*</span>Luggage:</label>
+                                <input type=text name=luggage value='' size=20>
+                                <span class="help" id="msg_luggage">How many bags do you have and how big are they?</span></li>
+                            <li>
+                                <label for="intl">International?</label>
+                                <input type=checkbox name=intl>
+                                <span class="help" id="msg_intl">Click if this is an international flight.</span></li>
+                            <li>
+                                <label for="customs">Customs?</label>
+                                <input type=checkbox name=customs>
+                                <span class="help" id="msg_customs">For <b>arriving</b> international flights, will you be clearing customs at this airport?</span></li>
+                        <!--
+                            <li>
+                                <label for="luggage"><span class="required">*</span>Number and size of luggage:</label>
+                                <input type=text name=luggage value='' size=20>
+                                <span class="help" id="msg_luggage"></span> </li>
+                            <li>
+                                <label for="intl">This flight is international.</label>
+                                <input type=checkbox name="intl">
+                                <span class="help" id="msg_intl"></span></li>
+                        -->
+                        </ol>
+                        </fieldset>
+                    </div>
+                    
+                    <div class="requests">
+                        <fieldset>
+                        <legend>Additional Comments or Requests</legend>
+                       
+                        <ol>
+                            <li>
+                                <textarea name="request" rows=10 cols=70 wrap=VIRTUAL></textarea>
+                            </li>
+                        </ol>
+                        </fieldset>
+                    </div>
+                    
+                    <div class="submit">
+                        <input type="submit" name="Submit" value="Submit">
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="bot"></div>
+    </div>
+</div>
+</body>
+</html>

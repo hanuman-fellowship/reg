@@ -1,0 +1,44 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw/:standard :cgi-lib/;
+use DBI;
+use lib 'mylib/lib/perl5';
+use Template;
+
+print header();
+
+my $dbh = DBI->connect(
+    'dbi:SQLite:dbname=people_data', '', '',
+    { RaiseError => 1, AutoCommit => 1 }
+) or die "cannot connect to database\n";
+
+my %P = Vars();
+
+my $sth = $dbh->prepare(
+    "select count(*) from people_data where secure_code = '$P{secure_code}'");
+$sth->execute();
+my ($count) = $sth->fetchrow_array();
+if ($count != 1) {
+    print "something is wrong!";
+    exit;
+}
+my $sql = "update people_data set";
+FIELD:
+for my $f (sort keys %P) {
+    next FIELD if $f eq 'secure_code';
+    $sql .= qq[ $f = "$P{$f}",];
+}
+$sql .= " updated = 1 ";
+$sql .= qq[ where secure_code = "$P{secure_code}"];
+$sth = $dbh->prepare($sql) or die "oops";
+$sth->execute();
+
+my $tt = Template->new(
+    INTERPOLATE => 1,
+);
+$tt->process(
+    'update2.tt2',
+    { p => \%P },
+);

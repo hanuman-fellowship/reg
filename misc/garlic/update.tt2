@@ -1,0 +1,67 @@
+<html>
+
+<head>
+<style>
+th {
+    text-align: right;
+}
+body, th, td input {
+    font-family: Arial;
+    font-size: 14pt;
+}
+</style>
+</head>
+
+<body>
+<form action="http://www.mountmadonna.org/cgi-bin/update2" method=POST>
+<input type=hidden name=secure_code value="$p.secure_code">
+This is what we have for you now:
+<p>
+<table cellpadding=5>
+
+<tr>
+<th>First</th>
+<td><input type=text name=first value="$p.first"></td>
+</tr>
+
+<tr>
+<th>Last</th>
+<td><input type=text name=last value="$p.last"></td>
+</tr>
+
+<tr>
+<th>Address</th>
+<td><input type=text name=addr1 value="$p.addr1"></td>
+</tr>
+
+<tr>
+<th></th>
+<td><input type=text name=addr2 value="$p.addr2"></td>
+</tr>
+
+<tr>
+<th>City</th>
+<td><input type=text name=city value="$p.city"></td>
+</tr>
+
+<tr>
+<th>State/Province</th>
+<td><input type=text name=st_prov value="$p.st_prov"></td>
+</tr>
+
+<tr>
+<th>Zip/Postal Code</th>
+<td><input type=text name=zip_post value="$p.zip_post"></td>
+</tr>
+
+<tr>
+<th></th>
+<td><input type=submit style="background-color: lightgreen"
+           value="Submit Your Changes">
+</td>
+</tr>
+
+</table>
+</form>
+</body>
+</html>
