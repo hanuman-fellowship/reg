@@ -3,7 +3,10 @@ use strict;
 use warnings;
 
 use CGI qw/:standard/;
+use CGI::Carp qw/fatalsToBrowser/;
 use DBI;
+use lib 'mylib/lib/perl5';
+use Date::Simple qw/today/;
 
 print header();
 
@@ -16,6 +19,7 @@ my $sth = $dbh->prepare(
     "select * from people_data where updated = 1");
 $sth->execute();
 open my $out, '>', "updates.sql";
+my $today = today()->as_d8();
 while (my $p = $sth->fetchrow_hashref()) {
     my $sql = "update people set";
     FIELD:
@@ -23,7 +27,7 @@ while (my $p = $sth->fetchrow_hashref()) {
         next FIELD if $f eq 'id' || $f eq 'secure_code' || $f eq 'updated';
         $sql .= qq[ $f = "$p->{$f}",];
     }
-    $sql =~ s{, \z}{}xms;
+    $sql .= qq[ date_updat = "$today"];
     $sql .= qq[ where secure_code = "$p->{secure_code}"];
     print {$out} "$sql;\n";
 }
