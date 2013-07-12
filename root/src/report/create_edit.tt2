@@ -25,16 +25,7 @@ To
 <td align=right>Format</td>
 <td>
 <select name="format">
-<option value="1" $format_selected_1> To CMS</option>
-<option value="2" $format_selected_2> Name, Address, Email</option>
-<option value="3" $format_selected_3> Name, Home, Work, Cell</option>
-<option value="4" $format_selected_4> Email to VistaPrint</option>
-<option value="5" $format_selected_5> Just Email</option>
-<option value="6" $format_selected_6> Name, Address, Link</option>
-<option value="7" $format_selected_7> First Sanskrit To CMS</option>
-<option value="8" $format_selected_8> Raw</option>
-<option value="9" $format_selected_9> To CMS - Those sans Email</option>
-<option value="10" $format_selected_10> Last, First, Email</option>
+$format_opts
 </select>
 </td>
 </tr>

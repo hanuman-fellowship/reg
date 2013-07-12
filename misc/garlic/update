@@ -1,0 +1,48 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw/:standard/;
+use DBI;
+use lib 'mylib/lib/perl5';
+use Template;
+use Date::Simple qw/date today/;
+
+my $ok = 0;
+if (open my $in, '<', 'expiry_date.txt') {
+    my $dt = <$in>;
+    chomp $dt;
+    $dt = date($dt);
+    if ($dt >= today()) {
+        $ok = 1;
+    }
+}
+if (! $ok) {
+    print header(), "Sorry, The update period has passed.";
+    exit;
+}
+
+my $dbh = DBI->connect(
+    'dbi:SQLite:dbname=people_data', '', '',
+    { RaiseError => 1, AutoCommit => 1 }
+) or die "cannot connect to database\n";
+
+my $code = param('code');
+if (! $code) {
+    $code = path_info();
+    $code =~ s{^/}{};
+}
+
+my $sth = $dbh->prepare(
+    "select * from people_data where secure_code = '$code'");
+$sth->execute();
+my $person = $sth->fetchrow_hashref();
+print header();
+
+my $tt = Template->new(
+    INTERPOLATE => 1,
+);
+$tt->process(
+    'update.tt2',
+    { p => $person },
+);

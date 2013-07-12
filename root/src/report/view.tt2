@@ -1,10 +1,7 @@
+[% code = (format_verbose=='Email, Code'||format_verbose=='Address, Code') %]
 <h2>Reports</h2>
-<form action="/report/run/$report.id">
 <table cellpadding=0 border=0>
 <tr>
-<td valign=top><a href="/report/create">Add</a>
-&nbsp;&nbsp;&nbsp;
-</td>
 <td valign=top><a href="/report/update/$report.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
 </td>
@@ -12,43 +9,10 @@
 onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 </td>
-<td valign=top><a href="/report/list">List</a>
-&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-</td>
-<td valign=top>
-<input type=checkbox name=incl_mmc value=yes [% IF incl_mmc %]checked[% END %]>Include MMC
-&nbsp;
-</td>
-<td valign=top>
-<input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]>Collapse
-&nbsp;
-</td>
-<td valign=top>
-<input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share
-&nbsp;
-</td>
-<td>
-<div style="border-style: solid; border-width: 1px; padding: 10px">
-Opt In<p class=p2>
-<input type=radio name=report_type value=mmc [% IF mmc_report %]checked[% END %]>MMC<p class=p2>
-<input type=radio name=report_type value=mmi [% IF mmi_report %]checked[% END %]>MMI<p class=p2>
-<input type=radio name=report_type value=none [% IF none_report %]checked[% END %]>Ignore<p class=p2>
-</div>
-</td>
-</tr>
-<tr><td>&nbsp;</td></tr>
-</tr>
-<td colspan=4></td>
-<td colspan=3 align=center>
-<input type=submit value="Count"      name=count>
-&nbsp;
-<input type=submit value="Run Report" name=report>
-</td>
+<td valign=top><a href="/report/list">List</a></td>
 </tr>
 </table>
-</form>
-<p>
+<hr width=400 align=left>
 <table cellpadding=3 border=0>
     <tr>
         <th align=right>Description</td>
@@ -97,5 +61,45 @@ Opt In<p class=p2>
         </td>
     </tr>
 </table>
+<hr width=400 align=left>
+<p style="margin-top: .3in">
+<form action="/report/run/$report.id">
+<table cellpadding=5>
+<tr>
+<th align=right>Options</th>
+<td><input type=checkbox name=incl_mmc value=yes [% IF incl_mmc %]checked[% END %]>Include MMC</td>
+<td><input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]>Collapse</td>
+<td><input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share</td>
+</tr>
+[% IF optin %]
+<tr>
+<th align=right>Opt In</th>
+<td><input type=radio name=report_type value=mmc [% IF mmc_report %]checked[% END %]>MMC</td>
+<td><input type=radio name=report_type value=mmi [% IF mmi_report %]checked[% END %]>MMI</td>
+<td><input type=radio name=report_type value=none [% IF none_report %]checked[% END %]>Ignore</td>
+</tr>
+[% END %]
+[% IF code %]
+<tr>
+<th align=right>For Code Formats</th>
+<td colspan=3>
+<input type=checkbox name=append value=1
+       [% IF append %]checked[% END %]>Append to Existing Records?
+&nbsp;&nbsp;
+Expiry Date <span class=red>*</span> 
+<input type=text name=expiry_date size=10 value=$expiry_date>
+</td>
+</tr>
+[% END %]
+<td colspan=4 align=left>
+<input style="background-color: lightyellow" type=submit value="Count" name=count>
+<input style="background-color: lightgreen" type=submit value="Run Report" name=report>
+</td>
+</tr>
+</table>
+[% IF code %]
 <p class=p2>
+<span class=red>Be sure to have run</span> Listings > People > Clear Double Quotes.
+[% END %]
+</form>
 $message

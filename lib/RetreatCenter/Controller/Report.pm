@@ -13,11 +13,21 @@ use Util qw/
     trim
     model
     tt_today
+    stash
+    error
 /;
 use Date::Simple qw/
     date
+    today
+/;
+use List::MoreUtils qw/
+    none
+/;
+use Global qw/
+    %string
 /;
 use Template;
+use LWP::Simple;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -25,27 +35,53 @@ sub index : Private {
     $c->forward('list');
 }
 
-sub formats : Private {
-    my ($self, $c) = @_;
+my @format_desc = (
+    '',
+    'To CMS',
+    'Name, Address, Email',
+    'Name, Home, Work, Cell',
+    'Email to VistaPrint',
+    'Just Email',
+    'Name, Address, Link',
+    'First Sanskrit To CMS',
+    'Raw',
+    'To CMS - Those sans Email',
+    'Last, First, Email',
+    'Email, Code',
+    'Address, Code',
+);
 
-    return {
-        1 => 'To CMS',
-        2 => 'Name, Address, Email',
-        3 => 'Name, Home, Work, Cell',
-        4 => 'Email to VistaPrint',
-        5 => 'Just Email',
-        6 => 'Name, Address, Link',
-        7 => 'First Sanskrit To CMS',
-        8 => 'Raw',
-        9 => 'To CMS - Those sans Email',
-        10 => 'Last, First, Email',
-    };
-}
+use constant {
+    TO_CMS              => 1,
+    NAME_ADDR_EMAIL     => 2,
+    NAME_HOME_WORK_CELL => 3,
+    TO_VISTAPRINT       => 4,
+    JUST_EMAIL          => 5,
+    NAME_ADDR_LINK      => 6,
+    FIRST_SANS_CMS      => 7,
+    RAW                 => 8,
+    CMS_SANS_EMAIL      => 9,
+    LAST_FIRST_EMAIL    => 10,
+    EMAIL_CODE          => 11,
+    ADDR_CODE           => 12,
+};
 
+my $exp = "expiry_date.txt";
+my $rst_exp = "root/static/$exp";
+my $cgi = "http://www.mountmadonna.org/cgi-bin";
 
 sub list : Local {
     my ($self, $c) = @_;
 
+    my ($updated, $expiry_date, $get_updates);
+    if (-f $rst_exp) {
+        open my $in, '<', $rst_exp;
+        my $dt = date(<$in>);
+        $expiry_date = $dt->format("%D");
+        close $in;
+        $updated = get("$cgi/update_status");
+        $get_updates = $dt < today();
+    }
     $c->stash->{reports} = [
         model($c, 'Report')->search(
             undef,
@@ -54,7 +90,12 @@ sub list : Local {
             },
         )
     ];
-    $c->stash->{template} = "report/list.tt2";
+    stash($c,
+        updated     => $updated,
+        expiry_date => $expiry_date,
+        get_updates => $get_updates,
+        template    => "report/list.tt2",
+    );
 }
 
 sub delete : Local {
@@ -71,8 +112,6 @@ sub view : Local {
     my ($self, $c, $id, $opt_inout) = @_;
 
     my $report = model($c, 'Report')->find($id);
-    $c->stash->{format_verbose} = $self->formats->{$report->format()};
-    $c->stash->{report} = $report;
     if (defined $opt_inout) {
         $c->stash->{mmc_report} = $opt_inout eq 'mmc';
         $c->stash->{mmi_report} = $opt_inout eq 'mmi';
@@ -81,26 +120,49 @@ sub view : Local {
     else {
         $c->stash->{mmc_report} = 1;
     }
-    $c->stash->{affils} = [
-        $report->affils(
-            undef,
-            {order_by => 'descrip'}
-        )
-    ];
-    $c->stash->{last_run}  = date($report->last_run())  || "";;
-    $c->stash->{template} = "report/view.tt2";
+    my $fmt = $report->format();
+    stash($c,
+        report => $report,
+        optin => (none { $_ == $fmt } (
+                     ADDR_CODE,
+                     EMAIL_CODE,
+                     NAME_HOME_WORK_CELL,
+                     NAME_ADDR_LINK,
+                     RAW,
+                     )),
+        format_verbose => $format_desc[$fmt],
+        affils => [
+            $report->affils(
+                undef,
+                {order_by => 'descrip'}
+            )
+        ],
+        last_run => date($report->last_run()) || "",
+        template => "report/view.tt2",
+    );
 }
 
 sub update : Local {
     my ($self, $c, $id) = @_;
 
     my $report = model($c, 'Report')->find($id);
-    $c->stash->{report} = $report;
-    $c->stash->{'format_selected_' . $report->format()} = 'selected';
-    $c->stash->{'rep_order_selected_' . $report->rep_order()} = 'selected';
-    $c->stash->{affil_table} = affil_table($c, $report->affils());
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "report/create_edit.tt2";
+    my $cur_fmt = $report->format;
+    my $format_opts = "";
+    for (my $i = 1; $i < @format_desc; ++$i) {
+        $format_opts .= "<option value=$i"
+                     .  (($i == $cur_fmt)? " selected": "")
+                     .  ">$format_desc[$i]</option>\n"
+                     ;
+    }
+    stash($c,
+        report => $report,
+        format_opts => $format_opts,
+        'format_selected_' . $report->format() => 'selected',
+        'rep_order_selected_' . $report->rep_order() => 'selected',
+        affil_table => affil_table($c, $report->affils()),
+        form_action => "update_do/$id",
+        template    => "report/create_edit.tt2",
+    );
 }
 
 my %hash;
@@ -226,11 +288,37 @@ sub create_do : Local {
 sub run : Local {
     my ($self, $c, $id) = @_;
 
+    my $report = model($c, 'Report')->find($id);
+    my $format = $report->format();
     my $share    = $c->request->params->{share};
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
     my $incl_mmc = $c->request->params->{incl_mmc};
-    my $opt_inout = $c->request->params->{report_type};
+    my $opt_inout = $c->request->params->{report_type} || "";
+    my $append    = $c->request->params->{append} || "";
+    my $expiry_date = $c->request->params->{expiry_date} || "";
+
+    if (($format == EMAIL_CODE || $format == ADDR_CODE)
+        && ! $expiry_date
+    ) {
+        error($c,
+            "missing Expiry Date",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    if ($expiry_date) {
+        my $dt = date($expiry_date);
+        if (!$dt) {
+            error($c,
+                "illegal date format: $expiry_date",
+                "gen_error.tt2",
+            );
+            return;
+        }
+        $expiry_date = $dt->as_d8();
+    }
+
     my $pref = "none";
     if ($opt_inout eq 'mmi') {
         $pref = "mmi_";
@@ -238,9 +326,6 @@ sub run : Local {
     elsif ($opt_inout eq 'mmc') {
         $pref = "";
     }
-
-    my $report = model($c, 'Report')->find($id);
-    my $format = $report->format();
 
     my $order = $report->rep_order();
     my $fields = "p.*";
@@ -255,20 +340,24 @@ sub run : Local {
     if ($report->end_update_cutoff) {
         $restrict .= "date_updat <= " . $report->end_update_cutoff . " and ";
     }
+    # if we have ADDR_CODE or EMAIL_CODE do not
+    # restrict it by opt_inout.   We're asking them to
+    # update their demographics.  We're not pestering them with ads.
+    #
     if ($pref ne 'none' &&
-        (   $format == 1
-         || $format == 2
-         || $format == 4
-         || $format == 7
-         || $format == 9
+        (   $format == TO_CMS
+         || $format == NAME_ADDR_EMAIL
+         || $format == TO_VISTAPRINT
+         || $format == FIRST_SANS_CMS
+         || $format == CMS_SANS_EMAIL
         )
     ) {
         $restrict .= "${pref}snail_mailings = 'yes' and ";
     }
     if ($pref ne 'none' &&
-        (   $format == 2
-         || $format == 5
-         || $format == 10
+        (   $format == NAME_ADDR_EMAIL
+         || $format == JUST_EMAIL
+         || $format == LAST_FIRST_EMAIL
         )
     ) {
         $restrict .= "${pref}e_mailings = 'yes' and ";
@@ -281,16 +370,20 @@ sub run : Local {
     }
 
     my $just_email = "";
-    if ($format == 5) {   # Just Email
+    if ($format == JUST_EMAIL) {
         # we only want non-blank emails
         $just_email = "email != '' and ";
         $order = "email";
         $fields = "email";
     }
-    elsif ($format == 9) {
-        $just_email = "email = '' and ";    # sans Email (misnamed oh well)
+    elsif ($format == EMAIL_CODE) {
+        # we only want non-blank emails
+        $just_email = "email != '' and ";
     }
-    elsif ($format == 10) {   # Last, First, Email
+    elsif ($format == CMS_SANS_EMAIL || $format == ADDR_CODE) {
+        $just_email = "email = '' and ";    # sans Email (misnamed, oh well)
+    }
+    elsif ($format == LAST_FIRST_EMAIL) {
         # we only want non-blank emails
         $just_email = "email != '' and ";
         $order = "last";
@@ -322,7 +415,7 @@ sub run : Local {
         $affil_bool = "and (ap.p_id = p.id and ap.a_id in ($affils))";
     }
 
-# ??? without the distinct below
+# ??? without the distinct below???
 # we get a row for each person and each affil that matches
 # i need an sql expert to explain this to me.
 
@@ -343,13 +436,13 @@ EOS
     }
     my @people = @{ Person->search($sql) };
     for my $p (@people) {
-        if ($format == 7) {
+        if ($format == FIRST_SANS_CMS) {
             $p->{name} = $p->{first} . " "
                        . (($p->{sanskrit} && $p->{sanskrit} ne $p->{first})?
                               $p->{sanskrit} . " " : "")
                        . $p->{last};
         }
-        elsif ($format != 5) {      # not just email
+        elsif ($format != JUST_EMAIL) {      # not just email
             $p->{name} = $p->{first} . " " . $p->{last};
         }
     }
@@ -461,10 +554,14 @@ EOS
         @people = @people[@subset];    # slice!
     }
     if ($count) {
-        $c->stash->{message} = "Record count = " . scalar(@people);
-        $c->stash->{share}    = $share;
-        $c->stash->{collapse} = $collapse;
-        $c->stash->{incl_mmc} = $incl_mmc;
+        stash($c,
+            message  => "Record count = " . scalar(@people),
+            share    => $share,
+            collapse => $collapse,
+            incl_mmc => $incl_mmc,
+            append   => $append,
+            expiry_date => date($expiry_date)->format("%D"),
+        );
         view($self, $c, $id, $opt_inout);
         return;
     }
@@ -474,7 +571,7 @@ EOS
     $report->update({
         last_run => tt_today($c),
     });
-    if ($format == 4) {       # VistaPrint
+    if ($format == TO_VISTAPRINT) {
         for my $p (@people) {
             # accomodate partners
             if ($p->{name} =~ m{(.*)(\&.*)}) {
@@ -495,7 +592,7 @@ EOS
     }
     # use the template toolkit outside of the Catalyst mechanism
     my $tt = Template->new({
-        INTERPOLATE => 1,
+        INTERPOLATE  => 1,
         INCLUDE_PATH => 'root/src/report',
         EVAL_PERL    => 0,
     });
@@ -505,7 +602,129 @@ EOS
          "root/static/$fname.$suf",
     ) or die "error in processing template: "
              . $tt->error();
+    if ($format == EMAIL_CODE || $format == ADDR_CODE) {
+        if (my $status = _gen_and_send_data_for_www(
+                             \@people,
+                             $append,
+                             $expiry_date
+                         )
+        ) {
+            error($c,
+                $status,
+                "gen_error.tt2",
+            );
+            return;
+        }
+    }
     $c->response->redirect($c->uri_for("/static/$fname.$suf"));
+}
+
+sub _gen_and_send_data_for_www {
+    my ($people_aref, $append, $expiry_date) = @_;
+
+    open my $exp_out, '>', $rst_exp
+        or return "no $rst_exp";
+    print {$exp_out} "$expiry_date\n";
+    close $exp_out;
+
+    my $fname = "people_data.sql";
+    open my $out, '>', "/tmp/$fname"
+        or return "no open: $!";
+    print {$out} <<'EOF' if ! $append;
+drop table if exists people_data;
+create table people_data (
+    first text, last text, addr1 text, addr2 text, city text,
+        st_prov text, zip_post text, country text,
+    tel_cell text, tel_home text, tel_work text,
+    email text, sex text, id integer,
+    e_mailings text, snail_mailings text, mmi_e_mailings text,
+        mmi_snail_mailings text,
+    share_mailings text,
+    secure_code text,
+    updated text default ''
+);
+EOF
+    # there are no double quotes anywhere in the data, right?
+    # I added sub dquote_clear in Listing.pm to ensure this.
+    #
+    for my $p (@$people_aref) {
+        print {$out} "insert into people_data values (";
+        for my $f (qw/
+            first last addr1 addr2 city st_prov zip_post country
+            tel_cell tel_home tel_work
+            email sex id
+            e_mailings snail_mailings mmi_e_mailings mmi_snail_mailings
+            share_mailings secure_code
+        /) {
+            my $val = $p->{$f};
+            if (! defined $val) {
+                $val = "";
+            }
+            print {$out} qq["$val",];
+        }
+        print {$out} qq["");\n];
+    }
+    close $out;
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive})
+        or return "no Net::FTP->new";
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or return "no login";
+    $ftp->cwd('www/cgi-bin')
+        or return "no cd";
+    $ftp->ascii()
+        or return "no ascii";
+    $ftp->put("/tmp/$fname", $fname)
+        or return "no put 1";
+    $ftp->put($rst_exp, $exp)
+        or return "no put 2";
+    $ftp->quit();
+    if (get("$cgi/load_people_data") ne "done\n"
+    ) {
+        return "no load";
+    }
+    return '';   # all okay
+}
+
+sub get_updates : Local {
+    my ($self, $c) = @_;
+
+    if (my $status = _get_updates()) {
+        error($c,
+            $status,
+            "gen_error.tt2",
+        );
+        return;
+    }
+    $c->forward('list');
+}
+
+sub _get_updates {
+    if (get("$cgi/get_updates") ne 'gotten') {
+        return "no get";
+    }
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive})
+        or return "no Net::FTP->new";
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or return "no login";
+    $ftp->cwd('www/cgi-bin')
+        or return "no cd";
+    $ftp->ascii()
+        or return "no ascii";
+    $ftp->get("updates.sql", "root/static/updates.sql")
+        or return "no ftp get";
+    $ftp->quit();
+    if (-d "/Users") {
+        system("/usr/local/bin/sqlite3"
+               . " $ENV{HOME}/Reg/retreatcenter.db"
+               . " <$ENV{HOME}/Reg/root/static/updates.sql");
+    }
+    else {
+        system("/usr/bin/mysql --user=sahadev --password=JonB --database=reg2"
+               . " <$ENV{HOME}/Reg/root/static/updates.sql");
+    }
+    return '';      # all okay
 }
 
 1;

@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw/:standard/;
+use DBI;
+
+print header();
+
+my $dbh = DBI->connect(
+    'dbi:SQLite:dbname=people_data', '', '',
+    { RaiseError => 1, AutoCommit => 1 }
+) or die "cannot connect to database\n";
+
+my $sth = $dbh->prepare(
+    "select * from people_data where updated = 1");
+$sth->execute();
+open my $out, '>', "updates.sql";
+while (my $p = $sth->fetchrow_hashref()) {
+    my $sql = "update people set";
+    FIELD:
+    for my $f (sort keys %$p) {
+        next FIELD if $f eq 'id' || $f eq 'secure_code' || $f eq 'updated';
+        $sql .= qq[ $f = "$p->{$f}",];
+    }
+    $sql =~ s{, \z}{}xms;
+    $sql .= qq[ where secure_code = "$p->{secure_code}"];
+    print {$out} "$sql;\n";
+}
+close $out;
+print "gotten";

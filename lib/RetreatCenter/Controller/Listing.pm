@@ -2080,4 +2080,45 @@ EOH
     );
 }
 
+#
+# remove any double quotes in the people data
+# first, last, addr1, addr2, city, country, email
+# are the fields where they might occur.
+#
+sub dquote_clear : Local {
+    my ($self, $c) = @_;
+
+    my $dq = '%"%';
+    PERSON:
+    for my $p (model($c, 'Person')->search({
+                -or => [
+                   first    => { like => $dq },
+                   last     => { like => $dq },
+                   addr1    => { like => $dq },
+                   addr2    => { like => $dq },
+                   city     => { like => $dq },
+                   country  => { like => $dq },
+                   email    => { like => $dq },
+                ]
+               })
+    ) {
+        $p->update({
+            first   => _dqclear($p->first),
+            last    => _dqclear($p->last),
+            addr1   => _dqclear($p->addr1),
+            addr2   => _dqclear($p->addr2),
+            city    => _dqclear($p->city),
+            country => _dqclear($p->country),
+            email   => _dqclear($p->email),
+        });
+    }
+    $c->response->redirect($c->uri_for('/listing/people'));
+}
+
+sub _dqclear {
+    my ($s) = @_;
+    $s =~ s{"}{}xmsg;
+    $s;
+}
+
 1;

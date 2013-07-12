@@ -2700,7 +2700,7 @@ EOH
                     && !$reg->letter_sent)?
                        "<img src=/static/images/envelope.jpg height=$ht>"
                   :    "";
-        if ($reg->leader_assistant || $reg->comment =~ /STAFF/) {
+        if ($reg->leader_assistant) {
             my $pref = ($reg->person->sex eq 'F'? "fe": "");
             $mark = "$mark <img src=/static/images/${pref}male_leader.png>";
         }

@@ -1,5 +1,12 @@
 <h2>Reports</h2>
 <a href=/report/create>Add</a>
+[% IF expiry_date %]
+<span style="margin-left: 1in">Expiry Date: $expiry_date</span>
+<span style="margin-left: .5in">$updated records updated.</span>
+[% IF get_updates %]
+<span style="margin-left: .5in"><a href=/report/get_updates>Get Updated Records</a></span>
+[% END %]
+[% END %]
 <ul>
 <table cellpadding=3 border=0 width=900>
 <col width=500>

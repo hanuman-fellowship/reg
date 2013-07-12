@@ -178,7 +178,7 @@ $ms->SendLineEnc($email);
 $ms->Close() or die "error: $Mail::Sender::Error";
 
 # and inform the program office of this online registration
-my $msg = "Online registration - $P{x_fname} $P{x_lname} in $P{x_title}";
+my $msg = "Online registration - $P{x_fname} $P{x_lname} - $P{x_title}";
 $ms->Open({
     to       => 'jon@suecenter.org, emily@mountmadonna.org',
     from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
