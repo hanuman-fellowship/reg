@@ -15,6 +15,41 @@ my $dbh = DBI->connect(
 ) or die "cannot connect to database\n";
 
 my %P = Vars();
+for my $f (qw/
+    e_mailings
+    snail_mailings
+    mmi_e_mailings
+    mmi_snail_mailings
+    share_mailings
+/) {
+    if (! exists $P{$f}) {
+        $P{$f} = '';
+    }
+}
+
+#
+# take the parameters, concatenate them,
+# extract the digits in order and suffix
+# them with the first letter.
+#
+# this is used during the efforts to locate
+# a duplicate entry.   If an address is
+# spelled differently or road instead of rd
+# it will have the same nsquished value.
+#
+# this is a poor man's MD5.
+# or an address-specific MD5.
+#
+sub nsquish {
+    my ($addr1, $addr2, $zip) = @_;
+    my $s = uc($addr1 . $addr2 . $zip);
+    my $n = $s;
+    $n =~ s{\D}{}g;
+    $s =~ s{[^A-Z]}{}g;
+    $s = substr($s, 0, 3);
+    return ($n . $s);
+}
+$P{akey} = nsquish($P{addr1}, $P{addr2}, $P{zip_post});
 
 my $sth = $dbh->prepare(
     "select count(*) from people_data where secure_code = '$P{secure_code}'");
@@ -30,15 +65,58 @@ for my $f (sort keys %P) {
     next FIELD if $f eq 'secure_code';
     $sql .= qq[ $f = "$P{$f}",];
 }
-$sql .= " updated = 1 ";
+$sql .= " status = 1 ";
 $sql .= qq[ where secure_code = "$P{secure_code}"];
 $sth = $dbh->prepare($sql) or die "oops";
 $sth->execute();
+
+my $prefs = "";
+if ($P{e_mailings} || $P{snail_mailings}) {
+     $prefs = "<p>We will include you on occasional mailings about MMC via ";
+     if ($P{e_mailings}) {
+        $prefs .= "e-mail";
+     }
+     if ($P{snail_mailings}) {
+        if ($P{e_mailings}) {
+            $prefs .= " and ";
+        }
+        $prefs .= "snail mail";
+     }
+     $prefs .= ".";
+}
+else {
+    $prefs .= "<p>We will <b>not</b> include you on occasional mailings"
+           .  " about MMC.";
+}
+if ($P{mmi_e_mailings} || $P{mmi_snail_mailings}) {
+     $prefs .= "<p>We will include you on occasional mailings about MMI via ";
+     if ($P{mmi_e_mailings}) {
+        $prefs .= "e-mail";
+     }
+     if ($P{mmi_snail_mailings}) {
+        if ($P{mmi_e_mailings}) {
+            $prefs .= " and ";
+        }
+        $prefs .= "snail mail";
+     }
+     $prefs .= ".";
+}
+else {
+    $prefs .= "<p>We will <b>not</b> include you on occasional mailings"
+           .  " about MMI.";
+}
+$prefs .= "<p>We will "
+     . ($P{share_mailings}? "": "<b>not</b> ")
+     . "share your contact information with MMC affiliates.";
+
 
 my $tt = Template->new(
     INTERPOLATE => 1,
 );
 $tt->process(
     'update2.tt2',
-    { p => \%P },
+    {
+        p     => \%P,
+        prefs => $prefs,
+    },
 );

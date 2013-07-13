@@ -1,2 +1,3 @@
-[% FOREACH p IN people %]$p.last|$p.first|$p.email
+[% FOREACH p IN people -%]
+$p.last|$p.first|$p.email
 [% END %]

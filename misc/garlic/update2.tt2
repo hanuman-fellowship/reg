@@ -2,6 +2,10 @@
 
 <head>
 <style>
+body {
+    margin-left: .3in;
+    margin-top: .3in;
+}
 th {
     text-align: right;
 }
@@ -13,32 +17,45 @@ body, th, td {
 </head>
 
 <body>
-Your data now looks like:
+<img src="http://www.mountmadonna.org/Gif/navbar_home.gif">
+<p>
+Thank you.  Your information now looks like this:
+<p>
 <table cellpadding=5>
 
 <tr>
 <th>First</th>
 <td>$p.first</td>
+<th>Sex</th>
+<td>[% IF p.sex == 'F' %]Female[% ELSE %]Male[% END %]</td>
 </tr>
 
 <tr>
 <th>Last Name</th>
 <td>$p.last</td>
+<th>Cell</th>
+<td>$p.tel_cell</td>
 </tr>
 
 <tr>
 <th>Address</th>
 <td>$p.addr1</td>
+<th>Home</th>
+<td>$p.tel_home</td>
 </tr>
 
 <tr>
 <th></th>
 <td>$p.addr2</td>
+<th>Work</th>
+<td>$p.tel_work</td>
 </tr>
 
 <tr>
 <th>City</th>
 <td>$p.city</td>
+<th>Email</th>
+<td>$p.email</td>
 </tr>
 
 <tr>
@@ -49,6 +66,12 @@ Your data now looks like:
 <tr>
 <th>Zip/Postal Code</th>
 <td>$p.zip_post</td>
+</tr>
+
+<tr>
+<td colspan=4>
+$prefs
+</td>
 </tr>
 
 <tr>

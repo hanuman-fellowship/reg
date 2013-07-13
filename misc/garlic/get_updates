@@ -15,8 +15,7 @@ my $dbh = DBI->connect(
     { RaiseError => 1, AutoCommit => 1 }
 ) or die "cannot connect to database\n";
 
-my $sth = $dbh->prepare(
-    "select * from people_data where updated = 1");
+my $sth = $dbh->prepare("select * from people_data where status = 1");
 $sth->execute();
 open my $out, '>', "updates.sql";
 my $today = today()->as_d8();
@@ -24,7 +23,7 @@ while (my $p = $sth->fetchrow_hashref()) {
     my $sql = "update people set";
     FIELD:
     for my $f (sort keys %$p) {
-        next FIELD if $f eq 'id' || $f eq 'secure_code' || $f eq 'updated';
+        next FIELD if $f eq 'id' || $f eq 'secure_code' || $f eq 'status';
         $sql .= qq[ $f = "$p->{$f}",];
     }
     $sql .= qq[ date_updat = "$today"];
@@ -32,4 +31,6 @@ while (my $p = $sth->fetchrow_hashref()) {
     print {$out} "$sql;\n";
 }
 close $out;
+$sth = $dbh->prepare("update people_data set status = 2 where status = 1");
+$sth->execute();
 print "gotten";

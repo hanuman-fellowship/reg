@@ -12,8 +12,12 @@ my $dbh = DBI->connect(
     { RaiseError => 1, AutoCommit => 1 }
 ) or die "cannot connect to database\n";
 
-my $sth = $dbh->prepare(
-    "select count(*) from people_data where updated = 1");
+my $sth = $dbh->prepare("select count(*) from people_data where status = 1");
 $sth->execute();
-my ($count) = $sth->fetchrow_array();
-print header(), "$count\n";
+my ($count1) = $sth->fetchrow_array();
+
+$sth = $dbh->prepare("select count(*) from people_data where status = 2");
+$sth->execute();
+my ($count2) = $sth->fetchrow_array();
+
+print header(), "$count1 updated, $count2 total\n";

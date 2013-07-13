@@ -73,14 +73,13 @@ my $cgi = "http://www.mountmadonna.org/cgi-bin";
 sub list : Local {
     my ($self, $c) = @_;
 
-    my ($updated, $expiry_date, $get_updates);
+    my ($status, $expiry_date);
     if (-f $rst_exp) {
         open my $in, '<', $rst_exp;
         my $dt = date(<$in>);
         $expiry_date = $dt->format("%D");
         close $in;
-        $updated = get("$cgi/update_status");
-        $get_updates = $dt < today();
+        $status = get("$cgi/update_status");
     }
     $c->stash->{reports} = [
         model($c, 'Report')->search(
@@ -91,9 +90,8 @@ sub list : Local {
         )
     ];
     stash($c,
-        updated     => $updated,
+        status      => $status,
         expiry_date => $expiry_date,
-        get_updates => $get_updates,
         template    => "report/list.tt2",
     );
 }
@@ -641,7 +639,8 @@ create table people_data (
         mmi_snail_mailings text,
     share_mailings text,
     secure_code text,
-    updated text default ''
+    akey text,
+    status text default ''
 );
 EOF
     # there are no double quotes anywhere in the data, right?
@@ -654,7 +653,7 @@ EOF
             tel_cell tel_home tel_work
             email sex id
             e_mailings snail_mailings mmi_e_mailings mmi_snail_mailings
-            share_mailings secure_code
+            share_mailings secure_code akey
         /) {
             my $val = $p->{$f};
             if (! defined $val) {

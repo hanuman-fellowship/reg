@@ -2,46 +2,79 @@
 
 <head>
 <style>
+body {
+    margin-left: .3in;
+    margin-top: .3in;
+}
 th {
     text-align: right;
 }
-body, th, td input {
+body, th, td, td input {
     font-family: Arial;
     font-size: 14pt;
 }
 </style>
+<script type="text/javascript">
+var newwin;
+function popup(url, height, width) {
+    newwin = window.open(
+        url, 'reg_search_help',
+        'height=' + height + ',width=' + width +', scrollbars'
+    );
+    if (window.focus) {
+        newwin.focus();
+    }
+    newwin.moveTo(700, 0);
+}
+</script>
 </head>
 
 <body>
+<img src="http://www.mountmadonna.org/Gif/navbar_home.gif">
+<p>
 <form action="http://www.mountmadonna.org/cgi-bin/update2" method=POST>
 <input type=hidden name=secure_code value="$p.secure_code">
-This is what we have for you now:
+This is the information we now have for you.  Please verify and correct it.
 <p>
 <table cellpadding=5>
 
 <tr>
 <th>First</th>
 <td><input type=text name=first value="$p.first"></td>
+<th>Sex</th>
+<td colspan=2>
+<input type=radio name=sex value="F" [% IF p.sex == "F" %]checked[% END %]>Female
+&nbsp;&nbsp;
+<input type=radio name=sex value="M" [% IF p.sex == "M" %]checked[% END %]>Male
+</td>
 </tr>
 
 <tr>
 <th>Last</th>
 <td><input type=text name=last value="$p.last"></td>
+<th>Cell</th>
+<td><input type=text name=tel_cell value="$p.tel_cell"></td>
 </tr>
 
 <tr>
 <th>Address</th>
-<td><input type=text name=addr1 value="$p.addr1"></td>
+<td><input type=text name=addr1 value="$p.addr1" size=30></td>
+<th>Home</th>
+<td><input type=text name=tel_home value="$p.tel_home"></td>
 </tr>
 
 <tr>
 <th></th>
-<td><input type=text name=addr2 value="$p.addr2"></td>
+<td><input type=text name=addr2 value="$p.addr2" size=30></td>
+<th>Work</th>
+<td><input type=text name=tel_work value="$p.tel_work"></td>
 </tr>
 
 <tr>
 <th>City</th>
 <td><input type=text name=city value="$p.city"></td>
+<th>Email</th>
+<td><input type=text name=email value="$p.email" size=40></td>
 </tr>
 
 <tr>
@@ -54,6 +87,33 @@ This is what we have for you now:
 <td><input type=text name=zip_post value="$p.zip_post"></td>
 </tr>
 
+<tr>
+<th><input type=checkbox name=e_mailings
+     value=yes [% IF p.e_mailings %]checked[% END %]></th>
+<td colspan=3>Yes, send me occasional e-mail announcements about MMC.</td>
+</tr>
+<tr>
+<th><input type=checkbox name=snail_mailings
+     value=yes [% IF p.snail_mailings %]checked[% END %]></th>
+<td colspan=3>Yes, send me postcards and brochures in the mail about MMC.</td>
+</tr>
+<tr>
+<th><input type=checkbox name=mmi_e_mailings
+     value=yes [% IF p.mmi_e_mailings %]checked[% END %]></th>
+<td colspan=3>Yes, send me occasional e-mail announcements about MMI.
+<span style="margin-left: .4in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215,550)">What is MMI?</a></span></li>
+</td>
+</tr>
+<tr>
+<th><input type=checkbox name=mmi_snail_mailings
+     value=yes [% IF p.mmi_snail_mailings %]checked[% END %]></th>
+<td colspan=3>Yes, send me postcards and brochures in the mail about MMI.</td>
+</tr>
+<tr>
+<th><input type=checkbox name=share_mailings
+     value=yes [% IF p.share_mailings %]checked[% END %]></th>
+<td colspan=3>You may share my address with MMC affiliates.</td>
+</tr>
 <tr>
 <th></th>
 <td><input type=submit style="background-color: lightgreen"

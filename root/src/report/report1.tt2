@@ -1,2 +1,3 @@
-[% FOREACH p IN people %][% p.name _'|'_ p.addrs _'|'_ p.city _'|'_ p.st_prov _'|'_ p.zip_post _'|'_ p.country _ '|' _ p.id %]
+[% FOREACH p IN people -%]
+$p.name|$p.addrs|$p.city|$p.st_prov|$p.zip_post|$p.country$p.id
 [% END %]

@@ -1,0 +1,236 @@
+Jul 4 4:00-6:10, 7:15-8:30
+    gathering requirements:
+
+    ## instead of a Bcc notification send a separate letter with
+        ## the person's name - program in the subject.  nothing needed in body?
+        ## in email to Jayanti, Emily, Jeremy - about online regs
+            ## just person's name and the program
+        ## after July 7th just Emily
+        ## make the people to notify about online regs
+            ## a configurable String - that is sent up to mountmadonna.org
+            ## for use there...
+    when reserved clusters cause a "No Room in the Inn" notify
+        the user of those reserved clusters. both program and rental housing
+    mySQL replication - Shantam with Ryder?
+        would $ motivate Shantam more?
+    more logging of online reg process
+    email from Jayanti
+        - manual registration - postmark is before online regs?
+        - conf notes disappear?
+        - do attached docs show up on staging or not?
+        ## - removing a reserved cluster on a rental removes all
+            ## of its rooms from the rental grid?   shouldn't.
+        - Founding Life members can take any program not just
+            PRs and Retreats
+        - auto setting of 12 nights for members on 12/31 11:59
+        - adjacent rental - reflected in the comings and goings list.
+        - no housing in SH if registration is in a program that
+            doesn't have SH Main as a meeting space?
+        - no PRs - what dates does it imply?
+
+        no email:
+
+        2priority - If docs attached to program reference the link(s) in the conf letter.
+            inform Genevieve, too.
+        a leader is needed for brochure generation???
+            does Jamal use this or not?
+        ## in AllRegs list - an icon for Leader, Assistant or for
+            ## others with STAFF in their Comment field.
+    ALL the MMI extra accounts - needed????
+        ask Brajesh, Genevieve, Lila
+    email from Barnaby
+        - popup reminder to check the lunch box if arrival time is before lunch
+        - center tent sites _always_ available as own tent
+    email from Jamal
+        generate a list of email addresses of people who
+            would be left out by a global inactivate?
+            still needed if we do this project?
+    email from Emily
+        ## - outstanding balances in the future should not pop up
+        - spell checker in tinyMCE
+        ## - put program name up front in late notice.
+            ## Welcome to Mount Madonna Center for the program '...'!
+            ## or
+            ## Welcome to Mount Madonna Center for your personal retreat!
+    tell Jeremy, Jayanti about using .pdf instead of .doc
+    requirements via Genevieve:
+        via email
+            ## - about office hours different for MMI
+            - if outstanding balance popup - insert into the comment
+        via discussion
+            - a 'flowchart' of how to put a StandAlone course on the web
+                who does what, when.
+            - which programs have this Affil?  a link on desc of Affil 
+            - Misc tab on Program - a Submit at bottom - green!
+            - AllRegs require a GL#?
+            - all booleans - null vs empty - update it.
+                and the mk* files in mig/
+            - program participant list - include the count
+            - Hari Pallatheri - registration for bodywork intensive
+                why is Manual Reg at 12:00 am?
+                what's the diff between that and Reg created?
+                why 2 history notes?
+            - conf letter for MMI-D-AY106 6/13
+                reg start/end is WRONG
+                prog start/end times
+                3priority - for auditors or stand alone courses
+                    the conf letter should use start end from program record
+                    for normal DCM people use fixed times that is there now.
+            - if leader's housing pref is Not Needed don't put Needs Housing
+            - MMI online payment clobbers auto charges - no good
+                and it adds a new charge for what you requested
+                - add a new type of online payment - For The Balance
+                    for these do not add a new charge
+                    this should be the *default* type.
+            - if online payment request for program that has passed
+                don't allow it.   email should say that it has expired.
+            - add a link to purge all old unprocessed requests from the list
+                auto cron job to do this?
+            - general reports - make the desc wider, the zip ranges can wrap
+                AND have a date range for the last contact date cutoff
+            - Program view - Email -  Cc in the form, gotten in sub email_all_do, but not used.
+                also - not To: lala@nono.com
+    email from Brajesh
+        - initial deposit for DCM program - to what GL Number?
+            later payments (even for a deposit) go to another GL number
+    online membership payments - email from Swapna, Vishwamitra
+    email from Jeremy, Brajesh
+        insert clause about damage in rental contract
+    ## NoMailings instead of Inactivate/Activate 
+        ## and remove the Inactive checkbox (no leave it)
+            ## in create_edit.tt2 but leave it in view.tt2
+        ## list of 34 people who were Inactivated in 2013
+            ## make them NoMailings instead and
+            ## keep a Deceased person Inactive
+        ## A deceased person should never be made active.
+        Deceased should automatically opt-out - yes by being Inactive.
+    Jamal says sometimes the change to Report format 6 or 7 does not stick.
+
+    MEMBERSHIP PROJECT
+    ==================
+    entering a membership payment (in Member area) should
+        also automatically enter a payment for the person
+        to the Membership extra account (for accounting purposes)
+    must be sent by DEADLINE 4/19
+    Swapna is leaving for India 4/9 
+    Lori will take over during that time.
+    members can pay online and the payments come in the usual way
+        and are listed like "Online (5)" on the initial membership
+        page.   Click on the name and you go to the payment page
+        to fill in a few dates, etc - as if you're entering
+        it manually.  Can some of those dates be pre-filled?
+
+        the online form could include General ($50) and Sponsor ($600).
+        by default they'll be offered their current status.
+        they can change that to the other.  perhaps include
+        their current total (sponsor) towards a Life membership.
+        we could include the date of their last payment and how much.
+
+        We could also have a place there for an extra amount of a 
+        payment/donation to an extra account named "Donation--MMC General"?
+        Or "Temple" or "The Green Scene" or "Miscellaneous" (not this).
+
+    MAILING LIST UPDATE PROJECT
+    ===========================
+    Jamal - automatic emailing to everyone with an email address
+    to allow them to update their contact info on a web form.  including
+    choosing which affiliations they want.  and mailing list prefs.
+    security?  a random code that is unguessable.
+    the sending of the letters will upload a lot of data (keys are the codes
+    and values are the person's info simply encrypted somehow) to
+    mountmadonna.org that is referenced when the online form is filled in.
+    the data file is in a subdir of cgi-bin
+
+    continuing:
+
+    https on garlic for this
+    add email or not to tally by year
+    in General Reports - Opt In/Out => MMI/MMC/None
+    ask Jamal for an example of the templating
+        system that CMS and the email service use
+    email - a link https://www.mountmadonna.org/cgi-bin/list?code=12345trHiJq
+        and an action of list_do
+    printed - direct them to a form to enter their code
+        (just the 6 letters - should be okay), right?
+        like: https://www.mountmadonna.org/list or something
+        then the action will take them to the filled in form
+            with the action for submitting it.
+    cron job to get the data - separate from grab_new - still every 15 mins
+        with log and report visible from within Reg
+
+    FOR DEVELOPERS
+    ==============
+    add dispatch, tt, DBIx::Class, adding new table/column
+    strings, Perl Best Practices
+    my on kali BEFORE push of code
+
+    reg history from logicalpoetry site, email thread
+
+    BARNABY
+    =======
+    prevent oversight of lunch thingy
+Jul 7 1:30-2:40, 9:45-12:00
+    what happens when you un-reserve a cluster that a Rental had?
+    better letter for online regs
+    all kinds of things relating to People and Reports
+        active/inactive, NoMailings, cutoff end date
+        boolean fields being not null default '';
+Jul 8 12:10-1:50, 7:35-9:00
+    editing the late notice to add the program
+    changing the subject line of confirmation letters to
+        include the person's name
+    no future outstanding balances
+    new string: online_notify - sent up to mountmadonna.org/cgi-bin
+
+    male, female images for (leaders, assistants, staff)
+    if a new registrant has an outstanding balance
+        insert a notice in front of any comment on the reg.
+Jul 9 3:55-5:20
+    beginning on distributed demographic update project (DDUP)
+        pro bono?
+Jul 10 4:45-5:30
+    question about Oaks Flat A-D in ClusterView and DailyPic
+Jul 10 5:55-8:15
+    continuing on DDUP
+    finished the generation of the .sql file to insert all chosen
+        people's records.
+    added listing/dquote_clear as well.
+Jul 11 3:40-4:50, 12:45-1:30
+    continuing on DDUP
+    adding a column 'updated' 1 or empty
+    sending the .sql to mountmadonna.com, invoking the CGI script
+        to load the data
+    append or not, check for errors in gen and loading
+    ???what about Sanskrit name????
+    ???online form needs careful wording, so does the email & letter we send.
+    ???what formats to do opt_inout?
+    ???what error checking?   what if someone clears first, last???
+    how about the end date?  where to store, where to use it?
+    ???report4 - Email To VistaPrint - suffix, title, company comes
+        between last and addr1 - so 4 tabs between - not 3
+        is it used?
+    next is actually getting the changes back to MMC
+        two links - one for # of changes
+                  - call CGI script to dump to .sql file
+                    set all updated to 0
+                    get that .sql ascii file
+                    apply it to the db.
+Jul 12 10:50-11:00
+    undoing STAFF
+Jul 12 11:00-1:15
+    expiry date for DDUP
+    get_updates
+    near done?   need to add tel numbers, optin, share statuses
+    what else?   recompute akey (on garlic side, please)!  and gender.
+        ask about sanskrit
+    ???show Jamal that date_updat was changed
+    ??? try entering a wrong code
+    ??? which affiliations should we offer them to sign up or show
+    ???         that they're already signed up?
+    ???cgi-bin/u/.... or cgi-bin/update?code=....
+    ??? beware - I modified the report\d+.tt2 files
+        especially report4 - see above
+Jul 12 9:50-10:20, 10:45-
+    refining DDUP
+    updated => status 0, 1, or 2
+    other fields, akey, mailings

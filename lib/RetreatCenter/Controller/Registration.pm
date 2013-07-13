@@ -749,10 +749,11 @@ sub _rest_of_reg {
                   ;
             stash($c, outstanding => 1);
             stash($c, outstanding_balance => $s);
-            $outstand = '<span style="background-color: #ff0000;">Outstanding balance of $'
+            $outstand = '<p><span style="background-color: #ff0000;">'
+                      . 'Outstanding balance of $'
                       . $r->balance
                       . " in " . $r->program->name
-                      . "</span><br>";
+                      . "</span></p><p>&nbsp;</p>";
             last REG;
         }
     }
@@ -2851,7 +2852,7 @@ sub update_confnote : Local {
         template   => "registration/confnote.tt2",
     );
 }
-sub update_confnote_do : Local{
+sub update_confnote_do : Local {
     my ($self, $c, $id) = @_;
 
     my $reg = model($c, 'Registration')->find($id);

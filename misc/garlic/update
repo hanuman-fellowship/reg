@@ -3,6 +3,7 @@ use strict;
 use warnings;
 
 use CGI qw/:standard/;
+print header();
 use DBI;
 use lib 'mylib/lib/perl5';
 use Template;
@@ -18,7 +19,7 @@ if (open my $in, '<', 'expiry_date.txt') {
     }
 }
 if (! $ok) {
-    print header(), "Sorry, The update period has passed.";
+    print "Sorry, The update period has passed.";
     exit;
 }
 
@@ -37,7 +38,11 @@ my $sth = $dbh->prepare(
     "select * from people_data where secure_code = '$code'");
 $sth->execute();
 my $person = $sth->fetchrow_hashref();
-print header();
+
+if (!$person) {
+    print "Your code '$code' is incorrect.  Please try again.";
+    exit;
+}
 
 my $tt = Template->new(
     INTERPOLATE => 1,
