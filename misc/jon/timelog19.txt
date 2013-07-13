@@ -230,7 +230,10 @@ Jul 12 11:00-1:15
     ???cgi-bin/u/.... or cgi-bin/update?code=....
     ??? beware - I modified the report\d+.tt2 files
         especially report4 - see above
+    ??? end cutoff date for Reports
 Jul 12 9:50-10:20, 10:45-
     refining DDUP
     updated => status 0, 1, or 2
     other fields, akey, mailings
+    ??? archive the updates.sql files you get - and rename
+        them with timestamp

@@ -153,10 +153,10 @@ sub update : Local {
                      ;
     }
     stash($c,
-        report => $report,
-        format_opts => $format_opts,
-        'format_selected_' . $report->format() => 'selected',
+        'format_selected_' . $report->format()       => 'selected',
         'rep_order_selected_' . $report->rep_order() => 'selected',
+        report      => $report,
+        format_opts => $format_opts,
         affil_table => affil_table($c, $report->affils()),
         form_action => "update_do/$id",
         template    => "report/create_edit.tt2",
@@ -244,9 +244,18 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{affil_table} = affil_table($c);
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "report/create_edit.tt2";
+    my $format_opts = "";
+    for (my $i = 1; $i < @format_desc; ++$i) {
+        $format_opts .= "<option value=$i"
+                     .  ">$format_desc[$i]</option>\n"
+                     ;
+    }
+    stash($c,
+        format_opts => $format_opts,
+        affil_table => affil_table($c),
+        form_action => "create_do",
+        template    => "report/create_edit.tt2",
+    );
 }
 
 #
