@@ -3,11 +3,13 @@ use strict;
 use warnings;
 
 use CGI qw/:standard/;
+use CGI::Carp qw/fatalsToBrowser/;
 print header();
 use DBI;
 use lib 'mylib/lib/perl5';
 use Template;
 use Date::Simple qw/date today/;
+use Mail::Sender;
 
 my $ok = 0;
 if (open my $in, '<', 'expiry_date.txt') {
@@ -20,6 +22,10 @@ if (open my $in, '<', 'expiry_date.txt') {
 }
 if (! $ok) {
     print "Sorry, The update period has passed.";
+    exit;
+}
+if (-s 'bad_code.txt' > 10) {
+    print "Sorry, the system is down.";
     exit;
 }
 
@@ -41,6 +47,45 @@ my $person = $sth->fetchrow_hashref();
 
 if (!$person) {
     print "Your code '$code' is incorrect.  Please try again.";
+    # since some nefarious person might do this repeatedly
+    # dump various info to later identify the possible hacker.
+    #
+    open my $out, '>>', 'bad_code.txt';
+    print {$out} "\n";      # max of 10 then system is down
+    close $out;
+    open my $out2, '>>', 'hacker_env.txt';
+    print {$out2} scalar(localtime()), "\n";
+    for my $k (qw/
+        REMOTE_ADDR
+        HTTP_COOKIE
+        HTTP_USER_AGENT
+    /) {
+        print {$out2} "$k => $ENV{$k}\n";
+    }
+    print {$out2} "\n";
+    close $out2;
+    if (-s 'bad_code.txt' == 10) {
+        my $ms = Mail::Sender->new({
+            smtp    => 'mail.suecenter.org',
+            port    => 50,
+            auth    => 'LOGIN',
+            authid  => 'test@suecenter.org',
+            authpwd => 'ABCdef108',
+        });
+        if (! $ms) {
+            die "no mail sender: ";
+        }
+        $ms->Open({
+            to       => 'jon@logicalpoetry.com',
+            from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
+            subject  => "SOS!  Update system has been HACKED!",
+            ctype    => "text/html",
+            encoding => "7bit",
+        })
+            or die "no Mail::Sender->Open $Mail::Sender::Error";
+        $ms->SendLineEnc("check out hacker_env.txt on mountmadonna.org");
+        $ms->Close() or die "error: $Mail::Sender::Error";
+    }
     exit;
 }
 

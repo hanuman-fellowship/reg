@@ -1,0 +1,26 @@
+<html>
+
+<head>
+<style>
+body {
+    margin-left: .3in;
+    margin-top: .3in;
+}
+body, input {
+    font-family: Arial;
+    font-size: 14pt;
+}
+</style>
+</head>
+
+<body>
+<img src="http://www.mountmadonna.org/Gif/navbar_home.gif">
+<p>
+<form name=form action="http://www.mountmadonna.org/cgi-bin/update" method=POST>
+Enter your 6 letter code: <input type=text name=code size=6 maximum=6>
+<p>
+and hit Return.
+</form>
+<script>
+document.form.secure_code.focus();
+</script>

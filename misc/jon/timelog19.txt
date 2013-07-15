@@ -231,9 +231,40 @@ Jul 12 11:00-1:15
     ??? beware - I modified the report\d+.tt2 files
         especially report4 - see above
     ??? end cutoff date for Reports
-Jul 12 9:50-10:20, 10:45-
+Jul 12 9:50-10:20, 10:45-1:00
     refining DDUP
     updated => status 0, 1, or 2
     other fields, akey, mailings
     ??? archive the updates.sql files you get - and rename
         them with timestamp
+    ???do we need https?  online reg1,2 are not.
+    pushed to kali, tested. yay!
+    ???another set of links to see the past reports
+        for each format
+    ???perhaps see all the changes before actually
+        making them?
+    ???no need for another date of DDUP update - date_updat
+        should suffice - can choose a subset based
+        on when their record was last updated...
+    ???for Addr, Code - a different form
+        to enter just the code like www.mountmadonna.org/update
+    ???another field with expiry date for each record
+        diff status on report/list
+        a separate clear function to remove all records
+            with an expired expiry date.
+Jul 13 9:30-10:30
+    showing DDUP to Jamal
+Jul 14 12:15-12:30
+    analyzing secure_code duplication
+        TODO: remove id from secure_codes, check for dups when
+            first assigning, two people have empty string for code.
+        Add date of last contact to Code reports?
+        check data entry for bad data
+Jul 15 10:00-10:20
+    talked with Barnaby about rental economy+
+    add an attribute to a room that is the housing cost level
+        that is fixed - not tied to the number of people in the room?
+        not sure. 
+Jul 15 1:45-
+    no id in front of secure code
+    online form for entering the 6 letter code

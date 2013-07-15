@@ -501,7 +501,7 @@ sub create_do : Local {
         date_entrd => $today_d8,
     });
     $p->update({
-        secure_code => $p->id . rand6(),
+        secure_code => rand6(),
     });
     if ($fname) {
         my $dir = "root/static/${type}_done/"
@@ -727,7 +727,7 @@ sub mkpartner : Local {
         date_updat => $today,
     });
     $p2->update({
-        secure_code => $p2->id . rand6(),
+        secure_code => rand6(),
     });
     $p1->update({
         id_sps     => $p2->id,

@@ -2052,7 +2052,7 @@ sub upload_yj_sheet_do : Local {
                     deceased           => q{},
                 });
                 $p->update({
-                    secure_code => $p->id . rand6(),
+                    secure_code => rand6(),
                 });
                 my $id = $p->id();
                 for my $ca (@cur_affils) {

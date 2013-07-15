@@ -420,7 +420,7 @@ sub _transmit {
                         ),
         });
         $person->update({
-            secure_code => $person->id . rand6(),
+            secure_code => rand6(),
         });
         $person_id = $person->id();
         model($c, 'AffilPerson')->create({
@@ -495,7 +495,7 @@ sub _cs_transmit {
                         ),
         });
         $person->update({
-            secure_code => $person->id . rand6(),
+            secure_code => rand6(),
         });
         $person_id = $person->id();
         $proposal->update({

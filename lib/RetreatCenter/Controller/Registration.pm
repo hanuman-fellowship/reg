@@ -512,7 +512,7 @@ EOH
             date_entrd => $today_d8,
         });
         $p->update({
-            secure_code => $p->id . rand6(),
+            secure_code => rand6(),
         });
     }
     else {

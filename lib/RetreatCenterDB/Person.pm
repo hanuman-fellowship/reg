@@ -267,7 +267,7 @@ mmi_snail_mailings - I want MMI snail mailings
 safety_form - this person has filled out a safety form
 sanskrit - Sanskrit name - if any.
     one can search for a person by their Sanskrit name
-secure_code - generated at record creation time - id + 6 random letters
+secure_code - generated at record creation time - 6 random letters
     Used for sending in email for online member payment and also
     for having people update their own People entry.
 sex - gender - M or F.
