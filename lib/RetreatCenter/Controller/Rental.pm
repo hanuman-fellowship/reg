@@ -1141,6 +1141,38 @@ sub del_booking : Local {
     my ($self, $c, $rental_id, $house_id) = @_;
 
     my $r = model($c, 'Rental')->find($rental_id);
+    my $h = model($c, 'House')->find($house_id);
+
+    # is there someone in the room?
+    # if so, you can't delete it!  they have to remove
+    # that person first.
+    #
+    #system("grab wait");        # make sure the local grid is current
+    # uncomment the above if Barnaby says that we
+    # should be very careful.
+    my $fgrid = get_grid_file($r->grid_code());
+    my $error = "";
+    if (open my $in, "<", $fgrid) {
+        while (my $line = <$in>) {
+            my ($h_id, $ignore, $person) = split /\|/, $line;
+            if ($h_id == $house_id && $person) {
+                $error = "Because the rental coordinator has assigned"
+                       . " $person to "
+                       . $h->name
+                       . " it cannot be removed.";
+            }
+        }
+    }
+    else {
+        $error = "Cannot get the web grid!";
+    }
+    if ($error) {
+        error($c,
+            $error,
+            'rental/error.tt2',
+        );
+        return;
+    }
     my $rname = $r->name();
 
     my $sdate = $r->sdate();
@@ -1161,7 +1193,6 @@ sub del_booking : Local {
         house_id  => $house_id,
     })->delete();
 
-    my $h = model($c, 'House')->find($house_id);
     my $max = $h->max;
     model($c, 'Config')->search({
         house_id => $house_id,
@@ -1481,7 +1512,7 @@ sub invoice : Local {
     my ($self, $c, $id) = @_;
 
     Global->init($c);
-    system("grab wait");        # make sure the web grid is current
+    system("grab wait");        # make sure the local grid is current
     my $rental = model($c, 'Rental')->find($id);
     my $ndays = $rental->edate_obj() - $rental->sdate_obj();
     my $hc = $rental->housecost();
@@ -2326,6 +2357,13 @@ sub cancel : Local {
         });
     }
     $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+}
+
+sub grab_new : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    system("grab wait");
+    $c->response->redirect($c->uri_for("/rental/grid/$rental_id"));
 }
 
 1;

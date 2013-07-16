@@ -114,6 +114,7 @@ my %string;
 while (my ($the_key, $value) = $sth->fetchrow_array()) {
     $string{$the_key} = $value;
 }
+undef $sth;
 $string{mmc_email} = $string{reception_email};      # sorry - see below
 
 my $sth_gaff = $dbh->prepare("
@@ -123,6 +124,7 @@ my $sth_gaff = $dbh->prepare("
 ");
 $sth_gaff->execute();
 my ($temple_guest_affil_id) = $sth_gaff->fetchrow_array();
+undef $sth_gaff;
 
 my $sth_ins_aff = $dbh->prepare("
     insert into affil_people
@@ -142,10 +144,8 @@ my $sth_insert_people = $dbh->prepare("
         tel_cell, addr1, addr2,
         city, st_prov, zip_post,
         akey,
-        e_mailings, mmi_e_mailings,
-        snail_mailings, mmi_snail_mailings,
-        share_mailings,
-        inactive,
+        e_mailings, mmi_e_mailings, snail_mailings, mmi_snail_mailings,
+            share_mailings, inactive,
         date_entrd, date_updat
     )
     values (
@@ -153,7 +153,9 @@ my $sth_insert_people = $dbh->prepare("
         ?, ?, ?,
         ?, ?, ?,
         ?,
-        'yes', 'yes', 'yes', 'yes', 'yes', ''
+        'yes', 'yes', 'yes', 'yes',
+            'yes', '',
+        ?, ?
     )
 ");
 my $sth_update_people = $dbh->prepare("
@@ -447,6 +449,9 @@ for my $f ($ftp->ls()) {
     $Msg .= "got req_mmi file $f\n";
     $ftp->delete($f);
 }
+undef $mmi_pay_sth;
+undef $req_mmi_del_sth;
+undef $reg_hist_sth;
 
 #
 # get transaction files from www.mountmadonnainstitute.org/cgi-bin/transactions
@@ -853,12 +858,12 @@ sub temple {
             my_warn("no get of online temple user $file");
             next TEMPLE_USER;
         }
-        # what to do with this record in $template/$file?
+        # what to do with this record in $temple/$file?
         # search the people table for existing records by last/first.
-        # if none (the normal case) insert a new record
-        # if one update it.
-        # if more than one try to match cell phone and email address
-        # else leave it be.
+        # - if none (the normal case) insert a new record
+        # - if one update it.
+        # - if more than one try to match cell phone and email address
+        # - else leave it be.
         #
         # example:  join the two into one line:
         #
@@ -956,6 +961,10 @@ sub temple {
         $Msg .= "temple: $file $action\n";
         $ftp->delete($file);
     }
+    undef $sth_ins_aff;
+    undef $sth_search_people;
+    undef $sth_insert_people;
+    undef $sth_update_people;
 }
 
 # return only the digits

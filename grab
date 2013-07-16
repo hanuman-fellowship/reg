@@ -7,13 +7,13 @@ if [ -d /home/sahadev/Reg ]; then
 
 else 
 
-    cd /Users/jonbjornstad/newReg/RetreatCenter
-    export DBI_DSN="dbi:SQLite:$HOME/newReg/RetreatCenter/retreatcenter.db"
+    cd /Users/jonbjornstad/Reg
+    export DBI_DSN="dbi:SQLite:$HOME/Reg/retreatcenter.db"
 
 fi
 
 if [ "$1" == "wait" ]; then
     script/grab_new
 else
-    script/grab_new
+    script/grab_new  &
 fi

@@ -260,11 +260,27 @@ Jul 14 12:15-12:30
             first assigning, two people have empty string for code.
         Add date of last contact to Code reports?
         check data entry for bad data
-Jul 15 10:00-10:20
+Jul 15 10:00-10:20, 11:15-12:50
     talked with Barnaby about rental economy+
     add an attribute to a room that is the housing cost level
         that is fixed - not tied to the number of people in the room?
-        not sure. 
-Jul 15 1:45-
+        not sure.  I think it sounds okay.
+    when removing a room from a Rental check that no one is
+        in that room!  not okay to clobber such a room.
+        ask Barnaby if we should always ensure that the local grid
+        is current whenever we are about to delete a room....
+        every 15 mins, manual grab new on the local grid page itself.
+Jul 15 1:45-3:45
     no id in front of secure code
     online form for entering the 6 letter code
+    10 invalid code failures and the system is shut down with
+        email sent
+    mysql sql counts not in synch with distinct secure_code thingy
+        why?   no dups but ???
+    ??? Shantam help - ssh password to kali, newkali
+        'net' icon on desktop - what, where?
+        sql distinct question - another way?
+        reports for SSC re affils?
+        what have you learned from Reg?
+        maintainability - writing in the latest and greatest slickness
+            does not ensure maintainability.

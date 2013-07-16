@@ -6,22 +6,22 @@
 </style>
 <ul>
 <a style="font-size: 20pt;"
-   href=/rental/view/[% rental.id %]
->[% rental.name %]</a>
-<span class=f13b style="margin-left: 1in;">[% rental.sdate_obj.format("%B %e '%q") %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+   href=/rental/view/$rental.id
+>$rental.name</a>
+<span class=f13b style="margin-left: 1in;">${rental.sdate_obj.format("%B %e '%q")} <span class=dow>${rental.sdate_obj.format("%a")}</span>
 to
-[% rental.edate_obj.format("%B %e '%q") %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
+${rental.edate_obj.format("%B %e '%q")} <span class=dow>${rental.edate_obj.format("%a")}</span>
 </span>
-<span class=f15b style="margin-left: .5in;">[% coord_name %]</span>
+<span class=f15b style="margin-left: .5in;">$coord_name</span>
 <p class="p2 f15b">
 Housing Assignment Grid
-<span style="margin-left: 4in"><a href=/registration/grab_new>Grab New</a></span>
+<span style="margin-left: 4in"><a href=/rental/grab_new/$rental.id>Grab New</a></span>
 <p class=p2>
 <table cellpadding=5 border=1>
 <tr>
 <td colspan=2>&nbsp;</td>
 <th align=left width=300>Name</th>
-[% days %]
+$days
 <th>Cost</th>
 </tr>
 [% FOR rb IN rental.rental_bookings %]
@@ -31,7 +31,7 @@ Housing Assignment Grid
     [% WHILE i <= maxh %]
         <tr>
         [% IF i == 1 %]
-            <th rowspan=[% maxh %] align=center>[% h.name_disp %]
+            <th rowspan=$maxh align=center>$h.name_disp
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.center %] - c
@@ -40,11 +40,11 @@ Housing Assignment Grid
                 </span>
             </th>
         [% END %]
-        <td align=right width=20>[% i %]</td>
+        <td align=right width=20>$i</td>
         [% vp = 'p' _ h.id _ '_' _ i %]
         [% vc = 'c' _ h.id _ '_' _ i %]
         [% vcl = 'cl' _ h.id _ '_' _ i %]
-        <td [% data.$vcl %]>[% data.$vp %]</td>
+        <td ${data.$vcl}>${data.$vp}</td>
         [% n = 1 %]
         [% WHILE n <= nnights %]
             [% v = 'n' _ h.id _ '_' _ i _ '_' _ n %]
@@ -55,7 +55,7 @@ Housing Assignment Grid
             [% END %]
             [% n = n + 1 %]
         [% END %]
-        <td align=right>[% data.$vc %]</td>
+        <td align=right>${data.$vc}</td>
         </tr>
         [% i = i + 1 %]
     [% END %]
@@ -66,13 +66,13 @@ Housing Assignment Grid
     [% WHILE i <= max.$t %]
         <tr>
         [% IF i == 1 %]
-            <th rowspan=[% max.$t %] align=center>[% IF t == 1001 %]Own Van[% ELSE %]Commuting[% END %]</th>
+            <th rowspan=${max.$t} align=center>[% IF t == 1001 %]Own Van[% ELSE %]Commuting[% END %]</th>
         [% END %]
         [% vp  = 'p'  _ t _ '_' _ i %]
         [% vc  = 'c'  _ t _ '_' _ i %]
         [% vcl = 'cl' _ t _ '_' _ i %]
-        <td align=right>[% i %]</td>
-        <td [% data.$vcl %]>[% data.$vp %]</td>
+        <td align=right>$i</td>
+        <td ${data.$vcl}>${data.$vp}</td>
         [% n = 1 %]
         [% WHILE n <= nnights %]
             [% v = 'n' _ t _ '_' _ i _ '_' _ n %]
@@ -83,14 +83,14 @@ Housing Assignment Grid
             [% END %]
             [% n = n + 1 %]
         [% END %]
-        <td align=right>[% data.$vc %]</td>
+        <td align=right>${data.$vc}</td>
         </tr>
         [% i = i + 1 %]
     [% END %]
 [% END %]
 
 [% x = nnights + 2 %]
-<tr><th colspan=[% x + 1 %] align=right>Total</th><td align=right>$[% total %]</td></tr>
+<tr><th colspan=[% x + 1 %] align=right>Total</th><td align=right>\$$total</td></tr>
 </table>
 <p class=p2>
 <ul>
