@@ -284,3 +284,41 @@ Jul 15 1:45-3:45
         what have you learned from Reg?
         maintainability - writing in the latest and greatest slickness
             does not ensure maintainability.
+Jul 16 9:45-12:45
+    consulting with Barnaby, Jamal, Shantam, Jayanti, Emily
+    considering Barnaby's request re: Rental housing
+    ??block ip address for 5 minutes after 5 attempts
+    ?? also log what they tried to enter
+    ?? additive affiliations - select from existing ones
+        but store ids in a single column, not a mapping table?
+        send the id, descriptions to mmc.org somehow
+        I guess as another table.
+    ?? update the date of last contact even if the
+        person just visits their page. - several status levels.
+        status  desc
+            0   sent to them, hopefully they received it
+            1   link clicked, form filled - update was run for this person
+            2   form submitted - update2 was run for this person
+            3   data was retrieved - so no further updates, include on report, however
+        so get people with status 1 and 2
+            if 1 just update date_updat
+            if 2 replace all fields.
+Jul 17 2:55-3:40, 4:15-5:50
+    adding PROGRAM affils to distr demog
+    ??? Men's Programs => Men's Issues    ??? ditto Women
+        status of 0-3, corresponding update_status
+Jul 18 12:20-1:20
+    status of 0-3, corresponding update_status
+
+    next: 6 upper case ensure unique from start - delete check_dup, rand6($c)
+    then: block ip address if 5 bogus codes, log all failed attempts
+    input affils in two columns
+    need smaller font?
+    less white space at top?  the message on same line as logo?
+    how to respond?  not just redirect to mmc.org?
+    archive the updates.sql coming back?
+        on mmc.org as well?
+    don't allow another running of CODE until expiry date is over?
+        unless append, that is.
+Jul 18 1:30-
+    

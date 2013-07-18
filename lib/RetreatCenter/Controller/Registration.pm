@@ -508,11 +508,9 @@ EOH
 
             share_mailings => $P{share_mailings},
 
-            date_updat => $today_d8,
-            date_entrd => $today_d8,
-        });
-        $p->update({
-            secure_code => rand6(),
+            date_updat  => $today_d8,
+            date_entrd  => $today_d8,
+            secure_code => rand6($c),
         });
     }
     else {
@@ -5480,9 +5478,7 @@ sub duplicate : Local {
 
 sub grab_new : Local {
     my ($self, $c) = @_;
-$c->log->info("before");
     system("grab wait");
-$c->log->info("after");
     $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 

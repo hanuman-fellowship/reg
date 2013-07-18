@@ -1057,11 +1057,9 @@ sub get_online : Local {
             mmi_snail_mailings => 'yes',
             share_mailings     => 'yes',
 
-            date_updat => $today,
-            date_entrd => $today,
-        });
-        $p->update({
-            secure_code => rand6(),
+            date_updat  => $today,
+            date_entrd  => $today,
+            secure_code => rand6($c),
         });
     }
     else {

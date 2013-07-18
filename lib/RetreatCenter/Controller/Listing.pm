@@ -2050,9 +2050,7 @@ sub upload_yj_sheet_do : Local {
                     safety_form        => q{},
                     inactive           => q{},
                     deceased           => q{},
-                });
-                $p->update({
-                    secure_code => rand6(),
+                    secure_code        => rand6($c),
                 });
                 my $id = $p->id();
                 for my $ca (@cur_affils) {

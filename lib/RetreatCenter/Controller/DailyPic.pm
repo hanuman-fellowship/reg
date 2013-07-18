@@ -293,6 +293,7 @@ sub show : Local {
         my $y2 = $y1 + $string{house_height};
         $dp->rectangle($x1, $y1, $x2, $y2, $black);
         # below we have a cool use of the ?: operator!  (what is its name?)
+        # ternary
         $dp->string(gdGiantFont,
             ($code eq 'L')? ($x1-length($tname)*$string{house_let}-2,$y1+3)
            :($code eq 'R')? ($x2+3, $y1+3)

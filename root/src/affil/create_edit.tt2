@@ -3,7 +3,7 @@
 <table cellpadding=3 border=0>
 <tr>
 <th align=right><span class="required">*</span> Description</span></th>
-<td><input type=text name=descrip value="$affil.descrip"></td>
+<td><input type=text name=descrip value="$affil.descrip" size=40></td>
 </tr>
 <tr>
 <td></td>

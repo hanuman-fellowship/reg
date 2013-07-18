@@ -497,11 +497,9 @@ sub create_do : Local {
     delete $hash{fname};
     my $p = model($c, 'Person')->create({
         %hash,
-        date_updat => $today_d8,
-        date_entrd => $today_d8,
-    });
-    $p->update({
-        secure_code => rand6(),
+        date_updat  => $today_d8,
+        date_entrd  => $today_d8,
+        secure_code => rand6($c),
     });
     if ($fname) {
         my $dir = "root/static/${type}_done/"
@@ -723,11 +721,9 @@ sub mkpartner : Local {
         akey     => nsquish($addr1, $addr2, $zip_post),
         tel_home => $p1->tel_home,
         id_sps   => $p1->id,
-        date_entrd => $today,
-        date_updat => $today,
-    });
-    $p2->update({
-        secure_code => rand6(),
+        date_entrd  => $today,
+        date_updat  => $today,
+        secure_code => rand6($c),
     });
     $p1->update({
         id_sps     => $p2->id,

@@ -28,6 +28,9 @@ use Global qw/
 /;
 use Template;
 use LWP::Simple;
+use DBH qw/
+    $dbh
+/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -611,6 +614,7 @@ EOS
              . $tt->error();
     if ($format == EMAIL_CODE || $format == ADDR_CODE) {
         if (my $status = _gen_and_send_data_for_www(
+                             $c,
                              \@people,
                              $append,
                              $expiry_date
@@ -627,7 +631,7 @@ EOS
 }
 
 sub _gen_and_send_data_for_www {
-    my ($people_aref, $append, $expiry_date) = @_;
+    my ($c, $people_aref, $append, $expiry_date) = @_;
 
     open my $exp_out, '>', $rst_exp
         or return "no $rst_exp";
@@ -638,6 +642,11 @@ sub _gen_and_send_data_for_www {
     open my $out, '>', "/tmp/$fname"
         or return "no open: $!";
     print {$out} <<'EOF' if ! $append;
+drop table if exists prog_affils;
+create table prog_affils (
+    id integer,
+    descrip text
+);
 drop table if exists people_data;
 create table people_data (
     first text, last text, addr1 text, addr2 text, city text,
@@ -649,12 +658,43 @@ create table people_data (
     share_mailings text,
     secure_code text,
     akey text,
+    prog_affils text,
     status text default ''
 );
 EOF
+    # note - the column prog_affils is a space separated list of integers
+    # representing ids in the affil table.
+
+    my @prog_affils;
+    for my $a (model($c, 'Affil')->search({
+                   descrip => { -like => 'PROGRAMS -%' },
+               })
+    ) {
+        push @prog_affils, $a->id;
+        my $descrip = $a->descrip;
+        # tidy it up
+        $descrip =~ s{\s* programs? \s*}{}xmsgi;
+        $descrip =~ s{ \s*-\s* }{}xmsg;
+        $descrip =~ s{ 's }{'s Programs}xmsig;      # Men's => Men's Programs
+        print {$out} "insert into prog_affils values (",
+                     $a->id,
+                     ', "',
+                     $descrip,
+                     qq[");\n];
+
+    }
+    my $prog_affils = join ',', @prog_affils;
     # there are no double quotes anywhere in the data, right?
     # I added sub dquote_clear in Listing.pm to ensure this.
     #
+    DBH->init();
+    my $sth = $dbh->prepare("
+        select ap.a_id
+          from affil_people ap, people p
+         where ap.p_id = p.id
+           and p.id = ?
+           and ap.a_id in ($prog_affils);
+    ");
     for my $p (@$people_aref) {
         print {$out} "insert into people_data values (";
         for my $f (qw/
@@ -670,6 +710,10 @@ EOF
             }
             print {$out} qq["$val",];
         }
+        # now to get the PROGRAM - affils that this person has
+        $sth->execute($p->{id});
+        my @affils = map { $_->[0] } @{$sth->fetchall_arrayref};    # wow
+        print {$out} qq["@affils",];
         print {$out} qq["");\n];
     }
     close $out;

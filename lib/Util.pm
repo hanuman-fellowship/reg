@@ -1767,9 +1767,20 @@ sub ensure_mmyy {
 # 6 random letters
 #
 sub rand6 {
-    my $lets = '';
-    $lets .= ('a' .. 'z', 'A' .. 'Z')[rand 52] for 1 .. 6;
-    $lets;
+    my ($c) = @_;
+
+    CODE_LOOP:
+    while (1) {
+        my $lets = '';
+        $lets .= ('A' .. 'Z')[rand 26] for 1 .. 6;
+        if (my ($person) = model($c, 'Person')->search({
+                               secure_code => $lets,
+                           })
+        ) {
+            next CODE_LOOP;     # dup - try again
+        }
+        return $lets;
+    }
 }
 
 
