@@ -1,6 +1,5 @@
 use strict;
 use warnings;
-# ??? order - name, sanskrit, zip - not first, last, zip
 package RetreatCenter::Controller::Report;
 use base 'Catalyst::Controller';
 
@@ -76,11 +75,11 @@ my $cgi = "http://www.mountmadonna.org/cgi-bin";
 sub list : Local {
     my ($self, $c) = @_;
 
-    my ($status, $expiry_date);
+    my ($status, $expiry);
     if (-f $rst_exp) {
         open my $in, '<', $rst_exp;
         my $dt = date(<$in>);
-        $expiry_date = $dt->format;
+        $expiry = $dt->format;
         close $in;
         $status = get("$cgi/update_status");
     }
@@ -93,9 +92,9 @@ sub list : Local {
         )
     ];
     stash($c,
-        status      => $status,
-        expiry_date => $expiry_date,
-        template    => "report/list.tt2",
+        expiry   => $expiry,
+        status   => $status,
+        template => "report/list.tt2",
     );
 }
 
@@ -306,28 +305,22 @@ sub run : Local {
     my $incl_mmc = $c->request->params->{incl_mmc};
     my $opt_inout = $c->request->params->{report_type} || "";
     my $append    = $c->request->params->{append} || "";
-    my $expiry_date = $c->request->params->{expiry_date} || "";
+    my $expiry    = $c->request->params->{expiry} || "";
     my $today = tt_today($c);
 
     if (($format == EMAIL_CODE || $format == ADDR_CODE)
-        && ! $expiry_date
+        && ! $expiry
     ) {
-        error($c,
-            "missing Expiry Date",
-            "gen_error.tt2",
-        );
-        return;
+        return error($c,
+            "missing Expiry Date", "gen_error.tt2");
     }
-    if ($expiry_date) {
-        my $dt = date($expiry_date);
+    if ($expiry) {
+        my $dt = date($expiry);
         if (!$dt) {
-            error($c,
-                "illegal date format: $expiry_date",
-                "gen_error.tt2",
-            );
-            return;
+            return error($c,
+                "illegal date format: $expiry", "gen_error.tt2");
         }
-        $expiry_date = $dt->as_d8();
+        $expiry = $dt->as_d8();
     }
 
     my $pref = "none";
@@ -336,6 +329,39 @@ sub run : Local {
     }
     elsif ($opt_inout eq 'mmc') {
         $pref = "";
+    }
+
+    #
+    # when running a format of EMAIL_CODE or ADDR_CODE
+    # there are all kinds of situations where one could
+    # inadvertently clobber an existing set of update requests.
+    #
+    if (($format == EMAIL_CODE || $format == ADDR_CODE)
+        && -f $rst_exp
+    ) {
+        my ($n, $m) = get("$cgi/update_status") =~ m{(\d+)}xmsg;
+        my $updates_to_get = $n + $m;
+        if ($updates_to_get) {
+            return error($c,
+                "There are still updates to be gotten.", "gen_error.tt2");
+        }
+        open my $in, '<', $rst_exp;
+        my $cur_expiry = date(<$in>);
+        close $in;
+        if ($append) {
+            if ($expiry != $cur_expiry) {
+                return error($c,
+                    "You are appending to existing data but have given"
+                   ." a different expiration date.", "gen_error.tt2");
+            }
+        }
+        else {
+            if ($cur_expiry < $today) {
+                return error($c,
+                    "The previous update requests have not expired yet.",
+                    "gen_error.tt2");
+            }
+        }
     }
 
     my $order = $report->rep_order();
@@ -571,7 +597,7 @@ EOS
             collapse => $collapse,
             incl_mmc => $incl_mmc,
             append   => $append,
-            expiry_date => $expiry_date? date($expiry_date)->format("%D"): '',
+            expiry   => $expiry? date($expiry)->format("%D"): '',
         );
         view($self, $c, $id, $opt_inout);
         return;
@@ -618,7 +644,7 @@ EOS
                              $c,
                              \@people,
                              $append,
-                             $expiry_date
+                             $expiry
                          )
         ) {
             error($c,
@@ -632,11 +658,11 @@ EOS
 }
 
 sub _gen_and_send_data_for_www {
-    my ($c, $people_aref, $append, $expiry_date) = @_;
+    my ($c, $people_aref, $append, $expiry) = @_;
 
     open my $exp_out, '>', $rst_exp
         or return "no $rst_exp";
-    print {$exp_out} "$expiry_date\n";
+    print {$exp_out} "$expiry\n";
     close $exp_out;
 
     my $fname = "people_data.sql";

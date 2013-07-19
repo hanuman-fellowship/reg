@@ -326,3 +326,5 @@ Jul 18 1:40-5:20, 9:00-9:50, 12:00-1:00
     jamal?? list of reports - description, zip range - is zip range useful
         what else for second column?  rather two columns?
     all the above things - lots of twiddling!
+Jul 19 1:30-
+    continuing with DDUP reports, etc.

@@ -96,6 +96,7 @@ sub phone_columns : Local {
 <tr class=fl_th>
     <th align=left>Sanskrit</th>
     <th align=left>Name</th>
+    <th align=center>Cell</th>
     <th align=center>Home</th>
     <th align=center>Work</th>
     <th align=left>&nbsp;&nbsp;Address</th>
@@ -104,11 +105,21 @@ EOH
     my $class = 1;
     my $address;
     for my $p (@people) {
-        $address = $p->address();      # method call
+        $address = $p->address() || "";      # method call
+        for my $f (qw/
+            sanskrit
+            first
+            tel_cell
+            tel_home
+            tel_work
+        /) {
+            $p->{$f} ||= "";
+        }
         print {$ph} <<"EOH";
 <tr class=fl_row$class>
     <td class=fl_name>$p->{sanskrit}</td>
     <td class=fl_name>$p->{first} $p->{last}</td>
+    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_cell}</td>
     <td class=fl_phone>&nbsp;&nbsp;$p->{tel_home}</td>
     <td class=fl_phone>&nbsp;&nbsp;$p->{tel_work}</td>
     <td class=fl_address>&nbsp;&nbsp;$address</td>
@@ -144,20 +155,29 @@ sub phone_noaddr : Local {
 <tr class=fl_th>
     <th align=left>Sanskrit</th>
     <th align=left>Name</th>
+    <th align=center>Cell</th>
     <th align=center>Home</th>
     <th align=center>Work</th>
-    <th align=center>Cell</th>
 </tr>
 EOH
     my $class = 1;
     for my $p (@people) {
+        for my $f (qw/
+            sanskrit
+            first
+            tel_home
+            tel_work
+            tel_cell
+        /) {
+            $p->{$f} ||= "";
+        }
         print {$ph} <<"EOH";
 <tr class=fl_row$class>
     <td class=fl_name>$p->{sanskrit}</td>
     <td class=fl_name>$p->{first} $p->{last}</td>
+    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_cell}</td>
     <td class=fl_phone>&nbsp;&nbsp;$p->{tel_home}</td>
     <td class=fl_phone>&nbsp;&nbsp;$p->{tel_work}</td>
-    <td class=fl_phone>&nbsp;&nbsp;$p->{tel_cell}</td>
 </tr>
 EOH
         $class = 1-$class;
@@ -172,6 +192,7 @@ EOH
 
 sub _tel_get {
     my ($fone, $let) = @_;
+    return "" if ! defined $fone;
     $fone .= " $let " if $let && $fone;
     return $fone;
 }
@@ -193,9 +214,10 @@ sub phone_line : Local {
 EOH
     my @people = _phone_list();
     for my $p (@people) {
-        my $fones = _tel_get($p->{tel_home}, 'h')
+        my $fones = _tel_get($p->{tel_cell}, 'c')
+                  . _tel_get($p->{tel_home}, 'h')
                   . _tel_get($p->{tel_work}, 'w')
-                  . _tel_get($p->{tel_cell}, 'c');
+                  ;
         chop $fones;    # final space
         $fones =~ s{ [hwc]$}{} if length($fones) <= 14;
         my $addr = $p->address();
@@ -2117,6 +2139,16 @@ sub _dqclear {
     my ($s) = @_;
     $s =~ s{"}{}xmsg;
     $s;
+}
+
+sub clobber : Local {
+    my ($self, $c) = @_;
+
+    unlink "root/static/expiry_date.txt";
+    # shall we also clobber the database on mmc.org and
+    # the expiry_date.txt file there?  nah.
+    # they will soon be overwritten.
+    $c->response->redirect($c->uri_for('/listing/people'));
 }
 
 1;
