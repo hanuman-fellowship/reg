@@ -3,18 +3,19 @@ use strict;
 use warnings;
 
 use CGI qw/:standard :cgi-lib/;
+use CGI::Carp qw/fatalsToBrowser/;
 use DBI;
 use lib 'mylib/lib/perl5';
 use Template;
 
 print header();
+my %P = Vars();
 
 my $dbh = DBI->connect(
     'dbi:SQLite:dbname=people_data', '', '',
     { RaiseError => 1, AutoCommit => 1 }
 ) or die "cannot connect to database\n";
 
-my %P = Vars();
 for my $f (qw/
     e_mailings
     snail_mailings
@@ -51,7 +52,16 @@ sub nsquish {
 }
 $P{akey} = nsquish($P{addr1}, $P{addr2}, $P{zip_post});
 
-my $sth = $dbh->prepare(
+my %interests;
+my $sth = $dbh->prepare("
+    select * from prog_affils;
+");
+$sth->execute();
+while (my ($id, $descrip) = $sth->fetchrow_array()) {
+    $interests{$id} = $descrip;
+}
+
+$sth = $dbh->prepare(
     "select count(*) from people_data where secure_code = '$P{secure_code}'");
 $sth->execute();
 my ($count) = $sth->fetchrow_array();
@@ -60,15 +70,26 @@ if ($count != 1) {
     exit;
 }
 my $sql = "update people_data set";
+my @prog_affils;
 FIELD:
 for my $f (sort keys %P) {
     next FIELD if $f eq 'secure_code';
+    if ($f =~ m{ \A a(\d+) \z }xms) {
+        push @prog_affils, $1;
+        next FIELD;
+    }
     $sql .= qq[ $f = "$P{$f}",];
 }
-$sql .= " status = 1 ";
+$sql .= qq[ prog_affils = "@prog_affils", ];
+$sql .= " status = 2 ";
 $sql .= qq[ where secure_code = "$P{secure_code}"];
 $sth = $dbh->prepare($sql) or die "oops";
 $sth->execute();
+
+my $interests = join ', ',
+                map { $interests{$_} }
+                @prog_affils
+                ;
 
 my $prefs = "";
 if ($P{e_mailings} || $P{snail_mailings}) {
@@ -116,7 +137,8 @@ my $tt = Template->new(
 $tt->process(
     'update2.tt2',
     {
-        p     => \%P,
-        prefs => $prefs,
+        p         => \%P,
+        prefs     => $prefs,
+        interests => $interests,
     },
 );

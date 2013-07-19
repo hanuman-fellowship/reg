@@ -8,20 +8,6 @@
 </tr>
 
 <tr>
-<td align=right>Zip Ranges</td>
-<td><input type=text name=zip_range size=80 value="$report.zip_range"></td>
-</tr>
-
-<tr>
-<td align=right>Update Cutoff</td>
-<td><input type=text name=update_cutoff size=12 value="${report.update_cutoff_obj.format('%D')}">
-To
-<input type=text name=end_update_cutoff size=12 value="${report.end_update_cutoff_obj.format('%D')}">
-(end point defaults to today).
-</td>
-</tr>
-
-<tr>
 <td align=right>Format</td>
 <td>
 <select name="format">
@@ -37,6 +23,20 @@ $format_opts
 <option value="zip_post" $rep_order_selected_zip_post>Zip/Postal Code</option>
 <option value="last" $rep_order_selected_last>Last</option>
 </select>
+</td>
+</tr>
+
+<tr>
+<td align=right>Zip Ranges</td>
+<td><input type=text name=zip_range size=80 value="$report.zip_range"></td>
+</tr>
+
+<tr>
+<td align=right>Update Cutoff</td>
+<td><input type=text name=update_cutoff size=12 value="${report.update_cutoff_obj.format('%D')}">
+To
+<input type=text name=end_update_cutoff size=12 value="${report.end_update_cutoff_obj.format('%D')}">
+(end point defaults to today).
 </td>
 </tr>
 
@@ -59,6 +59,6 @@ $format_opts
 $affil_table
 </table>
 
-<input type=submit value="Submit">
+<input id=sub type=submit value="Submit">
 </form>
 <script type='text/javascript'>document.form.descrip.focus();</script>

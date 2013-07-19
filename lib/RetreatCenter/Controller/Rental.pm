@@ -1153,18 +1153,22 @@ sub del_booking : Local {
     my $fgrid = get_grid_file($r->grid_code());
     my $error = "";
     if (open my $in, "<", $fgrid) {
+        LINE:
         while (my $line = <$in>) {
             my ($h_id, $ignore, $person) = split /\|/, $line;
             if ($h_id == $house_id && $person) {
                 $error = "Because the rental coordinator has assigned"
                        . " $person to "
                        . $h->name
-                       . " it cannot be removed.";
+                       . " it cannot be removed."
+                       . "<p>Perhaps you need to do 'Local Grid' and 'Grab New'?"
+                       ;
+                last LINE;
             }
         }
     }
     else {
-        $error = "Cannot get the web grid!";
+        $error = "Cannot get the grid file!";
     }
     if ($error) {
         error($c,

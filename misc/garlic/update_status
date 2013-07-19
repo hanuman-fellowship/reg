@@ -12,12 +12,21 @@ my $dbh = DBI->connect(
     { RaiseError => 1, AutoCommit => 1 }
 ) or die "cannot connect to database\n";
 
+my $sth = $dbh->prepare("select count(*) from people_data");
+$sth->execute();
+my ($all) = $sth->fetchrow_array();
+
 my $sth = $dbh->prepare("select count(*) from people_data where status = 1");
 $sth->execute();
-my ($count1) = $sth->fetchrow_array();
+my ($viewed) = $sth->fetchrow_array();
 
 $sth = $dbh->prepare("select count(*) from people_data where status = 2");
 $sth->execute();
-my ($count2) = $sth->fetchrow_array();
+my ($changed) = $sth->fetchrow_array();
 
-print header(), "$count1 updated, $count2 total\n";
+$sth = $dbh->prepare("select count(*) from people_data where status = 3");
+$sth->execute();
+my ($total) = $sth->fetchrow_array();
+
+my $pct = int((100*$total/$all) + .5);
+print header(), "$viewed viewed, $changed changed - total $total of $all = $pct%\n";

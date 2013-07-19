@@ -11,7 +11,16 @@ th {
 }
 body, th, td, td input {
     font-family: Arial;
-    font-size: 14pt;
+    font-size: 13.5pt;
+}
+input.changes {
+    background-color: lightgreen;
+}
+input.justfine {
+    background-color: lightblue;
+}
+form {
+    display: inline;
 }
 </style>
 <script type="text/javascript">
@@ -30,12 +39,10 @@ function popup(url, height, width) {
 </head>
 
 <body>
-<img src="http://www.mountmadonna.org/Gif/navbar_home.gif">
-<p>
+<img src="http://www.mountmadonna.org/Gif/navbar_home.gif" align=center>
+This is the information we now have for you.  Please verify and correct it.
 <form action="http://www.mountmadonna.org/cgi-bin/update2" method=POST>
 <input type=hidden name=secure_code value="$p.secure_code">
-This is the information we now have for you.  Please verify and correct it.
-<p>
 <table cellpadding=5>
 
 <tr>
@@ -79,49 +86,77 @@ This is the information we now have for you.  Please verify and correct it.
 
 <tr>
 <th>State/Province</th>
-<td><input type=text name=st_prov value="$p.st_prov"></td>
+<td colspan=3><input type=text name=st_prov value="$p.st_prov"></td>
 </tr>
 
 <tr>
 <th>Zip/Postal Code</th>
-<td><input type=text name=zip_post value="$p.zip_post"></td>
+<td colspan=3><input type=text name=zip_post value="$p.zip_post"></td>
 </tr>
 
 <tr>
-<th><input type=checkbox name=e_mailings
-     value=yes [% IF p.e_mailings %]checked[% END %]></th>
-<td colspan=3>Yes, send me occasional e-mail announcements about MMC.</td>
+<th valign=top>Your Interests</th>
+<td colspan=3>
+<table cellpadding=4>
+$affils
+</table>
+</td>
 </tr>
+
 <tr>
-<th><input type=checkbox name=snail_mailings
-     value=yes [% IF p.snail_mailings %]checked[% END %]></th>
-<td colspan=3>Yes, send me postcards and brochures in the mail about MMC.</td>
+<th valign=top>Mailing Preferences</th>
+<td colspan=3>
+
+<table cellpadding=4>
+
+<tr>
+<td colspan=3>
+<input type=checkbox name=e_mailings value=yes [% IF p.e_mailings %]checked[% END %]>
+Yes, send me occasional e-mail announcements about MMC.</td>
 </tr>
+
 <tr>
-<th><input type=checkbox name=mmi_e_mailings
-     value=yes [% IF p.mmi_e_mailings %]checked[% END %]></th>
-<td colspan=3>Yes, send me occasional e-mail announcements about MMI.
+<td colspan=3>
+<input type=checkbox name=snail_mailings value=yes [% IF p.snail_mailings %]checked[% END %]>
+Yes, send me postcards and brochures in the mail about MMC.</td>
+</tr>
+
+<tr>
+<td colspan=3>
+<input type=checkbox name=mmi_e_mailings value=yes [% IF p.mmi_e_mailings %]checked[% END %]>
+Yes, send me occasional e-mail announcements about MMI.
 <span style="margin-left: .4in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215,550)">What is MMI?</a></span></li>
 </td>
 </tr>
+
 <tr>
-<th><input type=checkbox name=mmi_snail_mailings
-     value=yes [% IF p.mmi_snail_mailings %]checked[% END %]></th>
-<td colspan=3>Yes, send me postcards and brochures in the mail about MMI.</td>
+<td colspan=3>
+<input type=checkbox name=mmi_snail_mailings value=yes [% IF p.mmi_snail_mailings %]checked[% END %]>
+Yes, send me postcards and brochures in the mail about MMI.
+</td>
 </tr>
+
 <tr>
-<th><input type=checkbox name=share_mailings
-     value=yes [% IF p.share_mailings %]checked[% END %]></th>
-<td colspan=3>You may share my address with MMC affiliates.</td>
-</tr>
-<tr>
-<th></th>
-<td><input type=submit style="background-color: lightgreen"
-           value="Submit Your Changes">
+<td colspan=3>
+<input type=checkbox name=share_mailings value=yes [% IF p.share_mailings %]checked[% END %]>
+You may share my address with MMC affiliates.
 </td>
 </tr>
 
 </table>
+</td>
+</tr>
+
+<tr>
+<td align=center colspan=4>
+<input class=changes type=submit value="Submit the changes I made">
 </form>
+<form action="http://www.mountmadonna.org/live/programs.html" method=post>
+<input class=justfine type=submit name=just_fine value="No changes are needed - It all looks Just Fine">
+</form>
+</td>
+</tr>
+
+</table>
 </body>
 </html>

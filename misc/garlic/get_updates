@@ -7,6 +7,7 @@ use CGI::Carp qw/fatalsToBrowser/;
 use DBI;
 use lib 'mylib/lib/perl5';
 use Date::Simple qw/today/;
+use File::Copy;
 
 print header();
 
@@ -15,22 +16,57 @@ my $dbh = DBI->connect(
     { RaiseError => 1, AutoCommit => 1 }
 ) or die "cannot connect to database\n";
 
-my $sth = $dbh->prepare("select * from people_data where status = 1");
+my @prog_affils;
+my $sth = $dbh->prepare("
+    select * from prog_affils
+");
 $sth->execute();
-open my $out, '>', "updates.sql";
+while (my ($id) = $sth->fetchrow_array()) {
+    push @prog_affils, $id;
+}
+my $prog_affils = join ', ', @prog_affils;
+
 my $today = today()->as_d8();
+open my $out, '>', "updates.sql";
+
+# people who loaded the form (but didn't change it)
+$sth = $dbh->prepare("select secure_code from people_data where status = 1");
+$sth->execute();
+while (my ($code) = $sth->fetchrow_array()) {
+    print {$out} qq[update people set date_updat = $today] .
+                 qq[ where secure_code = "$code";\n];
+}
+
+# people who hit submit on the form and likely changed something
+$sth = $dbh->prepare("select * from people_data where status = 2");
+$sth->execute();
 while (my $p = $sth->fetchrow_hashref()) {
     my $sql = "update people set";
     FIELD:
     for my $f (sort keys %$p) {
-        next FIELD if $f eq 'id' || $f eq 'secure_code' || $f eq 'status';
+        next FIELD if $f eq 'id'
+                      || $f eq 'secure_code'
+                      || $f eq 'status'
+                      || $f eq 'prog_affils'
+                      ;
         $sql .= qq[ $f = "$p->{$f}",];
     }
     $sql .= qq[ date_updat = "$today"];
     $sql .= qq[ where secure_code = "$p->{secure_code}"];
     print {$out} "$sql;\n";
+ 
+    # the PROGRAM affiliations
+    print {$out} "delete from affil_people" .
+                 " where p_id = $p->{id} and a_id in ($prog_affils);\n";
+    for my $a_id (split ' ', $p->{prog_affils}) {
+        print {$out} "insert into affil_people values ($a_id, $p->{id});\n";
+    }
 }
 close $out;
-$sth = $dbh->prepare("update people_data set status = 2 where status = 1");
+# copy the file to a unique name in the updates/ dir
+copy("updates.sql", (sprintf "updates/%d" . ("-%02d" x 5) . ".sql",
+                             (localtime(time()))[reverse 0 .. 5]));
+$sth = $dbh->prepare("update people_data set status = 3"
+                   . " where status = 1 or status = 2");
 $sth->execute();
 print "gotten";

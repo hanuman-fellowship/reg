@@ -80,7 +80,7 @@ sub list : Local {
     if (-f $rst_exp) {
         open my $in, '<', $rst_exp;
         my $dt = date(<$in>);
-        $expiry_date = $dt->format("%D");
+        $expiry_date = $dt->format;
         close $in;
         $status = get("$cgi/update_status");
     }
@@ -307,6 +307,7 @@ sub run : Local {
     my $opt_inout = $c->request->params->{report_type} || "";
     my $append    = $c->request->params->{append} || "";
     my $expiry_date = $c->request->params->{expiry_date} || "";
+    my $today = tt_today($c);
 
     if (($format == EMAIL_CODE || $format == ADDR_CODE)
         && ! $expiry_date
@@ -570,7 +571,7 @@ EOS
             collapse => $collapse,
             incl_mmc => $incl_mmc,
             append   => $append,
-            expiry_date => date($expiry_date)->format("%D"),
+            expiry_date => $expiry_date? date($expiry_date)->format("%D"): '',
         );
         view($self, $c, $id, $opt_inout);
         return;
@@ -579,7 +580,7 @@ EOS
     # mark the report as having been run today.
     #
     $report->update({
-        last_run => tt_today($c),
+        last_run => $today,
     });
     if ($format == TO_VISTAPRINT) {
         for my $p (@people) {
@@ -661,18 +662,27 @@ create table people_data (
     prog_affils text,
     status text default ''
 );
+drop table if exists hacker_ips;
+create table hacker_ips (
+    ip_addr text,
+    nfails integer not null default 0,
+    block_time text
+);
 EOF
     # note - the column prog_affils is a space separated list of integers
     # representing ids in the affil table.
 
     my @prog_affils;
+    PROG_REP:
     for my $a (model($c, 'Affil')->search({
                    descrip => { -like => 'PROGRAMS -%' },
                })
     ) {
-        push @prog_affils, $a->id;
         my $descrip = $a->descrip;
-        # tidy it up
+        next PROG_REP if $descrip =~ m{Misc|UNSPEC}xms;
+            # Misc. Programs and UNSPECIFIED Programs - don't include
+        push @prog_affils, $a->id;
+        # tidy up the description for this purpose
         $descrip =~ s{\s* programs? \s*}{}xmsgi;
         $descrip =~ s{ \s*-\s* }{}xmsg;
         $descrip =~ s{ 's }{'s Programs}xmsig;      # Men's => Men's Programs
@@ -755,6 +765,15 @@ sub _get_updates {
     if (get("$cgi/get_updates") ne 'gotten') {
         return "no get";
     }
+    # the above 'get' created the updates.sql file on mmc.org
+    # now we ftp it to here and apply it.
+    #
+    my $rst = "$ENV{HOME}/Reg/root/static";
+    if (! -d "$rst/updates") {
+        mkdir "$rst/updates" or return "no updates dir";
+    }
+    my $archive = sprintf "$rst/updates/%d" . ("-%02d" x 5) . ".sql",
+                          (localtime(time()))[reverse 0 .. 5];
     my $ftp = Net::FTP->new($string{ftp_site},
                             Passive => $string{ftp_passive})
         or return "no Net::FTP->new";
@@ -764,17 +783,15 @@ sub _get_updates {
         or return "no cd";
     $ftp->ascii()
         or return "no ascii";
-    $ftp->get("updates.sql", "root/static/updates.sql")
+    $ftp->get("updates.sql", $archive)
         or return "no ftp get";
     $ftp->quit();
-    if (-d "/Users") {
-        system("/usr/local/bin/sqlite3"
-               . " $ENV{HOME}/Reg/retreatcenter.db"
-               . " <$ENV{HOME}/Reg/root/static/updates.sql");
-    }
-    else {
-        system("/usr/bin/mysql --user=sahadev --password=JonB --database=reg2"
-               . " <$ENV{HOME}/Reg/root/static/updates.sql");
+    my $db = -d "/Users"?
+        "/usr/local/bin/sqlite3 $ENV{HOME}/Reg/retreatcenter.db"
+       :"/usr/bin/mysql --user=sahadev --password=JonB --database=reg2";
+    my $rc = system("$db <$archive");
+    if ($rc != -1) {
+        return "no system: $db with $archive, rc = $rc";
     }
     return '';      # all okay
 }

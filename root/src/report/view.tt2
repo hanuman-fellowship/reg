@@ -19,14 +19,6 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
         <td>$report.descrip</td>
     </tr>
     <tr>
-        <th align=right>Zip Ranges</td>
-        <td>$report.zip_range</td>
-    </tr>
-    <tr>
-        <th align=right>Last Contact Cutoff</td>
-        <td>$report.update_cutoff_range</td>
-    </tr>
-    <tr>
         <th align=right>Format</td>
         <td>$format_verbose</td>
     </tr>
@@ -45,12 +37,20 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
         %]</td>
     </tr>
     <tr>
-        <th align=right>Number of Records</td>
-        <td>$report.nrecs</td>
-    </tr>
-    <tr>
         <th align=right>Last Run</td>
         <td>$last_run</td>
+    </tr>
+    <tr>
+        <th align=right>Zip Ranges</td>
+        <td>$report.zip_range</td>
+    </tr>
+    <tr>
+        <th align=right>Last Contact Cutoff</td>
+        <td>$report.update_cutoff_range</td>
+    </tr>
+    <tr>
+        <th align=right>Number of Records</td>
+        <td>$report.nrecs</td>
     </tr>
     <tr>
         <th align=right valign=top>Affiliations</td>

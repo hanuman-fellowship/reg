@@ -13,14 +13,25 @@ body, th, td {
     font-family: Arial;
     font-size: 14pt;
 }
+input {
+    font-family: Arial;
+    font-size: 14pt;
+}
+form {
+    display: inline;
+}
+input.reedit {
+    background-color: lightblue;
+}
+input.looksgood {
+    background-color: lightgreen;
+}
 </style>
 </head>
 
 <body>
-<img src="http://www.mountmadonna.org/Gif/navbar_home.gif">
-<p>
+<img src="http://www.mountmadonna.org/Gif/navbar_home.gif" align=center>
 Thank you.  Your information now looks like this:
-<p>
 <table cellpadding=5>
 
 <tr>
@@ -69,6 +80,11 @@ Thank you.  Your information now looks like this:
 </tr>
 
 <tr>
+<th>Your Interests</th>
+<td>$interests</td>
+</tr>
+
+<tr>
 <td colspan=4>
 $prefs
 </td>
@@ -76,7 +92,15 @@ $prefs
 
 <tr>
 <th></th>
-<td><a href="http://www.mountmadonna.org/cgi-bin/update?code=$p.secure_code">Re-Edit</a></td>
+<td>
+<form action="http://www.mountmadonna.org/cgi-bin/update" method=post>
+<input type=hidden name=code value="$p.secure_code">
+<input class=reedit type=submit value="Re-Edit">
+</form>
+<form action="http://www.mountmadonna.org/live/programs.html" method=post>
+<input class=looksgood type=submit value="Looks Good">
+</form>
+</td>
 </tr>
 
 </table>

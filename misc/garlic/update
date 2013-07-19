@@ -11,6 +11,20 @@ use Template;
 use Date::Simple qw/date today/;
 use Mail::Sender;
 
+sub show_msg {
+    my ($msg) = @_;
+
+    my $tt = Template->new(
+        INTERPOLATE => 1,
+    );
+    $tt->process(
+        'update_msg.tt2',
+        {
+            msg => $msg,
+        },
+    );
+}
+
 my $ok = 0;
 if (open my $in, '<', 'expiry_date.txt') {
     my $dt = <$in>;
@@ -21,11 +35,7 @@ if (open my $in, '<', 'expiry_date.txt') {
     }
 }
 if (! $ok) {
-    print "Sorry, The update period has passed.";
-    exit;
-}
-if (-s 'bad_code.txt' > 10) {
-    print "Sorry, the system is down.";
+    show_msg "Sorry, The update period has passed.";
     exit;
 }
 
@@ -34,37 +44,84 @@ my $dbh = DBI->connect(
     { RaiseError => 1, AutoCommit => 1 }
 ) or die "cannot connect to database\n";
 
+#
+# worry about hackers trying to bust into our system
+# this is unlikely but do we need to protect against it.
+#
+# get the hacker_ips table into a hash so we
+# don't have to do everything through DBI.
+#
+use constant MAX_FAILS => 5;
+use constant BLOCK_TIME => 5*60;
+my %hackers;
+my $sth = $dbh->prepare("select * from hacker_ips");
+$sth->execute();
+while (my $href = $sth->fetchrow_hashref()) {   # NOT my ($href) !!
+    $hackers{$href->{ip_addr}} = {
+        nfails     => $href->{nfails},
+        block_time => $href->{block_time},
+    };
+}
+my $ip = $ENV{REMOTE_ADDR};
+
+if (exists $hackers{$ip}
+    && $hackers{$ip}{nfails} >= MAX_FAILS
+) {
+    if ($hackers{$ip}{block_time} > time) {
+        show_msg "Sorry, you are blocked!";
+        exit;
+    }
+    else {
+        # the block time has expired
+        # remove the record - the person is exonerated - for now.
+        #
+        $dbh->do("delete from hacker_ips where ip_addr = '$ip'");
+        delete $hackers{$ip};   # so if they fail again we are ready
+    }
+}
+
 my $code = param('code');
 if (! $code) {
     $code = path_info();
     $code =~ s{^/}{};
 }
 
-my $sth = $dbh->prepare(
+$sth = $dbh->prepare(
     "select * from people_data where secure_code = '$code'");
 $sth->execute();
 my $person = $sth->fetchrow_hashref();
 
 if (!$person) {
-    print "Your code '$code' is incorrect.  Please try again.";
+    show_msg "Your code '$code' is incorrect.  Please go back and try again.";
     # since some nefarious person might do this repeatedly
-    # dump various info to later identify the possible hacker.
+    # dump various info so that later it might help to identify
+    # the possible hacker.
     #
-    open my $out, '>>', 'bad_code.txt';
-    print {$out} "\n";      # max of 10 then system is down
-    close $out;
-    open my $out2, '>>', 'hacker_env.txt';
-    print {$out2} scalar(localtime()), "\n";
+    open my $out, '>>', 'hacker_env.txt';
+    print {$out} scalar(localtime()), "\n";
+    print {$out} "attempted code: $code\n";
     for my $k (qw/
         REMOTE_ADDR
         HTTP_COOKIE
         HTTP_USER_AGENT
     /) {
-        print {$out2} "$k => $ENV{$k}\n";
+        print {$out} "$k => $ENV{$k}\n";
     }
-    print {$out2} "\n";
-    close $out2;
-    if (-s 'bad_code.txt' == 10) {
+    print {$out} "\n";
+    close $out;
+    if (!exists $hackers{$ip}) {
+        $dbh->do("insert into hacker_ips values ('$ip', 1, 0);");
+        exit;
+    }
+    my $nfails = $hackers{$ip}{nfails} + 1;
+    $dbh->do("update hacker_ips set nfails = $nfails where ip_addr = '$ip'");
+    if ($nfails >= 5) {
+        # this person is now blocked - for 5 minutes
+        $dbh->do("update hacker_ips set block_time = "
+               . (time + BLOCK_TIME)
+               . " where ip_addr = '$ip'"
+               );
+        # notify Jon
         my $ms = Mail::Sender->new({
             smtp    => 'mail.suecenter.org',
             port    => 50,
@@ -89,10 +146,55 @@ if (!$person) {
     exit;
 }
 
+# we can proceed
+
+my %has_affil;
+for my $a_id (split ' ', $person->{prog_affils}) {
+    $has_affil{$a_id} = 1;
+}
+
+my $affils = "";
+$sth = $dbh->prepare("
+    select * from prog_affils order by descrip;
+");
+$sth->execute();
+my @affils;
+while (my ($id, $descrip) = $sth->fetchrow_array()) {
+    push @affils, {
+        id => $id,
+        descrip => $descrip,
+        checked => $has_affil{$id}? " checked": "",
+    };
+}
+sub element {
+    my ($href) = @_;
+    my $s = "<td>";
+    if ($href) {
+        $s .= "<input type=checkbox name='a$href->{id}' value=$href->{id}"
+           .  "$href->{checked}> $href->{descrip}";
+    }
+    else {
+        $s .= "&nbsp;";
+    }
+    $s .= "</td>";
+    $s;
+}
+my $offset = int($#affils/2);
+for my $i (0 .. $offset) {
+    my $a = $affils[$i];
+    my $b = $affils[$i+$offset+1];
+    $affils .= "<tr>" . element($a) . element($b) . "</tr>\n";
+}
+
 my $tt = Template->new(
     INTERPOLATE => 1,
 );
 $tt->process(
     'update.tt2',
-    { p => $person },
+    {
+        p => $person,
+        affils => $affils,
+    },
 );
+
+$dbh->do("update people_data set status = 1 where secure_code = '$code';");
