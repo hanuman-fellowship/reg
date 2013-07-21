@@ -10,6 +10,40 @@ use Template;
 
 print header();
 my %P = Vars();
+my $go_back = <<'EOH';
+<p>
+<form name=form>
+Please <input type="button" id=back value="Go Back" onclick="history.go(-1)"> and correct this.
+</form>
+<script>
+document.form.back.focus();
+</script>
+EOH
+
+my $tt = Template->new(
+    INTERPOLATE => 1,
+);
+
+if ($P{first} !~ /\S/ || $P{last} !~ /\S/) {
+    $tt->process(
+        'update_msg.tt2',
+        {
+            msg => "You must give a first and a last name$go_back",
+        },
+    );
+    exit;
+}
+if ($P{email} =~ /\S/
+    && $P{email} !~ m{ \A\s* [a-z0-9_-]+[@][a-z0-9.-]+ \s*\z }xmsi
+) {
+    $tt->process(
+        'update_msg.tt2',
+        {
+            msg => "Illegal format for the email address.$go_back",
+        },
+    );
+    exit;
+}
 
 my $dbh = DBI->connect(
     'dbi:SQLite:dbname=people_data', '', '',
@@ -180,11 +214,6 @@ else {
 $prefs .= "<p>We will "
      . ($P{share_mailings}? "": "<b>not</b> ")
      . "share your contact information with MMC affiliates.";
-
-
-my $tt = Template->new(
-    INTERPOLATE => 1,
-);
 $tt->process(
     'update2.tt2',
     {
