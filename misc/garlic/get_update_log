@@ -1,0 +1,11 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard/;
+print header();
+if (path_info() ne '/soma') {
+    print "Sorry, access denied.\n";
+    exit;
+}
+open my $in, '<', "update_log.txt" or exit;
+print <$in>;

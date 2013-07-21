@@ -30,17 +30,21 @@ my $today = today()->as_d8();
 open my $out, '>', "updates.sql";
 
 # people who loaded the form (but didn't change it)
+my $viewed = 0;
 $sth = $dbh->prepare("select secure_code from people_data where status = 1");
 $sth->execute();
 while (my ($code) = $sth->fetchrow_array()) {
+    ++$viewed;
     print {$out} qq[update people set date_updat = $today] .
                  qq[ where secure_code = "$code";\n];
 }
 
 # people who hit submit on the form and likely changed something
+my $changed = 0;
 $sth = $dbh->prepare("select * from people_data where status = 2");
 $sth->execute();
 while (my $p = $sth->fetchrow_hashref()) {
+    ++$changed;
     my $sql = "update people set";
     FIELD:
     for my $f (sort keys %$p) {
@@ -64,9 +68,18 @@ while (my $p = $sth->fetchrow_hashref()) {
 }
 close $out;
 # copy the file to a unique name in the updates/ dir
-copy("updates.sql", (sprintf "updates/%d" . ("-%02d" x 5) . ".sql",
-                             (localtime(time()))[reverse 0 .. 5]));
+my ($min, $hour, $day, $mon, $year) = (localtime)[1 .. 5];
+++$mon;
+$year += 1900;
+copy("updates.sql", (sprintf "updates/%d" . ("-%02d" x 4) . ".sql",
+                             $year, $mon, $day, $hour, $min));
 $sth = $dbh->prepare("update people_data set status = 3"
                    . " where status = 1 or status = 2");
 $sth->execute();
+if ($viewed + $changed) {
+    open my $log, '>>', 'update_log.txt';
+    printf {$log} "%d/%d %02d:%02d imported $viewed viewed, $changed changed\n",
+                  $mon, $day, $hour, $min;
+    close $log;
+}
 print "gotten";

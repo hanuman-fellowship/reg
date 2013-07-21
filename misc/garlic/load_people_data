@@ -1,7 +1,7 @@
 #!/bin/sh
 cd /home/mmc/www/cgi-bin
 /usr/bin/sqlite3 people_data <people_data.sql
-
+./log_load
 # give some kind of a response 
 echo 'Content-type: text/html'
 echo 

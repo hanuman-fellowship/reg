@@ -77,7 +77,11 @@ Thank you.  Your information now looks like this:
 <tr>
 <th>Zip/Postal Code</th>
 <td>$p.zip_post</td>
+<th>Country</th>
+<td>$p.country</td>
 </tr>
+
+<tr><td>&nbsp;</td></tr>
 
 <tr>
 <th>Your Interests</th>

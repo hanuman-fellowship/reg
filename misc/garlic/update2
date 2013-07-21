@@ -62,13 +62,14 @@ while (my ($id, $descrip) = $sth->fetchrow_array()) {
 }
 
 $sth = $dbh->prepare(
-    "select count(*) from people_data where secure_code = '$P{secure_code}'");
+    "select * from people_data where secure_code = '$P{secure_code}'");
 $sth->execute();
-my ($count) = $sth->fetchrow_array();
-if ($count != 1) {
+my $href = $sth->fetchrow_hashref();
+if ($href->{secure_code} ne $P{secure_code}) {
     print "something is wrong!";
     exit;
 }
+my $changes = "";
 my $sql = "update people_data set";
 my @prog_affils;
 FIELD:
@@ -78,13 +79,63 @@ for my $f (sort keys %P) {
         push @prog_affils, $1;
         next FIELD;
     }
-    $sql .= qq[ $f = "$P{$f}",];
+    my $s = $P{$f};
+    if (index($s, '"') != -1) {
+        # no double quotes at all are allowed
+        $s =~ s{"}{}xmsg;
+    }
+    $sql .= qq[ $f = "$s",];
+    # log it
+    if ($href->{$f} ne $P{$f}) {
+        if ($f eq 'akey') {
+            ;       # don't log this - internal
+        }
+        elsif ($f =~ m{mailings}) {
+            my $s = $f;
+            $s =~ s{_mailings}{};
+            $s =~ s{e_}{email};
+            if ($s !~ m{ \A (mmi_|share) }xms) {
+                $s = "mmc_$s";
+            }
+            $changes .= "$s: " . ($P{$f}? $P{$f}: "no") . ", ";
+        }
+        elsif ($f =~ m{sex}xms) {
+            $changes .= "$f: $P{$f}, ";
+        }
+        else {
+            $changes .= "$f: $href->{$f} => $P{$f}, ";
+        }
+    }
 }
 $sql .= qq[ prog_affils = "@prog_affils", ];
 $sql .= " status = 2 ";
 $sql .= qq[ where secure_code = "$P{secure_code}"];
 $sth = $dbh->prepare($sql) or die "oops";
 $sth->execute();
+
+# we had $href->{prog_affils} and now have "@prog_affils".
+# what changed?  put it succinctly in $changes.
+my @had = split ' ', $href->{prog_affils};
+for my $a (@had) {
+    if (! grep { $_ == $a } @prog_affils) {
+        $changes .= "$interests{$a}: no, ";
+    }
+}
+for my $a (@prog_affils) {
+    if (! grep { $_ == $a } @had) {
+        $changes .= "$interests{$a}: yes, ";
+    }
+}
+
+if ($changes) {
+    $changes =~ s{,\s*\z}{}xms;
+    open my $log, '>>', 'update_log.txt';
+    my ($min, $hour, $day, $mon) = (localtime)[1 .. 4];
+    ++$mon;
+    printf {$log} "%d/%d %02d:%02d $href->{first} $href->{last}: $changes\n",
+                  $mon, $day, $hour, $min;
+    close $log;
+}
 
 my $interests = join ', ',
                 map { $interests{$_} }

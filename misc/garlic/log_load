@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use DBI;
+use Date::Simple qw/
+    date
+/;
+my $dbh = DBI->connect(
+    'dbi:SQLite:dbname=people_data', '', '',
+    { RaiseError => 1, AutoCommit => 1 }
+) or die "cannot connect to database\n";
+my $sth = $dbh->prepare("select count(*) from people_data");
+$sth->execute();
+my ($count) = $sth->fetchrow_array();
+
+open my $in, "expiry_date.txt";
+my $exp = date(<$in>);
+close $in;
+open my $log, '>>', 'update_log.txt';
+my ($min, $hour, $day, $mon) = (localtime)[1 .. 4];
+++$mon;
+printf {$log} "%d/%d %02d:%02d loaded $count people expires %d/%d\n",
+              $mon, $day, $hour, $min, $exp->month, $exp->day;
+close $log;

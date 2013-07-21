@@ -1,0 +1,9 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard/;
+print header();
+if (path_info() eq '/soma') {
+    unlink "update_log.txt";
+}
+# no output except the header
