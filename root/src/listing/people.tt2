@@ -61,12 +61,12 @@
 
     </table>
     </form>
-    <p class=p2>
-    <li><a href="/listing/dquote_clear">Clear Double Quotes</a>
-    <p class=p2>
-    <li><a href="/listing/clobber"
-           onclick="return confirm('Are you sure you wish to CLOBBER it?');"
-        >Clobber Existing Distributed Update</a>
+    [% IF expiry %]
+        <p class=p2>
+        <li><a href="/report/clobber"
+               onclick="return confirm('Are you sure you wish to CLOBBER it?');"
+            >Clobber Existing Distributed Update</a>
+    [% END %]
 [% END %]
 </ul>
 </ul>

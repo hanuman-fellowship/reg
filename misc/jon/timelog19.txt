@@ -326,5 +326,44 @@ Jul 18 1:40-5:20, 9:00-9:50, 12:00-1:00
     jamal?? list of reports - description, zip range - is zip range useful
         what else for second column?  rather two columns?
     all the above things - lots of twiddling!
-Jul 19 1:30-
+Jul 19 1:30-4:50
     continuing with DDUP reports, etc.
+    talking with Jamal about it all, getting suggestions
+    summary:
+        ## count without expiry is okay
+        ## add country - you forgot it, USA default 
+        ## on kali - clean up all country that is US make it blank
+            ## verify that new US online regs come in as USA, No cleared in relay.
+        ## verify that online reg blank country comes in as blank, yes.
+        same edits as in online reg
+            not really - for online reg we need at least one phone
+            and their address and their gender.  they may not want
+            to give us one of those things!   minimum is their
+            non-blank first, last.  and a valid email if one was present
+            and given.
+        ## plain text log of what changed - mostly what fields, prefs+-, affils+-
+            ## viewable, clearable via some passworded command
+        ## imported 4 of 100, Import Newly Updated Records
+        ## fold code to upper case in update so can be entered
+            ## on form or in link either way
+        ## on form - and hit Return - on the same line
+        ## no Clobber listing if no _current_ expiry
+        ## Address, Code - with email is okay
+        ## past expiry date is not okay
+        ## redirect to Programs page - okay
+        ask Brajesh, Emily, other, etc.
+            I'll be up on Monday to work with them.
+            Their opinion is valuable at this point, I think.
+        ## Open Gate Sangha affil is not included here
+        ## When generating the sql - clear double quotes - it is fast enough.
+            ## you could concat and look for " before doing it to make it faster
+            ## I did 'index' instead of a regexp.
+            ## then eliminate the Clear Double Quote listing
+        ask to see the templating mechanism in MailChimp
+        ## ? does this need to be done via https SSL?  online reg is not.
+Jul 20 12:00-2:00, 4:15-5:30, 6:00-6:35
+    continuing with the things above
+    to finish: if $f =~ mailings then just the $P
+        other tweaks for logging
+    better archive name
+    log it all

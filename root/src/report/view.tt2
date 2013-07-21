@@ -97,10 +97,6 @@ Expiry Date <span class=red>*</span>
 </td>
 </tr>
 </table>
-[% IF code %]
-<p class=p2>
-<span class=red>Be sure to have run</span> Listings > People > Clear Double Quotes.
-[% END %]
 </form>
 $message
 [% IF code %]

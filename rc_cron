@@ -49,9 +49,6 @@ REG=/home/sahadev/Reg
 # at midnight check that the backups actually worked properly
 0 0 * * * test -f $REG/INACTIVE || $REG/check_backup >>$REG/output/check_backup.out 2>&1
 
-# at midnight every day ensure that the secure codes are unique
-0 0 * * * test -f $REG/INACTIVE || $REG/check_dup >>$REG/output/check_dup.out 2>&1
-
 # at noon and 6 pm republish the public version of the calendar
 0 12,18 * * * test -f $REG/INACTIVE || $REG/pubcal >>$REG/output/pubcal.out 2>&1
 

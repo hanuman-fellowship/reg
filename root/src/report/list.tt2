@@ -3,7 +3,8 @@
 [% IF expiry %]
 <span style="margin-left: .3in">Expires $expiry</span>
 <span style="margin-left: .3in">$status</span>
-<span style="margin-left: .3in"><a href=/report/get_updates>Get Newly Updated Records</a></span>
+<span style="margin-left: .3in"><a href=/report/get_updates>Import New</a></span>
+<span style="margin-left: .3in"><a href=/report/see_log>See Log</a></span>
 [% END %]
 <ul>
 <table cellpadding=3 border=0 width=900>

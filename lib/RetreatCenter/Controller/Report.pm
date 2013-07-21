@@ -308,7 +308,8 @@ sub run : Local {
     my $expiry    = $c->request->params->{expiry} || "";
     my $today = tt_today($c);
 
-    if (($format == EMAIL_CODE || $format == ADDR_CODE)
+    if (!$count
+        && ($format == EMAIL_CODE || $format == ADDR_CODE)
         && ! $expiry
     ) {
         return error($c,
@@ -319,6 +320,10 @@ sub run : Local {
         if (!$dt) {
             return error($c,
                 "illegal date format: $expiry", "gen_error.tt2");
+        }
+        if ($dt < $today) {
+            return error($c,
+                "Expiry date has past: $expiry", "gen_error.tt2");
         }
         $expiry = $dt->as_d8();
     }
@@ -336,7 +341,8 @@ sub run : Local {
     # there are all kinds of situations where one could
     # inadvertently clobber an existing set of update requests.
     #
-    if (($format == EMAIL_CODE || $format == ADDR_CODE)
+    if (!$count
+        && ($format == EMAIL_CODE || $format == ADDR_CODE)
         && -f $rst_exp
     ) {
         my ($n, $m) = get("$cgi/update_status") =~ m{(\d+)}xmsg;
@@ -417,7 +423,7 @@ sub run : Local {
         # we only want non-blank emails
         $just_email = "email != '' and ";
     }
-    elsif ($format == CMS_SANS_EMAIL || $format == ADDR_CODE) {
+    elsif ($format == CMS_SANS_EMAIL) {
         $just_email = "email = '' and ";    # sans Email (misnamed, oh well)
     }
     elsif ($format == LAST_FIRST_EMAIL) {
@@ -686,7 +692,7 @@ create table people_data (
     secure_code text,
     akey text,
     prog_affils text,
-    status text default ''
+    status text not null default 0
 );
 drop table if exists hacker_ips;
 create table hacker_ips (
@@ -705,7 +711,7 @@ EOF
                })
     ) {
         my $descrip = $a->descrip;
-        next PROG_REP if $descrip =~ m{Misc|UNSPEC}xms;
+        next PROG_REP if $descrip =~ m{Misc|UNSPEC|Open\s*Gate}xms;
             # Misc. Programs and UNSPECIFIED Programs - don't include
         push @prog_affils, $a->id;
         # tidy up the description for this purpose
@@ -720,9 +726,6 @@ EOF
 
     }
     my $prog_affils = join ',', @prog_affils;
-    # there are no double quotes anywhere in the data, right?
-    # I added sub dquote_clear in Listing.pm to ensure this.
-    #
     DBH->init();
     my $sth = $dbh->prepare("
         select ap.a_id
@@ -743,6 +746,10 @@ EOF
             my $val = $p->{$f};
             if (! defined $val) {
                 $val = "";
+            }
+            if (CORE::index($val, '"') != -1) {
+                # no double quotes anywhere, please!
+                $val =~ s{"}{}xmsg;
             }
             print {$out} qq["$val",];
         }
@@ -798,8 +805,11 @@ sub _get_updates {
     if (! -d "$rst/updates") {
         mkdir "$rst/updates" or return "no updates dir";
     }
-    my $archive = sprintf "$rst/updates/%d" . ("-%02d" x 5) . ".sql",
-                          (localtime(time()))[reverse 0 .. 5];
+    my ($min, $hour, $day, $mon, $year) = (localtime)[1 .. 5];
+    ++$mon;
+    $year += 1900;
+    my $archive = sprintf "$rst/updates/%d" . ("-%02d" x 4) . ".sql",
+                          $year, $mon, $day, $hour, $min;
     my $ftp = Net::FTP->new($string{ftp_site},
                             Passive => $string{ftp_passive})
         or return "no Net::FTP->new";
@@ -820,6 +830,32 @@ sub _get_updates {
         return "no system: $db with $archive, rc = $rc";
     }
     return '';      # all okay
+}
+
+sub see_log : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        lines => get("http://www.mountmadonna.org/cgi-bin/get_update_log/soma"),
+        template => "report/update_log.tt2",
+    );
+}
+
+sub clear_log : Local {
+    my ($self, $c) = @_;
+
+    get("http://www.mountmadonna.org/cgi-bin/clear_update_log/soma"),
+    $c->forward('list');
+}
+
+sub clobber : Local {
+    my ($self, $c) = @_;
+
+    unlink "root/static/expiry_date.txt";
+    # shall we also clobber the database on mmc.org and
+    # the expiry_date.txt file there?  nah.
+    # they will soon be overwritten.
+    $c->response->redirect($c->uri_for('/listing/people'));
 }
 
 1;
