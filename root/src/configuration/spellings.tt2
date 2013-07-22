@@ -1,0 +1,23 @@
+<h2>Spellings</h2>
+<div style="margin-left: .5in; margin-top: .2in">
+<form action=/configuration/spellings_do/$reg_id>
+[% IF maybe.1 %]
+    Check the ones you deem Okay.  The rest will be removed.
+    <h3>Maybe</h3>
+    <table>
+    [% FOR w IN maybe %]
+    <tr><td><input type=checkbox name="maybe_$w"> $w</td></tr>
+    [% END %]
+    </table>
+[% END %]
+<div style="margin-top: .3in">Check the ones you deem NOT okay.  They will be removed.</div>
+<h3>Okay</h3>
+<table>
+[% FOR w IN okay %]
+<tr><td><input type=checkbox name="okay_$w"> $w</td></tr>
+[% END %]
+</table>
+<p class=p2>
+<input id=sub type=submit>
+</form>
+</div>
