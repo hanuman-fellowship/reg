@@ -2180,7 +2180,7 @@ sub _view {
         my @words = <$in>;
         chomp @words;
         unlink '/tmp/spellout';
-        $misspellings = "@words";
+        $misspellings = "\\n\\n" . (join "\\n", @words);
     }
     stash($c,
         req_payments   => \@req_payments,
