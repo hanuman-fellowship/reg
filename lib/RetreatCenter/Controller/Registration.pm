@@ -2879,7 +2879,7 @@ sub update_confnote_do : Local {
 }
 sub _check_spelling {
     my ($c, $newnote) = @_;
-    open my $spell, "| aspell -H list |sort -u | "
+    open my $spell, "| aspell -H list |sort -fu | "
                   . "comm -23 - $rst/okaywords.txt >/tmp/spellout"
         or $c->log->info("cannot open spell");
     print {$spell} $newnote;

@@ -145,7 +145,13 @@ sub spellings_do : Local {
         }
     }
     open my $out, '>', "$rst/okaywords.txt";
-    for my $w (sort @okay) {
+    # need to sort case insensitively
+    for my $w (
+        map { $_->[0] } 
+        sort { $a->[1] cmp $b->[1] }
+        map { $_, lc $_ }
+        @okay
+    ) {
         print {$out} "$w\n" unless exists $not_okay{$w};
     }
     close $out;
