@@ -10,14 +10,16 @@
     [% END %]
     </table>
 [% END %]
-<div style="margin-top: .3in">Check the ones you deem NOT okay.  They will be removed.</div>
-<h3>Okay</h3>
-<table>
-[% FOR w IN okay %]
-<tr><td><input type=checkbox name="okay_$w"> $w</td></tr>
+[% IF okay.0 %]
+    <div style="margin-top: .3in">Check the ones you deem NOT okay.  They will be removed.</div>
+    <h3>Okay</h3>
+    <table>
+    [% FOR w IN okay %]
+    <tr><td><input type=checkbox name="okay_$w"> $w</td></tr>
+    [% END %]
+    </table>
+    <p class=p2>
+    <input id=sub type=submit>
+    </form>
+    </div>
 [% END %]
-</table>
-<p class=p2>
-<input id=sub type=submit>
-</form>
-</div>
