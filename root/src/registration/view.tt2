@@ -243,7 +243,18 @@ From [% program.sdate_obj %] <span class=dow>[% program.sdate_obj.format("%a") %
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td colspan=3 width=700>[% reg.confnote %]<a href="/registration/update_confnote/$id">Update</a>[% IF reg.confnotes.1 %]<span style="margin-left: 1in"><a href="/registration/conf_history/$id">Note History</a></span>[% END %]</td>
+<td colspan=3 width=700>
+[% reg.confnote %]<a href="/registration/update_confnote/$id">Update</a>
+[% IF reg.confnotes.1 %]
+    <span style="margin-left: 1in">
+    <a href="/registration/conf_history/$id">Note History</a>
+    </span>
+[% END %]
+<span style="margin-left: 1in">
+<a href=/configuration/spellings/$id>Spellings</a>
+</span>
+
+</td>
 </tr>
 </table>
 <p class=p2>
@@ -484,6 +495,9 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.f
 <script type="text/javascript">
 [% IF alert %]
 alert("Tell $who that someone was housed in '$reg.house.name'.");
+[% END %]
+[% IF misspellings %]
+alert("Possibly misspelled words: $misspellings");
 [% END %]
 document.form.reg_pat.focus();
 </script>

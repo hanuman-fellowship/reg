@@ -34,7 +34,7 @@ if ($P{first} !~ /\S/ || $P{last} !~ /\S/) {
     exit;
 }
 if ($P{email} =~ /\S/
-    && $P{email} !~ m{ \A\s* [a-z0-9_-]+[@][a-z0-9.-]+ \s*\z }xmsi
+    && $P{email} !~ m{ \A\s* [a-z0-9._-]+[@][a-z0-9.-]+ \s*\z }xmsi
 ) {
     $tt->process(
         'update_msg.tt2',

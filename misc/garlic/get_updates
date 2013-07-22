@@ -78,7 +78,7 @@ $sth = $dbh->prepare("update people_data set status = 3"
 $sth->execute();
 if ($viewed + $changed) {
     open my $log, '>>', 'update_log.txt';
-    printf {$log} "%d/%d %02d:%02d imported $viewed viewed, $changed changed\n",
+    printf {$log} "%d/%d %02d:%02d imported - $viewed viewed, $changed changed\n",
                   $mon, $day, $hour, $min;
     close $log;
 }

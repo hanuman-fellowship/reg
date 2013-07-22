@@ -59,6 +59,7 @@ use Global qw/
     @clusters
 /;
 use Template;
+my $rst = "root/static";
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -107,7 +108,7 @@ sub list_online : Local {
     my ($self, $c) = @_;
 
     my @online;
-    for my $f (<root/static/online/*>) {
+    for my $f (<$rst/online/*>) {
         open my $in, "<", $f
             or die "cannot open $f: $!\n";
         my ($date, $time, $first, $last, $pid, $synthesized,
@@ -176,7 +177,7 @@ sub list_online : Local {
             $arr_lv = ("&nbsp;" x 4) . $arr_lv;     # space on left
                                                     # rather than hacking CSS
         }
-        (my $fname = $f) =~ s{root/static/online/}{};
+        (my $fname = $f) =~ s{$rst/online/}{};
         push @online, {
             first   => $first,
             last    => $last,
@@ -257,7 +258,7 @@ sub list_reg_name : Local {
         return;
     }
     Global->init($c);
-    my @files = <root/static/online/*>;
+    my @files = <$rst/online/*>;
     my $sdate = $pr->sdate();
     my $nmonths = int((date($pr->edate()) - date($sdate))/30) + 1;
     stash($c,
@@ -294,7 +295,7 @@ sub list_reg_post : Local {
         $r->{date_mark} = date($r->date_postmark);
     }
     Global->init($c);
-    my @files = <root/static/online/*>;
+    my @files = <$rst/online/*>;
     stash($c,
         online          => scalar(@files),
         program         => $pr,
@@ -325,7 +326,7 @@ sub list_reg_missing : Local {
         }
     );
     Global->init($c);
-    my @files = <root/static/online/*>;
+    my @files = <$rst/online/*>;
     stash($c,
         missing_count   => scalar(@regs) . " of ",
         online          => scalar(@files),
@@ -388,7 +389,7 @@ sub get_online : Local {
     #
     my %P;
     my $in;
-    if (! open $in, "<", "root/static/online/$fname") {
+    if (! open $in, "<", "$rst/online/$fname") {
         $c->response->redirect($c->uri_for("/registration/list_online"));
         return;
     }
@@ -1130,6 +1131,8 @@ sub create_do : Local {
         );
         return;
     }
+    my $newnote = cf_expand($c, $c->request->params->{confnote});
+    _check_spelling($c, $newnote);
     my $reg = model($c, 'Registration')->create({
         person_id     => $P{person_id},
         program_id    => $P{program_id},
@@ -1146,7 +1149,7 @@ sub create_do : Local {
         h_type        => $P{h_type},
         h_name        => $P{h_name},
         kids          => trim($P{kids}),
-        confnote      => cf_expand($c, $c->request->params->{confnote}),
+        confnote      => $newnote,
         status        => $P{status},
         nights_taken  => $taken,
         cancelled     => '',    # to be sure
@@ -1251,7 +1254,7 @@ sub create_do : Local {
     if (!$P{dup} && $pr->notify_on_reg()) {
         my $html = "";
         my $tt = Template->new({
-            INCLUDE_PATH => 'root/static/templates/letter',
+            INCLUDE_PATH => "$rst/templates/letter",
             EVAL_PERL    => 0,
         });
         my $stash = {
@@ -1282,16 +1285,16 @@ sub create_do : Local {
     if (exists $P{fname}) {
         if ($P{fname} eq '0') {
             # from a staging online registration
-            unlink "root/static/online/$P{fname}";
+            unlink "$rst/online/$P{fname}";
         }
         else {
-            my $dir = "root/static/online_done/"
+            my $dir = "$rst/online_done/"
                     . substr($P{date_postmark}, 0, 4)
                     . '-'
                     . substr($P{date_postmark}, 4, 2)
                     ;
             mkdir $dir unless -d $dir;
-            rename "root/static/online/$P{fname}",
+            rename "$rst/online/$P{fname}",
                    "$dir/$P{fname}";
             open my $log, '>>', 'online_log';
             my $person = $reg->person;
@@ -1341,7 +1344,7 @@ sub create_do : Local {
             };
             my $html = "";
             my $tt = Template->new({
-                INCLUDE_PATH => 'root/static/templates/letter',
+                INCLUDE_PATH => "$rst/templates/letter",
                 EVAL_PERL    => 0,
             });
             $tt->process(
@@ -1952,7 +1955,7 @@ sub send_conf : Local {
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
-        INCLUDE_PATH => 'root/static/templates/letter',
+        INCLUDE_PATH => "$rst/templates/letter",
         EVAL_PERL    => 0,
     });
     $tt->process(
@@ -2070,7 +2073,7 @@ sub _view {
         #   = (@dcm)? "$name is enrolled in <i>more than one</i> D/C/M program!"
         #   :       "$name is not enrolled in <i>any</i> D/C/M program!";
     }
-    my @files = <root/static/online/*>;
+    my @files = <$rst/online/*>;
     my $share_first = $reg->share_first();
     my $share_last  = $reg->share_last();
     my $share = $share_first? "$share_first $share_last": '';
@@ -2100,7 +2103,7 @@ sub _view {
         elsif (! $next_reg) {
             # not registered - but are they in the online list?
             my ($found_first, $found_last) = (0, 0);
-            for my $f (<root/static/online/*>) {
+            for my $f (<$rst/online/*>) {
                 open my $in, "<", $f
                     or die "cannot open $f: $!\n";
                 # x_fname, x_lname - could be anywhere in the file
@@ -2171,6 +2174,14 @@ sub _view {
             $req->{group_total} = commify($group_totals{$req->code()});
         }
     }
+    my $misspellings = "";
+    if (-f "/tmp/spellout") {
+        open my $in, '<', '/tmp/spellout';
+        my @words = <$in>;
+        chomp @words;
+        unlink '/tmp/spellout';
+        $misspellings = "@words";
+    }
     stash($c,
         req_payments   => \@req_payments,
         send_requests  => $send_requests,
@@ -2192,6 +2203,7 @@ sub _view {
         send_preview   => ($PR || $same_name_reg[0]->id() == $reg->id()),
         alert          => $alert,
         who            => $who,
+        misspellings   => $misspellings,
         template       => "registration/view.tt2",
     );
 }
@@ -2416,11 +2428,11 @@ sub cancel_do : Local {
         my $html = "";
         my $tt = Template->new({
             INTERPOLATE  => 1,
-            INCLUDE_PATH => 'root/static/templates/letter',
+            INCLUDE_PATH => "$rst/templates/letter",
             EVAL_PERL    => 0,
         });
         my $template = $reg->program->cl_template . "_cancel.tt2";
-        if (! -f "root/static/templates/letter/$template") {
+        if (! -f "$rst/templates/letter/$template") {
             $template = "default_cancel.tt2";
         }
         my $stash = {
@@ -2862,7 +2874,18 @@ sub update_confnote_do : Local {
         });
         _reg_hist($c, $id, "Confirmation Note updated");
     }
+    _check_spelling($c, $newnote);
     $c->response->redirect($c->uri_for("/registration/view/$id"));
+}
+sub _check_spelling {
+    my ($c, $newnote) = @_;
+    open my $spell, "| aspell -H list |sort -u | "
+                  . "comm -23 - $rst/okaywords.txt >/tmp/spellout"
+        or $c->log->info("cannot open spell");
+    print {$spell} $newnote;
+    close $spell;
+    system("sort -u /tmp/spellout $rst/maybewords.txt > $rst/newmaybewords.txt;"
+         . "mv $rst/newmaybewords.txt $rst/maybewords.txt");
 }
 sub update_comment : Local {
     my ($self, $c, $id) = @_;
@@ -3045,6 +3068,7 @@ sub update_do : Local {
         _vacate($c, $reg);
     }
     my $newnote = cf_expand($c, $c->request->params->{confnote});
+    _check_spelling($c, $newnote);
     my @note_opt = ();
     if ($reg->confnote() ne $newnote) {
         @note_opt = (
@@ -3357,7 +3381,7 @@ sub lodge : Local {
         if ($message2 =~ m{Could not find|has not yet reg}) {
             my $found = 0;
             ONLINE:
-            for my $f (<root/static/online/*>) {
+            for my $f (<$rst/online/*>) {
                 open my $in, "<", $f
                     or die "cannot open $f: $!\n";
                 # x_fname, x_lname - could be anywhere in the file
@@ -3861,6 +3885,7 @@ sub lodge_do : Local {
             confnote    => $newnote,
             letter_sent => '',
         });
+        _check_spelling($c, $newnote);
         $c->response->redirect($c->uri_for("/registration/view/$id"));
         return;
     }
@@ -3964,6 +3989,7 @@ sub lodge_do : Local {
     #
     my @note_opt = ();
     if ($reg->confnote() && $reg->confnote() ne $newnote) {
+        _check_spelling($c, $newnote);
         @note_opt = (
             confnote    => $newnote,
             letter_sent => '',
@@ -4209,7 +4235,7 @@ sub seek : Local {
         }
 
         # we have some matching programs.
-        my @files = <root/static/online/*>;
+        my @files = <$rst/online/*>;
         stash($c,
             programs => \@progs,
             online   => scalar(@files),
@@ -4270,7 +4296,7 @@ sub seek : Local {
                 $multiple = 1;
             }
         }
-        my @files = <root/static/online/*>;
+        my @files = <$rst/online/*>;
         stash($c,
             online     => scalar(@files),
             pat        => $oreg_pat,
@@ -5489,7 +5515,7 @@ sub receipt : Local {
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
-        INCLUDE_PATH => 'root/static/templates/letter',
+        INCLUDE_PATH => "$rst/templates/letter",
         EVAL_PERL    => 0,
     });
     my @leaders = $reg->program->leaders;

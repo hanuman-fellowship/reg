@@ -17,8 +17,12 @@ open my $in, "expiry_date.txt";
 my $exp = date(<$in>);
 close $in;
 open my $log, '>>', 'update_log.txt';
-my ($min, $hour, $day, $mon) = (localtime)[1 .. 4];
+my ($min, $hour, $day, $mon, $year) = (localtime)[1 .. 5];
 ++$mon;
+$year += 1900;
 printf {$log} "%d/%d %02d:%02d loaded $count people expires %d/%d\n",
               $mon, $day, $hour, $min, $exp->month, $exp->day;
 close $log;
+rename 'people_data.sql', 
+       sprintf "updates/load-%d-%d-%d-%02d-%02d.sql",
+               $year, $mon, $day, $hour, $min;

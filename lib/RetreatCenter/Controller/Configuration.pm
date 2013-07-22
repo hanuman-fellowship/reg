@@ -10,6 +10,7 @@ use Util qw/
 
 use Global;
 use File::stat;
+my $rst = "root/static";
 
 sub index : Local {
     my ($self, $c) = @_;
@@ -106,6 +107,51 @@ sub counts : Local {
         classes  => \@classes,
         template => 'configuration/counts.tt2',
     );
+}
+
+sub _get_words {
+    my ($file, $aref) = @_;
+    open my $in, '<', $file;
+    @$aref = <$in>;
+    close $in;
+    chomp @$aref;
+}
+
+sub spellings : Local {
+    my ($self, $c, $reg_id) = @_;
+    my (@okay, @maybe);
+    _get_words("$rst/okaywords.txt",  \@okay);
+    _get_words("$rst/maybewords.txt", \@maybe);
+    stash($c,
+        reg_id   => $reg_id,
+        okay     => \@okay,
+        maybe    => \@maybe,
+        template => 'configuration/spellings.tt2',
+    );
+}
+sub spellings_do : Local {
+    my ($self, $c, $reg_id) = @_;
+
+    my %P = %{ $c->request->params() };
+    my (@okay, %not_okay);
+    _get_words("$rst/okaywords.txt", \@okay);
+    for my $k (sort keys %P) {
+        my ($type, $w) = $k =~ m{ \A (maybe|okay)_(\S+) \z }xms;
+        if ($type eq 'maybe') {
+            push @okay, $w;
+        }
+        else {
+            $not_okay{$w} = 1;
+        }
+    }
+    open my $out, '>', "$rst/okaywords.txt";
+    for my $w (@okay) {
+        print {$out} "$w\n" unless exists $not_okay{$w};
+    }
+    close $out;
+    open my $empty, '>', "$rst/maybewords.txt";
+    close $empty;
+    $c->response->redirect("/registration/view/$reg_id");
 }
 
 1;

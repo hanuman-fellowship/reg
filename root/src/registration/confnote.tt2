@@ -36,7 +36,7 @@ function popup(url) {
 
 <tr>
 <td>&nbsp;</td>
-<td width=20><input type=submit value="Submit"></td>
+<td width=20><input id=sub type=submit value="Submit"></td>
 <td><span style="margin-left: 1in">Click <a href="#" onclick="javascript:popup('/registration/conf_notes'); return false;">here</a> to see all quick notes.
 </span></td>
 </tr>
