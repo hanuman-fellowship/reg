@@ -1,7 +1,7 @@
 <h2>Spellings</h2>
 <div style="margin-left: .5in; margin-top: .2in">
 <form action=/configuration/spellings_do/$reg_id>
-[% IF maybe.1 %]
+[% IF maybe.0 %]
     Check the ones you deem Okay.  The rest will be removed.
     <h3>Maybe</h3>
     <table>
