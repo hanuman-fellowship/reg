@@ -145,7 +145,7 @@ sub spellings_do : Local {
         }
     }
     open my $out, '>', "$rst/okaywords.txt";
-    for my $w (@okay) {
+    for my $w (sort @okay) {
         print {$out} "$w\n" unless exists $not_okay{$w};
     }
     close $out;
