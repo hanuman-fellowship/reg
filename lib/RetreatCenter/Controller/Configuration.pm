@@ -149,7 +149,7 @@ sub spellings_do : Local {
     for my $w (
         map { $_->[0] } 
         sort { $a->[1] cmp $b->[1] }
-        map { $_, lc $_ }
+        map { [ $_, lc $_ ] }
         @okay
     ) {
         print {$out} "$w\n" unless exists $not_okay{$w};
