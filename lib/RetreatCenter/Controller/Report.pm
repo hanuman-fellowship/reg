@@ -83,15 +83,17 @@ sub list : Local {
         close $in;
         $status = get("$cgi/update_status");
     }
-    $c->stash->{reports} = [
-        model($c, 'Report')->search(
+    my @reports = model($c, 'Report')->search(
             undef,
             {
                 order_by => 'descrip',
             },
-        )
-    ];
+        );
+    for my $r (@reports) {
+        $r->{disp_format} = $format_desc[$r->format];
+    }
     stash($c,
+        reports  => \@reports,
         expiry   => $expiry,
         status   => $status,
         template => "report/list.tt2",
@@ -621,7 +623,7 @@ EOS
     # mark the report as having been run today.
     #
     $report->update({
-        last_run => $today,
+        last_run => $today->as_d8(),
     });
     if ($format == TO_VISTAPRINT) {
         for my $p (@people) {

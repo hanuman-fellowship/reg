@@ -33,6 +33,10 @@ sub end_update_cutoff_obj {
     my ($self) = @_;
     date($self->end_update_cutoff) || "";
 }
+sub last_run_obj {
+    my ($self) = @_;
+    date($self->last_run) || "";
+}
 sub update_cutoff_range {
     my ($self) = @_;
     my $s = '';

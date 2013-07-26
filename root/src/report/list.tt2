@@ -11,14 +11,22 @@ Distributed Update:
 [% END %]
 <ul>
 <table cellpadding=3 border=0 width=900>
-    <tr align=left>
-    <th>Description</th>
-    </tr>
+<tr align=left>
+<th>Description</th>
+<th>Format</th>
+<th>Last Run</th>
+</tr>
 
-    [% FOREACH report IN reports %]
-    <tr>
-        <td valign=top><a href="[% Catalyst.uri_for('/report/view/') _ report.id %]">[% report.descrip %]</a></td>
-    </tr>
-    [% END -%]
+[% FOREACH report IN reports %]
+
+<tr>
+<td valign=top>
+<a href="[% Catalyst.uri_for('/report/view/') _ report.id %]">[% report.descrip %]</a>
+</td>
+<td>$report.disp_format</td>
+<td>$report.last_run_obj</td>
+</tr>
+
+[% END -%]
 </table>
 </ul>
