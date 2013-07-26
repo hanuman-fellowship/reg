@@ -1,0 +1,50 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw/:standard/;
+use DBI;
+
+print header();
+
+my $dbh = DBI->connect(
+    'dbi:SQLite:dbname=people_data', '', '',
+    { RaiseError => 1, AutoCommit => 1 }
+) or die "cannot connect to database\n";
+
+my $sth = $dbh->prepare("select * from people_data where status = 4");
+$sth->execute();
+print <<'EOH';
+<html>
+<head>
+<style>
+body {
+    margin-top: .5in;
+    margin-left: .5in;
+}
+body, td {
+    font-size: 14pt;
+    font-family: Arial;
+}
+</style>
+</head>
+<body>
+These people attempted to update their information after the expiration date:<ul>
+<table cellpadding=5>
+EOH
+while (my $href = $sth->fetchrow_hashref) {
+    print "<tr><td>$href->{first} $href->{last}<td>";
+    print "<td>$href->{email}<td>";
+    my $phone = $href->{tel_cell}
+             || $href->{tel_home}
+             || $href->{tel_work}
+             || '';
+    print "<td>$phone</td>";
+    print "</tr>\n";
+}
+print <<'EOH';
+</table>
+</ul>
+</body>
+</html>
+EOH

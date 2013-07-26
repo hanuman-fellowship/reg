@@ -1703,14 +1703,7 @@ sub financial : Local {
 }
 sub people : Local {
     my ($self, $c) = @_;
-    my $today = today();
-    my $expiry;
-    if (open my $in, '<', 'root/static/expiry_date.txt') {
-        $expiry = date(<$in>);
-        close $in;
-    }
     stash($c,
-        expiry   => $expiry && $expiry >= $today,
         template => "listing/people.tt2",
     );
 }

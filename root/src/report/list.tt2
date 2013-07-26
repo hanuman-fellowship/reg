@@ -1,10 +1,13 @@
 <h2>Reports</h2>
 <a href=/report/create>Add</a>
 [% IF expiry %]
-<span style="margin-left: .3in">Expires $expiry</span>
+<p class=p2>
+Distributed Update:
+<span style="margin-left: .1in">Expires $expiry</span>
 <span style="margin-left: .3in">$status</span>
 <span style="margin-left: .3in"><a href=/report/get_updates>Import New</a></span>
 <span style="margin-left: .3in"><a href=/report/see_log>See Log</a></span>
+<p class=p2>
 [% END %]
 <ul>
 <table cellpadding=3 border=0 width=900>

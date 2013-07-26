@@ -1,17 +1,20 @@
 [% code = (format_verbose=='Email, Code'||format_verbose=='Address, Code') %]
 <h2>Reports</h2>
-<table cellpadding=0 border=0>
-<tr>
-<td valign=top><a href="/report/update/$report.id">Edit</a>
+<a href="/report/update/$report.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
-</td>
-<td valign=top><a href="/report/delete/$report.id"
+<a href="/report/delete/$report.id"
 onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
-</td>
-<td valign=top><a href="/report/list">List</a></td>
-</tr>
-</table>
+<a href="/report/list">List</a>
+[% IF expiry %]
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    <a href="/report/clobber/$report.id"
+           onclick="return confirm('Are you sure you wish to CLOBBER it?');"
+        >Clobber Current Distributed Update</a>
+[% END %]
+<p class=p2>
 <hr width=400 align=left>
 <table cellpadding=3 border=0>
     <tr>
@@ -40,6 +43,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
         <th align=right>Last Run</td>
         <td>$last_run</td>
     </tr>
+    <tr><td>&nbsp;</td></tr>
     <tr>
         <th align=right>Zip Ranges</td>
         <td>$report.zip_range</td>
@@ -62,7 +66,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
     </tr>
 </table>
 <hr width=400 align=left>
-<p style="margin-top: .3in">
+<p style="margin-top: .1in">
 <form name=form action="/report/run/$report.id">
 <table cellpadding=5>
 <tr>
@@ -87,7 +91,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
        [% IF append %]checked[% END %]>Append to Existing Records?
 &nbsp;&nbsp;
 Expiry Date <span class=red>*</span> 
-<input type=text name=expiry size=10 value=$expiry>
+<input type=text name=expiry size=10 value=$expiry_date>
 </td>
 </tr>
 [% END %]

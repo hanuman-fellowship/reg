@@ -12,31 +12,18 @@ use Date::Simple qw/date today/;
 use Mail::Sender;
 
 sub show_msg {
-    my ($msg) = @_;
+    my ($msg, $template) = @_;
 
+    $template ||= 'update_msg.tt2';
     my $tt = Template->new(
         INTERPOLATE => 1,
     );
     $tt->process(
-        'update_msg.tt2',
+        $template,
         {
             msg => $msg,
         },
     );
-}
-
-my $ok = 0;
-if (open my $in, '<', 'expiry_date.txt') {
-    my $dt = <$in>;
-    chomp $dt;
-    $dt = date($dt);
-    if ($dt >= today()) {
-        $ok = 1;
-    }
-}
-if (! $ok) {
-    show_msg "Sorry, The update period has passed.";
-    exit;
 }
 
 my $dbh = DBI->connect(
@@ -68,7 +55,7 @@ if (exists $hackers{$ip}
     && $hackers{$ip}{nfails} >= MAX_FAILS
 ) {
     if ($hackers{$ip}{block_time} > time) {
-        show_msg "Sorry, you are blocked!";
+        show_msg "Sorry, you are blocked!  Try again in 5 minutes.";
         exit;
     }
     else {
@@ -85,6 +72,7 @@ if (! $code) {
     $code = path_info();
     $code =~ s{^/}{};
 }
+$code = uc $code;
 
 $sth = $dbh->prepare(
     "select * from people_data where secure_code = '$code'");
@@ -92,7 +80,7 @@ $sth->execute();
 my $person = $sth->fetchrow_hashref();
 
 if (!$person) {
-    show_msg "Your code '$code' is incorrect.  Please go back and try again.";
+    show_msg "The code '$code' was not found.  Please go back and try again.";
     # since some nefarious person might do this repeatedly
     # dump various info so that later it might help to identify
     # the possible hacker.
@@ -146,7 +134,24 @@ if (!$person) {
     exit;
 }
 
-# we can proceed
+# we can proceed with a good person 
+
+my $ok = 0;
+if (open my $in, '<', 'expiry_date.txt') {
+    my $dt = <$in>;
+    chomp $dt;
+    $dt = date($dt);
+    if ($dt >= today()) {
+        $ok = 1;
+    }
+}
+if (! $ok) {
+    show_msg 'Sorry, The update period has passed.',
+             'update_expired.tt2';
+    $dbh->do("update people_data set status = 4 where secure_code = '$code';");
+    exit;
+}
+
 
 my %has_affil;
 for my $a_id (split ' ', $person->{prog_affils}) {

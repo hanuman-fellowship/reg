@@ -111,6 +111,12 @@ sub delete : Local {
 sub view : Local {
     my ($self, $c, $id, $opt_inout) = @_;
 
+    my $today = today();
+    my $expiry;
+    if (open my $in, '<', 'root/static/expiry_date.txt') {
+        $expiry = date(<$in>);
+        close $in;
+    }
     my $report = model($c, 'Report')->find($id);
     if (defined $opt_inout) {
         $c->stash->{mmc_report} = $opt_inout eq 'mmc';
@@ -122,6 +128,8 @@ sub view : Local {
     }
     my $fmt = $report->format();
     stash($c,
+        expiry => ($fmt == ADDR_CODE || $fmt == EMAIL_CODE)
+                  && $expiry && $expiry >= $today,
         report => $report,
         optin => (none { $_ == $fmt } (
                      ADDR_CODE,
@@ -192,6 +200,7 @@ sub _get_data {
     }
     $hash{update_cutoff} = $dt? $dt->as_d8(): '';
 
+    $dt = "";
     if ($hash{end_update_cutoff}) {
         $dt = date($hash{end_update_cutoff});   
         if (!$dt) {
@@ -362,9 +371,9 @@ sub run : Local {
             }
         }
         else {
-            if ($cur_expiry < $today) {
+            if ($cur_expiry > $today) {
                 return error($c,
-                    "The previous update requests have not expired yet.",
+                    "The current Distributed Update has not expired yet.",
                     "gen_error.tt2");
             }
         }
@@ -603,7 +612,7 @@ EOS
             collapse => $collapse,
             incl_mmc => $incl_mmc,
             append   => $append,
-            expiry   => $expiry? date($expiry)->format("%D"): '',
+            expiry_date => $expiry? date($expiry)->format("%D"): '',
         );
         view($self, $c, $id, $opt_inout);
         return;
@@ -760,25 +769,10 @@ EOF
         print {$out} qq["");\n];
     }
     close $out;
-    my $ftp = Net::FTP->new($string{ftp_site},
-                            Passive => $string{ftp_passive})
-        or return "no Net::FTP->new";
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return "no login";
-    $ftp->cwd('www/cgi-bin')
-        or return "no cd";
-    $ftp->ascii()
-        or return "no ascii";
-    $ftp->put("/tmp/$fname", $fname)
-        or return "no put 1";
-    $ftp->put($rst_exp, $exp)
-        or return "no put 2";
-    $ftp->quit();
-    if (get("$cgi/load_people_data") ne "done\n"
-    ) {
-        return "no load";
-    }
-    return '';   # all okay
+    # now ask a background task to do the sending and loading
+    # as it may take a while...
+    system("load_people_data " . $c->user->email .  " $fname &");
+    return '';
 }
 
 sub get_updates : Local {
@@ -849,13 +843,13 @@ sub clear_log : Local {
 }
 
 sub clobber : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $rep_id) = @_;
 
     unlink "root/static/expiry_date.txt";
     # shall we also clobber the database on mmc.org and
     # the expiry_date.txt file there?  nah.
     # they will soon be overwritten.
-    $c->response->redirect($c->uri_for('/listing/people'));
+    $c->response->redirect($c->uri_for("/report/view/$rep_id"));
 }
 
 1;

@@ -4,8 +4,6 @@ use warnings;
 
 use CGI qw/:standard/;
 use DBI;
-use lib 'mylib/lib/perl5';
-use Template;
 
 my $dbh = DBI->connect(
     'dbi:SQLite:dbname=people_data', '', '',
@@ -27,6 +25,14 @@ my ($changed) = $sth->fetchrow_array();
 $sth = $dbh->prepare("select count(*) from people_data where status = 3");
 $sth->execute();
 my ($total) = $sth->fetchrow_array();
+# total people who have either viewed or changed and HAVE
+# been imported.
+
+$sth = $dbh->prepare("select count(*) from people_data where status = 4");
+$sth->execute();
+my ($expired) = $sth->fetchrow_array();
 
 my $pct = int((100*$total/$all) + .5);
-print header(), "$viewed viewed, $changed changed - total $total of $all = $pct%\n";
+print header();
+print "$expired <a href=http://www.mountmadonna.org/cgi-bin/get_expired_updates>expired</a>, " if $expired;
+print "$viewed viewed, $changed changed - imported $total of $all = $pct%\n";

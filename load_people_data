@@ -1,0 +1,98 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use DBI;
+use Net::FTP;
+use Mail::Sender;
+use LWP::Simple;
+
+my ($whom, $fname) = @ARGV;
+
+my $cgi = "http://www.mountmadonna.org/cgi-bin";
+my $exp = "expiry_date.txt";
+my $rst_exp = "$ENV{HOME}/Reg/root/static/$exp";
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die("oh no DBI");
+my $sth = $dbh->prepare("
+    select the_key, value
+    from string
+    where the_key like 'ftp_%'
+       or the_key like 'smtp_%'
+");
+$sth->execute();
+my %string;
+while (my ($the_key, $value) = $sth->fetchrow_array()) {
+    $string{$the_key} = $value;
+}
+
+# 
+# get ready to send email - dup'ed from script/grab_new
+# someday we can make a shared sub...
+#
+sub email_letter {
+    my (%args) = @_;
+
+    my @auth = ();
+    if ($string{smtp_auth}) {
+        @auth = (
+            auth    => $string{smtp_auth},
+            authid  => $string{smtp_user},
+            authpwd => $string{smtp_pass},
+        );
+    }
+    my $mail_sender = Mail::Sender->new({
+        smtp => $string{smtp_server},
+        port => $string{smtp_port},
+        @auth,
+    }) or die("no mail sender");
+    $args{to} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
+    $args{cc} =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $args{cc}; 
+    my @cc;
+    if ($args{cc}) {
+        push @cc, cc => $args{cc};
+    }
+    $mail_sender->Open({
+        to       => $args{to},
+        from     => $args{from},
+        @cc,
+        subject  => $args{subject},
+        ctype    => "text/html",
+        encoding => "7bit",
+    }) or die("no mail sender Open");
+    $mail_sender->SendLineEnc($args{html});
+    $mail_sender->Close() or die("no mail sender Close");
+}
+
+sub finish {
+    my ($status) = @_;
+    email_letter(
+       to      => $whom, 
+       from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+       subject => "Your recent upload",
+       html    => "The status of your recent upload was:<ul>$status",
+
+    );
+    exit;
+}
+
+my $ftp = Net::FTP->new($string{ftp_site},
+                        Passive => $string{ftp_passive})
+    or finish("no Net::FTP->new");
+$ftp->login($string{ftp_login}, $string{ftp_password})
+    or finish("no login");
+$ftp->cwd('www/cgi-bin')
+    or finish("no cd");
+$ftp->ascii()
+    or finish("no ascii");
+$ftp->put("/tmp/$fname", $fname)
+    or finish("no put 1");
+$ftp->put($rst_exp, $exp)
+    or finish("no put 2");
+$ftp->quit();
+if (get("$cgi/load_people_data") ne "done\n"
+) {
+    finish("no load");
+}
+finish("Success");

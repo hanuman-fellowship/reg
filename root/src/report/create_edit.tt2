@@ -26,6 +26,8 @@ $format_opts
 </td>
 </tr>
 
+<tr><td>&nbsp;</td></tr>
+
 <tr>
 <td align=right>Zip Ranges</td>
 <td><input type=text name=zip_range size=80 value="$report.zip_range"></td>

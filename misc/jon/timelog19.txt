@@ -326,7 +326,8 @@ Jul 18 1:40-5:20, 9:00-9:50, 12:00-1:00
     jamal?? list of reports - description, zip range - is zip range useful
         what else for second column?  rather two columns?
     all the above things - lots of twiddling!
-Jul 19 1:30-4:50
+Jul 19 2:00-3:00, 1:30-4:50
+    early morning aspell investigation
     continuing with DDUP reports, etc.
     talking with Jamal about it all, getting suggestions
     summary:
@@ -372,3 +373,6 @@ Jul 21 2:25-5:10, 5:25-6:25
     using aspell for conf note
         lots of fiddling :(
     archiving load and log
+Jul 26 2:00-
+    background uploading
+    notification of expired attempt
