@@ -412,7 +412,7 @@ Other Charges
 
 [% FOREACH c IN charges %]
 <tr>
-<td align=right>[% c.amount_disp %]</td>
+<td align=right valign=top>[% c.amount_disp %]</td>
 <td>[% c.what %]</td>
 <th>
 <a href="javascript:void(0);" onclick="return overlib('#[% c.id %]&nbsp;&nbsp;[% c.the_date_obj.format("%D") %]&nbsp;&nbsp;[% c.time_obj %]&nbsp;&nbsp;[% c.user.username %] <span class=nh><a href=/rental/update_charge/[% c.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a href=/rental/del_charge/[% c.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '460', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 height=20 src="/static/images/info.png"></a>
