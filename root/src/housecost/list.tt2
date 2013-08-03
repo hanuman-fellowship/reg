@@ -4,7 +4,7 @@
 [% END %]
 &nbsp;&nbsp;&nbsp;
 [% IF inc_inactive %]
-    <a href="/housecost/list">Hide Active</a>
+    <a href="/housecost/list">Hide Inactive</a>
 [% ELSE %]
     <a href="/housecost/list/1">Show Inactive</a>
 [% END %]

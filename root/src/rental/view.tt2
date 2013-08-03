@@ -197,9 +197,10 @@ Web
 
 <p class=p2>
 
+<div class=head style="margin-top: .2in">Houses</div>
 <table cellpadding=3 border=0>
 <tr>
-<td width=120><span class=head>Houses</span></td>
+<th width=120 align=right>Type</th>
 <td></td>
 <th align=left valign=bottom width=550>Rooms</th>
 </tr>
