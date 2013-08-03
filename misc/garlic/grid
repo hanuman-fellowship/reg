@@ -52,12 +52,13 @@ while (my $line = <$in>) {
         #
         my ($id, $name, $max, $bath, $tent, $own) = split m{\|}, $line;
         push @houses, {
-            id   => $id,
-            name => $name,
-            max  => $max,
-            bath => $bath,
-            tent => $tent,
-            own  => $own,
+            id    => $id,
+            name  => $name,
+            max   => $max,
+            bath  => $bath,
+            tent  => $tent,
+            own   => $own,
+            class => ($fixed_cost_for_house{$id}? 'fixed': 'normal'),
         };
     }
     else {

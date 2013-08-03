@@ -1,0 +1,43 @@
+<html>
+<head>
+<style>
+body {
+    font-family: Arial;
+    font-size: 12pt;
+    margin-top: 10mm;
+    margin-left: 5mm;
+    margin-right: 5mm;
+}
+.special {
+    font-weight: bold;
+    color: red;
+}
+</style>
+</head>
+<body>
+In a name field of the Housing Assignment Grid if you put:
+<ul>
+    Charles Jones & Mary Smith
+</ul>
+(names separated by an ampersand '&')
+this means that there are two people in the space (usually a tent)
+and that they both should be charged the normal cost.
+<p>
+If you put:
+<ul>
+    Mark Bronson & Aaron child<br>
+</ul>
+or
+<ul>
+    Greta Haroldson & Annie child & Bobby child
+</ul>
+(a name followed by the word 'child')
+then the children will be charged half of the normal cost.
+Children are defined to be age 12 or under.
+<p>
+The above cases will be highlighted <span class=special>in red</span>
+when the grid is displayed with costs.
+<p>
+The names of houses with a fixed cost will be shown in <span style="color: green">green</span>.
+</body>
+</html>

@@ -81,6 +81,12 @@ body {
 h2 {
     margin-bottom: 0mm;
 }
+.normal {
+    /* nothing */
+}
+.fixed {
+    color: green;
+}
 </style>
 </head>
 <body>
@@ -95,7 +101,7 @@ $edate <span class=dow>${edate.format("%a")}</span>
 <p>
 Housing Assignment Grid
 <span style="margin-left: 1in;"><input class=submit type=submit value="Submit" name=process></span>
-<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('http://www.mountmadonna.org/rental/hints.html',430)">Helpful Hints</a></span>
+<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('http://www.mountmadonna.org/rental/hints.html',480)">Helpful Hints</a></span>
 </h2>
 <input type=hidden name=code value=$code>
 <table cellpadding=5 border=1>
@@ -144,7 +150,7 @@ $days
     [% WHILE bed <= max %]
         <tr>
         [% IF bed == 1 %]
-            <th rowspan=$max align=center>$h.name
+            <th rowspan=$max align=center class=$h.class>$h.name
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.own %] - o
