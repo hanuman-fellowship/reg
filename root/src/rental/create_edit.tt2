@@ -127,7 +127,10 @@ Fixed Cost Houses
 </tr>
 
 <tr>
-<td colspan=2><span style="font-size: 13pt; margin-left: .59in; color: green">for example: &nbsp; \$30 for 110, 205, MMS-A3 &nbsp;&nbsp & &nbsp;&nbsp; \$80 for SH 2, 115</span></td>  
+<td colspan=2>
+<span style="font-size: 13pt; margin-left: .59in; color: green">
+for example: &nbsp; \$30 for SH 2, 115&nbsp;&nbsp & &nbsp;&nbsp; \$80 for MMS*</span>
+<span style="margin-left: 1in">(* is a wild card)</span></td>  
 </tr>
 
 </table>      <!-- for the housing note -->

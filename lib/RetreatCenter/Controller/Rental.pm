@@ -168,15 +168,17 @@ sub _get_data {
         my (@house_names) = split /\s*,\s*/, $l;
         my @house_ids;
         for my $hn (@house_names) {
-            $hn =~ s{ \A \s* | \s* \z }{}xmsg;
-            my ($house) = model($c, 'House')->search({
-                              name => $hn,
-                          });
-            if (! $house) {
+            $hn =~ s{ \A \s* | \s* \z }{}xmsg;      # trim it up to be sure
+            my $hn2 = $hn;
+            $hn2 =~ s{[*]}{%}xmsg;                  # * => % for wildcard
+            my (@houses) = model($c, 'House')->search({
+                               name => { -like => $hn2 },
+                           });
+            if (!@houses) {
                 push @mess, "Invalid house '$hn' for fixed cost house line: $l";
                 last LINE;
             }
-            push @house_ids, $house->id;
+            push @house_ids, map { $_->id } @houses;
         }
         $P{fch_encoded} .= "$cost @house_ids|";
     }
