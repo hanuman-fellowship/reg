@@ -140,10 +140,6 @@ sub _get_data {
     if (! $P{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
     }
-    if (@mess) {
-        $c->stash->{mess} = join "<br>\n", @mess;
-        $c->stash->{template} = "rental/error.tt2";
-    }
     if (exists $P{glnum} && $P{glnum} !~ m{ \A [0-9A-Z]* \z }xms) {
         push @mess, "The GL Number must only contain digits and upper case letters.";
     }
@@ -154,6 +150,41 @@ sub _get_data {
     $P{mmc_does_reg} = "" unless exists $P{mmc_does_reg};
     $P{staff_ok}     = "" unless exists $P{staff_ok};
     $P{rental_follows} = "" unless exists $P{rental_follows};
+
+    #
+    # quick hack here - fixed cost houses
+    #
+    $P{fch_encoded} = "";
+    LINE:
+    for my $l (split /\&/, $P{fixed_cost_houses}) {
+        my $cost;
+        if ($l =~ s{ \A \s* \$ \s* (\d+) \s* for \s* }{}xms) {
+            $cost = $1;
+        }
+        else {
+            push @mess, "Invalid cost for fixed cost house line: $l";
+            last LINE;
+        }
+        my (@house_names) = split /\s*,\s*/, $l;
+        my @house_ids;
+        for my $hn (@house_names) {
+            $hn =~ s{ \A \s* | \s* \z }{}xmsg;
+            my ($house) = model($c, 'House')->search({
+                              name => $hn,
+                          });
+            if (! $house) {
+                push @mess, "Invalid house '$hn' for fixed cost house line: $l";
+                last LINE;
+            }
+            push @house_ids, $house->id;
+        }
+        $P{fch_encoded} .= "$cost @house_ids|";
+    }
+    $P{fch_encoded} =~ s{ \| \z }{}xms;
+    if (@mess) {
+        $c->stash->{mess} = join "<br>\n", @mess;
+        $c->stash->{template} = "rental/error.tt2";
+    }
 }
 
 sub create : Local {

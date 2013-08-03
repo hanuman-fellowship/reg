@@ -45,7 +45,9 @@ create table rental (
     staff_ok          text,
     rental_follows    text,
     refresh_days      text,
-    cancelled         text not null default ''
+    cancelled         text not null default '',
+    fixed_cost_houses text default '',
+    fch_encoded       text default ''
 );
 drop table if exists rental_payment;
 create table rental_payment (

@@ -161,6 +161,19 @@ $days
 </table>
 </div>
 
-</td></tr></table>
+</td></tr>
+
+[% IF rental.fixed_cost_houses %]
+<tr>
+<th>
+Fixed Cost Houses
+</th>
+<td>
+$rental.fixed_cost_houses
+</td>
+</tr>
+[% END %]
+
+</table>
 </ul>
 </ul>

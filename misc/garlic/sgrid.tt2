@@ -31,14 +31,14 @@ body {
 </head>
 <body>
 <h2>
-[% hash.name %] 
-<span style="margin-left: 1in;font-size: 13pt">[% sdate %] <span class=dow>[% sdate.format("%a") %]</span>
+$hash.name
+<span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
 <b>To</b>
-[% edate %] <span class=dow>[% edate.format("%a") %]</span>
+$edate <span class=dow>${edate.format("%a")}</span>
 </span>
-<span style="margin-left: .5in; font-size: 15pt;">[% hash.first %] [% hash.last %]
+<span style="margin-left: .5in; font-size: 15pt;">$hash.first $hash.last
 <p>
-Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=http://www.mountmadonna.org/cgi-bin/grid?code=[% code %]>ReEdit</a></span>
+Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=http://www.mountmadonna.org/cgi-bin/grid?code=$code>ReEdit</a></span>
 <span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('http://www.mountmadonna.org/rental/hints.html',430)">Helpful Hints</a></span>
 </h2>
 <p>
@@ -47,7 +47,7 @@ Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=
 <th>Room/Site</th>
 <th align=right>Bed</th>
 <th align=left width=300>Name</th>
-[% days %]
+$days
 <th>Cost</th>
 </tr>
 [% FOR h IN houses %]
@@ -56,7 +56,7 @@ Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=
     [% WHILE bed <= max %]
         <tr>
         [% IF bed == 1 %]
-            <th rowspan=[% max %] align=center>[% h.name %]
+            <th rowspan=$max align=center>$h.name
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.own %] - o
@@ -65,14 +65,14 @@ Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=
                 </span>
             </th>
         [% END %]
-        <td align=right>[% bed %]</td>
+        <td align=right>$bed</td>
         [% vn = 'p' _ h.id _ '_' _ bed %]
         [% vc = 'c' _ h.id _ '_' _ bed %]
         [% vcl = 'cl' _ h.id _ '_' _ bed %]
         [% IF data.$vcl == 1 %]
-            <td class=special>[% data.$vn %]</td>
+            <td class=special>${data.$vn}</td>
         [% ELSE %]
-            <td>[% data.$vn %]</td>
+            <td>${data.$vn}</td>
         [% END %]
         [% n = 1 %]
         [% WHILE n <= nnights %]
@@ -84,77 +84,85 @@ Housing Assignment Grid<span style="margin-left: 1in; font-size: 12pt;"><a href=
             [% END %]
             [% n = n + 1 %]
         [% END %]
-        <td align=right>[% data.$vc %]</td>
+        <td align=right>${data.$vc}</td>
         [% bed = bed + 1 %]
     [% END %]
     </tr>
 [% END %]
 <tr>
-<tr><th align=right colspan=[% nnights + 3 %]>Total</th><td align=right>$[% total %]</td></tr>
+<tr><th align=right colspan=[% nnights + 3 %]>Total</th><td align=right>\$$total</td></tr>
 </table>
 <p>
-<div style="float: left">
+<table cellpadding=5>
+<tr><td valign=top>
 <table cellpadding=3>
 <tr><th colspan=2 align=left>Codes</th></tr>
 <tr><td>b</td><td> - bath</td></tr>
 <tr><td>c</td><td> - center tent</td></tr>
 <tr><td>o</td><td> - own tent</td></tr>
 </table>
-</div>
+</td><td>
 
-<div style="float: left; margin-left: 1in;">
 <table cellpadding=3>
 <tr>
 <th align=left>Type</th><th align=center>Cost</th>
 </tr>
 <tr>
 <td>Single w/ Bath</td>
-<td align=right>[% hash.single_bath %]</td>
+<td align=right>$hash.single_bath</td>
 </tr>
 <tr>
 <td>Single</td>
-<td align=right>[% hash.single %]</td>
+<td align=right>$hash.single</td>
 </tr>
 <tr>
 <td>Double w/ Bath</td>
-<td align=right>[% hash.dble_bath %]</td>
+<td align=right>$hash.dble_bath</td>
 </tr>
 <tr>
 <td>Double</td>
-<td align=right>[% hash.dble %]</td>
+<td align=right>$hash.dble</td>
 </tr>
 <tr>
 <td>Triple</td>
-<td align=right>[% hash.triple %]</td>
+<td align=right>$hash.triple</td>
 </tr>
 <tr>
 <td>Dormitory</td>
-<td align=right>[% hash.dormitory %]</td>
+<td align=right>$hash.dormitory</td>
 </tr>
 <tr>
 <td>Economy</td>
-<td align=right>[% hash.economy %]</td>
+<td align=right>$hash.economy</td>
 </tr>
 [% IF hash.center_tent %]
 <tr>
 <td>Center Tent</td>
-<td align=right>[% hash.center_tent %]</td>
+<td align=right>$hash.center_tent</td>
 </tr>
 <tr>
 [% END %]
 <td>Own Tent</td>
-<td align=right>[% hash.own_tent %]</td>
+<td align=right>$hash.own_tent</td>
 </tr>
 <tr>
 <td>Own Van</td>
-<td align=right>[% hash.own_van %]</td>
+<td align=right>$hash.own_van</td>
 </tr>
 <tr>
 <td>Commuting</td>
-<td align=right>[% hash.commuting %]</td>
+<td align=right>$hash.commuting</td>
 </tr>
-<tr height=35></tr>
 </table>
-</div>
+</td></tr>
+
+[% IF hash.fixed_cost_houses %]
+<tr>
+<th>Fixed Cost Houses</th>
+<td>$hash.fixed_cost_houses</td>
+</tr>
+[% END %]
+
+</table>
 </body>
 </html>

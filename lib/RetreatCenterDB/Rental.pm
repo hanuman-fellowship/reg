@@ -73,6 +73,9 @@ __PACKAGE__->add_columns(qw/
     rental_follows
     refresh_days
     cancelled
+
+    fixed_cost_houses
+    fch_encoded
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -407,7 +410,7 @@ sub balance_disp {
 }
 
 sub send_grid_data {
-    my ($rental) = @_;
+    my ($rental, $c) = @_;
 
     my $code = $rental->grid_code() . ".txt";
     open my $gd, ">", "/tmp/$code"
@@ -439,6 +442,11 @@ sub send_grid_data {
         }
         print {$gd} "$t " . $hc->$t() . "\n";
     }
+    # quick hack for fixed cost houses
+    #
+    print {$gd} "fixed_cost_houses ", $rental->fixed_cost_houses(), "\n";
+    print {$gd} "fch_encoded ", $rental->fch_encoded(), "\n";
+
     for my $b ($rental->rental_bookings()) {
         my $house = $b->house;
         print {$gd}
@@ -492,6 +500,10 @@ edate - date the rental ends
 email - email address for the rental to put on the little web page (if desired)
 end_hour - time the rental will end (and people will leave)
 expected - how many people are expected?
+fch_encoded - the encoded form of fixed_cost_houses
+fixed_cost_houses - lines describing houses with a fixed cost.
+    designed specifically for economy dorms where there is only
+    a pad on the floor.
 glnum - a General Ledger number computed from the sdate
 grid_code - a hard to guess code for the grid URL
 housecost_id - foreign key to housecost

@@ -242,6 +242,16 @@ Web
 [% END %]
 
 <p class=p2>
+<span class=head>Fixed Cost Houses</span>
+<p style="margin-left: .3in; font-size: 13pt">
+[% IF rental.fixed_cost_houses %]
+$rental.fixed_cost_houses
+[% ELSE %]
+none
+[% END %]
+</p>
+
+<p class=p2>
 [% IF refresh_table %]
     <span class=head style="margin-left: .5in; margin-top: .5in"
          >Days to Refresh Rooms</span>

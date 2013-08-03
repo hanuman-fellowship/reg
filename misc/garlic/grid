@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use lib 'lib';
+use lib 'mylib/lib/perl5';
 use Template;
 use CGI qw/:standard/;
 use CGI::Carp qw/fatalsToBrowser/;
@@ -28,12 +28,26 @@ if (! -f $fname) {
     # send an alert to the authorities!
     exit;
 }
-my (%hash, @houses);
+my (%hash, @houses, %fixed_cost_for_house);
 open my $in, "<", $fname
     or die "cannot open $fname: $!";
 while (my $line = <$in>) {
     chomp $line;
-    if ($line =~ m{\|}) {
+    if (my ($fch) = $line =~ m{ \A fch_encoded \s* (.*) \z }xms) {
+        #
+        # sorry, a quick hack for fixed cost houses
+        #
+        for my $line (split /\|/, $fch) {
+            my ($cost, @house_ids) = split ' ', $line;
+            for my $hid (@house_ids) {
+                $fixed_cost_for_house{$hid} = $cost;
+            }
+        }
+    }
+    elsif ($line =~ m{ \A fixed_cost_houses \s* (.*) \z }xms) {
+        $hash{fixed_cost_houses} = $1;
+    }
+    elsif ($line =~ m{\|}) {
         # housing that has been assigned
         #
         my ($id, $name, $max, $bath, $tent, $own) = split m{\|}, $line;
@@ -185,6 +199,12 @@ if (param('process')) {
                 my $occ = $P{"n$id\_$bed\_$n"} || 0;
                 print {$out} "$occ|";
                 if ($occ) {
+                    # quick hack for fixed cost house
+                    #
+                    if ($fixed_cost_for_house{$id}) {
+                        $cost += $fixed_cost_for_house{$id};
+                        next NIGHT;
+                    }
                     if ($h->{tent}) {
                         $cost += ($h->{own})? $hash{own_tent}
                                 :             $hash{center_tent}
@@ -258,6 +278,7 @@ if (param('process')) {
     #
     my $html = "";
     my $tt = Template->new({
+        INTERPOLATE => 1,
         INCLUDE_PATH => 'rental',
         EVAL_PERL    => 0,
     });
@@ -273,10 +294,10 @@ if (param('process')) {
         code    => $code,
     };
     $tt->process(
-        "sgrid.tt2", # template
+        "sgrid.tt2",  # template
         $stash,       # variables
         \$html,       # output
-    );
+    ) or die $tt->error;
     print $html;
     exit;
 }
@@ -303,6 +324,7 @@ if (open my $in, "<", $dname) {
 }
 my $html = "";
 my $tt = Template->new({
+    INTERPOLATE => 1,
     INCLUDE_PATH => 'rental',
     EVAL_PERL    => 0,
 });
@@ -318,8 +340,8 @@ my $stash = {
     hash    => \%hash,
 };
 $tt->process(
-    "grid.tt2",  # template
+    "grid.tt2",   # template
     $stash,       # variables
     \$html,       # output
-);
+) or die $tt->error;
 print $html;

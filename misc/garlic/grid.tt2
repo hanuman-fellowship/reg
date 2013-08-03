@@ -35,30 +35,6 @@ function add_more(id) {
     var ind = id - 1000;
     var m = the_max[ind];
 
-// my first attempt using an old style.
-// it works but in Safari/Firefox
-// it clears any text you have entered in existing fields.
-//
-//    var s = "";
-//    for (i = m + 1; i <= m + 3; ++i) {
-//        var name = 'p' + id + '_' + i;
-//        s += "<tr><td align=right>" + i + "</td>"
-//        s += "<td><input class=name type=text size=40 name=" + name 
-//          +  " id=" + name
-//          +  " value='' onkeyup='check(" + id
-//          +  "," + i 
-//          +  ", [% nnights %])'></td>";
-//        for (n = 1; n <= [% nnights %]; ++n) {
-//            var name = 'n' + id + '_' + i + '_' + n;
-//            s += "<td><input type=checkbox name=" + name
-//              +  " id=" + name
-//              +  " value=1></td>";
-//        }
-//        s += "</tr>";
-//    }
-//    the_max[ind] += 3;
-//    document.getElementById('t' + id).innerHTML += s;
-
     var tbl = document.getElementById('t'+id).getElementsByTagName('tbody')[0];
     for (i = m + 1; i <= m + 3; ++i) {
         var name = 'p' + id + '_' + i;
@@ -71,9 +47,9 @@ function add_more(id) {
               + " id=" + name
               + " value='' onkeyup='check(" + id
               + "," + i 
-              + ", [% nnights %])'>";
+              + ", $nnights)'>";
         td2.innerHTML = s;
-        for (n = 1; n <= [% nnights %]; ++n) {
+        for (n = 1; n <= $nnights; ++n) {
             var td3 = tr.appendChild(document.createElement('td'));
             var name = 'n' + id + '_' + i + '_' + n;
             var s = "<input type=checkbox name=" + name
@@ -110,24 +86,24 @@ h2 {
 <body>
 <form action=http://www.mountmadonna.org/cgi-bin/grid method=post name=form>
 <h2>
-[% hash.name %]
-<span style="margin-left: 1in;font-size: 13pt">[% sdate %] <span class=dow>[% sdate.format("%a") %]</span>
+$hash.name
+<span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
 <b>To</b>
-[% edate %] <span class=dow>[% edate.format("%a") %]</span>
+$edate <span class=dow>${edate.format("%a")}</span>
 </span>
-<span style="margin-left: .5in; font-size: 15pt;">[% hash.first %] [% hash.last %]
+<span style="margin-left: .5in; font-size: 15pt;">$hash.first $hash.last
 <p>
 Housing Assignment Grid
 <span style="margin-left: 1in;"><input class=submit type=submit value="Submit" name=process></span>
 <span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('http://www.mountmadonna.org/rental/hints.html',430)">Helpful Hints</a></span>
 </h2>
-<input type=hidden name=code value=[% code %]>
+<input type=hidden name=code value=$code>
 <table cellpadding=5 border=1>
 <tr>
 <th>Room/Site</th>
 <th align=right>Bed</th>
 <th align=left>Name</th>
-[% days %]
+$days
 </tr>
 [% FOR h IN houses %]
     [% IF h.id > 1000 %]
@@ -135,25 +111,25 @@ Housing Assignment Grid
         [% IF h.id == 1001 %]</table>[% END %]   <! -- end the house table -->
 
         <script type="text/javascript">
-        set_max([% h.id - 1000 %], [% h.max %])
+        set_max([% h.id - 1000 %], $h.max)
         </script>
 
 
         <p>
-        <table cellpadding=5 border=1 id=t[% h.id %]>
-        <tr><th colspan=4>[% h.name %] <a style="margin-left: 1in" href='#' onclick="add_more([% h.id %]); return false;">more</a></th></tr>
-        <tr><th>#</th><th align=left>Name</th>[% days %]</tr>
+        <table cellpadding=5 border=1 id=t$h.id>
+        <tr><th colspan=4>$h.name <a style="margin-left: 1in" href='#' onclick="add_more($h.id); return false;">more</a></th></tr>
+        <tr><th>#</th><th align=left>Name</th>$days</tr>
         [% max = h.max %]
         [% bed = 1 %]
         [% WHILE bed <= max %]
             <tr>
-            <td align=right width=20>[% bed %]</td>
+            <td align=right width=20>$bed</td>
             [% v = 'p' _ h.id _ '_' _ bed %]
-            <td><input class=name type=text size=40 name=[% v %] id=[% v %] value="[% data.$v %]" onkeyup="check([% h.id %], [% bed %], [% nnights %])"></td>
+            <td><input class=name type=text size=40 name=$v id=$v value="${data.$v}" onkeyup="check($h.id, $bed, $nnights)"></td>
             [% n = 1 %]
             [% WHILE n <= nnights %]
                 [% v = 'n' _ h.id _ '_' _ bed _ '_' _ n %]
-                <td><input type=checkbox name=[% v %] id=[% v %] value=1 [% IF data.$v %]checked[% END %]></td>
+                <td><input type=checkbox name=$v id=$v value=1 [% IF data.$v %]checked[% END %]></td>
                 [% n = n + 1 %]
             [% END %]
             </tr>
@@ -168,7 +144,7 @@ Housing Assignment Grid
     [% WHILE bed <= max %]
         <tr>
         [% IF bed == 1 %]
-            <th rowspan=[% max %] align=center>[% h.name %]
+            <th rowspan=$max align=center>$h.name
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.own %] - o
@@ -177,13 +153,13 @@ Housing Assignment Grid
                 </span>
             </th>
         [% END %]
-        <td align=right>[% bed %]</td>
+        <td align=right>$bed</td>
         [% v = 'p' _ h.id _ '_' _ bed %]
-        <td><input class=name type=text size=40 name=[% v %] id=[% v %] value="[% data.$v %]" onkeyup="check([% h.id %], [% bed %], [% nnights %])"></td>
+        <td><input class=name type=text size=40 name=$v id=$v value="${data.$v}" onkeyup="check($h.id, $bed, $nnights)"></td>
         [% n = 1 %]
         [% WHILE n <= nnights %]
             [% v = 'n' _ h.id _ '_' _ bed _ '_' _ n %]
-            <td><input type=checkbox name=[% v %] id=[% v %] value=1 [% IF data.$v %]checked[% END %]></td>
+            <td><input type=checkbox name=$v id=$v value=1 [% IF data.$v %]checked[% END %]></td>
             [% n = n + 1 %]
         [% END %]
         </tr>
@@ -208,61 +184,67 @@ Housing Assignment Grid
 
 </td><td valign=top>
 
-<div style="margin-left: 1in;">
 <table cellpadding=3>
 <tr>
 <th align=left>Type</th><th align=center>Cost</th>
 </tr>
 <tr>
 <td>Single w/ Bath</td>
-<td align=right>[% hash.single_bath %]</td>
+<td align=right>$hash.single_bath</td>
 </tr>
 <tr>
 <td>Single</td>
-<td align=right>[% hash.single %]</td>
+<td align=right>$hash.single</td>
 </tr>
 <tr>
 <td>Double w/ Bath</td>
-<td align=right>[% hash.dble_bath %]</td>
+<td align=right>$hash.dble_bath</td>
 </tr>
 <tr>
 <td>Double</td>
-<td align=right>[% hash.dble %]</td>
+<td align=right>$hash.dble</td>
 </tr>
 <tr>
 <td>Triple</td>
-<td align=right>[% hash.triple %]</td>
+<td align=right>$hash.triple</td>
 </tr>
 <tr>
 <td>Dormitory</td>
-<td align=right>[% hash.dormitory %]</td>
+<td align=right>$hash.dormitory</td>
 </tr>
 <tr>
 <td>Economy</td>
-<td align=right>[% hash.economy %]</td>
+<td align=right>$hash.economy</td>
 </tr>
 [% IF hash.center_tent %]
 <tr>
 <td>Center Tent</td>
-<td align=right>[% hash.center_tent %]</td>
+<td align=right>$hash.center_tent</td>
 </tr>
 <tr>
 [% END %]
 <td>Own Tent</td>
-<td align=right>[% hash.own_tent %]</td>
+<td align=right>$hash.own_tent</td>
 </tr>
 <tr>
 <td>Own Van</td>
-<td align=right>[% hash.own_van %]</td>
+<td align=right>$hash.own_van</td>
 </tr>
 <tr>
 <td>Commuting</td>
-<td align=right>[% hash.commuting %]</td>
+<td align=right>$hash.commuting</td>
 </tr>
-<tr height=35></tr>
 </table>
-</div>
 
-</td></td></table>
+</td></td></tr>
+
+[% IF hash.fixed_cost_houses %]
+<tr>
+<th>Fixed Cost Houses</th>
+<td>$hash.fixed_cost_houses</td>
+</tr>
+[% END %]
+
+</table>
 </body>
 </html>

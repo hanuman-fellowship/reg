@@ -373,6 +373,11 @@ Jul 21 2:25-5:10, 5:25-6:25
     using aspell for conf note
         lots of fiddling :(
     archiving load and log
-Jul 26 2:00-
+Jul 26 2:00-4:50
     background uploading
-    notification of expired attempt
+    expired attempt list of people with email, phone
+    new template for expired attempt: update_expired.tt2
+    format and last run in report list
+        last run restarted on kali since year was missing
+Aug 2 2:10-
+    Barnaby's emergency request for Rental special fixed housing costs.
