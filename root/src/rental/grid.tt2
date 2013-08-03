@@ -3,6 +3,9 @@
     font-weight: bold;
     color: red;
 }
+.fixed {
+    color: green;
+}
 </style>
 <ul>
 <a style="font-size: 20pt;"
@@ -26,12 +29,13 @@ $days
 </tr>
 [% FOR rb IN rental.rental_bookings %]
     [% h = rb.house %]
+    [% h_id = h.id %]
     [% maxh = h.max %]
     [% i = 1 %]
     [% WHILE i <= maxh %]
         <tr>
         [% IF i == 1 %]
-            <th rowspan=$maxh align=center>$h.name_disp
+            <th rowspan=$maxh align=center class=${class.$h_id}>$h.name_disp
                 <span style="font-weight: normal">
                 [% IF h.bath %] - b
                 [% ELSIF h.tent && h.center %] - c

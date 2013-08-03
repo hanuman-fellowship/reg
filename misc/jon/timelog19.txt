@@ -382,5 +382,8 @@ Jul 26 2:00-4:50
 Aug 2 2:10-7:00
     Barnaby's emergency request for Rental special fixed housing costs.
         done well, I think.   not that bad of a hack.  it did take a while.
-Aug 3 10:00-
-    * as wild card in fixed cost housing field
+Aug 3 10:00-11:00, 1:10-
+    * as wild card in fixed cost housing field - nice!
+    various other tweaks
+    talking with Barnary
+    green for fixed cost houses in local grid

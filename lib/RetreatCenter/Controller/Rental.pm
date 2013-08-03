@@ -2231,6 +2231,16 @@ sub grid : Local {
               ;
         ++$d;
     }
+    # prepare the class hash for fixed cost houses
+    # so they can be rendered in green.
+    my %class;
+    for my $line (split /\|/, $rental->fch_encoded) {
+        my @h_ids = split ' ', $line;
+        shift @h_ids;     # cost
+        for my $h_id (@h_ids) {
+            $class{$h_id} = 'fixed';
+        }
+    }
 
     # get the most recent edit from the global web
     #
@@ -2272,6 +2282,7 @@ sub grid : Local {
         $coord_name = "";
     }
     stash($c,
+        class    => \%class,
         days     => $days,
         rental   => $rental,
         nnights  => ($rental->edate_obj() - $rental->sdate_obj()),
