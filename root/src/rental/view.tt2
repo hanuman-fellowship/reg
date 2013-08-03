@@ -236,9 +236,10 @@ Web
 </table>
 
 [% IF rental.housing_note_trim %]
-<p class=p2>
-<span class=head>Housing Note</span>
-[% rental.housing_note %]
+<div class=head style="margin-top: .2in">Housing Note</div>
+<div style="margin-left: .3in; margin-top: .1in;">
+$rental.housing_note_trim
+</div>
 [% END %]
 
 <p class=p2>
@@ -253,7 +254,7 @@ none
 
 <p class=p2>
 [% IF refresh_table %]
-    <span class=head style="margin-left: .5in; margin-top: .5in"
+    <span class=head style="margin-top: .5in"
          >Days to Refresh Rooms</span>
     <span class=updlunch><a href="/rental/update_refresh/[% id %]"
         >Update</a></span>
