@@ -5,7 +5,7 @@
 
 use strict;
 use warnings;
-use lib 'lib';
+use lib 'mylib/lib/perl5';
 use Template;
 use CGI qw/:standard/;
 print header;
@@ -109,12 +109,23 @@ if ($stash{pr}) {
             chomp $line;
             my ($sdate, $edate) = split m{-}, $line;
             $sdate = date($sdate);
-            $edate = date($edate)-1;
+            $edate = date($edate)-1;        # -1 is correct
             if ($sdate->month() == $edate->month()) {
-                $noPR .= $sdate->format("%B %e") . "-" . $edate->format("%e");
+                if ($sdate->day() == $edate->day()) {
+                    $noPR .= $sdate->format("%B %e '%q");
+                }
+                else {
+                    $noPR .= $sdate->format("%B %e")
+                          . "-"
+                          . $edate->format("%e '%q")
+                          ;
+                }
             }
             else {
-                $noPR .= $sdate->format("%B %e"). "-" . $edate->format("%B %e");
+                $noPR .= $sdate->format("%B %e '%q")
+                      .  "-"
+                      . $edate->format("%B %e '%q")
+                      ;
             }
             $noPR .= ", ";
         }
