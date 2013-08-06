@@ -1656,7 +1656,7 @@ sub _send_no_prs {
     my (@events) = model($c, 'Event')->search(
         {
             name  => 'No PR',
-            edate => { '<=' => today()->as_d8() },
+            edate => { '>=' => today()->as_d8() },
         },
         {
             order_by => 'sdate',
