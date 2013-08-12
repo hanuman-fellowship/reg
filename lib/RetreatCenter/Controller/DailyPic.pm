@@ -211,6 +211,23 @@ sub show : Local {
     }
     my $d8 = $dt->as_d8();
 
+    my @houses = @{ $houses_in{$type} };
+    my @house_ids = map { $_->id } @houses;
+
+    # get blocks on the current day into a hash.
+    # indexed by house_id with value of the # of beds blocked
+    # there may be more than one block in the house on this day.
+    #
+    my %blocks;
+    for my $b (model($c, 'Block')->search({
+                   sdate => { '<=', $d8 },
+                   edate => { '>', $d8 },
+                   house_id => { 'in', \@house_ids }
+               })
+    ) {
+        $blocks{$b->house_id()} += $b->nbeds();
+    }
+
     if ($type eq 'resident') {
         html_show($c, $dt);
         return;
@@ -218,7 +235,6 @@ sub show : Local {
     # first determine the size of the entire image
     # by looking at the coordinates and codes of the houses.
     my ($width, $height) = (0, 0);
-    my @houses = @{ $houses_in{$type} };
     for my $h (@houses) {
         my $wd = $h->x + $h->max * $string{house_width} + 6;
         my $disp_code = $h->disp_code;
@@ -264,7 +280,6 @@ sub show : Local {
     # if ! exists $config{$house_id} then we know it is empty.
     # sure!
     #
-    my @house_ids = map { $_->id() } @houses;
     my %config;
     for my $cf (model($c, 'Config')->search({
                     house_id => { -in => \@house_ids },
@@ -325,13 +340,23 @@ sub show : Local {
         }
         $dp->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $color);
         my $cw = 9.2;       # char_width - seems to work, empirically derived
-        # encode the config record in a string
+
+        # encode the config record in a string to put
+        # inside the above rectangle
+        # consider blocks as well...
+        #
         my $sexcode = ($sex x $cur);
+        my $n = $blocks{$hid} || 0;
+        if ($n && $sex ne 'B' && $h->max != $n) {
+            # in this circumstance use / to show the blocks 
+            substr($sexcode, -$n) = '/' x $n;
+        }
         if ($sexcode eq 'XX') {
             # for non-sexist purposes...
             # to not make the women angry ...
             $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
         }
+
         $dp->string(gdGiantFont, $x1+3, $y1+3,
                     $sexcode, $char_color{$sex})  if $cur;
         $dp->string(gdGiantFont, $x1+3 + $cw*$cur, $y1+3,
@@ -468,13 +493,14 @@ $dp_form
 </td><td valign=center>
 <table cellpadding=2>
 <tr><td>$string{dp_empty_bed_char}</td><td>empty bed</td></tr>
-<tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
-<tr><td>B</td><td>block</td></tr>
 <tr><td>F</td><td>female</td></tr>
 <tr><td>M</td><td>male</td></tr>
 <tr><td>R</td><td>rental</td></tr>
 <tr><td>S</td><td>meeting space</td></tr>
 <tr><td>X</td><td>mixed gender</td></tr>
+<tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
+<tr><td>B</td><td>block</td></tr>
+<tr><td>$string{dp_resize_block_char}</td><td>resize block</td></tr>
 </table>
 </td>
 </tr></table>

@@ -21,6 +21,10 @@ use Global qw/
     @clusters
 /;
 use GD;
+use List::Util qw/
+    max
+    min
+/;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -366,13 +370,40 @@ $res_table
 EOH
     }
 =cut
+    my @houses = @{$houses_in_cluster{$cur_clust}};
+    my @house_ids = map { $_->id } @houses;
+
+    # get blocks on the cluster's houses that intersect the displayed
+    # date range.  the keys are house_id and date and the value is
+    # the number of beds blocked.
+    # note that there may be more than one block in a house on a day.
+    #
+    my %blocks;
+    for my $b (model($c, 'Block')->search({
+                   sdate => { '<=', $ed8 },
+                   edate => { '>', $d8  },
+                   house_id => { 'in', \@house_ids },
+               })
+    ) {
+        my $s = max($d8, $b->sdate);
+        my $e = date(min($ed8, $b->edate));
+        if ($e == $b->edate) {
+            --$e;       # the block end date is UP TO that date
+        }
+        my $dt = date($s);
+        while ($dt <= $e) {
+            $blocks{$b->house_id()}{$dt->as_d8} += $b->nbeds();
+            ++$dt;
+        }
+    }
+
     my ($height, $width) = (0, 0);
     my $hh = $string{house_height};
     my $hw = $string{house_width};
     my $hl = $string{house_let};
     my $space = 7;
     $width = $space;
-    for my $h (@{$houses_in_cluster{$cur_clust}}) {
+    for my $h (@houses) {
         my $wd = $h->max * $hw + 6;
 
         # is the name of the house wider than the house rectangle itself?
@@ -409,7 +440,7 @@ EOH
     my ($x1, $y1, $x2, $y2);
     $x1 = $space + $hl*6;
     $y1 = $space;
-    for my $h (@{$houses_in_cluster{$cur_clust}}) {
+    for my $h (@houses) {
         # UNDUP this and above!???
         my $wd = $h->max * $hw + 6;
         # is the name of the house wider than the house rectangle itself?
@@ -431,7 +462,6 @@ EOH
     # current configuration, get all the config records that apply
     # and put them in a hash of hashes indexed by house_id and date.
     #
-    my @house_ids = map { $_->id } @{$houses_in_cluster{$cur_clust}};
     my %config;
     if (@house_ids) {
         for my $cf (model($c, 'Config')->search({
@@ -455,6 +485,7 @@ EOH
     my $cv_map = "";
     for my $d (1 .. $ndays) {
         my $cur_dt = $dt + $d - 1;
+        my $cur_dt8 = $cur_dt->as_d8();
         my $mon = $cur_dt->month();
         $cv->string(gdGiantFont, 
                     $x1, $y1,
@@ -472,7 +503,7 @@ EOH
             $cv->rectangle($x1, $y1, $x2, $y2, $black);
 
             my $room_color = $white;
-            if (my $cf = $config{$hid}{$cur_dt->as_d8()}) {
+            if (my $cf = $config{$hid}{$cur_dt8}) {
                 $sex    = $cf->sex();
                 $cur    = $cf->cur();
                 $curmax = $cf->curmax();
@@ -498,6 +529,10 @@ EOH
             my $cw = 9.2;      # char_width - seems to work, empirically derived
             # encode the config record in a string
             my $sexcode = ($sex x $cur);
+            my $n = $blocks{$hid}{$cur_dt8} || 0;
+            if ($n && $sex ne 'B' && $h->max != $n) {
+                substr($sexcode, -$n) = '/' x $n;
+            }
             if ($sexcode eq 'XX') {
                 $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
             }
@@ -520,7 +555,7 @@ EOH
                 my $ny2 = $y2*$pct;
                 $cv_map .= "<area shape=rect coords='$nx1, $ny1, $nx2, $ny2'"
                         . qq! onclick="Send('$sex', $hid, !
-                        . $cur_dt->as_d8()
+                        . $cur_dt8
                         . qq!);"!
                         . qq! onmouseout="return nd();">\n!
                         ;
@@ -628,13 +663,14 @@ EOH
 </td><td valign=center>
 <table cellpadding=2>
 <tr><td>$string{dp_empty_bed_char}</td><td>empty bed</td></tr>
-<tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
-<tr><td>B</td><td>block</td></tr>
 <tr><td>F</td><td>female</td></tr>
 <tr><td>M</td><td>male</td></tr>
 <tr><td>R</td><td>rental</td></tr>
 <tr><td>S</td><td>meeting space</td></tr>
 <tr><td>X</td><td>mixed gender</td></tr>
+<tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
+<tr><td>B</td><td>block</td></tr>
+<tr><td>$string{dp_resize_block_char}</td><td>resize block</td></tr>
 </table>
 </td>
 </tr></table>

@@ -98,7 +98,8 @@ sub counts : Local {
     my @classes = map {
                       +{
                           name  => $_,
-                          count => scalar(model($c, $_)->search),   # gives count?
+                          count => scalar(model($c, $_)->search),
+                                # scalar context gives the count
                       }
                   }
                   sort

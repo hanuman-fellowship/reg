@@ -247,3 +247,4 @@ green_glnum_mmi 00005
 nyears_forgiven 5
 personal_template personal
 online_notify jon@suecenter.org
+dp_resize_block_char /

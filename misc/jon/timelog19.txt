@@ -382,8 +382,30 @@ Jul 26 2:00-4:50
 Aug 2 2:10-7:00
     Barnaby's emergency request for Rental special fixed housing costs.
         done well, I think.   not that bad of a hack.  it did take a while.
-Aug 3 10:00-11:00, 1:10-
+Aug 3 10:00-11:00, 1:10-2:00
     * as wild card in fixed cost housing field - nice!
     various other tweaks
     talking with Barnary
     green for fixed cost houses in local grid
+Aug 5 11:00-11:15, 5:45-7:15, 1:35-1:55
+    responding to query about No PRs.
+    discussing (via email with Emily) the display of blocks in KKWC
+        and the display of the SH in the DailyPic
+    ## blocks should display like this MM//.
+        ## any /'s trailing
+        ## if all beds are blocked put BBBBB
+    ## cluster view as well
+    # add the / to the legend - make it a string like . and |?
+    ## block a bed first, then not offered at all - must force
+        ## for a reg should be offered with a - O
+        ## then the sex of the room changes
+        ## a config table sex attribute of B should be equivalent to U
+    ## daily pic - special - forest view is clobbered by
+        ## awkwardly placed MMS economy dorms.  put the dorms
+        ## below forest view lined up
+        ## courtside placement could be improved as well
+Aug 6 2:00-2:45
+    dealing further with No PRs.  tricky!
+Aug 12 2:00-
+    continuing on the display of blocks (see above)
+    deleted 'Forest View' annotation - ask what it was for

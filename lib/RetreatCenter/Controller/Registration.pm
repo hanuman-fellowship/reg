@@ -3544,6 +3544,7 @@ sub lodge : Local {
                     -and => [                   # can't mix genders
                         sex => { '!=', $psex }, #   or put someone unsuspecting
                         sex => { '!=', 'U'   }, #   in an X room
+                        sex => { '!=', 'B'   }, #   in an X room
                     ],
                     curmax => { '<', $low_max },    # too small
                     -and => [                   # can't resize - someone there
@@ -4021,6 +4022,7 @@ sub lodge_do : Local {
             curmax     => $cmax,
             cur        => $cf->cur + 1,
             sex        => ((   $csex eq 'U'
+                            || $csex eq 'B'
                             || $csex eq $psex  )? $psex
                            :$new_htype !~ m{dbl}? $csex
                            :                      'X'
@@ -4125,13 +4127,26 @@ sub _vacate {
                 house_id   => $house_id,
                 date_start => { '<=', $the_date },
                 date_end   => { '>',  $the_date },
-                id         => { '!=', $reg->id  },
+                id         => { '!=', $reg->id  },      # not the current reg
             });
             if (@reg == 1) {
                 push @opts, sex => $reg[0]->person->sex;
             }
             else {
-                $c->log->info("Inconsistent config records??? $#reg");
+                my @blocks = model($c, 'Block')->search({
+                    house_id => $house_id,
+                    sdate => { '<=', $the_date },
+                    edate => { '>',  $the_date },
+                });
+                if (@blocks) {
+                    push @opts, sex => 'B';
+                }
+                else {
+                    $c->log->info("Inconsistent config records??? "
+                                . " $#reg and house id = "
+                                . $cf->house_id
+                                . " and the date = $the_date");
+                }
             }
         }
         $cf->update({
@@ -4473,6 +4488,9 @@ sub who_is_there : Local {
 
 sub _get_kids {
     my ($s) = @_;
+    if (! defined $s) {
+        return "";
+    }
     my @ages = $s =~ m{(\d+)}g;
     if (!@ages) {
         return "";

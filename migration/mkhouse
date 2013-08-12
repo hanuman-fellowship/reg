@@ -272,7 +272,7 @@ drop table if exists config;
 create table config (
     house_id integer,
     the_date text,      -- not a date range as in old reg
-    sex      text,      -- U, M, F, X or R
+    sex      text,      -- U, M, F, X, R, S, or B
     curmax   integer,   -- initially = house.max
     cur      integer,   -- 0 up to curmax
     program_id integer, -- this or a rental id or neither butnot both
