@@ -1081,7 +1081,8 @@ sub late_notices : Local {
                            @date_bool,
                            arrived    => '',
                            'me.cancelled'  => '',
-                           'program.school' => 0,       # only MMC, not MMI
+                           #'program.school' => 0,       # only MMC, not MMI
+                           #                             # now MMI as well
                        },
                        {
                            join     => [qw/ program person /],
