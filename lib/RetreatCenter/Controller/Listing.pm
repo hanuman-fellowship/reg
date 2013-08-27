@@ -1837,6 +1837,7 @@ sub gate_codes : Local {
                     -or => [
                         school => 0,
                         level  => 'S',
+                        level  => 'A',
                     ],
                 }),
                 model($c, 'Rental')->search({
