@@ -1,4 +1,6 @@
-<h2>[% IF colors %]Colors[% ELSE %]Strings[% END %]</h2>
+<h2>[% IF colors %]Colors[% ELSE %]Strings[% END %]
+    <a style="margin-left: 1in; font-weight: normal;"
+       href=/static/help/schema/str_doc.html>Documentation</a></h2>
 <ul>
 <table cellpadding=3 border=0>
 

@@ -409,3 +409,24 @@ Aug 6 2:00-2:45
 Aug 12 2:00-4:10
     continuing on the display of blocks (see above)
     deleted 'Forest View' annotation - ask what it was for
+Aug 27 3:00-3:30
+    messing with trying to get access.
+    gate code, housing for one day MMI program...
+Aug 29 10:45-11:05
+    No PR Indoors begin
+    next is to make regPR1 and regPR2 to get the proper dates
+        and adjust the housing in reg1.
+        remove the noPR code in reg1.
+Aug 31 8:40-9:40
+    continuing on No PR Indoors
+    made some progress
+Sep 1 12:25-3:45
+    continuing on No PR Indoors
+Sep 2 2:00-2:30
+    finalizing No PR Indoors and requesting Jamal's help
+Sep 3 2:00-2:15
+    responding to Emily's query
+Sep 4 3:05-3:35, 8:00-8:25, 8:30-9:00
+    documenting strings
+Sep 5 11:00-11:30
+    talking with Jamal, final tweaks on updated regPR

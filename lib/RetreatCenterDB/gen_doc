@@ -42,7 +42,14 @@ sub get_col {
         }
         chomp $line;
     }
-    if ($line =~ m{\A (\w+) \s+ - \s* (.*) \z}xms) {
+    if ($line =~ m{\A __STRINGS__ \z}xms) {
+        # beginning of documentation for strings in String.pm.
+        # in effect, for this situation: EOF
+        # see check_doc, as well.
+        $line = <$in>;      # to prime the buffer
+        return 'STRINGS', '';
+    }
+    if ($line =~ m{\A (\S+) \s+ - \s* (.*) \z}xms) {
         $name = $1;
         $doc = $2 || '';
     }
@@ -115,7 +122,8 @@ for my $f (@files) {
             last PRE;
         }
     }
-    my ($name, $overview) = get_col($in);
+    my ($name, $doc);
+    ($name, $doc) = get_col($in);
     open my $out, '>', "../../root/static/help/schema/$f.html"
         or die "can't create $f.html\n";
     print {$out} <<"EOH";
@@ -125,14 +133,16 @@ for my $f (@files) {
 </head>
 <body>
 <h2>$f
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
 </h2>
-$overview
+$doc
 <p>
 Table: $table
 <dl>
 EOH
-    while (my ($name, $doc) = get_col($in)) {
+    NAME_DOC:
+    while (($name, $doc) = get_col($in)) {
+        last NAME_DOC if $name eq 'STRINGS';
         print {$out} "<dt>$name</dt>\n";
         $doc =~ s{(foreign[ ]key[ ]to[ ])(\w+)}{ $1 . link_to($2) }xmse;
         print {$out} "<dd>$doc</dd>\n";
@@ -162,10 +172,26 @@ EOH
         }
         print {$out} "</table>\n";
     }
-    print {$out} <<'EOH';
-</body>
-</html>
+    print {$out} "</body></html>\n";
+    close $out;
+    if (defined $name && $name eq 'STRINGS') {
+        open my $str_doc, '>', "../../root/static/help/schema/str_doc.html"
+            or die "cannot create str_doc.html: $!\n";
+        print {$str_doc} <<'EOH';
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+</head>
+<body>
+<h2>String Definitions</h2>
+<dl>
 EOH
+        while (($name, $doc) = get_col($in)) {
+            print {$str_doc} "<dt>$name</dt>\n<dd>$doc</dd>\n";
+        }
+        print {$str_doc} "</dl></body></html>\n";
+        close $str_doc;
+    }
     close $in;
 }
 
@@ -185,7 +211,8 @@ td {
 </style>
 </head>
 <body>
-<h2>Database Schema</h2>
+<h2>Help For Developers</h2>
+<h3>Database Schema</h3>
 <table cellpadding=5>
 EOH
 for my $i (0 .. $npercol-1) {
@@ -206,7 +233,8 @@ print {$out} <<'EOH';
 <p>
 <a href=/static/help/schema/data_types.html>Data Types in Reg</a><p>
 <a href=/static/help/schema/schema1.png>Overview Schema Diagram</a><p>
-<a href=/static/help/schema/new_column.html>Adding a New Column</a>
+<a href=/static/help/schema/new_column.html>Adding a New Column</a><p>
+<a href=/static/help/schema/str_doc.html>Configuration &gt; Strings Documentation</a>
 </body>
 </html>
 EOH

@@ -53,8 +53,11 @@ for my $t (@tables) {
     @cols = sort @cols;
     $database->{$t} = \@cols;
 }
-my $num_cols = 0;
+my $num_cols  = 0;
 my $num_nodoc = 0;
+my $num_strs  = 0;
+
+my $str_doc_err = 0;
 
 my $model;
 FILE:
@@ -102,12 +105,14 @@ for my $f (<*.pm>) {
         }
     }
     my @doc_cols;
+    my $line;
     DOC:
-    while (my $line = <$in>) {
+    while ($line = <$in>) {
+        chomp $line;
         next DOC if $line =~ m{\A \s}xms;   # doc continuation
+        last DOC if $line =~ m{ \A __STRINGS__ \z}xms;
         ++$num_cols;
         if ($line =~ m{\A \w+ \s+ - \s+ \z}xms) {
-            chomp $line;
             print "** missing doc for '$line' in $f\n";
             ++$num_nodoc;
         }
@@ -122,6 +127,38 @@ for my $f (<*.pm>) {
         }
         $line =~ s{[ ]-.*}{}xms;
         push @doc_cols, $line;
+    }
+    if ($line && $line =~ m{\A __STRINGS__ \z}xms) {
+        my %str_doc;
+        STR_LINE:
+        while (my $line = <$in>) {
+            if ($line =~ m{\A \s }xms) {
+                next STR_LINE;
+            }
+            my ($key, $doc) = $line =~ m{\A (\S+) \s*-\s* (.*) \z}xms;
+            ++$num_strs;
+            if ($doc !~ m{\S}xms) {
+                print "empty documentation for string '$key'\n";
+                $str_doc_err = 1;
+            }
+            $str_doc{$key} = $doc;
+        }
+        my $sth = $dbh->prepare("select the_key from string order by the_key");
+        $sth->execute();
+        my %str_row;
+        while (my ($key) = $sth->fetchrow_array()) {
+            $str_row{$key} = 1;
+            if (! exists $str_doc{$key}) {
+                print "no documentation line for string '$key'\n";
+                $str_doc_err = 1;
+            }
+        }
+        for my $key (sort keys %str_doc) {
+            if (! exists $str_row{$key}) {
+                print "no row in db for string '$key'\n";
+                $str_doc_err = 1;
+            }
+        }
     }
     close $in;
     if ((scalar(@cols)+1) != scalar(@doc_cols)) {
@@ -143,6 +180,8 @@ for my $f (<*.pm>) {
 }
 print "$ntables tables\n";
 print "$num_cols columns\n";
-plan tests => 2;
+print "$num_strs strings\n";
+plan tests => 3;
 is_deeply($database, $model, 'the database matches the model exactly');
 is($num_nodoc, 0, 'all columns have documentation');
+is($str_doc_err, 0, 'all strings are present and have documentation');

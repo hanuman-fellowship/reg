@@ -5,6 +5,10 @@
 .fw {
     margin-bottom: 2mm;
 }
+.pr_dates {
+    margin-top: 3mm;
+    margin-left: 12mm;
+}
 </style>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>MMC Online Registration - Step 1</title>
@@ -75,25 +79,34 @@ function confirm() {
 
                 <h2>You are registering for a Personal Retreat.</h2>
 
+                    <!-- couldn't use <p> had to use <br><br> why? -->
+
+                    <div class=pr_dates>
+                    $pr_dates
+                    [% IF outdoors %]
+                    <br><br>Outdoor housing only.
+                    [% END %]
+                    </div>
+
                 [% ELSE %]
                     <h2>You are registering for:</h2>
                     [% IF two_pics %]
-                        <img src='[% image1 %]' width="75">
-                        <img src='[% image2 %]' width="75">
+                        <img src='$image1' width="75">
+                        <img src='$image2' width="75">
                     [% ELSIF one_pic %]
-                        <img src='[% image1 %]' width="100">
+                        <img src='$image1' width="100">
                     [% END %]
                     <dl class="progList">
                         <dt>Program:</dt>
-                        <dd>[% title %]</dd>
+                        <dd>$title</dd>
     
                         <dt>Dates:</dt>
-                        <dd>[% dates %]</dd>
+                        <dd>$dates</dd>
                     
                         [% IF leader_names %]
 
                         <dt>Presenter:</dt>
-                        <dd>[% leader_names %]</dd>
+                        <dd>$leader_names</dd>
                         [% END %]
                     </dl>
                 [% END %]
@@ -112,14 +125,20 @@ function confirm() {
                     action="/cgi-bin/reg2"
                     onSubmit="return confirm();"
                 >
-                <input type=hidden value="[% test %]" name=test >
-                <input type=hidden value="[% dir %]" name=dir>
-                <input type=hidden value="[% title %]" name=title>
-                <input type=hidden value="[% dates %]" name=dates>
-                <input type=hidden value="[% leader_names %]" name=leader_names>
-                <input type=hidden value="[% name %]" name=name>
-                <input type=hidden value="[% plink %]" name=plink>
-                <input type=hidden value="[% pid %]" name=pid>
+                <input type=hidden value="$test" name=test >
+                <input type=hidden value="$dir" name=dir>
+                <input type=hidden value="$title" name=title>
+                <input type=hidden value="$dates" name=dates>
+                <input type=hidden value="$leader_names" name=leader_names>
+                <input type=hidden value="$name" name=name>
+                <input type=hidden value="$plink" name=plink>
+                <input type=hidden value="$pid" name=pid>
+
+                [% IF pr %]
+                    <input type=hidden name=sdate value=$sdate>
+                    <input type=hidden name=edate value=$edate>
+                [% END %]
+
 
                 
 
@@ -139,11 +158,11 @@ function confirm() {
                             <ol>  
                                 <li>  
                                 <input id="progchoice" name="progchoice" class="checkbox" type="radio" value="basic" />  
-                                <label for="progchoice">[% bdays %] days from [% bdates %]</label>  
+                                <label for="progchoice">$bdays days from $bdates</label>  
                                 </li>  
                                 <li>  
                                 <input id="progchoice" name="progchoice" class="checkbox" type="radio" value="full" />  
-                                <label for="progchoice">[% fdays %] days from [% fdates %]</label>  
+                                <label for="progchoice">$fdays days from $fdates</label>  
                                 </li>  
                             </ol>
                         </fieldset>
@@ -151,37 +170,6 @@ function confirm() {
                         </ol>
 
                     </fieldset>
-                </div>
-
-            [% ELSIF pr %]
-            
-                <div class="program_length">
-                
-                    <input type=hidden name=progchoice value=basic>
-
-                    <fieldset> 
-                    <legend>Length of Stay</legend>  
-                    <ol>
-                        <li>
-                            <label for="arr_date"><span class="required">*</span> Arrival Date:</label>
-                            <input type=text name=arr_date size=30>
-
-                        </li>
-                        <li>    
-                            <label for="dep_date"><span class="required">*</span> Departure Date:</label>
-                            <input type=text name=dep_date size=30>
-                        </li>
-                    </ol>    
-                    </fieldset>
-                    <div style="margin-left: 1in; margin-top: 3mm;">
-                    Dates can be in these formats: 9/20/12 or Sep 20, 2012<br>
-                    You can omit the year if it is the current year.
-                    <p>
-                [% IF noPR %]
-                    Unfortunately, you cannot stay these nights because the center
-                    is fully booked:<br>$noPR
-                [% END %]
-                    </div>
                 </div>
 
             [% ELSE %]
@@ -199,13 +187,13 @@ function confirm() {
                         <ol>
                             <li>
                                 <label for="fname"><span class="required">*</span> First Name:</label>
-                                <input type="text" name="fname" id="fname" value="[% fname %]" size="30" onchange="validatePresent(this, 'msg_fname');" />
+                                <input type="text" name="fname" id="fname" value="$fname" size="30" onchange="validatePresent(this, 'msg_fname');" />
                                 <span class="help" id="msg_fname"></span>
 
                             </li>
                             <li>    
                                 <label for="lname"><span class="required">*</span> Last Name:</label>
-                                <input type="text" name="lname" id="lname" value="[% lname %]" size="30"  onchange="validatePresent(this, 'msg_lname');" />
+                                <input type="text" name="lname" id="lname" value="$lname" size="30"  onchange="validatePresent(this, 'msg_lname');" />
                                 <span class="help" id="msg_lname"></span>
                             </li>
                             <li>
@@ -215,12 +203,12 @@ function confirm() {
 
                                     <ol>  
                                         <li>  
-                                        <input type=radio name="gender" [% female %] value="female" onclick="msg('msg_gender', 'info', '');"> 
+                                        <input type=radio name="gender" $female value="female" onclick="msg('msg_gender', 'info', '');"> 
                                         <label for="gender">Female</label>  
                                         </li>  
                                         
                                         <li>  
-                                        <input type=radio name="gender" [% male %] value="male" onclick="msg('msg_gender', 'info', '');">  
+                                        <input type=radio name="gender" $male value="male" onclick="msg('msg_gender', 'info', '');">  
                                         <label for="gender">Male</label>  
                                         </li>  
                                    </ol>
@@ -229,58 +217,58 @@ function confirm() {
                             </li>
                             <li>
                                 <label for="street1"><span class="required">*</span> Street Line 1:</label>
-                                <input type="text" name="street1" id="street1" value="[% street1 %]" size="30"  onchange="validatePresent(this, 'msg_street1');"/>
+                                <input type="text" name="street1" id="street1" value="$street1" size="30"  onchange="validatePresent(this, 'msg_street1');"/>
                                 <span class="help" id="msg_street1"></span>
                             </li>
                             <li>
                                 <label for="street2">Street Line 2:</label>
-                                <input type="text" name="street2" id="street2" value="[% street2 %]" size="30"  onchange="validatePresent(this, 'msg_street1');" />
+                                <input type="text" name="street2" id="street2" value="$street2" size="30"  onchange="validatePresent(this, 'msg_street1');" />
                                 <span class="help" id="msg_street2"></span>
                             </li>
                             <li>
                                 <label for="city"><span class="required">*</span> City:</label>
-                                <input type="text" name="city" id="city" value="[% city %]" size="30"  onchange="validatePresent(this, 'msg_city');" />
+                                <input type="text" name="city" id="city" value="$city" size="30"  onchange="validatePresent(this, 'msg_city');" />
                                 <span class="help" id="msg_city"></span>
                             </li>
                             <li>
                                 <label for="state"><span class="required">*</span> State/Province:</label>
-                                <input type="text" name="state" id="state" value="[% state %]" size="30" onchange="validatePresent(this, 'msg_state');" />
+                                <input type="text" name="state" id="state" value="$state" size="30" onchange="validatePresent(this, 'msg_state');" />
                                 <span class="help" id="msg_state"></span>
                             </li>
                             <li>
                                 <label for="zip"><span class="required">*</span> Zip/Postal Code:</label>
-                                <input type="text" name="zip" id="zip" value="[% zip %]" size="30"  onchange="validatePresent(this, 'msg_zip');" />
+                                <input type="text" name="zip" id="zip" value="$zip" size="30"  onchange="validatePresent(this, 'msg_zip');" />
                                 <span class="help" id="msg_zip"></span>
                             </li>
                             <li>
                                 <label for="country"> Country:</label>
-                                <input type="text" name="country" id="country" value="[% country %]" size="30"  />
+                                <input type="text" name="country" id="country" value="$country" size="30"  />
                                 <span class="help" id="msg_country">Defaults to USA</span>
     
                             </li>
                             <li>
                                 <label for="home"><span class="required">*</span> Home Phone:</label>
-                                <input type="text" name="home" id="home" value="[% home %]" size="30"  />
+                                <input type="text" name="home" id="home" value="$home" size="30"  />
                                 <span class="help" id="msg_home">At least one phone number is required</span>
                             </li>
                             <li>
                                 <label for="work"> Work Phone:</label>
-                                <input type="text" name="work" id="work" value="[% work %]" size="30"  />
+                                <input type="text" name="work" id="work" value="$work" size="30"  />
                                 <span class="help" id="msg_work"></span>
                             </li>
                             <li>
                                 <label for="cell"> Cell Phone:</label>
-                                <input type="text" name="cell" id="cell" value="[% cell %]" size="30" />
+                                <input type="text" name="cell" id="cell" value="$cell" size="30" />
                                 <span class="help" id="msg_cell"></span>
                             </li>
                             <li>
                                 <label for="email1"><span class="required">*</span> Email:</label>
-                                <input type="text" name="email1" id="email1" value="[% email1 %]" size="30" />
+                                <input type="text" name="email1" id="email1" value="$email1" size="30" />
                                 <span class="help" id="msg_email1"></span>
                             </li>
                             <li>
                                 <label for="email2"><span class="required">*</span> Email Again:</label>
-                                <input type="text" name="email2" id="email2" value="[% email2 %]" size="30" />
+                                <input type="text" name="email2" id="email2" value="$email2" size="30" />
                                 <span class="help" id="msg_email2">Repeated to be sure it is right</span>
                             </li>
                         </ol>
@@ -299,7 +287,7 @@ function confirm() {
                                 <li>
                                     <p>If you are a nurse[% IF mft %], LMFT, or LCSW[% END %] and wish to receive a CEU certificate</p>
                                     <label for="ceu_license">License #:</label>
-                                    <input type=text name=ceu_license id="" value='[% ceu_license %]' size=30>
+                                    <input type=text name=ceu_license id="" value='$ceu_license' size=30>
                                     <span class="help" style="display: block; margin-top: 3mm; margin-left: 1in; width: 400px; color: black">Like this: RN98765[% IF mft %], MFT43210 or LSW31415[% END %].<br>
                                     If you only want a certificate of completion enter COMP for the license #.
                                     </span>
@@ -321,7 +309,7 @@ function confirm() {
                     
                         <fieldset> 
                             <legend>Housing Choice</legend>  
-                            [% dncc_why %]
+                            $dncc_why
                             
                             <ol>
 <li class="housing_choice">
@@ -355,7 +343,7 @@ $housing_fees
 </table>
 
 <br style="clear:all;"/>        
-
+<p>     <!-- for some reason this was needed for PRs that cannot be indoors -->
 <span class="help" id="msg_house1">If you have a physical disability that limits where you can be housed, 
 please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                     
@@ -371,12 +359,12 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                 
                                     <ol>  
                                         <li>  
-                                        <input type=radio name=cabin_room value=cabin [% cabin %]>
+                                        <input type=radio name=cabin_room value=cabin $cabin>
                                         <label for="cabin_room">Cabin - heat and electricity, but no indoor plumbing</label>  
                                         </li>  
                                         
                                         <li>  
-                                        <input type=radio name=cabin_room value=room [% room %]>  
+                                        <input type=radio name=cabin_room value=room $room>  
                                         <label for="cabin_room">Room</label>  
                                         </li>  
                                    </ol>
@@ -392,12 +380,12 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                                 <ol>
                                     <li>
                                         <label for="withwhom_first">First</label>
-                                        <input type=text name="withwhom_first" value="[% withwhom_first %]" size=20>
+                                        <input type=text name="withwhom_first" value="$withwhom_first" size=20>
                                         <span class="helpRed">&larr; Make sure that they register <i>separately</i>.</span>
                                     </li>
                                     <li>
                                         <label for="withwhom_last">Last</label>
-                                        <input type=text name="withwhom_last" value="[% withwhom_last %]" size=20>
+                                        <input type=text name="withwhom_last" value="$withwhom_last" size=20>
                                     </li>
                                  </ol>
                              </fieldset>
@@ -430,12 +418,12 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
 -->
 <ol>
 <li>
-<input type=checkbox name=hascar id=ride value=yes [% hascar %]
+<input type=checkbox name=hascar id=ride value=yes $hascar
        onchange="toggle_from_where()"
 >
 <label for="hascar">I wish to offer a ride.</label>
 <li>
-<input type=checkbox name=carpool id=pool value=yes [% carpool %]
+<input type=checkbox name=carpool id=pool value=yes $carpool
        onchange="toggle_from_where()"
 >
 <label for="carpool">I wish to carpool.</label>
@@ -481,23 +469,23 @@ Another option is to <a target=_blank href=http://www.mountmadonna.org/direction
 <p>Shall we keep you informed of events at Mount Madonna Center?</p>
 <ol>
 <li>
-<input type=checkbox name=e_mailings value=yes [% e_mailings %]> 
+<input type=checkbox name=e_mailings value=yes $e_mailings> 
 <label for="e_mailings">Yes, send me occasional e-mail announcements about MMC.</label>
 </li>
 <li>
-<input type=checkbox name=snail_mailings value=yes [% snail_mailings %]>
+<input type=checkbox name=snail_mailings value=yes $snail_mailings>
 <label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMC.</label>
 </li>
 <li>
-<input type=checkbox name=mmi_e_mailings value=yes [% mmi_e_mailings %]> 
+<input type=checkbox name=mmi_e_mailings value=yes $mmi_e_mailings> 
 <label for="e_mailings">Yes, send me occasional e-mail announcements about MMI.</label>
 </li>
 <li>
-<input type=checkbox name=mmi_snail_mailings value=yes [% mmi_snail_mailings %]>
+<input type=checkbox name=mmi_snail_mailings value=yes $mmi_snail_mailings>
 <label for="snail_mailings">Yes, send me postcards and brochures in the mail about MMI.</label>
 </li>
 <li>
-<input type=checkbox name=share_mailings value=yes [% share_mailings %]>
+<input type=checkbox name=share_mailings value=yes $share_mailings>
 <label for="share_mailings">You may share my address with MMC affiliates.</label>
 </li>
 <li><span style="margin-left: 1in"><a href="javascript:popup('http://www.mountmadonna.org/onlinereg/mmi.html',215,550)">What is MMI?</a></span></li>
@@ -551,7 +539,9 @@ Another option is to <a target=_blank href=http://www.mountmadonna.org/direction
                                 <p>Include the following in your additional requests:</p>
                                 <ul>
                                     <li>The ages of children you are bringing, if any.
+                                    [% IF ! pr %]
                                     <li>Arrival and/or departure dates if they differ from your program's.
+                                    [% END %]
                                 </ul>
 
                                 
@@ -569,7 +559,7 @@ Another option is to <a target=_blank href=http://www.mountmadonna.org/direction
                         <h2>Important Notes</h2>
                         <ul>
                             <li>Balance is due on arrival (Visa, MasterCard, cash or check only).</li>
-                            <li>[% canpol %]</li>
+                            <li>$canpol</li>
                             <li>This form does not automatically reserve your spot for the program.
                             You are not registered until we receive your deposit. If the program is full,
                             your deposit will be refunded.</li>

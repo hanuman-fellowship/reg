@@ -18,7 +18,11 @@ __PACKAGE__->has_many(programs => 'RetreatCenterDB::Program', 'canpol_id',
 sub policy_br {
     my ($self) = @_;
     my $policy = $self->policy;
-    $policy =~ s{\r?\n}{<br>\n}g;
+    $policy =~ s{\r?\n}{<br>\n}xmsg;
+    $policy =~ s{(<p>[&]nbsp;</p>)* \z}{}xms;
+        # the above is needed in case the user
+        # hits Return at the end of the policy
+        # one or more times.
     $policy;
 }
 

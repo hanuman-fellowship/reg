@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Event;
 use base 'Catalyst::Controller';
 
+use lib '../..';
+
 use Date::Simple qw/
     date
     days_in_month
@@ -85,7 +87,9 @@ sub _get_data {
     # attribute of an event... but we'll do this for now
     #
     if ($P{name} =~ m{ no \s* pr }xmsi) {
-        $P{name} = "No PR";
+        $P{name} = ($P{name} =~ m{ indoor }xmsi)? "No PR Indoors"
+                  :                               "No PR"
+                  ;
     }
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate /) {
@@ -146,7 +150,7 @@ sub create_do : Local {
     }
 
     my $e = model($c, 'Event')->create(\%P);
-    if ($e->name() eq 'No PR') {
+    if ($e->name() =~ m{\A No[ ]PR}xms) {
         _send_no_prs($c);
     }
     my $id = $e->id();
@@ -302,7 +306,7 @@ sub update_do : Local {
         }
     }
     $e->update(\%P);
-    if ($e->name() eq 'No PR') {
+    if ($e->name() =~ m{\A No[ ]PR}xms) {
         _send_no_prs($c);
     }
     if ($names) {
@@ -326,7 +330,7 @@ sub delete : Local {
     my $e = model($c, 'Event')->find($id);
     my $name = $e->name();
     $e->delete();
-    if ($name eq 'No PR') {
+    if ($e->name() =~ m{\A No[ ]PR}xms) {
         _send_no_prs($c);
     }
     $c->response->redirect($c->uri_for('/event/list'));
@@ -1655,8 +1659,8 @@ sub _send_no_prs {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name  => 'No PR',
-            edate => { '>=' => today()->as_d8() },
+            name  => { 'like' => 'No PR%' },
+            edate => { '>='   => today()->as_d8() },
         },
         {
             order_by => 'sdate',
@@ -1665,7 +1669,9 @@ sub _send_no_prs {
     open my $out, ">", "noPR.txt"
         or die "cannot write noPR.txt: $!\n";
     for my $ev (@events) {
-        print {$out} $ev->sdate() . "-" . $ev->edate() . "\n";
+        print {$out} $ev->sdate() . "-" . $ev->edate()
+             . (($ev->name =~ m{indoors}xmsi)? " indoors": "")
+             . "\n";
     }
     close $out;
     #

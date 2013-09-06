@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use CGI qw/:standard :cgi-lib/;
 use CGI::Carp qw/fatalsToBrowser/;
-use lib 'lib';
+use lib 'mylib/lib/perl5';
 use Template;
 use Date::Simple qw/
     today
@@ -87,65 +87,9 @@ if ($form{email1} ne $form{email2}) {
 }
 my ($sdate, $edate, $ndays);		# only for Personal Retreats 
 if ($form{name} =~ m{personal\s+retreat}i) {
-	#
-	# check dates for personal retreat
-	#
-    eval {
-        $sdate = Date::Simple->new($form{arr_date});
-    };
-    if (!$sdate) {
-        $err .= "<li>Illegal date format for arrival date: $form{arr_date}\n";
-    }
-    my $hour = (localtime())[2];
-    my $today = today();
-    if ($sdate
-        && ($today == $sdate
-            || ($today == $sdate-1 && $hour >= 16))
-    ) {
-        $err .= "<li>We are sorry, but registrations for Personal Retreats"
-             .  " are not accepted after 4 p.m. on the day prior to arrival."
-             .  " Please register for a later date. Thank you."
-             ;
-    }
-    eval {
-        $edate = Date::Simple->new($form{dep_date});
-    };
-    if (!$edate) {
-        $err .= "<li>Illegal date for departure date: $form{dep_date}\n";
-    }
-    if ($sdate && $edate) {
-        $ndays = $edate-$sdate;
-        if ($ndays < 0) {
-            $err .= "<li>Departure date is not on or after the arrival date!\n"
-        }
-    }
-    if (!$err && $sdate < $today) {
-        $err .= "<li>Arrival date is in the past!";
-    }
-    my $noPRfile = "$progpath/noPR.txt";
-    if (-r $noPRfile) {
-        open my $in, "<", $noPRfile;
-        DATES:
-        while (my $dateline = <$in>) {
-            chomp $dateline;
-            my ($sd, $ed) = split m{-}, $dateline;
-            $sd = date($sd);
-            $ed = date($ed)-1;
-            # is there overlap?
-            if (!$err && $edate > $sd && $sdate <= $ed) {
-                $err .= "<li>Sorry, you cannot stay the nights from ";
-                if ($sd->month() == $ed->month()) {
-                    $err .= $sd->format("%B %e") . "-" . $ed->format("%e");
-                }
-                else {
-                    $err .= $sd->format("%B %e") . "-" . $ed->format("%B %e");
-                }
-                $err .= "!\n";
-                last DATES;
-            }
-        }
-        close $in;
-    }
+    $sdate = date($form{sdate});
+    $edate = date($form{edate});
+    $ndays = $edate - $sdate;
 }
 if (!$form{house1} && !$form{house2}) {
     $err .= "<li>Please fill out both choices of housing.\n";
@@ -635,4 +579,4 @@ Template->new(
 )->process(
     "reg2.tt2",
     \%stash,
-);
+) or die "template error";

@@ -9,7 +9,8 @@
 <table border=0 cellpadding=3>
 <tr>
 <th align=left>Name</th>
-<th align=left width=100>Start Date</th>
+<th align=left width=50>Start</th>
+<th align=left width=50>End</th>
 <th align=left width=150>Sponsor</th>
 <th align=left>Description</th>
 </tr>
@@ -17,6 +18,7 @@
     <tr>
     <td><a href="/event/view/[% e.id %]">[% e.name %]</a></td>
     <td>$e.sdate_obj</a></td>
+    <td>$e.edate_obj</a></td>
     <td>$e.organization.name</td>
     <td>$e.descr</a></td>
     </tr>

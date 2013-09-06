@@ -4,12 +4,14 @@ These Stand Alone MMI Courses were published:
 <table border=1 cellpadding=10>
 <tr align=left>
 <th>Name</th>
+<th>Dates</th>
 <th>Title</th>
 <th>Course Id</th>
 </tr>
 [% FOR p IN programs %]
     <tr>
     <td>$p.name</td>
+    <td>$p.dates</td>
     <td>$p.title</td>
     <td>$p.id</td>
     </tr>

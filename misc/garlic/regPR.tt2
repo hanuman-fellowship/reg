@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<title>MMC Online Registration - Step 1</title>
+		<link href="/styles/regform.css" rel="stylesheet" type="text/css">
+		<link href="/styles/header.css" rel="stylesheet" type="text/css">
+		<style>
+			.fw {
+				margin-bottom: 2mm;
+			}
+			.pr_dates {
+				margin-top: 3mm;
+				margin-left: 12mm;
+			}
+			.col1 {
+			float:left;
+			margin-top:50px;
+			font-size:14px;
+			width:40%;
+			}
+			.col2 {
+				margin-left: 350px;
+				margin-top: 50px;
+				padding-left: 50px;
+				border-left: 1px dotted grey;
+				width: 53%;	
+			}
+			.program p {
+				position:relative;
+				left: 0;
+				top: 0;
+			}
+			.program {
+				min-height:300px;
+			}
+		</style>
+
+	</head>
+
+	<body>
+
+		<div class="wrapper">
+			<div class="header">
+				<a href="/index.html" border="0"><img src="/Gif/navbar_home.gif" width="133" height="111" alt="logo" border="0"/></a>
+			</div>
+
+	
+			<div class="main">
+				<div class="top"></div>
+		
+				<div class="middle">
+		
+					<div class="steps">
+						<h1>Online Registration</h1>
+						<img src="/Gif/step_1.gif" width="797" height="43" />
+					</div>
+			
+					<!-- use this announcement div for special announcements 
+					<div class="announcement"></div>
+					-->
+
+					<div class="program">
+						<h2>Please enter the dates of your personal retreat</h2>
+						
+						<div class="col1">
+							<form name=form action=http://www.mountmadonna.org/cgi-bin/reg1 method=get>
+								<input type=hidden name=id value=0>
+								<input type=hidden name=dir value=personal>
+
+								<table cellpadding=5>
+									<tr>
+										<td align=right>Arrival Date:</td>
+										<td><input type=text id=arr_date name=arr_date size=12></td>
+									</tr>
+
+									<tr>
+										<td align=right>Departure Date:</td>
+										<td><input type=text name=dep_date size=12></td>
+									</tr>
+
+									<tr>
+										<td>&nbsp;</td>
+										<td><input type=submit></td>
+									</tr>
+
+								</table>
+							</form>
+		
+							<p>
+								Dates can be in these formats: 9/20/12 or Sep 20, 2012. 
+								You can omit the year if it is the current year.
+							</p>
+						</div>
+
+						[% IF noPR.0 || noPRindoors.0 %]
+						<div class="col2">
+							[% IF noPR.0 %]
+								Can't stay these nights for personal retreats:
+								<ul>
+								[% FOR d IN noPR %]
+									<li>$d</li>
+								[% END %]
+								</ul>
+							[% END %]
+							[% IF noPRindoors.0 %]
+								On these nights there is only <b>outdoor</b> housing available:
+								<ul>
+								[% FOR d IN noPRindoors %]
+									<li>$d</li>
+								[% END %]
+								</ul>
+							[% END %]
+							<br />
+
+		
+							<br style="clear:all;"/>        
+						</div>
+						[% END %]
+						
+					</div> <!-- program -->
+				</div> <!-- middle -->
+			</div> <!-- main -->
+		</div> <!-- wrapper -->
+
+		<script>
+		document.form.arr_date.focus();
+		</script>
+	</body>
+</html>
+

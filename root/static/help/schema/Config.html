@@ -4,7 +4,7 @@
 </head>
 <body>
 <h2>Config
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Schema</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
 </h2>
 This is a critical table (somewhat misnamed) that keeps track of housing configuration. There is a record for each house (aka room/site) and each day. The sex attribute tells what gender is occupying the space. We must do our best to keep the different genders apart! The foreign keys to program and rental are filled in only if  the housing reservation came from such.  Blocks and Meeting Space reservations associated with an Event have no such foreign keys. <p>Config records are added with Util::add_config() as needed.
 <p>
@@ -31,5 +31,4 @@ Table: config
 <tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
 <tr><td>rental</td><td><a href=/static/help/schema/Rental.html>rental</a></td><td>belongs_to</td></tr>
 </table>
-</body>
-</html>
+</body></html>

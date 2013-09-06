@@ -1540,7 +1540,8 @@ sub mmi_publish : Local {
     # and make sure we have initialized %string.
     Global->init($c);
 
-    # fill the global @programs with all future MMI stand alone courses
+    # fill the global @programs with all future 
+    # webready MMI stand alone courses
     # ordered by start date.
     #
     @programs = model($c, 'Program')->search(

@@ -14,6 +14,7 @@ use CGI::Carp qw/fatalsToBrowser/;
 use HousingNames;
 use Date::Simple qw/
     date
+    today
 /;
 use Time::Simple qw/
     get_time 
@@ -25,6 +26,109 @@ use Time::Simple qw/
 my $test = param('test') || 0;
 my $dir  = param('dir');
 my $pid  = param('id');
+my %stash;
+$stash{test} = $test;
+$stash{dir}  = $dir;
+$stash{pid}  = $pid;
+
+sub oops {
+    my ($err) = @_;
+    Template->new()->process(
+        'err.tt2',
+        { err => $err },
+    );
+    exit;
+}
+
+my $only_outdoors = 0;
+if ($pid == 0) {
+    # for PRs we need to check the dates
+    # arr_date and dep_date from the request
+    # and compare them to the dates in noPR.txt
+    # and maybe set a flag to exclude indoor housing below
+    #
+    my $arr_date = param('arr_date');       # for PRs
+    my $dep_date = param('dep_date');
+    my ($sdate, $edate);
+    eval {
+        $sdate = Date::Simple->new($arr_date);
+    };
+    if (!$sdate) {
+        oops "Illegal date format for arrival date: $arr_date";
+    }
+    my $hour = (localtime())[2];
+    my $today = today();
+    if ($sdate
+        && ($today == $sdate
+            || ($today == $sdate-1 && $hour >= 16))
+    ) {
+        oops "We are sorry, but registrations for Personal Retreats<br>"
+             . "are not accepted after 4 p.m. on the day prior to arrival.<br>"
+             . "Please register for a later date. Thank you."
+             ;
+    }
+    eval {
+        $edate = Date::Simple->new($dep_date);
+    };
+    if (!$edate) {
+        oops "Illegal date for departure date: $dep_date";
+    }
+    my $ndays;
+    if ($sdate && $edate) {
+        $ndays = $edate-$sdate;
+        if ($ndays < 0) {
+            oops "Departure date is not on or after the arrival date!";
+        }
+    }
+    if ($sdate < $today) {
+        oops "Arrival date is in the past!";
+    }
+    my $noPRfile = "../personal/noPR.txt";
+    if (-r $noPRfile) {
+        open my $in, "<", $noPRfile;
+        DATES:
+        while (my $dateline = <$in>) {
+            chomp $dateline;
+            my ($sd, $ed) = $dateline =~ m{\A (\d{8})-(\d{8})}xms;
+            my ($indoors) = $dateline =~ m{indoors}xms;
+            $sd = date($sd);
+            $ed = date($ed)-1;
+            # is there overlap?
+            if ($edate > $sd && $sdate <= $ed) {
+                if ($indoors) {
+                    $only_outdoors = 1;
+                }
+                else {
+                    my $err .= "Sorry, you cannot stay the nights from ";
+                    if ($sd->month() == $ed->month()) {
+                        $err .= $sd->format("%B %e")
+                             .  "-"
+                             .  $ed->format("%e")
+                             ;
+                    }
+                    else {
+                        $err .= $sd->format("%B %e")
+                             .  "-"
+                             .  $ed->format("%B %e")
+                             ;
+                    }
+                    $err .= '.';
+                    oops $err;
+                }
+            }
+        }
+        close $in;
+    }
+    my $dates = "$ndays day" . (($ndays > 1)? "s": "");
+    $dates .= " from ";
+    $dates .= $sdate->format("%A %B %e, %Y");
+    $dates .= " to ";
+    $dates .= $edate->format("%A %B %e, %Y");
+    $stash{sdate} = $sdate;
+    $stash{edate} = $edate;
+    $stash{pr_dates} = $dates;
+    $stash{outdoors} = $only_outdoors;
+}
 
 my $progpath = "/home/mmc/www/" . ($dir ? $dir:
                                    $test? "staging":
@@ -57,10 +161,6 @@ my %cookie = cookie(-name => 'user_data');
 
 # TODO: complain if you try to register for a program that has already happened.
 
-my %stash;
-$stash{test} = $test;
-$stash{dir}  = $dir;
-$stash{pid}  = $pid;
 for my $w (qw/
     title dates leader_names name
     canpol do_not_compute_costs dncc_why
@@ -93,46 +193,6 @@ elsif ($data->{image1}) {
 }
 else {
     $stash{zero_pics} = 1;
-}
-
-#
-# an exception for personal retreats
-#
-if ($stash{pr}) {
-    $stash{dates} = "";
-    $stash{leader_names} = "";
-    my $noPRfile = "../personal/noPR.txt";
-    if (-r $noPRfile) {
-        my $noPR = "";
-        open my $in, "<", $noPRfile;
-        while (my $line = <$in>) {
-            chomp $line;
-            my ($sdate, $edate) = split m{-}, $line;
-            $sdate = date($sdate);
-            $edate = date($edate)-1;        # -1 is correct
-            if ($sdate->month() == $edate->month()) {
-                if ($sdate->day() == $edate->day()) {
-                    $noPR .= $sdate->format("%B %e '%q");
-                }
-                else {
-                    $noPR .= $sdate->format("%B %e")
-                          . "-"
-                          . $edate->format("%e '%q")
-                          ;
-                }
-            }
-            else {
-                $noPR .= $sdate->format("%B %e '%q")
-                      .  "-"
-                      . $edate->format("%B %e '%q")
-                      ;
-            }
-            $noPR .= ", ";
-        }
-        close $in;
-        $noPR =~ s{, $}{};
-        $stash{noPR} = $noPR;
-    }
 }
 $stash{basicfull} = ($data->{ndays} != $data->{fulldays});
 $stash{bdays}     = $data->{ndays};
@@ -208,7 +268,11 @@ if (exists $data->{next_hc} && $data->{next_hc}) {
     $stash{next_date} = date($data->{next_date})->format("%b %e");
 }
 my $housing_fees = "";
+HOUSING_TYPE:
 for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
+    if ($only_outdoors && $k =~ m{single|dble}xms) {
+        next HOUSING_TYPE;
+    }
     my $nk = $k;
     $nk =~ s{basic }{};
     my $full = $k;

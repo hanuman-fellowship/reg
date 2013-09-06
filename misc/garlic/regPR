@@ -1,0 +1,79 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use lib 'mylib/lib/perl5';
+use Template;
+use CGI qw/:standard/;
+print header;
+use CGI::Carp qw/fatalsToBrowser/;
+
+use HousingNames;
+use Date::Simple qw/
+    date
+/;
+use Time::Simple qw/
+    get_time 
+/;
+
+my $progpath = "/home/mmc/www/personal";
+
+my $href = do "$progpath/progtable";
+if ($@) {
+    print "error in progtable: $@\n";
+    exit;
+}
+if (! exists $href->{0}) {
+    print "Sorry, Personal Retreat program not found.\n";
+    exit;
+}
+my $data = $href->{0};
+
+my %stash;
+
+my $noPRfile = "../personal/noPR.txt";
+if (-r $noPRfile) {
+    my @noPR;
+    my @noPRindoors;
+    open my $in, "<", $noPRfile;
+    while (my $line = <$in>) {
+        chomp $line;
+        my ($sdate, $edate) = $line =~ m{\A (\d{8})-(\d{8})}xms;
+        my ($indoors)       = $line =~ m{indoors}xms;
+        $sdate = date($sdate);
+        $edate = date($edate)-1;        # -1 is correct
+        my $s;
+        if ($sdate->month() == $edate->month()) {
+            if ($sdate->day() == $edate->day()) {
+                $s = $sdate->format("%B %e '%q");
+            }
+            else {
+                $s = $sdate->format("%B %e")
+                   . "-"
+                   . $edate->format("%e '%q")
+                   ;
+            }
+        }
+        else {
+            $s = $sdate->format("%B %e '%q")
+                 .  " - "
+                 . $edate->format("%B %e '%q")
+                 ;
+        }
+        if ($indoors) {
+            push @noPRindoors, $s;
+        }
+        else {
+            push @noPR, $s;
+        }
+    }
+    close $in;
+    $stash{noPR} = \@noPR;
+    $stash{noPRindoors} = \@noPRindoors;
+}
+
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "regPR.tt2",
+    \%stash,
+);
