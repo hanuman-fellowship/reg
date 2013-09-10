@@ -1,0 +1,62 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="help.css" />
+<style>
+.glnum {
+    font-family: Courier;
+    font-size: 16pt;
+}
+</style>
+</head>
+<body>
+<h2>MMI Online Registration</h2>
+Some MMI Courses are made available to the <b>public</b>.
+These courses are not just for
+students who are working towards a formal Diploma, Certificate, or Masters accredited degree
+from MMI.
+These courses are advertised widely and there are web pages at mountmadonnainstitute.org
+to allow <i>anyone</i> to register for the course online.
+This document outlines the steps needed to make the above happen.
+<ol>
+<li>Define the stand alone course - its curriculum and its teacher.
+<li>Create a program in Reg for this course - you specify (at least) these things:
+<ul>
+<li>Name
+<li>Start and End dates
+<li>Housing Cost (Meals/Lodging tab)
+<li>On the Misc tab:
+<ul>
+<li>Category - Normal
+<li>Sponsoring Organization - MMI
+<li>Level - Stand Alone Course (non DCM)
+</ul>
+<li>Tuition (Finance tab)
+<li>Title (Web tab)
+<li>Check 'Web Ready' (Web tab)
+</ul>
+<li>At mountmadonnainstitute.org create a web page that describes
+the course completely.  To make it easy to find, make links to this page
+from various places on the site.   Somewhere on the course web page there should be
+a 'Register Here' link like so:
+<pre>
+    <a href=#>&gt;Register Here</a>
+    
+    Here is the HTML for the link:
+
+    &lt;a href=<span style="color: purple">http://www.mountmadonnainstitute.org/cgi-bin/reg1?dir=courses&id=<span style="color: red">3661</span></span>&gt;&amp;gt;Register Here&lt;/a&gt;
+</pre>
+<p>
+The <span style="color: purple">purple</span> href above is the same for all stand alone courses.
+The <span style="color: red">red</span> 3661 above is the ID of the course's program in Reg.
+<p>
+How to easily get the program ID and the href?   See the next step.
+<li>When looking at the Programs in Reg you will see the command "MMI Publish".  When you
+choose it, Reg will gather all future MMI stand alone programs and 'publish' them
+on the mountmadonnainstitute.org site.  In this context, 'publish' means that
+information is made available to that site to facilitate online registration.  It does
+not alter any web pages on the site.  You will see a summary page like this:
+<img src=/static/images/mmi_published.png>
+</ol>
+<p>
+</body>
+</html>
