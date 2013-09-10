@@ -7,7 +7,6 @@ These Stand Alone MMI Courses were published:
 <th>Dates</th>
 <th>Title</th>
 <th>Program ID</th>
-<th>Register Link</th>
 </tr>
 [% FOR p IN programs %]
     <tr>
@@ -15,17 +14,18 @@ These Stand Alone MMI Courses were published:
     <td>$p.dates</td>
     <td>$p.title</td>
     <td>$p.id</td>
-    <td style="font-size: 10pt;">
-        http://www.mountmadonnainstitute.org/cgi-bin/reg1?dir=courses&id=$p.id
-    </td>
     </tr>
 [% END %]
 </table>
 </ul>
 <p class=p2>
-Copy and paste the above Register Links into the web pages for the online courses.
+Copy and paste the above Program IDs into the web pages for the online courses.<br>
+The IDs are part of the 'Register Here' links like so:
+<ul>
+http://www.mountmadonnainstitute.org/cgi-bin/reg1?dir=courses&id=[THE_PROGRAM_ID]
+</ul>
 <p class=p2>
-Append &test=1 if you want to be in TEST MODE.
+Append &test=1 to this link if you want to be in TEST MODE.
 <p class=p2>
 Those links will begin the online registration for the courses.<br>
 <p class=p2>
