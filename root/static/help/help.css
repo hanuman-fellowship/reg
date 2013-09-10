@@ -3,7 +3,7 @@ body {
     margin-top: .5in;
     margin-right: 1in;
     font-family: Verdana;
-    width: 700px;
+    width: 750px;
 }
 body, td {
     font-size: 13pt;
@@ -13,6 +13,10 @@ quote {
     margin-left: .5in;
     margin-top: .3in;
     margin-bottom: .3in;
+}
+li {
+    margin-top: 1mm;
+    margin-bottom: 1mm;
 }
 h2 {
     color: green;
