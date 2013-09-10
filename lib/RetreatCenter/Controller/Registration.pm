@@ -814,7 +814,7 @@ sub _rest_of_reg {
         next HTYPE if $ht eq "single"      && ! $pr->single;
         next HTYPE if $ht eq "economy"     && ! $pr->economy;
         next HTYPE if $ht eq "commuting"   && ! $pr->commuting;
-        if ($ht !~ m{unknown|not_needed} && $pr->housecost->$ht == 0) {
+        if ($ht !~ m{unknown|not_needed|commuting} && $pr->housecost->$ht == 0) {
             next HTYPE;
         }
         next HTYPE if $ht eq "center_tent" && wintertime($pr->sdate());
@@ -2934,6 +2934,7 @@ sub update : Local {
         next HTYPE if $htname eq "commuting"   && ! $pr->commuting;
         next HTYPE if    $htname ne "unknown"
                       && $htname ne "not_needed"
+                      && $htname ne "commuting"
                       && $pr->housecost->$htname() == 0;     # wow!
         next HTYPE if $htname eq 'center_tent'
                       && wintertime($reg->date_start());
