@@ -107,7 +107,8 @@ for my $k (1001, 1002) {
 }
 my $sdate = date($hash{sdate});
 my $edate = date($hash{edate});
-my $nnights = $edate - $sdate;
+my $nnights = ($edate - $sdate) || 1;
+    # || 1 for one day rentals where everyone is commuting
 my @days;
 my $days = join '',
            map { "<th align=center>" . ($sdate + $_)->format("%s") . "</th>" }
