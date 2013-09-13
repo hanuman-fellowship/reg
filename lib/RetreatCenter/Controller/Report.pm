@@ -661,7 +661,8 @@ EOS
                              $c,
                              \@people,
                              $append,
-                             $expiry
+                             $expiry,
+                             $report->descrip
                          )
         ) {
             error($c,
@@ -675,7 +676,7 @@ EOS
 }
 
 sub _gen_and_send_data_for_www {
-    my ($c, $people_aref, $append, $expiry) = @_;
+    my ($c, $people_aref, $append, $expiry, $report_name) = @_;
 
     open my $exp_out, '>', $rst_exp
         or return "no $rst_exp";
@@ -773,7 +774,7 @@ EOF
     close $out;
     # now ask a background task to do the sending and loading
     # as it may take a while...
-    system("load_people_data " . $c->user->email .  " $fname &");
+    system("load_people_data " . $c->user->email .  " $fname $report_name &");
     return '';
 }
 

@@ -7,7 +7,7 @@ use Net::FTP;
 use Mail::Sender;
 use LWP::Simple;
 
-my ($whom, $fname) = @ARGV;
+my ($whom, $fname, $report_name) = @ARGV;
 
 my $cgi = "http://www.mountmadonna.org/cgi-bin";
 my $exp = "expiry_date.txt";
@@ -91,7 +91,7 @@ $ftp->put("/tmp/$fname", $fname)
 $ftp->put($rst_exp, $exp)
     or finish("no put 2");
 $ftp->quit();
-if (get("$cgi/load_people_data") ne "done\n"
+if (get("$cgi/load_people_data?report_name=$report_name") ne "done\n"
 ) {
     finish("no load");
 }
