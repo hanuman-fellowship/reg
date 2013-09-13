@@ -766,10 +766,13 @@ sub _rest_of_reg {
     my $mem = $p->member();
     if ($pr->school() == 0
         && $mem
-        && ($pr->PR() || $pr->retreat())     # only PR and MMC Retreats
+        && ($pr->PR() 
+            || $pr->retreat()    # only PR and MMC Retreats for non Life members
+            || $mem->category =~ m{Life}xms)
     ) {
         my $status = $mem->category;
-        if ($status eq 'Life' || $status eq 'Founding Life'
+        if ($status eq 'Life'
+            || $status eq 'Founding Life'
             || ($status eq 'Sponsor' && $mem->date_sponsor_obj >= $today)
                                     # member in good standing
         ) {
