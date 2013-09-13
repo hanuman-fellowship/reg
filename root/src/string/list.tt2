@@ -1,3 +1,8 @@
+<!-- include overlib.js only when needed -->
+<script type="text/javascript" src="/static/js/overlib.js">
+<!-- overLIB (c) Erik Bosrup -->
+</script>
+
 <h2>[% IF colors %]Colors[% ELSE %]Strings[% END %]
     <a style="margin-left: 1in; font-weight: normal;"
        href=/static/help/schema/str_doc.html>Documentation</a></h2>
@@ -10,11 +15,15 @@
 </tr>
 
 [% FOREACH s IN strings %]
+[% key = s.the_key %]
 <tr>
 <td valign=top>
-<a name="[% s.the_key %]"></a>
-<a href="[% Catalyst.uri_for('/string/update/') _ s.the_key %]">[% s.the_key %]</a></td>
-[% s.value_td %]
+<a name="$key"></a>
+<a href="/string/update/$key"
+   onmouseover="return overlib('${doc_for.$key}', RIGHT, MOUSEOFF, TEXTSIZE, '12pt', FGCOLOR, '#FFFFFF', CELLPAD, 10, WIDTH, '460');"
+   onmouseout="return nd();"
+>$key</a></td>
+$s.value_td
 </tr>
 [% END %]
 

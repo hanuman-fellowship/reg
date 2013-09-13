@@ -163,7 +163,7 @@ sub addrs {
 sub sex_disp {
     my ($self) = @_;
 
-    my $sex = $self->sex;
+    my $sex = $self->sex || '';
     return ($sex eq 'M')? "Male"
           :($sex eq 'F')? "Female"
           :               "Person of Unreported Gender"

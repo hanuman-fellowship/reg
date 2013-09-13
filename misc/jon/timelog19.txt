@@ -20,8 +20,8 @@ Jul 4 4:00-6:10, 7:15-8:30
         - do attached docs show up on staging or not?
         ## - removing a reserved cluster on a rental removes all
             ## of its rooms from the rental grid?   shouldn't.
-        - Founding Life members can take any program not just
-            PRs and Retreats
+        ## - Founding Life members can take any program not just
+            ## PRs and Retreats
         - auto setting of 12 nights for members on 12/31 11:59
         - adjacent rental - reflected in the comings and goings list.
         - no housing in SH if registration is in a program that
@@ -56,12 +56,12 @@ Jul 4 4:00-6:10, 7:15-8:30
     requirements via Genevieve:
         via email
             ## - about office hours different for MMI
-            - if outstanding balance popup - insert into the comment
+            ## - if outstanding balance popup - insert into the comment
         via discussion
-            - a 'flowchart' of how to put a StandAlone course on the web
-                who does what, when.
+            ## - a 'flowchart' of how to put a StandAlone course on the web
+                ## who does what, when.
             - which programs have this Affil?  a link on desc of Affil 
-            - Misc tab on Program - a Submit at bottom - green!
+            ## - Misc tab on Program - a Submit at bottom - green!
             - AllRegs require a GL#?
             - all booleans - null vs empty - update it.
                 and the mk* files in mig/
@@ -71,12 +71,12 @@ Jul 4 4:00-6:10, 7:15-8:30
                 what's the diff between that and Reg created?
                 why 2 history notes?
             - conf letter for MMI-D-AY106 6/13
-                reg start/end is WRONG
+                ***** reg start/end is WRONG
                 prog start/end times
                 3priority - for auditors or stand alone courses
                     the conf letter should use start end from program record
                     for normal DCM people use fixed times that is there now.
-            - if leader's housing pref is Not Needed don't put Needs Housing
+            ## - if leader's housing pref is Not Needed don't put Needs Housing
             - MMI online payment clobbers auto charges - no good
                 and it adds a new charge for what you requested
                 - add a new type of online payment - For The Balance
@@ -86,16 +86,16 @@ Jul 4 4:00-6:10, 7:15-8:30
                 don't allow it.   email should say that it has expired.
             - add a link to purge all old unprocessed requests from the list
                 auto cron job to do this?
-            - general reports - make the desc wider, the zip ranges can wrap
-                AND have a date range for the last contact date cutoff
+            ## - general reports - make the desc wider, the zip ranges can wrap
+                ## AND have a date range for the last contact date cutoff
             - Program view - Email -  Cc in the form, gotten in sub email_all_do, but not used.
                 also - not To: lala@nono.com
     email from Brajesh
         - initial deposit for DCM program - to what GL Number?
             later payments (even for a deposit) go to another GL number
     online membership payments - email from Swapna, Vishwamitra
-    email from Jeremy, Brajesh
-        insert clause about damage in rental contract
+    ## email from Jeremy, Brajesh
+        ## insert clause about damage in rental contract
     ## NoMailings instead of Inactivate/Activate 
         ## and remove the Inactive checkbox (no leave it)
             ## in create_edit.tt2 but leave it in view.tt2
@@ -103,8 +103,8 @@ Jul 4 4:00-6:10, 7:15-8:30
             ## make them NoMailings instead and
             ## keep a Deceased person Inactive
         ## A deceased person should never be made active.
-        Deceased should automatically opt-out - yes by being Inactive.
-    Jamal says sometimes the change to Report format 6 or 7 does not stick.
+        ## Deceased should automatically opt-out - yes by being Inactive.
+    ## Jamal says sometimes the change to Report format 6 or 7 does not stick.
 
     MEMBERSHIP PROJECT
     ==================
@@ -428,5 +428,18 @@ Sep 3 2:00-2:15
     responding to Emily's query
 Sep 4 3:05-3:35, 8:00-8:25, 8:30-9:00
     documenting strings
-Sep 5 11:00-11:30
+Sep 5 11:00-11:30, 1:30-2:00
     talking with Jamal, final tweaks on updated regPR
+    getting changes on garlic, pushing changes to kali
+Sep 10 2:15-2:45
+    document mmi publish process
+Sep 12 2:15-5:15, 11:25-12:30
+    one day rental commuting housing grid tweak
+    documenting Strings
+    fixed the tuesday morning gate_code email to sukhdev, barnaby - sql oops
+    documenting DDUP and Personal Retreats and all the rest of the Strings
+    String doc overlib configuration > strings
+Sep 13 2:15-
+    consult with Emily, Barnaby
+    remedied Anurag Karen Mueller registration
+    Sound Needs - start-end meeting spaces

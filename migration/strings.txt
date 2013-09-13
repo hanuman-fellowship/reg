@@ -105,9 +105,6 @@ mem_spons_semi_year 150
 house_width 8.75
 house_height 20
 house_let 10
-cov_less_color 255,0,0
-cov_more_color 0,255,0
-cov_okay_color 255,255,255
 
 house_sum_perfect_fit 5 
 house_sum_occupied 10

@@ -222,6 +222,7 @@ Web
 $cat_opts
 </select>
 </td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 
 <tr>

@@ -400,7 +400,7 @@ $leaders_house
 
 <tr>
 <th align=right>Hot Tub/Lake Swimming<br>in Confirmation Letter</th>
-<td>$program.tub_swim</td>
+<td valign=top>$program.tub_swim</td>
 </tr>
 
 <tr>

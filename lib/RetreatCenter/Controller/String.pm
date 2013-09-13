@@ -3,6 +3,7 @@ use warnings;
 
 package RetreatCenter::Controller::String;
 use base 'Catalyst::Controller';
+use RetreatCenterDB::String;
 
 use Global qw/
     %string
@@ -41,6 +42,7 @@ sub list : Local {
         },
     ) ];
     stash($c,
+        doc_for  => RetreatCenterDB::String::doc_for(),
         colors   => $colors,
         template => "string/list.tt2",
     );

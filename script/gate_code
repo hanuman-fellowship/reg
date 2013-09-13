@@ -32,27 +32,33 @@ my %string;
 while (my ($the_key, $value) = $sth->fetchrow_array()) {
     $string{$the_key} = $value;
 }
+$string{gate_code_email}    =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
+$string{gate_code_cc_email} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
 
 #
 # how many programs and rentals in the next six months need a gate code?
 #
-my $count_prog_sth = $dbh->prepare("
-    select count(sum.gate_code)
-      from program prog, summary sum
-     where prog.sdate >= $today8 and prog.edate <= $six8
-       and not (prog.name like 'XL%')
-       and (prog.school == 0 or prog.level = 'S')
-       and prog.summary_id = sum.id
-       and (sum.gate_code = '' or sum.gate_code is null)
-");
-my $count_rent_sth = $dbh->prepare("
-    select count(sum.gate_code)
-      from rental rent, summary sum
-     where rent.sdate >= $today8 and rent.edate <= $six8
-       and not (rent.name like 'XL%')
-       and rent.summary_id = sum.id
-       and (sum.gate_code = '' or sum.gate_code is null)
-");
+my $count_prog_sth = $dbh->prepare(qq{
+
+select count(sum.gate_code)
+  from program prog, summary sum
+ where prog.sdate >= $today8 and prog.edate <= $six8
+   and not (prog.name like 'XL%')
+   and (prog.school = 0 or prog.level = 'S')
+   and prog.summary_id = sum.id
+   and (sum.gate_code = '' or sum.gate_code is null)
+
+});
+my $count_rent_sth = $dbh->prepare(qq{
+
+select count(sum.gate_code)
+  from rental rent, summary sum
+ where rent.sdate >= $today8 and rent.edate <= $six8
+   and not (rent.name like 'XL%')
+   and rent.summary_id = sum.id
+   and (sum.gate_code = '' or sum.gate_code is null)
+
+});
 $count_prog_sth->execute();
 $count_rent_sth->execute();
 my ($prog_count) = $count_prog_sth->fetchrow_array();

@@ -35,8 +35,33 @@ EOH
     return "<td>$v</td>";
 }
 
+my %doc_for;
+sub doc_for {
+    if (%doc_for) {
+        return \%doc_for;
+    }
+    seek DATA, 0, 0;
+    STRS1:
+    while (my $line = <DATA>) {
+        last STRS1 if $line eq "__STRINGS__\n";
+    }
+    my ($key, $doc);
+    STRS2:
+    while (my $line = <DATA>) {
+        chomp $line;
+        $line =~ s{'}{\\'}xmsg;
+        if ($line =~ m{ \A \s }xms) {
+            $doc_for{$key} .= $line;
+            next STRS2;
+        }
+        ($key, $doc) = $line =~ m{ \A (.*?) \s+ - \s+ (.*) \z}xms;
+        $doc_for{$key} = $doc;
+    }
+    return \%doc_for;
+}
+
 1;
-__END__
+__DATA__
 overview - strings are the way that Reg keeps its configuration data.
     They're just a key-value pair.
     The records are read into an exported global hash (named %string)
@@ -64,94 +89,103 @@ SJC_color - color for San Jose airport in Rides listing.
 big_imgwidth - size of large picture - for resizing in Util::resize
 cal_abutt_color - color used when drawing abutting events in the calendar.
     Also see lib/ActiveCal.pm
-cal_abutt_style - line style when drawing abutting events in the calendar.
-cal_abutt_thickness - line thickness when drawing abutting events
-    in the calendar.
-cal_arr_color - doc
-cal_day_line - doc
-cal_day_width - doc
-cal_event_border - doc
-cal_event_color - doc
-cal_fri_sun_color - doc
-cal_lv_color - doc
-cal_mon_thu_color - doc
-cal_pr_color - doc
-cal_today_color - doc
-center_tent - doc
-center_tent_end - doc
-center_tent_start - doc
-ceu_lic_fee - doc
-click_enlarge - doc
-commuting - doc
-costhdr - doc
-cov_less_color - doc
-cov_more_color - doc
-cov_okay_color - doc
-credit_amount - doc
-credit_nonprog - doc
-credit_nonprog_people - doc
-date_coming_going_printed - doc
-dble - doc
-dble_bath - doc
-default_date_format - doc
-deposit_lines_per_page - doc
-disc1days - doc
-disc1pct - doc
-disc2days - doc
-disc2pct - doc
-disc_pr - doc
-disc_pr_end - doc
-disc_pr_start - doc
-dormitory - doc
-dp_B_color - doc
-dp_F_color - doc
-dp_M_color - doc
-dp_R_color - doc
-dp_S_color - doc
-dp_X_color - doc
-dp_empty_bed_char - doc
-dp_empty_bed_color - doc
-dp_img_percent - doc
-dp_margin_bottom - doc
-dp_margin_right - doc
-dp_resize_block_char - doc
-dp_resize_char - doc
-dp_resize_color - doc
-dp_type1 - doc
-dp_type2 - doc
-dp_type3 - doc
-dp_type4 - doc
-dp_type5 - doc
-economy - doc
-email - doc
-email1 - doc
-email2 - doc
-extra_hours_charge - doc
-from - doc
-from_title - doc
-ftp_dir - doc
-ftp_dir2 - doc
-ftp_hfs_dir - doc
-ftp_hfs_password - doc
-ftp_hfs_site - doc
-ftp_hfs_user - doc
-ftp_login - doc
-ftp_mlist_requests - doc
-ftp_mmi_dir - doc
-ftp_mmi_login - doc
-ftp_mmi_passive - doc
-ftp_mmi_password - doc
-ftp_mmi_site - doc
-ftp_mmi_transactions - doc
-ftp_passive - doc
-ftp_password - doc
-ftp_rental_dir - doc
-ftp_ride_dir - doc
-ftp_site - doc
-ftp_transactions - doc
-ftp_userpics - doc
-gate_code_cc_email - doc
-gate_code_email - doc
+cal_abutt_style - line style when drawing abutting events in the calendar
+cal_abutt_thickness - line thickness when drawing abutting events in the calendar
+cal_arr_color - the color for arrivals in the personal retreat popup in the calendar
+cal_day_line - a boolean - do we want a line underneath the day names
+    in the calendar - see lib/ActiveCal.pm
+cal_day_width - the width of a day in the calendar
+cal_event_border - the width of the border for (all) events in the calendar
+cal_event_color - the border color for Events in the calendar
+cal_fri_sun_color - the color of the column for Fri-Sun in the calendar
+cal_lv_color - the color for departures in the personal retreat popup in the calendar
+cal_mon_thu_color - the color of the column for Mon-Thu in the calendar
+cal_pr_color - the color of the little box at the bottom of each day
+    with the number of personal retreats - in the calendar
+cal_today_color - the color of 'today' in the calendar - at the top of the current month
+center_tent - the display name for the housing type 'center_tent'
+center_tent_end - what mmdd are center tents taken down?
+center_tent_start - what mmdd are center tents put up?
+ceu_lic_fee - how much to charge for issuing a ceu certificate?
+click_enlarge - the text to display to tell the user that they can click to enlarge
+    a picture of the presenter in a program web page.
+commuting - the display name for the housing type 'commuting'
+costhdr - the display name for housing cost when there are no extra days in the program
+credit_amount - when cancelling a registration in an MMC program this is
+    the default amount of credit the person will receive.
+credit_nonprog - The name of an extra account that is used only
+    for non-program related credit card payments.
+credit_nonprog_people - The people to notify if a non-program related credit
+    card payment is made.
+date_coming_going_printed - obsolete - used to be used for
+    knowing when the coming/going listing had been printed - to determine
+    what page to present when prog_staff first logs in.  now the coming/going
+    page is always shown.
+dble - the display name for the housing type 'dble'
+dble_bath - the display name for the housing type 'dble_bath'
+default_date_format - the format used when doing $dt->format() or when
+    a $dt is stringified in a template.
+deposit_lines_per_page - number of lines per page when printing a deposit for filing.
+disc1days - number of days of housing to qualify for the first discount
+disc1pct - percentage for the first housing discount
+disc2days - no longer needed - a second housing discount - could revive
+disc2pct - no longer needed - a second housing discount - could revive
+disc_pr - percentage discount for mid-week PRs
+disc_pr_end - the date when mid-week PR discounts end
+disc_pr_start - the date when mid-week PR discounts begin
+dormitory - the display name for the housing type 'dormitory'
+dp_B_color - color for the daily pic - blocks
+dp_F_color - color for the daily pic - female
+dp_M_color - color for the daily pic - male
+dp_R_color - color for the daily pic - rental
+dp_S_color - color for the daily pic - meeting Space
+dp_X_color - color for the daily pic - mixed gender house
+dp_empty_bed_char - the character to use in the daily pic for empty beds.
+    it is appended to the character for the gender of the room.
+dp_empty_bed_color - the color to use in the daily pic for the empty bed character
+dp_img_percent - a percentage to resize the daily pic image - browser specific???
+dp_margin_bottom - margin at the bottom of the daily pic
+dp_margin_right - margin at the right of the daily pic
+dp_resize_block_char - the character to use for blocks that have resized the room
+dp_resize_char - the character to use for rooms that have been resized by a lodging.
+    it is appended to the character for the gender of the room.
+dp_resize_color - the color of the resize character
+dp_type1 - 1st type of daily pic - choices: indoors/outdoors/special/resident/future use
+dp_type2 - 2nd type of daily pic
+dp_type3 - 3rd type of daily pic
+dp_type4 - 4th type of daily pic
+dp_type5 - 5th type of daily pic
+economy - the display name for the housing type 'economy'
+email - The display named for the word 'Email' in the generated Rental web pages.
+email1 - text to display before a leader's email address in the generated program page
+email2 - text to display after a leader's email address in the generated program page
+extra_hours_charge - how many $'s to charge per person per hour of extra time for a Rental.
+    this is time before 4:00 on the first day and after 1:00 on the ending day.
+from - email address that emails are sent From.
+from_title - name of the person that emails are From.
+ftp_dir - FTP info for mountmadonna.org
+ftp_dir2 - FTP info for mountmadonna.org - staging directory
+ftp_hfs_dir - FTP info for hanumanfellowship.org - for temple reservations people
+ftp_hfs_password - FTP info for hanumanfellowship.org
+ftp_hfs_site - FTP info for hanumanfellowship.org
+ftp_hfs_user - FTP info for hanumanfellowship.org
+ftp_login - FTP info for mountmadonna.org
+ftp_mlist_requests - FTP info for mountmadonna.org - for people that made mlist requests
+ftp_mmi_dir - FTP info for mountmadonnainstitute.org
+ftp_mmi_login - FTP info for mountmadonnainstitute.org
+ftp_mmi_passive - FTP info for mountmadonnainstitute.org
+ftp_mmi_password - FTP info for mountmadonnainstitute.org
+ftp_mmi_site - FTP info for mountmadonnainstitute.org
+ftp_mmi_transactions - FTP info for mountmadonnainstitute.org - for online registrations for MMI courses
+ftp_passive - FTP info for mountmadonna.org
+ftp_password - FTP info for mountmadonna.org
+ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes
+ftp_ride_dir - FTP info for mountmadonna.org - for ride requests
+ftp_site - FTP info for mountmadonna.org
+ftp_transactions - FTP info for mountmadonna.org - for online registrations for MMC programs.
+ftp_userpics - FTP info for mountmadonna.org - for driver pictures - referenced in email to riders
+gate_code_cc_email - who to Cc when sending the Tuesday morning gate code email reminder
+gate_code_email - who to email when sending the Tuesday morning gate code email reminder
 green_from - doc
 green_glnum - doc
 green_glnum_mmi - doc

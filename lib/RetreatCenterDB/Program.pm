@@ -943,7 +943,7 @@ sub leaders_house {
         my $style = "style='font-weight: bold; color: red; margin-left: .4in'";
         if (@reg) {
             my $reg = $reg[0];
-            if ($reg->house_id == 0) {
+            if ($reg->pref1 ne 'not_needed' && $reg->house_id == 0) {
                 $html .= "<td colspan=2>"
                       .  "<a $style href=/registration/lodge/"
                       .  $reg->id()

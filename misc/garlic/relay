@@ -179,8 +179,13 @@ $ms->Close() or die "error: $Mail::Sender::Error";
 
 # and inform the program office of this online registration
 my $msg = "Online registration - $P{x_fname} $P{x_lname} - $P{x_title}";
+open my $in, '<', 'online_notify.txt';
+my $people = <$in>;
+close $in;
+chomp $people;
+$people ||= 'jon@suecenter.org';
 $ms->Open({
-    to       => 'jon@suecenter.org, emily@mountmadonna.org',
+    to       => $people,
     from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
     subject  => $msg,
     ctype    => "text/html",

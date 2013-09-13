@@ -349,7 +349,7 @@ sub show : Local {
         my $n = $blocks{$hid} || 0;
         if ($n && $sex ne 'B' && $h->max != $n) {
             # in this circumstance use / to show the blocks 
-            substr($sexcode, -$n) = '/' x $n;
+            substr($sexcode, -$n) = $string{dp_resize_block_char} x $n;
         }
         if ($sexcode eq 'XX') {
             # for non-sexist purposes...

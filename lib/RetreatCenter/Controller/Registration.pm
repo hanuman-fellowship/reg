@@ -768,7 +768,8 @@ sub _rest_of_reg {
         && $mem
         && ($pr->PR() 
             || $pr->retreat()    # only PR and MMC Retreats for non Life members
-            || $mem->category =~ m{Life}xms)
+            || ($mem->category =~ m{Life}xms && $pr->rental_id == 0))
+                                 # Life members can take any non-hybrid program
     ) {
         my $status = $mem->category;
         if ($status eq 'Life'
@@ -2918,8 +2919,9 @@ sub update : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     my $pr  = $reg->program();
+    my $this_ref = $reg->referral || '';
     for my $ref (qw/ad web brochure flyer word_of_mouth/) {
-        stash($c, "$ref\_selected" => ($reg->referral eq $ref)? "selected": "");
+        stash($c, "$ref\_selected" => ($this_ref eq $ref)? "selected": "");
     }
     if ($pr->footnotes =~ m{[*]}) {
         stash($c, ceu => 1);
@@ -2968,8 +2970,8 @@ sub update : Local {
             stash($c, free_prog => 1);
         }
     }
-    my $c_r = $reg->cabin_room();
-    my $fw = $reg->from_where() || "";
+    my $c_r = $reg->cabin_room() || '';
+    my $fw = $reg->from_where() || '';
     stash($c,
         person          => $reg->person,
         reg             => $reg,
