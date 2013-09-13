@@ -2,17 +2,17 @@
 <table cellpadding=5>
 <tr>
 <th align=left>Event</th>
-<th align=left>Start</th>
-<th align=left>End</th>
-<th align=left>Place</th>
+<th align=left>From, To, Where</th>
 </tr>
 [% FOREACH ev IN events %]
     [% sum = ev.summary %]
     <tr>
     <td valign=top><a href=/summary/view/[% ev.event_type %]/[% ev.summary_id %]>[% ev.name %]</a></td>
-    <td valign=top>${ev.sdate_obj.format("%a %b %e '%q")}, ${ev.start_hour_obj}</td>
-    <td valign=top>[% ev.edate_obj.format("%a %b %e '%q") %]</td>
-    <td valign=top>[% ev.meeting_places %]</td>
+    <td valign=top>
+    <b>From</b> ${ev.sdate_obj.format("%a %b %e '%q")}, ${ev.start_hour_obj}
+    &nbsp;&nbsp;<b>To</b> ${ev.edate_obj.format("%a %b %e '%q")} ${ev.end_hour_obj}
+    &nbsp;&nbsp;<b>In</b> $ev.meeting_places
+    </td>
     </tr>
     <tr><td></td>
     <td valign=top colspan=3>[% IF section == 'Flower' %][% sum.leader_housing_tr %]<p class=p2>[% sum.flowers_tr %][% ELSIF section ==  'Field Staff Setup' %][% sum.leader_housing_tr %]<p class=p2>[% sum.signage_tr %]<p class=p2>[% sum.field_staff_setup_tr %][% ELSIF section == 'Workshop Schedule' %][% sum.workshop_schedule_tr %][% ELSIF section == 'Workshop Description' %][% sum.workshop_description_tr %][% ELSE %][% sum.sound_setup_tr %][% END %]<hr></td>

@@ -261,10 +261,14 @@ sub reg_start_obj {
     my ($self) = @_;
     return get_time($self->reg_start());
 }
-# same but different name to match Rental
+# same but different name to match Rental - for Summary listings
 sub start_hour_obj {
     my ($self) = @_;
     return get_time($self->reg_start());
+}
+sub end_hour_obj {
+    my ($self) = @_;
+    return get_time($self->prog_end());
 }
 sub reg_end_obj {
     my ($self) = @_;
@@ -549,7 +553,7 @@ sub fee_table {
 <table>
 EOH
     if ($dncc) {
-    $fee_table .= <<"EOH";
+        $fee_table .= <<"EOH";
 <tr><th colspan=$cols style="text-align: center">
 TUITION \$$tuition<br>
 plus<br>
@@ -560,21 +564,22 @@ of this program per-day fees are shown below.<br>
 <br>
 </th></tr>
 EOH
-}
-elsif (! $PR) {
-    my $heading = ($tuition)?
-        "Cost Per Person<br>(including tuition, meals, lodging, and facilities use)"
-       :"Cost Per Person<br>(including meals, lodging, and facilities use - does NOT include tuition)"
-       ;
-    $heading = "<center>$heading</center>";
-    $fee_table .= "<tr><th colspan=$cols>$heading</th></tr>\n";
-    $fee_table .= "<tr><td colspan=$cols>&nbsp;</td></tr>\n";
-}
-$fee_table .= "<tr><th style='text-align: left' valign=bottom>$string{typehdr}</th>";
-if ($extradays) {
-    my $plural = ($ndays > 1)? "s": "";
-        $fee_table .= "<th style='text-align: right' width=70>$ndays Day$plural</th>".
-                      "<th style='text-align: right' width=70>$fulldays Days</th></tr>\n";
+    }
+    elsif (! $PR) {
+        my $heading = ($tuition)?
+            "Cost Per Person<br>(including tuition, meals, lodging, and facilities use)"
+           :"Cost Per Person<br>(including meals, lodging, and facilities use"
+               ." - does NOT include tuition)"
+           ;
+        $heading = "<center>$heading</center>";
+        $fee_table .= "<tr><th colspan=$cols>$heading</th></tr>\n";
+        $fee_table .= "<tr><td colspan=$cols>&nbsp;</td></tr>\n";
+    }
+    $fee_table .= "<tr><th style='text-align: left' valign=bottom>$string{typehdr}</th>";
+    if ($extradays) {
+        my $plural = ($ndays > 1)? "s": "";
+            $fee_table .= "<th style='text-align: right' width=70>$ndays Day$plural</th>".
+                          "<th style='text-align: right' width=70>$fulldays Days</th></tr>\n";
     }
     else {
         $fee_table .= "<th style='text-align: right'>$string{costhdr}</th></tr>\n";
@@ -775,8 +780,10 @@ sub picture {
 <tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
 </table>
 EOH
-# move the next line up above </table>
+# IF you want two sizes of pictures - you need to
+# move the following line up above </table>
 #<tr><td align=center colspan=2 class='click_enlarge'>$string{'click_enlarge'}</td></tr>
+# and uncomment various other things near here.
     } else {
         my $pic_html = "<img src='pics/$pic1' width=$full>";
         #$pic_html = gen_popup($pic_html, $pic1);

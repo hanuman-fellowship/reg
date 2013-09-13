@@ -182,6 +182,7 @@ sub get_now {
 sub places {
     my ($event, $type) = @_;
 
+    $type ||= 'all';
     join ", ",
          map { $_->meeting_place->abbr }
          grep {
