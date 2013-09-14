@@ -243,7 +243,9 @@ sub dates_tr2 {
 sub daily_counts {
     my ($self) = @_;
 
-    my $ndays = $self->edate_obj() - $self->sdate_obj();
+    my $ndays = ($self->edate_obj() - $self->sdate_obj()) || 1;
+        # || 1 for Rentals that are only one day - everyone commutes
+        # but they do eat.
     my $max = $self->expected() || $self->max();
     my $fname = get_grid_file($self->grid_code());
     my $in;
