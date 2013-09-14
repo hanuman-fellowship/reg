@@ -613,7 +613,7 @@ sub meal_list : Local {
             if ($details) {
                 $info = [ "$n people" , $r_name ];
             }
-            add('breakfast', $n) if $d != $r_start;
+            add('breakfast', $n) if ($d != $r_start || $start_hour < $breakfast_end);
             add('lunch',     $n) if ($d != $r_start || $start_hour < $lunch_end)
                                     && lunch($d);
             add('dinner',    $n) if $d != $r_end;
