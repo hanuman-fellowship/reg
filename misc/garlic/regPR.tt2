@@ -97,7 +97,7 @@
 						[% IF noPR.0 || noPRindoors.0 %]
 						<div class="col2">
 							[% IF noPR.0 %]
-								Can't stay these nights for personal retreats:
+								Sorry, but the following nights are not available for Personal Retreats:
 								<ul>
 								[% FOR d IN noPR %]
 									<li>$d</li>
@@ -105,7 +105,7 @@
 								</ul>
 							[% END %]
 							[% IF noPRindoors.0 %]
-								On these nights there is only <b>outdoor</b> housing available:
+								On the following nights, there is no indoor housing available, but you may stay in a tent or in your own vehicle:
 								<ul>
 								[% FOR d IN noPRindoors %]
 									<li>$d</li>
