@@ -1,7 +1,7 @@
 <html>
 <head>
 <style>
-body, p {
+body {
     width: 600px;
     font-size: 14pt;
     font-family: Arial;
@@ -20,68 +20,49 @@ th, td {
 <p>
 Greetings $first,
 <p>
-We just received your request for a massage or other bodywork.
-[% IF soon %]
-We will contact you very soon
-[% ELSE %]
-Two to three weeks before you arrive we will be in touch
-[% END %]
-via phone and email
-to set up an appointment during your stay.  Here is the information
-we have for you:
+Thank you for your interest in receiving a relaxing bodywork
+session at Kayakalpa Wellness Center during your stay at Mount Madonna Center.
 <p>
-<table cellpadding=5>
-
-<tr>
-<th align=right>Name</th>
-<td>$name</td>
-</tr>
-
-<tr>
-<th align=right>Email</th>
-<td><a href="mailto:$email">$email</a></td>
-</tr>
-
-[% IF home %]
-<tr>
-<th align=right>Home</th>
-<td>$home</td>
-</tr>
-[% END %]
-
-[% IF work %]
-<tr>
-<th align=right>Work</th>
-<td>$work</td>
-</tr>
-[% END %]
-
-[% IF cell %]
-<tr>
-<th align=right>Cell</th>
-<td>$cell</td>
-</tr>
-[% END %]
-
-<tr>
-<th align=right>Program</th>
-<td>$program</td>
-</tr>
-
-<tr>
-<th align=right>Arrive</th>
-<td>$arrive</td>
-</tr>
-
-<tr>
-<th align=right>Leave</th>
-<td>$leave</td>
-</tr>
-
-</table>
-<p style="margin-bottom: 10mm">
+We offer a variety of Ayurvedic therapies, traditional massage and other
+body therapies to enhance your stay at Mount Madonna Center.
+For a detailed list of our services please check out our
+<a href=http://www.mountmadonna.org/projects/kayakalpa/index.html>website</a>.
+You can also check out our 
+<a href=http://www.mountmadonna.org/projects/kayakalpa/kkbios.html>practitioner's bios</a>.
+<p>
+Please keep in my mind that it is advised to call us a week
+to two weeks in advance to book an appointment.
+Weekend appointments tend to get booked quickly.
+Booking in advance is especially helpful for weekday requests,
+allowing us to better schedule a practitioner who might be available
+on the days and times requested.
+<p>
+Please free to contact us by 
+<a href="mailto:kayakalpa@mountmadonna.org?subject=Massage/Bodywork Request during '$program' from $dates">e-mail</a>
+or by phone (408) 847-3276
+at your earliest convenience if you have any questions about our
+services or to book your appointment.
+<p>
+We are looking forward to speaking with you soon.
+<p>
+Respectfully,
+<p>
 Kaya Kalpa Wellness Center<br>
 408-847-3276<br>
-<a href="http:www.mountmadonna.org/kayakalpa">www.mountmadonna.org/kayakalpa</a>
-</body>
-</html>
+<a href=http://www.mountmadonna.org/projects/kayakalpa>www.mountmadonna.org/projects/kayakalpa</a>
+
+<h3>Reservation Policy</h3>
+We require a credit card number or gift certificate number to reserve an appointment.
+<p>
+We kindly request 24 hours notice on cancelling or rescheduling appointments.
+If a 24-hour notice is not given, 50% of the price of the service is billed
+to the client. A full charge will be applied for a cancellation without notice.
+
+<h3>Late Policy</h3>
+If you are late for an appointment, a modified service will be performed
+if time permits and will end at the scheduled time. However,
+if time does not permit, you will be charged 50% of the services selected.
+
+<h3>Refund Policy</h3>
+Without a 24 hr notice, with the exception of emergency situations,
+refunds will not be given.

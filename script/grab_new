@@ -790,7 +790,8 @@ EOS
             }
         }
         close $in;
-        my ($program, $p_sdate, $p_edate, $extradays, $arrive_dt, $soon, $arrive, $leave);
+        my ($program, $p_sdate, $p_edate, $extradays,
+            $arrive, $leave, $dates);
         if ($vals{pid} != 0) {
             $getprog->execute($vals{pid});
             ($program, $p_sdate, $p_edate, $extradays)
@@ -800,16 +801,12 @@ EOS
             if ($vals{progchoice} eq 'full') {
                 $p_edate += $extradays;
             }
-            $arrive_dt = $p_sdate;
-            $leave  = $p_edate->format($fmt);
+            $dates = fmt_date($p_sdate, $p_edate);
         }
         else {
             $program = "Personal Retreat";
-            $arrive_dt = date($vals{sdate});
-            $leave = date($vals{edate})->format($fmt);
+            $dates = fmt_date(date($vals{sdate}), date($vals{edate}));
         }
-        $arrive = $arrive_dt->format($fmt);
-        $soon = ($arrive_dt - today()) < 30;
         my $html;
         my $tt = Template->new(
             INTERPOLATE => 1,
@@ -818,15 +815,8 @@ EOS
             'kayakalpa.tt2',
             {
                 first   => $vals{fname},
-                name    => "$vals{fname} $vals{lname}",
-                email   => $vals{email},
-                home    => $vals{home},
-                work    => $vals{work},
-                cell    => $vals{cell},
                 program => $program,
-                arrive  => $arrive,
-                leave   => $leave,
-                soon    => $soon,
+                dates   => $dates,
             },
             \$html,
         ) or my_die("template error: " . $tt->error());
@@ -834,10 +824,16 @@ EOS
             to       => $vals{email},
             cc       => "Kaya Kalpa <$string{kayakalpa_email}>",
             from     => "Kaya Kalpa <$string{kayakalpa_email}>",
-            subject  => "Massage/Bodywork Request",
+            subject  => "Massage/Bodywork Request during '$program' from $dates",
             html     => $html,
         );
     }
+}
+
+sub fmt_dates {
+    my ($start, $end) = @_;
+    my $fmt = "%a %b %d";
+    return $start->format($fmt) . " to " . $end->format($fmt);
 }
 
 sub temple {
