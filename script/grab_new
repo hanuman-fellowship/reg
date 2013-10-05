@@ -761,10 +761,6 @@ sub kayakalpa {
     return unless @kayakalpa;
     my %needed = map { $_ => 1 } qw/
         fname
-        lname
-        home
-        work
-        cell
         pid
         email
         sdate
@@ -801,11 +797,11 @@ EOS
             if ($vals{progchoice} eq 'full') {
                 $p_edate += $extradays;
             }
-            $dates = fmt_date($p_sdate, $p_edate);
+            $dates = fmt_dates($p_sdate, $p_edate);
         }
         else {
             $program = "Personal Retreat";
-            $dates = fmt_date(date($vals{sdate}), date($vals{edate}));
+            $dates = fmt_dates(date($vals{sdate}), date($vals{edate}));
         }
         my $html;
         my $tt = Template->new(
@@ -832,8 +828,11 @@ EOS
 
 sub fmt_dates {
     my ($start, $end) = @_;
-    my $fmt = "%a %b %d";
-    return $start->format($fmt) . " to " . $end->format($fmt);
+    return fmt_date($start) . " to " . fmt_date($end);
+}
+sub fmt_date {
+    my ($dt) = @_;
+    return $dt->format("%a %b ") . $dt->day;
 }
 
 sub temple {
