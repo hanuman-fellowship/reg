@@ -13,7 +13,7 @@ You can sort the list by clicking on the headings.
 <a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=program">Program</a>
 </td>
 <td>
-<a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=reg_date">Online Reg Date</a>
+<a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=reg_date8">Online Reg Date</a>
 </td>
 <td>
 Action
