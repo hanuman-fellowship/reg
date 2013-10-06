@@ -1,4 +1,9 @@
 <h2>Online Registrations from $sdate to $edate</h2>
+<p class=p2>
+Registrations in <span class=red>red</span> are ones that probably need to be restored
+and brought in again.<br>
+You can sort the list by clicking on the headings.
+<p class=p2>
 <table cellpadding=5>
 <tr align=left>
 <td>
@@ -8,7 +13,7 @@
 <a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=program">Program</a>
 </td>
 <td>
-<a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=reg_date">Reg Date</a>
+<a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=reg_date">Online Reg Date</a>
 </td>
 <td>
 Action
@@ -22,16 +27,16 @@ Action
 [% ELSIF r.transaction_id %]
     <a href=/registration/view_trans_id/$r.transaction_id>$r.name</a>
 [% ELSE %]
-    <span style="color: red">$r.name</span>
+    <span class=red>$r.name</span>
 [% END %]
 </td>
 <td>$r.program</td>
 <td>$r.reg_date</td>
 <td><a 
 [% IF r.reg_exists %]
-onclick="return confirm('Are you sure?  There is ALREADY a registration for this person in this program!')"
+onclick="return confirm('Are you sure?  There is ALREADY a registration for\n$r.name in $r.program!\n\nYou can see the registration by clicking on the person\'s name.')"
 [% ELSE %]
-style="color: red"
+class=red
 [% END %]
 href=/registration/restore/$r.fname
 >Restore</a></td>
