@@ -25,7 +25,7 @@ Phone Lists
         <table>
         <tr>
         <td>
-        <a href="/registration/online_history?sdate=month">Online Registration History</a>
+        <a href="/registration/online_history?sdate=week">Online Registration History</a>
         </td>
         <td align=left>
         Start <input type=text name=sdate size=10>

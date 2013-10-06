@@ -5611,8 +5611,8 @@ sub online_history : Local {
     @mess = ();
     %P = %{ $c->request->params() };
     my $key = $P{sort_key} || 'name';
-    if ($P{sdate} eq 'month') {
-        $sdate = today() - 30;
+    if ($P{sdate} eq 'week') {
+        $sdate = today() - 7;
         $edate = today();
     }
     else {
