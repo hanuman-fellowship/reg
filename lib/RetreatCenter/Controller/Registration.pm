@@ -5692,12 +5692,13 @@ sub online_history : Local {
             }
             my $prog = model($c, 'Program')->find($vals{x_pid});
             my $pname = $prog? $prog->name: $vals{x_pname};
+            my $reg_date = date($vals{x_date});
             push @regs, {
                 name      => "$vals{x_last_name}, $vals{x_first_name}",
                 program   => $pname,
                 reg_id    => $vals{reg_id},
-                reg_date8 => $vals{x_date},
-                reg_date  => date($vals{x_date}),
+                reg_date8 => $reg_date->as_d8(),
+                reg_date  => $reg_date,
                 fname     => $dir_fname,
                 transaction_id => $vals{x_trans_id},
                 reg_exists => $reg,
