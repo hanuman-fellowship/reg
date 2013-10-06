@@ -5650,6 +5650,7 @@ sub online_history : Local {
         x_date
         x_first_name
         x_last_name
+        x_pid
         x_pname
         reg_id
         x_trans_id
@@ -5689,9 +5690,11 @@ sub online_history : Local {
             elsif ($vals{x_trans_id}) {
                 ($reg) = model($c, 'Registration')->search({transaction_id => $vals{x_trans_id}})
             }
+            my $prog = model($c, 'Program')->find($vals{x_pid});
+            my $pname = $prog->name || $vals{x_pname};
             push @regs, {
                 name      => "$vals{x_last_name}, $vals{x_first_name}",
-                program   => $vals{x_pname},
+                program   => $pname,
                 reg_id    => $vals{reg_id},
                 reg_date8 => $vals{x_date},
                 reg_date  => date($vals{x_date}),
