@@ -439,7 +439,14 @@ Sep 12 2:15-5:15, 11:25-12:30
     fixed the tuesday morning gate_code email to sukhdev, barnaby - sql oops
     documenting DDUP and Personal Retreats and all the rest of the Strings
     String doc overlib configuration > strings
-Sep 13 2:15-
+Sep 13 2:15-5:30
     consult with Emily, Barnaby
     remedied Anurag Karen Mueller registration
     Sound Needs - start-end meeting spaces
+    DDUP help
+    including Report name in DDUP log
+    fiddling with one day Rentals per request from Barnaby
+        meal counts were off - and had to worry about them
+            arriving before breakfast ended
+        what about one day rentals that leave after dinner ends????
+            still need to deal with it!

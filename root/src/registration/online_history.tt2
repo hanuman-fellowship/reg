@@ -1,0 +1,40 @@
+<h2>Online Registrations from $sdate to $edate</h2>
+<table cellpadding=5>
+<tr align=left>
+<td>
+<a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=name">Name</a>
+</td>
+<td>
+<a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=program">Program</a>
+</td>
+<td>
+<a href="/registration/online_history?sdate=$sdate8&edate=$edate8&sort_key=reg_date">Reg Date</a>
+</td>
+<td>
+Action
+</td>
+</tr>
+[% FOREACH r IN regs %]
+<tr>
+<td>
+[% IF r.reg_id %]
+    <a href=/registration/view/$r.reg_id>$r.name</a>
+[% ELSIF r.transaction_id %]
+    <a href=/registration/view_trans_id/$r.transaction_id>$r.name</a>
+[% ELSE %]
+    <span style="color: red">$r.name</span>
+[% END %]
+</td>
+<td>$r.program</td>
+<td>$r.reg_date</td>
+<td><a 
+[% IF r.reg_exists %]
+onclick="return confirm('Are you sure?  There is ALREADY a registration for this person in this program!')"
+[% ELSE %]
+style="color: red"
+[% END %]
+href=/registration/restore/$r.fname
+>Restore</a></td>
+</tr>
+[% END %]
+</table>

@@ -1292,6 +1292,10 @@ sub create_do : Local {
             unlink "$rst/online/$P{fname}";
         }
         else {
+            # first append the reg_id
+            open my $out, '>>', "$rst/online/$P{fname}";
+            print {$out} "reg_id => $reg_id\n";
+            close $out;
             my $dir = "$rst/online_done/"
                     . substr($P{date_postmark}, 0, 4)
                     . '-'
@@ -2031,6 +2035,16 @@ sub view : Local {
     my $reg = model($c, 'Registration')->find($reg_id);
     stash($c, reg => $reg);
     _view($c, $reg, $alert, $who);
+}
+
+sub view_trans_id : Local {
+    my ($self, $c, $trans_id) = @_;
+
+    my ($reg) = model($c, 'Registration')->search({
+        transaction_id => $trans_id,
+    });
+    stash($c, reg => $reg);
+    _view($c, $reg);
 }
 
 sub _view {
@@ -5587,6 +5601,141 @@ sub receipt : Local {
         $c->response->redirect($c->uri_for("/registration/view/$id"));
     }
     return;
+}
+
+sub online_history : Local {
+    my ($self, $c) = @_;
+
+    my ($sdate, $edate);
+
+    @mess = ();
+    %P = %{ $c->request->params() };
+    my $key = $P{sort_key} || 'name';
+    if ($P{sdate} eq 'month') {
+        $sdate = today() - 30;
+        $edate = today();
+    }
+    else {
+        my $dt = date($P{sdate});
+        if (! $dt) {
+            push @mess, "Invalid start date: $P{sdate}";
+        }
+        else {
+            $sdate = $dt;
+        }
+        if (empty $P{edate}) {
+            $edate = today();    
+        }
+        else {
+            $dt = date($P{edate});
+            if (! $dt) {
+                push @mess, "Invalid end date: $P{edate}";
+            }
+            else {
+                $edate = $dt;
+            }
+        }
+        if (!@mess && $edate < $sdate) {
+            push @mess, "End date cannot be before start date";
+        }
+        if (@mess) {
+            error($c,
+                join("<br>", @mess),
+                "registration/error.tt2",
+            );
+            return;
+        }
+    }
+    my %needed = map { $_ => 1 } qw/
+        x_date
+        x_first_name
+        x_last_name
+        x_pname
+        reg_id
+        x_trans_id
+    /;
+    my $y = $sdate->year;
+    my $m = $sdate->month;
+    my $rsod = "root/static/online_done/";
+    my @regs;
+    REG_DIR:
+    while (1) {
+        my $dir = sprintf("$rsod%04d-%02d", $y, $m);
+        REG_FILE:
+        for my $f (<$dir/*>) {
+            my $dir_fname = $f;
+            $dir_fname =~ s{$rsod}{}xms;
+            my %vals;
+            open my $in, '<', $f or next REG_FILE;
+            while (my $line = <$in>) {
+                chomp $line;
+                if (my ($key, $val) = $line =~ m{\A (\w+) \s*=>\s* (.*) \z}xms) {
+                    if ($needed{$key}) {
+                        $vals{$key} = $val;    
+                    }
+                }
+            }
+            close $in;
+            if (!$vals{x_date}) {
+                $c->log->info("missing x_date in $f");
+                next REG_FILE;
+            }
+            my $reg_date = date($vals{x_date});
+            next REG_FILE if $reg_date < $sdate || $reg_date > $edate;
+            my $reg = 0;
+            if ($vals{reg_id}) {
+                $reg = model($c, 'Registration')->find($vals{reg_id});
+            }
+            elsif ($vals{x_trans_id}) {
+                ($reg) = model($c, 'Registration')->search({transaction_id => $vals{x_trans_id}})
+            }
+            push @regs, {
+                name      => "$vals{x_last_name}, $vals{x_first_name}",
+                program   => $vals{x_pname},
+                reg_id    => $vals{reg_id},
+                reg_date8 => $vals{x_date},
+                reg_date  => date($vals{x_date}),
+                fname     => $dir_fname,
+                transaction_id => $vals{x_trans_id},
+                reg_exists => $reg,
+            };
+        }
+        ++$m;
+        if ($m > 12) {
+            $m = 1;
+            ++$y;
+        }
+        if ($y > $edate->year || ($y == $edate->year && $m > $edate->month)) {
+            last REG_DIR;
+        }
+    }
+    @regs = sort {
+                lc $a->{$key} cmp lc $b->{$key}
+            }
+            @regs;
+    stash($c,
+        sdate    => $sdate,
+        sdate8   => $sdate->as_d8(),
+        edate    => $edate,
+        edate8   => $edate->as_d8(),
+        regs     => \@regs,
+        template => "registration/online_history.tt2",
+    );
+}
+
+sub restore : Local {
+    my ($self, $c, $dir, $trans_id) = @_;
+
+    my $fname = "root/static/online_done/$dir/$trans_id";
+    if (! -f $fname) {
+        error($c,
+            "no such file: $fname",
+            "registration/error.tt2",
+        );
+        return;
+    }
+    rename $fname, "root/static/online/$trans_id";
+    $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 
 1;
