@@ -1,35 +1,51 @@
 <ul>
 <h3>People Listings</h3>
-<ul>
-<li><a href=/report/list>General Reports</a>
+<a href=/report/list>General Reports</a>
 <p class=p2>
-<li>Phone Lists
+Phone Lists
 <ol>
 <li><a href="/listing/phone_columns">In Columns</a>
 <li><a href="/listing/phone_line">In One Line</a>
 <li><a href="/listing/phone_noaddr">No Address</a>
 </ol>
 <p class=p2>
-<li><a target=_blank href="/listing/undup">Unduplication File</a>
+<a target=_blank href="/listing/undup">Unduplication File</a>
 <p class=p2>
-<li><a href="/listing/email_check">Email Check</a>
+<a href="/listing/email_check">Email Check</a>
 [% IF Catalyst.check_user_roles('mmi_admin') %]
 <p class=p2>
-<li><a href=/listing/upload_yj_sheet>Upload Spreadsheet of People</a>
+<a href=/listing/upload_yj_sheet>Upload Spreadsheet of People</a>
 [% END %]
 [% IF Catalyst.check_user_roles('mail_admin') %]
     <p class=p2>
-    <li><a href="/listing/activity_tally">Date of Last Contact - Tally by Year</a>
+    <a href="/listing/activity_tally">Date of Last Contact - Tally by Year</a>
     <p class=p2>
+    [% IF Catalyst.check_user_roles('prog_admin') %]
+        <form action="/registration/online_history" method=POST>
+        <table>
+        <tr>
+        <td>
+        <a href="/registration/online_history?sdate=month">Online Registration History</a>
+        </td>
+        <td align=left>
+        Start <input type=text name=sdate size=10>
+        End <input type=text name=edate size=10>
+        <input type=submit value="Go"></td>
+        </tr>
+        </table>
+        </form>
+    [% END %]
+    <hr width=600 align=left>
     <form action="/listing/mark_inactive">
-    <li>Date of last contact <b>on or before</b> which<br>people will be marked Inactive<br>
+    Date of last contact <b>on or before</b> which<br>people will be marked Inactive<br>
     and <b>after</b> which people are marked Active:
     <br>
     <input type=text name=date_last size=10 maxlength=10>
     <input type=submit value="Mark Inactive">
     </form>
     <p class=p2>
-    <li>Purge Stale Email Addresses
+    <hr width=600 align=left>
+    Purge Stale Email Addresses
     <p class=p2>
     <form action="[% Catalyst.uri_for('/listing/stale') %]"
           method=POST
@@ -39,7 +55,8 @@
     <input type=submit value="Purge">
     </form>
     <p class=p2>
-    <li>Unsubscribe Email Addresses
+    <hr width=600 align=left>
+    Unsubscribe Email Addresses
     <p class=p2>
     <form action="[% Catalyst.uri_for('/listing/unsubscribe') %]"
           method=POST
@@ -62,5 +79,4 @@
     </table>
     </form>
 [% END %]
-</ul>
 </ul>
