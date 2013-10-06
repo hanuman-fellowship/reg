@@ -5691,7 +5691,7 @@ sub online_history : Local {
                 ($reg) = model($c, 'Registration')->search({transaction_id => $vals{x_trans_id}})
             }
             my $prog = model($c, 'Program')->find($vals{x_pid});
-            my $pname = $prog->name || $vals{x_pname};
+            my $pname = $prog? $prog->name: $vals{x_pname};
             push @regs, {
                 name      => "$vals{x_last_name}, $vals{x_first_name}",
                 program   => $pname,
