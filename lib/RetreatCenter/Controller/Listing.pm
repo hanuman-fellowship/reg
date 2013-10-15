@@ -969,6 +969,7 @@ sub comings_goings : Local {
             name  => $p->name,
             count => $prg_coming{$p_id},
             noun  => ($prg_coming{$p_id} == 1)? "person": "people",
+            edate => $p->edate_obj,
         };
     }
     @prg_coming = sort {
@@ -1035,6 +1036,7 @@ sub comings_goings : Local {
         prg_going  => \@prg_going,
         rnt_coming => \@rnt_coming,
         rnt_going  => \@rnt_going,
+        pg_title   => "Comings and Goings",
         template   => "listing/comings_goings.tt2",
     );
 }

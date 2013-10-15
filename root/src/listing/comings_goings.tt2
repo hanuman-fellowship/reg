@@ -19,8 +19,8 @@ p {
 <td width=30></td>
 <th align=left width=250>Name</th>
 <th align=left>Program/Rental</th>
-<th align=left>Housing</th>
-<td width=300></td>
+<th align=left width=100>&nbsp;&nbsp;Housing</th>
+<th align=left>Leaving</th>
 </tr>
 
 [% FOR r IN ind_coming %]
@@ -30,7 +30,8 @@ p {
 <td align=right>[% IF not_sunday && r.date_start_obj.day_of_week == 0 %]<span class=red>Sun</span>[% END %]</td>
 <td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
 <td><a target=happening href="/program/view/[% pr.id %]">[% pr.name %]</a></td>
-<td align=left>[% r.house.name %]</td>
+<td align=left>&nbsp;&nbsp;$r.house.name</td>
+<td>$r.date_end_obj</td>
 </tr>
 [% IF r.comment %]
 <tr>
@@ -45,6 +46,8 @@ p {
 <td align=right>[% IF not_sunday && p.dow == 0 %]<span class=red>Sun</span>[% END %]</td>
 <td>[% p.count %] [% p.noun %]</td>
 <td><a target=happening href="/program/view/[% p.id %]">[% p.name %]</a></td>
+<td></td>
+<td>$p.edate</td>
 </tr>
 [% END %]
 
@@ -53,6 +56,8 @@ p {
 <td align=right>[% IF not_sunday && r.sdate_obj.day_of_week == 0 %]<span class=red>Sun</span>[% END %]</td>
 <td>[% r.count %] people</td>
 <td><a target=happening href="/rental/view/[% r.id %]">[% r.name %]</a></td>
+<td></td>
+<td>$r.edate_obj</td>
 </tr>
 [% END %]
 
