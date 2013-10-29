@@ -5692,7 +5692,6 @@ sub online_history : Local {
             }
             my $prog = model($c, 'Program')->find($vals{x_pid});
             my $pname = $prog? $prog->name: $vals{x_pname};
-            my $reg_date = date($vals{x_date});
             push @regs, {
                 name      => "$vals{x_last_name}, $vals{x_first_name}",
                 program   => $pname,

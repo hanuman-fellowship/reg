@@ -11,22 +11,22 @@
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right>Start Date</th>
+<th align=right><span class=red>*</span> Start Date</th>
 <td><input type=text name=sdate value='[% block.sdate_obj.format("%D") %]' size=10></td>
 </tr>
 
 <tr>
-<th align=right>End Date</th>
+<th align=right><span class=red>*</span> End Date</th>
 <td><input type=text name=edate value='[% block.edate_obj.format("%D") %]' size=10></td>
 </tr>
 
 <tr>
-<th align=right>Room Name</th>
+<th align=right><span class=red>*</span> Room Name</th>
 <td><input type=text name=h_name value='[% block.house.name %]' size=15></td>
 </tr>
 
 <tr>
-<th align=right>Brief Reason</th>
+<th align=right><span class=red>*</span> Brief Reason</th>
 <td><input type=text name=reason value="[% block.reason %]" size=30></td>
 </tr>
 

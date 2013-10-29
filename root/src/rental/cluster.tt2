@@ -1,16 +1,13 @@
-<h3>Reserving Entire Clusters for [% rental.name %]</h3>
-<p class=p2>
-<a href=/rental/view/[% rental.id %]/1>To Rental</a>
-<p class=p2>
+<h3>Reserving Entire Clusters for <a href=/rental/view/$rental.id>$rental.name</a></h3>
 <ul>
 <table cellpadding=5>
 
 <tr>
 <td align=left valign=top>
-<div id=available style="width: 200px">[% available_clusters %]</div>
+<div id=available style="width: 200px">$available_clusters</div>
 </td>
 <td align=left valign=top>
-<div id=reserved style="width: 200px">[% reserved_clusters %]</div>
+<div id=reserved style="width: 200px">$reserved_clusters</div>
 </td>
 </tr>
 

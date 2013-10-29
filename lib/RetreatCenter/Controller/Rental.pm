@@ -41,6 +41,7 @@ use Util qw/
     refresh_table
     penny
     ensure_mmyy
+    rand6
 /;
 use Global qw/
     %string
@@ -265,7 +266,7 @@ sub create_do : Local {
     $P{summary_id} = $sum->id();
     $P{status} = "tentative";
     $P{program_id} = 0;         # so it isn't NULL
-    $P{grid_code} = gen_code($P{sdate}, $P{name});
+    $P{grid_code} = rand6($c);
 
     my $r = model($c, 'Rental')->create(\%P);
     $r->send_grid_data();
@@ -281,19 +282,6 @@ sub create_do : Local {
     else {
         $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
     }
-}
-
-sub gen_code {
-    my ($sdate, $name) = @_;
-
-    my $l1 = uc substr($name, 0, 1);
-    my $l2 = uc substr($name, 1, 1);
-    return   substr($sdate, 6, 2)
-           . $l1
-           . substr($sdate, 2, 2)
-           . $l2
-           . substr($sdate, 4, 2)
-           ;
 }
 
 sub create_from_proposal : Local {
@@ -346,7 +334,7 @@ sub create_from_proposal : Local {
     $P{proposal_id}    = $proposal_id;      # to link back to Proposal
     $P{program_id} = 0;                     # so it isn't NULL
 
-    $P{grid_code} = gen_code($P{sdate}, $P{name});
+    $P{grid_code} = rand6($c);
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
@@ -719,9 +707,9 @@ sub update_do : Local {
     my $mmc_does_reg_b4 = $r->mmc_does_reg();      # before the update
 
     if (! $r->grid_code()) {
-        # in case it did not get set properly on creation
+        # just in case it did not get set properly on creation
         #
-        $P{grid_code} = gen_code($P{sdate}, $P{name});
+        $P{grid_code} = rand6($c);
     }
 
     $r->update(\%P);
@@ -808,7 +796,7 @@ sub pay_balance : Local {
     my $r = model($c, 'Rental')->find($id);
     stash($c,
         message  => payment_warning('mmc'),
-        amount   => (tt_today($c)->as_d8() >= $r->edate)? $r->balance_disp()
+        amount   => (tt_today($c)->as_d8() >= $r->edate)? $r->balance()
                     :                                     $r->deposit(),
         rental   => $r,
         template => "rental/pay_balance.tt2",
@@ -1870,6 +1858,7 @@ sub duplicate : Local {
         contract_received => "",
         sent_by           => "",
         received_by       => "",
+        grid_code         => "",
     });
     stash($c,
         dup_message => " - <span style='color: red'>Duplication</span>",
@@ -1933,6 +1922,8 @@ sub duplicate_do : Local {
         });
     }
 
+    $P{program_id} = 0;     # if a parallel rental is created
+                            # this will be overwritten
 
     # now we can create the new dup'ed rental
     # with the coordinator and contract signer ids from the old.
@@ -1942,7 +1933,9 @@ sub duplicate_do : Local {
         summary_id => $sum->id,
         coordinator_id => $old_rental->coordinator_id(),
         cs_person_id   => $old_rental->cs_person_id(),
+        grid_code      => rand6($c),
     });
+    $new_r->send_grid_data();
     my $id = $new_r->id();
 
     #

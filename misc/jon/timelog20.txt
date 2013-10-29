@@ -5,8 +5,26 @@ Sep 30 11:30-11:40
 Oct 3 9:50-10:30
     various requests
     tweaks to regPR.tt2, personal/index.html
-Oct 5 1:50-4:15, 4:50-
+Oct 5 1:50-4:15, 4:50-9:00
     OOs (why that name? wouldn't ORs be better?)
     Kaya Kalpa response letter - change in grab_new was tricky to test...
     OOs - give access to history so can restore, put reg_id inside the file?
-    Rental change date finally
+        took quite a while! :(
+    todo: Rental change date finally
+Oct 8 11:20-1:00
+    helping Jamal with water assessment query of people days - rentals?
+    Rental date change.   - checked for prior bookings
+Oct 9 10:45-
+    Rental date change continued.
+    Almost done with the check - need to do clusters - confusing.
+    Then, if okay, do the move of all the things.
+Oct 14 11:00-11:45
+    leaving date in coming and goings listing
+Oct 20 10:50-
+    continuing on Rental change_date
+    a question - did we once allow meeting space bookings
+        for a rental to be outside the dates of the rental?
+    there was an error in other_reserved_clusters sdate not edate
+    need more methods in db/RentalCluster db/ProgramCluster
+Oct 23 7:55-
+    restoring OGS rental

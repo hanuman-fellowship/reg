@@ -712,7 +712,7 @@ sub _get_cluster_groups {
     # other programs or rentals that overlap this program?
     #
     my $prog = model($c, 'Program')->find($program_id);
-    my %cids = other_reserved_cids($c, $prog, 'program');
+    my %cids = other_reserved_cids($c, $prog);
 
     #
     # and that leaves what clusters as available?
@@ -1184,6 +1184,7 @@ sub meetingplace_update_do : Local {
 
 #
 # what if it is a hybrid???
+# it cascades and deletes the rental - wow! is this good?!
 #
 sub delete : Local {
     my ($self, $c, $id) = @_;

@@ -1323,7 +1323,7 @@ sub other_reserved_cids {
             level => { -not_in => [qw/ D C M /], },
             name  => { -not_like => '%personal%retreat%' },
             sdate => { '<' => $edate1 },     # and it overlaps
-            edate => { '>' => $edate },      # with this program
+            edate => { '>' => $sdate },      # with this program
         });
     my @ol_rent_ids =
         map {
@@ -1776,6 +1776,12 @@ sub rand6 {
         $lets .= ('A' .. 'Z')[rand 26] for 1 .. 6;
         if (my ($person) = model($c, 'Person')->search({
                                secure_code => $lets,
+                           })
+        ) {
+            next CODE_LOOP;     # dup - try again
+        }
+        if (my ($rental) = model($c, 'Rental')->search({
+                               grid_code => $lets,
                            })
         ) {
             next CODE_LOOP;     # dup - try again

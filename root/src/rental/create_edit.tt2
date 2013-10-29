@@ -87,7 +87,7 @@ Web
 <table border=0 cellpadding=5>
 
 <tr>
-<th align=right><span class=red>*</span> Maximum</th>
+<th align=right width=200><span class=red>*</span> Maximum</th>
 <td><input type=text size=3 name=max value='[% rental.max %]'></td>
 </tr>
 
@@ -122,7 +122,7 @@ $rental.housing_note
 Fixed Cost Houses
 </th>
 <td>
-<input name=fixed_cost_houses value="$rental.fixed_cost_houses" size=80>
+<input name=fixed_cost_houses value="$rental.fixed_cost_houses" size=65>
 </td>
 </tr>
 

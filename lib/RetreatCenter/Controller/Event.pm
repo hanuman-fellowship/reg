@@ -304,6 +304,8 @@ sub update_do : Local {
         for my $b (@bookings) {
             $b->delete();
         }
+        # invalidate the blocks if the dates have changed
+        # ???
     }
     $e->update(\%P);
     if ($e->name() =~ m{\A No[ ]PR}xms) {
@@ -323,6 +325,7 @@ sub update_do : Local {
 
 #
 # and meeting places and blocks - and config.
+# ??? and config???
 #
 sub delete : Local {
     my ($self, $c, $id) = @_;

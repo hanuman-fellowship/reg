@@ -7,7 +7,7 @@
 <script type="text/javascript" src="/static/js/tabs.js"></script>
 <script type="text/javascript">
 
-init_tabs(4, [% id %], 0);
+init_tabs(4, $id, 0);
 
 </script>
 
@@ -19,46 +19,46 @@ h3 {
 </style>
 <h2>Rentals</h2>
 [% IF prog_admin %]
-<a href="/rental/create"
-       onclick="return confirm('If this new Rental has been at MMC before it would be better to use Duplicate.');"
->Add</a>
-&nbsp;&nbsp;&nbsp;
-<span id=editlink><a href="/rental/update/[% id %]/[% section %]">Edit</a></span>
-&nbsp;&nbsp;&nbsp;
-<a href="/rental/delete/$id"
-onclick="return confirm('Okay to Delete $rental.name?');">Delete</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/rental/duplicate/$id">Duplicate</a>
-&nbsp;&nbsp;&nbsp;
-[% cmd = 'Cancel' %]
-[% SET cmd = 'UnCancel' IF rental.cancelled %]
-    <a href=/rental/cancel/$id
-       onclick="return confirm('Are you sure you wish to $cmd \'$rental.name\'');"
-    >$cmd</a>
-&nbsp;&nbsp;&nbsp;
+    <a href="/rental/create"
+           onclick="return confirm('If this new Rental has been at MMC before it would be better to use Duplicate.');"
+    >Add</a>
+    &nbsp;&nbsp;&nbsp;
+    <span id=editlink><a href="/rental/update/$id/$section">Edit</a></span>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/rental/delete/$id"
+    onclick="return confirm('Okay to Delete $rental.name?');">Delete</a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/rental/duplicate/$id">Duplicate</a>
+    &nbsp;&nbsp;&nbsp;
+    [% cmd = 'Cancel' %]
+    [% SET cmd = 'UnCancel' IF rental.cancelled %]
+        <a href=/rental/cancel/$id
+           onclick="return confirm('Are you sure you wish to $cmd \'$rental.name\'');"
+        >$cmd</a>
+    &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF rental.proposal_id %]
-<a href="/proposal/view/[% rental.proposal_id %]">To Proposal</a>
+<a href="/proposal/view/$rental.proposal_id">To Proposal</a>
 &nbsp;&nbsp;&nbsp;
 [% ELSIF link_proposal_id %]
-<a href="/rental/link_proposal/[% id %]/[% link_proposal_id %]">Link Proposal</a>
+<a href="/rental/link_proposal/$id/$link_proposal_id">Link Proposal</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF rental.program_id %]
-<a href="/program/view/[% rental.program_id %]">To Program</a>
+<a href="/program/view/$rental.program_id">To Program</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
 
 [% IF prog_admin %]
 <a href="/program/publish">Publish</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/grid/[% id %]">Local Grid</a>
+<a href="/rental/grid/$id">Local Grid</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/email_contract/[% id %]">EmailContract</a>
+<a href="/rental/email_contract/$id">EmailContract</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/contract/[% id %]">Contract</a>
+<a href="/rental/contract/$id">Contract</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/rental/invoice/[% id %]">Invoice</a>
+<a href="/rental/invoice/$id">Invoice</a>
 <p class=p2>
 [% END %]
 
@@ -66,18 +66,18 @@ onclick="return confirm('Okay to Delete $rental.name?');">Delete</a>
 <tr>
 <td>
 <b>Name</b>
-<span class=larger>[% rental.name %][% IF rental.cancelled %] <span class=bred>Cancelled</span>[% END %]</span>
+<span class=larger>$rental.name[% IF rental.cancelled %] <span class=bred>Cancelled</span>[% END %]</span>
 <b>From</b>
-[% rental.sdate_obj %] <span class=dow>[% rental.sdate_obj.format("%a") %]</span>
+$rental.sdate_obj <span class=dow>${rental.sdate_obj.format("%a")}</span>
 <b>To</b>
-[% rental.edate_obj %] <span class=dow>[% rental.edate_obj.format("%a") %]</span>
+$rental.edate_obj <span class=dow>${rental.edate_obj.format("%a")}</span>
 </td>
-[% rental.status_td %]
+$rental.status_td
 <td>
 &nbsp;
 &nbsp;
 &nbsp;
-<a href=/summary/view/rental/[% rental.summary_id %]>Summary</a>
+<a href=/summary/view/rental/$rental.summary_id>Summary</a>
 </td></tr>
 </table>
 <p>
@@ -149,45 +149,45 @@ Web
 
 <tr>
 <th align=right>Maximum</th>
-<td>[% rental.max %]</td>
+<td>$rental.max</td>
 <td rowspan=6 valign=top>
 <div style="margin-left: .3in;">
-<span class=head style="margin-left: .5in">Lunches</span><span class=updlunch><a href="/rental/update_lunch/[% id %]">Update</a></span>
-<div class=lunch>[% lunch_table %]</div>
+<span class=head style="margin-left: .5in">Lunches</span><span class=updlunch><a href="/rental/update_lunch/$id">Update</a></span>
+<div class=lunch>$lunch_table</div>
 </div>
 </td>
 </tr>
 
 <tr>
 <th align=right>Expected</th>
-<td>[% rental.expected %]</td>
+<td>$rental.expected</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Housing Cost</th>
-<td><a href="/housecost/view/[% rental.housecost.id %]">[% rental.housecost.name %]</a></td>
+<td><a href="/housecost/view/$rental.housecost.id">$rental.housecost.name</a></td>
 </tr>
 
 <tr>
 <th>Number of Days</th>
-<td valign=top>[% ndays %]</td>
+<td valign=top>$ndays</td>
 </tr>
 
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td colspan=2 align=center><a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?code=[% rental.grid_code %]>Web Grid</a></td>
+<td colspan=2 align=center><a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code>Web Grid</a></td>
 </tr>
 
 <tr>
-<td colspan=2 align=center><a href=/rental/clusters/[% id %]>Cluster Reservations</a></td>
+<td colspan=2 align=center><a href=/rental/clusters/$id>Cluster Reservations</a></td>
 <td><div style="margin-left: .3in">
 <span class=head>Blocks</span>
 <a style="margin-left: .3in"
-   href=/block/bound_create/rental/[% id %]
+   href=/block/bound_create/rental/$id
 >New Block</a>
 [% FOR bl IN rental.blocks %]
-    <span style="margin-left: .4in"><a href=/block/view/[% bl.id %]>[% bl.house.name %]</a></span>
+    <span style="margin-left: .4in"><a href=/block/view/$bl.id>$bl.house.name</a></span>
 [% END %]
 </span>
 </p>
@@ -208,23 +208,23 @@ Web
 [% class = 'fl_row1' %]
 [% hc = rental.housecost %]
 [% FOREACH t IN h_types %]
-    <tr class=[% class %]>
+    <tr class=$class>
     [% IF hc.$t == 0 %]
-        <td align=right valign=center>[% string.$t %]</td>
+        <td align=right valign=center>${string.$t}</td>
     [% ELSE %]
-        <th align=right valign=top>[% string.$t %]</th>
+        <th align=right valign=top>${string.$t}</th>
     [% END %]
     [% IF t != 'own_van' && t != 'commuting' %]
 
     [% IF hc.$t == 0 %]
     <td></td>
     [% ELSE %]
-    <td valign=top><a href="/rental/booking/[% id %]/[% t %]">Add</a></td>
+    <td valign=top><a href="/rental/booking/$id/$t">Add</a></td>
     [% END %]
 
     [% END %]
 
-    <td align=left>[% bookings.$t %]</td>
+    <td align=left>${bookings.$t}</td>
 
     </tr>
     [% IF class == 'fl_row0' %]
@@ -257,11 +257,11 @@ none
 [% IF refresh_table %]
     <span class=head style="margin-top: .5in"
          >Days to Refresh Rooms</span>
-    <span class=updlunch><a href="/rental/update_refresh/[% id %]"
+    <span class=updlunch><a href="/rental/update_refresh/$id"
         >Update</a></span>
     <span class=f12b style="margin-left: 8mm;"
         >Confirm with Field Staff!</span>
-    <div class=lunch>[% refresh_table %]</div>
+    <div class=lunch>$refresh_table</div>
 [% END %]
 
 </div>      <!-- end Meals & Lodging div -->
@@ -272,7 +272,7 @@ none
 
 <tr>
 <th align=right>Tentative</th>
-<td>[% rental.tentative %]</td>
+<td>$rental.tentative</td>
 </tr>
 
 <tr>
@@ -313,62 +313,62 @@ none
 <td valign=top>
 [% IF rental.coordinator_id %]
 [% coord = rental.coordinator %]
-<a href="/person/view/[% coord.id %]">[% coord.first %] [% coord.last %]</a><br>
+<a href="/person/view/$coord.id">$coord.first $coord.last</a><br>
 [% END %]
-<a href="/rental/coordinator_update/[% id %]">Update</a>
+<a href="/rental/coordinator_update/$id">Update</a>
 </td>
 <th valign=top align=right>Contract Signer</th>
 <td valign=top>
 [% IF rental.cs_person_id %]
 [% cs = rental.contract_signer %]
-<a href="/person/view/[% cs.id %]">[% cs.first %] [% cs.last %]</a><br>
+<a href="/person/view/$cs.id">$cs.first $cs.last</a><br>
 [% END %]
-<a href="/rental/contract_signer_update/[% id %]">Update</a>
+<a href="/rental/contract_signer_update/$id">Update</a>
 </td>
 </tr>
 
 <tr>
 <th align=right>Start Hour</th>
-<td>[% rental.start_hour_obj %]</td>
+<td>$rental.start_hour_obj</td>
 </tr>
 
 <tr>
 <th align=right>End Hour</th>
-<td>[% rental.end_hour_obj %]</td>
+<td>$rental.end_hour_obj</td>
 </tr>
 
 <tr>
 <th align=right>MMC Does Registration</th>
-<td>[% rental.mmc_does_reg %]</td>
+<td>$rental.mmc_does_reg</td>
 </tr>
 
 <tr>
 <th align=right>Staff Okay?</th>
-<td>[% rental.staff_ok %]</td>
+<td>$rental.staff_ok</td>
 </tr>
 
 <tr>
 <th align=right>Rental Follows</th>
-<td>[% rental.rental_follows %]</td>
+<td>$rental.rental_follows</td>
 </tr>
 
 <tr>
 <th align=right>Contract Sent</th>
-<td>[% rental.contract_sent_obj %] [% IF rental.contract_sent %]by [% rental.sent_by.username %][% END %]</td>
+<td>$rental.contract_sent_obj [% IF rental.contract_sent %]by $rental.sent_by.username[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Contract Received</th>
-<td>[% rental.contract_received_obj %] [% IF rental.contract_received %]by [% rental.received_by.username %][% END %]</td>
+<td>$rental.contract_received_obj [% IF rental.contract_received %]by $rental.received_by.username[% END %]</td>
 </tr>
 
 [% IF ! rental.program_id %]
 <tr>
 <th align=right>Color</th>
 [% IF rental.color %]
-<td id=color style="cursor: pointer" width=100 bgcolor=[% rental.color_bg %] onclick="window.location.href='/rental/color/[% id %]'">
+<td id=color style="cursor: pointer" width=100 bgcolor=$rental.color_bg onclick="window.location.href='/rental/color/$id'">
 [% ELSE %]
-<td><a href=/rental/color/[% id %]>Update</a></td>
+<td><a href=/rental/color/$id>Update</a></td>
 [% END %]
 </tr>
 [% END %]
@@ -384,18 +384,18 @@ none
 <table cellpadding=3>
 <tr>
 <th align=right>Required Deposit</th>
-<td>[% rental.deposit %]</td>
+<td>$rental.deposit</td>
 </td>
 </tr>
 
 <tr>
 <th align=right>GL Number</th>
-<td>[% rental.glnum %]</td>
+<td>$rental.glnum</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td>[% rental.comment %]</td>
+<td>$rental.comment</td>
 </td>
 </tr>
 
@@ -413,21 +413,21 @@ Other Charges
 
 [% FOREACH c IN charges %]
 <tr>
-<td align=right valign=top>[% c.amount_disp %]</td>
-<td>[% c.what %]</td>
+<td align=right valign=top>$c.amount_disp</td>
+<td>$c.what</td>
 <th>
-<a href="javascript:void(0);" onclick="return overlib('#[% c.id %]&nbsp;&nbsp;[% c.the_date_obj.format("%D") %]&nbsp;&nbsp;[% c.time_obj %]&nbsp;&nbsp;[% c.user.username %] <span class=nh><a href=/rental/update_charge/[% c.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a href=/rental/del_charge/[% c.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '460', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 height=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#$c.id&nbsp;&nbsp;${c.the_date_obj.format("%D")}&nbsp;&nbsp;$c.time_obj&nbsp;&nbsp;$c.user.username <span class=nh><a href=/rental/update_charge/$c.id><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a href=/rental/del_charge/$c.id><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '460', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 height=20 src="/static/images/info.png"></a>
 </th>
 </tr>
 [% END %]
 <tr><td style="border-top: solid thin"></td><td></td></tr>
 <tr>
-<td align=right>[% tot_other_charges %]</td>
+<td align=right>$tot_other_charges</td>
 <td>Total</td>
 </tr>
 <tr>
 <td>&nbsp;</td>
-<td><a href="/rental/new_charge/[% id %]">New Charge</a></td>
+<td><a href="/rental/new_charge/$id">New Charge</a></td>
 </tr>
 
 </table>
@@ -445,22 +445,22 @@ Payments
 
 [% FOREACH p IN payments %]
 <tr>
-<td align=right>[% p.amount_disp %]</td>
-<td>[% p.type_sh %]</td>
+<td align=right>$p.amount_disp</td>
+<td>$p.type_sh</td>
 <th>
-<a href="javascript:void(0);" onclick="return overlib('#[% p.id %]&nbsp;&nbsp;[% p.the_date_obj.format("%D") %]&nbsp;&nbsp;[% p.time_obj %]&nbsp;&nbsp;[% p.user.username %] <span class=nh><a href=/rental/update_payment/[% p.id %]><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a href=/rental/del_payment/[% p.id %]><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '460', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 height=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#$p.id&nbsp;&nbsp;${p.the_date_obj.format("%D")}&nbsp;&nbsp;$p.time_obj&nbsp;&nbsp;$p.user.username <span class=nh><a href=/rental/update_payment/$p.id><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a href=/rental/del_payment/$p.id><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, '460', OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 height=20 src="/static/images/info.png"></a>
 </th>
 </tr>
 [% END %]
 <tr><td style="border-top: solid thin"></td><td></td></tr>
 <tr>
-<td align=right>[% tot_payments %]</td>
+<td align=right>$tot_payments</td>
 <td>Total</td>
 </tr>
 
 <tr>
 <td></td>
-<td><a href="/rental/pay_balance/[% id %]">New Payment</a></td>
+<td><a href="/rental/pay_balance/$id">New Payment</a></td>
 </tr>
 
 </table>
@@ -480,37 +480,37 @@ Payments
 
 <tr>
 <th align=right width=150>Linked</th>
-<td>[% rental.linked %]</td> 
+<td>$rental.linked</td> 
 </tr>
 
 <tr>
 <th align=right>Title</th>
-<td colspan=5>[% rental.title %]</td>
+<td colspan=5>$rental.title</td>
 </tr>
 
 <tr>
 <th align=right>SubTitle</th>
-<td colspan=5>[% rental.subtitle %]</td>
+<td colspan=5>$rental.subtitle</td>
 </tr>
 
 <tr>
 <th align=right>Web Address</th>
-<td colspan=5><a href="http://[% rental.url %]">[% rental.url %]</a></td>
+<td colspan=5><a href="http://$rental.url">$rental.url</a></td>
 </tr>
 
 <tr>
 <th align=right>Telephone</th>
-<td>[% rental.phone %]</td>
+<td>$rental.phone</td>
 </tr>
 
 <tr>
 <th align=right>Email</th>
-<td><a href="mailto:[% rental.email %]">[% rental.email %]</a></td>
+<td><a href="mailto:$rental.email">$rental.email</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Description</th>
-<td colspan=5>[% rental.webdesc %]</td>
+<td colspan=5>$rental.webdesc</td>
 </td>
 </tr>
 
@@ -521,4 +521,4 @@ Payments
 
 </table> <!-- end overall table -->
 
-<script type="text/javascript">tabs([% section %]);</script>
+<script type="text/javascript">tabs($section);</script>
