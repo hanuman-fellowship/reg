@@ -92,7 +92,7 @@ sub list : Local {
     for my $mp (@mp) {
         $mp->{bgcolor} = d3_to_hex($mp->color);
     }
-    stash(
+    stash($c,
         pg_title      => "Meeting Places",
         meetingplaces => \@mp,
         template      => "meetingplace/list.tt2",
