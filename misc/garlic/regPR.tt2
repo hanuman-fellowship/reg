@@ -105,7 +105,7 @@
 								</ul>
 							[% END %]
 							[% IF noPRindoors.0 %]
-								On the following nights, there is no indoor housing available, but you may stay in a tent or in your own vehicle:
+								On the following nights, there is no indoor housing available,<br>but you may stay in a tent or in your own vehicle:
 								<ul>
 								[% FOR d IN noPRindoors %]
 									<li>$d</li>
