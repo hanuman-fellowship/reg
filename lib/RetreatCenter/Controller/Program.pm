@@ -1804,7 +1804,7 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
                        qq!",\n!
                        ;
     }
-    my $month     = $p->sdate_obj->month();
+    my $month_day     = $p->sdate_obj->format("%m%d");
     my $housecost = $p->housecost();
 
     for my $t (reverse housing_types(1)) {
@@ -1815,7 +1815,8 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
         next if $t eq 'center_tent'
             && !($PR
                  || $p->name =~ m{tnt}i
-                 || (5 <= $month && $month <= 10));
+                 || ($string{center_tent_start} <= $month_day
+                     && $month_day <= $string{center_tent_end}));
         next if $PR && $t =~ m{triple|dormitory};
         my $fees = $PR? $housecost->$t()
                   :     $p->fees(0, $t);

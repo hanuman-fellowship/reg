@@ -6,12 +6,12 @@
 
 <tr>
 <th align=right><span class=red>*</span> Abbreviation</th>
-<td><input type=text name=abbr value=$meetingplace.abbr></td>
+<td><input type=text name=abbr value="$meetingplace.abbr"></td>
 </tr>
 
 <tr>
 <th align=right><span class=red>*</span> Name</th>
-<td><input type=text name=name value=$meetingplace.name></td>
+<td><input type=text name=name value="$meetingplace.name"></td>
 </tr>
 
 <tr>

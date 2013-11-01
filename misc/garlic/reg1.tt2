@@ -86,6 +86,9 @@ function confirm() {
                     [% IF outdoors %]
                     <br><br>Outdoor housing only.
                     [% END %]
+                    [% IF no_center_tents %]
+                    <br><br>Center tents are not available.
+                    [% END %]
                     </div>
 
                 [% ELSE %]

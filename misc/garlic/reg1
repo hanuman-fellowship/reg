@@ -41,6 +41,8 @@ sub oops {
 }
 
 my $only_outdoors = 0;
+my $no_center_tents = 1;
+$stash{no_center_tents} = 1;
 if ($pid == 0) {
     # for PRs we need to check the dates
     # arr_date and dep_date from the request
@@ -118,6 +120,23 @@ if ($pid == 0) {
             }
         }
         close $in;
+        if (-r "../personal/CT.txt") {
+            # if center tents are not allowed on their start date 
+            # we have to exclude the center tent option from the
+            # housing choices.
+            #
+            open my $ct, "<", "../personal/CT.txt";
+            my $line = <$ct>;
+            close $ct;
+            chomp $line;
+            my ($ct_smd, $ct_emd) = split m{-}, $line;
+                # ct_smd = center tent start month day
+            my $pr_smd = $sdate->format("%m%d");
+            if ($ct_smd <= $pr_smd && $pr_smd <= $ct_emd) {
+                $no_center_tents = 0;
+                $stash{no_center_tents} = 0;
+            }
+        }
     }
     my $dates = "$ndays day" . (($ndays > 1)? "s": "");
     $dates .= " from ";
@@ -271,6 +290,9 @@ my $housing_fees = "";
 HOUSING_TYPE:
 for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
     if ($only_outdoors && $k =~ m{single|dble}xms) {
+        next HOUSING_TYPE;
+    }
+    if ($k =~ m{center}xms && $no_center_tents) {
         next HOUSING_TYPE;
     }
     my $nk = $k;

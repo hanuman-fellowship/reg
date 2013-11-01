@@ -363,7 +363,7 @@ sub calendar : Local {
         Jul Aug Sep
         Oct Nov Dec
     /;
-    my $cancelled = " <span style='background-color: red'>Cancelled</span>";
+    my $cancelled = " <span style='background-color: pink'>Cancelled</span>";
 
     Global->init($c);
 

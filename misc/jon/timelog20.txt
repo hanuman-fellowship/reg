@@ -28,3 +28,9 @@ Oct 20 10:50-
     need more methods in db/RentalCluster db/ProgramCluster
 Oct 23 7:55-
     restoring OGS rental
+Oct 30 1:00-2:00
+    fixing various messes relating to the self inquiry debacle
+    no late notices for DCM regs.
+Oct 31 9:00-10:00
+    cancelled programs/rentals in the calendar
+    responding to various inquiries
