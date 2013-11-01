@@ -292,7 +292,7 @@ for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
     if ($only_outdoors && $k =~ m{single|dble}xms) {
         next HOUSING_TYPE;
     }
-    if ($k =~ m{center}xms && $no_center_tents) {
+    if ($stash{pr} && $k =~ m{center}xms && $no_center_tents) {
         next HOUSING_TYPE;
     }
     my $nk = $k;
