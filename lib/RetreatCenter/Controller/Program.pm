@@ -1776,10 +1776,19 @@ sub _prt_data {
     fulldays => $fulldays,
     canpol   => "$canpol",
 EOD
-print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
+    # plink - be careful with unlinked programs
+    if ($p->linked) {
+        print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
                . $p->fname()
                . "',\n"
                ;
+    }
+    else {
+        print {$progt} "    plink    => 'http://www.mountmadonna.org/"
+                     . $p->unlinked_dir     # index.html is implied
+                     . "',\n"
+                     ;
+    }
     for my $f (qw/
         name
         title
@@ -1832,8 +1841,12 @@ print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
     #
     my @leaders = $p->leaders();
     my $nleaders = @leaders;
+
+    # images - be careful with unlinked programs
     my ($pic1, $pic2) = ('', '');
-    my $url = "http://www.mountmadonna.org/live/pics";
+    my $url = $p->linked? "http://www.mountmadonna.org/live/pics"
+             :            ("http://www.mountmadonna.org/" . $p->unlinked_dir . "/pics")
+             ;
     if ($nleaders >= 1 && $leaders[0]->image) {
         $pic1 = "$url/lth-" . $leaders[0]->id() . ".jpg";
     }

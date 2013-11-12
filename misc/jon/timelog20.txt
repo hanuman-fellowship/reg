@@ -39,3 +39,7 @@ Nov 8 12:15-12:55
     Freeing up SSSSS in 4 meeting space housing WR, MR, OH MAIN, SH MAIN.
     They were booked and blocked on Feb 2, 2012 before the code to make
     an exception for dorms was put in place on Feb 14, 2012.
+Nov 11 11:00-12:30, 1:00-
+    two -or clauses messed up the late notices big time
+    generate progtable for unlinked programs - image, and plink are
+        not in /live
