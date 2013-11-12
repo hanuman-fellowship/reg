@@ -98,3 +98,6 @@ MAY YOUR STAY BE NOURISHING AND REWARDING.
 </center>
 <div style="page-break-after:always"></div>
 [% END %]
+<script>
+alert("$alert_msg");
+</script>

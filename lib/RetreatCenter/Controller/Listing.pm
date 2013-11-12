@@ -1066,27 +1066,24 @@ sub late_notices : Local {
                          -or => [
                              date_start => $d8,
                              date_start => (date($d8)+1)->as_d8(),
-                             #date_start => 
-                             #-and => [
-                             #    date_start => (date($d8)+1)->as_d8(),
-                             #    'program.name' => 
-                             #        { like => '%Personal Retreat%' },
-                             #],
                          ],
                      );
     }
     else {
         @date_bool = (date_start => $d8);
     }
-    my @late_arr = model($c, 'Registration')->search(
+    my @late_arr = grep {
+                       my $prog = $_->program;
+                       $prog->school == 0 || $prog->level =~ m{[AS]}xms;
+                       # I was tripped up trying to have two -or
+                       # clauses below so I'm trying this for now.
+                       # Later I'll trying reading SQL::Abstract POD for another way.
+                   }
+                   model($c, 'Registration')->search(
                        {
                            @date_bool,
                            arrived    => '',
                            'me.cancelled'  => '',
-                           -or => [
-                               'program.school' => 0,
-                               'program.level' => { -in => ['A', 'S'] },
-                           ],
                        },
                        {
                            join     => [qw/ program person /],
@@ -1094,6 +1091,7 @@ sub late_notices : Local {
                            order_by => [qw/ person.last person.first /],
                        }
                    );
+    my $nrecs = @late_arr;
     my $tt = Template->new({
         INTERPOLATE => 1,
         INCLUDE_PATH => 'root/static/templates/letter',
@@ -1102,7 +1100,13 @@ sub late_notices : Local {
     my $html;
     $tt->process(
         "late_notices.tt2",             # template
-        { late_arr => \@late_arr },     # variables
+        {
+            late_arr  => \@late_arr,
+            alert_msg => $nrecs == 0? "There were no late notices today."
+                        :$nrecs == 1? "There was only one late notice today."
+                        :             "There were $nrecs late notices today.",
+                        
+        },
         \$html,                         # output
     ) or die "error in processing template: "
              . $tt->error();
