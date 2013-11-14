@@ -854,7 +854,7 @@ EOH
                                    .  "<td align=left>$clusters</td>"
                                    ;
                 }
-                $disp =~ s{'}{\\'}g;    # what if name eq Mother's Day?
+                $disp =~ s{(['"])}{\\$1}g;    # what if name eq Mother's Day?
 
                 my $border = $black;
                 if ($ev_type eq 'rental') {
@@ -1205,7 +1205,7 @@ EOH
                 my $pr_links = "";
                 for my $pr (@prs) {
                     my ($name, $id, $status) = split /\t/, $pr;
-                    $name =~ s{'}{\\'}g;    # for O'Dwyer etc.
+                    $name =~ s{(['"])}{\\$1}g;    # for O'Dwyer etc.
                     my $bg = ($status eq 'lv' )? $lv_color
                             :($status eq 'arr')? $arr_color
                             :                    '#FFFFFF';
