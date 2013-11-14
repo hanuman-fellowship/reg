@@ -451,7 +451,8 @@ EOH
                 $date_span .= " - " . $ev_edate->format("%b %e");
             }
             $disp .= "<br>$places<br>$sponsor<br>$date_span";
-            $disp =~ s{'}{\\'}g;    # what if name eq Mother's Day?
+            $disp =~ s{'}{&apos;}g;
+            $disp =~ s{"}{&quot;}g;
 
             # tidy up the date_span for the printable row
             $date_span =~ s{^([a-z]+)([\d\s-]+)$}{$2}i;
