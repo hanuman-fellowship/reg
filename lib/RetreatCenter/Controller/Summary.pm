@@ -204,7 +204,7 @@ sub update_sect : Local {
 
 sub _trans {
     my ($s) = @_;
-    $s =~ s{_}{ };
+    $s =~ s{_}{ }g;
     $s =~ s{\b(\w)}{\u$1}g;
     if ($s =~ m{^Food}) {   # special case
         $s = "CB $s";

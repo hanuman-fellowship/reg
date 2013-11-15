@@ -47,3 +47,5 @@ Nov 12 12:00-1:00
     responding to queries from Barnaby and Jayanti
     publishing an unlinked program with an image
     Barnaby about meeting spaces that are not the full rental date range.
+Nov 14 11:05-11:30
+    tidying up a tinyMCE mess for Barnaby
