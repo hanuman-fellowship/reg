@@ -53,5 +53,15 @@ Nov 20 11:00-11:30
     restoring some mmi payments for Brajesh
 Nov 29 11:50-2:00
     online membership payments - good progress, finally.
-Nov 30 11:00-5:00
+Nov 30 11:00-5:00, 10:40-
     continuing with online membership payments
+    questions
+        should the tally of Members at the top also count and list Inactive?
+        * in the search to list all...
+        is 'Expired 12/31' link obsolete?
+Dec 1 8:40-
+    grab new mods for membership online payments
+        todo:
+            allow changing address/phone/category of membership
+            have a String for ftp_omp_dir
+            letter from whom to notify the mem secretary of new payments?

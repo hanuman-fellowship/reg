@@ -46,6 +46,7 @@ h3 {
       action='/member/$form_action'
       name=form
 >
+<input type=hidden name=file value=$file>
 
 <span class=larger>[% person.sanskrit || person.first %] $person.last</span>
 <span style="margin-left: 1in"><a href="/person/view/$person.id" accesskey='p'><span class=keyed>P</span>erson Info</a></span>
@@ -56,7 +57,7 @@ h3 {
 
 <tr>
 <th align=right>Amount</th>
-<td><input type=text name=mkpay_amount size=5></td>
+<td><input type=text name=mkpay_amount size=5 value=$amount></td>
 <th align=right>Payment Date</th>
 <td><input type=text name=mkpay_date size=10 maxlength=10 value="t">
 <th>Payment Type</th>
@@ -74,7 +75,7 @@ h3 {
 <th align=right>Valid From</th>
 <td><input type=text name=valid_from size=10 maxlength=10 value="t">
 <th align=right>Valid To</th>
-<td><input type=text name=valid_to size=10 maxlength=10 value="12/31">
+<td><input type=text name=valid_to size=10 maxlength=10 value="12/31/$year">
 </tr>
 <tr><td colspan=6><hr></td></tr>
 </table>
@@ -83,7 +84,7 @@ h3 {
 
 <tr>
 <th align=left width=200 height=40><input type=radio name=category value='General' $category_general onclick="ff(1);"><span id=1 class=cat> General</span></th>
-<th align=right>Expires on</th><td><input type=text name=date_general value='12/31' size=10 maxlength=10></td>
+<th align=right>Expires on</th><td><input type=text name=date_general value='12/31/$year' size=10 maxlength=10></td>
 <th align=right>Voter</th>
 <td><input type=checkbox name=voter value=yes $voter_checked></td>
 </tr>
@@ -94,7 +95,7 @@ h3 {
 
 <tr>
 <th align=left height=40><input type=radio name=category value='Sponsor' $category_sponsor onclick="ff(3);"><span id=3 class=cat> Sponsor</span></th>
-<th align=right>Payment Due on</td><td><input type=text name=date_sponsor value='12/31' size=10 maxlength=10></td><th align=right>Total Paid</td><td>$member.total_paid</th>
+<th align=right>Payment Due on</td><td><input type=text name=date_sponsor value='12/31/$year' size=10 maxlength=10></td><th align=right>Total Paid</td><td>$member.total_paid</th>
 </tr>
 
 <tr>

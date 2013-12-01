@@ -99,14 +99,56 @@ sub list : Local {
             # it is currently 12/31/11 not done this way.
         );
     }
-    $c->stash->{members} = \@members;
-    $c->stash->{template} = "member/list.tt2";
+    my @files = <root/static/omp/*>;
+    stash($c,
+        online   => scalar(@files),
+        members  => \@members,
+        template => "member/list.tt2",
+    );
+}
+
+# show the current online files
+# get the Member's name, category of payment, etc
+sub list_online : Local {
+    my ($self, $c) = @_;
+
+    my @files = <root/static/omp/*>;
+    my @payments;
+    for my $f (@files) {
+        my $g = $f;
+        $g =~ s{root/static/omp/}{}xms;
+        my ($id, $amount, $trans_id) = split '_', $g;
+        my $m = model($c, 'Member')->find($id);
+        my $p = $m->person;
+        my $name = $p->first . ' ' . $p->last;
+        push @payments, {
+            name     => $name,
+            file     => $g,
+            amount   => $amount,
+            category => $m->category,
+        };
+    }
+    stash($c,
+        payments => \@payments,
+        template => "member/online.tt2",
+    );
+}
+
+sub get_online : Local {
+    my ($self, $c, $file) = @_;
+
+    my ($id, $amount, $trans_id) = split '_', $file;
+    __PACKAGE__->update($c, $id, $amount, $file);
+    return;
 }
 
 sub update : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $id, $amount, $file) = @_;
 
-    my $m = $c->stash->{member} = model($c, 'Member')->find($id);
+    $amount ||= '';
+    $file ||= '';
+
+    my $m = model($c, 'Member')->find($id);
     for my $w (qw/
         general
         contributing_sponsor
@@ -121,14 +163,17 @@ sub update : Local {
             :                                         ""
             ;
     }
-    $c->stash->{free_prog_checked} = ($m->free_prog_taken)? "checked"
-                                     :                      ""
-                                     ;
-
-    $c->stash->{person}      = $m->person();
-    $c->stash->{voter_checked} = $m->voter()? "checked": "";
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "member/create_edit.tt2";
+    stash($c,
+        amount            => $amount,
+        file              => $file,
+        member            => $m,
+        year              => (tt_today()->year + 1) % 100,
+        free_prog_checked => (($m->free_prog_taken)? "checked": ''),
+        person            => $m->person(),
+        voter_checked     => $m->voter()? "checked": '',
+        form_action       => "update_do/$id",
+        template          => "member/create_edit.tt2",
+    );
 }
 
 my %P;
@@ -226,7 +271,11 @@ sub update_do : Local {
     my $amount     = $P{mkpay_amount};
     my $valid_from = $P{valid_from};
     my $valid_to   = $P{valid_to};
+    if ($P{file}) {
+        unlink "root/static/omp/$P{file}";
+    }
 
+    delete $P{file};
     delete $P{mkpay_date};
     delete $P{mkpay_type};
     delete $P{mkpay_amount};
@@ -473,10 +522,13 @@ sub delete : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->stash->{person} = model($c, 'Person')->find($person_id);
-    $c->stash->{form_action} = "create_do/$person_id";
-    $c->stash->{voter_checked} = '';
-    $c->stash->{template}    = "member/create_edit.tt2";
+    stash($c,
+        year          => (tt_today()->year + 1) % 100,
+        person        => model($c, 'Person')->find($person_id),
+        form_action   => "create_do/$person_id",
+        voter_checked => '',
+        template      => "member/create_edit.tt2",
+    );
 }
 
 sub create_do : Local {

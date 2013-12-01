@@ -13,8 +13,8 @@
 <a href="/member/non_email">Without Email</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/bulk">Bulk Mailings</a>
-<!-- &nbsp;&nbsp;&nbsp;
-<a href="/member/one_time">One Time</a> -->
+&nbsp;&nbsp;&nbsp;
+<a href="/member/list_online">Online ($online)</a>
 </td><td>
 <form action=/member/list>
 Search <input type=text name=pat id=pat size=12>

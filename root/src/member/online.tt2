@@ -1,0 +1,15 @@
+<h2>Online Membership Payments</h2>
+<table cellpadding=5>
+<tr>
+<th align=left>Name</th>
+<th>Amount</th>
+<th>Category</th>
+</tr>
+[% FOREACH p IN payments %]
+    <tr>
+        <td><a href=/member/get_online/$p.file>$p.name</a></td>
+        <td>$p.amount</td>
+        <td>$p.category</td>
+    </tr>
+[% END %]
+</table>

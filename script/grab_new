@@ -48,6 +48,8 @@ them into actual payments.
 
 9) Get MMI standalone course registations
 
+10) Get online membership payments
+
 =cut
 use lib 'lib';
 use DBI;
@@ -108,6 +110,7 @@ my $sth = $dbh->prepare("
        or the_key like 'kayakalpa_email'
        or the_key like 'mmi_email'
        or the_key like 'req_mmi_dir_paid'
+       or the_key like 'mem_email'
 ");
 $sth->execute();
 my %string;
@@ -231,10 +234,14 @@ my $mlist = "root/static/mlist";
 my $rides = "root/static/rides";
 my $temple = "root/static/temple";
 my $req_mmi_dir = "root/static/req_mmi";
+my $omp_dir = "root/static/omp";
+
 mkdir $online unless -d $online;
 mkdir $mlist unless -d $mlist;
 mkdir $rides unless -d $rides;
 mkdir $temple unless -d $temple;
+mkdir $req_mmi_dir unless -d $req_mmi_dir;
+mkdir $omp_dir unless -d $omp_dir;
 
 #
 # get transaction files from www.mountmadonna.org/cgi-bin/transactions
@@ -360,6 +367,34 @@ if ($nrides) {
         subject => "Online Ride Request",
         html    => "There is an online ride request waiting"
                  . " for you in Reg."
+    );
+}
+
+#
+# membership payments
+#
+#$ftp->cwd($string{ftp_omp_dir});
+$ftp->cwd('/www/cgi-bin/omp_dir");      # string
+my $nomp = 0;
+OMP_FILE:
+for my $f ($ftp->ls()) {
+    if ($f eq '.' || $f eq '..') {
+        next OMP_FILE;
+    }
+    if (! $ftp->get($f, "$omp_dir/$f")) {
+        my_warn("no get of membership payment file: $f");
+        next OMP_FILE;
+    }
+    ++$nomp;
+    $Msg .= "got omp file $f\n";
+    $ftp->delete($f);
+}
+if ($nomp) {
+    email_letter(
+        to      => "HFS Membership <$string{mem_email}>",
+        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',  # what else???
+        subject => "Membership Payment",
+        html    => "There is an online membership payment waiting for you in Reg."
     );
 }
 #
