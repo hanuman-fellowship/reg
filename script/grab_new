@@ -373,8 +373,7 @@ if ($nrides) {
 #
 # membership payments
 #
-#$ftp->cwd($string{ftp_omp_dir});
-$ftp->cwd('/www/cgi-bin/omp_dir");      # string
+$ftp->cwd($string{ftp_omp_dir});
 my $nomp = 0;
 OMP_FILE:
 for my $f ($ftp->ls()) {

@@ -63,5 +63,6 @@ Dec 1 8:40-
     grab new mods for membership online payments
         todo:
             allow changing address/phone/category of membership
-            have a String for ftp_omp_dir
             letter from whom to notify the mem secretary of new payments?
+            new member acknowlege letter
+            expired 12/31 link???

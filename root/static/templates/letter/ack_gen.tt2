@@ -3,8 +3,10 @@ Dear $sanskrit,
 <p>
 Thank you for your generous commitment to the Hanuman Fellowship
 as a General Member and for being part of our supportive community.
+<p>
 We received your payment of dues in the amount of \$$amount
-on ${pay_date.format("%D")}.
+on ${pay_date.format("%D")}.  Your next membership payment of
+\$$next will be due on ${due_date.format("%D")}.
 <p>
 [% IF new_member %]
 In order to become a voting member, your name will be voted on at the

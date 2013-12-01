@@ -259,6 +259,7 @@ sub get_now {
 # don't even try to move Sponsor to Life
 # when they exceed $5000 or $8000.
 # it will be a rare ocurrence.
+# and the amount will keep changing - now (12/1/13) it is $12,000
 #
 sub update_do : Local {
     my ($self, $c, $id) = @_;
@@ -272,7 +273,7 @@ sub update_do : Local {
     my $valid_from = $P{valid_from};
     my $valid_to   = $P{valid_to};
     if ($P{file}) {
-        unlink "root/static/omp/$P{file}";
+        rename "root/static/omp/$P{file}", "root/static/omp_done/$P{file}";
     }
 
     delete $P{file};
@@ -1191,6 +1192,11 @@ sub just_expired : Local {
                 date_sponsor => $last_dec31,
             ],
         ],
+    },
+    {
+        join     => ['person'],
+        prefetch => ['person'],
+        order_by => ['person.last', 'person.first' ],
     });
     stash($c,
         members  => \@members,

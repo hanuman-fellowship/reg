@@ -11,6 +11,13 @@ Your next membership payment of \$$next will be due on
 ${due_date.format("%D")}.
 <p>
 We have activated your benefits for the $year membership year.
+[% IF new_member %]
+<p>
+In order to become a voting member, your name will be voted on at the
+annual general meeting, held in May/June.  You are welcome to attend
+this meeting and, after approval, you will be eligible to vote in
+the election for Board of Directors, which is also held at that time.
+[% END %]
 <p>
 In order to receive your 20% discount on meals at MMC, kindly fill
 in the green meal card, located in the back of the

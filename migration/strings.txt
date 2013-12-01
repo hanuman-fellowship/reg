@@ -245,3 +245,4 @@ nyears_forgiven 5
 personal_template personal
 online_notify jon@suecenter.org
 dp_resize_block_char /
+ftp_omp_dir /www/cgi-bin/omp_dir
