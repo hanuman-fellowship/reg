@@ -13,15 +13,10 @@ and pledge of support to the projects, inspired by the guidance of Babaji,
 which foster that ideal. 
 <p>
 Your payment of dues in the amount of \$$string.mem_spons_year
-by December 31, $exp_year
-will assure that your benefits do not expire and that amount
-will be applied toward a Life Membership goal of \$${string.mem_life_total}.
-Sponsor payments may also be paid at a semiannually rate of \$$string.mem_spons_semi_year
+by December 31, $exp_year will assure that your benefits do not expire.
+Your payment will be applied toward a Life Membership goal of \$${string.mem_life_total}.
+Sponsor payments may also be paid at a semiannual rate of \$$string.mem_spons_semi_year
 by December 31st and June 30th by special arrangement with the
 Membership Secretary.
-<p>
-The HFS Membership application form and information about the levels
-of membership can be found <a href=${string.mem_site}>here</a>.
-Please return the application form with your payment to renew your membership.
 <p>
 [% INCLUDE info.tt2 %]

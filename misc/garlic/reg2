@@ -243,11 +243,6 @@ if ($form{green_amount}) {
 #
 use SimLib;
 
-# old account
-#my $loginid = 'x5aebjakm';
-#my $txnkey = '78QyCHfp69MP43bY';
-
-# new account
 my $loginid = '7bq2Ch2Hf3';
 my $txnkey = '2y4cKZp797y34Cks';
 

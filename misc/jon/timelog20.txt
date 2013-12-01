@@ -49,3 +49,9 @@ Nov 12 12:00-1:00
     Barnaby about meeting spaces that are not the full rental date range.
 Nov 14 11:05-11:30
     tidying up a tinyMCE mess for Barnaby
+Nov 20 11:00-11:30
+    restoring some mmi payments for Brajesh
+Nov 29 11:50-2:00
+    online membership payments - good progress, finally.
+Nov 30 11:00-5:00
+    continuing with online membership payments

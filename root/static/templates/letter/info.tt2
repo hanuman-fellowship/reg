@@ -1,9 +1,15 @@
+[% IF has_email %]
+You can securely and simply pay your membership dues online
+by <a href=http://www.mountmadonna.org/cgi-bin/omp?code=$secure_code>clicking here</a>.
+<p>
+[% END %]
+If you wish to pay with a personal check,
+the HFS Membership application form and information about the levels of membership can be found
+<a href=http://www.hanumanfellowship.org/HFS_Membership_Application.pdf >here</a>.
+Please print and mail the application form with your payment to renew your membership.
+<p>
 Please note:
 <ul>
-<li>To initiate the use of your Credit Card please call the
-HFS Membership Secretary at ${string.mem_phone}.
-<li>If paying by check, make it payable to the Hanuman Fellowship
-and note that the payment is for Membership. 
 <li>We are attempting to communicate primarily by email,
 so please make sure that we have your current email address
 and other contact information. 

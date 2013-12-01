@@ -13,10 +13,17 @@ use Mail::Sender;
 use lib 'mylib/lib/perl5';
 use Template;
 
+sub touch {
+    my ($fname) = @_;
+    open my $out, '>', $fname;
+    close $out;
+}
+
 # form parameters to a hash
 # so it is interpolatable.
 #
 my %P = Vars();
+my $id = $P{x_trans_id};
 
 # ensure the first and last names look okay.
 $P{x_fname} = normalize($P{x_fname});
@@ -38,7 +45,7 @@ EOH
 }
 
 if (exists $P{x_req_mmi_id}) {
-    rename "req_mmi_dir/$P{x_req_mmi_code}", "req_mmi_dir/paid/$P{x_trans_id}";
+    rename "req_mmi_dir/$P{x_req_mmi_code}", "req_mmi_dir/paid/$id";
     my $message;
     Template->new(INTERPOLATE => 1)->process(
         'req_mmi_message.tt2',
@@ -48,12 +55,32 @@ if (exists $P{x_req_mmi_id}) {
     print $message;
     exit;
 }
+if (exists $P{x_member_id}) {
+    my $amt = $P{x_amount};
+    $amt =~ s{[.].*}{}xms;
+    touch("omp_dir/$P{x_member_id}_$amt\_$id");
+    my ($min, $hr, $d, $m, $y) = (localtime)[1..5];
+    ++$m;
+    $y += 1900;
+    my $dir = sprintf "omp_archive/%d-%02d", $y, $m;
+    mkdir $dir if ! -d $dir;
+    touch("$dir/$P{x_member_id}_$amt\_$id");
+    open my $out, '>>', "omp_log.txt";
+    printf {$out} "%d-%02d-%02d %02d:%02d $id"
+                 ." $P{x_fname} $P{x_lname} $P{x_amount} $P{x_category}\n",
+                  $y, $m, $d, $hr, $min;
+    close $out;
+    Template->new(INTERPOLATE => 1)->process(
+        'omp_thanks.tt2',
+        \%P,
+    );
+    exit;
+}
 
 if (! exists $P{x_pid}) {
     exit;       # must be a refund - silently ignore it
 }
 
-my $id = $P{x_trans_id};
 open my $out, ">", "temp$id"
 	or die "cannot create temp$id: $!\n";
 my ($min, $hour, $d, $m, $y) = (localtime)[ 1..5 ];

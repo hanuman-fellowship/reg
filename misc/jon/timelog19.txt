@@ -108,12 +108,12 @@ Jul 4 4:00-6:10, 7:15-8:30
 
     MEMBERSHIP PROJECT
     ==================
-    entering a membership payment (in Member area) should
-        also automatically enter a payment for the person
-        to the Membership extra account (for accounting purposes)
-    must be sent by DEADLINE 4/19
-    Swapna is leaving for India 4/9 
-    Lori will take over during that time.
+    #entering a membership payment (in Member area) should
+        #also automatically enter a payment for the person
+        #to the Membership extra account (for accounting purposes)
+    ##must be sent by DEADLINE 4/19
+    ##Swapna is leaving for India 4/9 
+    ##Lori will take over during that time.
     members can pay online and the payments come in the usual way
         and are listed like "Online (5)" on the initial membership
         page.   Click on the name and you go to the payment page

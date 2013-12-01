@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>HFS Membership Online Payment</title>
+<link href="/styles/regform.css" rel="stylesheet" type="text/css">
+
+<style>
+/* override what's in regform.css */
+th {
+    text-align: right;
+}
+</style>
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="main">
+        <div class="top"><!--Leave this empty--></div>
+        
+        <div class="middle">
+            <img src=http://www.mountmadonna.org/Gif/hfs_banner.png width=838>        
+            <div class="steps"><h1>Payment for a $category Membership in the Hanuman Fellowship</h1>
+			
+                    <div class="submit">
+<table cellpadding=5 border=0>
+<tr><th>Name</th><td>$first $last</td></tr>
+<tr><th valign=top>Address</th><td>$addr<br>$city, $state $zip<br>$country</td></tr>
+<tr><th>Phone</th><td>$phone</td></tr>
+<tr><th>Email</th><td>$email</td></tr>
+<tr><th>Previous Payment</th><td>\$$last_amount on $date_payment</td></tr>
+[% IF category == 'Sponsor' %]
+<tr><th>Total to Date</th><td>\$$total_paid</td></tr>
+[% END %]
+<tr><th>Today's Payment</th><td>\$$amount</td></tr>
+</table>
+                    
+<FORM NAME="authorize"
+  action="https://secure.authorize.net/gateway/transact.dll"
+  method="POST"
+>
+
+<!-- Begin Authorize.net fields -->
+$fingerprint
+
+<INPUT type=hidden VALUE="TRUE"             name="x_relay_response">
+<INPUT type=hidden VALUE="http://www.mountmadonna.org/cgi-bin/relay"
+                                            name="x_relay_url">
+
+<INPUT type=hidden VALUE="$description"     name="x_description">
+<INPUT type=hidden VALUE="$loginid"         name="x_login">
+<INPUT type=hidden VALUE="$amount"          name="x_amount">
+<INPUT type=hidden VALUE="$member_id"       name="x_member_id">
+<INPUT type=hidden VALUE="$category"        name="x_category">
+<INPUT type=hidden VALUE="PAYMENT_FORM"     name="x_show_form" >
+<INPUT type=hidden VALUE="$test"            name="x_test_request" >
+
+<INPUT type=hidden VALUE="$first"           name="x_fname">
+<INPUT type=hidden VALUE="$first"           name="x_first_name">
+<INPUT type=hidden VALUE="$last"            name="x_lname">
+<INPUT type=hidden VALUE="$last"            name="x_last_name">
+<INPUT type=hidden VALUE="$addr"            name="x_address">
+<INPUT type=hidden VALUE="$city"            name="x_city">
+<INPUT type=hidden VALUE="$state"           name="x_state">
+<INPUT type=hidden VALUE="$zip"             name="x_zip">
+<INPUT type=hidden VALUE="$country"         name="x_country">
+
+<INPUT type=hidden VALUE="$first $last"     name="x_invoice_num">
+<INPUT type=hidden VALUE="$real_ip"         name="x_real_ip">
+
+<INPUT type=hidden VALUE="$phone"           name="x_phone">
+<INPUT type=hidden VALUE="$email"           name="x_email">
+
+<INPUT type=hidden VALUE="FALSE"            name="x_email_customer">
+
+<INPUT type=hidden 
+VALUE="<style type='text/css' >@import url(http://www.mountmadonna.org/styles/regform_authnet.css); </style><div class='wrapper'><div class='header'><img src=http://mountmadonna.org/Gif/hfs_banner.png width=840 /></div><div class='top'><!--Leave this empty--></div><div class='middle'><div class='steps'>"
+name="x_header_html_payment_form">
+                         
+<INPUT type=hidden 
+VALUE="</div></div><div class='bot'></div></div>"
+name="x_footer_html_payment_form">
+
+                            <button TYPE="submit" name="Accept Order" value="Pay Securely with your Credit Card" class="btn_to_payment">
+                                <em>Proceed to Payment</em>
+                            </button>
+                            <IMG SRC="http://www.mountmadonna.org/Gif/secure90x72.gif" align=middle style="margin-left:20px;">
+                    </FORM>
+                </div>                    
+            </div>
+        </div>
+    </div>        
+</div>
+
+<!-- Google ANALYTICS Code for site tracking -->
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-303243-2");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+
+
+</body>
+</html>

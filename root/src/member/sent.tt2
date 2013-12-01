@@ -1,7 +1,7 @@
 <div style="margin-top: 4mm; margin-bottom: 4mm;">
-[% msg %]
+$msg
 </div>
-There [% num_no_email %] without an email address.<br>
+There $num_no_email without an email address.<br>
 [% IF scalar(no_email) %]
 Click on each of the names below to print their letter.<br>
 Close the window after printing.
@@ -13,8 +13,8 @@ li {
 </style>
 <ol>
 [% FOR m IN no_email %]
-[% p = m.person %]
-<li><a target=_blank href="/member/lapsed_letter/[% m.id %]/[% soon %]">[% p.last %], [% p.first %]</a>[% IF p.sanskrit %] ([% p.sanskrit %])[% END %]
+    [% p = m.person %]
+    <li><a target=_blank href="/member/lapsed_letter/$m.id/$soon">$p.last, $p.first</a>[% IF p.sanskrit %] ($p.sanskrit)[% END %]
 [% END %]
 <p class=p2>
 </ol>

@@ -1,0 +1,21 @@
+<html>
+<head>
+<style>
+body {
+    margin-left: 8mm;
+    margin-top: 8mm;
+}
+p {
+    font-size: 14pt;
+}
+</style>
+</head>
+<body>
+<img src=http://www.mountmadonna.org/Gif/hfs_banner.png>
+<p>
+Thank you, ${x_first_name}.
+<p>
+We have received your payment of \$$x_amount<br>
+for a $x_category membership in the Hanuman Fellowship.
+</body>
+</html>

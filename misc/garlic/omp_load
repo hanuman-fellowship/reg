@@ -1,0 +1,27 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard/;
+print header();
+use DBI;
+# load the data into sqlite3
+system("/usr/bin/sqlite3 omp_database <omp.sql");
+my $dbh = DBI->connect(
+    'dbi:SQLite:dbname=omp_database', '', '',
+    { RaiseError => 1, AutoCommit => 1 }
+) or die "cannot connect to database\n";
+my $sth = $dbh->prepare("select count(*) from omp");
+$sth->execute();
+my ($count) = $sth->fetchrow_array();
+
+open my $log, '>>', 'omp_log.txt';
+my ($min, $hour, $day, $mon, $year) = (localtime)[1 .. 5];
+++$mon;
+$year += 1900;
+printf {$log} "%d/%d %02d:%02d loaded $count members data\n",
+              $mon, $day, $hour, $min;
+close $log;
+rename 'omp.sql', 
+       sprintf "omp_loads/load-%d-%d-%d-%02d:%02d.sql",
+               $year, $mon, $day, $hour, $min;
+print "done\n";

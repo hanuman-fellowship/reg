@@ -27,6 +27,7 @@ use Global qw/
     $guru_purnima
 /;
 use Template;
+use LWP::Simple 'get';
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -690,6 +691,7 @@ sub email_lapsed : Local {
     my $nsent = 0;
     my $mem_admin = $c->user->name();
     Global->init($c);
+    _omp_init();
     MEMBER:
     for my $m (_checked_members($c)) {
         my $per = $m->person();
@@ -698,6 +700,7 @@ sub email_lapsed : Local {
             push @no_email, $m;
             next MEMBER;
         }
+        _omp_add($c, $m);
         my $type = $m->category;
 
         my $html = "";
@@ -708,7 +711,9 @@ sub email_lapsed : Local {
         });
         my $stash = {
             sanskrit    => ($per->sanskrit || $per->first),
+            secure_code => $per->secure_code,
             string      => \%string,
+            has_email   => 1,
         };
         $tt->process(
             # template
@@ -724,9 +729,13 @@ sub email_lapsed : Local {
         );
         ++$nsent;
     }
+    my $msg = _omp_send_and_load();
+    if ($msg) {
+        $msg = "<span style='color: red'>$msg</span><p class=p2>";
+    }
 
     stash($c,
-        msg    => "$nsent email reminder letter"
+        msg    => "$msg$nsent email reminder letter"
                   . (($nsent == 1)? " was sent."
                      :              "s were sent."),
         status       => "expired",
@@ -735,7 +744,7 @@ sub email_lapsed : Local {
                                           . scalar(@no_email)
                                           . " members",
         no_email => \@no_email,
-        soon     => "0",
+        soon     => 0,
         template => "member/sent.tt2",
     );
 }
@@ -748,6 +757,7 @@ sub email_lapse_soon : Local {
     my $nsent = 0;
     my $mem_admin = $c->user->name();
     Global->init($c);
+    _omp_init();
     MEMBER:
     for my $m (_checked_members($c)) {
         my $per = $m->person;
@@ -757,6 +767,7 @@ sub email_lapse_soon : Local {
             push @no_email, $m;
             next MEMBER;
         }
+        _omp_add($c, $m);
         my $type = $m->category;
         my $html = "";
         my $tt = Template->new({
@@ -768,6 +779,8 @@ sub email_lapse_soon : Local {
             sanskrit    => ($per->sanskrit || $per->first),
             exp_year    => tt_today()->year,
             string      => \%string,
+            secure_code => $per->secure_code,
+            has_email   => 1,
         };
         $tt->process(
             "lapse_"
@@ -784,18 +797,20 @@ sub email_lapse_soon : Local {
         );
         ++$nsent;
     }
+    my $msg = _omp_send_and_load();
+    if ($msg) {
+        $msg = "<span style='color: red'>$msg</span><p class=p2>";
+    }
 
     stash($c,
         status => "will expire",
-        msg    => "$nsent email reminder letter"
+        msg    => "$msg$nsent email reminder letter"
                           . (($nsent == 1)? " was sent."
                              :              "s were sent."),
-        num_no_email => (@no_email == 1)? "was 1 member":
-                                          "were "
-                                          . scalar(@no_email)
-                                          . " members",
+        num_no_email => (@no_email == 1)? "was 1 member"
+                       :                  "were " . scalar(@no_email) . " members",
         no_email => \@no_email,
-        soon     => "1",
+        soon     => 1,
         template => "member/sent.tt2",
     );
 }
@@ -891,23 +906,24 @@ sub bulk_do : Local {
         # similar to Report running - but no collapsing.
         #
         my %partner = map { $_->id => $_ } @people;
+        PERSON:
         for my $p (@people) {
-            if (my $sps = $partner{$p->id_sps}) {
-                if ($sps->last eq $p->last) {
-                    $sps->{name} = $sps->first
+            next PERSON if ! $p->id_sps;
+            my $sps = $partner{$p->id_sps};
+            if ($sps->last eq $p->last) {
+                $sps->{name} = $sps->first
+                         . " & "
+                         . $p->name()
+                         ;
+            }
+            else {
+                $sps->{name} = $sps->name()
                              . " & "
                              . $p->name()
                              ;
-                }
-                else {
-                    $sps->{name} = $sps->name()
-                                 . " & "
-                                 . $p->name()
-                                 ;
-                }
-                delete $partner{$p->id};
-                $p = 0;     # clobber this person
             }
+            delete $partner{$p->id};
+            $p = 0;     # clobber this person
         }
         for my $p (sort {
                        $a->zip_post cmp $b->zip_post
@@ -1014,6 +1030,7 @@ EOA
         exp_year    => tt_today()->year(),
         string      => \%string,
         message     => $message,
+        has_email   => 0,
     };
     my $template = "lapse";
     if ($soon) {
@@ -1268,6 +1285,107 @@ sub _xaccount_mem_pay {
         the_date    => today()->as_d8(),
         time        => get_time()->t24(),
     });
+}
+
+#
+# omp = Online Membership Payment
+#
+my $omp;
+my $omp_fname = "omp.sql";
+sub _omp_init {
+    $omp = undef;   # re-initialize in case we've done it before...
+    open $omp, '>', "/tmp/$omp_fname" or die "cannot open $omp_fname: $!\n";
+    print {$omp} <<'EOS';
+drop table if exists omp;
+create table omp (
+    secure_code text,
+    first text,
+    last text,
+    addr1 text,
+    addr2 text,
+    city text,
+    st_prov text,
+    zip_post text,
+    country text,
+    email text,
+    phone text,
+    person_id integer,
+    member_id integer,
+    category text,
+    amount_due integer,
+    total_paid integer,
+    date_payment text,
+    last_amount integer,
+    general text
+);
+EOS
+}
+sub _omp_add {
+    my ($c, $mem) = @_;
+    my $per = $mem->person;
+    my @payments = model($c, 'SponsHist')->search(
+                       {
+                           member_id => $mem->id,
+                       },
+                       { order_by => "date_payment desc" },
+                   );
+    my ($date_payment, $last_amount, $general) = ('', 0, '');
+    if (@payments) {
+        $date_payment = $payments[0]->date_payment;
+        $last_amount = $payments[0]->amount;
+        $general = $payments[0]->general;
+            # the above is not really needed, I don't think
+    }
+    my $amount_due = $mem->category eq 'General'? $string{mem_gen_amt}
+                    :                             $string{mem_spons_year}
+                    ;
+    print {$omp} "insert into omp values ("
+                 . join(', ',
+                        _quote($per->secure_code),
+                        _quote($per->first),
+                        _quote($per->last),
+                        _quote($per->addr1),
+                        _quote($per->addr2),
+                        _quote($per->city),
+                        _quote($per->st_prov),
+                        _quote($per->zip_post),
+                        _quote($per->country),
+                        _quote($per->email),
+                        _quote($per->tel_home || $per->tel_cell || ''),
+                        $per->id,
+                        $mem->id,
+                        _quote($mem->category),
+                        $amount_due,
+                        $mem->total_paid,
+                        $date_payment,
+                        $last_amount,
+                        _quote($general),
+                   )
+                 . ");\n";
+                 ;
+}
+sub _omp_send_and_load {
+    close $omp;
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive})
+        or return "no Net::FTP->new";
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or return "no login";
+    $ftp->cwd('www/cgi-bin')
+        or return "no cd";
+    $ftp->ascii()
+        or return "no ascii";
+    $ftp->put("/tmp/$omp_fname", $omp_fname)
+        or return "no put";
+    $ftp->quit();
+    if (get("http://www.mountmadonna.org/cgi-bin/omp_load") ne "done\n"
+    ) {
+        return "no load";
+    }
+    return "";
+}
+sub _quote {
+    return '"' . $_[0] . '"';
 }
 
 1;

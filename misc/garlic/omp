@@ -1,0 +1,66 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI qw/:standard/;
+use CGI::Carp qw/fatalsToBrowser/;
+print header();
+use DBI;
+use lib 'mylib/lib/perl5';
+use Template;
+use SimLib;
+
+my $dbh = DBI->connect(
+    'dbi:SQLite:dbname=omp_database', '', '',
+    { RaiseError => 1, AutoCommit => 1 }
+) or die "cannot connect to database\n";
+my $code = param('code');
+my $test = param('test');
+my $sth = $dbh->prepare(<<'EOS');
+    select * from omp
+     where secure_code = ?
+EOS
+$sth->execute($code);
+my $href = $sth->fetchrow_hashref();
+# Call subroutine from authorize.net that sets $fingerprint_html 
+#
+my $loginid = '7bq2Ch2Hf3';
+my $txnkey = '2y4cKZp797y34Cks';
+
+my $x_currency_code = "USD";
+my $fingerprint_html =
+    SimLib::InsertFP($loginid, $txnkey, $href->{amount_due}, $x_currency_code);
+
+my $addr = $href->{addr1};
+if ($href->{addr2}) {
+    $addr .= "<br>$href->{addr2}";
+}
+my $date_payment = $href->{date_payment};
+$date_payment =~ s{\A (\d\d\d\d)(\d\d)(\d\d) \z}{$1-$2-$3}xms;
+
+my %stash = (
+    amount       => $href->{amount_due},
+    last_amount  => $href->{last_amount},
+    date_payment => $date_payment,
+    total_paid   => $href->{total_paid},
+    first    => $href->{first},
+    last     => $href->{last},
+    addr     => $addr,
+    city     => $href->{city},
+    state    => $href->{st_prov},
+    zip      => $href->{zip_post},
+    country  => $href->{country},
+    phone    => $href->{phone},
+    email    => $href->{email},
+    member_id   => $href->{member_id},
+    category    => $href->{category},
+    real_ip     => $ENV{REMOTE_ADDR},
+    fingerprint => $fingerprint_html,
+    loginid     => $loginid,
+    test     => $test,
+);
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "omp.tt2",
+    \%stash,
+);
