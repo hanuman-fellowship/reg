@@ -167,7 +167,7 @@ sub update : Local {
         amount            => $amount,
         file              => $file,
         member            => $m,
-        year              => (tt_today()->year + 1) % 100,
+        year              => (tt_today($c)->year + 1) % 100,
         free_prog_checked => (($m->free_prog_taken)? "checked": ''),
         person            => $m->person(),
         voter_checked     => $m->voter()? "checked": '',
@@ -524,7 +524,7 @@ sub create : Local {
     my ($self, $c, $person_id) = @_;
 
     stash($c,
-        year          => (tt_today()->year + 1) % 100,
+        year          => (tt_today($c)->year + 1) % 100,
         person        => model($c, 'Person')->find($person_id),
         form_action   => "create_do/$person_id",
         voter_checked => '',
@@ -830,7 +830,7 @@ sub email_lapse_soon : Local {
         });
         my $stash = {
             sanskrit    => ($per->sanskrit || $per->first),
-            exp_year    => tt_today()->year,
+            exp_year    => tt_today($c)->year,
             string      => \%string,
             secure_code => $per->secure_code,
             has_email   => 1,
@@ -1080,7 +1080,7 @@ EOA
     Global->init($c);
     my $stash = {
         sanskrit    => ($per->sanskrit || $per->first),
-        exp_year    => tt_today()->year(),
+        exp_year    => tt_today($c)->year(),
         string      => \%string,
         message     => $message,
         has_email   => 0,
@@ -1234,7 +1234,7 @@ sub email_just_expired : Local {
         });
         my $stash = {
             sanskrit    => ($per->sanskrit || $per->first),
-            year    => tt_today()->year-1,
+            year    => tt_today($c)->year-1,
             string      => \%string,
         };
         $tt->process(
@@ -1308,7 +1308,7 @@ EOA
     Global->init($c);
     my $stash = {
         sanskrit => ($per->sanskrit || $per->first),
-        year     => tt_today()->year-1,
+        year     => tt_today($c)->year-1,
         string   => \%string,
         message  => $message,
     };

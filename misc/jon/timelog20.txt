@@ -59,10 +59,14 @@ Nov 30 11:00-5:00, 10:40-
         should the tally of Members at the top also count and list Inactive?
         * in the search to list all...
         is 'Expired 12/31' link obsolete?
-Dec 1 8:40-
+Dec 1 8:40-11:30
     grab new mods for membership online payments
-        todo:
-            allow changing address/phone/category of membership
-            letter from whom to notify the mem secretary of new payments?
-            new member acknowlege letter
-            expired 12/31 link???
+    todo:
+        allow changing address/phone/category of membership
+        letter from whom to notify the mem secretary of new payments?
+            reservations@ mmc is probably okay
+        new member acknowlege letter
+        1/1/* 12:15 am auto updating of 4/12 nights for sponsor/life members
+            and free program for life, right - who to check with?
+        verify format of tt_today string - sukhdev fucked it up
+        track failed secure codes.

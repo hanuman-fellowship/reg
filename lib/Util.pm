@@ -906,7 +906,7 @@ sub tt_today {
     my ($c) = @_;    
 
     my $s = $string{tt_today};
-    if (! $s) {
+    if (! $s || ! $c) {
         return today();
     }
     my $login = $c->user->username();
