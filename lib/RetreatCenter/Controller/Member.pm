@@ -74,8 +74,9 @@ sub membership_list : Local {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $msg) = @_;
 
+    $msg ||= "";
     my $pat = trim($c->request->params->{pat});
     my @members = ();
     if ($pat) {
@@ -101,6 +102,7 @@ sub list : Local {
     }
     my @files = <root/static/omp/*>;
     stash($c,
+        msg      => $msg,
         online   => scalar(@files),
         members  => \@members,
         template => "member/list.tt2",
@@ -736,6 +738,17 @@ sub lapse_soon : Local {
     $c->stash->{template} = "member/lapse_soon.tt2";
 }
 
+sub push_to_web : Local {
+    my ($self, $c) = @_;
+
+    _omp_init();
+    for my $m (model($c, 'Member')->all()) {
+        _omp_add($c, $m);
+    }
+    my $msg = _omp_send_and_load();
+    $c->response->redirect($c->uri_for("/member/list/$msg"));
+}
+
 sub email_lapsed : Local {
     my ($self, $c) = @_;
 
@@ -744,7 +757,6 @@ sub email_lapsed : Local {
     my $nsent = 0;
     my $mem_admin = $c->user->name();
     Global->init($c);
-    _omp_init();
     MEMBER:
     for my $m (_checked_members($c)) {
         my $per = $m->person();
@@ -753,7 +765,6 @@ sub email_lapsed : Local {
             push @no_email, $m;
             next MEMBER;
         }
-        _omp_add($c, $m);
         my $type = $m->category;
 
         my $html = "";
@@ -782,13 +793,9 @@ sub email_lapsed : Local {
         );
         ++$nsent;
     }
-    my $msg = _omp_send_and_load();
-    if ($msg) {
-        $msg = "<span style='color: red'>$msg</span><p class=p2>";
-    }
 
     stash($c,
-        msg    => "$msg$nsent email reminder letter"
+        msg    => "$nsent email reminder letter"
                   . (($nsent == 1)? " was sent."
                      :              "s were sent."),
         status       => "expired",
@@ -810,7 +817,6 @@ sub email_lapse_soon : Local {
     my $nsent = 0;
     my $mem_admin = $c->user->name();
     Global->init($c);
-    _omp_init();
     MEMBER:
     for my $m (_checked_members($c)) {
         my $per = $m->person;
@@ -820,7 +826,6 @@ sub email_lapse_soon : Local {
             push @no_email, $m;
             next MEMBER;
         }
-        _omp_add($c, $m);
         my $type = $m->category;
         my $html = "";
         my $tt = Template->new({
@@ -850,14 +855,10 @@ sub email_lapse_soon : Local {
         );
         ++$nsent;
     }
-    my $msg = _omp_send_and_load();
-    if ($msg) {
-        $msg = "<span style='color: red'>$msg</span><p class=p2>";
-    }
 
     stash($c,
         status => "will expire",
-        msg    => "$msg$nsent email reminder letter"
+        msg    => "$nsent email reminder letter"
                           . (($nsent == 1)? " was sent."
                              :              "s were sent."),
         num_no_email => (@no_email == 1)? "was 1 member"
@@ -1440,10 +1441,12 @@ sub _omp_send_and_load {
     ) {
         return "no load";
     }
-    return "";
+    return "successfully pushed";
 }
 sub _quote {
-    return '"' . $_[0] . '"';
+    my ($s) = @_;
+    $s = "" if ! defined $s;
+    return qq{"$s"};
 }
 
 1;

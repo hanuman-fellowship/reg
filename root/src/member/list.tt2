@@ -4,11 +4,16 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/member/membership_list/1">Members</a>
 <p class=p2>
+<a href="/member/push_to_web">Push To Web</a>
+&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="/member/lapsed">Lapsed</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="/member/lapse_soon">Lapse Soon</a>
-&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;
 <a href="/member/just_expired">Expired 12/31</a>
+[% IF msg %]
+&nbsp;&nbsp;&nbsp;&nbsp;$msg
+[% END %]
 <p class=p2>
 <a href="/member/non_email">Without Email</a>
 &nbsp;&nbsp;&nbsp;
