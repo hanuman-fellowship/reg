@@ -23,7 +23,8 @@ create table spons_hist (
 
     user_id integer,    -- to User
     the_date text,
-    time text
+    time text,
+    type text
 );
 drop table if exists night_hist;
 create table night_hist (

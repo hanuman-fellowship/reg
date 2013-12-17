@@ -53,7 +53,7 @@ Nov 20 11:00-11:30
     restoring some mmi payments for Brajesh
 Nov 29 11:50-2:00
     online membership payments - good progress, finally.
-Nov 30 11:00-5:00, 10:40-
+Nov 30 11:00-5:00, 10:40-12:00
     continuing with online membership payments
     questions
         should the tally of Members at the top also count and list Inactive?
@@ -70,3 +70,10 @@ Dec 1 8:40-11:30
             and free program for life, right - who to check with?
         verify format of tt_today string - sukhdev fucked it up
         track failed secure codes.
+Dec 10 10:00-10:30
+    restoring a failed undup
+    tweaking a past local grid
+Dec 12 12:00-12:30
+    more tweaking of the undup and local grid
+Dec 16 8:30-
+    type of membership online payment - and xaccounts

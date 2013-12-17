@@ -165,7 +165,17 @@ sub update : Local {
             :                                         ""
             ;
     }
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t"
+                   .  (($t eq 'O' && $file)? " selected": "")
+                   .  ">"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
     stash($c,
+        type_opts         => $type_opts,
         amount            => $amount,
         file              => $file,
         member            => $m,
@@ -525,11 +535,19 @@ sub delete : Local {
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t>"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
     stash($c,
         year          => (tt_today($c)->year + 1) % 100,
         person        => model($c, 'Person')->find($person_id),
         form_action   => "create_do/$person_id",
         voter_checked => '',
+        type_opts     => $type_opts,
         template      => "member/create_edit.tt2",
     );
 }
@@ -1125,8 +1143,20 @@ sub payment_delete : Local {
 sub payment_update : Local {
     my ($self, $c, $payment_id) = @_;
     my $pmt = model($c, 'SponsHist')->find($payment_id);
-    $c->stash->{payment} = $pmt;
-    $c->stash->{template} = "member/payment_edit.tt2";
+    my $type_opts = "";
+    for my $t (qw/ D C S O /) {
+        $type_opts .= "<option value=$t"
+                   .  (($pmt->type() eq $t)? " selected": "")
+                   .  ">"
+                   .  $string{"payment_$t"}
+                   .  "\n";
+                   ;
+    }
+    stash($c,
+        type_opts => $type_opts,
+        payment   => $pmt,
+        template  => "member/payment_edit.tt2",
+    );
 }
 
 sub payment_update_do : Local {
@@ -1143,6 +1173,7 @@ sub payment_update_do : Local {
         $dates{$f} = $dt;
     }
     my $amount = trim($c->request->params->{amount});
+    my $type = $c->request->params->{type};
     if ($amount !~ m{^\d+$}) {
         push @mess, "Invalid amount: $amount";
     }
@@ -1153,6 +1184,7 @@ sub payment_update_do : Local {
     }
     my $pmt = model($c, 'SponsHist')->find($payment_id);
     $pmt->update({
+        type         => $type,
         date_payment => $dates{date_payment}->as_d8(),
         valid_from   => $dates{valid_from  }->as_d8(),
         valid_to     => $dates{valid_to    }->as_d8(),

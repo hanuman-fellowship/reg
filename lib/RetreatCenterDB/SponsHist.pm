@@ -9,6 +9,9 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
+use Global qw/
+    %string
+/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('spons_hist');
@@ -23,6 +26,7 @@ __PACKAGE__->add_columns(qw/
     user_id
     the_date
     time
+    type
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -49,6 +53,11 @@ sub time_obj {
     my ($self) = @_;
     return get_time($self->time());
 }
+sub type_sh {
+    my ($self) = @_;
+    $string{"payment_" . $self->type()};
+}
+
 
 1;
 __END__
@@ -60,6 +69,7 @@ id - unique id
 member_id - foreign key to member
 the_date - date the event happened
 time - time the event happened
+type - type of payment - Credit (D), Cash (S), Check (C), Online (O)
 user_id - foreign key to user - the one who created the event
 valid_from - what date is the payment valid from?
 valid_to - what date is the payment valid to?

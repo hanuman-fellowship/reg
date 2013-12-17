@@ -1,11 +1,68 @@
-<span class=larger>[% payment.member.person.first %] [% payment.member.person.last %]</span>
+<span class=larger>$payment.member.person.first $payment.member.person.last</span>
 <p>
-<form action="/member/payment_update_do/[% payment.id %]">
+<form action="/member/payment_update_do/$payment.id">
 <table cellpadding=3>
-<tr><th align=right>Amount</th><td><input type=text name=amount value="[% payment.amount %]"</td></tr>
-<tr><th align=right>Payment Date</th><td><input type=text name=date_payment value="[% payment.date_payment_obj.format("%D") %]"</td></tr>
-<tr><th align=right>Valid From</th><td><input type=text name=valid_from value="[% payment.valid_from_obj.format("%D") %]"</td></tr>
-<tr><th align=right>Valid To</th><td><input type=text name=valid_to value="[% payment.valid_to_obj.format("%D") %]"</td></tr>
-<tr><td></td><td><input type=submit value="Submit"></td></tr>
+
+<tr>
+<th align=right>
+Amount
+</th>
+<td>
+<input type=text name=amount value="$payment.amount"
+</td>
+</tr>
+
+<tr>
+<th align=right>
+Payment Date
+</th>
+<td>
+<input type=text
+       name=date_payment 
+       value="${payment.date_payment_obj.format("%D")}"
+>
+</td>
+</tr>
+
+<tr>
+<th align=right>
+Valid From
+</th>
+<td>
+<input type=text
+       name=valid_from
+       value="${payment.valid_from_obj.format("%D")}"
+>
+</td>
+</tr>
+
+<tr>
+<th align=right>
+Valid To
+</th>
+<td>
+<input type=text
+       name=valid_to
+       value="${payment.valid_to_obj.format("%D")}"
+>
+</td>
+</tr>
+
+<tr>
+<th align=right>
+Payment Type
+</th>
+<td>
+<select name=type>$type_opts</select>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<input type=submit value="Submit">
+</td>
+</tr>
+
 </table>
 </form>
