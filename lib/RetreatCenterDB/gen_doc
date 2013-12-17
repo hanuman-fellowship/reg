@@ -118,7 +118,7 @@ for my $f (@files) {
                 model    => "$3 => $4",
             };
         }
-        elsif ($line =~ m{\A__END__}xms) {
+        elsif ($line =~ m{\A(__END__|__DATA__)}xms) {
             last PRE;
         }
     }
