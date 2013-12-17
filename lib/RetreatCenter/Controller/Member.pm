@@ -569,6 +569,7 @@ sub create_do : Local {
     delete $P{mkpay_amount};
     delete $P{valid_from};
     delete $P{valid_to};
+    delete $P{file};        # from the hidden field - used for online payments
 
     if ($P{category} eq 'General' && ! $P{date_general}) {
         $P{date_general} = $valid_to;
