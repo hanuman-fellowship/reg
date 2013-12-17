@@ -61,8 +61,8 @@ sub doc_for {
 }
 
 1;
-__DATA__
-overview - strings are the way that Reg keeps its configuration data.
+__END__
+overview - Strings are the way that Reg keeps its configuration data.
     They're just a key-value pair.
     The records are read into an exported global hash (named %string)
     by the Global::init function.
