@@ -350,6 +350,7 @@ sub _transmit {
                  });
 
     my $person_id;
+    my $prop_sub_id = $system_affil_id_for{'Proposal Submitter'};
     if (@people == 1) {
         my $person = $people[0];
         $person_id = $person->id();
@@ -369,7 +370,6 @@ sub _transmit {
         # hope not.
 
         # if they don't already have the proposal submitter affil, add it.
-        my $prop_sub_id = $system_affil_id_for{'Proposal Submitter'};
         my @affils = model($c, 'AffilPerson')->search({
                          a_id => $prop_sub_id,
                          p_id => $person_id,
