@@ -185,7 +185,7 @@ After <input type=checkbox name=rental_after value=yes>
 <script type="text/javascript">
 var s = "";
 if ("[% alert_comment %]" != "") {
-    s = "$alert_comment\n";
+    s = "$alert_comment\n\n";
 }
 if ("[% outstanding %]" != "") {
     s = s + "$outstanding_balance\n";

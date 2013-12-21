@@ -100,7 +100,7 @@ for my $f (<*.pm>) {
 
     TO_END:
     while (my $line = <$in>) {
-        if ($line =~ m{\A __END__}xms) {
+        if ($line =~ m{\A __(END|DATA)__}xms) {
             last TO_END;
         }
     }

@@ -123,7 +123,7 @@ $string{mmc_email} = $string{reception_email};      # sorry - see below
 my $sth_gaff = $dbh->prepare("
     select id
       from affils
-     where descrip like '%temple%guest%'
+     where descrip like 'Temple Guest'
 ");
 $sth_gaff->execute();
 my ($temple_guest_affil_id) = $sth_gaff->fetchrow_array();

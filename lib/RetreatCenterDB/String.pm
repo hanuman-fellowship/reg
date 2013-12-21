@@ -177,6 +177,7 @@ ftp_mmi_passive - FTP info for mountmadonnainstitute.org
 ftp_mmi_password - FTP info for mountmadonnainstitute.org
 ftp_mmi_site - FTP info for mountmadonnainstitute.org
 ftp_mmi_transactions - FTP info for mountmadonnainstitute.org - for online registrations for MMI courses
+ftp_omp_dir - The directory on mountmadonna.org for online member payments
 ftp_passive - FTP info for mountmadonna.org
 ftp_password - FTP info for mountmadonna.org
 ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes

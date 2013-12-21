@@ -33,8 +33,7 @@ our @EXPORT_OK = qw/
     %houses_in_cluster
     %house_name_of
     %annotations_for
-    $alert
-    $guru_purnima
+    %system_affil_id_for
 /;
 
 our %string;
@@ -44,8 +43,7 @@ our %houses_in;     # house objects in cluster type
 our %houses_in_cluster;         # ??? better name?
 our %house_name_of;
 our %annotations_for;
-our $alert;
-our $guru_purnima;
+our %system_affil_id_for;
 
 sub init {
     my ($class, $c, $force) = @_;
@@ -92,14 +90,15 @@ sub init {
     ) {
         push @{$annotations_for{$a->cluster_type()}}, $a;           # yeah
     }
+
+    # system affiliations
     my @affils = Util::model($c, 'Affil')->search({
-        descrip => { like => '%alert%when%' },
+        system => 'yes',
     });
-    $alert = $affils[0]->id();
-    @affils = Util::model($c, 'Affil')->search({
-        descrip => { like => '%guru%purnima%' },
-    });
-    $guru_purnima = $affils[0]->id();
+    for my $a (@affils) {
+        $system_affil_id_for{$a->descrip} = $a->id;
+    }
+
     Date::Simple->default_format($string{default_date_format});
     #
     # create the stop script

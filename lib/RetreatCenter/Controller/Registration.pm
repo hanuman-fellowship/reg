@@ -55,7 +55,7 @@ use Global qw/
     %house_name_of
     %houses_in
     %houses_in_cluster
-    $alert
+    %system_affil_id_for
     @clusters
 /;
 use Template;
@@ -718,15 +718,16 @@ sub _rest_of_reg {
     #
     # better way of searching the ids???
     #
+    AFFIL:
     for my $a ($p->affils) {
-        if ($a->id() == $alert) {
+        if ($a->id() == $system_affil_id_for{'Alert When Registering'}) {
             my $s = $p->comment;
             if ($s) {
                 $s =~ s{\r?\n}{\\n}g;
                 $s =~ s{"}{\\"}g;
             }
             stash($c, alert_comment => $s);
-            last;
+            last AFFIL;
         }
     }
     #

@@ -8,16 +8,19 @@
 
 <tr>
 <th align=left>Description</th>
+<th align=left>System</th>
 [% IF madmin %]
-    <th>Action</th>
+    <th align=left>&nbsp;&nbsp;Action</th>
 [% END %]
 </tr>
 
 [% FOREACH a IN affil %]
     <tr>
     <td>$a.descrip</td>
-    [% IF madmin && ok_del_edit(a.descrip) %]
+    <td>$a.system</td>
+    [% IF madmin && ! a.system %]
         <td>
+        &nbsp;&nbsp;
         <a href=/affil/update/$a.id>Edit</a>&nbsp;
         <a href=/affil/delete/$a.id onclick="return confirm('Okay to Delete $a.descrip?')">Del</a>
         <a href=/affil/merge/$a.id>Merge</a>&nbsp;

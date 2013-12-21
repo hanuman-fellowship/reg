@@ -23,7 +23,6 @@ use Util qw/
     email_letter
     calc_mmi_glnum
     get_now
-    main_mmi_affil
     rand6
 /;
 use Date::Simple qw/
@@ -35,6 +34,7 @@ use Time::Simple qw/
 /;
 use Global qw/
     %string
+    %system_affil_id_for
 /;
 use USState;
 use LWP::Simple;
@@ -1672,9 +1672,7 @@ sub online_add : Local {
         $P{st_prov}  = uc $state;
         $P{zip_post} = $zip;
         $P{sex} = '';           # gender is unknown - leave it unset
-        @affils = model($c, 'Affil')->search({
-            descrip => { 'like' => '%Temple%Guest%' },
-        });
+        push @affils, $system_affil_id_for{'Temple Guest'};
         $P{e_mailings} = 'yes';
         $P{snail_mailings} = '';
         $P{mmi_e_mailings} = 'yes';
@@ -1709,20 +1707,12 @@ sub online_add : Local {
         }
         if ($type eq 'mmi') {
             if ($interest eq 'All Schools') {
-                @affils =
-                    grep {
-                        main_mmi_affil($_->descrip())
-                    }
-                    model($c, 'Affil')->search({
-                        -and => [
-                            descrip => { 'like' => 'MMI%' },
-                        ],
-                    });
+                for my $key (grep { /MMI/ } keys %system_affil_id_for) {
+                    push @affils, $system_affil_id_for{$key};
+                }
             }
             else {
-                @affils = model($c, 'Affil')->search({
-                    descrip => { 'like' => "MMI%$interest" },
-                });
+                push @affils, $system_affil_id_for{"MMI - $interest"};
             }
         }
     }

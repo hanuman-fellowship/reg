@@ -7,7 +7,6 @@ use lib '../..';
 use Util qw/
     empty
     model
-    main_mmi_affil
     stash
     affil_table
     error
@@ -28,13 +27,6 @@ sub list : Local {
                        { order_by => 'descrip' }
                    )
         ],
-        ok_del_edit => sub {
-            my $descrip = shift;
-            return ! ($descrip =~ m{\b(alert|guru)\b}ixms
-                   ||
-                   main_mmi_affil($descrip)
-                   );
-        },
         template => "affil/list.tt2",
     );
 }

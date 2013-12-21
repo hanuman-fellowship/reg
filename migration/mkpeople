@@ -36,10 +36,18 @@ create table people (
 drop table if exists affils;
 create table affils (
     id integer primary key autoincrement,
-    descrip text
+    descrip text,
+    system text
 );
-insert into affils values (1, 'Alert when registering');
-insert into affils values (2, 'Guru Purnima');
+insert into affils values (1, 'Alert when registering', 'yes');
+insert into affils values (2, 'Guru Purnima', 'yes');
+insert into affils values (3, 'HFS Member General', 'yes');
+insert into affils values (4, 'HFS Member Sponsor', 'yes');
+insert into affils values (5, 'HFS Member Life', 'yes');
+insert into affils values (6, 'HFS Member Founding Life', 'yes');
+insert into affils values (7, 'HFS Member Inactive', 'yes');
+insert into affils values (8, 'HFS Member Lapsed', 'yes');
+insert into affils values (9, 'Temple Guest', 'yes');
 drop table if exists affil_people;
 create table affil_people (
     a_id integer,

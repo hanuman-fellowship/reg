@@ -65,7 +65,6 @@ our @EXPORT_OK = qw/
     d3_to_hex
     req_code
     calc_mmi_glnum
-    main_mmi_affil
     ensure_mmyy
     rand6
 /;
@@ -109,11 +108,12 @@ sub _affil_elem {
 # which affils should be checked?
 #
 # the first parameter is the Catalyst context.
-# the next are Afill objects that you want checked.
+# the rest of the params are tricky - they are _either_ Afill objects
+# OR integer affil ids.
 #
 sub affil_table {
     my ($c) = shift;
-    %checked = map { $_->id() => 'checked' } @_;
+    %checked = map { (ref($_)? $_->id(): $_) => 'checked' } @_;
 
     @affils = model($c, 'Affil')->search(
         undef,
@@ -1736,17 +1736,6 @@ sub calc_mmi_glnum {
         $glnum = $for_what . $reg_program_glnum;
     }
     return $glnum;
-}
-
-sub main_mmi_affil {
-    my ($descrip) = @_;
-
-    return $descrip =~ m{
-        \A \s*
-        MMI \s+ - \s+
-        (Ayurveda|Community[ ]Studies|Massage|Yoga)
-        \s* \z
-    }xms;
 }
 
 sub ensure_mmyy {

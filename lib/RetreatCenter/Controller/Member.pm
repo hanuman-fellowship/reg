@@ -24,7 +24,7 @@ use Time::Simple qw/
 /;
 use Global qw/
     %string
-    $guru_purnima
+    %system_affil_id_for
 /;
 use Template;
 use LWP::Simple 'get';
@@ -590,12 +590,12 @@ sub create_do : Local {
     # if it is not already there.
     #
     my @affils = model($c, 'AffilPerson')->search({
-        a_id => $guru_purnima,
+        a_id => $system_affil_id_for{'Guru Purnima'},
         p_id => $person_id,
     });
     if (! @affils) {
         model($c, 'AffilPerson')->create({
-            a_id => $guru_purnima,
+            a_id => $system_affil_id_for{'Guru Purnima'},
             p_id => $person_id,
         });
     }

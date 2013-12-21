@@ -24,6 +24,7 @@ use Time::Simple qw/
 /;
 use Global qw/
     %string
+    %system_affil_id_for
 /;
 
 my @mess;
@@ -342,22 +343,6 @@ sub _transmit {
 
     my $proposal = model($c, 'Proposal')->find($id);
 
-    # first, find the id of the affiliation 'Proposal Submitter'
-    # put in Global???
-    my $prop_sub_id = 0;
-    my @prop_sub = model($c, 'Affil')->search({
-                       descrip => { 'like' => '%proposal%submitter%' },
-                   });
-    if (@prop_sub) {
-        $prop_sub_id = $prop_sub[0]->id();
-    }
-    else {
-        $c->stash->{mess}
-            = "Sorry, you must first create a Proposal Submitter affiliation";
-        $c->stash->{template} = "proposal/error.tt2";
-        return;
-    }
-
     # does this person already exist in the People table?
     my @people = model($c, 'Person')->search({
                      first => $proposal->first(),
@@ -384,6 +369,7 @@ sub _transmit {
         # hope not.
 
         # if they don't already have the proposal submitter affil, add it.
+        my $prop_sub_id = $system_affil_id_for{'Proposal Submitter'};
         my @affils = model($c, 'AffilPerson')->search({
                          a_id => $prop_sub_id,
                          p_id => $person_id,
