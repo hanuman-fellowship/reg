@@ -169,7 +169,7 @@ sub update : Local {
         'rep_order_selected_' . $report->rep_order() => 'selected',
         report      => $report,
         format_opts => $format_opts,
-        affil_table => affil_table($c, $report->affils()),
+        affil_table => affil_table($c, 1, $report->affils()),
         form_action => "update_do/$id",
         template    => "report/create_edit.tt2",
     );
@@ -265,7 +265,7 @@ sub create : Local {
     }
     stash($c,
         format_opts => $format_opts,
-        affil_table => affil_table($c),
+        affil_table => affil_table($c, 1),
         form_action => "create_do",
         template    => "report/create_edit.tt2",
     );

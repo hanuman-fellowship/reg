@@ -124,7 +124,9 @@ sub create_do : Local {
         return;
     }
     model($c, 'Affil')->create({
-        descrip => $descrip,
+        descrip    => $descrip,
+        system     => '',
+        selectable => 'yes',
     });
     $c->response->redirect($c->uri_for('/affil/list'));
 }
@@ -134,7 +136,7 @@ sub merge : Local {
 
     stash($c,
         affil       => model($c, 'Affil')->find($id),
-        affil_table => affil_table($c),
+        affil_table => affil_table($c, 0),
         template    => 'affil/merge.tt2',
     );
 }

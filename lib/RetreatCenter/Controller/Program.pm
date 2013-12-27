@@ -1111,7 +1111,7 @@ sub affil_update : Local {
     my $p = model($c, 'Program')->find($id);
     stash($c,
         program     => $p,
-        affil_table => affil_table($c, $p->affils()),
+        affil_table => affil_table($c, 0, $p->affils()),
         template    => "program/affil_update.tt2",
     );
 }

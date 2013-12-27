@@ -1927,7 +1927,7 @@ sub upload_yj_sheet : Local {
     my ($self, $c) = @_;
 
     stash($c,
-        affil_table => affil_table($c),
+        affil_table => affil_table($c, 0),
         template    => 'listing/yj_upload.tt2',
     );
 }

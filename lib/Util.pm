@@ -112,16 +112,18 @@ sub _affil_elem {
 # OR integer affil ids.
 #
 sub affil_table {
-    my ($c) = shift;
-    %checked = map { (ref($_)? $_->id(): $_) => 'checked' } @_;
+    my ($c, $all, @to_check) = @_;
+    %checked = map { (ref($_)? $_->id(): $_) => 'checked' } @to_check;
 
-    @affils = model($c, 'Affil')->search(
-        { 
+    my $bool = $all? undef
+        :{ 
             -or => [
                 system => { '!=' => 'yes' },
                 selectable => 'yes',
             ],
-        },
+        };
+    @affils = model($c, 'Affil')->search(
+        $bool,
         {
             order_by => 'descrip'
         },

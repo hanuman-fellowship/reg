@@ -332,7 +332,7 @@ sub create : Local {
         safety_form        => "",
         inactive       => "",
         deceased       => "",
-        affil_table    => affil_table($c),
+        affil_table    => affil_table($c, 0),
         form_action    => "create_do",
         template       => "person/create_edit.tt2",
     );
@@ -534,7 +534,7 @@ sub update : Local {
         mmi_snail_mailings => ($p->mmi_snail_mailings())? "checked": "",
         share_mailings => ($p->share_mailings())? "checked": "",
         safety_form    => (   $p->safety_form())? "checked": "",
-        affil_table    => affil_table($c, $p->affils()),
+        affil_table    => affil_table($c, 0, $p->affils()),
         form_action    => "update_do/$id",
         template       => "person/create_edit.tt2",
     );
@@ -1733,7 +1733,7 @@ sub online_add : Local {
             sex_male       => ($P{sex} eq "M")? "checked": "",
             inactive       => "",
             deceased       => "",
-            affil_table    => affil_table($c, @affils),
+            affil_table    => affil_table($c, 0, @affils),
             form_action    => "create_do",
             template       => "person/create_edit.tt2",
         );
@@ -1767,7 +1767,7 @@ sub online_add : Local {
             sex_male   => ($P{sex} eq "M")? "checked": "",
             inactive   => "",
             deceased   => "",
-            affil_table => affil_table($c, $p->affils(), @affils),
+            affil_table => affil_table($c, 0, $p->affils(), @affils),
             form_action => "update_do/" . $p->id(),
             template    => "person/create_edit.tt2",
         );
