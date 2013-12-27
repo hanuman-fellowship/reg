@@ -9,6 +9,7 @@ __PACKAGE__->add_columns(qw/
     id
     descrip
     system
+    selectable
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -30,4 +31,7 @@ overview - Affiliations are used to describe a person's interests -
     search for everyone that has an affiliation.
 descrip - the description of the affiliation
 id - unique id
-system - a boolean.  if 'yes' it means Reg uses it internally.  Cannot be edited.
+selectable - a boolean.  is the system affiliation selectable when editing
+    a person or program?
+system - a boolean.  if 'yes' it means Reg uses this affiliation internally.
+    Cannot be edited.

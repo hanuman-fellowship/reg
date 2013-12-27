@@ -77,6 +77,8 @@ Dec 12 12:00-12:30
     more tweaking of the undup and local grid
 Dec 16 8:30-
     type of membership online payment - and xaccounts
-Dec 21 1:40-3:20
-    system affiliations
+Dec 21 1:40-3:40
+    system affiliations - there are several!
     HFS Membership affiliations - as system affiliations
+Dec 26 11:20-
+    selectable system affiliations

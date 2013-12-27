@@ -116,8 +116,15 @@ sub affil_table {
     %checked = map { (ref($_)? $_->id(): $_) => 'checked' } @_;
 
     @affils = model($c, 'Affil')->search(
-        undef,
-        { order_by => 'descrip' },
+        { 
+            -or => [
+                system => { '!=' => 'yes' },
+                selectable => 'yes',
+            ],
+        },
+        {
+            order_by => 'descrip'
+        },
     );
     # figure the number of affils in the first and second column.
     $naffils = @affils;
