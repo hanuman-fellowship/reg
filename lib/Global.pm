@@ -34,6 +34,7 @@ our @EXPORT_OK = qw/
     %house_name_of
     %annotations_for
     %system_affil_id_for
+    @hfs_affil_ids
 /;
 
 our %string;
@@ -44,6 +45,7 @@ our %houses_in_cluster;         # ??? better name?
 our %house_name_of;
 our %annotations_for;
 our %system_affil_id_for;
+our @hfs_affil_ids;
 
 sub init {
     my ($class, $c, $force) = @_;
@@ -96,7 +98,12 @@ sub init {
         system => 'yes',
     });
     for my $a (@affils) {
-        $system_affil_id_for{$a->descrip} = $a->id;
+        my $id = $a->id;
+        my $descrip = $a->descrip;
+        $system_affil_id_for{$descrip} = $id;
+        if ($descrip =~ m{ \A HFS \s+ Member }xms) {
+            push @hfs_affil_ids, $id;
+        }
     }
 
     Date::Simple->default_format($string{default_date_format});

@@ -379,10 +379,14 @@ EOH
     # note that there may be more than one block in a house on a day.
     #
     my %blocks;
+    my @opt = ();
+    if (@house_ids) {
+        push @opt, house_id => { 'in', \@house_ids };
+    }
     for my $b (model($c, 'Block')->search({
                    sdate => { '<=', $ed8 },
                    edate => { '>', $d8  },
-                   house_id => { 'in', \@house_ids },
+                   @opt,
                })
     ) {
         my $s = max($d8, $b->sdate);

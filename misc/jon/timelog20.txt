@@ -75,10 +75,14 @@ Dec 10 10:00-10:30
     tweaking a past local grid
 Dec 12 12:00-12:30
     more tweaking of the undup and local grid
-Dec 16 8:30-
+Dec 16 8:30-9:30
     type of membership online payment - and xaccounts
 Dec 21 1:40-3:40
     system affiliations - there are several!
     HFS Membership affiliations - as system affiliations
-Dec 26 11:20-
+Dec 26 11:20-12:00
     selectable system affiliations
+Dec 27 10:30-11:40
+    cluster view - when no houses in a cluster
+    member affils after update/create
+    still a bit to mess with... script/memaffil

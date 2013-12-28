@@ -4,6 +4,7 @@ Sorry.  A fatal error has occured.
 [% IF error %]
     [% error %]
 [% ELSE %]
-    Sahadev has been alerted.
+    Sahadev has been alerted but it would be helpful<br>
+    if you sent him an email that explained what you were doing just now.
 [% END %]
 </div>

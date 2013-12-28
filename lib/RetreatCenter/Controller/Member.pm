@@ -25,6 +25,7 @@ use Time::Simple qw/
 use Global qw/
     %string
     %system_affil_id_for
+    @hfs_affil_ids
 /;
 use Template;
 use LWP::Simple 'get';
@@ -288,6 +289,14 @@ sub update_do : Local {
         rename "root/static/omp/$P{file}", "root/static/omp_done/$P{file}";
     }
 
+    if (! $amount) {
+        $valid_to = undef;
+            # no payment was made
+            # don't use the default valid_to date...
+        delete $P{date_general};
+        delete $P{date_sponsor};
+    }
+
     delete $P{file};
     delete $P{mkpay_date};
     delete $P{mkpay_type};
@@ -386,6 +395,11 @@ sub update_do : Local {
     # finally, update the member record
     $member->update(\%P);
 
+    #
+    # make sure the HFS Member affils are correct
+    #
+    _adjust_affils($c, $member);
+
     if (!$amount) {
         $c->response->redirect($c->uri_for("/member/view/$id"));
         return;
@@ -405,6 +419,37 @@ sub update_do : Local {
     }
     else {
         $c->res->output(_no_here($html) . js_print());
+    }
+}
+
+sub _adjust_affils {
+    my ($c, $member) = @_;
+
+    #
+    # clear all HFS Member affils for the person
+    #
+    my $p_id = $member->person_id;
+    model($c, 'AffilPerson')->search({
+        p_id => $p_id,
+        a_id => { -in => \@hfs_affil_ids },
+    })->delete();
+
+    # add the correct ones
+    my @a_ids;
+    if ($member->lapsed()) {
+        push @a_ids, $system_affil_id_for{'HFS Member Lapsed'};
+    }
+    else {
+        push @a_ids, $system_affil_id_for{"HFS Member " . $member->category()};
+        if ($member->voter()) {
+            push @a_ids, $system_affil_id_for{"HFS Member Voter"};
+        }
+    }
+    for my $a_id (@a_ids) {
+        model($c, 'AffilPerson')->create({
+            a_id => $a_id,
+            p_id => $p_id,
+        });
     }
 }
 
@@ -599,6 +644,11 @@ sub create_do : Local {
             p_id => $person_id,
         });
     }
+
+    #
+    # make sure the HFS Member affils are correct
+    #
+    _adjust_affils($c, $member);
 
     my $id = $member->id();
     my @who_now = get_now($c);
