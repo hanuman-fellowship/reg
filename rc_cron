@@ -62,5 +62,10 @@ REG=/home/sahadev/Reg
 # and send a request to comment on Facebook and Yelp
 0 12 * * * test -f $REG/INACTIVE || $REG/faceyelp >>$REG/output/faceyelp.out 2>&1
 
+# at 12:05 am on Jan 1st ensure that each member's status and affiliations are correct.
+# at 12:10 am on Jan 1st reset the number of nights and the free program for members.
+5 0 1 1 * test -f $REG/INACTIVE || $REG/memaffil >>$REG/output/memaffil 2>&1
+10 0 1 1 * test -f $REG/INACTIVE || $REG/memreset >>$REG/output/memreset 2>&1
+
 # restart the Catalyst server on reboot - not sure if this works
 @reboot $REG/go

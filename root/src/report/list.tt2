@@ -1,5 +1,8 @@
 <h2>Reports</h2>
 <a href=/report/create>Add</a>
+&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+<a href=/report/memaffil>Ensure Member Affiliations</a>
 [% IF expiry %]
 <p class=p2>
 Distributed Update:

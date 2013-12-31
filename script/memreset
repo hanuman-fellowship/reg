@@ -1,0 +1,36 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+
+#
+# on Jan 1st at 12:05 a.m. each year
+# reset the number of free nights for each member category
+# reset the free program for Founding Life
+#
+for my $m ($schema->resultset('Member')->all()) {
+my $p = $m->person;
+print $p->last, $/;
+    my $sponsor_nights  = 0;
+    my $free_prog_taken = 'yes';
+    if ($m->lapsed()) {
+        ; # defaults above are fine
+    }
+    else {
+        my $category = $m->category();
+        if ($category =~ m{Life}xms) {
+            $sponsor_nights  = 12;
+            $free_prog_taken = '';
+        }
+        elsif ($category =~ m{Sponsor}xms) {
+            $sponsor_nights = 4;
+        }
+    }
+    $m->update({
+        sponsor_nights  => $sponsor_nights,
+        free_prog_taken => $free_prog_taken,
+    });
+}

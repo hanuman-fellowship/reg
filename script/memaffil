@@ -1,0 +1,47 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+
+# get all HFS affils
+my @hfs_mem_affil_ids;
+my %hfs_mem_affil_id_for;
+for my $a ($schema->resultset('Affil')->search({
+               system => 'yes',
+               descrip => { -like => 'HFS%' },
+           })
+) {
+    my $id = $a->id();
+    push @hfs_mem_affil_ids, $id;
+    $hfs_mem_affil_id_for{$a->descrip()} = $id;
+}
+# delete all HFS affils
+$schema->resultset('AffilPerson')->search({
+    a_id => { -in => \@hfs_mem_affil_ids },
+})->delete();
+
+# assign the correct HFS affils to each Member
+for my $m ($schema->resultset('Member')->all()) {
+    my $p_id = $m->person_id();
+    my @a_ids;
+    if ($m->voter()) {
+        push @a_ids, $hfs_mem_affil_id_for{"HFS Member Voter"};
+    }
+    if ($m->lapsed()) {
+        push @a_ids, $hfs_mem_affil_id_for{'HFS Member Lapsed'};
+        # the voter attribute can remain - they've been approved long term
+        # but the HFS Member Voter will be remain cleared
+    }
+    else {
+        push @a_ids, $hfs_mem_affil_id_for{"HFS Member " . $m->category()};
+    }
+    for my $a_id (@a_ids) {
+        $schema->resultset('AffilPerson')->create({
+            a_id => $a_id,
+            p_id => $p_id,
+        });
+    }
+}

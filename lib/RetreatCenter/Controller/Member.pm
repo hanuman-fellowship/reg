@@ -81,14 +81,15 @@ sub list : Local {
     my $pat = trim($c->request->params->{pat});
     my @members = ();
     if ($pat) {
-        $pat =~ s{\*}{%}g;
-        $pat = { like => "%$pat%" };
-        @members = 
-            model($c, 'Member')->search({
+        my $sqlpat = $pat;
+        $sqlpat =~ s{\*}{%}g;
+        $sqlpat = { like => "%$sqlpat%" };
+        @members = model($c, 'Member')->search(
+            {
                 -or => [
-                    'person.last'     => $pat,
-                    'person.first'    => $pat,
-                    'person.sanskrit' => $pat,
+                    'person.last'     => $sqlpat,
+                    'person.first'    => $sqlpat,
+                    'person.sanskrit' => $sqlpat,
                 ],
             },
             {
@@ -101,8 +102,21 @@ sub list : Local {
             # it is currently 12/31/11 not done this way.
         );
     }
+    else {
+        @members = model($c, 'Member')->search(
+            {
+                category => { '!=' => 'Inactive' },
+            },
+            {
+                join     => ['person'],
+                prefetch => ['person'],
+                order_by => ['person.last', 'person.first' ],
+            }
+        );
+    }
     my @files = <root/static/omp/*>;
     stash($c,
+        pat      => $pat,
         msg      => $msg,
         online   => scalar(@files),
         members  => \@members,
@@ -436,14 +450,14 @@ sub _adjust_affils {
 
     # add the correct ones
     my @a_ids;
+    if ($member->voter()) {
+        push @a_ids, $system_affil_id_for{"HFS Member Voter"};
+    }
     if ($member->lapsed()) {
         push @a_ids, $system_affil_id_for{'HFS Member Lapsed'};
     }
     else {
         push @a_ids, $system_affil_id_for{"HFS Member " . $member->category()};
-        if ($member->voter()) {
-            push @a_ids, $system_affil_id_for{"HFS Member Voter"};
-        }
     }
     for my $a_id (@a_ids) {
         model($c, 'AffilPerson')->create({

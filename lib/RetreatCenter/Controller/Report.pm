@@ -855,4 +855,11 @@ sub clobber : Local {
     $c->response->redirect($c->uri_for("/report/view/$rep_id"));
 }
 
+sub memaffil : Local {
+    my ($self, $c) = @_;
+
+    system("memaffil");
+    $c->response->redirect($c->uri_for("/report/list"));
+}
+
 1;

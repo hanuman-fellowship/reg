@@ -86,3 +86,9 @@ Dec 27 10:30-11:40
     cluster view - when no houses in a cluster
     member affils after update/create
     still a bit to mess with... script/memaffil
+        need cron job to reset the number of free nights
+            for sponsoring members that have not lapsed
+            and to clear the nights for those have lapsed
+            and the voter setting as well.
+Dec 30 3:20-
+    year beginning cron job to reset member nights, etc

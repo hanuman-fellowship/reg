@@ -22,7 +22,22 @@
 <a href="/member/list_online">Online ($online)</a>
 </td><td>
 <form action=/member/list>
-Search <input type=text name=pat id=pat size=12>
+<table cellpadding=5>
+<tr><td>
+Search <input type=text name=pat id=pat size=12 value='$pat'>
+</td><td valign=top>
+[% IF pat %]
+    [% IF pat == '*' %]
+        Showing ALL members.
+    [% ELSE %]
+        Showing all members matching '$pat'.
+    [% END %]
+[% ELSE %]
+Showing active members - including lapsed.
+[% END %]
+<br>Enter a name to match or '*' to see all members.
+</td></tr>
+</table>
 </form>
 <ul>
 Click on Name to update member attributes.<br>
@@ -65,7 +80,6 @@ Click on First to see person attributes.<br>
 [% m.total_paid %]
 [% END %]
 </td>
-[% IF m.category == 'Sponsor' || m.category == 'Life'  || m.category == 'Founding Life' %]
 <td align=right>
 [% m.sponsor_nights %]
 </td>
@@ -74,9 +88,6 @@ Click on First to see person attributes.<br>
 <img src=/static/images/checked.gif>
 [% END %]
 </td>
-[% ELSE %]
-<td>&nbsp;</td><td>&nbsp;</td>
-[% END %]
 <td><a href="/member/delete/[% m.id %]" onclick="return confirm('Okay to Delete [% m.person.first _ ' ' _ m.person.last %] as member?');">Del</a></td>
 </tr>
 [% END %]
