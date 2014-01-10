@@ -16,6 +16,7 @@ Search for <input type=text id=pattern name=pattern size=20 value="[% pattern %]
 <option value=email [% email_selected %]> Email</option>
 <option value=first [% first_selected %]> First</option>
 <option value=tel_home [% tel_home_selected %]> Home Phone</option>
+<option value=country [% country_selected %]> Country</option>
 </select>
 <input type=submit value="Go">
 </form>

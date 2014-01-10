@@ -64,7 +64,7 @@ sub search : Local {
         $c->stash->{last_selected} = "selected";
     }
     for my $f (qw/ 
-        last sanskrit zip_post email first tel_home prefix substr
+        last sanskrit zip_post email first tel_home country prefix substr
     /) {
         if (defined $field && $field eq $f) {
             $c->stash->{"$f\_selected"} = "selected";
@@ -114,6 +114,11 @@ sub search_do : Local {
         $pattern =~ s{(\d)}{$1%}g;
         $search_ref = {
             tel_home => { like => "%$pattern" },
+        };
+    }
+    elsif ($pattern =~ m{ \A \s* id \s* = \s* (\d+) \s* \z }xms) {
+        $search_ref = {
+            id => $1,
         };
     }
     else {

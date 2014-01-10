@@ -313,6 +313,7 @@ sub run : Local {
     my $share    = $c->request->params->{share};
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
+    my $no_foreign = $c->request->params->{no_foreign};
     my $incl_mmc = $c->request->params->{incl_mmc};
     my $opt_inout = $c->request->params->{report_type} || "";
     my $append    = $c->request->params->{append} || "";
@@ -421,6 +422,15 @@ sub run : Local {
     }
     if (! $incl_mmc) {
         $restrict .= "akey != '44595076SUM' and ";
+    }
+    if ($format == TO_CMS
+        || $format == CMS_SANS_EMAIL
+        || $format == FIRST_SANS_CMS
+    ) {
+        $restrict .= "addr1 != '' and ";
+    }
+    if ($no_foreign) {
+        $restrict .= "country = '' and ";
     }
 
     my $just_email = "";
@@ -612,6 +622,7 @@ EOS
             message  => "Record count = " . scalar(@people),
             share    => $share,
             collapse => $collapse,
+            no_foreign => $no_foreign,
             incl_mmc => $incl_mmc,
             append   => $append,
             expiry_date => $expiry? date($expiry)->format("%D"): '',

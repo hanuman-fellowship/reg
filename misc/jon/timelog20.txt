@@ -90,5 +90,13 @@ Dec 27 10:30-11:40
             for sponsoring members that have not lapsed
             and to clear the nights for those have lapsed
             and the voter setting as well.
-Dec 30 3:20-
+Dec 30 3:20-5:30
     year beginning cron job to reset member nights, etc
+Jan 3 12:30-1:20
+    restoring 14 mysterious registrations that somehow
+    got to online_done in the wrong month - 2014-01/ instead of 2013-12/.
+    how the heck?
+Jan 10 11:45-1:00
+    how to do MMI online - pointed them to the doc
+    various requests by Jamal for the Search and Report functions
+        on request by CMS, etc.

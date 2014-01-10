@@ -74,6 +74,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <td><input type=checkbox name=incl_mmc value=yes [% IF incl_mmc %]checked[% END %]>Include MMC</td>
 <td><input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]>Collapse</td>
 <td><input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share</td>
+<td><input type=checkbox name=no_foreign value=yes [% IF no_foreign %]checked[% END %]>No Foreign</td>
 </tr>
 [% IF optin %]
 <tr>
