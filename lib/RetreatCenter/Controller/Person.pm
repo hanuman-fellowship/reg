@@ -893,13 +893,15 @@ sub undup_do : Local {
     # and modify the person_id field to be the primary id.
     # do the same with donations and credits and rides.
     #
+    # the affiliations of the merged person should be
+    # put on the primary person if they're not there already.
+    #
     # Unpartner the merged person and then any
-    # affil_person, leader, member (and related) records connected
+    # leader, member (and related) records connected
     # to the merged person should be deleted.
     #
     # sorry to delete them but too much trouble would ensue if
-    # the primary person was ALSO a leader or member or if they
-    # had the same affils.
+    # the primary person was ALSO a leader or member.
     #
     # actually, prohibit doing this at all if a merged person
     # is a member.
@@ -922,6 +924,10 @@ sub undup_do : Local {
             return;
         }
     }
+    my %primary_affils = map { $_->a_id => 1 }
+                         model($c, 'AffilPerson')->search({
+                             p_id => $primary,
+                         });
     for my $mid (@merged) {
         for my $table (qw/ Registration Credit Donation MMIPayment /) {
             model($c, $table)->search({
@@ -941,9 +947,6 @@ sub undup_do : Local {
         })->update({
             id_sps => 0,
         });
-        model($c, 'AffilPerson')->search({
-            p_id => $mid,
-        })->delete();
         model($c, 'Leader')->search({
             person_id => $mid,
         })->delete();
@@ -954,6 +957,23 @@ sub undup_do : Local {
         ) {
             $member->delete();      # should cascade
         }
+        for my $m_a_id (map { $_->a_id }
+                        model($c, 'AffilPerson')->search({
+                            p_id => $mid,
+                        })
+        ) {
+            if (! exists $primary_affils{$m_a_id}) {
+                # add the merged person's affil to the primary
+                model($c, 'AffilPerson')->create({
+                    a_id => $m_a_id,
+                    p_id => $primary,
+                });
+            }
+        }
+        # now we can delete all of the merged person's affils
+        model($c, 'AffilPerson')->search({
+            p_id => $mid,
+        })->delete();
         # finally, delete the person we are merging
         model($c, 'Person')->search({
             id => $mid,
