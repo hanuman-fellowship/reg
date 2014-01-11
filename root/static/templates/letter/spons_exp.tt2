@@ -14,4 +14,4 @@ arrangement with the Membership Secretary.
 <p>
 To claim a Tax Deduction for this donation, you must deduct the
 value of any benefits you receive.
-[% INCLUDE bot.tt2 %]
+[% INCLUDE info.tt2 %]

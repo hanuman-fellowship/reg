@@ -1332,7 +1332,8 @@ sub email_just_expired : Local {
         });
         my $stash = {
             sanskrit    => ($per->sanskrit || $per->first),
-            year    => tt_today($c)->year-1,
+            year        => tt_today($c)->year-1,
+            secure_code => $per->secure_code,
             string      => \%string,
         };
         $tt->process(
