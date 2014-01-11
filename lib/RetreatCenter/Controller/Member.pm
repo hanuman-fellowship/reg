@@ -1334,6 +1334,7 @@ sub email_just_expired : Local {
             sanskrit    => ($per->sanskrit || $per->first),
             year        => tt_today($c)->year-1,
             secure_code => $per->secure_code,
+            has_email   => 1,
             string      => \%string,
         };
         $tt->process(
