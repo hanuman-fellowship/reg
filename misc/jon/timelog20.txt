@@ -100,3 +100,6 @@ Jan 10 11:45-1:00
     how to do MMI online - pointed them to the doc
     various requests by Jamal for the Search and Report functions
         on request by CMS, etc.
+Jan 11 1:00-2:30
+    affils transferred on merging
+    membership secure code on all 3 types of letters sent
