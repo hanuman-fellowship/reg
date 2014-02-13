@@ -269,7 +269,7 @@ sub create_do : Local {
     $P{grid_code} = rand6($c);
 
     my $r = model($c, 'Rental')->create(\%P);
-    $r->send_grid_data();
+    $r->set_grid_stale();
     my $id = $r->id();
     #
     # we must ensure that there are config records
@@ -713,7 +713,7 @@ sub update_do : Local {
     }
 
     $r->update(\%P);
-    $r->send_grid_data();        # relevant things may have changed
+    $r->set_grid_stale();        # relevant things may have changed
 
     if (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
         $c->response->redirect($c->uri_for("/program/parallel/$id"));
@@ -871,7 +871,7 @@ sub coordinator_update_do : Local {
         $r->update({
             coordinator_id => $person[0]->id,
         });
-        $r->send_grid_data();
+        $r->set_grid_stale();
         $c->response->redirect($c->uri_for("/rental/view/$id/2"));
     }
     else {
@@ -1153,7 +1153,7 @@ sub booking_do : Local {
         }
         check_makeup_new($c, $h_id, $sdate);
     }
-    $r->send_grid_data();
+    $r->set_grid_stale();
 
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
@@ -1168,9 +1168,8 @@ sub del_booking : Local {
     # if so, you can't delete it!  they have to remove
     # that person first.
     #
-    #system("grab wait");        # make sure the local grid is current
-    # uncomment the above if Barnaby says that we
-    # should be very careful.
+    system("grab wait");        # make sure the local grid is current
+
     my $fgrid = get_grid_file($r->grid_code());
     my $error = "";
     if (open my $in, "<", $fgrid) {
@@ -1243,7 +1242,7 @@ sub del_booking : Local {
         }
     }
 
-    $r->send_grid_data();
+    $r->set_grid_stale();
 
     check_makeup_vacate($c, $house_id, $sdate);
 
@@ -1442,7 +1441,7 @@ sub reserve_cluster : Local {
             }
         }
     }
-    $rental->send_grid_data();
+    $rental->set_grid_stale();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -1515,7 +1514,7 @@ sub cancel_cluster : Local {
             }
         }
     }
-    $rental->send_grid_data();
+    $rental->set_grid_stale();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
 
@@ -1935,7 +1934,7 @@ sub duplicate_do : Local {
         cs_person_id   => $old_rental->cs_person_id(),
         grid_code      => rand6($c),
     });
-    $new_r->send_grid_data();
+    $new_r->set_grid_stale();
     my $id = $new_r->id();
 
     #
@@ -2405,6 +2404,16 @@ sub grab_new : Local {
 
     system("grab wait");
     $c->response->redirect($c->uri_for("/rental/grid/$rental_id"));
+}
+
+sub send_grid : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $r = model($c, 'Rental')->find($rental_id);
+    $r->send_grid_data();
+    $r->update({
+        grid_stale => '',
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
 1;

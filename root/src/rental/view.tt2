@@ -176,7 +176,15 @@ Web
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td colspan=2 align=center><a target=_blank href=http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code>Web Grid</a></td>
+<td align=right>
+<a target=_blank 
+   href=http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code>Web Grid</a>
+</td>
+[% IF rental.grid_stale %]
+<td colspan=2>
+<a style="color: red; margin-left: .4in; font-weight: bold" href=/rental/send_grid/$id>Send To Web</a>
+</td>
+[% END %]
 </tr>
 
 <tr>

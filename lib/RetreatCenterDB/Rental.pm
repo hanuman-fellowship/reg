@@ -76,6 +76,8 @@ __PACKAGE__->add_columns(qw/
 
     fixed_cost_houses
     fch_encoded
+
+    grid_stale
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -412,7 +414,7 @@ sub balance_disp {
 }
 
 sub send_grid_data {
-    my ($rental, $c) = @_;
+    my ($rental) = @_;
 
     my $code = $rental->grid_code() . ".txt";
     open my $gd, ">", "/tmp/$code"
@@ -479,6 +481,16 @@ sub send_grid_data {
     $ftp->put("/tmp/$code", $code);
     $ftp->quit();
     unlink "/tmp/$code";
+    $rental->update({
+        grid_stale => '',
+    });
+}
+
+sub set_grid_stale {
+    my ($rental) = @_;
+    $rental->update({
+        grid_stale => 'yes',
+    });
 }
 
 
@@ -508,6 +520,7 @@ fixed_cost_houses - lines describing houses with a fixed cost.
     a pad on the floor.
 glnum - a General Ledger number computed from the sdate
 grid_code - a hard to guess code for the grid URL
+grid_stale - is the web grid in need of refreshing?
 housecost_id - foreign key to housecost
 housing_note - free text describing any issues with the rental housing
 id - unique id
