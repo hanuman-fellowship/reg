@@ -83,6 +83,7 @@ use Global qw/
     %string
 /;
 use Mail::Sender;
+use Net::Ping;
 
 my ($naffils, @affils, %checked);
 
@@ -603,6 +604,12 @@ sub email_letter {
 
     open my $mlog, ">>", "mlog";
     print {$mlog} localtime() . " $args{to}\n";
+    my $p = Net::Ping->new();
+    if (!$p->ping("mountmadonna.org")) {
+        print {$mlog} "no ping so just return\n";
+        close $mlog;
+        return;     # don't even try
+    }
     close $mlog;
 
     if (! $mail_sender) {
@@ -634,7 +641,7 @@ sub email_letter {
     }
     # temporary adjustment of mountmadonna.org addresses:
     for my $a ($args{to}, @cc_bcc) {
-        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org};
+        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
     }
     if (! $mail_sender->Open({
         to       => $args{to},

@@ -3,6 +3,8 @@ use strict;
 use warnings;
 =comment
 
+0) Make sure that the net is available by trying to ping mountmadonna.org.
+
 1) Ftp-get all transaction files from www.mountmadonna.org
 created by the 'relay' program.  The names of these files
 are the ids of the most recent authorize.net transactions.
@@ -52,6 +54,7 @@ them into actual payments.
 
 =cut
 use lib 'lib';
+use Net::Ping;
 use DBI;
 use Net::FTP;
 use Template;
@@ -61,6 +64,12 @@ use Date::Simple qw{
 };
 use FindBin;
 chdir "$FindBin::Bin/..";
+
+my $p = Net::Ping->new();
+if (!$p->ping("mountmadonna.org")) {
+    my_die("no ping of mountmadonna.org at " . localtime() . "\n");
+    exit;
+}
 
 my $Msg = "";       # globals (capitalized to emphasize this)
 my $Error = 0;
@@ -207,8 +216,8 @@ sub email_letter {
         port => $string{smtp_port},
         @auth,
     }) or my_die("no mail sender");
-    $args{to} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
-    $args{cc} =~ s{mountmadonna.org}{mountmadonnainstitute.org}; 
+    $args{to} =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $args{to}; 
+    $args{cc} =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $args{cc}; 
     my @cc;
     if ($args{cc}) {
         push @cc, cc => $args{cc};

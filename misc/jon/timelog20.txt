@@ -103,3 +103,7 @@ Jan 10 11:45-1:00
 Jan 11 1:00-2:30
     affils transferred on merging
     membership secure code on all 3 types of letters sent
+Feb 13 11:00-1:00, 10:45-11:30
+    Reg rentals - send to web.
+    restoring mmc password.
+    using net ping
