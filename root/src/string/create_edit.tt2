@@ -11,7 +11,7 @@
 </tr>
 <tr>
 <th align=right>Value</th>
-<td><input type=text name=value value="[% value %]" size=70></td>
+<td><input type=$type name=value value="[% value %]" size=70></td>
 </tr>
 <tr>
 <td>&nbsp;</td>

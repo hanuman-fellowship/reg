@@ -23,7 +23,7 @@ sub value_td {
     my $v = defined($self->value())? $self->value()
             :                        ""
             ;
-    if ($k =~ m{_color$}) {
+    if ($k =~ m{_color \z}xms) {
         my $color = d3_to_hex($v);
         return <<"EOH";
 <td id=color
@@ -31,6 +31,9 @@ sub value_td {
  onclick="window.location.href='/string/update/$k'"
 >
 EOH
+    }
+    elsif ($k =~ m{ password }xms) {
+        return '<td>' . ('*' x length($v)) . '</td>';
     }
     return "<td>$v</td>";
 }

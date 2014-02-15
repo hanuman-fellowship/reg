@@ -55,6 +55,9 @@ sub update : Local {
     my $s = model($c, 'String')->find($the_key);
 
     $c->stash->{the_key} = $the_key;
+    $c->stash->{type} = $the_key =~ m{password}? 'password'
+                       :                         'text'
+                       ;
     my $value = $c->stash->{value} = uri_escape($s->value, '"');
     $c->stash->{form_action} = "update_do/$the_key";
     if ($the_key =~ m{_color$}) {
