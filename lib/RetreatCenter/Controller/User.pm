@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package RetreatCenter::Controller::User;
 use base 'Catalyst::Controller';
+use Digest::MD5 qw(md5_hex);
 
 use Util qw/
     trim
@@ -306,6 +307,7 @@ sub profile_edit_do : Local {
 
     my %hash = %{ $c->request->params() };
     $hash{hide_mmi} = '' unless $hash{hide_mmi};
+    $hash{password} = md5_hex($hash{password});
     $c->user->update(\%hash);
     $c->response->redirect($c->uri_for('/user/profile_view'));
 }
@@ -379,10 +381,10 @@ sub profile_password : Local {
 sub profile_password_do : Local {
     my ($self, $c) = @_;
     my $u = $c->user;
-    my $cur_pass  = $c->request->params->{cur_pass};
+    my $cur_pass  = md5_hex($c->request->params->{cur_pass});
     my $good_pass = $u->password();
-    my $new_pass  = $c->request->params->{new_pass};
-    my $new_pass2 = $c->request->params->{new_pass2};
+    my $new_pass  = md5_hex($c->request->params->{new_pass});
+    my $new_pass2 = md5_hex($c->request->params->{new_pass2});
     @mess = ();
     if ($cur_pass) {
         if ($good_pass ne $cur_pass) {
