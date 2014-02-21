@@ -1,15 +1,3 @@
 #!/bin/sh
-
-if [ -d /home/sahadev/Reg ]; then
-
-    cd /home/sahadev/Reg
-    export DBI_DSN="dbi:mysql:reg2"
-
-else 
-
-    cd /Users/jonbjornstad/Reg
-    export DBI_DSN="dbi:SQLite:$HOME/Reg/retreatcenter.db"
-
-fi
-
+export DBI_DSN="dbi:SQLite:$HOME/Reg/retreatcenter.db"
 script/hash_db

@@ -3,9 +3,6 @@ use strict;
 use warnings;
 use lib 'lib';
 use RetreatCenterDB;
-use Global qw/
-    %string
-/;
 use Digest::MD5 qw(md5_hex);
 
 my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
@@ -14,6 +11,7 @@ my @users = $schema->resultset('User')->search({
     password   => { -not_like => '%-no login-%' },
 });
 for my $user (@users) {
-    $user->password = md5_hex($user->password);
-    $schema->user->update(\$user);
+    $user->update({
+      password => md5_hex($user->password),
+    });
 }

@@ -381,13 +381,13 @@ sub profile_password : Local {
 sub profile_password_do : Local {
     my ($self, $c) = @_;
     my $u = $c->user;
-    my $cur_pass  = md5_hex($c->request->params->{cur_pass});
+    my $cur_pass  = $c->request->params->{cur_pass};
     my $good_pass = $u->password();
-    my $new_pass  = md5_hex($c->request->params->{new_pass});
-    my $new_pass2 = md5_hex($c->request->params->{new_pass2});
+    my $new_pass  = $c->request->params->{new_pass};
+    my $new_pass2 = $c->request->params->{new_pass2};
     @mess = ();
     if ($cur_pass) {
-        if ($good_pass ne $cur_pass) {
+        if ($good_pass ne md5_hex($cur_pass)) {
             push @mess, "Current password is not correct.";
         }
         elsif ($new_pass ne $new_pass2) {
@@ -406,7 +406,7 @@ sub profile_password_do : Local {
         return;
     }
     $u->update({
-        password => $new_pass,
+        password => md5_hex($new_pass),
     });
     $c->response->redirect($c->uri_for('/user/profile_view/1'));
 }
