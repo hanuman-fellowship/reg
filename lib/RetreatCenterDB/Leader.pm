@@ -30,6 +30,23 @@ sub name_public_email {
     return $person->first() . " " . $person->last()
          . " <" . $self->public_email() . ">";
 }
+
+#
+# leaders are allowed to have only one name.
+# normal people are not.
+# is this fair? this is not egalitarian.
+#
+sub leader_name {
+    my ($self) = @_;
+    my $person = $self->person;
+    if ($self->just_first) {
+        return $person->first;
+    }
+    else {
+        return $person->first . ' ' . $person->last;
+    }
+}
+
 1;
 __END__
 overview - People can become Leaders of programs.
