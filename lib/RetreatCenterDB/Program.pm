@@ -385,9 +385,7 @@ sub leader_names {
     }
     my $s = "";
     my @leaders = map {
-                      my $p = $_->person();
-                      $_->just_first()? $p->first()
-                      :                 $p->first . " " . $p->last
+                      $_->leader_name
                   }
                   grep {
                     ! $_->assistant

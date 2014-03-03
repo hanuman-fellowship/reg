@@ -51,7 +51,7 @@ for my $pr (@programs) {
     my @leaders = $pr->leaders;
     my $leader_name;
     if (@leaders) {
-        $leader_name = $leaders[0]->person->name;
+        $leader_name = $leaders[0]->leader_name;
     }
     my $title = $pr->title;
     my $n = 0;
