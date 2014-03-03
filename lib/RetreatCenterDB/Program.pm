@@ -986,7 +986,9 @@ sub prog_type {
         $type .= "MMI ";
     }
     if (! $self->PR && ! $self->linked()) {
-        $type .= "Unlinked ";
+        if ($self->school == 0 || $self->level() eq 'A') {
+            $type .= "Unlinked ";
+        }
     }
     if ($self->rental_id()) {
         $type .= "Hybrid ";
