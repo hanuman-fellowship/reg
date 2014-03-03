@@ -158,14 +158,8 @@ sub future_programs {
             edate    => { '>=', tt_today($c)->as_d8() },
             webready => 'yes',
             -or => [
-                school => 0,        # MMC
-                -or => [
-                    level => 'A',      # MMI standalone course
-                    -and => [
-                        level => 'S',
-                        name  => { like => '%-D%' },    # Diploma courses
-                    ],
-                ],
+                school => 0,       # MMC
+                level => 'A',      # MMI standalone course
             ],
         },
         { order_by => [ 'sdate', 'edate' ] },
@@ -991,7 +985,7 @@ sub prog_type {
     if ($self->school() != 0) {
         $type .= "MMI ";
     }
-    elsif (! $self->PR && ! $self->linked()) {
+    if (! $self->PR && ! $self->linked()) {
         $type .= "Unlinked ";
     }
     if ($self->rental_id()) {

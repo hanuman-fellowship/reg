@@ -176,6 +176,23 @@ sub link {
 sub event_type {
     return "rental";
 }
+sub rental_type {
+    my ($self) = @_;
+    my $type = "";
+    if ($self->cancelled()) {
+        $type .= "Cancelled ";
+    }
+    else {
+        if ($self->program_id) {
+            $type .= "Hybrid ";
+        }
+        if ($self->linked) {
+            $type .= "<span style='color: green'>w</span> ";
+        }
+    }
+    chop $type;
+    return $type;
+}
 sub meeting_places {
     my ($self, $breakout) = @_;
     places($self, $breakout);

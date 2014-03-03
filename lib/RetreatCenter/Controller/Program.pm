@@ -1321,11 +1321,6 @@ sub publish : Local {
     my $tt = Template->new();
     PROGRAM:
     for my $p (@programs) {
-        next PROGRAM if $p->school != 0;    # skip MMI standalone courses
-                # not sure why future_programs sends along
-                # MMI programs if we're going to ignore them...
-                # we do include them in the prog_table for some reason.
-                # see mmi_publish.
         my $fname = $p->fname();
         my $copy = $p->template_src();
         $tt->process(
@@ -1344,14 +1339,11 @@ sub publish : Local {
     }
 
     #
-    # generate the program and event calendars
-    # each program (MMC and MMI standalone courses) and each rental
-    # will appear EITHER on the program OR the event calendar
-    # not both.
-    #
-    # Only MMC programs will appear on the program calendar.
-    # Rentals and MMI standalone courses appear on the event calendar.
+    # generate the program and event calendars.
+    # programs (MMC and MMI standalone courses) appear only on the program calendar.
+    # rentals appear only on the event calendar.
     # Unlinked MMC programs appear on neither.
+    #
     # It's okay to require that MMI standalone courses have linked checked.
     # Yes?
     #
@@ -1379,7 +1371,7 @@ sub publish : Local {
                @rentals
     ) {
         my $rental = (ref($e) =~ m{Rental$});
-        my $for_event_calendar = $rental || $e->school != 0;
+        my $for_event_calendar = $rental;
 
         my $sdate = $e->sdate_obj;
         my $smonth = $sdate->month;
