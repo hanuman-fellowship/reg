@@ -216,15 +216,6 @@ sub _get_data {
         # MMC
         $P{level} = ' ';
     }
-    #else {
-        # MMI
-        # force this. for now...
-        # MMI may have web pages someday?
-        # yes.  today.
-    #    $P{webready} = '';
-    #    $P{linked} = '';
-    #    $P{unlinked_dir} = '';
-    #}
     # since unchecked boxes are not sent...
     for my $f (qw/
         collect_total
@@ -247,7 +238,7 @@ sub _get_data {
 
     @mess = ();
     # no need for the check for MMI standalone coursew
-    if ($P{webready} && $P{school} == 0 && ! $P{linked}) {
+    if ($P{webready} && ! $P{linked}) {
         if ($P{ptemplate} eq 'default') {
             push @mess, "Unlinked programs cannot use the standard template.";
         }
