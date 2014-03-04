@@ -111,5 +111,7 @@ Feb 15 12:00-3:30
     meeting with Jamal, Kevin, Shantam
 Feb 20 8:00-9:45
     getting Shantam going again
-Mar 2 6:00-6:15
+Mar 2 6:00-8:00
     Adyashanti no last => Adyashanti
+    MMI stand alone are now published to mountmadonna.org
+    Rentals on the web now have a green 'w'.

@@ -13,7 +13,6 @@ create table program (
     confnote    text,
     url         text,
     webdesc     text,
-    brdesc      text,
     webready    text,
     image       text,
     kayakalpa   text,

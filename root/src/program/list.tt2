@@ -9,8 +9,6 @@
 [% END %]
 [% IF admin %]
     &nbsp;&nbsp;&nbsp;
-    <a href="/program/brochure">Brochure</a>
-    &nbsp;&nbsp;&nbsp;
     <a href="/program/publish">Publish<a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish_pics">PublishPics<a>

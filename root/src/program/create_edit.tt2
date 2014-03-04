@@ -339,30 +339,27 @@ $cat_opts
 </tr>
 
 <tr>
-<th align=right valign=top>Brochure Description</th>
-<td colspan=5><textarea name=brdesc cols=60 rows=[% brdesc_rows %]>[% program.brdesc %]</textarea></td>
-</td>
-</tr>
-
-<tr>
 <th align=right>Footnotes</th>
 <td><input type=text name=footnotes value="[% program.footnotes %]" size=5></td>
 <td><input type=submit id=sub value="Submit"></td>
 </tr>
 
+[% no_publish = program.school != 0 && program.level != 'A'? 'disabled': '' %]
+
 <tr>
 <th align=right>Web Ready</th>
-<td><input type=checkbox value=yes name=webready [% check_webready %]></td>
+<td><input type=checkbox value=yes name=webready [% check_webready %] $no_publish>
+</td>
 </tr>
 
 <tr>
 <th align=right>Linked</th>
-<td><input type=checkbox value=yes name=linked [% check_linked %]></td>
+<td><input type=checkbox value=yes name=linked [% check_linked %] $no_publish></td>
 </tr>
 
 <tr>
 <th align=right>Unlinked Dir</th>
-<td><input type=text name=unlinked_dir size=20 value="[% program.unlinked_dir %]">
+<td><input type=text name=unlinked_dir size=20 value="[% program.unlinked_dir %]" $no_publish>
 </tr>
 
 <tr>

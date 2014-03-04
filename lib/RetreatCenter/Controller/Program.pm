@@ -929,7 +929,6 @@ sub update : Local {
             <root/static/templates/letter/*.tt2>
         ],
         webdesc_rows => lines($p->webdesc()) + 5,
-        brdesc_rows  => lines($p->brdesc()) + 5,
         cat_opts     => _cat_opts($c, $p->category_id()),
         school_opts  => $sch_opts,
         level_opts   => $level_opts,
@@ -1617,93 +1616,6 @@ sub publish_pics : Local {
         ftp_dir2 => $string{ftp_dir2},
         template => "program/published.tt2",
     );
-}
-
-sub brochure : Local {
-    my ($self, $c) = @_;
-
-    # make a guess at the season we are generating.
-    my $d = tt_today($c);
-    my $m = $d->month();
-    my $y = $d->year() % 100;
-    my $seas;
-    if (4 <= $m && $m <= 9) {
-        $seas = 'f';
-    }
-    else {
-        $seas = 's';
-        ++$y if 10 <= $m && $m <= 12;
-    }
-    stash($c,
-        season   => sprintf("$seas%02d", $y),
-        fee_page => 11,
-        template => "program/brochure.tt2",
-    );
-}
-
-sub brochure_do : Local {
-    my ($self, $c) = @_;
-
-    my $season   = $c->request->params->{season};
-    my ($bdate, $edate);
-    if (my ($s, $y) = $season =~ m{(^[fs])(\d\d)$}i) {
-        $s = lc $s;
-        $y += 2000;
-        $bdate = ($s eq 'f')? $y."1001": $y."0401";
-        $edate = ($s eq 'f')? ($y+1)."0331": $y."0930";
-    }
-    else {
-        error($c,
-            "Invalid season.",
-            "program/error.tt2",
-        );
-        return;
-    }
-    my $fee_page = $c->request->params->{fee_page};
-    if ($fee_page !~ m{^\d+$}) {
-        error($c,
-            "Invalid fee page number.",
-            "program/error.tt2",
-        );
-        return;
-    }
-    my $fname = "root/static/brochure.txt";
-    open my $br, ">", $fname
-        or die "cannot create $fname";
-    my $n = 0;
-    for my $p (model($c, 'Program')->search(
-                   {
-                       sdate => { 'between' => [ $bdate, $edate ] },
-                       linked => 'yes',
-                       webready => 'yes',
-                   },
-                   { order_by => 'sdate' },
-               ))
-    {
-        ++$n;
-        print {$br} "\@date:<\$>", $p->dates3, "\n";
-        print {$br} "\@wkshop intro<\$>", $p->title, "\n";
-        print {$br} "\@wkshop<\$>", $p->subtitle, "\n";
-        my $s = $p->leader_names();
-        if ($s) {
-            print {$br} "\@presenter<\$>$s\n";
-        }
-        print {$br} "\@initial paragraph<\$>",
-            expand2(($p->brdesc())? $p->brdesc(): $p->webdesc());
-        $s = expand2($p->leader_bio());
-        if ($s) {
-            print {$br} "\@text<\$>$s";
-        }
-	    print {$br} "<B>Tuition \$" . $p->tuition
-                  . "</B>, plus fees (see page $fee_page)\n";
-        print {$br} "<\\c>";
-    }
-    if ($n == 0) {
-        print {$br} "No programs in season \U$season.\n";
-    }
-    close $br;
-    $fname =~ s{root}{};
-    $c->response->redirect($c->uri_for($fname));
 }
 
 #

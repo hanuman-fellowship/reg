@@ -74,8 +74,6 @@ function UNreserve_cluster(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF web_designer %]
-    <a href=/program/brochure>Brochure</a>
-    &nbsp;&nbsp;&nbsp;
     [% IF program.PR %]
         <a href=/program/publishPR/$id>PublishPR<a>
         &nbsp;&nbsp;&nbsp;
@@ -522,12 +520,6 @@ $leaders_house
 <tr>
 <th align=right valign=top>Web Description</th>
 <td colspan=5>$program.webdesc</td>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Brochure Description</th>
-<td colspan=5>$program.brdesc</td>
 </td>
 </tr>
 

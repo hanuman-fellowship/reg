@@ -43,7 +43,6 @@ __PACKAGE__->add_columns(qw/
     confnote
     url
     webdesc
-    brdesc
     webready
     image
     kayakalpa
@@ -1045,8 +1044,6 @@ overview - Programs are MMC (and MMI) sponsored events for which we do registrat
     They have many attributes and many relations to other tables.  
 allow_dup_regs - Can a person sign up more than once?  Personal Retreats have this field set to 'yes'.
     Other programs could have it set as well.  If not set we prohibit a duplicate registration.
-brdesc - A lengthy description of the program for the brochure.  If empty
-    we take the webdesc field.
 cancelled - boolean - Has this program been cancelled?  Set/Unset via a menu link.
 canpol_id - foreign key to canpol
 category_id - foreign key to category
