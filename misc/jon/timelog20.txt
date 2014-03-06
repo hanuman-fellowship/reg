@@ -115,3 +115,6 @@ Mar 2 6:00-8:00
     Adyashanti no last => Adyashanti
     MMI stand alone are now published to mountmadonna.org
     Rentals on the web now have a green 'w'.
+Mar 3 9:00-10:30
+    removing Brochure functionality, remedying the publishing error
+    introduced by making MMI stand alone courses publishable.

@@ -156,10 +156,11 @@ sub future_programs {
         {
             edate    => { '>=', tt_today($c)->as_d8() },
             webready => 'yes',
-            -or => [
+# uncomment when Brajesh says so
+#            -or => [
                 school => 0,       # MMC
-                level => 'A',      # MMI standalone course
-            ],
+#                level => 'A',      # MMI standalone course
+#            ],
         },
         { order_by => [ 'sdate', 'edate' ] },
     );
