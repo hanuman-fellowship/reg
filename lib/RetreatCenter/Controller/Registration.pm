@@ -4968,9 +4968,9 @@ sub mmi_import : Local {
     my @progs = model($c, 'Program')->search({
         school => { '!=', 0      },
         # should we only accept DCM people in the same school
-        # as the course we are importing into???
+        # as the course we are importing into???   No.
         #
-        level  => { '!=', 'S'    },
+        level  => { -in, [qw/ D C M /]},
         sdate  => { '<=', $sdate },
         edate  => { '>=', $sdate },
     },
