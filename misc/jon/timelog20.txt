@@ -118,3 +118,99 @@ Mar 2 6:00-8:00
 Mar 3 9:00-10:30
     removing Brochure functionality, remedying the publishing error
     introduced by making MMI stand alone courses publishable.
+
+Mar 10 9:00-10:30
+    responding to various requests
+        MMI import, registration closed for Weintraub - not.
+        color in SH 2
+
+
+    Agenda for Reg Meeting
+    Saturday, 2/15/2014 — 12:00pm
+
+    Shantam added:
+    General overview of dependencies and locations of files.
+    What is the web server being used?
+    Can we switch to Apache? Should we?
+    Backups and Regular Data Exports
+    Jayanti mentioned having a recent copy of certain info available in case of an emergency (sums, list of current registrations, etc.)
+
+    Kevin added:
+    Internet functional dependencies?
+
+    Sahadev added:
+    Overview of what Reg does
+    How Reg on Kali accesses mountmadonna.org
+    Online registrations - the archive
+    How newKali is the backup machine in case (when) Kali dies
+    Overview of the database schema
+    How Reg accesses the database via DBIx::Class
+    Catalyst dispatch
+    Template::Toolkit and the simple way Reg uses it
+    Perl vs Ruby vs PHP vs Python
+    Perl Best Practices
+    cronjobs
+    A partial list of tasks that need doing
+    hashing of passwords
+    ayurvedic consultation system
+    mirror mysql to newkali
+    A mass delete of Rental housing - for Barnaby
+    Finish documenting the Strings
+    Hide net passwords in Reg, Change mmc’s password
+    Unduplication, better prevention of duplicates
+    Allowing the edit of names in online regs in some circumstances
+    Distributed Data Update - document, test, and use it
+    MMI and MMC Program tallies - add a column to charges and payments
+    Use jQuery - replace code that is there now
+    Date picker - now used in only one place on mountmadonna.org
+    Color picker - to replace my homemade simple one
+    Redesign of Member dialog
+    Uncluttering the top line of the calendar
+    an automatic way of backing up HTML versions of recent critical data - registrations and sums and … - to a dedicated USB stick plugged into kali?  email to some account?
+    color of room (program/rental) is set on first resident
+        if changes later the color does not
+    Job queue to handle long running (or global web dependent) tasks
+        a way of seeing the job queue
+    newly added/updated templates get clobbered when a push is done
+        better way?
+    How Sahadev is old and tired and would be very appreciative of help with Reg
+
+
+    Tasks
+
+    Update password security with new display / change methods
+    Move New Kali to High School
+    Backup WWW files locally
+    For current + future (30 / 60 / 90 days) program, write out to HTML for backup purposes
+    Time Sync Kali + New Kali
+
+    subsequent action items:
+
+    Kevin
+        move newKali to the school
+        put a USB stick in kali [ that sounds odd, somehow :) ] and let Sahadev know when it’s there
+            and how/where to write to it
+
+    Jamal
+        test out the Distributed Update feature and then use it for real
+            on a small subset
+            after Sahadev has documented it again
+
+    Shantam
+        pull from bitbucket
+        use Digest::MD5 for hashing the user passwords
+            several parts to this including a migration step
+
+    Sahadev
+        Jobs - to do do longer running processes in the background
+            like sending email, sending grids back and forth, etc
+            so that there is no delayed response time from Reg to any request
+        Jayanti’s request to create emergency backup files - sums, reg list, daily pic
+            and write them to the USB stick in Kali
+            cron job that runs how often?
+            of current and soon to come programs
+            perhaps have links to registrations active as well?
+            will need to disable many links
+        send Shantam some pointers on where to update the code
+            for his task
+        document the Distributed Update feature for Jamal
