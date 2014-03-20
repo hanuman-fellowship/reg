@@ -1045,7 +1045,7 @@ sub bulk_do : Local {
         my %partner = map { $_->id => $_ } @people;
         PERSON:
         for my $p (@people) {
-            next PERSON if ! $p->id_sps;
+            next PERSON if ! $p->id_sps || ! exists $partner{$p->id_sps};
             my $sps = $partner{$p->id_sps};
             if ($sps->last eq $p->last) {
                 $sps->{name} = $sps->first
