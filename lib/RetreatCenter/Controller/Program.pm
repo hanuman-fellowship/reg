@@ -2433,9 +2433,6 @@ sub cancel : Local {
             );
             return;
         }
-        $p->update({
-            cancelled => 'yes',
-        });
         if (my @blocks = $p->blocks) {
             error($c,
                 "Cannot cancel a program with blocks.",
@@ -2450,6 +2447,9 @@ sub cancel : Local {
             );
             return;
         }
+        $p->update({
+            cancelled => 'yes',
+        });
     }
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }
