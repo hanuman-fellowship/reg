@@ -342,7 +342,7 @@ sub _get_data {
     #
     if (!@mess
         && $P{name} !~ m{personal\s+retreat}i
-        && $P{name} != m{template}i
+        && $P{name} !~ m{template}i
     ) {
         $P{name} = ensure_mmyy($P{name}, $sdate);
     }

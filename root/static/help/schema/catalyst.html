@@ -1,0 +1,76 @@
+<head>
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+</head>
+<h2>Catalyst - URL Dispatch
+<span class=to_schema><a href=/static/help/schema/index.html>To Schema</a></span>
+</h2>
+Reg uses a Perl module named 'Catalyst' to help organize the code.
+It implements an MVC design pattern - MVC stands for Model/View/Controller.
+One main thing Catalyst does is take a URL and converts it to
+a method call in a particular class.  This is called 'dispatch'.
+<p>
+The so-called "Controller" classes all live in Reg/lib/RetreatCenter/Controller
+and are derived from the parent class Catalyst::Controller.
+<p>
+In the source tree is a very simple Controller class only for the
+purpose of demonstration.  It is called Hello.pm and looks like this:
+
+<pre style="margin-left: 10mm">
+use strict;
+use warnings;
+package RetreatCenter::Controller::Hello;
+use base 'Catalyst::Controller';
+
+use lib '../../';       # so you can do a perl -c here.
+use Util qw/
+    model
+    stash
+/;
+
+sub index : Local {
+    my ($self, $c) = @_;
+
+    $c->forward('demo');
+}
+
+sub demo : Local {
+    my ($self, $c, $name, $i) = @_;
+
+    $name ||= 'Sahadev';
+    $i ||= 42;
+    stash($c,
+        template => 'hello/demo.tt2',
+        number   => $i,
+        name     => $name,
+    );
+}
+
+1;
+</pre>
+The index method is what is called with the URL:
+<pre style="margin-left: 10mm">
+    kali:3000/hello
+</pre>
+<p>
+It forwards control on to 'demo'.
+<p>
+This URL:
+<pre style="margin-left: 10mm">
+    kali:3000/hello/demo/Charles/28
+</pre>
+goes directly to the 'demo' method in Hello.pm and passes along
+the 'Charles' and the 28 as parameters to that method (see $name and $i above).
+Preceding these two parameters you will always have
+$self and $c.   $c is the "catalyst context" and is
+used in several places.   Note also the ': Local'.  This is needed
+for Catalyst to be able to dispatch URLs to it.   There are other things
+that one can give aside from 'Local' but these are not used in Reg.
+<p class=p2>
+In the demo method you see the utility subroutines 'model' and 'stash' (from
+Reg/lib/Util.pm and exported from there into Hello.pm).
+stash() is used to create the screen output of the 'demo' method.
+You first give it $c.   Then a hash of values.  One key of the hash
+must be 'template' - the value of which is a pathname to a 'Template Toolkit' file
+with a .tt2 suffix.  The pathname begins at Reg/root/src/ - this is where
+the "Views" live.   The other parameters to stash() are passed along to
+the template.   Here's what a template would look like - the 'hello/demo.tt2' file:

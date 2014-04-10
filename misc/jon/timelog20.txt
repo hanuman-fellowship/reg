@@ -214,3 +214,22 @@ Mar 10 9:00-10:30
         send Shantam some pointers on where to update the code
             for his task
         document the Distributed Update feature for Jamal
+Mar 14 5:00-5:20, 12:00-12:20
+    responding to two requests from Barnaby
+    responding to a request from Swapna
+Mar 17 10:40-11:00
+    responding to a query from Jayanti
+Mar 22 10:00-11:00
+    documentation on Catalyst dispatch and Templates
+Mar 29 12:00-12:45
+    responding to a new feature request from Brajesh
+    mmi online reg - education
+    a little bit more on documentation for the developer
+Apr 1 12:00-13:20
+    restoring missing online registrations - why did this happen??
+        how did they get into online_done? need to write into
+        online_log when grab_new starts.
+Apr 9 10:30-12:00
+    implementing several recent requests.
+    need to scp reg1.tt2 files up to garlic and mmi.
+    and republish the PR.
