@@ -188,18 +188,22 @@ Web
 </tr>
 
 <tr>
-<td colspan=2 align=center><a href=/rental/clusters/$id>Cluster Reservations</a></td>
-<td><div style="margin-left: .3in">
+<td colspan=2><span class=head>Cluster Reservations</span>
+&nbsp;&nbsp;
+<a href=/rental/clusters/$id>Update</a></td><td colspan=2 align=left>$clusters</td>
+</tr>
+<tr>
+<td colspan=2 align=right>
 <span class=head>Blocks</span>
-<a style="margin-left: .3in"
-   href=/block/bound_create/rental/$id
->New Block</a>
+&nbsp;&nbsp;<a href=/block/bound_create/rental/$id>New Block</a>
+</td>
+<td align=left>
 [% FOR bl IN rental.blocks %]
-    <span style="margin-left: .4in"><a href=/block/view/$bl.id>$bl.house.name</a></span>
+    <a href=/block/view/$bl.id>$bl.house.name</a>&nbsp;&nbsp;
 [% END %]
 </span>
 </p>
-</div></td>
+</td>
 </tr>
 </table>
 

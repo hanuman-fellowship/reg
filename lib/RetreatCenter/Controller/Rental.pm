@@ -462,6 +462,12 @@ sub view : Local {
                 + 1;
 
     my @h_types = housing_types(0);
+    my $clusters = join ', ',
+                   map {
+                       $_->name()
+                   }
+                   reserved_clusters($c, $rental_id, 'rental')
+                   ;
 
     stash($c,
         ndays          => $ndays,
@@ -493,6 +499,7 @@ sub view : Local {
                                               $rental->sdate_obj(),
                                               $rental->edate_obj(),
                                 ): "",
+        clusters       => $clusters,
         template       => "rental/view.tt2",
     );
 }
