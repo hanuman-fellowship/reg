@@ -188,7 +188,7 @@ Web
 </tr>
 
 <tr>
-<td colspan=2><span class=head>Cluster Reservations</span>
+<td colspan=2 align=right><span class=head>Cluster Reservations</span>
 &nbsp;&nbsp;
 <a href=/rental/clusters/$id>Update</a></td><td colspan=2 align=left>$clusters</td>
 </tr>
