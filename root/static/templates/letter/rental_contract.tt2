@@ -4,7 +4,7 @@
 body {
     width: 6.5in;
     margin-left: .3in;
-    margin-top: 1.5in;
+    margin-top: 2in;
     font-size: 11pt;
 }
 h3 {
@@ -26,29 +26,29 @@ table {
 </style>
 </head>
 <body>
-${today.format("%B %e, %Y")}
+[% today.format("%B %e, %Y") %]
 <p>
-$signer.first $signer.last<br>
-$signer.addr1<br>
+[% signer.first %] [% signer.last %]<br>
+[% signer.addr1 %]<br>
 [% IF signer.addr2 %]
-$signer.addr2<br>
+[% signer.addr2 %]<br>
 [% END %]
-$signer.city, $signer.st_prov $signer.zip_post<br>
+[% signer.city %], [% signer.st_prov %] [% signer.zip_post %]<br>
 [% IF signer.country %]
-$signer.country<br>
+[% signer.country %]<br>
 [% END %]
 <p>
-Dear $signer.first,
+Dear [% signer.first %],
 <p>
 Here is the contract reflecting our agreement for your workshop
-on $rental.dates, ${rental.sdate_obj.format("%Y")}.  Please sign and return the original with your
+on [% rental.dates %], [% rental.sdate_obj.format("%Y") %].  Please sign and return the original with your
 deposit, keeping the copy for your files. Note that the contract expires
 if not returned with the deposit within two weeks. Also, here is our
 standard confirmation sheet including a map, directions,
 and other information you may find useful.
 <p>
 Please note the contract provisions regarding housing procedure,
-especially the \$5.00 to \$10.00 charge for any changes or additions
+especially the $5.00 to $10.00 charge for any changes or additions
 within the last week prior to the event. (You may want to set up a
 way to pass this cost on to participants who sign up after the
 one-week-prior date). We will be grateful if you can let us know,
@@ -63,7 +63,7 @@ list of the participants.
 To assist you in your housing assignment and financial tallies
 we have created a customized web page for you here:
 <ul>
-<a href=http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code>www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code</a>
+<a href=http://www.mountmadonna.org/cgi-bin/grid?code=[% rental.grid_code %]>www.mountmadonna.org/cgi-bin/grid?code=[% rental.grid_code %]</a>
 </ul>
 [% END %]
 <p>
@@ -103,36 +103,36 @@ Programs Director
 <div style="height: 1.125in"></div>
 <h3>Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
-$signer.first
-$signer.last
-of $signer.addr1[% IF signer.addr2 %] $signer.addr2[% END %],
-$signer.city, $signer.st_prov
-$signer.zip_post, [% IF signer.country %]$signer.country[% END %]
-for &#145;${rental.name}&#146;, hereafter called the Renter, hereby agree as follows:
+[% signer.first %]
+[% signer.last %]
+of [% signer.addr1 %][% IF signer.addr2 %] [% signer.addr2 %][% END %],
+[% signer.city %], [% signer.st_prov %]
+[% signer.zip_post %], [% IF signer.country %][% signer.country %][% END %]
+for &#145;[% rental.name %]&#146;, hereafter called the Renter, hereby agree as follows:
 <h2>Facilities</h2>
-The Center will provide workshop space in the ${rental.meeting_spaces},
-or a comparable facility, and lodging for up to $rental.max
-people from ${rental.start_hour_obj.format('ampm')} on ${rental.sdate_obj.format("%A %B %e, %Y")}
-to ${rental.end_hour_obj.format('ampm')} on ${rental.edate_obj.format("%A %B %e, %Y")} at the following rates:
+The Center will provide workshop space in the [% rental.meeting_spaces %],
+or a comparable facility, and lodging for up to [% rental.max %]
+people from [% rental.start_hour_obj.format('ampm') %] on [% rental.sdate_obj.format("%A %B %e, %Y") %] 
+to [% rental.end_hour_obj.format('ampm') %] on [% rental.edate_obj.format("%A %B %e, %Y") %] at the following rates:
 <h2>Rates</h2>
 The costs below are dollars per person per day.
 [% hc = rental.housecost %]
 <table cellpadding=2>
-<tr><td>Commuting</th><td align=right>$hc.commuting</td></tr>
-<tr><td>Own Tent</th><td align=right>$hc.own_tent</td></tr>
-<tr><td>Own Van</th><td align=right>$hc.own_van</td></tr>
+<tr><td>Commuting</th><td align=right>[% hc.commuting %]</td></tr>
+<tr><td>Own Tent</th><td align=right>[% hc.own_tent %]</td></tr>
+<tr><td>Own Van</th><td align=right>[% hc.own_van %]</td></tr>
 [% IF rental.summer %]
-<tr><td>Center Tent</th><td align=right>$hc.center_tent</td></tr>
+<tr><td>Center Tent</th><td align=right>[% hc.center_tent %]</td></tr>
 [% END %]
 [% IF hc.economy %]
-<tr><td>Economy</td><td align=right>$hc.economy</td></tr>
+<tr><td>Economy</td><td align=right>[% hc.economy %]</td></tr>
 [% END %]
-<tr><td>Dormitory (4-7 to a room)</td><td align=right>$hc.dormitory</td></tr>
-<tr><td>Triple</td><td align=right>$hc.triple</td></tr>
-<tr><td>Double</td><td align=right>$hc.dble</td></tr>
-<tr><td>Double with bath</td><td align=right>$hc.dble_bath</td></tr>
-<tr><td>Single</td><td align=right>$hc.single</td></tr>
-<tr><td>Single with bath</td><td align=right>$hc.single_bath</td></tr>
+<tr><td>Dormitory (4-7 to a room)</td><td align=right>[% hc.dormitory %]</td></tr>
+<tr><td>Triple</td><td align=right>[% hc.triple %]</td></tr>
+<tr><td>Double</td><td align=right>[% hc.dble %]</td></tr>
+<tr><td>Double with bath</td><td align=right>[% hc.dble_bath %]</td></tr>
+<tr><td>Single</td><td align=right>[% hc.single %]</td></tr>
+<tr><td>Single with bath</td><td align=right>[% hc.single_bath %]</td></tr>
 </table>
 Children aged 2 to 12 staying in the room
 with a guest will pay 1/2 of the above rates.
@@ -153,12 +153,9 @@ Charges are based on actual occupancy, not room capacity
 [% IF rental.seminar_house %]
 <b>Renter agrees to house a minimum of 15 guests in the Seminar House.</b>
 [% END %]
-[% IF ! lunch %]
-If lunches are requested for the group there will be a charge
-of \$11/person/day.
-[% END %]
-<i>There will be a charge of
-\$2/person/hour for any additional time before 4:00 pm on the start date,
+<i>There will be an additional charge of
+$2/person/hour for any
+additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
@@ -178,7 +175,7 @@ within the first half-hour of mealtime. Meals are at the
 Community Building for the renter,
 other guests of the Center, and the Center community.
 <h2>Payment and Cancellation Policies</h2>
-The renter will pay a deposit of \$$deposit amount
+The renter will pay a deposit of $[% deposit %] amount
 upon the signing of this contract.
 <p>
 “Agreed Upon Revenue” is equal to the number of people specified
@@ -189,9 +186,9 @@ For example, if the reservation is for x number of attendees
 for y number of days, the Agreed Upon Revenue is 
 (x)(y)(dormitory rate above). 
 <p>
-In this particular case, x = ${rental.max}, y = ${ndays},
-and the dormitory rate is \$$rental.housecost.dormitory per day.
-The Agreed Upon Revenue is thus \$${agreed}.
+In this particular case, x = [% rental.max %], y = [% ndays %],
+and the dormitory rate is $[% rental.housecost.dormitory %] per day.
+The Agreed Upon Revenue is thus $[% agreed %].
 <p>
 Cancellation charges shall be as follows:
 <table cellpadding=2>
@@ -229,7 +226,7 @@ or at the 75% of Agreed Upon Revenue formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
 <p>
-<b>The minimum due for your workshop is 75% of \$$agreed &nbsp;&nbsp;=&nbsp;&nbsp; \$${min_due}.</b>
+<b>The minimum due for your workshop is 75% of $[% agreed %]&nbsp;&nbsp;=&nbsp;&nbsp;$[% min_due %].</b>
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Concurrent Workshops</h2>
@@ -273,8 +270,8 @@ received after that point.
 The Center cannot guarantee that accommodation requests received
 later than two weeks out will be accepted.
 For housing requests received within the last week before the event,
-those that can be accepted will be surcharged \$5.00 per
-outdoor accommodation and \$10.00 per indoor accommodation.
+those that can be accepted will be surcharged $5.00 per
+outdoor accommodation and $10.00 per indoor accommodation.
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Arbitration</h2>
@@ -289,15 +286,6 @@ California.
 <h2>General Provisions</h2>
 This agreement is not a lease and it is agreed by the
 parties that no tenancy is created hereby.
-<p>
-Renter shall indemnify, defend and hold the Center harmless from any claims,
-actions, damages, liabilities, costs and expenses (including attorneys' fees
-and costs) resulting from the loss of life, injury or damage to property
-arising from any occurrence related to Renter’s activities on the Center’s
-premises, or caused wholly or in part by any act or omission of Renter
-or its representatives.  Renter waives any potential claim by Renter
-against the Center in the event of any such occurrence.
-<p>
 This agreement is intended to be a complete statement of the
 terms and conditions of the rental, and for the protection of both parties,
 any modification of this agreement is required to be in writing
@@ -314,7 +302,7 @@ of the date alongside the Program Director's signature.
 </table>
 <table id=line border=0>
 <tr><td colspan=2><hr></td></tr>
-<tr><td id=name align=left>$signer.first $signer.last</td><td>Date</td></tr>
+<tr><td id=name align=left>[% signer.first %] [% signer.last %]</td><td>Date</td></tr>
 </table>
 </center>
 </body>

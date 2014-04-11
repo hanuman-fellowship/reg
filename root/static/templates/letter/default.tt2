@@ -56,12 +56,10 @@ h4 {
 .name {
     font-weight: bold;
 }
-.addr {
-    font-weight: normal;
-    margin-left: .25in;
+.hascar {
     color: red;
 }
-.contact {
+.addr {
     font-weight: normal;
     margin-left: .25in;
     margin-bottom: .2in;
@@ -193,66 +191,6 @@ For lodging you have been given $article "$htdesc" reservation.
 	you are due a refund of \$[% -1*reg.balance %].
 	We will issue you a refund when you check-in.
 [% END %]
-<P class=p2>
-[% IF personal_retreat %]
-Your retreat begins on the afternoon of 
-${reg.date_start_obj.format("%A, %B %e")}.
-[% ELSE %]
-Program registration is from
-[% IF mmi %]
-12:30-1:30 pm and 5:00-6:30 pm
-[% ELSE %]
-$program.reg_start_obj to $program.reg_end_obj
-[% END %]
-on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
-[% END %]
-</P>
-[% IF personal_retreat && sunday %]
-    <P class=p2><b>Your housing information will be posted
-    in the Community Building lobby.</b></P>
-    <P class=p2>Dinner is served from 5:00 pm to 6:00 pm.</P>
-[% ELSE %]
-    [% IF ! mmi %]
-	<P class=p2>Dinner is served from
-    [% IF program.retreat %]
-		5:00 pm to 6:00 pm.
-    [% ELSIF friday %]
-		5:30 pm to 6:30 pm.
-	[% ELSE %]
-		5:00 pm to 6:00 pm.
-	[% END %]
-    </P>
-
-    <P class=p2>Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  
-    Your first meal is dinner. If you wish to arrive earlier and have lunch (12:30-1:30),
-    you will need to make a lunch reservation by phoning 408-846-4065 at least 24 hours in advance.
-    </p>
-
-    <P class=p2>Check-out time is 1:00 pm on the day of your departure.  Please be sure to vacate your room 
-       prior to the check-out time.</p>
-
-    <P class=p2>
-	The office closes at ${program.reg_end_obj}.
-    <BR>
-    [% END %]
-	If you will <B>ARRIVE LATER</B> than 6:00 pm please call to let us know.<BR>
-    Notes are posted in the Community Building lobby for late arrivals.<BR>
-	We will save dinner for you on request.
-    </P>
-[% END %]
-<P class=p2>
-[% IF personal_retreat %]
-    Your retreat will end at $program.prog_end_obj
-    on ${reg.date_end_obj.format("%A, %B %e")}.
-[% ELSIF mmi %]
-    A schedule of your program will be sent to you separately.
-[% ELSE %]
-    Your program will begin at $program.prog_start_obj on
-    ${program.sdate_obj.format("%A")}
-    and will end at $program.prog_end_obj on
-    ${prog_end.format("%A, %B %e")}.
-[% END %]
-</P>
 [% staying = (htdesc != 'Commuting') %]
 [% camping = (htdesc == 'Your Tent' || htdesc == 'Center Tent') %]
 </P>
@@ -267,11 +205,8 @@ We suggest that you bring the following:
 <LI>flashlight</LI>
 <LI>warm clothing for cool nights and mornings</LI>
 <LI>comfortable clothes and shoes for a rural setting</LI>
-[% IF program.tub_swim %]
 <LI>a swimsuit for lake swimming or hot tubbing</LI>
-[% END %]
 <LI>water bottle</LI>
-<LI>your own mug for tea (optional)</LI>
 [% IF program.retreat %]
     <LI>loose clothing suitable for breathing practices and postures</LI>
     <LI>a blanket or mat for postures (optional)</LI>
@@ -300,7 +235,6 @@ We provide shampoo, conditioner, body wash, and lotion in all shower facilities.
 Our food service is strictly vegetarian &ndash; no meat, fish, fowl, or eggs.
 At each meal there are non-dairy and non-gluten options, and foods
 containing dairy and gluten are clearly marked.
-Please note that Saturday breakfast is at 10:00 a.m., but fruit, tea, and milks of various kinds are available 24/7.
 </P>
 <P class=p2>
 Please <STRONG>DO NOT</STRONG> bring the following onto the property:
@@ -314,21 +248,76 @@ Please <STRONG>DO NOT</STRONG> bring the following onto the property:
 <P class=p2>
 <SPAN class=scent>DO NOT</SPAN> wear scented body products.
 <p>
-[% IF program.single %]
-If you are a <span style="color: blue">snorer</span>,
-please request a single room or cabin.
-[% END %]
-If you are worried about someone in your room who might
-<span style="color: blue">snore</span>
+If you are a <span style="color: blue">snorer</span>, please request a single room or cabin;
+however, most of our accommodations are shared.
+If you are worried about someone in your room who might snore,
 we suggest wearing earplugs (provided), or waking the snorer.
 We will make an attempt to change your lodging the next day if you
 find yourself in a room with a snorer, but cannot guarantee
-that it will be possible; no changes can be made in the
-middle of the night. 
+that it would be possible; no changes can be made in the
+middle of the night.
 </P>
 <P class=p2>
 Due to extreme fire precautions <SPAN class=fire>DO NOT</SPAN> bring or use incense, candles,
 kerosene lamps, etc.
+</P>
+<P class=p2>
+[% IF personal_retreat %]
+Your retreat begins on the afternoon of 
+${reg.date_start_obj.format("%A, %B %e")}.
+[% ELSE %]
+Program registration is from
+[% IF mmi %]
+12:30-1:30 pm and 5:00-6:30 pm
+[% ELSE %]
+$program.reg_start_obj to $program.reg_end_obj
+[% END %]
+on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
+[% END %]
+</P>
+[% IF personal_retreat && sunday %]
+    <P class=p2><b>Your housing information will be posted
+    in the Community Building lobby.</b></P>
+    <P class=p2>Dinner is served from 5:00 pm to 6:00 pm.</P>
+[% ELSE %]
+    [% IF ! mmi %]
+	<P class=p2>Dinner is served from
+    [% IF program.retreat %]
+		6:00 pm to 7:00 pm.
+    [% ELSIF friday %]
+		5:30 pm to 6:30 pm.
+	[% ELSE %]
+		5:00 pm to 6:00 pm.
+	[% END %]
+    </P>
+
+    <P class=p2>Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  Check with 
+       the Programs Office if you plan to arrive before 4:00 pm.</p>
+
+    <P class=p2>Check-out time is 1:00 pm on the day of your departure.  Please be sure to vacate your room 
+       prior to the check-out time.</p>
+
+    <P class=p2>
+	The office closes at ${program.reg_end_obj}.
+    <BR>
+    [% END %]
+	If you will <B>ARRIVE LATER</B> than 6:00 pm please call to let us know.<BR>
+    Notes are posted in the Community Building lobby for late arrivals.<BR>
+	We will save dinner for you on request.
+    </P>
+[% END %]
+<P class=p2>
+[% IF personal_retreat %]
+    Your retreat will end at $program.prog_end_obj
+    on ${reg.date_end_obj.format("%A, %B %e")}.
+[% ELSIF mmi %]
+    A schedule of your program will be sent to you separately.
+[% ELSE %]
+    Your program will begin at $program.prog_start_obj on
+    ${program.sdate_obj.format("%A")}
+    and will end at $program.prog_end_obj on
+    ${prog_end.format("%A, %B %e")}.
+[% END %]
 </P>
 <P class=p2>
 $program.canpol.policy
@@ -395,13 +384,7 @@ $user.first $user.last
 [% ELSE %]
 <TR><TH align=right>Email</TH><TD><A HREF="mailto:programs@mountmadonna.org">programs@mountmadonna.org</A></TD></TR>
 [% END %]
-<TR><TH align=right valign=top>Business Hours</TH><TD align=left>
-[% IF mmi %]
-Tuesday-Thursday 9:00-5:00<BR>Friday 9:30-5:30<BR>Saturday 11:00-5:00
-[% ELSE %]
-Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 11:00-5:00
-[% END %]
-</TD></TR>
+<TR><TH align=right valign=top>Business Hours</TH><TD align=left>Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 11:00-5:00</TD></TR>
 <TR>
     <TH align=right valign=top>Map/Directions</TH>
     <TD align=left>Use only <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>, or directions <A HREF="#directions">below</A>. Do not use GPS, Mapquest or Yahoo Maps.</TD>
@@ -415,23 +398,16 @@ For massage and other procedures at Kaya Kalpa Wellness Center see <A href=#kaya
 <HR>
 [% IF carpoolers %]
     <H2>Carpool List</H2>
-This carpool list includes all the people who have requested carpool
-information as of today. You will be sent a more complete list 14 days
-prior to the beginning of the program, and again 7 days prior
-to the program.
-<p class=p2>
     [% FOR cp IN carpoolers %]
         [% p = cp.person %]
-        <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - HAS CAR[% END %]
+        <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - <SPAN class=hascar>HAS CAR</SPAN>[% END %]<BR>
         <DIV class=addr>
         [% IF cp.from_where == 'Home' %]
             $p.city, $p.st_prov $p.zip_post<br>
-            [% IF p.country %]$p.country[% END %]
+            [% IF p.country %]$p.country<br>[% END %]
         [% ELSE %]
-            From the $cp.from_where_verbose airport.<br>
+            From the $cp.from_where airport.<br>
         [% END %]
-        </div>
-        <div class=contact>
         $p.carpool_telephone
         [% IF p.email %]<A HREF="mailto:$p.email?subject=Carpooling to '$cp.program.title' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">$p.email</A>[% END %]
         </DIV>
