@@ -1,14 +1,24 @@
-[% INCLUDE style.tt2 %]
-[% message %]Dear [% sanskrit %],
+[% INCLUDE top.tt2 %]
+Dear $sanskrit,
 <p>
-Thank you for the payment of $[% amount %]
-for General Membership in the Hanuman Fellowship
-which we received on [% pay_date.format("%D") %].
-Your dues are in effect until [% expire_date.format("%D") %]. 
-[% IF toward_spons %]
-Your payment <i>will</i> be added to a Sponsor Membership total.
+Thank you for your generous commitment to the Hanuman Fellowship
+as a General Member and for being part of our supportive community.
+<p>
+We received your payment of dues in the amount of \$$amount
+on ${pay_date.format("%D")}.  Your next membership payment of
+\$$next will be due on ${due_date.format("%D")}.
+<p>
+[% IF new_member %]
+In order to become a voting member, your name will be voted on at the
+annual general meeting, held in May/June.  You are welcome to attend
+this meeting and, after approval, you will be eligible to vote in
+the election for Board of Directors, which is also held at that time.
+<p>
 [% END %]
+In order to receive the 20% discount on meals at MMC,
+kindly fill out the green meal ticket form, located in the back of
+binders found on the table near the entry to the dining room.
 <p>
-Information about HFS membership can be found <a href='[% string.mem_site %]'>here</a>.
-<p>
-[% INCLUDE info.tt2 %]
+To claim a Tax Deduction for this donation, you must deduct the
+value of any benefits you receive.
+[% INCLUDE bot.tt2 %]

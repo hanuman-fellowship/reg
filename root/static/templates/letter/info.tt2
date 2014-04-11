@@ -1,17 +1,26 @@
-Please note: 
-<ul>
-<li><span style='color: navy'>To initiate the use of your Credit Card
-please call the Reception Office</span> at [% string.mem_credit_phone %]
-during regular office hours: [% string.mem_credit_hours %].
-The receptionist will take your payment information and pass it to Membership.
-<li>If paying by check, make it payable to MMC rather than Hanuman Fellowship and note that the payment is for Membership.
-<li><span style='color: navy'>We are communicating by Email primarily, so please make sure that we have your correct information.</span>
-<li>Please use this notice as your receipt.
-<li>To claim a Tax Deduction for this donation, you must deduct the value of any benefits you receive.
-</ul>
-Sincerely,<br>
-Membership Team<br>
-[% string.mem_team %]
+[% IF has_email %]
+You can securely and simply pay your membership dues online
+by <a href=http://www.mountmadonna.org/cgi-bin/omp?code=$secure_code>clicking here</a>.
 <p>
-[% string.mem_phone %]<br>
-<a href='mailto:[% string.mem_email %]'>[% string.mem_email %]</a>
+[% END %]
+If you wish to pay with a personal check,
+the HFS Membership application form and information about the levels of membership can be found
+<a href=http://www.hanumanfellowship.org/HFS_Membership_Application.pdf >here</a>.
+Please print and mail the application form with your payment to renew your membership.
+<p>
+Please note:
+<ul>
+<li>We are attempting to communicate primarily by email,
+so please make sure that we have your current email address
+and other contact information. 
+<li>To claim a Tax Deduction for this donation,
+you must deduct the value of any benefits you receive.
+</ul>
+In Peace,
+<p>
+The Hanuman Fellowship<br>
+Membership Secretary<br>
+<a href=mailto:$string.mem_email>$string.mem_email</a><br>
+$string.mem_phone
+</body>
+</html>

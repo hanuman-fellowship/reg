@@ -1,14 +1,28 @@
-[% INCLUDE style.tt2 %]
-[% message %]Dear [% sanskrit %],
+[% INCLUDE top.tt2 %]
+Dear $sanskrit,
 <p>
-Thank you for the payment of $[% amount %]
-for Sponsor Membership in the Hanuman Fellowship
-which we received on [% pay_date.format("%D") %].
-Your benefits are now in effect.
-Your next Payment Due date will be due on [% due_date.format("%D") %].
-Through today you have paid a total of $[% total_paid %] toward your
-Sponsor Membership.
+Thank you for your generous commitment to the Hanuman Fellowship as a
+Sponsor Member and for continuing to be part of our supportive community.
 <p>
-[% INCLUDE spons.tt2 %]
+We received your payment of dues in the amount of \$$amount on
+${pay_date.format("%D")} which brings your total contribution
+to \$$subtot towards a Life Membership goal of \$${string.mem_life_total}.
+Your next membership payment of \$$next will be due on
+${due_date.format("%D")}.
 <p>
-[% INCLUDE info.tt2 %]
+We have activated your benefits for the $year membership year.
+[% IF new_member %]
+<p>
+In order to become a voting member, your name will be voted on at the
+annual general meeting, held in May/June.  You are welcome to attend
+this meeting and, after approval, you will be eligible to vote in
+the election for Board of Directors, which is also held at that time.
+[% END %]
+<p>
+In order to receive your 20% discount on meals at MMC, kindly fill
+in the green meal card, located in the back of the
+binders found on the table near the entry to the dining room.
+<p>
+To claim a Tax Deduction for this donation, you must deduct the
+value of any benefits you receive.
+[% INCLUDE bot.tt2 %]

@@ -1,6 +1,6 @@
 <html>
 <head>
-<meta name="keywords" content="<!--T leader_names -->, <!--T title1 -->, <!--T title2 -->, bay area yoga, bay area conference center, bay area retreat center, baba hari dass, vegetarian, meditation">
+<meta name="keywords" content="[% program.leader_names %], [% program.title1 %], [% program.title2 %], bay area yoga, bay area conference center, bay area retreat center, baba hari dass, vegetarian, meditation">
 <!--
 <style type="text/css">
 <!--
@@ -12,7 +12,7 @@ aa {text-decoration: none; }
 
 <meta content="text/html; charset=iso-8859-1">
 <title>
-<!--T title1 --> <!--T title2 -->
+[% program.title1 %] [% program.title2 %]
 </title>
 
 <link href="/mmc.css" rel="stylesheet" type="text/css">
@@ -134,7 +134,7 @@ border="0"></a></div></td>
                       <TD vAlign=top>
 					  <center>
 					  <TABLE height=230><TD><IMG src="/Gif/spacer.gif" width=1 height=230 align=left>
-			</TD><TD align=center><!--T picture --></TD></TABLE>
+			</TD><TD align=center>[% program.picture %]</TD></TABLE>
                         </center>
                         <HR>
                         <center>
@@ -152,10 +152,10 @@ border="0"></a></div></td>
                                   <td><img src="/Gif/spacer.gif" width="1" height="10" border="0" alt=""></td>
                                 </tr>
                                 <tr>
-                                  <td><a href="<!--T firstprog_prevmonth -->" target="_top" onClick="MM_nbGroup('down','navbar1','prev_month','/Gif/prev_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_month','/Gif/prev_month_f2.gif','/Gif/prev_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="prev_month" src="/Gif/prev_month.gif" width="42" height="26" border="0" alt=""></a></td>
-                                  <td><a href="<!--T firstprog_nextmonth -->" target="_top" onClick="MM_nbGroup('down','navbar1','next_month','/Gif/next_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_month','/Gif/next_month_f2.gif','/Gif/next_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="next_month" src="/Gif/next_month.gif" width="44" height="26" border="0" alt=""></a></td>
-                                  <td><a href="<!--T prevprog -->" target="_top" onClick="MM_nbGroup('down','navbar1','prev_prog','/Gif/prev_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_prog','/Gif/prev_prog_f2.gif','/Gif/prev_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="prev_prog" src="/Gif/prev_prog.gif" width="41" height="26" border="0" alt=""></a></td>
-                                  <td><a href="<!--T nextprog -->" target="_top" onClick="MM_nbGroup('down','navbar1','next_prog','/Gif/next_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_prog','/Gif/next_prog_f2.gif','/Gif/next_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="next_prog" src="/Gif/next_prog.gif" width="43" height="26" border="0" alt=""></a></td>
+                                  <td><a href="[% program.firstprog_prevmonth %]" target="_top" onClick="MM_nbGroup('down','navbar1','prev_month','/Gif/prev_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_month','/Gif/prev_month_f2.gif','/Gif/prev_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="prev_month" src="/Gif/prev_month.gif" width="42" height="26" border="0" alt=""></a></td>
+                                  <td><a href="[% program.firstprog_nextmonth %]" target="_top" onClick="MM_nbGroup('down','navbar1','next_month','/Gif/next_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_month','/Gif/next_month_f2.gif','/Gif/next_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="next_month" src="/Gif/next_month.gif" width="44" height="26" border="0" alt=""></a></td>
+                                  <td><a href="[% program.prevprog %]" target="_top" onClick="MM_nbGroup('down','navbar1','prev_prog','/Gif/prev_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_prog','/Gif/prev_prog_f2.gif','/Gif/prev_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="prev_prog" src="/Gif/prev_prog.gif" width="41" height="26" border="0" alt=""></a></td>
+                                  <td><a href="[% program.nextprog %]" target="_top" onClick="MM_nbGroup('down','navbar1','next_prog','/Gif/next_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_prog','/Gif/next_prog_f2.gif','/Gif/next_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><img name="next_prog" src="/Gif/next_prog.gif" width="43" height="26" border="0" alt=""></a></td>
                                   <td><img src="/Gif/spacer.gif" width="1" height="26" border="0" alt=""></td>
                                 </tr>
                                 <tr>
@@ -163,7 +163,7 @@ border="0"></a></div></td>
                                   <td><img src="/Gif/spacer.gif" width="1" height="29" border="0" alt=""></td>
                                 </tr>
                               </table>
-                              <!--T month_calendar -->
+                              [% program.month_calendar %]
                         </center></TD></TR></TBODY></TABLE></TD>
                 <TD background=/Gif/greenbox_right.gif></TD></TR>
               <TR>
@@ -202,24 +202,33 @@ border=0>
                             background=/Gif/whitebox_left.gif>&nbsp;</TD>
                             <TD bgColor=#ffffff class="pbody">
                               <p>
-							  <span class="ptitle"><!--T title1 --></span><br>
-                              <span class="psubtitle"><!--T title2 --></span><br>
-							  <span class="pdates"><!--T dates --></span></P>
+							  <span class="ptitle">[% program.title1 %]</span><br>
+                              <span class="psubtitle">[% program.title2 %]</span><br>
+							  <span class="pdates">[% program.dates %]</span></P>
 <p class="pdates"> REGISTRATION
     FULL!<br> 
-    <A href="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=<!--T id -->"><img src="/Gif/waiting_list_button.gif" alt="Register for this program" border="0"></A><br>
+    <A href="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=[% program.id %]"><img src="/Gif/waiting_list_button.gif" alt="Register for this program" border="0"></A><br>
 Economy dorm and commuting options only.</P>
 			    <p><img src="/Gif/section_desc.gif" border="0"></P>
 	
-				  <!--T webdesc_plus -->
-			      <!--T weburl -->
-				  <p><img src="/Gif/section_bio.gif" border="0" usemap="#section_bioMap"></P>
-			      <!--T leader_bio -->
+				  [% program.webdesc_plus %]
+                  [% IF program.documents %]
+                      <ul class=doc_ul>
+                      [% FOR d IN  program.documents %]
+                          <li><a href="docs/pdoc[% d.id %].[% d.suffix %]">[% d.title %]</a>
+                      [% END %]
+                  </ul>
+                  [% END %]
+			      [% program.weburl %]
+                  [% IF program.leader_bio %]
+                      <p><img src="/Gif/section_bio.gif" border="0" usemap="#section_bioMap"></P>
+                      [% program.leader_bio %]
+                  [% END %]
 				  <p><img src="/Gif/section_reg.gif" border="0"usemap="#section_regMap"></P>
-			     <CENTER><ul><!--T fee_table --></ul>
+			     <CENTER><ul>[% program.fee_table %]</ul>
 <p class="pdates"> REGISTRATION
     FULL!<br> 
-    <A href="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=<!--T id -->"><img src="/Gif/waiting_list_button.gif" alt="Register for this program" border="0"></A><br>
+    <A href="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=[% program.id %]"><img src="/Gif/waiting_list_button.gif" alt="Register for this program" border="0"></A><br>
 Economy dorm and commuting options only.</P></CENTER>
 <p><img src="/Gif/section_line.gif" border="0"></P>
 <BR>
@@ -279,7 +288,7 @@ urchinTracker();
             <br>
             A Project of<br>
                     <a href="http://www.hanumanfellowship.org" target="_blank"><img src="/Gif/logoHF.jpg" width="150" height="43" border="0"></a><br>
-                    Copyright <!-- T current_year -->, Hanuman Fellowship. All rights reserved. &bull; Last updated <!-- T current_date -->
+                    Copyright [% program.current_year %], Hanuman Fellowship. All rights reserved. &bull; Last updated [% program.current_date %]
                   </p>
                   <p>&nbsp;</p>
                 </center>

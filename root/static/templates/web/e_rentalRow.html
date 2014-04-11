@@ -1,16 +1,38 @@
-<tr>
+<TR CLASS="prog_row_spacing">
+	<TD CLASS="event_dates">
+		[% event.dates_tr2 %] 
+	</TD>
+	<TD>
+		<DIV CLASS="event_titles">
+			<SPAN class="event_title1">[% event.title1 %]</SPAN><BR />
+			<SPAN class="event_title2"><SPAN CLASS="event_subtitle">[% event.title2 %]</SPAN></SPAN><BR />
+		</DIV>		   
 
-<td>&nbsp;</td>
+		<DIV CLASS="event_type">
+			<A HREF="#" ID="detail_show[% event.id %]" CLASS="show_hide_link[% event.id %] show_link">show details</A><A HREF="#" ID="detail_hide[% event.id %]" CLASS="show_hide_link[% event.id %] hide_link">hide details</A>
+		</DIV>
+	</TD>
+</TR>
+		
+<TR>
+	<TD COLSPAN=2>
+		<DIV CLASS="event_details" ID="event_details[% event.id %]">
+			<SPAN CLASS="event_desc">
+				[% event.desc %] 
+			</SPAN>
+			
+			<SPAN class="event_phone">[% event.phone_str %]</SPAN><BR />
+			<SPAN class="event_website">[% event.weburl %]</SPAN><BR />
+			<SPAN class="event_email">[% event.email_str %]</SPAN><BR />
+		</DIV>
+	</TD>
+</TR>
 
-<td>
-
-<span class='event_dates'><!--T dates_tr2 --></span><br>
-<span class='event_title'><!--T title1 --></span><br>
-<!--T title2 -->
-<!--T desc -->
-<!--T phone_str -->
-<span class='event_website'><!--T weburl --></span>
-<!--T email_str -->
-
-</td>
-</tr>
+<SCRIPT TYPE="text/javascript"> 
+	$('.show_hide_link[% event.id %]').click(function() { 
+			$('#event_details[% event.id %]').toggle('fast');
+			$('#detail_show[% event.id %]').toggle('fast');
+			$('#detail_hide[% event.id %]').toggle('fast');
+			return false;				
+	});
+</SCRIPT>
