@@ -59,7 +59,6 @@ p {
 [% END %]
 [% IF web_des %]
     <a href=/string/list>Strings</a><p>
-    <a href=/template/list>Templates</a><p>
 [% END %]
 <a href=/user/profile_view>User Profile</a><p>
 [% IF mail_staff %]

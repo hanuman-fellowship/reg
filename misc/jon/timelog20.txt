@@ -229,7 +229,7 @@ Apr 1 12:00-13:20
     restoring missing online registrations - why did this happen??
         how did they get into online_done? need to write into
         online_log when grab_new starts.
-Apr 9 10:30-12:00
+Apr 9 10:30-12:50
     implementing several recent requests.
     need to scp reg1.tt2 files up to garlic and mmi.
     and republish the PR.
