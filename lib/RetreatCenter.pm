@@ -90,10 +90,6 @@ for my $a (qw/ leader affil /) {
     }
 }
 
-for my $a (qw/ list delete upload /) {
-    __PACKAGE__->deny_access_unless("/template/$a", ['web_designer']);
-}
-
 for my $a (qw/ list create create_do update update_do /) {
     __PACKAGE__->deny_access_unless("/member/$a", ['member_admin']);
 }
