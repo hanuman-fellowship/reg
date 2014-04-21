@@ -12,92 +12,111 @@ body {
     text-decoration: underline;
     font-weight: bold;
     font-size: 15pt;
+	padding: 40px;
+	border: 1px black solid;
 }
 .nice {
     font-style: italic;
 }
+.centered {
+	text-align: center;
+}
 </style>
+
 [% IF ! late_arr.0 %]
 No late notices today.
 [% END %]
 [% FOR reg IN late_arr %]
 Late Notice for:
 <p class=large>
-$reg.person.first $reg.person.last
+	$reg.person.first $reg.person.last
+</p>
 <p>
-Welcome to Mount Madonna Center!  We&rsquo;re glad that you have arrived,
-and hope you had a pleasant journey!!
+	Welcome to Mount Madonna Center!  We&rsquo;re glad that you have arrived,
+	and hope you had a pleasant journey!!
+</p>
 <p>
-You are registered for
-[% IF reg.program.PR %]
-a Personal Retreat.
-[% ELSE %]
-${reg.program.title}.
+	You are registered for
+	[% IF reg.program.PR %]
+	a Personal Retreat.
+	[% ELSE %]
+	${reg.program.title}.
 [% END %]
+</p>
 <p>
-[% mp = reg.program.main_meeting_place %]
-[% IF mp %]
-Your program meets in the ${mp}.
-[% END %]
-[% IF reg.house_id %]
+	[% mp = reg.program.main_meeting_place %]
+	[% IF mp %]
+	Your program meets in the ${mp}.
+	[% END %]
+	[% IF reg.house_id %]
+</p>
 <p>
-You are housed in the <b>$reg.house.cluster.name </b> in $reg.room_site <b>$reg.house.name_disp </b>.<br>
-Your housing location is highlighted on the attached map(s).<br>
-[% IF reg.house.key_card %]
-We have included your room key-card in this packet.<br>
-<b>
-To use the key-card, insert with blank side up and the arrow forward.
-</b>
-[% END %]
-[% ELSIF reg.h_type == 'own_van' %]
+	Your housing location is highlighted on the attached map(s).<br>
+	[% IF reg.house.key_card %]
+	We have included your room key-card in this packet.<br>
+	<b>
+	To use the key-card, insert with blank side up and the arrow forward.
+	</b>
+	[% END %]
+	[% ELSIF reg.h_type == 'own_van' %]
+</p>
 <p>
-Please park your vehicle in one of the spots marked &ldquo;OV&rdquo; on the attached map.
-[% END %]
+	Please park your vehicle in one of the spots marked &ldquo;OV&rdquo; on the attached map.
+	[% END %]
 <p>
-If you asked for a &ldquo;DINNER SAVE,&rdquo; a meal with your name
-on it can be found on a shelf across from the silverware table
-on the way to the kitchen (go through the double doors and turn
-left in the carpeted lobby).  If you cannot find a plate with your
+	If you asked for a &ldquo;DINNER SAVE,&rdquo; a meal with your name
+	on it can be found on a shelf across from the silverware table
+	on the way to the kitchen (go through the double doors and turn
+	left in the carpeted lobby).  If you cannot find a plate with your
 name on it, take one marked &ldquo;GUEST.&rdquo;
 <p>
-PLEASE READ THIS PAGE AND THE ENCLOSED GUIDELINES.  THANK YOU!
+	PLEASE READ THIS PAGE AND THE ENCLOSED GUIDELINES.  THANK YOU!
+</p>
 <p>
-Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  Check with the Programs Office if you plan to arrive before 4:00 pm.
+	Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  Check with the Programs Office if you plan to arrive before 4:00 pm.
 </p>
 <P>
-Check-out time is 1:00 pm on the day of your departure.  Please be sure to vacate your room prior to the check-out time.
-</p>
-<p><b>FOOD:</b> Meals are served for one hour.  An alternative to the main
-course is available upon request.  Please come to the Program Office
-with special food needs, rather than to the kitchen staff.
-And note: we are a strictly vegetarian community (no meat, fish, poultry,
-or eggs are to be consumed on the property).</p>
-<p>
-<b>PARKING:</b> Only as marked &ndash; not right in front of
-the Community Building.
+	Check-out time is 1:00 pm on the day of your departure.  Please be sure to vacate your room prior to the check-out time.
 </p>
 <p>
-<b>SHOES:</b> If comfortable, remove your shoes upon entering our buildings.
+	<b>FOOD:</b> Meals are served for one hour.  An alternative to the main
+	course is available upon request.  Please come to the Program Office
+	with special food needs, rather than to the kitchen staff.
+	And note: we are a strictly vegetarian community (no meat, fish, poultry,
+	or eggs are to be consumed on the property).
 </p>
 <p>
-<b>SATURDAY EARLY MORNING:</b> Yoga/meditation classes are offered
-in the Redwood Trailer, beginning at 7:30.  Please help keep
-building quiet 7:15-9:45 am.
-<center>
-<p class=big>
-PLEASE REGISTER IN THE PROGRAM OFFICE<br>
-TOMORROW DURING BUSINESS HOURS TO COMPLETE YOUR REGISTRATION[% IF reg.balance > 0 %] AND PAY YOUR OUTSTANDING BALANCE[% END %].
+	<b>PARKING:</b> Only as marked &ndash; not right in front of
+	the Community Building.
 </p>
-<p class=nice>
-DO NOT SWITCH ROOMS OR TENT SITES FOR ANY REASON!<br>
-YOU CAN COME INTO THE PROGRAM OFFICE TOMORROW AND ASK PERMISSION TO SWITCH.
-</p>
-<p class=nice>
-MAY YOUR STAY BE NOURISHING AND REWARDING.
 <p>
-</center>
+	<b>SHOES:</b> If comfortable, remove your shoes upon entering our buildings.
+</p>
+<p>
+	<b>SATURDAY EARLY MORNING:</b> Yoga/meditation classes are offered
+	in the Redwood Trailer, beginning at 7:30.  Please help keep
+	building quiet 7:15-9:45 am.
+</p>
+
+
+<div class="centered">
+	<p class=big>
+		You are housed in the <b>$reg.house.cluster.name </b> in $reg.room_site <b>$reg.house.name_disp </b>.<br>
+		PLEASE REGISTER IN THE PROGRAM OFFICE<br>
+		TOMORROW DURING BUSINESS HOURS TO COMPLETE YOUR REGISTRATION[% IF reg.balance > 0 %] AND PAY YOUR OUTSTANDING BALANCE[% END %].
+	</p>
+	<p class=nice>
+		DO NOT SWITCH ROOMS OR TENT SITES FOR ANY REASON!<br>
+		YOU CAN COME INTO THE PROGRAM OFFICE TOMORROW AND ASK PERMISSION TO SWITCH.
+	</p>
+	<p class=nice>
+		MAY YOUR STAY BE NOURISHING AND REWARDING.
+	</p>
+</div>
+
+
 <div style="page-break-after:always"></div>
 [% END %]
 <script>
-alert("$alert_msg");
+	alert("$alert_msg");
 </script>
