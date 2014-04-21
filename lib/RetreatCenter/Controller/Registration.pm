@@ -596,8 +596,7 @@ EOH
 
     my $date = date($P{date});
 
-    $P{time} = get_time($P{time})->t24();       # convert to 24 hour time
-                                # could have just removed the colon but ...
+    $P{time} =~ s{:}{}xms;      # so it is interpreted as 24 hour time
 
     #
     # date_start and date_end are always present in the table record.
