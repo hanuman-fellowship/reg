@@ -1,18 +1,18 @@
 <style type="text/css">
 body {
-    font-size: 13pt;
+    font-size: 12pt;
     width: 700px;
 }
 .large {
-    font-size: 35pt;
+    font-size: 30pt;
     font-weight: bold;
     text-align: center;
 }
 .big {
     text-decoration: underline;
     font-weight: bold;
-    font-size: 15pt;
-	padding: 40px;
+    font-size: 13pt;
+	padding: 30px;
 	border: 1px black solid;
 }
 .nice {
@@ -42,8 +42,7 @@ Late Notice for:
 	[% ELSE %]
 	${reg.program.title}.
 [% END %]
-</p>
-<p>
+
 	[% mp = reg.program.main_meeting_place %]
 	[% IF mp %]
 	Your program meets in the ${mp}.
@@ -51,9 +50,9 @@ Late Notice for:
 	[% IF reg.house_id %]
 </p>
 <p>
-	Your housing location is highlighted on the attached map(s).<br>
+	Your housing location is highlighted on the attached map(s). 
 	[% IF reg.house.key_card %]
-	We have included your room key-card in this packet.<br>
+	We have included your room key-card in this packet. 
 	<b>
 	To use the key-card, insert with blank side up and the arrow forward.
 	</b>
