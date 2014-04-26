@@ -36,6 +36,16 @@ sub name_disp {
     $name =~ s{(\d{3})[BH]+$}{$1};
     $name;
 }
+#
+# special handling for the late notice.
+#
+sub name_disp_late {
+    my ($self) = @_;
+    my $name = $self->name();
+    $name =~ s{(\d{3})[BH]+$}{$1};
+    $name =~ s{\A (MAD|OAKS)\s*}{}xms;
+    $name;
+}
 
 1;
 __END__

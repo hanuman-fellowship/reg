@@ -13,6 +13,14 @@ __PACKAGE__->add_columns(qw/
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
+sub name_disp {
+    my ($self) = @_;
+    my $name = $self->name();
+    $name =~ s{ (Center|Own) \s* Tent \s* \z }{Campground}xms;
+    $name =~ s{ \s* (1st|2nd) \s* \z }{}xms;
+    return $name;
+}
+
 1;
 __END__
 overview - Houses are grouped into Clusters (via the cluster_id on House).

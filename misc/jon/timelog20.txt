@@ -233,3 +233,12 @@ Apr 9 10:30-12:50
     implementing several recent requests.
     need to scp reg1.tt2 files up to garlic and mmi.
     and republish the PR.
+Apr 18 11:45-12:00
+    responding to Brajesh re events sponsored by HF Board
+Apr 25 10:30-12:20
+    Jamal is now pushing to kali.   I had to mess about with the 'reg' group.
+    We need to rethink how to launch.   Not as user sahadev?
+    Use Apache or FastCGI or?  Hire someone experienced to help?
+    From sf.pm or sv.pm?  The Catalyst fellow?
+    Reformatted the late notice.  Special handling of cluster name and house name.
+    We'll see what Jayanti says.
