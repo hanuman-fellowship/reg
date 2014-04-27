@@ -3495,13 +3495,11 @@ sub lodge : Local {
         my $cl_name = $cl->name();
         my $cl_tent   = $cl_name =~ m{tent|terrace}i
                                     && $cl_name !~ m{structure}i;
-        my $cl_center = $cl_name =~ m{center}i;
+        my $cl_center_tent = $cl_name =~ m{center \s+ tent}xmsi;
         if (($tent && !$cl_tent) ||
             (!$tent && $cl_tent) ||
-            ($summer && (!$center && $cl_center ||
-                         $center && !$cl_center   ))
-                # watch out for the word center
-                # in indoor housing cluster names!
+            ($summer && (!$center && $cl_center_tent ||
+                         $center && !$cl_center_tent   ))
         ) {
             next CLUSTER;
         }

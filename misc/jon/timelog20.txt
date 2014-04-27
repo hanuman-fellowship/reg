@@ -242,3 +242,6 @@ Apr 25 10:30-12:20
     From sf.pm or sv.pm?  The Catalyst fellow?
     Reformatted the late notice.  Special handling of cluster name and house name.
     We'll see what Jayanti says.
+Apr 27 10:00-10:45
+    When I changed CC 1st to Conference Center 1st it screwed up housing in the CC.
+    Damn.   Tweaked it.   I did warn myself that this might happen. :(
