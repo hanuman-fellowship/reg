@@ -42,8 +42,8 @@ sub name_disp {
 sub name_disp_late {
     my ($self) = @_;
     my $name = $self->name();
-    $name =~ s{(\d{3})[BH]+$}{$1};
-    $name =~ s{\A (MAD|OAKS)\s*}{}xms;
+    $name =~ s{( \d{3})[BH]+ \z }{$1}xms;
+    $name =~ s{ \A (MAD|OAKS|OC) \s* }{}xms;
     $name;
 }
 

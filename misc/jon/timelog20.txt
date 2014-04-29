@@ -202,7 +202,7 @@ Mar 10 9:00-10:30
             several parts to this including a migration step
 
     Sahadev
-        Jobs - to do do longer running processes in the background
+        Jobs - to do longer running processes in the background
             like sending email, sending grids back and forth, etc
             so that there is no delayed response time from Reg to any request
         Jayanti’s request to create emergency backup files - sums, reg list, daily pic
@@ -242,6 +242,8 @@ Apr 25 10:30-12:20
     From sf.pm or sv.pm?  The Catalyst fellow?
     Reformatted the late notice.  Special handling of cluster name and house name.
     We'll see what Jayanti says.
-Apr 27 10:00-10:45
+Apr 27 10:00-11:15
     When I changed CC 1st to Conference Center 1st it screwed up housing in the CC.
     Damn.   Tweaked it.   I did warn myself that this might happen. :(
+Apr 28 1:00-1:20
+    tweaked late notice

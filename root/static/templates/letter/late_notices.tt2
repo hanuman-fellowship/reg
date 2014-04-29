@@ -10,7 +10,7 @@ body {
     text-align: center;
 }
 .big {
-    width: 600px;
+    width: 650px;
     font-size: 14pt;
 	padding: 20px;
 	border: 1px black solid;
@@ -48,13 +48,6 @@ Late Notice for:
 </p>
 <p>
 	Your housing location is highlighted on the attached map(s). 
-<div class="centered">
-	<p class=big>
-		You are housed in the <b>$reg.house.cluster.name_disp </b> in $reg.room_site <b>$reg.house.name_disp_late</b>.<br><br>
-		PLEASE REGISTER IN THE PROGRAM OFFICE TOMORROW<br>
-		DURING BUSINESS HOURS TO COMPLETE YOUR REGISTRATION[% IF reg.balance > 0 %] AND PAY YOUR OUTSTANDING BALANCE[% END %].
-	</p>
-</div>
 	[% IF reg.house.key_card %]
 	We have included your room key-card in this packet. 
 	<b>
@@ -101,6 +94,11 @@ name on it, take one marked &ldquo;GUEST.&rdquo;
 	building quiet 7:15-9:45 am.
 </p>
 <div class="centered">
+	<p class=big>
+		You are housed in the $reg.house.cluster.name_disp in <b>$reg.site_cabin_room $reg.house.name_disp_late</b>.<br><br>
+		PLEASE REGISTER IN THE PROGRAM OFFICE TOMORROW<br>
+		DURING BUSINESS HOURS TO COMPLETE YOUR REGISTRATION[% IF reg.balance > 0 %] AND PAY YOUR OUTSTANDING BALANCE[% END %].
+	</p>
 	<p>
 		DO NOT SWITCH ROOMS OR TENT SITES FOR ANY REASON!<br>
 		YOU CAN COME INTO THE PROGRAM OFFICE TOMORROW AND ASK PERMISSION TO SWITCH.

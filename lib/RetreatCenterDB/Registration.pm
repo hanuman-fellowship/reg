@@ -129,12 +129,14 @@ sub h_type_disp {
     $type = $string{$type};
 }
 
-sub room_site {
+sub site_cabin_room {
     my ($self) = @_;
 
-    ($self->h_type =~ m{tent}ixms)? 'site'
-    :                               'room'
-    ;
+    my $house = $self->house;
+    return $house->tent ? 'SITE'
+          :$house->cabin? 'CABIN' 
+          :               'ROOM'
+          ;
 }
 
 sub pref1_sh {
