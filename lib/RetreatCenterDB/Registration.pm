@@ -132,6 +132,7 @@ sub h_type_disp {
 sub site_cabin_room {
     my ($self) = @_;
 
+    return if ! $self->house_id;
     my $house = $self->house;
     return $house->tent ? 'SITE'
           :$house->cabin? 'CABIN' 

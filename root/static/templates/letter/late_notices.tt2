@@ -50,9 +50,6 @@ Late Notice for:
 	Your housing location is highlighted on the attached map(s). 
 	[% IF reg.house.key_card %]
 	We have included your room key-card in this packet. 
-	<b>
-	To use the key-card, insert with blank side up and the arrow forward.
-	</b>
 	[% END %]
 	[% ELSIF reg.h_type == 'own_van' %]
 </p>
@@ -95,7 +92,9 @@ name on it, take one marked &ldquo;GUEST.&rdquo;
 </p>
 <div class="centered">
 	<p class=big>
+        [% IF reg.house_id %]
 		You are housed in the $reg.house.cluster.name_disp in <b>$reg.site_cabin_room $reg.house.name_disp_late</b>.<br><br>
+        [% END %]
 		PLEASE REGISTER IN THE PROGRAM OFFICE TOMORROW<br>
 		DURING BUSINESS HOURS TO COMPLETE YOUR REGISTRATION[% IF reg.balance > 0 %] AND PAY YOUR OUTSTANDING BALANCE[% END %].
 	</p>
