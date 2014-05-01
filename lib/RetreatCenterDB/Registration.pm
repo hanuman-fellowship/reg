@@ -95,13 +95,16 @@ sub comment_tr {
     my ($self) = @_;
     return ptrim($self->comment());
 }
+#
+# a trimmed comment for the Comings and Goings listing.
+# can't predict the exact number of lines because the
+# number will vary depending size of the browser window.
+#
 sub comment1 {
     my ($self) = @_;
     my $c = $self->comment();
-    $c =~ s{\n.*}{\n};      # only the first line, please
-    $c =~ s{([.!?]).*}{$1};     # only the first sentence, please.
-                                # since lines depend on a </p> or \n
-                                # those are not always there.
+    $c =~ s{\A (([^\n]*\n){3}).*}{$1}xms;        # only the first 3 lines
+    $c =~ s{( <p>[&]nbsp;</p> | \s )* \z}{}xms;  # trim trailing "white space"
     $c;
 }
 sub date_start_obj {
