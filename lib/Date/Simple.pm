@@ -251,6 +251,10 @@ sub new {
     if (scalar (@ymd) == 0) {
         return (today());
     }
+    if ($ymd[0] < 1900) {
+        return;     # someone once entered 5/24/161
+                    # and all hell broke loose in the calendar
+    }
     if (scalar (@ymd) == 3) {
         my $days = ymd_to_days(@ymd);
         return undef if ! defined ($days);
