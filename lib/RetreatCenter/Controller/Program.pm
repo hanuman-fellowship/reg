@@ -379,13 +379,16 @@ sub _get_data {
             $P{$t} = $time->t24();
         }
     }
-    if ($P{school} == 0       # check times for MMC not MMI
-        &&
-        !(($P{reg_start}  <= $P{reg_end})
-          && ($P{reg_end} <= $P{prog_start}))
-    ) {
-        push @mess, "Sequence error in the registration/program start/end times",
-    }
+    # This check is no longer needed.  The Registar will
+    # take responsibility for the times being correct.
+    #
+    #if ($P{school} == 0       # check times for MMC not MMI
+    #    &&
+    #    !(($P{reg_start}  <= $P{reg_end})
+    #      && ($P{reg_end} <= $P{prog_start}))
+    #) {
+    #    push @mess, "Sequence error in the registration/program start/end times",
+    #}
     my @email = split m{[, ]+}, $P{notify_on_reg};
     for my $em (@email) {
         if (! valid_email($em)) {
