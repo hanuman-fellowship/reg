@@ -80,7 +80,6 @@ sub _get_data {
         username
         first
         last
-        password
         email
     /) {
         $P{$k} = trim($P{$k});
@@ -89,7 +88,6 @@ sub _get_data {
         }
     }
     $P{hide_mmi} = '' unless exists $P{hide_mmi};
-    check_password($P{password});
     if ($P{email} && ! valid_email($P{email})) {
         push @mess, "Invalid email: $P{email}";
     }
