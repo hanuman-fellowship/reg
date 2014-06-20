@@ -2,6 +2,7 @@ use strict;
 use warnings;
 package RetreatCenter::Controller::User;
 use base 'Catalyst::Controller';
+use Digest::MD5 qw(md5_hex);
 
 use Util qw/
     trim
@@ -79,7 +80,6 @@ sub _get_data {
         username
         first
         last
-        password
         email
     /) {
         $P{$k} = trim($P{$k});
@@ -88,7 +88,6 @@ sub _get_data {
         }
     }
     $P{hide_mmi} = '' unless exists $P{hide_mmi};
-    check_password($P{password});
     if ($P{email} && ! valid_email($P{email})) {
         push @mess, "Invalid email: $P{email}";
     }
@@ -306,6 +305,7 @@ sub profile_edit_do : Local {
 
     my %hash = %{ $c->request->params() };
     $hash{hide_mmi} = '' unless $hash{hide_mmi};
+    $hash{password} = md5_hex($hash{password});
     $c->user->update(\%hash);
     $c->response->redirect($c->uri_for('/user/profile_view'));
 }
@@ -385,7 +385,7 @@ sub profile_password_do : Local {
     my $new_pass2 = $c->request->params->{new_pass2};
     @mess = ();
     if ($cur_pass) {
-        if ($good_pass ne $cur_pass) {
+        if ($good_pass ne md5_hex($cur_pass)) {
             push @mess, "Current password is not correct.";
         }
         elsif ($new_pass ne $new_pass2) {
@@ -404,7 +404,7 @@ sub profile_password_do : Local {
         return;
     }
     $u->update({
-        password => $new_pass,
+        password => md5_hex($new_pass),
     });
     $c->response->redirect($c->uri_for('/user/profile_view/1'));
 }
