@@ -295,8 +295,8 @@ sub daily_counts {
         if ($line =~ s{^\d+\|\d+\|([^|]*)\|}{}) {
             $name = $1;
         }
-        my $np = $name =~ tr/&/&/;
-        ++$np;
+        my @peeps = split m{\&|\band\b}i, $name;
+        my $np = @peeps;
         my @nights = split m{\|}, $line;
         for my $i (0 .. $#counts) {
             $counts[$i] += $np * $nights[$i];
