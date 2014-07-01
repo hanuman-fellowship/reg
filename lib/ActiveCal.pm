@@ -142,6 +142,7 @@ sub new {
         cal_height => $cal_height,
         counts => [],
         prs    => [],
+        no_where_event_spans => [],
     }, $class;
 }
 
@@ -204,6 +205,29 @@ sub get_prs {
     my ($self, $d) = @_;
 
     $self->{prs}[$d];
+}
+
+# we have an event on the top row in the line segment [ $x1, $x2].
+sub no_where_add {
+    my ($self, $x1, $x2) = @_;
+    push @{$self->{no_where_event_spans}}, [ $x1, $x2 ];
+}
+
+# are there any events on the top row that overlap
+# the line segment [ $s1, $e1 ]?
+sub no_where_overlaps {
+    my ($self, $s1, $e1) = @_;
+
+    for my $aref (@{$self->{no_where_event_spans}}) {
+        my $s2 = $aref->[0];
+        my $e2 = $aref->[1];
+        my $max_s = ($s1 > $s2)? $s1: $s2;
+        my $min_e = ($e1 > $e2)? $e2: $e1;
+        if ($max_s < $min_e) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 1;

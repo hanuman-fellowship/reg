@@ -776,9 +776,24 @@ EOH
                     }
                 }
 
-                my $y1 = $mp->disp_ord() * 40 + 2;
+                my $disp_ord = $mp->disp_ord();
+                my $y1 = $disp_ord * 40 + 2;
                         # +2 for the thick border not impeding the top line
                 my $y2 = $y1 + 20;
+                if ($disp_ord == 1) {
+                    if ($cal->no_where_overlaps($x1, $x2)) {
+                        # this No Where event would OVERLAP another No Where
+                        # event on the top row of this image.  put it 20
+                        # pixels lower so that it just fits above the
+                        # first actual meeting place row.
+                        $y1 += 20;
+                        $y2 += 20;
+                    }
+                    else {
+                        # this No Where event WILL be on the top row.
+                        $cal->no_where_add($x1, $x2);
+                    }
+                }
                 my $place_name = $mp->abbr();
                 if ($place_name eq '-') {
                     $place_name = "";
