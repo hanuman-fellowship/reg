@@ -1127,7 +1127,7 @@ sub dcm_registration {
         }
     );
     @regs = grep {
-                $_->program->level() =~ m{[DCM]}
+                $_->program->level() =~ m{[HPBDCM]}
             }
             @regs;
     if (@regs == 1) {

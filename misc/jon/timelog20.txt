@@ -247,3 +247,33 @@ Apr 27 10:00-11:15
     Damn.   Tweaked it.   I did warn myself that this might happen. :(
 Apr 28 1:00-1:20
     tweaked late notice
+May 11 9:15-11:00
+    MMI program tally
+        will add an integer 'type' to reg_charge with 7 diff values
+        will go through old records and code the 'what' field.
+        will need to adjust all places where a reg_charge is made
+            both manual and automatic, mmc and mmi.
+        need an array with alternating names, numbers
+            for the charge_type <select> list.
+            perhaps a utility routine?   pass one to be selected?
+        i don't know.  getting tired.
+    something funky with fname in Controller/Registration.pm
+        fname = first name and file name of online file.
+        fix this!  understand this!
+May 18 10:00-11:00
+    pink calendar from a bogus date of 5/24/161 - prevented that in the future.
+Jun 3 1:00-1:20, 3:10-3:30
+    a tweak for Jayanti about reg/program start/end times
+    a tweak for Brajesh about Rental Contracts
+Jun 12 11:00-11:30
+    help with housing issues with couples with children
+    in Dorms and in Ram 1A, 1B
+Jun 16 11:00-11:20
+    checking notify on reg for Jayanti
+Jun 19 9:20-
+    Barnaby - rental counts for Ati Mela 6/14
+Jun 20 10:00-11:30
+    started on AHC CAP etc.
+Jun 22 9:50-
+    hacked on overlapping no where events.  success!
+    my git state is all messed up.  too many mods without commits.

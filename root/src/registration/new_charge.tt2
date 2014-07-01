@@ -18,7 +18,26 @@
 </tr>
 
 <tr>
-<th align=right>For What</th>
+<th align=right>Type of Charge</th>
+<td>
+<select name=type>
+<option value=2>Meals and Lodging
+<option value=1>Tuition
+<option value=3>Application Fee
+<option value=4>Registration Fee
+<option value=6>STRF
+<option value=7>Recordings
+<option value=8>CEU License
+<option value=5>Other
+</select>
+<!-- apologies for the ordering above. this field is a
+     kind of patch that repairs data that goes way way back to 1989
+-->
+</td>
+</tr>
+
+<tr>
+<th align=right>Note</th>
 <td><input type=text name=what size=60></td>
 </tr>
 

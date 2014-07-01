@@ -60,6 +60,9 @@ my @sch_opts = (
     'MMI School of Community Studies',
 );
 my %mmi_levels = (
+    H => "AHC",
+    P => "CAP",
+    B => "AHC Bridge",
     D => "Diploma",
     C => "Certificate",
     M => "Masters",
@@ -181,9 +184,18 @@ sub create : Local {
         ],
         cat_opts       => _cat_opts($c, 0),
         school_opts    => $sch_opts,
+
+        # There is a better way of generating this option list.
+        # We do so twice in other places in this file.
+        # Please refactor this!
+        #
+# no more diploma or certificate
+#<option value=D>Diploma
+#<option value=C>Certificate
         level_opts => <<"EOO",
-<option value=D>Diploma
-<option value=C>Certificate
+<option value=H>AHC
+<option value=P>CAP
+<option value=B>AHC Bridge
 <option value=M>Masters
 <option value=S>Course
 <option value=A>Stand Alone Course (non DCM)
@@ -268,6 +280,9 @@ sub _get_data {
             }
         }
         else {
+            # what is happening here???
+            # category is 'Normal' but the program name
+            # might begin with another category?  yeah.
             my $cats = join '|',
                        map {
                            $_->name()        
@@ -299,10 +314,10 @@ sub _get_data {
         push @mess, "Name must have $mmi_levels{$P{level}} in it.";
     }
     if ($P{school} != 0 && ($P{level} eq 'S' || $P{level} eq 'A')
-        && $P{name} =~ m{Diploma|Certificate|Masters}
+        && $P{name} =~ m{Diploma|Certificate|Masters|AHC|CAP}
     ) {
         push @mess, 'Name must not have Diploma, Certificate,'
-                    . ' or Masters in it.';
+                    . ' Masters, AHC, or CAP in it.';
     }
 
     # dates are converted to d8 format
@@ -622,11 +637,11 @@ sub view : Local {
     }
 
     #
-    # no lunches for personal retreat, resident programs, or DCM.
+    # no lunches for personal retreat, resident programs, or DCMHPB.
     #
     if (! ($p->PR()
            || $p->category->name() ne 'Normal'
-           || $p->level() =~ m{[DCM]}
+           || $p->level() =~ m{[DCMHPB]}
           )
     ) {
         stash($c,
@@ -748,10 +763,10 @@ sub list : Local {
     my $cutoff = tt_today($c) - 7;
     $cutoff = $cutoff->as_d8();
     my @cond = ();
-    if ($type eq 'dcm') {
+    if ($type eq 'hpm') {
         @cond = (
             'category.name' => 'Normal',
-            level           => { -in  => [qw/ D C M /] },
+            level           => { -in  => [qw/ D C M H P B /] },
             edate => { },       # all programs not just current.
                                 # this overrides the cutoff one below
         );
@@ -764,7 +779,7 @@ sub list : Local {
     else {
         @cond = (
             'category.name' => 'Normal',
-            level           => { -not_in  => [qw/ D C M /] },
+            level           => { -not_in  => [qw/ D C M H P B /] },
         );
         if ($hide_mmi) {
             push @cond, (school => 0);      # only MMC no MMI
@@ -880,7 +895,7 @@ sub update : Local {
     }
     # order matters here
     my $level_opts = '';
-    for my $l (qw/ D C M S A /) {
+    for my $l (qw/ H P B D C M S A /) {
         $level_opts .= "<option value=$l "
                     .  ($l eq $p->level()? "selected": '')
                     .  ">$mmi_levels{$l}\n"
@@ -1881,7 +1896,7 @@ sub duplicate : Local {
                   ;
     }
     my $level_opts = '';
-    for my $l (qw/ D C M S A /) {
+    for my $l (qw/ H P B D C M S A /) {
         $level_opts .= "<option value=$l "
                     .  ($l eq $orig_p->level()? "selected": '')
                     .  ">$mmi_levels{$l}\n"

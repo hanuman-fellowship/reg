@@ -24,6 +24,7 @@ __PACKAGE__->add_columns(qw/
     amount
     what
     automatic
+    type
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -42,6 +43,21 @@ sub amount_disp {
     my ($self) = @_;
     penny($self->amount());
 }
+my @type_disp = (
+    '',             # we want 1 based
+    'Tuition',
+    'Meals and Lodging',
+    'Application Fee',
+    'Registration Fee',
+    'Other',
+    'STRF',
+    'Recordings',
+    'CEU License Fee',
+);
+sub type_disp {
+    my ($self) = @_;
+    return $type_disp[$self->type];
+}
 
 1;
 __END__
@@ -52,5 +68,14 @@ id - unique id
 reg_id - foreign key to registration
 the_date - what day was this charge added?
 time - what time was the charge added?
+type - a code indicating what the charge was for:
+    1 - Tuition
+    2 - Meals and Lodging (default)
+    3 - Application Fee
+    4 - Registration Fee
+    5 - Other
+    6 - STRF
+    7 - Recordings
+    8 - CEU License Fee
 user_id - foreign key to user - the person who added it
-what - a brief description of the charge
+what - a brief description of the charge - this is 'Note' in the dialog

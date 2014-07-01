@@ -61,6 +61,22 @@ use Global qw/
 use Template;
 my $rst = "root/static";
 
+my $TYPE_TUITION           = 1;
+my $TYPE_MEALS_AND_LODGING = 2;
+my $TYPE_OTHER             = 5;
+my $TYPE_CEU_LICENSE_FEE   = 8;
+
+my %type_opts = (
+    'Tuition' => 1,
+    'Meals and Lodging' => 2,
+    'Application Fee' => 3,
+    'Registration Fee' => 4,
+    'Other' => 5,
+    'STRF' => 6,
+    'Recordings' => 7,
+    'CEU License Fee' => 8,
+);
+
 sub index : Private {
     my ( $self, $c ) = @_;
 
@@ -1211,6 +1227,7 @@ sub create_do : Local {
             @who_now,
             automatic => '',        # NOT automatic
             amount  => -1*$amount,
+            type    => $TYPE_OTHER,
             what    => 'Credit from the '
                        . $pr_g->name . ' program in '
                        . $pr_g->sdate_obj->format("%B %Y"),
@@ -1444,6 +1461,7 @@ sub _compute {
                 @who_now,
                 automatic => 'yes',
                 amount    => $tuition,
+                type      => $TYPE_TUITION,
                 what      => $what,
             });
         }
@@ -1458,6 +1476,7 @@ sub _compute {
                     @who_now,
                     automatic => 'yes',
                     amount    => -1*$tuition,
+                    type      => $TYPE_TUITION,
                     what      => $reg->status
                                  . " member - free program - tuition waived.",
                 });
@@ -1475,6 +1494,7 @@ sub _compute {
                     @who_now,
                     automatic => 'yes',
                     amount    => -1*$amount,
+                    type      => $TYPE_TUITION,
                     what      => "$string{spons_tuit_disc}% Tuition discount for "
                                 . $reg->status . " member$maxed",
                 });
@@ -1515,6 +1535,7 @@ sub _compute {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
+            type      => $TYPE_MEALS_AND_LODGING,
             amount    => $tot_h_cost,
             what      => $what,
         });
@@ -1560,6 +1581,7 @@ sub _compute {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => 'yes',
+            type      => $TYPE_MEALS_AND_LODGING,
             amount    => $extra_days*$extra_h_cost,
             what      => "$extra_days day$plural Lodging"
                         ." at \$$extra_h_cost per day",
@@ -1572,6 +1594,7 @@ sub _compute {
             @who_now,
             automatic => 'yes',
             amount    => -$tot_h_cost,
+            type      => $TYPE_MEALS_AND_LODGING,
             what      => $reg->status
                          . " member - free program - lodging waived",
         });
@@ -1602,6 +1625,7 @@ sub _compute {
             model($c, 'RegCharge')->create({
                 @who_now,
                 automatic => 'yes',
+                type      => $TYPE_MEALS_AND_LODGING,
                 amount    => -1*(int(($string{disc1pct}/100)*$tot_h_cost + .5)),
                 what      => "$string{disc1pct}% Lodging discount for"
                             ." programs >= $string{disc1days} days",
@@ -1612,7 +1636,8 @@ sub _compute {
         #    model($c, 'RegCharge')->create({
         #        @who_now,
         #        automatic => 'yes',
-        #        amount   => -1*(int(($string{disc2pct}/100)*$tot_h_cost + .5)),
+        #        amount    => -1*(int(($string{disc2pct}/100)*$tot_h_cost+.5)),
+        #        type      => $TYPE_MEALS_AND_LODGING,
         #        what      => "$string{disc2pct}% Lodging discount for"
         #                    ." programs >= $string{disc2days} days",
         #    });
@@ -1652,6 +1677,7 @@ sub _compute {
                 @who_now,
                 automatic => 'yes',
                 amount    => -1*(int(($string{disc_pr}/100)*$ndays*$h_cost+.5)),
+                type      => $TYPE_MEALS_AND_LODGING,
                 what      => "$string{disc_pr}% Lodging discount for"
                              . " $ndays day$pl Mon-Thu<br>"
                              . " in the PR discount period.",
@@ -1696,6 +1722,7 @@ sub _compute {
                 @who_now,
                 automatic => 'yes',
                 amount    => -1*($n * $perday),
+                type      => $TYPE_MEALS_AND_LODGING,
                 what      => "$n free night$plural Lodging at"
                             ." \$$perday per day for "
                             . $reg->status . " member",
@@ -1715,6 +1742,7 @@ sub _compute {
             @who_now,
             automatic => 'yes',
             amount    => ($ntaken * $meal_cost),
+            type      => $TYPE_MEALS_AND_LODGING,
             what      => "$ntaken day$plural of meals"
                        . " at \$$meal_cost per day for "
                        . $reg->status() . " member",
@@ -1746,6 +1774,7 @@ sub _compute {
             @who_now,
             automatic => 'yes',
             amount    => -1*(int(($string{mmi_discount}/100)*$tot_h_cost + .5)),
+            type      => $TYPE_MEALS_AND_LODGING,
             what      => "$string{mmi_discount}% MMI lodging discount",
         });
     }
@@ -1767,6 +1796,7 @@ sub _compute {
                 @who_now,
                 automatic => 'yes',
                 amount    => int($nkids*(($string{kid_disc}/100)*$tot_h_cost)),
+                type      => $TYPE_MEALS_AND_LODGING,
                 what      => "$nkids kid$plural aged $min_age-$max_age"
                             ." - $string{kid_disc}% for lodging",
             });
@@ -1777,6 +1807,7 @@ sub _compute {
             @who_now,
             automatic => 'yes',
             amount    => $string{ceu_lic_fee},
+            type      => $TYPE_CEU_LICENSE_FEE,
             what      => "CEU License fee",
         });
     }
@@ -2534,7 +2565,8 @@ sub new_charge_do : Local {
     my ($self, $c, $reg_id) = @_;
 
     my $amount = trim($c->request->params->{amount});
-    my $what   = trim($c->request->params->{what});
+    my $type = $c->request->params->{type};
+    my $what   = trim($c->request->params->{what} || "");
     
     my @mess = ();
     if (empty($amount)) {
@@ -2542,9 +2574,6 @@ sub new_charge_do : Local {
     }
     if (invalid_amount($amount)) {
         push @mess, "Illegal Amount: $amount";
-    }
-    if (empty($what)) {
-        push @mess, "Missing What";
     }
     if (@mess) {
         error($c,
@@ -2566,12 +2595,13 @@ sub new_charge_do : Local {
     my $now_time = get_time()->t24();
 
     model($c, 'RegCharge')->create({
+        amount    => $amount,
+        type      => $type,
+        what      => $what,
         reg_id    => $reg_id,
         user_id   => $user_id,
         the_date  => $now_date,
         time      => $now_time,
-        amount    => $amount,
-        what      => $what,
         automatic => '',        # this charge will not be cleared
                                 # when editing a registration.
     });
@@ -2579,9 +2609,9 @@ sub new_charge_do : Local {
     $reg->update({
         balance => $reg->balance + $amount,
     });
-    if (exists $c->request->params->{from}
-            && $c->request->params->{from} eq 'edit_dollar')
-    {
+    if ($c->request->params->{from}
+        && $c->request->params->{from} eq 'edit_dollar'
+    ) {
         $c->response->redirect($c->uri_for("/registration/edit_dollar/$reg_id"));
     }
     else {

@@ -15,7 +15,7 @@
 [% END %]
 [% IF mmi_admin %]
     &nbsp;&nbsp;&nbsp;
-    <a href="/program/list/dcm">DCM<a>
+    <a href="/program/list/hpm">HPM<a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/mmi_publish">MMI Publish<a>
 [% END %]
