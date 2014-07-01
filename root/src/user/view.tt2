@@ -50,13 +50,6 @@
 <td>$user.hide_mmi</td>
 </tr>
 
-[% IF user_admin %]
-<tr>
-<th align=right valign=top>Password</th>
-<td>$user.password</td>
-</tr>
-[% END %]
-
 <tr>
 <th align=right valign=top>Roles</th>
 <td>
