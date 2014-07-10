@@ -2,7 +2,6 @@ use strict;
 use warnings;
 package RetreatCenter::Controller::User;
 use base 'Catalyst::Controller';
-use Digest::MD5 qw(md5_hex);
 
 use Util qw/
     trim
@@ -238,6 +237,7 @@ sub create_do : Local {
     _get_data($c);
     return if @mess;
 
+    $P{password} = 'hello';
     my $u = model($c, 'User')->create(\%P);
     my $id = $u->id;
 
@@ -305,7 +305,6 @@ sub profile_edit_do : Local {
 
     my %hash = %{ $c->request->params() };
     $hash{hide_mmi} = '' unless $hash{hide_mmi};
-    $hash{password} = md5_hex($hash{password});
     $c->user->update(\%hash);
     $c->response->redirect($c->uri_for('/user/profile_view'));
 }
@@ -385,7 +384,7 @@ sub profile_password_do : Local {
     my $new_pass2 = $c->request->params->{new_pass2};
     @mess = ();
     if ($cur_pass) {
-        if ($good_pass ne md5_hex($cur_pass)) {
+        if ($good_pass ne $cur_pass) {
             push @mess, "Current password is not correct.";
         }
         elsif ($new_pass ne $new_pass2) {
@@ -404,7 +403,7 @@ sub profile_password_do : Local {
         return;
     }
     $u->update({
-        password => md5_hex($new_pass),
+        password => $new_pass,
     });
     $c->response->redirect($c->uri_for('/user/profile_view/1'));
 }
@@ -421,6 +420,18 @@ sub inactivate : Local {
     my $u = model($c, 'User')->find($id);
     $u->update({
         password => '-no login-',
+    });
+    model($c, 'UserRole')->search(
+        { user_id => $id }
+    )->delete();
+    $c->response->redirect($c->uri_for("/user/view/$id"));
+}
+
+sub activate : Local {
+    my ($self, $c, $id) = @_;
+    my $u = model($c, 'User')->find($id);
+    $u->update({
+        password => 'hello',
     });
     model($c, 'UserRole')->search(
         { user_id => $id }

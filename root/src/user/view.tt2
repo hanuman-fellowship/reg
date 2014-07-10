@@ -7,11 +7,17 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/user/delete/$user.id"
  onclick="return confirm('Okay to Delete user $user.first $user.last?\n\nIt is very likely better to just Inactivate them!');">Delete</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/user/inactivate/$user.id"
- onclick="return confirm('Okay to Inactivate user $user.first $user.last?');">Inactivate</a>
-&nbsp;&nbsp;&nbsp;
+[% IF user.inactive %]
+    &nbsp;&nbsp;&nbsp;
+    <a href="/user/activate/$user.id"
+     onclick="return confirm('Okay to Activate user $user.first $user.last?');">Activate</a>
+[% ELSE %]
+    &nbsp;&nbsp;&nbsp;
+    <a href="/user/inactivate/$user.id"
+     onclick="return confirm('Okay to Inactivate user $user.first $user.last?');">Inactivate</a>
 [% END %]
+[% END %]
+&nbsp;&nbsp;&nbsp;
 <a href="/user/list">List</a>
 <ul>
 <table cellpadding=3 border=0>
