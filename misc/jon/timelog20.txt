@@ -270,10 +270,17 @@ Jun 12 11:00-11:30
     in Dorms and in Ram 1A, 1B
 Jun 16 11:00-11:20
     checking notify on reg for Jayanti
-Jun 19 9:20-
+Jun 19 9:20-10:15
     Barnaby - rental counts for Ati Mela 6/14
 Jun 20 10:00-11:30
     started on AHC CAP etc.
-Jun 22 9:50-
+Jun 22 9:50-11:45
     hacked on overlapping no where events.  success!
     my git state is all messed up.  too many mods without commits.
+Jun 25 10:00-10:30
+    tweaked something - forgot
+Jun 30 9:00-10:30
+    git tutorial with Shantam
+    undoing hashing of passwords
+Jul 1 1:00-1:35
+    MMI web site tweaking - can't keep doing this.
