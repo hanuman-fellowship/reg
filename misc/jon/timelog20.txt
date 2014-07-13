@@ -284,3 +284,8 @@ Jun 30 9:00-10:30
     undoing hashing of passwords
 Jul 1 1:00-1:35
     MMI web site tweaking - can't keep doing this.
+Jul 10 3:00-3:45
+    undoing password hashing inadvertent commits
+Jul 12 12:00-4:45, 7:00-
+    nowhere overlap calendar tweak
+    forgotten password, random password

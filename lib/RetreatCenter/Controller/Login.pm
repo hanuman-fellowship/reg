@@ -11,13 +11,25 @@ use Date::Simple qw/
 /;
 use Util qw/
     stash
+    model
+    randpass
+    email_letter
 /;
 use Time::Simple qw/
     get_time
 /;
 
+#
+# multiple uses depending on login state
+#
+# it is tricky - for some reason we cannot use url path
+# components (sub parameters) but must use form parameters
+# for asking for a forgotten password?  seems to work.
+#
 sub index : Private {
     my ($self, $c) = @_;
+
+    Global->init($c);
 
     # if already logged in ...
     if ($c->user_exists()) {
@@ -38,13 +50,14 @@ sub index : Private {
     # Get the username and password from form
     my $username = $c->request->params->{username} || "";
     my $password = $c->request->params->{password} || "";
+    my $forgot   = $c->request->params->{forgot}   || "";
+    my $email    = $c->request->params->{email}    || "";
 
     # If the username and password values were found in form
     if ($username && $password) {
         # Attempt to log the user in
         if ($password ne '-no login-' && $c->login($username, $password)) {
             # successful, let them use the application!
-            Global->init($c);       # where else to put this???
             _clear_images();
             if ($c->check_user_roles('super_admin')) {
                 $c->response->redirect($c->uri_for('/person/search'));
@@ -91,7 +104,58 @@ sub index : Private {
             $c->stash->{error_msg} = "Bad username or password.";
         }
     }
-    # If either of the above don't work out, send to the login page
+    elsif ($forgot) {
+        stash($c,
+            message  => '',
+            email    => '',
+            template => 'forgot_password.tt2',
+        );
+        return;
+    }
+    elsif ($email) {
+        my @users = model($c, 'User')->search({
+                        email => $email,
+                    });
+        if (! @users) {
+            stash($c,
+                message  => 'There is no such email address in our system.',
+                email    => $email,
+                template => 'forgot_password.tt2',
+            );
+            return;
+        }
+        my $user = $users[0];
+        my $username = $user->username;
+        my $new_pass = randpass();
+        $user->update({
+            password => $new_pass,
+        });
+        my $url = $c->uri_for('/login');
+        email_letter($c,
+            to      => $user->name_email(),
+            from    => "$string{from_title} <$string{from}>",
+            subject => "Your account in Reg for MMC",
+            html    => <<"EOH",
+The password for your account '$username' in Reg for MMC<br>
+has been reset to '$new_pass'.
+<p>
+Here is the <a href='$url'>login page</a>.
+<p>
+Please change your password to something that you can<br>
+easily remember (but hard to guess!).  Do this by choosing:
+<ul>
+Configuration > User Profile > Password
+</ul>
+EOH
+        );
+        stash($c,
+            username => $username,
+            email    => $email,
+            template => 'password_sent.tt2',
+        );
+        return;
+    }
+    # send to the login page
     stash($c,
         time     => get_time(),
         inactive => -f "$ENV{HOME}/Reg/INACTIVE",

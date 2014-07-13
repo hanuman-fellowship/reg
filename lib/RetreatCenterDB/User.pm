@@ -44,6 +44,11 @@ sub name {
     return $self->first() . ' ' . $self->last();
 }
 
+sub inactive {
+    my ($self) = @_;
+    return $self->password() eq '-no login-';
+}
+
 sub numbers {
     my ($self) = @_;
     return ($self->office && $self->cell)? "s are"

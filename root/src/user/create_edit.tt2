@@ -1,7 +1,7 @@
 <h2>Users</h2>
 <form action=[% '/user/' _ form_action %] name=form>
 
-<table cellpadding=3 border=0>
+<table cellpadding=3 border=0 width=850px>
 
 <tr>
 <th align=right><span class=red>*</span> User Name</th>
@@ -11,13 +11,13 @@
 <tr>
 <th align=right><span class=red>*</span> First</th>
 <td><input type=text name=first value="[% user.first %]"></td>
-<th align=right width=200>Office Phone</th>
-<td><input type=text name=office value="[% user.office %]"></td>
+<th align=right><span class=red>*</span> Last</th>
+<td><input type=text name=last value="[% user.last %]"></td>
 </tr>
 
 <tr>
-<th align=right><span class=red>*</span> Last</th>
-<td><input type=text name=last value="[% user.last %]"></td>
+<th align=right width=200>Office Phone</th>
+<td><input type=text name=office value="[% user.office %]"></td>
 <th align=right>Cell Phone</th>
 <td><input type=text name=cell value="[% user.cell %]"></td>
 </tr>
@@ -34,7 +34,7 @@
 
 <tr>
 <th align=right valign=top>Roles</th>
-<td>
+<td colspan=3>
 <table>
 [% role_table %]
 </table>

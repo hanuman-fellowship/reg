@@ -67,6 +67,7 @@ our @EXPORT_OK = qw/
     calc_mmi_glnum
     ensure_mmyy
     rand6
+    randpass
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -161,6 +162,8 @@ sub role_table {
           "<tr><td>"
         . "<input type=checkbox name=role$id $checked> "
         . $_->fullname
+        . ' - '
+        . $_->descr
         . "</td></tr>"
     }
     sort {
@@ -1793,6 +1796,20 @@ sub rand6 {
         }
         return $lets;
     }
+}
+
+#
+# a random password
+#
+sub randpass {
+    my @lets = ('a' .. 'z', 'A' .. 'Z');
+    my @digs =  0  ..  9;
+    return 
+        $lets[rand @lets]
+      . $digs[rand @digs]
+      . $lets[rand @lets]
+      . $digs[rand @digs]
+      ;
 }
 
 

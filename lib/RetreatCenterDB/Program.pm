@@ -199,7 +199,7 @@ sub web_addr {
     my $dir = "http://$string{ftp_site}/";
 
     return ($self->linked)? "$dir$string{ftp_dir2}/" . $self->fname
-          :                 $dir . ($self->unlinked_dir || "")     ;
+          :                 $dir . ($self->unlinked_dir || '')     ;
 }
 
 #
