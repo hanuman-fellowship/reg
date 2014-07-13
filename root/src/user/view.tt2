@@ -3,8 +3,6 @@
 [% IF user_admin %]
 <a href="/user/update/$user.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/user/create">Add</a>
-&nbsp;&nbsp;&nbsp;
 <a href="/user/delete/$user.id"
  onclick="return confirm('Okay to Delete user $user.first $user.last?\n\nIt is very likely better to just Inactivate them!');">Delete</a>
 [% IF user.inactive %]
@@ -16,6 +14,8 @@
     <a href="/user/inactivate/$user.id"
      onclick="return confirm('Okay to Inactivate user $user.first $user.last?');">Inactivate</a>
 [% END %]
+&nbsp;&nbsp;&nbsp;
+<a href="/user/create">Add</a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/user/list">List</a>

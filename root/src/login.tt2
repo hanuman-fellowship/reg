@@ -3,7 +3,8 @@
 <table border=0 cellpadding=3>
 
 <tr>
-<td colspan=2 align=center valign=center><span class=f20b>Reg for MMC</span></td>
+<td></td>
+<td align=center valign=center><span class=f20b>Reg for MMC</span></td>
 <td valign=center>$time</td>
 <tr>
 
@@ -19,7 +20,9 @@
 
 <tr>
 <td>&nbsp;</td>
-<td><input id=sub type="submit" value="Login"></td>
+<td><input id=sub type="submit" value="Login">
+&nbsp;&nbsp;&nbsp;<a href=/login?forgot=1>Forgot Password?</a>
+</td>
 </tr>
 
 [% IF inactive %]

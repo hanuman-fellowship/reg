@@ -1,4 +1,4 @@
-<h2>Users</h2>
+<h2>[% IF inactive %]Inactive[% ELSE %]Active[% END %] Users</h2>
 [% IF Catalyst.check_user_roles('user_admin') %]
 <a href="/user/create">Add</a>
 [% END %]

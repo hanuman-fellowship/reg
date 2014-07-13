@@ -60,6 +60,10 @@ sub create : Local {
     ) {
         $sponsor_opts .= "<option value="
                       .  $o->id
+                      # the default sponsor should be MMC Programs
+                      # so that the event will appear on the Calendar
+                      #
+                      .  ($o->name =~ /MMC/? " selected": "")
                       .  ">"
                       .  $o->name
                       .  "</option>\n";
@@ -783,16 +787,22 @@ EOH
                 if ($disp_ord == 1) {
                     if ($cal->no_where_overlaps($x1, $x2)) {
                         # this No Where event would OVERLAP another No Where
-                        # event on the top row of this image.  put it 20
+                        # event on the top row of this image.  put it 21
                         # pixels lower so that it just fits above the
                         # first actual meeting place row.
-                        $y1 += 20;
-                        $y2 += 20;
+                        $y1 += 21;
+                        $y2 += 21;
                     }
                     else {
                         # this No Where event WILL be on the top row.
                         $cal->no_where_add($x1, $x2);
                     }
+                }
+                else {
+                    # put a little bit of space between the
+                    # two nowhere rows and the other rows.
+                    $y1 += 7;
+                    $y2 += 7;
                 }
                 my $place_name = $mp->abbr();
                 if ($place_name eq '-') {

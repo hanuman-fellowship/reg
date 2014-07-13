@@ -3,6 +3,7 @@ use warnings;
 package RetreatCenter::Controller::User;
 use base 'Catalyst::Controller';
 
+use lib '../..';    # so you can do a perl -c here
 use Util qw/
     trim
     empty
@@ -13,6 +14,8 @@ use Util qw/
     model
     stash
     d3_to_hex
+    randpass
+    email_letter
 /;
 use Global qw/
     %string
@@ -66,7 +69,7 @@ sub update : Local {
 my %P;
 my @mess;
 sub _get_data {
-    my ($c) = @_;
+    my ($c, $creating) = @_;
 
     %P = %{$c->request->params};
     for my $k (keys %P) {
@@ -89,6 +92,14 @@ sub _get_data {
     $P{hide_mmi} = '' unless exists $P{hide_mmi};
     if ($P{email} && ! valid_email($P{email})) {
         push @mess, "Invalid email: $P{email}";
+    }
+    if ($creating) {
+        my @users = model($c, 'User')->search({
+                        username => $P{username},
+                    });
+        if (@users) {
+            push @mess, "The username '$P{username}' already exists.";
+        }
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -126,7 +137,7 @@ sub check_password {
 sub update_do : Local {
     my ($self, $c, $id) = @_;
 
-    _get_data($c);
+    _get_data($c, 0);
     return if @mess;
 
     my $user =  model($c, 'User')->find($id);
@@ -234,19 +245,69 @@ sub _get_roles {
 sub create_do : Local {
     my ($self, $c) = @_;
 
-    _get_data($c);
+    _get_data($c, 1);
     return if @mess;
 
-    $P{password} = 'hello';
+    my @roles = _get_roles($c);
+    if (! @roles) {
+        $c->stash->{mess} = "You probably want to give the new account some Roles, yes?",
+        $c->stash->{template} = "user/error.tt2";
+        return;
+    }
+
+    $P{password} = randpass();
     my $u = model($c, 'User')->create(\%P);
     my $id = $u->id;
 
-    for my $r (_get_roles($c)) {
+    for my $r (@roles) {
         model($c, 'UserRole')->create({
             user_id => $id,
             role_id => $r,
         });
     }
+    my $roles = join "\n",
+                map { "<li>" . $_->fullname }
+                $u->roles();
+    my $login_url = $c->uri_for("/login");
+    my $short_url = $login_url;
+    $short_url =~ s{\A http://}{}xms;
+    my $cur_u = $c->user();
+    my $cur_first = $cur_u->first();
+
+    email_letter(
+        $c,
+        to      => $u->name_email(),
+        from    => $cur_u->name_email(),
+        subject => 'Your account in Reg for MMC',
+        html    => <<"EOH",
+Greetings $P{first},
+<p>
+You now have an account in Reg for MMC.
+<p>
+You have these roles within the system:
+<ul>
+$roles
+</ul>
+Login here: <a href='$login_url'>$short_url</a>.
+<p>
+Bookmark the login page so you can get to it easily.
+<p>
+Here are your access credentials:
+<ul>
+<table cellpadding=1>
+<tr><th align=right>Username:</td><td>$P{username}</td></tr>
+<tr><th align=right>Password:</td><td>$P{password}</td></tr>
+</table>
+</ul>
+Please change your password to something that you can<br>
+easily remember (but hard to guess!).  Do this by choosing:
+<ul>
+Configuration > User Profile > Password
+</ul>
+Be well,<br>
+$cur_first
+EOH
+    );
 
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
@@ -418,24 +479,53 @@ sub access_denied : Private {
 sub inactivate : Local {
     my ($self, $c, $id) = @_;
     my $u = model($c, 'User')->find($id);
+    my $username = $u->username;
     $u->update({
         password => '-no login-',
     });
     model($c, 'UserRole')->search(
         { user_id => $id }
     )->delete();
+    email_letter(
+        $c,
+        to      => $u->name_email(),
+        from    => $c->user->name_email(),
+        subject => "Your account in Reg for MMC",
+        html    => <<"EOH",
+Your account '$username' in Reg for MMC has been inactivated.
+EOH
+    );
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
 sub activate : Local {
     my ($self, $c, $id) = @_;
     my $u = model($c, 'User')->find($id);
+    my $username = $u->username,
+    my $pass = randpass();
     $u->update({
-        password => 'hello',
+        password => $pass,
     });
     model($c, 'UserRole')->search(
         { user_id => $id }
     )->delete();
+    email_letter(
+        $c,
+        to      => $u->name_email(),
+        from    => $c->user->name_email(),
+        subject => "Your account in Reg for MMC",
+        html    => <<"EOH",
+Your account '$username' in Reg for MMC has been RE-activated.
+<p>
+Your password has been reset to '$pass'.
+<p>
+Please change your password to something that you can<br>
+easily remember (but hard to guess!).  Do this by choosing:
+<ul>
+Configuration > User Profile > Password
+</ul>
+EOH
+    );
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
