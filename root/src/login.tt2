@@ -6,6 +6,7 @@
 <td></td>
 <td align=center valign=center><span class=f20b>Reg for MMC</span></td>
 <td valign=center>$time</td>
+<td><a style="font-size: 11pt" href=/login?forgot=1>Forgot Password?</a></td>
 <tr>
 
 <tr>
@@ -20,9 +21,7 @@
 
 <tr>
 <td>&nbsp;</td>
-<td><input id=sub type="submit" value="Login">
-&nbsp;&nbsp;&nbsp;<a href=/login?forgot=1>Forgot Password?</a>
-</td>
+<td><input id=sub type="submit" value="Login"></td>
 </tr>
 
 [% IF inactive %]
