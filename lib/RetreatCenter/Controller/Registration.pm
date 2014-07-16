@@ -66,15 +66,17 @@ my $TYPE_MEALS_AND_LODGING = 2;
 my $TYPE_OTHER             = 5;
 my $TYPE_CEU_LICENSE_FEE   = 8;
 
-my %type_opts = (
-    'Tuition' => 1,
-    'Meals and Lodging' => 2,
-    'Application Fee' => 3,
-    'Registration Fee' => 4,
-    'Other' => 5,
-    'STRF' => 6,
-    'Recordings' => 7,
-    'CEU License Fee' => 8,
+# This needs to be re-thought, re-factored.
+my @charge_type = (
+    '',
+    'Tuition',
+    'Meals and Lodging',
+    'Application Fee',
+    'Registration Fee',
+    'Other',
+    'STRF',
+    'Recordings',
+    'CEU License Fee',
 );
 
 sub index : Private {
@@ -1302,8 +1304,9 @@ sub create_do : Local {
 
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
+    # manual registrations will come in with fname empty
     #
-    if (exists $P{fname}) {
+    if (exists $P{fname} && $P{fname} ne '') {
         if ($P{fname} eq '0') {
             # from a staging online registration
             unlink "$rst/online/$P{fname}";
@@ -2586,31 +2589,25 @@ sub new_charge_do : Local {
         return;
     }
 
-    # another way to get the user data???
-    my $username = $c->user->username();
-    my ($u) = model($c, 'User')->search({
-        username => $username,
-    });
-    my $user_id = $u->id;
-
-    my $today = tt_today($c);
-    my $now_date = $today->as_d8();
-    my $now_time = get_time()->t24();
-
+    my @who_now = get_now($c);
     model($c, 'RegCharge')->create({
         amount    => $amount,
         type      => $type,
         what      => $what,
         reg_id    => $reg_id,
-        user_id   => $user_id,
-        the_date  => $now_date,
-        time      => $now_time,
+        @who_now,
         automatic => '',        # this charge will not be cleared
                                 # when editing a registration.
     });
     my $reg = model($c, 'Registration')->find($reg_id);
     $reg->update({
         balance => $reg->balance + $amount,
+    });
+    $what = " - $what" if $what;
+    model($c, 'RegHistory')->create({
+        reg_id    => $reg_id,
+        @who_now,
+        what    => "New charge of \$$amount - $charge_type[$type]$what.",
     });
     if ($c->request->params->{from}
         && $c->request->params->{from} eq 'edit_dollar'
@@ -5291,7 +5288,21 @@ sub edit_dollar : Local {
 sub charge_delete : Local {
     my ($self, $c, $reg_id, $ch_id, $from) = @_;
 
-    model($c, 'RegCharge')->find($ch_id)->delete();
+    my ($charge) = model($c, 'RegCharge')->find($ch_id);
+    my $what = 'Deleted charge of $'
+             . $charge->amount
+             . " - "
+             . $charge_type[$charge->type]
+             . ($charge->what? ' - ' . $charge->what: '')
+             . '.'
+             ;
+    $charge->delete();
+    my @who_now = get_now($c);
+    model($c, 'RegHistory')->create({
+        reg_id   => $reg_id,
+        @who_now,
+        what    => $what,
+    });
     _calc_balance(model($c, 'Registration')->find($reg_id));
     if (defined $from && $from eq 'edit_dollar') {
         $c->response->redirect(
@@ -5578,9 +5589,9 @@ sub grab_new : Local {
 }
 
 sub receipt : Local {
-    my ($self, $c, $id, $type) = @_;
+    my ($self, $c, $reg_id, $type) = @_;
 
-    my $reg = model($c, 'Registration')->find($id);
+    my $reg = model($c, 'Registration')->find($reg_id);
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -5620,8 +5631,8 @@ sub receipt : Local {
         );
     }
     my @who_now = get_now($c);
-    push @who_now, reg_id => $id;
     model($c, 'RegHistory')->create({
+        reg_id   => $reg_id,
         @who_now,
         what    => "Receipt ${type}ed",
     });
@@ -5629,7 +5640,7 @@ sub receipt : Local {
         $c->res->output($html);
     }
     else {
-        $c->response->redirect($c->uri_for("/registration/view/$id"));
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
     }
     return;
 }
