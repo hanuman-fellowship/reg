@@ -13,7 +13,7 @@ use Util qw/
     model
     tt_today
     commify
-    dcm_registration
+    hpm_registration
     payment_warning
     normalize
     stash
@@ -1096,7 +1096,7 @@ sub request_mmi_payment : Local {
         message  => payment_warning('mmi'),
         person   => $person,
         reg      => $reg,
-        dcm      => dcm_registration($c, $person_id),
+        hpm      => hpm_registration($c, $person_id),
         template => "person/request_mmi_payment.tt2",
     );
 }
