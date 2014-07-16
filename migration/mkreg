@@ -72,7 +72,8 @@ create table reg_charge (
     time text,
     amount integer,
     what text,
-    automatic text
+    automatic text,
+    type integer default 5
 );
 drop table if exists reg_payment;
 create table reg_payment (

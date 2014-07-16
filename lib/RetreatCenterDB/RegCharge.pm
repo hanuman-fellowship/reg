@@ -70,10 +70,10 @@ the_date - what day was this charge added?
 time - what time was the charge added?
 type - a code indicating what the charge was for:
     1 - Tuition
-    2 - Meals and Lodging (default)
+    2 - Meals and Lodging
     3 - Application Fee
     4 - Registration Fee
-    5 - Other
+    5 - Other (default)
     6 - STRF
     7 - Recordings
     8 - CEU License Fee

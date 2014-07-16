@@ -28,7 +28,7 @@ use Util qw/
     ceu_license
     commify
     wintertime
-    dcm_registration
+    hpm_registration
     stash
     error
     payment_warning
@@ -2101,25 +2101,28 @@ sub _view {
         stash($c, ceu => 1);
     }
     # to DCM?
-    my $dcm_reg_id = 0;
-    my $dcm_type = '';
+    my $hpm_reg_id = 0;
+    my $hpm_type = '';
     if ($prog->level() eq 'S') {
-        my $dcm = dcm_registration($c, $reg->person->id());
-        if (ref($dcm)) {
-            $dcm_reg_id = $dcm->id();
-            my $lev = $dcm->program->level();
-            $dcm_type = $lev eq 'D'? 'Diploma'
+        my $hpm = hpm_registration($c, $reg->person->id());
+        if (ref($hpm)) {
+            $hpm_reg_id = $hpm->id();
+            my $lev = $hpm->program->level();
+            $hpm_type = $lev eq 'D'? 'Diploma'
                        :$lev eq 'C'? 'Certificate'
                        :$lev eq 'M'? 'Masters'
-                       :             'DCM'
+                       :$lev eq 'C'? 'CAP'
+                       :$lev eq 'H'? 'AHC'
+                       :$lev eq 'B'? 'AHC Bridge'
+                       :             '??'
                        ;
         }
-        # else if $dcm > 1 !!!! ???? give error
+        # else if $hpm > 1 !!!! ???? give error
         # prohibit it from happening in the first place!
         # my $person = model($c, 'Person')->find($person_id);
         # my $name = $person->name();
         # $c->stash->{mess}
-        #   = (@dcm)? "$name is enrolled in <i>more than one</i> D/C/M program!"
+        #   = (@hpm)? "$name is enrolled in <i>more than one</i> D/C/M program!"
         #   :       "$name is not enrolled in <i>any</i> D/C/M program!";
     }
     my @files = <$rst/online/*>;
@@ -2245,8 +2248,8 @@ sub _view {
         cluster_date   => $sdate,
         cur_cluster    => ($reg->house_id && $reg->house)? $reg->house->cluster_id: 1,
         cal_param      => "$sdate/$nmonths",
-        dcm_reg_id     => $dcm_reg_id,
-        dcm_type       => $dcm_type,
+        hpm_reg_id     => $hpm_reg_id,
+        hpm_type       => $hpm_type,
         program        => $prog,
         only_one       => (@same_name_reg == 1),
         send_preview   => ($PR || $same_name_reg[0]->id() == $reg->id()),
@@ -2788,15 +2791,15 @@ EOH
         }
         if ($school != 0 && $pr->level() eq 'S') {
             #
-            # A/D/C/M marks for MMI _course_ registrations
-            # not registrants in the D/C/M programs themselves
+            # A/D/C/M/H/P marks for MMI _course_ registrations
+            # not registrants in the D/C/M/H/P programs themselves
             #
-            my $dcm = dcm_registration($c, $reg->person->id());
+            my $hpm = hpm_registration($c, $reg->person->id());
             my $type = 'A';
-            if (ref($dcm)) {
-                $type = $dcm->program->level();
+            if (ref($hpm)) {
+                $type = $hpm->program->level();
             }
-            elsif ($dcm) {
+            elsif ($hpm) {
                 $type = '?';
             }
             if (!($type eq 'A' || $school == 3)
@@ -5006,7 +5009,7 @@ sub mmi_import : Local {
     });
     stash($c,
         cur_prog  => $pr,
-        dcm_progs => \@progs,
+        hpm_progs => \@progs,
         template  => "registration/mmi_import.tt2",
     );
 }
@@ -5016,10 +5019,10 @@ sub mmi_import_do : Local {
 
     my $program = model($c, 'Program')->find($program_id);
     my %person_ids = ();
-    for my $dcm_id (keys %{ $c->request->params() }) {
-        $dcm_id =~ s{^n}{};
+    for my $hpm_id (keys %{ $c->request->params() }) {
+        $hpm_id =~ s{^n}{};
         REG:
-        for my $reg (model($c, 'Program')->find($dcm_id)->registrations()) {
+        for my $reg (model($c, 'Program')->find($hpm_id)->registrations()) {
             next REG if $reg->cancelled();
             $person_ids{$reg->person->id()} = 1;
         }

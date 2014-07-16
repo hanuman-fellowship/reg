@@ -38,7 +38,7 @@ our @EXPORT_OK = qw/
     ceu_license
     commify
     wintertime
-    dcm_registration
+    hpm_registration
     stash
     error
     payment_warning
@@ -1117,7 +1117,7 @@ sub wintertime {
 #
 # should this be a method in the Person data object instead???
 #
-sub dcm_registration {
+sub hpm_registration {
     my ($c, $person_id) = @_;
 
     my @regs = model($c, 'Registration')->search(

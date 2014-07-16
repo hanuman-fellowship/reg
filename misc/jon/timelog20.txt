@@ -290,5 +290,10 @@ Jul 12 12:00-4:45, 7:00-8:25
     nowhere overlap calendar tweak
     forgotten password, random password
     merged master to mmi, began testing, tweaking - hope it goes okay
-Jul 13 4:30-
+Jul 13 4:30-5:30, 9:45-10:20
     trying to resolve a database issue with updating more than one row
+    found issue - corrupted database - need to improve hcck and run it periodically
+    there were duplicate primary keys in the index of the config table :(
+    need to be careful to not interrupt the adding of config records!
+Jul 14 4:30-
+    continuing on MMI changes

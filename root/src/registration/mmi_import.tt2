@@ -7,7 +7,7 @@
 <th>Start Date</th>
 <th>End Date</th>
 </tr>
-[% FOREACH p IN dcm_progs %]
+[% FOREACH p IN hpm_progs %]
 <tr>
 <td><input type=checkbox name=n[% p.id %] value=yes> [% p.name %]</td>
 <td>[% p.sdate_obj %]</td>
