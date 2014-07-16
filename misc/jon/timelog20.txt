@@ -295,5 +295,7 @@ Jul 13 4:30-5:30, 9:45-10:20
     found issue - corrupted database - need to improve hcck and run it periodically
     there were duplicate primary keys in the index of the config table :(
     need to be careful to not interrupt the adding of config records!
-Jul 14 4:30-
+Jul 15 4:30-5:50
     continuing on MMI changes
+Jul 16 1:30-
+    finalizing first cut at new MMI changes (HCM)

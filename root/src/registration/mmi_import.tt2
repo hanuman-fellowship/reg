@@ -1,4 +1,4 @@
-<h2>Importing D/C/M Registrations into [% cur_prog.name %] ([% cur_prog.sdate_obj %])</h2>
+<h2>Importing AHC/CAP/Masters Registrations into [% cur_prog.name %] ([% cur_prog.sdate_obj %])</h2>
 <form action="/registration/mmi_import_do/[% cur_prog.id %]">
 <ul>
 <table cellpadding=5>

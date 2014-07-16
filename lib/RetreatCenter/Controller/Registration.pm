@@ -4976,8 +4976,8 @@ EOH
 
 #
 # for the given MMI program automatically register
-# everyone who is in a D/C/M program that is concurrent
-# with the given program.   Offer the list of D/C/M programs
+# everyone who is in a D/C/M/H/P/B program that is concurrent
+# with the given program.   Offer the list of D/C/M/H/P/B programs
 # and let the user choose which to do the import on.
 #
 sub mmi_import : Local {
@@ -4994,10 +4994,10 @@ sub mmi_import : Local {
     my $sdate = $pr->sdate();
     my @progs = model($c, 'Program')->search({
         school => { '!=', 0      },
-        # should we only accept DCM people in the same school
+        # should we only accept DCMHPB people in the same school
         # as the course we are importing into???   No.
         #
-        level  => { -in, [qw/ D C M /]},
+        level  => { -in, [qw/ D C M H P B /]},
         sdate  => { '<=', $sdate },
         edate  => { '>=', $sdate },
     },
