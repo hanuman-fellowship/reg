@@ -988,8 +988,8 @@ EOH
 
                 # these tweakings of pixels were determined by trial and error
                 #
-                my $y1 = ($meeting_places{$meet_id}->disp_ord()) * 40 + 3;
-                my $y2 = $y1 + 20 - 2;
+                my $y1 = ($meeting_places{$meet_id}->disp_ord()) * 40 + 10;
+                my $y2 = $y1 + 18;
                 my $x = ($day-1) * $day_width + $day_width/2 - 1;
                 $im->setThickness($string{cal_abutt_thickness});
 

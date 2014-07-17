@@ -297,5 +297,12 @@ Jul 13 4:30-5:30, 9:45-10:20
     need to be careful to not interrupt the adding of config records!
 Jul 15 4:30-5:50
     continuing on MMI changes
-Jul 16 1:30-
+Jul 16 1:30-2:30, 10:50-11:00
     finalizing first cut at new MMI changes (HCM)
+    now need to migrate existing reg_charges to have Types.
+    then use these Types in program finance tallies.
+    also look at Barnaby's request - re: Quaker meal list
+    counts when people come and go at different days.
+    then HTML emergency printouts written to USB stick?
+
+    fixing two small things

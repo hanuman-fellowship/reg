@@ -1723,11 +1723,11 @@ sub calc_mmi_glnum {
     my ($c, $person_id, $stand_alone, $for_what, $reg_program_glnum) = @_;
 
     my $glnum;
-    my $dcm_reg = dcm_registration($c, $person_id);
-    if (! $stand_alone && ref($dcm_reg)) {
+    my $hpm_reg = hpm_registration($c, $person_id);
+    if (! $stand_alone && ref($hpm_reg)) {
         # this person is enrolled in a DCM program
         #
-        my $program = $dcm_reg->program();
+        my $program = $hpm_reg->program();
 
         my $sdate = $program->sdate_obj();
         my $m = $sdate->month();
