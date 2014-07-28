@@ -306,3 +306,9 @@ Jul 16 1:30-2:30, 10:50-11:00
     then HTML emergency printouts written to USB stick?
 
     fixing two small things
+Jul 19 5:45-7:20
+    fixing the issue with Cancelled program overlib popup in the Calendar
+    populating the type column of past reg_charge records. - began
+    responding to Shantam
+Jul 27 10:25-
+    rental lunch cost - in strings

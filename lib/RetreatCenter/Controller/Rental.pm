@@ -1349,6 +1349,7 @@ sub contract : Local {
         agreed  => commify($agreed),
         min_due => commify($min_due),
         deposit => commify($rental->deposit()),
+        rental_lunch_cost => $string{rental_lunch_cost},
     );
     $tt->process(
         "rental_contract.tt2",# template

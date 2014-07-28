@@ -155,7 +155,7 @@ Charges are based on actual occupancy, not room capacity
 [% END %]
 [% IF ! lunch %]
 If lunches are requested for the group there will be a charge
-of \$11/person/day.
+of \$$rental_lunch_cost/person/day.
 [% END %]
 <i>There will be a charge of
 \$2/person/hour for any additional time before 4:00 pm on the start date,

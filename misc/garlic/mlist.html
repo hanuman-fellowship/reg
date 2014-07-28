@@ -1,0 +1,193 @@
+<?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/referral.php'); ?> 
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<HTML><!-- InstanceBegin template="/Templates/csstemplate_general.dwt" codeOutsideHTMLIsLocked="false" --><HEAD>
+
+<!-- InstanceBeginEditable name="variables" -->
+<?php 
+//VARIABLE DECLARATION
+$active_navbar = '';//defines which button on the navbar should be down
+$sidebar ='general';//defines which sidebar to use
+?>
+<!-- InstanceEndEditable -->
+
+
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1" />
+<!-- InstanceBeginEditable name="doctitle" -->
+<TITLE>Mount Madonna Center Mailing List Request</TITLE>
+<!-- InstanceEndEditable -->
+
+<!-- InstanceBeginEditable name="head" -->
+<LINK HREF="/styles/reset.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/layout.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/header.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/sidebar.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/text.css" REL="stylesheet" TYPE="text/css" />
+<LINK HREF="/styles/yoga.css" REL="stylesheet" TYPE="text/css" />
+<!-- InstanceEndEditable -->
+
+<!--[if IE 5]>
+<style type="text/css"> 
+.twoColFixLtHdr #sidebar1 { margin-right: 7px; }
+.twoColFixLtHdr #contentHeader { margin-left: 197px;}
+</style>
+<![endif]-->
+<!--[if IE 6]>
+<style type="text/css"> 
+.twoColFixLtHdr #sidebar1 { width: 187px; }
+.twoColFixLtHdr #contentHeader { margin-left: 197px;}
+</style>
+<![endif]-->
+<!--[if IE]>
+<style type="text/css"> 
+/* place css fixes for all versions of IE in this conditional comment */
+.twoColFixLtHdr #mainContent { zoom: 1; }
+/* the above proprietary zoom property gives IE the hasLayout it needs to avoid several bugs */
+</style>
+<![endif]-->
+</HEAD>
+
+<BODY CLASS="twoColFixLtHdr">
+
+
+    <DIV ID="container">
+        <DIV ID="header"><?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/header.php');?></DIV>
+        <DIV ID="mainWrapper">
+            <DIV ID="sidebar1"><?php include("/home/mmc/domains/mountmadonna.org/public_html/includes/sidebar_$sidebar.php");?></DIV>
+      
+            <DIV ID="contentHeader"><!-- put 650 px width image here or leave &nbsp; if no header image-->
+                <!-- InstanceBeginEditable name="contentHeader" -->&nbsp;<!-- InstanceEndEditable -->
+            </DIV><!-- end #contentHeader -->
+          
+         
+            <DIV ID="content">
+                <!-- InstanceBeginEditable name="content" -->
+                
+                <H1>Brochure/Mailing List Request</H1>
+                <FORM ACTION="/cgi-bin/mlist" METHOD="post">
+                    <INPUT TYPE=hidden NAME=type VALUE=mmc>
+                    <P>Fields marked with a <SPAN CLASS="required">*</SPAN> are required.</P>
+                    <P>
+                    <TABLE CELLPADDING=0 BORDER=0>
+                        <TR>
+                            <TD ALIGN=right><SPAN CLASS="required">*</SPAN> First Name </TD>
+                            <TD><INPUT TYPE=text NAME=first SIZE=15 MAXLENGTH=15></TD>
+                            </td>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right><SPAN CLASS="required">*</SPAN> Last Name</TD>
+                            <TD><INPUT TYPE=text NAME=last SIZE=15 MAXLENGTH=15></TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right VALIGN=top><SPAN CLASS="required">*</SPAN> Gender</TD>
+                            <TD><INPUT TYPE=radio NAME="gender" CHECKED VALUE="female">
+                                Female<BR>
+                                <INPUT TYPE=radio NAME="gender" VALUE="male">
+                                Male<BR>                            </TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right><SPAN CLASS="required">*</SPAN> Street</TD>
+                            <TD><INPUT TYPE=text NAME=street SIZE=50></TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right><SPAN CLASS="required">*</SPAN> City</TD>
+                            <TD><INPUT TYPE=text NAME=city SIZE=24 MAXLENGTH=24></TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right><SPAN CLASS="required">*</SPAN> State/Province</TD>
+                            <TD><INPUT TYPE=text NAME=st_prov SIZE=5 MAXLENGTH=5></TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right><SPAN CLASS="required">*</SPAN> Zip/Postal Code</TD>
+                            <TD><INPUT TYPE=text NAME=zip_post SIZE=7 MAXLENGTH=7></TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right>Country</TD>
+                            <TD><INPUT TYPE=text NAME=country SIZE=20 MAXLENGTH=20></TD>
+                            <TD>Defaults to USA.</TD>
+                        </TR>
+                        <TR STYLE="margin-top: 3mm">
+                            <TD>&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right>Email</TD>
+                            <TD><INPUT TYPE=text NAME=email SIZE=40 MAXLENGTH=40></TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right>Email Again</TD>
+                            <TD><INPUT TYPE=text NAME=email2 SIZE=40 MAXLENGTH=40></TD>
+                            <TD>Repeated to be sure it is right.</TD>
+                        </TR>
+                        <TR STYLE="margin-top: 3mm">
+                            <TD>&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right>Home Phone</TD>
+                            <TD><INPUT TYPE=text NAME=home SIZE=20 MAXLENGTH=20>                            </TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right>Work Phone</TD>
+                            <TD><INPUT TYPE=text NAME=work SIZE=20 MAXLENGTH=20>                            </TD>
+                        </TR>
+                        <TR>
+                            <TD ALIGN=right>&nbsp; Cell Phone</TD>
+                            <TD><INPUT TYPE=text NAME=cell SIZE=20 MAXLENGTH=20>                            </TD>
+                        </TR>
+                        <TR STYLE="margin-top: 3mm">
+                            <TD>&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD COLSPAN=2><INPUT TYPE=checkbox NAME=e_mailings VALUE=yes CHECKED>
+                                Yes, Send me occasional e-mail announcements about Mount Madonna Center.</TD>
+                        </TR>
+                        <TR>
+                            <TD COLSPAN=2><INPUT TYPE=checkbox NAME=snail_mailings VALUE=yes CHECKED>
+                                Yes, Send me postcards and brochures in the mail about Mount Madonna Center.</TD>
+                        </TR>
+                        <TR>
+                            <TD COLSPAN=2><INPUT TYPE=checkbox NAME=mmi_e_mailings VALUE=yes CHECKED>
+                                Yes, Send me occasional e-mail announcements about Mount Madonna Institute.</TD>
+                        </TR>
+                        <TR>
+                            <TD COLSPAN=2><INPUT TYPE=checkbox NAME=mmi_snail_mailings VALUE=yes CHECKED>
+                                Yes, Send me postcards and brochures in the mail about Mount Madonna Institute.</TD>
+                        </TR>
+                        <TR>
+                            <TD COLSPAN=2><INPUT TYPE=checkbox NAME=share_mailings VALUE=yes CHECKED>
+                                Yes, You may share my information with MMC affiliates.</TD>
+                        </TR>
+                        <TR>
+                            <TD COLSPAN=2><div style="background-color:#FFC;border:dotted 2px #FFCC00;padding:25px;margin:25px 0 25px 0;">
+                              <p>Don't let our emails end up in your spam filter! <br>
+                              Add the following addresses to your address book:</p>
+                              <ul>
+                                <li>programs@mountmadonna.org</li>
+                                <li>info@mountmadonnainstitute.org</li>
+                              </ul>
+                            </div></TD>
+                        </TR>
+                        <TR>
+                            <TD COLSPAN=2>Additional comments or requests:<BR>
+                                    <TEXTAREA NAME="request" ROWS=10 COLS=60 WRAP=virtual></TEXTAREA></TD>
+                        </TR>
+                        <TR>
+                            <TD>&nbsp;</TD>
+                        </TR>
+                        <TR>
+                            <TD><INPUT TYPE="submit">                            </TD>
+                        </TR>
+                    </TABLE>
+                    <P>&nbsp;</P>
+                </FORM>
+                <!-- InstanceEndEditable -->
+             <!-- end #Content --></DIV>
+           <DIV ID="contentFooter" CLASS="clearfloat"><!-- end #ContentFooter --></DIV>
+        <!-- end #mainWrapper --></DIV>
+        
+
+        <DIV ID="footer">
+        <?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/footer.php'); ?>
+        </DIV><!-- end #footer -->
+    </DIV><!-- end #container -->
+</BODY>
+<!-- InstanceEnd --></HTML>

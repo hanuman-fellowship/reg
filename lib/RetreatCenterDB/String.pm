@@ -91,8 +91,14 @@ SJC - Abbreviation for San Jose airport.
 SJC_color - color for San Jose airport in Rides listing.
 big_imgwidth - size of large picture - for resizing in Util::resize
 cal_abutt_color - color used when drawing abutting events in the calendar.
-    Also see lib/ActiveCal.pm
-cal_abutt_style - line style when drawing abutting events in the calendar
+    Also see lib/ActiveCal.pm.  This is used only when cal_abutt_style
+    is empty.
+cal_abutt_style - line style when drawing abutting events in the calendar.
+    This string consists of a sequence of the letters rwab - for red,
+    white, abutt color, and black.  Any other character is interpreted
+    as being black.  These colors are used in sequence to draw the pixels
+    in the abutting line of thickness cal_abutt_thickness.
+    Also see 'perldoc GD' and search for setStyle.
 cal_abutt_thickness - line thickness when drawing abutting events in the calendar
 cal_arr_color - the color for arrivals in the personal retreat popup in the calendar
 cal_day_line - a boolean - do we want a line underneath the day names
@@ -274,6 +280,7 @@ rental_done_color - doc
 rental_due - doc
 rental_due_color - doc
 rental_end_hour - doc
+rental_lunch_cost - how much do rentals pay for a lunch?
 rental_received - doc
 rental_received_color - doc
 rental_sent - doc

@@ -1484,7 +1484,9 @@ sub _compute {
                                  . " member - free program - tuition waived.",
                 });
             }
+
 =comment
+
             # no more - as of 6/11/10
             else {
                 my $amount = int(($string{spons_tuit_disc}/100)*$tuition);
@@ -1502,7 +1504,9 @@ sub _compute {
                                 . $reg->status . " member$maxed",
                 });
             }
+
 =cut
+
         }
     }
 
@@ -1736,7 +1740,9 @@ sub _compute {
         #
         # members getting free nights still pay for meal costs
         #
+
 =comment
+
 # As of 6/11/10 they pay for meals with their meal ticket instead.
 #
         my $meal_cost = $string{member_meal_cost};
@@ -1750,7 +1756,9 @@ sub _compute {
                        . " at \$$meal_cost per day for "
                        . $reg->status() . " member",
         });
+
 =cut
+
         # and add a NightHist record to specify what happened
         #
         model($c, 'NightHist')->create({

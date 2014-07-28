@@ -367,7 +367,7 @@ sub calendar : Local {
         Jul Aug Sep
         Oct Nov Dec
     /;
-    my $cancelled = " <span style='background-color: pink'>Cancelled</span>";
+    my $cancelled = " <span class=pink>Cancelled</span>";
 
     Global->init($c);
 
@@ -1016,9 +1016,6 @@ EOH
                     # solid color
                     $im->line($x, $y1, $x, $y2, $cal->abutt());
                 }
-
-
-
                 $im->setThickness(1);
                 next BOOKING;
             }
