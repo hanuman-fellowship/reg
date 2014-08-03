@@ -2255,7 +2255,7 @@ sub _view {
         non_pr         => ! $PR,
         daily_pic_date => ($prog->category->name() eq "Normal"? "indoors"
                            :                                    "resident")
-                           . "/$sdate",
+                           . "/" . $reg->date_start,
         cluster_date   => $sdate,
         cur_cluster    => ($reg->house_id && $reg->house)? $reg->house->cluster_id: 1,
         cal_param      => "$sdate/$nmonths",

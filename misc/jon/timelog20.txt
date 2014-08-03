@@ -312,3 +312,7 @@ Jul 19 5:45-7:20
     responding to Shantam
 Jul 27 10:25-
     rental lunch cost - in strings
+Aug 1 10:00-10:30
+    responding to Brajesh re: Akhilesh, Ramnath, Shantam
+Aug 2 11:00-11:45
+    Barnaby's housing conundrum, daily_pic_date
