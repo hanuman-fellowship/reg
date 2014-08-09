@@ -512,7 +512,7 @@ EOH
         my @prog_opt = ();
         if ($ev_kind eq "Program") {
             @prog_opt = (
-                level           => { 'not in',  [qw/ D C M P H /] },
+                level           => { 'not in',  [qw/ D C M P H B /] },
                 name            => { -not_like, "%personal%retreat%" },
                 not_on_calendar => '',
             );
