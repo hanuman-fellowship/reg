@@ -3,8 +3,8 @@
 <link rel="stylesheet" type="text/css" href="/src/ttsite.css" />
 <style type="text/css">
 body {
-    margin-top: 0.75in;
-    margin-left: 1in;
+    margin-top: 0.25in;
+    margin-left: 0.25in;
 }
 </style>
 </head>
