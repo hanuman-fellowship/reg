@@ -1,0 +1,177 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use CGI qw/:standard :cgi-lib/;
+$|++;               # unbuffer STDOUT
+print header;       # so authorize.net knows we are alive
+
+use CGI::Carp qw/fatalsToBrowser/;
+use File::Copy;
+
+use Mail::Sender;
+use lib '/home/mmi/public_html/cgi-bin/lib/share/perl5';
+use Template;
+use File::Copy;
+
+my ($m, $y) = (localtime)[4, 5];
+++$m;
+$y += 1900;
+my $yyyy_mm_dir = sprintf("req_mmi_arch/%04d-%02d", $y, $m);
+mkdir $yyyy_mm_dir unless -d $yyyy_mm_dir;
+
+# form parameters to a hash
+# so it is interpolatable.
+#
+my %P = Vars();
+
+#
+# was it a failed transaction?
+#
+if ((exists $P{x_response_code}  && $P{x_response_code} != 1)
+    ||
+    (! exists $P{x_trans_id})
+) {
+    print <<"EOH";
+Sorry, the transaction failed for this reason:
+<p>
+$P{x_response_reason_text}
+EOH
+    exit;
+}
+
+if (exists $P{x_req_mmi_code}) {
+    rename "req_mmi_dir/$P{x_req_mmi_code}", "req_mmi_dir/paid/$P{x_trans_id}";
+    copy("req_mmi_dir/paid/$P{x_trans_id}", "$yyyy_mm_dir/$P{x_trans_id}");
+    my $message;
+    Template->new(INTERPOLATE => 1)->process(
+        'req_mmi_message.tt2',
+        \%P,
+        \$message,
+    );
+    print $message;
+    exit;
+}
+
+if (! exists $P{x_pid}) {
+    exit;       # must be a refund - silently ignore it
+}
+
+my $id = $P{x_trans_id};
+open my $out, ">", "temp$id"
+	or die "cannot create temp$id: $!\n";
+my ($min, $hour, $d, $m, $y) = (localtime)[ 1..5 ];
+++$m;
+$y += 1900;
+print {$out} "x_date => $m/$d/$y\n";
+printf {$out} "x_time => %02d:%02d\n", $hour, $min;
+PARAM:
+for my $k (sort keys %P) {
+    next PARAM unless $k =~ m{^x_};
+    my $val = $P{$k};
+	print {$out} "$k => " unless $k eq 'x_request';
+	if ($k =~ m{home|work|cell}) {
+		my $phone = $val;
+        my $n = $phone =~ tr/0-9/0-9/;
+        if ($n == 10 && $phone =~ m{^[0-9\(\)-. /]+$}) {
+            #
+            # an American phone number
+            # reformat it in a standard way
+            #
+            $phone =~ s{[^0-9]}{}g;
+            $phone = substr($phone, 0, 3) . "-"
+                   . substr($phone, 3, 3) . "-"
+                   . substr($phone, 6, 4);
+        }
+		print {$out} $phone;
+    }
+    elsif ($k eq 'x_country') {
+        my $country = $val;
+        $country =~ s{^\s*|\s*$}{}g;
+        $country =~ s{[^\w ]}{}g;
+        if ($country =~ /^us|usa|united states$/i) {
+            $country = "";
+            print {$out} $country;
+        }
+        else {
+            print {$out} param($k);
+        }
+    }
+    elsif ($k eq 'x_request') {
+		my $request = $val;
+		$request =~ s{\cM\n}{ }g;
+		my $n = 1;
+        my ($i, $first);
+		while (length($request) > 70) {
+			$i = rindex($request, ' ', 70);
+			$first = substr($request, 0, $i);
+			print {$out} "x_request$n => $first\n";
+			++$n;
+			$request = substr($request, $i+1);
+		}
+		print {$out} "x_request$n => $request\n" if length($request) > 0;
+		next PARAM;		# no need for extra newline
+	}
+    elsif ($k =~ m{date}) {
+        $val =~ s{4008}{2008};        # it HAS happened, not sure why
+        print {$out} $val;
+    }
+    else {
+		print {$out} $val;
+	}
+	print {$out} "\n";
+}
+close $out;
+
+#
+# we have prepared the file.
+# now move it quickly to the transactions dirs.
+#
+rename "temp$id", "transactions/$id";
+
+# as a backup and an archive:
+my $dir = sprintf "trans_archive/$y-%02d", $m;
+mkdir $dir unless -d $dir;
+copy("transactions/$id", "$dir/$id");
+
+my $message;
+Template->new()->process(
+    'message.tt2',
+    \%P,
+    \$message,
+);
+print $message;
+
+# put the script into the background to send the email
+fork and exit;
+
+#
+# send an email with the info.
+#
+my $ms = Mail::Sender->new({
+    smtp    => 'mail.suecenter.org',
+    port    => 50,
+    auth    => 'LOGIN',
+    authid  => 'test@suecenter.org',
+    authpwd => 'ABCdef108',
+});
+if (! $ms) {
+    die "no mail sender: ";
+}
+$ms->Open({
+    to       => "$P{x_fname} $P{x_lname} <$P{x_email}>",
+    from     => 'Mount Madonna Institute <MMIreservations@mountmadonnainstitute.org>',
+    subject  => "Online registration for $P{x_title}",
+    ctype    => "text/html",
+    encoding => "7bit",
+})
+    or die "no Mail::Sender->Open $Mail::Sender::Error";
+
+my $email;
+Template->new()->process(
+    'email.tt2',
+    \%P,
+    \$email,
+);
+$ms->SendLineEnc($email);
+$ms->Close() or die "error: $Mail::Sender::Error";
