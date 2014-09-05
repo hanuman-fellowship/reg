@@ -316,5 +316,16 @@ Aug 1 10:00-10:30
     responding to Brajesh re: Akhilesh, Ramnath, Shantam
 Aug 2 11:00-11:45
     Barnaby's housing conundrum, daily_pic_date
-Aug 9 9:15-
+Aug 9 9:15-10:00, 9:00-9:15
     Adding H, P to program levels to not appear on calendar
+    MMI Payments receipt tweak
+    Cathy Woods reg - wrong Cathy Woods?
+Aug 19 10:30-11:00
+    AHC Level confusion explained
+Aug 30 2:15-2:25
+    fixing links on the MMI site.   They could do it!
+Sep 4 10:30-11:00, 11:10-11:30
+    housing cost for programs and rentals - inactive
+        duplicate, update, create
+    summary reports - added coordinator
+    job description for helper

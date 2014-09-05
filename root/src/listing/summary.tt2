@@ -2,7 +2,7 @@
 <table cellpadding=5>
 <tr>
 <th align=left>Event</th>
-<th align=left>From, To, Where</th>
+<th align=left>From, To, Where, Who</th>
 </tr>
 [% FOREACH ev IN events %]
     [% sum = ev.summary %]
@@ -12,6 +12,7 @@
     <b>From</b> ${ev.sdate_obj.format("%a %b %e '%q")}, ${ev.start_hour_obj}
     &nbsp;&nbsp;<b>To</b> ${ev.edate_obj.format("%a %b %e '%q")} ${ev.end_hour_obj}
     &nbsp;&nbsp;<b>In</b> $ev.meeting_places
+    &nbsp;&nbsp;<b>Coordinator</b> $sum.prog_person
     </td>
     </tr>
     <tr><td></td>

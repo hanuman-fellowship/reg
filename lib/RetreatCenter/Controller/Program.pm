@@ -928,7 +928,10 @@ sub update : Local {
         housecost_opts =>
             [ model($c, 'HouseCost')->search(
                 {
-                    inactive => { '!=' => 'yes' },
+                    -or => [
+                        id       => $p->housecost_id,
+                        inactive => { '!=' => 'yes' },
+                    ],
                 },
                 { order_by => 'name' },
             ) ],
@@ -1909,7 +1912,12 @@ sub duplicate : Local {
         ) ],
         housecost_opts =>
             [ model($c, 'HouseCost')->search(
-                undef,
+                {
+                    -or => [
+                        id       => $orig_p->housecost_id,
+                        inactive => { '!=' => 'yes' },
+                    ],
+                },
                 { order_by => 'name' },
             ) ],
         template_opts => [
