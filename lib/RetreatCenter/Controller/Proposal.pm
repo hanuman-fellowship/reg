@@ -143,7 +143,7 @@ sub _get_data {
         # since unchecked boxes are not sent...
         #
         $hash{denied} = "" unless exists $hash{denied};
-        $hash{staff_ok} = "" unless exists $hash{staff_ok};
+        #$hash{staff_ok} = "" unless exists $hash{staff_ok};
 
     }
     if (@mess) {
@@ -209,7 +209,7 @@ sub update : Local {
         $c->stash->{"$f\_rows"} = lines($proposal->$f()) + 3;    # 3 in strings?
     }
     $c->stash->{"check_denied"}  = ($proposal->denied())? "checked": "";
-    $c->stash->{"check_staff_ok"}  = ($proposal->staff_ok())? "checked": "";
+    #$c->stash->{"check_staff_ok"}  = ($proposal->staff_ok())? "checked": "";
 
     $c->stash->{form_action} = "update_do/$id";
     $c->stash->{template} = "proposal/create_edit.tt2";
@@ -292,7 +292,7 @@ sub approve : Local {
             # see comment in Program.pm
         check_linked    => "",
         check_tentative => "checked",
-        check_staff_ok => $proposal->staff_ok()? "checked": "",
+        #check_staff_ok => $proposal->staff_ok()? "checked": "",
         housecost_opts  =>
             [ model($c, 'HouseCost')->search(
                 undef,

@@ -354,10 +354,12 @@ none
 <td>$rental.mmc_does_reg</td>
 </tr>
 
+<!--
 <tr>
 <th align=right>Staff Okay?</th>
 <td>$rental.staff_ok</td>
 </tr>
+-->
 
 <tr>
 <th align=right>Rental Follows</th>

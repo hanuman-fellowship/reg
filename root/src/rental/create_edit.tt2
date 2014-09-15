@@ -161,10 +161,12 @@ for example: &nbsp; \$30 for SH 2, 115&nbsp;&nbsp & &nbsp;&nbsp; \$80 for MMS*</
 <td colspan=2><input type=checkbox value="yes" name=mmc_does_reg [% check_mmc_does_reg %]> MMC Does Registration</td>
 </tr>
 
+<!--
 <tr>
 <td>&nbsp;</td>
 <td colspan=2><input type=checkbox value="yes" name=staff_ok [% check_staff_ok %]> Staff Okay?</td>
 </tr>
+-->
 
 <tr>
 <td>&nbsp;</td>

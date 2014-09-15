@@ -149,7 +149,7 @@ sub _get_data {
     $P{linked}       = "" unless exists $P{linked};
     $P{tentative}    = "" unless exists $P{tentative};
     $P{mmc_does_reg} = "" unless exists $P{mmc_does_reg};
-    $P{staff_ok}     = "" unless exists $P{staff_ok};
+    #$P{staff_ok}     = "" unless exists $P{staff_ok};
     $P{rental_follows} = "" unless exists $P{rental_follows};
 
     #
@@ -214,7 +214,7 @@ sub create : Local {
                 # see comment in Program.pm in create().
         },
         check_mmc_does_reg => '',
-        check_staff_ok     => '',
+        #check_staff_ok     => '',
         check_rental_follows => '',
     );
 }
@@ -630,7 +630,7 @@ sub update : Local {
         check_linked    => ($r->linked()   )? "checked": "",
         check_tentative => ($r->tentative())? "checked": "",
         check_mmc_does_reg => ($r->mmc_does_reg())? "checked": "",
-        check_staff_ok => ($r->staff_ok())? "checked": "",
+        #check_staff_ok => ($r->staff_ok())? "checked": "",
         check_rental_follows => ($r->rental_follows())? "checked": "",
         housecost_opts  =>
             [ model($c, 'HouseCost')->search(
@@ -1890,7 +1890,7 @@ sub duplicate : Local {
         form_action        => "duplicate_do/$rental_id",
         template           => "rental/create_edit.tt2",
         check_mmc_does_reg => ($orig_r->mmc_does_reg())? "checked": "",
-        check_staff_ok     => ($orig_r->staff_ok())? "checked": "",
+        #check_staff_ok     => ($orig_r->staff_ok())? "checked": "",
         rental_follows     => ($orig_r->rental_follows())? "checked": "",
     );
 }

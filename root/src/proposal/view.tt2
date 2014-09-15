@@ -344,6 +344,7 @@ onclick="return confirm('Okay to Delete [% proposal.group_name %]?');">Delete</a
 <td colspan=3>[% proposal.deposit %]</td>
 </tr>
 
+<!--
 <tr>
 <td colspan=4 width=600>
 Our staff is mostly volunteers, and it often works well both
@@ -358,6 +359,7 @@ Can that work for you?
 <th align=right>Staff Okay?</th>
 <td>[% proposal.staff_ok %]</td>
 </tr>
+-->
 
 <tr>
 <th align=right valign=top>Special Needs</th>
