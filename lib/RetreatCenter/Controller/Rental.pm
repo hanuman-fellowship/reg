@@ -1191,7 +1191,6 @@ sub del_booking : Local {
                        . " $person to "
                        . $h->name
                        . " it cannot be removed."
-                       . "<p>Perhaps you need to do 'Local Grid' and 'Grab New'?"
                        ;
                 last LINE;
             }

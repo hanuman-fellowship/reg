@@ -30,6 +30,7 @@ sub list : Local {
         )
     ];
     stash($c,
+        pg_title     => 'Housing Costs',
         inc_inactive => $inc_inactive,
         template     => "housecost/list.tt2",
     );

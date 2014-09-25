@@ -847,6 +847,56 @@ sub glnum_list : Local {
     );
 }
 
+sub housecost : Local  {
+    my ($self, $c) = @_;
+
+    my $start_str = trim($c->request->params->{start});
+    my $start = date($start_str);
+    if (! $start) {
+        error($c,
+              "Illegal Start Date: $start_str",
+              'gen_error.tt2',
+        );
+        return;
+    }
+    my $end_str = trim($c->request->params->{end});
+    my $end;
+    my $cond = {};
+    if (! empty($end_str)) {
+        $end = date($end_str);
+        if (! $end) {
+            error($c,
+                  "Illegal End Date: $end_str",
+                  'gen_error.tt2',
+            );
+            return;
+        }
+        $cond = {
+            sdate => { between => [ $start->as_d8(), $end->as_d8() ] },
+        };
+    }
+    my @progs = model($c, 'Program')->search(
+                    $cond,
+                    {
+                        order_by => [ 'sdate' ],
+                    }
+                );
+    my @rentals = model($c, 'Rental')->search(
+                    $cond,
+                    {
+                        order_by => [ 'sdate' ],
+                    }
+                );
+    stash($c,
+        pg_title => 'Housing Costs for Programs and Rentals',
+        start    => $start,
+        end      => $end,
+        progs    => \@progs,
+        rentals  => \@rentals,
+        template => 'finance/housecost.tt2',
+    );
+}
+
 #
 # gather Extra Accounts and Programs (since $since) sponsored by MMI
 #
