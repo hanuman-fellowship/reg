@@ -15,6 +15,7 @@ my %rename = qw/
     meeting_place   MeetingPlace
     mmipayment      MMIPayment
     nighthist       NightHist
+    programdoc      ProgramDoc
     regcharge       RegCharge
     reghistory      RegHistory
     regpayment      RegPayment
