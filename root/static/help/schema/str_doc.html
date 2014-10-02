@@ -37,9 +37,9 @@
 <dt>big_imgwidth</dt>
 <dd>size of large picture - for resizing in Util::resize</dd>
 <dt>cal_abutt_color</dt>
-<dd>color used when drawing abutting events in the calendar. Also see lib/ActiveCal.pm</dd>
+<dd>color used when drawing abutting events in the calendar. Also see lib/ActiveCal.pm.  This is used only when cal_abutt_style is empty.</dd>
 <dt>cal_abutt_style</dt>
-<dd>line style when drawing abutting events in the calendar</dd>
+<dd>line style when drawing abutting events in the calendar. This string consists of a sequence of the letters rwab - for red, white, abutt color, and black.  Any other character is interpreted as being black.  These colors are used in sequence to draw the pixels in the abutting line of thickness cal_abutt_thickness. Also see 'perldoc GD' and search for setStyle.</dd>
 <dt>cal_abutt_thickness</dt>
 <dd>line thickness when drawing abutting events in the calendar</dd>
 <dt>cal_arr_color</dt>
@@ -376,6 +376,8 @@
 <dd>doc</dd>
 <dt>rental_end_hour</dt>
 <dd>doc</dd>
+<dt>rental_lunch_cost</dt>
+<dd>how much do rentals pay for a lunch?</dd>
 <dt>rental_received</dt>
 <dd>doc</dd>
 <dt>rental_received_color</dt>

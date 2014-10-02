@@ -1328,7 +1328,7 @@ sub housekeeping : Local {
 }
 
 #
-# display all of the records in the made_up table.
+# display all of the records in the make_up table.
 #
 sub make_up : Local {
     my ($self, $c, $tent) = @_;

@@ -1,0 +1,26 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+</head>
+<body>
+<h2>ProgramDoc
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+</h2>
+A document that is attached to a program.  It is uploaded to the web and a link is made to it on the program's web page.
+<p>
+Table: program_doc
+<dl>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>program_id</dt>
+<dd>foreign key to <a href=/static/help/schema/Program.html>program</a></dd>
+<dt>suffix</dt>
+<dd>the file extension of the document (e.g. jpg or pdf)</dd>
+<dt>title</dt>
+<dd>The description of the document - used as a link target on the web page.</dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>

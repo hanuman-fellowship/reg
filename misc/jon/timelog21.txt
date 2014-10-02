@@ -5,5 +5,20 @@ Sep 18 6:45-7:00
         to mmc.org also put an empty data file in rst/grid/code.txt
         empty - with house ids, beds, nights as is generated
         by garlic/grid
-Sep 24 1:30-2:00
+Sep 24 1:30-2:00, 11:00-12:30
     responding to Barnaby re: new rental grids, Jayanti re: housing cost
+    making a new listing for housing costs for each
+        rental and program in a date range
+Sep 27 1:30-4:00
+    sitting with Akhilesh talking about Reg and Perl
+Sep 28 11:00-12:00
+    the housing cost snafu - what caused it?
+Sep 30 10:00-11:30
+    restarting Reg - its cur dir got messed up - how?
+    email to all, helping Jamal, Jayanti.
+    more housing cost remedies
+    need to call Rachel, see TODO above, add date range for housecost
+        also manual credits
+Oct 1 10:30-11:00
+    talked with Jamal
+    responding to Jayanti re: adjacent rental thingy
