@@ -1127,20 +1127,18 @@ sub hpm_registration {
         },
         {
             prefetch => [qw/program/],
+            order_by => 'date_start desc',
         }
     );
     @regs = grep {
                 $_->program->level() =~ m{[HPBDCM]}
             }
             @regs;
-    if (@regs == 1) {
-        return $regs[0];
-    }
-    elsif (! @regs) {
+    if (! @regs) {
         return 0;
     }
     else {
-        return scalar(@regs);
+        return $regs[0];
     }
 }
 
@@ -1726,6 +1724,7 @@ sub calc_mmi_glnum {
     my $hpm_reg = hpm_registration($c, $person_id);
     if (! $stand_alone && ref($hpm_reg)) {
         # this person is enrolled in a DCM program
+        # perhaps more than one...
         #
         my $program = $hpm_reg->program();
 

@@ -18,7 +18,9 @@ Sep 30 10:00-11:30
     email to all, helping Jamal, Jayanti.
     more housing cost remedies
     need to call Rachel, see TODO above, add date range for housecost
-        also manual credits
-Oct 1 10:30-11:00
+        also manual credits, and Books link?
+Oct 1 10:15-11:30
     talked with Jamal
     responding to Jayanti re: adjacent rental thingy
+    fixing a few schema doc issues
+    investigating publishing and chdir - not sure yet - ask Jamal?
