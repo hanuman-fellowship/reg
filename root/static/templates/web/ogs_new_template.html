@@ -63,7 +63,7 @@ $sidebar ='template';//defines which sidebar to use
                     <H1 CLASS="ptitle">[% program.program.title1 %]</H1>
                     <H2 CLASS="psubtitle">[% program.title2 %]</H2>
                     <P CLASS="pdates">[% program.dates %]</P>
-                    <SPAN><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG SRC="/Gif/register_button.png" ALT="Register for this program" BORDER="0"></A></SPAN>
+                    <SPAN><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG SRC="/Gif/reserve_housing_button.png" ALT="Register for this program" BORDER="0"></A></SPAN>
                 
                 </DIV>
                 
@@ -92,19 +92,21 @@ $sidebar ='template';//defines which sidebar to use
                         <UL>
                             [% program.fee_table %]
                         </UL>
-                    <P><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?&id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG SRC="/Gif/register_button.png" STYLE="padding-top:25px;" ALT="Register for this program" BORDER="0"></A></P>
+                    <P><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?&id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG SRC="/Gif/reserve_housing_button.png" STYLE="padding-top:25px;" ALT="Register for this program" BORDER="0"></A></P>
                     </CENTER>
                 </DIV>
                 
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PROGRAM NOTES</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
 
                 <DIV CLASS="pnotes">
-                    <UL>
-						<LI>[% program.cancellation_policy %]</LI>
-						<LI>Mount Madonna Center program registration begins at 4:00 pm.</LI>
-						<LI>Dinner is served from 5:30-6:30 on Friday and 5:00-6:00 on other days.</LI>
-						<LI>If you will be arriving late, please ask us to save a dinner for you.</LI>
-                    </UL>
+                    <ul>
+						<li>[% program.cancellation_policy %]</li>
+						<li>Retreat registration is from 3:00-5:00 the first day.</li>
+						<li>Dinner is served from 5:30-6:30 on Friday and 5:00-6:00 on other days.</li>
+						<li>If you will be arriving late, please ask us to save a dinner for you.</li>
+						<li>Orientation begins at 6:30 pm.</li>
+						<li>The program will end about midday on the final scheduled day.</li>
+					</ul>
                 </DIV>
                 
               
