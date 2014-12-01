@@ -24,3 +24,16 @@ Oct 1 10:15-11:30
     responding to Jayanti re: adjacent rental thingy
     fixing a few schema doc issues
     investigating publishing and chdir - not sure yet - ask Jamal?
+Oct 12 11:00-11:40
+    MMI registrations in HPM - okay for two degree programs
+    TODO: confirm deletions of payments/charges - too easy to mess up!
+    TODO: program financial tallies - especially MMI
+        Rachel says requested payments are not billed as online?
+Oct 22 8:30-9:00
+    responding to Barnaby re: confusion in filling out the web grid
+Nov 9 10:00-10:40
+    poking database for program extradays change - Mandala '15
+        TODO: when going from auto to manual or back
+            add a history record
+Nov 30 12:30-
+    priority of tent sites

@@ -40,7 +40,9 @@ use Util qw/
 /;
 use Date::Simple qw/
     date
+    ymd
     today
+    days_in_month
 /;
 use Time::Simple qw/
     get_time
@@ -2339,8 +2341,12 @@ sub publishPR : Local {
 }
 
 #
+# get the form values and then
 # invoke the publish_pr program usually invoked
 # automatically on the 1st of the month at 1 am.
+#
+# we force the start date to the first of the month
+# and the end date to the last day of the month.
 #
 sub publishPR_do : Local {
     my ($self, $c, $id) = @_;
@@ -2353,11 +2359,6 @@ sub publishPR_do : Local {
         );
         return;
     }
-    model($c, 'String')->find('disc_pr')->update({
-        value => $pct,
-    });
-    $string{disc_pr} = $pct;
-
     my $start = date($c->request->params->{start});
     if (! $start) {
         error($c,
@@ -2366,12 +2367,7 @@ sub publishPR_do : Local {
         );
         return;
     }
-    my $d8 = $start->as_d8();
-    model($c, 'String')->find('disc_pr_start')->update({
-        value => $d8,
-    });
-    $string{disc_pr_start} = $d8;
-
+    $start = ymd($start->year, $start->month, 1);
     my $end = date($c->request->params->{end});
     if (! $end) {
         error($c,
@@ -2380,6 +2376,32 @@ sub publishPR_do : Local {
         );
         return;
     }
+    my $y = $end->year;
+    my $m = $end->month;
+    $end = ymd($y, $m, days_in_month($y, $m));
+
+    if ($start >= $end) {
+        error($c,
+            "Start is greater than End",
+            "gen_error.tt2",
+        );
+        return;
+    }
+
+    #
+    # put the values in the database table and in the %string hash.
+    #
+    model($c, 'String')->find('disc_pr')->update({
+        value => $pct,
+    });
+    $string{disc_pr} = $pct;
+
+    my $d8 = $start->as_d8();
+    model($c, 'String')->find('disc_pr_start')->update({
+        value => $d8,
+    });
+    $string{disc_pr_start} = $d8;
+
     $d8 = $end->as_d8();
     model($c, 'String')->find('disc_pr_end')->update({
         value => $d8,
@@ -2392,7 +2414,10 @@ sub publishPR_do : Local {
         value => $value,
     });
     $string{personal_template} = $value;
+
+    # now send everything up to mountmadonna.org
     system("publish_pr");
+
     $c->response->redirect($c->uri_for("/program/view/$id"));
 }
 

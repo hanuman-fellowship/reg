@@ -10,14 +10,13 @@
 
 <tr>
 <th align=right>Discount Period Start</th>
-<td><input type=text name=start value='$start'>
-<span style="margin-left: 5mm">(only the months really matter)</span>
+<td><input type=text name=start value="${start.format('%D')}">
 </td>
 </tr>
 
 <tr>
 <th align=right>End</td>
-<td><input type=text name=end value='$end'></td>
+<td><input type=text name=end value="${end.format('%D')}"></td>
 </tr>
 
 <tr><th align=right>With Discount Get Away Offer</th>
@@ -28,5 +27,9 @@
 <td><input type=radio name=publish_type value='plain' [% 'checked' IF getaway != 'getaway' %]></td>
 </tr>
 <tr><th></th><td><input type=submit value="Submit" id=sub></td></tr>
+<tr><td colspan=2>If you choose 'No Discount Offer' the % and dates are irrelevant.
+<p class=p2>
+The start date will be forced to the first of the month<br>
+and the end date will be forced to the end of the month.</td></tr>
 </table>
 </form>

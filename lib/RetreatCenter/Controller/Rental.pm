@@ -1178,7 +1178,7 @@ sub del_booking : Local {
     # if so, you can't delete it!  they have to remove
     # that person first.
     #
-    system("grab wait");        # make sure the local grid is current
+    system("grab wait");        # make sure the local grids are current
 
     my $fgrid = get_grid_file($r->grid_code());
     my $error = "";
@@ -1197,7 +1197,8 @@ sub del_booking : Local {
         }
     }
     else {
-        $error = "Cannot get the grid file!";
+        # the rental grid has never been saved on the web.
+        # we can safely assume that no one is in this space.
     }
     if ($error) {
         error($c,
