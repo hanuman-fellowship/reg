@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-
 BEGIN { 
     $ENV{CATALYST_ENGINE} ||= 'HTTP';
     $ENV{CATALYST_SCRIPT_GEN} = 30;

@@ -102,7 +102,7 @@ sub email_letter {
 
 email_letter(
     from => 'MMC Reservations <reservations@mountmadonna.org>',
-      to => 'Jon Bjornstad <jon@logicalpoetry.com>',
+      to => 'Jon Bjornstad <jonb@logicalpoetry.com>',
  subject => ($err? "ALERT!  Faulty ": "") . "MMC Backup on $full_dayname",
      msg => $msg,
 );
