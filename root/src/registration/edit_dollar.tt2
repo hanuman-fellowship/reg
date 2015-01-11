@@ -16,16 +16,19 @@ $[% reg.balance %]
 <tr>
 <th colspan=2 width=50></th>
 <th>Amount</th>
+<th>Type of Charge</th>
 <th align=left>What</th>
 </tr>
 [% FOR ch IN manual_charges %]
 [% amt = ch.amount %]
+[% type = ch.type %]
 [% tot_chg = tot_chg + amt %]
 <tr>
 <th><a title="Edit" href=/registration/charge_update/[% ch.id %]/edit_dollar><img src=/static/images/pencil.png height=20 border=0></a></th>
 <th><a title="Delete" href=/registration/charge_delete/[% reg_id %]/[% ch.id %]/edit_dollar onclick="return confirm('Delete Charge of $[% ch.amount %].\nAre you sure?');"><img src=/static/images/redX.gif height=20 border=0></a></th>
-<td align=right>[% amt %]</td>
-<td align=left>[% ch.what %]</td>
+<td align=right>$amt</td>
+<td align=right>${charge_label.$type}</td>
+<td align=left>$ch.what</td>
 </tr>
 [% END %]
 [% IF auto_total != 0 %]

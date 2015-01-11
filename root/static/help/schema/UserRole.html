@@ -1,23 +1,23 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>UserRole
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 A mapping table to enable Users to have multiple Roles.
 <p>
 Table: user_role
 <dl>
 <dt>role_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Role.html>role</a></dd>
+<dd>foreign key to <a href=Role.html>role</a></dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=/static/help/schema/User.html>user</a></dd>
+<dd>foreign key to <a href=User.html>user</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>role</td><td><a href=/static/help/schema/Role.html>role</a></td><td>belongs_to</td></tr>
-<tr><td>user</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>role</td><td><a href=Role.html>role</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

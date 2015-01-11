@@ -1,23 +1,23 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>LeaderProgram
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 A mapping table allowing more than one Leader per Program.
 <p>
 Table: leader_program
 <dl>
 <dt>l_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Leader.html>leader</a></dd>
+<dd>foreign key to <a href=Leader.html>leader</a></dd>
 <dt>p_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Program.html>program</a></dd>
+<dd>foreign key to <a href=Program.html>program</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>leader</td><td><a href=/static/help/schema/Leader.html>leader</a></td><td>belongs_to</td></tr>
-<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
+<tr><td>leader</td><td><a href=Leader.html>leader</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

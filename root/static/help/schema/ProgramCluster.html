@@ -1,25 +1,25 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>ProgramCluster
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 A mapping table between cluster and program by which programs can reserve housing clusters so that other programs and rentals can't access the houses in those clusters.  Or at least, they won't be offered them. A lodging FORCE or a Block can always get at them.
 <p>
 Table: program_cluster
 <dl>
 <dt>cluster_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Cluster.html>cluster</a></dd>
+<dd>foreign key to <a href=Cluster.html>cluster</a></dd>
 <dt>program_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Program.html>program</a></dd>
+<dd>foreign key to <a href=Program.html>program</a></dd>
 <dt>seq</dt>
 <dd>obsolete?  I don't see it used anywhere.</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>cluster</td><td><a href=/static/help/schema/Cluster.html>cluster</a></td><td>belongs_to</td></tr>
-<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
+<tr><td>cluster</td><td><a href=Cluster.html>cluster</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

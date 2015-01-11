@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>MakeUp
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 Records indicating which rooms/tent sites need to be cleaned/made-up. And by when.
 <p>
@@ -15,12 +15,12 @@ Table: make_up
 <dt>date_vacated</dt>
 <dd>When was the space vacated?</dd>
 <dt>house_id</dt>
-<dd>foreign key to <a href=/static/help/schema/House.html>house</a></dd>
+<dd>foreign key to <a href=House.html>house</a></dd>
 <dt>refresh</dt>
 <dd>Does this space need to be refreshed now?  This is for programs/rentals that are longer than a week - the beds need fresh linen periodically.</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>house</td><td><a href=/static/help/schema/House.html>house</a></td><td>belongs_to</td></tr>
+<tr><td>house</td><td><a href=House.html>house</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

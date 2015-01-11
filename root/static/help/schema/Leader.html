@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>Leader
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 People can become Leaders of programs.
 <p>
@@ -23,7 +23,7 @@ Table: leader
 <dt>l_order</dt>
 <dd>If a program has multiple leaders what order should they appear in?</dd>
 <dt>person_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Person.html>person</a></dd>
+<dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>public_email</dt>
 <dd>an email address for the leader that can be made public.</dd>
 <dt>url</dt>
@@ -31,8 +31,8 @@ Table: leader
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>leader_program</td><td><a href=/static/help/schema/LeaderProgram.html>leaderprogram</a></td><td>has_many</td></tr>
-<tr><td>person</td><td><a href=/static/help/schema/Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>leader_program</td><td><a href=LeaderProgram.html>leaderprogram</a></td><td>has_many</td></tr>
+<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
 <tr><td>programs</td><td>leader_program => program</td><td>many_to_many</td></tr>
 </table>
 </body></html>

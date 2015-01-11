@@ -37,3 +37,10 @@ Nov 9 10:00-10:40
             add a history record
 Nov 30 12:30-1:00
     priority of tent sites
+Dec 15 1:00-3:00
+    burglary interrupted, lost some things, some time logged here
+    adding a few hours - also coordinating with Tony, Chad, Shankar
+Jan 10 9:20-10:45, 10:45-
+    program tally - reg_charge types?
+    TODO: CEU intermediary dialog to allow changing the hours
+        on the certificate

@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>RegHistory
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 any time anything is done to/in/on a registration a history record is added.
 <p>
@@ -13,19 +13,19 @@ Table: reg_history
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>reg_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Registration.html>registration</a></dd>
+<dd>foreign key to <a href=Registration.html>registration</a></dd>
 <dt>the_date</dt>
 <dd>what day did this event happen?</dd>
 <dt>time</dt>
 <dd>what time did this event happen?</dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=/static/help/schema/User.html>user</a></dd>
+<dd>foreign key to <a href=User.html>user</a></dd>
 <dt>what</dt>
 <dd>a brief description of the event</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>registration</td><td><a href=/static/help/schema/Registration.html>registration</a></td><td>belongs_to</td></tr>
-<tr><td>user</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>registration</td><td><a href=Registration.html>registration</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

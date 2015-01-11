@@ -11,24 +11,26 @@
 
 <tr>
 <th align=right>Amount</th>
-<td><input type=text name=amount size=5 value='[% chg.amount %]'></td>
+<td><input type=text name=amount size=7 value='[% chg.amount %]'></td>
 </tr>
 
 <tr>
 <th align=right>Type of Charge</th>
 <td>
 <select name=type>
-<option value=2>Meals and Lodging
-<option value=1>Tuition
-<option value=3>Application Fee
-<option value=4>Registration Fee
-<option value=6>STRF
-<option value=7>Recordings
-<option value=8>CEU License
-<option value=5>Other
+<option value=2 $selected.2>Meals and Lodging
+<option value=1 $selected.1>Tuition
+<option value=3 $selected.3>Application Fee
+<option value=4 $selected.4>Registration Fee
+<option value=6 $selected.6>STRF
+<option value=7 $selected.7>Recordings
+<option value=8 $selected.8>CEU License
+<option value=5 $selected.5>Other
 </select>
 <!-- apologies for the ordering above. this field is a
      kind of patch that repairs data that goes way way back to 1989
+     I also apologize for the kludgy $selected thingy - I'm tired.
+     Please help me.
 -->
 </td>
 </tr>

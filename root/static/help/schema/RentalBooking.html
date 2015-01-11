@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>RentalBooking
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 A rental booking reserves a house (all beds) for the rental. The table name probably should have been 'rental_house' and the model RentalHouse.
 <p>
@@ -17,13 +17,13 @@ Table: rental_booking
 <dt>h_type</dt>
 <dd>housing type - see the h_type field of Registration</dd>
 <dt>house_id</dt>
-<dd>foreign key to <a href=/static/help/schema/House.html>house</a></dd>
+<dd>foreign key to <a href=House.html>house</a></dd>
 <dt>rental_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Rental.html>rental</a></dd>
+<dd>foreign key to <a href=Rental.html>rental</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>house</td><td><a href=/static/help/schema/House.html>house</a></td><td>belongs_to</td></tr>
-<tr><td>rental</td><td><a href=/static/help/schema/Rental.html>rental</a></td><td>belongs_to</td></tr>
+<tr><td>house</td><td><a href=House.html>house</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

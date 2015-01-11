@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>XAccountPayment
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 People can make Payments to XAccounts.  An XAccountPayment record is created.
 <p>
@@ -15,7 +15,7 @@ Table: xaccount_payment
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>person_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Person.html>person</a></dd>
+<dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>the_date</dt>
 <dd>date of the payment</dd>
 <dt>time</dt>
@@ -23,16 +23,16 @@ Table: xaccount_payment
 <dt>type</dt>
 <dd>C (Check) D (Credit) O (Online) S (Cash)</dd>
 <dt>user_id</dt>
-<dd>foreign key to <a href=/static/help/schema/User.html>user</a></dd>
+<dd>foreign key to <a href=User.html>user</a></dd>
 <dt>what</dt>
 <dd>optional description of what the payment was for</dd>
 <dt>xaccount_id</dt>
-<dd>foreign key to <a href=/static/help/schema/XAccount.html>xaccount</a></dd>
+<dd>foreign key to <a href=XAccount.html>xaccount</a></dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>person</td><td><a href=/static/help/schema/Person.html>person</a></td><td>belongs_to</td></tr>
-<tr><td>user</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
-<tr><td>xaccount</td><td><a href=/static/help/schema/XAccount.html>xaccount</a></td><td>belongs_to</td></tr>
+<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>xaccount</td><td><a href=XAccount.html>xaccount</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

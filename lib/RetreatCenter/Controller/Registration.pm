@@ -2575,6 +2575,7 @@ sub new_charge : Local {
         template => "registration/new_charge.tt2",
     );
 }
+
 sub new_charge_do : Local {
     my ($self, $c, $reg_id) = @_;
 
@@ -2615,7 +2616,7 @@ sub new_charge_do : Local {
     model($c, 'RegHistory')->create({
         reg_id    => $reg_id,
         @who_now,
-        what    => "New charge of \$$amount - $charge_type[$type]$what.",
+        what    => "New charge of \$$amount - $charge_type[$type]$what",
     });
     if ($c->request->params->{from}
         && $c->request->params->{from} eq 'edit_dollar'
@@ -4834,42 +4835,66 @@ sub tally : Local {
     my $adults     = 0;
     my $kids       = 0;
 
-    my $tuition    = 0;
-    my $lodging    = 0;
-    my $adjustment = 0;
-
+    # Payments
     my $deposit    = 0;
     my $can_deposit = 0;
     my $can_payment = 0;
     my $payment    = 0;
     my $balance    = 0;
 
+    # Charges
+    my @charges_for = (0) x 8;
+
     my $credit     = 0;
 
     my %seen;
     REG:
     for my $r (@regs) {
-        for my $rp ($r->payments()) {
-            my $what   = $rp->what;
-            my $amount = $rp->amount();
-            if ($what =~ m{deposit}i) {
-                if ($r->cancelled()) {
-                    $can_deposit += $amount;
+        if ($pr->school() == 0) {       # MMC
+            for my $rp ($r->payments()) {
+                my $what   = $rp->what;
+                my $amount = $rp->amount();
+                if ($what =~ m{deposit}i) {
+                    if ($r->cancelled()) {
+                        $can_deposit += $amount;
+                    }
+                    else {
+                        $deposit += $amount;
+                    }
+                }
+                elsif ($what =~ m{payment}i) {
+                    if ($r->cancelled()) {
+                        $can_payment += $amount;
+                    }
+                    else {
+                        $payment += $amount;
+                    }
                 }
                 else {
-                    $deposit += $amount;
+                    # ??? what else?
                 }
             }
-            elsif ($what =~ m{payment}i) {
-                if ($r->cancelled()) {
-                    $can_payment += $amount;
+        }
+        else {      # MMI
+            for my $rp ($r->mmi_payments()) {
+                my $amount = $rp->amount();
+                my $cancelled = $r->cancelled();
+                if ($rp->note() =~ m{deposit}xmsi) {
+                    if ($cancelled) {
+                        $can_deposit += $amount;
+                    }
+                    else {
+                        $deposit += $amount;
+                    }
                 }
                 else {
-                    $payment += $amount;
+                    if ($cancelled) {
+                        $can_payment += $amount;
+                    }
+                    else {
+                        $payment += $amount;
+                    }
                 }
-            }
-            else {
-                # ??? what else?
             }
         }
         if (my ($credit_rec) = model($c, 'Credit')->search({
@@ -4886,17 +4911,7 @@ sub tally : Local {
         #
         if (! $r->cancelled()) {
             for my $rc ($r->charges()) {
-                my $what   = $rc->what();
-                my $amount = $rc->amount();
-                if ($what =~ m{tuition}i) {
-                    $tuition += $amount;
-                }
-                elsif ($what =~ m{lodging}i) {
-                    $lodging += $amount;
-                }
-                else {
-                    $adjustment += $amount;
-                }
+                $charges_for[$rc->type()] += $rc->amount();
             }
             $balance += $r->balance();
         }
@@ -4929,6 +4944,11 @@ sub tally : Local {
             $kids += @ages;
         }
     }
+    my $tot_charge = 0;
+    for my $a (@charges_for) {
+        $tot_charge += $a;
+        $a = commify($a);
+    }
     stash($c,
         program     => $pr,
         id          => $prog_id,
@@ -4940,10 +4960,9 @@ sub tally : Local {
         adults      => $adults,
         kids        => $kids,
 
-        tuition     => commify($tuition),
-        lodging     => commify($lodging),
-        adjustment  => commify($adjustment),
-        tot_charge  => commify($tuition + $lodging + $adjustment),
+        charge_amount => \@charges_for,
+        charge_label  => \@charge_type,
+        tot_charge    => commify($tot_charge),
 
         deposit     => commify($deposit),
         payment     => commify($payment),
@@ -5287,6 +5306,7 @@ sub edit_dollar : Local {
                 automatic => '',
             })
         ],
+        charge_label => \@charge_type,
         auto_total => $auto_total,
         reg => $reg,
         template => 'registration/edit_dollar.tt2',
@@ -5298,11 +5318,10 @@ sub charge_delete : Local {
 
     my ($charge) = model($c, 'RegCharge')->find($ch_id);
     my $what = 'Deleted charge of $'
-             . $charge->amount
+             . commify($charge->amount)
              . " - "
              . $charge_type[$charge->type]
              . ($charge->what? ' - ' . $charge->what: '')
-             . '.'
              ;
     $charge->delete();
     my @who_now = get_now($c);
@@ -5438,9 +5457,13 @@ sub payment_update_do : Local {
 sub charge_update : Local {
     my ($self, $c, $chg_id, $from) = @_;
 
+    my $chg = model($c, 'RegCharge')->find($chg_id);
+    my @selected;
+    $selected[$chg->type()] = "selected";       # hack! :(
     stash($c,
-        from => $from,
-        chg => model($c, 'RegCharge')->find($chg_id),
+        from     => $from,
+        chg      => $chg,
+        selected => \@selected,
         template => 'registration/edit_charge.tt2',
     );
 }
@@ -5448,6 +5471,7 @@ sub charge_update_do : Local {
     my ($self, $c, $chg_id) = @_;
 
     my $chg = model($c, 'RegCharge')->find($chg_id);
+    my $old_amount = $chg->amount();
     my $amount = trim($c->request->params->{amount});
     if (invalid_amount($amount)) {
         error($c,
@@ -5456,12 +5480,25 @@ sub charge_update_do : Local {
         );
         return;
     }
+    my $what = $c->request->params->{what};
+    my $type = $c->request->params->{type};
+    my @who_now = get_now($c);
     $chg->update({
         amount => $amount,
+        type   => $type,
         what   => $c->request->params->{what},
+        @who_now,
     });
     _calc_balance($chg->registration());
-    # ??? also update who, when
+
+    $what = " - $what" if $what;
+    $amount = commify($amount);
+    $old_amount = commify($old_amount);
+    model($c, 'RegHistory')->create({
+        reg_id    => $chg->reg_id(),
+        @who_now,
+        what    => "Updated \$$old_amount charge: \$$amount - $charge_type[$type]$what",
+    });
     if ($c->request->params->{from} eq 'edit_dollar') {
         $c->response->redirect(
             $c->uri_for("/registration/edit_dollar/" . $chg->reg_id())

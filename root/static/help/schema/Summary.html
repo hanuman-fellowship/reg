@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>Summary
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 The summary contains all kinds of information that enable the MMC staff to be gracious and attentive hosts - for both rentals and programs. Lots of free text fields.
 <p>
@@ -57,7 +57,7 @@ Table: summary
 <dt>time_updated</dt>
 <dd>time last updated</dd>
 <dt>who_updated</dt>
-<dd>which user last updated - foreign key to <a href=/static/help/schema/User.html>user</a></dd>
+<dd>which user last updated - foreign key to <a href=User.html>user</a></dd>
 <dt>wind_up</dt>
 <dd>free text</dd>
 <dt>workshop_description</dt>
@@ -67,8 +67,8 @@ Table: summary
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>might_have</td></tr>
-<tr><td>rental</td><td><a href=/static/help/schema/Rental.html>rental</a></td><td>might_have</td></tr>
-<tr><td>who</td><td><a href=/static/help/schema/User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>program</a></td><td>might_have</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>might_have</td></tr>
+<tr><td>who</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

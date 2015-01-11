@@ -1,17 +1,17 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>Exception
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 When a program web page is generated you may want to make an exception for a particular program and a particular tag within the web page template.
 <p>
 Table: exception
 <dl>
 <dt>prog_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Program.html>program</a></dd>
+<dd>foreign key to <a href=Program.html>program</a></dd>
 <dt>tag</dt>
 <dd>the tag name</dd>
 <dt>value</dt>
@@ -19,6 +19,6 @@ Table: exception
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

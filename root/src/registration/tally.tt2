@@ -49,31 +49,22 @@
 </tr>
 <tr>
 
+
 </table>
 </div>
+<a href=/program/view/[% id %]>To Program</a>
 
 <div style="float: left; margin-left: 1in; margin-bottom: .7in;">
 <table cellpadding=3>
 
 <tr><td colspan=2 align=center><h2>Finances</h2></td></tr>
 
+[% FOREACH i IN [ 1 .. 8 ] %]
 <tr>
-<th align=right>Tuition</td>
-<td align=right width=90>[% tuition %]</td>
+<th align=right>${charge_label.$i}</th>
+<td align=right width=90>${charge_amount.$i}</td>
 </tr>
-<tr>
-
-<tr>
-<th align=right>Lodging</td>
-<td align=right>[% lodging %]</td>
-</tr>
-<tr>
-
-<tr>
-<th align=right>Adjustments</td>
-<td align=right>[% adjustment %]</td>
-</tr>
-<tr>
+[% END %]
 
 <tr><td></td><td style="border-top: solid thin"></td></tr>
 
@@ -114,13 +105,13 @@
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<th align=right>Canceled Deposits</td>
+<th align=right>Cancelled Deposits</td>
 <td align=right>[% can_deposit %]</td>
 </tr>
 <tr>
 
 <tr>
-<th align=right>Canceled Payments</td>
+<th align=right>Cancelled Payments</td>
 <td align=right>[% can_payment %]</td>
 </tr>
 <tr>
@@ -134,7 +125,7 @@
 <tr><td></td><td style="border-top: solid thin"></td></tr>
 
 <tr>
-<th align=right>Net Canceled</td>
+<th align=right>Net Cancelled</td>
 <td align=right>[% net_cancel %]</td>
 </tr>
 <tr>
@@ -148,6 +139,4 @@
 <a href=/registration/tally/[% id %]/1>Normal Only</a><br>
 <a href=/registration/tally/[% id %]/2>Full Only</a>
 [% END %]
-<p>
-<a href=/program/view/[% id %]>To Program</a>
 </div>

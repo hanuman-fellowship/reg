@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>Member
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 People can become Members of the Hanuman Fellowship by paying dues.
 <p>
@@ -23,7 +23,7 @@ Table: member
 <dt>id</dt>
 <dd>unique id</dd>
 <dt>person_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Person.html>person</a></dd>
+<dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>sponsor_nights</dt>
 <dd>how many sponsor free nights remain?</dd>
 <dt>total_paid</dt>
@@ -33,8 +33,8 @@ Table: member
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>nighthist</td><td><a href=/static/help/schema/NightHist.html>nighthist</a></td><td>has_many</td></tr>
-<tr><td>payments</td><td><a href=/static/help/schema/SponsHist.html>sponshist</a></td><td>has_many</td></tr>
-<tr><td>person</td><td><a href=/static/help/schema/Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>nighthist</td><td><a href=NightHist.html>nighthist</a></td><td>has_many</td></tr>
+<tr><td>payments</td><td><a href=SponsHist.html>sponshist</a></td><td>has_many</td></tr>
+<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

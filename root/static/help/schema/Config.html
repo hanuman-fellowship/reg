@@ -1,10 +1,10 @@
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="/static/help/help.css" />
+<link rel="stylesheet" type="text/css" href="../help.css" />
 </head>
 <body>
 <h2>Config
-<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=/static/help/schema/index.html>To Help for Developers</a>
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
 This is a critical table (somewhat misnamed) that keeps track of housing configuration. There is a record for each house (aka room/site) and each day. The sex attribute tells what gender is occupying the space. We must do our best to keep the different genders apart! The foreign keys to program and rental are filled in only if  the housing reservation came from such.  Blocks and Meeting Space reservations associated with an Event have no such foreign keys. <p>Config records are added with Util::add_config() as needed.
 <p>
@@ -15,11 +15,11 @@ Table: config
 <dt>curmax</dt>
 <dd>Max capacity of the space.</dd>
 <dt>house_id</dt>
-<dd>foreign key to <a href=/static/help/schema/House.html>house</a></dd>
+<dd>foreign key to <a href=House.html>house</a></dd>
 <dt>program_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Program.html>program</a></dd>
+<dd>foreign key to <a href=Program.html>program</a></dd>
 <dt>rental_id</dt>
-<dd>foreign key to <a href=/static/help/schema/Rental.html>rental</a></dd>
+<dd>foreign key to <a href=Rental.html>rental</a></dd>
 <dt>sex</dt>
 <dd>U (As yet Undefined), M (Male), F (Female), X (Mixed), R (Rental), B (Block), S (meeting Space), or C (Unreported Gender).</dd>
 <dt>the_date</dt>
@@ -27,8 +27,8 @@ Table: config
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
-<tr><td>house</td><td><a href=/static/help/schema/House.html>house</a></td><td>belongs_to</td></tr>
-<tr><td>program</td><td><a href=/static/help/schema/Program.html>program</a></td><td>belongs_to</td></tr>
-<tr><td>rental</td><td><a href=/static/help/schema/Rental.html>rental</a></td><td>belongs_to</td></tr>
+<tr><td>house</td><td><a href=House.html>house</a></td><td>belongs_to</td></tr>
+<tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>
