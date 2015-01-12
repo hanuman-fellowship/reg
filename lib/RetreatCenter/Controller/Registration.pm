@@ -5316,21 +5316,35 @@ sub edit_dollar : Local {
 sub charge_delete : Local {
     my ($self, $c, $reg_id, $ch_id, $from) = @_;
 
+    my ($reg) = model($c, 'Registration')->find($reg_id);
     my ($charge) = model($c, 'RegCharge')->find($ch_id);
-    my $what = 'Deleted charge of $'
-             . commify($charge->amount)
-             . " - "
-             . $charge_type[$charge->type]
-             . ($charge->what? ' - ' . $charge->what: '')
-             ;
-    $charge->delete();
-    my @who_now = get_now($c);
-    model($c, 'RegHistory')->create({
-        reg_id   => $reg_id,
-        @who_now,
-        what    => $what,
-    });
-    _calc_balance(model($c, 'Registration')->find($reg_id));
+    stash($c,
+        reg      => $reg,
+        charge   => $charge,
+        template => 'registration/reg_charge_del.tt2',
+    );
+}
+
+sub charge_delete_do : Local {
+    my ($self, $c, $reg_id, $ch_id, $from) = @_;
+
+    my ($charge) = model($c, 'RegCharge')->find($ch_id);
+    if ($c->request->params->{yes}) {
+        my $what = 'Deleted charge of $'
+                 . commify($charge->amount)
+                 . " - "
+                 . $charge_type[$charge->type]
+                 . ($charge->what? ' - ' . $charge->what: '')
+                 ;
+        $charge->delete();
+        my @who_now = get_now($c);
+        model($c, 'RegHistory')->create({
+            reg_id   => $reg_id,
+            @who_now,
+            what    => $what,
+        });
+        _calc_balance(model($c, 'Registration')->find($reg_id));
+    }
     if (defined $from && $from eq 'edit_dollar') {
         $c->response->redirect(
             $c->uri_for("/registration/edit_dollar/$reg_id")

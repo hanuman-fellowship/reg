@@ -40,7 +40,8 @@ Nov 30 12:30-1:00
 Dec 15 1:00-3:00
     burglary interrupted, lost some things, some time logged here
     adding a few hours - also coordinating with Tony, Chad, Shankar
-Jan 10 9:20-10:45, 10:45-
-    program tally - reg_charge types?
+Jan 10 9:20-10:45, 10:45-1:00
+    program tally - reg_charge types
+    redid links in schema pages
     TODO: CEU intermediary dialog to allow changing the hours
         on the certificate
