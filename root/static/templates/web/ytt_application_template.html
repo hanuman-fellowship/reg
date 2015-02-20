@@ -43,16 +43,19 @@ $sidebar ='template';//defines which sidebar to use
 ?>
 
 
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=ISO-8859-1" />
 
-<TITLE><!--T title1 --> <!--T title2 -->
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" />
+
+<TITLE>
+[% program.title1 %] [% program.title2 %]
 </TITLE>
 
 
 
-<META NAME="keywords" CONTENT="<!--T leader_names -->, <!--T title1 -->, <!--T title2 -->, bay area yoga, bay area conference center, bay area retreat center, baba hari dass, vegetarian, meditation">
+<META NAME="keywords" CONTENT="[% program.leader_names %], [% program.title1 %], [% program.title2 %], bay area yoga, bay area conference center, bay area retreat center, baba hari dass, vegetarian, meditation">
 
-<META PROPERTY="og:title" CONTENT=" <!--T title1 --> - <!--T title2 -->"/>
+<META PROPERTY="og:title" CONTENT="[% program.title1 %] - [% program.title2 %]"/>
 <META PROPERTY="og:type" CONTENT="other"/>
 <META PROPERTY="og:url" CONTENT="<?php 
 $string = $_SERVER['REQUEST_URI']; 
@@ -67,11 +70,11 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 ?>"/>
 
 
-<META PROPERTY="og:image" CONTENT="<?php $string="<!--T picture-->"; preg_match('/(?<=\').*?(?=\')/', $string, $result); echo 'http://www.mountmadonna.org/live/' . $result[0]; ?>"/>
+<META PROPERTY="og:image" CONTENT="<?php $string="[% program.picture %]"; preg_match('/(?<=\').*?(?=\')/', $string, $result); echo 'http://www.mountmadonna.org/live/' . $result[0]; ?>"/>
 <META PROPERTY="og:site_name" CONTENT="Mount Madonna Center"/>
 <META PROPERTY="fb:admins" CONTENT="507138422"/>
 <META PROPERTY="og:description"
-          CONTENT="Workshop <!--T dates --> by <!--T leader_names -->"/>
+          CONTENT="Workshop [% program.dates %] by [% program.leader_names %]"/>
 
 <LINK HREF="/styles/reset.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/layout.css" REL="stylesheet" TYPE="text/css" />
@@ -80,6 +83,12 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 <LINK HREF="/styles/text.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/programs.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/facebook.css" REL="stylesheet" TYPE="text/css" />
+<link HREF="/styles/tipsy.css" rel="stylesheet" type="text/css" />
+<link HREF="/styles/dynamic_header.php?programNumber=[% program.id %]" rel="stylesheet" type="text/css" />
+
+<SCRIPT TYPE="text/javascript" SRC="/javascript/jquery-1.4.2.min.js"></SCRIPT>
+<script type="text/javascript" src="/javascript/jquery.tipsy.js"></script>
+
 <!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
 
 <!--[if IE 5]>
@@ -104,10 +113,31 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 </HEAD>
 
 <BODY CLASS="twoColFixLtHdr">
+<script type='text/javascript'>
+  $(function() {
+    
+    $('#name1').tipsy({gravity: 'nw'});
+    $('#name2').tipsy({gravity: 'nw'});
+    $('#name3').tipsy({gravity: 'nw'});
+    $('#name4').tipsy({gravity: 'nw'});
+    $('#name5').tipsy({gravity: 'nw'});
+    $('#name6').tipsy({gravity: 'nw'});
+    $('#name7').tipsy({gravity: 'nw'});
+    $('#name8').tipsy({gravity: 'nw'});
+    $('#name9').tipsy({gravity: 'nw'});
+    $('#name10').tipsy({gravity: 'nw'});
+    $('#name11').tipsy({gravity: 'nw'});
+    $('#name12').tipsy({gravity: 'nw'});
+    $('#name13').tipsy({gravity: 'nw'});
+    $('#name14').tipsy({gravity: 'nw'});
+    $('#name15').tipsy({gravity: 'nw'});
+    $('#name16').tipsy({gravity: 'nw'});
+  });
+</script>
 
-<DIV ID="fb-root"></DIV>
+<div id="fb-root"></div>
 <!-- Facebook SDK loader -->
-    <SCRIPT>
+    <script>
       window.fbAsyncInit = function() {
         FB.init({
           appId   : '<?php echo $facebook->getAppId(); ?>',
@@ -129,15 +159,13 @@ echo 'http://www.mountmadonna.org' . $result_uri;
         e.async = true;
         document.getElementById('fb-root').appendChild(e);
       }());
-    </SCRIPT>
-
-
+    </script>
     <DIV ID="container">
         <DIV ID="header"><?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/header.php');?></DIV>
         <DIV ID="mainWrapper">
             <DIV ID="sidebar1"><DIV CLASS="sidebarContainer"><DIV CLASS="sidebarTop"><DIV></DIV></DIV>
 	<DIV CLASS="sidebarContent" STYLE="margin-right:auto;margin-left:auto;width:170px;">
-        <DIV><!--T picture --></DIV>
+        <DIV>[% program.picture %]</DIV>
 
                   <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="170">
                                 <!-- fwtable fwsrc="nextback_button.png" fwbase="next_back_buttons.gif" fwstyle="Dreamweaver" fwdocid = "2121170430" fwnested="0" -->
@@ -153,10 +181,10 @@ echo 'http://www.mountmadonna.org' . $result_uri;
                                   <TD><IMG SRC="/Gif/spacer.gif" WIDTH="1" HEIGHT="10" BORDER="0" ALT=""></TD>
                                 </TR>
                                 <TR>
-                                  <TD><A HREF="<!--T firstprog_prevmonth -->" TARGET="_top" onClick="MM_nbGroup('down','navbar1','prev_month','/Gif/prev_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_month','/Gif/prev_month_f2.gif','/Gif/prev_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="prev_month" SRC="/Gif/prev_month.gif" WIDTH="42" HEIGHT="26" BORDER="0" ALT=""></A></TD>
-                                  <TD><A HREF="<!--T firstprog_nextmonth -->" TARGET="_top" onClick="MM_nbGroup('down','navbar1','next_month','/Gif/next_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_month','/Gif/next_month_f2.gif','/Gif/next_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="next_month" SRC="/Gif/next_month.gif" WIDTH="44" HEIGHT="26" BORDER="0" ALT=""></A></TD>
-                                  <TD><A HREF="<!--T prevprog -->" TARGET="_top" onClick="MM_nbGroup('down','navbar1','prev_prog','/Gif/prev_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_prog','/Gif/prev_prog_f2.gif','/Gif/prev_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="prev_prog" SRC="/Gif/prev_prog.gif" WIDTH="41" HEIGHT="26" BORDER="0" ALT=""></A></TD>
-                                  <TD><A HREF="<!--T nextprog -->" TARGET="_top" onClick="MM_nbGroup('down','navbar1','next_prog','/Gif/next_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_prog','/Gif/next_prog_f2.gif','/Gif/next_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="next_prog" SRC="/Gif/next_prog.gif" WIDTH="43" HEIGHT="26" BORDER="0" ALT=""></A></TD>
+                                  <TD><A HREF="[% program.firstprog_prevmonth %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','prev_month','/Gif/prev_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_month','/Gif/prev_month_f2.gif','/Gif/prev_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="prev_month" SRC="/Gif/prev_month.gif" WIDTH="42" HEIGHT="26" BORDER="0" ALT=""></A></TD>
+                                  <TD><A HREF="[% program.firstprog_nextmonth %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','next_month','/Gif/next_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_month','/Gif/next_month_f2.gif','/Gif/next_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="next_month" SRC="/Gif/next_month.gif" WIDTH="44" HEIGHT="26" BORDER="0" ALT=""></A></TD>
+                                  <TD><A HREF="[% program.prevprog %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','prev_prog','/Gif/prev_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_prog','/Gif/prev_prog_f2.gif','/Gif/prev_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="prev_prog" SRC="/Gif/prev_prog.gif" WIDTH="41" HEIGHT="26" BORDER="0" ALT=""></A></TD>
+                                  <TD><A HREF="[% program.nextprog %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','next_prog','/Gif/next_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_prog','/Gif/next_prog_f2.gif','/Gif/next_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="next_prog" SRC="/Gif/next_prog.gif" WIDTH="43" HEIGHT="26" BORDER="0" ALT=""></A></TD>
                                   <TD><IMG SRC="/Gif/spacer.gif" WIDTH="1" HEIGHT="26" BORDER="0" ALT=""></TD>
                                 </TR>
                                 <TR>
@@ -164,23 +192,29 @@ echo 'http://www.mountmadonna.org' . $result_uri;
                                   <TD><IMG SRC="/Gif/spacer.gif" WIDTH="1" HEIGHT="29" BORDER="0" ALT=""></TD>
                                 </TR>
                               </TABLE>
-                              <!--T month_calendar -->
+                              [% program.month_calendar %]
                         </CENTER></TD></TR></TBODY></TABLE>
                         
-
+<?php 
+$eid = "[% program.facebook_event_id %]";
+if (!empty($eid)) {
+	$_GET['eid']=$eid;
+	include("/home/mmc/domains/mountmadonna.org/public_html/includes/fb_activity.php");  
+}
+?>
                 
 
   </DIV><DIV CLASS=sidebarBottom><DIV></DIV></DIV></DIV>
   </DIV>
       
-            <DIV ID="contentHeader" CLASS="p<!--T id-->"><!-- put 650 px width image here or leave &nbsp; if no header image-->
+            <DIV ID="contentHeader" CLASS="p[% program.id %]"><!-- put 650 px width image here or leave &nbsp; if no header image-->
 
 
                 <DIV CLASS="ptop">
-                    <H1 CLASS="ptitle"><!--T title1 --></H1>
-                    <H2 CLASS="psubtitle"><!--T title2 --></H2>
-                    <P CLASS="pdates"><!--T dates --></P>
-                    <SPAN><a href="/yoga/ytt_application.html"><IMG SRC="/Gif/online_application_button.png" ALT="Apply Online" BORDER="0"></a></SPAN>
+                    <H1 CLASS="ptitle">[% program.title1 %]</H1>
+                    <H2 CLASS="psubtitle">[% program.title2 %]</H2>
+                    <P CLASS="pdates">[% program.dates %]</P>
+                    <SPAN><SPAN><a href="/yoga/ytt_application.html"><IMG SRC="/Gif/online_application_button.png" ALT="Apply Online" BORDER="0"></a></SPAN></SPAN>
                     <SPAN STYLE="float:right;"><fb:like width="300" action="recommend"></fb:like></SPAN>
                 </DIV>
                 
@@ -194,26 +228,35 @@ echo 'http://www.mountmadonna.org' . $result_uri;
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PROGRAM DESCRIPTION</SPAN><SPAN STYLE="float:right;">&nbsp;</SPAN></DIV>
                 
                 <DIV CLASS="pdesc">
-                    <!--T webdesc -->
-                    <!--T weburl -->
+                    [% program.webdesc %]
+                    [% IF program.documents %]
+                        <ul class=doc_ul>
+                        [% FOR d IN  program.documents %]
+                            <li><a href="docs/pdoc[% d.id %].[% d.suffix %]">[% d.title %]</a>        
+                        [% END %]
+                        </ul>
+                    [% END %]
+                    [% program.weburl %]
                 </DIV>
                 
+                [% IF program.leader_bio %]
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PRESENTER BIO</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
                 <DIV CLASS="pbio">
-                    <!--T leader_bio -->
+                    [% program.leader_bio %]
                 </DIV>
+                [% END %]
                 
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">REGISTRATION</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
                 
                 <DIV CLASS="preg">
-                <!--T long_footnotes -->
+                [% program.long_footnotes %]
                 <P STYLE="margin-top:25px;"><STRONG>Cost:</STRONG></P>
 
                     <CENTER>
                         <UL>
-                            <!--T fee_table -->
+                            [% program.fee_table %]
                         </UL>
-                    <P><a href="/yoga/ytt_application.html"><IMG SRC="/Gif/online_application_button.png" STYLE="padding-top:25px;" ALT="Apply Online" BORDER="0"></a></P>
+                    <P style="padding-top: 25px"><SPAN><a href="/yoga/ytt_application.html"><IMG SRC="/Gif/online_application_button.png" ALT="Apply Online" BORDER="0"></a></SPAN></P>
                     </CENTER>
                 </DIV>
                 
@@ -221,13 +264,13 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 
                 <DIV CLASS="pnotes">
                     <UL>
-                        <LI>A deposit of $<!--T deposit --> is required with registration.</LI>
-                        <LI><!-- T cancellation_policy --></LI>
-                        <LI>Registration check-in for this program is from <!--T reg_start_obj --> to <!--T reg_end_obj -->.</LI>
+                        <LI>A deposit of $[% program.deposit %] is required with registration. Balance is due upon arrival.</LI>
+                        <LI>[% program.cancellation_policy %]</LI>
+                        <LI>Registration check-in for this program is from [% program.reg_start_obj %] to [% program.reg_end_obj %].</LI>
                         <LI>Dinner is served from 5:30-6:30 pm on Friday and 5:00-6:00 pm on other days.</LI>
                         <LI>If you will be arriving late, please ask us to save a dinner for you.</LI>
-                        <LI>Orientation begins at <!--T prog_start_obj -->.</LI>
-                        <LI>The program will end at <!--T prog_end_obj --> on the final scheduled day.</LI>
+                        <LI>Orientation begins at [% program.prog_start_obj %].</LI>
+                        <LI>The program will end at [% program.prog_end_obj %] on the final scheduled day.</LI>
                     </UL>
                 </DIV>
                 
