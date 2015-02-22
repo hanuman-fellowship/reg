@@ -141,6 +141,7 @@ and give you the help you need.
 [% IF gc %]
 If you arrive in the evening and the gate is closed you can open it<br>
 by entering this code in the keypad: #${gc}. That's POUND ${gc}.<br>
+Press the five keys firmly and without any pauses or it will not work.
 [% END %]
 </UL>
 [% END %]
