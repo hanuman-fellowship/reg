@@ -27,7 +27,7 @@ THEN synthesize a transaction file from the info in the email
 and mark it as such.
 
 B. report the following untoward things via an email
-to jon@logicalpoetry.com:  
+to jonb@logicalpoetry.com:  
 
     - unable to make a connection via ftp or pop3
     - misformatted emails
@@ -226,7 +226,7 @@ sub email_letter {
         to       => $args{to},
         from     => $args{from},
         @cc,
-        #bcc      => 'jon@logicalpoetry.com',
+        #bcc      => 'jonb@logicalpoetry.com',
         subject  => $args{subject},
         ctype    => "text/html",
         encoding => "7bit",
@@ -1022,7 +1022,7 @@ sub finalities {
         if ($Error) {            # 1 or 0 - okay?
             $Msg =~ s{\n}{<br>\n}g;
             email_letter(
-                to       => 'jon@logicalpoetry.com',
+                to       => 'jonb@logicalpoetry.com',
                 from     =>
                     'Mount Madonna Center <reservations@mountmadonna.org>',
                 subject  => "Grab New "

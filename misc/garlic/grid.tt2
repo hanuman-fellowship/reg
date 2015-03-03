@@ -3,7 +3,9 @@
 <script type='text/javascript'>
 function check(h_id, bed, nnights) {
     var x = 'p' + h_id + '_' + bed;
-    var l = document.getElementById(x).value.length;
+    var s = document.getElementById(x).value;
+    s = s.trim();
+    var l = s.length;
     if (l > 1) {
         return true;
     }

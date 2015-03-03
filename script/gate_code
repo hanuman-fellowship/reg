@@ -91,7 +91,7 @@ if ($prog_count + $rent_count != 0 && $first_week) {
 if ($mail_sender && $mail_sender->Open({
     to       => $string{gate_code_email},
     @opt,
-    bcc      => 'jon@logicalpoetry.com',
+    bcc      => 'jonb@logicalpoetry.com',
     from     => 'Reminder <reservations@mountmadonna.org>',
     subject  => "Gate Codes",
     ctype    => "text/html",

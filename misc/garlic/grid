@@ -136,6 +136,7 @@ if (param('process')) {
             while (exists $P{"p$id\_$bed"}) {
                 my $name = $P{"p$id\_$bed"};
                 print {$out} "$id|$bed|";
+                $name =~ s{\A \s* | \s* \z}{}xmsg;  # trim leading/trailing
                 $name ||= "";            # in case it is undef
                 print {$out} "$name|";
                 # how many people?
@@ -194,6 +195,8 @@ if (param('process')) {
                 $override_np = $1;
             }
             print {$out} "$id|$bed|";
+            # trim leading and trailing blanks
+            $P{"p$id\_$bed"} =~ s{\A \s* | \s* \z}{}xmsg;
             print {$out} $P{"p$id\_$bed"} . '|';
             my $cost = 0;
             NIGHT:

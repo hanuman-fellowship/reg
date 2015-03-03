@@ -16,6 +16,14 @@ h3 {
     margin-bottom: 1mm;
     color: #338833;
 }
+.mass_delete {
+    font-weight: normal;
+    margin-left: 2in;
+}
+/* not sure why this is needed - for Mass Delete */
+th a:hover {
+    background: blue;
+}
 </style>
 <h2>Rentals</h2>
 [% IF prog_admin %]
@@ -214,7 +222,7 @@ Web
 <tr>
 <th width=120 align=right>Type</th>
 <td></td>
-<th align=left valign=bottom width=550>Rooms</th>
+<th align=left valign=bottom width=550>Rooms<span class=mass_delete><a href=/rental/mass_delete/$id>Mass Delete</a></span></th>
 </tr>
 
 [% class = 'fl_row1' %]

@@ -2430,4 +2430,50 @@ sub send_grid : Local {
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
 }
 
+sub mass_delete : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $rental = model($c, 'Rental')->find($rental_id);
+    stash($c,
+        rental   => $rental,
+        template => 'rental/mass_delete.tt2',
+    );
+}
+
+sub mass_delete_do : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate();
+    my $edate1 = date($rental->edate()) - 1;
+    $edate1 = $edate1->as_d8();
+
+    %P = %{ $c->request->params() };
+    for my $house_id (keys %P) {
+
+        # remove booking
+        model($c, 'RentalBooking')->search({
+            rental_id => $rental_id,
+            house_id  => $house_id,
+        })->delete();
+
+        # adjust config
+        my $h = model($c, 'House')->find($house_id);
+        my $max = $h->max;
+        model($c, 'Config')->search({
+            house_id => $house_id,
+            the_date => { 'between' => [ $sdate, $edate1 ] },
+        })->update({
+            sex        => 'U',
+            curmax     => $max,
+            cur        => 0,
+            program_id => 0,
+            rental_id  => 0,
+        });
+
+    }
+    $rental->set_grid_stale();
+    # housing log?
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
+}
+
 1;
