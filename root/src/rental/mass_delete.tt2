@@ -17,8 +17,9 @@
 </style>
 <h2>Rental Housing Mass Delete</h2>
 <h3>$rental.name - $rental.sdate_obj to $rental.edate_obj</h3>
-<p class=p2>
-<span class=attention>Attention!</span> - Print this page before you submit the form!
+<p class="p2 help">
+<span class=attention>Attention!</span> - Make sure you have
+<i>already</i> printed the Meals/Lodging page.
 <p class="p2 help">
 This form is a very sharp knife.  It is primarily used when you need to change
 the dates of a rental after which rooms have already been assigned to people.
