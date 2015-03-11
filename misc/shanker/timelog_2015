@@ -1,0 +1,7 @@
+Jan 20 13:00-16:00
+    Weigh pros/cons of spacewalk server vs amazon ec2, cpan vs rpms
+    General plan layout for setting up a reproducible dev environment.
+Mar 8 19:00-21:15
+    configuration for new server purchase
+    incremental db updates, copy db data from one to another
+    
