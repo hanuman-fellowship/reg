@@ -1,0 +1,91 @@
+#!/usr/bin/perl -w
+use strict;
+use Getopt::Long;
+
+# A useful tool for classifying objects into clusters.
+my ($line, $total_clusters, $total_move);
+my ($i, $j);
+my (@data_points, @assigned, @centroids, @new_centroids, @means, @points) = ();
+
+usage() if (!GetOptions('count=i' => \$total_clusters));
+
+while (defined($line = <STDIN>)) {
+    chomp($line);
+    push @data_points, $line;
+}
+
+# Randomly set centroids.
+for (my $i=0; $i < $total_clusters; $i++) {
+    $centroids[$i] = $data_points[int(rand(scalar(@data_points)))];
+}
+
+do {
+    $total_move = 0;
+    # Assign each data point to closest centroid.
+    for (my $i=0; $i <= $#data_points; $i++) {
+        $assigned[$i] = closest_centroid($data_points[$i], \@centroids);
+    }
+    
+    # Initialize all means to 0
+    for (my $i=0; $i <= $#centroids; $i++) {
+        $means[$i] = $points[$i] = $new_centroids[$i] = 0;
+    }
+    
+    # Compute mean of points assigned to the same centroid.
+    for (my $i=0; $i <= $#centroids; $i++) {
+        for (my $j=0; $j <= $#assigned; $j++) {
+            if ($assigned[$j] == $i) {
+                $means[$i] += $data_points[$j];
+                $points[$i]++;
+            }
+        }
+    }
+    
+    # Update centroid to be the mean.
+    for (my $i=0; $i <= $#means; $i++) {
+       $new_centroids[$i] = ($points[$i] != 0) ? $means[$i]/$points[$i] : $centroids[$i];
+       $total_move += abs($new_centroids[$i] - $centroids[$i]);
+       $centroids[$i] = $new_centroids[$i];
+    }
+    
+} while ($total_move >= 0.05);  # Rinse and repeat
+
+for (my $i=0; $i < $total_clusters; $i++) {
+    print "Cluster $i:\n";
+    for (my $j=0; $j <= $#data_points; $j++) {
+        print "\t" . $data_points[$j] . "\n" if ($i == $assigned[$j]);
+    }
+    print "\n";
+}
+
+sub closest_centroid {
+    my ($element, $centroids) = @_;
+    my $min = 999999999; # poor man's infinity
+    my $closest;
+ 
+    for (my $i=0; $i < scalar(@$centroids); $i++) {
+        if (abs($element - $centroids->[$i]) < $min) {
+             $min = abs($element - $centroids->[$i]);
+             $closest = $i;
+        }
+    }
+
+    return $closest;
+}
+
+
+sub usage {
+print <<"EOM";
+
+Usage: $0 <cluster-count> < input.txt
+
+where:
+
+cluster-count = Number of clusters you want to divide the input into.
+input.txt contains one number in each line of the file. It is the actual data to be classified.
+For eg:
+A list of numbers representing heights of people in a classroom could be fed to this algorithm
+and you could get back two clusters -- a list of tall people and a list of short people.
+
+EOM
+}
