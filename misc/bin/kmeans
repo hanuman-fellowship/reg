@@ -26,13 +26,9 @@ do {
         $assigned[$i] = closest_centroid($data_points[$i], \@centroids);
     }
     
-    # Initialize all means to 0
-    for (my $i=0; $i <= $#centroids; $i++) {
-        $means[$i] = $points[$i] = $new_centroids[$i] = 0;
-    }
-    
     # Compute mean of points assigned to the same centroid.
     for (my $i=0; $i <= $#centroids; $i++) {
+        $means[$i] = $points[$i] = $new_centroids[$i] = 0;
         for (my $j=0; $j <= $#assigned; $j++) {
             if ($assigned[$j] == $i) {
                 $means[$i] += $data_points[$j];
