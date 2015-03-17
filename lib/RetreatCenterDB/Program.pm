@@ -388,6 +388,7 @@ sub leader_names {
     return "" unless @leaders;
     my $last = pop @leaders;
     $s .= join ", ", @leaders;
+    $s .= ", " if @leaders >= 2;
     $s .= " and " if $s;
     $s .= $last;
     $self->{leader_names} = $s;

@@ -36,6 +36,8 @@ our @EXPORT_OK = qw/
     normalize
     tt_today
     ceu_license
+    show_ceu_license
+    ceu_license_stash
     commify
     wintertime
     hpm_registration
@@ -934,17 +936,42 @@ sub tt_today {
     return ($user eq $login && $dt)? $dt: today();
 }
 
-# given a Registration return the ceu_license
-#
 sub ceu_license {
-    my ($reg, $override_hours) = @_;
+    my ($reg) = @_;
+
+    show_ceu_license(ceu_license_stash($reg));
+}
+
+# given a stash of license info, generate the license.
+#
+sub show_ceu_license {
+    my ($stash) = @_;
+
+    my $html = "";
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src/registration',
+        EVAL_PERL    => 0,
+    }) or die Template->error();
+    $tt->process(
+        "ceu.tt2",   # template
+        $stash,      # variables
+        \$html,      # output
+    ) or die $tt->error();
+    return $html;
+}
+
+# given a Registration return the ceu_license stash
+#
+sub ceu_license_stash {
+    my ($reg) = @_;
+
     my $person = $reg->person;
     my $program = $reg->program;
     my $lic = uc $reg->ceu_license;
 	$lic =~ s{^\s*}{};
     my ($license, $has_completed, $provider);
 	if ($lic =~ /^RN/) {
-		$license  = "Registered Nurse License Number: $lic<br>";
+		$license  = "Registered Nurse License Number: $lic";
 		$has_completed = "Has completed the following course work<br>". 
                                "for Continuing Education Credit:";
 		$provider = "This Certificate must be retained by the ".
@@ -954,13 +981,13 @@ sub ceu_license {
 	}
 	elsif ($lic =~ /COMP/i) {
 		# extra space so it's the same size and spacing as the others
-		$license  = "&nbsp;<br>";
+		$license  = "&nbsp;";
 		$provider = "&nbsp;<br>&nbsp;";
 		$has_completed = "Has completed the following course work:<br>".
 							   "&nbsp;";
 	}
 	else {
-		$license  = "License Number: $lic<br>";
+		$license  = "License Number: $lic";
 		$has_completed = "Has completed the following course work<br>".
                                "for Continuing Education Credit:";
 		$provider = "This Certificate must be retained by the ".
@@ -987,9 +1014,6 @@ sub ceu_license {
                ##:($program->name =~ m{YTT}          )? 120
                :                                      $ndays*5
                ;
-    if ($override_hours) {
-        $hours = $override_hours;
-    }
     my $date = $sdate->format("%B %e");
     if (   $sdate->month() == $edate->month() 
         && $sdate->year()  == $sdate->year() )
@@ -1009,7 +1033,7 @@ sub ceu_license {
                          $sdate->format("%Y"),
                          $edate->format("%B %e, %Y");
     }
-    my $stash = {
+    return {
         name          => $person->first() . " " . $person->last(),
         topic         => $program->title(),
         date          => $date,
@@ -1019,17 +1043,6 @@ sub ceu_license {
         provider      => $provider,
         hours         => $hours . " (" . _spell($hours) . ")",
     };
-    my $html = "";
-    my $tt = Template->new({
-        INCLUDE_PATH => 'root/src/registration',
-        EVAL_PERL    => 0,
-    }) or die Template->error();
-    $tt->process(
-        "ceu.tt2",   # template
-        $stash,      # variables
-        \$html,      # output
-    ) or die $tt->error();
-    $html;
 }
 
 #

@@ -45,3 +45,28 @@ Jan 10 9:20-10:45, 10:45-1:00
     redid links in schema pages
     TODO: CEU intermediary dialog to allow changing the hours
         on the certificate
+Jan 11 9:00-
+    confirm reg_charge deletion
+    started on CEU intermediary dialog to allow changing the hours
+        on the certificate but got confused and sloppy.
+        override hours will ignore the different number of days
+        the people have attended...  need to start fresh.
+Jan 20 12:40-3:00
+    meeting with Shankar - re: putting Reg in the cloud, making
+        a reproducible development environment
+Feb 5 1:00-1:30
+    space in the grid prevents a deletion
+Feb 12 1:00-1:35
+    barnaby and editing the AVI summary - infested with markup
+    I cleared it all away.
+Feb 15 11:30-12:00
+    MMI finances, Sean sutras, Alex online_notify
+Mar 2 9:00-11:30
+    mass delete of rental housing
+Mar 9 11:00-11:30
+    preparing kali specs, schema, etc for Shankar
+Mar 14 10:00-11:00
+    adding/removing a kid after registration and possibly housing
+Mar 16 8:30-8:45, 7:30-9:00
+    finishing up kids housing issue
+    finalizing custom ceus

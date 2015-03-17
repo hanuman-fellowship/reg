@@ -26,6 +26,8 @@ use Util qw/
     normalize
     tt_today
     ceu_license
+    ceu_license_stash
+    show_ceu_license
     commify
     wintertime
     hpm_registration
@@ -969,6 +971,7 @@ sub _get_data {
     else {
         $dates{date_end} = '';
     }
+    $P{kids} = trim($P{kids});
     return if @mess;
 
     if ($PR) {
@@ -1170,7 +1173,7 @@ sub create_do : Local {
         comment       => $P{comment},
         h_type        => $P{h_type},
         h_name        => $P{h_name},
-        kids          => trim($P{kids}),
+        kids          => $P{kids},
         confnote      => $newnote,
         status        => $P{status},
         nights_taken  => $taken,
@@ -3135,6 +3138,99 @@ sub update_do : Local {
             letter_sent => '',
         );
     }
+    if ($P{kids} ne $reg->kids()) {
+        #
+        # the kids field changed
+        #
+        my $h_id = $reg->house_id();
+        if ($h_id) {
+            #
+            # housing HAD been assigned already
+            # we will likely need to adjust it.
+            #
+            # a kid has been added (or removed) after the initial
+            # registration and housing.  there are several use cases.
+            #
+            # if a kid was added and the current housing has just
+            # one person for the length of the stay,
+            # resize it to a single to make it unavailable to others.
+            #
+            # if all kids were removed and the house currently has one person
+            # in a resized single for the length of the stay, 
+            # undo the resize to free up the other beds.
+            #
+            # if there is more than one person in the room at some point
+            # during the stay we must have just added a kid so
+            # vacate the room and fall through to prompt for new lodging.
+            # We can't put the kid in the same room that the parent had before.
+            #
+            my $sdate = $reg->date_start;
+            my $edate1 = (date($reg->date_end) - 1)->as_d8();
+            my @more_than_one = model($c, 'Config')->search({
+                house_id => $h_id,
+                the_date => { 'between' => [ $sdate, $edate1 ] },
+                cur      => { '>' => 1 },
+            });
+            if (@more_than_one) {
+                _vacate($c, $reg);
+            }
+            else {
+                if ($P{kids}) {
+                    #
+                    # kids were added
+                    # can resize the room
+                    # we don't show the kids per se - even
+                    # with more than one kid we still just resize
+                    # the room as if the parent had a single.
+                    #
+                    model($c, 'Config')->search({
+                        house_id => $h_id,
+                        the_date => { 'between' => [ $sdate, $edate1 ] },
+                    })->update({
+                        curmax => 1,
+                    });
+                    #
+                    # the kid change COULD have been to change the age
+                    # of a kid that was already there - or to add a second
+                    # kid to one that was already there.   In these cases
+                    # the above operation will have a null effect.
+                    #
+                }
+                else {
+                    # kids were removed
+                    # undo the resizing - put the curmax back to the 
+                    # size of the house - or rather to the size of
+                    # the parent's chosen housing type (which may have changed!).
+                    # the parent may have chosen Double but was put
+                    # into a Triple.  Is this right?  Not sure.
+                    #
+                    my $max    = type_max($P{h_type});
+                    my $house_max = model($c, 'House')->find($h_id)->max;
+                    my $cmax = $max;
+                    if ($max > $house_max) {
+                        $cmax = $house_max;
+                    }
+                    model($c, 'Config')->search({
+                        house_id => $h_id,
+                        the_date => { 'between' => [ $sdate, $edate1 ] },
+                    })->update({
+                        curmax => $cmax,
+                    });
+                }
+            }
+        }
+        else {
+            # housing has not yet been assigned so we fall through and
+            # prompt for lodging as usual.
+        }
+        # I'm wondering how the registar knows the type
+        # of house to put the parent and kids in...  And what
+        # housing type is okay to use.  For example, if
+        # a parent comes with 2 kids they'll need to be put
+        # in at least a Triple.  Does that mean that the parent
+        # pays at the triple rate?   Or the single rate?
+        # the kids are half price of what the parent pays, yes?
+    }
     $reg->update({
         ceu_license   => $P{ceu_license},
         referral      => $P{referral},
@@ -3145,7 +3241,7 @@ sub update_do : Local {
         comment       => etrim($P{comment}),
         h_type        => $P{h_type},
         h_name        => $P{h_name},
-        kids          => trim($P{kids}),
+        kids          => $P{kids},
         nights_taken  => $taken,
         cabin_room    => $P{cabin_room},
         share_first   => normalize($P{share_first}),
@@ -4589,15 +4685,24 @@ sub first_reg : Local {
     }
 }
 
+# get the stash, put the values in a form in a template
+# let the user alter the values
+# the form action is ceu_do
 sub ceu : Local {
-    my ($self, $c, $reg_id, $override_hours) = @_;
-    $c->res->output(
-        ceu_license(
-            model($c, 'Registration')->find($reg_id),
-            $override_hours,
-        )
+    my ($self, $c, $reg_id) = @_;
+
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $stash = ceu_license_stash($reg);
+    stash($c,
+        %$stash,
+        template => 'registration/ceu_form.tt2',
     );
-    return;
+}
+
+sub ceu_do : Local {
+    my ($self, $c) = @_;
+    my $html = show_ceu_license($c->request->params);
+    $c->res->output($html);
 }
 
 my $npeople;

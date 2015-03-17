@@ -2118,7 +2118,7 @@ sub cur_prog : Local {
 }
 
 sub ceu : Local {
-    my ($self, $c, $prog_id, $override_hours) = @_;    
+    my ($self, $c, $prog_id) = @_;    
 
     my $html = '';
     for my $r (model($c, 'Registration')->search({
@@ -2127,7 +2127,7 @@ sub ceu : Local {
                    cancelled => { "!=", 'yes' },
                }) 
     ) {
-        $html .= ceu_license($r, $override_hours)
+        $html .= ceu_license($r)
               .  "<div style='page-break-after:always'></div>\n"
               ;
     }
