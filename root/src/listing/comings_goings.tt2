@@ -27,7 +27,7 @@ p {
 [% p = r.person %]
 [% pr = r.program %]
 <tr>
-<td align=right>[% IF not_sunday && r.date_start_obj.day_of_week == 0 %]<span class=red>Sun</span>[% END %]</td>
+<td align=right>[% IF not_sunday && r.date_start_obj.day_of_week == 0 %]<span class=red>Sun</span>[% END %][% IF r.arrived = 'yes' %]<span class=red>*</span>[% END %]</td>
 <td><a target=happening href="/registration/view/[% r.id %]">[% p.last %], [% p.first %]</a></td>
 <td><a target=happening href="/program/view/[% pr.id %]">[% pr.name %]</a></td>
 <td align=left>&nbsp;&nbsp;$r.house.name</td>
