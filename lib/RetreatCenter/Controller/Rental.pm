@@ -1638,7 +1638,10 @@ EOH
     my $diff = get_time("1600") - $start;
     if ($diff > 0) {
         my $extra_hours = $diff/60;
-        my $np = $rental->expected() || $counts[0];       # first day count
+        my $np = $rental->expected();
+        if ($counts[0] > $np) {    # first day count
+            $np = $counts[0];
+        }
         my $ec = $extra_hours
                  * $np
                  * $string{extra_hours_charge}
@@ -1667,7 +1670,10 @@ EOH
     $diff = $end - get_time("1300");
     if ($diff > 0) {
         my $extra_hours = $diff/60;
-        my $np = $rental->expected()|| $counts[-1];       # last day count
+        my $np = $rental->expected();
+        if ($counts[-1] > $np) {       # last day count
+            $np = $counts[-1];
+        }
         my $ec = $extra_hours
                  * $np
                  * $string{extra_hours_charge}

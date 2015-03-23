@@ -607,9 +607,13 @@ sub meal_list : Local {
         my $ol = $dr->overlap(DateRange->new($r_start, $r_end));
         my $sd = $ol->sdate();
         my $ed = $ol->edate();
+        my $expected = $r->expected();
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            my $n = $r->expected() || $counts[$d - $event_start];
+            my $n = $counts[$d - $event_start];
+            if ($expected > $n) {
+                $n = $expected;
+            }
             if ($details) {
                 $info = [ "$n people" , $r_name ];
             }

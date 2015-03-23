@@ -45,7 +45,7 @@ Jan 10 9:20-10:45, 10:45-1:00
     redid links in schema pages
     TODO: CEU intermediary dialog to allow changing the hours
         on the certificate
-Jan 11 9:00-
+Jan 11 9:00-10:00
     confirm reg_charge deletion
     started on CEU intermediary dialog to allow changing the hours
         on the certificate but got confused and sloppy.
@@ -67,6 +67,33 @@ Mar 9 11:00-11:30
     preparing kali specs, schema, etc for Shankar
 Mar 14 10:00-11:00
     adding/removing a kid after registration and possibly housing
-Mar 16 8:30-8:45, 7:30-9:00
+Mar 16 8:30-8:45, 7:30-11:00
     finishing up kids housing issue
     finalizing custom ceus
+    talked with Jamal re MMI Standalone courses appearing
+        on the MMC program calendar intermixed with MMC programs.
+        still need 'web ready' and 'linked' to be checked.
+        the link is the title not leaders, subtitle is below.
+        the link goes to the 'web address' field.
+        use a different row template for the MMI courses.
+        remove the e_progRow.tt2 file - outdated
+        rename things - not event calendar - rental calendar
+        update the MMI Online help page
+        still need to do an MMI Publish.
+        Jamal can adjust the <title>, left hand links (Calendar of Events - aka rentals.html)
+        a gradient - not on the last one???  optical illusion? no?
+        leave the name 'events.html' or change it to 'rentals.html'??
+        or make a hard link?
+Mar 18 11:15-12:00
+    looking at member dates
+    red star for registration arrivals on Comings & Goings
+Mar 19 8:30-
+    beginning MMI standalone to MMC's programs.html page
+Mar 21 
+    captcha question on mailing request 
+    why not bring people in who have requested?  they're behind.
+    double entries??   double clicking?
+Mar 22 2:00-2:40
+    expected - mod for Barnaby
+    responding to Brajesh's query about the calendar pre-2009
+    another tweak for Jamal & MMI standalone courses on programs.html

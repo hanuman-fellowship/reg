@@ -229,8 +229,12 @@ if ($cookie{gender} eq "male") {
     $stash{male} = "checked";
     $stash{female}   = "";
 }
-else {
+elsif ($cookie{gender} eq "female") {
     $stash{female} = "checked";
+    $stash{male}   = "";
+}
+else {
+    $stash{female} = "";
     $stash{male}   = "";
 }
 if ($cookie{cabin_room} eq 'cabin') {

@@ -1327,6 +1327,7 @@ sub publish : Local {
 
     # 
     # generate each of the program pages
+    # MMI Standalone courses do not need a program page.
     #
     # a side effect will be to copy the pictures of
     # the leaders or the program picture to the holding area.
@@ -1338,6 +1339,7 @@ sub publish : Local {
     my $tt = Template->new();
     PROGRAM:
     for my $p (@programs) {
+        next PROGRAM if $p->level() eq 'A';  # no MMI courses
         my $fname = $p->fname();
         my $copy = $p->template_src();
         $tt->process(
@@ -1356,23 +1358,23 @@ sub publish : Local {
     }
 
     #
-    # generate the program and event calendars.
+    # generate the program and rental calendars.
     # programs (MMC and MMI standalone courses) appear only on the program calendar.
-    # rentals appear only on the event calendar.
+    # rentals appear only on the rental calendar.
     # Unlinked MMC programs appear on neither.
     #
     # It's okay to require that MMI standalone courses have linked checked.
     # Yes?
     #
-    my $events = '';
-    my $programs = '';
+    my $rentallist = '';
+    my $programlist = '';
 
-    my $progRow     = slurp "progRow";
-    my $e_progRow   = slurp "e_progRow";
-    my $e_rentalRow = slurp "e_rentalRow";
+    my $progRow   = slurp "progRow";
+    my $mmiRow    = slurp "mmiRow";
+    my $rentalRow = slurp "rentalRow";
 
-    my $cur_event_month = 0;
-    my $cur_event_year = 0;
+    my $cur_rental_month = 0;
+    my $cur_rental_year = 0;
     my $cur_prog_month = 0;
     my $cur_prog_year = 0;
     my @rentals  = RetreatCenterDB::Rental->future_rentals($c);
@@ -1388,62 +1390,62 @@ sub publish : Local {
                @rentals
     ) {
         my $rental = (ref($e) =~ m{Rental$});
-        my $for_event_calendar = $rental;
+        my $for_rental_calendar = $rental;
 
         my $sdate = $e->sdate_obj;
         my $smonth = $sdate->month;
         my $syear = $sdate->year;
         my $my = monthyear($sdate);
 
-        if ($for_event_calendar) {
-            if ($cur_event_month != $smonth || $cur_event_year != $syear) {
-                $events
-                    .= "<tr><td class='event_my_row' colspan=2>$my</td></tr>\n";
-                $cur_event_month = $smonth;
-                $cur_event_year = $syear;
+        if ($for_rental_calendar) {
+            if ($cur_rental_month != $smonth || $cur_rental_year != $syear) {
+                $rentallist
+                    .= "<tr><td class='rental_my_row' colspan=2>$my</td></tr>\n";
+                $cur_rental_month = $smonth;
+                $cur_rental_year = $syear;
             }
             my $s;
             $tt->process(
-                $rental? \$e_rentalRow: \$e_progRow,
-                { event => $e },
+                \$rentalRow,
+                { rental => $e },
                 \$s,
             ) or die "error in processing template: "
                  . $tt->error();
-            $events .= $s;
+            $rentallist .= $s;
         }
         else {
             if ($cur_prog_month != $smonth || $cur_prog_year != $syear) {
-                $programs
+                $programlist
                     .= "<tr><td class='prog_my_row' colspan=2>$my</td></tr>\n";
                 $cur_prog_month = $smonth;
                 $cur_prog_year = $syear;
             }
             my $s;
             $tt->process(
-                \$progRow,
-                { event => $e },
+                $e->level() eq 'A'? \$mmiRow: \$progRow,
+                { program => $e },
                 \$s,
             ) or die "error in processing template: "
                      . $tt->error();
-            $programs .= $s;
+            $programlist .= $s;
         }
     }
     #
-    # we have gathered all the info.
-    # now to insert it in the templates and output
-    # the .html files for the program and event lists.
+    # we have gathered all the info into rentallist and programlist.
+    # now to insert them in the templates and output
+    # the .html files for the programs and rentals pages.
     #
-    my $event_template = slurp "events";
+    my $rental_template = slurp "rentals";
     $tt->process(
-        \$event_template,
-        { eventlist => $events },
-        "gen_files/events.html",
+        \$rental_template,
+        { rentallist => $rentallist },
+        "gen_files/rentals.html",
     ) or die "error in processing template: "
              . $tt->error();
     my $program_template = slurp "programs";
     $tt->process(
         \$program_template,
-        { programlist => $programs },
+        { programlist => $programlist },
         "gen_files/programs.html",
     ) or die "error in processing template: "
              . $tt->error();
@@ -1533,7 +1535,7 @@ sub publish : Local {
         }
     }
     $ftp->quit();
-    chdir "..";
+    chdir "..";     # important!
     stash($c,
         ftp_dir2 => $string{ftp_dir2},
         unlinked => \@unlinked,

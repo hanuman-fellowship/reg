@@ -1130,11 +1130,14 @@ sub request_mmi_payment_do : Local {
         the_date  => tt_today($c)->as_d8(),
         time      => get_time()->t24(),
         amount    => $amount,
-        what      => $req_payment->for_what_disp()
-                     . ($note? ' - ' . $note
-                       :       q{}          ),
+        what      => $note,
         automatic => '',        # this charge will not be cleared
                                 # when editing a registration.
+        type      => $req_payment->for_what(),
+            # The above setting of 'type' is correct.
+            # The integer values for the 
+            # 'for_what' field in the 'req_mmi_payment' table
+            # match the 'type' field in the 'reg_charge' table.
     });
     my @who_now = get_now($c);
     my $reg = model($c, 'Registration')->find($reg_id);

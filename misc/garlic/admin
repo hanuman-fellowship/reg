@@ -49,8 +49,10 @@ if (param('live')) {
 	cp staging/pics/* live/pics
 	cp staging/docs/* live/docs
 
-	# no longer test mode so...
+	# no longer test mode so ...
 	perl -p -i -e 's{reg1\\?test=1&}{reg1?}' live/*.html;
+    # no longer staging mode so ...
+    perl -p -i -e 's{staging/}{live/}g' live/programs.html live/rentals.html
 EOC
 	#
 	# execute these commands
@@ -72,8 +74,10 @@ EOC
 		rm -rf staging 2>/tmp/debug
 		mv live staging 2>>/tmp/debug
 
-		# back to test mode so...
+		# back to test mode so ...
 		perl -p -i -e 's{reg1\\?}{reg1?test=1&}' staging/*.html
+        # back to staging so ...
+		perl -p -i -e 's{live/}{staging/}' staging/programs.html staging/rentals.html
 
 		mv live.00 live 2>>/tmp/debug
 EOC

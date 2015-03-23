@@ -331,9 +331,6 @@ sub count {
         #
         $prog_count = $self->program->count();
     }
-    if ($self->expected()) {
-        return $self->expected() + $prog_count;
-    }
     # the count is the population count when
     # the maximum number of people were present.
     #
@@ -344,7 +341,10 @@ sub count {
             $top = $c;
         }
     }
-    return $top + $prog_count;
+    if ($top > $self->expected()) {
+        return $top + $prog_count;
+    }
+    return $self->expected() + $prog_count;
 }
 sub status_td {
     my ($self) = @_;
