@@ -384,6 +384,11 @@ none
 <td>$rental.contract_received_obj [% IF rental.contract_received %]by $rental.received_by.username[% END %]</td>
 </tr>
 
+<tr>
+<th align=right>PR Alert</th>
+<td>$rental.pr_alert</td>
+</tr>
+
 [% IF ! rental.program_id %]
 <tr>
 <th align=right>Color</th>

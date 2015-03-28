@@ -100,3 +100,8 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</
 </table>
 
 </form>
+<script>
+if ("[% alerts %]" != "") {
+    alert("$alerts\n\n");
+}
+</script>

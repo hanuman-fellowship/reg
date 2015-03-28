@@ -879,7 +879,7 @@ EOH
                                    .  "<td align=left>$clusters</td>"
                                    ;
                 }
-                $disp =~ s{'}{&apos;}g;
+                $disp =~ s{'}{&#8217;}g;    # not &apos; for some reason...
                 $disp =~ s{"}{&quot;}g;
 
                 my $border = $black;

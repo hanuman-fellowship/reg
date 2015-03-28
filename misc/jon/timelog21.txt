@@ -89,7 +89,8 @@ Mar 18 11:15-12:00
     red star for registration arrivals on Comings & Goings
 Mar 19 8:30-
     beginning MMI standalone to MMC's programs.html page
-Mar 21 
+Mar 21 7:15-8:30
+    speaking with Vandana
     captcha question on mailing request 
     why not bring people in who have requested?  they're behind.
     double entries??   double clicking?
@@ -97,3 +98,27 @@ Mar 22 2:00-2:40
     expected - mod for Barnaby
     responding to Brajesh's query about the calendar pre-2009
     another tweak for Jamal & MMI standalone courses on programs.html
+Mar 23 10:15-12:30
+    finalizing MMI stand alone
+    MMI online payment requests - type in reg_payment done right
+    expected in rentals
+    no gender default in online reg
+Mar 25 8:30-9:15
+    pr alerts in programs
+        to continue - in Registration->create_do
+        see if dates of a PR coincide with another Program
+        that has a PR Alert field that is not null.
+        if so, pop it up before going on to lodging.
+Mar 26 11:00-12:30
+    pr alerts continued
+Mar 27 7:00-8:30
+    pr alerts finalized
+        demo and ask Alex these things:
+            date overlap - abutting?
+            include the P/R/E name (sans mm/yy) in the alert?
+            need unbound PR Alerts?   prob not
+Mar 28 9:30-10:10
+    polish pr alerts, convert registration/create.tt2 to INTERPOLATE
+
+    conf note on lodging page doesn't always work - first time?
+    single quote in Program name - calendar popup?
