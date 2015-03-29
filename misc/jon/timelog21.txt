@@ -117,8 +117,10 @@ Mar 27 7:00-8:30
             date overlap - abutting?
             include the P/R/E name (sans mm/yy) in the alert?
             need unbound PR Alerts?   prob not
-Mar 28 9:30-10:10
+Mar 28 9:30-10:10, 1:00-4:00
     polish pr alerts, convert registration/create.tt2 to INTERPOLATE
-
     conf note on lodging page doesn't always work - first time?
     single quote in Program name - calendar popup?
+    at MMC met with Alex, finalized pr alerts, etc
+Mar 29 1:10-1:20
+    pushing to kali, etc.
