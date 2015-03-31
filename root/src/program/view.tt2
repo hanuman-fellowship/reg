@@ -392,6 +392,11 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right valign=top>PR Alert</th>
+<td colspan=5 valign=top>$program.pr_alert</td>
+</tr>
+
+<tr>
 <th align=right>Not on Calendar</th>
 <td>$program.not_on_calendar</td>
 </tr>

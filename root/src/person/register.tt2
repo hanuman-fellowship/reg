@@ -1,7 +1,39 @@
+<style>
+.pr_dates_off {
+    display: none;
+}
+.pr_dates_on {
+    display: normal;
+}
+.end_date {
+    font-weight: bold;
+    margin-right: 2mm;
+}
+</style>
+<script>
+//
+// If the program selected is a Personal Retreat
+// they must give a date range.
+// Otherwise change the focus to the Submit button.
+//
+function check_for_pr() {
+    var pr_dates = document.getElementById('pr_dates');
+    var el = document.getElementById('program_id');
+    if (el.value.search(/p$/) >= 0) {
+        pr_dates.className = "pr_dates_on";
+        document.form.sdate.focus();
+    }
+    else {
+        pr_dates.className = "pr_dates_off";
+        document.form.submit.focus();
+    }
+    return 0;   // stay on the <select>?
+}
+</script>
 <h2>[% IF resident %]Enrolling in a Residential Program[% ELSE %]Registering for a Program[% END %]</h2>
 <form action="/registration/manual" name=form>
-<input type=hidden name=person_id value=[% person.id %]>
-<span class=larger>[% person.first %] [% person.last %]</span>
+<input type=hidden name=person_id value=$person.id>
+<span class=larger>$person.first $person.last</span>
 <p class=p2>
 <table cellpadding=3>
 <tr><th align=right>Deposit</th><td><input type=text size=6 maxlength=6 name=deposit value="100">
@@ -15,15 +47,22 @@
 <tr><th>Postmark Date</th><td><input type=text size=10 maxlength=10 name=date_post value="today">
 <tr><th align=right valign=top>Program</th>
 <td>
-<table cellpadding=2>
-<select name=program_id>
+<select name=program_id id=program_id onchange="check_for_pr();">
+<option value=0>Select a program</option>
 [% FOR p IN programs %]
-<option value=[% p.id %]> [% p.name %] - [% p.sdate_obj %]</option>
+<option value=$p.id[% IF p.PR %]p[% END %] > $p.name - $p.sdate_obj</option>
 [% END %]
 </select>
-</table>
-<td></tr>
-<tr><td></td><td><input type=submit value="Submit"></td></tr>
+</td>
+</tr>
+
+<tr class=pr_dates_off id=pr_dates>
+<th align=right>Start Date</th>
+<td><input type=text name=sdate size=8 id=sdate>
+&nbsp;&nbsp;<span class=end_date>End Date</span><input type=text name=edate size=8></td>
+</tr>
+
+<tr><td></td><td><input type=submit value="Submit" id=submit></td></tr>
 </table>
 </form>
 <script type='text/javascript'>document.form.program_id.focus();</script>

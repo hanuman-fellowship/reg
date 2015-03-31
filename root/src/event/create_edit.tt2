@@ -34,6 +34,11 @@ $sponsor_opts
 </tr>
 
 <tr>
+<th align=right>PR Alert</th>
+<td width=100 colspan=3><input type=text name=pr_alert value="$event.pr_alert" size=70></td>
+</tr>
+
+<tr>
 <td>&nbsp;</td>
 <td width=100><input id=sub type=submit value="Submit"></td>
 <td colspan=2 class=red style="font-size: 15pt">Ask the person leading the event to notify<br>Field Staff if they need the room set up.</td>

@@ -614,8 +614,8 @@ EOH
         stash($c, date_end => date($P{edate}));
     }
 
+    # the postmark timestamp
     my $date = date($P{date});
-
     $P{time} =~ s{:}{}xms;      # so it is interpreted as 24 hour time
 
     #
@@ -655,10 +655,9 @@ EOH
 }
 
 #
-# the stash is partially filled in (from an online or manual reg).
+# the stash is partially filled in (from an online, manual, or duplicate reg).
 # fill in the rest of it by looking at the program and person
-# and render the view.  the program must have a GL number
-# or we give an error.
+# and render the view.  the program must have a GL number or we give an error.
 #
 sub _rest_of_reg {
     my ($pr, $p, $c, $today, $house1, $house2, $cabin_room) = @_;
@@ -735,19 +734,33 @@ sub _rest_of_reg {
     #
     # pop up comment?
     #
-    # better way of searching the ids???
+    # is there a better way of searching the affil ids???
     #
+    my @alerts;
     AFFIL:
     for my $a ($p->affils) {
         if ($a->id() == $system_affil_id_for{'Alert When Registering'}) {
             my $s = $p->comment;
+            $s = trim($s);
             if ($s) {
                 $s =~ s{\r?\n}{\\n}g;
                 $s =~ s{"}{\\"}g;
             }
-            stash($c, alert_comment => $s);
+            push @alerts, $s;
             last AFFIL;
         }
+    }
+    # if this is for a Personal Retreat
+    # are there any PR Alerts for the popup comment?
+    #
+    if ($pr->PR()) {
+        # in the stash we have Date::Simple objects
+        # for start_date and end_date - put there in
+        # sub manual and get_online.
+        #
+        my $pr_sd = $c->stash->{date_start}->as_d8();
+        my $pr_ed = $c->stash->{date_end}->as_d8();
+        push @alerts, get_pr_alerts($c, $pr_sd, $pr_ed);
     }
     #
     # outstanding balance?
@@ -766,8 +779,8 @@ sub _rest_of_reg {
                   . '$' . $r->balance()
                   . " in ". $r->program->name() . "."
                   ;
+            push @alerts, $s;
             stash($c, outstanding => 1);
-            stash($c, outstanding_balance => $s);
             $outstand = '<p><span style="background-color: #ff0000;">'
                       . 'Outstanding balance of $'
                       . $r->balance
@@ -775,6 +788,9 @@ sub _rest_of_reg {
                       . "</span></p><p>&nbsp;</p>";
             last REG;
         }
+    }
+    if (@alerts) {
+        stash($c, alerts => join "\\n\\n", @alerts);
     }
 
     #
@@ -858,8 +874,39 @@ sub _rest_of_reg {
             model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
         ],
         outstand      => $outstand,
-        template    => "registration/create.tt2",
+        template      => "registration/create.tt2",
     );
+}
+
+sub get_pr_alerts {
+    my ($c, $PR_start, $PR_end) = @_;
+
+    my @alerts;
+    for my $type (qw/ Program Rental Event /) {
+        my @cancelled = $type ne 'Event'? (cancelled => { '!=' => 'yes' })
+                       :                  ();
+        for my $p (model($c, $type)->search({
+                       @cancelled,
+                       pr_alert  => { '!=' => '' },
+                       sdate     => { '<=' => $PR_end   },
+                       edate     => { '>'  => $PR_start },
+                   })
+        ) {
+            my $name = $p->name();
+            
+            # trim off the mm/yy appendage on Programs and Rentals
+            $name =~ s{ [ \d/]*\z}{}xms if $type ne 'Event';
+
+            my $alert = $p->pr_alert();
+            # indent the alert a little - including line breaks (<br>)
+            $alert =~ s{(<br>)}{\n  }xmsg;
+            my $s = "PR Alert from '$name':\n  $alert";
+            $s =~ s{\r?\n}{\\n}g;   # for javascript
+            $s =~ s{"}{\\"}g;
+            push @alerts, $s;
+        }
+    }
+    return @alerts;
 }
 
 my @mess;
@@ -3110,12 +3157,21 @@ sub update_do : Local {
         );
         return;
     }
+    my $dates_changed = ($dates{date_start} != $reg->date_start())
+                        ||
+                        ($dates{date_end}   != $reg->date_end())
+                        ;
+    if ($dates_changed && $pr->PR) {
+        # a personal retreat - the new dates might have a PR alert...
+        my @alerts = get_pr_alerts($c, $dates{date_start}, $dates{date_end});
+        if (@alerts) {
+            stash($c, alerts => join "\\n\\n", @alerts);
+        }
+    }
     if ($reg->house_id()
         && (($P{h_type} ne $reg->h_type())
             ||
-            ($dates{date_start} != $reg->date_start())
-            ||
-            ($dates{date_end}   != $reg->date_end())
+            $dates_changed
            )
         ) {
         # housing type has changed!  and we have a prior house.
@@ -3279,21 +3335,50 @@ sub update_do : Local {
 # a manual registration.
 # at this point we have chosen a person, a program
 # and have specified a deposit, a deposit type and a postmark date.
+# if the program is a PR we also have a date range.
 # we now need to get the rest of the registration details.
 #
 sub manual : Local {
     my ($self, $c) = @_;
 
+    %P = %{ $c->request->params() };
     my @mess = ();
-    my $deposit      = $c->request->params->{deposit};
+    my $deposit      = $P{deposit};
     if (invalid_amount($deposit)) {
         push @mess, "Illegal deposit: $deposit";
     }
-    my $deposit_type = $c->request->params->{deposit_type};
-    my $date_post    = $c->request->params->{date_post};
+    my $deposit_type = $P{deposit_type};
+    my $date_post    = $P{date_post};
     my $d = date($date_post);
     if (! $d) {
         push @mess, "Illegal postmark date: $date_post";
+    }
+    $date_post = $d;
+
+    my $person_id    = $P{person_id};
+    my $pers = model($c, 'Person')->find($person_id);
+
+    my $program_id   = $P{program_id};
+    if ($P{program_id} eq '0') {
+        push @mess, "No program selected.";
+    }
+    my @date_range = ();
+    if ($program_id =~ s{p\z}{}) {  # trim a 'p' which indicates a PR
+                                    # pretty hacky, huh?
+        # we have a Personal Retreat.
+        # verify the date range
+        #
+        my $start = date($P{sdate});
+        my $end   = date($P{edate});
+        if (! $start || ! $end || $start > $end || $start < tt_today($c)) {
+            push @mess, "Illegal date range for Personal Retreat";
+        }
+        else {
+            @date_range = (
+                date_start => $start,
+                date_end   => $end,
+            );
+        }
     }
     if (@mess) {
         error($c,
@@ -3302,12 +3387,7 @@ sub manual : Local {
         );
         return;
     }
-    $date_post = $d;
-    my $program_id   = $c->request->params->{program_id};
-    my $person_id    = $c->request->params->{person_id};
-
-    my $pr = model($c, 'Program')->find($program_id);
-    my $p  = model($c, 'Person')->find($person_id);
+    my $prog = model($c, 'Program')->find($program_id);
     stash($c,
         deposit       => $deposit,
         deposit_type  => $deposit_type,
@@ -3315,12 +3395,13 @@ sub manual : Local {
         time_postmark => "0000",        # good guess?
         cabin_checked => "",
         room_checked  => "",
+        @date_range,
     );
-    my @housing = ($pr->category->name() ne 'Normal')?
+    my @housing = ($prog->category->name() ne 'Normal')?
                         ('single', 'single', 'room')
                   :     ('dble',   'dble',   'room')
                   ;
-    _rest_of_reg($pr, $p, $c, tt_today($c), @housing);
+    _rest_of_reg($prog, $pers, $c, tt_today($c), @housing);
 }
 
 sub delete : Local {
@@ -4142,7 +4223,7 @@ sub lodge_do : Local {
     # we have passed all the hurdles.
     #
     my @note_opt = ();
-    if ($reg->confnote() && $reg->confnote() ne $newnote) {
+    if ($newnote && (!$reg->confnote() || $reg->confnote() ne $newnote)) {
         _check_spelling($c, $newnote);
         @note_opt = (
             confnote    => $newnote,
@@ -4608,7 +4689,8 @@ sub who_is_there : Local {
                    #. $relodge
                    . "</tr>";
     }
-    $reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.
+    # escaping single quotes not needed?
+    #$reg_names =~ s{'}{\\'}g;       # for O'Dwyer etc.
                                 # can't use &apos; :( why?
     for my $b (@blocks) {
         my $nbeds = $b->nbeds();

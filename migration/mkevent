@@ -7,5 +7,6 @@ create table event (
     edate       text,
     sponsor     text,
     organization_id integer not null,
-    max         text
+    max         text,
+    pr_alert    text default ''
 );

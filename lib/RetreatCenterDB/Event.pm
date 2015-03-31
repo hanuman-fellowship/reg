@@ -16,6 +16,7 @@ __PACKAGE__->add_columns(qw/
     sponsor
     organization_id
     max
+    pr_alert
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -103,5 +104,8 @@ max - Max number of people (used for choosing a Meeting Place).
 name - short name of the event
 organization_id - foreign key to organization.
     The organization determines which calendar the event appears on.
+pr_alert - This event has an effect on PRs.  This column contains
+    text to 'pop up' when a person registers for a PR whose dates
+    overlap with this event's dates.
 sdate - start date
 sponsor - obsolete - superceded by organization

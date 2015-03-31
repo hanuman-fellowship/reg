@@ -251,7 +251,7 @@ sub _get_data {
     $P{url} =~ s{^\s*http://}{};
 
     @mess = ();
-    # no need for the check for MMI standalone coursew
+    # no need for the check for MMI standalone course
     if ($P{webready} && ! $P{linked}) {
         if ($P{ptemplate} eq 'default') {
             push @mess, "Unlinked programs cannot use the standard template.";

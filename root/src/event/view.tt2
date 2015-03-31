@@ -38,6 +38,11 @@
 </tr>
 
 <tr>
+<th align=right>PR Alert</th>
+<td>$e.pr_alert</td>
+</tr>
+
+<tr>
 <th align=right>Blocks</th>
 <td><a href=/block/bound_create/event/$e.id>New Block</a></td>
 </tr>

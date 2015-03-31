@@ -83,6 +83,7 @@ __PACKAGE__->add_columns(qw/
     not_on_calendar
     tub_swim
     cancelled
+    pr_alert
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -1085,6 +1086,9 @@ notify_on_reg - A list of email addresses to email when people register for the 
 percent_tuition - What percentage of the tuition should be collected
     when someone registers online?  Default is 0.   This would be in addition
     to the specified deposit.
+pr_alert - This program has an effect on PRs.  This column contains
+    text to 'pop up' when a person registers for a PR whose dates
+    overlap with this program's dates.
 prog_end - Time the program ends on the last day.
 prog_start - Time the program begins on the first day.
 ptemplate - the template file to be used for generating the program web page.
