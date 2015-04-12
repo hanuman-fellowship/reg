@@ -1248,7 +1248,7 @@ EOH
         or die "cannot login ", $ftp->message; # not die???
     $ftp->cwd($string{req_mmi_dir}) or die "cannot chdir to $string{req_mmi_dir}";
     $ftp->ascii();
-    $ftp->put("/tmp/$code", $code);
+    $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
     $ftp->quit();
 
     # now mark the payment requests as sent
@@ -1275,6 +1275,7 @@ EOH
         req_code    => $code,
         tbl_py_desc => $tbl_py_desc,
         program     => $program_title,
+        signed      => $string{mmi_payment_request_signed},
     };
     my $html;
     $tt->process(
@@ -1285,7 +1286,7 @@ EOH
              . $tt->error();
     email_letter($c,
         to      => $email,
-        from    => 'Mount Madonna Institute <info@mountmadonnainstitute.org>',
+        from    => $string{mmi_payment_request_from},
         subject => "Requested Payment for MMI Program '$program_title'",
         html    => $html,
     );
@@ -1340,6 +1341,7 @@ sub delete_req_mmi : Local {
             name        => $person->name(),
             total       => $tot,
             program     => $program_title,
+            signed      => $string{mmi_payment_request_signed},
         };
         my $html;
         $tt->process(
@@ -1350,7 +1352,7 @@ sub delete_req_mmi : Local {
                  . $tt->error();
         email_letter($c,
             to      => $email,
-            from    => 'Mount Madonna Institute <info@mountmadonnainstitute.org>',
+            from    => $string{mmi_payment_request_from},
             subject => "Requested Payment for MMI Program '$program_title'",
             html    => $html,
         );

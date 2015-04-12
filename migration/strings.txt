@@ -247,3 +247,5 @@ online_notify jon@suecenter.org
 dp_resize_block_char /
 ftp_omp_dir /www/cgi-bin/omp_dir
 rental_lunch_cost 12
+mmi_payment_request_signed
+mmi_payment_request_from Rachel Stark <rachel@mountmadonna.org>

@@ -124,3 +124,6 @@ Mar 28 9:30-10:10, 1:00-4:00
     at MMC met with Alex, finalized pr alerts, etc
 Mar 29 1:10-1:20
     pushing to kali, etc.
+Apr 12 11:30-1:00
+    Rachel's request for mmi_payments - different reply address, signature
+    I put it in Strings.   For deleting such, too.

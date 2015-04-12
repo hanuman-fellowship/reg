@@ -3,6 +3,7 @@ use warnings;
 package RetreatCenterDB::String;
 
 use base qw/DBIx::Class/;
+use HTML::Entities 'encode_entities';
 
 use Util qw/
     d3_to_hex
@@ -23,6 +24,7 @@ sub value_td {
     my $v = defined($self->value())? $self->value()
             :                        ""
             ;
+    $v = encode_entities($v);        # for <, >, etc.
     if ($k =~ m{_color \z}xms) {
         my $color = d3_to_hex($v);
         return <<"EOH";
@@ -256,6 +258,9 @@ mmc_reconciling - doc
 mmi_discount - doc
 mmi_email - doc
 mmi_reconciling - doc
+mmi_payment_request_signed - The name of the person who is requesting an MMI Online Payment.
+mmi_payment_request_from - The email of the person who is requesting an MMI Online Payment.
+    Replies will go to this address.
 not_needed - doc
 nyears_forgiven - doc
 online_notify - doc
