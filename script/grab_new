@@ -53,7 +53,7 @@ them into actual payments.
 10) Get online membership payments
 
 =cut
-use lib 'lib';
+use lib '../lib';
 use Net::Ping;
 use DBI;
 use Net::FTP;
@@ -62,6 +62,7 @@ use Date::Simple qw{
     date
     today
 };
+use Util 'normalize';
 use FindBin;
 chdir "$FindBin::Bin/..";
 
@@ -915,6 +916,8 @@ sub temple {
         close $in;
         my ($first, $last, $email, $cell, $addr1, $addr2,
             $city, $state, $zip) = split m{\|}, $line;
+        $first = normalize($first);
+        $last = normalize($last);
         if ($cell =~ m{\A (\d\d\d) (\d\d\d) (\d\d\d\d) \z}msx) {
             $cell = "$1-$2-$3";
         }
