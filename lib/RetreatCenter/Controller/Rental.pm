@@ -96,7 +96,9 @@ sub _get_data {
     }
     # ensure the Rental name has mm/yy that matches the start date
     #
-    $P{name} = ensure_mmyy($P{name}, date($P{sdate}));
+    if (! @mess) {
+        $P{name} = ensure_mmyy($P{name}, date($P{sdate}));
+    }
 
     #
     # if a contract has been sent the rental is no longer tentative, yes?
