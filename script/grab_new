@@ -53,7 +53,7 @@ them into actual payments.
 10) Get online membership payments
 
 =cut
-use lib '../lib';
+use lib 'lib';
 use Net::Ping;
 use DBI;
 use Net::FTP;
