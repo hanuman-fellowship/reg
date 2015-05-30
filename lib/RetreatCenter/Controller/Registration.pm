@@ -5038,7 +5038,7 @@ sub name_addr_do : Local {
     }
     else {
         if ($format eq 'csv') {
-            $c->response->redirect($c->uri_for("/static/csv.txt"));
+            $c->response->redirect($c->uri_for("/static/participant.csv"));
         }
         else {
             $c->res->output($html);
