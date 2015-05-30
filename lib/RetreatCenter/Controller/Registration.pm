@@ -4915,13 +4915,13 @@ sub name_addr_do : Local {
         }
     }
     if ($format eq 'csv') {
-        # generate csv.txt given 'containing' and @people
+        # generate participant.csv given 'containing' and @people
         my $out;
         if ($email) {
             open $out, '>', \$html;
         }
         else {
-            open $out, '>', "root/static/csv.txt";
+            open $out, '>', "root/static/participant.csv";
         }
         for my $p (@people) {
             if ($containing eq 'name') {
@@ -5026,6 +5026,7 @@ sub name_addr_do : Local {
                             . " from "
                             . $program->dates,
                html       => $html, 
+               ctype      => 'text/csv',
         );
         my $email_entity = $email;
         $email_entity =~ s{<([^>]*)>}{&lt;$1&gt;}g;

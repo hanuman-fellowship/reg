@@ -654,7 +654,7 @@ sub email_letter {
         from     => $args{from},
         replyto  => ($args{replyto} || $args{from}),
         subject  => $args{subject},
-        ctype    => "text/html",
+        ctype    => $args{ctype}? $args{ctype}: "text/html",
         encoding => "7bit",
     })) {
         $mail_sender = undef;
