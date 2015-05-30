@@ -1,5 +1,6 @@
+<p class=p2>
 Participant list for [% program.name %] sent to [% email %].
-<p>
+<p class=p2>
 <input id='back' type=button value="Back" onclick="history.go(-1)">
 <script type='text/javascript'>document.getElementById('back').focus();</script>
 

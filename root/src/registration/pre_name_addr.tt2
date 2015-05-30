@@ -11,9 +11,11 @@
 <tr>
 <th align=right>Format</th>
 <td>
-<input type=radio name=format value="3col" checked>3 Column
+<input type=radio name=format value="3col" checked> 3 Column
 &nbsp;&nbsp;&nbsp;
-<input type=radio name=format value="linear">Linear
+<input type=radio name=format value="linear"> Linear
+&nbsp;&nbsp;&nbsp;
+<input type=radio name=format value=csv> CSV (comma separated values)
 </td>
 </tr>
 

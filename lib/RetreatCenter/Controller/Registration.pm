@@ -4853,6 +4853,7 @@ sub name_addr_do : Local {
                 :                     [qw/ date_postmark time_postmark /];
     my $including = $c->request->params->{including} || "";
     $containing = $c->request->params->{containing};
+    my $format = $c->request->params->{format};
     my @cond = ();
     if ($including eq 'normal') {
         @cond = (
@@ -4906,71 +4907,114 @@ sub name_addr_do : Local {
 
     my $info_rows;
     my $mailto = "";
-    if ($c->request->params->{format} eq 'linear') {
-        $info_rows = "";
-        for my $i (0 .. $#people) {
-            my $s = _person_data($i);
-            $info_rows .= "$s\n";
-            if ($containing eq "email") {
-                $s =~ s{<br>}{};
-                $mailto .= "$s," if $s;
-            }
-        }
-        if ($containing eq "email") {
-            $mailto =~ s{,$}{};
-            $mailto = "<a href='mailto: ?bcc=$mailto'>Email All</a><p>\n";
-                # for some reason, we need the space after the :
-        }
-    }
-    else {
-        # make the 3 across table - too tricky to do
-        # in the template.  we want it sorted by last name
-        # going down the column.
-        #
-        my $n = ceil($npeople/3);   # length of 1st, 2nd column
-        $info_rows = "<table cellpadding=3>\n";
-        for my $i (0 .. $n-1) {
-            $info_rows .= "<tr>";
-            for my $offset (0, $n, 2*$n) {
-                my $s = _person_data($i+$offset);
-                $info_rows .= "<td valign=top>$s</td>";
-                if ($containing eq "email") {
-                    $s =~ s{<br>}{};
-                    $mailto .= "$s," if $s;
-                }
-            }
-            $info_rows .= "</tr>\n";
-        }
-        $info_rows .= "</table>\n";
-        if ($containing eq "email") {
-            $mailto =~ s{,$}{};
-            $mailto = "<a href='mailto:?bcc=$mailto'>Email All</a><p>\n";
-        }
-    }
     my $html = "";
-    my $tt = Template->new({
-        INCLUDE_PATH => 'root/src',
-        EVAL_PERL    => 0,
-    }) or die Template->error();
-    my $stash = {
-        program => $program,
-        rows    => $info_rows,
-        mailto  => $mailto,
-        type    => ($including eq 'both'    ? ''
-                   :$including eq 'normal'  ? 'Normal '
-                   :$including eq 'extended'? 'Extended '
-                   :                          ''),
-    };
-    $tt->process(
-        "registration/name_addr.tt2",   # template
-        $stash,               # variables
-        \$html,               # output
-    ) or die $tt->error();
     my $email = "";
     for my $em (keys %{$c->request->params()}) {
         if ($em =~ m{^email}) {
             $email .= $c->request->params->{$em} . ", ";
         }
+    }
+    if ($format eq 'csv') {
+        # generate csv.txt given 'containing' and @people
+        my $out;
+        if ($email) {
+            open $out, '>', \$html;
+        }
+        else {
+            open $out, '>', "root/static/csv.txt";
+        }
+        for my $p (@people) {
+            if ($containing eq 'name') {
+                print {$out} join ',',
+                             map { s/"//g; qq{"$_"} }
+                             $p->first,
+                             $p->last
+                             ;
+            }
+            elsif ($containing eq 'email') {
+                print {$out} $p->email;
+            }
+            else {
+                print {$out} join ',',
+                             map { s/"//g; qq{"$_"} }
+                             $p->first,
+                             $p->last,
+                             $p->addr1,
+                             $p->addr2,
+                             $p->city,
+                             $p->st_prov,
+                             $p->zip_post,
+                             $p->country,
+                             $p->tel_home,
+                             $p->tel_work,
+                             $p->tel_cell,
+                             $p->email,
+                             ;
+            }
+            print {$out} "\n";
+        }
+        close $out;
+    }
+    else {
+        if ($format eq 'linear') {
+            $info_rows = "";
+            for my $i (0 .. $#people) {
+                my $s = _person_data($i);
+                $info_rows .= "$s\n";
+                if ($containing eq "email") {
+                    $s =~ s{<br>}{};
+                    $mailto .= "$s," if $s;
+                }
+            }
+            if ($containing eq "email") {
+                $mailto =~ s{,$}{};
+                $mailto = "<a href='mailto: ?bcc=$mailto'>Email All</a><p>\n";
+                    # for some reason, we need the space after the :
+            }
+        }
+        else {
+            # make the 3 across table - too tricky to do
+            # in the template.  we want it sorted by last name
+            # going down the column.
+            #
+            my $n = ceil($npeople/3);   # length of 1st, 2nd column
+            $info_rows = "<table cellpadding=3>\n";
+            for my $i (0 .. $n-1) {
+                $info_rows .= "<tr>";
+                for my $offset (0, $n, 2*$n) {
+                    my $s = _person_data($i+$offset);
+                    $info_rows .= "<td valign=top>$s</td>";
+                    if ($containing eq "email") {
+                        $s =~ s{<br>}{};
+                        $mailto .= "$s," if $s;
+                    }
+                }
+                $info_rows .= "</tr>\n";
+            }
+            $info_rows .= "</table>\n";
+            if ($containing eq "email") {
+                $mailto =~ s{,$}{};
+                $mailto = "<a href='mailto:?bcc=$mailto'>Email All</a><p>\n";
+            }
+        }
+        my $tt = Template->new({
+            INCLUDE_PATH => 'root/src',
+            EVAL_PERL    => 0,
+        }) or die Template->error();
+        my $stash = {
+            program => $program,
+            rows    => $info_rows,
+            mailto  => $mailto,
+            type    => ($including eq 'both'    ? ''
+                       :$including eq 'normal'  ? 'Normal '
+                       :$including eq 'extended'? 'Extended '
+                       :                          ''),
+        };
+        $tt->process(
+            "registration/name_addr.tt2",   # template
+            $stash,               # variables
+            \$html,               # output
+        ) or die $tt->error();
     }
     if ($email) {
         $email =~ s{, $}{};     # chop last comma
@@ -4992,7 +5036,12 @@ sub name_addr_do : Local {
         );
     }
     else {
-        $c->res->output($html);
+        if ($format eq 'csv') {
+            $c->response->redirect($c->uri_for("/static/csv.txt"));
+        }
+        else {
+            $c->res->output($html);
+        }
     }
 }
 

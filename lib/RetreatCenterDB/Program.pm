@@ -906,7 +906,7 @@ sub email_nameaddr {
 sub _em_check {
     my ($em, $n) = @_;
     (my $em_entity = $em) =~ s{<(.*)>}{&lt;$1&gt;};
-    return "<input type=checkbox name='email$n' value='$em'>$em_entity<br>";
+    return "<input type=checkbox name='email$n' value='$em'> $em_entity<br>";
 }
 
 #

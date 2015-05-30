@@ -1,0 +1,13 @@
+May 6 12:30-1:15
+    getting back up data for Barnaby
+
+    undo sharing checkbox for people who
+        only have the Temple affiliation
+    look for another final field which is the opt in 
+        for mailings - email MMC, MMI
+    use the file name for the temple id
+        use that for unduplication
+    first link on prog page is to prog
+        change Prog to FirstReg
+May 29 1:00-
+    looking at CSV format for registrant list
