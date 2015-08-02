@@ -47,3 +47,5 @@ sub hlog_toggle {
                  ($state == 1? "ON": "OFF")
                  ;
 }
+
+1;

@@ -38,7 +38,7 @@
     <tr class=[% class %]>
     <td class=fl_row0 align=right>[% p.prog_type %]</td>
     [% IF p.school == 0 || mmi_admin %]
-        <td><a href="/registration/first_reg/[% p.id %]">[% p.name %]</a></td>
+        <td><a href="/program/view/[% p.id %]" title="[% p.title %]">[% p.name %]</a></td>
     [% ELSE %]
         <td>[% p.name %]</td>
     [% END %]
@@ -53,7 +53,7 @@
     <a href="/summary/view/program/[% p.summary_id %]">Sum</a>
     [% END %]
     </td>
-    <td width=40><a href="/program/view/[% p.id %]" title="[% p.title %]">Prog</a></td>
+    <td><a href="/registration/first_reg/[% p.id %]">FirstReg</a></td>
     </tr>
     [% IF class == 'fl_row0' %]
         [% class = 'fl_row1' %]

@@ -168,11 +168,15 @@ sub future_programs {
     # go through the programs in order
     # skipping the unlinked and cancelled programs
     # setting the prev and next links.
-    # and assigning a sequential program number.
+    # treat MMI programs in a special way - they will never
+    # be the target of a prev or next link.
+    # assigning a sequential program number.
     # these are used in subsequent methods.
     #
     my ($prev_prog);
-    for my $p (grep { $_->linked && ! $_->cancelled } @programs) {
+    PROG:
+    for my $p (@programs) {
+        next PROG if ! $p->linked || $p->cancelled || $p->school != 0;
         $p->{prev}   = $prev_prog || $p;
         $prev_prog->{"next"} = $p;
         $prev_prog = $p;
@@ -185,8 +189,9 @@ sub future_programs {
     # we go backwards through the programs
     # so the last one overwritten will be the first of the month!
     #
+    PROG:
     for my $p (reverse @programs) {
-        next unless $p->linked || $p->cancelled;
+        next PROG if ! $p->linked || $p->cancelled || $p->school != 0;
         my $sd = $p->sdate_obj();
         $first_of_month{$sd->month . $sd->year} = $p;
     }
@@ -280,6 +285,7 @@ sub fname {
 
     return $self->id . ".html";
     # delete everything below, right?
+    # right.  it is obsolete.
     my $sd = $self->sdate_obj;
     my $name =
            substr($self->name,  0, 3) .

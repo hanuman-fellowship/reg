@@ -132,12 +132,13 @@ for my $f (<*.pm>) {
         my %str_doc;
         STR_LINE:
         while (my $line = <$in>) {
+            chomp $line;
             if ($line =~ m{\A \s }xms) {
                 next STR_LINE;
             }
             my ($key, $doc) = $line =~ m{\A (\S+) \s*-\s* (.*) \z}xms;
             ++$num_strs;
-            if ($doc !~ m{\S}xms) {
+            if ($doc !~ m{\S}xms || $doc eq 'doc') {
                 print "empty documentation for string '$key'\n";
                 $str_doc_err = 1;
             }

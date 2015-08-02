@@ -198,120 +198,134 @@ ftp_transactions - FTP info for mountmadonna.org - for online registrations for 
 ftp_userpics - FTP info for mountmadonna.org - for driver pictures - referenced in email to riders
 gate_code_cc_email - who to Cc when sending the Tuesday morning gate code email reminder
 gate_code_email - who to email when sending the Tuesday morning gate code email reminder
-green_from - doc
-green_glnum - doc
-green_glnum_mmi - doc
-green_name - doc
-green_subj - doc
-heading - doc
-house_alert - doc
-house_height - doc
-house_let - doc
-house_sum_cabin - doc
-house_sum_clean - doc
-house_sum_foreign - doc
-house_sum_occupied - doc
-house_sum_perfect_fit - doc
-house_sum_reserved - doc
-house_width - doc
-housing_log - doc
+green_from - when someone makes a donation to the Green Fund - who is the 
+    acknowledgment letter from?
+green_glnum - the GL Number for Green Fund donations
+green_glnum_mmi - the GL Number for Green Fund donations from MMI registrations
+green_name - the name of the person acknowledging Green Fund donations
+green_subj - the subject of the Green Fun acknowledgment letter
+heading - obsolete - can be removed
+house_alert - used to alert someone that a person was housed in a specific room
+    For example: ~SH1=amita~101=jayanti~
+house_height - the height of the house rectangle when drawing the DailyPic and ClusterView
+house_let - The width of a letter in a house name - used to calculate
+    the width of the entire image in DailyPic and ClusterView.
+house_sum_cabin - the 'weight' of a room that is a cabin
+house_sum_clean - the 'weight' of a room that needs to be cleaned (negative)
+house_sum_foreign - the 'weight' of a room that some other Program/Rental is occupying
+house_sum_occupied - the 'weight' of a room that is partially occupied
+house_sum_perfect_fit - the 'weight' of a room that is a
+    perfect fit for the housing preference
+house_sum_reserved - the 'weight' of a room that is reserved
+    for the current program/rental
+house_width - the width of a bed in a room - used when drawing the DailyPic and ClusterView
+housing_log - shall we keep a log of housing activity in 'hlog'?  See lib/HLog.pm
 imgwidth - size of small picture - for resizing in Util::resize
-kayakalpa_email - doc
-kid_disc - doc
-last_deposit_date - doc
-last_mmi_deposit_date - doc
-long_center_tent - doc
-long_commuting - doc
-long_dble - doc
-long_dble_bath - doc
-long_dormitory - doc
-long_economy - doc
-long_not_needed - doc
-long_own_tent - doc
-long_own_van - doc
-long_quad - doc
-long_single - doc
-long_single_bath - doc
-long_triple - doc
-long_unknown - doc
-lunch_charge - doc
-make_up_clean_days - doc
-make_up_urgent_days - doc
-max_kid_age - doc
-max_lodge_opts - doc
-max_shuttles - doc
-max_tuit_disc - doc
-mem_credit_hours - doc
-mem_credit_phone - doc
-mem_email - doc
-mem_gen_amt - doc
-mem_life_total - doc
-mem_phone - doc
-mem_site - doc
-mem_spons_semi_year - doc
-mem_spons_year - doc
-mem_sponsor_nights - doc
-mem_team - doc
-member_meal_cost - doc
-min_kid_age - doc
-mmc_reconciling - doc
-mmi_discount - doc
-mmi_email - doc
-mmi_reconciling - doc
+kayakalpa_email - the email address of the Kaya Kalpa person who is
+    notified when a massage request comes in - see script/grab_new.
+kid_disc - how much of a lodging discount for children?
+last_deposit_date - when was the last MMC deposit made?  filled in automatically.
+last_mmi_deposit_date - when was the last MMI deposit made?  filled in automatically.
+long_center_tent - for housing type descriptions.  see RetreatCenterDB::Program::fee_table
+long_commuting - for housing type descriptions
+long_dble - for housing type descriptions
+long_dble_bath - for housing type descriptions
+long_dormitory - for housing type descriptions
+long_economy - for housing type descriptions
+long_not_needed - for housing type descriptions
+long_own_tent - for housing type descriptions
+long_own_van - for housing type descriptions
+long_quad - for housing type descriptions
+long_single - for housing type descriptions
+long_single_bath - for housing type descriptions
+long_triple - for housing type descriptions
+long_unknown - for housing type descriptions
+lunch_charge - obsolete - can be removed.
+    rental_lunch_cost instead.  incorporated into housing cost.
+make_up_clean_days - used when presenting the list of available rooms.
+    it is the number of days before a room that needs to be cleaned is marked with an 'N'
+make_up_urgent_days - for the make up list - for marking rooms as needed urgently
+max_kid_age - how old can a person be and still be considered a child?
+max_lodge_opts - the maximum number of rooms to offer when lodging a registrant
+max_shuttles - maximum number of shuttles for Rides
+max_tuit_disc - maximum tuition discount for Members - no longer used
+mem_credit_hours - obsolete - can be removed
+mem_credit_phone - obsolete - can be removed
+mem_email - the email address of the membership secretary
+mem_gen_amt - how much for a General membership?
+mem_life_total - total donations to be a Life member
+mem_phone - phone number of the membership secretary
+mem_site - obsolete - can be removed
+mem_spons_semi_year - amount for semi-annual Sponsor membership
+mem_spons_year - amount for annual Sponsor membership
+mem_sponsor_nights - number of free lodging nights for a Sponsor member
+mem_team - obsolete - can be removed
+member_meal_cost - obsolete - can be removed
+min_kid_age - minimum age of a person before they need to pay (as a child)
+mmc_reconciling - who is doing an MMC reconciliation?
+mmi_discount - percentage discount for MMI programs - must be requested via an Affiliation
+mmi_email - who should be notified when an MMI mailing list request comes in?
+mmi_reconciling - who is doing an MMI reconciliation?
 mmi_payment_request_signed - The name of the person who is requesting an MMI Online Payment.
 mmi_payment_request_from - The email of the person who is requesting an MMI Online Payment.
     Replies will go to this address.
-not_needed - doc
-nyears_forgiven - doc
-online_notify - doc
-own_tent - doc
-own_van - doc
-password_security - doc
-payment_C - doc
-payment_D - doc
-payment_O - doc
-payment_S - doc
-payment_U - doc
-personal_template - doc
-phone - doc
-prog_end - doc
-prog_start - doc
-quad - doc
-reception_email - doc
-reg_end - doc
-reg_start - doc
-rental_done - doc
-rental_done_color - doc
-rental_due - doc
-rental_due_color - doc
-rental_end_hour - doc
+not_needed - for housing type descriptions
+nyears_forgiven - how many years before an outstanding balance is forgiven?
+online_notify - a list of email addresses to notify when
+    an online registration happens.  This is different from the
+    notify_on_reg column in the Program table.
+own_tent - for housing type descriptions
+own_van - for housing type descriptions
+password_security - what level of password security?
+payment_C - description of a Check payment
+payment_D - description of a Credit Card payment
+payment_O - description an Online payment
+payment_S - description of a Cash payment
+payment_U - a payment is Due
+personal_template - the template for a Personal Retreat program
+    it changes as the 'get_away' is offered or not.
+phone - the description of a telephone in the row for a rental online
+prog_end - the default time of day that a program ends
+prog_start - the default time of day that a program starts
+quad - for housing type descriptions
+reception_email - who should be notified when an MMC mailing list request comes in?
+reg_end - the default time of day for program registration to end
+reg_start - the default time of day for program registration to begin
+rental_done - description for a rental status of Done
+rental_done_color - the color in the calendar of a Done rental
+rental_due - description for a rental status of Due
+rental_due_color - the color in the calendar of a Due rental
+rental_end_hour - the time of day that rentals normally end
 rental_lunch_cost - how much do rentals pay for a lunch?
-rental_received - doc
-rental_received_color - doc
-rental_sent - doc
-rental_sent_color - doc
-rental_start_hour - doc
-rental_tentative - doc
-rental_tentative_color - doc
-req_mmi_dir - doc
-req_mmi_dir_paid - doc
-ride_cancel_penalty - doc
-ride_email - doc
-ride_glnum - doc
-seen_lodge_opts - doc
-single - doc
-single_bath - doc
-smtp_auth - doc
-smtp_pass - doc
-smtp_port - doc
-smtp_server - doc
-smtp_user - doc
-spons_tuit_disc - doc
-sum_copy_id - doc
-sys_last_config_date - doc
-triple - doc
-tt_today - doc
-typehdr - doc
-unknown - doc
-website - doc
-weburl - doc
+rental_received - description for a rental status
+rental_received_color - the color in the calendar of a Received rental
+rental_sent - description for a rental status of Sent
+rental_sent_color - the color in the calendar of a Sent rental
+rental_start_hour - the time of day that rentals normally start
+rental_tentative - description for a rental status of Tentative
+rental_tentative_color - the color in the calendar of a Tentative rental
+req_mmi_dir - the directory on mountmadonna.org where MMI payment requests live
+req_mmi_dir_paid - the directory on mountmadonna.org for paid MMI payment requests
+ride_cancel_penalty - How much penalty for cancelling a Ride?
+ride_email - who to notify by email when a Ride request comes in?
+ride_glnum - the GL Number of the ride account
+seen_lodge_opts - what is the size of the <select> list for housing options?
+    There can be many more houses in the list but this is what is initially visible.
+single - the display name for the housing type 'single'
+single_bath - the display name for the housing type 'single with bath'
+smtp_auth - the 'auth' field for the SMTP server
+smtp_pass - the 'password' field for the SMTP server
+smtp_port - the 'port' field for the SMTP server
+smtp_server - the 'server' field for the SMTP server
+smtp_user - the 'user' field for the SMTP server
+spons_tuit_disc - the percentage of discount offered to
+    Sponsor members - no longer offered
+sum_copy_id - a place to remember the 'copied' summary page.  it is used
+    when later pasting the summary.   format: 'timestamp summary_id name'
+sys_last_config_date - the last date in the config table
+triple - the display name for the housing type 'triple'
+tt_today - a place to do 'time travel'.  format: 'username date'
+typehdr - the heading for the list of housing types
+unknown - the display name for the housing type 'unknown'
+website - the title for a Rental's website in the online row for the rental
+weburl - the web address for a Rental's website in the online row for the rental

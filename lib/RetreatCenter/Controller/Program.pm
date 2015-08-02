@@ -1644,12 +1644,15 @@ sub publish_pics : Local {
 # where X is the month number.
 #
 # skip the unlinked ones
+# treat the MMI ones specially
 #
 # clear them first? or after using them???
 #
 sub gen_month_calendars {
     my ($c) = @_;
     my $cur_ym = 0;
+    my $mmi_link = "</span><span class='external_link_icon'>"
+                 . "<i class='fa fa-external-link'></i> MMI</span>";
     my $cal;
     for my $p (grep { $_->linked && ! $_->cancelled } @programs) {
         my $ym = $p->sdate_obj->format("%Y%m");
@@ -1674,10 +1677,13 @@ EOH
         # the program info itself
         print {$cal} "<tr>\n<td class='dates_tr'>",
                   $p->dates_tr, "</td>",
-                  "<td class='title'><a href='",
-                  $p->fname, "'>",
+                  "<td class='title'>",
+                  $p->school == 0? "<a href='" . $p->fname . "'>"
+                                 : "<a href='http://" . $p->url . "'>",
                   $p->title1, 
-                  "</a><br><span class='subtitle'>",
+                  "</a>",
+                  $p->school != 0? $mmi_link: "",
+                  "<br><span class='subtitle'>",
                   $p->title2,
                   "</span></td></tr>";
     }
