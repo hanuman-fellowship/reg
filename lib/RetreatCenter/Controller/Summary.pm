@@ -126,6 +126,7 @@ sub update : Local {
         feedback
         food_service
         flowers
+        field_staff_std_setup
         field_staff_setup
         workshop_schedule
         sound_setup
@@ -205,6 +206,7 @@ sub update_sect : Local {
 sub _trans {
     my ($s) = @_;
     $s =~ s{_}{ }g;
+    $s =~ s{ std }{ standard };
     $s =~ s{\b(\w)}{\u$1}g;
     if ($s =~ m{^Food}) {   # special case
         $s = "CB $s";

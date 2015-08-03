@@ -101,6 +101,13 @@ th {
 </td>
 </tr>
 
+<tr><th valign=top>Field Staff Standard Setup</th>
+<td colspan=3>
+<textarea id=field_staff_std_setup name=field_staff_std_setup rows=[% field_staff_std_setup_rows %] cols=60>
+[% sum.field_staff_std_setup %]
+</textarea>
+</td></tr>
+
 <tr><th valign=top>Field Staff Setup
 <br><br>
 <input id=sub type=submit value="Submit">

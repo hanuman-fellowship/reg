@@ -35,6 +35,7 @@ __PACKAGE__->add_columns(qw/
     flowers
     miscellaneous
     feedback
+    field_staff_std_setup
     field_staff_setup
     sound_setup
     check_list

@@ -219,6 +219,11 @@ th {
 </tr>
 
 <tr>
+<td align=right valign=top><a href=/summary/update_sect/field_staff_std_setup/$type/$sum.id>Field Staff Standard Setup</a></td>
+<td colspan=3 valign=top>$sum.field_staff_std_setup</td>
+</tr>
+
+<tr>
 <td align=right valign=top><a href=/summary/update_sect/field_staff_setup/$type/$sum.id>Field Staff Setup</a></td>
 <td colspan=3 valign=top>$sum.field_staff_setup</td>
 </tr>
