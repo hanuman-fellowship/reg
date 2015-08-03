@@ -1674,18 +1674,29 @@ sub gen_month_calendars {
 <tr><td class="monthyear" colSpan=2>$my</td></tr>
 EOH
         }
+        my $title = "";
+        my $class = "";
+        if ($p->school == 0) {
+            $title .= "<a href='" . $p->fname . "'>";
+            $title .= $p->title1;
+            $title .= "</a>";
+            $title .= "<br><span class='subtitle'>" . $p->title2 . "</span>";
+            $class = "title";
+        }
+        else {
+            $title .= "<a href='http://" . $p->url . "'>";
+            $title .= $p->title;
+            $title .= "</a>";
+            $title .= $mmi_link;
+            $title .= "<br><span class='subtitle'>" . $p->subtitle . "</span>";
+            $class = "mmi_event";
+        }
         # the program info itself
         print {$cal} "<tr>\n<td class='dates_tr'>",
-                  $p->dates_tr, "</td>",
-                  "<td class='title'>",
-                  $p->school == 0? "<a href='" . $p->fname . "'>"
-                                 : "<a href='http://" . $p->url . "'>",
-                  $p->title1, 
-                  "</a>",
-                  $p->school != 0? $mmi_link: "",
-                  "<br><span class='subtitle'>",
-                  $p->title2,
-                  "</span></td></tr>";
+                     $p->dates_tr, "</td>",
+                     "<td class='$class'>",
+                     $title,
+                     "</td></tr>";
     }
     # finish the prior calendar file, if any
     if ($cur_ym) {
