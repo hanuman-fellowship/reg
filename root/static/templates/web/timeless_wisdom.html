@@ -1,37 +1,5 @@
 <?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/referral.php'); ?> 
-<?php require('/home/mmc/domains/mountmadonna.org/public_html/javascript/facebook-php-sdk/src/facebook.php');
 
-// Create our Application instance (replace this with your appId and secret).
-$facebook = new Facebook(array(
-  'appId'  => '147620828625721',
-  'secret' => '8c8647f52e7bf2e93f301b5cecd0cff8',
-  'cookie' => true,
-));
-
-
-// We may or may not have this data based on a $_GET or $_COOKIE based session.
-//
-// If we get a session here, it means we found a correctly signed session using
-// the Application Secret only Facebook and the Application know. We dont know
-// if it is still valid until we make an API call using the session. A session
-// can become invalid if it has already expired (should not be getting the
-// session back in this case) or if the user logged out of Facebook.
-$session = $facebook->getSession();
-
-$me = null;
-// Session based API call.
-if ($session) {
-  try {
-    $uid = $facebook->getUser();
-    $me = $facebook->api('/me');
-  } catch (FacebookApiException $e) {
-    error_log($e);
-  }
-}
-
-$access_token = $session['access_token'];
-
-?>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <HTML>
 <HEAD>
@@ -42,20 +10,16 @@ $active_navbar = 'programs';//defines which button on the navbar should be down
 $sidebar ='template';//defines which sidebar to use
 ?>
 
-
-
-
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8" />
 
-<TITLE>
-[% program.title1 %] [% program.title2 %]
+<TITLE>[% program.title1 %] [% program.title2 %]
 </TITLE>
 
 
 
 <META NAME="keywords" CONTENT="[% program.leader_names %], [% program.title1 %], [% program.title2 %], bay area yoga, bay area conference center, bay area retreat center, baba hari dass, vegetarian, meditation">
 
-<META PROPERTY="og:title" CONTENT="[% program.title1 %] - [% program.title2 %]"/>
+<META PROPERTY="og:title" CONTENT=" [% program.title1 %] - [% program.title2 %]"/>
 <META PROPERTY="og:type" CONTENT="other"/>
 <META PROPERTY="og:url" CONTENT="<?php 
 $string = $_SERVER['REQUEST_URI']; 
@@ -84,10 +48,7 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 <LINK HREF="/styles/programs.css" REL="stylesheet" TYPE="text/css" />
 <LINK HREF="/styles/facebook.css" REL="stylesheet" TYPE="text/css" />
 <link HREF="/styles/tipsy.css" rel="stylesheet" type="text/css" />
-<link HREF="/styles/dynamic_header.php?programNumber=[% program.id %]" rel="stylesheet" type="text/css" />
 
-<SCRIPT TYPE="text/javascript" SRC="/javascript/jquery-1.4.2.min.js"></SCRIPT>
-<script type="text/javascript" src="/javascript/jquery.tipsy.js"></script>
 
 <!-- TemplateBeginEditable name="head" --><!-- TemplateEndEditable -->
 
@@ -113,53 +74,7 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 </HEAD>
 
 <BODY CLASS="twoColFixLtHdr">
-<script type='text/javascript'>
-  $(function() {
-    
-    $('#name1').tipsy({gravity: 'nw'});
-    $('#name2').tipsy({gravity: 'nw'});
-    $('#name3').tipsy({gravity: 'nw'});
-    $('#name4').tipsy({gravity: 'nw'});
-    $('#name5').tipsy({gravity: 'nw'});
-    $('#name6').tipsy({gravity: 'nw'});
-    $('#name7').tipsy({gravity: 'nw'});
-    $('#name8').tipsy({gravity: 'nw'});
-    $('#name9').tipsy({gravity: 'nw'});
-    $('#name10').tipsy({gravity: 'nw'});
-    $('#name11').tipsy({gravity: 'nw'});
-    $('#name12').tipsy({gravity: 'nw'});
-    $('#name13').tipsy({gravity: 'nw'});
-    $('#name14').tipsy({gravity: 'nw'});
-    $('#name15').tipsy({gravity: 'nw'});
-    $('#name16').tipsy({gravity: 'nw'});
-  });
-</script>
 
-<div id="fb-root"></div>
-<!-- Facebook SDK loader -->
-    <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId   : '<?php echo $facebook->getAppId(); ?>',
-          session : <?php echo json_encode($session); ?>, // don't refetch the session when PHP already has it
-          status  : true, // check login status
-          cookie  : true, // enable cookies to allow the server to access the session
-          xfbml   : true // parse XFBML
-        });
-
-        // whenever the user logs in, we refresh the page
-        FB.Event.subscribe('auth.login', function() {
-          window.location.reload();
-        });
-      };
-
-      (function() {
-        var e = document.createElement('script');
-        e.src = document.location.protocol + '//connect.facebook.net/en_US/all.js';
-        e.async = true;
-        document.getElementById('fb-root').appendChild(e);
-      }());
-    </script>
     <DIV ID="container">
         <DIV ID="header"><?php include('/home/mmc/domains/mountmadonna.org/public_html/includes/header.php');?></DIV>
         <DIV ID="mainWrapper">
@@ -167,42 +82,8 @@ echo 'http://www.mountmadonna.org' . $result_uri;
 	<DIV CLASS="sidebarContent" STYLE="margin-right:auto;margin-left:auto;width:170px;">
         <DIV>[% program.picture %]</DIV>
 
-                  <TABLE BORDER="0" CELLPADDING="0" CELLSPACING="0" WIDTH="170">
-                                <!-- fwtable fwsrc="nextback_button.png" fwbase="next_back_buttons.gif" fwstyle="Dreamweaver" fwdocid = "2121170430" fwnested="0" -->
-                                <TR>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="42" HEIGHT="1" BORDER="0" ALT=""></TD>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="44" HEIGHT="1" BORDER="0" ALT=""></TD>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="41" HEIGHT="1" BORDER="0" ALT=""></TD>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="43" HEIGHT="1" BORDER="0" ALT=""></TD>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="1" HEIGHT="1" BORDER="0" ALT=""></TD>
-                                </TR>
-                                <TR>
-                                  <TD COLSPAN="4"><IMG NAME="next_back_buttons_r1_c1" SRC="/Gif/next_back_buttons_r1_c1.gif" WIDTH="170" HEIGHT="10" BORDER="0" ALT=""></TD>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="1" HEIGHT="10" BORDER="0" ALT=""></TD>
-                                </TR>
-                                <TR>
-                                  <TD><A HREF="[% program.firstprog_prevmonth %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','prev_month','/Gif/prev_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_month','/Gif/prev_month_f2.gif','/Gif/prev_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="prev_month" SRC="/Gif/prev_month.gif" WIDTH="42" HEIGHT="26" BORDER="0" ALT=""></A></TD>
-                                  <TD><A HREF="[% program.firstprog_nextmonth %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','next_month','/Gif/next_month_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_month','/Gif/next_month_f2.gif','/Gif/next_month_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="next_month" SRC="/Gif/next_month.gif" WIDTH="44" HEIGHT="26" BORDER="0" ALT=""></A></TD>
-                                  <TD><A HREF="[% program.prevprog %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','prev_prog','/Gif/prev_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','prev_prog','/Gif/prev_prog_f2.gif','/Gif/prev_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="prev_prog" SRC="/Gif/prev_prog.gif" WIDTH="41" HEIGHT="26" BORDER="0" ALT=""></A></TD>
-                                  <TD><A HREF="[% program.nextprog %]" TARGET="_top" onClick="MM_nbGroup('down','navbar1','next_prog','/Gif/next_prog_f3.gif',1);" onMouseOver="MM_nbGroup('over','next_prog','/Gif/next_prog_f2.gif','/Gif/next_prog_f3.gif',1);" onMouseOut="MM_nbGroup('out');"><IMG NAME="next_prog" SRC="/Gif/next_prog.gif" WIDTH="43" HEIGHT="26" BORDER="0" ALT=""></A></TD>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="1" HEIGHT="26" BORDER="0" ALT=""></TD>
-                                </TR>
-                                <TR>
-                                  <TD COLSPAN="4"><IMG NAME="next_back_buttons_r3_c1" SRC="/Gif/next_back_buttons_r3_c1.gif" WIDTH="170" HEIGHT="29" BORDER="0" ALT=""></TD>
-                                  <TD><IMG SRC="/Gif/spacer.gif" WIDTH="1" HEIGHT="29" BORDER="0" ALT=""></TD>
-                                </TR>
-                              </TABLE>
-                              [% program.month_calendar %]
-                        </CENTER></TD></TR></TBODY></TABLE>
-                        
-<?php 
-$eid = "[% program.facebook_event_id %]";
-if (!empty($eid)) {
-	$_GET['eid']=$eid;
-	include("/home/mmc/domains/mountmadonna.org/public_html/includes/fb_activity.php");  
-}
-?>
-                
+                  
+            
 
   </DIV><DIV CLASS=sidebarBottom><DIV></DIV></DIV></DIV>
   </DIV>
@@ -214,8 +95,7 @@ if (!empty($eid)) {
                     <H1 CLASS="ptitle">[% program.title1 %]</H1>
                     <H2 CLASS="psubtitle">[% program.title2 %]</H2>
                     <P CLASS="pdates">[% program.dates %]</P>
-                    <SPAN>[% program.reg_link %]</SPAN>
-                    <SPAN STYLE="float:right;"><fb:like width="300" action="recommend"></fb:like></SPAN>
+                    <SPAN><A href="http://www.mountmadonna.org/cgi-bin/reg1?id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG alt="Reserve Housing" src="/Gif/OGS-Button.png" width=147 height=32 border=0></A></SPAN>
                 </DIV>
                 
             </DIV><!-- end #contentHeader -->
@@ -228,15 +108,15 @@ if (!empty($eid)) {
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PROGRAM DESCRIPTION</SPAN><SPAN STYLE="float:right;">&nbsp;</SPAN></DIV>
                 
                 <DIV CLASS="pdesc">
-                    [% program.webdesc %]
+					[% program.webdesc_plus %]
                     [% IF program.documents %]
                         <ul class=doc_ul>
                         [% FOR d IN  program.documents %]
-                            <li><a href="docs/pdoc[% d.id %].[% d.suffix %]">[% d.title %]</a>        
+                            <li><a href="docs/pdoc[% d.id %].[% d.suffix %]">[% d.title %]</a>
                         [% END %]
-                        </ul>
+                    </ul>
                     [% END %]
-                    [% program.weburl %]
+			    	[% program.weburl %]
                 </DIV>
                 
                 [% IF program.leader_bio %]
@@ -249,30 +129,21 @@ if (!empty($eid)) {
                 <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">REGISTRATION</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
                 
                 <DIV CLASS="preg">
-                [% program.long_footnotes %]
                 <P STYLE="margin-top:25px;"><STRONG>Cost:</STRONG></P>
 
                     <CENTER>
                         <UL>
                             [% program.fee_table %]
                         </UL>
-                    <P style="padding-top: 25px">[% program.reg_link %]</P>
+                    <P align=center style="margin-top:35px;"><A href="http://www.mountmadonna.org/cgi-bin/reg1?id=[% program.id %]&dir=[% program.unlinked_dir %]"><IMG 
+                              alt="Reserve Housing" 
+                              src="/Gif/OGS-Button.png" 
+                              width=147 height=32 border=0 
+                              ></A></P>
                     </CENTER>
                 </DIV>
                 
-                <DIV CLASS="pdivider"><SPAN STYLE="float:left;"><IMG SRC="/Gif/arrow_programs_right.gif" WIDTH="7" HEIGHT="10" STYLE="margin-right:2px;vertical-align: top;">PROGRAM NOTES</SPAN><SPAN STYLE="float:right;"><A HREF="#top"><IMG SRC="/Gif/arrow_programs_up.gif" WIDTH="10" HEIGHT="7">top</A></SPAN></DIV>
-
-                <DIV CLASS="pnotes">
-                    <UL>
-                        <LI>A deposit of $[% program.deposit %] is required with registration. Balance is due upon arrival.</LI>
-                        <LI>[% program.cancellation_policy %]</LI>
-                        <LI>Registration check-in for this program is from [% program.reg_start_obj %] to [% program.reg_end_obj %].</LI>
-                        <LI>Dinner is served from 5:30-6:30 pm on Friday and 5:00-6:00 pm on other days.</LI>
-                        <LI>If you will be arriving late, please ask us to save a dinner for you.</LI>
-                        <LI>Orientation begins at [% program.prog_start_obj %].</LI>
-                        <LI>The program will end at [% program.prog_end_obj %] on the final scheduled day.</LI>
-                    </UL>
-                </DIV>
+               
                 
               
                 <P>&nbsp;</P>
