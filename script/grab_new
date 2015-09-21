@@ -224,6 +224,7 @@ sub finalities {
     unlink $run_file;
     close $log;
     my $log_str = slurp $log_name;
+    $log_str =~ s{$}{<br>}xmsg;
     if ($something_happened) {
         # not forever ... just until you trust it
         # then comment this out
