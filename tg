@@ -1,0 +1,58 @@
+#!/bin/bash
+REGDIR=/Users/jonbjornstad/Reg
+DIRFTP=$REGDIR/file_ftp_dir
+TEST_EMAIL=jon@sucenter.org
+
+# clear the field - including the people records that we will be creating
+clear_field.pl
+
+# online registrations
+# a personal retreat and a temple donation
+# the temple donation may be done differently by Shantam
+cp from_kali/online/{7341853503,7316527613} $DIRFTP/www/cgi-bin/transactions
+
+# mlist requests from mmc and mmi
+cp from_kali/mlist/* $DIRFTP/www/cgi-bin/mlist_requests
+
+# grid
+cat >$DIRFTP/www/cgi-bin/rental/ftp_dir/blah <<EOF
+blah
+EOF
+
+# ride requests
+cat >$DIRFTP/www/cgi-bin/ride_requests/hello <<EOF
+hello
+EOF
+
+# online member payments
+cat >$DIRFTP/www/cgi-bin/omp_dir/lala <<EOF
+lala
+EOF
+
+# MMI registrations
+cp from_kali/online/7353331213 $DIRFTP/domains/mountmadonnainstitute.org/public_html/cgi-bin/transactions
+
+# MMI payment requests
+# functional/manual test:
+# 1 - add an MMI program
+# 2 - register someone
+# 3 - put them on automatic payment
+# 4 - house them
+# 5 - request multiple online payments
+# 6 - send them
+# 7 - copy the /tmp/$code file to from_kali/req_mmi (as the only file there)
+# 8 - run here
+# 9 - verify that the requested payments became real payments.
+#     and that the file $code appears in root/static/req_mmi/yyyy_mm
+#
+cp from_kali/req_mmi/* \
+   $DIRFTP/domains/mountmadonnainstitute.org/public_html/cgi-bin/req_mmi_dir/paid
+
+# temple registration
+cp from_kali/temple/* $DIRFTP/www/temple/_updates/users
+
+rm -f grab_running
+FILE_FTP_DIR=$DIRFTP perl script/grab_new
+
+# here are the tests:
+check_field.pl

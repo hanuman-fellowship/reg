@@ -1,22 +1,61 @@
 #!/usr/bin/perl
 use strict;
 use warnings;
-=comment
+
+=begin comment
+
+-1) Log everything that happens in the running of this script.
+It is is run from cron in the background.
+Append the log messages for this one run to a file named after
+the current day.  If this is the first run for the day start
+the file anew.
 
 0) Make sure that the net is available by trying to ping mountmadonna.org.
+Otherwise simply exit.
 
 1) Ftp-get all transaction files from www.mountmadonna.org
 created by the 'relay' program.  The names of these files
 are the ids of the most recent authorize.net transactions.
 Put the files in root/static/online.
 
-2) Get recently modified rental grid files.
+1a) If one of the above transaction files has a line like
+'x_description => Temple Donation ...'
+it is a temple donation and requires special handling.   
+Create a Payment record for the person to the 'Temple' Extra Account.
+Send a proper thank you letter???
 
-3) Get mailing list requests into root/static/mlist.
+2) Get recently modified rental grid files into root/static/grid.
+
+3) Get mailing list requests (from MMC and MMI) into 
+root/static/mlist_done/$yyyy_mm and insert them into the people table.
+Notify the reception office who and which so they can
+send them a brochure.
 
 4) Get ride requests into root/static/rides.
 
-5) Get all email from authorize@hanumanfellowship.org.
+5) For registrations that indicated they would like
+to be contacted about massage send Kaya Kalpa a letter
+with their contact information and which program and when
+they'll be here.
+
+Also send the registrant a letter (actually it's the same letter
+that they are Cc'ed on) saying that they will
+be contacted by someone at Kaya Kalpa two to three weeks
+before the program to arrange for the bodywork.
+
+6) Get people that recently registered on the temple
+reservation site and import them directly into the People table.
+
+7) Get MMI payment requests that have been paid and morph
+them into actual payments.
+
+8) Get MMI standalone course registations
+
+9) Get online membership payments
+
+10) Get new and updated temple users.
+
+11) Maybe ... Get all email from authorize@hanumanfellowship.org.
 This address is one of the recipients of the "Merchant Email Receipts"
 sent by authorize.net after every transaction.
 
@@ -32,511 +71,652 @@ to jonb@logicalpoetry.com:
     - unable to make a connection via ftp or pop3
     - misformatted emails
 
-6) For registrations that indicated they would like
-to be contacted about massage send Kaya Kalpa a letter
-with their contact information and which program and when
-they'll be here.
-
-Also send the registrant a letter (actually it's the same letter
-that they are Cc'ed on) saying that they will
-be contacted by someone at Kaya Kalpa two to three weeks
-before the program to arrange for the bodywork.
-
-7) Get people that recently registered on the temple
-reservation site and import them directly into the People table.
-
-8) Get MMI payment requests that have been paid and morph
-them into actual payments.
-
-9) Get MMI standalone course registations
-
-10) Get online membership payments
+=end
 
 =cut
+
 use lib 'lib';
-use Net::Ping;
-use DBI;
-use Net::FTP;
+use Util qw/
+    model
+    db_init
+    normalize
+    add_or_update_deduping
+    digits_only
+    commify
+    x_file_to_href
+    email_letter
+    slurp
+/;
+
+use RetreatCenterDB;    # ??? why can't we move this to Util?
+use Global qw/
+    %string
+    %system_affil_id_for
+/;
+
 use Template;
-use Date::Simple qw{
+use Date::Simple qw/
     date
     today
-};
-use Util 'normalize';
+/;
+use Time::Simple qw/
+    get_time
+/;
+use Net::Ping;
+use Net::FTP;
+use File::FTP;      # this is mine
+use File::Basename 'basename';
+
 use FindBin;
 chdir "$FindBin::Bin/..";
 
-my $p = Net::Ping->new();
-if (!$p->ping("mountmadonna.org")) {
-    my_die("no ping of mountmadonna.org at " . localtime() . "\n");
+# globals
+my $today = today();
+my $c;
+my $ftp;
+my $run_file = "grab_running";
+my ($log, $log_name);
+my $nomp = 0;
+my $nrides = 0;
+my ($now_t24, $today_d8, $year_mon_dir);
+my ($temple_xaccount_id);
+my %ids = ();   # needed any more??
+my @kayakalpa;  # an array of hashrefs - these people requested
+                # information about bodywork.
+my @mlist_alerts;   # an array of hashrefs - who to send
+                    # brochures for MMI/MMC.
+
+# directories
+my ($online, $grid, $temple, $mlist_done, $rides,
+    $req_mmi_dir, $omp_dir, $temple_donation);
+my $something_happened = 0;
+
+sub msg {
+    if ($_[0] !~ m{\A (.)\1}xms) {
+        print {$log} '   ';
+    }
+    print {$log} @_;
+    if (pop !~ m{\n$}xms) {
+        print {$log} "\n";
+    }
+}
+
+sub quit {
+    msg @_, "\n";
+    close $log;
+    # try to email $log_name to Jon ???
     exit;
 }
 
-my $Msg = "";       # globals (capitalized to emphasize this)
-my $Error = 0;
-my $Run_File = "grab_running";
+sub failed {
+    my ($rc) = @_;
+    return $rc? '': ' - failed';
+}
 
-my ($min, $hour, $now_mon, $now_year) = (localtime())[1, 2, 4, 5];
-++$now_mon;
-$now_year += 1900;
-my $now = sprintf("%d-%02d", $now_year, $now_mon);
-my $the_time = sprintf("%02d%02d", $hour, $min);
-my $today_d8 = today()->as_d8();
+sub initialize {
+    my $now = get_time();
+    $now_t24 = $now->t24;
+    $today_d8 = $today->as_d8();
+    $year_mon_dir = $today->format("%Y-%m");
+    $log_name = 'grab_new_log';
+    open $log, '>', $log_name
+        or die "no $log_name! :(\n";
+    msg "%% " . $now->t12;
 
-if (-f $Run_File) {
-    my $t = (stat($Run_File))[9];
-    if (time() - $t > 5*60) {
-        #
-        # a stale run file (older than 5 minutes).
-        # it somehow got left behind from a previous run.
-        # remove it and continue.
-        #
-        unlink $Run_File;
+    if (-f $run_file) {
+        my $t = (stat($run_file))[9];
+        if (time() - $t > 5*60) {
+            #
+            # a stale run file (older than 5 minutes).
+            # it somehow got left behind from a previous run.
+            # remove it and continue.
+            # use the pid instead with kill?
+            #
+            unlink $run_file;
+        }
+        else {
+            #
+            # we have been invoked via "Grab New" in Reg.
+            # but we are still validly running via cron!
+            #
+            quit("still running via cron");
+        }
+    }
+
+    # touch the run file
+    open my $run, ">", $run_file;
+    close $run;
+
+    if (! $ENV{FILE_FTP_DIR}) {     # are we testing or not?
+        my $p = Net::Ping->new();
+        if (!$p->ping("mountmadonna.org")) {
+            quit("no ping of mountmadonna.org");
+        }
+    }
+
+    $c = db_init();
+    Global->init($c, 1, 1);
+    $string{mmc_email} = $string{reception_email};  # see *1 below
+
+    # for temple donations
+    my @xaccounts = model($c, 'XAccount')->search({
+                        descr => 'Temple',
+                    });
+    if (@xaccounts == 1) {
+        $temple_xaccount_id = $xaccounts[0]->id;
     }
     else {
-        #
-        # we have been invoked via "Grab New" in Reg.
-        # but we are still validly running via cron!
-        #
-        exit;
+        quit("could not find Temple Extra Account");
     }
+
+    my $rst = "root/static";
+    $online          = make_dir("$rst/online");
+    $grid            = make_dir("$rst/grid");
+    $temple          = make_dir("$rst/temple_done/$year_mon_dir");
+    $mlist_done      = make_dir("$rst/mlist_done/$year_mon_dir");
+    $rides           = make_dir("$rst/rides");
+    $req_mmi_dir     = make_dir("$rst/req_mmi/$year_mon_dir");
+    $omp_dir         = make_dir("$rst/omp");
+    $temple_donation = make_dir("$rst/temple_donation");
 }
-open my $run, ">", $Run_File;
-close $run;
 
-#
-# we need some values from the database
-# to know where to connect to the web site.
-#
-my $dbh = DBI->connect(undef, "sahadev", "JonB")
-    or my_die("oh no DBI");
-my $sth = $dbh->prepare("
-    select the_key, value
-    from string
-    where the_key like 'ftp_%'
-       or the_key like 'smtp_%'
-       or the_key like 'ride_%'
-       or the_key like 'reception_email'
-       or the_key like 'kayakalpa_email'
-       or the_key like 'mmi_email'
-       or the_key like 'req_mmi_dir_paid'
-       or the_key like 'mem_email'
-");
-$sth->execute();
-my %string;
-while (my ($the_key, $value) = $sth->fetchrow_array()) {
-    $string{$the_key} = $value;
-}
-undef $sth;
-$string{mmc_email} = $string{reception_email};      # sorry - see below
-
-my $sth_gaff = $dbh->prepare("
-    select id
-      from affils
-     where descrip like 'Temple Guest'
-");
-$sth_gaff->execute();
-my ($temple_guest_affil_id) = $sth_gaff->fetchrow_array();
-undef $sth_gaff;
-
-my $sth_ins_aff = $dbh->prepare("
-    insert into affil_people
-    (a_id, p_id)
-    values
-    (?, ?)
-");
-
-my $sth_search_people = $dbh->prepare("
-    select id, tel_cell, email
-      from people
-     where first = ? and last = ?
-");
-my $sth_insert_people = $dbh->prepare("
-    insert into people (
-        first, last, email,
-        tel_cell, addr1, addr2,
-        city, st_prov, zip_post,
-        akey,
-        e_mailings, mmi_e_mailings, snail_mailings, mmi_snail_mailings,
-            share_mailings, inactive,
-        date_entrd, date_updat
-    )
-    values (
-        ?, ?, ?,
-        ?, ?, ?,
-        ?, ?, ?,
-        ?,
-        'yes', 'yes', 'yes', 'yes',
-            'yes', '',
-        ?, ?
-    )
-");
-my $sth_update_people = $dbh->prepare("
-    update people set
-        first = ?,
-        last  = ?,
-        email = ?,
-        tel_cell  = ?,
-        addr1 = ?,
-        addr2 = ?,
-        city  = ?,
-        st_prov = ?,
-        zip_post   = ?,
-        date_updat = ?
-    where id = ?
-");
-
-#
-# now we can connect to mountmadonna.org
-#
-my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-    or my_die("cannot connect to $string{ftp_site}");    # not die???
-$ftp->login($string{ftp_login}, $string{ftp_password})
-    or my_die("cannot login " . $ftp->message);
-$ftp->cwd($string{ftp_transactions})
-    or my_die("cannot cwd to $string{ftp_transactions} " . $ftp->message);
-$ftp->ascii();
-
-# 
-# get ready to send email
-#
-use Mail::Sender;
-sub email_letter {
-    my (%args) = @_;
-
-    my @auth = ();
-    if ($string{smtp_auth}) {
-        @auth = (
-            auth    => $string{smtp_auth},
-            authid  => $string{smtp_user},
-            authpwd => $string{smtp_pass},
+sub finalities {
+    unlink $run_file;
+    close $log;
+    my $log_str = slurp $log_name;
+    if ($something_happened) {
+        # not forever ... just until you trust it
+        # then comment this out
+        email_letter($c,
+            to      => 'jon@suecenter.org',
+            from    => 'jon@suecenter.org',
+            subject => 'grab_new',
+            html    => $log_str,
         );
     }
-    my $mail_sender = Mail::Sender->new({
-        smtp => $string{smtp_server},
-        port => $string{smtp_port},
-        @auth,
-    }) or my_die("no mail sender");
-    $args{to} =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $args{to}; 
-    $args{cc} =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $args{cc}; 
-    my @cc;
-    if ($args{cc}) {
-        push @cc, cc => $args{cc};
+    my $dow_name = "output/grab_new_" . $today->format("%a");
+    my $mode = (! -f $dow_name || -M $dow_name > 1)? '>': '>>';
+    if (open my $out, $mode, $dow_name) {
+        print {$out} $log_str;
+        close $out;
     }
-    $mail_sender->Open({
-        to       => $args{to},
-        from     => $args{from},
-        @cc,
-        #bcc      => 'jonb@logicalpoetry.com',
-        subject  => $args{subject},
-        ctype    => "text/html",
-        encoding => "7bit",
-    }) or my_die("no mail sender Open");
-    $mail_sender->SendLineEnc($args{html});
-    $mail_sender->Close() or my_die("no mail sender Close");
+
+    # at what point do the req_mmi_payments expire???
+    # a cron job on the remote site to clear them after n days?
+    # also a cron job to clear the grid files after
+    # the rental is over - two week delays?
+    # ask/confirm with Rachel and Barnaby
 }
 
-my %ids = ();
-my @kayakalpa;
+sub ftp_connect {
+    my (%arg) = @_;
 
-my $online = "root/static/online";
-my $mlist = "root/static/mlist";
-my $rides = "root/static/rides";
-my $temple = "root/static/temple";
-my $req_mmi_dir = "root/static/req_mmi";
-my $omp_dir = "root/static/omp";
+    my $ftp_class = $ENV{FILE_FTP_DIR}? 'File::FTP': 'Net::FTP';
+    my $ftp = $ftp_class->new($arg{site}, Passive => $arg{passive})
+                  or quit("cannot connect to $arg{site}");
+    $ftp->login($arg{login}, $arg{password})
+        or quit("cannot login to $arg{site}: " . $ftp->message);
+    $ftp->ascii();
+    return $ftp;
+}
 
-mkdir $online unless -d $online;
-mkdir $mlist unless -d $mlist;
-mkdir $rides unless -d $rides;
-mkdir $temple unless -d $temple;
-mkdir $req_mmi_dir unless -d $req_mmi_dir;
-mkdir $omp_dir unless -d $omp_dir;
+sub make_dir {
+    my ($d) = @_;
+    mkdir $d if ! -d $d;
+    return $d;
+}
 
 #
-# get transaction files from www.mountmadonna.org/cgi-bin/transactions
+# using $ftp cd to the remote dir
+# get all files there into $get_dir
+# if $code_ref is supplied call it on each file.
 #
-open my $log, '>>', 'grab_new_log';
-TRANSACTION:
-for my $f ($ftp->ls()) {
-    if ($f eq '.' || $f eq '..') {
-        next TRANSACTION;
+sub get_files {
+    my ($title, $ftp, $remote_dir, $get_dir, $code_ref) = @_;
+
+    msg "** $title";
+    $ftp->cwd($remote_dir)
+        or quit("cannot cwd to $remote_dir " . $ftp->message);
+    mkdir $get_dir if ! -d $get_dir;
+    my $nfiles = 0;
+    FILE:
+    for my $f ($ftp->ls()) {
+        if ($f eq '.' || $f eq '..') {
+            next FILE;
+        }
+        $ftp->get($f, "$get_dir/$f");
+        ++$nfiles;
+        if ($code_ref) {
+            $code_ref->($get_dir, $f);
+        }
+        $ftp->delete($f);
     }
-    if (! $ftp->get($f, "$online/$f")) {
-        my_warn("no get of online reg $f");
-        next TRANSACTION;
+    if ($nfiles) {
+        my $pl = $nfiles == 1? '': 's';
+        msg "$nfiles file$pl";
+        $something_happened = 1;
     }
-    $ids{$f} = 1;
-    my ($last, $first, $title) = ("", "", "");
-    if (open my $in, "<", "$online/$f") {
-        LINE:
-        while (my $line = <$in>) {
-            if ($line =~ m{x_kayakalpa => yes}) {
-                push @kayakalpa, $f;    
+}
+
+sub check_transaction {
+    my ($get_dir, $f) = @_;
+
+    $ids{$f} = 1;       #  needed any more???
+    my $href = x_file_to_href("$get_dir/$f");
+    my $kk   = $href->{kayakalpa};
+    my $desc = $href->{description};
+    if ($kk && $kk eq 'yes') {
+        push @kayakalpa, $href;
+    }
+    elsif ($desc && $desc =~ m{\A Temple \s+ Donation}xms) {
+        temple_donation($href, $f);
+        return;
+    }
+    msg "transaction $f, $href->{first} $href->{last}, $href->{title}";
+}
+
+sub temple_donation {
+    my ($href, $f) = @_;
+
+    msg "temple donation $href->{amount}";
+
+    # add the person if needed
+    # ensure an affiliation is there.
+    # add the payment to the Temple xaccount
+    # move the file into the archive by month
+
+    $href->{e_mailings} =
+    $href->{snail_mailings} = 
+    $href->{mmi_e_mailings} = 
+    $href->{mmi_snail_mailings} = 
+    $href->{share_mailings} = -1;   # don't change these
+                                    # it's just a donation
+
+    my ($person_id, $person, $status) = add_or_update_deduping(
+        $c, $href,
+        affil_ids => $system_affil_id_for{'Temple Guest'},
+    );
+    msg sprintf "%s %s - %s", $person->first, $person->last, $status;
+    # now we can add the payment record
+    model($c, 'XAccountPayment')->create({
+        xaccount_id => $temple_xaccount_id,
+        person_id   => $person_id,
+        amount      => $href->{amount},
+        type        => 'D',               # credit
+        what        => 'Online temple donation',
+        user_id     => 0,                 # what other user id?
+        the_date    => $today_d8,
+        time        => $now_t24,
+    });
+    # move the file into the archive - we have finished with it
+    rename "$online/$f", "$temple_donation/$f";
+    # email thank you again???
+    # email temple people interested in donations???
+}
+
+
+#
+#
+# send the admins (mmc and mmi) a letter telling them
+# who/where to send the brochure(s) - include the special requests.
+#
+sub mlist_alerts {
+    msg "-- mlist alerts";
+    return unless @mlist_alerts;
+    TYPE:
+    for my $type (qw/ mmc mmi /) {
+        my $TYPE = uc $type;
+        my $html = "";
+        ALERT:
+        for my $href (@mlist_alerts) {
+            next ALERT if $href->{type} ne $type;
+            $html .= <<"EOH";
+<p>
+$href->{first} $href->{last}<br>
+$href->{addr1}<br>
+$href->{city}, $href->{st_prov}<br>
+$href->{zip_post}<br>
+EOH
+            if ($href->{country}) {
+                $html .= "$href->{country}<br>\n";
             }
-            elsif ($line =~ m{x_fname => (.*)}) {
-                $first = $1;
+            if ($href->{interest}) {
+                $html .= "Interest: $href->{interest}<br>\n";
             }
-            elsif ($line =~ m{x_lname => (.*)}) {
-                $last = $1;
-            }
-            elsif ($line =~ m{x_title => (.*)}) {
-                $title = $1;
+            if ($href->{request}) {
+                $html .= "Special Request: $href->{request}<br>\n"
             }
         }
-        close $in;
-    }
-    $Msg .= "ftp: $f - $last, $first\n";
-    print {$log} scalar(localtime), " $f, $first $last, $title\n";
-    $ftp->delete($f);
-}
-close $log;
-
-#
-# get (and delete) any newly modified rental grid files
-#
-$ftp->cwd($string{ftp_rental_dir})
-    or my_die("cannot cwd to $string{ftp_rental_dir} " . $ftp->message);
-GRID_FILE:
-for my $f ($ftp->ls()) {
-    if ($f eq '.' || $f eq '..') {
-        next GRID_FILE;
-    }
-    if (! $ftp->get($f, "root/static/grid/$f")) {
-        my_warn("no get of grid file $f");
-        next GRID_FILE;
-    }
-    $Msg .= "got rental file $f\n";
-    $ftp->delete($f);
-}
-
-#
-# mlist requests
-#
-$ftp->cwd($string{ftp_mlist_requests});
-my $nmlist = 0;
-my %for_whom;
-MLIST_FILE:
-for my $f ($ftp->ls()) {
-    if ($f eq '.' || $f eq '..') {
-        next MLIST_FILE;
-    }
-    if (! $ftp->get($f, "$mlist/$f")) {
-        my_warn("no get of mlist file $f");
-        next MLIST_FILE;
-    }
-    ++$nmlist;
-    $Msg .= "got mlist file $f\n";
-    $ftp->delete($f);
-    # was it for mmi or mmc?
-    if (open my $in, "<", $f) {
-        while (my $line = <$in>) {
-            if ($line =~ m{^type (.*)}) {
-                $for_whom{$1} = 1;                
-            }
-        }
-        close $in;
-    }
-}
-if ($nmlist) {
-    for my $k (keys %for_whom) {
-        my $uk = uc $k;
-        my $email = $string{$k . '_email'};
-        email_letter(
-            to      => "$uk Mail Admin <$email>",
+        next TYPE if ! $html;
+        my $email = $string{"$type\_email"};   # *1 mmc_email == reception_email
+        my $rc = email_letter($c,
+            to      => "$TYPE Mail Admin <$email>",
             from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-            subject => "Online Mailing List Request",
-            html    => "There is an online mailing list request waiting"
+            subject => "Online Mailing List Requests",
+            html    => $html,
+        );
+        msg "email to $type $email" . failed($rc);
+    }
+}
+
+sub process_mlist {
+    my ($get_dir, $f) = @_;
+
+    # was it for mmi or mmc?
+    open my $in, "<", "$get_dir/$f"
+        or quit("cannot open $get_dir/$f: $!\n");
+    my %hash;
+    while (my $line = <$in>) {
+        chomp $line;
+        if (my ($key, $val) = $line =~ m{^(\w+)\s+(.*)}) {
+            $hash{$key} = $val;
+        }
+        else {
+            $hash{$line} = '';
+        }
+    }
+    close $in;
+    $hash{addr1} = $hash{street};
+    $hash{addr2} = '';
+    my $type = $hash{type};
+    my $interest = $hash{interest};
+    for my $k (qw/ cell home work /) {
+        $hash{"tel_$k"} = $hash{$k};
+    }
+    $hash{sex} = $hash{gender} eq 'female'? 'F': 'M';
+    $hash{request} =~ s{NEWLINE}{\n}g;      # how did the NEWLINE get there???
+
+    # remove unneeded ones
+    for my $k (qw/
+        street type interest
+        cell home work gender
+        email2
+    /) {
+        delete $hash{$k};
+    }
+    my @affil_ids;
+    if ($type eq 'mmi') {
+        if ($interest eq 'All Schools') {
+            for my $k (grep { /MMI/ } keys %system_affil_id_for) {
+                push @affil_ids, $system_affil_id_for{$k};
+            }
+        }
+        else {
+            push @affil_ids, $system_affil_id_for{"MMI - $interest"};
+        }
+    }
+    my ($person_id, $person, $status) = add_or_update_deduping(
+        $c, \%hash,
+        affil_ids => \@affil_ids,
+        request_to_comment => 1,
+    );
+    msg sprintf "%s %s - %s", $person->first, $person->last, $status;
+    # record name, address for emailing all later to the reception office.
+    # see sub mlist_alerts()
+    # include type and comment
+    #
+    push @mlist_alerts, {
+        type => $type,
+        interest => $interest,
+        map { $_ => $hash{$_} } qw/
+            first last
+            addr1 city st_prov zip_post country
+            request
+        /,
+    };
+}
+
+sub ride_alert {
+    msg "-- ride_alert";
+    if ($nrides) {
+        my $rc = email_letter($c,
+            to      => "MMC Transportation <$string{ride_email}>",
+            from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+            subject => "Online Ride Request",
+            html    => "There is an online ride request waiting"
                      . " for you in Reg."
         );
+        msg "email ride request waiting to $string{ride_email}"
+            . failed($rc);
     }
 }
 
-#
-# ride requests
-#
-$ftp->cwd($string{ftp_ride_dir});
-my $nrides = 0;
-RIDE_FILE:
-for my $f ($ftp->ls()) {
-    if ($f eq '.' || $f eq '..') {
-        next RIDE_FILE;
+sub omp_alert {
+    msg "-- omp_alert";
+    if ($nomp) {
+        my $rc = email_letter($c,
+            to      => "HFS Membership <$string{mem_email}>",
+            from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+                                # what else???
+            subject => "Membership Payment",
+            html    => "There is an online membership payment waiting for you in Reg."
+        );
+        msg "email about omp waiting" . failed($rc);
     }
-    if (! $ftp->get($f, "$rides/$f")) {
-        my_warn("no get of rides file $f");
-        next RIDE_FILE;
-    }
-    ++$nrides;
-    $Msg .= "got rides file $f\n";
-    $ftp->delete($f);
-}
-if ($nrides) {
-    email_letter(
-        to      => "MMC Transportation <$string{ride_email}>",
-        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-        subject => "Online Ride Request",
-        html    => "There is an online ride request waiting"
-                 . " for you in Reg."
-    );
 }
 
-#
-# membership payments
-#
-$ftp->cwd($string{ftp_omp_dir});
-my $nomp = 0;
-OMP_FILE:
-for my $f ($ftp->ls()) {
-    if ($f eq '.' || $f eq '..') {
-        next OMP_FILE;
-    }
-    if (! $ftp->get($f, "$omp_dir/$f")) {
-        my_warn("no get of membership payment file: $f");
-        next OMP_FILE;
-    }
-    ++$nomp;
-    $Msg .= "got omp file $f\n";
-    $ftp->delete($f);
-}
-if ($nomp) {
-    email_letter(
-        to      => "HFS Membership <$string{mem_email}>",
-        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',  # what else???
-        subject => "Membership Payment",
-        html    => "There is an online membership payment waiting for you in Reg."
-    );
-}
-#
-# all done with mmc
-#
-$ftp->quit();
-
-#
-# MMI paid payment requests
-#
-my $mmi_pay_sth = $dbh->prepare("
-    insert into mmi_payment
-    (
-        the_date, type,
-        person_id, reg_id,
-        amount, glnum, note
-    )
-    values (
-        $today_d8, 'O',
-        ?, ?,
-        ?, ?, ?
-    );
-");
-my $req_mmi_del_sth = $dbh->prepare("
-    delete from req_mmi_payment
-     where code = ?
-");
-my $reg_hist_sth = $dbh->prepare("
-    insert into reg_history
-    (
-        reg_id,
-        the_date,
-        time,
-        user_id,
-        what
-    )
-    values (
-        ?, ?, ?, 0, ?
-    )
-");
-$ftp = Net::FTP->new($string{ftp_mmi_site}, Passive => $string{ftp_mmi_passive})
-    or my_die("cannot connect to $string{ftp_mmi_site}");    # not die???
-$ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
-    or my_die("cannot login to mmi " . $ftp->message);
-$ftp->cwd($string{req_mmi_dir_paid})
-    or my_die("no cd paid dir $string{req_mmi_dir_paid}");
-REQ_MMI_FILE:
-for my $f ($ftp->ls()) {
-    if ($f eq '.' || $f eq '..') {
-        next REQ_MMI_FILE;
-    }
-    my $dir = "$req_mmi_dir/$now";
-    mkdir $dir if ! -d $dir;
-    if (! $ftp->get($f, "$dir/$f")) {
-        my_warn("no get of req_mmi file $f");
-        next REQ_MMI_FILE;
-    }
-    my %hash = %{ do "$dir/$f" };
+sub process_mmi_payments {
+    my ($get_dir, $f) = @_;
+    my %hash = %{ do "$get_dir/$f" };
+    #
+    # this hash contains keys:
+    #    py_desc
+    #       which has multiple ~ separated fields
+    #       which are | separated fields of
+    #           amount, note, glnum
+    #    code
+    #    reg_id
+    #    person_id
+    #    total
+    #    first
+    #    last
+    #
+    # - create RegPayment records with the above
+    # - clear requested payments with the code
+    # - adjust the balance in the registration
+    # - log it
+    #
     for my $py (split m{~}, $hash{py_desc}) {
         my ($amount, $note, $glnum) = split m{\|}, $py;
-        $amount =~ s{,}{}gxms;
-        $mmi_pay_sth->execute(
-            $hash{person_id},
-            $hash{reg_id},
-            $amount,
-            $glnum,
-            $note,
-        );
+        $amount =~ s{,}{}xmsg;
+        model($c, 'MMIPayment')->create({
+            reg_id    => $hash{reg_id},
+            deleted   => '',
+            the_date  => $today_d8,
+            person_id => $hash{person_id},
+            type      => 'O',       # online
+            amount    => $amount,
+            glnum     => $glnum,
+            note      => $note,
+        });
     }
-    $req_mmi_del_sth->execute($hash{code});     # remove all requests
+    # remove all requests with the code
+    model($c, 'RequestedMMIPayment')->search({
+        code => $hash{code},
+    })->delete();
+
     # History record
-    $reg_hist_sth->execute(
-        $hash{reg_id},
-        $today_d8,
-        $the_time,
-        "Got total payment of \$" . commify($hash{total}) . '.',
-    );
+    model($c, 'RegHistory')->create({
+        reg_id   => $hash{reg_id},
+        the_date => $today_d8,
+        time     => $now_t24,
+        user_id  => 0,
+        what     => "Got total payment of \$" . commify($hash{total}) . '.',
+    });
 
     # adjust the balance
-    my $sth_balance = $dbh->prepare("
-        update registration
-        set balance = balance - $hash{total}
-        where id = $hash{reg_id}
-    ");
-    $sth_balance->execute();
-
-    $Msg .= "got req_mmi file $f\n";
-    $ftp->delete($f);
+    model($c, 'Registration')->find($hash{reg_id})->update({
+        balance => \"balance - $hash{total}",
+    });
+# let's notify someone that the payment was made!???
+    msg "got req mmi payment totaling $hash{total} for $hash{first} $hash{last}";
 }
-undef $mmi_pay_sth;
-undef $req_mmi_del_sth;
-undef $reg_hist_sth;
 
 #
-# get transaction files from www.mountmadonnainstitute.org/cgi-bin/transactions
+# a temple user - either to create or update
+# does Shantam send it for update only when something has changed???
+# the filename is the temple_id
+# opt_in - means what?   which to set?  all???
 #
-if (! $ftp->cwd($string{ftp_mmi_transactions})) {
-    my_die("no cd paid dir $string{ftp_mmi_transactions}");
+sub get_temple {
+    my ($get_dir, $f) = @_;
+
+    open my $in, '<', "$get_dir/$f"
+        or quit("cannot open $get_dir/$f");
+    my $line = <$in>;
+    chomp $line;
+    close $in;
+    my %hash;
+    @hash{qw/ first last email tel_cell addr1 addr2
+              city st_prov zip_post opt_in /}
+        = split m{\|}, $line;
+    $hash{temple_id} = $f;  # the filename is the temple_id
+    $hash{temple_id} =~ s{-\d+\z}{}xms;     # this is for testing only
+    $hash{tel_home} = '';
+    $hash{tel_work} = '';
+    $hash{sex} = '';
+    @hash{qw/
+        e_mailings
+        snail_mailings
+        mmi_e_mailings
+        mmi_snail_mailings
+        share_mailings
+    /} = (0) x 5;
+    if ($hash{opt_in}) {
+        @hash{qw/
+            e_mailings
+            mmi_emailings
+            share_mailings
+        /} = (1) x 3;
+    }
+    my ($person_id, $person, $status) = add_or_update_deduping(
+        $c, \%hash,
+        affil_ids => $system_affil_id_for{'Temple Guest'},
+    );
+    msg sprintf "%s %s - %s", $person->first, $person->last, $status;
 }
-TRANSACTION:
-for my $f ($ftp->ls()) {
-    if ($f eq '.' || $f eq '..') {
-        next TRANSACTION;
-    }
-    if (! $ftp->get($f, "$online/$f")) {
-        my_warn("no get of online reg $f");
-        next TRANSACTION;
-    }
-    $ids{$f} = 1;
-    my ($last, $first) = ("", "");
-    if (open my $in, "<", "$online/$f") {
-        LINE:
-        while (my $line = <$in>) {
-            if ($line =~ m{x_kayakalpa => yes}) {
-                push @kayakalpa, $f;    
+
+sub kayakalpa {
+    msg "-- kayakalpa";
+    return unless @kayakalpa;
+    my $fmt = "%A, %B %e, %Y";
+    KK:
+    for my $href (@kayakalpa) {
+        my ($program, $p_sdate, $p_edate, $extradays,
+            $arrive, $leave, $dates);
+        if ($href->{pid} != 0) {
+            my $prog = model($c, 'Program')->find($href->{pid});
+            if (! $prog) {
+                quit("unknown program id: $href->{pid}");
             }
-            elsif ($line =~ m{x_fname => (.*)}) {
-                $first = $1;
+            $program = $prog->title;
+            $p_sdate = date($prog->sdate);
+            $p_edate = date($prog->edate);
+            if ($href->{progchoice} eq 'full') {
+                $p_edate += $extradays;
             }
-            elsif ($line =~ m{x_lname => (.*)}) {
-                $last = $1;
-            }
+            $dates = fmt_dates($p_sdate, $p_edate);
         }
-        close $in;
+        else {
+            $program = "Personal Retreat";
+            $dates = fmt_dates(date($href->{sdate}), date($href->{edate}));
+        }
+        my $html;
+        my $tt = Template->new(
+            INTERPOLATE => 1,
+        ) or quit("template new error: " . Template->error());
+        $tt->process(
+            'kayakalpa.tt2',
+            {
+                first   => $href->{first},
+                program => $program,
+                dates   => $dates,
+            },
+            \$html,
+        ) or quit("template error: " . $tt->error());
+        my $rc = email_letter($c,
+            to       => $href->{email},
+            cc       => "Kaya Kalpa <$string{kayakalpa_email}>",
+            from     => "Kaya Kalpa <$string{kayakalpa_email}>",
+            subject  => "Massage/Bodywork Request during '$program' from $dates",
+            html     => $html,
+        );
+        msg "email to $href->{first} $href->{last}" . failed($rc);
     }
-    $Msg .= "ftp: $f - $last, $first\n";
-    $ftp->delete($f);
 }
-#
-# all done with mmi
-#
-$ftp->quit();
 
+sub fmt_dates {
+    my ($start, $end) = @_;
+    return fmt_date($start) . " to " . fmt_date($end);
+}
+sub fmt_date {
+    my ($dt) = @_;
+    return $dt->format("%a %b ") . $dt->day;
+}
+
+sub main {
+    initialize();
+    $ftp = ftp_connect(              # mountmadonna.org
+        site     => $string{ftp_site},
+        passive  => $string{ftp_passive},
+        login    => $string{ftp_login},
+        password => $string{ftp_password},
+    );
+    get_files("MMC Transactions", $ftp, $string{ftp_transactions},
+                                  $online, \&check_transaction);
+
+    get_files("Rental Grids",     $ftp, $string{ftp_rental_dir},
+                                  $grid);
+
+    get_files("MList Requests",   $ftp, $string{ftp_mlist_requests},
+                                  $mlist_done,  \&process_mlist);
+
+    get_files("Rides",            $ftp, $string{ftp_ride_dir},
+                                  $rides, sub { $nrides = 1; });
+
+    get_files("Membership Payments", $ftp, $string{ftp_omp_dir},
+                                  $omp_dir, sub { $nomp = 1 });
+    $ftp->quit();   # all done with MMC
+
+    $ftp = ftp_connect(           #  mountmadonnainstitute.org
+        site     => $string{ftp_mmi_site},
+        passive  => $string{ftp_mmi_passive},
+        login    => $string{ftp_mmi_login},
+        password => $string{ftp_mmi_password},
+    );
+
+    get_files("MMI Payment Requests", $ftp, $string{req_mmi_dir_paid},
+                                      $req_mmi_dir,
+                                      \&process_mmi_payments);
+
+    get_files("MMI Transactions", $ftp, $string{ftp_mmi_transactions},
+                                  $online, \&check_transaction);
+
+    $ftp->quit();   # all done with MMI
+
+    $ftp = ftp_connect(         # hanumanfellowship.org
+        site     => $string{ftp_hfs_site},
+        passive  => $string{ftp_passive},
+        login    => $string{ftp_hfs_user},
+        password => $string{ftp_hfs_password},
+    );
+
+    get_files("Temple Users", $ftp, $string{ftp_hfs_dir},
+                  $temple, \&get_temple);
+
+    $ftp->quit();   # all done with HFS
+
+    mlist_alerts();
+    ride_alert();
+    omp_alert();
+    kayakalpa();
+
+    finalities();
+}
+
+main();
+
+__END__
 
 my %mnum = qw/
     Jan 1
@@ -563,7 +743,7 @@ my $pop = new Mail::POP3Client(
     HOST     => "mail.hanumanfellowship.org"
 );
 if (! $pop) {
-    my_die("no pop")
+    quit("no pop");
 }
 LETTER:
 for (my $i = 1; $i <= $pop->Count(); ++$i) {
@@ -637,10 +817,10 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
                                     # shouldn't matter, right?
 
         }
-        elsif ($l =~ m{x_lname\s*:\s*(.*)}i) {
+        elsif ($l =~ m{lname\s*:\s*(.*)}i) {
             $last = $1;
         }
-        elsif ($l =~ m{x_fname\s*:\s*(.*)}i) {
+        elsif ($l =~ m{fname\s*:\s*(.*)}i) {
             $first = $1;
         }
     }
@@ -675,7 +855,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
         $pop->Delete($i);
         next LETTER;
     }
-    if (-f "root/static/online_done/$now/$trans_id") {
+    if (-f "root/static/online_done/$/$trans_id") {
         #
         # already gotten on a previous call to grab_new
         # (within the same month)
@@ -753,7 +933,7 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
     #
     my $html;
     my $tt = Template->new()
-        or my_die("template new error: " . Template->error());
+        or quit("template new error: " . Template->error());
     $tt->process(
         'email.tt2',
         {
@@ -763,296 +943,13 @@ for (my $i = 1; $i <= $pop->Count(); ++$i) {
             %P,
         },
         \$html,
-    ) or my_die("template error: " . $tt->error());
-    email_letter(
+    ) or quit("template error: " . $tt->error());
+    my $rc = email_letter($c,
         to       => "$first $last <$email>",
         from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
         subject  => "Online registration for $P{x_title}",
         html     => $html,
     );
+    msg "email to $first $last" . failed($rc);
 }
 $pop->Close();
-kayakalpa();
-temple();
-finalities();
-exit;
-
-#
-# five utility functions
-#
-
-sub my_die {
-    $Error = 1;
-    $Msg .= "@_\n";
-    finalities();
-    exit;
-}
-
-sub my_warn {
-    $Error = 1;
-    $Msg .= "@_\n";
-}
-
-sub dump_it {
-    my ($i, $err) = @_;
-
-    $Error = 1;
-    $Msg .= "$err\n\n" . scalar($pop->HeadAndBody($i));
-    $pop->Delete($i);
-}
-
-sub kayakalpa {
-    return unless @kayakalpa;
-    my %needed = map { $_ => 1 } qw/
-        fname
-        pid
-        email
-        sdate
-        edate
-        progchoice
-    /;
-    my $fmt = "%A, %B %e, %Y";
-    my $getprog = $dbh->prepare(<<"EOS");
-
-    select title, sdate, edate, extradays
-      from program
-     where id = ?
-
-EOS
-    KK:
-    for my $k (@kayakalpa) {
-        my %vals;
-        open my $in, "<", "$online/$k" or next KK;
-        while (my $line = <$in>) {
-            my ($key, $val) = $line =~ m{x_(\w+) => (.*)};
-            if ($needed{$key}) {
-                $vals{$key} = $val;
-            }
-        }
-        close $in;
-        my ($program, $p_sdate, $p_edate, $extradays,
-            $arrive, $leave, $dates);
-        if ($vals{pid} != 0) {
-            $getprog->execute($vals{pid});
-            ($program, $p_sdate, $p_edate, $extradays)
-                = $getprog->fetchrow_array();
-            $p_sdate = date($p_sdate);
-            $p_edate = date($p_edate);
-            if ($vals{progchoice} eq 'full') {
-                $p_edate += $extradays;
-            }
-            $dates = fmt_dates($p_sdate, $p_edate);
-        }
-        else {
-            $program = "Personal Retreat";
-            $dates = fmt_dates(date($vals{sdate}), date($vals{edate}));
-        }
-        my $html;
-        my $tt = Template->new(
-            INTERPOLATE => 1,
-        ) or my_die("template new error: " . Template->error());
-        $tt->process(
-            'kayakalpa.tt2',
-            {
-                first   => $vals{fname},
-                program => $program,
-                dates   => $dates,
-            },
-            \$html,
-        ) or my_die("template error: " . $tt->error());
-        email_letter(
-            to       => $vals{email},
-            cc       => "Kaya Kalpa <$string{kayakalpa_email}>",
-            from     => "Kaya Kalpa <$string{kayakalpa_email}>",
-            subject  => "Massage/Bodywork Request during '$program' from $dates",
-            html     => $html,
-        );
-    }
-}
-
-sub fmt_dates {
-    my ($start, $end) = @_;
-    return fmt_date($start) . " to " . fmt_date($end);
-}
-sub fmt_date {
-    my ($dt) = @_;
-    return $dt->format("%a %b ") . $dt->day;
-}
-
-sub temple {
-    my $ftp = Net::FTP->new($string{ftp_hfs_site},
-                            Passive => $string{ftp_passive})
-        or my_die("cannot connect to $string{ftp_hfs_site}");    # not die???
-    $ftp->login($string{ftp_hfs_user}, $string{ftp_hfs_password})
-        or my_die("cannot login to hfs " . $ftp->message);
-    $ftp->cwd($string{ftp_hfs_dir})
-        or my_die("cannot cwd to $string{ftp_hfs_dir} " . $ftp->message);
-    $ftp->ascii();
-    TEMPLE_USER:
-    for my $file ($ftp->ls()) {
-        if ($file eq '.' || $file eq '..') {
-            next TEMPLE_USER;
-        }
-        if (! $ftp->get($file, "$temple/$file")) {
-            my_warn("no get of online temple user $file");
-            next TEMPLE_USER;
-        }
-        # what to do with this record in $temple/$file?
-        # search the people table for existing records by last/first.
-        # - if none (the normal case) insert a new record
-        # - if one update it.
-        # - if more than one try to match cell phone and email address
-        # - else leave it be.
-        #
-        # example:  join the two into one line:
-        #
-        # Sridhar|Dasika|suridasika@gmail.com|4082205399|
-        # 1529 timbercreek dr||San jose|CA|95131
-        #
-        my $action = "";
-        open my $in, '<', "$temple/$file";
-        my $line = <$in>;
-        chomp $line;
-        close $in;
-        my ($first, $last, $email, $cell, $addr1, $addr2,
-            $city, $state, $zip) = split m{\|}, $line;
-        $first = normalize($first);
-        $last = normalize($last);
-        if ($cell =~ m{\A (\d\d\d) (\d\d\d) (\d\d\d\d) \z}msx) {
-            $cell = "$1-$2-$3";
-        }
-        $sth_search_people->execute($first, $last);
-        my @found = ();
-        while (my ($id, $cell, $email) = $sth_search_people->fetchrow_array()) {
-            push @found, {
-                id    => $id, 
-                cell  => $cell, 
-                email => $email,
-            };
-        }
-        my $year_mon_dir = today()->strftime("%Y-%m");
-        mkdir "$temple\_done/$year_mon_dir" unless -d $year_mon_dir; 
-        if (!@found || @found == 0) {
-            # new
-            my ($akey) = nsquish($addr1, $addr2, $zip);
-            $sth_insert_people->execute(
-                $first, $last, $email,
-                $cell, $addr1, $addr2,
-                $city, $state, $zip,
-                $akey,
-                $today_d8, $today_d8
-            );
-            my $person_id = $dbh->last_insert_id(undef, undef, undef, undef);
-            $sth_ins_aff->execute(
-                $temple_guest_affil_id,
-                $person_id,
-            );
-            $action = "new";
-            rename "$temple/$file", "$temple\_done/$year_mon_dir/$file";
-        }
-        elsif (@found == 1
-               && (_digits($found[0]{cell}) eq _digits($cell)
-                   ||
-                    $found[0]{email} eq $email
-                  )
-
-        ) {
-            # one to update - it matches cell or email so it's
-            # not another person with the same first/last name.
-            #
-            $sth_update_people->execute(
-                $first, $last, $email,
-                $cell, $addr1, $addr2,
-                $city, $state, $zip,
-                $today_d8,
-                $found[0]{id},
-            );
-            $action = "updated";
-            rename "$temple/$file", "$temple\_done/$year_mon_dir/$file";
-        }
-        else {
-            # more than one duplicate first/last - which to update?
-            FOUND:
-            for my $f (@found) {
-                if (_digits($f->{cell}) eq _digits($cell) 
-                    ||
-                    $f->{email} eq $email
-                ) {
-                    $sth_update_people->execute(
-                        $first, $last, $email,
-                        $cell, $addr1, $addr2,
-                        $city, $state, $zip,
-                        $today_d8,
-                        $f->{id},
-                    );
-                    $action = "updated one of " . scalar(@found);
-                    rename "$temple/$file", "$temple\_done/$year_mon_dir/$file";
-                    last FOUND;
-                }
-            }
-            # if no action was taken the record will remain
-            # in the $temple directory to be dealt with by reception.
-
-            #
-            # ??? be smarter about matching address as well
-            # and append a '2' to the other person to make
-            # them unique.
-            #
-        }
-        $Msg .= "temple: $file $action\n";
-        $ftp->delete($file);
-    }
-    undef $sth_ins_aff;
-    undef $sth_search_people;
-    undef $sth_insert_people;
-    undef $sth_update_people;
-}
-
-# return only the digits
-sub _digits {
-    my ($s) = @_;
-    $s =~ s{\D}{}g;
-    $s;
-}
-
-sub finalities {
-    if ($Msg) {
-        # write to a file (uniquely named) and send a letter to Jon.
-        #if (open my $out, ">", "error-" . time()) {
-        #    print {$out} $Msg;
-        #    close $out;
-        #}
-        if ($Error) {            # 1 or 0 - okay?
-            $Msg =~ s{\n}{<br>\n}g;
-            email_letter(
-                to       => 'jonb@logicalpoetry.com',
-                from     =>
-                    'Mount Madonna Center <reservations@mountmadonna.org>',
-                subject  => "Grab New "
-                            . ($Error? "Failure"
-                               :       "Status"),
-                html     => $Msg,
-            );
-        }
-    }
-    unlink $Run_File;
-}
-
-sub nsquish {
-    my ($addr1, $addr2, $zip) = @_;
-    my $s = uc($addr1 . $addr2 . $zip);
-    my $n = $s;
-    $n =~ s{\D}{}g;
-    $s =~ s{[^A-Z]}{}g;
-    $s = substr($s, 0, 3);
-    return ($n . $s); 
-}
-
-sub commify {
-    my ($n) = @_;
-
-    $n = reverse $n;
-    $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
-    $n = scalar reverse $n;
-    return $n;
-}

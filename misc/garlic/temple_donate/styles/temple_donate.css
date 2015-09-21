@@ -1,0 +1,16 @@
+body {
+    width: 800px;
+    margin-top: 10mm;
+    margin-left: 10mm;
+}
+body, td, input, button {
+    font-family: Times;
+    font-size: 13pt;
+}
+th {
+    text-align: right;
+    vertical-align: middle;
+}
+button {
+    background: lightgreen;
+}

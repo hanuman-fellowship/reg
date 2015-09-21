@@ -1,0 +1,154 @@
+Jul 9 3:55-5:20
+    beginning on distributed demographic update project (DDUP)
+        pro bono?
+Jul 10 5:55-8:15
+    continuing on DDUP
+    finished the generation of the .sql file to insert all chosen
+        people's records.
+    added listing/dquote_clear as well.
+Jul 11 3:40-4:50, 12:45-1:30
+    continuing on DDUP
+    adding a column 'updated' 1 or empty
+    sending the .sql to mountmadonna.com, invoking the CGI script
+        to load the data
+    append or not, check for errors in gen and loading
+    ???what about Sanskrit name????
+    ???online form needs careful wording, so does the email & letter we send.
+    ???what formats to do opt_inout?
+    ???what error checking?   what if someone clears first, last???
+    how about the end date?  where to store, where to use it?
+    ???report4 - Email To VistaPrint - suffix, title, company comes
+        between last and addr1 - so 4 tabs between - not 3
+        is it used?
+    next is actually getting the changes back to MMC
+        two links - one for # of changes
+                  - call CGI script to dump to .sql file
+                    set all updated to 0
+                    get that .sql ascii file
+                    apply it to the db.
+Jul 12 11:00-1:15
+    expiry date for DDUP
+    get_updates
+    near done?   need to add tel numbers, optin, share statuses
+    what else?   recompute akey (on garlic side, please)!  and gender.
+        ask about sanskrit
+    ???show Jamal that date_updat was changed
+    ??? try entering a wrong code
+    ??? which affiliations should we offer them to sign up or show
+    ???         that they're already signed up?
+    ???cgi-bin/u/.... or cgi-bin/update?code=....
+    ??? beware - I modified the report\d+.tt2 files
+        especially report4 - see above
+    ??? end cutoff date for Reports
+Jul 12 9:50-10:20, 10:45-1:00
+    refining DDUP
+    updated => status 0, 1, or 2
+    other fields, akey, mailings
+    ??? archive the updates.sql files you get - and rename
+        them with timestamp
+    ???do we need https?  online reg1,2 are not.
+    pushed to kali, tested. yay!
+    ???another set of links to see the past reports
+        for each format
+    ???perhaps see all the changes before actually
+        making them?
+    ???no need for another date of DDUP update - date_updat
+        should suffice - can choose a subset based
+        on when their record was last updated...
+    ???for Addr, Code - a different form
+        to enter just the code like www.mountmadonna.org/update
+    ???another field with expiry date for each record
+        diff status on report/list
+        a separate clear function to remove all records
+            with an expired expiry date.
+Jul 13 9:30-10:30
+    showing DDUP to Jamal
+Jul 14 12:15-12:30
+    analyzing secure_code duplication
+        TODO: remove id from secure_codes, check for dups when
+            first assigning, two people have empty string for code.
+        Add date of last contact to Code reports?
+        check data entry for bad data
+Jul 15 1:45-3:45
+    no id in front of secure code
+    online form for entering the 6 letter code
+    10 invalid code failures and the system is shut down with
+        email sent
+    mysql sql counts not in synch with distinct secure_code thingy
+        why?   no dups but ???
+Jul 17 2:55-3:40, 4:15-5:50
+    adding PROGRAM affils to distr demog
+    ??? Men's Programs => Men's Issues    ??? ditto Women
+        status of 0-3, corresponding update_status
+Jul 18 12:20-1:20
+    status of 0-3, corresponding update_status
+
+    next: 6 upper case ensure unique from start - delete check_dup, rand6($c)
+    then: block ip address if 5 bogus codes, log all failed attempts
+    input affils in two columns
+    need smaller font?
+    less white space at top?  the message on same line as logo?
+    jamal?? how to respond?  not just redirect to mmc.org?
+    archive the updates.sql coming back?
+        on mmc.org as well?
+    don't allow another running of CODE until expiry date is over?
+        unless append, that is.  and append must have same expiry date?
+        ?just make a list of how it could be misused?
+Jul 18 1:40-5:20, 9:00-9:50, 12:00-1:00
+    secure code 6 upper unique
+    jamal?? list of reports - description, zip range - is zip range useful
+        what else for second column?  rather two columns?
+    all the above things - lots of twiddling!
+Jul 19 1:30-4:50
+    continuing with DDUP reports, etc.
+    talking with Jamal about it all, getting suggestions
+    summary:
+        ## count without expiry is okay
+        ## add country - you forgot it, USA default 
+        ## on kali - clean up all country that is US make it blank
+            ## verify that new US online regs come in as USA, No cleared in relay.
+        ## verify that online reg blank country comes in as blank, yes.
+        same edits as in online reg
+            not really - for online reg we need at least one phone
+            and their address and their gender.  they may not want
+            to give us one of those things!   minimum is their
+            non-blank first, last.  and a valid email if one was present
+            and given.
+        ## plain text log of what changed - mostly what fields, prefs+-, affils+-
+            ## viewable, clearable via some passworded command
+        ## imported 4 of 100, Import Newly Updated Records
+        ## fold code to upper case in update so can be entered
+            ## on form or in link either way
+        ## on form - and hit Return - on the same line
+        ## no Clobber listing if no _current_ expiry
+        ## Address, Code - with email is okay
+        ## past expiry date is not okay
+        ## redirect to Programs page - okay
+        ask Brajesh, Emily, other, etc.
+            I'll be up on Monday to work with them.
+            Their opinion is valuable at this point, I think.
+        ## Open Gate Sangha affil is not included here
+        ## When generating the sql - clear double quotes - it is fast enough.
+            ## you could concat and look for " before doing it to make it faster
+            ## I did 'index' instead of a regexp.
+            ## then eliminate the Clear Double Quote listing
+        ask to see the templating mechanism in MailChimp
+        ## ? does this need to be done via https SSL?  online reg is not.
+Jul 20 12:00-2:00, 4:15-5:30, 6:00-6:35, 7:00-7:45
+    continuing with the things above
+    to finish: if $f =~ mailings then just the $P
+        other tweaks for logging
+    better archive name
+    log it all
+    validate first, last, email
+Jul 21 5:25-6:25
+    archiving load and log
+Jul 26 2:00-4:50
+    background uploading
+    expired attempt list of people with email, phone
+    new template for expired attempt: update_expired.tt2
+    format and last run in report list
+        last run restarted on kali since year was missing
+Sep 13 4:15-5:30
+    DDUP help
+    including Report name in DDUP log

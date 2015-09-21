@@ -27,14 +27,15 @@ use Date::Simple;
 use base 'Exporter';
 our @EXPORT_OK = qw/
     %string
+    %system_affil_id_for
+    @hfs_affil_ids
+
     @clusters
     %cluster
     %houses_in
     %houses_in_cluster
     %house_name_of
     %annotations_for
-    %system_affil_id_for
-    @hfs_affil_ids
 /;
 
 our %string;
@@ -48,7 +49,7 @@ our %system_affil_id_for;
 our @hfs_affil_ids;
 
 sub init {
-    my ($class, $c, $force) = @_;
+    my ($class, $c, $force, $for_grab) = @_;
     
     return if %string && ! $force;      # already done
                                         # and we don't want to force it again
@@ -59,9 +60,28 @@ sub init {
     %houses_in_cluster = ();
     %house_name_of     = ();
     %annotations_for   = ();
+
+    # strings
     for my $s (Util::model($c, 'String')->all()) {
         $string{$s->the_key} = $s->value;
     }
+
+    # system and hfs affiliations
+    my @affils = Util::model($c, 'Affil')->search({
+        system => 'yes',
+    });
+    for my $a (@affils) {
+        my $id = $a->id;
+        my $descrip = $a->descrip;
+        $system_affil_id_for{$descrip} = $id;
+        if ($descrip =~ m{ \A HFS \s+ Member }xms) {
+            push @hfs_affil_ids, $id;
+        }
+    }
+
+    return if $for_grab;    # grab_new only needs the above
+
+    # cluster related variables
     my %clust_type;     # not exported - intermediate variable
     for my $cl (Util::model($c, 'Cluster')->search(
         {},
@@ -91,19 +111,6 @@ sub init {
                })
     ) {
         push @{$annotations_for{$a->cluster_type()}}, $a;           # yeah
-    }
-
-    # system affiliations
-    my @affils = Util::model($c, 'Affil')->search({
-        system => 'yes',
-    });
-    for my $a (@affils) {
-        my $id = $a->id;
-        my $descrip = $a->descrip;
-        $system_affil_id_for{$descrip} = $id;
-        if ($descrip =~ m{ \A HFS \s+ Member }xms) {
-            push @hfs_affil_ids, $id;
-        }
     }
 
     Date::Simple->default_format($string{default_date_format});

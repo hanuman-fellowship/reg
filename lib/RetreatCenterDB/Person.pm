@@ -49,6 +49,7 @@ __PACKAGE__->add_columns(qw/
     cc_code
     safety_form
     secure_code
+    temple_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -282,4 +283,7 @@ tel_home - home phone
 tel_work - work phone
     These phone numbers are used in many places.
     Especially in the phone list, of course.
+temple_id - the unique id in the temple visitor database.
+    not all people will have one - only those who have reserved a visit to the temple.
+    used in grab_new.
 zip_post - zip (or postal) code

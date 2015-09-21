@@ -31,7 +31,8 @@ create table people (
     cc_expire text,
     cc_code   text,
     safety_form text,
-    secure_code text
+    secure_code text,
+    temple_id integer null
 );
 drop table if exists affils;
 create table affils (

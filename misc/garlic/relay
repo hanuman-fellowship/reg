@@ -44,7 +44,7 @@ EOH
     exit;
 }
 
-if (exists $P{x_req_mmi_id}) {
+if (exists $P{x_req_mmi_code}) {
     rename "req_mmi_dir/$P{x_req_mmi_code}", "req_mmi_dir/paid/$id";
     my $message;
     Template->new(INTERPOLATE => 1)->process(

@@ -1,27 +1,3 @@
-=comment
-Times
-
-They are more complex than they appear.
-Dates, too.
-
-- In the database they are stored in 4 digit 24 hour/military time.
-    This makes the SQL clause 'order by' possible.
-- To enter a time there is a variety of flexible formats:
-    1423
-    2:23
-    2:23 pm
-    223
-- For display there are 3 methods t24(), t12(), and ampm().
-    t12 and ampm take an optional parameter to say that
-    you want to truncate a possible :00.
-- The internal form of the object is in minutes since midnight
-    to facilitate time difference calculations.  Otherwise
-    determining the number of minutes between 11:30 am and
-    7:25 pm is tricky - or between 1130 and 1925.
-    Time comparisions would have been easy if we had stored in 24 hour time
-    but not differences.
-
-=cut
 use strict;
 use warnings;
 package Time::Simple;
@@ -168,10 +144,10 @@ sub _diff {
 my $time_format = 'ampm';       # normal in U.S.A.
 
 #
-# 24, 12 (default), or 'ampm'
+# 24, 12, or 'ampm' (default)
 #
 sub set_format {
-    my ($class) = shift;
+    my ($class_or_obj) = shift;    # ignored
     $time_format = shift;
         # check it
 }
@@ -223,6 +199,11 @@ sub minutes {
     return $self->{minutes}%60;
 }
 
+sub minutes_since_midnight {
+    my ($self) = @_;
+    return $self->{minutes};
+}
+
 sub _compare {
     my ($left, $right, $reverse) = @_;
 
@@ -252,3 +233,54 @@ sub t24 {
 }
 
 1;
+
+__END__
+
+=head1 NAME
+
+Time::Simple
+
+=head1 DESCRIPTION
+
+Times are more complex than they appear.
+A simple time object with hours and minutes only.
+Dates, too.
+
+=head1 SYNOPSIS
+
+    use Time::Simple 'get_time';
+
+    $now = get_time();      # right now
+    $then = get_time('14:25');
+
+    print $then->hours();    # 14
+    print $then->minutes();   # 25
+
+    Time::Simple->set_format('24');     # or 12 (default) or ampm
+
+    print "$then\n";    # interpolated in current set format
+
+In the database time objects are stored in 4 digit 24 hour/military time.
+This makes the SQL clause 'order by' possible.
+
+To enter a time there is a variety of flexible formats:
+
+    1423
+    2:23
+    2:23 pm
+    223
+
+Any of these strings can be passed to the constructor get_time().
+
+For display there are 3 methods t24(), t12(), and ampm().
+t12 and ampm take an optional parameter to say that
+you want to truncate a possible :00.   You can set the default format
+
+
+- The internal form of the object is in minutes since midnight
+    to facilitate time difference calculations.  Otherwise
+    determining the number of minutes between 11:30 am and
+    7:25 pm is tricky - or between 1130 and 1925.
+    Time comparisions would have been easy if we had stored in 24 hour time
+    but not differences.
+    Perhaps the database could have stored them in minutes since midnight?

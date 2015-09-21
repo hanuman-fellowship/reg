@@ -10,7 +10,6 @@ use Util qw/
     model
     email_letter
     tt_today
-    slurp
     stash
 /;
 use Date::Simple qw/

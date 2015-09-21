@@ -1,0 +1,56 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+
+use DBI;
+
+#
+# we need some values from the database
+# to know where to connect to the web site.
+#
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or my_die("oh no DBI");
+
+my $sth_search_people = $dbh->prepare("
+    select id, tel_cell, email
+      from people
+     where first = ? and last = ?
+");
+my $sth_update_people = $dbh->prepare("
+    update people set
+        temple_id = ?
+    where id = ?
+");
+
+open my $in, '<', 'temple_dump.txt'
+    or die "no dump file\n";
+LINE:
+while (my $line = <$in>) {
+    chomp $line;
+    my ($temple_id, $first, $last, $l_email, $l_cell) = split /\|/, $line;
+    $sth_search_people->execute($first, $last);
+    my @found = ();
+    while (my ($id, $cell, $email) = $sth_search_people->fetchrow_array()) {
+        push @found, {
+            id    => $id, 
+            cell  => $cell, 
+            email => $email,
+        };
+    }
+    if (! @found) {
+        print "could not find $temple_id $first $last $l_email $l_cell\n";
+        next LINE;
+    }
+    if (@found > 1) {
+        print "> 1 match for $temple_id $first $last\n";
+        next LINE;
+    }
+    my ($id, $cell, $email) = ($found[0]->{id}, $found[0]->{cell}, $found[0]->{email});
+    if ($cell eq $l_cell || $email eq $l_email) {
+        #$sth_update_people->execute($temple_id, $id);
+        #print "matched\n";
+    }
+    else {
+        print "$first, $last - could not fully match $temple_id $email $cell to $l_email $l_cell\n";
+    }
+}

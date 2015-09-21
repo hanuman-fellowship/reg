@@ -1,0 +1,286 @@
+Jul 4 4:00-6:10, 7:15-8:30
+    gathering requirements:
+
+    ## instead of a Bcc notification send a separate letter with
+        ## the person's name - program in the subject.  nothing needed in body?
+        ## in email to Jayanti, Emily, Jeremy - about online regs
+            ## just person's name and the program
+        ## after July 7th just Emily
+        ## make the people to notify about online regs
+            ## a configurable String - that is sent up to mountmadonna.org
+            ## for use there...
+    when reserved clusters cause a "No Room in the Inn" notify
+        the user of those reserved clusters. both program and rental housing
+    mySQL replication - Shantam with Ryder?
+        would $ motivate Shantam more?
+    more logging of online reg process
+    email from Jayanti
+        - manual registration - postmark is before online regs?
+        - conf notes disappear?
+        - do attached docs show up on staging or not?
+        ## - removing a reserved cluster on a rental removes all
+            ## of its rooms from the rental grid?   shouldn't.
+        ## - Founding Life members can take any program not just
+            ## PRs and Retreats
+        - auto setting of 12 nights for members on 12/31 11:59
+        - adjacent rental - reflected in the comings and goings list.
+        - no housing in SH if registration is in a program that
+            doesn't have SH Main as a meeting space?
+        - no PRs - what dates does it imply?
+
+        no email:
+
+        2priority - If docs attached to program reference the link(s) in the conf letter.
+            inform Genevieve, too.
+        a leader is needed for brochure generation???
+            does Jamal use this or not?
+        ## in AllRegs list - an icon for Leader, Assistant or for
+            ## others with STAFF in their Comment field.
+    ALL the MMI extra accounts - needed????
+        ask Brajesh, Genevieve, Lila
+    email from Barnaby
+        - popup reminder to check the lunch box if arrival time is before lunch
+        - center tent sites _always_ available as own tent
+    email from Jamal
+        generate a list of email addresses of people who
+            would be left out by a global inactivate?
+            still needed if we do this project?
+    email from Emily
+        ## - outstanding balances in the future should not pop up
+        - spell checker in tinyMCE
+        ## - put program name up front in late notice.
+            ## Welcome to Mount Madonna Center for the program '...'!
+            ## or
+            ## Welcome to Mount Madonna Center for your personal retreat!
+    tell Jeremy, Jayanti about using .pdf instead of .doc
+    requirements via Genevieve:
+        via email
+            ## - about office hours different for MMI
+            ## - if outstanding balance popup - insert into the comment
+        via discussion
+            ## - a 'flowchart' of how to put a StandAlone course on the web
+                ## who does what, when.
+            - which programs have this Affil?  a link on desc of Affil 
+            ## - Misc tab on Program - a Submit at bottom - green!
+            - AllRegs require a GL#?
+            - all booleans - null vs empty - update it.
+                and the mk* files in mig/
+            - program participant list - include the count
+            - Hari Pallatheri - registration for bodywork intensive
+                why is Manual Reg at 12:00 am?
+                what's the diff between that and Reg created?
+                why 2 history notes?
+            - conf letter for MMI-D-AY106 6/13
+                ***** reg start/end is WRONG
+                prog start/end times
+                3priority - for auditors or stand alone courses
+                    the conf letter should use start end from program record
+                    for normal DCM people use fixed times that is there now.
+            ## - if leader's housing pref is Not Needed don't put Needs Housing
+            - MMI online payment clobbers auto charges - no good
+                and it adds a new charge for what you requested
+                - add a new type of online payment - For The Balance
+                    for these do not add a new charge
+                    this should be the *default* type.
+            - if online payment request for program that has passed
+                don't allow it.   email should say that it has expired.
+            - add a link to purge all old unprocessed requests from the list
+                auto cron job to do this?
+            ## - general reports - make the desc wider, the zip ranges can wrap
+                ## AND have a date range for the last contact date cutoff
+            - Program view - Email -  Cc in the form, gotten in sub email_all_do, but not used.
+                also - not To: lala@nono.com
+    email from Brajesh
+        - initial deposit for DCM program - to what GL Number?
+            later payments (even for a deposit) go to another GL number
+    online membership payments - email from Swapna, Vishwamitra
+    ## email from Jeremy, Brajesh
+        ## insert clause about damage in rental contract
+    ## NoMailings instead of Inactivate/Activate 
+        ## and remove the Inactive checkbox (no leave it)
+            ## in create_edit.tt2 but leave it in view.tt2
+        ## list of 34 people who were Inactivated in 2013
+            ## make them NoMailings instead and
+            ## keep a Deceased person Inactive
+        ## A deceased person should never be made active.
+        ## Deceased should automatically opt-out - yes by being Inactive.
+    ## Jamal says sometimes the change to Report format 6 or 7 does not stick.
+
+    MEMBERSHIP PROJECT
+    ==================
+    entering a membership payment (in Member area) should
+        also automatically enter a payment for the person
+        to the Membership extra account (for accounting purposes)
+    must be sent by DEADLINE 4/19
+    Swapna is leaving for India 4/9 
+    Lori will take over during that time.
+    members can pay online and the payments come in the usual way
+        and are listed like "Online (5)" on the initial membership
+        page.   Click on the name and you go to the payment page
+        to fill in a few dates, etc - as if you're entering
+        it manually.  Can some of those dates be pre-filled?
+
+        the online form could include General ($50) and Sponsor ($600).
+        by default they'll be offered their current status.
+        they can change that to the other.  perhaps include
+        their current total (sponsor) towards a Life membership.
+        we could include the date of their last payment and how much.
+
+        We could also have a place there for an extra amount of a 
+        payment/donation to an extra account named "Donation--MMC General"?
+        Or "Temple" or "The Green Scene" or "Miscellaneous" (not this).
+
+    MAILING LIST UPDATE PROJECT
+    ===========================
+    Jamal - automatic emailing to everyone with an email address
+    to allow them to update their contact info on a web form.  including
+    choosing which affiliations they want.  and mailing list prefs.
+    security?  a random code that is unguessable.
+    the sending of the letters will upload a lot of data (keys are the codes
+    and values are the person's info simply encrypted somehow) to
+    mountmadonna.org that is referenced when the online form is filled in.
+    the data file is in a subdir of cgi-bin
+
+    continuing:
+
+    https on garlic for this
+    add email or not to tally by year
+    in General Reports - Opt In/Out => MMI/MMC/None
+    ask Jamal for an example of the templating
+        system that CMS and the email service use
+    email - a link https://www.mountmadonna.org/cgi-bin/list?code=12345trHiJq
+        and an action of list_do
+    printed - direct them to a form to enter their code
+        (just the 6 letters - should be okay), right?
+        like: https://www.mountmadonna.org/list or something
+        then the action will take them to the filled in form
+            with the action for submitting it.
+    cron job to get the data - separate from grab_new - still every 15 mins
+        with log and report visible from within Reg
+
+    FOR DEVELOPERS
+    ==============
+    add dispatch, tt, DBIx::Class, adding new table/column
+    strings, Perl Best Practices
+    my on kali BEFORE push of code
+
+    reg history from logicalpoetry site, email thread
+
+    BARNABY
+    =======
+    prevent oversight of lunch thingy
+Jul 7 1:30-2:40, 9:45-12:00
+    what happens when you un-reserve a cluster that a Rental had?
+    better letter for online regs
+    all kinds of things relating to People and Reports
+        active/inactive, NoMailings, cutoff end date
+        boolean fields being not null default '';
+Jul 8 12:10-1:50, 7:35-9:00
+    editing the late notice to add the program
+    changing the subject line of confirmation letters to
+        include the person's name
+    no future outstanding balances
+    new string: online_notify - sent up to mountmadonna.org/cgi-bin
+
+    male, female images for (leaders, assistants, staff)
+    if a new registrant has an outstanding balance
+        insert a notice in front of any comment on the reg.
+Jul 10 4:45-5:30
+    question about Oaks Flat A-D in ClusterView and DailyPic
+Jul 12 10:50-11:00
+    undoing STAFF
+Jul 15 10:00-10:20, 11:15-12:50
+    talked with Barnaby about rental economy+
+    add an attribute to a room that is the housing cost level
+        that is fixed - not tied to the number of people in the room?
+        not sure.  I think it sounds okay.
+    when removing a room from a Rental check that no one is
+        in that room!  not okay to clobber such a room.
+        ask Barnaby if we should always ensure that the local grid
+        is current whenever we are about to delete a room....
+        every 15 mins, manual grab new on the local grid page itself.
+        email sent
+    ??? Shantam help - ssh password to kali, newkali
+        'net' icon on desktop - what, where?
+        sql distinct question - another way?
+        reports for SSC re affils?
+        what have you learned from Reg?
+        maintainability - writing in the latest and greatest slickness
+            does not ensure maintainability.
+Jul 16 9:45-12:45
+    consulting with Barnaby, Jamal, Shantam, Jayanti, Emily
+    considering Barnaby's request re: Rental housing
+Jul 19 2:00-3:00
+    early morning aspell investigation
+Jul 21 2:25-5:10
+    using aspell for conf note
+        lots of fiddling :(
+Aug 2 2:10-7:00
+    Barnaby's emergency request for Rental special fixed housing costs.
+        done well, I think.   not that bad of a hack.  it did take a while.
+Aug 3 10:00-11:00, 1:10-2:00
+    * as wild card in fixed cost housing field - nice!
+    various other tweaks
+    talking with Barnary
+    green for fixed cost houses in local grid
+Aug 5 11:00-11:15, 5:45-7:15, 1:35-1:55
+    responding to query about No PRs.
+    discussing (via email with Emily) the display of blocks in KKWC
+        and the display of the SH in the DailyPic
+    ## blocks should display like this MM//.
+        ## any /'s trailing
+        ## if all beds are blocked put BBBBB
+    ## cluster view as well
+    # add the / to the legend - make it a string like . and |?
+    ## block a bed first, then not offered at all - must force
+        ## for a reg should be offered with a - O
+        ## then the sex of the room changes
+        ## a config table sex attribute of B should be equivalent to U
+    ## daily pic - special - forest view is clobbered by
+        ## awkwardly placed MMS economy dorms.  put the dorms
+        ## below forest view lined up
+        ## courtside placement could be improved as well
+Aug 6 2:00-2:45
+    dealing further with No PRs.  tricky!
+Aug 12 2:00-4:10
+    continuing on the display of blocks (see above)
+    deleted 'Forest View' annotation - ask what it was for
+Aug 27 3:00-3:30
+    messing with trying to get access.
+    gate code, housing for one day MMI program...
+Aug 29 10:45-11:05
+    No PR Indoors begin
+    next is to make regPR1 and regPR2 to get the proper dates
+        and adjust the housing in reg1.
+        remove the noPR code in reg1.
+Aug 31 8:40-9:40
+    continuing on No PR Indoors
+    made some progress
+Sep 1 12:25-3:45
+    continuing on No PR Indoors
+Sep 2 2:00-2:30
+    finalizing No PR Indoors and requesting Jamal's help
+Sep 3 2:00-2:15
+    responding to Emily's query
+Sep 4 3:05-3:35, 8:00-8:25, 8:30-9:00
+    documenting strings
+Sep 5 11:00-11:30, 1:30-2:00
+    talking with Jamal, final tweaks on updated regPR
+    getting changes on garlic, pushing changes to kali
+Sep 10 2:15-2:45
+    document mmi publish process
+Sep 12 2:15-5:15, 11:25-12:30
+    one day rental commuting housing grid tweak
+    documenting Strings
+    fixed the tuesday morning gate_code email to sukhdev, barnaby - sql oops
+    documenting more of the Strings
+    String doc overlib configuration > strings
+Sep 13 2:15-4:15
+    consult with Emily, Barnaby
+    remedied Anurag Karen Mueller registration
+    Sound Needs - start-end meeting spaces
+    fiddling with one day Rentals per request from Barnaby
+        meal counts were off - and had to worry about them
+            arriving before breakfast ended
+        what about one day rentals that leave after dinner ends????
+            still need to deal with it!

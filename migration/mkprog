@@ -149,7 +149,8 @@ create table summary (
     needs_verification text,
     prog_person text,
     workshop_schedule text,
-    workshop_description text
+    workshop_description text,
+    field_staff_std_setup text
 );
 drop table if exists confnote;
 create table confnote (

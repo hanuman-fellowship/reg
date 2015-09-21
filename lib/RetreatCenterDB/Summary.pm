@@ -116,6 +116,7 @@ converted_spaces - meeting rooms that become dorms
 date_updated - when was this summary last updated?
 feedback - free text
 field_staff_setup - free text
+field_staff_std_setup - free text
 flowers - free text
 food_service - free text
 gate_code - the gate code

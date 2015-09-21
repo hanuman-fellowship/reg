@@ -70,10 +70,8 @@ sub search : Local {
             $c->stash->{"$f\_selected"} = "selected";
         }
     }
-    my @files = <root/static/mlist/* root/static/temple/*>;
     stash($c,
         pg_title => "People Search",
-        online   => scalar(@files),
         template => "person/search.tt2",
     );
 }
@@ -439,6 +437,7 @@ sub _get_affils {
 # I know it would be better to catch a possible duplicate and prevent
 # it from being created AT ALL but that's more work.
 # Perhaps later.
+# Later: I've tried ...  we'll leave this here anyway.
 #
 sub _get_dups {
     my ($c, $id, $p) = @_;
@@ -498,13 +497,21 @@ sub create_do : Local {
         $hash{$n} = normalize($hash{$n});
     }
     my $today_d8 = tt_today($c)->as_d8();
-    my ($type, $fname) = split m{/}, $hash{fname};
-    delete $hash{fname};
+    my ($type, $fname);
+    my @temple;
+    if (exists $hash{fname}) {
+        ($type, $fname) = split m{/}, $hash{fname};
+        delete $hash{fname};
+        if ($type eq 'temple') {
+            @temple = (temple_id => $fname);
+        }
+    }
     my $p = model($c, 'Person')->create({
         %hash,
         date_updat  => $today_d8,
         date_entrd  => $today_d8,
         secure_code => rand6($c),
+        @temple,
     });
     if ($fname) {
         my $dir = "root/static/${type}_done/"
@@ -559,10 +566,18 @@ sub update_do : Local {
     return if @mess;
 
     my $p = model($c, 'Person')->find($id);
-    my ($type, $fname) = split m{/}, $hash{fname};
-    delete $hash{fname};
+    my @temple;
+    my ($type, $fname);
+    if (exists $hash{fname}) {
+        ($type, $fname) = split m{/}, $hash{fname};
+        delete $hash{fname};
+        if (defined $type && $type eq 'temple') {
+            @temple = (temple_id => $fname);
+        }
+    }
     $p->update({
         %hash,
+        @temple,
         date_updat => tt_today($c)->as_d8(),
     });
     if ($fname) {
@@ -1140,6 +1155,7 @@ sub request_mmi_payment_do : Local {
             # match the 'type' field in the 'reg_charge' table.
     });
     my @who_now = get_now($c);
+    push @who_now, reg_id => $reg_id;
     my $reg = model($c, 'Registration')->find($reg_id);
     RetreatCenter::Controller::Registration::_compute($c, $reg, 0, @who_now);
         # the above full qualifier indicates
@@ -1211,6 +1227,7 @@ EOH
     # create the file and ftp it to the mmi (not mmc) site
     #
     open my $out, '>', "/tmp/$code" or die "cannot create /tmp/$code: $!\n";
+    # could use Data::Dumper or YAML or XML::Simple instead!
     print {$out} "{\n";
     sub put {
         my ($out, $lab, $val) = @_;
@@ -1241,17 +1258,24 @@ EOH
     put($out, 'person_id', $person_id);
     print {$out} "};\n";
     close $out;
-    my $ftp = Net::FTP->new($string{ftp_mmi_site},
-                            Passive => $string{ftp_mmi_passive})
-        or die "cannot connect to $string{ftp_mmi_site}";    # not die???
-    $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
-        or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd($string{req_mmi_dir}) or die "cannot chdir to $string{req_mmi_dir}";
-    $ftp->ascii();
-    $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
-    $ftp->quit();
 
-    # now mark the payment requests as sent
+    # and send them - we assume they will be sent properly
+    eval {
+        my $ftp = Net::FTP->new($string{ftp_mmi_site},
+                                Passive => $string{ftp_mmi_passive})
+            or die "cannot connect to $string{ftp_mmi_site}";    # not die???
+        $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
+            or die "cannot login ", $ftp->message; # not die???
+        $ftp->cwd($string{req_mmi_dir}) or die "cannot chdir to $string{req_mmi_dir}";
+        $ftp->ascii();
+        $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
+        $ftp->quit();
+    };
+    if ($@) {
+        print $@;
+    }
+
+    # mark the payment requests as sent
     PAYMENT:
     for my $py ($reg->req_mmi_payments()) {
         next PAYMENT if $py->code();        # already sent but not gotten yet
@@ -1259,7 +1283,9 @@ EOH
             code => $code,
         });
     }
-    unlink "/tmp/$code";
+
+    unlink "/tmp/$code";        # maybe not delete this???
+                                # move it somewhere?
 
     #
     # send email to the person with the code
@@ -1608,220 +1634,6 @@ sub get_gender : Local {
     }
     $c->res->output($rc);
     return;
-}
-
-sub online : Local {
-    my ($self, $c) = @_;
-
-    my @requests = ();
-    for my $f (<root/static/mlist/*>) {
-        my $href = {};
-        ($href->{num}) = $f =~ m{(\d+)};
-        open my $in, "<", $f
-            or die "cannot open $f: $!\n";
-        my ($type, $send) = ("", 0);
-        while (my $line = <$in>) {
-            chomp $line;
-            my ($key, $val) = $line =~ m{^(\w+)\s+(.*)};
-            if ($key eq 'type') {
-                $val = uc $val;
-            }
-            $href->{$key} = $val;
-        }
-        close $in;
-        my $mtime = (stat($f))[9];
-        my ($min, $hour, $day, $mon, $year) = (localtime($mtime))[1 .. 5];
-        $year += 1900;
-        ++$mon;
-        $href->{date} = date($year, $mon, $day);
-        $href->{time} = get_time(sprintf("%02d%02d", $hour, $min));
-        push @requests, $href;
-    }
-    for my $f (<root/static/temple/*>) {
-        my $href = {};
-        ($href->{num}) = $f =~ m{(\d+)};
-        open my $in, "<", $f
-            or die "cannot open $f: $!\n";
-        while (my $line = <$in>) {
-            my ($first, $last) = split m{\|}, $line;
-            $href->{first} = $first;
-            $href->{last} = $last;
-            $href->{type} = 'Temple';
-        }
-        close $in;
-        my $mtime = (stat($f))[9];
-        my ($min, $hour, $day, $mon, $year) = (localtime($mtime))[1 .. 5];
-        $year += 1900;
-        ++$mon;
-        $href->{date} = date($year, $mon, $day);
-        $href->{time} = get_time(sprintf("%02d%02d", $hour, $min));
-        push @requests, $href;
-    }
-    stash($c,
-        requests => \@requests,
-        template => 'person/online.tt2',
-    );
-}
-
-sub grab_new : Local {
-    my ($self, $c) = @_;
-    system("grab wait");
-    $c->response->redirect($c->uri_for("/person/online"));
-}
-
-
-sub online_add : Local {
-    my ($self, $c, $type, $num) = @_;
-
-    my $subdir = $type eq 'Temple'? 'temple'
-                 :                  'mlist'
-                 ;
-    my $fname = "root/static/$subdir/$num";
-    my $in;
-    if (! open $in, "<", $fname) {
-        error($c,
-            "Cannot find online $subdir file $num.",
-            'gen_error.tt2',
-        );
-        return;
-    }
-    my %P;
-    my @affils = ();
-    if ($type eq 'Temple') {
-        my $line = <$in>;
-        chomp $line;
-        my ($first, $last, $email, $phone, $addr1, $addr2, $city, $state, $zip)
-            = split m{\|}, $line;
-        $P{first} = normalize($first);
-        $P{last}  = normalize($last);
-        $P{email} = $email;
-        $P{tel_cell} = $phone;
-        $P{addr1} = $addr1;
-        $P{addr2} = $addr2;
-        $P{city}  = $city;
-        $P{st_prov}  = uc $state;
-        $P{zip_post} = $zip;
-        $P{sex} = '';           # gender is unknown - leave it unset
-        push @affils, $system_affil_id_for{'Temple Guest'};
-        $P{e_mailings} = 'yes';
-        $P{snail_mailings} = '';
-        $P{mmi_e_mailings} = 'yes';
-        $P{mmi_snail_mailings} = '';
-        $P{share_mailings} = 'yes';     # why not
-    }
-    else {
-        while (my $line = <$in>) {
-            chomp $line;
-            my ($key, $val) = $line =~ m{^(\w+)\s+(.*)};
-            $P{$key} = $val;
-        }
-        close $in;
-        $P{first} = normalize($P{first});
-        $P{last} = normalize($P{last});
-        $P{addr1} = $P{street};
-        $P{addr2} = '';
-        my $type = $P{type};
-        my $interest = $P{interest};
-        for my $k (qw/ cell home work /) {
-            $P{"tel_$k"} = $P{$k};
-        }
-        $P{sex} = $P{gender} eq 'female'? 'F': 'M';
-        $P{comment} = $P{request};
-        $P{comment} =~ s{NEWLINE}{\n}g;
-        for my $k (qw/
-            street type interest
-            cell home work gender
-            request email2
-        /) {
-            delete $P{$k};
-        }
-        if ($type eq 'mmi') {
-            if ($interest eq 'All Schools') {
-                for my $key (grep { /MMI/ } keys %system_affil_id_for) {
-                    push @affils, $system_affil_id_for{$key};
-                }
-            }
-            else {
-                push @affils, $system_affil_id_for{"MMI - $interest"};
-            }
-        }
-    }
-    my @people = model($c, 'Person')->search({
-        first => $P{first},
-        last  => $P{last},
-    });
-    if (@people == 0) {
-        stash($c,
-            e_mailings         => ($P{e_mailings}        )? "checked": "",
-            snail_mailings     => ($P{snail_mailings}    )? "checked": "",
-            mmi_e_mailings     => ($P{mmi_e_mailings}    )? "checked": "",
-            mmi_snail_mailings => ($P{mmi_snail_mailings})? "checked": "",
-            share_mailings     => ($P{share_mailings}    )? "checked": "",
-            fname          => "$subdir/$num",
-            person         => \%P,
-            sex_female     => ($P{sex} eq "F")? "checked": "",
-            sex_male       => ($P{sex} eq "M")? "checked": "",
-            inactive       => "",
-            deceased       => "",
-            affil_table    => affil_table($c, 0, @affils),
-            form_action    => "create_do",
-            template       => "person/create_edit.tt2",
-        );
-    }
-    elsif (@people == 1) {
-        my $p = $people[0];
-        stash($c,
-            e_mailings         => ($P{e_mailings}        )? "checked": "",
-            snail_mailings     => ($P{snail_mailings}    )? "checked": "",
-            mmi_e_mailings     => ($P{mmi_e_mailings}    )? "checked": "",
-            mmi_snail_mailings => ($P{mmi_snail_mailings})? "checked": "",
-            share_mailings     => ($P{share_mailings}    )? "checked": "",
-            fname              => "$subdir/$num",
-            person => {
-                first     => $P{first},
-                last      => $P{last},
-                sanskrit  => $p->sanskrit(),
-                addr1     => $P{addr1} || $p->addr1(),
-                addr2     => $p->addr2(),
-                city      => $P{city} || $p->city(),
-                st_prov   => $P{st_prov} || $p->st_prov(),
-                zip_post  => $P{zip_post} || $p->zip_post(),
-                country   => $P{country} || $p->country(),
-                email     => $P{email} || $p->email(),
-                tel_cell  => $P{tel_cell} || $p->tel_cell(),
-                tel_home  => $P{tel_home} || $p->tel_home(),
-                tel_work  => $P{tel_work} || $p->tel_work(),
-                comment   => $P{comment} || $p->comment(),
-            },
-            sex_female => ($P{sex} eq "F")? "checked": "",
-            sex_male   => ($P{sex} eq "M")? "checked": "",
-            inactive   => "",
-            deceased   => "",
-            affil_table => affil_table($c, 0, $p->affils(), @affils),
-            form_action => "update_do/" . $p->id(),
-            template    => "person/create_edit.tt2",
-        );
-    }
-    else {
-        error($c,
-              "$P{first} $P{last} needs unduplicating first!",
-              'gen_error.tt2'
-        );
-    }
-}
-
-sub online_del : Local {
-    my ($self, $c, $type, $num) = @_;
-    my $subdir = ($type eq 'Temple')? 'temple'
-                 :                    'mlist'
-                 ;
-    my $dir = "root/static/${subdir}_done/"
-            . today()->format("%Y-%m")
-            ;
-    mkdir $dir unless -d $dir;
-    rename "root/static/$subdir/$num",
-           "$dir/$num";
-    $c->response->redirect($c->uri_for("/person/online"));
 }
 
 1;

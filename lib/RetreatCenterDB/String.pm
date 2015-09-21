@@ -309,7 +309,7 @@ req_mmi_dir_paid - the directory on mountmadonna.org for paid MMI payment reques
 ride_cancel_penalty - How much penalty for cancelling a Ride?
 ride_email - who to notify by email when a Ride request comes in?
 ride_glnum - the GL Number of the ride account
-seen_lodge_opts - what is the size of the <select> list for housing options?
+seen_lodge_opts - what is the size of the &gt;select&lt; list for housing options?
     There can be many more houses in the list but this is what is initially visible.
 single - the display name for the housing type 'single'
 single_bath - the display name for the housing type 'single with bath'

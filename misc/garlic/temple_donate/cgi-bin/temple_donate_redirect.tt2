@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>Sankat Mochan Temple Donation</title>
+</head>
+
+<body >
+<img src="/temple_images/redirect.gif" style="display:block;width:800px;margin:200px auto">
+<FORM NAME="authorize"
+  action="https://secure.authorize.net/gateway/transact.dll"
+  method="POST"
+  style="display:none"
+>
+
+<!-- Begin Authorize.net fields -->
+$fingerprint
+<INPUT type=hidden VALUE="TRUE"             name="x_relay_response">
+<INPUT type=hidden VALUE="$loginid"         name="x_login">
+<INPUT type=hidden VALUE="http://www.mountmadonna.org/cgi-bin/relay2" name="x_relay_url">
+<INPUT type=hidden VALUE="$test"            name="x_test_request" >
+<INPUT type=hidden VALUE="$first $last"     name="x_invoice_num">
+<INPUT type=hidden VALUE="$real_ip"         name="x_real_ip">
+<INPUT type=hidden VALUE="FALSE"            name="x_email_customer">
+<INPUT type=hidden 
+       name="x_header_html_payment_form"
+       VALUE="Sankat Mochan Hanuman Temple Donation"
+>
+<input type=hidden 
+       name="x_footer_html_payment_form"
+       value="</div></div><div class='bot'></div></div>"
+>
+<INPUT type=hidden VALUE="PAYMENT_FORM"     name="x_show_form" >
+<INPUT type=hidden VALUE="Temple Donation from $first $last"   name="x_description">
+<INPUT type=hidden VALUE="$amount"          name="x_amount">
+<INPUT type=hidden VALUE="$first"           name="x_fname">
+<INPUT type=hidden VALUE="$first"           name="x_first_name">
+<INPUT type=hidden VALUE="$last"            name="x_lname">
+<INPUT type=hidden VALUE="$last"            name="x_last_name">
+<INPUT type=hidden VALUE="$address"         name="x_address">
+<INPUT type=hidden VALUE="$city"            name="x_city">
+<INPUT type=hidden VALUE="$state"           name="x_state">
+<INPUT type=hidden VALUE="$zip"             name="x_zip">
+<INPUT type=hidden VALUE="$country"         name="x_country">
+<INPUT type=hidden VALUE="$telephone"       name="x_phone">
+<INPUT type=hidden VALUE="$email"           name="x_email">
+<INPUT type=hidden VALUE="$temple_id"       name="x_temple_id">
+
+<input type="submit"
+        name="Accept Order"
+        value="Pay Securely with your Credit Card"
+        style="display:none"
+/>
+</form>
+<script type="text/javascript">
+function downloadJSAtOnload() {
+document.forms["authorize"].submit();return false;
+}
+if (window.addEventListener)
+window.addEventListener("load", downloadJSAtOnload, false);
+else if (window.attachEvent)
+window.attachEvent("onload", downloadJSAtOnload);
+else window.onload = downloadJSAtOnload;
+</script>
+</body>
+</html>

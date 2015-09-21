@@ -70,6 +70,11 @@ our @EXPORT_OK = qw/
     ensure_mmyy
     rand6
     randpass
+    db_init
+    digits_only
+    add_or_update_deduping
+    x_file_to_href
+    phone_match
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -87,6 +92,11 @@ use Global qw/
 /;
 use Mail::Sender;
 use Net::Ping;
+use Carp 'croak';
+
+sub db_init {
+    return RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+}
 
 my ($naffils, @affils, %checked);
 
@@ -330,7 +340,9 @@ sub nsquish {
 sub slurp {
     my ($fname) = @_;
 
-    if (index($fname, '.') == -1) {     # no period - so it's a web template
+    if ($fname !~ /grab_new_log/ &&
+        index($fname, '.') == -1     # no period - so it's a web template
+    ) {
         $fname = "root/static/templates/web/$fname.html";
     }
     open my $in, "<", $fname
@@ -594,28 +606,54 @@ sub digits {
 }
 
 sub model {
-    my ($c, $table) = @_;
-    return $c->model("RetreatCenterDB::$table");
+    my ($ref, $table) = @_;
+
+    if (ref $ref eq 'RetreatCenterDB') {
+        return $ref->resultset($table);
+    }
+    else {
+        return $ref->model("RetreatCenterDB::$table");
+    }
 }
 
 my $mail_sender;
 
 #
 # must have to, from, subject and html in the %args.
-# check for it!???
+# if $ENV{test_email} send it to that address instead of to and cc/bcc
+# return a boolean - did it succeed?
 #
 sub email_letter {
     my ($c, %args) = @_;
 
-    open my $mlog, ">>", "mlog";
-    print {$mlog} localtime() . " $args{to}\n";
+    for my $k (qw/ to from subject html /) {
+        if (! exists $args{$k}) {
+            die "no $k in args for Util::email_letter\n";
+        }
+    }
+    my @cc_bcc = ();
+    if (exists $args{cc}) {
+        push @cc_bcc, cc => $args{cc};
+    }
+    if (exists $args{bcc}) {
+        push @cc_bcc, bcc => $args{bcc};
+    }
+    if ($ENV{test_email}) {
+        $args{to} = $ENV{test_email};
+        @cc_bcc = ();
+    }
+    # temporary adjustment of mountmadonna.org addresses:
+    for my $a ($args{to}, @cc_bcc) {
+        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
+    }
+    open my $mlog, ">>", "mail.log";
+    print {$mlog} localtime() . " $args{to} - ";
     my $p = Net::Ping->new();
     if (!$p->ping("mountmadonna.org")) {
         print {$mlog} "no ping so just return\n";
         close $mlog;
         return;     # don't even try
     }
-    close $mlog;
 
     if (! $mail_sender) {
         Global->init($c);
@@ -633,20 +671,10 @@ sub email_letter {
             @auth,
         });
         if (! $mail_sender) {
-            $c->log->info("could not create mail_sender");
-            return 0;
+            print {$mlog} "could not create mail_sender\n";
+            close $mlog;
+            return;
         }
-    }
-    my @cc_bcc = ();
-    if (exists $args{cc}) {
-        push @cc_bcc, cc => $args{cc};
-    }
-    if (exists $args{bcc}) {
-        push @cc_bcc, bcc => $args{bcc};
-    }
-    # temporary adjustment of mountmadonna.org addresses:
-    for my $a ($args{to}, @cc_bcc) {
-        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
     }
     if (! $mail_sender->Open({
         to       => $args{to},
@@ -658,19 +686,23 @@ sub email_letter {
         encoding => "7bit",
     })) {
         $mail_sender = undef;
-        $c->log->info("no Mail::Sender->Open $Mail::Sender::Error");
-        return 0;
+        print {$mlog} "no Mail::Sender->Open $Mail::Sender::Error\n";
+        close $mlog;
+        return;
     }
     $mail_sender->SendLineEnc($args{html});
     if (! $mail_sender->Close()) {
+        print {$mlog} "no Mail::Sender->Close $Mail::Sender::Error\n";
+        close $mlog;
         $mail_sender = undef;
-        $c->log->info("no Mail::Sender->Close $Mail::Sender::Error");
-        return 0;
+        return;
     }
+    print {$mlog} "sent\n";
+    close $mlog;
     if (@cc_bcc) {
         $mail_sender = undef;
         # need to recreate or else the cc/bcc people
-        # will receive all email!
+        # will receive ALL email! :(
     }
     return 1;
 }
@@ -1824,5 +1856,285 @@ sub randpass {
       ;
 }
 
+# return only the digits
+sub digits_only {
+    my ($s) = @_;
+    if (! defined $s || $s !~ m{\S}xms) {
+        return '';
+    }
+    $s =~ s{\D}{}xmsg;
+    $s;
+}
+
+# look carefully at $href for the keys - normalize them
+# several are required or else!
+#
+# match on first, last
+# consider phone numbers, email for a further match
+# input phone numbers: tel_cell, tel_work, tel_home
+#     normalize them to ddd-ddd-dddd
+#     they could match anything
+#     these days we mostly just have cell, yes?
+# there are two address lines - these days there's usually
+#     just one street - given the long extendible line of a web form.
+#
+# update if we found a match otherwise add anew.
+# if provided ensure the affil_id - or an array of such?
+#
+# return a person_id and a status of 'added' or 'updated'
+#
+# what about online reg - multiple phone #s???
+# use this when doing a People > Add as well?
+#     to avoid duplicates, yes?  YES.
+# if you do an update recompute the akey
+#
+# opt_in ???    online reg is more sophisticated than the temple, yes???
+# mlist (MMC/MMI) opt in???
+# can pass e_mailings etc as -1, 0, or 1
+# undef or -1 means don't change anything - or, if
+# it is a new person make it 0 (the default).
+#
+# control these things with %args:
+#     affil_id
+#     request_to_comment
+#
+# ??? inactive, deceased
+# ??? multiple affils - pass an array OR a scalar
+#
+# there may be a request in the $href.
+# if there is an $args{request_to_comment} put the request
+# in the comment field of the person - otherwise ignore it.
+# it'll be a comment for an online registration.
+#
+sub add_or_update_deduping {
+    my ($c, $href, %args) = @_;
+
+    # add temple_id to $href if it is missing.
+    # it is only used for temple visitors
+    $href->{temple_id} ||= 0;
+
+    my @mailing_keys = qw/
+        e_mailings
+        snail_mailings
+        mmi_e_mailings
+        mmi_snail_mailings
+        share_mailings
+    /;
+
+    # validate the input parameters that are REQUIRED.
+    # there will sometimes be several in the input that
+    # are not used at all.
+    my %needed = map { $_ => 1 } qw/
+        tel_home
+        tel_cell
+        tel_work
+        addr1
+        addr2
+        city
+        st_prov
+        zip_post
+        sex
+        email
+        temple_id
+        snail_mailings
+        e_mailings
+        mmi_snail_mailings
+        mmi_e_mailings
+        share_mailings
+    /;
+    # check that all required are present ...
+    my @missing;
+    for my $k (keys %needed, qw/ first last /) {
+        if (! exists $href->{$k}) {
+            push @missing, $k;        
+        }
+    }
+    if (@missing) {
+        croak "missing keys for Util::add_update_deduping: @missing";
+        # yes, die.  this is a programming problem not user error.
+    }
+    for my $k (@mailing_keys) {
+        $href->{$k} = 0 if $href->{$k} eq '';
+        $href->{$k} = 1 if $href->{$k} eq 'yes';
+    }
+
+    # normalize first, last and phone numbers
+    $href->{first} = normalize($href->{first});
+    $href->{last} = normalize($href->{last});
+    for my $phone (@{$href}{qw/ tel_cell tel_home tel_work/}) {
+        my $tmp = $phone;
+        $tmp =~ s{\D}{}xms;
+        if ($tmp =~ s{\A(\d\d\d)(\d\d\d)(\d\d\d\d)\z}{$1-$2-$3}xms) {
+            $phone = $tmp;  # this modifies the $href
+        }
+        else {
+            # leave it be - it is likely an international number
+            # that doesn't have 10 digits
+        }
+    }
+    # get the digits only version of the phones
+    my $cell = digits_only($href->{tel_cell});
+    my $home = digits_only($href->{tel_home});
+    my $work = digits_only($href->{tel_work});
+
+    # a few other initializations
+    my $akey = nsquish($href->{addr1}, $href->{addr2}, $href->{zip_post});
+    my $today_d8 = today()->as_d8();
+
+    my @people = model($c, 'Person')->search({
+                     first => $href->{first},
+                     last  => $href->{last},
+                 });
+    my ($person_id, $person, $status);
+    for my $p (@people) {
+        if (phone_match(digits_only($p->tel_cell),
+                        digits_only($p->tel_home),
+                        digits_only($p->tel_work),
+                        $cell,
+                        $home,
+                        $work)
+            ||
+            $p->email eq $href->{email}
+            ||
+            ($p->temple_id || -1) == $href->{temple_id}
+        ) {
+            # a match - THIS is the person we're looking for.
+            # they're already in our database.
+            # update their information - their address may have changed.
+            #
+            for my $k (@mailing_keys) {
+                delete $href->{$k} if $href->{$k} == -1;
+            }
+            $p->update({
+                map({ $_ => $href->{$_} } keys %needed),
+                akey       => $akey,
+                date_updat => $today_d8,
+            });
+            $person_id = $p->id;
+            $person = $p;
+            $status = 'updated';
+        }
+    }
+    if (! $person_id) {
+        # either no match on first/last
+        # or didn't find a match of phone/email/temple_id.
+        # so we add a new person.
+        #
+        for my $k (@mailing_keys) {
+            $href->{$k} = 0 if $href->{$k} == -1;
+        }
+        my @comment;
+        if ($args{request_to_comment}) {
+            push @comment, comment => $href->{request};
+        }
+        $person = model($c, 'Person')->create({
+            map({ $_ => $href->{$_} } keys %needed, qw /first last /),
+            @comment,
+            id_sps      => 0,
+            akey        => $akey,
+            date_entrd  => $today_d8,
+            date_updat  => $today_d8,
+            temple_id   => $href->{temple_id},
+            secure_code => rand6($c),
+        });
+        $person_id = $person->id;
+        $status = 'added';
+    }
+    if (exists $args{affil_ids}) {
+        # ensure the person has all of the affil_ids
+        # we do not _remove_ affiliations here
+
+        my @affil_ids;
+        if (ref $args{affil_ids} eq 'ARRAY') {
+            @affil_ids = @{$args{affil_ids}};
+        }
+        else {
+            @affil_ids = $args{affil_ids};
+        }
+        my %has_affil = map { $_->a_id => 1 }
+                        model($c, 'AffilPerson')->search({
+                            p_id => $person_id,
+                         });
+        AFFIL:
+        for my $a_id (@affil_ids) {
+            next AFFIL if $has_affil{$a_id};
+            model($c, 'AffilPerson')->create({
+                p_id => $person_id,
+                a_id => $a_id,
+            });
+        }
+    }
+    return $person_id, $person, $status;
+}
+
+# we have 6 phone numbers.
+# they are all digits unless they are empty.
+# do any of the first 3 match any of the last 3?
+# if this were written today we would not have
+# home or work numbers - just cell.  this shows the
+# long history of Reg going back to pre-cell days.
+#
+sub phone_match {
+    my (@nums) = @_;
+    for my $i (0 .. 2) {
+        for my $j (3 .. 5) {
+            if ($nums[$i] && $nums[$j] && $nums[$i] eq $nums[$j]) {
+                return 1;
+            }
+        }
+    }
+    return 0;
+}
+
+# parse the typical file we get from authorize.
+# return an href.
+# rename fields as appropriate to make it ready for add_or_update_deduping.
+sub x_file_to_href {
+    my ($fname) = @_;
+    my %hash;
+    my $in;
+    if (! open $in, '<', $fname) {
+        print "could not open $fname: $!\n";
+        return {};
+    }
+    while (my $line = <$in>) {
+        chomp $line;
+        my ($key, $value) = $line =~ m{\A \s* x_(\w+) \s* => \s* (.*) \z}xms;
+        if ($key) {
+            $hash{$key} = $value;
+        }
+        else {
+            # a file might have reg_id => ...
+        }
+    }
+    close $in;
+    $hash{first} = delete $hash{fname};
+    $hash{last}  = delete $hash{lname};
+    $hash{addr1} = delete $hash{address};
+    $hash{addr2} = '';
+    $hash{st_prov} = delete $hash{state};
+    $hash{zip_post} = delete $hash{zip};
+    $hash{sex} = delete $hash{gender};
+    $hash{sex} =   $hash{sex} eq   'Male'? 'M'
+                 : $hash{sex} eq 'Female'? 'F'
+                 :                         ''
+                 ;
+    if ($hash{phone} && ! exists $hash{tel_cell}) {
+        $hash{tel_cell} = delete $hash{phone};
+    }
+    $hash{tel_home} = '' if ! exists $hash{tel_home};
+    $hash{tel_work} = '' if ! exists $hash{tel_work};
+    $hash{request} = "";
+    my $i = 1;
+    while (exists $hash{"request$i"}) {
+        $hash{request} .= delete $hash{"request$i"};
+        $hash{request} .= "\n";
+        ++$i;
+    }
+    $hash{request} =~ s{\xa0}{ }xmsg;      # space out a stray non-ASCII char
+                                           # don't know the source
+    $hash{green_amount} ||= 0;      # in case it was not given
+    return \%hash;
+}
 
 1;

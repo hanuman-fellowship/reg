@@ -1,0 +1,18 @@
+{
+first => 'Julie',
+last => 'Bishop',
+addr => '415 Tusculum Rd Apt #E9',
+city => 'Nashville',
+st_prov => 'TN',
+zip_post => '37211',
+country => 'United States',
+email => 'jon@suecenter.org',
+phone => '',
+total => '134',
+py_desc => '78|food|287654~56|yeah|187654~',
+tbl_py_desc => '<table cellpadding=5><tr><th align=right>Amount</th><th align=left>For</th><th align=left>Note</th></tr><tr><td align=right>78</td><td>Meals and Lodging</td><td>food</td></tr><tr><td align=right>56</td><td>Tuition</td><td>yeah</td></tr><tr><td style=\'border-top: solid thin\' align=right>$134</td></tr></table>',
+program => 'Test this',
+code => 'YDIKnL',
+reg_id => '112',
+person_id => '2393',
+};

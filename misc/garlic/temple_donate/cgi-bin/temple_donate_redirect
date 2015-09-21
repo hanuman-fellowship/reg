@@ -1,0 +1,85 @@
+#!/usr/bin/perl
+use strict;
+use warnings;
+use CGI;
+use CGI::Carp qw/fatalsToBrowser/;
+use lib 'mylib/lib/perl5';
+use Template;
+use SimLib;
+use Auth qw/
+    $MMC_loginid
+    $MMC_txnkey
+/;
+
+my $q = CGI->new();
+print $q->header();
+my $params = $q->Vars();
+my @mess;
+for my $f (qw/
+    first
+    last
+    address
+    city
+    state
+    zip
+    email
+    telephone
+    amount
+/) {
+    if (! $params->{$f}) {
+        push @mess, "missing $f";
+    }
+}
+my $amount = $params->{amount};
+$amount =~ s/[^\d.]//g;     # trim any $, etc
+$amount =~ s{\A\s*|\s*\z}{}xmsg;
+if ($amount && $amount !~ m{\A \d+([.]\d\d)? \z}xms) {
+    push @mess, "illegal donation amount: $amount";
+}
+if (@mess) {
+    my $mess = join "<br>\n", @mess;
+    print <<"EOH";
+<head>
+<link rel="stylesheet" type="text/css" href="http://www.mountmadonna.org/styles/temple_donate.css">
+</head>
+<body>
+<p>
+The following errors were found:
+<ul>
+$mess
+</ul>
+Please go <input id='back' type=button value="Back" onclick="history.go(-1)"> and fix them.
+<script type='text/javascript'>document.getElementById('back').focus();</script>
+EOH
+    exit;
+}
+
+# Call subroutine from authorize.net that sets $fingerprint_html 
+#
+my $x_currency_code = "USD";
+my $fingerprint_html =
+    SimLib::InsertFP($MMC_loginid, $MMC_txnkey, $amount, $x_currency_code);
+
+my %stash = (
+    first    => $params->{first},
+    last     => $params->{last},
+    address  => $params->{address},
+    city     => $params->{city},
+    state    => $params->{state},
+    zip      => $params->{zip},
+    telephone => $params->{telephone},
+    email    => $params->{email},
+    amount   => $params->{amount},
+    country  => 'USA',
+    temple_id => $params->{temple_id},
+    real_ip     => $ENV{REMOTE_ADDR},
+    fingerprint => $fingerprint_html,
+    loginid     => $MMC_loginid,
+    test        => $params->{test}? 'TRUE': 'FALSE',
+);
+Template->new(
+    INTERPOLATE => 1,
+)->process(
+    "temple_donate_redirect.tt2",
+    \%stash,
+);

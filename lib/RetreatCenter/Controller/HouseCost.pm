@@ -8,7 +8,6 @@ use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     empty
     model
-    slurp
     stash
 /;
 

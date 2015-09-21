@@ -44,6 +44,8 @@ use Util qw/
     check_makeup_vacate
     get_now
     rand6
+    x_file_to_href
+    add_or_update_deduping
 /;
 use POSIX qw/
     ceil
@@ -407,60 +409,35 @@ sub get_online : Local {
     #
     # first extract all information from the file.
     #
-    my %P;
-    my $in;
-    if (! open $in, "<", "$rst/online/$fname") {
+    my $href = x_file_to_href("$rst/online/$fname");
+    if (! exists $href->{pid}) {
         $c->response->redirect($c->uri_for("/registration/list_online"));
         return;
     }
-    while (<$in>) {
-        chomp;
-        my ($key, $value) = m{^x_(\w+) => (.*)$};
-        next unless $key;
-        if ($needed{$key}) {
-            $P{$key} = $value;
-        }
-        elsif ($key =~ m{^request\d+}) {
-            $P{request} .= "$value\n";
-        }
-    }
-    close $in;
-    if ($P{request}) {
-        $P{request} =~ s{\xa0}{ }xmsg;      # space out stray non-ASCII chars
-                                            # don't know the source
-    }
-
-    $P{green_amount} ||= 0;     # in case not set at all
-
     # save the filename so we can delete it when the registration is complete
     stash($c, fname => $fname);
 
-    # verify that we have a pid, first, and last. and an amount.
-    # ...???
-
-    open my $log, '>>', 'online_log';
-    print {$log} scalar(localtime), " $fname $P{fname} $P{lname}, ";
     #
     # first, find the program
     # without it we can do nothing!
     #
     my $pr;
-    if ($P{pid} == 0) {
+    if ($href->{pid} == 0) {
         # find the appropriate Personal Retreat given the start date
         #
-        my $sdate = date($P{sdate})->as_d8();
+        my $sdate = date($href->{sdate})->as_d8();
         ($pr) = model($c, 'Program')->search({
             name  => { -like => '%personal%retreat%' },
             sdate => { '<=' => $sdate },
             edate => { '>=' => $sdate },
         });
         if ($pr) {
-            $P{pid} = $pr->id();
+            $href->{pid} = $pr->id();
         }
         else {
             error($c,
                 <<"EOH",
-There is no Personal Retreat Program for $P{sdate}.
+There is no Personal Retreat Program for $href->{sdate}.
 <p class=p2>
 Please add one by finding any other Personal Retreat Program,<br>
 choosing Duplicate, and changing the dates.
@@ -471,7 +448,7 @@ EOH
         }
     }
     else {
-        ($pr) = model($c, 'Program')->find($P{pid});
+        ($pr) = model($c, 'Program')->find($href->{pid});
     }
     if (! $pr) {
         error($c,
@@ -480,143 +457,39 @@ EOH
         );
         return;
     }
-    print {$log} $pr->name, ", ", $c->user->username(), "\n";
+    open my $log, '>>', 'online_log';
+    print {$log} scalar(localtime), " $fname $href->{first} $href->{last}, ",
+                 $pr->name, ", ", $c->user->username(), "\n";
     close $log;
 
     #
     # find or create a person object.
     #
-    $P{fname} = normalize($P{fname});
-    $P{lname} = normalize($P{lname});
-    my @ppl = ();
-    (@ppl) = model($c, 'Person')->search(
-        {
-            first => $P{fname},
-            last  => $P{lname},
-        },
-    );
-    my $p;
-    my $today = tt_today($c);
-    my $today_d8 = $today->as_d8();
-    if (! @ppl || @ppl == 0) {
-        #
-        # no match so create a new person
-        # check for misspellings first???
-        # do an akey search, pop up list???
-        # or cell phone search???
-        #
-        $p = model($c, 'Person')->create({
-            first    => $P{fname},
-            last     => $P{lname},
-            addr1    => $P{street1},
-            addr2    => $P{street2},
-            city     => $P{city},
-            st_prov  => $P{state},
-            zip_post => $P{zip},
-            country  => $P{country},
-            akey     => nsquish($P{street1}, $P{street2}, $P{zip}),
-            tel_home => $P{home},
-            tel_work => $P{work},
-            tel_cell => $P{cell},
-            email    => $P{email},
-            sex      => ($P{gender} eq 'Male'? 'M': 'F'),
-            id_sps   => 0,
-
-            e_mailings         => $P{e_mailings},
-            snail_mailings     => $P{snail_mailings},
-            mmi_e_mailings     => $P{mmi_e_mailings},
-            mmi_snail_mailings => $P{mmi_snail_mailings},
-
-            share_mailings => $P{share_mailings},
-
-            date_updat  => $today_d8,
-            date_entrd  => $today_d8,
-            secure_code => rand6($c),
-        });
-    }
-    else {
-        if (@ppl == 1) {
-            # only one match so go for it
-            $p = $ppl[0];
-        }
-        else {
-            # disambiguate somehow???
-            # cell first, then zip
-            for my $q (@ppl) {
-                if (digits($q->tel_cell) eq digits($P{cell})) {
-                    $p = $q;
-                }
-            }
-            if (!$p) {
-                for my $q (@ppl) {
-                    if ($q->zip_post eq $P{zip}) {
-                        $p = $q;
-                    }
-                }
-            }
-            # else what else to do???
-            if (! $p) {
-                $p = $ppl[0];
-            }
-        }
-        # we have one unique person
-        #
-        # that person's address etc gets the values
-        # from the web registration.
-        $p->update({
-            addr1    => $P{street1},
-            addr2    => $P{street2},
-            city     => $P{city},
-            st_prov  => $P{state},
-            zip_post => $P{zip},
-            country  => $P{country},
-            akey     => nsquish($P{street1}, $P{street2}, $P{zip}),
-            tel_home => $P{home},
-            tel_work => $P{work},
-            tel_cell => $P{cell},
-            email    => $P{email},
-            sex      => ($P{gender} eq 'Male'? 'M': 'F'),
-
-            e_mailings         => $P{e_mailings},
-            snail_mailings     => $P{snail_mailings},
-            mmi_e_mailings     => $P{mmi_e_mailings},
-            mmi_snail_mailings => $P{mmi_snail_mailings},
-
-            share_mailings => $P{share_mailings},
-
-            date_updat => $today_d8,
-        });
-    }
+    my ($person_id, $person, $status) = add_or_update_deduping($c, $href);
 
     #
     # various fields from the online file make their way
     # into the stash...
-
-    # comments
-    my $comment = "";
-    if ($P{request}) {
-        $comment = $P{request};
-    }
-    if ($P{progchoice} eq 'full') {
+    if ($href->{progchoice} eq 'full') {
         stash($c, date_end => $pr->edate_obj() + $pr->extradays);
     }
     for my $how (qw/ ad web brochure flyer word_of_mouth /) {
         stash($c, "$how\_checked" => "");
     }
-    # sdate/edate (in the hash from the online file)
+    # sdate/edate (in the hashref from the online file)
     # are normally empty - except for personal retreats
     # OR for programs with extra days.
     #
-    if ($P{sdate}) {
-        stash($c, date_start => date($P{sdate}));
+    if ($href->{sdate}) {
+        stash($c, date_start => date($href->{sdate}));
     }
-    if ($P{edate}) {
-        stash($c, date_end => date($P{edate}));
+    if ($href->{edate}) {
+        stash($c, date_end => date($href->{edate}));
     }
 
     # the postmark timestamp
-    my $date = date($P{date});
-    $P{time} =~ s{:}{}xms;      # so it is interpreted as 24 hour time
+    my $date = date($href->{date});
+    $href->{time} =~ s{:}{}xms;      # so it is interpreted as 24 hour time
 
     #
     # date_start and date_end are always present in the table record.
@@ -628,30 +501,32 @@ EOH
     # the database.
     #
 
-    my $fw = $P{from_where};
+    my $fw = $href->{from_where};
     stash($c,
-        comment         => $comment,
-        share_first     => normalize($P{withwhom_first}),
-        share_last      => normalize($P{withwhom_last}),
-        cabin_checked   => $P{cabin_room} eq 'cabin'? "checked": "",
-        room_checked    => $P{cabin_room} eq 'room' ? "checked": "",
-        adsource        => $P{advertiserName},
-        carpool_checked => $P{carpool}? 'checked': '',
-        hascar_checked  => $P{hascar}? 'checked': '',
+        comment         => $href->{request},
+        share_first     => normalize($href->{withwhom_first}),
+        share_last      => normalize($href->{withwhom_last}),
+        cabin_checked   => $href->{cabin_room} eq 'cabin'? "checked": "",
+        room_checked    => $href->{cabin_room} eq 'room' ? "checked": "",
+        adsource        => $href->{advertiserName},
+        carpool_checked => $href->{carpool}? 'checked': '',
+        hascar_checked  => $href->{hascar}? 'checked': '',
         home_checked    => $fw eq 'Home'? 'checked': '',
         sjc_checked     => $fw eq 'SJC'? 'checked': '',
         sfo_checked     => $fw eq 'SFO'? 'checked': '',
-        from_where_display => ($P{hascar} || $P{carpool})? 'block': 'none',
+        from_where_display => ($href->{hascar} || $href->{carpool})? 'block'
+                             :                                       'none',
         date_postmark   => $date->as_d8(),
-        time_postmark   => $P{time},
-        green_amount    => $P{green_amount},
-        deposit         => int($P{amount} - $P{green_amount}),
+        time_postmark   => $href->{time},
+        green_amount    => $href->{green_amount},
+        deposit         => int($href->{amount} - $href->{green_amount}),
         deposit_type    => 'O',
-        ceu_license     => $P{ceu_license},
-        "$P{howHeard}_checked" => "selected",
+        ceu_license     => $href->{ceu_license},
+        "$href->{howHeard}_checked" => "selected",
     );
 
-    _rest_of_reg($pr, $p, $c, $today, $P{house1}, $P{house2});
+    my $today = tt_today($c);
+    _rest_of_reg($pr, $person, $c, $today, $href->{house1}, $href->{house2});
 }
 
 #
@@ -1477,7 +1352,7 @@ sub _compute {
     my $mem = $reg->person->member();
     my $lead_assist = $reg->leader_assistant();   # no housing or tuition charge
                                                   # for these people
-    # clear auto charges
+    # clear auto charges - they'll be readded below
     model($c, 'RegCharge')->search({
         reg_id    => $reg_id,
         automatic => 'yes',
@@ -2371,11 +2246,11 @@ sub pay_balance_do : Local {
         return;
     }
     my @who_now = get_now($c);
+    push @who_now, reg_id => $reg_id;
     if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
         push @who_now, the_date => (tt_today($c)+1)->as_d8(),
     }
     model($c, 'RegPayment')->create({
-        reg_id => $reg_id,
         @who_now,
         amount => $amount,
         type   => $type,
@@ -2649,6 +2524,7 @@ sub new_charge_do : Local {
     }
 
     my @who_now = get_now($c);
+    push @who_now, reg_id => $reg_id;
     model($c, 'RegCharge')->create({
         amount    => $amount,
         type      => $type,
@@ -6004,40 +5880,30 @@ sub online_history : Local {
         for my $f (<$dir/*>) {
             my $dir_fname = $f;
             $dir_fname =~ s{$rsod}{}xms;
-            my %vals;
-            open my $in, '<', $f or next REG_FILE;
-            while (my $line = <$in>) {
-                chomp $line;
-                if (my ($key, $val) = $line =~ m{\A (\w+) \s*=>\s* (.*) \z}xms) {
-                    if ($needed{$key}) {
-                        $vals{$key} = $val;    
-                    }
-                }
-            }
-            close $in;
-            if (!$vals{x_date}) {
-                $c->log->info("missing x_date in $f");
+            my $href = x_file_to_href($f);
+            if (!$href->{date}) {
+                $c->log->info("missing date in $f");
                 next REG_FILE;
             }
-            my $reg_date = date($vals{x_date});
+            my $reg_date = date($href->{date});
             next REG_FILE if $reg_date < $sdate || $reg_date > $edate;
             my $reg = 0;
-            if ($vals{reg_id}) {
-                $reg = model($c, 'Registration')->find($vals{reg_id});
+            if ($href->{reg_id}) {
+                $reg = model($c, 'Registration')->find($href->{reg_id});
             }
-            elsif ($vals{x_trans_id}) {
-                ($reg) = model($c, 'Registration')->search({transaction_id => $vals{x_trans_id}})
+            elsif ($href->{trans_id}) {
+                ($reg) = model($c, 'Registration')->search({transaction_id => $href->{trans_id}})
             }
-            my $prog = model($c, 'Program')->find($vals{x_pid});
-            my $pname = $prog? $prog->name: $vals{x_pname};
+            my $prog = model($c, 'Program')->find($href->{pid});
+            my $pname = $prog? $prog->name: $href->{pname};
             push @regs, {
-                name      => "$vals{x_last_name}, $vals{x_first_name}",
+                name      => "$href->{last}, $href->{first}",
                 program   => $pname,
-                reg_id    => $vals{reg_id},
+                reg_id    => $href->{reg_id},
                 reg_date8 => $reg_date->as_d8(),
                 reg_date  => $reg_date,
                 fname     => $dir_fname,
-                transaction_id => $vals{x_trans_id},
+                transaction_id => $href->{trans_id},
                 reg_exists => $reg,
             };
         }

@@ -9,5 +9,59 @@ May 6 12:30-1:15
         use that for unduplication
     first link on prog page is to prog
         change Prog to FirstReg
-May 29 1:00-
-    looking at CSV format for registrant list
+May 29 12:00-12:30, 1:00-2:30
+    talking with Shantam
+    CSV format for registrant list
+May 31 1:15-2:30
+    importing temple_dump for temple ids - new column for people table
+Jun 13 9:00-11:00
+    getting missing temple records - 75 no matches
+    need to improve the online_add form - temple, otherwise.
+    manual add/online registration as well?
+        search for first-last
+        if no match - okay, add it
+        if >= 1 try to match these by cell, email, temple_id (if present)
+            if cell|email|temple_id match - update it.
+            else - give warning to registrar/reception with all info
+                   and do not add.  they'll need to deal with it.
+                   send email about the new screen
+Jun 14 11:30-11:50, 12:55-1:15, 2:45-3:05, 5:45-6:50, 10:00-11:00
+    continuing, got 8125-9856
+    adjusting Person.pm when adding to mailing list
+        from Temple, MMI, MMC
+Jun 15 11:00-11:20
+    responding to a query from Alex about Lasater housing.
+Jun 28 8:00-11:00
+    temple donations - begun
+Jul 5 11:00-1:00
+    temple donations - complete but ... refactoring, using the schema in 
+        cron jobs, writing a sub to add/undup a person.
+Jul 8 8:30-10:20
+    continuing temple donations - nearly done with that part
+    let's do the rest of converting script/grab_new to model etc
+        and write and use that routine to add/update/dedup a person
+Jul 9 8:30-10:00
+    writing that routine - add_or_update_deduping
+    wrote File::FTP for testing grab_new - should be useful!
+Jul 10 2:00-5:00, 7:20-
+    continued refactoring of grab_new
+Jul 20 10:00-3:00
+    lots of work on refactoring grab_new
+    didn't keep good track of my time so let's say 5 hours
+Aug 2 2:30-6:00
+    publishing MMI program bug wrt the 'next', 'prev' program
+    new field named field_staff_std_setup for the summary
+Aug 8 9:15-12:00, 4:40-6:30
+    continuing with a rewrite of grab_new
+    next step: the log
+Aug 17 12:00-12:45
+    temple_donation negotiation with Shantam/Jamal.
+    resetting passwords for authorize.net
+Aug 29 8:30-9:30
+    continuing, up to MMC
+Sep 12 11:00-12:30
+    grab_new refinement
+Sep 13 2:00-4:00
+    db_init, grab_new refinement
+Sep 20 6:00-10:00
+    putting many changes in place - including temple_donations
