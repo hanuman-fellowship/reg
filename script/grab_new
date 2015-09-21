@@ -224,22 +224,22 @@ sub finalities {
     unlink $run_file;
     close $log;
     my $log_str = slurp $log_name;
-    $log_str =~ s{$}{<br>}xmsg;
+    my $dow_name = "output/grab_new_" . $today->format("%a");
+    my $mode = (! -f $dow_name || -M $dow_name > 1)? '>': '>>';
+    if (open my $out, $mode, $dow_name) {
+        print {$out} $log_str;
+        close $out;
+    }
     if ($something_happened) {
         # not forever ... just until you trust it
         # then comment this out
+        $log_str =~ s{$}{<br>}xmsg;
         email_letter($c,
             to      => 'jon@suecenter.org',
             from    => 'jon@suecenter.org',
             subject => 'grab_new',
             html    => $log_str,
         );
-    }
-    my $dow_name = "output/grab_new_" . $today->format("%a");
-    my $mode = (! -f $dow_name || -M $dow_name > 1)? '>': '>>';
-    if (open my $out, $mode, $dow_name) {
-        print {$out} $log_str;
-        close $out;
     }
 
     # at what point do the req_mmi_payments expire???
