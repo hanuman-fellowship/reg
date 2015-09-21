@@ -238,7 +238,7 @@ sub finalities {
             to      => 'jon@suecenter.org',
             from    => 'jon@suecenter.org',
             subject => 'grab_new',
-            html    => $log_str,
+            html    => "<pre>$log_str</pre>",
         );
     }
 
