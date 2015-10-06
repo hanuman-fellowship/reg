@@ -15,10 +15,9 @@ use Util qw/
     stash
     invalid_amount
     penny
-    nsquish
-    normalize
     d3_to_hex
     rand6
+    add_or_update_deduping
 /;
 use Date::Simple qw/
     date
@@ -1012,113 +1011,29 @@ sub get_online : Local {
     }
     close $in;
     $P{request} =~ s{NEWLINE}{\n}g;
-    #
     # first create/update the person
-    # copied from Registration/get_online - DRY?
-    #
-    $P{first} = normalize($P{first});
-    $P{last} = normalize($P{last});
-    my @ppl = ();
-    (@ppl) = model($c, 'Person')->search(
-        {
-            first => $P{first},
-            last  => $P{last},
-        },
-    );
-    my $p;
-    my $today = tt_today($c)->as_d8();
-    if (! @ppl || @ppl == 0) {
-        #
-        # no match so create a new person
-        # check for misspellings first???
-        # do an akey search, pop up list???
-        # or cell phone search???
-        #
-        $p = model($c, 'Person')->create({
-            first    => $P{first},
-            last     => $P{last},
-            addr1    => $P{street},
-            addr2    => '',
-            city     => $P{city},
-            st_prov  => $P{st_prov},
-            zip_post => $P{zip_post},
-            country  => $P{country},
-            akey     => nsquish($P{street}, $P{zip}),
-            tel_home => $P{home},
-            tel_work => $P{work},
-            tel_cell => $P{cell},
-            email    => $P{email},
-            sex      => ($P{gender} eq 'male'? 'M': 'F'),
-            id_sps   => 0,
+    my ($person_id, $person, $status) = add_or_update_deduping($c, {
+        first     => $P{first},
+        last      =>   $P{last},
+        tel_home  => $P{home},
+        tel_cell  => $P{cell},
+        tel_work  => $P{work},
+        addr1     => $P{street},
+        addr2     => '',
+        city      => $P{city},
+        st_prov   => $P{st_prov},
+        zip_post  => $P{zip_post},
+        sex       => ($P{gender} eq 'female'? 'F': 'M'),
+        email     => $P{email},
 
-            e_mailings         => 'yes',
-            snail_mailings     => 'yes',
-            mmi_e_mailings     => 'yes',
-            mmi_snail_mailings => 'yes',
-            share_mailings     => 'yes',
-
-            date_updat  => $today,
-            date_entrd  => $today,
-            secure_code => rand6($c),
-        });
-    }
-    else {
-        if (@ppl == 1) {
-            # only one match so go for it
-            $p = $ppl[0];
-        }
-        else {
-            # disambiguate somehow???
-            # cell first, then zip
-            for my $q (@ppl) {
-                if (digits($q->tel_cell) eq digits($P{cell})) {
-                    $p = $q;
-                }
-            }
-            if (!$p) {
-                for my $q (@ppl) {
-                    if ($q->zip_post eq $P{zip}) {
-                        $p = $q;
-                    }
-                }
-            }
-            # else what else to do???
-            if (! $p) {
-                $p = $ppl[0];
-            }
-        }
-        # we have one unique person
-        #
-        # that person's address etc gets the values
-        # from the web registration.
-        $p->update({
-            addr1    => $P{street},
-            addr2    => '',
-            city     => $P{city},
-            st_prov  => $P{st_prov},
-            zip_post => $P{zip_post},
-            country  => $P{country},
-            akey     => nsquish($P{street}, $P{zip}),
-            tel_home => $P{home},
-            tel_work => $P{work},
-            tel_cell => $P{cell},
-            email    => $P{email},
-            sex      => ($P{gender} eq 'male'? 'M': 'F'),
-
-            # don't muck with these settings!
-            # the ride request form does not include them...
-            #
-            # e_mailings         => 'yes',
-            # snail_mailings     => 'yes',
-            # mmi_e_mailings     => 'yes',
-            # mmi_snail_mailings => 'yes',
-            # share_mailings     => 'yes',
-
-            date_updat => $today,
-        });
-    }
-    # so we have a Person in $p
-    #
+        # -1 below means don't touch them if the person exists.
+        # set them to 0 for new people.
+        snail_mailings     => -1,       
+        e_mailings         => -1,
+        mmi_snail_mailings => -1,
+        mmi_e_mailings     => -1,
+        share_mailings     => -1,
+    });
     my $airport = $P{airport};        # for use below
     my $driver_opts = "<option value=0>Driver\n";
     for my $d (_get_drivers($c)) {
@@ -1154,7 +1069,7 @@ sub get_online : Local {
         shuttle_opts => $shuttle_opts,
         type_opts    => $type_opts,
         driver_opts  => $driver_opts,
-        person       => $p,
+        person       => $person,
         dir_to       => $P{from_to} eq 'To MMC'  ? "checked": "",
         dir_from     => $P{from_to} eq 'From MMC'? "checked": "",
         ride         => {
@@ -1170,7 +1085,7 @@ sub get_online : Local {
         carrier      => $P{carrier},
         create_date  => $P{create_date},
         create_time  => $P{create_time},
-        form_action  => "create_do/" . $p->id(),
+        form_action  => "create_do/" . $person_id,
         template     => "ride/create_edit.tt2",
     );
 }

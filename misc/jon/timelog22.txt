@@ -65,3 +65,12 @@ Sep 13 2:00-4:00
     db_init, grab_new refinement
 Sep 20 6:00-10:00
     putting many changes in place - including temple_donations
+Sep 27 11:00-12:30
+    investigating Savita's email
+Sep 28 8:30-9:00, 12:00-1:00
+    grab_new
+    conversation with Savita
+Sep 29 1:00-2:00
+    grab_new
+Sep 30 8:45-9:15
+    grab_new continuing

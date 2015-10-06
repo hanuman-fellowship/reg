@@ -1879,8 +1879,10 @@ sub digits_only {
 #     just one street - given the long extendible line of a web form.
 #
 # update if we found a match otherwise add anew.
-# if provided ensure the affil_id - or an array of such?
+# check if anything has changed
+# return a status 'added', 'updated', or 'no change'.
 #
+# if provided ensure the affil_id - or an array of such?
 # return a person_id and a status of 'added' or 'updated'
 #
 # what about online reg - multiple phone #s???
@@ -1890,9 +1892,9 @@ sub digits_only {
 #
 # opt_in ???    online reg is more sophisticated than the temple, yes???
 # mlist (MMC/MMI) opt in???
-# can pass e_mailings etc as -1, 0, or 1
-# undef or -1 means don't change anything - or, if
-# it is a new person make it 0 (the default).
+# can pass e_mailings etc as '-1', '', or 'yes'
+# -1 means don't change anything - or, if
+# it is a new person make it '' (the default).
 #
 # control these things with %args:
 #     affil_id
@@ -1925,6 +1927,8 @@ sub add_or_update_deduping {
     # there will sometimes be several in the input that
     # are not used at all.
     my %needed = map { $_ => 1 } qw/
+        first
+        last
         tel_home
         tel_cell
         tel_work
@@ -1944,7 +1948,7 @@ sub add_or_update_deduping {
     /;
     # check that all required are present ...
     my @missing;
-    for my $k (keys %needed, qw/ first last /) {
+    for my $k (keys %needed) {
         if (! exists $href->{$k}) {
             push @missing, $k;        
         }
@@ -1953,10 +1957,23 @@ sub add_or_update_deduping {
         croak "missing keys for Util::add_update_deduping: @missing";
         # yes, die.  this is a programming problem not user error.
     }
+    # ensure the mailing keys are consistent
+    # they should be either '', 'yes', or '-1' (which means don't change it).
+    KEY:
     for my $k (@mailing_keys) {
-        $href->{$k} = 0 if $href->{$k} eq '';
-        $href->{$k} = 1 if $href->{$k} eq 'yes';
+        next KEY if $href->{$k} eq '-1';
+        if ($href->{$k} eq '1') {
+            $href->{$k} = 'yes';
+        }
+        elsif ($href->{$k} eq 'yes') {
+            ;  # okay
+        }
+        else {
+            $href->{$k} = '';
+        }
     }
+    # should the above be '' and 'yes' instead of 0 and 1???
+    # look in the database.  they ARE booleans.
 
     # normalize first, last and phone numbers
     $href->{first} = normalize($href->{first});
@@ -1979,6 +1996,10 @@ sub add_or_update_deduping {
 
     # a few other initializations
     my $akey = nsquish($href->{addr1}, $href->{addr2}, $href->{zip_post});
+    $href->{akey} = $akey;
+    if (exists $href->{country} && _is_usa($href->{country})) {
+        $href->{country} = '';
+    }
     my $today_d8 = today()->as_d8();
 
     my @people = model($c, 'Person')->search({
@@ -2003,16 +2024,25 @@ sub add_or_update_deduping {
             # update their information - their address may have changed.
             #
             for my $k (@mailing_keys) {
-                delete $href->{$k} if $href->{$k} == -1;
+                if (! defined $href->{$k} || $href->{$k} eq '-1') {
+                    # don't change what is already there...
+                    delete $href->{$k} 
+                }
             }
-            $p->update({
-                map({ $_ => $href->{$_} } keys %needed),
-                akey       => $akey,
-                date_updat => $today_d8,
-            });
+            # has anything changed at all?
+            if (_all_the_same($p, $href)) {
+                $status = 'no change';
+            }
+            else {
+                # do the update
+                $p->update({
+                    map({ $_ => $href->{$_} } keys %needed, 'akey'),
+                    date_updat => $today_d8,
+                });
+                $status = 'updated';
+            }
             $person_id = $p->id;
             $person = $p;
-            $status = 'updated';
         }
     }
     if (! $person_id) {
@@ -2020,18 +2050,14 @@ sub add_or_update_deduping {
         # or didn't find a match of phone/email/temple_id.
         # so we add a new person.
         #
-        for my $k (@mailing_keys) {
-            $href->{$k} = 0 if $href->{$k} == -1;
-        }
         my @comment;
         if ($args{request_to_comment}) {
             push @comment, comment => $href->{request};
         }
         $person = model($c, 'Person')->create({
-            map({ $_ => $href->{$_} } keys %needed, qw /first last /),
+            map({ $_ => $href->{$_} } keys %needed, 'akey'),
             @comment,
             id_sps      => 0,
-            akey        => $akey,
             date_entrd  => $today_d8,
             date_updat  => $today_d8,
             temple_id   => $href->{temple_id},
@@ -2043,7 +2069,7 @@ sub add_or_update_deduping {
     if (exists $args{affil_ids}) {
         # ensure the person has all of the affil_ids
         # we do not _remove_ affiliations here
-
+        # this does not change $status
         my @affil_ids;
         if (ref $args{affil_ids} eq 'ARRAY') {
             @affil_ids = @{$args{affil_ids}};
@@ -2065,6 +2091,35 @@ sub add_or_update_deduping {
         }
     }
     return $person_id, $person, $status;
+}
+
+# given a person object and a hashref
+# see if the key-values of the hashref exactly match
+# what is in the object.
+sub _all_the_same {
+    my ($p, $href) = @_;
+    KEY:
+    for my $k (keys %$href) {
+        next KEY if $k eq 'request' or $k eq 'opt_in';
+        if ($href->{$k} ne $p->$k) {    # hash index, method call
+            return 0;
+        }
+    }
+    return 1;
+}
+
+my %is_usa = map { $_ => 1 } (
+    'United States',
+    'U.S.A.',
+    'USA',
+    'u.s.a.',
+    'usa',
+    'US',
+    'u.s.',
+);
+sub _is_usa {
+    my ($country) = @_;
+    return exists $is_usa{$country};
 }
 
 # we have 6 phone numbers.

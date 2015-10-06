@@ -30,5 +30,6 @@ my $RST = "root/static";
 system("rm -rf $RST/mlist/*");
 system("rm -rf $RST/temple/*");
 system("rm -rf $RST/online/*");
+system("rm -rf $RST/grid/*");
 
 model($c, 'XAccountPayment')->search()->delete();

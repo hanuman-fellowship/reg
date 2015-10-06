@@ -135,14 +135,18 @@ sub list_online : Local {
         $g =~ s{root/static/omp/}{}xms;
         my ($id, $amount, $trans_id) = split '_', $g;
         my $m = model($c, 'Member')->find($id);
-        my $p = $m->person;
-        my $name = $p->first . ' ' . $p->last;
-        push @payments, {
-            name     => $name,
-            file     => $g,
-            amount   => $amount,
-            category => $m->category,
-        };
+        if ($m) {
+            my $p = $m->person;
+            if ($p) {
+                my $name = $p->first . ' ' . $p->last;
+                push @payments, {
+                    name     => $name,
+                    file     => $g,
+                    amount   => $amount,
+                    category => $m->category,
+                };
+            }
+        }
     }
     stash($c,
         payments => \@payments,

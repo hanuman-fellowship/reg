@@ -1271,8 +1271,10 @@ EOH
         $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
         $ftp->quit();
     };
-    if ($@) {
-        print $@;
+    if ($@ && ! -e '/tmp/testing_req_mmi') {
+        # what to do???  it did not succeed.
+        $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+        return;
     }
 
     # mark the payment requests as sent
@@ -1284,8 +1286,7 @@ EOH
         });
     }
 
-    unlink "/tmp/$code";        # maybe not delete this???
-                                # move it somewhere?
+    unlink "/tmp/$code" unless -e '/tmp/testing_req_mmi';
 
     #
     # send email to the person with the code

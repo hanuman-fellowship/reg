@@ -28,10 +28,11 @@ Send a proper thank you letter???
 
 3) Get mailing list requests (from MMC and MMI) into 
 root/static/mlist_done/$yyyy_mm and insert them into the people table.
-Notify the reception office who and which so they can
-send them a brochure.
+In one email (to each office) let them know
+the names and addresses so they can send them a brochure.
 
 4) Get ride requests into root/static/rides.
+If there were any notify the reception office.
 
 5) For registrations that indicated they would like
 to be contacted about massage send Kaya Kalpa a letter
@@ -52,24 +53,6 @@ them into actual payments.
 8) Get MMI standalone course registations
 
 9) Get online membership payments
-
-10) Get new and updated temple users.
-
-11) Maybe ... Get all email from authorize@hanumanfellowship.org.
-This address is one of the recipients of the "Merchant Email Receipts"
-sent by authorize.net after every transaction.
-
-A. If a transaction id found within the email is NOT
-among the transaction ids we got in 1) AND it is not in 
-root/static/online/<trans_id> (or the online_done/ dirs)
-THEN synthesize a transaction file from the info in the email
-and mark it as such.
-
-B. report the following untoward things via an email
-to jonb@logicalpoetry.com:  
-
-    - unable to make a connection via ftp or pop3
-    - misformatted emails
 
 =end
 
@@ -120,7 +103,6 @@ my $nomp = 0;
 my $nrides = 0;
 my ($now_t24, $today_d8, $year_mon_dir);
 my ($temple_xaccount_id);
-my %ids = ();   # needed any more??
 my @kayakalpa;  # an array of hashrefs - these people requested
                 # information about bodywork.
 my @mlist_alerts;   # an array of hashrefs - who to send
@@ -132,9 +114,6 @@ my ($online, $grid, $temple, $mlist_done, $rides,
 my $something_happened = 0;
 
 sub msg {
-    if ($_[0] !~ m{\A (.)\1}xms) {
-        print {$log} '   ';
-    }
     print {$log} @_;
     if (pop !~ m{\n$}xms) {
         print {$log} "\n";
@@ -161,7 +140,7 @@ sub initialize {
     $log_name = 'grab_new_log';
     open $log, '>', $log_name
         or die "no $log_name! :(\n";
-    msg "%% " . $now->t12;
+    msg "** " . $now->t12;
 
     if (-f $run_file) {
         my $t = (stat($run_file))[9];
@@ -206,7 +185,7 @@ sub initialize {
         $temple_xaccount_id = $xaccounts[0]->id;
     }
     else {
-        quit("could not find Temple Extra Account");
+        quit("could not find the Temple Extra Account");
     }
 
     my $rst = "root/static";
@@ -273,9 +252,8 @@ sub make_dir {
 # if $code_ref is supplied call it on each file.
 #
 sub get_files {
-    my ($title, $ftp, $remote_dir, $get_dir, $code_ref) = @_;
+    my ($ftp, $remote_dir, $get_dir, $code_ref, @params) = @_;
 
-    msg "** $title";
     $ftp->cwd($remote_dir)
         or quit("cannot cwd to $remote_dir " . $ftp->message);
     mkdir $get_dir if ! -d $get_dir;
@@ -288,21 +266,18 @@ sub get_files {
         $ftp->get($f, "$get_dir/$f");
         ++$nfiles;
         if ($code_ref) {
-            $code_ref->($get_dir, $f);
+            $code_ref->($get_dir, $f, @params);
         }
         $ftp->delete($f);
     }
     if ($nfiles) {
-        my $pl = $nfiles == 1? '': 's';
-        msg "$nfiles file$pl";
         $something_happened = 1;
     }
 }
 
 sub check_transaction {
-    my ($get_dir, $f) = @_;
+    my ($get_dir, $f, @params) = @_;
 
-    $ids{$f} = 1;       #  needed any more???
     my $href = x_file_to_href("$get_dir/$f");
     my $kk   = $href->{kayakalpa};
     my $desc = $href->{description};
@@ -310,10 +285,20 @@ sub check_transaction {
         push @kayakalpa, $href;
     }
     elsif ($desc && $desc =~ m{\A Temple \s+ Donation}xms) {
+        # a special case
         temple_donation($href, $f);
         return;
     }
-    msg "transaction $f, $href->{first} $href->{last}, $href->{title}";
+    msg "@params transaction $f, $href->{first} $href->{last}, $href->{title}";
+}
+
+sub check_grid {
+    my ($get_dir, $f) = @_;
+    my ($code) = $f =~ m{\A(.*)-}xms;
+    my ($rental) = model($c, 'Rental')->search({
+                       grid_code => $code,
+                   });
+    msg "grid " . ($rental? $rental->name: "unknown rental: code = $code");
 }
 
 sub temple_donation {
@@ -337,7 +322,8 @@ sub temple_donation {
         $c, $href,
         affil_ids => $system_affil_id_for{'Temple Guest'},
     );
-    msg sprintf "%s %s - %s", $person->first, $person->last, $status;
+    msg sprintf "temple donation %s %s - %s",
+                $person->first, $person->last, $status;
     # now we can add the payment record
     model($c, 'XAccountPayment')->create({
         xaccount_id => $temple_xaccount_id,
@@ -352,9 +338,8 @@ sub temple_donation {
     # move the file into the archive - we have finished with it
     rename "$online/$f", "$temple_donation/$f";
     # email thank you again???
-    # email temple people interested in donations???
+    # email temple people interested in what donations have come in???
 }
-
 
 #
 #
@@ -362,7 +347,6 @@ sub temple_donation {
 # who/where to send the brochure(s) - include the special requests.
 #
 sub mlist_alerts {
-    msg "-- mlist alerts";
     return unless @mlist_alerts;
     TYPE:
     for my $type (qw/ mmc mmi /) {
@@ -393,10 +377,11 @@ EOH
         my $rc = email_letter($c,
             to      => "$TYPE Mail Admin <$email>",
             from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+                    # what else???
             subject => "Online Mailing List Requests",
             html    => $html,
         );
-        msg "email to $type $email" . failed($rc);
+        msg "email mlist $type alert to $email" . failed($rc);
     }
 }
 
@@ -425,7 +410,10 @@ sub process_mlist {
         $hash{"tel_$k"} = $hash{$k};
     }
     $hash{sex} = $hash{gender} eq 'female'? 'F': 'M';
-    $hash{request} =~ s{NEWLINE}{\n}g;      # how did the NEWLINE get there???
+    $hash{request} =~ s{NEWLINE}{\n}g;
+        # for the purposes of the file format
+        # we needed the request to be on one line
+        # so dealt with newlines like this.
 
     # remove unneeded ones
     for my $k (qw/
@@ -451,7 +439,8 @@ sub process_mlist {
         affil_ids => \@affil_ids,
         request_to_comment => 1,
     );
-    msg sprintf "%s %s - %s", $person->first, $person->last, $status;
+    msg sprintf "$type mlist %s %s - %s",
+                $person->first, $person->last, $status;
     # record name, address for emailing all later to the reception office.
     # see sub mlist_alerts()
     # include type and comment
@@ -467,12 +456,39 @@ sub process_mlist {
     };
 }
 
+#
+# see who is requesting a ride and from/to where
+#
+sub get_rides {
+    my ($get_dir, $f) = @_;
+
+    ++$nrides;
+    open my $in, "<", "$get_dir/$f"
+        or quit("cannot open $get_dir/$f: $!\n");
+    my %hash;
+    while (my $line = <$in>) {
+        chomp $line;
+        my ($key, $value) = split ' ', $line;
+        $hash{$key} = $value;
+    }
+    close $in;
+    msg "ride for $hash{first} $hash{last} $hash{from_to} $hash{airport}";
+}
+
+sub get_omp {
+    my ($get_dir, $f) = @_;
+
+    my ($id, $amount, $transaction_id) = split '_', $f;
+    msg "omp \$$amount for member id $id";
+    ++$nomp;
+}
+
 sub ride_alert {
-    msg "-- ride_alert";
     if ($nrides) {
         my $rc = email_letter($c,
             to      => "MMC Transportation <$string{ride_email}>",
             from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+                                        # what else?
             subject => "Online Ride Request",
             html    => "There is an online ride request waiting"
                      . " for you in Reg."
@@ -483,7 +499,6 @@ sub ride_alert {
 }
 
 sub omp_alert {
-    msg "-- omp_alert";
     if ($nomp) {
         my $rc = email_letter($c,
             to      => "HFS Membership <$string{mem_email}>",
@@ -492,7 +507,7 @@ sub omp_alert {
             subject => "Membership Payment",
             html    => "There is an online membership payment waiting for you in Reg."
         );
-        msg "email about omp waiting" . failed($rc);
+        msg "email omp waiting to $string{mem_email}" . failed($rc);
     }
 }
 
@@ -517,7 +532,9 @@ sub process_mmi_payments {
     # - adjust the balance in the registration
     # - log it
     #
+    my $npy = 0;
     for my $py (split m{~}, $hash{py_desc}) {
+        ++$npy;
         my ($amount, $note, $glnum) = split m{\|}, $py;
         $amount =~ s{,}{}xmsg;
         model($c, 'MMIPayment')->create({
@@ -532,9 +549,18 @@ sub process_mmi_payments {
         });
     }
     # remove all requests with the code
-    model($c, 'RequestedMMIPayment')->search({
+    my @req_py = model($c, 'RequestedMMIPayment')->search({
         code => $hash{code},
-    })->delete();
+    });
+    if ($npy != @req_py) {
+        msg "**** some mismatch with MMI req_pay - "
+           ."reg_id $hash{reg_id} npy $npy != " . scalar(@req_py);
+    }
+    else {
+        for my $py (@req_py) {
+            $py->delete();
+        }
+    }
 
     # History record
     model($c, 'RegHistory')->create({
@@ -549,13 +575,14 @@ sub process_mmi_payments {
     model($c, 'Registration')->find($hash{reg_id})->update({
         balance => \"balance - $hash{total}",
     });
-# let's notify someone that the payment was made!???
-    msg "got req mmi payment totaling $hash{total} for $hash{first} $hash{last}";
+# notify someone that the payment was made!???
+    msg "req mmi payment totaling $hash{total} for $hash{first} $hash{last}";
 }
 
 #
 # a temple user - either to create or update
 # does Shantam send it for update only when something has changed???
+# in add_or_update_deduping we return 'no change' if nothing has changed.
 # the filename is the temple_id
 # opt_in - means what?   which to set?  all???
 #
@@ -586,7 +613,7 @@ sub get_temple {
     if ($hash{opt_in}) {
         @hash{qw/
             e_mailings
-            mmi_emailings
+            mmi_e_mailings
             share_mailings
         /} = (1) x 3;
     }
@@ -594,11 +621,11 @@ sub get_temple {
         $c, \%hash,
         affil_ids => $system_affil_id_for{'Temple Guest'},
     );
-    msg sprintf "%s %s - %s", $person->first, $person->last, $status;
+    msg sprintf "temple %s %s - %s",
+                $person->first, $person->last, $status;
 }
 
 sub kayakalpa {
-    msg "-- kayakalpa";
     return unless @kayakalpa;
     my $fmt = "%A, %B %e, %Y";
     KK:
@@ -642,7 +669,7 @@ sub kayakalpa {
             subject  => "Massage/Bodywork Request during '$program' from $dates",
             html     => $html,
         );
-        msg "email to $href->{first} $href->{last}" . failed($rc);
+        msg "email kayakalpa to $href->{email}" . failed($rc);
     }
 }
 
@@ -663,20 +690,25 @@ sub main {
         login    => $string{ftp_login},
         password => $string{ftp_password},
     );
-    get_files("MMC Transactions", $ftp, $string{ftp_transactions},
-                                  $online, \&check_transaction);
+    # MMC Transactions
+    get_files($ftp, $string{ftp_transactions},
+              $online, \&check_transaction, 'mmc');
 
-    get_files("Rental Grids",     $ftp, $string{ftp_rental_dir},
-                                  $grid);
+    # Rental Grids
+    get_files($ftp, $string{ftp_rental_dir},
+              $grid, \&check_grid);
 
-    get_files("MList Requests",   $ftp, $string{ftp_mlist_requests},
-                                  $mlist_done,  \&process_mlist);
+    # MList Requests
+    get_files($ftp, $string{ftp_mlist_requests},
+              $mlist_done,  \&process_mlist);
 
-    get_files("Rides",            $ftp, $string{ftp_ride_dir},
-                                  $rides, sub { $nrides = 1; });
+    # Rides
+    get_files($ftp, $string{ftp_ride_dir},
+              $rides, \&get_rides);
 
-    get_files("Membership Payments", $ftp, $string{ftp_omp_dir},
-                                  $omp_dir, sub { $nomp = 1 });
+    # Membership Payments
+    get_files($ftp, $string{ftp_omp_dir},
+              $omp_dir, \&get_omp);
     $ftp->quit();   # all done with MMC
 
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
@@ -686,26 +718,28 @@ sub main {
         password => $string{ftp_mmi_password},
     );
 
-    get_files("MMI Payment Requests", $ftp, $string{req_mmi_dir_paid},
-                                      $req_mmi_dir,
-                                      \&process_mmi_payments);
+    # MMI Payment Requests
+    get_files($ftp, $string{req_mmi_dir_paid},
+              $req_mmi_dir, \&process_mmi_payments);
 
-    get_files("MMI Transactions", $ftp, $string{ftp_mmi_transactions},
-                                  $online, \&check_transaction);
+    # MMI Transactions
+    get_files($ftp, $string{ftp_mmi_transactions},
+              $online, \&check_transaction, 'mmi');
 
     $ftp->quit();   # all done with MMI
 
-    $ftp = ftp_connect(         # hanumanfellowship.org
+    $ftp = ftp_connect(         # temple.mountmadonna.org used to be at hfs
         site     => $string{ftp_hfs_site},
         passive  => $string{ftp_passive},
         login    => $string{ftp_hfs_user},
         password => $string{ftp_hfs_password},
     );
 
-    get_files("Temple Users", $ftp, $string{ftp_hfs_dir},
-                  $temple, \&get_temple);
+    # Temple Users
+    get_files($ftp, $string{ftp_hfs_dir},
+              $temple, \&get_temple);
 
-    $ftp->quit();   # all done with HFS
+    $ftp->quit();   # all done with temple.mountmadonna.org
 
     mlist_alerts();
     ride_alert();
@@ -716,241 +750,3 @@ sub main {
 }
 
 main();
-
-__END__
-
-my %mnum = qw/
-    Jan 1
-    Feb 2
-    Mar 3
-    Apr 4
-    May 5
-    Jun 6
-    Jul 7
-    Aug 8
-    Sep 9
-    Oct 10
-    Nov 11
-    Dec 12
-/;
-
-#
-# get all email sent to authorize@hanumanfellowship.org.
-#
-use Mail::POP3Client;
-my $pop = new Mail::POP3Client(
-    USER     => "authorize+hanumanfellowship.org",
-    PASSWORD => "Ashtanga!",
-    HOST     => "mail.hanumanfellowship.org"
-);
-if (! $pop) {
-    quit("no pop");
-}
-LETTER:
-for (my $i = 1; $i <= $pop->Count(); ++$i) {
-    my ($from, $subj) = ("", "");
-    for my $h ($pop->Head($i)) {
-        if ($h =~ m{^From:\s+(.*)}i) {
-            $from = $1;
-        }
-        elsif ($h =~ m{^Subject:\s+(.*)}i) {
-            $subj = $1;
-        }
-    }
-    if (! (
-        $from && $from =~ m{emailreceipts\@authorize.net}
-        &&
-        $subj && $subj =~ m{Merchant Email Receipt}
-        )
-    ) {
-        dump_it($i, "from/subj error");
-        next LETTER;
-    }
-    my @lines = $pop->Body($i);
-    #
-    # First get the transaction id, email,
-    # city, state, zip, country and the amount.
-    # also get the last and first names for the status message.
-    # They're in a different section from the x_ vars.
-    # We DO unnecessarily go through the @lines twice.  It could
-    # be optimized a little - but speed is not the issue here.
-    #
-    my ($trans_id, $email, $city, $state, $zip, $country, $amount);
-    my ($last, $first) = ("", "");
-    my ($day, $mon, $year, $hour, $min, $sec, $ampm);
-
-    for my $l (@lines) {
-        if ($l =~ m{Transaction\s+ID\s*:\s*(.*)}i) {
-            $trans_id = $1;
-        }
-        elsif ($l =~ m{E-Mail\s*:\s*(.*)}i) {
-            $email = $1;
-        }
-        elsif ($l =~ m{City\s*:\s*(.*)}i) {
-            $city = $1;
-        }
-        elsif ($l =~ m{State/Province\s*:\s*(.*)}i) {
-            $state = $1;
-        }
-        elsif ($l =~ m{Zip/Postal\s+Code\s*:\s*(.*)}i) {
-            $zip = $1;
-        }
-        elsif ($l =~ m{Country\s*:\s*(.*)}i) {
-            $country = $1;
-            if ($country eq "USA") {
-                $country = "";
-            }
-        }
-        elsif ($l =~ m{Amount\s*:\s*([\d.]+)}i) {
-            $amount = $1;
-        }
-        elsif ($l =~ m{Date/Time\s*:\s*(.*)}i) {
-            my $date_time = $1;
-            ($day, $mon, $year) = $date_time =~ m{(\d+)-(...)-(\d+)};
-            $mon = $mnum{$mon};
-            ($hour, $min, $sec, $ampm)
-                = $date_time =~ m{(\d\d):(\d\d):(\d\d) (..)$};
-            $hour = 0   if $hour == 12 && $ampm eq 'AM';
-            $hour += 12 if $hour  < 12 && $ampm eq 'PM';
-            --$hour if $hour > 0;       # not quite right but
-                                    # I don't want to mess with a new day
-                                    # in case we cross a day boundary.
-                                    # shouldn't matter, right?
-
-        }
-        elsif ($l =~ m{lname\s*:\s*(.*)}i) {
-            $last = $1;
-        }
-        elsif ($l =~ m{fname\s*:\s*(.*)}i) {
-            $first = $1;
-        }
-    }
-    for my $x (
-        $trans_id, $email, $city, $state, $zip,
-        $country, $amount, $first, $last,
-        $day, $mon, $year, $hour, $min, $sec, $ampm
-    ) {
-        if (! defined $x) {
-            dump_it($i, "flaw in format: $x");
-            next LETTER;
-        }
-    }
-
-    if (exists $ids{$trans_id}) {
-        #
-        # already gotten above.
-        # no problem - normal behavior.
-        # this is what we hope.
-        #
-        $Msg .= "email: $trans_id - $last, $first"
-             .  " - just got above\n";
-        $pop->Delete($i);
-        next LETTER;
-    }
-    if (-f "$online/$trans_id") {
-        #
-        # already gotten on a previous call to grab_new
-        #
-        $Msg .= "email: $trans_id - $last, $first"
-             .  " - gotten previously\n";
-        $pop->Delete($i);
-        next LETTER;
-    }
-    if (-f "root/static/online_done/$/$trans_id") {
-        #
-        # already gotten on a previous call to grab_new
-        # (within the same month)
-        # AND already processed and moved aside.
-        #
-        $Msg .= "email: $trans_id - $last, $first"
-             .  " - gotten previously and processed\n";
-        $pop->Delete($i);
-        next LETTER;
-    }
-    #
-    # we have found a 'missing' online registration.
-    # without this email it would not have been seen at all.
-    # synthesize a transaction file.
-    #
-    my $fname = "$online/$trans_id";
-    my $out;
-    if (! open $out, ">", $fname) {
-        dump_it($i, "could not open $fname");
-        next LETTER;
-    }
-    printf {$out} "x_date => %d/%d/%d\n", $mon, $day, $year;
-    printf {$out} "x_time => %02d:%02d\n", $hour, $min;
-    print  {$out} "x_trans_id => $trans_id\n";
-    print  {$out} "x_amount => $amount\n";
-    print  {$out} "x_state => $state\n";
-    print  {$out} "x_city => $city\n";
-    print  {$out} "x_country => $country\n";
-    print  {$out} "x_zip => $zip\n";
-    print  {$out} "x_email => $email\n";
-    print  {$out} "x_synthesized => 1\n";        # to mark it for Reg
-    my %P;      # all other x_ named values
-    my $got_pid = 0;
-    for my $l (@lines) {
-        if ($l =~ m{^(x_\w+) : (.*)}) {
-            my $type = $1;
-            if ($type eq 'x_pid') {
-                $got_pid = 1;
-            }
-            my $val = $2;
-            $P{$type} = $val;
-            $l =~ s{:}{=>};
-            if ($type =~ m{home|work|cell}) {
-                my ($phone) = $l =~ m{=> (.*)};
-                my $n = $phone =~ tr/0-9/0-9/;      # count digits
-                if ($n == 10 && $phone =~ m{^[0-9\(\)-. /]+$}) {
-                    #
-                    # an American phone number
-                    # reformat it in a standard way
-                    #
-                    $phone =~ s{[^0-9]}{}g;
-                    $phone = substr($phone, 0, 3) . "-"
-                           . substr($phone, 3, 3) . "-"
-                           . substr($phone, 6, 4);
-                    $l =~ s{=>.*}{=> $phone};
-                }
-            }
-            print {$out} "$l\n";
-            if ($l =~ m{x_kayakalpa => yes}) {
-                push @kayakalpa, $trans_id;    
-            }
-        }
-    }
-    close $out;
-    if (! $got_pid) {
-        unlink $fname;
-        $Msg .= "refund? transaction_id $trans_id amount $amount\n";
-        $pop->Delete($i);
-        next LETTER;
-    }
-    $Msg .= "email: $trans_id - $last, $first\n";
-    $pop->Delete($i);
-    #
-    # send an email with the info to assure the registrant.
-    #
-    my $html;
-    my $tt = Template->new()
-        or quit("template new error: " . Template->error());
-    $tt->process(
-        'email.tt2',
-        {
-            first    => $first,
-            amount   => $amount,
-            trans_id => $trans_id,
-            %P,
-        },
-        \$html,
-    ) or quit("template error: " . $tt->error());
-    my $rc = email_letter($c,
-        to       => "$first $last <$email>",
-        from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
-        subject  => "Online registration for $P{x_title}",
-        html     => $html,
-    );
-    msg "email to $first $last" . failed($rc);
-}
-$pop->Close();

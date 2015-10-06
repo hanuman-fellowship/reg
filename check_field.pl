@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use Test::More tests => 10;
+use Test::More tests => 11;
 use lib 'lib';
 use Util qw/
     model
@@ -31,6 +31,11 @@ if (@p) {
 else {
     ok(0, '1 person');
 }
+# the 3rd occurence of this person should end up with
+# 'no change' in the log named 'grab_new_log'.
+my $rc = system("grep 'Sephalika.*no change' grab_new_log >/dev/null");
+$rc >>= 8;
+ok($rc == 0, 'no change for 3rd Sephalika');
 
 # the second person by this name has a different temple_id, phone, and email
 # so we create a new person with the same name
