@@ -308,19 +308,20 @@ sub _get_data {
     ) {
         push @mess, 'Name has MMI in it but the program is not an MMI program.';
     }
-    if ($P{school} != 0 
-        && $P{level} ne 'S'
-        && $P{level} ne 'A'
-        && $P{name} !~ m{$mmi_levels{$P{level}}}
-    ) {
-        push @mess, "Name must have $mmi_levels{$P{level}} in it.";
-    }
-    if ($P{school} != 0 && ($P{level} eq 'S' || $P{level} eq 'A')
-        && $P{name} =~ m{Diploma|Certificate|Masters|AHC|CAP}
-    ) {
-        push @mess, 'Name must not have Diploma, Certificate,'
-                    . ' Masters, AHC, or CAP in it.';
-    }
+    # Temporary fix...
+    #if ($P{school} != 0 
+    #    && $P{level} ne 'S'
+    #    && $P{level} ne 'A'
+    #    && $P{name} !~ m{$mmi_levels{$P{level}}}
+    #) {
+    #    push @mess, "Name must have $mmi_levels{$P{level}} in it.";
+    #}
+    #if ($P{school} != 0 && ($P{level} eq 'S' || $P{level} eq 'A')
+    #    && $P{name} =~ m{Diploma|Certificate|Masters|AHC|CAP}
+    #) {
+    #    push @mess, 'Name must not have Diploma, Certificate,'
+    #                . ' Masters, AHC, or CAP in it.';
+    #}
 
     # dates are converted to d8 format
     my ($sdate, $edate);
