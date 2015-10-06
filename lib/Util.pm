@@ -1926,7 +1926,7 @@ sub add_or_update_deduping {
     # validate the input parameters that are REQUIRED.
     # there will sometimes be several in the input that
     # are not used at all.
-    my %needed = map { $_ => 1 } qw/
+    my @needed = (qw/
         first
         last
         tel_home
@@ -1940,15 +1940,12 @@ sub add_or_update_deduping {
         sex
         email
         temple_id
-        snail_mailings
-        e_mailings
-        mmi_snail_mailings
-        mmi_e_mailings
-        share_mailings
-    /;
+    /,
+    @mailing_keys);
+
     # check that all required are present ...
     my @missing;
-    for my $k (keys %needed) {
+    for my $k (@needed) {
         if (! exists $href->{$k}) {
             push @missing, $k;        
         }
@@ -2030,13 +2027,13 @@ sub add_or_update_deduping {
                 }
             }
             # has anything changed at all?
-            if (_all_the_same($p, $href)) {
+            if (_all_the_same($p, $href, \@needed)) {
                 $status = 'no change';
             }
             else {
                 # do the update
                 $p->update({
-                    map({ $_ => $href->{$_} } keys %needed, 'akey'),
+                    map({ $_ => $href->{$_} } @needed, 'akey'),
                     date_updat => $today_d8,
                 });
                 $status = 'updated';
@@ -2055,7 +2052,7 @@ sub add_or_update_deduping {
             push @comment, comment => $href->{request};
         }
         $person = model($c, 'Person')->create({
-            map({ $_ => $href->{$_} } keys %needed, 'akey'),
+            map({ $_ => $href->{$_} } @needed, 'akey'),
             @comment,
             id_sps      => 0,
             date_entrd  => $today_d8,
@@ -2093,13 +2090,13 @@ sub add_or_update_deduping {
     return $person_id, $person, $status;
 }
 
-# given a person object and a hashref
-# see if the key-values of the hashref exactly match
+# given a person object and a hashref and an array of needed keys
+# see if the needed key-values of the hashref exactly match
 # what is in the object.
 sub _all_the_same {
-    my ($p, $href) = @_;
+    my ($p, $href, $needed_aref) = @_;
     KEY:
-    for my $k (keys %$href) {
+    for my $k (@$needed_aref) {
         next KEY if $k eq 'request' or $k eq 'opt_in';
         if ($href->{$k} ne $p->$k) {    # hash index, method call
             return 0;
