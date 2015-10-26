@@ -1,3 +1,5 @@
+<!-- need a way to organize this better -->
+<!-- comment the END to match the IF and FOR -->
 [% id = program.id %]
 [% prog_admin = Catalyst.check_user_roles('prog_admin') %]
 [% mmi_admin = Catalyst.check_user_roles('mmi_admin') %]
@@ -293,6 +295,7 @@ Web
 <th align=right>Level</th>
 <td>$program.level.name</td>
 </tr>
+[% END %]
 
 <tr>
 <th align=right valign=top>Leaders</th>
@@ -431,7 +434,6 @@ $leaders_house
 
 </td>
 </tr>
-[% END %]
 
 </table>
 </div>

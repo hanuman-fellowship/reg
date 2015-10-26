@@ -185,7 +185,7 @@ sub future_programs {
     my ($prev_prog);
     PROG:
     for my $p (@programs) {
-        next PROG if ! $p->linked || $p->cancelled || $p->school != 0;
+        next PROG if ! $p->linked || $p->cancelled || $p->school->mmi;
         $p->{prev}   = $prev_prog || $p;
         $prev_prog->{"next"} = $p;
         $prev_prog = $p;
@@ -200,7 +200,7 @@ sub future_programs {
     #
     PROG:
     for my $p (reverse @programs) {
-        next PROG if ! $p->linked || $p->cancelled || $p->school != 0;
+        next PROG if ! $p->linked || $p->cancelled || $p->school->mmi;
         my $sd = $p->sdate_obj();
         $first_of_month{$sd->month . $sd->year} = $p;
     }
@@ -714,12 +714,12 @@ sub month_calendar {
 }
 sub nextprog {
     my ($self) = @_;
-    return "#" if $self->cancelled || ! $self->{next};      # ???
+    return "#" if $self->cancelled || ! $self->{next};
     $self->{"next"}->fname;
 }
 sub prevprog {
     my ($self) = @_;
-    return "#" if $self->cancelled || ! $self->{prev};      # ???
+    return "#" if $self->cancelled || ! $self->{prev};
     $self->{prev}->fname;
 }
 
