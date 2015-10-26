@@ -18,7 +18,7 @@
 </tr>
 [% FOR r IN registrations %]
 <tr>
-[% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
+[% IF ! program.school.mmi || Catalyst.check_user_roles('mmi_admin') %]
 <td align=left><a href="/registration/view/[% r.id %]">[% r.name %]</a></td>
 [% ELSE %]
 <td align=left>[% r.name %]</td>

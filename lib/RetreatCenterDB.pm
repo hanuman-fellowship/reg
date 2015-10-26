@@ -83,6 +83,9 @@ my @classes = qw/
 
     Organization
     ProgramDoc
+
+    Level
+    School
 /;
 
 __PACKAGE__->load_classes({

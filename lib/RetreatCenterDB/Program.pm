@@ -66,8 +66,8 @@ __PACKAGE__->add_columns(qw/
     prog_end
     reg_count
     lunches
-    school
-    level
+    school_id
+    level_id
     max
     notify_on_reg
     summary_id
@@ -99,6 +99,12 @@ __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
 # category
 __PACKAGE__->belongs_to(category => 'RetreatCenterDB::Category',
                         'category_id');
+# level
+__PACKAGE__->belongs_to(level => 'RetreatCenterDB::Level',
+                        'level_id');
+# school
+__PACKAGE__->belongs_to(school => 'RetreatCenterDB::School',
+                        'school_id');
 # summary
 __PACKAGE__->belongs_to(summary => 'RetreatCenterDB::Summary', 'summary_id');
 
@@ -158,8 +164,8 @@ sub future_programs {
             edate    => { '>=', tt_today($c)->as_d8() },
             webready => 'yes',
             -or => [
-                school => 0,       # MMC
-                level => 'A',      # MMI standalone course
+                'school.mmi' => '',           # MMC
+                'level.public' => 'yes', # MMI public standalone course
             ],
         },
         { order_by => [ 'sdate', 'edate' ] },
@@ -986,10 +992,10 @@ sub prog_type {
     if ($self->cancelled) {
         $type = "<span class=red>Cancelled</span> ";
     }
-    if ($self->level() eq 'A') {
+    if ($self->level->public()) {
         $type .= "Course ";
     }
-    if ($self->school() != 0) {
+    if ($self->school->mmi()) {
         $type .= "MMI ";
     }
     if (! $self->PR && ! $self->linked()) {
@@ -1080,8 +1086,8 @@ id - unique id
 image - A boolean - do we have an image for the web page of this program?
     Naming conventions lead us to the actual filename.
 kayakalpa - Shall we include a note about Kaya Kalpa information in the confirmation letter?
-level - For MMI programs this indicates the type of course.
-    D (Diploma), C (Certificate), M (Masters), S (Course), A (Stand-alone Course)
+level_id - For MMI programs this indicates the type of course.
+   CS YSC1, CS YSC2, ..., Certificate, ... Course
 linked - Shall this program's web page be linked to the others?
 lunches - An encoded (essentially binary) field describing which days of the program have lunch.
 max - What is the expected maximum registrations for the program?
@@ -1110,7 +1116,7 @@ reg_start - Time that registration begins on the first day.
 rental_id - foreign key to rental - if the program is a 'hybrid'.
 retreat - Is this an MMC yoga retreat?
 sbath - Are singles with bath allowed?
-school - 0 for MMC programs.   1-4 for programs sponsored by MMI - Yoga, Ayurveda, Massage and Community Studies.
+school_id - foreign key to school
 sdate - start date of the program.
 single - Are singles allowed for this program?
 subtitle - A secondary description of the program.  For the web page.

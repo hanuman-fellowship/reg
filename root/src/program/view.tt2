@@ -51,7 +51,7 @@ function UNreserve_cluster(cluster_id) {
     <a href=/program/create
        onclick="return confirm('If this new Program has been at MMC before it would be better to use Duplicate.');"
     >Add</a>
-    [% IF program.school == 0 || mmi_admin %]
+    [% IF program.school.mmi || mmi_admin %]
         &nbsp;&nbsp;&nbsp;
         <span id=editlink><a accesskey=E href=/program/update/$id><span class=keyed>E</span>dit</a></span>
         &nbsp;&nbsp;&nbsp;
@@ -79,14 +79,6 @@ function UNreserve_cluster(cluster_id) {
         &nbsp;&nbsp;&nbsp;
     [% END %]
 [% END %]
-[% IF prog_admin %]
-    <a href=/program/publish>Publish<a>
-    &nbsp;&nbsp;&nbsp;
-[% END %]
-[% IF program.school != 0 && program.level == 'A' && mmi_admin %]
-    <a href=/program/mmi_publish>MMI Publish<a>
-    &nbsp;&nbsp;&nbsp;
-[% END %]
 <a target=_blank href=$program.web_addr>Web</a>
 &nbsp;&nbsp;&nbsp;
 <span id=backlink><a href=/program/view_adj/$id/back accesskey='B'><span class=keyed>B</span>ack</a></span>
@@ -105,11 +97,11 @@ function UNreserve_cluster(cluster_id) {
 &nbsp;&nbsp;&nbsp;
 <a href=/registration/nonzero/$id>NonZero\$</a>
 &nbsp;&nbsp;&nbsp;
-[% IF program.school != 0 && program.level == 'S' && mmi_admin %]
+[% IF program.school.mmi && ! program.level.long_term && mmi_admin %]
 <a href=/registration/mmi_import/$id>Import</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-[% IF program.school == 0 || Catalyst.check_user_roles('mmi_admin') %]
+[% IF ! program.school.mmi || Catalyst.check_user_roles('mmi_admin') %]
     <a href=/registration/first_reg/$id>1st Reg</a>
     &nbsp;&nbsp;&nbsp;
 [% END %]
@@ -287,6 +279,22 @@ Web
 <table cellpadding=3 border=0>
 
 <tr>
+<th align=right valign=top>Category</th>
+<td valign=top>$program.category.name</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Sponsoring<br>Organization</th>
+<td valign=top>$program.school.name</td>
+</tr>
+
+[% IF program.school.mmi %]
+<tr>
+<th align=right>Level</th>
+<td>$program.level.name</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Leaders</th>
 <td valign=top align=left colspan=5 width=300>
 $leaders_house
@@ -422,22 +430,6 @@ $leaders_house
 </table>                <!-- Times table -->
 
 </td>
-</tr>
-
-<tr>
-<th align=right valign=top>Category</th>
-<td valign=top>$program.category.name</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Sponsoring<br>Organization</th>
-<td valign=top>$school</td>
-</tr>
-
-[% IF program.school != 0 %]
-<tr>
-<th align=right>Level</th>
-<td>$level</td>
 </tr>
 [% END %]
 

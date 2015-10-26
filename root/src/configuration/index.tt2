@@ -12,7 +12,11 @@ p {
 [% mail_admin = Catalyst.check_user_roles('mail_admin') %]
 [% user_admin = Catalyst.check_user_roles('user_admin') %]
 [% web_des = Catalyst.check_user_roles('web_designer') %]
-<ul>
+
+<!-- two columns; each column just has a sequence of paragaphs -->
+<table cellpadding=20>
+<tr>
+<td valign=top>
 [% IF mail_admin %]
     <a href=/affil/list>Affiliations</a><p>
 [% END %]
@@ -40,6 +44,11 @@ p {
     <a href=/xaccount/list>Extra Accounts</a><p>
     <a href=/house>Houses</a><p>
     <a href=/housecost>Housing Costs</a><p>
+[% END %]
+<a href=/issue/list>Issues</a><p>
+</td>
+<td valign=top>
+[% IF prog %]
     <a href=/leader>Leaders</a><p>
     <a href=/meetingplace>Meeting Places</a><p>
 [% END %]
@@ -70,4 +79,6 @@ p {
 [% IF switch %]
 <a href=/configuration/switch>Emergency Switch</a><p>
 [% END %]
-</ul>
+</td>
+</tr>
+</table>

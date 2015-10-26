@@ -69,6 +69,20 @@ body {
     color: red;
     font-size: 19pt;
 }
+.outbal {
+    color: white;
+    background-color: red;
+}
+.greyed {
+    color: #aaaaaa
+}
+.smaller {
+    font-weight: normal;
+    font-size: 12;
+    position: absolute;
+    left: 400px;
+    top: 105px;
+}
 .dow {
     color: red;
     font-weight: bold;

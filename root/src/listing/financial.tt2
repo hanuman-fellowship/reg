@@ -32,7 +32,7 @@ End <input type=text name=edate size=10 value='$end'>
 </form>
 </table>
 <p style="margin-top: 6mm">
-<form action="/finance/outstanding" method=post>
+<form action="/finance/outstanding/mmc" method=post>
 Outstanding Balances Since <input type=text name=since size=10 value='$since'>
 &nbsp;<input type=submit value="Go">
 </form>
@@ -80,6 +80,11 @@ End <input type=text name=edate size=10 value='[% end %]'>
 </td><td><input type=submit value="Go"></td></tr>
 </form>
 </table>
+<p style="margin-top: 6mm">
+<form action="/finance/outstanding/mmi" method=post>
+Outstanding Balances Since <input type=text name=since size=10 value='$since'>
+&nbsp;<input type=submit value="Go">
+</form>
 <p style="margin-top: 6mm">
 <form action="/finance/mmi_glnum_list" method=post>
 MMI General Ledger Numbers Since <input type=text name=since size=10 value='$since'>

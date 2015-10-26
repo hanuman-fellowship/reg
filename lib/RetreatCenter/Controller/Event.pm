@@ -510,11 +510,15 @@ EOH
     my @events;
     for my $ev_kind (qw/Event Program Rental/) {
         my @prog_opt = ();
+        my @join_opt = ();
         if ($ev_kind eq "Program") {
             @prog_opt = (
-                level           => { 'not in',  [qw/ D C M P H B /] },
-                name            => { -not_like, "%personal%retreat%" },
-                not_on_calendar => '',
+                'level.long_term' => '',    # we don't want long term events
+                'me.name'         => { -not_like, "%personal%retreat%" },
+                not_on_calendar   => '',
+            );
+            @join_opt = (
+                join => [qw/ level /],
             );
         }
         elsif ($ev_kind eq 'Event') {
@@ -526,6 +530,9 @@ EOH
                           edate => { '>=', $the_first },
                           @opt_end,
                           @prog_opt,
+                      },
+                      {
+                          @join_opt,
                       });
     }
 
@@ -616,7 +623,7 @@ EOH
         $event_name =~ s{ \s* \d?\d/\d\d\s* \z }{}xms;
                                             # tidy up ending mm/yy or m/yy
                                             # not really needed
-        $event_name =~ s{ \A MMI- }{}xms;   # tidy up the front of MMI programs
+        $event_name =~ s{ \A MMI-? }{}xms;   # tidy up the front of MMI programs
 
         my $ev_count = $ev->count();
         my $count = $ev_count;

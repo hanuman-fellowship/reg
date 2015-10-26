@@ -43,7 +43,7 @@ Jul 8 8:30-10:20
 Jul 9 8:30-10:00
     writing that routine - add_or_update_deduping
     wrote File::FTP for testing grab_new - should be useful!
-Jul 10 2:00-5:00, 7:20-
+Jul 10 2:00-5:00, 7:20-8:00
     continued refactoring of grab_new
 Jul 20 10:00-3:00
     lots of work on refactoring grab_new
@@ -74,3 +74,36 @@ Sep 29 1:00-2:00
     grab_new
 Sep 30 8:45-9:15
     grab_new continuing
+Oct 8 8:30-9:45
+    beginning to add Level, School tables
+    and use them
+Oct 9 10:00-11:00
+    conversation with Brajesh re MMI, further on Level, School
+Oct 10 8:45-10:30
+    further on grab_new, Level&School transformation
+Oct 13 9:00-9:45
+    fiddling with MMI, arranging for visit on Saturday
+Oct 14 8:30-9:00
+    looking for all functionality re: School and Level
+Oct 17 1:00-3:00
+    at MMC consult with Rachel and Sukh
+Oct 18 9:30-11:30
+    implementing what I learned yesterday
+    housing preferences on import???
+Oct 19 8:30-9:20
+    Level on Credentialed list of programs
+    Import and housing prefs, type
+    outstanding balance in red after import - with notices
+Oct 20 8:30-9:20
+    continuing
+Oct 22 8:30-9:15, 1:00-1:50, 5:40-6:25
+    continuing, grab_new as well
+    activity
+
+    todo: date on Activity page, member name instead of id
+    $ signs in msg lines
+Oct 25 1:30-
+    view program Misc tab with Category, School, and Level at top
+    final(?) tweaks before putting in place
+    TODO - payment edit/delete from?  both MMI and MMC - never immediate for deleting please
+        reg history for MMI when edit/deleting

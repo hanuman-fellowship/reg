@@ -450,7 +450,7 @@ sub meal_list : Local {
     my $end_d8   = $end->as_d8();
 
     #
-    # people enrolled in a DCM program do not eat meals.
+    # people enrolled in a long term MMI programs do not eat meals.
     # resident programs are considered community and not included.
     #
     my @regs = model($c, 'Registration')->search(
@@ -462,15 +462,11 @@ sub meal_list : Local {
                             # do program.category.name => 'Normal'
                             # but not now ...
                        'me.cancelled'  => '',
-                       -or => [
-                           'program.level' => 'S',
-                           'program.level' => 'A',
-                           'program.level' => ' ',
-                       ],
+                       'program.level.long_term' => '',
                    },
                    {
-                       join     => [qw/ program /],
-                       prefetch => [qw/ program /],   
+                       join     => [qw/ program level /],
+                       prefetch => [qw/ program level /],   
                    }
                );
     my @rentals = model($c, 'Rental')->search({
@@ -541,7 +537,7 @@ sub meal_list : Local {
         my $ed = $ol->edate();
 
         my $prog = $r->program();
-        my $mmi_prog = $prog->school() != 0;
+        my $mmi_prog = $prog->school->mmi();
         my $PR = $prog->PR();
         #
         # optimizations???
@@ -1078,7 +1074,7 @@ sub late_notices : Local {
     }
     my @late_arr = grep {
                        my $prog = $_->program;
-                       $prog->school == 0 || $prog->level =~ m{[AS]}xms;
+                       !$prog->school->mmi() || !$prog->level->long_term()
                        # I was tripped up trying to have two -or
                        # clauses below so I'm trying this for now.
                        # Later I'll trying reading SQL::Abstract POD for another way.
@@ -1595,7 +1591,7 @@ sub field_plan : Local {
 # ??? we get start and end dates in several places.
 # can we unify this?  DRY? or not horribly refactored?
 #
-# do not include PR or MMI DCM programs
+# do not include PR or MMI long term programs
 #
 sub summary : Local {
     my ($self, $c, $section) = @_;
@@ -1652,32 +1648,21 @@ sub summary : Local {
             prefetch => [qw/ summary /],   
         }
     );
-    # don't require any content in the reports
-    #my @opt = ();
-    #if ($section !~ m{workshop}xms) {
-    #    @opt = ("summary.$section" => { '!=' => '' });
-    #}
     my @programs = model($c, 'Program')->search(
         {
+            'me.name'  => { -not_like => '%personal%retreat%' },
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
             cancelled => '',
             rental_id => 0,             # ignore the summary of hybrid programs
                                         # the rental side is the one we use.
-    #        @opt,
+            'level.long_term' => '',
         },
         {
-            join     => [qw/ summary /],
-            prefetch => [qw/ summary /],   
+            join     => [qw/ summary level /],
+            prefetch => [qw/ summary level /],   
         }
     );
-    # a further limiting of the programs not so easily
-    # done above...   no biggie - don't worry about it.
-    #
-    @programs = grep {
-                    !($_->PR() || $_->level() =~ m{[DCM]})
-                }
-                @programs;
     stash($c,
         start  => $start,
         end    => $end,
@@ -1759,11 +1744,11 @@ sub orient_windup : Local {
                     sdate => { '<=' => $ow_to8   },
                     edate => { '>=' => $ow_from8 },
                     cancelled => '',
-                    name  => { -not_like => 'Personal Retreats%'},
-                    -or => [
-                        school => 0,
-                        level  => 'S',
-                    ],
+                    'me.name'  => { -not_like => '%personal%retreat%'},
+                    'level.long_term'  => '',   # some kind of course
+                },
+                {
+                    join => [qw/ school level /],
                 }),
                 model($c, 'Rental')->search({
                     sdate => { '<=' => $ow_to8   },
@@ -1781,6 +1766,7 @@ sub orient_windup : Local {
             orientation => $sum->orientation(),
             wind_up => $sum->wind_up(),
             sum_id => $sum->id(),
+            type   => $ev->event_type(),
         };
     }
     my (%dup_start, %dup_end);
@@ -1846,11 +1832,10 @@ sub gate_codes : Local {
                     edate => { '>=' => $gc_from8 },
                     cancelled => '',
                     rental_id => 0,     # not a hybrid
-                    -or => [
-                        school => 0,
-                        level  => 'S',
-                        level  => 'A',
-                    ],
+                    'level.long_term'  => '',   # course or public
+                },
+                {
+                    join => [qw/ level /],
                 }),
                 model($c, 'Rental')->search({
                     sdate => { '<=' => $gc_to8   },

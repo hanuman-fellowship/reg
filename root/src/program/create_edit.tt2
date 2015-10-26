@@ -8,8 +8,8 @@
 init_tabs(4, 0, 1);
 
 function set_level_visibility() {
-    var lev_div = document.getElementById('level');
-    if (document.form.school.value == 0) {
+    var lev_div = document.getElementById('level_id');
+    if (document.form.school_id.value == 1) {  // MMC
         lev_div.style.visibility = 'hidden';
     }
     else {
@@ -142,11 +142,41 @@ Web
 <div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
-<tr><td></td><td colspan=4><table cellpadding=5>
+<tr>
+<th align=right valign=top>Category</th>
+<td valign=top>
+<select name=category_id>
+$cat_opts
+</select>
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Sponsoring Organization</th>
+<td valign=top>
+<select name=school_id
+        onchange="set_level_visibility();"
+>
+$school_opts
+</select>
+</td>
+</tr>
+
+<tr id=level_id>    <!-- see script below -->
+<th align=right>Level</th>
+<td>
+<select name=level_id>
+$level_opts
+</select>
+</td>
+</tr>
 
 <tr>
 <th align=right>Allow Aux Regs</th>
 <td colspan=2><input type=checkbox value=yes name=allow_dup_regs $check_allow_dup_regs></td>
+</tr>
+
+<tr>
 <th align=right>Kaya Kalpa</th>
 <td colspan=2><input type=checkbox value=yes name=kayakalpa $check_kayakalpa></td>
 </tr>
@@ -155,8 +185,6 @@ Web
 <th align=right>Retreat</th>
 <td colspan=2><input type=checkbox value=yes name=retreat $check_retreat></td>
 </tr>
-
-</table></td></tr>
 
 <tr>
 <th align=right>Notify on Reg</th>
@@ -217,38 +245,9 @@ Web
 <td><input type=text size=8 name=reg_end value='$program.reg_end_obj'></td>
 <th align=right>End</th>
 <td><input type=text size=8 name=prog_end value='$program.prog_end_obj'></td>
-</tr>
-</table>
-
-<tr>
-<th align=right valign=top>Category</th>
-<td valign=top>
-<select name=category_id>
-$cat_opts
-</select>
-</td>
 <td><input type=submit id=sub value="Submit"></td>
 </tr>
-
-<tr>
-<th align=right valign=top>Sponsoring Organization</th>
-<td valign=top>
-<select name=school
-        onchange="set_level_visibility();"
->
-$school_opts
-</select>
-</td>
-</tr>
-
-<tr id=level>
-<th align=right>Level</th>
-<td>
-<select name=level>
-$level_opts
-</select>
-</td>
-</tr>
+</table>
 
 </table>
 </div>
@@ -349,7 +348,7 @@ $level_opts
 <td><input type=submit id=sub value="Submit"></td>
 </tr>
 
-[% no_publish = program.school != 0 && program.level != 'A'? 'disabled': '' %]
+[% no_publish = program.school.mmi && ! program.level.public? 'disabled': '' %]
 
 <tr>
 <th align=right>Web Ready</th>
@@ -434,5 +433,5 @@ $level_opts
     tabs($section); document.form.name.focus();
 
     <!-- show level? -->
-    document.getElementById('level').style.visibility = '$show_level';
+    document.getElementById('level_id').style.visibility = '$show_level';
 </script>

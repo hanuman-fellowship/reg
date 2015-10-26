@@ -1,7 +1,7 @@
 [% reg_id = reg.id %]
 [% per = reg.person %]
 [% prog = reg.program %]
-[% mmi = prog.school != 0 %]
+[% mmi = prog.school.mmi %]
 <h2>Editing Charges and [% IF mmi %]MMI [% END %]Payments<br>
 For [% per.first %] [% per.last %] in [% prog.name %]</h2>
 <a href=/registration/view/[% reg_id %]>To Registration</a>

@@ -101,7 +101,7 @@ my $run_file = "grab_running";
 my ($log, $log_name);
 my $nomp = 0;
 my $nrides = 0;
-my ($now_t24, $today_d8, $year_mon_dir);
+my ($now, $now_t24, $today_d8, $year_mon_dir);
 my ($temple_xaccount_id);
 my @kayakalpa;  # an array of hashrefs - these people requested
                 # information about bodywork.
@@ -110,10 +110,15 @@ my @mlist_alerts;   # an array of hashrefs - who to send
 
 # directories
 my ($online, $grid, $temple, $mlist_done, $rides,
-    $req_mmi_dir, $omp_dir, $temple_donation);
+    $req_mmi_dir, $omp_dir, $temple_donation, $grab_new);
 my $something_happened = 0;
+my $time_printed = 0;
 
 sub msg {
+    if (! $time_printed) {
+        print {$log} "** " . $now->t12 . "\n";
+        $time_printed = 1;
+    }
     print {$log} @_;
     if (pop !~ m{\n$}xms) {
         print {$log} "\n";
@@ -133,14 +138,13 @@ sub failed {
 }
 
 sub initialize {
-    my $now = get_time();
+    $now = get_time();
     $now_t24 = $now->t24;
     $today_d8 = $today->as_d8();
     $year_mon_dir = $today->format("%Y-%m");
     $log_name = 'grab_new_log';
     open $log, '>', $log_name
         or die "no $log_name! :(\n";
-    msg "** " . $now->t12;
 
     if (-f $run_file) {
         my $t = (stat($run_file))[9];
@@ -197,13 +201,14 @@ sub initialize {
     $req_mmi_dir     = make_dir("$rst/req_mmi/$year_mon_dir");
     $omp_dir         = make_dir("$rst/omp");
     $temple_donation = make_dir("$rst/temple_donation");
+    $grab_new        = make_dir("$rst/grab_new");
 }
 
 sub finalities {
     unlink $run_file;
     close $log;
     my $log_str = slurp $log_name;
-    my $dow_name = "output/grab_new_" . $today->format("%a");
+    my $dow_name = $grab_new . '/' . $today->format("%a");
     my $mode = (! -f $dow_name || -M $dow_name > 1)? '>': '>>';
     if (open my $out, $mode, $dow_name) {
         print {$out} $log_str;
@@ -304,7 +309,7 @@ sub check_grid {
 sub temple_donation {
     my ($href, $f) = @_;
 
-    msg "temple donation $href->{amount}";
+    msg "temple donation \$$href->{amount}";
 
     # add the person if needed
     # ensure an affiliation is there.
@@ -322,14 +327,14 @@ sub temple_donation {
         $c, $href,
         affil_ids => $system_affil_id_for{'Temple Guest'},
     );
-    msg sprintf "temple donation %s %s - %s",
+    msg sprintf "temple %s %s - %s",
                 $person->first, $person->last, $status;
     # now we can add the payment record
     model($c, 'XAccountPayment')->create({
         xaccount_id => $temple_xaccount_id,
         person_id   => $person_id,
         amount      => $href->{amount},
-        type        => 'D',               # credit
+        type        => 'O',               # online credit
         what        => 'Online temple donation',
         user_id     => 0,                 # what other user id?
         the_date    => $today_d8,
@@ -381,7 +386,7 @@ EOH
             subject => "Online Mailing List Requests",
             html    => $html,
         );
-        msg "email mlist $type alert to $email" . failed($rc);
+        msg "email mailing list $TYPE alert to $email" . failed($rc);
     }
 }
 
@@ -439,7 +444,7 @@ sub process_mlist {
         affil_ids => \@affil_ids,
         request_to_comment => 1,
     );
-    msg sprintf "$type mlist %s %s - %s",
+    msg sprintf "$type mailing list %s %s - %s",
                 $person->first, $person->last, $status;
     # record name, address for emailing all later to the reception office.
     # see sub mlist_alerts()
@@ -478,8 +483,10 @@ sub get_rides {
 sub get_omp {
     my ($get_dir, $f) = @_;
 
-    my ($id, $amount, $transaction_id) = split '_', $f;
-    msg "omp \$$amount for member id $id";
+    my ($mem_id, $amount, $transaction_id) = split '_', $f;
+    my $member = model($c, 'Member')->find($mem_id);
+    my $name = $member? $member->person->name(): "unknown person";
+    msg "membership payment of \$$amount for $name";
     ++$nomp;
 }
 
@@ -507,7 +514,7 @@ sub omp_alert {
             subject => "Membership Payment",
             html    => "There is an online membership payment waiting for you in Reg."
         );
-        msg "email omp waiting to $string{mem_email}" . failed($rc);
+        msg "email membership payment waiting to $string{mem_email}" . failed($rc);
     }
 }
 
@@ -576,7 +583,7 @@ sub process_mmi_payments {
         balance => \"balance - $hash{total}",
     });
 # notify someone that the payment was made!???
-    msg "req mmi payment totaling $hash{total} for $hash{first} $hash{last}";
+    msg "requested MMI payment totaling \$$hash{total} for $hash{first} $hash{last}";
 }
 
 #
@@ -692,7 +699,7 @@ sub main {
     );
     # MMC Transactions
     get_files($ftp, $string{ftp_transactions},
-              $online, \&check_transaction, 'mmc');
+              $online, \&check_transaction, 'MMC');
 
     # Rental Grids
     get_files($ftp, $string{ftp_rental_dir},
@@ -724,7 +731,7 @@ sub main {
 
     # MMI Transactions
     get_files($ftp, $string{ftp_mmi_transactions},
-              $online, \&check_transaction, 'mmi');
+              $online, \&check_transaction, 'MMI');
 
     $ftp->quit();   # all done with MMI
 

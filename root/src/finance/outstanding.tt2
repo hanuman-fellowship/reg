@@ -1,9 +1,9 @@
 <table cellpadding=5>
-<h2>Outstanding Balances since $since</h2>
+<h2>$TYPE Outstanding Balances since $since</h2>
 [% FOREACH ob IN outbals %]
 <tr>
 <td>$ob.date</td>
-<td align=right>$ob.balance</td>
+<td align=right>\$$ob.balance</td>
 <td><a target=reg href=$ob.link>$ob.name</a></td>
 <td>$ob.program</td>
 </tr>

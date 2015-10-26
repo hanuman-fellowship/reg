@@ -40,7 +40,7 @@ p {
 [% id = reg.id %]
 [% person = reg.person %]
 [% snail = 'Snail Mail' %]
-[% mmi = program.school != 0 %]
+[% mmi = program.school.mmi %]
 [% PR = program.PR %]
 [% ev_type = (PR? 'PR': 'program') %]
 <h2 style="margin-bottom: 9px">Registration</h2>
@@ -78,9 +78,9 @@ onclick="return confirm('\n\nAbout to delete the registration and payments and h
 <a href="/registration/ceu/$id">CEU</a>
 &nbsp;&nbsp;
 [% END %]
-[% IF mmi && reg.program.level == 'S' %]
-    [% IF hpm_reg_id %]
-    <a href="/registration/view/$hpm_reg_id">To $hpm_type</a>
+[% IF mmi && ! reg.program.level.long_term %]
+    [% IF lt_reg_id %]
+    <a href="/registration/view/$lt_reg_id">To Credentialed</a>
     [% ELSE %]
     Auditor
     [% END %]

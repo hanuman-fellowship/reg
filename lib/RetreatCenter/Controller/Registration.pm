@@ -30,7 +30,7 @@ use Util qw/
     show_ceu_license
     commify
     wintertime
-    hpm_registration
+    long_term_registration
     stash
     error
     payment_warning
@@ -46,6 +46,7 @@ use Util qw/
     rand6
     x_file_to_href
     add_or_update_deduping
+    outstanding_balance
 /;
 use POSIX qw/
     ceil
@@ -535,11 +536,11 @@ EOH
 # and render the view.  the program must have a GL number or we give an error.
 #
 sub _rest_of_reg {
-    my ($pr, $p, $c, $today, $house1, $house2, $cabin_room) = @_;
+    my ($program, $person, $c, $today, $house1, $house2, $cabin_room) = @_;
 
-    if (empty($pr->glnum())) {
+    if (empty($program->glnum())) {
         error($c,
-            $pr->name() . " does not have a GL Number.  Please fix.",
+            $program->name() . " does not have a GL Number.  Please fix.",
             "registration/error.tt2",
         );
         return;
@@ -566,14 +567,14 @@ sub _rest_of_reg {
     # we CAN register twice for some programs.
     #
     my @reg = model($c, 'Registration')->search({
-                  person_id  => $p->id(),
-                  program_id => $pr->id(),
+                  person_id  => $person->id(),
+                  program_id => $program->id(),
               });
-    if (! $pr->allow_dup_regs() && @reg) {
+    if (! $program->allow_dup_regs() && @reg) {
         stash($c,
             template => "registration/dup.tt2",
-            person   => $p,
-            program  => $pr,
+            person   => $person,
+            program  => $program,
             registration => $reg[0],
         );
         return;
@@ -592,16 +593,16 @@ sub _rest_of_reg {
     # should we wait until create_do()?
     #
     my %cur_affils = map { $_->id => 1 }
-                     $p->affils;
-    my @pr_affil_ids = map  { $_->id }
+                     $person->affils;
+    my @program_affil_ids = map  { $_->id }
                        grep { $_->descrip() ne 'None' }
-                       $pr->affils
+                       $program->affils
                        ;
-    for my $pr_affil_id (@pr_affil_ids) {
-        if (! exists $cur_affils{$pr_affil_id}) {
+    for my $program_affil_id (@program_affil_ids) {
+        if (! exists $cur_affils{$program_affil_id}) {
             model($c, 'AffilPerson')->create({
-                a_id => $pr_affil_id,
-                p_id => $p->id,
+                a_id => $program_affil_id,
+                p_id => $person->id,
             });
         }
     }
@@ -613,9 +614,9 @@ sub _rest_of_reg {
     #
     my @alerts;
     AFFIL:
-    for my $a ($p->affils) {
+    for my $a ($person->affils) {
         if ($a->id() == $system_affil_id_for{'Alert When Registering'}) {
-            my $s = $p->comment;
+            my $s = $person->comment;
             $s = trim($s);
             if ($s) {
                 $s =~ s{\r?\n}{\\n}g;
@@ -628,41 +629,19 @@ sub _rest_of_reg {
     # if this is for a Personal Retreat
     # are there any PR Alerts for the popup comment?
     #
-    if ($pr->PR()) {
+    if ($program->PR()) {
         # in the stash we have Date::Simple objects
         # for start_date and end_date - put there in
         # sub manual and get_online.
         #
-        my $pr_sd = $c->stash->{date_start}->as_d8();
-        my $pr_ed = $c->stash->{date_end}->as_d8();
-        push @alerts, get_pr_alerts($c, $pr_sd, $pr_ed);
+        my $program_sd = $c->stash->{date_start}->as_d8();
+        my $program_ed = $c->stash->{date_end}->as_d8();
+        push @alerts, get_PR_alerts($c, $program_sd, $program_ed);
     }
-    #
-    # outstanding balance?
-    #
-    my $outstand = "";
-    REG:
-    for my $r ($p->registrations) {
-        # skip registrations that were cancelled, that were
-        # a long time ago, or are in the future.
-        next REG if $r->cancelled();
-        next REG if ($today - $r->date_end_obj) > 365*$string{nyears_forgiven};
-        next REG if $r->date_start_obj >= $today;
-        if ($r->balance != 0) {
-            my $s = $p->first() . " "
-                  . "has an outstanding balance of "
-                  . '$' . $r->balance()
-                  . " in ". $r->program->name() . "."
-                  ;
-            push @alerts, $s;
-            stash($c, outstanding => 1);
-            $outstand = '<p><span style="background-color: #ff0000;">'
-                      . 'Outstanding balance of $'
-                      . $r->balance
-                      . " in " . $r->program->name
-                      . "</span></p><p>&nbsp;</p>";
-            last REG;
-        }
+    my ($outstand_str, $ob_alert) = outstanding_balance($c, $person);
+    if ($ob_alert) {
+        stash($c, outstanding => 1);
+        push @alerts, $ob_alert;
     }
     if (@alerts) {
         stash($c, alerts => join "\\n\\n", @alerts);
@@ -674,15 +653,15 @@ sub _rest_of_reg {
     # and can't take free nights if the housing cost is not a Per Day type.
     # and not if MMI program.
     #
-    my $mem = $p->member();
-    if ($pr->school() == 0
+    my $mem = $person->member();
+    if (! $program->school->mmi()
         && $mem
-        && ($pr->PR() 
-            || $pr->retreat()    # only PR and MMC Retreats for non Life members
-            || ($mem->category =~ m{Life}xms && $pr->rental_id == 0))
+        && ($program->PR() 
+            || $program->retreat()    # only PR and MMC Retreats for non Life members
+            || ($mem->category =~ m{Life}xms && ! $program->rental_id()))
                                  # Life members can take any non-hybrid program
     ) {
-        my $status = $mem->category;
+        my $status = $mem->category();
         if ($status eq 'Life'
             || $status eq 'Founding Life'
             || ($status eq 'Sponsor' && $mem->date_sponsor_obj >= $today)
@@ -691,19 +670,19 @@ sub _rest_of_reg {
             stash($c, status => $status);    # they always get a 30%
                                              # tuition discount.
             my $nights = $mem->sponsor_nights();
-            if ($pr->housecost->type eq 'Per Day' && $nights > 0) {
+            if ($program->housecost->type eq 'Per Day' && $nights > 0) {
                 stash($c, nights => $nights);
             }
-            if (!$pr->PR() && $status =~ m{Life} && ! $mem->free_prog_taken) {
+            if (!$program->PR() && $status =~ m{Life} && ! $mem->free_prog_taken) {
                 stash($c, free_prog => 1);
             }
         }
     }
 
     # any credits?
-    if ($p->credits()) {
+    if ($person->credits()) {
         CREDIT:
-        for my $cr ($p->credits()) {
+        for my $cr ($person->credits()) {
             if (! $cr->date_used && $cr->date_expires_obj > $today) {
                 stash($c, credit => $cr);
                 last CREDIT;
@@ -711,7 +690,7 @@ sub _rest_of_reg {
         }
     }
 
-    if ($pr->footnotes =~ m{[*]}) {
+    if ($program->footnotes =~ m{[*]}) {
         stash($c, ceu => 1);
     }
 
@@ -725,14 +704,14 @@ sub _rest_of_reg {
     Global->init($c);     # get %string ready.
     HTYPE:
     for my $ht (housing_types(2)) {
-        next HTYPE if $ht eq "single_bath" && ! $pr->sbath;
-        next HTYPE if $ht eq "single"      && ! $pr->single;
-        next HTYPE if $ht eq "economy"     && ! $pr->economy;
-        next HTYPE if $ht eq "commuting"   && ! $pr->commuting;
-        if ($ht !~ m{unknown|not_needed|commuting} && $pr->housecost->$ht == 0) {
+        next HTYPE if $ht eq "single_bath" && ! $program->sbath;
+        next HTYPE if $ht eq "single"      && ! $program->single;
+        next HTYPE if $ht eq "economy"     && ! $program->economy;
+        next HTYPE if $ht eq "commuting"   && ! $program->commuting;
+        if ($ht !~ m{unknown|not_needed|commuting} && $program->housecost->$ht == 0) {
             next HTYPE;
         }
-        next HTYPE if $ht eq "center_tent" && wintertime($pr->sdate());
+        next HTYPE if $ht eq "center_tent" && wintertime($program->sdate());
 
         my $selected = ($ht eq $house1 )? " selected": "";
         my $selected2 = ($ht eq $house2)? " selected": "";
@@ -740,39 +719,39 @@ sub _rest_of_reg {
         $h_type_opts2 .= "<option value=$ht$selected2>$string{$ht}\n";
     }
     stash($c,
-        program       => $pr,
-        person        => $p,
+        program       => $program,
+        person        => $person,
         h_type_opts   => $h_type_opts,
         h_type_opts1  => $h_type_opts,
         h_type_opts2  => $h_type_opts2,
         confnotes     => [
             model($c, 'ConfNote')->search(undef, { order_by => 'abbr' })
         ],
-        outstand      => $outstand,
+        outstand      => $outstand_str,
         template      => "registration/create.tt2",
     );
 }
 
-sub get_pr_alerts {
+sub get_PR_alerts {
     my ($c, $PR_start, $PR_end) = @_;
 
     my @alerts;
     for my $type (qw/ Program Rental Event /) {
         my @cancelled = $type ne 'Event'? (cancelled => { '!=' => 'yes' })
                        :                  ();
-        for my $p (model($c, $type)->search({
+        for my $ev (model($c, $type)->search({
                        @cancelled,
                        pr_alert  => { '!=' => '' },
                        sdate     => { '<=' => $PR_end   },
                        edate     => { '>'  => $PR_start },
                    })
         ) {
-            my $name = $p->name();
+            my $name = $ev->name();
             
             # trim off the mm/yy appendage on Programs and Rentals
             $name =~ s{ [ \d/]*\z}{}xms if $type ne 'Event';
 
-            my $alert = $p->pr_alert();
+            my $alert = $ev->pr_alert();
             # indent the alert a little - including line breaks (<br>)
             $alert =~ s{(<br>)}{\n  }xmsg;
             my $s = "PR Alert from '$name':\n  $alert";
@@ -1105,7 +1084,7 @@ sub create_do : Local {
         pref2         => $P{pref2},
         share_first   => normalize($P{share_first}),
         share_last    => normalize($P{share_last}),
-        manual        => ($P{dup} || $pr->school() != 0)? 'yes': '',
+        manual        => ($P{dup} || $pr->school->mmi())? 'yes': '',
         cabin_room    => $P{cabin_room} || '',
         leader_assistant => '',
         free_prog_taken  => $P{free_prog},
@@ -1166,7 +1145,7 @@ sub create_do : Local {
         });
     }
     # the payment (deposit)
-    if ($pr->school == 0 && $P{deposit}) {
+    if (! $pr->school->mmi() && $P{deposit}) {
         # MMC program deposit
         #
         model($c, 'RegPayment')->create({
@@ -1264,7 +1243,7 @@ sub create_do : Local {
     if ($P{green_amount}) {
         # which XAccount id?
         my $key = 'green_glnum';
-        if ($pr->school() != 0) {
+        if ($pr->school->mmi()) {
             $key .= "_mmi";
         }
         my ($xa) = model($c, 'XAccount')->search({
@@ -1275,7 +1254,7 @@ sub create_do : Local {
                 xaccount_id => $xa->id(),
                 person_id   => $P{person_id},
                 amount      => $P{green_amount},
-                type        => 'O',     # credit
+                type        => 'O',     # online credit
                 what        => '',
                 @who_now[0..5],     # not reg_id => $reg_id
 
@@ -1397,7 +1376,7 @@ sub _compute {
         # sponsor/life members get a discount on tuition
         # up to a max.  and only for MMC events, not MMI.
         #
-        if ($pr->school() == 0 && $reg->status() && $tuition > 0) {
+        if (! $pr->school->mmi() && $reg->status() && $tuition > 0) {
             # Life members can take a free program ... so:
             if ($reg->free_prog_taken) {
                 model($c, 'RegCharge')->create({
@@ -1548,9 +1527,9 @@ sub _compute {
     # discounts - MMC and MMI
     #
     if ($auto
-        && $pr->school() == 0      # not MMI
-        && !$life_free
-        && !$lead_assist
+        && ! $pr->school->mmi()
+        && ! $life_free
+        && ! $lead_assist
         && $housecost->type eq "Per Day"
     ) {
         if ($prog_days + $extra_days >= $string{disc1days}) {
@@ -1854,7 +1833,7 @@ sub _calc_balance {
     for my $ch ($reg->charges) {
         $balance += $ch->amount;
     }
-    my $payments = ($reg->program->school() != 0)? "mmi_payments"
+    my $payments = ($reg->program->school->mmi())? "mmi_payments"
                   :                                "payments"
                   ;
     for my $py ($reg->$payments) {
@@ -1962,7 +1941,7 @@ sub send_conf : Local {
     }
     my $user = $c->user->obj();
     my ($title, $from);
-    if ($pr->school == 0) {
+    if (! $pr->school->mmi()) {
         $title = $string{from_title};
         $from  = $string{from};
     }
@@ -2036,30 +2015,20 @@ sub _view {
     if ($prog->footnotes =~ m{[*]}) {
         stash($c, ceu => 1);
     }
-    # to DCM?
-    my $hpm_reg_id = 0;
-    my $hpm_type = '';
-    if ($prog->level() eq 'S') {
-        my $hpm = hpm_registration($c, $reg->person->id());
-        if (ref($hpm)) {
-            $hpm_reg_id = $hpm->id();
-            my $lev = $hpm->program->level();
-            $hpm_type = $lev eq 'D'? 'Diploma'
-                       :$lev eq 'C'? 'Certificate'
-                       :$lev eq 'M'? 'Masters'
-                       :$lev eq 'C'? 'CAP'
-                       :$lev eq 'H'? 'AHC'
-                       :$lev eq 'B'? 'AHC Bridge'
-                       :             '??'
-                       ;
+    # to Long Term?
+    my $lt_reg_id = 0;
+    if (! $prog->level->long_term()) {
+        my $lt = long_term_registration($c, $reg->person->id());
+        if (ref($lt)) {
+            $lt_reg_id = $lt->id();
         }
-        # else if $hpm > 1 !!!! ???? give error
+        # else if $lt > 1 !!!! ???? give error
         # prohibit it from happening in the first place!
         # my $person = model($c, 'Person')->find($person_id);
         # my $name = $person->name();
         # $c->stash->{mess}
-        #   = (@hpm)? "$name is enrolled in <i>more than one</i> D/C/M program!"
-        #   :       "$name is not enrolled in <i>any</i> D/C/M program!";
+        #   = (@lt)? "$name is enrolled in <i>more than one</i> long term program!"
+        #    :       "$name is not enrolled in <i>any</i> long term program!";
     }
     my @files = <$rst/online/*>;
     my $share_first = $reg->share_first();
@@ -2184,8 +2153,7 @@ sub _view {
         cluster_date   => $sdate,
         cur_cluster    => ($reg->house_id && $reg->house)? $reg->house->cluster_id: 1,
         cal_param      => "$sdate/$nmonths",
-        hpm_reg_id     => $hpm_reg_id,
-        hpm_type       => $hpm_type,
+        lt_reg_id      => $lt_reg_id,
         program        => $prog,
         only_one       => (@same_name_reg == 1),
         send_preview   => ($PR || $same_name_reg[0]->id() == $reg->id()),
@@ -2295,7 +2263,7 @@ sub cancel : Local {
 
     my $reg = model($c, 'Registration')->find($id);
 
-    if ($reg->program->school() != 0) {
+    if ($reg->program->school->mmi()) {
         # when MMI students cancel, there is no credit, no letter
         #
         cancel_do($self, $c, $id, 1);       # 1 => mmi
@@ -2690,7 +2658,7 @@ EOH
                   :($need_house && !$hid)?
                        "<img src=/static/images/house.gif height=$ht>"
                   :($first
-                    && ($level eq 'S' || $level eq ' ')
+                    && $level->name =~ /course/i
                     && !$reg->letter_sent)?
                        "<img src=/static/images/envelope.jpg height=$ht>"
                   :    "";
@@ -2721,31 +2689,22 @@ EOH
                 }
             }
         }
-        if ($school != 0 && $pr->level() eq 'S') {
-            #
-            # A/D/C/M/H/P marks for MMI _course_ registrations
-            # not registrants in the D/C/M/H/P programs themselves
-            #
-            my $hpm = hpm_registration($c, $reg->person->id());
+        if ($school->mmi() && $pr->level->name() eq 'Course') {
+            my $lt = long_term_registration($c, $reg->person->id());
             my $type = 'A';
-            if (ref($hpm)) {
-                $type = $hpm->program->level();
+            if (ref($lt)) {
+                $type = 'C';    # for 'Credentialed'
             }
-            elsif ($hpm) {
-                $type = '?';
+            if ($mark =~ /envelope/ && $type eq 'C') {
+                # no confirmation letter for MMI credentialed people
+                # auditors, yes.
+                $mark =~ s{<img src=/static/images/envelope.jpg height=\d+>}{};
             }
-            if (!($type eq 'A' || $school == 3)
-                && $mark =~ m{envelope}
-            ) {
-                # Auditor and School of Massage (3 is hard coded :( )
-                # can have envelope for non-sent confirmation letters
-                # others no.
-                #
-                $mark = $type;
-            }
-            else {
-                $mark = "$type $mark";
-            }
+            $mark = "$type $mark";
+        }
+        my $comment = $reg->comment;
+        if ($comment && $comment =~ m{outstanding\s+balance}xmsi) {
+            $mark = "<span class=outbal>O</span> $mark";
         }
         if ($show_arrived
             && $reg->arrived() eq 'yes'
@@ -3039,7 +2998,7 @@ sub update_do : Local {
                         ;
     if ($dates_changed && $pr->PR) {
         # a personal retreat - the new dates might have a PR alert...
-        my @alerts = get_pr_alerts($c, $dates{date_start}, $dates{date_end});
+        my @alerts = get_PR_alerts($c, $dates{date_start}, $dates{date_end});
         if (@alerts) {
             stash($c, alerts => join "\\n\\n", @alerts);
         }
@@ -5116,8 +5075,8 @@ EOH
 
 #
 # for the given MMI program automatically register
-# everyone who is in a D/C/M/H/P/B program that is concurrent
-# with the given program.   Offer the list of D/C/M/H/P/B programs
+# everyone who is in a long term program that is concurrent (overlaps)
+# with the given program.   Offer the list of long term programs
 # and let the user choose which to do the import on.
 #
 sub mmi_import : Local {
@@ -5133,20 +5092,21 @@ sub mmi_import : Local {
     }
     my $sdate = $pr->sdate();
     my @progs = model($c, 'Program')->search({
-        school => { '!=', 0      },
-        # should we only accept DCMHPB people in the same school
+        'school.mmi'       => 'yes',
+        'level.long_term'  => 'yes',
+        # should we only accept long term registrants from the same school
         # as the course we are importing into???   No.
         #
-        level  => { -in, [qw/ D C M H P B /]},
         sdate  => { '<=', $sdate },
         edate  => { '>=', $sdate },
     },
     {
         order_by => 'sdate asc, edate asc',
+        join     => [qw/ school level /],
     });
     stash($c,
         cur_prog  => $pr,
-        hpm_progs => \@progs,
+        long_term_progs => \@progs,
         template  => "registration/mmi_import.tt2",
     );
 }
@@ -5156,10 +5116,10 @@ sub mmi_import_do : Local {
 
     my $program = model($c, 'Program')->find($program_id);
     my %person_ids = ();
-    for my $hpm_id (keys %{ $c->request->params() }) {
-        $hpm_id =~ s{^n}{};
+    for my $lt_id (keys %{ $c->request->params() }) {
+        $lt_id =~ s{^n}{};
         REG:
-        for my $reg (model($c, 'Program')->find($hpm_id)->registrations()) {
+        for my $reg (model($c, 'Program')->find($lt_id)->registrations()) {
             next REG if $reg->cancelled();
             $person_ids{$reg->person->id()} = 1;
         }
@@ -5180,49 +5140,44 @@ sub mmi_import_do : Local {
         # what kind of housing should we initially use for this person?
         #
         # look in their past registrations and take the most recent one.
+        # this isn't perfect - perhaps it is now winter and they
+        # tented before...
         #
-        # if the current program is in the wintertime, keep looking
-        # for a non-tent option in reverse chronological order.
-        #
-        # a small weakness - if the prior registrations were all
-        # in the wintertime and now they want a tent - we can't guess that.
-        #
-        my @h_types
+        my @prior_reg
             = grep {
-                  m{\S} && ! m{unknown|not_needed}
-                      # we only want valid types
-              }
-              map {
-                  $_->h_type()
+                  $_->h_type() !~ m{unknown|not_needed}
               }
               model($c, 'Registration')->search(
                   { person_id => $person_id        },
                   { order_by  => 'date_start desc' },
               );
-        my $h_type = shift @h_types;
-        if ($h_type =~ m{tent} && wintertime($program->sdate())) {
-            $h_type = "";
-            H_TYPE:
-            for my $ht (@h_types) {
-                if ($ht !~ m{tent}) {
-                    $h_type = $ht;
-                    last H_TYPE;
-                }
-            }
+        my ($h_type, $pref1, $pref2);
+        if (@prior_reg) {
+            my $r = $prior_reg[0];
+            $h_type = $r->h_type;
+            $pref1 = $r->pref1 || $h_type;
+            $pref2 = $r->pref2 || $h_type;
         }
-        $h_type ||= "dble";     # a good choice for a last chance default
+        else {
+            $h_type = $pref1 = $pref2 = 'dble';
+        }
         my $edate = date($program->edate()) + $program->extradays();
+        my $person = model($c, 'Person')->find($person_id);
+        my ($outstand_str, $ob_alert) = outstanding_balance($c, $person);
         model($c, 'Registration')->create({
             person_id  => $person_id,
             program_id => $program_id,
             house_id   => 0,
             h_type     => $h_type,
+            pref1      => $pref1,
+            pref2      => $pref2,
             cancelled  => '',    # to be sure
             arrived    => '',    # ditto
             date_start => $program->sdate(),
             date_end   => $edate->as_d8(),
             balance    => 0,
             manual     => 'yes',
+            comment    => $outstand_str,
         });
         # finances???
         ++$new_regs;
@@ -5469,7 +5424,7 @@ sub charge_delete_do : Local {
 }
 
 sub payment_delete : Local {
-    my ($self, $c, $reg_id, $pay_id, $from) = @_;
+    my ($self, $c, $reg_id, $pay_id) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
     my $payment = model($c, 'RegPayment')->find($pay_id);

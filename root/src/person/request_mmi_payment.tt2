@@ -24,7 +24,7 @@ for [% person.first %] [% person.last %] in [% reg.program.name %]</h2>
 <select name=for_what>
 <option value='1' selected>Tuition
 <option value='2'>Meals and Lodging
-[% IF hpm %]
+[% IF long_term %]
     <option value='3'>Application Fee
     <option value='4'>Registration Fee
 [% END %]

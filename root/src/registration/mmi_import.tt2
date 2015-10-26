@@ -1,4 +1,4 @@
-<h2>Importing AHC/CAP/Masters Registrations into [% cur_prog.name %] ([% cur_prog.sdate_obj %])</h2>
+<h2>Importing LongTerm Registrations<br>for [% cur_prog.name %] ([% cur_prog.sdate_obj %])</h2>
 <form action="/registration/mmi_import_do/[% cur_prog.id %]">
 <ul>
 <table cellpadding=5>
@@ -7,7 +7,7 @@
 <th>Start Date</th>
 <th>End Date</th>
 </tr>
-[% FOREACH p IN hpm_progs %]
+[% FOREACH p IN long_term_progs %]
 <tr>
 <td><input type=checkbox name=n[% p.id %] value=yes> [% p.name %]</td>
 <td>[% p.sdate_obj %]</td>

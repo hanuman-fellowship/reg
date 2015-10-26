@@ -40,7 +40,7 @@ our @EXPORT_OK = qw/
     ceu_license_stash
     commify
     wintertime
-    hpm_registration
+    long_term_registration
     stash
     error
     payment_warning
@@ -75,6 +75,7 @@ our @EXPORT_OK = qw/
     add_or_update_deduping
     x_file_to_href
     phone_match
+    outstanding_balance
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -340,13 +341,12 @@ sub nsquish {
 sub slurp {
     my ($fname) = @_;
 
-    if ($fname !~ /grab_new_log/ &&
-        index($fname, '.') == -1     # no period - so it's a web template
-    ) {
+    my $in;
+    if (! open $in, '<', $fname) {
         $fname = "root/static/templates/web/$fname.html";
+        open $in, "<", $fname
+            or die "cannot open $fname: $!\n";
     }
-    open my $in, "<", $fname
-		or die "cannot open $fname: $!\n";
     local $/;
     my $s = <$in>;
     close $in;
@@ -1157,26 +1157,25 @@ sub wintertime {
 }
 
 #
-# can use a prefetch/join to help further with this...???
-# to add another search condition
+# what Credentialed program is the person currently enrolled in?
 #
 # should this be a method in the Person data object instead???
 #
-sub hpm_registration {
+sub long_term_registration {
     my ($c, $person_id) = @_;
 
     my @regs = model($c, 'Registration')->search(
         {
-            person_id      => $person_id,
-            'me.cancelled' => { '!=' => 'yes' },
+            person_id => $person_id,
+            date_end  => { '>=' => tt_today($c)->as_d8() },
+            cancelled => { '!=' => 'yes' },
         },
         {
-            prefetch => [qw/program/],
-            order_by => 'date_start desc',
+            order_by => 'date_start asc',
         }
     );
     @regs = grep {
-                $_->program->level() =~ m{[HPBDCM]}
+                $_->program->level->long_term()
             }
             @regs;
     if (! @regs) {
@@ -1282,6 +1281,7 @@ sub mmi_glnum {
                   :            'Other');
     $purpose = " - $purpose";
     my $d6 = substr($glnum, 5, 1);
+    # ??? needs work!!!
     if ($d6 =~ m{[DCM]} && length($glnum) == 6) {
         # d6 is D, C, or M - the kind of MMI program.
         # Diploma, Certificate, or Masters.
@@ -1295,8 +1295,8 @@ sub mmi_glnum {
                 # are sequential in the ASCII table
         }
         my @progs = model($c, 'Program')->search({
-            school => $school,
-            level  => $d6,
+            school_id => $school,       # ??? needs work!!!
+            level_id  => $d6,           # ditto
         });
         for my $p (@progs) {
             my $sdate = $p->sdate_obj;
@@ -1322,8 +1322,8 @@ sub mmi_glnum {
         #
         my @progs = model($c, 'Program')->search(
             {
-                school => { '!=' => 0 },        # not MMC
-                glnum  => substr($glnum, 1),
+                school_id => { '!=' => 1 },        # not MMC
+                glnum     => substr($glnum, 1),
             },
         );
         if (@progs) {
@@ -1369,7 +1369,7 @@ sub other_reserved_cids {
     my @optp = ();
     my @optr = ();
     if ($event->event_type() eq 'program') {
-        @optp = (id => { '!=' => $id });
+        @optp = ('me.id' => { '!=' => $id });
     }
     else {
         @optr = (id => { '!=' => $id });
@@ -1380,13 +1380,20 @@ sub other_reserved_cids {
         map {
             $_->id()
         }
-        model($c, 'Program')->search({
-            @optp,
-            level => { -not_in => [qw/ D C M /], },
-            name  => { -not_like => '%personal%retreat%' },
-            sdate => { '<' => $edate1 },     # and it overlaps
-            edate => { '>' => $sdate },      # with this program
-        });
+        model($c, 'Program')->search(
+            {
+                @optp,
+                'level.long_term' => '',
+                'me.name'    => { -not_like => '%personal%retreat%' },
+                    # had to be 'me' not 'program'
+                    # both program and level have a 'name' column
+                sdate             => { '<' => $edate1 },     # and it overlaps
+                edate             => { '>' => $sdate },      # with this program
+            },
+            {
+                join => [qw/ level /],
+            }
+        );
     my @ol_rent_ids =
         map {
             $_->id()
@@ -1431,12 +1438,16 @@ sub PR_other_reserved_cids {
         map {
             $_->id()
         }
-        model($c, 'Program')->search({
-            level => { -not_in => [qw/ D C M /], },
+        model($c, 'Program')->search(
+            {
+            'level.long_term' => '',
             name  => { -not_like => '%personal%retreat%' },
             sdate => { '<' => $date_end },       # and it overlaps
             edate => { '>' => $date_start },     # with this PR registration
-        });
+            },
+            {
+                join => [qw/ level /],
+            });
     my @ol_rent_ids =
         map {
             $_->id()
@@ -1760,35 +1771,22 @@ sub req_code {
 }
 
 #
-# calculate a glnum for an MMI payment
+# calculate a General Ledger number for an MMI payment
 #
 sub calc_mmi_glnum {
-    my ($c, $person_id, $stand_alone, $for_what, $reg_program_glnum) = @_;
+    my ($c, $person_id, $public, $for_what, $reg_program_glnum) = @_;
 
     my $glnum;
-    my $hpm_reg = hpm_registration($c, $person_id);
-    if (! $stand_alone && ref($hpm_reg)) {
-        # this person is enrolled in a DCM program
+    my $lt_reg = long_term_registration($c, $person_id);
+    if (! $public && ref($lt_reg)) {
+        # this person is enrolled in a Credentialed program
         # perhaps more than one...
         #
-        my $program = $hpm_reg->program();
-
-        my $sdate = $program->sdate_obj();
-        my $m = $sdate->month();
-        $glnum = $for_what
-               . $program->school()
-               . $sdate->format("%y")
-               . ((1 <= $m && $m <=  9)? $m
-                  :          ($m == 10)? 'X'
-                  :          ($m == 11)? 'Y'
-                  :                      'Z'
-                 )
-               . $program->level()
-               ;
+        $glnum = $for_what . $lt_reg->program->level->glnum_suffix();
     }
     else {
         # this person is an auditor or a student in a stand alone program.
-        # (OR they are enrolled in more than one DCM program! :( )
+        # (OR they are enrolled in more than one Credentialed program! :( )
         #
         # we use the glnum of the program itself (plus 'for_what').
         #
@@ -2027,7 +2025,8 @@ sub add_or_update_deduping {
                 }
             }
             # has anything changed at all?
-            if (_all_the_same($p, $href, \@needed)) {
+            my ($same, $what) = _all_the_same($p, $href, \@needed);
+            if ($same) {
                 $status = 'no change';
             }
             else {
@@ -2036,7 +2035,7 @@ sub add_or_update_deduping {
                     map({ $_ => $href->{$_} } @needed, 'akey'),
                     date_updat => $today_d8,
                 });
-                $status = 'updated';
+                $status = "updated: $what";
             }
             $person_id = $p->id;
             $person = $p;
@@ -2093,16 +2092,17 @@ sub add_or_update_deduping {
 # given a person object and a hashref and an array of needed keys
 # see if the needed key-values of the hashref exactly match
 # what is in the object.
+# if something changed return a description of it in the 2nd return value
 sub _all_the_same {
     my ($p, $href, $needed_aref) = @_;
     KEY:
     for my $k (@$needed_aref) {
         next KEY if $k eq 'request' or $k eq 'opt_in';
         if ($href->{$k} ne $p->$k) {    # hash index, method call
-            return 0;
+            return 0, "$href->{$k} != " . $p->$k;
         }
     }
-    return 1;
+    return 1, "";
 }
 
 my %is_usa = map { $_ => 1 } (
@@ -2187,6 +2187,36 @@ sub x_file_to_href {
                                            # don't know the source
     $hash{green_amount} ||= 0;      # in case it was not given
     return \%hash;
+}
+
+sub outstanding_balance {
+    my ($c, $person) = @_;
+
+    my $outstand_str = "";
+    my $alert;
+    my $today = tt_today($c);
+    REG:
+    for my $r ($person->registrations) {
+        # skip registrations that were cancelled, that were
+        # a long time ago, or are in the future.
+        next REG if $r->cancelled();
+        next REG if ($today - $r->date_end_obj) > 365*$string{nyears_forgiven};
+        next REG if $r->date_start_obj >= $today;
+        if ($r->balance != 0) {
+            my $alert = $person->first() . " "
+                      . "has an outstanding balance of "
+                      . '$' . $r->balance()
+                      . " in ". $r->program->name() . "."
+                      ;
+            $outstand_str = '<p><span style="background-color: red;">'
+                          . 'Outstanding balance of $'
+                          . $r->balance
+                          . " in " . $r->program->name
+                          . "</span></p><p>&nbsp;</p>";
+            last REG;
+        }
+    }
+    return $outstand_str, $alert;
 }
 
 1;

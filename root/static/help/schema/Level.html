@@ -1,0 +1,32 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Level
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
+</h2>
+A type of program.  
+<p>
+Table: level
+<dl>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>glnum_suffix</dt>
+<dd>digits 2-6 of the general ledger number of payments for programs with this level.</dd>
+<dt>long_term</dt>
+<dd>Does this program span many months? If so registrants can be imported from it as well. Also it will not appear on the calendar.</dd>
+<dt>name</dt>
+<dd>the level name: Course, Public Course, CS YSC1, CS YSC2, etc Diploma, Certificate - for older programs only</dd>
+<dt>name_regex</dt>
+<dd>a regular expression that must match the program's name</dd>
+<dt>public</dt>
+<dd>Will this course stand alone and be offered to the general public?</dd>
+<dt>school_id</dt>
+<dd>foreign key to <a href=School.html>School</a> - optional - could be 0</dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>school</td><td><a href=School.html>school</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>

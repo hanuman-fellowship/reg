@@ -56,8 +56,8 @@ Table: program
 <dd>A boolean - do we have an image for the web page of this program? Naming conventions lead us to the actual filename.</dd>
 <dt>kayakalpa</dt>
 <dd>Shall we include a note about Kaya Kalpa information in the confirmation letter?</dd>
-<dt>level</dt>
-<dd>For MMI programs this indicates the type of course. D (Diploma), C (Certificate), M (Masters), S (Course), A (Stand-alone Course)</dd>
+<dt>level_id</dt>
+<dd>For MMI programs this indicates the type of course. CS YSC1, CS YSC2, ..., Certificate, ... Course</dd>
 <dt>linked</dt>
 <dd>Shall this program's web page be linked to the others?</dd>
 <dt>lunches</dt>
@@ -94,8 +94,8 @@ Table: program
 <dd>Is this an MMC yoga retreat?</dd>
 <dt>sbath</dt>
 <dd>Are singles with bath allowed?</dd>
-<dt>school</dt>
-<dd>0 for MMC programs.   1-4 for programs sponsored by MMI - Yoga, Ayurveda, Massage and Community Studies.</dd>
+<dt>school_id</dt>
+<dd>foreign key to <a href=School.html>school</a></dd>
 <dt>sdate</dt>
 <dd>start date of the program.</dd>
 <dt>single</dt>
@@ -132,8 +132,10 @@ Table: program
 <tr><td>housecost</td><td><a href=HouseCost.html>housecost</a></td><td>belongs_to</td></tr>
 <tr><td>leader_program</td><td><a href=LeaderProgram.html>leaderprogram</a></td><td>has_many</td></tr>
 <tr><td>leaders</td><td>leader_program => leader</td><td>many_to_many</td></tr>
+<tr><td>level</td><td><a href=Level.html>level</a></td><td>belongs_to</td></tr>
 <tr><td>registrations</td><td><a href=Registration.html>registration</a></td><td>has_many</td></tr>
 <tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>belongs_to</td></tr>
+<tr><td>school</td><td><a href=School.html>school</a></td><td>belongs_to</td></tr>
 <tr><td>summary</td><td><a href=Summary.html>summary</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

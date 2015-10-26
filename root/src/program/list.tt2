@@ -15,18 +15,20 @@
 [% END %]
 [% IF mmi_admin %]
     &nbsp;&nbsp;&nbsp;
-    <a href="/program/list/hpm">HPM<a>
-    &nbsp;&nbsp;&nbsp;
     <a href="/program/mmi_publish">MMI Publish<a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/list/long_term">Credentialed<a>
 [% END %]
-&nbsp;&nbsp;&nbsp;
-<a href="/program/list/yscl">YSCL<a>
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ($online)</a>
 &nbsp;&nbsp;&nbsp;<input text name=pr_pat size=10 value='[% pr_pat %]'> <input type=submit value="Search"></form>
 <table border=0 cellpadding=3>
 <tr>
+[% IF long_term %]
+<th align=right>Level</th>
+[% ELSE %]
 <td></td>   <!-- for marking rental-programs and mmi program -->
+[% END %]
 <th align=left>Name</th>
 <th align=left>Start</th>
 <th align=left>End</th>
@@ -36,8 +38,12 @@
 [% class = 'fl_row1' %]
 [% FOREACH p IN programs %]
     <tr class=[% class %]>
+    [% IF long_term %]
+    <td class=fl_row0 align=right>[% p.level.name %]</td>
+    [% ELSE %]
     <td class=fl_row0 align=right>[% p.prog_type %]</td>
-    [% IF p.school == 0 || mmi_admin %]
+    [% END %]
+    [% IF ! p.school.mmi || mmi_admin %]
         <td><a href="/program/view/[% p.id %]" title="[% p.title %]">[% p.name %]</a></td>
     [% ELSE %]
         <td>[% p.name %]</td>

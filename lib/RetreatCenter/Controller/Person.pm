@@ -13,7 +13,7 @@ use Util qw/
     model
     tt_today
     commify
-    hpm_registration
+    long_term_registration
     payment_warning
     normalize
     stash
@@ -1108,11 +1108,11 @@ sub request_mmi_payment : Local {
         return;
     }
     stash($c,
-        message  => payment_warning('mmi'),
-        person   => $person,
-        reg      => $reg,
-        hpm      => hpm_registration($c, $person_id),
-        template => "person/request_mmi_payment.tt2",
+        message   => payment_warning('mmi'),
+        person    => $person,
+        reg       => $reg,
+        long_term => long_term_registration($c, $person_id),
+        template  => "person/request_mmi_payment.tt2",
     );
 }
 
@@ -1175,7 +1175,7 @@ sub send_requests : Local {
     my ($self, $c, $reg_id) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
-    my $stand_alone = $reg->program->level() eq 'A';
+    my $public = $reg->program->level->public();
     my $person = $reg->person();
     my $person_id = $person->id();
     my $name = $person->name();
@@ -1204,7 +1204,7 @@ EOH
         $total += $py->amount();
         $py_desc .= join('|', $amt,
                               $note,
-                              calc_mmi_glnum($c, $person_id, $stand_alone,
+                              calc_mmi_glnum($c, $person_id, $public,
                                              $py->for_what(), $prog_glnum))
                  .  '~'
                  ;
@@ -1440,8 +1440,8 @@ sub create_mmi_payment_do : Local {
     }
     my $for_what = $c->request->params->{for_what};
     my $reg = model($c, 'Registration')->find($reg_id);
-    my $stand_alone = $reg->program->level() eq 'A';
-    my $glnum = calc_mmi_glnum($c, $person_id, $stand_alone,
+    my $public = $reg->program->level->public();
+    my $glnum = calc_mmi_glnum($c, $person_id, $public,
                                $for_what,
                                $reg->program->glnum());
     if ($glnum =~ m{XX}xms) {
@@ -1474,7 +1474,7 @@ sub create_mmi_payment_do : Local {
     my @who_now = get_now($c);
     model($c, 'RegHistory')->create({
         reg_id => $reg_id,
-        what   => "Payment of $amount for " . $payment->for_what(),
+        what   => "Payment of \$$amount for " . $payment->for_what(),
         @who_now,
     });
     $reg->calc_balance();

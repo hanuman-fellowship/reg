@@ -80,6 +80,7 @@ EOH
 
 #
 # find everything that is happening on this day
+# copied to ClusterView.pm :(  undup it?
 #
 sub event_table {
     my ($c, $d8) = @_;
@@ -97,7 +98,7 @@ sub event_table {
                 && (
                     ($ev->name() =~ m{personal.*retreats}i)
                     ||
-                    ($ev->level() =~ m{[DCM]})
+                    ($ev->level->long_term())
                     ||
                     ($ev->category->name() ne 'Normal')
                     ||

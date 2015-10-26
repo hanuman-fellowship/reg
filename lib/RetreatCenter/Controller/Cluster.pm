@@ -215,7 +215,7 @@ sub show : Local {
                 && (
                     ($ev->name() =~ m{personal.*retreats}i)
                     ||
-                    ($ev->level() =~ m{[DCM]})
+                    ($ev->level->long_term())
                     ||
                     ($ev->category->name() ne 'Normal')
                     ||

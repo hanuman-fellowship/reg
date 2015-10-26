@@ -342,10 +342,11 @@ sub count {
             $top = $c;
         }
     }
-    if ($top > $self->expected()) {
+    my $expected = $self->expected() || 0;
+    if ($top > $expected) {
         return $top + $prog_count;
     }
-    return $self->expected() + $prog_count;
+    return $expected + $prog_count;
 }
 sub status_td {
     my ($self) = @_;

@@ -21,6 +21,7 @@ cp from_kali/grid/SITLZO-data.txt $DIRFTP/www/cgi-bin/rental/ftp_dir
 # ride requests
 cp from_kali/rides/* $DIRFTP/www/cgi-bin/ride_requests
 
+# functional test - need members with ids of 159 and 16!!
 # online member payments
 cp from_kali/omp/* $DIRFTP/www/cgi-bin/omp_dir
 

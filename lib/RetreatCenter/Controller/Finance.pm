@@ -685,7 +685,7 @@ sub mmi_dig : Local {
     );
 }
 sub outstanding : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $type) = @_;
 
     my $since_str = $c->request->params->{since};
     my $since = date($since_str);
@@ -696,15 +696,20 @@ sub outstanding : Local {
         );
         return;
     }
-    my $yesterday = today()-1;
+    my $yesterday = tt_today($c)-1;
     my @outbals = ();
+    # ??? can we make this better?
+    # join level and ask mmi???
+    my @school = ('program.school_id',
+                  $type eq 'mmc'? 1               # not MMI
+                 :                { '!=' => 1 }); # MMI
     my @regs = model($c, 'Registration')->search(
         {
             date_start       => { 'between' => [ $since->as_d8(),
                                            $yesterday->as_d8() ] },
             balance          => { '!=' => 0 },
             'me.cancelled'   => { '!=' => 'yes' }, 
-            'program.school' => 0,      # no MMI
+            @school,
         },
         {
             prefetch => ['program'],
@@ -724,20 +729,23 @@ sub outstanding : Local {
         sdate   => { 'between' => [ $since->as_d8(), $yesterday->as_d8() ] },
         balance => { '!=' => 0 },
     });
-    for my $r (@rentals) {
-        push @outbals, {
-            date => $r->sdate_obj(),
-            name => $r->name(),
-            program => '',
-            link => $c->uri_for("/rental/view/" . $r->id() . "/3"),
-            balance => penny($r->balance()),
-        };
+    if ($type eq 'mmc') {
+        for my $r (@rentals) {
+            push @outbals, {
+                date => $r->sdate_obj(),
+                name => $r->name(),
+                program => '',
+                link => $c->uri_for("/rental/view/" . $r->id() . "/3"),
+                balance => penny($r->balance()),
+            };
+        }
     }
     @outbals = sort {
                    $b->{date} <=> $a->{date}
                }
                @outbals;
     stash($c,
+        TYPE     => uc $type,
         since    => $since,
         outbals  => \@outbals,
         template => 'finance/outstanding.tt2',
@@ -778,7 +786,7 @@ sub glnum_list : Local {
     my @progs = model($c, 'Program')->search(
                     {
                         sdate     => { '>=' => $since->as_d8() },
-                        school    => 0,
+                        school_id => 1,     # MMC sponsored
                         rental_id => 0,     # no hybrid programs
                                             # the finances are on the Rental
                     },
@@ -931,7 +939,7 @@ sub mmi_glnum_list : Local {
     my @progs = model($c, 'Program')->search(
                     {
                         sdate  => { '>=' => $since->as_d8() },
-                        school => { '!=' => 0 },
+                        school_id => { '!=' => 1 },     # MMI
                     },
                     {
                         order_by => [ $porder ],

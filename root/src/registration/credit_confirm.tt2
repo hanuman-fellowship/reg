@@ -37,7 +37,7 @@ Transaction $reg.transaction_id
 </tr>
 
 </table>
-[% IF reg.program.school == 0 %]
+[% IF ! reg.program.school.mmi %]
 <p class=p2>
 Send cancellation letter? <input type=checkbox name=send_letter value="yes" checked>
 [% END %]

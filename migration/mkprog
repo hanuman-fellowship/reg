@@ -36,9 +36,8 @@ create table program (
     prog_end    text,
     reg_count   integer,
     lunches     text,
-    -- for regi:
-    school      integer,
-    level       text,
+    school_id   integer,
+    level_id    integer,
     max         text,
     notify_on_reg text,
     summary_id  integer,
@@ -61,13 +60,41 @@ create table category (
     id integer primary key autoincrement,
     name text
 );
-insert into category values (1, 'Normal');
-insert into category values (2, 'YSC 1');
-insert into category values (3, 'YSC 2');
-insert into category values (4, 'YSL');
-insert into category values (5, 'Resident');
-insert into category values (6, 'Intern');
-insert into category values (7, 'Temporary');
+drop table if exists school;
+create table school (
+    id integer primary key autoincrement,
+    name text,
+    mmi text
+);
+insert into school values (1, 'MMC', '');
+insert into school values (2, 'MMI School of Yoga', 'yes');
+insert into school values (3, 'MMI College of Ayurveda', 'yes');
+insert into school values (4, 'MMI School of Professional Massage', 'yes');
+insert into school values (5, 'MMI School of Community Studies', 'yes');
+drop table if exists level;
+create table level (
+    id integer primary key autoincrement,
+    name text,
+    long_term text,
+    public text,
+    school_id integer,
+    name_regex text,
+    glnum_suffix text
+);
+insert into level values (1, 'Course', '', '', 0, '', '');
+insert into level values (2, 'Public Course', '', 'yes', 0, '', '');
+insert into level values (3, 'CS YSC1', 'yes', '', 5, 'YSC\s*1', '4YSC1');
+insert into level values (4, 'CS YSC2', 'yes', '', 5, 'YSC\s*2', '4YSC2');
+insert into level values (5, 'CS YSL1', 'yes', '', 5, 'YSL\s*1', '4YSL1');
+insert into level values (6, 'CS YSL2', 'yes', '', 5, 'YSL\s*2', '4YSL2');
+insert into level values (7, 'YTT 200M', 'yes', '', 2, 'YTT\s*200\s*M', '1200M');
+insert into level values (8, 'YTT 200S', 'yes', '', 2, 'YTT\s*200\s*S', '1200S');
+insert into level values (9, 'YTT 300', 'yes', '', 2, 'YTT\s*300', '1300M');
+insert into level values (10, 'AHC', 'yes', '', 3, 'AHC', '2AHC1');
+insert into level values (11, 'CAP', 'yes', '', 3, 'CAP', '2CAP1');
+insert into level values (12, 'Diploma', 'yes', '', 0, '', '');
+insert into level values (13, 'Certificate', 'yes', '', 0, '', '');
+insert into level values (14, 'Masters', 'yes', '', 3, 'masters', '2MAS1'); -- only Ayurveda?
 
 drop table if exists canpol;
 create table canpol (

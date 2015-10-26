@@ -54,37 +54,20 @@ use Global qw/
 /;
 use File::Copy;
 
-my @sch_opts = (
-    'MMC',
-    'MMI School of Yoga',
-    'MMI College of Ayurveda',
-    'MMI School of Professional Massage',
-    'MMI School of Community Studies',
-);
-my %mmi_levels = (
-    H => "AHC",
-    P => "CAP",
-    B => "AHC Bridge",
-    D => "Diploma",
-    C => "Certificate",
-    M => "Masters",
-    S => "Course",
-    A => "Stand Alone Course (non DCM)"
-);
-
-sub _cat_opts {
-    my ($c, $default) = @_;
-    my $cat_opts = '';
-    for my $cat (model($c, 'Category')->all()) {
-        my $index = $cat->id();
-        $cat_opts .= "<option value=$index "
-                  .  ($index == $default? "selected": '')
-                  .  ">"
-                  .  $cat->name()
-                  . "\n"
-                  ;
+# for Category, School, and Level
+sub _opts {
+    my ($c, $type, $default) = @_;
+    my $opts = '';
+    for my $l (model($c, $type)->all()) {
+        my $index = $l->id();
+        $opts .= "<option value=$index "
+              .  ($index == $default? "selected": '')
+              .  ">"
+              .  $l->name()
+              . "\n"
+              ;
     }
-    return $cat_opts;
+    return $opts;
 }
 
 sub index : Private {
@@ -114,13 +97,6 @@ sub create : Local {
         );
     }
     Global->init($c);
-    my $sch_opts = '';
-    for my $i (0 .. $#sch_opts) {
-        $sch_opts .= "<option value=$i "
-                  .  ($i == 0? "selected": '')
-                  .  ">$sch_opts[$i]\n"
-                  ;
-    }
     # set defaults by putting them in the stash
     #
     stash($c,
@@ -184,24 +160,9 @@ sub create : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
-        cat_opts       => _cat_opts($c, 0),
-        school_opts    => $sch_opts,
-
-        # There is a better way of generating this option list.
-        # We do so twice in other places in this file.
-        # Please refactor this!
-        #
-# no more diploma or certificate
-#<option value=D>Diploma
-#<option value=C>Certificate
-        level_opts => <<"EOO",
-<option value=H>AHC
-<option value=P>CAP
-<option value=B>AHC Bridge
-<option value=M>Masters
-<option value=S>Course
-<option value=A>Stand Alone Course (non DCM)
-EOO
+        cat_opts       => _opts($c, 'Category', 1),
+        school_opts    => _opts($c, 'School', 1),
+        level_opts     => _opts($c, 'Level', 1),
         @dates,
         show_level  => "hidden",
         form_action => "create_do",
@@ -226,9 +187,9 @@ sub _get_data {
 
     %P = %{ $c->request->params() };
     #
-    if ($P{school} == 0) {
+    if ($P{school_id} == 1) {
         # MMC
-        $P{level} = ' ';
+        $P{level_id} = 1;      # course
     }
     # since unchecked boxes are not sent...
     for my $f (qw/
@@ -298,30 +259,36 @@ sub _get_data {
             }
         }
     }
-    if ($P{school} != 0
+    if ($P{school_id} != 1
         && $P{name} !~ m{MMI}
     ) {
         push @mess, 'Name must have MMI in it';
     }
-    if ($P{school} == 0
+    if ($P{school_id} == 1
         && $P{name} =~ m{MMI}
     ) {
-        push @mess, 'Name has MMI in it but the program is not an MMI program.';
+        push @mess, 'Name has MMI in it but the program is not sponsored by an MMI school';
     }
-    # Temporary fix...
-    #if ($P{school} != 0 
-    #    && $P{level} ne 'S'
-    #    && $P{level} ne 'A'
-    #    && $P{name} !~ m{$mmi_levels{$P{level}}}
-    #) {
-    #    push @mess, "Name must have $mmi_levels{$P{level}} in it.";
-    #}
-    #if ($P{school} != 0 && ($P{level} eq 'S' || $P{level} eq 'A')
-    #    && $P{name} =~ m{Diploma|Certificate|Masters|AHC|CAP}
-    #) {
-    #    push @mess, 'Name must not have Diploma, Certificate,'
-    #                . ' Masters, AHC, or CAP in it.';
-    #}
+    # verify the level and school match okay
+    my $level = model($c, 'Level')->find($P{level_id});
+    if (! $level) {
+        push @mess, 'Illegal Level!!';
+    }
+    else {
+        my $lev_name = $level->name();
+        if ($level->school_id && $level->school_id != $P{school_id}) {
+            my $school = model($c, 'School')->find($P{school_id});
+            my $sch_name = $school->name();
+            # we _could_ have some Javascript to only permit
+            # certain allowable options in the <select> for Level.
+            push @mess, "Level '$lev_name' does not match the Sponsoring Organization '$sch_name'";
+        }
+        # the program name must match the level name_regex
+        my $regex = $level->name_regex();
+        if ($regex && $P{name} !~ m{$regex}i) {
+            push @mess, "Program name '$P{name}' does not match the Level '$lev_name'";
+        }
+    }
 
     # dates are converted to d8 format
     my ($sdate, $edate);
@@ -400,7 +367,7 @@ sub _get_data {
     # This check is no longer needed.  The Registar will
     # take responsibility for the times being correct.
     #
-    #if ($P{school} == 0       # check times for MMC not MMI
+    #if ($P{school_id} == 1       # check times for MMC not MMI
     #    &&
     #    !(($P{reg_start}  <= $P{reg_end})
     #      && ($P{reg_end} <= $P{prog_start}))
@@ -440,7 +407,7 @@ sub create_do : Local {
     # gl num is computed not gotten
     $P{glnum} = ($P{name} =~ m{personal\s+retreat}i)?
                                    '99999'
-               :($P{school} != 0)? 'XX'     # MMI programs/courses
+               :($P{school_id} != 1)? 'XX'     # MMI programs/courses
                :                   compute_glnum($c, $P{sdate})
                ;
 
@@ -461,16 +428,7 @@ sub create_do : Local {
 
         # create the summary from the right template
         #
-        my $prefix;
-        if ($P{name} =~ m{^MMI-([DCM])}) {
-            $prefix = "MMI-$1";
-        }
-        elsif ($P{school} != 0) {
-            $prefix = "MMI";
-        }
-        else {
-            $prefix = "MMC";
-        }
+        my $prefix = $P{school_id} != 1? 'MMI': 'MMC';
         my @prog = model($c, 'Program')->search({
             name => "$prefix Template",
         });
@@ -540,7 +498,7 @@ sub create_do : Local {
 sub _finalize_program_creation {
     my ($c, $id) = @_;
 
-    my $glnum_popup = $P{school} != 0 && $P{level} =~ m{\A [SA] \z}xms;
+    my $glnum_popup = $P{school_id} != 0 && $P{level_id} =~ m{\A [SA] \z}xms;
     if ($glnum_popup) {
         #
         # send email to all of the account admins
@@ -640,11 +598,12 @@ sub view : Local {
     }
 
     #
-    # no lunches for personal retreat, resident programs, or DCMHPB.
+    # no lunches for personal retreat, resident programs,
+    # or credentialed long term MMI programs.
     #
     if (! ($p->PR()
            || $p->category->name() ne 'Normal'
-           || $p->level() =~ m{[DCMHPB]}
+           || $p->level->long_term()
           )
     ) {
         stash($c,
@@ -658,7 +617,8 @@ sub view : Local {
         );
     }
     if (! ($p->PR()
-           || $p->category->name() ne 'Normal')
+           || $p->category->name() ne 'Normal'
+           || $p->level->long_term())       # no credentialed programs
         && ($p->edate()-$p->sdate()+1+$p->extradays() >= 7)
     ) {
         stash($c,
@@ -698,8 +658,6 @@ sub view : Local {
         cluster_date        => $sdate,
         cal_param           => "$sdate/$nmonths",
         leaders_house       => $p->leaders_house($c),
-        school              => $sch_opts[$p->school()],
-        level               => $mmi_levels{$p->level()},
         template            => "program/view.tt2",
     );
 }
@@ -766,26 +724,21 @@ sub list : Local {
     my $cutoff = tt_today($c) - 7;
     $cutoff = $cutoff->as_d8();
     my @cond = ();
-    if ($type eq 'hpm') {
+    if ($type eq 'long_term') {
         @cond = (
             'category.name' => 'Normal',
-            level           => { -in  => [qw/ D C M H P B /] },
+            'level.long_term' => 'yes',
             edate => { },       # all programs not just current.
                                 # this overrides the cutoff one below
         );
     }
-    elsif ($type eq 'yscl') {
-        @cond = (
-            'category.name' => { '!=' => 'Normal' },
-        );
-    }
     else {
         @cond = (
-            'category.name' => 'Normal',
-            level           => { -not_in  => [qw/ D C M H P B /] },
+            'category.name'   => 'Normal',
+            'level.long_term' => '',
         );
         if ($hide_mmi) {
-            push @cond, (school => 0);      # only MMC no MMI
+            push @cond, ('school.mmi' => '');      # only MMC no MMI
         }
     }
     stash($c,
@@ -796,7 +749,7 @@ sub list : Local {
                     @cond,
                 },
                 {
-                    join     => [qw/ category /],
+                    join     => [qw/ category school level /],
                     prefetch => [qw/ category /],
                     order_by => [qw/ sdate me.name /]
                 },
@@ -805,10 +758,11 @@ sub list : Local {
     );
     my @files = <root/static/online/*>;
     stash($c,
-        pg_title => "Programs",
-        online   => scalar(@files),
-        pr_pat   => '',
-        template => "program/list.tt2",
+        long_term => $type eq 'long_term',
+        pg_title  => "Programs",
+        online    => scalar(@files),
+        pr_pat    => '',
+        template  => "program/list.tt2",
     );
 }
 
@@ -889,22 +843,6 @@ sub update : Local {
 
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
-    my $sch_opts = '';
-    for my $i (0 .. $#sch_opts) {
-        $sch_opts .= "<option value=$i "
-                  .  ($i == $p->school()? "selected": '')
-                  .  ">$sch_opts[$i]\n"
-                  ;
-    }
-    # order matters here
-    my $level_opts = '';
-    for my $l (qw/ H P B D C M S A /) {
-        $level_opts .= "<option value=$l "
-                    .  ($l eq $p->level()? "selected": '')
-                    .  ">$mmi_levels{$l}\n"
-                    ;
-    }
-
     for my $w (qw/
         sbath single collect_total allow_dup_regs kayakalpa
         retreat
@@ -948,10 +886,10 @@ sub update : Local {
             <root/static/templates/letter/*.tt2>
         ],
         webdesc_rows => lines($p->webdesc()) + 5,
-        cat_opts     => _cat_opts($c, $p->category_id()),
-        school_opts  => $sch_opts,
-        level_opts   => $level_opts,
-        show_level   => $p->school() == 0? "hidden": "visible",
+        cat_opts     => _opts($c, 'Category', $p->category_id()),
+        school_opts  => _opts($c, 'School', $p->school_id()),
+        level_opts   => _opts($c, 'Level', $p->level_id()),
+        show_level   => $p->school->mmi()? 'visible': 'hidden',
         edit_gl      => $c->check_user_roles('account_admin') || 0,
         form_action  => "update_do/$id",
         template     => "program/create_edit.tt2",
@@ -1299,7 +1237,8 @@ sub publish : Local {
     my ($self, $c) = @_;
 
     # clear the arena
-    system("rm -rf gen_files; mkdir gen_files; mkdir gen_files/pics; mkdir gen_files/docs");
+    system("rm -rf gen_files; mkdir gen_files; "
+         . "mkdir gen_files/pics; mkdir gen_files/docs");
 
     # and make sure we have initialized %string.
     Global->init($c);
@@ -1340,7 +1279,7 @@ sub publish : Local {
     my $tt = Template->new();
     PROGRAM:
     for my $p (@programs) {
-        next PROGRAM if $p->level() eq 'A';  # no MMI courses
+        next PROGRAM if $p->level()->mmi();     # stand alone MMI courses
         my $fname = $p->fname();
         my $copy = $p->template_src();
         $tt->process(
@@ -1423,7 +1362,7 @@ sub publish : Local {
             }
             my $s;
             $tt->process(
-                $e->level() eq 'A'? \$mmiRow: \$progRow,
+                $e->level->public()? \$mmiRow: \$progRow,
                 { program => $e },
                 \$s,
             ) or die "error in processing template: "
@@ -1560,11 +1499,14 @@ sub mmi_publish : Local {
     @programs = model($c, 'Program')->search(
                     {
                         sdate  => { '>=', tt_today($c)->as_d8() },
-                        school => { '!=', 0 },      # not MMC
-                        level  => 'A',              # stand alone course
+                        'school.mmi' => 'yes',      # not MMC
+                        'level.course' => 'yes',    # stand alone course
                         webready => 'yes',
                     },
-                    { order_by => 'sdate', },
+                    {
+                        order_by => 'sdate',
+                        join     => [qw/ school level /],
+                    },
                 );
     gen_progtable();
     # send to mountmadonnainstitute.org/courses
@@ -1677,20 +1619,20 @@ EOH
         }
         my $title = "";
         my $class = "";
-        if ($p->school == 0) {
-            $title .= "<a href='" . $p->fname . "'>";
-            $title .= $p->title1;
-            $title .= "</a>";
-            $title .= "<br><span class='subtitle'>" . $p->title2 . "</span>";
-            $class = "title";
-        }
-        else {
+        if ($p->school->mmi) {
             $title .= "<a href='http://" . $p->url . "'>";
             $title .= $p->title;
             $title .= "</a>";
             $title .= $mmi_link;
             $title .= "<br><span class='subtitle'>" . $p->subtitle . "</span>";
             $class = "mmi_event";
+        }
+        else {
+            $title .= "<a href='" . $p->fname . "'>";
+            $title .= $p->title1;
+            $title .= "</a>";
+            $title .= "<br><span class='subtitle'>" . $p->title2 . "</span>";
+            $class = "title";
         }
         # the program info itself
         print {$cal} "<tr>\n<td class='dates_tr'>",
@@ -1913,20 +1855,6 @@ sub duplicate : Local {
             "check_$w" => ($orig_p->$w)? "checked": ''
         );
     }
-    my $sch_opts = '';
-    for my $i (0 .. $#sch_opts) {
-        $sch_opts .= "<option value=$i "
-                  .  ($i == $orig_p->school()? "selected": '')
-                  .  ">$sch_opts[$i]\n"
-                  ;
-    }
-    my $level_opts = '';
-    for my $l (qw/ H P B D C M S A /) {
-        $level_opts .= "<option value=$l "
-                    .  ($l eq $orig_p->level()? "selected": '')
-                    .  ">$mmi_levels{$l}\n"
-                    ;
-    }
     stash($c,
         canpol_opts => [ model($c, 'CanPol')->search(
             undef,
@@ -1951,10 +1879,10 @@ sub duplicate : Local {
             map { s{^.*templates/letter/(.*)[.]tt2$}{$1}; $_ }
             <root/static/templates/letter/*.tt2>
         ],
-        cat_opts    => _cat_opts($c, $orig_p->category_id()),
-        school_opts => $sch_opts,
-        level_opts  => $level_opts,
-        show_level   => $orig_p->school() == 0? "hidden": "visible",
+        cat_opts    => _opts($c, 'Category', $orig_p->category_id()),
+        school_opts => _opts($c, 'School', $orig_p->school_id()),
+        level_opts  => _opts($c, 'Level', $orig_p->level_id()),
+        show_level  => $orig_p->school->mmi()? 'visible': 'hidden',
         section     => 1,   # Web (a required field)
         edit_gl     => 0,
         program     => $orig_p,      # with modifed columns
@@ -1997,7 +1925,7 @@ sub duplicate_do : Local {
     # gl num is computed not gotten
     $P{glnum} = ($P{name} =~ m{personal\s+retreat}i)?
                                    '99999'
-               :($P{school} != 0)? 'XX'     # MMI programs/courses
+               :($P{school_id} != 1)? 'XX'     # MMI programs/courses
                :                   compute_glnum($c, $P{sdate})
                ;
 
@@ -2287,7 +2215,7 @@ sub view_adj : Local {
     my $ord      = ($dir eq 'next')? 'asc': 'desc';
     my @cond = ();
     if ($c->user->obj->hide_mmi()) {
-        push @cond, (school => 0);      # only MMC
+        push @cond, (school_id => 1);      # only MMC
     }
     my @progs = model($c, 'Program')->search(
         {
