@@ -1,0 +1,10 @@
+<h2>Activity for $date
+<span class=smaller>
+<a href=/activity/view/$prev>Prev</a>
+&nbsp;&nbsp;
+<a href=/activity/view/$next>Next</a>
+</span>
+</h2>
+<ul style="line-height: 7mm">
+$output
+</ul>
