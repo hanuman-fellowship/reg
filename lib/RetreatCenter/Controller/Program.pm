@@ -1279,7 +1279,7 @@ sub publish : Local {
     my $tt = Template->new();
     PROGRAM:
     for my $p (@programs) {
-        next PROGRAM if $p->level()->mmi();     # stand alone MMI courses
+        next PROGRAM if $p->school->mmi();     # stand alone MMI courses
         my $fname = $p->fname();
         my $copy = $p->template_src();
         $tt->process(
