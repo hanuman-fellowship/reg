@@ -719,7 +719,7 @@ sub nextprog {
 }
 sub prevprog {
     my ($self) = @_;
-    return "#" if $self->cancelled;
+    return "#" if $self->cancelled || ! $self->{prev};      # ???
     $self->{prev}->fname;
 }
 
