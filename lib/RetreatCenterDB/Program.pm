@@ -714,7 +714,7 @@ sub month_calendar {
 }
 sub nextprog {
     my ($self) = @_;
-    return "#" if $self->cancelled;
+    return "#" if $self->cancelled || ! $self->{next};      # ???
     $self->{"next"}->fname;
 }
 sub prevprog {
