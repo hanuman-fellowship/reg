@@ -104,20 +104,28 @@ do not really have a single GL number.  Each MMI payment has its <i>own</i>
 <p>
 Each registrant making a payment is enrolled in just one Credentialed program.
 <i>That</i> program and its Level are used to determine digits 2-6 below.
-<ul>
-<li>digit 1 = what the payment is for:
+digit 1 = what the payment is for:
+<table cellpadding=3>
+<tr><td>1</td><td>Tuition</td></tr>
+<tr><td>3</td><td>Admin Fee</td></tr>
+<tr><td>4</td><td>Clinic Fee</td></tr>
+<tr><td>5</td><td>Other</td></tr>
+</table>
 <p>
-    <table cellpadding=3>
-    <tr><td>1</td><td>Tuition</td></tr>
-    <tr><td>2</td><td>Meals & Lodging</td></tr>
-    <tr><td>3</td><td>Application Fee</td></tr>
-    <tr><td>4</td><td>Registration Fee</td></tr>
-    <tr><td>5</td><td>Other</td></tr>
-    <tr><td>6</td><td>Recording</td></tr>
-    <tr><td>7</td><td>STRF</td></tr>
-    </table>
-    <p>
-</ul>
+digits 2-6 are determined by the Level of the Program:
+<table cellpadding=3>
+<tr><td>CS YSC1</td><td>4YSC1</td></tr>
+<tr><td>CS YSC2</td><td>4YSC2</td></tr>
+<tr><td>CS YSL1</td><td>4YSL1</td></tr>
+<tr><td>CS YSL2</td><td>4YSL2</td></tr>
+<tr><td>YTT 200M</td><td>1200M</td></tr>
+<tr><td>YTT 200S</td><td>1200S</td></tr>
+<tr><td>YTT 300</td><td>1300M</td></tr>
+<tr><td>AHC</td><td>2AHC1</td></tr>
+<tr><td>CAP</td><td>2CAP1</td></tr>
+<tr><td>Masters</td><td>2MAS1</td></tr>
+</table>
+<p>
 Actually, <i>anyone</i> can register for an MMI <i>course</i> - even people who
 are not enrolled in a Credentialed program.  These are called &lsquo;Auditors&rsquo;.
 When auditors make a payment (via "New" MMI Payment) 
