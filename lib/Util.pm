@@ -1441,7 +1441,7 @@ sub PR_other_reserved_cids {
         model($c, 'Program')->search(
             {
             'level.long_term' => '',
-            name  => { -not_like => '%personal%retreat%' },
+            'me.name'         => { -not_like => '%personal%retreat%' },
             sdate => { '<' => $date_end },       # and it overlaps
             edate => { '>' => $date_start },     # with this PR registration
             },

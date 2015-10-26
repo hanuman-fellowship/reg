@@ -109,3 +109,5 @@ Oct 25 1:30-9:00
         never immediate for deleting please
         reg history for MMI when edit/deleting
     put in place, prepared the tables/columns for school, level
+Oct 26 9:45-10:10
+    fiddling with YSC programs, M & L for MMI

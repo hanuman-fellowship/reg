@@ -164,11 +164,14 @@ sub future_programs {
             edate    => { '>=', tt_today($c)->as_d8() },
             webready => 'yes',
             -or => [
-                'school.mmi' => '',           # MMC
+                'school.mmi' => '',      # MMC
                 'level.public' => 'yes', # MMI public standalone course
             ],
         },
-        { order_by => [ 'sdate', 'edate' ] },
+        {
+            join     => [qw/ school level /],
+            order_by => [qw/ sdate  edate /],
+        },
     );
     #
     # go through the programs in order
