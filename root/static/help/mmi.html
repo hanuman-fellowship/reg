@@ -90,7 +90,7 @@ links "New" and "List".
 <p>  
 Choosing "New" to create a new MMI payment
 you supply a dollar amount, type (credit/check/cash), what the payment
-is for (Tuition/Meals&Lodging/Fees/...) and an optional note.
+is for (Tuition/Fees/...) and an optional note.
 <p>
 The program where you clicked on the "New" link will
 be remembered with the payment itself.  This means you could
@@ -104,16 +104,22 @@ do not really have a single GL number.  Each MMI payment has its <i>own</i>
 <p>
 Each registrant making a payment is enrolled in just one Credentialed program.
 <i>That</i> program and its Level are used to determine digits 2-6 below.
-digit 1 = what the payment is for:
+<p>
+Digit 1 = what the payment is for:
+<ul>
 <table cellpadding=3>
 <tr><td>1</td><td>Tuition</td></tr>
 <tr><td>3</td><td>Admin Fee</td></tr>
 <tr><td>4</td><td>Clinic Fee</td></tr>
 <tr><td>5</td><td>Other</td></tr>
 </table>
+</ul>
+Meals and Lodging are now paid to MMC directly (how?).
 <p>
-digits 2-6 are determined by the Level of the Program:
+Digits 2-6 are determined by the Level of the Program:
+<ul>
 <table cellpadding=3>
+<tr><th>Level</th><th>Digits 2-6</th></tr>
 <tr><td>CS YSC1</td><td>4YSC1</td></tr>
 <tr><td>CS YSC2</td><td>4YSC2</td></tr>
 <tr><td>CS YSL1</td><td>4YSL1</td></tr>
@@ -125,6 +131,7 @@ digits 2-6 are determined by the Level of the Program:
 <tr><td>CAP</td><td>2CAP1</td></tr>
 <tr><td>Masters</td><td>2MAS1</td></tr>
 </table>
+</ul>
 <p>
 Actually, <i>anyone</i> can register for an MMI <i>course</i> - even people who
 are not enrolled in a Credentialed program.  These are called &lsquo;Auditors&rsquo;.
