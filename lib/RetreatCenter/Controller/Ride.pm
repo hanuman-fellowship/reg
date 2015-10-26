@@ -502,11 +502,11 @@ sub update_do : Local {
     return if @mess;
     my $ride = model($c, 'Ride')->find($id);
     my $rider = $ride->rider();
-    $rider->update({
-        cc_number => $P{cc_number},
-        cc_expire => $P{cc_expire},
-        cc_code   => $P{cc_code},
-    });
+    #$rider->update({
+    #    cc_number => $P{cc_number},
+    #    cc_expire => $P{cc_expire},
+    #    cc_code   => $P{cc_code},
+    #});
     delete @P{qw/cc_number cc_expire cc_code/};
     my $changed = ($ride->pickup_time() ne $P{pickup_time});
     $ride->update(\%P);
@@ -595,11 +595,11 @@ sub create_do : Local {
     return if @mess;
     $P{rider_id} = $person_id;
     my $p = model($c, 'Person')->find($person_id);
-    $p->update({
-        cc_number => $P{cc_number},
-        cc_expire => $P{cc_expire},
-        cc_code   => $P{cc_code},
-    });
+    #$p->update({
+    #    cc_number => $P{cc_number},
+    #    cc_expire => $P{cc_expire},
+    #    cc_code   => $P{cc_code},
+    #});
 
     delete $P{cc_number};
     delete $P{cc_expire};
