@@ -25,11 +25,11 @@ for [% person.first %] [% person.last %] in [% reg.program.name %]</h2>
 <option value='1' selected>Tuition
 <option value='2'>Meals and Lodging
 [% IF long_term %]
-    <option value='3'>Application Fee
-    <option value='4'>Registration Fee
+    <option value='3'>Admin Fee
+    <option value='4'>Clinic Fee
 [% END %]
-<option value='6'>STRF
-<option value='7'>Recordings
+<!-- <option value='6'>STRF
+<option value='7'>Recordings old -->
 <option value='5'>Other
 </select>
 </td>

@@ -23,8 +23,8 @@
 <select name=type>
 <option value=2>Meals and Lodging
 <option value=1>Tuition
-<option value=3>Application Fee
-<option value=4>Registration Fee
+<option value=3>Admin Fee
+<option value=4>Clinic Fee
 <option value=6>STRF
 <option value=7>Recordings
 <option value=8>CEU License

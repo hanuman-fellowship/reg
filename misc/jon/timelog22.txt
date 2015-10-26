@@ -102,8 +102,10 @@ Oct 22 8:30-9:15, 1:00-1:50, 5:40-6:25
 
     todo: date on Activity page, member name instead of id
     $ signs in msg lines
-Oct 25 1:30-
+Oct 25 1:30-9:00
     view program Misc tab with Category, School, and Level at top
     final(?) tweaks before putting in place
-    TODO - payment edit/delete from?  both MMI and MMC - never immediate for deleting please
+    TODO - payment edit/delete from?  both MMI and MMC
+        never immediate for deleting please
         reg history for MMI when edit/deleting
+    put in place, prepared the tables/columns for school, level

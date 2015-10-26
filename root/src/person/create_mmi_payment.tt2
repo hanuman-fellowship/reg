@@ -29,7 +29,7 @@
 <td colspan=2>
 <select name=for_what>
 <option value='1' selected>Tuition
-<!-- <option value='2'>Meals and Lodging  - old -->
+<option value='2'>Meals and Lodging
 <option value='3'>Admin Fee
 <option value='4'>Clinic Fee
 <!-- <option value='6'>STRF
