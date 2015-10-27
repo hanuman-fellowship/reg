@@ -81,20 +81,21 @@ create table level (
     name_regex text,
     glnum_suffix text
 );
-insert into level values (1, 'Course', '', '', 0, '', '');
-insert into level values (2, 'Public Course', '', 'yes', 0, '', '');
-insert into level values (3, 'CS YSC1', 'yes', '', 5, 'YSC\s*1', '4YSC1');
-insert into level values (4, 'CS YSC2', 'yes', '', 5, 'YSC\s*2', '4YSC2');
-insert into level values (5, 'CS YSL1', 'yes', '', 5, 'YSL\s*1', '4YSL1');
-insert into level values (6, 'CS YSL2', 'yes', '', 5, 'YSL\s*2', '4YSL2');
-insert into level values (7, 'YTT 200M', 'yes', '', 2, 'YTT\s*200\s*M', '1200M');
-insert into level values (8, 'YTT 200S', 'yes', '', 2, 'YTT\s*200\s*S', '1200S');
-insert into level values (9, 'YTT 300', 'yes', '', 2, 'YTT\s*300', '1300M');
+insert into level values (1, 'Course', '', '', 0, '', ''); -- school_id of 0?
+insert into level values (2, 'Public Course', '', 'yes', 0, '', ''); -- ditto
+insert into level values (3, 'CS YSC1', 'yes', '', 5, 'YSC\\s*1', '4YSC1');
+insert into level values (4, 'CS YSC2', 'yes', '', 5, 'YSC\\s*2', '4YSC2');
+insert into level values (5, 'CS YSL1', 'yes', '', 5, 'YSL\\s*1', '4YSL1');
+insert into level values (6, 'CS YSL2', 'yes', '', 5, 'YSL\\s*2', '4YSL2');
+insert into level values (7, 'YTT 200M', 'yes', '', 2, 'YTT\\s*200\\s*M', '1200M');
+insert into level values (8, 'YTT 200S', 'yes', '', 2, 'YTT\\s*200\\s*S', '1200S');
+insert into level values (9, 'YTT 300', 'yes', '', 2, 'YTT\\s*300', '1300M');
 insert into level values (10, 'AHC', 'yes', '', 3, 'AHC', '2AHC1');
 insert into level values (11, 'CAP', 'yes', '', 3, 'CAP', '2CAP1');
 insert into level values (12, 'Diploma', 'yes', '', 0, '', '');
 insert into level values (13, 'Certificate', 'yes', '', 0, '', '');
 insert into level values (14, 'Masters', 'yes', '', 3, 'masters', '2MAS1'); -- only Ayurveda?
+insert into level values (15, 'AHC Bridge', 'yes', '', 3, 'ahci\\s*bridge', '2MAS1'); -- only Ayurveda?
 
 drop table if exists canpol;
 create table canpol (

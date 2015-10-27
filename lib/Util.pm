@@ -111,7 +111,7 @@ sub _affil_elem {
     my $descrip = $a->descrip();
     return "<td><input type=checkbox name=aff$id "
            . ($checked{$id} || "")
-           . ">"
+           . "> "
            . $descrip
            . "</td>";
 }

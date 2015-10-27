@@ -28,7 +28,8 @@ __END__
 overview - Affiliations are used to describe a person's interests -
     the way that they are connected to the center.   Programs have affiliations
     that are assigned to everyone registering for the program.  Reports 
-    search for everyone that has an affiliation.
+    search for everyone that has an affiliation.   Members are assigned
+    an affiliation corresponding to their category.
 descrip - the description of the affiliation
 id - unique id
 selectable - a boolean.  is the system affiliation selectable when editing
