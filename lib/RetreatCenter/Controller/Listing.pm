@@ -462,13 +462,14 @@ sub meal_list : Local {
                             # do program.category.name => 'Normal'
                             # but not now ...
                        'me.cancelled'  => '',
-                       'program.level.long_term' => '',
                    },
                    {
-                       join     => [qw/ program level /],
-                       prefetch => [qw/ program level /],   
+                       join     => [qw/ program /],
+                       prefetch => [qw/ program /],   
                    }
                );
+    # can't put this in the where clause above???  why?
+    @regs = grep { ! $_->program->level->long_term() } @regs;
     my @rentals = model($c, 'Rental')->search({
                       sdate => { '<=' => $end_d8   },
                       edate => { '>=' => $start_d8 },

@@ -99,9 +99,6 @@ __PACKAGE__->belongs_to(housecost => 'RetreatCenterDB::HouseCost',
 # category
 __PACKAGE__->belongs_to(category => 'RetreatCenterDB::Category',
                         'category_id');
-# level
-__PACKAGE__->belongs_to(level => 'RetreatCenterDB::Level',
-                        'level_id');
 # school
 __PACKAGE__->belongs_to(school => 'RetreatCenterDB::School',
                         'school_id');
