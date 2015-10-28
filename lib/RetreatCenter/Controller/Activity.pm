@@ -11,8 +11,9 @@ use Util qw/
 /;
 
 sub view : Local {
-    my ($self, $c, $day) = @_;
+    my ($self, $c, $day, $temple) = @_;
 
+    $temple ||= 0;
     if (! $day) {
         $day = tt_today($c)->format('%a');
     }
@@ -23,10 +24,28 @@ sub view : Local {
     my $prev = $days[-1];
     my $next = $days[1];
     my @lines = split '\n', slurp("root/static/grab_new/$day");
+    if ($temple <= 1) {
+        my $tmpl_re = qr{\A temple(?!\s+donation)}xms;
+        if ($temple == 1) {
+            @lines = grep { /$tmpl_re/ } @lines;
+        }
+        else {
+            my $nbefore = @lines;
+            @lines = grep { ! /$tmpl_re/ } @lines;
+            my $ntemple = $nbefore - @lines;
+            if ($lines[-1] =~ m{\A \*\*}xms) {
+                # no need for a time
+                pop @lines;
+            }
+            if ($ntemple) {
+                push @lines, "<a href=/activity/view/$day/1>temple $ntemple</a>";
+            }
+        }
+    }
     my $s = "";
     my $time;
     for my $l (@lines) {
-        if ($l =~ m{\*\* \s (\d+:\d+)}xms) {
+        if ($l =~ m{\A \*\* \s (\d+:\d+)}xms) {
             $time = $1;
         }
         else {
