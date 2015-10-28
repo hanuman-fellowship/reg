@@ -1,4 +1,4 @@
-[% mmi = program.school != 0 %]
+[% mmi = program.school.mmi %]
 <HTML>
 <HEAD>
 <STYLE type='text/css'>

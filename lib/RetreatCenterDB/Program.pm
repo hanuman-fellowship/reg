@@ -105,6 +105,9 @@ __PACKAGE__->belongs_to(level => 'RetreatCenterDB::Level',
 # school
 __PACKAGE__->belongs_to(school => 'RetreatCenterDB::School',
                         'school_id');
+# level
+__PACKAGE__->belongs_to(level => 'RetreatCenterDB::Level',
+                        'level_id');
 # summary
 __PACKAGE__->belongs_to(summary => 'RetreatCenterDB::Summary', 'summary_id');
 

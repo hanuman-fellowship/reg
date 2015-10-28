@@ -37,7 +37,7 @@ h3 {
 <body>
 [% pers = reg.person %]
 [% prog = reg.program %]
-[% mmi = prog.school != 0 %]
+[% mmi = prog.school.mmi %]
 [% IF mmi %]
 <div class=mmi_header>
 [% IF print %]
