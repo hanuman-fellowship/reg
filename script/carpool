@@ -130,7 +130,7 @@ for my $p (@progs) {
         email_letter(
             from    => "$string{from_title} <$string{from}>",
             fake_to => "Car Pool List",
-            to      => 'jon2.bjornstad@gmail.com',
+            to      => 'jon@suecenter.com',
             bcc     => (join ", ",
                         map { "$_->[0] $_->[1] <$_->[2]>" }
                         @emails,

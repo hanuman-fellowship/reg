@@ -121,7 +121,7 @@ if (!$person) {
             die "no mail sender: ";
         }
         $ms->Open({
-            to       => 'jon@logicalpoetry.com',
+            to       => 'jonb@logicalpoetry.com',
             from     => 'Mount Madonna Center <reservations@mountmadonna.org>',
             subject  => "SOS!  Update system has been HACKED!",
             ctype    => "text/html",

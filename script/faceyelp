@@ -183,12 +183,12 @@ if (@prog_pr) {
     $tot += $n;
 }
 
-exit;       # no need for mailings any more
+#exit;       # no need for mailings any more
 
 if ($tot) {
     email_letter(
         schema  => $schema,
-        from    => 'jon@logicalpoetry.com',
+        from    => 'jonb@logicalpoetry.com',
         to      => 'jon@suecenter.org, brajesh@mountmadonna.org',
         subject => "Post-Event emailings",
         html    => $msg,
@@ -196,7 +196,7 @@ if ($tot) {
 }
 email_letter(
     schema  => $schema,
-    from    => 'jon@logicalpoetry.com',
+    from    => 'jonb@logicalpoetry.com',
     to      => 'jon@suecenter.org',
     subject => "Post-Event emailings",
     html    => 'It did run!',

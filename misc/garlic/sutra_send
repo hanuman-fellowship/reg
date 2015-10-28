@@ -84,7 +84,7 @@ my @addrs = <$addrs>;
 close $addrs;
 chomp @addrs;
 
-#@addrs = ('jon@logicalpoetry.com');
+#@addrs = ('jonb@logicalpoetry.com');
 
 my $ms = Mail::Sender->new({
     smtp    => 'mail.suecenter.org',
@@ -107,7 +107,7 @@ for my $em (@addrs) {
             ctype    => "text/html",
             encoding => "7bit",
             # the following didn't seem to work :(
-            # headers  => 'Errors-To: jon@logicalpoetry.com',
+            # headers  => 'Errors-To: jonb@logicalpoetry.com',
         })
             or die "no Mail::Sender->Open $Mail::Sender::Error";
         $ms->SendLineEnc($html);

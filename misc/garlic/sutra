@@ -188,7 +188,7 @@ elsif ($P{sug_sut}) {
         die "no mail sender";
     }
     $ms->Open({
-        to       => 'Jon Bjornstad <jon@logicalpoetry.com>, ' 
+        to       => 'Jon Bjornstad <jonb@logicalpoetry.com>, ' 
                   . 'Sukhdev Pettingill <sukhdev@mountmadonna.org>',
         from     => $email,
         subject  => "Suggestion for a New Sutra",
