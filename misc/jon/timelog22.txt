@@ -111,3 +111,7 @@ Oct 25 1:30-9:00
     put in place, prepared the tables/columns for school, level
 Oct 26 9:45-10:10
     fiddling with YSC programs, M & L for MMI
+Oct 28 4:00-4:20
+    responding to some error reports
+Oct 29 8:35-9:15
+    db_init - gathering all table definitions

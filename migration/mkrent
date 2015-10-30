@@ -48,7 +48,7 @@ create table rental (
     cancelled         text not null default '',
     fixed_cost_houses text default '',
     fch_encoded       text default '',
-    grid_state        text default '',
+    grid_stale        text default '',
     pr_alert          text default ''
 );
 drop table if exists rental_payment;

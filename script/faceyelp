@@ -183,7 +183,7 @@ if (@prog_pr) {
     $tot += $n;
 }
 
-#exit;       # no need for mailings any more
+exit;       # no need for mailings any more
 
 if ($tot) {
     email_letter(
