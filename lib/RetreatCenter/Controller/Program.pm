@@ -1493,14 +1493,13 @@ sub mmi_publish : Local {
     Global->init($c);
 
     # fill the global @programs with all future 
-    # webready MMI stand alone courses
-    # ordered by start date.
+    # webready MMI public courses ordered by start date.
     #
     @programs = model($c, 'Program')->search(
                     {
                         sdate  => { '>=', tt_today($c)->as_d8() },
                         'school.mmi' => 'yes',      # not MMC
-                        'level.course' => 'yes',    # stand alone course
+                        'level.public' => 'yes', # MMI public course
                         webready => 'yes',
                     },
                     {
