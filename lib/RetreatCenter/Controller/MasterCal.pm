@@ -197,6 +197,7 @@ EOH
                           edate => { '>=', $the_first },
                           @opt_end,
                           @prog_opt,
+                          @join_opt,
                       });
     }
 
