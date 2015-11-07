@@ -746,24 +746,46 @@ sub update_do : Local {
 sub delete : Local {
     my ($self, $c, $rental_id) = @_;
 
+    my $r = model($c, 'Rental')->find($rental_id);
+    # make a relationship instead???
     my @clusters = model($c, 'RentalCluster')->search({
         rental_id => $rental_id,
     });
-    my @houses = model($c, 'RentalBooking')->search({
-        rental_id => $rental_id,
-    });
-    my @bookings = model($c, 'Booking')->search({
-        rental_id => $rental_id,
-    });
-
-    if (@clusters || @houses || @bookings) {
+    if (@clusters) {
+        my $n = @clusters;
+        my $pl = $n == 1? '': "s";
         error($c,
-              'You must first remove any assigned clusters,'
-                  . ' houses, or meeting places.',
-              'gen_error.tt2');
+            "You must first delete the $n cluster$pl attached to this rental.",
+            'gen_error.tt2');
         return;
     }
-    my $r = model($c, 'Rental')->find($rental_id);
+    if (my @blocks = $r->blocks()) {
+        my $n = @blocks;
+        my $pl = $n == 1? '': "s";
+        error($c,
+            "You must first delete the $n block$pl attached to this rental.",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    if (my @bookings = $r->bookings()) {
+        my $n = @bookings;
+        my $pl = $n == 1? '': "s";
+        error($c,
+            "You must first delete the $n booking$pl attached to this rental.",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    if (my @houses = $r->houses()) {
+        my $n = @houses;
+        my $pl = $n == 1? '': "s";
+        error($c,
+            "You must first delete the $n house$pl attached to this rental.",
+            'gen_error.tt2',
+        );
+        return;
+    }
 
     # first break any link from the Proposal to this Rental.
     #
@@ -2166,10 +2188,13 @@ sub _get_cluster_groups {
             $_->id()
         }
         model($c, 'Program')->search({
-            level => { -not_in => [qw/ D C M /], },
-            name  => { -not_like => '%personal%retreat%' },
+            'me.name'  => { -not_like => '%personal%retreat%' },
+            'level.long_term' => '',
             sdate => { '<' => $edate },       # and it overlaps
             edate => { '>' => $sdate },       # with this rental
+        },
+        {
+            join => [qw/ level /],
         });
     my @ol_rent_ids =
         map {

@@ -581,9 +581,11 @@ sub compute_glnum {
     });
     my $max = 0;
     for my $e (@programs, @rentals) {
-        my $digit = substr($e->glnum, 4, 1);
-        if ($digit > $max) {
-            $max = $digit;
+        if (length($e->glnum) >= 5) {
+            my $digit = substr($e->glnum, 4, 1);
+            if ('0' <= $digit && $digit <= '9' && $digit > $max) {
+                $max = $digit;
+            }
         }
     }
     return sprintf "%d%02d%d%d", $dt->year % 10, $dt->month, $week, $max+1;
@@ -1802,6 +1804,7 @@ sub calc_mmi_glnum {
 sub ensure_mmyy {
     my ($name, $date) = @_;
 
+    $name = trim($name);
     my $d_mm = $date->month;
     my $d_yy = $date->year % 100;
     my ($mm, $yy) = $name =~ m{(\d\d?)/(\d\d)}xms;

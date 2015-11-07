@@ -159,7 +159,7 @@ your personal retreat,
 [% ELSIF program.retreat %]
     "$program.title", $reg.att_prog_dates,
 [% ELSE %]
-    the "$program.title" program, $reg.att_prog_dates,[% IF program.leaders %] with $program.leader_names,[% END %]
+    the "$program.title" program, $reg.att_prog_dates,[% IF program.leader_names %] with $program.leader_names,[% END %]
 [% END %]
 as you requested.
 </P>
@@ -200,11 +200,7 @@ Your retreat begins on the afternoon of
 ${reg.date_start_obj.format("%A, %B %e")}.
 [% ELSE %]
 Program registration is from
-[% IF mmi %]
-12:30-1:30 pm and 5:00-6:30 pm
-[% ELSE %]
 $program.reg_start_obj to $program.reg_end_obj
-[% END %]
 on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
 [% END %]
 </P>

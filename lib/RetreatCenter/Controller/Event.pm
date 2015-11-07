@@ -28,6 +28,7 @@ use Util qw/
     check_makeup_vacate
     d3_to_hex
     email_letter
+    error
 /;
 use HLog;
 use GD;
@@ -328,13 +329,41 @@ sub update_do : Local {
 }
 
 #
-# and meeting places and blocks - and config.
-# ??? and config???
+# before deleting
+# check for meeting places and blocks
 #
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
     my $e = model($c, 'Event')->find($id);
+
+#
+# strange behavior - $e->blocks() in scalar context
+# always returns a DBIx::Class::ResultSet
+# even when there are no blocks.
+#
+# use Data::Dumper;
+# $c->log->info('-' . Dumper($e->blocks()) . '-');
+# $c->log->info('r-' . ref($e->blocks()) . '-');
+# my $x = scalar $e->blocks();
+# if ($x) {
+#     $c->log->info('yes');
+# }
+# if ($e->blocks()) {
+#     $c->log->info("yeah");
+# }
+# my @b = $e->blocks();
+# $c->log->info("b-@b-" . scalar(@b));
+# 
+    my @blocks = $e->blocks();
+    my @bookings = $e->bookings();
+    if (@blocks || @bookings) {
+        error($c,
+            'You cannot delete an event if it has blocks or meeting places.',
+            'gen_error.tt2',
+        );
+        return;
+    }
     my $name = $e->name();
     $e->delete();
     if ($e->name() =~ m{\A No[ ]PR}xms) {

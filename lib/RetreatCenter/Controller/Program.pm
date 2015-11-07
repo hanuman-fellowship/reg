@@ -1174,6 +1174,15 @@ sub delete : Local {
         );
         return;
     }
+    if (my @blocks = $p->blocks()) {
+        my $n = @blocks;
+        my $pl = $n == 1? '': "s";
+        error($c,
+            "You must first delete the $n block$pl attached to this program.",
+            'gen_error.tt2',
+        );
+        return;
+    }
 
     # affiliation/programs
     model($c, 'AffilProgram')->search({

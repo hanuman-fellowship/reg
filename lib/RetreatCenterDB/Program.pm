@@ -386,6 +386,9 @@ sub title2_barnacles {
                "");
 }
 
+#
+# this does not include assistant names
+#
 sub leader_names {
     my ($self) = @_;
 
