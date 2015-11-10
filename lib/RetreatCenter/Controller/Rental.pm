@@ -777,11 +777,11 @@ sub delete : Local {
         );
         return;
     }
-    if (my @houses = $r->houses()) {
+    if (my @rental_bookings = $r->rental_bookings()) {
         my $n = @houses;
         my $pl = $n == 1? '': "s";
         error($c,
-            "You must first delete the $n house$pl attached to this rental.",
+            "You must first delete the $n room booking$pl attached to this rental.",
             'gen_error.tt2',
         );
         return;

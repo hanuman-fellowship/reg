@@ -20,10 +20,6 @@ function toggle_all() {
 <th align=left>Date</th>
 <th align=left>Airport</th>
 <th align=left>Name</th>
-<th align=left>Card Number</th>
-<th align=left>&nbsp;&nbsp;&nbsp;Expires</th>
-<th align=left>&nbsp;&nbsp;&nbsp;Code</th>
-<th align=left>AVS</th>
 <th align=right>Amount</th>
 <td></td>
 </tr>
@@ -33,10 +29,6 @@ function toggle_all() {
 <td>&nbsp;&nbsp;&nbsp;[% r.airport %]</td>
 [% rider = r.rider %]
 <td><a href="/person/view/[% rider.id %]">[% rider.last %], [% rider.first %]</a></td>
-<td>[% rider.cc_number1 %]-[% rider.cc_number2 %]-[% rider.cc_number3 %]-[% rider.cc_number4 %]</td>
-<td align=center>&nbsp;&nbsp;&nbsp;[% rider.cc_expire %]</td>
-<td align=center>&nbsp;&nbsp;&nbsp;[% rider.cc_code %]</td>
-<td align=left>[% rider.avs %]</td>
 <td align=right>[% r.cost %]&nbsp;&nbsp;</td>
 <td><input type=checkbox name=r[% r.id %] value='yes'></td>
 </tr>

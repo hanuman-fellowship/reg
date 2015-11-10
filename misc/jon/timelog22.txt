@@ -118,3 +118,5 @@ Oct 29 8:35-9:15
 Nov 2 1:00-1:30
     responding to various things.
     TODO - prohibit deleting a program if there are any blocks
+Nov 7 9:00-10:15
+    adjusting for the confirmation letter - MMI related
