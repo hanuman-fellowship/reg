@@ -394,9 +394,9 @@ $user.first $user.last
 [% END %]
 <TR><TH align=right valign=top>Business Hours</TH><TD align=left>
 [% IF mmi %]
-Tuesday-Thursday 9:00-5:00<BR>Friday 9:30-5:30<BR>Saturday 11:00-5:00
+Tuesday-Thursday 9:00-5:00<BR>Friday 9:30-5:30<BR>Saturday 10:00-5:00
 [% ELSE %]
-Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 11:00-5:00
+Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 10:00-5:00
 [% END %]
 </TD></TR>
 <TR>
