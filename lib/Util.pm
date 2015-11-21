@@ -2102,7 +2102,7 @@ sub _all_the_same {
     for my $k (@$needed_aref) {
         next KEY if $k eq 'request' or $k eq 'opt_in';
         if ($href->{$k} ne $p->$k) {    # hash index, method call
-            return 0, "$href->{$k} != " . $p->$k;
+            return 0, "$k: '$href->{$k}' != " . "'" . $p->$k . "'";
         }
     }
     return 1, "";
