@@ -357,6 +357,7 @@ sub mlist_alerts {
     for my $type (qw/ mmc mmi /) {
         my $TYPE = uc $type;
         my $html = "";
+        my @last_names;
         ALERT:
         for my $href (@mlist_alerts) {
             next ALERT if $href->{type} ne $type;
@@ -376,14 +377,16 @@ EOH
             if ($href->{request}) {
                 $html .= "Special Request: $href->{request}<br>\n"
             }
+            push @last_names, $href->{last};
         }
         next TYPE if ! $html;
         my $email = $string{"$type\_email"};   # *1 mmc_email == reception_email
+        my $last_names = join '/', @last_names;
         my $rc = email_letter($c,
             to      => "$TYPE Mail Admin <$email>",
             from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
                     # what else???
-            subject => "Online Mailing List Requests",
+            subject => "$last_names - Online $TYPE Mailing List Requests",
             html    => $html,
         );
         msg "email mailing list $TYPE alert to $email" . failed($rc);
