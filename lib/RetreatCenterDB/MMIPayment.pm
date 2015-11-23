@@ -53,10 +53,8 @@ sub for_what {
     my $type = substr($self->glnum(), 0, 1);
     return ($type eq '1')? "Tuition"
           :($type eq '2')? "Meals and Lodging"
-          :($type eq '3')? "Application Fee"
-          :($type eq '4')? "Registration Fee"
-          :($type eq '6')? "STRF"
-          :($type eq '7')? "Recordings"
+          :($type eq '3')? "Admin Fee"
+          :($type eq '4')? "Clinic Fee"
           :                "Other"
           ;
 }

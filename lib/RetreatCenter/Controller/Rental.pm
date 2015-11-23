@@ -1284,6 +1284,7 @@ sub del_booking : Local {
 }
 
 # different stash than sub contract???
+# yes, this template just gathers email addresses.
 #
 sub email_contract : Local {
     my ($self, $c, $rental_id) = @_;

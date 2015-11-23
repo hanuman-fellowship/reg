@@ -1072,8 +1072,18 @@ sub del_mmi_payment : Local {
     my ($self, $c, $payment_id, $from) = @_;
     
     my $pay = model($c, 'MMIPayment')->find($payment_id);
+    my $amount = $pay->amount();
+    my $for_what = $pay->for_what();
     $pay->delete();
     my $reg = $pay->registration();
+    # add a Reg History record
+    my @who_now = get_now($c);
+    model($c, 'RegHistory')->create({
+        reg_id   => $reg->id,
+        what     => "Deleted Payment of \$" . commify($amount)
+                  . " for $for_what",
+        @who_now,
+    });
     $reg->calc_balance();
     if ($from eq 'reg') {
         $c->response->redirect(
@@ -1452,8 +1462,7 @@ sub create_mmi_payment_do : Local {
         return;
     }
     if ($glnum eq 'illegal') {
-        $c->stash->{mess} = "Since this person is an Auditor the payment<br>"
-                          . "cannot be a fee for Application or Registration.";
+        $c->stash->{mess} = "The payment cannot be an Admin or Clinic Fee.";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
@@ -1510,8 +1519,8 @@ sub update_mmi_payment : Local {
     my $n = 1;
     for my $wh ('Tuition',
                 'Meals and Lodging',
-                'Application Fee',
-                'Registration Fee',
+                'Admin Fee',
+                'Clinic Fee',
                 'Other',
     ) {
         $for_what_opts .= "<option value=$n"
@@ -1534,6 +1543,8 @@ sub update_mmi_payment_do : Local {
     my ($self, $c, $pay_id) = @_;
 
     my $pay = model($c, 'MMIPayment')->find($pay_id);
+    my $o_amount = $pay->amount();
+    my $o_for_what = $pay->for_what();
     my $amount = trim($c->request->params->{amount});
     if (invalid_amount($amount)) {
         error($c,
@@ -1560,6 +1571,16 @@ sub update_mmi_payment_do : Local {
         note     => $c->request->params->{note},
     });
     $pay->registration->calc_balance();
+    # add a RegHistory record
+    my @who_now = get_now($c);
+    model($c, 'RegHistory')->create({
+        reg_id   => $pay->reg_id,
+        what     => 'Updated Payment of '
+                  . '$' . commify($o_amount) . " for $o_for_what"
+                  . ' => '
+                  . '$' . commify($amount)   . " for " . $pay->for_what . '.',
+        @who_now,
+    });
     if ($c->request->params->{from} eq 'reg') {
         $c->response->redirect(
             $c->uri_for("/registration/view/" . $pay->reg_id())
