@@ -999,7 +999,7 @@ sub prog_type {
         $type = "<span class=red>Cancelled</span> ";
     }
     if ($self->level->public()) {
-        $type .= "Course ";
+        $type .= "Public ";
     }
     if ($self->school->mmi()) {
         $type .= "MMI ";
