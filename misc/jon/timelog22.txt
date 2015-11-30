@@ -124,6 +124,7 @@ Nov 22 6:45-9:00
     miscellaneous things.   MMI and MMC
 Nov 28 2:00-3:00
     letter to Shantam about temple data
-Nov 29 11:00-11:20
+Nov 29 11:00-11:20, 2:30-3:45
     /usr/bin/perl => /usr/local/bin/perl for El Capitan SIP
     add more choices for MMI payments per Lila/Rachel
+    fiddling with MMI programs

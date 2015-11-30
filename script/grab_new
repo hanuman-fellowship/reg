@@ -217,13 +217,13 @@ sub finalities {
     if ($something_happened) {
         # not forever ... just until you trust it
         # then comment this out
-        $log_str =~ s{$}{<br>}xmsg;
-        email_letter($c,
-            to      => 'jon@suecenter.org',
-            from    => 'jon@suecenter.org',
-            subject => 'grab_new',
-            html    => "<pre>$log_str</pre>",
-        );
+        #$log_str =~ s{$}{<br>}xmsg;
+        #email_letter($c,
+        #    to      => 'jon@suecenter.org',
+        #    from    => 'jon@suecenter.org',
+        #    subject => 'grab_new',
+        #    html    => "<pre>$log_str</pre>",
+        #);
     }
 
     # at what point do the req_mmi_payments expire???
