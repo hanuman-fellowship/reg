@@ -120,3 +120,10 @@ Nov 2 1:00-1:30
     TODO - prohibit deleting a program if there are any blocks
 Nov 7 9:00-10:15
     adjusting for the confirmation letter - MMI related
+Nov 22 6:45-9:00
+    miscellaneous things.   MMI and MMC
+Nov 28 2:00-3:00
+    letter to Shantam about temple data
+Nov 29 11:00-11:20
+    /usr/bin/perl => /usr/local/bin/perl for El Capitan SIP
+    add more choices for MMI payments per Lila/Rachel

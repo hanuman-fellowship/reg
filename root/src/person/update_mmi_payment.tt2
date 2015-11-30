@@ -1,28 +1,28 @@
 [% per = pay.person %]
 [% reg = pay.registration %]
-<h2>Editing an MMI Payment for [% per.first %] [% per.last %] in [% reg.program.name %]</h2>
-<form action="/person/update_mmi_payment_do/[% pay.id %]"
+<h2>Editing an MMI Payment for $per.first $per.last in $reg.program.name</h2>
+<form action="/person/update_mmi_payment_do/$pay.id"
       method=post
       name=form
 >
-<input type=hidden name=from value='[% from %]'>
+<input type=hidden name=from value='$from'>
 <table cellpadding=5 border=0>
 
 <tr>
 <th align=right>Amount</th>
-<td><input type=text name=amount size=6 value=[% pay.amount %]></td>
+<td><input type=text name=amount size=6 value=$pay.amount></td>
 </tr>
 
 <tr>
 <th align=right>Date</th>
-<td><input type=text name=the_date size=10 value=[% pay.the_date_obj.format("%D") %]></td>
+<td><input type=text name=the_date size=10 value=${pay.the_date_obj.format("%D")}></td>
 </tr>
 
 <tr>
 <th align=right>Type</th>
 <td>
 <select name=type>
-[% type_opts %]
+$type_opts
 </select>
 </td>
 </tr>
@@ -31,14 +31,14 @@
 <th align=right>For</th>
 <td colspan=2>
 <select name=for_what>
-[% for_what_opts %]
+$for_what_opts
 </select>
 </td>
 </tr>
 
 <tr>
 <th align=right>Note</th>
-<td colspan=2><input type=text name=note size=40 value='[% pay.note %]'></td>
+<td colspan=2><input type=text name=note size=40 value='$pay.note'></td>
 </tr>
 
 <tr>

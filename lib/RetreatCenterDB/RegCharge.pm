@@ -47,12 +47,13 @@ my @type_disp = (
     '',             # we want 1 based
     'Tuition',
     'Meals and Lodging',
-    'Application Fee',
-    'Registration Fee',
+    'Administration Fee',
+    'Clinic Fee',
     'Other',
     'STRF',
     'Recordings',
     'CEU License Fee',
+    'Materials Fees',
 );
 sub type_disp {
     my ($self) = @_;
@@ -77,5 +78,6 @@ type - a code indicating what the charge was for:
     6 - STRF
     7 - Recordings
     8 - CEU License Fee
+    9 - Materials Fees
 user_id - foreign key to user - the person who added it
 what - a brief description of the charge - this is 'Note' in the dialog

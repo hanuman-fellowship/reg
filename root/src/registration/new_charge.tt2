@@ -21,18 +21,8 @@
 <th align=right>Type of Charge</th>
 <td>
 <select name=type>
-<option value=2>Meals and Lodging
-<option value=1>Tuition
-<option value=3>Admin Fee
-<option value=4>Clinic Fee
-<option value=6>STRF
-<option value=7>Recordings
-<option value=8>CEU License
-<option value=5>Other
+$type_opts
 </select>
-<!-- apologies for the ordering above. this field is a
-     kind of patch that repairs data that goes way way back to 1989
--->
 </td>
 </tr>
 

@@ -47,6 +47,8 @@ use Util qw/
     x_file_to_href
     add_or_update_deduping
     outstanding_balance
+    charges_and_payments_options
+    @charge_type
 /;
 use POSIX qw/
     ceil
@@ -70,19 +72,6 @@ my $TYPE_TUITION           = 1;
 my $TYPE_MEALS_AND_LODGING = 2;
 my $TYPE_OTHER             = 5;
 my $TYPE_CEU_LICENSE_FEE   = 8;
-
-# This needs to be re-thought, re-factored.
-my @charge_type = (
-    '',
-    'Tuition',
-    'Meals and Lodging',
-    'Admin Fee',
-    'Clinic Fee',
-    'Other',
-    'STRF',
-    'Recordings',
-    'CEU License Fee',
-);
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -2463,9 +2452,10 @@ sub new_charge : Local {
 
     my $reg = model($c, 'Registration')->find($id);
     stash($c,
-        from     => $from,
-        reg      => $reg,
-        template => "registration/new_charge.tt2",
+        from      => $from,
+        reg       => $reg,
+        type_opts => charges_and_payments_options(),
+        template  => "registration/new_charge.tt2",
     );
 }
 
@@ -5540,12 +5530,10 @@ sub charge_update : Local {
     my ($self, $c, $chg_id, $from) = @_;
 
     my $chg = model($c, 'RegCharge')->find($chg_id);
-    my @selected;
-    $selected[$chg->type()] = "selected";       # hack! :(
     stash($c,
         from     => $from,
         chg      => $chg,
-        selected => \@selected,
+        type_opts => charges_and_payments_options($chg->type()),
         template => 'registration/edit_charge.tt2',
     );
 }

@@ -24,6 +24,7 @@ use Util qw/
     calc_mmi_glnum
     get_now
     rand6
+    charges_and_payments_options
 /;
 use Date::Simple qw/
     date
@@ -1024,12 +1025,13 @@ sub undup_akey : Local {
 sub list_mmi_payment : Local {
     my ($self, $c, $id, $show_gl) = @_;
 
-    my $person = $c->stash->{person} = model($c, 'Person')->find($id);
+    my $person = model($c, 'Person')->find($id);
     my $tot = 0;
     for my $pay ($person->mmi_payments()) {
         $tot += $pay->amount();
     }
     stash($c,
+        person    => $person,
         time      => scalar(localtime),
         mmi_print => 0,
         show_gl   => $show_gl,
@@ -1121,7 +1123,7 @@ sub request_mmi_payment : Local {
         message   => payment_warning('mmi'),
         person    => $person,
         reg       => $reg,
-        long_term => long_term_registration($c, $person_id),
+        for_what_opts => charges_and_payments_options(),
         template  => "person/request_mmi_payment.tt2",
     );
 }
@@ -1129,7 +1131,7 @@ sub request_mmi_payment : Local {
 sub request_mmi_payment_do : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
 
-    my $amount = trim($c->request->params->{amount});
+    my $amount = trim($c->request->params->{amount}) || '';
     if (invalid_amount($amount)) {
         error($c,
             "Illegal amount: $amount",
@@ -1432,6 +1434,7 @@ sub create_mmi_payment : Local {
         from     => $from,
         message  => payment_warning('mmi'),
         person   => model($c, 'Person')->find($person_id),
+        for_what_opts => charges_and_payments_options(),
         reg      => $reg,
         template => "person/create_mmi_payment.tt2",
     );
@@ -1462,7 +1465,7 @@ sub create_mmi_payment_do : Local {
         return;
     }
     if ($glnum eq 'illegal') {
-        $c->stash->{mess} = "The payment cannot be an Admin or Clinic Fee.";
+        $c->stash->{mess} = "The payment cannot be an Administrative or Clinic Fee.";
         $c->stash->{template} = "gen_error.tt2";
         return;
     }
@@ -1515,25 +1518,10 @@ sub update_mmi_payment : Local {
                    ;
     }
     my $for_what = substr($pay->glnum(), 0, 1);
-    my $for_what_opts = "";
-    my $n = 1;
-    for my $wh ('Tuition',
-                'Meals and Lodging',
-                'Admin Fee',
-                'Clinic Fee',
-                'Other',
-    ) {
-        $for_what_opts .= "<option value=$n"
-                       .  ($for_what == $n? " selected"
-                          :                 ""         )
-                       .  ">$wh\n"
-                       ;
-        ++$n;
-    }
     stash($c,
         from          => $from,
         type_opts     => $type_opts,
-        for_what_opts => $for_what_opts,
+        for_what_opts => charges_and_payments_options($for_what),
         pay           => $pay,
         template      => 'person/update_mmi_payment.tt2',
     );

@@ -76,6 +76,8 @@ our @EXPORT_OK = qw/
     x_file_to_href
     phone_match
     outstanding_balance
+    charges_and_payments_options
+    @charge_type
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -94,6 +96,31 @@ use Global qw/
 use Mail::Sender;
 use Net::Ping;
 use Carp 'croak';
+
+our @charge_type = (
+    '',
+    'Tuition',
+    'Meals and Lodging',
+    'Administration Fee',
+    'Clinic Fee',
+    'Other',
+    'STRF',
+    'Recordings',
+    'CEU License Fee',
+    'Materials Fees',
+);
+
+sub charges_and_payments_options {
+    my ($selected) = @_;
+    my $opts = "";
+    for my $i (1 .. 9) {
+        $opts .= "<option value=$i>$charge_type[$i]\n";
+    }
+    if ($selected) {
+        $opts =~ s{=$selected}{=$selected selected}xms;
+    }
+    return $opts;
+}
 
 sub db_init {
     return RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
