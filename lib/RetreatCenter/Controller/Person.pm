@@ -1087,6 +1087,9 @@ sub del_mmi_payment : Local {
         @who_now,
     });
     $reg->calc_balance();
+    $reg->update({
+        arrived => 'yes',
+    });
     if ($from eq 'reg') {
         $c->response->redirect(
             $c->uri_for("/registration/view/" . $reg->id())
