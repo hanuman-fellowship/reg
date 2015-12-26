@@ -44,9 +44,6 @@ __PACKAGE__->add_columns(qw/
     share_mailings
     deceased
     inactive
-    cc_number
-    cc_expire
-    cc_code
     safety_form
     secure_code
     temple_id
@@ -127,30 +124,6 @@ sub date_entrd_obj {
 
     return date($self->date_entrd);
 }
-sub cc_number1 {
-    my $cc = shift->cc_number();
-    return (defined($cc) && ! empty($cc))? substr($cc, 0, 4)
-           :                               ""
-           ;
-}
-sub cc_number2 {
-    my $cc = shift->cc_number();
-    return (defined($cc) && ! empty($cc))? substr($cc, 4, 4)
-           :                               ""
-           ;
-}
-sub cc_number3 {
-    my $cc = shift->cc_number();
-    return (defined($cc) && ! empty($cc))? substr($cc, 8, 4)
-           :                               ""
-           ;
-}
-sub cc_number4 {
-    my $cc = shift->cc_number();
-    return (defined($cc) && ! empty($cc))? substr($cc, 12, 4)
-           :                               ""
-           ;
-}
 sub addrs {
     my ($self) = @_;
 
@@ -201,11 +174,6 @@ sub avs {
     return "$addr $zip";
 }
 
-sub bad_cc {
-    my ($self) = @_;
-    return ! is_valid($self->cc_number());
-}
-
 sub carpool_telephone {
     my ($self) = @_;
 
@@ -246,9 +214,6 @@ overview - The person record contains all the personal information
 addr1 - first line of address
 addr2 - optional second line of address
 akey - a computed key used for address unduplication
-cc_code - credit card security code
-cc_expire - credit card expiration date
-cc_number - credit card #
 city - city
 comment - arbitrary length comment about the person
 country - country

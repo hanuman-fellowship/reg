@@ -42,6 +42,7 @@ p {
 [% snail = 'Snail Mail' %]
 [% mmi = program.school.mmi %]
 [% PR = program.PR %]
+[% bank = program.bank_account %]
 [% ev_type = (PR? 'PR': 'program') %]
 <h2 style="margin-bottom: 9px">Registration</h2>
 <table border=0 cellpadding=0>
@@ -221,9 +222,9 @@ $type
 <td align=center style="font-size: 18pt">$reg.balance_disp</td>
 
 <td align=center>[% IF reg.balance != 0 %]
-    [% IF mmi %]
+    [% IF bank == 'mmi' %]
     <a style="margin-left: .5in"
-       href="/person/create_mmi_payment/$id/$person.id"><img src="/static/images/dollar.jpg" height=55 border=0></a>
+       href="/person/create_mmi_payment/$id/$person.id/reg/$reg.balance"><img src="/static/images/dollar.jpg" height=55 border=0></a>
     [% ELSE %]
     <a style="margin-left: .5in"
        href="/registration/pay_balance/$id/view"><img src="/static/images/dollar.jpg" height=55 border=0></a>
@@ -296,9 +297,9 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 
 </td><td valign=top>
 
-[% IF ! mmi %]
 <!-------- Payments --------->
-<span class=hdr>Payments</span>
+[% IF bank == 'mmc' || bank == 'both' %]
+<span class=hdr>MMC Payments</span>
 <table cellpadding=5>
 
 <tr>
@@ -326,8 +327,10 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <td align=right>$tot</td>
 <td>Total</td>
 </tr>
+<tr><td></td><td><a href="/registration/pay_balance/$id/view">New MMC Payment</a></td></tr>
 </table>
-[% ELSE %]
+[% END %]
+[% IF bank == 'mmi' || bank == 'both' %]
 <span class=hdr>MMI Payments</span>
 <table cellpadding=5>
 <tr>
@@ -362,7 +365,7 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <table cellpadding=4>
 <tr>
 <td><a href="/person/list_mmi_payment/$person.id">List All</a></td>
-<td>&nbsp;&nbsp;<a href="/person/create_mmi_payment/$id/$person.id">New MMI Payment</a></td>
+<td>&nbsp;&nbsp;<a href="/person/create_mmi_payment/$id/$person.id/reg">New MMI Payment</a></td>
 </tr>
 <tr>
 <td></td>
@@ -417,9 +420,10 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.f
     [% END %]
     </table>
 [% END %]
-[% END %]   <!-- mmi -->
 
 </td><tr>
+
+[% END %]
 
 <tr><td valign=top>
 <span class=hdr>Information</span>

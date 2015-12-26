@@ -53,7 +53,8 @@ create table program (
     not_on_calendar text,
     tub_swim text default 'yes',
     cancelled text not null default '',
-    pr_alert text default ''
+    pr_alert text default '',
+    mmi_finance text default ''
 );
 drop table if exists category;
 create table category (

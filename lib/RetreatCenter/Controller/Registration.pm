@@ -1716,7 +1716,7 @@ sub _compute {
         });
     }
 
-    _calc_balance($reg);
+    $reg->calc_balance();
 
     if (! $mem) {
         return;
@@ -1812,25 +1812,6 @@ sub reset_mem {
         free_prog_taken => $taken,
     });
 
-}
-
-sub _calc_balance {
-    my ($reg) = @_;
-
-    # calculate the balance, update the reg record
-    my $balance = 0;
-    for my $ch ($reg->charges) {
-        $balance += $ch->amount;
-    }
-    my $payments = ($reg->program->school->mmi())? "mmi_payments"
-                  :                                "payments"
-                  ;
-    for my $py ($reg->$payments) {
-        $balance -= $py->amount;
-    }
-    $reg->update({
-        balance => $balance,
-    });
 }
 
 #
@@ -5386,6 +5367,7 @@ sub charge_delete : Local {
 sub charge_delete_do : Local {
     my ($self, $c, $reg_id, $ch_id, $from) = @_;
 
+    my $reg = model($c, 'Registration')->find($reg_id);
     my ($charge) = model($c, 'RegCharge')->find($ch_id);
     if ($c->request->params->{yes}) {
         my $what = 'Deleted charge of $'
@@ -5401,7 +5383,7 @@ sub charge_delete_do : Local {
             @who_now,
             what    => $what,
         });
-        _calc_balance(model($c, 'Registration')->find($reg_id));
+        $reg->calc_balance();
     }
     if (defined $from && $from eq 'edit_dollar') {
         $c->response->redirect(
@@ -5428,10 +5410,11 @@ sub payment_delete : Local {
 sub payment_delete_do : Local {
     my ($self, $c, $reg_id, $pay_id, $from) = @_;
 
+    my $reg = model($c, 'Registration')->find($reg_id);
     if ($c->request->params->{yes}) {
         my $payment = model($c, 'RegPayment')->find($pay_id);
         $payment->delete();
-        _calc_balance(model($c, 'Registration')->find($reg_id));
+        $reg->calc_balance();
         _reg_hist($c, $reg_id, "Deleted payment of \$"
                                . $payment->amount()
                                . "."
@@ -5514,7 +5497,7 @@ sub payment_update_do : Local {
         });
     }
     # ??? also update who, when
-    _calc_balance($pay->registration());
+    $reg->calc_balance();
     if ($c->request->params->{from} eq 'edit_dollar') {
         $c->response->redirect(
             $c->uri_for("/registration/edit_dollar/" . $pay->reg_id())
@@ -5541,6 +5524,7 @@ sub charge_update_do : Local {
     my ($self, $c, $chg_id) = @_;
 
     my $chg = model($c, 'RegCharge')->find($chg_id);
+    my $reg = $chg->registration();
     my $old_amount = $chg->amount();
     my $amount = trim($c->request->params->{amount});
     if (invalid_amount($amount)) {
@@ -5559,7 +5543,7 @@ sub charge_update_do : Local {
         what   => $c->request->params->{what},
         @who_now,
     });
-    _calc_balance($chg->registration());
+    $reg->calc_balance();
 
     $what = " - $what" if $what;
     $amount = commify($amount);

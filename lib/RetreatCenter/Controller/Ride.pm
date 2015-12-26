@@ -358,56 +358,6 @@ sub _get_data {
     else {
         $P{pickup_time} = "";
     }
-    if (! (   empty($P{cc_number1})
-           && empty($P{cc_number2})
-           && empty($P{cc_number3})
-           && empty($P{cc_number4})
-          )
-    ) {
-        if (   $P{cc_number1} !~ m{\d{4}}
-            || $P{cc_number2} !~ m{\d{4}}
-            || $P{cc_number3} !~ m{\d{4}}
-            || $P{cc_number4} !~ m{\d{4}}
-        ) {
-            push @mess, "Invalid credit card number";
-        }
-    }
-    if (! empty($P{cc_expire})) {
-        if ($P{cc_expire} !~ m{(\d\d)(\d\d)}) {
-            push @mess, "Invalid expiration date";
-        }
-        else {
-            my $month = $1;
-            my $year = $2;
-            if (! (1 <= $month && $month <= 12)) {
-                push @mess, "Invalid month in expiration date";
-            }
-            else {
-                my $today = today();
-                my $cur_century = (int($today->year() / 100)) * 100;
-                    # another way to just get the century?
-
-                my $exp_date = date($year + $cur_century,
-                                    $month,
-                                    days_in_month($year, $month)
-                               );
-                if ($today > $exp_date) {
-                    push @mess, "Credit card has expired";
-                }
-            }
-        }
-    }
-    if (! empty($P{cc_code}) && $P{cc_code} !~ m{\d{3}}) {
-        push @mess, "Invalid security code";
-    }
-    $P{cc_number} = ($P{cc_number1} || "")
-                  . ($P{cc_number2} || "")
-                  . ($P{cc_number3} || "")
-                  . ($P{cc_number4} || "")
-                  ;
-    for my $i (1 .. 4) {
-        delete $P{"cc_number$i"};
-    }
     if ((! empty($P{cost})) && invalid_amount($P{cost})) {
         push @mess, "Invalid cost";
     }
@@ -589,15 +539,6 @@ sub create_do : Local {
     return if @mess;
     $P{rider_id} = $person_id;
     my $p = model($c, 'Person')->find($person_id);
-    #$p->update({
-    #    cc_number => $P{cc_number},
-    #    cc_expire => $P{cc_expire},
-    #    cc_code   => $P{cc_code},
-    #});
-
-    delete $P{cc_number};
-    delete $P{cc_expire};
-    delete $P{cc_code};
     my $fname = $P{fname};
     delete $P{fname};
 

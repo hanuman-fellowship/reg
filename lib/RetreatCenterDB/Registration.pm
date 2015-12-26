@@ -172,11 +172,16 @@ sub calc_balance {
     for my $ch ($reg->charges) {
         $balance += $ch->amount;
     }
-    my $payments = ($reg->program->school() != 0)? "mmi_payments"
-                  :                                "payments"
-                  ;
-    for my $py ($reg->$payments) {
-        $balance -= $py->amount;
+    my $bank = $reg->program->bank_account();
+    if ($bank eq 'mmi' || $bank eq 'both') {
+        for my $py ($reg->mmi_payments()) {
+            $balance -= $py->amount;
+        }
+    }
+    if ($bank eq 'mmc' || $bank eq 'both') {
+        for my $py ($reg->payments()) {
+            $balance -= $py->amount;
+        }
     }
     $reg->update({
         balance => $balance,

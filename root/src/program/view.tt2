@@ -1,6 +1,7 @@
 <!-- need a way to organize this better -->
 <!-- comment the END to match the IF and FOR -->
 [% id = program.id %]
+[% bank = program.bank_account %]
 [% prog_admin = Catalyst.check_user_roles('prog_admin') %]
 [% mmi_admin = Catalyst.check_user_roles('mmi_admin') %]
 [% web_designer = Catalyst.check_user_roles('web_designer') %]
@@ -474,7 +475,14 @@ $leaders_house
 
 <tr>
 <th align=right>GL Number</th>
-<td>$program.glnum</td>
+<td>$program.glnum &nbsp;&nbsp; 
+[% IF bank == 'mmi' %]
+Payments will go to the <b>MMI</b> bank account.
+[% ELSIF bank == 'mmc' %]
+Payments will go to the <b>MMC</b> bank account.
+[% ELSE %]
+Payments will go to both the <b>MMC</b> and the <b>MMI</b> bank accounts.
+[% END %]
 </tr>
 
 <tr>

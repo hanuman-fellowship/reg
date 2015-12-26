@@ -400,6 +400,8 @@ sub detail_disp {
 #   day - depending on the start time.
 # dinner does not happen on the departure date - for programs and rentals.
 # but for MMI _courses_ dinner IS served on the last day.
+#   Not quite - look at the program end time to see if the people
+#   will be having dinner or not.
 # people in DCM programs do not eat at all.
 # PRs always have lunch except for their arrival day (but never
 #     on a Saturday).
@@ -538,7 +540,7 @@ sub meal_list : Local {
         my $ed = $ol->edate();
 
         my $prog = $r->program();
-        my $mmi_prog = $prog->school->mmi();
+        my $prog_end_dinner = $prog->prog_end() >= 1700;
         my $PR = $prog->PR();
         #
         # optimizations???
@@ -557,7 +559,7 @@ sub meal_list : Local {
                                      &&
                                      (lunch($d) || $PR)
                                      ;
-            add('dinner', $np)    if $d != $r_end || $mmi_prog;
+            add('dinner', $np)    if $d != $r_end || $prog_end_dinner;
         }
     }
     for my $bl (@blocks) {

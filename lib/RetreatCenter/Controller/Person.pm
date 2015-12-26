@@ -1072,21 +1072,33 @@ sub list_mmi_payment_print : Local {
 
 sub del_mmi_payment : Local {
     my ($self, $c, $payment_id, $from) = @_;
+    my $mmi_pay = model($c, 'MMIPayment')->find($payment_id);
+    stash($c,
+        mmi_pay    => $mmi_pay,
+        from       => $from,
+        template   => 'person/confirm_del_mmi_payment.tt2',
+    );
+}
+
+sub del_mmi_payment_do : Local {
+    my ($self, $c, $payment_id, $from) = @_;
     
     my $pay = model($c, 'MMIPayment')->find($payment_id);
-    my $amount = $pay->amount();
-    my $for_what = $pay->for_what();
-    $pay->delete();
     my $reg = $pay->registration();
-    # add a Reg History record
-    my @who_now = get_now($c);
-    model($c, 'RegHistory')->create({
-        reg_id   => $reg->id,
-        what     => "Deleted Payment of \$" . commify($amount)
-                  . " for $for_what",
-        @who_now,
-    });
-    $reg->calc_balance();
+    if ($c->request->params->{yes}) {
+        my $amount = $pay->amount();
+        my $for_what = $pay->for_what();
+        $pay->delete();
+        # add a Reg History record
+        my @who_now = get_now($c);
+        model($c, 'RegHistory')->create({
+            reg_id   => $reg->id,
+            what     => "Deleted Payment of \$" . commify($amount)
+                      . " for $for_what",
+            @who_now,
+        });
+        $reg->calc_balance();
+    }
     if ($from eq 'reg') {
         $c->response->redirect(
             $c->uri_for("/registration/view/" . $reg->id())
@@ -1413,8 +1425,9 @@ sub delete_req_mmi : Local {
 }
 
 sub create_mmi_payment : Local {
-    my ($self, $c, $reg_id, $person_id, $from) = @_;
+    my ($self, $c, $reg_id, $person_id, $from, $amount) = @_;
     
+    $amount ||= '';
     if (tt_today($c)->as_d8() eq $string{last_mmi_deposit_date}) {
         error($c,
               'Since a deposit was just done for MMI'
@@ -1434,6 +1447,7 @@ sub create_mmi_payment : Local {
         from     => $from,
         message  => payment_warning('mmi'),
         person   => model($c, 'Person')->find($person_id),
+        amount   => $amount,
         for_what_opts => charges_and_payments_options(),
         reg      => $reg,
         template => "person/create_mmi_payment.tt2",
@@ -1531,6 +1545,7 @@ sub update_mmi_payment_do : Local {
     my ($self, $c, $pay_id) = @_;
 
     my $pay = model($c, 'MMIPayment')->find($pay_id);
+    my $reg = $pay->registration();
     my $o_amount = $pay->amount();
     my $o_for_what = $pay->for_what();
     my $amount = trim($c->request->params->{amount});
@@ -1558,7 +1573,7 @@ sub update_mmi_payment_do : Local {
                   . substr($pay->glnum(), 1),
         note     => $c->request->params->{note},
     });
-    $pay->registration->calc_balance();
+    $reg->calc_balance();
     # add a RegHistory record
     my @who_now = get_now($c);
     model($c, 'RegHistory')->create({

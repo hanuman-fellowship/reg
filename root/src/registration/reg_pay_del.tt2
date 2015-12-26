@@ -1,6 +1,9 @@
-<h2>Registration</h2>
+<h2>Deleting a Payment</h2>
 [% per = reg.person %]
-Deleting payment of \$$payment.amount for $per.first ${per.last} in ${reg.program.name}.
+Deleting a payment
+of \$$payment.amount
+for $per.first $per.last
+in the program '$reg.program.name'.
 <p class=p2>
 <form name=form action=/registration/payment_delete_do/$reg.id/$payment.id>
 Are you sure? <input type=submit name=yes value="Yes">

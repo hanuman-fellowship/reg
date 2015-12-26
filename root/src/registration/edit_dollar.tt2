@@ -1,8 +1,8 @@
 [% reg_id = reg.id %]
 [% per = reg.person %]
 [% prog = reg.program %]
-[% mmi = prog.school.mmi %]
-<h2>Editing Charges and [% IF mmi %]MMI [% END %]Payments<br>
+[% bank = prog.bank_account %]
+<h2>Editing Charges and Payments<br>
 For [% per.first %] [% per.last %] in [% prog.name %]</h2>
 <a href=/registration/view/[% reg_id %]>To Registration</a>
 <p class=p2>
@@ -52,8 +52,8 @@ $[% reg.balance %]
 <p class=p2>
 <a href=/registration/new_charge/[% reg_id %]/edit_dollar>New Charge</a>
 <hr width=300 align=left>
-[% IF ! mmi %]
-<h3>Payments</h3>
+[% IF bank == 'mmc' || bank == 'both' %]
+<h3>MMC Payments</h3>
 <table cellpadding=3>
 <tr>
 <th colspan=2 width=50></th>
@@ -86,8 +86,9 @@ $[% reg.balance %]
 </tr>
 </table>
 <p class=p2>
-<a href=/registration/pay_balance/[% reg_id %]/edit_dollar>New Payment</a>
-[% ELSE %]
+<a href=/registration/pay_balance/[% reg_id %]/edit_dollar>New MMC Payment</a>
+[% END %]
+[% IF bank == 'mmi' || bank == 'both' %]
 <h3>MMI Payments</h3>
 <table cellpadding=3>
 <tr>

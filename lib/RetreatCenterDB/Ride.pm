@@ -107,11 +107,6 @@ sub complete {
            && ! empty($self->flight_time())
            && ($self->cost() != 0 || $self->comment() =~ m{cancel}i)
            ;
-# Don't require the Credit Card info before sending the confirmation letter...
-#           && ! empty($rider->cc_number()) 
-#           && ! empty($rider->cc_expire()) 
-#           && ! empty($rider->cc_code()) 
-#           && is_valid($rider->cc_number())
 }
 
 sub cost_disp {

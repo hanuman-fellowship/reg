@@ -7,7 +7,7 @@
 
 <tr>
 <th align=right>Amount</th>
-<td><input type=text name=amount size=6></td>
+<td><input type=text name=amount size=6 value=$amount></td>
 [% IF message %]
 <td valign=top><span class="red f15b">[% message %]</span></td>
 [% END %]

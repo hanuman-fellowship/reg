@@ -859,9 +859,13 @@ sub update : Local {
         );
     }
 
+    my $bank = $p->bank_account();
     stash($c,
         section     => $section,
         program     => $p,
+        bank_mmi => $bank eq 'mmi'? 'checked': '',
+        bank_mmc => $bank eq 'mmc'? 'checked': '',
+        bank_both => $bank eq 'both'? 'checked': '',
         canpol_opts => [ model($c, 'CanPol')->search(
             undef,
             { order_by => 'name' },
@@ -969,7 +973,15 @@ sub update_do : Local {
         $P{lunches} = '';
         $P{refresh_days} = '';
     }
+    # if we changed where we expect payments (MMC vs MMI)
+    # we will need to recalculate all registration balances AFTER the update.
+    my $recalc = $p->bank_account ne $P{bank_account};
     $p->update(\%P);
+    if ($recalc) {
+        for my $reg ($p->registrations()) {
+            $reg->calc_balance();
+        }
+    }
     add_config($c, date($P{edate}) + 30);
     $c->response->redirect($c->uri_for("/program/view/"
                            . $p->id . "/$section"));

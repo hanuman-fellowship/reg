@@ -84,6 +84,7 @@ __PACKAGE__->add_columns(qw/
     tub_swim
     cancelled
     pr_alert
+    bank_account
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -1058,12 +1059,22 @@ EOS
     }
 }
 
+sub Bank_account {
+    my ($self) = @_;
+    my $b = $self->bank_account();
+    return $b eq 'mmi'? 'MMI'
+          :$b eq 'mmc'? 'MMC'
+          :             'Both MMC and MMI'
+          ;
+}
+
 1;
 __END__
 overview - Programs are MMC (and MMI) sponsored events for which we do registrations of individuals.
     They have many attributes and many relations to other tables.  
 allow_dup_regs - Can a person sign up more than once?  Personal Retreats have this field set to 'yes'.
     Other programs could have it set as well.  If not set we prohibit a duplicate registration.
+bank_account - Where do registrations payments go?  To the MMI bank account ('mmi'), the MMC bank account ('mmc'), or both accounts ('both')?
 cancelled - boolean - Has this program been cancelled?  Set/Unset via a menu link.
 canpol_id - foreign key to canpol
 category_id - foreign key to category

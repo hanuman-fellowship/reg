@@ -136,25 +136,6 @@
 <td>$ride.type_sh</td>
 </tr>
 
-[% IF Catalyst.check_user_roles('ride_admin') %]
-
-<tr>
-<th align=right>Credit Card Number</th>
-<td colspan=3>$rider.cc_number1-$rider.cc_number2-$rider.cc_number3-$rider.cc_number4 [% IF rider.bad_cc %]<img src=/static/images/unhappy1.gif>[% END %]</td>
-</tr>
-
-<tr>
-<th align=right>Expiration Date</th>
-<td>$rider.cc_expire</td>
-</tr>
-
-<tr>
-<th align=right>Security Code</th>
-<td>$rider.cc_code</td>
-</tr>
-
-[% END %]
-
 <tr>
 <th align=right valign=top>Comment</th>
 <td colspan=3>$ride.comment</td>

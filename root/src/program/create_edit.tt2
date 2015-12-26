@@ -288,7 +288,16 @@ $level_opts
 
 <tr>
 <th align=right>GL Number</th>
-<td>[% IF edit_gl %]<input type=text name=glnum value="$program.glnum" size=7>[% ELSE %]$program.glnum[% END %]</td>
+<td>[% IF edit_gl %]<input type=text name=glnum value="$program.glnum" size=7>[% ELSE %]$program.glnum[% END %]
+&nbsp;&nbsp;
+Payments will go to this bank account:
+&nbsp;
+MMC <input type=radio name=bank_account value='mmc' $bank_mmc>
+&nbsp;&nbsp;&nbsp;
+MMI <input type=radio name=bank_account value='mmi' $bank_mmi>
+&nbsp;&nbsp;&nbsp;
+Both <input type=radio name=bank_account value='both' $bank_both>
+</td>
 </tr>
 
 <tr>
