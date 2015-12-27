@@ -412,6 +412,7 @@ sub create_do : Local {
                ;
 
     $P{reg_count} = 0;       # otherwise it will not increment
+    $P{bank_account} ||= 'mmc';     # it defaults but to be safe ...
 
     my $upload     = $c->request->upload('image');
     if ($upload) {

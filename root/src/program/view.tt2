@@ -480,8 +480,10 @@ $leaders_house
 Payments will go to the <b>MMI</b> bank account.
 [% ELSIF bank == 'mmc' %]
 Payments will go to the <b>MMC</b> bank account.
-[% ELSE %]
+[% ELSIF bank == 'both' %]
 Payments will go to both the <b>MMC</b> and the <b>MMI</b> bank accounts.
+[% ELSE %]
+By default, Payments will hopefully go to the <b>MMC</b> bank account.
 [% END %]
 </tr>
 
