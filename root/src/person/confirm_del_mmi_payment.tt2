@@ -1,0 +1,13 @@
+<h2>Deleting a Payment</h2>
+Deleting a payment
+of \$$mmi_pay.amount
+for $mmi_pay.person.first $mmi_pay.person.last
+in the program '$mmi_pay.registration.program.name'.
+<p class=p2>
+<form name=form action=/person/del_mmi_payment_do/$mmi_pay.id/$from>
+Are you sure? <input type=submit name=yes value="Yes">
+&nbsp;&nbsp;&nbsp;
+<input type=submit name=no value="No">
+<form>
+<script type="text/javascript">document.form.no.focus();</script>
+</form>
