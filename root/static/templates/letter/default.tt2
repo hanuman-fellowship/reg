@@ -274,6 +274,11 @@ We suggest that you bring the following:
     <LI>a blanket or mat for postures (optional)</LI>
 [% END %]
 </UL>
+If you want help with transportation to the Center, please go to:
+<ul>
+<a href="http://www.mountmadonna.org/rides">www.mountmadonna.org/rides</a>.
+</ul>
+<p class=p2>
 [% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
     <P class=p2>
     Since you are camping remember to bring your own bedding.
