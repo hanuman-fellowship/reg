@@ -5,11 +5,15 @@ use CGI qw/:standard :cgi-lib/;
 use CGI::Carp qw/fatalsToBrowser/;
 use lib 'mylib/lib/perl5';
 use Template;
+use SimLib;
+use Auth qw/
+    $MMC_loginid
+    $MMC_txnkey
+/;
 use Date::Simple qw/
     today
     date
 /;
-
 use HousingNames qw/
     %housing_name
 /;
@@ -241,15 +245,10 @@ if ($form{green_amount}) {
 
 # Call subroutine from authorize.net that sets $fingerprint_html 
 #
-use SimLib;
-
-my $loginid = '7bq2Ch2Hf3';
-my $txnkey = '2y4cKZp797y34Cks';
-
 my $x_currency_code = "USD";
 my $fingerprint_html =
-    SimLib::InsertFP($loginid, $txnkey, $x_amount, $x_currency_code);
-
+    SimLib::InsertFP($MMC_loginid, $MMC_txnkey,
+                     $x_amount, $x_currency_code);
 my %stash;
 for my $name (qw/
     fname lname street1 street2 city state zip
@@ -284,7 +283,7 @@ $stash{test} = $test? "TRUE"
                :      "FALSE";
 $stash{fingerprint_html} = $fingerprint_html;
 $stash{x_description} = $form{name};
-$stash{loginid} = $loginid;
+$stash{loginid} = $MMC_loginid;
 $stash{x_amount} = $x_amount;
 $stash{x_firstname} = $form{fname};
 $stash{x_lastname} = $form{lname};
@@ -506,6 +505,7 @@ your total payment today will be \$$x_amount.
 EOP
 }
 $stash{payment} = $payment;
+$stash{waiver_needed} = $data->{waiver_needed};
 
 # get 2 cookies set by user accessing a redirected page
 #
