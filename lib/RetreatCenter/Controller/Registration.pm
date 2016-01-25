@@ -632,6 +632,10 @@ sub _rest_of_reg {
         stash($c, outstanding => 1);
         push @alerts, $ob_alert;
     }
+    if ($program->waiver_needed() && ! $person->waiver_signed()) {
+        push @alerts, $c->stash->{fname}? "Waiver Was Signed"
+                     :                    "Waiver Needs To Be Signed!";
+    }
     if (@alerts) {
         stash($c, alerts => join "\\n\\n", @alerts);
     }
@@ -1288,6 +1292,17 @@ sub create_do : Local {
             return;
         }
     }
+    # if the program needs a waiver signed
+    if ($pr->waiver_needed() && ! $reg->person->waiver_signed()) {
+        $reg->person->update({
+            waiver_signed => 'yes',
+        });
+        model($c, 'RegHistory')->create({
+            what    => 'Liability Waiver Signed',
+            @who_now,
+        });
+    }
+    
     # go on to lodging, if needed
     $c->response->redirect($c->uri_for("/registration/"
         . (($reg->h_type =~ m{own_van|commuting|unknown|not_needed})? "view"

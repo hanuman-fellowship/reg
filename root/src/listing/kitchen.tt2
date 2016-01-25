@@ -1,5 +1,5 @@
-<div style="margin-left: .5in">
-<h3>Kitchen Meal Lists</h3>
+<h2>Kitchen Meal Lists</h2>
+<ul>
 <a href="/listing/meal_list">For Planning</a>
 <p class=p2>
 <a href="/listing/meal_list?details=1&sdate=t&edate=t">Today With Names</a>
@@ -17,4 +17,4 @@
 </tr>
 </table>
 </form>
-</div>
+</ul>

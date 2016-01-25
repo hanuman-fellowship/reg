@@ -47,6 +47,7 @@ __PACKAGE__->add_columns(qw/
     safety_form
     secure_code
     temple_id
+    waiver_signed
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -249,6 +250,7 @@ tel_work - work phone
     These phone numbers are used in many places.
     Especially in the phone list, of course.
 temple_id - the unique id in the temple visitor database.
-    not all people will have one - only those who have reserved a visit to the temple.
-    used in grab_new.
+    not all people will have one - only those who have reserved
+    a visit to the temple.  used in grab_new.
+waiver_signed - they signed a waiver of liability (yoga programs)
 zip_post - zip (or postal) code

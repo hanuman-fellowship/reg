@@ -1,5 +1,5 @@
+<h2>People Listings</h2>
 <ul>
-<h3>People Listings</h3>
 <a href=/report/list>General Reports</a>
 <p class=p2>
 Phone Lists
@@ -8,6 +8,8 @@ Phone Lists
 <li><a href="/listing/phone_line">In One Line</a>
 <li><a href="/listing/phone_noaddr">No Address</a>
 </ol>
+<p class=p2>
+<a href="/listing/waiver">People Who Signed Waiver</a>
 <p class=p2>
 <a target=_blank href="/listing/undup">Unduplication File</a>
 <p class=p2>

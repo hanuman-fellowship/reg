@@ -85,6 +85,7 @@ __PACKAGE__->add_columns(qw/
     cancelled
     pr_alert
     bank_account
+    waiver_needed
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -1144,6 +1145,7 @@ tuition - A charge for the program - mostly for the presenter.
 unlinked_dir - For unlinked programs (see the linked attribute) this is
     a directory name on www.mountmadonna.org that will contain the program.
 url - A web URL containing further information about the program.
+waiver_needed - Registrants for this program must sign a waiver.
 webdesc - A long description of the program.
 webready - Is this program ready to be published to the web (at least to
     the staging area)? 

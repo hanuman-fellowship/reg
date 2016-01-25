@@ -206,6 +206,7 @@ sub _get_data {
         do_not_compute_costs
         not_on_calendar
         tub_swim
+        waiver_needed
     /) {
         $P{$f} = '' unless exists $P{$f};
     }
@@ -848,7 +849,7 @@ sub update : Local {
         sbath single collect_total allow_dup_regs kayakalpa
         retreat
         economy commuting webready linked do_not_compute_costs
-        not_on_calendar tub_swim
+        not_on_calendar tub_swim waiver_needed
     /) {
         stash($c,
             "check_$w" => ($p->$w)? "checked": ''
@@ -1712,6 +1713,7 @@ EOD
         reg_end
         prog_start
         prog_end
+        waiver_needed
     /) {
         print {$progt} qq!    $f => "!,
                        esc_dquote($p->$f()),

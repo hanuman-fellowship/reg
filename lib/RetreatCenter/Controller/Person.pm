@@ -334,6 +334,7 @@ sub create : Local {
         mmi_snail_mailings => "checked",
         share_mailings     => "checked",
         safety_form        => "",
+        waiver_signed      => "",
         inactive       => "",
         deceased       => "",
         affil_table    => affil_table($c, 0),
@@ -364,6 +365,7 @@ sub _get_data {
         inactive
         deceased
         safety_form
+        waiver_signed
     /) {
         $hash{$f} = "" unless exists $hash{$f};
     }
@@ -547,6 +549,7 @@ sub update : Local {
         mmi_snail_mailings => ($p->mmi_snail_mailings())? "checked": "",
         share_mailings => ($p->share_mailings())? "checked": "",
         safety_form    => (   $p->safety_form())? "checked": "",
+        waiver_signed  => ( $p->waiver_signed())? "checked": "",
         affil_table    => affil_table($c, 0, $p->affils()),
         form_action    => "update_do/$id",
         template       => "person/create_edit.tt2",

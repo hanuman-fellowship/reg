@@ -12,7 +12,7 @@ p {
 <a href=/listing/comings_goings/[% next_date %] accesskey='n'><span class=keyed>N</span>ext</a>
 &nbsp;&nbsp;&nbsp;
 <a accesskey='p' href=/program/list/2 onclick="javascript:window.print(); return true;"><span class=keyed>P</span>rint</a>
-<h3>Coming</h3>
+<h2>Coming</h2>
 <ul>
 <table cellpadding=2 border=0>
 <tr>
@@ -64,7 +64,7 @@ p {
 </table>
 </ul>
 
-<h3>Going</h3>
+<h2>Going</h2>
 <ul>
 <table cellpadding=3>
 <tr>

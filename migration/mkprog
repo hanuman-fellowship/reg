@@ -54,7 +54,8 @@ create table program (
     tub_swim text default 'yes',
     cancelled text not null default '',
     pr_alert text default '',
-    mmi_finance text default ''
+    mmi_finance text default '',
+    waiver_needed text default ''
 );
 drop table if exists category;
 create table category (

@@ -5,7 +5,7 @@ With 70+ in the meal count, add tables / chairs in CB Main - 1 table w/ 6 chairs
 When a group leaves MMC and no longer needs the West Wing for dining, please clean it, putting the tables and chairs away. Thank you.
 <p class=p2>
 [% IF special %]
-    <h3>Special Food Needs</h3>
+    <h2>Special Food Needs</h2>
     <table cellpadding=3>
     <tr>
     <th align=left width=250>Event</th>

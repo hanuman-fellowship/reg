@@ -298,6 +298,36 @@ Web
 </tr>
 [% END %]
 
+<tr><td>&nbsp;</td></tr>
+
+<tr>
+<td colspan=6>
+<b>Allow Aux Regs</b>
+$program.allow_dup_regs
+&nbsp; &nbsp; &nbsp;
+<b>Kaya Kalpa</b>
+$program.kayakalpa
+&nbsp; &nbsp; &nbsp;
+<b>Retreat</b>
+$program.retreat
+&nbsp; &nbsp; &nbsp;
+<b>Waiver Needed</b>
+$program.waiver_needed
+</td>
+</tr>
+
+<tr>
+<td colspan=6>
+<b>Not on Calendar</b>
+$program.not_on_calendar
+&nbsp; &nbsp; &nbsp;
+<b>Hot Tub/Lake Swimming in Confirmation Letter</b>
+$program.tub_swim
+</td>
+</tr>
+
+<tr><td>&nbsp;</td></tr>
+
 <tr>
 <th align=right valign=top>Leaders</th>
 <td valign=top align=left colspan=5 width=300>
@@ -362,19 +392,6 @@ $leaders_house
 </tr>
 
 <tr>
-<th align=right>Allow Aux Regs</th>
-<td>$program.allow_dup_regs</td>
-<th align=right>Kaya Kalpa</th>
-<td>$program.kayakalpa</td>
-</tr>
-
-<tr>
-<th align=right>Retreat</th>
-<td>$program.retreat</td>
-</tr>
-
-
-<tr>
 <th align=right>Color</th>
 [% IF program.color %]
 <td id=color style="cursor: pointer" width=100 bgcolor=$program.color_bg onclick="window.location.href='/program/color/$id'">
@@ -406,16 +423,6 @@ $leaders_house
 <tr>
 <th align=right valign=top>PR Alert</th>
 <td colspan=5 valign=top>$program.pr_alert</td>
-</tr>
-
-<tr>
-<th align=right>Not on Calendar</th>
-<td>$program.not_on_calendar</td>
-</tr>
-
-<tr>
-<th align=right>Hot Tub/Lake Swimming<br>in Confirmation Letter</th>
-<td valign=top>$program.tub_swim</td>
 </tr>
 
 <tr>

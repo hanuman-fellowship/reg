@@ -1,4 +1,4 @@
-<h3>Listings</h3>
+<h2>Listings</h2>
 <ul>
 [% FOR p IN people %]
 <a target=_blank href="/person/update/[% p.id %]">[% p.email %]</a><br>

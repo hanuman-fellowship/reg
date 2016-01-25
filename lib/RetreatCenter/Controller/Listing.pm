@@ -2104,4 +2104,17 @@ EOH
     );
 }
 
+sub waiver : Local {
+    my ($self, $c) = @_;
+
+    my @people = model($c, 'Person')->search(
+        { waiver_signed => 'yes'    },
+        { order_by => "last, first" }
+    );
+    stash($c,
+        people   => \@people,
+        template => 'listing/waiver.tt2',
+    );
+}
+
 1;

@@ -139,7 +139,9 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 
 <tr>
 <th align=right valign=top>Safety Form</th>
-<td valign=top colspan=3>$person.safety_form</td>
+<td valign=top>$person.safety_form</td>
+<th align=right valign=top>Waiver Signed</th>
+<td valign=top>$person.waiver_signed</td>
 </tr>
 
 [% IF person.deceased || person.inactive %]

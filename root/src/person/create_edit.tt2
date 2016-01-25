@@ -118,6 +118,9 @@ function get_gender() {
 <th align=right>Safety Form</th>
 <td><input tabindex=12 type=checkbox name=safety_form
            value="yes" $safety_form></td>
+<th align=right>Waiver Signed</th>
+<td><input tabindex=12 type=checkbox name=waiver_signed
+           value="yes" $waiver_signed></td>
 </tr>
 
 <tr>

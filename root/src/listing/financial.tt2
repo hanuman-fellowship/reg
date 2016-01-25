@@ -1,5 +1,5 @@
+<h2>Financial Listings</h2>
 <ul>
-<h3>Financial Listings</h3>
 <table border=0 cellspacing=0 cellpadding=0>
 <tr>
 <td valign=top>
@@ -51,7 +51,7 @@ Housing Costs Start <input type=text name=start size=10 value='1/1'> End <input 
 </form>
 [% IF Catalyst.check_user_roles('mmi_admin') %]
 <hr width=500 align=left>
-<h3>MMI Financial Listings</h3>
+<h2>MMI Financial Listings</h2>
 <p class=p2>
 <table border=0 cellspacing=0 cellpadding=0>
 <tr>

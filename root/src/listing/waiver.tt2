@@ -1,0 +1,6 @@
+<h2>People Who Signed Waiver</h2>
+<ul>
+[% FOR p IN people %]
+$p.last, $p.first<br>
+[% END %]
+</ul>
