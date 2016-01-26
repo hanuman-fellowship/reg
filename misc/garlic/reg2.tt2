@@ -161,6 +161,7 @@ function check_waiver() {
             
                     
     
+[% IF ! housing_not_needed %]
                     <div class="housing">
                     
                             <h2>Housing Choice</h2>  
@@ -174,6 +175,7 @@ function check_waiver() {
                             instead of a ${other_cabin_room}.
 
                     </div>
+[% END %]
                     
 
 

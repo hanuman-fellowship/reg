@@ -307,7 +307,7 @@ function confirm() {
             
             
                     
-    
+[% IF ! housing_not_needed %]    
                     <div class="housing">
                     
                         <fieldset> 
@@ -399,6 +399,7 @@ please note this in &ldquo;Additional Requests&rdquo; below. </span>
                         </fieldset>
 
                     </div>
+[% END %]
                     
 
 

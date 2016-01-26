@@ -86,6 +86,7 @@ __PACKAGE__->add_columns(qw/
     pr_alert
     bank_account
     waiver_needed
+    housing_not_needed
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -1100,6 +1101,8 @@ full_tuition - For extended programs what is the tuition for the full length?
 glnum - General Ledger number for this program for accounting purposes.
     This is computed based on the start date.
 housecost_id - foreign key to housecost
+housing_not_needed - No housing is needed for this program - perhaps it is
+    being held away from MMC?
 id - unique id
 image - A boolean - do we have an image for the web page of this program?
     Naming conventions lead us to the actual filename.

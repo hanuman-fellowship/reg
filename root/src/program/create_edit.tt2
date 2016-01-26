@@ -135,6 +135,11 @@ Web
 <td><input type=checkbox value=yes name=commuting $check_commuting></td>
 </tr>
 
+<tr>
+<th align=right>Housing Not Needed</th>
+<td><input type=checkbox value=yes name=housing_not_needed $check_housing_not_needed></td>
+</tr>
+
 </table>
 </div>
 

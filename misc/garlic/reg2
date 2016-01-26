@@ -95,7 +95,7 @@ if ($form{name} =~ m{personal\s+retreat}i) {
     $edate = date($form{edate});
     $ndays = $edate - $sdate;
 }
-if (!$form{house1} && !$form{house2}) {
+if (! $data->{housing_not_needed} && !$form{house1} && !$form{house2}) {
     $err .= "<li>Please fill out both choices of housing.\n";
 } 
 elsif ($sdate && $edate && $ndays == 0
@@ -146,6 +146,8 @@ if ($err) {
 # how much to charge??
 # it depends on their house1 choice, progchoice (basic/full), 
 # collect_total, percent_tuition, and deposit values.
+# oh, and housing_not_needed - in which case the cost
+# is simply the tuition.
 #
 # AND for Personal Retreats there are current and next
 # housing costs and M-Th discount ranges.
@@ -159,6 +161,9 @@ my $key = ($data->{next_hc}
 my $key1 = $key . " " . $form{house1};
 my $key2 = $key . " " . $form{house2};
 my $h_cost = $data->{$key1};
+if ($data->{housing_not_needed}) {
+    $h_cost = $data->{tuition};
+}
 my $house1 = $data->{$key1};
 my $house2 = $data->{$key2};
 my $total;
@@ -506,6 +511,7 @@ EOP
 }
 $stash{payment} = $payment;
 $stash{waiver_needed} = $data->{waiver_needed};
+$stash{housing_not_needed} = $data->{housing_not_needed};
 
 # get 2 cookies set by user accessing a redirected page
 #

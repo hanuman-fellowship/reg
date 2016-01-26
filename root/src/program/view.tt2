@@ -229,6 +229,14 @@ Web
 <td>$program.commuting</td>
 </tr>
 
+<tr>
+<th align=right>Housing Not Needed</th>
+<td>$program.housing_not_needed</td>
+[% IF program.housing_not_needed %]
+<td style="color: red; font-weight: bold;">Add an Exception for 'fee_table'!</td>
+[% END %]
+</tr>
+
 </table>
 
 <p>

@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 #
 # maybe send $data as the stash hash ref?
+# yeah, would simplify things...
 #
 
 use strict;
@@ -290,6 +291,7 @@ if (exists $data->{next_hc} && $data->{next_hc}) {
     $stash{through_date} = date($data->{next_date})->prev->format("%b %e");
     $stash{next_date} = date($data->{next_date})->format("%b %e");
 }
+$stash{housing_not_needed} = $data->{housing_not_needed};
 my $housing_fees = "";
 HOUSING_TYPE:
 for my $k (sort { $data->{$a} <=> $data->{$b} } @housekeys) {
