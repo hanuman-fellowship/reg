@@ -1,6 +1,6 @@
 <h2>People Who Signed Waiver</h2>
 <ul>
 [% FOR p IN people %]
-$p.last, $p.first<br>
+<a href=/person/view/$p.id>$p.last, $p.first</a><br>
 [% END %]
 </ul>
