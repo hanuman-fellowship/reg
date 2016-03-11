@@ -65,11 +65,11 @@ if ($queryLoc) {
 } else { 
 	$result_uri=$string;
 } 
-echo 'http://www.mountmadonna.org' . $result_uri; 
+echo 'https://www.mountmadonna.org' . $result_uri; 
 ?>"/>
 
 
-<META PROPERTY="og:image" CONTENT="<?php $string="[% program.picture %]"; preg_match('/(?<=\').*?(?=\')/', $string, $result); echo 'http://www.mountmadonna.org/live/' . $result[0]; ?>"/>
+<META PROPERTY="og:image" CONTENT="<?php $string="[% program.picture %]"; preg_match('/(?<=\').*?(?=\')/', $string, $result); echo 'https://www.mountmadonna.org/live/' . $result[0]; ?>"/>
 <META PROPERTY="og:site_name" CONTENT="Mount Madonna Center"/>
 <META PROPERTY="fb:admins" CONTENT="507138422"/>
 <META PROPERTY="og:description"
@@ -212,7 +212,7 @@ if (!empty($eid)) {
                     <H1 CLASS="ptitle">[% program.title1 %]</H1>
                     <H2 CLASS="psubtitle">[% program.title2 %]</H2>
                     <P CLASS="pdates">[% program.dates %]</P>
-                    <SPAN><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=[% program.id %]"><IMG SRC="/Gif/register_button.gif" ALT="Register for this program" BORDER="0"></A></SPAN>
+                    <SPAN><A HREF="https://www.mountmadonna.org/cgi-bin/reg1?test=1&id=[% program.id %]"><IMG SRC="/Gif/register_button.gif" ALT="Register for this program" BORDER="0"></A></SPAN>
                     <SPAN STYLE="float:right;"><fb:like width="300" action="recommend"></fb:like></SPAN>
                 </DIV>
                 
@@ -260,7 +260,7 @@ If it is not available you will be housed in the next best available space.
                         <UL>
                             [% program.fee_table %]
                         </UL>
-                    <P><A HREF="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=[% program.id %]"><IMG SRC="/Gif/register_button.gif" STYLE="padding-top:25px;" ALT="Register for this program" BORDER="0"></A></P>
+                    <P><A HREF="https://www.mountmadonna.org/cgi-bin/reg1?test=1&id=[% program.id %]"><IMG SRC="/Gif/register_button.gif" STYLE="padding-top:25px;" ALT="Register for this program" BORDER="0"></A></P>
                     </CENTER>
                 </DIV>
                 
