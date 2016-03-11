@@ -92,7 +92,7 @@ h2 {
 </style>
 </head>
 <body>
-<form action=http://www.mountmadonna.org/cgi-bin/grid method=post name=form>
+<form action=https://www.mountmadonna.org/cgi-bin/grid method=post name=form>
 <h2>
 $hash.name
 <span style="margin-left: 1in;font-size: 13pt">$sdate <span class=dow>${sdate.format("%a")}</span>
@@ -103,7 +103,7 @@ $edate <span class=dow>${edate.format("%a")}</span>
 <p>
 Housing Assignment Grid
 <span style="margin-left: 1in;"><input class=submit type=submit value="Submit" name=process></span>
-<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('http://www.mountmadonna.org/rental/hints.html',480)">Helpful Hints</a></span>
+<span style="margin-left: 1in; font-size: 13pt;"><a href="javascript:popup('https://www.mountmadonna.org/rental/hints.html',480)">Helpful Hints</a></span>
 </h2>
 <input type=hidden name=code value=$code>
 <table cellpadding=5 border=1>
