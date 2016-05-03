@@ -265,6 +265,7 @@ $rental.housing_note_trim
 
 <p class=p2>
 <span class=head>Fixed Cost Houses</span>
+<span style="margin-left: .5in; font-size: 12pt;"> Useful when certain houses have special costs.</span>
 <p style="margin-left: .3in; font-size: 13pt">
 [% IF rental.fixed_cost_houses %]
 $rental.fixed_cost_houses

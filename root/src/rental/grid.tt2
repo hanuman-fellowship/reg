@@ -48,18 +48,26 @@ $days
         [% vp = 'p' _ h.id _ '_' _ i %]
         [% vc = 'c' _ h.id _ '_' _ i %]
         [% vcl = 'cl' _ h.id _ '_' _ i %]
-        <td ${data.$vcl}>${data.$vp}</td>
+        [% IF data.$vp %]
+            <td ${data.$vcl}>${data.$vp}</td>
+        [% ELSE %]
+            <td>&nbsp;</td>
+        [% END %]
         [% n = 1 %]
         [% WHILE n <= nnights %]
             [% v = 'n' _ h.id _ '_' _ i _ '_' _ n %]
             [% IF data.$v %]
-            <td bgcolor=green>&nbsp;</td>
+                <td bgcolor=green>&nbsp;</td>
             [% ELSE %]
-            <td>&nbsp;</td>
+                <td>&nbsp;</td>
             [% END %]
             [% n = n + 1 %]
         [% END %]
-        <td align=right>${data.$vc}</td>
+        [% IF data.$vc %]
+            <td align=right>${data.$vc}</td>
+        [% ELSE %]
+            <td align=right>&nbsp;</td>
+        [% END %]
         </tr>
         [% i = i + 1 %]
     [% END %]
@@ -76,18 +84,26 @@ $days
         [% vc  = 'c'  _ t _ '_' _ i %]
         [% vcl = 'cl' _ t _ '_' _ i %]
         <td align=right>$i</td>
-        <td ${data.$vcl}>${data.$vp}</td>
+        [% IF data.$vp %]
+            <td ${data.$vcl}>${data.$vp}</td>
+        [% ELSE %]
+            <td>&nbsp;</td>
+        [% END %]
         [% n = 1 %]
         [% WHILE n <= nnights %]
             [% v = 'n' _ t _ '_' _ i _ '_' _ n %]
             [% IF data.$v %]
-            <td bgcolor=green>&nbsp;</td>
+                <td bgcolor=green>&nbsp;</td>
             [% ELSE %]
-            <td>&nbsp;</td>
+                <td>&nbsp;</td>
             [% END %]
             [% n = n + 1 %]
         [% END %]
-        <td align=right>${data.$vc}</td>
+        [% IF data.$vc %]
+            <td align=right>${data.$vc}</td>
+        [% ELSE %]
+            <td>&nbsp;</td>
+        [% END %]
         </tr>
         [% i = i + 1 %]
     [% END %]
@@ -160,6 +176,10 @@ $days
 <tr>
 <td>Commuting</td>
 <td align=right>[% hc.commuting %]</td>
+</tr>
+<tr>
+<td>House Cost Type</td>
+<td align=right>[% hc.type %]</td>
 </tr>
 <tr height=35></tr>
 </table>

@@ -128,9 +128,12 @@ Fixed Cost Houses
 
 <tr>
 <td colspan=2>
-<span style="font-size: 13pt; margin-left: .59in; color: green">
-for example: &nbsp; \$30 for SH 2, 115&nbsp;&nbsp & &nbsp;&nbsp; \$80 for MMS*</span>
-<span style="margin-left: 1in">(* is a wild card)</span></td>  
+<div style="font-size: 13pt; margin-left: .59in; color: green">
+For example: &nbsp; \$30 for SH 2, 115&nbsp;&nbsp & &nbsp;&nbsp; \$80 for MMS*<br>
+These costs will apply for each day the person stays - regardless of how many others are in the room.<br>
+* above is a wild card
+</div>
+</td>  
 </tr>
 
 </table>      <!-- for the housing note -->

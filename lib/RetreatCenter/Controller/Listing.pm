@@ -411,6 +411,11 @@ sub detail_disp {
 #     by looking at the web grid - maintained by the rental coordinator.
 #     if that grid is empty we use the maximum specified in the rental
 #     for each day.
+#     oh oh - more complications ...:
+#     for breakfast on the first day see if the start time is before
+#         the breakfast end time (9:00).
+#     for breakfast on a mid-rental day look at the count for the day before.
+#     same applies to lunch :(
 #
 sub meal_list : Local {
     my ($self, $c) = @_;
@@ -613,12 +618,34 @@ sub meal_list : Local {
             if ($expected > $n) {
                 $n = $expected;
             }
+            my $n_day_before = $counts[$d - $event_start - 1] || 0;
+            if ($expected > $n_day_before) {
+                $n_day_before = $expected;
+            }
             if ($details) {
                 $info = [ "$n people" , $r_name ];
             }
-            add('breakfast', $n) if ($d != $r_start || $start_hour < $breakfast_end);
-            add('lunch',     $n) if ($d != $r_start || $start_hour < $lunch_end)
-                                    && lunch($d);
+            # BREAKFAST
+            if ($d == $r_start && $start_hour < $breakfast_end) {
+                add('breakfast', $n) 
+            }
+            elsif ($d != $r_start) {
+                $info = [ "$n_day_before people" , $r_name ];
+                add('breakfast', $n_day_before);
+                $info = [ "$n people" , $r_name ];  # set it back
+            }
+            # LUNCH
+            if (lunch($d)) {
+                if ($d == $r_start && $start_hour < $lunch_end) {
+                    add('lunch',     $n);
+                }
+                elsif ($d != $r_start) {
+                    $info = [ "$n_day_before people" , $r_name ];
+                    add('lunch', $n_day_before);
+                    $info = [ "$n people" , $r_name ];  # set it back
+                }
+            }
+            # DINNER
             add('dinner',    $n) if $d != $r_end;
         }
     }

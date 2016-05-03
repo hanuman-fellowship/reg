@@ -161,7 +161,7 @@ sub _get_data {
     LINE:
     for my $l (split /\&/, $P{fixed_cost_houses}) {
         my $cost;
-        if ($l =~ s{ \A \s* \$ \s* (\d+) \s* for \s* }{}xms) {
+        if ($l =~ s{ \A \s* \$ \s* (\d+([.]\d\d)?) \s* for \s* }{}xms) {
             $cost = $1;
         }
         else {

@@ -29,7 +29,7 @@ function toggle_all() {
 <ul class=lunch>
 [% lunch_table %]</span>
 <p class=p2>
-<input type=submit value="Submit">
+<input type=submit id=sub value="Submit">
 <span style="margin-left: 1in">All <input type=checkbox name=all onclick="toggle_all();"></span>
 </ul>
 </form>
