@@ -1,15 +1,15 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>MMC Online Registration - Success</title>
-<link href="http://www.mountmadonna.org/regform_authnet.css" rel="stylesheet" type="text/css">
+<link href="https://www.mountmadonna.org/styles/regform_authnet.css" rel="stylesheet" type="text/css">
 
 </head>
 
 <body>
 <div class="wrapper">
-    <div class="header"><img src="http://www.mountmadonna.org/Gif/navbar_home.gif" width="133" height="111" alt="logo" /></div>
+    <div class="header"><a href="https://www.mountmadonna.org/index.html"><img src="https://www.mountmadonna.org/Gif/navbar_home.gif" width="133" height="111" alt="logo" border="0"/></a></div>
     
     <div class="main">
         <div class="top"></div>
@@ -17,12 +17,12 @@
         <div class="middle">
         
             <div class="steps"><h1>Online Registration</h1>
-            <img src="http://www.mountmadonna.org/Gif/step_4.gif" width="797" height="43" />            </div>
+            <img src="https://www.mountmadonna.org/Gif/step_4.gif" width="797" height="43" />            </div>
 
 
 			<div class="receipt">
 				<div class="success">
-					<img src="http://www.mountmadonna.org/Gif/success.jpg">
+					<img src="https://www.mountmadonna.org/Gif/success.jpg">
 					<div class="success_text">
 						<h2>Thank you, [% x_fname %].</h2>
 						<h3>Your payment has been received.</h3>
@@ -56,12 +56,24 @@ Do <b>not</b> make travel plans until you have received
 your housing confirmation letter.
 				
 			</div>
+[% IF x_withwhom_last OR x_withwhom_first %]
+    <div class="announcement">
+    <p>You requested to be housed with
+      <em>[% x_withwhom_first %] [% x_withwhom_last %]</em>.
+      They <strong>MUST REGISTER SEPARATELY</strong>.<BR>
+      [% IF x_pid == 0 %]
+      <a href="https://www.mountmadonna.org/cgi-bin/regPR?id=0&dir=personal">Click here to go back to the registration page</a> and register them.</p>
+      [% ELSE %]
+      <a href="https://www.mountmadonna.org/cgi-bin/reg1?id=[% x_pid %]">Click here to go back to the registration page</a> and register them.</p>
+      [% END %]
+    </div>
+[% END %]
 			
 			<div class="links">
 				<ul>
-					<li><a href='[% IF x_title == 'Personal Retreat' %]http://www.mountmadonna.org/personal [% ELSE %][% x_plink %][% END %]'>Back to Program Info</a></li>
-					<li><a href="http://www.mountmadonna.org/live/programs.html">See all Programs</a></li>
-					<li><a href="http://www.mountmadonna.org">Mount Madonna Center Home Page</a></li>
+					<li><a href='[% IF x_title == 'Personal Retreat' %]https://www.mountmadonna.org/personal [% ELSE %][% x_plink %][% END %]'>Back to Program Info</a></li>
+					<li><a href="https://www.mountmadonna.org/live/programs.html">See all Programs</a></li>
+					<li><a href="https://www.mountmadonna.org">Mount Madonna Center Home Page</a></li>
 				</ul>
 			</div>
 					
@@ -73,35 +85,43 @@ your housing confirmation letter.
 </div>
 
 
-<!-- Google ADWORDS Code for successful registration Conversion Page -->
+<!-- Google Code for success page Conversion Page -->
 <script type="text/javascript">
-<!--
+/* <![CDATA[ */
 var google_conversion_id = 1067523886;
 var google_conversion_language = "en";
-var google_conversion_format = "3";
+var google_conversion_format = "2";
 var google_conversion_color = "ffffff";
-var google_conversion_label = "77USCMaamgEQrr6E_QM";
+var google_conversion_label = "UflZCN7F2wIQrr6E_QM";
 var google_conversion_value = 0;
-//-->
+/* ]]> */
 </script>
 <script type="text/javascript" src="https://www.googleadservices.com/pagead/conversion.js">
 </script>
 <noscript>
 <div style="display:inline;">
-<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1067523886/?label=77USCMaamgEQrr6E_QM&amp;guid=ON&amp;script=0"/>
+<img height="1" width="1" style="border-style:none;" alt="" src="https://www.googleadservices.com/pagead/conversion/1067523886/?value=0&amp;label=UflZCN7F2wIQrr6E_QM&amp;guid=ON&amp;script=0"/>
 </div>
 </noscript>
 
+
+
 <!-- Google ANALYTICS Code for site tracking -->
 <script type="text/javascript">
-var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-303243-2']);
+  _gaq.push(['_setDomainName', 'none']);
+  _gaq.push(['_setAllowLinker', true]);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
 </script>
-<script type="text/javascript">
-try {
-var pageTracker = _gat._getTracker("UA-303243-2");
-pageTracker._trackPageview();
-} catch(err) {}</script>
 
 </body>
 </html>
