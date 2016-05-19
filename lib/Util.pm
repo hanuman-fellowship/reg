@@ -78,6 +78,7 @@ our @EXPORT_OK = qw/
     outstanding_balance
     charges_and_payments_options
     @charge_type
+    cf_expand
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2247,6 +2248,21 @@ sub outstanding_balance {
         }
     }
     return $outstand_str, $alert;
+}
+
+sub cf_expand {
+    my ($c, $s) = @_;
+    return "" if ! defined $s;
+    $s = etrim($s);
+    return $s if empty($s);
+    # ??? get these each time??? cache them!
+    # certainly!  in Global.
+    my %note;
+    for my $cf (model($c, 'ConfNote')->all()) {
+        $note{$cf->abbr()} = etrim($cf->expansion());
+    }
+    $s =~ s{<p>(\S+)</p>}{'<p>' . ($note{$1} || $1) . '</p>'}gem;
+    $s;
 }
 
 1;

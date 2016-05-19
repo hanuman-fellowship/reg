@@ -37,6 +37,7 @@ use Util qw/
     avail_mps
     refresh_table
     ensure_mmyy
+    cf_expand
 /;
 use Date::Simple qw/
     date
@@ -383,6 +384,8 @@ sub _get_data {
         }
     }
     $P{notify_on_reg} = join ', ', @email;
+
+    $P{confnote} = cf_expand($c, $P{confnote});
 
     if (! empty($P{max}) && $P{max} !~ m{^\s*\d+\s*$}) {
         push @mess, "Max must be an integer";
@@ -1244,8 +1247,6 @@ sub access_denied : Private {
     );
 }
 
-my @programs;
-
 sub _pub_err {
     my ($c, $msg, $chdir) = @_;
 
@@ -1271,7 +1272,7 @@ sub publish : Local {
     # get all the future programs destined for the web into an array
     # sorted by start date and then end date.
     #
-    @programs = RetreatCenterDB::Program->future_programs($c);
+    my @programs = RetreatCenterDB::Program->future_programs($c);
 
     # ensure that all of these programs have at least one affiliation set
     #
@@ -1286,8 +1287,8 @@ sub publish : Local {
         }
     }
 
-    gen_month_calendars($c);
-    gen_progtable();
+    gen_month_calendars($c, \@programs);
+    gen_progtable(\@programs);
 
     # 
     # generate each of the program pages
@@ -1519,19 +1520,19 @@ sub mmi_publish : Local {
     # fill the global @programs with all future 
     # webready MMI public courses ordered by start date.
     #
-    @programs = model($c, 'Program')->search(
-                    {
-                        sdate  => { '>=', tt_today($c)->as_d8() },
-                        'school.mmi' => 'yes',      # not MMC
-                        'level.public' => 'yes', # MMI public course
-                        webready => 'yes',
-                    },
-                    {
-                        order_by => 'sdate',
-                        join     => [qw/ school level /],
-                    },
-                );
-    gen_progtable();
+    my @programs = model($c, 'Program')->search(
+                       {
+                           sdate  => { '>=', tt_today($c)->as_d8() },
+                           'school.mmi' => 'yes',      # not MMC
+                           'level.public' => 'yes', # MMI public course
+                           webready => 'yes',
+                       },
+                       {
+                           order_by => 'sdate',
+                           join     => [qw/ school level /],
+                       },
+                   );
+    gen_progtable(\@programs);
     # send to mountmadonnainstitute.org/courses
     my $ftp = Net::FTP->new($string{ftp_mmi_site},
                             Passive => $string{ftp_mmi_passive})
@@ -1615,12 +1616,12 @@ sub publish_pics : Local {
 # clear them first? or after using them???
 #
 sub gen_month_calendars {
-    my ($c) = @_;
+    my ($c, $programs_ref) = @_;
     my $cur_ym = 0;
     my $mmi_link = "</span><span class='external_link_icon'>"
                  . "<i class='fa fa-external-link'></i> MMI</span>";
     my $cal;
-    for my $p (grep { $_->linked && ! $_->cancelled } @programs) {
+    for my $p (grep { $_->linked && ! $_->cancelled } @$programs_ref) {
         my $ym = $p->sdate_obj->format("%Y%m");
         if ($ym != $cur_ym) {
             # finish the prior calendar file, if any
@@ -1782,10 +1783,11 @@ EOD
 # generate the progtable for online registration
 #
 sub gen_progtable {
+    my ($programs_ref) = @_;
     open my $progt, ">", "gen_files/progtable"
         or die "cannot create progtable: $!\n";
     print {$progt} "{\n";       # the enclosing anonymous hash ref
-    for my $p (grep { ! $_->cancelled } @programs) {
+    for my $p (grep { ! $_->cancelled } @$programs_ref) {
         _prt_data($progt, $p, $p->id());
     }
     print {$progt} "};\n";
@@ -2497,6 +2499,63 @@ sub del_doc : Local {
         return;
     }
     $c->response->redirect($c->uri_for("/program/view/$program_id/4"));
+}
+
+#
+# for the new web site where the generation of the program pages
+# happens in another way.
+#
+sub export : Local {
+    my ($self, $c) = @_;
+
+    # clear the arena
+    system("rm -rf gen_files; mkdir gen_files; "
+         . "mkdir gen_files/pics; mkdir gen_files/docs");
+
+    # and make sure we have initialized %string.
+    Global->init($c);
+
+    #
+    # get all the future programs destined for the web into an array
+    # sorted by start date and then end date.
+    #
+    # not sure why future_programs includes cancelled ones...
+    #
+    my @programs = grep { ! $_->cancelled }
+                   RetreatCenterDB::Program->future_programs($c);
+
+    # ensure that all of these programs have at least one affiliation set
+    #
+    for my $pr (@programs) {
+        my @affils = $pr->affils();
+        unless (@affils) {
+            error($c,
+                "Program " . $pr->name . " has no affiliations!",
+                "program/error.tt2",
+            );
+            return;
+        }
+    }
+    gen_progtable(\@programs);
+    for my $p (@programs) {
+        for my $d ($p->documents) {
+            my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
+            copy("root/static/images/$pdoc", "gen_files/docs/$pdoc");
+        }
+        my $pic_html = $p->picture();   # this copies pics to gen_files/pics
+                                        # we discard the $pic_html
+    }
+    # fee table??? - insert into the program
+    # generate a json file with the program data
+
+    my @rentals  = RetreatCenterDB::Rental->future_rentals($c);
+    # generate a json file with the rental data
+
+    # ftp it all somewhere
+    # ...
+    stash($c,
+        template    => "program/exported.tt2",
+    );
 }
 
 1;

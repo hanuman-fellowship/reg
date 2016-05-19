@@ -12,6 +12,8 @@
     <a href="/program/publish">Publish<a>
     &nbsp;&nbsp;&nbsp;
     <a href="/program/publish_pics">PublishPics<a>
+    &nbsp;&nbsp;&nbsp;
+    <a href="/program/export">Export<a>
 [% END %]
 [% IF mmi_admin %]
     &nbsp;&nbsp;&nbsp;

@@ -49,6 +49,7 @@ use Util qw/
     outstanding_balance
     charges_and_payments_options
     @charge_type
+    cf_expand
 /;
 use POSIX qw/
     ceil
@@ -4376,21 +4377,6 @@ sub seek : Local {
             other_sort_name => "By Postmark",
         );
     }
-}
-
-sub cf_expand {
-    my ($c, $s) = @_;
-    return "" if ! defined $s;
-    $s = etrim($s);
-    return $s if empty($s);
-    # ??? get these each time??? cache them!
-    # certainly!  in Global.
-    my %note;
-    for my $cf (model($c, 'ConfNote')->all()) {
-        $note{$cf->abbr()} = etrim($cf->expansion());
-    }
-    $s =~ s{<p>(\S+)</p>}{'<p>' . ($note{$1} || $1) . '</p>'}gem;
-    $s;
 }
 
 #

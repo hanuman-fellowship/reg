@@ -160,6 +160,7 @@ my $default_template = slurp("default");
 my %first_of_month;
 
 # do I really need $c passed in???
+# not sure why we include canceled programs here
 sub future_programs {
     my ($class, $c) = @_;
     my @programs = $c->model('RetreatCenterDB::Program')->search(
@@ -839,16 +840,17 @@ sub cl_picture {
     }
     return "" unless $pic1;          # no image at all
 
+    my $dir = $self->unlinked_dir || 'live';
     if ($pic2) {
-        my $pic1_html = "<img src='http://$string{ftp_site}/live/pics/$pic1' width=$half>";
-        my $pic2_html = "<img src='http://$string{ftp_site}/live/pics/$pic2' width=$half>";
+        my $pic1_html = "<img src='http://$string{ftp_site}/$dir/pics/$pic1' width=$half>";
+        my $pic2_html = "<img src='http://$string{ftp_site}/$dir/pics/$pic2' width=$half>";
         return <<EOH;
 <table cellspacing=0>
 <tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
 </table>
 EOH
     } else {
-        return "<img src='http://$string{ftp_site}/live/pics/$pic1' width=$full>";
+        return "<img src='http://$string{ftp_site}/$dir/pics/$pic1' width=$full>";
     }
 }
 
