@@ -290,7 +290,7 @@ Web
 <table cellpadding=3 border=0>
 
 <tr>
-<th align=right valign=top>Category</th>
+<th align=right valign=top width=20%>Category</th>
 <td valign=top>$program.category.name</td>
 </tr>
 
@@ -309,7 +309,7 @@ Web
 <tr><td>&nbsp;</td></tr>
 
 <tr>
-<td colspan=6>
+<td colspan=2>
 <b>Allow Aux Regs</b>
 $program.allow_dup_regs
 &nbsp; &nbsp; &nbsp;
@@ -325,7 +325,7 @@ $program.waiver_needed
 </tr>
 
 <tr>
-<td colspan=6>
+<td colspan=2>
 <b>Not on Calendar</b>
 $program.not_on_calendar
 &nbsp; &nbsp; &nbsp;
@@ -338,7 +338,7 @@ $program.tub_swim
 
 <tr>
 <th align=right valign=top>Leaders</th>
-<td valign=top align=left colspan=5 width=300>
+<td valign=top align=left colspan=2 width=300>
 $leaders_house
 [% IF prog_admin %]
     <a href=/program/leader_update/$id>Update</a>
@@ -410,7 +410,7 @@ $leaders_house
 
 <tr>
 <th align=right valign=top>Notify on Reg</th>
-<td colspan=4>$program.notify_on_reg</td>
+<td colspan=2>$program.notify_on_reg</td>
 </tr>
 
 <tr>
@@ -425,17 +425,17 @@ $leaders_house
 
 <tr>
 <th align=right valign=top>Conf Notes</th>
-<td colspan=5 valign=top>$program.confnote</td>
+<td colspan=2 valign=top>$program.confnote</td>
 </tr>
 
 <tr>
 <th align=right valign=top>PR Alert</th>
-<td colspan=5 valign=top>$program.pr_alert</td>
+<td colspan=2 valign=top>$program.pr_alert</td>
 </tr>
 
 <tr>
 <th align=right>Times</th>
-<td colspan=4>
+<td colspan=2>
 
 <table cellpadding=3>   <!-- for Times -->
 <tr>

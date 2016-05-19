@@ -2261,7 +2261,7 @@ sub cf_expand {
     for my $cf (model($c, 'ConfNote')->all()) {
         $note{$cf->abbr()} = etrim($cf->expansion());
     }
-    $s =~ s{<p>(\S+)</p>}{'<p>' . ($note{$1} || $1) . '</p>'}gem;
+    $s =~ s{<p>([^<]+)</p>}{'<p>' . ($note{$1} || $1) . '</p>'}gem;
     $s;
 }
 
