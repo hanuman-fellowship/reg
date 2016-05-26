@@ -249,3 +249,9 @@ ftp_omp_dir /www/cgi-bin/omp_dir
 rental_lunch_cost 12
 mmi_payment_request_signed
 mmi_payment_request_from Rachel Stark <rachel@mountmadonna.org>
+
+ftp_export_site www.mountmadonna.org
+ftp_export_login mmc
+ftp_export_password Ashtanga!
+ftp_export_dir www/cgi-bin/export
+ftp_export_passive 0

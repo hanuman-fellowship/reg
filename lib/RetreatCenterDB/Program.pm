@@ -505,7 +505,7 @@ sub expand_footnotes {
     my $barnacles = shift;
     my $s = "";
     if ($barnacles) {
-        $s = "<P><STRONG>Credits:</STRONG></P>";
+        $s = "<p><b>Credits:</b></p>";
         $s .= "<ul>\n";
         if ($barnacles =~ /\*\*/) {
             $s .= "<li>$string{'**'}\n";
@@ -779,8 +779,12 @@ sub picture {
         if (! -f "root/static/images/$p") {
             $p =~ s{jpg}{gif};      # this modifies $pic1, $pic2
         }
-        mkdir "gen_files/pics";
+        mkdir "gen_files/pics" if ! -d "gen_files/pics";
         copy("root/static/images/$p", "gen_files/pics/$p");
+        if ($self->school->mmi()) {
+            mkdir "gen_files/mmi_pics" if ! -d "gen_files/mmi_pics";
+            copy("root/static/images/$p", "gen_files/mmi_pics/$p");
+        }
         #my $big = $p;
         #$big =~ s{th}{b};
         #copy("root/static/images/$big", "gen_files/pics/$big");

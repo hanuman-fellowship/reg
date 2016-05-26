@@ -472,22 +472,21 @@ sub monthyear {
 sub resize {
     my ($type, $id, $which) = @_;
 
-    chdir "root/static/images";
+    my $rst = "root/static/images";
     if (!$which || $which eq "imgwidth") {
         system("convert -scale "
                . trim($string{imgwidth})
                . "x"
-               . " ${type}o-$id.jpg ${type}th-$id.jpg"
+               . " $rst/${type}o-$id.jpg $rst/${type}th-$id.jpg"
         );
     }
     if (!$which || $which eq "big_imgwidth") {
         system("convert -scale "
                . trim($string{big_imgwidth})
                . "x"
-               . " ${type}o-$id.jpg ${type}b-$id.jpg"
+               . " $rst/${type}o-$id.jpg $rst/${type}b-$id.jpg"
         );
     }
-    chdir "../../..";       # must cd back!   not stateless HTTP, exactly
 }
 
 sub housing_types {

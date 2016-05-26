@@ -54,6 +54,7 @@ use Global qw/
     @clusters
 /;
 use File::Copy;
+use JSON;
 
 # for Category, School, and Level
 sub _opts {
@@ -2509,8 +2510,14 @@ sub export : Local {
     my ($self, $c) = @_;
 
     # clear the arena
-    system("rm -rf gen_files; mkdir gen_files; "
-         . "mkdir gen_files/pics; mkdir gen_files/docs");
+    system(<<'EOS');
+rm -rf gen_files;
+mkdir gen_files;
+mkdir gen_files/pics;
+mkdir gen_files/docs;
+mkdir gen_files/mmi_pics;
+mkdir gen_files/mmi_docs;
+EOS
 
     # and make sure we have initialized %string.
     Global->init($c);
@@ -2536,26 +2543,307 @@ sub export : Local {
             return;
         }
     }
-    gen_progtable(\@programs);
+    gen_progtable(\@programs);      # writes to gen_files/progtable
+    # documents and pictures
     for my $p (@programs) {
         for my $d ($p->documents) {
             my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
             copy("root/static/images/$pdoc", "gen_files/docs/$pdoc");
+            if ($p->school->mmi()) {
+                copy("root/static/images/$pdoc", "gen_files/mmi_docs/$pdoc");
+            }
         }
-        my $pic_html = $p->picture();   # this copies pics to gen_files/pics
-                                        # we discard the $pic_html
+        my $pic_html = $p->picture();   # a side effect of this is to
+                                        # copy pics to gen_files/pics and gen_files/mmi_pics.
+                                        # we do not need the returned $pic_html
     }
-    # fee table??? - insert into the program
-    # generate a json file with the program data
+    my $fmt = '%Y-%m-%d';
+    my (@export_programs, @export_mmi_programs, @export_unlinked_programs);
+    for my $p (@programs) {
+        my @leaders;
+        for my $l ($p->leaders()) {
+            push @leaders, {
+                map({ $_ => $l->$_ } qw/
+                    id
+                    public_email
+                    url
+                    biography
+                    l_order
+                /),
+                first => $l->person->first,
+                last => $l->person->last,
+                image => ($l->image? ("lth-" . $l->id . ".jpg"): ""),
+            },
+        }
+        my @docs;
+        for my $d ($p->documents()) {
+            push @docs, {
+                title    => $d->title,
+                filename => "pdoc" . $d->id . '.' . $d->suffix
+            };
+        }
+        my $fee_table = $p->fee_table();
+        my %extracted_fee_table = _extract_fee_table($fee_table);
+        my $mmi = $p->school->mmi();
+        my $href = {
+            map({ $_ => $p->$_ } qw/
+                id
+
+                extradays
+                dates
+
+                title1
+                title2
+
+                leader_names
+                picture
+                webdesc
+                leader_bio
+                url
+                weburl
+                footnotes
+                deposit
+                cancellation_policy
+                reg_start
+                reg_end
+                prog_start
+                prog_end
+                housing_not_needed
+                
+                unlinked_dir
+                image
+            /),
+            sdate => $p->sdate_obj->format($fmt),
+            edate => $p->edate_obj->format($fmt),
+            footnotes_long => $p->long_footnotes,
+            %extracted_fee_table,
+            str_reg_start  => $p->reg_start_obj->ampm,
+            str_reg_end    => $p->reg_end_obj->ampm,
+            str_prog_start => $p->prog_start_obj->ampm,
+            str_prog_end   => $p->prog_end_obj->ampm,
+            mmi => $mmi,
+            leaders => \@leaders,
+            documents => \@docs,
+        };
+        if ($href->{unlinked_dir}) {
+            push @export_unlinked_programs, $href;
+        }
+        else {
+            push @export_programs, $href;   # includes mmi programs
+        }
+        if ($mmi) {
+            push @export_mmi_programs, $href;
+        }
+    }
+    _json_put(\@export_programs, 'programs.json');
+    _json_put(\@export_unlinked_programs, 'unlinked_programs.json');
+    _json_put(\@export_mmi_programs, 'mmi_programs.json');
+    my $string_ref = {
+        'footnotes_*'   => $string{'*'},
+        'footnotes_**'  => $string{'**'},
+        'footnotes_+'   => $string{'+'},
+        'footnotes_%'   => $string{'%'},
+    };
+    _json_put($string_ref, 'strings.json');
 
     my @rentals  = RetreatCenterDB::Rental->future_rentals($c);
-    # generate a json file with the rental data
+    my @export_rentals;
+    for my $r (@rentals) {
+        push @export_rentals, {
+            map({ $_ => $r->$_ } qw/
+                id
+                dates_tr2
+                title
+                subtitle
+                title1
+                title2
+                webdesc
+                phone
+                phone_str
+                url
+                weburl
+                email
+                email_str
+            /),
+            sdate => $r->sdate_obj->format($fmt),
+            edate => $r->edate_obj->format($fmt),
+        };
+    }
+    _json_put(\@export_rentals, 'rentals.json');
 
-    # ftp it all somewhere
-    # ...
+    # noPRs
+    my (@events) = model($c, 'Event')->search(
+        {
+            name  => { 'like' => 'No PR%' },
+            edate => { '>='   => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    my @no_prs;
+    for my $ev (@events) {
+        push @no_prs, {
+            start => $ev->sdate(),
+            end   => $ev->edate(),
+            indoors => (($ev->name =~ m{indoors}xmsi)? "yes": ""),
+        };
+    }
+    my $pr_ref = {
+        disc_pr       => $string{disc_pr},
+        disc_pr_start => date($string{disc_pr_start})->format($fmt),
+        disc_pr_end   => date($string{disc_pr_end})->format($fmt),
+        pr_template   => $string{personal_template},
+                   # personal_getaway / personal
+        noPR_dates    => \@no_prs,
+        fee_table_headings => [
+            'Housing Type',
+            'Cost',
+        ],
+
+    };
+    #
+    # find the housing cost of the current PR
+    # and the housing cost of the *next* PR
+    # that has a _different_ housing cost.
+    #
+    my @prs = model($c, 'Program')->search(
+        {
+            name  => { 'like' => '%personal%retreat%' },
+            edate => { '>='   => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    my $curr_hc = $prs[0]->housecost;
+    my $next_hc;
+    my $change_date;
+    shift @prs;
+    PR:
+    for my $p (@prs) {
+        if ($p->housecost->id != $curr_hc->id) {
+            $next_hc = $p->housecost;
+            $change_date = $p->sdate;
+            last PR;
+        }
+    }
+    TYPE:
+    for my $type (reverse housing_types(1)) {
+        next TYPE if $type =~ m{^economy|dormitory|triple$};
+        push @{$pr_ref->{curr_fee_table_rows}}, [
+            $string{"long_$type"}, 
+            $curr_hc->$type,
+        ];
+    }
+    if ($next_hc) {
+        # it IS optional - no change in sight
+        $pr_ref->{on_and_before} = date($change_date)->prev->format($fmt);
+        $pr_ref->{on_and_after}  = date($change_date)->format($fmt);
+        TYPE:
+        for my $type (reverse housing_types(1)) {
+            next TYPE if $type =~ m{^economy|dormitory|triple$};
+            push @{$pr_ref->{next_fee_table_rows}}, [
+                $string{"long_$type"},
+                $next_hc->$type,
+            ];
+        }
+    }
+    _json_put($pr_ref, 'pr.json');
+
+    # tar it up
+    system("cd gen_files; tar czf ../exported_programs.tgz .");
+
+    # send it off
+
+    # document it all - it's pretty quirky
+    #   but this IS what is needed.
+    #   it can't be simplified or regularized.
+    # must use the current pages as a model
+    #   make sure all the same information is there
+    # times - dddd or am/pm
+    # PRs - mid week discount, dates for no PRs & no indoor housing
+    #   fees now and after a date (maybe)
+    #   headings are 'Housing Type' and 'Cost'
+    # staging/live
+    # unlinked (& purging), MMI (weburl), basic/full, PR, footnotes
+    # documents, progtable 
+    # on MMC site MMI programs are currently just mentioned - with a link.
+    #       don't need pics or docs there - but include them in case
+    #       this changes.
+    # dates (programs), sdate & edate (yyyy-mm-dd), dates_tr (rentals)
+    # leader_bio, webdesc, and rental desc - with HTML
+    # leader order
+    # documents - title, full name in docs dir 
+    # pictures - one/two (width), leaders/program image, "picture" HTML
+    # rentals - phone_str, email_str - if you wish
+    #   url, weburl
+    #   titles
+    # fee table - caption, headings, rows
+    # MMI page generation - with reg1 link and program id
+    #    the programs pics & docs copied to mmi_pics and mmi_docs
+    # register now link - cgi-bin/reg1?id=xxx test=1?
+    #   when move from staging to live test=1 gets excised
+    #   can also move from live to staging and restore previous live
+    #       test gets added back
+    # akami? - new interaction with authorize
+    # MMI export - progtable AND mmi_programs.json  AND mmi_pics, mmi_docs
+    # docs not used much - but we need to implement it.
+    # housing_not_needed - if "yes" - ignore the fee table, etc
+    #   can use an exception - will get null, [], [] for fee table
+    # no exceptions...? 
+    #   fee table exception will not be exported properly
+    #       unless it is in right form
+    #   other exceptions are okay
+    #
+    # tar up the entire gen_files directory and ftp it all somewhere?
+    # will it be ftp'ed to multiple sites?
+    # one for now
+    #
+    my $ftp = Net::FTP->new($string{ftp_export_site},
+                            Passive => $string{ftp_export_passive})
+        or return _pub_err($c, "cannot connect to ...");
+    $ftp->login($string{ftp_export_user}, $string{ftp_export_password})
+        or return _pub_err($c, "cannot login: " . $ftp->message);
+    $ftp->cwd($string{ftp_export_dir})
+        or return _pub_err($c, "cannot cwd: " . $ftp->message);
+    $ftp->binary();
+    $ftp->put("exported_programs.tgz", "exported_programs.tgz");
+    $ftp->quit();
     stash($c,
+        ftp_export_site => $string{ftp_export_site},
         template    => "program/exported.tt2",
     );
+}
+
+sub _extract_fee_table {
+    my ($html) = @_;
+    my %hash;
+    my @th = $html =~ m{<th [^>]*>(.*?)</th>}xmsg;
+    if (! @th) {
+        return %hash;
+    }
+    my $top = shift @th;
+    $top =~ s{</?center>}{}xmsg;
+    $hash{fee_table_caption} = $top;
+    $hash{fee_table_headings} = \@th;
+    my $n = @th;    # number of columns per row
+    my @td = $html =~ m{<td [^>]*>(.*?)</td>}xmsg;
+    my $toss = shift @td;
+    my @rows;
+    while (my @one_row = splice(@td, 0, $n)) {
+        push @rows, \@one_row;
+    }
+    $hash{fee_table_rows} = \@rows;
+    return %hash;
+}
+
+my $json = JSON->new->utf8->pretty->canonical;
+sub _json_put {
+    my ($ref, $fname) = @_;
+    open my $out, '>', "gen_files/$fname" or die "no gen_files/$fname!!\n";
+    print {$out} $json->encode($ref);
+    close $out;
 }
 
 1;
