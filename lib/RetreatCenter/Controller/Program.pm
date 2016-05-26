@@ -2646,7 +2646,10 @@ EOS
     };
     _json_put($string_ref, 'strings.json');
 
-    my @rentals  = RetreatCenterDB::Rental->future_rentals($c);
+    my @rentals  = grep {
+                       $_->linked && ! $_->cancelled
+                   }
+                   RetreatCenterDB::Rental->future_rentals($c);
     my @export_rentals;
     for my $r (@rentals) {
         push @export_rentals, {
