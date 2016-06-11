@@ -2803,6 +2803,8 @@ EOS
     # will it be ftp'ed to multiple sites?
     # one for now
     #
+    # image for programs - filename not 'yes'
+    #
     my $ftp = Net::FTP->new($string{ftp_export_site},
                             Passive => $string{ftp_export_passive})
         or return _pub_err($c, "cannot connect to ...");

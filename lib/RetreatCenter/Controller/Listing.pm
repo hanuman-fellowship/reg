@@ -391,8 +391,11 @@ sub detail_disp {
 #
 # very tricky.  Pay Attention.
 # we consider the date range of the requested meal list.
-# breakfast does not happen on the arrival date - programs and rentals.
+# breakfast does not happen on the person's arrival date - programs and rentals.
 #   well, unless the program start time is before 9:00 am.
+#   however, if someone arrives a day BEFORE the program starts
+#      they don't have breakfast even if the program
+#      start time is before 9:00 am (which would be the NEXT day in any case).
 # program lunches could happen on the first day of the program
 #     if that day's lunch is selected (which it _could_ be if the
 #     _program_ _start_ time is before 1:00 pm).
@@ -416,6 +419,9 @@ sub detail_disp {
 #         the breakfast end time (9:00).
 #     for breakfast on a mid-rental day look at the count for the day before.
 #     same applies to lunch :(
+#
+# this has, obviously, evolved over time.
+# no one could forsee all these things ahead of time.
 #
 sub meal_list : Local {
     my ($self, $c) = @_;
@@ -527,9 +533,9 @@ sub meal_list : Local {
             }
             $info = [ $name, $r->program->name ];
         }
-        my $pr = $r->program();
-        if ($pr->rental_id()) {
-            ($event_start, $lunches) = get_lunch($c, $pr->rental_id, 'Rental');
+        my $prog = $r->program();
+        if ($prog->rental_id()) {
+            ($event_start, $lunches) = get_lunch($c, $prog->rental_id, 'Rental');
         }
         else {
             ($event_start, $lunches) = get_lunch($c, $r->program_id, 'Program');
@@ -544,7 +550,6 @@ sub meal_list : Local {
         my $sd = $ol->sdate();
         my $ed = $ol->edate();
 
-        my $prog = $r->program();
         my $prog_end_dinner = $prog->prog_end() >= 1700;
         my $PR = $prog->PR();
         #
@@ -554,8 +559,9 @@ sub meal_list : Local {
 
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            add('breakfast', $np) if ($d != $r_start
-                                     || $prog->prog_start() < $breakfast_end)
+            add('breakfast', $np) if $d != $r_start
+                                     || ($d == $prog->sdate_obj()
+                                         && $prog->prog_start() < $breakfast_end)
                                      ;
             add('lunch', $np)     if $d->day_of_week() != 6
                                      &&
@@ -611,7 +617,7 @@ sub meal_list : Local {
         my $ol = $dr->overlap(DateRange->new($r_start, $r_end));
         my $sd = $ol->sdate();
         my $ed = $ol->edate();
-        my $expected = $r->expected();
+        my $expected = $r->expected() || 0;
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
             my $n = $counts[$d - $event_start];
