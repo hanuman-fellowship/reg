@@ -1,0 +1,192 @@
+Files and Directories in the Export of Reg Data
+===============================================
+exported_reg_data.tgz is a compressed tar file.
+It contains these files and directories:
+
+README             this file
+docs/              directory with documents for MMC programs in programs.json
+footnotes.json     4 footnote labels for CEU types *, %, +, and **
+mmi_docs/          directory with documents for programs in mmi_programs.json
+mmi_pics/          directory with pictures for programs and leaders
+                       in mmi_programs.json
+mmi_programs.json  info to generate pages for MMI programs
+pics/              directory with pictures for programs (and leaders)
+                       in programs.json
+pr/pr.json         info for Personal Retreats (PR)
+pr/progtable       used by the Perl script reg1 when someone registers for a PR
+                       should be in same directory as the generated PR page.
+programs.json      info to generate MMC program pages and the
+                       program list that contains both MMC and MMI programs
+progtable          used by the Perl script reg1 when someone registers
+                       for an MMC or an MMI program or an unlinked program
+                       it should be in the same directory as the program page.
+rentals.json       info to generate the rental list
+unlinked_programs.json  info to generate the pages for unlinked programs
+
+Keys in programs.json, mmi_programs.json, and unlinked_programs.json
+====================================================================
+programs.json contains an array of programs.  Same for the other two files.
+Each program is represented by a hash with these keys:
+
+cancellation_policy - the multi-line text of the cancellation policy 
+    for this program.  It may contain HTML.
+dates - a human readable string representing the date range(s) for the program
+    Could be derived from sdate, edate, and extradays.
+deposit - how much to collect for an online registration
+documents - an array of documents for this program
+    Each element is a hashref with these keys:
+        filename - the location of the document
+        title - A description of the document
+edate - when does the basic program end?  yyyy-mm-dd format
+extradays - how many extra days in the full version of the program?
+    This is 0 for basic programs.
+fee_table_caption - A description of what the fees include
+fee_table_headings - The string to put in the <th> elements of the fee table.
+    There could be 2 or 3 of them.
+fee_table_rows - an array of labels and costs in order by increasing cost.
+    There could be 2 costs (for basic and full programs).
+    The elements are like this:
+        * description of housing type
+        * cost of basic (in dollars)
+        * cost of full (in dollars) - optional - if the program has extra days
+footnotes - the symbols representing the CEU status of the program
+    Can include *, +, %, and **.
+footnotes_long - a long description of the footnotes.  
+    This could be derived using the footnotes.json file.
+housing_not_needed - a boolean - "" or "yes"
+id - the primary key in the program table
+    This is used in the "Register Now" link to reg1.  Something like this:
+        <A HREF="http://www.mountmadonna.org/cgi-bin/reg1?test=1&id=$id">
+        <IMG SRC="/Gif/register_button.png" 
+             ALT="Register for this program" BORDER="0"></A>
+image - the location of the optional image for the program
+leader_bio - the multi-line text of the biographies of
+    the leaders of this program.  It may contain HTML.
+    Could be derived from the bios in the leaders array.
+leader_names - a string with the leader names.
+    Could be derived from the names in leaders array.
+leaders - an array of leaders.  Each leader has these keys:
+    biography - multi-line bio - may contain HTML
+    first - first name
+    id - primary key in leader table
+    image - location of the image of the leader (optional)
+    l_order - the order that the leaders should appear in
+    last - last name
+    public_email - their email address (optional)
+    url - their web address (optional)
+mmi - boolean - is this an MMI program? - "" or "yes"
+picture - HTML representing the picture(s) for the program
+    Could be derived.
+prog_end - time the program ends - hhmm format
+prog_start - time the program starts - hhmm format
+reg_end - time registration ends - hhmm format
+reg_start - time registration starts - hhmm format
+sdate - date the basic program ends - yyyy-mm-dd format
+str_prog_end - human readable format of prog_end
+str_prog_start - human readable format of prog_start
+str_reg_end - human readable format of reg_end
+str_reg_start - human readable format of reg_start
+title1 - title of program
+title2 - subtitle of program
+unlinked_dir - blank if it is in programs.json - so ignore
+    the directory where the program page will live
+    if it is in unlinked_programs.json.
+url - the web address of the organization sponsoring the program
+webdesc - a multi-line description of the program - could contain HTML
+weburl - A link to the 'url' above with a prefatory link and an <a> tag.
+    Could be derived.
+
+Keys in pr/pr.json
+==================
+cur_fee_table_rows - an array of housing costs in increasing cost order
+    each cost is an arrayref with these elements:
+        * description of the housing type
+        * cost (in dollars)
+disc_pr - percentage discount for a PR in the date range
+disc_pr_end - end of the discounted date range
+disc_pr_start - start of the discounted date range
+fee_table_headings - an array 2 headings (Housing Type, Cost) for the fee table
+next_fee_table_rows
+noPR_dates - an array of dates when no PRs are allows
+    they are hashrefs with these keys:
+     end - end of date range
+     indoors - a boolean "" or "yes' - is indoor housing allowed?
+     start - start of date range
+on_and_after - a date in format yyyy-mm-dd - first day that
+    the 'next_fees' apply.
+on_and_before - a date in yyyy-mm-dd - last day that
+    the 'next_fees' apply.
+pr_template - the name of a template indicating whether there
+    is a discounted period or not - "personal" or "personal_getaway".
+
+Keys in rentals.json
+====================
+dates_tr2 - a date-like string - could be useful
+    could be derived from sdate and edate.
+edate - end date - format yyyy-mm-dd
+email - email address of rental person
+email_str - the email address in HTML with label - could be
+    derived from email.
+id - primary key in the rental table - not really used
+phone - rental contact phone number
+phone_str - phone in HTML - could be derived from phone
+sdate - start date - format yyyy-mm-dd
+subtitle - subtitle of rental
+title - title of rental
+title1 - title in HTML with link to web url - could be derived
+title2 - subtitle in HTML - could be derived
+url - the web address of the rental
+webdesc - description of the rental - could contain HTML
+weburl - url in HTML with label - could be derived from url
+
+Miscellaneous Notes
+===================
+All about the way the pages are generated by Reg now.
+The notes are somewhat cryptic.  Ask if you don't understand.
+Jon Bjornstad - 415-246-6499 - jonb@logicalpoetry.com
+
+document it all - it's pretty quirky
+  but this IS what is needed.  it has evolved over many years.
+  it can't be 'simplified' or 'regularized'.
+must use the current pages as a model
+  make sure all the same information is there
+times - hhmm or am/pm
+PRs - mid week discount, dates for no PRs & no indoor housing
+  fees now and after a date (maybe)
+  headings are 'Housing Type' and 'Cost'
+  put in pr.json and progtable in pr/
+  maybe do this one manually?  but we do need the progtable.
+staging/live
+unlinked (& purging), MMI (weburl), basic/full, PR, footnotes
+documents, progtable 
+on MMC site MMI programs are currently just mentioned - with a link.
+      don't need pics or docs there - but include them in case
+      this changes.
+dates (programs), sdate & edate (yyyy-mm-dd), dates_tr (rentals)
+leader_bio, webdesc, and rental desc - with HTML
+leader order
+documents - title, full name in docs dir 
+pictures - one/two (width), leaders/program image, "picture" HTML
+rentals - phone_str, email_str - if you wish
+  url, weburl
+  titles
+fee table - caption, headings, rows
+MMI page generation - with reg1 link and program id
+   the programs pics & docs copied to mmi_pics and mmi_docs
+register now link - cgi-bin/reg1?id=xxx test=1?
+  when move from staging to live test=1 gets excised
+  can also move from live to staging and restore previous live
+      test gets added back
+akami? - new interaction with authorize
+MMI export - progtable AND mmi_programs.json  AND mmi_pics, mmi_docs
+docs not used much - but we need to implement it.
+housing_not_needed - if "yes" - ignore the fee table, etc
+  can use an exception - will get null, [], [] for fee table
+no exceptions...? 
+  fee table exception will not be exported properly
+      unless it is in right form
+  other exceptions are okay
+
+tar up the entire gen_files directory and ftp it all somewhere?
+will it be ftp'ed to multiple sites?
+one for now

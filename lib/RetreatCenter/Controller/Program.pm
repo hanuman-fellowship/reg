@@ -38,6 +38,7 @@ use Util qw/
     refresh_table
     ensure_mmyy
     cf_expand
+    PR_progtable
 /;
 use Date::Simple qw/
     date
@@ -2517,6 +2518,7 @@ mkdir gen_files/pics;
 mkdir gen_files/docs;
 mkdir gen_files/mmi_pics;
 mkdir gen_files/mmi_docs;
+mkdir gen_files/pr
 EOS
 
     # and make sure we have initialized %string.
@@ -2546,20 +2548,23 @@ EOS
     gen_progtable(\@programs);      # writes to gen_files/progtable
     # documents and pictures
     for my $p (@programs) {
+        my $mmi = $p->school->mmi();
         for my $d ($p->documents) {
             my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
-            copy("root/static/images/$pdoc", "gen_files/docs/$pdoc");
-            if ($p->school->mmi()) {
-                copy("root/static/images/$pdoc", "gen_files/mmi_docs/$pdoc");
-            }
+            copy("root/static/images/$pdoc",
+                 "gen_files/" . ($mmi? "mmi_docs": "docs") . "/$pdoc");
         }
         my $pic_html = $p->picture();   # a side effect of this is to
-                                        # copy pics to gen_files/pics and gen_files/mmi_pics.
+                                        # copy pics to gen_files/pics
+                                        #           or gen_files/mmi_pics.
                                         # we do not need the returned $pic_html
     }
     my $fmt = '%Y-%m-%d';
     my (@export_programs, @export_mmi_programs, @export_unlinked_programs);
     for my $p (@programs) {
+        my $mmi = $p->school->mmi();
+        my $pic_dir = $mmi? "mmi_pics": "pics";
+        my $doc_dir = $mmi? "mmi_docs": "docs";
         my @leaders;
         for my $l ($p->leaders()) {
             push @leaders, {
@@ -2572,19 +2577,18 @@ EOS
                 /),
                 first => $l->person->first,
                 last => $l->person->last,
-                image => ($l->image? ("lth-" . $l->id . ".jpg"): ""),
+                image => ($l->image? ("$pic_dir/lth-" . $l->id . ".jpg"): ""),
             },
         }
         my @docs;
         for my $d ($p->documents()) {
             push @docs, {
                 title    => $d->title,
-                filename => "pdoc" . $d->id . '.' . $d->suffix
+                filename => "$doc_dir/pdoc" . $d->id . '.' . $d->suffix
             };
         }
         my $fee_table = $p->fee_table();
         my %extracted_fee_table = _extract_fee_table($fee_table);
-        my $mmi = $p->school->mmi();
         my $href = {
             map({ $_ => $p->$_ } qw/
                 id
@@ -2625,6 +2629,9 @@ EOS
             leaders => \@leaders,
             documents => \@docs,
         };
+        if ($href->{image} eq 'yes') {
+            $href->{image} = "$pic_dir/pth" . $p->id() . ".jpg";
+        }
         if ($href->{unlinked_dir}) {
             push @export_unlinked_programs, $href;
         }
@@ -2638,13 +2645,13 @@ EOS
     _json_put(\@export_programs, 'programs.json');
     _json_put(\@export_unlinked_programs, 'unlinked_programs.json');
     _json_put(\@export_mmi_programs, 'mmi_programs.json');
-    my $string_ref = {
+    my $footnote_href = {
         'footnotes_*'   => $string{'*'},
         'footnotes_**'  => $string{'**'},
         'footnotes_+'   => $string{'+'},
         'footnotes_%'   => $string{'%'},
     };
-    _json_put($string_ref, 'strings.json');
+    _json_put($footnote_href, 'footnotes.json');
 
     my @rentals  = grep {
                        $_->linked && ! $_->cancelled
@@ -2674,7 +2681,7 @@ EOS
     }
     _json_put(\@export_rentals, 'rentals.json');
 
-    # noPRs
+    # noPR events
     my (@events) = model($c, 'Event')->search(
         {
             name  => { 'like' => 'No PR%' },
@@ -2692,6 +2699,9 @@ EOS
             indoors => (($ev->name =~ m{indoors}xmsi)? "yes": ""),
         };
     }
+
+    # now for personal retreats
+    # we generate pr/pr.json and pr/progtable
     my $pr_ref = {
         disc_pr       => $string{disc_pr},
         disc_pr_start => date($string{disc_pr_start})->format($fmt),
@@ -2705,42 +2715,18 @@ EOS
         ],
 
     };
-    #
-    # find the housing cost of the current PR
-    # and the housing cost of the *next* PR
-    # that has a _different_ housing cost.
-    #
-    my @prs = model($c, 'Program')->search(
-        {
-            name  => { 'like' => '%personal%retreat%' },
-            edate => { '>='   => today()->as_d8() },
-        },
-        {
-            order_by => 'sdate',
-        }
-    );
-    my $curr_hc = $prs[0]->housecost;
-    my $next_hc;
-    my $change_date;
-    shift @prs;
-    PR:
-    for my $p (@prs) {
-        if ($p->housecost->id != $curr_hc->id) {
-            $next_hc = $p->housecost;
-            $change_date = $p->sdate;
-            last PR;
-        }
-    }
+    my ($currHC, $nextHC, $change_date)
+        = PR_progtable($c, 'gen_files/pr/progtable');
     TYPE:
     for my $type (reverse housing_types(1)) {
         next TYPE if $type =~ m{^economy|dormitory|triple$};
         push @{$pr_ref->{curr_fee_table_rows}}, [
             $string{"long_$type"}, 
-            $curr_hc->$type,
+            $currHC->$type,
         ];
     }
-    if ($next_hc) {
-        # it IS optional - no change in sight
+    if ($nextHC) {
+        # this IS optional - there may be no change in sight
         $pr_ref->{on_and_before} = date($change_date)->prev->format($fmt);
         $pr_ref->{on_and_after}  = date($change_date)->format($fmt);
         TYPE:
@@ -2748,63 +2734,17 @@ EOS
             next TYPE if $type =~ m{^economy|dormitory|triple$};
             push @{$pr_ref->{next_fee_table_rows}}, [
                 $string{"long_$type"},
-                $next_hc->$type,
+                $nextHC->$type,
             ];
         }
     }
-    _json_put($pr_ref, 'pr.json');
+    _json_put($pr_ref, 'pr/pr.json');
+    copy 'root/static/README', 'gen_files/README';
 
     # tar it up
-    system("cd gen_files; tar czf ../exported_programs.tgz .");
+    system("cd gen_files; tar czf ../exported_reg_data.tgz .");
 
     # send it off
-
-    # document it all - it's pretty quirky
-    #   but this IS what is needed.
-    #   it can't be simplified or regularized.
-    # must use the current pages as a model
-    #   make sure all the same information is there
-    # times - dddd or am/pm
-    # PRs - mid week discount, dates for no PRs & no indoor housing
-    #   fees now and after a date (maybe)
-    #   headings are 'Housing Type' and 'Cost'
-    # staging/live
-    # unlinked (& purging), MMI (weburl), basic/full, PR, footnotes
-    # documents, progtable 
-    # on MMC site MMI programs are currently just mentioned - with a link.
-    #       don't need pics or docs there - but include them in case
-    #       this changes.
-    # dates (programs), sdate & edate (yyyy-mm-dd), dates_tr (rentals)
-    # leader_bio, webdesc, and rental desc - with HTML
-    # leader order
-    # documents - title, full name in docs dir 
-    # pictures - one/two (width), leaders/program image, "picture" HTML
-    # rentals - phone_str, email_str - if you wish
-    #   url, weburl
-    #   titles
-    # fee table - caption, headings, rows
-    # MMI page generation - with reg1 link and program id
-    #    the programs pics & docs copied to mmi_pics and mmi_docs
-    # register now link - cgi-bin/reg1?id=xxx test=1?
-    #   when move from staging to live test=1 gets excised
-    #   can also move from live to staging and restore previous live
-    #       test gets added back
-    # akami? - new interaction with authorize
-    # MMI export - progtable AND mmi_programs.json  AND mmi_pics, mmi_docs
-    # docs not used much - but we need to implement it.
-    # housing_not_needed - if "yes" - ignore the fee table, etc
-    #   can use an exception - will get null, [], [] for fee table
-    # no exceptions...? 
-    #   fee table exception will not be exported properly
-    #       unless it is in right form
-    #   other exceptions are okay
-    #
-    # tar up the entire gen_files directory and ftp it all somewhere?
-    # will it be ftp'ed to multiple sites?
-    # one for now
-    #
-    # image for programs - filename not 'yes'
-    #
     my $ftp = Net::FTP->new($string{ftp_export_site},
                             Passive => $string{ftp_export_passive})
         or return _pub_err($c, "cannot connect to ...");
@@ -2813,7 +2753,7 @@ EOS
     $ftp->cwd($string{ftp_export_dir})
         or return _pub_err($c, "cannot cwd: " . $ftp->message);
     $ftp->binary();
-    $ftp->put("exported_programs.tgz", "exported_programs.tgz");
+    $ftp->put("exported_reg_data.tgz", "exported_reg_data.tgz");
     $ftp->quit();
     stash($c,
         ftp_export_site => $string{ftp_export_site},
