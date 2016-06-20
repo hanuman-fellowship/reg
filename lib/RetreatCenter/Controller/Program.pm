@@ -1456,7 +1456,7 @@ sub publish : Local {
     # or whereever Global says, that is...
     #
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or return _pub_err($c, "cannot connect to ...");
+        or return _pub_err($c, "cannot connect to $string{ftp_site}");
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or return _pub_err($c, "cannot login: " . $ftp->message);
     $ftp->cwd($string{ftp_dir})
@@ -2747,7 +2747,7 @@ EOS
     # send it off
     my $ftp = Net::FTP->new($string{ftp_export_site},
                             Passive => $string{ftp_export_passive})
-        or return _pub_err($c, "cannot connect to ...");
+        or return _pub_err($c, "cannot connect to $string{ftp_export_site}");
     $ftp->login($string{ftp_export_user}, $string{ftp_export_password})
         or return _pub_err($c, "cannot login: " . $ftp->message);
     $ftp->cwd($string{ftp_export_dir})

@@ -7,4 +7,4 @@ else
     cd /Users/jonbjornstad/Reg
     export DBI_DSN="dbi:SQLite:retreatcenter.db"
 fi
-script/publish_pr
+script/publish_pr >>output/publish_pr 2>&1

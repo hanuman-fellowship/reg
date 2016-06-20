@@ -19,7 +19,7 @@ chdir "$FindBin::Bin/..";
 # we need several values from the string table
 #
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
-    or my_die("oh no DBI");
+    or die("oh no DBI");
 my $sth = $dbh->prepare("
     select the_key, value
     from string
@@ -211,11 +211,11 @@ close $prg;
 # send index.html and progtable to mountmadonna.org/personal
 #
 my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-    or my_die("cannot connect to $string{ftp_site}");    # not die???
+    or die("cannot connect to $string{ftp_site}");    # not die???
 $ftp->login($string{ftp_login}, $string{ftp_password})
-    or my_die("cannot login " . $ftp->message);
+    or die("cannot login " . $ftp->message);
 $ftp->cwd('www/personal')
-    or my_die("cannot cwd to www/personal " . $ftp->message);
+    or die("cannot cwd to www/personal " . $ftp->message);
 $ftp->ascii();
 $ftp->put("index.html");
 $ftp->put("progtable");
