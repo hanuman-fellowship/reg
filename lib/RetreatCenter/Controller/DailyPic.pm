@@ -212,7 +212,8 @@ sub show : Local {
     }
     my $d8 = $dt->as_d8();
 
-    my @houses = @{ $houses_in{$type} };
+    my @houses = grep { $_->disp_code ne 'X' }
+                 @{ $houses_in{$type} };
     my @house_ids = map { $_->id } @houses;
 
     # get blocks on the current day into a hash.

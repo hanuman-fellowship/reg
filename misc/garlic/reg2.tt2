@@ -200,7 +200,7 @@ function check_waiver() {
                     [% END %]
 
 <FORM NAME="authorize"
-      action="https://secure.authorize.net/gateway/transact.dll"
+      action="https://secure2.authorize.net/gateway/transact.dll"
       method="POST"
       onsubmit="pageTracker._linkByPost(this);"
 >

@@ -68,7 +68,7 @@
 <td><input type=text name=sq_foot value='$house.sq_foot' size=3>
 </tr>
 
-<tr><td colspan=3><hr></td></tr>
+<tr><td colspan=3><hr><h3>Attributes for Drawing on the DailyPic</h3></td></tr>
 
 
 <tr>
@@ -90,7 +90,9 @@ A - above<br>
 B - Below<br>
 L - Left<br>
 R - Right<br>
-t - truncate name
+t - A suffix - trim first token in the name<br>
+digits - suffix for a leftwards horizontal offset when using 'A'<br>
+X - Omit this house entirely - ignore X and Y
 </td>
 </tr>
 
