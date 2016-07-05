@@ -1,11 +1,19 @@
+<style>
+.dt {
+    width: 70px;
+}
+.per {
+    width: 220px;
+}
+</style>
 <h2>People Who Did Work Study</h2>
 <ul>
 <table cellpadding=5>
 [% FOR r IN regs %]
     [% p = r.person %]
     <tr>
-    <td>${r.date_start_obj.format("%b '%y")}</td>
-    <td><a href=/registration/view/$r.id>$p.last, $p.first [% IF p.inactive %]<span class=red>*</span>[% END %]</a></td>
+    <td class=dt>${r.date_start_obj.format("%b '%y")}</td>
+    <td class=per><a href=/registration/view/$r.id>$p.last, $p.first [% IF p.inactive %]<span class=red>*</span>[% END %]</a></td>
     <td>$r.work_study_comment</td>
     </tr>
 [% END %]

@@ -1,3 +1,11 @@
+<style>
+.dt {
+    width: 120px;
+}
+.pg {
+    width: 280px;
+}
+</style>
 <!-- include overlib.js only when needed -->
 <script type="text/javascript" src="/static/js/overlib.js"><!-- overLIB (c) Erik Bosrup --></script>
 [% id = person.id %]
@@ -258,11 +266,11 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
         <tr>
         <td>[% IF r.program.school.mmi %]<span class=red>*</span>[% END %]</td>
         [% IF ! r.program.school.mmi || Catalyst.check_user_roles('mmi_admin') %]
-        <td><a href="/registration/view/$r.id">$r.program.name</a></td>
+        <td class=pg><a href="/registration/view/$r.id">$r.program.name</a></td>
         [% ELSE %]
-        <td>$r.program.name</td>
+        <td class=pg>$r.program.name</td>
         [% END %]
-        <td>[% IF r.date_start %]$r.date_start_obj[% ELSE %]$r.program.sdate_obj[% END %]</td>
+        <td class=dt>[% IF r.date_start %]$r.date_start_obj[% ELSE %]$r.program.sdate_obj[% END %]</td>
         [% IF r.work_study %]
         <td>Work Study: $r.work_study_comment</td>
         [% END %]
