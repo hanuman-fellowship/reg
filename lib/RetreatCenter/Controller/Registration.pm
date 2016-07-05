@@ -3136,10 +3136,27 @@ sub update_do : Local {
         %dates,         # optionally
         @note_opt,           # ditto
     });
-    if ($P{work_study_safety} && ! $reg->person->safety_form()) {
-        $reg->person->update({
-            safety_form => 'yes',
-        });
+    if ($P{work_study_safety}) {
+        # ensure that the safety_form field on the 
+        # person record is set.
+        if (! $reg->person->safety_form()) {
+            $reg->person->update({
+                safety_form => 'yes',
+            });
+        }
+        # ensure the person has the affil 'Work Study'
+        my $person_id = $reg->person_id();
+        my %has_affil = map { $_->a_id => 1 }
+                        model($c, 'AffilPerson')->search({
+                            p_id => $person_id,
+                         });
+        my $ws_affil_id = $system_affil_id_for{'Work Study'};
+        if (! $has_affil{$ws_affil_id}) {
+            model($c, 'AffilPerson')->create({
+                p_id => $person_id,
+                a_id => $ws_affil_id,
+            });
+        }
     }
 
     _compute($c, $reg, 0, @who_now);

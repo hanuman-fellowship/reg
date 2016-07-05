@@ -57,6 +57,7 @@ insert into affils values (13, 'MMI - Ayurveda', 'yes', 'yes');
 insert into affils values (14, 'MMI - Community Studies', 'yes', 'yes');
 insert into affils values (15, 'MMI - Yoga', 'yes', 'yes');
 insert into affils values (16, 'MMI - Massage', 'yes', 'yes');
+insert into affils values (17, 'Work Study', 'yes', 'yes');
 drop table if exists affil_people;
 create table affil_people (
     a_id integer,

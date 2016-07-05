@@ -2150,4 +2150,16 @@ sub waiver : Local {
     );
 }
 
+sub work_study : Local {
+    my ($self, $c) = @_;
+
+    my @regs = model($c, 'Registration')->search(
+               { work_study => 'yes' },
+               { order_by => 'date_start desc' });
+    stash($c,
+        regs => \@regs,
+        template => 'listing/work_study.tt2',
+    );
+}
+
 1;

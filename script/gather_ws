@@ -1,0 +1,30 @@
+#!/usr/local/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+use Util qw/
+    model
+    db_init
+/;
+use Global qw/
+    %system_affil_id_for
+/;
+my $c = db_init();
+Global->init($c, 1, 1);
+my $ws_affil_id = $system_affil_id_for{'Work Study'};
+for my $r (model($c, 'Registration')->search(
+           { work_study => 'yes', })
+) {
+    my $person_id = $r->person_id();
+    my %has_affil = map { $_->a_id => 1 }
+                        model($c, 'AffilPerson')->search({
+                            p_id => $person_id,
+                         });
+    if (! $has_affil{$ws_affil_id}) {
+        model($c, 'AffilPerson')->create({
+            p_id => $person_id,
+            a_id => $ws_affil_id,
+        });
+    }
+}
