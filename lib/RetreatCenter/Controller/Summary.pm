@@ -333,7 +333,8 @@ sub paste : Local {
     if (@prog) {
         my $template_sum = model($c, 'Summary')->find($prog[0]->summary_id());
         $hap_sum->update({
-            check_list => $template_sum->check_list(),
+            check_list            => $template_sum->check_list(),
+            field_staff_std_setup => $template_sum->field_staff_std_setup(),
         });
     }
 

@@ -1,0 +1,5 @@
+Thank you, [% x_fname %], for your donation to the Sankat Mochan Hanuman Temple.
+<p>
+Your credit card has been charged $[% x_amount %] via an authorize.net transaction.
+<p>
+The id for this transaction is [% x_trans_id %].

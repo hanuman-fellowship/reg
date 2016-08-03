@@ -517,7 +517,8 @@ sub meal_list : Local {
     my $d;      # to loop through days
     for my $r (@regs) {
 
-        my @ages = $r->kids =~ m{(\d+)}xmsg;
+        my $kids = $r->kids || '';
+        my @ages = $kids =~ m{(\d+)}xmsg;
         my $nkids = @ages;
         my $np = 1 + $nkids;
 

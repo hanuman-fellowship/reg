@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>
+Sankat Mochan Hanuman Temple 
+</title>
+<meta charset='UTF-8'>
+<style>
+
+body.default {
+    background-color: #CC2527;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 14pt;
+    color: #000;
+    line-height: 18pt;
+    text-align: center;
+    padding: 0
+}
+
+body.default #heading {
+    margin-left: -22px;
+    width: 698px;
+    position: absolute
+}
+
+body.default .heading {
+    font-size: 20pt;
+    line-height: 1em;
+    font-family: "serif";
+    text-align: center
+}
+
+body.default .article_heading {
+    color: maroon;
+    font-size: x-large
+}
+
+body.default #container {
+    width: 727px;
+    background: url("http://www.mountmadonna.org/temple_images/templeDonateMainbg.png") repeat;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: left
+}
+
+body.default #header {
+    background: url("http://www.mountmadonna.org/temple_images/templeDonateHeader.png") no-repeat;
+    background-color: #CC2527;
+    width: 727px;
+    height: 326px;
+    margin-left: auto;
+    margin-right: auto;
+    color: #000
+}
+body.default .page_bottom {
+    background: url("http://www.mountmadonna.org/temple_images/templeDonateBottom.png") no-repeat;
+    width: 727px;
+    height: 59px;
+    margin-right: auto;
+    margin-left: auto
+}
+
+body.default #content, body.default .content {
+    padding: 20px 50px
+}
+
+body.default .footer {
+	background: #CC2527;
+	width: 100%;
+	margin: 20px auto;
+	color: #fff;
+	font-size: 11px;
+	text-align: center;
+}
+
+body.default a.button {
+	background-color: #e6e6e6;
+	border: 0 none transparent;
+	border-radius: 2px;
+	color: rgba(0,0,0,0.8);
+	font-family: inherit;
+	font-size: 1em;
+	padding: 0.5em 1em;
+	text-decoration: none;
+}
+
+body.default a.button:hover, body.default a.button:focus {
+    color: rgba(0, 0, 0, 0.8);
+    background-image: linear-gradient(transparent, rgba(0, 0, 0, 0.05) 40%, rgba(0, 0, 0, 0.1))
+}
+
+body.default a.button:active {
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15) inset, 0 0 6px rgba(0, 0, 0, 0.2) inset
+}
+
+</style>
+
+<link href="/favicon.ico" rel="shortcut icon" type="image/vnd.microsoft.icon" />
+</head>
+<body class='default'>
+	<div id='header'></div>
+	<div id='container'>
+
+		<div class='content'>
+			<hr>
+			<br>
+			<div class='heading' id='page_heading'>Thank You</div>
+			<br>
+			<hr>
+		</div>
+		
+		<div id='sections'>
+			<div class='content'>
+				<img style="float: right; border: 1px solid black;margin: 0 0 35px 20px;"  src="http://www.mountmadonna.org/temple_images/offering.gif" width="288" height="216">
+				<div>
+					<p>Thank you, [% x_fname %], for your donation to the Sankat Mochan Hanuman Temple.</p>
+					<p>Your credit card has been charged $[% x_amount %] via an authorize.net transaction.</p>
+					<p>The id for this transaction is [% x_trans_id %].</p>
+					<p>You will receive an email with this information.</p>			
+					<p>&nbsp;</p>
+					<p>&nbsp;</p>
+					<p style='text-align: center;'><a href='http://temple.mountmadonna.org/' class='button'>Return to Temple Home Page</a>
+				</div>
+			</div>
+		</div>
+
+	</div>
+	<div class='page_bottom'></div>
+	<div class='footer'>
+	&copy; 2015 Hanuman Fellowship
+	</div>
+</body>
+</html>
+

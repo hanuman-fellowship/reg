@@ -20,7 +20,7 @@ When a group leaves MMC and no longer needs the West Wing for dining, please cle
         <td valign=top align=right>[% IF s.PR %][% ELSE %][% s.count %][% END %]&nbsp;&nbsp;&nbsp;</td>
         <td valign=top>[% s.sdate_obj.format("%b %e") %]</td>
         <td valign=top>[% s.edate_obj.format("%b %e") %]</td>
-        <td valign=top>[% s.summary.food_service_tr %]</td>
+        <td valign=top><b>Meeting Places</b>: $s.meeting_places<p class=p2>[% s.summary.food_service_tr %]</td>
         </tr>
     [% END %]
 [% END %]
