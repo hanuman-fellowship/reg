@@ -26,7 +26,7 @@ table {
 </style>
 </head>
 <body>
-${today.format("%B %e, %Y")}
+${rental.contract_sent_obj.format("%B %e, %Y")}
 <p>
 $signer.first $signer.last<br>
 $signer.addr1<br>

@@ -9,10 +9,17 @@
 [% END %]
 </td>
 </tr>
+
 <tr>
 <th align=right>Value</th>
 <td><input type=$type name=value value="[% value %]" size=70></td>
 </tr>
+
+<tr>
+<td></td>
+<td width=400>$doc</td>
+</tr>
+
 <tr>
 <td>&nbsp;</td>
 <td><input id=sub type=submit value="Submit"></td>

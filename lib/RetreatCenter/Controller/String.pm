@@ -59,6 +59,9 @@ sub update : Local {
                        :                         'text'
                        ;
     my $value = $c->stash->{value} = uri_escape($s->value, '"');
+    my $doc = RetreatCenterDB::String::doc_for()->{$the_key};
+    $doc =~ s{\\}{}xmsg;
+    $c->stash->{doc} = $doc;
     $c->stash->{form_action} = "update_do/$the_key";
     if ($the_key =~ m{_color$}) {
         my ($r, $g, $b) = $value =~ m{\d+}g;

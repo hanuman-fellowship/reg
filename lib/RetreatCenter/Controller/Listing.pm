@@ -621,7 +621,7 @@ sub meal_list : Local {
         my $expected = $r->expected() || 0;
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            my $n = $counts[$d - $event_start];
+            my $n = $counts[$d - $event_start] || 0;
             if ($expected > $n) {
                 $n = $expected;
             }
@@ -700,33 +700,42 @@ EOL
     }
     #
     # any special food service needs within this date range?
+    # actually, include all Programs/Rentals even if they
+    # don't have anything in the Summary section 'CB Food Service'.
+    # exclude Programs that are hybrids and ones that have
+    # YSC in their name.   Also exclude MMI programs that
+    # are long term - only courses or standalone courses.
+    # we also exclude Personal Retreats, yes?
     #
     my @programs = model($c, 'Program')->search(
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
+            rental_id => 0,       # no hybrids
             category_id  => 1,    # must be 'normal' program
-            "summary.food_service" => { '!=' => '' },
+            cancelled => '',
         },
-        {
-            join     => [qw/ summary /],
-            prefetch => [qw/ summary /],   
-        }
     );
+    @programs = grep {
+                    ! $_->PR()
+                    &&
+                    (! $_->school->mmi()
+                     ||
+                     ! $_->level->long_term()
+                    )
+                }
+                @programs;
     #
     # get rentals again but only the ones with an
     # entry in the summary for food_service.
+    # ... no longer - all rentals.
     #
     @rentals = model($c, 'Rental')->search(
         {
             sdate => { '<=' => $end_d8   },
             edate => { '>=' => $start_d8 },
-            "summary.food_service" => { '!=' => '' },
+            cancelled => '',
         },
-        {
-            join     => [qw/ summary /],
-            prefetch => [qw/ summary /],   
-        }
     );
     stash($c,
         daily_list => $list,

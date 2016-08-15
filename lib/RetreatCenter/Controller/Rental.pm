@@ -1349,12 +1349,16 @@ sub contract : Local {
     }
     #
     # assume the contract is sent the same day it is generated.
+    # don't update this when viewing the contract after it
+    # was sent.
     #
-    $rental->update({
-        contract_sent => today()->as_d8(),
-        sent_by       => $c->user->obj->id,
-        status        => "sent",
-    });
+    if (! $rental->contract_sent()) {
+        $rental->update({
+            contract_sent => tt_today($c)->as_d8(),
+            sent_by       => $c->user->obj->id,
+            status        => "sent",
+        });
+    }
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -1368,7 +1372,7 @@ sub contract : Local {
                  ;
     my $min_due = int(.75* $agreed);
     my %stash = (
-        today   => today(),
+        today   => tt_today($c),
         email   => $email,
         signer  => ($rental->cs_person_id()? $rental->contract_signer()
                    :                        $rental->coordinator()),
