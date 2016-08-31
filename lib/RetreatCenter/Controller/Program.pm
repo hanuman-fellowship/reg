@@ -2770,6 +2770,7 @@ sub _extract_fee_table {
     }
     my $top = shift @th;
     $top =~ s{</?center>}{}xmsg;
+    $top =~ s{Cost[ ]Per[ ]Person<br>}{}xms;    # per Shantam's request
     $hash{fee_table_caption} = $top;
     $hash{fee_table_headings} = \@th;
     my $n = @th;    # number of columns per row
