@@ -1,0 +1,15 @@
+#!/usr/bin/perl
+# for some reason this doesn't work when invoked
+# within Programs.pm sub export.
+use strict;
+use warnings;
+use Net::FTP;
+my $ftp = Net::FTP->new("52.53.150.121", Debug => 0)
+    or die "Cannot connect: $@";
+$ftp->login("reg","S1tarAm!")
+    or die "Cannot login ", $ftp->message;
+$ftp->binary();
+$ftp->put('exported_reg_data.tgz');
+
+use LWP::Simple qw(get);
+print get('http://reg:S1tarAm!@mmc.cosmicdev.com/mmc-dev-team/feeds_from_reg/go.php');

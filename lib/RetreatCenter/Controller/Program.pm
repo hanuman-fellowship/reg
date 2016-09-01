@@ -2745,16 +2745,7 @@ EOS
     system("cd gen_files; tar czf ../exported_reg_data.tgz .");
 
     # send it off
-    my $ftp = Net::FTP->new($string{ftp_export_site},
-                            Passive => $string{ftp_export_passive})
-        or return _pub_err($c, "cannot connect to $string{ftp_export_site}");
-    $ftp->login($string{ftp_export_user}, $string{ftp_export_password})
-        or return _pub_err($c, "cannot login: " . $ftp->message);
-    $ftp->cwd($string{ftp_export_dir})
-        or return _pub_err($c, "cannot cwd: " . $ftp->message);
-    $ftp->binary();
-    $ftp->put("exported_reg_data.tgz", "exported_reg_data.tgz");
-    $ftp->quit();
+    system("send_export");
     stash($c,
         ftp_export_site => $string{ftp_export_site},
         template    => "program/exported.tt2",
