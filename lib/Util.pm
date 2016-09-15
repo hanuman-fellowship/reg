@@ -80,6 +80,7 @@ our @EXPORT_OK = qw/
     @charge_type
     cf_expand
     PR_progtable
+    dump_inc
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -488,6 +489,18 @@ sub resize {
                . "x"
                . " $rst/${type}o-$id.jpg $rst/${type}b-$id.jpg"
         );
+    }
+}
+
+sub dump_inc {
+    open my $out, '>', "/tmp/inc";
+    print {$out} "\@INC\n";
+    for my $d (@INC) {
+        print {$out} "$d\n";
+    }
+    print {$out} "%INC\n";
+    for my $k (sort keys %INC) {
+        print {$out} "$k => $INC{$k}\n";
     }
 }
 

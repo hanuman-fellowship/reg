@@ -14,6 +14,7 @@ use Util qw/
     model
     randpass
     email_letter
+    dump_inc
 /;
 use Time::Simple qw/
     get_time
@@ -52,6 +53,8 @@ sub index : Private {
     my $password = $c->request->params->{password} || "";
     my $forgot   = $c->request->params->{forgot}   || "";
     my $email    = $c->request->params->{email}    || "";
+
+dump_inc();
 
     # If the username and password values were found in form
     if ($username && $password) {
