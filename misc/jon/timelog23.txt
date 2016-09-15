@@ -1,0 +1,130 @@
+Dec 6 8:30-9:30
+    MMI - automatic and discounts
+    replying to various emails
+    ... RG research, discussion around year-end - time?
+Dec 31 12:00-1:30
+    RG call
+Jan 22 7:00-10:00
+    registrant waiver
+Jan 26 4:00-5:00
+    housing not needed - question, followup
+Jan 31 7:00-8:30
+    looking again at RG
+Feb 3 12:00-12:30
+    email about the waiver
+Feb 10 12:10-12:20
+    'magic' with payments from MMC/MMI
+Feb 13 12:30-2:00
+    email to RG people summarizing what is missing
+Feb 17 2:00-3:00
+    comments on Google doc from RG
+Feb 19 10:00-10:15
+    'magic' with payments from MMC/MMI
+Feb 26 12:00-2:00
+    at MMC with Brajesh, Kevin
+Mar 2 12:00-1:00
+    rental Skype call with RG
+Mar 18 9:30-9:45
+    explaining housing issue/cost
+Mar 23 10:20-10:30
+    email explaining hybrids
+Mar 31 4:10-4:30
+    http = https
+Apr 12 4:00-4:15
+    Center tent option explained
+Apr 20 3:45-3:50
+    AVI sum truncate/edit
+Apr 22 4:00-4:30
+    fixed cost housing explained, tweaked
+Apr 29 3:00-3:45
+    Total cost on Grid
+May 3 10:00-12:00
+    readjusting meal counts for rentals that come and go
+May 4 10:00-10:25
+    link in message.tt2 for PR
+May 7 10:00-10:50
+    removing x_ fields from mmc, mmi authorize page
+May 11 1:30-2:20
+    phone call re: Cosmic, etc
+May 12 11:15-11:25
+    debug housing cost lack
+May 13 10:10-10:25
+    jacobsen sum edit/clear
+May 17 7:30-9:40
+    list of Reg <=> mmc, mmi, temple
+May 19 1:00-2:30
+    expand conf note in program, unlinked leader picture
+May 20 8:30-9:30, 5:15-6:00
+    export data for Cosmic
+May 23 3:00-4:30
+    export data for Cosmic
+May 24 5:20-6:10
+    export data for Cosmic
+May 25 12:10-12:30
+    investigate PR for Cosmic
+May 26 6:55-9:00
+    finalize Export for Cosmic
+May 26 10:00-11:30, 7:00-9:00
+    tar, compress, ftp
+    demo to Shantam and Jamal
+    still need to
+        - generate progtable for PR and put in pr/ directory
+        - also - the image name not 'yes' for the program image
+Jun 4 12:30-12:50
+    chat with Shantam about temple site, etc
+Jun 11 11:25-12:10
+    Barnaby found another meal list quirk
+        someone came one day early to an MMI program and was
+        counted for breakfast on their arrival day because
+        the MMI program began before 8:00 am the following day.
+Jun 16 10:00-10:25
+    export - filename instead of 'yes'
+Jun 19 1:15-3:00, 3:30-5:00
+    PR_progtable sub for publish_pr and export use
+    README for Exported files
+Jun 20 9:00-9:30
+    final tweaks on export and emailing Jamal and Shantam
+Jul 3 1:40-2:00, 2:30-2:50, 4:15-4:30
+    work study project - due to request by Mirona
+    on kali - add Work Study affil, run script/gather_ws
+        check listing
+Jul 5 2:00-2:30
+    finalization for work study fix
+Aug 3 9:00-10:15
+    various tweaks for Barnaby, Jamal
+Aug 5 11:00-12:00
+    meeting with Retreat Guru
+Aug 8 9:00-10:00
+    adjust bottom Kitchen report to include all even if they
+    don't have any special needs.  Only rental side of hybrids.
+Aug 14 1:30-3:40
+    contract sent date - only set it once
+    responding to various email queries
+    exclude PRs from the special food needs listing - right?
+    investigating the new tinyMCE some more
+Aug 20 12:20-2:50, 3:15-4:15, 5:10-6:00
+    gathering stats for RG
+Aug 28 9:00-10:00
+    made a beginning at moving reg1, etc to new site
+Aug 29 7:20-7:40, 8:15-9:00, 6:45-7:15
+    continuing - with minimal programs.html and program pages
+        let them fill in the rest and style it
+    an unlinked program AVI with dir=
+    <input type=submit> - delete
+    next - reg2
+    cookies work
+    description on authorize form??   not there now at mmc.org?
+    not https?  sftp?
+    javascript datepicker works in PRs
+    missing Green Scene picture, others
+Aug 31 9:45-10:00, 11:30-12:00
+    Shantam's requests for adjusting the exported file.
+        remove the html editor for Rentals - pasting from
+        Word pastes only the text.  how to convert the
+        existing ones?
+Sep 1 2:45-3:30
+    finalizing sending export_data to new site
+Sep 7 9:00-11:30
+    160 char max javascript for rental webdesc
+    send export_data to mmi as well
+    let them know about future rentals with >160 chars

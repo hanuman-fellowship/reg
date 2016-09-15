@@ -3,3 +3,10 @@ hlog
 cat.out
 run
 .DS_Store
+.al
+
+# vim swap file
+*.swp
+
+# generated files to ftp
+gen_files/
