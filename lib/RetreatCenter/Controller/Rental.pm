@@ -1643,16 +1643,18 @@ EOH
     my $dorm_rate = $hc->dormitory();
     my $min_lodging = int(0.75
                           * $max
-                          * $ndays
+                          * ($hc->type() eq 'Per Day'? $ndays: 1)
                           * $dorm_rate
                          );
-    if ($hc->type() ne 'Total' && $tot_housing_charge < $min_lodging) {
+    if ($tot_housing_charge < $min_lodging) {
         my $s = commify($min_lodging);
+        my $times_nights =
+            $hc->type() eq 'Per Day'? "times $ndays nights ": "";
         $html .= <<"EOH";
 <div style="width: 500">
 <p>
 However, the <i>minimum</i> lodging cost was contractually agreed to be
-3/4 times the maximum ($max) times $ndays nights at the dormitory rate
+3/4 times the maximum ($max) ${times_nights}at the dormitory rate
 of \$$dorm_rate per night which comes to a total of \$$s.
 </div>
 EOH
