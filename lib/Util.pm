@@ -498,6 +498,8 @@ sub dump_inc {
     for my $d (@INC) {
         print {$out} "$d\n";
     }
+# take $k, replace / with : globally, .pm with ::VERSION, prepend $ and print it.
+# if defined
     print {$out} "%INC\n";
     for my $k (sort keys %INC) {
         print {$out} "$k => $INC{$k}\n";

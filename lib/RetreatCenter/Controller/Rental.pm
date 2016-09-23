@@ -1366,10 +1366,18 @@ sub contract : Local {
         EVAL_PERL    => 0,
     });
     my $ndays  = date($rental->edate()) - date($rental->sdate());
-    my $agreed = $rental->max()
+    my $agreed;
+    if ($rental->housecost->type() eq 'Per Day') {
+        $agreed = $rental->max()
                  * $ndays
                  * $rental->housecost->dormitory()
                  ;
+    }
+    else {
+        $agreed = $rental->max()
+                 * $rental->housecost->dormitory()
+                 ;
+    }
     my $min_due = int(.75* $agreed);
     my %stash = (
         today   => tt_today($c),

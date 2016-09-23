@@ -115,8 +115,12 @@ or a comparable facility, and lodging for up to $rental.max
 people from ${rental.start_hour_obj.format('ampm')} on ${rental.sdate_obj.format("%A %B %e, %Y")}
 to ${rental.end_hour_obj.format('ampm')} on ${rental.edate_obj.format("%A %B %e, %Y")} at the following rates:
 <h2>Rates</h2>
-The costs below are dollars per person per day.
 [% hc = rental.housecost %]
+[% IF hc.type == 'Per Day' %]
+The costs below are dollars per person per day.
+[% ELSE %]
+The costs below are for the entire rental period - not per day.
+[% END %]
 <table cellpadding=2>
 <tr><td>Commuting</th><td align=right>$hc.commuting</td></tr>
 <tr><td>Own Tent</th><td align=right>$hc.own_tent</td></tr>
@@ -181,16 +185,27 @@ other guests of the Center, and the Center community.
 The renter will pay a deposit of \$$deposit amount
 upon the signing of this contract.
 <p>
-“Agreed Upon Revenue” is equal to the number of people specified
-under “Facilities” above, multiplied by the number of days of the
-rental specified in the same place, multiplied by the Dormitory
-rate specified under “Rates” above.
+[% IF hc.type == 'Per Day' %]
+“Agreed Upon Revenue” is equal to the number of
+people specified under “Facilities” above,
+multiplied by the number of days of the rental specified in the same place,
+multiplied by the Dormitory rate specified under “Rates” above.
 For example, if the reservation is for x number of attendees
 for y number of days, the Agreed Upon Revenue is 
 (x)(y)(dormitory rate above). 
 <p>
 In this particular case, x = ${rental.max}, y = ${ndays},
 and the dormitory rate is \$$rental.housecost.dormitory per day.
+[% ELSE %]
+“Agreed Upon Revenue” is equal to the number of
+people specified under “Facilities” above
+multiplied by the Dormitory rate specified under “Rates” above.
+For example, if the reservation is for x number of attendees
+the Agreed Upon Revenue is (x)(dormitory rate above). 
+<p>
+In this particular case, x = ${rental.max}
+and the dormitory rate is \$$rental.housecost.dormitory per day.
+[% END %]
 The Agreed Upon Revenue is thus \$${agreed}.
 <p>
 Cancellation charges shall be as follows:
