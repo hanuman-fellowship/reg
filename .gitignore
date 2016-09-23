@@ -10,3 +10,6 @@ run
 
 # generated files to ftp
 gen_files/
+
+grab_running
+root/static/images/
