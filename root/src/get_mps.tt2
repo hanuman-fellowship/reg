@@ -7,16 +7,18 @@ from $sdate to $edate?
 <input type=hidden name=edate value=$edate.as_d8>
 <table cellpadding=5>
 <tr>
+<th align=left>Abbr</th>
 <th align=left>Name</th>
 <th>Meeting</th>
 <th>Breakout</th>
 [% IF hap_type != 'Event' %]
 <th>Dorm</th>
 [% END %]
-[% red = 0 %]
 </tr>
+[% red = 0 %]
 [% FOR mp IN meeting_places %]
 <tr>
+<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.abbr</span>[% ELSE %]$mp.abbr[% END %]</td>
 <td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
 <td align=center><input type=checkbox name=br$mp.id></td>
 [% IF hap_type != 'Event' && mp.sleep_too %]
@@ -38,13 +40,28 @@ less than the maximum of $hap.max specified for the ${hap_type}.
 </td>
 [% END %]
 
+[% IF meeting_0_places.0 %]
 <tr>
-<th colspan=2 align=left>Other Places</th>
+<th colspan=2 align=left style="font-size: 15pt">Other Places</th>
+</tr>
+<tr>
+<th align=left>Abbr</th>
+<th align=left>Name</th>
+<th>Meeting</th>
+<th>Breakout</th>
+[% IF hap_type != 'Event' %]
+<th>Dorm</th>
+[% END %]
 </tr>
 
 [% FOR mp IN meeting_0_places %]
 <tr>
+<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.abbr</span>[% ELSE %]$mp.abbrname[% END %]</td>
 <td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
+<td align=center><input type=checkbox name=br$mp.id></td>
+[% IF hap_type != 'Event' && mp.sleep_too %]
+<td align=center><input type=checkbox name=adorm$mp.id></td>
+[% END %]
 </tr>
 [% END %]
 
@@ -53,10 +70,12 @@ less than the maximum of $hap.max specified for the ${hap_type}.
 <td colspan=2 align=left><input id=sub type=submit value="Submit"></td>
 </tr>
 
-</table>
-<p class=p2>
 [% IF red %]
 Meeting places with names in <span class=red>red</span> have a maximum capacity<br>
 less than the maximum of $hap.max specified for the ${hap_type}.
 [% END %]
+
+[% END %]
+</table>
+<p class=p2>
 </form>

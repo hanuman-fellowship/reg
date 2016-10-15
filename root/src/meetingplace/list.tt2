@@ -1,5 +1,9 @@
 <h2>Meeting Places</h2>
 <a href="/meetingplace/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/meetingplace/list/0">ByName</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/meetingplace/list/1">ByOrder</a>
 <ul>
 <table border=0 cellpadding=3>
 <tr>

@@ -793,7 +793,7 @@ sub register1 : Local {
         # show only MMC sponsored programs.
         #
         push @cond, (
-            school => 0,
+            school_id => 1,
         );
     }
     if ($resident) {

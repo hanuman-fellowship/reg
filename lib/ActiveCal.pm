@@ -191,6 +191,7 @@ sub add_pr {
         my $status = ($d == $start)? "arr"
                     :($d == $end  )? "lv"
                     :                "";
+        $name =~ s{'}{&rsquo;}xmsg;  # for Charles O'Neill
         push @{$self->{prs}[$d]}, "$name\t$id\t$status";
         $self->{counts}[$d]++;
     }

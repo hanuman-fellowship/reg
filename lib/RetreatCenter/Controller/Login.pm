@@ -54,7 +54,7 @@ sub index : Private {
     my $forgot   = $c->request->params->{forgot}   || "";
     my $email    = $c->request->params->{email}    || "";
 
-dump_inc();
+#dump_inc();
 
     # If the username and password values were found in form
     if ($username && $password) {

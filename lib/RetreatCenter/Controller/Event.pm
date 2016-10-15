@@ -494,8 +494,19 @@ sub calendar : Local {
             @opt_end = (sdate => { '<=', $end_date->as_d8() });
         }
     }
-    # for non-public calendars
+    # for non-public calendars:
     #
+
+    # how many meeting places do we have?
+    my @mps = model($c, 'MeetingPlace')->search(
+        {
+        },
+        {
+            order_by => 'disp_ord asc',
+        }
+    );
+    my $nmps = @mps;
+    my $colors_height = $nmps * 38 + 250;   # a guess
     my $go_form = <<"EOH";
 <style type="text/css">
 \@media print {
@@ -512,9 +523,9 @@ sub calendar : Local {
 <span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
 <span class=datefld><input class=go type=submit value="Go"></span>
 &nbsp;&nbsp;
-<a href="javascript:popup('/static/help/calendar.html', 620);">How?</a>
+<a href="javascript:popup('/static/help/calendar.html', 650);">How?</a>
 &nbsp;&nbsp;
-<a href="javascript:popup('/event/cal_colors', 670);">Colors?</a>
+<a href="javascript:popup('/event/cal_colors', $colors_height);">Colors?</a>
 </form>
 </div>
 <p>

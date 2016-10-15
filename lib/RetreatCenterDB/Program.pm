@@ -338,7 +338,7 @@ sub main_meeting_place {
     my @bookings = sort {
                        $b->meeting_place->max() <=> $a->meeting_place->max()
                    }
-                   grep { $_->breakout() ne 'yes' }
+                   grep { $_->breakout() ne 'yes' && $_->dorm() ne 'yes' }
                    $self->rental_id()? $self->rental->bookings()
                    :                   $self->bookings();
     @bookings? $bookings[0]->meeting_place()->name()

@@ -83,12 +83,15 @@ sub view : Local {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $by_disp) = @_;
 
     my @mp = model($c, 'MeetingPlace')->search(
                  undef,
                  { order_by => 'abbr' },
              );
+    if ($by_disp) {
+        @mp = sort _by_disp @mp;
+    }
     for my $mp (@mp) {
         $mp->{bgcolor} = d3_to_hex($mp->color);
     }
@@ -97,6 +100,25 @@ sub list : Local {
         meetingplaces => \@mp,
         template      => "meetingplace/list.tt2",
     );
+}
+
+sub _by_disp {
+    my $ad = $a->disp_ord();
+    my $an = $a->name();
+    my $bd = $b->disp_ord();
+    my $bn = $b->name();
+    if ($ad == 0 && $bd == 0) {
+        return $an cmp $bn;
+    }
+    if ($ad != 0 && $bd != 0) {
+        return $ad <=> $bd || $an cmp $bn;
+    }
+    if ($ad == 0 && $bd != 0) {
+        return 1;
+    }
+    if ($ad != 0 && $bd == 0) {
+        return -1;
+    }
 }
 
 sub update : Local {
