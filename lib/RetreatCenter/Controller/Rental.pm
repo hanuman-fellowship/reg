@@ -42,6 +42,7 @@ use Util qw/
     penny
     ensure_mmyy
     rand6
+    months_calc
 /;
 use Global qw/
     %string
@@ -459,9 +460,7 @@ sub view : Local {
         $c->stash->{link_proposal_id} = $proposals[0]->id();
     }
     my $sdate = $rental->sdate();
-    my $nmonths = date($rental->edate())->month()
-                - date($sdate)->month()
-                + 1;
+    my $nmonths = months_calc(date($sdate), date($rental->edate()));
 
     my @h_types = housing_types(0);
     my $clusters = join ', ',

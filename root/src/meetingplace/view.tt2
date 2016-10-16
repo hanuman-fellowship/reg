@@ -3,9 +3,11 @@
 &nbsp;&nbsp;&nbsp;
 <a href="/meetingplace/create">Add</a>
 &nbsp;&nbsp;&nbsp;
+[% IF mp.name != 'No Where' %]
 <a href="/meetingplace/delete/$mp.id"
 onclick="return confirm('Okay to Delete $mp.name?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
+[% END %]
 <a href="/meetingplace/list">List</a>
 <p class=p2>
 <table cellpadding=3 border=0>

@@ -83,13 +83,17 @@ sub view : Local {
 }
 
 sub list : Local {
-    my ($self, $c, $by_disp) = @_;
+    my ($self, $c, $sort) = @_;
 
+    $sort ||= 0;
     my @mp = model($c, 'MeetingPlace')->search(
                  undef,
                  { order_by => 'abbr' },
              );
-    if ($by_disp) {
+    if ($sort == 1) {
+        @mp = sort { $b->max <=> $a->max } @mp;
+    }
+    elsif ($sort == 2) {
         @mp = sort _by_disp @mp;
     }
     for my $mp (@mp) {

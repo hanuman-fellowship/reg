@@ -81,12 +81,14 @@ our @EXPORT_OK = qw/
     cf_expand
     PR_progtable
     dump_inc
+    months_calc
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
     d8
     date
     today
+    days_in_month
 /;
 use Time::Simple qw/
     get_time
@@ -2376,6 +2378,15 @@ sub PR_progtable {
     print {$out} Dumper({ 0 => $href });
     close $out;
     return $currHC, $nextHC, $sdate;
+}
+
+# how many months are included from start to end inclusive?
+sub months_calc {
+    my ($start, $end) = @_;
+    $start -= $start->day() - 1;       # move to the first of the month
+    # move to the last day of the month
+    $end += days_in_month($end->year(), $end->month()) - $end->day();
+    return int(($end - $start)/31) + 1;
 }
 
 1;

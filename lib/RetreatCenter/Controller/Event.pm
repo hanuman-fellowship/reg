@@ -29,6 +29,7 @@ use Util qw/
     d3_to_hex
     email_letter
     error
+    months_calc
 /;
 use HLog;
 use GD;
@@ -167,9 +168,7 @@ sub view : Local {
 
     my $ev = model($c, 'Event')->find($id);
     my $sdate = $ev->sdate();
-    my $nmonths = date($ev->edate())->month()
-                - date($sdate)->month()
-                + 1;
+    my $nmonths = months_calc(date($sdate), date($ev->edate()));
     stash($c,
         event          => $ev,
         pg_title       => $ev->name(),
@@ -523,7 +522,7 @@ sub calendar : Local {
 <span class=datefld>End</span> <input type=text name=end size=10 value='$end_param'>
 <span class=datefld><input class=go type=submit value="Go"></span>
 &nbsp;&nbsp;
-<a href="javascript:popup('/static/help/calendar.html', 650);">How?</a>
+<a href="javascript:popup('/static/help/calendar.html', 670);">How?</a>
 &nbsp;&nbsp;
 <a href="javascript:popup('/event/cal_colors', $colors_height);">Colors?</a>
 </form>
@@ -1447,6 +1446,7 @@ sub cal_colors : Local {
 EOF
     my @mps = model($c, 'MeetingPlace')->search(
         {
+            disp_ord => { '!=', 0 },
         },
         {
             order_by => 'disp_ord asc',

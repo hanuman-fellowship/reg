@@ -39,6 +39,7 @@ use Util qw/
     ensure_mmyy
     cf_expand
     PR_progtable
+    months_calc
 /;
 use Date::Simple qw/
     date
@@ -641,7 +642,7 @@ sub view : Local {
 
     my @files = <root/static/online/*>;
     my $sdate = $p->sdate();
-    my $nmonths = int((date($p->edate()) - date($sdate))/30) + 1;
+    my $nmonths = months_calc(date($sdate), date($p->edate()));
 
     my ($UNres, $res) = split /XX/, _get_cluster_groups($c, $id);
 
