@@ -56,7 +56,7 @@ less than the maximum of $hap.max specified for the ${hap_type}.
 
 [% FOR mp IN meeting_0_places %]
 <tr>
-<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.abbr</span>[% ELSE %]$mp.abbrname[% END %]</td>
+<td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.abbr</span>[% ELSE %]$mp.abbr[% END %]</td>
 <td>[% IF hap.max && mp.max < hap.max %][% red = 1 %]<span class=red>$mp.name</span>[% ELSE %]$mp.name[% END %]</td> <td align=center><input type=checkbox name=mp$mp.id></td>
 <td align=center><input type=checkbox name=br$mp.id></td>
 [% IF hap_type != 'Event' && mp.sleep_too %]

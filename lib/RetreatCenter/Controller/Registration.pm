@@ -50,6 +50,7 @@ use Util qw/
     charges_and_payments_options
     @charge_type
     cf_expand
+    months_calc
 /;
 use POSIX qw/
     ceil
@@ -2081,9 +2082,7 @@ sub _view {
     }
     else {
         $sdate = $prog->sdate();
-        $nmonths = date($prog->edate())->month()
-                   - date($sdate)->month()
-                   + 1;
+        $nmonths = months_calc(date($sdate), date($prog->edate()));
     }
     #
     # is this person a leader or assistant of this program?
