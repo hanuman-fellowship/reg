@@ -176,6 +176,12 @@ from - email address that emails are sent From.
 from_title - name of the person that emails are From.
 ftp_dir - FTP info for mountmadonna.org
 ftp_dir2 - FTP info for mountmadonna.org - staging directory
+ftp_export_dir - FTP info for mountmadonna.org - for exporting JSON data
+ftp_export_passive - FTP info for mountmadonna.org - for exporting JSON data
+ftp_export_password - FTP info for mountmadonna.org - for exporting JSON data
+ftp_export_site - FTP info for mountmadonna.org - for exporting JSON data
+ftp_export_user - FTP info for mountmadonna.org - for exporting JSON data
+ftp_grid_dir - where to put the rental grid data?
 ftp_hfs_dir - FTP info for hanumanfellowship.org - for temple reservations people
 ftp_hfs_password - FTP info for hanumanfellowship.org
 ftp_hfs_site - FTP info for hanumanfellowship.org
@@ -188,9 +194,11 @@ ftp_mmi_passive - FTP info for mountmadonnainstitute.org
 ftp_mmi_password - FTP info for mountmadonnainstitute.org
 ftp_mmi_site - FTP info for mountmadonnainstitute.org
 ftp_mmi_transactions - FTP info for mountmadonnainstitute.org - for online registrations for MMI courses
+ftp_notify_dir - where to place the online notify people
 ftp_omp_dir - The directory on mountmadonna.org for online member payments
 ftp_passive - FTP info for mountmadonna.org
 ftp_password - FTP info for mountmadonna.org
+ftp_pr_dir - where to put NoPR.txt data
 ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes
 ftp_ride_dir - FTP info for mountmadonna.org - for ride requests
 ftp_site - FTP info for mountmadonna.org
@@ -198,6 +206,7 @@ ftp_transactions - FTP info for mountmadonna.org - for online registrations for 
 ftp_userpics - FTP info for mountmadonna.org - for driver pictures - referenced in email to riders
 gate_code_cc_email - who to Cc when sending the Tuesday morning gate code email reminder
 gate_code_email - who to email when sending the Tuesday morning gate code email reminder
+grid_url - the URL for opening up the Web Grid with the rental $code
 green_from - when someone makes a donation to the Green Fund - who is the 
     acknowledgment letter from?
 green_glnum - the GL Number for Green Fund donations
@@ -274,6 +283,7 @@ nyears_forgiven - how many years before an outstanding balance is forgiven?
 online_notify - a list of email addresses to notify when
     an online registration happens.  This is different from the
     notify_on_reg column in the Program table.
+omp_url - for loading the online membership payment data
 own_tent - for housing type descriptions
 own_van - for housing type descriptions
 password_security - what level of password security?

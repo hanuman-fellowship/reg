@@ -245,7 +245,7 @@ nyears_forgiven 5
 personal_template personal
 online_notify jon@suecenter.org
 dp_resize_block_char /
-ftp_omp_dir /www/cgi-bin/omp_dir
+ftp_omp_dir  /www/cgi-bin/omp_dir
 rental_lunch_cost 12
 mmi_payment_request_signed
 mmi_payment_request_from Rachel Stark <rachel@mountmadonna.org>
@@ -258,3 +258,5 @@ ftp_export_passive 0
 ftp_notify_dir .
 ftp_pr_dir pr
 grid_url http://mmc.cosmicdev.com/cgi-bin/grid
+omp_url http://mmc.cosmicdev.com/cgi-bin/omp_load
+ftp_grid_dir /www/cgi-bin/rental

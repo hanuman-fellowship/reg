@@ -1532,15 +1532,14 @@ sub _omp_send_and_load {
         or return "no Net::FTP->new";
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or return "no login";
-    $ftp->cwd('www/cgi-bin')
+    $ftp->cwd($string{ftp_omp_dir})
         or return "no cd";
     $ftp->ascii()
         or return "no ascii";
     $ftp->put("/tmp/$omp_fname", $omp_fname)
         or return "no put";
     $ftp->quit();
-    if (get("http://www.mountmadonna.org/cgi-bin/omp_load") ne "done\n"
-    ) {
+    if (get($string{omp_url}) ne "done\n") {
         return "no load";
     }
     return "successfully pushed";

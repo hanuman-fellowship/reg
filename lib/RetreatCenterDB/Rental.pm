@@ -500,7 +500,7 @@ sub send_grid_data {
         or die "cannot connect to $string{ftp_site}";    # not die???
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
-    $ftp->cwd($string{ftp_rental_dir}) or die "cwd";
+    $ftp->cwd($string{ftp_grid_dir}) or die "cwd";
     $ftp->ascii() or die "ascii";
     $ftp->put("/tmp/$code", $code) or die "put";
     $ftp->quit();
