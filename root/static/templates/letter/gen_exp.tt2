@@ -1,13 +1,28 @@
 [% INCLUDE top.tt2 %]
 Dear $sanskrit,
 <p>
-We noticed that your General Membership in the Hanuman Fellowship expired
-on December 31, $year and we respectfully request that you renew your
+Thank you for your on-going generous commitment to the Hanuman Fellowship
+over this past year. Your annual General Membership in the Fellowship is
+due to expire on December 31, ${year}. We respectfully ask you to renew your
 membership and continue to be part of our supportive community.
-General Membership is maintained by an annual payment of dues in the
-amount of \$${string.mem_gen_amt}. Please make your payment today
-to renew your membership and reinstate your benefits. 
+</p>
+
 <p>
-To claim a Tax Deduction for this donation, you must deduct the
-value of any benefits you receive.
+The Fellowship is a self-sustaining community dedicated to the attainment of peace. Your membership dues provide the needed funding and pledge of support to the projects, inspired by the guidance of Babaji, which foster this ideal. 
+</p>
+
+<p>
+We are happy to announce that we now have three options for payment of General Member dues.  These include the following:
+<ul>
+<li>GENERAL MEMBER:  $50 annual dues</li>
+<li>GENERAL MEMBER-KY:  $25 annual dues + 20 hours Karma Yoga</li>
+<li>GENERAL MEMBER-Resident (Free to MMC or PCC residents of 2+ years)</li>
+</ul>
+</p>
+
+<p>
+Please reply with your payment of \$${string.mem_gen_amt" to continue your
+General Membership for another year.
+</p>
+
 [% INCLUDE info.tt2 %]

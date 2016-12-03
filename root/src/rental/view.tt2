@@ -186,7 +186,7 @@ Web
 <tr>
 <td align=right>
 <a target=_blank 
-   href=http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code>Web Grid</a>
+   href=${string.grid_url}?code=$rental.grid_code>Web Grid</a>
 </td>
 [% IF rental.grid_stale %]
 <td colspan=2>

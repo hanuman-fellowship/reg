@@ -255,3 +255,6 @@ ftp_export_login mmc
 ftp_export_password Ashtanga!
 ftp_export_dir www/cgi-bin/export
 ftp_export_passive 0
+ftp_notify_dir .
+ftp_pr_dir pr
+grid_url http://mmc.cosmicdev.com/cgi-bin/grid

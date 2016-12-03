@@ -107,7 +107,7 @@ sub update_do : Local {
         my $ftp = Net::FTP->new($string{ftp_site},
                                 Passive => $string{ftp_passive}) or last BLOCK;
         $ftp->login($string{ftp_login}, $string{ftp_password})   or last BLOCK;
-        $ftp->cwd("www/cgi-bin") or last BLOCK;
+        $ftp->cwd($string{ftp_notify_dir}) or last BLOCK;
         $ftp->ascii()            or last BLOCK;
         $ftp->put("/tmp/online_notify.txt", "online_notify.txt") or last BLOCK;
         $ftp->quit();
@@ -132,9 +132,9 @@ sub _update_CT {
     print {$ct} "$string{center_tent_start}-$string{center_tent_end}\n";
     close $ct;
     my $ftp = Net::FTP->new($string{ftp_site},
-                            Passive => $string{ftp_passive}) or return;;
+                            Passive => $string{ftp_passive}) or return;
     $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
-    $ftp->cwd("www/personal") or return;
+    $ftp->cwd($string{ftp_pr_dir}) or return;
     $ftp->ascii() or return;
     $ftp->put("/tmp/CT.txt", "CT.txt") or return;
     $ftp->quit();

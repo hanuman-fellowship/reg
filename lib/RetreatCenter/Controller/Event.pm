@@ -1755,8 +1755,8 @@ sub _send_no_prs {
         or return(my_die($c, "cannot connect to $string{ftp_site}"));
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or return(my_die($c, "cannot login " . $ftp->message));
-    $ftp->cwd('www/personal')
-        or return(my_die($c, "cannot cwd to www/personal " . $ftp->message));
+    $ftp->cwd($string{ftp_pr_dir})
+        or return(my_die($c, "cannot cwd to $string{ftp_pr_dir} " . $ftp->message));
     $ftp->ascii();
     $ftp->put("noPR.txt");
     $ftp->quit();

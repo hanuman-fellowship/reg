@@ -5,3 +5,29 @@ Oct 15 8:30-12:50, 7:20-9:30
 Oct 16 9:15-11:15, 1:00-4:10
     continuing, finished
     next is a screen recording.
+Oct 23 4:00-8:30
+    mucking around with mmc-dev, installing Template, LWP::Simple
+    templates, etc.
+    need a testplan!
+Oct 26 10:00-10:30
+    responding to email inquiries
+Oct 29 9:30-11:40
+    sutra sending, site
+    rental grids
+    problem with ownership and permissions
+        group?
+        reg ftp login - in www-data group?
+Oct 30 9:30-12:00, 6:00-7:00, 8:30-10:30
+    continuing to debug, refine the cosmic reg site
+    strings for ftp_notify_dir, ftp_pr_dir for ftp'ing files
+    discovered: passive 0 for new site
+Nov 13 2:00-
+    continuing (post election)
+    asking Barnaby about grid link email to rental contact person
+Nov 19
+Nov 20 7:45-9:30
+    installing packages, developing email to gmail
+        openssl dev, DBI already there
+        crazy how many dependencies
+Dec 3 11:15-
+    continuing with porting to the new site
