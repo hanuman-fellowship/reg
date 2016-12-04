@@ -29,5 +29,7 @@ Nov 20 7:45-9:30
     installing packages, developing email to gmail
         openssl dev, DBI already there
         crazy how many dependencies
-Dec 3 11:15-
+Dec 3 11:15-2:50, 3:10-
     continuing with porting to the new site
+    adding new strings
+    fixing rental grid issue - that I just introduced

@@ -283,7 +283,8 @@ nyears_forgiven - how many years before an outstanding balance is forgiven?
 online_notify - a list of email addresses to notify when
     an online registration happens.  This is different from the
     notify_on_reg column in the Program table.
-omp_url - for loading the online membership payment data
+omp_load_url - for loading the online membership payment data
+omp_pay_url - for making online membership payments
 own_tent - for housing type descriptions
 own_van - for housing type descriptions
 password_security - what level of password security?

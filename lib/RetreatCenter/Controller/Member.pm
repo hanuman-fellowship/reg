@@ -1518,7 +1518,7 @@ sub _omp_add {
                         _quote($mem->category),
                         $amount_due,
                         $mem->total_paid,
-                        $date_payment,
+                        $date_payment || 20000101,
                         $last_amount,
                         _quote($general),
                    )
@@ -1539,7 +1539,7 @@ sub _omp_send_and_load {
     $ftp->put("/tmp/$omp_fname", $omp_fname)
         or return "no put";
     $ftp->quit();
-    if (get($string{omp_url}) ne "done\n") {
+    if (get($string{omp_load_url}) ne "done\n") {
         return "no load";
     }
     return "successfully pushed";

@@ -1,6 +1,6 @@
 [% IF has_email %]
 <p>You can securely and simply pay your membership dues online
-by <a href=http://www.mountmadonna.org/cgi-bin/omp?code=$secure_code>clicking here</a>.</p>
+by <a href=${string.omp_pay_url}?code=$secure_code>clicking here</a>.</p>
 <p>
 [% END %]
 If you would like to switch to one of the new payment categories ($25+ KY or free for residents) or, if you wish to pay with a personal check, the new HFS Membership application form and information about the levels of membership can be found
