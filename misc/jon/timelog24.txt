@@ -29,7 +29,14 @@ Nov 20 7:45-9:30
     installing packages, developing email to gmail
         openssl dev, DBI already there
         crazy how many dependencies
-Dec 3 11:15-2:50, 3:10-
+Dec 3 11:15-2:50, 3:10-5:30
     continuing with porting to the new site
     adding new strings
     fixing rental grid issue - that I just introduced
+Dec 4 9:10-9:55
+    omp images, test relay
+Dec 5 7:25-7:55, 10:30-11:30
+    relay?
+    relay - process(\$template not $template, okay but too big?
+Dec 7 11:00-12:00, 8:00-11:00
+    fiddling with the port
