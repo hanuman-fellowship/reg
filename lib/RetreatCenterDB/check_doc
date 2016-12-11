@@ -148,7 +148,9 @@ for my $f (<*.pm>) {
         my $sth = $dbh->prepare("select the_key from string order by the_key");
         $sth->execute();
         my %str_row;
+        STR:
         while (my ($key) = $sth->fetchrow_array()) {
+            next STR if $key =~ m{\A pal_\d\d_color \z}xms;
             $str_row{$key} = 1;
             if (! exists $str_doc{$key}) {
                 print "no documentation line for string '$key'\n";
