@@ -710,11 +710,11 @@ sub main {
 
     # MList Requests
     get_files($ftp, $string{ftp_mlist_requests},
-              $mlist_done,  \&process_mlist);
+              $mlist_done, \&process_mlist);
 
-    # Rides
-    get_files($ftp, $string{ftp_ride_dir},
-              $rides, \&get_rides);
+    # Rides - obsolete
+    # get_files($ftp, $string{ftp_ride_dir},
+    #           $rides, \&get_rides);
 
     # Membership Payments
     get_files($ftp, $string{ftp_omp_dir},

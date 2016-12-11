@@ -101,15 +101,35 @@ sub update_do : Local {
     elsif ($the_key eq 'online_notify') {
         # need to send this string up to mountmadonna.org
         BLOCK: {
-        open my $out, '>', '/tmp/online_notify.txt' or last BLOCK;
+        open my $out, '>', '/tmp/online_notify.txt'
+            or last BLOCK;
         print {$out} "$value\n";
         close $out;
+        # MMC
         my $ftp = Net::FTP->new($string{ftp_site},
-                                Passive => $string{ftp_passive}) or last BLOCK;
-        $ftp->login($string{ftp_login}, $string{ftp_password})   or last BLOCK;
-        $ftp->cwd($string{ftp_notify_dir}) or last BLOCK;
-        $ftp->ascii()            or last BLOCK;
-        $ftp->put("/tmp/online_notify.txt", "online_notify.txt") or last BLOCK;
+                                Passive => $string{ftp_passive})
+            or last BLOCK;
+        $ftp->login($string{ftp_login}, $string{ftp_password})
+            or last BLOCK;
+        $ftp->cwd($string{ftp_notify_dir})
+            or last BLOCK;
+        $ftp->ascii()
+            or last BLOCK;
+        $ftp->put("/tmp/online_notify.txt", "online_notify.txt")
+            or last BLOCK;
+        $ftp->quit();
+        # MMI
+        $ftp = Net::FTP->new($string{ftp_mmi_site},
+                             Passive => $string{ftp_mmi_passive})
+            or last BLOCK;
+        $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
+            or last BLOCK;
+        $ftp->cwd($string{ftp_notify_dir})
+            or last BLOCK;
+        $ftp->ascii()
+            or last BLOCK;
+        $ftp->put("/tmp/online_notify.txt", "online_notify.txt")
+            or last BLOCK;
         $ftp->quit();
         unlink "/tmp/online_notify.txt";
         }
