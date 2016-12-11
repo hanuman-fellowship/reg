@@ -174,6 +174,7 @@ extra_hours_charge - how many $'s to charge per person per hour of extra time fo
     this is time before 4:00 on the first day and after 1:00 on the ending day.
 from - email address that emails are sent From.
 from_title - name of the person that emails are From.
+ftp_calendar_dir - the directory on mmc.org for the public calendar images, index.html
 ftp_dir - FTP info for mountmadonna.org
 ftp_dir2 - FTP info for mountmadonna.org - staging directory
 ftp_export_dir - FTP info for mountmadonna.org - for exporting JSON data

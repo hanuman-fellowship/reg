@@ -260,3 +260,4 @@ ftp_pr_dir pr
 grid_url http://mmc.cosmicdev.com/cgi-bin/grid
 omp_url http://mmc.cosmicdev.com/cgi-bin/omp_load
 ftp_grid_dir /www/cgi-bin/rental
+ftp_calendar_dir calendar

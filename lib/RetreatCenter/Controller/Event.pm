@@ -1413,7 +1413,7 @@ EOH
             or die "cannot login ", $ftp->message; # not die???
         $ftp->cwd($string{ftp_dir})
             or die "cannot cwd ", $ftp->message; # not die???
-        $ftp->cwd("calendar")
+        $ftp->cwd($string{ftp_calendar_dir})
             or die "cannot cwd ", $ftp->message; # not die???
         for my $f ($ftp->ls()) {
             $ftp->delete($f);
