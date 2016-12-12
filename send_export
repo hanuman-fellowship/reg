@@ -6,7 +6,7 @@ use warnings;
 use Net::FTP;
 
 # MMC
-my $ftp = Net::FTP->new("52.53.150.121", Debug => 0)
+my $ftp = Net::FTP->new("www.mountmadonna.org", Debug => 0)
     or die "Cannot connect: $@";
 $ftp->login("reg","S1tarAm!")
     or die "Cannot login ", $ftp->message;
@@ -15,7 +15,7 @@ $ftp->put('exported_reg_data.tgz');
 $ftp->quit();
 
 # MMI
-$ftp = Net::FTP->new("54.67.32.96", Debug => 0)
+$ftp = Net::FTP->new("www.mountmadonnainstitute.org", Debug => 0)
     or die "Cannot connect: $@";
 $ftp->login("reg","S1tarAm!")
     or die "Cannot login ", $ftp->message;
@@ -24,5 +24,5 @@ $ftp->put('exported_reg_data.tgz');
 $ftp->quit();
 
 use LWP::Simple qw(get);
-print get('https://reg:S1tarAm!@mmc.cosmicdev.com/mmc-dev-team/feeds_from_reg/go.php');
-print get('https://reg:S1tarAm!@mmi.cosmicdev.com/mmi-dev-team/feeds_from_reg/go.php');
+print get('https://reg:S1tarAm!@www.mountmadonna.org/feeds_from_reg/go.php');
+print get('https://reg:S1tarAm!@www.mountmadonnainstitute.org/feeds_from_reg/go.php');

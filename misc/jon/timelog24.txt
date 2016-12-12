@@ -40,5 +40,6 @@ Dec 5 7:25-7:55, 10:30-11:30
     relay - process(\$template not $template, okay but too big?
 Dec 7 11:00-12:00, 8:00-11:00
     fiddling with the port
-Dec 10 12:50-5:30
+Dec 10 12:50-5:30, 7:00-11:00
     continuing
+Dec 11 11:30-
