@@ -85,7 +85,7 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
-use Net::Ping;
+#use Net::Ping;
 use Net::FTP;
 use File::FTP;      # this is mine
 use File::Basename 'basename';
@@ -171,10 +171,10 @@ sub initialize {
     close $run;
 
     if (! $ENV{FILE_FTP_DIR}) {     # are we testing or not?
-        my $p = Net::Ping->new();
-        if (!$p->ping("mountmadonna.org")) {
-            quit("no ping of mountmadonna.org");
-        }
+        #my $p = Net::Ping->new();
+        #if (!$p->ping("mountmadonna.org")) {
+        #    quit("no ping of mountmadonna.org");
+        #}
     }
 
     $c = db_init();
