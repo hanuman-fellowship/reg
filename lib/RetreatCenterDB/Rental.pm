@@ -20,7 +20,7 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
-use Net::Ping;
+#use Net::Ping;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
@@ -436,10 +436,10 @@ sub balance_disp {
 sub send_grid_data {
     my ($rental) = @_;
     
-    my $p = Net::Ping->new();
-    if (!$p->ping("mountmadonna.org")) {
-        return;     # don't even try
-    }
+    #my $p = Net::Ping->new();
+    #if (!$p->ping("mountmadonna.org")) {
+    #    return;     # don't even try
+    #}
     my $code = $rental->grid_code() . ".txt";
     open my $gd, ">", "/tmp/$code"
         or die "cannot create /tmp/$code: $!\n";

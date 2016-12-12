@@ -99,7 +99,8 @@ use Global qw/
     %string
 /;
 use Mail::Sender;
-use Net::Ping;
+# no ping on new site :(
+#use Net::Ping;
 use Carp 'croak';
 use Data::Dumper;
 
@@ -696,12 +697,13 @@ sub email_letter {
     }
     open my $mlog, ">>", "mail.log";
     print {$mlog} localtime() . " $args{to} - ";
-    my $p = Net::Ping->new();
-    if (!$p->ping("mountmadonna.org")) {
-        print {$mlog} "no ping so just return\n";
-        close $mlog;
-        return;     # don't even try
-    }
+    # no ping :(
+    #my $p = Net::Ping->new();
+    #if (!$p->ping("mountmadonna.org")) {
+    #    print {$mlog} "no ping so just return\n";
+    #    close $mlog;
+    #    return;     # don't even try
+    #}
 
     if (! $mail_sender) {
         Global->init($c);
