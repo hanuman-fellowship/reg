@@ -164,11 +164,6 @@ your personal retreat,
 as you requested.
 </P>
 <P class=p2>
-<CENTER>
-$program.cl_picture
-</CENTER>
-</P>
-<P class=p2>
 [% IF htdesc == 'Your Van' %]
 No lodging was reserved for you since you will be staying in your own van.
 [% ELSIF htdesc == 'Commuting' %]
