@@ -110,7 +110,7 @@ ul {
 <DIV CLASS="container">
 <TABLE WIDTH="700">
 <TR><TD ALIGN="center">
-<IMG height=200 SRC="http://www.mountmadonna.org/programs/main_image/nov_sc_sunset.jpg">
+<IMG height=200 SRC="http://www.mountmadonna.org/assets/img/registration/nov_sc_sunset.jpg">
 <H1>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</H1>
 </TD></TR>
 <TR><TD>
@@ -274,10 +274,8 @@ We suggest that you bring the following:
     <LI>a blanket or mat for postures (optional)</LI>
 [% END %]
 </UL>
-If you want help with transportation to the Center, please go to:
-<ul>
-<a href="http://www.mountmadonna.org/rides">www.mountmadonna.org/rides</a>.
-</ul>
+If you want help with transportation to the Center, please check
+<a href="http://www.mountmadonna.org/transportation-directions/shuttle-service">this site</a>.
 <p class=p2>
 [% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
     <P class=p2>
@@ -470,10 +468,10 @@ continue straight through the 4-way stop onto Summit Rd. The [% IF mmi %]Institu
 miles further on the left (445 Summit Rd).
 </P>
 <CENTER>
-<IMG height=400 SRC="http://www.mountmadonna.org/Gif/circlemap.gif">
+<IMG height=400 SRC="http://www.mountmadonna.org/assets/img/registration/circlemap.gif">
 </CENTER>
 <P class=p2>
-For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <A href=http://www.mountmadonna.org/directions/index.html>here</A>.</P>
+For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <A href='http://www.mountmadonna.org/transportation-directions'>here</A>.</P>
 <A name=kaya></A>
 
 <HR>
