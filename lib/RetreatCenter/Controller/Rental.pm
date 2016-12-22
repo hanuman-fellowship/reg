@@ -430,9 +430,9 @@ sub view : Local {
     }
     if ($rental->contract_received() && $rental->payments() > 0) {
         $status = 'received';
-    }
-    if ($rental->arrangement_sent()) {
-        $status = 'arranged';
+        if ($rental->arrangement_sent()) {
+            $status = 'arranged';
+        }
     }
     if (tt_today($c)->as_d8() > $rental->sdate()) {
         if ($rental->balance() != 0) {
@@ -1298,6 +1298,7 @@ sub email_arrangements : Local {
     my $rental = model($c, 'Rental')->find($rental_id);
     stash($c,
         rental   => $rental,
+        subject  => "MMC Rental Arrangements for " . $rental->name(),
         template => "rental/email_arrangements.tt2",
     );
 }
@@ -1327,6 +1328,7 @@ sub arrangements : Local {
         $c->res->output($html);
         return;
     }
+    my $subject = $c->request->params->{subject};
     my @to = ();
     my @cc = ();
     my $em;
@@ -1373,7 +1375,7 @@ sub arrangements : Local {
                  . ' <' . $user->email . '>',
         to      => \@to,
         cc      => \@cc,
-        subject => "MMC Rental Arrangements for " . $rental->title(),
+        subject => $subject,
     });
     $sender->Body({
         ctype => 'text/html',

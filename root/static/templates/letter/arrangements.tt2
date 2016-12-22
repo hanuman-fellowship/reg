@@ -15,7 +15,7 @@ body {
 Dear ${rental.coordinator.first},
 <p>
 We'd like to get started working out the details for your upcoming
-'${rental.title}' program from ${rental.sdate_obj.format("%A, %D")}
+'${rental.name}' program from ${rental.sdate_obj.format("%A, %D")}
 to ${rental.edate_obj.format("%A, %D")} at Mount Madonna Center.
 This initial email contains information to help you plan
 your program and requests some information from you as well,

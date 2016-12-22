@@ -368,11 +368,19 @@ sub count {
     }
     return $expected + $prog_count;
 }
+my %display_for = (
+    'tentative' => 'Tentative',
+    'sent'      => 'Contract Sent',
+    'received'  => 'Contract Received',
+    'arranged'  => 'Letter Sent',
+    'due'       => 'Due',
+    'done'      => 'Done',
+);
 sub status_td {
     my ($self) = @_;
     my $status = $self->status();
     my $color = d3_to_hex($string{"rental_$status\_color"});
-    return "<td align=center bgcolor=$color>\u$status</td>";
+    return "<td align=center bgcolor=$color>$display_for{$status}</td>";
 }
 
 sub ndays_sent {
