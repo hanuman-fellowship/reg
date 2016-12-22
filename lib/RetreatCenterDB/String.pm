@@ -303,6 +303,9 @@ quad - for housing type descriptions
 reception_email - who should be notified when an MMC mailing list request comes in?
 reg_end - the default time of day for program registration to end
 reg_start - the default time of day for program registration to begin
+rental_arranged_color - the color of an arranged rental
+rental_late_in - the penalty for a late indoor rental
+rental_late_out - the penalty for a late outdoor rental
 rental_done - description for a rental status of Done
 rental_done_color - the color in the calendar of a Done rental
 rental_due - description for a rental status of Due
@@ -336,7 +339,7 @@ sum_copy_id - a place to remember the 'copied' summary page.  it is used
     when later pasting the summary.   format: 'timestamp summary_id name'
 sys_last_config_date - the last date in the config table
 triple - the display name for the housing type 'triple'
-tt_today - a place to do 'time travel'.  format: 'username date'
+tt_today - a place to do 'time travel'.  format: 'username mm/dd/yy'
 typehdr - the heading for the list of housing types
 unknown - the display name for the housing type 'unknown'
 website - the title for a Rental's website in the online row for the rental

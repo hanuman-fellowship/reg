@@ -80,6 +80,9 @@ __PACKAGE__->add_columns(qw/
 
     grid_stale
     pr_alert
+
+    arrangement_sent
+    arrangement_by
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -108,6 +111,8 @@ __PACKAGE__->belongs_to(sent_by => 'RetreatCenterDB::User',
                         'sent_by');
 __PACKAGE__->belongs_to(received_by => 'RetreatCenterDB::User',
                         'received_by');
+__PACKAGE__->belongs_to(arrangement_by => 'RetreatCenterDB::User',
+                        'arrangement_by');
 
 # payments
 __PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment',
@@ -142,6 +147,16 @@ __PACKAGE__->has_many(rental_bookings => 'RetreatCenterDB::RentalBooking',
                       }
                      );
 
+sub seminar_house_sleeping {
+    my ($self) = @_;
+    for my $b ($self->rental_bookings) {
+        if ($b->house->name =~ /^SH/) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
 sub future_rentals {
     my ($class, $c) = @_;
     my @rentals = $c->model('RetreatCenterDB::Rental')->search(
@@ -170,6 +185,10 @@ sub contract_received_obj {
     my ($self) = @_;
     return date($self->contract_received) || "";
 }
+sub arrangement_sent_obj {
+    my ($self) = @_;
+    return date($self->arrangement_sent) || "";
+}
 sub link {
     my ($self) = @_;
     return "/rental/view/" . $self->id();
@@ -194,6 +213,7 @@ sub rental_type {
     chop $type;
     return $type;
 }
+# see also - sub meeting_spaces
 sub meeting_places {
     my ($self, $breakout) = @_;
     places($self, $breakout);
@@ -381,6 +401,7 @@ sub summer {
     return 5 <= $m && $m <= 10;
 }
 
+# see also - sub meeting_places
 sub meeting_spaces {
     my ($self) = @_;
 
@@ -525,6 +546,8 @@ overview - A rental is created when some other organization wants
     sponsored nor advertised by the center.  Housing assignments are
     made by the coordinator by filling in a form on the global web.
     This information is brought into Reg periodically.
+arrangement_sent - date that the arrangement letter was sent
+arrangement_by - who sent the arrangement letter
 balance - the outstanding balance
 cancelled - boolean - was this rental cancelled?  Set/Unset by a menu link.
 color - RGB values for the DailyPic display.

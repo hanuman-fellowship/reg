@@ -224,6 +224,11 @@ These costs will apply for each day the person stays - regardless of how many ot
 </tr>
 
 <tr>
+<th align=right>Arrangement Letter Sent</th>
+<td><input type=text name=arrangement_sent value='${rental.arrangement_sent_obj.format("%D")}' size=10></td>
+</tr>
+
+<tr>
 <th align=right>PR Alert</th>
 <td><input type=text name=pr_alert value='$rental.pr_alert' size=70></td>
 </tr>

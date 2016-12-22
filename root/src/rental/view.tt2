@@ -61,10 +61,16 @@ th a:hover {
 <a href="/program/publish">Publish</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/grid/$id">Local Grid</a>
-&nbsp;&nbsp;&nbsp;
-<a href="/rental/email_contract/$id">EmailContract</a>
-&nbsp;&nbsp;&nbsp;
+<p class=p2>
 <a href="/rental/contract/$id">Contract</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/email_contract/$id">Email Contract</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/received/$id">Received</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/arrangements/$id">Arrangements</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/rental/email_arrangements/$id">Email Arrangements</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/invoice/$id">Invoice</a>
 <p class=p2>
@@ -383,6 +389,11 @@ none
 <tr>
 <th align=right>Contract Received</th>
 <td>$rental.contract_received_obj [% IF rental.contract_received %]by $rental.received_by.username[% END %]</td>
+</tr>
+
+<tr>
+<th align=right>Arrangement Letter Sent</th>
+<td>$rental.arrangement_sent_obj [% IF rental.arrangement_sent %]by $rental.arrangement_by.username[% END %]</td>
 </tr>
 
 <tr>

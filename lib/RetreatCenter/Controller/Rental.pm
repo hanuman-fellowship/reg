@@ -54,6 +54,7 @@ use HLog;
 use POSIX;
 use Template;
 use CGI qw/:html/;      # for Tr, td
+use Mail::Sender;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -74,7 +75,10 @@ sub _get_data {
         push @mess, "Name cannot be blank";
     }
     # dates are either blank or converted to d8 format
-    for my $d (qw/ sdate edate contract_sent contract_received /) {
+    for my $d (qw/
+        sdate edate contract_sent
+        contract_received arrangement_sent
+    /) {
         my $fld = $P{$d};
         if ($d =~ /date/ && $fld !~ /\S/) {
             push @mess, "missing date field";
@@ -105,7 +109,7 @@ sub _get_data {
     # if a contract has been sent the rental is no longer tentative, yes?
     #
     if ($P{contract_sent}) {
-        $P{tentative} = "";
+        $P{tentative} = '';
     }
     TIME:
     for my $n (qw/start_hour end_hour/) {
@@ -419,26 +423,29 @@ sub view : Local {
 
     my $status;
     if ($rental->tentative() || ! $rental->contract_sent()) {
-        $status = "tentative";
+        $status = 'tentative';
     }
-    elsif (! ($rental->contract_received() && $rental->payments() > 0)) {
-        $status = "sent";
+    if ($rental->contract_sent()) {
+        $status = 'sent';
     }
-    elsif (tt_today($c)->as_d8() > $rental->sdate()) {
+    if ($rental->contract_received() && $rental->payments() > 0) {
+        $status = 'received';
+    }
+    if ($rental->arrangement_sent()) {
+        $status = 'arranged';
+    }
+    if (tt_today($c)->as_d8() > $rental->sdate()) {
         if ($rental->balance() != 0) {
-            $status = "due";
+            $status = 'due';
         }
         else {
-            $status = "done";
+            $status = 'done';
         }
     }
-    else {
-        $status = "received";
-    }
-    # ??? needed each view???
-    # a rental_booking may have been done
+    # Is the above needed with each view?  Yes.
+    # A rental_booking may have been done
     # housing costs could have changed...
-    # the program might be finished.
+    # time might have advanced and the program might be finished.
     $rental->update({
         status  => $status,
     });
@@ -1285,6 +1292,158 @@ sub del_booking : Local {
 # different stash than sub contract???
 # yes, this template just gathers email addresses.
 #
+sub email_arrangements : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    stash($c,
+        rental   => $rental,
+        template => "rental/email_arrangements.tt2",
+    );
+}
+
+sub arrangements : Local {
+    my ($self, $c, $rental_id, $email) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => 'root/static/templates/letter',
+        EVAL_PERL    => 0,
+    });
+    my $stash = {
+        rental => $rental,
+        user   => $c->user,
+        string => \%string,
+        gate_code => $rental->summary->gate_code || 'XXXX',
+    };
+    my $html;
+    $tt->process(
+        'arrangements.tt2',
+        $stash,
+        \$html,
+    );
+    if (!$email) {
+        $c->res->output($html);
+        return;
+    }
+    my @to = ();
+    my @cc = ();
+    my $em;
+    if ($em = $c->request->params->{coord_email}) {
+        push @to, $em;
+    }
+    if ($em = $c->request->params->{cs_email}) {
+        push @to, $em;
+    }
+    if (! @to) {
+        error($c,
+            'Need at least one of the Rental people on the letter.',
+            "rental/error.tt2",
+        );
+        return;
+    }
+    if ($c->request->params->{cc}) {
+        @cc = split m{[\s,]+}, $c->request->params->{cc};
+    }
+    # is this still neeeded??
+    for my $a (@to, @cc) {
+        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
+    }
+    # a special sending of the letter - can't use Util sub email_letter
+    Global->init($c);
+    my @auth = ();
+    if ($string{smtp_auth}) {
+        @auth = (
+            auth    => $string{smtp_auth},
+            authid  => $string{smtp_user},
+            authpwd => $string{smtp_pass},
+        );
+    }
+    my $sender = Mail::Sender->new({
+        smtp => $string{smtp_server},
+        port => $string{smtp_port},
+        @auth,
+        on_errors => 'die',
+    });
+    $sender->OpenMultipart({
+        from    => "$string{from_title} <$string{from}>",
+        to      => \@to,
+        cc      => \@cc,
+        subject => "MMC Rental Arrangements for " . $rental->name(),
+    });
+    $sender->Body({
+        ctype => 'text/html',
+        msg   => $html,
+    });
+    my $dir = 'root/static/templates/letter';
+    $sender->Attach({
+        description => 'Map of the main area at MMC.',
+        ctype       => 'application/pdf',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . 'filename="Main_Area_Map.pdf";'
+                     . 'type="pdf"',
+        file        => "$dir/Main Area Map 2014.pdf",
+    });
+    $sender->Attach({
+        description => 'Rental Guest Confirmation Letter.doc',
+        ctype       => 'application/msword',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . 'filename="Rental_Guest_Confiration_Letter.doc";'
+                     . 'type="doc"',
+        file        => "$dir/Rental Guest Confirmation Letter.doc",
+    });
+    $sender->Attach({
+        description => 'MMC Food.doc',
+        ctype       => 'application/msword',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . 'filename="MMC_Food.doc";'
+                     . 'type="doc"',
+        file        => "$dir/MMC Food.doc",
+    });
+    $sender->Attach({
+        description => 'CURRENT INFO SHEET.doc',
+        ctype       => 'application/msword',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . 'filename="Current_Info_Sheet.doc";'
+                     . 'type="doc"',
+        file        => "$dir/CURRENT INFO SHEET.doc",
+    });
+    my $rc = $sender->Close;
+    open my $mlog, ">>", "mail.log";
+    print {$mlog} localtime() . " @to - ";
+    if (ref $rc) {
+        print {$mlog} "sent\n";
+    }
+    else {
+        print {$mlog} " error - $Mail::Sender::Error\n";
+    }
+    close $mlog;
+    $rental->update({
+        arrangement_sent => tt_today($c)->as_d8(),
+        arrangement_by   => $c->user->obj->id,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+}
+
+sub received : Local {
+    my ($self, $c, $rental_id) = @_;
+
+    my $rental = model($c, 'Rental')->find($rental_id);
+    $rental->update({
+        contract_received => tt_today->as_d8(),
+        received_by       => $c->user->obj->id,
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
+}
+
+# different stash than sub contract?
+# yes, this template just gathers email addresses.
+#
 sub email_contract : Local {
     my ($self, $c, $rental_id) = @_;
 
@@ -1354,6 +1513,7 @@ sub contract : Local {
     if (! $rental->contract_sent()) {
         $rental->update({
             contract_sent => tt_today($c)->as_d8(),
+            tentative     => '',
             sent_by       => $c->user->obj->id,
             status        => "sent",
         });
@@ -1396,32 +1556,37 @@ sub contract : Local {
         \$html,           # output
     ) or die "error in processing template: "
              . $tt->error();
-    if ($email) {
-        my @to = ();
-        my @cc = ();
-        my $em;
-        if ($em = $c->request->params->{coord_email}) {
-            push @to, $em;
-        }
-        if ($em = $c->request->params->{cs_email}) {
-            push @to, $em;
-        }
-        if ($c->request->params->{cc}) {
-            @cc = split m{[\s,]+}, $c->request->params->{cc};
-        }
-        # check @to, empty @cc?
-        email_letter($c,
-            from    => "$string{from_title} <$string{from}>",
-            to      => \@to,
-            cc      => \@cc,
-            subject => "MMC Rental Contract with " . $rental->name(),
-            html    => $html,
-        );
-        $c->response->redirect($c->uri_for("/rental/view/$id/1"));
-    }
-    else {
+    if (!$email) {
         $c->res->output($html);
+        return;
     }
+    my @to = ();
+    my @cc = ();
+    my $em;
+    if ($em = $c->request->params->{coord_email}) {
+        push @to, $em;
+    }
+    if ($em = $c->request->params->{cs_email}) {
+        push @to, $em;
+    }
+    if ($c->request->params->{cc}) {
+        @cc = split m{[\s,]+}, $c->request->params->{cc};
+    }
+    if (! @to) {
+        error($c,
+            'Need at least one of the Rental people on the letter.',
+            "rental/error.tt2",
+        );
+        return;
+    }
+    email_letter($c,
+        from    => "$string{from_title} <$string{from}>",
+        to      => \@to,
+        cc      => \@cc,
+        subject => "MMC Rental Contract with " . $rental->name(),
+        html    => $html,
+    );
+    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
 #

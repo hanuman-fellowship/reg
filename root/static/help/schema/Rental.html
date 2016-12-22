@@ -10,6 +10,10 @@ A rental is created when some other organization wants to rent the meeting space
 <p>
 Table: rental
 <dl>
+<dt>arrangement_sent</dt>
+<dd>date that the arrangement letter was sent</dd>
+<dt>arrangement_by</dt>
+<dd>who sent the arrangement letter</dd>
 <dt>balance</dt>
 <dd>the outstanding balance</dd>
 <dt>cancelled</dt>
@@ -101,6 +105,7 @@ Table: rental
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
+<tr><td>arrangement_by</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 <tr><td>blocks</td><td><a href=Block.html>block</a></td><td>has_many</td></tr>
 <tr><td>bookings</td><td><a href=Booking.html>booking</a></td><td>has_many</td></tr>
 <tr><td>charges</td><td><a href=RentalCharge.html>rentalcharge</a></td><td>has_many</td></tr>
