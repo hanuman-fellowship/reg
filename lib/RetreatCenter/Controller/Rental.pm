@@ -1366,11 +1366,14 @@ sub arrangements : Local {
         @auth,
         on_errors => 'die',
     });
+    my $user = $c->user->obj();
     $sender->OpenMultipart({
-        from    => "$string{from_title} <$string{from}>",
+        from    =>        $user->first
+                 . ' '  . $user->last
+                 . ' <' . $user->email . '>',
         to      => \@to,
         cc      => \@cc,
-        subject => "MMC Rental Arrangements for " . $rental->name(),
+        subject => "MMC Rental Arrangements for " . $rental->title(),
     });
     $sender->Body({
         ctype => 'text/html',
