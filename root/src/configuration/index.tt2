@@ -45,9 +45,9 @@ p {
     <a href=/house>Houses</a><p>
     <a href=/housecost>Housing Costs</a><p>
 [% END %]
-<a href=/issue/list>Issues</a><p>
 </td>
 <td valign=top>
+<a href=/issue/list>Issues</a><p>
 [% IF prog %]
     <a href=/leader>Leaders</a><p>
     <a href=/meetingplace>Meeting Places</a><p>

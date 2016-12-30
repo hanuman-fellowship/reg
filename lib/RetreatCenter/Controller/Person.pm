@@ -1199,7 +1199,7 @@ sub request_mmi_payment_do : Local {
 }
 
 sub send_requests : Local {
-    my ($self, $c, $reg_id) = @_;
+    my ($self, $c, $reg_id, $resend_all) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
     my $public = $reg->program->level->public();
@@ -1224,7 +1224,10 @@ EOH
     my $prog_glnum = $reg->program->glnum();
     PAYMENT:
     for my $py ($reg->req_mmi_payments()) {
-        next PAYMENT if $py->code();        # already sent but not yet gotten
+        next PAYMENT if !$resend_all && $py->code();
+            # if not resending
+            # $py->code means
+            # already sent but not yet gotten
         my $amt = commify($py->amount());
         my $note = $py->note();
         my $for  = $py->for_what_disp();
@@ -1251,7 +1254,7 @@ EOH
 </table>
 EOH
     #
-    # create the file and ftp it to the mmi (not mmc) site
+    # create the file and ftp it to the MMI site
     #
     open my $out, '>', "/tmp/$code" or die "cannot create /tmp/$code: $!\n";
     # could use Data::Dumper or YAML or XML::Simple instead!
@@ -1290,10 +1293,11 @@ EOH
     eval {
         my $ftp = Net::FTP->new($string{ftp_mmi_site},
                                 Passive => $string{ftp_mmi_passive})
-            or die "cannot connect to $string{ftp_mmi_site}";    # not die???
+            or die "cannot connect to $string{ftp_mmi_site}";
         $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
-            or die "cannot login ", $ftp->message; # not die???
-        $ftp->cwd($string{req_mmi_dir}) or die "cannot chdir to $string{req_mmi_dir}";
+            or die "cannot login ", $ftp->message;
+        $ftp->cwd($string{req_mmi_dir})
+            or die "cannot chdir to $string{req_mmi_dir}";
         $ftp->ascii();
         $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
         $ftp->quit();
@@ -1308,7 +1312,10 @@ EOH
     # mark the payment requests as sent
     PAYMENT:
     for my $py ($reg->req_mmi_payments()) {
-        next PAYMENT if $py->code();        # already sent but not gotten yet
+        next PAYMENT if !$resend_all && $py->code();
+            # if not resending
+            # $py->code means
+            # already sent but not gotten yet
         $py->update({
             code => $code,
         });
@@ -1330,6 +1337,7 @@ EOH
         req_code    => $code,
         tbl_py_desc => $tbl_py_desc,
         program     => $program_name,
+        resending   => $resend_all,
         signed      => $string{mmi_payment_request_signed},
     };
     my $html;
@@ -1349,7 +1357,8 @@ EOH
     my @who_now = get_now($c);
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
-        what     => "Sent requests totaling \$" . commify($total),
+        what     => ($resend_all? "REsent": "Sent")
+                  . " requests totaling \$$comma_total",
         @who_now,
     });
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));

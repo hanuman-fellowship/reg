@@ -379,6 +379,10 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
     <span style="margin-left: 5mm">
     <a class=not_sent href=/person/send_requests/$reg.id>Send Requests</a>
     </span>
+    [% ELSE %]
+    <span style="margin-left: 5mm">
+    <a class=not_sent href=/person/send_requests/$reg.id/1>REsend All Requests</a>
+    </span>
     [% END %]
     <table cellpadding=2>
     <tr>

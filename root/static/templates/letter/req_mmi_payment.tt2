@@ -9,5 +9,10 @@ Description of charges:
 <ul>
 $tbl_py_desc
 </ul>
+[% IF resending %]
+<p>
+Please ignore previous payment requests for this program.
+<p>
+[% END %]
 Thank you,<br>
 $signed
