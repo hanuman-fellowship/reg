@@ -319,7 +319,7 @@ rental_sent_color - the color in the calendar of a Sent rental
 rental_start_hour - the time of day that rentals normally start
 rental_tentative - description for a rental status of Tentative
 rental_tentative_color - the color in the calendar of a Tentative rental
-req_mmi_dir - the directory on mountmadonna.org where MMI payment requests live
+req_mmi_dir - the directory on mountmadonnainstitute.org where MMI payment requests live
 req_mmi_dir_paid - the directory on mountmadonna.org for paid MMI payment requests
 ride_cancel_penalty - How much penalty for cancelling a Ride?
 ride_email - who to notify by email when a Ride request comes in?

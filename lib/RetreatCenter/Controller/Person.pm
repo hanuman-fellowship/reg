@@ -1208,7 +1208,7 @@ sub send_requests : Local {
     my $name = $person->name();
     my $phone = $person->tel_home() || $person->tel_cell();
     my $email = $person->email();
-    my $program_title = $reg->program->title();
+    my $program_name = $reg->program->name();
 
     my $code = req_code();
     my $total = 0;
@@ -1279,7 +1279,7 @@ EOH
     put($out, 'total',     $total);
     put($out, 'py_desc',   $py_desc);
     put($out, 'tbl_py_desc', _strip_nl($tbl_py_desc));
-    put($out, 'program',   $program_title);
+    put($out, 'program',   $program_name);
     put($out, 'code',      $code);
     put($out, 'reg_id',    $reg_id);
     put($out, 'person_id', $person_id);
@@ -1300,6 +1300,7 @@ EOH
     };
     if ($@ && ! -e '/tmp/testing_req_mmi') {
         # what to do???  it did not succeed.
+        $c->log->info("failed to send payment: $@\n");
         $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
         return;
     }
@@ -1328,7 +1329,7 @@ EOH
         total       => $comma_total,
         req_code    => $code,
         tbl_py_desc => $tbl_py_desc,
-        program     => $program_title,
+        program     => $program_name,
         signed      => $string{mmi_payment_request_signed},
     };
     my $html;
@@ -1341,7 +1342,7 @@ EOH
     email_letter($c,
         to      => $email,
         from    => $string{mmi_payment_request_from},
-        subject => "Requested Payment for MMI Program '$program_title'",
+        subject => "Requested Payment for MMI Program '$program_name'",
         html    => $html,
     );
     # Reg History record

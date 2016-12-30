@@ -54,3 +54,12 @@ Dec 21 1:00-2:30, 6:50-7:30, 9:15-10:30
     almost done
 Dec 22 7:30-9:40
     finishing up arrangements letter
+Dec 23 8:15-8:25
+    correcting mistake about args{to}.
+Dec 29 10:00-11:30, 2:30-4:45
+    *feedback to retreat guru
+    *sutra_send, getting email credentials, directory ownership/mode
+    resend MMI requested payments - made some progress
+    email Summary to same group
+    rental balance reset whenever anything affects it
+        including getting a new grid

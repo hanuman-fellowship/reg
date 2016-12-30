@@ -287,7 +287,7 @@ Web
 
 <!-- Misc -->
 <div id="content2" class="tabcontent" style="display: none">
-<table cellpadding=3 border=0>
+<table cellpadding=3 border=0 width=800>
 
 <tr>
 <th align=right valign=top width=20%>Category</th>
@@ -350,24 +350,26 @@ $leaders_house
 [% IF ! program.rental_id %]     <!-- not for hybrid rental-programs -->
 
 <tr>
-<th align=right valign=top width=150>Meeting Places</th>
-<td align=left valign=top>
+<th>Meeting Places</th>
+<td>
+<table cellpadding=12><tr><td align=left valign=top>
+<b>Meet</b><br>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == '' && b.dorm == '' %]
         <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate2 %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
-<th align=right valign=top width=150>Breakout Places</th>
 <td align=left valign=top>
+<b>Breakout</b><br>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == 'yes' %]
         <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
-<th align=right valign=top width=150>Dorms</th>
 <td align=left valign=top>
+<b>Dormitory</b><br>
 [% FOR b IN program.bookings %]
     [% IF b.dorm == 'yes' %]
         <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
@@ -375,6 +377,10 @@ $leaders_house
 [% END %]
 </td>
 </tr>
+</table>
+</td>
+</tr>
+
 
 [% IF prog_admin %]
 <tr>

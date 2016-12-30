@@ -303,24 +303,26 @@ none
 </tr>
 
 <tr>
-<th align=right valign=top width=150>Meeting Places</th>
-<td align=left valign=top>
+<th>Meeting Places</th>
+<td align=left valign=top colspan=3>
+<table cellpadding=12><tr><td>
+<b>Meet</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == '' && b.dorm == '' %]
         <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
-<th align=right valign=top width=150>Breakout Places</th>
 <td align=left valign=top>
+<b>Breakout</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == 'yes' %]
         <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
     [% END %]
 [% END %]
 </td>
-<th align=right valign=top width=150>Dorms</th>
 <td align=left valign=top>
+<b>Dormitory</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.dorm == 'yes' %]
         <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
@@ -328,6 +330,7 @@ none
 [% END %]
 </td>
 </tr>
+</td></tr></table>
 [% IF Catalyst.check_user_roles('prog_admin') %]
     <tr>
     <td></td>
@@ -383,17 +386,17 @@ none
 
 <tr>
 <th align=right>Contract Sent</th>
-<td>$rental.contract_sent_obj [% IF rental.contract_sent %]by $rental.sent_by.username[% END %]</td>
+<td colspan=2>$rental.contract_sent_obj [% IF rental.contract_sent %]by $rental.sent_by.username[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Contract Received</th>
-<td>$rental.contract_received_obj [% IF rental.contract_received %]by $rental.received_by.username[% END %]</td>
+<td colspan=2>$rental.contract_received_obj [% IF rental.contract_received %]by $rental.received_by.username[% END %]</td>
 </tr>
 
 <tr>
 <th align=right>Arrangement Letter Sent</th>
-<td>$rental.arrangement_sent_obj [% IF rental.arrangement_sent %]by $rental.arrangement_by.username[% END %]</td>
+<td colspan=2>$rental.arrangement_sent_obj [% IF rental.arrangement_sent %]by $rental.arrangement_by.username[% END %]</td>
 </tr>
 
 <tr>

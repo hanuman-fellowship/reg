@@ -368,14 +368,14 @@ sub count {
     }
     return $expected + $prog_count;
 }
-my %display_for = (
-    'tentative' => 'Tentative',
-    'sent'      => 'Contract Sent',
-    'received'  => 'Contract Received',
-    'arranged'  => 'Letter Sent',
-    'due'       => 'Due',
-    'done'      => 'Done',
-);
+my %display_for = map { my $x = $_; $x =~ s{_}{ }xmsg; $x } qw/
+    tentative Tentative
+    sent      Contract_Sent
+    received  Contract_Received
+    arranged  Letter_Sent
+    due       Due
+    done      Done
+/;
 sub status_td {
     my ($self) = @_;
     my $status = $self->status();

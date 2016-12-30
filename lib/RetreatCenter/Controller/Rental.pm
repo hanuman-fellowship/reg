@@ -434,7 +434,7 @@ sub view : Local {
             $status = 'arranged';
         }
     }
-    if (tt_today($c)->as_d8() > $rental->sdate()) {
+    if (tt_today($c)->as_d8() >= $rental->sdate()) {
         if ($rental->balance() != 0) {
             $status = 'due';
         }
