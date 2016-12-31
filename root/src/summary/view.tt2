@@ -46,6 +46,7 @@ p {
 </span>
 [% END %]
 [% END %]
+&nbsp;&nbsp;&nbsp;<a href='/summary/email/$sum.id'>Email</a>
 &nbsp;&nbsp;&nbsp;<a href=#bottom>To Bottom</a>
 <p>
 </div>

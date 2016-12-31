@@ -20,10 +20,12 @@ use Util qw/
     avail_pic_num
     resize
     error
+    email_letter
 /;
 use Global qw/
     %string
 /;
+use Template;
 
 sub view : Local {
     my ($self, $c, $type, $id) = @_;
@@ -382,6 +384,133 @@ sub view_pic : Local {
           hap_id   => $hap->id(),
           hap_name => $hap->name(),
     );
+}
+
+sub email : Local {
+    my ($self, $c, $sum_id) = @_;
+
+    my $summary = model($c, 'Summary')->find($sum_id);
+    my $type = $summary->program()? 'program': 'rental';
+    my $happening = $summary->$type();
+    my @people;
+    if ($type eq 'rental') {
+        push @people, person1 => $happening->coordinator();
+        push @people, person2 => $happening->contract_signer();
+    }
+    else {
+        my @leaders = $happening->leaders();
+        push @people, person1 => $leaders[0]->person() if @leaders >= 1;
+        push @people, person2 => $leaders[1]->person() if @leaders >= 2;
+    }
+    stash($c,
+        happening => $happening,
+        @people,
+        template => "summary/email.tt2",
+    );
+}
+
+sub email_do : Local {
+    my ($self, $c, $sum_id) = @_;
+    my $summary = model($c, 'Summary')->find($sum_id);
+    my $type = $summary->program()? 'program': 'rental';
+    my (@to, @cc);
+    if (my $email1 = $c->request->params->{email1}) {
+        push @to, $email1;
+    }
+    if (my $email2 = $c->request->params->{email2}) {
+        push @to, $email2;
+    }
+    if ($c->request->params->{cc}) {
+        @cc = split m{[\s,]+}, $c->request->params->{cc};
+    }
+    if (! @to && @cc) {
+        @to = @cc;
+        @cc = ();
+    }
+    if (! @to) {
+        error($c,
+            'Need at least one email address!',
+            "summary/error.tt2",
+        );
+        return;
+    }
+    # is this still neeeded??
+    for my $a (@to, @cc) {
+        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
+    }
+    # use the template toolkit outside of the Catalyst mechanism
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        EVAL_PERL    => 0,
+        INCLUDE_PATH => 'root/src/summary',
+    });
+    my $stash = {};
+    for my $f (qw/
+        gate_code
+        alongside
+        registration_location
+        orientation
+        wind_up
+        alongside
+        back_to_back
+        leader_name
+        leader_housing
+        staff_arrival
+        staff_departure
+        converted_spaces
+    /) {
+        $stash->{$f} = highlight($summary->$f());
+    }
+    my $happening = $summary->$type();
+    my $sdate = $happening->sdate();
+    my $nmonths = date($happening->edate())->month()
+                - date($sdate)->month()
+                + 1;
+    if ($type eq 'program') {
+        my $extra = $happening->extradays();
+        if ($extra) {
+            my $edate2 = $happening->edate_obj() + $extra;
+            $stash->{plus} = "<b>Plus</b> $extra day"
+                      . ($extra > 1? "s": "")
+                      . " <b>To</b> " . $edate2
+                      . " <span class=dow>"
+                      . $edate2->format("%a")
+                      . "</span>"
+        }
+    }
+    $stash->{type}      = $type;
+    $stash->{Type}      = ucfirst $type;
+    $stash->{happening} = $happening;
+    $stash->{sum}       = $summary;
+    my $html;
+    $tt->process(
+        "view.tt2", 
+         $stash,
+         \$html,
+    ) or die "error in processing template: ";
+    $html =~ s{.*?<h2>}{<h2>}xms;
+    $html =~ s{<div.*?</div>}{}xms;
+    $html =~ s{<a\s+href=.mailto[^>]*>(.*?)</a>}{$1}xmsg;
+    $html =~ s{<a[^>]*>}{<b>}xmsg;
+    $html =~ s{</a[^>]*>}{</b>}xmsg;
+    $html =~ s{<img[^>]*>}{}xmsg;
+    $html =~ s{<b>(Edit|To\ Top)</b>}{}xmsg;
+    $html =~ s{<td\ align=center.*?</td>}{}xms;
+    $html =~ s{\A}{
+        <style>
+        body { margin: .5in; }
+        .larger { font-size: 18pt; font-weight: bold; color: darkgreen; }
+        .dow { color: red; }
+        </style>
+    }xms;
+    email_letter($c,
+        from    => "$string{from_title} <$string{from}>",
+        to      => \@to,
+        cc      => \@cc,
+        subject => "Summary for " . $happening->name(),
+        html    => $html,
+    );
+    $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
 
 1;

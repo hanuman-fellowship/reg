@@ -1338,15 +1338,19 @@ sub arrangements : Local {
     if ($em = $c->request->params->{cs_email}) {
         push @to, $em;
     }
+    if ($c->request->params->{cc}) {
+        @cc = split m{[\s,]+}, $c->request->params->{cc};
+    }
+    if (! @to && @cc) {
+        @to = @cc;
+        @cc = ();
+    }
     if (! @to) {
         error($c,
-            'Need at least one of the Rental people on the letter.',
+            'Need at least one email address!',
             "rental/error.tt2",
         );
         return;
-    }
-    if ($c->request->params->{cc}) {
-        @cc = split m{[\s,]+}, $c->request->params->{cc};
     }
     # is this still neeeded??
     for my $a (@to, @cc) {
@@ -1577,9 +1581,13 @@ sub contract : Local {
     if ($c->request->params->{cc}) {
         @cc = split m{[\s,]+}, $c->request->params->{cc};
     }
+    if (! @to && @cc) {
+        @to = @cc;
+        @cc = ();
+    }
     if (! @to) {
         error($c,
-            'Need at least one of the Rental people on the letter.',
+            'Need at least one email address.',
             "rental/error.tt2",
         );
         return;

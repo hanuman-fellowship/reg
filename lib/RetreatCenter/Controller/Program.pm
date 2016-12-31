@@ -2167,7 +2167,7 @@ sub email_all_do : Local {
     }
     Global->init($c);
     email_letter($c,
-        to      => 'lala@nono.com',
+        to      => 'noreply@mountmadonna.org',
         bcc     => \@emails,
         subject => $subj,
         from    => "$string{from_title} <$string{from}>",

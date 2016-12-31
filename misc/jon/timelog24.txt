@@ -60,12 +60,15 @@ Dec 29 10:00-11:30, 2:30-4:45
     *feedback to retreat guru
     *sutra_send, getting email credentials, directory ownership/mode
     TODO:
-    email Summary to same group
     rental balance reset whenever anything affects it
         including getting a new grid via grab_new
-    have a new column for total # of people from web grid
-        updated when getting it - use it in calendar
+    have a new column (no - use rental.daily_counts)    
+        for total # of people from web grid
+        yes, have new column - updated by grab_new.
     have total population at bottom - under PR count
         don't put 0
-Dec 30 12:50-
-    resend MMI requested payments - made some progress
+    if someone is sleeping in a meeting place/dormitory
+        don't offer it as a possible meeting place
+Dec 30 12:50-3:20, 10:00-10:50
+    resend MMI requested payments
+    email Summary to same group
