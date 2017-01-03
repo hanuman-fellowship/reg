@@ -1222,12 +1222,18 @@ sub send_requests : Local {
 </tr>
 EOH
     my $prog_glnum = $reg->program->glnum();
+    my @old_codes;
     PAYMENT:
     for my $py ($reg->req_mmi_payments()) {
-        next PAYMENT if !$resend_all && $py->code();
+        if ($resend_all) {
+            push @old_codes, $py->code();
+        }
+        elsif ($py->code()) {
             # if not resending
             # $py->code means
             # already sent but not yet gotten
+            next PAYMENT;
+        }
         my $amt = commify($py->amount());
         my $note = $py->note();
         my $for  = $py->for_what_disp();
@@ -1300,6 +1306,12 @@ EOH
             or die "cannot chdir to $string{req_mmi_dir}";
         $ftp->ascii();
         $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
+        if ($resend_all) {
+            # delete any old code files
+            for my $old_code (@old_codes) {
+                $ftp->delete($old_code);
+            }
+        }
         $ftp->quit();
     };
     if ($@ && ! -e '/tmp/testing_req_mmi') {
@@ -1309,7 +1321,7 @@ EOH
         return;
     }
 
-    # mark the payment requests as sent
+    # mark the payment requests as sent - with the new code
     PAYMENT:
     for my $py ($reg->req_mmi_payments()) {
         next PAYMENT if !$resend_all && $py->code();

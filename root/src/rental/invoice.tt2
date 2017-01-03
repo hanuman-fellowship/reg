@@ -1,0 +1,113 @@
+<style type="text/css">
+body {
+    margin-top: 1.5in;
+    margin-left: .5in;
+    margin-bottom: .5in;
+}
+h1 {
+    font-size: 18pt;
+}
+h2 {
+    font-size: 14pt;
+}
+.para {
+    width: 500px;
+}
+.ind {
+    margin-left: .5in;
+}
+.xx {
+    width: 150px;
+}
+.yy {
+    width: 50px;
+    text-align: right;
+}
+</style>
+<h1>Invoice for $rental.name<br>
+${rental.sdate_obj.format("%B %e, %Y")}
+to ${rental.edate_obj.format("%B %e, %Y")}</h1>
+
+<h2>Housing Charges</h2>
+Total from the web housing grid: \$[% commify(tot_hc) %]
+[% IF min_cost %]
+<p>
+<div class=para>
+However, the <i>minimum</i> lodging cost was contractually agreed
+to be 3/4 times the maximum ($rental.max)
+[% IF per_day %] times $n_nights nights [% END %]
+at the dormitory rate of \$$dorm_rate[% IF per_day %] per night[% END %]:
+<ul>
+.75 * $rental.max
+[% IF per_day %]* $n_nights[% END %]
+* \$$dorm_rate = \$[% commify(final_tot_hc) %]
+<ul>
+</div>
+[% END %]
+[% IF extra_time %]
+<h2>Extra Time Charges</h2>
+<div class=para>
+[% IF extra_start %]
+    The rental started at ${rental.start_hour_obj.ampm}
+    (before $string.rental_start_hour)
+    so there is an extra time charge of
+    $start_hours hour$pl_start_hours for $np_start people
+    at \$$string.extra_hours_charge per hour
+    = \$[% commify(start_charge) %]${start_rounded}.
+<p>
+</div>
+[% END %]
+[% IF extra_end %]
+<div class=para>
+    The rental ended at ${rental.end_hour_obj.ampm}
+    (after $string.rental_end_hour)
+    so there is an extra time charge of
+    $end_hours hour$pl_end_hours for $np_end people
+    at \$$string.extra_hours_charge per hour
+    = \$[% commify(end_charge) %]${end_rounded}.
+</div>
+[% END %]
+[% END %]
+
+[% IF rental.charges.0 %]
+<h2>Other Charges</h2>
+<table class=ind cellpadding=3 border=1>
+    [% tot_ch = 0 %]
+    [% FOR ch IN rental.charges %]
+        <tr>
+        <td class=xx>$ch.what</td>
+        <td class=yy>[% commify(ch.amount_disp) %]</td>
+        </tr>
+    [% tot_ch = tot_ch + ch.amount %]
+    [% END %]
+    <tr>
+    <td class=xx>Total</td>
+    <td class=yy>\$[% commify(tot_ch) %]</td>
+    </tr>
+</table>
+[% END %]
+
+[% IF rental.payments.0 %]
+<h2>Payments</h2>
+[% tot_pa = 0 %]
+<table class=ind cellpadding=3 border=1>
+    [% FOR p IN rental.payments %]
+        <tr>
+        <td class=xx>${p.the_date_obj.format()}</td>
+        <td class=yy>[% commify(p.amount_disp) %]</td>
+        </tr>
+    [% tot_pa = tot_pa + p.amount %]
+    [% END %]
+    <tr>
+    <td class=xx>Total</td>
+    <td class=yy>\$[% commify(tot_pa) %]</td>
+    </tr>
+</table>
+[% END %]
+
+<h2>Balance</h2>
+<table class=ind cellpadding=3 border=1>
+<tr><th>Charges</th><td></td></tr>
+<tr><th>Payments</th><td></td></tr>
+<tr><th>Balance</th><td></td></tr>
+</table>

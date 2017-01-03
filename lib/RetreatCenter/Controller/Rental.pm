@@ -130,10 +130,6 @@ sub _get_data {
     if (!@mess && $P{sdate} > $P{edate}) {
         push @mess, "End date must be after the Start date";
     }
-    my $rental_ndays = 0;
-    if (!@mess) {
-        $rental_ndays = date($P{edate}) - date($P{sdate});
-    }
     if ($P{email} && ! valid_email($P{email})) {
         push @mess, "Invalid email: $P{email}";
     }
@@ -274,6 +270,11 @@ sub create_do : Local {
     $P{status} = "tentative";
     $P{program_id} = 0;         # so it isn't NULL
     $P{grid_code} = rand6($c);
+    my $rental_ndays = date($P{edate}) - date($P{sdate});
+    $P{counts} = join ' ', (0) x ($rental_ndays + 1);
+    $P{grid_max} = 0;
+    $P{housing_charge} = 0;
+    # the above 3 columns will be updated only by grab_new
 
     my $r = model($c, 'Rental')->create(\%P);
     $r->set_grid_stale();
@@ -342,6 +343,10 @@ sub create_from_proposal : Local {
     $P{program_id} = 0;                     # so it isn't NULL
 
     $P{grid_code} = rand6($c);
+    my $rental_ndays = date($P{edate}) - date($P{sdate});
+    $P{counts} = join ' ', (0) x ($rental_ndays + 1);
+    $P{grid_max} = 0;
+    $P{housing_charge} = 0;
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
@@ -731,6 +736,7 @@ sub update_do : Local {
     }
 
     $r->update(\%P);
+    $r->compute_balance();       # the changes may have affected it
     $r->set_grid_stale();        # relevant things may have changed
 
     if (! $mmc_does_reg_b4 && $P{mmc_does_reg} && ! $r->program_id()) {
@@ -824,7 +830,7 @@ sub access_denied : Private {
 }
 
 sub pay_balance : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $rental_id) = @_;
 
     if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
         error($c,
@@ -833,7 +839,7 @@ sub pay_balance : Local {
               'gen_error.tt2');
         return;
     }
-    my $r = model($c, 'Rental')->find($id);
+    my $r = model($c, 'Rental')->find($rental_id);
     stash($c,
         message  => payment_warning('mmc'),
         amount   => (tt_today($c)->as_d8() >= $r->edate)? $r->balance()
@@ -844,7 +850,7 @@ sub pay_balance : Local {
 }
 
 sub pay_balance_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $rental_id) = @_;
 
     my $amount = trim($c->request->params->{amount});
     if (invalid_amount($amount)) {
@@ -866,7 +872,7 @@ sub pay_balance_do : Local {
 
     model($c, 'RentalPayment')->create({
 
-        rental_id => $id,
+        rental_id => $rental_id,
         amount    => $amount,
         type      => $type,
 
@@ -874,7 +880,9 @@ sub pay_balance_do : Local {
         the_date => $now_date,
         time     => $now_time,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/3"));
+    my $rental = model($c, 'Rental')->find($rental_id);
+    $rental->compute_balance();
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
 
 sub coordinator_update : Local {
@@ -967,7 +975,7 @@ sub new_charge : Local {
     $c->stash->{template} = "rental/new_charge.tt2";
 }
 sub new_charge_do : Local {
-    my ($self, $c, $id) = @_;
+    my ($self, $c, $rental_id) = @_;
 
     my $amount = trim($c->request->params->{amount});
     my $what   = trim($c->request->params->{what});
@@ -993,7 +1001,7 @@ sub new_charge_do : Local {
     my $now_time = get_time()->t24();
 
     model($c, 'RentalCharge')->create({
-        rental_id => $id,
+        rental_id => $rental_id,
         amount    => $amount,
         what      => $what,
 
@@ -1001,7 +1009,9 @@ sub new_charge_do : Local {
         the_date  => $now_date,
         time      => $now_time,
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/3"));
+    my $rental = model($c, 'Rental')->find($rental_id);
+    $rental->compute_balance();
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/3"));
 }
 
 sub update_lunch : Local {
@@ -1753,289 +1763,14 @@ sub view_summary : Local {
     $c->stash->{template} = "rental/view_summary.tt2";
 }
 
-#
-# ???provide a Back button at the bottom but
-# exclude it when printing!
-#
 sub invoice : Local {
     my ($self, $c, $id) = @_;
-
-    Global->init($c);
-    system("grab wait");        # make sure the local grid is current
     my $rental = model($c, 'Rental')->find($id);
-    my $ndays = $rental->edate_obj() - $rental->sdate_obj();
-    my $hc = $rental->housecost();
-    my $max = $rental->max();
-
-    my $html = <<"EOH";
-<html>
-<head>
-<style type="text/css">
-body {
-    margin-top: 1.5in;
-    margin-left: .5in;
-}
-h1 {
-    font-size: 18pt;
-}
-h2 {
-    font-size: 14pt;
-}
-</style>
-</head>
-<body>
-EOH
-    $html .= "<h1>Invoice for "
-          .  $rental->name()
-          .  "<br>"
-          .  $rental->sdate_obj->format("%b %e, %Y")
-          .  " to "
-          .  $rental->edate_obj->format("%b %e, %Y")
-          .  "</h1>\n";
-
-    $html .= <<"EOH";
-<h2>Housing Charges</h2>
-<div style="margin-left: .3in">
-EOH
-
-    my $tot_housing_charge = 0;
-    my $fgrid = get_grid_file($rental->grid_code());
-    if (open my $in, "<", $fgrid) {
-        # parse the file and extract total cost
-        #
-        while (my $line = <$in>) {
-            chomp $line;
-            my ($cost) = $line =~ m{(\d+)$};
-            $tot_housing_charge += $cost;
-        }
-        close $in;
-        my $ctot = commify($tot_housing_charge);
-        $html .= <<"EOH";
-From web housing grid: \$$ctot
-EOH
-    }
-   
-    # how does the total cost compare to the minimum?
-    #
-    my $dorm_rate = $hc->dormitory();
-    my $min_lodging = int(0.75
-                          * $max
-                          * ($hc->type() eq 'Per Day'? $ndays: 1)
-                          * $dorm_rate
-                         );
-    if ($tot_housing_charge < $min_lodging) {
-        my $s = commify($min_lodging);
-        my $times_nights =
-            $hc->type() eq 'Per Day'? "times $ndays nights ": "";
-        $html .= <<"EOH";
-<div style="width: 500">
-<p>
-However, the <i>minimum</i> lodging cost was contractually agreed to be
-3/4 times the maximum ($max) ${times_nights}at the dormitory rate
-of \$$dorm_rate per night which comes to a total of \$$s.
-</div>
-EOH
-        $tot_housing_charge = $min_lodging;
-    }
-    $html .= "</div>\n";
-
-    # get attendance for the first, last days
-    my @counts = $rental->daily_counts();
-
-    my $ex_time = "";
-    my $extra_hours_charge = 0;
-    my $tr_extra = "";
-
-    #
-    # repetitious.
-    # I can't bother to generalize the two cases at this time.
-    #
-    my $start = $rental->start_hour_obj();
-    my $diff = get_time("1600") - $start;
-    if ($diff > 0) {
-        my $extra_hours = $diff/60;
-        my $np = $rental->expected();
-        if ($counts[0] > $np) {    # first day count
-            $np = $counts[0];
-        }
-        my $ec = $extra_hours
-                 * $np
-                 * $string{extra_hours_charge}
-                 ;
-        my $rounded = "";
-        if ($ec != int($ec)) {
-            $rounded = " (rounded down)";
-        }
-        $ec = int($ec);
-        my $s = commify($ec);
-        $extra_hours_charge += $ec;
-
-        my $pl = ($extra_hours == 1)? "": "s";
-        $extra_hours = sprintf("%.2f", $extra_hours);
-        $tr_extra = "<tr><th align=right>Extra Time</th><td align=right>$s</td></tr>";
-        $ex_time .= "The rental started at "
-                 .  $start->ampm()
-                 .  " (before 4:00 pm)"
-                 .  " so there is an extra time charge of "
-                 .  " $extra_hours hour$pl for $np people"
-                 .  " at \$$string{extra_hours_charge} per hour"
-                 .  " = \$$s$rounded."
-                 ;
-    }
-    my $end = $rental->end_hour_obj();
-    $diff = $end - get_time("1300");
-    if ($diff > 0) {
-        my $extra_hours = $diff/60;
-        my $np = $rental->expected();
-        if ($counts[-1] > $np) {       # last day count
-            $np = $counts[-1];
-        }
-        my $ec = $extra_hours
-                 * $np
-                 * $string{extra_hours_charge}
-                 ;
-        my $rounded = "";
-        if ($ec != int($ec)) {
-            $rounded = " (rounded down)";
-        }
-        $ec = int($ec);
-        my $s = commify($ec);
-        $extra_hours_charge += $ec;
-
-        my $pl = ($extra_hours == 1)? "": "s";
-        $extra_hours = sprintf("%.2f", $extra_hours);
-        $tr_extra .= "<tr><th align=right>Extra Time</th><td align=right>$s</td></tr>";
-        $ex_time .= "<p>\n" if $ex_time;
-        $ex_time .= "The rental ended at "
-                 .  $end->ampm()
-                 .  " (after 1:00 pm)"
-                 .  " so there is an extra time charge of "
-                 .  " $extra_hours hour$pl for $np people"
-                 .  " at \$$string{extra_hours_charge} per hour"
-                 .  " = \$$s$rounded."
-                 ;
-    }
-    if ($extra_hours_charge) {
-        $html .= <<"EOH";
-<h2>Extra Time Charge</h2>
-<div style="width: 500; margin-left: .3in;">
-$ex_time
-</div>
-EOH
-    }
-
-    my @charges = $rental->charges();
-    my $tot_other_charges = 0;
-    my $tr_other = "";
-    if (@charges) {
-        $html .= <<"EOH";
-<h2>Other Charges</h2>
-<div style="margin-left: .3in">
-<table cellpadding=3 border=1>
-<tr>
-<th>Amount</th>
-<th align=left>What</th>
-</tr>
-EOH
-        for my $ch (@charges) {
-            $tot_other_charges += $ch->amount;
-            $html .= "<tr>"
-                  .  "<td align=right>" . commify($ch->amount_disp()) . "</td>"
-                  .  "<td>" . $ch->what()   . "</td>"
-                  .  "</tr>\n"
-                  ;
-        }
-        $html .= "<tr><td align=right>\$"
-              .  commify(penny($tot_other_charges))
-              .  "</td><td>Total</td></tr>\n";
-        $html .= "</table></ul>\n";
-        $tr_other = "<tr><th align=right>Other</th><td align=right>"
-                  . commify(penny($tot_other_charges))
-                  . "</td></tr>";
-    }
-    my $tot_charges = $tot_housing_charge
-                    + $extra_hours_charge
-                    + $tot_other_charges
-                    ;
-    my $st = commify(penny($tot_charges));
-    my $sh = commify(penny($tot_housing_charge));
-    $html .= <<"EOH";
-</table>
-</div>
-<h2>Total Charges</h2>
-<div style="margin-left: .3in">
-<table cellpadding=3 border=1>
-<tr><th align=right>Housing</th><td align=right>$sh</td></tr>
-$tr_extra
-$tr_other
-<tr><th align=right>Total</th><td>\$$st</td></tr>
-</table>
-</div>
-EOH
-    my $tot_payments = 0;
-    my @payments = $rental->payments();
-    if (@payments) {
-        $html .= <<"EOH";
-<h2>Total Payments</h2>
-<div style="margin-left: .3in">
-<table cellpadding=3 border=1>
-<tr>
-<th>Date</th>
-<th>Amount</th>
-</tr>
-EOH
-        for my $p (@payments) {
-            $html .= "<tr>"
-                  .  "<td>" . $p->the_date_obj() . "</td>"
-                  .  "<td align=right>" . commify($p->amount_disp()) . "</td>"
-                  .  "</tr>\n"
-                  ;
-            $tot_payments += $p->amount();
-        }
-        my $s = commify($tot_payments);
-        $html .= <<"EOH";
-<tr>
-<td>Total</td>
-<td align=right>\$$s</td>
-</tr>
-</table>
-</div>
-EOH
-    }
-
-    my $balance = $tot_charges - $tot_payments;
-    my $sb = commify(penny($balance));
-    if ($balance == 0) {
-        $sb = "Paid in Full";
-    }
-    else {
-        $sb = "\$$sb";
-    }
-    $html .= <<"EOH";
-<h2>Balance</h2>
-<div style="margin-left: .3in">
-    $sb
-</div>
-</body>
-</html>
-EOH
-    #
-    # update the balance here this will help determine
-    # the status of the rental.  hopefully we don't need
-    # to compute the balance elsewhere.  If a new charge
-    # is added we'll need to change the balance and the
-    # status - but to do that all we need to is ask for
-    # invoice.  is this okay?  it is awkward to compute
-    # the balance in several places.  make convenience sub???
-    #
-    # the balance is computed when creating the invoice.
-    # the status is set when viewing the rental.
-    #
-    $rental->update({
-        balance => $balance,
-    });
+    my $html = $rental->compute_balance(1);
     $c->res->output($html);
 }
+
+
 
 sub link_proposal : Local {
     my ($self, $c, $rental_id, $proposal_id) = @_;
@@ -2163,12 +1898,16 @@ sub duplicate_do : Local {
     # now we can create the new dup'ed rental
     # with the coordinator and contract signer ids from the old.
     #
+    my $ndays = date($P{edate}) - date($P{sdate});
     my $new_r = model($c, 'Rental')->create({
         %P,         # this comes first so summary_id can override
         summary_id => $sum->id,
         coordinator_id => $old_rental->coordinator_id(),
         cs_person_id   => $old_rental->cs_person_id(),
         grid_code      => rand6($c),
+        counts         => (join ' ', (0) x ($ndays + 1)),
+        grid_max       => 0,
+        housing_charge => 0,
     });
     $new_r->set_grid_stale();
     my $id = $new_r->id();

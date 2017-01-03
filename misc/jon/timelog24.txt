@@ -21,7 +21,7 @@ Oct 30 9:30-12:00, 6:00-7:00, 8:30-10:30
     continuing to debug, refine the cosmic reg site
     strings for ftp_notify_dir, ftp_pr_dir for ftp'ing files
     discovered: passive 0 for new site
-Nov 13 2:00-
+Nov 13 2:00-2:30
     continuing (post election)
     asking Barnaby about grid link email to rental contact person
 Nov 19
@@ -60,15 +60,30 @@ Dec 29 10:00-11:30, 2:30-4:45
     *feedback to retreat guru
     *sutra_send, getting email credentials, directory ownership/mode
     TODO:
+    cron job to clear old req_mmi files?
     rental balance reset whenever anything affects it
         including getting a new grid via grab_new
-    have a new column (no - use rental.daily_counts)    
-        for total # of people from web grid
-        yes, have new column - updated by grab_new.
-    have total population at bottom - under PR count
+    calendar - have total population at bottom - under PR count
         don't put 0
     if someone is sleeping in a meeting place/dormitory
         don't offer it as a possible meeting place
-Dec 30 12:50-3:20, 10:00-10:50
-    resend MMI requested payments
-    email Summary to same group
+Dec 30 12:50-3:20, 10:00-10:50, 11:00-12:10
+    *resend MMI requested payments
+    *email Summary to same group
+Dec 31 9:30-10:10
+    * more feedback to retreat guru
+    *remove old code files from resent mmi payment requests
+Jan 1 10:00-10:30
+    sutras not sending?
+Jan 2 11:25-3:00
+    sutras now sending - sleep 60 every 50 - works
+    rentals - have a new columns for daily totals and
+        max # of people derived from web grid.
+        updated by grab_new when new grid is gotten.
+        balance is recomputed and updated as well.
+        balance is recomputed when payments, charges are added.
+        before - only the invoice display did it.
+    Lots of work - went fairly smoothly - just put 4 hours
+    Now have invoice.tt2 template - much better
+Jan 3 6:45-7:00
+    tidying up a bit

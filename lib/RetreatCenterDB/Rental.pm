@@ -12,6 +12,7 @@ use Util qw/
     commify
     d3_to_hex
     housing_types
+    penny
 /;
 use Date::Simple qw/
     date
@@ -20,7 +21,7 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
-#use Net::Ping;
+use Template;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
@@ -83,6 +84,10 @@ __PACKAGE__->add_columns(qw/
 
     arrangement_sent
     arrangement_by
+
+    counts
+    grid_max
+    housing_charge
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -276,69 +281,7 @@ sub dates_tr2 {
 	my ($self) = @_;
 	return RetreatCenterDB::Program::dates_tr2($self);
 }
-#
-# returns an array of counts for each day of the rental
-# if the web grid is not there or is empty use the
-# count (as below) or failing that, the maximum.
-#
-sub daily_counts {
-    my ($self) = @_;
 
-    my $ndays = ($self->edate_obj() - $self->sdate_obj()) || 1;
-        # || 1 for Rentals that are only one day - everyone commutes
-        # but they do eat.
-    my $max = $self->expected() || $self->max();
-    my $fname = get_grid_file($self->grid_code());
-    my $in;
-    if (! open($in, "<", $fname)) {
-        if ($self->program_id) {
-            return (0 x ($ndays+1));
-        }
-        return (($max) x ($ndays+1));
-    }
-    #
-    # we take care of the final day below
-    # the web grid does not have a # for that last day
-    #
-    my @counts = (0) x $ndays;
-    my $tot_cost = 0;
-    LINE:
-    while (my $line = <$in>) {
-        chomp $line;
-        if ($line =~ s{(\d+)$}{}) {
-            my $cost = $1;
-            if (! $cost) {
-                next LINE;
-            }
-            $tot_cost += $cost;
-        }
-        my $name = "";
-        if ($line =~ s{^\d+\|\d+\|([^|]*)\|}{}) {
-            $name = $1;
-        }
-        my @peeps = split m{\&|\band\b}i, $name;
-        my $np = @peeps;
-        my @nights = split m{\|}, $line;
-        for my $i (0 .. $#counts) {
-            $counts[$i] += $np * $nights[$i];
-        }
-    }
-    close $in;
-    if ($tot_cost == 0) {
-        if ($self->program_id) {
-            # for hybrids the count is solely from the program registrations
-            return (0 x ($ndays+1));
-        }
-        return (($max) x ($ndays+1));
-    }
-    #
-    # on the last day
-    # the people who slept the night before will have breakfast
-    # and maybe lunch.
-    #
-    push @counts, $counts[-1];
-    return @counts;
-}
 sub count {
     my ($self) = @_;
 
@@ -346,27 +289,9 @@ sub count {
         # it has been cancelled - ignore the web grid
         return 0;
     }
-    my $prog_count = 0;
-    if ($self->program_id()) {
-        # Hybrid counts come from the program and also the web grid.
-        #
-        $prog_count = $self->program->count();
-    }
-    # the count is the population count when
-    # the maximum number of people were present.
-    #
-    my @counts = $self->daily_counts();
-    my $top = 0;
-    for my $c (@counts) {
-        if ($top < $c) {
-            $top = $c;
-        }
-    }
     my $expected = $self->expected() || 0;
-    if ($top > $expected) {
-        return $top + $prog_count;
-    }
-    return $expected + $prog_count;
+    my $gmax = $self->grid_max() || 0;
+    return ($gmax > $expected)? $gmax: $expected;
 }
 my %display_for = map { my $x = $_; $x =~ s{_}{ }xmsg; $x } qw/
     tentative Tentative
@@ -465,10 +390,6 @@ sub balance_disp {
 sub send_grid_data {
     my ($rental) = @_;
     
-    #my $p = Net::Ping->new();
-    #if (!$p->ping("mountmadonna.org")) {
-    #    return;     # don't even try
-    #}
     my $code = $rental->grid_code() . ".txt";
     open my $gd, ">", "/tmp/$code"
         or die "cannot create /tmp/$code: $!\n";
@@ -546,6 +467,219 @@ sub set_grid_stale {
     });
 }
 
+# ??? system("grab wait") if $invoice;
+# make sure the local grid is current???
+sub compute_balance {
+    my ($rental, $invoice) = @_;
+
+    my $n_nights = $rental->edate_obj() - $rental->sdate_obj();
+    my $hc = $rental->housecost();
+    my $dorm_rate = $hc->dormitory();
+    my $per_day = $hc->type() eq 'Per Day';
+    my $max = $rental->max();
+    my $tot_hc = $rental->housing_charge();
+    my $final_tot_hc = $tot_hc;
+    my $min_cost = 0;
+   
+    # how does the total cost compare to the minimum?
+    #
+    my $min_lodging = int(0.75
+                          * $max
+                          * ($per_day? $n_nights: 1)
+                          * $dorm_rate
+                         );
+    if ($tot_hc < $min_lodging) {
+        $min_cost = 1;
+        $final_tot_hc = $min_lodging;
+    }
+
+    # get attendance for the first, last days
+    my @counts = split ' ', $rental->counts();
+    my $extra_hours_charge = 0;
+    #
+    # repetitious.
+    # I can't bother to generalize the two cases at this time.
+    #
+
+    # starting
+    my $extra_start = 0;
+    my ($start_hours, $fmt_start_hours, $pl_start_hours,
+        $start_charge, $start_rounded, $np_start);
+    my $start = $rental->start_hour_obj();
+    my $start_diff = get_time($string{rental_start_hour}) - $start;
+    if ($start_diff > 0) {
+        $extra_start = 1;
+        $start_hours = $start_diff/60;
+        $np_start = $rental->expected() || 0;
+        if ($counts[0] > $np_start) {    # first day count
+            $np_start = $counts[0];
+        }
+        my $ec = $start_hours
+                 * $np_start
+                 * $string{extra_hours_charge}
+                 ;
+        $start_rounded = "";
+        if ($ec != int($ec)) {
+            $start_rounded = " (rounded down)";
+        }
+        $start_charge = int($ec);
+    }
+
+    # ending
+    my $extra_end = 0;
+    my ($end_hours, $fmt_end_hours, $pl_end_hours,
+        $end_charge, $end_rounded, $np_end);
+    my $end = $rental->end_hour_obj();
+    my $end_diff = $end - get_time($string{rental_end_hour});
+    if ($end_diff > 0) {
+        $extra_end = 1;
+        $end_hours = $end_diff/60;
+        $np_end = $rental->expected() || 0;
+        if ($counts[-1] > $np_end) {    # last day count
+            $np_end = $counts[-1];
+        }
+        my $ec = $end_hours
+                 * $np_end
+                 * $string{extra_hours_charge}
+                 ;
+        $end_rounded = "";
+        if ($ec != int($ec)) {
+            $end_rounded = " (rounded down)";
+        }
+        $end_charge = int($ec);
+    }
+
+=begin
+
+    my $tot_charges = $housing_charge
+                    + $extra_hours_charge
+                    + $tot_other_charges
+                    ;
+    if ($invoice) {
+        my $st = commify(penny($tot_charges));
+        my $sh = commify(penny($housing_charge));
+        $html .= <<"EOH";
+    </table>
+    </div>
+    <h2>Total Charges</h2>
+    <div style="margin-left: .3in">
+    <table cellpadding=3 border=1>
+    <tr><th align=right width=$wid1>Housing</th><td align=right width=$wid2>$sh</td></tr>
+    $tr_extra
+    $tr_other
+    <tr><th align=right>Total</th><td align=right>\$$st</td></tr>
+    </table>
+    </div>
+EOH
+    }
+    my $tot_payments = 0;
+    my @payments = $rental->payments();
+    if (@payments) {
+        $html .= <<"EOH" if $invoice;
+<h2>Total Payments</h2>
+<div style="margin-left: .3in">
+<table cellpadding=3 border=1>
+<tr>
+<th align=left width=$wid1>Date</th>
+<th width=$wid2>Amount</th>
+</tr>
+EOH
+        for my $p (@payments) {
+            $html .= "<tr>"
+                  .  "<td>" . $p->the_date_obj() . "</td>"
+                  .  "<td align=right>" . commify($p->amount_disp()) . "</td>"
+                  .  "</tr>\n"
+                  if $invoice;
+            $tot_payments += $p->amount();
+        }
+        if ($invoice) {
+            my $s = commify($tot_payments);
+            $html .= <<"EOH";
+<tr>
+<td>Total</td>
+<td align=right>\$$s</td>
+</tr>
+</table>
+</div>
+EOH
+        }
+    }
+
+    my $balance = $tot_charges - $tot_payments;
+    if ($invoice) {
+        my $sb = commify(penny($balance));
+        if ($balance == 0) {
+            $sb = "Paid in Full";
+        }
+        else {
+            $sb = "\$$sb";
+        }
+        my $c_tot_charges = commify(penny($tot_charges));
+        my $c_tot_payments = commify(penny($tot_payments));
+        $html .= <<"EOH";
+<h2>Balance</h2>
+<div style="margin-left: .3in">
+<table cellpadding=3 border=1>
+<tr><th width=$wid1 align=right>Charges</th><td align=right width=$wid2>\$$c_tot_charges</td></tr>
+<tr><th align=right>Payments</th><td align=right>-\$$c_tot_payments</td></tr>
+<tr><th align=right>Balance</th><td align=right>$sb</td></tr>
+</table>
+</div>
+</body>
+</html>
+EOH
+    }
+
+=end
+
+=cut
+
+    my $balance = 300;
+    $rental->update({
+        balance => $balance,
+    });
+    if ($invoice) {
+        my $tt = Template->new({
+            INTERPOLATE => 1,
+            INCLUDE_PATH => 'root/src/rental',
+        });
+        my $html;
+        my $stash = {
+            string         => \%string,
+            commify        => \&commify,
+            rental         => $rental,
+            tot_hc         => $tot_hc,
+            final_tot_hc   => $final_tot_hc,
+            dorm_rate      => $dorm_rate,
+            n_nights       => $n_nights,
+            per_day        => $per_day,
+            min_lodging    => $min_lodging,
+            min_cost       => $min_cost,
+
+            extra_time     => $extra_start || $extra_end,
+
+            extra_start    => $extra_start,
+            start_hours    => sprintf("%.2f", $start_hours),
+            pl_start_hours => ($start_hours == 1)? "": "s",
+            np_start       => $np_start,
+            start_charge   => $start_charge,
+            start_rounded  => $start_rounded,
+
+            extra_end      => $extra_end,
+            end_hours      => sprintf("%.2f", $end_hours),
+            pl_end_hours   => ($end_hours == 1)? "": "s",
+            np_end         => $np_end,
+            end_charge     => $end_charge,
+            end_rounded    => $end_rounded,
+        };
+        $tt->process(
+            'invoice.tt2',
+            $stash,
+            \$html,
+        );
+        return $html;
+    }
+}
 
 1;
 __END__
@@ -553,7 +687,8 @@ overview - A rental is created when some other organization wants
     to rent the meeting space and housing at MMC.  These events are not
     sponsored nor advertised by the center.  Housing assignments are
     made by the coordinator by filling in a form on the global web.
-    This information is brought into Reg periodically.
+    This information is brought into Reg periodically via a cron job
+    or on demand (Grab New).
 arrangement_sent - date that the arrangement letter was sent
 arrangement_by - who sent the arrangement letter
 balance - the outstanding balance
@@ -563,6 +698,8 @@ comment - free text describing the rental
 contract_received - date the contract was received
 contract_sent - date the contract was sent out
 coordinator_id - foreign key to person
+counts - the number of people attending the rental
+    each day from start to end - space separated
 cs_person_id - foreign key to person
 deposit - how much deposit is required?
 edate - date the rental ends
@@ -575,8 +712,10 @@ fixed_cost_houses - lines describing houses with a fixed cost.
     a pad on the floor.
 glnum - a General Ledger number computed from the sdate
 grid_code - a hard to guess code for the grid URL
+grid_max - the maximum of the daily counts
 grid_stale - is the web grid in need of refreshing?
 housecost_id - foreign key to housecost
+housing_charge - total cost from the housing grid
 housing_note - free text describing any issues with the rental housing
 id - unique id
 linked - should this rental be included on the online Event calendar?

@@ -303,7 +303,61 @@ sub check_grid {
     my ($rental) = model($c, 'Rental')->search({
                        grid_code => $code,
                    });
-    msg "grid " . ($rental? $rental->name: "unknown rental: code = $code");
+    # look carefully at the file and update 3 columns in the Rental
+    my $in;
+    if (! open($in, "<", "$get_dir/$f")) {
+        msg "could not open grid file $get_dir/$f\n";
+        return;
+    }
+    #
+    # we take care of the final day below
+    # the web grid does not have a # for that last day
+    #
+    my $ndays = $rental->edate_obj() - $rental->sdate_obj();
+    my @counts = (0) x $ndays;
+    my $tot_cost = 0;
+    LINE:
+    while (my $line = <$in>) {
+        chomp $line;
+        if ($line =~ s{(\d+)$}{}) {
+            my $cost = $1;
+            if (! $cost) {
+                next LINE;
+            }
+            $tot_cost += $cost;
+        }
+        my $name = "";
+        # chop off the house id, the bed # and the name(s)
+        if ($line =~ s{^\d+\|\d+\|([^|]*)\|}{}) {
+            $name = $1;
+        }
+        my @peeps = split m{\&|\band\b}i, $name;
+        my $np = @peeps;
+        my @nights = split m{\|}, $line;
+        for my $i (0 .. $#counts) {
+            $counts[$i] += $np * $nights[$i];
+        }
+    }
+    close $in;
+    #
+    # on the last day
+    # the people who slept the night before will have breakfast
+    # and maybe lunch.
+    #
+    push @counts, $counts[-1];
+    my $max = 0;
+    for my $c (@counts) {
+        if ($max < $c) {
+            $max = $c;
+        }
+    }
+    $rental->update({
+        counts         => (join ' ', @counts),
+        grid_max       => $max,
+        housing_charge => $tot_cost,
+    });
+    msg "grid " . ($rental? $rental->name
+                   :        "unknown rental: code = $code");
 }
 
 sub temple_donation {

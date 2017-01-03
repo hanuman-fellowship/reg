@@ -183,7 +183,7 @@ Web
 </tr>
 
 <tr>
-<th>Number of Days</th>
+<th align=right>Number of Days</th>
 <td valign=top>$ndays</td>
 </tr>
 

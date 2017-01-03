@@ -605,7 +605,7 @@ sub meal_list : Local {
 
         $event_start = $r->sdate_obj();
         $lunches = $r->lunches();
-        my @counts = $r->daily_counts();
+        my @counts = split ' ', $r->counts();
 
         ($event_start, $lunches)  = get_lunch($c, $r->id(), 'Rental');
         $len_lunches = length($lunches);

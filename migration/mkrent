@@ -125,5 +125,9 @@ create table proposal (
     cs_person_id integer,
     staff_ok text,
     arrangement_sent text,
-    arrangement_by text
+    arrangement_by text,
+
+    counts txt,
+    grid_max integer,
+    housing_charge integer
 );
