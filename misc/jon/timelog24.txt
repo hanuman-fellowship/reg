@@ -87,3 +87,8 @@ Jan 2 11:25-3:00
     Now have invoice.tt2 template - much better
 Jan 3 6:45-7:00
     tidying up a bit
+    need script for running on kali - to add 3 columns to rental
+        and read CODE-data.txt files to update them - and balance
+        many old ones won't have a CODE-data.txt file? then - 0 0 0 0
+        that script can't rely on DB Rental compute_balance
+        we can do this before pushing all to kali

@@ -496,6 +496,7 @@ sub compute_balance {
     # get attendance for the first, last days
     my @counts = split ' ', $rental->counts();
     my $extra_hours_charge = 0;
+
     #
     # repetitious.
     # I can't bother to generalize the two cases at this time.
@@ -572,36 +573,6 @@ sub compute_balance {
     </div>
 EOH
     }
-    my $tot_payments = 0;
-    my @payments = $rental->payments();
-    if (@payments) {
-        $html .= <<"EOH" if $invoice;
-<h2>Total Payments</h2>
-<div style="margin-left: .3in">
-<table cellpadding=3 border=1>
-<tr>
-<th align=left width=$wid1>Date</th>
-<th width=$wid2>Amount</th>
-</tr>
-EOH
-        for my $p (@payments) {
-            $html .= "<tr>"
-                  .  "<td>" . $p->the_date_obj() . "</td>"
-                  .  "<td align=right>" . commify($p->amount_disp()) . "</td>"
-                  .  "</tr>\n"
-                  if $invoice;
-            $tot_payments += $p->amount();
-        }
-        if ($invoice) {
-            my $s = commify($tot_payments);
-            $html .= <<"EOH";
-<tr>
-<td>Total</td>
-<td align=right>\$$s</td>
-</tr>
-</table>
-</div>
-EOH
         }
     }
 
@@ -644,6 +615,8 @@ EOH
             INCLUDE_PATH => 'root/src/rental',
         });
         my $html;
+        $start_hours ||= 0;
+        $end_hours ||= 0;
         my $stash = {
             string         => \%string,
             commify        => \&commify,

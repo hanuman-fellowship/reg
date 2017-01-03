@@ -16,7 +16,7 @@ th, td {
 </style>
 </head>
 <body>
-<img src=http://www.mountmadonna.org/Gif/contentHeader_kayakalpa.jpg>
+<img src='https://www.mountmadonna.org/assets/img/registration/contentHeader_kayakalpa.jpg'>
 <p>
 Greetings $first,
 <p>
