@@ -477,8 +477,8 @@ sub compute_balance {
     my $dorm_rate = $hc->dormitory();
     my $per_day = $hc->type() eq 'Per Day';
     my $max = $rental->max();
-    my $tot_hc = $rental->housing_charge();
-    my $final_tot_hc = $tot_hc;
+    my $tot_housing = $rental->housing_charge();
+    my $final_tot_housing = $tot_housing;
     my $min_cost = 0;
    
     # how does the total cost compare to the minimum?
@@ -488,9 +488,9 @@ sub compute_balance {
                           * ($per_day? $n_nights: 1)
                           * $dorm_rate
                          );
-    if ($tot_hc < $min_lodging) {
+    if ($tot_housing < $min_lodging) {
         $min_cost = 1;
-        $final_tot_hc = $min_lodging;
+        $final_tot_housing = $min_lodging;
     }
 
     # get attendance for the first, last days
@@ -549,66 +549,23 @@ sub compute_balance {
         }
         $end_charge = int($ec);
     }
-
-=begin
-
-    my $tot_charges = $housing_charge
-                    + $extra_hours_charge
-                    + $tot_other_charges
-                    ;
-    if ($invoice) {
-        my $st = commify(penny($tot_charges));
-        my $sh = commify(penny($housing_charge));
-        $html .= <<"EOH";
-    </table>
-    </div>
-    <h2>Total Charges</h2>
-    <div style="margin-left: .3in">
-    <table cellpadding=3 border=1>
-    <tr><th align=right width=$wid1>Housing</th><td align=right width=$wid2>$sh</td></tr>
-    $tr_extra
-    $tr_other
-    <tr><th align=right>Total</th><td align=right>\$$st</td></tr>
-    </table>
-    </div>
-EOH
+    my $tot_charges = 0;
+    for my $ch ($rental->charges()) {
+        $tot_charges += $ch->amount();
     }
-        }
+    my $tot2_charges = $final_tot_housing + $tot_charges + $start_charge + $end_charge;
+
+    my $tot_payments = 0;
+    for my $p ($rental->payments()) {
+        $tot_payments += $p->amount();
     }
 
-    my $balance = $tot_charges - $tot_payments;
-    if ($invoice) {
-        my $sb = commify(penny($balance));
-        if ($balance == 0) {
-            $sb = "Paid in Full";
-        }
-        else {
-            $sb = "\$$sb";
-        }
-        my $c_tot_charges = commify(penny($tot_charges));
-        my $c_tot_payments = commify(penny($tot_payments));
-        $html .= <<"EOH";
-<h2>Balance</h2>
-<div style="margin-left: .3in">
-<table cellpadding=3 border=1>
-<tr><th width=$wid1 align=right>Charges</th><td align=right width=$wid2>\$$c_tot_charges</td></tr>
-<tr><th align=right>Payments</th><td align=right>-\$$c_tot_payments</td></tr>
-<tr><th align=right>Balance</th><td align=right>$sb</td></tr>
-</table>
-</div>
-</body>
-</html>
-EOH
-    }
+    my $balance = $tot2_charges - $tot_payments;
 
-=end
-
-=cut
-
-    my $balance = 300;
     $rental->update({
         balance => $balance,
     });
+
     if ($invoice) {
         my $tt = Template->new({
             INTERPOLATE => 1,
@@ -621,8 +578,8 @@ EOH
             string         => \%string,
             commify        => \&commify,
             rental         => $rental,
-            tot_hc         => $tot_hc,
-            final_tot_hc   => $final_tot_hc,
+            tot_housing    => $tot_housing,
+            final_tot_housing => $final_tot_housing,
             dorm_rate      => $dorm_rate,
             n_nights       => $n_nights,
             per_day        => $per_day,
@@ -644,6 +601,11 @@ EOH
             np_end         => $np_end,
             end_charge     => $end_charge,
             end_rounded    => $end_rounded,
+
+            tot_charges    => $tot_charges,
+            tot2_charges   => $tot2_charges,
+            tot_payments   => $tot_payments,
+            balance        => $balance,
         };
         $tt->process(
             'invoice.tt2',

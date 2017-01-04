@@ -30,7 +30,7 @@ ${rental.sdate_obj.format("%B %e, %Y")}
 to ${rental.edate_obj.format("%B %e, %Y")}</h1>
 
 <h2>Housing Charges</h2>
-Total from the web housing grid: \$[% commify(tot_hc) %]
+Total from the web housing grid: \$[% commify(tot_housing) %]
 [% IF min_cost %]
 <p>
 <div class=para>
@@ -41,7 +41,7 @@ at the dormitory rate of \$$dorm_rate[% IF per_day %] per night[% END %]:
 <ul>
 .75 * $rental.max
 [% IF per_day %]* $n_nights[% END %]
-* \$$dorm_rate = \$[% commify(final_tot_hc) %]
+* \$$dorm_rate = \$[% commify(final_tot_housing) %]
 <ul>
 </div>
 [% END %]
@@ -73,57 +73,52 @@ at the dormitory rate of \$$dorm_rate[% IF per_day %] per night[% END %]:
 [% IF rental.charges.0 %]
 <h2>Other Charges</h2>
 <table class=ind cellpadding=3 border=1>
-    [% tot_ch = 0 %]
     [% FOR ch IN rental.charges %]
         <tr>
         <td class=xx>$ch.what</td>
         <td class=yy>[% commify(ch.amount_disp) %]</td>
         </tr>
-    [% tot_ch = tot_ch + ch.amount %]
     [% END %]
     <tr>
     <td class=xx>Total</td>
-    <td class=yy>\$[% commify(tot_ch) %]</td>
+    <td class=yy>\$[% commify(tot_charges) %]</td>
     </tr>
 </table>
 [% END %]
 
 <h2>Total Charges</h2>
 <table class=ind cellpadding=3 border=1>
-<tr><td class=xx>Housing</td><td class=yy>[% commify(final_tot_hc) %]</td></tr>
+<tr><td class=xx>Housing</td><td class=yy>[% commify(final_tot_housing) %]</td></tr>
 [% IF extra_start %]
 <tr><td class=xx>Extra Start Time</td><td class=yy>[% commify(start_charge) %]</td></tr>
 [% END %]
 [% IF extra_end %]
 <tr><td class=xx>Extra End Time</td><td class=yy>[% commify(end_charge) %]</td></tr>
 [% END %]
-<tr><td class=xx>Other</td><td class=yy>[% commify(tot_ch) %]</td></tr>
-[% tot_ch = final_tot_hc + start_charge + end_charge + tot_ch %]
-<tr><td class=xx>Total</td><td class=yy>\$[% commify(tot_ch) %]</td></tr>
+<tr><td class=xx>Other</td><td class=yy>[% commify(tot_charges) %]</td></tr>
+<tr><td class=xx>Total</td><td class=yy>\$[% commify(tot2_charges) %]</td></tr>
 </table>
 
 
 [% IF rental.payments.0 %]
 <h2>Payments</h2>
-[% tot_pa = 0 %]
 <table class=ind cellpadding=3 border=1>
     [% FOR p IN rental.payments %]
         <tr>
         <td class=xx>${p.the_date_obj.format()}</td>
         <td class=yy>[% commify(p.amount_disp) %]</td>
         </tr>
-    [% tot_pa = tot_pa + p.amount %]
     [% END %]
     <tr>
     <td class=xx>Total</td>
-    <td class=yy>\$[% commify(tot_pa) %]</td>
+    <td class=yy>\$[% commify(tot_payments) %]</td>
     </tr>
 </table>
 [% END %]
 
 <h2>Balance</h2>
 <table class=ind cellpadding=3 border=1>
-<tr><th>Charges</th><td></td></tr>
-<tr><th>Payments</th><td></td></tr>
-<tr><th>Balance</th><td></td></tr>
+<tr><th class=xx>Charges</th><td class=yy>[% commify(tot2_charges) %]</td></tr>
+<tr><th class=xx>Payments</th><td class=yy>-[% commify(tot_payments) %]</td></tr>
+<tr><th class=xx>Balance</th><td class=yy>\$[% commify(balance) %]</td></tr>
 </table>
