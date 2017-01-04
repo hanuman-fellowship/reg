@@ -127,7 +127,7 @@ create table proposal (
     arrangement_sent text,
     arrangement_by text,
 
-    counts txt,
+    counts text,
     grid_max integer,
     housing_charge integer
 );
