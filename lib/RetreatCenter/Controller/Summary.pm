@@ -416,10 +416,7 @@ sub email : Local {
         %people,
         intro    => <<"EOF",
 Hi $to,
-<p>&nbsp;</p>
 $string{sum_intro}
-<p>&nbsp;</p>
-<p>
 $user_first
 EOF
         template => "summary/email.tt2",

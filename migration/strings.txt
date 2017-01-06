@@ -264,5 +264,5 @@ ftp_calendar_dir calendar
 rental_late_in 10
 rental_late_out 5
 rental_arranged_color 255,0,0
-sum_into Please review the logistic plan.
+sum_intro Please review the logistic plan.
 sum_email_subject Logistic plan for
