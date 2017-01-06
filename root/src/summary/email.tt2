@@ -1,3 +1,5 @@
+<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
 <h2>Emailing the Summary for $happening.name</h2>
 
 <form action=/summary/email_do/$happening.summary_id>
@@ -8,7 +10,20 @@
 [% IF person2 %]
 <tr><td></td><td><input type=checkbox name=email2 value='$person2.first $person2.last <$person2.email>' checked> $person2.first $person2.last </td><td>$person2.email<td></tr>
 [% END %]
-<tr><td>Cc</td><td colspan=2><input type=text name=cc size=40></td></tr>
+
+<tr>
+<th align=right>Cc</th><td colspan=2><input type=text name=cc size=60></td>
+</tr>
+
+<tr>
+<th align=right>Subject</th><td colspan=2><input type=text name=subject size=60 value="$subject"</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Introduction</th>
+<td colspan=2><textarea name=intro rows=10 cols=60>$intro</textarea></td>
+</tr>
+
 <tr><td></td><td><input id=sub type=submit value="Submit"></td></tr>
 </table>
 </form>

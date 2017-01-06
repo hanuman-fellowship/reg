@@ -93,4 +93,7 @@ Jan 3 6:45-7:00, 10:00-11:00
         that script can't rely on DB Rental compute_balance
         we can do this before pushing all to kali
     responding to multiple email requests
-Jan 4 8:30-9:10
+Jan 4 8:30-9:10, 2:30-3:00
+    talking with Barnaby
+Jan 5 8:30-9:15, 6:00-6:20
+    adding tweaks Barnaby suggested

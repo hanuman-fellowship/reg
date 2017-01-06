@@ -392,19 +392,36 @@ sub email : Local {
     my $summary = model($c, 'Summary')->find($sum_id);
     my $type = $summary->program()? 'program': 'rental';
     my $happening = $summary->$type();
-    my @people;
+    my %people;
     if ($type eq 'rental') {
-        push @people, person1 => $happening->coordinator();
-        push @people, person2 => $happening->contract_signer();
+        my $i = 1;
+        for my $n (qw/ coordinator contract_signer /) {
+            my $p = $happening->$n;
+            if ($p) {
+                $people{"person$i"} = $p;
+                ++$i;
+            }
+        }
     }
     else {
         my @leaders = $happening->leaders();
-        push @people, person1 => $leaders[0]->person() if @leaders >= 1;
-        push @people, person2 => $leaders[1]->person() if @leaders >= 2;
+        $people{person1} = $leaders[0]->person() if @leaders >= 1;
+        $people{person2} = $leaders[1]->person() if @leaders >= 2;
     }
+    my $to = join ' and ', map { $people{$_}->first } sort keys %people;
+    my $user_first = $c->user->obj->first;
     stash($c,
         happening => $happening,
-        @people,
+        subject   => "$string{sum_email_subject} " . $happening->name,
+        %people,
+        intro    => <<"EOF",
+Hi $to,
+<p>&nbsp;</p>
+$string{sum_intro}
+<p>&nbsp;</p>
+<p>
+$user_first
+EOF
         template => "summary/email.tt2",
     );
 }
@@ -413,6 +430,8 @@ sub email_do : Local {
     my ($self, $c, $sum_id) = @_;
     my $summary = model($c, 'Summary')->find($sum_id);
     my $type = $summary->program()? 'program': 'rental';
+    my $intro = $c->request->params->{intro};
+    my $subject = $c->request->params->{subject};
     my (@to, @cc);
     if (my $email1 = $c->request->params->{email1}) {
         push @to, $email1;
@@ -502,12 +521,15 @@ sub email_do : Local {
         .larger { font-size: 18pt; font-weight: bold; color: darkgreen; }
         .dow { color: red; }
         </style>
+        $intro
     }xms;
+    my $user = $c->user->obj;
     email_letter($c,
-        from    => "$string{from_title} <$string{from}>",
+        from    => $user->first . ' ' . $user->last
+                 . '<' . $user->email . '>',
         to      => \@to,
         cc      => \@cc,
-        subject => "Summary for " . $happening->name(),
+        subject => $subject,
         html    => $html,
     );
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));

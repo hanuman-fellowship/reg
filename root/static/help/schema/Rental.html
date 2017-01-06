@@ -6,7 +6,7 @@
 <h2>Rental
 <span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
 </h2>
-A rental is created when some other organization wants to rent the meeting space and housing at MMC.  These events are not sponsored nor advertised by the center.  Housing assignments are made by the coordinator by filling in a form on the global web. This information is brought into Reg periodically.
+A rental is created when some other organization wants to rent the meeting space and housing at MMC.  These events are not sponsored nor advertised by the center.  Housing assignments are made by the coordinator by filling in a form on the global web. This information is brought into Reg periodically via a cron job or on demand (Grab New).
 <p>
 Table: rental
 <dl>
@@ -28,6 +28,8 @@ Table: rental
 <dd>date the contract was sent out</dd>
 <dt>coordinator_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
+<dt>counts</dt>
+<dd>the number of people attending the rental each day from start to end - space separated</dd>
 <dt>cs_person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>deposit</dt>
@@ -48,10 +50,14 @@ Table: rental
 <dd>a General Ledger number computed from the sdate</dd>
 <dt>grid_code</dt>
 <dd>a hard to guess code for the grid URL</dd>
+<dt>grid_max</dt>
+<dd>the maximum of the daily counts</dd>
 <dt>grid_stale</dt>
 <dd>is the web grid in need of refreshing?</dd>
 <dt>housecost_id</dt>
 <dd>foreign key to <a href=HouseCost.html>housecost</a></dd>
+<dt>housing_charge</dt>
+<dd>total cost from the housing grid</dd>
 <dt>housing_note</dt>
 <dd>free text describing any issues with the rental housing</dd>
 <dt>id</dt>
