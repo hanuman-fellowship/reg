@@ -18,7 +18,9 @@ Phone Lists
 <a href="/listing/email_check">Email Check</a>
 [% IF Catalyst.check_user_roles('mmi_admin') %]
 <p class=p2>
-<a href=/listing/upload_yj_sheet>Upload Spreadsheet of People</a>
+<a href=/listing/upload_yj_sheet>Upload Yoga Journal Spreadsheet of New People</a>
+<p class=p2>
+<a href=/listing/upload_ncoa_sheet>Upload NCOA Spreadsheet of Updated Addresses</a>
 [% END %]
 [% IF Catalyst.check_user_roles('mail_admin') %]
     <p class=p2>

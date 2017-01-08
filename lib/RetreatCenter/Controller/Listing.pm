@@ -2147,6 +2147,117 @@ EOH
     );
 }
 
+sub upload_ncoa_sheet : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        template    => 'listing/ncoa_upload.tt2',
+    );
+}
+
+# What does NCOA stand for?
+sub upload_ncoa_sheet_do : Local {
+    my ($self, $c) = @_;
+
+    my $sname = $c->request->upload('spreadsheet');
+    if (! $sname) {
+        error($c,
+            'Cannot load the spreadsheet.',
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my $content = $sname->slurp();
+    my $parser   = Spreadsheet::ParseExcel->new();
+    my $workbook = $parser->parse(\$content);
+    if ( !defined $workbook ) {
+        error($c,
+            "Could not parse spreadsheet: " . $parser->error(),
+            'gen_error.tt2',
+        );
+        return;
+    }
+    my @chosen;
+    my $count = 0;
+    my $skipped = 0;
+    my @errors;
+    TOP:
+    for my $worksheet ($workbook->worksheets()) {
+        my ($row_min, $row_max) = $worksheet->row_range();
+        my ($col_min, $col_max) = $worksheet->col_range();
+        ROW:
+        for my $row ($row_min .. $row_max) {
+
+            my @fields;
+            for my $col ($col_min .. $col_max) {
+ 
+                my $cell = $worksheet->get_cell($row, $col);
+                next unless $cell;
+ 
+                $fields[$col] = $cell->value();
+            }
+            if ($row == $row_min) {
+                # first row is the header - naming the columns.
+                # it must be correct or else we abandon this import.
+                #
+                @chosen = (0, 1, 3..6, 15, 16);
+                my @field_names = qw/
+                    recnum name address city st zip nxi_ ank_
+                /;
+                my @header = @fields[ @chosen ];
+                for my $i (0 .. $#field_names) {
+                    if ($header[$i] ne $field_names[$i]) {
+                        my $let = chr(ord('A') + $chosen[$i]);
+                        error($c,
+                            "Header column $let is $header[$i] but it should be $field_names[$i]",
+                            'gen_error.tt2',
+                        );
+                        return;
+                    }
+                }
+                next ROW;   # we're good to process the rest
+            }
+            my ($recnum, $name, $address,
+                $city, $state, $zip, $nxi_, $ank_) = @fields[ @chosen ];
+            # $ank_/$nxi_ ???
+            if ($ank_ eq '77' || $nxi_ =~ m{\A 0[123] \z}xms) {
+                ++$skipped;
+                next ROW;
+            }
+            #$zip =~ s{-.*}{}xms; # ???
+            if (!$recnum) {
+                next ROW;
+            }
+            my $p = model($c, 'Person')->find($recnum);
+            if ($p) {
+                # check name??? perhaps
+                # is the extended zip code okay???
+                # update $p with new info
+            #    $p->update({
+            #        addr1    => $address,
+            #        addr2    => '',
+            #        city     => $city,
+            #        st_prov  => $state,
+            #        zip_post => $zip
+            #    });
+                ++$count;
+            }
+            else {
+                push @errors, "$name ($recnum)";
+            }
+        }
+    }
+    my $errs = "";
+    if (@errors) {
+        $errs = join "<br>\n", @errors;
+        $errs = "<p class=p2>Errors:<p>$errs";
+    }
+    stash($c,
+        mess     => "got $count, skipped $skipped" . $errs,
+        template => 'gen_message.tt2',
+    );
+}
+
 sub waiver : Local {
     my ($self, $c) = @_;
 

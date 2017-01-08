@@ -12,23 +12,22 @@ function popup(url, height) {
 }
 </script>
 <div style="margin-left: .5in; margin-top: .5in">
-<h2>Uploading a Spreadsheet of People
-<span style="font-size: 10pt; margin-left: 1.5in">
-<a href="javascript:popup('/static/help/spreadsheet.html', 350);">Help</a>
+<h2>Uploading a Yoga Journal Spreadsheet of New People
+<span style="font-size: 10pt; margin-left: .5in">
+<a href="javascript:popup('/static/help/spreadsheet.html', 450);">Help</a>
 </span>
 </h2>
 <form action="[% Catalyst.uri_for('/listing/upload_yj_sheet_do') %]"
       enctype="multipart/form-data"
       method=POST>
-<h2>Spreadsheet to Upload <input type=file name=spreadsheet>
+Spreadsheet to Upload <input type=file name=spreadsheet>
 <input type=submit id=sub value="Submit">
-</h2>
 <p class=p2>
-<h2>Affiliations to Apply to Each Person Uploaded:</h2>
+<h3>Affiliations to Apply to Each Person Uploaded:</h3>
 <table cellpadding=5>
 $affil_table
 </table>
 <p class=p2>
-<input type=submit value="Submit">
+<input id=sub type=submit value="Submit">
 </form>
 </div>

@@ -1,0 +1,11 @@
+<div style="margin-left: .5in; margin-top: .5in">
+<h2>Uploading an NCOA Spreadsheet of Updated Addresses
+</h2>
+<form action="[% Catalyst.uri_for('/listing/upload_ncoa_sheet_do') %]"
+      enctype="multipart/form-data"
+      method=POST>
+Spreadsheet to Upload <input type=file name=spreadsheet>
+<p class=p2>
+<input id=sub type=submit value="Submit">
+</form>
+</div>
