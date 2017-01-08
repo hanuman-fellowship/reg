@@ -65,7 +65,7 @@ sub search : Local {
         $c->stash->{last_selected} = "selected";
     }
     for my $f (qw/ 
-        last sanskrit zip_post email first tel_home country prefix substr
+        last sanskrit zip_post email first tel_home country rec_num
     /) {
         if (defined $field && $field eq $f) {
             $c->stash->{"$f\_selected"} = "selected";
@@ -87,6 +87,10 @@ sub search_do : Local {
     # even when method=post?
 
     my $field   = $c->request->params->{field};
+    if ($field eq 'rec_num') {
+        $c->response->redirect($c->uri_for("/person/view/$orig_pattern"));
+        return;    
+    }
     my $nrecs = 15;
     if ($pattern =~ s{\s+(\d+)\s*$}{}) {
         $nrecs = $1;

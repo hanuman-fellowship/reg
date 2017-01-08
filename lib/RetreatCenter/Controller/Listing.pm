@@ -2179,14 +2179,17 @@ sub upload_ncoa_sheet_do : Local {
     }
     my @chosen;
     my $count = 0;
-    my $skipped = 0;
+    my $moved = 0;
+    my $bad_num = 0;
     my @errors;
+    my $row_num = 0;
     TOP:
     for my $worksheet ($workbook->worksheets()) {
         my ($row_min, $row_max) = $worksheet->row_range();
         my ($col_min, $col_max) = $worksheet->col_range();
         ROW:
         for my $row ($row_min .. $row_max) {
+            ++$row_num;
 
             my @fields;
             for my $col ($col_min .. $col_max) {
@@ -2200,9 +2203,9 @@ sub upload_ncoa_sheet_do : Local {
                 # first row is the header - naming the columns.
                 # it must be correct or else we abandon this import.
                 #
-                @chosen = (0, 1, 3..6, 15, 16);
+                @chosen = (0, 1, 3..7, 15, 16);
                 my @field_names = qw/
-                    recnum name address city st zip nxi_ ank_
+                    recnum name address city st zip oaddress nxi_ ank_
                 /;
                 my @header = @fields[ @chosen ];
                 for my $i (0 .. $#field_names) {
@@ -2218,42 +2221,72 @@ sub upload_ncoa_sheet_do : Local {
                 next ROW;   # we're good to process the rest
             }
             my ($recnum, $name, $address,
-                $city, $state, $zip, $nxi_, $ank_) = @fields[ @chosen ];
-            # $ank_/$nxi_ ???
-            if ($ank_ eq '77' || $nxi_ =~ m{\A 0[123] \z}xms) {
-                ++$skipped;
-                next ROW;
-            }
-            #$zip =~ s{-.*}{}xms; # ???
+                $city, $state, $zip, $old_address,
+                $nxi_, $ank_) = @fields[ @chosen ];
             if (!$recnum) {
+                push @errors, "missing recnum at row $row_num";
+                ++$bad_num;
                 next ROW;
             }
             my $p = model($c, 'Person')->find($recnum);
             if ($p) {
-                # check name??? perhaps
-                # is the extended zip code okay???
+                my $atag = "<a target=_blank href='/person/view/$recnum'>";
+                my ($fname1) = $name =~ m{\A \s* (\S+)}xms;
+                my ($fname2) = $p->name =~ m{\A \s* (\S+)}xms;
+                if ($fname1 ne $fname2) {
+                    push @errors, "${atag}mismatched first name</a>:"
+                                . " (row: $row_num - recnum: $recnum) $fname1 ne $fname2";
+                    next ROW;
+                }
+                my $naddr1 = $old_address;
+                my $naddr2 = $p->addr1 . $p->addr2;
+                $naddr1 =~ s{\D}{}xmsg;
+                $naddr2 =~ s{\D}{}xmsg;
+                if ($naddr1 ne $naddr2) {
+                    push @errors, "${atag}mismatched old address numbers</a>:"
+                                . " (row: $row_num - recnum: $recnum) $naddr1 ne $naddr2";
+                    next ROW;
+                }
+                # $ank_/$nxi_ ???
+                if ($ank_ eq '77' || $nxi_ =~ m{\A 0[123] \z}xms) {
+                    ++$moved;
+                    # clear out the old address, mark them as no snail mail
+                    $p->update({
+                        addr1 => '',
+                        addr2 => '',
+                        city  => '',
+                        st_prov => '',
+                        zip_post => '',
+                        snail_mailings => '',
+                        mmi_snail_mailings => '',
+                    });
+                    next ROW;
+                }
                 # update $p with new info
-            #    $p->update({
-            #        addr1    => $address,
-            #        addr2    => '',
-            #        city     => $city,
-            #        st_prov  => $state,
-            #        zip_post => $zip
-            #    });
+                $p->update({
+                    addr1    => $address,
+                    addr2    => '',
+                    city     => $city,
+                    st_prov  => $state,
+                    zip_post => $zip
+                });
                 ++$count;
             }
             else {
-                push @errors, "$name ($recnum)";
+                push @errors, "recnum not found: (row: $row_num - recnum: $recnum) $name";
             }
         }
     }
-    my $errs = "";
+    my $mess = "<p class=p2>got: $count, moved no forward: $moved";
+    if ($bad_num) {
+        $mess .= ", no recnum: $bad_num";
+    }
     if (@errors) {
-        $errs = join "<br>\n", @errors;
-        $errs = "<p class=p2>Errors:<p>$errs";
+        $mess .= "<p class=p2>Errors:<br>";
+        $mess .= join "<br>\n", @errors;
     }
     stash($c,
-        mess     => "got $count, skipped $skipped" . $errs,
+        mess     => $mess,
         template => 'gen_message.tt2',
     );
 }
