@@ -289,6 +289,10 @@ sub count {
         # it has been cancelled - ignore the web grid
         return 0;
     }
+    if ($self->program_id()) {
+        # Hybrid counts come from the program and also the web grid.
+        return $self->program->count();
+    }
     my $expected = $self->expected() || 0;
     my $gmax = $self->grid_max() || 0;
     return ($gmax > $expected)? $gmax: $expected;
