@@ -7,7 +7,7 @@
 [% IF person1 %]
 <tr><td></td><td><input type=checkbox name=email1 value='$person1.first $person1.last <$person1.email>' checked> $person1.first $person1.last </td><td>$person1.email<td></tr>
 [% END %]
-[% IF person2 %]
+[% IF person2 && person2.email != person1.email %]
 <tr><td></td><td><input type=checkbox name=email2 value='$person2.first $person2.last <$person2.email>' checked> $person2.first $person2.last </td><td>$person2.email<td></tr>
 [% END %]
 

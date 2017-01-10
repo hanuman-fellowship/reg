@@ -7,7 +7,7 @@
 [% IF coord.email %]
 <tr><td></td><td><input type=checkbox name=coord_email value='$coord.first $coord.last <$coord.email>' checked> $coord.first $coord.last</td><td>$coord.email<td></tr>
 [% END %]
-[% IF cs.email %]
+[% IF cs.email && cs.email != coord.email %]
 <tr><td></td><td><input type=checkbox name=cs_email value='$cs.first $cs.last <$cs.email>' checked> $cs.first $cs.last</td><td>$cs.email<td></tr>
 [% END %]
 <tr><td>Cc</td><td colspan=2><input type=text name=cc size=40></td></tr>

@@ -92,14 +92,20 @@ Jan 4 8:30-9:10, 2:30-3:00
 Jan 5 8:30-9:15, 6:00-6:20
     adding tweaks Barnaby suggested
     TODO:
-    cron job to clear old req_mmi files?
-    calendar - have total population at bottom - under PR count
-        don't put 0
-    if someone is sleeping in a meeting place/dormitory
-        don't offer it as a possible meeting place
 Jan 7 7:50-9:15
     responding to Kamala, Leslie
     beginning NCOA upload
 Jan 8 11:00-1:00
     talking with Jamal
     finishing the NCOA upload and searching by record number
+Jan 9 8:30-9:00, 1:00-1:30
+    if someone is sleeping in a meeting place/dormitory
+        don't offer it as a possible meeting place
+    helping and getting advice from Barnaby
+    what about versioning the grid files???
+    cron job to clear old req_mmi files? and old grid files
+    calendar - have total population at bottom - under PR count
+        don't put 0 if none
+        get temple reservation total per day - ask some
+            script on the temple site twice a day?
+        if click - popup a breakdown of PR, program, rental, temple
