@@ -74,7 +74,9 @@ for my $a (qw/ create create_do update update_do delete view /) {
 }
 
 for my $c (qw/ program canpol housecost leader rental cluster house /) {
+    ACTION:
     for my $a (qw/ create create_do update update_do delete /) {
+        next ACTION if $c eq 'house' && $a eq 'delete';
         __PACKAGE__->deny_access_unless("/$c/$a", ['prog_admin']);
     }
 }

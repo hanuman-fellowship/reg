@@ -214,9 +214,9 @@ sub future_programs {
 sub web_addr {
     my ($self) = @_;
 
-    my $dir = "http://$string{ftp_site}/";
+    my $dir = "https://$string{ftp_site}";
 
-    return ($self->linked)? "$dir$string{ftp_dir2}/" . $self->fname
+    return ($self->linked)? "$dir/program-page/" . $self->id
           :                 $dir . ($self->unlinked_dir || '')     ;
 }
 
@@ -1151,8 +1151,9 @@ summary_id - foreign key to summary
 tub_swim - should we mention the hot tub and lake swimming in the conf letter?
 title - A short description of the program for the web page.
 tuition - A charge for the program - mostly for the presenter.
-unlinked_dir - For unlinked programs (see the linked attribute) this is
-    a directory name on www.mountmadonna.org that will contain the program.
+unlinked_dir - Obsolete.  For unlinked programs (see the linked attribute)
+    this is a directory name on www.mountmadonna.org that
+    will contain the program.
 url - A web URL containing further information about the program.
 waiver_needed - Registrants for this program must sign a waiver.
 webdesc - A long description of the program.

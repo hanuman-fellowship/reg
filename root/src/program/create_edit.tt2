@@ -382,11 +382,6 @@ Both <input type=radio name=bank_account value='both' $bank_both>
 </tr>
 
 <tr>
-<th align=right>Unlinked Dir</th>
-<td><input type=text name=unlinked_dir size=20 value="$program.unlinked_dir" $no_publish>
-</tr>
-
-<tr>
 <th align=right>Facebook Event Id</th>
 <td><input type=text name=facebook_event_id size=20 value="$program.facebook_event_id">
 </tr>

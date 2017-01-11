@@ -223,12 +223,6 @@ sub _get_data {
         if ($P{ptemplate} eq 'default') {
             push @mess, "Unlinked programs cannot use the standard template.";
         }
-        if (empty($P{unlinked_dir})) {
-            push @mess, "Missing unlinked directory name";
-        }
-        elsif ($P{unlinked_dir} =~ m{[^\w_.-]}) {
-            push @mess, "Illegal unlinked directory name";
-        }
     }
     for my $f (qw/ name title /) {
         if ($P{$f} !~ m{\S}) {
