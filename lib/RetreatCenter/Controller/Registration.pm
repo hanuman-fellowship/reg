@@ -3007,15 +3007,18 @@ sub update_do : Local {
         _vacate($c, $reg);
     }
     my $newnote = cf_expand($c, $c->request->params->{confnote});
+    # avoid uninitialized warnings...
+    my $r_confnote = $reg->confnote() || '';
+    my $r_kids = $reg->kids() || '';
     _check_spelling($c, $newnote);
     my @note_opt = ();
-    if ($reg->confnote() ne $newnote) {
+    if ($r_confnote ne $newnote) {
         @note_opt = (
             confnote    => $newnote,
             letter_sent => '',
         );
     }
-    if ($P{kids} ne $reg->kids()) {
+    if ($P{kids} ne $r_kids) {
         #
         # the kids field changed
         #

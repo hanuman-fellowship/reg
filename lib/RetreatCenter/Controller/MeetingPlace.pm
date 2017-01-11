@@ -56,6 +56,16 @@ sub _get_data {
             push @mess, "Illegal maximum: $hash{max}";
         }
     }
+    # is there a house with the same name/abbreviation?
+    my ($house) = model($c, 'House')->search({
+                      name => $hash{abbr},
+                  });
+    if ($house && !$hash{sleep_too}) {
+        push @mess, "Since there is also a House named '$hash{abbr}' you must check 'For Sleeping'.";
+    }
+    if ($hash{sleep_too} && ! $house) {
+        push @mess, "Since you checked 'For Sleeping' there must be a House with the name '$hash{abbr}' but there isn't.  Add it first.";
+    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "meetingplace/error.tt2";
@@ -149,13 +159,6 @@ sub update_do : Local {
 
     model($c, 'MeetingPlace')->find($id)->update(\%hash);
     $c->response->redirect($c->uri_for("/meetingplace/list"));
-}
-
-sub delete : Local {
-    my ($self, $c, $id) = @_;
-
-    model($c, 'MeetingPlace')->find($id)->delete();
-    $c->response->redirect($c->uri_for('/meetingplace/list'));
 }
 
 sub access_denied : Private {

@@ -77,18 +77,6 @@ sub by_type_priority : Local {
     );
 }
 
-# ???referential integrity - watch out!
-# deletion of houses will be quite rare. but still...
-# both registrations, rentals and config records
-# reference house_id.
-sub delete : Local {
-    my ($self, $c, $id) = @_;
-
-    model($c, 'House')->find($id)->delete();
-    Global->init($c, 1);
-    $c->response->redirect($c->uri_for('/house/list'));
-}
-
 my %hash;
 my @mess;
 sub _get_data {
@@ -131,6 +119,12 @@ sub _get_data {
         if (!($hash{$f} =~ m{^\d+$})) {
             push @mess, "Illegal \u$f: $hash{$f}";
         }
+    }
+    my ($mp) = model($c, 'MeetingPlace')->search({
+                   abbr => $hash{name},
+               });
+    if ($mp && ! $mp->sleep_too()) {
+        push @mess, "The Meeting Place whose abbreviation is '$hash{name}' must have 'For Sleeping'.";
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
@@ -176,7 +170,17 @@ sub update_do : Local {
 
     _get_data($c);
     return if @mess;
-    model($c, 'House')->find($id)->update(\%hash);
+    my ($h) = model($c, 'House')->find($id);
+    my $old_name = $h->name();
+    my ($mp) = model($c, 'MeetingPlace')->search({
+                   abbr => $old_name,
+               });
+    if ($mp && $old_name ne $hash{name}) {
+        $c->stash->{mess} = "Cannot change the name '$old_name' because there is a Meeting Place with that name!";
+        $c->stash->{template} = "house/error.tt2";
+        return;
+    }
+    $h->update(\%hash);
     Global->init($c, 1);
     $c->response->redirect($c->uri_for('/house/list'));
 }

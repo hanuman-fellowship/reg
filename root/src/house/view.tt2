@@ -2,9 +2,6 @@
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/house/update/$house.id" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/house/delete/$house.id"
- onclick="return confirm('Okay to Delete $house.name?');">Delete</a>
-&nbsp;&nbsp;&nbsp;
 [% END %]
 <a href="/house/list" accesskey='l'><span class=keyed>L</span>ist</a>
 &nbsp;&nbsp;&nbsp;

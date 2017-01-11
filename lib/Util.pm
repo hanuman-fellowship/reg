@@ -1642,8 +1642,27 @@ sub avail_mps {
                        });
         next MEETING_PLACE if @bookings;
         #
-        # it is okay
+        # so far so good
+        # if this meeting place allows sleeping
+        # is anyone sleeping there?
         #
+        if ($mp->sleep_too()) {
+            # find the house with the same name (abbreviation)
+            # there must be one, yes?  yes.
+            my ($house) = model($c, 'House')->search({
+                              name => $mp->abbr(),
+                          });
+            my @config = model($c, 'Config')->search({
+                             house_id => $house->id(),
+                             cur      => { '>' => 0 },  # someone there
+                             the_date => { 'between' => [ $sdate, $edate ] },
+                                                        # on some day
+                         });
+            if (! @config) {
+                push @avail, $mp;
+            }
+            next MEETING_PLACE;
+        }
         push @avail, $mp;
     }
     return @avail;
