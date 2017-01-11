@@ -82,8 +82,10 @@ function UNreserve_cluster(cluster_id) {
         &nbsp;&nbsp;&nbsp;
     [% END %]
 [% END %]
+[% IF program.webready %]
 <a target=_blank href=$program.web_addr>Web</a>
 &nbsp;&nbsp;&nbsp;
+[% END %]
 <span id=backlink><a href=/program/view_adj/$id/back accesskey='B'><span class=keyed>B</span>ack</a></span>
 &nbsp;&nbsp;&nbsp;
 <span id=nextlink><a href=/program/view_adj/$id/next accesskey='N'><span class=keyed>N</span>ext</a></span>
