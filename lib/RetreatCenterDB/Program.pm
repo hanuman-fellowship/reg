@@ -216,8 +216,7 @@ sub web_addr {
 
     my $dir = "https://$string{ftp_site}";
 
-    return ($self->linked)? "$dir/program-page/" . $self->id
-          :                 $dir . ($self->unlinked_dir || '')     ;
+    return "$dir/program-page/" . $self->id;
 }
 
 #
