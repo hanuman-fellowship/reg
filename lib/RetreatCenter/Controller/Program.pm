@@ -219,11 +219,6 @@ sub _get_data {
 
     @mess = ();
     # no need for the check for MMI standalone course
-    if ($P{webready} && ! $P{linked}) {
-        if ($P{ptemplate} eq 'default') {
-            push @mess, "Unlinked programs cannot use the standard template.";
-        }
-    }
     for my $f (qw/ name title /) {
         if ($P{$f} !~ m{\S}) {
             push @mess, "$readable{$f} cannot be blank";
