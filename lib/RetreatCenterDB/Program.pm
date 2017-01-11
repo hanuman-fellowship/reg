@@ -214,7 +214,8 @@ sub future_programs {
 sub web_addr {
     my ($self) = @_;
 
-    my $dir = "https://$string{ftp_site}";
+    my $dir = $self->school->mmi? "https://mountmadonnainstitute.org"
+             :                    "https://mountmadonna.org";
 
     return "$dir/program-page/" . $self->id;
 }
