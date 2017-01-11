@@ -2224,8 +2224,12 @@ sub upload_ncoa_sheet_do : Local {
                 $city, $state, $zip, $old_address,
                 $nxi_, $ank_) = @fields[ @chosen ];
             if (!$recnum) {
-                push @errors, "missing recnum at row $row_num";
-                ++$bad_num;
+                if ($name =~ m{\S}xms) {
+                    push @errors, "missing recnum at row $row_num: $name";
+                    ++$bad_num;
+                }
+                # else it must be a blank innocuous
+                # row which we can ignore
                 next ROW;
             }
             my $p = model($c, 'Person')->find($recnum);
