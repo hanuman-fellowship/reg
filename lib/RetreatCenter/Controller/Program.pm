@@ -2604,7 +2604,7 @@ EOS
                 prog_end
                 housing_not_needed
                 
-                unlinked_dir
+                linked
                 image
             /),
             sdate => $p->sdate_obj->format($fmt),
@@ -2622,7 +2622,7 @@ EOS
         if ($href->{image} eq 'yes') {
             $href->{image} = "$pic_dir/pth" . $p->id() . ".jpg";
         }
-        if ($href->{unlinked_dir}) {
+        if (! $href->{linked}) {
             push @export_unlinked_programs, $href;
         }
         else {
