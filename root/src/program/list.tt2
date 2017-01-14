@@ -8,12 +8,6 @@
     >Add</a>
 [% END %]
 [% IF admin %]
-<!-- obsolete
-    &nbsp;&nbsp;&nbsp;
-    <a href="/program/publish">Publish<a>
-    &nbsp;&nbsp;&nbsp;
-    <a href="/program/publish_pics">PublishPics<a>
--->
     &nbsp;&nbsp;&nbsp;
     <a href="/program/export">Export<a>
 [% END %]
