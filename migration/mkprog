@@ -180,7 +180,10 @@ create table summary (
     prog_person text,
     workshop_schedule text,
     workshop_description text,
-    field_staff_std_setup text
+    field_staff_std_setup text,
+    who_sent text,
+    date_sent text,
+    time_sent text
 );
 drop table if exists confnote;
 create table confnote (

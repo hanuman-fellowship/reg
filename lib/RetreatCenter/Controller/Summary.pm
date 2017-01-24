@@ -95,6 +95,7 @@ sub view : Local {
         happening => $happening,
         @opt,
         sum       => $summary,
+        email_class => $summary->needs_emailing? 'bold_red': '',
         cal_param => "$sdate/$nmonths",
         template  => "summary/view.tt2",
     );
@@ -531,6 +532,11 @@ sub email_do : Local {
         subject => $subject,
         html    => $html,
     );
+    $summary->update({
+        date_sent => tt_today($c)->as_d8(),
+        who_sent  => $c->user->obj->id,
+        time_sent => sprintf "%02d:%02d", (localtime())[2, 1],
+    });
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
 

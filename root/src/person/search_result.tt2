@@ -18,7 +18,11 @@ Searched [% field_desc %] for: [% pattern %]
 [% FOREACH p IN people %]
 <tr>
 <td><a tabindex=1 id=name_lnk href="[% '/person/view/' _ p.id %]">[% p.last %]</a></td>
+[% IF p.last %]
 <td>[% p.first %]</td>
+[% ELSE %]
+<td><a id=name_lnk href="[% '/person/view/' _ p.id %]">[% p.first %]</a></td>
+[% END %]
 <td>[% p.sanskrit %]</td>
 <td>[% p.zip_post %]</td>
 <td>[% IF field == 'email' %][% p.email %][% ELSE %][% p.tel_home %][% END %]</td>

@@ -44,15 +44,21 @@ __PACKAGE__->add_columns(qw/
     prog_person
     workshop_schedule
     workshop_description
+    date_sent
+    time_sent
+    who_sent
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
-__PACKAGE__->belongs_to(who     => 'RetreatCenterDB::User',    'who_updated');
+__PACKAGE__->belongs_to(who_updated => 'RetreatCenterDB::User', 'who_updated');
+__PACKAGE__->belongs_to(who_sent    => 'RetreatCenterDB::User', 'who_sent');
 __PACKAGE__->might_have(rental  => 'RetreatCenterDB::Rental',  'summary_id');
 __PACKAGE__->might_have(program => 'RetreatCenterDB::Program', 'summary_id');
 
 sub     date_updated_obj { date(shift->date_updated) || ""; }
 sub     time_updated_obj { get_time(shift->time_updated); }
+sub     date_sent_obj { date(shift->date_sent) || ""; }
+sub     time_sent_obj { get_time(shift->time_sent); }
 
 #
 # used in listing/summary.tt2
@@ -104,6 +110,17 @@ sub pictures {
 EOH
 }
 
+sub needs_emailing {
+    my ($self) = @_;
+    if (! $self->date_sent) {
+        return 1;
+    }
+    my $rc = $self->date_updated_obj <=> $self->date_sent_obj
+             ||
+             $self->time_updated_obj <=> $self->time_sent_obj;
+    $rc > 0;
+}
+
 1;
 __END__
 overview - The summary contains all kinds of information that enable the MMC staff
@@ -113,6 +130,7 @@ alongside - which other activities are alongside this event?
 back_to_back - does another activity abutt this one?
 check_list - things to not forget
 converted_spaces - meeting rooms that become dorms
+date_sent - when was this summary last sent?
 date_updated - when was this summary last updated?
 feedback - free text
 field_staff_setup - free text
@@ -133,7 +151,9 @@ signage - free text
 sound_setup - free text
 staff_arrival - free text
 staff_departure - free text
+time_sent - time last sent
 time_updated - time last updated
+who_sent - which user last sent - foreign key to user
 who_updated - which user last updated - foreign key to user
 wind_up - free text
 workshop_description - free text

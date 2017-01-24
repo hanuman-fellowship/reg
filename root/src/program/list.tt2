@@ -52,11 +52,13 @@
     <td>[% p.edate_obj %][% IF p.extradays %]<span style="color: green"> +[% p.extradays %]</span>[% END %]</td>
     <td align=right>[% p.reg_count %]&nbsp;&nbsp;</td>
     <td width=40><a href="/registration/list_reg_name/[% p.id %]">AllRegs</a></td>
-    <td width=40>
+    <td width=50 align=left>
     [% IF p.rental_id %]
-    <a href="/summary/view/rental/[% p.rental.summary_id %]">Sum</a>
+    <a href="/summary/view/rental/$p.rental.summary_id">Sum</a>
+    [% IF p.rental.summary.needs_emailing %]<span class=bold_red> *</span>[% END %]
     [% ELSE %]
-    <a href="/summary/view/program/[% p.summary_id %]">Sum</a>
+    <a href="/summary/view/program/$p.summary_id">Sum</a>
+    [% IF p.summary.needs_emailing %]<span class=bold_red> *</span>[% END %]
     [% END %]
     </td>
     <td><a href="/registration/first_reg/[% p.id %]">FirstReg</a></td>

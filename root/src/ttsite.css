@@ -208,6 +208,10 @@ th a:hover {
 .red {
     color: red;
 }
+.bold_red {
+    color: red;
+    font-weight: bold;
+}
 .bred {
     background-color: red;
 }

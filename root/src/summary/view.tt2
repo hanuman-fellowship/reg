@@ -46,7 +46,7 @@ p {
 </span>
 [% END %]
 [% END %]
-&nbsp;&nbsp;&nbsp;<a href='/summary/email/$sum.id'>Email</a>
+&nbsp;&nbsp;&nbsp;<a class=$email_class href='/summary/email/$sum.id'>Email</a>
 &nbsp;&nbsp;&nbsp;<a href=#bottom>To Bottom</a>
 <p>
 </div>
@@ -73,7 +73,6 @@ $happening.status_td
 <td valign=bottom>$plus</td>
 [% END %]
 </tr>
-
 </table>
 <style type="text/css">
 th {
@@ -306,14 +305,24 @@ $cs.first $cs.last
 </tr>
 
 $sum.pictures
-<tr>
-
-<th>Last Updated</th>
-<td colspan=3>
-$sum.date_updated_obj by $sum.who.username at $sum.time_updated_obj.ampm
-<a style="margin-left: 1in" href=/summary/update/$type/$sum.id>Edit</a>
-<a style="margin-left: 1in" href=#top>To Top</a>
-</td>
-</tr>
 </table>
+
+<table>
+<tr>
+<td>Updated</td>
+<td>$sum.date_updated_obj</td>
+<td>$sum.who_updated.username</td>
+<td>$sum.time_updated_obj.ampm</td>
+</tr>
+[% IF sum.date_sent %]
+<tr>
+<td align=right>Sent</td>
+<td>$sum.date_sent_obj</td>
+<td>$sum.who_sent.username</td>
+<td>$sum.time_sent_obj.ampm</td>
+</tr>
+[% END %]
+</table>
+<a style="margin-left: 5in" href=/summary/update/$type/$sum.id>Edit</a>
+<a style="margin-left: 1in" href=#top>To Top</a>
 <a name=bottom></a>

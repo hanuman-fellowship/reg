@@ -8,7 +8,7 @@
 >Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/program/export">Export</a>
-<span style="margin-left: 1.5in"><input text name=rent_pat size=10 value=[% rent_pat %]> <input type=submit value="Search"></span></form>
+<span style="margin-left: 1.5in"><input text name=rent_pat size=10 value=$rent_pat> <input type=submit value="Search"></span></form>
 <ul>
 <table border=0 cellpadding=3>
 <tr>
@@ -21,13 +21,15 @@
 </tr>
 [% class = 'fl_row1' %]
 [% FOREACH r IN rentals %]
-    <tr class=[% class %]>
-    <td align=right class='fl_row0'>[% r.rental_type %]</td>
-    <td><a href="/rental/view/[% r.id %]">[% r.name %]</a></td>
-    <td>[% r.sdate_obj %]</td>
-    <td>[% r.edate_obj %]</td>
-    <td align=center><a href=/summary/view/rental/[% r.summary_id %]>Sum</a></td>
-    [% r.status_td %]
+    <tr class=$class>
+    <td align=right class='fl_row0'>$r.rental_type</td>
+    <td><a href="/rental/view/$r.id">$r.name</a></td>
+    <td>$r.sdate_obj</td>
+    <td>$r.edate_obj</td>
+    <td align=left><a href=/summary/view/rental/$r.summary_id>Sum</a>
+    [% IF r.summary.needs_emailing %]<span class=bold_red> *</span>[% END %]
+    </td>
+    $r.status_td
     [% IF r.status == 'sent' %]
         <td>$r.ndays_sent</td>
     [% ELSIF r.status == 'due' %]

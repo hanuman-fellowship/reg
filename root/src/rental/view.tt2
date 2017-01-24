@@ -92,6 +92,7 @@ $rental.status_td
 &nbsp;
 &nbsp;
 <a href=/summary/view/rental/$rental.summary_id>Summary</a>
+[% IF rental.summary.needs_emailing %]<span class=bold_red> *</span>[% END %]
 </td></tr>
 </table>
 <p>
@@ -196,7 +197,7 @@ Web
 </td>
 [% IF rental.grid_stale %]
 <td colspan=2>
-<a style="color: red; margin-left: .4in; font-weight: bold" href=/rental/send_grid/$id>Send To Web</a>
+<a class=bold_red style="margin-left: .4in;" href=/rental/send_grid/$id>Send To Web</a>
 </td>
 [% END %]
 </tr>

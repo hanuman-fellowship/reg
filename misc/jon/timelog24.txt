@@ -109,3 +109,12 @@ Jan 9 8:30-9:00, 1:00-1:30
         get temple reservation total per day - ask some
             script on the temple site twice a day?
         if click - popup a breakdown of PR, program, rental, temple
+Jan 14 11:00-1:00, 2:30-4:00
+    researching something for Kamalesh
+    getting numbers for Brajesh
+Jan 21 12:30-1:00
+    getting numbers again for Brajesh
+Jan 23 8:20-9:00
+    sent summary - date, time, who, marking unsent summaries
+Jan 24 1:00-2:00
+    finalizing sending summary and marking programs/rentals with red *

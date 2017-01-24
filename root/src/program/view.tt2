@@ -135,8 +135,11 @@ $plus
 &nbsp;
 [% IF program.rental_id %]
 <a href=/summary/view/rental/$program.rental.summary_id>Summary</a>
+[% IF program.rental.summary.needs_emailing %]<span class=bold_red> *</span>[% END %]
 [% ELSE %]
 <a href=/summary/view/program/$program.summary_id>Summary</a>
+<!-- awkward duplication :( -->
+[% IF program.summary.needs_emailing %]<span class=bold_red> *</span>[% END %]
 [% END %]
 <p class=p2>
 <table border=0 cellspacing=0 cellpadding=0>
