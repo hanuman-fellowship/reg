@@ -172,6 +172,9 @@ sub new {
     my $format = $default_format;
     $format = pop @ymd if scalar(@ymd) % 2 == 0;    # last arg may be format
 
+    if (! defined @ymd) {
+        @ymd = ('');
+    }
     #
     # The array @ymd is the set of parameters passed in.
     # it is re-purposed to pass to ymd_to_days() below.
