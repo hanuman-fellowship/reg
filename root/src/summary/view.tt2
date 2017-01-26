@@ -312,17 +312,18 @@ $sum.pictures
 <td>Updated</td>
 <td>$sum.date_updated_obj</td>
 <td>$sum.who_updated.username</td>
-<td>$sum.time_updated_obj.ampm</td>
+<td align=right>$sum.time_updated_obj.ampm</td>
 </tr>
 [% IF sum.date_sent %]
 <tr>
 <td align=right>Sent</td>
 <td>$sum.date_sent_obj</td>
 <td>$sum.who_sent.username</td>
-<td>$sum.time_sent_obj.ampm</td>
+<td align=right>$sum.time_sent_obj.ampm</td>
 </tr>
 [% END %]
 </table>
-<a style="margin-left: 5in" href=/summary/update/$type/$sum.id>Edit</a>
-<a style="margin-left: 1in" href=#top>To Top</a>
+<a style="margin-left: 4in" href=/summary/touch_sent/$type/$sum.id>Touch Sent</a>
+<a style="margin-left: .75in" href=/summary/update/$type/$sum.id>Edit</a>
+<a style="margin-left: .75in" href=#top>To Top</a>
 <a name=bottom></a>
