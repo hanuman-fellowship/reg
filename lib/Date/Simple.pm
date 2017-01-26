@@ -172,7 +172,7 @@ sub new {
     my $format = $default_format;
     $format = pop @ymd if scalar(@ymd) % 2 == 0;    # last arg may be format
 
-    if (! defined @ymd) {
+    if (! @ymd) {
         @ymd = ('');
     }
     #

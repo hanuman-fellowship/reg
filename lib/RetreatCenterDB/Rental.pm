@@ -510,6 +510,7 @@ sub compute_balance {
     my $extra_start = 0;
     my ($start_hours, $fmt_start_hours, $pl_start_hours,
         $start_charge, $start_rounded, $np_start);
+    $start_charge = 0;
     my $start = $rental->start_hour_obj();
     my $start_diff = get_time($string{rental_start_hour}) - $start;
     if ($start_diff > 0) {
@@ -534,6 +535,7 @@ sub compute_balance {
     my $extra_end = 0;
     my ($end_hours, $fmt_end_hours, $pl_end_hours,
         $end_charge, $end_rounded, $np_end);
+    $end_charge = 0;
     my $end = $rental->end_hour_obj();
     my $end_diff = $end - get_time($string{rental_end_hour});
     if ($end_diff > 0) {
@@ -557,7 +559,11 @@ sub compute_balance {
     for my $ch ($rental->charges()) {
         $tot_charges += $ch->amount();
     }
-    my $tot2_charges = $final_tot_housing + $tot_charges + $start_charge + $end_charge;
+    my $tot2_charges = $final_tot_housing
+                     + $tot_charges
+                     + $start_charge
+                     + $end_charge
+                     ;
 
     my $tot_payments = 0;
     for my $p ($rental->payments()) {

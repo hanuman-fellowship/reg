@@ -5720,7 +5720,9 @@ sub receipt : Local {
     my @leaders = $reg->program->leaders;
     my $presenter;
     if (@leaders) {
-        $presenter = $leaders[0]->person->name;
+        my $l = $leaders[0];
+        my $p = $l->person();
+        $presenter = $l->just_first()? $p->first(): $p->name();
     }
     else {
         $presenter = '';

@@ -110,8 +110,23 @@ sub pictures {
 EOH
 }
 
+#
+# is there someone to email the summary to?
+# and has it not been sent since it was last updated?
+#
 sub needs_emailing {
     my ($self) = @_;
+    my $p = $self->program();
+    my $r = $self->rental();
+    if ($p) {
+        my @leaders = $p->leaders();
+        if (! @leaders) {
+            return 0;
+        }
+    }
+    if ($r && ! ($r->coordinator() || $r->contract_signer())) {
+        return 0;
+    }
     if (! $self->date_sent) {
         return 1;
     }
