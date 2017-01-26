@@ -118,7 +118,7 @@ sub needs_emailing {
     my ($self) = @_;
     my $p = $self->program();
     my $r = $self->rental();
-    if ($p) {
+    if (!$r && $p) {        # hybrids will be both
         my @leaders = $p->leaders();
         if (! @leaders) {
             return 0;
