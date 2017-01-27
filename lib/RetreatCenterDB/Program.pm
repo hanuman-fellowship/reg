@@ -1042,7 +1042,7 @@ sub color_bg {
 
 sub PR {
     my ($self) = @_;
-    $self->name() =~ m{personal\s+retreat}i; 
+    $self->name() =~ m{personal\s+retreat|special\s+guest}i; 
 }
 
 #

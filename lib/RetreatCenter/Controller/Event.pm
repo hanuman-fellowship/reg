@@ -1083,7 +1083,10 @@ EOH
                  model($c, 'Program')->search(
                     {
                         edate => { '>=', $the_prev },
-                        name  => { 'like' => "personal retreat%" },
+                        -or => [
+                            name  => { 'like' => "%personal%retreat%" },
+                            name  => { 'like' => "%special%guest%" },
+                        ],
                     },
                  );
     my @pr_regs = ();
