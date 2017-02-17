@@ -410,6 +410,7 @@ sub email : Local {
         $people{person2} = $leaders[1]->person() if @leaders >= 2;
     }
     my $to = join ' and ', map { $people{$_}->first } sort keys %people;
+    $to =~ s{(\w+)\s+and\s+\1}{$1}xms;  # if coordinator = contract signer
     my $user_first = $c->user->obj->first;
     stash($c,
         happening => $happening,
