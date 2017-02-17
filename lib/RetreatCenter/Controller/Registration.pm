@@ -78,7 +78,7 @@ my $TYPE_CEU_LICENSE_FEE   = 8;
 sub index : Private {
     my ( $self, $c ) = @_;
 
-    $c->forward('program/list');    # ???
+    $c->forward('/program/list');
 }
 
 #
