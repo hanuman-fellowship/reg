@@ -2606,6 +2606,9 @@ EOS
                 
                 linked
                 image
+
+                do_not_compute_costs
+                dncc_why
             /),
             sdate => $p->sdate_obj->format($fmt),
             edate => $p->edate_obj->format($fmt),
@@ -2750,13 +2753,16 @@ sub _extract_fee_table {
         return %hash;
     }
     my $top = shift @th;
+    while ($th[0] !~ m{Housing[ ]Type}xms) {
+        # an extra row(s) for spacing??
+        my $toss = shift @th;
+    }
     $top =~ s{</?center>}{}xmsg;
     $top =~ s{Cost[ ]Per[ ]Person<br>}{}xms;    # per Shantam's request
     $hash{fee_table_caption} = $top;
     $hash{fee_table_headings} = \@th;
     my $n = @th;    # number of columns per row
     my @td = $html =~ m{<td [^>]*>(.*?)</td>}xmsg;
-    my $toss = shift @td;
     my @rows;
     while (my @one_row = splice(@td, 0, $n)) {
         push @rows, \@one_row;

@@ -588,7 +588,7 @@ EOH
            ;
         $heading = "<center>$heading</center>";
         $fee_table .= "<tr><th colspan=$cols>$heading</th></tr>\n";
-        $fee_table .= "<tr><td colspan=$cols>&nbsp;</td></tr>\n";
+        $fee_table .= "<tr><th colspan=$cols>&nbsp;</th></tr>\n";
     }
     $fee_table .= "<tr><th style='text-align: left' valign=bottom>$string{typehdr}</th>";
     if ($extradays) {
