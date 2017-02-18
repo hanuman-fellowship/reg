@@ -98,6 +98,8 @@ sub event_table {
                 && (
                     ($ev->name() =~ m{personal.*retreats}i)
                     ||
+                    ($ev->name() =~ m{special.*guest}i)
+                    ||
                     ($ev->level->long_term())
                     ||
                     ($ev->category->name() ne 'Normal')
