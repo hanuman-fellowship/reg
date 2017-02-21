@@ -1,15 +1,24 @@
 #!/usr/local/bin/perl
 use strict;
 use warnings;
-use DBI;
-use FindBin;
-use lib "$FindBin::Bin/../lib";
+
+use lib "lib";
+use RetreatCenterDB;
+use Util qw/
+    model
+    db_init
+    email_letter
+/;
+my $c = db_init();
+use Global qw/
+    %string
+/;
+Global->init($c, 1, 1);
+
 use Date::Simple qw/
     today
     date
 /;
-use Mail::Sender;
-chdir "$FindBin::Bin/..";
 
 my ($cmdline_date, $offset) = @ARGV;
 if ($cmdline_date && $cmdline_date eq '-') {
@@ -23,36 +32,12 @@ my $cur_date = $cmdline_date || today()->as_d8();
 
 my $cur_date_off = (date($cur_date) + $offset)->as_d8();
 
-my $dbh = DBI->connect(undef, "sahadev", "JonB")
-    or die "oh no\n";
-
-my %string;
-my $sth = $dbh->prepare("
-    select the_key, value
-    from string
-    where the_key like 'smtp%' or the_key like 'from%';
-");
-$sth->execute();
-while (my ($key, $val) = $sth->fetchrow_array()) {
-    $string{$key} = $val;
-}
-
-#
-# gather ids of programs that begin on cur_date_off
-#
-my $prog_sth = $dbh->prepare("
-    select id, name, sdate, edate, extradays
-    from program
-    where sdate = $cur_date_off
-      and name not like '%personal%retreat%'
-");
-$prog_sth->execute();
-my @progs;
-while (my ($id, $name, $sdate, $edate, $extradays)
-        = $prog_sth->fetchrow_array()) {
-    push @progs, [ $id, $name, date($sdate), date($edate), $extradays ];
-}
-
+my @progs = model($c, 'Program')->search(
+    {
+        sdate => $cur_date_off,
+        name  => { -not_like => '%personal_retreat%' },
+    },
+);
 if (! @progs) {
     exit;
 }
@@ -61,62 +46,64 @@ if (! @progs) {
 # now find people in those programs who
 # requested a carpool list.
 #
-for my $p (@progs) {
+for my $prog (@progs) {
     my $let = "";
-    $let .= "<h3>Car Pool List for $p->[1] from "
-         .  short_dates($p->[2], $p->[3], $p->[4])
+    $let .= "<h3>Car Pool List for " .  $prog->name . " from "
+         .  short_dates($prog->sdate_obj, $prog->edate_obj, $prog->extradays)
          .  "</h3><ul>\n"
          ;
-    my $reg_sth = $dbh->prepare("
-        select p.first, p.last,
-               p.addr1, p.addr2, p.city, p.st_prov, p.zip_post, p.country,
-               p.tel_home, p.tel_work, p.tel_cell,
-               p.email, r.hascar, r.from_where
-          from registration r, people p
-         where r.program_id = $p->[0]
-           and r.carpool = 'yes'
-           and r.cancelled != 'yes'
-           and r.person_id = p.id
-      order by p.zip_post
-    ");
-    $reg_sth->execute();
+    my @regs = model($c, 'Registration')->search(
+                   {
+                       program_id => $prog->id,    
+                       carpool    => 'yes',
+                       cancelled  => { '!=' => 'yes' },
+                   },
+                   {
+                       join => qw/ person /,
+                       order_by => 'zip_post',
+                   },
+               );
     my (@emails, @no_emails);
-    while (my ($first, $last,
-               $addr1, $addr2, $city, $state, $zip, $country,
-               $home, $work, $cell,
-               $email, $hascar, $from_where)
-        = $reg_sth->fetchrow_array()
-    ) {
+    for my $r (@regs) {
+        my $per = $r->person;
+        my $first = $per->first;
+        my $last  = $per->last;
+        my $email = $per->email;
         $let .= "$first $last";
-        if ($hascar) {
+        if ($r->hascar) {
             $let .= " - HAS CAR"
         }
         $let .= "<br>\n";
-        if ($from_where eq 'Home') {
-            $let .= "$city, $state $zip<br>\n";
-            if ($country) {
-                $let .= "$country<br>\n";
+        if ($r->from_where eq 'Home') {
+            $let .= $per->city
+                  . ', '
+                  . $per->st_prov
+                  .   ' '
+                  .  $per->zip_post
+                  . "<br>\n";
+            if ($per->country) {
+                $let .= $per->country . "<br>\n";
             }
         }
-        else {
-            $let .= "From the $from_where airport.<br>\n";
+        elsif ($r->from_where) {
+            $let .= "From the " . $r->from_where . " airport.<br>\n";
         }
         if ($email) {
             $let .= "<a href='mailto:$email'>$email</a><br>\n";
-            push @emails, [ $first, $last, $email ];
+            push @emails, $email;
         }
         else {
-            push @no_emails, [ $first, $last, $addr1, $addr2,
-                               $city, $state, $zip, $country ];
+            push @no_emails, [ $first, $last, $per->addr1, $per->addr2,
+                               $per->city, $per->st_prov, $per->zip_post,
+                               $per->country
+                             ];
         }
-        if ($home) {
-            $let .= "$home home<br>\n";
-        }
-        elsif ($work) {
-            $let .= "$work work<br>\n";
-        }
-        elsif ($cell) {
-            $let .= "$cell cell<br>\n";
+        TEL:
+        for my $tel (qw/ tel_home tel_work tel_cell /) {
+            if ($per->$tel) {
+                $let .= $per->$tel;
+                last TEL;
+            }
         }
         $let .= "<p>\n";
     }
@@ -126,19 +113,24 @@ for my $p (@progs) {
     #
     if (@emails) {
         push @emails, 'jon@suecenter.org';
-        email_letter(
+        email_letter($c,
             from    => "$string{from_title} <$string{from}>",
             fake_to => "Car Pool List",
-            to      => 'jon@suecenter.org',
+            to      => 'reservations@mountmadonna.org',
             bcc     => (join ", ", @emails),
-            subject => "Carpool List for $p->[1]",
+            subject => "Carpool List for " . $prog->name,
             html    => $let,
         );
     }
     if (@no_emails) {
+        my $n_no_emails = @no_emails;
+        my $copies = $n_no_emails > 1? 'copies': 'copy';
         my $let = "The following people do not have an email address<br>\n"
                 . "and need to be snail mailed the car pool list"
-                . " for $p->[1].<p><ul>\n";
+                . " for " . $prog->name . ".<p>"
+                . "Click <a href='http://localhost:3000/registration/carpool/"
+                .  $prog->id . "'>here</a> and"
+                . " then print $n_no_emails $copies.<p>";
         for my $p (@no_emails) {
             my ($first, $last, $addr1, $addr2,
                 $city, $state, $zip, $country) = @$p;
@@ -154,11 +146,12 @@ for my $p (@progs) {
             $let .= "<p>\n";
         }
         $let .= "</ul>\n";
-        email_letter(
+        email_letter($c,
             from    => "$string{from_title} <$string{from}>",
             fake_to => '',
             to      => 'reservations@mountmadonna.org',
-            subject => "Snail Mail People - Carpool List for $p->[1]",
+            bcc     => 'jon@suecenter.org',
+            subject => "Snail Mail People - Carpool List for " . $prog->name,
             html    => $let,
         );
     }
@@ -185,40 +178,4 @@ sub short_dates {
         }
     }
     $dates;
-}
-
-my $mail_sender;
-
-sub email_letter {
-    my (%args) = @_;
-
-    if (! $mail_sender) {
-        my @auth = ();
-        if ($string{smtp_auth}) {
-            @auth = (
-                auth    => $string{smtp_auth},
-                authid  => $string{smtp_user},
-                authpwd => $string{smtp_pass},
-            );
-        }
-        $mail_sender = Mail::Sender->new({
-            smtp => $string{smtp_server},
-            port => $string{smtp_port},
-            @auth,
-        });
-        if (! $mail_sender) {
-            # ???
-        }
-    }
-    $mail_sender->Open({
-        %args,
-        ctype    => "text/html",
-        encoding => "7bit",
-    })
-        or die "no Mail::Sender->Open" . $Mail::Sender::Error;
-        # ??? better failure behavior?
-
-    $mail_sender->SendLineEnc($args{html});
-    $mail_sender->Close()
-        or die "no Mail::Sender->Close" . $Mail::Sender::Error;
 }

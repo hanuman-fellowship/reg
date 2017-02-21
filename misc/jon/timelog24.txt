@@ -125,6 +125,8 @@ Feb 8 8:30-8:50
     perusing email, responding
 Feb 16 11:00-12:00
     talking with Mitra and Kevin
-Feb 18 11:00-
+Feb 18 11:00-2:30
     dealing with requests from Jamal and Kamala
     gate code email, do not compute costs program & Export
+Feb 20 3:00-
+    finishing gate_code, checking/converting carpool

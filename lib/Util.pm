@@ -726,8 +726,13 @@ sub email_letter {
             return;
         }
     }
+    my @fake_to;
+    if ($args{fake_to}) {
+        @fake_to = (fake_to => $args{fake_to});
+    }
     if (! $mail_sender->Open({
         to       => $args{to},
+        @fake_to,
         @cc_bcc,
         from     => $args{from},
         replyto  => ($args{replyto} || $args{from}),

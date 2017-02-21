@@ -15,6 +15,6 @@
     <td><input type=text size=4 name=sum$c.sum_id value='$c.code'></td>
     </tr>
 [% END %]
-<tr><td colspan=3></td><td><input type=submit value="Submit"></td></tr>
+<tr><td colspan=3></td><td><input type=submit id=sub value="Submit"></td></tr>
 </table>
 </form>

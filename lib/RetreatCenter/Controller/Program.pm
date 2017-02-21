@@ -2753,7 +2753,7 @@ sub _extract_fee_table {
         return %hash;
     }
     my $top = shift @th;
-    while ($th[0] !~ m{Housing[ ]Type}xms) {
+    if ($th[0] !~ m{Housing}xms) {
         # an extra row(s) for spacing??
         my $toss = shift @th;
     }
