@@ -1660,7 +1660,7 @@ sub avail_mps {
             my @config = model($c, 'Config')->search({
                              house_id => $house->id(),
                              cur      => { '>' => 0 },  # someone there
-                             the_date => { 'between' => [ $sdate, $edate ] },
+                             the_date => { 'between' => [ $sdate, $edate1 ] },
                                                         # on some day
                          });
             if (! @config) {

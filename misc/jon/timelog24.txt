@@ -128,5 +128,5 @@ Feb 16 11:00-12:00
 Feb 18 11:00-2:30
     dealing with requests from Jamal and Kamala
     gate code email, do not compute costs program & Export
-Feb 20 3:00-
+Feb 20 3:00-4:30
     finishing gate_code, checking/converting carpool

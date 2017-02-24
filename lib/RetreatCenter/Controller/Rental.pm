@@ -453,6 +453,7 @@ sub view : Local {
     # time might have advanced and the program might be finished.
     $rental->update({
         status  => $status,
+        tentative => $status eq 'tentative'? 'yes': '',
     });
 
     #
