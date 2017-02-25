@@ -2161,6 +2161,7 @@ sub email_all_do : Local {
         subject => $subj,
         from    => "$string{from_title} <$string{from}>",
         html    => $body,
+        which   => "To All in Program " . $p->name . " - $subj",
     );
     # sort by last, first
     @snails = map {

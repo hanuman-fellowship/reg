@@ -1435,7 +1435,7 @@ sub arrangements : Local {
     });
     my $rc = $sender->Close;
     open my $mlog, ">>", "mail.log";
-    print {$mlog} localtime() . " @to - Arrangements - ";
+    print {$mlog} localtime() . " @to - Arrangements for " . $rental->name . " - ";
     if (ref $rc) {
         print {$mlog} "sent\n";
     }
@@ -1609,7 +1609,6 @@ sub contract : Local {
         cc      => \@cc,
         subject => "MMC Rental Contract with " . $rental->name(),
         html    => $html,
-        which   => "Rental Contract",
     );
     $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }

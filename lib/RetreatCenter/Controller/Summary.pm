@@ -95,7 +95,7 @@ sub view : Local {
         happening => $happening,
         @opt,
         sum       => $summary,
-        email_class => $summary->needs_emailing? 'bold_red': '',
+        email_class => $summary->needs_emailing? 'bold_red': 'normal',
         cal_param => "$sdate/$nmonths",
         template  => "summary/view.tt2",
     );
@@ -532,7 +532,6 @@ sub email_do : Local {
         cc      => \@cc,
         subject => $subject,
         html    => $html,
-        which   => "Summary",
     );
     $summary->update({
         date_sent => tt_today($c)->as_d8(),

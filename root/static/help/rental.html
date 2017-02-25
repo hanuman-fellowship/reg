@@ -2,7 +2,7 @@
 <link rel="stylesheet" type="text/css" href="help.css" />
 </head>
 <body>
-<h2>Rentals</h2>
+<h2>Rentals from A to Z</h2>
 <p>
 A call (or email) comes in for a proposed rental.
 <h3>Fill out a Proposal</h3>
@@ -18,7 +18,7 @@ A call (or email) comes in for a proposed rental.
         there is a link 'Contract Signer?' which will open up an
         additional area to enter the info.
         This also auto fills from prior data.
-    <li>Max
+    <li>Max - maximum number of people that may come.
     <li>Dates requested<br>
         This can be as verbose and as vague as you wish.
     <li>Default check in is 4:00, default check out is 1:00
@@ -27,6 +27,7 @@ A call (or email) comes in for a proposed rental.
         that 8:00 is am and 7:00 is pm.  This is okay, yes?
     <li>Program meeting date is important.  This is when the program
     director and staff will meet to consider this proposal.
+    Can enter dates in many ways - see other help page for this.
     <li>Deposit field is required.
 </ul>
 <p>
@@ -42,22 +43,27 @@ A call (or email) comes in for a proposed rental.
     You can edit/update/delete them as usual.
 <p>
 The program meeting then happens and decisions are made
-    to approve or deny the proposals.
+    to Approve or Deny the proposals.  The decision depends on
+    what else is happening at the center, whether a meeting space
+    is available, and many other factors.  The Calendar is an
+    effective tool to help make the decision.  Perhaps alternate
+    date is better for the center.
 <h3>Deny</h3>
-    If deny,
+    If Deny,
         Choose Edit, check 'Denied' and possibly put a reason in
         Miscellaneous Notes.
         Then click 'Transmit' to move contact person (and contract signer)
             to People for later reference.
 <h3>Create a Rental</h3>
-    If approve - click 'Approve'.
+    If Approve - click 'Approve'.
         This brings up a Rental creation screen (in a new window)
             with these fields already filled in from the information
             in the proposal:
 
 <ul>
 <li>Check in, Check out
-<li>Tentative
+<li>Tentative - still 'yes' - will not be tentative when the contract is signed
+and deposit payment is received.
 <li>Rental Name (the proposal group name)
 <li>Contact Person/Contract Signer
 <li>Max
@@ -75,10 +81,11 @@ Fill in start, end date and hit Submit.
 A rental is thus created.
 <p>
 The Rental's Summary is automatically created.
-Note that Special Needs, Food Service,
-Leader Housing, Misc Notes, Provisos, etc
+Note that Food Service,
+Leader Housing,
+Misc Notes + Special Needs + Provisos, etc
 are taken directly from the Proposal and added
-to the Food Service and Miscellaneous Notes fields in the Summary.
+to the Food Service, Leader Housing, and Miscellaneous Notes fields in the Summary.
 <p>
 The Contact Person and Contract Signer in the proposal
 are automatically 'transmitted' to the People table
@@ -98,7 +105,7 @@ Rentals can also be created directly without going through
     One difference is that you need to add the contact person
     separately in People and then retype their name after
     choosing 'Update' next to the Contact Person field in Rentals.
-    Similarily for contract signer if not the contact person.
+    Similarily for Contract Signer if not the same as the Contact Person.
 <p>
 Several other things need to be done to make the rental complete:
 <ul>
@@ -114,6 +121,7 @@ Note that if the rental begins after 1:00 they
 cannot have lunch on the first day.
 <li>Verify the GL Number which was automatically computed.
 <li>Enter any comment and web information, if provided.
+        Check 'Linked' if the organization wants their information public.
         The web stuff will appear on the Events Calendar
             at www.mountmadonna.org.
         Some organizations won't want their information public
@@ -122,7 +130,7 @@ cannot have lunch on the first day.
             happening at the center.
 </ul>
 <h3>MMC Does Registration and Parallel Programs</h3>
-The field 'MMC Does Registration' is normally unchecked.
+The field 'MMC Does Registration' on the Misc tab is normally unchecked.
 <p>
 For special rentals (like AVI and OGS) MMC does the individual
 registration for them but it <i>is</i> still a Rental - from a financial
@@ -159,7 +167,7 @@ hybrid entity.
 Each rental has a 'status' which is displayed in the 4th column in the
 list of rentals
 and also on the rental screen after the date range.
-It shows the progress of the rental:
+It shows the progress through time of the rental:
 <table cellpadding=5>
 <tr><td>Tentative</td></tr>
 <tr><td>Contract Sent</td></tr>
@@ -169,7 +177,7 @@ It shows the progress of the rental:
 <tr><td>Done</td></tr>
 </table>
 Each status has its own color - which can be
-    changed in Configuration/Strings.
+    changed in Configuration > Colors.
     This color is prominently visible when viewing the list of rentals,
     each rental screen, and also as a <i>border</i> color in the Calendar.
 <p>
@@ -185,7 +193,7 @@ The second line of menus on the Rental screen is an <i>ordered</i> sequence like
 The MMC rental coordinator chooses these menu items in order - as the rental
 progresses through time.
 <h3>Contract</h3>
-Once the rental is complete you can generate a contract
+Once the rental screen creation is complete you can generate a contract
     by simply choosing 'Contract'.
     This is a legal document and hence needs to be examined
     and vetted carefully.
@@ -243,25 +251,26 @@ The Contact Person could simply put "John", "Mary", "Bill & Hillary",
 They also note which nights the person will be there - they default
 to every day of the rental.
 <p>
-The web grid calculates a cost for each
+The Web Grid calculates a cost for each
 person and displays it in the grid.   The cost depends on how many
 other people are in the room - and, of course, on the housing cost (which is
 displayed at the bottom of the grid).  As an example, say person A in a Double
-room has a roommate (person B) for the first night. If person B
+room has a roommate (person B) for the first night.  They will both pay
+the Double rate for that night.  If person B
 leaves the next day, person A will pay the Single rate for the
 rest of the rental.
 <p>The costs displayed on the grid are used by the Contact Person
 to charge the people they housed.   The total of all these housing costs
 is used in the Invoice to calculate the total amount due to MMC.
-<p>The MMC rental coordinator can exactly see what the Contact Person sees
+<p>The MMC rental coordinator can see exactly what the Contact Person sees
 by clicking on the link 'Web Grid'.  They shouldn't change anything there!
 <p>Every 15 minutes 24/7 a program (a cron job) runs that transfers any changes
 in the web housing grids (for any active Rentals) from the global web on
-www.mountmadonna.org to the computer that Reg runs on.   People using
+www.mountmadonna.org to the computer that Reg runs on (for security it is behind a VPN [virtual private network]).   People using
 Reg can then see the housing assignments by clicking on the Rental
 menu link 'Local Grid'.  On that screen is a link 'Grab New'
 which can be used by those who
-don't want to wait for the next 15 minute transfer/checking.
+don't want to wait for the next 15 minute transfer/checking interval. 
 <h4>Housing</h4>
 There is an ongoing conversation between the Contact Person
 and the MMC Rental Coordinator about how many
@@ -292,17 +301,31 @@ It will also appear if you change the Housing Cost type.
 <p>
 The DailyPic can be consulted to see what houses have been assigned
 and reserved for the Rental.
+<h3>Emailing the Summary</h3>
+The 'Arrangements' letter above was sent early on in the process
+to begin the discussion of the specific needs of the Rental.
+These are entered into the 'Summary'.  It is important that the Contact
+Person knows exactly what the Summary contains so that they and the Center
+are 'on the same page'.   On the Summary screen there is a menu link
+'Email'.  This is used to send the summary to the Contact Person
+and the Contract Signer.  You can add Cc emails, change the Subject,
+and the Introductory note for the email.  The email will contain
+the entire Summary page.  The introductory note default is in Configuration > Strings.  
+<p>Note: If the Summary has been updated since it was last sent
+there is a red asterisk next to the menu choices 'Sum' and 'Summary',
+and the 'Email' link is in red.
 <h3>Post Rental</h3>
 The Rental comes and all hopefully went well.
 <p>
 The coordinator can now choose 'Invoice' to get a nicely laid out and
-    accurate invoice to print for the contact person.  Actually,
+    accurate invoice to print for the Contact Person.  Actually,
     as usual, it is as accurate as the input data.
 <p>
 A check is made out for the unpaid balance and it is entered
     as a Payment on the Rental.  The status of the Rental changes to 'Done'.
 <p>
-If the payment was not made on the last day of the Rental 
+If the full payment was not made on the last day of the Rental 
     the status becomes 'Due' - with its own unique color to 
-    make it stand out.
+    make it stand out.  This Rental will continue to be at the top
+    of the Rentals list until the payment is made.
 </body>

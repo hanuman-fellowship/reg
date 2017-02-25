@@ -29,7 +29,6 @@ use Util qw/
     check_makeup_new
     check_makeup_vacate
     d3_to_hex
-    email_letter
 /;
 use HLog;
 use GD;

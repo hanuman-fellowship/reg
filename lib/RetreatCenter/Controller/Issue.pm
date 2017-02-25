@@ -133,7 +133,7 @@ sub update_do : Local {
                      . "<p>See it <a href='" 
                      . $c->uri_for('/issue/update/' . $issue->id())
                      . "'>here</a>."
-                     . "<p>Please verify that the issue actually <i>is</i> resolved."
+                     . "<p>Please verify that the issue actually <i>is</i> resolved.",
         );
     }
     $c->response->redirect($c->uri_for('/issue/list'));
@@ -169,7 +169,7 @@ sub create_do : Local {
         html    => $issue->notes()
                  . "<p><hr><p>See it <a href='" 
                  . $c->uri_for('/issue/update/' . $issue->id())
-                 . "'>here</a>."
+                 . "'>here</a>.",
     );
 
     $c->response->redirect($c->uri_for('/issue/list'));

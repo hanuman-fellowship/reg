@@ -702,9 +702,10 @@ sub email_letter {
     else {
         print {$mlog} localtime() . " $args{to} - ";
     }
-    if ($args{which}) {
-        print {$mlog} "$args{which} - ";
+    if (! exists $args{which}) {
+        $args{which} = $args{subject};
     }
+    print {$mlog} "$args{which} - ";
     # no ping :(
     #my $p = Net::Ping->new();
     #if (!$p->ping("mountmadonna.org")) {

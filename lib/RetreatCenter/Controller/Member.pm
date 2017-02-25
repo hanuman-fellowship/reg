@@ -720,6 +720,7 @@ sub create_do : Local {
             from    => "HFS Membership <$string{mem_email}>",
             subject => "Hanuman Fellowship Membership Payment",
             html    => $html,
+            which   => "Membership Payment for " . $pers->name,
         );
         $c->response->redirect($c->uri_for("/member/view/$id/1"));
     }
