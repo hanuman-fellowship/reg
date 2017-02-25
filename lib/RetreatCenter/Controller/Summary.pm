@@ -532,7 +532,7 @@ sub email_do : Local {
         cc      => \@cc,
         subject => $subject,
         html    => $html,
-        which   => " Summary ",
+        which   => "Summary",
     );
     $summary->update({
         date_sent => tt_today($c)->as_d8(),
