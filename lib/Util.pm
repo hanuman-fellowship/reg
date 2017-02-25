@@ -696,7 +696,15 @@ sub email_letter {
         $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
     }
     open my $mlog, ">>", "mail.log";
-    print {$mlog} localtime() . " $args{to} - ";
+    if (ref $args{to} eq 'ARRAY') {
+        print {$mlog} localtime() . " @{$args{to}} - ";
+    }
+    else {
+        print {$mlog} localtime() . " $args{to} - ";
+    }
+    if ($args{which}) {
+        print {$mlog} "$args{which} - ";
+    }
     # no ping :(
     #my $p = Net::Ping->new();
     #if (!$p->ping("mountmadonna.org")) {
