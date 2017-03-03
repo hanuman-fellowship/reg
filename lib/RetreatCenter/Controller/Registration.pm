@@ -1337,7 +1337,7 @@ sub _compute {
     my $mem = $reg->person->member();
     my $lead_assist = $reg->leader_assistant();   # no housing or tuition charge
                                                   # for these people
-    # clear auto charges - they'll be readded below
+    # clear auto charges - they'll be re-added below
     model($c, 'RegCharge')->search({
         reg_id    => $reg_id,
         automatic => 'yes',
@@ -1459,11 +1459,12 @@ sub _compute {
     }
 
     # extra days - at the current personal retreat housecost rate.
-    # but not for leaders/assistants???  right?
+    # but not for leaders/assistants???  right?  wrong - for now.
     # show leader/asst on reg screen???   show footnotes differently?
     #
     my $extra_h_cost = 0;
-    if ($auto && $extra_days && ! $lead_assist) {
+    #if ($auto && $extra_days && ! $lead_assist) {
+    if ($auto && $extra_days) {
         #
         # look for the personal retreat program
         # that contains the start date of the registration.
@@ -3161,6 +3162,9 @@ sub update_do : Local {
         }
     }
 
+    # might as well recompute the automatic charges.
+    # several things could have changed that affected the cost.
+    # it is too troublesome to check them all to see if one of them changed.
     _compute($c, $reg, 0, @who_now);
 
     _reg_hist($c, $id, "Registration Updated.");
