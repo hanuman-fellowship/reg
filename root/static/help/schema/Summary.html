@@ -18,6 +18,8 @@ Table: summary
 <dd>things to not forget</dd>
 <dt>converted_spaces</dt>
 <dd>meeting rooms that become dorms</dd>
+<dt>date_sent</dt>
+<dd>when was this summary last sent?</dd>
 <dt>date_updated</dt>
 <dd>when was this summary last updated?</dd>
 <dt>feedback</dt>
@@ -56,8 +58,12 @@ Table: summary
 <dd>free text</dd>
 <dt>staff_departure</dt>
 <dd>free text</dd>
+<dt>time_sent</dt>
+<dd>time last sent</dd>
 <dt>time_updated</dt>
 <dd>time last updated</dd>
+<dt>who_sent</dt>
+<dd>which user last sent - foreign key to <a href=User.html>user</a></dd>
 <dt>who_updated</dt>
 <dd>which user last updated - foreign key to <a href=User.html>user</a></dd>
 <dt>wind_up</dt>
@@ -71,6 +77,7 @@ Table: summary
 <table cellpadding=5>
 <tr><td>program</td><td><a href=Program.html>program</a></td><td>might_have</td></tr>
 <tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>might_have</td></tr>
-<tr><td>who</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>who_sent</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+<tr><td>who_updated</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>
