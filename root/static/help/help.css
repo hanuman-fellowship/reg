@@ -18,6 +18,9 @@ li {
     margin-top: 1mm;
     margin-bottom: 1mm;
 }
+h1 {
+    font-size: 22pt;
+}
 h2 {
     color: green;
 }
@@ -33,6 +36,9 @@ dd {
 a {
     color: blue;
     text-decoration: none;
+}
+.red {
+    color: red;
 }
 a:hover {
     color: white;

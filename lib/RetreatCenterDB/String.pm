@@ -299,6 +299,7 @@ personal_template - the template for a Personal Retreat program
 phone - the description of a telephone in the row for a rental online
 prog_end - the default time of day that a program ends
 prog_start - the default time of day that a program starts
+program_director - the name of the Program Director - for the contract
 quad - for housing type descriptions
 reception_email - who should be notified when an MMC mailing list request comes in?
 reg_end - the default time of day for program registration to end

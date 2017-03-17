@@ -533,6 +533,9 @@ EOH
     # may extend beyond the last day of the season.
     #
     add_config($c, date($P{edate}) + $P{extradays} + 30);
+
+    # send an alert about this new program
+    #_alert(%P, $id);
     $c->response->redirect($c->uri_for("/program/view/$id/1/$glnum_popup"));
 }
 

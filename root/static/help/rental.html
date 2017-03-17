@@ -1,23 +1,33 @@
+<html>
 <head>
 <link rel="stylesheet" type="text/css" href="help.css" />
 </head>
 <body>
-<h2>Rentals from A to Z</h2>
+<h1>Rentals at MMC from the Cradle to the Grave</h1>
 <p>
 A call (or email) comes in for a proposed rental.
 <h3>Fill out a Proposal</h3>
+During the conversation with the person requesting a rental
+you will record the details in a Proposal.
     First choose Rentals from the top menu.
     Then choose the Proposals link.
     Then Add.
+    Note the required fields marked with a red asterisk <span class=red>*</span>.
+    This is the place where you record the particular needs
+    of the Rental to help evaluate whether the center can 
+    accomodate them - or not.
 <ul>
+    <li>Date of Call (you can put 't' for today in any date field).
+    <li>Group Name
+    <li>Type of Rental
     <li>Contact Person<br>
-    Note the required fields.
         On leaving the last name field, Reg will fill
         in the rest from prior data from the People table, if it is available.
     <li>IF the Contract Signer is different from the contact person
         there is a link 'Contract Signer?' which will open up an
         additional area to enter the info.
         This also auto fills from prior data.
+    <li>Min - minimum number of people that may come.
     <li>Max - maximum number of people that may come.
     <li>Dates requested<br>
         This can be as verbose and as vague as you wish.
@@ -25,16 +35,25 @@ A call (or email) comes in for a proposed rental.
         You CAN put hh:mm for minutes.  Like 4:30.
         No need to enter am/pm because it is assumed
         that 8:00 is am and 7:00 is pm.  This is okay, yes?
-    <li>Program meeting date is important.  This is when the program
+    <li>Program Meeting Date is important.  This is when the program
     director and staff will meet to consider this proposal.
     Can enter dates in many ways - see other help page for this.
+    For example, you can put 5/16 for May 16th of the current year.
+    The 'Denied' checkbox next to this date is used later.
     <li>Deposit field is required.
 </ul>
 <p>
-    The several multiline text fields have a fancy editor for 
-        Word-like formatting.
+    Several multiline text fields have a fancy editor for 
+        Word-like formatting:
+<ul>
+<li>Special Needs
+<li>Food Service
+<li>Other Requests
+<li>Provisos
+<li>Miscellaneous Notes
+</ul>
 <p>
-    After entry you see the list of all proposals.
+    After submitting the entry you see the list of all proposals.
     They are listed in order of program meeting date.
         Only current or future ones are shown.
         You can search for others by the group's name.
@@ -42,27 +61,27 @@ A call (or email) comes in for a proposed rental.
 
     You can edit/update/delete them as usual.
 <p>
-The program meeting then happens and decisions are made
+The Program Office meeting then happens and decisions are made
     to Approve or Deny the proposals.  The decision depends on
     what else is happening at the center, whether a meeting space
     is available, and many other factors.  The Calendar is an
-    effective tool to help make the decision.  Perhaps alternate
-    date is better for the center.
+    effective tool to help make the decision.  Perhaps an alternate
+    date is better for the center.  This is negotiated with
+    the rental's Contact Person.
 <h3>Deny</h3>
-    If Deny,
+    If the decision is to Deny,
         Choose Edit, check 'Denied' and possibly put a reason in
-        Miscellaneous Notes.
-        Then click 'Transmit' to move contact person (and contract signer)
+        Miscellaneous Notes.  Save these entries.
+        Then click 'Transmit' to move contact person (and perhaps contract signer)
             to People for later reference.
-<h3>Create a Rental</h3>
+<h3>Approved</h3>
     If Approve - click 'Approve'.
         This brings up a Rental creation screen (in a new window)
             with these fields already filled in from the information
             in the proposal:
-
 <ul>
-<li>Check in, Check out
-<li>Tentative - still 'yes' - will not be tentative when the contract is signed
+<li>Check in/out times
+<li>Tentative - still 'yes' - will be no longer Tentative when the contract is signed
 and deposit payment is received.
 <li>Rental Name (the proposal group name)
 <li>Contact Person/Contract Signer
@@ -77,7 +96,13 @@ Note that the Rental screen has 4 tabs:
 <li>Finance
 <li>Web
 </ol>
-Fill in start, end date and hit Submit.
+Like this:
+<p>
+<img src=create.png width=800>
+<p>
+In the discussion at the Program Meeting you probably settled
+on a date range that would work for this Proposal.
+Fill in the start and end date of the Rental and hit Submit.
 A rental is thus created.
 <p>
 The Rental's Summary is automatically created.
@@ -98,7 +123,7 @@ After a Proposal is 'Approved' you can no longer modify it.
     have been 'Transmitted' you cannot modify them on the Proposal.
     Instead, you modify their info in the People screen.
     From the Proposal and the Rental you can get to the people
-    screen in one click on a link.
+    screen in one click with the 'To Person' link.
 <p>
 Rentals can also be created directly without going through
     the proposal process.  Choose 'Add' on the Rentals list screen.
@@ -114,13 +139,15 @@ Note that it cannot be the default - the default
 is for Programs and Personal Retreats not Rentals.
 If the rental will be having lunches the housing cost
 should reflect this - the housing cost name must contain
-the word 'lunch'.
-<li>Assign meeting places and breakout places.
+the word 'lunch'.  Also - the housing cost can be either a Per Day charge
+or a Total charge.
+<li>Assign meeting places and breakout places (on the Misc tab).
 <li>Choose which days have lunches.
 Note that if the rental begins after 1:00 they
 cannot have lunch on the first day.
 <li>Verify the GL Number which was automatically computed.
 <li>Enter any comment and web information, if provided.
+The fields are Title, SubTitle, Web Address, Telephone, Email, Description.
         Check 'Linked' if the organization wants their information public.
         The web stuff will appear on the Events Calendar
             at www.mountmadonna.org.
@@ -130,9 +157,9 @@ cannot have lunch on the first day.
             happening at the center.
 </ul>
 <h3>MMC Does Registration and Parallel Programs</h3>
-The field 'MMC Does Registration' on the Misc tab is normally unchecked.
+The Rental field 'MMC Does Registration' on the Misc tab is normally unchecked.
 <p>
-For special rentals (like AVI and OGS) MMC does the individual
+For special rentals (like AVI, OGS, Laster, and others) MMC does the individual
 registration for them but it <i>is</i> still a Rental - from a financial
 and contractual perspective.  In order to do the registrations
 and generate a web page on which people can register online you
@@ -142,8 +169,9 @@ able to assign any meeting spaces or breakout spaces to this program.
 This program will not appear on the calendar at all - not even
 in the 'No Where' place.  The original rental <i>will</i> appear.
 <p>
-To help you to not forget to create this parallel program Reg
-will bring you to a Program creation dialog when you first check
+To help you to not forget to create this parallel program, after
+submitting the Rental informat, Reg will bring you to a Program
+creation dialog when you first check
 'MMC Does Registration' on the Rental screen.  The name and dates
 will be filled in from the rental.  The rest of the program attributes
 (including the web page information) is up to you.
@@ -168,115 +196,92 @@ Each rental has a 'status' which is displayed in the 4th column in the
 list of rentals
 and also on the rental screen after the date range.
 It shows the progress through time of the rental:
+<ul>
 <table cellpadding=5>
-<tr><td>Tentative</td></tr>
-<tr><td>Contract Sent</td></tr>
-<tr><td>Contract Received</td></tr>
-<tr><td>Letter Sent</td></tr>
-<tr><td>Due</td></tr>
-<tr><td>Done</td></tr>
+<tr><td style='background: rgb(255,0,0)'>Tentative</td></tr>
+<tr><td style='background: rgb(160,160,255)'>Contract Sent</td></tr>
+<tr><td style='background: rgb(0,255,0)'>Contract Received</td></tr>
+<tr><td style='background: rgb(200,120,255)'>Letter Sent</td></tr>
+<tr><td style='background: rgb(200,200,200)'>Due</td></tr>
+<tr><td style='background: rgb(255,0,255)'>Done</td></tr>
 </table>
-Each status has its own color - which can be
+</ul>
+Each status has its own background color - which can be
     changed in Configuration > Colors.
     This color is prominently visible when viewing the list of rentals,
     each rental screen, and also as a <i>border</i> color in the Calendar.
 <p>
 The second line of menus on the Rental screen is an <i>ordered</i> sequence like so:
-<ul>
-<li>Contract
-<li>Email Contract
-<li>Received
-<li>Arrangements
-<li>Email Arrangements
-<li>Invoice
-</ul>
+<p class=p2>
+<img width=800 src=sequence.png>
+<p>
 The MMC rental coordinator chooses these menu items in order - as the rental
 progresses through time.
 <h3>Contract</h3>
 Once the rental screen creation is complete you can generate a contract
-    by simply choosing 'Contract'.
+    by simply choosing 'Contract'.  Print it, sign it, and send it to the Contact Person
+    for their signature.
     This is a legal document and hence needs to be examined
     and vetted carefully.
+    <a target=_blank href=contract.html>Here is an example.</a>
+    For demonstration purposes, that page has been marked up
+    with yellow highlighting on the places where information from the particular
+    rental has been inserted into the contract template.
+    <p>
     Double check the housing costs.  Seminar house use
     affects the contract.  Lunches do, too.
     Try the various combinations.
     Read the meal times carefully.
-<p>
-The contract should be sent (emailed) to the Contact
-Person for their signature.  This also requests a deposit check.
-Generating the contract will put the current date in the
+The contract requests a deposit check.
+Simply generating the contract will put the current date in the
     'Contract Sent' field and change the status from 'Tentative'
     to 'Contract Sent'.  
 <p>
-When the contract is received <i>back</i> you can click on 
+Sometimes the Contact Person wishes to see the contract sooner rather than later.
+By choosing 'Email Contract' the contract will be emailed to the Contact Person.
+You can supply addresses to Cc if you wish.
+<p>
+When the signed contract is received <i>back</i> you can click on 
 the menu item 'Received' to put the date the contract was 
 received (i.e. today) in the
 Contract Received field.  This field can also be edited manually if you wish.
 The deposit check should also be entered as a Payment (in the
-Finance tab).  The rental status will changed to 'Contract Received'.
+Finance tab).  The rental status will then be changed to 'Contract Received'.
 <p>
 <h3>Arrangements</h3>
 The MMC Rental Coordinator can now begin the conversation
 about the <i>arrangements</i> - all the things in the Summary.
-One of these is the Gate Code.
+One of these is the Gate Code which should have been entered by the
+'gate code keeper'.
 <p>
 There is a link in the menu titled 'Arrangements' and 'Email Arrangements'.
 This is an email sent to the Contact Person and the Contract Signer
 that explains many things - housing procedure, gate code, schedule,
 meeting space setup, sound equipment, map, food service, etc.
-There are also 4 documents attached to this email:
+<a target=_blank href=arrange.html>Here is an example.</a>.
+Again, it has been marked up with yellow highlighting.
+One special paragraph is not in this particular arrangements letter has to
+do with the case where Seminar House rooms are used for sleeping.
+<p>
+There are also these 4 static documents attached to the email:
 <ul>
-<li>Map of MMC Main Area
-<li>Guest Confirmation Letter
-<li>Food Information
-<li>Schedules, Recreation/Leisure Activities, Safety, Other Misc Info
+<li><a target=_blank href='/static/templates/letter/Main Area Map 2014.pdf'>Map of MMC Main Area</a>
+<li><a href='/static/templates/letter/Rental Guest Confirmation Letter.doc'>Guest Confirmation Letter</a>
+<li><a href='/static/templates/letter/MMC Food.doc'>Food Information</a>
+<li><a href='/static/templates/letter/CURRENT INFO SHEET.doc'>Schedules, Recreation/Leisure Activities, Safety, Other Misc Info</a>
 </ul>
+You can click the above links to view and download the documents.
 <p>
-One important thing in this letter is the Web URL to the web grid for
-the rental housing.   This is where the Contact Person puts the 
-names of the people
-attending the rental to assign them specific rooms (aka houses)
-according to their preferred housing choice.  Since this is on the
-global web rather than on Reg it is visible anywhere in the world.
-For a measure of security, the Web URL contains a 6 letter secret
-(randomly generated and essentially unguessable) code that is
-unique to the specific Rental.
-<p>
-Note that these housing assignments
-are <i>entirely</i> the responsibility of the Contact Person,
-not anyone at MMC.   Also note that we do not collect any demographic
-information <i> at all</i> on the people being housed.  
-The Contact Person could simply put "John", "Mary", "Bill & Hillary",
-"Melissa and child", etc.  in the fields for the beds in the room.
-They also note which nights the person will be there - they default
-to every day of the rental.
-<p>
-The Web Grid calculates a cost for each
-person and displays it in the grid.   The cost depends on how many
-other people are in the room - and, of course, on the housing cost (which is
-displayed at the bottom of the grid).  As an example, say person A in a Double
-room has a roommate (person B) for the first night.  They will both pay
-the Double rate for that night.  If person B
-leaves the next day, person A will pay the Single rate for the
-rest of the rental.
-<p>The costs displayed on the grid are used by the Contact Person
-to charge the people they housed.   The total of all these housing costs
-is used in the Invoice to calculate the total amount due to MMC.
-<p>The MMC rental coordinator can see exactly what the Contact Person sees
-by clicking on the link 'Web Grid'.  They shouldn't change anything there!
-<p>Every 15 minutes 24/7 a program (a cron job) runs that transfers any changes
-in the web housing grids (for any active Rentals) from the global web on
-www.mountmadonna.org to the computer that Reg runs on (for security it is behind a VPN [virtual private network]).   People using
-Reg can then see the housing assignments by clicking on the Rental
-menu link 'Local Grid'.  On that screen is a link 'Grab New'
-which can be used by those who
-don't want to wait for the next 15 minute transfer/checking interval. 
-<h4>Housing</h4>
+After you email the arrangements letter the status of the rental
+is changed to 'Letter Sent'.  The date it was sent is also recorded.
+<h3>Housing</h3>
 There is an ongoing conversation between the Contact Person
 and the MMC Rental Coordinator about how many
 people will be coming and what kind of housing
 they will want.  This information is entered into the
 Meals/Lodging tab of the Rental.
+<p>
+<img src=housing.png width=800>
 <p>
 Entire housing clusters can be booked (or cancelled) for a rental
 in one fell swoop.  Choose 'Update' to the right of 'Cluster Reservations'.
@@ -300,22 +305,109 @@ it disappears.  Whenever you add or delete a house it will reappear.
 It will also appear if you change the Housing Cost type.
 <p>
 The DailyPic can be consulted to see what houses have been assigned
-and reserved for the Rental.
+and reserved for the Rental.  Here's an example.  'Codspa' is a Rental.
+<p>
+<img src=daily.png width=800>
+<p>
+<h3>The Grid</h3>
+One very important thing in the Arrangements letter is the
+URL to the web grid for the rental housing.   This is where 
+the Contact Person puts the names of the people
+attending the rental to assign them specific rooms (aka houses)
+according to their preferred housing choice.  Since this is on the
+global web rather than on Reg it is visible anywhere in the world.
+For a small measure of security, the Web URL contains a 6 letter secret
+(randomly generated and essentially unguessable) code that is
+unique to the specific Rental.
+<p>
+<img src=grid1.png width=800>
+<p>
+Note that these housing assignments
+are <i>entirely</i> the responsibility of the Contact Person,
+not anyone at MMC.   Also note that we do not collect any demographic
+information <i> at all</i> on the people being housed.  
+The Contact Person could simply put "John", "Mary", "Bill & Hillary",
+"Melissa and child", etc.  in the fields for the beds in the room.
+They also note which nights the person will be there - they default
+to every day of the rental.   Note that 'Darling, Flow' will leave
+before the last day of the rental above.
+<p>
+The Web Grid calculates a cost for each
+person and displays it in the grid after the entries are submitted.
+The cost depends on how many
+other people are in the room - and, of course, on the housing cost (which is
+displayed at the bottom of the grid).  As an example, say person A in a Double
+room has a roommate (person B) for the first night.  They will both pay
+the Double rate for that night.  If person B
+leaves the next day, person A will pay the Single rate for the
+rest of the rental.
+<p>
+<img src=grid2.png width=800>
+<p>
+Note the difference in cost above for Carolyn, Gloria, Flow, and Shannon.
+The nightly costs are:
+<ul>
+<table cellpadding=5 border=1>
+<tr><td>Single w/ Bath</td><td>$184</td></tr>
+<tr><td>Single</td><td>$155</td></tr>
+<tr><td>Double w/ Bath</td><td>$136</td></tr>
+</table>
+</ul>
+Carolyn: 136*4 = 544.<br>
+Gloria: 136*3 + 184 = 592.<br>
+Flow: 136*3 = 408.<br>
+Shannon: 155*4 = 620.<br>
+<p>
+Special calculations are done when there are two people in a tent
+or a person has their child with them.
+<p>
+<img src=grid3.png width=800><p class=p2>
+<img src=grid4.png width=700>
+<p>The costs displayed on the grid are used by the Contact Person
+to charge the people they housed.   The total of all these housing costs
+is used in the Invoice to calculate the total amount due to MMC.
+<p>The MMC rental coordinator can see exactly what the Contact Person sees
+by clicking on the link 'Web Grid'.  They shouldn't change anything there!
+<p>Every 15 minutes 24/7 a program (a cron job) runs that transfers any changes
+in the web housing grids (for any active Rentals) from the global web on
+www.mountmadonna.org to the computer that Reg runs on (for security it is behind a VPN [virtual private network]).   People using
+Reg can then see the housing assignments by clicking on the Rental
+menu link 'Local Grid'.  On that screen is a link 'Grab New'
+which can be used by those who
+don't want to wait for the next 15 minute transfer/checking interval. 
+<p>
+The entries in the rental's Grid are used in the generation
+of the Meal List.  The count from the rental can, of course,
+vary from day to day.
 <h3>Emailing the Summary</h3>
 The 'Arrangements' letter above was sent early on in the process
 to begin the discussion of the specific needs of the Rental.
-These are entered into the 'Summary'.  It is important that the Contact
-Person knows exactly what the Summary contains so that they and the Center
-are 'on the same page'.   On the Summary screen there is a menu link
+These needs are entered into the 'Summary'.  It is important
+that the Contact Person knows exactly what the Summary contains
+so that they and the Center are 'on the same page'.
+On the Summary screen there is a menu link
 'Email'.  This is used to send the summary to the Contact Person
 and the Contract Signer.  You can add Cc emails, change the Subject,
 and the Introductory note for the email.  The email will contain
 the entire Summary page.  The introductory note default is in Configuration > Strings.  
 <p>Note: If the Summary has been updated since it was last sent
 there is a red asterisk next to the menu choices 'Sum' and 'Summary',
-and the 'Email' link is in red.
+and the 'Email' link is in red.  This red color alerts you
+to the fact that changes have been made that the Contact Person
+does not yet know about.
+<p>
+Here is a <a target=_blank href=sum.html>rather lengthy example</a> of the
+summary of a very challenging hybrid rental/program.
+You can see why it is important for the Contact Person to verify
+all the details of what they require of the Center.
+<p>
+<h3>Finance</h3>
+The Finance tab shows Charges (other than housing) and Payments.
+Here's an example:
+<p>
+<img src=finance.png width=700>
 <h3>Post Rental</h3>
-The Rental comes and all hopefully went well.
+The Rental comes and hopefully all went well.
 <p>
 The coordinator can now choose 'Invoice' to get a nicely laid out and
     accurate invoice to print for the Contact Person.  Actually,
@@ -327,5 +419,495 @@ A check is made out for the unpaid balance and it is entered
 If the full payment was not made on the last day of the Rental 
     the status becomes 'Due' - with its own unique color to 
     make it stand out.  This Rental will continue to be at the top
-    of the Rentals list until the payment is made.
+    of the Rentals list until the payment is made.  Like so:
+    <p>
+<img src=duelist.png width=800>
+<p>
+Here are some sample invoices:
+<hr>
+<h2>Invoice for Aspire  7/16<br>
+July 17, 2016
+to July 22, 2016</h2>
+
+<h3>Housing Charges</h3>
+Total from the web housing grid: $23,870
+
+
+<h3>Extra Time Charges</h3>
+<div class=para>
+
+    The rental started at 9:00 am
+    (before 4:00 pm)
+    so there is an extra time charge of
+    7.00 hours for 37 people
+    at $2 per hour
+    = $518.
+<p>
+</div>
+
+
+
+
+
+
+<h3>Total Charges</h3>
+<table class=ind cellpadding=3 border=1>
+<tr><td class=xx>Housing</td><td class=yy>23,870</td></tr>
+
+<tr><td class=xx>Extra Start Time</td><td class=yy>518</td></tr>
+
+
+<tr><td class=xx>Other</td><td class=yy>0</td></tr>
+<tr><td class=xx>Total</td><td class=yy>$24,388</td></tr>
+</table>
+
+
+
+<h3>Payments</h3>
+<table class=ind cellpadding=3 border=1>
+    
+        <tr>
+        <td class=xx>Jul 17 '16</td>
+        <td class=yy>23,388</td>
+        </tr>
+    
+        <tr>
+        <td class=xx>Feb 18 '15</td>
+        <td class=yy>1,000</td>
+        </tr>
+    
+    <tr>
+    <td class=xx>Total</td>
+    <td class=yy>$24,388</td>
+    </tr>
+</table>
+
+
+<h3>Balance</h3>
+<table class=ind cellpadding=3 border=1>
+<tr><th class=xx>Charges</th><td class=yy>24,388</td></tr>
+<tr><th class=xx>Payments</th><td class=yy>-24,388</td></tr>
+<tr><th class=xx>Balance</th><td class=yy>$0</td></tr>
+</table>
 </body>
+<hr>
+<h2>Invoice for Ecstatic Living  7/16<br>
+July 22, 2016
+to July 24, 2016</h2>
+
+<h3>Housing Charges</h3>
+Total from the web housing grid: $3,118
+
+<p>
+<div class=para>
+However, the <i>minimum</i> lodging cost was contractually agreed
+to be 3/4 times the maximum (28)
+
+at the dormitory rate of $185:
+<ul>
+.75 * 28
+
+* $185 = $3,885
+<ul>
+</div>
+
+
+
+
+
+<h3>Total Charges</h3>
+<table class=ind cellpadding=3 border=1>
+<tr><td class=xx>Housing</td><td class=yy>3,885</td></tr>
+
+
+<tr><td class=xx>Other</td><td class=yy>384</td></tr>
+<tr><td class=xx>Total</td><td class=yy>$4,269</td></tr>
+</table>
+
+
+
+<h3>Payments</h3>
+<table class=ind cellpadding=3 border=1>
+    
+        <tr>
+        <td class=xx>Jul 22 '16</td>
+        <td class=yy>3,002</td>
+        </tr>
+    
+        <tr>
+        <td class=xx>Jan 20 '16</td>
+        <td class=yy>500</td>
+        </tr>
+    
+    <tr>
+    <td class=xx>Total</td>
+    <td class=yy>$3,502</td>
+    </tr>
+</table>
+
+
+<h3>Balance</h3>
+<table class=ind cellpadding=3 border=1>
+<tr><th class=xx>Charges</th><td class=yy>4,269</td></tr>
+<tr><th class=xx>Payments</th><td class=yy>-3,502</td></tr>
+<tr><th class=xx>Balance</th><td class=yy>$767</td></tr>
+</table>
+<p>
+<hr>
+<hr>
+<h1>Technical Appendices</h1>
+Here are some things that are of interest
+only to engineers working on Reg.
+<h2>Proposal Schema</h2>
+<html>
+<body>
+<h3>Proposal</h3>
+When people call to ask about renting the space at MMC  a Proposal is created.  Information is gathered and the proposal is considered at the next Program admin meeting.   Creating a proposal awkwardly creates People records. <p> If a proposal is approved there is an Approved link on the proposal screen that creates a Rental from the Proposal - copying the information from the proposal to the rental.
+<p>
+Table: proposal
+<dl>
+<dt>addr1</dt>
+<dd>coordinator address 1</dd>
+<dt>addr2</dt>
+<dd>coordinator address 2</dd>
+<dt>checkin_time</dt>
+<dd>when will they check in?  default 4:00 pm</dd>
+<dt>checkout_time</dt>
+<dd>when will they check out?  default 1:00 pm</dd>
+<dt>city</dt>
+<dd>coordinator city</dd>
+<dt>country</dt>
+<dd>coordinator country</dd>
+<dt>cs_addr1</dt>
+<dd>contract signer address 1</dd>
+<dt>cs_addr2</dt>
+<dd>contract signer address 2</dd>
+<dt>cs_city</dt>
+<dd>contract signer city</dd>
+<dt>cs_country</dt>
+<dd>contract signer country</dd>
+<dt>cs_email</dt>
+<dd>contract signer email address</dd>
+<dt>cs_first</dt>
+<dd>contract signer first name</dd>
+<dt>cs_last</dt>
+<dd>contract signer last name</dd>
+<dt>cs_person_id</dt>
+<dd>foreign key to <a#>person</a></dd>
+<dt>cs_st_prov</dt>
+<dd>contract signer state/province</dd>
+<dt>cs_tel_cell</dt>
+<dd>contract signer cell phone</dd>
+<dt>cs_tel_home</dt>
+<dd>contract signer home phone</dd>
+<dt>cs_tel_work</dt>
+<dd>contract signer work phone</dd>
+<dt>cs_zip_post</dt>
+<dd>contract signer zip/postal code</dd>
+<dt>date_of_call</dt>
+<dd>when did the call come in?</dd>
+<dt>dates_requested</dt>
+<dd>a free text field describing dates and/or date ranges</dd>
+<dt>denied</dt>
+<dd>was the proposal was denied?</dd>
+<dt>deposit</dt>
+<dd>the required deposit</dd>
+<dt>email</dt>
+<dd>coordinator email address</dd>
+<dt>first</dt>
+<dd>coordinator first name</dd>
+<dt>food_service</dt>
+<dd>free text describing food needs</dd>
+<dt>group_name</dt>
+<dd>name of the group requesting the rental</dd>
+<dt>housing_space</dt>
+<dd>what housing is needed?</dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>last</dt>
+<dd>coordinator last name</dd>
+<dt>leader_housing</dt>
+<dd>where will the leader be housed?</dd>
+<dt>max</dt>
+<dd>maximum # of people to be housed.  this number is used to calculate the contractual financial obligation.</dd>
+<dt>meeting_space</dt>
+<dd>what kind of meeting space is needed?</dd>
+<dt>min</dt>
+<dd>minimum # of people to be housed.</dd>
+<dt>misc_notes</dt>
+<dd>free text of other notes</dd>
+<dt>other_requests</dt>
+<dd>free text describing other requests</dd>
+<dt>other_things</dt>
+<dd>free text describing miscellaneous other things</dd>
+<dt>person_id</dt>
+<dd>foreign key to <a#>person</a></dd>
+<dt>program_meeting_date</dt>
+<dd>when will this proposal be considered? </dd>
+<dt>provisos</dt>
+<dd>free text describing any provisos</dd>
+<dt>rental_id</dt>
+<dd>foreign key to <a#>rental</a></dd>
+<dt>rental_type</dt>
+<dd>what type of organization is requesting the rental? like psychology, yoga, sound healing, social justice, movement, etc.</dd>
+<dt>special_needs</dt>
+<dd>free text describing any special needs</dd>
+<dt>st_prov</dt>
+<dd>coordinator state/province</dd>
+<dt>staff_ok</dt>
+<dd>did the staff okay this proposal?</dd>
+<dt>tel_cell</dt>
+<dd>coordinator cell phone</dd>
+<dt>tel_home</dt>
+<dd>coordinator home phone</dd>
+<dt>tel_work</dt>
+<dd>coordinator work phone</dd>
+<dt>zip_post</dt>
+<dd>coordinator zip/postal code</dd>
+</dl>
+<h3>Relations</h3>
+<table cellpadding=5>
+<tr><td>cs_person</td><td><a#>person</a></td><td>belongs_to</td></tr>
+<tr><td>person</td><td><a#>person</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a#>rental</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>
+<hr>
+<h2>Rental Schema</h2>
+<html>
+<body>
+<h3>Rental</h3>
+A rental is created when some other organization wants to rent the meeting space and housing at MMC.  These events are not sponsored nor advertised by the center.  Housing assignments are made by the coordinator by filling in a form on the global web. This information is brought into Reg periodically via a cron job or on demand (Grab New).
+<p>
+Table: rental
+<dl>
+<dt>arrangement_sent</dt>
+<dd>date that the arrangement letter was sent</dd>
+<dt>arrangement_by</dt>
+<dd>who sent the arrangement letter</dd>
+<dt>balance</dt>
+<dd>the outstanding balance</dd>
+<dt>cancelled</dt>
+<dd>boolean - was this rental cancelled?  Set/Unset by a menu link.</dd>
+<dt>color</dt>
+<dd>RGB values for the DailyPic display.</dd>
+<dt>comment</dt>
+<dd>free text describing the rental</dd>
+<dt>contract_received</dt>
+<dd>date the contract was received</dd>
+<dt>contract_sent</dt>
+<dd>date the contract was sent out</dd>
+<dt>coordinator_id</dt>
+<dd>foreign key to <a>person</a></dd>
+<dt>counts</dt>
+<dd>the number of people attending the rental each day from start to end - space separated</dd>
+<dt>cs_person_id</dt>
+<dd>foreign key to <a>person</a></dd>
+<dt>deposit</dt>
+<dd>how much deposit is required?</dd>
+<dt>edate</dt>
+<dd>date the rental ends</dd>
+<dt>email</dt>
+<dd>email address for the rental to put on the little web page (if desired)</dd>
+<dt>end_hour</dt>
+<dd>time the rental will end (and people will leave)</dd>
+<dt>expected</dt>
+<dd>how many people are expected?</dd>
+<dt>fch_encoded</dt>
+<dd>the encoded form of fixed_cost_houses</dd>
+<dt>fixed_cost_houses</dt>
+<dd>lines describing houses with a fixed cost. designed specifically for economy dorms where there is only a pad on the floor.</dd>
+<dt>glnum</dt>
+<dd>a General Ledger number computed from the sdate</dd>
+<dt>grid_code</dt>
+<dd>a hard to guess code for the grid URL</dd>
+<dt>grid_max</dt>
+<dd>the maximum of the daily counts</dd>
+<dt>grid_stale</dt>
+<dd>is the web grid in need of refreshing?</dd>
+<dt>housecost_id</dt>
+<dd>foreign key to <a>housecost</a></dd>
+<dt>housing_charge</dt>
+<dd>total cost from the housing grid</dd>
+<dt>housing_note</dt>
+<dd>free text describing any issues with the rental housing</dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>linked</dt>
+<dd>should this rental be included on the online Event calendar?</dd>
+<dt>lunches</dt>
+<dd>an encoded (essentially binary) field for when lunches are requested.</dd>
+<dt>max</dt>
+<dd>the maximum number of people expected.  this is used to determine the financial obligation of the renter.</dd>
+<dt>mmc_does_reg</dt>
+<dd>will we be doing registration for this event? if so, a parallel hybrid program will be created.</dd>
+<dt>name</dt>
+<dd>a brief name of the rental for internal purposes</dd>
+<dt>phone</dt>
+<dd>phone number for the web page, if wanted</dd>
+<dt>pr_alert</dt>
+<dd>This rental has an effect on PRs.  This column contains text to 'pop up' when a person registers for a PR whose dates overlap with this rentals's dates.</dd>
+<dt>program_id</dt>
+<dd>foreign key to <a>program</a></dd>
+<dt>proposal_id</dt>
+<dd>foreign key to <a>proposal</a></dd>
+<dt>received_by</dt>
+<dd>foreign key to <a>user</a></dd>
+<dt>refresh_days</dt>
+<dd>what days should the bedding be refreshed? This is an encoded field similar to lunches. This is used for longer term rentals.</dd>
+<dt>rental_follows</dt>
+<dd>does another rental follow this one? used in generating the make up list.</dd>
+<dt>sdate</dt>
+<dd>date the rental starts</dd>
+<dt>sent_by</dt>
+<dd>foreign key to <a>user</a></dd>
+<dt>staff_ok</dt>
+<dd>has the staff okayed this rental?</dd>
+<dt>start_hour</dt>
+<dd>time the rental begins</dd>
+<dt>status</dt>
+<dd>tentative, sent, received, due, done</dd>
+<dt>subtitle</dt>
+<dd>secondary description of the rental for the web</dd>
+<dt>summary_id</dt>
+<dd>foreign key to <a>summary</a></dd>
+<dt>tentative</dt>
+<dd>has this rental not been confirmed yet? checked at first, unchecked automatically when a contract is sent out.</dd>
+<dt>title</dt>
+<dd>primary description of the rental for the web</dd>
+<dt>url</dt>
+<dd>a URL of the rental for the web</dd>
+<dt>webdesc</dt>
+<dd>a longer description of the rental for the web.</dd>
+</dl>
+<h3>Relations</h3>
+<table cellpadding=5>
+<tr><td>arrangement_by</td><td><a>user</a></td><td>belongs_to</td></tr>
+<tr><td>blocks</td><td><a>block</a></td><td>has_many</td></tr>
+<tr><td>bookings</td><td><a>booking</a></td><td>has_many</td></tr>
+<tr><td>charges</td><td><a>rentalcharge</a></td><td>has_many</td></tr>
+<tr><td>contract_signer</td><td><a>person</a></td><td>belongs_to</td></tr>
+<tr><td>coordinator</td><td><a>person</a></td><td>belongs_to</td></tr>
+<tr><td>housecost</td><td><a>housecost</a></td><td>belongs_to</td></tr>
+<tr><td>payments</td><td><a>rentalpayment</a></td><td>has_many</td></tr>
+<tr><td>program</td><td><a>program</a></td><td>belongs_to</td></tr>
+<tr><td>received_by</td><td><a>user</a></td><td>belongs_to</td></tr>
+<tr><td>rental_bookings</td><td><a>rentalbooking</a></td><td>has_many</td></tr>
+<tr><td>sent_by</td><td><a>user</a></td><td>belongs_to</td></tr>
+<tr><td>summary</td><td><a>summary</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>
+<hr>
+<hr>
+<h2>Grid Files</h2>
+The first text file (for the specific rental Aspire 7/16)
+is sent <i>to</i> mountmadonna.org from Reg.
+The second one is gotten <i>from</i> mountmadonna.org after
+the Contact Person has filled in people's names and
+when they'll be coming.
+<h3>ZIZPRV.txt</h3>
+<pre>
+name Aspire  7/16
+id 1203
+first Carolyn
+last Mollohan
+sdate 20160717
+edate 20160722
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+12|105|2|0|0|1
+13|107|2|0|0|1
+14|108|2|1|0|1
+15|109|2|0|0|1
+17|111|2|0|0|1
+18|112|2|1|0|1
+19|113|2|0|0|1
+21|115|2|0|0|1
+22|116|2|1|0|1
+23|117|2|0|0|1
+24|118|2|1|0|1
+33|211|2|0|0|1
+34|212|2|1|0|1
+36|214|2|1|0|1
+38|216|2|1|0|1
+40|218|2|1|0|1
+50|OAKS 15|2|0|1|0
+118|OC 2|2|0|0|1
+120|OC 4|2|0|0|1
+121|OC 5|2|0|0|1
+122|OC 6|2|0|0|1
+124|OC 8|2|0|0|1
+</pre>
+<h3>ZIZPRV-data.txt</h3>
+<pre>
+12|1|Kahlenberg, Ondrea|1|1|1|1|1|775
+12|2||0|0|0|0|0|0
+13|1|Hamilton, Lynne|1|1|1|1|1|775
+13|2||0|0|0|0|0|0
+14|1|DeLillo, Carol|1|1|1|1|1|680
+14|2|Mollohan,Carolyn|1|1|1|1|1|680
+15|1|Fidel, Coco|1|1|1|1|1|775
+15|2||0|0|0|0|0|0
+17|1|Chamblee, Johnny|1|1|1|1|1|600
+17|2|Merritt, Dan|1|1|1|1|1|600
+18|1|Brumfield, Sally|1|1|1|1|1|680
+18|2|Hacker, Susan|1|1|1|1|1|680
+19|1||0|0|0|0|0|0
+19|2|Gehlen, Doris|1|1|1|1|1|775
+21|1|Gavin, Shannon|1|1|1|1|1|775
+21|2||0|0|0|0|0|0
+22|1|Darling, Flow|1|1|1|1|1|680
+22|2|Hughes, Gloria|1|1|1|1|1|680
+23|1|Weaver, Vicki|1|1|1|1|1|600
+23|2|King, Paula|1|1|1|1|1|600
+24|1|Eidsmoe, Anne|1|1|1|1|1|680
+24|2|Eidsmoe, Mike|1|1|1|1|1|680
+29|1||0|0|0|0|0|0
+29|2||0|0|0|0|0|0
+29|3||0|0|0|0|0|0
+29|4||0|0|0|0|0|0
+33|1|Tarquinio, Al|1|1|1|1|1|775
+33|2||0|0|0|0|0|0
+34|1|Shaw, Michael|1|1|1|1|1|680
+34|2|Shaw, Gloria|1|1|1|1|1|680
+36|1|Loftin, Wendy|1|1|1|1|1|680
+36|2|Waller, Lois|1|1|1|1|1|680
+38|1|Baker, Greg|1|1|1|1|1|680
+38|2|Baker, Haley|1|1|1|1|1|680
+40|1|Penn, Greg ~ Teacher|1|1|1|1|1|920
+40|2||0|0|0|0|0|0
+50|1|Bisson, Emil|1|1|1|1|1|385
+50|2||0|0|0|0|0|0
+118|1|Roos, Mary|1|1|1|1|1|775
+118|2||0|0|0|0|0|0
+120|1|Rodriguez, Maria|1|1|1|1|1|775
+120|2||0|0|0|0|0|0
+121|1|White, Laurie|1|1|1|1|1|775
+121|2||0|0|0|0|0|0
+122|1|Smith, Nancy Jo|1|1|1|1|1|600
+122|2|McGriff, Pat|1|1|1|1|1|600
+124|1|Gardner, Jack|1|1|1|1|1|600
+124|2|Gardner, Teresa|1|1|1|1|1|600
+1001|1|Wilkins, Alfreida|1|1|1|1|1|345
+1001|2|Capson, Sherman|1|1|1|1|1|345
+1001|3||0|0|0|0|0|0
+1001|4||0|0|0|0|0|0
+1001|5||0|0|0|0|0|0
+1002|1|Bugalski, Sheri|1|1|1|1|1|290
+1002|2|Roderick, Ron|1|1|1|1|1|290
+1002|3||0|0|0|0|0|0
+1002|4||0|0|0|0|0|0
+1002|5||0|0|0|0|0|0
+</pre>

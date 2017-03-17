@@ -23,32 +23,37 @@ table {
 #name {
     width: 400px;
 }
+.hi {
+    background-color: yellow;
+}
 </style>
 </head>
 <body>
-${rental.contract_sent_obj.format("%B %e, %Y")}
+<span class=hi>
+March  1, 2016
+</span>
 <p>
-$signer.first $signer.last<br>
-$signer.addr1<br>
-[% IF signer.addr2 %]
-$signer.addr2<br>
-[% END %]
-$signer.city, $signer.st_prov $signer.zip_post<br>
-[% IF signer.country %]
-$signer.country<br>
-[% END %]
+<span class=hi>
+Ameya Specterman<br>
+Open Gate Sangha <br>
+
+PO Box 112107<br>
+
+Campbell, CA 95011<br>
+</span>
+
 <p>
-Dear $signer.first,
+Dear <span class=hi>Ameya</span>,
 <p>
 Here is the contract reflecting our agreement for your workshop
-on $rental.dates, ${rental.sdate_obj.format("%Y")}.  Please sign and return the original with your
+on <span class=hi>February 12-17, 2017</span>.  Please sign and return the original with your
 deposit, keeping the copy for your files. Note that the contract expires
 if not returned with the deposit within two weeks. Also, here is our
 standard confirmation sheet including a map, directions,
 and other information you may find useful.
 <p>
 Please note the contract provisions regarding housing procedure,
-especially the \$5.00 to \$10.00 charge for any changes or additions
+especially the <span class=hi>$5.00 to $10.00</span> charge for any changes or additions
 within the last week prior to the event. (You may want to set up a
 way to pass this cost on to participants who sign up after the
 one-week-prior date). We will be grateful if you can let us know,
@@ -59,13 +64,7 @@ both a schedule of your sessions and breaks and an alphabetical
 list of the participants.
 <p>
 <!--
-[% IF email %]
-To assist you in your housing assignment and financial tallies
-we have created a customized web page for you here:
-<ul>
-<a href=http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code>www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code</a>
-</ul>
-[% END %]
+
 <p>
 -->
 We also offer, by appointment, through the Kaya Kalpa Wellness Center,
@@ -96,117 +95,93 @@ And if there are any other needs or ways we can help, please do let us know.
 <p>
 All good wishes,<br>
 <div style="margin-top: .3in;">
-$program_director<br>
+<span class=hi>Jerry Brajesh Friedberg</span><br>
 Programs Director
 </div>
 <div style="page-break-after:always"></div>
 <div style="height: 1.125in"></div>
 <h3>Facilities Use Contract</h3>
 Mount Madonna Center, hereafter called the Center, and 
-$signer.first
-$signer.last
-of $signer.addr1[% IF signer.addr2 %] $signer.addr2[% END %],
-$signer.city, $signer.st_prov
-$signer.zip_post, [% IF signer.country %]$signer.country[% END %]
-for "${rental.name}", hereafter called the Renter, hereby agree as follows:
+<span class=hi>Ameya
+Specterman
+of Open Gate Sangha  PO Box 112107,
+Campbell, CA
+95011, 
+for "Open Gate Sangha  2/17";</span>, hereafter called the Renter, hereby agree as follows:
 <h2>Facilities</h2>
-The Center will provide workshop space in the ${rental.meeting_spaces},
-or a comparable facility, and lodging for up to $rental.max
-people from ${rental.start_hour_obj.format('ampm')} on ${rental.sdate_obj.format("%A %B %e, %Y")}
-to ${rental.end_hour_obj.format('ampm')} on ${rental.edate_obj.format("%A %B %e, %Y")} at the following rates:
+The Center will provide workshop space in the <span class=hi>CC Main, Maple Room, Orchard House Main, Seminar House Main, Willow Room,  and Jasmine Room</span>,
+or a comparable facility, and lodging for up to <span class=hi>230</span>
+people from <span class=hi>2:30 pm on Sunday February 12, 2017
+to 1:00 pm on Friday February 17, 2017</span> at the following rates:
 <h2>Rates</h2>
-[% hc = rental.housecost %]
-[% IF hc.type == 'Per Day' %]
-The costs below are dollars per person per day.
-[% ELSE %]
-The costs below are for the entire rental period - not per day.
-[% END %]
+
+
+The costs below are <span class=hi>for the entire rental period - not per day.</span>
+
 <table cellpadding=2>
-<tr><td>Commuting</th><td align=right>$hc.commuting</td></tr>
-<tr><td>Own Tent</th><td align=right>$hc.own_tent</td></tr>
-<tr><td>Own Van</th><td align=right>$hc.own_van</td></tr>
-[% IF rental.summer %]
-<tr><td>Center Tent</th><td align=right>$hc.center_tent</td></tr>
-[% END %]
-[% IF hc.economy %]
-<tr><td>Economy</td><td align=right>$hc.economy</td></tr>
-[% END %]
-<tr><td>Dormitory (4-7 to a room)</td><td align=right>$hc.dormitory</td></tr>
-<tr><td>Triple</td><td align=right>$hc.triple</td></tr>
-<tr><td>Double</td><td align=right>$hc.dble</td></tr>
-<tr><td>Double with bath</td><td align=right>$hc.dble_bath</td></tr>
-<tr><td>Single</td><td align=right>$hc.single</td></tr>
-<tr><td>Single with bath</td><td align=right>$hc.single_bath</td></tr>
+<tr><td>Commuting</th><td align=right><span class=hi>340</span></td></tr>
+<tr><td>Own Tent</th><td align=right><span class=hi>395</span></td></tr>
+<tr><td>Own Van</th><td align=right><span class=hi>395</span></td></tr>
+
+
+<tr><td>Economy</td><td align=right><span class=hi>495</span></td></tr>
+
+<tr><td>Dormitory (4-7 to a room)</td><td align=right><span class=hi>545</span></td></tr>
+<tr><td>Triple</td><td align=right><span class=hi>595</span></td></tr>
+<tr><td>Double</td><td align=right><span class=hi>695</span></td></tr>
+<tr><td>Double with bath</td><td align=right><span class=hi>730</span></td></tr>
+<tr><td>Single</td><td align=right><span class=hi>825</span></td></tr>
+<tr><td>Single with bath</td><td align=right><span class=hi>970</span></td></tr>
 </table>
 Children aged 2 to 12 staying in the room
 with a guest will pay 1/2 of the above rates.
 <p>
 <b>Please note all guest rooms must be vacated by 1 pm.</b>
 Room rates include accommodations,
-[% lunch = rental.any_lunches %]
-[% IF lunch %]
-three meals
-[% ELSE %]
-two meals and a snack
-[% END %]
+
+
+<span class=hi>three meals</span>
+
 per day,
 applicable state and local taxes, insurance, meeting space,
 and use of grounds and recreational facilities.
 Charges are based on actual occupancy, not room capacity
 - e.g., a room with 3 beds occupied by 2 people is charged as a double.
-[% IF rental.seminar_house %]
-<b>Renter agrees to house a minimum of 15 guests in the Seminar House.</b>
-[% END %]
-[% IF ! lunch %]
-If lunches are requested for the group there will be a charge
-of \$$rental_lunch_cost/person/day.
-[% END %]
+
+<b><span class=hi>Renter agrees to house a minimum of 15 guests in the Seminar House.</span></b>
+
+
 <i>There will be a charge of
-\$2/person/hour for any additional time before 4:00 pm on the start date,
+$2/person/hour for any additional time before 4:00 pm on the start date,
 or after 1:00 pm on the end date.</i>
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Meals</h2>
-[% IF lunch %]
+
 The Center will provide three vegetarian meals per day:
-breakfast 8:15 am, lunch 12:30 pm, and dinner 5:00 pm with the
+breakfast 8:15am, <span class=hi>lunch 12:30 pm</span>, and dinner 5:00 pm with the
 following exceptions: Friday dinner 5:30 pm;
 Saturday brunch 10:00 am, snack (no lunch) 1:00 pm; Sunday breakfast 8:30. 
-[% ELSE %]
-The Center will provide two vegetarian meals and a snack per day:
-Friday dinner 5:30 pm; Saturday brunch 10:00 am, snack 1:00 pm,
-dinner 5:00 pm; Sunday breakfast 8:30 am, snack 12:30 pm.
-[% END %]
+
 To be assured of a complete, fresh, hot meal, guests must arrive
 within the first half-hour of mealtime. Meals are at the
 Community Building for the renter,
 other guests of the Center, and the Center community.
 <h2>Payment and Cancellation Policies</h2>
-The renter will pay a deposit of \$$deposit amount
+The renter will pay a deposit of <span class=hi>$2,000</span> amount
 upon the signing of this contract.
 <p>
-[% IF hc.type == 'Per Day' %]
-"Agreed Upon Revenue" is equal to the number of
-people specified under "Facilities" above,
-multiplied by the number of days of the rental specified in the same place,
-multiplied by the Dormitory rate specified under "Rates" above.
-For example, if the reservation is for x number of attendees
-for y number of days, the Agreed Upon Revenue is 
-(x)(y)(dormitory rate above). 
-<p>
-In this particular case, x = ${rental.max}, y = ${ndays},
-and the dormitory rate is \$$rental.housecost.dormitory per day.
-[% ELSE %]
+
 "Agreed Upon Revenue" is equal to the number of
 people specified under "Facilities" above
-multiplied by the Dormitory rate specified under "Rates" above.
+<span class=hi>multiplied by the Dormitory rate specified under "Rates" above.
 For example, if the reservation is for x number of attendees
-the Agreed Upon Revenue is (x)(dormitory rate above). 
+the Agreed Upon Revenue is (x)(dormitory rate above)</span>. 
 <p>
-In this particular case, x = ${rental.max}
-and the dormitory rate is \$$rental.housecost.dormitory per day.
-[% END %]
-The Agreed Upon Revenue is thus \$${agreed}.
+In this particular case, <span class=hi>x = 230
+and the dormitory rate is $545 per day.
+
+The Agreed Upon Revenue is thus $125,350</span>.
 <p>
 Cancellation charges shall be as follows:
 <table cellpadding=2>
@@ -244,7 +219,7 @@ or at the 75% of Agreed Upon Revenue formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
 <p>
-<b>The minimum due for your workshop is 75% of \$$agreed &nbsp;&nbsp;=&nbsp;&nbsp; \$${min_due}.</b>
+<b>The minimum due for your workshop is 75% of <span class=hi>$125,350 &nbsp;&nbsp;=&nbsp;&nbsp; $94,012</span>.</b>
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Concurrent Workshops</h2>
@@ -288,8 +263,8 @@ received after that point.
 The Center cannot guarantee that accommodation requests received
 later than two weeks out will be accepted.
 For housing requests received within the last week before the event,
-those that can be accepted will be surcharged \$${string.rental_late_in>.00 per
-outdoor accommodation and \$${string.rental_late_out>.00 per indoor accommodation.
+those that can be accepted will be surcharged <span class=hi>$5.00</span> per
+outdoor accommodation and <span class=hi>$10.00</span> per indoor accommodation.
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Arbitration</h2>
@@ -326,14 +301,13 @@ of the date alongside the Program Director's signature.
 <center>
 <table id=line border=0>
 <tr><td colspan=2><hr></td></tr>
-<tr><td id=name align=left>$program_director</td><td>Date</td></tr>
+<tr><td id=name align=left><span class=hi>Brajesh (Jerry Friedberg, Ph.D.)</span></td><td>Date</td></tr>
 <tr><td id=name align=left>Program Director of the Center</td></tr>
 </table>
 <table id=line border=0>
 <tr><td colspan=2><hr></td></tr>
-<tr><td id=name align=left>$signer.first $signer.last</td><td>Date</td></tr>
+<tr><td id=name align=left><span class=hi>Ameya Specterman</span></td><td>Date</td></tr>
 </table>
 </center>
 </body>
 </html>
-<!-- Brajesh (Jerry Friedberg, Ph.D.) -->

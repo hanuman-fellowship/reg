@@ -62,7 +62,7 @@ th a:hover {
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/grid/$id">Local Grid</a>
 <p class=p2>
-<a href="/rental/contract/$id">Contract</a>
+<a target=_blank href="/rental/contract/$id">Contract</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/email_contract/$id">Email Contract</a>
 &nbsp;&nbsp;&nbsp;

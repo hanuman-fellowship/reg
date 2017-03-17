@@ -119,7 +119,6 @@ th {
 <tr>
 <th><span class=red>*</span> Type of Rental</th>
 <td><input type=text name=rental_type value="[% proposal.rental_type %]"></td>
-<td><a style="margin-left: 1in" href="#" onclick="show_no_show_cs()"; return false;">Contract Signer?</a></td>
 </tr>
 
 [% IF ! (proposal.person_id) %]
@@ -194,6 +193,7 @@ th {
 <th><span class=red>*</span> Email</th>
 <td colspan=3>
 <input type=text id=email name=email value="[% proposal.email %]" size=30>
+<a style="margin-left: 1in" href="#" onclick="show_no_show_cs()"; return false;">Contract Signer?</a>
 </td>
 </tr>
 [% END %]
@@ -207,14 +207,14 @@ th {
 <tr><th style="text-align: left; color: green; font-size: 15pt" colspan=4>Contract Signer (needed only if not the contact person)</th></tr>
 
 <tr>
-<th style="min-width: 200px">First</th>
+<th style="min-width: 200px"><span class=red>*</span> First</th>
 <td><input type=text id=cs_first name=cs_first value="[% proposal.cs_first %]"></td>
 <th>Home</th>
 <td><input type=text id=cs_tel_home name=cs_tel_home value="[% proposal.cs_tel_home %]"></td>
 </tr>
 
 <tr>
-<th>Last</th>
+<th><span class=red>*</span> Last</th>
 <td>
 <input type=text
        id=cs_last
@@ -228,7 +228,7 @@ th {
 </tr>
 
 <tr>
-<th>Address</th>
+<th><span class=red>*</span> Address</th>
 <td><input type=text id=cs_addr1 name=cs_addr1 value="[% proposal.cs_addr1 %]"></td>
 <th>Cell</th>
 <td><input type=text id=cs_tel_cell name=cs_tel_cell value="[% proposal.cs_tel_cell %]"></td>
@@ -240,17 +240,17 @@ th {
 </tr>
 
 <tr>
-<th>City</th>
+<th><span class=red>*</span> City</th>
 <td colspan=3><input type=text id=cs_city name=cs_city value="[% proposal.cs_city %]"></td>
 </tr>
 
 <tr>
-<th>State/Province</th>
+<th><span class=red>*</span> State/Province</th>
 <td colspan=3><input type=text id=cs_st_prov name=cs_st_prov value="[% proposal.cs_st_prov %]"></td>
 </tr>
 
 <tr>
-<th>Zip/Postal Code</th>
+<th><span class=red>*</span> Zip/Postal Code</th>
 <td><input type=text id=cs_zip_post name=cs_zip_post value="[% proposal.cs_zip_post %]"></td>
 <td><input id=sub type=submit value="Submit"></td>
 </tr>
@@ -261,7 +261,7 @@ th {
 </tr>
 
 <tr>
-<th>Email</th>
+<th><span class=red>*</span> Email</th>
 <td colspan=3><input type=text id=cs_email name=cs_email value="[% proposal.cs_email %]" size=30></td>
 </tr>
 
