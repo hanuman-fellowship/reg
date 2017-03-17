@@ -2732,13 +2732,13 @@ EOH
         }
         my $pay_balance = $balance;
         if (! $reg->cancelled && $balance > 0
-            && ($school == 0 || $mmi_admin)
+            && (! $school->mmi() || $mmi_admin)
         ) {
             $pay_balance =
                 "<a href='/registration/pay_balance/$id/list_reg_name'>"
                ."$pay_balance</a>";
         }
-        if ($school == 0 || $mmi_admin) {
+        if (! $school->mmi() || $mmi_admin) {
             $name = <<"EOH"
 <a href='/registration/view/$id'
    onmouseover="overlib('$string{$pref1} | $string{$pref2}',
@@ -4482,7 +4482,7 @@ sub who_is_there : Local {
     for my $r (@regs) {
         my $rid = $r->id();
         my $pr = $r->program();
-        my $mmi = $pr->school() != 0;
+        my $mmi = $pr->school()->mmi();
         my $name = $r->person->last() . ", " . $r->person->first();
         my $pr_name = $pr->name();
         my $relodge = "";
@@ -4917,7 +4917,7 @@ sub tally : Local {
     my %seen;
     REG:
     for my $r (@regs) {
-        if ($pr->school() == 0) {       # MMC
+        if (! $pr->school()->mmi()) {       # MMC
             for my $rp ($r->payments()) {
                 my $what   = $rp->what;
                 my $amount = $rp->amount();
@@ -5743,7 +5743,7 @@ sub receipt : Local {
         \$html,         # output
     ) or die "error in processing template: "
              . $tt->error();
-    my $from = ($reg->program->school() == 0)?
+    my $from = ($reg->program->school()->mmi())?
         "$string{from_title} <$string{from}>":
         'Mount Madonna Institute <MMIreservations@mountmadonnainstitute.org>'
         ;
