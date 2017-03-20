@@ -30,6 +30,7 @@ use Util qw/
     email_letter
     error
     months_calc
+    new_event_alert
 /;
 use HLog;
 use GD;
@@ -156,10 +157,18 @@ sub create_do : Local {
     }
 
     my $e = model($c, 'Event')->create(\%P);
+    my $id = $e->id();
+
+    # send an email alert about this new event
+    new_event_alert(
+        $c,
+        1, 'Event',
+        $P{name}, 
+        $c->uri_for("/event/view/$id"),
+    );
     if ($e->name() =~ m{\A No[ ]PR}xms) {
         _send_no_prs($c);
     }
-    my $id = $e->id();
     $c->response->redirect($c->uri_for("/event/view/$id"));
 }
 

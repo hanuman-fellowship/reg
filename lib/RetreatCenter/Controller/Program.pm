@@ -40,6 +40,7 @@ use Util qw/
     cf_expand
     PR_progtable
     months_calc
+    new_event_alert
 /;
 use Date::Simple qw/
     date
@@ -496,7 +497,10 @@ sub create_do : Local {
 sub _finalize_program_creation {
     my ($c, $id) = @_;
 
-    my $glnum_popup = $P{school_id} != 0 && $P{level_id} =~ m{\A [SA] \z}xms;
+    my $url = $c->uri_for("/program/view/$id");
+
+    #                              MMI   and   Course or Public Course
+    my $glnum_popup = $P{school_id} != 1 && $P{level_id} <= 2;
     if ($glnum_popup) {
         #
         # send email to all of the account admins
@@ -512,14 +516,14 @@ sub _finalize_program_creation {
             to      => (join ', ', map { $_->email } @users),
             cc      => $c->user->email,
             subject => "$P{name} needs a GL Number",
-            from    => $c->user->email,
+            from    => "$string{from_title} <$string{from}>",
             html    => <<"EOH",
 Greetings $acct_admin_names,
 <p>
 A new program has been added that needs a GL number.<br>
 Its name is:
 <ul>
-$P{name}
+<a href=$url>$P{name}</a>
 </ul>
 Thank you,<br>
 $cur_user
@@ -534,8 +538,13 @@ EOH
     #
     add_config($c, date($P{edate}) + $P{extradays} + 30);
 
-    # send an alert about this new program
-    #_alert(%P, $id);
+    # send an email alert about this new program
+    new_event_alert(
+        $c,
+        $P{school_id} == 1, 'Program',
+        $P{name}, 
+        $url,
+    );
     $c->response->redirect($c->uri_for("/program/view/$id/1/$glnum_popup"));
 }
 

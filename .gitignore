@@ -13,3 +13,6 @@ gen_files/
 
 grab_running
 root/static/images/
+root/static/js
+
+stop

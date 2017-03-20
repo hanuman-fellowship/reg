@@ -138,3 +138,5 @@ Mar 16 5:00-9:00
     lots of work on Rental doc and video
 Mar 17 10:30-10:45
     checking in
+Mar 19 5:00-7:00
+    new_event_alert, polishing the rentals doc

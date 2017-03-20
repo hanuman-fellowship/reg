@@ -82,6 +82,7 @@ our @EXPORT_OK = qw/
     PR_progtable
     dump_inc
     months_calc
+    new_event_alert
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2422,6 +2423,25 @@ sub months_calc {
     # move to the last day of the month
     $end += days_in_month($end->year(), $end->month()) - $end->day();
     return int(($end - $start)/31) + 1;
+}
+
+sub new_event_alert {
+    my ($c, $mmc, $type, $name, $url) = @_;
+
+    my $to = $mmc? $string{mmc_event_alert}: $string{mmi_event_alert};
+    return unless $to =~ /\S/;
+    email_letter($c,
+        to      => $to,
+        from    => "$string{from_title} <$string{from}>",
+        subject => "ADDED: New $type: $name",
+        html    => <<"EOH",
+A new $type was added:<br>
+Its name is:
+<ul>
+<a href=$url>$name</a>
+</ul>
+EOH
+    );
 }
 
 1;

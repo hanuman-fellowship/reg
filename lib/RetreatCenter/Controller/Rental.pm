@@ -43,6 +43,7 @@ use Util qw/
     ensure_mmyy
     rand6
     months_calc
+    new_event_alert
 /;
 use Global qw/
     %string
@@ -284,6 +285,14 @@ sub create_do : Local {
     # out to the end date of this rental.
     #
     add_config($c, $P{edate});
+
+    # send an email alert about this new rental
+    new_event_alert(
+        $c,
+        1, 'Rental',
+        $P{name}, 
+        $c->uri_for("/rental/view/$id"),
+    );
     if ($P{mmc_does_reg}) {
         $c->response->redirect($c->uri_for("/program/parallel/$id"));
     }
@@ -350,6 +359,15 @@ sub create_from_proposal : Local {
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
+
+    # send an email alert about this new rental
+    new_event_alert(
+        $c,
+        1, 'Rental',
+        $P{name}, 
+        $c->uri_for("/rental/view/$rental_id"),
+    );
+
     #
     # update the proposal with the rental_id
     #
@@ -1913,6 +1931,14 @@ sub duplicate_do : Local {
     });
     $new_r->set_grid_stale();
     my $id = $new_r->id();
+
+    # send an email alert about this new rental
+    new_event_alert(
+        $c,
+        1, 'Rental',
+        $P{name}, 
+        $c->uri_for("/rental/view/$id"),
+    );
 
     #
     # we must ensure that we have config records

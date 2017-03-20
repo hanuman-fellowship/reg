@@ -267,3 +267,5 @@ rental_arranged_color 255,0,0
 sum_intro Please review the logistic plan.
 sum_email_subject Logistic plan for
 program_director David Prisk
+mmc_event_alert jon@suecenter.org
+mmi_event_alert jonb@suecenter.org
