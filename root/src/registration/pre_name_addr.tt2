@@ -53,11 +53,20 @@
 <th align=right valign=top>Email Leaders</th>
 <td valign=top>
 [% email %]
-<p class=p2>
-If none is checked, output is to the screen.
 </td>
 </tr>
 [% END %]
+<tr>
+<th align=right>Cc</th>
+<td valign=top><input type=text name=cc size=40></td>
+</tr>
+<tr>
+<th></th>
+<td>
+<p class=p2>
+If no emails are given output is to the screen.
+</td>
+</tr>
 
 <tr>
 <td>&nbsp;</td>

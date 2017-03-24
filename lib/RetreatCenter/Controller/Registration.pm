@@ -4744,6 +4744,10 @@ sub name_addr_do : Local {
             $email .= $c->request->params->{$em} . ", ";
         }
     }
+    my $cc = $c->request->params->{cc};
+    if ($cc) {
+        $email .= $cc;
+    }
     if ($format eq 'csv') {
         # generate participant.csv given 'containing' and @people
         my $out;
@@ -4856,7 +4860,7 @@ sub name_addr_do : Local {
                             . " from "
                             . $program->dates,
                html       => $html, 
-               ctype      => 'text/csv',
+               ctype      => $format eq 'csv'? 'text/csv': 'text/html',
         );
         my $email_entity = $email;
         $email_entity =~ s{<([^>]*)>}{&lt;$1&gt;}g;
