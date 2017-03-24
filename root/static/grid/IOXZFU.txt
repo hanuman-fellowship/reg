@@ -1,0 +1,43 @@
+name Urban Priestess Retreat  3/18
+id 1267
+first Karly
+last Wade
+sdate 20180322
+edate 20180325
+housecost_type Per Day
+single_bath 194
+single 163
+dble_bath 143
+dble 130
+triple 114
+dormitory 105
+economy 93
+own_tent 72
+own_van 72
+commuting 60
+fixed_cost_houses 
+fch_encoded 
+23|117|2|0|0|1
+5|201|2|0|0|1
+6|203|2|0|0|1
+31|205|2|0|0|1
+32|207|2|0|0|1
+25|209|2|0|0|1
+33|211|2|0|0|1
+34|212|2|1|0|1
+35|213|2|0|0|1
+36|214|2|1|0|1
+37|215|2|0|0|1
+38|216|2|1|0|1
+39|217|2|0|0|1
+40|218|2|1|0|1
+117|OC 1|2|0|0|1
+118|OC 2|2|0|0|1
+119|OC 3|2|0|0|1
+120|OC 4|2|0|0|1
+121|OC 5|2|0|0|1
+7|SH 1|3|0|0|1
+8|SH 2|7|0|0|1
+9|SH 3|7|0|0|1
+10|SH 4|3|0|0|1
+11|SH 5|2|0|0|1

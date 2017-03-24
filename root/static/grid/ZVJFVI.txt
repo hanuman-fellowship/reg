@@ -1,0 +1,27 @@
+name Lotus Garden  5/16
+id 1286
+first Kathleen
+last Finigan
+sdate 20160527
+edate 20160529
+housecost_type Per Day
+single_bath 171
+single 142
+dble_bath 123
+dble 116
+triple 96
+dormitory 86
+economy 76
+center_tent 64
+own_tent 56
+own_van 56
+commuting 45
+fixed_cost_houses 
+fch_encoded 
+12|105|2|0|0|1
+18|112|2|1|0|1
+20|114|2|1|0|1
+49|OAKS 14|1|0|1|1
+80|OAKS 18|1|0|1|0
+51|OAKS 19|1|0|1|1
+56|OAKS 25|1|0|1|1

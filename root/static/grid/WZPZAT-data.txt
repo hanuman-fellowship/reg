@@ -1,0 +1,48 @@
+179|1|Dieter Ramakers|1|1|240
+179|2|Susie Kavanagh (plus 3 month old baby)|1|1|240
+179|3||0|0|0
+179|4||0|0|0
+179|5||0|0|0
+179|6||0|0|0
+179|7||0|0|0
+109|1|Mary Reynolds|1|1|138
+105|1|Nils Tikkanen & Colleen Young|1|1|276
+101|1|Simon Thornton|1|1|138
+108|1|Marc Dure-Smith|1|1|138
+56|1|Kaya Brown & Amy Selover|1|1|276
+118|1|Holly Anderson|1|1|310
+118|2||0|0|0
+121|1|Elizabeth Borelli|1|1|310
+121|2||0|0|0
+7|1|Kelly Blaser|1|1|240
+7|2|Laurie Broderick-Burr|1|1|240
+7|3||0|0|0
+8|1|Laurie Mount|1|1|198
+8|2|Wendy Romero|1|1|198
+8|3|Katie Dahlen|1|1|198
+8|4|Nora Grant|1|1|198
+8|5|Genna Mount|1|1|198
+8|6||0|0|0
+8|7||0|0|0
+9|1|Bonnie Gold|1|1|198
+9|2|Serina Marichiba|1|1|198
+9|3|Karyn Adams|1|1|198
+9|4|Leslie Cucuel|1|1|198
+9|5|Cara Flack|1|1|198
+9|6||0|0|0
+9|7||0|0|0
+10|1|Rob Holt|1|1|240
+10|2|Gary Bencomo|1|1|240
+10|3||0|0|0
+11|1|Lis Bensley|1|1|240
+11|2|Amy Hemmert|1|1|240
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1||0|0|0
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

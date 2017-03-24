@@ -1,0 +1,29 @@
+name None Zen Center  11/17
+id 1327
+first Linda
+last Huang
+sdate 20171109
+edate 20171112
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+1|101|2|0|0|1
+3|103|2|0|0|1
+33|211|2|0|0|1
+35|213|2|0|0|1
+37|215|2|0|0|1
+38|216|2|1|0|1
+39|217|2|0|0|1
+40|218|2|1|0|1
+117|OC 1|2|0|0|1
+118|OC 2|2|0|0|1

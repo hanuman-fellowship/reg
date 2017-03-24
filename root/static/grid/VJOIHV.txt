@@ -1,0 +1,19 @@
+name Open Gate Sangha  2/18
+id 1359
+first Randi
+last Specterman
+sdate 20180225
+edate 20180302
+housecost_type Total
+single_bath 1020
+single 865
+dble_bath 765
+dble 700
+triple 620
+dormitory 575
+economy 515
+own_tent 410
+own_van 410
+commuting 350
+fixed_cost_houses 
+fch_encoded 

@@ -1,0 +1,29 @@
+name Ecstatic Living  9/16
+id 1300
+first Logan
+last Rose
+sdate 20160902
+edate 20160904
+housecost_type Total
+single_bath 355
+single 297
+dble_bath 259
+dble 245
+triple 205
+dormitory 185
+economy 165
+center_tent 141
+own_tent 125
+own_van 125
+commuting 103
+fixed_cost_houses 
+fch_encoded 
+14|108|2|1|0|1
+18|112|2|1|0|1
+22|116|2|1|0|1
+34|212|2|1|0|1
+36|214|2|1|0|1
+38|216|2|1|0|1
+40|218|2|1|0|1
+100|MAD 1|1|0|1|1
+107|MAD 5|1|0|1|1

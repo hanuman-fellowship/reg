@@ -1,0 +1,42 @@
+virtualbox 5.1.6
+download a debian 64 bit virtual machine
+    from the catalyst tutorial site
+    untar it - .vdi file
+launch vb
+New
+accept 1 gig memory
+import existing - the .vdi file
+choose Networking
+    Bridged
+    advanced
+        regen mac address
+boot the vm
+catalyst catalyst
+sudo bash
+cd /etc/udev/rules.d/
+    rm the 70*net* file
+cd /etc/network
+    vi interfaces
+    add these lines:
+-----
+# The primary network interface
+allow-hotplug eth0
+auto eth0
+iface eth0 inet static
+address 192.168.8.122
+netmask 255.255.255.0
+network 192.168.8.0
+broadcast 192.168.8.255
+gateway 192.168.8.1
+-----
+maybe you change 192.168.8 to the first 3 octets
+of what you have in your network (do ifconfig and look at en0)
+change the 122 to two more than the 4th octet
+
+the ifconfig/en0 ip address keeps changing depending on
+what network you're connected to...
+
+ideally one should not have to be connected to
+the global net in order to do this development...
+
+reboot and you're good to go

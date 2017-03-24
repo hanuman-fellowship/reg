@@ -1,0 +1,32 @@
+name NVC-SC  1/17
+id 1281
+first Deanna
+last Zachary
+sdate 20170127
+edate 20170129
+housecost_type Per Day
+single_bath 171
+single 142
+dble_bath 123
+dble 116
+triple 96
+dormitory 86
+economy 76
+own_tent 56
+own_van 56
+commuting 45
+fixed_cost_houses 
+fch_encoded 
+5|201|2|0|0|1
+6|203|2|0|0|1
+31|205|2|0|0|1
+30|208|4|0|0|1
+35|213|2|0|0|1
+36|214|2|1|0|1
+37|215|2|0|0|1
+38|216|2|1|0|1
+39|217|2|0|0|1
+40|218|2|1|0|1
+117|OC 1|2|0|0|1
+118|OC 2|2|0|0|1
+119|OC 3|2|0|0|1

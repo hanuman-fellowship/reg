@@ -1,0 +1,30 @@
+3|1|Serge Nolin (RWP, unhappy with twin beds)|1|1|245
+3|2|Marie Bedard (RWP, unhappy with twin beds)|1|1|245
+13|1|Annette Ephroni (RWP)|1|1|245
+13|2|Brian Esch (RWP)|1|1|245
+20|1|Regula Badertscher|1|1|259
+20|2|Marco Gallo|1|1|259
+5|1|John Featherstone (RWP)|1|1|245
+5|2|Yasmi Crystal (RWP)|1|1|245
+31|1|Jim Hilsinger|1|1|245
+31|2|Ramez Soliman|1|1|245
+29|1|Sanjay Srikanth|0|1|148.5
+29|2||0|0|0
+29|3||0|0|0
+29|4||0|0|0
+51|1|Liz MacDonald (TENT CAMPING)|1|1|125
+53|1||0|0|0
+120|1|Kai Wu (TEACHER)|1|1|245
+120|2|Steve Still (TEACHER)|1|1|245
+121|1|Nan Wang (RWP, upgraded)|1|1|297
+121|2||0|0|0
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1|Sanjay Srikanth|1|0|51.5
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

@@ -4621,7 +4621,9 @@ my $npeople;
 my @people;
 my @star;
 my $containing;
+my $email_all;
 
+# a side effect is to append any email $to mail_all
 sub _person_data {
     my ($i) = @_;
 
@@ -4629,7 +4631,11 @@ sub _person_data {
         return "";
     }
     my $p = $people[$i];
+    my $email = $p->email;
+    my $email_to = "";
+    $email_to = "<a href='mailto:$email'>$email</a>" if $email;
     if ($containing eq 'all') {
+        $email_all .= $email . ", " if $email;
         return "<b>" . $p->last . ", " . $p->first . "</b>"
              . ($star[$i]? '<span class=extended> *</span>'
                 :          '')
@@ -4641,7 +4647,7 @@ sub _person_data {
              . ($p->tel_home? $p->tel_home . " home<br>": "")
              . ($p->tel_work? $p->tel_work . " work<br>": "")
              . ($p->tel_cell? $p->tel_cell . " cell<br>": "")
-             . ($p->email   ? $p->email                 : "")
+             . ($email_to   ? $email_to                 : "")
              . "<p>"
              ;
     }
@@ -4655,9 +4661,7 @@ sub _person_data {
         # if no email return nothing.
         # the row gets collapsed, right???.
         #
-        return $p->email? ($p->email . "<br>")
-               :          ""
-               ;
+        return $email_to? ($email_to . "<br>"): "";
     }
 }
 
@@ -4736,7 +4740,7 @@ sub name_addr_do : Local {
     $npeople = @people;
 
     my $info_rows;
-    my $mailto = "";
+    $email_all = "";     # not my
     my $html = "";
     my $email = "";
     for my $em (keys %{$c->request->params()}) {
@@ -4795,15 +4799,6 @@ sub name_addr_do : Local {
             for my $i (0 .. $#people) {
                 my $s = _person_data($i);
                 $info_rows .= "$s\n";
-                if ($containing eq "email") {
-                    $s =~ s{<br>}{};
-                    $mailto .= "$s," if $s;
-                }
-            }
-            if ($containing eq "email") {
-                $mailto =~ s{,$}{};
-                $mailto = "<a href='mailto: ?bcc=$mailto'>Email All</a><p>\n";
-                    # for some reason, we need the space after the :
             }
         }
         else {
@@ -4818,31 +4813,24 @@ sub name_addr_do : Local {
                 for my $offset (0, $n, 2*$n) {
                     my $s = _person_data($i+$offset);
                     $info_rows .= "<td valign=top>$s</td>";
-                    if ($containing eq "email") {
-                        $s =~ s{<br>}{};
-                        $mailto .= "$s," if $s;
-                    }
                 }
                 $info_rows .= "</tr>\n";
             }
             $info_rows .= "</table>\n";
-            if ($containing eq "email") {
-                $mailto =~ s{,$}{};
-                $mailto = "<a href='mailto:?bcc=$mailto'>Email All</a><p>\n";
-            }
         }
         my $tt = Template->new({
             INCLUDE_PATH => 'root/src',
+            INTERPOLATE  => 1,
             EVAL_PERL    => 0,
         }) or die Template->error();
         my $stash = {
-            program => $program,
-            rows    => $info_rows,
-            mailto  => $mailto,
-            type    => ($including eq 'both'    ? ''
-                       :$including eq 'normal'  ? 'Normal '
-                       :$including eq 'extended'? 'Extended '
-                       :                          ''),
+            program   => $program,
+            rows      => $info_rows,
+            email_all => $email_all,
+            type      => ($including eq 'both'    ? ''
+                         :$including eq 'normal'  ? 'Normal '
+                         :$including eq 'extended'? 'Extended '
+                         :                          ''),
         };
         $tt->process(
             "registration/name_addr.tt2",   # template

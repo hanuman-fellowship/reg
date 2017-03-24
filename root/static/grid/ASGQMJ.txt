@@ -1,0 +1,28 @@
+name Therapists' Retreat  9/16
+id 1261
+first Cece
+last Sykes
+sdate 20160907
+edate 20160911
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+29|206|4|0|0|1
+30|208|4|0|0|1
+33|211|2|0|0|1
+35|213|2|0|0|1
+37|215|2|0|0|1
+38|216|2|1|0|1
+39|217|2|0|0|1
+40|218|2|1|0|1

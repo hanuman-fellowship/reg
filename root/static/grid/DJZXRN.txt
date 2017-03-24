@@ -1,0 +1,32 @@
+name Buddhist Yogis  7/16
+id 1314
+first Satya
+last Shiva
+sdate 20160712
+edate 20160717
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+3|103|2|0|0|1
+24|118|2|1|0|1
+100|MAD 1|1|0|1|1
+109|MAD 10|1|0|1|1
+102|MAD 6|1|0|1|1
+103|MAD 7|1|0|1|0
+108|MAD 8|1|0|1|0
+7|SH 1|3|0|0|1
+8|SH 2|7|0|0|1
+9|SH 3|7|0|0|1
+10|SH 4|3|0|0|1
+11|SH 5|2|0|0|1

@@ -1,0 +1,39 @@
+name Mahabodhi Society of USA  7/16
+id 1319
+first Hank
+last Chang
+sdate 20160722
+edate 20160731
+housecost_type Per Day
+single_bath 171
+single 142
+dble_bath 123
+dble 116
+triple 96
+dormitory 86
+economy 76
+center_tent 64
+own_tent 56
+own_van 56
+commuting 45
+fixed_cost_houses $76 for MMS*
+fch_encoded 76 184 188 281 282 283 284 285 287
+5|201|2|0|0|1
+27|202|4|0|0|1
+6|203|2|0|0|1
+28|204|4|0|0|1
+31|205|2|0|0|1
+29|206|4|0|0|1
+30|208|4|0|0|1
+25|209|2|0|0|1
+26|210|4|0|0|1
+35|213|2|0|0|1
+179|JR|7|0|0|1
+281|MMS B4|6|0|0|1
+282|MMS B6|6|0|0|1
+287|MMS B8|10|0|0|1
+80|OAKS 18|1|0|1|0
+52|OAKS 20|1|0|1|0
+53|OAKS 21|1|0|1|0
+41|RAM 1A|2|0|0|1
+42|RAM 1B|2|0|0|1

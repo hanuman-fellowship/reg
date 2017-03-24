@@ -1,0 +1,34 @@
+name Cabrillo Student Senate  8/16
+id 1364
+first Charity
+last Funtila
+sdate 20160818
+edate 20160820
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+13|107|2|0|0|1
+14|108|2|1|0|1
+15|109|2|0|0|1
+16|110|4|0|0|1
+17|111|2|0|0|1
+19|113|2|0|0|1
+22|116|2|1|0|1
+27|202|4|0|0|1
+60|OAKS 35|1|0|1|1
+61|OAKS 36|1|0|1|1
+63|OAKS 39|1|0|1|1
+89|OAKS 40|1|0|1|1
+64|OAKS 41|1|0|1|1
+65|OAKS 42|1|0|1|1

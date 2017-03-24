@@ -1,0 +1,46 @@
+20|1|Michele Whizin|1|1|272
+20|2|Rebecca Arnesty|1|1|272
+21|1||0|0|0
+21|2||0|0|0
+23|1|Nancy Manning|1|1|310
+23|2||0|0|0
+32|1|Elizabeth Borelli  (1 day credit per Barnaby)|1|1|240
+32|2|Freny Cooper|1|1|240
+106|1|Mark Dure-Smith|1|1|138
+107|1|Susan Nilsson & Rauol Sanchez|1|1|276
+103|1|Belinda Ordonez|1|1|154
+79|1||0|0|0
+80|1||0|0|0
+82|1|Kaya Brown & Amy Selover|1|1|276
+7|1|Lysa Tabachnik|1|1|218
+7|2|David Levan|1|1|218
+7|3|Anika Levan|1|1|218
+8|1|Laurie Broderick-Burr|1|1|198
+8|2|Kelly Blaser|1|1|198
+8|3|Laurie Mount|1|1|198
+8|4|Nils Tikkanen|1|1|198
+8|5|Wendy Romero|1|1|198
+8|6||0|0|0
+8|7||0|0|0
+9|1|Amy Hemmert|1|1|198
+9|2|Lis Bensley|1|1|198
+9|3|Dee Blumenthal|1|1|198
+9|4|Susan Algert|1|1|198
+9|5|Jessica DeGrassi|1|1|198
+9|6||0|0|0
+9|7||0|0|0
+10|1|Pauline Siedenberg|1|1|240
+10|2|Jay Siedenberg|1|1|240
+10|3||0|0|0
+11|1|Anamaria Schmid|1|1|310
+11|2||0|0|0
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1||0|0|0
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

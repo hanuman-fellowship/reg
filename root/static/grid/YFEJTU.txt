@@ -1,0 +1,25 @@
+name MMS Accreditation  3/16
+id 1288
+first 
+last 
+sdate 20160320
+edate 20160323
+housecost_type Per Day
+single_bath 164
+single 138
+dble_bath 118
+dble 105
+triple 94
+dormitory 83
+economy 73
+own_tent 54
+own_van 54
+commuting 39
+fixed_cost_houses 
+fch_encoded 
+33|211|2|0|0|1
+34|212|2|1|0|1
+35|213|2|0|0|1
+36|214|2|1|0|1
+37|215|2|0|0|1
+39|217|2|0|0|1

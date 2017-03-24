@@ -1,0 +1,25 @@
+name Fresno  6/19
+id 1367
+first Ann
+last McGowan
+sdate 20190621
+edate 20190623
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+7|SH 1|3|0|0|1
+8|SH 2|7|0|0|1
+9|SH 3|7|0|0|1
+10|SH 4|3|0|0|1
+11|SH 5|2|0|0|1

@@ -1,0 +1,20 @@
+name Ruhani Satsang (Kirpal)  5/17
+id 1337
+first Olivia
+last Marie Braida-Chiusano
+sdate 20170531
+edate 20170605
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 

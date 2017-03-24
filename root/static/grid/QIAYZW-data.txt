@@ -1,0 +1,57 @@
+1|1|Thao Phi|1|1|20
+1|2||0|0|0
+14|1|Mary Roscoe|1|1|20
+14|2||0|0|0
+17|1|Ryan Oliver|1|1|20
+17|2|Louise Place|1|1|20
+5|1|Simon Goland|1|1|20
+5|2||0|0|0
+27|1|Anna Rainville|1|1|20
+27|2||0|0|0
+27|3||0|0|0
+27|4||0|0|0
+6|1|Laura Hansen|1|1|20
+6|2||0|0|0
+28|1|Prachi Murarka|0|1|10
+28|2||0|0|0
+28|3||0|0|0
+28|4||0|0|0
+31|1|Pamela Wilhelms|1|1|20
+31|2||0|0|0
+25|1|Rajat Mishra|1|1|20
+25|2||0|0|0
+33|1|Whitney Vosburgh|1|1|20
+33|2||0|0|0
+35|1|Ritu Pasrija|1|1|20
+35|2||0|0|0
+47|1||0|0|0
+52|1||0|0|0
+121|1|Joel Kauffmann|1|1|20
+121|2||0|0|0
+122|1||0|0|0
+122|2||0|0|0
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1|Michelle Beske|1|1|20
+1002|2|Kevin Gibson|0|0|0
+1002|3|Ward Mailliard|0|0|0
+1002|4|J. Haley Campbell|1|1|20
+1002|5|Sarojani Rohan|0|0|0
+1002|6|Kalpana Kachuck|0|0|0
+1002|7|Sampad	Kachuck|0|0|0
+1002|8|Sinead Gibson|0|0|0
+1002|9|Savita Brownfield|0|0|0
+1002|10|Mirona Constantinescu|0|0|0
+1002|11|Maggie Hodge|0|0|0
+1002|12|Nicole Tervalon|0|1|10
+1002|13|Les Hodge|0|0|0
+1002|14|Rabbi Paula Marcus|1|1|20
+1002|15|Keith Topar|0|0|0
+1002|16|Bob	Caplan|0|0|0
+1002|17|Raj 	Padmanabhan|1|1|20
+1002|18|Vivian Wright|1|1|20
+1002|19|Katrina Leni-Konig|1|1|20
+1002|20|Rami Walker|0|0|0

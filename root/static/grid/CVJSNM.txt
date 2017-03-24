@@ -1,0 +1,20 @@
+name AVI YT 7/16 S1
+id 1120
+first Donna
+last McCloskey
+sdate 20160724
+edate 20160805
+housecost_type Total
+single_bath 2246
+single 1898
+dble_bath 1670
+dble 1526
+triple 1346
+dormitory 1238
+economy 0
+center_tent 974
+own_tent 866
+own_van 866
+commuting 734
+fixed_cost_houses 
+fch_encoded 

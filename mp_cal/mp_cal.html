@@ -1,0 +1,246 @@
+<html>
+<head>
+<style>
+body {
+    width: 800px;
+    font-size: 14pt;
+    margin: 10mm;
+}
+th, td {
+    font-size: 14pt;
+}
+</style>
+<body>
+<h1>Meeting Places and the Calendar in Reg for MMC</h1>
+<h2>Definition of Terms</h2>
+A <b>Meeting Place</b> is a space where groups at the center
+gather for seminars/meetings/sessions.
+<p>
+An <b>event</b> in Reg is one of three things:
+<b>Program</b>, <b>Rental</b> or <b>Event</b>.
+Each of these 3 have a start and an end date (among many other attributes).
+Note - in this document the term 'event' (with a lower case 'e')
+can refer to either a Program, a Rental, or an Event.
+Maybe to avoid confusion we should refer to events as 'happenings'
+or 'activities'.
+<p>
+A <b>Booking</b> is when an event reserves a Meeting Place for a date range.
+The date range of the Booking must be <i>within</i> the date range of the event.
+Once a booking has been made no other event can book that space
+during the date range of the booking.
+There is an minor exception to this - abutting events - see below.
+<p>
+The <b>Calendar</b> is a page containing a series of images
+each representing a month.
+All of the days of the month are arranged horizontally in one row.
+This is NOT like a typical monthly calendar with one row per week.
+Within the image there are little boxes that correspond
+to a Bookings for events.  Each Meeting Place has an "order" that
+determines the vertical position of the box within the month image.
+
+Here's an example of a month on the Calendar:
+<p>
+<img src=oct.png width=800>
+
+<h2>Meeting Places</h2>
+You add/edit/delete/list meeting places with Configuration > Meeting Places.
+<p>
+<img src=mp.png width=600 border=1>
+<p>
+They have these attributes:
+<ul>
+<table border=1 cellpadding=5 width=500>
+<tr><td>Abbreviation  </td><td> Short name for the place.</td></tr>
+<tr><td>Name</td><td>Long name for the place.</td></tr>
+<tr><td>Max</td><td> Maximum # of people that can be accomodated.</td></tr>
+<tr><td>Display Order</td><td> What row on the monthly calendar image is used
+to display events that have booked this place?</td></tr>
+<tr><td>For Sleeping  </td>
+<td> Can this place be converted into a dorm for sleeping?</td></tr>
+<tr><td>Color</td>
+<td>A color for the box on the calendar that represents
+an event booking for this place.</td></tr>
+</table>
+</ul>
+In the list of Meeting Places you can sort them by Name, Max, or Order.
+<p>
+There is a fixed Meeting Place named 'No Where'
+with an order of 1.  It cannot be deleted.
+It is used to display events that have no Meeting Place.
+There are actually two rows on the calendar for this purpose.
+They are on top - right below the itemized days of the month.
+The second line is used in case there are 'no where' events that overlap.
+<p>
+<img src=nw.png width=750>
+<h2>Bookings</h2>
+When booking the Meeting Place for an event (any of Program/Rental/Event)
+you first choose a date range [inclusive] which defaults to the start and
+end date of the event.  The date range of the booking must
+be contained <i>within</i> the date range of the event.
+The places are booked for entire days - no hourly booking.
+However, if event A ends on the same date that event B starts on
+they CAN both book the same meeting place.  This is represented
+on the Calendar as an 'abutting' event.  For such abuttments
+there is a specially styled vertical line between the boxes for the events.
+Like this:
+<ul>
+<img src=abut1.png width=300>&nbsp;&nbsp; or &nbsp;&nbsp;<img src=abut2.png width=300>
+</ul>
+This line is configured with
+Strings > cal_abutt_style, cal_abutt_thickness and Colors > cal_abutt_color.
+This does not apply to abutting events with no bookings - on the top line.
+<p>
+When booking a meeting place you also choose either
+Meeting, Breakout, or Dorm.
+<p>
+The Breakout choice only matters when generating
+Late Notices.  These notices tell the person arriving late
+where their program is meeting - in case they
+are not so late that they can go to that Meeting Place to
+join the introductory session in progress.  
+The late notice letter directs the person to the largest Meeting Place
+(non-breakout and non-dorm) that is reserved for the program.
+<p>
+The Dorm choice is offered only when the Meeting Place has
+the attribute 'For Sleeping'.  In this case there must be
+a House (i.e. a room where people sleep) with exactly the same name.  
+If a booking is made for such a Meeting Place the corresponding
+House is blocked off so it is unavailable for sleeping.
+Conversely, if the House is assigned to someone for sleeping
+(either a Registration or a Rental assignment)
+the corresponding Meeting Place is unavailable to an event
+for booking.
+<h2>Invoking the Calendar - Which Months to Show?</h2>
+The Calendar can be invoked at any time from the ever present top level menu.
+It is opened in a new browser window - the calendar window.
+This window is <i>re-used</i> if the Calendar is chosen again from
+a different place.
+<p>
+At the top is a kind of menu to control the calendar:
+<p>
+<img src=menu.png border=1 width=800>
+<p>
+<p>The two checkboxes control the display of the monthly images (or not)
+and the display of all of the Detail Tables or not (see below).
+<p>
+The date range of months that are shown is determined by where you are
+when you invoke the Calendar.
+If you choose it from the screen of a Program, Rental, Event or Registration
+the Calendar will show each month included in the date range of that event.
+If you choose it from anywhere else you will see the month before today (now),
+the current month and 3 months ahead - 5 months in all.
+The keyboard focus of the Calendar when first invoked is on
+the last date shown.  You can immediately replace it with a
+new date - or a number of months to show.  
+If the end date is empty it will be the date of the very
+last scheduled event - you'll see far into the future.
+After modifying a date you can click 'Go' or just hit Return.
+<p>The 'How?' link explains how to do this date entry.
+<p>The 'Colors?' link explains the color scheme.
+<h2>Colors</h2>
+The calendar is colored to make it easy to see the more active days
+Fri-Sun (14-16) and today's date (16) as well.
+These colors are configurable - Configuration > Colors: 
+cal_fri_sun_color, cal_mon_thu_color, cal_today_color.
+<ul>
+<img src=weekend.png width=300>
+</ul>
+The boxes representing bookings are colored according to
+the color of the Meeting Place.  The name of the event
+goes inside the box - it may extend beyond the box itself.
+<ul>
+<img src=boxes.png width=400>
+</ul>
+The <i>border</i> of the box has a meaningful color as well:
+<ul>
+<table border=1 cellpadding=5 width=500>
+<tr><th colspan=2>Border Colors</th></tr>
+<tr><td>Programs </td><td> Black - not configurable</td></tr>
+<tr><td>Events </td><td> Configurable in Configuration > Colors as 'cal_event_color'.</td></tr>
+<tr><td>Rentals </td><td> The color indicates the <b>status</b>
+of the Rental and is also configurable:
+<p>
+<table border=1 cellpadding=5>
+        <tr><th align=left>Status</th><th align=left>      Color</th></tr>
+<tr><td>        Tentative   </td><td>rental_tentative_color</td></tr>
+<tr><td>        Sent        </td><td>rental_sent_color</td></tr>
+<tr><td>        Received    </td><td>rental_received_color</td></tr>
+<tr><td>        Due         </td><td>rental_due_color</td></tr>
+<tr><td>        Done        </td><td>rental_done_color</td></tr>
+</td></tr>
+</table>
+</td></tr></table></ul>
+<h2>What <i>doesn't</i> appear on the Calendar?</h2>
+Programs that are Personal Retreats do not show in the Calendar.
+Long term MMI Programs do not show either.
+Hybrid program/rentals (rentals for which the center does the registration)
+are shown as Rentals.
+There is also an attribute of Program called 'Not on Calendar' which
+can be set to exclude the program.
+Bookings of Meeting Places with a 'display order' of 0 (zero) are not shown
+on the calendar at all.  This is for rarely used spaces.
+<h2>Jumping to other Months</h2>
+You can, of course, scroll the calendar page as you wish to see other months.
+More convenient is to click on the little 'jump tables' that appear above
+each month image.  With these you can immediately jump to a specific month/year.
+These only jump to months that are already displayed.
+<ul>
+<img src=jump.png width=300 border=1>
+</ul>
+<p>
+<h2>Popup Windows</h2>
+As you move the cursor around a calendar month image 
+and enter one of the event boxes
+a small window will pop up (without your clicking) 
+to show some details of the event.
+If you click ON the box you will open another
+full browser window with the page for that event (Program, Rental, or Event).
+If you move off the box the popup will pop down.
+<ul>
+<img src=pop.png width=600>
+</ul>
+<h2>Personal Retreats</h2>
+The Personal Retreat monthly <i>programs</i> are not shown
+on the Calendar but at the bottom of each day is a number which
+is the number of people who are at the center for a Personal Retreat
+on that day.
+If you click on that number a popup window will launch with
+the names of all the personal retreatants - and whether they are
+arriving, leaving, or staying.
+<ul>
+<img src=pr.png width=300>
+</ul>
+If you click on a person's name you will open another window
+with the Registration screen for that person.
+<h2>Tables of Details</h2>
+At the top is a checkbox labeled 'All Details?' and above
+each month image is a checkbox labeled 'Details?'.
+These control whether the 'table of details' is shown or not.
+This table is displayed beneath the month image
+and gives many details on the events you see on the calendar that month.
+You can click on the name of an event to jump to that event's screen.
+<p>
+<img src=detail.png width=850>
+<p>
+This table is useful in case if there are two events close to each other
+and their descriptions overlap - which makes it hard to read.
+<h2>Printing</h2>
+If you print the calendar page each month will show 
+on a separate page - the image along with the table of details (if chosen).
+<h2>The Public Calendar</h2>
+Every day at 12:00 pm and 6:00 pm a special calendar image is generated.
+It is posted at 
+<a href=http://mountmadonna.org/calendar>http://mountmadonna.org/calendar</a>.
+It shows all schedule future events at the center for the public to see.
+People viewing it cannot click to jump to event screens
+and only the number of the personal retreatants.
+You can't click to see their names.
+<h2>Known Bugs</h2>
+Typing 10/1/16 as an end date should move it to the last day of the month
+and display it in the input field.
+<p>
+A event that spans multiple months with no booking (No Where).
+When you show just one month the box goes from the 1st to end of month
+correctly but it uses <b>both</b> lines on top.
+</body>
+</html>

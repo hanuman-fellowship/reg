@@ -1,0 +1,26 @@
+name Yin Yoga  5/16
+id 1323
+first Torrey
+last Trover
+sdate 20160529
+edate 20160605
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+20|114|2|1|0|1
+28|204|4|0|0|1
+29|206|4|0|0|1
+26|210|4|0|0|1
+48|OAKS 13|1|0|1|1
+87|OAKS 34|1|0|1|0

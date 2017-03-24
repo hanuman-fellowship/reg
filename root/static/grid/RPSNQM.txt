@@ -1,0 +1,20 @@
+name Ancestral Medicine  9/16
+id 1321
+first Daniel
+last Foor
+sdate 20160929
+edate 20161002
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 135
+dble 124
+triple 109
+dormitory 100
+economy 89
+center_tent 78
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 

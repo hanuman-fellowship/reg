@@ -1,0 +1,34 @@
+name Meditation Retreat with Savita Geuther  6/16
+id 1309
+first Savita
+last Geuther
+sdate 20160618
+edate 20160622
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+1|101|2|0|0|1
+14|108|2|1|0|1
+20|114|2|1|0|1
+22|116|2|1|0|1
+23|117|2|0|0|1
+33|211|2|0|0|1
+179|JR|7|0|0|1
+86|OAKS 33|1|0|1|1
+117|OC 1|2|0|0|1
+41|RAM 1A|2|0|0|1
+42|RAM 1B|2|0|0|1
+43|RAM 2A|2|0|0|1
+44|RAM 2B|2|0|0|1
+45|RAM 2C|2|0|0|1

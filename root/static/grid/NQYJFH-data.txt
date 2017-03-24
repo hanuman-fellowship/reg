@@ -1,0 +1,53 @@
+12|1|Kahlenberg, Ondrea|1|1|1|1|584
+12|2||0|0|0|0|0
+13|1|Hamlton, Lynne|1|1|1|1|584
+13|2||0|0|0|0|0
+14|1|DeLillo, Carol|1|1|1|1|512
+14|2|Mollohan, Carolyn|1|1|1|1|512
+15|1|Tarquinio, Al|1|1|1|1|584
+15|2||0|0|0|0|0
+16|1|Chamblee, Johnny|1|1|1|1|412
+16|2|Merritt, Dan|1|1|1|1|412
+16|3|Fidel, Rey|1|1|1|1|412
+16|4|4th bed not available|0|0|0|0|0
+17|1|Bisson, Sharilyn|1|1|1|1|468
+17|2|Gavin, Shannon|1|1|1|1|468
+18|1|Shaw, Gloria|1|1|1|1|512
+18|2|Shaw, Michael|1|1|1|1|512
+19|1|Darling, Flow|1|1|1|1|468
+19|2|Hughes, Gloria|1|1|1|1|468
+20|1|Brumfield, Sally|1|1|1|1|512
+20|2|Hacker, Susan|1|1|1|1|512
+21|1|Gehlen, Doris|1|1|1|1|584
+21|2||0|0|0|0|0
+22|1|Eidsmoe, Ann|1|1|1|1|512
+22|2|Eidsmoe, Mike|1|1|1|1|512
+23|1|Rodriguez, Maria|1|1|1|1|584
+23|2||0|0|0|0|0
+24|1|Waller,Lois|1|1|1|1|512
+24|2|Loftin, Wendy|1|1|1|1|512
+32|1|Weaver, vicki|1|1|1|1|468
+32|2|King, Paul|1|1|1|1|468
+38|1|Baker, Greg|1|1|1|1|512
+38|2|Baker, Haley|1|1|1|1|512
+40|1|Penn, Greg  ~ Teacher|1|1|1|1|692
+40|2||0|0|0|0|0
+50|1|Bisson, Emil|1|1|1|1|260
+122|1|Smith, Nancy Jo|1|1|1|1|468
+122|2|McGriff, Pat|1|1|1|1|468
+123|1|Roos, Mary|1|1|1|1|584
+123|2||0|0|0|0|0
+124|1|Gardner, Jack|1|1|1|1|468
+124|2|Gardner, Teresa|1|1|1|1|468
+125|1|Bugalski, Sheri|1|1|1|1|468
+125|2|Roderick, Ron|1|1|1|1|468
+1001|1|Wilkins, Alfreida|1|1|1|1|260
+1001|2|Capson, Sherman|1|1|1|1|260
+1001|3||0|0|0|0|0
+1001|4||0|0|0|0|0
+1001|5||0|0|0|0|0
+1002|1||0|0|0|0|0
+1002|2||0|0|0|0|0
+1002|3||0|0|0|0|0
+1002|4||0|0|0|0|0
+1002|5||0|0|0|0|0

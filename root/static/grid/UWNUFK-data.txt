@@ -1,0 +1,69 @@
+1|1|Dora Moreinis|1|1|1|351
+1|2|Demi Chan|1|1|1|351
+3|1|Amy Lucas|1|1|1|438
+3|2|single|0|0|0|0
+13|1|Roslyn Nance|1|1|1|351
+13|2|Heather Gallagher|1|1|1|351
+15|1|Cassandra Perez|1|1|1|351
+15|2|Tania da Costa|1|1|1|351
+16|1|Katie Titus|1|1|1|309
+16|2|Cartter Evans|1|1|1|309
+16|3|Niav Connor|1|1|1|309
+16|4|not available|0|0|0|0
+17|1|Christy Evans|1|1|1|438
+17|2|single|0|0|0|0
+18|1|Nanci Pritchard|1|1|1|519
+18|2|single|0|0|0|0
+19|1|Jayne Gottlieb|1|1|1|438
+19|2||0|0|0|0
+21|1|Maria Bloomfield|1|1|1|351
+21|2|Olga Sergeevna Kempe|1|1|1|351
+22|1|Lauren Schiermeyer|1|1|1|519
+22|2|single|0|0|0|0
+23|1|Brenda Villa|1|1|1|438
+23|2||0|0|0|0
+24|1|Ginger Harris|1|1|1|519
+24|2|single|0|0|0|0
+5|1|Cat Bottini|0|0|1|146
+5|2||0|0|0|0
+27|1|Cat Bottini|1|1|0|206
+27|2|Roslyn Nance|1|1|1|323
+27|3|Christina Koliastasis|1|1|1|323
+27|4|not available|0|0|0|0
+6|1|Rondi Robinson|1|1|1|351
+6|2|Sheila Katerndahl|1|1|1|351
+28|1|Innanya Magick|1|1|1|309
+28|2|Angela Chalekode|1|1|1|309
+28|3|Greta Hill|1|1|1|309
+28|4|not available|0|0|0|0
+31|1|Ariel Spilsbury|1|1|1|438
+31|2||0|0|0|0
+29|1|Sonya Genel|1|1|1|309
+29|2|Karly Wade|1|1|1|309
+29|3|Kathleen Pizzello|1|1|1|309
+29|4|not available|0|0|0|0
+34|1|Evonne Hanna|1|1|1|519
+34|2|single|0|0|0|0
+36|1|Sianna Sherman|1|1|1|519
+36|2|single|0|0|0|0
+38|1|Ashley Turner|1|1|1|519
+38|2|single|0|0|0|0
+273|1||0|0|0|0
+47|1|Tammy Gitter|1|1|1|195
+48|1|Lindsay Chapman|1|1|1|195
+49|1|Laura Yeh|1|1|1|195
+50|1|Dominique Laniel|1|1|1|195
+80|1|Christine Koth|1|1|1|195
+52|1|Jessica Lusty|1|1|1|195
+81|1|Stephanie Koehler|1|1|1|195
+56|1|Hannah Muse|1|1|1|195
+1001|1|Jowee Aulston|1|1|1|195
+1001|2||0|0|0|0
+1001|3||0|0|0|0
+1001|4||0|0|0|0
+1001|5||0|0|0|0
+1002|1||0|0|0|0
+1002|2||0|0|0|0
+1002|3||0|0|0|0
+1002|4||0|0|0|0
+1002|5||0|0|0|0

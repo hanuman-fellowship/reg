@@ -70,7 +70,7 @@ If no emails are given output is to the screen.
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 
 </table>

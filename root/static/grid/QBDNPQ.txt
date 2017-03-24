@@ -1,0 +1,25 @@
+name Wild Woman Summit  1/16
+id 1274
+first Melanie
+last Munir
+sdate 20160108
+edate 20160110
+housecost_type Per Day
+single_bath 171
+single 142
+dble_bath 123
+dble 116
+triple 96
+dormitory 86
+economy 76
+own_tent 56
+own_van 56
+commuting 45
+fixed_cost_houses 
+fch_encoded 
+6|203|2|0|0|1
+32|207|2|0|0|1
+25|209|2|0|0|1
+33|211|2|0|0|1
+36|214|2|1|0|1
+39|217|2|0|0|1

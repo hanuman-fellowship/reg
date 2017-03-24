@@ -1,0 +1,19 @@
+name AVI FYT NOV2009
+id 652
+first Clare
+last Collins
+sdate 20091130
+edate 20091214
+housecost_type Total
+single_bath 20
+single 20
+dble_bath 20
+dble 20
+triple 20
+dormitory 20
+economy 20
+own_tent 20
+own_van 20
+commuting 20
+fixed_cost_houses 
+fch_encoded 

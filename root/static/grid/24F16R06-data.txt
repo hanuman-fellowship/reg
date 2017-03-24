@@ -1,0 +1,46 @@
+24|1|Gerrie Linn|1|1|232
+24|2|Sheila Gill|1|1|232
+100|1|Angela Islas|1|1|106
+109|1|Kathryn Purcell|1|1|106
+106|1||0|0|0
+107|1|Judith Marshall|1|1|122
+102|1|Denise Canu|1|1|106
+103|1|Dave Martin|1|1|122
+43|1|Linda Berliner|1|1|268
+43|2||0|0|0
+44|1|Gloria Burrola|1|1|210
+44|2|Susana Sosa|1|1|210
+45|1|Joan Sharma|1|1|268
+45|2||0|0|0
+7|1|Charles Schoelen|1|1|182
+7|2|Ken Butler|1|1|182
+7|3|Angel Fernandez|1|1|182
+8|1|Patsy Fields|1|1|164
+8|2|Lori Bump|1|1|164
+8|3|Nancy Red|1|1|164
+8|4|Peggy Gregory|1|1|164
+8|5|Emily Lawrence|1|1|164
+8|6||0|0|0
+8|7||0|0|0
+9|1|Nancy Gaseor|1|1|164
+9|2|Carolyn Sutherlin|1|1|164
+9|3|Nicole Flores|1|1|164
+9|4|Kristin Harlan|1|1|164
+9|5||0|0|0
+9|6||0|0|0
+9|7||0|0|0
+10|1|Margie Medina|1|1|182
+10|2|Joan Poss|1|1|182
+10|3|Sara Poss|1|1|182
+11|1|Cynthia Oliphant|1|1|268
+11|2||0|0|0
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1||0|0|0
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

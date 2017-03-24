@@ -1,0 +1,34 @@
+17|1|Sam Himmelstein|1|1|284
+17|2||0|0|0
+19|1|Jason Young|1|1|232
+19|2|JG Larochette|1|1|232
+27|1|Salina Espinosa-Setchko|1|1|232
+27|2|Ursula Stoller|1|1|232
+27|3||0|0|0
+27|4||0|0|0
+117|1|Jonny Perez|1|1|232
+117|2|Amani William|1|1|232
+118|1|Safahri Ra|1|1|232
+118|2|Oscar Medina|1|1|232
+119|1|Aisha Carabello|1|1|232
+119|2|Angelica Santana|1|1|232
+120|1|Angelina Alvarez|1|1|232
+120|2|Jasmine Saavedra|1|1|232
+125|1|Alison Espinosa-Setchko|1|1|232
+125|2|Amani Johnson|1|1|232
+43|1|Coco Peila|1|1|232
+43|2|Hazel Rose|1|1|232
+44|1|Sarah Holloway|1|1|232
+44|2|Mona Shahab|1|1|232
+45|1|Melody Malakooti|1|1|232
+45|2|Marisa Halperin|1|1|232
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1||0|0|0
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

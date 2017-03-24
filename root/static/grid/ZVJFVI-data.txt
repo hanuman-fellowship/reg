@@ -1,0 +1,20 @@
+12|1|Margaret Tighe|1|1|284
+12|2||0|0|0
+18|1|Tory Mudd|1|1|342
+18|2||0|0|0
+20|1|Kathleen Finigan|1|1|246
+20|2|Mary Waitz|1|1|246
+49|1|Ashley Davenport and Geoff Picus [note Sat nite only]|0|1|112
+80|1|Deborah Lockwood (CENTER TENT)|1|1|128
+51|1|Michelle Mills|1|1|112
+56|1|Anne Pincus and Jim Johnson|1|1|224
+1001|1|Robert Lehmann and Anne Fraser|1|1|224
+1001|2|Christopher and Takiko Larson|1|1|224
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1|Rebecca Kopriva|1|1|90
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

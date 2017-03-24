@@ -1,0 +1,31 @@
+name Mapa & Sisk (Rhythm)  7/16
+id 1247
+first Meenal
+last Chakradeo
+sdate 20160712
+edate 20160717
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+1|101|2|0|0|1
+14|108|2|1|0|1
+27|202|4|0|0|1
+28|204|4|0|0|1
+29|206|4|0|0|1
+30|208|4|0|0|1
+33|211|2|0|0|1
+34|212|2|1|0|1
+36|214|2|1|0|1
+38|216|2|1|0|1
+40|218|2|1|0|1

@@ -1,0 +1,33 @@
+name BLASER-BURR YOGA  4/16
+id 1138
+first Laurie
+last Broderick-Burr
+sdate 20160422
+edate 20160424
+housecost_type Per Day
+single_bath 184
+single 155
+dble_bath 136
+dble 120
+triple 109
+dormitory 99
+economy 89
+center_tent 77
+own_tent 69
+own_van 69
+commuting 58
+fixed_cost_houses 
+fch_encoded 
+179|JR|7|0|0|1
+109|MAD 10|1|0|1|1
+105|MAD 2|1|0|1|1
+101|MAD 4|1|0|1|1
+108|MAD 8|1|0|1|1
+56|OAKS 25|1|0|1|1
+118|OC 2|2|0|0|1
+121|OC 5|2|0|0|1
+7|SH 1|3|0|0|1
+8|SH 2|7|0|0|1
+9|SH 3|7|0|0|1
+10|SH 4|3|0|0|1
+11|SH 5|2|0|0|1

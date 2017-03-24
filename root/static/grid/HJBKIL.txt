@@ -1,0 +1,36 @@
+name BREAKFREE  4/17
+id 1350
+first Karen
+last Kiker
+sdate 20170428
+edate 20170430
+housecost_type Per Day
+single_bath 171
+single 142
+dble_bath 123
+dble 116
+triple 96
+dormitory 86
+economy 76
+center_tent 64
+own_tent 56
+own_van 56
+commuting 45
+fixed_cost_houses 
+fch_encoded 
+16|110|4|0|0|1
+19|113|2|0|0|1
+21|115|2|0|0|1
+23|117|2|0|0|1
+27|202|4|0|0|1
+26|210|4|0|0|1
+117|OC 1|2|0|0|1
+118|OC 2|2|0|0|1
+121|OC 5|2|0|0|1
+122|OC 6|2|0|0|1
+123|OC 7|2|0|0|1
+7|SH 1|3|0|0|1
+8|SH 2|7|0|0|1
+9|SH 3|7|0|0|1
+10|SH 4|3|0|0|1
+11|SH 5|2|0|0|1

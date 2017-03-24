@@ -1,0 +1,26 @@
+name TEST RENTAL  5/16
+id 61
+first 
+last 
+sdate 20160510
+edate 20160513
+housecost_type Per Day
+single_bath 100
+single 90
+dble_bath 80
+dble 70
+triple 60
+dormitory 50
+economy 40
+center_tent 30
+own_tent 20
+own_van 25
+commuting 10
+fixed_cost_houses 
+fch_encoded 
+3|103|2|0|0|1
+12|105|2|0|0|1
+13|107|2|0|0|1
+15|109|2|0|0|1
+17|111|2|0|0|1
+19|113|2|0|0|1

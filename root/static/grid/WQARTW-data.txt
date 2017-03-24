@@ -1,0 +1,28 @@
+15|1|Cortney Biggs|1|1|1|465
+15|2||0|0|0|0
+23|1|Sienna Smith|1|1|1|465
+23|2||0|0|0|0
+24|1|Isa Metcalf|1|1|1|408
+24|2|Chelsea Supawit|1|1|1|408
+6|1|Carrie-Beth McCall (at dorm rate)|1|1|1|360
+6|2|Seraphina Atemasov (at dorm rate)|1|1|1|360
+32|1|Teresa Gregory|1|1|1|465
+32|2||0|0|0|0
+25|1|Kathryn Danielle-Rappaport|1|1|1|465
+25|2||0|0|0|0
+33|1|Tiffany Greenholz|1|1|1|360
+33|2|Meghan Ohare|1|1|1|360
+35|1|Rosalyn Miller|1|1|1|360
+35|2|Sita Khufu|1|1|1|360
+38|1|Gail|1|1|1|408
+38|2|Michael|1|1|1|408
+1001|1||0|0|0|0
+1001|2||0|0|0|0
+1001|3||0|0|0|0
+1001|4||0|0|0|0
+1001|5||0|0|0|0
+1002|1||0|0|0|0
+1002|2||0|0|0|0
+1002|3||0|0|0|0
+1002|4||0|0|0|0
+1002|5||0|0|0|0

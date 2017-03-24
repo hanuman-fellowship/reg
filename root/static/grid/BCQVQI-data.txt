@@ -1,0 +1,62 @@
+3|1|Amy Lucas|1|1|1|465
+3|2|single|0|0|0|0
+18|1|Lauren Schiermeyer|1|1|1|408
+18|2|Stephanie Koehler|1|1|1|408
+24|1|Evonne Hanna|1|1|1|552
+24|2|single|0|0|0|0
+5|1|Cassandra Perez|1|1|1|360
+5|2|Tania da Costa|1|1|1|360
+27|1|Katie Titus|1|1|1|327
+27|2|Carter Evans|1|1|1|327
+27|3|Niav Connor|1|1|1|327
+27|4||0|0|0|0
+6|1|Cat Bottini|1|1|1|465
+6|2|single|0|0|0|0
+28|1|Greta Hill|1|1|1|327
+28|2|Karly Wade|1|1|1|327
+28|3|Sonya Genel|1|1|1|327
+28|4||0|0|0|0
+29|1|Angela Chalekode|1|1|1|360
+29|2|Roslyn Nance|1|1|1|360
+29|3||0|0|0|0
+29|4||0|0|0|0
+32|1|Olga Kempe|1|1|1|360
+32|2|Maria Bloomfield|1|1|1|360
+30|1|Kathleen Pizzello|1|1|1|360
+30|2|Jessica Lusty|1|1|1|360
+30|3||0|0|0|0
+30|4||0|0|0|0
+25|1|Nanci Pritchard|1|1|1|465
+25|2|single|0|0|0|0
+34|1|Sianna Sherman|1|1|1|552
+34|2|single|0|0|0|0
+35|1|Hope Andreason|1|1|1|465
+35|2|single|0|0|0|0
+36|1|guest|1|1|1|552
+36|2||0|0|0|0
+38|1|Ashley Turner|1|1|1|552
+38|2|single|0|0|0|0
+105|1|Dominique Laniel|1|1|1|231
+101|1|Christine Koth|1|1|1|231
+101|2||0|0|0|0
+107|1|Lindsay Chapman|1|1|1|231
+102|1|Laura Yeh|1|1|1|207
+103|1|Tammy Gitter|1|1|1|231
+120|1|Harmony Forest|1|1|1|360
+120|2|Shelia Katherndahl|1|1|1|360
+121|1|Demi Chan|1|1|1|360
+121|2|Dora Moreinis|1|1|1|360
+122|1|Heather Gallagher|1|1|1|360
+122|2|Rondi Robinson|1|1|1|360
+125|1|Christina Koliastis|1|1|1|465
+125|2|single|0|0|0|0
+1001|1|Jowee Aulston|1|1|1|207
+1001|2||0|0|0|0
+1001|3||0|0|0|0
+1001|4||0|0|0|0
+1001|5||0|0|0|0
+1002|1||0|0|0|0
+1002|2||0|0|0|0
+1002|3||0|0|0|0
+1002|4||0|0|0|0
+1002|5||0|0|0|0

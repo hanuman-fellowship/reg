@@ -1,0 +1,46 @@
+18|1|Gretchen Heinrichs|1|1|246
+18|2|Lindsey Woodward|1|1|246
+19|1|Nick Crowne|1|1|284
+19|2||0|0|0
+21|1|Elise Geltman|1|1|232
+21|2|Scott Geltman|1|1|232
+22|1|Kelly Steckelberg|1|1|246
+22|2|Amanda Fabian|1|1|246
+35|1|Kristen Sinch|1|1|284
+35|2||0|0|0
+36|1|Amanda Smoot|1|1|246
+36|2|Leslie Smoot|1|1|246
+122|1|Eileen|1|1|284
+122|2||0|0|0
+7|1|Carly Sanders|1|1|192
+7|2|Jen Lee Otero|1|1|192
+7|3|Verna Carter|1|1|192
+8|1|Therese James|1|1|172
+8|2|Linda Breedlove|1|1|172
+8|3|Victoria Williams|1|1|172
+8|4|Sharon Stefanson|0|1|86
+8|5|Alexandra Breedlove|1|1|172
+8|6|Rachael|1|1|172
+8|7|Hannah|1|1|172
+9|1|Maria Fregeau|1|1|172
+9|2|Nadia Fairlamb|1|1|172
+9|3|Angie Vani|1|1|172
+9|4|Julie Schnabel|1|1|172
+9|5|Lydia Chow|1|1|172
+9|6||0|0|0
+9|7||0|0|0
+10|1|Jim Sinunu|1|1|232
+10|2|Alex Sinunu|1|1|232
+10|3||0|0|0
+11|1|Pradeep Teotia|1|1|284
+11|2||0|0|0
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1||0|0|0
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

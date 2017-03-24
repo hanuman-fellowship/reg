@@ -1,0 +1,26 @@
+14|1|Louis Lujan|1|1|259
+14|2|Francisco Lujan|1|1|259
+18|1|Danielle Adler|1|1|259
+18|2|Rona Zollinger|1|1|259
+22|1|Kai Wu|1|1|259
+22|2|Steve Still|1|1|259
+34|1|Saji Salam|1|1|259
+34|2|Sumanth Gangashanaiah|1|1|259
+36|1||0|0|0
+36|2|Ramez Soliman|1|1|355
+38|1|Sukhama Tutone|1|1|259
+38|2|Vicki Reiner|1|1|259
+40|1|Sandra Deutscher (C-PAP machine)|1|1|355
+40|2||0|0|0
+100|1|Jay McGill & Heidi Love|1|1|250
+107|1|Diana Stapleton|1|1|125
+1001|1||0|0|0
+1001|2||0|0|0
+1001|3||0|0|0
+1001|4||0|0|0
+1001|5||0|0|0
+1002|1||0|0|0
+1002|2||0|0|0
+1002|3||0|0|0
+1002|4||0|0|0
+1002|5||0|0|0

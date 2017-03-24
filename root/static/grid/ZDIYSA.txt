@@ -1,0 +1,30 @@
+name Chautauqua 7/14
+id 1060
+first Kay
+last Brownfield
+sdate 20140713
+edate 20140716
+housecost_type Total
+single_bath 20
+single 20
+dble_bath 20
+dble 20
+triple 20
+dormitory 20
+economy 20
+center_tent 20
+own_tent 20
+own_van 20
+commuting 20
+fixed_cost_houses 
+fch_encoded 
+28|204|4|0|0|1
+29|206|4|0|0|1
+30|208|4|0|0|1
+25|209|2|0|0|1
+26|210|4|0|0|1
+39|217|2|0|0|1
+51|OAKS 19|1|0|1|1
+117|OC 1|2|0|0|1
+120|OC 4|2|0|0|1
+121|OC 5|2|0|0|1

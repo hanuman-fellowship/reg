@@ -1,0 +1,56 @@
+1|1|Christine Koth|1|1|1|372
+1|2|Demi Chan|1|1|1|372
+3|1|Amy Lucas|1|1|1|465
+3|2|single|0|0|0|0
+13|1|Rondi Robinson|1|1|1|372
+13|2|Heather Gallagher|1|1|1|372
+15|1|Jayne Gottlieb|1|1|1|372
+15|2|Tania da Costa|1|1|1|372
+16|1|Katie Titus|1|1|1|327
+16|2|Cartter Evans|1|1|1|327
+16|3|Niav Connor|1|1|1|327
+16|4||0|0|0|0
+17|1|Christina Koliastasis|1|1|1|372
+17|2|Hope Andreason|1|1|1|372
+18|1|Nanci Pritchard|1|1|1|552
+18|2|single|0|0|0|0
+19|1|Dominique Laniel|1|1|1|372
+19|2|Hamony Forrest|1|1|1|372
+21|1|Roslyn Nance|1|1|1|372
+21|2|Angela Chalekode|1|1|1|372
+22|1|Lauren Schiermeyer|1|1|1|552
+22|2|single|0|0|0|0
+23|1|Olga Sergeevna Kempe|1|1|1|372
+23|2|Maria Bloomfield|1|1|1|372
+24|1|Evonne Hanna|1|1|1|552
+24|2|single|0|0|0|0
+6|1|Shelia Katerndahl|1|1|1|372
+6|2|Dora Moreinis|1|1|1|372
+29|1|Jessica Lusty (Weds PR) (moved from SH 2)|1|1|1|300
+29|2|Kathleen Pizzello (Weds PR) (moved from SH 2)|1|1|1|300
+29|3|Greta Hill|1|1|1|300
+29|4|Sonya Genel|1|1|1|300
+32|1|Cat Bottini|1|1|1|465
+32|2||0|0|0|0
+34|1|Guest Speaker|1|1|1|552
+34|2||0|0|0|0
+36|1|Jowee Aulston|0|1|1|368
+36|2||0|0|0|0
+38|1|Sianna Sherman (Weds PR)|1|1|1|552
+38|2|single|0|0|0|0
+50|1|Laura Yeh|1|1|1|207
+78|1|Dominique Laniel|1|1|1|207
+79|1|Stephanie Koehler|1|1|1|207
+80|1|Tammy Gitter|1|1|1|207
+54|1|Hannah Muse|1|1|1|207
+81|1|Lindsay Chapman|1|1|1|207
+1001|1|Jowee Aulston|1|0|0|69
+1001|2||0|0|0|0
+1001|3||0|0|0|0
+1001|4||0|0|0|0
+1001|5||0|0|0|0
+1002|1||0|0|0|0
+1002|2||0|0|0|0
+1002|3||0|0|0|0
+1002|4||0|0|0|0
+1002|5||0|0|0|0

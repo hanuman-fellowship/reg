@@ -1,0 +1,32 @@
+name Elevated Escapes  4/16
+id 1276
+first Stacy
+last Wittingham
+sdate 20160415
+edate 20160417
+housecost_type Per Day
+single_bath 171
+single 142
+dble_bath 123
+dble 116
+triple 96
+dormitory 86
+economy 76
+center_tent 64
+own_tent 56
+own_van 56
+commuting 45
+fixed_cost_houses 
+fch_encoded 
+24|118|2|1|0|1
+5|201|2|0|0|1
+6|203|2|0|0|1
+26|210|4|0|0|1
+35|213|2|0|0|1
+176|GH 5|2|1|0|1
+178|LTL HSE|2|1|0|1
+109|MAD 10|1|0|1|1
+51|OAKS 19|1|0|1|1
+86|OAKS 33|1|0|1|1
+117|OC 1|2|0|0|1
+118|OC 2|2|0|0|1

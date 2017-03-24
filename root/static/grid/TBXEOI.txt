@@ -1,0 +1,19 @@
+name Open Gate Sangha  2/17
+id 1198
+first David
+last Michelson
+sdate 20170212
+edate 20170217
+housecost_type Total
+single_bath 970
+single 825
+dble_bath 730
+dble 695
+triple 595
+dormitory 545
+economy 495
+own_tent 395
+own_van 395
+commuting 340
+fixed_cost_houses 
+fch_encoded 

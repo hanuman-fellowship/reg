@@ -1,0 +1,29 @@
+name Paige Cogger Retreat  2/16
+id 1222
+first Paige
+last Cogger
+sdate 20160226
+edate 20160228
+housecost_type Per Day
+single_bath 161
+single 134
+dble_bath 116
+dble 105
+triple 91
+dormitory 82
+economy 72
+own_tent 53
+own_van 53
+commuting 42
+fixed_cost_houses 
+fch_encoded 
+13|107|2|0|0|1
+15|109|2|0|0|1
+16|110|4|0|0|1
+17|111|2|0|0|1
+19|113|2|0|0|1
+20|114|2|1|0|1
+22|116|2|1|0|1
+23|117|2|0|0|1
+24|118|2|1|0|1
+121|OC 5|2|0|0|1

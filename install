@@ -1,0 +1,27 @@
+Virtual Box
+
+osboxes.org/centos
+download Centos 7.1
+double click to extract to 64bit/
+
+New
+Red Hat 64
+2048 Mb
+choose .vdi
+
+make shared folder - select from disk
+
+General drag/drop, clipboard
+
+Network - Bridged
+
+port forwarding?
+SSH ??? ... later ports
+    ssh out/in
+    VPN??
+access app from host browser
+
+Start...
+
+username osboxes.org
+password osboxes.org

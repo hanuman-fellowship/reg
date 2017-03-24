@@ -1,0 +1,49 @@
+5|1|Lewis Call|1|1|1|1|620
+5|2||0|0|0|0|0
+32|1|Marilyn Montgomery|1|1|1|1|620
+32|2||0|0|0|0|0
+33|1|Karen Fitzgerald|1|1|1|1|620
+33|2||0|0|0|0|0
+35|1|Bodhi Montgomery|1|1|1|1|480
+35|2|Helene Rein|1|1|1|1|480
+36|1|Rebekah Ingalls|1|1|1|1|736
+36|2||0|0|0|0|0
+37|1|Susanne Fairclough|1|1|1|1|620
+37|2||0|0|0|0|0
+38|1|Anne Torney|1|1|1|1|736
+38|2||0|0|0|0|0
+39|1|Michelle Patterson|1|1|1|1|480
+39|2|Andrea Traber|1|1|1|1|480
+51|1|Spirit Wiseman|1|1|1|1|276
+52|1|Roger Horner|1|1|1|1|308
+81|1|Ted Sundin|1|1|1|1|276
+55|1|Nancy Barton|1|1|1|1|276
+82|1|Sascha Grignon|1|1|0|0|138
+83|1||0|0|0|0|0
+83|2||0|0|0|0|0
+84|1|Daniel Patten|1|1|1|1|308
+84|2||0|0|0|0|0
+85|1|Jed Fox|1|1|1|1|276
+59|1|Lance Harpham and Forest Harpham|1|1|1|1|552
+86|1|Sarah Beasley|1|1|1|1|276
+87|1|Dwight Chapman|1|1|1|1|308
+60|1|Danielle Shula|1|1|1|1|276
+61|1|Pat and Bruce Von Alten|1|1|1|1|552
+88|1|Lainey Tant|1|1|1|1|276
+63|1|Ori Tziveli|1|1|1|1|276
+89|1|Joseph Bailey|1|1|1|1|276
+64|1|Allison Rader|0|0|1|1|138
+41|1|Lama Drimed|1|1|1|1|620
+41|2||0|0|0|0|0
+42|1|Pilar Martin|1|1|1|1|620
+42|2||0|0|0|0|0
+1001|1||0|0|0|0|0
+1001|2||0|0|0|0|0
+1001|3||0|0|0|0|0
+1001|4||0|0|0|0|0
+1001|5||0|0|0|0|0
+1002|1|Eman Fallah|1|1|1|1|232
+1002|2|Jeanne Sutton|1|1|1|1|232
+1002|3||0|0|0|0|0
+1002|4||0|0|0|0|0
+1002|5||0|0|0|0|0

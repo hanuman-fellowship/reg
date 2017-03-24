@@ -4,7 +4,8 @@
 }
 </style>
 <h2>[% type %]Participant List for [% program.name %] from [% program.dates %]</h2>
-[% mailto %]
+<a href='mailto: ?bcc=$email_all'>Email All Bcc</a>
+<p>
 [% FOR r IN rows %]
 [% r %]
 [% END %]

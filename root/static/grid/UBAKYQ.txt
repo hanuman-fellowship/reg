@@ -1,0 +1,19 @@
+name Pointing Out Way of Indo-Tibetan Buddhist Meditation  1/17
+id 1315
+first Daniel
+last Brown
+sdate 20170120
+edate 20170127
+housecost_type Total
+single_bath 1331
+single 1128
+dble_bath 988
+dble 911
+triple 806
+dormitory 743
+economy 0
+own_tent 526
+own_van 526
+commuting 449
+fixed_cost_houses 
+fch_encoded 
