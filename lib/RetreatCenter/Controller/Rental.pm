@@ -1112,6 +1112,7 @@ sub booking : Local {
                    tent     => $tent,
                    center   => $center,
                    max      => { '>=', $low_max },
+                   resident => '',
                    @opt,
                },
                { order_by => 'name' }
