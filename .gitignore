@@ -14,5 +14,8 @@ gen_files/
 grab_running
 root/static/images/
 root/static/js
+root/static/grid
+root/static/online
+root/static/omp
 
 stop
