@@ -269,3 +269,4 @@ sum_email_subject Logistic plan for
 program_director David Prisk
 mmc_event_alert jon@suecenter.org
 mmi_event_alert jonb@suecenter.org
+pr_max_nights 14

@@ -51,6 +51,7 @@ my @format_desc = (
     'Last, First, Email',
     'Email, Code',
     'Address, Code',
+    'CSV',
 );
 
 use constant {
@@ -66,6 +67,7 @@ use constant {
     LAST_FIRST_EMAIL    => 10,
     EMAIL_CODE          => 11,
     ADDR_CODE           => 12,
+    CSV                 => 13,
 };
 
 my $exp = "expiry_date.txt";
@@ -139,6 +141,7 @@ sub view : Local {
                      NAME_HOME_WORK_CELL,
                      NAME_ADDR_LINK,
                      RAW,
+                     CSV,
                      )),
         format_verbose => $format_desc[$fmt],
         affils => [

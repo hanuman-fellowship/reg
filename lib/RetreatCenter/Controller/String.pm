@@ -98,6 +98,9 @@ sub update_do : Local {
     elsif ($the_key =~ m{^center_tent_}) {
         _update_CT();
     }
+    elsif ($the_key eq 'pr_max_nights') {
+        _update_max_nights();
+    }
     elsif ($the_key eq 'online_notify') {
         # need to send this string up to mountmadonna.org
         BLOCK: {
@@ -145,10 +148,11 @@ sub update_do : Local {
     }
 }
 
-# we need to update the www.mountmadonna.org/personal/CT.txt file
+# we need to update the www.mountmadonna.org/pr/CT.txt file
 #
 sub _update_CT {
-    open my $ct, ">", "/tmp/CT.txt" or return;
+    my $fn = '/tmp/CT.txt';
+    open my $ct, ">", $fn or return;
     print {$ct} "$string{center_tent_start}-$string{center_tent_end}\n";
     close $ct;
     my $ftp = Net::FTP->new($string{ftp_site},
@@ -156,9 +160,26 @@ sub _update_CT {
     $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
     $ftp->cwd($string{ftp_pr_dir}) or return;
     $ftp->ascii() or return;
-    $ftp->put("/tmp/CT.txt", "CT.txt") or return;
+    $ftp->put($fn, "CT.txt") or return;
     $ftp->quit();
-    unlink "/tmp/CT.txt";
+    unlink $fn;
+}
+
+# we need to update the www.mountmadonna.org/pr/max_nights.txt file
+#
+sub _update_max_nights {
+    my $fn = '/tmp/max_nights.txt';
+    open my $mn, ">", $fn or return;
+    print {$mn} "$string{pr_max_nights}\n";
+    close $mn;
+    my $ftp = Net::FTP->new($string{ftp_site},
+                            Passive => $string{ftp_passive}) or return;
+    $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
+    $ftp->cwd($string{ftp_pr_dir}) or return;
+    $ftp->ascii() or return;
+    $ftp->put($fn, "max_nights.txt") or return;
+    $ftp->quit();
+    unlink $fn;
 }
 
 sub access_denied : Private {

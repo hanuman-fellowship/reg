@@ -272,9 +272,11 @@ mem_sponsor_nights - number of free lodging nights for a Sponsor member
 mem_team - obsolete - can be removed
 member_meal_cost - obsolete - can be removed
 min_kid_age - minimum age of a person before they need to pay (as a child)
+mmc_event_alert - who should be notified by email of a new MMC Program/Rental/Event?
 mmc_reconciling - who is doing an MMC reconciliation?
 mmi_discount - percentage discount for MMI programs - must be requested via an Affiliation
 mmi_email - who should be notified when an MMI mailing list request comes in?
+mmi_event_alert - who should be notified by email of a new MMI Program?
 mmi_reconciling - who is doing an MMI reconciliation?
 mmi_payment_request_signed - The name of the person who is requesting an MMI Online Payment.
 mmi_payment_request_from - The email of the person who is requesting an MMI Online Payment.
@@ -297,6 +299,7 @@ payment_U - a payment is Due
 personal_template - the template for a Personal Retreat program
     it changes as the 'get_away' is offered or not.
 phone - the description of a telephone in the row for a rental online
+pr_max_nights - the maximum number of nights for a PR registration
 prog_end - the default time of day that a program ends
 prog_start - the default time of day that a program starts
 program_director - the name of the Program Director - for the contract
