@@ -28,11 +28,18 @@ Table: event
 <dd>start date</dd>
 <dt>sponsor</dt>
 <dd>obsolete - superceded by organization</dd>
+<dt>user_id</dt>
+<dd>which user added this event?</dd>
+<dt>the_date</dt>
+<dd>date the event was created</dd>
+<dt>time</dt>
+<dd>time the event was created</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
 <tr><td>blocks</td><td><a href=Block.html>block</a></td><td>has_many</td></tr>
 <tr><td>bookings</td><td><a href=Booking.html>booking</a></td><td>has_many</td></tr>
 <tr><td>organization</td><td><a href=Organization.html>organization</a></td><td>belongs_to</td></tr>
+<tr><td>user</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 </table>
 </body></html>

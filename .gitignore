@@ -17,5 +17,11 @@ root/static/js
 root/static/grid
 root/static/online
 root/static/omp
+root/static/grab_new
+root/static/maybewords.txt
+root/static/mlist_done
+root/static/participant.csv
+root/static/report*.txt
+mail.log
 
 stop

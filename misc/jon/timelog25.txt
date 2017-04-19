@@ -1,0 +1,12 @@
+Apr 3 10:00-10:20
+    responding to Kevin re: RG
+Apr 4 12:25-12:45
+    notifications password to jamal
+    update faceyelp letter brajesh => vishwamitra
+Apr 6 11:00-11:30
+    talk with Vishwamitra and Kevin
+Apr 8 4:45-6:30
+    cvs format for reports - requested by Kevin
+    pr_max_nights - requested by Kamala
+Apr 19 1:30-
+    who created event when?

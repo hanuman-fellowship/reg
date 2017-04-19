@@ -31,6 +31,7 @@ use Util qw/
     error
     months_calc
     new_event_alert
+    get_now
 /;
 use HLog;
 use GD;
@@ -156,7 +157,10 @@ sub create_do : Local {
         return;
     }
 
-    my $e = model($c, 'Event')->create(\%P);
+    my $e = model($c, 'Event')->create({
+        %P,
+        get_now($c),
+    });
     my $id = $e->id();
 
     # send an email alert about this new event

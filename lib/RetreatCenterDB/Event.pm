@@ -4,6 +4,7 @@ package RetreatCenterDB::Event;
 use base qw/DBIx::Class/;
 
 use Date::Simple qw/date/;
+use Time::Simple qw/get_time/;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('event');
@@ -17,8 +18,14 @@ __PACKAGE__->add_columns(qw/
     organization_id
     max
     pr_alert
+    user_id
+    the_date
+    time
 /);
 __PACKAGE__->set_primary_key(qw/id/);
+
+# user who created
+__PACKAGE__->belongs_to(user => 'RetreatCenterDB::User', 'user_id');
 
 # organization
 __PACKAGE__->belongs_to(organization   => 'RetreatCenterDB::Organization', 'organization_id');
@@ -36,6 +43,11 @@ __PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
                       }
                      );
 
+sub the_date_obj {
+    my ($self) = @_;
+    return date($self->the_date);
+}
+sub time_obj { get_time(shift->time); }
 sub sdate_obj {
     my ($self) = @_;
     return date($self->sdate);
@@ -44,11 +56,6 @@ sub edate_obj {
     my ($self) = @_;
     return date($self->edate);
 }
-sub the_date_obj {
-    my ($self) = @_;
-    return date($self->the_date);
-}
-
 sub descr_br {
     my ($self) = @_;
     my $descr = $self->descr;
@@ -109,3 +116,6 @@ pr_alert - This event has an effect on PRs.  This column contains
     overlap with this event's dates.
 sdate - start date
 sponsor - obsolete - superceded by organization
+user_id - which user added this event?
+the_date - date the event was created
+time - time the event was created
