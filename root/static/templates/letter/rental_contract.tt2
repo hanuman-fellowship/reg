@@ -288,8 +288,8 @@ received after that point.
 The Center cannot guarantee that accommodation requests received
 later than two weeks out will be accepted.
 For housing requests received within the last week before the event,
-those that can be accepted will be surcharged \$${string.rental_late_in>.00 per
-outdoor accommodation and \$${string.rental_late_out>.00 per indoor accommodation.
+those that can be accepted will be surcharged \$${string.rental_late_out>.00 per
+outdoor accommodation and \$${string.rental_late_in>.00 per indoor accommodation.
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Arbitration</h2>
