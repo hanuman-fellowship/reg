@@ -1589,6 +1589,8 @@ sub contract : Local {
         deposit => commify($rental->deposit()),
         rental_lunch_cost => $string{rental_lunch_cost},
         program_director => $string{program_director},
+        rental_late_in => $string{rental_late_in},
+        rental_late_out => $string{rental_late_out},
     );
     $tt->process(
         "rental_contract.tt2",# template
