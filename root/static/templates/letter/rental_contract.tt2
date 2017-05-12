@@ -58,16 +58,6 @@ It is also very helpful for us if you can send in advance
 both a schedule of your sessions and breaks and an alphabetical
 list of the participants.
 <p>
-<!--
-[% IF email %]
-To assist you in your housing assignment and financial tallies
-we have created a customized web page for you here:
-<ul>
-<a href=http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code>www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code</a>
-</ul>
-[% END %]
-<p>
--->
 We also offer, by appointment, through the Kaya Kalpa Wellness Center,
 various bodywork sessions. Appointments may be booked in advance by
 calling 408-847-3276. Kaya Kalpa's office hours are Monday through
@@ -97,7 +87,7 @@ And if there are any other needs or ways we can help, please do let us know.
 All good wishes,<br>
 <div style="margin-top: .3in;">
 $program_director<br>
-Programs Director
+Program Director
 </div>
 <div style="page-break-after:always"></div>
 <div style="height: 1.125in"></div>
@@ -327,7 +317,7 @@ of the date alongside the Program Director's signature.
 <table id=line border=0>
 <tr><td colspan=2><hr></td></tr>
 <tr><td id=name align=left>$program_director</td><td>Date</td></tr>
-<tr><td id=name align=left>Program Director of the Center</td></tr>
+<tr><td id=name align=left>Program Director</td></tr>
 </table>
 <table id=line border=0>
 <tr><td colspan=2><hr></td></tr>
@@ -336,4 +326,3 @@ of the date alongside the Program Director's signature.
 </center>
 </body>
 </html>
-<!-- Brajesh (Jerry Friedberg, Ph.D.) -->
