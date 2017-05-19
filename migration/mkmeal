@@ -1,0 +1,13 @@
+drop table if exists meal;
+create table meal (
+    id integer primary key autoincrement,
+    sdate text,
+    edate text,
+    breakfast integer,
+    lunch integer,
+    dinner integer,
+    comment text,
+    user_id integer,        -- foreign key to user
+    the_date text,
+    time text
+);

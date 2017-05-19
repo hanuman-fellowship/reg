@@ -1,0 +1,50 @@
+<h2>Meal</h2>
+[% IF Catalyst.check_user_roles('prog_staff') %]
+<a href=/meal/create>Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/meal/update/[% meal.id %]>Edit</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/meal/delete/[% meal.id %]
+ onclick="return confirm('Okay to Delete Meal on [% meal.sdate_obj %]?');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+[% END %]
+<a href=/meal/list>List</a>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right>Start Date</th>
+<td>[% meal.sdate_obj %]</td>
+</tr>
+
+<tr>
+<th align=right>End Date</th>
+<td>[% meal.edate_obj %]</td>
+</tr>
+
+<tr>
+<th align=right>Breakfast</th>
+<td>[% meal.breakfast %]</td>
+</tr>
+
+<tr>
+<th align=right>Lunch</th>
+<td>[% meal.lunch %]</td>
+</tr>
+
+<tr>
+<th align=right>Dinner</th>
+<td>[% meal.dinner %]</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td>
+[% meal.comment_tr %]
+</td>
+</tr>
+
+</table>
+<p class=p2>
+Last modified by [% meal.user.username %] on [% meal.the_date_obj %] at [% meal.time_obj %]
+</ul>

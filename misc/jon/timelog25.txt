@@ -8,5 +8,17 @@ Apr 6 11:00-11:30
 Apr 8 4:45-6:30
     cvs format for reports - requested by Kevin
     pr_max_nights - requested by Kamala
-Apr 19 1:30-
+Apr 19 1:30-2:45
     who created event when?
+Apr 22 1:00-3:00
+    begin expanding payment requests to MMC
+May 1 9:15-11:00
+    link in conf letter about maps - on mmc site
+May 10 4:00-4:30
+    rental contract tweaks
+May 12 1:15-1:45
+    more rental contract tweaks
+May 17 3:25-5:20
+    meal list tweaks and adding Configuration > Meals
+May 18 8:00-8:40
+    the meal list now looks at Meals objects

@@ -409,16 +409,20 @@ sub detail_disp {
 # PRs always have lunch except for their arrival day (but never
 #     on a Saturday).
 # Blocks with people in them will eat as if they were in a PR
-#   for the date range.
+#   for the date range.   This is true even for blocks that are bound
+#   to a Rental where the rental begins early.
 # the number of rental people on any given day is determined
 #     by looking at the web grid - maintained by the rental coordinator.
-#     if that grid is empty we use the maximum specified in the rental
+#     if that grid is empty we use the expected # specified in the rental
 #     for each day.
 #     oh oh - more complications ...:
 #     for breakfast on the first day see if the start time is before
 #         the breakfast end time (9:00).
 #     for breakfast on a mid-rental day look at the count for the day before.
 #     same applies to lunch :(
+#
+# finally, we look at Meal objects within the date range
+#   and add the breakfast, lunch, and dinner counts.
 #
 # this has, obviously, evolved over time.
 # no one could forsee all these things ahead of time.
@@ -508,13 +512,17 @@ sub meal_list : Local {
                       npeople => { '>'  => 0 },
                       allocated => 'yes',
                   });
-
+    my @meal_objs = model($c, 'Meal')->search({
+                        sdate   => { '<=' => $end_d8 },
+                        edate   => { '>=' => $start_d8 },
+                    });
     my $breakfast_end = '0900';    # 9:00 am
     my $lunch_end     = '1300';    # 1:00 pm
     @meals = ();   # hashrefs from $start to $end
     @detls = ();   # names, sources
     clear_lunch();
     my $d;      # to loop through days
+    # REGISTRATIONS ---------------
     for my $r (@regs) {
 
         my $kids = $r->kids || '';
@@ -574,6 +582,7 @@ sub meal_list : Local {
             add('dinner', $np)    if $d != $r_end || $prog_end_dinner;
         }
     }
+    # BLOCKS ---------------
     for my $bl (@blocks) {
         my $npeople = $bl->npeople();
         my $bl_start = $bl->sdate_obj();
@@ -599,6 +608,7 @@ sub meal_list : Local {
             add('dinner',    $npeople) if $d != $bl_end;
         }
     }
+    # RENTALS ---------------
     RENTAL:
     for my $r (@rentals) {
         # set globals
@@ -621,14 +631,8 @@ sub meal_list : Local {
         my $expected = $r->expected() || 0;
         for ($d = $sd; $d <= $ed; ++$d) {
             $d8 = $d->as_d8();
-            my $n = $counts[$d - $event_start] || 0;
-            if ($expected > $n) {
-                $n = $expected;
-            }
-            my $n_day_before = $counts[$d - $event_start - 1] || 0;
-            if ($expected > $n_day_before) {
-                $n_day_before = $expected;
-            }
+            my $n_day_before = $counts[$d - $event_start - 1] || $expected;
+            my $n = $counts[$d - $event_start] || $expected;
             if ($details) {
                 $info = [ "$n people" , $r_name ];
             }
@@ -654,6 +658,21 @@ sub meal_list : Local {
             }
             # DINNER
             add('dinner',    $n) if $d != $r_end;
+        }
+    }
+    # MEAL OBJECTS -----------
+    for my $mo (@meal_objs) {
+        my $ol = $dr->overlap(DateRange->new($mo->sdate_obj, $mo->edate_obj));
+        my $sd = $ol->sdate();
+        my $ed = $ol->edate();
+        my $comment = $mo->comment;
+        for ($d = $sd; $d <= $ed; ++$d) {
+            $d8 = $d->as_d8();
+            for my $m (qw/ breakfast lunch dinner /) {
+                my $count = $mo->$m;
+                $info = [ "$count people", $comment ];
+                add($m, $count);
+            }
         }
     }
     my $css = $c->uri_for("/static/meal_list.css");

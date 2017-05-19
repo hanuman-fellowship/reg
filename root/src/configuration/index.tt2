@@ -47,6 +47,7 @@ p {
 [% END %]
 </td>
 <td valign=top>
+<a href=/meal>Meals</a><p>
 <a href=/issue/list>Issues</a><p>
 [% IF prog %]
     <a href=/leader>Leaders</a><p>

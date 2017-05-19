@@ -1,0 +1,49 @@
+<h2>Meal</h2>
+<form name=form
+      action=/meal/[% form_action %]
+      method=post
+>
+<ul>
+<table cellpadding=3 border=0>
+
+<tr>
+<th align=right><span class=red>*</span> Start Date</th>
+<td><input type=text name=sdate value='[% meal.sdate_obj.format("%D") %]' size=10></td>
+</tr>
+
+<tr>
+<th align=right><span class=red>*</span> End Date</th>
+<td><input type=text name=edate value='[% meal.edate_obj.format("%D") %]' size=10></td>
+</tr>
+
+<tr>
+<th align=right>Breakfast</th>
+<td><input type=text name=breakfast value='[% meal.breakfast %]' size=3></td>
+</tr>
+
+<tr>
+<th align=right>Lunch</th>
+<td><input type=text name=lunch value='[% meal.lunch %]' size=3></td>
+</tr>
+
+<tr>
+<th align=right>Dinner</th>
+<td><input type=text name=dinner value='[% meal.dinner %]' size=3></td>
+</tr>
+
+<tr>
+<th align=right valign=top>Comment</th>
+<td><input type=text name=comment value='[% meal.comment %]' size=50></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit id=sub value="Submit"></td>
+</tr>
+
+</table>
+</form>
+</ul>
+<script type="text/javascript">
+document.form.sdate.focus();
+</script>

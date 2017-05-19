@@ -9,10 +9,10 @@ use Util qw/
     model
     trim
     error
-    tt_today
     stash
     check_makeup_new
     check_makeup_vacate
+    get_now
 /;
 use Date::Simple qw/
     date
@@ -33,20 +33,6 @@ sub index : Private {
     $c->forward('list');
 }
 
-#
-# who is doing this?  and what's the current date/time?
-#
-sub _get_now {
-    my ($c) = @_;
-
-    return
-        user_id  => $c->user->obj->id,
-        the_date => tt_today($c)->as_d8(),
-        time     => get_time()->t24()
-        ;
-    # we return an array of 6 values perfect
-    # for passing to a DBI insert/update.
-}
 #
 # show future blocks
 #
@@ -283,7 +269,7 @@ sub update_do : Local {
         $block->update({
             %P,
             allocated => 'yes',
-            _get_now($c),
+            get_now($c),
         });
         $c->response->redirect($c->uri_for("/block/list"));
     }
@@ -356,7 +342,7 @@ sub create_do : Local {
             @opt,           # overrides above 3
 
             allocated => 'yes',
-            _get_now($c),
+            get_now($c),
         });
         if (@opt) {
             $opt[0] =~ s{_id}{};
@@ -464,7 +450,8 @@ sub search : Local {
                 order_by => 'sdate',
                 join     => [qw/ house /],
                 prefetch => [qw/ house /],   
-                rows     => 10,
+                rows     => 10,     # limit it on purpose
+                                    # otherwise too many ...
             }
         ) ],
         template => "block/list.tt2",

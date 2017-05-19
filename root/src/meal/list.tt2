@@ -1,0 +1,35 @@
+<h2>Meals</h2>
+<table cellpadding=3>
+<form name=form action=/meal/search>
+<tr>
+<td width=100 valign=center><a href=/meal/create>Add</a></td>
+<td valign=center>
+Start&nbsp;<input type=text name=start size=10>&nbsp;<input type=submit value="Go">
+</td></tr></table>
+</form>
+<p class=p2>
+<ul>
+<table cellpadding=5 border=0>
+<tr>
+<th align=left>Start</th>
+<th align=left>End</th>
+<th align=right>Breakfast</th>
+<th align=right>Lunch</th>
+<th align=right>Dinner</th>
+<th align=left>Comment</th>
+</tr>
+[% FOREACH m IN meals %]
+    <tr>
+    <td align=left><a href=/meal/view/$m.id>$m.sdate_obj</a></td>
+    <td align=left>$m.edate_obj</td>
+    <td align=right>$m.breakfast</td>
+    <td align=right>$m.lunch</td>
+    <td align=right>$m.dinner</td>
+    <td align=left>$m.comment</td>
+    </tr>
+[% END %]
+</table>
+</ul>
+<script type="text/javascript">
+document.form.start.focus();
+</script>

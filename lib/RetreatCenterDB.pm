@@ -86,6 +86,8 @@ my @classes = qw/
 
     Level
     School
+
+    Meal
 /;
 
 __PACKAGE__->load_classes({
