@@ -13,15 +13,14 @@ gen_files/
 
 grab_running
 root/static/images/
-root/static/js
-root/static/grid
-root/static/online
-root/static/omp
-root/static/grab_new
-root/static/req_mmc
-root/static/req_mmi
+root/static/js/
+root/static/grid/
+root/static/online/
+root/static/omp/
+root/static/req_mmc/
+root/static/req_mmi/
 root/static/maybewords.txt
-root/static/mlist_done
+root/static/mlist_done/
 root/static/participant.csv
 root/static/report*.txt
 mail.log
