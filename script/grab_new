@@ -71,7 +71,6 @@ use Util qw/
     x_file_to_href
     email_letter
     slurp
-    tt_today
 /;
 
 use RetreatCenterDB;    # ??? why can't we move this to Util?
@@ -629,7 +628,7 @@ sub process_req_payments {
                 type     => 'O',       # online
                 amount   => $amount,
                 what     => $note,
-                the_date => tt_today($c)->as_d8(),
+                the_date => $today_d8,
                 time     => get_time()->t24(),
                 user_id  => 0,     # no user - this is a script
             });
