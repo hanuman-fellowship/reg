@@ -30,6 +30,8 @@ Table: program
 <dd>Are people allowed to commute for this program?</dd>
 <dt>confnote</dt>
 <dd>A note that is included in ALL confirmation notes.</dd>
+<dt>created_by</dt>
+<dd>the user who created the program - foreign key to <a href=User.html>user</a></dd>
 <dt>deposit</dt>
 <dd>the amount required to deposit when registering.</dd>
 <dt>dncc_why</dt>
@@ -82,6 +84,8 @@ Table: program
 <dd>Time the program ends on the last day.</dd>
 <dt>prog_start</dt>
 <dd>Time the program begins on the first day.</dd>
+<dt>program_created</dt>
+<dd>date the program was created</dd>
 <dt>ptemplate</dt>
 <dd>the template file to be used for generating the program web page. Defaults to default.tt2 in root/static/templates/web.</dd>
 <dt>refresh_days</dt>
@@ -94,6 +98,8 @@ Table: program
 <dd>Time that registration begins on the first day.</dd>
 <dt>rental_id</dt>
 <dd>foreign key to <a href=Rental.html>rental</a> - if the program is a 'hybrid'.</dd>
+<dt>req_pay</dt>
+<dd>Do registrations for this program allow requested payments?</dd>
 <dt>retreat</dt>
 <dd>Is this an MMC yoga retreat?</dd>
 <dt>sbath</dt>
@@ -133,6 +139,7 @@ Table: program
 <tr><td>bookings</td><td><a href=Booking.html>booking</a></td><td>has_many</td></tr>
 <tr><td>canpol</td><td><a href=CanPol.html>canpol</a></td><td>belongs_to</td></tr>
 <tr><td>category</td><td><a href=Category.html>category</a></td><td>belongs_to</td></tr>
+<tr><td>created_by</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 <tr><td>documents</td><td><a href=ProgramDoc.html>programdoc</a></td><td>has_many</td></tr>
 <tr><td>exceptions</td><td><a href=Exception.html>exception</a></td><td>has_many</td></tr>
 <tr><td>housecost</td><td><a href=HouseCost.html>housecost</a></td><td>belongs_to</td></tr>

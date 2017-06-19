@@ -464,6 +464,11 @@ $leaders_house
 </td>
 </tr>
 
+<tr>
+<th align=right>Program Created</th>
+<td colspan=2>$program.program_created_obj [% IF program.program_created %]by $program.created_by.username[% END %]</td>
+</tr>
+
 </table>
 </div>
 
@@ -504,6 +509,16 @@ $leaders_house
 <tr>
 <th align=right>GL Number</th>
 <td>$program.glnum &nbsp;&nbsp; 
+</tr>
+
+<tr>
+<th align=right>Requested Payments</th>
+<td>$program.req_pay</td>
+</tr>
+
+<tr>
+<th align=right>Bank Account</th>
+<td>
 [% IF bank == 'mmi' %]
 Payments will go to the <b>MMI</b> bank account.
 [% ELSIF bank == 'mmc' %]
@@ -513,6 +528,7 @@ Payments will go to both the <b>MMC</b> and the <b>MMI</b> bank accounts.
 [% ELSE %]
 By default, Payments will hopefully go to the <b>MMC</b> bank account.
 [% END %]
+</td>
 </tr>
 
 <tr>

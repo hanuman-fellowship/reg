@@ -79,7 +79,7 @@ my @classes = qw/
     Category
     ResidentNote
 
-    RequestedMMIPayment
+    RequestedPayment
 
     Organization
     ProgramDoc

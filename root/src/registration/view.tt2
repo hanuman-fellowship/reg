@@ -260,7 +260,7 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 </table>
 <p class=p2>
 
-<table cellpadding=5>
+<table cellpadding=5 border=0>
 <tr><td valign=top>
 <!-------- Charges --------->
 <span class=hdr>Charges</span>
@@ -327,11 +327,12 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <td align=right>$tot</td>
 <td>Total</td>
 </tr>
-<tr><td></td><td><a href="/registration/pay_balance/$id/view">New MMC Payment</a></td></tr>
+<tr><td align=left colspan=4><a href="/registration/pay_balance/$id/view">New MMC Payment</a></td></tr>
 </table>
+<p class=p2>
 [% END %]
 [% IF bank == 'mmi' || bank == 'both' %]
-<span class=hdr>MMI Payments</span>
+<span class=hdr>MMI Payments</span><span style="margin-left: 1in"><a href="/person/list_mmi_payment/$person.id">List All</a>
 <table cellpadding=5>
 <tr>
 <th align=right>Amount</th>
@@ -360,34 +361,30 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <td align=right>$tot</td>
 <td>Total</td>
 </tr>
-</table>
+<tr>
+<td align=left colspan=4><a href="/person/create_mmi_payment/$id/$person.id/reg">New MMI Payment</a></td>
+</tr>
 
-<table cellpadding=4>
-<tr>
-<td><a href="/person/list_mmi_payment/$person.id">List All</a></td>
-<td>&nbsp;&nbsp;<a href="/person/create_mmi_payment/$id/$person.id/reg">New MMI Payment</a></td>
-</tr>
-<tr>
-<td></td>
-<td>&nbsp;&nbsp;<a href="/person/request_mmi_payment/$id/$person.id">Request Online Payment</a></td>
-</tr>
 </table>
-[% IF req_payments %]
+[% END %]
+
+[% IF program.req_pay %]
     <p class=p2>
-    <span class=hdr>Requested MMI Payments</span>
+    <span class=hdr>Requested Payments</span>
     [% IF send_requests %]
-    <span style="margin-left: 5mm">
+    <span style="margin-left: .5in">
     <a class=not_sent href=/person/send_requests/$reg.id>Send Requests</a>
     </span>
-    [% ELSE %]
+    [% ELSIF req_payments.0 %]
     <span style="margin-left: 5mm">
     <a class=not_sent href=/person/send_requests/$reg.id/1>REsend All Requests</a>
     </span>
     [% END %]
-    <table cellpadding=2>
+    <table cellpadding=5 border=0>
     <tr>
     <th>Sent</th>
     <th align=right>Amount</th>
+    <th align=right>Organization</th>
     <th align=left>For</th>
     <th align=left>Date</th>
     <th align=left>Note</th>
@@ -405,15 +402,16 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
         <tr class=$class>
         <td align=center>[% IF py.code %]<img src=/static/images/checked.gif>[% ELSE %]<span class=red>**</span>[% END %]</td>
         <td align=right>$py.amount_disp</td>
+        <td align=right>$py.org</td>
         <td>$py.for_what_disp</td>
         <td>$py.the_date_obj</td>
         <td>$py.note</td>
         <th>
-<a href=/person/delete_req_mmi/$py.id
+<a href=/person/delete_req/$py.id
         [% IF py.code %]
 onclick="return confirm('Delete requested AND SENT payments totaling \$$py.group_total?')"
         [% ELSE %]
-onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.for_what_disp?');"
+onclick="return confirm('Delete requested payment of \$$py.amount_disp to $py.org for $py.for_what_disp?');"
         [% END %]
 >
 <img src=/static/images/redX.gif height=20 border=0>
@@ -422,9 +420,10 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp for $py.f
         </tr>
         [% prev_code = py.code %]
     [% END %]
+<tr>
+<td colspan=4 align=left><a href="/person/request_payment/$id/$person.id">New Requested Payment</a></td>
+</tr>
     </table>
-[% END %]
-
 </td><tr>
 
 [% END %]

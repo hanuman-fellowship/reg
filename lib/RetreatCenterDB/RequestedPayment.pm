@@ -1,6 +1,6 @@
 use strict;
 use warnings;
-package RetreatCenterDB::RequestedMMIPayment;
+package RetreatCenterDB::RequestedPayment;
 use base qw/DBIx::Class/;
 
 use Date::Simple qw/
@@ -14,9 +14,10 @@ use Util qw/
 /;
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
-__PACKAGE__->table('req_mmi_payment');
+__PACKAGE__->table('req_payment');
 __PACKAGE__->add_columns(qw/
     id
+    org
     person_id
     amount
     for_what
@@ -92,7 +93,7 @@ sub amount_disp {
 
 1;
 __END__
-overview - Payments for MMI programs can be sent to the registrant so
+overview - Payments for programs can be sent to the registrant so
     they can pay online via authorize.net.  When the payment is made
     at authorize.net it is brought in automatically by Reg.
 amount - dollar amount
@@ -100,6 +101,7 @@ code - a generated code sent to the person to identify the payment request
 for_what - Tuition, Meals and Lodging, STRF, Recordings, Other
 id - unique id
 note - the reason for the charge
+org - MMC or MMI - the organization to charge
 person_id - foreign key to person
 reg_id - foreign key to registration
 the_date - the date the request was sent

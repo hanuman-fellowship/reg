@@ -386,6 +386,11 @@ none
 </tr>
 
 <tr>
+<th align=right>Rental Created</th>
+<td colspan=2>$rental.rental_created_obj [% IF rental.rental_created %]by $rental.created_by.username[% END %]</td>
+</tr>
+
+<tr>
 <th align=right>Contract Sent</th>
 <td colspan=2>$rental.contract_sent_obj [% IF rental.contract_sent %]by $rental.sent_by.username[% END %]</td>
 </tr>

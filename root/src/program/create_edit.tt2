@@ -300,8 +300,18 @@ $level_opts
 <tr>
 <th align=right>GL Number</th>
 <td>[% IF edit_gl %]<input type=text name=glnum value="$program.glnum" size=7>[% ELSE %]$program.glnum[% END %]
+</tr>
+
+<tr>
+<th align=right>Requested Payments</th>
+<td><input type=checkbox value=yes name=req_pay $check_req_pay></td>
+</tr>
+
+<tr>
+<th align=right>Bank Account</th>
+<td>
 &nbsp;&nbsp;
-Payments will go to this bank account:
+Payments will go to:
 &nbsp;
 MMC <input type=radio name=bank_account value='mmc' $bank_mmc>
 &nbsp;&nbsp;&nbsp;

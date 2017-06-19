@@ -47,7 +47,9 @@ before the program to arrange for the bodywork.
 6) Get people that recently registered on the temple
 reservation site and import them directly into the People table.
 
-7) Get MMI payment requests that have been paid and morph
+7a) Get MMI payment requests that have been paid and morph
+them into actual payments.
+7b) Get MMC payment requests that have been paid and morph
 them into actual payments.
 
 8) Get MMI standalone course registations
@@ -69,6 +71,7 @@ use Util qw/
     x_file_to_href
     email_letter
     slurp
+    tt_today
 /;
 
 use RetreatCenterDB;    # ??? why can't we move this to Util?
@@ -110,7 +113,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
 
 # directories
 my ($online, $grid, $temple, $mlist_done, $rides,
-    $req_mmi_dir, $omp_dir, $temple_donation, $grab_new);
+    $req_mmi_dir, $req_mmc_dir, $omp_dir, $temple_donation, $grab_new);
 my $something_happened = 0;
 my $time_printed = 0;
 
@@ -199,6 +202,7 @@ sub initialize {
     $mlist_done      = make_dir("$rst/mlist_done/$year_mon_dir");
     $rides           = make_dir("$rst/rides");
     $req_mmi_dir     = make_dir("$rst/req_mmi/$year_mon_dir");
+    $req_mmc_dir     = make_dir("$rst/req_mmc/$year_mon_dir");
     $omp_dir         = make_dir("$rst/omp");
     $temple_donation = make_dir("$rst/temple_donation");
     $grab_new        = make_dir("$rst/grab_new");
@@ -226,7 +230,7 @@ sub finalities {
         #);
     }
 
-    # at what point do the req_mmi_payments expire???
+    # at what point do the req_mmi_payments/req_mmc_payments expire???
     # a cron job on the remote site to clear them after n days?
     # also a cron job to clear the grid files after
     # the rental is over - two week delays?
@@ -575,8 +579,12 @@ sub omp_alert {
     }
 }
 
-sub process_mmi_payments {
+# Both MMI and MMC requested payments.
+# $get_dir tells us which.
+sub process_req_payments {
     my ($get_dir, $f) = @_;
+
+    my $org = $get_dir =~ m{mmi}xms? 'MMI': 'MMC';
     my %hash = %{ do "$get_dir/$f" };
     #
     # this hash contains keys:
@@ -590,8 +598,10 @@ sub process_mmi_payments {
     #    total
     #    first
     #    last
+    #    signed   (unused here)
+    #    quest_email   (unused here)
     #
-    # - create RegPayment records with the above
+    # - create MMIPayment or RegPayment records with the above
     # - clear requested payments with the code
     # - adjust the balance in the registration
     # - log it
@@ -601,23 +611,36 @@ sub process_mmi_payments {
         ++$npy;
         my ($amount, $note, $glnum) = split m{\|}, $py;
         $amount =~ s{,}{}xmsg;
-        model($c, 'MMIPayment')->create({
-            reg_id    => $hash{reg_id},
-            deleted   => '',
-            the_date  => $today_d8,
-            person_id => $hash{person_id},
-            type      => 'O',       # online
-            amount    => $amount,
-            glnum     => $glnum,
-            note      => $note,
-        });
+        if ($org eq 'MMI') {
+            model($c, 'MMIPayment')->create({
+                reg_id    => $hash{reg_id},
+                deleted   => '',
+                the_date  => $today_d8,
+                person_id => $hash{person_id},
+                type      => 'O',       # online
+                amount    => $amount,
+                glnum     => $glnum,
+                note      => $note,
+            });
+        }
+        else {
+            model($c, 'RegPayment')->create({
+                reg_id   => $hash{reg_id},
+                type     => 'O',       # online
+                amount   => $amount,
+                what     => $note,
+                the_date => tt_today($c)->as_d8(),
+                time     => get_time()->t24(),
+                user_id  => 0,     # no user - this is a script
+            });
+        }
     }
     # remove all requests with the code
-    my @req_py = model($c, 'RequestedMMIPayment')->search({
+    my @req_py = model($c, 'RequestedPayment')->search({
         code => $hash{code},
     });
     if ($npy != @req_py) {
-        msg "**** some mismatch with MMI req_pay - "
+        msg "**** some mismatch with $org req_pay - "
            ."reg_id $hash{reg_id} npy $npy != " . scalar(@req_py);
     }
     else {
@@ -632,7 +655,7 @@ sub process_mmi_payments {
         the_date => $today_d8,
         time     => $now_t24,
         user_id  => 0,
-        what     => "Got total payment of \$" . commify($hash{total}) . '.',
+        what     => "Got $org requested payment of \$" . commify($hash{total}) . '.',
     });
 
     # adjust the balance
@@ -640,7 +663,7 @@ sub process_mmi_payments {
         balance => \"balance - $hash{total}",
     });
 # notify someone that the payment was made!???
-    msg "requested MMI payment totaling \$$hash{total} for $hash{first} $hash{last}";
+    msg "requested $org payment totaling \$$hash{total} for $hash{first} $hash{last}";
 }
 
 #
@@ -773,6 +796,11 @@ sub main {
     # Membership Payments
     get_files($ftp, $string{ftp_omp_dir},
               $omp_dir, \&get_omp);
+
+    # MMC Payment Requests
+    get_files($ftp, $string{req_mmc_dir_paid},
+              $req_mmc_dir, \&process_req_payments);
+
     $ftp->quit();   # all done with MMC
 
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
@@ -784,7 +812,7 @@ sub main {
 
     # MMI Payment Requests
     get_files($ftp, $string{req_mmi_dir_paid},
-              $req_mmi_dir, \&process_mmi_payments);
+              $req_mmi_dir, \&process_req_payments);
 
     # MMI Transactions
     get_files($ftp, $string{ftp_mmi_transactions},

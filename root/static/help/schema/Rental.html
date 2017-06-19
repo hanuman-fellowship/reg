@@ -30,6 +30,8 @@ Table: rental
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>counts</dt>
 <dd>the number of people attending the rental each day from start to end - space separated</dd>
+<dt>created_by</dt>
+<dd>foreign key to <a href=User.html>user</a> who created the rental</dd>
 <dt>cs_person_id</dt>
 <dd>foreign key to <a href=Person.html>person</a></dd>
 <dt>deposit</dt>
@@ -84,6 +86,8 @@ Table: rental
 <dd>foreign key to <a href=User.html>user</a></dd>
 <dt>refresh_days</dt>
 <dd>what days should the bedding be refreshed? This is an encoded field similar to lunches. This is used for longer term rentals.</dd>
+<dt>rental_created</dt>
+<dd>date the rental was created</dd>
 <dt>rental_follows</dt>
 <dd>does another rental follow this one? used in generating the make up list.</dd>
 <dt>sdate</dt>
@@ -117,6 +121,7 @@ Table: rental
 <tr><td>charges</td><td><a href=RentalCharge.html>rentalcharge</a></td><td>has_many</td></tr>
 <tr><td>contract_signer</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
 <tr><td>coordinator</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
+<tr><td>created_by</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
 <tr><td>housecost</td><td><a href=HouseCost.html>housecost</a></td><td>belongs_to</td></tr>
 <tr><td>payments</td><td><a href=RentalPayment.html>rentalpayment</a></td><td>has_many</td></tr>
 <tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>

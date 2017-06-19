@@ -85,7 +85,9 @@ __PACKAGE__->has_many(rides => 'RetreatCenterDB::Ride',
 __PACKAGE__->has_many(mmi_payments => 'RetreatCenterDB::MMIPayment',
                                       'person_id',
                       { order_by => 'the_date desc'});
-__PACKAGE__->has_many(req_mmi_payments => 'RetreatCenterDB::RequestedMMIPayment',
+
+# Requested Payments MMC/MMI
+__PACKAGE__->has_many(req_payments => 'RetreatCenterDB::RequestedPayment',
                                       'person_id',
                       { order_by => 'the_date desc'});
 

@@ -868,6 +868,14 @@ sub _get_data {
         $dates{date_end} = '';
     }
     $P{kids} = trim($P{kids});
+# ??? only digits and spaces or commas.   no kids over 12.
+#
+# have requested payments be optional (checkbox in Finances)
+# requested payments have new attribute (MMC or MMI).
+# when sending you send one link for all MMI requests
+# and another for MMC requests.
+# grab_new will understand which is which.
+#
     return if @mess;
 
     if ($PR) {
@@ -2098,10 +2106,10 @@ sub _view {
     my $person = $reg->person();
     my $name = $person->last() . ", " . $person->first();
     #
-    # are there any unsent MMI requests?
+    # are there any unsent payment requests?
     #
     my $send_requests = 0;
-    my @req_payments = $reg->req_mmi_payments();
+    my @req_payments = $reg->req_payments();
     my %group_totals;
     REQS:
     for my $req (@req_payments) {

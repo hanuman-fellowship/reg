@@ -83,6 +83,8 @@ our @EXPORT_OK = qw/
     dump_inc
     months_calc
     new_event_alert
+    JON
+    strip_nl
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -715,7 +717,7 @@ sub email_letter {
     #    return;     # don't even try
     #}
 
-    if (! $mail_sender) {
+    if (! ref $mail_sender) {
         Global->init($c);
         my @auth = ();
         if ($string{smtp_auth}) {
@@ -730,11 +732,11 @@ sub email_letter {
             port => $string{smtp_port},
             @auth,
         });
-        if (! $mail_sender) {
-            print {$mlog} "could not create mail_sender\n";
-            close $mlog;
-            return;
-        }
+    }
+    if (! ref $mail_sender) {
+        print {$mlog} "could not create mail_sender\n";
+        close $mlog;
+        return;
     }
     my @fake_to;
     if ($args{fake_to}) {
@@ -2442,6 +2444,20 @@ Its name is:
 </ul>
 EOH
     );
+}
+
+# append to the file /tmp/jon with timestamp
+# named 'JON' to make it easy to find these calls and remove them
+sub JON {
+    open my $out, '>>', '/tmp/jon';
+    print {$out} scalar(localtime(time)), " @_\n";
+    close $out;
+}
+
+sub strip_nl {
+    my ($s) = @_;
+    $s =~ s{\n}{}gxms;
+    $s;
 }
 
 1;

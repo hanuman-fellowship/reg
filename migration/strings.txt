@@ -270,3 +270,5 @@ program_director David Prisk
 mmc_event_alert jon@suecenter.org
 mmi_event_alert jonb@suecenter.org
 pr_max_nights 14
+req_mmc_dir /for_reg/req_mmc_dir
+req_mmc_dir_paid /for_reg/req_mmc_dir/paid

@@ -1,0 +1,58 @@
+[% prog = reg.program %]
+<h2>Requesting an <span class=red>Online</span> Payment<br>
+for $person.first $person.last in $reg.program.name</h2>
+<form action="/person/request_payment_do/$reg.id/$person.id"
+      name=form
+>
+<table cellpadding=5 border=0>
+
+<tr>
+<th align=right>Organization</th>
+[% IF prog.bank_account == 'mmc' %]
+<td>MMC</td>
+<input type=hidden name=org value='MMC'>
+[% ELSIF prog.bank_account == 'mmi' %]
+<td>MMI</td>
+<input type=hidden name=org value='MMI'>
+[% ELSE %]
+<td>
+<input type=radio name=org value='MMC'>MMC
+&nbsp;&nbsp;
+<input type=radio name=org value='MMI'>MMI
+</td>
+[% END %]
+</tr>
+
+<tr>
+<th align=right>Amount</th>
+<td><input type=text name=amount size=6>&nbsp;&nbsp;Balance is \$$reg.balance</td>
+[% IF message %]
+<td valign=top><span class="red f15b">$message</span></td>
+[% END %]
+</tr>
+
+<tr>
+<th align=right>For</th>
+<td colspan=2>
+<select name=for_what>
+$for_what_opts
+</select>
+</td>
+<td><div style="margin-left: 10mm"><span class=red>Note!</span> For Observations, Donations and Consultations<br>add an Extra Account payment instead.  Do not use Other here.</div></td>
+</tr>
+
+<tr>
+<th align=right>Note</th>
+<td colspan=3><input type=text name=note size=40></td>
+</tr>
+
+<tr>
+<td></td>
+<td><input type=submit id=sub value="Submit">
+</tr>
+
+</table>
+</form>
+<script type="text/javascript">
+document.form.amount.focus();
+</script>

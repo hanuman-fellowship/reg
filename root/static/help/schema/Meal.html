@@ -1,0 +1,38 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>Meal
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
+</h2>
+Meals reserve a meal for a given number for breakfast, lunch or dinner in a date range. The meal list understands this.
+<p>
+Table: meal
+<dl>
+<dt>breakfast</dt>
+<dd>how many for breakfast?</dd>
+<dt>comment</dt>
+<dd>a long reason</dd>
+<dt>dinner</dt>
+<dd>how many for dinner?</dd>
+<dt>edate</dt>
+<dd>end date</dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>lunch</dt>
+<dd>how many for lunch?</dd>
+<dt>sdate</dt>
+<dd>start date</dd>
+<dt>the_date</dt>
+<dd>when was this block created?</dd>
+<dt>time</dt>
+<dd>what time was this block created?</dd>
+<dt>user_id</dt>
+<dd>foreign key to <a href=User.html>user</a></dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>user</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>

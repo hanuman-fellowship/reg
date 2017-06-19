@@ -86,7 +86,7 @@ __PACKAGE__->has_many(charges   => 'RetreatCenterDB::RegCharge',   'reg_id');
 __PACKAGE__->has_many(payments  => 'RetreatCenterDB::RegPayment',  'reg_id');
 __PACKAGE__->has_many(mmi_payments  => 'RetreatCenterDB::MMIPayment',
                       'reg_id');
-__PACKAGE__->has_many(req_mmi_payments => 'RetreatCenterDB::RequestedMMIPayment', 'reg_id',
+__PACKAGE__->has_many(req_payments => 'RetreatCenterDB::RequestedPayment', 'reg_id',
                       { order_by => 'id desc' });
 __PACKAGE__->has_many(confnotes => 'RetreatCenterDB::ConfHistory', 'reg_id',
                       { order_by => 'the_date desc, time desc' });

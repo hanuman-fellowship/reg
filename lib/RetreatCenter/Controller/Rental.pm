@@ -237,12 +237,15 @@ sub create_do : Local {
 
     $P{glnum} = compute_glnum($c, $P{sdate});
 
+    my $user_id = $c->user->obj->id;
     if ($P{contract_sent}) {
-        $P{sent_by} = $c->user->obj->id;
+        $P{sent_by} = $user_id;
     }
     if ($P{contract_received}) {
-        $P{received_by} = $c->user->obj->id;
+        $P{received_by} = $user_id;
     }
+    $P{rental_created} = tt_today($c)->as_d8();
+    $P{created_by} = $user_id;
     # create the summary from the template
     #
     my @prog = model($c, 'Program')->search({
@@ -1549,14 +1552,17 @@ sub contract : Local {
     # don't update this when viewing the contract after it
     # was sent.
     #
-    if (! $rental->contract_sent()) {
-        $rental->update({
-            contract_sent => tt_today($c)->as_d8(),
-            tentative     => '',
-            sent_by       => $c->user->obj->id,
-            status        => "sent",
-        });
-    }
+    # This is no longer true.   The user must set the
+    # Contract Sent date themselves manually.
+    #
+    #if (! $rental->contract_sent()) {
+    #    $rental->update({
+    #        contract_sent => tt_today($c)->as_d8(),
+    #        tentative     => '',
+    #        sent_by       => $c->user->obj->id,
+    #        status        => "sent",
+    #    });
+    #}
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -1577,6 +1583,8 @@ sub contract : Local {
                  ;
     }
     my $min_due = int(.75* $agreed);
+    my $contract_sent = $rental->contract_sent? $rental->contract_sent_obj
+                        :                       tt_today($c);
     my %stash = (
         today   => tt_today($c),
         email   => $email,
@@ -1591,6 +1599,8 @@ sub contract : Local {
         program_director => $string{program_director},
         rental_late_in => $string{rental_late_in},
         rental_late_out => $string{rental_late_out},
+        contract_sent => $contract_sent,
+        contract_expire => $contract_sent + 17,
     );
     $tt->process(
         "rental_contract.tt2",# template
@@ -1931,6 +1941,8 @@ sub duplicate_do : Local {
         counts         => (join ' ', (0) x ($ndays + 1)),
         grid_max       => 0,
         housing_charge => 0,
+        rental_created => tt_today($c)->as_d8(),
+        created_by     => $c->user->obj->id,
     });
     $new_r->set_grid_stale();
     my $id = $new_r->id();

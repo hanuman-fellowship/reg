@@ -50,6 +50,7 @@ __PACKAGE__->add_columns(qw/
     extradays
     full_tuition
     deposit
+    req_pay
     collect_total
     linked
     unlinked_dir
@@ -87,6 +88,8 @@ __PACKAGE__->add_columns(qw/
     bank_account
     waiver_needed
     housing_not_needed
+    program_created
+    created_by
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -147,6 +150,8 @@ __PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
                           order_by => 'house.name',
                       },
                      );
+__PACKAGE__->belongs_to(created_by => 'RetreatCenterDB::User',
+                        'created_by');
 
 #
 # we really can't call $self->{field}
@@ -285,6 +290,10 @@ sub end_hour_obj {
 sub reg_end_obj {
     my ($self) = @_;
     return get_time($self->reg_end());
+}
+sub program_created_obj {
+    my ($self) = @_;
+    date($self->program_created) || "";
 }
 sub link {
     my ($self) = @_;
@@ -1092,6 +1101,7 @@ collect_total - Should we collect the total amount due when registering online?
 color - RGB values for the color of the program in the DailyPic.
 commuting - Are people allowed to commute for this program?
 confnote - A note that is included in ALL confirmation notes.
+created_by - the user who created the program - foreign key to user
 deposit - the amount required to deposit when registering.
 dncc_why - an obsolete field
 do_not_compute_costs - Should we not compute the costs of this program?
@@ -1130,6 +1140,7 @@ pr_alert - This program has an effect on PRs.  This column contains
     overlap with this program's dates.
 prog_end - Time the program ends on the last day.
 prog_start - Time the program begins on the first day.
+program_created - date the program was created
 ptemplate - the template file to be used for generating the program web page.
     Defaults to default.tt2 in root/static/templates/web.
 refresh_days - a binary encoded field to indicate which days that
@@ -1141,6 +1152,7 @@ reg_count - The number of current registrants.
 reg_end - Time that registration ends on the first day.
 reg_start - Time that registration begins on the first day.
 rental_id - foreign key to rental - if the program is a 'hybrid'.
+req_pay - Do registrations for this program allow requested payments?
 retreat - Is this an MMC yoga retreat?
 sbath - Are singles with bath allowed?
 school_id - foreign key to school

@@ -26,7 +26,7 @@ table {
 </style>
 </head>
 <body>
-${rental.contract_sent_obj.format("%B %e, %Y")}
+${contract_sent.format("%B %e, %Y")}
 <p>
 $signer.first $signer.last<br>
 $signer.addr1<br>
@@ -41,15 +41,19 @@ $signer.country<br>
 Dear $signer.first,
 <p>
 Here is the contract reflecting our agreement for your workshop
-on $rental.dates, ${rental.sdate_obj.format("%Y")}.  Please sign and return the original with your
-deposit, keeping the copy for your files. Note that the contract expires
-if not returned with the deposit within two weeks. Also, here is our
+on $rental.dates, ${rental.sdate_obj.format("%Y")}.
+Please sign and return the original with your deposit,
+keeping the copy for your files. Note that the contract will expire
+if it is not returned with the deposit by
+${contract_expire.format("%B %e, %Y")}.
+Also, here is our
 standard confirmation sheet including a map, directions,
 and other information you may find useful.
 <p>
-Please note the contract provisions regarding housing procedure,
-especially the \$5.00 to \$10.00 charge for any changes or additions
-within the last week prior to the event. (You may want to set up a
+Please note the contract provisions regarding the housing procedure,
+especially the \$${rental_late_out}.00 to \$${rental_late_in}.00
+charge for any changes or additions within the last week prior
+to the event. (You may want to set up a
 way to pass this cost on to participants who sign up after the
 one-week-prior date). We will be grateful if you can let us know,
 as your registration comes in, what the housing needs are shaping

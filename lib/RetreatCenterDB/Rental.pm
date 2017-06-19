@@ -88,6 +88,9 @@ __PACKAGE__->add_columns(qw/
     counts
     grid_max
     housing_charge
+
+    rental_created
+    created_by
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -118,6 +121,8 @@ __PACKAGE__->belongs_to(received_by => 'RetreatCenterDB::User',
                         'received_by');
 __PACKAGE__->belongs_to(arrangement_by => 'RetreatCenterDB::User',
                         'arrangement_by');
+__PACKAGE__->belongs_to(created_by => 'RetreatCenterDB::User',
+                        'created_by');
 
 # payments
 __PACKAGE__->has_many(payments => 'RetreatCenterDB::RentalPayment',
@@ -193,6 +198,10 @@ sub contract_received_obj {
 sub arrangement_sent_obj {
     my ($self) = @_;
     return date($self->arrangement_sent) || "";
+}
+sub rental_created_obj {
+    my ($self) = @_;
+    return date($self->rental_created) || "";
 }
 sub link {
     my ($self) = @_;
@@ -645,6 +654,7 @@ contract_sent - date the contract was sent out
 coordinator_id - foreign key to person
 counts - the number of people attending the rental
     each day from start to end - space separated
+created_by - foreign key to user who created the rental
 cs_person_id - foreign key to person
 deposit - how much deposit is required?
 edate - date the rental ends
@@ -680,6 +690,7 @@ received_by - foreign key to user
 refresh_days - what days should the bedding be refreshed?
     This is an encoded field similar to lunches.
     This is used for longer term rentals.
+rental_created - date the rental was created
 rental_follows - does another rental follow this one?
     used in generating the make up list.
 sdate - date the rental starts

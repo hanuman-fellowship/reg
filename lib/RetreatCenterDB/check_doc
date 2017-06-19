@@ -17,7 +17,7 @@ my %repl_file = qw/
     mmipayment   mmi_payment
     person       people
     report       reports
-    requested_mmipayment req_mmi_payment
+    requested_payment req_payment
 /;
 my %repl_pm = qw/
     Canpol      CanPol

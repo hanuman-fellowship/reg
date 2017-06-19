@@ -49,7 +49,9 @@ create table rental (
     fixed_cost_houses text default '',
     fch_encoded       text default '',
     grid_stale        text default '',
-    pr_alert          text default ''
+    pr_alert          text default '',
+    rental_created    text default '',
+    created_by        integer default 0 -- user_id
 );
 drop table if exists rental_payment;
 create table rental_payment (

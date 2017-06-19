@@ -112,6 +112,7 @@ sub create : Local {
         check_retreat       => '',
         check_sbath         => 'checked',
         check_single        => 'checked',
+        check_req_pay       => '',
         check_collect_total => '',
         check_economy       => '',
         check_commuting     => 'checked',
@@ -198,6 +199,7 @@ sub _get_data {
     }
     # since unchecked boxes are not sent...
     for my $f (qw/
+        req_pay
         collect_total
         allow_dup_regs
         kayakalpa
@@ -462,6 +464,8 @@ sub create_do : Local {
         %P,         # this includes rental_id for a possible parallel rental
                     # and also a summary_id for the parallel rental
                     # OR a freshly created summary id.
+        program_created => tt_today($c)->as_d8(),
+        created_by => $c->user->obj->id,
     });
     my $id = $p->id();
 
@@ -854,7 +858,7 @@ sub update : Local {
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
     for my $w (qw/
-        sbath single collect_total allow_dup_regs kayakalpa
+        sbath single req_pay collect_total allow_dup_regs kayakalpa
         retreat
         economy commuting webready linked do_not_compute_costs
         not_on_calendar tub_swim waiver_needed housing_not_needed
@@ -1711,6 +1715,7 @@ EOD
         footnotes
         deposit
         collect_total
+        req_pay
         do_not_compute_costs
         dncc_why
         percent_tuition
@@ -1877,7 +1882,7 @@ sub duplicate : Local {
         webready => 0,
     });
     for my $w (qw/
-        sbath single collect_total allow_dup_regs kayakalpa
+        sbath single req_pay collect_total allow_dup_regs kayakalpa
         retreat
         commuting economy webready linked
         not_on_calendar tub_swim
@@ -1996,6 +2001,8 @@ sub duplicate_do : Local {
         %P,     # this comes first so summary_id can override
         summary_id => $sum->id,
         image      => ($upload || $old_prog->image())? 'yes': '',
+        program_created => tt_today($c)->as_d8(),
+        created_by => $c->user->obj->id,
     });
 
     my $new_id = $new_p->id();

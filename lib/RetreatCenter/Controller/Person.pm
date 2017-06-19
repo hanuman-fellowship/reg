@@ -25,6 +25,7 @@ use Util qw/
     get_now
     rand6
     charges_and_payments_options
+    strip_nl
 /;
 use Date::Simple qw/
     date
@@ -40,6 +41,7 @@ use Global qw/
 use USState;
 use LWP::Simple;
 use Template;
+use Data::Dumper;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -1118,7 +1120,7 @@ sub del_mmi_payment_do : Local {
     }
 }
 
-sub request_mmi_payment : Local {
+sub request_payment : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
 
     my $reg = model($c, 'Registration')->find($reg_id);
@@ -1143,11 +1145,11 @@ sub request_mmi_payment : Local {
         person    => $person,
         reg       => $reg,
         for_what_opts => charges_and_payments_options(),
-        template  => "person/request_mmi_payment.tt2",
+        template  => "person/request_payment.tt2",
     );
 }
 
-sub request_mmi_payment_do : Local {
+sub request_payment_do : Local {
     my ($self, $c, $reg_id, $person_id) = @_;
 
     my $amount = trim($c->request->params->{amount}) || '';
@@ -1158,12 +1160,21 @@ sub request_mmi_payment_do : Local {
         );
         return;
     }
+    my $org = $c->request->params->{org};
+    if (! $org) {
+        error($c,
+            "Is this payment for MMC or MMI?",
+            "registration/error.tt2",
+        );
+        return;
+    }
     my $the_date = tt_today($c)->as_d8();
     my $note = $c->request->params->{note} || '';
     my $for_what = $c->request->params->{for_what};
 
-    my $req_payment = model($c, 'RequestedMMIPayment')->create({
+    my $req_payment = model($c, 'RequestedPayment')->create({
         person_id => $person_id,
+        org       => $org,
         amount    => $amount,
         for_what  => $for_what,
         the_date  => $the_date,
@@ -1182,7 +1193,7 @@ sub request_mmi_payment_do : Local {
         type      => $req_payment->for_what(),
             # The above setting of 'type' is correct.
             # The integer values for the 
-            # 'for_what' field in the 'req_mmi_payment' table
+            # 'for_what' field in the 'req_payment' table
             # match the 'type' field in the 'reg_charge' table.
     });
     my @who_now = get_now($c);
@@ -1195,16 +1206,47 @@ sub request_mmi_payment_do : Local {
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
         what     => "Payment request of \$" . commify($amount)
-                  . " for "
+                  . " to $org for "
                   . $req_payment->for_what_disp(),
         @who_now,
     });
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
 
+# TODO: test the sending of the request
+# ensure it arrives at BOTH mmi and mmc sites.
+# Dumper? purge the old way.  signed and quest_email keys as well.
+# req_pay (instead of req_mmi)
+#     if no signed key make it Leslie, ditto for _from
+# when good make link from req_mmi to req_pay and remove req_mmi
+#     how will git manage this?
+# copy req_pay to mmc site - with diff fingerprint
+#    make this fingerprint dependent on /for_reg/req_mm[ic]_payment dir? -f?
+# test payment at both sites at authorize.net, void the payments
+# relay creates the proper transaction file?
+#     i.e. moves the code file to the proper paid directory
+# test grab_new - be careful to avoid running it when
+#     kali is running as well...
+#     perhaps temporarily handicap it to ONLY process req payments?
+# test suite for Manjarika, Rachel/Leslie?
+#     delete requests - does not delete the charge!
+#     resending - removes the file at the remote site?
+#     how about a date for the request to expire?
+#     Put this in the email?  have cron job to purge expired ones?
+#     remind them of the req_payment strings:
+#          payment_request_signed, payment_request_from (fff lll <xxx@yyy.com>)
+#
 sub send_requests : Local {
     my ($self, $c, $reg_id, $resend_all) = @_;
 
+    for my $org (qw/ MMC MMI /) {
+        _send_requests($self, $c, $reg_id, $resend_all, $org);
+    }
+    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
+}
+
+sub _send_requests {
+    my ($self, $c, $reg_id, $resend_all, $org) = @_;
     my $reg = model($c, 'Registration')->find($reg_id);
     my $public = $reg->program->level->public();
     my $person = $reg->person();
@@ -1227,8 +1269,13 @@ sub send_requests : Local {
 EOH
     my $prog_glnum = $reg->program->glnum();
     my @old_codes;
+    my $npayments = 0;
     PAYMENT:
-    for my $py ($reg->req_mmi_payments()) {
+    for my $py ($reg->req_payments()) {
+        if ($py->org() ne $org) {
+            # not for the current organization
+            next PAYMENT;
+        }
         if ($resend_all) {
             push @old_codes, $py->code();
         }
@@ -1238,14 +1285,22 @@ EOH
             # already sent but not yet gotten
             next PAYMENT;
         }
+        ++$npayments;
         my $amt = commify($py->amount());
         my $note = $py->note();
         my $for  = $py->for_what_disp();
         $total += $py->amount();
         $py_desc .= join('|', $amt,
                               $note,
-                              calc_mmi_glnum($c, $person_id, $public,
-                                             $py->for_what(), $prog_glnum))
+                              $org eq 'MMI'
+                                 ?calc_mmi_glnum($c,
+                                                 $person_id,
+                                                 $public,
+                                                 $py->for_what(),
+                                                 $prog_glnum,
+                                                )
+                                 : $prog_glnum,
+                        )
                  .  '~'
                  ;
         $tbl_py_desc .= <<"EOH";
@@ -1256,6 +1311,9 @@ EOH
 </tr>
 EOH
     }
+    if (! $npayments || ! $total) {
+        return;     # no payments for the current $org
+    }
     my $comma_total = commify($total);
     $tbl_py_desc .= <<"EOH";
 <tr>
@@ -1264,50 +1322,45 @@ EOH
 </table>
 EOH
     #
-    # create the file and ftp it to the MMI site
+    # create the file with Data::Dumper
+    # and ftp it to the appropriate MMI/MMC site.
     #
     open my $out, '>', "/tmp/$code" or die "cannot create /tmp/$code: $!\n";
-    # could use Data::Dumper or YAML or XML::Simple instead!
-    print {$out} "{\n";
-    sub put {
-        my ($out, $lab, $val) = @_;
-
-        $val =~ s{'}{\\'}gmsx;
-        print {$out} qq{$lab => '$val',\n};
-    }
-    sub _strip_nl {
-        my ($s) = @_;
-        $s =~ s{\n}{}gxms;
-        $s;
-    }
-    put($out, 'first',     $person->first());
-    put($out, 'last',      $person->last());
-    put($out, 'addr',      trim($person->addr1() . " " . $person->addr2));
-    put($out, 'city',      $person->city());
-    put($out, 'st_prov',   $person->st_prov());
-    put($out, 'zip_post',  $person->zip_post());
-    put($out, 'country',   $person->country() || 'USA');
-    put($out, 'email',     $email);
-    put($out, 'phone',     $phone);
-    put($out, 'total',     $total);
-    put($out, 'py_desc',   $py_desc);
-    put($out, 'tbl_py_desc', _strip_nl($tbl_py_desc));
-    put($out, 'program',   $program_name);
-    put($out, 'code',      $code);
-    put($out, 'reg_id',    $reg_id);
-    put($out, 'person_id', $person_id);
-    print {$out} "};\n";
+    my ($quest_email) = $string{payment_request_from} =~ m{<(.*)>};
+    print {$out} Dumper({
+        py_desc  => $py_desc,
+        first    => $person->first(),
+        last     => $person->last(),
+        addr     => $person->addr1() . " " . $person->addr2,
+        city     => $person->city(),
+        st_prov  => $person->st_prov(),
+        zip_post => $person->zip_post(),
+        country  => $person->country() || 'USA',
+        email    => $email,
+        phone    => $phone,
+        total    => $total,
+        py_desc  => $py_desc,
+        tbl_py_desc => strip_nl($tbl_py_desc),
+        program  => $program_name,
+        code     => $code,
+        reg_id   => $reg_id,
+        person_id => $person_id,
+        signed   => $string{payment_request_signed},
+        quest_email => $quest_email,
+    });
     close $out;
 
-    # and send them - we assume they will be sent properly
+    # and send it - we assume it will be sent properly
     eval {
-        my $ftp = Net::FTP->new($string{ftp_mmi_site},
-                                Passive => $string{ftp_mmi_passive})
-            or die "cannot connect to $string{ftp_mmi_site}";
-        $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
+        my $o = $org eq 'MMI'? 'mmi_': '';
+            # ftp_site was first, then ftp_mmi_site
+        my $ftp = Net::FTP->new($string{"ftp_${o}site"},
+                                Passive => $string{"ftp_${o}passive"})
+            or die qq!cannot connect to $string{"ftp_${o}site"}!;
+        $ftp->login($string{"ftp_${o}login"}, $string{"ftp_${o}password"})
             or die "cannot login ", $ftp->message;
-        $ftp->cwd($string{req_mmi_dir})
-            or die "cannot chdir to $string{req_mmi_dir}";
+        my $dir = $string{$org eq 'MMI'? 'req_mmi_dir': 'req_mmc_dir'};
+        $ftp->cwd($dir) or die "cannot chdir to $dir";
         $ftp->ascii();
         $ftp->put("/tmp/$code", $code) or die "could not send /tmp/$code\n";
         if ($resend_all) {
@@ -1318,8 +1371,9 @@ EOH
         }
         $ftp->quit();
     };
-    if ($@ && ! -e '/tmp/testing_req_mmi') {
+    if ($@ && ! -e '/tmp/testing_req_payments') {
         # what to do???  it did not succeed.
+        # how to notify the user?
         $c->log->info("failed to send payment: $@\n");
         $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
         return;
@@ -1327,7 +1381,8 @@ EOH
 
     # mark the payment requests as sent - with the new code
     PAYMENT:
-    for my $py ($reg->req_mmi_payments()) {
+    for my $py ($reg->req_payments()) {
+        next PAYMENT if $py->org() ne $org;
         next PAYMENT if !$resend_all && $py->code();
             # if not resending
             # $py->code means
@@ -1354,19 +1409,20 @@ EOH
         tbl_py_desc => $tbl_py_desc,
         program     => $program_name,
         resending   => $resend_all,
-        signed      => $string{mmi_payment_request_signed},
+        signed      => $string{payment_request_signed},
+        org         => $org eq 'MMC'? 'mountmadonna': 'mountmadonnainstitute',
     };
     my $html;
     $tt->process(
-        "templates/letter/req_mmi_payment.tt2",   # template
+        "templates/letter/req_payment.tt2",   # template
         $stash,               # variables
         \$html,               # output
     ) or die "error in processing template: "
              . $tt->error();
     email_letter($c,
         to      => $email,
-        from    => $string{mmi_payment_request_from},
-        subject => "Requested Payment for MMI Program '$program_name'",
+        from    => $string{payment_request_from},
+        subject => "Requested Payment for Program '$program_name'",
         html    => $html,
     );
     # Reg History record
@@ -1374,15 +1430,14 @@ EOH
     model($c, 'RegHistory')->create({
         reg_id   => $reg_id,
         what     => ($resend_all? "REsent": "Sent")
-                  . " requests totaling \$$comma_total",
+                  . " $org requests totaling \$$comma_total",
         @who_now,
     });
-    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
 
-sub delete_req_mmi : Local {
+sub delete_req : Local {
     my ($self, $c, $req_pay_id) = @_;
-    my $req_pay = model($c, 'RequestedMMIPayment')->find($req_pay_id);
+    my $req_pay = model($c, 'RequestedPayment')->find($req_pay_id);
     my $program_title = $req_pay->registration->program->title();
     my $person = $req_pay->registration->person;
     my $email = $person->email();
@@ -1390,7 +1445,8 @@ sub delete_req_mmi : Local {
     my $tot = 0;
     my $word = '';
     if (my $code = $req_pay->code()) {
-        for my $req (model($c, 'RequestedMMIPayment')->search({
+        # it was already sent
+        for my $req (model($c, 'RequestedPayment')->search({
                          code => $code,
                      }))
         {
@@ -1400,6 +1456,8 @@ sub delete_req_mmi : Local {
         $tot = commify($tot);
         #
         # delete the code file on the mmi web site.
+        # or maybe the MMC site???
+        # req_mmi_dir vs req_mmc_dir
         my $ftp = Net::FTP->new($string{ftp_mmi_site},
                                 Passive => $string{ftp_mmi_passive})
             or die "cannot connect to $string{ftp_mmi_site}";    # not die???
@@ -1421,19 +1479,19 @@ sub delete_req_mmi : Local {
             name        => $person->name(),
             total       => $tot,
             program     => $program_title,
-            signed      => $string{mmi_payment_request_signed},
+            signed      => $string{payment_request_signed},
         };
         my $html;
         $tt->process(
-            "templates/letter/ignore_req_mmi_payment.tt2",   # template
+            "templates/letter/ignore_req_payment.tt2",   # template
             $stash,               # variables
             \$html,               # output
         ) or die "error in processing template: "
                  . $tt->error();
         email_letter($c,
             to      => $email,
-            from    => $string{mmi_payment_request_from},
-            subject => "Requested Payment for MMI Program '$program_title'",
+            from    => $string{payment_request_from},
+            subject => "Requested Payment for Program '$program_title'",
             html    => $html,
         );
         $word = 'totaling';

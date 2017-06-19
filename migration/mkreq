@@ -1,6 +1,7 @@
-drop table if exists req_mmi_payment;
-create table req_mmi_payment (
+drop table if exists req_payment;
+create table req_payment (
     id integer primary key autoincrement,
+    org        text          not null default 'mmi',
     person_id  integer       not null default 0,
     amount     integer       not null default 0,
     for_what   integer       not null default 0,
