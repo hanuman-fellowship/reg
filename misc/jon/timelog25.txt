@@ -77,3 +77,8 @@ Jun 17 7:30-9:20
 Jun 18 11:20-1:35
     finalize requested payments
         much more time but ...
+Jun 19 4:45-6:50
+    resuscitating DDUP
+Jun 20 3:45-5:55
+    DDUP - finalizing.   for some reason LWP get is not working
+        so using curl instead - seems okay

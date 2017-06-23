@@ -26,7 +26,6 @@ use Global qw/
     %string
 /;
 use Template;
-use LWP::Simple;
 use DBH qw/
     $dbh
 /;
@@ -72,7 +71,7 @@ use constant {
 
 my $exp = "expiry_date.txt";
 my $rst_exp = "root/static/$exp";
-my $cgi = "http://www.mountmadonna.org/cgi-bin";
+my $cgi = "https://www.mountmadonna.org/cgi-bin";
 
 sub list : Local {
     my ($self, $c) = @_;
@@ -83,7 +82,7 @@ sub list : Local {
         my $dt = date(<$in>);
         $expiry = $dt->format;
         close $in;
-        $status = get("$cgi/update_status");
+        $status = qx(curl $cgi/update_status 2>/dev/null);
     }
     my @reports = model($c, 'Report')->search(
             undef,
@@ -360,7 +359,7 @@ sub run : Local {
         && ($format == EMAIL_CODE || $format == ADDR_CODE)
         && -f $rst_exp
     ) {
-        my ($n, $m) = get("$cgi/update_status") =~ m{(\d+)}xmsg;
+        my ($n, $m) = qx("curl $cgi/update_status 2>/dev/null") =~ m{(\d+)}xmsg;
         my $updates_to_get = $n + $m;
         if ($updates_to_get) {
             return error($c,
@@ -806,10 +805,10 @@ sub get_updates : Local {
 }
 
 sub _get_updates {
-    if (get("$cgi/get_updates") ne 'gotten') {
-        return "no get";
+    if (qx(curl $cgi/get_updates 2>/dev/null)) ne 'gotten') {
+        return "no curl";
     }
-    # the above 'get' created the updates.sql file on mmc.org
+    # the above curl created the updates.sql file on mmc.org
     # now we ftp it to here and apply it.
     #
     my $rst = "$ENV{HOME}/Reg/root/static";
@@ -826,7 +825,7 @@ sub _get_updates {
         or return "no Net::FTP->new";
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or return "no login";
-    $ftp->cwd('www/cgi-bin')
+    $ftp->cwd('update_dir')
         or return "no cd";
     $ftp->ascii()
         or return "no ascii";
@@ -847,7 +846,7 @@ sub see_log : Local {
     my ($self, $c) = @_;
 
     stash($c,
-        lines => get("http://www.mountmadonna.org/cgi-bin/get_update_log/soma"),
+        lines => scalar(qx(curl $cgi/get_update_log?passwd=soma 2>/dev/null)),
         template => "report/update_log.tt2",
     );
 }
@@ -855,7 +854,7 @@ sub see_log : Local {
 sub clear_log : Local {
     my ($self, $c) = @_;
 
-    get("http://www.mountmadonna.org/cgi-bin/clear_update_log/soma"),
+    qx(curl $cgi/clear_update_log?passwd=soma 2>/dev/null),
     $c->forward('list');
 }
 

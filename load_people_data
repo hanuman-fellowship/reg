@@ -5,11 +5,10 @@ use warnings;
 use DBI;
 use Net::FTP;
 use Mail::Sender;
-use LWP::Simple;
 
 my ($whom, $fname, $report_name) = @ARGV;
 
-my $cgi = "http://www.mountmadonna.org/cgi-bin";
+my $cgi = "https://www.mountmadonna.org/cgi-bin";
 my $exp = "expiry_date.txt";
 my $rst_exp = "$ENV{HOME}/Reg/root/static/$exp";
 
@@ -82,7 +81,7 @@ my $ftp = Net::FTP->new($string{ftp_site},
     or finish("no Net::FTP->new");
 $ftp->login($string{ftp_login}, $string{ftp_password})
     or finish("no login");
-$ftp->cwd('www/cgi-bin')
+$ftp->cwd('update_dir')
     or finish("no cd");
 $ftp->ascii()
     or finish("no ascii");
@@ -91,7 +90,8 @@ $ftp->put("/tmp/$fname", $fname)
 $ftp->put($rst_exp, $exp)
     or finish("no put 2");
 $ftp->quit();
-if (get("$cgi/load_people_data?report_name=$report_name") ne "done\n"
+my $rc = qx(curl '$cgi/load_people_data?report_name=$report_name' 2>/dev/null);
+if ($rc ne "done\n"
 ) {
     finish("no load");
 }
