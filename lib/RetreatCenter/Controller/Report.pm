@@ -805,7 +805,7 @@ sub get_updates : Local {
 }
 
 sub _get_updates {
-    if (qx(curl $cgi/get_updates 2>/dev/null)) ne 'gotten') {
+    if (qx(curl $cgi/get_updates 2>/dev/null) ne 'gotten') {
         return "no curl";
     }
     # the above curl created the updates.sql file on mmc.org
