@@ -90,7 +90,7 @@ $ftp->put("/tmp/$fname", $fname)
 $ftp->put($rst_exp, $exp)
     or finish("no put 2");
 $ftp->quit();
-my $rc = qx(curl '$cgi/load_people_data' >/tmp/ddup 2>&1);
+my $rc = qx(curl -k '$cgi/load_people_data' >/tmp/ddup 2>&1);
 if ($rc ne "done\n"
 ) {
     finish("no load");

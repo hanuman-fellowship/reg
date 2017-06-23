@@ -82,7 +82,7 @@ sub list : Local {
         my $dt = date(<$in>);
         $expiry = $dt->format;
         close $in;
-        $status = qx(curl $cgi/update_status 2>/dev/null);
+        $status = qx(curl -k $cgi/update_status 2>/dev/null);
     }
     my @reports = model($c, 'Report')->search(
             undef,
@@ -359,7 +359,7 @@ sub run : Local {
         && ($format == EMAIL_CODE || $format == ADDR_CODE)
         && -f $rst_exp
     ) {
-        my ($n, $m) = qx("curl $cgi/update_status 2>/dev/null") =~ m{(\d+)}xmsg;
+        my ($n, $m) = qx("curl -k $cgi/update_status 2>/dev/null") =~ m{(\d+)}xmsg;
         my $updates_to_get = $n + $m;
         if ($updates_to_get) {
             return error($c,
@@ -805,7 +805,7 @@ sub get_updates : Local {
 }
 
 sub _get_updates {
-    if (qx(curl $cgi/get_updates 2>/dev/null) ne 'gotten') {
+    if (qx(curl -k $cgi/get_updates 2>/dev/null) ne 'gotten') {
         return "no curl";
     }
     # the above curl created the updates.sql file on mmc.org
@@ -846,7 +846,7 @@ sub see_log : Local {
     my ($self, $c) = @_;
 
     stash($c,
-        lines => scalar(qx(curl $cgi/get_update_log?passwd=soma 2>/dev/null)),
+        lines => scalar(qx(curl -k $cgi/get_update_log?passwd=soma 2>/dev/null)),
         template => "report/update_log.tt2",
     );
 }
@@ -854,7 +854,7 @@ sub see_log : Local {
 sub clear_log : Local {
     my ($self, $c) = @_;
 
-    qx(curl $cgi/clear_update_log?passwd=soma 2>/dev/null),
+    qx(curl -k $cgi/clear_update_log?passwd=soma 2>/dev/null),
     $c->forward('list');
 }
 
