@@ -6,7 +6,7 @@ use DBI;
 use Net::FTP;
 use Mail::Sender;
 
-my ($whom, $fname, $report_name) = @ARGV;
+my ($whom, $fname) = @ARGV;
 
 my $cgi = "https://www.mountmadonna.org/cgi-bin";
 my $exp = "expiry_date.txt";
@@ -90,7 +90,7 @@ $ftp->put("/tmp/$fname", $fname)
 $ftp->put($rst_exp, $exp)
     or finish("no put 2");
 $ftp->quit();
-my $rc = qx(curl '$cgi/load_people_data?report_name=$report_name' 2>/dev/null);
+my $rc = qx(curl '$cgi/load_people_data' >/tmp/ddup 2>&1);
 if ($rc ne "done\n"
 ) {
     finish("no load");

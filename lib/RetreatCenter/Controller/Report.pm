@@ -787,7 +787,7 @@ EOF
     close $out;
     # now ask a background task to do the sending and loading
     # as it may take a while...
-    system("load_people_data " . $c->user->email .  " $fname '$report_name' &");
+    system("load_people_data " . $c->user->email .  " $fname &");
     return '';
 }
 
