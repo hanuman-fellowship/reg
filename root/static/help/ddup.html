@@ -2,9 +2,16 @@
 <head>
 <link rel="stylesheet" type="text/css" href="help.css" />
 <style>
-.glnum {
+.code {
+    color: red;
     font-family: Courier;
-    font-size: 16pt;
+}
+pre {
+    margin-left: .5in;
+    color: green;
+}
+li {
+    margin-top: 5mm;
 }
 </style>
 </head>
@@ -12,21 +19,163 @@
 <h2>Distributed Demographic Update</h2>
 This document describes a mechanism within Reg that
 makes it very easy to keep everyone's address, email, phone numbers,
-etcetera up to date.  This is done by requesting that people to do it <i>themselves</i>.
+et cetera up to date.  This is done by requesting that people to do it <i>themselves</i>.
 This <u>distributes</u> the clerical burden of our staff and reduces the risk
 of typos and errors.
 <ol>
-<li>The process is begun by Adding a Report (Listings &gt; People &gt; General Reports)
-with a format of type 'Email, Code' or 'Address, Code'.
-'Email, Code' is used for making the requests by email.
-'Address, Code' is used when sending requests by snail mail.
+<li>The process (nicknamed DDUP) is begun by Adding a Report (Listings &gt; People &gt; General Reports)
+with a format of type:
+<span class=code>Email, Code</span>
+or
+<span class=code>Address, Code</span>.
+<p>
+<span class=code>Email, Code</span> is used
+for making the requests by email.  The report output
+contains the following fields:
+First, Last, Email, Secure Code
+<p>
+<span class=code>Address, Code</span> is used
+when sending requests by snail mail.  The report output includes these fields:
+First, Last, Address 1, Address 2, City, State, Zip, Country, Secure Code.
 <p>
 The other attributes of the Report are up to you.
-They select a subset of all people by restricting the zip code, the affiliations,
+You can select a subset of all people by restricting
+the zip code, the affiliations,
 and/or the date of last contact.
-In both cases, people who are Inactive will not be included in the report's output.
+People who are Inactive will not be included in the report's output.
+<li>
+You can ask for a Count of the report to see if it is of the size you wish.
 <p>
-The only affils that will be sent are those that begin with 'PROGRAMS -'.
+When you wish to Run these reports you will need to supply
+an Expiration Date (in the usual format: see <a href=Dates.html>Dates</a>).
+<p>
+<b>Important</b>: The output of the reports should be saved in a file for sending
+to the mailing services.  Use File > Save As in your browser.
+<p>
+The act of running the report will export/upload all the demographic data for
+the chosen people
+to a secure place on mountmadonna.org.  You will receive an email
+about the status of the upload (hopefully it will say Success).
+<li>
+Going to the Listings > People > General Reports page
+(might as well make a bookmark for this page, eh?) you will see
+a line like this:
+<pre>
+Distributed Update: Expires Jun 25 0 viewed, 0 changed - imported 0 of 223 = 0% Import New See Log
+</pre>
+This status line shows what has been happening.
+<p>
+Viewed - the # of people who clicked on the link but made no change.<br>
+Changed -  the # of people who made some kind of change.<br>
+Imported - How many people's changes have been imported so far?
+The percentage is calculated as well so you can see what level
+of feedback you're getting from the requests for demographic updates.
+<p>
+'Import New' and 'See Log' are links. 
+<p>
+'See Log' will show you a timestamped log of what has
+happened with the DDUP process.  You'll see when the exports
+(uploadings) happened,
+what changes people made, and what imports (see below) happened as well.
+On that page you can choose 'Clear Log' to
+start fresh.  There's also 'Reports' to go back to the list of reports.
+<p>
+'Import New' will take all the latest changes that were made
+on mountmadonna.org and import them into Reg.  This act is logged.
+<li>
+Using Mail Chimp (for <span class=code>Email, Code</span> or Complete Mailing Service for <span class=code>Address, Code</span>) you take the saved
+report file and do a mail merge.    The emails you send should be something
+like this:
+<pre>
+Greetings FIRST,
+
+MMC wants to be sure we have your current information
+such as address, phone, mailing preferences, etc.
+Click &lt;a href='https://www.mountmadonna.org/cgi-bin/update?code=CODE'&gt;here&lt;/a&gt; to see and update it.
+
+Thank you,
+MMC
+</pre>
+Your email will be worded much better, of course.
+The secure_code field in your saved data file will be used for the CODE above.
+<li>
+The people who receive the email will click on the link
+and see their information.  They can change these things:
+<p>
+First, Last, Address 1, Address 2, City, State, Zip, Country.
+Email address.  Sex (gender). Cell, Home, and Work phone numbers.
+<p>
+There is a section entitled 'Your Interests' which includes
+the affiliations that begin (in Reg) with 'PROGRAMS -'.  The
+'PROGRAMS -' prefix will be removed for the person to see.
+This list is currently (6/25/17):
+<pre>
+Art 
+Ayurveda, Herbs & Health
+Buddhist
+Jewish
+Meditation
+Men's Programs
+Movement  
+Music
+Personal Growth
+Personal Retreats
+Women's Programs
+Yoga
+Yoga Teacher Training
+</pre>
+<p>
+The mailing preferences section looks like this:
+<pre>
+_ Yes, send me occasional e-mail announcements about MMC.
+_ Yes, send me postcards and brochures in the mail about MMC.
+_ Yes, send me occasional e-mail announcements about MMI. What is MMI?
+_ Yes, send me postcards and brochures in the mail about MMI.
+_ You may share my address with MMC affiliates.
+</pre>
+<p>
+After checking and updating any or all of this
+the person will click on one of two buttons:
+<pre>
+Submit the changes I made
+
+No changes are needed - It all looks Just Fine.
+</pre>
+In the first case we present them will a summary of what
+their information looks like now.  We also give them
+an opportunity to ReEdit it.   Or they can choose 'Looks Good'
+which takes them to the home page of MMC.
+<p>
+If it all looks Just Fine they're taken directly to the home page.
+<li>
+If a nefarious hacker tries to break our system we
+have some protections build in.  If the cgi-bin/update program
+detects an illegal CODE will give an error message and keep
+track of who submitted it.  If too many have happened (currently 5 failures)
+an email is sent to jonb@logicalpoetry.com and the person is notified
+of their transgressions and they are BLOCKED (for 5 minutes).
+<p>
+This system can be tweaked as needed.
+<li>
+When the expiration date has passed people will no longer
+be able to update their demographic data.  At this point we
+can go to any 'code report' and choose the link 
+'Clobber Current Distributed Update'.
+Then you can Run another one.
+<p>
+Another option before Running is to Append
+to existing records that have been exported.  The expiration
+date has to be the same as the currently active one.
+<li>
+For DDUP reports that use <span class=code>Address, Code</span>
+You can put the CODE on the mailing label somewhere.
+Within the mailing (brochure, etc) you can direct people
+to go to this web address:
+<pre>
+    <a target=_blank href='https://www.mountmadonna.org/update'>mountmadonna.org/update</a>
+</pre>
+At this site (click it above) you can enter your CODE and proceed as before.
+This page needs styling attention (as do the other pages as well!).
 </ol>
 </body>
 </html>

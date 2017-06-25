@@ -89,9 +89,9 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <th align=right>For Code Formats</th>
 <td colspan=3>
 <input type=checkbox name=append value=1
-       [% IF append %]checked[% END %]>Append to Existing Records?
+       [% IF append %]checked[% END %]> Append to Existing Records?
 &nbsp;&nbsp;
-Expiry Date <span class=red>*</span> 
+Expiration Date <span class=red>*</span> 
 <input type=text name=expiry size=10 value=$expiry_date>
 </td>
 </tr>
