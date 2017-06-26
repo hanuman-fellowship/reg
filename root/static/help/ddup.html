@@ -43,6 +43,9 @@ You can select a subset of all people by restricting
 the zip code, the affiliations,
 and/or the date of last contact.
 People who are Inactive will not be included in the report's output.
+Also note that there is no restriction based on
+the people's mailing preferences - since this is a request
+for them to update those preferences.
 <li>
 You can ask for a Count of the report to see if it is of the size you wish.
 <p>
@@ -50,7 +53,8 @@ When you wish to Run these reports you will need to supply
 an Expiration Date (in the usual format: see <a href=Dates.html>Dates</a>).
 <p>
 <b>Important</b>: The output of the reports should be saved in a file for sending
-to the mailing services.  Use File > Save As in your browser.
+to the mailing services (Mail Chimp and CMS).
+Use 'File > Save As' in your browser.
 <p>
 The act of running the report will export/upload all the demographic data for
 the chosen people
@@ -82,10 +86,11 @@ start fresh.  There's also 'Reports' to go back to the list of reports.
 <p>
 'Import New' will take all the latest changes that were made
 on mountmadonna.org and import them into Reg.  This act is logged.
+You can do this import incrementally several times before the expiration date.
 <li>
 Using Mail Chimp (for <span class=code>Email, Code</span> or Complete Mailing Service for <span class=code>Address, Code</span>) you take the saved
-report file and do a mail merge.    The emails you send should be something
-like this:
+report file and do a mail merge.    The body of the emails you send
+should be something like this:
 <pre>
 Greetings FIRST,
 
@@ -97,7 +102,7 @@ Thank you,
 MMC
 </pre>
 Your email will be worded much better, of course.
-The secure_code field in your saved data file will be used for the CODE above.
+The Secure Code field in your saved data file will be used for the CODE above.
 <li>
 The people who receive the email will click on the link
 and see their information.  They can change these things:
@@ -107,8 +112,9 @@ Email address.  Sex (gender). Cell, Home, and Work phone numbers.
 <p>
 There is a section entitled 'Your Interests' which includes
 the affiliations that begin (in Reg) with 'PROGRAMS -'.  The
-'PROGRAMS -' prefix will be removed for the person to see.
-This list is currently (6/25/17):
+'PROGRAMS -' prefix will be removed so the person will only see the rest of the
+affiliation name.
+This list is currently (6/25/17) like so:
 <pre>
 Art 
 Ayurveda, Herbs & Health
@@ -137,45 +143,51 @@ _ You may share my address with MMC affiliates.
 After checking and updating any or all of this
 the person will click on one of two buttons:
 <pre>
-Submit the changes I made
+1 - Submit the changes I made
 
-No changes are needed - It all looks Just Fine.
+2 - No changes are needed - It all looks Just Fine.
 </pre>
-In the first case we present them will a summary of what
-their information looks like now.  We also give them
+In the first case we present a summary of what
+their information looks like now and we give them
 an opportunity to ReEdit it.   Or they can choose 'Looks Good'
 which takes them to the home page of MMC.
 <p>
-If it all looks Just Fine they're taken directly to the home page.
+The second case is Just Fine and they're again taken directly to the MMC home page.
 <li>
 If a nefarious hacker tries to break our system we
-have some protections build in.  If the cgi-bin/update program
-detects an illegal CODE will give an error message and keep
-track of who submitted it.  If too many have happened (currently 5 failures)
-an email is sent to jonb@logicalpoetry.com and the person is notified
+have some protections built in.  If the cgi-bin/update program
+detects an illegal CODE it will give an error message and keep
+track of who submitted it.  If too many failures have
+happened (currently more than 5)
+an email is sent to jonb@logicalpoetry.com (who else?)
+and the person is notified
 of their transgressions and they are BLOCKED (for 5 minutes).
 <p>
 This system can be tweaked as needed.
 <li>
 When the expiration date has passed people will no longer
 be able to update their demographic data.  At this point we
-can go to any 'code report' and choose the link 
+can go to any report with one of the two Code formats and choose the link 
 'Clobber Current Distributed Update'.
 Then you can Run another one.
 <p>
-Another option before Running is to Append
-to existing records that have been exported.  The expiration
+When doing the 'Run Report', another option is to Append
+to the existing records that have been exported.  The expiration
 date has to be the same as the currently active one.
 <li>
 For DDUP reports that use <span class=code>Address, Code</span>
-You can put the CODE on the mailing label somewhere.
-Within the mailing (brochure, etc) you can direct people
-to go to this web address:
+you can have CMS put the CODE on the mailing label somewhere.
+Within the text of the mailing item (brochure, flyer, card, etc)
+you can direct people to go to this web address:
 <pre>
     <a target=_blank href='https://www.mountmadonna.org/update'>mountmadonna.org/update</a>
 </pre>
-At this site (click it above) you can enter your CODE and proceed as before.
-This page needs styling attention (as do the other pages as well!).
+At this site (click it above to see) you can enter your CODE
+and proceed as before.
+This page needs styling attention - as do the other pages as well!.
+The other pages are in the cgi-bin directory and are named
+update.tt2, update2.tt2, update_msg.tt2, and update_expired.tt2.
+They are not generated by Craft.
 </ol>
 </body>
 </html>

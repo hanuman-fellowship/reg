@@ -82,3 +82,7 @@ Jun 19 4:45-6:50
 Jun 20 3:45-5:55
     DDUP - finalizing.   for some reason LWP get is not working
         so using curl instead - seems okay
+Jun 22 1:00-3:30
+    DDUP refining on the new site
+Jun 25 8:00-10:00
+    documenting DDUP, sending to Jamal, Ratna, etc
