@@ -359,9 +359,8 @@ sub run : Local {
         && ($format == EMAIL_CODE || $format == ADDR_CODE)
         && -f $rst_exp
     ) {
-        my ($n, $m) = qx("curl -k $cgi/update_status 2>/dev/null") =~ m{(\d+)}xmsg;
-        my $updates_to_get = $n + $m;
-        if ($updates_to_get) {
+        my ($n) = qx("curl -k $cgi/update_status 2>/dev/null") =~ m{(\d+)\s*changed}xmsg;
+        if ($n) {
             return error($c,
                 "There are still updates to be gotten.", "gen_error.tt2");
         }
@@ -865,9 +864,8 @@ sub clear_log : Local {
 sub clobber : Local {
     my ($self, $c) = @_;
 
-    my ($n, $m) = qx(curl -k $cgi/update_status 2>/dev/null) =~ m{(\d+)}xmsg;
-    my $updates_to_get = $n + $m;
-    if ($updates_to_get) {
+    my ($n) = qx(curl -k $cgi/update_status 2>/dev/null) =~ m{(\d+)\s*changed}xmsg;
+    if ($n) {
         return error($c,
             "There are updates that have not been imported yet.", "gen_error.tt2");
     }
