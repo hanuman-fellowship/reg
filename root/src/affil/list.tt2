@@ -2,6 +2,8 @@
 [% madmin = Catalyst.check_user_roles('mail_admin') %]
 [% IF madmin %]
 <a href=/affil/create>Add</a>
+&nbsp;&nbsp;
+<a href=/affil/memaffil>Ensure HFS Member Affiliations</a>
 [% END %]
 <ul>
 <table cellpadding=3 border=0>

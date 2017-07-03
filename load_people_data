@@ -6,7 +6,8 @@ use DBI;
 use Net::FTP;
 use Mail::Sender;
 
-my ($whom, $fname) = @ARGV;
+my ($fname, $report_name, $who, $email) = @ARGV;
+$report_name =~ s{\W}{_}xmsg;
 
 my $cgi = "https://www.mountmadonna.org/cgi-bin";
 my $exp = "expiry_date.txt";
@@ -67,7 +68,7 @@ sub email_letter {
 sub finish {
     my ($status) = @_;
     email_letter(
-       to      => $whom, 
+       to      => $email, 
        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
        subject => "Your recent upload",
        html    => "The status of your recent upload was:<ul>$status",
@@ -90,8 +91,8 @@ $ftp->put("/tmp/$fname", $fname)
 $ftp->put($rst_exp, $exp)
     or finish("no put 2");
 $ftp->quit();
-my $rc = qx(curl -k '$cgi/load_people_data' 2>/dev/null);
-if ($rc ne "done\n") {
+my $rc = qx(curl -k '$cgi/load_people_data?report_name=$report_name&who=$who' 2>/dev/null);
+if ($rc ne "done") {
     finish("no load");
 }
 finish("Success");

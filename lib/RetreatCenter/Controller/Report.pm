@@ -787,7 +787,10 @@ EOF
     close $out;
     # now ask a background task to do the sending and loading
     # as it may take a while...
-    system("load_people_data " . $c->user->email .  " $fname &");
+    my $who = $c->user->username;
+    $report_name =~ s{\W}{_}xmsg;
+    my $email = $c->user->email;
+    system("load_people_data " . " $fname $report_name $who $email &");
     return '';
 }
 
@@ -845,8 +848,9 @@ sub _get_updates {
 sub see_log : Local {
     my ($self, $c) = @_;
 
+    my @lines = qx(curl -k $cgi/get_update_log?passwd=soma 2>/dev/null);
     stash($c,
-        lines => scalar(qx(curl -k $cgi/get_update_log?passwd=soma 2>/dev/null)),
+        lines => (join '', reverse @lines),
         template => "report/update_log.tt2",
     );
 }
@@ -859,19 +863,18 @@ sub clear_log : Local {
 }
 
 sub clobber : Local {
-    my ($self, $c, $rep_id) = @_;
-
-    unlink "root/static/expiry_date.txt";
-    # shall we also clobber the database on mmc.org and
-    # the expiry_date.txt file there?  nah.
-    # they will soon be overwritten.
-    $c->response->redirect($c->uri_for("/report/view/$rep_id"));
-}
-
-sub memaffil : Local {
     my ($self, $c) = @_;
 
-    system("memaffil");
+    my ($n, $m) = qx(curl -k $cgi/update_status 2>/dev/null) =~ m{(\d+)}xmsg;
+    my $updates_to_get = $n + $m;
+    if ($updates_to_get) {
+        return error($c,
+            "There are updates that have not been imported yet.", "gen_error.tt2");
+    }
+    unlink "root/static/expiry_date.txt";
+    # also clobber the database on mmc.org and
+    # the expiry_date.txt file there.
+    qx(curl -k $cgi/update_clobber?passwd=soma 2>/dev/null);
     $c->response->redirect($c->uri_for("/report/list"));
 }
 

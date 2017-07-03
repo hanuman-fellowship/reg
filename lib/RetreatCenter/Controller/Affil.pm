@@ -234,4 +234,12 @@ sub access_denied : Private {
     );
 }
 
+sub memaffil : Local {
+    my ($self, $c) = @_;
+
+    system("memaffil");
+    $c->response->redirect($c->uri_for("/affil/list"));
+}
+
+
 1;

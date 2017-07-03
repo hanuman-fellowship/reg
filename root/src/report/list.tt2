@@ -1,15 +1,25 @@
+<style>
+.ddup {
+    margin-left: 1in;
+    border: 1px solid;
+    width: 480px;
+    padding: 10px;
+    line-height: 25px;
+}
+</style>
 <h2>Reports</h2>
 <a href=/report/create>Add</a>
-&nbsp;&nbsp;&nbsp;
-&nbsp;&nbsp;&nbsp;
-<a href=/report/memaffil>Ensure Member Affiliations</a>
 [% IF expiry %]
-<p class=p2>
-Distributed Update:
-<span style="margin-left: .1in">Expires $expiry</span>
-<span style="margin-left: .3in">$status</span>
-<span style="margin-left: .3in"><a href=/report/get_updates>Import New</a></span>
-<span style="margin-left: .3in"><a href=/report/see_log>See Log</a></span>
+<div class=ddup>
+<b>Distributed Demographic Update</b><br>
+<a href=/report/get_updates>Import New</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/report/see_log>See Log</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/report/clobber onclick="return confirm('Okay to CLOBBER the current DDUP?');">Clobber</a><br>
+Expires $expiry<br>
+$status
+</div>
 <p class=p2>
 [% END %]
 <ul>

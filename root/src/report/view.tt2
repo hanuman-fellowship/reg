@@ -6,14 +6,6 @@
 onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/report/list">List</a>
-[% IF expiry %]
-    &nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;
-    &nbsp;&nbsp;&nbsp;
-    <a href="/report/clobber/$report.id"
-           onclick="return confirm('Are you sure you wish to CLOBBER it?');"
-        >Clobber Current Distributed Update</a>
-[% END %]
 <p class=p2>
 <hr width=400 align=left>
 <table cellpadding=3 border=0>
@@ -76,6 +68,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <td><input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share</td>
 <td><input type=checkbox name=no_foreign value=yes [% IF no_foreign %]checked[% END %]>No Foreign</td>
 </tr>
+
 [% IF optin %]
 <tr>
 <th align=right>Opt In</th>
@@ -84,23 +77,28 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <td><input type=radio name=report_type value=none [% IF none_report %]checked[% END %]>Ignore</td>
 </tr>
 [% END %]
-[% IF code %]
-<tr>
-<th align=right>For Code Formats</th>
-<td colspan=3>
-<input type=checkbox name=append value=1
-       [% IF append %]checked[% END %]> Append to Existing Records?
-&nbsp;&nbsp;
-Expiration Date <span class=red>*</span> 
-<input type=text name=expiry size=10 value=$expiry_date>
-</td>
-</tr>
+
+[% IF code && ! expiry %]
+    <tr>
+    <th align=right>For Code Formats</th>
+    <td colspan=3>
+        Expiration Date <span class=red>*</span> 
+        <input type=text name=expiry size=10>
+    </td>
+    </tr>
 [% END %]
+
+<tr>
 <td colspan=4 align=left>
 <input style="background-color: lightyellow" type=submit value="Count" name=count>
-<input style="background-color: lightgreen" type=submit value="Run Report" name=report>
+[% IF code && expiry %]
+<input style="background-color: lightgreen" type=submit value="Run Report and Append to Current DDUP" name=run_append>
+[% ELSE %]
+<input style="background-color: lightgreen" type=submit value="Run Report" name=run>
+[% END %]
 </td>
 </tr>
+
 </table>
 </form>
 $message

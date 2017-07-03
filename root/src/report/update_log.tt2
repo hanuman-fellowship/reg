@@ -1,8 +1,8 @@
-<h2>Update Log</h2>
+<h2>DDUP Log</h2>
 <a href=/report/list>Reports</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/report/clear_log
-   onclick="return confirm('Okay to CLEAR the Update Log?');"
+   onclick="return confirm('Okay to CLEAR the DDUP Log?');"
 >Clear Log</a>
 <p class=p2>
 <pre>

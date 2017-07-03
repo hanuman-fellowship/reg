@@ -86,3 +86,30 @@ Jun 22 1:00-3:30
     DDUP refining on the new site
 Jun 25 8:00-10:00
     documenting DDUP, sending to Jamal, Ratna, etc
+Jun 28 11:30-12:30 
+    demo'ed DDUP to Jamal, gathered suggestions:
+    links below status - with clobber
+    3 lines - to the right of the other menu items
+
+    append same records?  What if changed? ignore the expiration date?
+        make it conditional - append if current exists
+            otherwise require the expiration date
+        hmm.
+        if no DDUP in progress (no exp date)
+            require an expiration date and
+                the button is labeled "Run Report".
+        else
+            you WILL be appending and
+                the button is labeled "Run Report and Append to Current DDUP".
+        you can always do "Count".
+
+    hacker block tweak? for 10, To Jamal as well.
+    log who and what report's output was sent to mmc
+    reword mail prefs verbiage
+    PROGRAMS - => tweak
+    styling help for all pages 
+    clobbering - actually clobber the database
+        check soma - other scripts, too.
+    push back on affiliations, suggest improvements?
+Jul 2 3:20-5:20
+    acting on feedback from Jamal, Ratna

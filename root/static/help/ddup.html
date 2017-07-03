@@ -54,18 +54,24 @@ an Expiration Date (in the usual format: see <a href=dates.html>Dates</a>).
 <p>
 <b>Important</b>: The output of the reports should be saved in a file for sending
 to the mailing services (Mail Chimp and CMS).
-Use 'File > Save As' in your browser.
+Use 'File > Save As' in your browser.  Note that at the top of the page
+there is some HTML that you should delete.  Alternatively, you could
+do a 'select, copy, and paste' into a text file or email to select
+just the data you wish.
 <p>
 The act of running the report will export/upload all the demographic data for
 the chosen people
 to a secure place on mountmadonna.org.  You will receive an email
 about the status of the upload (hopefully it will say Success).
 <li>
-Going to the Listings > People > General Reports page
-(might as well make a bookmark for this page, eh?) you will see
-a line like this:
+On the Listings > People > General Reports page
+(might as well make a bookmark for this page, eh?) at the top you will see
+a box with this information:
 <pre>
-Distributed Update: Expires Jun 25 0 viewed, 0 changed - imported 0 of 223 = 0% Import New See Log
+Distributed Demographic Update
+Import New   See Log  Clobber
+Expires Jun 25
+2 viewed, 4 changed - imported 20 of 223 = 8%
 </pre>
 This status line shows what has been happening.
 <p>
@@ -75,18 +81,55 @@ Imported - How many people's changes have been imported so far?
 The percentage is calculated as well so you can see what level
 of feedback you're getting from the requests for demographic updates.
 <p>
-'Import New' and 'See Log' are links. 
+'Import New', 'See Log', and 'Clobber' are links. 
 <p>
-'See Log' will show you a timestamped log of what has
-happened with the DDUP process.  You'll see when the exports
+'See Log' will show you a timestamped log (in reverse chronological order)
+of what has happened with the DDUP process.  You'll see when the exports
 (uploadings) happened,
-what changes people made, and what imports (see below) happened as well.
+exactly what changes people made, what imports (see below) happened,
+and when the DDUP process was 'clobbered'.
 On that page you can choose 'Clear Log' to
 start fresh.  There's also 'Reports' to go back to the list of reports.
 <p>
 'Import New' will take all the latest changes that were made
 on mountmadonna.org and import them into Reg.  This act is logged.
-You can do this import incrementally several times before the expiration date.
+You can do this import incrementally several times.
+<p>
+'Clobber' will (after confirmation) remove all traces of the current DDUP
+report.   You can then run a different one.  This clobbering will
+not be permitted if there are any outstanding changes that have
+not yet been imported.
+<p>
+Once the expiration date has passed people will no longer
+be able to update their information.  They'll get a page saying 'sorry ...'.
+These people will have their records marked as having tried
+to update their data.  When you are viewing the status of the DDUP
+and seeing '# viewed, # changed, ...' there will also be
+'# expired'.
+<pre>
+Distributed Demographic Update
+Import New   See Log  Clobber
+Expires Jun 25
+2 <span style="color: blue">expired</span>, 2 viewed, 4 changed - imported 20 of 223 = 8%
+</pre>
+
+The word 'expired' is a link and you
+can click it to see the names, email, and phone number (cell, home, or work)
+of the people that tried to update their data after the
+expiration date.  You can contact them if you wish to see
+what they would have done.
+<p>
+At this point - the expiration date has passed - you
+can do 'Import New' one last time and then 'Clobber' the DDUP process.
+This will clear the data from mountmadonna.org.
+<p>
+There is an expiration date for two reasons:
+<ol type=a>
+<li>A deadline will prompt people to do it <i>now</i> rather than later.
+<li>For security/privacy reasons it is good to have the people's
+demographic data on the web (inaccessible though it may be) for
+as little time as possible.
+</ol>
 <li>
 Using Mail Chimp (for <span class=code>Email, Code</span> or Complete Mailing Service for <span class=code>Address, Code</span>) you take the saved
 report file and do a mail merge.    The body of the emails you send
@@ -133,10 +176,8 @@ Yoga Teacher Training
 <p>
 The mailing preferences section looks like this:
 <pre>
-_ Yes, send me occasional e-mail announcements about MMC.
-_ Yes, send me postcards and brochures in the mail about MMC.
-_ Yes, send me occasional e-mail announcements about MMI. What is MMI?
-_ Yes, send me postcards and brochures in the mail about MMI.
+_ Send me brochures and cards via US Mail.
+_ Send me emails.
 _ You may share my address with MMC affiliates.
 </pre>
 <p>
@@ -149,7 +190,7 @@ the person will click on one of two buttons:
 </pre>
 In the first case we present a summary of what
 their information looks like now and we give them
-an opportunity to ReEdit it.   Or they can choose 'Looks Good'
+an opportunity to 'Re-Edit' it.   Or they can choose 'Looks Good'
 which takes them to the home page of MMC.
 <p>
 The second case is Just Fine and they're again taken directly to the MMC home page.
@@ -167,13 +208,17 @@ This system can be tweaked as needed.
 <li>
 When the expiration date has passed people will no longer
 be able to update their demographic data.  At this point we
-can go to any report with one of the two Code formats and choose the link 
-'Clobber Current Distributed Update'.
+can go to the Reports list page and choose 'Clobber'.
 Then you can Run another one.
 <p>
-When doing the 'Run Report', another option is to Append
-to the existing records that have been exported.  The expiration
-date has to be the same as the currently active one.
+When a DDUP report has not yet expired and is currently active
+you can go to another 'Email, Code' or 'Address, Code' report.
+Instead of 'Run Report' the button at the bottom will
+say 'Run Report and Append to Current DDUP'.
+On choosing this, the report will be run and the records
+so generated will be <i>appended</i> to
+those that were exported before.  The expiration
+date will be the same as the currently active one.
 <li>
 For DDUP reports that use <span class=code>Address, Code</span>
 you can have CMS put the CODE on the mailing label somewhere.
@@ -187,7 +232,7 @@ and proceed as before.
 This page needs styling attention - as do the other pages as well!.
 The other pages are in the cgi-bin directory and are named
 update.tt2, update2.tt2, update_msg.tt2, and update_expired.tt2.
-They are not generated by Craft.
+They are not generated by Craft (yet).
 </ol>
 </body>
 </html>

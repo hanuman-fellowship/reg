@@ -1,3 +1,7 @@
+<a href='/report/list'>To Reports</a>
+<p>
+<pre>
 [% FOREACH p IN people -%]
 $p.last|$p.first|$p.email|$p.secure_code
 [% END %]
+</pre>
