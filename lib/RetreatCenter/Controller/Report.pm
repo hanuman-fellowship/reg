@@ -433,6 +433,9 @@ sub run : Local {
     if ($no_foreign) {
         $restrict .= "country = '' and ";
     }
+    if ($format == ADDR_CODE) {
+        $restrict .= "email = '' and ";
+    }
 
     my $just_email = "";
     if ($format == JUST_EMAIL) {
@@ -787,9 +790,8 @@ EOF
     # now ask a background task to do the sending and loading
     # as it may take a while...
     my $who = $c->user->username;
-    $report_name =~ s{\W}{_}xmsg;
     my $email = $c->user->email;
-    system("load_people_data " . " $fname $report_name $who $email &");
+    system("load_people_data " . " $fname '$report_name' $who $email &");
     return '';
 }
 

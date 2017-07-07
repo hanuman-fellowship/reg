@@ -5,9 +5,10 @@ use warnings;
 use DBI;
 use Net::FTP;
 use Mail::Sender;
+use URI::Escape 'uri_escape';
 
 my ($fname, $report_name, $who, $email) = @ARGV;
-$report_name =~ s{\W}{_}xmsg;
+$report_name = uri_escape($report_name);
 
 my $cgi = "https://www.mountmadonna.org/cgi-bin";
 my $exp = "expiry_date.txt";
