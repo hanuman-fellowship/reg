@@ -48,6 +48,7 @@ __PACKAGE__->add_columns(qw/
     secure_code
     temple_id
     waiver_signed
+    only_temple
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -233,6 +234,7 @@ inactive - This record is no longer active - for whatever reason.
 last - last name
 mmi_e_mailings - I want MMI emailings
 mmi_snail_mailings - I want MMI snail mailings
+only_temple - Is this person ONLY a Temple Guest?
 safety_form - this person has filled out a safety form
 sanskrit - Sanskrit name - if any.
     one can search for a person by their Sanskrit name

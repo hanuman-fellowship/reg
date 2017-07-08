@@ -32,7 +32,9 @@ create table people (
     cc_code   text,
     safety_form text,
     secure_code text,
-    temple_id integer null
+    temple_id integer null,
+    waiver signed text not null default '',
+    only_temple text not null default ''
 );
 drop table if exists affils;
 create table affils (

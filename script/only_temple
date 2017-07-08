@@ -1,0 +1,27 @@
+#!/usr/local/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+use Util qw/
+    model
+    db_init
+/;
+
+use RetreatCenterDB;    # ??? why can't we move this to Util?
+my $c = db_init();
+my $n = 0;
+for my $p (model($c, 'Person')->all()) {
+    my @affils = $p->affils();
+    my $only = '';
+    if (@affils == 1 && $affils[0]->descrip eq 'Temple Guest') {
+        $only = 'yes';
+        ++$n;
+        print "$n\r";
+    }
+    if ($p->only_temple ne $only) {
+        $p->update({
+            only_temple => $only,
+        });
+    }
+}
+print "\ntotal only Temple Guest $n\n";

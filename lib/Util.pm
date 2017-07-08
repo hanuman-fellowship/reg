@@ -2193,17 +2193,17 @@ sub _all_the_same {
 }
 
 my %is_usa = map { $_ => 1 } (
-    'United States',
-    'U.S.A.',
-    'USA',
-    'u.s.a.',
+    'unitedstates',
     'usa',
-    'US',
-    'u.s.',
+    'us',
+    'usofa',
+    'unitedstatesofamerica',
+
 );
 sub _is_usa {
     my ($country) = @_;
-    return exists $is_usa{$country};
+    $country =~ s{[. ]}{}xmsg;  # normalize
+    return exists $is_usa{lc $country};
 }
 
 # we have 6 phone numbers.
