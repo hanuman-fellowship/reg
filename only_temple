@@ -13,7 +13,7 @@ else
 fi
 
 if [ "$1" == "wait" ]; then
-    script/temple_only
+    script/only_temple
 else
-    script/temple_only  &
+    script/only_temple  &
 fi
