@@ -98,6 +98,7 @@ sub list : Local {
         expiry   => $expiry,
         status   => $status,
         template => "report/list.tt2",
+        pg_title => "Reports",
     );
 }
 
@@ -150,6 +151,7 @@ sub view : Local {
             )
         ],
         last_run => date($report->last_run()) || "",
+        pg_title => $report->descrip(),
         template => "report/view.tt2",
     );
 }
@@ -316,6 +318,7 @@ sub run : Local {
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
     my $no_foreign = $c->request->params->{no_foreign};
+    my $exclude_only_temple = $c->request->params->{exclude_only_temple};
     my $incl_mmc = $c->request->params->{incl_mmc};
     my $opt_inout = $c->request->params->{report_type} || "";
     my $append    = $c->request->params->{append} || "";
@@ -433,6 +436,9 @@ sub run : Local {
     if ($no_foreign) {
         $restrict .= "country = '' and ";
     }
+    if ($exclude_only_temple) {
+        $restrict .= "only_temple = '' and ";
+    }
     if ($format == ADDR_CODE) {
         $restrict .= "email = '' and ";
     }
@@ -499,7 +505,7 @@ EOS
     # mimic DBIx::Class tracing    - it is worth the energy to
     #                                figure out how to do the above
     #                                in Abstract::SQL???
-    if ($ENV{DBIC_TRACE}) {
+    if (-f '/tmp/sql') {    # an easy way to turn the tracing on and off...
         $c->log->info($sql);
     }
     my @people = @{ Person->search($sql) };
@@ -627,6 +633,7 @@ EOS
             share    => $share,
             collapse => $collapse,
             no_foreign => $no_foreign,
+            exclude_only_temple => $exclude_only_temple,
             incl_mmc => $incl_mmc,
             append   => $append,
             expiry_date => $expiry? date($expiry)->format("%D"): '',

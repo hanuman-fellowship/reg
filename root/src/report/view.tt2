@@ -63,10 +63,14 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <table cellpadding=5>
 <tr>
 <th align=right>Options</th>
-<td><input type=checkbox name=incl_mmc value=yes [% IF incl_mmc %]checked[% END %]>Include MMC</td>
-<td><input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]>Collapse</td>
-<td><input type=checkbox name=share value=yes [% IF share %]checked[% END %]>Share</td>
-<td><input type=checkbox name=no_foreign value=yes [% IF no_foreign %]checked[% END %]>No Foreign</td>
+<td><input type=checkbox name=incl_mmc value=yes [% IF incl_mmc %]checked[% END %]> Include MMC</td>
+<td><input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]> Collapse</td>
+<td><input type=checkbox name=share value=yes [% IF share %]checked[% END %]> Share</td>
+</tr>
+<tr>
+<td></td>
+<td><input type=checkbox name=no_foreign value=yes [% IF no_foreign %]checked[% END %]> No Foreign</td>
+<td colspan=2><input type=checkbox name=exclude_only_temple value=yes [% IF exclude_only_temple %]checked[% END %]> Exclude Only Temple</td>
 </tr>
 
 [% IF optin %]
