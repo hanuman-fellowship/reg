@@ -16,7 +16,7 @@
 &nbsp;&nbsp;&nbsp;
 <a href=/report/see_log>See Log</a>
 &nbsp;&nbsp;&nbsp;
-<a href=/report/clobber onclick="return confirm('Okay to CLOBBER the current DDUP?');">Clobber</a><br>
+<a href=/report/clobber onclick="return confirm('Okay to DELETE the current DDUP?');">Delete</a><br>
 Expires $expiry<br>
 $status
 </div>
