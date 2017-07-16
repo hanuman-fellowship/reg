@@ -65,7 +65,6 @@ our @EXPORT_OK = qw/
     check_makeup_vacate
     refresh_table
     d3_to_hex
-    req_code
     calc_mmi_glnum
     ensure_mmyy
     rand6
@@ -1840,22 +1839,6 @@ sub d3_to_hex {
     return sprintf("#%02x%02x%02x", $r, $g, $b);
 }
 
-my @alphanum = (
-    0 .. 9,
-    'a' .. 'z',
-    'A' .. 'Z',
-);
-#
-# return 6 random alphanumerics
-#
-sub req_code {
-    my $s = q{};
-    for (1 .. 6) {
-        $s .= $alphanum[ rand 62 ];
-    }
-    return $s;
-}
-
 #
 # calculate a General Ledger number for an MMI payment
 #
@@ -1910,7 +1893,7 @@ sub rand6 {
     CODE_LOOP:
     while (1) {
         my $lets = '';
-        $lets .= ('A' .. 'Z')[rand 26] for 1 .. 6;
+        $lets .= ('a' .. 'z')[rand 26] for 1 .. 6;
         if (my ($person) = model($c, 'Person')->search({
                                secure_code => $lets,
                            })

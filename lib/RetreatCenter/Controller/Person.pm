@@ -19,7 +19,6 @@ use Util qw/
     stash
     error
     invalid_amount
-    req_code
     email_letter
     calc_mmi_glnum
     get_now
@@ -1256,7 +1255,7 @@ sub _send_requests {
     my $email = $person->email();
     my $program_name = $reg->program->name();
 
-    my $code = req_code();
+    my $code = rand6($c);
     my $total = 0;
     my $py_desc = q{};
     my $tbl_py_desc = <<"EOH";
