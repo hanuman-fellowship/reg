@@ -70,7 +70,7 @@ at the dormitory rate of \$$dorm_rate[% IF per_day %] per night[% END %]:
 [% END %]
 [% END %]
 
-[% IF rental.charges.0 %]
+[% IF rental.charges %]
 <h2>Other Charges</h2>
 <table class=ind cellpadding=3 border=1>
     [% FOR ch IN rental.charges %]
@@ -100,7 +100,7 @@ at the dormitory rate of \$$dorm_rate[% IF per_day %] per night[% END %]:
 </table>
 
 
-[% IF rental.payments.0 %]
+[% IF rental.payments %]
 <h2>Payments</h2>
 <table class=ind cellpadding=3 border=1>
     [% FOR p IN rental.payments %]
