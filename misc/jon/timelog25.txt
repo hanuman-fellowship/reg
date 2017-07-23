@@ -123,3 +123,5 @@ Jul 15 11:00-11:35
     ensuring secure_code is 6 lower case letters
 Jul 16 4:00-5:00
     Talking with Jamal testing DDUP.  It's ready to go.
+Jul 22 11:25-45
+    shuffling around PROGRAM - affiliations for Ratna

@@ -745,8 +745,6 @@ EOF
                })
     ) {
         my $descrip = $a->descrip;
-        next PROG_REP if $descrip =~ m{Misc|UNSPEC|Open\s*Gate}xms;
-            # Misc. Programs and UNSPECIFIED Programs - don't include
         push @prog_affils, $a->id;
         # tidy up the description for this purpose
         $descrip =~ s{\s* programs? \s*}{}xmsgi;
