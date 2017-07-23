@@ -1325,7 +1325,9 @@ EOH
     # and ftp it to the appropriate MMI/MMC site.
     #
     open my $out, '>', "/tmp/$code" or die "cannot create /tmp/$code: $!\n";
-    my ($quest_email) = $string{payment_request_from} =~ m{<(.*)>};
+    my $user = $c->user->obj;
+    my $signed = $user->first;
+    my $quest_email = $user->email;
     print {$out} Dumper({
         py_desc  => $py_desc,
         first    => $person->first(),
@@ -1344,7 +1346,7 @@ EOH
         code     => $code,
         reg_id   => $reg_id,
         person_id => $person_id,
-        signed   => $string{payment_request_signed},
+        signed   => $signed,
         quest_email => $quest_email,
     });
     close $out;
@@ -1408,7 +1410,7 @@ EOH
         tbl_py_desc => $tbl_py_desc,
         program     => $program_name,
         resending   => $resend_all,
-        signed      => $string{payment_request_signed},
+        signed      => $signed,
         org         => $org eq 'MMC'? 'mountmadonna': 'mountmadonnainstitute',
     };
     my $html;
@@ -1420,7 +1422,8 @@ EOH
              . $tt->error();
     email_letter($c,
         to      => $email,
-        from    => $string{payment_request_from},
+        from    => $user->first . ' ' . $user->last . ' '
+                 . '<' . $user->email . '>',
         subject => "Requested Payment for Program '$program_name'",
         html    => $html,
     );
