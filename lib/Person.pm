@@ -88,9 +88,7 @@ sub raw_pipe {
         tel_home tel_work tel_cell
         email sex
         snail_mailings
-        mmi_snail_mailings
         e_mailings
-        mmi_e_mailings
         share_mailings
     /) {
         $s .= ($self->$f() || '') . '|';
@@ -108,9 +106,7 @@ sub csv {
         tel_home tel_work tel_cell
         email sex
         snail_mailings
-        mmi_snail_mailings
         e_mailings
-        mmi_e_mailings
         share_mailings
     /) {
         my $fld = $self->$f() || '';

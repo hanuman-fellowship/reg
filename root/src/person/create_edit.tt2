@@ -128,13 +128,11 @@ function get_gender() {
 <td>
 <table cellpadding=6>
 <tr>
-<td>Email</td><td><input tabindex=13 type=checkbox name=e_mailings value='yes' [% e_mailings %]>MMC</td>
-<td><input tabindex=14 type=checkbox name=mmi_e_mailings     value='yes' [% mmi_e_mailings %]>MMI</td>
+<td>Email</td><td><input tabindex=13 type=checkbox name=e_mailings value='yes' [% e_mailings %]></td>
 </tr>
 
 <tr>
-<td>Snail Mail</d><td><input tabindex=15 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]>MMC</td>
-<td><input tabindex=16 type=checkbox name=mmi_snail_mailings value='yes' [% mmi_snail_mailings %]>MMI</td>
+<td>Snail Mail</d><td><input tabindex=15 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]></td>
 </tr>
 
 <tr><td><input tabindex=17 type=checkbox name=share_mailings value='yes' [% share_mailings %]> Share</td></tr>

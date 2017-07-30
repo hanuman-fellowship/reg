@@ -965,8 +965,6 @@ sub get_online : Local {
         # set them to 0 for new people.
         snail_mailings     => -1,       
         e_mailings         => -1,
-        mmi_snail_mailings => -1,
-        mmi_e_mailings     => -1,
         share_mailings     => -1,
     });
     my $airport = $P{airport};        # for use below

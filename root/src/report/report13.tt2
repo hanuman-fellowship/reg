@@ -1,2 +1,2 @@
-Last,First,Addr1,Addr2,City,State/Province,Zip/Post,Country,Home,Work,Cell,Email,Gender,MMC Snail,MMI Snail,MMC Email,MMI Email,Share
+Last,First,Addr1,Addr2,City,State/Province,Zip/Post,Country,Home,Work,Cell,Email,Gender,Snail,Email,Share
 [% FOREACH p IN people %]$p.csv[% END %]

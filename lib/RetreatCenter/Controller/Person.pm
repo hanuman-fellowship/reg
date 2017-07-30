@@ -335,8 +335,6 @@ sub create : Local {
     stash($c,
         e_mailings         => "checked",
         snail_mailings     => "checked",
-        mmi_e_mailings     => "checked",
-        mmi_snail_mailings => "checked",
         share_mailings     => "checked",
         safety_form        => "",
         waiver_signed      => "",
@@ -364,8 +362,6 @@ sub _get_data {
     for my $f (qw/
         e_mailings
         snail_mailings
-        mmi_e_mailings
-        mmi_snail_mailings
         share_mailings
         inactive
         deceased
@@ -550,8 +546,6 @@ sub update : Local {
         deceased       => (      $p->deceased())? "checked": "",
         e_mailings     => (    $p->e_mailings())? "checked": "",
         snail_mailings => ($p->snail_mailings())? "checked": "",
-        mmi_e_mailings     => (    $p->mmi_e_mailings())? "checked": "",
-        mmi_snail_mailings => ($p->mmi_snail_mailings())? "checked": "",
         share_mailings => ($p->share_mailings())? "checked": "",
         safety_form    => (   $p->safety_form())? "checked": "",
         waiver_signed  => ( $p->waiver_signed())? "checked": "",
@@ -1720,10 +1714,7 @@ sub no_mailings : Local {
     my $p = model($c, 'Person')->find($id);
     $p->update({
         snail_mailings     => '',
-        mmi_snail_mailings => '',
         e_mailings         => '',
-        mmi_e_mailings     => '',
-        share_mailings     => '',
     });
     $c->response->redirect($c->uri_for("/person/view/$id"));
 }

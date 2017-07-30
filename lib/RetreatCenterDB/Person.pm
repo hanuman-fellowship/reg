@@ -39,8 +39,6 @@ __PACKAGE__->add_columns(qw/
     comment
     e_mailings
     snail_mailings
-    mmi_e_mailings
-    mmi_snail_mailings
     share_mailings
     deceased
     inactive
@@ -232,8 +230,6 @@ id_sps - foreign key to person - the partner, if partnered
 inactive - This record is no longer active - for whatever reason.
     Do not include it in any mailings.
 last - last name
-mmi_e_mailings - I want MMI emailings
-mmi_snail_mailings - I want MMI snail mailings
 only_temple - Is this person ONLY a Temple Guest?
 safety_form - this person has filled out a safety form
 sanskrit - Sanskrit name - if any.

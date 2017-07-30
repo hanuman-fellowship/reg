@@ -123,5 +123,10 @@ Jul 15 11:00-11:35
     ensuring secure_code is 6 lower case letters
 Jul 16 4:00-5:00
     Talking with Jamal testing DDUP.  It's ready to go.
-Jul 22 11:25-45
+Jul 22 11:25-11:45, 11:50-12:15
     shuffling around PROGRAM - affiliations for Ratna
+    requested payments email is from the user logged in.
+        need to test it again, please.
+        why does it hang for me?
+Jul 30 9:00-11:30
+    now we do not distinguish mmc and mmi mailing preferences

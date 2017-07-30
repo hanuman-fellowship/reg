@@ -790,8 +790,6 @@ sub unsubscribe : Local {
     my ($self, $c) = @_;
 
     my $upload = $c->request->upload('unsub_emails');
-    my $type = $c->request->params->{unsub_type} eq 'mmi'? "mmi_"
-               :                                          "";
     my $n = 0;
     if ($upload) {
         my @emails = $upload->slurp =~ m{[^'",\s]+\@[^'",\s]+}g;
@@ -800,7 +798,7 @@ sub unsubscribe : Local {
             model($c, 'Person')->search({
                 email => { -in => \@emails },
             })->update({
-                "${type}e_mailings" => '',
+                "e_mailings" => '',
             });
         }
     }
@@ -2132,8 +2130,6 @@ sub upload_yj_sheet_do : Local {
                     date_entrd => $today_d8,
                     e_mailings         => 'yes',
                     snail_mailings     => 'yes',
-                    mmi_e_mailings     => 'yes',
-                    mmi_snail_mailings => 'yes',
                     share_mailings     => 'yes',
                     safety_form        => q{},
                     inactive           => q{},
@@ -2281,7 +2277,6 @@ sub upload_ncoa_sheet_do : Local {
                         st_prov => '',
                         zip_post => '',
                         snail_mailings => '',
-                        mmi_snail_mailings => '',
                     });
                     next ROW;
                 }

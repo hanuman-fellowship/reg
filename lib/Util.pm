@@ -1986,8 +1986,6 @@ sub add_or_update_deduping {
     my @mailing_keys = qw/
         e_mailings
         snail_mailings
-        mmi_e_mailings
-        mmi_snail_mailings
         share_mailings
     /;
 

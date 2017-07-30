@@ -352,46 +352,6 @@ sub list_reg_missing : Local {
     );
 }
 
-my %needed = map { $_ => 1 } qw/
-    pid
-    fname
-    lname
-    street1
-    street2
-    city
-    state
-    zip
-    country
-    home
-    work
-    cell
-    ceu_license
-    email
-    house1
-    house2
-    cabin_room
-    howHeard
-    advertiserName
-    gender
-    carpool
-    hascar
-    from_where
-    amount
-    date
-    time
-    e_mailings
-    snail_mailings
-    mmi_e_mailings
-    mmi_snail_mailings
-    share_mailings
-    sdate
-    edate
-    withwhom_first
-    withwhom_last
-    progchoice
-    green_amount
-/;
-
 #
 # an online registration via a file
 #
@@ -5813,15 +5773,6 @@ sub online_history : Local {
             return;
         }
     }
-    my %needed = map { $_ => 1 } qw/
-        x_date
-        x_first_name
-        x_last_name
-        x_pid
-        x_pname
-        reg_id
-        x_trans_id
-    /;
     my $y = $sdate->year;
     my $m = $sdate->month;
     my $rsod = "root/static/online_done/";

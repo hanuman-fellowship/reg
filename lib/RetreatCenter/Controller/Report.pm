@@ -345,14 +345,6 @@ sub run : Local {
         $expiry = $dt->as_d8();
     }
 
-    my $pref = "none";
-    if ($opt_inout eq 'mmi') {
-        $pref = "mmi_";
-    }
-    elsif ($opt_inout eq 'mmc') {
-        $pref = "";
-    }
-
     #
     # when running a format of EMAIL_CODE or ADDR_CODE
     # there are all kinds of situations where one could
@@ -400,26 +392,22 @@ sub run : Local {
         $restrict .= "date_updat <= " . $report->end_update_cutoff . " and ";
     }
     # if we have ADDR_CODE or EMAIL_CODE do not
-    # restrict it by opt_inout.   We're asking them to
+    # restrict it by the opt'ing in booleans.   We're asking them to
     # update their demographics.  We're not pestering them with ads.
     #
-    if ($pref ne 'none' &&
-        (   $format == TO_CMS
-         || $format == NAME_ADDR_EMAIL
-         || $format == TO_VISTAPRINT
-         || $format == FIRST_SANS_CMS
-         || $format == CMS_SANS_EMAIL
-        )
+    if (   $format == TO_CMS
+        || $format == NAME_ADDR_EMAIL
+        || $format == TO_VISTAPRINT
+        || $format == FIRST_SANS_CMS
+        || $format == CMS_SANS_EMAIL
     ) {
-        $restrict .= "${pref}snail_mailings = 'yes' and ";
+        $restrict .= "snail_mailings = 'yes' and ";
     }
-    if ($pref ne 'none' &&
-        (   $format == NAME_ADDR_EMAIL
-         || $format == JUST_EMAIL
-         || $format == LAST_FIRST_EMAIL
-        )
+    if (   $format == NAME_ADDR_EMAIL
+        || $format == JUST_EMAIL
+        || $format == LAST_FIRST_EMAIL
     ) {
-        $restrict .= "${pref}e_mailings = 'yes' and ";
+        $restrict .= "e_mailings = 'yes' and ";
     }
     if ($share) {
         $restrict .= "share_mailings = 'yes' and ";
@@ -720,8 +708,7 @@ create table people_data (
         st_prov text, zip_post text, country text,
     tel_cell text, tel_home text, tel_work text,
     email text, sex text, id integer,
-    e_mailings text, snail_mailings text, mmi_e_mailings text,
-        mmi_snail_mailings text,
+    e_mailings text, snail_mailings text,
     share_mailings text,
     secure_code text,
     akey text,
@@ -772,7 +759,7 @@ EOF
             first last addr1 addr2 city st_prov zip_post country
             tel_cell tel_home tel_work
             email sex id
-            e_mailings snail_mailings mmi_e_mailings mmi_snail_mailings
+            e_mailings snail_mailings
             share_mailings secure_code akey
         /) {
             my $val = $p->{$f};

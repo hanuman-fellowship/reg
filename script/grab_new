@@ -375,8 +375,6 @@ sub temple_donation {
 
     $href->{e_mailings} =
     $href->{snail_mailings} = 
-    $href->{mmi_e_mailings} = 
-    $href->{mmi_snail_mailings} = 
     $href->{share_mailings} = -1;   # don't change these
                                     # it's just a donation
 
@@ -692,14 +690,11 @@ sub get_temple {
     @hash{qw/
         e_mailings
         snail_mailings
-        mmi_e_mailings
-        mmi_snail_mailings
         share_mailings
     /} = (0) x 5;
     if ($hash{opt_in}) {
         @hash{qw/
             e_mailings
-            mmi_e_mailings
             share_mailings
         /} = (1) x 3;
     }
