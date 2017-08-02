@@ -128,5 +128,9 @@ Jul 22 11:25-11:45, 11:50-12:15
     requested payments email is from the user logged in.
         need to test it again, please.
         why does it hang for me?
-Jul 30 9:00-11:30
+Jul 30 9:00-11:45
     now we do not distinguish mmc and mmi mailing preferences
+Jul 31
+    optionally to do: trim down the export.
+    eliminate photo uploads for programs, users?
+    ask Barnaby about retreat.guru

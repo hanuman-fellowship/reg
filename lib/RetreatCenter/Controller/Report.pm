@@ -418,6 +418,7 @@ sub run : Local {
     if ($format == TO_CMS
         || $format == CMS_SANS_EMAIL
         || $format == FIRST_SANS_CMS
+        || $format == ADDR_CODE
     ) {
         $restrict .= "addr1 != '' and ";
     }
