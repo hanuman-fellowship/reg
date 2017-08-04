@@ -31,4 +31,5 @@ mail.log
 file_ftp_dir/
 grab_new_log
 
+exported_reg_data.tgz
 stop

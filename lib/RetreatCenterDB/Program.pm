@@ -654,8 +654,9 @@ sub fees {
     my $hcost = $housecost->$type;      # column name is correct, yes?
     if ($housecost->type eq "Per Day") {
         $hcost = $ndays*$hcost;
-        $hcost -= 0.10*$hcost  if $ndays >= 7;      # Strings???
-        $hcost -= 0.10*$hcost  if $ndays >= 30;     # Strings???
+        # no more 7 day discount
+        #$hcost -= 0.10*$hcost  if $ndays >= 7;      # Strings???
+        $hcost -= ($string{disc2pct}/100)*$hcost  if $ndays >= $string{disc2days};     # Strings???
         $hcost = int($hcost);
     }
     return 0 unless $hcost;        # don't offer this housing type if cost is zero
