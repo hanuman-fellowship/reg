@@ -49,7 +49,7 @@ my @format_desc = (
     'To CMS - Those sans Email',
     'Last, First, Email',
     'Email, Code',
-    'Address, Code',
+    'To CMS - Address, Code',
     'CSV',
 );
 
