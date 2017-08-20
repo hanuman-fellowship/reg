@@ -27,14 +27,14 @@ of typos and errors.
 with a format of type:
 <span class=code>Email, Code</span>
 or
-<span class=code>Address, Code</span>.
+<span class=code>To CMS - Address, Code</span>.
 <p>
 <span class=code>Email, Code</span> is used
 for making the requests by email.  The report output
 contains the following fields:
 First, Last, Email, Secure Code
 <p>
-<span class=code>Address, Code</span> is used
+<span class=code>To CMS - Address, Code</span> is used
 when sending requests by snail mail.  The report output includes these fields:
 First, Last, Address 1, Address 2, City, State, Zip, Country, Secure Code.
 <b>Note</b>: Since this format is used for snail mail addresses it will only
@@ -56,10 +56,7 @@ an Expiration Date (in the usual format: see <a href=dates.html>Dates</a>).
 <p>
 <b>Important</b>: The output of the reports should be saved in a file for sending
 to the mailing services (Mail Chimp and CMS).
-Use 'File > Save As' in your browser.  Note that at the top of the page
-there is some HTML that you should delete.  Alternatively, you could
-do a 'select, copy, and paste' into a text file or email to select
-just the data you wish.
+Use 'File > Save As' in your browser.
 <p>
 The act of running the report will export/upload all the demographic data for
 the chosen people
@@ -133,7 +130,7 @@ demographic data on the web (inaccessible though it may be) for
 as little time as possible.
 </ol>
 <li>
-Using Mail Chimp (for <span class=code>Email, Code</span> or Complete Mailing Service for <span class=code>Address, Code</span>) you take the saved
+Using Mail Chimp (for <span class=code>Email, Code</span> or Complete Mailing Service for <span class=code>To CMS - Address, Code</span>) you take the saved
 report file and do a mail merge.    The body of the emails you send
 should be something like this:
 <pre>
@@ -232,11 +229,11 @@ you can direct people to go to this web address:
 At this site (click it above to see) you can enter your CODE
 and proceed as before.
 <p>
-Again, note that when using the format <span class=code>Address, Code</span>
+Again, note that when using the format <span class=code>To CMS - Address, Code</span>
 the only people included in the report are those <b>without</b> an email address.
 Using <span class=code>Email, Code</span> is <i>so</i> much 
 more convenient for everyone that it should be used in preference
-to <span class=code>Address, Code</span>.
+to <span class=code>To CMS - Address, Code</span>.
 <p>
 The page presented above needs styling attention - as do the other pages as well!.
 The other pages are in the cgi-bin directory and are named
