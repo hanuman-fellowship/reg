@@ -387,11 +387,10 @@ $user.first $user.last
 </TABLE>
 <HR>
 <H2>Address and Contact Information</H2>
-<P class=p2><B>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</B> - 445 Summit Rd, Watsonville, CA 95076<BR></P>
 
 <TABLE cellpadding=3>
-<TR><TH align=right>Phone</TH><TD>[% IF mmi %]408-846-4060[% ELSE %]408-846-4064[% END %] or 408-847-0406</TD></TR>
-<TR><TH align=right>Fax</TH><TD>408-847-2683</TD></TR>
+<TR><th align=right valign=top>Address</th><td>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]<br>445 Summit Rd, Watsonville, CA 95076</td</tr>
+<TR><TH align=right width=200>[% IF mmi %]Phone[% ELSE %]Programs Office Phone[% END %]</TH><TD>[% IF mmi %]408-846-4060[% ELSE %]408-846-4090[% END %]</TD></TR>
 [% IF mmi %]
 <TR><TH align=right>Email</TH><TD><A HREF="mailto:info@mountmadonnainstitute.org">info@mountmadonnainstitute.org</A></TD></TR>
 [% ELSE %]
@@ -406,7 +405,7 @@ Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 10:00-5:00
 </TD></TR>
 <TR>
     <TH align=right valign=top>Map/Directions</TH>
-    <TD align=left>Use only <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>, or directions <A HREF="#directions">below</A>. Do not use GPS, Mapquest or Yahoo Maps.</TD>
+    <TD align=left>Use only <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>, or directions <A HREF="#directions">below</A>. <br>Do <b>NOT</b> use GPS, Mapquest or Yahoo Maps.</TD>
 </TR>
 </TABLE>
 [% IF program.kayakalpa %]
