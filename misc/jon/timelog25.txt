@@ -140,3 +140,7 @@ Aug 4 2:00-3:00
     another fix for 10% discount for 7 days or more - on export
 Aug 20 11:30-11:40
     tweaking the DDUP help
+Sep 4 12:45-1:00
+    look for decimal points in housing grid costs
+Sep 6 1:45-2:00
+    fixing mistake I made when fixing the decimal points :(
