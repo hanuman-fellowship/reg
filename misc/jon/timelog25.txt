@@ -144,3 +144,18 @@ Sep 4 12:45-1:00
     look for decimal points in housing grid costs
 Sep 6 1:45-2:00
     fixing mistake I made when fixing the decimal points :(
+Sep 30 10:00-10:30
+    replying to Kamala 
+    replying to Barnaby and Vishwamitra re: Rental updates
+Oct 1 7:00-8:00
+    creating signature file with iPhone, resize, etc
+    exploring docusign
+Oct 11 8:45-
+    hybrid programs from rentals after creation and
+        received/arrangement/housing assignment of the rental
+        help updated
+Oct 15 9:00-9:30
+    examining rental docs and signature for rental project
+Oct 17 9:40-9:50
+    time travel - ignore case when looking at usernames
+    amazing that mysql ignores case when doing test for equality!

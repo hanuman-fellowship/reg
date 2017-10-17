@@ -4575,7 +4575,7 @@ sub ceu : Local {
     my $stash = ceu_license_stash($reg);
     stash($c,
         %$stash,
-        template => 'registration/ceu_form.tt2',
+        template => 'registration/ceu.tt2',
     );
 }
 

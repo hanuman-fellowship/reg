@@ -1031,7 +1031,7 @@ sub tt_today {
     my $login = $c->user->username();
     my ($user, $dt) = split m{\s+}, $string{tt_today};
     $dt = date($dt);
-    return ($user eq $login && $dt)? $dt: today();
+    return (lc $user eq lc $login && $dt)? $dt: today();
 }
 
 sub ceu_license {
@@ -1140,6 +1140,7 @@ sub ceu_license_stash {
         has_completed => $has_completed,
         provider      => $provider,
         hours         => $hours . " (" . _spell($hours) . ")",
+        program_director => $string{program_director},
     };
 }
 
