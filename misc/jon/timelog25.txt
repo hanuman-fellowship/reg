@@ -150,7 +150,7 @@ Sep 30 10:00-10:30
 Oct 1 7:00-8:00
     creating signature file with iPhone, resize, etc
     exploring docusign
-Oct 11 8:45-
+Oct 11 8:45-9:30
     hybrid programs from rentals after creation and
         received/arrangement/housing assignment of the rental
         help updated
@@ -159,7 +159,7 @@ Oct 15 9:00-9:30
 Oct 17 9:40-9:50
     time travel - ignore case when looking at usernames
     amazing that mysql ignores case when doing test for equality!
-Oct 18 7:15-9:05, 9:20-
+Oct 18 7:15-9:05, 9:20-11:15, 3:45-
     rental contract mods, attachments, payment link
         why couldn't I cp MMC_header.png to the assets/img/registration dir?
         had to touch it then ...

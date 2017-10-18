@@ -2,9 +2,10 @@
 <head>
 <style type="text/css">
 body {
-    width: 6.5in;
+    width: 7in;
     margin-left: .3in;
     font-size: 11pt;
+    font-family: Arial;
 }
 h3 {
     text-align: center;
@@ -18,7 +19,6 @@ table {
 }
 #line {
     margin-top: .4in;
-    margin-bottom: 1.5in;
 }
 #name {
     width: 400px;
@@ -90,7 +90,7 @@ And if there are any other needs or ways we can help, please do let us know.
 <p>
 <p>
 All good wishes,<br>
-<div style="margin-top: .3in;">
+<img width=250 src="https://www.mountmadonna.org/assets/img/registration/signature.png"><br>
 $program_director<br>
 Program Director
 </div>
@@ -177,11 +177,6 @@ within the first half-hour of mealtime. Meals are at the
 Community Building for the renter,
 other guests of the Center, and the Center community.
 <h2>Payment and Cancellation Policies</h2>
-The renter will pay a deposit of \$$deposit
-upon the signing of this contract.
-<br>
-This amount can be paid online with this <a href="https://www.mountmadonna.org/cgi-bin/rental_deposit?code=$rental.grid_code">payment link</a>.
-<p>
 [% IF hc.type == 'Per Day' %]
 "Agreed Upon Revenue" is equal to the number of
 people specified under "Facilities" above,
@@ -204,6 +199,13 @@ In this particular case, x = ${rental.max}
 and the dormitory rate is \$$rental.housecost.dormitory per day.
 [% END %]
 The Agreed Upon Revenue is thus \$${agreed}.
+<p>
+<b>The minimum due for your workshop is 75% of \$$agreed &nbsp;&nbsp;=&nbsp;&nbsp; \$${min_due}.</b>
+<p>
+The renter will pay a deposit of \$$deposit
+upon the signing of this contract.
+<p>
+This amount can be paid online with this <a href="https://www.mountmadonna.org/cgi-bin/rental_deposit?code=$rental.grid_code">payment link</a>.
 <p>
 Cancellation charges shall be as follows:
 <table cellpadding=2>
@@ -241,7 +243,6 @@ or at the 75% of Agreed Upon Revenue formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
 <p>
-<b>The minimum due for your workshop is 75% of \$$agreed &nbsp;&nbsp;=&nbsp;&nbsp; \$${min_due}.</b>
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Concurrent Workshops</h2>

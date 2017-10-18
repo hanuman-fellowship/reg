@@ -1,13 +1,27 @@
+<style>
+body {
+    width: 700px;
+    font-family: Arial;
+    font-size: 13pt;
+    margin-bottom: .5in;
+}
+</style>
 Greetings ${rental.coordinator.first},
 <p>
 Attached you will find the rental contract for '$rental.name_trimmed'.
 <p>
-There are two other things attached:
-<ol>
-<li>Registration Guidelines
-<li>Kaya Kalpa Brochure
-</ol>
+Mount Madonna Center is most pleased to be able to host your group.
+Attached you will find the Rental Contract,
+Registration and Advertising Guidelines, and the Kaya Kalpa Wellness Brochure.
+Please print and sign the rental contract then scan the signed copy
+and attach it to a reply email to me.
+You may use the payment link embedded in the contract to
+pay your deposit for us to hold the venue and accommodations
+for the dates you have reserved.
 <p>
-Thank you,<br>
-$user.first $user.last
-<div style="page-break-after:always"></div>
+Thank you and best wishes,
+<p>
+$program_director<br>
+Program Director<br>
+Mount Madonna Center
+<p>

@@ -1623,6 +1623,10 @@ sub contract : Local {
         );
         return;
     }
+    # temporary adjustment of mountmadonna.org addresses:
+    for my $a ($args{to}, @cc_bcc) {
+        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
+    }
     # a special sending of the letter - can't use Util sub email_letter
     Global->init($c);
     my @auth = ();
@@ -1661,7 +1665,7 @@ sub contract : Local {
     });
     my $dir = 'root/static/templates/letter';
     my $f0 = "/tmp/contract" . $rental->id . ".html";
-    open my $out, '>', $f0 or return;
+    open my $out, '>', $f0 or return;   # what to do??
     print {$out} $html;
     close $out;
     my $rental_name = $rental->name_trimmed;
