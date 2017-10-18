@@ -159,3 +159,21 @@ Oct 15 9:00-9:30
 Oct 17 9:40-9:50
     time travel - ignore case when looking at usernames
     amazing that mysql ignores case when doing test for equality!
+Oct 18 7:15-9:05, 9:20-
+    rental contract mods, attachments, payment link
+        why couldn't I cp MMC_header.png to the assets/img/registration dir?
+        had to touch it then ...
+        tell Shantam/Jamal about this file?!!
+    good progress
+    next - attach contract to email as html
+        so it prints properly
+    attached as html but the mail user agent displays it
+        rather than shows it as an attachment - then it doesn't!
+            hostmysite webmail treats it okay
+        confusing.
+        convert to pdf?   wkhtmltopdf-0.12.4-1.el7.aarch64.rpm has
+            all kinds of dependencies
+            forget it
+
+        trimmed mm/yy from rental name - okay?
+        preface letter - wordsmith it please

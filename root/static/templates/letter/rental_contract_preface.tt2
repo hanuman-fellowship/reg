@@ -1,0 +1,13 @@
+Greetings ${rental.coordinator.first},
+<p>
+Attached you will find the rental contract for '$rental.name_trimmed'.
+<p>
+There are two other things attached:
+<ol>
+<li>Registration Guidelines
+<li>Kaya Kalpa Brochure
+</ol>
+<p>
+Thank you,<br>
+$user.first $user.last
+<div style="page-break-after:always"></div>

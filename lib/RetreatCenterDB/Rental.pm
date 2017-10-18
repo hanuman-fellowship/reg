@@ -635,6 +635,13 @@ sub compute_balance {
     }
 }
 
+sub name_trimmed {
+    my ($self) = @_;
+    my $name = $self->name;
+    $name =~ s{\s* \d+/\d+ \s* \z}{}xms;
+    $name;
+}
+
 1;
 __END__
 overview - A rental is created when some other organization wants

@@ -4,7 +4,6 @@
 body {
     width: 6.5in;
     margin-left: .3in;
-    margin-top: 1.5in;
     font-size: 11pt;
 }
 h3 {
@@ -18,7 +17,8 @@ table {
     font-size: 11pt;
 }
 #line {
-    margin-top: .7in;
+    margin-top: .4in;
+    margin-bottom: 1.5in;
 }
 #name {
     width: 400px;
@@ -26,6 +26,8 @@ table {
 </style>
 </head>
 <body>
+<img width=650 src="https://www.mountmadonna.org/assets/img/registration/MMC_header.png">
+<p>
 ${contract_sent.format("%B %e, %Y")}
 <p>
 $signer.first $signer.last<br>
@@ -101,7 +103,7 @@ $signer.last
 of $signer.addr1[% IF signer.addr2 %] $signer.addr2[% END %],
 $signer.city, $signer.st_prov
 $signer.zip_post, [% IF signer.country %]$signer.country[% END %]
-for "${rental.name}", hereafter called the Renter, hereby agree as follows:
+for "${rental.name_trimmed}", hereafter called the Renter, hereby agree as follows:
 <h2>Facilities</h2>
 The Center will provide workshop space in the ${rental.meeting_spaces},
 or a comparable facility, and lodging for up to $rental.max
@@ -175,8 +177,10 @@ within the first half-hour of mealtime. Meals are at the
 Community Building for the renter,
 other guests of the Center, and the Center community.
 <h2>Payment and Cancellation Policies</h2>
-The renter will pay a deposit of \$$deposit amount
+The renter will pay a deposit of \$$deposit
 upon the signing of this contract.
+<br>
+This amount can be paid online with this <a href="https://www.mountmadonna.org/cgi-bin/rental_deposit?code=$rental.grid_code">payment link</a>.
 <p>
 [% IF hc.type == 'Per Day' %]
 "Agreed Upon Revenue" is equal to the number of
@@ -318,11 +322,11 @@ of the date alongside the Program Director's signature.
 <p>
 <center>
 <table id=line border=0>
+<tr><td><img src="https://www.mountmadonna.org/assets/img/registration/signature.png"></td><td valign=bottom>${today.format("%m/%d/%Y")}</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td id=name align=left>$program_director</td><td>Date</td></tr>
 <tr><td id=name align=left>Program Director</td></tr>
-</table>
-<table id=line border=0>
+<tr><td height=80>&nbsp;</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td id=name align=left>$signer.first $signer.last</td><td>Date</td></tr>
 </table>

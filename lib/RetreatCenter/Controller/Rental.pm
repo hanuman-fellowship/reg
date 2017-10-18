@@ -125,6 +125,7 @@ sub _get_data {
         my $tm = get_time($t);
         if (! $tm) {
             push @mess, Time::Simple->error();
+            next TIME;
         }
         $P{$n} = $tm->t24();
     }
@@ -1331,7 +1332,7 @@ sub email_arrangements : Local {
     my $rental = model($c, 'Rental')->find($rental_id);
     stash($c,
         rental   => $rental,
-        subject  => "MMC Rental Arrangements for " . $rental->name(),
+        subject  => "MMC Rental Arrangements for '" . $rental->name_trimmed() . "'",
         template => "rental/email_arrangements.tt2",
     );
 }
@@ -1490,7 +1491,7 @@ sub email_contract : Local {
     my ($self, $c, $rental_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
-    if (! _contract_ready($c, $rental)) {
+    if (! _contract_ready($c, $rental, 0)) {
         return;
     }
     stash($c,
@@ -1500,7 +1501,7 @@ sub email_contract : Local {
 }
 
 sub _contract_ready {
-    my ($c, $rental) = @_;
+    my ($c, $rental, $new_window) = @_;
 
     my $cs_id = ($rental->cs_person_id() || $rental->coordinator_id());
     my $cs = undef;
@@ -1534,7 +1535,9 @@ sub _contract_ready {
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>", @mess;
-        $c->stash->{template} = "rental/error.tt2";
+        $c->stash->{template} = "rental/" 
+                              . ($new_window? 'close_': '')
+                              . "error.tt2";
         return 0;
     }
     return 1;
@@ -1544,25 +1547,9 @@ sub contract : Local {
     my ($self, $c, $id, $email) = @_;
 
     my $rental = model($c, 'Rental')->find($id);
-    if (! _contract_ready($c, $rental)) {
+    if (! _contract_ready($c, $rental, 1)) {
         return;
     }
-    #
-    # assume the contract is sent the same day it is generated.
-    # don't update this when viewing the contract after it
-    # was sent.
-    #
-    # This is no longer true.   The user must set the
-    # Contract Sent date themselves manually.
-    #
-    #if (! $rental->contract_sent()) {
-    #    $rental->update({
-    #        contract_sent => tt_today($c)->as_d8(),
-    #        tentative     => '',
-    #        sent_by       => $c->user->obj->id,
-    #        status        => "sent",
-    #    });
-    #}
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
@@ -1601,6 +1588,7 @@ sub contract : Local {
         rental_late_out => $string{rental_late_out},
         contract_sent => $contract_sent,
         contract_expire => $contract_sent + 17,
+        user   => $c->user,
     );
     $tt->process(
         "rental_contract.tt2",# template
@@ -1635,13 +1623,96 @@ sub contract : Local {
         );
         return;
     }
-    email_letter($c,
-        from    => "$string{from_title} <$string{from}>",
+    # a special sending of the letter - can't use Util sub email_letter
+    Global->init($c);
+    my @auth = ();
+    if ($string{smtp_auth}) {
+        @auth = (
+            auth    => $string{smtp_auth},
+            authid  => $string{smtp_user},
+            authpwd => $string{smtp_pass},
+        );
+    }
+    my $sender = Mail::Sender->new({
+        smtp => $string{smtp_server},
+        port => $string{smtp_port},
+        @auth,
+        on_errors => 'die',
+    });
+    my $user = $c->user->obj();
+    $sender->OpenMultipart({
+        from    =>        $user->first
+                 . ' '  . $user->last
+                 . ' <' . $user->email . '>',
         to      => \@to,
         cc      => \@cc,
-        subject => "MMC Rental Contract with " . $rental->name(),
-        html    => $html,
-    );
+        subject => "MMC Rental Contract with '" . $rental->name_trimmed() . "'",
+    });
+    my $preface = "";
+    $tt->process(
+        "rental_contract_preface.tt2",  # template
+        \%stash,             # variables
+        \$preface,           # output
+    ) or die "error in processing template: "
+             . $tt->error();
+    $sender->Body({
+        ctype => 'text/html',
+        msg   => $preface,
+    });
+    my $dir = 'root/static/templates/letter';
+    my $f0 = "/tmp/contract" . $rental->id . ".html";
+    open my $out, '>', $f0 or return;
+    print {$out} $html;
+    close $out;
+    my $rental_name = $rental->name_trimmed;
+    $sender->Attach({
+        description => '$rental_name MMC Rental Contract',
+        ctype       => 'text/html',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . qq{filename="$rental_name MMC Rental Contract.html";}
+                     . 'type="html"',
+        file        => $f0,
+    });
+    my $f1 = "Rental Registration Guidelines.pdf";
+    $sender->Attach({
+        description => $f1,
+        ctype       => 'application/pdf',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . qq{filename="$f1";}
+                     . 'type="pdf"',
+        file        => "$dir/$f1",
+    });
+    my $f2 = 'Kaya Kalpa Brochure.pdf';
+    $sender->Attach({
+        description => $f2,
+        ctype       => 'application/pdf',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . qq{filename="$f2";}
+                     . 'type="pdf"',
+        file        => "$dir/$f2",
+    });
+    my $rc = $sender->Close;
+    open my $mlog, ">>", "mail.log";
+    print {$mlog} localtime() . " @to - Contract for " . $rental->name . " - ";
+    if (ref $rc) {
+        print {$mlog} "sent\n";
+    }
+    else {
+        print {$mlog} " error - $Mail::Sender::Error\n";
+    }
+    close $mlog;
+    #
+    # the contract has been sent
+    #
+    $rental->update({
+        contract_sent => tt_today($c)->as_d8(),
+        tentative     => '',
+        sent_by       => $c->user->obj->id,
+        status        => "sent",
+    });
     $c->response->redirect($c->uri_for("/rental/view/$id/2"));
 }
 
