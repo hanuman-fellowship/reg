@@ -48,9 +48,6 @@ Please sign and return the original with your deposit,
 keeping the copy for your files. Note that the contract will expire
 if it is not returned with the deposit by
 ${contract_expire.format("%B %e, %Y")}.
-Also, here is our
-standard confirmation sheet including a map, directions,
-and other information you may find useful.
 <p>
 Please note the contract provisions regarding the housing procedure,
 especially the \$${rental_late_out}.00 to \$${rental_late_in}.00
