@@ -1624,7 +1624,7 @@ sub contract : Local {
         return;
     }
     # temporary adjustment of mountmadonna.org addresses:
-    for my $a ($args{to}, @cc_bcc) {
+    for my $a (@to, @cc) {
         $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
     }
     # a special sending of the letter - can't use Util sub email_letter
