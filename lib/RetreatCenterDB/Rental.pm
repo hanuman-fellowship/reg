@@ -22,6 +22,7 @@ use Time::Simple qw/
     get_time
 /;
 use Template;
+use Data::Dumper 'Dumper';
 
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('rental');
