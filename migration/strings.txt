@@ -269,3 +269,5 @@ mmi_event_alert jonb@suecenter.org
 pr_max_nights 14
 req_mmc_dir /for_reg/req_mmc_dir
 req_mmc_dir_paid /for_reg/req_mmc_dir/paid
+ftp_rental_deposit_dir /for_reg/rental_deposit
+ftp_rental_deposit_dir_paid /for_reg/rental_deposit/paid

@@ -159,7 +159,7 @@ Oct 15 9:00-9:30
 Oct 17 9:40-9:50
     time travel - ignore case when looking at usernames
     amazing that mysql ignores case when doing test for equality!
-Oct 18 7:15-9:05, 9:20-11:15, 3:45-
+Oct 18 7:15-9:05, 9:20-11:15, 3:45-6:00, 10:05-11:00
     rental contract mods, attachments, payment link
         why couldn't I cp MMC_header.png to the assets/img/registration dir?
         had to touch it then ...
@@ -177,3 +177,16 @@ Oct 18 7:15-9:05, 9:20-11:15, 3:45-
 
         trimmed mm/yy from rental name - okay?
         preface letter - wordsmith it please
+    Vishwamitra's edits, other tweaks
+    began rental_deposit CGI script
+        mimick req_pay, etc.
+        relay and grab_new as well.
+Oct 20 10:30-10:40
+    sitaRam secret passwd
+Oct 21 1:05-1:20
+    another transportation link
+Oct 23 11:50-12:15
+    various little email replies
+    mmc => mmi email translate still applies?
+Oct 24 8:15-
+    continuing with rental deposit online payment

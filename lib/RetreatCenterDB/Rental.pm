@@ -480,6 +480,39 @@ sub set_grid_stale {
     });
 }
 
+sub send_rental_deposit {
+    my ($rental) = @_;
+    my $code = $rental->grid_code() . ".txt";
+    my $coord = $rental->coordinator();
+    open my $out, '>', "/tmp/$code";
+    print {$out} Dumper({
+        first    => $coord->first(),
+        last     => $coord->last(),
+        addr     => $coord->addr1() . " " . $coord->addr2,
+        city     => $coord->city(),
+        st_prov  => $coord->st_prov(),
+        zip_post => $coord->zip_post(),
+        country  => $coord->country() || 'USA',
+        id       => $rental->id(),
+        name     => $rental->name_trimmed(),
+        amount   => $rental->deposit(),
+        sdate    => $rental->sdate(),
+        edate    => $rental->edate(),
+        phone    => $coord->tel_home() || $coord->tel_cell(),
+        email    => $coord->email(),
+    });
+    close $out;
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or die "cannot connect to $string{ftp_site}";    # not die???
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or die "cannot login ", $ftp->message; # not die???
+    $ftp->cwd($string{ftp_rental_deposit_dir}) or die "cwd";
+    $ftp->ascii() or die "ascii";
+    $ftp->put("/tmp/$code", $code) or die "put " . $ftp->message;
+    $ftp->quit();
+    unlink "/tmp/$code";
+}
+
 # ??? system("grab wait") if $invoice;
 # make sure the local grid is current???
 sub compute_balance {

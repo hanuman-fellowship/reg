@@ -1550,6 +1550,7 @@ sub contract : Local {
     if (! _contract_ready($c, $rental, 1)) {
         return;
     }
+    $rental->send_rental_deposit();
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,

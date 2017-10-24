@@ -270,7 +270,7 @@ We suggest that you bring the following:
 [% END %]
 </UL>
 If you want help with transportation to the Center, please check
-<a href="http://www.mountmadonna.org/transportation-directions/shuttle-service">this site</a>.
+<a href="http://www.mountmadonna.org/transportation-directions">this site</a>.
 <p class=p2>
 [% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
     <P class=p2>
