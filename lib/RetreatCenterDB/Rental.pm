@@ -483,7 +483,7 @@ sub set_grid_stale {
 
 sub send_rental_deposit {
     my ($rental) = @_;
-    my $code = $rental->grid_code() . ".txt";
+    my $code = $rental->grid_code();
     my $coord = $rental->coordinator();
     open my $out, '>', "/tmp/$code";
     print {$out} Dumper({
@@ -491,8 +491,8 @@ sub send_rental_deposit {
         last     => $coord->last(),
         addr     => $coord->addr1() . " " . $coord->addr2,
         city     => $coord->city(),
-        st_prov  => $coord->st_prov(),
-        zip_post => $coord->zip_post(),
+        state    => $coord->st_prov(),
+        zip      => $coord->zip_post(),
         country  => $coord->country() || 'USA',
         id       => $rental->id(),
         name     => $rental->name_trimmed(),

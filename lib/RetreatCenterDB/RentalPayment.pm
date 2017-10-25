@@ -106,5 +106,5 @@ id - unique id
 rental_id - foreign key to rental
 the_date - date the payment was made
 time - time the payment was made
-type - D (credit), C (check), S (cash)
+type - D (credit), C (check), S (cash), O (online)
 user_id - foreign key to user - the user who entered the payment

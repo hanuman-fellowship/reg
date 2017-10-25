@@ -188,5 +188,12 @@ Oct 21 1:05-1:20
 Oct 23 11:50-12:15
     various little email replies
     mmc => mmi email translate still applies?
-Oct 24 8:15-
+Oct 24 8:15-9:30, 10:00-11:30
     continuing with rental deposit online payment
+    next step - fill in template with fields from rental_deposit code file
+        check out how it looks
+        the template is cloned from req_mmc.tt2
+    good progress - still some issue with relay
+Oct 25 9:30-12:30
+    finalizing online rental deposit payment
+    it's like making all the stars align :)

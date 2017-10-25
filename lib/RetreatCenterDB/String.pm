@@ -307,6 +307,7 @@ reception_email - who should be notified when an MMC mailing list request comes 
 reg_end - the default time of day for program registration to end
 reg_start - the default time of day for program registration to begin
 rental_arranged_color - the color of an arranged rental
+rental_coord_email - the person to notify when a rental deposit is received online
 rental_late_in - the penalty for a late indoor rental
 rental_late_out - the penalty for a late outdoor rental
 rental_done - description for a rental status of Done
@@ -349,5 +350,6 @@ triple - the display name for the housing type 'triple'
 tt_today - a place to do 'time travel'.  format: 'username mm/dd/yy'
 typehdr - the heading for the list of housing types
 unknown - the display name for the housing type 'unknown'
+url_prefix - the prefix for all URLs in Reg - like http://kali:3000
 website - the title for a Rental's website in the online row for the rental
 weburl - the web address for a Rental's website in the online row for the rental

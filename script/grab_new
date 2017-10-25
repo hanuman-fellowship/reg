@@ -56,6 +56,8 @@ them into actual payments.
 
 9) Get online membership payments
 
+10) Get rental deposit payments
+
 =end
 
 =cut
@@ -112,7 +114,8 @@ my @mlist_alerts;   # an array of hashrefs - who to send
 
 # directories
 my ($online, $grid, $temple, $mlist_done, $rides,
-    $req_mmi_dir, $req_mmc_dir, $omp_dir, $temple_donation, $grab_new);
+    $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
+    $temple_donation, $grab_new);
 my $something_happened = 0;
 my $time_printed = 0;
 
@@ -203,6 +206,7 @@ sub initialize {
     $req_mmi_dir     = make_dir("$rst/req_mmi/$year_mon_dir");
     $req_mmc_dir     = make_dir("$rst/req_mmc/$year_mon_dir");
     $omp_dir         = make_dir("$rst/omp");
+    $rental_deposit_dir = make_dir("$rst/rental_deposit/$year_mon_dir");
     $temple_donation = make_dir("$rst/temple_donation");
     $grab_new        = make_dir("$rst/grab_new");
 }
@@ -548,6 +552,37 @@ sub get_omp {
     ++$nomp;
 }
 
+sub get_rental_deposit {
+    my ($get_dir, $transaction_id) = @_;
+
+    my %hash = %{ do "$get_dir/$transaction_id" };
+    # this hash contains the keys 'id' and 'amount'
+    # the id is the rental id
+    # other keys are 'first' and 'last' - the name of the contact person
+    #
+    my $rental = model($c, 'Rental')->find($hash{id});
+    # make a rental_payment
+    model($c, 'RentalPayment')->create({
+        amount    => $hash{amount},
+        rental_id => $hash{id},
+        type      => 'O',
+        user_id     => 0,                 # what other user id?
+        the_date    => $today_d8,
+        time        => $now_t24,
+    });
+    msg "rental deposit of \$$hash{amount} for " . $rental->name;
+    # notify the rental coordinator
+    my $rc = email_letter($c,
+        to      => "MMC Transportation <$string{rental_coord_email}>",
+        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+                                    # what else?
+        subject => "Rental Deposit Received for " . $rental->name(),
+        html    => "$hash{first} $hash{last} paid \$$hash{amount}"
+                 . " for <a href='$string{url_prefix}/rental/view/$hash{id}/3'>"
+                 . $rental->name() . "</a>",
+    );
+}
+
 sub ride_alert {
     if ($nrides) {
         my $rc = email_letter($c,
@@ -790,6 +825,10 @@ sub main {
     # Membership Payments
     get_files($ftp, $string{ftp_omp_dir},
               $omp_dir, \&get_omp);
+
+    # Rental Deposit Payments
+    get_files($ftp, $string{ftp_rental_deposit_dir_paid},
+              $rental_deposit_dir, \&get_rental_deposit);
 
     # MMC Payment Requests
     get_files($ftp, $string{req_mmc_dir_paid},
