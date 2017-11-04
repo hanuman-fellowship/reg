@@ -391,6 +391,7 @@ $user.first $user.last
 <TABLE cellpadding=3>
 <TR><th align=right valign=top>Address</th><td>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]<br>445 Summit Rd, Watsonville, CA 95076</td</tr>
 <TR><TH align=right width=200>[% IF mmi %]Phone[% ELSE %]Programs Office Phone[% END %]</TH><TD>[% IF mmi %]408-846-4060[% ELSE %]408-846-4090[% END %]</TD></TR>
+<tr><th align=right>After Hours Emergency Phone</th><td>408-475-0095</td></tr>
 [% IF mmi %]
 <TR><TH align=right>Email</TH><TD><A HREF="mailto:info@mountmadonnainstitute.org">info@mountmadonnainstitute.org</A></TD></TR>
 [% ELSE %]
