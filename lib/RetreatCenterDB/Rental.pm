@@ -299,13 +299,14 @@ sub count {
         # it has been cancelled - ignore the web grid
         return 0;
     }
+    my $reg_count = 0;
     if ($self->program_id()) {
         # Hybrid counts come from the program and also the web grid.
-        return $self->program->count();
+        $reg_count = $self->program->count();
     }
     my $expected = $self->expected() || 0;
     my $gmax = $self->grid_max() || 0;
-    return ($gmax > $expected)? $gmax: $expected;
+    return (($gmax > $expected)? $gmax: $expected) + $reg_count;
 }
 my %display_for = map { my $x = $_; $x =~ s{_}{ }xmsg; $x } qw/
     tentative Tentative
