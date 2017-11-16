@@ -1173,6 +1173,23 @@ sub delete : Local {
 
     my $p = model($c, 'Program')->find($id);
 
+    if ($p->rental_id) {
+        error($c,
+            "This is a hybrid.  Ask Sahadev for help in deleting it.",
+            'gen_error.tt2',
+        );
+        return;
+        # cascading deletes are very confusing in DBIx::Class
+        # perhaps it is better in the latest version which we
+        # do not have ...
+        # what to do?   just prohibit it from the UI.
+        # first clear out any registrations, bookings, etc from the program
+        # then on the mysql command line 
+        # - update the rental and set program_id to 0
+        #   and mmi_does_reg to ''
+        # - delete the program (it won't cascade)
+    }
+
     if (my @regs = $p->registrations()) {
         my $n = @regs;
         my $pl = $n == 1? '': "s";
