@@ -1,0 +1,22 @@
+Nov 15 10:45-12:50
+    restore a deleted hybrid rental
+        it cascaded - so that is prohibited now
+    bad - kali and backups are not happening!
+        needs immediate attention.
+        bad
+        kali is not current.
+        make a tar file to set up a new backup machine!
+        for the mac as well.
+            do a db_init for a clean db
+    git pushes the source to newkali okay
+        but the database and the perl modules may be disabled!
+Nov 16 8:15-8:50
+    research pay deposit or full amount
+        see cg/try and ht/try.html on mmc.org
+Nov 22 9:00-9:45
+    pay in full reg2 research
+        harder than I thought - needs new fingerprint
+Nov 23 4:50-5:05, 10:00-11:00
+    pay in full continuing and finishing
+Nov 25 1:00-1:30
+    first steps in creating a Reg dev env
