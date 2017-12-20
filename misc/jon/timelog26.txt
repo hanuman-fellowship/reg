@@ -18,5 +18,74 @@ Nov 22 9:00-9:45
         harder than I thought - needs new fingerprint
 Nov 23 4:50-5:05, 10:00-11:00
     pay in full continuing and finishing
-Nov 25 1:00-1:30
+Nov 25 1:00-1:30, 2:45-3:15
     first steps in creating a Reg dev env
+    getting help from Shantam re: craft and git
+Dec 2 7:00-8:45
+    docuSign try
+    pretty simple.   everyone gets lots of email.
+    will need to change who has access to the account
+    no images from remote urls
+        base64 encoded image inserted in src=""
+        cool!
+        MMC_header is too big, though.
+        can compress, resize
+        format must be precise: <img src="data:image/png;base64,...>
+        didn't work :(
+        https://stackoverflow.com/questions/47463127/embedded-image-in-htm-document-not-visible-while-signing-in-docusign
+
+        solution:
+        print it, save as pdf !!, upload to docusign, add recipient,
+            add signature element and date, and send
+        add email address to the contract so it is easily seen
+
+        can add multiple users
+        as usual it has many more features than we will use
+        we'll find our way, document it, and that will be it.
+    make MMC_header.png smaller please
+Dec 5 11:00-11:10, 3:40-6:20
+    adding contract signer email to rental contract
+    documenting docuSign process in email and help.
+    and video?
+Dec 13 6:15-6:45
+    answering Shantam's questions about exporting MMI programs
+    answering Kamala's question about member benefits
+Dec 16 1:00-5:30
+    kali crashed after power outage
+    took some real effort by Shantam, Ryder Brooks, and myself
+        to get newkali going.
+Dec 17 4:00-5:10, 6:30-
+    talking with Shantam
+    installing gcc, make, on cloudkali (ubuntu)
+        Catalyst::RunTime, Catalyst::Devel
+            some error at the end
+            did it twice and then it took
+        DBIx::Class
+        Template came with Catalyst
+        installed Catalyst::Manual separately
+        apt-get install sqlite3
+            tested sqlite3
+        apt-get install mysql-server 
+            root password is 'SitaRam'
+            then:  /usr/bin/mysql_secure_installation
+                no remote root login (only from localhost)
+                no anonymous users
+                left test database intact - but it is gone
+            mysql -u root -p 
+                entered password
+                then 
+                    show databases;
+                    create database test;
+                    create table person;
+                    ...
+                    drop ...
+        installed YAML
+        trying to install DBD::mysql
+            some issue - with mysql_config?
+            instead: apt-get install libdbd-mysql-perl
+        installed DBD::SQLite
+        cpan GD
+            need apt-get install pkg-config
+            apt-get install libgd-devel
+            then cpan GD
+                lots of stuff!!! jeez

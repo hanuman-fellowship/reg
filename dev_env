@@ -10,15 +10,30 @@ How to set up a Reg developer environment.
     install it
         maybe alias git to /usr/local/bin/git
 - get permission to access the repository on bitbucket.org
+    do a ssh-keygen to make your id_rsa and id_dsa private and public keys
+    have someone put your public key on bitbucket.org
+        Click your avatar in the lower left
+        Choose 'Bitbucket settings'
+        Choose 'SSH keys'
+        Choose 'Add key'
+            and copy/paste it in there
 - % cd
   % mkdir Reg
   % cd Reg
   % git clone git@bitbucket.org:sahadev108/reg.git
     this will download all of the Reg source
-- get the Perl and sqlite2 environment that Reg uses
-    a big tarfile
+    why the extra level of directories with 'reg'??
+- get the Perl and sqlite3 and ImageMagick environment that Reg uses
+    a big tarfile - yes, big, but what's wrong with big?
     it is not the latest and greatest and most current
-        by any means but it works and has worked for 10 years.
+        by any means but it does work.
+    if all the right files are in all the right places
+        it will work - and it has worked for 10 years!
+    cd; tar cvf /tmp/dev.tar /usr/local/ActivePerl-5.8/ 
+    then move it over to the new machine
+    cd;
+    tar xvf dev.tar
+    then set $PATH and the ENV
 - initialize the database
     % cd ~/Reg
     % ./db_init

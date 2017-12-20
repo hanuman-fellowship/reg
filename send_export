@@ -6,7 +6,7 @@ use warnings;
 use Net::FTP;
 
 # MMC
-my $ftp = Net::FTP->new("www.mountmadonna.org", Debug => 0)
+my $ftp = Net::FTP->new("www.mountmadonna.org", Debug => 0, Passive => 0)
     or die "Cannot connect: $@";
 $ftp->login("reg","S1tarAm!")
     or die "Cannot login ", $ftp->message;
@@ -15,7 +15,7 @@ $ftp->put('exported_reg_data.tgz');
 $ftp->quit();
 
 # MMI
-$ftp = Net::FTP->new("www.mountmadonnainstitute.org", Debug => 0)
+$ftp = Net::FTP->new("www.mountmadonnainstitute.org", Debug => 0, Passive => 0)
     or die "Cannot connect: $@";
 $ftp->login("reg","S1tarAm!")
     or die "Cannot login ", $ftp->message;
