@@ -89,3 +89,7 @@ Dec 17 4:00-5:10, 6:30-
             apt-get install libgd-devel
             then cpan GD
                 lots of stuff!!! jeez
+Dec 20 11:00-
+    untar tiny_mce for Barnaby
+    talked with Vishwamitra
+    curl instead of get for go.php

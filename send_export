@@ -23,6 +23,5 @@ $ftp->binary();
 $ftp->put('exported_reg_data.tgz');
 $ftp->quit();
 
-use LWP::Simple qw(get);
-print get('https://reg:S1tarAm!@www.mountmadonna.org/feeds_from_reg/go.php');
-print get('https://reg:S1tarAm!@www.mountmadonnainstitute.org/feeds_from_reg/go.php');
+system('curl --user reg:S1tarAm! https://www.mountmadonna.org/feeds_from_reg/go.php');
+system('curl --user reg:S1tarAm! https://www.mountmadonnainstitute.org/feeds_from_reg/go.php');
