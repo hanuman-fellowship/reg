@@ -31,7 +31,7 @@ my $mysql = -d "/home/sahadev";
 my $dbh = DBI->connect(undef, "sahadev", "JonB")
     or die "oh no\n";
 my @tables = grep { !m{sqlite}xms && $_ ne 'omp' }
-             map  { m{(\w+)` \z}xms }   # get the table name
+             map  { m{(\w+)[`"] \z}xms }   # get the table name
              $dbh->tables;
 @tables = map { s/(main|temp)"."//; $_ } @tables;
 my $ntables = @tables;
