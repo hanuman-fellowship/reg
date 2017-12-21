@@ -5,5 +5,5 @@ f=backup/rc.$day
 rm -f $f $f.gz
 mysqldump --user=root --add-drop-table --databases reg2 >$f
 gzip $f
-scp $f.gz logicalpoetr@logicalpoetry.com:backup/mmc
+scp $f.gz sahadev@cloudkali:backup
 test -f $HOME/sahadev/Reg/INACTIVE || scp $f.gz newkali:Reg/backup
