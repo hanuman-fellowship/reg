@@ -95,3 +95,4 @@ Dec 20 11:00-12:10
     curl instead of get for go.php
 Dec 21 10:00-10:30
     initialization of cloudkali
+    one more line for testing
