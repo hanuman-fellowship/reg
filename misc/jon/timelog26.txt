@@ -93,6 +93,16 @@ Dec 20 11:00-12:10
     untar tiny_mce for Barnaby
     talked with Vishwamitra
     curl instead of get for go.php
-Dec 21 10:00-10:30
+Dec 21 10:00-11:30
     initialization of cloudkali
+        added user sahadev - no password - ssh passphraseless
+            sudo privileges
+        what about for ftp'ing files?
+    git clone'd reg software
     one more line for testing
+    got mysql schema in place on cloudkali
+    check_doc tweaks
+    backed up rc.20.gz and grid.Wed.gz to lp - send_lp in backup/ on kali
+        how to supply password?
+        how did Shantam copy scheduler data to cloudkali?
+    now I need to make a db_init!
