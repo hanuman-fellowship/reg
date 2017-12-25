@@ -17,13 +17,22 @@ my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
 
 # programs
 #
-my @programs = $schema->resultset('Program')->search({
-    sdate  => { '<=', $today },
-    edate  => { '>=', $today },
-    name   => { -not_like => '%personal%retreat%' },
-});
+my @programs = $schema->resultset('Program')->search(
+    {
+        sdate  => { '<=', $today },
+        edate  => { '>=', $today },
+        'level.long_term' => '',
+    },
+    {
+        join => [ qw/ level / ],
+    }
+);
+PROG:
 for my $pr (@programs) {
     my $name = $pr->name;
+    if ($name =~ m{personal\s+retreat|special\s+guest}xmsi) {
+        next PROG;
+    }
     $name =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
     my @people;
     REG:
@@ -84,36 +93,41 @@ for my $r (@rentals) {
 #
 my @people;
 my @prog_pr = $schema->resultset('Program')->search({
-    name => { -like => '%personal%retreat%' },
+    -or => [
+        name => { -like => '%personal%retreat%' },
+        name => { -like => '%special%guest%' },
+    ],
     sdate  => { '<=', $today },
     edate  => { '>=', $today },
 });
 if (@prog_pr) {
-    my $pr_id = $prog_pr[0]->id();
-    my @pers_retr = $schema->resultset('Registration')->search({
-        program_id  => $pr_id,
-        date_start  => { '<=', $today },
-        date_end    => { '>=', $today },
-    });
-    REG:
-    for my $reg (@pers_retr) {
-        next REG if $reg->cancelled;
-        my $per = $reg->person;
-        push @people, $per->name;
+    for my $pr (@prog_pr) {
+        my $pr_id = $pr->id();
+        my @pers_retr = $schema->resultset('Registration')->search({
+            program_id  => $pr_id,
+            date_start  => { '<=', $today },
+            date_end    => { '>=', $today },
+        });
+        REG:
+        for my $reg (@pers_retr) {
+            next REG if $reg->cancelled;
+            my $per = $reg->person;
+            push @people, $per->name;
+        }
     }
-}
-@people = sort @people;
-for my $p (@people) {
-    push @people_today, {
-        name => $p,
-        title => "PR",
+    @people = sort @people;
+    for my $p (@people) {
+        push @people_today, {
+            name => $p,
+            title => "Personal Retreat",
+        };
+    }
+    push @programs_today, {
+        title => "Personal Retreat",
+        people => \@people,
     };
-}
-push @programs_today, {
-    title => "Personal Retreat",
-    people => \@people,
-};
 
+}
 @people_today = sort { $a->{name} cmp $b->{name} } @people_today;
 @programs_today = sort { $a->{title} cmp $b->{title} } @programs_today;
 
@@ -125,4 +139,4 @@ open my $pe, '>', 'people_today.json'
     or die "no people_today.json\n";
 print {$pe} to_json(\@people_today, { pretty => 1 });
 close $pe;
-system("scp people_today.json programs_today.json reservations:.");
+#system("scp people_today.json programs_today.json reservations:.");
