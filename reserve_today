@@ -12,4 +12,4 @@ else
 
 fi
 
-script/reserve_today
+script/reserve_today 2>&1 $*
