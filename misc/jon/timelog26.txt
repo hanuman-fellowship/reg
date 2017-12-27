@@ -54,7 +54,7 @@ Dec 16 1:00-5:30
     kali crashed after power outage
     took some real effort by Shantam, Ryder Brooks, and myself
         to get newkali going.
-Dec 17 4:00-5:10, 6:30-
+Dec 17 4:00-5:10, 6:30-8:00
     talking with Shantam
     installing gcc, make, on cloudkali (ubuntu)
         Catalyst::RunTime, Catalyst::Devel
@@ -93,9 +93,10 @@ Dec 20 11:00-12:10
     untar tiny_mce for Barnaby
     talked with Vishwamitra
     curl instead of get for go.php
-Dec 21 10:00-11:30
+Dec 21 10:00-11:30, 1:50-2:50, 11:00-11:30
     initialization of cloudkali
         added user sahadev - no password - ssh passphraseless
+        actually, the password is '49deV#'
             sudo privileges
         what about for ftp'ing files?
     git clone'd reg software
@@ -106,3 +107,126 @@ Dec 21 10:00-11:30
         how to supply password?
         how did Shantam copy scheduler data to cloudkali?
     now I need to make a db_init!
+
+    cpan Mail::Sender => Email::Sender
+        no easy way to uninstall Mail::Sender
+        so no problem
+    cpan Image::Size
+    made script/try and it succeeded to insert values into table string
+        yay!
+    installed my bash alias tools
+    transfering files TO cloudkali:
+        sftp sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com
+        scp fname sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:reg/xxx
+
+    now, after a freshly initialized database schema,
+        am inserting values for strings and roles
+        next: houses and affiliations
+        next: clusters
+        next: users (with roles)
+        then: people (with partners and affiliations)
+    now clusters are ordered by cl_order - you can control
+        needs a restart after that, though
+        maybe reinitialize @clusters in Global?
+            sure
+Dec 22 10:30-11:30, 1:15-4:30
+    continuing with cloudkali
+    tried launching script/retreatcenter_server.pl
+        failed - saying something about loading ...HTTP
+            is not supported in this version of Catalyst
+        we'll need to branch
+        time to follow the tutorial
+            I think this is the best way to start with the new version.
+        We can get it working and then adapt Reg.
+    cpan Task::Catalyst::Tutorial
+        lots of things! :( :)
+        failed.  try again.  worked.  :)
+    set the timezone on the machine in my .profile
+        export TZ='America/Los_Angeles'
+    failed to get to port 3000
+    talked with Shantam
+    I'll use 80 for now running as root.
+
+    templates and dispatch works as before - great
+    I added INTERPOLATE => 1 to View/HTML.pm
+    HTML is the default view - can name it something else 
+        TT is what we called it in old Reg
+
+    This IS quite involved.   But familiar.
+    I'm not sure yet of how to move over...
+
+    adding needed modules to Makefile.PL
+        requires ....
+        good idea
+
+    as usual, one doesn't need to understand ALL the options;
+        just the ones you need to get your app to work.
+
+    cpan DBIx::Class::Schema::Loader
+        automatically create the Model classes?
+        lots of fancy lingua things
+        failed several things - did a force
+    cpan MooseX::NonMoose - needed to continue
+    this may be an issue - can I use the existing
+        model classes without modification?
+
+    it analyzes the table structure and EACH TIME
+        the server loads it generates the Model files.
+        seems unnecessary?  Nice? Not sure.
+    see:
+        https://www.slideshare.net/davorg/database-programming-with-perl-and-dbixclass
+    looks like it DOES detect many_to_many
+        if I add them it complains
+    http://search.cpan.org/~ilmari/DBIx-Class-Schema-Loader-0.04006/lib/DBIx/Class/Schema/Loader.pm#dump_to_dir
+    https://metacpan.org/pod/distribution/Catalyst-Manual/lib/Catalyst/Manual/Tutorial/03_MoreCatalystBasics.pod#Updating-the-Generated-DBIx::Class-Result-Class-Files
+Dec 23 3:30-3:55
+    experimented with a new script/rc_server.pl
+        => will need new authentication modules
+    need to do this development under a branch of master.
+        https://stackoverflow.com/questions/1519006/how-do-you-create-a-remote-git-branch
+        this tracks it
+Dec 25 9:00-11:00
+    Shantam's request for the reservations check at the gate.
+    To be scp'ed to the reservations machine (.ssh/config).
+    programs_today.json:
+    [
+      {
+        "title" : "New Years Ashtanga Yoga Retreat",
+        "people" : [
+          "Jason Galuten",
+          "Jon Bjornstad"
+        ]
+      },
+      {
+        "title" : "Personal Retreat Dec 2017",
+        "people" : [
+          "Stephanie Conway"
+        ]
+      }
+    ]
+
+    people_today.json:
+    [
+      {
+        "name" : "Jason Galuten",
+        "program" : "New Years Ashtanga Yoga Retreat",
+      },
+      {
+        "name" : "Jon Bjornstad",
+        "program" : "New Years Ashtanga Yoga Retreat"
+      {
+        "name" : "Stephanie Conway",
+        "program" : "Personal Retreat Dec 2018"
+      }
+    ]
+
+    done - just for weekend days
+        can test with command line arg yyyymmdd
+Dec 26 9:45-10:10, 10:00-12:30
+    tidying up cron reservations thing
+    fixing calendar publication after crash
+
+    total guest population on new last line of calendar months
+        not easy to decipher sub calendar of Event.pm
+    got it, I think.
+    resolving kali crash detritus

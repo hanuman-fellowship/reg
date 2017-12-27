@@ -85,7 +85,7 @@ sub init {
     my %clust_type;     # not exported - intermediate variable
     for my $cl (Util::model($c, 'Cluster')->search(
         {},
-        { order_by => 'name' })
+        { order_by => 'cl_order' })
     ) {
         my $id = $cl->id();
         push @clusters, $cl;

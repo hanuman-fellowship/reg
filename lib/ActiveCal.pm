@@ -231,4 +231,19 @@ sub no_where_overlaps {
     return 0;
 }
 
+# a program or a rental has people present
+# from $start_day to $end_day.
+sub add_count {
+    my ($self, $start_day, $end_day, $count) = @_;
+    return if ! $count;
+    for my $d ($start_day .. $end_day) {
+        $self->{counts}[$d] += $count;
+    }
+}
+
+sub get_count {
+    my ($self, $d) = @_;
+    return $self->{counts}[$d] || 0;
+}
+
 1;

@@ -114,6 +114,7 @@ cal_mon_thu_color - the color of the column for Mon-Thu in the calendar
 cal_pr_color - the color of the little box at the bottom of each day
     with the number of personal retreats - in the calendar
 cal_today_color - the color of 'today' in the calendar - at the top of the current month
+cal_tot_pop_color - the color of the total guest population count at the bottom of the month image
 center_tent - the display name for the housing type 'center_tent'
 center_tent_end - what mmdd are center tents taken down?
 center_tent_start - what mmdd are center tents put up?
