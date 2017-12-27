@@ -1480,7 +1480,7 @@ sub _num_offset {
     my ($n) = @_;
     return ($n <  10)? 13:
            ($n < 100)?  9:
-                        5;
+                        4;
 }
 
 sub cal_colors : Local {
