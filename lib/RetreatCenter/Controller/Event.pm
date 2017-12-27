@@ -744,9 +744,6 @@ EOH
             }
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
 
-            # add the counts for the event to the Active Cal????
-            $cal->add_count($dr->sdate->day, $dr->edate->day, $ev->count);
-
             # ???maybe optimize so we don't get the meeting_place
             # record?   We skip meeting places that have a disp_ord
             # of zero.
@@ -779,6 +776,10 @@ EOH
                         # no corresponding booking so we use undef ...
                 }
             }
+
+            # add the counts for the event to the Active Cal????
+            $cal->add_count($dr->sdate->day, $dr->edate->day, $ev->count);
+
             my $im = $cal->image;
             my $black = $cal->black;
             my $white = $cal->white;
