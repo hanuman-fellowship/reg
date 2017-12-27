@@ -139,4 +139,4 @@ open my $pe, '>', 'people_today.json'
     or die "no people_today.json\n";
 print {$pe} to_json(\@people_today, { pretty => 1 });
 close $pe;
-system("scp people_today.json programs_today.json reservations:. 2>&1 >/dev/null");
+system("scp people_today.json programs_today.json reservations:apps/reservations/shared/ 2>&1 >/dev/null");

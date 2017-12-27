@@ -235,7 +235,6 @@ sub no_where_overlaps {
 # from $start_day to $end_day.
 sub add_count {
     my ($self, $start_day, $end_day, $count) = @_;
-open JON, '>>/tmp/jon'; print JON "$start_day .. $end_day adding $count\n"; close JON;
     return if ! $count;
     for my $d ($start_day .. $end_day) {
         $self->{counts}[$d] += $count;
