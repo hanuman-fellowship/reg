@@ -1,5 +1,9 @@
 [% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
+[% IF msg %]
+<span style="color: red; font-size: 20pt" $msg</span>
+<p>
+[% END %]
 <a href="/member/membership_list">Members w/\$</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/membership_list/1">Members</a>
@@ -11,9 +15,6 @@
 <a href="/member/just_expired">Expired 12/31</a>
 &nbsp;&nbsp;&nbsp;&nbsp;
 <a href="/member/lapsed">Lapsed</a>
-[% IF msg %]
-&nbsp;&nbsp;&nbsp;&nbsp;$msg
-[% END %]
 <p class=p2>
 <a href="/member/non_email">Without Email</a>
 &nbsp;&nbsp;&nbsp;
