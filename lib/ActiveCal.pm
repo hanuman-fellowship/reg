@@ -159,6 +159,7 @@ sub ndays { $_[0]->{ndays}; }
 # return an array of keys
 # for the hash of ActiveCal objects
 # that the range [ $sdate, $edate ] falls in.
+# make sure that they are valid keys.
 sub keys {
     my ($class, $sdate, $edate) = @_;
 
@@ -170,6 +171,11 @@ sub keys {
         # and on to the first of the next month
         $d += days_in_month($d->year, $d->month);
     }
+    # we may return an invalid key in case an event
+    # spans a month boundary.
+    # should we have kept the array of objects here?
+    # maybe.  the calendar code is so gnarly I will
+    # just make a 'breakfix' at this point.
     return @keys;
 }
 

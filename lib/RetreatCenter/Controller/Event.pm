@@ -733,15 +733,10 @@ EOH
         my $ev_id = $ev->id;
         my $title = $ev->title;
 
+        KEY:
         for my $key (ActiveCal->keys($ev_sdate, $ev_edate)) {
             my $cal = $cals{$key};
-            if (! $cal) {
-                # this event apparently begins in a prior month
-                # and overlaps into the first shown month???
-                # like today is April 10th and the event is from
-                # March 29th to April 4th.
-                $cal = $cals{$start->format("%Y%m")};
-            }
+            next KEY unless $cal;   # see comment in ActiveCal.pm
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
 
             # ???maybe optimize so we don't get the meeting_place

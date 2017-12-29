@@ -230,3 +230,8 @@ Dec 26 9:45-10:10, 10:00-12:30
         not easy to decipher sub calendar of Event.pm
     got it, I think.
     resolving kali crash detritus
+Dec 28 10:00-11:30
+    dealing with membership
+Dec 29 9:30-10:00, 2:00-2:30
+    dealing with membership, various other tweaks
+    fixing bug in calendar
