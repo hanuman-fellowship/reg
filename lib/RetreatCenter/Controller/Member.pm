@@ -1540,8 +1540,9 @@ sub _omp_send_and_load {
     $ftp->put("/tmp/$omp_fname", $omp_fname)
         or return "no put";
     $ftp->quit();
-    if (`curl $string{omp_load_url}` !~ m{done}) {
-        return "no load";
+    my $output = `curl $string{omp_load_url}`;
+    if ($output !~ m{done}) {
+        return "no load: $output";
     }
     return "successfully pushed";
 }

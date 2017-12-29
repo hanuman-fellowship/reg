@@ -2,7 +2,7 @@
 <h2>Members</h2>
 [% IF msg %]
 <span style="color: red; font-size: 20pt"> $msg</span>
-<p>
+<p class=p2>
 [% END %]
 <a href="/member/membership_list">Members w/\$</a>
 &nbsp;&nbsp;&nbsp;
