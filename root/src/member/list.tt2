@@ -1,7 +1,7 @@
 [% super_admin = Catalyst.check_user_roles('super_admin') %]
 <h2>Members</h2>
 [% IF msg %]
-<span style="color: red; font-size: 20pt" $msg</span>
+<span style="color: red; font-size: 20pt"> $msg</span>
 <p>
 [% END %]
 <a href="/member/membership_list">Members w/\$</a>
