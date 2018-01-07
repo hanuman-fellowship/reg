@@ -192,12 +192,14 @@ sub update : Local {
                    .  "\n";
                    ;
     }
+    my $today = tt_today($c);
+    my $offset = $today->month <= 11? 0: 1;
     stash($c,
         type_opts         => $type_opts,
         amount            => $amount,
         file              => $file,
         member            => $m,
-        year              => (tt_today($c)->year + 1) % 100,
+        year              => ($today->year + $offset) % 100,
         free_prog_checked => (($m->free_prog_taken)? "checked": ''),
         person            => $m->person(),
         voter_checked     => $m->voter()? "checked": '',

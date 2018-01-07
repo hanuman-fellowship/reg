@@ -235,3 +235,8 @@ Dec 28 10:00-11:30
 Dec 29 9:30-10:00, 2:00-2:30
     dealing with membership, various other tweaks
     fixing bug in calendar
+Jan 4 7:00-7:30
+    sutra_send - use Email::Sender instead
+Jan 6 10:15-
+    rewording the rental contract preface letter
+    futzing with members
