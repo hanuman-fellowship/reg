@@ -800,8 +800,6 @@ sub _checked_members {
         }
     }
     if (! @ids) {
-        $c->stash->{mess} = "No one was checked!",
-        $c->stash->{template} = "member/error.tt2";
         return;
     }
     model($c, 'Member')->search(
