@@ -237,6 +237,12 @@ Dec 29 9:30-10:00, 2:00-2:30
     fixing bug in calendar
 Jan 4 7:00-7:30
     sutra_send - use Email::Sender instead
-Jan 6 10:15-
+Jan 6 10:15-11:00, 11:25-
     rewording the rental contract preface letter
     futzing with members
+    brought in 16 payments.
+        just one for a Sponsor (Harvey Darnell).  added 4 nights for him.
+    could be made more efficient, the 4 nights could be done automatically.
+    but it will work for now, yes?
+    sent letter to just expired people
+    what about longer term lapsed people? ask the committee.
