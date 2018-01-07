@@ -731,10 +731,11 @@ sub create_do : Local {
     }
 }
 
+# 'lapsed' means more than 6 months ago
 sub _lapsed_members {
     my ($c) = @_;
 
-    my $today = tt_today($c)->as_d8();
+    my $m6 = (tt_today($c)-6*31)->as_d8();
     my @opt;
     return [
         model($c, 'Member')->search(
@@ -742,11 +743,11 @@ sub _lapsed_members {
                 -or => [
                     -and => [
                         category => 'General',
-                        date_general => { '<', $today },
+                        date_general => { '<', $m6 },
                     ],
                     -and => [
                         category => 'Sponsor',
-                        date_sponsor => { '<', $today },
+                        date_sponsor => { '<', $m6 },
                     ],
                     @opt,
                 ],
