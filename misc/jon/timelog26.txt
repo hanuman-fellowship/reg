@@ -245,4 +245,6 @@ Jan 6 10:15-11:00, 11:25-
     could be made more efficient, the 4 nights could be done automatically.
     but it will work for now, yes?
     sent letter to just expired people
+        65 sent
+        4 non email people
     what about longer term lapsed people? ask the committee.
