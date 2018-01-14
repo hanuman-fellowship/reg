@@ -14,18 +14,31 @@ use Catalyst::Runtime '5.70';
 #                 directory
 
     # we have not been looking at these so remove em!
-    # -Debug
-    # StackTrace
+#
+# old/original mechanisms for Authentication and Authorization:
+#    Authentication
+#    Authentication::Store::DBIC
+#    Authentication::Credential::Password
+#    Authorization::Roles
+#    Authorization::ACL
+#
+# ??Should we use
+#   Session::Store::File 
+# instead of:
+#   Session::Store::FastMmap
+# Since we're on Unix we apparently can use:
+#   Session::Store::Memcached
+#
+
 use Catalyst qw/
+    -Debug
+    StackTrace
 
     ConfigLoader
     Static::Simple
 
     Authentication
-    Authentication::Store::DBIC
-    Authentication::Credential::Password
     Authorization::Roles
-    Authorization::ACL
 
     Session
     Session::Store::FastMmap
@@ -45,19 +58,21 @@ our $VERSION = '0.01';
 
 __PACKAGE__->config( 
     name => 'RetreatCenter', 
-    static => {
-                'mime_types' => {
-                    'jpg' => 'image/jpg',
-                    'gif' => 'image/gif',
-                    'png' => 'image/png',
-                },
-                'dirs'       => [ 'static', qr/^(images|css)/ ],    
-                'ignore_extensions' => [ 'html' ],
-            }
+    'Plugin::Static::Simple' => {
+        'mime_types' => {
+            'jpg' => 'image/jpg',
+            'gif' => 'image/gif',
+            'png' => 'image/png',
+        },
+        'dirs' => [ 'static', qr/^(images|css)/ ],    
+        'ignore_extensions' => [ 'html' ],
+    },
 );
 
 # Start the application
 __PACKAGE__->setup;
+
+=begin
 
 # authorization rules
 # ??? deleting a person requires no authorization???
@@ -96,5 +111,7 @@ for my $a (qw/ list create create_do update update_do /) {
     __PACKAGE__->deny_access_unless("/member/$a", ['member_admin']);
 }
 __PACKAGE__->deny_access_unless("/member/delete", ['super_admin']);
+
+=end
 
 1;

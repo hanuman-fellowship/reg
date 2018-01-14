@@ -14,7 +14,6 @@ use Util qw/
     model
     randpass
     email_letter
-    dump_inc
 /;
 use Time::Simple qw/
     get_time
@@ -27,7 +26,8 @@ use Time::Simple qw/
 # components (sub parameters) but must use form parameters
 # for asking for a forgotten password?  seems to work.
 #
-sub index : Private {
+# old was: sub index : Private {
+sub index :Path :Args(0) {
     my ($self, $c) = @_;
 
     Global->init($c);
@@ -54,20 +54,23 @@ sub index : Private {
     my $forgot   = $c->request->params->{forgot}   || "";
     my $email    = $c->request->params->{email}    || "";
 
-#dump_inc();
-
     # If the username and password values were found in form
     if ($username && $password) {
         # Attempt to log the user in
-        if ($password ne '-no login-' && $c->login($username, $password)) {
+        if ($password ne '-no login-'
+            && $c->authenticate({
+                   username => $username,
+                   password => $password,
+                })
+        ) {
             # successful, let them use the application!
             _clear_images();
             if ($c->check_user_roles('super_admin')) {
                 $c->response->redirect($c->uri_for('/person/search'));
             }
-            elsif ($c->check_user_roles('ride_admin')) {
-                $c->response->redirect($c->uri_for('/ride/list'));
-            }
+            #elsif ($c->check_user_roles('ride_admin')) {
+            #    $c->response->redirect($c->uri_for('/ride/list'));
+            #}
             elsif ($c->check_user_roles('prog_staff')) {
                 if (today()->as_d8() > $string{date_coming_going_printed}) {
                     $c->response->redirect(
