@@ -112,7 +112,7 @@ sub _get_data {
         if (empty($P{$m})) {
             $P{$m} = 0;
         }
-        elsif ($P{$m} !~ m{^\d+$}) {
+        elsif ($P{$m} !~ m{^-?\d+$}) {
             push @mess, "Invalid # for " . ucfirst($m) . ": $P{$m}";
         }
     }
