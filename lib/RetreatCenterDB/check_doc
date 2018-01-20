@@ -57,6 +57,8 @@ for my $t (@tables) {
 my $num_cols  = 0;
 my $num_nodoc = 0;
 my $num_strs  = 0;
+my $num_mismatches = 0;
+my $num_no_foreign = 0;
 
 my $str_doc_err = 0;
 
@@ -80,6 +82,7 @@ for my $f (<*.pm>) {
 
             if ($table ne $file) {
                 print "file $file <!> table $table\n";
+                ++$num_mismatches;
             }
         }
         if ($line =~ m{add_columns}xms) {
@@ -124,6 +127,7 @@ for my $f (<*.pm>) {
             $pm .= ".pm";
             if (! -e $pm) {
                 print "$f: no such file: $pm\n";
+                ++$num_no_foreign;
             }
         }
         $line =~ s{[ ]-.*}{}xms;
@@ -168,24 +172,29 @@ for my $f (<*.pm>) {
     if ((scalar(@cols)+1) != scalar(@doc_cols)) {
         # +1 above for the 'overview'
         print "mismatch in doc cols for $f\n";
+        ++$num_mismatches;
     }
     my %cols = map { $_ => 1 } @cols;
     my %doc_cols = map { $_ => 1 } @doc_cols;
     for my $c (@cols) {
         if (! exists $doc_cols{$c}) {
             print "$table: no documentation for column $c\n";
+            ++$num_mismatches;
         }
     }
     for my $c (@doc_cols) {
         if ($c ne 'overview' && ! exists $cols{$c}) {
             print "no table column for doc column $c\n";
+            ++$num_mismatches;
         }
     }
 }
 print "$ntables tables\n";
 print "$num_cols columns\n";
 print "$num_strs strings\n";
-plan tests => 3;
+plan tests => 5;
+is($num_no_foreign, 0, 'all foreign keys exist');
+is($num_mismatches, 0, 'all columns match okay');
 is_deeply($database, $model, 'the database matches the model exactly');
 is($num_nodoc, 0, 'all columns have documentation');
 is($str_doc_err, 0, 'all strings are present and have documentation');

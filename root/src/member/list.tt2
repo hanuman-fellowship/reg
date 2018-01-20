@@ -41,7 +41,7 @@ Showing active members - including lapsed.
 </table>
 </form>
 <ul>
-Click on Name to update member attributes.<br>
+Click on Name to view the member attributes.<br>
 Click on First to see person attributes.<br>
 <p class=p2>
 <table cellpadding=5 border=0>
@@ -64,32 +64,32 @@ Click on First to see person attributes.<br>
     [% color = 'fl_row0' %]
 [% END %]
 [% per = m.person %]
-<td><a href="/member/update/[% m.id %]">[% per.last %], [% per.sanskrit || per.first %]</a></td>
-<td><a tabindex=1 href="/person/view/[% per.id %]">[% per.first %]</a></td>
-<td>[% m.category %]</td>
+<td><a href="/member/view/$m.id">$per.last, [% per.sanskrit || per.first %]</a></td>
+<td><a tabindex=1 href="/person/view/$per.id">$per.first</a></td>
+<td>$m.category</td>
 <td>
-[% IF    m.category == 'General' %][% m.date_general_obj.format("%D") %]
-[% ELSIF m.category == 'Life'    %][% m.date_life_obj.format("%D")    %]
-[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj.format("%D") %]
+[% IF    m.category == 'General' %]${m.date_general_obj.format("%D")}
+[% ELSIF m.category == 'Life'    %]${m.date_life_obj.format("%D")}
+[% ELSIF m.category == 'Sponsor' %]${m.date_sponsor_obj.format("%D")}
 [% END %]
 </td>
 <td>
-[% m.lapsed %]
+$m.lapsed
 </td>
 <td align=right>
 [% IF m.total_paid != 0 %]
-[% m.total_paid %]
+$m.total_paid
 [% END %]
 </td>
 <td align=right>
-[% m.sponsor_nights %]
+$m.sponsor_nights
 </td>
 <td align=center>
 [% IF m.free_prog_taken %]
 <img src=/static/images/checked.gif>
 [% END %]
 </td>
-<td><a href="/member/delete/[% m.id %]" onclick="return confirm('Okay to Delete [% m.person.first _ ' ' _ m.person.last %] as member?');">Del</a></td>
+<td><a href="/member/delete/$m.id" onclick="return confirm('Okay to Delete $m.person.first $m.person.last as member?');">Del</a></td>
 </tr>
 [% END %]
 </table>

@@ -39,29 +39,32 @@ h3 {
 [% prog = reg.program %]
 [% mmi = prog.school.mmi %]
 [% IF mmi %]
-<div class=mmi_header>
-[% IF print %]
-<img src=/static/images/mmi_logo.png>
+    <div class=mmi_header>
+    [% IF print %]
+        <img src=/static/images/mmi_logo.png>
+    [% ELSE %]
+        <img src="https://www.mountmadonna.org/assets/img/external-site-logos/MountMadonnaInstitute.org.png">
+    [% END %]
+    <br>
+    Mount Madonna Institute<br>
+    415 Summit Rd Watsonville, CA 95076
+    </div>
 [% ELSE %]
-<img src="http://mountmadonnainstitute.org/images2/header_home.png">
-[% END %]
-<br>
-415 Summit Rd Watsonville, CA 95076
-</div>
-[% ELSE %]
-<table cellpadding=2>
-<tr>
-[% IF print %]
-<td><img src=/static/images/mmc_logo.gif></td>
-[% ELSE %]
-<td><img src="http://mountmadonna.org/Gif/navbar_home.gif"></td>
-[% END %]
-<td class=header>Mount Madonna Center<br>
-<div class=addr>
-415 Summit Rd Watsonville, CA 95076
-</div>
-</td>
-</table>
+    [% IF print %]
+        <table cellpadding=6>
+        <tr>
+        <td><img src=/static/images/mmc_logo.gif></td>
+        <td class=header>Mount Madonna Center<br>
+        <div class=addr>
+        415 Summit Rd Watsonville, CA 95076
+        </div>
+        </td>
+        </table>
+    [% ELSE %]
+        <!-- no good non-white logo on the site anymore? -->
+        <img src="https://www.mountmadonna.org/assets/img/MMC_header.png">
+        <p class=p2>
+    [% END %]
 [% END %]
 ${today.format("%B %e, %Y")}
 <p>

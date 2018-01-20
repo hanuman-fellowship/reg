@@ -129,7 +129,7 @@ onclick="return confirm('\n\nAbout to delete the registration and payments and h
 &nbsp;&nbsp;
 [% IF person.email_okay %]
 <a href=#
-onmouseover="return overlib('<a href=/registration/receipt/$id/email>Send to $person.email</a><p class=p2><a target=_blank href=/registration/receipt/$id/print>Send to Printer</a>', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 15, WRAP, STICKY);"
+onmouseover="return overlib('<a href=/registration/receipt/$id/email>Email</a><p class=p2><a target=_blank href=/registration/receipt/$id/print>Print</a>', RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 15, WRAP, STICKY);"
        onmouseout="return nd();">Receipt</a>
 [% ELSE %]
 <a target=_blank href="/registration/receipt/$id/print">Receipt</a>

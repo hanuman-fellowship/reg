@@ -21,6 +21,7 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
+use File::stat;
 use Global qw/
     %string
     %system_affil_id_for
@@ -194,9 +195,18 @@ sub update : Local {
     }
     my $today = tt_today($c);
     my $offset = $today->month <= 11? 0: 1;
+    my $payment_date = 't';
+    if ($file) {
+        my $sb = stat("root/static/omp/$file");       # see File::stat
+        my ($day, $month, $year) = (localtime $sb->mtime)[3..5];
+        ++$month;
+        $year += 1900;
+        $payment_date = sprintf("%d/%d/%d", $month, $day, $year);
+    }
     stash($c,
         type_opts         => $type_opts,
         amount            => $amount,
+        payment_date      => $payment_date,
         file              => $file,
         member            => $m,
         year              => ($today->year + $offset) % 100,
@@ -304,7 +314,9 @@ sub update_do : Local {
     my $amount     = $P{mkpay_amount};
     my $valid_from = $P{valid_from};
     my $valid_to   = $P{valid_to};
+    my $transaction_id = '';
     if ($P{file}) {
+        ($transaction_id) = (split '_', $P{file})[2];
         rename "root/static/omp/$P{file}", "root/static/omp_done/$P{file}";
     }
 
@@ -337,6 +349,7 @@ sub update_do : Local {
             amount       => $amount,
             general      => $P{category} eq 'General' 
                             && $amount <= $string{mem_gen_amt}? 'yes': '',
+            transaction_id => $transaction_id,
             @who_now,
         });
         _xaccount_mem_pay($c, $member->person_id,

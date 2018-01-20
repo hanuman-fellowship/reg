@@ -5674,6 +5674,25 @@ sub grab_new : Local {
 sub receipt : Local {
     my ($self, $c, $reg_id, $type) = @_;
 
+    if ($type eq 'print') {
+        _send_receipt($c, $reg_id, $type);
+    }
+    else {
+        my $reg = model($c, 'Registration')->find($reg_id);
+        stash($c,
+            reg      => $reg,
+            template => "registration/receipt.tt2",
+        );
+    }
+}
+sub email_receipt : Local {
+    my ($self, $c, $reg_id) = @_;
+    my $email_addrs = $c->request->params->{email_addrs};
+    # check addresses?
+    _send_receipt($c, $reg_id, 'email', $email_addrs);
+}
+sub _send_receipt {
+    my ($c, $reg_id, $type, $addrs) = @_;
     my $reg = model($c, 'Registration')->find($reg_id);
     my $html = "";
     my $tt = Template->new({
@@ -5703,13 +5722,15 @@ sub receipt : Local {
         \$html,         # output
     ) or die "error in processing template: "
              . $tt->error();
-    my $from = ($reg->program->school()->mmi())?
-        "$string{from_title} <$string{from}>":
-        'Mount Madonna Institute <MMIreservations@mountmadonnainstitute.org>'
+    my $from =
+        ($reg->program->school->mmi())?
+            'Mount Madonna Institute '
+           .'<MMIreservations@mountmadonnainstitute.org>'
+        : "$string{from_title} <$string{from}>";
         ;
     if ($type eq 'email') {
         email_letter($c,
-            to      => $reg->person->email,
+            to      => $addrs,
             from    => $from,
             subject => "Receipt for " . $reg->program->title,
             html    => $html, 

@@ -27,6 +27,7 @@ __PACKAGE__->add_columns(qw/
     the_date
     time
     type
+    transaction_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -69,6 +70,7 @@ id - unique id
 member_id - foreign key to member
 the_date - date the event happened
 time - time the event happened
+transaction_id - the transaction id in authorize.net
 type - type of payment - Credit (D), Cash (S), Check (C), Online (O)
 user_id - foreign key to user - the one who created the event
 valid_from - what date is the payment valid from?

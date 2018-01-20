@@ -237,7 +237,7 @@ Dec 29 9:30-10:00, 2:00-2:30
     fixing bug in calendar
 Jan 4 7:00-7:30
     sutra_send - use Email::Sender instead
-Jan 6 10:15-11:00, 11:25-
+Jan 6 10:15-11:00, 11:25-12:00
     rewording the rental contract preface letter
     futzing with members
     brought in 16 payments.
@@ -248,3 +248,94 @@ Jan 6 10:15-11:00, 11:25-
         65 sent
         4 non email people
     what about longer term lapsed people? ask the committee.
+Jan 7 10:15-1:45
+    membership duties
+    emailing lapsed, marking people inactive
+    Devendra, Shantam re: expired certs
+    on to cloudkali and TRY IT
+        following the authentication tutorial
+            did some tweaking as directed
+            if this works we'll never change it again!
+        need to add 'requires' statements to Makefile.PL?????
+        instead of Catalyst.check_user_roles
+            the new way just uses c.check_user_roles.
+        we used 'deny_access_unless' in RetreatCenter.pm
+            to control access - will this eventually be covered in the
+            up-to-date tutorial?
+        tried rc_server.pl and it told me to:
+        cpan install Spreadsheet::ParseExcel
+
+        a few other tweaks - static => 'Plugin::Static::Simple'
+        sudo and -p 80
+
+        some problem with defining DBI connection info so...
+        using retreatcenter.conf instead of retreatcenter.yml
+        and removing authentication configuration from RetreatCenter.pm
+
+        kept trying... commented out Global->init and DID
+            get the login form.   Yay.
+        but failed: do we have a connection to the database??
+        let's see... nope
+        hacking here and there - no luck
+        may need to follow the tutorial with a test app on the Model etc
+        it's close!
+        it does redirect properly when I try member/list
+
+        will need to move from Mail::Sender to Email::Sender
+            it IS installed already
+
+        Tried -Debug and StackTrace
+        it led me to tweak the .config file with Model::RetreatCenterDB
+            instead of Model::DB
+        and voila!   it almost works.
+        some issue with searches in Rides - obsolete?
+        and something with Configuration
+        
+        but Wow!   almost there.
+
+        configuration/index in lib/src/layout
+        Ride.pm [ ] => { }  but obsolete... I'm confused here...
+
+        no super_admin role so - edit it in $C/Login.pm
+Jan 13 12:45-3:20
+    responding to Shantam about double reg
+    responding to the list of Reg enhancements that Vishwamitra
+    and I discussed at length.
+    connected to MMC VPN from workwork machine
+        with Kevin's help
+Jan 14 9:00-10:15
+    messing around with cloudkali branches
+    looking into Membership payments
+    asking a question on IRC about companies using Catalyst
+Jan 15 11:15-11:30
+    responding to Shantam about Exceptions to dates on web site pages
+Jan 16 5:45-6:10
+    fixing receipts (PRs, email to other)
+Jan 17 3:25-5:20
+    online member payment - preserve transaction id,
+        include payment date in acknowledgement letter
+        later we'll do the 'bringing in' in grab_new
+    bring in the 12 current ones, send acknowledgments
+        also remove the duplicate xaccount payments Ken added.
+    send letter to Harvey
+        by moving his omp_done file back, removing the dup xaccount payment
+            and the SponsHist file?
+    updating member - delete payment requires confirmation!
+    on update page have a message about the multiple
+        ways that updates can happen - with/without a payment...
+    create_edit.tt2 - Payment Due On === date_sponsor (expires on)
+        applies to both Sponsor and Contributing Sponsor
+    founding life ALSO get a free program, yes?
+        yes
+    need to finish the receipt thing - then test member stuff
+        thoroughly, then commit
+    later - automate(cron) the push, the lapse soon, the expired 12/31,
+        the lapsed
+    & the grab_new bringing in.
+Jan 19 10:00-10:20, 1:00-3:10, 3:35-
+    negative number for Meals
+    installing ImageMagick convert - from oldkali or fresh...
+    investigating export, exceptions (dates, etc) 
+        writing email to Shantam and Kamal
+    adding Exceptions for dates tag in export, progtable
+    finalizing receipt changes

@@ -110,7 +110,7 @@ ul {
 <DIV CLASS="container">
 <TABLE WIDTH="700">
 <TR><TD ALIGN="center">
-<IMG height=200 SRC="http://www.mountmadonna.org/assets/img/registration/nov_sc_sunset.jpg">
+<IMG height=200 SRC="https://www.mountmadonna.org/assets/img/registration/nov_sc_sunset.jpg">
 <H1>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</H1>
 </TD></TR>
 <TR><TD>
