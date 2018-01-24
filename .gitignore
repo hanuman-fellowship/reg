@@ -15,6 +15,7 @@ grab_running
 root/static/images/
 root/static/js/
 root/static/grid/
+root/static/omp_done/
 root/static/updates
 root/static/report*
 root/static/online/

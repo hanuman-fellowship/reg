@@ -332,10 +332,33 @@ Jan 17 3:25-5:20
     later - automate(cron) the push, the lapse soon, the expired 12/31,
         the lapsed
     & the grab_new bringing in.
-Jan 19 10:00-10:20, 1:00-3:10, 3:35-
+Jan 19 10:00-10:20, 1:00-3:10, 3:35-5:20, 7:25-8:30
     negative number for Meals
     installing ImageMagick convert - from oldkali or fresh...
     investigating export, exceptions (dates, etc) 
         writing email to Shantam and Kamal
     adding Exceptions for dates tag in export, progtable
     finalizing receipt changes
+    deleting duplicate membership payments that Ken brought in
+        to satisfy the financial reconciliation
+        favoring those that were brought in by me...
+
+        he deleted some of the ones himself to eliminate
+            duplicates - but didn't tell me...
+
+    TODO!!!
+    updating member - delete spons_hist 
+        payment on Member page requires confirmation!
+    on update page have a message about the multiple
+        ways that updates can happen - with/without a payment...
+    create_edit.tt2 - Payment Due On ===> date_sponsor (expires on)
+        applies to both Sponsor and Contributing Sponsor
+    later - automate(cron) the push, the lapse soon, the expired 12/31,
+        the lapsed
+    & the grab_new bringing in.
+    on the view member page have Online(?) link
+        but when grab_new brings them in - no point in
+            Online(?) at all!
+    need to confirm deletions of xaccount payments on Person page
+Jan 23 11:00-11:15
+    typo in receipt, edit to rental contract

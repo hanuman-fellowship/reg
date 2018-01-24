@@ -47,7 +47,7 @@ h3 {
     [% END %]
     <br>
     Mount Madonna Institute<br>
-    415 Summit Rd Watsonville, CA 95076
+    445 Summit Rd Watsonville, CA 95076
     </div>
 [% ELSE %]
     [% IF print %]
@@ -56,7 +56,7 @@ h3 {
         <td><img src=/static/images/mmc_logo.gif></td>
         <td class=header>Mount Madonna Center<br>
         <div class=addr>
-        415 Summit Rd Watsonville, CA 95076
+        445 Summit Rd Watsonville, CA 95076
         </div>
         </td>
         </table>
