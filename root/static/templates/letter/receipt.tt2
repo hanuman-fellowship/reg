@@ -6,10 +6,10 @@ body {
     margin-top: .5in;
     margin-left: .5in;
     font-family: Times;
-    font-size: 17pt;
+    font-size: 15pt;
 }
 .header {
-    font-size: 31pt;
+    font-size: 21pt;
     text-align: center;
     margin-bottom: 1mm;
     font-weight: bold;
@@ -20,17 +20,18 @@ body {
     margin-bottom: 3mm;
 }
 .addr {
-    font-size: 14pt;
+    font-size: 13pt;
     font-weight: normal;
     text-align: center;
     margin-bottom: 4mm;
 }
 td, th {
-    font-size: 17pt;
+    font-size: 13pt;
 }
 h3 {
-    margin-top: 9mm;
-    margin-bottom: 2mm;
+    margin-top: 3mm;
+    margin-bottom: 0mm;
+    font-size: 16pt;
 }
 </style>
 </head>
@@ -51,9 +52,9 @@ h3 {
     </div>
 [% ELSE %]
     [% IF print %]
-        <table cellpadding=6>
+        <table cellpadding=2>
         <tr>
-        <td><img src=/static/images/mmc_logo.gif></td>
+        <td><img src=/static/images/mmc-teal.png width=200></td>
         <td class=header>Mount Madonna Center<br>
         <div class=addr>
         445 Summit Rd Watsonville, CA 95076
@@ -67,22 +68,21 @@ h3 {
     [% END %]
 [% END %]
 ${today.format("%B %e, %Y")}
-<p>
 <h3>$pers.first $pers.last</h3>
 $pers.addr1<br>
 $pers.city, $pers.st_prov, $pers.zip_post<br>
 $pers.carpool_telephone
 <h3>Program</h3>
-<table cellpadding=6 border=1>
+<table cellpadding=2>
 <tr><th align=right>Title</th><td>$prog.title</td></tr>
 [% IF presenter %]
 <tr><th align=right>Presenter</th><td>$presenter</td></tr>
 [% END %]
 <tr><th align=right>Dates</th><td>$reg.receipt_dates</td></tr>
 </table>
-<p>
+
 <h3>Charges</h3>
-<table cellpadding=6 border=1>
+<table cellpadding=2>
 <tr align=left>
 <th align=right>Amount</th>
 <th>Type</th>
@@ -101,7 +101,7 @@ $pers.carpool_telephone
 </table>
 
 <h3>Payments</h3>
-<table cellpadding=6 border=1>
+<table cellpadding=2>
 <tr valign=bottom align=left>
 <th align=right>Amount</th>
 <th>Type</th>
