@@ -2519,6 +2519,39 @@ sub matchreg : Local {
     $c->res->output(_reg_table($c, \@regs));
 }
 
+sub print_list : Local {
+    my ($self, $c, $prog_id) = @_;
+    my $program = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first me.date_start /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    Global->init($c);
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src',
+        INTERPOLATE  => 1,
+        EVAL_PERL    => 0,
+    }) or die Template->error();
+    my $stash = {
+        program => $program,
+        regs    => _reg_table($c, \@regs, sans_icons => 1),
+        today   => tt_today($c),
+    };
+    my $html;
+    $tt->process(
+        "registration/print_list.tt2",   # template
+        $stash,               # variables
+        \$html,               # output
+    ) or die $tt->error();
+    $c->res->output($html);
+}
+
 #
 # if only one - make it larger - for fun.
 # this is not used if we go there directly, yes???
@@ -2667,6 +2700,11 @@ EOH
         ) {
             $mark = "<span class=arrived_star>*</span> $mark";
         }
+        # we don't want the marks if we're printing
+        # the list for the program presenter...
+        if ($opt{sans_icons}) {
+            $mark = '';
+        }
         my $program_td = "";
         if ($opt{multiple}) {
             $program_td = "<td>" . $pr->name() . "</td>\n";
@@ -2737,8 +2775,13 @@ $postmark_td
 </tr>
 EOH
     }
+    if ($opt{sans_icons}) {
+        # remove any <a> tags
+        $body =~ s{<a[^>]*>}{}xmsg;
+        $body =~ s{</a>}{}xmsg;
+    }
     $body ||= "";
-<<"EOH";        # returning a bare string heredoc constant?  sure.
+    return <<"EOH";        # returning a bare string heredoc constant?  sure.
 <table cellpadding=4>
 $heading
 $body
