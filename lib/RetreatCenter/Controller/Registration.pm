@@ -2703,7 +2703,7 @@ EOH
         # we don't want the marks if we're printing
         # the list for the program presenter...
         if ($opt{sans_icons}) {
-            $mark = '';
+            $mark = $reg->cancelled()? 'X': '';
         }
         my $program_td = "";
         if ($opt{multiple}) {

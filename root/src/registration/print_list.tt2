@@ -2,6 +2,7 @@
 body {
     margin-top: 10mm;
     margin-left: 10mm;
+    font-family: Arial;
 }
 </style>
 <h2>$program.title - $program.dates</h2>
@@ -11,3 +12,6 @@ Registrations as of ${today}:
 <p>
 Count: $program.reg_count[% IF program.extradays %]/$program.full_count[% END %]
 $regs
+<script>
+window.print();
+</script>
