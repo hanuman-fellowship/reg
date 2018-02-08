@@ -79,11 +79,11 @@ our @EXPORT_OK = qw/
     @charge_type
     cf_expand
     PR_progtable
-    dump_inc
     months_calc
     new_event_alert
     JON
     strip_nl
+    login_log
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -494,20 +494,6 @@ sub resize {
                . "x"
                . " $rst/${type}o-$id.jpg $rst/${type}b-$id.jpg"
         );
-    }
-}
-
-sub dump_inc {
-    open my $out, '>', "/tmp/inc";
-    print {$out} "\@INC\n";
-    for my $d (@INC) {
-        print {$out} "$d\n";
-    }
-# take $k, replace / with : globally, .pm with ::VERSION, prepend $ and print it.
-# if defined
-    print {$out} "%INC\n";
-    for my $k (sort keys %INC) {
-        print {$out} "$k => $INC{$k}\n";
     }
 }
 
@@ -1913,6 +1899,8 @@ sub rand6 {
 
 #
 # a random password
+# improve this?
+# 6 characters, must have lower, upper, digit, special?
 #
 sub randpass {
     my @lets = ('a' .. 'z', 'A' .. 'Z');
@@ -2441,5 +2429,15 @@ sub strip_nl {
     $s =~ s{\n}{}gxms;
     $s;
 }
+
+sub login_log {
+    my ($username, $msg) = @_;
+    return unless $username;
+    if (open my $out, '>>', 'login.log') {
+        print {$out} scalar(localtime), " $username - $msg\n";
+        close $out;
+    }
+}
+
 
 1;

@@ -41,7 +41,7 @@
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<td><input type=submit id=sub value="Submit"></td>
 </tr>
 
 </table>

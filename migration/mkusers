@@ -16,7 +16,11 @@ create table user (
     office      text,
     cell        text,
     txt_msg_email text,
-    hide_mmi    text
+    hide_mmi    text,
+    expiry_date text,
+    locked      text,
+    nfails      integer,
+    last_login_date text
 );
 drop table if exists role;
 create table role (

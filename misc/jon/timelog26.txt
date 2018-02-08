@@ -364,3 +364,35 @@ Jan 23 11:00-11:15
     typo in receipt, edit to rental contract
 Jan 26 10:45-12:00
     print reg list without frowny faces, envelopes, etc
+Feb 3 5:10-9:20
+    passwords expire in $string{days_pass_expire}
+        with a $string{days_pass_grace} day grace period
+    after expiry - locked out
+    after $string{num_pass_fails} consecutive password failures - locked out
+    user_admin role can unlock an account
+    add 'expiry_date' (d8) and 'locked' (boolean) columns to table user
+    and 'nfails' integer
+    log the logins in login.log
+
+    one more thing - when a password fully expires the account
+        is locked out.  When it is Unlocked we need to send the person
+        a new password.
+    make sure you remove the disabling of the email sending!
+Feb 5 9:00-10:30
+    removing activate/inactivate - done
+
+    we need to mark all accounts with '-no login-' as locked
+    we need to hash all current passwords
+    done - use script/hash_pass for both of the above
+
+Feb 6 1:00-3:25
+    prevent reuse of current password
+    test!   many cases!  I think it's solid.
+    have a master key?  no
+Feb 7 12:30-12:45, 5:35-7:00
+    what if a person uses Reg only every 9 months?
+    we should have a date of last login.
+    if their last_login_date < expiry_date
+        then allow them to login but they must change their password
+        right then and there...
+    and list the last login date on the Users list screen?

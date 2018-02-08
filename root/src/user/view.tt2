@@ -1,18 +1,18 @@
 [% user_admin = Catalyst.check_user_roles('user_admin') %]
+[% fulluser = user.first _ ' ' _ user.last _ ' - ' _ user.username %]
 <h2>Users</h2>
 [% IF user_admin %]
 <a href="/user/update/$user.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/user/delete/$user.id"
- onclick="return confirm('Okay to Delete user $user.first $user.last?\n\nIt is very likely better to just Inactivate them!');">Delete</a>
-[% IF user.inactive %]
-    &nbsp;&nbsp;&nbsp;
-    <a href="/user/activate/$user.id"
-     onclick="return confirm('Okay to Activate user $user.first $user.last?');">Activate</a>
+ onclick="return confirm('Okay to Delete user $fulluser?\n\nIt is very likely better to just Lock them!');">Delete</a>
+&nbsp;&nbsp;&nbsp;
+[% IF user.locked %]
+    <a href="/user/unlock/$user.id"
+     onclick="return confirm('Okay to Unlock user $fulluser?');">Unlock</a>
 [% ELSE %]
-    &nbsp;&nbsp;&nbsp;
-    <a href="/user/inactivate/$user.id"
-     onclick="return confirm('Okay to Inactivate user $user.first $user.last?');">Inactivate</a>
+    <a href="/user/lock/$user.id"
+     onclick="return confirm('Okay to Lock user $fulluser?');">Lock</a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/user/create">Add</a>
@@ -21,6 +21,11 @@
 <a href="/user/list">List</a>
 <ul>
 <table cellpadding=3 border=0>
+
+[% IF user.locked %]
+<p class=red>This user is LOCKED out.</p>
+<p class=p2>
+[% END %]
 
 <tr>
 <th align=right>User Name</th>

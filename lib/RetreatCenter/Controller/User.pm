@@ -16,10 +16,16 @@ use Util qw/
     d3_to_hex
     randpass
     email_letter
+    tt_today
+    login_log
 /;
 use Global qw/
     %string
 /;
+use Date::Simple qw/
+    today
+/;
+use Digest::SHA 'sha256_hex';
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -28,16 +34,19 @@ sub index : Private {
 }
 
 sub list : Local {
-    my ($self, $c, $inactive) = @_;
+    my ($self, $c, $locked, $by_login_date) = @_;
 
     $c->stash->{users} = [
         model($c, 'User')->search(
-            { password => { $inactive? '=': '!=' => '-no login-' } },
-            { order_by => 'username' }
+            { locked => $locked? 'yes': '' },
+            { order_by =>
+                $by_login_date? 'last_login_date desc, username asc'
+               :                 'username asc' }
         )
     ];
     stash($c,
-        inactive => $inactive,
+        bydate => $by_login_date,
+        locked => $locked,
         template => "user/list.tt2",
     );
 }
@@ -101,13 +110,21 @@ sub _get_data {
             push @mess, "The username '$P{username}' already exists.";
         }
     }
+    if ($creating) {
+        my @users = model($c, 'User')->search({
+                        email => $P{email},
+                    });
+        if (@users) {
+            push @mess, "Sorry, $P{email} is being used by another user.";
+        }
+    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "user/error.tt2";
     }
 }
 
-sub check_password {
+sub _check_password {
     my ($pass) = @_;
 
     my $lev = $string{password_security} || 0;
@@ -141,6 +158,19 @@ sub update_do : Local {
     return if @mess;
 
     my $user =  model($c, 'User')->find($id);
+    if ($P{email} ne $user->email()) {
+        # have they changed it to somebody else's email?
+        my @users = model($c, 'User')->search({
+                        email => $P{email},
+                    });
+        if (@users) {
+            stash($c,
+                mess     => "Sorry, $P{email} is being used by another user.",
+                template => "user/error.tt2",
+            );
+            return;
+        }
+    }
     $user->update(\%P);
 
     #
@@ -255,7 +285,9 @@ sub create_do : Local {
         return;
     }
 
-    $P{password} = randpass();
+    my $pass = randpass();
+    $P{password} = sha256_hex($pass);
+    $P{expiry_date} = (today()-1)->as_d8();
     my $u = model($c, 'User')->create(\%P);
     my $id = $u->id;
 
@@ -296,9 +328,10 @@ Here are your access credentials:
 <ul>
 <table cellpadding=1>
 <tr><th align=right>Username:</td><td>$P{username}</td></tr>
-<tr><th align=right>Password:</td><td>$P{password}</td></tr>
+<tr><th align=right>Password:</td><td>$pass</td></tr>
 </table>
 </ul>
+This password is temporary and will fully expire in $string{days_pass_grace} days.<br>
 Please change your password to something that you can<br>
 easily remember (but hard to guess!).  Do this by choosing:
 <ul>
@@ -308,6 +341,7 @@ Be well,<br>
 $cur_first
 EOH
     );
+    login_log($P{username}, 'account created');
 
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
@@ -317,7 +351,7 @@ sub profile_view : Local {
 
     my $u = $c->user();
     stash($c,
-        msg       => ($msg? "Password was changed.": ""),        # hack
+        msg       => ($msg? "Password was changed.&nbsp;&nbsp;It will expire in $string{days_pass_expire} days.": ""),        # hack
         user      => $u,
         user_bg   => d3_to_hex($u->bg()   || '255,255,255'),   # black
         user_fg   => d3_to_hex($u->fg()   || '  0,  0,  0'),   # white
@@ -432,6 +466,7 @@ sub profile_color_do : Local {
 sub profile_password : Local {
     my ($self, $c) = @_;
     stash($c,
+        security => $string{password_security},
         template => 'user/profile_password.tt2',
     );
 }
@@ -440,31 +475,36 @@ sub profile_password_do : Local {
     my ($self, $c) = @_;
     my $u = $c->user;
     my $cur_pass  = $c->request->params->{cur_pass};
-    my $good_pass = $u->password();
     my $new_pass  = $c->request->params->{new_pass};
     my $new_pass2 = $c->request->params->{new_pass2};
     @mess = ();
-    if ($cur_pass) {
-        if ($good_pass ne $cur_pass) {
+    push @mess, "Missing current password"
+        if ! $cur_pass;
+    push @mess, "Missing new password"
+        if ! $new_pass;
+    push @mess, "Missing repeated new password"
+        if ! $new_pass2;
+    push @mess, "Cannot reuse the same password!"
+        if $new_pass && $cur_pass && $new_pass eq $cur_pass;
+    push @mess, "New passwords do not match."
+        if $new_pass && $new_pass2 && $new_pass ne $new_pass2;
+    if (! @mess) {
+        if (sha256_hex($cur_pass) ne $u->password()) {
             push @mess, "Current password is not correct.";
         }
-        elsif ($new_pass ne $new_pass2) {
-            push @mess, "New passwords do not match.";
-        }
         else {
-            check_password($new_pass);
+            _check_password($new_pass);
         }
-    }
-    else {
-        push @mess, "Missing current password.";
     }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "user/error.tt2";
         return;
     }
+    login_log($u->username, 'password changed');
     $u->update({
-        password => $new_pass,
+        password    => sha256_hex($new_pass),
+        expiry_date => (today() + $string{days_pass_expire})->as_d8(),
     });
     $c->response->redirect($c->uri_for('/user/profile_view/1'));
 }
@@ -476,48 +516,45 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
-sub inactivate : Local {
+sub lock : Local {
     my ($self, $c, $id) = @_;
     my $u = model($c, 'User')->find($id);
-    my $username = $u->username;
     $u->update({
-        password => '-no login-',
+        locked => 'yes',
     });
-    model($c, 'UserRole')->search(
-        { user_id => $id }
-    )->delete();
+    my $username = $u->username();
     email_letter(
         $c,
         to      => $u->name_email(),
         from    => $c->user->name_email(),
         subject => "Your account in Reg for MMC",
-        html    => <<"EOH",
-Your account '$username' in Reg for MMC has been inactivated.
-EOH
+        html    => "Your account '$username' in Reg for MMC has been locked by the administrator.",
     );
+    login_log($u->username, 'account locked by admin');
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
-sub activate : Local {
+sub unlock : Local {
     my ($self, $c, $id) = @_;
     my $u = model($c, 'User')->find($id);
-    my $username = $u->username,
+    my $username = $u->username();
     my $pass = randpass();
     $u->update({
-        password => $pass,
+        locked => '',
+        nfails => 0,
+        password => sha256_hex($pass),
+        expiry_date => (today()-1)->as_d8(),
     });
-    model($c, 'UserRole')->search(
-        { user_id => $id }
-    )->delete();
     email_letter(
         $c,
         to      => $u->name_email(),
         from    => $c->user->name_email(),
         subject => "Your account in Reg for MMC",
         html    => <<"EOH",
-Your account '$username' in Reg for MMC has been RE-activated.
+Your account '$username' in Reg for MMC has been unlocked.
 <p>
-Your password has been reset to '$pass'.
+Your password has been reset to '$pass'.<br>
+This is a temporary password and will fully expire in $string{days_pass_grace} days.
 <p>
 Please change your password to something that you can<br>
 easily remember (but hard to guess!).  Do this by choosing:
@@ -526,6 +563,7 @@ Configuration > User Profile > Password
 </ul>
 EOH
     );
+    login_log($u->username, 'account unlocked by admin');
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
