@@ -10,6 +10,5 @@ for my $u (@users) {
     my $pass = $u->password();
     $u->update({
         password => sha256_hex($pass),
-        locked   => $pass eq '-no login-'? 'yes': '',
     });
 }
