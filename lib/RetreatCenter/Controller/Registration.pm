@@ -2552,6 +2552,48 @@ sub print_list : Local {
     $c->res->output($html);
 }
 
+sub csv_labels : Local {
+    my ($self, $c, $prog_id) = @_;
+    my $program = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+            cancelled      => '',
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first me.date_start /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    open my $labs, '>', 'root/static/labels.txt';
+    for my $r (@regs) {
+        my $h = $r->house;
+        my $p = $r->person;
+        my $h_type = $r->h_type;
+        my $h_name;
+        if ($h_type eq 'own_van') {
+            $h_name = 'Own Van';
+        }
+        elsif ($h_type eq 'commuting') {
+            $h_name = 'Commuting';
+        }
+        elsif ($h_type eq 'unknown' || $h_type eq 'not_needed') {
+            $h_name = 'No Housing';
+        }
+        else {
+            $h_name = $h->name;
+            my $cluster_name = $h->cluster->name;
+            if ($cluster_name =~ m{Conference}xms) {
+                $h_name = 'CC ' . $h_name;
+                $h_name =~ s{[BH]+ \z}{}xms;
+            }
+        }
+        print {$labs} join(', ', $p->first, $p->last, $h_name) . "\n";
+    }
+    $c->response->redirect($c->uri_for("/static/labels.txt"));
+}
+
 #
 # if only one - make it larger - for fun.
 # this is not used if we go there directly, yes???

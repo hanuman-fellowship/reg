@@ -82,6 +82,9 @@ function process(e) {
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/registration/print_list/$program.id">ToPrint</a>
 
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/registration/csv_labels/$program.id">Labels</a>
+
 [% IF ! multiple_progs %]
 &nbsp;&nbsp;&nbsp;
 Search <input type=text size=15 name=pat id=pat
