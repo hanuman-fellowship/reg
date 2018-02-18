@@ -67,8 +67,14 @@ for my $r (@rentals) {
     my $name = $r->name;
     $name =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
     my @people;
-    open my $in, '<', "root/static/grid/" . $r->grid_code() . "-data.txt"
-        or die "no grid\n";
+    my $in;
+    if (! open $in, '<', "root/static/grid/"
+                          . $r->grid_code()
+                          . "-data.txt"
+    ) {
+        print "no grid for $name so skipping it\n";
+        next RENTAL;
+    }
     while (my $line = <$in>) {
         my ($name) = (split m{\|}xms, $line)[2];
         if ($name) {
