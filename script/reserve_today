@@ -64,6 +64,7 @@ RENTAL:
 for my $r (@rentals) {
     next RENTAL if $r->program_id;      # skip hybrid rentals
                                         # the program will suffice
+    next RENTAL if $r->cancelled;
     my $name = $r->name;
     $name =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
     my @people;
