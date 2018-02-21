@@ -398,5 +398,20 @@ Feb 7 12:30-12:45, 5:35-7:00
     and list the last login date on the Users list screen?
 Feb 8 9:00-9:45
     commiting password changes to kali, sending email
-Feb 10 1:00-
+Feb 10 1:00-12:15
     Labels for Meg
+Feb 12 8:00-10:45
+    meeting John, giving tour, getting screen in multi mode
+Feb 16 11:00-12:30
+    fixing a few things for Barnaby, Sumati, Kamal
+    researching cloudkali installation process
+    masterkey?
+Feb 18 12:20-12:35, 5:55-6:30
+    fixing reserve_today for Shantam
+    logout if password fully expired
+    sent message about passwords
+Feb 20 8:00-9:20
+    talking again with John
+Feb 21 11:30-
+    helping Barnaby log in
+    no more mmc to mmi for email

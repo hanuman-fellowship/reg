@@ -454,10 +454,6 @@ sub email_do : Local {
         );
         return;
     }
-    # is this still neeeded??
-    for my $a (@to, @cc) {
-        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
-    }
     # use the template toolkit outside of the Catalyst mechanism
     my $tt = Template->new({
         INTERPOLATE  => 1,

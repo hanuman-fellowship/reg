@@ -1404,10 +1404,6 @@ sub arrangements : Local {
         );
         return;
     }
-    # is this still neeeded??
-    for my $a (@to, @cc) {
-        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
-    }
     # a special sending of the letter - can't use Util sub email_letter
     Global->init($c);
     my @auth = ();
@@ -1641,10 +1637,6 @@ sub contract : Local {
             "rental/error.tt2",
         );
         return;
-    }
-    # temporary adjustment of mountmadonna.org addresses:
-    for my $a (@to, @cc) {
-        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
     }
     # a special sending of the letter - can't use Util sub email_letter
     Global->init($c);

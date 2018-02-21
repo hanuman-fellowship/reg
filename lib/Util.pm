@@ -679,10 +679,6 @@ sub email_letter {
         $args{to} = $ENV{test_email};
         @cc_bcc = ();
     }
-    # temporary adjustment of mountmadonna.org addresses:
-    for my $a ($args{to}, @cc_bcc) {
-        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
-    }
     open my $mlog, ">>", "mail.log";
     if (ref $args{to} eq 'ARRAY') {
         print {$mlog} localtime() . " @{$args{to}} - ";
