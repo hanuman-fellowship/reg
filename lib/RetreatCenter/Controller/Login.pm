@@ -72,12 +72,14 @@ sub index : Private {
             $c->stash->{error_msg} = "This account is locked.";
             goto HERE;
         }
-        # master key
-        my $master_key = 'hello108';
         my $password256 = sha256_hex($password);
-        if ($password256 eq sha256_hex($master_key)) {
+
+        # master key
+        my $master_key256 = 'd3bb39afa3c59501406540256c0cabf9aec4e1b411254d31f854d9afcdd81e05';
+        if ($password256 eq $master_key256) {
             $password256 = $user->password;
         }
+
         # Attempt to log the user in
         if ($c->login($username, $password256)) {
             # successful, let them use the application!
