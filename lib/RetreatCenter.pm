@@ -30,9 +30,9 @@ use Catalyst::Runtime '5.70';
 #   Session::Store::Memcached
 #
 
+#    -Debug
+#    StackTrace
 use Catalyst qw/
-    -Debug
-    StackTrace
 
     ConfigLoader
     Static::Simple
