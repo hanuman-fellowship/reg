@@ -12,6 +12,7 @@ run
 # generated files to ftp
 gen_files/
 
+output/
 grab_running
 root/static/images/
 root/static/js/
