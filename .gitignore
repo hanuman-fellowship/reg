@@ -12,6 +12,7 @@ run
 gen_files/
 
 grab_running
+output/
 root/static/images/
 root/static/js/
 root/static/grid/
