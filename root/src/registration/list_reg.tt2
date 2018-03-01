@@ -47,8 +47,8 @@ function process(e) {
     keychar = String.fromCharCode(keynum);
     var s = document.getElementById('pat');
     var t = s.value;
-    var url = '[% Catalyst.uri_for("/registration/matchreg/") %]' +
-              '[% program.id %]/' + t;
+    var url = '[% Catalyst.uri_for("/registration/matchreg/$program.id/") %]'
+            + t;
     xmlhttp.open('GET', url, true);
     xmlhttp.onreadystatechange = getIt;
     xmlhttp.send(null);
@@ -58,43 +58,49 @@ function process(e) {
 </script>
 </head>
 
-<h2>Registrations[% IF ! multiple_progs %] for [% program.name %] - [% program.dates %][% END %]</h2>
+<h2>Registrations[% IF ! multiple_progs %] for $program.name - $program.dates[% END %]</h2>
 
 [% IF ! multiple_progs %]
-<form name=form id= form action="/registration/list_reg_name/[% program.id %]">
+<form name=form id= form action="/registration/list_reg_name/$program.id">
 
-<a href="/program/view/[% program.id %]">Program</a>
+<a href="/program/view/$program.id">Program</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/[% other_sort %]/[% program.id %]">[% other_sort_name %]</a>
+<a href="/registration/$other_sort/$program.id">$other_sort_name</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/nonzero/[% program.id %]">NonZero$</a>
+<a href="/registration/nonzero/$program.id">NonZero$</a>
 [% END %]
 
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/list_reg_missing/[% program.id %]">Missing</a>
+<a href="/registration/list_reg_missing/$program.id">Missing</a>
 
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/search/[% program.id %]">Search</a>
+<a href="/registration/search/$program.id">Search</a>
 
 &nbsp;&nbsp;&nbsp;
-<a href="/registration/list_online">Online ([% online %])</a>
+<a href="/registration/list_online">Online ($online)</a>
+
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/registration/print_list/$program.id">ToPrint</a>
+
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/registration/csv_labels/$program.id">Labels</a>
 
 [% IF ! multiple_progs %]
 &nbsp;&nbsp;&nbsp;
 Search <input type=text size=15 name=pat id=pat
-              value="[% pat %]" onkeyup="return process(event)">
+              value="$pat" onkeyup="return process(event)">
 <script type="text/javascript">
 document.form.pat.focus();
 </script>
 </form>
 <p>
-Count: [% missing_count %][% program.reg_count %][% IF program.extradays %]/[% program.full_count %][% END %]
+Count: $missing_count$program.reg_count[% IF program.extradays %]/$program.full_count[% END %]
 [% END %]
 
 <ul>
 <div id=regs>
-[% regs %]
+$regs
 </div>
 <p>
 </ul>
-Count: [% missing_count %][% program.reg_count %][% IF program.extradays %]/[% program.full_count %][% END %]
+Count: $missing_count$program.reg_count[% IF program.extradays %]/$program.full_count[% END %]

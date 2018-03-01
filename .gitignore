@@ -1,5 +1,6 @@
 retreatcenter.db
 hlog
+login.log
 cat.out
 run
 .DS_Store
@@ -11,11 +12,13 @@ run
 # generated files to ftp
 gen_files/
 
+output/
 grab_running
 output/
 root/static/images/
 root/static/js/
 root/static/grid/
+root/static/omp_done/
 root/static/updates
 root/static/report*
 root/static/online/
@@ -29,6 +32,7 @@ root/static/mlist_done/
 root/static/participant.csv
 root/static/report*.txt
 root/static/expiry_date.txt
+root/static/labels.txt
 mail.log
 file_ftp_dir/
 grab_new_log

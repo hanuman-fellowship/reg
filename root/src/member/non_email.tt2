@@ -25,9 +25,9 @@
 <td>[% IF p.tel_cell %][% p.tel_cell %][% ELSE %]&nbsp;[% END %]</td>
 <td>$m.category</td>
 <td>
-[% IF    m.category == 'General' %][% m.date_general_obj.format("%D") %]
-[% ELSIF m.category == 'Life'    %][% m.date_life_obj.format("%D")    %]
-[% ELSIF m.category == 'Sponsor' %][% m.date_sponsor_obj.format("%D") %]
+[% IF    m.category == 'General' %]${m.date_general_obj.format("%D")}
+[% ELSIF m.category == 'Life'    %]${m.date_life_obj.format("%D")}
+[% ELSIF m.category == 'Sponsor' %]${m.date_sponsor_obj.format("%D")}
 [% END %]
 </td>
 <td>

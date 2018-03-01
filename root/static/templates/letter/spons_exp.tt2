@@ -11,7 +11,4 @@ reinstate your benefits and to have that amount applied toward the
 Life Membership goal of \$${string.mem_life_total}. Sponsors may also make two
 semiannual payments of \$$string.mem_spons_semi_year by special
 arrangement with the Membership Secretary. 
-<p>
-To claim a Tax Deduction for this donation, you must deduct the
-value of any benefits you receive.
 [% INCLUDE info.tt2 %]

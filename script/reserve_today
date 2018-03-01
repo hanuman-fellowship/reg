@@ -1,0 +1,149 @@
+#!/usr/local/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+use Date::Simple qw/
+    date
+    today
+/;
+use JSON qw/
+    to_json
+/;
+my (@programs_today, @people_today);
+
+my $today = shift || today()->as_d8();
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+
+# programs
+#
+my @programs = $schema->resultset('Program')->search(
+    {
+        sdate  => { '<=', $today },
+        edate  => { '>=', $today },
+        'level.long_term' => '',
+    },
+    {
+        join => [ qw/ level / ],
+    }
+);
+PROG:
+for my $pr (@programs) {
+    my $name = $pr->name;
+    if ($name =~ m{personal\s+retreat|special\s+guest}xmsi) {
+        next PROG;
+    }
+    $name =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
+    my @people;
+    REG:
+    for my $reg ($pr->registrations) {
+        next REG if $reg->cancelled;
+        my $per = $reg->person;
+        push @people, $per->name;
+    }
+    @people = sort @people;
+    for my $p (@people) {
+        push @people_today, {
+            name => $p,
+            title => $name,
+        };
+    }
+    push @programs_today, {
+        title  => $name,
+        people => \@people,
+    };
+}
+
+# rentals
+#
+my @rentals = $schema->resultset('Rental')->search({
+    sdate  => { '<=', $today },
+    edate  => { '>=', $today },
+});
+RENTAL:
+for my $r (@rentals) {
+    next RENTAL if $r->program_id;      # skip hybrid rentals
+                                        # the program will suffice
+    next RENTAL if $r->cancelled;
+    my $name = $r->name;
+    $name =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
+    my @people;
+    my $in;
+    if (! open $in, '<', "root/static/grid/"
+                          . $r->grid_code()
+                          . "-data.txt"
+    ) {
+        print "no grid for $name so skipping it\n";
+        next RENTAL;
+    }
+    while (my $line = <$in>) {
+        my ($name) = (split m{\|}xms, $line)[2];
+        if ($name) {
+            push @people, $name;
+        }
+    }
+    close $in;
+    @people = sort @people;
+    for my $p (@people) {
+        push @people_today, {
+            name => $p,
+            title => $name,
+        };
+    }
+    push @programs_today, {
+        title  => $name,
+        people => \@people,
+    };
+}
+
+# personal retreatants
+#
+my @people;
+my @prog_pr = $schema->resultset('Program')->search({
+    -or => [
+        name => { -like => '%personal%retreat%' },
+        name => { -like => '%special%guest%' },
+    ],
+    sdate  => { '<=', $today },
+    edate  => { '>=', $today },
+});
+if (@prog_pr) {
+    for my $pr (@prog_pr) {
+        my $pr_id = $pr->id();
+        my @pers_retr = $schema->resultset('Registration')->search({
+            program_id  => $pr_id,
+            date_start  => { '<=', $today },
+            date_end    => { '>=', $today },
+        });
+        REG:
+        for my $reg (@pers_retr) {
+            next REG if $reg->cancelled;
+            my $per = $reg->person;
+            push @people, $per->name;
+        }
+    }
+    @people = sort @people;
+    for my $p (@people) {
+        push @people_today, {
+            name => $p,
+            title => "Personal Retreat",
+        };
+    }
+    push @programs_today, {
+        title => "Personal Retreat",
+        people => \@people,
+    };
+
+}
+@people_today = sort { $a->{name} cmp $b->{name} } @people_today;
+@programs_today = sort { $a->{title} cmp $b->{title} } @programs_today;
+
+open my $pr, '>', 'programs_today.json'
+    or die "no programs_today.json\n";
+print {$pr} to_json(\@programs_today, { pretty => 1 });
+close $pr;
+open my $pe, '>', 'people_today.json'
+    or die "no people_today.json\n";
+print {$pe} to_json(\@people_today, { pretty => 1 });
+close $pe;
+system("scp people_today.json programs_today.json reservations:apps/reservations/shared/ 2>&1 >/dev/null");

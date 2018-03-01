@@ -2519,6 +2519,81 @@ sub matchreg : Local {
     $c->res->output(_reg_table($c, \@regs));
 }
 
+sub print_list : Local {
+    my ($self, $c, $prog_id) = @_;
+    my $program = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first me.date_start /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    Global->init($c);
+    my $tt = Template->new({
+        INCLUDE_PATH => 'root/src',
+        INTERPOLATE  => 1,
+        EVAL_PERL    => 0,
+    }) or die Template->error();
+    my $stash = {
+        program => $program,
+        regs    => _reg_table($c, \@regs, sans_icons => 1),
+        today   => tt_today($c),
+    };
+    my $html;
+    $tt->process(
+        "registration/print_list.tt2",   # template
+        $stash,               # variables
+        \$html,               # output
+    ) or die $tt->error();
+    $c->res->output($html);
+}
+
+sub csv_labels : Local {
+    my ($self, $c, $prog_id) = @_;
+    my $program = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+            cancelled      => '',
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first me.date_start /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    open my $labs, '>', 'root/static/labels.txt';
+    for my $r (@regs) {
+        my $h = $r->house;
+        my $p = $r->person;
+        my $h_type = $r->h_type;
+        my $h_name;
+        if ($h_type eq 'own_van') {
+            $h_name = 'Own Van';
+        }
+        elsif ($h_type eq 'commuting') {
+            $h_name = 'Commuting';
+        }
+        elsif ($h_type eq 'unknown' || $h_type eq 'not_needed') {
+            $h_name = 'No Housing';
+        }
+        else {
+            $h_name = $h->name;
+            my $cluster_name = $h->cluster->name;
+            if ($cluster_name =~ m{Conference}xms) {
+                $h_name = 'CC ' . $h_name;
+                $h_name =~ s{[BH]+ \z}{}xms;
+            }
+        }
+        print {$labs} join(', ', $p->first, $p->last, $h_name) . "\n";
+    }
+    $c->response->redirect($c->uri_for("/static/labels.txt"));
+}
+
 #
 # if only one - make it larger - for fun.
 # this is not used if we go there directly, yes???
@@ -2667,6 +2742,11 @@ EOH
         ) {
             $mark = "<span class=arrived_star>*</span> $mark";
         }
+        # we don't want the marks if we're printing
+        # the list for the program presenter...
+        if ($opt{sans_icons}) {
+            $mark = $reg->cancelled()? 'X': '';
+        }
         my $program_td = "";
         if ($opt{multiple}) {
             $program_td = "<td>" . $pr->name() . "</td>\n";
@@ -2737,8 +2817,13 @@ $postmark_td
 </tr>
 EOH
     }
+    if ($opt{sans_icons}) {
+        # remove any <a> tags
+        $body =~ s{<a[^>]*>}{}xmsg;
+        $body =~ s{</a>}{}xmsg;
+    }
     $body ||= "";
-<<"EOH";        # returning a bare string heredoc constant?  sure.
+    return <<"EOH";        # returning a bare string heredoc constant?  sure.
 <table cellpadding=4>
 $heading
 $body
@@ -5674,6 +5759,25 @@ sub grab_new : Local {
 sub receipt : Local {
     my ($self, $c, $reg_id, $type) = @_;
 
+    if ($type eq 'print') {
+        _send_receipt($c, $reg_id, $type);
+    }
+    else {
+        my $reg = model($c, 'Registration')->find($reg_id);
+        stash($c,
+            reg      => $reg,
+            template => "registration/receipt.tt2",
+        );
+    }
+}
+sub email_receipt : Local {
+    my ($self, $c, $reg_id) = @_;
+    my $email_addrs = $c->request->params->{email_addrs};
+    # check addresses?
+    _send_receipt($c, $reg_id, 'email', $email_addrs);
+}
+sub _send_receipt {
+    my ($c, $reg_id, $type, $addrs) = @_;
     my $reg = model($c, 'Registration')->find($reg_id);
     my $html = "";
     my $tt = Template->new({
@@ -5703,13 +5807,15 @@ sub receipt : Local {
         \$html,         # output
     ) or die "error in processing template: "
              . $tt->error();
-    my $from = ($reg->program->school()->mmi())?
-        "$string{from_title} <$string{from}>":
-        'Mount Madonna Institute <MMIreservations@mountmadonnainstitute.org>'
+    my $from =
+        ($reg->program->school->mmi())?
+            'Mount Madonna Institute '
+           .'<MMIreservations@mountmadonnainstitute.org>'
+        : "$string{from_title} <$string{from}>";
         ;
     if ($type eq 'email') {
         email_letter($c,
-            to      => $reg->person->email,
+            to      => $addrs,
             from    => $from,
             subject => "Receipt for " . $reg->program->title,
             html    => $html, 

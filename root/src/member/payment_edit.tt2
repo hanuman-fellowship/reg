@@ -19,7 +19,7 @@ Payment Date
 <td>
 <input type=text
        name=date_payment 
-       value="${payment.date_payment_obj.format("%D")}"
+       value="${payment.date_payment_obj.format('%D')}"
 >
 </td>
 </tr>
@@ -31,7 +31,7 @@ Valid From
 <td>
 <input type=text
        name=valid_from
-       value="${payment.valid_from_obj.format("%D")}"
+       value="${payment.valid_from_obj.format('%D')}"
 >
 </td>
 </tr>
@@ -43,7 +43,7 @@ Valid To
 <td>
 <input type=text
        name=valid_to
-       value="${payment.valid_to_obj.format("%D")}"
+       value="${payment.valid_to_obj.format('%D')}"
 >
 </td>
 </tr>

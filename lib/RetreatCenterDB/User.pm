@@ -4,6 +4,10 @@ package RetreatCenterDB::User;
 
 use base qw/DBIx::Class/;
 
+use Date::Simple qw/
+    date
+/;
+
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 __PACKAGE__->table('user');
 __PACKAGE__->add_columns(qw/
@@ -20,6 +24,10 @@ __PACKAGE__->add_columns(qw/
     cell
     txt_msg_email
     hide_mmi
+    locked
+    expiry_date
+    nfails
+    last_login_date
 /);
 __PACKAGE__->set_primary_key('id');
 
@@ -56,6 +64,16 @@ sub numbers {
           ;
 }
 
+sub expiry_date_obj {
+    my ($self) = @_;
+    return date($self->expiry_date) || "";
+}
+
+sub last_login_date_obj {
+    my ($self) = @_;
+    return date($self->last_login_date) || "";
+}
+
 1;
 __END__
 overview - This contains the information for users of Reg.
@@ -63,12 +81,16 @@ overview - This contains the information for users of Reg.
 bg - RGB values for background
 cell - cell phone number
 email - email address
+expiry_date - the date the password expires
 fg - RGB values for foreground
 first - first name
 hide_mmi - should MMI programs be hidden from you?
 id - unique id
 last - last name
+last_login_date - date of the last time they logged in
 link - RGB values for links
+locked - is this account locked? 
+nfails - the number of consecutive password failures
 office - office phone number
 password - password - in clear text :(
 txt_msg_email - email address to send a text message to this person

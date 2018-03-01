@@ -110,7 +110,7 @@ ul {
 <DIV CLASS="container">
 <TABLE WIDTH="700">
 <TR><TD ALIGN="center">
-<IMG height=200 SRC="http://www.mountmadonna.org/assets/img/registration/nov_sc_sunset.jpg">
+<IMG height=200 SRC="https://www.mountmadonna.org/assets/img/registration/nov_sc_sunset.jpg">
 <H1>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</H1>
 </TD></TR>
 <TR><TD>
@@ -130,6 +130,7 @@ You [% IF reg.early %]arrive on ${reg.date_start_obj.format("%A, %B %e")}[% END 
 [% END %]
 [% IF personal_retreat && sunday %]
 <b>Please note that the Programs Office is not open on Sunday.</b><br>
+Your room will be available for check-in at 4:00 pm.
 Upon arrival, please go to the Community Building lobby, where you will
 find an arrival package containing all you need to find your way to
 your lodging, a meal and yoga class schedule, and maps of the Center.

@@ -40,6 +40,7 @@
 <td>$user.hide_mmi</td>
 </tr>
 
+<!-- comment out the color changing!!
 <tr>
 <th align=right>Background</th>
 <td style="
@@ -79,6 +80,7 @@ onclick="window.location.href='/user/profile_color/fg'"
 onclick="window.location.href='/user/profile_color/link'"
 >&nbsp;</td>
 </tr>
+-->
 
 <tr>
 <th valign=top align=right>Pictures</th>

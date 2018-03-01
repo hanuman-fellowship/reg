@@ -55,8 +55,8 @@ sub update : Local {
     my $s = model($c, 'String')->find($the_key);
 
     $c->stash->{the_key} = $the_key;
-    $c->stash->{type} = $the_key =~ m{password}? 'password'
-                       :                         'text'
+    $c->stash->{type} = $the_key =~ m{_password}? 'password'
+                       :                          'text'
                        ;
     my $value = $c->stash->{value} = uri_escape($s->value, '"');
     my $doc = RetreatCenterDB::String::doc_for()->{$the_key};

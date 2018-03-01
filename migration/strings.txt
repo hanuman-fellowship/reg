@@ -273,3 +273,6 @@ ftp_rental_deposit_dir /for_reg/rental_deposit
 ftp_rental_deposit_dir_paid /for_reg/rental_deposit/paid
 rental_coord_email jon@suecenter.org
 url_prefix http://kali:3000
+days_pass_expire 60
+days_pass_grace 2
+num_pass_fails 3

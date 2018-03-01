@@ -733,15 +733,10 @@ EOH
         my $ev_id = $ev->id;
         my $title = $ev->title;
 
+        KEY:
         for my $key (ActiveCal->keys($ev_sdate, $ev_edate)) {
             my $cal = $cals{$key};
-            if (! $cal) {
-                # this event apparently begins in a prior month
-                # and overlaps into the first shown month???
-                # like today is April 10th and the event is from
-                # March 29th to April 4th.
-                $cal = $cals{$start->format("%Y%m")};
-            }
+            next KEY unless $cal;   # see comment in ActiveCal.pm
             my $dr = overlap(DateRange->new($ev_sdate, $ev_edate), $cal);
 
             # ???maybe optimize so we don't get the meeting_place
@@ -776,6 +771,10 @@ EOH
                         # no corresponding booking so we use undef ...
                 }
             }
+
+            # add the counts for the event to the Active Cal????
+            $cal->add_count($dr->sdate->day, $dr->edate->day, $ev->count);
+
             my $im = $cal->image;
             my $black = $cal->black;
             my $white = $cal->white;
@@ -1256,6 +1255,7 @@ $jump_map
 EOH
     my $jump_img = $c->uri_for("/static/images/$jump_name");
     my @pr_color  = $string{cal_pr_color}  =~ m{\d+}g;
+    my @tot_pop_color  = $string{cal_tot_pop_color}  =~ m{\d+}g;
     my $arr_color = d3_to_hex($string{cal_arr_color});
     my $lv_color  = d3_to_hex($string{cal_lv_color});
     # ??? optimize - skip a $cals entirely if no PRs - have a flag
@@ -1277,9 +1277,10 @@ EOH
         $m =~ s{^0}{};      # worry about octal constant???
         my $im = $ac->image;
         my $pr_color = $im->colorAllocate(@pr_color);
+        my $tot_pop_color = $im->colorAllocate(@tot_pop_color);
         my $black = $ac->black;
 
-        # PRs
+        # PRs and Total Guest Population
         for my $d (1 .. $ac->ndays) {
             my $arr_ref = $ac->get_prs($d);
             if (defined $arr_ref) {
@@ -1311,26 +1312,41 @@ EOH
                     $pr_links .= "</tr>";
                 }
                 my $x1 = $day_width*($d-1);
-                my $y1 = $ac->cal_height - 20 - 1;
+                my $y1 = $ac->cal_height - 40 - 1;
                 my $x2 = $x1 + $day_width;
                 my $y2 = $y1 + 20;
                 $im->line($x1, $y1, $x2, $y1, $black);
                     # just draw the upper line, yeah.
                 $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
                                      $pr_color);
-                my $offset = ($n < 10)? 11: 7;
+                my $offset = _num_offset($n);
                 $im->string(gdGiantFont, $x1+$offset, $y1+3, $n, $black);
                 # ??? rework this to use HEREDOC <<
                 $imgmaps{$key} .= "<area shape='rect' "
                                .  "coords='$x1,$y1,$x2,$y2'\n"
-. qq! onclick="return overlib('<center>$day_name!
-. qq! $month_name[$m-1] $d</center><p><table cellpadding=2>!
-. qq!$pr_links</table>',!
+    . qq! onclick="return overlib('<center>$day_name!
+    . qq! $month_name[$m-1] $d</center><p><table cellpadding=2>!
+    . qq!$pr_links</table>',!
              # very cool to use $m-1 inside index inside ' inside " !!!
-. qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
-. qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2, VAUTO)"!
-. qq! onmouseout="return nd();">\n!
+    . qq! STICKY, MOUSEOFF, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP,!
+    . qq! CELLPAD, 7, FGCOLOR, '#FFFFFF', BORDER, 2, VAUTO)"!
+    . qq! onmouseout="return nd();">\n!
                     if ! $public;       # zowee! fun!
+            }
+            # now the total population.
+            # we kept a running total in the Active Calendar object itself...
+            my $total = $ac->get_count($d);
+            if ($total) {
+                my $x1 = $day_width*($d-1);
+                my $y1 = $ac->cal_height - 20 - 1;
+                my $x2 = $x1 + $day_width;
+                my $y2 = $y1 + 20;
+                $im->line($x1, $y1, $x2, $y1, $black);
+                    # just draw the upper line, yeah.
+                $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1,
+                                     $tot_pop_color);
+                my $offset = _num_offset($total);
+                $im->string(gdGiantFont, $x1+$offset, $y1+3, $total, $black);
             }
         }
 
@@ -1451,6 +1467,15 @@ EOH
     else {
         $c->res->output($go_form . $content);
     }
+}
+
+# this helps center 1, 2, and 3 digit numbers
+# inside the PR and total population count boxes
+sub _num_offset {
+    my ($n) = @_;
+    return ($n <  10)? 13:
+           ($n < 100)?  9:
+                        3;
 }
 
 sub cal_colors : Local {

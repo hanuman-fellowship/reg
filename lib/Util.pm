@@ -79,11 +79,11 @@ our @EXPORT_OK = qw/
     @charge_type
     cf_expand
     PR_progtable
-    dump_inc
     months_calc
     new_event_alert
     JON
     strip_nl
+    login_log
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -678,10 +678,6 @@ sub email_letter {
     if ($ENV{test_email}) {
         $args{to} = $ENV{test_email};
         @cc_bcc = ();
-    }
-    # temporary adjustment of mountmadonna.org addresses:
-    for my $a ($args{to}, @cc_bcc) {
-        $a =~ s{mountmadonna.org}{mountmadonnainstitute.org} if $a;
     }
     open my $mlog, ">>", "mail.log";
     if (ref $args{to} eq 'ARRAY') {
@@ -1899,6 +1895,8 @@ sub rand6 {
 
 #
 # a random password
+# improve this?
+# 6 characters, must have lower, upper, digit, special?
 #
 sub randpass {
     my @lets = ('a' .. 'z', 'A' .. 'Z');
@@ -2427,5 +2425,15 @@ sub strip_nl {
     $s =~ s{\n}{}gxms;
     $s;
 }
+
+sub login_log {
+    my ($username, $msg) = @_;
+    return unless $username;
+    if (open my $out, '>>', 'login.log') {
+        print {$out} scalar(localtime), " $username - $msg\n";
+        close $out;
+    }
+}
+
 
 1;

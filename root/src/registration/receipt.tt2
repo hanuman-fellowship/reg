@@ -1,0 +1,7 @@
+<h2>Emailing Receipt for $reg.person.name in $reg.program.name</h2>
+<form action=/registration/email_receipt/$reg.id>
+<table cellpadding=5>
+<tr><th>Email Addresses</th><td><input type=text name=email_addrs value='$reg.person.email' size=60></td><tr>
+<tr><th></th><td><input type=submit id=sub></td></tr>
+</table>
+</form>

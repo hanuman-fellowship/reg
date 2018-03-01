@@ -111,9 +111,9 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <th align=right valign=top>Mailings</th>
 <td rowspan=2>
 <table border=0 cellpadding=6>
-<tr><td align=right>Email: </td><td>$person.e_mailings</td></tr>
-<tr><td align=right>Snail Mail:</td>$person.snail_mailings</td></tr>
-<tr><td align=right>Share</td><td>$person.share_mailings</td>
+<tr><td align=right>Email:</td><td>$person.e_mailings</td></tr>
+<tr><td align=right>Snail Mail:</td><td>$person.snail_mailings</td></tr>
+<tr><td align=right>Share:</td><td>$person.share_mailings</td>
 </table>
 </td>
 </tr>

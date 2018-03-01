@@ -34,7 +34,7 @@ sub value_td {
 >
 EOH
     }
-    elsif ($k =~ m{ password }xms) {
+    elsif ($k =~ m{ _password }xms) {
         return '<td>' . ('*' x length($v)) . '</td>';
     }
     return "<td>$v</td>";
@@ -114,6 +114,7 @@ cal_mon_thu_color - the color of the column for Mon-Thu in the calendar
 cal_pr_color - the color of the little box at the bottom of each day
     with the number of personal retreats - in the calendar
 cal_today_color - the color of 'today' in the calendar - at the top of the current month
+cal_tot_pop_color - the color of the total guest population count at the bottom of the month image
 center_tent - the display name for the housing type 'center_tent'
 center_tent_end - what mmdd are center tents taken down?
 center_tent_start - what mmdd are center tents put up?
@@ -132,6 +133,8 @@ date_coming_going_printed - obsolete - used to be used for
     knowing when the coming/going listing had been printed - to determine
     what page to present when prog_staff first logs in.  now the coming/going
     page is always shown.
+days_pass_expire - the number of days a new password is active
+days_pass_grace - grace period for expiry
 dble - the display name for the housing type 'dble'
 dble_bath - the display name for the housing type 'dble_bath'
 default_date_format - the format used when doing $dt->format() or when
@@ -281,6 +284,7 @@ mmi_email - who should be notified when an MMI mailing list request comes in?
 mmi_event_alert - who should be notified by email of a new MMI Program?
 mmi_reconciling - who is doing an MMI reconciliation?
 not_needed - for housing type descriptions
+num_pass_fails - how many times in a row can a wrong password be entered?
 nyears_forgiven - how many years before an outstanding balance is forgiven?
 online_notify - a list of email addresses to notify when
     an online registration happens.  This is different from the
@@ -289,13 +293,13 @@ omp_load_url - for loading the online membership payment data
 omp_pay_url - for making online membership payments
 own_tent - for housing type descriptions
 own_van - for housing type descriptions
-password_security - what level of password security?
+password_security - what level of password security? 0, 1, or 2.
 payment_C - description of a Check payment
 payment_D - description of a Credit Card payment
 payment_O - description an Online payment
 payment_S - description of a Cash payment
 payment_U - a payment is Due
-personal_template - the template for a Personal Retreat program
+personal_template - the template for a Personal Retreat program -
     it changes as the 'get_away' is offered or not.
 phone - the description of a telephone in the row for a rental online
 pr_max_nights - the maximum number of nights for a PR registration

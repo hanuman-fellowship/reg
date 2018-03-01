@@ -21,6 +21,7 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
+use File::stat;
 use Global qw/
     %string
     %system_affil_id_for
@@ -192,12 +193,23 @@ sub update : Local {
                    .  "\n";
                    ;
     }
+    my $today = tt_today($c);
+    my $offset = $today->month <= 11? 0: 1;
+    my $payment_date = 't';
+    if ($file) {
+        my $sb = stat("root/static/omp/$file");       # see File::stat
+        my ($day, $month, $year) = (localtime $sb->mtime)[3..5];
+        ++$month;
+        $year += 1900;
+        $payment_date = sprintf("%d/%d/%d", $month, $day, $year);
+    }
     stash($c,
         type_opts         => $type_opts,
         amount            => $amount,
+        payment_date      => $payment_date,
         file              => $file,
         member            => $m,
-        year              => (tt_today($c)->year + 1) % 100,
+        year              => ($today->year + $offset) % 100,
         free_prog_checked => (($m->free_prog_taken)? "checked": ''),
         person            => $m->person(),
         voter_checked     => $m->voter()? "checked": '',
@@ -302,7 +314,9 @@ sub update_do : Local {
     my $amount     = $P{mkpay_amount};
     my $valid_from = $P{valid_from};
     my $valid_to   = $P{valid_to};
+    my $transaction_id = '';
     if ($P{file}) {
+        ($transaction_id) = (split '_', $P{file})[2];
         rename "root/static/omp/$P{file}", "root/static/omp_done/$P{file}";
     }
 
@@ -335,6 +349,7 @@ sub update_do : Local {
             amount       => $amount,
             general      => $P{category} eq 'General' 
                             && $amount <= $string{mem_gen_amt}? 'yes': '',
+            transaction_id => $transaction_id,
             @who_now,
         });
         _xaccount_mem_pay($c, $member->person_id,
@@ -729,10 +744,11 @@ sub create_do : Local {
     }
 }
 
+# 'lapsed' means more than 6 months ago
 sub _lapsed_members {
     my ($c) = @_;
 
-    my $today = tt_today($c)->as_d8();
+    my $m6 = (tt_today($c)-6*31)->as_d8();
     my @opt;
     return [
         model($c, 'Member')->search(
@@ -740,11 +756,11 @@ sub _lapsed_members {
                 -or => [
                     -and => [
                         category => 'General',
-                        date_general => { '<', $today },
+                        date_general => { '<', $m6 },
                     ],
                     -and => [
                         category => 'Sponsor',
-                        date_sponsor => { '<', $today },
+                        date_sponsor => { '<', $m6 },
                     ],
                     @opt,
                 ],
@@ -796,6 +812,9 @@ sub _checked_members {
         if ($p =~ m{id(\d+)}) {
             push @ids, $1;
         }
+    }
+    if (! @ids) {
+        return;
     }
     model($c, 'Member')->search(
         {
@@ -1540,8 +1559,9 @@ sub _omp_send_and_load {
     $ftp->put("/tmp/$omp_fname", $omp_fname)
         or return "no put";
     $ftp->quit();
-    if (get($string{omp_load_url}) ne "done\n") {
-        return "no load";
+    my $output = `curl $string{omp_load_url}`;
+    if ($output !~ m{done}) {
+        return "no load: $output";
     }
     return "successfully pushed";
 }

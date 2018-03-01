@@ -365,6 +365,7 @@ my (@meals, @detls);
 my ($d8, $info, $details);
 sub add {
     my ($meal, $n) = @_;
+    return unless $n;
     $n ||= 1;           # !!!??? amazing.   put a space between || and =
                         # and all kinds of syntax errors are produced.
                         # hard to find the origin.

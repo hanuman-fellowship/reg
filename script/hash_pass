@@ -1,0 +1,14 @@
+#!/usr/local/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+use Digest::SHA 'sha256_hex';
+use RetreatCenterDB;
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+my @users = $schema->resultset('User')->all();
+for my $u (@users) {
+    my $pass = $u->password();
+    $u->update({
+        password => sha256_hex($pass),
+    });
+}

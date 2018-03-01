@@ -1,23 +1,31 @@
-<h2>[% IF inactive %]Inactive[% ELSE %]Active[% END %] Users</h2>
+<h2>[% IF locked %]Locked[% ELSE %]Active[% END %] Users</h2>
 [% IF Catalyst.check_user_roles('user_admin') %]
 <a href="/user/create">Add</a>
 [% END %]
 &nbsp; &nbsp; &nbsp;
-[% IF inactive %]
-<a href="/user/list">Active</a>
+[% IF locked %]
+<a href="/user/list/0">Active</a>
 [% ELSE %]
-<a href="/user/list/1">Inactive</a>
+<a href="/user/list/1">Locked</a>
+[% END %]
+&nbsp; &nbsp; &nbsp;
+[% IF bydate %]
+<a href="/user/list/$locked/0">ByName</a>
+[% ELSE %]
+<a href="/user/list/$locked/1">ByDate</a>
 [% END %]
 <ul>
-<table cellpadding=3 border=0>
+<table cellpadding=5 border=0>
 <tr>
 <th align=left>User Name</th>
 <th align=left>Real Name</th>
+<th align=left>Last Login</th>
 </tr>
 [% FOREACH u IN users %]
 <tr>
-<td><a href="/user/view/[% u.id %]">[% u.username %]</a></td>
-<td>[% u.first _ " " _ u.last %]</td>
+<td><a href="/user/view/$u.id">$u.username</a></td>
+<td>$u.first $u.last</td>
+<td>${u.last_login_date_obj.format("%D")}</td>
 </tr>
 [% END %]
 </table>

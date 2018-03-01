@@ -58,18 +58,29 @@ sub _view_person {
 sub search : Local {
     my ($self, $c, $pattern, $field, $nrecs) = @_;
 
-    if ($pattern) {
-        $c->stash->{message}  = "No one found matching '$pattern'.";
+    if ($pattern && $pattern eq '__expired__') {
+        # special case - $field a number of days
+        my $msg = ($field <= 1)? "Change it TODAY"
+                 :               "You have $field days to change it"
+                 ;
+        $msg .= " or you will be locked out.<p class=p2>";
+        $msg .= "You can change it <a href=/user/profile_password>here</a>.<p class=p2>";
+        $c->stash->{message}  = "<b>Your password has expired!!</b><br>$msg";
     }
-    $c->stash->{pattern} = $pattern;
-    if (! $field) {
-        $c->stash->{last_selected} = "selected";
-    }
-    for my $f (qw/ 
-        last sanskrit zip_post email first tel_home country rec_num
-    /) {
-        if (defined $field && $field eq $f) {
-            $c->stash->{"$f\_selected"} = "selected";
+    else {
+        if ($pattern) {
+            $c->stash->{message}  = "No one found matching '$pattern'.";
+        }
+        $c->stash->{pattern} = $pattern;
+        if (! $field) {
+            $c->stash->{last_selected} = "selected";
+        }
+        for my $f (qw/ 
+            last sanskrit zip_post email first tel_home country rec_num
+        /) {
+            if (defined $field && $field eq $f) {
+                $c->stash->{"$f\_selected"} = "selected";
+            }
         }
     }
     stash($c,

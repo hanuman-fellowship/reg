@@ -54,7 +54,7 @@ Dec 16 1:00-5:30
     kali crashed after power outage
     took some real effort by Shantam, Ryder Brooks, and myself
         to get newkali going.
-Dec 17 4:00-5:10, 6:30-
+Dec 17 4:00-5:10, 6:30-8:00
     talking with Shantam
     installing gcc, make, on cloudkali (ubuntu)
         Catalyst::RunTime, Catalyst::Devel
@@ -93,9 +93,10 @@ Dec 20 11:00-12:10
     untar tiny_mce for Barnaby
     talked with Vishwamitra
     curl instead of get for go.php
-Dec 21 10:00-11:30
+Dec 21 10:00-11:30, 1:50-2:50, 11:00-11:30
     initialization of cloudkali
         added user sahadev - no password - ssh passphraseless
+        actually, the password is '49deV#'
             sudo privileges
         what about for ftp'ing files?
     git clone'd reg software
@@ -106,3 +107,314 @@ Dec 21 10:00-11:30
         how to supply password?
         how did Shantam copy scheduler data to cloudkali?
     now I need to make a db_init!
+
+    cpan Mail::Sender => Email::Sender
+        no easy way to uninstall Mail::Sender
+        so no problem
+    cpan Image::Size
+    made script/try and it succeeded to insert values into table string
+        yay!
+    installed my bash alias tools
+    transfering files TO cloudkali:
+        sftp sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com
+        scp fname sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:reg/xxx
+
+    now, after a freshly initialized database schema,
+        am inserting values for strings and roles
+        next: houses and affiliations
+        next: clusters
+        next: users (with roles)
+        then: people (with partners and affiliations)
+    now clusters are ordered by cl_order - you can control
+        needs a restart after that, though
+        maybe reinitialize @clusters in Global?
+            sure
+Dec 22 10:30-11:30, 1:15-4:30
+    continuing with cloudkali
+    tried launching script/retreatcenter_server.pl
+        failed - saying something about loading ...HTTP
+            is not supported in this version of Catalyst
+        we'll need to branch
+        time to follow the tutorial
+            I think this is the best way to start with the new version.
+        We can get it working and then adapt Reg.
+    cpan Task::Catalyst::Tutorial
+        lots of things! :( :)
+        failed.  try again.  worked.  :)
+    set the timezone on the machine in my .profile
+        export TZ='America/Los_Angeles'
+    failed to get to port 3000
+    talked with Shantam
+    I'll use 80 for now running as root.
+
+    templates and dispatch works as before - great
+    I added INTERPOLATE => 1 to View/HTML.pm
+    HTML is the default view - can name it something else 
+        TT is what we called it in old Reg
+
+    This IS quite involved.   But familiar.
+    I'm not sure yet of how to move over...
+
+    adding needed modules to Makefile.PL
+        requires ....
+        good idea
+
+    as usual, one doesn't need to understand ALL the options;
+        just the ones you need to get your app to work.
+
+    cpan DBIx::Class::Schema::Loader
+        automatically create the Model classes?
+        lots of fancy lingua things
+        failed several things - did a force
+    cpan MooseX::NonMoose - needed to continue
+    this may be an issue - can I use the existing
+        model classes without modification?
+
+    it analyzes the table structure and EACH TIME
+        the server loads it generates the Model files.
+        seems unnecessary?  Nice? Not sure.
+    see:
+        https://www.slideshare.net/davorg/database-programming-with-perl-and-dbixclass
+    looks like it DOES detect many_to_many
+        if I add them it complains
+    http://search.cpan.org/~ilmari/DBIx-Class-Schema-Loader-0.04006/lib/DBIx/Class/Schema/Loader.pm#dump_to_dir
+    https://metacpan.org/pod/distribution/Catalyst-Manual/lib/Catalyst/Manual/Tutorial/03_MoreCatalystBasics.pod#Updating-the-Generated-DBIx::Class-Result-Class-Files
+Dec 23 3:30-3:55
+    experimented with a new script/rc_server.pl
+        => will need new authentication modules
+    need to do this development under a branch of master.
+        https://stackoverflow.com/questions/1519006/how-do-you-create-a-remote-git-branch
+        this tracks it
+Dec 25 9:00-11:00
+    Shantam's request for the reservations check at the gate.
+    To be scp'ed to the reservations machine (.ssh/config).
+    programs_today.json:
+    [
+      {
+        "title" : "New Years Ashtanga Yoga Retreat",
+        "people" : [
+          "Jason Galuten",
+          "Jon Bjornstad"
+        ]
+      },
+      {
+        "title" : "Personal Retreat Dec 2017",
+        "people" : [
+          "Stephanie Conway"
+        ]
+      }
+    ]
+
+    people_today.json:
+    [
+      {
+        "name" : "Jason Galuten",
+        "program" : "New Years Ashtanga Yoga Retreat",
+      },
+      {
+        "name" : "Jon Bjornstad",
+        "program" : "New Years Ashtanga Yoga Retreat"
+      {
+        "name" : "Stephanie Conway",
+        "program" : "Personal Retreat Dec 2018"
+      }
+    ]
+
+    done - just for weekend days
+        can test with command line arg yyyymmdd
+Dec 26 9:45-10:10, 10:00-12:30
+    tidying up cron reservations thing
+    fixing calendar publication after crash
+
+    total guest population on new last line of calendar months
+        not easy to decipher sub calendar of Event.pm
+    got it, I think.
+    resolving kali crash detritus
+Dec 28 10:00-11:30
+    dealing with membership
+Dec 29 9:30-10:00, 2:00-2:30
+    dealing with membership, various other tweaks
+    fixing bug in calendar
+Jan 4 7:00-7:30
+    sutra_send - use Email::Sender instead
+Jan 6 10:15-11:00, 11:25-12:00
+    rewording the rental contract preface letter
+    futzing with members
+    brought in 16 payments.
+        just one for a Sponsor (Harvey Darnell).  added 4 nights for him.
+    could be made more efficient, the 4 nights could be done automatically.
+    but it will work for now, yes?
+    sent letter to just expired people
+        65 sent
+        4 non email people
+    what about longer term lapsed people? ask the committee.
+Jan 7 10:15-1:45
+    membership duties
+    emailing lapsed, marking people inactive
+    Devendra, Shantam re: expired certs
+    on to cloudkali and TRY IT
+        following the authentication tutorial
+            did some tweaking as directed
+            if this works we'll never change it again!
+        need to add 'requires' statements to Makefile.PL?????
+        instead of Catalyst.check_user_roles
+            the new way just uses c.check_user_roles.
+        we used 'deny_access_unless' in RetreatCenter.pm
+            to control access - will this eventually be covered in the
+            up-to-date tutorial?
+        tried rc_server.pl and it told me to:
+        cpan install Spreadsheet::ParseExcel
+
+        a few other tweaks - static => 'Plugin::Static::Simple'
+        sudo and -p 80
+
+        some problem with defining DBI connection info so...
+        using retreatcenter.conf instead of retreatcenter.yml
+        and removing authentication configuration from RetreatCenter.pm
+
+        kept trying... commented out Global->init and DID
+            get the login form.   Yay.
+        but failed: do we have a connection to the database??
+        let's see... nope
+        hacking here and there - no luck
+        may need to follow the tutorial with a test app on the Model etc
+        it's close!
+        it does redirect properly when I try member/list
+
+        will need to move from Mail::Sender to Email::Sender
+            it IS installed already
+
+        Tried -Debug and StackTrace
+        it led me to tweak the .config file with Model::RetreatCenterDB
+            instead of Model::DB
+        and voila!   it almost works.
+        some issue with searches in Rides - obsolete?
+        and something with Configuration
+        
+        but Wow!   almost there.
+
+        configuration/index in lib/src/layout
+        Ride.pm [ ] => { }  but obsolete... I'm confused here...
+
+        no super_admin role so - edit it in $C/Login.pm
+Jan 13 12:45-3:20
+    responding to Shantam about double reg
+    responding to the list of Reg enhancements that Vishwamitra
+    and I discussed at length.
+    connected to MMC VPN from workwork machine
+        with Kevin's help
+Jan 14 9:00-10:15
+    messing around with cloudkali branches
+    looking into Membership payments
+    asking a question on IRC about companies using Catalyst
+Jan 15 11:15-11:30
+    responding to Shantam about Exceptions to dates on web site pages
+Jan 16 5:45-6:10
+    fixing receipts (PRs, email to other)
+Jan 17 3:25-5:20
+    online member payment - preserve transaction id,
+        include payment date in acknowledgement letter
+        later we'll do the 'bringing in' in grab_new
+    bring in the 12 current ones, send acknowledgments
+        also remove the duplicate xaccount payments Ken added.
+    send letter to Harvey
+        by moving his omp_done file back, removing the dup xaccount payment
+            and the SponsHist file?
+    updating member - delete payment requires confirmation!
+    on update page have a message about the multiple
+        ways that updates can happen - with/without a payment...
+    create_edit.tt2 - Payment Due On === date_sponsor (expires on)
+        applies to both Sponsor and Contributing Sponsor
+    founding life ALSO get a free program, yes?
+        yes
+    need to finish the receipt thing - then test member stuff
+        thoroughly, then commit
+    later - automate(cron) the push, the lapse soon, the expired 12/31,
+        the lapsed
+    & the grab_new bringing in.
+Jan 19 10:00-10:20, 1:00-3:10, 3:35-5:20, 7:25-8:30
+    negative number for Meals
+    installing ImageMagick convert - from oldkali or fresh...
+    investigating export, exceptions (dates, etc) 
+        writing email to Shantam and Kamal
+    adding Exceptions for dates tag in export, progtable
+    finalizing receipt changes
+    deleting duplicate membership payments that Ken brought in
+        to satisfy the financial reconciliation
+        favoring those that were brought in by me...
+
+        he deleted some of the ones himself to eliminate
+            duplicates - but didn't tell me...
+
+    TODO!!!
+    updating member - delete spons_hist 
+        payment on Member page requires confirmation!
+    on update page have a message about the multiple
+        ways that updates can happen - with/without a payment...
+    create_edit.tt2 - Payment Due On ===> date_sponsor (expires on)
+        applies to both Sponsor and Contributing Sponsor
+    later - automate(cron) the push, the lapse soon, the expired 12/31,
+        the lapsed
+    & the grab_new bringing in.
+    on the view member page have Online(?) link
+        but when grab_new brings them in - no point in
+            Online(?) at all!
+    need to confirm deletions of xaccount payments on Person page
+Jan 23 11:00-11:15
+    typo in receipt, edit to rental contract
+Jan 26 10:45-12:00
+    print reg list without frowny faces, envelopes, etc
+Feb 3 5:10-9:20
+    passwords expire in $string{days_pass_expire}
+        with a $string{days_pass_grace} day grace period
+    after expiry - locked out
+    after $string{num_pass_fails} consecutive password failures - locked out
+    user_admin role can unlock an account
+    add 'expiry_date' (d8) and 'locked' (boolean) columns to table user
+    and 'nfails' integer
+    log the logins in login.log
+
+    one more thing - when a password fully expires the account
+        is locked out.  When it is Unlocked we need to send the person
+        a new password.
+    make sure you remove the disabling of the email sending!
+Feb 5 9:00-10:30
+    removing activate/inactivate - done
+
+    we need to mark all accounts with '-no login-' as locked
+    we need to hash all current passwords
+    done - use script/hash_pass for both of the above
+
+Feb 6 1:00-3:25
+    prevent reuse of current password
+    test!   many cases!  I think it's solid.
+    have a master key?  no
+Feb 7 12:30-12:45, 5:35-7:00
+    what if a person uses Reg only every 9 months?
+    we should have a date of last login.
+    if their last_login_date < expiry_date
+        then allow them to login but they must change their password
+        right then and there...
+    and list the last login date on the Users list screen?
+Feb 8 9:00-9:45
+    commiting password changes to kali, sending email
+Feb 10 1:00-12:15
+    Labels for Meg
+Feb 12 8:00-10:45
+    meeting John, giving tour, getting screen in multi mode
+Feb 16 11:00-12:30
+    fixing a few things for Barnaby, Sumati, Kamal
+    researching cloudkali installation process
+    masterkey?
+Feb 18 12:20-12:35, 5:55-6:30
+    fixing reserve_today for Shantam
+    logout if password fully expired
+    sent message about passwords
+Feb 20 8:00-9:20
+    talking again with John
+Feb 21 11:30-12:00
+    helping Barnaby log in
+    no more mmc to mmi for email
+Feb 24 12:30-1:15, 1:30-
+    asking 3 perl shops about their terms
+    hello108 => other master password

@@ -3,6 +3,8 @@ use warnings;
 package RetreatCenter::Controller::Login;
 use base 'Catalyst::Controller';
 
+use lib '../..';
+
 use Global qw/
     %string
 /;
@@ -14,10 +16,12 @@ use Util qw/
     model
     randpass
     email_letter
+    login_log
 /;
 use Time::Simple qw/
     get_time
 /;
+use Digest::SHA 'sha256_hex';
 
 #
 # multiple uses depending on login state
@@ -31,13 +35,14 @@ sub index :Path :Args(0) {
     my ($self, $c) = @_;
 
     Global->init($c);
+    my $today_d8 = today()->as_d8();
 
     # if already logged in ...
     if ($c->user_exists()) {
         my $username = $c->user->username();
         if ($username eq 'calendar') {
             $c->response->redirect($c->uri_for('/event/calendar/'
-                . today()->as_d8() . "/3"));
+                . $today_d8 . "/3"));
         }
         elsif ($username eq 'library') {
             $c->response->redirect($c->uri_for('/book/search'));
@@ -56,23 +61,81 @@ sub index :Path :Args(0) {
 
     # If the username and password values were found in form
     if ($username && $password) {
+        my (@users) = model($c, 'User')->search({
+            username => $username,
+        });
+        my $user = $users[0];
+        if (!$user) {
+            $c->stash->{error_msg} = "No such username.";
+            goto HERE;
+        }
+        elsif ($user->locked) {
+            $c->stash->{error_msg} = "This account is locked.";
+            goto HERE;
+        }
+        my $password256 = sha256_hex($password);
+
+        # master key
+        my $master_key256 = 'd3bb39afa3c59501406540256c0cabf9aec4e1b411254d31f854d9afcdd81e05';
+        if ($password256 eq $master_key256) {
+            $password256 = $user->password;
+        }
+
         # Attempt to log the user in
-        if ($password ne '-no login-'
-            && $c->authenticate({
-                   username => $username,
-                   password => $password,
-                })
+        if ($c->authenticate({
+                username => $username,
+                password => $password256,
+            })
         ) {
             # successful, let them use the application!
-            _clear_images();
-            if ($c->check_user_roles('super_admin')) {
+            # unless their password has expired, that is...
+            my $last_login = $user->last_login_date();
+            $user->update({
+                nfails => 0,
+                last_login_date => $today_d8,
+            });
+            _clear_images();    # move this somewhere else??
+                                # it's just for tidying up
+            if ($user->expiry_date < $today_d8) {
+                my $ndays = $string{days_pass_grace}
+                          - (today() - $user->expiry_date_obj()) + 1;
+                if ($ndays <= 0) {
+                    if ($last_login < $user->expiry_date) {
+                        # they haven't logged in since the expiry date passed
+                        login_log($username, 'Password expired - MUST change it now.');
+                        $c->response->redirect($c->uri_for("/person/search/__expired__/$ndays"));
+                        return;
+                    }
+                    else {
+                        $user->update({
+                            locked => 'yes',    
+                        });
+                        login_log($username, 'Password expired - account locked.');
+                        # log them out and send to the login page
+                        # with a message.
+                        $c->logout;
+                        stash($c,
+                            error_msg => "Sorry, your password has fully expired. This account is now locked.",
+                            time      => get_time(),
+                            inactive  => -f "$ENV{HOME}/Reg/INACTIVE",
+                            pg_title  => "Reg for MMC",
+                            template  => 'login.tt2',
+                        );
+                        return;
+                    }
+                }
+                else {
+                    $c->response->redirect($c->uri_for("/person/search/__expired__/$ndays"));
+                }
+            }
+            elsif ($c->check_user_roles('super_admin')) {
                 $c->response->redirect($c->uri_for('/person/search'));
             }
             #elsif ($c->check_user_roles('ride_admin')) {
             #    $c->response->redirect($c->uri_for('/ride/list'));
             #}
             elsif ($c->check_user_roles('prog_staff')) {
-                if (today()->as_d8() > $string{date_coming_going_printed}) {
+                if ($today_d8 > $string{date_coming_going_printed}) {
                     $c->response->redirect(
                         $c->uri_for('/listing/comings_goings')
                     );
@@ -94,7 +157,7 @@ sub index :Path :Args(0) {
                 # so, instead we go direct:
                 #
                 RetreatCenter::Controller::Event->calendar(
-                    $c, today()->as_d8(), ""
+                    $c, $today_d8, ""
                 );
                 return;
             }
@@ -104,11 +167,30 @@ sub index :Path :Args(0) {
             else {
                 $c->response->redirect($c->uri_for('/person/search'));
             }
+            login_log($username, 'success');
             return;
         }
         else {
-            $c->stash->{error_msg} = "Bad username or password.";
+            my $n = $user->nfails;
+            $user->update({
+                nfails => $n+1,
+            });
+            if ($user->nfails >= $string{num_pass_fails}) {
+                $user->update({
+                    locked => 'yes',
+                });
+                $c->stash->{error_msg}
+                    = "$string{num_pass_fails} consecutive password failures"
+                    . " - This account is locked."
+                    ;
+            }
+            else {
+                $c->stash->{error_msg} = "Bad username or password.";
+            }
         }
+    }
+    elsif (! $username xor ! $password) {
+        $c->stash->{error_msg} = "Bad username or password.";
     }
     elsif ($forgot) {
         stash($c,
@@ -122,19 +204,30 @@ sub index :Path :Args(0) {
         my @users = model($c, 'User')->search({
                         email => $email,
                     });
-        if (! @users) {
+        my $user = $users[0];
+        if (! $user) {
+            login_log('forgotten pass', 'no such email');
             stash($c,
-                message  => 'There is no such email address in our system.',
+                message  => 'Sorry, there is no such email address in our system.',
                 email    => $email,
                 template => 'forgot_password.tt2',
             );
             return;
         }
-        my $user = $users[0];
+        elsif ($user->locked()) {
+            login_log($user->username, 'forgot password but account is locked');
+            stash($c,
+                message  => 'Sorry, the account associated with this email is locked.',
+                email    => $email,
+                template => 'forgot_password.tt2',
+            );
+            return;
+        }
         my $username = $user->username;
         my $new_pass = randpass();
         $user->update({
-            password => $new_pass,
+            password    => sha256_hex($new_pass),
+            expiry_date => (today()-1)->as_d8(),
         });
         my $url = $c->uri_for('/login');
         email_letter($c,
@@ -142,18 +235,20 @@ sub index :Path :Args(0) {
             from    => "$string{from_title} <$string{from}>",
             subject => "Your account in Reg for MMC",
             html    => <<"EOH",
-The password for your account '$username' in Reg for MMC<br>
-has been reset to '$new_pass'.
+The password for your account '$username' in Reg for MMC has been reset to '$new_pass'.<br>
+This is a temporary password and will fully expire in $string{days_pass_grace} days.
 <p>
 Here is the <a href='$url'>login page</a>.
 <p>
 Please change your password to something that you can<br>
 easily remember (but hard to guess!).  Do this by choosing:
+<p>
 <ul>
 Configuration > User Profile > Password
 </ul>
 EOH
         );
+        login_log($username, 'forgotten password - new one sent');
         stash($c,
             username => $username,
             email    => $email,
@@ -161,7 +256,10 @@ EOH
         );
         return;
     }
+    HERE:
+    # login failure - see 'error_msg' above
     # send to the login page
+    login_log($username, $c->stash->{error_msg});
     stash($c,
         time     => get_time(),
         inactive => -f "$ENV{HOME}/Reg/INACTIVE",

@@ -90,6 +90,7 @@ sub update_do : Local {
         type  => $type,
         cl_order => $cl_order,
     });
+    Global->init($c, 1);
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
 
