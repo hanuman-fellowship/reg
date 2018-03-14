@@ -170,6 +170,6 @@ Jan 7 10:15-1:45
         Ride.pm [ ] => { }  but obsolete... I'm confused here...
 
         no super_admin role so - edit it in $C/Login.pm
-Jan 14 9:00-10:15
-    messing around with cloudkali branches
-    asking a question on IRC about companies using Catalyst
+
+added jjn to sudo group:
+    # usermod -aG sudo jjn
