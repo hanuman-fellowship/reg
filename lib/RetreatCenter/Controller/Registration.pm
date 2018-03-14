@@ -3403,7 +3403,7 @@ sub not_arrived : Local {
 }
 
 #
-# choosing a house (given a housing type)
+# Choosing a house (given a housing type)
 # should not affect the costs - unless you change
 # housing type on the lodging screen, that is.
 #
