@@ -415,6 +415,38 @@ Feb 20 8:00-9:20
 Feb 21 11:30-12:00
     helping Barnaby log in
     no more mmc to mmi for email
-Feb 24 12:30-1:15, 1:30-
+Feb 24 12:30-1:15, 1:30-1:45
     asking 3 perl shops about their terms
     hello108 => other master password
+Feb 28 12:00-1:00
+    merging latest changes into cloudkali
+    email is not sending from there - why?
+        need new module?
+Mar 1 1:00-1:15
+    sending TPS (The Perl Shop) documents
+    accepting their call invite
+Mar 2 1:00-2:15
+    talking with the PerlShop guys
+        exactly what Brajesh and I were thinking!
+        founded in 2013
+    perl legacy apps? how many?
+    digital ocean vs AWS
+    infinity interactive is another PerlShop - west coast
+        much too large and not focused on Perl
+Mar 3 4:45-5:15
+    talking with Alexandra about conf letter template
+Mar 6 3:30-5:30
+    talking with Vishwamitra and Kamala about several new requests
+    communicating with Infinity Interactive
+    talking with Henry VanStyn
+    shadowcat is out - if only for the timezone issue
+        John says they would be the priciest
+Mar 9 12:45-1:15, 1:30-2:10
+    John, nginx, certbot, Shantam, answering email from Kamala
+    sending request to Henry for rates, etc
+    talking with Infinity Interactive
+Mar 13 4:10-5:30
+    getting the 3 companies the source tarball and an explanation
+        that we're still in process
+    let's stay with bitbucket, yes?
+    moved to github, invited 4 people
