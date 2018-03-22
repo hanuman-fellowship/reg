@@ -2594,6 +2594,79 @@ sub csv_labels : Local {
     $c->response->redirect($c->uri_for("/static/labels.txt"));
 }
 
+sub badges : Local {
+    my ($self, $c, $prog_id) = @_;
+    my $program = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+            cancelled      => '',
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.last person.first me.date_start /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    my $data_href = {
+        program => $program->title(),
+        code    => $program->summary->gate_code(),
+    };
+    my (@names, @rooms, @dates);
+    for my $r (@regs) {
+        my $h = $r->house;
+        my $p = $r->person;
+        push @names, $p->name();
+        push @dates, $r->date_start_obj->format("%b %e")
+                   . ' - '
+                   .  $r->date_end_obj->format("%b %e")
+                   ;
+        my $h_type = $r->h_type;
+        my $h_name;
+        if ($h_type eq 'own_van') {
+            $h_name = 'Own Van';
+        }
+        elsif ($h_type eq 'commuting') {
+            $h_name = 'Commuting';
+        }
+        elsif ($h_type eq 'unknown' || $h_type eq 'not_needed') {
+            $h_name = 'No Housing';
+        }
+        else {
+            $h_name = $h->name;
+            my $cluster_name = $h->cluster->name;
+            if ($cluster_name =~ m{Conference}xms) {
+                $h_name = 'CC ' . $h_name;
+                $h_name =~ s{[BH]+ \z}{}xms;
+            }
+        }
+        push @rooms, $h_name;
+    }
+    my $tt = Template->new({
+                 INCLUDE_PATH => 'root/src',
+                 INTERPOLATE => 1,
+             }) or die Template->error();
+    my $html;
+    $tt->process(
+        'registration/badge_top.tt2',
+        {},
+        \$html,
+    );
+    for (my $i = 0; $i <= $#names; $i += 6) {
+        $data_href->{name}  = [ @names[$i .. $i+5] ];
+        $data_href->{dates} = [ @dates[$i .. $i+5] ];
+        $data_href->{room}  = [ @rooms[$i .. $i+5] ];
+        $tt->process(
+            'registration/badge.tt2',
+            $data_href,
+            \$html,
+        ) or die Template->error();
+    }
+    $html =~ s{<div style='page-break-after:always'></div>\n\z}{};
+    $html .= "</body>";
+    $c->res->output($html);
+}
+
 #
 # if only one - make it larger - for fun.
 # this is not used if we go there directly, yes???

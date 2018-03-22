@@ -1,0 +1,61 @@
+<style>
+body {
+    margin-left: .20in;
+    margin-top: .20in;
+}
+td {
+    width: 2.6in;
+    height: 3.6in;
+}
+table, td {
+    border: 1px solid black;
+}
+.center {
+    text-align: center;
+}
+.name {
+    font-size: 25pt;
+    font-weight: bold;
+    font-family: Calibri;
+    color: teal;
+}
+.program {
+    font-size: 18pt;
+    font-family: Calibri;
+}
+.dates {
+    font-size: 15pt;
+    color: teal;
+    font-family: Calibri;
+}
+.emergency_lab {
+    font-size: 18pt;
+    font-family: Calibri;
+    color: teal;
+    font-weight: bold;
+}
+.emergency_txt {
+    font-size: 18pt;
+    font-family: Calibri;
+    color: black;
+    font-weight: bold;
+}
+.room_lab, .main_lab, .oaks_lab, .return {
+    font-size: 15pt;
+    font-family: Calibri;
+    color: teal;
+    margin-top: .15in;
+}
+.room_txt, .main_txt, .oaks_txt {
+    font-size: 15pt;
+    font-family: Calibri;
+    font-weight: bold;
+    color: black;
+}
+.lan {
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+}
+</style>
+<body>
