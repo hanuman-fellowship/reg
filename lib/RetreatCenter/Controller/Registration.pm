@@ -2604,7 +2604,7 @@ sub badges : Local {
         },
         {
             join     => [qw/ person /],
-            order_by => [qw/ person.last person.first me.date_start /],
+            order_by => [qw/ person.first person.last /],
             prefetch => [qw/ person /],   
         }
     );
