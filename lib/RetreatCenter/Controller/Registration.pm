@@ -2623,7 +2623,10 @@ sub badges : Local {
                    ;
         my $h_type = $r->h_type;
         my $h_name;
-        if ($h_type eq 'own_van') {
+        if (! $h) {
+            $h_name = '??';
+        }
+        elsif ($h_type eq 'own_van') {
             $h_name = 'Own Van';
         }
         elsif ($h_type eq 'commuting') {
