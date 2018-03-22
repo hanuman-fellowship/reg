@@ -1894,13 +1894,13 @@ sub rand6 {
 }
 
 #
-# a random password
-# improve this?
-# 6 characters, must have lower, upper, digit, special?
+# a random password for temporary purposes
+# we require that it is changed immediately.
 #
 sub randpass {
-    my @lets = ('a' .. 'z', 'A' .. 'Z');
-    my @digs =  0  ..  9;
+    my @lets = split '', 'abcdefghjkmnpqrstvwxz'
+                         . uc 'abcdefghjkmnpqrstvwxz';
+    my @digs = split '', '23456789';
     return 
         $lets[rand @lets]
       . $digs[rand @digs]

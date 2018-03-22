@@ -445,8 +445,54 @@ Mar 9 12:45-1:15, 1:30-2:10
     John, nginx, certbot, Shantam, answering email from Kamala
     sending request to Henry for rates, etc
     talking with Infinity Interactive
-Mar 13 4:10-5:30
+Mar 13 4:10-6:00
     getting the 3 companies the source tarball and an explanation
         that we're still in process
     let's stay with bitbucket, yes?
     moved to github, invited 4 people
+    cloudkali is up to date as well
+Mar 14 2:30-3:50
+    skyping with John
+    nginx, fastcgi, sendmail, mirroring mysql etc etc
+    responding to Manjarika
+    ask John about initializing the Globals in the 5 slaves...
+Mar 15 11:20-
+    skype call with Shantam, John
+    TODOS:
+        Global.pm initiation when under nginx, fastcgi
+            a better place for it?
+        Female/Mail/Transgender, Other
+            reg1, reg2, relay, grab new
+            db Person F/M/O, CRUD
+            when housing do no search - must do a FORCE
+            Daily Pic, ClusterView M/F/O
+        Hybrids
+            rental contract should read differently
+            it's okay for leaders/assistants to have
+                an outstanding balance
+            the invoice goes to the total of those
+                leaders/assistants rather than the grid
+            once balance is 0 the outstanding balances
+                of leaders/assistants are cleared out
+            the minimum still applies
+                look to the # of registrations
+            arrangements letter does not need grid URL
+            no Send to Web link on Rental
+            disable housing assignments on Rental page
+        Late Notices
+            when printing Sat & Sun on Sat suppress
+                notices for a program that starts on Sun
+            still OK for PRs that start on Sunday
+        License Plate #s
+            reg1, 2, relay, grab new
+            db add column Registration, CRUD
+            listing for field staff of all cars currently on land
+            bulk from Rental coord? grid like?
+        Badges
+            generate the badges and print
+                then staff cuts and inserts into sleeves, lanyards
+            ideally more than one a page
+            Kurt has prototype in Word
+Mar 21 7:45-
+    pass fails to 5
+    restrict characters in temp passwords
