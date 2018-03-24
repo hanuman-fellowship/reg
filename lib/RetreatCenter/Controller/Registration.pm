@@ -2675,6 +2675,7 @@ window.print();
 }
 </html>
 EOH
+}
 
 #
 # if only one - make it larger - for fun.
