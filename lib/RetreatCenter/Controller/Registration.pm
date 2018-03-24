@@ -2666,9 +2666,15 @@ sub badges : Local {
         ) or die Template->error();
     }
     $html =~ s{<div style='page-break-after:always'></div>\n\z}{};
-    $html .= "</body>";
+    $html .= <<'EOH';
+</body> 
+<script>
+window.print();
+</script>
     $c->res->output($html);
 }
+</html>
+EOH
 
 #
 # if only one - make it larger - for fun.
