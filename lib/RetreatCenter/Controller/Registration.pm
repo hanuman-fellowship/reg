@@ -2675,6 +2675,7 @@ window.print();
 }
 </html>
 EOH
+    $c->res->output($html);
 }
 
 #
