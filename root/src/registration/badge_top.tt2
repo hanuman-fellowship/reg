@@ -1,10 +1,10 @@
 <style>
-body {
+.front, .back {
     margin-left: .20in;
     margin-top: .20in;
 }
 td {
-    width: 2.6in;
+    width: 2.4in;
     height: 3.6in;
 }
 table, td {

@@ -1,5 +1,5 @@
 <!-- the front of the badges -->
-<table cellpadding=1 cellspacing=1 border=2>
+<table cellpadding=1 cellspacing=1 border=2 class=front>
 <tr>
 [% FOREACH i IN [ 0..5] %]
     [% IF ! name.$i %]
@@ -15,7 +15,7 @@
 <div style='page-break-after:always'></div>
 
 <!-- the back of the badges -->
-<table cellpadding=1 cellspacing=1 border=2>
+<table cellpadding=1 cellspacing=1 border=2 class=back>
 <tr>
 [% FOREACH i IN [ 0..5 ] %]
     [% IF ! name.$i %]
