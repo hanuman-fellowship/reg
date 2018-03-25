@@ -2671,7 +2671,6 @@ sub badges : Local {
 <script>
 window.print();
 </script>
-}
 </html>
 EOH
     $c->res->output($html);
