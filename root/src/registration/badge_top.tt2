@@ -1,25 +1,34 @@
 <html>
 <head>
 <style>
-.front, .back {
-    margin-left: .20in;
-    margin-top: .20in;
+.front {
+    margin-left: 15mm;
+    margin-top: 10mm;
+}
+.back {
+    margin-left: 4.9mm;
+    margin-top: 10.5mm;
 }
 td {
     width: 2.125in;
     height: 3.375in;
 }
 table, td {
-    border: 1px solid black;
+    border: 1px dotted black;
 }
 .center {
     text-align: center;
+}
+.image {
+    margin-bottom: 5mm;
 }
 .name {
     font-size: 25pt;
     font-weight: bold;
     font-family: Calibri;
     color: teal;
+    margin-top: .2in;
+    margin-bottom: .2in;
 }
 .program {
     font-size: 18pt;
@@ -46,7 +55,11 @@ table, td {
     font-size: 15pt;
     font-family: Calibri;
     color: teal;
-    margin-top: .15in;
+    margin-top: 3mm;
+}
+.return {
+    /* text-align: left; */
+    margin-left: .5mm;
 }
 .room_txt, .main_txt, .oaks_txt {
     font-size: 15pt;

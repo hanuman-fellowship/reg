@@ -501,3 +501,6 @@ Mar 21 7:45-11:00, 11:45-12:45
 Mar 22 10:10-10:30, 11:15-12:30
     continuing with succeeding batches of 6
     skype meeting with Shantam, John, Jamal
+Mar 24 5:00-6:00
+    tweaking the badges - almost there.
+    

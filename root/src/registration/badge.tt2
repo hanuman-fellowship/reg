@@ -1,11 +1,18 @@
 <!-- the front of the badges -->
 <table cellpadding=1 cellspacing=1 border=2 class=front>
 <tr>
-[% FOREACH i IN [ 0..5] %]
+[% FOREACH i IN [ 0,1,2,3,4,5] %]
     [% IF ! name.$i %]
         [% BREAK %]
     [% END %]
-<td><center><img src=/static/images/MMC.png><p class=name>[% name.$i %]<p class=program>$program<p class=dates>[% dates.$i %]</center></td>
+<td>
+<center>
+<img src=/static/images/MMC.png class=image>
+<div class=name>[% name.$i %]</div>
+<div class=program>$program</div>
+<div class=dates>[% dates.$i %]</div>
+</center>
+</td>
     [% IF i == 2 %]
     </tr><tr>
     [% END %]
@@ -17,7 +24,7 @@
 <!-- the back of the badges -->
 <table cellpadding=1 cellspacing=1 border=2 class=back>
 <tr>
-[% FOREACH i IN [ 0..5 ] %]
+[% FOREACH i IN [ 2,1,0,5,4,3 ] %]
     [% IF ! name.$i %]
         [% BREAK %]
     [% END %]
@@ -48,13 +55,13 @@ Oaks Gate Code:
 1$code
 </div>
 <div class=return>
-Please <span class=lan>RETURN LANYARDS</span><br>
-and keys to the programs<br>
-office or leave in your room
+<span class=lan>RETURN LANYARDS</span>
+and keys to the programs
+office or leave in your room.
 </div>
 </div>
 </td>
-    [% IF i == 2 %]
+    [% IF i == 0 %]
     </tr><tr>
     [% END %]
 [% END %]
