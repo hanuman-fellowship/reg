@@ -456,7 +456,7 @@ Mar 14 2:30-3:50
     nginx, fastcgi, sendmail, mirroring mysql etc etc
     responding to Manjarika
     ask John about initializing the Globals in the 5 slaves...
-Mar 15 11:20-
+Mar 15 11:20-12:30
     skype call with Shantam, John
     TODOS:
         Global.pm initiation when under nginx, fastcgi
@@ -501,6 +501,5 @@ Mar 21 7:45-11:00, 11:45-12:45
 Mar 22 10:10-10:30, 11:15-12:30
     continuing with succeeding batches of 6
     skype meeting with Shantam, John, Jamal
-Mar 24 5:00-6:00
+Mar 24 5:00-6:30
     tweaking the badges - almost there.
-    
