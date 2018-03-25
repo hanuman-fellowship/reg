@@ -6,8 +6,8 @@
     margin-top: .20in;
 }
 td {
-    width: 2.4in;
-    height: 3.6in;
+    width: 2.125in;
+    height: 3.375in;
 }
 table, td {
     border: 1px solid black;
