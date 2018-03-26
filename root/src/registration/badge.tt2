@@ -1,10 +1,10 @@
 <!-- the front of the badges -->
-<table cellpadding=1 cellspacing=1 border=2 class=front>
+<table cellpadding=1 cellspacing=1 class=front>
 <tr>
 [% FOREACH i IN [ 0,1,2,3,4,5] %]
     [% IF ! name.$i %]
-        [% BREAK %]
-    [% END %]
+<td>&nbsp;</td>
+    [% ELSE %]
 <td>
 <center>
 <img src=/static/images/MMC.png class=image>
@@ -13,6 +13,8 @@
 <div class=dates>[% dates.$i %]</div>
 </center>
 </td>
+    [% END %]
+
     [% IF i == 2 %]
     </tr><tr>
     [% END %]
@@ -22,11 +24,12 @@
 <div style='page-break-after:always'></div>
 
 <!-- the back of the badges -->
-<table cellpadding=1 cellspacing=1 border=2 class=back>
+<table cellpadding=1 cellspacing=1 class=back>
 <tr>
 [% FOREACH i IN [ 2,1,0,5,4,3 ] %]
     [% IF ! name.$i %]
-        [% BREAK %]
+        <td>&nbsp;</td>
+        [% NEXT %]
     [% END %]
 <td>
 <div class=center>

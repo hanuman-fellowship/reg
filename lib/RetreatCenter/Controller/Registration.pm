@@ -51,6 +51,7 @@ use Util qw/
     @charge_type
     cf_expand
     months_calc
+    gen_badges
 /;
 use POSIX qw/
     ceil
@@ -2608,10 +2609,6 @@ sub badges : Local {
             prefetch => [qw/ person /],   
         }
     );
-    my $data_href = {
-        program => $program->title(),
-        code    => $program->summary->gate_code(),
-    };
     my (@names, @rooms, @dates);
     for my $r (@regs) {
         my $h = $r->house;
@@ -2645,35 +2642,11 @@ sub badges : Local {
         }
         push @rooms, $h_name;
     }
-    my $tt = Template->new({
-                 INCLUDE_PATH => 'root/src',
-                 INTERPOLATE => 1,
-             }) or die Template->error();
-    my $html;
-    $tt->process(
-        'registration/badge_top.tt2',
-        {},
-        \$html,
-    );
-    for (my $i = 0; $i <= $#names; $i += 6) {
-        $data_href->{name}  = [ @names[$i .. $i+5] ];
-        $data_href->{dates} = [ @dates[$i .. $i+5] ];
-        $data_href->{room}  = [ @rooms[$i .. $i+5] ];
-        $tt->process(
-            'registration/badge.tt2',
-            $data_href,
-            \$html,
-        ) or die Template->error();
-    }
-    $html =~ s{<div style='page-break-after:always'></div>\n\z}{};
-    $html .= <<'EOH';
-</body> 
-<script>
-window.print();
-</script>
-</html>
-EOH
-    $c->res->output($html);
+    gen_badges($c,
+               $program->title(),
+               $program->summary->gate_code(),
+               \@names, \@dates, \@rooms
+              );
 }
 
 #

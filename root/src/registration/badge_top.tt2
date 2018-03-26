@@ -14,7 +14,8 @@ td {
     height: 3.375in;
 }
 table, td {
-    border: 1px dotted black;
+    border: 1px dotted lightgrey;
+    border-collapse: collapse;
 }
 .center {
     text-align: center;
