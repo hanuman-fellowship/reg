@@ -176,7 +176,11 @@ sub index : Private {
                     ;
             }
             else {
-                $c->stash->{error_msg} = "Bad username or password.";
+                my $msg = "Bad username or password.";
+                if ($user->nfails + 2 == $string{num_pass_fails}) {
+                    $msg .= "<br><span style='color: red'>Danger</span>... two more failed attempts and you will be locked out!";
+                }
+                $c->stash->{error_msg} = $msg;
             }
         }
     }
