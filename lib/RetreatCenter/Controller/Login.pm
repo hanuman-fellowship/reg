@@ -36,22 +36,6 @@ sub index : Private {
     Global->init($c);
     my $today_d8 = today()->as_d8();
 
-    # Get the username and password from form
-    my $username = $c->request->params->{username} || "";
-    my $password = $c->request->params->{password} || "";
-    my $forgot   = $c->request->params->{forgot}   || "";
-    my $email    = $c->request->params->{email}    || "";
-
-    # special case - we don't want the calendar 'user'
-    # to need a password which will expire...
-    if ($username eq 'calendar') {
-        # generate a public calendar and send it to mountmadonna.org
-        # that's all.
-        $c->response->redirect($c->uri_for('/event/calendar/'
-            . $today_d8 . "/3"));
-        return;
-    }
-
     # if already logged in ...
     if ($c->user_exists()) {
         my $username = $c->user->username();
@@ -63,6 +47,12 @@ sub index : Private {
         }
         return;
     }
+
+    # Get the username and password from form
+    my $username = $c->request->params->{username} || "";
+    my $password = $c->request->params->{password} || "";
+    my $forgot   = $c->request->params->{forgot}   || "";
+    my $email    = $c->request->params->{email}    || "";
 
     # If the username and password values were found in form
     if ($username && $password) {
@@ -158,7 +148,7 @@ sub index : Private {
                 # so, instead we go direct:
                 #
                 RetreatCenter::Controller::Event->calendar(
-                    $c, $today_d8, ""
+                    $c, $today_d8, "", 1
                 );
                 return;
             }
