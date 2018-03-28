@@ -503,7 +503,7 @@ Mar 22 10:10-10:30, 11:15-12:30
     skype meeting with Shantam, John, Jamal
 Mar 24 5:00-6:30
     tweaking the badges - almost there.
-Mar 27 4:50-
+Mar 27 4:50-6:25
     public calendar publishing
     need to add a new field for programs (and rentals)
         called 'badge_title' - for a short version of the
@@ -516,3 +516,5 @@ Mar 27 4:50-
         sort it by the name (assuming first name is first)
         strip the name after any punctuation (aside from &)
             but not ' or -
+    tweaks to the login process
+    calendar password does not expire...
