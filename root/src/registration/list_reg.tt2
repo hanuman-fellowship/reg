@@ -79,12 +79,6 @@ function process(e) {
 &nbsp;&nbsp;&nbsp;
 <a href="/registration/list_online">Online ($online)</a>
 
-&nbsp;&nbsp;&nbsp;
-<a target=_blank href="/registration/print_list/$program.id">ToPrint</a>
-
-&nbsp;&nbsp;&nbsp;
-<a target=_blank href="/registration/csv_labels/$program.id">Labels</a>
-
 [% IF ! multiple_progs %]
 &nbsp;&nbsp;&nbsp;
 Search <input type=text size=15 name=pat id=pat
@@ -93,11 +87,21 @@ Search <input type=text size=15 name=pat id=pat
 document.form.pat.focus();
 </script>
 </form>
+[% END %]
 <p>
+<a target=_blank href="/registration/print_list/$program.id">ToPrint</a>
+
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/registration/csv_labels/$program.id">Labels</a>
+
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/registration/badges/$program.id">Badges</a>
+
+<p class=p2>
+[% IF ! multiple_progs %]
 Count: $missing_count$program.reg_count[% IF program.extradays %]/$program.full_count[% END %]
 [% END %]
-
-<ul>
+<ul style="margin-top: 0px">
 <div id=regs>
 $regs
 </div>

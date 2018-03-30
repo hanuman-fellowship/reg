@@ -51,6 +51,7 @@ use Util qw/
     @charge_type
     cf_expand
     months_calc
+    gen_badges
 /;
 use POSIX qw/
     ceil
@@ -2592,6 +2593,60 @@ sub csv_labels : Local {
         print {$labs} join(', ', $p->first, $p->last, $h_name) . "\n";
     }
     $c->response->redirect($c->uri_for("/static/labels.txt"));
+}
+
+sub badges : Local {
+    my ($self, $c, $prog_id) = @_;
+    my $program = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id     => $prog_id,
+            cancelled      => '',
+        },
+        {
+            join     => [qw/ person /],
+            order_by => [qw/ person.first person.last /],
+            prefetch => [qw/ person /],   
+        }
+    );
+    my (@names, @rooms, @dates);
+    for my $r (@regs) {
+        my $h = $r->house;
+        my $p = $r->person;
+        push @names, $p->name();
+        push @dates, $r->date_start_obj->format("%b %e")
+                   . ' - '
+                   .  $r->date_end_obj->format("%b %e")
+                   ;
+        my $h_type = $r->h_type;
+        my $h_name;
+        if ($h_type eq 'own_van') {
+            $h_name = 'Own Van';
+        }
+        elsif ($h_type eq 'commuting') {
+            $h_name = 'Commuting';
+        }
+        elsif ($h_type eq 'unknown' || $h_type eq 'not_needed') {
+            $h_name = 'No Housing';
+        }
+        elsif (! $h) {
+            $h_name = '??';
+        }
+        else {
+            $h_name = $h->name;
+            my $cluster_name = $h->cluster->name;
+            if ($cluster_name =~ m{Conference}xms) {
+                $h_name = 'CC ' . $h_name;
+                $h_name =~ s{[BH]+ \z}{}xms;
+            }
+        }
+        push @rooms, $h_name;
+    }
+    gen_badges($c,
+               $program->title(),
+               $program->summary->gate_code(),
+               \@names, \@dates, \@rooms
+              );
 }
 
 #

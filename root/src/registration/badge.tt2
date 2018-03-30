@@ -1,0 +1,73 @@
+<!-- the front of the badges -->
+<table cellpadding=1 cellspacing=1 class=front>
+<tr>
+[% FOREACH i IN [ 0,1,2,3,4,5] %]
+    [% IF ! name.$i %]
+<td>&nbsp;</td>
+    [% ELSE %]
+<td>
+<center>
+<img src=/static/images/MMC.png class=image>
+<div class=name>[% name.$i %]</div>
+<div class=program>$program</div>
+<div class=dates>[% dates.$i %]</div>
+</center>
+</td>
+    [% END %]
+
+    [% IF i == 2 %]
+    </tr><tr>
+    [% END %]
+[% END %]
+</tr>
+</table>
+<div style='page-break-after:always'></div>
+
+<!-- the back of the badges -->
+<table cellpadding=1 cellspacing=1 class=back>
+<tr>
+[% FOREACH i IN [ 2,1,0,5,4,3 ] %]
+    [% IF ! name.$i %]
+        <td>&nbsp;</td>
+        [% NEXT %]
+    [% END %]
+<td>
+<div class=center>
+<div class=emergency_lab>
+Emergency Contact
+</div>
+<div class=emergency_txt>
+1-866-662-1275
+</div>
+<div class=room_lab>
+Room #:
+<span class=room_txt>
+[% room.$i %]
+</span>
+</div>
+<div class=main_lab>
+Main Gate Code:
+</div>
+<div class=main_txt>
+#$code
+</div>
+<div class=oaks_lab>
+Oaks Gate Code:
+</div>
+<div class=oaks_txt>
+1$code
+</div>
+<div class=return>
+<span class=lan>RETURN LANYARDS</span>
+and keys to the programs
+office or leave in your room.
+</div>
+</div>
+</td>
+    [% IF i == 0 %]
+    </tr><tr>
+    [% END %]
+[% END %]
+</tr>
+</table>
+<div style='page-break-after:always'></div>

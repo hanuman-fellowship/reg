@@ -84,6 +84,7 @@ our @EXPORT_OK = qw/
     JON
     strip_nl
     login_log
+    gen_badges
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2433,6 +2434,50 @@ sub login_log {
         print {$out} scalar(localtime), " $username - $msg\n";
         close $out;
     }
+}
+
+sub gen_badges {
+    my ($c, $program, $code, $names_aref, $dates_aref, $rooms_aref) = @_;
+    
+    # assign to plain arrays
+    # otherwise the syntax is too tricky for me
+    #
+    my @names = @$names_aref;
+    my @dates = @$dates_aref;
+    my @rooms = @$rooms_aref;
+    my $tt = Template->new({
+                 INCLUDE_PATH => 'root/src',
+                 INTERPOLATE => 1,
+             }) or die Template->error();
+    my $html;
+    $tt->process(
+        'registration/badge_top.tt2',
+        {},
+        \$html,
+    );
+    my $data_href = {
+        program => $program,
+        code    => $code,
+    };
+    for (my $i = 0; $i <= $#names; $i += 6) {
+        $data_href->{name}  = [ @names[$i .. $i+5] ];
+        $data_href->{dates} = [ @dates[$i .. $i+5] ];
+        $data_href->{room}  = [ @rooms[$i .. $i+5] ];
+        $tt->process(
+            'registration/badge.tt2',
+            $data_href,
+            \$html,
+        ) or die Template->error();
+    }
+    $html =~ s{<div style='page-break-after:always'></div>\n\z}{};
+    $html .= <<'EOH';
+</body> 
+<script>
+window.print();
+</script>
+</html>
+EOH
+    $c->res->output($html);
 }
 
 

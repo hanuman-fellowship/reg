@@ -396,10 +396,9 @@ sub access_denied : Private {
 # put in ActiveCal??
 #
 sub calendar : Local {
-    my ($self, $c, $the_start, $the_end) = @_;
+    my ($self, $c, $the_start, $the_end, $public) = @_;
 
     my $staff = $c->check_user_roles('prog_staff');
-    my $public = $c->user->username() eq 'calendar';
     my $day_width  = $string{cal_day_width};
     my $event_border = $string{cal_event_border};
     my @month_name = qw/

@@ -456,7 +456,7 @@ Mar 14 2:30-3:50
     nginx, fastcgi, sendmail, mirroring mysql etc etc
     responding to Manjarika
     ask John about initializing the Globals in the 5 slaves...
-Mar 15 11:20-
+Mar 15 11:20-12:30
     skype call with Shantam, John
     TODOS:
         Global.pm initiation when under nginx, fastcgi
@@ -493,6 +493,28 @@ Mar 15 11:20-
                 then staff cuts and inserts into sleeves, lanyards
             ideally more than one a page
             Kurt has prototype in Word
-Mar 21 7:45-
+Mar 21 7:45-11:00, 11:45-12:45
     pass fails to 5
     restrict characters in temp passwords
+    initial attempt at badges
+    pretty good!
+Mar 22 10:10-10:30, 11:15-12:30
+    continuing with succeeding batches of 6
+    skype meeting with Shantam, John, Jamal
+Mar 24 5:00-6:30
+    tweaking the badges - almost there.
+Mar 27 4:50-6:25
+    public calendar publishing
+    need to add a new field for programs (and rentals)
+        called 'badge_title' - for a short version of the
+        program title to fit on the badges
+    then to the template pass one array of hashes
+        rather than 3 arrays
+    then do the badges for rentals - extracting the
+        names, dates, and rooms from the local grid
+        worry about & 'and' for two people in a tent
+        sort it by the name (assuming first name is first)
+        strip the name after any punctuation (aside from &)
+            but not ' or -
+    tweaks to the login process
+    calendar password does not expire...

@@ -40,11 +40,7 @@ sub index :Path :Args(0) {
     # if already logged in ...
     if ($c->user_exists()) {
         my $username = $c->user->username();
-        if ($username eq 'calendar') {
-            $c->response->redirect($c->uri_for('/event/calendar/'
-                . $today_d8 . "/3"));
-        }
-        elsif ($username eq 'library') {
+        if ($username eq 'library') {
             $c->response->redirect($c->uri_for('/book/search'));
         }
         else {
@@ -157,7 +153,7 @@ sub index :Path :Args(0) {
                 # so, instead we go direct:
                 #
                 RetreatCenter::Controller::Event->calendar(
-                    $c, $today_d8, ""
+                    $c, $today_d8, "", 1
                 );
                 return;
             }
@@ -185,7 +181,11 @@ sub index :Path :Args(0) {
                     ;
             }
             else {
-                $c->stash->{error_msg} = "Bad username or password.";
+                my $msg = "Bad username or password.";
+                if ($user->nfails + 2 == $string{num_pass_fails}) {
+                    $msg .= "<br><span style='color: red'>Danger</span>... two more failed attempts and you will be locked out!";
+                }
+                $c->stash->{error_msg} = $msg;
             }
         }
     }
