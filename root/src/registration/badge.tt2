@@ -8,7 +8,7 @@
 <td>
 <center>
 <img src=/static/images/MMC.png class=image>
-<div class=name>[% data.$i.name %]</div>
+<div class='name [% data.$i.name_class %]'>[% data.$i.name %]</div>
 <div class=program>$program</div>
 <div class=dates>[% data.$i.dates %]</div>
 </center>

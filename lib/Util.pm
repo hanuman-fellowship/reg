@@ -2439,6 +2439,11 @@ sub login_log {
 sub gen_badges {
     my ($c, $program, $code, $data_aref) = @_;
     
+    for my $d_href (@$data_aref) {
+        if (length($d_href->{name}) > 20) {
+            $d_href->{name_class} = 'long_name';
+        }
+    }
     my $tt = Template->new({
                  INCLUDE_PATH => 'root/src',
                  INTERPOLATE => 1,

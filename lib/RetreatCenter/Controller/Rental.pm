@@ -45,6 +45,7 @@ use Util qw/
     months_calc
     new_event_alert
     gen_badges
+    normalize
 /;
 use Global qw/
     %string
@@ -2439,7 +2440,7 @@ sub badges : Local {
         #
         $name =~ s{
                     \s*
-                    ([^\w\s&'-] | \W[-]\W)
+                    ([^\w\s&'-] | -\W)
                     .*
                  }{}xms;
 
@@ -2467,7 +2468,7 @@ sub badges : Local {
         for my $n (@names) {
             $n =~ s{ \b child \s* \z}{}xmsi;
             push @data, {
-                name  => $n,
+                name  => normalize($n),
                 dates => $dates,
                 room  => $room,
             };

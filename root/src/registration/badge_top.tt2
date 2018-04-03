@@ -31,6 +31,9 @@ table, td {
     margin-top: .2in;
     margin-bottom: .2in;
 }
+.long_name {
+    font-size: 20pt;
+}
 .program {
     font-size: 18pt;
     font-family: Calibri;
