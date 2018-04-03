@@ -10,7 +10,7 @@ use DBI;
 
 sub init {
     finis();
-    $dbh = DBI->connect(undef, "sahadev", "JonB")
+    $dbh = DBI->connect($ENV{DBI_DSN}, "sahadev", "JonB")
         or die "cannot connect $DBI::errstr:(";
 }
 

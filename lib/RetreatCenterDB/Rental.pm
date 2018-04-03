@@ -92,6 +92,7 @@ __PACKAGE__->add_columns(qw/
 
     rental_created
     created_by
+    badge_title
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -687,6 +688,7 @@ overview - A rental is created when some other organization wants
     or on demand (Grab New).
 arrangement_sent - date that the arrangement letter was sent
 arrangement_by - who sent the arrangement letter
+badge_title - A short version of the title to fit on the badges.
 balance - the outstanding balance
 cancelled - boolean - was this rental cancelled?  Set/Unset by a menu link.
 color - RGB values for the DailyPic display.

@@ -51,7 +51,8 @@ create table rental (
     grid_stale        text default '',
     pr_alert          text default '',
     rental_created    text default '',
-    created_by        integer default 0 -- user_id
+    created_by        integer default 0 -- user_id,
+    badge_title       text default ''
 );
 drop table if exists rental_payment;
 create table rental_payment (

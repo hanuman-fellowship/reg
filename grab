@@ -13,7 +13,7 @@ else
 fi
 
 if [ "$1" == "wait" ]; then
-    script/grab_new
+    script/grab_new >>output/grab.out 2>&1
 else
-    script/grab_new  &
+    script/grab_new  >>output/grab.out 2>&1 &
 fi

@@ -566,6 +566,11 @@ By default, Payments will hopefully go to the <b>MMC</b> bank account.
 </tr>
 
 <tr>
+<th align=right width=170>Badge Title</th>
+<td colspan=5>$program.badge_title</td>
+</tr>
+
+<tr>
 <th align=right>Web Address</th>
 <td colspan=5><a href="http://$program.url">$program.url</a></td>
 </tr>

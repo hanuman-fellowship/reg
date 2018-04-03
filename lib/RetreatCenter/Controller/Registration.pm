@@ -2609,15 +2609,10 @@ sub badges : Local {
             prefetch => [qw/ person /],   
         }
     );
-    my (@names, @rooms, @dates);
+    my @data;
     for my $r (@regs) {
         my $h = $r->house;
         my $p = $r->person;
-        push @names, $p->name();
-        push @dates, $r->date_start_obj->format("%b %e")
-                   . ' - '
-                   .  $r->date_end_obj->format("%b %e")
-                   ;
         my $h_type = $r->h_type;
         my $h_name;
         if ($h_type eq 'own_van') {
@@ -2640,12 +2635,23 @@ sub badges : Local {
                 $h_name =~ s{[BH]+ \z}{}xms;
             }
         }
-        push @rooms, $h_name;
+        push @data, {
+            name => $p->name(),
+            dates => $r->date_start_obj->format("%b %e")
+                   . ' - '
+                   .  $r->date_end_obj->format("%b %e")
+                   ,
+            room => $h_name,
+        };
+    }
+    my $title = $program->badge_title();
+    if (empty($title)) {
+        $title = $program->title();
     }
     gen_badges($c,
-               $program->title(),
+               $title,
                $program->summary->gate_code(),
-               \@names, \@dates, \@rooms
+               \@data,
               );
 }
 
