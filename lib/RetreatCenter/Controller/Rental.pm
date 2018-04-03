@@ -2403,6 +2403,25 @@ sub badges : Local {
     if (empty($title)) {
         $title = $rental->title();
     }
+    my $code = $rental->summary->gate_code(); 
+    my $mess;
+    if (empty($title)) {
+       $mess = "<br>Need a Badge Title"; 
+    }
+    if (length($title) > 30) {
+        $mess .= "<br>Badge Title is too long to properly fit.";
+    }
+    if (empty($code)) {
+        $mess .= "<br>Missing Gate Code - add it in the Summary";
+    }
+    if ($mess) {
+        $mess .= "<p class=p2>Close this window.";
+        stash($c,
+            mess     => $mess,
+            template => "gen_message.tt2",
+        );
+        return;
+    }
     my $d = $rental->sdate_obj();
     my $ed = $rental->edate_obj();
 
@@ -2481,7 +2500,7 @@ sub badges : Local {
             @data;
     gen_badges($c,
                $title,
-               $rental->summary->gate_code(), 
+               $code,
                \@data,
               );
 }

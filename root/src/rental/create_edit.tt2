@@ -283,7 +283,7 @@ $rental.comment
 
 <tr>
 <th align=right>Badge Title</th>
-<td colspan=5><input type=text name=badge_title value="$rental.badge_title" size=60></td>
+<td colspan=5><input type=text name=badge_title value="$rental.badge_title" maxlength=30 size=30></td>
 </tr>
 
 <tr>
