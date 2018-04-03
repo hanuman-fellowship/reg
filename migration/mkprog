@@ -58,7 +58,8 @@ create table program (
     waiver_needed text default '',
     req_pay text default '',
     program_created text default '',
-    created_by integer default 0
+    created_by integer default 0,
+    badge_title text default ''
 );
 drop table if exists category;
 create table category (

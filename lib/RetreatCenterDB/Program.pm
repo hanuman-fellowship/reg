@@ -90,6 +90,7 @@ __PACKAGE__->add_columns(qw/
     housing_not_needed
     program_created
     created_by
+    badge_title
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -1092,6 +1093,7 @@ overview - Programs are MMC (and MMI) sponsored events for which we do registrat
     They have many attributes and many relations to other tables.  
 allow_dup_regs - Can a person sign up more than once?  Personal Retreats have this field set to 'yes'.
     Other programs could have it set as well.  If not set we prohibit a duplicate registration.
+badge_title - A short description of the program for badges.
 bank_account - Where do registrations payments go?  To the MMI bank account ('mmi'), the MMC bank account ('mmc'), or both accounts ('both')?
 cancelled - boolean - Has this program been cancelled?  Set/Unset via a menu link.
 canpol_id - foreign key to canpol

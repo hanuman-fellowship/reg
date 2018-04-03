@@ -2437,14 +2437,13 @@ sub login_log {
 }
 
 sub gen_badges {
-    my ($c, $program, $code, $names_aref, $dates_aref, $rooms_aref) = @_;
+    my ($c, $program, $code, $data_aref) = @_;
     
-    # assign to plain arrays
-    # otherwise the syntax is too tricky for me
-    #
-    my @names = @$names_aref;
-    my @dates = @$dates_aref;
-    my @rooms = @$rooms_aref;
+    for my $d_href (@$data_aref) {
+        if (length($d_href->{name}) > 20) {
+            $d_href->{name_class} = 'long_name';
+        }
+    }
     my $tt = Template->new({
                  INCLUDE_PATH => 'root/src',
                  INTERPOLATE => 1,
@@ -2455,17 +2454,15 @@ sub gen_badges {
         {},
         \$html,
     );
-    my $data_href = {
+    my $stash = {
         program => $program,
         code    => $code,
     };
-    for (my $i = 0; $i <= $#names; $i += 6) {
-        $data_href->{name}  = [ @names[$i .. $i+5] ];
-        $data_href->{dates} = [ @dates[$i .. $i+5] ];
-        $data_href->{room}  = [ @rooms[$i .. $i+5] ];
+    for (my $i = 0; $i <= $#$data_aref; $i += 6) {
+        $stash->{data}  = [ @{$data_aref}[$i .. $i+5] ];
         $tt->process(
             'registration/badge.tt2',
-            $data_href,
+            $stash,
             \$html,
         ) or die Template->error();
     }

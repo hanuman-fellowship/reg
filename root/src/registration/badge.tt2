@@ -2,15 +2,15 @@
 <table cellpadding=1 cellspacing=1 class=front>
 <tr>
 [% FOREACH i IN [ 0,1,2,3,4,5] %]
-    [% IF ! name.$i %]
+    [% IF ! data.$i.name %]
 <td>&nbsp;</td>
     [% ELSE %]
 <td>
 <center>
 <img src=/static/images/MMC.png class=image>
-<div class=name>[% name.$i %]</div>
+<div class='name [% data.$i.name_class %]'>[% data.$i.name %]</div>
 <div class=program>$program</div>
-<div class=dates>[% dates.$i %]</div>
+<div class=dates>[% data.$i.dates %]</div>
 </center>
 </td>
     [% END %]
@@ -27,7 +27,7 @@
 <table cellpadding=1 cellspacing=1 class=back>
 <tr>
 [% FOREACH i IN [ 2,1,0,5,4,3 ] %]
-    [% IF ! name.$i %]
+    [% IF ! data.$i.name %]
         <td>&nbsp;</td>
         [% NEXT %]
     [% END %]
@@ -42,7 +42,7 @@ Emergency Contact
 <div class=room_lab>
 Room #:
 <span class=room_txt>
-[% room.$i %]
+[% data.$i.room %]
 </span>
 </div>
 <div class=main_lab>

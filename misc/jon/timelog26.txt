@@ -459,38 +459,38 @@ Mar 14 2:30-3:50
 Mar 15 11:20-12:30
     skype call with Shantam, John
     TODOS:
-        Global.pm initiation when under nginx, fastcgi
-            a better place for it?
-        Female/Mail/Transgender, Other
-            reg1, reg2, relay, grab new
-            db Person F/M/O, CRUD
-            when housing do no search - must do a FORCE
-            Daily Pic, ClusterView M/F/O
-        Hybrids
-            rental contract should read differently
-            it's okay for leaders/assistants to have
-                an outstanding balance
-            the invoice goes to the total of those
-                leaders/assistants rather than the grid
-            once balance is 0 the outstanding balances
-                of leaders/assistants are cleared out
-            the minimum still applies
-                look to the # of registrations
-            arrangements letter does not need grid URL
-            no Send to Web link on Rental
-            disable housing assignments on Rental page
-        Late Notices
-            when printing Sat & Sun on Sat suppress
-                notices for a program that starts on Sun
-            still OK for PRs that start on Sunday
-        License Plate #s
-            reg1, 2, relay, grab new
-            db add column Registration, CRUD
-            listing for field staff of all cars currently on land
-            bulk from Rental coord? grid like?
-        Badges
-            generate the badges and print
-                then staff cuts and inserts into sleeves, lanyards
+    Global.pm initiation when under nginx, fastcgi
+        a better place for it?
+    Female/Mail/Transgender, Other
+        reg1, reg2, relay, grab new
+        db Person F/M/O, CRUD
+        when housing do no search - must do a FORCE
+        Daily Pic, ClusterView M/F/O
+    Hybrids
+        rental contract should read differently
+        it's okay for leaders/assistants to have
+            an outstanding balance
+        the invoice goes to the total of those
+            leaders/assistants rather than the grid
+        once balance is 0 the outstanding balances
+            of leaders/assistants are cleared out
+        the minimum still applies
+            look to the # of registrations
+        arrangements letter does not need grid URL
+        no Send to Web link on Rental
+        disable housing assignments on Rental page
+    Late Notices
+        when printing Sat & Sun on Sat suppress
+            notices for a program that starts on Sun
+        still OK for PRs that start on Sunday
+    License Plate #s
+        reg1, 2, relay, grab new
+        db add column Registration, CRUD
+        listing for field staff of all cars currently on land
+        bulk from Rental coord? grid like?
+    Badges
+        generate the badges and print
+            then staff cuts and inserts into sleeves, lanyards
             ideally more than one a page
             Kurt has prototype in Word
 Mar 21 7:45-11:00, 11:45-12:45
@@ -505,6 +505,9 @@ Mar 24 5:00-6:30
     tweaking the badges - almost there.
 Mar 27 4:50-6:25
     public calendar publishing
+    tweaks to the login process
+    calendar password does not expire...
+
     need to add a new field for programs (and rentals)
         called 'badge_title' - for a short version of the
         program title to fit on the badges
@@ -516,5 +519,20 @@ Mar 27 4:50-6:25
         sort it by the name (assuming first name is first)
         strip the name after any punctuation (aside from &)
             but not ' or -
-    tweaks to the login process
-    calendar password does not expire...
+Mar 30 3:00-3:30
+    sending email about near term Reg tasks
+Mar 31 5:50-6:00
+    TODOS:
+    Roles - editing who is in a specific role
+        rather than editing individuals
+        user_admin, account_admin (see email)
+    you do the Transgender thing alone
+    share the list of future enhancements
+    git commit the config changes for nginx, fastcgi?
+    how to do the restart of ngnix, fastcgi servers?
+        after a git commit
+    what about Global->init when there are 5 slaves?
+        where to put it rather than in lots of places?
+    how to have John develop on his own?
+        on another EC2 instance - what else?
+    automate membership stuff

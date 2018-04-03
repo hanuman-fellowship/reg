@@ -362,6 +362,11 @@ Both <input type=radio name=bank_account value='both' $bank_both>
 </tr>
 
 <tr>
+<th align=right><span class=red>*</span> Badge Title</th>
+<td colspan=5><input type=text name=badge_title value="$program.badge_title" size=30></td>
+</tr>
+
+<tr>
 <th align=right>Web Address</th>
 <td colspan=5><input type=text name=url value="$program.url" size=60></td>
 </tr>

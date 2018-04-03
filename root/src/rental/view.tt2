@@ -61,6 +61,8 @@ th a:hover {
 <a href="/program/export">Export</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/rental/grid/$id">Local Grid</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/rental/badges/$id">Badges</a>
 <p class=p2>
 <a target=_blank href="/rental/contract/$id">Contract</a>
 &nbsp;&nbsp;&nbsp;
@@ -539,6 +541,11 @@ Payments
 <tr>
 <th align=right>SubTitle</th>
 <td colspan=5>$rental.subtitle</td>
+</tr>
+
+<tr>
+<th align=right>Badge Title</th>
+<td colspan=5>$rental.badge_title</td>
 </tr>
 
 <tr>

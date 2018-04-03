@@ -74,6 +74,8 @@ sub end : ActionClass('RenderView') {
 sub auto : Private {
     my ($self, $c) = @_;
 
+    Global->init($c);
+
     # Allow unauthenticated users to reach the login page.  This
     # allows anauthenticated users to reach any action in the Login
     # controller.  To lock it down to a single action, we could use:
