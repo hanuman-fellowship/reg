@@ -2598,6 +2598,29 @@ sub csv_labels : Local {
 sub badges : Local {
     my ($self, $c, $prog_id) = @_;
     my $program = model($c, 'Program')->find($prog_id);
+    my $title = $program->badge_title();
+    if (empty($title)) {
+        $title = $program->title();
+    }
+    my $code = $program->summary->gate_code();
+    my $mess;
+    if (empty($title)) {
+       $mess = "<br>Need a Badge Title"; 
+    }
+    if (length($title) > 30) {
+        $mess .= "<br>Badge Title is too long to properly fit.";
+    }
+    if (empty($code)) {
+        $mess .= "<br>Missing Gate Code - add it in the Summary";
+    }
+    if ($mess) {
+        $mess .= "<p class=p2>Close this window.";
+        stash($c,
+            mess     => $mess,
+            template => "gen_message.tt2",
+        );
+        return;
+    }
     my @regs = model($c, 'Registration')->search(
         {
             program_id     => $prog_id,
@@ -2644,13 +2667,9 @@ sub badges : Local {
             room => $h_name,
         };
     }
-    my $title = $program->badge_title();
-    if (empty($title)) {
-        $title = $program->title();
-    }
     gen_badges($c,
                $title,
-               $program->summary->gate_code(),
+               $code,
                \@data,
               );
 }
