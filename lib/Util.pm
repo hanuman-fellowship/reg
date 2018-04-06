@@ -688,7 +688,7 @@ sub email_letter {
         print {$mlog} localtime() . " $args{to} - ";
     }
     if (@cc_bcc) {
-        print {$mlog} localtime() . " @cc_bcc - ";
+        print {$mlog} " @cc_bcc - ";
     }
     if (! exists $args{which}) {
         $args{which} = $args{subject};

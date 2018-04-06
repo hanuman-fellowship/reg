@@ -1474,7 +1474,11 @@ sub arrangements : Local {
     });
     my $rc = $sender->Close;
     open my $mlog, ">>", "mail.log";
-    print {$mlog} localtime() . " @to - Arrangements for " . $rental->name . " - ";
+    print {$mlog} localtime() . " @to - ";
+    if (@cc) {
+        print {$mlog} "Cc: @cc - ";
+    }
+    print {$mlog} "Arrangements for " . $rental->name . " - ";
     if (ref $rc) {
         print {$mlog} "sent\n";
     }
@@ -1713,7 +1717,11 @@ sub contract : Local {
     });
     my $rc = $sender->Close;
     open my $mlog, ">>", "mail.log";
-    print {$mlog} localtime() . " @to - Contract for " . $rental->name . " - ";
+    print {$mlog} localtime() . " @to - ";
+    if (@cc) {
+        print {$mlog} "Cc: @cc - ";
+    }
+    print {$mlog} "Contract for " . $rental->name . " - ";
     if (ref $rc) {
         print {$mlog} "sent\n";
     }
