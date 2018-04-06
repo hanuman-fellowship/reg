@@ -687,13 +687,8 @@ sub email_letter {
     else {
         print {$mlog} localtime() . " $args{to} - ";
     }
-    if (exists $args{cc_bcc}) {
-        if (ref $args{cc_bcc} eq 'ARRAY') {
-            print {$mlog} localtime() . " @{$args{cc_bcc}} - ";
-        }
-        else {
-            print {$mlog} localtime() . " $args{cc_bcc} - ";
-        }
+    if (@cc_bcc) {
+        print {$mlog} localtime() . " @cc_bcc - ";
     }
     if (! exists $args{which}) {
         $args{which} = $args{subject};
