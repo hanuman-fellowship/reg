@@ -2,7 +2,7 @@
 <head>
 <style>
 .front {
-    margin-left: 20mm;
+    margin-left: 6mm;
     margin-top: 10mm;
 }
 .back {
