@@ -94,8 +94,10 @@ document.form.pat.focus();
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/registration/csv_labels/$program.id">Labels</a>
 
+[% IF badges %]
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/registration/badges/$program.id">Badges</a>
+[% END %]
 
 <p class=p2>
 [% IF ! multiple_progs %]

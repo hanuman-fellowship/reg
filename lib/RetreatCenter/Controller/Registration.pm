@@ -288,6 +288,7 @@ sub list_reg_name : Local {
         other_sort      => "list_reg_post",
         other_sort_name => "By Postmark",
         online          => scalar(@files),
+        badges          => ! $pr->PR(),
         template        => "registration/list_reg.tt2",
     );
 }
