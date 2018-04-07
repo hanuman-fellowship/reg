@@ -84,7 +84,6 @@ our @EXPORT_OK = qw/
     JON
     strip_nl
     login_log
-    gen_badges
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2438,47 +2437,5 @@ sub login_log {
         close $out;
     }
 }
-
-sub gen_badges {
-    my ($c, $program, $code, $data_aref) = @_;
-    
-    for my $d_href (@$data_aref) {
-        if (length($d_href->{name}) > 20) {
-            $d_href->{name_class} = 'long_name';
-        }
-    }
-    my $tt = Template->new({
-                 INCLUDE_PATH => 'root/src',
-                 INTERPOLATE => 1,
-             }) or die Template->error();
-    my $html;
-    $tt->process(
-        'registration/badge_top.tt2',
-        {},
-        \$html,
-    );
-    my $stash = {
-        program => $program,
-        code    => $code,
-    };
-    for (my $i = 0; $i <= $#$data_aref; $i += 6) {
-        $stash->{data}  = [ @{$data_aref}[$i .. $i+5] ];
-        $tt->process(
-            'registration/badge.tt2',
-            $stash,
-            \$html,
-        ) or die Template->error();
-    }
-    $html =~ s{<div style='page-break-after:always'></div>\n\z}{};
-    $html .= <<'EOH';
-</body> 
-<script>
-window.print();
-</script>
-</html>
-EOH
-    $c->res->output($html);
-}
-
 
 1;

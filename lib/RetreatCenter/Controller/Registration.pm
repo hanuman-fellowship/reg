@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use DBIx::Class::ResultClass::HashRefInflator;      # ???
 
 use lib '../../';       # so you can do a perl -c here.
+use Badge;
 use Date::Simple qw/
     date
     today
@@ -51,7 +52,6 @@ use Util qw/
     @charge_type
     cf_expand
     months_calc
-    gen_badges
 /;
 use POSIX qw/
     ceil
@@ -2598,21 +2598,8 @@ sub csv_labels : Local {
 sub badges : Local {
     my ($self, $c, $prog_id) = @_;
     my $program = model($c, 'Program')->find($prog_id);
-    my $title = $program->badge_title();
-    if (empty($title)) {
-        $title = $program->title();
-    }
-    my $code = $program->summary->gate_code();
-    my $mess;
-    if (empty($title)) {
-       $mess = "<br>Need a Badge Title"; 
-    }
-    if (length($title) > 30) {
-        $mess .= "<br>Badge Title is too long to properly fit.";
-    }
-    if (empty($code)) {
-        $mess .= "<br>Missing Gate Code - add it in the Summary";
-    }
+    my ($mess, $title, $code, $data_aref) = 
+        Badge->get_badge_data_from_program($c, $program);
     if ($mess) {
         $mess .= "<p class=p2>Close this window.";
         stash($c,
@@ -2621,57 +2608,38 @@ sub badges : Local {
         );
         return;
     }
-    my @regs = model($c, 'Registration')->search(
-        {
-            program_id     => $prog_id,
-            cancelled      => '',
-        },
-        {
-            join     => [qw/ person /],
-            order_by => [qw/ person.first person.last /],
-            prefetch => [qw/ person /],   
-        }
+    Badge->initialize();
+    Badge->add_group(
+        $title,
+        $code,
+        $data_aref,
     );
-    my @data;
-    for my $r (@regs) {
-        my $h = $r->house;
-        my $p = $r->person;
-        my $h_type = $r->h_type;
-        my $h_name;
-        if ($h_type eq 'own_van') {
-            $h_name = 'Own Van';
-        }
-        elsif ($h_type eq 'commuting') {
-            $h_name = 'Commuting';
-        }
-        elsif ($h_type eq 'unknown' || $h_type eq 'not_needed') {
-            $h_name = 'No Housing';
-        }
-        elsif (! $h) {
-            $h_name = '??';
-        }
-        else {
-            $h_name = $h->name;
-            my $cluster_name = $h->cluster->name;
-            if ($cluster_name =~ m{Conference}xms) {
-                $h_name = 'CC ' . $h_name;
-                $h_name =~ s{[BH]+ \z}{}xms;
-            }
-        }
-        push @data, {
-            name => $p->name(),
-            dates => $r->date_start_obj->format("%b %e")
-                   . ' - '
-                   .  $r->date_end_obj->format("%b %e")
-                   ,
-            room => $h_name,
-        };
+    $c->res->output(Badge->finalize());
+}
+
+sub badge : Local {
+    my ($self, $c, $reg_id) = @_;
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my ($mess, $title, $code) = Badge->get_title_code($reg->program);
+    if ($mess) {
+        $mess .= "<p class=p2>Close this window.";
+        stash($c,
+            mess     => $mess,
+            template => "gen_message.tt2",
+        );
+        return;
     }
-    gen_badges($c,
-               $title,
-               $code,
-               \@data,
-              );
+    Badge->initialize();
+    Badge->add_group(
+        $title,
+        $code,
+        [{
+            name  => $reg->person->name,
+            dates => $reg->dates,
+            room  => $reg->house_name,
+        }],
+    );
+    $c->res->output(Badge->finalize());
 }
 
 #

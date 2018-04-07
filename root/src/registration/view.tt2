@@ -89,6 +89,8 @@ onclick="return confirm('\n\nAbout to delete the registration and payments and h
 [% END %]
 <a href="/registration/list_reg_name/$program.id">AllRegs</a>
 &nbsp;&nbsp;
+<a target=_blank href="/registration/badge/$id">Badge</a>
+&nbsp;&nbsp;
 <a href="/registration/list_online">Online ($online)</a>
 &nbsp;&nbsp;
 </td>

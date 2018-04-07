@@ -44,7 +44,6 @@ use Util qw/
     rand6
     months_calc
     new_event_alert
-    gen_badges
     normalize
 /;
 use Global qw/
@@ -2407,21 +2406,8 @@ sub badges : Local {
     my ($self, $c, $rental_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
-    my $title = $rental->badge_title();
-    if (empty($title)) {
-        $title = $rental->title();
-    }
-    my $code = $rental->summary->gate_code(); 
-    my $mess;
-    if (empty($title)) {
-       $mess = "<br>Need a Badge Title"; 
-    }
-    if (length($title) > 30) {
-        $mess .= "<br>Badge Title is too long to properly fit.";
-    }
-    if (empty($code)) {
-        $mess .= "<br>Missing Gate Code - add it in the Summary";
-    }
+    my ($mess, $title, $code, $data_aref) =
+        Badge->get_badge_data_from_rental($c, $rental);
     if ($mess) {
         $mess .= "<p class=p2>Close this window.";
         stash($c,
@@ -2430,87 +2416,13 @@ sub badges : Local {
         );
         return;
     }
-    my $d = $rental->sdate_obj();
-    my $ed = $rental->edate_obj();
-
-    # get the most recent edit from the global web
-    #
-    my $fgrid = get_grid_file($rental->grid_code());
-
-    my $in;
-    if (! open $in, "<", $fgrid) {
-        stash($c,
-            mess     => "Cannot get the current local grid!",
-            template => "gen_message.tt2",
-        );
-        return;
-    }
-    my @data;
-    LINE:
-    while (my $line = <$in>) {
-        chomp $line;
-        my ($id, $bed, $name, @nights) = split m{\|}, $line;
-        my $cost = pop @nights;
-        if (!$cost) {
-            # no one is in that room
-            next LINE;
-        }
-        my $room = ($id == 1001)? 'Own Van'
-                  :($id == 1002)? 'Commuting'
-                  :               $house_name_of{$id}
-                  ;
-
-        # trim any extra info after punctuation (except for & or ')
-        # be careful of hyphenated last names like:
-        #
-        # Sherry Gates-Hannon - no dairy
-        #
-        $name =~ s{
-                    \s*
-                    ([^\w\s&'-] | -\W)
-                    .*
-                 }{}xms;
-
-        # for 'child', '&', and 'and', see below
-        
-        # what nights?
-        my $this_d = $d;
-        my $this_ed = $ed;
-        while ($nights[0] == 0) {
-            shift @nights;
-            ++$this_d;
-        }
-        while ($nights[-1] == 0) {
-            pop @nights;
-            --$this_ed;
-        }
-        my $dates = $this_d->format("%b %e")
-                  . ' - '
-                  . $this_ed->format("%b %e")
-                  ;
-        my @names = split m{ \s*
-                             (?: [&] | \band\b )    # and
-                             \s*
-                           }xmsi, $name;
-        for my $n (@names) {
-            $n =~ s{ \b child \s* \z}{}xmsi;
-            push @data, {
-                name  => normalize($n),
-                dates => $dates,
-                room  => $room,
-            };
-        }
-    }
-    close $in;
-    @data = sort {
-                lc $a->{name} cmp lc $b->{name}
-            }
-            @data;
-    gen_badges($c,
-               $title,
-               $code,
-               \@data,
-              );
+    Badge->initialize();
+    Badge->add_group(
+        $title,
+        $code,
+        $data_aref,
+    );
+    $c->res->output(Badge->finalize());
 }
 
 sub color : Local {

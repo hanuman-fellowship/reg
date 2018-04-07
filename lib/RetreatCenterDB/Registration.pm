@@ -231,6 +231,14 @@ sub att_prog_dates {
     }
 }
 
+sub dates {
+    my ($self) = @_; 
+    return $self->date_start_obj->format("%b %e")
+         . ' - '
+         . $self->date_end_obj->format("%b %e")
+         ;
+}
+
 sub receipt_dates {
     my ($self) = @_;
     my $prog = $self->program();
@@ -242,6 +250,35 @@ sub receipt_dates {
     my $s = $psdate->format("%B %e" . ($diff_yr? ", %Y": ""));
     my $e = $pedate->format(($diff_mon? "%B %e": "%e") . ", %Y");
     return $s . " - " . $e;
+}
+
+sub house_name {
+    my ($self) = @_;
+    my $h = $self->house;
+    my $p = $self->person;
+    my $h_type = $self->h_type;
+    my $h_name;
+    if ($h_type eq 'own_van') {
+        $h_name = 'Own Van';
+    }
+    elsif ($h_type eq 'commuting') {
+        $h_name = 'Commuting';
+    }
+    elsif ($h_type eq 'unknown' || $h_type eq 'not_needed') {
+        $h_name = 'No Housing';
+    }
+    elsif (! $h) {
+        $h_name = '??';
+    }
+    else {
+        $h_name = $h->name;
+        my $cluster_name = $h->cluster->name;
+        if ($cluster_name =~ m{Conference}xms) {
+            $h_name = 'CC ' . $h_name;
+            $h_name =~ s{[BH]+ \z}{}xms;
+        }
+    }
+    return $h_name;
 }
 
 1;
