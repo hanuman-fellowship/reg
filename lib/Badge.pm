@@ -153,16 +153,8 @@ sub get_badge_data_from_rental {
                   :               $house_name_of{$id}
                   ;
 
-        # trim any extra info after punctuation (except for & or ' or /)
-        # be careful of hyphenated last names like:
-        #
-        # Sherry Gates-Hannon - no dairy
-        #
-        $name =~ s{
-                    \s*
-                    ([^\w\s&'/-] | -\W)
-                    .*
-                 }{}xms;
+        # trim any extra info after the delimiter ~~
+        $name =~ s{ ~~ .* }{}xms;
 
         # for 'child', '&', and 'and', see below
         

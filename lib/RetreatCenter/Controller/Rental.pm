@@ -2361,12 +2361,18 @@ sub grid : Local {
         LINE:
         while (my $line = <$in>) {
             chomp $line;
-            my ($id, $bed, $name, @nights) = split m{\|}, $line;
+            my ($id, $bed, $name_notes, @nights) = split m{\|}, $line;
             if ($id >= 1000) {
                 $max{$id} = $bed;
             }
             my $cost = pop @nights;
+            my $name = $name_notes;
+            my $notes = "";
+            if ($name =~ m{~~}xms) {
+                ($name, $notes) = split m{ \s* ~~ \s* }xms, $name_notes;
+            }
             $data{"p$id\_$bed"} = $name;
+            $data{"x$id\_$bed"} = $notes;
             $data{"cl$id\_$bed"}
                 = ($name =~ m{\&|\band\b}
                    || $name =~ m{\bchild\b}

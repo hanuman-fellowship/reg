@@ -32,4 +32,7 @@ Apr 6 4:45-8:35
     replying to Barnaby's email
     badges for the coming and going page
         almost done - mess if any is not right...
-
+Apr 7 10:00-12:30
+    badges badges
+Apr 8 2:45-4:00
+    grid_move - to move aside old grid files to subdir rental/archive/
