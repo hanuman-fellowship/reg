@@ -27,6 +27,7 @@ my @classes = qw/
     Proposal
 
     Summary
+    Session
 
     Exception
     String

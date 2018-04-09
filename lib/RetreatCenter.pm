@@ -41,7 +41,7 @@ use Catalyst qw/
     Authorization::Roles
 
     Session
-    Session::Store::FastMmap
+    Session Session::Store::DBIC
     Session::State::Cookie
 /;
 
@@ -66,6 +66,10 @@ __PACKAGE__->config(
         },
         'dirs' => [ 'static', qr/^(images|css)/ ],    
         'ignore_extensions' => [ 'html' ],
+    },
+    'Plugin::Session' => {
+        dbic_class => 'RetreatCenterDB::Session',  # Assuming MyApp::Model::DBIC
+        expires    => 3600,
     },
 );
 
