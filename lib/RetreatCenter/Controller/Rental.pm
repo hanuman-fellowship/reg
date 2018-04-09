@@ -53,6 +53,7 @@ use Global qw/
     %house_name_of
 /;
 use HLog;
+use Badge;
 use POSIX;
 use Template;
 use CGI qw/:html/;      # for Tr, td
@@ -2605,6 +2606,76 @@ sub mass_delete_do : Local {
     $rental->set_grid_stale();
     # housing log?
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
+}
+
+sub badge : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        template => "rental/badge.tt2",
+    );
+}
+
+sub badge_do : Local {
+    my ($self, $c) = @_;
+    
+    my %P = %{ $c->request->params() };
+    my @mess;
+    if (empty($P{name})) {
+        push @mess, "Missing First Last names";
+    }
+    if (empty($P{badge_title})) {
+        push @mess, "Missing Event Title";
+    }
+    if (empty($P{sdate})) {
+        push @mess, "Missing Start Date";
+    }
+    if (empty($P{edate})) {
+        push @mess, "Missing End Date";
+    }
+    if (empty($P{room})) {
+        push @mess, "Missing Room";
+    }
+    if (empty($P{gate_code})) {
+        push @mess, "Missing Gate Code";
+    }
+    my ($sdate, $edate);
+    if (! @mess) {
+        $sdate = date($P{sdate});
+        if (! $sdate) {
+            push @mess, "Invalid Start Date";
+        }
+        $edate = date($P{edate});
+        if (! $edate) {
+            push @mess, "Invalid End Date";
+        }
+        if (! @mess) {
+            if ($sdate > $edate) {
+                push @mess, "Start Date must be before the End Date";
+            }
+        }
+    }
+    if (@mess) {
+        stash($c,
+              template => 'rental/badge.tt2',
+              mess     => join('<br>', @mess),
+              p        => \%P,
+        );
+        return;
+    }
+    Badge->initialize();
+    Badge->add_group(
+        $P{badge_title},
+        $P{gate_code},
+        [{
+            name  => $P{name},
+            room  => $P{room},
+            dates => $sdate->format("%b %e")
+                   . ' - '
+                   . $edate->format("%b %e"),
+        }],
+    );
+    $c->res->output(Badge->finalize());
 }
 
 1;

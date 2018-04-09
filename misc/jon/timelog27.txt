@@ -34,5 +34,12 @@ Apr 6 4:45-8:35
         almost done - mess if any is not right...
 Apr 7 10:00-12:30
     badges badges
-Apr 8 2:45-4:00
+Apr 8 2:45-4:00, 11:00-12:45
     grid_move - to move aside old grid files to subdir rental/archive/
+    Notes in grid on mmc-dev - with ~~ as delimiter
+    more tweaks for Notes in grid
+    sent email to everyone explaining
+Apr 9 2:30-
+    custom badge and updated badge help
+    need better error handling - in javascript and also
+        as we did in Configuration > Badge

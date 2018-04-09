@@ -24,6 +24,7 @@ p {
     <a href=/annotation>Annotations</a><p>
 [% END %]
 [% IF prog %]
+    <a target=_blank href=/rental/badge>Badge</a><p>
     <a href=/block>Blocks</a><p>
     <a href=/canpol>Cancellation Policies</a><p>
     <a href=/cluster>Clusters</a><p>
