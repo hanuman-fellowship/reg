@@ -1105,6 +1105,99 @@ sub comings_goings : Local {
     );
 }
 
+sub coming_badges : Local {
+    my ($self, $c, $dt8) = @_;
+
+    my $edt = date($dt8);
+    if ($edt->day_of_week == 6) {
+        ++$edt;
+    }
+    my $edt8 = $edt->as_d8();
+    my (@rnt_coming) = sort {
+                           $a->name cmp $b->name
+                       }
+                       model($c, 'Rental')->search({
+                           sdate      => { 'between' => [ $dt8, $edt8 ] },
+                           program_id => 0,
+                       });
+    Badge->initialize();
+    for my $r (@rnt_coming) {
+        my ($mess, $title, $code, $data_aref) =
+            Badge->get_badge_data_from_rental($c, $r);
+        if ($mess) {
+            stash($c,
+                mess     => $mess,
+                template => 'gen_message.tt2',
+            );
+            return;
+        }
+        Badge->add_group(
+            $title,
+            $code,
+            $data_aref,
+        );
+    }
+    # now for registrants
+    # we need to deal with the case that someone
+    # might be coming to their program early.
+    # so we can't just get everyone in programs
+    # that begin today...
+    my @reg_coming = model($c, 'Registration')->search(
+        {
+            date_start => { 'between' => [ $dt8, $edt8 ] },
+            'me.cancelled'  => '',
+        },
+        {
+            join     => [qw/ program person /],
+            prefetch => [qw/ program person /],   
+            order_by => [qw/ program.name person.first person.last /],
+        }
+    );
+    my ($title, $code, @data);
+    for my $r (@reg_coming) {
+        my $pr = $r->program;
+        my $cur_title = $pr->badge_title();
+        if (empty($cur_title)) {
+            $cur_title = $pr->title();
+        }
+        my $cur_code = $pr->summary->gate_code();
+        if (! $title) {
+            # first registrant initialization
+            $title = $cur_title;
+            $code = $cur_code;
+        }
+        # return and $mess if bad title or code???
+        # Inform Barnaby, Aja that if a rental person
+        # comes a day late the badge will have been printed
+        # on the day that everyone else came...
+        # they'll have to keep it somewhere...
+        if ($title && $title ne $cur_title) {
+            # flush the current program's data
+            Badge->add_group(
+                $title,
+                $code,
+                \@data,
+            );
+            # and reinitialize
+            @data = ();
+            $title = $cur_title;
+            $code = $cur_code;
+        }
+        push @data, {
+            name  => $r->person->name,
+            dates => $r->dates,
+            room  => $r->house_name,
+        };
+    }
+    # the last group
+    Badge->add_group(
+        $title,
+        $code,
+        \@data,
+    );
+    $c->res->output(Badge->finalize());
+}
+
 sub late_notices : Local {
     my ($self, $c, $date) = @_;
 

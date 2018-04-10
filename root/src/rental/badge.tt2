@@ -1,0 +1,50 @@
+<h2>Custom Badge</h2>
+<ul>
+[% IF mess %]
+<span class=red>$mess</span>
+<p class=p2>
+[% END %]
+<form name=form action='/rental/badge_do'>
+<table cellpadding=5>
+
+<tr>
+<th align=right>First Last</th>
+<td><input type=text size=50 name=name value='$p.name'></td>
+</tr>
+
+<tr>
+<th align=right>Event Title</th>
+<td><input type=text size=30 name=badge_title maxlength=30 value='$p.badge_title'></td>
+</tr>
+
+<tr>
+<th align=right>Start Date</th>
+<td><input type=text size=10 name=sdate value='$p.sdate'></td>
+</tr>
+
+<tr>
+<th align=right>End Date</th>
+<td><input type=text size=10 name=edate value='$p.edate'></td>
+</tr>
+
+<tr>
+<th align=right>Room</th>
+<td><input type=text size=12 name=room value='$p.room'></td>
+</tr>
+
+<tr>
+<th align=right>Gate Code</th>
+<td><input type=text size=5 name=gate_code maxlength=4 value='$p.gate_code'></td>
+</tr>
+
+<tr>
+<th>&nbsp;</th>
+<td><input type=submit id=sub value="Submit"></td>
+</tr>
+
+</table>
+</form>
+</ul>
+<script type="text/javascript">
+document.form.name.focus();
+</script>

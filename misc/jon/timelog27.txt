@@ -1,0 +1,45 @@
+Apr 1 1:30-3:00
+    sending invoice
+    sending list of enhancements
+    sending invite to test kali.mountmadonna.org
+Apr 2 12:30-5:00
+    pairing with John (disaster - can't really
+        work with an audience!) but ...
+        adding badge_title column to program and rental
+        placed Global->init in Root->index
+        John understood and suggested
+            a code review post development
+            complement him on his compassion and experience
+                in this regard.
+            ask about text field default in mysql.
+                version 5.0.95 (on kali) vs 5.7.21 (on cloudkali)
+            ask about creating more indexes!!
+                for speed.
+    reworked the call to gen_badges
+    rental badges - nifty!
+    fixed DBH.pm on cloudkali
+Apr 3 5:15-6:00, 12:10-12:40
+    normalize rental names in badges
+    have smaller font for long names in badges
+    show Aja name wrapping to second line, smaller font
+        also badge_title
+            some rentals have no title at all...
+                Count On Us, for example
+        tweak margins
+    title length, missing code
+Apr 6 4:45-8:35
+    responding to Brajesh's email re security, longevity of the companies
+    replying to Barnaby's email
+    badges for the coming and going page
+        almost done - mess if any is not right...
+Apr 7 10:00-12:30
+    badges badges
+Apr 8 2:45-4:00, 11:00-12:45
+    grid_move - to move aside old grid files to subdir rental/archive/
+    Notes in grid on mmc-dev - with ~~ as delimiter
+    more tweaks for Notes in grid
+    sent email to everyone explaining
+Apr 9 2:30-
+    custom badge and updated badge help
+    need better error handling - in javascript and also
+        as we did in Configuration > Badge

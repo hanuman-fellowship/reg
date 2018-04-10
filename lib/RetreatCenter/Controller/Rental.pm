@@ -44,7 +44,6 @@ use Util qw/
     rand6
     months_calc
     new_event_alert
-    gen_badges
     normalize
 /;
 use Global qw/
@@ -54,6 +53,7 @@ use Global qw/
     %house_name_of
 /;
 use HLog;
+use Badge;
 use POSIX;
 use Template;
 use CGI qw/:html/;      # for Tr, td
@@ -1474,7 +1474,11 @@ sub arrangements : Local {
     });
     my $rc = $sender->Close;
     open my $mlog, ">>", "mail.log";
-    print {$mlog} localtime() . " @to - Arrangements for " . $rental->name . " - ";
+    print {$mlog} localtime() . " @to - ";
+    if (@cc) {
+        print {$mlog} "Cc: @cc - ";
+    }
+    print {$mlog} "Arrangements for " . $rental->name . " - ";
     if (ref $rc) {
         print {$mlog} "sent\n";
     }
@@ -1713,7 +1717,11 @@ sub contract : Local {
     });
     my $rc = $sender->Close;
     open my $mlog, ">>", "mail.log";
-    print {$mlog} localtime() . " @to - Contract for " . $rental->name . " - ";
+    print {$mlog} localtime() . " @to - ";
+    if (@cc) {
+        print {$mlog} "Cc: @cc - ";
+    }
+    print {$mlog} "Contract for " . $rental->name . " - ";
     if (ref $rc) {
         print {$mlog} "sent\n";
     }
@@ -2354,12 +2362,18 @@ sub grid : Local {
         LINE:
         while (my $line = <$in>) {
             chomp $line;
-            my ($id, $bed, $name, @nights) = split m{\|}, $line;
+            my ($id, $bed, $name_notes, @nights) = split m{\|}, $line;
             if ($id >= 1000) {
                 $max{$id} = $bed;
             }
             my $cost = pop @nights;
+            my $name = $name_notes;
+            my $notes = "";
+            if ($name =~ m{~~}xms) {
+                ($name, $notes) = split m{ \s* ~~ \s* }xms, $name_notes;
+            }
             $data{"p$id\_$bed"} = $name;
+            $data{"x$id\_$bed"} = $notes;
             $data{"cl$id\_$bed"}
                 = ($name =~ m{\&|\band\b}
                    || $name =~ m{\bchild\b}
@@ -2399,21 +2413,8 @@ sub badges : Local {
     my ($self, $c, $rental_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
-    my $title = $rental->badge_title();
-    if (empty($title)) {
-        $title = $rental->title();
-    }
-    my $code = $rental->summary->gate_code(); 
-    my $mess;
-    if (empty($title)) {
-       $mess = "<br>Need a Badge Title"; 
-    }
-    if (length($title) > 30) {
-        $mess .= "<br>Badge Title is too long to properly fit.";
-    }
-    if (empty($code)) {
-        $mess .= "<br>Missing Gate Code - add it in the Summary";
-    }
+    my ($mess, $title, $code, $data_aref) =
+        Badge->get_badge_data_from_rental($c, $rental);
     if ($mess) {
         $mess .= "<p class=p2>Close this window.";
         stash($c,
@@ -2422,87 +2423,13 @@ sub badges : Local {
         );
         return;
     }
-    my $d = $rental->sdate_obj();
-    my $ed = $rental->edate_obj();
-
-    # get the most recent edit from the global web
-    #
-    my $fgrid = get_grid_file($rental->grid_code());
-
-    my $in;
-    if (! open $in, "<", $fgrid) {
-        stash($c,
-            mess     => "Cannot get the current local grid!",
-            template => "gen_message.tt2",
-        );
-        return;
-    }
-    my @data;
-    LINE:
-    while (my $line = <$in>) {
-        chomp $line;
-        my ($id, $bed, $name, @nights) = split m{\|}, $line;
-        my $cost = pop @nights;
-        if (!$cost) {
-            # no one is in that room
-            next LINE;
-        }
-        my $room = ($id == 1001)? 'Own Van'
-                  :($id == 1002)? 'Commuting'
-                  :               $house_name_of{$id}
-                  ;
-
-        # trim any extra info after punctuation (except for & or ')
-        # be careful of hyphenated last names like:
-        #
-        # Sherry Gates-Hannon - no dairy
-        #
-        $name =~ s{
-                    \s*
-                    ([^\w\s&'-] | -\W)
-                    .*
-                 }{}xms;
-
-        # for 'child', '&', and 'and', see below
-        
-        # what nights?
-        my $this_d = $d;
-        my $this_ed = $ed;
-        while ($nights[0] == 0) {
-            shift @nights;
-            ++$this_d;
-        }
-        while ($nights[-1] == 0) {
-            pop @nights;
-            --$this_ed;
-        }
-        my $dates = $this_d->format("%b %e")
-                  . ' - '
-                  . $this_ed->format("%b %e")
-                  ;
-        my @names = split m{ \s*
-                             (?: [&] | \band\b )    # and
-                             \s*
-                           }xmsi, $name;
-        for my $n (@names) {
-            $n =~ s{ \b child \s* \z}{}xmsi;
-            push @data, {
-                name  => normalize($n),
-                dates => $dates,
-                room  => $room,
-            };
-        }
-    }
-    close $in;
-    @data = sort {
-                lc $a->{name} cmp lc $b->{name}
-            }
-            @data;
-    gen_badges($c,
-               $title,
-               $code,
-               \@data,
-              );
+    Badge->initialize();
+    Badge->add_group(
+        $title,
+        $code,
+        $data_aref,
+    );
+    $c->res->output(Badge->finalize());
 }
 
 sub color : Local {
@@ -2679,6 +2606,76 @@ sub mass_delete_do : Local {
     $rental->set_grid_stale();
     # housing log?
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/1"));
+}
+
+sub badge : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        template => "rental/badge.tt2",
+    );
+}
+
+sub badge_do : Local {
+    my ($self, $c) = @_;
+    
+    my %P = %{ $c->request->params() };
+    my @mess;
+    if (empty($P{name})) {
+        push @mess, "Missing First Last names";
+    }
+    if (empty($P{badge_title})) {
+        push @mess, "Missing Event Title";
+    }
+    if (empty($P{sdate})) {
+        push @mess, "Missing Start Date";
+    }
+    if (empty($P{edate})) {
+        push @mess, "Missing End Date";
+    }
+    if (empty($P{room})) {
+        push @mess, "Missing Room";
+    }
+    if (empty($P{gate_code})) {
+        push @mess, "Missing Gate Code";
+    }
+    my ($sdate, $edate);
+    if (! @mess) {
+        $sdate = date($P{sdate});
+        if (! $sdate) {
+            push @mess, "Invalid Start Date";
+        }
+        $edate = date($P{edate});
+        if (! $edate) {
+            push @mess, "Invalid End Date";
+        }
+        if (! @mess) {
+            if ($sdate > $edate) {
+                push @mess, "Start Date must be before the End Date";
+            }
+        }
+    }
+    if (@mess) {
+        stash($c,
+              template => 'rental/badge.tt2',
+              mess     => join('<br>', @mess),
+              p        => \%P,
+        );
+        return;
+    }
+    Badge->initialize();
+    Badge->add_group(
+        $P{badge_title},
+        $P{gate_code},
+        [{
+            name  => $P{name},
+            room  => $P{room},
+            dates => $sdate->format("%b %e")
+                   . ' - '
+                   . $edate->format("%b %e"),
+        }],
+    );
+    $c->res->output(Badge->finalize());
 }
 
 1;
