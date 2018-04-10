@@ -145,8 +145,15 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "meal/create_edit.tt2";
+    stash($c,
+        meal => {
+            breakfast   => 0,
+            lunch       => 0,
+            dinner      => 0,
+        },
+        form_action => "create_do",
+        template    => "meal/create_edit.tt2",
+    );
 }
 
 sub create_do : Local {

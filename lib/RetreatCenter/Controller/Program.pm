@@ -145,6 +145,7 @@ sub create : Local {
                 # tricky!
             rental_id   => $rental_id,
             summary_id  => $summary_id,
+            percent_tuition => 0,
             @name,
         },
         canpol_opts => [ model($c, 'CanPol')->search(
@@ -466,6 +467,7 @@ sub create_do : Local {
                     # OR a freshly created summary id.
         program_created => tt_today($c)->as_d8(),
         created_by => $c->user->obj->id,
+        cancelled => '',
     });
     my $id = $p->id();
 
@@ -2020,6 +2022,7 @@ sub duplicate_do : Local {
         image      => ($upload || $old_prog->image())? 'yes': '',
         program_created => tt_today($c)->as_d8(),
         created_by => $c->user->obj->id,
+        cancelled => '',
     });
 
     my $new_id = $new_p->id();

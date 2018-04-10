@@ -146,6 +146,12 @@ sub _get_data {
         #$hash{staff_ok} = "" unless exists $hash{staff_ok};
 
     }
+    if ($hash{min} !~ m{\A \d+ \z}xms) {
+        push @mess, "Invalid minimum";
+    }
+    if ($hash{max} !~ m{\A \d+ \z}xms) {
+        push @mess, "Invalid maximum";
+    }
     if (@mess) {
         $c->stash->{mess} = join "<br>\n", @mess;
         $c->stash->{template} = "proposal/error.tt2";
@@ -156,16 +162,21 @@ sub create : Local {
     my ($self, $c) = @_;
 
     # defaults
-    $c->stash->{proposal} = {
-        checkin_time_obj  => $string{rental_start_hour},
-        checkout_time_obj => $string{rental_end_hour},
-            # see comment in Program.pm create()
-        first             => '',    # no idea why these are needed???
-        last              => '',    # otherwise it shows HASH(0x99999) ???
-                                    # I did see it.  Once, at least.
-    };
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "proposal/create_edit.tt2";
+    stash($c,
+        proposal => {
+            checkin_time_obj  => $string{rental_start_hour},
+            checkout_time_obj => $string{rental_end_hour},
+                # see comment in Program.pm create()
+            first             => '',    # no idea why these are needed???
+            last              => '',    # otherwise it shows HASH(0x99999) ???
+                                        # I did see it.  Once, at least.
+            min => 1,
+            max => 1,
+            deposit => 100,
+        },
+        form_action => "create_do",
+        template    => "proposal/create_edit.tt2",
+    );
 }
 
 sub create_do : Local {

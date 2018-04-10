@@ -137,13 +137,11 @@ sub _get_data {
     if ($P{email} && ! valid_email($P{email})) {
         push @mess, "Invalid email: $P{email}";
     }
-    if (! $P{max} =~ m{^\d+$}) {
+    if ($P{max} !~ m{^\d+$}) {
         push @mess, "Invalid maximum.";
     }
-    elsif (! empty($P{expected})) {
-        if (! ($P{expected} =~ m{^\d+$})) {
+    if ($P{expected} !~ m{^\d+$}) {
             push @mess, "Invalid expected: $P{expected}.";
-        }
     }
     if (! $P{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
@@ -218,6 +216,7 @@ sub create : Local {
         rental => {     # double faked object
             start_hour_obj => $string{rental_start_hour},
             end_hour_obj   => $string{rental_end_hour},
+            expected       => 0,
                 # see comment in Program.pm in create().
         },
         check_mmc_does_reg => '',
@@ -277,6 +276,7 @@ sub create_do : Local {
     $P{status} = "tentative";
     $P{program_id} = 0;         # so it isn't NULL
     $P{grid_code} = rand6($c);
+    $P{cancelled} = '';
     my $rental_ndays = date($P{edate}) - date($P{sdate});
     $P{counts} = join ' ', (0) x ($rental_ndays + 1);
     $P{grid_max} = 0;

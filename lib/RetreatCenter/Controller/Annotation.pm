@@ -7,6 +7,7 @@ use lib '../..';
 use Util qw/
     empty
     model
+    stash
 /;
 use Global qw/
     %string
@@ -81,7 +82,6 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-    $c->stash->{form_action} = "create_do";
     my $cluster_type_opts = "";
     for my $i (1 .. 5) {
         my $s = $string{"dp_type$i"};
@@ -89,19 +89,32 @@ sub create : Local {
             $cluster_type_opts .= "<option value=$s>\u$s\n";
         }
     }
-    $c->stash->{cluster_type_opts} = $cluster_type_opts;
-    $c->stash->{shape_opts} = <<"EOO";
+    stash($c,
+        cluster_type_opts => $cluster_type_opts,
+        shape_opts => <<'EOO',
 <option value=none>None
 <option value=rectangle>Rectangle
 <option value=ellipse>Ellipse
 EOO
-    $c->stash->{check_inactive} = "";
-    $c->stash->{template}    = "annotation/create_edit.tt2";
+        annotation => {
+            x  => 0,
+            y  => 0,
+            x1 => 0,
+            y1 => 0,
+            x2 => 0,
+            y2 => 0,
+            thickness => 0,
+            check_inactive => '',
+        },
+        form_action => "create_do",
+        template    => "annotation/create_edit.tt2",
+    );
 }
 
 sub create_do : Local {
     my ($self, $c) = @_;
 
+    # no checking of data?
     my $label = $c->request->params->{label};
     my $shape = $c->request->params->{shape};
     if (empty($label)) {

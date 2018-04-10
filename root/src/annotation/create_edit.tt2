@@ -1,73 +1,73 @@
 <h2>Annotation</h2>
-<form action='/annotation/[% form_action %]' name=form>
+<form action='/annotation/$form_action' name=form>
 <table cellpadding=3>
 
 <tr>
 <th align=right>Type</th>
 <td>
 <select name=cluster_type>
-[% cluster_type_opts %]
+$cluster_type_opts
 </select>
 </td>
 </tr>
 
 <tr>
 <th align=right>Label</th>
-<td><input type=text name=label size=30 value="[% annotation.label %]"></td>
+<td><input type=text name=label size=30 value="$annotation.label"></td>
 </tr>
 
 <tr>
 <th align=right>X</th>
-<td><input name=x size=3 value="[% annotation.x %]"></td>
+<td><input name=x size=3 value="$annotation.x"></td>
 </tr>
 
 <tr>
 <th align=right>Y</th>
-<td><input type=text name=y size=3 value="[% annotation.y %]"></td>
+<td><input type=text name=y size=3 value="$annotation.y"></td>
 </tr>
 
 <tr>
 <th align=right>Shape</th>
 <td>
 <select name=shape>
-[% shape_opts %]
+$shape_opts
 </select>
 </td>
 </tr>
 
 <tr>
 <th align=right>X1</th>
-<td><input type=text name=x1 value='[% annotation.x1 %]'></td>
+<td><input type=text name=x1 value='$annotation.x1'></td>
 </tr>
 
 <tr>
 <th align=right>Y1</th>
-<td><input type=text name=y1 value='[% annotation.y1 %]'></td>
+<td><input type=text name=y1 value='$annotation.y1'></td>
 </tr>
 
 <tr>
 <th align=right>X2</th>
-<td><input type=text name=x2 value='[% annotation.x2 %]'></td>
+<td><input type=text name=x2 value='$annotation.x2'></td>
 </tr>
 
 <tr>
 <th align=right>Y2</th>
-<td><input type=text name=y2 value='[% annotation.y2 %]'</td>
+<td><input type=text name=y2 value='$annotation.y2'</td>
 </tr>
 
 <tr>
 <th align=right>Thickness</th>
-<td><input type=text name=thickness size=3 value='[% annotation.thickness %]'</td>
+<td><input type=text name=thickness size=3 value='$annotation.thickness'</td>
 </tr>
 
 <tr>
 <th align=right>Color</th>
-<td><input type=text name=color value='[% annotation.color %]'</td>
+<td><input type=text name=color value='$annotation.color'</td>
 </tr>
 
 <tr>
 <th align=right>Inactive</th>
-<td><input type=checkbox name=inactive value="yes" [% check_inactive %]></td>
+<td><input type=checkbox name=inactive value="yes" $check_inactive></td>
 </tr>
 
 <tr>

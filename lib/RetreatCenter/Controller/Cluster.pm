@@ -10,6 +10,7 @@ use Util qw/
     trim
     tt_today
     reserved_clusters
+    stash
 /;
 use Date::Simple qw/
     date
@@ -97,19 +98,19 @@ sub update_do : Local {
 sub create : Local {
     my ($self, $c) = @_;
 
-# obsoleted???
-    $c->stash->{red  } = 127;
-    $c->stash->{green} = 127;
-    $c->stash->{blue } = 127;
-
-    $c->stash->{type_opts} = <<"EOO";
+    stash($c,
+        type_opts => <<"EOO",
 <option value="indoors">Indoors
 <option value="outdoors">Outdoors
 <option value="special">Special
 <option value="resident">Resident
 EOO
-    $c->stash->{form_action} = "create_do";
-    $c->stash->{template}    = "cluster/create_edit.tt2";
+        cluster => {
+            cl_order => 0,
+        },
+        form_action => "create_do",
+        template    => "cluster/create_edit.tt2",
+    );
 }
 
 #
@@ -118,6 +119,7 @@ EOO
 sub create_do : Local {
     my ($self, $c) = @_;
 
+    # check fields?  cl_order int?
     my $name  = $c->request->params->{name};
     my $type  = $c->request->params->{type};
     my $cl_order = $c->request->params->{cl_order};

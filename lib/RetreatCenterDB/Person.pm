@@ -48,6 +48,10 @@ __PACKAGE__->add_columns(qw/
     waiver_signed
     only_temple
 /);
+# didn't work??? - check_doc complains as well...
+#__PACKAGE__->add_columns(
+#    deceased => { data_type => 'text', is_nullable => 1, },
+#);
 __PACKAGE__->set_primary_key(qw/id/);
 
 # affiliations

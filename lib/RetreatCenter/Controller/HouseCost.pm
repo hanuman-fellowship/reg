@@ -119,6 +119,19 @@ sub create : Local {
     my ($self, $c) = @_;
 
     stash($c,
+        housecost        => {
+            single      => 0,
+            dble        => 0,
+            triple      => 0,
+            dormitory   => 0,
+            economy     => 0,
+            center_tent => 0,
+            own_tent    => 0,
+            own_van     => 0,
+            commuting   => 0,
+            single_bath => 0,
+            dble_bath   => 0,
+        },
         checked_perday   => "checked",
         checked_total    => "",
         checked_inactive => "",

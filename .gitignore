@@ -16,7 +16,7 @@ output/
 grab_running
 output/
 root/static/images/
-root/static/js/
+root/static/js/*
 root/static/grid/
 root/static/omp_done/
 root/static/updates

@@ -2114,6 +2114,8 @@ sub add_or_update_deduping {
             date_updat  => $today_d8,
             temple_id   => $href->{temple_id},
             secure_code => rand6($c),
+            deceased    => '',
+            inactive    => '',
         });
         $person_id = $person->id;
         $status = 'added';
