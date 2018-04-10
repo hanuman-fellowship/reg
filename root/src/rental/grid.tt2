@@ -122,8 +122,7 @@ $days
     [% END %]
 [% END %]
 
-[% x = nnights + 2 %]
-<tr><th colspan=[% x + 1 %] align=right>Total</th><td align=right>\$$total</td></tr>
+<tr><th colspan=[% nnights + 4 %] align=right>Total</th><td align=right>\$$total</td></tr>
 </table>
 <p class=p2>
 <ul>
