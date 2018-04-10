@@ -13,6 +13,7 @@
 <div class=noprint>
 <table cellpadding=4 border=0 style="background-color: #eeeeee">
 <tr>
+<td><span class=red>**TEST**</td>
 [% IF field_staff && ! mail_staff %]
 <td><a href=/listing/field>Listings</a></td>
 [% ELSE %]
@@ -33,6 +34,7 @@
 </tr>
 
 <tr>
+<td><span class=red>**TEST**</td>
 [% IF prog_staff %]
     <td><a href=/program/list>Programs</a></td>
     <td><a href=/rental/list>Rentals</a></td>

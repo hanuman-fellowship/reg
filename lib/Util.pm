@@ -676,10 +676,10 @@ sub email_letter {
     if (exists $args{bcc}) {
         push @cc_bcc, bcc => $args{bcc};
     }
-    if ($ENV{test_email}) {
-        $args{to} = $ENV{test_email};
+    #if ($ENV{test_email}) {
+        $args{to} = $c->user->email;
         @cc_bcc = ();
-    }
+    #}
     open my $mlog, ">>", "mail.log";
     if (ref $args{to} eq 'ARRAY') {
         print {$mlog} localtime() . " @{$args{to}} - ";

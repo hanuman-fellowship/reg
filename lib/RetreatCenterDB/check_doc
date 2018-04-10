@@ -18,6 +18,7 @@ my %repl_file = qw/
     person       people
     report       reports
     requested_payment req_payment
+    session      sessions
 /;
 my %repl_pm = qw/
     Canpol      CanPol
