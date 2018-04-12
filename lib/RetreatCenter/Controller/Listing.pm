@@ -1156,11 +1156,18 @@ sub coming_badges : Local {
     my ($title, $code, @data);
     for my $r (@reg_coming) {
         my $pr = $r->program;
-        my $cur_title = $pr->badge_title();
-        if (empty($cur_title)) {
-            $cur_title = $pr->title();
+        # can we 'memoize' this so we don't keep getting
+        # the title, code for the same program over and over?
+        my ($mess, $cur_title, $cur_code) =
+            Badge->get_title_code($pr);
+        if ($mess) {
+            $mess .= "<p class=p2>Close this window.";
+            stash($c,
+                mess     => $mess,
+                template => "gen_message.tt2",
+            );
+            return;
         }
-        my $cur_code = $pr->summary->gate_code();
         if (! $title) {
             # first registrant initialization
             $title = $cur_title;
