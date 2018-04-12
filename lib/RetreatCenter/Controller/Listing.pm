@@ -1158,6 +1158,13 @@ sub coming_badges : Local {
         my $pr = $r->program;
         my ($mess, $cur_title, $cur_code) =
             Badge->get_title_code($pr);
+        if ($mess) {
+            error($c,
+                $mess,
+                'gen_error.tt2',
+            );
+            return;
+        }
         if (! $title) {
             # first registrant initialization
             $title = $cur_title;
