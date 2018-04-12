@@ -1156,12 +1156,15 @@ sub coming_badges : Local {
     my ($title, $code, @data);
     for my $r (@reg_coming) {
         my $pr = $r->program;
+        # can we 'memoize' this so we don't keep getting
+        # the title, code for the same program over and over?
         my ($mess, $cur_title, $cur_code) =
             Badge->get_title_code($pr);
         if ($mess) {
-            error($c,
-                $mess,
-                'gen_error.tt2',
+            $mess .= "<p class=p2>Close this window.";
+            stash($c,
+                mess     => $mess,
+                template => "gen_message.tt2",
             );
             return;
         }
