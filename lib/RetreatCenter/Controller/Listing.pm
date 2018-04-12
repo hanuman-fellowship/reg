@@ -1157,7 +1157,7 @@ sub coming_badges : Local {
     for my $r (@reg_coming) {
         my $pr = $r->program;
         my ($mess, $cur_title, $cur_code) =
-            Badge->get_title_code($c, $pr);
+            Badge->get_title_code($pr);
         if (! $title) {
             # first registrant initialization
             $title = $cur_title;
