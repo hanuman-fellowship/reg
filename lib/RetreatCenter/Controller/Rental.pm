@@ -1270,6 +1270,7 @@ sub del_booking : Local {
         LINE:
         while (my $line = <$in>) {
             my ($h_id, $ignore, $person) = split /\|/, $line;
+            $person =~ s{\s* ~~.*}{}xms;    # trim any notes
             if ($h_id == $house_id && $person) {
                 $error = "Because the rental coordinator has assigned"
                        . " $person to "
