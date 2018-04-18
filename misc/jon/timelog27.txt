@@ -51,3 +51,7 @@ Apr 10 10:00-11:50, 12:15-2:15
     Program - percent_tuition default 0
               cancelled
     fixing defaults in forms and tables
+Apr 14 3:00-3:25
+    unwanted side effect from ~~ delimiter
+        prevented deletion of a room - tweaked del_booking.
+    Put Cost to the right of Name - local and web grids.
