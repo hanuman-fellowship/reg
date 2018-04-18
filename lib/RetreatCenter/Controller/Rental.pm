@@ -2378,9 +2378,9 @@ sub grid : Local {
             $data{"cl$id\_$bed"}
                 = ($name =~ m{\&|\band\b}i
                    || $name =~ m{\bchild\b}i
-                   || $name =~ m{-\s*[12347]\s*$})? "class=special"
-                   || $notes =~ m{\bchild\b}i &&
-                      $name !~ m{\&|\band\b}i
+                   || $name =~ m{-\s*[12347]\s*$}
+                   || ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i)
+                  )? "class=special"
                   :                                 ""
                   ;
             for my $n (1 .. @nights) {
