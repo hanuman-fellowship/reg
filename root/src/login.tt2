@@ -3,8 +3,9 @@
 <table border=0 cellpadding=3>
 
 <tr>
-<td></td>
-<td align=center valign=center><span class=f20b>Reg for MMC</span></td>
+<td align=center valign=center colspan=4>
+<span style="color: red; font-size: 20pt; font-weight: bold" align=right>Cloud</span>
+<span class=f20b>Reg for MMC</span></td>
 <td valign=center>$time</td>
 <td><a style="font-size: 11pt" href=/login?forgot=1>Forgot Password?</a></td>
 <tr>

@@ -1427,7 +1427,8 @@ sub arrangements : Local {
         from    =>        $user->first
                  . ' '  . $user->last
                  . ' <' . $user->email . '>',
-        to      => \@to,
+        #to      => \@to,
+        to      => $user->email,
         cc      => \@cc,
         subject => $subject,
     });
@@ -1665,7 +1666,8 @@ sub contract : Local {
         from    =>        $user->first
                  . ' '  . $user->last
                  . ' <' . $user->email . '>',
-        to      => \@to,
+        #to      => \@to,
+        to      => $user->email,
         cc      => \@cc,
         subject => "MMC Rental Contract with '" . $rental->name_trimmed() . "'",
     });
