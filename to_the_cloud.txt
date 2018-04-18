@@ -1,0 +1,14 @@
+Changes to Revert when moving to the cloud:
+
+Remove red 'Cloud' in reg/root/src/login.tt2
+Remove the TWO red **TEST**s in reg/root/lib/site/layout
+    the whole <td></td> lines
+Undo the sub email_letter change to
+    send to $user->email; in reg/lib/Util.pm
+    just uncomment two lines
+Undo the TWO email_letter changes to
+    send to $user->email in reg/lib/RetreatCenter/Controller/Rental.pm
+    uncomment, delete
+Remove the exit; line in reg/grab
+Check with John about DBI_DSN environment variable
+    added in config for fastcgi thing.
