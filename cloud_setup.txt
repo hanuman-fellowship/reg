@@ -173,3 +173,5 @@ Jan 7 10:15-1:45
 
 added jjn to sudo group:
     # usermod -aG sudo jjn
+
+4/20/18 - cpan installed Spreadsheet::WriteExcel

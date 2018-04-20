@@ -411,7 +411,7 @@ EOH
         );
         return;
     }
-    open my $log, '>>', 'online_log';
+    open my $log, '>>', '/var/log/Reg/online.log';
     print {$log} scalar(localtime), " $fname $href->{first} $href->{last}, ",
                  $pr->name, ", ", $c->user->username(), "\n";
     close $log;

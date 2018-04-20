@@ -11,7 +11,7 @@ use FileHandle;
 
 my $fh;
 BEGIN {
-    open $fh, ">>", "hlog" or die "no hlog: $!";
+    open $fh, ">>", "/var/log/Reg/housing.log" or die "no housing.log: $!";
     $fh->autoflush(1);
 }
 

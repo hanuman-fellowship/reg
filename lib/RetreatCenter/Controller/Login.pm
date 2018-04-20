@@ -206,7 +206,7 @@ sub index :Path :Args(0) {
                     });
         my $user = $users[0];
         if (! $user) {
-            login_log('forgotten pass', 'no such email');
+            login_log('forgotten pass', "no such email: $email");
             stash($c,
                 message  => 'Sorry, there is no such email address in our system.',
                 email    => $email,

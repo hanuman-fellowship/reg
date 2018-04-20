@@ -1474,7 +1474,7 @@ sub arrangements : Local {
         file        => "$dir/CURRENT INFO SHEET.doc",
     });
     my $rc = $sender->Close;
-    open my $mlog, ">>", "mail.log";
+    open my $mlog, ">>", "/var/log/Reg/mail.log";
     print {$mlog} localtime() . " @to - ";
     if (@cc) {
         print {$mlog} "Cc: @cc - ";
@@ -1718,7 +1718,7 @@ sub contract : Local {
         file        => "$dir/$f2",
     });
     my $rc = $sender->Close;
-    open my $mlog, ">>", "mail.log";
+    open my $mlog, ">>", "/var/log/Reg/mail.log";
     print {$mlog} localtime() . " @to - ";
     if (@cc) {
         print {$mlog} "Cc: @cc - ";

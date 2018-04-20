@@ -679,7 +679,7 @@ sub email_letter {
         $args{to} = $c->user->email;
         @cc_bcc = ();
     #}
-    open my $mlog, ">>", "mail.log";
+    open my $mlog, ">>", "/var/log/Reg/mail.log";
     if (ref $args{to} eq 'ARRAY') {
         print {$mlog} localtime() . " @{$args{to}} - ";
     }
@@ -2434,7 +2434,7 @@ sub strip_nl {
 sub login_log {
     my ($username, $msg) = @_;
     return unless $username;
-    if (open my $out, '>>', 'login.log') {
+    if (open my $out, '>>', '/var/log/Reg/login.log') {
         print {$out} scalar(localtime), " $username - $msg\n";
         close $out;
     }

@@ -147,7 +147,7 @@ sub initialize {
     $now_t24 = $now->t24;
     $today_d8 = $today->as_d8();
     $year_mon_dir = $today->format("%Y-%m");
-    $log_name = 'grab_new_log';
+    $log_name = '/var/log/Reg/grab_new.log';
     open $log, '>', $log_name
         or die "no $log_name! :(\n";
 
