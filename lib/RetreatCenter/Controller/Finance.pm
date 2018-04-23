@@ -28,6 +28,53 @@ use Global qw/
     %string
 /;
 
+use Spreadsheet::WriteExcel;
+use Spreadsheet::WriteExcel::Utility qw/
+    xl_rowcol_to_cell
+/;
+
+my ($workbook, $worksheet);
+my ($default_size, $bold, $bold_right, $big_bold,
+    $top_border, $default, $default_no_border);
+sub _init_spreadsheet {
+    my ($name) = @_;
+    $workbook = Spreadsheet::WriteExcel->new("root/static/$name");
+    $default_size = 14;
+    $bold = $workbook->add_format(
+        bold => 1,
+        size => $default_size,
+        border => 1,
+    );
+    $bold_right = $workbook->add_format(
+        bold => 1,
+        align => 'right',
+        size => $default_size,
+        border => 1,
+    );
+    $big_bold = $workbook->add_format(
+        bold => 1,
+        size => 20,
+    );
+    $top_border = $workbook->add_format(
+        top  => 2,
+        left => 1,
+        right => 1,
+        bottom => 1,
+        border_color => 'black',
+        size => $default_size,
+    );
+    $default = $workbook->add_format(
+        size => $default_size,
+        border => 1,
+    );
+    $default_no_border = $workbook->add_format(
+        size => $default_size,
+    );
+    # Add a worksheet
+    $worksheet = $workbook->add_worksheet();
+    $worksheet->hide_gridlines(2);
+}
+
 sub reconcile_deposit : Local {
     my ($self, $c, $sponsor, $id, $prelim) = @_;
 
@@ -158,6 +205,56 @@ sub reconcile_deposit : Local {
         # on disk???  not needed?
     }
 
+    # the spreadsheet
+    my $name_xls = "reconcile-$sponsor-$date_start-$date_end.xls";
+    _init_spreadsheet($name_xls);
+    $worksheet->set_column(0, 0, 40);
+    $worksheet->set_column(1, 1, 10);
+    $worksheet->set_column(2, 5, 13);
+    $worksheet->set_column(6, 6, 40);
+    my $row = 0;
+    $worksheet->write($row, 0, "Reconciling the "
+                             . uc($sponsor)
+                             . " Bank Deposit from "
+                             . date($date_start)->format("%D")
+                             . " to "
+                             . date($date_end)->format("%D"),
+                       $big_bold);
+    $row += 2;
+    $worksheet->write($row, 0, 'Name',    $bold);
+    $worksheet->write($row, 1, 'Date',    $bold);
+    $worksheet->write($row, 2, 'Cash',    $bold_right);
+    $worksheet->write($row, 3, 'Check',   $bold_right);
+    $worksheet->write($row, 4, 'Credit',  $bold_right);
+    $worksheet->write($row, 5, 'Online',  $bold_right);
+    $worksheet->write($row, 6, 'Account', $bold);
+    for my $p_href (@payments) {
+        ++$row;
+        $worksheet->write($row, 0, $p_href->{name},   $default);
+        $worksheet->write($row, 1, $p_href->{date},   $default);
+        $worksheet->write($row, 2, $p_href->{cash},   $default);
+        $worksheet->write($row, 3, $p_href->{chk},    $default);
+        $worksheet->write($row, 4, $p_href->{credit}, $default);
+        $worksheet->write($row, 5, $p_href->{online}, $default);
+        $worksheet->write($row, 6, $p_href->{pname},  $default);
+    }
+    ++$row;
+    $worksheet->write($row, 0, 'Totals', $top_border);
+    $worksheet->write($row, 1, '', $top_border);
+    for my $col (2 .. 5) {
+        my $a = xl_rowcol_to_cell(     3, $col);
+        my $b = xl_rowcol_to_cell($row-1, $col);
+        $worksheet->write($row, $col, "=SUM($a:$b)", $top_border);
+    }
+    $worksheet->write($row, 6, "=SUM("
+                             . xl_rowcol_to_cell($row, 2)
+                             . ':'
+                             . xl_rowcol_to_cell($row, 5)
+                             . ')',
+                             $top_border);
+
+    $worksheet->freeze_panes(3, 0);
+    $workbook->close();
     stash($c,
         start    => date($date_start),
         end      => date($date_end),
@@ -171,6 +268,7 @@ sub reconcile_deposit : Local {
         credit   => $credit,
         online   => $online,
         total    => commify($total),
+        xls_download => $name_xls,
         template => "finance/deposit.tt2",
     );
 }
@@ -585,7 +683,22 @@ sub period_end : Local {
                     $name = $p->pname();
                     $link = $p->plink();
                 }
+                my ($pstart, $pend);
+                if ($src eq 'RegPayment' || $src eq 'MMIPayment') {
+                    $pstart = $p->registration->program->sdate_obj;
+                    $pend   = $p->registration->program->edate_obj;
+                }
+                elsif ($src eq 'RentalPayment') {
+                    $pstart = $p->rental->sdate_obj;
+                    $pend   = $p->rental->edate_obj;
+                }
+                else {
+                    $pstart = undef;
+                    $pend   = undef;
+                }
                 $totals{$glnum} = {
+                    start  => $pstart,
+                    end    => $pend,
                     name   => $name,
                     type   => ($src eq "RegPayment"     ? ' '
                               :$src eq "RentalPayment"  ? '*'
@@ -657,6 +770,88 @@ sub period_end : Local {
     for my $n (keys %grand_total) {
         $grand_total{$n} = commify($grand_total{$n});
     }
+
+    # the spreadsheet
+    my $name_xls = "period-$sponsor-"
+                 . $start->as_d8()
+                 . '-'
+                 . $end->as_d8()
+                 . '.xls';
+    _init_spreadsheet($name_xls);
+    $worksheet->set_column(0, 0, 40);   # name
+    $worksheet->set_column(1, 2, 10);   # start/end
+    $worksheet->set_column(3, 3, 10);   # glnum
+    $worksheet->set_column(4, 7, 13);   # amount cash check credit
+    my $row = 0;
+    $worksheet->write($row, 0, "End of Period Summary for General Ledger",
+                      $big_bold);
+    ++$row;
+    $worksheet->write($row, 0, "For "
+                             . uc($sponsor)
+                             . " Receipts Issued between "
+                             . $start->format("%D")
+                             . " and "
+                             . $end->format("%D"),
+                      $big_bold);
+    $row += 2;
+    $worksheet->write($row, 0, 'Name',    $bold);
+    $worksheet->write($row, 1, 'Start',   $bold);
+    $worksheet->write($row, 2, 'End',     $bold);
+    $worksheet->write($row, 3, 'GL #',    $bold_right);
+    $worksheet->write($row, 4, 'Amount',  $bold_right);
+    $worksheet->write($row, 5, 'Cash',    $bold_right);
+    $worksheet->write($row, 6, 'Check',   $bold_right);
+    $worksheet->write($row, 7, 'Credit',  $bold_right);
+    for my $t (sort { $a->{name} cmp $b->{name} } values %totals) {
+        ++$row;
+        my $ty = $t->{type};
+        my $suffix = (! empty($ty))? " $ty": '';
+        $worksheet->write($row, 0, $t->{name} . $suffix, $default);
+        if (defined $t->{start}) {
+            $worksheet->write($row, 1, $t->{start}->format("%D"), $default);
+        }
+        else {
+            $worksheet->write($row, 1, '');
+        }
+        if (defined $t->{end}) {
+            $worksheet->write($row, 2, $t->{end}->format("%D"), $default);
+        }
+        else {
+            $worksheet->write($row, 2, '');
+        }
+        $worksheet->write($row, 3, $t->{glnum}, $default);
+        $worksheet->write($row, 4, '=SUM('
+                                 . xl_rowcol_to_cell($row, 5)
+                                 . ':'
+                                 . xl_rowcol_to_cell($row, 7)
+                                 . ')', $default);
+        $worksheet->write($row, 5, $t->{cash}, $default);
+        $worksheet->write($row, 6, $t->{check}, $default);
+        $worksheet->write($row, 7, $t->{credit}, $default);
+    }
+    ++$row;
+    $worksheet->write($row, 0, 'Totals', $top_border, $default);
+    $worksheet->write($row, 1, '', $top_border);
+    $worksheet->write($row, 2, '', $top_border);
+    $worksheet->write($row, 3, '', $top_border);
+    for my $col (4 .. 7) {
+        $worksheet->write($row, $col,
+                          '=SUM('
+                        . xl_rowcol_to_cell(4, $col)
+                        . ':'
+                        . xl_rowcol_to_cell($row-1, $col)
+                        . ')'
+                         , $top_border);
+                                   
+    }
+    $row += 2;
+    $worksheet->write($row, 0, "As of " . scalar(localtime), $default_no_border);
+    ++$row;
+    $worksheet->write($row, 0, "* - rental", $default_no_border);
+    ++$row;
+    $worksheet->write($row, 0, "x - extra Account", $default_no_border);
+    $worksheet->freeze_panes(4, 0);
+    $workbook->close();
     stash($c,
         SPONSOR     => uc $sponsor,
         start       => $start,
@@ -664,6 +859,7 @@ sub period_end : Local {
         totals      => [ sort { $a->{name} cmp $b->{name} } values %totals ],
         grand_total => \%grand_total,
         timestamp   => scalar(localtime),
+        xls_download => $name_xls,
         template    => "finance/period_end.tt2",
     );
 }
