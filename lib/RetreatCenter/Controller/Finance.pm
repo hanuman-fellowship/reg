@@ -14,6 +14,7 @@ use Util qw/
     penny
     empty
     trim
+    no_comma
 /;
 use Date::Simple qw/
     date
@@ -825,9 +826,9 @@ sub period_end : Local {
                                  . ':'
                                  . xl_rowcol_to_cell($row, 7)
                                  . ')', $default);
-        $worksheet->write($row, 5, $t->{cash}, $default);
-        $worksheet->write($row, 6, $t->{check}, $default);
-        $worksheet->write($row, 7, $t->{credit}, $default);
+        $worksheet->write($row, 5, no_comma($t->{cash}), $default);
+        $worksheet->write($row, 6, no_comma($t->{check}), $default);
+        $worksheet->write($row, 7, no_comma($t->{credit}), $default);
     }
     ++$row;
     $worksheet->write($row, 0, 'Totals', $top_border, $default);

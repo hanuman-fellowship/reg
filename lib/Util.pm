@@ -84,6 +84,7 @@ our @EXPORT_OK = qw/
     JON
     strip_nl
     login_log
+    no_comma
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2436,6 +2437,12 @@ sub login_log {
         print {$out} scalar(localtime), " $username - $msg\n";
         close $out;
     }
+}
+
+sub no_comma {
+    my ($s) = @_;
+    $s =~ s{,}{}xmsg;
+    return $s;
 }
 
 1;
