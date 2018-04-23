@@ -1270,6 +1270,7 @@ sub del_booking : Local {
         LINE:
         while (my $line = <$in>) {
             my ($h_id, $ignore, $person) = split /\|/, $line;
+            $person =~ s{\s* ~~.*}{}xms;    # trim any notes
             if ($h_id == $house_id && $person) {
                 $error = "Because the rental coordinator has assigned"
                        . " $person to "
@@ -2377,9 +2378,11 @@ sub grid : Local {
             $data{"p$id\_$bed"} = $name;
             $data{"x$id\_$bed"} = $notes;
             $data{"cl$id\_$bed"}
-                = ($name =~ m{\&|\band\b}
-                   || $name =~ m{\bchild\b}
-                   || $name =~ m{-\s*[12347]\s*$})? "class=special"
+                = ($name =~ m{\&|\band\b}i
+                   || $name =~ m{\bchild\b}i
+                   || $name =~ m{-\s*[12347]\s*$}
+                   || ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i)
+                  )? "class=special"
                   :                                 ""
                   ;
             for my $n (1 .. @nights) {

@@ -9,9 +9,15 @@ td {
     font-size: 9.5pt;
 }
 .timestamp {
-    display: block;
     font-size: 11pt;
-    margin-left: 10mm; 
+}
+.download {
+    font-size: 11pt;
+    margin-left: 1.8in;
+}
+.legend {
+    font-size: 11pt;
+    margin-left: 10mm;
 }
 </style>
 [% mmi = which == 'MMI' %]
@@ -68,9 +74,11 @@ For [% SPONSOR %] Receipts Issued between [% start.format("%D") %] and [% end.fo
 <td align=right>[% grand_total.credit %]</td>
 </tr>
 </table>
-<span class=timestamp>
+<p class=p2>
+<span class=timestamp>As of $timestamp</span><a class=download href='/static/$xls_download'>Download Spreadsheet</a></span>
+<p>
+<div class=legend>
 * - Rental<br>
 r - Rides<br>
-x - Extra Account<br>
-As of [% timestamp %]
-</span>
+x - Extra Account
+</div>

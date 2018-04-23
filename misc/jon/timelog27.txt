@@ -51,3 +51,32 @@ Apr 10 10:00-11:50, 12:15-2:15
     Program - percent_tuition default 0
               cancelled
     fixing defaults in forms and tables
+Apr 14 3:00-3:25
+    unwanted side effect from ~~ delimiter
+        prevented deletion of a room - tweaked del_booking.
+    Put Cost to the right of Name - local and web grids.
+Apr 17 6:30-7:10, 8:00-9:15
+    tweaks for cloudkali - red Cloud on login, etc
+    logs to /var/log/Reg
+    making list of things for John
+        which files are created where.
+Apr 20 11:00-11:55, 4:50-7:10
+    install Spreadsheet::WriteExcel
+        it generates .xls files - can be opened with OSX Numbers
+    reconcile spreadsheet - freeze panes???
+    period end spreadsheet - almost
+Apr 21 9:30-11:00, 8:30-9:15
+    a lot of fiddling
+    OSX Numbers does not respect freeze_panes for some reason
+    Google Sheets does :)
+    used xl_rowcol_to_cell for =SUM()
+    TODO: add legend for r rental and x extra account
+          add r, x to name column   like BADGE - r or TEMPLE - x
+          and also the 'As of' current date
+            which you can move above the legend in Reg screen
+          larger font overall
+Apr 22 7:50-9:15
+    remove gridlines
+    _init_worksheet sub to not repeat initializations of formats
+        lame?  but clearer?
+    clear old images and spreadsheets on login in a better way

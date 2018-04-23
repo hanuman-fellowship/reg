@@ -5,6 +5,7 @@ use base 'Catalyst::Controller';
 
 use lib '../..';
 
+
 use Global qw/
     %string
 /;
@@ -90,8 +91,8 @@ sub index :Path :Args(0) {
                 nfails => 0,
                 last_login_date => $today_d8,
             });
-            _clear_images();    # move this somewhere else??
-                                # it's just for tidying up
+            _clear_files();    # move this somewhere else??
+                               # it's just for tidying up
             if ($user->expiry_date < $today_d8) {
                 my $ndays = $string{days_pass_grace}
                           - (today() - $user->expiry_date_obj()) + 1;
@@ -272,15 +273,20 @@ EOH
 # clear any GD generated images that are more
 # than two minutes old.  certainly the browser
 # has gotten it already.
+# clear any .xls files that are more than an hour old.
 #
-sub _clear_images {
-    my $now = sprintf("%04d%02d%02d%02d%02d%02d",
-                      (localtime())[reverse (0 .. 5)]);
+sub _clear_files {
+    my $now = time();
     for my $im (<root/static/images/im*.png>) {
-        my $stamp = substr($im, -18, 14);
-        if ($now - $stamp > 120) {
-            # that arithmetic is suspect. does it matter???
+        my $age = $now - (stat($im))[9];
+        if ($age > 2*60) {
             unlink $im;
+        }
+    }
+    for my $xls (<root/static/*.xls>) {
+        my $age = $now - (stat($xls))[9];
+        if ($age > 60*60) {
+            unlink $xls;
         }
     }
 }

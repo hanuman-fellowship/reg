@@ -24,9 +24,9 @@ Housing Assignment Grid
 <tr>
 <td colspan=2>&nbsp;</td>
 <th align=left width=300>Name</th>
+<th align=right>Cost</th>
 <th align=left width=300>Notes</th>
 $days
-<th>Cost</th>
 </tr>
 [% FOR rb IN rental.rental_bookings %]
     [% h = rb.house %]
@@ -55,6 +55,11 @@ $days
         [% ELSE %]
             <td>&nbsp;</td>
         [% END %]
+        [% IF data.$vc %]
+            <td align=right>${data.$vc}</td>
+        [% ELSE %]
+            <td align=right>&nbsp;</td>
+        [% END %]
         [% IF data.$vx %]
             <td>${data.$vx}</td>
         [% ELSE %]
@@ -69,11 +74,6 @@ $days
                 <td>&nbsp;</td>
             [% END %]
             [% n = n + 1 %]
-        [% END %]
-        [% IF data.$vc %]
-            <td align=right>${data.$vc}</td>
-        [% ELSE %]
-            <td align=right>&nbsp;</td>
         [% END %]
         </tr>
         [% i = i + 1 %]
@@ -97,6 +97,11 @@ $days
         [% ELSE %]
             <td>&nbsp;</td>
         [% END %]
+        [% IF data.$vc %]
+            <td align=right>${data.$vc}</td>
+        [% ELSE %]
+            <td>&nbsp;</td>
+        [% END %]
         [% IF data.$vx %]
             <td>${data.$vx}</td>
         [% ELSE %]
@@ -112,17 +117,15 @@ $days
             [% END %]
             [% n = n + 1 %]
         [% END %]
-        [% IF data.$vc %]
-            <td align=right>${data.$vc}</td>
-        [% ELSE %]
-            <td>&nbsp;</td>
-        [% END %]
         </tr>
         [% i = i + 1 %]
     [% END %]
 [% END %]
 
-<tr><th colspan=[% nnights + 4 %] align=right>Total</th><td align=right>\$$total</td></tr>
+<tr>
+<th colspan=3 align=right>Total</th><td align=right>\$$total</td>
+<td colspan=[% nnights + 1 %]>&nbsp;</td>
+</tr>
 </table>
 <p class=p2>
 <ul>
