@@ -127,17 +127,20 @@ If you arrive in the evening and the gate is closed, you can open it
 by entering this code in the keypad: #${gc}. That's POUND ${gc}.
 Press the five keys firmly and without any pauses or it will not work.
 
+[% IF reg.balance > 0 %]
 <h2>Payments</h2>
 <p>
 You are welcome to pay your balance before arrival to expedite the
 check-in process, especially if you will be arriving after hours
 or on a Sunday when our office is closed.
-[% IF pre_payment_link %]
-You may pay in advance
-with a credit card online at <a target=_blank href='$pre_payment_link'>this link</a>
-or by calling the Programs Office at (408) 846-4090.
-[% ELSE %]
-You may pay in advance by calling the Programs Office at (408) 846-4090.
+    [% IF pre_payment_link %]
+    You may pay in advance
+    with a credit card online at
+    <a target=_blank href='$pre_payment_link'>this link</a>
+    or by calling the Programs Office at (408) 846-4090.
+    [% ELSE %]
+    You may pay in advance by calling the Programs Office at (408) 846-4090.
+    [% END %]
 [% END %]
 <h2>Packing</h2>
 <p>
