@@ -1,11 +1,13 @@
 <h2>Roles</h2>
 <ul>
+* - locked users
+<p class=p2>
 [% FOREACH r IN roles %]
 $r.fullname - $r.descr_br
 &nbsp;&nbsp<a href=/role/update/$r.id>Edit</a>
 <ul>
     [% FOREACH u IN r.users %]
-    <a href="/user/view/$u.id">$u.first $u.last</a><br>
+        <a href="/user/view/$u.id">$u.first $u.last</a>[% IF u.locked %] *[% END %]<br>
     [% END %]
     <p class=p2>
 </ul>

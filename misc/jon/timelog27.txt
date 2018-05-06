@@ -233,6 +233,7 @@ May 2 9:00-10:25, 1:00-1:15, 8:25-9:30
     why won't it do the ftp?
 May 3 3:45-5:00
     ftp issues???  it's okay on kali.
-May 5 5:15-6:30, 7:55-
+May 5 5:15-6:30, 7:55-8:30
     tidying up default2.tt2
     sent letter to Alexandra, others.
+    bulk removal of Role assignments
