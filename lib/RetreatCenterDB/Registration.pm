@@ -14,6 +14,7 @@ use Global qw/
 /;
 use Util qw/
     trim
+    empty
     expand
     ptrim
     penny
@@ -122,6 +123,13 @@ sub date_postmark_obj {
 sub time_postmark_obj {
     my ($self) = @_;
     return get_time($self->time_postmark());
+}
+
+sub confnote_not_empty {
+    my ($self) = @_;
+    my $s = $self->confnote();
+    $s =~ s{<[^>]*>}{}xmsg;     # remove all html tags
+    return ! empty($s);
 }
 
 sub h_type_disp {

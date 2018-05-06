@@ -310,6 +310,7 @@ quad - for housing type descriptions
 reception_email - who should be notified when an MMC mailing list request comes in?
 reg_end - the default time of day for program registration to end
 reg_start - the default time of day for program registration to begin
+registrar_email - the email address of the registrar
 rental_arranged_color - the color of an arranged rental
 rental_coord_email - the person to notify when a rental deposit is received online
 rental_late_in - the penalty for a late indoor rental

@@ -52,6 +52,7 @@ use Util qw/
     @charge_type
     cf_expand
     months_calc
+    slurp
 /;
 use POSIX qw/
     ceil
@@ -951,6 +952,7 @@ sub _re_get_days {
 sub create_do : Local {
     my ($self, $c) = @_;
 
+    my $today = tt_today($c)->as_d8();
     _get_data($c);
     if (@mess) {
         error($c,
@@ -1105,7 +1107,7 @@ sub create_do : Local {
         });
         # and mark the credit as taken
         $cr->update({
-            date_used   => tt_today($c)->as_d8(),
+            date_used   => $today,
             used_reg_id => $reg_id,
         });
     }
@@ -1130,7 +1132,7 @@ sub create_do : Local {
         model($c, 'MMIPayment')->create({
             reg_id    => $reg_id,
             deleted   => '',
-            the_date  => tt_today($c)->as_d8(),
+            the_date  => $today,
             person_id => $P{person_id},
             type      => $P{deposit_type},
             amount    => $P{deposit},
@@ -1141,6 +1143,44 @@ sub create_do : Local {
 
     # add the automatic charges
     _compute($c, $reg, $P{dup}, @who_now);
+
+    # if there's a tag in the conf letter named 'pre_payment_link'
+    # create a pre-payment record.
+    #
+    my $pre_pay_link = '';
+    my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
+    if (-r $fname && slurp($fname) =~ m{pre_payment_link}xms) {
+        my $org = $reg->program->school->mmi()? 'MMI': 'MMC';
+        my $amount = $reg->balance();
+        my $req_payment = model($c, 'RequestedPayment')->create({
+            person_id => $P{person_id},
+            org       => $org,
+            amount    => $amount,
+            for_what  => 2,     # meals & lodging
+            the_date  => $today,
+            reg_id    => $reg_id,
+            note      => 'Payment of balance',
+        });
+        # by 'send_requests' here we mean that the file
+        # is sent to mountmadonna.org so it's ready for
+        # the person when they click on the link in their
+        # confirmation letter that we will soon send them.
+        RetreatCenter::Controller::Person->_send_requests(
+            $c,
+            $reg_id,
+            0,      # don't "resend all". this is the first request.
+            $org,
+            0,      # no sending of email - we will include
+                    # the prepayment link in the confirmation letter.
+        );
+        # Reg History record
+        my @who_now = get_now($c);
+        model($c, 'RegHistory')->create({
+            reg_id   => $reg_id,
+            what     => "Created pre-payment request for \$$amount.",
+            @who_now,
+        });
+    }
 
     # notify those who want to know of each registration as it happens
     if (!$P{dup} && $pr->notify_on_reg()) {
@@ -1173,7 +1213,7 @@ sub create_do : Local {
 
     # if this registration was from an online file
     # move it aside.  we have finished processing it at this point.
-    # manual registrations will come in with fname empty
+    # manual registrations will come in with fname empty.
     #
     if (exists $P{fname} && $P{fname} ne '') {
         if ($P{fname} eq '0') {
@@ -1847,6 +1887,36 @@ sub send_conf : Local {
     if ($xdays && $reg->date_end() >= $pr->edate() + $xdays) {
         $prog_end += $xdays;
     }
+    # if there is a tag named 'pre_payment_link' in the conf letter template
+    # create that link and pass it along.
+    # we have already created the actual pre_payment_request and
+    # sent it to the web site.
+    #
+    my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
+    if (! -r $fname) {
+        error($c,
+              "Sorry, cannot open confirmation letter template.",
+              'gen_error.tt2');
+        return;
+    }
+    my $conf_template = slurp($fname);
+    my $pre_pay_link = '';
+    if ($conf_template =~ m{pre_payment_link}xms) {
+        my @req_payments = $reg->req_payments();
+        if ($req_payments[0]) {
+            my $org  = $req_payments[0]->org();
+            my $code = $req_payments[0]->code();
+            $pre_pay_link = "https://www.mountmadonna"
+                             . ($org eq 'MMI'? 'institute': '')
+                             . ".org/cgi-bin/req_pay?code=$code"
+                             ;
+        }
+    }
+    my $cancel_policy = '';
+    my $cp = $pr->canpol();
+    if (lc $cp->name ne 'default') {
+        $cancel_policy = $cp->policy();
+    }
     my $stash = {
         user     => $c->user,
         person   => $reg->person,
@@ -1863,17 +1933,19 @@ sub send_conf : Local {
         article  => ($htdesc =~ m{^[aeiou]}i)? 'an': 'a',
         carpoolers => $carpoolers,
         penny    => \&penny,
+        registrar_email => $string{registrar_email},
+        pre_payment_link => $pre_pay_link,
+        cancel_policy => $cancel_policy,
     };
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
-        INCLUDE_PATH => "$rst/templates/letter",
         EVAL_PERL    => 0,
     });
     $tt->process(
-        $pr->cl_template() . ".tt2",    # template
-        $stash,                         # variables
-        \$html,                         # output
+        \$conf_template,   # text reference
+        $stash,            # variables
+        \$html,            # output
     ) or die "error in processing template: "
              . $tt->error();
     #
