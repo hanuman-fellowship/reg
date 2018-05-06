@@ -1,12 +1,13 @@
 <h2>Roles</h2>
 <ul>
 [% FOREACH r IN roles %]
-<a href="/role/view/[% r.id %]">[% r.fullname %]</a>
+$r.fullname - $r.descr_br
+&nbsp;&nbsp<a href=/role/update/$r.id>Edit</a>
 <ul>
     [% FOREACH u IN r.users %]
-    <a href="/user/view/[% u.id %]">[% u.first _ " " _ u.last %]</a><br>
+    <a href="/user/view/$u.id">$u.first $u.last</a><br>
     [% END %]
-    <p>
+    <p class=p2>
 </ul>
 [% END %]
 </ul>

@@ -4,7 +4,10 @@ package RetreatCenter::Controller::Role;
 use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
-use Util qw/model/;
+use Util qw/
+    model
+    stash
+/;
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -24,18 +27,47 @@ sub list : Local {
     $c->stash->{template} = "role/list.tt2";
 }
 
+# needed by ACL???
 sub view : Local {
     my ($self, $c, $id) = @_;
+    $c->forward('update');
+}
 
-    my $r = $c->stash->{role} = model($c, 'Role')->find($id);
-    $c->stash->{template} = "role/view.tt2";
+sub update : Local {
+    my ($self, $c, $role_id) = @_;
+
+    my $role = model($c, 'Role')->find($role_id);
+    stash($c,
+        role     => $role,
+        template => "role/update.tt2",
+    );
+}
+
+sub update_do : Local {
+    my ($self, $c, $role_id) = @_;
+
+    # delete all old roles and create the new ones.
+    model($c, 'UserRole')->search(
+        { role_id => $role_id },
+    )->delete();
+    my @user_ids = grep { s/^r(\d+)/$1/ }
+                   $c->request->param;
+    for my $user_id (@user_ids) {
+        model($c, 'UserRole')->create({
+            user_id => $user_id,
+            role_id => $role_id,
+        });
+    }
+    $c->forward('list');
 }
 
 sub access_denied : Private {
     my ($self, $c) = @_;
 
-    $c->stash->{mess}  = "Authorization denied!";
-    $c->stash->{template} = "gen_error.tt2";
+    stash($c,
+        mess     => "Authorization denied!",
+        template => "gen_error.tt2",
+    );
 }
 
 1;
