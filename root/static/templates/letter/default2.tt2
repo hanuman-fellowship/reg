@@ -118,6 +118,11 @@ balance at the Programs Office in the Community Building.   Check-in
 is at ${program.reg_start_obj}.  If you arrive after business hours, stop by our
 &ldquo;Late Notice Board&rdquo; in the entryway of the Community
 Building to get your key and welcome packet.   Check-out is at $program.prog_end_obj  on the day of your departure.
+[% IF ! personal_retreat %]
+<p>
+Your program begins at $program.prog_start_obj and meets in the ${program.main_meeting_place}.
+[% END %]
+
 
 <h2>Gate Code</h2>
 <p>

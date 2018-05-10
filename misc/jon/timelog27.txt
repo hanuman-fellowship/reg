@@ -245,3 +245,5 @@ May 9 9:00-9:20, 3:10-4:30, 5:35-6:20, 10:30-11:50
     beginning on Rental images, enlarged text
     done - now for export
     export and checking of size
+May 10 12:10-1:05
+    tweaking conf letter in several ways
