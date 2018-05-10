@@ -115,10 +115,9 @@ This email contains important information regarding the check-in process and pay
 <p>
 You may pick up your room key and guest packet and pay your remaining
 balance at the Programs Office in the Community Building.   Check-in
-is at 4:00 pm.  If you arrive after business hours, stop by our
+is at ${program.reg_start_obj}.  If you arrive after business hours, stop by our
 &ldquo;Late Notice Board&rdquo; in the entryway of the Community
-Building to get your key and welcome packet.   Check-out is at 1:00
-pm on the day of your departure.
+Building to get your key and welcome packet.   Check-out is at $program.prog_end_obj  on the day of your departure.
 
 <h2>Gate Code</h2>
 <p>
@@ -155,7 +154,7 @@ Here is the local <a target=_blank href='https://weather.com/weather/today/l/942
 <p>
 Our food service is strictly vegetarian - no meat, fish, fowl, or eggs. Please do not bring any outside food.  With advanced notice, we do our best to accommodate dietary restrictions.  If you have serious allergies, contact your retreat coordinator and/or the Programs Office to discuss available options.  
 <p>
-More information on meals, including a sample menu, can be found <a target=_blank href='https://www.mountmadonna.org/'>here</a>.
+More information on meals, including a sample menu, can be found <a target=_blank href='https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center'>here</a>.
 <h2>Getting Here</h2>
 <p>
 Maps, directions, and shuttle listings are available at our <a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportations & Directions</a> page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable.  You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain. 

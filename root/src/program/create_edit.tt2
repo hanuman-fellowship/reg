@@ -135,9 +135,12 @@ Web
 <td><input type=checkbox value=yes name=commuting $check_commuting></td>
 </tr>
 
+<tr><td>&nbsp;</td></tr>
+
 <tr>
 <th align=right>Housing Not Needed</th>
 <td><input type=checkbox value=yes name=housing_not_needed $check_housing_not_needed></td>
+<td class=red>ALERT! - Checking this will also affect the registration pages!<br>And you may need to add an exception for the 'fee table'.</td>
 </tr>
 
 </table>
