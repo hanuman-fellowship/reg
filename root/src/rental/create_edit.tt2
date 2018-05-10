@@ -20,7 +20,7 @@
 }
 </style>
 <script>
-var max = 160;
+var max = $string.max_rental_desc;
 function check_len() {
     var area = document.getElementById('webdesc')
     var len = area.value.length;
@@ -41,7 +41,11 @@ function check_len() {
 </script>
 
 <h2>Rentals$dup_message</h2>
-<form action="/rental/$form_action" name=form method=post>
+<form
+ action="/rental/$form_action"
+ name=form method=post
+ enctype="multipart/form-data"
+>
 <table cellpadding=3 border=0>
 
 <tr>
@@ -308,6 +312,31 @@ $rental.comment
 &nbsp;<script>document.write(max);</script> characters maximum<br>
 <textarea name=webdesc id=webdesc cols=60 rows=6 oninput="return check_len();">$rental.webdesc</textarea>
 <br><span id=left>&nbsp;<script>document.write(max);</script></span>&nbsp;character<span id=plural>s</span> left
+</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Rental Image</th>
+<td colspan=2>
+[% IF rental.image %]
+<img src="$rental.image_file" border=0><br>
+[% ELSE %]
+    [% IF dup_image %]
+        <img src=$dup_image border=0><br>
+    [% END %]
+[% END %]
+<input type=file name=image>
+<br>
+<span style="color: red;">
+The picture must have been cropped and resized to 640x368.
+</span>
+</td>
+</tr>
+
+<tr>
+<td></td>
+<td>
+<input type=submit id=sub value="Submit">
 </td>
 </tr>
 

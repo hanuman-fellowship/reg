@@ -482,6 +482,14 @@ sub resize {
     my ($type, $id, $which) = @_;
 
     my $rst = "root/static/images";
+    if ($type eq 'r') {
+        # create just the thumbnail
+        system("convert -scale "
+               . " 100x"
+               . " $rst/r-$id.jpg $rst/rth-$id.jpg"
+        );
+        return;
+    }
     if (!$which || $which eq "imgwidth") {
         system("convert -scale "
                . trim($string{imgwidth})

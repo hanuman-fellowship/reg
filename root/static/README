@@ -184,6 +184,8 @@ email - email address of rental person
 email_str - the email address in HTML with label - could be
     derived from email.
 id - primary key in the rental table - not really used
+image - boolean.  if 'yes' then there is an image for this rental
+    it is in the file pics/r-<id>.jpg
 phone - rental contact phone number
 phone_str - phone in HTML - could be derived from phone
 sdate - start date - format yyyy-mm-dd

@@ -2704,10 +2704,16 @@ EOS
                 weburl
                 email
                 email_str
+                image
             /),
             sdate => $r->sdate_obj->format($fmt),
             edate => $r->edate_obj->format($fmt),
         };
+        if ($r->image()) {
+            copy 'root/static/images/r-' . $r->id . '.jpg',
+                 'gen_files/pics'
+              or die "no copy: $!\n";
+        }
     }
     _json_put(\@export_rentals, 'rentals.json');
 
@@ -2769,7 +2775,7 @@ EOS
         }
     }
     _json_put($pr_ref, 'pr/pr.json');
-    copy 'root/static/README', 'gen_files/README';
+    copy 'root/static/README', 'gen_files';
 
     # tar it up
     system("cd gen_files; tar czf ../exported_reg_data.tgz .");

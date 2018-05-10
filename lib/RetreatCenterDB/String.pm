@@ -262,6 +262,7 @@ make_up_clean_days - used when presenting the list of available rooms.
 make_up_urgent_days - for the make up list - for marking rooms as needed urgently
 max_kid_age - how old can a person be and still be considered a child?
 max_lodge_opts - the maximum number of rooms to offer when lodging a registrant
+max_rental_desc - the maximum number of characters in a rental web description
 max_shuttles - maximum number of shuttles for Rides
 max_tuit_disc - maximum tuition discount for Members - no longer used
 mem_credit_hours - obsolete - can be removed
