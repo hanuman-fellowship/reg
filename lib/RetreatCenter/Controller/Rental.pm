@@ -296,11 +296,8 @@ sub create_do : Local {
     my $id = $r->id();
 
     if ($upload) {
-        my $picfile = "root/static/images/r-$id.jpg";
+        my $picfile = "root/static/images/ro-$id.jpg";
         $upload->copy_to($picfile);
-        if (! _pic_check($c, $picfile)) {
-            return;
-        }
         Global->init($c);
         resize('r', $id);
     }
@@ -323,22 +320,6 @@ sub create_do : Local {
     else {
         $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
     }
-}
-
-sub _pic_check {
-    my ($c, $fname) = @_;
-    my ($x, $y) = imgsize($fname);
-    if ($x != 640 || $y != 368) {
-        unlink $fname;
-        stash($c,
-            mess => 'Sorry, the width x height of the picture named '
-                  . $c->request->param('image')
-                  . " is $x x $y.<br>It must be equal to 640 x 368.",
-            template => 'rental/error.tt2',
-        );
-        return 0;
-    }
-    return 1;
 }
 
 sub view_pic : Local {
@@ -817,11 +798,8 @@ sub update_do : Local {
     my $upload     = $c->request->upload('image');
     if ($upload) {
         $P{image} = 'yes';
-        my $picfile = "root/static/images/r-$id.jpg";
+        my $picfile = "root/static/images/ro-$id.jpg";
         $upload->copy_to($picfile);
-        if (! _pic_check($c, $picfile)) {
-            return;
-        }
         Global->init($c);
         resize('r', $id);
     }
@@ -2128,11 +2106,8 @@ sub duplicate_do : Local {
 
     # mess with the new image, if any.
     if ($upload) {
-        my $picfile = "root/static/images/r-$new_id.jpg";
+        my $picfile = "root/static/images/ro-$new_id.jpg";
         $upload->copy_to($picfile);
-        if (! _pic_check($c, $picfile)) {
-            return;
-        }
         Global->init($c);
         resize('r', $new_id);
     }

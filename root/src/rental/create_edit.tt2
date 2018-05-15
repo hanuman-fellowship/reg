@@ -326,10 +326,6 @@ $rental.comment
     [% END %]
 [% END %]
 <input type=file name=image>
-<br>
-<span style="color: red;">
-The picture must have been cropped and resized to 640x368.
-</span>
 </td>
 </tr>
 

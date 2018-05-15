@@ -1147,7 +1147,6 @@ sub create_do : Local {
     # if there's a tag in the conf letter named 'pre_payment_link'
     # create a pre-payment record.
     #
-    my $pre_pay_link = '';
     my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
     if (-r $fname && slurp($fname) =~ m{pre_payment_link}xms) {
         my $org = $reg->program->school->mmi()? 'MMI': 'MMC';

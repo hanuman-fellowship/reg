@@ -247,3 +247,8 @@ May 9 9:00-9:20, 3:10-4:30, 5:35-6:20, 10:30-11:50
     export and checking of size
 May 10 12:10-1:05
     tweaking conf letter in several ways
+May 11 9:45-10:15
+    resize and centrally crop rental images to 640x368
+May 15 12:20-
+    Time Travel as separate Configuration item
+    added time_traveler as new Role

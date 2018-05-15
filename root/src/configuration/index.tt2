@@ -12,6 +12,7 @@ p {
 [% mail_admin = Catalyst.check_user_roles('mail_admin') %]
 [% user_admin = Catalyst.check_user_roles('user_admin') %]
 [% web_des = Catalyst.check_user_roles('web_designer') %]
+[% time_traveler = Catalyst.check_user_roles('time_traveler') %]
 
 <!-- two columns; each column just has a sequence of paragaphs -->
 <table cellpadding=20>
@@ -72,6 +73,9 @@ p {
 [% END %]
 [% IF web_des %]
     <a href=/string/list>Strings</a><p>
+[% END %]
+[% IF time_traveler %]
+    <a href=/string/time_travel>Time Travel</a><p>
 [% END %]
 <a href=/user/profile_view>User Profile</a><p>
 [% IF mail_staff %]

@@ -478,15 +478,22 @@ sub monthyear {
 # if you only want to resize one of the two
 # give the optional third parameter.
 #
+# rentals images are handled in a very special way
+#
 sub resize {
     my ($type, $id, $which) = @_;
 
     my $rst = "root/static/images";
     if ($type eq 'r') {
-        # create just the thumbnail
-        system("convert -scale "
-               . " 100x"
-               . " $rst/r-$id.jpg $rst/rth-$id.jpg"
+        # resize and crop centrally to 640x368
+        system(
+            "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
+          . " $rst/ro-$id.jpg $rst/r-$id.jpg"
+        );
+        # create the thumbnail
+        system(
+            "convert -scale 100x"
+          . " $rst/r-$id.jpg $rst/rth-$id.jpg"
         );
         return;
     }
@@ -1018,14 +1025,17 @@ sub normalize {
 sub tt_today {
     my ($c) = @_;    
 
-    my $s = $string{tt_today};
-    if (! $s || ! $c) {
+    my ($s) = model($c, 'String')->search({ the_key => 'tt_today' });
+    $s = $s->value();
+    if (empty($s)) {
         return today();
     }
+    my %date_for = $s =~ m{(\w+) \s+ (\d+/\d+/\d+)}xmsg;
     my $login = $c->user->username();
-    my ($user, $dt) = split m{\s+}, $string{tt_today};
-    $dt = date($dt);
-    return (lc $user eq lc $login && $dt)? $dt: today();
+    if (! exists $date_for{$login}) {
+        return today();
+    }
+    return date($date_for{$login});
 }
 
 sub ceu_license {
