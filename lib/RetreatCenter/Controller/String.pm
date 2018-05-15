@@ -14,6 +14,7 @@ use Util qw/
     stash
     error
     empty
+    time_travel_class
 /;
 use Date::Simple qw/
     date
@@ -198,6 +199,7 @@ sub time_travel : Local {
     my %date_for = $str->value() =~ m{(\w+) \s+ (\d+/\d+/\d+)}xmsg;
     my $user = $c->user->username();
     stash($c,
+        time_travel_class($c),
         user => $user,
         date => $date_for{$user},
         template => 'string/time_travel.tt2',

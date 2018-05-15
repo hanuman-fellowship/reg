@@ -85,6 +85,7 @@ our @EXPORT_OK = qw/
     strip_nl
     login_log
     no_comma
+    time_travel_class
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -1036,6 +1037,11 @@ sub tt_today {
         return today();
     }
     return date($date_for{$login});
+}
+
+sub time_travel_class {
+    my ($c) = @_;
+    return time_travel_class => ((today() != tt_today($c))? 'red': '');
 }
 
 sub ceu_license {

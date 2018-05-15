@@ -53,6 +53,7 @@ use Util qw/
     cf_expand
     months_calc
     slurp
+    time_travel_class
 /;
 use POSIX qw/
     ceil
@@ -278,6 +279,7 @@ sub list_reg_name : Local {
     my $sdate = $pr->sdate();
     my $nmonths = int((date($pr->edate()) - date($sdate))/30) + 1;
     stash($c,
+        time_travel_class($c),
         program         => $pr,
         pat             => $pat,
         daily_pic_date  => ($pr->category->name() eq "Normal"? "indoors"
@@ -2167,6 +2169,7 @@ sub _view {
         $misspellings = "\\n\\n" . (join "\\n", @words) if @words;
     }
     stash($c,
+        time_travel_class($c),
         req_payments   => \@req_payments,
         send_requests  => $send_requests,
         pers_label     => $pers_label,

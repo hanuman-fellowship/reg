@@ -48,6 +48,7 @@ use Util qw/
     new_event_alert
     normalize
     resize
+    time_travel_class
 /;
 use Global qw/
     %string
@@ -605,6 +606,7 @@ sub list : Local {
     Global->init($c);
     my $today = tt_today($c)->as_d8();
     stash($c,
+        time_travel_class($c),
         pg_title => "Rentals",
         rentals  => [
             # past due ones first

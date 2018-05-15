@@ -25,6 +25,7 @@ use Util qw/
     rand6
     charges_and_payments_options
     strip_nl
+    time_travel_class
 /;
 use Date::Simple qw/
     date
@@ -84,6 +85,7 @@ sub search : Local {
         }
     }
     stash($c,
+        time_travel_class($c),
         pg_title => "People Search",
         template => "person/search.tt2",
     );
@@ -189,13 +191,16 @@ sub search_do : Local {
                             . "&nrecs=$nrecs"
                             . "&offset=" . ($offset+$nrecs);
     }
-    $c->stash->{field} = $field eq 'tel_home'? 'tel_home': 'email';
-    $c->stash->{ids} = join '-', map { $_->id } @people;
-    $c->stash->{people} = \@people;
-    $c->stash->{field_desc} = $field eq 'tel_home'? 'Home Phone'
-                              :                     ucfirst $field;
-    $c->stash->{pattern} = $orig_pattern;
-    $c->stash->{template} = "person/search_result.tt2";
+    stash($c,
+        time_travel_class($c),
+        field => $field eq 'tel_home'? 'tel_home': 'email',
+        ids => join('-', map { $_->id } @people),
+        people => \@people,
+        field_desc => $field eq 'tel_home'? 'Home Phone'
+                     :                      ucfirst $field,
+        pattern => $orig_pattern,
+        template => 'person/search_result.tt2',
+    );
 }
 
 sub delete : Local {
@@ -322,6 +327,7 @@ sub view : Local {
     }
     my $sex = $p->sex();
     stash($c,
+        time_travel_class($c),
         person   => $p,
         pg_title => $p->name(),
         sex      => (!defined $sex || !$sex)? "Not Reported"

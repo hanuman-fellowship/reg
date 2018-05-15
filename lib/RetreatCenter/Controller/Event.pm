@@ -32,6 +32,7 @@ use Util qw/
     months_calc
     new_event_alert
     get_now
+    time_travel_class
 /;
 use HLog;
 use GD;
@@ -197,6 +198,7 @@ sub list : Local {
 
     my $today = tt_today($c)->as_d8();
     stash($c,
+        time_travel_class($c),
         pg_title  => "Events",
         events    => [
             model($c, 'Event')->search(

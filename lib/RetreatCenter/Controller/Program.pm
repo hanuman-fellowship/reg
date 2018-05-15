@@ -41,6 +41,7 @@ use Util qw/
     PR_progtable
     months_calc
     new_event_alert
+    time_travel_class
 /;
 use Date::Simple qw/
     date
@@ -772,6 +773,7 @@ sub list : Local {
     );
     my @files = <root/static/online/*>;
     stash($c,
+        time_travel_class($c),
         long_term => $type eq 'long_term',
         pg_title  => "Programs",
         online    => scalar(@files),

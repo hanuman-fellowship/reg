@@ -62,7 +62,7 @@
 [% ELSE %]
     <td colspan=3></td>
 [% END %]
-<td colspan=3>${today.format("%A %B %e, %Y")}</td>
+<td colspan=3 class=$time_travel_class>${today.format("%A %B %e, %Y")}</td>
 </tr>
 </table>
 </div>
