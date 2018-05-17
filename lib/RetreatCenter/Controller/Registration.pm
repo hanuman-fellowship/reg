@@ -1162,6 +1162,13 @@ sub create_do : Local {
             reg_id    => $reg_id,
             note      => 'Payment of balance',
         });
+        # Reg History record
+        my @who_now = get_now($c);
+        model($c, 'RegHistory')->create({
+            reg_id   => $reg_id,
+            what     => "Created pre-payment request for \$$amount.",
+            @who_now,
+        });
         # by 'send_requests' here we mean that the file
         # is sent to mountmadonna.org so it's ready for
         # the person when they click on the link in their
@@ -1171,16 +1178,9 @@ sub create_do : Local {
             $reg_id,
             0,      # don't "resend all". this is the first request.
             $org,
-            0,      # no sending of email - we will include
+            1,      # no sending of email - we will include
                     # the prepayment link in the confirmation letter.
         );
-        # Reg History record
-        my @who_now = get_now($c);
-        model($c, 'RegHistory')->create({
-            reg_id   => $reg_id,
-            what     => "Created pre-payment request for \$$amount.",
-            @who_now,
-        });
     }
 
     # notify those who want to know of each registration as it happens
