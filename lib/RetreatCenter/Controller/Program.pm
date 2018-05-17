@@ -19,7 +19,6 @@ use Util qw/
     trim
     empty
     lunch_table
-    add_config
     valid_email
     tt_today
     ceu_license
@@ -42,6 +41,7 @@ use Util qw/
     months_calc
     new_event_alert
     time_travel_class
+    too_far
 /;
 use Date::Simple qw/
     date
@@ -321,6 +321,11 @@ sub _get_data {
     if (!@mess && $sdate && $sdate > $edate) {
         push @mess, "End Date must be after the Start Date";
     }
+    if (! @mess && too_far($c, $P{edate})) {
+        push @mess, "Sorry, the End Date "
+                  . date($P{edate})->format("%F")
+                  . " is too far in the future.";
+    }
     # ensure that the program name has mm/yy that matches the start date
     # - unless it is a Template
     #
@@ -535,13 +540,6 @@ $cur_user
 EOH
         );
     }
-    #
-    # we must ensure that we have config records
-    # out to the end of this program + 30 days.
-    # we add 30 days because registrations for Personal Retreats
-    # may extend beyond the last day of the season.
-    #
-    add_config($c, date($P{edate}) + $P{extradays} + 30);
 
     # send an email alert about this new program
     new_event_alert(
@@ -998,7 +996,6 @@ sub update_do : Local {
             $reg->calc_balance();
         }
     }
-    add_config($c, date($P{edate}) + 30);
     $c->response->redirect($c->uri_for("/program/view/"
                            . $p->id . "/$section"));
 }

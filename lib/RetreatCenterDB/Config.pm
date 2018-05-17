@@ -35,9 +35,10 @@ overview - This is a critical table (somewhat misnamed) that keeps track of hous
     The sex attribute tells what gender is occupying the space.
     We must do our best to keep the different genders apart!
     The foreign keys to program and rental are filled in only if 
-    the housing reservation came from such.  Blocks and Meeting Space reservations
+    the housing reservation came from such.
+    Blocks and Meeting Space reservations
     associated with an Event have no such foreign keys.
-    <p>Config records are added with Util::add_config() as needed.
+    config records are added by the cronjob add_config.
 cur - The # of people that are currently in this space.
 curmax - Max capacity of the space.
 house_id - foreign key to house

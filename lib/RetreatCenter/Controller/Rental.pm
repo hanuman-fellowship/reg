@@ -21,7 +21,6 @@ use Util qw/
     valid_email
     model
     lunch_table
-    add_config
     type_max
     max_type
     housing_types
@@ -49,6 +48,7 @@ use Util qw/
     normalize
     resize
     time_travel_class
+    too_far
 /;
 use Global qw/
     %string
@@ -105,6 +105,11 @@ sub _get_data {
         }
         $P{$d} = $dt? $dt->as_d8()
                    :     "";
+    }
+    if (! @mess && too_far($c, $P{edate})) {
+        push @mess, "Sorry, the End Date "
+                  . date($P{edate})->format("%F")
+                  . " is too far in the future.";
     }
     # ensure the Rental name has mm/yy that matches the start date
     #
@@ -302,11 +307,6 @@ sub create_do : Local {
         Global->init($c);
         resize('r', $id);
     }
-    #
-    # we must ensure that there are config records
-    # out to the end date of this rental.
-    #
-    add_config($c, $P{edate});
 
     # send an email alert about this new rental
     new_event_alert(
@@ -417,11 +417,6 @@ sub create_from_proposal : Local {
     $proposal->update({
         rental_id => $rental_id,
     });
-    #
-    # we must ensure that there are config records
-    # out to the end date of this rental.
-    #
-    add_config($c, $P{edate});
 
     # are we done yet?
     #
@@ -773,10 +768,6 @@ sub update_do : Local {
         }
         $P{lunches} = "";
         $P{refresh_days} = "";
-        #
-        # and perhaps add a few more config records.
-        #
-        add_config($c, $P{edate});
     }
 
     if ($P{contract_sent} ne $r->contract_sent) {
@@ -1548,7 +1539,7 @@ sub received : Local {
 
     my $rental = model($c, 'Rental')->find($rental_id);
     $rental->update({
-        contract_received => tt_today->as_d8(),
+        contract_received => tt_today($c)->as_d8(),
         received_by       => $c->user->obj->id,
     });
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
@@ -2130,12 +2121,6 @@ sub duplicate_do : Local {
         $P{name}, 
         $c->uri_for("/rental/view/$new_id"),
     );
-
-    #
-    # we must ensure that we have config records
-    # out to the end of this rental + 30 days, say.
-    #
-    add_config($c, date($P{edate}) + 30);
 
     if ($P{mmc_does_reg}) {
         # we need to create a parallel program for the dup'ed rental.

@@ -249,6 +249,24 @@ May 10 12:10-1:05
     tweaking conf letter in several ways
 May 11 9:45-10:15
     resize and centrally crop rental images to 640x368
-May 15 12:20-2:55
+May 15 12:20-2:55, 5:00-6:50
     Time Travel as separate Configuration item
     added time_traveler as new Role
+    finish add_config, etc
+
+    if error in entering Rental - go Back - you lose ALL! :(
+        how to avoid this?  ask John.
+        rental/badge_do - use a $mess, p => \%P and the same template!
+
+    blocks assume that config records are there
+        don't do this.
+    TODO!!
+
+    ask John about the %string global when we have
+        multiple slaves ...  is it possible to update %string
+        in one slave and have it wrong in the other?
+        not good
+May 17 3:25-
+    bug in Rental->received
+    TODO: blocks assume the config records are there
+        add a new house - add config records!

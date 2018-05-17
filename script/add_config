@@ -1,0 +1,124 @@
+#!/usr/local/bin/perl
+use strict;
+use warnings;
+#
+# this is run from cron once a month on the first of the month
+# to add one month of records to the config table.
+#
+# it can also be run outside of cron.
+# if there's a command line argument mm/dd/yy
+# use that as the new max date (forwarded to the first of the month).
+#
+# also, remove any config records with cur = 0
+# with the_date <= Today - 30 days.
+#
+# if the command line argument is a simple integer it is a new house id.
+# Add records for this house from Today to the current max (the_date) date.
+#
+use DBI;
+use lib 'lib';
+use Date::Simple qw/
+    today
+    date
+/;
+my $today = today();
+print "today $today\n";
+my $today_30 = $today - 30;
+print "today-30 $today_30\n";
+
+my $dbh = DBI->connect(undef, "sahadev", "JonB")
+    or die("oh no DBI");
+my $get_date = $dbh->prepare("select max(the_date) from config");
+$get_date->execute();
+my ($max_date) = $get_date->fetchrow_array();
+$get_date->finish();
+my $max_dt = date($max_date);
+print "max $max_dt\n";
+
+my $ins = $dbh->prepare(<<'EOS');
+    insert
+      into config
+    (house_id, the_date, sex, curmax, cur, program_id, rental_id)
+    values
+    (       ?,        ?,   ?,      ?,   ?,          ?,         ?)
+EOS
+my $new_max_dt = $max_dt + 1;
+while ($new_max_dt->day != 1) {
+    ++$new_max_dt;
+}
+my $arg = shift;
+if ($arg) {
+    print "from command line: $arg\n";
+    if ($arg =~ m{\A \d+ \z}xms) {
+        add_for_house($arg);
+        $dbh->disconnect();
+        exit;
+    }
+    my $dt = date($arg);
+    if (! $dt) {
+        die "invalid date: $arg\n";
+    }
+    if ($dt < $max_dt) {
+        die "arg date not greater than $max_dt\n";
+    }
+    while ($dt->day != 1) {
+        ++$dt;
+    }
+    $new_max_dt = $dt;
+}
+print "new max $new_max_dt\n";
+
+# pre compute the array of new dates in d8 form
+# we'll use it once per house.
+my @dates_d8;
+for (my $dt = $max_dt+1; $dt <= $new_max_dt; ++$dt) {
+    push @dates_d8, $dt->as_d8();
+}
+my $house_sth = $dbh->prepare(<<'EOS');
+select id, max
+  from house
+ order by id asc
+EOS
+$house_sth->execute();
+while (my ($id, $max) = $house_sth->fetchrow_array()) {
+    for my $d (@dates_d8) {
+        $ins->execute($id, $d, 'U', $max, 0, 0, 0);
+    }
+}
+$house_sth->finish();
+$ins->finish();
+$dbh->do(<<"EOS");
+update
+string
+set value = $dates_d8[-1]
+where the_key = 'sys_last_config_date'
+EOS
+#
+# clear unused config records in the recent past.
+#
+my $today_30_d8 = $today_30->as_d8();
+my $nrows = $dbh->do(<<"EOS");
+delete
+  from config
+ where cur = 0 and the_date <= $today_30_d8
+EOS
+print "$nrows rows cleared\n";
+$dbh->disconnect();
+
+sub add_for_house {
+    my ($h_id) = @_;    
+    my $count_href = $dbh->selectrow_hashref(
+        "select count(*) as cnt from config where house_id = $h_id"
+    );
+    if ($count_href->{cnt} != 0) {
+        die "house with id $h_id ALREADY exists in config!!\n";
+    }
+    my $house_href = $dbh->selectrow_hashref(
+        "select * from house where id = $h_id"
+    );
+    my $curmax = $house_href->{max};
+    for (my $dt = $today; $dt <= $max_dt; ++$dt) {
+        $ins->execute($h_id, $dt->as_d8(), 'U', $curmax, 0, 0, 0);
+    }
+    $ins->finish();
+}

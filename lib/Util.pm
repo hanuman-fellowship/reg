@@ -86,6 +86,7 @@ our @EXPORT_OK = qw/
     login_log
     no_comma
     time_travel_class
+    too_far
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2324,7 +2325,7 @@ sub cf_expand {
 sub PR_progtable {
     my ($c, $fname) = @_;
 
-    my $today = tt_today();
+    my $today = tt_today($c);
     my $fom = $today - $today->day() + 1;     # first of month
     my $fom_d8 = $fom->as_d8();
     #
@@ -2467,6 +2468,20 @@ sub no_comma {
     my ($s) = @_;
     $s =~ s{,}{}xmsg;
     return $s;
+}
+
+#
+# Is the end date of the program/rental/block
+# beyond where we have config records?  I even add a 
+# fudge factor of 30 days.
+#
+sub too_far {
+    my ($c, $d8) = @_;
+    my ($str) = model($c, 'String')->search({
+                  the_key => 'sys_last_config_date',
+              });
+    my $last = $str->value;
+    return date($d8) + 30 > date($last);
 }
 
 1;
