@@ -1,4 +1,4 @@
-requires 'Catalyst';
+requires 'Catalyst','5.90118';
 requires 'Catalyst::Plugin::Static::Simple';
 requires 'DBD::mysql';
 requires 'DBIx::Class';
