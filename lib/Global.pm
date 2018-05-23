@@ -114,16 +114,19 @@ sub init {
     }
 
     Date::Simple->default_format($string{default_date_format});
-    #
-    # create the stop script
-    #
-    open my $stop, ">", "stop"
-        or die "cannot create stop script\n";
-    print {$stop} "#!/bin/sh\n";
-    print {$stop} "kill $$\n";
-    print {$stop} "rm stop\n";
-    close $stop;
-    chmod 0755, "stop";
+#    #
+#    # create the stop script
+#    #
+#    open my $stop, ">", "stop"
+#        or do {
+#	    warn "cannot create stop script\n";
+#            return;
+#        };
+#    print {$stop} "#!/bin/sh\n";
+#    print {$stop} "kill $$\n";
+#    print {$stop} "rm stop\n";
+#    close $stop;
+#    chmod 0755, "stop";
 }
 
 1;

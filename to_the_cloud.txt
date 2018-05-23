@@ -12,3 +12,17 @@ Undo the TWO email_letter changes to
 Remove the exit; line in reg/grab
 Check with John about DBI_DSN environment variable
     added in config for fastcgi thing.
+
+restore full functionality to grab_new script
+lots of commented out lines in the rc_cron file 
+
+Before turning on grab_new
+    We need to copy over all current grid files.
+    And we can update the database - and then:
+move mmc.jasongaluten.com to mountmadonna.org
+    in ftp_site string
+move mmi.jasongaluten.com to mountmadonnainstitute.org
+    in ftp_mmi_site string
+
+we'll leave the requested payment templates alone
+    the link will be wrong but in testing we can adjust it...

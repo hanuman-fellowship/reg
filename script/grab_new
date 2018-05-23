@@ -853,21 +853,21 @@ sub main {
 
     $ftp->quit();   # all done with MMI
 
-    $ftp = ftp_connect(         # temple.mountmadonna.org used to be at hfs
-        site     => $string{ftp_hfs_site},
-        passive  => $string{ftp_passive},
-        login    => $string{ftp_hfs_user},
-        password => $string{ftp_hfs_password},
-    );
-
-    # Temple Users
-    get_files($ftp, $string{ftp_hfs_dir},
-              $temple, \&get_temple);
-
-    $ftp->quit();   # all done with temple.mountmadonna.org
+#    $ftp = ftp_connect(         # temple.mountmadonna.org used to be at hfs
+#        site     => $string{ftp_hfs_site},
+#        passive  => $string{ftp_passive},
+#        login    => $string{ftp_hfs_user},
+#        password => $string{ftp_hfs_password},
+#    );
+#
+#    # Temple Users
+#    get_files($ftp, $string{ftp_hfs_dir},
+#              $temple, \&get_temple);
+#
+#    $ftp->quit();   # all done with temple.mountmadonna.org
 
     mlist_alerts();
-    ride_alert();
+#    ride_alert();
     omp_alert();
     kayakalpa();
 

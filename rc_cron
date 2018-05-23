@@ -23,55 +23,55 @@ REG=/home/sahadev/Reg
 # Get online registrations and rental grid files (etc) every 15 minutes
 0,15,30,45 * * * * test -f $REG/INACTIVE || $REG/grab >>$REG/output/grab.out 2>&1
 # rsync various directories two minutes after the above grab
-2,17,32,47 * * * * test -f $REG/INACTIVE || $REG/do_rsync >>$REG/output/rsync.out 2>&1
+#2,17,32,47 * * * * test -f $REG/INACTIVE || $REG/do_rsync >>$REG/output/rsync.out 2>&1
 
 # at 1:00 am get the rooms/campsites to be made up
 0 1 * * * test -f $REG/INACTIVE || $REG/makeup >>$REG/output/makeup.out 2>&1
 
 # at 1:30 am send off the carpool lists - 7 and 14 days out
-30 1 * * * test -f $REG/INACTIVE || $REG/carpool >>$REG/output/carpool.out 2>&1
-30 1 * * * test -f $REG/INACTIVE || $REG/carpool - 14 >>$REG/output/carpool.out 2>&1
+#30 1 * * * test -f $REG/INACTIVE || $REG/carpool >>$REG/output/carpool.out 2>&1
+#30 1 * * * test -f $REG/INACTIVE || $REG/carpool - 14 >>$REG/output/carpool.out 2>&1
 
 # at 2:00 am ensure the only_temple boolean of the people table is correct
 0 2 * * * test -f $REG/INACTIVE || $REG/only_temple >>$REG/output/only_temple.out 2>&1
 
 # at noon, 3:00, and 7:00 pm back up all the data in mysql and send it offsite.
-0 19 * * * test -f $REG/INACTIVE || $REG/db_backup >>$REG/output/db_backup.out 2>&1
-0 12 * * * test -f $REG/INACTIVE || $REG/db_backup >>$REG/output/db_backup.out 2>&1
-0 15 * * * test -f $REG/INACTIVE || $REG/db_backup >>$REG/output/db_backup.out 2>&1
+#0 19 * * * test -f $REG/INACTIVE || $REG/db_backup >>$REG/output/db_backup.out 2>&1
+#0 12 * * * test -f $REG/INACTIVE || $REG/db_backup >>$REG/output/db_backup.out 2>&1
+#0 15 * * * test -f $REG/INACTIVE || $REG/db_backup >>$REG/output/db_backup.out 2>&1
 
 # at 12:15, 3:15, and 7:15 synchronize newkali's database with kali's db dumps
 # these will do nothing if not on newkali because of the file test.
-15 19 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
-15 12 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
-15 15 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
+#15 19 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
+#15 12 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
+#15 15 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
 
 # at 11:40 pm back up all the rental grid data and send it offsite
-40 23 * * * test -f $REG/INACTIVE || $REG/grid_backup >>$REG/output/db_backup.out 2>&1
+#40 23 * * * test -f $REG/INACTIVE || $REG/grid_backup >>$REG/output/db_backup.out 2>&1
 
 # at midnight check that the backups actually worked properly
-0 0 * * * test -f $REG/INACTIVE || $REG/check_backup >>$REG/output/check_backup.out 2>&1
+#0 0 * * * test -f $REG/INACTIVE || $REG/check_backup >>$REG/output/check_backup.out 2>&1
 
 # at noon and 6:00 pm republish the public version of the calendar
-0 12,18 * * * test -f $REG/INACTIVE || $REG/pubcal >>$REG/output/pubcal.out 2>&1
+#0 12,18 * * * test -f $REG/INACTIVE || $REG/pubcal >>$REG/output/pubcal.out 2>&1
 
 # at 1:00 am on the 1st of every month publish the personal retreat page
-0 1 1 * * test -f $REG/INACTIVE || $REG/publish_pr >>$REG/output/publish_pr.out 2>&1
+#0 1 1 * * test -f $REG/INACTIVE || $REG/publish_pr >>$REG/output/publish_pr.out 2>&1
 
 # at 1:00 am every Tuesday morning send Sukhdev a letter about gate codes.
-0 1 * * 2 test -f $REG/INACTIVE || $REG/gate >>$REG/output/gate.out 2>&1
+#0 1 * * 2 test -f $REG/INACTIVE || $REG/gate >>$REG/output/gate.out 2>&1
 
 # at 2:00 am every morning send json files to reservations machine
-0 2 * * * test -f $REG/INACTIVE || $REG/reserve_today >>$REG/output/reserve_today.out 2>&1
+#0 2 * * * test -f $REG/INACTIVE || $REG/reserve_today >>$REG/output/reserve_today.out 2>&1
 
 # at noon every day see if any events ended the day before
 # and send a request to comment on Facebook and Yelp
-0 12 * * * test -f $REG/INACTIVE || $REG/faceyelp >>$REG/output/faceyelp.out 2>&1
+#0 12 * * * test -f $REG/INACTIVE || $REG/faceyelp >>$REG/output/faceyelp.out 2>&1
 
 # at 12:05 am on Jan 1st ensure that each member's status and affiliations are correct.
 # at 12:10 am on Jan 1st reset the number of nights and the free program for members.
-5 0 1 1 * test -f $REG/INACTIVE || $REG/memaffil >>$REG/output/memaffil 2>&1
-10 0 1 1 * test -f $REG/INACTIVE || $REG/memreset >>$REG/output/memreset 2>&1
+#5 0 1 1 * test -f $REG/INACTIVE || $REG/memaffil >>$REG/output/memaffil 2>&1
+#10 0 1 1 * test -f $REG/INACTIVE || $REG/memreset >>$REG/output/memreset 2>&1
 
 # restart the Catalyst server on reboot - not sure if this works
-@reboot $REG/go
+#@reboot $REG/go
