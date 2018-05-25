@@ -106,10 +106,8 @@ sub _get_data {
         $P{$d} = $dt? $dt->as_d8()
                    :     "";
     }
-    if (! @mess && too_far($c, $P{edate})) {
-        push @mess, "Sorry, the End Date "
-                  . date($P{edate})->format("%F")
-                  . " is too far in the future.";
+    if (! @mess && (my $mess = too_far($c, $P{edate}))) {
+        push @mess, $mess;
     }
     # ensure the Rental name has mm/yy that matches the start date
     #

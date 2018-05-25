@@ -7,4 +7,4 @@ else
     cd /Users/jonbjornstad/Reg
     export DBI_DSN="dbi:SQLite:retreatcenter.db"
 fi
-script/add_config $* &
+script/add_config $* >>output/add_config 2>&1  &

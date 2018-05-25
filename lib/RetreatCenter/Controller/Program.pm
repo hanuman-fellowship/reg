@@ -321,10 +321,8 @@ sub _get_data {
     if (!@mess && $sdate && $sdate > $edate) {
         push @mess, "End Date must be after the Start Date";
     }
-    if (! @mess && too_far($c, $P{edate})) {
-        push @mess, "Sorry, the End Date "
-                  . date($P{edate})->format("%F")
-                  . " is too far in the future.";
+    if (! @mess && (my $mess = too_far($c, $P{edate}))) {
+        push @mess, $mess;
     }
     # ensure that the program name has mm/yy that matches the start date
     # - unless it is a Template

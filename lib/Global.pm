@@ -8,7 +8,7 @@ use warnings;
 # how to get access to $c from Program.pm???
 #
 # after updating a string this hash is out of date.
-# so must call Lookup->init($c) each time before
+# so must call Global->init($c) each time before
 # using %string.
 # - not any more - we now change the exported hash.
 # we'll call it each time anyway - in case we

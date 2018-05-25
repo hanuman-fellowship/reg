@@ -59,7 +59,9 @@ center - center tent?
 cluster_id - foreign key to cluster
 cluster_order - where should this house be displayed in the ClusterView?
 comment - a longer description of the space
-disp_code - A above, B below, L left, or R right with an optional t to truncate name
+disp_code - A above, B below, L left, or R right
+    with an optional t to truncate the name,
+    OR X which means this house will not be displayed on the DailyPic.
 id - unique id
 inactive - no longer habitable?
 key_card - does the door require an electronic key card?

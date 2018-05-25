@@ -28,7 +28,6 @@ our @EXPORT_OK = qw/
     lunch_table
     clear_lunch
     get_lunch
-    add_config
     type_max
     max_type
     lines
@@ -860,74 +859,6 @@ sub get_lunch {
         $lunch_cache{$type}{$id} = [ $event->sdate_obj, $event->lunches ];
     }
     return @{$lunch_cache{$type}{$id}};
-}
-
-#
-# add a bunch of Config records
-# so that we're ready for the future.
-#
-# $new_last_date is a string in d8 format
-# OR a Date::Simple object.
-#
-# if we pass a $house object just add config
-# records for that one house - otherwise all houses.
-#
-# in the one house case (a new house was added)
-# begin adding from today() - otherwise add from
-# when we last added a config record.
-#
-sub add_config {
-    my ($c, $new_last_date, $house) = @_;
-
-    if (! ref($new_last_date)) {
-        $new_last_date = date($new_last_date);
-    }
-    my $last;
-    my @houses;
-    if ($house) {
-        $last = today();        # not tt_today()
-    }
-    else {
-        $last = date($string{sys_last_config_date});
-        ++$last;
-    }
-    if ($last >= $new_last_date) {
-        # we have just added a program or rental
-        # that ends before an existing one.
-        # so there is nothing to do.
-        return;
-    }
-
-    if ($house) {
-        push @houses, [ $house->id, $house->max ];
-    }
-    else {
-        for my $h (model($c, 'House')->all()) {
-            push @houses, [ $h->id, $h->max ];
-        }
-    }
-    my $d8;
-    while ($last <= $new_last_date) {
-        $d8 = $last->as_d8();
-        for my $h (@houses) {
-            model($c, 'Config')->create({
-                house_id   => $h->[0],
-                the_date   => $d8,
-                sex        => 'U',
-                curmax     => $h->[1],
-                cur        => 0,
-                program_id => 0,
-                rental_id  => 0,
-            });
-        }
-        ++$last;
-    }
-    return if $d8 eq $string{sys_last_config_date};
-
-    $string{sys_last_config_date} = $d8;
-    model($c, 'String')->find('sys_last_config_date')->update({
-        value => $d8,
-    });
 }
 
 my %tmax = qw/
@@ -2481,7 +2412,18 @@ sub too_far {
                   the_key => 'sys_last_config_date',
               });
     my $last = $str->value;
-    return date($d8) + 30 > date($last);
+    if (date($d8) + 30 > date($last)) {
+        return "Sorry. The End Date "
+             . date($d8)->format("%F")
+             . " is too far in the future.<br>"
+             . " The last date you can currently use for housing is "
+             . date($last)->format("%F") . ".<br>"
+             . " On the first of every month this is extended by one month."
+             ;
+    }
+    else {
+        return 0;
+    }
 }
 
 1;

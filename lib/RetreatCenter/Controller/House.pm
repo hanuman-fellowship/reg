@@ -8,7 +8,6 @@ use Util qw/
     empty
     model
     trim
-    add_config
     stash
 /;
 use Date::Simple qw/
@@ -115,8 +114,8 @@ sub _get_data {
         priority
         cluster_order
     /) {
-        $hash{$f} = trim($hash{$f});
-        if (!($hash{$f} =~ m{^\d+$})) {
+        $hash{$f} = trim($hash{$f}) || '';
+        if ($hash{$f} !~ m{^\d+$}) {
             push @mess, "Illegal \u$f: $hash{$f}";
         }
     }
@@ -180,7 +179,15 @@ sub update_do : Local {
         $c->stash->{template} = "house/error.tt2";
         return;
     }
+    my $old_max = $h->max();
     $h->update(\%hash);
+    if ($old_max != $hash{max}) {
+        # need to change the future config records
+        # to reflect the new max.
+        # what about those records which have a non-zero 'cur'?
+        # I'd say just leave them alone ... yes.
+        system('add_config ' . $h->id() . ' ' . $h->max());
+    }
     Global->init($c, 1);
     $c->response->redirect($c->uri_for('/house/list'));
 }
@@ -205,10 +212,17 @@ sub create_do : Local {
 
     _get_data($c);
     return if @mess;
-    my $house = model($c, 'House')->create(\%hash);
-    Global->init($c);
-    add_config($c, $string{sys_last_config_date}, $house);
-    Global->init($c, 1);
+    my $house = model($c, 'House')->create({
+        %hash,
+        inactive => 'yes',
+    });
+    #
+    # we need to add config records for this house
+    # all the way into the future.  this will take a while.
+    # we'll do it in the background and when it is complete
+    # we will set the house to be not 'inactive'.
+    #
+    system('add_config ' . $house->id);
     $c->response->redirect($c->uri_for('/house/list'));
 }
 

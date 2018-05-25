@@ -13,6 +13,7 @@ use Util qw/
     check_makeup_new
     check_makeup_vacate
     get_now
+    too_far
 /;
 use Date::Simple qw/
     date
@@ -215,6 +216,9 @@ sub _get_data {
     if (! @mess && $P{sdate} > $P{edate}) {
         push @mess, "Start date must be before the End date";
     }
+    if (! @mess && (my $mess = too_far($c, $P{edate}))) {
+        push @mess, $mess;
+    }
     if ($house) {
         my $hmax = $house->max();
         if (empty($P{nbeds})) {
@@ -227,6 +231,7 @@ sub _get_data {
             push @mess, "There are not $P{nbeds} beds in " . $house->name();
         }
     }
+    # npeople is only used in the meal count
     if (empty($P{npeople})) {
         $P{npeople} = 0;
     }

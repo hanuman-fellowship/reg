@@ -266,7 +266,15 @@ May 15 12:20-2:55, 5:00-6:50
         multiple slaves ...  is it possible to update %string
         in one slave and have it wrong in the other?
         not good
-May 17 3:25-
+May 17 3:25-4:15
     bug in Rental->received
     TODO: blocks assume the config records are there
         add a new house - add config records!
+    two pre-payment issues remedied
+    MAYBE create the pre-payment at conf letter sending time?  Yes.
+May 23 4:30-5:50
+    checking on authorize.net muck up - just a glitch?
+    finalizing add_config, blocks, new house,
+May 24 3:50-5:45
+    add_config - existing house max change
+    db_init - next
