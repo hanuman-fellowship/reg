@@ -2390,13 +2390,14 @@ sub _get_cluster_groups {
 }
 
 sub grid : Local {
-    my ($self, $c, $rental_id) = @_;
+    my ($self, $c, $rental_id, $by_name) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate_obj();
+    my $edate = $rental->edate_obj();
+    my $d = $sdate;
     my $days = "";
-    my $d = $rental->sdate_obj();
-    my $ed = $rental->edate_obj() - 1;
-    while ($d <= $ed) {
+    while ($d <= $edate-1) {
         $days .= "<th align=center width=20>"
               .  $d->format("%s")
               .  "</th>"
@@ -2420,6 +2421,7 @@ sub grid : Local {
 
     my %data = ();
     my $total = 0;
+    my @people;
     my %max;
     if (open my $in, "<", $fgrid) {
         LINE:
@@ -2434,6 +2436,29 @@ sub grid : Local {
             my $notes = "";
             if ($name =~ m{~~}xms) {
                 ($name, $notes) = split m{ \s* ~~ \s* }xms, $name_notes;
+            }
+            if ($cost != 0) {
+                my $i = 0;
+                while ($nights[$i] == 0) {
+                    ++$i;
+                }
+                my $j = -1;
+                while ($nights[$j] == 0) {
+                    --$j;
+                }
+                my $dates = "";
+                if ($i != 0 || $j != -1) {
+                    $dates = ($sdate+$i)->day() . '-' . ($edate+$j+1)->day();
+                }
+                push @people, {
+                    name => $name,
+                    notes => $notes,
+                    cost => $cost,
+                    room => $id == 1001? 'Commuting'
+                            :$id == 1002? 'Own Van'
+                            :             $house_name_of{$id},
+                    dates => $dates,
+                };
             }
             $data{"p$id\_$bed"} = $name;
             $data{"x$id\_$bed"} = $notes;
@@ -2461,16 +2486,22 @@ sub grid : Local {
     else {
         $coord_name = "";
     }
+    @people = sort {
+                  lc $a->{name} cmp lc $b->{name}
+              }
+              @people;
     stash($c,
         class    => \%class,
         days     => $days,
         rental   => $rental,
-        nnights  => ($rental->edate_obj() - $rental->sdate_obj()),
+        nnights  => $edate - $sdate,
         data     => \%data,
         max      => \%max,      # for own van, commuting
         coord_name => $coord_name,
         total    => commify($total),
-        template => 'rental/grid.tt2',
+        people   => \@people,
+        template => $by_name? 'rental/grid_by_name.tt2'
+                   :          'rental/grid.tt2',
     );
 }
 

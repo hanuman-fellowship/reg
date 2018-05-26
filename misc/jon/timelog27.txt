@@ -277,4 +277,8 @@ May 23 4:30-5:50
     finalizing add_config, blocks, new house,
 May 24 3:50-5:45
     add_config - existing house max change
+May 25 1:45-2:15
+    finalizing add_config
     db_init - next
+May 26 12:40-1:00, 2:00-
+    by name in grid - here and there
