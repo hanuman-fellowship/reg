@@ -10,12 +10,12 @@
 <ul>
 <a style="font-size: 20pt;"
    href=/rental/view/$rental.id
->$rental.name</a>
-<span class=f13b style="margin-left: .2in;">${rental.sdate_obj.format("%B %e '%q")} <span class=dow>${rental.sdate_obj.format("%a")}</span>
+>$rental.name</a><br>
+<span class=f13b>${rental.sdate_obj.format("%B %e '%q")} <span class=dow>${rental.sdate_obj.format("%a")}</span>
 to
 ${rental.edate_obj.format("%B %e '%q")} <span class=dow>${rental.edate_obj.format("%a")}</span>
 </span>
-<span class=f15b style="margin-left: .2in;">$coord_name</span>
+<span class=f15b style="margin-left: 1in;">$coord_name</span>
 <p class="p2 f15b">
 Housing Assignment Grid
 <span style="margin-left: 1in"><a href=/rental/grid/$rental.id>By House</a></span>
