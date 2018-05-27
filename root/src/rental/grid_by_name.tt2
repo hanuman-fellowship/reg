@@ -15,10 +15,10 @@
 to
 ${rental.edate_obj.format("%B %e '%q")} <span class=dow>${rental.edate_obj.format("%a")}</span>
 </span>
-<span class=f15b style="margin-left: .5in;">$coord_name</span>
+<span class=f15b style="margin-left: .2in;">$coord_name</span>
 <p class="p2 f15b">
 Housing Assignment Grid
-<span style="margin-left: 2.5in"><a href=/rental/grid/$rental.id>By House</a></span>
+<span style="margin-left: 1in"><a href=/rental/grid/$rental.id>By House</a></span>
 <span style="margin-left: .445in"><a href=/rental/grab_new/$rental.id>Grab New</a></span>
 <p class=p2>
 <table cellpadding=5 border=1>
