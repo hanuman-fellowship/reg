@@ -11,7 +11,7 @@
 <a style="font-size: 20pt;"
    href=/rental/view/$rental.id
 >$rental.name</a>
-<span class=f13b style="margin-left: 1in;">${rental.sdate_obj.format("%B %e '%q")} <span class=dow>${rental.sdate_obj.format("%a")}</span>
+<span class=f13b style="margin-left: .2in;">${rental.sdate_obj.format("%B %e '%q")} <span class=dow>${rental.sdate_obj.format("%a")}</span>
 to
 ${rental.edate_obj.format("%B %e '%q")} <span class=dow>${rental.edate_obj.format("%a")}</span>
 </span>
