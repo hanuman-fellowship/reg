@@ -19,7 +19,6 @@ use Util qw/
     trim
     empty
     lunch_table
-    add_config
     valid_email
     tt_today
     ceu_license
@@ -41,6 +40,8 @@ use Util qw/
     PR_progtable
     months_calc
     new_event_alert
+    time_travel_class
+    too_far
 /;
 use Date::Simple qw/
     date
@@ -321,6 +322,9 @@ sub _get_data {
     if (!@mess && $sdate && $sdate > $edate) {
         push @mess, "End Date must be after the Start Date";
     }
+    if (! @mess && (my $mess = too_far($c, $P{edate}))) {
+        push @mess, $mess;
+    }
     # ensure that the program name has mm/yy that matches the start date
     # - unless it is a Template
     #
@@ -536,13 +540,6 @@ $cur_user
 EOH
         );
     }
-    #
-    # we must ensure that we have config records
-    # out to the end of this program + 30 days.
-    # we add 30 days because registrations for Personal Retreats
-    # may extend beyond the last day of the season.
-    #
-    add_config($c, date($P{edate}) + $P{extradays} + 30);
 
     # send an email alert about this new program
     new_event_alert(
@@ -774,6 +771,7 @@ sub list : Local {
     );
     my @files = <root/static/online/*>;
     stash($c,
+        time_travel_class($c),
         long_term => $type eq 'long_term',
         pg_title  => "Programs",
         online    => scalar(@files),
@@ -998,7 +996,6 @@ sub update_do : Local {
             $reg->calc_balance();
         }
     }
-    add_config($c, date($P{edate}) + 30);
     $c->response->redirect($c->uri_for("/program/view/"
                            . $p->id . "/$section"));
 }
@@ -2707,10 +2704,16 @@ EOS
                 weburl
                 email
                 email_str
+                image
             /),
             sdate => $r->sdate_obj->format($fmt),
             edate => $r->edate_obj->format($fmt),
         };
+        if ($r->image()) {
+            copy 'root/static/images/r-' . $r->id . '.jpg',
+                 'gen_files/pics'
+              or die "no copy: $!\n";
+        }
     }
     _json_put(\@export_rentals, 'rentals.json');
 
@@ -2772,7 +2775,7 @@ EOS
         }
     }
     _json_put($pr_ref, 'pr/pr.json');
-    copy 'root/static/README', 'gen_files/README';
+    copy 'root/static/README', 'gen_files';
 
     # tar it up
     system("cd gen_files; tar czf ../exported_reg_data.tgz .");

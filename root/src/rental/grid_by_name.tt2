@@ -1,0 +1,137 @@
+<style>
+.special {
+    font-weight: bold;
+    color: red;
+}
+.fixed {
+    color: green;
+}
+</style>
+<ul>
+<a style="font-size: 20pt;"
+   href=/rental/view/$rental.id
+>$rental.name</a><p class=p2>
+<span class=f15b>${rental.sdate_obj.format("%B %e '%q")} <span class=dow>${rental.sdate_obj.format("%a")}</span>
+to
+${rental.edate_obj.format("%B %e '%q")} <span class=dow>${rental.edate_obj.format("%a")}</span>
+</span>
+<span class=f15b style="margin-left: 1in;">$coord_name</span>
+<p class="p2 f15b">
+Housing Assignment Grid
+<span style="margin-left: 1in"><a href=/rental/grid/$rental.id>By House</a></span>
+<span style="margin-left: .445in"><a href=/rental/grab_new/$rental.id>Grab New</a></span>
+<p class=p2>
+<table cellpadding=5 border=1>
+<tr>
+<th align=left>Name</th>
+<th align=right>Room</th>
+<th align=right>Cost</th>
+<th align=left>Dates</th>
+<th align=left>Notes</th>
+</tr>
+[% FOR p IN people %]
+    <tr>
+    <td>$p.name</td>
+    <td align=right>$p.room</td>
+    <td align=right>$p.cost</td>
+    <td>$p.dates</td>
+    <td>$p.notes</td>
+    </tr>
+[% END %]
+<tr>
+<td>Total</td>
+<td>&nbsp;</td>
+<td align=right>\$$total</td>
+<td>&nbsp;</td>
+<td>&nbsp;</td>
+</tr>
+</table>
+<p class=p2>
+<ul>
+<p>
+
+<table><tr><td valign=top>
+
+<table>
+<tr><th colspan=2 align=left>Codes</th></tr>
+<tr><td>b</td><td> - bath</td></tr>
+<tr><td>c</td><td> - center tent</td></tr>
+<tr><td>o</td><td> - own tent</td></tr>
+</table>
+
+</td><td>
+
+<div style="margin-left: 1in;">
+<table cellpadding=3>
+<tr>
+<th align=left>Type</th><th align=center>Cost</th>
+</tr>
+[% hc = rental.housecost %]
+<tr>
+<td>Single w/ Bath</td>
+<td align=right>[% hc.single_bath %]</td>
+</tr>
+<tr>
+<td>Single</td>
+<td align=right>[% hc.single %]</td>
+</tr>
+<tr>
+<td>Double w/ Bath</td>
+<td align=right>[% hc.dble_bath %]</td>
+</tr>
+<tr>
+<td>Double</td>
+<td align=right>[% hc.dble %]</td>
+</tr>
+<tr>
+<td>Triple</td>
+<td align=right>[% hc.triple %]</td>
+</tr>
+<tr>
+<td>Dormitory</td>
+<td align=right>[% hc.dormitory %]</td>
+</tr>
+<tr>
+<td>Economy</td>
+<td align=right>[% hc.economy %]</td>
+</tr>
+<tr>
+<td>Center Tent</td>
+<td align=right>[% hc.center_tent %]</td>
+</tr>
+<tr>
+<td>Own Tent</td>
+<td align=right>[% hc.own_tent %]</td>
+</tr>
+<tr>
+<td>Own Van</td>
+<td align=right>[% hc.own_van %]</td>
+</tr>
+<tr>
+<td>Commuting</td>
+<td align=right>[% hc.commuting %]</td>
+</tr>
+<tr>
+<td>House Cost Type</td>
+<td align=right>[% hc.type %]</td>
+</tr>
+<tr height=35></tr>
+</table>
+</div>
+
+</td></tr>
+
+[% IF rental.fixed_cost_houses %]
+<tr>
+<th>
+Fixed Cost Houses
+</th>
+<td>
+$rental.fixed_cost_houses
+</td>
+</tr>
+[% END %]
+
+</table>
+</ul>
+</ul>

@@ -25,6 +25,7 @@ use Util qw/
     rand6
     charges_and_payments_options
     strip_nl
+    time_travel_class
 /;
 use Date::Simple qw/
     date
@@ -84,6 +85,7 @@ sub search : Local {
         }
     }
     stash($c,
+        time_travel_class($c),
         pg_title => "People Search",
         template => "person/search.tt2",
     );
@@ -189,13 +191,16 @@ sub search_do : Local {
                             . "&nrecs=$nrecs"
                             . "&offset=" . ($offset+$nrecs);
     }
-    $c->stash->{field} = $field eq 'tel_home'? 'tel_home': 'email';
-    $c->stash->{ids} = join '-', map { $_->id } @people;
-    $c->stash->{people} = \@people;
-    $c->stash->{field_desc} = $field eq 'tel_home'? 'Home Phone'
-                              :                     ucfirst $field;
-    $c->stash->{pattern} = $orig_pattern;
-    $c->stash->{template} = "person/search_result.tt2";
+    stash($c,
+        time_travel_class($c),
+        field => $field eq 'tel_home'? 'tel_home': 'email',
+        ids => join('-', map { $_->id } @people),
+        people => \@people,
+        field_desc => $field eq 'tel_home'? 'Home Phone'
+                     :                      ucfirst $field,
+        pattern => $orig_pattern,
+        template => 'person/search_result.tt2',
+    );
 }
 
 sub delete : Local {
@@ -322,6 +327,7 @@ sub view : Local {
     }
     my $sex = $p->sex();
     stash($c,
+        time_travel_class($c),
         person   => $p,
         pg_title => $p->name(),
         sex      => (!defined $sex || !$sex)? "Not Reported"
@@ -1249,8 +1255,25 @@ sub send_requests : Local {
     $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
 
+#
+# this sub does a lot.
+# for the registration
+# it sees what existing payment requests there are
+# for the given organization.  Some may have been sent
+# already.  If 'resend_all' is true then all should be sent again.
+# it generates a random 6 letter code ($code) and creates
+# a file /tmp/$code with a Data::Dumper formatted structure
+# that includes the person's name, address, ... and the requested
+# total amount.
+# this file is ftp'ed to the global web (mmc or mmi) in
+# a well known place.
+# an email is sent (optionally) to the person giving them
+# a link to a CGI script along with the $code.  With this they
+# can pay the given total amount.
+# A RegHistory record is added.
+#
 sub _send_requests {
-    my ($self, $c, $reg_id, $resend_all, $org) = @_;
+    my ($self, $c, $reg_id, $resend_all, $org, $no_email) = @_;
     my $reg = model($c, 'Registration')->find($reg_id);
     my $public = $reg->program->level->public();
     my $person = $reg->person();
@@ -1400,6 +1423,9 @@ EOH
 
     unlink "/tmp/$code" unless -e '/tmp/testing_req_mmi';
 
+    if ($no_email) {
+        return;
+    }
     #
     # send email to the person with the code
     #

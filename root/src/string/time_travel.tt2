@@ -1,0 +1,22 @@
+<h2>Time Travel for $user</h2>
+<form name=form action=/string/time_travel_do>
+<ul>
+<table cellpadding=5>
+
+<tr>
+<th align=right>When in the Future or the Past<br>Do you want to be?</th>
+<td><input type=text name=date value=$date></td>
+<td>
+12/31/2009 or 10/1/23<br>
+or leave it blank to <i>Be Here Now</i>.
+</td>
+</tr>
+
+<tr><th></th><td><input type=submit id=sub></td></tr>
+
+</table>
+</ul>
+</form>
+<script>
+document.form.date.focus();
+</script>

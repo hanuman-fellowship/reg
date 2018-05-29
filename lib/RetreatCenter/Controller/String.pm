@@ -12,8 +12,13 @@ use Util qw/
     resize
     model
     stash
+    error
+    empty
+    time_travel_class
 /;
-use Date::Simple;
+use Date::Simple qw/
+    date
+/;
 use HLog;
 
 sub index : Private {
@@ -25,17 +30,13 @@ sub index : Private {
 sub list : Local {
     my ($self, $c, $colors) = @_;
 
-    my @colors = ();
-    if ($colors) {
-        push @colors, the_key => { -like => '%color%' };
-    }
-    else {
-        push @colors, the_key => { -not_like => '%color%' };
-    }
     $c->stash->{strings} = [ model($c, 'String')->search(
         { 
-            the_key => { -not_like => 'sys_%' },
-            @colors,
+            -and => [
+                the_key => { ($colors? '-like': '-not_like') => '%color%' },
+                the_key => { '!=' => 'sys_last_config_date' },
+                the_key => { '!=' => 'tt_today' },
+            ]
         },
         {
             order_by => 'the_key'
@@ -187,6 +188,49 @@ sub access_denied : Private {
 
     $c->stash->{mess}  = "Authorization denied!";
     $c->stash->{template} = "gen_error.tt2";
+}
+
+sub time_travel : Local {
+    my ($self, $c) = @_;
+
+    my ($str) = model($c, 'String')->search({
+        the_key => 'tt_today',
+    });
+    my %date_for = $str->value() =~ m{(\w+) \s+ (\d+/\d+/\d+)}xmsg;
+    my $user = $c->user->username();
+    stash($c,
+        time_travel_class($c),
+        user => $user,
+        date => $date_for{$user},
+        template => 'string/time_travel.tt2',
+    );
+}
+
+sub time_travel_do : Local {
+    my ($self, $c) = @_;
+    my ($str) = model($c, 'String')->search({
+        the_key => 'tt_today',
+    });
+    my %date_for = $str->value() =~ m{(\w+) \s+ (\d+/\d+/\d+)}xmsg;
+    my $user = $c->user->username();
+    my $new_date = $c->request->params->{date};
+    if (empty($new_date)) {
+        delete $date_for{$user};
+    }
+    elsif (! date($new_date)) {
+        error($c,
+            "Invalid date: $new_date",
+            'gen_error.tt2',
+        );
+        return;
+    }
+    else {
+        $date_for{$user} = $new_date;
+    }
+    $str->update({
+        value => join ' ', %date_for,
+    });
+    $c->forward('/person/search');
 }
 
 1;

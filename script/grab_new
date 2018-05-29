@@ -571,9 +571,9 @@ sub get_rental_deposit {
         time        => $now_t24,
     });
     msg "rental deposit of \$$hash{amount} for " . $rental->name;
-    # notify the rental coordinator
+    # notify the rental coordinator(s)
     my $rc = email_letter($c,
-        to      => "MMC Transportation <$string{rental_coord_email}>",
+        to      => $string{rental_coord_email},
         from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
                                     # what else?
         subject => "Rental Deposit Received for " . $rental->name(),

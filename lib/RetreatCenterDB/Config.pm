@@ -30,14 +30,18 @@ sub the_date_obj {
 
 1;
 __END__
-overview - This is a critical table (somewhat misnamed) that keeps track of housing configuration.
-    There is a record for each house (aka room/site) and each day.
+overview - This is a critical table (somewhat misnamed) that
+    keeps track of housing configuration.
+    There is a record for each house (aka room/site) and each day
+    out to a maximum date 4 years out.
     The sex attribute tells what gender is occupying the space.
     We must do our best to keep the different genders apart!
     The foreign keys to program and rental are filled in only if 
-    the housing reservation came from such.  Blocks and Meeting Space reservations
+    a housing reservation came from such.
+    Blocks and Meeting Space (sleeping too) reservations
     associated with an Event have no such foreign keys.
-    <p>Config records are added with Util::add_config() as needed.
+    config records are added periodically by the cronjob 'add_config'
+    which is also called when a new house is added or its size changed.
 cur - The # of people that are currently in this space.
 curmax - Max capacity of the space.
 house_id - foreign key to house

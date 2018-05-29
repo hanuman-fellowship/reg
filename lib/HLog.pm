@@ -5,6 +5,7 @@ package HLog;
 use base 'Exporter';
 our @EXPORT = qw/
     hlog
+    hlog_str
     hlog_toggle
 /;
 use FileHandle;
@@ -34,6 +35,14 @@ sub hlog {
                  $month, $mday, $hour, $min,
                  $user
                  ;
+}
+
+sub hlog_str {
+    my ($str) = @_;
+    my ($sec, $min, $hour, $mday, $month) = localtime;
+    printf {$fh} "%2d/%2d %02d:%02d %s\n",
+                 $month, $mday, $hour, $min,
+                 $str;
 }
 
 sub hlog_toggle {

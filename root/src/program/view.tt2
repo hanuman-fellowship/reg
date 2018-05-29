@@ -240,7 +240,7 @@ Web
 <th align=right>Housing Not Needed</th>
 <td>$program.housing_not_needed</td>
 [% IF program.housing_not_needed %]
-<td style="color: red; font-weight: bold;">Add an Exception for 'fee_table'!</td>
+<td class=red>Add an Exception for 'fee_table'?!</td>
 [% END %]
 </tr>
 

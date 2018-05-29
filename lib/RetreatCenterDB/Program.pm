@@ -12,6 +12,7 @@ use Time::Simple qw/
     get_time
 /;
 use Util qw/
+    empty
     slurp
     housing_types
     places
@@ -217,6 +218,13 @@ sub future_programs {
     @programs;
 }
 
+sub confnote_not_empty {
+    my ($self) = @_;
+    my $s = $self->confnote();
+    $s =~ s{<[^>]*>}{}xmsg;     # remove all html tags
+    return ! empty($s);
+}
+
 sub web_addr {
     my ($self) = @_;
 
@@ -353,6 +361,13 @@ sub main_meeting_place {
                    :                   $self->bookings();
     @bookings? $bookings[0]->meeting_place()->name()
     :          "";
+}
+
+sub title_trimmed {
+    my ($self) = @_;
+    my $title = $self->title();
+    $title =~ s{\A \s* (special\s+guest|personal\s+retreat).*}{$1}xmsi;
+    return $title;
 }
 
 sub title1 {

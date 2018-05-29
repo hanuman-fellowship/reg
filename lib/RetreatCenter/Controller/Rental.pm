@@ -12,6 +12,8 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
+use File::Copy;
+use Image::Size 'imgsize';
 use Util qw/
     trim
     empty
@@ -19,7 +21,6 @@ use Util qw/
     valid_email
     model
     lunch_table
-    add_config
     type_max
     max_type
     housing_types
@@ -45,6 +46,9 @@ use Util qw/
     months_calc
     new_event_alert
     normalize
+    resize
+    time_travel_class
+    too_far
 /;
 use Global qw/
     %string
@@ -101,6 +105,9 @@ sub _get_data {
         }
         $P{$d} = $dt? $dt->as_d8()
                    :     "";
+    }
+    if (! @mess && (my $mess = too_far($c, $P{edate}))) {
+        push @mess, $mess;
     }
     # ensure the Rental name has mm/yy that matches the start date
     #
@@ -283,14 +290,21 @@ sub create_do : Local {
     $P{housing_charge} = 0;
     # the above 3 columns will be updated only by grab_new
 
-    my $r = model($c, 'Rental')->create(\%P);
+    my $upload     = $c->request->upload('image');
+
+    my $r = model($c, 'Rental')->create({
+        %P,
+        image => $upload? 'yes': '',
+    });
     $r->set_grid_stale();
     my $id = $r->id();
-    #
-    # we must ensure that there are config records
-    # out to the end date of this rental.
-    #
-    add_config($c, $P{edate});
+
+    if ($upload) {
+        my $picfile = "root/static/images/ro-$id.jpg";
+        $upload->copy_to($picfile);
+        Global->init($c);
+        resize('r', $id);
+    }
 
     # send an email alert about this new rental
     new_event_alert(
@@ -306,6 +320,27 @@ sub create_do : Local {
         $c->response->redirect($c->uri_for("/rental/view/$id/$section"));
     }
 }
+
+sub view_pic : Local {
+    my ($self, $c, $id) = @_;
+    my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
+    stash($c,
+        rental => $r,
+        template => 'rental/view_pic.tt2',
+    );
+}
+
+sub del_image : Local {
+    my ($self, $c, $id) = @_;
+
+    my $r = $c->stash->{rental} = model($c, 'Rental')->find($id);
+    $r->update({
+        image => '',
+    });
+    unlink <root/static/images/r*-$id.jpg>;
+    $c->response->redirect($c->uri_for("/rental/view/$id/4"));
+}
+
 
 sub create_from_proposal : Local {
     my ($self, $c, $proposal_id) = @_;
@@ -380,11 +415,6 @@ sub create_from_proposal : Local {
     $proposal->update({
         rental_id => $rental_id,
     });
-    #
-    # we must ensure that there are config records
-    # out to the end date of this rental.
-    #
-    add_config($c, $P{edate});
 
     # are we done yet?
     #
@@ -569,6 +599,7 @@ sub list : Local {
     Global->init($c);
     my $today = tt_today($c)->as_d8();
     stash($c,
+        time_travel_class($c),
         pg_title => "Rentals",
         rentals  => [
             # past due ones first
@@ -735,10 +766,6 @@ sub update_do : Local {
         }
         $P{lunches} = "";
         $P{refresh_days} = "";
-        #
-        # and perhaps add a few more config records.
-        #
-        add_config($c, $P{edate});
     }
 
     if ($P{contract_sent} ne $r->contract_sent) {
@@ -758,6 +785,14 @@ sub update_do : Local {
         # just in case it did not get set properly on creation
         #
         $P{grid_code} = rand6($c);
+    }
+    my $upload     = $c->request->upload('image');
+    if ($upload) {
+        $P{image} = 'yes';
+        my $picfile = "root/static/images/ro-$id.jpg";
+        $upload->copy_to($picfile);
+        Global->init($c);
+        resize('r', $id);
     }
 
     $r->update(\%P);
@@ -852,6 +887,9 @@ sub delete : Local {
 
     # the summary
     $r->summary->delete();
+
+    # the image(s) if any
+    unlink <root/static/images/r*-$rental_id.*>;
 
     # and the rental itself
     # does this cascade to rental payments???
@@ -1500,7 +1538,7 @@ sub received : Local {
 
     my $rental = model($c, 'Rental')->find($rental_id);
     $rental->update({
-        contract_received => tt_today->as_d8(),
+        contract_received => tt_today($c)->as_d8(),
         received_by       => $c->user->obj->id,
     });
     $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
@@ -1934,6 +1972,11 @@ sub duplicate : Local {
 
     my $orig_r = model($c, 'Rental')->find($rental_id);
 
+    if ($orig_r->image()) {
+        stash($c,
+            dup_image => $orig_r->image_file(),
+        );
+    }
     #
     # what should be cleared and entered differently?
     #
@@ -1944,6 +1987,7 @@ sub duplicate : Local {
         sdate   => "",
         edate   => "",
         glnum   => "", 
+        image   => '',   # not yet
         balance => 0,
         status  => "",
         lunches => "",
@@ -1998,6 +2042,12 @@ sub duplicate_do : Local {
 
     $P{glnum} = compute_glnum($c, $P{sdate});
 
+    # the image takes special handling
+    # if a new one is provided, take that.
+    # otherwise use the old one, if any.
+    #
+    my $upload = $c->request->upload('image');
+
     # get the old rental and the old summary
     # so we can duplicate the summary.  and get the
     # contact person and contract signer ids.
@@ -2037,6 +2087,7 @@ sub duplicate_do : Local {
         coordinator_id => $old_rental->coordinator_id(),
         cs_person_id   => $old_rental->cs_person_id(),
         grid_code      => rand6($c),
+        image      => ($upload || $old_rental->image())? 'yes': '',
         counts         => (join ' ', (0) x ($ndays + 1)),
         grid_max       => 0,
         housing_charge => 0,
@@ -2044,29 +2095,40 @@ sub duplicate_do : Local {
         created_by     => $c->user->obj->id,
     });
     $new_r->set_grid_stale();
-    my $id = $new_r->id();
+    my $new_id = $new_r->id();
+
+    # mess with the new image, if any.
+    if ($upload) {
+        my $picfile = "root/static/images/ro-$new_id.jpg";
+        $upload->copy_to($picfile);
+        Global->init($c);
+        resize('r', $new_id);
+    }
+    elsif ($new_r->image()) {
+        # complicated! wake up.
+        my $path = "root/static/images";
+        my $suf = (-f "$path/r-$old_id.jpg")? "jpg": "gif";
+        for my $let ('o', 'th', '') {
+            copy "$path/r$let-$old_id.$suf",
+                 "$path/r$let-$new_id.$suf";
+        }
+    }
 
     # send an email alert about this new rental
     new_event_alert(
         $c,
         1, 'Rental',
         $P{name}, 
-        $c->uri_for("/rental/view/$id"),
+        $c->uri_for("/rental/view/$new_id"),
     );
-
-    #
-    # we must ensure that we have config records
-    # out to the end of this rental + 30 days, say.
-    #
-    add_config($c, date($P{edate}) + 30);
 
     if ($P{mmc_does_reg}) {
         # we need to create a parallel program for the dup'ed rental.
         #
-        $c->response->redirect($c->uri_for("/program/parallel/$id"));
+        $c->response->redirect($c->uri_for("/program/parallel/$new_id"));
     }
     else {
-        $c->response->redirect($c->uri_for("/rental/view/$id/1"));
+        $c->response->redirect($c->uri_for("/rental/view/$new_id/1"));
     }
 }
 
@@ -2330,13 +2392,14 @@ sub _get_cluster_groups {
 }
 
 sub grid : Local {
-    my ($self, $c, $rental_id) = @_;
+    my ($self, $c, $rental_id, $by_name) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
+    my $sdate = $rental->sdate_obj();
+    my $edate = $rental->edate_obj();
+    my $d = $sdate;
     my $days = "";
-    my $d = $rental->sdate_obj();
-    my $ed = $rental->edate_obj() - 1;
-    while ($d <= $ed) {
+    while ($d <= $edate-1) {
         $days .= "<th align=center width=20>"
               .  $d->format("%s")
               .  "</th>"
@@ -2360,6 +2423,7 @@ sub grid : Local {
 
     my %data = ();
     my $total = 0;
+    my @people;
     my %max;
     if (open my $in, "<", $fgrid) {
         LINE:
@@ -2374,6 +2438,29 @@ sub grid : Local {
             my $notes = "";
             if ($name =~ m{~~}xms) {
                 ($name, $notes) = split m{ \s* ~~ \s* }xms, $name_notes;
+            }
+            if ($cost != 0) {
+                my $i = 0;
+                while ($nights[$i] == 0) {
+                    ++$i;
+                }
+                my $j = -1;
+                while ($nights[$j] == 0) {
+                    --$j;
+                }
+                my $dates = "";
+                if ($i != 0 || $j != -1) {
+                    $dates = ($sdate+$i)->day() . '-' . ($edate+$j+1)->day();
+                }
+                push @people, {
+                    name => $name,
+                    notes => $notes,
+                    cost => $cost,
+                    room => $id == 1001? 'Commuting'
+                            :$id == 1002? 'Own Van'
+                            :             $house_name_of{$id},
+                    dates => $dates,
+                };
             }
             $data{"p$id\_$bed"} = $name;
             $data{"x$id\_$bed"} = $notes;
@@ -2401,16 +2488,22 @@ sub grid : Local {
     else {
         $coord_name = "";
     }
+    @people = sort {
+                  lc $a->{name} cmp lc $b->{name}
+              }
+              @people;
     stash($c,
         class    => \%class,
         days     => $days,
         rental   => $rental,
-        nnights  => ($rental->edate_obj() - $rental->sdate_obj()),
+        nnights  => $edate - $sdate,
         data     => \%data,
         max      => \%max,      # for own van, commuting
         coord_name => $coord_name,
         total    => commify($total),
-        template => 'rental/grid.tt2',
+        people   => \@people,
+        template => $by_name? 'rental/grid_by_name.tt2'
+                   :          'rental/grid.tt2',
     );
 }
 

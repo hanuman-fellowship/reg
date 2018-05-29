@@ -1,0 +1,18 @@
+<h2>Role $role.fullname - Bulk Removal</h2>
+<p class=p2>
+$role.descr_br
+<ul>
+<p class=p2>
+<b>UN</b>check the users who should <b>not</b> have this role.
+<p class=p2>
+<form action=/role/update_do/$role.id>
+<ul>
+[% FOREACH u IN role.users %]
+<input type=checkbox checked name=r$u.id> $u.first $u.last
+[% IF u.locked %] *[% END %]<p class=p2>
+[% END %]
+</ul>
+<p class=p2>
+<input type=submit id=sub><span style="margin-left: 1in;">* - locked users</span>
+</ul>
+</form>

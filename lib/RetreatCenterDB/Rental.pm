@@ -93,6 +93,8 @@ __PACKAGE__->add_columns(qw/
     rental_created
     created_by
     badge_title
+
+    image
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -516,6 +518,12 @@ sub send_rental_deposit {
     unlink "/tmp/$code";
 }
 
+sub image_file {
+    my ($self) = @_;
+    my $path = "/static/images/rth-" . $self->id;
+    (-f "root/$path.jpg")? "$path.jpg": "$path.gif";
+}
+
 # ??? system("grab wait") if $invoice;
 # make sure the local grid is current???
 sub compute_balance {
@@ -717,6 +725,7 @@ housecost_id - foreign key to housecost
 housing_charge - total cost from the housing grid
 housing_note - free text describing any issues with the rental housing
 id - unique id
+image - does this rental have an image?
 linked - should this rental be included on the online Event calendar?
 lunches - an encoded (essentially binary) field for when lunches are requested.
 max - the maximum number of people expected.  this is used

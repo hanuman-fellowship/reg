@@ -20,6 +20,7 @@ use Util qw/
     empty
     nsquish
     rand6
+    time_travel_class
 /;
 use Date::Simple qw/
     date
@@ -39,6 +40,7 @@ sub index : Local {
     my $from = $today->format("%D");
     my $to   = (today()+6*30)->format("%D");
     stash($c,
+        time_travel_class($c),
         gc_from  => $from,
         gc_to    => $to,
         ow_from  => $from,
@@ -1091,6 +1093,7 @@ sub comings_goings : Local {
                       });
 
     stash($c,
+        time_travel_class($c),
         date       => $dt,
         prev_date  => ($dt-1)->as_d8(),
         next_date  => ($dt+1)->as_d8(),
@@ -1854,6 +1857,7 @@ sub financial : Local {
     my $y = $today->year();
     my $m = $today->month();
     stash($c,
+        time_travel_class($c),
         last_mmc => date($string{last_deposit_date}),
         last_mmi => date($string{last_mmi_deposit_date}),
         since    => date($y-1, $m, 1)->format("%D"),

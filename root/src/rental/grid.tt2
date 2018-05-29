@@ -18,14 +18,15 @@ ${rental.edate_obj.format("%B %e '%q")} <span class=dow>${rental.edate_obj.forma
 <span class=f15b style="margin-left: .5in;">$coord_name</span>
 <p class="p2 f15b">
 Housing Assignment Grid
-<span style="margin-left: 4in"><a href=/rental/grab_new/$rental.id>Grab New</a></span>
+<span style="margin-left: 2.5in"><a href=/rental/grid/$rental.id/1>By Name</a></span>
+<span style="margin-left: .5in"><a href=/rental/grab_new/$rental.id>Grab New</a></span>
 <p class=p2>
 <table cellpadding=5 border=1>
 <tr>
 <td colspan=2>&nbsp;</td>
-<th align=left width=300>Name</th>
+<th align=left>Name</th>
 <th align=right>Cost</th>
-<th align=left width=300>Notes</th>
+<th align=left>Notes</th>
 $days
 </tr>
 [% FOR rb IN rental.rental_bookings %]

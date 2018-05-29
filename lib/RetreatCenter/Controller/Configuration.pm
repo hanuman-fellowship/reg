@@ -6,6 +6,7 @@ use base 'Catalyst::Controller';
 use Util qw/
     stash
     model
+    time_travel_class
 /;
 
 use Global;
@@ -16,6 +17,7 @@ sub index : Local {
     my ($self, $c) = @_;
 
     stash($c,
+        time_travel_class($c),
         switch   => -f "$ENV{HOME}/Reg/INACTIVE",
         pg_title => "Configuration",
         template => "configuration/index.tt2",

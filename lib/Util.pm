@@ -28,7 +28,6 @@ our @EXPORT_OK = qw/
     lunch_table
     clear_lunch
     get_lunch
-    add_config
     type_max
     max_type
     lines
@@ -85,6 +84,8 @@ our @EXPORT_OK = qw/
     strip_nl
     login_log
     no_comma
+    time_travel_class
+    too_far
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -478,10 +479,25 @@ sub monthyear {
 # if you only want to resize one of the two
 # give the optional third parameter.
 #
+# rentals images are handled in a very special way
+#
 sub resize {
     my ($type, $id, $which) = @_;
 
     my $rst = "root/static/images";
+    if ($type eq 'r') {
+        # resize and crop centrally to 640x368
+        system(
+            "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
+          . " $rst/ro-$id.jpg $rst/r-$id.jpg"
+        );
+        # create the thumbnail
+        system(
+            "convert -scale 100x"
+          . " $rst/r-$id.jpg $rst/rth-$id.jpg"
+        );
+        return;
+    }
     if (!$which || $which eq "imgwidth") {
         system("convert -scale "
                . trim($string{imgwidth})
@@ -845,74 +861,6 @@ sub get_lunch {
     return @{$lunch_cache{$type}{$id}};
 }
 
-#
-# add a bunch of Config records
-# so that we're ready for the future.
-#
-# $new_last_date is a string in d8 format
-# OR a Date::Simple object.
-#
-# if we pass a $house object just add config
-# records for that one house - otherwise all houses.
-#
-# in the one house case (a new house was added)
-# begin adding from today() - otherwise add from
-# when we last added a config record.
-#
-sub add_config {
-    my ($c, $new_last_date, $house) = @_;
-
-    if (! ref($new_last_date)) {
-        $new_last_date = date($new_last_date);
-    }
-    my $last;
-    my @houses;
-    if ($house) {
-        $last = today();        # not tt_today()
-    }
-    else {
-        $last = date($string{sys_last_config_date});
-        ++$last;
-    }
-    if ($last >= $new_last_date) {
-        # we have just added a program or rental
-        # that ends before an existing one.
-        # so there is nothing to do.
-        return;
-    }
-
-    if ($house) {
-        push @houses, [ $house->id, $house->max ];
-    }
-    else {
-        for my $h (model($c, 'House')->all()) {
-            push @houses, [ $h->id, $h->max ];
-        }
-    }
-    my $d8;
-    while ($last <= $new_last_date) {
-        $d8 = $last->as_d8();
-        for my $h (@houses) {
-            model($c, 'Config')->create({
-                house_id   => $h->[0],
-                the_date   => $d8,
-                sex        => 'U',
-                curmax     => $h->[1],
-                cur        => 0,
-                program_id => 0,
-                rental_id  => 0,
-            });
-        }
-        ++$last;
-    }
-    return if $d8 eq $string{sys_last_config_date};
-
-    $string{sys_last_config_date} = $d8;
-    model($c, 'String')->find('sys_last_config_date')->update({
-        value => $d8,
-    });
-}
-
 my %tmax = qw/
     single_bath 1
     single      1
@@ -1010,14 +958,22 @@ sub normalize {
 sub tt_today {
     my ($c) = @_;    
 
-    my $s = $string{tt_today};
-    if (! $s || ! $c) {
+    my ($s) = model($c, 'String')->search({ the_key => 'tt_today' });
+    $s = $s->value();
+    if (empty($s)) {
         return today();
     }
+    my %date_for = $s =~ m{(\w+) \s+ (\d+/\d+/\d+)}xmsg;
     my $login = $c->user->username();
-    my ($user, $dt) = split m{\s+}, $string{tt_today};
-    $dt = date($dt);
-    return (lc $user eq lc $login && $dt)? $dt: today();
+    if (! exists $date_for{$login}) {
+        return today();
+    }
+    return date($date_for{$login});
+}
+
+sub time_travel_class {
+    my ($c) = @_;
+    return time_travel_class => ((today() != tt_today($c))? 'red': '');
 }
 
 sub ceu_license {
@@ -2302,7 +2258,7 @@ sub cf_expand {
 sub PR_progtable {
     my ($c, $fname) = @_;
 
-    my $today = tt_today();
+    my $today = tt_today($c);
     my $fom = $today - $today->day() + 1;     # first of month
     my $fom_d8 = $fom->as_d8();
     #
@@ -2445,6 +2401,31 @@ sub no_comma {
     my ($s) = @_;
     $s =~ s{,}{}xmsg;
     return $s;
+}
+
+#
+# Is the end date of the program/rental/block
+# beyond where we have config records?  I even add a 
+# fudge factor of 30 days.
+#
+sub too_far {
+    my ($c, $d8) = @_;
+    my ($str) = model($c, 'String')->search({
+                  the_key => 'sys_last_config_date',
+              });
+    my $last = $str->value;
+    if (date($d8) + 30 > date($last)) {
+        return "Sorry. The End Date "
+             . date($d8)->format("%F")
+             . " is too far in the future.<br>"
+             . " The last date you can currently use for housing is "
+             . date($last)->format("%F") . ".<br>"
+             . " On the first of every month this is extended by one month."
+             ;
+    }
+    else {
+        return 0;
+    }
 }
 
 1;

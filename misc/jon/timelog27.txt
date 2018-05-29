@@ -80,3 +80,205 @@ Apr 22 7:50-9:15
     _init_worksheet sub to not repeat initializations of formats
         lame?  but clearer?
     clear old images and spreadsheets on login in a better way
+    TODO:
+        examine member benefits
+            - reset_mem seems to not work right
+            - depends on NightHist being correct
+            after a delete or vacate or cancel
+                of a registration where they used benefits
+                or even after a _compute
+Apr 23 2:30-4:00
+    from 20200816 through 20201101 there are TRIPLICATE
+        config record entries.  why?
+    from 20201102 there are DOUBLED entries up to 20210329
+    then single again
+    why is last_config_date 20201101 but config table goes to 20230730?
+    perhaps someone added a program or rental far in
+        the future and the adding of config records took took long
+        and they didn't want to wait for the browser to return
+        so they abandoned the request in the middle of
+        the config records being added?  and the last_config_date
+        was not properly set.  Likely.  or the browser timed out?
+
+        can we add them in the background - they still may
+            not wait long enough.
+        or add them far in the future with an independent
+            process rather than on demand?
+Apr 24 8:15-9:45, 4:00-4:30
+    talking with John
+    config issues
+    plan for www-data user
+    move to cloud early June - during Ramayana time
+    new confirmation letter and pre-payment link
+Apr 27 9:30-10:00
+    kerfuffle about images for rentals
+    responding to Alexandra re: the rewritten confirmation letter
+Apr 28 7:55-8:00
+    how about a cron job on the 1st to add a month more
+        and keep config 3 years ahead.
+    AND the same cron job can clear unused config records
+        in the past (say 3 months back).
+        Is that okay?  Will we still be
+        able to see who was where and still generate the
+        correct DailyPic for past dates?
+Apr 29 1:50-3:40, 11:15-12:00
+    config rework - 
+        can we add a constraint so that house_id + the_date is unique
+            otherwise throw error?
+            that _pair_ IS the unique id
+    58, 62, 87, 178 - 2 < 1?
+        can we change the size in config, too???
+            maybe? maybe not.
+    seems to work to delete past config records where cur = 0
+        how far back?  a month.
+        what if tried to house someone/rental booking
+            in the past?  can prohibit.
+    fixconfig worked to take away dups
+    the cron job has to ask for the max the_date in config.
+        it is fast.
+    last_config_date in string is way off - 2020? 2023?
+    truncate it to 4 years ahead.
+
+    on kali - ran fixconfig, cleared cur = 0 before March 31, 2017.
+    truncated config - ends at 20220501, set sys_last_config_date.
+
+    TODO:
+    need to not do add_config when adding program, rental, event
+        or blocks?
+    need to prohibit adding such when edate exceeds last config record.
+    need monthly cronjob to extend config by a month
+        same job will clear cur = 0 records up to today minus 1 month
+    prohibit changing housing in the past.
+        not tt_today timetravel...
+Apr 30 11:30-12:15
+    talked with John - status of non-privileged user
+    status of config rework
+    status of cloudkali
+    dockerizing - his task
+    other new features
+
+    grab_new
+        notify people of rental deposit received
+        rental_coord_email - multiple people?
+        Not MMC Transportation!
+May 1 2:30-6:15
+    confirmation letter rewrite - much cleaner!!
+        is it complete enough?
+
+    I like "Please read on to prepare for your stay on our beautiful mountain!"
+    gate code - okay after Arrivals?
+    registration start/end time - can be different
+        old letter specified both start/end
+        new one just 4:00 - okay?
+    no program start/end times in new
+    no checkOUT time...
+    trail/mmc maps in separate section Maps
+        same as in old letter... but pdf instead of jpg
+        pdf is sharper than jpg for maps
+            is it okay that the Main_Area one is so large?
+                1.1 meg
+    What if there's a confirmation note???? - I added it at the bottom
+        (above carpool)
+        in a section called 'Notes'. Okay?
+    Program note, too.
+        as long as they're not empty, that is.
+    Ariana's meal website???
+    Carpool list?
+        added after signature
+    Lots of special cases are not handled.
+    e.g. PR on Sunday
+        okay.   It references Maps - no more, right?
+    Deposit received instead of Payment - okay?
+        otherwise I will need to total up payments...
+    The old conf letter had an 'invoice'.
+        a complete description of charges, payments, and balance
+        not needed any more?
+    No Kaya Kalpa info - people could request massage appt.
+    LOTS of no PRs!
+        the first reg page has a long list
+    refund if first choice not avail...
+    program begin/end times?
+    no DO NOT - will people not read the warnings
+        about prohibited substances?
+    no word about snorers...
+    MMI
+    This will evolve over time just like the current one did...
+    Carpool list?
+    The official individual Cancellation Policy is on the registration page.
+        No need to put in the confirmation letter?
+        If OGS is different will there be a problem that
+        the confirmation letter points to the standard one?
+        
+        The old conf letter did spell out the cancellation policy.
+        Should this one?
+    no after hours emergency phone
+    no current date at the top.   - just the
+        Date on the email should suffice ...
+    receipt #? does anyone care?
+
+    registrar_email - new string
+
+    next - prepayment link
+    list the questions in an email
+May 2 9:00-10:25, 1:00-1:15, 8:25-9:30
+    prepayment link for new conf letter
+        automatically adding a payment request
+        when first finalizing the registration
+    create a pre payment request only if the template
+        has a tag of pre_payment_link
+    if the cancellation policy is non-standard
+        include it in the conf letter.
+    does this also work for MMI programs?
+    MMI imported registrations are a different matter, yes?
+    why won't it do the ftp?
+May 3 3:45-5:00
+    ftp issues???  it's okay on kali.
+May 5 5:15-6:30, 7:55-8:30
+    tidying up default2.tt2
+    sent letter to Alexandra, others.
+    bulk removal of Role assignments
+May 6 2:30-4:00
+    add_config
+May 9 9:00-9:20, 3:10-4:30, 5:35-6:20, 10:30-11:50
+    sending tally script to John
+    replying to Barnaby
+    beginning on Rental images, enlarged text
+    done - now for export
+    export and checking of size
+May 10 12:10-1:05
+    tweaking conf letter in several ways
+May 11 9:45-10:15
+    resize and centrally crop rental images to 640x368
+May 15 12:20-2:55, 5:00-6:50
+    Time Travel as separate Configuration item
+    added time_traveler as new Role
+    finish add_config, etc
+
+    if error in entering Rental - go Back - you lose ALL! :(
+        how to avoid this?  ask John.
+        rental/badge_do - use a $mess, p => \%P and the same template!
+
+    blocks assume that config records are there
+        don't do this.
+    TODO!!
+
+    ask John about the %string global when we have
+        multiple slaves ...  is it possible to update %string
+        in one slave and have it wrong in the other?
+        not good
+May 17 3:25-4:15
+    bug in Rental->received
+    TODO: blocks assume the config records are there
+        add a new house - add config records!
+    two pre-payment issues remedied
+    MAYBE create the pre-payment at conf letter sending time?  Yes.
+May 23 4:30-5:50
+    checking on authorize.net muck up - just a glitch?
+    finalizing add_config, blocks, new house,
+May 24 3:50-5:45
+    add_config - existing house max change
+May 25 1:45-2:15
+    finalizing add_config
+    db_init - next
+May 26 12:40-1:00, 2:00-
+    by name in grid - here and there
