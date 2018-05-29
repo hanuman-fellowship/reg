@@ -3,6 +3,7 @@ use warnings;
 package HLog;
 
 use base 'Exporter';
+use File::Path qw(make_path);
 our @EXPORT = qw/
     hlog
     hlog_str
@@ -12,7 +13,9 @@ use FileHandle;
 
 my $fh;
 BEGIN {
-    open $fh, ">>", "/var/log/Reg/housing.log" or die "no housing.log: $!";
+    my $type = -e '/var/log/Reg/housing.log' ? ">>" : ">";    
+    open $fh, $type, "/var/log/Reg/housing.log" 
+      or die "trouble opening housing.log: $!";
     $fh->autoflush(1);
 }
 
