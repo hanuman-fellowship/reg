@@ -5,6 +5,7 @@ cat.out
 run
 .DS_Store
 .al
+.DS_Store*
 
 # vim swap file
 *.swp
