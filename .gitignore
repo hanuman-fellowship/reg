@@ -6,6 +6,7 @@ run
 .DS_Store
 .al
 .DS_Store*
+._.DS_Store
 
 # vim swap file
 *.swp
