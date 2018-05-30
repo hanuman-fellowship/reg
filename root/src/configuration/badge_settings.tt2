@@ -1,0 +1,32 @@
+<h2>Badge Settings</h2>
+<form action=/string/badge_settings_do>
+<table cellpadding=5>
+<tr>
+<th align=right>Width</th>
+<td><input type=text name=width value='$width' size=7> inches</td>
+</tr>
+<tr>
+<th align=right>Height</th>
+<td><input type=text name=height value='$height' size=7> inches</td>
+</tr>
+<tr>
+<th align=right>Front Top Margin</th>
+<td><input type=text name=ftop value='$ftop' size=7> mm</td>
+</tr>
+<tr>
+<th align=right>Front Left Margin</th>
+<td><input type=text name=fleft value='$fleft' size=7> mm</td>
+</tr>
+<tr>
+<th align=right>Back Top Margin</th>
+<td><input type=text name=btop value='$btop' size=7> mm</td>
+</tr>
+<tr>
+<th align=right>Back Left Margin</th>
+<td><input type=text name=bleft value='$bleft' size=7> mm</td>
+</tr>
+<tr>
+<th>&nbsp;</th>
+<td><input type=submit id=sub></td>
+</tr>
+</table>
