@@ -91,6 +91,12 @@ SFO - Abbreviation for San Francisco airport.
 SFO_color - color for San Francisco airport in Rides listing.
 SJC - Abbreviation for San Jose airport.
 SJC_color - color for San Jose airport in Rides listing.
+badge_width - width of badges
+badge_height - height of badges
+badge_ftop - front top margin of badges
+badge_fleft - front left margin of badges
+badge_btop - bottom top margin of badges
+badge_bleft - bottom left margin of badges
 big_imgwidth - size of large picture - for resizing in Util::resize
 cal_abutt_color - color used when drawing abutting events in the calendar.
     Also see lib/ActiveCal.pm.  This is used only when cal_abutt_style

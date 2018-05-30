@@ -36,6 +36,7 @@ sub list : Local {
                 the_key => { ($colors? '-like': '-not_like') => '%color%' },
                 the_key => { '!=' => 'sys_last_config_date' },
                 the_key => { '!=' => 'tt_today' },
+                the_key => { '-not_like' => 'badge_%' },
             ]
         },
         {
@@ -233,4 +234,32 @@ sub time_travel_do : Local {
     $c->forward('/person/search');
 }
 
+sub badge_settings : Local {
+    my ($self, $c) = @_;
+    my @badge_strs = model($c, 'String')->search({
+                         the_key => { 'like' => 'badge_%' },
+                     });
+    my %hash;
+    for my $bs (@badge_strs) {
+        my $key = $bs->the_key();
+        $key =~ s{\A badge_}{}xms;
+        $hash{$key} = $bs->value();
+    }
+    stash($c,
+        %hash,
+        template => 'configuration/badge_settings.tt2',
+    );
+}
+
+sub badge_settings_do : Local {
+    my ($self, $c) = @_;
+    my %P = %{ $c->request->params() };
+    for my $k (keys %P) {
+        my $bk = "badge_$k";
+        model($c, 'String')->search({
+            the_key => $bk,
+        })->update({value => $P{$k}});
+    }
+    $c->forward('/rental/badge');
+}
 1;

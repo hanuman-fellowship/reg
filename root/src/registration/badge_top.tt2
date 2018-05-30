@@ -2,16 +2,16 @@
 <head>
 <style>
 .front {
-    margin-left: 6mm;
-    margin-top: 10mm;
+    margin-left: ${fleft}mm;
+    margin-top: ${ftop}mm;
 }
 .back {
-    margin-left: 4.9mm;
-    margin-top: 10mm;
+    margin-left: ${bleft}mm;
+    margin-top: ${btop}mm;
 }
 td {
-    width: 2.125in;
-    height: 3.375in;
+    width: ${width}in;
+    height: ${height}in;
 }
 table, td {
     border: 1px dotted lightgrey;

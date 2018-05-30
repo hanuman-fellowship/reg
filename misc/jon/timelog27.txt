@@ -280,5 +280,13 @@ May 24 3:50-5:45
 May 25 1:45-2:15
     finalizing add_config
     db_init - next
-May 26 12:40-1:00, 2:00-
+May 26 12:40-1:00, 2:00-5:00
     by name in grid - here and there
+May 27 7:45-8:45
+    create payment request on the sending conf letter
+        instead of on creation of registration
+    why can't we do an ftp???
+        try in a separate script???
+        send_export the same???
+May 30 10:10-
+    badge settings

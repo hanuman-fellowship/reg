@@ -1146,43 +1146,6 @@ sub create_do : Local {
     # add the automatic charges
     _compute($c, $reg, $P{dup}, @who_now);
 
-    # if there's a tag in the conf letter named 'pre_payment_link'
-    # create a pre-payment record.
-    #
-    my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
-    if (-r $fname && slurp($fname) =~ m{pre_payment_link}xms) {
-        my $org = $reg->program->school->mmi()? 'MMI': 'MMC';
-        my $amount = $reg->balance();
-        my $req_payment = model($c, 'RequestedPayment')->create({
-            person_id => $P{person_id},
-            org       => $org,
-            amount    => $amount,
-            for_what  => 2,     # meals & lodging
-            the_date  => $today,
-            reg_id    => $reg_id,
-            note      => 'Payment of balance',
-        });
-        # Reg History record
-        my @who_now = get_now($c);
-        model($c, 'RegHistory')->create({
-            reg_id   => $reg_id,
-            what     => "Created pre-payment request for \$$amount.",
-            @who_now,
-        });
-        # by 'send_requests' here we mean that the file
-        # is sent to mountmadonna.org so it's ready for
-        # the person when they click on the link in their
-        # confirmation letter that we will soon send them.
-        RetreatCenter::Controller::Person->_send_requests(
-            $c,
-            $reg_id,
-            0,      # don't "resend all". this is the first request.
-            $org,
-            1,      # no sending of email - we will include
-                    # the prepayment link in the confirmation letter.
-        );
-    }
-
     # notify those who want to know of each registration as it happens
     if (!$P{dup} && $pr->notify_on_reg()) {
         my $html = "";
@@ -1850,11 +1813,26 @@ sub reset_mem {
 # if there is a non-blank confnote
 # create a ConfHistory record for this sending.
 #
+# several other things happen, too!
+#
 sub send_conf : Local {
-    my ($self, $c, $id, $preview) = @_;
+    my ($self, $c, $reg_id, $preview) = @_;
 
-    my $reg = model($c, 'Registration')->find($id);
+    my $reg = model($c, 'Registration')->find($reg_id);
+    my $today = tt_today($c);
     my $pr = $reg->program;
+    # if there is a tag named 'pre_payment_link' in the conf letter template
+    # create that link and pass it along.
+    # we have already created the actual pre_payment_request and
+    # sent it to the web site.
+    #
+    my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
+    if (! -r $fname) {
+        error($c,
+              "Sorry, cannot open confirmation letter template.",
+              'gen_error.tt2');
+        return;
+    }
     if (empty($pr->summary->gate_code())) {
         error($c,
               "Sorry, cannot send confirmation letter because<br>"
@@ -1888,30 +1866,55 @@ sub send_conf : Local {
     if ($xdays && $reg->date_end() >= $pr->edate() + $xdays) {
         $prog_end += $xdays;
     }
-    # if there is a tag named 'pre_payment_link' in the conf letter template
-    # create that link and pass it along.
-    # we have already created the actual pre_payment_request and
-    # sent it to the web site.
+    # if we're not previewing
+    # and there's a tag in the conf letter named 'pre_payment_link'
+    # first clear any existing requested payment records and
+    # then create a single pre-payment record for the total balance.
     #
-    my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
-    if (! -r $fname) {
-        error($c,
-              "Sorry, cannot open confirmation letter template.",
-              'gen_error.tt2');
-        return;
-    }
+    my $amount = $reg->balance();
     my $conf_template = slurp($fname);
     my $pre_pay_link = '';
-    if ($conf_template =~ m{pre_payment_link}xms) {
-        my @req_payments = $reg->req_payments();
-        if ($req_payments[0]) {
-            my $org  = $req_payments[0]->org();
-            my $code = $req_payments[0]->code();
-            $pre_pay_link = "https://www.mountmadonna"
-                             . ($org eq 'MMI'? 'institute': '')
-                             . ".org/cgi-bin/req_pay?code=$code"
-                             ;
+    my $need_pre_pay_link = $conf_template =~ m{pre_payment_link}xms;
+    if (! $preview && $need_pre_pay_link && $amount != 0) {
+        for my $rp ($reg->req_payments()) {
+            $rp->delete();
         }
+        my $org = $reg->program->school->mmi()? 'MMI': 'MMC';
+        my $req_payment = model($c, 'RequestedPayment')->create({
+            person_id => $reg->person_id(),
+            org       => $org,
+            amount    => $amount,
+            for_what  => 2,     # meals & lodging
+            the_date  => $today,
+            reg_id    => $reg_id,
+            note      => 'Payment of balance',
+        });
+        # Reg History record
+        my @who_now = get_now($c);
+        model($c, 'RegHistory')->create({
+            reg_id   => $reg_id,
+            what     => "Created pre-payment request for \$$amount.",
+            @who_now,
+        });
+
+        # by 'send_requests' here we mean that the file
+        # is sent to mountmadonna.org so it's ready for
+        # the person when they click on the link in their
+        # confirmation letter that we will soon send them.
+        #
+        RetreatCenter::Controller::Person->_send_requests(
+            $c,
+            $reg_id,
+            0,      # don't "resend all". this is the only request.
+            $org,
+            1,      # no sending of email - we will include
+                    # the prepayment link in the confirmation letter.
+        );
+        my $code = $req_payment->code();
+        $pre_pay_link = "https://www.mountmadonna"
+                         . ($org eq 'MMI'? 'institute': '')
+                         . ".org/cgi-bin/req_pay?code=$code"
+                         ;
     }
     my $cancel_policy = '';
     my $cp = $pr->canpol();
@@ -1928,7 +1931,7 @@ sub send_conf : Local {
         sunday   => $PR
                     && ($reg->date_start_obj->day_of_week() == 0),
         friday   => $start->day_of_week() == 5,
-        today    => tt_today($c),
+        today    => $today,
         deposit  => $reg->deposit,
         htdesc   => $htdesc,
         article  => ($htdesc =~ m{^[aeiou]}i)? 'an': 'a',
@@ -1954,7 +1957,7 @@ sub send_conf : Local {
     # printed or sent - if you are not previewing, that is.
     #
     if (! $preview) {
-        _reg_hist($c, $id, "Confirmation Letter sent");
+        _reg_hist($c, $reg_id, "Confirmation Letter sent");
         $reg->update({
             letter_sent => 'yes',   # this duplicates the RegHistory record
                                     # above but is much easier accessed.
@@ -1970,6 +1973,7 @@ sub send_conf : Local {
         $c->res->output($html);
         return;
     }
+
     my $user = $c->user->obj();
     my ($title, $from);
     if (! $pr->school->mmi()) {
@@ -1995,15 +1999,15 @@ sub send_conf : Local {
               'gen_error.tt2');
         return;
     }
-    my @who_now = get_now($c, $id);
-    push @who_now, reg_id => $id;
+    my @who_now = get_now($c, $reg_id);
+    push @who_now, reg_id => $reg_id;
     if ($reg->confnote) {
         model($c, 'ConfHistory')->create({
             note => $reg->confnote,
             @who_now,
         });
     }
-    $c->response->redirect($c->uri_for("/registration/view/$id"));
+    $c->response->redirect($c->uri_for("/registration/view/$reg_id"));
 }
 
 sub view : Local {
@@ -2683,7 +2687,7 @@ sub badges : Local {
         );
         return;
     }
-    Badge->initialize();
+    Badge->initialize($c);
     Badge->add_group(
         $title,
         $code,
@@ -2704,7 +2708,7 @@ sub badge : Local {
         );
         return;
     }
-    Badge->initialize();
+    Badge->initialize($c);
     Badge->add_group(
         $title,
         $code,

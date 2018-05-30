@@ -2519,7 +2519,7 @@ sub badges : Local {
         );
         return;
     }
-    Badge->initialize();
+    Badge->initialize($c);
     Badge->add_group(
         $title,
         $code,
@@ -2759,7 +2759,7 @@ sub badge_do : Local {
         );
         return;
     }
-    Badge->initialize();
+    Badge->initialize($c);
     Badge->add_group(
         $P{badge_title},
         $P{gate_code},
