@@ -67,11 +67,11 @@ function get_gender() {
 </tr>
 
 <tr>
-<th align=right><span class=red>*</span> Sex</th>
+<th align=right><span class=red>*</span> Gender</th>
 <td>
-<input tabindex=4 type=radio name=sex value="F" [% sex_female %] >Female
-&nbsp;&nbsp;&nbsp;
-<input tabindex=4 type=radio name=sex value="M" [% sex_male %]>Male
+<input tabindex=4 type=radio name=sex value="F" $sex_female >Female<br>
+<input tabindex=4 type=radio name=sex value="M" $sex_male>Male<br>
+<input tabindex=4 type=radio name=sex value="X" $sex_non_binary>Non-Binary
 </td>
 </tr>
 

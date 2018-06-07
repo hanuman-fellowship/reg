@@ -355,11 +355,11 @@ sub show : Local {
             # in this circumstance use / to show the blocks 
             substr($sexcode, -$n) = $string{dp_resize_block_char} x $n;
         }
-        if ($sexcode eq 'XX') {
-            # for non-sexist purposes...
-            # to not make the women angry ...
-            $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
-        }
+        #if ($sexcode eq 'XX') {
+        #    # for non-sexist purposes...
+        #    # to not make the women angry ...
+        #    $sexcode = (int(rand(2)) == 1)? 'MF': 'FM';
+        #}
 
         $dp->string(gdGiantFont, $x1+3, $y1+3,
                     $sexcode, $char_color{$sex})  if $cur;
@@ -499,9 +499,9 @@ $dp_form
 <tr><td>$string{dp_empty_bed_char}</td><td>empty bed</td></tr>
 <tr><td>F</td><td>female</td></tr>
 <tr><td>M</td><td>male</td></tr>
+<tr><td>X</td><td>mixed gender</td></tr>
 <tr><td>R</td><td>rental</td></tr>
 <tr><td>S</td><td>meeting space</td></tr>
-<tr><td>X</td><td>mixed gender</td></tr>
 <tr><td>$string{dp_resize_char}</td><td>resized room</td></tr>
 <tr><td>B</td><td>block</td></tr>
 <tr><td>$string{dp_resize_block_char}</td><td>resize block</td></tr>

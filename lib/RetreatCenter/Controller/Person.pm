@@ -331,9 +331,10 @@ sub view : Local {
         person   => $p,
         pg_title => $p->name(),
         sex      => (!defined $sex || !$sex)? "Not Reported"
-                          :($sex eq "M"           )? "Male"
-                          :($sex eq "F"           )? "Female"
-                          :                          "Not Reported",
+                   :($sex eq "M"           )? "Male"
+                   :($sex eq "F"           )? "Female"
+                   :($sex eq "X"           )? "Non-Binary"
+                   :                          "Not Reported",
         template => "person/view.tt2",
     );
 }
@@ -559,6 +560,7 @@ sub update : Local {
         person         => $p,
         sex_female     => ($sex eq "F")? "checked": "",
         sex_male       => ($sex eq "M")? "checked": "",
+        sex_non_binary => ($sex eq "X")? "checked": "",
         inactive       => (      $p->inactive())? "checked": "",
         deceased       => (      $p->deceased())? "checked": "",
         e_mailings     => (    $p->e_mailings())? "checked": "",
@@ -793,7 +795,7 @@ sub register1 : Local {
         date_updat => today()->as_d8(),
     });
 
-    if (!($person->sex() && $person->sex() =~ m{[MF]})) {
+    if (!($person->sex() && $person->sex() =~ m{[MFX]})) {
         error($c,
             'Sorry, you must set a gender for '
                 . $person->name()
