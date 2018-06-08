@@ -1426,7 +1426,7 @@ EOH
     unlink "/tmp/$code" unless -e '/tmp/testing_req_mmi';
 
     if ($no_email) {
-        return;
+        return $code;
     }
     #
     # send email to the person with the code
@@ -1468,6 +1468,7 @@ EOH
                   . " $org requests totaling \$$comma_total",
         @who_now,
     });
+    return $code;
 }
 
 sub delete_req : Local {

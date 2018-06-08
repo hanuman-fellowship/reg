@@ -40,6 +40,7 @@ sub hlog {
 sub hlog_str {
     my ($str) = @_;
     my ($sec, $min, $hour, $mday, $month) = localtime;
+    ++$month;
     printf {$fh} "%2d/%2d %02d:%02d %s\n",
                  $month, $mday, $hour, $min,
                  $str;

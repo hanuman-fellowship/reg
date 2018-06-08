@@ -1821,11 +1821,6 @@ sub send_conf : Local {
     my $reg = model($c, 'Registration')->find($reg_id);
     my $today = tt_today($c);
     my $pr = $reg->program;
-    # if there is a tag named 'pre_payment_link' in the conf letter template
-    # create that link and pass it along.
-    # we have already created the actual pre_payment_request and
-    # sent it to the web site.
-    #
     my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
     if (! -r $fname) {
         error($c,
@@ -1873,7 +1868,8 @@ sub send_conf : Local {
     #
     my $amount = $reg->balance();
     my $conf_template = slurp($fname);
-    my $pre_pay_link = '';
+    my $pre_pay_link = '#';     # so that the preview will have
+                                # the pre-payment section
     my $need_pre_pay_link = $conf_template =~ m{pre_payment_link}xms;
     if (! $preview && $need_pre_pay_link && $amount != 0) {
         for my $rp ($reg->req_payments()) {
@@ -1902,7 +1898,7 @@ sub send_conf : Local {
         # the person when they click on the link in their
         # confirmation letter that we will soon send them.
         #
-        RetreatCenter::Controller::Person->_send_requests(
+        my $code = RetreatCenter::Controller::Person->_send_requests(
             $c,
             $reg_id,
             0,      # don't "resend all". this is the only request.
@@ -1910,7 +1906,6 @@ sub send_conf : Local {
             1,      # no sending of email - we will include
                     # the prepayment link in the confirmation letter.
         );
-        my $code = $req_payment->code();
         $pre_pay_link = "https://www.mountmadonna"
                          . ($org eq 'MMI'? 'institute': '')
                          . ".org/cgi-bin/req_pay?code=$code"
