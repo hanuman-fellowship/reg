@@ -104,7 +104,7 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 </tr>
 
 <tr>
-<th align=right valign=top>Sex</th><td>$sex</td>
+<th align=right valign=top>Gender</th><td>$sex</td>
 </tr>
 
 <tr><th align=right valign=top>Address</th><td>$person.addr1[% IF person.addr2 %]<br>$person.addr2[% END %]</td>

@@ -15,7 +15,16 @@ use Global qw/
 my $html;
 my $tt;
 sub initialize {
-    my ($class) = @_;
+    my ($class, $c) = @_;
+    my @badge_strs = model($c, 'String')->search({
+                         the_key => { 'like' => 'badge_%' },
+                     });
+    my %hash;
+    for my $bs (@badge_strs) {
+        my $bk = $bs->the_key();
+        $bk =~ s{\A badge_}{}xms;
+        $hash{$bk} = $bs->value();
+    }
     $html = undef;
     $tt = Template->new({
               INCLUDE_PATH => 'root/src',
@@ -23,7 +32,7 @@ sub initialize {
           }) or die Template->error();
     $tt->process(
         'registration/badge_top.tt2',
-        {},
+        \%hash,
         \$html,
     );
 }

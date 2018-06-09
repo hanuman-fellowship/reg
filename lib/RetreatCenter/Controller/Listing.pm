@@ -1123,7 +1123,7 @@ sub coming_badges : Local {
                            sdate      => { 'between' => [ $dt8, $edt8 ] },
                            program_id => 0,
                        });
-    Badge->initialize();
+    Badge->initialize($c);
     for my $r (@rnt_coming) {
         my ($mess, $title, $code, $data_aref) =
             Badge->get_badge_data_from_rental($c, $r);

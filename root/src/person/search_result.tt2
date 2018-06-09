@@ -12,7 +12,7 @@ Searched [% field_desc %] for: [% pattern %]
 <th align=left>Last</th>
 <th align=left>First</th>
 <th align=left>Sanskrit</th>
-<th align=center>Zip</th>
+<th align=left>Zip</th>
 <th align=left>[% IF field == 'email' %]Email[% ELSE %]Home Phone[% END %]</th>
 </tr>
 [% FOREACH p IN people %]

@@ -476,7 +476,10 @@ sub process_mlist {
     for my $k (qw/ cell home work /) {
         $hash{"tel_$k"} = $hash{$k};
     }
-    $hash{sex} = $hash{gender} eq 'female'? 'F': 'M';
+    $hash{sex} = $hash{gender} eq     'female'? 'F'
+                :$hash{gender} eq       'male'? 'M'
+                :$hash{gender} eq 'non_binary'? 'X'
+                :                               ' ';
     $hash{request} =~ s{NEWLINE}{\n}g;
         # for the purposes of the file format
         # we needed the request to be on one line

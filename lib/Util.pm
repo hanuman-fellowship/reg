@@ -2182,9 +2182,10 @@ sub x_file_to_href {
     $hash{st_prov} = delete $hash{state};
     $hash{zip_post} = delete $hash{zip};
     $hash{sex} = delete $hash{gender};
-    $hash{sex} =   $hash{sex} eq   'Male'? 'M'
-                 : $hash{sex} eq 'Female'? 'F'
-                 :                         ''
+    $hash{sex} =   $hash{sex} eq       'Male'? 'M'
+                 : $hash{sex} eq     'Female'? 'F'
+                 : $hash{sex} eq 'Non-Binary'? 'X'  # mixed gender
+                 :                             ''
                  ;
     if ($hash{phone} && ! exists $hash{tel_cell}) {
         $hash{tel_cell} = delete $hash{phone};

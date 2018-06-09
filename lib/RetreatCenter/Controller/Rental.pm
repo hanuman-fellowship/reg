@@ -1389,6 +1389,30 @@ sub email_arrangements : Local {
     my ($self, $c, $rental_id) = @_;
 
     my $rental = model($c, 'Rental')->find($rental_id);
+    my $cs_id = ($rental->cs_person_id() || $rental->coordinator_id());
+    my $cs = undef;
+    if ($cs_id) {
+        $cs = model($c, 'Person')->find($cs_id);
+    }
+    my @mess;
+    if (! $cs) {
+        push @mess, "There is no contact person or a contract signer.";
+    }
+    elsif (empty($cs->addr1())) {
+        push @mess, $cs->name()
+                    . " does not have an address.";
+    }
+    elsif (empty($cs->email())) {
+        push @mess, $cs->name()
+                    . " does not have an email address.";
+    }
+    if (@mess) {
+        stash($c,
+            mess     => join("<br>", @mess),
+            template => "rental/error.tt2",
+        );
+        return;
+    }
     stash($c,
         rental   => $rental,
         subject  => "MMC Rental Arrangements for '" . $rental->name_trimmed() . "'",
@@ -1578,6 +1602,10 @@ sub _contract_ready {
     elsif (empty($cs->addr1())) {
         push @mess, $cs->name()
                     . " does not have an address.";
+    }
+    elsif (empty($cs->email())) {
+        push @mess, $cs->name()
+                    . " does not have an email address.";
     }
     my @bookings = $rental->bookings();
     if (! @bookings) {
@@ -2521,7 +2549,7 @@ sub badges : Local {
         );
         return;
     }
-    Badge->initialize();
+    Badge->initialize($c);
     Badge->add_group(
         $title,
         $code,
@@ -2761,7 +2789,7 @@ sub badge_do : Local {
         );
         return;
     }
-    Badge->initialize();
+    Badge->initialize($c);
     Badge->add_group(
         $P{badge_title},
         $P{gate_code},

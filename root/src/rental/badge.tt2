@@ -34,7 +34,10 @@
 
 <tr>
 <th align=right>Gate Code</th>
-<td><input type=text size=5 name=gate_code maxlength=4 value='$p.gate_code'></td>
+<td>
+<input type=text size=5 name=gate_code maxlength=4 value='$p.gate_code'>
+<a style="margin-left: 3in" href=/string/badge_settings>Settings</a>
+</td>
 </tr>
 
 <tr>

@@ -8,6 +8,10 @@ body {
     width: 800px;
     font-size: 14pt;
     margin-left: 10mm;
+    margin-bottom: 10mm;
+}
+.invoice {
+    margin-left: 20mm;
 }
 .rt {
     text-align: right;
@@ -26,6 +30,10 @@ img {
 }
 h2 {
     font-size: 14pt;
+    margin-bottom: 0mm;
+}
+h3 {
+    font-size: 12pt;
     margin-bottom: 0mm;
 }
 .indent {
@@ -73,6 +81,7 @@ td {
 </style>
 </head>
 <body>
+[% mmi = program.school.mmi %]
 <table class=top>
 <tr><td><img class=logo src='https://www.mountmadonna.org/assets/img/press/logos/MMC_Logo_Teal.png'></td>
 <td>
@@ -134,17 +143,40 @@ Press the five keys firmly and without any pauses or it will not work.
 [% IF reg.balance > 0 %]
 <h2>Payments</h2>
 <p>
-You are welcome to pay your balance before arrival to expedite the
+You are welcome to pay your balance of \$$reg.balance before arrival to expedite the
 check-in process, especially if you will be arriving after hours
-or on a Sunday when our office is closed.
+or on a Sunday when our office is closed.<br>
     [% IF pre_payment_link %]
     You may pay in advance
     with a credit card online at
-    <a target=_blank href='$pre_payment_link'>this link</a>
-    or by calling the Programs Office at (408) 846-4090.
-    [% ELSE %]
-    You may pay in advance by calling the Programs Office at (408) 846-4090.
+    <a target=_blank href='$pre_payment_link'>this link</a>.
     [% END %]
+<div class=invoice>
+<table>
+<tr><th align=left colspan=2>Charges</th></tr>
+[% tot = 0 %]
+[% FOR ch IN reg.charges %]
+<tr>
+<td align=right valign=top>[% penny(ch.amount) %]</td>
+<td>$ch.what</td>
+</tr>
+[% tot = tot + ch.amount %]
+[% END %]
+<tr><td align=right><span style="border-top: solid thin">\$$tot</span></td><td>Total</td></tr>
+<tr><th align=left colspan=2>Payments</th></tr>
+[% tot = 0 %]
+[% FOR p IN reg.payments %]
+<tr>
+<td align=right>[% penny(p.amount) %]</td>
+<td>$p.what</td>
+</TR>
+[% tot = tot + p.amount %]
+[% END %]
+<tr><td align=right><span style="border-top: solid thin">\$$tot</span></td><td>Total</td></tr>
+<tr><th align=left colspan=2>Balance Due</th></tr>
+<tr><td align=right width=60>\$$reg.balance</td></tr>
+</table>
+</div>
 [% END %]
 <h2>Packing</h2>
 <p>

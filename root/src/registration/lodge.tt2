@@ -20,30 +20,30 @@ function popup(url) {
 }
 </style>
 <h2>Program Housing</h2>
-<form action="/registration/lodge_do/[% reg.id %]" name=form>
+<form action="/registration/lodge_do/$reg.id" name=form>
 
 <table cellpadding=3>
 <tr>
 <th align=right>Person</th>
-<td><a class=larger href="/person/view/[% reg.person.id %]">[% reg.person.last %], [% reg.person.first %]</a><a style="margin-left: 1in" href="/registration/view/[% reg.id %]">To Registration</a></td>
+<td><a class=larger href="/person/view/$reg.person.id">${reg.person.last}, $reg.person.first</a><a style="margin-left: 1in" href="/registration/view/$reg.id">To Registration</a></td>
 </tr>
 
 <tr>
 <th align=right>Program</th>
 <!-- 2 below is for Meals and Lodging -->
-<td><a class=larger href="/program/view/[% reg.program.id %]/2">[% reg.program.name %]</a></td>
+<td><a class=larger href="/program/view/$reg.program.id/2">$reg.program.name</a></td>
 </tr>
 </table>
 [% IF message1 %]
 <p class=p2>
-<span class=mess>[% message1 %]</span>
+<span class=mess>$message1</span>
 [% END %]
 [% IF message2 %]
 <p class=p2>
-<span class=mess>[% message2 %]</span>
+<span class=mess>$message2</span>
 [% END %]
-<h3>Looking for [% disp_h_type %] for a [% reg.person.sex_disp %][% kids %][% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %]
-for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</h3>
+<h3>Looking for $disp_h_type for a $reg.person.sex_disp$kids[% IF reg.cabin_room == 'cabin' %] - preferably a Cabin[% END %]
+for $n_nights $sdate[% IF sdate != edate %] to $edate[% END %].</h3>
 <table border=0>
 <tr>
 [% IF total_opts == 0 %]
@@ -51,8 +51,8 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</
 [% ELSE %]
 <th align=right valign=top>Available Houses</th>
 <td valign=top>
-<select name=house_id size=[% seen_opts %]>
-[% house_opts %]
+<select name=house_id size=$seen_opts>
+$house_opts
 </select>
 </td>
 [% END %]
@@ -73,12 +73,12 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</
 
 <tr><td>&nbsp;</td></tr>
 
-<tr><th align=right>Force this room</th><td><input type=text name=force_house size=10 value='[% force_house %]'></td></tr>
+<tr><th align=right>Force this room</th><td><input type=text name=force_house size=10 value='$force_house'></td></tr>
 
 <tr>
 <th align=right>Housing Type</th>
-<td><select name=htype onchange="form.submit();">[% h_type_opts %]</select></td>
-<td>[% house_prefs %]</td>
+<td><select name=htype onchange="form.submit();">$h_type_opts</select></td>
+<td>$house_prefs</td>
 </tr>
 
 </table>
@@ -88,8 +88,8 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</
 <table>
 <tr>
 <th align=right valign=top>Confirmation Note</th>
-<td><textarea rows=[% note_lines %] cols=60 name=confnote>
-[% note %]
+<td><textarea rows=$note_lines cols=60 name=confnote>
+$note
 </textarea></td>
 </tr>
 
@@ -101,7 +101,7 @@ for [% n_nights %] [% sdate %][% IF sdate != edate %] to [% edate %][% END %].</
 
 </form>
 <script>
-if ("[% alerts %]" != "") {
+if ("$alerts" != "") {
     alert("$alerts\n\n");
 }
 </script>

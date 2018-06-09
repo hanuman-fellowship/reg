@@ -280,5 +280,70 @@ May 24 3:50-5:45
 May 25 1:45-2:15
     finalizing add_config
     db_init - next
-May 26 12:40-1:00, 2:00-
+May 26 12:40-1:00, 2:00-5:00
     by name in grid - here and there
+May 27 7:45-8:45
+    create payment request on the sending conf letter
+        instead of on creation of registration
+    why can't we do an ftp???
+        try in a separate script???
+        send_export the same???
+May 30 10:10-11:20
+    badge settings
+Jun 1 3:45-4:45
+    skype with John - regops, virtual box dev env
+Jun 5 8:50-10:30
+    non-binary gender 
+    good progress - do we need to denote Non Binary genders
+        in some special way or not?  like put it in red on lodging screen?
+            "Looking for a Double for a Non Binary for 2 nights"...
+        better name than 'Non Binary'???
+Jun 6 8:45-10:30
+    mmi non-binary
+    mlist as well
+
+    test:
+        register as non-binary on mmc, mmi
+        new mlist on both mmc, mmi
+            bring them all in
+    
+    ready to go...
+Jun 7 9:00-11:15
+    testing
+        MMC mail list - Testing(Male|Female|NonBinary) (first names)
+        MMI mail list - MMITesting(Male|Female|NonBinary) (first names)
+            all came in just fine
+            deleted
+            notified reception of testing purposes
+
+        MMC Register - NonBinary Jon Bjornstad for Liberation
+            deleted voided
+        MMC Register - Okgenderchoice Jon Bjornstad for PR
+            not complete - just checked
+        MMI Register - NonBinary Jon Bjornstad for Handcrafted Herbalism
+            deleted voided
+
+        search for 'test' in Person last name
+        Manual Register Male Testingmale for PR June 13-15 217*/215
+        Manual Register Female Testingfemale for PR June 13-15 - 117*/217/215
+        Manual Register NonBinary Testingnonbinary for PR June 13-15 215*
+            double - okay
+            triples - SH 1*, SH 4, SH 2 (R)
+                female in SH 1/then male Forced into SH 1
+                    FF.?? not XX.?? - the XX thing only works for doubles? apparently
+            One CAN first put NonBinary then force female - still an X house
+                then force male - remains X - noted as XXX
+
+        maybe one thing weird - M/F Couple in a *Triple*
+            it IS offered to the NonBinary - not yet ...
+        all MMI registrations are initially manual - right?
+June 8 1:30-2:20, 3:00-
+    trying regops instructions
+        vagrant => /usr/local/bin/vagrant
+        packer => ~/bin
+        virtualbox => Applications
+        clone => ~/regops
+    got John's help
+    resuming on new conf letter with payment link
+        generated at email conf time
+        and outline of charges/payments
