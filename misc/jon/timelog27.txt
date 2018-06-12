@@ -337,7 +337,7 @@ Jun 7 9:00-11:15
         maybe one thing weird - M/F Couple in a *Triple*
             it IS offered to the NonBinary - not yet ...
         all MMI registrations are initially manual - right?
-June 8 1:30-2:20, 3:00-
+June 8 1:30-2:20, 3:00-4:30, 6:10-7:25, 10:30-10:45
     trying regops instructions
         vagrant => /usr/local/bin/vagrant
         packer => ~/bin
@@ -347,3 +347,12 @@ June 8 1:30-2:20, 3:00-
     resuming on new conf letter with payment link
         generated at email conf time
         and outline of charges/payments
+        done - need a real test
+            as could not do ftp from my box - whyyyyy?
+    downloading ubuntu iso
+    ran through John's instructions
+    it works. :)
+
+    no gate code for Liberation?  how did the
+        existing Registrations get conf letters?
+    TODO - save transaction id in requested payment received???
