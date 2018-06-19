@@ -42,17 +42,17 @@ sub add_group {
     for my $d_href (@$data_aref) {
         # mess with the name
         my $name = $d_href->{name};
-        if (length($name) > 20) {
-            $d_href->{name_class} = 'long_name';
-            $d_href->{first} = $name;
-        }
-        elsif (index($name, ' ') != -1) {
+        if (index($name, ' ') != -1) {
             my ($first, $last) = $name =~ m{\A (\S+) \s+ (.*) \z}xms;
             $d_href->{first} = $first;
             $d_href->{last} = $last;
         }
         else {
             $d_href->{first} = $name;
+            $d_href->{last} = '';
+        }
+        if (length($d_href->{first}) > 12) {
+            $d_href->{name_class} = 'long_name';
         }
     }
     my $stash = {

@@ -2708,7 +2708,7 @@ sub badge : Local {
         $title,
         $code,
         [{
-            name  => $reg->person->name,
+            name  => $reg->person->badge_name,
             dates => $reg->dates,
             room  => $reg->house_name,
         }],
