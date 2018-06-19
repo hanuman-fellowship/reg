@@ -115,7 +115,7 @@ sub pr_sg_badges : Local {
         };
     }
     @data = sort {
-                $a->{date_start} <=> $a->{date_start}
+                $a->{date_start} <=> $b->{date_start}
                 ||
                 $a->{name}       cmp $b->{name}
             }

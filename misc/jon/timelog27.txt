@@ -400,7 +400,7 @@ Jun 17 2:00-2:30, 3:30-5:30
     figured out the missing pay full amount
         what about going back in the browser?
         ask Jamal/Shantam.
-Jun 18 3:30-5:25, 5:40-6:15
+Jun 18 3:30-5:25, 5:40-6:30
     sorting out the changes for alternate name, pay in full,
         and one telephone number
     will commit the badge changes as well.
