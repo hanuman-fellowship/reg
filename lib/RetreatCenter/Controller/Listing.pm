@@ -89,7 +89,6 @@ sub pr_sg_badges : Local {
                    {
                        join     => [qw/ program /],
                        prefetch => [qw/ program /],   
-                       order_by => [qw/ me.date_start /],
                    }
                );
     my @data;
@@ -108,12 +107,19 @@ sub pr_sg_badges : Local {
         }
         push @data, {
             name  => $r->person->badge_name(),
+            date_start => $r->date_start(),
             dates => $r->dates(),
             room  => $r->house_name(),
             program => $title,
             code  => $code,
         };
     }
+    @data = sort {
+                $a->{date_start} <=> $a->{date_start}
+                ||
+                $a->{name}       cmp $b->{name}
+            }
+            @data;
     Badge->initialize($c);
     Badge->add_group('', '', \@data);
     $c->res->output(Badge->finalize());
