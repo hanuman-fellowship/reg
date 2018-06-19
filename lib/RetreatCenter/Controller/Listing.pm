@@ -22,6 +22,7 @@ use Util qw/
     rand6
     time_travel_class
 /;
+use Badge;
 use Date::Simple qw/
     date
     today
@@ -38,15 +39,84 @@ sub index : Local {
 
     my $today = today();
     my $from = $today->format("%D");
+    my $to7  = (today()+7)->format("%D");
     my $to   = (today()+6*30)->format("%D");
     stash($c,
         time_travel_class($c),
         gc_from  => $from,
         gc_to    => $to,
+        pr_sg_badge_from  => $from,
+        pr_sg_badge_to    => $to7,
         ow_from  => $from,
         ow_to    => $to,
         template => "listing/index.tt2",
     );
+}
+
+sub pr_sg_badges : Local {
+    my ($self, $c) = @_;
+    my $from = trim($c->request->params->{pr_sg_badge_from}) || '';
+    my $to   = trim($c->request->params->{pr_sg_badge_to}) || '';
+    my @mess;
+    my $from_dt = date($from);
+    if (! $from_dt) {
+        push @mess, "Invalid from date: $from";
+    }
+    my $to_dt   = date($to);
+    if (! $to_dt) {
+        push @mess, "Invalid to date: $to";
+    }
+    if (@mess) {
+        my $mess = join '<br>', @mess;
+        $mess .= "<p class=p2>Close this window.";
+        stash($c,
+            mess     => $mess,
+            template => 'gen_message.tt2',
+        );
+        return;
+    }
+    $from = $from_dt->as_d8();
+    $to   = $to_dt->as_d8();
+    my @regs = model($c, 'Registration')->search(
+                   {
+                       date_start => { between => [ $from, $to ] },
+                       'me.cancelled'  => '',
+                       -or => [
+                           'program.name' => { 'like' => '%Personal%Retreat%' },
+                           'program.name' => { 'like' => '%Special%Guest%'    },
+                        ],
+                   },
+                   {
+                       join     => [qw/ program /],
+                       prefetch => [qw/ program /],   
+                       order_by => [qw/ me.date_start /],
+                   }
+               );
+    my @data;
+    for my $r (@regs) {
+        # this is inefficient - fix? memoize?
+        # we _could_ have alternating PR and Special Guest registrations
+        # and they _could_ span month boundaries
+        my ($mess, $title, $code) = Badge->get_title_code($r->program);
+        if ($mess) {
+            $mess .= "<p class=p2>Close this window.";
+            stash($c,
+                mess     => $mess,
+                template => 'gen_message.tt2',
+            );
+            return;
+        }
+        push @data, {
+            name  => $r->person->badge_name(),
+            dates => $r->dates(),
+            room  => $r->house_name(),
+            program => $title,
+            code  => $code,
+        };
+    }
+    Badge->initialize($c);
+    Badge->add_group('', '', \@data);
+    $c->res->output(Badge->finalize());
 }
 
 #
@@ -1106,106 +1176,6 @@ sub comings_goings : Local {
         pg_title   => "Comings and Goings",
         template   => "listing/comings_goings.tt2",
     );
-}
-
-sub coming_badges : Local {
-    my ($self, $c, $dt8) = @_;
-
-    my $edt = date($dt8);
-    if ($edt->day_of_week == 6) {
-        ++$edt;
-    }
-    my $edt8 = $edt->as_d8();
-    my (@rnt_coming) = sort {
-                           $a->name cmp $b->name
-                       }
-                       model($c, 'Rental')->search({
-                           sdate      => { 'between' => [ $dt8, $edt8 ] },
-                           program_id => 0,
-                       });
-    Badge->initialize($c);
-    for my $r (@rnt_coming) {
-        my ($mess, $title, $code, $data_aref) =
-            Badge->get_badge_data_from_rental($c, $r);
-        if ($mess) {
-            stash($c,
-                mess     => $mess,
-                template => 'gen_message.tt2',
-            );
-            return;
-        }
-        Badge->add_group(
-            $title,
-            $code,
-            $data_aref,
-        );
-    }
-    # now for registrants
-    # we need to deal with the case that someone
-    # might be coming to their program early.
-    # so we can't just get everyone in programs
-    # that begin today...
-    my @reg_coming = model($c, 'Registration')->search(
-        {
-            date_start => { 'between' => [ $dt8, $edt8 ] },
-            'me.cancelled'  => '',
-        },
-        {
-            join     => [qw/ program person /],
-            prefetch => [qw/ program person /],   
-            order_by => [qw/ program.name person.first person.last /],
-        }
-    );
-    my ($title, $code, @data);
-    for my $r (@reg_coming) {
-        my $pr = $r->program;
-        # can we 'memoize' this so we don't keep getting
-        # the title, code for the same program over and over?
-        my ($mess, $cur_title, $cur_code) =
-            Badge->get_title_code($pr);
-        if ($mess) {
-            $mess .= "<p class=p2>Close this window.";
-            stash($c,
-                mess     => $mess,
-                template => "gen_message.tt2",
-            );
-            return;
-        }
-        if (! $title) {
-            # first registrant initialization
-            $title = $cur_title;
-            $code = $cur_code;
-        }
-        # return and $mess if bad title or code???
-        # Inform Barnaby, Aja that if a rental person
-        # comes a day late the badge will have been printed
-        # on the day that everyone else came...
-        # they'll have to keep it somewhere...
-        if ($title && $title ne $cur_title) {
-            # flush the current program's data
-            Badge->add_group(
-                $title,
-                $code,
-                \@data,
-            );
-            # and reinitialize
-            @data = ();
-            $title = $cur_title;
-            $code = $cur_code;
-        }
-        push @data, {
-            name  => $r->person->name,
-            dates => $r->dates,
-            room  => $r->house_name,
-        };
-    }
-    # the last group
-    Badge->add_group(
-        $title,
-        $code,
-        \@data,
-    );
-    $c->res->output(Badge->finalize());
 }
 
 sub late_notices : Local {

@@ -322,7 +322,9 @@ sub leader_table {
 sub trim {
     my ($s) = @_;
 
-    return $s unless $s;
+    if (! $s) {
+        return $s;
+    }
     $s =~ s{^\s*|\s*$}{}gm;
     $s;
 }
@@ -1940,6 +1942,7 @@ sub add_or_update_deduping {
     my @needed = (qw/
         first
         last
+        sanskrit
         tel_home
         tel_cell
         tel_work
@@ -1986,6 +1989,7 @@ sub add_or_update_deduping {
     # normalize first, last and phone numbers
     $href->{first} = normalize($href->{first});
     $href->{last} = normalize($href->{last});
+    $href->{sanskrit} = normalize($href->{sanskrit});
     for my $phone (@{$href}{qw/ tel_cell tel_home tel_work/}) {
         my $tmp = $phone;
         $tmp =~ s{\D}{}xms;
@@ -2175,6 +2179,7 @@ sub x_file_to_href {
     close $in;
     $hash{first} = delete $hash{fname};
     $hash{last}  = delete $hash{lname};
+    $hash{sanskrit}  = delete $hash{aname};
     $hash{addr1} = delete $hash{address};
     $hash{addr2} = '';
     $hash{st_prov} = delete $hash{state};

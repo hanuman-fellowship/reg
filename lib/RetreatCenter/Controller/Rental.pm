@@ -2495,6 +2495,7 @@ sub grid : Local {
                    || $name =~ m{\bchild\b}i
                    || $name =~ m{-\s*[12347]\s*$}
                    || ($notes =~ m{\bchild\b}i && $name !~ m{\&|\band\b}i)
+                   || $cost == 0
                   )? "class=special"
                   :                                 ""
                   ;

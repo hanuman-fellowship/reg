@@ -25,18 +25,25 @@ table, td {
     width: 150px;
 }
 .name {
-    font-size: 25pt;
     font-weight: bold;
     font-family: Calibri;
     color: teal;
+}
+.first {
+    font-size: ${first_font_size}pt;
     margin-top: .1in;
+    margin-bottom: 0in;
+}
+.last {
+    font-size: ${last_font_size}pt;
+    margin-top: 0in;
     margin-bottom: .1in;
 }
 .long_name {
-    font-size: 20pt;
+    font-size: ${last_font_size}pt;
 }
 .program {
-    font-size: 18pt;
+    font-size: ${title_font_size}pt;
     font-family: Calibri;
 }
 .dates {

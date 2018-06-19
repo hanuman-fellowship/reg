@@ -152,6 +152,13 @@ sub name {
     return $self->first() . ' ' . $self->last();
 }
 
+sub badge_name {
+    my ($self) = @_;
+    return ! empty($self->sanskrit())? $self->sanskrit()
+          :                            $self->first() . ' ' . $self->last()
+          ;
+}
+
 sub name_email {
     my ($self) = @_;
     return $self->name() . ' <' . $self->email() . '>';
