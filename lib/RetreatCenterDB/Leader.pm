@@ -15,6 +15,7 @@ __PACKAGE__->add_columns(qw/
     assistant
     l_order
     just_first
+    inactive
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -54,6 +55,7 @@ assistant - Is this person an assistant to another leader?
 biography - Full bio.
 id - unique id
 image - is there a JPG of the person?  Naming conventions help locate the file.
+inactive - is this person an active leader?
 just_first - Does this leader only use their first name?  e.g. Adyashanti
 l_order - If a program has multiple leaders what order should they appear in?
 person_id - foreign key to person

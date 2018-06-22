@@ -299,7 +299,7 @@ sub leader_table {
             $_->assistant
         ]
     }
-    model($c, 'Leader')->all();
+    model($c, 'Leader')->search({ inactive => '' });
     $nleaders = @leaders;
     my $n = ceil($nleaders/3);
     my $rows = "";

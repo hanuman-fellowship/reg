@@ -9,6 +9,7 @@ use Util qw/
     resize
     valid_email
     model
+    stash
 /;
 use Global qw/%string/;     # resize needs this to have been done
 
@@ -19,18 +20,22 @@ sub index : Private {
 }
 
 sub list : Local {
-    my ($self, $c) = @_;
+    my ($self, $c, $inactive) = @_;
 
-    $c->stash->{leaders} = [
-        # how to sort like this in all()???
-        sort {
-            $a->person->last()  cmp $b->person->last()
-            or
-            $a->person->first() cmp $b->person->first()
-        }
-        model($c, 'Leader')->all()
-    ];
-    $c->stash->{template} = "leader/list.tt2";
+    my @leaders = model($c, 'Leader')->search(
+            {
+                'me.inactive' => ($inactive? 'yes': ''),
+            },
+            {
+                prefetch => [qw/ person /],
+                order_by => [qw/ person.last person.first /],
+            },
+    );
+    stash($c,
+        leaders  => \@leaders,
+        inactive => $inactive,
+        template => 'leader/list.tt2',
+    );
 }
 
 sub delete : Local {
@@ -38,9 +43,11 @@ sub delete : Local {
 
     my $l = model($c, 'Leader')->find($id);
     if (my @programs = $l->programs()) {
-        $c->stash->{leader} = $l;
-        $c->stash->{programs} = \@programs;
-        $c->stash->{template} = "leader/del_confirm.tt2";
+        stash($c,
+            leader    => $l,
+            programs  => \@programs,
+            template  => 'leader/del_confirm.tt2',
+        );
         return;
     }
     _del($c, $id);
@@ -76,6 +83,7 @@ sub _get_data {
         url
         biography
         assistant
+        inactive
         just_first
     /) {
         $hash{$f} = trim($c->request->params->{$f});
@@ -87,25 +95,33 @@ sub _get_data {
         push @mess, "Illegal order: $hash{l_order}";
     }
     if (@mess) {
-        $c->stash->{mess}     = join "<br>\n", @mess;
-        $c->stash->{template} = "leader/error.tt2";
+        stash($c,
+            mess     => join("<br>\n", @mess),
+            template => "leader/error.tt2",
+        );
         return;
     }
     $hash{url} =~ s{^http://}{};
-    $hash{assistant} = '' unless $hash{assistant};
+
+    # since not sent if not checked...
+    $hash{assistant}  = '' unless $hash{assistant};
     $hash{just_first} = '' unless $hash{just_first};
-            # since not sent if not checked...
+    $hash{inactive}   = '' unless $hash{inactive};
 }
 
 sub update : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
-    $c->stash->{person} = $l->person();
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{"check_assistant"}  = ($l->assistant)? "checked": "";
-    $c->stash->{"check_just_first"}  = ($l->just_first)? "checked": "";
-    $c->stash->{template}    = "leader/create_edit.tt2";
+    my $l = model($c, 'Leader')->find($id);
+    stash($c,
+        leader => $l,
+        person => $l->person(),
+        form_action       => "update_do/$id",
+        check_assistant   => ($l->assistant )? "checked": "",
+        check_just_first  => ($l->just_first)? "checked": "",
+        check_inactive    => ($l->inactive  )? "checked": "",
+        template          => "leader/create_edit.tt2",
+    );
 }
 
 sub update_do : Local {
@@ -130,20 +146,26 @@ sub update_do : Local {
 sub view : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
-    $c->stash->{template} = "leader/view.tt2";
+    stash($c,
+        leader   => model($c, 'Leader')->find($id),
+        template => 'leader/view.tt2',
+    );
 }
 
 sub create : Local {
     my ($self, $c, $person_id) = @_;
 
-    $c->stash->{person}      = model($c, 'Person')->find($person_id);
-    $c->stash->{form_action} = "create_do/$person_id";
-    $c->stash->{leader}      = { l_order => 1 };  # fake a Leader object
-                                                  # for this default
-    $c->stash->{check_assistant} = '';
-    $c->stash->{just_first} = '';
-    $c->stash->{template}    = "leader/create_edit.tt2";
+    stash($c,
+        person      => model($c, 'Person')->find($person_id),
+        form_action => "create_do/$person_id",
+        leader      => { l_order => 1 },  # fake a Leader object
+                                          # for this default
+        check_assistant => '',
+        check_inactive  => '',
+        just_first      => '',
+        inactive        => '',
+        template        => "leader/create_edit.tt2",
+    );
 }
 
 sub create_do : Local {
@@ -171,8 +193,7 @@ sub create_do : Local {
 sub del_image : Local {
     my ($self, $c, $id) = @_;
 
-    my $l = $c->stash->{leader} = model($c, 'Leader')->find($id);
-    $l->update({
+    model($c, 'Leader')->find($id)->update({
         image => "",
     });
     unlink <root/static/images/l*-$id.jpg>;
@@ -182,8 +203,10 @@ sub del_image : Local {
 sub access_denied : Private {
     my ($self, $c) = @_;
 
-    $c->stash->{mess}  = "Authorization denied!";
-    $c->stash->{template} = "gen_error.tt2";
+    stash($c,
+        mess     => 'Authorization denied!',
+        template => 'gen_error.tt2',
+    );
 }
 
 1;
