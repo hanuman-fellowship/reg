@@ -3,8 +3,6 @@ use warnings;
 package RetreatCenter::Controller::Registration;
 use base 'Catalyst::Controller';
 
-use DBIx::Class::ResultClass::HashRefInflator;      # ???
-
 use lib '../../';       # so you can do a perl -c here.
 use Badge;
 use Date::Simple qw/
