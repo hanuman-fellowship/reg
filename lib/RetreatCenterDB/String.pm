@@ -97,6 +97,9 @@ badge_ftop - front top margin of badges
 badge_fleft - front left margin of badges
 badge_btop - bottom top margin of badges
 badge_bleft - bottom left margin of badges
+badge_first_font_size - font size of first name
+badge_last_font_size - font size of last name
+badge_title_font_size - font size of title
 big_imgwidth - size of large picture - for resizing in Util::resize
 cal_abutt_color - color used when drawing abutting events in the calendar.
     Also see lib/ActiveCal.pm.  This is used only when cal_abutt_style

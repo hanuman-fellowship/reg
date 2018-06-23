@@ -26,6 +26,20 @@
 <td><input type=text name=bleft value='$bleft' size=7> mm</td>
 </tr>
 <tr>
+<th align=right>First Name Font Size</th>
+<td><input type=text name=first_font_size value='$first_font_size' size=7> mm</td>
+</tr>
+<tr>
+<tr>
+<th align=right>Last Name Font Size</th>
+<td><input type=text name=last_font_size value='$last_font_size' size=7> mm</td>
+</tr>
+<tr>
+<tr>
+<th align=right>Title Font Size</th>
+<td><input type=text name=title_font_size value='$title_font_size' size=7> mm</td>
+</tr>
+<tr>
 <th>&nbsp;</th>
 <td><input type=submit id=sub></td>
 </tr>

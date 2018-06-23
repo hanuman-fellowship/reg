@@ -1,495 +1,359 @@
-[% mmi = program.school.mmi %]
-<HTML>
-<HEAD>
-<STYLE type='text/css'>
-/* for tinymce generated text: */
-p {
-	margin-top: 0px;
-	margin-bottom: 0px;
-}
-/* other paragraphs */
-.p2 {
-	margin-top: 0.1in;
-	margin-bottom: 0.1in;
-}
-hr {
-	margin-bottom: 45px;
-}
-body, td, th {
-	font-family: Georgia, Times;
-	font-size: 12pt;
-	color: #333333;
-	background: ivory;
-	margin-right: 1in;
-	line-height: 20px;
-}
-.on_right {
-    display: block;
-    text-align: right;
-    margin-right: .1in;
-}
-strong {
-    font-weight: bold;
-}
-h2 {
-	color: #660000;
-	font-size: 18pt;
-}
-h3 {
-	color: #663A3A;
-	font-size: 14pt;
-	margin-bottom: 1mm;
-}
+<html>
+   <head>
+   <meta name="viewport" content="width=device-width" />
+   
+      <style>
+         .after {
+         margin-top: .5in;
+         }
+         body {
+         font-size: 14pt;
+         }
+         #container {
+         max-width: 660px;
+         margin: 0 auto;
+         }
+         .invoice {
+         margin-left: 20px;
+         }
+         .rt {
+         text-align: right;
+         }
+         /* I need to learn more about CSS so I don't have the repetition... */
+         .lt2 {
+         text-align: left;
+         font-size: 14pt;
+         }
+         .rt2 {
+         text-align: right;
+         font-size: 14pt;
+         }
+         img {
+         margin: 7px;
+         }
+         h2 {
+         font-size: 16pt;
+         margin-bottom: 5px;
+         }
+         h3 {
+         font-size: 14pt;
+         margin-bottom: 5px;
+         }
+         .indent {
+         margin-left: 0mm;
+         margin-bottom: 5mm;
+         }
+         p {
+         }
+         .hours {
+         font-size: 12pt;
+         text-align: right;
+         }
+         td {
+         font-size: 12pt;
+         }
+         .logo {
+         width: 280px;
+         }
+         .top {
+					padding-bottom: 40px;
+					width: 100%;
+					margin-bottom: 70px;
+					border-bottom: 1px solid rgb(178, 178, 178);
+         }
+         .column {
+        	display: inline-block;
+         }
+         
+         .column img {
+         width: 100%;
+         max-width: 220px;
+         }
+         .closed {
+         text-align: center;
+         }
+         .name {
+         font-weight: bold;
+         margin-left: .25in;
+         }
+         .addr {
+         font-weight: normal;
+         margin-left: .25in;
+         color: red;
+         }
+         .contact {
+         font-weight: normal;
+         margin-left: .25in;
+         margin-bottom: .2in;
+         }
+         
+				@media only screen and (max-width: 480px) {
+					#container {
+					margin: 20px;			
+					}
+					.column {
+					display: block !important;
+					width: 100% !important;
+					}
+				}
+      </style>
+      
 
-table, th, td {
-	background-color: #FFFFFF;
-}
-
-table {
-	padding: 10px;
-}
-h4 {
-	color: #CC9900;
-	font-size: 13pt;
-	margin-bottom: 1mm;
-}
-.name {
-    font-weight: bold;
-}
-.addr {
-    font-weight: normal;
-    margin-left: .25in;
-    color: red;
-}
-.contact {
-    font-weight: normal;
-    margin-left: .25in;
-    margin-bottom: .2in;
-}
-.fire {
-    font-weight: bold;
-    font-size: 18pt;
-    color: red;
-}
-.scent {
-    font-weight: bold;
-    color: purple;
-}
-
-.subhead {
-	font-family: Georgia, "Times New Roman", Times, serif;
-	font-size: 16px;
-	font-weight: bold;
-	color: #663A3A;
-	margin: 0px;
-	padding: 0px;
-}
-
-h1 {
-	font-family: Georgia, "Times New Roman", Times, serif;
-	font-size: 25px;
-	color: #660000;
-}
-
-ul {
-	color: #333333;
-}
+   </head>
+   <body>
+      <div id="container">
+      
+           [% mmi = program.school.mmi %]
 
 
 
-.container {
-	background-color: #FFFFFF;
-	margin: 10px auto;
-	padding: 10px;
-	width: 720px;
-}
-</STYLE>
-</HEAD>
-<BODY>
-<CENTER>
-<DIV CLASS="container">
-<TABLE WIDTH="700">
-<TR><TD ALIGN="center">
-<IMG height=200 SRC="https://www.mountmadonna.org/assets/img/registration/nov_sc_sunset.jpg">
-<H1>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]</H1>
-</TD></TR>
-<TR><TD>
-<P class=p2><SPAN CLASS="on_right">${today.format("%A, %B %e, %Y")}</SPAN></P>
-[% gc = program.summary.gate_code %]
-<P class=p2>[% IF program.confnote || reg.confnote || gc %]
-<B>NOTES:</B><BR>
-<UL>
-[% IF reg.confnote %]
-    $reg.confnote
-[% END %]
-[% IF reg.early || reg.late %]
-You [% IF reg.early %]arrive on ${reg.date_start_obj.format("%A, %B %e")}[% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on ${reg.date_end_obj.format("%A, %B %e")}[% END %].
-[% END %]
-[% IF program.confnote %]
-    $program.confnote<BR>
-[% END %]
-[% IF personal_retreat && sunday %]
-<b>Please note that the Programs Office is not open on Sunday.</b><br>
-Your room will be available for check-in at 4:00 pm.
-Upon arrival, please go to the Community Building lobby, where you will
-find an arrival package containing all you need to find your way to
-your lodging, a meal and yoga class schedule, and maps of the Center.
-If other concerns arise on Sunday, you can find a contact phone number
-on the door of the Programs Office. Someone will answer your call
-and give you the help you need.
-<p class=p2>
-[% END %]
-[% IF gc %]
-If you arrive in the evening and the gate is closed you can open it<br>
-by entering this code in the keypad: #${gc}. That's POUND ${gc}.<br>
-Press the five keys firmly and without any pauses or it will not work.
-[% END %]
-</UL>
-[% END %]
-</P>
-<P><SPAN CLASS="on_right">Receipt #$reg.id</SPAN></P>
-<P class=p2>
-Dear $person.first,
-</P>
-<P class=p2>
-<!-- being careful of that comma before "as you requested" ... -->
-We [% IF ! mmi %]have received your deposit/payment of \$$deposit
-and [% END %]have scheduled you for
-[% IF personal_retreat %]
-your personal retreat,
-[% ELSIF program.retreat %]
-    "$program.title", $reg.att_prog_dates,
-[% ELSE %]
-    the "$program.title" program, $reg.att_prog_dates,[% IF program.leader_names %] with $program.leader_names,[% END %]
-[% END %]
-as you requested.
-</P>
-<P class=p2>
-[% IF htdesc == 'Your Van' %]
-No lodging was reserved for you since you will be staying in your own van.
-[% ELSIF htdesc == 'Commuting' %]
-No lodging was reserved for you since you will be commuting.
-[% ELSE %]
-For lodging you have been given $article "$htdesc" reservation.
-[% END %]
-</P>
-<P class=p2>
-[% IF reg.balance > 0 %]
-    Your balance due on arrival is \$$reg.balance for meals,
-    [% IF personal_retreat %]
-		lodging and facilities.
-	[% ELSE %]
-	    lodging, facilities and program.
-    [% END %]
-    <BR>
-    We accept checks, money orders, Visa, MasterCard and cash.
-[% ELSIF reg.balance == 0 %]
-    Your account is paid in full; there is no balance due.
-[% ELSIF reg.balance < 0 %]
-	Because your first housing choice was not available
-	you are due a refund of \$[% -1*reg.balance %].
-	We will issue you a refund when you check-in.
-[% END %]
-<P class=p2>
-[% IF personal_retreat %]
-Your retreat begins on the afternoon of 
-${reg.date_start_obj.format("%A, %B %e")}.
-[% ELSE %]
-Program registration is from
-$program.reg_start_obj to $program.reg_end_obj
-on ${program.sdate_obj.format("%A, %B %e")} in the Community Building.
-[% END %]
-</P>
-[% IF personal_retreat && sunday %]
-    <P class=p2><b>Your housing information will be posted
-    in the Community Building lobby.</b></P>
-    <P class=p2>Dinner is served from 5:00 pm to 6:00 pm.</P>
-[% ELSE %]
-    [% IF ! mmi %]
-	<P class=p2>Dinner is served from
-    [% IF program.retreat %]
-		5:00 pm to 6:00 pm.
-    [% ELSIF friday %]
-		5:30 pm to 6:30 pm.
-	[% ELSE %]
-		5:00 pm to 6:00 pm.
-	[% END %]
-    </P>
+      <table class=top width="100%">
+         <tr>
+					 <td>
+            <div width="300" class="column" style="text-align: center;">
+							<img class=logo src='https://www.mountmadonna.org/assets/img/press/logos/MMC_Logo_Teal.png'>
+            </div>
 
-    <P class=p2>Our check-in time is 4:00 pm.  Rooms may not be available prior to the check-in time.  
-    Your first meal is dinner. If you wish to arrive earlier and have lunch (12:30-1:30),
-    you will need to make a lunch reservation by phoning 408-846-4065 at least 24 hours in advance.
-    </p>
-
-    <P class=p2>Check-out time is 1:00 pm on the day of your departure.  Please be sure to vacate your room 
-       prior to the check-out time.</p>
-
-    <P class=p2>
-	The office closes at ${program.reg_end_obj}.
-    <BR>
-    [% END %]
-	If you will <B>ARRIVE LATER</B> than 6:00 pm please call to let us know.<BR>
-    Notes are posted in the Community Building lobby for late arrivals.<BR>
-	We will save dinner for you on request.
-    </P>
-[% END %]
-<P class=p2>
-[% IF personal_retreat %]
-    Your retreat will end at $program.prog_end_obj
-    on ${reg.date_end_obj.format("%A, %B %e")}.
-[% ELSIF mmi %]
-    A schedule of your program will be sent to you separately.
-[% ELSE %]
-    Your program will begin at $program.prog_start_obj on
-    ${program.sdate_obj.format("%A")}
-    and will end at $program.prog_end_obj on
-    ${prog_end.format("%A, %B %e")}.
-[% END %]
-</P>
-[% staying = (htdesc != 'Commuting') %]
-[% camping = (htdesc == 'Your Tent' || htdesc == 'Center Tent') %]
-</P>
-<P class=p2>
-We suggest that you bring the following:
-</P>
-<UL>
-[% IF staying %]
-    <LI>towel (since towels are <I>not</I> provided)</LI>
-    <LI>alarm clock</LI>
-[% END %]
-<LI>flashlight</LI>
-<LI>warm clothing for cool nights and mornings</LI>
-<LI>comfortable clothes and shoes for a rural setting</LI>
-[% IF program.tub_swim %]
-<LI>a swimsuit for lake swimming or hot tubbing</LI>
-[% END %]
-<LI>water bottle</LI>
-<LI>your own mug for tea (optional)</LI>
-[% IF program.retreat %]
-    <LI>loose clothing suitable for breathing practices and postures</LI>
-    <LI>a blanket or mat for postures (optional)</LI>
-[% END %]
-</UL>
-If you want help with transportation to the Center, please check
-<a href="http://www.mountmadonna.org/transportation-directions">this site</a>.
-<p class=p2>
-[% IF htdesc == 'Your Tent' || htdesc == 'Center Tent' %]
-    <P class=p2>
-    Since you are camping remember to bring your own bedding.
-    [% IF htdesc == 'Center Tent' %]
-        <BR>Foam mattresses are provided in center tents.
-    [% END %]
-    </P>
-[% END %]
-<P class=p2>
-Please note that the rainy season in this part of California can begin
-as early as October 1, and end as late as May 1; make sure you pack
-waterproof clothing during that season.
-</P>
-<P class=p2>
-You may wish to bring slippers, as shoes are not worn indoors.
-</P>
-<P class=p2>
-We provide shampoo, conditioner, body wash, and lotion in all shower facilities.
-</P>
-<P class=p2>
-Our food service is strictly vegetarian &ndash; no meat, fish, fowl, or eggs.
-At each meal there are non-dairy and non-gluten options, and foods
-containing dairy and gluten are clearly marked.
-Please note that Saturday breakfast is at 10:00 a.m., but fruit, tea, and milks of various kinds are available 24/7.
-</P>
-<P class=p2>
-Please <STRONG>DO NOT</STRONG> bring the following onto the property:
-</P>
-<UL>
-<LI>food</LI>
-<LI>drugs</LI>
-<LI>alcohol</LI>
-<LI>pets</LI>
-</UL>
-<P class=p2>
-<SPAN class=scent>DO NOT</SPAN> wear scented body products.
-<p>
-[% IF program.single %]
-If you are a <span style="color: blue">snorer</span>,
-please request a single room or cabin.
-[% END %]
-If you are worried about someone in your room who might
-<span style="color: blue">snore</span>
-we suggest wearing earplugs (provided), or waking the snorer.
-We will make an attempt to change your lodging the next day if you
-find yourself in a room with a snorer, but cannot guarantee
-that it will be possible; no changes can be made in the
-middle of the night. 
-</P>
-<P class=p2>
-Due to extreme fire precautions <SPAN class=fire>DO NOT</SPAN> bring or use incense, candles,
-kerosene lamps, etc.
-</P>
-<P class=p2>
-$program.canpol.policy
-</P>
-<P class=p2>
-Here are maps of the 
-<a target=_blank href='https://www.mountmadonna.org/assets/img/registration/trails.jpg'>hiking trails</a>
-and the 
-<a target=_blank href='https://www.mountmadonna.org/assets/img/registration/downtown.jpg'>downtown area</a>
-of MMC.
-</P>
-<P class=p2>
-We look forward to seeing you here soon.
-</P>
-<P class=p2>
-<SPAN STYLE="margin-left: 3in; display: block">
-Sincerely,<BR>
-$user.first $user.last
-</SPAN>
-</P>
-<HR>
-<H2>Finances</H2>
-<H3>Charges</H3>
-<TABLE cellpadding=3>
-<TR>
-<TH align=right width=100>Amount</TH>
-<TH align=left>What</TH>
-</TR>
-[% tot = 0 %]
-[% FOR ch IN reg.charges %]
-<TR>
-<TD align=right valign=top>[% penny(ch.amount) %]</TD>
-<TD>$ch.what</TD>
-</TR>
-[% tot = tot + ch.amount %]
-[% END %]
-<TR><TD align=right><SPAN STYLE="border-top: solid thin">\$$tot</SPAN></TD><TD>Total</TD></TR>
-</TABLE>
-<P class=p2>
-[% IF ! mmi %]
-    <H3>Payments</H3>
-    <TABLE cellpadding=3>
-    <TR>
-    <TH align=right width=100>Amount</TH>
-    <TH align=left>What</TH>
-    </TR>
-    [% tot = 0 %]
-    [% FOR p IN reg.payments %]
-    <TR>
-    <TD align=right>[% penny(p.amount) %]</TD>
-    <TD>$p.what</TD>
-    </TR>
-    [% tot = tot + p.amount %]
-    [% END %]
-    <TR><TD align=right><SPAN STYLE="border-top: solid thin">\$$tot</SPAN></TD><TD>Total</TD></TR>
-    </TABLE>
-[% END %]
-<H3>Balance Due</H3>
-<TABLE>
-<TR><TD width=100 align=right>\$$reg.balance</TD></TR>
-</TABLE>
-<HR>
-<H2>Address and Contact Information</H2>
-
-<TABLE cellpadding=3>
-<TR><th align=right valign=top>Address</th><td>Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]<br>445 Summit Rd, Watsonville, CA 95076</td</tr>
-<TR><TH align=right width=200>[% IF mmi %]Phone[% ELSE %]Programs Office Phone[% END %]</TH><TD>[% IF mmi %]408-846-4060[% ELSE %]408-846-4090[% END %]</TD></TR>
-<tr><th align=right>After Hours Emergency Phone</th><td>408-475-0095</td></tr>
-[% IF mmi %]
-<TR><TH align=right>Email</TH><TD><A HREF="mailto:info@mountmadonnainstitute.org">info@mountmadonnainstitute.org</A></TD></TR>
-[% ELSE %]
-<TR><TH align=right>Email</TH><TD><A HREF="mailto:programs@mountmadonna.org">programs@mountmadonna.org</A></TD></TR>
-[% END %]
-<TR><TH align=right valign=top>Business Hours</TH><TD align=left>
-[% IF mmi %]
-Tuesday-Thursday 9:00-5:00<BR>Friday 9:30-5:30<BR>Saturday 11:00-5:00
-[% ELSE %]
-Monday-Thursday 9:00-5:00<BR>Friday 9:00-5:30<BR>Saturday 10:00-5:00
-[% END %]
-</TD></TR>
-<TR>
-    <TH align=right valign=top>Map/Directions</TH>
-    <TD align=left>Use only <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>, or directions <A HREF="#directions">below</A>. <br>Do <b>NOT</b> use GPS, Mapquest or Yahoo Maps.</TD>
-</TR>
-</TABLE>
-[% IF program.kayakalpa %]
-<P class=p2>
-For massage and other procedures at Kaya Kalpa Wellness Center see <A href=#kaya>below</A>.
-</P>
-[% END %]
-<HR>
-[% IF carpoolers %]
-    <H2>Carpool List</H2>
-This carpool list includes all the people who have requested carpool
-information as of today. You will be sent a more complete list 14 days
-prior to the beginning of the program, and again 7 days prior
-to the program.
-<p class=p2>
-    [% FOR cp IN carpoolers %]
-        [% p = cp.person %]
-        <SPAN class=name>$p.first $p.last</SPAN>[% IF cp.hascar %] - HAS CAR[% END %]
-        <DIV class=addr>
-        [% IF cp.from_where == 'Home' %]
+						<table width="280" class="hours column" align="right">
+							<tr>
+									<td colspan=2 style="text-align: center;"> <b>Programs Office: 408-846-4090</b></td>
+							 </tr>
+							 <tr>
+									<td>Monday</td>
+									<td class=rt>9:00 am - 5:00 pm</td>
+							 </tr>
+							 <tr>
+									<td>Tuesday</td>
+									<td class=rt>9:00 am - 5:00 pm</td>
+							 </tr>
+							 <tr>
+									<td>Wednesday</td>
+									<td class=rt>9:00 am - 3:00 pm</td>
+							 </tr>
+							 <tr>
+									<td>Thursday</td>
+									<td class=rt>9:00 am - 5:00 pm</td>
+							 </tr>
+							 <tr>
+									<td>Friday</td>
+									<td class=rt>10:30 am - 5:30 pm</td>
+							 </tr>
+							 <tr>
+									<td>Saturday</td>
+									<td class=rt>10:00 am - 5:00 pm</td>
+							 </tr>
+							 <tr>
+									<td>Sunday</td>
+									<td class=closed>Closed</td>
+							 </tr>
+						</table>
+            </td>
+         </tr>
+      </table>
+      
+      
+      
+      
+      <div class=indent>
+         Dear $person.first,
+      </div>
+      <div class=indent>
+         We look forward to your visit to Mount Madonna Center!
+      </div>
+      <div class=indent>
+         Here are your reservation details:
+      </div>
+      <p>
+      <table>
+         <tr>
+            <th class=rt2>Program</th>
+            <td class=lt2>&nbsp;$program.title_trimmed
+               [% IF personal_retreat %]$reg.dates[% ELSE %]$reg.att_prog_dates[% END %]
+            </td>
+         </tr>
+         <tr>
+            <th class=rt2>Accommodation</th>
+            <td class=lt2>&nbsp;$htdesc</td>
+         </tr>
+         <tr>
+            <th class=rt2>Deposit received</th>
+            <td class=lt2>&nbsp;\$$reg.deposit</td>
+         </tr>
+         <tr>
+            <th class=rt2>Balance remaining</th>
+            <td class=lt2>&nbsp;\$$reg.balance</td>
+         </tr>
+      </table>
+      <div class=indent> 
+         This email contains important information regarding the check-in process and payments, meals, packing suggestions, transportation and cancellations.  Please read on to prepare for your stay on our beautiful mountain! 
+      </div>
+      <p>
+      <h2>Arrivals</h2>
+      <p>
+         You may pick up your room key and guest packet and pay your remaining
+         balance at the Programs Office in the Community Building.   Check-in
+         is at ${program.reg_start_obj}.  If you arrive after business hours, stop by our
+         &ldquo;Late Notice Board&rdquo; in the entryway of the Community
+         Building to get your key and welcome packet.   Check-out is at $program.prog_end_obj  on the day of your departure.
+         [% IF ! personal_retreat %]
+      <p>
+         Your program begins at $program.prog_start_obj and meets in the ${program.main_meeting_place}.
+         [% END %]
+      <h2>Gate Code</h2>
+      <p>
+         [% gc = program.summary.gate_code %]
+         If you arrive in the evening and the gate is closed, you can open it
+         by entering this code in the keypad: #${gc}. That's POUND ${gc}.
+         Press the five keys firmly and without any pauses or it will not work.
+         [% IF reg.balance > 0 %]
+      <h2>Payments</h2>
+      <p>
+         You are welcome to pay your balance of \$$reg.balance before arrival to expedite the
+         check-in process, especially if you will be arriving after hours
+         or on a Sunday when our office is closed.<br>
+         [% IF pre_payment_link %]
+         You may pay in advance
+         with a credit card online at
+         <a target=_blank href='$pre_payment_link'>this link</a>.
+         [% END %]
+      <div class=invoice>
+         <table>
+            <tr>
+               <th align=left colspan=2>Charges</th>
+            </tr>
+            [% tot = 0 %]
+            [% FOR ch IN reg.charges %]
+            <tr>
+               <td align=right valign=top>[% penny(ch.amount) %]</td>
+               <td>$ch.what</td>
+            </tr>
+            [% tot = tot + ch.amount %]
+            [% END %]
+            <tr>
+               <td align=right><span style="border-top: solid thin">\$$tot</span></td>
+               <td>Total</td>
+            </tr>
+            <tr>
+               <th align=left colspan=2>Payments</th>
+            </tr>
+            [% tot = 0 %]
+            [% FOR p IN reg.payments %]
+            <tr>
+               <td align=right>[% penny(p.amount) %]</td>
+               <td>$p.what</td>
+            </TR>
+            [% tot = tot + p.amount %]
+            [% END %]
+            <tr>
+               <td align=right><span style="border-top: solid thin">\$$tot</span></td>
+               <td>Total</td>
+            </tr>
+            <tr>
+               <th align=left colspan=2>Balance Due</th>
+            </tr>
+            <tr>
+               <td align=right width=60>\$$reg.balance</td>
+            </tr>
+         </table>
+      </div>
+      [% END %]
+      <h2>Packing</h2>
+      <p>
+         A detailed packing list can be found on our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a>.
+      <p>
+         Note that we do not provide towels, so you will need to bring your own.  We also have towels available for purchase at our bookstore.
+      <p>
+         We ask that you leave the following at home: food, drugs, alcohol, pets, scented body products, and all fire hazards (candles, incense, kerosene lamps etc.) 
+      <p>
+         Here is the local <a target=_blank href='https://weather.com/weather/today/l/9425:19:US'>weather prediction</a> to help guide your packing decisions.
+      <h2>Meals</h2>
+      <p>
+         Our food service is strictly vegetarian - no meat, fish, fowl, or eggs. Please do not bring any outside food.  With advanced notice, we do our best to accommodate dietary restrictions.  If you have serious allergies, contact your retreat coordinator and/or the Programs Office to discuss available options.  
+      <p>
+         More information on meals, including a sample menu, can be found <a target=_blank href='https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center'>here</a>.
+      <h2>Getting Here</h2>
+      <p>
+         Maps, directions, and shuttle listings are available at our <a target=_blank href='https://www.mountmadonna.org/transportation-directions'>Transportations & Directions</a> page. We do not recommend relying on GPS as it sometimes will direct you to roads that are undeveloped and/or impassable.  You may want to print out directions from the link above, as cell service can be unreliable as you travel up the mountain. 
+      <h2>Cancellations</h2>
+      [% IF cancel_policy %]
+      $cancel_policy
+      [% ELSE %]
+      <p>
+         If you need to cancel or change your reservation, please refer to our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>cancellation policy</a> and contact our registrar at 
+         [% rem = registrar_email %]
+         <a href='mailto:$rem'>$rem</a>.
+         [% END %]
+      <h2>Maps</h2>
+      <p>
+         Maps of the <a target=_bank href='https://www.mountmadonna.org/assets/img/Main_Area_Map_MMC.pdf'>Mount Madonna property</a> and <a target=_blank href='https://www.mountmadonna.org/assets/img/Trail_Map_MMC.pdf'>hiking trails</a> may help orient you to the center.
+      <h2>Still have questions?</h2>
+      <p>
+         Our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> has answers to many questions not answered here.
+         If you have a question about your stay that is still not answered, please call the Programs Office at (408) 846-4090. 
+      <div class=indent>
+         We look forward to seeing you here soon! 
+      </div>
+      <div class=indent>
+         Sincerely,<br>
+         $user.first $user.last<br>
+         and the Programs Office team
+         [% IF    reg.confnote_not_empty
+         || program.confnote_not_empty
+         || reg.early || reg.late
+         || (personal_retreat && sunday)
+         %]
+         <h2 class=after>Notes</h2>
+         <p>
+            [% IF reg.confnote_not_empty %]
+            $reg.confnote
+         <p>
+            [% END %]
+            [% IF reg.early || reg.late %]
+            You [% IF reg.early %]arrive on ${reg.date_start_obj.format("%A, %B %e")}[% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on ${reg.date_end_obj.format("%A, %B %e")}[% END %].
+         <p>
+            [% END %]
+            [% IF program.confnote_not_empty %]
+            $program.confnote
+            [% END %]
+            [% IF personal_retreat && sunday %]
+         <p>
+            <b>Please note that the Programs Office is not open on Sunday.</b><br>
+            Your room will be available for check-in at 4:00 pm.
+            Upon arrival, please go to the Community Building lobby, where you will
+            find an arrival package containing all you need to find your way to
+            your lodging, a meal and yoga class schedule, and maps of the Center.
+            If other concerns arise on Sunday, you can find a contact phone number
+            on the door of the Programs Office. Someone will answer your call
+            and give you the help you need.
+            [% END %]
+            [% END %]    <!-- if Note -->
+            [% IF carpoolers %]
+         <h2 class=after>Carpool List</h2>
+         <p>
+            This carpool list includes all the people who have requested carpool
+            information as of today. You will be sent a more complete list 14 days
+            prior to the beginning of the program, and again 7 days prior
+            to the program.
+         </p>
+         [% FOR cp IN carpoolers %]
+         [% p = cp.person %]
+         <span class=name>$p.first $p.last</span>
+         [% IF cp.hascar %] - HAS CAR[% END %]
+         <div class=addr>
+            [% IF cp.from_where == 'Home' %]
             $p.city, $p.st_prov $p.zip_post<br>
             [% IF p.country %]$p.country[% END %]
-        [% ELSE %]
+            [% ELSE %]
             From the $cp.from_where_verbose airport.<br>
-        [% END %]
-        </div>
-        <div class=contact>
-        $p.carpool_telephone
-        [% IF p.email %]<A HREF="mailto:$p.email?subject=Carpooling to '$cp.program.title' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">$p.email</A>[% END %]
-        </DIV>
-    [% END %]
-    <HR>
-[% END %]
-<H2><A NAME="directions"></A>Directions</H2>
-<P class=p2>
-Do not use any GPS system or any directions from Mapquest, or Yahoo  Maps or
-any other outside source.
-Use <B>only</B> the directions below, or see the <A HREF="http://www.mountmadonna.org/directions/bycar.html">maps on our website</A>.</P>
-<P class=p2>
-On the west coast of Central California approximately 2 hours driving 
-time south of San Francisco (more if traffic is heavy), Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]
-overlooks Monterey Bay from the Santa Cruz mountains between Santa Cruz and
-Watsonville, 3.5 miles off Highway 152.
-</P>
-<P class=p2>
-<SPAN class=name>From Highway 1, THE COAST:</SPAN><BR>
-Take Hwy 1 to Watsonville, then take the Airport Blvd exit.  Go
-approximately 3 miles on Airport Blvd, then left onto Hwy 152 East.
-At the top of the mountain turn left just after Mount Madonna Inn,
-into Mt Madonna County Park (Pole Line Rd).   Follow the yellow line
-through the park and continue straight through the 4-way stop onto
-Summit Rd. The [% IF mmi %]Institute[% ELSE %]Center[% END %] is 1.5 miles further on the left (445 Summit Rd).
-</P>
-<P class=p2>
-<SPAN class=name>From Highway 101, INLAND:</SPAN><BR>
-Take Hwy 152 West at Gilroy.  Go approximately 10 miles through Gilroy 
-and up the mountain.  At the top of the mountain, turn right into Mt Madonna
-County Park (Pole Line Rd).  If you come to Mount Madonna Inn on your right,
-you've just missed your turn.  Follow the yellow line through the park and
-continue straight through the 4-way stop onto Summit Rd. The [% IF mmi %]Institute[% ELSE %]Center[% END %] is 1.5 
-miles further on the left (445 Summit Rd).
-</P>
-<CENTER>
-<IMG height=400 SRC="http://www.mountmadonna.org/assets/img/registration/circlemap.gif">
-</CENTER>
-<P class=p2>
-For information about other forms of transportation to the [% IF mmi %]institute[% ELSE %]center[% END %] click <A href='http://www.mountmadonna.org/transportation-directions'>here</A>.</P>
-<A name=kaya></A>
-
-<HR>
-[% IF program.kayakalpa %]
-<H2>Kaya Kalpa Wellness Center<BR>
-<SPAN CLASS="subhead">massage, ayurvedic therapy, bodywork</SPAN></H2>
-<P>Kaya Kalpa means rejuvenation of body and spirit and our professionally
-    trained practitioners are dedicated to your well-being. We offer a variety
-    of Ayurveda therapies, traditional massage and other body therapies to
-    enhance your stay at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]. Nestled among majestic oak
-    and redwood trees, on 355 acres overlooking Monterey Bay, Kaya Kalpa
-Wellness Center offers an oasis for relaxation, health and nurturing.</P>
-<P>&nbsp;</P>
-<P>For more information see our website: <A HREF="http://www.mountmadonna.org/kayakalpa">www.MountMadonna.org/kayakalpa</A></P>
-</TD></TR></TABLE></DIV></CENTER>
-[% END %]
-</BODY>
-</HTML>
+            [% END %]
+         </div>
+         <div class=contact>
+            $p.carpool_telephone
+            [% IF p.email %]<a href="mailto:$p.email?subject=Carpooling to '$cp.program.title' at Mount Madonna [% IF mmi %]Institute[% ELSE %]Center[% END %]">$p.email</A>[% END %]
+         </div>
+         [% END %] <!-- FOR loop -->
+         [% END %] <!-- carpoolers bool -->
+      </div>
+      </div>
+   </body>
+</html>

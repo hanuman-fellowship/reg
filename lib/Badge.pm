@@ -40,7 +40,18 @@ sub initialize {
 sub add_group {
     my ($class, $program, $code, $data_aref) = @_;
     for my $d_href (@$data_aref) {
-        if (length($d_href->{name}) > 20) {
+        # mess with the name
+        my $name = $d_href->{name};
+        if (index($name, ' ') != -1) {
+            my ($first, $last) = $name =~ m{\A (\S+) \s+ (.*) \z}xms;
+            $d_href->{first} = $first;
+            $d_href->{last} = $last;
+        }
+        else {
+            $d_href->{first} = $name;
+            $d_href->{last} = '';
+        }
+        if (length($d_href->{first}) > 12) {
             $d_href->{name_class} = 'long_name';
         }
     }
@@ -77,8 +88,8 @@ sub get_title_code {
     if (empty($title)) {
         $title = $event->title();
     }
-    $title =~ s{\A (Special \s+ Guest) .*}{$1}xms;
-    $title =~ s{\A (Personal \s+ Retreat) .*}{$1}xms;
+    $title =~ s{\A .* (Special \s+ Guest) .*}{$1}xms;
+    $title =~ s{\A .* (Personal \s+ Retreat) .*}{$1}xms;
     my $code = $event->summary->gate_code();
     my $name = $event->name;
     my $mess;
@@ -109,18 +120,18 @@ sub get_badge_data_from_program {
         },
         {
             join     => [qw/ person /],
-            order_by => [qw/ person.first person.last /],
             prefetch => [qw/ person /],   
         }
     );
     my @data;
     for my $r (@regs) {
         push @data, {
-            name  => $r->person->name(),
+            name  => $r->person->badge_name(),
             dates => $r->dates(),
             room  => $r->house_name(),
         };
     }
+    @data = sort { $a->{name} cmp $b->{name} } @data;
     return ($mess, $title, $code, \@data);
 }
 
@@ -188,6 +199,13 @@ sub get_badge_data_from_rental {
                            }xmsi, $name;
         for my $n (@names) {
             $n =~ s{ \b child \s* \z}{}xmsi;
+            if ($n =~ m{ [(] (.*) [)] }xms) {
+                # a parenthesized name is the nickname
+                # they want to be called by - perhaps
+                # an adopted Sanskrit name or a shortened name
+                # they prefer over their formal legal name.
+                $n = $1;
+            }
             push @data, {
                 name  => normalize($n),
                 dates => $dates,

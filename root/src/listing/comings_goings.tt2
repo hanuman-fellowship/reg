@@ -10,8 +10,6 @@ p {
 <a href=/listing/comings_goings/[% prev_date %] accesskey='b'><span class=keyed>B</span>ack</a>
 &nbsp;&nbsp;&nbsp;
 <a href=/listing/comings_goings/[% next_date %] accesskey='n'><span class=keyed>N</span>ext</a>
-&nbsp;&nbsp;&nbsp;
-<a target=_blank href='/listing/coming_badges/$date.as_d8'>Badges</a>
 <h2>Coming</h2>
 <ul>
 <table cellpadding=2 border=0>

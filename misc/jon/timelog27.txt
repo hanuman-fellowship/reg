@@ -337,7 +337,7 @@ Jun 7 9:00-11:15
         maybe one thing weird - M/F Couple in a *Triple*
             it IS offered to the NonBinary - not yet ...
         all MMI registrations are initially manual - right?
-June 8 1:30-2:20, 3:00-
+June 8 1:30-2:20, 3:00-4:30, 6:10-7:25, 10:30-10:45
     trying regops instructions
         vagrant => /usr/local/bin/vagrant
         packer => ~/bin
@@ -347,3 +347,68 @@ June 8 1:30-2:20, 3:00-
     resuming on new conf letter with payment link
         generated at email conf time
         and outline of charges/payments
+        done - need a real test
+            as could not do ftp from my box - whyyyyy?
+    downloading ubuntu iso
+    ran through John's instructions
+    it works. :)
+
+    no gate code for Liberation?  how did the
+        existing Registrations get conf letters?
+    TODO - save transaction id in requested payment received???
+Jun 12 12:00-4:00
+    consulting with:
+    ariana, alexandra, vishwamitra, barnaby
+    shantam, jamal, bhavani, susan, jayanti,
+    (suvas chand)
+Jun 14 11:00-11:30
+    talked with Barnaby about his transition and a new idea
+        4 fields in sum to track various meetings
+            in sequence (vertical)
+            1 - greet leader (current 'staff arrival')
+                move to above orientation field place
+            2 - orientation
+            3 - finance (no where now)
+            4 - wind up (eliminated at some point?)
+                after gathering emails from rental this
+                *could* be eliminated - after this is done
+                    we can send everyone a letter saying
+                    'how did it go?'
+        rearrange things at top of summary with these fields somewhere
+
+        retitle the orientation/windup listing
+            and have 4 columns of these events
+Jun 15 1:30-4:10
+    starting development on the new VM.
+        no write permission?  for user vagrant?
+    asking John several questions via email
+    did several badge tasks
+Jun 16 3:15-6:00
+    listing > badge
+    trouble with mountmadonna.org and git commits
+        Shantam gave me commit privileges on craft-mmc and craft-mmi
+        why didn't I have this all along?   did I not want it
+        or did he not want me to have it?
+Jun 17 2:00-2:30, 3:30-5:30
+    cloned craft-mmc
+    after pushing to repo
+    you also push master to mmc:/var/repo/mount-madonna-center.git
+
+    and craft-mmi, I presume one pushes to,
+    mmi:/var/repo/mount-madonna-institute.git
+
+    figured out the missing pay full amount
+        what about going back in the browser?
+        ask Jamal/Shantam.
+Jun 18 3:30-5:25, 5:40-6:30
+    sorting out the changes for alternate name, pay in full,
+        and one telephone number
+    will commit the badge changes as well.
+    test!
+    TODO: mmi similar changes
+    TODO: mailing list on both sites - one telephone #, alternate name
+    test!
+    TODO: Helpful Hints on grid - (alternate) and email addresses
+    TODO: new conf letter - from Jamal
+Jun 22 1:45-2:00, 2:40-4:00
+    leader inactive, list, inactive list

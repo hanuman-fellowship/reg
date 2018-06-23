@@ -8,8 +8,9 @@
 <td>
 <center>
 <img src=/static/images/MMC.png class=image>
-<div class='name [% data.$i.name_class %]'>[% data.$i.name %]</div>
-<div class=program>$program</div>
+<div class='name first ${data.$i.name_class}'>${data.$i.first}</div>
+<div class='name last'>${data.$i.last}</div>
+<div class=program>[% IF data.$i.program %]${data.$i.program}[% ELSE %]$program[% END %]</div>
 <div class=dates>[% data.$i.dates %]</div>
 </center>
 </td>
@@ -37,7 +38,7 @@
 Emergency Contact
 </div>
 <div class=emergency_txt>
-1-866-662-1275
+408-475-0095
 </div>
 <div class=room_lab>
 Room #:
@@ -49,7 +50,7 @@ Room #:
 Main Gate Code:
 </div>
 <div class=main_txt>
-#$code
+#[% IF data.$i.code %]${data.$i.code}[% ELSE %]$code[% END %]
 </div>
 <div class=oaks_lab>
 Oaks Gate Code:

@@ -5,42 +5,49 @@ p {
 }
 </style>
 <h2>Leaders</h2>
-<h3>[% leader.person.first %] [% IF ! leader.just_first %][% leader.person.last %][% END %]</h3>
+<h3>$leader.person.first [% IF ! leader.just_first %]$leader.person.last[% END %]</h3>
 <p>
 [% IF Catalyst.check_user_roles('prog_admin') %]
-<a href="/leader/update/[% leader.id %]" accesskey='e'><span class=keyed>E</span>dit</a>
+<a href="/leader/update/$leader.id" accesskey='e'><span class=keyed>E</span>dit</a>
 &nbsp;&nbsp;&nbsp;
-<a href="/leader/delete/[% leader.id %]"
- onclick="return confirm('Okay to Delete [% leader.person.first %] [% leader.person.last %] as leader?');">Delete</a>
+<a href="/leader/delete/$leader.id"
+ onclick="return confirm('Okay to Delete $leader.person.first $leader.person.last as leader?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-<a href="/person/view/[% leader.person.id %]" accesskey='p'><span class=keyed>P</span>erson Info</a>
+<a href="/person/view/$leader.person.id" accesskey='p'><span class=keyed>P</span>erson Info</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/leader/list" accesskey='l'><span class=keyed>L</span>ist</a>
 <p class=p2>
 <table cellpadding=5 border=0>
 
 <tr>
 <th align=right width=130>Public Email</th>
-<td><a href="mailto:[% leader.public_email %]">[% leader.public_email %]</a></td>
+<td><a href="mailto:$leader.public_email">$leader.public_email</a></td>
 </tr>
 
 <tr>
 <th align=right>Web Address</th>
-<td><a href="http://[% leader.url %]">[% leader.url %]</a></td>
+<td><a href="http://$leader.url">$leader.url</a></td>
 </tr>
 
 <tr>
 <th align=right valign=top>Biography</th>
-<td>[% leader.biography %]</td>
+<td>$leader.biography</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Assistant</th>
-<td>[% leader.assistant %]</td>
+<td>$leader.assistant</td>
 </tr>
 
 <tr>
 <th align=right valign=top>Just First</th>
-<td>[% leader.just_first %]</td>
+<td>$leader.just_first</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Inactive</th>
+<td>$leader.inactive</td>
 </tr>
 
 <tr>
@@ -48,7 +55,7 @@ p {
 <td>
 [% IF leader.image %]
 <img src="[% Catalyst.uri_for('/static/images/lth-') _ leader.id _ '.jpg' %]"><br>
-<a href="[% Catalyst.uri_for('/leader/del_image/') _ leader.id %]" onclick="return confirm('Okay to Delete image for [% leader.person.first %] [% leader.person.last %]?');" >Delete Image</a>
+<a href="[% Catalyst.uri_for('/leader/del_image/') _ leader.id %]" onclick="return confirm('Okay to Delete image for $leader.person.first $leader.person.last?');" >Delete Image</a>
 [% ELSE %]
 &nbsp;
 [% END %]
@@ -57,7 +64,7 @@ p {
 
 <tr>
 <th align=right>Order</th>
-<td>[% leader.l_order %]</a></td>
+<td>$leader.l_order</a></td>
 </tr>
 
 <tr>
@@ -66,8 +73,8 @@ p {
 <table cellpadding=2>
 [% FOR p IN leader.programs %]
 <tr>
-<td><a href="/program/view/[% p.id %]">[% p.name %]</a></td>
-<td>[% p.sdate_obj %]</td>
+<td><a href="/program/view/$p.id">$p.name</a></td>
+<td>$p.sdate_obj</td>
 </tr>
 [% END %]
 </td>
