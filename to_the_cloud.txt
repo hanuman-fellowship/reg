@@ -24,5 +24,6 @@ move mmc.jasongaluten.com to mountmadonna.org
 move mmi.jasongaluten.com to mountmadonnainstitute.org
     in ftp_mmi_site string
 
+
 we'll leave the requested payment templates alone
     the link will be wrong but in testing we can adjust it...
