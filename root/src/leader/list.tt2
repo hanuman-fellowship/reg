@@ -2,7 +2,7 @@
     <h2>Inactive Leaders</h2>
     <a href="/leader/list">Active</a>
 [% ELSE %]
-    <h2>Leaders</h2>
+    <h2>Active Leaders</h2>
     <a href="/leader/list/1">Inactive</a>
 [% END %]
 <ul>
