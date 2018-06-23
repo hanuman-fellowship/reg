@@ -2,5 +2,6 @@ Jun 22 4:30-5:00
     checking out Jamal's version of the
         new confirmation letter
     putting it in place
-Jun 23 9:00-10:00
+Jun 23 9:00-11:00
     following John's advice and getting vm set up for development
+    tweaking lots of things
