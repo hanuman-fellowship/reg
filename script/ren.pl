@@ -1,4 +1,4 @@
-#!/usr/local/bin/perl
+#!/usr/bin/env perl
 
 # first do this:
 # alter table program add column req_pay default '' not null;
