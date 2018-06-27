@@ -12,7 +12,7 @@ requires 'JSON';
 requires 'Mail::Sender';
 requires 'MooseX::NonMoose';
 requires 'Task::Catalyst::Tutorial';
-requires 'Template';
+requires 'Template', '2.27';
 requires 'Spreadsheet::ParseExcel';
 requires 'Spreadsheet::WriteExcel';
 requires 'YAML';
