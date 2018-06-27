@@ -5,6 +5,7 @@ requires 'DBD::mysql';
 requires 'DBIx::Class';
 requires 'DBIx::Class::Schema::Loader';
 requires 'Email::Sender';
+requires 'FCGI';
 requires 'FCGI::ProcManager';
 requires 'GD';
 requires 'Image::Size';
