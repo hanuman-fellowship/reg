@@ -1987,7 +1987,7 @@ sub send_conf : Local {
            subject => "Confirmation of Registration for "
                       . $reg->person->name
                       . " in "
-                      . $pr_title(),
+                      . $pr_title,
            html    => $html, 
     )) {
         error($c,
