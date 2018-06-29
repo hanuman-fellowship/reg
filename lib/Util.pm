@@ -1960,7 +1960,8 @@ sub add_or_update_deduping {
     # check that all required are present ...
     my @missing;
     for my $k (@needed) {
-        if (! exists $href->{$k}) {
+        # fix this sanskrit thing later???
+        if ($k ne 'sanskrit' && ! exists $href->{$k}) {
             push @missing, $k;        
         }
     }
