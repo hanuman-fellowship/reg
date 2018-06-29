@@ -4,3 +4,8 @@ Jun 22 4:30-5:00
     putting it in place
 Jun 23 9:00-10:00
     following John's advice and getting vm set up for development
+Jun 26 7:00-
+    continuing on db_init
+    could not create a database in mysql on Reg-VM - why?
+        so I loaded sqlite3. and DBD::SQLite
+    creating the skeleton of all lib/DB modules with a perl script

@@ -1,0 +1,21 @@
+#!/usr/local/bin/perl
+use strict;
+use warnings;
+use lib 'lib';
+
+use DBH;
+DBH->init();
+
+my @classes;
+for my $t (<lib/DB/*.pm>) {
+    require $t or die "no require of $t";
+    my $class = $t;
+    $class =~ s{lib/DB/(\w+)[.]pm}{DB::$1}xms;
+    push @classes, $class;
+}
+@classes = sort { $a->order() <=> $b->order() } @classes;
+for my $cl (@classes) {
+    print "$cl\n";
+#    $cl->create();
+#    $cl->init();
+}
