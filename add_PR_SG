@@ -1,0 +1,10 @@
+#!/bin/sh
+if [ `whoami` = 'sahadev' ]
+then
+    cd /home/sahadev/Reg
+    export DBI_DSN="dbi:mysql:reg2"
+else
+    cd /Users/jonbjornstad/Reg
+    export DBI_DSN="dbi:SQLite:retreatcenter.db"
+fi
+script/add_PR_SG $* >>output/add_PR_SG 2>&1  &

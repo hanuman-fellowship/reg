@@ -4,6 +4,10 @@ Jun 22 4:30-5:00
     putting it in place
 Jun 23 9:00-10:00
     following John's advice and getting vm set up for development
+<<<<<<< Updated upstream
+=======
+    tweaking lots of things
+>>>>>>> Stashed changes
 Jun 27 7:00-9:00
     continuing on db_init
     could not create a database in mysql on Reg-VM - why?
@@ -14,3 +18,14 @@ Jun 29 12:00-12:45
         mucked up title for many Special Guest programs on Web tab
         should I add the PR and Special Guest programs
             in a cron job?
+Jul 1 5:55-9:45
+    PR and SG - tidy up current, add monthly to add_config cron job
+    note: you must develop on cloudkali
+        then cherry pick to master?
+    to start server on cloudkali:
+        ./script/retreatcenter_server.pl &
+        then http://0.0.0.0:3033/login
+    when can cloudkali be running the VM?
+        and nginx?
+Jun 2 4:20-
+    resuming on add_PR_SG

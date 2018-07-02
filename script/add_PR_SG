@@ -1,0 +1,133 @@
+#!/usr/local/bin/perl
+use strict;
+use warnings;
+
+use lib "lib";
+use RetreatCenterDB;
+use Util qw/
+    model
+    db_init
+    email_letter
+/;
+my $c = db_init();
+use Global qw/
+    %string
+/;
+Global->init($c, 1, 1);
+
+use Date::Simple qw/
+    today
+    date
+    days_in_month
+    ymd
+/;
+my @month_name = qw/
+    January February March
+    April   May      June
+    July    August   September
+    October November December
+/;
+
+my @affils = model($c, 'Affil')->search({
+    descrip => { -like => '%Personal%Retreat%' },
+});
+if (! @affils) {
+    die "no affiliation for PRs\n";
+}
+my $PR_affil_id = $affils[0]->id();
+my $today_d8 = today()->as_d8();
+my ($sahadev) = model($c, 'User')->search({
+    username => 'sahadev',
+});
+if (! $sahadev) {
+    die "could not find user named sahadev\n";
+}
+
+if (@ARGV == 2) {
+    my ($cmd_date, $type) = @ARGV;
+    my $sdate = date($cmd_date);
+    if (! $sdate) {
+        die "illegal date: $cmd_date\n";
+    }
+    if ($type ne 'PR' && $type ne 'SG') {
+        die "Type must be PR or SG.\n";
+    }
+    my $ltype = $type eq 'PR'? 'Personal Retreats'
+               :               'Special Guests'
+               ;
+    # ensure the date is on the first of the month
+    while ($sdate->day() != 1) {
+        --$sdate;
+    }
+    my @progs = model($c, 'Program')->search({
+                    sdate => $sdate->as_d8(),
+                    name => { -like => "%$ltype%" },
+                });
+    if (@progs) {
+        die "There is already a program starting on $sdate of type '$ltype'.\n";
+    }
+    add_program($sdate, $ltype);
+}
+else {
+    # add a PR _and_ an SG to the end
+    add_program(undef, 'Personal Retreats');
+    add_program(undef, 'Special Guests');
+}
+
+sub add_program {
+    my ($sdate, $ltype) = @_;
+
+    my $ltype2 = $ltype; chop $ltype2; # no plural
+    my ($last_one) = model($c, 'Program')->search(
+                         {
+                             name => { -like => "%$ltype2%" },
+                         },
+                         {
+                            order_by => 'sdate desc',
+                            rows     => 1,
+                         }
+                     );
+    if (! $last_one) {
+        die "no existing $ltype program??!\n";
+    }
+    my $old_sum = model($c, 'Summary')->find($last_one->summary_id());
+    my $new_sum = model($c, 'Summary')->create({
+        # from the old sum:
+        $old_sum->get_columns(),
+        # and override these:
+        id => undef,
+        gate_code => '',
+    });
+    if (! $sdate) {
+        my $last_sdate = date($last_one->sdate());
+        my $m = $last_sdate->month() + 1;
+        my $y = $last_sdate->year();
+        if ($m > 12) {
+            $m = 1;
+            ++$y;
+        }
+        print "$m and $y\n";
+        $sdate = ymd($y, $m, 1);
+    }
+    my $m = $sdate->month();
+    my $y = $sdate->year();
+    my $edate = $sdate + days_in_month($sdate) - 1,
+    my $mmyy = "$month_name[$m-1] $y $m/" . $y % 100;
+    my $new_prog = model($c, 'Program')->create({
+        # from the previous program:
+        $last_one->get_columns(),
+        # and override these:
+        id    => undef,
+        sdate => $sdate->as_d8(),
+        edate => $edate->as_d8(),
+        name  => "$ltype $mmyy",
+        title => $ltype2,
+        summary_id => $new_sum->id(),
+        program_created => $today_d8,
+        created_by => $sahadev->id(),
+    });
+    model($c, 'AffilProgram')->create({
+        a_id => $PR_affil_id,
+        p_id => $new_prog->id(),
+    });
+}
