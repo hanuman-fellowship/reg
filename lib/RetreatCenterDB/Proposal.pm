@@ -34,7 +34,6 @@ __PACKAGE__->add_columns(qw/
     program_meeting_date
     denied
     provisos
-
     first
     last
     addr1
@@ -47,7 +46,6 @@ __PACKAGE__->add_columns(qw/
     tel_work
     tel_cell
     email
-
     cs_first
     cs_last
     cs_addr1
@@ -60,7 +58,6 @@ __PACKAGE__->add_columns(qw/
     cs_tel_work
     cs_tel_cell
     cs_email
-
     deposit
     misc_notes
     rental_id

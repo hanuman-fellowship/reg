@@ -1,0 +1,56 @@
+#!/usr/local/bin/perl
+# DBI_DSN=dbi:SQLite:reg3.db perl -I. script/db_init
+MOD:
+for my $m (<lib/RetreatCenterDB/*.pm>) {
+    my $p = $m;
+    $p =~ s{lib.RetreatCenterDB/(\w+).pm}{$1}xms;
+    open my $in, '<', $m;
+    my $src;
+    {
+        local $/;
+        $src = <$in>;
+    }
+    close $in;
+    my ($table) = $src =~ m{table[(]'(\w+)}xms;
+    next MOD if $table eq 'string';
+    my ($columns) = $src =~ m{add_columns[(]qw/\n([^/]*)/}xms;
+    chomp $columns;
+    my @columns = $columns =~ m{(\w+)}xmsg;
+    my $comma_columns = join ', ', @columns;
+    my $question_marks = '?, ' x @columns;
+    chop $question_marks;
+    chop $question_marks;
+#    print "$p, $table, $columns\n";
+#    print "$comma_columns\n$question_marks\n";
+    open my $out, '>', "lib/DB/$p.pm";
+    print {$out} <<"EOM";
+use strict;
+use warnings;
+package DB::$p;
+use DBH '\$dbh';
+
+sub order { 1 }
+
+sub create {
+    \$dbh->do(<<'EOS');
+DROP TABLE IF EXISTS $table;
+EOS
+    \$dbh->do(<<'EOS');
+CREATE TABLE $table (
+$columns
+)
+EOS
+}
+
+sub init {
+    my \$sth = \$dbh->prepare(<<'EOS');
+INSERT INTO $table
+($comma_columns) 
+VALUES
+($question_marks)
+EOS
+}
+
+1;
+EOM
+}

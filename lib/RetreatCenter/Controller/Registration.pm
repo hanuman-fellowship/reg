@@ -1977,6 +1977,9 @@ sub send_conf : Local {
         $title = "MOUNT MADONNA INSTITUTE Program Office";
         $from  = 'MMIreservations@mountmadonnainstitute.org';
     }
+    my $pr_title = $pr->title();
+    $pr_title =~ s{\A .* (Special \s+ Guest) .*}{$1}xms;
+    $pr_title =~ s{\A .* (Personal \s+ Retreat) .*}{$1}xms;
     if (!email_letter($c,
            to      => $reg->person->name_email(),
            from    => $title . " <" . $user->email() . ">",
@@ -1984,7 +1987,7 @@ sub send_conf : Local {
            subject => "Confirmation of Registration for "
                       . $reg->person->name
                       . " in "
-                      . $pr->title(),
+                      . $pr_title,
            html    => $html, 
     )) {
         error($c,

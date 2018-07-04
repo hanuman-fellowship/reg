@@ -12,6 +12,10 @@ __PACKAGE__->add_columns(qw/
     a_id
     p_id
 /);
+__PACKAGE__->set_primary_key(qw/
+    a_id
+    p_id
+/);
 #
 # Set relationships:
 #
