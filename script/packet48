@@ -1,0 +1,120 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib "lib";
+use RetreatCenterDB;
+use Util qw/
+    model
+    db_init
+/;
+my $c = db_init();
+use Global qw/
+    %string
+/;
+use Template;
+Global->init($c, 1, 1);
+
+use Date::Simple qw/
+    today
+/;
+
+my $in_two_days_d8 = (today() + 2)->as_d8();
+my @regs = model($c, 'Registration')->search({
+               date_start => $in_two_days_d8,
+               cancelled  => { '!=' => 'yes' },
+           });
+if (! @regs) {
+    exit;
+}
+my @auth = ();
+if ($string{smtp_auth}) {
+@auth = (
+    auth    => $string{smtp_auth},
+    authid  => $string{smtp_user},
+    authpwd => $string{smtp_pass},
+);
+}
+my $sender = Mail::Sender->new({
+    smtp => $string{smtp_server},
+    port => $string{smtp_port},
+    @auth,
+    on_errors => 'die',
+});
+REG:
+for my $r (@regs) {
+    my $person = $r->person();
+    my $email = $person->email();
+    if (! $email) {
+        next REG;
+    }
+    my $program = $r->program();
+    my $mmi = $program->school->mmi();
+    my $gate_code = $program->summary->gate_code();
+    my $balance = $r->balance();
+    my $prepay_link = '';
+    if ($balance > 0) {
+        my @req_payments = $r->req_payments();
+        if (@req_payments) {
+            my $code = $req_payments[0]->code();
+            $prepay_link = "https://www.mountmadonna"
+                         . ($mmi? 'institute': '')
+                         . ".org/cgi-bin/req_pay?code=$code"
+                         ;
+        }
+    }
+    my $stash_href = {
+        today       => today()->format("%B %e, %Y"),
+        balance     => $balance,
+        first       => $person->first(),
+        gate_code   => $gate_code,
+        prepay_link => $prepay_link,
+    };
+    my $html;
+    my $tt = Template->new({
+        INTERPOLATE  => 1,
+        INCLUDE_PATH => "root/static/templates/letter",
+        EVAL_PERL    => 0,
+    });
+    $tt->process(
+        'guest_packet.tt2',
+        $stash_href,
+        \$html,
+    ) or die "error in processing template: " . $tt->error;
+    # can't use email_letter in Util
+    sleep 1;        # so we aren't blacklisted as spammers?
+    $sender->OpenMultipart({
+        from    => "$string{from_title} <$string{from}>",
+        to      => $email,
+        subject => "Guest Packet for your visit to MMC",
+    });
+    $sender->Body({
+        ctype => 'text/html',
+        msg   => $html,
+    });
+    my $dir = 'root/static/templates/letter';
+    $sender->Attach({
+        description => 'MMC Guest Packet Information',
+        ctype       => 'application/pdf',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . 'filename="MMC_Guest_Packet.pdf";'
+                     . 'type="pdf"',
+        file        => "$dir/MMC_Guest_Packet.pdf",
+    });
+    my $rc = $sender->Close;
+    open my $mlog, ">>", "mail.log";
+    print {$mlog} localtime()
+                . $person->name()
+                . " $email -"
+                . " Guest Packet "
+                . ' - '
+                ;
+    if (ref $rc) {
+        print {$mlog} "sent\n";
+    }
+    else {
+        print {$mlog} "error - $Mail::Sender::Error\n";
+    }
+    close $mlog;
+}

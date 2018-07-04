@@ -1869,7 +1869,7 @@ sub send_conf : Local {
     my $pre_pay_link = '#';     # so that the preview will have
                                 # the pre-payment section
     my $need_pre_pay_link = $conf_template =~ m{pre_payment_link}xms;
-    if (! $preview && $need_pre_pay_link && $amount != 0) {
+    if (! $preview && $need_pre_pay_link && $amount > 0) {
         for my $rp ($reg->req_payments()) {
             $rp->delete();
         }

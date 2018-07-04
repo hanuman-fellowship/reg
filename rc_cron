@@ -69,6 +69,9 @@ REG=/home/sahadev/Reg
 # at 1:00 am every Tuesday morning send Sukhdev a letter about gate codes.
 0 1 * * 2 test -f $REG/INACTIVE || $REG/gate >>$REG/output/gate.out 2>&1
 
+# at 1:05 am every morning send guest packets to people arriving in 48 hours.
+#5 1 * * * test -f $REG/INACTIVE || $REG/packet48 >>$REG/output/packet48.out 2>&1
+
 # at 2:00 am every morning send json files to reservations machine
 0 2 * * * test -f $REG/INACTIVE || $REG/reserve_today >>$REG/output/reserve_today.out 2>&1
 
