@@ -3,7 +3,7 @@ use warnings;
 package DB::Booking;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,15 +11,15 @@ DROP TABLE IF EXISTS booking;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE booking (
-    id
-    meet_id
-    rental_id
-    program_id
-    event_id
-    sdate
-    edate
-    breakout
-    dorm
+id integer primary key autoincrement,
+meet_id integer,
+rental_id integer,
+program_id integer,
+event_id integer,
+sdate text,
+edate text,
+breakout text,
+dorm text
 )
 EOS
 }

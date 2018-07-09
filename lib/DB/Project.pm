@@ -3,7 +3,7 @@ use warnings;
 package DB::Project;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,9 +11,9 @@ DROP TABLE IF EXISTS project;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE project (
-    id
-    descr
-    glnum
+id integer primary key autoincrement,
+descr text,
+glnum text
 )
 EOS
 }

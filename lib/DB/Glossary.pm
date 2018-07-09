@@ -3,7 +3,7 @@ use warnings;
 package DB::Glossary;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS glossary;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE glossary (
-    term
-    definition
+term text,
+definition text
 )
 EOS
 }

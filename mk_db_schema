@@ -16,6 +16,26 @@ for my $m (<lib/RetreatCenterDB/*.pm>) {
     my ($columns) = $src =~ m{add_columns[(]qw/\n([^/]*)/}xms;
     chomp $columns;
     my @columns = $columns =~ m{(\w+)}xmsg;
+    my $create_columns = '';
+    my $got_id = 0;
+    for my $c (@columns) {
+        if ($c eq 'id') {
+            $got_id = 1;
+            $create_columns .= "$c integer primary key autoincrement,\n";
+        }
+        elsif ($c =~ m{_id \z}xms) {
+            $create_columns .= "$c integer,\n";
+        }
+        else {
+            $create_columns .= "$c text,\n";
+        }
+    }
+    #if ($got_id) {
+    #    $create_columns .= "primary key (id)";
+    #}
+    #else {
+        $create_columns =~ s{,\n \z}{}xms;
+    #}
     my $comma_columns = join ', ', @columns;
     my $question_marks = '?, ' x @columns;
     chop $question_marks;
@@ -29,7 +49,7 @@ use warnings;
 package DB::$p;
 use DBH '\$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     \$dbh->do(<<'EOS');
@@ -37,7 +57,7 @@ DROP TABLE IF EXISTS $table;
 EOS
     \$dbh->do(<<'EOS');
 CREATE TABLE $table (
-$columns
+$create_columns
 )
 EOS
 }

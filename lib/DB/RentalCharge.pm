@@ -3,7 +3,7 @@ use warnings;
 package DB::RentalCharge;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,13 +11,13 @@ DROP TABLE IF EXISTS rental_charge;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE rental_charge (
-    id
-    rental_id
-    amount
-    what
-    user_id
-    the_date
-    time
+id integer primary key autoincrement,
+rental_id integer,
+amount text,
+what text,
+user_id integer,
+the_date text,
+time text
 )
 EOS
 }

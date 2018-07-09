@@ -3,6 +3,10 @@ use strict;
 use warnings;
 use lib 'lib';
 
+use Date::Simple qw/
+    today
+/;
+
 use DBH;
 DBH->init();
 
@@ -14,8 +18,15 @@ for my $t (<lib/DB/*.pm>) {
     push @classes, $class;
 }
 @classes = sort { $a->order() <=> $b->order() } @classes;
+my $today = today();
+CLASS:
 for my $cl (@classes) {
-    print "$cl\n";
-#    $cl->create();
-#    $cl->init();
+    my $order = $cl->order();
+    if ($order == 0) {
+        next CLASS;
+    }
+    print "$order: $cl";
+    $cl->create();
+    $cl->init($today);
+    print "\n";
 }

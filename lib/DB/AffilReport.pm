@@ -3,7 +3,7 @@ use warnings;
 package DB::AffilReport;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS affil_reports;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE affil_reports (
-    affiliation_id
-    report_id
+affiliation_id integer,
+report_id integer
 )
 EOS
 }

@@ -3,7 +3,7 @@ use warnings;
 package DB::ProgramCluster;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,9 +11,9 @@ DROP TABLE IF EXISTS program_cluster;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE program_cluster (
-    program_id
-    cluster_id
-    seq
+program_id integer,
+cluster_id integer,
+seq text
 )
 EOS
 }

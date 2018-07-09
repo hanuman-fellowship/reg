@@ -3,7 +3,7 @@ use warnings;
 package DB::AffilProgram;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS affil_program;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE affil_program (
-    a_id
-    p_id
+a_id integer,
+p_id integer
 )
 EOS
 }

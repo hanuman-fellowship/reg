@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS category;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE category (
-    id
-    name
+id integer primary key autoincrement,
+name char(20)
 )
 EOS
 }
@@ -20,10 +20,21 @@ EOS
 sub init {
     my $sth = $dbh->prepare(<<'EOS');
 INSERT INTO category
-(id, name) 
+(name) 
 VALUES
-(?, ?)
+(?)
 EOS
+    while (my $line = <DATA>) {
+        chomp $line;
+        my (@fields) = split /\|/, $line, -1;
+        $sth->execute(@fields);
+    }
 }
 
 1;
+
+__DATA__
+Normal
+Resident
+Intern
+Temporary
