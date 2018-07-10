@@ -25,7 +25,7 @@ cell varchar(15),
 txt_msg_email varchar(30),
 hide_mmi char(3),
 locked char(3),
-expiry_date  char(8),
+expiry_date char(8),
 nfails tinyint,
 last_login_date char(8) 
 )
