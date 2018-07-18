@@ -33,6 +33,22 @@ EOS
 }
 
 sub init {
+    my ($class, $today, $email) = @_;
+    my $roles_sth = $dbh->prepare(<<'EOS');
+SELECT id, role
+  FROM role
+EOS
+    $roles_sth->execute();
+    my %id_for;
+    while (my ($id, $role) = $roles_sth->fetchrow_array()) {
+        $id_for{$role} = $id;
+    }
+    my $add_role_sth = $dbh->prepare(<<'EOS');
+INSERT INTO user_role
+(user_id, role_id)
+VALUES
+(?, ?);
+EOS
     my $sth = $dbh->prepare(<<'EOS');
 INSERT INTO user
 (username, password, email, first, last, bg, fg, link, office, cell, txt_msg_email, hide_mmi, locked, expiry_date, nfails, last_login_date) 
@@ -42,20 +58,68 @@ EOS
     while (my $line = <DATA>) {
         chomp $line;
         my (@fields) = split /\|/, $line, -1;
+        my $user = $fields[0];
+        # password (hashed)
+        $fields[1] = ($user eq 'calendar')?
+            'd05ab7aff9d8000ae1075ee1f4c8f93fe7428c2c977f24a7bcf63d6bbb89a91c'
+                    # z2A2
+           :'15794f8f66f752e17431c19561406a7373189242c05a9648e8da2c44aa23e922';
+                    # helloA!1
+        $fields[2] = $email;     # email
+
+        # bg, fg, link - a somewhat obsolete feature
+        $fields[5] = '255, 255, 255';
+        $fields[6] = '  0,   0,   0';
+        $fields[7] = '  0,   0, 255';
+
+        $fields[-4] = '';                  # locked
+        $fields[-3] = '21991231';          # expiry_date
+        $fields[-2] = 0;                   # nfails
+        $fields[-1] = ($today-1)->as_d8(); # last_login_date
         $sth->execute(@fields);
+        my $user_id = $dbh->last_insert_id(undef, undef, undef, undef);
+        my @roles;
+        if ($user eq 'sahadev') {
+            # assign ALL roles
+            @roles = keys %id_for;
+        }
+        elsif ($user eq 'jayanti') {
+            # registrar
+            @roles = qw/
+                prog_admin prog_staff
+                mail_admin mail_staff
+                mmi_admin
+                user_admin
+                event_scheduler
+                time_traveler
+            /;
+        }
+        elsif ($user eq 'susan') {
+            # reception
+            @roles = qw/
+                mail_admin mail_staff
+                field_staff
+                member_admin
+            /;
+        }
+        elsif ($user eq 'fieldstaff') {
+            # field staff
+            @roles = qw/
+                field_staff
+                prog_staff
+            /;
+        }
+        for my $role (@roles) {
+            $add_role_sth->execute($user_id, $id_for{$role});
+        }
     }
 }
 
 1;
 
 __DATA__
-sahadev|15794f8f66f752e17431c19561406a7373189242c05a9648e8da2c44aa23e922|jon@suecenter.org|Jon|Bjornstad|||||||||20180814|0|20180708
-brajesh|e451adc585d28056cb377beaf54e843c03b0f7485031f5a86b8e72a22d202a06|jon@suecenter.org|Brajesh|Friedberg|||||||||20180714|0|20180515
-jamal|2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824|jon.bjornstad@gmail.com|Jamal|Killou||||123|456-090-9991||||20180210|0|20180218
-jayanti|2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824|jayanti@mountmadonna.org|Jayanti|Peterson|||||||||20180210|0|20180101
-lori|2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824|lori_march@hotmail.com|Lori|March|||||||||20180210|0|20180101
-sukhdev|e451adc585d28056cb377beaf54e843c03b0f7485031f5a86b8e72a22d202a06|sukhdev@mountmadonna.org|Sukhdev|Pettingill|||||||||20180408|0|20180218
-barnaby|2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824|barnaby@mountmadonna.org|Barnaby|Stamm|||||||||20180201|0|20180207
-savita|2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824|savita@mountmadonna.org|Savita|Brownfield|||||||||20180131|0|20180218
-sunanda|2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824|sunanda@mountmadonna.org|Sunanda|Pacey|||||||||20180201|0|20180207
-calendar|2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824|jon@logicalpoetry.com|cal_first|cal_last|||||||||20180210|0|20180101
+sahadev|1234|jon@suecenter.org|Jon|Bjornstad|||||||||20180814|0|20180708
+jayanti|1234|jon@suecenter.org|Jayanti|Peterson|||||||||20180814|0|20180708
+susan|1234|jon@suecenter.org|Susan|Robeck|||||||||20180814|0|20180708
+fieldstaff|1234|jon@suecenter.org|Field|Staff|||||||||20180814|0|20180708
+calendar|1234|jon@logicalpoetry.com|cal_first|cal_last|||||||||20180210|0|20180101

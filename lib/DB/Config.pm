@@ -25,9 +25,19 @@ EOS
 sub init {
     my ($class, $today) = @_;
 
+    #
+    # we'll add config records a week back
+    # and 6 months into the future.
+    #
+    my $start = $today - 7;
+    my $end = $today + 6*31;
+    while ($end->day != 1) {
+        ++$end;
+    }
+    --$end;
     my @dates;
-    for my $i (-7 .. 60) {
-        push @dates, ($today + $i)->as_d8();
+    for (my $d = $start; $d <= $end; ++$d) {
+        push @dates, $d->as_d8();
     }
     my $sth = $dbh->prepare(<<'EOS');
 INSERT INTO config
@@ -45,6 +55,12 @@ EOS
             $sth->execute($h_id, $dt, 'U', $max, 0, 0, 0);
         }
     }
+    my $str_sth = $dbh->prepare(<<"EOS");
+UPDATE string
+   SET value = '$dates[-1]'
+ WHERE the_key = 'sys_last_config_date'
+EOS
+    $str_sth->execute();
 }
 
 1;
