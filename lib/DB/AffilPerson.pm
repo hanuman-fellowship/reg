@@ -11,19 +11,14 @@ DROP TABLE IF EXISTS affil_people;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE affil_people (
-    a_id
-    p_id
+a_id integer,
+p_id integer
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
-INSERT INTO affil_people
-(a_id, p_id) 
-VALUES
-(?, ?)
-EOS
+    return;     # see Person
 }
 
 1;

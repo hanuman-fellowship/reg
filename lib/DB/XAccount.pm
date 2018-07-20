@@ -3,7 +3,7 @@ use warnings;
 package DB::XAccount;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,10 +11,10 @@ DROP TABLE IF EXISTS xaccount;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE xaccount (
-    id
-    descr
-    glnum
-    sponsor
+id integer primary key autoincrement,
+descr text,
+glnum text,
+sponsor text
 )
 EOS
 }

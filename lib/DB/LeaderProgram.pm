@@ -3,7 +3,7 @@ use warnings;
 package DB::LeaderProgram;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,8 +11,8 @@ DROP TABLE IF EXISTS leader_program;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE leader_program (
-    l_id
-    p_id
+l_id integer,
+p_id integer
 )
 EOS
 }

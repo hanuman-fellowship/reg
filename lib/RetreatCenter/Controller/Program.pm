@@ -113,7 +113,7 @@ sub create : Local {
         check_retreat       => '',
         check_sbath         => 'checked',
         check_single        => 'checked',
-        check_req_pay       => '',
+        check_req_pay       => 'checked',
         check_collect_total => '',
         check_economy       => '',
         check_commuting     => 'checked',

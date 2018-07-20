@@ -3,19 +3,36 @@ use strict;
 use warnings;
 use lib 'lib';
 
+use Date::Simple qw/
+    today
+/;
+
 use DBH;
 DBH->init();
+
+my $email = shift or die "usage: db_init email";
 
 my @classes;
 for my $t (<lib/DB/*.pm>) {
     require $t or die "no require of $t";
     my $class = $t;
-    $class =~ s{lib/DB/(\w+)[.]pm}{DB::$1}xms;
+    $class =~ s{\A lib/DB/(\w+)[.]pm \z}{DB::$1}xms;
     push @classes, $class;
 }
-@classes = sort { $a->order() <=> $b->order() } @classes;
+@classes = sort {
+               $a->order() <=> $b->order() ||
+               $a cmp $b
+           }
+           @classes;
+my $today = today();
+CLASS:
 for my $cl (@classes) {
-    print "$cl\n";
-#    $cl->create();
-#    $cl->init();
+    my $order = $cl->order();
+    if ($order == 0) {
+        next CLASS;
+    }
+    print "$order: $cl";
+    $cl->create();
+    $cl->init($today, $email);
+    print "\n";
 }

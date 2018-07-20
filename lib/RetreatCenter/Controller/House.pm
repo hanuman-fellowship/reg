@@ -26,7 +26,7 @@ sub list : Local {
 
     $resident = $resident? 'yes'
                 :          q{};
-    my ($tcb) = model($c, 'House')->search({ name => 'TCB 25' });
+    my ($tcb) = model($c, 'House')->search({ name => 'TCB 10' });
     stash($c,
         resident => $resident,
         rooms => [ model($c, 'House')->search(

@@ -3,7 +3,7 @@ use warnings;
 package DB::ResidentNote;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,11 +11,11 @@ DROP TABLE IF EXISTS resident_note;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE resident_note (
-    id
-    resident_id
-    the_date
-    the_time
-    note
+id integer primary key autoincrement,
+resident_id integer,
+the_date text,
+the_time text,
+note text
 )
 EOS
 }

@@ -183,7 +183,7 @@ sub update_do : Local {
         %hash,
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
-        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_updated => get_time()->t24(),
     });
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
@@ -226,7 +226,7 @@ sub update_section_do : Local {
         $section     => $section_data,
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
-        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_updated => get_time()->t24(),
     });
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
@@ -268,7 +268,7 @@ sub update_top_do : Local {
         %hash,
         date_updated => tt_today($c)->as_d8(),
         who_updated  => $c->user->obj->id,
-        time_updated => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_updated => get_time()->t24(),
     });
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }

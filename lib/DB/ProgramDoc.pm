@@ -3,7 +3,7 @@ use warnings;
 package DB::ProgramDoc;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,10 +11,10 @@ DROP TABLE IF EXISTS program_doc;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE program_doc (
-    id
-    program_id
-    title
-    suffix
+id integer primary key autoincrement,
+program_id integer,
+title text,
+suffix text
 )
 EOS
 }

@@ -633,10 +633,9 @@ sub update_do : Local {
     }
 
     my $msg = _view_person($p);
-    my $pronoun = (defined $p->sex() and $p->sex() eq "M")? "his": "her";
     my $verb = "was";
     if ($p->partner) {
-        $msg .= " and $pronoun partner "
+        $msg .= " and their partner "
               . _view_person($p->partner);
         $verb = "were"
     }

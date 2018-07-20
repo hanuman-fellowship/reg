@@ -3,7 +3,7 @@ use warnings;
 package DB::CheckOut;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,9 +11,9 @@ DROP TABLE IF EXISTS check_out;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE check_out (
-    book_id
-    person_id
-    due_date
+book_id integer,
+person_id integer,
+due_date text
 )
 EOS
 }

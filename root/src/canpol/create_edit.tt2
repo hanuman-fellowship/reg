@@ -1,21 +1,19 @@
-<script type="text/javascript" src="/static/js/tiny_mce/tiny_mce.js"></script>
-<script type="text/javascript" src="/static/js/tiny_mce_config.js"></script>
 <h2>Cancellation Policies</h2>
-<form action=[% '/canpol/' _ form_action %] name=form>
+<form action='/canpol/$form_action' name=form>
 <table cellpadding=3 border=0>
 
 <tr>
 <th align=right><span class=red>*</span> Name</th>
 [% IF canpol.name == 'Default' %]
-<td>[% canpol.name %]<input type=hidden name=name value="[% canpol.name %]"></td>
+<td>$canpol.name<input type=hidden name=name value="$canpol.name"></td>
 [% ELSE %]
-<td><input type=text name=name value="[% canpol.name %]"></td>
+<td><input type=text name=name value="$canpol.name"></td>
 [% END %]
 </tr>
 
 <tr>
 <th align=right valign=top><span class=red>*</span> Policy</th>
-<td><textarea cols=60 rows=5 name=policy>[% canpol.policy %]</textarea></td>
+<td><textarea cols=60 rows=5 name=policy>$canpol.policy</textarea></td>
 </tr>
 
 <tr>

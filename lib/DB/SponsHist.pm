@@ -3,7 +3,7 @@ use warnings;
 package DB::SponsHist;
 use DBH '$dbh';
 
-sub order { 1 }
+sub order { 0 }
 
 sub create {
     $dbh->do(<<'EOS');
@@ -11,18 +11,18 @@ DROP TABLE IF EXISTS spons_hist;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE spons_hist (
-    id
-    member_id
-    date_payment
-    valid_from
-    valid_to
-    amount
-    general
-    user_id
-    the_date
-    time
-    type
-    transaction_id
+id integer primary key autoincrement,
+member_id integer,
+date_payment text,
+valid_from text,
+valid_to text,
+amount text,
+general text,
+user_id integer,
+the_date text,
+time text,
+type text,
+transaction_id integer
 )
 EOS
 }
