@@ -83,6 +83,14 @@ INSERT INTO program
 VALUES
 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 EOS
+    while (my $line = <DATA>) {
+        chomp $line;
+        my (@fields) = split /\|/, $line, -1;
+        $sth->execute(@fields);
+    }
 }
 
 1;
+
+__DATA__
+10|MMC Template|template|||1||20151001|20151003|0|<p><br mce_bogus="1"></p>||<p><br mce_bogus="1"></p>|||yes|1|0|0|100||||default|default|yes|yes||yes||1600|1900|1900|1300|0||1|1|0||999|0||<p><br mce_bogus="1"></p>|||||1|||yes|||mmc|||||0|
