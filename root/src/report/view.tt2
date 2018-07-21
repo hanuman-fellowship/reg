@@ -73,6 +73,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <td colspan=2><input type=checkbox name=exclude_only_temple value=yes [% IF exclude_only_temple %]checked[% END %]> Exclude Only Temple</td>
 </tr>
 
+<!--
 [% IF optin %]
 <tr>
 <th align=right>Opt In</th>
@@ -81,6 +82,7 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <td><input type=radio name=report_type value=none [% IF none_report %]checked[% END %]>Ignore</td>
 </tr>
 [% END %]
+-->
 
 [% IF code && ! expiry %]
     <tr>
