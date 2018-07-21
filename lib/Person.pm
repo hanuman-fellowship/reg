@@ -90,6 +90,7 @@ sub raw_pipe {
         snail_mailings
         e_mailings
         share_mailings
+        secure_code
     /) {
         $s .= ($self->$f() || '') . '|';
     }
