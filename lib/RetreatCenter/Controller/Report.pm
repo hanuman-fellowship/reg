@@ -48,8 +48,8 @@ my @format_desc = (
     'Raw',
     'To CMS - Those sans Email',
     'Last, First, Email',
-    'Email, Code',
-    'To CMS - Address, Code',
+    'Email, Code for DDUP',
+    'To CMS - Address, Code for DDUP',
     'CSV',
 );
 
@@ -113,7 +113,7 @@ sub delete : Local {
 
 
 sub view : Local {
-    my ($self, $c, $id, $opt_inout) = @_;
+    my ($self, $c, $id) = @_;
 
     my $today = today();
     my $expiry;
@@ -122,14 +122,6 @@ sub view : Local {
         close $in;
     }
     my $report = model($c, 'Report')->find($id);
-    if (defined $opt_inout) {
-        $c->stash->{mmc_report} = $opt_inout eq 'mmc';
-        $c->stash->{mmi_report} = $opt_inout eq 'mmi';
-        $c->stash->{none_report} = $opt_inout eq 'none';
-    }
-    else {
-        $c->stash->{mmc_report} = 1;
-    }
     my $fmt = $report->format();
     stash($c,
         expiry => ($fmt == ADDR_CODE || $fmt == EMAIL_CODE)
@@ -320,7 +312,6 @@ sub run : Local {
     my $no_foreign = $c->request->params->{no_foreign};
     my $exclude_only_temple = $c->request->params->{exclude_only_temple};
     my $incl_mmc = $c->request->params->{incl_mmc};
-    my $opt_inout = $c->request->params->{report_type} || "";
     my $append    = $c->request->params->{append} || "";
     my $expiry    = $c->request->params->{expiry} || "";
     my $today = tt_today($c);
@@ -627,7 +618,7 @@ EOS
             append   => $append,
             expiry_date => $expiry? date($expiry)->format("%D"): '',
         );
-        view($self, $c, $id, $opt_inout);
+        view($self, $c, $id);
         return;
     }
     #
