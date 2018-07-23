@@ -532,7 +532,7 @@ sub email_do : Local {
     $summary->update({
         date_sent => tt_today($c)->as_d8(),
         who_sent  => $c->user->obj->id,
-        time_sent => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_sent => get_time()->t24(),
     });
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }
@@ -544,7 +544,7 @@ sub touch_sent : Local {
     $summary->update({
         date_sent => tt_today($c)->as_d8(),
         who_sent  => $c->user->obj->id,
-        time_sent => sprintf "%02d:%02d", (localtime())[2, 1],
+        time_sent => get_time()->t24(),
     });
     $c->response->redirect($c->uri_for("/summary/view/$type/$sum_id"));
 }

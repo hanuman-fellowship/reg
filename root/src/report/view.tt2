@@ -1,4 +1,4 @@
-[% code = (format_verbose=='Email, Code'||format_verbose=='Address, Code') %]
+[% code = (format_verbose=='Email, Code'||format_verbose=='To CMS - Address, Code') %]
 <h2>Reports</h2>
 <a href="/report/update/$report.id">Edit</a>
 &nbsp;&nbsp;&nbsp;
@@ -72,15 +72,6 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <td><input type=checkbox name=no_foreign value=yes [% IF no_foreign %]checked[% END %]> No Foreign</td>
 <td colspan=2><input type=checkbox name=exclude_only_temple value=yes [% IF exclude_only_temple %]checked[% END %]> Exclude Only Temple</td>
 </tr>
-
-[% IF optin %]
-<tr>
-<th align=right>Opt In</th>
-<td><input type=radio name=report_type value=mmc [% IF mmc_report %]checked[% END %]>MMC</td>
-<td><input type=radio name=report_type value=mmi [% IF mmi_report %]checked[% END %]>MMI</td>
-<td><input type=radio name=report_type value=none [% IF none_report %]checked[% END %]>Ignore</td>
-</tr>
-[% END %]
 
 [% IF code && ! expiry %]
     <tr>
