@@ -2707,9 +2707,7 @@ EOS
             edate => $r->edate_obj->format($fmt),
         };
         if ($r->image()) {
-            my $id = $r->id();
-            my ($fname) = <root/static/images/r-$id.*>;
-            copy $fname, 'gen_files/pics'
+            copy $r->image_file(), 'gen_files/pics'
               or die "no copy: $!\n";
         }
     }
