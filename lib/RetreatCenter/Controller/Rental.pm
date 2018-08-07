@@ -300,7 +300,9 @@ sub create_do : Local {
     my $id = $r->id();
 
     if ($upload) {
-        my $picfile = "root/static/images/ro-$id.jpg";
+        my $fname = $upload->filename();
+        my ($suffix) = $fname =~ m{[.](.*)\z}xms;
+        my $picfile = "root/static/images/ro-$id.$suffix";
         $upload->copy_to($picfile);
         Global->init($c);
         resize('r', $id);
