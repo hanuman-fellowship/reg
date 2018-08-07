@@ -573,7 +573,7 @@ Payments
 <th align=right valign=top>Rental Image</th>
 <td colspan=2>
 [% IF rental.image %]
-<a href=/rental/view_pic/$id><img src=$rental.image_file border=0></a>
+<a href=/rental/view_pic/$id><img src=${rental.image_file('th')} border=0></a>
  <a href=/rental/del_image/$id
 onclick="return confirm('Okay to Delete image for \'$rental.name\'?');"><img src=/static/images/redX.gif height=20 border=0></a>
 [% ELSE %]
