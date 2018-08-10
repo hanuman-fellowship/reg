@@ -1024,6 +1024,7 @@ sub bulk_do : Local {
     }
     if ($c->request->params->{sponsor}) {
         push @memtypes, 'Sponsor';
+        push @memtypes, 'Contributing Sponsor';
         $sponsor = 1;
     }
     if ($c->request->params->{life}) {
