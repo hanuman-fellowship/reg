@@ -1,0 +1,2 @@
+#!/bin/sh
+DBI_DSN=dbi:mysql:reg3 script/retreatcenter_server.pl

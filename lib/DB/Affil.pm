@@ -11,7 +11,7 @@ DROP TABLE IF EXISTS affils;
 EOS
     $dbh->do(<<'EOS');
 CREATE TABLE affils (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 descrip varchar(255),
 system char(3),
 selectable char(3)
