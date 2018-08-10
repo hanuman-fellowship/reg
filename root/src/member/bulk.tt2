@@ -10,6 +10,11 @@
 <input type=checkbox name=sponsor value='yes' [% sponsor_checked %]> Sponsor
 <input type=checkbox name=life value='yes' [% life_checked %]> Life
 </td>
+
+</tr>
+<th>Include Lapsed</th>
+<td><input type=checkbox name=include_lapsed value='yes' [% include_lapsed_checked %]></td>
+<tr>
 </tr>
 
 <tr>

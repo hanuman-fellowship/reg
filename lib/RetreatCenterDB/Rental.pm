@@ -504,9 +504,13 @@ sub send_rental_deposit {
 }
 
 sub image_file {
-    my ($self) = @_;
-    my $path = "/static/images/rth-" . $self->id;
-    (-f "root/$path.jpg")? "$path.jpg": "$path.gif";
+    my ($self, $type) = @_;
+    $type ||= '';
+    my $path = "/static/images/r$type-" . $self->id;
+    (-f "root/$path.jpg")? "$path.jpg"
+   :(-f "root/$path.png")? "$path.png"
+   :                       "$path.gif"
+   ;
 }
 
 # ??? system("grab wait") if $invoice;

@@ -489,6 +489,12 @@ sub resize {
     my $rst = "root/static/images";
     if ($type eq 'r') {
         # resize and crop centrally to 640x368
+        # convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage
+        #     in.png out.png 
+        #
+        # for square images:
+        # convert in.jpg -resize 640x368 -background none \
+        #         -gravity center -extent 640x368 out.jpg
         system(
             "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
           . " $rst/ro-$id.jpg $rst/r-$id.jpg"
