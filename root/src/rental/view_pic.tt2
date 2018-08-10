@@ -1,5 +1,5 @@
 <p class=p2>
 Rental <a href=/rental/view/$rental.id/4>$rental.name</a>
 <p class=p2>
-<img src='/static/images/$rental.image_file'>
+<img src='$rental.image_file'>
 <p class=p2>

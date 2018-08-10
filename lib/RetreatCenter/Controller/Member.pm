@@ -999,6 +999,7 @@ sub bulk : Local {
         general_checked => "checked",
         sponsor_checked => "checked",
         life_checked    => "checked",
+        include_lapsed_checked => 'checked',
         include_checked => "",
         exclude_checked => "checked",
         only_checked    => "",
@@ -1032,20 +1033,25 @@ sub bulk_do : Local {
     my $count = $c->request->params->{count};
     my $mmc = $c->request->params->{mmc};
     my $email = $c->request->params->{type} eq 'email';
+    my $include_lapsed = $c->request->params->{include_lapsed};
     open my $list, ">", "root/static/memlist.txt"
         or die "cannot create memlist.txt: $!\n";
     my @people;
     my $n = 0;
+    MEMBER:
     for my $m (model($c, 'Member')->search({
                    category => { 'in', \@memtypes },
                })
     ) {
+        if (! $include_lapsed && $m->lapsed) {
+            next MEMBER;
+        }
         my $p = $m->person;
         if ($p->akey eq '44595076SUM') {
-            next if $mmc eq 'exclude';
+            next MEMBER if $mmc eq 'exclude';
         }
         else {
-            next if $mmc eq 'only';
+            next  MEMBER if $mmc eq 'only';
         }
         if ($email) {
             my $em = $p->email;
@@ -1116,6 +1122,7 @@ sub bulk_do : Local {
             sponsor_checked => ($sponsor)? "checked": "",
             life_checked    => ($life   )? "checked": "",
             include_checked => ($mmc eq 'include')? "checked": "",
+            include_lapsed_checked => ($include_lapsed)? 'checked': '',
             exclude_checked => ($mmc eq 'exclude')? "checked": "",
             only_checked    => ($mmc eq 'only'   )? "checked": "",
             email_checked   => ($email  )? "checked": "",
