@@ -2708,7 +2708,7 @@ EOS
         };
         if ($r->image()) {
             copy $r->image_file(), 'gen_files/pics'
-              or die "no copy: $!\n";
+              or die "no copy of " . $r->image_file() . ": $!\n";
         }
     }
     _json_put(\@export_rentals, 'rentals.json');
