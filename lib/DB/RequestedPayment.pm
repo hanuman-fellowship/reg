@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::RequestedPayment;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS req_payment;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE req_payment (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 org text,
 person_id integer,
 amount text,
@@ -25,7 +25,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO req_payment
 (id, org, person_id, amount, for_what, the_date, reg_id, note, code) 
 VALUES

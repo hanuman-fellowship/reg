@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::ConfNote;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS confnote;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE confnote (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 abbr text,
 expansion text
 )
@@ -19,7 +19,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO confnote
 (id, abbr, expansion) 
 VALUES

@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::Level;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS level;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE level (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 name varchar(15),
 long_term char(3),
 public char(3),
@@ -23,7 +23,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO level
 (name, long_term, public, school_id, name_regex, glnum_suffix) 
 VALUES

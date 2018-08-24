@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::Organization;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS organization;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE organization (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 name varchar(20),
 on_prog_cal char(3),
 color char(15)
@@ -20,7 +20,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO organization
 (name, on_prog_cal, color) 
 VALUES

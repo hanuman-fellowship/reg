@@ -1,31 +1,31 @@
 use strict;
 use warnings;
 package DB::MeetingPlace;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS meeting_place;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE meeting_place (
-id integer primary key autoincrement,
-abbr varchar(10),
-name varchar(20),
-max tinyint,
+id integer primary key auto_increment,
+abbr varchar(10) default '',
+name varchar(20) default '',
+max smallint default 0,
 disp_ord tinyint,
-sleep_too char(3),
-color char(15)
+sleep_too char(3) default '',
+color char(15) default ''
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO meeting_place
-(abbr, name, max, disp_ord, sleep_too, color) 
+(abbr, name, max, disp_ord, color, sleep_too) 
 VALUES
 (?, ?, ?, ?, ?, ?)
 EOS

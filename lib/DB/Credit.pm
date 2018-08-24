@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::Credit;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS credit;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE credit (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 person_id integer,
 reg_id integer,
 date_given text,
@@ -24,7 +24,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO credit
 (id, person_id, reg_id, date_given, amount, date_expires, date_used, used_reg_id) 
 VALUES

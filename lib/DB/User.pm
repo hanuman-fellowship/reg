@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::User;
-use DBH '$dbh';
+use DBH;
 
 sub order { 2 }     # needs Role
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS user;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE user (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 username varchar(15),
 password varchar(255),
 email varchar(100),
@@ -34,7 +34,7 @@ EOS
 
 sub init {
     my ($class, $today, $email) = @_;
-    my $roles_sth = $dbh->prepare(<<'EOS');
+    my $roles_sth = $dbh->prepare(<<"EOS");
 SELECT id, role
   FROM role
 EOS
@@ -43,13 +43,13 @@ EOS
     while (my ($id, $role) = $roles_sth->fetchrow_array()) {
         $id_for{$role} = $id;
     }
-    my $add_role_sth = $dbh->prepare(<<'EOS');
+    my $add_role_sth = $dbh->prepare(<<"EOS");
 INSERT INTO user_role
 (user_id, role_id)
 VALUES
 (?, ?);
 EOS
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO user
 (username, password, email, first, last, bg, fg, link, office, cell, txt_msg_email, hide_mmi, locked, expiry_date, nfails, last_login_date) 
 VALUES

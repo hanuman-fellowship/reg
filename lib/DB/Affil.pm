@@ -1,26 +1,26 @@
 use strict;
 use warnings;
 package DB::Affil;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS affils;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE affils (
-id integer primary key auto_increment,
-descrip varchar(255),
-system char(3),
-selectable char(3)
+id $pk,
+descrip varchar(255) $sdn,
+system char(3) $sdn,
+selectable char(3) $sdn
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO affils
 (descrip, system, selectable) 
 VALUES

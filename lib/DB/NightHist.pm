@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::NightHist;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS night_hist;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE night_hist (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 member_id integer,
 reg_id integer,
 num_nights text,
@@ -24,7 +24,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO night_hist
 (id, member_id, reg_id, num_nights, action, user_id, the_date, time) 
 VALUES

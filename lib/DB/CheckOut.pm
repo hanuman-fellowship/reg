@@ -1,25 +1,25 @@
 use strict;
 use warnings;
 package DB::CheckOut;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS check_out;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE check_out (
-book_id integer,
-person_id integer,
-due_date text
+book_id integer $idn,
+person_id integer $idn,
+due_date char(8) $sdn
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO check_out
 (book_id, person_id, due_date) 
 VALUES

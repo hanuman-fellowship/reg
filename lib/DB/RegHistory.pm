@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::RegHistory;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS reg_history;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE reg_history (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 reg_id integer,
 the_date text,
 time text,
@@ -22,7 +22,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO reg_history
 (id, reg_id, the_date, time, user_id, what) 
 VALUES

@@ -1,15 +1,15 @@
 use strict;
 use warnings;
 package DB::String;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS string;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE string (
     the_key VARCHAR(30),
     value   VARCHAR(200)
@@ -18,7 +18,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO string
 (the_key, value) 
 VALUES

@@ -1,30 +1,24 @@
 use strict;
 use warnings;
 package DB::Session;
-use DBH '$dbh';
+use DBH;
 
-sub order { 0 }
+sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS sessions;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE sessions (
-    id
-    session_data
-    expires
+    id char(72) primary key not null,
+    session_data text null,
+    expires integer(11) null
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
-INSERT INTO sessions
-(id, session_data, expires) 
-VALUES
-(?, ?, ?)
-EOS
 }
 
 1;

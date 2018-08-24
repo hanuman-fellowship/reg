@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::MMIPayment;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS mmi_payment;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE mmi_payment (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 person_id integer,
 amount text,
 glnum text,
@@ -25,7 +25,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO mmi_payment
 (id, person_id, amount, glnum, the_date, type, deleted, reg_id, note) 
 VALUES

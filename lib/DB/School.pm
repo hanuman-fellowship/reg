@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::School;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS school;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE school (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 name varchar(50),
 mmi char(3)
 )
@@ -19,7 +19,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO school
 (name, mmi) 
 VALUES

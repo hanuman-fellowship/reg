@@ -1,39 +1,39 @@
 use strict;
 use warnings;
 package DB::HouseCost;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS housecost;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE housecost (
-id integer primary key autoincrement,
-name varchar(255),
-single_bath tinyint,
-single tinyint,
-dble_bath tinyint,
-dble tinyint,
-triple tinyint,
-dormitory tinyint,
-economy tinyint,
-center_tent tinyint,
-own_tent tinyint,
-own_van tinyint,
-commuting tinyint,
-type char(7),
-inactive char(3)
+id integer primary key auto_increment,
+name varchar(255) default '',
+single_bath smallint default 0,
+single smallint default 0,
+dble_bath smallint default 0,
+dble smallint default 0,
+triple smallint default 0,
+dormitory smallint default 0,
+economy smallint default 0,
+center_tent smallint default 0,
+own_tent smallint default 0,
+own_van smallint default 0,
+commuting smallint default 0,
+type char(7) default 'Per Day',
+inactive char(3) default ''
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO housecost
-(name, single_bath, single, dbl_bath, dble, triple, dormitory, economy, center_tent, own_tent, own_van, commuting, type, inactive) 
+(name, single_bath, single, dble_bath, dble, triple, dormitory, economy, center_tent, own_tent, own_van, commuting, type, inactive) 
 VALUES
 (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 EOS

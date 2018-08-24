@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::Role;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS role;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE role (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 role varchar(20),
 fullname varchar(30),
 descr varchar(1000)
@@ -20,7 +20,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO role
 (role, fullname, descr) 
 VALUES

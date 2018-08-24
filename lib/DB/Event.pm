@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::Event;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS event;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE event (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 name text,
 descr text,
 sdate text,
@@ -28,7 +28,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO event
 (id, name, descr, sdate, edate, sponsor, organization_id, max, pr_alert, user_id, the_date, time) 
 VALUES

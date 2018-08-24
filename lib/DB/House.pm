@@ -1,41 +1,41 @@
 use strict;
 use warnings;
 package DB::House;
-use DBH '$dbh';
+use DBH;
 
 sub order { 2 } # needs Cluster
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS house;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE house (
-id integer primary key autoincrement,
-name varchar(10),
-max tinyint,
-bath char(3),
-tent char(3),
-center char(3),
-cabin char(3),
-priority tinyint,
-x smallint,
-y smallint,
-cluster_id integer,
-cluster_order tinyint,
-inactive char(3),
-disp_code char(3),
-comment varchar(255),
-resident char(3),
-cat_abode char(3),
-sq_foot tinyint,
-key_card char(3)
+id integer primary key auto_increment,
+name varchar(10) default '',
+max tinyint default 0,
+bath char(3) default '',
+tent char(3) default '',
+center char(3) default '',
+cabin char(3) default '',
+priority tinyint default 0,
+x smallint default 0,
+y smallint default 0,
+cluster_id integer default 0,
+cluster_order tinyint default 0,
+inactive char(3) default '',
+disp_code char(3) default '',
+comment varchar(255) default '',
+resident char(3) default '',
+cat_abode char(3) default '',
+sq_foot tinyint default 0,
+key_card char(3) default ''
 )
 EOS
 }
 
 sub init {
-    my $clust_str = $dbh->prepare(<<'EOS');
+    my $clust_str = $dbh->prepare(<<"EOS");
 SELECT id, name
   FROM cluster;
 EOS
@@ -44,7 +44,7 @@ EOS
     while (my ($id, $name) = $clust_str->fetchrow_array()) {
         $cluster_id_for{$name} = $id;
     }
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO house
 (name, max, bath, tent, center, cabin, priority, x, y, cluster_id, cluster_order, inactive, disp_code, comment, resident, cat_abode, sq_foot, key_card) 
 VALUES
@@ -53,6 +53,9 @@ EOS
     while (my $line = <DATA>) {
         chomp $line;
         my (@fields) = split /\|/, $line, -1;
+        for my $f (@fields) {
+            $f = undef if $f eq '';
+        }
         my $name = $fields[0];
         my $center = $fields[4]; 
         # set cluster_id

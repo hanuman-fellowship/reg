@@ -1,26 +1,26 @@
 use strict;
 use warnings;
 package DB::Cluster;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS cluster;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE cluster (
-id integer primary key autoincrement,
-name varchar(30),
-type char(10),
-cl_order tinyint
+id $pk
+name varchar(30) $sdn,
+type char(10) $sdn,
+cl_order tinyint $idn
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO cluster
 (name, type, cl_order) 
 VALUES

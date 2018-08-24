@@ -1,17 +1,17 @@
 use strict;
 use warnings;
 package DB::Ride;
-use DBH '$dbh';
+use DBH;
 
 sub order { 0 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS ride;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE ride (
-id integer primary key autoincrement,
+id integer primary key auto_increment,
 rider_id integer,
 driver_id integer,
 from_to text,
@@ -38,7 +38,7 @@ EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO ride
 (id, rider_id, driver_id, from_to, pickup_date, pickup_time, airport, carrier, flight_num, flight_time, cost, type, comment, paid_date, sent_date, shuttle, create_date, create_time, status, luggage, intl, customs) 
 VALUES

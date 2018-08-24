@@ -1,15 +1,15 @@
 use strict;
 use warnings;
 package DB::Config;
-use DBH '$dbh';
+use DBH;
 
 sub order { 2 }     # needs House
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS config;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE config (
 house_id integer,
 the_date char(8),
@@ -39,13 +39,13 @@ sub init {
     for (my $d = $start; $d <= $end; ++$d) {
         push @dates, $d->as_d8();
     }
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO config
 (house_id, the_date, sex, curmax, cur, program_id, rental_id) 
 VALUES
 (?, ?, ?, ?, ?, ?, ?)
 EOS
-    my $house_sth = $dbh->prepare(<<'EOS');
+    my $house_sth = $dbh->prepare(<<"EOS");
 SELECT id, max
   FROM house
 EOS

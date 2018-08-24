@@ -1,53 +1,53 @@
 use strict;
 use warnings;
 package DB::Person;
-use DBH '$dbh';
+use DBH;
 
 sub order { 2 }     # needs Affils
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS people;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE people (
-id integer primary key autoincrement,
-last varchar(255),
-first varchar(255),
-sanskrit varchar(255),
-addr1 varchar(255),
-addr2 varchar(255),
-city varchar(255),
-st_prov char(255),
-zip_post char(255),
-country varchar(255),
-akey varchar(255),
-tel_home varchar(255),
-tel_work varchar(255),
-tel_cell varchar(255),
-email varchar(255),
-sex char(1),
-id_sps integer,
-date_updat char(8),
-date_entrd char(8),
-comment varchar(512),
-e_mailings char(3),
-snail_mailings char(3),
-share_mailings char(3),
-deceased char(3),
-inactive char(3),
-safety_form char(3),
-secure_code char(6),
-temple_id integer,
-waiver_signed char(3),
-only_temple char(3)
+id integer primary key auto_increment,
+last varchar(255) default '',
+first varchar(255) default '',
+sanskrit varchar(255) default '',
+addr1 varchar(255) default '',
+addr2 varchar(255) default '',
+city varchar(255) default '',
+st_prov char(255) default '',
+zip_post char(255) default '',
+country varchar(255) default '',
+akey varchar(255) default '',
+tel_home varchar(255) default '',
+tel_work varchar(255) default '',
+tel_cell varchar(255) default '',
+email varchar(255) default '',
+sex char(1) default '',
+id_sps integer default 0,
+date_updat char(8) default '',
+date_entrd char(8) default '',
+comment varchar(512) default '',
+e_mailings char(3) default '',
+snail_mailings char(3) default '',
+share_mailings char(3) default '',
+deceased char(3) default '',
+inactive char(3) default '',
+safety_form char(3) default '',
+secure_code char(6) default '',
+temple_id integer default 0,
+waiver_signed char(3) default '',
+only_temple char(3) default ''
 )
 EOS
 }
 
 sub init {
     my ($class, $today, $email) = @_;
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO people
 (last, first, sanskrit, addr1, addr2, city, st_prov, zip_post, country, akey, tel_home, tel_work, tel_cell, email, sex, id_sps, date_updat, date_entrd, comment, e_mailings, snail_mailings, share_mailings, deceased, inactive, safety_form, secure_code, temple_id, waiver_signed, only_temple) 
 VALUES
@@ -56,6 +56,9 @@ EOS
     while (my $line = <DATA>) {
         chomp $line;
         my (@fields) = split /\|/, $line, -1;
+        for my $f (@fields) {
+            $f = undef if $f eq '';
+        }
         $fields[13] = $email;
         $sth->execute(@fields);
     }

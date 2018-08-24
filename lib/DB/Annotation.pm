@@ -1,35 +1,35 @@
 use strict;
 use warnings;
 package DB::Annotation;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS annotation;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE annotation (
-id integer primary key autoincrement,
-cluster_type char(10),
-label char(20),
-x smallint,
-y smallint,
-x1 smallint,
-y1 smallint,
-x2 smallint,
-y2 smallint,
-shape char(20),
-thickness tinyint,
-color char(15),
-inactive char(3)
+id $pk
+cluster_type char(10) $sdn,
+label char(20) $sdn,
+x smallint $idn,
+y smallint $idn,
+x1 smallint $idn,
+y1 smallint $idn,
+x2 smallint $idn,
+y2 smallint $idn,
+shape char(20) $sdn,
+thickness tinyint $idn,
+color char(15) $sdn,
+inactive char(3) $sdn
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO annotation
 (cluster_type, label, x, y, x1, y1, x2, y2, shape, thickness, color, inactive) 
 VALUES
@@ -38,6 +38,9 @@ EOS
     while (my $line = <DATA>) {
         chomp $line;
         my (@fields) = split /\|/, $line, -1;
+        for my $f (@fields) {
+            $f = undef if $f eq '';
+        }
         $sth->execute(@fields);
     }
 }

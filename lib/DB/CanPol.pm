@@ -1,25 +1,25 @@
 use strict;
 use warnings;
 package DB::CanPol;
-use DBH '$dbh';
+use DBH;
 
 sub order { 1 }
 
 sub create {
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 DROP TABLE IF EXISTS canpol;
 EOS
-    $dbh->do(<<'EOS');
+    $dbh->do(<<"EOS");
 CREATE TABLE canpol (
-id integer primary key autoincrement,
-name varchar(50),
-policy varchar(300)
+id $pk,
+name varchar(255) $sdn,
+policy text $sdn
 )
 EOS
 }
 
 sub init {
-    my $sth = $dbh->prepare(<<'EOS');
+    my $sth = $dbh->prepare(<<"EOS");
 INSERT INTO canpol
 (name, policy) 
 VALUES
