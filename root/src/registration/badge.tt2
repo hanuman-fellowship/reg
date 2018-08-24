@@ -56,7 +56,7 @@ Main Gate Code:
 Oaks Gate Code:
 </div>
 <div class=oaks_txt>
-1$code
+1[% IF data.$i.code %]${data.$i.code}[% ELSE %]$code[% END %]
 </div>
 <div class=return>
 <span class=lan>RETURN LANYARDS</span>
