@@ -1473,7 +1473,7 @@ sub arrangements : Local {
     }
 
     # redirect of all emails
-    if (! empty($string{redirect_email}) {
+    if (! empty($string{redirect_email})) {
         $html = <<"EOM";
 This email has been <b>redirected</b>.<br>
 The original recipients were:<br>
@@ -1731,7 +1731,7 @@ sub contract : Local {
     }
 
     # redirect of all emails
-    if (! empty($string{redirect_email}) {
+    if (! empty($string{redirect_email})) {
         $html = <<"EOM";
 This email has been <b>redirected</b>.<br>
 The original recipients were:<br>
