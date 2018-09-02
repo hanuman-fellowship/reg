@@ -1471,6 +1471,22 @@ sub arrangements : Local {
         );
         return;
     }
+
+    # redirect of all emails
+    if (! empty($string{redirect_email}) {
+        $html = <<"EOM";
+This email has been <b>redirected</b>.<br>
+The original recipients were:<br>
+To: @to<br>
+Cc: @cc<br>
+<hr style="color: red">
+<p>
+$html
+EOM
+        @to = $string{redirect_email};
+        @cc = ();
+    }
+
     # a special sending of the letter - can't use Util sub email_letter
     Global->init($c);
     my @auth = ();
@@ -1713,6 +1729,22 @@ sub contract : Local {
         );
         return;
     }
+
+    # redirect of all emails
+    if (! empty($string{redirect_email}) {
+        $html = <<"EOM";
+This email has been <b>redirected</b>.<br>
+The original recipients were:<br>
+To: @to<br>
+Cc: @cc<br>
+<hr style="color: red">
+<p>
+$html
+EOM
+        @to = $string{redirect_email};
+        @cc = ();
+    }
+
     # a special sending of the letter - can't use Util sub email_letter
     Global->init($c);
     my @auth = ();

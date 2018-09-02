@@ -9,12 +9,15 @@ our @EXPORT_OK = qw/
 use Mail::Sender;
 my $mail_sender;
 
+my %string;
 sub _init {
     my ($schema) = @_;
     my @auth = ();
-    my %string;
     my @strings = $schema->resultset('String')->search({
-        the_key => { -like => 'smtp%' },
+        -or => [
+            the_key => { -like => 'smtp%' },
+            the_key => 'redirect_email',
+        ],
     });
     for my $s (@strings) {
         $string{$s->the_key} = $s->value;
@@ -45,6 +48,21 @@ sub email_letter {
     my @bcc;
     if ($args{bcc}) {
         push @bcc, $args{bcc},
+    }
+
+    # redirect of all emails
+    if ($string{redirect_email} =~ /\S/) {
+        $html = <<"EOM";
+This email has been <b>redirected</b>.<br>
+The original recipients were:<br>
+To: $args{to}<br>
+Bcc: @bcc<br>
+<hr style="color: red">
+<p>
+$html
+EOM
+        $args{to} = $string{redirect_email};
+        @bcc = ();
     }
     $mail_sender->Open({
         to       => $args{to},

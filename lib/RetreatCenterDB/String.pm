@@ -318,6 +318,7 @@ prog_start - the default time of day that a program starts
 program_director - the name of the Program Director - for the contract
 quad - for housing type descriptions
 reception_email - who should be notified when an MMC mailing list request comes in?
+redirect_email - If empty, ALL outgoing email will be sent to these comma separated address(es).
 reg_end - the default time of day for program registration to end
 reg_start - the default time of day for program registration to begin
 registrar_email - the email address of the registrar
