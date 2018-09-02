@@ -83,6 +83,20 @@ for my $r (@regs) {
     ) or die "error in processing template: " . $tt->error;
     # can't use email_letter in Util
     sleep 1;        # so we aren't blacklisted as spammers?
+
+    # redirect of all emails
+    if (! empty($string{redirect_email}) {
+        $html = <<"EOM";
+This email has been <b>redirected</b>.<br>
+The original recipients were:<br>
+To: $email<br>
+<hr style="color: red">
+<p>
+$html
+EOM
+        $email = $string{redirect_email};
+    }
+
     $sender->OpenMultipart({
         from    => "$string{from_title} <$string{from}>",
         to      => $email,

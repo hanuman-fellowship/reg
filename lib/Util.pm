@@ -700,11 +700,9 @@ sub email_letter {
     if (exists $args{bcc}) {
         push @cc_bcc, bcc => $args{bcc};
     }
-    #if ($ENV{test_email}) {
-        $args{to} = $c->user->email;
-        @cc_bcc = ();
-    #}
-    open my $mlog, ">>", "/var/log/Reg/mail.log";
+
+    # log this sending
+    open my $mlog, ">>", "mail.log";
     if (ref $args{to} eq 'ARRAY') {
         print {$mlog} localtime() . " @{$args{to}} - ";
     }
@@ -718,13 +716,24 @@ sub email_letter {
         $args{which} = $args{subject};
     }
     print {$mlog} "$args{which} - ";
-    # no ping :(
-    #my $p = Net::Ping->new();
-    #if (!$p->ping("mountmadonna.org")) {
-    #    print {$mlog} "no ping so just return\n";
-    #    close $mlog;
-    #    return;     # don't even try
-    #}
+
+    # redirecting for testing purpose
+    if (! empty($string{redirect_email})) {
+        my $to = (ref $args{to} eq 'ARRAY')? @{$args{to}}: $args{to};
+        $args{cc} ||= '';
+        $args{bcc} ||= '';
+        $args{html} = <<"EOM";
+This email was <b>redirected</b>.<br>
+The original recipients were:<br>
+To: $to<br>
+Cc: $args{cc}<br>
+Bcc: $args{bcc}<br>
+<hr style="color: red">
+<p>
+$args{html}
+EOM
+        $args{to} = $string{redirect_email};
+    }
 
     if (! ref $mail_sender) {
         Global->init($c);
