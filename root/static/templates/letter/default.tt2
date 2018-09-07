@@ -188,6 +188,36 @@
          This email contains important information regarding the check-in process and payments, meals, packing suggestions, transportation and cancellations.  Please read on to prepare for your stay on our beautiful mountain! 
       </div>
       <p>
+         [% IF    reg.confnote_not_empty
+         || program.confnote_not_empty
+         || reg.early || reg.late
+         || (personal_retreat && sunday)
+         %]
+         <h2>Notes</h2>
+         <p>
+            [% IF reg.confnote_not_empty %]
+            $reg.confnote
+         <p>
+            [% END %]
+            [% IF reg.early || reg.late %]
+            You [% IF reg.early %]arrive on ${reg.date_start_obj.format("%A, %B %e")}[% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on ${reg.date_end_obj.format("%A, %B %e")}[% END %].
+         <p>
+            [% END %]
+            [% IF program.confnote_not_empty %]
+            $program.confnote
+            [% END %]
+            [% IF personal_retreat && sunday %]
+         <p>
+            <b>Please note that the Programs Office is not open on Sunday.</b><br>
+            Your room will be available for check-in at 4:00 pm.
+            Upon arrival, please go to the Community Building lobby, where you will
+            find an arrival package containing all you need to find your way to
+            your lodging, a meal and yoga class schedule, and maps of the Center.
+            If other concerns arise on Sunday, you can find a contact phone number
+            on the door of the Programs Office. Someone will answer your call
+            and give you the help you need.
+            [% END %]
+            [% END %]    <!-- if Note -->
       <h2>Arrivals</h2>
       <p>
          You may pick up your room key and guest packet and pay your remaining
@@ -297,36 +327,6 @@
          Sincerely,<br>
          $user.first $user.last<br>
          and the Programs Office team
-         [% IF    reg.confnote_not_empty
-         || program.confnote_not_empty
-         || reg.early || reg.late
-         || (personal_retreat && sunday)
-         %]
-         <h2 class=after>Notes</h2>
-         <p>
-            [% IF reg.confnote_not_empty %]
-            $reg.confnote
-         <p>
-            [% END %]
-            [% IF reg.early || reg.late %]
-            You [% IF reg.early %]arrive on ${reg.date_start_obj.format("%A, %B %e")}[% END %][% IF reg.early && reg.late %] and [% END %][% IF reg.late %]depart on ${reg.date_end_obj.format("%A, %B %e")}[% END %].
-         <p>
-            [% END %]
-            [% IF program.confnote_not_empty %]
-            $program.confnote
-            [% END %]
-            [% IF personal_retreat && sunday %]
-         <p>
-            <b>Please note that the Programs Office is not open on Sunday.</b><br>
-            Your room will be available for check-in at 4:00 pm.
-            Upon arrival, please go to the Community Building lobby, where you will
-            find an arrival package containing all you need to find your way to
-            your lodging, a meal and yoga class schedule, and maps of the Center.
-            If other concerns arise on Sunday, you can find a contact phone number
-            on the door of the Programs Office. Someone will answer your call
-            and give you the help you need.
-            [% END %]
-            [% END %]    <!-- if Note -->
             [% IF carpoolers %]
          <h2 class=after>Carpool List</h2>
          <p>
