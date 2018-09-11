@@ -2699,6 +2699,7 @@ sub cancel : Local {
         }
         $r->update({
             cancelled => 'yes',
+            linked    => '',
         });
     }
     $c->response->redirect($c->uri_for("/rental/view/$id/1"));
