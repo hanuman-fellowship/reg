@@ -1570,7 +1570,7 @@ sub invalid_amount {
 sub get_grid_file {
     my ($code) = @_;
 
-    return "root/static/grid/$code-data.txt";
+    return "/var/Reg/grid/$code-data.txt";
 }
 
 #

@@ -1,0 +1,20 @@
+#!/bin/bash
+cd /tmp
+mkdir jon
+cp *.gz jon
+gunzip grid*.gz
+mkdir -p /var/Reg
+chmod 777 /var/Reg
+mkdir -p /var/Reg/grid
+cd /var/Reg/grid
+tar xf /tmp/grid.*
+cd /tmp
+rm grid.*
+unzip rc*.gz
+mysql <rc.*
+rm -f rc.*
+mysql <<EOS
+update string set value = 'jon@suecenter.org, jjn1056@gmail.com' where the_key = 'redirect_email';
+update string set value = 'mmc.jasongaluten.com' where the_key = 'ftp_site';
+EOS
+

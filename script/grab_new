@@ -197,7 +197,7 @@ sub initialize {
         quit("could not find the Temple Extra Account");
     }
 
-    my $rst = "root/static";
+    my $rst = "/var/Reg";
     $online          = make_dir("$rst/online");
     $grid            = make_dir("$rst/grid");
     $temple          = make_dir("$rst/temple_done/$year_mon_dir");
@@ -839,6 +839,7 @@ sub main {
 
     $ftp->quit();   # all done with MMC
 
+goto THERE;
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
         site     => $string{ftp_mmi_site},
         passive  => $string{ftp_mmi_passive},
@@ -873,7 +874,7 @@ sub main {
 #    ride_alert();
     omp_alert();
     kayakalpa();
-
+THERE:
     finalities();
 }
 
