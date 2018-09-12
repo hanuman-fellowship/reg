@@ -69,7 +69,7 @@ use Global qw/
     @clusters
 /;
 use Template;
-my $rst = "root/static";
+my $rst = "/var/Reg";
 
 my $TYPE_TUITION           = 1;
 my $TYPE_MEALS_AND_LODGING = 2;
@@ -1148,7 +1148,7 @@ sub create_do : Local {
     if (!$P{dup} && $pr->notify_on_reg()) {
         my $html = "";
         my $tt = Template->new({
-            INCLUDE_PATH => "$rst/templates/letter",
+            INCLUDE_PATH => "root/static/templates/letter",
             EVAL_PERL    => 0,
         });
         my $stash = {
@@ -1243,7 +1243,7 @@ sub create_do : Local {
             };
             my $html = "";
             my $tt = Template->new({
-                INCLUDE_PATH => "$rst/templates/letter",
+                INCLUDE_PATH => "root/static/templates/letter",
                 EVAL_PERL    => 0,
             });
             $tt->process(
@@ -1819,7 +1819,7 @@ sub send_conf : Local {
     my $reg = model($c, 'Registration')->find($reg_id);
     my $today = tt_today($c);
     my $pr = $reg->program;
-    my $fname = "$rst/templates/letter/" . $pr->cl_template() . ".tt2";
+    my $fname = "root/static/templates/letter/" . $pr->cl_template() . ".tt2";
     if (! -r $fname) {
         error($c,
               "Sorry, cannot open confirmation letter template.",
@@ -2414,11 +2414,11 @@ sub cancel_do : Local {
         my $html = "";
         my $tt = Template->new({
             INTERPOLATE  => 1,
-            INCLUDE_PATH => "$rst/templates/letter",
+            INCLUDE_PATH => "root/static/templates/letter",
             EVAL_PERL    => 0,
         });
         my $template = $reg->program->cl_template . "_cancel.tt2";
-        if (! -f "$rst/templates/letter/$template") {
+        if (! -f "root/static/templates/letter/$template") {
             $template = "default_cancel.tt2";
         }
         my $stash = {
@@ -5905,7 +5905,7 @@ sub _send_receipt {
     my $html = "";
     my $tt = Template->new({
         INTERPOLATE  => 1,
-        INCLUDE_PATH => "$rst/templates/letter",
+        INCLUDE_PATH => "root/static/templates/letter",
         EVAL_PERL    => 0,
     });
     my @leaders = $reg->program->leaders;
