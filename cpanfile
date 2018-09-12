@@ -4,6 +4,7 @@ requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'DBD::mysql';
 requires 'DBIx::Class';
 requires 'DBIx::Class::Schema::Loader';
+requires 'Daemon::Control';
 requires 'Email::Sender';
 requires 'FCGI';
 requires 'FCGI::ProcManager';
