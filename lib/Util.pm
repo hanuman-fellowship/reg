@@ -702,7 +702,7 @@ sub email_letter {
     }
 
     # log this sending
-    open my $mlog, ">>", "mail.log";
+    open my $mlog, ">>", "/var/log/Reg/mail.log";
     if (ref $args{to} eq 'ARRAY') {
         print {$mlog} localtime() . " @{$args{to}} - ";
     }
