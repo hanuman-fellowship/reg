@@ -1,6 +1,6 @@
-requires 'Devel::CheckLib';
 requires 'Catalyst','5.90118';
 requires 'Catalyst::Plugin::Static::Simple';
+requires 'Catalyst::Plugin::ServeFile';
 requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'DBD::mysql';
 requires 'DBIx::Class';
