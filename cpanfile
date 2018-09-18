@@ -1,5 +1,5 @@
 requires 'Catalyst','5.90118';
-requires 'Catalyst::Plugin::Static::Simple';
+requires 'Catalyst::Plugin::Static::Simple', '0.36';
 requires 'Catalyst::Plugin::ServeFile', '0.004';
 requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'DBD::mysql';
