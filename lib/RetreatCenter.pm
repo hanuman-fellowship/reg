@@ -57,7 +57,8 @@ our $VERSION = '0.01';
 # local deployment.
 
 __PACKAGE__->config( 
-    name => 'RetreatCenter', 
+    name => 'RetreatCenter',
+    psgi_middleware => ['XSendfile'], # Maybe move to prod only config?
     'Plugin::Static::Simple' => {
         'mime_types' => {
             'jpg' => 'image/jpg',
