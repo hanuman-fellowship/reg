@@ -1,6 +1,6 @@
 requires 'Catalyst','5.90118';
 requires 'Catalyst::Plugin::Static::Simple';
-requires 'Catalyst::Plugin::ServeFile';
+requires 'Catalyst::Plugin::ServeFile', '0.004';
 requires 'Catalyst::Plugin::Session::Store::DBIC';
 requires 'DBD::mysql';
 requires 'DBIx::Class';
