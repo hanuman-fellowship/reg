@@ -34,12 +34,21 @@ use Spreadsheet::WriteExcel::Utility qw/
     xl_rowcol_to_cell
 /;
 
+
+sub excel : Local Args(1) {
+    my ($self, $c, $excel_name) = @_;
+    open my $fh, '<', "/var/Reg/excel/$excel_name"
+        or die "$excel_name not found!!: $!\n";
+    $c->response->content_type('application/excel');
+    $c->response->body($fh);
+}
+
 my ($workbook, $worksheet);
 my ($default_size, $bold, $bold_right, $big_bold,
     $top_border, $default, $default_no_border);
 sub _init_spreadsheet {
     my ($name) = @_;
-    $workbook = Spreadsheet::WriteExcel->new("root/static/$name");
+    $workbook = Spreadsheet::WriteExcel->new("/var/Reg/excel/$name");
     $default_size = 14;
     $bold = $workbook->add_format(
         bold => 1,

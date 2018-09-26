@@ -147,6 +147,13 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
+sub cl_image : Local Args(1) {
+    my ($self, $c, $image_name) = @_;
+    open my $fh, '<', "/var/Reg/images/$image_name"
+        or die "$image_name not found!!: $!\n";
+    $c->response->content_type('image/png');
+    $c->response->body($fh);
+}
 #
 # need to plan this better rather than just hacking it.
 # how about space between houses, top margin, bottom margin
@@ -588,8 +595,8 @@ EOH
                   . sprintf("%04d%02d%02d%02d%02d%02d",
                             (localtime())[reverse (0 .. 5)])
                   . ".png";
-    my $im_uri = $c->uri_for("/static/images/$im_name");
-    open my $imf, ">", "root/static/images/$im_name"
+    my $im_uri = $c->uri_for("/cluster/cl_image/$im_name");
+    open my $imf, ">", "/var/Reg/images/$im_name"
         or die "no $im_name: $!\n"; 
     print {$imf} $cv->png;
     close $imf;

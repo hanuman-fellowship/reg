@@ -63,6 +63,8 @@ use Template;
 use CGI qw/:html/;      # for Tr, td
 use Mail::Sender;
 
+my $img = '/var/Reg/images';
+
 sub index : Private {
     my ($self, $c) = @_;
 
@@ -302,7 +304,7 @@ sub create_do : Local {
     if ($upload) {
         my $fname = $upload->filename();
         my ($suffix) = $fname =~ m{[.](.*)\z}xms;
-        my $picfile = "root/static/images/ro-$id.$suffix";
+        my $picfile = "$img/ro-$id.$suffix";
         $upload->copy_to($picfile);
         Global->init($c);
         resize('r', $id);
@@ -330,6 +332,15 @@ sub view_pic : Local {
         rental => $r,
         template => 'rental/view_pic.tt2',
     );
+}
+
+sub image_file : Local Args(1) {
+    my ($self, $c, $image_name) = @_;
+    open my $fh, '<', "$img/$image_name"
+        or die "$image_name not found!!: $!\n";
+    my ($suffix) = $image_name =~ m{[.](\w+)$}xms;
+    $c->response->content_type('image/$suffix');
+    $c->response->body($fh);
 }
 
 sub del_image : Local {
@@ -791,7 +802,7 @@ sub update_do : Local {
     my $upload     = $c->request->upload('image');
     if ($upload) {
         $P{image} = 'yes';
-        my $picfile = "root/static/images/ro-$id.jpg";
+        my $picfile = "$img/ro-$id.jpg";
         $upload->copy_to($picfile);
         Global->init($c);
         resize('r', $id);
@@ -2161,7 +2172,7 @@ sub duplicate_do : Local {
 
     # mess with the new image, if any.
     if ($upload) {
-        my $picfile = "root/static/images/ro-$new_id.jpg";
+        my $picfile = "$img/ro-$new_id.jpg";
         $upload->copy_to($picfile);
         Global->init($c);
         resize('r', $new_id);

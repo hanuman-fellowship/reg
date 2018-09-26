@@ -184,6 +184,14 @@ EOT
     return $event_table;
 }
 
+sub dp_image : Local Args(1) {
+    my ($self, $c, $image_name) = @_;
+    open my $fh, '<', "/var/Reg/images/$image_name"
+        or die "$image_name not found!!: $!\n";
+    $c->response->content_type('image/png');
+    $c->response->body($fh);
+}
+
 sub show : Local {
     my ($self, $c, $type, $date) = @_;
 
@@ -422,17 +430,17 @@ sub show : Local {
                   . sprintf("%04d%02d%02d%02d%02d%02d",
                             (localtime())[reverse (0 .. 5)])
                   . ".png";
-    open my $imf, ">", "root/static/images/$im_name"
+    open my $imf, ">", "/var/Reg/images/$im_name"
         or die "no $im_name: $!\n"; 
     print {$imf} $dp->png;
     close $imf;
-    my $image = $c->uri_for("/static/images/$im_name");
+    my $image = $c->uri_for("/dailypic/dp_image/$im_name");
     my $campsites = "";
     if ($type eq 'outdoors') {
         $campsites = join '<br>',
                      map {
                          "<img border=0 src="
-                         . $c->uri_for("/static/images/$_")
+                         . $c->uri_for("/dailypic/dp_image/$_")
                          . ">"
                      }
                      qw/

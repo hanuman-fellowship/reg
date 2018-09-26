@@ -75,7 +75,7 @@ For [% SPONSOR %] Receipts Issued between [% start.format("%D") %] and [% end.fo
 </tr>
 </table>
 <p class=p2>
-<span class=timestamp>As of $timestamp</span><a class=download href='/static/$xls_download'>Download Spreadsheet</a></span>
+<span class=timestamp>As of $timestamp</span><a class=download href='/finance/excel/$xls_download'>Download Spreadsheet</a></span>
 <p>
 <div class=legend>
 * - Rental<br>

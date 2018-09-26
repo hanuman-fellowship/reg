@@ -486,7 +486,7 @@ sub monthyear {
 sub resize {
     my ($type, $id, $which) = @_;
 
-    my $rst = "root/static/images";
+    my $img = "/var/Reg/images";
     if ($type eq 'r') {
         # resize and crop centrally to 640x368
         # convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage
@@ -497,12 +497,12 @@ sub resize {
         #         -gravity center -extent 640x368 out.jpg
         system(
             "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
-          . " $rst/ro-$id.jpg $rst/r-$id.jpg"
+          . " $img/ro-$id.jpg $img/r-$id.jpg"
         );
         # create the thumbnail
         system(
             "convert -scale 100x"
-          . " $rst/r-$id.jpg $rst/rth-$id.jpg"
+          . " $img/r-$id.jpg $img/rth-$id.jpg"
         );
         return;
     }
@@ -510,14 +510,14 @@ sub resize {
         system("convert -scale "
                . trim($string{imgwidth})
                . "x"
-               . " $rst/${type}o-$id.jpg $rst/${type}th-$id.jpg"
+               . " $img/${type}o-$id.jpg $img/${type}th-$id.jpg"
         );
     }
     if (!$which || $which eq "big_imgwidth") {
         system("convert -scale "
                . trim($string{big_imgwidth})
                . "x"
-               . " $rst/${type}o-$id.jpg $rst/${type}b-$id.jpg"
+               . " $img/${type}o-$id.jpg $img/${type}b-$id.jpg"
         );
     }
 }

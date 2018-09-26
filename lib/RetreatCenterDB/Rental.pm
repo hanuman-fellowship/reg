@@ -506,9 +506,11 @@ sub send_rental_deposit {
 sub image_file {
     my ($self, $type) = @_;
     $type ||= '';
-    my $path = "/static/images/r$type-" . $self->id;
-    (-f "root/$path.jpg")? "$path.jpg"
-   :(-f "root/$path.png")? "$path.png"
+    my $img = '/var/Reg/images';
+    my $name = "r$type-" . $self->id;
+    my $path = "/rental/image_file/$name";
+    (-f "$img/$name.jpg")? "$path.jpg"
+   :(-f "$img/$name.png")? "$path.png"
    :                       "$path.gif"
    ;
 }

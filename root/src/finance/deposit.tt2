@@ -56,5 +56,5 @@ If it reconciles
 Generate it again for Filing</a>.
 [% END %]
 <p class=p2>
-<a href='/static/$xls_download'>Download Spreadsheet</a>
+<a href='/finance/excel/$xls_download'>Download Spreadsheet</a>
 </div>

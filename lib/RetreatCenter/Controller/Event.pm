@@ -393,6 +393,14 @@ sub access_denied : Private {
     $c->stash->{template} = "gen_error.tt2";
 }
 
+sub calendar_image : Local Args(1) {
+    my ($self, $c, $image_name) = @_;
+    open my $fh, '<', "/var/Reg/images/$image_name"
+        or die "$image_name not found!!: $!\n";
+    $c->response->content_type('image/png');
+    $c->response->body($fh);
+}
+
 #
 # 40, 20 are the heights of the event rectangles.
 # put in ActiveCal??
@@ -1177,7 +1185,7 @@ EOH
         $jim->string(gdGiantFont, $x + 45, 1,
                      $start_year+$yr-1, $black);
     }
-    open my $jpng, ">", "root/static/images/$jump_name"
+    open my $jpng, ">", "/var/Reg/images/$jump_name"
         or die "no $jump_name: $!\n";
     print {$jpng} $jim->png;
     close $jpng;
@@ -1254,7 +1262,7 @@ function image_toggle() {
 $jump_map
 <p>
 EOH
-    my $jump_img = $c->uri_for("/static/images/$jump_name");
+    my $jump_img = $c->uri_for("/event/calendar_image/$jump_name");
     my @pr_color  = $string{cal_pr_color}  =~ m{\d+}g;
     my @tot_pop_color  = $string{cal_tot_pop_color}  =~ m{\d+}g;
     my $arr_color = d3_to_hex($string{cal_arr_color});
@@ -1358,7 +1366,7 @@ EOH
                                  (localtime())[reverse (0 .. 5)])
                        . ".png"
                        ;
-        open my $imf, ">", "root/static/images/$cal_name"
+        open my $imf, ">", "/var/Reg/images/$cal_name"
             or die "no $cal_name: $!\n"; 
         print {$imf} $im->png;
         close $imf;
@@ -1372,7 +1380,7 @@ EOH
                   . "<span class=datefld>Details <input type=checkbox id=detail$key onclick='detail_toggle($key)'></span>";
 
         $content .= "<p>\n";
-        my $image = $c->uri_for("/static/images/$cal_name");
+        my $image = $c->uri_for("/event/calendar_image/$cal_name");
         $content .= <<"EOH";
 <div id=img$key>
 <img border=0 src='$image' usemap='#$key'>
