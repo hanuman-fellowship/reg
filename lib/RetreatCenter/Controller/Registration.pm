@@ -4827,9 +4827,6 @@ sub _person_data {
              . "<p>"
              ;
     }
-    elsif ($containing eq 'email') {
-        $email_all .= $email . ", " if $email;
-    }
     elsif ($containing eq 'name') {
         return $p->last . ", " . $p->first
              . ($star[$i]? '<span class=extended> *</span>'
@@ -4840,6 +4837,7 @@ sub _person_data {
         # if no email return nothing.
         # the row gets collapsed, right???.
         #
+        $email_all .= $email . ", " if $email;
         return $email_to? ($email_to . "<br>"): "";
     }
 }
