@@ -4810,7 +4810,7 @@ sub _person_data {
     my $email = $p->email;
     my $email_to = "";
     $email_to = "<a href='mailto:$email'>$email</a>" if $email;
-    if ($containing eq 'all') {
+    if ($containing eq 'all' || $containing eq 'email') {
         $email_all .= $email . ", " if $email;
         return "<b>" . $p->last . ", " . $p->first . "</b>"
              . ($star[$i]? '<span class=extended> *</span>'
