@@ -2416,17 +2416,74 @@ sub work_study : Local {
 }
 
 sub tarpanam_counts : Local {
-    my ($c) = @_;
+    my ($self, $c) = @_;
+    my @progs = model($c, 'Program')->search(
+        { name => { '-like' => '%Tarpanam%' } },
+    );
+    my $p = $progs[0];
+    my @dates;
+    my $sd = date($p->sdate);
+    my $ed = date($p->edate);
+    my $d = $sd;
+    while ($d < $ed) {
+        push @dates, $d->as_d8();
+        ++$d;
+    }
     my @regs = model($c, 'Registration')->search(
         {
-            program_id => 4296,
+            program_id => $p->id(),
             cancelled  => { '!=' => 'yes' },
         },
     );
+    my %tally;
+    for my $r (@regs) {
+        my $sd = date($r->date_start());
+        my $ed = date($r->date_end());
+        my $d = $sd;
+        while ($d < $ed) {
+            ++$tally{$d->as_d8()}{$r->h_type()};
+            ++$d;
+        }
+    }
+    my @rows;
+    for my $d (sort keys %tally) {
+        push @rows, "<tr><td>" . date($d)->format() . "</td>" . _house_counts($tally{$d}) . "</tr>";
+    }
     stash($c,
-        regs => \@regs,
+        rows => \@rows,
         template => 'listing/tarpanam_counts.tt2',
     );
+}
+
+sub _house_counts {
+    my ($href) = @_; 
+    $href->{commuting} ||= 0;
+    my $n = 0;
+    HT:
+    for my $ht (keys %$href) {
+        if ($ht eq 'commuting') {
+            next HT;
+        }
+        $n += $href->{$ht};
+    }
+    my $tot = $n + $href->{commuting};
+    my $counts = "<td align=right>$tot</td>";
+    $counts .= "<td align=right>$href->{commuting}</td>";
+    $counts .= "<td align=right>$n</td>";
+    my $onland = "";
+    HT:
+    for my $ht (sort keys %$href) {
+        if ($ht eq 'commuting') {
+            next HT;
+        }
+        $onland .= "$string{$ht} $href->{$ht}, ";
+    }
+    $onland =~ s{,\s*$}{}xms;
+    $onland ||= "&nbsp;";
+    if ($onland) {
+        $counts .= "<td>$onland</td>";
+    }
+    $counts;
 }
 
 1;
