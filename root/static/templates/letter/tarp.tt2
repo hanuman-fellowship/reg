@@ -5,6 +5,7 @@ body {
     width: 600px;
     margin-top: .5in;
     margin-left: .5in;
+    margin-bottom: .5in;
     font-size: 15pt;
 }
 li {
