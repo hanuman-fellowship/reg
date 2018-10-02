@@ -2415,8 +2415,8 @@ sub work_study : Local {
     );
 }
 
-sub tarpanam_counts {
-    my ($c) = @_
+sub tarpanam_counts : Local {
+    my ($c) = @_;
     my @regs = model($c, 'Registration')->search(
         {
             program_id => 4296,
