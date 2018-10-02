@@ -32,7 +32,7 @@ Thank you for joining us in this sacred time of honoring our beloved guru, Baba 
 <p>
 This letter is a confirmation that we have reserved you a housing type of $htdesc from ${reg.dates}.
 [% IF reg.balance > 0 %]
-Please pay for your balance of \$$reg.balance prior to arrival to expedite the check-in process.
+Please pay your balance of \$$reg.balance prior to arrival to expedite the check-in process.
     [% IF pre_payment_link %]
     You may pay in advance
     with a credit card online at
