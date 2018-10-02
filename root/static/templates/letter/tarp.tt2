@@ -1,0 +1,61 @@
+<html>
+<head>
+<style>
+body {
+    width: 600px;
+    margin-top: .5in;
+    margin-left: .5in;
+    font-size: 15pt;
+}
+li {
+    margin-top: 5mm;
+}
+</style>
+</head>
+<body>
+[% gc = program.summary.gate_code %]
+<div align=center style="font-family: Verdana; font-size: 12pt;">
+<img src='https://www.mountmadonna.org/assets/img/babaji/Bji.jpg'>
+<br>
+<hr width=200>
+BABA HARI DASS
+<br>
+1923-2018
+<hr width=200>
+</div>
+<p>
+<div>
+Dear $person.first,
+<p>
+Thank you for joining us in this sacred time of honoring our beloved guru, Baba Hari Dass.
+<p>
+This letter is a confirmation that we have reserved you a housing type of $htdesc from ${reg.dates}.
+[% IF reg.balance > 0 %]
+Please pay for your balance of \$$reg.balance prior to arrival to expedite the check-in process.
+    [% IF pre_payment_link %]
+    You may pay in advance
+    with a credit card online at
+    <a target=_blank href='$pre_payment_link'>this link</a>.
+    [% END %]
+[% END %]
+<p>
+We are so grateful for the many people who plan to visit Mount Madonna Center during this time.  In order to accommodate the high volume of guests that we are expecting, kindly observe the following requests:
+<ul>
+<li><b>Check-in</b>: Your guest packet will be available in the lobby of the Community Building starting at 4 p.m. on the day of your arrival.  A guest packet is also  attached to this email for reference to maps and other information regarding your stay in advance.  Please use the link above to pay your balance before arrival.  The Programs Office will be open intermittently.  You will need the following gate codes if you arrive after hours or are camping: #$gc (center gate) and 1$gc (school gate for camping). 
+<li><b>Carpool</b>:  Parking at the center will be extremely limited.  We ask that you DO NOT drive here without carpooling.  Here is a simple <a href='https://www.groupcarpool.com/t/9phmsf'>online portal</a> to help you arrange car pools.  We also offer shuttles (+link) from various locations in the area. 
+<li><b>Cleaning</b>:  We will need your help with making your bed when you arrive and putting your dirty linens in a designated laundry bin upon departure.  You will find clean linens in the lobby of your assigned accommodation.  Please use only one set of linens during your stay to conserve water.  When you remove your used sheets and pillowcase at the end of your stay, leave the mattress pad and pillow on the bed for the next guest. 
+<li><b>Economy dorms</b>:  If you are staying in an economy dorm, you will not need a room key.  You may assign yourself a bed from the beds that do not have linens on them.  These dorms are co-ed; we will reserve special dorms for families to the best of our ability. Housing is extremely limited, so we won’t be able to accomodate all special or last-minute requests. Thank you for your flexibility as we do our best to make space for everyone who wishes to be here.
+<li><b>School is in session</b>:  Mount Madonna Center shares space with the students at Mount Madonna School.  Please honor their space by not approaching them.
+</ul>
+<p>
+Thank you for your support, flexibility and open-heartedness as we navigate this together.  We are reminded of the blessings of community and Babaji’s teachings every step of the way.  The Mount Madonna Center <a href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> has answers to many questions you may have while preparing for your stay which includes a packing list (don’t forget to bring a towel!)  You may also refer to the <a href='https://weather.com/weather/today/l/9425:19:US'>local weather prediction</a> and <a href='https://www.mountmadonna.org/transportation-directions'>transportations & directions</a> page.  Our  food service  is strictly vegetarian - no meat, fish, fowl, or eggs. Please do not bring any outside food.
+<p>
+Jai Guru Dev! 
+<p>
+We look forward to seeing you here soon.  
+<p>
+Warmly,<br>
+The Programs Office at Mount Madonna Center
+</div>
+</body>
+</html>
