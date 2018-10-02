@@ -2415,4 +2415,18 @@ sub work_study : Local {
     );
 }
 
+sub tarpanam_counts {
+    my ($c) = @_
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id => 4296,
+            cancelled  => { '!=' => 'yes' },
+        },
+    );
+    stash($c,
+        regs => \@regs,
+        template => 'listing/tarpanam_counts.tt2',
+    );
+}
+
 1;

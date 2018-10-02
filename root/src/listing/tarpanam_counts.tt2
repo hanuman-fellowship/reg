@@ -1,0 +1,4 @@
+<h2>Tarpanam Counts</h2>
+[% FOR r IN regs %]
+$r.person.name<br>
+[% END %]
