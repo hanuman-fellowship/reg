@@ -140,7 +140,10 @@ sub list_online : Local {
                 $edate = date($1);
             }
             elsif (m{x_time => (.*)}) {
-                $time = get_time($1);
+                my $t = $1;
+                # we know the time is 24 hour time
+                $t =~ s/://;
+                $time = get_time($t);
             }
             elsif (m{x_fname => (.*)}) {
                 $first = normalize($1);
