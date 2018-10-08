@@ -495,26 +495,32 @@ sub resize {
         # for square images:
         # convert in.jpg -resize 640x368 -background none \
         #         -gravity center -extent 640x368 out.jpg
+        open JON, '>/tmp/jon';
+        print JON
+            "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
+          . " $img/ro-$id.jpg $img/r-$id.jpg"
+        );
+        close JON;
         system(
-            "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
+            "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
           . " $img/ro-$id.jpg $img/r-$id.jpg"
         );
         # create the thumbnail
         system(
-            "convert -scale 100x"
+            "/usr/bin/convert -scale 100x"
           . " $img/r-$id.jpg $img/rth-$id.jpg"
         );
         return;
     }
     if (!$which || $which eq "imgwidth") {
-        system("convert -scale "
+        system("/usr/bin/convert -scale "
                . trim($string{imgwidth})
                . "x"
                . " $img/${type}o-$id.jpg $img/${type}th-$id.jpg"
         );
     }
     if (!$which || $which eq "big_imgwidth") {
-        system("convert -scale "
+        system("/usr/bin/convert -scale "
                . trim($string{big_imgwidth})
                . "x"
                . " $img/${type}o-$id.jpg $img/${type}b-$id.jpg"

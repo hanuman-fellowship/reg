@@ -350,7 +350,7 @@ sub del_image : Local {
     $r->update({
         image => '',
     });
-    unlink <root/static/images/r*-$id.jpg>;
+    unlink <$img/r*-$id.jpg>;
     $c->response->redirect($c->uri_for("/rental/view/$id/4"));
 }
 
