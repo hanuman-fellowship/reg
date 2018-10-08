@@ -60,6 +60,8 @@ use Global qw/
 use File::Copy;
 use JSON;
 
+my $export_dir = '/var/Reg/export';
+
 # for Category, School, and Level
 sub _opts {
     my ($c, $type, $default) = @_;
@@ -1532,6 +1534,7 @@ sub publish : Local {
     );
 }
 
+# Obsolete!
 sub mmi_publish : Local {
     my ($self, $c) = @_;
 
@@ -1573,6 +1576,7 @@ sub mmi_publish : Local {
     );
 }
 
+# Obsolete!
 sub publish_pics : Local {
     my ($self, $c) = @_;
 
@@ -1629,6 +1633,7 @@ sub publish_pics : Local {
     );
 }
 
+# Obsolete!
 #
 # go through the programs in ascending date order
 # and create the monthly calendar files calX.html
@@ -1696,6 +1701,7 @@ EOH
     }
 }
 
+# ??? Use Data::Dumper?
 sub _prt_data {
     my ($progt, $p, $id) = @_;
     my $PR = $p->name() =~ m{personal\s+retreat}i;
@@ -2538,14 +2544,13 @@ sub export : Local {
     my ($self, $c) = @_;
 
     # clear the arena
-    my $dir = '/var/Reg/export';
     system(<<"EOS");
-rm -rf $dir/*;
-mkdir $dir/pics;
-mkdir $dir/docs;
-mkdir $dir/mmi_pics;
-mkdir $dir/mmi_docs;
-mkdir $dir/pr
+rm -rf $export_dir/*;
+mkdir $export_dir/pics;
+mkdir $export_dir/docs;
+mkdir $export_dir/mmi_pics;
+mkdir $export_dir/mmi_docs;
+mkdir $export_dir/pr
 EOS
 
     # and make sure we have initialized %string.
@@ -2572,14 +2577,14 @@ EOS
             return;
         }
     }
-    gen_progtable(\@programs);      # writes to /var/Reg/export/progtable
+    gen_progtable(\@programs);      # writes to $export_dir/progtable
     # documents and pictures
     for my $p (@programs) {
         my $mmi = $p->school->mmi();
         for my $d ($p->documents) {
             my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
             copy("root/static/images/$pdoc",
-                 "/var/Reg/export/" . ($mmi? "mmi_docs": "docs") . "/$pdoc");
+                 $export_dir . ($mmi? "mmi_docs": "docs") . "/$pdoc");
         }
         my $pic_html = $p->picture();   # a side effect of this is to
                                         # copy pics to gen_files/pics
@@ -2710,7 +2715,7 @@ EOS
             edate => $r->edate_obj->format($fmt),
         };
         if ($r->image()) {
-            copy 'root' . $r->image_file(), '/var/Reg/export/pics'
+            copy 'root' . $r->image_file(), "$export_dir/pics"
               or die "no copy of " . $r->image_file() . ": $!\n";
         }
     }
@@ -2751,7 +2756,7 @@ EOS
 
     };
     my ($currHC, $nextHC, $change_date)
-        = PR_progtable($c, '/var/Reg/export/pr/progtable');
+        = PR_progtable($c, "$export_dir/pr/progtable");
     TYPE:
     for my $type (reverse housing_types(1)) {
         next TYPE if $type =~ m{^economy|dormitory|triple$};
@@ -2774,10 +2779,10 @@ EOS
         }
     }
     _json_put($pr_ref, 'pr/pr.json');
-    copy 'root/static/README', '/var/Reg/export';
+    copy 'root/static/README', $export_dir;
 
     # tar it up
-    system("cd /var/Reg/Export; tar czf /tmp/exported_reg_data.tgz .");
+    system("cd $export_dir; tar czf /tmp/exported_reg_data.tgz .");
 
     # send it off
     system("send_export");
@@ -2816,7 +2821,8 @@ sub _extract_fee_table {
 my $json = JSON->new->utf8->pretty->canonical;
 sub _json_put {
     my ($ref, $fname) = @_;
-    open my $out, '>', "gen_files/$fname" or die "no gen_files/$fname!!\n";
+    open my $out, '>', "$export_dir/$fname"
+        or die "no $export_dir/$fname!!\n";
     print {$out} $json->encode($ref);
     close $out;
 }
