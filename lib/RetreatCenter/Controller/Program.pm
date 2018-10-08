@@ -1809,7 +1809,7 @@ EOD
 #
 sub gen_progtable {
     my ($programs_ref) = @_;
-    open my $progt, ">", "gen_files/progtable"
+    open my $progt, ">", "/var/Reg/export/progtable"
         or die "cannot create progtable: $!\n";
     print {$progt} "{\n";       # the enclosing anonymous hash ref
     for my $p (grep { ! $_->cancelled } @$programs_ref) {
