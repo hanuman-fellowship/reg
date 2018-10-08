@@ -2545,11 +2545,11 @@ sub export : Local {
 
     # clear the arena
     system(<<"EOS");
-rm -rf $export_dir/*;
-mkdir $export_dir/pics;
-mkdir $export_dir/docs;
-mkdir $export_dir/mmi_pics;
-mkdir $export_dir/mmi_docs;
+rm -rf $export_dir/*
+mkdir $export_dir/pics
+mkdir $export_dir/docs
+mkdir $export_dir/mmi_pics
+mkdir $export_dir/mmi_docs
 mkdir $export_dir/pr
 EOS
 
