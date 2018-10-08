@@ -5,6 +5,8 @@ use strict;
 use warnings;
 use Net::FTP;
 
+exit;    # TODO!
+
 # MMC
 my $ftp = Net::FTP->new("www.mountmadonna.org", Debug => 0, Passive => 0)
     or die "Cannot connect: $@";

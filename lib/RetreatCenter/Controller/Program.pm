@@ -2538,14 +2538,14 @@ sub export : Local {
     my ($self, $c) = @_;
 
     # clear the arena
-    system(<<'EOS');
-rm -rf gen_files;
-mkdir gen_files;
-mkdir gen_files/pics;
-mkdir gen_files/docs;
-mkdir gen_files/mmi_pics;
-mkdir gen_files/mmi_docs;
-mkdir gen_files/pr
+    my $dir = '/var/Reg/export';
+    system(<<"EOS");
+rm -rf $dir/*;
+mkdir $dir/pics;
+mkdir $dir/docs;
+mkdir $dir/mmi_pics;
+mkdir $dir/mmi_docs;
+mkdir $dir/pr
 EOS
 
     # and make sure we have initialized %string.
@@ -2572,14 +2572,14 @@ EOS
             return;
         }
     }
-    gen_progtable(\@programs);      # writes to gen_files/progtable
+    gen_progtable(\@programs);      # writes to /var/Reg/export/progtable
     # documents and pictures
     for my $p (@programs) {
         my $mmi = $p->school->mmi();
         for my $d ($p->documents) {
             my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
             copy("root/static/images/$pdoc",
-                 "gen_files/" . ($mmi? "mmi_docs": "docs") . "/$pdoc");
+                 "/var/Reg/export/" . ($mmi? "mmi_docs": "docs") . "/$pdoc");
         }
         my $pic_html = $p->picture();   # a side effect of this is to
                                         # copy pics to gen_files/pics
@@ -2710,7 +2710,7 @@ EOS
             edate => $r->edate_obj->format($fmt),
         };
         if ($r->image()) {
-            copy 'root' . $r->image_file(), 'gen_files/pics'
+            copy 'root' . $r->image_file(), '/var/Reg/export/pics'
               or die "no copy of " . $r->image_file() . ": $!\n";
         }
     }
@@ -2751,7 +2751,7 @@ EOS
 
     };
     my ($currHC, $nextHC, $change_date)
-        = PR_progtable($c, 'gen_files/pr/progtable');
+        = PR_progtable($c, '/var/Reg/export/pr/progtable');
     TYPE:
     for my $type (reverse housing_types(1)) {
         next TYPE if $type =~ m{^economy|dormitory|triple$};
@@ -2774,10 +2774,10 @@ EOS
         }
     }
     _json_put($pr_ref, 'pr/pr.json');
-    copy 'root/static/README', 'gen_files';
+    copy 'root/static/README', '/var/Reg/export';
 
     # tar it up
-    system("cd gen_files; tar czf ../exported_reg_data.tgz .");
+    system("cd /var/Reg/Export; tar czf /tmp/exported_reg_data.tgz .");
 
     # send it off
     system("send_export");
