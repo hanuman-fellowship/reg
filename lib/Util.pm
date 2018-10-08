@@ -495,11 +495,6 @@ sub resize {
         # for square images:
         # convert in.jpg -resize 640x368 -background none \
         #         -gravity center -extent 640x368 out.jpg
-        open JON, '>/tmp/jon';
-        print JON
-            "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
-          . " $img/ro-$id.jpg $img/r-$id.jpg";
-        close JON;
         system(
             "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
           . " $img/ro-$id.jpg $img/r-$id.jpg"
