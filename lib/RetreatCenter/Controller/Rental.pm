@@ -63,7 +63,7 @@ use Template;
 use CGI qw/:html/;      # for Tr, td
 use Mail::Sender;
 
-my $img = '/var/Reg/images';
+my $img = '/var/Reg/rental_images';
 
 sub index : Private {
     my ($self, $c) = @_;

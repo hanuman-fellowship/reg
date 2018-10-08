@@ -486,7 +486,7 @@ sub monthyear {
 sub resize {
     my ($type, $id, $which) = @_;
 
-    my $img = "/var/Reg/images";
+    my $img = "/var/Reg/rental_images";
     if ($type eq 'r') {
         # resize and crop centrally to 640x368
         # convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage
@@ -498,8 +498,7 @@ sub resize {
         open JON, '>/tmp/jon';
         print JON
             "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
-          . " $img/ro-$id.jpg $img/r-$id.jpg"
-        );
+          . " $img/ro-$id.jpg $img/r-$id.jpg";
         close JON;
         system(
             "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
