@@ -2544,14 +2544,12 @@ sub export : Local {
     my ($self, $c) = @_;
 
     # clear the arena
-    system(<<"EOS");
-rm -rf $export_dir/*
-mkdir $export_dir/pics
-mkdir $export_dir/docs
-mkdir $export_dir/mmi_pics
-mkdir $export_dir/mmi_docs
-mkdir $export_dir/pr
-EOS
+    system("rm -rf $export_dir/*");
+    mkdir "$export_dir/pics";
+    mkdir "$export_dir/docs";
+    mkdir "$export_dir/mmi_pics";
+    mkdir "$export_dir/mmi_docs";
+    mkdir "$export_dir/pr";
 
     # and make sure we have initialized %string.
     Global->init($c);
