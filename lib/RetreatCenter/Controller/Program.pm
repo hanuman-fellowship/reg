@@ -2715,7 +2715,7 @@ EOS
             edate => $r->edate_obj->format($fmt),
         };
         if ($r->image()) {
-            copy 'root' . $r->image_file(), "$export_dir/pics"
+            copy $r->image_file(), "$export_dir/pics"
               or die "no copy of " . $r->image_file() . ": $!\n";
         }
     }
