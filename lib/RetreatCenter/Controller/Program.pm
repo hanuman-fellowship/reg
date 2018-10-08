@@ -2780,7 +2780,7 @@ sub export : Local {
     copy 'root/static/README', $export_dir;
 
     # tar it up
-    system("cd $export_dir; tar czf /tmp/exported_reg_data.tgz .");
+    system("cd $export_dir; /bin/tar czf /tmp/exported_reg_data.tgz .");
 
     # send it off
     system("send_export");
