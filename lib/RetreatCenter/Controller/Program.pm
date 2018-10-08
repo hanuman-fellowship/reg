@@ -2544,7 +2544,7 @@ sub export : Local {
     my ($self, $c) = @_;
 
     # clear the arena
-    system("rm -rf $export_dir/*");
+    system("/bin/rm -rf $export_dir/*");
     mkdir "$export_dir/pics";
     mkdir "$export_dir/docs";
     mkdir "$export_dir/mmi_pics";
