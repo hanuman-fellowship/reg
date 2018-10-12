@@ -23,7 +23,7 @@ sub view : Local {
     }
     my $prev = $days[-1];
     my $next = $days[1];
-    my @lines = split '\n', slurp("root/static/grab_new/$day");
+    my @lines = split '\n', slurp("/var/Reg/grab_new/$day");
     if ($temple <= 1) {
         my $tmpl_re = qr{\A temple(?!\s+donation)}xms;
         if ($temple == 1) {

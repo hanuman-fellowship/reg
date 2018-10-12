@@ -64,17 +64,6 @@ sub mark_inactive_do : Local {
     my ($self, $c, $date_last) = @_;
 }
 
-sub help_upload : Local {
-    my ($self, $c) = @_;
-
-    if (my $upload = $c->request->upload('helpfile')) {
-        my $name = $upload->filename;
-        $name =~ s{.*/}{};
-        $upload->copy_to("root/static/help/$name");
-    }
-    $c->response->redirect($c->uri_for("/static/help/index.html"));
-}
-
 sub switch : Local {
     my ($self, $c) = @_;
 

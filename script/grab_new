@@ -16,7 +16,7 @@ Otherwise simply exit.
 1) Ftp-get all transaction files from www.mountmadonna.org
 created by the 'relay' program.  The names of these files
 are the ids of the most recent authorize.net transactions.
-Put the files in root/static/online.
+Put the files in /var/Reg/online.
 
 1a) If one of the above transaction files has a line like
 'x_description => Temple Donation ...'
@@ -24,14 +24,14 @@ it is a temple donation and requires special handling.
 Create a Payment record for the person to the 'Temple' Extra Account.
 Send a proper thank you letter???
 
-2) Get recently modified rental grid files into root/static/grid.
+2) Get recently modified rental grid files into /var/Reg/grid.
 
 3) Get mailing list requests (from MMC and MMI) into 
-root/static/mlist_done/$yyyy_mm and insert them into the people table.
+/var/Reg/mlist_done/$yyyy_mm and insert them into the people table.
 In one email (to each office) let them know
 the names and addresses so they can send them a brochure.
 
-4) Get ride requests into root/static/rides.
+4) Get ride requests into /var/Reg/rides.
 If there were any notify the reception office.
 
 5) For registrations that indicated they would like
