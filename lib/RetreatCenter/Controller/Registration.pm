@@ -140,7 +140,10 @@ sub list_online : Local {
                 $edate = date($1);
             }
             elsif (m{x_time => (.*)}) {
-                $time = get_time($1);
+                my $t = $1;
+                # we know the time is 24 hour time
+                $t =~ s/://;
+                $time = get_time($t);
             }
             elsif (m{x_fname => (.*)}) {
                 $first = normalize($1);
@@ -4837,6 +4840,7 @@ sub _person_data {
         # if no email return nothing.
         # the row gets collapsed, right???.
         #
+        $email_all .= $email . ", " if $email;
         return $email_to? ($email_to . "<br>"): "";
     }
 }

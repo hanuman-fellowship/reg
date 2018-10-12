@@ -492,12 +492,13 @@ sub resize {
         # convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage
         #     in.png out.png 
         #
-        # for square images:
+        # for square images - MUST BE PNG!!:
         # convert in.jpg -resize 640x368 -background none \
-        #         -gravity center -extent 640x368 out.jpg
+        #         -gravity center -extent 640x368 out.png
+        # needs work - input is not always jpg!
         system(
-            "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
-          . " $img/ro-$id.jpg $img/r-$id.jpg"
+            "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
+          . " $rst/ro-$id.jpg $rst/r-$id.png"
         );
         # create the thumbnail
         system(

@@ -8,6 +8,8 @@
 &nbsp; &nbsp; &nbsp;
 <a href=/listing/kitchen>Kitchen</a>
 <div style="margin-top: .5in">
+<a href="/listing/tarpanam_counts">Tarpanam Observance Counts</a>
+<p class=p2>
 <a href="/listing/late_notices">Late Notices for Today</a>
 <p class=p2>
 <form action="/listing/comings_goings" method=POST>

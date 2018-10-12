@@ -1,3 +1,4 @@
+requires 'Devel::CheckLib';
 requires 'Catalyst','5.90118';
 requires 'Catalyst::Plugin::Static::Simple', '0.36';
 requires 'Catalyst::Plugin::ServeFile', '0.004';

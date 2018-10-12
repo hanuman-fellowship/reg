@@ -1,0 +1,15 @@
+<h2>Tarpanam Observance Counts</h2>
+<ul>
+<table cellpadding=5 cellspacing=7>
+<tr>
+<th align=left>Date</th>
+<th align=right>Total</th>
+<th>Commuting</th>
+<th>On Land</th>
+<th align=left>Details</th>
+</tr>
+[% FOR r IN rows %]
+$r
+[% END %]
+</table>
+</ul>
