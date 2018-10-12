@@ -498,7 +498,7 @@ sub resize {
         # needs work - input is not always jpg!
         system(
             "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
-          . " $rst/ro-$id.jpg $rst/r-$id.png"
+          . " $img/ro-$id.jpg $img/r-$id.png"
         );
         # create the thumbnail
         system(
