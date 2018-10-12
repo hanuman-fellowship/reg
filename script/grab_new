@@ -197,18 +197,18 @@ sub initialize {
         quit("could not find the Temple Extra Account");
     }
 
-    my $rst = "/var/Reg";
-    $online          = make_dir("$rst/online");
-    $grid            = make_dir("$rst/grid");
-    $temple          = make_dir("$rst/temple_done/$year_mon_dir");
-    $mlist_done      = make_dir("$rst/mlist_done/$year_mon_dir");
-    $rides           = make_dir("$rst/rides");
-    $req_mmi_dir     = make_dir("$rst/req_mmi/$year_mon_dir");
-    $req_mmc_dir     = make_dir("$rst/req_mmc/$year_mon_dir");
-    $omp_dir         = make_dir("$rst/omp");
-    $rental_deposit_dir = make_dir("$rst/rental_deposit/$year_mon_dir");
-    $temple_donation = make_dir("$rst/temple_donation");
-    $grab_new        = make_dir("$rst/grab_new");
+    my $dir = "/var/Reg";
+    $online          = make_dir("$dir/online");
+    $grid            = make_dir("$dir/grid");
+    $temple          = make_dir("$dir/temple_done/$year_mon_dir");
+    $mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
+    $rides           = make_dir("$dir/rides");
+    $req_mmi_dir     = make_dir("$dir/req_mmi/$year_mon_dir");
+    $req_mmc_dir     = make_dir("$dir/req_mmc/$year_mon_dir");
+    $omp_dir         = make_dir("$dir/omp");
+    $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
+    $temple_donation = make_dir("$dir/temple_donation");
+    $grab_new        = make_dir("$dir/grab_new");
 }
 
 sub finalities {
