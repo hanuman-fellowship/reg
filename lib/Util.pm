@@ -497,13 +497,13 @@ sub resize {
         #         -gravity center -extent 640x368 out.png
         # needs work - input is not always jpg!
         system(
-            "convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
+            "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
           . " $img/ro-$id.jpg $img/r-$id.png"
         );
         # create the thumbnail
         system(
             "/usr/bin/convert -scale 100x"
-          . " $img/r-$id.jpg $img/rth-$id.jpg"
+          . " $img/r-$id.png $img/rth-$id.png"
         );
         return;
     }
@@ -511,14 +511,14 @@ sub resize {
         system("/usr/bin/convert -scale "
                . trim($string{imgwidth})
                . "x"
-               . " $img/${type}o-$id.jpg $img/${type}th-$id.jpg"
+               . " $img/${type}o-$id.jpg $img/${type}th-$id.png"
         );
     }
     if (!$which || $which eq "big_imgwidth") {
         system("/usr/bin/convert -scale "
                . trim($string{big_imgwidth})
                . "x"
-               . " $img/${type}o-$id.jpg $img/${type}b-$id.jpg"
+               . " $img/${type}o-$id.jpg $img/${type}b-$id.png"
         );
     }
 }
