@@ -45,7 +45,6 @@ __PACKAGE__->add_columns(qw/
     url
     webdesc
     webready
-    image
     kayakalpa
     canpol_id
     extradays
@@ -122,9 +121,6 @@ __PACKAGE__->has_many(affil_program => 'RetreatCenterDB::AffilProgram',
 __PACKAGE__->many_to_many(affils => 'affil_program', 'affil',
                           { order_by => 'descrip' },
                          );
-# web documents
-__PACKAGE__->has_many(documents => 'RetreatCenterDB::ProgramDoc',
-                      'program_id');
 
 # registrations
 __PACKAGE__->has_many(registrations => 'RetreatCenterDB::Registration',
@@ -756,157 +752,11 @@ sub prevprog {
     $self->{prev}->fname;
 }
 
-#
-# either the leader pic(s) or the program pic
-# or nothing
-# this is one place where we emit HTML :(
-# not sure how to avoid this in the case where
-# there IS no pic.
-#
-# what about clicking on the pic for a large one?
-# open in new window easily closed, sized just right.
-# have little note saying "click to enlarge"?
-# yes, the above used to work okay.   but we removed it.
-# there are lines below that can be uncommented to generate a
-# popup enlargement.  when we have better pictures, that is.
-# take a look at sub gen_popup as well.
-#
-sub picture {
-    my ($self) = @_;
-
-    my $full = $string{imgwidth};
-    my $half = $full/2;
-
-    my @leaders = $self->leaders;
-    my $nleaders = @leaders;
-    # have an array of pictures instead???
-    # which gets pushed onto?
-    # and take the first two leaders that have images.
-    my ($pic1, $pic2) = ("", "");
-    if ($nleaders >= 1 && $leaders[0]->image) {
-        $pic1 = "lth-" . $leaders[0]->id . ".jpg";
-    }
-    if ($nleaders >= 2 && $leaders[1]->image) {
-        $pic2 = "lth-" . $leaders[1]->id . ".jpg";
-    }
-    if ($pic2 and ! $pic1) {
-        $pic1 = $pic2;
-        $pic2 = "";
-    }
-    if ($self->image) {  # use program pic if present
-        $pic1 = "pth-" . $self->id . ".jpg";
-        $pic2 = "";
-    }
-    return "" unless $pic1;          # no image at all
-
-    # first copy the needed pictures to the 'holding area'
-    for my $p ($pic1, $pic2) {
-        next unless $p;
-        if (! -f "root/static/images/$p") {
-            $p =~ s{jpg}{gif};      # this modifies $pic1, $pic2
-        }
-        mkdir "gen_files/pics" if ! -d "gen_files/pics";
-        copy("root/static/images/$p", "gen_files/pics/$p");
-        if ($self->school->mmi()) {
-            mkdir "gen_files/mmi_pics" if ! -d "gen_files/mmi_pics";
-            copy("root/static/images/$p", "gen_files/mmi_pics/$p");
-        }
-        #my $big = $p;
-        #$big =~ s{th}{b};
-        #copy("root/static/images/$big", "gen_files/pics/$big");
-    }
-    if ($pic2) {
-        my $pic1_html = "<img src='pics/$pic1' width=$half>";
-        #$pic1_html = gen_popup($pic1_html, $pic1);
-        my $pic2_html = "<img src='pics/$pic2' width=$half>";
-        #$pic2_html = gen_popup($pic2_html, $pic2);
-        return <<EOH;
-<table cellspacing=0>
-<tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
-</table>
-EOH
-# IF you want two sizes of pictures - you need to
-# move the following line up above </table>
-#<tr><td align=center colspan=2 class='click_enlarge'>$string{'click_enlarge'}</td></tr>
-# and uncomment various other things near here.
-    } else {
-        my $pic_html = "<img src='pics/$pic1' width=$full>";
-        #$pic_html = gen_popup($pic_html, $pic1);
-        $pic_html = "<table><tr><td>"
-                    . $pic_html
-                    . "</td></tr>"
-                    #. "<tr><td align=center class='click_enlarge'>"
-                    #. $string{click_enlarge}
-                    #. "</td></tr>
-                    . "</table>";
-        return $pic_html;
-    }
-}
-sub cl_picture {
-    my ($self) = @_;
-
-    my $full = $string{imgwidth};
-    my $half = $full/2;
-
-    my @leaders = $self->leaders;
-    my $nleaders = @leaders;
-    # have an array of pictures instead???
-    # which gets pushed onto?
-    # and take the first two leaders that have images.
-    my ($pic1, $pic2) = ("", "");
-    if ($nleaders >= 1 && $leaders[0]->image) {
-        $pic1 = "lth-" . $leaders[0]->id . ".jpg";
-    }
-    if ($nleaders >= 2 && $leaders[1]->image) {
-        $pic2 = "lth-" . $leaders[1]->id . ".jpg";
-    }
-    if ($pic2 and ! $pic1) {
-        $pic1 = $pic2;
-        $pic2 = "";
-    }
-    if ($self->image) {  # use program pic if present
-        $pic1 = "pth-" . $self->id . ".jpg";
-        $pic2 = "";
-    }
-    return "" unless $pic1;          # no image at all
-
-    my $dir = $self->unlinked_dir || 'live';
-    if ($pic2) {
-        my $pic1_html = "<img src='http://$string{ftp_site}/$dir/pics/$pic1' width=$half>";
-        my $pic2_html = "<img src='http://$string{ftp_site}/$dir/pics/$pic2' width=$half>";
-        return <<EOH;
-<table cellspacing=0>
-<tr><td valign=bottom>$pic1_html</td><td valign=bottom>$pic2_html</td></tr>
-</table>
-EOH
-    } else {
-        return "<img src='http://$string{ftp_site}/$dir/pics/$pic1' width=$full>";
-    }
-}
-
 sub cancellation_policy {
     my ($self) = @_;
     my $s = gptrim($self->canpol->policy);
     $s =~ s{^<p>|</p>$}{}g;     # no paragraphs at all, please.
     $s;
-}
-
-sub gen_popup {
-    my ($pic_html, $pic) = @_;
-    $pic =~ s{th}{b};
-    my ($w, $h) = imgsize("gen_files/pics/$pic");
-    my $pw = $w + 80;
-    my $ph = $h + 70;
-    $pic_html = qq!<a target=_blank onclick='window.open("$pic.html","","width=$pw,height=$ph")'>$pic_html</a>!;
-    my $fname = "gen_files/$pic.html";
-    open my $out, ">", $fname or die "cannot create $fname: $!\n";
-    my $copy = slurp("popup");
-    # used to have http://www.mountmadonna.org/staging/ in front
-    # this is not right - need to rework using Template Toolkit.
-    $copy =~ s{<!--\s*T\s+bigpic\s*-->}{<img src="pics/$pic" width=$w height=$h border=0>};
-    print {$out} $copy;
-    close $out;
-    $pic_html;
 }
 
 # class methods
@@ -919,11 +769,6 @@ sub current_year {
     return today()->year();                 # can't use tt_today() - no $c
 }
 
-sub image_file {
-    my ($self) = @_;
-    my $path = "/static/images/pth-" . $self->id;
-    (-f "root/$path.jpg")? "$path.jpg": "$path.gif";
-}
 sub count {
     my ($self) = @_;
     return scalar($self->reg_count);
@@ -1138,8 +983,6 @@ housecost_id - foreign key to housecost
 housing_not_needed - No housing is needed for this program - perhaps it is
     being held away from MMC?
 id - unique id
-image - A boolean - do we have an image for the web page of this program?
-    Naming conventions lead us to the actual filename.
 kayakalpa - Shall we include a note about Kaya Kalpa information in the confirmation letter?
 level_id - For MMI programs this indicates the type of course.
    CS YSC1, CS YSC2, ..., Certificate, ... Course
@@ -1187,5 +1030,4 @@ unlinked_dir - Obsolete.  For unlinked programs (see the linked attribute)
 url - A web URL containing further information about the program.
 waiver_needed - Registrants for this program must sign a waiver.
 webdesc - A long description of the program.
-webready - Is this program ready to be published to the web (at least to
-    the staging area)? 
+webready - Is this program ready to be Exported?

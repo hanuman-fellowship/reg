@@ -182,14 +182,6 @@ th {
 </td>
 </tr>
 
-<tr>
-<th>New Picture</th>
-<td colspan=3><input type=file name=newpic>
-<input id=sub type=submit value="Submit">
-<a style="margin-left: 1in" href=#top>To Top</a>
-</td>
-</tr>
-
 [% IF sum.needs_verification %]
 <tr>
 <td></td>

@@ -6,7 +6,6 @@ use base 'Catalyst::Controller';
 use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     trim
-    resize
     valid_email
     model
     stash
@@ -17,7 +16,6 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
-use Global qw/%string/;     # resize needs this to have been done
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -96,7 +94,6 @@ sub _del {
     my ($c, $id) = @_;
     model($c, 'Resident')->search({id => $id})->delete();
     model($c, 'ResidentNote')->search({resident_id => $id})->delete();
-    unlink <root/static/images/r*-$id.jpg>;
 }
 
 my @mess;
@@ -137,16 +134,8 @@ sub update_do : Local {
 
     _get_data($c);
     return if @mess;
-    my @img = ();
-    if (my $upload = $c->request->upload('image')) {
-        $upload->copy_to("root/static/images/ro-$id.jpg");
-        Global->init($c);
-        resize('r', $id);
-        @img = (image => 'yes');
-    }
     model($c, 'Resident')->find($id)->update({
         %hash,
-        @img,
     });
     $c->response->redirect($c->uri_for("/resident/view/$id"));
 }
@@ -180,26 +169,6 @@ sub create_do : Local {
         %hash,
     });
     my $id = $r->id();      # the new resident id
-    my $upload = $c->request->upload('image');
-    if ($upload) {
-        $upload->copy_to("root/static/images/ro-$id.jpg");
-        Global->init($c);
-        resize('r', $id);
-        $r->update({
-            image => 'yes',
-        });
-    }
-    $c->response->redirect($c->uri_for("/resident/view/$id"));
-}
-
-sub del_image : Local {
-    my ($self, $c, $id) = @_;
-
-    my $r = $c->stash->{resident} = model($c, 'Resident')->find($id);
-    $r->update({
-        image => "",
-    });
-    unlink <root/static/images/r*-$id.jpg>;
     $c->response->redirect($c->uri_for("/resident/view/$id"));
 }
 

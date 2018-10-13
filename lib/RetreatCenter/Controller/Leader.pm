@@ -6,12 +6,10 @@ use base 'Catalyst::Controller';
 use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     trim
-    resize
     valid_email
     model
     stash
 /;
-use Global qw/%string/;     # resize needs this to have been done
 
 sub index : Private {
     my ( $self, $c ) = @_;
@@ -67,7 +65,6 @@ sub _del {
     my ($c, $id) = @_;
     model($c, 'Leader')->search({id => $id})->delete();
     model($c, 'LeaderProgram')->search({l_id => $id})->delete();
-    unlink <root/static/images/l*-$id.jpg>;
 }
 
 my @mess;
@@ -129,16 +126,8 @@ sub update_do : Local {
 
     _get_data($c);
     return if @mess;
-    my @img = ();
-    if (my $upload = $c->request->upload('image')) {
-        $upload->copy_to("root/static/images/lo-$id.jpg");
-        Global->init($c);
-        resize('l', $id);
-        @img = (image => 'yes');
-    }
     model($c, 'Leader')->find($id)->update({
         %hash,
-        @img,
     });
     $c->response->redirect($c->uri_for("/leader/view/$id"));
 }
@@ -178,25 +167,6 @@ sub create_do : Local {
         %hash,
     });
     my $id = $l->id();      # the new leader id
-    my $upload = $c->request->upload('image');
-    if ($upload) {
-        $upload->copy_to("root/static/images/lo-$id.jpg");
-        Global->init($c);
-        resize('l', $id);
-        $l->update({
-            image => 'yes',
-        });
-    }
-    $c->response->redirect($c->uri_for("/leader/view/$id"));
-}
-
-sub del_image : Local {
-    my ($self, $c, $id) = @_;
-
-    model($c, 'Leader')->find($id)->update({
-        image => "",
-    });
-    unlink <root/static/images/l*-$id.jpg>;
     $c->response->redirect($c->uri_for("/leader/view/$id"));
 }
 

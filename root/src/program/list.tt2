@@ -12,10 +12,6 @@
     <a href="/program/export">Export<a>
 [% END %]
 [% IF mmi_admin %]
-<!-- obsolete
-    &nbsp;&nbsp;&nbsp;
-    <a href="/program/mmi_publish">MMI Publish<a>
--->
     &nbsp;&nbsp;&nbsp;
     <a href="/program/list/long_term">Credentialed<a>
 [% END %]

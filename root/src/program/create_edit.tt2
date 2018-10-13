@@ -386,36 +386,22 @@ Both <input type=radio name=bank_account value='both' $bank_both>
 <td><input type=submit id=sub value="Submit"></td>
 </tr>
 
-[% no_publish = program.school.mmi && ! program.level.public? 'disabled': '' %]
+[% no_export = program.school.mmi && ! program.level.public? 'disabled': '' %]
 
 <tr>
 <th align=right>Web Ready</th>
-<td><input type=checkbox value=yes name=webready $check_webready $no_publish>
+<td><input type=checkbox value=yes name=webready $check_webready $no_export>
 </td>
 </tr>
 
 <tr>
 <th align=right>Linked</th>
-<td><input type=checkbox value=yes name=linked $check_linked $no_publish></td>
+<td><input type=checkbox value=yes name=linked $check_linked $no_export></td>
 </tr>
 
 <tr>
 <th align=right>Facebook Event Id</th>
 <td><input type=text name=facebook_event_id size=20 value="$program.facebook_event_id">
-</tr>
-
-<tr>
-<th align=right valign=top>Program Image</th>
-<td colspan=2>
-[% IF program.image %]
-<img src="$program.image_file" border=0><br>
-[% ELSE %]
-    [% IF dup_image %]
-        <img src=$dup_image border=0><br>
-    [% END %]
-[% END %]
-<input type=file name=image>
-</td>
 </tr>
 
 <tr>
@@ -426,25 +412,6 @@ Both <input type=radio name=bank_account value='both' $bank_both>
     <option value='$t'[% IF t == program.ptemplate %] selected[% END %]>$t</option>
 [% END %]
 </select>
-</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Documents</th>
-<td colspan=2>
-    <table cellpadding=5>
-    [% IF program.documents %]
-        [% FOR d IN program.documents %]
-            <tr>
-            <td>$d.title</td>
-            </tr>
-        [% END %]
-    [% END %]
-    <tr>
-    <td><b>Title</b> <input type=text name=doc_title></td>
-    <td><input type=file name=new_web_doc></td>
-    </tr>
-    </table>
 </td>
 </tr>
 

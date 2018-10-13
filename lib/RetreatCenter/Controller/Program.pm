@@ -11,7 +11,6 @@ use Util qw/
     monthyear
     expand
     expand2
-    resize
     housing_types
     sys_template
     compute_glnum
@@ -421,15 +420,6 @@ sub create_do : Local {
     $P{reg_count} = 0;       # otherwise it will not increment
     $P{bank_account} ||= 'mmc';     # it defaults but to be safe ...
 
-    my $upload     = $c->request->upload('image');
-    if ($upload) {
-        $P{image} = 'yes';
-    }
-    my $doc_upload = $c->request->upload('new_web_doc');
-    my $doc_title = $P{doc_title};
-    delete $P{doc_title};       # so they aren't referenced below
-    delete $P{new_web_doc};
-
     if (! $P{summary_id}) {
         # we do not have a summary already from
         # a parallel rental
@@ -464,7 +454,6 @@ sub create_do : Local {
     # now we can create the program itself
     #
     my $p = model($c, 'Program')->create({
-        image      => $upload? 'yes': '',
         lunches    => '',
         refresh_days => '',
         rental_id  => 0,        # overridden by hybrid
@@ -486,22 +475,6 @@ sub create_do : Local {
         $r->update({
             program_id => $id,
         });
-    }
-    if ($upload) {
-        $upload->copy_to("root/static/images/po-$id.jpg");
-        Global->init($c);
-        resize('p', $id);
-    }
-    if ($doc_upload) {
-        my ($suffix) = $doc_upload->filename =~ m{ [.] (\w+) \z }xms;
-        my $pdoc = model($c, 'ProgramDoc')->create({
-            program_id => $id,
-            title      => $doc_title,
-            suffix     => $suffix,
-        });
-        $doc_upload->copy_to("root/static/images/pdoc"
-                           . $pdoc->id()
-                           . ".$suffix");
     }
     _finalize_program_creation($c, $id);
 }
@@ -940,25 +913,6 @@ sub update_do : Local {
     if (! $c->check_user_roles('prog_admin')) {
         delete $P{glnum};
     }
-    if (my $upload = $c->request->upload('image')) {
-        $upload->copy_to("root/static/images/po-$id.jpg");
-        Global->init($c);
-        resize('p', $id);
-        $P{image} = 'yes';
-    }
-    if (my $doc_upload = $c->request->upload('new_web_doc')) {
-        my ($suffix) = $doc_upload->filename =~ m{ [.] (\w+) \z }xms;
-        my $pdoc = model($c, 'ProgramDoc')->create({
-            program_id => $id,
-            title      => $P{doc_title},
-            suffix     => $suffix,
-        });
-        $doc_upload->copy_to("root/static/images/pdoc"
-                           . $pdoc->id()
-                           . ".$suffix");
-    }
-    delete $P{doc_title};       # so they aren't referenced below
-    delete $P{new_web_doc};
     my $p = model($c, 'Program')->find($id);
     $P{max} ||= 0;
     if (   $p->sdate       ne $P{sdate}
@@ -1244,24 +1198,10 @@ sub delete : Local {
     # the summary
     $p->summary->delete();
 
-    # any image
-    unlink <root/static/images/p*-$id.jpg>;
-
     # and finally, the program itself
     $p->delete();
 
     $c->response->redirect($c->uri_for('/program/list'));
-}
-
-sub del_image : Local {
-    my ($self, $c, $id) = @_;
-
-    my $p = $c->stash->{program} = model($c, 'Program')->find($id);
-    $p->update({
-        image => '',
-    });
-    unlink <root/static/images/p*-$id.jpg>;
-    $c->response->redirect($c->uri_for("/program/view/$id/4"));
 }
 
 sub access_denied : Private {
@@ -1271,434 +1211,6 @@ sub access_denied : Private {
         "Authorization denied!",
         "gen_error.tt2",
     );
-}
-
-sub _pub_err {
-    my ($c, $msg, $chdir) = @_;
-
-    chdir ".." if $chdir;
-    stash($c,
-        mess     => $msg,
-        template => "program/pub_error.tt2",
-    );
-    return;
-}
-
-sub publish : Local {
-    my ($self, $c) = @_;
-
-    # clear the arena
-    system("rm -rf gen_files; mkdir gen_files; "
-         . "mkdir gen_files/pics; mkdir gen_files/docs");
-
-    # and make sure we have initialized %string.
-    Global->init($c);
-
-    #
-    # get all the future programs destined for the web into an array
-    # sorted by start date and then end date.
-    #
-    my @programs = RetreatCenterDB::Program->future_programs($c);
-
-    # ensure that all of these programs have at least one affiliation set
-    #
-    for my $pr (@programs) {
-        my @affils = $pr->affils();
-        unless (@affils) {
-            error($c,
-                "Program " . $pr->name . " has no affiliations!",
-                "program/error.tt2",
-            );
-            return;
-        }
-    }
-
-    gen_month_calendars($c, \@programs);
-    gen_progtable(\@programs);
-
-    # 
-    # generate each of the program pages
-    # MMI Standalone courses do not need a program page.
-    #
-    # a side effect will be to copy the pictures of
-    # the leaders or the program picture to the holding area.
-    # (see RetreatCenterDB::Program->picture)
-    #
-    # the docs, if any, we copy ourselves here.
-    #
-    my @unlinked;
-    my $tt = Template->new();
-    PROGRAM:
-    for my $p (@programs) {
-        next PROGRAM if $p->school->mmi();     # stand alone MMI courses
-        my $fname = $p->fname();
-        my $copy = $p->template_src();
-        $tt->process(
-            \$copy,
-            { program => $p },
-            "gen_files/$fname",
-        ) or die "error in processing template: "
-             . $tt->error();
-        for my $d ($p->documents) {
-            my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
-            copy("root/static/images/$pdoc", "gen_files/docs/$pdoc");
-        }
-        if (! $p->linked) {
-            push @unlinked, $p;
-        }
-    }
-
-    #
-    # generate the program and rental calendars.
-    # programs (MMC and MMI standalone courses) appear only on the program calendar.
-    # rentals appear only on the rental calendar.
-    # Unlinked MMC programs appear on neither.
-    #
-    # It's okay to require that MMI standalone courses have linked checked.
-    # Yes?
-    #
-    my $rentallist = '';
-    my $programlist = '';
-
-    my $progRow   = slurp "progRow";
-    my $mmiRow    = slurp "mmiRow";
-    my $rentalRow = slurp "rentalRow";
-
-    my $cur_rental_month = 0;
-    my $cur_rental_year = 0;
-    my $cur_prog_month = 0;
-    my $cur_prog_year = 0;
-    my @rentals  = RetreatCenterDB::Rental->future_rentals($c);
-    for my $e (sort {
-                   $a->sdate <=> $b->sdate
-                   or
-                   $a->edate <=> $b->edate
-               }
-               grep {
-                   $_->linked && ! $_->cancelled
-               }
-               @programs,
-               @rentals
-    ) {
-        my $rental = (ref($e) =~ m{Rental$});
-        my $for_rental_calendar = $rental;
-
-        my $sdate = $e->sdate_obj;
-        my $smonth = $sdate->month;
-        my $syear = $sdate->year;
-        my $my = monthyear($sdate);
-
-        if ($for_rental_calendar) {
-            if ($cur_rental_month != $smonth || $cur_rental_year != $syear) {
-                $rentallist
-                    .= "<tr><td class='rental_my_row' colspan=2>$my</td></tr>\n";
-                $cur_rental_month = $smonth;
-                $cur_rental_year = $syear;
-            }
-            my $s;
-            $tt->process(
-                \$rentalRow,
-                { rental => $e },
-                \$s,
-            ) or die "error in processing template: "
-                 . $tt->error();
-            $rentallist .= $s;
-        }
-        else {
-            if ($cur_prog_month != $smonth || $cur_prog_year != $syear) {
-                $programlist
-                    .= "<tr><td class='prog_my_row' colspan=2>$my</td></tr>\n";
-                $cur_prog_month = $smonth;
-                $cur_prog_year = $syear;
-            }
-            my $s;
-            $tt->process(
-                $e->level->public()? \$mmiRow: \$progRow,
-                { program => $e },
-                \$s,
-            ) or die "error in processing template: "
-                     . $tt->error();
-            $programlist .= $s;
-        }
-    }
-    #
-    # we have gathered all the info into rentallist and programlist.
-    # now to insert them in the templates and output
-    # the .html files for the programs and rentals pages.
-    #
-    my $rental_template = slurp "rentals";
-    $tt->process(
-        \$rental_template,
-        { rentallist => $rentallist },
-        "gen_files/rentals.html",
-    ) or die "error in processing template: "
-             . $tt->error();
-    my $program_template = slurp "programs";
-    $tt->process(
-        \$program_template,
-        { programlist => $programlist },
-        "gen_files/programs.html",
-    ) or die "error in processing template: "
-             . $tt->error();
-
-    #
-    # schmush around the unlinked programs
-    #
-    for my $ulp (@unlinked) {
-        my $dir = $ulp->unlinked_dir;
-        mkdir "gen_files/$dir";
-        mkdir "gen_files/$dir/pics";
-        rename "gen_files/" . $ulp->fname,
-               "gen_files/$dir/index.html";
-        copy "gen_files/progtable",
-             "gen_files/$dir/progtable";
-        # now for the pictures and the associated html files...
-        my $src = slurp("gen_files/$dir/index.html");
-        my @img = $src =~ m{pics/(.*?(?:jpg|gif))}g;
-        for my $im (@img) {
-            copy "gen_files/pics/$im",   # not move.
-                 "gen_files/$dir/pics/$im";
-                                        # it is POSSIBLE for a leader
-                                        # to lead both a linked and an
-                                        # unlinked program.
-            my $pic = $im;
-            $pic =~ s{gen_files/pics/}{};
-            $pic =~ s{th}{b};
-            copy "gen_files/pics/$pic",   # not move.
-                 "gen_files/$dir/pics/$pic";
-            copy "gen_files/$pic.html",
-                 "gen_files/$dir/$pic.html";
-        }
-    }
-    #
-    # remove the temporary calX.html files
-    #
-    unlink <root/static/templates/web/cal?.html>;
-
-    #
-    # finally, ftp all generated pages to www.mountmadonna.org
-    # or whereever Global says, that is...
-    #
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or return _pub_err($c, "cannot connect to $string{ftp_site}");
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return _pub_err($c, "cannot login: " . $ftp->message);
-    $ftp->cwd($string{ftp_dir})
-        or return _pub_err($c, "cannot cwd: " . $ftp->message);
-    $ftp->cwd($string{ftp_dir2})
-        or return _pub_err($c, "cannot cwd: " . $ftp->message);
-    for my $f ($ftp->ls()) {
-        $ftp->delete($f) if $f ne 'pics';
-    }
-    $ftp->ascii();
-    # dangerous to chdir - in case we die...
-    # need to restore current directory.
-    # die does not really die.  the server keeps running somehow.
-    chdir "gen_files";
-    FILE:
-    for my $f (<*>) {
-        if (-d $f) {
-            next FILE if $f eq 'pics' || $f eq 'docs';
-            # an unlinked program directory
-            $ftp->mkdir("../$f");
-            for my $hf (<$f/*.html>) {
-                $ftp->put($hf, "../$hf")
-                    or return _pub_err($c, "cannot put $hf to ../$hf", 1);
-            }
-            $ftp->binary();
-            $ftp->mkdir("../$f/pics");
-            for my $p (<$f/pics/*>) {
-                $ftp->put($p, "../$p")
-                    or return _pub_err($c, "cannot put $p to ../$p", 1);
-            }
-            $ftp->mkdir("../$f/docs");
-            for my $d (<$f/docs/*>) {
-                $ftp->put($d, "../$d")
-                    or return _pub_err($c, "cannot put $d to ../$d", 1);
-            }
-            $ftp->ascii();
-            $ftp->put("$f/progtable", "../$f/progtable")
-                    or return _pub_err($c, "cannot put $f/progtable to ../$f/progtable", 1);
-        }
-        else {
-            $ftp->put($f)
-                or return _pub_err($c, "cannot put $f: " . $ftp->message, 1);
-        }
-    }
-    $ftp->quit();
-    chdir "..";     # important!
-    stash($c,
-        ftp_dir2 => $string{ftp_dir2},
-        unlinked => \@unlinked,
-        template => "program/published.tt2",
-    );
-}
-
-# Obsolete!
-sub mmi_publish : Local {
-    my ($self, $c) = @_;
-
-    # clear the arena
-    system("rm -rf gen_files; mkdir gen_files");
-
-    # and make sure we have initialized %string.
-    Global->init($c);
-
-    # fill the global @programs with all future 
-    # webready MMI public courses ordered by start date.
-    #
-    my @programs = model($c, 'Program')->search(
-                       {
-                           sdate  => { '>=', tt_today($c)->as_d8() },
-                           'school.mmi' => 'yes',      # not MMC
-                           'level.public' => 'yes', # MMI public course
-                           webready => 'yes',
-                       },
-                       {
-                           order_by => 'sdate',
-                           join     => [qw/ school level /],
-                       },
-                   );
-    gen_progtable(\@programs);
-    # send to mountmadonnainstitute.org/courses
-    my $ftp = Net::FTP->new($string{ftp_mmi_site},
-                            Passive => $string{ftp_mmi_passive})
-        or return _pub_err($c, "cannot connect to ...");
-    $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
-        or return _pub_err($c, "cannot login: " . $ftp->message);
-    $ftp->cwd($string{ftp_mmi_dir})
-        or return _pub_err($c, "cannot cwd " . $ftp->message);
-    $ftp->put('gen_files/progtable');
-    $ftp->quit();
-    stash($c,
-        programs => \@programs,
-        template => "program/mmi_published.tt2",
-    );
-}
-
-# Obsolete!
-sub publish_pics : Local {
-    my ($self, $c) = @_;
-
-    Global->init($c);
-    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
-        or return _pub_err($c, "cannot connect to ...");
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return _pub_err($c, "cannot login: " . $ftp->message);
-    #
-    # this assumes pics/ is there...
-    #
-    $ftp->cwd("$string{ftp_dir}/$string{ftp_dir2}/pics")
-        or return _pub_err($c, "cannot cwd " . $ftp->message);
-    for my $f ($ftp->ls()) {
-        $ftp->delete($f);
-    }
-    $ftp->binary();
-    chdir "gen_files/pics";
-    PIC:
-    for my $f (<*.jpg>) {
-        if ($f =~ m{^[lp]b}) {      # skip the big ones for now
-            next PIC;
-        }
-        if (! $ftp->put($f)) {
-            chdir "../..";
-            return _pub_err($c, "cannot put $f", 1);
-        }
-    }
-    #
-    # this assumes docs/ is there...
-    #
-    $ftp->cwd("../docs")
-        or return _pub_err($c, "cannot cwd " . $ftp->message);
-    for my $f ($ftp->ls()) {
-        $ftp->delete($f);
-    }
-    $ftp->binary();
-    chdir "../docs";
-    for my $f (<*>) {
-        if (! $ftp->put($f)) {
-            chdir "../..";
-            return _pub_err($c, "cannot put $f", 1);
-        }
-    }
-    $ftp->quit();
-    chdir "../..";
-    my @unlinked = grep { ! $_->linked }
-                   RetreatCenterDB::Program->future_programs($c);
-    stash($c,
-        unlinked => \@unlinked,
-        pics     => 1,
-        ftp_dir2 => $string{ftp_dir2},
-        template => "program/published.tt2",
-    );
-}
-
-# Obsolete!
-#
-# go through the programs in ascending date order
-# and create the monthly calendar files calX.html
-# where X is the month number.
-#
-# skip the unlinked ones
-# treat the MMI ones specially
-#
-# clear them first? or after using them???
-#
-sub gen_month_calendars {
-    my ($c, $programs_ref) = @_;
-    my $cur_ym = 0;
-    my $mmi_link = "</span><span class='external_link_icon'>"
-                 . "<i class='fa fa-external-link'></i> MMI</span>";
-    my $cal;
-    for my $p (grep { $_->linked && ! $_->cancelled } @$programs_ref) {
-        my $ym = $p->sdate_obj->format("%Y%m");
-        if ($ym != $cur_ym) {
-            # finish the prior calendar file, if any
-            if ($cur_ym) {
-                print {$cal} "</table>\n";
-                close $cal;
-                undef $cal;
-            }
-            # start a new calendar file
-            $cur_ym = $ym;
-            undef $cal;
-            open $cal, ">", "root/static/templates/web/cal$ym.html"
-                or die "cannot create cal$ym.html: $!\n";
-            my $my = monthyear($p->sdate_obj);
-            print {$cal} <<EOH;
-<table class='caltable'>
-<tr><td class="monthyear" colSpan=2>$my</td></tr>
-EOH
-        }
-        my $title = "";
-        my $class = "";
-        if ($p->school->mmi) {
-            $title .= "<a href='http://" . $p->url . "'>";
-            $title .= $p->title;
-            $title .= "</a>";
-            $title .= $mmi_link;
-            $title .= "<br><span class='subtitle'>" . $p->subtitle . "</span>";
-            $class = "mmi_event";
-        }
-        else {
-            $title .= "<a href='" . $p->fname . "'>";
-            $title .= $p->title1;
-            $title .= "</a>";
-            $title .= "<br><span class='subtitle'>" . $p->title2 . "</span>";
-            $class = "title";
-        }
-        # the program info itself
-        print {$cal} "<tr>\n<td class='dates_tr'>",
-                     $p->dates_tr, "</td>",
-                     "<td class='$class'>",
-                     $title,
-                     "</td></tr>";
-    }
-    # finish the prior calendar file, if any
-    if ($cur_ym) {
-        print {$cal} "</table>\n";
-        close $cal;
-    }
 }
 
 # ??? Use Data::Dumper?
@@ -1778,33 +1290,6 @@ EOD
     }
     print {$progt} "    type => '", $housecost->type(), "',\n";
 
-    # pictures
-    #
-    my @leaders = $p->leaders();
-    my $nleaders = @leaders;
-
-    # images - be careful with unlinked programs
-    my ($pic1, $pic2) = ('', '');
-    my $url = $p->linked? "http://www.mountmadonna.org/live/pics"
-             :            ("http://www.mountmadonna.org/" . $p->unlinked_dir . "/pics")
-             ;
-    if ($nleaders >= 1 && $leaders[0]->image) {
-        $pic1 = "$url/lth-" . $leaders[0]->id() . ".jpg";
-    }
-    if ($nleaders >= 2 && $leaders[1]->image) {
-        $pic2 = "$url/lth-" . $leaders[1]->id() . ".jpg";
-    }
-    if ($pic2 and ! $pic1) {
-        $pic1 = $pic2;
-        $pic2 = '';
-    }
-    if ($p->image()) {  # program pic, if present, overrides the leader pics
-        $pic1 = "$url/pth-" . $p->id() . ".jpg";
-        $pic2 = '';
-    }
-    print {$progt} "    image1 => '$pic1',\n";
-    print {$progt} "    image2 => '$pic2',\n";
-
     # finalization
     #
     print {$progt} "},\n";
@@ -1872,21 +1357,6 @@ sub duplicate : Local {
     my ($self, $c, $id) = @_;
     my $orig_p = model($c, 'Program')->find($id);
 
-    # the image takes some special handling
-    # in the initial duplication dialog we want to indicate
-    # what the image _will_ be if we would take the image
-    # from the original program - but that image (the dup'ed one)
-    # does not yet exist.   We may abort the duplication process,
-    # we may upload a different image for the dup'ed program.
-    # if we want to not have an image at all in the dup'ed program
-    # we'll need to accept the old when creating the dup
-    # and THEN delete it.
-    if ($orig_p->image()) {
-        stash($c,
-            dup_image => $orig_p->image_file(),
-        );
-    }
-
     # things that are different from the original:
     # tricky!  we will duplicate the summary but
     # not a parallel program.  the user will need to
@@ -1899,7 +1369,6 @@ sub duplicate : Local {
         lunches => '',
         refresh_days => '',
         glnum   => '',
-        image   => '',      # not yet
         rental_id => 0,
         webready => 0,
     });
@@ -1970,12 +1439,6 @@ sub duplicate_do : Local {
     return if @mess;
 
     delete $P{section};      # irrelevant
-    my $doc_upload = $c->request->upload('new_web_doc');
-    my $doc_title = $P{doc_title};
-    delete $P{doc_title};       # so they aren't referenced below
-    delete $P{new_web_doc};
-    # documents from the original program are not copied forward.
-    # hope this is okay.
 
     if ($P{name} =~ m{ personal \s+ retreat }xmsi) {
         $P{title} = $P{name};
@@ -2012,17 +1475,10 @@ sub duplicate_do : Local {
         });
     }
 
-    # the image takes special handling
-    # if a new one is provided, take that.
-    # otherwise use the old one, if any.
-    #
-    my $upload = $c->request->upload('image');
-
     # now we can create the new dup'ed program
     my $new_p = model($c, 'Program')->create({
         %P,     # this comes first so summary_id can override
         summary_id => $sum->id,
-        image      => ($upload || $old_prog->image())? 'yes': '',
         program_created => tt_today($c)->as_d8(),
         created_by => $c->user->obj->id,
         cancelled => '',
@@ -2030,32 +1486,6 @@ sub duplicate_do : Local {
 
     my $new_id = $new_p->id();
 
-    # mess with the new image, if any.
-    if ($upload) {
-        $upload->copy_to("root/static/images/po-$new_id.jpg");
-        Global->init($c);
-        resize('p', $new_id);
-    }
-    elsif ($new_p->image()) {
-        # complicated! wake up.
-        my $path = "root/static/images";
-        my $suf = (-f "$path/po-$old_id.jpg")? "jpg": "gif";
-        for my $let (qw/ b o th /) {
-            copy "$path/p$let-$old_id.$suf",
-                 "$path/p$let-$new_id.$suf";
-        }
-    }
-    if ($doc_upload) {
-        my ($suffix) = $doc_upload->filename =~ m{ [.] (\w+) \z }xms;
-        my $pdoc = model($c, 'ProgramDoc')->create({
-            program_id => $new_id,
-            title      => $doc_title,
-            suffix     => $suffix,
-        });
-        $doc_upload->copy_to("root/static/images/pdoc"
-                           . $pdoc->id()
-                           . ".$suffix");
-    }
     # copy the leaders and affils
     my @leader_programs = model($c, 'LeaderProgram')->search({
         p_id => $old_id,
@@ -2335,102 +1765,6 @@ sub color_do : Local {
     $c->response->redirect($c->uri_for("/program/view/$program_id/2"));
 }
 
-sub publishPR : Local {
-    my ($self, $c, $id) = @_;
-
-    Global->init($c);
-    stash($c,
-        id       => $id,
-        discount => $string{disc_pr},
-        start    => date($string{disc_pr_start}),
-        end      => date($string{disc_pr_end}),
-        getaway  => $string{personal_template} eq 'personal_getaway'?
-                        'getaway': 'plain',
-        template => "program/publish_pr.tt2",
-    );
-}
-
-#
-# get the form values and then
-# invoke the publish_pr program usually invoked
-# automatically on the 1st of the month at 1 am.
-#
-# we force the start date to the first of the month
-# and the end date to the last day of the month.
-#
-sub publishPR_do : Local {
-    my ($self, $c, $id) = @_;
-
-    my $pct = trim($c->request->params->{discount});
-    if ($pct !~ m{\A \d+ \z}xms) {
-        error($c,
-            "Illegal discount percentage",
-            "gen_error.tt2",
-        );
-        return;
-    }
-    my $start = date($c->request->params->{start});
-    if (! $start) {
-        error($c,
-            "Invalid start date",
-            "gen_error.tt2",
-        );
-        return;
-    }
-    $start = ymd($start->year, $start->month, 1);
-    my $end = date($c->request->params->{end});
-    if (! $end) {
-        error($c,
-            "Invalid end date",
-            "gen_error.tt2",
-        );
-        return;
-    }
-    my $y = $end->year;
-    my $m = $end->month;
-    $end = ymd($y, $m, days_in_month($y, $m));
-
-    if ($start >= $end) {
-        error($c,
-            "Start is greater than End",
-            "gen_error.tt2",
-        );
-        return;
-    }
-
-    #
-    # put the values in the database table and in the %string hash.
-    #
-    model($c, 'String')->find('disc_pr')->update({
-        value => $pct,
-    });
-    $string{disc_pr} = $pct;
-
-    my $d8 = $start->as_d8();
-    model($c, 'String')->find('disc_pr_start')->update({
-        value => $d8,
-    });
-    $string{disc_pr_start} = $d8;
-
-    $d8 = $end->as_d8();
-    model($c, 'String')->find('disc_pr_end')->update({
-        value => $d8,
-    });
-    $string{disc_pr_end} = $d8;
-
-    my $value = ($c->request->params->{publish_type} eq 'getaway')?
-        'personal_getaway': 'personal';
-    model($c, 'String')->find('personal_template')->update({
-        value => $value,
-    });
-    $string{personal_template} = $value;
-
-    # now send everything up to mountmadonna.org
-    system("publish_pr");
-
-    $c->response->redirect($c->uri_for("/program/view/$id"));
-}
-
 sub update_refresh : Local {
     my ($self, $c, $id) = @_;
 
@@ -2515,27 +1849,6 @@ sub cancel : Local {
     $c->response->redirect($c->uri_for("/program/view/$id/1"));
 }
 
-sub del_doc : Local {
-    my ($self, $c, $program_id, $doc_id) = @_;
-
-    my ($prog_doc) = model($c, 'ProgramDoc')->search({
-        program_id => $program_id,
-        id         => $doc_id,
-    });
-    if ($prog_doc) {
-        $prog_doc->delete();
-        unlink "root/static/images/pdoc$doc_id." . $prog_doc->suffix();
-    }
-    else {
-        error($c,
-            "Could not find the document you requested.",
-            "gen_error.tt2",
-        );
-        return;
-    }
-    $c->response->redirect($c->uri_for("/program/view/$program_id/4"));
-}
-
 #
 # for the new web site where the generation of the program pages
 # happens in another way.
@@ -2576,19 +1889,6 @@ sub export : Local {
         }
     }
     gen_progtable(\@programs);      # writes to $export_dir/progtable
-    # documents and pictures
-    for my $p (@programs) {
-        my $mmi = $p->school->mmi();
-        for my $d ($p->documents) {
-            my $pdoc = "pdoc" . $d->id . '.' . $d->suffix;
-            copy("root/static/images/$pdoc",
-                 $export_dir . ($mmi? "mmi_docs": "docs") . "/$pdoc");
-        }
-        my $pic_html = $p->picture();   # a side effect of this is to
-                                        # copy pics to gen_files/pics
-                                        #           or gen_files/mmi_pics.
-                                        # we do not need the returned $pic_html
-    }
     my $fmt = '%Y-%m-%d';
     my (@export_programs, @export_mmi_programs, @export_unlinked_programs);
     for my $p (@programs) {
@@ -2607,7 +1907,6 @@ sub export : Local {
                 /),
                 first => $l->person->first,
                 last => $l->person->last,
-                image => ($l->image? ("$pic_dir/lth-" . $l->id . ".jpg"): ""),
             },
         }
         my @docs;
@@ -2630,7 +1929,6 @@ sub export : Local {
                 title2
 
                 leader_names
-                picture
                 webdesc
                 leader_bio
                 url
@@ -2645,7 +1943,6 @@ sub export : Local {
                 housing_not_needed
                 
                 linked
-                image
 
                 do_not_compute_costs
                 dncc_why
@@ -2662,9 +1959,6 @@ sub export : Local {
             leaders => \@leaders,
             documents => \@docs,
         };
-        if ($href->{image} eq 'yes') {
-            $href->{image} = "$pic_dir/pth" . $p->id() . ".jpg";
-        }
         if (! $href->{linked}) {
             push @export_unlinked_programs, $href;
         }

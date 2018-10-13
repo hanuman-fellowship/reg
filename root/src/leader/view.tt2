@@ -51,18 +51,6 @@ p {
 </tr>
 
 <tr>
-<th align=right valign=top>Image</th>
-<td>
-[% IF leader.image %]
-<img src="[% Catalyst.uri_for('/static/images/lth-') _ leader.id _ '.jpg' %]"><br>
-<a href="[% Catalyst.uri_for('/leader/del_image/') _ leader.id %]" onclick="return confirm('Okay to Delete image for $leader.person.first $leader.person.last?');" >Delete Image</a>
-[% ELSE %]
-&nbsp;
-[% END %]
-</td>
-</tr>
-
-<tr>
 <th align=right>Order</th>
 <td>$leader.l_order</a></td>
 </tr>

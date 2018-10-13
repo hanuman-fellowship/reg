@@ -114,7 +114,6 @@ sub index :Path :Args(0) {
                         stash($c,
                             error_msg => "Sorry, your password has fully expired. This account is now locked.",
                             time      => get_time(),
-                            inactive  => -f "$ENV{HOME}/Reg/INACTIVE",
                             pg_title  => "Reg for MMC",
                             template  => 'login.tt2',
                         );
@@ -257,7 +256,6 @@ EOH
     login_log($username, $c->stash->{error_msg});
     stash($c,
         time     => get_time(),
-        inactive => -f "$ENV{HOME}/Reg/INACTIVE",
         pg_title => "Reg for MMC",
         template => 'login.tt2',
     );
@@ -271,13 +269,14 @@ EOH
 #
 sub _clear_files {
     my $now = time();
-    for my $im (<root/static/images/im*.png>) {
+    my $reg = '/var/Reg';
+    for my $im (<$reg/images/im*.png>) {
         my $age = $now - (stat($im))[9];
         if ($age > 2*60) {
             unlink $im;
         }
     }
-    for my $xls (<root/static/*.xls>) {
+    for my $xls (<$reg/excel/*.xls>) {
         my $age = $now - (stat($xls))[9];
         if ($age > 60*60) {
             unlink $xls;

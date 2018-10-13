@@ -25,18 +25,6 @@ p {
 </tr>
 
 <tr>
-<th align=right valign=top>Image</th>
-<td>
-[% IF resident.image %]
-<img src="[% Catalyst.uri_for('/static/images/rth-') _ resident.id _ '.jpg' %]"><br>
-<a href="[% Catalyst.uri_for('/resident/del_image/') _ resident.id %]" onclick="return confirm('Okay to Delete image for $resident.person.first $resident.person.last %]?');" >Delete Image</a>
-[% ELSE %]
-&nbsp;
-[% END %]
-</td>
-</tr>
-
-<tr>
 <th align=right valign=top>Notes</th>
 <td>
 [% FOREACH rn IN resident.notes %]

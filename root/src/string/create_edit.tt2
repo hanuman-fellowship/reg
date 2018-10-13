@@ -3,11 +3,7 @@
 <table cellpadding=3 border=0>
 <tr>
 <th align=right>Key</th>
-<td>[% the_key %]
-[% IF the_key == 'imgwidth' || the_key == 'big_imgwidth' %]
-&nbsp;&nbsp;&nbsp;<input type=checkbox name=resize_all checked> Resize all images
-[% END %]
-</td>
+<td>[% the_key %]</td>
 </tr>
 
 <tr>

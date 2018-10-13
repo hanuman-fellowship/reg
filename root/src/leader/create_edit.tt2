@@ -38,16 +38,6 @@
 </tr>
 
 <tr>
-<th align=right valign=top>Image</th>
-<td>
-[% IF leader.image %]
-<img src="[% Catalyst.uri_for('/static/images/lth-') _ leader.id _ '.jpg' %]"><br>
-[% END %]
-<input type=file name=image>
-</td>
-</tr>
-
-<tr>
 <th align=right>Order</th>
 <td><input type=text name=l_order value="$leader.l_order" size=2 maxlength=2></td>
 </tr>

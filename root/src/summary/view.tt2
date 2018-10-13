@@ -1,10 +1,4 @@
 <a name=top></a>
-<script type="text/javascript">
-var newwin;
-function popup(url) {
-    newwin = window.open(url, 'sum_pic');
-}
-</script>
 [% prog_staff = Catalyst.check_user_roles('prog_staff') %]
 <style type="text/css">
 p {
@@ -304,7 +298,6 @@ $cs.first $cs.last
 <td colspan=3 valign=top>$sum.check_list</td>
 </tr>
 
-$sum.pictures
 </table>
 
 <table>

@@ -87,23 +87,8 @@ onclick="window.location.href='/user/profile_color/link'"
 <td colspan=2>
 <table>
 
-$pictures
-
 </table>
 </td>
 </tr>
-
-<tr>
-<td></td>
-<td colspan=2>
-<form action=/user/profile_new_pic
-      method=post
-      enctype="multipart/form-data"
->
-<input type=file name=newpic><input type=submit value="Upload Picture">
-</form>
-</td>
-</tr>
-
 
 </table>

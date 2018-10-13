@@ -9,7 +9,6 @@ __PACKAGE__->add_columns(qw/
     id
     person_id
     comment
-    image
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -29,5 +28,4 @@ overview - People can become residents of MMC by registering (or being "enrolled
     They are then assigned resident housing.
 comment - free text
 id - unique id
-image - is there a picture?   a naming convention finds the file.
 person_id - foreign key to person

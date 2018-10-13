@@ -307,7 +307,7 @@ sub create_do : Local {
         my $picfile = "$img/ro-$id.$suffix";
         $upload->copy_to($picfile);
         Global->init($c);
-        resize('r', $id);
+        resize($id);
     }
 
     # send an email alert about this new rental
@@ -805,7 +805,7 @@ sub update_do : Local {
         my $picfile = "$img/ro-$id.jpg";
         $upload->copy_to($picfile);
         Global->init($c);
-        resize('r', $id);
+        resize($id);
     }
 
     $r->update(\%P);
@@ -2175,7 +2175,7 @@ sub duplicate_do : Local {
         my $picfile = "$img/ro-$new_id.jpg";
         $upload->copy_to($picfile);
         Global->init($c);
-        resize('r', $new_id);
+        resize($new_id);
     }
     elsif ($new_r->image()) {
         # complicated! wake up.

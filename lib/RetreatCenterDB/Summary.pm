@@ -73,44 +73,6 @@ sub workshop_description_tr { ptrim(shift->workshop_description()) };
 sub workshop_schedule_tr { ptrim(shift->workshop_schedule()) };
 
 #
-# are there any pictures for this summary
-# in root/static/images??
-# if not return ""
-# else return <tr> rows
-# containing the <img> tags along
-# links to enlarge them in a new window and
-# links to delete them.
-#
-sub pictures {
-    my ($self) = @_;
-    my $id = $self->id();
-    my @pics = <root/static/images/sth-$id-*>;
-    if (!@pics) {
-        return "";
-    }
-    my $pics1 = "";
-    my $dels2 = "";
-    for my $p (@pics) {
-        my $mp = $p;
-        $mp =~ s{^root}{};
-        my ($n) = $mp =~ m{(\d+)[.]};
-        $pics1 .= qq!<td align=center><a href="/summary/view_pic/$id/$n"><img src=$mp></a></td>!;
-        $dels2 .= "<td align=center><a href=/summary/del_pic/$id/$n>Del</a></td>";
-    }
-    return <<"EOH";
-<tr>
-<th align=right valign=top>Pictures</th>
-<td>
-<table>
-<tr>$pics1</tr>
-<tr>$dels2</tr>
-</table>
-</td>
-</tr>
-EOH
-}
-
-#
 # is there someone to email the summary to?
 # and has it not been sent since it was last updated?
 #

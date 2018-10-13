@@ -540,7 +540,7 @@ sub html_show {
         my $h_id = $h->id();
         push @house_ids, $h_id;
         $cat_abode{$h_id} = $h->cat_abode();
-        $sq_foot  {$h_id} = $h->sq_foot();
+        $sq_foot  {$h_id} = $h->sq_foot() || '';
     }
     my %info_for_house_id = ();
     for my $reg (model($c, 'Registration')->search({

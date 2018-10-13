@@ -49,5 +49,17 @@ DELETE FROM string where the_key like 'OAK%';
 DELETE FROM string where the_key like 'OTH%';
 DELETE FROM string where the_key like 'SFO%';
 DELETE FROM string where the_key like 'SJC%';
+DELETE FROM string where the_key like '%imgwidth';
+
+DROP TABLE IF EXISTS program_doc;
+
+-- comment these out once the production db has dropped the columns
+-- no images for leaders
+ALTER TABLE leader DROP COLUMN image;
+-- no images for programs
+ALTER TABLE program DROP COLUMN image;
+-- no images for residents
+ALTER TABLE resident DROP COLUMN image;
+-- no documents for programs
 
 EOS

@@ -17,16 +17,6 @@
 </tr>
 
 <tr>
-<th align=right valign=top>Image</th>
-<td>
-[% IF resident.image %]
-<img src="[% Catalyst.uri_for('/static/images/rth-') _ resident.id _ '.jpg' %]"><br>
-[% END %]
-<input type=file name=image>
-</td>
-</tr>
-
-<tr>
 <td></td>
 <td><input type=submit value="Submit"></td>
 </tr>

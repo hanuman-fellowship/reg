@@ -9,7 +9,6 @@ use Global qw/
     %string
 /;
 use Util qw/
-    resize
     model
     stash
     error
@@ -85,12 +84,6 @@ sub update_do : Local {
         value => $value,
     });
     $string{$the_key} = $value;
-    if ($the_key =~ m{imgwidth} && $c->request->params->{resize_all}) {
-        for my $f (<root/static/images/*o-*.jpg>) {
-            my ($type, $id) = $f =~ m{/(\w+)o-(\d+).jpg$};
-            resize($type, $id, $the_key);
-        }
-    }
     if ($the_key eq 'default_date_format') {
         Date::Simple->default_format($value);
     }

@@ -10,7 +10,6 @@ __PACKAGE__->add_columns(qw/
     person_id
     public_email
     url
-    image
     biography
     assistant
     l_order
@@ -54,7 +53,6 @@ overview - People can become Leaders of programs.
 assistant - Is this person an assistant to another leader?
 biography - Full bio.
 id - unique id
-image - is there a JPG of the person?  Naming conventions help locate the file.
 inactive - is this person an active leader?
 just_first - Does this leader only use their first name?  e.g. Adyashanti
 l_order - If a program has multiple leaders what order should they appear in?

@@ -9,8 +9,6 @@ use Util qw/
     empty
     role_table
     valid_email
-    avail_pic_num
-    resize
     model
     stash
     d3_to_hex
@@ -360,33 +358,8 @@ sub profile_view : Local {
         user_bg   => d3_to_hex($u->bg()   || '255,255,255'),   # black
         user_fg   => d3_to_hex($u->fg()   || '  0,  0,  0'),   # white
         user_link => d3_to_hex($u->link() || '  0,  0,255'),   # blue
-        pictures  => _pictures($u->obj->id()),
         template  => "user/profile_view.tt2",
     );
-}
-
-sub _pictures {
-    my ($id) = @_;
-    my $pics = "";
-    my $dels = "";
-    my @pics = <root/static/images/uth-$id-*>;
-    for my $p (@pics) {
-        my $mp = $p;
-        $mp =~ s{root}{};
-        my ($n) = $p =~ m{(\d+)[.]};
-        $pics .= "<td><img src=$mp></td>\n";
-        $dels .= "<td align=center><a href='/user/profile_pic_del/$id/$n'>Del</a></td>\n";
-    }
-    return <<"EOH";
-<tr>$pics</tr>
-<tr>$dels</tr>
-EOH
-}
-
-sub profile_pic_del : Local {
-    my ($self, $c, $id, $n) = @_;
-    unlink <root/static/images/u*$id-$n*>;
-    $c->response->redirect($c->uri_for('/user/profile_view'));
 }
 
 sub profile_edit : Local {
@@ -405,29 +378,6 @@ sub profile_edit_do : Local {
     my %hash = %{ $c->request->params() };
     $hash{hide_mmi} = '' unless $hash{hide_mmi};
     $c->user->update(\%hash);
-    $c->response->redirect($c->uri_for('/user/profile_view'));
-}
-
-sub profile_new_pic : Local {
-    my ($self, $c) = @_;
-    if (my $upload = $c->request->upload('newpic')) {
-        my $id = $c->user->obj->id();
-        my $n = avail_pic_num('u', $id);
-        $upload->copy_to("root/static/images/uo-$id-$n.jpg");
-        Global->init($c);
-        resize('u', "$id-$n");
-        my $ftp = Net::FTP->new($string{ftp_site},
-                                Passive => $string{ftp_passive})
-            or return _pub_err($c, "cannot connect to $string{ftp_site}");
-        $ftp->login($string{ftp_login}, $string{ftp_password})
-            or return _pub_err($c, "cannot login: " . $ftp->message);
-        $ftp->cwd($string{ftp_userpics})
-            or return _pub_err($c, "cannot cwd: " . $ftp->message);
-        $ftp->binary();
-        $ftp->put("root/static/images/ub-$id-$n.jpg", "ub-$id-$n.jpg")
-            or return _pub_err($c, "cannot put: " . $ftp->message);
-        $ftp->quit();
-    }
     $c->response->redirect($c->uri_for('/user/profile_view'));
 }
 

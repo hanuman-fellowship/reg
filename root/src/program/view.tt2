@@ -78,12 +78,6 @@ function UNreserve_cluster(cluster_id) {
 <a href=/rental/view/$program.rental_id>To Rental</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-[% IF web_designer %]
-    [% IF program.PR %]
-        <a href=/program/publishPR/$id>PublishPR<a>
-        &nbsp;&nbsp;&nbsp;
-    [% END %]
-[% END %]
 [% IF program.webready %]
 <a target=_blank href=$program.web_addr>Web</a>
 &nbsp;&nbsp;&nbsp;
@@ -602,38 +596,8 @@ By default, Payments will hopefully go to the <b>MMC</b> bank account.
 </tr>
 
 <tr>
-<th align=right valign=top>Program Image</th>
-<td colspan=2>
-[% IF program.image %]
-<img src=$program.image_file border=0>
- <a href=/program/del_image/$id
-onclick="return confirm('Okay to Delete image for \'$program.name\'?');"><img src=/static/images/redX.gif height=20 border=0></a>
-[% ELSE %]
-&nbsp;
-[% END %]
-</td>
-</tr>
-
-<tr>
 <th align=right valign=top>Web Page Template</th>
 <td>$program.ptemplate</td>
-</tr>
-
-<tr>
-<th align=right valign=top>Web Documents</th>
-<td>
-[% IF program.documents %]
-    <table cellpadding=5>
-    [% FOR d IN program.documents %]
-    <tr>
-    <td><a target=_blank href=/static/images/pdoc${d.id}.$d.suffix>$d.title</a></td>
-    <td><a href=/program/del_doc/$id/$d.id
-        onclick="return confirm('Okay to Delete document for \'$program.name\' entitled \'$d.title\'?');"><img src=/static/images/redX.gif height=20 border=0></a></td>
-    </tr>
-    [% END %]
-    </table>
-[% END %]
-</td>
 </tr>
 
 </table>

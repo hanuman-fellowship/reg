@@ -59,7 +59,6 @@ our @EXPORT_OK = qw/
     avail_mps
     get_now
     penny
-    avail_pic_num
     check_makeup_new
     check_makeup_vacate
     refresh_table
@@ -484,43 +483,26 @@ sub monthyear {
 # rentals images are handled in a very special way
 #
 sub resize {
-    my ($type, $id, $which) = @_;
+    my ($id) = @_;
 
     my $img = "/var/Reg/rental_images";
-    if ($type eq 'r') {
-        # resize and crop centrally to 640x368
-        # convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage
-        #     in.png out.png 
-        #
-        # for square images - MUST BE PNG!!:
-        # convert in.jpg -resize 640x368 -background none \
-        #         -gravity center -extent 640x368 out.png
-        # needs work - input is not always jpg!
-        system(
-            "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
-          . " $img/ro-$id.jpg $img/r-$id.png"
-        );
-        # create the thumbnail
-        system(
-            "/usr/bin/convert -scale 100x"
-          . " $img/r-$id.png $img/rth-$id.png"
-        );
-        return;
-    }
-    if (!$which || $which eq "imgwidth") {
-        system("/usr/bin/convert -scale "
-               . trim($string{imgwidth})
-               . "x"
-               . " $img/${type}o-$id.jpg $img/${type}th-$id.png"
-        );
-    }
-    if (!$which || $which eq "big_imgwidth") {
-        system("/usr/bin/convert -scale "
-               . trim($string{big_imgwidth})
-               . "x"
-               . " $img/${type}o-$id.jpg $img/${type}b-$id.png"
-        );
-    }
+    # resize and crop centrally to 640x368
+    # convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage
+    #     in.png out.png 
+    #
+    # for square images - MUST BE PNG!!:
+    # convert in.jpg -resize 640x368 -background none \
+    #         -gravity center -extent 640x368 out.png
+    # needs work - input is not always jpg!
+    system(
+        "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
+      . " $img/ro-$id.jpg $img/r-$id.png"
+    );
+    # create the thumbnail
+    system(
+        "/usr/bin/convert -scale 100x"
+      . " $img/r-$id.png $img/rth-$id.png"
+    );
 }
 
 sub housing_types {
@@ -1656,15 +1638,6 @@ sub penny {
         $amt .= "0";
     }
     $amt;
-}
-
-sub avail_pic_num {
-    my ($type, $id) = @_;
-    my $n = 1;
-    while (-f "root/static/images/${type}o-$id-$n.jpg") {
-        ++$n;
-    }
-    return $n;
 }
 
 # check the make up list and see

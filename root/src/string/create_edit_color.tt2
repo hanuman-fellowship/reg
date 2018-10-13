@@ -1,19 +1,17 @@
 <link rel="stylesheet" type="text/css" href="/static/color.css">
 <script type="text/javascript" src="/static/js/color.js"></script>
 <h2>Strings</h2>
-<form action="[% '/string/' _ form_action %]" name=form>
+<form action="/string/$form_action" name=form>
 <table cellpadding=3 border=0>
+
 <tr>
 <th align=right>Key</th>
-<td>[% the_key %]
-[% IF the_key == 'imgwidth' || the_key == 'big_imgwidth' %]
-&nbsp;&nbsp;&nbsp;<input type=checkbox name=resize_all checked> Resize all images
-[% END %]
-</td>
+<td>$the_key</td>
 </tr>
+
 <tr>
 <th align=right>Value</th>
-<td colspan=4><input type=text id=color_val name=value value="[% value %]" size=70></td>
+<td colspan=4><input type=text id=color_val name=value value="$value" size=70></td>
 </tr>
 
 <tr>
@@ -56,5 +54,5 @@ Click the Submit button to finish.
 </form>
 <script type="text/javascript">
 document.form.value.focus();
-colorSet([% red %], [% green %], [% blue %]);
+colorSet($red, $green, $blue);
 </script>

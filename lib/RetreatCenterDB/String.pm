@@ -90,7 +90,6 @@ badge_bleft - bottom left margin of badges
 badge_first_font_size - font size of first name
 badge_last_font_size - font size of last name
 badge_title_font_size - font size of title
-big_imgwidth - size of large picture - for resizing in Util::resize
 cal_abutt_color - color used when drawing abutting events in the calendar.
     Also see lib/ActiveCal.pm.  This is used only when cal_abutt_style
     is empty.
@@ -232,7 +231,6 @@ house_sum_reserved - the 'weight' of a room that is reserved
     for the current program/rental
 house_width - the width of a bed in a room - used when drawing the DailyPic and ClusterView
 housing_log - shall we keep a log of housing activity in 'hlog'?  See lib/HLog.pm
-imgwidth - size of small picture - for resizing in Util::resize
 kayakalpa_email - the email address of the Kaya Kalpa person who is
     notified when a massage request comes in - see script/grab_new.
 kid_disc - how much of a lodging discount for children?

@@ -82,7 +82,6 @@ my @classes = qw/
     RequestedPayment
 
     Organization
-    ProgramDoc
 
     Level
     School
