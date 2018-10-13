@@ -1,0 +1,35 @@
+ssh-keyscan ec2-13-57-186-109.us-west-1.compute.amazonaws.com> ~/.ssh/known_hosts
+
+ssh sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com \
+    "ls -1tr /var/reg_backup/grid.* | tail -1" \
+    | xargs -iz -I '{}' \
+    scp sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:{} .
+
+sudo tar zxvf grid.* -C /var/Reg/grid
+sudo chown vagrant:www-data /var/Reg/grid/*
+
+ssh sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com \
+    "ls -1tr /var/reg_backup/rc.* | tail -1" \
+    | xargs -iz -I '{}' \
+    scp sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:{} .
+
+pv rc.* | gunzip | mysql
+
+rm rc.* grid.*
+
+mysql <<EOS
+DROP TABLE IF EXISTS sessions;
+CREATE TABLE sessions (
+    id           CHAR(72) PRIMARY KEY,
+    session_data TEXT,
+    expires      INTEGER
+);
+
+UPDATE string
+   SET   value = 'jon@suecenter.org, jjn1056@gmail.com'
+ WHERE the_key = 'redirect_email';
+
+UPDATE string
+   SET   value = 'mmc.jasongaluten.com'
+ WHERE the_key = 'ftp_site';
+EOS
