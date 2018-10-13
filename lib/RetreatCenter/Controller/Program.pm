@@ -1226,19 +1226,6 @@ sub _prt_data {
     fulldays => $fulldays,
     canpol   => "$canpol",
 EOD
-    # plink - be careful with unlinked programs
-    if ($p->linked) {
-        print {$progt} "    plink    => 'http://www.mountmadonna.org/live/"
-               . $p->fname()
-               . "',\n"
-               ;
-    }
-    else {
-        print {$progt} "    plink    => 'http://www.mountmadonna.org/"
-                     . $p->unlinked_dir     # index.html is implied
-                     . "',\n"
-                     ;
-    }
     for my $f (qw/
         name
         title
@@ -1858,10 +1845,7 @@ sub export : Local {
 
     # clear the arena
     system("/bin/rm -rf $export_dir/*");
-    mkdir "$export_dir/pics";
-    mkdir "$export_dir/docs";
-    mkdir "$export_dir/mmi_pics";
-    mkdir "$export_dir/mmi_docs";
+    mkdir "$export_dir/pics";       # for rental images
     mkdir "$export_dir/pr";
 
     # and make sure we have initialized %string.
@@ -1909,13 +1893,6 @@ sub export : Local {
                 last => $l->person->last,
             },
         }
-        my @docs;
-        for my $d ($p->documents()) {
-            push @docs, {
-                title    => $d->title,
-                filename => "$doc_dir/pdoc" . $d->id . '.' . $d->suffix
-            };
-        }
         my $fee_table = $p->fee_table();
         my %extracted_fee_table = _extract_fee_table($fee_table);
         my $href = {
@@ -1957,7 +1934,6 @@ sub export : Local {
             str_prog_end   => $p->prog_end_obj->ampm,
             mmi => $mmi,
             leaders => \@leaders,
-            documents => \@docs,
         };
         if (! $href->{linked}) {
             push @export_unlinked_programs, $href;
@@ -2007,8 +1983,8 @@ sub export : Local {
             edate => $r->edate_obj->format($fmt),
         };
         if ($r->image()) {
-            copy $r->image_file(), "$export_dir/pics"
-              or die "no copy of " . $r->image_file() . ": $!\n";
+            copy $r->image_path(), "$export_dir/pics"
+              or die "no copy of " . $r->image_path() . ": $!\n";
         }
     }
     _json_put(\@export_rentals, 'rentals.json');
@@ -2077,7 +2053,7 @@ sub export : Local {
     system("cd $export_dir; /bin/tar czf /tmp/exported_reg_data.tgz .");
 
     # send it off
-    system("send_export");
+#    system("send_export");
     stash($c,
         ftp_export_site => $string{ftp_export_site},
         template    => "program/exported.tt2",

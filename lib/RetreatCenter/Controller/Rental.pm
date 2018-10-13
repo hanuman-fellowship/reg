@@ -2047,7 +2047,7 @@ sub duplicate : Local {
 
     if ($orig_r->image()) {
         stash($c,
-            dup_image => $orig_r->image_file(),
+            dup_image => $orig_r->image_url(),
         );
     }
     #

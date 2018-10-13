@@ -503,7 +503,17 @@ sub send_rental_deposit {
     unlink "/tmp/$code";
 }
 
-sub image_file {
+sub image_path {
+    my ($self) = @_;
+    my $img = '/var/Reg/rental_images';
+    my $name = "r-" . $self->id;
+    (-f "$img/$name.jpg")? "$img/$name.jpg"
+   :(-f "$img/$name.png")? "$img/$name.png"
+   :                       "$img/$name.gif"
+   ;
+}
+
+sub image_url {
     my ($self, $type) = @_;
     $type ||= '';
     my $img = '/var/Reg/rental_images';
@@ -515,7 +525,6 @@ sub image_file {
    ;
 }
 
-# ??? system("grab wait") if $invoice;
 # make sure the local grid is current???
 sub compute_balance {
     my ($rental, $invoice) = @_;
