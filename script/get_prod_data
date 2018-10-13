@@ -32,4 +32,6 @@ UPDATE string
 UPDATE string
    SET   value = 'mmc.jasongaluten.com'
  WHERE the_key = 'ftp_site';
+
+DROP TABLE RIDES;
 EOS

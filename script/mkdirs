@@ -1,0 +1,17 @@
+#!/bin/bash
+mkdir -p /var/Reg/grab_new
+mkdir -p /var/Reg/grid
+mkdir -p /var/Reg/mlist
+mkdir -p /var/Reg/mlist_done
+mkdir -p /var/Reg/omp
+mkdir -p /var/Reg/omp_done
+mkdir -p /var/Reg/online
+mkdir -p /var/Reg/online_done
+mkdir -p /var/Reg/rental_deposit
+mkdir -p /var/Reg/req_mmc
+mkdir -p /var/Reg/req_mmi
+mkdir -p /var/Reg/temple
+mkdir -p /var/Reg/temple_donation
+mkdir -p /var/Reg/temple_done
+chmod 775 /var/Reg/*
+chown reg:www-data /var/Reg/*
