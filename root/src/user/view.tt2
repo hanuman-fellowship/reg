@@ -71,30 +71,3 @@ $r.fullname<br>
 
 </table>
 </ul>
-[% rides = user.rides %]
-[% IF rides %]
-    <span class=larger>Rides</span>
-    <table cellpadding=5>
-    <tr>
-    <td></td>
-    <th align=left>Name</th>
-    <th>Date</th>
-    <th>Airport</th>
-    </tr>
-    [% FOR r IN rides %]
-        <tr>
-        <td>
-        [% IF !r.complete %]
-        <img src=/static/images/question.jpg height=20>
-        [% ELSIF ! r.sent_date %]
-        <img src=/static/images/envelope.jpg height=20>
-        [% ELSIF r.paid_date %]
-        <img src=/static/images/checked.gif>
-        [% END %]
-        </td>
-        <td><a href=/ride/view/$r.id>$r.rider.first $r.rider.last</a></td>
-        <td>$r.pickup_date_obj</td>
-        <td>$r.airport</td>
-        </tr>
-    [% END %]
-[% END %]

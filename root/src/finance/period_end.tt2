@@ -79,6 +79,5 @@ For [% SPONSOR %] Receipts Issued between [% start.format("%D") %] and [% end.fo
 <p>
 <div class=legend>
 * - Rental<br>
-r - Rides<br>
 x - Extra Account
 </div>

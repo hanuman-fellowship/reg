@@ -79,10 +79,6 @@ __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'person_id',
 __PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment',
                                   'person_id',
                       { order_by => 'the_date desc'});
-# rides
-__PACKAGE__->has_many(rides => 'RetreatCenterDB::Ride',
-                                  'rider_id',
-                      { order_by => 'pickup_date'});
 
 # MMI payments
 __PACKAGE__->has_many(mmi_payments => 'RetreatCenterDB::MMIPayment',
@@ -219,9 +215,6 @@ overview - The person record contains all the personal information
     Many other tables have a foreign key into person.
     See the many Relations below.
     <p>
-    For people requesting Rides we keep their
-    credit card information in the person record.  This may be a
-    violation of federal rules.  It's worth asking about.
     <p>The table name is people but the model name is Person.
     We don't have a strict naming convention for table/model names
     like Ruby on Rails does.

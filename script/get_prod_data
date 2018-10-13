@@ -18,6 +18,7 @@ pv rc.* | gunzip | mysql
 rm rc.* grid.*
 
 mysql <<EOS
+-- new mechanism for session data
 DROP TABLE IF EXISTS sessions;
 CREATE TABLE sessions (
     id           CHAR(72) PRIMARY KEY,
@@ -25,13 +26,28 @@ CREATE TABLE sessions (
     expires      INTEGER
 );
 
+-- all email comes to us
 UPDATE string
    SET   value = 'jon@suecenter.org, jjn1056@gmail.com'
  WHERE the_key = 'redirect_email';
 
+-- talk to the clone of mountmadonna.org
 UPDATE string
    SET   value = 'mmc.jasongaluten.com'
  WHERE the_key = 'ftp_site';
 
-DROP TABLE RIDES;
+-- remove any reference to rides and drivers
+DROP TABLE IF EXISTS ride;
+DELETE FROM role where role = 'ride_admin';
+DELETE FROM role where role = 'driver';
+DELETE FROM user_role where role_id in (12, 13);
+
+DELETE FROM string where the_key like '%ride%';
+DELETE FROM string where the_key = 'max_shuttles' OR the_key = 'ftp_userpics';
+DELETE FROM string where the_key like 'MRY%';
+DELETE FROM string where the_key like 'OAK%';
+DELETE FROM string where the_key like 'OTH%';
+DELETE FROM string where the_key like 'SFO%';
+DELETE FROM string where the_key like 'SJC%';
+
 EOS

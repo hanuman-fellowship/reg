@@ -81,16 +81,6 @@ __STRINGS__
     LMFT's, and LCSW's.
 + - Definition (for program pages) of spiritual practice prerequisite
     for John F. Kennedy University's Graduate School for Holistic Studies.
-MRY - Abbreviation for Monterey airport.
-MRY_color - color for Monterey airport in Rides listing.
-OAK - Abbreviation for Oakland airport.
-OAK_color - color for Oakland airport in Rides listing.
-OTH - Abbreviation for Other location for ride pick-up.
-OTH_color - color for Other location  in Rides listing.
-SFO - Abbreviation for San Francisco airport.
-SFO_color - color for San Francisco airport in Rides listing.
-SJC - Abbreviation for San Jose airport.
-SJC_color - color for San Jose airport in Rides listing.
 badge_width - width of badges
 badge_height - height of badges
 badge_ftop - front top margin of badges
@@ -215,10 +205,8 @@ ftp_pr_dir - where to put NoPR.txt data
 ftp_rental_dir - FTP info for mountmadonna.org - for rental grid changes
 ftp_rental_deposit_dir - FTP info for mountmadonna.org - for rental deposit payment
 ftp_rental_deposit_dir_paid - FTP info for mountmadonna.org - for rental deposit payments that were paid
-ftp_ride_dir - FTP info for mountmadonna.org - for ride requests
 ftp_site - FTP info for mountmadonna.org
 ftp_transactions - FTP info for mountmadonna.org - for online registrations for MMC programs.
-ftp_userpics - FTP info for mountmadonna.org - for driver pictures - referenced in email to riders
 gate_code_cc_email - who to Cc when sending the Tuesday morning gate code email reminder
 gate_code_email - who to email when sending the Tuesday morning gate code email reminder
 grid_url - the URL for opening up the Web Grid with the rental $code
@@ -272,7 +260,6 @@ make_up_urgent_days - for the make up list - for marking rooms as needed urgentl
 max_kid_age - how old can a person be and still be considered a child?
 max_lodge_opts - the maximum number of rooms to offer when lodging a registrant
 max_rental_desc - the maximum number of characters in a rental web description
-max_shuttles - maximum number of shuttles for Rides
 max_tuit_disc - maximum tuition discount for Members - no longer used
 mem_credit_hours - obsolete - can be removed
 mem_credit_phone - obsolete - can be removed
@@ -343,9 +330,6 @@ req_mmc_dir - the directory on mountmadonna.org where MMC payment requests live
 req_mmc_dir_paid - the directory on mountmadonna.org for paid MMC payment requests
 req_mmi_dir - the directory on mountmadonnainstitute.org where MMI payment requests live
 req_mmi_dir_paid - the directory on mountmadonnainstitute.org for paid MMI payment requests
-ride_cancel_penalty - How much penalty for cancelling a Ride?
-ride_email - who to notify by email when a Ride request comes in?
-ride_glnum - the GL Number of the ride account
 seen_lodge_opts - what is the size of the &gt;select&lt; list for housing options?
     There can be many more houses in the list but this is what is initially visible.
 single - the display name for the housing type 'single'

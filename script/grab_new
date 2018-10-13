@@ -31,10 +31,7 @@ Send a proper thank you letter???
 In one email (to each office) let them know
 the names and addresses so they can send them a brochure.
 
-4) Get ride requests into /var/Reg/rides.
-If there were any notify the reception office.
-
-5) For registrations that indicated they would like
+4) For registrations that indicated they would like
 to be contacted about massage send Kaya Kalpa a letter
 with their contact information and which program and when
 they'll be here.
@@ -44,19 +41,19 @@ that they are Cc'ed on) saying that they will
 be contacted by someone at Kaya Kalpa two to three weeks
 before the program to arrange for the bodywork.
 
-6) Get people that recently registered on the temple
+5) Get people that recently registered on the temple
 reservation site and import them directly into the People table.
 
-7a) Get MMI payment requests that have been paid and morph
+6a) Get MMI payment requests that have been paid and morph
 them into actual payments.
-7b) Get MMC payment requests that have been paid and morph
+6b) Get MMC payment requests that have been paid and morph
 them into actual payments.
 
-8) Get MMI standalone course registations
+7) Get MMI standalone course registations
 
-9) Get online membership payments
+8) Get online membership payments
 
-10) Get rental deposit payments
+9) Get rental deposit payments
 
 =end
 
@@ -104,7 +101,6 @@ my $ftp;
 my $run_file = "grab_running";
 my ($log, $log_name);
 my $nomp = 0;
-my $nrides = 0;
 my ($now, $now_t24, $today_d8, $year_mon_dir);
 my ($temple_xaccount_id);
 my @kayakalpa;  # an array of hashrefs - these people requested
@@ -113,7 +109,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
                     # brochures for MMI/MMC.
 
 # directories
-my ($online, $grid, $temple, $mlist_done, $rides,
+my ($online, $grid, $temple, $mlist_done,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
     $temple_donation, $grab_new);
 my $something_happened = 0;
@@ -202,7 +198,6 @@ sub initialize {
     $grid            = make_dir("$dir/grid");
     $temple          = make_dir("$dir/temple_done/$year_mon_dir");
     $mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
-    $rides           = make_dir("$dir/rides");
     $req_mmi_dir     = make_dir("$dir/req_mmi/$year_mon_dir");
     $req_mmc_dir     = make_dir("$dir/req_mmc/$year_mon_dir");
     $omp_dir         = make_dir("$dir/omp");
@@ -526,25 +521,6 @@ sub process_mlist {
     };
 }
 
-#
-# see who is requesting a ride and from/to where
-#
-sub get_rides {
-    my ($get_dir, $f) = @_;
-
-    ++$nrides;
-    open my $in, "<", "$get_dir/$f"
-        or quit("cannot open $get_dir/$f: $!\n");
-    my %hash;
-    while (my $line = <$in>) {
-        chomp $line;
-        my ($key, $value) = split ' ', $line;
-        $hash{$key} = $value;
-    }
-    close $in;
-    msg "ride for $hash{first} $hash{last} $hash{from_to} $hash{airport}";
-}
-
 sub get_omp {
     my ($get_dir, $f) = @_;
 
@@ -584,21 +560,6 @@ sub get_rental_deposit {
                  . " for <a href='$string{url_prefix}/rental/view/$hash{id}/3'>"
                  . $rental->name() . "</a>",
     );
-}
-
-sub ride_alert {
-    if ($nrides) {
-        my $rc = email_letter($c,
-            to      => "MMC Transportation <$string{ride_email}>",
-            from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-                                        # what else?
-            subject => "Online Ride Request",
-            html    => "There is an online ride request waiting"
-                     . " for you in Reg."
-        );
-        msg "email ride request waiting to $string{ride_email}"
-            . failed($rc);
-    }
 }
 
 sub omp_alert {
@@ -821,10 +782,6 @@ sub main {
     get_files($ftp, $string{ftp_mlist_requests},
               $mlist_done, \&process_mlist);
 
-    # Rides - obsolete
-    # get_files($ftp, $string{ftp_ride_dir},
-    #           $rides, \&get_rides);
-
     # Membership Payments
     get_files($ftp, $string{ftp_omp_dir},
               $omp_dir, \&get_omp);
@@ -871,7 +828,6 @@ goto THERE;
 #    $ftp->quit();   # all done with temple.mountmadonna.org
 
     mlist_alerts();
-#    ride_alert();
     omp_alert();
     kayakalpa();
 THERE:

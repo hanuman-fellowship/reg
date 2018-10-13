@@ -2987,13 +2987,15 @@ sub update_confnote_do : Local {
 }
 sub _check_spelling {
     my ($c, $newnote) = @_;
-    open my $spell, "| aspell -H list |sort -fu | "
+    open my $spell, "| /usr/bin/aspell -H list |sort -fu | "
                   . "comm -23 - $rst/okaywords.txt >/tmp/spellout"
-        or $c->log->info("cannot open spell");
+        or $c->log->info("cannot open aspell");
     print {$spell} $newnote;
     close $spell;
-    system("sort -u /tmp/spellout $rst/maybewords.txt > $rst/newmaybewords.txt;"
-         . "mv $rst/newmaybewords.txt $rst/maybewords.txt");
+    system('/usr/bin/sort -u /tmp/spellout'
+         . " $rst/maybewords.txt > $rst/newmaybewords.txt;"
+         . "mv $rst/newmaybewords.txt $rst/maybewords.txt"
+    );
 }
 sub update_comment : Local {
     my ($self, $c, $id) = @_;
@@ -5879,7 +5881,7 @@ sub duplicate : Local {
 
 sub grab_new : Local {
     my ($self, $c) = @_;
-    system("grab wait");
+    system("/var/www/src/grab wait");
     $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 

@@ -67,7 +67,6 @@ my @classes = qw/
     MMIPayment
 
     Issue
-    Ride
 
     Block
 

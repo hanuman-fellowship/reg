@@ -164,45 +164,6 @@ sub reconcile_deposit : Local {
             };
         }
     }
-    if ($sponsor eq 'mmc') {
-        # ride payments are handled differently
-        # and it is always a credit card payment.
-        # not any more!
-        #
-        RIDE1:
-        for my $r (model($c, 'Ride')->search({
-                       paid_date => { between => [ $date_start, $date_end ] },
-                   })
-        ) {
-            my $type = $r->type();
-            my $amt = $r->cost_disp();
-            next RIDE1 if $amt == 0;       # bogus payment
-            if ($type eq 'D') {
-                $credit += $amt;
-            }
-            elsif ($type eq 'C') {
-                $check += $amt;
-            }
-            elsif ($type eq 'S') {
-                $cash += $amt;
-            }
-            elsif ($type eq 'O') {
-                $online += $amt;
-            }
-            $total += $amt;
-            push @payments, {
-                name   => $r->name(),
-                link   => $r->link(),
-                date   => $r->paid_date_obj->format("%D"),
-                type   => $type,
-                cash   => ($type eq 'S')? $amt: "",
-                chk    => ($type eq 'C')? $amt: "",
-                credit => ($type eq 'D')? $amt: "",
-                online => ($type eq 'O')? $amt: "",
-                pname  => "Ride",
-            };
-        }
-    }
     @payments = sort {
                         lc $a->{name} cmp lc $b->{name}
                     }
@@ -347,28 +308,6 @@ sub file_deposit : Local {
                 amt    => $amt,
                 glnum  => $glnum,
                 pname  => $p->pname(),
-            };
-        }
-    }
-    if ($sponsor eq 'mmc') {
-        # ride payments are handled differently
-        # and it is always a credit card payment.
-        # not any more!
-        #
-        RIDE2:
-        for my $r (model($c, 'Ride')->search({
-                       paid_date => { between => [ $date_start, $date_end ] },
-                   })
-        ) {
-            my $amt = $r->cost_disp();
-            next RIDE2 if $amt == 0;       # bogus payment
-            push @payments, {
-                name  => $r->name(),
-                date  => $r->paid_date_obj->format("%D"),
-                type  => $r->type(),
-                amt   => $amt,
-                glnum => $string{ride_glnum},
-                pname => "Ride",
             };
         }
     }
@@ -735,40 +674,6 @@ sub period_end : Local {
             } += $amt;
         }
     }
-    if ($sponsor eq 'mmc') {
-        # ride payments are handled differently
-        # and it is always a credit card payment. - not any more.
-        #
-        my $rgl = $string{ride_glnum};
-        RIDE3:
-        for my $r (model($c, 'Ride')->search({
-                       paid_date => { between => [ $start_d8, $end_d8 ] },
-                   })
-        ) {
-            my $amt = $r->cost_disp();
-            next RIDE3 if $amt == 0;        # bogus payment
-            if (! exists $totals{$rgl}) {
-                $totals{$rgl} = {
-                    name  => 'Rides',
-                    type  => 'r',
-                    link  => "/ride/list",
-                    glnum => $rgl,
-                    amount => 0,
-                    cash   => 0,
-                    check  => 0,
-                    credit => 0,
-                };
-            }
-            my $href = $totals{$rgl};
-            $href->{amount} += $amt;
-            my $type = $r->type();
-            $href->{
-                $type eq 'S'? 'cash'
-               :$type eq 'C'? 'check'
-               :              'credit'      # includes online
-            } += $amt;
-        }
-    }
     my %grand_total;
     for my $t (keys %totals) {
         my $href = $totals{$t};
@@ -1056,7 +961,6 @@ sub glnum_list : Local {
         events   => \@events,
         projs    => \@projs,
         xaccts   => \@xaccts,
-        ride_glnum  => $string{ride_glnum},
         template => 'finance/glnum.tt2',
     );
 }
@@ -1169,75 +1073,6 @@ sub mmi_glnum_list : Local {
         programs => \@progs,
         xaccts   => \@xaccts,
         template => 'finance/mmi_glnum.tt2',
-    );
-}
-
-sub ride : Local {
-    my ($self, $c) = @_;
-
-    my $start_str = trim($c->request->params->{start});
-    my $start = date($start_str);
-    if (! $start) {
-        error($c,
-              "Illegal Start Date: $start_str",
-              'gen_error.tt2',
-        );
-        return;
-    }
-    my $end_str = trim($c->request->params->{end});
-    my $end;
-    my @opt = ();
-    my $cond = { paid_date => { '>=' => $start->as_d8() } };
-    if (! empty($end_str)) {
-        $end = date($end_str);
-        if (! $end) {
-            error($c,
-                  "Illegal End Date: $end_str",
-                  'gen_error.tt2',
-            );
-            return;
-        }
-        $cond = {
-            paid_date => { between => [ $start->as_d8(), $end->as_d8() ] },
-        };
-    }
-    my @rides = model($c, 'Ride')->search($cond);
-    my %nrides = ();
-    my %total = ();
-    my $gtot = 0;
-    for my $r (@rides) {
-        my $d_id = $r->driver_id();
-        ++$nrides{$d_id};
-        my $cost = $r->cost();
-        $total{$d_id} += $cost;
-        $gtot += $cost;
-    }
-    my @drivers = ();
-    if (%nrides) {
-        # must make it conditional - otherwise
-        # one gets an error in the sql
-        #
-        @drivers = model($c, 'User')->search(
-            {
-                id => { in => [keys %nrides] },
-            },
-            {
-                order_by => ['first'],
-            }
-        );
-    }
-    # to make it easier in the template:
-    for my $d (@drivers) {
-        my $d_id = $d->id();
-        $d->{nrides} = $nrides{$d_id};
-        $d->{total} = $total{$d_id};
-    }
-    stash($c,
-        start    => $start,
-        end      => $end,
-        drivers  => \@drivers,
-        gtot     => $gtot,
-        template => "finance/rides.tt2",
     );
 }
 

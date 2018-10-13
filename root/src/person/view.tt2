@@ -35,10 +35,6 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 <a accesskey='p' href="/xaccount/prep_pay_balance/$id"><span class=keyed>P</span>ayment</a>
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="http://maps.google.com/maps?near=$person.addr1 $person.addr2 $person.city $person.st_prov $person.zip_post $person.country">Map</a>
-[% IF Catalyst.check_user_roles('ride_admin') %]
-    &nbsp;&nbsp;&nbsp;
-    <a accesskey='d' href="/ride/create/$id">Ri<span class=keyed>d</span>e</a>
-[% END %]
 [% IF person.partner %]
     &nbsp;&nbsp;&nbsp;
     Partnered
@@ -169,28 +165,6 @@ onclick="return confirm('Okay to Delete $person.first $person.last?');">Delete</
 [% END %]
 </ul>
 
-[% IF person.rides %]
-    <p class=p2>
-    <span class=larger>Rides</span>
-    <ul>
-    <table cellpadding=3>
-    <tr>
-    <th align=center>Date</th>
-    <th align=left>Time</th>
-    </tr>
-    [% FOR r IN person.rides %]
-        <tr>
-        [% IF r.pickup_date %]
-        <td><a href=/ride/view/$r.id>$r.pickup_date_obj</a></td>
-        [% ELSE %]
-        <td><a href=/ride/view/$r.id>Date</a></td>
-        [% END %]
-        <td>$r.flight_time_obj</td>
-        </tr>
-    [% END %]
-    </table>
-    </ul>
-[% END %]
 [% IF person.donations %]
     <p class=p2>
     <span class=larger>Donations</span>

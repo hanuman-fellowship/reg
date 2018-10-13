@@ -244,12 +244,6 @@ sub delete : Local {
         $c->stash->{template} = "person/nodel_pay.tt2";
         return;
     }
-    if (my @r = $p->rides) {
-        $c->stash->{person} = $p;
-        $c->stash->{rides} = \@r;
-        $c->stash->{template} = "person/nodel_ride.tt2";
-        return;
-    }
 
     # affilation/persons
     model($c, 'AffilPerson')->search(
@@ -927,7 +921,7 @@ sub undup_do : Local {
     #
     # for each person to merge, take their registrations
     # and modify the person_id field to be the primary id.
-    # do the same with donations and credits and rides.
+    # do the same with donations and credits.
     #
     # the affiliations of the merged person should be
     # put on the primary person if they're not there already.
@@ -972,11 +966,6 @@ sub undup_do : Local {
                 person_id => $primary,
             });
         }
-        model($c, 'Ride')->search({
-            rider_id => $mid,
-        })->update({
-            rider_id => $primary,
-        });
         # partner, if any
         model($c, 'Person')->search({
             id_sps => $mid,

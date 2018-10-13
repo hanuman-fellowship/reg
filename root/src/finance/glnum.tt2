@@ -79,6 +79,3 @@ $xa.glnum
 </tr>
 [% END %]
 </table>
-<p style="margin-top: 6mm">
-<h3>Rides GL Number: $ride_glnum</h3>
-

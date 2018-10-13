@@ -11,14 +11,13 @@ use Util qw/
 
 use Global;
 use File::stat;
-my $rst = "root/static";
+my $words = "/var/Reg/words";
 
 sub index : Local {
     my ($self, $c) = @_;
 
     stash($c,
         time_travel_class($c),
-        switch   => -f "$ENV{HOME}/Reg/INACTIVE",
         pg_title => "Configuration",
         template => "configuration/index.tt2",
     );
@@ -64,25 +63,6 @@ sub mark_inactive_do : Local {
     my ($self, $c, $date_last) = @_;
 }
 
-sub switch : Local {
-    my ($self, $c) = @_;
-
-    stash($c,
-        template => 'configuration/switch.tt2',
-    );
-}
-
-sub switch_do : Local {
-    my ($self, $c) = @_;
-
-    unlink "$ENV{HOME}/Reg/INACTIVE";
-    my $sb = stat("$ENV{HOME}/Reg/latest_synch");
-    stash($c,
-        latest   => scalar localtime $sb->mtime,
-        template => 'configuration/switch_done.tt2',
-    );
-}
-
 sub counts : Local {
     my ($self, $c) = @_;
 
@@ -112,8 +92,8 @@ sub _get_words {
 sub spellings : Local {
     my ($self, $c, $reg_id) = @_;
     my (@okay, @maybe);
-    _get_words("$rst/okaywords.txt",  \@okay);
-    _get_words("$rst/maybewords.txt", \@maybe);
+    _get_words("$words/okaywords.txt",  \@okay);
+    _get_words("$words/maybewords.txt", \@maybe);
     stash($c,
         reg_id   => $reg_id,
         okay     => \@okay,
@@ -126,7 +106,7 @@ sub spellings_do : Local {
 
     my %P = %{ $c->request->params() };
     my (@okay, %not_okay);
-    _get_words("$rst/okaywords.txt", \@okay);
+    _get_words("$words/okaywords.txt", \@okay);
     for my $k (sort keys %P) {
         my ($type, $w) = $k =~ m{ \A (maybe|okay)_(\S+) \z }xms;
         if ($type eq 'maybe') {
@@ -136,7 +116,7 @@ sub spellings_do : Local {
             $not_okay{$w} = 1;
         }
     }
-    open my $out, '>', "$rst/okaywords.txt";
+    open my $out, '>', "$words/okaywords.txt";
     # need to sort case insensitively
     for my $w (
         map { $_->[0] } 
@@ -147,7 +127,7 @@ sub spellings_do : Local {
         print {$out} "$w\n" unless exists $not_okay{$w};
     }
     close $out;
-    open my $empty, '>', "$rst/maybewords.txt";
+    open my $empty, '>', "$words/maybewords.txt";
     close $empty;
     $c->response->redirect("/registration/view/$reg_id");
 }

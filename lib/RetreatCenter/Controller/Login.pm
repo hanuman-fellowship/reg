@@ -128,9 +128,6 @@ sub index :Path :Args(0) {
             elsif ($c->check_user_roles('super_admin')) {
                 $c->response->redirect($c->uri_for('/person/search'));
             }
-            #elsif ($c->check_user_roles('ride_admin')) {
-            #    $c->response->redirect($c->uri_for('/ride/list'));
-            #}
             elsif ($c->check_user_roles('prog_staff')) {
                 if ($today_d8 > $string{date_coming_going_printed}) {
                     $c->response->redirect(
@@ -144,9 +141,6 @@ sub index :Path :Args(0) {
             elsif ($c->check_user_roles('field_staff')
                    && ! $c->check_user_roles('mail_staff')) {
                 $c->response->redirect($c->uri_for('/listing/field'));
-            }
-            elsif ($c->check_user_roles('driver')) {
-                $c->response->redirect($c->uri_for('/ride/mine'));
             }
             elsif ($username eq 'calendar') {
                 # tried a redirect - did not work when calling

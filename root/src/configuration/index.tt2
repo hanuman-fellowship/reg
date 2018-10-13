@@ -62,12 +62,6 @@ p {
     <a href=/project/list>Projects</a><p>
     <a href=/resident/list>Residents</a><p>
 [% END %]
-<!-- obsolete
-[% IF prog %]
-    <a href=/ride/list>Rides</a><p>
-[% END %]
--->
-
 [% IF user_admin %]
     <a href=/role/list>Roles</a><p>
 [% END %]
@@ -80,14 +74,6 @@ p {
 <a href=/user/profile_view>User Profile</a><p>
 [% IF mail_staff %]
 <a href=/user/list>Users</a><p>
-[% END %]
-<!-- obsolete
-[% IF prog_admin %]
-<a target=_blank href=http://www.mountmadonna.org/cgi-bin/admin>Web Administration</a><p>
-[% END %]
--->
-[% IF switch %]
-<a href=/configuration/switch>Emergency Switch</a><p>
 [% END %]
 </td>
 </tr>

@@ -43,10 +43,6 @@ General Ledger Numbers Since <input type=text name=since size=10 value='$since'>
 &nbsp;<input type=submit value="Go">
 </form>
 <p style="margin-top: 6mm">
-<form action="/finance/ride" method=post>
-Ride Financials Start <input type=text name=start size=10 value='$since_2months'> End <input type=text name=end size=10>&nbsp;<input type=submit value="Go">
-</form>
-<p style="margin-top: 6mm">
 <form action="/finance/housecost" method=post>
 Housing Costs Start <input type=text name=start size=10 value='1/1'> End <input type=text name=end size=10 value='12/31'>&nbsp;<input type=submit value="Go">
 </form>

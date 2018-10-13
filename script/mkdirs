@@ -13,5 +13,6 @@ mkdir -p /var/Reg/req_mmi
 mkdir -p /var/Reg/temple
 mkdir -p /var/Reg/temple_donation
 mkdir -p /var/Reg/temple_done
+mkdir -p /var/Reg/words
 chmod 775 /var/Reg/*
 chown reg:www-data /var/Reg/*
