@@ -11,7 +11,7 @@ the current day.  If this is the first run for the day start
 the file anew.
 
 0) Make sure that the net is available by trying to ping mountmadonna.org.
-Otherwise simply exit.
+Otherwise simply exit.   Commented this part out...
 
 1) Ftp-get all transaction files from www.mountmadonna.org
 created by the 'relay' program.  The names of these files

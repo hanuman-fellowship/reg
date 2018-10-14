@@ -7,10 +7,6 @@ use lib '../../';       # so you can do a perl -c here.
 use Util qw/
     leader_table
     affil_table
-    slurp 
-    monthyear
-    expand
-    expand2
     housing_types
     sys_template
     compute_glnum
@@ -58,6 +54,7 @@ use Global qw/
 /;
 use File::Copy;
 use JSON;
+use Data::Dumper;
 
 my $export_dir = '/var/Reg/export';
 
@@ -1091,35 +1088,6 @@ sub affil_update_do : Local {
 }
 
 #
-# how about a max for a program???
-# ??? obsoleted
-#
-sub meetingplace_update : Local {
-    my ($self, $c, $id) = @_;
-
-    my $p = model($c, 'Program')->find($id);
-    my $edate = $p->edate;
-    if ($p->extradays) {
-        $edate += $p->extradays;
-    }
-    stash($c,
-        program => $p,
-        meetingplace_table => meetingplace_table($c,
-                                  $p->max, $p->sdate,
-                                  $edate,  $p->bookings(),
-                              ),
-        template => "program/meetingplace_update.tt2",
-    );
-}
-
-# ??? obsoleted
-sub meetingplace_update_do : Local {
-    my ($self, $c, $program_id) = @_;
-
-    meetingplace_book($c, 'program', $program_id);
-}
-
-#
 # what if it is a hybrid???
 # it cascades and deletes the rental - wow! is this good?!
 #
@@ -1213,87 +1181,74 @@ sub access_denied : Private {
     );
 }
 
-# ??? Use Data::Dumper?
-sub _prt_data {
-    my ($progt, $p, $id) = @_;
-    my $PR = $p->name() =~ m{personal\s+retreat}i;
-    my $ndays = $p->edate_obj - $p->sdate_obj;
-    my $fulldays = $ndays + $p->extradays;
-    my $canpol = esc_dquote($p->canpol->policy());
-    print {$progt} $id, <<"EOD";
-=> {
-    ndays    => $ndays,
-    fulldays => $fulldays,
-    canpol   => "$canpol",
-EOD
-    for my $f (qw/
-        name
-        title
-        dates
-        sdate
-        edate
-        leader_names
-        footnotes
-        deposit
-        collect_total
-        req_pay
-        do_not_compute_costs
-        dncc_why
-        percent_tuition
-        tuition
-        reg_start
-        reg_end
-        prog_start
-        prog_end
-        waiver_needed
-        housing_not_needed
-    /) {
-        print {$progt} qq!    $f => "!,
-                       esc_dquote($p->$f()),
-                       qq!",\n!
-                       ;
-    }
-    my $month_day     = $p->sdate_obj->format("%m%d");
-    my $housecost = $p->housecost();
-
-    for my $t (reverse housing_types(1)) {
-        next if $t eq 'commuting'   && !$p->commuting;
-        next if $t eq 'economy'     && !$p->economy;
-        next if $t eq 'single_bath' && !$p->sbath;
-        next if $t eq 'single'      && !$p->single;
-        next if $t eq 'center_tent'
-            && !($PR
-                 || $p->name =~ m{tnt}i
-                 || ($string{center_tent_start} <= $month_day
-                     && $month_day <= $string{center_tent_end}));
-        next if $PR && $t =~ m{triple|dormitory};
-        my $fees = $PR? $housecost->$t()
-                  :     $p->fees(0, $t);
-        next if $fees == 0;    # another way to eliminate a housing option 
-        print {$progt} "    'basic $t' => $fees,\n";
-        if ($p->extradays()) {
-            print {$progt} "    'full $t' => ", $p->fees(1, $t), ",\n";
-        }
-    }
-    print {$progt} "    type => '", $housecost->type(), "',\n";
-
-    # finalization
-    #
-    print {$progt} "},\n";
-}
-
 #
 # generate the progtable for online registration
 #
 sub gen_progtable {
     my ($programs_ref) = @_;
-    open my $progt, ">", "/var/Reg/export/progtable"
-        or die "cannot create progtable: $!\n";
-    print {$progt} "{\n";       # the enclosing anonymous hash ref
-    for my $p (grep { ! $_->cancelled } @$programs_ref) {
-        _prt_data($progt, $p, $p->id());
+    my %progs;
+    for my $p (@$programs_ref) {
+        my $ndays = $p->edate_obj - $p->sdate_obj;
+        my $month_day = $p->sdate_obj->format("%m%d");
+        my $housecost = $p->housecost();
+        my $PR = $p->PR();
+        my @fees;
+        HTYPE:
+        for my $t (reverse housing_types(1)) {
+            next HTYPE if $t eq 'commuting'   && !$p->commuting;
+            next HTYPE if $t eq 'economy'     && !$p->economy;
+            next HTYPE if $t eq 'single_bath' && !$p->sbath;
+            next HTYPE if $t eq 'single'      && !$p->single;
+            next HTYPE if $t eq 'center_tent'
+                && !($PR
+                     || $p->name =~ m{tnt}i
+                     || ($string{center_tent_start} <= $month_day
+                         && $month_day <= $string{center_tent_end}));
+            next HTYPE if $PR && $t =~ m{triple|dormitory};
+            my $fees = $PR? $housecost->$t()
+                      :     $p->fees(0, $t);
+            next HTYPE if $fees == 0;   # this is another way
+                                        # to eliminate a housing option 
+            push @fees, "basic $t", $fees;
+            if ($p->extradays()) {
+                push @fees, "full $t", $p->fees(1, $t);
+            }
+        }
+        $progs{$p->id} = {
+            name     => $p->name,
+            ndays    => $ndays,
+            fulldays => $ndays + $p->extradays,
+            canpol   => $p->canpol->policy,
+            type     => $housecost->type(),
+            @fees,
+            map { $_ => $p->$_ } qw(
+                title
+                dates
+                sdate
+                edate
+                leader_names
+                footnotes
+                deposit
+                collect_total
+                req_pay
+                do_not_compute_costs
+                dncc_why
+                percent_tuition
+                tuition
+                reg_start
+                reg_end
+                prog_start
+                prog_end
+                waiver_needed
+                housing_not_needed
+            ),
+        };
     }
-    print {$progt} "};\n";
+    open my $progt, '>', "$export_dir/progtable"
+        or die "cannot create progtable: $!\n";
+    $Data::Dumper::Indent = 1;
+    $Data::Dumper::Sortkeys = 1;
+    print {$progt} Dumper(\%progs);
     close $progt;
 }
 
@@ -1855,10 +1810,7 @@ sub export : Local {
     # get all the future programs destined for the web into an array
     # sorted by start date and then end date.
     #
-    # not sure why future_programs includes cancelled ones...
-    #
-    my @programs = grep { ! $_->cancelled }
-                   RetreatCenterDB::Program->future_programs($c);
+    my @programs = RetreatCenterDB::Program->future_programs($c);
 
     # ensure that all of these programs have at least one affiliation set
     #

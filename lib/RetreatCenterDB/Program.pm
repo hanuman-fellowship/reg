@@ -151,22 +151,9 @@ __PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
 __PACKAGE__->belongs_to(created_by => 'RetreatCenterDB::User',
                         'created_by');
 
-#
-# we really can't call $self->{field}
-# but must call $self->field()
-# or just $self->field;
-#
-# something about when it actually does populate the object...???
-#
-
-my $default_template = slurp("default");
-my %first_of_month;
-
-# do I really need $c passed in???
-# not sure why we include canceled programs here
 sub future_programs {
-    my ($class, $c) = @_;
-    my @programs = $c->model('RetreatCenterDB::Program')->search(
+    my ($self, $c) = @_;
+    return $c->model('RetreatCenterDB::Program')->search(
         {
             edate    => { '>=', tt_today($c)->as_d8() },
             webready => 'yes',
@@ -174,44 +161,13 @@ sub future_programs {
                 'school.mmi' => '',      # MMC
                 'level.public' => 'yes', # MMI public standalone course
             ],
+            cancelled => { '!=' => 'yes' },
         },
         {
             join     => [qw/ school level /],
             order_by => [qw/ sdate  edate /],
         },
     );
-    #
-    # go through the programs in order
-    # skipping the unlinked and cancelled programs
-    # setting the prev and next links.
-    # treat MMI programs in a special way - they will never
-    # be the target of a prev or next link.
-    # assigning a sequential program number.
-    # these are used in subsequent methods.
-    #
-    my ($prev_prog);
-    PROG:
-    for my $p (@programs) {
-        next PROG if ! $p->linked || $p->cancelled || $p->school->mmi;
-        $p->{prev}   = $prev_prog || $p;
-        $prev_prog->{"next"} = $p;
-        $prev_prog = $p;
-    }
-    # set the last program's next
-    $prev_prog->{"next"} = $prev_prog;
-
-    #
-    # set the first of the month program hash.
-    # we go backwards through the programs
-    # so the last one overwritten will be the first of the month!
-    #
-    PROG:
-    for my $p (reverse @programs) {
-        next PROG if ! $p->linked || $p->cancelled || $p->school->mmi;
-        my $sd = $p->sdate_obj();
-        $first_of_month{$sd->month . $sd->year} = $p;
-    }
-    @programs;
 }
 
 sub confnote_not_empty {
@@ -335,11 +291,6 @@ sub fname {
             # ??? really?   isn't it created immediately after
             # getting it?
     $name;
-}
-sub template_src {
-    my ($self) = @_;
-    return ($self->ptemplate)?  slurp($self->ptemplate)
-          :                     $default_template;
 }
 
 #
@@ -675,45 +626,6 @@ sub fees {
     return $tuition + $hcost;
 }
 
-sub firstprog_prevmonth {
-    my ($self) = @_;
-    return "#" if $self->cancelled;
-    my $sd = $self->sdate_obj;
-    my $m = $sd->month;
-    my $y = $sd->year;
-    my $n = 0;
-    while (1) {
-        --$m;
-        if ($m == 0) {
-            $m = 12;
-            --$y;
-        }
-        my $x = $first_of_month{"$m$y"};
-        return $x->fname if $x;
-        last if $n++ > 5;
-    }
-    return $self->fname;
-}
-
-sub firstprog_nextmonth {
-    my ($self) = @_;
-    return "#" if $self->cancelled;
-    my $sd = $self->sdate_obj;
-    my $m = $sd->month;
-    my $y = $sd->year;
-    my $n = 0;
-    while (1) {
-        ++$m;
-        if ($m == 13) {
-            $m = 1;
-            ++$y;
-        }
-        my $x = $first_of_month{"$m$y"};
-        return $x->fname if $x;
-        last if $n++ > 5;
-    }
-    return $self->fname;
-}
 sub leader_bio {
     my ($self) = @_;
     my $bio = "";
@@ -734,22 +646,6 @@ sub leader_bio {
         }
     }
     return $bio;
-}
-sub month_calendar {
-    my ($self) = @_;
-    my $ym = $self->sdate_obj->format("%Y%m");
-    my $cal = slurp "cal$ym";
-    $cal;
-}
-sub nextprog {
-    my ($self) = @_;
-    return "#" if $self->cancelled || ! $self->{next};
-    $self->{"next"}->fname;
-}
-sub prevprog {
-    my ($self) = @_;
-    return "#" if $self->cancelled || ! $self->{prev};
-    $self->{prev}->fname;
 }
 
 sub cancellation_policy {
