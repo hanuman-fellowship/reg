@@ -22,6 +22,6 @@ echo '** Reg Templates'
 cd $rc/root/src
 grep -i "$PAT" */*.tt2
 echo
-echo '** Web and Letter'
+echo '** Letter'
 cd $rc/root/static/templates
-grep -i "$PAT" */*.tt2 */*.html
+grep -i "$PAT" */*.tt2
