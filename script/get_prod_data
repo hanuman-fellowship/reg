@@ -7,13 +7,13 @@ ssh sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com \
     scp sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:{} .
 sudo tar zxvf grid.* -C /var/Reg/grid
 sudo chmod 775 /var/Reg/grid/*
-sudo chown vagrant:www-data /var/Reg/grid/*
+sudo chown reg:www-data /var/Reg/grid/*
 
 # rental images
 scp sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:/var/reg_backup/rental_images.tar .
 sudo tar xvf rental_images.tar -C /var/Reg/rental_images
 sudo chmod 775 /var/Reg/rental_images/*
-sudo chown vagrant:www-data /var/Reg/rental_images/*
+sudo chown reg:www-data /var/Reg/rental_images/*
 
 # mysql data
 ssh sahadev@ec2-13-57-186-109.us-west-1.compute.amazonaws.com \
