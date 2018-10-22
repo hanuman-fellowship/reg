@@ -20,3 +20,5 @@ requires 'Template', '2.27';
 requires 'Spreadsheet::ParseExcel';
 requires 'Spreadsheet::WriteExcel';
 requires 'YAML';
+requires 'IO::Socket::SSL';
+requires 'LWP::Protocol::https';
