@@ -1,6 +1,7 @@
 #!/usr/bin/env perl
 use strict;
 use warnings;
+no warnings 'redefine';     # for Net::FTP::pasv
 
 =begin comment
 
@@ -88,6 +89,9 @@ use Time::Simple qw/
 /;
 #use Net::Ping;
 use Net::FTP;
+# thanks to jnap and haarg
+# a nice HACK to force Extended Passive Mode:
+*Net::FTP::pasv = \&Net::FTP::epsv;
 use File::FTP;      # this is mine
 use File::Basename 'basename';
 
@@ -239,14 +243,11 @@ sub ftp_connect {
     my (%arg) = @_;
 
     my $ftp_class = $ENV{FILE_FTP_DIR}? 'File::FTP': 'Net::FTP';
-    my $ftp = $ftp_class->new($arg{site}, Passive => $arg{passive})
-                  or quit("cannot connect to $arg{site}");
+    my $ftp = $ftp_class->new($arg{site}, Passive => 1, Debug => 0)
+        or quit("cannot connect to $arg{site}");
     $ftp->login($arg{login}, $arg{password})
         or quit("cannot login to $arg{site}: " . $ftp->message);
     $ftp->ascii();
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
     return $ftp;
 }
 
@@ -769,7 +770,6 @@ sub main {
     initialize();
     $ftp = ftp_connect(              # mountmadonna.org
         site     => $string{ftp_site},
-        passive  => $string{ftp_passive},
         login    => $string{ftp_login},
         password => $string{ftp_password},
     );
@@ -799,10 +799,10 @@ sub main {
 
     $ftp->quit();   # all done with MMC
 
+# ???
 goto THERE;
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
         site     => $string{ftp_mmi_site},
-        passive  => $string{ftp_mmi_passive},
         login    => $string{ftp_mmi_login},
         password => $string{ftp_mmi_password},
     );
@@ -816,19 +816,6 @@ goto THERE;
               $online, \&check_transaction, 'MMI');
 
     $ftp->quit();   # all done with MMI
-
-#    $ftp = ftp_connect(         # temple.mountmadonna.org used to be at hfs
-#        site     => $string{ftp_hfs_site},
-#        passive  => $string{ftp_passive},
-#        login    => $string{ftp_hfs_user},
-#        password => $string{ftp_hfs_password},
-#    );
-#
-#    # Temple Users
-#    get_files($ftp, $string{ftp_hfs_dir},
-#              $temple, \&get_temple);
-#
-#    $ftp->quit();   # all done with temple.mountmadonna.org
 
     mlist_alerts();
     omp_alert();
