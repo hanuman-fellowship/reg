@@ -2011,7 +2011,7 @@ sub export : Local {
         Debug => 0,
         Passive => $string{ftp_passive},
     ) or die "Cannot connect: $@";
-    $ftp->login($string{ftp_user}, $string{ftp_password})
+    $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "Cannot login ", $ftp->message;
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
