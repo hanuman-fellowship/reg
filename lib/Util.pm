@@ -96,7 +96,6 @@ use Date::Simple qw/
 use Time::Simple qw/
     get_time
 /;
-use HLog;
 use Template;
 use Global qw/
     %string

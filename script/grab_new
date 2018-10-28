@@ -244,6 +244,9 @@ sub ftp_connect {
     $ftp->login($arg{login}, $arg{password})
         or quit("cannot login to $arg{site}: " . $ftp->message);
     $ftp->ascii();
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
     return $ftp;
 }
 

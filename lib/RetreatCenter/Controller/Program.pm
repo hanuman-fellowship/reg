@@ -2005,13 +2005,29 @@ sub export : Local {
     system("cd $export_dir; /bin/tar czf /tmp/exported_reg_data.tgz .");
 
     # send it off
+    _send_export('mmc');
+    #_send_export('mmi');
+
+    stash($c,
+        ftp_export_site => $string{ftp_export_site},
+        template    => "program/exported.tt2",
+    );
+}
+
+sub _send_export {
+    my $where = shift;
+    my $place = $where eq 'mmi'? 'mmi_': '';
     # MMC
+    my $site     = $string{"ftp_${place}site"};
+    my $login    = $string{"ftp_${place}login"};
+    my $password = $string{"ftp_${place}password"};
+    my $passive  = $string{"ftp_${place}passive"};
     my $ftp = Net::FTP->new(
-        $string{ftp_site},
+        $site,
         Debug => 0,
-        Passive => $string{ftp_passive},
+        Passive => $passive,
     ) or die "Cannot connect: $@";
-    $ftp->login($string{ftp_login}, $string{ftp_password})
+    $ftp->login($login, $password)
         or die "Cannot login ", $ftp->message;
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
@@ -2019,27 +2035,9 @@ sub export : Local {
     $ftp->binary();
     $ftp->put('/tmp/exported_reg_data.tgz');
     $ftp->quit();
-goto THERE;
-    # MMI
-    $ftp = Net::FTP->new(
-        $string{ftp_mmi_site},
-        Debug => 0,
-        Passive => $string{ftp_mmi_passive},
-    ) or die "Cannot connect: $@";
-    $ftp->login($string{ftp_mmi_user}, $string{ftp_mmi_password})
-        or die "Cannot login ", $ftp->message;
-    # a nice HACK to force Extended Passive Mode:
-    # thanks to jnap and haarg
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->binary();
-    $ftp->put('exported_reg_data.tgz');
-    $ftp->quit();
-THERE:
-#    system("send_export");
-    stash($c,
-        ftp_export_site => $string{ftp_export_site},
-        template    => "program/exported.tt2",
-    );
+    # not yet
+    #system("/usr/bin/curl --user $login:$password"
+    #     . " https://$site/feeds_from_reg/go.php");
 }
 
 sub _extract_fee_table {
