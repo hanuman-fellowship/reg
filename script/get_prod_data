@@ -60,6 +60,9 @@ DELETE FROM string where the_key like 'SFO%';
 DELETE FROM string where the_key like 'SJC%';
 DELETE FROM string where the_key like '%imgwidth';
 
+INSERT INTO string (the_key, value) VALUES ('curl_command', 'http://mmc.jasongaluten.com/feeds_from_reg/go.php');
+INSERT INTO string (the_key, value) VALUES ('curl_mmi_command', 'http://mountmadonnainstitute.org/feeds_from_reg/go.php');
+
 DROP TABLE IF EXISTS program_doc;
 
 -- comment these out once the production db has dropped the columns

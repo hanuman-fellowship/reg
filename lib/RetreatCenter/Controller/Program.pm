@@ -2022,6 +2022,7 @@ sub _send_export {
     my $login    = $string{"ftp_${place}login"};
     my $password = $string{"ftp_${place}password"};
     my $passive  = $string{"ftp_${place}passive"};
+    my $command  = $string{"curl_${place}command"};
     my $ftp = Net::FTP->new(
         $site,
         Debug => 0,
@@ -2036,8 +2037,7 @@ sub _send_export {
     $ftp->put('/tmp/exported_reg_data.tgz');
     $ftp->quit();
     # not yet
-    #system("/usr/bin/curl --user $login:$password"
-    #     . " https://$site/feeds_from_reg/go.php");
+    system("/usr/bin/curl --user $login:$password $command");
 }
 
 sub _extract_fee_table {

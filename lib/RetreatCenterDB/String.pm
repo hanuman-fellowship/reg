@@ -127,6 +127,8 @@ credit_nonprog - The name of an extra account that is used only
     for non-program related credit card payments.
 credit_nonprog_people - The people to notify if a non-program related credit
     card payment is made.
+curl_command - the command to invoke after Export to mmc
+curl_mmi_command - the command to invoke after Export to mmi
 date_coming_going_printed - obsolete - used to be used for
     knowing when the coming/going listing had been printed - to determine
     what page to present when prog_staff first logs in.  now the coming/going

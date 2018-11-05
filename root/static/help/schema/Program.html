@@ -60,8 +60,6 @@ Table: program
 <dd>No housing is needed for this program - perhaps it is being held away from MMC?</dd>
 <dt>id</dt>
 <dd>unique id</dd>
-<dt>image</dt>
-<dd>A boolean - do we have an image for the web page of this program? Naming conventions lead us to the actual filename.</dd>
 <dt>kayakalpa</dt>
 <dd>Shall we include a note about Kaya Kalpa information in the confirmation letter?</dd>
 <dt>level_id</dt>
@@ -131,7 +129,7 @@ Table: program
 <dt>webdesc</dt>
 <dd>A long description of the program.</dd>
 <dt>webready</dt>
-<dd>Is this program ready to be published to the web (at least to the staging area)? </dd>
+<dd>Is this program ready to be Exported?</dd>
 </dl>
 <h2>Relations</h2>
 <table cellpadding=5>
@@ -142,7 +140,6 @@ Table: program
 <tr><td>canpol</td><td><a href=CanPol.html>canpol</a></td><td>belongs_to</td></tr>
 <tr><td>category</td><td><a href=Category.html>category</a></td><td>belongs_to</td></tr>
 <tr><td>created_by</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
-<tr><td>documents</td><td><a href=ProgramDoc.html>programdoc</a></td><td>has_many</td></tr>
 <tr><td>exceptions</td><td><a href=Exception.html>exception</a></td><td>has_many</td></tr>
 <tr><td>housecost</td><td><a href=HouseCost.html>housecost</a></td><td>belongs_to</td></tr>
 <tr><td>leader_program</td><td><a href=LeaderProgram.html>leaderprogram</a></td><td>has_many</td></tr>
