@@ -1,5 +1,5 @@
 USER=$1
-ssh-keyscan ec2-13-57-186-109.us-west-1.compute.amazonaws.com> ~/.ssh/known_hosts
+ssh-keyscan ec2-13-57-186-109.us-west-1.compute.amazonaws.com >>~/.ssh/known_hosts
 
 # grid data
 ssh $USER@ec2-13-57-186-109.us-west-1.compute.amazonaws.com \
