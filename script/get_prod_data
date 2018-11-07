@@ -1,26 +1,26 @@
 USER=$1
-ssh-keyscan ec2-13-57-186-109.us-west-1.compute.amazonaws.com >>~/.ssh/known_hosts
+HOST=$2
 
 # grid data
-ssh $USER@ec2-13-57-186-109.us-west-1.compute.amazonaws.com \
+ssh $USER@$HOST \
     "ls -1tr /var/reg_backup/grid.* | tail -1" \
     | xargs -iz -I '{}' \
-    scp $USER@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:{} .
+    scp $USER@$HOST:{} .
 tar zxvf grid.* -C /var/Reg/grid
 chmod 664 /var/Reg/grid/*
 chown reg:www-data /var/Reg/grid/*
 
 # rental images
-scp $USER@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:/var/reg_backup/rental_images.tar .
+scp $USER@$HOST:/var/reg_backup/rental_images.tar .
 tar xvf rental_images.tar -C /var/Reg/rental_images
 chmod 664 /var/Reg/rental_images/*
 chown reg:www-data /var/Reg/rental_images/*
 
 # mysql data
-ssh $USER@ec2-13-57-186-109.us-west-1.compute.amazonaws.com \
+ssh $USER@$HOST \
     "ls -1tr /var/reg_backup/rc.* | tail -1" \
     | xargs -iz -I '{}' \
-    scp $USER@ec2-13-57-186-109.us-west-1.compute.amazonaws.com:{} .
+    scp $USER@$HOST:{} .
 pv rc.* | gunzip | mysql
 
 rm rc.* grid.* rental_images.tar
