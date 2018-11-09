@@ -1,5 +1,6 @@
 USER=$1
 HOST=$2
+PERMISSIONS=$3
 
 # grid data
 ssh $USER@$HOST \
@@ -8,13 +9,13 @@ ssh $USER@$HOST \
     scp $USER@$HOST:{} .
 tar zxvf grid.* -C /var/Reg/grid
 chmod 664 /var/Reg/grid/*
-chown reg:www-data /var/Reg/grid/*
+chown $PERMISSIONS /var/Reg/grid/*
 
 # rental images
 scp $USER@$HOST:/var/reg_backup/rental_images.tar .
 tar xvf rental_images.tar -C /var/Reg/rental_images
 chmod 664 /var/Reg/rental_images/*
-chown reg:www-data /var/Reg/rental_images/*
+chown $PERMISSIONS /var/Reg/rental_images/*
 
 # mysql data
 ssh $USER@$HOST \
