@@ -72,6 +72,16 @@ __PACKAGE__->config(
         dbic_class => 'RetreatCenterDB::Session',  # Assuming MyApp::Model::DBIC
         expires    => 3600,
     },
+    'Plugin::Authentication' => {
+        default => {
+            password_type => 'clear',
+            user_model    => 'RetreatCenterDB::User',
+            class         => 'SimpleDB'
+        }
+    },
+    'Model::RetreatCenterDB' => {
+        schema_class  => 'RetreatCenterDB',
+    },
 );
 
 # Start the application
