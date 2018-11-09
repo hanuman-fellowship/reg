@@ -377,7 +377,14 @@ sub profile_edit_do : Local {
 
     my %hash = %{ $c->request->params() };
     $hash{hide_mmi} = '' unless $hash{hide_mmi};
+
     $c->user->update(\%hash);
+
+    # Since we are caching user info in the session, we need to
+    # force a session update.
+    $c->user->get_object(1);
+    $c->update_user_in_session();
+
     $c->response->redirect($c->uri_for('/user/profile_view'));
 }
 
