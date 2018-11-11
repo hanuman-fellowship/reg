@@ -23,7 +23,14 @@ sub view : Local {
     }
     my $prev = $days[-1];
     my $next = $days[1];
-    my @lines = split '\n', slurp("root/static/grab_new/$day");
+    my $file = "root/static/grab_new/$day";
+    my @lines;
+    if (-r $file) {
+        @lines = split '\n', slurp("root/static/grab_new/$day");
+    }
+    else {
+        @lines = ('Nothing happened on this day.');
+    }
     if ($temple <= 1) {
         my $tmpl_re = qr{\A temple(?!\s+donation)}xms;
         if ($temple == 1) {
