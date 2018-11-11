@@ -769,7 +769,9 @@ sub kayakalpa {
             $dates = fmt_dates(date($href->{sdate}), date($href->{edate}));
         }
         my $html;
+        my $dir = 'root/static/templates/letter';
         my $tt = Template->new(
+            INCLUDE_PATH => $dir,
             INTERPOLATE => 1,
         ) or quit("template new error: " . Template->error());
         $tt->process(
