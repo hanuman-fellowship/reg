@@ -30,10 +30,10 @@ sub view : Local {
         $prev = 'Sun';
         $next = 'Tue';
     }
-    my $file = "root/static/grab_new/$day";
+    my $file = "/var/Reg/grab_new/$day";
     my @lines;
     if (-r $file) {
-        @lines = split '\n', slurp("root/static/grab_new/$day");
+        @lines = split '\n', slurp($file);
     }
     else {
         @lines = ('Nothing happened on this day.');
