@@ -18,12 +18,26 @@ sub view : Local {
         $day = tt_today($c)->format('%a');
     }
     my @days = qw/ Sun Mon Tue Wed Thu Fri Sat /;
-    while ($days[0] ne $day) {
-        unshift @days, pop @days;
+    my ($prev, $next);
+    for my $i (0 .. $#days) {
+        if ($day eq $days[$i]) {
+            $prev = $i-1 >=      0? $days[$i-1]: 'Sat';
+            $next = $i+1 <= $#days? $days[$i+1]: 'Sun';
+        }
     }
-    my $prev = $days[-1];
-    my $next = $days[1];
-    my @lines = split '\n', slurp("/var/Reg/grab_new/$day");
+    if (! $prev) {
+        # some nefarious person tried to force a non-day
+        $prev = 'Sun';
+        $next = 'Tue';
+    }
+    my $file = "root/static/grab_new/$day";
+    my @lines;
+    if (-r $file) {
+        @lines = split '\n', slurp("root/static/grab_new/$day");
+    }
+    else {
+        @lines = ('Nothing happened on this day.');
+    }
     if ($temple <= 1) {
         my $tmpl_re = qr{\A temple(?!\s+donation)}xms;
         if ($temple == 1) {

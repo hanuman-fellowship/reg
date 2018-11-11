@@ -46,8 +46,8 @@ REG=/home/sahadev/Reg
 #15 12 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
 #15 15 * * * test -f $REG/INACTIVE && $REG/synch_db >>$REG/output/synch_db.out 2>&1
 
-# at 11:40 pm back up all the rental grid data and send it offsite
-#40 23 * * * test -f $REG/INACTIVE || $REG/grid_backup >>$REG/output/db_backup.out 2>&1
+# at 11:40 pm back up all the rental grid data (and images) and send it offsite
+40 23 * * * test -f $REG/INACTIVE || $REG/grid_backup >>$REG/output/db_backup.out 2>&1
 
 # at midnight check that the backups actually worked properly
 #0 0 * * * test -f $REG/INACTIVE || $REG/check_backup >>$REG/output/check_backup.out 2>&1

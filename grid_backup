@@ -7,4 +7,7 @@ cd $r/root/static/grid
 tar cvf $f *data.txt >$r/grid.out 2>&1
 gzip $f
 scp $f.gz sahadev@cloudkali:/var/reg_backup
-test -f $r/INACTIVE || scp $f.gz newkali:Reg/backup
+
+cd ../images
+tar cvf $r/rental_images.tar r-* rth-*
+scp $r/rental_images.tar sahadev@cloudkali:/var/reg_backup
