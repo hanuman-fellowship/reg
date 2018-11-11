@@ -78,6 +78,7 @@ sub view : Local {
     );
 }
 
+# silly
 sub _full_day {
     my ($day) = @_;
     return $day . ($day eq 'Tue'? 's'

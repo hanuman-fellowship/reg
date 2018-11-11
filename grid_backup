@@ -11,3 +11,8 @@ scp $f.gz sahadev@cloudkali:/var/reg_backup
 cd ../images
 tar cvf $r/rental_images.tar r-* rth-*
 scp $r/rental_images.tar sahadev@cloudkali:/var/reg_backup
+
+# and activity files
+cd ../grab_new
+tar cvf $r/activity_files.tar *
+scp $r/activity_files.tar sahadev@cloudkali:/var/reg_backup
