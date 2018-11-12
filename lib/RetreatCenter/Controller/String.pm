@@ -109,6 +109,9 @@ sub update_do : Local {
             or last BLOCK;
         $ftp->login($string{ftp_login}, $string{ftp_password})
             or last BLOCK;
+        # thanks to jnap and haarg
+        # a nice HACK to force Extended Passive Mode:
+        local *Net::FTP::pasv = \&Net::FTP::epsv;
         $ftp->cwd($string{ftp_notify_dir})
             or last BLOCK;
         $ftp->ascii()

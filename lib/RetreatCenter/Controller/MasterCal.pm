@@ -815,6 +815,9 @@ EOH
             or die "cannot connect to ...";    # not die???
         $ftp->login($string{ftp_login}, $string{ftp_password})
             or die "cannot login ", $ftp->message; # not die???
+        # thanks to jnap and haarg
+        # a nice HACK to force Extended Passive Mode:
+        local *Net::FTP::pasv = \&Net::FTP::epsv;
         $ftp->cwd($string{ftp_dir})
             or die "cannot cwd ", $ftp->message; # not die???
         $ftp->cwd("calendar")

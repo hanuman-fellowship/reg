@@ -453,6 +453,9 @@ sub send_grid_data {
         or die "cannot connect to $string{ftp_site}";    # not die???
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->cwd($string{ftp_grid_dir}) or die "cwd";
     $ftp->ascii() or die "ascii";
     $ftp->put("/tmp/$code", $code) or die "put";
@@ -496,6 +499,9 @@ sub send_rental_deposit {
         or die "cannot connect to $string{ftp_site}";    # not die???
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or die "cannot login ", $ftp->message; # not die???
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->cwd($string{ftp_rental_deposit_dir}) or die "cwd";
     $ftp->ascii() or die "ascii";
     $ftp->put("/tmp/$code", $code) or die "put " . $ftp->message;

@@ -813,6 +813,9 @@ sub _get_updates {
         or return "no Net::FTP->new";
     $ftp->login($string{ftp_login}, $string{ftp_password})
         or return "no login";
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->cwd('update_dir')
         or return "no cd";
     $ftp->ascii()

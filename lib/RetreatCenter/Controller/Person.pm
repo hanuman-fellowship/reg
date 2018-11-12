@@ -1378,6 +1378,9 @@ EOH
             or die qq!cannot connect to $string{"ftp_${o}site"}!;
         $ftp->login($string{"ftp_${o}login"}, $string{"ftp_${o}password"})
             or die "cannot login ", $ftp->message;
+        # thanks to jnap and haarg
+        # a nice HACK to force Extended Passive Mode:
+        local *Net::FTP::pasv = \&Net::FTP::epsv;
         my $dir = $string{$org eq 'MMI'? 'req_mmi_dir': 'req_mmc_dir'};
         $ftp->cwd($dir) or die "cannot chdir to $dir";
         $ftp->ascii();
