@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/var/www/perl5.26.2/bin/perl
 use strict;
 use warnings;
 no warnings 'redefine';     # for Net::FTP::pasv
@@ -102,7 +102,7 @@ chdir "$FindBin::Bin/..";
 my $today = today();
 my $c;
 my $ftp;
-my $run_file = "grab_running";
+my $run_file = '/var/Reg/grab_running';
 my ($log, $log_name);
 my $nomp = 0;
 my ($now, $now_t24, $today_d8, $year_mon_dir);
@@ -274,7 +274,7 @@ sub get_files {
         if ($f eq '.' || $f eq '..') {
             next FILE;
         }
-        $ftp->get($f, "$get_dir/$f");
+        $ftp->get($f, "$get_dir/$f") or die "no get\n";
         ++$nfiles;
         if ($code_ref) {
             $code_ref->($get_dir, $f, @params);
@@ -801,8 +801,8 @@ sub main {
 
     $ftp->quit();   # all done with MMC
 
-# ???
 goto THERE;
+
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
         site     => $string{ftp_mmi_site},
         login    => $string{ftp_mmi_login},
@@ -819,10 +819,11 @@ goto THERE;
 
     $ftp->quit();   # all done with MMI
 
+THERE:
+
     mlist_alerts();
     omp_alert();
     kayakalpa();
-THERE:
     finalities();
 }
 

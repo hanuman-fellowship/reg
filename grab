@@ -1,8 +1,8 @@
-#!/bin/sh
-exit
+#!/bin/bash
 export DBI_DSN="dbi:mysql:reg2"
+export PERL5LIB=/var/www/cpan-lib/lib/perl5
+cd /var/www/src
 if [ "$1" == "wait" ]; then
-    script/grab_new >>output/grab.out 2>&1
+    /var/www/src/script/grab_new >>/var/Reg/output/grab.out 2>&1
 else
-    script/grab_new  >>output/grab.out 2>&1 &
-fi
+    /var/www/src/script/grab_new  >>/var/Reg/output/grab.out 2>&1 &
