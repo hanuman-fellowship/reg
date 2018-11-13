@@ -312,6 +312,8 @@ payment_U - a payment is Due
 personal_template - the template for a Personal Retreat program -
     it changes as the 'get_away' is offered or not.
 phone - the description of a telephone in the row for a rental online
+prepay_link - the URL for prepayment requests for MMC
+prepay_mmi_link - the URL for prepayment requests for MMI
 pr_max_nights - the maximum number of nights for a PR registration
 prog_end - the default time of day that a program ends
 prog_start - the default time of day that a program starts
