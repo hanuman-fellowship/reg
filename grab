@@ -1,8 +1,19 @@
-#!/bin/bash
-export DBI_DSN="dbi:mysql:reg2"
-export PERL5LIB=/var/www/cpan-lib/lib/perl5
-cd /var/www/src
+#!/bin/sh
+
+if [ -d /home/sahadev/Reg ]; then
+
+    cd /home/sahadev/Reg
+    export DBI_DSN="dbi:mysql:reg2"
+
+else 
+
+    cd /Users/jonbjornstad/Reg
+    export DBI_DSN="dbi:SQLite:$HOME/Reg/retreatcenter.db"
+
+fi
+
 if [ "$1" == "wait" ]; then
-    /var/www/src/script/grab_new >>/var/Reg/output/grab.out 2>&1
+    script/grab_new >>output/grab.out 2>&1
 else
-    /var/www/src/script/grab_new  >>/var/Reg/output/grab.out 2>&1 &
+    script/grab_new  >>output/grab.out 2>&1 &
+fi

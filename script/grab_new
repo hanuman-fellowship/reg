@@ -1,7 +1,6 @@
-#!/var/www/perl5.26.2/bin/perl
+#!/usr/local/bin/perl
 use strict;
 use warnings;
-no warnings 'redefine';     # for Net::FTP::pasv
 
 =begin comment
 
@@ -12,12 +11,12 @@ the current day.  If this is the first run for the day start
 the file anew.
 
 0) Make sure that the net is available by trying to ping mountmadonna.org.
-Otherwise simply exit.   Commented this part out...
+Otherwise simply exit.
 
 1) Ftp-get all transaction files from www.mountmadonna.org
 created by the 'relay' program.  The names of these files
 are the ids of the most recent authorize.net transactions.
-Put the files in /var/Reg/online.
+Put the files in root/static/online.
 
 1a) If one of the above transaction files has a line like
 'x_description => Temple Donation ...'
@@ -25,14 +24,17 @@ it is a temple donation and requires special handling.
 Create a Payment record for the person to the 'Temple' Extra Account.
 Send a proper thank you letter???
 
-2) Get recently modified rental grid files into /var/Reg/grid.
+2) Get recently modified rental grid files into root/static/grid.
 
 3) Get mailing list requests (from MMC and MMI) into 
-/var/Reg/mlist_done/$yyyy_mm and insert them into the people table.
+root/static/mlist_done/$yyyy_mm and insert them into the people table.
 In one email (to each office) let them know
 the names and addresses so they can send them a brochure.
 
-4) For registrations that indicated they would like
+4) Get ride requests into root/static/rides.
+If there were any notify the reception office.
+
+5) For registrations that indicated they would like
 to be contacted about massage send Kaya Kalpa a letter
 with their contact information and which program and when
 they'll be here.
@@ -42,19 +44,19 @@ that they are Cc'ed on) saying that they will
 be contacted by someone at Kaya Kalpa two to three weeks
 before the program to arrange for the bodywork.
 
-5) Get people that recently registered on the temple
+6) Get people that recently registered on the temple
 reservation site and import them directly into the People table.
 
-6a) Get MMI payment requests that have been paid and morph
+7a) Get MMI payment requests that have been paid and morph
 them into actual payments.
-6b) Get MMC payment requests that have been paid and morph
+7b) Get MMC payment requests that have been paid and morph
 them into actual payments.
 
-7) Get MMI standalone course registations
+8) Get MMI standalone course registations
 
-8) Get online membership payments
+9) Get online membership payments
 
-9) Get rental deposit payments
+10) Get rental deposit payments
 
 =end
 
@@ -89,9 +91,6 @@ use Time::Simple qw/
 /;
 #use Net::Ping;
 use Net::FTP;
-# thanks to jnap and haarg
-# a nice HACK to force Extended Passive Mode:
-*Net::FTP::pasv = \&Net::FTP::epsv;
 use File::FTP;      # this is mine
 use File::Basename 'basename';
 
@@ -102,9 +101,10 @@ chdir "$FindBin::Bin/..";
 my $today = today();
 my $c;
 my $ftp;
-my $run_file = "/var/Reg/grab_running";
+my $run_file = "grab_running";
 my ($log, $log_name);
 my $nomp = 0;
+my $nrides = 0;
 my ($now, $now_t24, $today_d8, $year_mon_dir);
 my ($temple_xaccount_id);
 my @kayakalpa;  # an array of hashrefs - these people requested
@@ -113,7 +113,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
                     # brochures for MMI/MMC.
 
 # directories
-my ($online, $grid, $temple, $mlist_done,
+my ($online, $grid, $temple, $mlist_done, $rides,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
     $temple_donation, $grab_new);
 my $something_happened = 0;
@@ -147,7 +147,7 @@ sub initialize {
     $now_t24 = $now->t24;
     $today_d8 = $today->as_d8();
     $year_mon_dir = $today->format("%Y-%m");
-    $log_name = '/var/log/Reg/grab_new.log';
+    $log_name = 'grab_new_log';
     open $log, '>', $log_name
         or die "no $log_name! :(\n";
 
@@ -197,17 +197,18 @@ sub initialize {
         quit("could not find the Temple Extra Account");
     }
 
-    my $dir = "/var/Reg";
-    $online          = make_dir("$dir/online");
-    $grid            = make_dir("$dir/grid");
-    $temple          = make_dir("$dir/temple_done/$year_mon_dir");
-    $mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
-    $req_mmi_dir     = make_dir("$dir/req_mmi/$year_mon_dir");
-    $req_mmc_dir     = make_dir("$dir/req_mmc/$year_mon_dir");
-    $omp_dir         = make_dir("$dir/omp");
-    $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
-    $temple_donation = make_dir("$dir/temple_donation");
-    $grab_new        = make_dir("$dir/grab_new");
+    my $rst = "root/static";
+    $online          = make_dir("$rst/online");
+    $grid            = make_dir("$rst/grid");
+    $temple          = make_dir("$rst/temple_done/$year_mon_dir");
+    $mlist_done      = make_dir("$rst/mlist_done/$year_mon_dir");
+    $rides           = make_dir("$rst/rides");
+    $req_mmi_dir     = make_dir("$rst/req_mmi/$year_mon_dir");
+    $req_mmc_dir     = make_dir("$rst/req_mmc/$year_mon_dir");
+    $omp_dir         = make_dir("$rst/omp");
+    $rental_deposit_dir = make_dir("$rst/rental_deposit/$year_mon_dir");
+    $temple_donation = make_dir("$rst/temple_donation");
+    $grab_new        = make_dir("$rst/grab_new");
 }
 
 sub finalities {
@@ -243,8 +244,8 @@ sub ftp_connect {
     my (%arg) = @_;
 
     my $ftp_class = $ENV{FILE_FTP_DIR}? 'File::FTP': 'Net::FTP';
-    my $ftp = $ftp_class->new($arg{site}, Passive => 1, Debug => 0)
-        or quit("cannot connect to $arg{site}");
+    my $ftp = $ftp_class->new($arg{site}, Passive => $arg{passive})
+                  or quit("cannot connect to $arg{site}");
     $ftp->login($arg{login}, $arg{password})
         or quit("cannot login to $arg{site}: " . $ftp->message);
     $ftp->ascii();
@@ -274,8 +275,7 @@ sub get_files {
         if ($f eq '.' || $f eq '..') {
             next FILE;
         }
-print "getting $f into $get_dir/$f\n";
-        $ftp->get($f, "$get_dir/$f") or die "no get!\n";
+        $ftp->get($f, "$get_dir/$f");
         ++$nfiles;
         if ($code_ref) {
             $code_ref->($get_dir, $f, @params);
@@ -526,6 +526,25 @@ sub process_mlist {
     };
 }
 
+#
+# see who is requesting a ride and from/to where
+#
+sub get_rides {
+    my ($get_dir, $f) = @_;
+
+    ++$nrides;
+    open my $in, "<", "$get_dir/$f"
+        or quit("cannot open $get_dir/$f: $!\n");
+    my %hash;
+    while (my $line = <$in>) {
+        chomp $line;
+        my ($key, $value) = split ' ', $line;
+        $hash{$key} = $value;
+    }
+    close $in;
+    msg "ride for $hash{first} $hash{last} $hash{from_to} $hash{airport}";
+}
+
 sub get_omp {
     my ($get_dir, $f) = @_;
 
@@ -565,6 +584,21 @@ sub get_rental_deposit {
                  . " for <a href='$string{url_prefix}/rental/view/$hash{id}/3'>"
                  . $rental->name() . "</a>",
     );
+}
+
+sub ride_alert {
+    if ($nrides) {
+        my $rc = email_letter($c,
+            to      => "MMC Transportation <$string{ride_email}>",
+            from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+                                        # what else?
+            subject => "Online Ride Request",
+            html    => "There is an online ride request waiting"
+                     . " for you in Reg."
+        );
+        msg "email ride request waiting to $string{ride_email}"
+            . failed($rc);
+    }
 }
 
 sub omp_alert {
@@ -773,6 +807,7 @@ sub main {
     initialize();
     $ftp = ftp_connect(              # mountmadonna.org
         site     => $string{ftp_site},
+        passive  => $string{ftp_passive},
         login    => $string{ftp_login},
         password => $string{ftp_password},
     );
@@ -788,6 +823,10 @@ sub main {
     get_files($ftp, $string{ftp_mlist_requests},
               $mlist_done, \&process_mlist);
 
+    # Rides - obsolete
+    # get_files($ftp, $string{ftp_ride_dir},
+    #           $rides, \&get_rides);
+
     # Membership Payments
     get_files($ftp, $string{ftp_omp_dir},
               $omp_dir, \&get_omp);
@@ -802,10 +841,9 @@ sub main {
 
     $ftp->quit();   # all done with MMC
 
-goto THERE;
-
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
         site     => $string{ftp_mmi_site},
+        passive  => $string{ftp_mmi_passive},
         login    => $string{ftp_mmi_login},
         password => $string{ftp_mmi_password},
     );
@@ -819,10 +857,25 @@ goto THERE;
               $online, \&check_transaction, 'MMI');
 
     $ftp->quit();   # all done with MMI
-THERE:
+
+    $ftp = ftp_connect(         # temple.mountmadonna.org used to be at hfs
+        site     => $string{ftp_hfs_site},
+        passive  => $string{ftp_passive},
+        login    => $string{ftp_hfs_user},
+        password => $string{ftp_hfs_password},
+    );
+
+    # Temple Users
+    get_files($ftp, $string{ftp_hfs_dir},
+              $temple, \&get_temple);
+
+    $ftp->quit();   # all done with temple.mountmadonna.org
+
     mlist_alerts();
+    ride_alert();
     omp_alert();
     kayakalpa();
+
     finalities();
 }
 
