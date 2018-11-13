@@ -1907,10 +1907,11 @@ sub send_conf : Local {
             1,      # no sending of email - we will include
                     # the prepayment link in the confirmation letter.
         );
-        $pre_pay_link = "https://www.mountmadonna"
-                         . ($org eq 'MMI'? 'institute': '')
-                         . ".org/cgi-bin/req_pay?code=$code"
-                         ;
+        $pre_pay_link = $string{ $org eq 'MMI'? 'prepay_mmi_link'
+                                :               'prepay_link'
+                               }
+                      . "?code=$code"
+                      ;
     }
     my $cancel_policy = '';
     my $cp = $pr->canpol();
