@@ -1436,6 +1436,7 @@ sub arrangements : Local {
         user   => $c->user,
         string => \%string,
         gate_code => $rental->summary->gate_code || 'XXXX',
+        grid_url => $string{grid_url},
     };
     my $html;
     $tt->process(

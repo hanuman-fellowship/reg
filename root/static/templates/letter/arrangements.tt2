@@ -64,7 +64,7 @@ as possible, and we will then add them to the grid
 as reservations for your group.
 <p>
 <ul>
-<a href='http://www.mountmadonna.org/cgi-bin/grid?code=${rental.grid_code}'>http://www.mountmadonna.org/cgi-bin/grid?code=$rental.grid_code
+<a href='$grid_url?code=${rental.grid_code}'>$grid_url?code=$rental.grid_code
 </a>
 </ul>
 <p>
