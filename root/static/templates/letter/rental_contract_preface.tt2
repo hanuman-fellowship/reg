@@ -26,7 +26,7 @@ With a link in that email you can sign the contract <i>electronically</i>.
 There is a required deposit of \$${rental.deposit} which
 will hold the venue and accommodations
 for the dates you have reserved.
-You may use this <a href="https://www.mountmadonna.org/cgi-bin/rental_deposit?code=${rental.grid_code}">payment link</a> (also found in the attached contract) to pay your deposit.  You could, of course, send a check via postal mail.
+You may use this <a href="$rental_deposit_url?code=${rental.grid_code}">payment link</a> (also found in the attached contract) to pay your deposit.  You could, of course, send a check via postal mail.
 <p>
 Thank you and best wishes,
 <p>

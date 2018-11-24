@@ -1695,6 +1695,7 @@ sub contract : Local {
         contract_sent => $contract_sent,
         contract_expire => $contract_sent + 17,
         user   => $c->user,
+        rental_deposit_url => $string{rental_deposit_url},
     );
     $tt->process(
         "rental_contract.tt2",# template

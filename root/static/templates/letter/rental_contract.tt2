@@ -205,7 +205,7 @@ The Agreed Upon Revenue is thus \$${agreed}.
 The renter will pay a deposit of \$$deposit
 upon the signing of this contract.
 <p>
-This amount can be paid online with this <a href="https://www.mountmadonna.org/cgi-bin/rental_deposit?code=$rental.grid_code">payment link</a>.
+This amount can be paid online with this <a href="$rental_deposit_url?code=$rental.grid_code">payment link</a>.
 <p>
 Cancellation charges shall be as follows:
 <table cellpadding=2>
