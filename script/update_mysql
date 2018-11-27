@@ -1,0 +1,57 @@
+#!/bin/bash
+mysql <<EOS
+-- new mechanism for session data
+DROP TABLE IF EXISTS sessions;
+CREATE TABLE sessions (
+    id           CHAR(72) PRIMARY KEY,
+    session_data TEXT,
+    expires      INTEGER
+);
+
+-- all email comes to us
+UPDATE string
+   SET   value = 'jon@suecenter.org, jjn1056@gmail.com'
+ WHERE the_key = 'redirect_email';
+
+-- talk to the clone of mountmadonna.org
+UPDATE string
+   SET   value = 'mmc.jasongaluten.com'
+ WHERE the_key = 'ftp_site';
+
+-- separate script for this:
+-- remove any reference to rides and drivers
+DROP TABLE IF EXISTS ride;
+DELETE FROM role where role = 'ride_admin';
+DELETE FROM role where role = 'driver';
+DELETE FROM user_role where role_id in (12, 13);
+
+DELETE FROM string where the_key like '%ride%';
+DELETE FROM string where the_key = 'max_shuttles' OR the_key = 'ftp_userpics';
+DELETE FROM string where the_key like 'MRY%';
+DELETE FROM string where the_key like 'OAK%';
+DELETE FROM string where the_key like 'OTH%';
+DELETE FROM string where the_key like 'SFO%';
+DELETE FROM string where the_key like 'SJC%';
+DELETE FROM string where the_key like '%imgwidth';
+
+UPDATE string set value = 'https://mmc.jasongaluten.com/feeds_from_reg/go.php' where the_key = 'curl_command';
+UPDATE string set value = 'mmc.jasongaluten.com' where the_key = 'ftp_export_site';
+UPDATE string set value = 'mmc.jasongaluten.com' where the_key = 'ftp_site';
+UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/req_pay' where the_key = 'prepay_link';
+UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/grid' where the_key = 'grid_url';
+UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/rental_deposit' where the_key = 'rental_deposit_url';
+UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp_load' where the_key = 'omp_load_url';
+UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp_pay' where the_key = 'omp_pay_url';
+
+DROP TABLE IF EXISTS program_doc;
+
+-- comment these out once the production db has dropped the columns
+-- no images for leaders
+ALTER TABLE leader DROP COLUMN image;
+-- no images for programs
+ALTER TABLE program DROP COLUMN image;
+-- no images for residents
+ALTER TABLE resident DROP COLUMN image;
+-- no documents for programs
+
+EOS
