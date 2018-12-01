@@ -315,6 +315,7 @@ rental_arranged_color - the color of an arranged rental
 rental_coord_email - the person to notify when a rental deposit is received online
 rental_late_in - the penalty for a late indoor rental
 rental_late_out - the penalty for a late outdoor rental
+rental_deposit_url - the URL for paying the rental deposit
 rental_done - description for a rental status of Done
 rental_done_color - the color in the calendar of a Done rental
 rental_due - description for a rental status of Due
