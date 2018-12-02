@@ -1485,6 +1485,10 @@ sub arrangements : Local {
 
     # redirect of all emails
     if (! empty($string{redirect_email})) {
+        for (@to, @cc) {
+            s{[<]}{&lt;}xmsg;
+            s{[>]}{&gt;}xmsg;
+        }
         $html = <<"EOM";
 This email has been <b>redirected</b>.<br>
 The original recipients were:<br>
