@@ -1523,8 +1523,7 @@ EOM
         from    =>        $user->first
                  . ' '  . $user->last
                  . ' <' . $user->email . '>',
-        #to      => \@to,
-        to      => $user->email,
+        to      => \@to,
         cc      => \@cc,
         subject => $subject,
     });
@@ -1748,6 +1747,10 @@ sub contract : Local {
 
     # redirect of all emails
     if (! empty($string{redirect_email})) {
+        for (@to, @cc) {
+            s{[<]}{&lt;}xmsg;
+            s{[>]}{&gt;}xmsg;
+        }
         $html = <<"EOM";
 This email has been <b>redirected</b>.<br>
 The original recipients were:<br>
@@ -1782,8 +1785,7 @@ EOM
         from    =>        $user->first
                  . ' '  . $user->last
                  . ' <' . $user->email . '>',
-        #to      => \@to,
-        to      => $user->email,
+        to      => \@to,
         cc      => \@cc,
         subject => "MMC Rental Contract with '" . $rental->name_trimmed() . "'",
     });
