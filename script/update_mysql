@@ -37,6 +37,7 @@ DELETE FROM string where the_key like '%imgwidth';
 UPDATE string set value = 'https://mmc.jasongaluten.com/feeds_from_reg/go.php' where the_key = 'curl_command';
 UPDATE string set value = 'mmc.jasongaluten.com' where the_key = 'ftp_export_site';
 UPDATE string set value = 'mmc.jasongaluten.com' where the_key = 'ftp_site';
+UPDATE string set value = '1' where the_key = 'ftp_passive';
 UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/req_pay' where the_key = 'prepay_link';
 UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/grid' where the_key = 'grid_url';
 UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/rental_deposit' where the_key = 'rental_deposit_url';
