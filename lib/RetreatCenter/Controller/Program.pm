@@ -2034,9 +2034,9 @@ sub _send_export {
     # a nice HACK to force Extended Passive Mode:
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->binary();
-    $ftp->put('/tmp/exported_reg_data.tgz');
+    $ftp->put('/tmp/exported_reg_data.tgz', 'exported_reg_data.tgz')
+    	or die 'could not put exported_reg_data.tgz';
     $ftp->quit();
-    # not yet
     system("/usr/bin/curl --user $login:$password $command");
 }
 
