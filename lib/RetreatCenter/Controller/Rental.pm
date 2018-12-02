@@ -1483,6 +1483,8 @@ sub arrangements : Local {
         return;
     }
 
+    my @orig_to = @to;
+    my @orig_cc = @cc;
     # redirect of all emails
     if (! empty($string{redirect_email})) {
         for (@to, @cc) {
@@ -1570,9 +1572,9 @@ EOM
     });
     my $rc = $sender->Close;
     open my $mlog, ">>", "/var/log/Reg/mail.log";
-    print {$mlog} localtime() . " @to - ";
-    if (@cc) {
-        print {$mlog} "Cc: @cc - ";
+    print {$mlog} localtime() . " @orig_to - ";
+    if (@orig_cc) {
+        print {$mlog} "Cc: @orig_cc - ";
     }
     print {$mlog} "Arrangements for " . $rental->name . " - ";
     if (ref $rc) {
@@ -1745,6 +1747,8 @@ sub contract : Local {
         return;
     }
 
+    my @orig_to = @to;
+    my @orig_cc = @cc;
     # redirect of all emails
     if (! empty($string{redirect_email})) {
         for (@to, @cc) {
@@ -1760,7 +1764,7 @@ Cc: @cc<br>
 <p>
 $html
 EOM
-        @to = $string{redirect_email};
+        @to = split m{\s*,\s*}xms, $string{redirect_email};
         @cc = ();
     }
 
@@ -1837,9 +1841,9 @@ EOM
     });
     my $rc = $sender->Close;
     open my $mlog, ">>", "/var/log/Reg/mail.log";
-    print {$mlog} localtime() . " @to - ";
-    if (@cc) {
-        print {$mlog} "Cc: @cc - ";
+    print {$mlog} localtime() . " @orig_to - ";
+    if (@orig_cc) {
+        print {$mlog} "Cc: @orig_cc - ";
     }
     print {$mlog} "Contract for " . $rental->name . " - ";
     if (ref $rc) {
