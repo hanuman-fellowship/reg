@@ -6,3 +6,4 @@ if [ "$1" == "wait" ]; then
     /var/www/src/script/grab_new >>/var/Reg/output/grab.out 2>&1
 else
     /var/www/src/script/grab_new  >>/var/Reg/output/grab.out 2>&1 &
+fi
