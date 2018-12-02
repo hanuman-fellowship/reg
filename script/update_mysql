@@ -10,7 +10,7 @@ CREATE TABLE sessions (
 
 -- all email comes to us
 UPDATE string
-   SET   value = 'jon@suecenter.org, jjn1056@gmail.com'
+   SET   value = 'jonb@logicalpoetry.com, jjn1056@gmail.com'
  WHERE the_key = 'redirect_email';
 
 -- talk to the clone of mountmadonna.org
