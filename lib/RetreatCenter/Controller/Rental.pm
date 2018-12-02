@@ -1498,7 +1498,7 @@ Cc: @cc<br>
 <p>
 $html
 EOM
-        @to = $string{redirect_email};
+        @to = split m{\s*,\s*}xms, $string{redirect_email};
         @cc = ();
     }
 

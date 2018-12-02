@@ -714,7 +714,7 @@ Bcc: $args{bcc}<br>
 <p>
 $args{html}
 EOM
-        $args{to} = $string{redirect_email};
+        $args{to} = [ split m{\s*,\s*}xms, $string{redirect_email} ];
     }
 
     if (! ref $mail_sender) {
