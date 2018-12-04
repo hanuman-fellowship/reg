@@ -502,6 +502,10 @@ sub resize {
         "/usr/bin/convert -scale 100x"
       . " $img/r-$id.png $img/rth-$id.png"
     );
+    # this needs work
+    # I think craft requires a jpg but only png has transparency.
+    system("mv $img/r-$id.png $img/r-$id.jpg");
+    system("mv $img/rth-$id.png $img/rth-$id.jpg");
 }
 
 sub housing_types {
