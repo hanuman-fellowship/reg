@@ -705,9 +705,13 @@ sub email_letter {
 
     # redirecting for testing purpose
     if (! empty($string{redirect_email})) {
-        my $to = (ref $args{to} eq 'ARRAY')? @{$args{to}}: $args{to};
+        my $to = (ref $args{to} eq 'ARRAY')? "@{$args{to}}": $args{to};
         $args{cc} ||= '';
         $args{bcc} ||= '';
+        for ($to, $args{cc}, $args{bcc}) {
+            s{[<]}{&lt;}xms;
+            s{[>]}{&gt;}xms;
+        }
         $args{html} = <<"EOM";
 This email was <b>redirected</b>.<br>
 The original recipients were:<br>
