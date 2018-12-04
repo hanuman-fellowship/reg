@@ -1711,6 +1711,7 @@ sub contract : Local {
         rental_late_out => $string{rental_late_out},
         contract_sent => $contract_sent,
         contract_expire => $contract_sent + 17,
+        rental_deposit_url => $string{rental_deposit_url},
         user   => $c->user,
     );
     $tt->process(
