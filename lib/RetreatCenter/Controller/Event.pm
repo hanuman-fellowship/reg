@@ -1794,7 +1794,7 @@ sub _send_no_prs {
         }
     );
     open my $out, ">", "/tmp/noPR.txt"
-        or die "cannot write noPR.txt: $!\n";
+        or die "cannot write /tmp/noPR.txt: $!\n";
     for my $ev (@events) {
         print {$out} $ev->sdate() . "-" . $ev->edate()
              . (($ev->name =~ m{indoors}xmsi)? " indoors": "")
