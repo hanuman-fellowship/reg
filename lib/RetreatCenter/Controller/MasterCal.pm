@@ -622,7 +622,7 @@ EOH
         $jim->string(gdGiantFont, $x + 45, 1,
                      $start_year+$yr-1, $black);
     }
-    open my $jpng, ">", "root/static/images/$jump_name"
+    open my $jpng, ">", "/var/Reg/images/$jump_name"
         or die "no $jump_name: $!\n";
     print {$jpng} $jim->png;
     close $jpng;
@@ -729,7 +729,7 @@ EOH
                                  (localtime())[reverse (0 .. 5)])
                        . ".png"
                        ;
-        open my $imf, ">", "root/static/images/$cal_name"
+        open my $imf, ">", "/var/Reg/images/$cal_name"
             or die "no $cal_name: $!\n"; 
         print {$imf} $im->png;
         close $imf;
@@ -786,62 +786,7 @@ document.form.end.focus();
 </script>
 EOH
     }
-    if ($public) {
-        # clear the user's state
-        $c->logout;
-
-        # fix up the content and then
-        # ftp it all to www.mountmadonna.org
-        #
-        $content =~ s{http://.*?/images/}{}g;
-        $content =~ s{/static/}{};
-        $content =~ s{/static/js/}{};
-        open my $cal, ">", "root/static/pubcal_index.html"
-            or die "cannot open index.html: $!";
-        my $updated = get_time()->ampm() . " " . today()->format("%b %e");
-        print {$cal} <<"EOH";
-<span class=cal_head>
-Future Events at Mount Madonna Center
-<span class=updated>Updated $updated</span>
-<span class=cal_help><a href="javascript:popup('pubcal_help.html', 620);">Help</a></span>
-</span>
-EOH
-        print {$cal} $content;
-        close $cal;
-        my ($jmp_image)  = $content =~ m{src=(imJ\d+[.]png)};
-        my @cal_images = $content =~ m{src='(im\d+[.]png)'}g;
-        my $ftp = Net::FTP->new($string{ftp_site},
-                                Passive => $string{ftp_passive})
-            or die "cannot connect to ...";    # not die???
-        $ftp->login($string{ftp_login}, $string{ftp_password})
-            or die "cannot login ", $ftp->message; # not die???
-        # thanks to jnap and haarg
-        # a nice HACK to force Extended Passive Mode:
-        local *Net::FTP::pasv = \&Net::FTP::epsv;
-        $ftp->cwd($string{ftp_dir})
-            or die "cannot cwd ", $ftp->message; # not die???
-        $ftp->cwd("calendar")
-            or die "cannot cwd ", $ftp->message; # not die???
-        for my $f ($ftp->ls()) {
-            $ftp->delete($f);
-        }
-        $ftp->ascii();
-        $ftp->put("root/static/pubcal_index.html", "index.html");
-        $ftp->put("root/static/js/overlib.js",     "overlib.js");
-        $ftp->put("root/static/cal.css",           "cal.css");
-        $ftp->put("root/static/help/pubcal_help.html", "pubcal_help.html");
-        $ftp->binary();
-        for my $im (@cal_images, $jmp_image) {
-            $ftp->put("root/static/images/$im", $im);
-        }
-        $ftp->quit();
-        # tidy up
-        #
-        $c->res->output("sent");
-    }
-    else {
-        $c->res->output($go_form . $content);
-    }
+    $c->res->output($go_form . $content);
 }
 
 1;

@@ -1433,8 +1433,8 @@ EOH
         $content =~ s{http://.*?/images/}{}g;
         $content =~ s{/static/}{};
         $content =~ s{/static/js/}{};
-        open my $cal, ">", "root/static/pubcal_index.html"
-            or die "cannot open index.html: $!";
+        open my $cal, ">", "/tmp/pubcal_index.html"
+            or die "cannot open pubcal_index.html: $!";
         my $updated = get_time()->ampm() . " " . today()->format("%b %e");
         print {$cal} <<"EOH";
 <span class=cal_head>
@@ -1463,13 +1463,13 @@ EOH
             $ftp->delete($f);
         }
         $ftp->ascii();
-        $ftp->put("root/static/pubcal_index.html", "index.html");
+        $ftp->put("/tmp/pubcal_index.html", "index.html");
         $ftp->put("root/static/js/overlib.js",     "overlib.js");
         $ftp->put("root/static/cal.css",           "cal.css");
         $ftp->put("root/static/help/pubcal_help.html", "pubcal_help.html");
         $ftp->binary();
         for my $im (@cal_images, $jmp_image) {
-            $ftp->put("root/static/images/$im", $im);
+            $ftp->put("/var/Reg/images/$im", $im);
         }
         $ftp->quit();
         # tidy up
@@ -1793,7 +1793,7 @@ sub _send_no_prs {
             order_by => 'sdate',
         }
     );
-    open my $out, ">", "noPR.txt"
+    open my $out, ">", "/tmp/noPR.txt"
         or die "cannot write noPR.txt: $!\n";
     for my $ev (@events) {
         print {$out} $ev->sdate() . "-" . $ev->edate()
@@ -1811,7 +1811,7 @@ sub _send_no_prs {
     $ftp->cwd($string{ftp_pr_dir})
         or return(my_die($c, "cannot cwd to $string{ftp_pr_dir} " . $ftp->message));
     $ftp->ascii();
-    $ftp->put("noPR.txt");
+    $ftp->put("/tmp/noPR.txt", "noPR.txt");
     $ftp->quit();
 }
 
