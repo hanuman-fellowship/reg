@@ -511,24 +511,13 @@ sub send_rental_deposit {
 
 sub image_path {
     my ($self) = @_;
-    my $img = '/var/Reg/rental_images';
-    my $name = "r-" . $self->id;
-    (-f "$img/$name.jpg")? "$img/$name.jpg"
-   :(-f "$img/$name.png")? "$img/$name.png"
-   :                       "$img/$name.gif"
-   ;
+    return "/var/Reg/rental_images/r-" . $self->id . ".jpg";
 }
 
 sub image_url {
     my ($self, $type) = @_;
     $type ||= '';
-    my $img = '/var/Reg/rental_images';
-    my $name = "r$type-" . $self->id;
-    my $path = "/rental/image_file/$name";
-    (-f "$img/$name.jpg")? "$path.jpg"
-   :(-f "$img/$name.png")? "$path.png"
-   :                       "$path.gif"
-   ;
+    return "/rental/image_file/r$type-" . $self->id . ".jpg";
 }
 
 # make sure the local grid is current???

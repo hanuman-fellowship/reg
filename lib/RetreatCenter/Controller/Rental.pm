@@ -219,6 +219,7 @@ sub create : Local {
             [ model($c, 'HouseCost')->search(
                 {
                     inactive => { '!=' => 'yes' },
+                    name     => { 'like' => '%rental%' },
                 },
                 { order_by => 'name' },
             ) ],
@@ -293,6 +294,8 @@ sub create_do : Local {
     # the above 3 columns will be updated only by grab_new
 
     my $upload     = $c->request->upload('image');
+    my $no_crop = $P{no_crop};
+    delete $P{no_crop};
 
     my $r = model($c, 'Rental')->create({
         %P,
@@ -302,12 +305,11 @@ sub create_do : Local {
     my $id = $r->id();
 
     if ($upload) {
-        my $fname = $upload->filename();
-        my ($suffix) = $fname =~ m{[.](.*)\z}xms;
-        my $picfile = "$img/ro-$id.$suffix";
-        $upload->copy_to($picfile);
+        # force the name to be .jpg even if it's a .png...
+        # okay?
+        $upload->copy_to("$img/ro-$id.jpg");
         Global->init($c);
-        resize($id);
+        resize($id, $no_crop);
     }
 
     # send an email alert about this new rental
@@ -721,6 +723,7 @@ sub update : Local {
                         id       => $r->housecost_id,
                         inactive => { '!=' => 'yes' },
                     ],
+                    name => { 'like' => '%rental%' },
                 },
                 { order_by => 'name' },
             ) ],
@@ -799,13 +802,16 @@ sub update_do : Local {
         #
         $P{grid_code} = rand6($c);
     }
-    my $upload     = $c->request->upload('image');
+    my $upload = $c->request->upload('image');
+    my $no_crop = $P{no_crop};
+    delete $P{no_crop};
     if ($upload) {
         $P{image} = 'yes';
-        my $picfile = "$img/ro-$id.jpg";
-        $upload->copy_to($picfile);
+        # force the name to be .jpg even if it's a .png...
+        # okay?
+        $upload->copy_to("$img/ro-$id.jpg");
         Global->init($c);
-        resize($id);
+        resize($id, $no_crop);
     }
 
     $r->update(\%P);
@@ -902,7 +908,7 @@ sub delete : Local {
     $r->summary->delete();
 
     # the image(s) if any
-    unlink <root/static/images/r*-$rental_id.*>;
+    unlink <$img/r*-$rental_id.*>;
 
     # and the rental itself
     # does this cascade to rental payments???
@@ -2095,8 +2101,11 @@ sub duplicate : Local {
         housecost_opts =>
             [ model($c, 'HouseCost')->search(
                 {
-                    id       => $orig_r->housecost_id,
-                    inactive => { '!=' => 'yes' },
+                    -or => [
+                        id       => $orig_r->housecost_id,
+                        inactive => { '!=' => 'yes' },
+                    ],
+                    name => { 'like' => '%rental%' },
                 },
                 { order_by => 'name' },
             ) ],
@@ -2131,6 +2140,8 @@ sub duplicate_do : Local {
     # otherwise use the old one, if any.
     #
     my $upload = $c->request->upload('image');
+    my $no_crop = $P{no_crop};
+    delete $P{no_crop};
 
     # get the old rental and the old summary
     # so we can duplicate the summary.  and get the
@@ -2177,24 +2188,23 @@ sub duplicate_do : Local {
         housing_charge => 0,
         rental_created => tt_today($c)->as_d8(),
         created_by     => $c->user->obj->id,
+        cancelled      => '',
     });
     $new_r->set_grid_stale();
     my $new_id = $new_r->id();
 
     # mess with the new image, if any.
     if ($upload) {
-        my $picfile = "$img/ro-$new_id.jpg";
-        $upload->copy_to($picfile);
+        # force the name to be .jpg even if it's a .png...
+        # okay?
+        $upload->copy_to("$img/ro-$new_id.jpg");
         Global->init($c);
-        resize($new_id);
+        resize($new_id, $no_crop);
     }
     elsif ($new_r->image()) {
-        # complicated! wake up.
-        my $path = "root/static/images";
-        my $suf = (-f "$path/r-$old_id.jpg")? "jpg": "gif";
         for my $let ('o', 'th', '') {
-            copy "$path/r$let-$old_id.$suf",
-                 "$path/r$let-$new_id.$suf";
+            copy "$img/r$let-$old_id.jpg",
+                 "$img/r$let-$new_id.jpg";
         }
     }
 

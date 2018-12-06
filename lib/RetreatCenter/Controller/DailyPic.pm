@@ -439,9 +439,7 @@ sub show : Local {
     if ($type eq 'outdoors') {
         $campsites = join '<br>',
                      map {
-                         "<img border=0 src="
-                         . $c->uri_for("/dailypic/dp_image/$_")
-                         . ">"
+                         "<img border=0 src='/static/images/$_'>"
                      }
                      qw/
                          oaks.gif

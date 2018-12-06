@@ -476,36 +476,41 @@ sub monthyear {
 # invoke ImageMagick convert to create
 # the thumbnail and large images from the original
 #
-# if you only want to resize one of the two
-# give the optional third parameter.
-#
-# rentals images are handled in a very special way
+# this is only used for rental images
+# and are handled in a very special way.
+# no matter what the uploaded input file is we
+# have named it with .jpg suffix.
+# if $no_crop is supplied we generate a .png
+# and then rename it a .jpg.
+# Does this work?  If not, fix it!
 #
 sub resize {
-    my ($id) = @_;
+    my ($id, $no_crop) = @_;
 
     my $img = "/var/Reg/rental_images";
-    # resize and crop centrally to 640x368
-    # convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage
-    #     in.png out.png 
-    #
-    # for square images - MUST BE PNG!!:
-    # convert in.jpg -resize 640x368 -background none \
-    #         -gravity center -extent 640x368 out.png
-    # needs work - input is not always jpg!
-    system(
-        "/usr/bin/convert -resize 640x368^ -gravity center -crop 640x368+0+0 +repage"
-      . " $img/ro-$id.jpg $img/r-$id.png"
-    );
+    if ($no_crop) {
+        # for no crop images - convert output MUST BE PNG!!:
+        # this generates a transparent bars on either side
+        system(
+            "/usr/bin/convert $img/ro-$id.jpg -resize 640x368 -background none"
+          . " -gravity center -extent 640x368"
+          . " $img/r-$id.png"
+        );
+        system("mv $img/r-$id.png $img/r-$id.jpg");
+    }
+    else {
+        # resize and crop centrally to 640x368
+        system(
+            "/usr/bin/convert $img/ro-$id.jpg -resize 640x368^"
+          . " -gravity center -crop 640x368+0+0 +repage"
+          . " $img/r-$id.jpg"
+        );
+    }
     # create the thumbnail
     system(
         "/usr/bin/convert -scale 100x"
-      . " $img/r-$id.png $img/rth-$id.png"
+      . " $img/r-$id.jpg $img/rth-$id.jpg"
     );
-    # this needs work - add checkbox to do the transparent png thing.
-    # I think craft requires a jpg but only png has transparency.
-    system("mv $img/r-$id.png $img/r-$id.jpg");
-    system("mv $img/rth-$id.png $img/rth-$id.jpg");
 }
 
 sub housing_types {
@@ -1156,6 +1161,7 @@ sub _spell {
 sub commify {
     my ($n) = @_;
 
+    return '' if ! defined $n;
     $n = reverse $n;
     $n =~ s/(\d\d\d)(?=\d)(?!\d*\.)/$1,/g;
     $n = scalar reverse $n;

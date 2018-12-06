@@ -319,13 +319,15 @@ $rental.comment
 <th align=right valign=top>Rental Image</th>
 <td colspan=2>
 [% IF rental.image %]
-<img src="$rental.image_file" border=0><br>
+<img src="$rental.image_url" border=0><br>
 [% ELSE %]
     [% IF dup_image %]
         <img src=$dup_image border=0><br>
     [% END %]
 [% END %]
 <input type=file name=image>
+&nbsp;&nbsp;
+<input type=checkbox name=no_crop value="yes"> No Crop
 </td>
 </tr>
 
