@@ -713,7 +713,7 @@ sub list : Local {
         @cond = (
             'category.name' => 'Normal',
             'level.long_term' => 'yes',
-            edate => { },       # all programs not just current.
+            edate => { '>=', 19890101 },       # all programs not just current.
                                 # this overrides the cutoff one below
         );
     }
