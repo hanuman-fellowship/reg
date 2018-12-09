@@ -699,7 +699,7 @@ function image_toggle() {
 $jump_map
 <p>
 EOH
-    my $jump_img = $c->uri_for("/static/images/$jump_name");
+    my $jump_img = $c->uri_for("/event/calendar_image/$jump_name");
     my @pr_color  = $string{cal_pr_color}  =~ m{\d+}g;
     my $arr_color = d3_to_hex($string{cal_arr_color});
     my $lv_color  = d3_to_hex($string{cal_lv_color});
@@ -743,7 +743,7 @@ EOH
                   . "<span class=datefld>Details <input type=checkbox id=detail$key onclick='detail_toggle($key)'></span>";
 
         $content .= "<p>\n";
-        my $image = $c->uri_for("/static/images/$cal_name");
+        my $image = $c->uri_for("/event/calendar_image/$cal_name");
         $content .= <<"EOH";
 <div id=img$key>
 <img border=0 src='$image' usemap='#$key'>
