@@ -1054,7 +1054,7 @@ sub create_do : Local {
         pref2         => $P{pref2},
         share_first   => normalize($P{share_first}),
         share_last    => normalize($P{share_last}),
-        manual        => ($P{dup} || $pr->school->mmi())? 'yes': '',
+        manual        => '',
         cabin_room    => $P{cabin_room} || '',
         leader_assistant => '',
         free_prog_taken  => $P{free_prog},
@@ -5344,7 +5344,7 @@ sub mmi_import_do : Local {
             date_start => $program->sdate(),
             date_end   => $edate->as_d8(),
             balance    => 0,
-            manual     => 'yes',
+            manual     => '',
             comment    => $outstand_str,
         });
         # finances???
