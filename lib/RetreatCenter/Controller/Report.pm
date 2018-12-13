@@ -674,7 +674,18 @@ EOS
             return;
         }
     }
-    $c->response->redirect($c->uri_for("/static/$fname.$suf"));
+    $c->response->redirect($c->uri_for("/report/show_report_file/$fname.$suf"));
+}
+
+sub show_report_file : Local Args(1) {
+    my ($self, $c, $fname) = @_;
+    open my $fh, '<', "/var/Reg/report/$fname"
+        or die "$fname not found!!: $!\n";
+    $c->response->content_type(
+        ($fname =~ m/[.]html$/xms)? 'text/html'
+       :                            'text/plain'
+    );
+    $c->response->body($fh);
 }
 
 sub _gen_and_send_data_for_www {
