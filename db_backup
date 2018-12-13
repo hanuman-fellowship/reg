@@ -1,9 +1,7 @@
 #!/bin/sh
-cd /home/sahadev/Reg
 day=`date +%d`
-f=backup/rc.$day
+f=/var/Reg/backup/rc.$day
 rm -f $f $f.gz
-mysqldump --user=root --add-drop-table --databases reg2 >$f
+mysqldump --no-defaults --user=sahadev --password=JonB --add-drop-table \
+    reg2 >$f 2>/dev/null
 gzip $f
-scp $f.gz sahadev@cloudkali:/var/reg_backup
-test -f $HOME/sahadev/Reg/INACTIVE || scp $f.gz newkali:Reg/backup

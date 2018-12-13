@@ -2,5 +2,5 @@
 use strict;
 use warnings;
 use LWP::Simple;
-my $rc = get("http://kali:3000/login?username=calendar&password=z2A2");
+my $rc = get("https://akash.mountmadonna.org/login?username=calendar&password=z2A2");
 # that's it!

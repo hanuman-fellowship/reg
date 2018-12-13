@@ -353,6 +353,6 @@ triple - the display name for the housing type 'triple'
 tt_today - a place to do 'time travel'.  format: 'username mm/dd/yy'
 typehdr - the heading for the list of housing types
 unknown - the display name for the housing type 'unknown'
-url_prefix - the prefix for all URLs in Reg - like http://kali:3000
+url_prefix - the prefix for all URLs in Reg - like https://akash.mountmadonna.org
 website - the title for a Rental's website in the online row for the rental
 weburl - the web address for a Rental's website in the online row for the rental

@@ -1,4 +1,5 @@
-#!/bin/sh
-cd /home/sahadev/Reg
+#!/bin/bash
 export DBI_DSN="dbi:mysql:reg2"
-./script/pubcal
+export PERL5LIB=/var/www/cpan-lib/lib/perl5
+cd /var/www/src
+/var/www/src/script/pubcal

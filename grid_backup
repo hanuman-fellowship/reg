@@ -1,18 +1,15 @@
 #!/bin/sh
-r=/home/sahadev/Reg
+r=/var/Reg
 day=`date +%a`
 f=$r/backup/grid.$day
 rm -f $f $f.gz
-cd $r/root/static/grid
-tar cvf $f *data.txt >$r/grid.out 2>&1
+cd $r/grid
+tar cvf $f *data.txt >/var/Reg/output/grid.out 2>&1
 gzip $f
-scp $f.gz sahadev@cloudkali:/var/reg_backup
 
-cd ../images
-tar cvf $r/rental_images.tar r-* rth-*
-scp $r/rental_images.tar sahadev@cloudkali:/var/reg_backup
+cd ../rental_images
+tar cvf $r/backup/rental_images.tar r-* rth-* >>/var/Reg/output/grid.out 2>&1
 
 # and activity files
 cd ../grab_new
-tar cvf $r/activity_files.tar *
-scp $r/activity_files.tar sahadev@cloudkali:/var/reg_backup
+tar cvf $r/backup/activity_files.tar * >>/var/Reg/output/grid.out 2>&1

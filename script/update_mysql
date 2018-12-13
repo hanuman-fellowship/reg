@@ -43,6 +43,7 @@ UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/grid' where the_
 UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/rental_deposit' where the_key = 'rental_deposit_url';
 UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp_load' where the_key = 'omp_load_url';
 UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp_pay' where the_key = 'omp_pay_url';
+UPDATE string set value = 'https://mmc.jasongaluten.com' where the_key = 'url_prefix';
 
 DROP TABLE IF EXISTS program_doc;
 
