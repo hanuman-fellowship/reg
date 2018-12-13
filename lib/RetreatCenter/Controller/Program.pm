@@ -616,7 +616,7 @@ sub view : Local {
         );
     }
 
-    my @files = <root/static/online/*>;
+    my @files = </var/Reg/online/*>;
     my $sdate = $p->sdate();
     my $nmonths = months_calc(date($sdate), date($p->edate()));
 
@@ -809,7 +809,7 @@ sub listpat : Local {
             name => { 'like' => "${pat}%" },
         };
     }
-    my @files = <root/static/online/*>;
+    my @files = </var/Reg/online/*>;
     stash($c,
         pg_title => "Programs",
         online   => scalar(@files),
