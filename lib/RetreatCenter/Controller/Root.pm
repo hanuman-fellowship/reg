@@ -12,7 +12,7 @@ use Util qw/
 sub index : Private {
     my ($self, $c) = @_;
 
-    $c->forward('/login');
+    $c->response->redirect($c->uri_for('/login'));
 }
 
 #
