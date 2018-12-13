@@ -9,6 +9,12 @@ use Util qw/
     d3_to_hex
 /;
 
+sub index : Private {
+    my ($self, $c) = @_;
+
+    $c->forward('/login');
+}
+
 #
 # Sets the actions in this controller to be registered with no prefix
 # so they function identically to actions created in MyApp.pm
