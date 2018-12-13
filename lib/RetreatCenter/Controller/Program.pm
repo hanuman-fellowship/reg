@@ -741,7 +741,7 @@ sub list : Local {
             )
         ]
     );
-    my @files = <root/static/online/*>;
+    my @files = </var/Reg/online/*>;
     stash($c,
         time_travel_class($c),
         long_term => $type eq 'long_term',
