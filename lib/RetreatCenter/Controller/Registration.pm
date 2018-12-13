@@ -1198,7 +1198,7 @@ sub create_do : Local {
             mkdir $dir unless -d $dir;
             rename "$rst/online/$P{fname}",
                    "$dir/$P{fname}";
-            open my $log, '>>', 'online_log';
+            open my $log, '>>', '/var/log/Reg/online.log';
             my $person = $reg->person;
             print {$log} scalar(localtime), " $P{fname} ",
                          $person->first, " ", $person->last, ", ",
@@ -2989,13 +2989,13 @@ sub update_confnote_do : Local {
 sub _check_spelling {
     my ($c, $newnote) = @_;
     open my $spell, "| /usr/bin/aspell -H list |sort -fu | "
-                  . "comm -23 - $rst/okaywords.txt >/tmp/spellout"
+                  . "comm -23 - $rst/words/okaywords.txt >/tmp/spellout"
         or $c->log->info("cannot open aspell");
     print {$spell} $newnote;
     close $spell;
     system('/usr/bin/sort -u /tmp/spellout'
-         . " $rst/maybewords.txt > $rst/newmaybewords.txt;"
-         . "mv $rst/newmaybewords.txt $rst/maybewords.txt"
+         . " $rst/words/maybewords.txt > $rst/words/newmaybewords.txt;"
+         . "mv $rst/words/newmaybewords.txt $rst/words/maybewords.txt"
     );
 }
 sub update_comment : Local {

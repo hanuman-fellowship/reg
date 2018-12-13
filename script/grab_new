@@ -667,6 +667,8 @@ sub process_req_payments {
 }
 
 #
+# obsolete - stopped doing this at some point...
+#
 # a temple user - either to create or update
 # does Shantam send it for update only when something has changed???
 # in add_or_update_deduping we return 'no change' if nothing has changed.
