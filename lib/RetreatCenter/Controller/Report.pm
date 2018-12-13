@@ -655,7 +655,7 @@ EOS
     $tt->process(
         "$fname.tt2", 
          { people => \@people },
-         "root/static/$fname.$suf",
+         "/var/Reg/report/$fname.$suf",
     ) or die "error in processing template: "
              . $tt->error();
     if ($format == EMAIL_CODE || $format == ADDR_CODE) {
