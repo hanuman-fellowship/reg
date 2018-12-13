@@ -1,2 +1,3 @@
 PERL5LIB=/var/www/cpan-lib/lib/perl5
 0,15,30,45 * * * * /var/www/src/grab
+0 1 * * * /var/www/src/makeup

@@ -1581,7 +1581,7 @@ sub make_up_do : Local {
         $c->stash->{template} = "listing/field.tt2";
     }
     else {
-        $c->response->redirect($c->uri_for("/listing/"));
+        $c->response->redirect($c->uri_for("/listing/index"));
     }
 }
 
