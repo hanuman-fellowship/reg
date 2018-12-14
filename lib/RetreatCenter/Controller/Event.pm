@@ -1430,7 +1430,7 @@ EOH
         # fix up the content and then
         # ftp it all to www.mountmadonna.org
         #
-        $content =~ s{http://.*?/images/}{}g;
+        $content =~ s{https://.*?/calendar_image/}{}g;
         $content =~ s{/static/}{};
         $content =~ s{/static/js/}{};
         open my $cal, ">", "/tmp/pubcal_index.html"
