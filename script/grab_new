@@ -429,6 +429,7 @@ EOH
             if ($href->{country}) {
                 $html .= "$href->{country}<br>\n";
             }
+            $html .= "$href->{email}<br>\n";
             if ($href->{interest}) {
                 $html .= "Interest: $href->{interest}<br>\n";
             }
