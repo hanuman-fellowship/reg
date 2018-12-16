@@ -1450,7 +1450,7 @@ sub arrangements : Local {
     });
     my $stash = {
         rental => $rental,
-        user   => $c->user,
+        signed   => ucfirst $c->user->username,
         string => \%string,
         gate_code => $rental->summary->gate_code || 'XXXX',
     };
