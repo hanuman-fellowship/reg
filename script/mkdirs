@@ -1,8 +1,7 @@
 #!/bin/bash
 cd /var/Reg
-mkdir -p backup export grab_new grid mlist_done \
-    omp omp_done online online_done rental_deposit report \
-    req_mmc req_mmi rides temple_donation words output \
-    rides_done
+mkdir -p backup excel export grab_new grid images mlist_done \
+    omp omp_done online online_done output rental_deposit rental_images \
+    report req_mmc req_mmi rides_done temple_donation words
 chmod 775 *
 chown reg:www-data *
