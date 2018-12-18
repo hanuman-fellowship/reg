@@ -1011,6 +1011,7 @@ sub leader_update_do : Local {
                 leader_assistant => 'yes',      # only way to set this
                 pref1      => $assist? 'dble': 'single_bath',
                 pref2      => $assist? 'dble': 'single_bath',
+                transaction_id => 0,
             });
             ++$new_regs;
         }
