@@ -2007,7 +2007,7 @@ sub export : Local {
 
     # send it off
     _send_export('mmc');
-    #_send_export('mmi');
+    _send_export('mmi');
 
     stash($c,
         ftp_export_site => $string{ftp_export_site},
