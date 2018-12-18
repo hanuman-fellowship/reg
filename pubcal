@@ -1,5 +1,2 @@
 #!/bin/bash
-export DBI_DSN="dbi:mysql:reg2"
-export PERL5LIB=/var/www/cpan-lib/lib/perl5
-cd /var/www/src
-/var/www/src/script/pubcal
+/usr/bin/curl 'https://akash.mountmadonna.org/login?username=calendar&password=z2A2'

@@ -1,6 +1,0 @@
-#!/usr/bin/env perl
-use strict;
-use warnings;
-use LWP::Simple;
-my $rc = get("https://akash.mountmadonna.org/login?username=calendar&password=z2A2");
-# that's it!
