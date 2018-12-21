@@ -2007,7 +2007,7 @@ sub export : Local {
 
     # send it off
     _send_export('mmc');
-#    _send_export('mmi');
+    _send_export('mmi');
 
     stash($c,
         ftp_export_site => $string{ftp_export_site},
@@ -2038,7 +2038,7 @@ sub _send_export {
     $ftp->put('/tmp/exported_reg_data.tgz', 'exported_reg_data.tgz')
     	or die 'could not put exported_reg_data.tgz';
     $ftp->quit();
-    system("/usr/bin/curl --user $login:$password $command");
+    system("/usr/bin/curl --user $login:$password $command &");
 }
 
 sub _extract_fee_table {
