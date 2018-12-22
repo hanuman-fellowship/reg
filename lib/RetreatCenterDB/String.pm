@@ -180,7 +180,7 @@ from_title - name of the person that emails are From.
 ftp_calendar_dir - the directory on mmc.org for the public calendar images, index.html
 ftp_dir - FTP info for mountmadonna.org
 ftp_dir2 - FTP info for mountmadonna.org - staging directory
-ftp_export_site - FTP info for mountmadonna.org - for exporting JSON data
+ftp_export_site - text describing where things were exported
 ftp_grid_dir - where to put the rental grid data?
 ftp_hfs_dir - FTP info for hanumanfellowship.org - for temple reservations people
 ftp_hfs_password - FTP info for hanumanfellowship.org

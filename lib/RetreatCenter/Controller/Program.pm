@@ -1827,7 +1827,7 @@ sub export : Local {
     }
     gen_progtable(\@programs);      # writes to $export_dir/progtable
     my $fmt = '%Y-%m-%d';
-    my (@export_programs, @export_mmi_programs, @export_unlinked_programs);
+    my @export_programs;
     for my $p (@programs) {
         my $mmi = $p->school->mmi();
         my $pic_dir = $mmi? "mmi_pics": "pics";
@@ -1888,19 +1888,9 @@ sub export : Local {
             mmi => $mmi,
             leaders => \@leaders,
         };
-        if (! $href->{linked}) {
-            push @export_unlinked_programs, $href;
-        }
-        else {
-            push @export_programs, $href;   # includes mmi programs
-        }
-        if ($mmi) {
-            push @export_mmi_programs, $href;
-        }
+        push @export_programs, $href;
     }
     _json_put(\@export_programs, 'programs.json');
-    _json_put(\@export_unlinked_programs, 'unlinked_programs.json');
-    _json_put(\@export_mmi_programs, 'mmi_programs.json');
     my $footnote_href = {
         'footnotes_*'   => $string{'*'},
         'footnotes_**'  => $string{'**'},

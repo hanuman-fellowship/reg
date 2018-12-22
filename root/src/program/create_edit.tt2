@@ -156,6 +156,7 @@ Web
 <select name=category_id>
 $cat_opts
 </select>
+<span class=red>Leave this alone.</span>
 </td>
 </tr>
 
@@ -167,6 +168,7 @@ $cat_opts
 >
 $school_opts
 </select>
+<span class=red>This, too.</span>
 </td>
 </tr>
 
@@ -321,6 +323,7 @@ MMC <input type=radio name=bank_account value='mmc' $bank_mmc>
 MMI <input type=radio name=bank_account value='mmi' $bank_mmi>
 &nbsp;&nbsp;&nbsp;
 Both <input type=radio name=bank_account value='both' $bank_both>
+<span class=red>Leave this alone.</span>
 </td>
 </tr>
 
