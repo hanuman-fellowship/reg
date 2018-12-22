@@ -229,64 +229,64 @@ sub _get_data {
     }
     # naming conventions for Resident && MMI programs
     #
-    my $category = model($c, 'Category')->find($P{category_id});
-    if (! $category) {
-        push @mess, "Unknown Category!";
-    }
-    else {
-        my $name = $category->name();
-        if ($name ne 'Normal') {
-            if ($P{name} !~ m{^$name}) {
-                push @mess, 'Name does not match the Category.';
-            }
-        }
-        else {
-            # what is happening here???
-            # category is 'Normal' but the program name
-            # might begin with another category?  yeah.
-            my $cats = join '|',
-                       map {
-                           $_->name()        
-                       }
-                       model($c, 'Category')->search({
-                           name => { '!=', 'Normal' },
-                       })
-                       ;
-            if ($P{name} =~ m{^($cats)}) {
-                push @mess, 'Name does not match the Category.';
-            }
-        }
-    }
-    if ($P{school_id} != 1
-        && $P{name} !~ m{MMI}
-    ) {
-        push @mess, 'Name must have MMI in it';
-    }
-    if ($P{school_id} == 1
-        && $P{name} =~ m{MMI}
-    ) {
-        push @mess, 'Name has MMI in it but the program is not sponsored by an MMI school';
-    }
+    #my $category = model($c, 'Category')->find($P{category_id});
+    #if (! $category) {
+    #    push @mess, "Unknown Category!";
+    #}
+    #else {
+    #    my $name = $category->name();
+    #    if ($name ne 'Normal') {
+    #        if ($P{name} !~ m{^$name}) {
+    #            push @mess, 'Name does not match the Category.';
+    #        }
+    #    }
+    #    else {
+    #        # what is happening here???
+    #        # category is 'Normal' but the program name
+    #        # might begin with another category?  yeah.
+    #        my $cats = join '|',
+    #                   map {
+    #                       $_->name()        
+    #                   }
+    #                   model($c, 'Category')->search({
+    #                       name => { '!=', 'Normal' },
+    #                   })
+    #                   ;
+    #        if ($P{name} =~ m{^($cats)}) {
+    #            push @mess, 'Name does not match the Category.';
+    #        }
+    #    }
+    #}
+    #if ($P{school_id} != 1
+    #    && $P{name} !~ m{MMI}
+    #) {
+    #    push @mess, 'Name must have MMI in it';
+    #}
+    #if ($P{school_id} == 1
+    #    && $P{name} =~ m{MMI}
+    #) {
+    #    push @mess, 'Name has MMI in it but the program is not sponsored by an MMI school';
+    #}
     # verify the level and school match okay
-    my $level = model($c, 'Level')->find($P{level_id});
-    if (! $level) {
-        push @mess, 'Illegal Level!!';
-    }
-    else {
-        my $lev_name = $level->name();
-        if ($level->school_id && $level->school_id != $P{school_id}) {
-            my $school = model($c, 'School')->find($P{school_id});
-            my $sch_name = $school->name();
-            # we _could_ have some Javascript to only permit
-            # certain allowable options in the <select> for Level.
-            push @mess, "Level '$lev_name' does not match the Sponsoring Organization '$sch_name'";
-        }
-        # the program name must match the level name_regex
-        my $regex = $level->name_regex();
-        if ($regex && $P{name} !~ m{$regex}i) {
-            push @mess, "Program name '$P{name}' does not match the Level '$lev_name'";
-        }
-    }
+    #my $level = model($c, 'Level')->find($P{level_id});
+    #if (! $level) {
+    #    push @mess, 'Illegal Level!!';
+    #}
+    #else {
+    #    my $lev_name = $level->name();
+    #    if ($level->school_id && $level->school_id != $P{school_id}) {
+    #        my $school = model($c, 'School')->find($P{school_id});
+    #        my $sch_name = $school->name();
+    #        # we _could_ have some Javascript to only permit
+    #        # certain allowable options in the <select> for Level.
+    #        push @mess, "Level '$lev_name' does not match the Sponsoring Organization '$sch_name'";
+    #    }
+    #    # the program name must match the level name_regex
+    #    my $regex = $level->name_regex();
+    #    if ($regex && $P{name} !~ m{$regex}i) {
+    #        push @mess, "Program name '$P{name}' does not match the Level '$lev_name'";
+    #    }
+    #}
 
     # dates are converted to d8 format
     my ($sdate, $edate);
