@@ -804,8 +804,6 @@ sub main {
 
     $ftp->quit();   # all done with MMC
 
-goto THERE;
-
     $ftp = ftp_connect(           #  mountmadonnainstitute.org
         site     => $string{ftp_mmi_site},
         login    => $string{ftp_mmi_login},
@@ -821,8 +819,6 @@ goto THERE;
               $online, \&check_transaction, 'MMI');
 
     $ftp->quit();   # all done with MMI
-
-THERE:
 
     mlist_alerts();
     omp_alert();
