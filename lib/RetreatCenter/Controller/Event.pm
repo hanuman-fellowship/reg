@@ -1811,7 +1811,8 @@ sub _send_no_prs {
     $ftp->cwd($string{ftp_pr_dir})
         or return(my_die($c, "cannot cwd to $string{ftp_pr_dir} " . $ftp->message));
     $ftp->ascii();
-    $ftp->put("/tmp/noPR.txt", "noPR.txt")
+    # why do we need the ./ below?
+    $ftp->put("/tmp/noPR.txt", "./noPR.txt")
         or return (my_die($c, "cannot put noPR.txt " . $ftp->message));
     $ftp->quit();
 }
