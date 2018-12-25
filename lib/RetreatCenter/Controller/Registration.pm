@@ -2646,7 +2646,7 @@ sub csv_labels : Local {
             prefetch => [qw/ person /],   
         }
     );
-    open my $labs, '>', 'root/static/labels.txt';
+    open my $labs, '>', '/var/Reg/report/labels.txt';
     for my $r (@regs) {
         my $h = $r->house;
         my $p = $r->person;
@@ -2661,6 +2661,9 @@ sub csv_labels : Local {
         elsif ($h_type eq 'unknown' || $h_type eq 'not_needed') {
             $h_name = 'No Housing';
         }
+        elsif (! defined $h) {
+            $h_name = 'Not Housed Yet';
+        }
         else {
             $h_name = $h->name;
             my $cluster_name = $h->cluster->name;
@@ -2671,7 +2674,7 @@ sub csv_labels : Local {
         }
         print {$labs} join(', ', $p->first, $p->last, $h_name) . "\n";
     }
-    $c->response->redirect($c->uri_for("/static/labels.txt"));
+    $c->response->redirect($c->uri_for("/report/show_report_file/labels.txt"));
 }
 
 sub badges : Local {
