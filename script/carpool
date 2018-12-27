@@ -112,7 +112,7 @@ for my $prog (@progs) {
     # doesn't have to be valid.  we hide it with a fake_to.
     #
     if (@emails) {
-        push @emails, 'jon@suecenter.org';
+        push @emails, 'POStaff@mountmadonna.org', 'jonb@logicalpoetry.com';
         email_letter($c,
             from    => "$string{from_title} <$string{from}>",
             fake_to => "Car Pool List",
@@ -150,7 +150,7 @@ for my $prog (@progs) {
             from    => "$string{from_title} <$string{from}>",
             fake_to => '',
             to      => 'reservations@mountmadonna.org',
-            bcc     => 'jon@suecenter.org',
+            bcc     => 'POStaff@mountmadonna.org, jonb@logicalpoetry.com',
             subject => "Snail Mail People - Carpool List for " . $prog->name,
             html    => $let,
         );
