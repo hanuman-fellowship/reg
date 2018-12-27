@@ -24,7 +24,7 @@ my ($cmdline_date, $offset) = @ARGV;
 if ($cmdline_date && $cmdline_date eq '-') {
     $cmdline_date = "";
 }
-if (!$offset) {
+if (!defined $offset) {
     $offset = 7;
 }
 
