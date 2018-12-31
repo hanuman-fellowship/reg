@@ -2042,6 +2042,8 @@ sub add_or_update_deduping {
                 if (! defined $href->{$k} || $href->{$k} eq '-1') {
                     # don't change what is already there...
                     delete $href->{$k} 
+                    # and remove it from the @needed array
+                    @needed = grep { $_ ne $k } @needed;
                 }
             }
             # has anything changed at all?
