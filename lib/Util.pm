@@ -2041,7 +2041,7 @@ sub add_or_update_deduping {
             for my $k (@mailing_keys) {
                 if (! defined $href->{$k} || $href->{$k} eq '-1') {
                     # don't change what is already there...
-                    delete $href->{$k} 
+                    delete $href->{$k};
                     # and remove it from the @needed array
                     @needed = grep { $_ ne $k } @needed;
                 }
