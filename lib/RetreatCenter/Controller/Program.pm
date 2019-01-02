@@ -1132,15 +1132,6 @@ sub delete : Local {
         );
         return;
     }
-    if (my @docs = $p->documents()) {
-        my $n = @docs;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n document$pl attached to this program.",
-            'gen_error.tt2',
-        );
-        return;
-    }
     if (my @blocks = $p->blocks()) {
         my $n = @blocks;
         my $pl = $n == 1? '': "s";
