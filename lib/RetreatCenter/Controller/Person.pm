@@ -1,3 +1,8 @@
+#
+# TODO: something needs tidying up here.
+# search for _done and fname
+# I think these are obsolete now.
+#
 use strict;
 use warnings;
 package RetreatCenter::Controller::Person;

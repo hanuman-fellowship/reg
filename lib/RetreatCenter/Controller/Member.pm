@@ -1,3 +1,7 @@
+#
+# TODO: the online member payments need to be
+# verified on akash.
+#
 use strict;
 use warnings;
 package RetreatCenter::Controller::Member;
@@ -1035,7 +1039,7 @@ sub bulk_do : Local {
     my $mmc = $c->request->params->{mmc};
     my $email = $c->request->params->{type} eq 'email';
     my $include_lapsed = $c->request->params->{include_lapsed};
-    open my $list, ">", "root/static/memlist.txt"
+    open my $list, ">", "/var/Reg/report/memlist.txt"
         or die "cannot create memlist.txt: $!\n";
     my @people;
     my $n = 0;
@@ -1131,7 +1135,7 @@ sub bulk_do : Local {
         );
     }
     else {
-        $c->response->redirect($c->uri_for("/static/memlist.txt"));
+        $c->response->redirect($c->uri_for("/report/show_report_file/memlist.txt"));
     }
 }
 

@@ -128,7 +128,7 @@ sub export : Local {
     my ($self, $c) = @_;
 
     my $csv;
-    if (!open $csv, '>', 'root/static/xaccounts.csv') {
+    if (!open $csv, '>', '/var/Reg/report/xaccounts.csv') {
         error($c,
               'Cannot open xaccounts.csv',
               'gen_error.tt2',
@@ -143,7 +143,7 @@ sub export : Local {
         print {$csv} join(', ', uc $xa->sponsor, '"'.$xa->descr.'"', $xa->glnum), "\n";
     }
     close $csv;
-    $c->response->redirect($c->uri_for('/static/xaccounts.csv'));
+    $c->response->redirect($c->uri_for('/report/show_report_file/xaccounts.csv'));
 }
 
 sub update : Local {

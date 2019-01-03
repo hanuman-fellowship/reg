@@ -1,3 +1,6 @@
+#
+# TODO: the DDUP mechanism needs to be reverified on akash
+#
 use strict;
 use warnings;
 package RetreatCenter::Controller::Report;
@@ -70,7 +73,7 @@ use constant {
 };
 
 my $exp = "expiry_date.txt";
-my $rst_exp = "root/static/$exp";
+my $rst_exp = "/var/Reg/report/$exp";
 my $cgi = "https://www.mountmadonna.org/cgi-bin";
 
 sub list : Local {
@@ -117,7 +120,7 @@ sub view : Local {
 
     my $today = today();
     my $expiry;
-    if (open my $in, '<', 'root/static/expiry_date.txt') {
+    if (open my $in, '<', '/var/Reg/report/expiry_date.txt') {
         $expiry = date(<$in>);
         close $in;
     }
@@ -810,7 +813,7 @@ sub _get_updates {
     # the above curl created the updates.sql file on mmc.org
     # now we ftp it to here and apply it.
     #
-    my $rst = "$ENV{HOME}/Reg/root/static";
+    my $rst = "/var/Reg/report";
     if (! -d "$rst/updates") {
         mkdir "$rst/updates" or return "no updates dir";
     }
@@ -869,7 +872,7 @@ sub clobber : Local {
         return error($c,
             "There are updates that have not been imported yet.", "gen_error.tt2");
     }
-    unlink "root/static/expiry_date.txt";
+    unlink "/var/Reg/report/expiry_date.txt";
     # also clobber the database on mmc.org and
     # the expiry_date.txt file there.
     qx(curl -k $cgi/update_clobber?passwd=soma 2>/dev/null);

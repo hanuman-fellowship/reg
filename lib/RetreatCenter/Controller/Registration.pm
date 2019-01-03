@@ -4945,7 +4945,7 @@ sub name_addr_do : Local {
             open $out, '>', \$html;
         }
         else {
-            open $out, '>', "root/static/participant.csv";
+            open $out, '>', "/var/Reg/report/participant.csv";
         }
         for my $p (@people) {
             if ($containing eq 'name') {
@@ -4960,7 +4960,7 @@ sub name_addr_do : Local {
             }
             else {
                 print {$out} join ',',
-                             map { s/"//g; qq{"$_"} }
+                             map { _escape_quote_and_quote($_) }
                              $p->first,
                              $p->last,
                              $p->addr1,
@@ -5046,12 +5046,19 @@ sub name_addr_do : Local {
     }
     else {
         if ($format eq 'csv') {
-            $c->response->redirect($c->uri_for("/static/participant.csv"));
+            $c->response->redirect($c->uri_for("/report/show_report_file/participant.csv"));
         }
         else {
             $c->res->output($html);
         }
     }
+}
+
+sub _escape_quote_and_quote {
+    my ($s) = @_;
+    return '' if ! defined $s;
+    $s =~ s{"}{\\"}xmsg;
+    return qq{"$s"};
 }
 
 #
@@ -5969,6 +5976,10 @@ sub _send_receipt {
     return;
 }
 
+#
+# I've forgotten how this is useful
+# what does it do?  What does restore do?
+#
 sub online_history : Local {
     my ($self, $c) = @_;
 
@@ -6014,7 +6025,7 @@ sub online_history : Local {
     }
     my $y = $sdate->year;
     my $m = $sdate->month;
-    my $rsod = "root/static/online_done/";
+    my $rsod = "/var/Reg/online_done/";
     my @regs;
     REG_DIR:
     while (1) {
@@ -6076,7 +6087,7 @@ sub online_history : Local {
 sub restore : Local {
     my ($self, $c, $dir, $trans_id) = @_;
 
-    my $fname = "root/static/online_done/$dir/$trans_id";
+    my $fname = "/var/Reg/online_done/$dir/$trans_id";
     if (! -f $fname) {
         error($c,
             "no such file: $fname",
@@ -6084,7 +6095,7 @@ sub restore : Local {
         );
         return;
     }
-    rename $fname, "root/static/online/$trans_id";
+    rename $fname, "/var/Reg/online/$trans_id";
     $c->response->redirect($c->uri_for("/registration/list_online"));
 }
 

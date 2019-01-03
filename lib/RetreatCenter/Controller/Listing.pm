@@ -161,7 +161,7 @@ sub phone_columns : Local {
     my ($self, $c) = @_;
 
     my @people = _phone_list();
-    open my $ph, ">", "root/static/phone_columns.html"
+    open my $ph, ">", "/var/Reg/report/phone_columns.html"
         or die "cannot create phone_columns.html";
     print {$ph} <<"EOH";
 <html>
@@ -210,7 +210,7 @@ EOH
 </body>
 </html>
 EOH
-    $c->response->redirect($c->uri_for("/static/phone_columns.html"));
+    $c->response->redirect($c->uri_for("/report/show_report_file/phone_columns.html"));
 }
 
 #
@@ -220,7 +220,7 @@ sub phone_noaddr : Local {
     my ($self, $c) = @_;
 
     my @people = _phone_list();
-    open my $ph, ">", "root/static/phone_noaddr.html"
+    open my $ph, ">", "/var/Reg/report/phone_noaddr.html"
         or die "cannot create phone_noaddr.html";
     print {$ph} <<"EOH";
 <html>
@@ -265,7 +265,7 @@ print {$ph} <<"EOH";
 </body>
 </html>
 EOH
-    $c->response->redirect($c->uri_for("/static/phone_noaddr.html"));
+    $c->response->redirect($c->uri_for("/report/show_report_file/phone_noaddr.html"));
 }
 
 sub _tel_get {
@@ -280,7 +280,7 @@ sub _tel_get {
 sub phone_line : Local {
     my ($self, $c) = @_;
 
-    open my $ph, ">", "root/static/phone_line.html"
+    open my $ph, ">", "/var/Reg/report/phone_line.html"
         or die "cannot create phone_line.html";
     print {$ph} <<"EOH";
 <html>
@@ -306,19 +306,20 @@ EOH
 <span class='phones'>$fones</span>
 <span class='address'>$addr</span>
 </span>
+<br>
 EOH
     }
 print {$ph} <<"EOH";
 </body>
 </html>
 EOH
-    $c->response->redirect($c->uri_for("/static/phone_line.html"));
+    $c->response->redirect($c->uri_for("/report/show_report_file/phone_line.html"));
 }
 
 sub undup : Local {
     my ($self, $c) = @_;
 
-    my $fname = "root/static/undup.html";
+    my $fname = "/var/Reg/report/undup.html";
     open my $out, ">", $fname
         or die "cannot create $fname: $!\n";
     print {$out} "<pre>\n";
@@ -343,7 +344,10 @@ EOS
         $last  = $p->{last};
         $first = $p->{first};
         $id    = $p->{id};
-        if ($last eq $prev_last && $first eq $prev_first) {
+        if ((defined $last  && defined $prev_last  && $last eq  $prev_last)
+            &&
+            (defined $first && defined $prev_first && $first eq $prev_first)
+        ) {
             print {$out} "<a target=other href='/person/undup/$id-$prev_id'>"
                         ."$last, $first</a>\n";    
             ++$n_same_name;
@@ -370,7 +374,9 @@ EOS
     while ($p = Person->search_next($sth)) {
         if ($prev
             && $p->{akey} eq $prev->{akey}
-            && ($p->{id_sps} == 0 || $prev->{id_sps} == 0)
+            && ((defined $p->{id_sps} && $p->{id_sps} == 0)
+                ||
+                (defined $prev->{id_sps} && $prev->{id_sps} == 0))
         ) {
             print {$out} "<a target=other href='/person/undup_akey/$p->{akey}'>$p->{last}, $p->{first}</a>\n";    
             if ($p->{addr1} ne $prev->{addr1} 
@@ -413,7 +419,7 @@ Tallies:
 </pre>
 EOF
     close $out;
-    $c->response->redirect($c->uri_for("/static/undup.html"));
+    $c->response->redirect($c->uri_for("/report/show_report_file/undup.html"));
 }
 
 #
