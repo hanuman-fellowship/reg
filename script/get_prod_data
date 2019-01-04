@@ -16,7 +16,7 @@ PERMISSIONS=$3
 
 # grid data
 ssh $USER@$HOST \
-    "ls -1tr /var/reg_backup/grid.* | tail -1" \
+    "ls -1tr /var/Reg/backup/grid.* | tail -1" \
     | xargs -iz -I '{}' \
     scp $USER@$HOST:{} .
 tar zxvf grid.* -C /var/Reg/grid
@@ -24,20 +24,20 @@ chmod 664 /var/Reg/grid/*
 sudo chown $PERMISSIONS /var/Reg/grid/*
 
 # rental images
-scp $USER@$HOST:/var/reg_backup/rental_images.tar .
+scp $USER@$HOST:/var/Reg/backup/rental_images.tar .
 tar xvf rental_images.tar -C /var/Reg/rental_images
 chmod 664 /var/Reg/rental_images/*
 sudo chown $PERMISSIONS /var/Reg/rental_images/*
 
 # activity files
-scp $USER@$HOST:/var/reg_backup/activity_files.tar .
+scp $USER@$HOST:/var/Reg/backup/activity_files.tar .
 tar xvf activity_files.tar -C /var/Reg/grab_new
 chmod 664 /var/Reg/grab_new/*
 sudo chown $PERMISSIONS /var/Reg/grab_new/*
 
 # mysql data
 ssh $USER@$HOST \
-    "ls -1tr /var/reg_backup/rc.* | tail -1" \
+    "ls -1tr /var/Reg/backup/rc.* | tail -1" \
     | xargs -iz -I '{}' \
     scp $USER@$HOST:{} .
 pv rc.* | gunzip | mysql
