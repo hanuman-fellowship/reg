@@ -69,7 +69,7 @@ for my $r (@rentals) {
     $name =~ s{ \s* \d+/\d+ \s* \z }{}xms;    # chop mm/yy at the end
     my @people;
     my $in;
-    if (! open $in, '<', "root/static/grid/"
+    if (! open $in, '<', "/var/Reg/grid/"
                           . $r->grid_code()
                           . "-data.txt"
     ) {
