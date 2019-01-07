@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# Ok, only run this on your development VM.  This is used to set your devVM
+# database to have local dev only values (like  don't send emails for real).
+# We also clear out the sessions table and etc to prevent snooping :)
+
 mysql <<EOS
 -- new mechanism for session data
 DROP TABLE IF EXISTS sessions;
@@ -46,14 +51,5 @@ UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp_pay' where t
 UPDATE string set value = 'https://mmc.jasongaluten.com' where the_key = 'url_prefix';
 
 DROP TABLE IF EXISTS program_doc;
-
--- comment these out once the production db has dropped the columns
--- no images for leaders
-ALTER TABLE leader DROP COLUMN image;
--- no images for programs
-ALTER TABLE program DROP COLUMN image;
--- no images for residents
-ALTER TABLE resident DROP COLUMN image;
--- no documents for programs
 
 EOS
