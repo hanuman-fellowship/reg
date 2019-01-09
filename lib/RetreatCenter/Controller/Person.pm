@@ -47,6 +47,7 @@ use USState;
 use LWP::Simple;
 use Template;
 use Data::Dumper;
+use Net::FTP;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -1493,6 +1494,9 @@ sub delete_req : Local {
         my $ftp = Net::FTP->new($string{ftp_mmi_site},
                                 Passive => $string{ftp_mmi_passive})
             or die "cannot connect to $string{ftp_mmi_site}";    # not die???
+        # thanks to jnap and haarg
+        # a nice HACK to force Extended Passive Mode:
+        local *Net::FTP::pasv = \&Net::FTP::epsv;
         $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
             or die "cannot login ", $ftp->message; # not die???
         $ftp->cwd($string{req_mmi_dir})

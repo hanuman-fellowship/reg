@@ -37,7 +37,6 @@ use DateRange;      # imports overlap
 use Global qw/
     %string
 /;
-use Net::FTP;
 
 sub do_mastercal {
     my ($self, $c, $the_start, $the_end) = @_;

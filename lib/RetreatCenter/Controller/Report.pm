@@ -32,6 +32,7 @@ use Template;
 use DBH qw/
     $dbh
 /;
+use Net::FTP;
 
 sub index : Private {
     my ( $self, $c ) = @_;

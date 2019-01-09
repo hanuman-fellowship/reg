@@ -33,6 +33,7 @@ use Global qw/
 /;
 use Template;
 use LWP::Simple 'get';
+use Net::FTP;
 
 sub index : Private {
     my ( $self, $c ) = @_;

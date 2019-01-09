@@ -19,6 +19,7 @@ use Date::Simple qw/
     date
 /;
 use HLog;
+use Net::FTP;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -155,6 +156,9 @@ sub _update_CT {
     close $ct;
     my $ftp = Net::FTP->new($string{ftp_site},
                             Passive => $string{ftp_passive}) or return;
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
     $ftp->cwd($string{ftp_pr_dir}) or return;
     $ftp->ascii() or return;
@@ -172,6 +176,9 @@ sub _update_max_nights {
     close $mn;
     my $ftp = Net::FTP->new($string{ftp_site},
                             Passive => $string{ftp_passive}) or return;
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
     $ftp->cwd($string{ftp_pr_dir}) or return;
     $ftp->ascii() or return;
