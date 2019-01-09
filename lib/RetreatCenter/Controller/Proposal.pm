@@ -416,6 +416,11 @@ sub _transmit {
                                 $proposal->zip_post()
                         ),
             secure_code => rand6($c),
+            # non NULL columns:
+            e_mailings     => '',
+            snail_mailings => '',
+            deceased       => '',
+            inactive       => '',
         });
         $person_id = $person->id();
         model($c, 'AffilPerson')->create({
