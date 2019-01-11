@@ -412,6 +412,7 @@ sub create_from_proposal : Local {
     $P{counts} = join ' ', (0) x ($rental_ndays + 1);
     $P{grid_max} = 0;
     $P{housing_charge} = 0;
+    $P{cancelled} = '';
 
     my $r = model($c, 'Rental')->create(\%P);
     my $rental_id = $r->id();
