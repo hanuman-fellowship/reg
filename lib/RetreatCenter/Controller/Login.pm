@@ -51,10 +51,18 @@ sub index :Path :Args(0) {
     }
 
     # Get the username and password from form
-    my $username = $c->request->params->{username} || "";
-    my $password = $c->request->params->{password} || "";
-    my $forgot   = $c->request->params->{forgot}   || "";
-    my $email    = $c->request->params->{email}    || "";
+    # we use body_params (via POST) and not params (via both POST and GET)
+    # since username and password are 'sensitive' data.
+    # the <input> field names are chosen to not be
+    # obvious ones that a browser can remember and pre-fill.
+    # see this site:
+    # https://medium.com/@idanhareven/how-to-workaround-browsers-save-password-password-autocomplete-features-135b91ad06d2
+    # and this one:
+    # https://stackoverflow.com/questions/41217019/how-to-prevent-a-browser-from-storing-password
+    my $username = $c->request->body_params->{abcxyz} || "";
+    my $password = $c->request->body_params->{defghi} || "";
+    my $forgot   = $c->request->body_params->{forgot}   || "";
+    my $email    = $c->request->body_params->{email}    || "";
 
     # If the username and password values were found in form
     if ($username && $password) {

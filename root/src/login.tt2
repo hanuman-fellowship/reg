@@ -1,5 +1,8 @@
 <!-- Login form -->
-<form method="post" name=form action=" [% Catalyst.uri_for('/login') %] ">
+<form method="POST" name=form action=" [% Catalyst.uri_for('/login') %] ">
+<!-- maybe foil browser auto-fill with this: -->
+<input type="password" style="visibility: hidden">
+<!-- see the comment in Controller/Login.pm -->
 <table border=0 cellpadding=3>
 
 <tr>
@@ -12,25 +15,20 @@
 
 <tr>
 <th align=right>Username</th>
-<td><input type="text" name="username" size="20" /></td>
+<td><input type="text" name="abcxyz" size="20" /></td>
 </tr>
 
 <tr>
 <th align=right>Password</th>
-<td><input type="password" name="password" size="20" /></td>
+<td>
+<input type="password" name="defghi" size="20" />
+</td>
 </tr>
 
 <tr>
 <td>&nbsp;</td>
 <td><input id=sub type="submit" value="Login"></td>
 </tr>
-
-[% IF inactive %]
-<tr>
-<td>&nbsp;</td>
-<td class=red>Should you be logging in to kali instead?</td>
-</tr>
-[% END %]
 
 </table>
 </form>

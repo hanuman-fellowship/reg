@@ -398,7 +398,8 @@ sub send_grid_data {
         or die "cannot create /tmp/$code: $!\n";
     print {$gd} "name " . $rental->name() . "\n";
     print {$gd} "id " . $rental->id() . "\n";
-    my $coord = $rental->coordinator();
+    # if no coordinator choose the contract signer
+    my $coord = $rental->coordinator() || $rental->contract_signer();
     if ($coord) {
         print {$gd} "first " . $coord->first() . "\n";
         print {$gd} "last " . $coord->last() . "\n";

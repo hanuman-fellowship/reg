@@ -1706,7 +1706,7 @@ sub contract : Local {
         today   => tt_today($c),
         email   => $email,
         signer  => ($rental->cs_person_id()? $rental->contract_signer()
-                   :                        $rental->coordinator()),
+                   :                         $rental->coordinator()),
         rental  => $rental,
         ndays   => $ndays,
         agreed  => commify($agreed),
