@@ -35,5 +35,5 @@
 
 [% error_msg %]
 <script type="text/javascript">
-document.form.username.focus();
+document.form.abcxyz.focus();
 </script>
