@@ -435,9 +435,9 @@ sub profile_password : Local {
 sub profile_password_do : Local {
     my ($self, $c) = @_;
     my $u = $c->user;
-    my $cur_pass  = $c->request->params->{cur_pass};
-    my $new_pass  = $c->request->params->{new_pass};
-    my $new_pass2 = $c->request->params->{new_pass2};
+    my $cur_pass  = $c->request->body_params->{cur_pass};
+    my $new_pass  = $c->request->body_params->{new_pass};
+    my $new_pass2 = $c->request->body_params->{new_pass2};
     @mess = ();
     push @mess, "Missing current password"
         if ! $cur_pass;
