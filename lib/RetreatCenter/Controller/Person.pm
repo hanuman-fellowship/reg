@@ -10,6 +10,7 @@ use base 'Catalyst::Controller';
 
 use lib '../..';
 use Util qw/
+    get_string
     affil_table
     trim
     empty
@@ -1551,7 +1552,7 @@ sub create_mmi_payment : Local {
     my ($self, $c, $reg_id, $person_id, $from, $amount) = @_;
     
     $amount ||= '';
-    if (tt_today($c)->as_d8() eq $string{last_mmi_deposit_date}) {
+    if (tt_today($c)->as_d8() eq get_string($c, 'last_mmi_deposit_date')) {
         error($c,
               'Since a deposit was just done for MMI'
                   . ' please make this payment tomorrow instead.',
@@ -1607,7 +1608,7 @@ sub create_mmi_payment_do : Local {
         return;
     }
     my $the_date = tt_today($c)->as_d8();
-    if ($the_date eq $string{last_mmi_deposit_date}) {
+    if ($the_date eq get_string($c, 'last_mmi_deposit_date')) {
         $the_date = (tt_today($c)+1)->as_d8();
     }
     my $payment = model($c, 'MMIPayment')->create({

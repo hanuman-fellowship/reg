@@ -15,6 +15,8 @@ use Util qw/
     empty
     trim
     no_comma
+    get_string
+    put_string
 /;
 use Date::Simple qw/
     date
@@ -97,7 +99,8 @@ sub reconcile_deposit : Local {
         $date_end   = $dep->date_end();
     }
     else {
-        $date_start = date($string{"last_${host}deposit_date"})+1;
+        my $ldd = get_string($c, "last_${host}deposit_date");
+        $date_start = date($ldd)+1;
         $date_end   = tt_today($c);
         if (   $date_start->month() != $date_end->month()
             || $date_start->year()  != $date_end->year()
@@ -261,7 +264,8 @@ sub file_deposit : Local {
         $date_end   = $dep->date_end();
     }
     else {
-        $date_start = date($string{"last_${host}deposit_date"})+1;
+        my $ldd = get_string($c, "last_${host}deposit_date");
+        $date_start = date($ldd)+1;
         $date_end   = tt_today($c);
         if (   $date_start->month() != $date_end->month()
             || $date_start->year()  != $date_end->year()
@@ -491,7 +495,8 @@ EOH
     if (! $id) {
         if ($gtotal != 0) {
             #
-            # create a new deposit and update the "last_${host}deposit_date"
+            # create a new deposit and update the String
+            # last_${host}deposit_date
             #
             model($c, 'Deposit')->create({
                 user_id    => $c->user->obj->id(),
@@ -505,13 +510,7 @@ EOH
                 sponsor    => $sponsor,
             });
 
-            # in memory
-            $string{"last_${host}deposit_date"} = $date_end;         
-
-            # on disk
-            model($c, 'String')->find("last_${host}deposit_date")->update({
-                value => $date_end,
-            });
+            put_string($c, "last_${host}deposit_date", $date_end);
         }
         $string{"$sponsor\_reconciling"} = "";
         # only in memory???
@@ -1125,13 +1124,8 @@ sub undo_deposit_do : Local {
 
     $deposit->delete();
 
-    # in memory
-    $string{"last_${host}deposit_date"} = $date_end;
+    put_string($c, "last_${host}deposit_date", $date_end);
 
-    # on disk
-    model($c, 'String')->find("last_${host}deposit_date")->update({
-        value => $date_end,
-    });
     $c->response->redirect($c->uri_for("/finance/deposits/$sponsor"));
 }
 

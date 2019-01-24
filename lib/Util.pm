@@ -85,6 +85,8 @@ our @EXPORT_OK = qw/
     no_comma
     time_travel_class
     too_far
+    get_string
+    put_string
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2437,6 +2439,21 @@ sub too_far {
     else {
         return 0;
     }
+}
+
+# string functions to read and write directly to the database
+# Global %string is not reliable now that there are multiple slaves.
+sub get_string {
+    my ($c, $key) = @_;
+    my $s = $c->model("RetreatCenterDB::String")->find($key);
+    return $s->value();
+}
+sub put_string {
+    my ($c, $key, $new_value) = @_;
+    my $s = $c->model("RetreatCenterDB::String")->find($key);
+    $s->update({
+        value => $new_value,
+    });
 }
 
 1;

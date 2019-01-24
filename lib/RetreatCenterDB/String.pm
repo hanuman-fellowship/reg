@@ -232,8 +232,10 @@ housing_log - shall we keep a log of housing activity in 'hlog'?  See lib/HLog.p
 kayakalpa_email - the email address of the Kaya Kalpa person who is
     notified when a massage request comes in - see script/grab_new.
 kid_disc - how much of a lodging discount for children?
-last_deposit_date - when was the last MMC deposit made?  filled in automatically.
-last_mmi_deposit_date - when was the last MMI deposit made?  filled in automatically.
+last_deposit_date - when was the last MMC deposit made?
+    filled in automatically.   Must use get_string and put_string to access.
+last_mmi_deposit_date - when was the last MMI deposit made?
+    filled in automatically.   Must use get_string and put_string to access.
 long_center_tent - for housing type descriptions.  see RetreatCenterDB::Program::fee_table
 long_commuting - for housing type descriptions
 long_dble - for housing type descriptions

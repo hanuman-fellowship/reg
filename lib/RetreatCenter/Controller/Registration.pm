@@ -13,6 +13,7 @@ use Time::Simple qw/
     get_time
 /;
 use Util qw/
+    get_string
     nsquish
     digits
     model
@@ -2201,7 +2202,7 @@ sub _view {
 sub pay_balance : Local {
     my ($self, $c, $id, $from) = @_;
 
-    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+    if (tt_today($c)->as_d8() eq get_string($c, 'last_deposit_date')) {
         error($c,
               'Since a deposit was just done'
                   . ' please make this payment tomorrow instead.',
@@ -2249,7 +2250,7 @@ sub pay_balance_do : Local {
     }
     my @who_now = get_now($c);
     push @who_now, reg_id => $reg_id;
-    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+    if (tt_today($c)->as_d8() eq get_string($c, 'last_deposit_date')) {
         push @who_now, the_date => (tt_today($c)+1)->as_d8(),
     }
     model($c, 'RegPayment')->create({

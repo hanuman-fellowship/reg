@@ -15,6 +15,7 @@ use Time::Simple qw/
 use File::Copy;
 use Image::Size 'imgsize';
 use Util qw/
+    get_string
     trim
     empty
     compute_glnum
@@ -933,7 +934,7 @@ sub access_denied : Private {
 sub pay_balance : Local {
     my ($self, $c, $rental_id) = @_;
 
-    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+    if (tt_today($c)->as_d8() eq get_string($c, 'last_deposit_date')) {
         error($c,
               'Since a deposit was just done'
                   . ' please make this payment tomorrow instead.',
@@ -966,7 +967,7 @@ sub pay_balance_do : Local {
     # ??? check amount
     my $today = tt_today($c);
     my $now_date = $today->as_d8();
-    if (tt_today($c)->as_d8() eq $string{last_deposit_date}) {
+    if (tt_today($c)->as_d8() eq get_string($c, 'last_deposit_date')) {
         $now_date = (tt_today($c)+1)->as_d8();
     }
     my $now_time = get_time()->t24();

@@ -5,6 +5,7 @@ use base 'Catalyst::Controller';
 
 use Person;
 use Util qw/
+    get_string
     valid_email
     model
     clear_lunch
@@ -1840,8 +1841,8 @@ sub financial : Local {
     my $m = $today->month();
     stash($c,
         time_travel_class($c),
-        last_mmc => date($string{last_deposit_date}),
-        last_mmi => date($string{last_mmi_deposit_date}),
+        last_mmc => date(get_string($c, 'last_deposit_date'),
+        last_mmi => date(get_string($c, 'last_mmi_deposit_date'),
         since    => date($y-1, $m, 1)->format("%D"),
         since_2months => ($today-60)->format("%D"),
         start    => date($y, $m, 1)->format("%D"),
