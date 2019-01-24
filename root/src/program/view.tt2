@@ -71,8 +71,6 @@ function UNreserve_cluster(cluster_id) {
        onclick="return confirm('Are you sure you wish to $cmd \'$program.name\'');"
     >$cmd</a>
     &nbsp;&nbsp;&nbsp;
-    <a href=/program/export>Export</a>
-    &nbsp;&nbsp;&nbsp;
 [% END %]
 [% IF program.rental_id %]
 <a href=/rental/view/$program.rental_id>To Rental</a>

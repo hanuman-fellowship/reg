@@ -58,8 +58,6 @@ th a:hover {
 [% END %]
 
 [% IF prog_admin %]
-<a href="/program/export">Export</a>
-&nbsp;&nbsp;&nbsp;
 <a href="/rental/grid/$id">Local Grid</a>
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/rental/badges/$id">Badges</a>
