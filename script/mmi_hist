@@ -26,7 +26,7 @@ my @mmi_prog = model($c, 'Program')->search(
         -or => \@names,
     },
     {
-        order_by => 'sdate asc',
+        order_by => 'sdate desc',
     },
 );
 for my $prog (@mmi_prog) {
