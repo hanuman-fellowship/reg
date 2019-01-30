@@ -1,0 +1,40 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+use Util qw/
+    db_init
+    model
+/;
+use Date::Simple qw/
+    date
+/;
+my $c = db_init();
+my @names;
+for my $w (qw/
+    MMI
+    Lad
+    Shrestha
+    Shanbag
+    Ayurved
+/) {
+    push @names, name => { -like => "%$w%" };
+}
+my @mmi_prog = model($c, 'Program')->search(
+    {
+        -or => \@names,
+    },
+    {
+        order_by => 'sdate asc',
+    },
+);
+for my $prog (@mmi_prog) {
+    my $d = date($prog->sdate);
+    print $prog->name(), " ", $d, "\n";
+    for my $reg ($prog->registrations()) {
+        for my $per ($reg->person()) {
+            print "    ", $per->name, "\n";
+        }
+    }
+}
