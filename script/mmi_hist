@@ -33,8 +33,7 @@ for my $prog (@mmi_prog) {
     my $d = date($prog->sdate);
     print $prog->name(), " ", $d, "\n";
     for my $reg ($prog->registrations()) {
-        for my $per ($reg->person()) {
-            print "    ", $per->name, "\n";
-        }
+        my $per  = $reg->person();
+        print "    ", $per->name, "\n";
     }
 }

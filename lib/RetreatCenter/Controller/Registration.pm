@@ -1987,7 +1987,7 @@ sub send_conf : Local {
     $pr_title =~ s{\A .* (Personal \s+ Retreat) .*}{$1}xms;
     if (!email_letter($c,
            to      => $reg->person->name_email(),
-           from    => $title . " <" . $user->email() . ">",
+           from    => "$title <$from>",
            replyto => "$title <$from>",
            subject => "Confirmation of Registration for "
                       . $reg->person->name
