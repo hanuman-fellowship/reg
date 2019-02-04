@@ -1,2 +1,4 @@
 #!/bin/bash
-/usr/bin/curl 'https://akash.mountmadonna.org/login?username=calendar&password=z2A2'
+curl --request POST \
+     --data 'abcxyz=calendar&defghi=z2A2' \
+     https://akash.mountmadonna.org/login >/dev/null 2>&1
