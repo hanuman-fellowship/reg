@@ -1582,6 +1582,7 @@ sub _omp_send_and_load {
     if ($output !~ m{done}) {
         return "no load: $output";
     }
+    unlink "/tmp/$omp_fname";
     return "successfully pushed";
 }
 sub _quote {
