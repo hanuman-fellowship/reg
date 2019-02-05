@@ -35,6 +35,8 @@ use Template;
 use LWP::Simple 'get';
 use Net::FTP;
 
+my $omp_dir = '/var/Reg/omp';
+
 sub index : Private {
     my ( $self, $c ) = @_;
 
@@ -119,7 +121,7 @@ sub list : Local {
             }
         );
     }
-    my @files = <root/static/omp/*>;
+    my @files = <$omp_dir/*>;
     stash($c,
         pat      => $pat,
         msg      => $msg,
@@ -134,11 +136,11 @@ sub list : Local {
 sub list_online : Local {
     my ($self, $c) = @_;
 
-    my @files = </var/Reg/omp/*>;
+    my @files = <$omp_dir/*>;
     my @payments;
     for my $f (@files) {
         my $g = $f;
-        $g =~ s{/var/Reg/omp/}{}xms;
+        $g =~ s{$omp_dir/}{}xms;
         my ($id, $amount, $trans_id) = split '_', $g;
         my $m = model($c, 'Member')->find($id);
         if ($m) {
@@ -202,7 +204,7 @@ sub update : Local {
     my $offset = $today->month <= 11? 0: 1;
     my $payment_date = 't';
     if ($file) {
-        my $sb = stat("root/static/omp/$file");       # see File::stat
+        my $sb = stat("$omp_dir/$file");       # see File::stat
         my ($day, $month, $year) = (localtime $sb->mtime)[3..5];
         ++$month;
         $year += 1900;
@@ -322,7 +324,7 @@ sub update_do : Local {
     my $transaction_id = '';
     if ($P{file}) {
         ($transaction_id) = (split '_', $P{file})[2];
-        rename "root/static/omp/$P{file}", "root/static/omp_done/$P{file}";
+        rename "$omp_dir/$P{file}", "${omp_dir}_done/$P{file}";
     }
 
     if (! $amount) {
