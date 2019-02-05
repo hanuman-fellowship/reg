@@ -134,11 +134,11 @@ sub list : Local {
 sub list_online : Local {
     my ($self, $c) = @_;
 
-    my @files = <root/static/omp/*>;
+    my @files = </var/Reg/omp/*>;
     my @payments;
     for my $f (@files) {
         my $g = $f;
-        $g =~ s{root/static/omp/}{}xms;
+        $g =~ s{/var/Reg/omp/}{}xms;
         my ($id, $amount, $trans_id) = split '_', $g;
         my $m = model($c, 'Member')->find($id);
         if ($m) {
@@ -699,6 +699,7 @@ sub create_do : Local {
             valid_to     => $valid_to,
             amount       => $amount,
             general      => $P{category} eq 'General'? 'yes': '',
+            transaction_id => '',
             @who_now,
         });
         _xaccount_mem_pay($c, $person_id,

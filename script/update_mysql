@@ -32,7 +32,7 @@ UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/rental_deposit'
     WHERE the_key = 'rental_deposit_url';
 UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp_load'
     WHERE the_key = 'omp_load_url';
-UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp_pay'
+UPDATE string set value = 'https://mmc.jasongaluten.com/cgi-bin/omp'
     WHERE the_key = 'omp_pay_url';
 
 -- mmi
