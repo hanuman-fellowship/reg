@@ -59,10 +59,16 @@ sub index :Path :Args(0) {
     # https://medium.com/@idanhareven/how-to-workaround-browsers-save-password-password-autocomplete-features-135b91ad06d2
     # and this one:
     # https://stackoverflow.com/questions/41217019/how-to-prevent-a-browser-from-storing-password
+    #
+    # but don't use body_param for the 'forgot' parameter
+    # as the 'Forgot Password?' link uses GET params 
+    # somehow we can't have any other action in the Login controller.
+    # not sure why...
+    #
     my $username = $c->request->body_params->{abcxyz} || "";
     my $password = $c->request->body_params->{defghi} || "";
-    my $forgot   = $c->request->body_params->{forgot}   || "";
-    my $email    = $c->request->body_params->{email}    || "";
+    my $forgot   = $c->request->params->{forgot}   || "";
+    my $email    = $c->request->params->{email}    || "";
 
     # If the username and password values were found in form
     if ($username && $password) {
