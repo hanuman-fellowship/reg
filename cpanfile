@@ -22,4 +22,5 @@ requires 'Spreadsheet::WriteExcel';
 requires 'YAML';
 requires 'IO::Socket::SSL';
 requires 'LWP::Protocol::https';
-requires 'Email::Stuffer'
+requires 'Email::Stuffer';
+requires 'HTML::FormatText';
