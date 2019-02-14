@@ -11,64 +11,58 @@ use Util qw/
 use Date::Simple qw/
     date
 /; 
-use HTML::FormatText;
 
 my $c = db_init();
-my @names;
-for my $w (qw/
-    MMI
-    Lad
-    Shrestha
-    Shanbag
-    Ayurved
-/) {
-    push @names, 'me.name' => { -like => "%$w%" };
-}
+
 my @mmi_prog = model($c, 'Program')->search(
-    {
-        -and => [
-          -or => \@names,
-          -or => [
-            -and => [
-              'school.name' => { '!=' => 'MMC' },
-              \[ "STR_TO_DATE(sdate, '%Y%m%d') > ?", '2007-01-01' ]
-            ],
-            \[ "STR_TO_DATE(sdate, '%Y%m%d') < ?", '2007-01-01' ],
-          ], # end -or
-        ],
-    },
-    {
-        order_by => 'sdate desc',
-        prefetch => ['school','summary', +{registrations => 'person'}],
-    },
+  {
+    -or => [ # Either
+      -and => [
+        'me.sdate' => { '>' => '20070101' }, # the Date is after 2007 AND
+        -or => [
+          'me.name' => { -like => '%MMI%'}, 
+          'me.school_id' => { '!=' => 1 },
+        ], # name is like MMI OR the school_id is not 1 (not MMC)
+      ], # OR
+      -and => [
+        'me.sdate' => { '<' => '20070101' }, # the Date is before 2007 AND
+        -or => [
+          'me.name' => { -like => '%Lad%'}, 
+          'me.name' => { -like => '%Shrestha%'}, 
+          'me.name' => { -like => '%Shanbag%'}, 
+          'me.name' => { -like => '%Ayurved'}, 
+        ], # The name is like at least one of these
+      ],
+    ],
+  },
+  {
+    order_by => 'me.sdate desc',
+    prefetch => [
+      'summary', 
+      +{ registrations => 'person' },
+    ],
+  },
 );
 
+say "Programs, dates and students.";
+
+my %students;
 for my $prog (@mmi_prog) {
-    my $d = date($prog->sdate);
-    my $desc = HTML::FormatText->format_string($prog->summary->workshop_description//'');
-    $desc =~ s/\n/ /g; # clean up a bit
-    $desc = '' if($desc eq " "); #seems to be common so lets clean it out
-    say join ', ', (grep { $_ } $prog->name(), $d, $desc);
-    for my $reg ($prog->registrations()) {
-        my $per  = $reg->person() || next;
-        print "    ", $per->name, "\n";
-    }
+  my $d = date($prog->sdate);
+  say join ', ', (grep { $_ } $d, $prog->name(), $prog->title);
+  for my $reg ($prog->registrations()) {
+    my $per  = $reg->person() || next; #S kip if there's no one in the registration.
+    say "\t", $per->name;
+    push @{$students{$per->name}}, $prog->name;
+  }
 }
 
-warn "Total found: $#mmi_prog";
+say "Students and all the programs attended.";
 
-__END__
-
-Not clear this is correct to me :)
-WHERE (
-  (
-    ( me.name LIKE ? OR me.name LIKE ? OR me.name LIKE ? OR me.name LIKE ? OR me.name LIKE ? ) 
-    AND (
-      ( school.name != ? AND STR_TO_DATE(sdate, '%Y%m%d') > ? ) 
-      OR STR_TO_DATE(sdate, '%Y%m%d') < ? 
-    ) 
-  ) 
-)
-
-ORDER BY sdate desc: '%MMI%', '%Lad%', '%Shrestha%', '%Shanbag%', '%Ayurved%', 'MMC', '2007-01-01', '2007-01-01'
+foreach my $student (sort keys %students) {
+  say $student;
+  foreach my $program (@{$students{$student}||[]}) {
+    say "\t $program";
+  }
+}
 
