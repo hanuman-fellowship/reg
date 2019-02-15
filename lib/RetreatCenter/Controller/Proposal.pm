@@ -419,6 +419,7 @@ sub _transmit {
             # non NULL columns:
             e_mailings     => '',
             snail_mailings => '',
+            share_mailings => '',
             deceased       => '',
             inactive       => '',
         });
