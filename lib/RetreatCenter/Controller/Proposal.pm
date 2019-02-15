@@ -247,7 +247,7 @@ sub list : Local {
     my $today30 = (tt_today($c)-30)->as_d8();
     $c->stash->{proposals} = [
         model($c, 'Proposal')->search(
-            { program_meeting_date => { '>=', $today8 } },
+            { program_meeting_date => { '>=', $today30 } },
             { order_by             => 'program_meeting_date' },
         )
     ];
