@@ -66,3 +66,22 @@ foreach my $student (sort keys %students) {
   }
 }
 
+my @consults = model($c, 'Program')->search(
+  { 'me.name' => { -like => '%CONSULT%'} },
+  { order_by => 'me.sdate DESC', 
+    prefetch => ['summary', +{ registrations => 'person' }]
+  }
+);
+
+say "Consults and who attended.";
+
+for my $prog (@consults) {
+  my $d = date($prog->sdate);
+  say join ', ', (grep { $_ } $d, $prog->name(), $prog->title);
+  for my $reg ($prog->registrations()) {
+    my $per  = $reg->person() || next;
+    say "\t", $per->name;
+    push @{$students{$per->name}}, $prog->name;
+  }
+}
+
