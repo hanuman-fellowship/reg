@@ -3,7 +3,9 @@ use warnings;
 package RetreatCenter::Controller::Registration;
 use base 'Catalyst::Controller';
 
+
 use lib '../../';       # so you can do a perl -c here.
+use RetreatCenter::Controller::Block;       # for _vacating a block
 use Badge;
 use Date::Simple qw/
     date
@@ -3915,6 +3917,57 @@ sub lodge : Local {
             }
         }   # end of houses in this cluster
     }   # end of CLUSTER
+
+    #
+    # does the program have any Blocks that would
+    # be acceptable sized rooms?
+    # NOTE - this is only if the registrant is not arriving early
+    # or leaving late - because the blocks just span the program dates.
+    #
+    if (! $reg->early() && ! $reg->late()) {
+        my @blocks = $pr->blocks();
+        BLOCK:
+        for my $b (@blocks) {
+            my $h = $b->house();
+            my $h_id = $h->id();
+            if ($h->max < $low_max
+                || ($h->bath && !$bath)
+                || (!$h->bath && $bath)
+            ) {
+                next BLOCK;
+            }
+            # tent?
+            if ($h->max >= $low_max) {
+                my $codes = ' - B';
+                my $code_sum = 1000;
+                if ($h->max > $max) {
+                    $codes .= 'R';
+                    $code_sum -= 5;
+                }
+                if ($h->cabin()) {
+                    $codes .= 'C';
+                    if ($cabin) {
+                        $code_sum += $string{house_sum_cabin};
+                    }
+                    else {
+                        $code_sum -= $string{house_sum_cabin};
+                    }
+                }
+                # the value of the option is in two parts:
+                # house_id and block_id - separated by a dash.
+                my $opt = "<option value=" 
+                          . "$h_id-" . $b->id
+                          . (($h_id == $share_house_id)? " selected"
+                            :                            "")
+                          . ">"
+                          . $h->name()
+                          . $codes
+                          . "</option>\n"
+                          ;
+                push @h_opts, [ $opt, $code_sum , $h->priority(), $h->name() ];
+            }
+        }
+    }
     #
     # and now the big sort:
     #
@@ -3933,7 +3986,8 @@ sub lodge : Local {
                   }
                   sort {
                       $b->[1] <=> $a->[1] ||      # 1st by code_sum - descending
-                      $a->[2] <=> $b->[2]         # 2nd by priority - ascending
+                      $a->[2] <=> $b->[2] ||      # 2nd by priority - ascending
+                      $a->[3] cmp $b->[3]         # by name
                   }
                   @h_opts;
     }
@@ -4142,6 +4196,13 @@ sub lodge_do : Local {
     # settle on exactly which house we're using.
     #
     my ($house_id) = $c->request->params->{house_id};
+    if ($house_id =~ s{-(\d+)}{}xms) {
+        # they have chosen a Block for this program
+        my $block_id = $1;
+        my $block = model($c, 'Block')->find($block_id);
+        RetreatCenter::Controller::Block::_vacate($c, $block);
+        $block->delete();
+    }
     my ($force_house) = trim($c->request->params->{force_house});
     if (! ($house_id || $force_house) && $reg->confnote() ne $newnote) {
         #

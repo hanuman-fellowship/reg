@@ -59,6 +59,7 @@ $house_opts
 <td valign=top><input id=sub type=submit value="Submit">
 <p>
 <table style="margin-left: 1in">
+<tr><td>B</td><td> - blocked for this program</td></tr>
 <tr><td>c</td><td> - cat abode</td></tr>
 <tr><td>C</td><td> - cabin</td></tr>
 <tr><td>F</td><td> - foreign program</td></tr>

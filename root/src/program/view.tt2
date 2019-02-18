@@ -249,7 +249,9 @@ Web
 <td>
 <span class=head>Blocks</span>
 <a style="margin-left: .3in"
-   href=/block/bound_create/program/$id>New Block</a>
+   href=/block/program_create_many/$id>Add Blocks</a>
+<a style="margin-left: .3in"
+   href=/block/bound_create/program/$id>Custom Block</a>
 </td>
 </tr>
 

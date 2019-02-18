@@ -1,0 +1,48 @@
+<h2>Adding Blocks for $program.name</h2>
+From $program.sdate_obj to $program.edate_obj
+<p class=p2>
+<ul>
+<form action='/block/program_create_many_do/$program.id'>
+[% IF single_bath %]
+    <h3>Single with Bath</h3>
+    $single_bath
+[% END %]
+[% IF single %]
+    <h3>Single</h3>
+    $single
+[% END %]
+[% IF double_bath %]
+    <h3>Double with Bath</h3>
+    $double_bath
+[% END %]
+[% IF double %]
+    <h3>Double</h3>
+    $double
+[% END %]
+[% IF triple %]
+    <h3>Triple</h3>
+    $triple
+[% END %]
+[% IF dorm %]
+    <h3>Dormitory</h3>
+    $dorm
+[% END %]
+[% IF economy %]
+    <h3>Economy</h3>
+    $economy
+[% END %]
+<p class=p2>
+<input type=submit id=sub value="Submit">
+<h2>Tents</h2>
+[% IF center_tent %]
+    <h3>Center Tent</h3>
+    $center_tent
+[% END %]
+[% IF own_tent %]
+    <h3>Own Tent</h3>
+    $own_tent
+[% END %]
+<p class=p2>
+<input type=submit id=sub value="Submit">
+</form>
+</ul>

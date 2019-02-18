@@ -14,6 +14,7 @@ use Util qw/
     check_makeup_vacate
     get_now
     too_far
+    other_reserved_cids
 /;
 use Date::Simple qw/
     date
@@ -324,6 +325,156 @@ sub bound_create : Local {
         form_action => "create_do",
         template    => "block/create_edit.tt2",
     );
+}
+
+#
+# offer to create multiple blocks at once.
+# just for the date range of the program (not rental at this time)
+# nbeds all in house, npeople 0
+#
+sub program_create_many : Local {
+    my ($self, $c, $program_id) = @_;
+    my $program = model($c, 'Program')->find($program_id);
+    my $sdate = $program->sdate();
+    my $edate1 = ($program->edate_obj() - 1)->as_d8();
+    my %or_cids = other_reserved_cids($c, $program);
+    my @or_cids = keys %or_cids;
+    my @opt = ();
+    if (@or_cids) {
+        push @opt, cluster_id => { -not_in => \@or_cids };
+    }
+    my ($center_tent, $own_tent, $single, $single_bath,
+        $double, $double_bath, $triple, $dorm, $economy) = ('' x 8);
+    my $checks = '';
+    HOUSE:
+    for my $h (model($c, 'House')->search({
+                   inactive => '',
+                   resident => '',
+                   @opt,
+               },
+               { order_by => 'name' }
+              ) 
+    ) {
+        my $h_id = $h->id;
+        #
+        # is this house _completely_ available from sdate to edate1?
+        # needs a thorough testing!
+        #
+        my @cf = model($c, 'Config')->search({
+            house_id => $h_id,
+            the_date => { between => [ $sdate, $edate1 ] },
+            cur      => { '>', 0 },
+        });
+        next HOUSE if @cf;        # nope
+        my $check .= "<input type=checkbox name=h$h_id value=$h_id> "
+              . $h->name()
+              . "<br>\n"
+              ;
+        if ($h->tent()) {
+            if ($h->center()) {
+                $center_tent .= $check;
+            }
+            else {
+                $own_tent .= $check;
+            }
+        }
+        elsif ($h->max() == 1) {
+            if ($h->bath()) {
+                $single_bath .= $check;
+            }
+            else {
+                $single .= $check;
+            }
+        }
+        elsif ($h->max() == 2) {
+            if ($h->bath()) {
+                $double_bath .= $check;
+            }
+            else {
+                $double .= $check;
+            }
+        }
+        elsif ($h->max() == 3) {
+            $triple .= $check;
+        }
+        elsif ($h->max() <= 7) {
+            $dorm .= $check;
+        }
+        else {
+            $economy .= $check;
+        }
+    }
+    stash($c,
+        program     => $program,
+        center_tent => $center_tent,
+        own_tent    => $own_tent,
+        single      => $single,
+        single_bath => $single_bath,
+        double      => $double,
+        double_bath => $double_bath,
+        triple      => $triple,
+        dorm        => $dorm,
+        economy     => $economy,
+        daily_pic_date => "indoors/$sdate",
+        cluster_date   => $sdate,
+        pg_title    => "Blocks for " . $program->name(),
+        template    => 'program/many_block.tt2',
+    );
+}
+
+sub program_create_many_do : Local {
+    my ($self, $c, $program_id) = @_;
+    my $program = model($c, 'Program')->find($program_id);
+    my $sdate = $program->sdate();
+    my $edate = $program->edate();
+    my $edate1 = ($program->edate_obj() - 1)->as_d8();
+    my @chosen_house_ids = values %{$c->request->params()};
+    if (! @chosen_house_ids) {
+        $c->response->redirect($c->uri_for("/program/view/$program_id/1"));
+        return;
+    }
+    for my $h_id (@chosen_house_ids) {
+        my $h = model($c, 'House')->find($h_id);
+        my $hname = $h->name();
+        model($c, 'Block')->create({
+            house_id   => $h_id,
+            sdate      => $sdate,
+            edate      => $edate,
+            nbeds      => $h->max(),
+            npeople    => 0,
+            reason     => $program->name(),
+            comment    => 'added by Many Blocks',
+            event_id   => 0,
+            program_id => $program_id,
+            rental_id  => 0,
+            allocated => 'yes',
+            get_now($c),
+        });
+        # and update the config records
+        for my $cf (model($c, 'Config')->search({
+                        house_id => $h_id,
+                        the_date => { -between => [ $sdate, $edate1 ] },
+                    })
+        ) {
+            $cf->update({
+                cur => $h->max(),
+                program_id => $program_id,
+                rental_id  => 0,
+                sex => 'B',
+            });
+            # housing log
+            if ($string{housing_log}) {
+                hlog($c,
+                     $hname, $cf->the_date(),
+                     "many_block_create",
+                     $h_id, $cf->curmax(), $cf->cur(), $cf->sex(),
+                     0, 0,
+                     'Many Block',
+                );
+            }
+        }
+    }
+    $c->response->redirect($c->uri_for("/program/view/$program_id/1"));
 }
 
 sub create_do : Local {
