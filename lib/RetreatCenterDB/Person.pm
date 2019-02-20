@@ -3,7 +3,6 @@ use warnings;
 package RetreatCenterDB::Person;
 use base qw/DBIx::Class/;
 
-use 5.10.0;
 use Date::Simple qw/
     date
 /;
@@ -150,8 +149,7 @@ sub sex_disp {
 
 sub name {
     my ($self) = @_;
-    return 'NA' unless $self->first() && $self->last();
-    return join(' ', ($self->first()//''), ($self->last()//''));
+    return $self->first() . ' ' . $self->last();
 }
 
 sub badge_name {

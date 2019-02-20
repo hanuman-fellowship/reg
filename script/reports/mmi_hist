@@ -36,52 +36,52 @@ my @mmi_prog = model($c, 'Program')->search(
     ],
   },
   {
-    order_by => 'me.sdate desc',
+    order_by => ['me.sdate desc','person.last ASC'], 
     prefetch => [
-      'summary', 
       +{ registrations => 'person' },
     ],
   },
 );
 
-say "Programs, dates and students.";
+say "Programs, dates and students.\n";
 
 my %students;
-for my $prog (@mmi_prog) {
+PROGRAMS: for my $prog (@mmi_prog) {
   my $d = date($prog->sdate);
   say join ', ', (grep { $_ } $d, $prog->name(), $prog->title);
-  for my $reg ($prog->registrations()) {
-    my $per  = $reg->person() || next; #S kip if there's no one in the registration.
-    say "\t", $per->name;
-    push @{$students{$per->name}}, $prog->name;
+  PROGRAM_REGISTRATIONS: for my $reg ($prog->registrations()) {
+    my $per  = $reg->person();
+    my $lastfirst =  join(',', grep { $_ } ($per->last, $per->first));
+    say "    $lastfirst";
+    push @{$students{$lastfirst}}, $prog->name;
   }
 }
 
-say "Students and all the programs attended.";
+say "\nStudents and all the programs attended.\n";
 
-foreach my $student (sort keys %students) {
+STUDENTS: foreach my $student (sort { $a cmp $b } keys %students) {
   say $student;
-  foreach my $program (@{$students{$student}||[]}) {
-    say "\t $program";
+  STUDENT_PROGRAMS: foreach my $program (@{$students{$student}||[]}) {
+    say "    $program";
   }
 }
 
 my @consults = model($c, 'Program')->search(
   { 'me.name' => { -like => '%CONSULT%'} },
-  { order_by => 'me.sdate DESC', 
-    prefetch => ['summary', +{ registrations => 'person' }]
+  { order_by => ['me.sdate DESC', 'person.last ASC'], 
+    prefetch => [+{ registrations => 'person' }]
   }
 );
 
-say "Consults and who attended.";
+say "\nConsults and who attended.\n";
 
-for my $prog (@consults) {
+CONSULTANT_PROGRAMS: for my $prog (@consults) {
   my $d = date($prog->sdate);
   say join ', ', (grep { $_ } $d, $prog->name(), $prog->title);
-  for my $reg ($prog->registrations()) {
-    my $per  = $reg->person() || next;
-    say "\t", $per->name;
-    push @{$students{$per->name}}, $prog->name;
+  CONSULTANT_REGISTRATIONS: for my $reg ($prog->registrations()) {
+    my $per  = $reg->person();
+    my $lastfirst =  join(',', grep { $_ } ($per->last, $per->first));
+    say "    $lastfirst";
   }
 }
 
