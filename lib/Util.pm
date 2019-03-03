@@ -2441,7 +2441,7 @@ sub too_far {
     }
 }
 
-# string functions to read and write directly to the database
+# String functions to read and write directly to the database.
 # Global %string is not reliable now that there are multiple slaves.
 sub get_string {
     my ($c, $key) = @_;
