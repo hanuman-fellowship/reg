@@ -19,6 +19,8 @@ use Util qw/
     stash
     error
     email_letter
+    put_string
+    get_string
 /;
 use Global qw/
     %string
@@ -45,18 +47,15 @@ sub view : Local {
     /) {
         $c->stash->{$f} = highlight($summary->$f());
     }
-    if ($string{sum_copy_id}) {
+    if (my $s = get_string($c, 'sum_copy_id')) {
         my ($timestamp, $paste_id, $paste_name)
-            = $string{sum_copy_id} =~ m{^(\d+)\s+(\d+)\s+(.*)};
+            = $s =~ m{^ (\d+) \s+ (\d+) \s+ (.*) \z}xms;
         if ($timestamp < time() - 5*60) {
             #
             # more than 5 minutes have passed since the copy
             # so expire the copy id.
             #
-            model($c, 'String')->find('sum_copy_id')->update({
-                value => '',
-            });
-            $string{sum_copy_id} = '';      # update Global %string as well
+            put_string($c, 'sum_copy_id', '');
         }
         else {
             stash($c,
@@ -105,10 +104,7 @@ sub copy : Local {
     my $hap = model($c, $type)->find($id);
     my $name = $hap->name();
     my $s = time() . " " . $hap->summary_id() . " $name";
-    model($c, 'String')->find('sum_copy_id')->update({
-        value => $s,
-    });
-    $string{sum_copy_id} = $s;      # update Global %string as well
+    put_string($c, 'sum_copy_id', $s);
     stash($c,
         name     => $name,
         template => "summary/copied.tt2",
