@@ -1,9 +1,11 @@
 #!/usr/bin/env perl
+
 use strict;
 use warnings;
 use 5.10.0;
 use lib 'lib';
 use RetreatCenterDB;
+use Text::CSV_XS;
 use Util qw/
     db_init
     model
@@ -14,74 +16,113 @@ use Date::Simple qw/
 
 my $c = db_init();
 
-my @mmi_prog = model($c, 'Program')->search(
-  {
-    -or => [ # Either
-      -and => [
-        'me.sdate' => { '>' => '20070101' }, # the Date is after 2007 AND
-        -or => [
-          'me.name' => { -like => '%MMI%'}, 
-          'me.school_id' => { '!=' => 1 },
-        ], # name is like MMI OR the school_id is not 1 (not MMC)
-      ], # OR
-      -and => [
-        'me.sdate' => { '<' => '20070101' }, # the Date is before 2007 AND
-        -or => [
-          'me.name' => { -like => '%Lad%'}, 
-          'me.name' => { -like => '%Shrestha%'}, 
-          'me.name' => { -like => '%Shanbag%'}, 
-          'me.name' => { -like => '%Ayurved'}, 
-        ], # The name is like at least one of these
+PROGRAM_INFO: {
+  
+  my @mmi_prog = model($c, 'Program')->search(
+    {
+      -or => [ # Either
+        -and => [
+          'me.sdate' => { '>' => '20070101' }, # the Date is after 2007 AND
+          -or => [
+            'me.name' => { -like => '%MMI%'}, 
+            'me.school_id' => { '!=' => 1 },
+          ], # name is like MMI OR the school_id is not 1 (not MMC)
+        ], # OR
+        -and => [
+          'me.sdate' => { '<' => '20070101' }, # the Date is before 2007 AND
+          -or => [
+            'me.name' => { -like => '%Lad%'}, 
+            'me.name' => { -like => '%Shrestha%'}, 
+            'me.name' => { -like => '%Shanbag%'}, 
+            'me.name' => { -like => '%Ayurved'}, 
+          ], # The name is like at least one of these
+        ],
       ],
-    ],
-  },
-  {
-    order_by => ['me.sdate desc','person.last ASC'], 
-    prefetch => [
-      +{ registrations => 'person' },
-    ],
-  },
-);
+    },
+    {
+      order_by => ['me.sdate desc','person.last ASC'], 
+      prefetch => [
+        +{ registrations => 'person' },
+      ],
+    },
+  );
 
-say "Programs, dates and students.\n";
+  # CSV File For Programs
+  my $csv = Text::CSV_XS->new({ binary => 1, eol => $/ })
+    or die "Cannot use CSV view: ".Text::CSV_XS->error_diag();
 
-my %students;
-PROGRAMS: for my $prog (@mmi_prog) {
-  my $d = date($prog->sdate);
-  say join ', ', (grep { $_ } $d, $prog->name(), $prog->title);
-  PROGRAM_REGISTRATIONS: for my $reg ($prog->registrations()) {
-    my $per  = $reg->person();
-    my $lastfirst =  join(',', grep { $_ } ($per->last, $per->first));
-    say "    $lastfirst";
-    push @{$students{$lastfirst}}, $prog->name;
+  open my $fh_programs, ">:encoding(utf8)", "program_info.csv"
+    or die "can't open file: $!";
+
+  my @headers = ('start_date', 'name', 'title', 'student_lastname', 'student_firstname');
+  $csv->column_names(@headers);
+  $csv->print($fh_programs, \@headers);
+
+  # CSV File For Student / Programs
+  my $csv_student = Text::CSV_XS->new({ binary => 1, eol => $/ })
+    or die "Cannot use CSV view: ".Text::CSV_XS->error_diag();
+
+  open my $fh_student, ">:encoding(utf8)", "student_programs.csv"
+    or die "can't open file: $!";
+
+  # CSV File For Student Info
+  my $csv_student_info = Text::CSV_XS->new({ binary => 1, eol => $/ })
+    or die "Cannot use CSV view: ".Text::CSV_XS->error_diag();
+
+  open my $fh_student_info, ">:encoding(utf8)", "student_info.csv"
+    or die "can't open file: $!";
+
+  my @headers_student_info = (qw(lastname firstname sex addr1 addr2 st_prov zip_post country));
+  $csv_student_info->column_names(@headers_student_info);
+  $csv_student_info->print($fh_student_info, \@headers_student_info);
+
+  my %student_seen = ();
+  PROGRAMS: for my $prog (@mmi_prog) {
+    my $d = date($prog->sdate);
+    PROGRAM_REGISTRATIONS: for my $reg ($prog->registrations()) {
+      my $per  = $reg->person();
+      next PROGRAM_REGISTRATIONS unless $per->id;
+
+      $csv->print($fh_programs, [$d, $prog->name, $prog->title, $per->last, $per->first]);
+      $csv_student->print($fh_student, [$per->last, $per->first, $prog->title]);
+
+      unless($student_seen{$per->id}++) {
+        $csv_student_info->print($fh_student_info, [
+          $per->last, $per->first, $per->sex, $per->addr1 ,$per->addr2,
+          $per->st_prov, $per->zip_post, $per->country]
+        );
+      }
+    }
   }
+  close $fh_programs or die "Can't close file!: $!";
+  close $fh_student or die "Can't close file!: $!";
 }
 
-say "\nStudents and all the programs attended.\n";
+CONSULTANT_INFO: {
+  my @consults = model($c, 'Program')->search(
+    { 'me.name' => { -like => '%CONSULT%'} },
+    { order_by => ['me.sdate DESC', 'person.last ASC'], 
+      prefetch => [+{ registrations => 'person' }]
+    }
+  );
 
-STUDENTS: foreach my $student (sort { $a cmp $b } keys %students) {
-  say $student;
-  STUDENT_PROGRAMS: foreach my $program (@{$students{$student}||[]}) {
-    say "    $program";
+  my $csv = Text::CSV_XS->new({ binary => 1, eol => $/ })
+    or die "Cannot use CSV view: ".Text::CSV_XS->error_diag();
+
+  open my $fh, ">:encoding(utf8)", "consultant_info.csv"
+    or die "can't open file: $!";
+
+  my @headers = ('start_date', 'name', 'title', 'student_lastname', 'student_firstname');
+  $csv->column_names(@headers);
+  $csv->print($fh, \@headers);
+
+  CONSULTANT_PROGRAMS: for my $prog (@consults) {
+    my $d = date($prog->sdate);
+    CONSULTANT_REGISTRATIONS: for my $reg ($prog->registrations()) {
+      my $per  = $reg->person();
+      $csv->print($fh, [$d, $prog->name, $prog->title, $per->last, $per->first]);
+    }
   }
-}
-
-my @consults = model($c, 'Program')->search(
-  { 'me.name' => { -like => '%CONSULT%'} },
-  { order_by => ['me.sdate DESC', 'person.last ASC'], 
-    prefetch => [+{ registrations => 'person' }]
-  }
-);
-
-say "\nConsults and who attended.\n";
-
-CONSULTANT_PROGRAMS: for my $prog (@consults) {
-  my $d = date($prog->sdate);
-  say join ', ', (grep { $_ } $d, $prog->name(), $prog->title);
-  CONSULTANT_REGISTRATIONS: for my $reg ($prog->registrations()) {
-    my $per  = $reg->person();
-    my $lastfirst =  join(',', grep { $_ } ($per->last, $per->first));
-    say "    $lastfirst";
-  }
+  close $fh or die "Can't close file!: $!";
 }
 
