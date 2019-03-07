@@ -481,7 +481,7 @@ sub _finalize_program_creation {
 
     my $url = $c->uri_for("/program/view/$id");
 
-my $x = <<'EOC'
+my $x = <<'EOC';
     # no more 3/6/19
     #                              MMI   and   Course or Public Course
     my $glnum_popup = $P{school_id} != 1 && $P{level_id} <= 2;
