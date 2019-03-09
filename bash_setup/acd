@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+#
+# acd
+#
+# create an Alias for the Current Directory
+#
+# put this line in $HOME/.bash_profile
+#
+# alias acd="~/bin/acd;. ~/.bash_alias"
+#
+# so that the alias will be active after acd is run.
+#
+use strict;
+use warnings;
+use Cwd;
+
+my $cwd = getcwd();
+
+print "alias for $cwd? ";
+my $alias = <STDIN>;
+chop $alias;
+die "aborted\n" unless $alias;
+
+my $make_al = -w $cwd;
+
+open my $balias, ">>", "$ENV{HOME}/.bash_alias"
+    or die "cannot append to $ENV{HOME}/.bash_alias: $!\n";
+print {$balias} "\n$alias=$cwd\n";                            # shell var
+print {$balias} qq!alias $alias="cd $cwd; pwd!;
+print {$balias} ";[ -f ./.al ] && . ./.al" if $make_al;
+print {$balias} qq!"\n!;
+close $balias;
+system "touch $cwd/.al" if $make_al;

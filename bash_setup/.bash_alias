@@ -1,0 +1,48 @@
+# the following make it very convenient to create aliases
+# for getting to the current directory and to make
+# an alias for one of the commands you recently entered.
+#
+# acd  - alias current directory
+# adir - see the aliases for switching directories
+# alc  - alias last commands into .al - the local alias file
+# galc - alias last commands into $HOME/.bash_alias - the global alias file
+# al   - edit the local aliases (in the current directory)
+# ga   - edit the global aliases
+#
+alias  alc='history|tail -80>~/.tmpbashalias; $HOME/bin/alc;   [ -f ./.al ] && . ./.al'
+alias galc='history|tail -80>~/.tmpbashalias; $HOME/bin/alc g; . ~/.bash_alias'
+alias acd='acd; . ~/.bash_alias'
+alias ga='${FCEDIT:-${EDITOR:-vi}} ~/.bash_alias; unalias -a; . ~/.bash_alias'
+alias al='${FCEDIT:-${EDITOR:-vi}} .al;[ -f ./.al ] && . ./.al'
+alias lc="ls -C"
+
+rc=/var/www/src
+alias rc="cd /var/www/src; pwd; [ -f ./.al ] && . ./.al"
+
+C=/var/www/src/lib/RetreatCenter/Controller
+alias C="cd /var/www/src/lib/RetreatCenter/Controller; pwd; [ -f ./.al ] && . ./.al"
+
+lib=/var/www/src/lib
+alias lib="cd /var/www/src/lib; pwd;[ -f ./.al ] && . ./.al"
+alias u='vi /var/www/src/lib/Util.pm'
+alias gd='git diff'
+alias gs='git status'
+alias gb='git branch'
+
+db=/var/www/src/lib/RetreatCenterDB
+alias db="cd /var/www/src/lib/RetreatCenterDB; pwd;[ -f ./.al ] && . ./.al"
+
+tt2=/var/www/src/root/src
+alias tt2="cd /var/www/src/root/src; pwd;[ -f ./.al ] && . ./.al"
+
+let=/var/www/src/root/static/templates/letter
+alias let="cd /var/www/src/root/static/templates/letter; pwd;[ -f ./.al ] && . ./.al"
+
+tpr=/var/www/src/root/src/program
+alias tpr="cd /var/www/src/root/src/program; pwd;[ -f ./.al ] && . ./.al"
+
+treg=/var/www/src/root/src/registration
+alias treg="cd /var/www/src/root/src/registration; pwd;[ -f ./.al ] && . ./.al"
+
+sc=/var/www/src/script
+alias sc="cd /var/www/src/script; pwd;[ -f ./.al ] && . ./.al"
