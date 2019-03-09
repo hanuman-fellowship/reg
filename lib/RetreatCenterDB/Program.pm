@@ -225,7 +225,6 @@ sub edate2_obj {
     else {
         return date($self->edate) || "";
     }
-    date($self->edate) || "";
 }
 sub prog_start_obj {
     my ($self) = @_;
