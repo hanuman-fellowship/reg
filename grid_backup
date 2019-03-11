@@ -1,6 +1,6 @@
 #!/bin/sh
 r=/var/Reg
-day=`date +%a`
+day=`date +%d`
 f=$r/backup/grid.$day
 rm -f $f $f.gz
 cd $r/grid
@@ -10,6 +10,9 @@ gzip $f
 cd ../rental_images
 tar cvf $r/backup/rental_images.tar r-* rth-* >>/var/Reg/output/grid.out 2>&1
 
-# and activity files
+# and activity files (this data will soon be in the database)
 cd ../grab_new
 tar cvf $r/backup/activity_files.tar * >>/var/Reg/output/grid.out 2>&1
+
+/usr/local/bin/s3cmd put $f s3://backups-reg/rentals/grid.$day.gz >>/var/log/Reg/s3cmd.log 2>&1
+/usr/local/bin/s3cmd put /var/Reg/backup/rental_images.tar s3://backups-reg/rentals/rental_images.$day.tar >>/var/log/Reg/s3cmd.log 2>&1
