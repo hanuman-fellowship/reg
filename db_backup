@@ -5,4 +5,4 @@ rm -f $f $f.gz
 mysqldump --no-defaults --user=sahadev --password=JonB --add-drop-table \
     reg2 >$f 2>/dev/null
 gzip $f
-/usr/local/bin/s3cmd put $f s3://backups-reg/sql/rc.$day.gz >>/var/log/Reg/s3cmd.log 2>&1
+/usr/local/bin/s3cmd put $f.gz s3://backups-reg/sql/rc.$day.gz >>/var/log/Reg/s3cmd.log 2>&1
