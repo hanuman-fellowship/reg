@@ -72,7 +72,7 @@ PROGRAM_INFO: {
   open my $fh_student_info, ">:encoding(utf8)", "student_info.csv"
     or die "can't open file: $!";
 
-  my @headers_student_info = (qw(lastname firstname sex addr1 addr2 st_prov zip_post country));
+  my @headers_student_info = (qw(lastname firstname sex addr1 addr2 city st_prov zip_post country));
   $csv_student_info->column_names(@headers_student_info);
   $csv_student_info->print($fh_student_info, \@headers_student_info);
 
@@ -88,7 +88,7 @@ PROGRAM_INFO: {
 
       unless($student_seen{$per->id}++) {
         $csv_student_info->print($fh_student_info, [
-          $per->last, $per->first, $per->sex, $per->addr1 ,$per->addr2,
+          $per->last, $per->first, $per->sex, $per->addr1 ,$per->addr2, $per->city
           $per->st_prov, $per->zip_post, $per->country]
         );
       }
