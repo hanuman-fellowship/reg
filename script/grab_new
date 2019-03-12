@@ -100,7 +100,7 @@ chdir "$FindBin::Bin/..";
 
 # globals
 my $today = today();
-my $c;
+my $c = 100;
 my $ftp;
 my $run_file = '/var/Reg/grab_running';
 my ($log, $log_name);
@@ -120,9 +120,16 @@ my $something_happened = 0;
 my $time_printed = 0;
 
 sub msg {
+    my ($row) = @_;
+    model($c, 'Activity')->create({
+        message => $row,
+        cdate   => $today_d8,
+        ctime   => $now_t24,
+    });
+    
     if (! $time_printed) {
         print {$log} "** " . $now->t12 . "\n";
-        $time_printed = 1;
+        $time_printed = $now->t12;
     }
     print {$log} @_;
     if (pop !~ m{\n$}xms) {

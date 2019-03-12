@@ -1,0 +1,32 @@
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<h2>Adding a New Table
+<span class=to_schema><a href=index.html>To Schema</a></span>
+</h2>
+For demonstration purposes, let's add a new tabled called 'activity'
+<ol>
+  <li>From the $HOME/lib/RetreatcenterDB/.. find an existing Resultsource class
+    that is similar to your new table and copy it.
+  <pre class=code>
+    cp $HOME/lib/RetreatcenterDB/Glossary.pm \
+    $HOME/lib/RetreatcenterDB/Activity.pm 
+  </pre>
+  <li>Open the new resultsource and edit it to reflect the new table design.  Be
+    sure to edit the package name as well as update the column documentation at
+    the end of the file since gendoc will use it to create documentation.  Be sure
+    that the file name and the package name properly match (this is a common error)
+  <li>Edit $HOME/RetreatcenterDB.pm to add the name of your new class to the 'classes'
+    list.
+  <li>Create new table SQL in $HOME/sql/.. (remember to follow the ordered naming 
+    convention).  Be sure to teset your new SQL and inform other developers as needed.
+  <li>Run checkdoc
+  <pre class=code>
+  cd $HOME/lib/RetreatcenterDB
+  ./checkdoc
+  </pre>
+  <li>If checkdoc passes next run gendoc and the remebr to commit all your changes
+  <pre class=code>
+  ./gendoc
+  </pre>
+</ol>

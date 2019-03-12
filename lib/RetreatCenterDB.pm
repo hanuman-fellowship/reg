@@ -5,6 +5,7 @@ package RetreatCenterDB;
 use base 'DBIx::Class::Schema';
 
 my @classes = qw/
+    Activity
     Affil 
     AffilPerson 
     Person 

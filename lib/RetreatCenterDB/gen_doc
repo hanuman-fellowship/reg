@@ -234,6 +234,7 @@ print {$out} <<'EOH';
 <p>
 <a href=data_types.html>Data Types in Reg</a><p>
 <a href=schema1.png>Overview Schema Diagram</a><p>
+<a href=new_table.html>Adding a New Table</a><p>
 <a href=new_column.html>Adding a New Column</a><p>
 <a href=str_doc.html>Configuration &gt; Strings Documentation</a>
 </body>
