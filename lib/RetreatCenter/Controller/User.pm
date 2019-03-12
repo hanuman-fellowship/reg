@@ -287,7 +287,7 @@ sub create_do : Local {
     $P{password} = sha256_hex($pass);
     $P{expiry_date} = (today()-1)->as_d8();
     $P{locked} = '';
-    $P{last_login_date} = '';
+    $P{last_login_date} = today()->as_d8();
     $P{expiry_date} = '';
     $P{nfails} = 0;
     my $u = model($c, 'User')->create(\%P);
