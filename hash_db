@@ -1,3 +1,0 @@
-#!/bin/sh
-export DBI_DSN="dbi:SQLite:$HOME/Sites/Reg/retreatcenter.db"
-script/hash_db
