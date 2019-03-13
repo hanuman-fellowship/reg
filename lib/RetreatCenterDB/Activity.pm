@@ -1,7 +1,7 @@
 use strict;
 use warnings;
 package RetreatCenterDB::Activity;
-use base qw/DBIx::Class/;
+use base qw/RetreatCenterDB::Result/;
 
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
@@ -16,6 +16,12 @@ __PACKAGE__->add_columns(qw/
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
+__PACKAGE__->resultset_class('RetreatCenterDB::ResultSet::Activity');
+
+sub ctime_obj {
+  my ($self) = @_;
+  return my $ctime_obj = $self->_get_as_time_obj($self->ctime);
+}
 
 1;
 __END__

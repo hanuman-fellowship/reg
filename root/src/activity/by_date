@@ -1,0 +1,21 @@
+<h2>Activity for $cdate
+    <span class=smaller>
+        <a href=/activity?cdate=$prev>Prev</a>
+        &nbsp;&nbsp;
+        <a href=/activity?cdate=$next>Next</a>
+        &nbsp;&nbsp;
+        <form style='display:inline' method='GET' action='/activity'>
+            <input type='text' size=8 name='cdate' />
+            <input id='sub' type='submit'value='Find Date' />
+        </form>
+    </span>
+</h2>
+[% IF activity.size %]
+    <ul>[% FOREACH entry IN activity %]
+        <li style="list-style-type: none; line-height: 1.6;">
+            $entry.message<span class=greyed>$entry.ctime_obj</span>
+        </li>
+    [% END %]</ul>
+[% ELSE %]
+    No activity for this day.
+[% END %]

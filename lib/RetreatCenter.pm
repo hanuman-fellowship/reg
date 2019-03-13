@@ -87,6 +87,26 @@ __PACKAGE__->config(
 # Start the application
 __PACKAGE__->setup;
 
+sub gen_error {
+  my ($self, $mess) = @_;
+  $self->log->error("Error to user: $mess");
+  $self->stash(
+      mess => $mess,
+      template => 'gen_error.tt2',
+  );
+  $self->detach;
+}
+
+sub gen_message {
+  my ($self, $mess) = @_;
+  $self->log->info("Information to user: $mess");
+  $self->stash(
+      mess => $mess,
+      template => 'gen_message.tt2',
+  );
+  $self->detach;
+}
+
 =begin
 
 # authorization rules

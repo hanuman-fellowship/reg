@@ -9,6 +9,31 @@ use Util qw/
     stash
     tt_today
 /;
+use Date::Simple qw/
+    date
+    today
+/;
+
+sub by_date :Path() Args(0) {
+    my ($self, $c) = @_;
+    my $cdate = today();
+    if (my $cdate_param = $c->req->query_parameters->{cdate}) {
+        $cdate = date($cdate_param);
+        if (!$cdate) {
+            $c->gen_error('Requested activity date is not valid');
+        }
+    }
+    $c->stash(
+        cdate => $cdate,
+        prev => ($cdate-1)->as_d8(),
+        next => ($cdate+1)->as_d8(),
+        activity => [
+            $c->model('RetreatCenterDB::Activity')
+              ->by_date_of($cdate->as_d8())
+              ->all
+        ],
+    );
+}
 
 sub view : Local {
     my ($self, $c, $day, $temple) = @_;

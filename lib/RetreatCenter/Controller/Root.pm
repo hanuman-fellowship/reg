@@ -56,20 +56,22 @@ sub end : ActionClass('RenderView') {
     if (@errs) {
         # something went wrong...
         #
-        $c->stash->{template} = "fatal_error.tt2";
-        my $user = $c->user();
-        if ($user->username() ne 'sahadev') {
-            email_letter($c,
-                to      => 'Jon Bjornstad <jonb@logicalpoetry.com>',
-                from    => $user->name_email(),
-                subject => 'Error from Reg',
-                html    => $errs[0],
-            );
+        if (!$c->debug) {
+            $c->stash->{template} = "fatal_error.tt2";
+            my $user = $c->user();
+            if ($user->username() ne 'sahadev') {
+                email_letter($c,
+                    to      => 'Jon Bjornstad <jonb@logicalpoetry.com>',
+                    from    => $user->name_email(),
+                    subject => 'Error from Reg',
+                    html    => $errs[0],
+                );
+            }
+            else {
+                $c->stash->{error} = $errs[0];
+            }
+            $c->clear_errors();
         }
-        else {
-            $c->stash->{error} = $errs[0];
-        }
-        $c->clear_errors();
     }
 }
 
