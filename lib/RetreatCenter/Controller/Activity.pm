@@ -25,8 +25,8 @@ sub by_date :Path() Args(0) {
     }
     $c->stash(
         cdate => $cdate,
-        prev => ($cdate-1)->as_d8(),
-        next => ($cdate+1)->as_d8(),
+        prev => $c->uri_for($self->action_for('by_date'), {cdate => ($cdate-1)->as_d8()}),
+        next => $c->uri_for($self->action_for('by_date'), {cdate => ($cdate+1)->as_d8()}),
         activity => [
             $c->model('RetreatCenterDB::Activity')
               ->by_date_of($cdate->as_d8())

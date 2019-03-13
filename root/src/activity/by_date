@@ -1,8 +1,8 @@
 <h2>Activity for $cdate
     <span class=smaller>
-        <a href=/activity?cdate=$prev>Prev</a>
+        <a href="$prev">Prev</a>
         &nbsp;&nbsp;
-        <a href=/activity?cdate=$next>Next</a>
+        <a href="$next">Next</a>
         &nbsp;&nbsp;
         <form style='display:inline' method='GET' action='/activity'>
             <input type='text' size=8 name='cdate' />
