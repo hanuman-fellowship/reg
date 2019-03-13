@@ -158,6 +158,9 @@ sub initialize {
     open $log, '>', $log_name
         or die "no $log_name! :(\n";
 
+    $c = db_init();
+    Global->init($c, 1, 1);
+
     if (-f $run_file) {
         my $t = (stat($run_file))[9];
         if (time() - $t > 5*60) {
@@ -189,8 +192,6 @@ sub initialize {
         #}
     }
 
-    $c = db_init();
-    Global->init($c, 1, 1);
     $string{mmc_email} = $string{reception_email};  # see *1 below
 
     # for temple donations
