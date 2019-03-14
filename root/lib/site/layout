@@ -27,7 +27,7 @@
 [% END %]
 <td><a target=help href=/event/mastercal/$cal_param>MasterCal</a></td>
 <td align=left><a target=help href=/static/help/index.html>Help</a></td>
-<td align=left><a href=/activity/view>Activity</a></td>
+<td align=left><a href=/activity>Activity</a></td>
 <td><a href=/logout>Logout</a></td>
 <td>[% Catalyst.user.first _ " " _ Catalyst.user.last %]
 </tr>

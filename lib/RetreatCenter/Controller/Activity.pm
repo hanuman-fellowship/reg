@@ -25,14 +25,20 @@ sub by_date :Path() Args(0) {
     }
     $c->stash(
         cdate => $cdate,
-        prev => $c->uri_for($self->action_for('by_date'), {cdate => ($cdate-1)->as_d8()}),
-        next => $c->uri_for($self->action_for('by_date'), {cdate => ($cdate+1)->as_d8()}),
+        target => $self->by_date_uri($c),
+        prev => $self->by_date_uri($c, cdate => ($cdate-1)->as_d8()),
+        next => $self->by_date_uri($c, cdate => ($cdate+1)->as_d8()),
         activity => [
             $c->model('RetreatCenterDB::Activity')
-              ->by_date_of($cdate->as_d8())
-              ->all
+              ->by_date_of($cdate)
+              ->all()
         ],
     );
+}
+
+sub by_date_uri {
+    my ($self, $c, %params) = @_;
+    return my $uri = $c->uri_for($self->action_for('by_date'), \%params);
 }
 
 sub view : Local {

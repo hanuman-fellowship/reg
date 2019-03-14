@@ -8,20 +8,16 @@ __PACKAGE__->load_components(qw/PK::Auto Core/);
 # Set the table name
 __PACKAGE__->table('activity');
 # Set columns in table
-__PACKAGE__->add_columns(qw/
-    id
-    message
-    cdate
-    ctime
-/);
+__PACKAGE__->add_columns(
+    id => { data_type => 'integer', is_auto_increment => 1 },
+    message => { data_type => 'varchar', size => 256 },
+    cdate => { data_type => 'varchar', size => 8, date_simple => 1 },
+    ctime => { data_type => 'varchar', size => 4, time_simple => 1 },
+);
+
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
 __PACKAGE__->resultset_class('RetreatCenterDB::ResultSet::Activity');
-
-sub ctime_obj {
-  my ($self) = @_;
-  return my $ctime_obj = $self->_get_as_time_obj($self->ctime);
-}
 
 1;
 __END__
