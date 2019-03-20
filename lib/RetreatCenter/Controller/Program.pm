@@ -568,8 +568,17 @@ sub view : Local {
         );
         return;
     }
+    # Check if program is editable
+    my $current_date = tt_today($c);
+    my $is_editable = 1;
+
+    if ($current_date > $p->edate2_obj + $string{max_days_after_program_ends}) {
+        $is_editable = 0;
+    }
+
     stash($c,
         program  => $p,
+        editable => $is_editable,
         pg_title => $p->name(),
     );
     my $extra = $p->extradays();
@@ -623,7 +632,7 @@ sub view : Local {
     my $sdate = $p->sdate();
     my $nmonths = months_calc(date($sdate), date($p->edate()));
 
-    my ($UNres, $res) = split /XX/, _get_cluster_groups($c, $id);
+    my ($UNres, $res) = split /XX/, _get_cluster_groups($c, $id, $is_editable);
 
     my @acct_adm_name;
     if ($glnum_popup) {
@@ -651,7 +660,7 @@ sub view : Local {
 }
 
 sub _get_cluster_groups {
-    my ($c, $program_id) = @_;
+    my ($c, $program_id, $is_editable) = @_;
 
     my @reserved = reserved_clusters($c, $program_id, 'program');
     my %my_reserved_ids;
@@ -661,9 +670,9 @@ sub _get_cluster_groups {
         $my_reserved_ids{$cid} = 1;
         $reserved .=
            "<tr><td>"
-           . "<a href='#' onclick='UNreserve_cluster($cid); return false;'>"
+           . ($is_editable ? "<a href='#' onclick='UNreserve_cluster($cid); return false;'>" : "")
            . $cl->name()
-           . "</a>"
+           . ($is_editable ? "</a>" : "")
            . "</td></tr>\n"
            ;
     }
@@ -685,9 +694,9 @@ sub _get_cluster_groups {
         next CLUSTER if exists $my_reserved_ids{$id} || exists $cids{$id};
         $UNreserved
             .= "<tr><td>"
-            .  "<a href='#' onclick='reserve_cluster($id); return false;'>"
+            .  ($is_editable ? "<a href='#' onclick='reserve_cluster($id); return false;'>" : "")
             .  $cl->name()
-            .  "</a>"
+            .  ($is_editable ? "</a>" : "")
             .  "</td></tr>\n"
             ;
     }
@@ -1454,7 +1463,7 @@ sub reserve_cluster : Local {
         program_id => $program_id,
         cluster_id => $cluster_id,
     });
-    $c->res->output(_get_cluster_groups($c, $program_id));
+    $c->res->output(_get_cluster_groups($c, $program_id, 1));
 }
 
 # AJAX call to UNreserve a cluster
@@ -1465,7 +1474,7 @@ sub UNreserve_cluster : Local {
         program_id => $program_id,
         cluster_id => $cluster_id,
     })->delete();
-    $c->res->output(_get_cluster_groups($c, $program_id));
+    $c->res->output(_get_cluster_groups($c, $program_id, 1));
 }
 
 # find the 'current' program - not a Personal Retreat

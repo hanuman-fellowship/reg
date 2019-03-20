@@ -255,6 +255,7 @@ lunch_charge - obsolete - can be removed.
 make_up_clean_days - used when presenting the list of available rooms.
     it is the number of days before a room that needs to be cleaned is marked with an 'N'
 make_up_urgent_days - for the make up list - for marking rooms as needed urgently
+max_days_after_program_ends - the number of days after a program ends when the program becomes uneditable.
 max_kid_age - how old can a person be and still be considered a child?
 max_lodge_opts - the maximum number of rooms to offer when lodging a registrant
 max_rental_desc - the maximum number of characters in a rental web description
