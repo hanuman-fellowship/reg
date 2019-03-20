@@ -636,7 +636,7 @@ sub compute_glnum {
     for my $e (@programs, @rentals) {
         if (length($e->glnum) >= 5) {
             my $digit = substr($e->glnum, 4, 1);
-            if ('0' <= $digit && $digit <= '9' && $digit > $max) {
+            if ('0' le $digit && $digit le '9' && $digit > $max) {
                 $max = $digit;
             }
         }
