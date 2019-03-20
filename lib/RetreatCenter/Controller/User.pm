@@ -288,7 +288,6 @@ sub create_do : Local {
     $P{expiry_date} = (today()-1)->as_d8();
     $P{locked} = '';
     $P{last_login_date} = today()->as_d8();
-    $P{expiry_date} = '';
     $P{nfails} = 0;
     my $u = model($c, 'User')->create(\%P);
     my $id = $u->id;
