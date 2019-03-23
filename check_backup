@@ -1,4 +1,0 @@
-#!/bin/sh
-cd /home/sahadev/Reg
-export DBI_DSN="dbi:mysql:reg2"
-script/check_backup

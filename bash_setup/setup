@@ -1,0 +1,6 @@
+#!/bin/bash
+mkdir -p $HOME/bin
+cp acd adir alc $HOME/bin
+cp .bash_alias .bash_profile .vimrc $HOME
+touch $HOME/.hushlogin
+echo log out and back in again

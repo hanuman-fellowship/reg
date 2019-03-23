@@ -1321,7 +1321,7 @@ sub del_booking : Local {
     # if so, you can't delete it!  they have to remove
     # that person first.
     #
-    system("grab wait");        # make sure the local grids are current
+    system("/var/www/src/grab wait");   # make sure the local grids are current
 
     my $fgrid = get_grid_file($r->grid_code());
     my $error = "";
@@ -2744,7 +2744,7 @@ sub cancel : Local {
 sub grab_new : Local {
     my ($self, $c, $rental_id) = @_;
 
-    system("grab wait");
+    system("/var/www/src/grab wait");
     $c->response->redirect($c->uri_for("/rental/grid/$rental_id"));
 }
 

@@ -54,23 +54,27 @@ function UNreserve_cluster(cluster_id) {
     <a href=/program/create
        onclick="return confirm('If this new Program has been at MMC before it would be better to use Duplicate.');"
     >Add</a>
-    [% IF program.school.mmi || mmi_admin %]
-        &nbsp;&nbsp;&nbsp;
-        <span id=editlink><a accesskey=E href=/program/update/$id><span class=keyed>E</span>dit</a></span>
-        &nbsp;&nbsp;&nbsp;
-        <a href=/program/delete/$id
-           onclick="return confirm('Okay to Delete \'$program.name\'?');"
-              >Delete</a>
+    [% IF editable %]
+        [% IF program.school.mmi || mmi_admin %]
+            &nbsp;&nbsp;&nbsp;
+            <span id=editlink><a accesskey=E href=/program/update/$id><span class=keyed>E</span>dit</a></span>
+            &nbsp;&nbsp;&nbsp;
+            <a href=/program/delete/$id
+               onclick="return confirm('Okay to Delete \'$program.name\'?');"
+                  >Delete</a>
+        [% END %]
     [% END %]
     &nbsp;&nbsp;&nbsp;
     <a href=/program/duplicate/$id>Duplicate</a>
     &nbsp;&nbsp;&nbsp;
-[% cmd = 'Cancel' %]
-[% SET cmd = 'UnCancel' IF program.cancelled %]
-    <a href=/program/cancel/$id
-       onclick="return confirm('Are you sure you wish to $cmd \'$program.name\'');"
-    >$cmd</a>
-    &nbsp;&nbsp;&nbsp;
+    [% IF editable %]
+        [% cmd = 'Cancel' %]
+        [% SET cmd = 'UnCancel' IF program.cancelled %]
+            <a href=/program/cancel/$id
+               onclick="return confirm('Are you sure you wish to $cmd \'$program.name\'');"
+            >$cmd</a>
+            &nbsp;&nbsp;&nbsp;
+    [% END %]
 [% END %]
 [% IF program.rental_id %]
 <a href=/rental/view/$program.rental_id>To Rental</a>
@@ -201,7 +205,9 @@ Web
 <td rowspan=5>
 <!-- hacky CSS - please remedy -->
 <span class=head style="margin-left: .5in">Lunches</span>
-<span class=updlunch><a href=/program/update_lunch/$id>Update</a></span>
+[% IF editable %]
+    <span class=updlunch><a href=/program/update_lunch/$id>Update</a></span>
+[% END %]
 <div class=lunch>$lunch_table</div>
 </td>
 [% END %]
@@ -248,10 +254,12 @@ Web
 </td>
 <td>
 <span class=head>Blocks</span>
-<a style="margin-left: .3in"
-   href=/block/program_create_many/$id>Add Blocks</a>
-<a style="margin-left: .3in"
-   href=/block/bound_create/program/$id>Custom Block</a>
+[% IF editable %]
+    <a style="margin-left: .3in"
+       href=/block/program_create_many/$id>Add Blocks</a>
+    <a style="margin-left: .3in"
+       href=/block/bound_create/program/$id>Custom Block</a>
+[% END %]
 </td>
 </tr>
 
@@ -265,7 +273,13 @@ Web
 <td valign=top>
 <table>
 [% FOR bl IN program.blocks %]
-    <tr><td><a href=/block/view/$bl.id>$bl.house.name</a></td></tr>
+    <tr><td>
+    [% IF editable %]
+        <a href=/block/view/$bl.id>$bl.house.name</a>
+    [% ELSE %]
+        $bl.house.name
+    [% END %]
+    </td></tr>
 [% END %]
 </table>
 </td>
@@ -278,8 +292,10 @@ Web
     <p class=p2>
     <!-- hacky CSS - please remedy -->
     <span class=head style="margin-left: .5in">Days to Refresh Rooms</span>
-    <span class=updlunch><a href=/program/update_refresh/$id>Update</a></span> 
-    <span class=f12b style="margin-left: 8mm;">Confirm with Field Staff!</span>
+    [% IF editable %]
+        <span class=updlunch><a href=/program/update_refresh/$id>Update</a></span> 
+        <span class=f12b style="margin-left: 8mm;">Confirm with Field Staff!</span>
+    [% END %]
     <div class=lunch>$refresh_table</div>
 [% END %]
 
@@ -336,13 +352,14 @@ $program.tub_swim
 </tr>
 
 <tr><td>&nbsp;</td></tr>
-
 <tr>
 <th align=right valign=top>Leaders</th>
 <td valign=top align=left colspan=2 width=300>
 $leaders_house
 [% IF prog_admin %]
+    [% IF editable %]
     <a href=/program/leader_update/$id>Update</a>
+    [% END %]
 [% END %]
 <p>
 </td>
@@ -357,7 +374,11 @@ $leaders_house
 <b>Meet</b><br>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == '' && b.dorm == '' %]
-        <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate2 %] $b.date_range[% END %]<br>
+        [% IF editable %]
+            <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate2 %] $b.date_range[% END %]<br>
+        [% ELSE %]
+            ${b.meeting_place.name}<br>
+        [% END %]
     [% END %]
 [% END %]
 </td>
@@ -365,7 +386,11 @@ $leaders_house
 <b>Breakout</b><br>
 [% FOR b IN program.bookings %]
     [% IF b.breakout == 'yes' %]
-        <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
+        [% IF editable %]
+            <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
+        [% ELSE %]
+            ${b.meeting_place.name}<br>
+        [% END %]
     [% END %]
 [% END %]
 </td>
@@ -373,7 +398,11 @@ $leaders_house
 <b>Dormitory</b><br>
 [% FOR b IN program.bookings %]
     [% IF b.dorm == 'yes' %]
-        <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
+        [% IF editable %]
+            <a href=/event/del_meeting_place/program/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a>[% IF b.sdate != program.sdate || b.edate != program.edate %] $b.date_range[% END %]<br>
+        [% ELSE %]
+            ${b.meeting_place.name}<br>
+        [% END %]
     [% END %]
 [% END %]
 </td>
@@ -387,7 +416,9 @@ $leaders_house
 <tr>
 <td></td>
 <td>
-<a href="/event/add_meeting_place/program/$id">Add</a>
+[% IF editable %]
+    <a href="/event/add_meeting_place/program/$id">Add</a>
+[% END %]
 </td>
 </tr>
 [% END %]
@@ -401,7 +432,9 @@ $leaders_house
     $a.descrip<br>
 [% END %]
 [% IF prog_admin %]
-    <a href=/program/affil_update/$id>Update</a>
+    [% IF editable %]
+        <a href=/program/affil_update/$id>Update</a>
+    [% END %]
 [% END %]
 </td>
 </tr>
@@ -409,9 +442,15 @@ $leaders_house
 <tr>
 <th align=right>Color</th>
 [% IF program.color %]
-<td id=color style="cursor: pointer" width=100 bgcolor=$program.color_bg onclick="window.location.href='/program/color/$id'">
+    [% IF editable %]
+        <td id=color style="cursor: pointer" width=100 bgcolor=$program.color_bg onclick="window.location.href='/program/color/$id'">
+    [% ELSE %]
+        <td id=color width=100 bgcolor=$program.color_bg>
+    [% END %]
 [% ELSE %]
-<td><a href=/program/color/$id>Update</a></td>
+    [% IF editable %]
+        <td><a href=/program/color/$id>Update</a></td>
+    [% END %]
 [% END %]
 </tr>
 

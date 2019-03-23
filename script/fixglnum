@@ -1,0 +1,25 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+use Util qw/
+    compute_glnum
+/;
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+
+# programs
+#
+my @programs = $schema->resultset('Program')->search({
+    sdate  => { '>', 20190101 },
+    -or => [
+        glnum => '',
+        glnum => 'XX',
+    ],
+});
+for my $pr (@programs) {
+    print $pr->name, "\n";
+    $pr->update({
+        glnum => compute_glnum($schema, $pr->sdate),
+    });
+}
