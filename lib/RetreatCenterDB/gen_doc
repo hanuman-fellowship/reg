@@ -78,6 +78,7 @@ sub link_to {
 
 my @files = sort
             map { s/[.]pm$//; $_ }
+            grep { ! m{Result}xms }
             <*.pm>;
 for my $f (@files) {
     open my $in, '<', "$f.pm"

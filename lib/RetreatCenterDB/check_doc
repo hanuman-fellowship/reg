@@ -66,6 +66,7 @@ my $str_doc_err = 0;
 my $model;
 FILE:
 for my $f (<*.pm>) {
+    next FILE if $f =~ m{Result}xms;
     my @cols;
     my $table;
     open my $in, '<', $f
@@ -93,12 +94,11 @@ for my $f (<*.pm>) {
     COLS:
     while (my $line = <$in>) {
         next unless $line =~ m{\S}xms;
-        if ($line =~ m{\A /}xms) {
+        if ($line =~ m{\A [/)]}xms) {
             last COLS;
         }
-        chomp $line;
-        $line =~ s{\A \s* | \s* \z}{}xmsg;
-        push @cols, $line;
+        my ($name) = $line =~ m{\A \s* (\w+)}xms;
+        push @cols, $name;
     }
     @cols = sort @cols;
     $model->{$table} = \@cols;
