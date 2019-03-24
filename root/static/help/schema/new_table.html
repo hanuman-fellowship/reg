@@ -4,29 +4,38 @@
 <h2>Adding a New Table
 <span class=to_schema><a href=index.html>To Schema</a></span>
 </h2>
-For demonstration purposes, let's add a new tabled called 'activity'
+For demonstration purposes, let's add a new table called 'activity'.
 <ol>
-  <li>From the $HOME/lib/RetreatcenterDB/.. find an existing Resultsource class
+  <li>Create the new table SQL file in $HOME/sql/. Follow
+  the naming conventions (\d\d-...sql).
+  Foreign keys are named '{table_name}_id'.
+  Be sure to test your new SQL and inform other developers as needed.
+  Ensure that there are defaults, if needed.
+  Which columns allow NULLs?
+  Note that a type of 'text' may not be appropriate unless
+  you expect a very large block of text.
+  <li>In $HOME/lib/RetreatcenterDB/ find an existing class
     that is similar to your new table and copy it.
   <pre class=code>
-    cp $HOME/lib/RetreatcenterDB/Glossary.pm \
-    $HOME/lib/RetreatcenterDB/Activity.pm 
+    % cd $HOME/lib/RetreatcenterDB
+    % cp Glossary.pm  Activity.pm 
   </pre>
-  <li>Open the new resultsource and edit it to reflect the new table design.  Be
+  <li>Open the new file and edit it to reflect the new table design.  Be
     sure to edit the package name as well as update the column documentation at
-    the end of the file since gendoc will use it to create documentation.  Be sure
-    that the file name and the package name properly match (this is a common error)
-  <li>Edit $HOME/RetreatcenterDB.pm to add the name of your new class to the 'classes'
-    list.
-  <li>Create new table SQL in $HOME/sql/.. (remember to follow the ordered naming 
-    convention).  Be sure to teset your new SQL and inform other developers as needed.
-  <li>Run checkdoc
+    the end of the file since gen_doc will use it to create documentation.
+    Be sure that the file name and the package name properly match
+    (this is a common error).
+    <p>
+    Add any DBIC relationships, as needed.   Other classes can serve
+    as examples of 'belongs_to', 'has_many', 'many_to_many', etc. 
+  <li>Edit $HOME/RetreatcenterDB.pm to add the name of your new class to the 'classes' list.
+  <li>Run ./check_doc
   <pre class=code>
   cd $HOME/lib/RetreatcenterDB
-  ./checkdoc
+  ./check_doc
   </pre>
-  <li>If checkdoc passes next run gendoc and the remebr to commit all your changes
+  <li>If check_doc passes, next run ./gen_doc and remember to commit all your changes.
   <pre class=code>
-  ./gendoc
+  ./gen_doc
   </pre>
 </ol>
