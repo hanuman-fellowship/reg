@@ -1,23 +1,31 @@
 use strict;
 use warnings;
 package RetreatCenterDB::Activity;
-use base qw/RetreatCenterDB::Result/;
+use base qw/DBIx::Class/;
+
+use Time::Simple qw/
+    get_time
+/;
 
 # Load required DBIC stuff
 __PACKAGE__->load_components(qw/PK::Auto Core/);
 # Set the table name
 __PACKAGE__->table('activity');
 # Set columns in table
-__PACKAGE__->add_columns(
-    id => { data_type => 'integer', is_auto_increment => 1 },
-    message => { data_type => 'varchar', size => 256 },
-    cdate => { data_type => 'varchar', size => 8, date_simple => 1 },
-    ctime => { data_type => 'varchar', size => 4, time_simple => 1 },
-);
+__PACKAGE__->add_columns(qw/
+    id
+    message
+    cdate
+    ctime
+/);
 
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
-__PACKAGE__->resultset_class('RetreatCenterDB::ResultSet::Activity');
+
+sub ctime_obj {
+    my ($self) = @_;
+    return get_time($self->ctime());
+}
 
 1;
 __END__

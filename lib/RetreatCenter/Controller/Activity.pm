@@ -5,118 +5,84 @@ use base 'Catalyst::Controller';
 
 use lib '../../';       # so you can do a perl -c here.
 use Util qw/
-    slurp
     stash
     tt_today
+    model
+    time_travel_class
 /;
 use Date::Simple qw/
     date
     today
 /;
-
-sub by_date :Path() Args(0) {
-    my ($self, $c) = @_;
-    my $cdate = today();
-    if (my $cdate_param = $c->req->query_parameters->{cdate}) {
-        $cdate = date($cdate_param);
-        if (!$cdate) {
-            $c->gen_error('Requested activity date is not valid');
-        }
-    }
-    $c->stash(
-        cdate => $cdate,
-        target => $self->by_date_uri($c),
-        prev => $self->by_date_uri($c, cdate => ($cdate-1)->as_d8()),
-        next => $self->by_date_uri($c, cdate => ($cdate+1)->as_d8()),
-        activity => [
-            $c->model('RetreatCenterDB::Activity')
-              ->by_date_of($cdate)
-              ->all()
-        ],
-    );
-}
-
-sub by_date_uri {
-    my ($self, $c, %params) = @_;
-    return my $uri = $c->uri_for($self->action_for('by_date'), \%params);
-}
+use Time::Simple qw/
+    get_time
+/;
 
 sub view : Local {
-    my ($self, $c, $day, $temple) = @_;
+    my ($self, $c, $cdate_d8) = @_;
 
-    $temple ||= 0;
-    if (! $day) {
-        $day = tt_today($c)->format('%a');
-    }
-    my @days = qw/ Sun Mon Tue Wed Thu Fri Sat /;
-    my ($prev, $next);
-    for my $i (0 .. $#days) {
-        if ($day eq $days[$i]) {
-            $prev = $i-1 >=      0? $days[$i-1]: 'Sat';
-            $next = $i+1 <= $#days? $days[$i+1]: 'Sun';
+    # first we get a date
+    my $cdate_obj;
+    if (my $cdate_param = $c->req->query_parameters->{cdate}) {
+        # $cdate_param could be in a variety of date formats
+        $cdate_obj = date($cdate_param);
+        if (! $cdate_obj) {
+            $c->gen_error('Requested activity date is not valid');
         }
+        $cdate_d8 = $cdate_obj->as_d8();
     }
-    if (! $prev) {
-        # some nefarious person tried to force a non-day
-        $prev = 'Sun';
-        $next = 'Tue';
-    }
-    my $file = "/var/Reg/grab_new/$day";
-    my @lines;
-    if (-r $file) {
-        @lines = split '\n', slurp($file);
+    elsif (! defined $cdate_d8) {
+        $cdate_obj = tt_today($c);
+        $cdate_d8 = $cdate_obj->as_d8();
     }
     else {
-        @lines = ('Nothing happened on this day.');
-    }
-    if ($temple <= 1) {
-        my $tmpl_re = qr{\A temple(?!\s+donation)}xms;
-        if ($temple == 1) {
-            @lines = grep { /$tmpl_re/ } @lines;
+        # likely d8 format
+        $cdate_obj = date($cdate_d8);
+        if (! $cdate_obj) {
+            $c->gen_error('Requested activity date is not valid');
         }
-        else {
-            my $nbefore = @lines;
-            @lines = grep { ! /$tmpl_re/ } @lines;
-            my $ntemple = $nbefore - @lines;
-            if ($lines[-1] =~ m{\A \*\*}xms) {
-                # no need for a time
-                pop @lines;
-            }
-            if ($ntemple) {
-                push @lines, "<a href=/activity/view/$day/1>temple $ntemple</a>";
-            }
-        }
+        $cdate_d8 = $cdate_obj->as_d8();
     }
-    my $s = "";
+    # look for activity records on that date
+    my @activities = model($c, 'Activity')->search(
+                         {
+                            cdate => $cdate_d8,
+                         },
+                         {
+                            order_by => 'ctime asc',
+                         }
+                     );
+    # there can be multiple activity records with the same time.
+    # to keep things clean
+    # we want to display the time only once per grab_new execution
+    # which happens every 15 minutes 24/7.
+    my @array;
+    my $prev_time = '';
     my $time;
-    for my $l (@lines) {
-        if ($l =~ m{\A \*\* \s (\d+:\d+)}xms) {
-            $time = $1;
+    for my $a (@activities) {
+        my $t = $a->ctime();
+        if ($prev_time eq $t) {
+            $time = '';
         }
         else {
-            $s .= $l;
-            $s .= " <span class=greyed>$time</span>" if $time;
-            $time = "";
-            $s .= "<br>";
+            $time = get_time($t)->t12();
+            # 12 hour time is okay without the am/pm
+            # it should be clear what's what.
+            $prev_time = $t;
         }
+        push @array, {
+            message => $a->message(),
+            time    => $time,
+        };
     }
-    stash($c,
-        prev     => $prev,
-        next     => $next,
-        date     => _full_day($day),
-        output   => $s,
-        template => 'activity/view.tt2',
+    $c->stash(
+        time_travel_class($c),
+        cdate => $cdate_obj,
+        prev => ($cdate_obj-1)->as_d8(),
+        next => ($cdate_obj+1)->as_d8(),
+        activity => \@array,
+        template => "activity/view.tt2",
     );
-}
-
-# silly
-sub _full_day {
-    my ($day) = @_;
-    return $day . ($day eq 'Tue'? 's'
-                  :$day eq 'Wed'? 'nes'
-                  :$day eq 'Thu'? 'rs'
-                  :$day eq 'Sat'? 'ur'
-                  :               '') . 'day';
 }
 
 1;

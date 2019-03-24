@@ -7,9 +7,7 @@ no warnings 'redefine';     # for Net::FTP::pasv
 
 -1) Log everything that happens in the running of this script.
 It is is run from cron in the background.
-Append the log messages for this one run to a file named after
-the current day.  If this is the first run for the day start
-the file anew.
+Insert records into the activity table.
 
 0) Make sure that the net is available by trying to ping mountmadonna.org.
 Otherwise simply exit.   Commented this part out...
@@ -100,10 +98,9 @@ chdir "$FindBin::Bin/..";
 
 # globals
 my $today = today();
-my $c = 100;
+my $c;
 my $ftp;
 my $run_file = '/var/Reg/grab_running';
-my ($log, $log_name);
 my $nomp = 0;
 my ($now, $now_t24, $today_d8, $year_mon_dir);
 my ($temple_xaccount_id);
@@ -126,21 +123,11 @@ sub msg {
         cdate   => $today_d8,
         ctime   => $now_t24,
     });
-    
-    if (! $time_printed) {
-        print {$log} "** " . $now->t12 . "\n";
-        $time_printed = $now->t12;
-    }
-    print {$log} @_;
-    if (pop !~ m{\n$}xms) {
-        print {$log} "\n";
-    }
 }
 
 sub quit {
     msg @_, "\n";
-    close $log;
-    # try to email $log_name to Jon ???
+    unlink $run_file;
     exit;
 }
 
@@ -154,10 +141,6 @@ sub initialize {
     $now_t24 = $now->t24;
     $today_d8 = $today->as_d8();
     $year_mon_dir = $today->format("%Y-%m");
-    $log_name = '/var/log/Reg/grab_new.log';
-    open $log, '>', $log_name
-        or die "no $log_name! :(\n";
-
     $c = db_init();
     Global->init($c, 1, 1);
 
@@ -220,26 +203,6 @@ sub initialize {
 
 sub finalities {
     unlink $run_file;
-    close $log;
-    my $log_str = slurp $log_name;
-    my $dow_name = $grab_new . '/' . $today->format("%a");
-    my $mode = (! -f $dow_name || -M $dow_name > 1)? '>': '>>';
-    if (open my $out, $mode, $dow_name) {
-        print {$out} $log_str;
-        close $out;
-    }
-    if ($something_happened) {
-        # not forever ... just until you trust it
-        # then comment this out
-        #$log_str =~ s{$}{<br>}xmsg;
-        #email_letter($c,
-        #    to      => 'jon@suecenter.org',
-        #    from    => 'jon@suecenter.org',
-        #    subject => 'grab_new',
-        #    html    => "<pre>$log_str</pre>",
-        #);
-    }
-
     # at what point do the req_mmi_payments/req_mmc_payments expire???
     # a cron job on the remote site to clear them after n days?
     # also a cron job to clear the grid files after

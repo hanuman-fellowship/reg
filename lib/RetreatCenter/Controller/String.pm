@@ -229,7 +229,7 @@ sub time_travel_do : Local {
         return;
     }
     else {
-        $date_for{$user} = $new_date;
+        $date_for{$user} = date($new_date)->format('%m/%d/%Y');;
     }
     $str->update({
         value => join ' ', %date_for,

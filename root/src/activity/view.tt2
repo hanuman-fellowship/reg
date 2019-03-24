@@ -1,10 +1,26 @@
-<h2>Activity for $date
-<span class=smaller>
-<a href=/activity/view/$prev>Prev</a>
-&nbsp;&nbsp;
-<a href=/activity/view/$next>Next</a>
-</span>
+<h2>Activity for $cdate
+    <span class=smaller>
+        <a href="/activity/view/$prev">Prev</a>
+        &nbsp;&nbsp;
+        <a href="/activity/view/$next">Next</a>
+        &nbsp;&nbsp;
+        <form style='display:inline'
+              name=form
+              method='GET'
+              action='/activity/view'
+        >
+            <input type='text' size=8 name='cdate' />
+            <input id='sub' type='submit' value='Find Date' />
+        </form>
+    </span>
 </h2>
-<ul style="line-height: 7mm">
-$output
-</ul>
+[% IF activity.size %]
+    <ul style="list-style-type: none; line-height: 1.6;">
+    [% FOREACH a IN activity %]
+        <li>$a.message<span class=greyed>$a.time</span></li>
+    [% END %]
+    </ul>
+[% ELSE %]
+    No activity for this day.
+[% END %]
+<script type="text/javascript">document.form.cdate.focus();</script>
