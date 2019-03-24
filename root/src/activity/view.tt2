@@ -1,8 +1,8 @@
 <h2>Activity for $cdate
     <span class=smaller>
-        <a href="/activity/view/$prev">Prev</a>
+        <a href="/activity/view?cdate=$prev">Prev</a>
         &nbsp;&nbsp;
-        <a href="/activity/view/$next">Next</a>
+        <a href="/activity/view?cdate=$next">Next</a>
         &nbsp;&nbsp;
         <form style='display:inline'
               name=form
@@ -15,11 +15,11 @@
     </span>
 </h2>
 [% IF activity.size %]
-    <ul style="list-style-type: none; line-height: 1.6;">
+    <div style="margin-left: .5in; line-height: 1.6;">
     [% FOREACH a IN activity %]
-        <li>$a.message<span class=greyed>$a.time</span></li>
+        $a.message<span class=greyed>$a.time</span><br>
     [% END %]
-    </ul>
+    </div>
 [% ELSE %]
     No activity for this day.
 [% END %]

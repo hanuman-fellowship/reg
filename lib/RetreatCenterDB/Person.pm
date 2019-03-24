@@ -6,9 +6,6 @@ use base qw/DBIx::Class/;
 use Date::Simple qw/
     date
 /;
-use Algorithm::LUHN qw/
-    is_valid
-/;
 use Util qw/
     empty
     valid_email

@@ -19,42 +19,32 @@ use Time::Simple qw/
 /;
 
 sub view : Local {
-    my ($self, $c, $cdate_d8) = @_;
+    my ($self, $c) = @_;
 
-    # first we get a date
+    # first we get a date defaulting to today
     my $cdate_obj;
     if (my $cdate_param = $c->req->query_parameters->{cdate}) {
         # $cdate_param could be in a variety of date formats
         $cdate_obj = date($cdate_param);
         if (! $cdate_obj) {
-            $c->gen_error('Requested activity date is not valid');
+            $c->gen_error('Requested activity date is not valid.');
         }
-        $cdate_d8 = $cdate_obj->as_d8();
-    }
-    elsif (! defined $cdate_d8) {
-        $cdate_obj = tt_today($c);
-        $cdate_d8 = $cdate_obj->as_d8();
     }
     else {
-        # likely d8 format
-        $cdate_obj = date($cdate_d8);
-        if (! $cdate_obj) {
-            $c->gen_error('Requested activity date is not valid');
-        }
-        $cdate_d8 = $cdate_obj->as_d8();
+        $cdate_obj = tt_today($c);
     }
     # look for activity records on that date
     my @activities = model($c, 'Activity')->search(
                          {
-                            cdate => $cdate_d8,
+                            cdate => $cdate_obj->as_d8(),
                          },
                          {
                             order_by => 'ctime asc',
                          }
                      );
     # there can be multiple activity records with the same time.
-    # to keep things clean
-    # we want to display the time only once per grab_new execution
+    # to keep things clean we want to display the time
+    # only once per execution of the cronjob grab_new
     # which happens every 15 minutes 24/7.
     my @array;
     my $prev_time = '';
@@ -77,9 +67,9 @@ sub view : Local {
     }
     $c->stash(
         time_travel_class($c),
-        cdate => $cdate_obj,
-        prev => ($cdate_obj-1)->as_d8(),
-        next => ($cdate_obj+1)->as_d8(),
+        cdate    => $cdate_obj,
+        prev     => ($cdate_obj-1)->as_d8(),
+        next     => ($cdate_obj+1)->as_d8(),
         activity => \@array,
         template => "activity/view.tt2",
     );
