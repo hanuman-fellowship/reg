@@ -1878,11 +1878,7 @@ sub export : Local {
                 title1
                 title2
 
-                leader_names
-                webdesc
-                leader_bio
                 url
-                weburl
                 footnotes
                 deposit
                 cancellation_policy
@@ -1890,21 +1886,14 @@ sub export : Local {
                 reg_end
                 prog_start
                 prog_end
-                housing_not_needed
                 
                 linked
 
                 do_not_compute_costs
-                dncc_why
             /),
             sdate => $p->sdate_obj->format($fmt),
             edate => $p->edate_obj->format($fmt),
-            footnotes_long => $p->long_footnotes,
             %extracted_fee_table,
-            str_reg_start  => $p->reg_start_obj->ampm,
-            str_reg_end    => $p->reg_end_obj->ampm,
-            str_prog_start => $p->prog_start_obj->ampm,
-            str_prog_end   => $p->prog_end_obj->ampm,
             mmi => $mmi,
             leaders => \@leaders,
         };
@@ -1928,18 +1917,12 @@ sub export : Local {
         push @export_rentals, {
             map({ $_ => $r->$_ } qw/
                 id
-                dates_tr2
                 title
                 subtitle
-                title1
-                title2
                 webdesc
                 phone
-                phone_str
                 url
-                weburl
                 email
-                email_str
                 image
             /),
             sdate => $r->sdate_obj->format($fmt),
@@ -1979,7 +1962,6 @@ sub export : Local {
         disc_pr_end   => date($string{disc_pr_end})->format($fmt),
         pr_template   => $string{personal_template},
                    # personal_getaway / personal
-        noPR_dates    => \@no_prs,
         fee_table_headings => [
             'Housing Type',
             'Cost',
