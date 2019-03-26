@@ -80,7 +80,7 @@ function UNreserve_cluster(cluster_id) {
 <a href=/rental/view/$program.rental_id>To Rental</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
-[% IF program.webready %]
+[% IF program.webready && pre_craft %]
 <a target=_blank href=$program.web_addr>Web</a>
 &nbsp;&nbsp;&nbsp;
 [% END %]
@@ -306,24 +306,26 @@ Web
 <div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0 width=800>
 
-<tr>
-<th align=right valign=top width=20%>Category</th>
-<td valign=top>$program.category.name</td>
-</tr>
+[% IF pre_craft %]
+    <tr>
+    <th align=right valign=top width=20%>Category</th>
+    <td valign=top>$program.category.name</td>
+    </tr>
 
-<tr>
-<th align=right valign=top>Sponsoring<br>Organization</th>
-<td valign=top>$program.school.name</td>
-</tr>
+    <tr>
+    <th align=right valign=top>Sponsoring<br>Organization</th>
+    <td valign=top>$program.school.name</td>
+    </tr>
 
-[% IF program.school.mmi %]
-<tr>
-<th align=right>Level</th>
-<td>$program.level.name</td>
-</tr>
-[% END %]
+    [% IF program.school.mmi %]
+    <tr>
+    <th align=right>Level</th>
+    <td>$program.level.name</td>
+    </tr>
+    [% END %]
 
 <tr><td>&nbsp;</td></tr>
+[% END %]
 
 <tr>
 <td colspan=2>
@@ -549,20 +551,22 @@ $leaders_house
 <td>$program.req_pay</td>
 </tr>
 
-<tr>
-<th align=right>Bank Account</th>
-<td>
-[% IF bank == 'mmi' %]
-Payments will go to the <b>MMI</b> bank account.
-[% ELSIF bank == 'mmc' %]
-Payments will go to the <b>MMC</b> bank account.
-[% ELSIF bank == 'both' %]
-Payments will go to both the <b>MMC</b> and the <b>MMI</b> bank accounts.
-[% ELSE %]
-By default, Payments will hopefully go to the <b>MMC</b> bank account.
+[% IF pre_craft %]
+    <tr>
+    <th align=right>Bank Account</th>
+    <td>
+    [% IF bank == 'mmi' %]
+    Payments will go to the <b>MMI</b> bank account.
+    [% ELSIF bank == 'mmc' %]
+    Payments will go to the <b>MMC</b> bank account.
+    [% ELSIF bank == 'both' %]
+    Payments will go to both the <b>MMC</b> and the <b>MMI</b> bank accounts.
+    [% ELSE %]
+    By default, Payments will hopefully go to the <b>MMC</b> bank account.
+    [% END %]
+    </td>
+    </tr>
 [% END %]
-</td>
-</tr>
 
 <tr>
 <th align=right>Cancellation Policy</th>
@@ -603,21 +607,23 @@ By default, Payments will hopefully go to the <b>MMC</b> bank account.
 <td colspan=5>$program.badge_title</td>
 </tr>
 
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><a href="http://$program.url">$program.url</a></td>
-</tr>
+[% IF pre_craft %]
+    <tr>
+    <th align=right>Web Address</th>
+    <td colspan=5><a href="http://$program.url">$program.url</a></td>
+    </tr>
 
-<tr>
-<th align=right valign=top>Web Description</th>
-<td colspan=5>$program.webdesc</td>
-</td>
-</tr>
+    <tr>
+    <th align=right valign=top>Web Description</th>
+    <td colspan=5>$program.webdesc</td>
+    </td>
+    </tr>
 
-<tr>
-<th align=right>Footnotes</th>
-<td>$program.footnotes</td>
-</tr>
+    <tr>
+    <th align=right>Footnotes</th>
+    <td>$program.footnotes</td>
+    </tr>
+[% END %]
 
 <tr>
 <th align=right>Web Ready</th>
@@ -634,10 +640,12 @@ By default, Payments will hopefully go to the <b>MMC</b> bank account.
 <td>$program.facebook_event_id</td>
 </tr>
 
-<tr>
-<th align=right valign=top>Web Page Template</th>
-<td>$program.ptemplate</td>
-</tr>
+[% IF pre_craft %]
+    <tr>
+    <th align=right valign=top>Web Page Template</th>
+    <td>$program.ptemplate</td>
+    </tr>
+[% END %]
 
 </table>
 </div>

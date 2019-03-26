@@ -150,27 +150,27 @@ Web
 <div id="content2" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
-<tr>
-<th align=right valign=top>Category</th>
-<td valign=top>
-<select name=category_id>
-$cat_opts
-</select>
-<span class=red>Leave this alone.</span>
-</td>
-</tr>
+[% IF pre_craft %]
+    <tr>
+    <th align=right valign=top>Category</th>
+    <td valign=top>
+    <select name=category_id>
+    $cat_opts
+    </select>
+    </td>
+    </tr>
 
-<tr>
-<th align=right valign=top>Sponsoring Organization</th>
-<td valign=top>
-<select name=school_id
-        onchange="set_level_visibility();"
->
-$school_opts
-</select>
-<span class=red>This, too.</span>
-</td>
-</tr>
+    <tr>
+    <th align=right valign=top>Sponsoring Organization</th>
+    <td valign=top>
+    <select name=school_id
+            onchange="set_level_visibility();"
+    >
+    $school_opts
+    </select>
+    </td>
+    </tr>
+[% END %]
 
 <tr id=level_id>    <!-- see script below -->
 <th align=right>Level</th>
@@ -312,20 +312,22 @@ $level_opts
 <td><input type=checkbox value=yes name=req_pay $check_req_pay></td>
 </tr>
 
-<tr>
-<th align=right>Bank Account</th>
-<td>
-&nbsp;&nbsp;
-Payments will go to:
-&nbsp;
-MMC <input type=radio name=bank_account value='mmc' $bank_mmc>
-&nbsp;&nbsp;&nbsp;
-MMI <input type=radio name=bank_account value='mmi' $bank_mmi>
-&nbsp;&nbsp;&nbsp;
-Both <input type=radio name=bank_account value='both' $bank_both>
-<span class=red>Leave this alone.</span>
-</td>
-</tr>
+[% IF pre_craft %]
+    <tr>
+    <th align=right>Bank Account</th>
+    <td>
+    &nbsp;&nbsp;
+    Payments will go to:
+    &nbsp;
+    MMC <input type=radio name=bank_account value='mmc' $bank_mmc>
+    &nbsp;&nbsp;&nbsp;
+    MMI <input type=radio name=bank_account value='mmi' $bank_mmi>
+    &nbsp;&nbsp;&nbsp;
+    Both <input type=radio name=bank_account value='both' $bank_both>
+    <span class=red>Leave this alone.</span>
+    </td>
+    </tr>
+[% END %]
 
 <tr>
 <th align=right>Cancellation Policy</th>
@@ -372,22 +374,27 @@ Both <input type=radio name=bank_account value='both' $bank_both>
 <td colspan=5><input type=text name=badge_title value="$program.badge_title" maxlength=30 size=30></td>
 </tr>
 
-<tr>
-<th align=right>Web Address</th>
-<td colspan=5><input type=text name=url value="$program.url" size=60></td>
-</tr>
+[% IF pre_craft %]
+    <tr>
+    <th align=right>Web Address</th>
+    <td colspan=5><input type=text name=url value="$program.url" size=60></td>
+    </tr>
 
-<tr>
-<th align=right valign=top>Web Description</th>
-<td colspan=5><textarea id=webdesc name=webdesc cols=60 rows=$webdesc_rows>$program.webdesc</textarea>
-</td>
-</tr>
+    <tr>
+    <th align=right valign=top>Web Description</th>
+    <td colspan=5>
+        <textarea id=webdesc name=webdesc
+                  cols=60 rows=$webdesc_rows
+        >$program.webdesc</textarea>
+    </td>
+    </tr>
 
-<tr>
-<th align=right>Footnotes</th>
-<td><input type=text name=footnotes value="$program.footnotes" size=5></td>
-<td><input type=submit id=sub value="Submit"></td>
-</tr>
+    <tr>
+    <th align=right>Footnotes</th>
+    <td><input type=text name=footnotes value="$program.footnotes" size=5></td>
+    <td><input type=submit id=sub value="Submit"></td>
+    </tr>
+[% END %]
 
 [% no_export = program.school.mmi && ! program.level.public? 'disabled': '' %]
 
@@ -407,16 +414,18 @@ Both <input type=radio name=bank_account value='both' $bank_both>
 <td><input type=text name=facebook_event_id size=20 value="$program.facebook_event_id">
 </tr>
 
-<tr>
-<th align=right valign=top>Web Page<br>Template</th>
-<td valign=top>
-<select name=ptemplate>
-[% FOREACH t IN template_opts %]
-    <option value='$t'[% IF t == program.ptemplate %] selected[% END %]>$t</option>
+[% IF pre_craft %]
+    <tr>
+    <th align=right valign=top>Web Page<br>Template</th>
+    <td valign=top>
+    <select name=ptemplate>
+    [% FOREACH t IN template_opts %]
+        <option value='$t'[% IF t == program.ptemplate %] selected[% END %]>$t</option>
+    [% END %]
+    </select>
+    </td>
+    </tr>
 [% END %]
-</select>
-</td>
-</tr>
 
 </table>
 </div>
