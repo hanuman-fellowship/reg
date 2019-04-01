@@ -168,7 +168,7 @@ sub phone_columns : Local {
     print {$ph} <<"EOH";
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="phone_columns.css" />
+<link rel="stylesheet" type="text/css" href="/static/phone_columns.css" />
 </head>
 <body>
 <span class=fl_heading>Hanuman Fellowship Phone List</span>
@@ -227,7 +227,7 @@ sub phone_noaddr : Local {
     print {$ph} <<"EOH";
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="phone_noaddr.css" />
+<link rel="stylesheet" type="text/css" href="/static/phone_noaddr.css" />
 </head>
 <body>
 <span class=fl_heading>Hanuman Fellowship Phone List</span>
@@ -287,7 +287,7 @@ sub phone_line : Local {
     print {$ph} <<"EOH";
 <html>
 <head>
-<link rel="stylesheet" type="text/css" href="phone_line.css" />
+<link rel="stylesheet" type="text/css" href="/static/phone_line.css" />
 </head>
 <body>
 <span class=heading>Hanuman Fellowship Phone List</span>
