@@ -9,6 +9,111 @@ use Util qw/
     d3_to_hex
 /;
 
+
+use JSON;
+use GraphQL::Execution qw(execute);
+use GraphQL::Type::Library -all;
+use DBIx::Class::Schema::Loader;
+use GraphQL::Plugin::Convert::DBIC;
+
+{
+    package RetreatCenter::Schema;
+    use base qw/DBIx::Class::Schema::Loader/;
+
+    my @TABLES = (qw/
+      booking
+      people
+      program
+      registration
+      rental
+    /);
+
+    my $tables = join('|', @TABLES);
+    my $constraint = qr/\A(?:$tables)\z/x;
+
+    __PACKAGE__->loader_options(
+        constraint   => $constraint,
+    );
+}
+
+sub _safe_serialize {
+  my $data = shift or return 'undefined';
+  my $json = encode_json($data);
+  $json =~ s#/#\\/#g;
+  return $json;
+}
+
+sub make_code_closure {
+  my ($schema, $root_value, $field_resolver) = @_;
+  sub {
+    my ($app, $body, $execute) = @_;
+    $execute->(
+      $schema,
+      $body->{query},
+      $root_value,
+      $app->request->headers,
+      $body->{variables},
+      $body->{operationName},
+      $field_resolver,
+    );
+  };
+};
+
+my $EXECUTE = sub {
+  my ($schema, $query, $root_value, $per_request, $variables, $operationName, $field_resolver) = @_;
+  execute(
+    $schema,
+    $query,
+    $root_value,
+    $per_request,
+    $variables,
+    $operationName,
+    $field_resolver,
+  );
+};
+
+sub graphql :Local {
+    my($self, $c) = @_;
+
+    my $schema = RetreatCenter::Schema->connect(@{$c->model('RetreatCenterDB')->schema->storage->connect_info});
+    my $graphql_schema = GraphQL::Plugin::Convert::DBIC->to_graphql($schema);
+    
+    if(
+      (($c->req->headers->header('Accept')//'') =~ /^text\/html\b/) and
+      !defined $c->req->query_params->{'raw'}
+    ) {
+        $c->stash(
+          nowrapper => 1,
+          title            => 'GraphiQL',
+          graphiql_version => 'latest',
+          queryString      => _safe_serialize( $c->req->query_params->{'query'} ),
+          operationName    => _safe_serialize( $c->req->query_params->{'operationName'} ),
+          resultString     => _safe_serialize( $c->req->query_params->{'result'} ),
+          variablesString  => _safe_serialize( $c->req->query_params->{'variables'} ),    
+        );
+        return $c->detach;
+    }
+
+    my $handler = sub {
+        my ($c, $body, $execute) = @_;
+        $execute->(
+            $graphql_schema->{schema},
+            $body->{query},
+            $graphql_schema->{root_value},
+            $c->req->headers,
+            $body->{variables},
+            $body->{operationName},
+            $graphql_schema->{resolver},
+          );
+    };
+
+    my $body_data = $c->req->body_data;
+    my $data = $handler->($c, $body_data, $EXECUTE);
+    
+    $c->res->body( encode_json $data);
+}
+
+
 sub index : Private {
     my ($self, $c) = @_;
 

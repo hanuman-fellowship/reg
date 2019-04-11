@@ -24,3 +24,7 @@ requires 'IO::Socket::SSL';
 requires 'LWP::Protocol::https';
 requires 'Email::Stuffer';
 requires 'Text::CSV_XS', '1.38';
+
+requires 'GraphQL';
+requires 'GraphQL::Plugin::Convert::DBIC', '0.14';
+
