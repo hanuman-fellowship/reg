@@ -15,7 +15,10 @@
      onclick="return confirm('Okay to Lock user $fulluser?');">Lock</a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
+<a href="/user/password_reset/$user.id">Password Reset</a>
+&nbsp;&nbsp;&nbsp;
 <a href="/user/create">Add</a>
+
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href="/user/list">List</a>
@@ -24,6 +27,12 @@
 
 [% IF user.locked %]
 <p class=red>This user is LOCKED out.</p>
+<p class=p2>
+[% END %]
+
+
+[% IF new_password %]
+<p class=red>User has new temporary password: $new_password</p>
 <p class=p2>
 [% END %]
 
