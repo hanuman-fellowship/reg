@@ -466,6 +466,14 @@ sub view : Local {
         return;
     }
 
+    # Check if rental is editable
+    my $current_date = tt_today($c);
+    my $is_editable = 1;
+
+    if ($rental->status ne 'due' && $current_date > $rental->edate_obj + $string{max_days_after_program_ends}) {
+        $is_editable = 0;
+    }
+
     my @payments = $rental->payments;
     my $tot_payments = 0;
     for my $p (@payments) {
@@ -483,14 +491,18 @@ sub view : Local {
     for my $b ($rental->rental_bookings()) {
         my $h_name = $b->house->name;
         my $h_type = $b->h_type;
-        $bookings{$h_type} .=
-            "<a href=/rental/del_booking/$rental_id/"
-            .  $b->house_id
-         .  qq! onclick="return confirm('Okay to Delete booking of $h_name?');"!
-            .  ">"
-            .  $h_name
-            .  "</a>, "
-            ;
+        if ($is_editable) {
+            $bookings{$h_type} .=
+                "<a href=/rental/del_booking/$rental_id/"
+                .  $b->house_id
+                .  qq! onclick="return confirm('Okay to Delete booking of $h_name?');"!
+                .  ">"
+                .  $h_name
+                .  "</a>, "
+                ;
+        } else {
+            $bookings{$h_type} .= $h_name . ", "
+        }
         ++$booking_count{$h_type};
     }
     for my $t (keys %bookings) {
@@ -555,6 +567,7 @@ sub view : Local {
                    ;
 
     stash($c,
+        editable       => $is_editable,
         ndays          => $ndays,
         rental         => $rental,
         pg_title       => $rental->name(),
