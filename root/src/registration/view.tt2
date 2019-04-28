@@ -48,30 +48,42 @@ p {
 <table border=0 cellpadding=0>
 <tr>
 <td valign=center>
-[% IF reg.cancelled %]
-<a href=/registration/uncancel/$id>Uncancel</a>
-&nbsp;&nbsp;
+[% IF editable %]
+    [% IF reg.cancelled %]
+    <a href=/registration/uncancel/$id>Uncancel</a>
+    &nbsp;&nbsp;
+    [% ELSE %]
+        <a accesskey='E' href="/registration/update/$id"><span class=keyed>E</span>dit</a>
+        &nbsp;&nbsp;
+        <a href="/registration/cancel/$id"
+           onclick="return confirm('Okay to Cancel $person.first ${person.last}?');"
+        >Cancel</a>
+        &nbsp;&nbsp;
+    [% END %]
+    [% IF ! reg.cancelled %]
+    <a href="/registration/delete/$id"
+    onclick="return confirm('\n\nAbout to delete the registration and payments and history and charges for $person.first ${person.last}.\n\nAre you SURE?\n\n');">Delete</a>
+    &nbsp;&nbsp;
+    [% END %]
+[% END %]
+
+[% IF editable %]
+    [% IF reg.arrived != 'yes' && reg.cancelled != 'yes' %]
+    <a href="/registration/arrived/$id">Not Arrived</a>
+    &nbsp;&nbsp;
+    [% ELSIF reg.arrived == 'yes' %]
+    <a href="/registration/not_arrived/$id"><span class=red>* Arrived *</span></a>
+    &nbsp;&nbsp;
+    [% END %]
 [% ELSE %]
-    <a accesskey='E' href="/registration/update/$id"><span class=keyed>E</span>dit</a>
-    &nbsp;&nbsp;
-    <a href="/registration/cancel/$id"
-       onclick="return confirm('Okay to Cancel $person.first ${person.last}?');"
-    >Cancel</a>
-    &nbsp;&nbsp;
+    [% IF reg.arrived != 'yes' %]
+        Not Arrived
+    [% ELSE %]
+        <span class=red>* Arrived *</span>&nbsp;&nbsp;
+    [% END %]
 [% END %]
-[% IF ! reg.cancelled %]
-<a href="/registration/delete/$id"
-onclick="return confirm('\n\nAbout to delete the registration and payments and history and charges for $person.first ${person.last}.\n\nAre you SURE?\n\n');">Delete</a>
-&nbsp;&nbsp;
-[% END %]
-[% IF reg.arrived != 'yes' && reg.cancelled != 'yes' %]
-<a href="/registration/arrived/$id">Not Arrived</a>
-&nbsp;&nbsp;
-[% ELSIF reg.arrived == 'yes' %]
-<a href="/registration/not_arrived/$id"><span class=red>* Arrived *</span></a>
-&nbsp;&nbsp;
-[% END %]
-[% IF reg.program.allow_dup_regs %]
+
+[% IF reg.program.allow_dup_regs && editable %]
 <a href="/registration/duplicate/$id">Aux</a>
 &nbsp;&nbsp;
 [% END %]
@@ -100,18 +112,22 @@ onclick="return confirm('\n\nAbout to delete the registration and payments and h
 <td>
 <a accesskey='B' href="/registration/view_adj/$program.id/$id/$person.last/$person.first/back"><span class=keyed>B</span>ack</a>&nbsp;&nbsp;&nbsp;<a accesskey='N' href="/registration/view_adj/$program.id/$id/$person.last/$person.first/next"><span class=keyed>N</span>ext</a>
 &nbsp;&nbsp;
-[% IF ! reg.cancelled %]
-<a href=/registration/edit_dollar/$id>Edit\$</a>
-&nbsp;&nbsp;
+[% IF editable %]
+    [% IF ! reg.cancelled %]
+    <a href=/registration/edit_dollar/$id>Edit\$</a>
+    &nbsp;&nbsp;
+    [% END %]
 [% END %]
 <a href=/registration/search/$program.id>Search</a>
-&nbsp;&nbsp;
 [% IF ! reg.cancelled %]
-[% IF reg.manual %]
-<a href=/registration/automatic/$id/0>To Automatic</a>
-[% ELSE %]
-<a href=/registration/automatic/$id/1>To Manual</a>
-[% END %]
+    [% IF editable %]
+        &nbsp;&nbsp;
+        [% IF reg.manual %]
+            <a href=/registration/automatic/$id/0>To Automatic</a>
+        [% ELSE %]
+            <a href=/registration/automatic/$id/1>To Manual</a>
+        [% END %]
+    [% END %]
 [% END %]
 [% IF send_preview %]
     &nbsp;&nbsp;
@@ -186,14 +202,22 @@ $type
    && type != 'Not Needed'
 %]
 <span style="font-size: 18pt">
-    [% IF reg.house_id %]
-        <a style="font-size: 18pt;" href=/registration/relodge/$id
-       onmouseover="return overlib('ReHouse or Vacate', WIDTH, 250, RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
-       onmouseout="return nd();"
-        >$reg.house.name
-        </a>
+    [% IF editable %]
+        [% IF reg.house_id %]
+            <a style="font-size: 18pt;" href=/registration/relodge/$id
+           onmouseover="return overlib('ReHouse or Vacate', WIDTH, 250, RIGHT, MOUSEOFF, TEXTSIZE, '16pt', FGCOLOR, '#FFFFFF', CELLPAD, 10);"
+           onmouseout="return nd();"
+            >$reg.house.name
+            </a>
+        [% ELSE %]
+            <a href=/registration/lodge/$id>[% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.gif border=0>[% END %]</a>
+        [% END %]
     [% ELSE %]
-        <a href=/registration/lodge/$id>[% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.gif border=0>[% END %]</a>
+        [% IF reg.house_id %]
+            $reg.house.name
+        [% ELSE %]
+            [% IF type == 'Own Tent' || type == 'Center Tent' %]<img src=/static/images/tent.gif border=0>[% ELSE %]<img src=/static/images/house.gif border=0>[% END %]
+        [% END %]
     [% END %]
 [% END %]
 [% IF reg.h_name %]
@@ -241,13 +265,21 @@ $type
 
 <tr>
 <th align=right valign=top>Comment</th>
-<td colspan=3 width=500>$reg.comment<a href="/registration/update_comment/$id">Update</a></td>
+[% IF editable %]
+    <td colspan=3 width=500>$reg.comment<a href="/registration/update_comment/$id">Update</a></td>
+[% ELSE %]
+    <td colspan=3 width=500>$reg.comment</td>
+[% END %]
 </tr>
 
 <tr>
 <th align=right valign=top>Confirmation Note</th>
 <td colspan=3 width=700>
-$reg.confnote<a href="/registration/update_confnote/$id">Update</a>
+[% IF editable %]
+    $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
+[% ELSE %]
+    $reg.confnote
+[% END %]
 [% IF reg.confnotes.1 %]
     <span style="margin-left: 1in">
     <a href="/registration/conf_history/$id">Note History</a>
@@ -266,7 +298,9 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <tr><td valign=top>
 <!-------- Charges --------->
 <span class=hdr>Charges</span>
-<a style="margin-left: .5in" href="/registration/new_charge/$id">New Charge</a>
+[% IF editable %]
+    <a style="margin-left: .5in" href="/registration/new_charge/$id">New Charge</a>
+[% END %]
 <table cellpadding=5>
 
 <tr>
@@ -317,7 +351,7 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <td>$py.what</td>
 <td>$py.type_sh</td>
 <th>
-<a href="javascript:void(0);" onclick="return overlib('#$py.id&nbsp;&nbsp;${py.the_date_obj.format("%D")}&nbsp;&nbsp;$py.time_obj&nbsp;&nbsp;$py.user.username&nbsp;<span class=nh><a title=Edit href=/registration/payment_update/$py.id><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/payment_delete/$id/$py.id><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 500, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#$py.id&nbsp;&nbsp;${py.the_date_obj.format("%D")}&nbsp;&nbsp;$py.time_obj&nbsp;&nbsp;$py.user.username&nbsp;[% IF editable %]<span class=nh><a title=Edit href=/registration/payment_update/$py.id><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/payment_delete/$id/$py.id><img src=/static/images/redX.gif height=20 border=0></a></span>[% END %]', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 500, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
 </th>
 </tr>
 [% tot = tot + py.amount %]
@@ -329,7 +363,13 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <td align=right>$tot</td>
 <td>Total</td>
 </tr>
-<tr><td align=left colspan=4><a href="/registration/pay_balance/$id/view">New MMC Payment</a></td></tr>
+[% IF editable %]
+    <tr>
+    <td align=left colspan=4>
+        <a href="/registration/pay_balance/$id/view">New MMC Payment</a>
+    </td>
+    </tr>
+[% END %]
 </table>
 <p class=p2>
 [% END %]
@@ -351,7 +391,7 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
 <td>$py.type_sh</td>
 <td>$py.note</td>
 <th>
-<a href="javascript:void(0);" onclick="return overlib('#$py.id&nbsp;&nbsp;${py.the_date_obj.format("%D")}&nbsp;&nbsp;$py.time_obj&nbsp;<span class=nh><a title=Edit href=/person/update_mmi_payment/$py.id/reg><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/person/del_mmi_payment/$py.id/reg><img src=/static/images/redX.gif height=20 border=0></a></span>', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 300, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
+<a href="javascript:void(0);" onclick="return overlib('#$py.id&nbsp;&nbsp;${py.the_date_obj.format("%D")}&nbsp;&nbsp;$py.time_obj&nbsp;[% IF editable %]<span class=nh><a title=Edit href=/person/update_mmi_payment/$py.id/reg><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/person/del_mmi_payment/$py.id/reg><img src=/static/images/redX.gif height=20 border=0></a></span>[% END %]', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 300, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
 </th>
 </tr>
 [% tot = tot + py.amount %]
@@ -409,6 +449,7 @@ $reg.confnote<a href="/registration/update_confnote/$id">Update</a>
         <td>$py.the_date_obj</td>
         <td>$py.note</td>
         <th>
+[% IF editable %]
 <a href=/person/delete_req/$py.id
         [% IF py.code %]
 onclick="return confirm('Delete requested AND SENT payments totaling \$$py.group_total?')"
@@ -418,13 +459,18 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp to $py.or
 >
 <img src=/static/images/redX.gif height=20 border=0>
 </a>
+[% END %]
         </th>
         </tr>
         [% prev_code = py.code %]
     [% END %]
-<tr>
-<td colspan=4 align=left><a href="/person/request_payment/$id/$person.id">New Requested Payment</a></td>
-</tr>
+
+    [% IF editable %]
+        <tr>
+        <td colspan=4 align=left><a href="/person/request_payment/$id/$person.id">New Requested Payment</a></td>
+        </tr>
+    [% END %]
+
     </table>
 </td><tr>
 
