@@ -208,7 +208,7 @@ sub update_do : Local {
 
 sub view : Local {
     my ($self, $c, $id) = @_;
-    my $new_password = $c->flash->{new_password} || 'NOTFOUND';
+    my $new_password = $c->flash->{new_password} || '';
     my $u = model($c, 'User')->find($id);
     stash($c,
         user          => $u,
@@ -497,6 +497,40 @@ sub lock : Local {
         html    => "Your account '$username' in Reg for MMC has been locked by the administrator.",
     );
     login_log($u->username, 'account locked by admin');
+    $c->response->redirect($c->uri_for("/user/view/$id"));
+}
+
+sub password_reset :Local {
+    my ($self, $c, $id) = @_;
+    my $u = model($c, 'User')->find($id);
+    my $username = $u->username();
+    my $pass = randpass();
+    $u->update({
+        locked => '',
+        nfails => 0,
+        password => sha256_hex($pass),
+        expiry_date => (today()-1)->as_d8(),
+    });
+    email_letter(
+        $c,
+        to      => $u->name_email(),
+        from    => $c->user->name_email(),
+        subject => "Your account in Reg for MMC",
+        html    => <<"EOH",
+Your account '$username' in Reg for MMC has a new temporary password.
+<p>
+Your password has been reset to '$pass'.<br>
+This is a temporary password and will fully expire in $string{days_pass_grace} days.
+<p>
+Please change your password to something that you can<br>
+easily remember (but hard to guess!).  Do this by choosing:
+<ul>
+Configuration > User Profile > Password
+</ul>
+EOH
+    );
+    login_log($u->username, 'password reset by admin');
+    $c->flash(new_password => $pass);
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
