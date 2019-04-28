@@ -208,11 +208,12 @@ sub update_do : Local {
 
 sub view : Local {
     my ($self, $c, $id) = @_;
-
+    my $new_password = $c->flash->{new_password} || 'NOTFOUND';
     my $u = model($c, 'User')->find($id);
     stash($c,
-        user     => $u,
-        template => "user/view.tt2",
+        user          => $u,
+        new_password  => $new_password,
+        template      => "user/view.tt2",
     );
 }
 
@@ -529,6 +530,7 @@ Configuration > User Profile > Password
 EOH
     );
     login_log($u->username, 'account unlocked by admin');
+    $c->flash(new_password => $pass);
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 

@@ -27,6 +27,12 @@
 <p class=p2>
 [% END %]
 
+
+[% IF new_password %]
+<p class=red>User unlocked, temporary password is: $new_password</p>
+<p class=p2>
+[% END %]
+
 <tr>
 <th align=right>User Name</th>
 <td>$user.username</td>
