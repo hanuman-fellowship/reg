@@ -146,6 +146,7 @@ for my $a (qw/ list create create_do update update_do /) {
     __PACKAGE__->deny_access_unless("/member/$a", ['member_admin']);
 }
 __PACKAGE__->deny_access_unless("/member/delete", ['super_admin']);
+__PACKAGE__->deny_access_unless("/housecost/bulk_inactivate", ['prog_admin']);
 
 =end
 

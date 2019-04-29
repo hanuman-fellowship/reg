@@ -36,6 +36,44 @@ sub list : Local {
     );
 }
 
+sub bulk_inactivate : Local {
+    my ($self, $c, $inc_inactive) = @_;
+
+    if (my $deactivate_proto = $c->req->parameters->{deactivate}) {
+        my @deactivate = ref($deactivate_proto) ?
+          @$deactivate_proto :
+          ($deactivate_proto);
+
+        model($c, 'HouseCost')->search(
+            {
+                id => { '-in' => \@deactivate }
+            }
+        )->update(
+            {
+                inactive => 'yes'
+            }
+        );
+        $c->stash->{number_deactivate} = scalar(@deactivate);
+    }
+
+    my @housecosts = model($c, 'HouseCost')
+        ->search(
+            {
+                inactive => '',
+            },
+            {
+                order_by => 'name',
+            },
+        )
+        ->all;
+
+    stash($c,
+        pg_title     => 'Bulk Housing Cost Inactivation',
+        template     => 'housecost/bulk_inactivate.tt2',
+        housecosts   => \@housecosts,
+    );
+}
+
 sub delete : Local {
     my ($self, $c, $id) = @_;
 
