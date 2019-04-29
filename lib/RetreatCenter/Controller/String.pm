@@ -14,6 +14,7 @@ use Util qw/
     error
     empty
     time_travel_class
+    set_cache_timestamp
 /;
 use Date::Simple qw/
     date
@@ -34,9 +35,9 @@ sub list : Local {
         { 
             -and => [
                 the_key => { ($colors? '-like': '-not_like') => '%color%' },
-                the_key => { '!=' => 'sys_last_config_date' },
                 the_key => { '!=' => 'tt_today' },
                 the_key => { '-not_like' => 'badge_%' },
+                the_key => { '-not_like' => 'sys_%' },
             ]
         },
         {
@@ -84,6 +85,7 @@ sub update_do : Local {
     model($c, 'String')->find($the_key)->update({
         value => $value,
     });
+    set_cache_timestamp($c);
     $string{$the_key} = $value;
     if ($the_key eq 'default_date_format') {
         Date::Simple->default_format($value);

@@ -348,6 +348,7 @@ sum_copy_id - a place to remember the 'copied' summary page.  it is used
     when later pasting the summary.   format: 'timestamp summary_id name'
 sum_email_subject - the first part of the subject when emailing a Summary
 sum_intro - the text of the introduction when emailing a Summary
+sys_cache_timestamp - the time the cache elements were updated in the database
 sys_last_config_date - the last date in the config table
 triple - the display name for the housing type 'triple'
 tt_today - a place to do 'time travel'.  format: 'username mm/dd/yy'

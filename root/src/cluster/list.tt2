@@ -17,9 +17,6 @@
     <td>$cl.cl_order</a></td>
     [% IF padmin %]
         <td width=20></td>
-        <td>
-        <a href="/cluster/delete/$cl.id" onclick="return confirm('Okay to Delete $cl.name?')">Del</a>
-        </td>
     [% END %]
     </tr>
 [% END -%]

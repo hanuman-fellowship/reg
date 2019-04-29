@@ -23,18 +23,6 @@ sub index : Local {
     );
 }
 
-#
-# no longer needed???
-# since we always do the Global->init($c, 1) after
-# house/cluster mods?
-#
-sub reload : Local {
-    my ($self, $c) = @_;
-
-    Global->init($c, 1);
-    $c->response->redirect($c->uri_for("/configuration"));
-}
-
 sub mark_inactive : Local {
     my ($self, $c) = @_;
 

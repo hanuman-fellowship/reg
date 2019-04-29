@@ -8,6 +8,7 @@ use Util qw/
     empty
     model
     stash
+    set_cache_timestamp
 /;
 use Global qw/
     %string
@@ -33,7 +34,7 @@ sub delete : Local {
     my ($self, $c, $id) = @_;
 
     model($c, 'Annotation')->search({id => $id})->delete();
-    Global->init($c, 1);
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/annotation/list'));
 }
 
@@ -75,7 +76,7 @@ sub update_do : Local {
     # since unchecked boxes are not sent...
     $hash{inactive} = "" unless exists $hash{inactive};
     model($c, 'Annotation')->find($id)->update(\%hash);
-    Global->init($c, 1);
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/annotation/list'));
 }
 
@@ -125,7 +126,7 @@ sub create_do : Local {
     my %hash = %{ $c->request->params() };
     $hash{inactive} = "" unless exists $hash{inactive};
     model($c, 'Annotation')->create(\%hash);
-    Global->init($c, 1);
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/annotation/list'));
 }
 
