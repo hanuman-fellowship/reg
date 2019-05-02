@@ -138,6 +138,9 @@ sub index :Path :Args(0) {
                     $c->response->redirect($c->uri_for("/person/search/__expired__/$ndays"));
                 }
             }
+            elsif (my $post_login_target = delete $c->session->{post_login_target}) {
+                $c->response->redirect($c->uri_for($post_login_target));
+            }
             elsif ($c->check_user_roles('super_admin')) {
                 $c->response->redirect($c->uri_for('/person/search'));
             }
