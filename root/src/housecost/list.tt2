@@ -3,7 +3,6 @@
 <a href="/housecost/create">Add</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/housecost/bulk_inactivate">Bulk Inactivate</a>
-&nbsp;&nbsp;&nbsp;
 [% END %]
 &nbsp;&nbsp;&nbsp;
 [% IF inc_inactive %]

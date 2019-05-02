@@ -40,9 +40,8 @@ sub bulk_inactivate : Local {
     my ($self, $c, $inc_inactive) = @_;
 
     if (my $deactivate_proto = $c->req->parameters->{deactivate}) {
-        my @deactivate = ref($deactivate_proto) ?
-          @$deactivate_proto :
-          ($deactivate_proto);
+        my @deactivate = ref($deactivate_proto)? @$deactivate_proto
+                        :                        ($deactivate_proto);
 
         model($c, 'HouseCost')->search(
             {
@@ -53,7 +52,8 @@ sub bulk_inactivate : Local {
                 inactive => 'yes'
             }
         );
-        $c->stash->{number_deactivate} = scalar(@deactivate);
+        $c->stash->{number_deactivate} = @deactivate;
+        $c->stash->{plural}            = @deactivate > 1? 's': '';
     }
 
     my @housecosts = model($c, 'HouseCost')
@@ -64,8 +64,7 @@ sub bulk_inactivate : Local {
             {
                 order_by => 'name',
             },
-        )
-        ->all;
+        );
 
     stash($c,
         pg_title     => 'Bulk Housing Cost Inactivation',
