@@ -29,12 +29,6 @@ tar xvf rental_images.tar -C /var/Reg/rental_images
 chmod 664 /var/Reg/rental_images/*
 sudo chown $PERMISSIONS /var/Reg/rental_images/*
 
-# activity files
-scp $USER@$HOST:/var/Reg/backup/activity_files.tar .
-tar xvf activity_files.tar -C /var/Reg/grab_new
-chmod 664 /var/Reg/grab_new/*
-sudo chown $PERMISSIONS /var/Reg/grab_new/*
-
 # mysql data
 ssh $USER@$HOST \
     "ls -1tr /var/Reg/backup/rc.* | tail -1" \

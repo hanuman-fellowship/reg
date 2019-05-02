@@ -7,12 +7,13 @@ cd $r/grid
 tar cvf $f *data.txt >/var/Reg/output/grid.out 2>&1
 gzip $f
 
+/usr/local/bin/s3cmd put $f.gz \
+                         s3://backups-reg/rentals/grid.$day.gz \
+                         >>/var/log/Reg/s3cmd.log 2>&1
+
 cd ../rental_images
 tar cvf $r/backup/rental_images.tar r-* rth-* >>/var/Reg/output/grid.out 2>&1
 
-# and activity files (this data will soon be in the database)
-cd ../grab_new
-tar cvf $r/backup/activity_files.tar * >>/var/Reg/output/grid.out 2>&1
-
-/usr/local/bin/s3cmd put $f.gz s3://backups-reg/rentals/grid.$day.gz >>/var/log/Reg/s3cmd.log 2>&1
-/usr/local/bin/s3cmd put /var/Reg/backup/rental_images.tar s3://backups-reg/rentals/rental_images.$day.tar >>/var/log/Reg/s3cmd.log 2>&1
+/usr/local/bin/s3cmd put /var/Reg/backup/rental_images.tar \
+                         s3://backups-reg/rentals/rental_images.$day.tar \
+                         >>/var/log/Reg/s3cmd.log 2>&1
