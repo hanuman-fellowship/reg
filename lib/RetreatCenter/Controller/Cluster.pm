@@ -11,6 +11,7 @@ use Util qw/
     tt_today
     reserved_clusters
     stash
+    set_cache_timestamp
 /;
 use Date::Simple qw/
     date
@@ -41,14 +42,6 @@ sub list : Local {
         { order_by => 'name' }
     ) ];
     $c->stash->{template} = "cluster/list.tt2";
-}
-
-sub delete : Local {
-    my ($self, $c, $id) = @_;
-
-    # cascade???
-    model($c, 'Cluster')->find($id)->delete();
-    $c->response->redirect($c->uri_for('/cluster/list'));
 }
 
 sub update : Local {
@@ -91,7 +84,7 @@ sub update_do : Local {
         type  => $type,
         cl_order => $cl_order,
     });
-    Global->init($c, 1);
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
 
@@ -133,10 +126,7 @@ sub create_do : Local {
         type  => $type,
         cl_order => $cl_order,
     });
-    # no need to reload Configuration - creating clusters
-    # is quite rare and houses would be added soon afterwards
-    # which would do a reload.
-    #
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/cluster/list'));
 }
 
