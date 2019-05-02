@@ -28,6 +28,11 @@ sub list : Local {
     $resident = $resident? 'yes'
                 :          q{};
     my ($tcb) = model($c, 'House')->search({ name => 'TCB 10' });
+    my @tents = model($c, 'House')->search({
+                        tent     => 'yes',
+                        resident => $resident,
+                    });
+    @tents = _tent_sort(@tents);
     stash($c,
         resident => $resident,
         rooms => [ model($c, 'House')->search(
@@ -37,13 +42,7 @@ sub list : Local {
             },
             { order_by => 'name' }
         ) ],
-        tents => [ model($c, 'House')->search(
-            {
-                tent     => 'yes',
-                resident => $resident,
-            },
-            { order_by => 'name' }
-        ) ],
+        tents        => \@tents,
         hdr          => $resident? 'Resident': 'By Name',
         tcb_activate => ($tcb->inactive())? "Activate": "Inactivate",
         other_sort   => "<a href=/house/by_type_priority>By Type/Priority</a>",
@@ -319,6 +318,80 @@ sub makeup : Local {
         house     => model($c, 'House')->find($id),
         template  => "house/view.tt2",
     );
+}
+
+sub own_center : Local {
+    my ($self, $c) = @_;
+    my @tents = model($c, 'House')->search(
+        {
+            tent     => 'yes',
+            inactive => { '!=' => 'yes' },
+        },
+    );
+    @tents = _tent_sort(@tents);
+    stash($c,
+        tents    => \@tents,
+        template => 'house/own_center.tt2',
+    );
+}
+
+# MAD 1 and MAD 10 make for a troublesome ordering.
+# A Schwartzian transform to the rescue.
+sub _tent_sort {
+    return map {
+               $_->[2]
+           }
+           sort { 
+              ($a->[0] cmp $b->[0])     # by name
+              ||
+              ($a->[1] <=> $b->[1])     # by number
+           }
+           map {
+              my ($name, $number) =
+                  $_->name =~ m{\A ([A-Z ]+) ([\d.]*) \z }xmsi;
+              $number ||= 0;
+              [ $name, $number, $_ ]
+           }
+           @_
+           ;
+}
+
+#
+# Switch the checked houses from Own to Center or vica versa.
+# This entails changing the columns 'center', 'cluster_id', and 'x'.
+# We have just two campgrounds - Oak (OAK) and Madrone (MAD).
+#
+sub own_center_do : Local {
+    my ($self, $c) = @_;
+    my @tent_clusters = model($c, 'Cluster')->search({
+        name => { 'like' => '%Tent%' },
+    });
+    my %id_for_cluster = map { $_->name => $_->id   } @tent_clusters;;
+    my %cluster_for_id = reverse %id_for_cluster;
+    for my $h_id (keys %{ $c->request->params() }) {
+        my $house = model($c, 'House')->find($h_id);
+        my $cluster_name = $cluster_for_id{$house->cluster_id};
+        my $x = $house->x;
+        my $center;
+        my $incr = $cluster_name =~ m{Oak}xms? 150: 60;
+        if ($house->center) {
+            $center = '';
+            $cluster_name =~ s{Center}{Own}xms;
+            $x -= $incr;
+        }
+        else {
+            $center = 'yes';
+            $cluster_name =~ s{Own}{Center}xms;
+            $x += $incr;
+        }
+        $house->update({
+            center     => $center,
+            cluster_id => $id_for_cluster{$cluster_name},
+            x          => $x,
+        });
+    }
+    set_cache_timestamp($c);
+    $c->response->redirect($c->uri_for('/house/list'));
 }
 
 1;

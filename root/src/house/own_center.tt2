@@ -1,0 +1,20 @@
+<h2>Toggling Own &lt;=&gt; Center Tents</h2>
+<p class=p2>
+Check the tent sites below that you wish to change from<br>
+Center to Own - or from Own to Center.<br>
+Then choose Submit at the bottom.
+<ul>
+<form action='/house/own_center_do'>
+<table cellpadding=5 border=0>
+[% FOREACH t IN tents %]
+    <tr>
+        <td><input type='checkbox' value=yes name=$t.id></td>
+        <td>$t.name</td>
+        <td>[% IF t.center %]Center[% ELSE %]Own[% END %]</td>
+    </tr>
+[% END %]
+<tr>
+    <td colspan=3><input type=submit id=sub></td>
+</tr>
+</form>
+</ul>
