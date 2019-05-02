@@ -23,9 +23,7 @@ __PACKAGE__->config->{namespace} = '';
 
 sub default : Private {
     my ( $self, $c ) = @_;
-
-    # Hello World
-    $c->response->body( $c->welcome_message );
+    $c->gen_message("Sorry, this page doesn't seem to exist on our site.  <a href='/login'>Click here</a> to return to your home page");
 }
 
 sub _set {
@@ -98,6 +96,7 @@ sub auto : Private {
     if (!$c->user_exists) {
         # Dump a log message to the development server debug output
         $c->log->debug('***Root::auto User not found, forwarding to /login');
+        $c->session->{post_login_target} = $c->req->uri;
 
         # Redirect the user to the login page
         $c->response->redirect($c->uri_for('/login'));
