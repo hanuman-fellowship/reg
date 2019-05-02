@@ -1,8 +1,9 @@
 use strict;
 use warnings;
 #
-# this is just an exported hash
-# initialized from the database table
+# these are exported hashes and arrays
+# initialized from the database table.
+#
 # must be a better way - to access %string
 # from Program.pm
 # how to get access to $c from Program.pm???
@@ -17,6 +18,8 @@ use warnings;
 # very confusing indeed.
 # there must be a way to do this init() at
 # catalyst startup time.???
+# 4/28/19 - introduced the sys_cache_timestamp to deal
+# with the multiple slave servers now.
 #
 # why can't I do "use Util qw/ model /; here???
 #
@@ -48,11 +51,19 @@ our %annotations_for;
 our %system_affil_id_for;
 our @hfs_affil_ids;
 
+my $scts = 'sys_cache_timestamp';
+
 sub init {
     my ($class, $c, $force, $for_grab) = @_;
     
-    return if %string && ! $force;      # already done
-                                        # and we don't want to force it again
+    # is this memory cache up to date with the database?
+    # do we want to force it again?
+    if (%string
+        && $string{$scts} >= Util::get_string($c, $scts)
+        && ! $force
+    ) {
+        return;
+    }
 
     %string            = ();
     @clusters          = ();
@@ -64,6 +75,15 @@ sub init {
     # strings
     for my $s (Util::model($c, 'String')->all()) {
         $string{$s->the_key} = $s->value;
+    }
+    if ($string{$scts} == 0) {
+        # only needed once
+        my $s = Util::model($c, 'String')->find($scts);
+        my $t = time();
+        $s->update({
+            value => $t,
+        });
+        $string{$scts} = $t;
     }
 
     # system and hfs affiliations
@@ -114,19 +134,6 @@ sub init {
     }
 
     Date::Simple->default_format($string{default_date_format});
-#    #
-#    # create the stop script
-#    #
-#    open my $stop, ">", "stop"
-#        or do {
-#	    warn "cannot create stop script\n";
-#            return;
-#        };
-#    print {$stop} "#!/bin/sh\n";
-#    print {$stop} "kill $$\n";
-#    print {$stop} "rm stop\n";
-#    close $stop;
-#    chmod 0755, "stop";
 }
 
 1;

@@ -2,26 +2,26 @@ PAT="$1"
 rc=/var/www/src
 echo '** Controller'
 cd $rc/lib/RetreatCenter/Controller
-grep -i "$PAT" *.pm
+grep -ir "$PAT" *.pm
 echo
 echo '** Database'
 cd $rc/lib/RetreatCenterDB
-grep -i "$PAT" *.pm
+grep -ir "$PAT" *.pm
 echo
 echo '** Scripts'
 cd $rc/script
-grep -i "$PAT" *
+grep -ir "$PAT" *
 echo
 echo '** lib'
 cd $rc/lib
-grep -i "$PAT" *.pm
-grep -iH "$PAT" Date/*.pm
-grep -iH "$PAT" Time/*.pm
+grep -ir "$PAT" *.pm
+grep -irH "$PAT" Date/*.pm
+grep -irH "$PAT" Time/*.pm
 echo
 echo '** Reg Templates'
 cd $rc/root/src
-grep -i "$PAT" */*.tt2
+grep -ir "$PAT" */*.tt2
 echo
 echo '** Letter'
 cd $rc/root/static/templates
-grep -i "$PAT" */*.tt2
+grep -ir "$PAT" */*.tt2

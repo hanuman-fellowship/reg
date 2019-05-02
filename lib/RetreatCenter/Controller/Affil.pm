@@ -10,6 +10,7 @@ use Util qw/
     stash
     affil_table
     error
+    set_cache_timestamp
 /;
 
 sub index : Private {
@@ -73,6 +74,7 @@ sub _del {
     model($c, 'AffilProgram')->search({a_id => $id})->delete();
     model($c, 'AffilReport')->search(
         {affiliation_id => $id})->delete();
+    set_cache_timestamp($c);
 }
 
 sub update : Local {
@@ -101,6 +103,7 @@ sub update_do : Local {
     model($c, 'Affil')->find($id)->update({
         descrip => $descrip,
     });
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/affil/list'));
 }
 
@@ -128,6 +131,7 @@ sub create_do : Local {
         system     => '',
         selectable => 'yes',
     });
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/affil/list'));
 }
 

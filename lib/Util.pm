@@ -87,6 +87,7 @@ our @EXPORT_OK = qw/
     too_far
     get_string
     put_string
+    set_cache_timestamp
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2453,6 +2454,14 @@ sub put_string {
     my $s = $c->model("RetreatCenterDB::String")->find($key);
     $s->update({
         value => $new_value,
+    });
+}
+
+sub set_cache_timestamp {
+    my ($c) = @_;
+    my $s = $c->model("RetreatCenterDB::String")->find('sys_cache_timestamp');
+    $s->update({
+        value => time(),
     });
 }
 

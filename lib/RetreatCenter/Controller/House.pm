@@ -9,6 +9,7 @@ use Util qw/
     model
     trim
     stash
+    set_cache_timestamp
 /;
 use Date::Simple qw/
     today
@@ -188,7 +189,7 @@ sub update_do : Local {
         # I'd say just leave them alone ... yes.
         system('add_config ' . $h->id() . ' ' . $h->max());
     }
-    Global->init($c, 1);
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/house/list'));
 }
 
@@ -223,6 +224,7 @@ sub create_do : Local {
     # we will set the house to be not 'inactive'.
     #
     system('add_config ' . $house->id);
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/house/list'));
 }
 
@@ -255,8 +257,8 @@ sub toggleTCB : Local {
         ->update({ inactive => $new_val });
     model($c, 'Annotation')->search({ label => { 'like', "%Terrace%" }})
         ->update({ inactive => $new_val });
+    set_cache_timestamp($c);
     $c->response->redirect($c->uri_for('/house/list'));
-    Global->init($c, 1);    # force a reload
 }
 
 sub makeup : Local {
