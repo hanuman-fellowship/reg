@@ -958,6 +958,7 @@ sub _re_get_days {
 sub create_do : Local {
     my ($self, $c) = @_;
 
+    Global->init($c);
     my $today = tt_today($c)->as_d8();
     _get_data($c);
     if (@mess) {
@@ -2180,7 +2181,11 @@ sub _view {
     my $current_date = tt_today($c);
     my $is_editable = 1;
 
-    if ($reg->balance == 0 && $current_date > $reg->date_end_obj + $string{max_days_after_program_ends}) {
+    Global->init($c);
+    if ($reg->balance == 0
+        && $current_date >
+            $reg->date_end_obj + $string{max_days_after_program_ends}
+    ) {
         $is_editable = 0;
     }
 
