@@ -17,43 +17,42 @@ h3 {
 [% END %]
 &nbsp;&nbsp;&nbsp;
 <a href=/house/toggleTCB>[% tcb_activate %] Terrace below CB</a>
+&nbsp;&nbsp;&nbsp;
+<a href=/house/own_center>Own<=>Center</a>
 <h3>Rooms</h3>
 <ul>
 <table cellpadding=3 border=0>
 <tr>
-<th align=left>Name</th>
-<th align=right>Max</th>
-<th align=left>&nbsp;&nbsp;&nbsp;Properties</th>
-[% IF by_priority %]
-<th colspan=2 align=right>Priority</th>
-[% END %]
+    <th align=left>Name</th>
+    <th align=right>Max</th>
+    [% IF by_priority %]
+        <th align=right>Priority</th>
+    [% END %]
+    <th align=left>Properties</th>
 </tr>
 [% curmax = 0 %]
 [% FOREACH h IN rooms %]
-
-[% IF by_priority && curmax != 0 && h.max != curmax %]
-    <tr><td colspan=4><hr></td></tr>
-[% END %]
-[% curmax = h.max %]
-
-<tr>
-<td><a href="/house/view/[% h.id %]">[% h.name %]</a></td>
-<td align=right>[% h.max %]</td>
-<td>&nbsp;&nbsp;
-[% IF h.bath %]bath [% END %]
-[% IF h.cabin %]cabin [% END %]
-[% IF h.resident %]resident [% END %]
-[% IF h.cat_abode %]cat [% END %]
-[% IF h.sq_foot %]$h.sq_foot&#9165; [% END %]
-[% IF h.inactive %]inactive[% END %]
-[% IF ! h.key_card %]no key card[% END %]
-[% IF h.comment %] - [% h.comment %][% END %]
-</td>
-[% IF by_priority %]
-    <td align=right>[% h.priority %]</td>
-</td>
-[% END %]
-</tr>
+    [% IF by_priority && curmax != 0 && h.max != curmax %]
+        <tr><td colspan=4><hr></td></tr>
+    [% END %]
+    [% curmax = h.max %]
+    <tr>
+        <td><a href="/house/view/[% h.id %]">[% h.name %]</a></td>
+        <td align=right>[% h.max %]</td>
+        [% IF by_priority %]
+            <td valign=top align=right>[% h.priority %]</td>
+        [% END %]
+        <td>
+        [% IF h.bath %]bath [% END %]
+        [% IF h.cabin %]cabin [% END %]
+        [% IF h.resident %]resident [% END %]
+        [% IF h.cat_abode %]cat [% END %]
+        [% IF h.sq_foot %]$h.sq_foot&#9165; [% END %]
+        [% IF h.inactive %]inactive[% END %]
+        [% IF ! h.key_card %]no key card[% END %]
+        [% IF h.comment %] - [% h.comment %][% END %]
+        </td>
+    </tr>
 [% END %]
 </table>
 </ul>
@@ -65,11 +64,11 @@ h3 {
 </tr>
 [% FOREACH t IN tents %]
 <tr>
-<td><a href="/house/view/[% t.id %]">[% t.name %]</a></td>
-<td align=left>
-[% IF t.center %]center [% END %]
-[% IF t.inactive %]inactive[% END %]
-</td>
+    <td><a href="/house/view/[% t.id %]">[% t.name %]</a></td>
+    <td align=left>
+        [% IF t.center %]center [% END %]
+        [% IF t.inactive %]inactive[% END %]
+    </td>
 </tr>
 [% END %]
 </table>

@@ -31,19 +31,23 @@ th a:hover {
            onclick="return confirm('If this new Rental has been at MMC before it would be better to use Duplicate.');"
     >Add</a>
     &nbsp;&nbsp;&nbsp;
-    <span id=editlink><a href="/rental/update/$id/$section">Edit</a></span>
-    &nbsp;&nbsp;&nbsp;
-    <a href="/rental/delete/$id"
-    onclick="return confirm('Okay to Delete $rental.name?');">Delete</a>
-    &nbsp;&nbsp;&nbsp;
+    [% IF editable %]
+        <span id=editlink><a href="/rental/update/$id/$section">Edit</a></span>
+        &nbsp;&nbsp;&nbsp;
+        <a href="/rental/delete/$id"
+        onclick="return confirm('Okay to Delete $rental.name?');">Delete</a>
+        &nbsp;&nbsp;&nbsp;
+    [% END %]
     <a href="/rental/duplicate/$id">Duplicate</a>
     &nbsp;&nbsp;&nbsp;
-    [% cmd = 'Cancel' %]
-    [% SET cmd = 'UnCancel' IF rental.cancelled %]
-        <a href=/rental/cancel/$id
-           onclick="return confirm('Are you sure you wish to $cmd \'$rental.name\'');"
-        >$cmd</a>
-    &nbsp;&nbsp;&nbsp;
+    [% IF editable %]
+        [% cmd = 'Cancel' %]
+        [% SET cmd = 'UnCancel' IF rental.cancelled %]
+            <a href=/rental/cancel/$id
+               onclick="return confirm('Are you sure you wish to $cmd \'$rental.name\'');"
+            >$cmd</a>
+        &nbsp;&nbsp;&nbsp;
+    [% END %]
 [% END %]
 [% IF rental.proposal_id %]
 <a href="/proposal/view/$rental.proposal_id">To Proposal</a>
@@ -167,7 +171,10 @@ Web
 <td>$rental.max</td>
 <td rowspan=6 valign=top>
 <div style="margin-left: .3in;">
-<span class=head style="margin-left: .5in">Lunches</span><span class=updlunch><a href="/rental/update_lunch/$id">Update</a></span>
+<span class=head style="margin-left: .5in">Lunches</span>
+[% IF editable %]
+    <span class=updlunch><a href="/rental/update_lunch/$id">Update</a></span>
+[% END %]
 <div class=lunch>$lunch_table</div>
 </div>
 </td>
@@ -190,31 +197,43 @@ Web
 
 <tr><td>&nbsp;</td></tr>
 
-<tr>
-<td align=right>
-<a target=_blank 
-   href=${string.grid_url}?code=$rental.grid_code>Web Grid</a>
-</td>
-[% IF rental.grid_stale %]
-<td colspan=2>
-<a class=bold_red style="margin-left: .4in;" href=/rental/send_grid/$id>Send To Web</a>
-</td>
+[% IF editable %]
+    <tr>
+    <td align=right>
+    <a target=_blank 
+       href=${string.grid_url}?code=$rental.grid_code>Web Grid</a>
+    </td>
+    [% IF rental.grid_stale %]
+        <td colspan=2>
+        <a class=bold_red style="margin-left: .4in;" href=/rental/send_grid/$id>Send To Web</a>
+        </td>
+    [% END %]
+    </tr>
 [% END %]
-</tr>
 
 <tr>
 <td colspan=2 align=right><span class=head>Cluster Reservations</span>
 &nbsp;&nbsp;
-<a href=/rental/clusters/$id>Update</a></td><td colspan=2 align=left>$clusters</td>
+[% IF editable %]
+    <a href=/rental/clusters/$id>Update</a>
+[% END %]
+</td><td colspan=2 align=left>$clusters</td>
 </tr>
 <tr>
 <td colspan=2 align=right>
 <span class=head>Blocks</span>
-&nbsp;&nbsp;<a href=/block/bound_create/rental/$id>New Block</a>
+&nbsp;&nbsp;
+[% IF editable %]
+    <a href=/block/bound_create/rental/$id>New Block</a>
+[% END %]
 </td>
 <td align=left>
 [% FOR bl IN rental.blocks %]
-    <a href=/block/view/$bl.id>$bl.house.name</a>&nbsp;&nbsp;
+    [% IF editable %]
+        <a href=/block/view/$bl.id>$bl.house.name</a>&nbsp;&nbsp;
+    [% ELSE %]
+        $bl.house.name
+    [% END %]
 [% END %]
 </span>
 </p>
@@ -229,7 +248,13 @@ Web
 <tr>
 <th width=120 align=right>Type</th>
 <td></td>
-<th align=left valign=bottom width=550>Rooms<span class=mass_delete><a href=/rental/mass_delete/$id>Mass Delete</a></span></th>
+<th align=left valign=bottom width=550>Rooms
+[% IF editable %]
+    <span class=mass_delete>
+        <a href=/rental/mass_delete/$id>Mass Delete</a>
+    </span>
+[% END %]
+</th>
 </tr>
 
 [% class = 'fl_row1' %]
@@ -242,13 +267,15 @@ Web
         <th align=right valign=top>${string.$t}</th>
     [% END %]
     [% IF t != 'own_van' && t != 'commuting' %]
-
-    [% IF hc.$t == 0 %]
-    <td></td>
-    [% ELSE %]
-    <td valign=top><a href="/rental/booking/$id/$t">Add</a></td>
-    [% END %]
-
+        [% IF hc.$t == 0 %]
+            <td></td>
+        [% ELSE %]
+            [% IF editable %]
+                <td valign=top><a href="/rental/booking/$id/$t">Add</a></td>
+            [% ELSE %]
+                <td valign=top>&nbsp;</td>
+            [% END %]
+        [% END %]
     [% END %]
 
     <td align=left>${bookings.$t}</td>
@@ -285,10 +312,12 @@ none
 [% IF refresh_table %]
     <span class=head style="margin-top: .5in"
          >Days to Refresh Rooms</span>
-    <span class=updlunch><a href="/rental/update_refresh/$id"
-        >Update</a></span>
-    <span class=f12b style="margin-left: 8mm;"
-        >Confirm with Field Staff!</span>
+    [% IF editable %]
+        <span class=updlunch><a href="/rental/update_refresh/$id"
+            >Update</a></span>
+        <span class=f12b style="margin-left: 8mm;"
+            >Confirm with Field Staff!</span>
+    [% END %]
     <div class=lunch>$refresh_table</div>
 [% END %]
 
@@ -310,7 +339,11 @@ none
 <b>Meet</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == '' && b.dorm == '' %]
-        <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% IF editable %]
+            <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% ELSE %]
+            $b.meeting_place.name [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% END %]
     [% END %]
 [% END %]
 </td>
@@ -318,7 +351,11 @@ none
 <b>Breakout</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.breakout == 'yes' %]
-        <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% IF editable %]
+            <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% ELSE %]
+            $b.meeting_place.name [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% END %]
     [% END %]
 [% END %]
 </td>
@@ -326,17 +363,23 @@ none
 <b>Dormitory</b><br>
 [% FOR b IN rental.bookings %]
     [% IF b.dorm == 'yes' %]
-        <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% IF editable %]
+            <a href=/event/del_meeting_place/rental/$b.id onclick="return confirm('Deleting booking of ${b.meeting_place.name}.\nAre you sure?');">$b.meeting_place.name</a> [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% ELSE %]
+            $b.meeting_place.name [% IF b.sdate != rental.sdate || b.edate != rental.edate %] $b.date_range[% END %]<br>
+        [% END %]
     [% END %]
 [% END %]
 </td>
 </tr>
 </td></tr></table>
-[% IF Catalyst.check_user_roles('prog_admin') %]
-    <tr>
-    <td></td>
-    <td align=left colspan=2><a href="/event/add_meeting_place/rental/$id">Add</a></td>
-    </tr>
+[% IF editable %]
+    [% IF Catalyst.check_user_roles('prog_admin') %]
+        <tr>
+        <td></td>
+        <td align=left colspan=2><a href="/event/add_meeting_place/rental/$id">Add</a></td>
+        </tr>
+    [% END %]
 [% END %]
 
 <tr>
@@ -346,7 +389,9 @@ none
 [% coord = rental.coordinator %]
 <a href="/person/view/$coord.id">$coord.first $coord.last</a><br>
 [% END %]
-<a href="/rental/coordinator_update/$id">Update</a>
+[% IF editable %]
+    <a href="/rental/coordinator_update/$id">Update</a>
+[% END %]
 </td>
 <th valign=top align=right>Contract Signer</th>
 <td valign=top>
@@ -354,7 +399,9 @@ none
 [% cs = rental.contract_signer %]
 <a href="/person/view/$cs.id">$cs.first $cs.last</a><br>
 [% END %]
-<a href="/rental/contract_signer_update/$id">Update</a>
+[% IF editable %]
+    <a href="/rental/contract_signer_update/$id">Update</a>
+[% END %]
 </td>
 </tr>
 
@@ -475,7 +522,11 @@ Other Charges
 </tr>
 <tr>
 <td>&nbsp;</td>
-<td><a href="/rental/new_charge/$id">New Charge</a></td>
+<td>
+[% IF editable %]
+    <a href="/rental/new_charge/$id">New Charge</a>
+[% END %]
+</td>
 </tr>
 
 </table>
@@ -508,7 +559,11 @@ Payments
 
 <tr>
 <td></td>
-<td><a href="/rental/pay_balance/$id">New Payment</a></td>
+<td>
+[% IF editable %]
+    <a href="/rental/pay_balance/$id">New Payment</a>
+[% END %]
+</td>
 </tr>
 
 </table>

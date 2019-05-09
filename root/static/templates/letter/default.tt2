@@ -287,6 +287,14 @@
          </table>
       </div>
       [% END %]
+      <h2>Appointment Reservations</h2>
+      <p>
+        If you'd like to make an appointment for massage or bodywork at Kaya Kalpa Wellness Center 
+        during your stay, <a href="https://clients.mindbodyonline.com/consumerbooking?studioid=415046&">you
+        can do that here</a>. If you'd like to make an appointment for an ayurvedic wellness consultation
+        during your stay, <a href="https://clients.mindbodyonline.com/consumerbooking?studioid=415046&">you
+        can do that here</a>.
+      </p>
       <h2>Packing</h2>
       <p>
          A detailed packing list can be found on our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a>.

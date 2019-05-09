@@ -958,6 +958,7 @@ sub _re_get_days {
 sub create_do : Local {
     my ($self, $c) = @_;
 
+    Global->init($c);
     my $today = tt_today($c)->as_d8();
     _get_data($c);
     if (@mess) {
@@ -2175,8 +2176,22 @@ sub _view {
         unlink '/tmp/spellout';
         $misspellings = "\\n\\n" . (join "\\n", @words) if @words;
     }
+
+    # Check if program is editable
+    my $current_date = tt_today($c);
+    my $is_editable = 1;
+
+    Global->init($c);
+    if ($reg->balance == 0
+        && $current_date >
+            $reg->date_end_obj + $string{max_days_after_program_ends}
+    ) {
+        $is_editable = 0;
+    }
+
     stash($c,
         time_travel_class($c),
+        editable       => $is_editable,
         req_payments   => \@req_payments,
         send_requests  => $send_requests,
         pers_label     => $pers_label,

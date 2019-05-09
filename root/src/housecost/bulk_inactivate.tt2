@@ -1,0 +1,31 @@
+<style type='text/css'>
+    form { margin-left:2em; margin-top:1em }
+    label { margin:.15em; display: block }
+    label:hover { background: #e2e2e2 }
+    .deactivation_message { color: red; margin-top: 1em; margin-bottom: 1em } 
+</style>
+
+<h2>Bulk Housing Costs Inactivate</h2>
+<a href='/housecost'>Return to List</a>
+
+<p class=p2>
+
+Check any Housing Costs that are now Inactive<br>
+and choose the button at the bottom.
+
+<p class=p2>
+
+<form method='POST'>
+    [% IF number_deactivate %]
+        <p class='deactivation_message'>
+            Deactivated $number_deactivate Housing Cost$plural
+        </p>
+    [% END %]
+    [% FOREACH hc IN housecosts %]
+    <label>
+        <input name='deactivate' type='checkbox' value='$hc.id'/>
+        $hc.name
+    </label>
+    [% END %]
+    <input type='submit' id=sub value="Deactivate Checked Housing Costs">
+</form>

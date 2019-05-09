@@ -1,6 +1,8 @@
 <h2>Housing Costs</h2>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/housecost/create">Add</a>
+&nbsp;&nbsp;&nbsp;
+<a href="/housecost/bulk_inactivate">Bulk Inactivate</a>
 [% END %]
 &nbsp;&nbsp;&nbsp;
 [% IF inc_inactive %]
