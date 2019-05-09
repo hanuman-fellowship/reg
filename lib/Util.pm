@@ -893,6 +893,17 @@ EOM
         $stuffer->attach($args{html}, content_type => $args{ctype});
     }
 
+    # attachments = [
+    #   { content => $body, %args }
+    # ]
+
+    if (my @attachments = @{$args{attachments}||[]}) {
+        foreach my $attachment (@attachments) {
+          my $content = delete $attachment->{content};
+          $stuffer->attach($content, %{$attachment} );
+        }
+    }
+
     eval {
         $stuffer->send_or_die;
     } || do {
