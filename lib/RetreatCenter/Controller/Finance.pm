@@ -1317,7 +1317,7 @@ sub summary : Local {
 <th>Total Revenue</th>
 </tr>
 EOH
-    my $disp = commify($PROG_paid);
+    my $disp = commify(trim_pennies($PROG_paid));
     $html .= <<"EOH";
 <tr align=right>
 <td align=left>MMC</td>
@@ -1328,7 +1328,7 @@ EOH
 <td>$disp</td>
 </tr>
 EOH
-    $disp = commify($MMI_paid);
+    $disp = commify(trim_pennies($MMI_paid));
     $html .= <<"EOH";
 <tr align=right>
 <td align=left>MMI</td>
@@ -1339,7 +1339,7 @@ EOH
 <td>$disp</td>
 </tr>
 EOH
-    $disp = commify($RENT_paid);
+    $disp = commify(trim_pennies($RENT_paid));
     $html .= <<"EOH";
 <tr align=right>
 <td align=left>Rentals</td>
@@ -1350,7 +1350,7 @@ EOH
 <td>$disp</td>
 </tr>
 EOH
-    $disp = commify($PRSG_paid);
+    $disp = commify(trim_pennies($PRSG_paid));
     $html .= <<"EOH";
 <tr align=right>
 <td align=left>PRs & SGs</td>
@@ -1365,6 +1365,12 @@ EOH
 </table>
 EOH
     $c->res->output($html);
+}
+
+sub trim_pennies {
+    my $amt = shift;
+    $amt =~ s{[.]\d+$}{}xms;
+    return $amt;
 }
 
 1;
