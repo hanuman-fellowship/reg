@@ -17,6 +17,7 @@ use Util qw/
     no_comma
     get_string
     put_string
+    get_grid_file
 /;
 use Date::Simple qw/
     date
@@ -1127,6 +1128,243 @@ sub undo_deposit_do : Local {
     put_string($c, "last_${host}deposit_date", $date_end);
 
     $c->response->redirect($c->uri_for("/finance/deposits/$sponsor"));
+}
+
+sub summary : Local {
+    my ($self, $c) = @_;
+
+    my $sdate = $c->request->params->{sdate};
+    my $edate = $c->request->params->{edate};
+
+    # validation
+    my $start = $sdate? date($sdate): "";
+    if (! $start) {
+        $c->stash->{mess} = "Illegal start date: $sdate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my $end = $edate? date($edate): "";
+    if (! $end) {
+        $c->stash->{mess} = "Illegal end date: $edate";
+        $c->stash->{template} = "gen_error.tt2";
+        return;
+    }
+    my $html = '';
+    $html .= join ',',
+               'Name',
+               'Type',
+               'Start Date',
+               'End Date',
+               'Tuition',
+               '# People',
+               'Event Days',
+               'People Days',
+               'Total Paid',
+             ;
+    $html .= "<br>\n";
+    my ($PRSG_came, $PRSG_paid, $PRSG_people_days) = (0, 0, 0);
+    my ($MMI_nprog, $MMI_came,  $MMI_paid,
+        $MMI_prog_days, $MMI_people_days)  = (0, 0, 0, 0, 0);
+    my ($PROG_nprog, $PROG_came, $PROG_paid,
+        $PROG_prog_days, $PROG_people_days) = (0, 0, 0, 0, 0);
+    my @progs = model($c, 'Program')->search(
+                    {
+                        sdate => { between => [ $start->as_d8, $end->as_d8 ] },
+                    },
+                    {
+                        order_by => 'sdate asc',
+                    }
+                );
+    for my $prog (@progs) {
+        my $name = $prog->name;
+        my $n_came = 0;
+        my $tot_paid = 0;
+        my $tuition = $prog->tuition;
+        my $people_days = 0;
+        my $sdate = $prog->sdate_obj;
+        my $edate = $prog->edate_obj;
+        my $prog_days = $edate - $sdate;
+        REG:
+        for my $reg ($prog->registrations) {
+            if ($reg->cancelled) {
+                next REG;
+            }
+            ++$n_came;
+            for my $pay ($reg->payments) {
+                $tot_paid += $pay->amount;
+            }
+            for my $pay ($reg->mmi_payments) {
+                $tot_paid += $pay->amount;
+            }
+            if ($tuition) {
+                CHARGE:
+                for my $charge ($reg->charges) {
+                    if ($charge->what =~ m{tuition}xmsi) {
+                        $tot_paid -= $tuition;
+                        last CHARGE;
+                    }
+                }
+            }
+            $people_days += $reg->date_end_obj - $reg->date_start_obj;
+        }
+        my $code;
+        if ($name =~ m{Personal\s+Retreat|Special\s+Guest}xms) {
+            $code = 'PR/SG';
+            $PRSG_came += $n_came;
+            $PRSG_paid += $tot_paid;
+            $PRSG_people_days += $people_days;
+        }
+        elsif ($name =~ m{MMI}xms || $prog->school->mmi) {
+            $code = 'MMI';
+            ++$MMI_nprog;
+            $MMI_came += $n_came;
+            $MMI_paid += $tot_paid;
+            $MMI_prog_days += $prog_days;
+            $MMI_people_days += $people_days;
+        }
+        else {
+            $code = 'MMC';
+            ++$PROG_nprog;
+            $PROG_came += $n_came;
+            $PROG_paid += $tot_paid;
+            $PROG_prog_days += $prog_days;
+            $PROG_people_days += $people_days;
+        }
+        $html .= join ',', 
+                           $name,
+                           $code,
+                           $sdate->format("%D"),
+                           $edate->format("%D"),
+                           $prog->tuition,
+                           $n_came,
+                           $prog_days,
+                           $people_days,
+                           $tot_paid,
+                           ;
+        $html .= "<br>\n";
+    }
+    my @rentals = model($c, 'Rental')->search(
+        {
+            sdate => { between => [ $start->as_d8, $end->as_d8 ] },
+        },
+        {
+            order_by => 'sdate asc',
+        }
+    );
+    $html .= "-----<br>\n";
+    my $RENT_nrentals = 0;
+    my $RENT_paid = 0;
+    my $RENT_days = 0;
+    my $RENT_n_people = 0;
+    my $RENT_n_people_days = 0;
+    RENTAL:
+    for my $rent (@rentals) {
+        if ($rent->program_id) {
+            # hybrid
+            next RENTAL;
+        }
+        ++$RENT_nrentals;
+        my $sdate = $rent->sdate_obj;
+        my $edate = $rent->edate_obj;
+        $RENT_days += $edate - $sdate;
+        my $fgrid = get_grid_file($rent->grid_code());
+        my $error = "";
+        my $tot_paid = 0;
+        my $n_people = 0;
+        my $n_people_days = 0;
+        if (open my $in, "<", $fgrid) {
+            while (my $line = <$in>) {
+                my @fields = split /\|/, $line;
+                my $name_note = $fields[2];
+                $name_note =~ s{\s+~~.*}{}xms;
+                if ($name_note =~ m{\S}xms) {
+                    ++$n_people;
+                    $tot_paid += pop @fields;
+                    shift @fields;  # house id
+                    shift @fields;  # bed
+                    shift @fields;  # name/note
+                    for my $f (@fields) {
+                        $n_people_days += $f;   # either 0 or 1
+                    }
+                }
+            }
+        }
+        $RENT_paid += $tot_paid;
+        $RENT_n_people += $n_people;
+        $RENT_n_people_days += $n_people_days;
+        $html .= join ',',
+            $rent->name,
+            'Rental',
+            $sdate->format("%D"),
+            $edate->format("%D"),
+            0,      # tuition (none)
+            $n_people,
+            $edate - $sdate,
+            $n_people_days,
+            $tot_paid,
+            ;
+        $html .= "<br>\n";
+    }
+    $html .= "<p>\n";
+    $html .= <<'EOH';
+<table cellpadding=5 border=1>
+<tr align=left>
+<th>Type</th>
+<th>Count</th>
+<th>Total Days</th>
+<th>People Count</th>
+<th>Nights Stayed</th>
+<th>Total Revenue</th>
+</tr>
+EOH
+    my $disp = commify($PROG_paid);
+    $html .= <<"EOH";
+<tr align=right>
+<td align=left>MMC</td>
+<td>$PROG_nprog</td>
+<td>$PROG_prog_days</td>
+<td>$PROG_came</td>
+<td>$PROG_people_days</td>
+<td>$disp</td>
+</tr>
+EOH
+    $disp = commify($MMI_paid);
+    $html .= <<"EOH";
+<tr align=right>
+<td align=left>MMI</td>
+<td>$MMI_nprog</td>
+<td>$MMI_prog_days</td>
+<td>$MMI_came</td>
+<td>$MMI_people_days</td>
+<td>$disp</td>
+</tr>
+EOH
+    $disp = commify($RENT_paid);
+    $html .= <<"EOH";
+<tr align=right>
+<td align=left>Rentals</td>
+<td>$RENT_nrentals</td>
+<td>$RENT_days</td>
+<td>$RENT_n_people</td>
+<td>$RENT_n_people_days</td>
+<td>$disp</td>
+</tr>
+EOH
+    $disp = commify($PRSG_paid);
+    $html .= <<"EOH";
+<tr align=right>
+<td align=left>PRs & SGs</td>
+<td>&nbsp;</td>
+<td>&nbsp</td>
+<td>$PRSG_came</td>
+<td>$PRSG_people_days</td>
+<td>$disp</td>
+</tr>
+EOH
+    $html .= <<"EOH";
+</table>
+EOH
+    $c->res->output($html);
 }
 
 1;
