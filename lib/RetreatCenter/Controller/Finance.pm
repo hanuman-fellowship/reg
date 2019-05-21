@@ -1214,7 +1214,7 @@ sub summary : Local {
             $PRSG_paid += $tot_paid;
             $PRSG_people_days += $people_days;
         }
-        elsif ($name =~ m{MMI}xms || $prog->school->mmi) {
+        elsif ($name =~ m{MMI|Institute|YTT}xmsi || $prog->school->mmi) {
             $code = 'MMI';
             ++$MMI_nprog;
             $MMI_came += $n_came;
