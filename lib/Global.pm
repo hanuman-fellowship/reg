@@ -78,7 +78,7 @@ sub init {
     }
     if ($string{$scts} == 0) {
         # only needed once
-        my $s = Util::model($c, 'String')->find($scts);
+        my $s = Util::model($c, 'String')->find_or_create({the_key=>$scts});
         my $t = time();
         $s->update({
             value => $t,

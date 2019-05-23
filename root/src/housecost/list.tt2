@@ -11,6 +11,11 @@
     <a href="/housecost/list/1">Show Inactive</a>
 [% END %]
 <ul>
+[% IF number_deactivate %]
+    <p style='color: red; margin-top: 1em; margin-bottom: 1em'>
+        Deactivated $number_deactivate Housing Cost[% number_deactivate > 1 ? 's':'' %]
+    </p>
+[% END %]
 <table cellpadding=5 border=0>
 [% FOREACH hc IN housecosts %]
     [% IF hc.inactive && ! inc_inactive %]
