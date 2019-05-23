@@ -30,9 +30,10 @@ sub list : Local {
         )
     ];
     stash($c,
-        pg_title     => 'Housing Costs',
-        inc_inactive => $inc_inactive,
-        template     => "housecost/list.tt2",
+        pg_title          => 'Housing Costs',
+        inc_inactive      => $inc_inactive,
+        template          => "housecost/list.tt2",
+        number_deactivate => $c->flash->{number_deactivate}||'',
     );
 }
 
