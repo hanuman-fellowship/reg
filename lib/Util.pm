@@ -138,6 +138,7 @@ sub charges_and_payments_options {
 }
 
 sub db_init {
+    Catalyst::Utils::ensure_class_loaded('RetreatCenterDB');
     return RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
 }
 
@@ -677,7 +678,7 @@ sub model {
 
 sub email_letter {
   my ($c) = @_;
-  if ($c->user && ($c->user->username eq 'jnap')) {
+  if ($c->can('user') && $c->user && ($c->user->username eq 'jnap')) {
       $c->log->info("Using new email transport");
       return new_email_letter(@_);
   } else {
