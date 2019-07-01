@@ -1,0 +1,43 @@
+#!/var/www/perl5.26.2/bin/perl
+# 6/12/19
+# one time (probably) script to get email addresses
+# of people who have had a personal retreat in the last 3 years.
+use strict;
+use warnings;
+
+use lib "lib";
+use RetreatCenterDB;
+use Util qw/
+    model
+    db_init
+/;
+my $c = db_init();
+
+my @progs = model($c, 'Program')->search(
+    {
+        sdate => { '>=', 20160601 },
+        name  => { -like => '%personal retreat%' },
+    },
+);
+my %emails;
+for my $prog (@progs) {
+    my @regs = model($c, 'Registration')->search(
+                   {
+                       program_id => $prog->id,    
+                       cancelled  => { '!=' => 'yes' },
+                   },
+                   {
+                       join => qw/ person /,
+                   },
+               );
+    for my $r (@regs) {
+        my $per = $r->person;
+        my $email = $per->email;
+        if ($email) {
+            $emails{$email}++;
+        }
+    }
+}
+for my $e (sort keys %emails) {
+    print "$e\n";
+}
