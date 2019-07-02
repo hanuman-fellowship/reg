@@ -847,7 +847,9 @@ sub new_email_letter {
                 sasl_username  => $string{smtp_user},
                 sasl_password => $string{smtp_pass},
                 host => $string{smtp_server},
-                port => $string{smtp_port} );
+                port => $string{smtp_port},
+                ssl => 'starttls',
+            );
             $_transport = Email::Sender::Transport::SMTP->new(%args);
         }
         if (! ref $_transport) {
