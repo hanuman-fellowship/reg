@@ -2911,8 +2911,10 @@ sub grid_emails : Local {
             push @all_emails, @emails;
         }
         @all_emails = uniq @all_emails;
-        $c->res->output(join "<br>\n", sort @all_emails);
-        return;
+        if (@all_emails) {
+            $c->res->output(join "<br>\n", sort @all_emails);
+            return;
+        }
     }
     $c->res->output("No emails :(");
 }
