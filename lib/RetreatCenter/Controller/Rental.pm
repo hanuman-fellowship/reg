@@ -63,6 +63,9 @@ use POSIX;
 use Template;
 use CGI qw/:html/;      # for Tr, td
 use Mail::Sender;
+use List::Util qw/
+    uniq
+/;
 
 my $img = '/var/Reg/rental_images';
 
@@ -2885,6 +2888,33 @@ sub badge_do : Local {
         }],
     );
     $c->res->output(Badge->finalize());
+}
+
+sub grid_emails : Local {
+    my ($self, $c, $rental_id) = @_;
+    my $rental = model($c, 'Rental')->find($rental_id);
+    if (! $rental) {
+        error($c,
+            "Rental not found.",
+            "gen_error.tt2",
+        );
+        return;
+    }
+    my $fgrid = get_grid_file($rental->grid_code());
+    if (open my $in, "<", $fgrid) {
+        my @all_emails;
+        LINE:
+        while (my $line = <$in>) {
+            chomp $line;
+            my ($id, $bed, $name_notes) = split m{\|}, $line;
+            my @emails = $name_notes =~ m{(\S+[@]\S+)}xmsg;
+            push @all_emails, @emails;
+        }
+        @all_emails = uniq @all_emails;
+        $c->res->output(join "<br>\n", sort @all_emails);
+        return;
+    }
+    $c->res->output("No emails :(");
 }
 
 1;

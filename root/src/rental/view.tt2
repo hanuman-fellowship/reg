@@ -65,6 +65,8 @@ th a:hover {
 <a href="/rental/grid/$id">Local Grid</a>
 &nbsp;&nbsp;&nbsp;
 <a target=_blank href="/rental/badges/$id">Badges</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/rental/grid_emails/$id">Grid Emails</a>
 <p class=p2>
 <a target=_blank href="/rental/contract/$id">Contract</a>
 &nbsp;&nbsp;&nbsp;
