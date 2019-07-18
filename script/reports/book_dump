@@ -1,0 +1,47 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use 5.10.0;
+use lib 'lib';
+use RetreatCenterDB;
+use Text::CSV_XS;
+use Util qw/
+    db_init
+    model
+/;
+use Date::Simple qw/
+    date
+/; 
+
+my $c = db_init();
+
+my @books = model($c, 'Book')->search(
+    {
+        media => 1,
+    },
+    {
+        order_by => 'author asc',
+    },
+);
+
+# CSV File For Books
+my $csv = Text::CSV_XS->new({ binary => 1, eol => $/ })
+    or die "Cannot use CSV view: ".Text::CSV_XS->error_diag();
+
+open my $fh_books, ">:encoding(utf8)", "book.csv"
+    or die "can't open file: $!";
+
+my @headers = qw/
+    title
+    author
+    subject
+    description
+/;
+$csv->column_names(@headers);
+$csv->print($fh_books, \@headers);
+
+for my $b (@books) {
+    $csv->print($fh_books, [ $b->author, $b->title, $b->subject, $b->description ]);
+}
+
