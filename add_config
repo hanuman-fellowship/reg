@@ -1,5 +1,5 @@
 #!/bin/bash
 export DBI_DSN="dbi:mysql:reg2"
-export PERL5LIB=/var/www/cpan-lib/lib/perl5
+export PERL5LIB=/var/www/cpan-lib/lib/perl5::/var/www/cpan-lib/lib/perl5/x86_64-linux-thread-multi/
 cd /var/www/src
 /var/www/src/script/add_config $* >>/var/Reg/output/add_config.out &

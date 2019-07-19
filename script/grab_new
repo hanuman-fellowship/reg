@@ -527,15 +527,17 @@ sub get_rental_deposit {
     });
     msg "rental deposit of \$$hash{amount} for " . $rental->name;
     # notify the rental coordinator(s)
-    my $rc = email_letter($c,
-        to      => $string{rental_coord_email},
-        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-                                    # what else?
-        subject => "Rental Deposit Received for " . $rental->name(),
-        html    => "$hash{first} $hash{last} paid \$$hash{amount}"
-                 . " for <a href='$string{url_prefix}/rental/view/$hash{id}/3'>"
-                 . $rental->name() . "</a>",
-    );
+    # something is wrong here that makes the whole process die
+    # TODO: eval the whole of it!
+    #my $rc = email_letter($c,
+    #    to      => $string{rental_coord_email},
+    #    from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+    #                                # what else?
+    #    subject => "Rental Deposit Received for " . $rental->name(),
+    #    html    => "$hash{first} $hash{last} paid \$$hash{amount}"
+    #             . " for <a href='$string{url_prefix}/rental/view/$hash{id}/3'>"
+    #             . $rental->name() . "</a>",
+    #);
 }
 
 sub omp_alert {

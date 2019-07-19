@@ -1387,6 +1387,8 @@ sub email_just_expired : Local {
             subject => "Hanuman Fellowship Membership Status",
             html    => $html,
         );
+        sleep 1;        # the browser will timeout so what to do? :(
+                        # have a job queue?
         ++$nsent;
     }
 
