@@ -88,7 +88,7 @@ PROGRAM_INFO: {
 
       unless($student_seen{$per->id}++) {
         $csv_student_info->print($fh_student_info, [
-          $per->last, $per->first, $per->sex, $per->addr1 ,$per->addr2, $per->city
+          $per->last, $per->first, $per->sex, $per->addr1 ,$per->addr2, $per->city,
           $per->st_prov, $per->zip_post, $per->country]
         );
       }

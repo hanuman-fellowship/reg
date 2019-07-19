@@ -2337,6 +2337,7 @@ sub PR_progtable {
         disc_pr_start => $string{disc_pr_start},
         disc_pr_end   => $string{disc_pr_end},
         footnotes     => '',
+        collect_total => 'yes',
         do_not_compute_costs => '0',
         dncc_why      => '',
         next_hc       => $next_hc,

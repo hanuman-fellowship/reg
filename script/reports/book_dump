@@ -21,7 +21,7 @@ my @books = model($c, 'Book')->search(
         media => 1,
     },
     {
-        order_by => 'author asc',
+        order_by => 'author asc, title asc',
     },
 );
 
@@ -33,15 +33,16 @@ open my $fh_books, ">:encoding(utf8)", "book.csv"
     or die "can't open file: $!";
 
 my @headers = qw/
-    title
     author
+    title
     subject
     description
+    location
 /;
 $csv->column_names(@headers);
 $csv->print($fh_books, \@headers);
 
 for my $b (@books) {
-    $csv->print($fh_books, [ $b->author, $b->title, $b->subject, $b->description ]);
+    $csv->print($fh_books, [ $b->author, $b->title, $b->subject, $b->description, $b->location ]);
 }
 
