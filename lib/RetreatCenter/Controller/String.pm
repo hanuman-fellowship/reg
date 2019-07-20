@@ -21,6 +21,7 @@ use Date::Simple qw/
 /;
 use HLog;
 use Net::FTP;
+use JSON;
 
 sub index : Private {
     my ($self, $c) = @_;
@@ -136,6 +137,41 @@ sub update_do : Local {
             or last BLOCK;
         $ftp->quit();
         unlink "/tmp/online_notify.txt";
+        }
+    }
+    elsif ($the_key =~ m{^(breakfast|lunch|dinner)_(cost|daily_max)$}xms) {
+        # need to send this and other meal_request items
+        # up to mountmadonna.org
+        BLOCK: {
+        my $mrs = "meal_reqest_strings.txt";
+        open my $out, '>', "/tmp/$mrs"
+            or last BLOCK;
+        my %hash;
+        for my $w (qw/ breakfast lunch dinner /) {
+            for my $t (qw/ cost daily_max /) {
+                my $x = "$w\_$t";
+                $hash{$x} = $string{$x};
+            }
+        }
+        print {$out} encode_json(\%hash);
+        close $out;
+        # MMC
+        my $ftp = Net::FTP->new($string{ftp_site},
+                                Passive => $string{ftp_passive})
+            or last BLOCK;
+        $ftp->login($string{ftp_login}, $string{ftp_password})
+            or last BLOCK;
+        # thanks to jnap and haarg
+        # a nice HACK to force Extended Passive Mode:
+        local *Net::FTP::pasv = \&Net::FTP::epsv;
+        $ftp->cwd('meal_request')   # not in %string
+            or last BLOCK;
+        $ftp->ascii()
+            or last BLOCK;
+        $ftp->put("/tmp/$mrs", $mrs)
+            or last BLOCK;
+        $ftp->quit();
+        unlink "/tmp/$mrs";
         }
     }
     #

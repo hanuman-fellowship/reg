@@ -1,0 +1,6 @@
+insert into string values ('breakfast_cost', 8);
+insert into string values ('lunch_cost', 10);
+insert into string values ('dinner_cost', 12);
+insert into string values ('breakfast_daily_max', 10);
+insert into string values ('lunch_daily_max', 10);
+insert into string values ('dinner_daily_max', 10);

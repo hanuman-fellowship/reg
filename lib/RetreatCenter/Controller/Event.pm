@@ -330,6 +330,9 @@ sub update_do : Local {
     if ($e->name() =~ m{\A No[ ]PR}xms) {
         _send_no_prs($c);
     }
+    if ($e->name() =~ m{\A No[ ]Meal}xms) {
+        _send_no_meals($c);
+    }
     if ($names) {
         stash($c,
             event    => $e,
@@ -382,6 +385,9 @@ sub delete : Local {
     $e->delete();
     if ($e->name() =~ m{\A No[ ]PR}xms) {
         _send_no_prs($c);
+    }
+    if ($e->name() =~ m{\A No[ ]Meal}xms) {
+        _send_no_meals($c);
     }
     $c->response->redirect($c->uri_for('/event/list'));
 }
@@ -1817,6 +1823,44 @@ sub _send_no_prs {
     $ftp->put('/tmp/noPR.txt', 'noPR.txt')
         or return (my_die($c, 'cannot put noPR.txt ' . $ftp->message));
     $ftp->quit();
+}
+
+sub _send_no_meals {
+    my ($c) = @_;
+    my (@events) = model($c, 'Event')->search(
+        {
+            name  => { 'like' => 'No Meal%' },
+            edate => { '>='   => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    my $nm = "noMeals.txt";
+    open my $out, ">", "/tmp/$nm"
+        or die "cannot write /tmp/$nm: $!\n";
+    for my $ev (@events) {
+        print {$out} $ev->sdate() . "-" . $ev->edate()
+             . "\n";
+    }
+    close $out;
+    #
+    # send it to mountmadonna.org/meal_requests
+    #
+    my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
+        or return(my_die($c, "cannot connect to $string{ftp_site}"));
+    $ftp->login($string{ftp_login}, $string{ftp_password})
+        or return(my_die($c, "cannot login " . $ftp->message));
+    $ftp->cwd('meal_request')
+        or return(my_die($c, "cannot cwd to meal_request " . $ftp->message));
+    $ftp->ascii();
+    # thanks to jnap and haarg
+    # a nice HACK to force Extended Passive Mode:
+    local *Net::FTP::pasv = \&Net::FTP::epsv;
+    $ftp->put("/tmp/$nm", $nm)
+        or return (my_die($c, 'cannot put $nm ' . $ftp->message));
+    $ftp->quit();
+    unlink "/tmp/$nm";
 }
 
 #
