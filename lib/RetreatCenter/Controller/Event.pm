@@ -174,6 +174,9 @@ sub create_do : Local {
     if ($e->name() =~ m{\A No[ ]PR}xms) {
         _send_no_prs($c);
     }
+    if ($e->name() =~ m{\A No[ ]Meal}xms) {
+        _send_no_meals($c);
+    }
     $c->response->redirect($c->uri_for("/event/view/$id"));
 }
 
