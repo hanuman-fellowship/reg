@@ -9,3 +9,10 @@ CREATE TABLE meal_requests (
     date_requested char(8) not null,
     time_requested char(4) not null
 );
+INSERT INTO string (
+    the_key, value
+)
+VALUES (
+    'ftp_meal_requests_dir',
+    '/home/reg/for_reg/meal_requests'
+);

@@ -191,6 +191,7 @@ ftp_hfs_password - FTP info for hanumanfellowship.org
 ftp_hfs_site - FTP info for hanumanfellowship.org
 ftp_hfs_user - FTP info for hanumanfellowship.org
 ftp_login - FTP info for mountmadonna.org
+ftp_meal_requests_dir - FTP info for mountmadonna.org - for meal requests
 ftp_mlist_requests - FTP info for mountmadonna.org - for people that made mlist requests
 ftp_mmi_dir - FTP info for mountmadonnainstitute.org
 ftp_mmi_login - FTP info for mountmadonnainstitute.org
