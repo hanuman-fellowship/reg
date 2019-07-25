@@ -1,0 +1,34 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>MealRequests
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
+</h2>
+Online Meal Requests for breakfast, lunch and dinner 
+<p>
+Table: meal_requests
+<dl>
+<dt>id</dt>
+<dd>Primary key</dd>
+<dt>person_id</dt>
+<dd>foreign key to <a href=Person.html>Person</a></dd>
+<dt>date</dt>
+<dd>date of requested meals</dd>
+<dt>breakfast</dt>
+<dd># of breakfasts</dd>
+<dt>lunch</dt>
+<dd># of lunches</dd>
+<dt>dinner</dt>
+<dd># of dinners</dd>
+<dt>date_requested</dt>
+<dd>date request was made</dd>
+<dt>time_requested</dt>
+<dd>time request was made</dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>

@@ -1,0 +1,11 @@
+DROP TABLE IF EXISTS meal_requests;
+CREATE TABLE meal_requests (
+    id integer primary key auto_increment,
+    person_id integer not null,
+    date char(8),
+    breakfast tinyint not null default 0,
+    lunch tinyint not null default 0,
+    dinner tinyint not null default 0,
+    date_requested char(8) not null,
+    time_requested char(4) not null
+);
