@@ -1,1 +1,1 @@
-alter table xaccount_payment add column transaction_id integer;
+alter table xaccount_payment add column transaction_id varchar(20);
