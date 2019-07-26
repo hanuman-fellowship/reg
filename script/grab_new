@@ -683,8 +683,12 @@ sub process_meal_requests {
         user_id     => 0,                 # what other user id?
         the_date    => $today_d8,
         time        => $now_t24,
+        transaction_id => $f,
     });
-    msg 'meal request for ' . $person->name;
+    msg "meal request for <a href=/person/view/' . $person->id . '>'
+      . $person->name . '</a>,'
+      . " $f, $href->{encoded_requests}
+      ;
 }
 
 #

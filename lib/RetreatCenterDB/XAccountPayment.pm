@@ -32,6 +32,7 @@ __PACKAGE__->add_columns(qw/
     user_id
     the_date
     time
+    transaction_id
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -99,6 +100,7 @@ id - unique id
 person_id - foreign key to person
 the_date - date of the payment
 time - time of the payment
+transaction_id - authorize.net transaction id for online payments
 type - C (Check) D (Credit) O (Online) S (Cash)
 user_id - foreign key to user
 what - optional description of what the payment was for
