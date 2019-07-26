@@ -465,7 +465,7 @@ sub detail_disp {
     "<table>\n"
     . (join "\n",
        map { 
-           "<tr><td>$_->[0]</td><td>$_->[1]</td></tr>"
+           "<tr><td>$_->[0]</td><td>&nbsp;&nbsp;$_->[1]</td></tr>"
        }
        sort {
            $a->[0] cmp $b->[0]
@@ -507,6 +507,8 @@ sub detail_disp {
 #         the breakfast end time (9:00).
 #     for breakfast on a mid-rental day look at the count for the day before.
 #     same applies to lunch :(
+# 
+# see if there are any 'meal requests' (consult the meal_requests table)
 #
 # finally, we look at Meal objects within the date range
 #   and add the breakfast, lunch, and dinner counts.
@@ -602,6 +604,9 @@ sub meal_list : Local {
     my @meal_objs = model($c, 'Meal')->search({
                         sdate   => { '<=' => $end_d8 },
                         edate   => { '>=' => $start_d8 },
+                    });
+    my @meal_reqs = model($c, 'MealRequests')->search({
+                        date => { 'between' => [ $start_d8, $end_d8 ] },
                     });
     my $breakfast_end = '0900';    # 9:00 am
     my $lunch_end     = '1300';    # 1:00 pm
@@ -747,6 +752,17 @@ sub meal_list : Local {
             add('dinner',    $n) if $d != $r_end;
         }
     }
+    # MEAL REQUESTS
+    for my $mr (@meal_reqs) {
+        $d8 = $mr->date;
+        for my $meal (qw/ breakfast lunch dinner /) {
+            my $n = $mr->$meal;
+            my $pl = $n > 1? 's': '';
+            $info = [ $mr->person->last_first_name, "requested $n meal$pl" ];
+            add($meal, $n);
+        }
+    }
+
     # MEAL OBJECTS -----------
     for my $mo (@meal_objs) {
         my $ol = $dr->overlap(DateRange->new($mo->sdate_obj, $mo->edate_obj));
