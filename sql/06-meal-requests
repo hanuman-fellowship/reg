@@ -14,5 +14,5 @@ INSERT INTO string (
 )
 VALUES (
     'ftp_meal_requests_dir',
-    '/home/reg/for_reg/meal_requests'
+    '/for_reg/meal_requests'
 );

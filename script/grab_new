@@ -654,6 +654,10 @@ sub process_req_payments {
 sub process_meal_requests {
     my ($get_dir, $f) = @_;
     my $href = x_file_to_href("$get_dir/$f");
+    # missing keys - we're not a full mlist thingy
+    for my $k (qw/ sex e_mailings snail_mailings share_mailings /) {
+        $href->{$k} = '';
+    }
     my ($person_id, $person, $status) = add_or_update_deduping(
         $c, $href,
     );
