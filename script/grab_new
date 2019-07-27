@@ -112,7 +112,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
 # directories
 my ($online, $grid, $temple, $mlist_done, $meal_requests_done,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
-    $temple_donation, $grab_new);
+    $temple_donation);
 my $something_happened = 0;
 my $time_printed = 0;
 
@@ -209,7 +209,6 @@ sub initialize {
     $omp_dir         = make_dir("$dir/omp");
     $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
     $temple_donation = make_dir("$dir/temple_donation");
-    $grab_new        = make_dir("$dir/grab_new");
 }
 
 sub finalities {
