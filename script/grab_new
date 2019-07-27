@@ -662,8 +662,15 @@ sub process_meal_requests {
         $c, $href,
     );
     my @terms = split ',', $href->{encoded_requests};
+    my $mr_desc = "";
     while (@terms) {
         my ($date, $breakfast, $lunch, $dinner) = splice @terms, 0, 4;
+        $mr_desc .= date($date)->format() . ' - ';
+        $mr_desc .= "$breakfast for breakfast, " if $breakfast;
+        $mr_desc .= "$lunch for lunch, "         if $lunch;
+        $mr_desc .= "$dinner for dinner"         if $dinner;
+        $mr_desc =~ s{,\s+ \z}{}xms;    # chop a trailing ,
+        $mr_desc .= '<br>';
         model($c, 'MealRequests')->create({
             person_id => $person_id,
             date      => $date,
@@ -677,7 +684,7 @@ sub process_meal_requests {
     model($c, 'XAccountPayment')->create({
         person_id   => $person_id,
         xaccount_id => $meals_xaccount_id,
-        what        => 'online meal request',
+        what        => "online meal request<br>$mr_desc",
         amount      => $href->{amount},
         type        => 'O',               # online
         user_id     => 0,                 # what other user id?
@@ -685,9 +692,10 @@ sub process_meal_requests {
         time        => $now_t24,
         transaction_id => $f,
     });
+    $mr_desc =~ s{<br>}{ | }xmsg;
     msg 'meal request for <a href=/person/view/' . $person->id . '>'
       . $person->name . '</a>,'
-      . " $f, $href->{encoded_requests}"
+      . " $f, $mr_desc"
       ;
 }
 
