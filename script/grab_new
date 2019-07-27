@@ -670,6 +670,7 @@ sub process_meal_requests {
         $mr_desc .= "$lunch for lunch, "         if $lunch;
         $mr_desc .= "$dinner for dinner"         if $dinner;
         $mr_desc =~ s{,\s+ \z}{}xms;    # chop a trailing ,
+        $mr_desc .= '<br>';
         model($c, 'MealRequests')->create({
             person_id => $person_id,
             date      => $date,
@@ -691,6 +692,7 @@ sub process_meal_requests {
         time        => $now_t24,
         transaction_id => $f,
     });
+    $mr_desc =~ s{<br> \z}{}xms;        # chop the last <br>
     $mr_desc =~ s{<br>}{ | }xmsg;
     msg 'meal request for <a href=/person/view/' . $person->id . '>'
       . $person->name . '</a>,'
