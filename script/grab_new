@@ -655,8 +655,9 @@ sub process_meal_requests {
     my ($get_dir, $f) = @_;
     my $href = x_file_to_href("$get_dir/$f");
     # missing keys - we're not a full mlist thingy
-    for my $k (qw/ gender e_mailings snail_mailings share_mailings /) {
-        $href->{$k} = '';
+    $href->{sex} = '';
+    for my $k (qw/ e_mailings snail_mailings share_mailings /) {
+        $href->{$k} = -1;
     }
     my ($person_id, $person, $status) = add_or_update_deduping(
         $c, $href,

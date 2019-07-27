@@ -132,10 +132,10 @@ function get_gender() {
 </tr>
 
 <tr>
-<td>Snail Mail</d><td><input tabindex=15 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]></td>
+<td>Snail Mail</td><td><input tabindex=15 type=checkbox name=snail_mailings value='yes' [% snail_mailings %]></td>
 </tr>
 
-<tr><td><input tabindex=17 type=checkbox name=share_mailings value='yes' [% share_mailings %]> Share</td></tr>
+<tr><td>Share</td><td> <input tabindex=17 type=checkbox name=share_mailings value='yes' [% share_mailings %]></td></tr>
 </table>
 </tr>
 

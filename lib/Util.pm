@@ -2049,6 +2049,11 @@ sub add_or_update_deduping {
                     @needed = grep { $_ ne $k } @needed;
                 }
             }
+            # sometimes we don't ask for gender
+            if ($href->{sex} eq '') {
+                delete $href->{sex};
+                @needed = grep { $_ ne 'sex' } @needed;
+            }
             # has anything changed at all?
             my ($same, $what) = _all_the_same($p, $href, \@needed);
             if ($same) {
