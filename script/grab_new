@@ -665,7 +665,7 @@ sub process_meal_requests {
     my $mr_desc = "";
     while (@terms) {
         my ($date, $breakfast, $lunch, $dinner) = splice @terms, 0, 4;
-        $mr_desc .= date($date)->format("%a %B %e '%q") . ' - ';
+        $mr_desc .= date($date)->format("%b %e '%q") . ' - ';
         $mr_desc .= "$breakfast for breakfast, " if $breakfast;
         $mr_desc .= "$lunch for lunch, "         if $lunch;
         $mr_desc .= "$dinner for dinner"         if $dinner;
