@@ -241,7 +241,15 @@ sub reg_start_obj {
 # same but different name to match Rental - for Summary listings
 sub start_hour_obj {
     my ($self) = @_;
-    return get_time($self->reg_start());
+    return get_time($self->prog_start_obj());
+}
+# if the registration start time is AFTER the program start time
+# we know that the program starts on the day after people arrive.
+sub start_date_obj {
+    my ($self) = @_;
+    my $reg_t = $self->reg_start_obj();
+    my $prog_t = $self->prog_start_obj();
+    return $self->sdate_obj() + (($reg_t > $prog_t)? 1: 0);
 }
 sub end_hour_obj {
     my ($self) = @_;
