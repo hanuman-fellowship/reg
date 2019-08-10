@@ -108,7 +108,7 @@ for "${rental.name_trimmed}", hereafter called the Renter, hereby agree as follo
 The Center will provide workshop space in the ${rental.meeting_spaces},
 or a comparable facility, and lodging for up to $rental.max
 people from ${rental.start_hour_obj.format('ampm')} on ${rental.sdate_obj.format("%A %B %e, %Y")}
-to ${rental.end_hour_obj.format('ampm')} on ${rental.edate_obj.format("%A %B %e, %Y")} at the following rates:
+to 12:00 pm on ${rental.edate_obj.format("%A %B %e, %Y")} at the following rates:
 <h2>Rates</h2>
 [% hc = rental.housecost %]
 [% IF hc.type == 'Per Day' %]
@@ -136,7 +136,7 @@ The costs below are for the entire rental period - not per day.
 Children aged 2 to 12 staying in the room
 with a guest will pay 1/2 of the above rates.
 <p>
-<b>Please note all guest rooms must be vacated by 1 pm.</b>
+<b>Please note all guest rooms must be vacated by 12:00 noon.</b>
 Room rates include accommodations,
 [% lunch = rental.any_lunches %]
 [% IF lunch %]
@@ -158,7 +158,7 @@ of \$$rental_lunch_cost/person/day.
 [% END %]
 <i>There will be a charge of
 \$2/person/hour for any additional time before 4:00 pm on the start date,
-or after 1:00 pm on the end date.</i>
+or after 12:00 pm on the end date.</i>
 <div style='page-break-after:always'></div>
 <div style="height: .25in"></div>
 <h2>Meals</h2>
