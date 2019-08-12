@@ -168,11 +168,6 @@ sub sdate_obj {
     my ($self) = @_;
     return date($self->sdate) || "";
 }
-# start_date_obj is more complicated for Programs
-sub start_date_obj {
-    my ($self) = @_;
-    return date($self->sdate) || "";
-}
 sub edate_obj {
     my ($self) = @_;
     return date($self->edate) || "";

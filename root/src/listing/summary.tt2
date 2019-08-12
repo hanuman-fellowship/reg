@@ -9,7 +9,7 @@
     <tr>
     <td valign=top><a href=/summary/view/[% ev.event_type %]/[% ev.summary_id %]>[% ev.name %]</a></td>
     <td valign=top>
-    <b>From</b> ${ev.start_date_obj.format("%a %b %e '%q")}, ${ev.start_hour_obj}
+    <b>From</b> ${ev.sdate_obj.format("%a %b %e '%q")}, ${ev.start_hour_obj}
     &nbsp;&nbsp;<b>To</b> ${ev.edate_obj.format("%a %b %e '%q")} ${ev.end_hour_obj}
     &nbsp;&nbsp;<b>In</b> $ev.meeting_places
     &nbsp;&nbsp;<b>Coordinator</b> $sum.prog_person
