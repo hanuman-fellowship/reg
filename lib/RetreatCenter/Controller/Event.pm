@@ -1794,7 +1794,7 @@ sub _send_no_prs {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]PRs?[[:>]]' },
+            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]PRs?[[:>:]]' },
             edate => { '>='   => today()->as_d8() },
         },
         {
@@ -1831,7 +1831,7 @@ sub _send_no_meals {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]Meals?[[:>]]' },
+            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]Meals?[[:>:]]' },
             edate => { '>='   => today()->as_d8() },
         },
         {
