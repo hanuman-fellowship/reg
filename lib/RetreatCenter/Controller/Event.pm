@@ -1794,7 +1794,7 @@ sub _send_no_prs {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'like' => '%No%PR%' },
+            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]PRs?[[:>]]' },
             edate => { '>='   => today()->as_d8() },
         },
         {
@@ -1805,7 +1805,7 @@ sub _send_no_prs {
         or die "cannot write /tmp/noPR.txt: $!\n";
     for my $ev (@events) {
         print {$out} $ev->sdate() . "-" . $ev->edate()
-             . (($ev->name =~ m{indoors}xmsi)? " indoors": "")
+             . (($ev->name =~ m{\bindoors\b}xmsi)? " indoors": "")
              . "\n";
     }
     close $out;
@@ -1831,7 +1831,7 @@ sub _send_no_meals {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'like' => '%No%Meal%' },
+            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]Meals?[[:>]]' },
             edate => { '>='   => today()->as_d8() },
         },
         {
