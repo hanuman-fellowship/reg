@@ -48,6 +48,9 @@ use RetreatCenter::Controller::MasterCal qw/
 
 use lib '../../';       # so you can do a perl -c here.
 
+my $no_PR_regex    = qr{\bno\b .* \bPRs?\b}xmsi;
+my $no_meals_regex = qr{\bno\b .* \bMeals?\b}xmsi;
+
 sub index : Private {
     my ( $self, $c ) = @_;
 
@@ -171,13 +174,18 @@ sub create_do : Local {
         $P{name}, 
         $c->uri_for("/event/view/$id"),
     );
-    if ($e->name() =~ m{\A No[ ]PR}xms) {
+    check_no_PR_meals($c, $e);
+    $c->response->redirect($c->uri_for("/event/view/$id"));
+}
+
+sub check_no_PR_meals {
+    my ($c, $e) = @_;
+    if ($e->name() =~ $no_PR_regex) {
         _send_no_prs($c);
     }
-    if ($e->name() =~ m{\A No[ ]Meal}xms) {
+    if ($e->name() =~ $no_meals_regex) {
         _send_no_meals($c);
     }
-    $c->response->redirect($c->uri_for("/event/view/$id"));
 }
 
 sub view : Local {
@@ -330,12 +338,7 @@ sub update_do : Local {
         # ???
     }
     $e->update(\%P);
-    if ($e->name() =~ m{\A No[ ]PR}xms) {
-        _send_no_prs($c);
-    }
-    if ($e->name() =~ m{\A No[ ]Meal}xms) {
-        _send_no_meals($c);
-    }
+    check_no_PR_meals($c, $e);
     if ($names) {
         stash($c,
             event    => $e,
@@ -386,12 +389,8 @@ sub delete : Local {
     }
     my $name = $e->name();
     $e->delete();
-    if ($e->name() =~ m{\A No[ ]PR}xms) {
-        _send_no_prs($c);
-    }
-    if ($e->name() =~ m{\A No[ ]Meal}xms) {
-        _send_no_meals($c);
-    }
+    # $e the object still exists - the table row does not
+    check_no_PR_meals($c, $e);
     $c->response->redirect($c->uri_for('/event/list'));
 }
 
@@ -1795,7 +1794,7 @@ sub _send_no_prs {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'like' => 'No PR%' },
+            name  => { 'like' => '%No%PR%' },
             edate => { '>='   => today()->as_d8() },
         },
         {
@@ -1832,7 +1831,7 @@ sub _send_no_meals {
     my ($c) = @_;
     my (@events) = model($c, 'Event')->search(
         {
-            name  => { 'like' => 'No Meal%' },
+            name  => { 'like' => '%No%Meal%' },
             edate => { '>='   => today()->as_d8() },
         },
         {
