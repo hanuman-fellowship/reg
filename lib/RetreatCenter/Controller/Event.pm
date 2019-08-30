@@ -94,15 +94,6 @@ sub _get_data {
     if (empty($P{name})) {
         push @mess, "Name cannot be blank";
     }
-    # enforce the No PR constant string thingy
-    # this probably indicates that we need another
-    # attribute of an event... but we'll do this for now
-    #
-    if ($P{name} =~ m{ no \s* pr }xmsi) {
-        $P{name} = ($P{name} =~ m{ indoor }xmsi)? "No PR Indoors"
-                  :                               "No PR"
-                  ;
-    }
     # dates are either blank or converted to d8 format
     for my $d (qw/ sdate edate /) {
         my $fld = $P{$d};
