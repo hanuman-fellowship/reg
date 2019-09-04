@@ -139,7 +139,7 @@ sub update_do : Local {
         unlink "/tmp/online_notify.txt";
         }
     }
-    elsif ($the_key =~ m{^(breakfast|lunch|dinner)_(cost|daily_max)$}xms) {
+    elsif ($the_key =~ m{^(breakfast|lunch|dinner)_(cost|daily_max)}xms) {
         # need to send this and other meal_request items
         # up to mountmadonna.org
         BLOCK: {
@@ -148,7 +148,7 @@ sub update_do : Local {
             or last BLOCK;
         my %hash;
         for my $w (qw/ breakfast lunch dinner /) {
-            for my $t (qw/ cost daily_max /) {
+            for my $t (qw/ cost cost_5_12 daily_max /) {
                 my $x = "$w\_$t";
                 $hash{$x} = $string{$x};
             }
