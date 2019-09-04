@@ -6,6 +6,7 @@ CREATE TABLE meal_requests (
     breakfast tinyint not null default 0,
     lunch tinyint not null default 0,
     dinner tinyint not null default 0,
+    child tinyint not null default 0,
     date_requested char(8) not null,
     time_requested char(4) not null
 );

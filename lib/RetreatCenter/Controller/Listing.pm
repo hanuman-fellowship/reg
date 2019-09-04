@@ -758,7 +758,8 @@ sub meal_list : Local {
         for my $meal (qw/ breakfast lunch dinner /) {
             my $n = $mr->$meal;
             my $pl = $n > 1? 's': '';
-            $info = [ $mr->person->last_first_name, "requested $n meal$pl" ];
+            my $child = $mr->child? ' for a child': '';
+            $info = [ $mr->person->last_first_name, "requested $n meal$pl$child" ];
             add($meal, $n);
         }
     }

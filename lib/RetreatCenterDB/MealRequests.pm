@@ -16,6 +16,7 @@ __PACKAGE__->add_columns(qw/
     breakfast
     lunch
     dinner
+    child
     date_requested
     time_requested
 /);
@@ -49,5 +50,6 @@ date - date of requested meals
 breakfast - # of breakfasts
 lunch - # of lunches
 dinner - # of dinners
+child - meal for a child instead of an adult?
 date_requested - date request was made
 time_requested - time request was made
