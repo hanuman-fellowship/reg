@@ -181,6 +181,7 @@ sub _get_data {
     my ($c) = @_;
 
     %hash = %{ $c->request->params() };
+    $hash{nrecs} ||= 0;
     for my $k (keys %hash) {
         delete $hash{$k} if $k =~ m{^aff\d+$};
     }
