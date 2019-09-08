@@ -1976,6 +1976,9 @@ sub add_or_update_deduping {
     }
     # ensure the mailing keys are consistent
     # they should be either '', 'yes', or '-1' (which means don't change it).
+    #
+    # we'll tweak this ... so that the only way to UNsubscribe
+    # is via a Mail Chimp import of unsubscriptions.
     KEY:
     for my $k (@mailing_keys) {
         next KEY if $href->{$k} eq '-1';
@@ -2042,7 +2045,10 @@ sub add_or_update_deduping {
             # update their information - their address may have changed.
             #
             for my $k (@mailing_keys) {
-                if (! defined $href->{$k} || $href->{$k} eq '-1') {
+                if (! defined $href->{$k}
+                    || $href->{$k} eq '-1'
+                    || $href->{$k} eq ''
+                ) {
                     # don't change what is already there...
                     delete $href->{$k};
                     # and remove it from the @needed array
