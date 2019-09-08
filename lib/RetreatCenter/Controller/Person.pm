@@ -611,9 +611,21 @@ sub update_do : Local {
         rename "root/static/$type/$fname",
                "$dir/$fname";
     }
-    # delete all old affiliations and create the new ones.
+    # delete all existing affiliations
+    # (but not ones that are system and not selectable)
+    # and create the new ones.
+    my @sys_affils = map { $_->id }
+                     model($c, 'Affil')->search(
+                         {
+                             system => 'yes',
+                             selectable => '',
+                         },
+                     );
     model($c, 'AffilPerson')->search(
-        { p_id => $id },
+        {
+            p_id => $id,
+            a_id => { -not_in => \@sys_affils },
+        },
     )->delete();
     _get_affils($c, $id);
     #

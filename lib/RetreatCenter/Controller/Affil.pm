@@ -241,7 +241,7 @@ sub access_denied : Private {
 sub memaffil : Local {
     my ($self, $c) = @_;
 
-    system("memaffil");
+    system("memaffil");         # does this work?
     $c->response->redirect($c->uri_for("/affil/list"));
 }
 
