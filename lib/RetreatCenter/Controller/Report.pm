@@ -312,6 +312,7 @@ sub run : Local {
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
     my $share    = $c->request->params->{share};
+    my $ignore_opt_out = $c->request->params->{ignore_opt_out};
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
     my $no_foreign = $c->request->params->{no_foreign};
@@ -391,17 +392,21 @@ sub run : Local {
     # restrict it by the opt'ing in booleans.   We're asking them to
     # update their demographics.  We're not pestering them with ads.
     #
-    if (   $format == TO_CMS
+    if (! $ignore_opt_out &&
+        (  $format == TO_CMS
         || $format == NAME_ADDR_EMAIL
         || $format == TO_VISTAPRINT
         || $format == FIRST_SANS_CMS
         || $format == CMS_SANS_EMAIL
+        )
     ) {
         $restrict .= "snail_mailings = 'yes' and ";
     }
-    if (   $format == NAME_ADDR_EMAIL
+    if (! $ignore_opt_out &&
+        (  $format == NAME_ADDR_EMAIL
         || $format == JUST_EMAIL
         || $format == LAST_FIRST_EMAIL
+        )
     ) {
         $restrict .= "e_mailings = 'yes' and ";
     }
@@ -618,6 +623,7 @@ EOS
             share    => $share,
             collapse => $collapse,
             no_foreign => $no_foreign,
+            ignore_opt_out => $ignore_opt_out,
             exclude_only_temple => $exclude_only_temple,
             incl_mmc => $incl_mmc,
             append   => $append,
