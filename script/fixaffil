@@ -1,0 +1,22 @@
+#!/var/www/perl5.26.2/bin/perl
+# a one time script to repair affiliations
+use strict;
+use warnings;
+use lib 'lib';
+use RetreatCenterDB;
+
+my $schema = RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
+
+for my $a ($schema->resultset('Affil')->search(
+                {}, { order_by => 'descrip' },
+                )
+) {
+    my $d = $a->descrip;
+    print "$d\n";
+    if ($d =~ /\r/) {
+        $d =~ s{\r}{};
+        $a->update({
+            descrip => $d,
+        });
+    };
+}
