@@ -451,7 +451,7 @@ sub run : Local {
         # we only want non-blank emails
         $just_email = "email != '' and ";
         $order = "last";
-        $fields = "last, first, email";
+        $fields = "last, first, sanskrit, email";
     }
 
     my $range_ref = parse_zips($report->zip_range);
