@@ -51,7 +51,7 @@ my @format_desc = (
     'First Sanskrit To CMS',
     'Raw',
     'To CMS - Those sans Email',
-    'Last, First, Email',
+    'Last, First, Sanskrit, Email',
     'Email, Code for DDUP',
     'To CMS - Address, Code for DDUP',
     'CSV',
