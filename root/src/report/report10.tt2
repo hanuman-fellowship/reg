@@ -1,3 +1,3 @@
 [% FOREACH p IN people -%]
-$p.last|$p.first|$p.email
+$p.last|$p.first|$p.sanskrit|$p.email
 [% END %]
