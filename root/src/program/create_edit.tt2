@@ -196,6 +196,9 @@ $level_opts
 &nbsp; &nbsp; &nbsp;
 <b>Waiver Needed</b>
 <input type=checkbox value=yes name=waiver_needed $check_waiver_needed>
+&nbsp; &nbsp; &nbsp;
+<b>Manual Reg Finance</b>
+<input type=checkbox value=yes name=manual_reg_finance $check_manual_reg_finance>
 </td>
 </tr>
 

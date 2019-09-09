@@ -91,6 +91,7 @@ __PACKAGE__->add_columns(qw/
     program_created
     created_by
     badge_title
+    manual_reg_finance
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -883,6 +884,7 @@ level_id - For MMI programs this indicates the type of course.
    CS YSC1, CS YSC2, ..., Certificate, ... Course
 linked - Shall this program's web page be linked to the others?
 lunches - An encoded (essentially binary) field describing which days of the program have lunch.
+manual_reg_finance - registrations will initially have manual finance not automatic
 max - What is the expected maximum registrations for the program?
 name - A name for the program - used internally for identification.
 not_on_calendar - Should this program not be included on the calendar?

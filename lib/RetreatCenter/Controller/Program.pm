@@ -221,6 +221,7 @@ sub _get_data {
         not_on_calendar
         tub_swim
         waiver_needed
+        manual_reg_finance
         housing_not_needed 
     /) {
         $P{$f} = '' unless exists $P{$f};
@@ -858,6 +859,7 @@ sub update : Local {
         retreat
         economy commuting webready linked do_not_compute_costs
         not_on_calendar tub_swim waiver_needed housing_not_needed
+        manual_reg_finance
     /) {
         stash($c,
             "check_$w" => ($p->$w)? "checked": ''
@@ -1261,6 +1263,7 @@ sub gen_progtable {
                 prog_start
                 prog_end
                 waiver_needed
+                manual_reg_finance
                 housing_not_needed
             ),
         };

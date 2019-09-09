@@ -1,0 +1,1 @@
+alter table program add column manual_reg_finance varchar(3) not null default '';
