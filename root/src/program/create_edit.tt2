@@ -147,7 +147,7 @@ Web
 </div>
 
 <!-- Misc -->
-<div id="content2" class="tabcontent" style="display: none">
+<div id="content2" class="xtabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
 [% IF pre_craft %]
@@ -181,40 +181,12 @@ $level_opts
 </td>
 </tr>
 
-<tr><td>&nbsp;</td></tr>
-
-<tr>
-<td colspan=8>
-<b>Allow Aux Regs</b>
-<input type=checkbox value=yes name=allow_dup_regs $check_allow_dup_regs>
-&nbsp; &nbsp; &nbsp;
-<b>Kaya Kalpa</b>
-<input type=checkbox value=yes name=kayakalpa $check_kayakalpa>
-&nbsp; &nbsp; &nbsp;
-<b>Retreat</b>
-<input type=checkbox value=yes name=retreat $check_retreat>
-&nbsp; &nbsp; &nbsp;
-<b>Waiver Needed</b>
-<input type=checkbox value=yes name=waiver_needed $check_waiver_needed>
-&nbsp; &nbsp; &nbsp;
-<b>Manual Reg Finance</b>
-<input type=checkbox value=yes name=manual_reg_finance $check_manual_reg_finance>
-</td>
-</tr>
-
-<tr>
-<td colspan=8>
-<b>Not on Calendar</b>
-<input type=checkbox value=yes name=not_on_calendar $check_not_on_calendar>
-&nbsp; &nbsp; &nbsp;
-<b>Hot Tub/Lake Swimming in Confirmation Letter</b>
-<input type=checkbox value=yes name=tub_swim $check_tub_swim>
-</td>
-</tr>
-
-<tr><td>&nbsp;</td></tr>
-
-<tr>
+<tr><th align=right>Allow Aux Regs</th><td><input type=checkbox value=yes name=allow_dup_regs $check_allow_dup_regs></td></tr>
+<tr><th align=right>Kaya Kalpa</th><td><input type=checkbox value=yes name=kayakalpa $check_kayakalpa></td></tr>
+<tr><th align=right>Retreat</th><td><input type=checkbox value=yes name=retreat $check_retreat></td></tr>
+<tr><th align=right>Waiver Needed</th><td><input type=checkbox value=yes name=waiver_needed $check_waiver_needed></td></tr>
+<tr><th align=right>Not on Calendar</th><td><input type=checkbox value=yes name=not_on_calendar $check_not_on_calendar></td></tr>
+<tr><th align=right>Hot Tub/Lake Swimming<br>in Confirmation Letter</th><td><input type=checkbox value=yes name=tub_swim $check_tub_swim></td></tr>
 <th align=right>Notify on Reg</th>
 <td><input type=text value='$program.notify_on_reg' name=notify_on_reg size=60></td>
 </tr>
@@ -250,7 +222,7 @@ $level_opts
 
 <tr>
 <th align=right>Times</th>
-<td colspan=3>
+<td>
 
 <table cellpadding=3>
 <tr>
@@ -313,6 +285,11 @@ $level_opts
 <tr>
 <th align=right>Requested Payments</th>
 <td><input type=checkbox value=yes name=req_pay $check_req_pay></td>
+</tr>
+
+<tr>
+<th align=right>Manual Reg Finance</th>
+<td><input type=checkbox value=yes name=manual_reg_finance $check_manual_reg_finance></td>
 </tr>
 
 [% IF pre_craft %]
