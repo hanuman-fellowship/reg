@@ -1151,7 +1151,7 @@ sub create_do : Local {
     # IF the program has manual_reg_finance and there is
     # an amount that was paid, put it as a charge with the
     # note 'meals and lodging'.   This is done first for the Reunion Retreat.
-    if ($pr->manual_reg_finance() && $P{deposit} >= 0) {
+    if ($pr->manual_reg_finance() && $P{deposit} > 0) {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => '',
