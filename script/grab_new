@@ -92,6 +92,7 @@ use Net::FTP;
 *Net::FTP::pasv = \&Net::FTP::epsv;
 use File::FTP;      # this is mine
 use File::Basename 'basename';
+use File::Copy 'copy';
 
 use FindBin;
 chdir "$FindBin::Bin/..";
@@ -280,6 +281,29 @@ sub check_transaction {
         # a special case
         temple_donation($href, $f);
         return;
+    }
+    if ($href->{days}) {
+        # the Fall Reunion Retreat October 2019
+        my $d = date('10/07/2019');
+        my $suffix = 'a';
+        for my $range (split '-', $href->{days}) {
+            my @days = split //, $range;
+            my $start = $days[0];
+            my $end = $days[-1];        # may be the same as [0]
+            my $fname = "$get_dir/$f$suffix";
+            copy("$get_dir/$f", $fname);
+            open my $out, '>>', $fname
+                or die "cannot open $fname: $!\n";
+            print {$out} "x_sdate => ", ($d+$start), "\n";
+            print {$out} "x_edate => ", ($d+$end+1), "\n";
+            if ($suffix ne 'a') {
+                print {$out} "x_amount => 0\n";
+                    # this will override the first one in the file
+            }
+            print {$out}
+            close $out;
+            ++$suffix;
+        }
     }
     msg "@params transaction $f, $href->{first} $href->{last}, $href->{title}";
 }
