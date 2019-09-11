@@ -304,6 +304,7 @@ sub check_transaction {
             close $out;
             ++$suffix;
         }
+        unlink $fname;
     }
     msg "@params transaction $f, $href->{first} $href->{last}, $href->{title}";
 }
