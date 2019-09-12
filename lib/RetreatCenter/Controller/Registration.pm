@@ -2048,10 +2048,15 @@ sub view_trans_id : Local {
 sub _view {
     my ($c, $reg, $alert, $who) = @_;
     my $reg_id = $reg->id();
-    my (@same_name_reg) = model($c, 'Registration')->search({
-                              person_id  => $reg->person_id(),
-                              program_id => $reg->program_id(),
-                          });
+    my (@same_name_reg) = model($c, 'Registration')->search(
+        {
+            person_id  => $reg->person_id(),
+            program_id => $reg->program_id(),
+        },
+        {
+            order_by => [qw/ me.date_start /],
+        }
+    );
     my $prog = $reg->program();
     my $extra = $prog->extradays();
     if ($extra) {
