@@ -314,7 +314,8 @@ sub run : Local {
     my $share    = $c->request->params->{share};
     my $ignore_opt_out = $c->request->params->{ignore_opt_out};
     my $count    = $c->request->params->{count};
-    my $collapse = $c->request->params->{collapse};
+    my $collapse_same_addr = $c->request->params->{collapse_same_addr};
+    my $collapse_partners = $c->request->params->{collapse_partners};
     my $no_foreign = $c->request->params->{no_foreign};
     my $exclude_only_temple = $c->request->params->{exclude_only_temple};
     my $incl_mmc = $c->request->params->{incl_mmc};
@@ -510,6 +511,8 @@ EOS
             $p->{name} = $p->{first} . " " . $p->{last};
         }
     }
+    my $ndel = 0;
+
     #
     # now to take care of two people in the report
     # who are partners.   this is tricky!  wake up.
@@ -517,37 +520,38 @@ EOS
     # if we are asking for "Just Email" this won't really apply.
     # no id_sps field so...
     #
-    my %partner_index = ();
-    my $i = 0;
-    for my $p (@people) {
-        if ($p->{id_sps}) {
-            $partner_index{$p->{id}} = $i;
+    if (! $just_email && $collapse_partners) {
+        my %partner_index = ();
+        my $i = 0;
+        for my $p (@people) {
+            if ($p->{id_sps}) {
+                $partner_index{$p->{id}} = $i;
+            }
+            ++$i;
         }
-        ++$i;
-    }
-    my $ndel = 0;
-    for my $p (@people) {
-        if ($p->{id_sps}
-            && (my $pi = $partner_index{$p->{id_sps}})
-        ) {
-            my $ptn = $people[$pi];
-            if ($p->addr1() eq $ptn->addr1()) {
-                # good enough match of address...
-                # modify $p so that their 'name' is both of them
-                # direct access... :(
-                # treating this as an arrayref of hashrefs
-                # or an arrayref of objects as convenient.
-                $p->{name} = ($p->last eq $ptn->last)?
-                                $p->first." & ".$ptn->first." ".$ptn->last:
-                                $p->name." & ".$ptn->name; 
-                #
-                # and modify the data so the partner is not shown
-                # nor even considered.
-                #
-                delete $partner_index{$p->id};
-                delete $partner_index{$ptn->id};
-                $ptn->{deleted} = 1;
-                ++$ndel;
+        for my $p (@people) {
+            if ($p->{id_sps}
+                && (my $pi = $partner_index{$p->{id_sps}})
+            ) {
+                my $ptn = $people[$pi];
+                if ($p->addr1() eq $ptn->addr1()) {
+                    # good enough match of address...
+                    # modify $p so that their 'name' is both of them
+                    # direct access... :(
+                    # treating this as an arrayref of hashrefs
+                    # or an arrayref of objects as convenient.
+                    $p->{name} = ($p->last eq $ptn->last)?
+                                    $p->first." & ".$ptn->first." ".$ptn->last:
+                                    $p->name." & ".$ptn->name; 
+                    #
+                    # and modify the data so the partner is not shown
+                    # nor even considered.
+                    #
+                    delete $partner_index{$p->id};
+                    delete $partner_index{$ptn->id};
+                    $ptn->{deleted} = 1;
+                    ++$ndel;
+                }
             }
         }
     }
@@ -555,7 +559,7 @@ EOS
     #
     # if we should collapse records with the same address, do so.
     #
-    if ($collapse && ! $just_email) {
+    if (! $just_email && $collapse_same_addr) {
         # sort to get same addresses together
         @people = map {
                       $_->[1]
@@ -621,7 +625,8 @@ EOS
         stash($c,
             message  => "Record count = " . scalar(@people),
             share    => $share,
-            collapse => $collapse,
+            collapse_partners => $collapse_partners,
+            collapse_same_addr => $collapse_same_addr,
             no_foreign => $no_foreign,
             ignore_opt_out => $ignore_opt_out,
             exclude_only_temple => $exclude_only_temple,
