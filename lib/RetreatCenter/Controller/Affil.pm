@@ -185,7 +185,7 @@ sub merge_do : Local {
 
     for my $model ('AffilPerson', 'AffilProgram') {
         for my $ap (model($c, $model)->search({
-                       affiliation_id => $from_id,
+                       a_id => $from_id,
                     })
         ) {
             # the list vs scalar context matters for when 
@@ -208,7 +208,7 @@ sub merge_do : Local {
     }
     # Unfortunately the report table has affiliation_id not a_id so ...
     for my $ar (model($c, 'AffilReport')->search({
-                   a_id => $from_id,
+                   affiliation_id => $from_id,
                 })
     ) {
         my @ar = model($c, 'AffilReport')->search({

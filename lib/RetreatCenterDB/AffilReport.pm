@@ -12,6 +12,10 @@ __PACKAGE__->add_columns(qw/
     affiliation_id
     report_id
 /);
+__PACKAGE__->set_primary_key(qw/
+    affiliation_id
+    report_id
+/);
 #
 # Set relationships:
 #
