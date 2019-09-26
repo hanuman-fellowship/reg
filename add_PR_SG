@@ -2,4 +2,4 @@
 export DBI_DSN="dbi:mysql:reg2"
 export PERL5LIB=/var/www/cpan-lib/lib/perl5
 cd /var/www/src
-/var/www/src/script/add_PR_SG $* >>/var/Reg/output/add_PR_SG.out &
+/var/www/src/script/add_PR_SG $* >>/var/Reg/output/add_PR_SG.out 2>&1 &
