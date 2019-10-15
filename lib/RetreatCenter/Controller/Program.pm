@@ -1265,6 +1265,7 @@ sub gen_progtable {
                 waiver_needed
                 manual_reg_finance
                 housing_not_needed
+                kayakalpa
             ),
         };
     }
