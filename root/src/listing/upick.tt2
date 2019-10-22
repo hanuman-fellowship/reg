@@ -1,0 +1,11 @@
+<ul>
+Pick the people whose badge you want to print:
+<p class=p2>
+<form action='/listing/upick'>
+[% FOR r IN regs %]
+    <input type=checkbox name=upicked value=$r.id> $r.person.name - $r.program.name<br>
+[% END %]
+<p class=p2>
+<input type=submit id=sub>
+</ul>
+</form>

@@ -25,6 +25,8 @@ To <input type=text size=10 name=badge_to value=$badge_to>
 &nbsp;
 Only UnBadged <input type=checkbox name=only_unbadged checked>
 &nbsp;
+UPick <input type=checkbox name=upick>
+&nbsp;
 <input type=submit id=sub value="Go">
 </form>
 <p class=p2>

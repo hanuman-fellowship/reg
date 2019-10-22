@@ -61,6 +61,7 @@ sub reg_badges_in_date_range : Local {
     my $from = trim($c->request->params->{badge_from}) || '';
     my $to   = trim($c->request->params->{badge_to}) || '';
     my $only_unbadged  = $c->request->params->{only_unbadged} || '';
+    my $upick  = $c->request->params->{upick} || '';
     my @mess;
     my $from_dt = date($from);
     if (! $from_dt) {
@@ -89,7 +90,7 @@ sub reg_badges_in_date_range : Local {
                    },
                    {
                        join     => [qw/ program /],
-                       prefetch => [qw/ program /],   
+                       prefetch => [qw/ program /],
                    }
                );
     if (! @regs) {
@@ -100,10 +101,22 @@ sub reg_badges_in_date_range : Local {
         );
         return;
     }
+    if ($upick) {
+        stash($c,
+            regs     => \@regs,
+            template => 'listing/upick.tt2',
+        );
+        return;
+    }
+    _regs_to_badges($c, \@regs);
+}
+
+sub _regs_to_badges {
+    my ($c, $regs_aref) = @_;
     my $all_mess = '';
     my @data;
     my %seen;       # so we don't give the same error multiple times
-    for my $reg (@regs) {
+    for my $reg (@$regs_aref) {
         # this is inefficient - fix? memoize?
         # we will likely keep getting the title and code for the
         # same program over and over.
@@ -113,12 +126,16 @@ sub reg_badges_in_date_range : Local {
             $seen{$mess} = 1;
         }
         else {
-            my $dates      = $reg->dates();
-            my $room       = $reg->house_name();
+            my $dates = $reg->dates();
+            my $room  = $reg->house_name();
+            my $date_start = $reg->date_start();
+                # date_start is used for when sorting the
+                # people in PRs and Special Guests - perhaps across months
             push @data,
                  map {
                     +{  # href
                         name       => $_,
+                        date_start => $date_start,
                         dates      => $dates,
                         room       => $room,
                         program    => $title,
@@ -138,13 +155,15 @@ sub reg_badges_in_date_range : Local {
     }
     # now that we know we WILL be printing badges
     # mark everyone's badge as having been printed.
-    for my $r (@regs) {
+    for my $r (@$regs_aref) {
         $r->update({
             badge_printed => 'yes',
         });
     }
     @data = sort {
                 $a->{program}    cmp $b->{program}
+                ||
+                $a->{date_start} cmp $b->{date_start}
                 ||
                 $a->{name}       cmp $b->{name}
             }
@@ -153,6 +172,29 @@ sub reg_badges_in_date_range : Local {
     Badge->add_group('', '', \@data);
         # first two params will vary - date, program
     $c->res->output(Badge->finalize());
+}
+
+sub upick : Local {
+    my ($self, $c) = @_;
+    my $upicked = $c->request->params->{upicked};
+    my @ids = ref $upicked? @$upicked: $upicked;
+    if (! @ids) {
+        stash($c,
+            mess     => "No badges to print.<p class=p2>Close this window.",
+            template => 'gen_message.tt2',
+        );
+        return;
+    }
+    my @regs = model($c, 'Registration')->search(
+                   {
+                       'me.id' => { -in => \@ids },
+                   },
+                   {
+                       join     => [qw/ program /],
+                       prefetch => [qw/ program /],
+                   }
+               );
+    _regs_to_badges($c, \@regs);
 }
 
 #
@@ -379,7 +421,7 @@ EOS
             (defined $first && defined $prev_first && $first eq $prev_first)
         ) {
             print {$out} "<a target=other href='/person/undup/$id-$prev_id'>"
-                        ."$last, $first</a>\n";    
+                        ."$last, $first</a>\n";
             ++$n_same_name;
         }
         $prev_last  = $last;
@@ -408,14 +450,14 @@ EOS
                 ||
                 (defined $prev->{id_sps} && $prev->{id_sps} == 0))
         ) {
-            print {$out} "<a target=other href='/person/undup_akey/$p->{akey}'>$p->{last}, $p->{first}</a>\n";    
-            if ($p->{addr1} ne $prev->{addr1} 
+            print {$out} "<a target=other href='/person/undup_akey/$p->{akey}'>$p->{last}, $p->{first}</a>\n";
+            if ($p->{addr1} ne $prev->{addr1}
                 ||
                 $p->{zip_post} ne $prev->{zip_post}
             ) {
                 print {$out} "    $p->{addr1} $p->{zip_post}\n";
             }
-            print {$out} "<a target=other href='/person/undup_akey/$prev->{akey}'>$prev->{last}, $prev->{first}</a>\n";    
+            print {$out} "<a target=other href='/person/undup_akey/$prev->{akey}'>$prev->{last}, $prev->{first}</a>\n";
             print {$out} "    $prev->{addr1} $prev->{zip_post}\n";
             print {$out} "\n";
             ++$n_addr_dup;
@@ -492,7 +534,7 @@ sub detail_disp {
     return "" unless defined $aref;
     "<table>\n"
     . (join "\n",
-       map { 
+       map {
            "<tr><td>$_->[0]</td><td>&nbsp;&nbsp;$_->[1]</td></tr>"
        }
        sort {
@@ -535,7 +577,7 @@ sub detail_disp {
 #         the breakfast end time (9:00).
 #     for breakfast on a mid-rental day look at the count for the day before.
 #     same applies to lunch :(
-# 
+#
 # see if there are any 'meal requests' (consult the meal_requests table)
 #
 # finally, we look at Meal objects within the date range
@@ -592,14 +634,14 @@ sub meal_list : Local {
                        date_start => { '<=' => $end_d8   },
                        date_end   => { '>=' => $start_d8 },
                        'program.category_id' => 1,    # must be 'normal' program
-                            # could do some multi-step join 
+                            # could do some multi-step join
                             # do program.category.name => 'Normal'
                             # but not now ...
                        'me.cancelled'  => '',
                    },
                    {
                        join     => [qw/ program /],
-                       prefetch => [qw/ program /],   
+                       prefetch => [qw/ program /],
                    }
                );
     # can't put this in the where clause above???  why?
@@ -758,7 +800,7 @@ sub meal_list : Local {
             }
             # BREAKFAST
             if ($d == $r_start && $start_hour < $breakfast_end) {
-                add('breakfast', $n) 
+                add('breakfast', $n)
             }
             elsif ($d != $r_start) {
                 $info = [ "$n_day_before people" , $r_name ];
@@ -847,7 +889,6 @@ EOL
             $list .= "</ul>\n";
             ++$d;
         }
-        
     }
     #
     # any special food service needs within this date range?
@@ -965,7 +1006,6 @@ sub email_check : Local {
 sub activity_tally : Local {
     my ($self, $c) = @_;
 
-    
     my $n_tot = model($c, 'Person')->all();
     my $n_inact = model($c, 'Person')->search({
         inactive => 'yes',
@@ -1251,7 +1291,7 @@ sub late_notices : Local {
     if (date($d8)->day_of_week() == 6) {    # Saturday
         # also look for PRs arriving on Sunday
         # not other programs.
-        # 
+        #
         # this was how it worked for a good while.
         # until some program (Berch 3/16-3/18 plus 3) had
         # a person arriving in the middle of it - on a Sunday.
@@ -1283,7 +1323,7 @@ sub late_notices : Local {
                        },
                        {
                            join     => [qw/ program person /],
-                           prefetch => [qw/ program person /],   
+                           prefetch => [qw/ program person /],
                            order_by => [qw/ person.last person.first /],
                        }
                    );
@@ -1301,7 +1341,6 @@ sub late_notices : Local {
             alert_msg => $nrecs == 0? "There were no late notices today."
                         :$nrecs == 1? "There was only one late notice today."
                         :             "There were $nrecs late notices today.",
-                        
         },
         \$html,                         # output
     ) or die "error in processing template: "
@@ -1352,7 +1391,7 @@ sub housekeeping : Local {
             },
             {
                 join     => [qw/ house /],
-                prefetch => [qw/ house /],   
+                prefetch => [qw/ house /],
             }
         );
     push @arriving_houses,
@@ -1369,7 +1408,7 @@ sub housekeeping : Local {
             },
             {
                 join     => [qw/ house /],
-                prefetch => [qw/ house /],   
+                prefetch => [qw/ house /],
             }
         );
     push @arriving_houses,
@@ -1388,7 +1427,7 @@ sub housekeeping : Local {
             },
             {
                 join     => [qw/ house /],
-                prefetch => [qw/ house /],   
+                prefetch => [qw/ house /],
             }
         );
     @arriving_houses =
@@ -1417,7 +1456,7 @@ sub housekeeping : Local {
             },
             {
                 join     => [qw/ house /],
-                prefetch => [qw/ house /],   
+                prefetch => [qw/ house /],
             }
         );
     push @departing_houses,
@@ -1438,7 +1477,7 @@ sub housekeeping : Local {
             },
             {
                 join     => [qw/ house /],
-                prefetch => [qw/ house /],   
+                prefetch => [qw/ house /],
             }
         );
     push @departing_houses,
@@ -1456,7 +1495,7 @@ sub housekeeping : Local {
             },
             {
                 join     => [qw/ house /],
-                prefetch => [qw/ house /],   
+                prefetch => [qw/ house /],
             }
         );
     @departing_houses =
@@ -1528,7 +1567,7 @@ sub housekeeping : Local {
 #
 sub make_up : Local {
     my ($self, $c, $tent) = @_;
-    
+
     $tent ||= 0;
     my $today = tt_today($c);
     my $prev_clust = '';
@@ -1609,7 +1648,7 @@ EOH
     $html .= "</table></ul>\n";
     $c->stash->{heading} ="<span class=heading>$type Make-Up List</span>\n"
                         . "<span class=timestamp>As of "
-                        . localtime() 
+                        . localtime()
                         . "</span>\n"
                         ;
     $c->stash->{content}  = $html;
@@ -1841,7 +1880,7 @@ sub summary : Local {
         },
         {
             join     => [qw/ summary /],
-            prefetch => [qw/ summary /],   
+            prefetch => [qw/ summary /],
         }
     );
     my @programs = model($c, 'Program')->search(
@@ -1856,7 +1895,7 @@ sub summary : Local {
         },
         {
             join     => [qw/ summary level /],
-            prefetch => [qw/ summary level /],   
+            prefetch => [qw/ summary level /],
         }
     );
     stash($c,
@@ -1865,7 +1904,7 @@ sub summary : Local {
         events => [
             sort {
                 $a->sdate <=> $b->sdate ||
-                $a->name  cmp $b->name 
+                $a->name  cmp $b->name
             }
             @rentals, @programs
         ],
@@ -2132,7 +2171,7 @@ my @chosen;
 #
 sub init_chosen {
     my (@headers) = @_;
-    
+
     @chosen = ();
     NEEDED:
     for my $w (qw/
@@ -2189,10 +2228,8 @@ sub upload_yj_sheet_do : Local {
 
             my @fields;
             for my $col ($col_min .. $col_max) {
- 
                 my $cell = $worksheet->get_cell($row, $col);
                 next unless $cell;
- 
                 $fields[$col] = $cell->value();
             }
             $fields[100] = '';      # for missing address2 or company
@@ -2342,10 +2379,10 @@ sub upload_ncoa_sheet_do : Local {
 
             my @fields;
             for my $col ($col_min .. $col_max) {
- 
+
                 my $cell = $worksheet->get_cell($row, $col);
                 next unless $cell;
- 
+
                 $fields[$col] = $cell->value();
             }
             if ($row == $row_min) {
@@ -2509,7 +2546,7 @@ sub tarpanam_counts : Local {
 }
 
 sub _house_counts {
-    my ($href) = @_; 
+    my ($href) = @_;
     $href->{commuting} ||= 0;
     my $n = 0;
     HT:
