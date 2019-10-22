@@ -7,9 +7,11 @@ use Util qw/
     model
     get_grid_file
     normalize
+    kid_badge_names
 /;
 use Global qw/
     %house_name_of
+    %string
 /;
 
 my $html;
@@ -106,7 +108,7 @@ sub get_title_code {
 }
 
 sub get_badge_data_from_program {
-    my ($class, $c, $program) = @_;
+    my ($class, $c, $program, $only_unbadged) = @_;
 
     my ($mess, $title, $code) = $class->get_title_code($program);
     if ($mess) {
@@ -117,19 +119,32 @@ sub get_badge_data_from_program {
         {
             program_id     => $program->id,
             cancelled      => '',
+            $only_unbadged? (badge_printed => ''): (),
         },
         {
             join     => [qw/ person /],
             prefetch => [qw/ person /],   
         }
     );
+    if (! @regs) {
+        return "No badges to print.";
+    }
     my @data;
-    for my $r (@regs) {
-        push @data, {
-            name  => $r->person->badge_name(),
-            dates => $r->dates(),
-            room  => $r->house_name(),
-        };
+    for my $reg (@regs) {
+        my $dates = $reg->dates();
+        my $room  = $reg->house_name();
+        push @data, 
+             map {
+                +{  # href
+                    name  => $_,
+                    dates => $dates,
+                    room  => $room,
+                }
+            }
+            $reg->person->badge_name(), kid_badge_names($reg);
+        $reg->update({
+            badge_printed => 'yes',
+        });
     }
     @data = sort { $a->{name} cmp $b->{name} } @data;
     return ($mess, $title, $code, \@data);

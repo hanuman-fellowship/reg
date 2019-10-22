@@ -69,6 +69,7 @@ __PACKAGE__->add_columns(qw/
     rental_after
     transaction_id
     from_where
+    badge_printed
 /);
 # Set the primary key for the table
 __PACKAGE__->set_primary_key(qw/id/);
@@ -295,6 +296,7 @@ overview - A registration is created when a Person signs up for a Program.
     This is a central record that has many relations to other tables (i.e. Models/Objects).
 adsource - how did they find out about the program?
 arrived - have they arrived at MMC?
+badge_printed - Has the badge been printed for this person?
 balance - balance due
 cabin_room - do they prefer a cabin or a room?  the value is cabin, room, or empty
 cancelled - has this registration been cancelled?

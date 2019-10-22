@@ -23,6 +23,7 @@ use Util qw/
     nsquish
     rand6
     time_travel_class
+    kid_badge_names
 /;
 use Badge;
 use Date::Simple qw/
@@ -45,20 +46,21 @@ sub index : Local {
     my $to   = (today()+6*30)->format("%D");
     stash($c,
         time_travel_class($c),
-        gc_from  => $from,
-        gc_to    => $to,
-        pr_sg_badge_from  => $from,
-        pr_sg_badge_to    => $to7,
-        ow_from  => $from,
-        ow_to    => $to,
-        template => "listing/index.tt2",
+        gc_from    => $from,
+        gc_to      => $to,
+        badge_from => $from,
+        badge_to   => $to7,
+        ow_from    => $from,
+        ow_to      => $to,
+        template   => "listing/index.tt2",
     );
 }
 
-sub pr_sg_badges : Local {
+sub reg_badges_in_date_range : Local {
     my ($self, $c) = @_;
-    my $from = trim($c->request->params->{pr_sg_badge_from}) || '';
-    my $to   = trim($c->request->params->{pr_sg_badge_to}) || '';
+    my $from = trim($c->request->params->{badge_from}) || '';
+    my $to   = trim($c->request->params->{badge_to}) || '';
+    my $only_unbadged  = $c->request->params->{only_unbadged} || '';
     my @mess;
     my $from_dt = date($from);
     if (! $from_dt) {
@@ -82,48 +84,74 @@ sub pr_sg_badges : Local {
     my @regs = model($c, 'Registration')->search(
                    {
                        date_start => { between => [ $from, $to ] },
+                       $only_unbadged? (badge_printed => ''): (),
                        'me.cancelled'  => '',
-                       -or => [
-                           'program.name' => { 'like' => '%Personal%Retreat%' },
-                           'program.name' => { 'like' => '%Special%Guest%'    },
-                        ],
                    },
                    {
                        join     => [qw/ program /],
                        prefetch => [qw/ program /],   
                    }
                );
+    if (! @regs) {
+        my $mess = "No badges to print.<p class=p2>Close this window.";
+        stash($c,
+            mess     => $mess,
+            template => 'gen_message.tt2',
+        );
+        return;
+    }
+    my $all_mess = '';
     my @data;
-    for my $r (@regs) {
+    my %seen;       # so we don't give the same error multiple times
+    for my $reg (@regs) {
         # this is inefficient - fix? memoize?
-        # we _could_ have alternating PR and Special Guest registrations
-        # and they _could_ span month boundaries
-        my ($mess, $title, $code) = Badge->get_title_code($r->program);
-        if ($mess) {
-            $mess .= "<p class=p2>Close this window.";
-            stash($c,
-                mess     => $mess,
-                template => 'gen_message.tt2',
-            );
-            return;
+        # we will likely keep getting the title and code for the
+        # same program over and over.
+        my ($mess, $title, $code) = Badge->get_title_code($reg->program);
+        if ($mess && ! $seen{$mess}) {
+            $all_mess .= $mess;
+            $seen{$mess} = 1;
         }
-        push @data, {
-            name  => $r->person->badge_name(),
-            date_start => $r->date_start(),
-            dates => $r->dates(),
-            room  => $r->house_name(),
-            program => $title,
-            code  => $code,
-        };
+        else {
+            my $dates      = $reg->dates();
+            my $room       = $reg->house_name();
+            push @data,
+                 map {
+                    +{  # href
+                        name       => $_,
+                        dates      => $dates,
+                        room       => $room,
+                        program    => $title,
+                        code       => $code,
+                    }
+                }
+                $reg->person->badge_name(), kid_badge_names($reg);
+        }
+    }
+    if ($all_mess) {
+        $all_mess .= "<p class=p2>Close this window.";
+        stash($c,
+            mess     => $all_mess,
+            template => 'gen_message.tt2',
+        );
+        return;
+    }
+    # now that we know we WILL be printing badges
+    # mark everyone's badge as having been printed.
+    for my $r (@regs) {
+        $r->update({
+            badge_printed => 'yes',
+        });
     }
     @data = sort {
-                $a->{date_start} <=> $b->{date_start}
+                $a->{program}    cmp $b->{program}
                 ||
                 $a->{name}       cmp $b->{name}
             }
             @data;
     Badge->initialize($c);
     Badge->add_group('', '', \@data);
+        # first two params will vary - date, program
     $c->res->output(Badge->finalize());
 }
 

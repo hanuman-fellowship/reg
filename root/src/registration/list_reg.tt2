@@ -96,7 +96,9 @@ document.form.pat.focus();
 
 [% IF badges %]
 &nbsp;&nbsp;&nbsp;
-<a target=_blank href="/registration/badges/$program.id">Badges</a>
+<a target=_blank href="/registration/badges/$program.id">AllBadges</a>
+&nbsp;&nbsp;&nbsp;
+<a target=_blank href="/registration/badges/$program.id/1">UnBadged</a>
 [% END %]
 
 <p class=p2>

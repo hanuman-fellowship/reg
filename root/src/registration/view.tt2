@@ -524,6 +524,11 @@ onclick="return confirm('Delete requested payment of \$$py.amount_disp to $py.or
 <td>[% IF reg.work_study %]yes - $reg.work_study_comment - $reg.work_study_safety [% END %]</td>
 </tr>
 
+<tr>
+<th align=right>Badge Printed</th>
+<td>$reg.badge_printed</td>
+</tr>
+
 </table>
 
 </td><td valign=top>

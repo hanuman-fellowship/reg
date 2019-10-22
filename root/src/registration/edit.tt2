@@ -123,7 +123,7 @@ After <input type=checkbox value=yes name=rental_after [% rental_after_checked %
 
 <tr>
 <th align=right>Ages of Kids</th>
-<td colspan=2><input type=text name=kids size=10 value="[% reg.kids %]"></td>
+<td colspan=2><input type=text name=kids size=20 value="[% reg.kids %]"></td>
 <td><input id=sub type=submit value="Submit"></td>
 </tr>
 
@@ -178,6 +178,11 @@ After <input type=checkbox value=yes name=rental_after [% rental_after_checked %
 &nbsp;<b>Safety Form</b>
 <input type=checkbox value=yes name=work_study_safety [% work_study_safety_checked %]>
 </td>
+</tr>
+
+<tr>
+<th align=right>Badge Printed</th>
+<td align=left colspan=2><input type=checkbox value=yes name=badge_printed [% badge_printed_checked %]></td>
 </tr>
 
 

@@ -18,10 +18,12 @@
 On <input type=text size=10 name=cg_date>&nbsp;<input type=submit id=sub value="Go">
 </form>
 <p class=p2>
-<form action="/listing/pr_sg_badges" target=_blank>
-PR and Special Guest Badges -
-<input type=text size=10 name=pr_sg_badge_from value=$pr_sg_badge_from>
-To <input type=text size=10 name=pr_sg_badge_to value=$pr_sg_badge_to>
+<form action="/listing/reg_badges_in_date_range" target=_blank>
+Registration Badges -
+<input type=text size=10 name=badge_from value=$badge_from>
+To <input type=text size=10 name=badge_to value=$badge_to>
+&nbsp;
+Only UnBadged <input type=checkbox name=only_unbadged checked>
 &nbsp;
 <input type=submit id=sub value="Go">
 </form>

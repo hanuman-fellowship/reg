@@ -55,6 +55,7 @@ use Util qw/
     months_calc
     slurp
     time_travel_class
+    kid_badge_names
 /;
 use POSIX qw/
     ceil
@@ -881,6 +882,9 @@ sub _get_data {
                 "Only staying " . ($prog_days + $extra_days)
                ." night$plural so can't take $taken of them free!";
         }
+    }
+    if (! $P{badge_printed}) {
+        $P{badge_printed} = '';
     }
     if ($P{hascar} && ! $P{carpool}) {
         $P{carpool} = 'yes';
@@ -2714,10 +2718,10 @@ sub csv_labels : Local {
 }
 
 sub badges : Local {
-    my ($self, $c, $prog_id) = @_;
+    my ($self, $c, $prog_id, $only_unbadged) = @_;
     my $program = model($c, 'Program')->find($prog_id);
     my ($mess, $title, $code, $data_aref) = 
-        Badge->get_badge_data_from_program($c, $program);
+        Badge->get_badge_data_from_program($c, $program, $only_unbadged);
     if ($mess) {
         $mess .= "<p class=p2>Close this window.";
         stash($c,
@@ -2748,15 +2752,25 @@ sub badge : Local {
         return;
     }
     Badge->initialize($c);
+    my $dates = $reg->dates();
+    my $room  = $reg->house_name();
     Badge->add_group(
         $title,
         $code,
-        [{
-            name  => $reg->person->badge_name,
-            dates => $reg->dates,
-            room  => $reg->house_name,
-        }],
+        [
+            map { 
+                +{      # hashref
+                    name  => $_,
+                    dates => $dates,
+                    room  => $room,
+                }
+            }
+            $reg->person->badge_name(), kid_badge_names($reg)
+        ],
     );
+    $reg->update({
+        badge_printed => 'yes',
+    });
     $c->res->output(Badge->finalize());
 }
 
@@ -3136,6 +3150,7 @@ sub update : Local {
         cabin_checked   => $c_r eq 'cabin'   ? "checked": "",
         room_checked    => $c_r eq 'room'    ? "checked": "",
         work_study_checked        => $reg->work_study()       ? "checked": "",
+        badge_printed_checked     => $reg->badge_printed()    ? "checked": "",
         work_study_safety_checked => $reg->work_study_safety() 
                                      || $reg->person->safety_form()? "checked"
                                                                      : "",
@@ -3353,6 +3368,7 @@ sub update_do : Local {
         work_study         => $P{work_study},
         work_study_comment => $P{work_study_comment},
         work_study_safety  => $P{work_study_safety},
+        badge_printed      => $P{badge_printed},
         rental_before => $P{rental_before},
         rental_after  => $P{rental_after},
         free_prog_taken    => $P{free_prog},

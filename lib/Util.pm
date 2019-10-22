@@ -88,6 +88,7 @@ our @EXPORT_OK = qw/
     get_string
     put_string
     set_cache_timestamp
+    kid_badge_names
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2475,6 +2476,30 @@ sub set_cache_timestamp {
     $s->update({
         value => time(),
     });
+}
+
+sub kid_badge_names {
+    my ($reg) = @_;
+    my @names;
+    if ($reg->kids()) {
+        # kids aged 2-12 deserve their own badge!
+        my $parent_name = $reg->person->badge_name();
+        my @kids = split /\s*,\s*/, $reg->kids();
+        for my $k (@kids) {
+            $k =~ s{\s*(\d+)\s*}{}xms;   # chop the age
+            my $age = $1;
+            my $name = $k;  # the rest (if any) is the name
+            if ($string{min_kid_age} <= $age
+                && $age <= $string{max_kid_age}
+            ) {
+                if (!$name) {
+                    $name = "Kid($age)";
+                }
+                push @names, $name . '* ' . $parent_name;
+            }
+        }
+    }
+    return @names;
 }
 
 1;
