@@ -1,7 +1,7 @@
 <!-- the front of the badges -->
 <table cellpadding=1 cellspacing=1 class=front>
 <tr>
-[% FOREACH i IN [ 0,1,2,3,4,5] %]
+[% FOREACH i IN [ 0,1,2,3,4,5,6,7] %]
     [% IF ! data.$i.name %]
 <td>&nbsp;</td>
     [% ELSE %]
@@ -16,7 +16,7 @@
 </td>
     [% END %]
 
-    [% IF i == 2 %]
+    [% IF i == 3 %]
     </tr><tr>
     [% END %]
 [% END %]
@@ -27,7 +27,7 @@
 <!-- the back of the badges -->
 <table cellpadding=1 cellspacing=1 class=back>
 <tr>
-[% FOREACH i IN [ 2,1,0,5,4,3 ] %]
+[% FOREACH i IN [ 3,2,1,0,7,6,5,4 ] %]
     [% IF ! data.$i.name %]
         <td>&nbsp;</td>
         [% NEXT %]

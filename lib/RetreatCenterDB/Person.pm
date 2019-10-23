@@ -155,9 +155,9 @@ sub last_first_name {
 }
 
 sub badge_name {
-    my ($self) = @_;
+    my ($self, $no_sanskrit) = @_;
     my $name = $self->name();
-    if ($self->sanskrit()) {
+    if (! $no_sanskrit && $self->sanskrit()) {
         $name = $self->sanskrit() . ' ' . $name;
     }
     return $name;

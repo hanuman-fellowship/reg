@@ -61,8 +61,8 @@ sub add_group {
         program => $program,
         code    => $code,
     };
-    for (my $i = 0; $i <= $#$data_aref; $i += 6) {
-        $stash->{data}  = [ @{$data_aref}[$i .. $i+5] ];
+    for (my $i = 0; $i <= $#$data_aref; $i += 8) {
+        $stash->{data}  = [ @{$data_aref}[$i .. $i+7] ];
         $tt->process(
             'registration/badge.tt2',
             $stash,
