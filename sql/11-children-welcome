@@ -1,0 +1,1 @@
+alter table program add column children_welcome varchar(3) not null default 'yes';
