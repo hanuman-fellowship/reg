@@ -108,6 +108,7 @@ sub create : Local {
         check_linked        => 'checked',
         check_allow_dup_regs => '',
         check_kayakalpa     => 'checked',
+        check_children_welcome => 'checked',
         check_retreat       => '',
         check_sbath         => 'checked',
         check_single        => 'checked',
@@ -210,6 +211,7 @@ sub _get_data {
         collect_total
         allow_dup_regs
         kayakalpa
+        children_welcome
         sbath
         single
         retreat
@@ -856,6 +858,7 @@ sub update : Local {
     my $p = model($c, 'Program')->find($id);
     for my $w (qw/
         sbath single req_pay collect_total allow_dup_regs kayakalpa
+        children_welcome
         retreat
         economy commuting webready linked do_not_compute_costs
         not_on_calendar tub_swim waiver_needed housing_not_needed
@@ -1266,6 +1269,7 @@ sub gen_progtable {
                 manual_reg_finance
                 housing_not_needed
                 kayakalpa
+                children_welcome
             ),
         };
     }
@@ -1341,6 +1345,7 @@ sub duplicate : Local {
     });
     for my $w (qw/
         sbath single req_pay collect_total allow_dup_regs kayakalpa
+        children_welcome
         retreat
         commuting economy webready linked
         not_on_calendar tub_swim

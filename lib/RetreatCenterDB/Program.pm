@@ -92,6 +92,7 @@ __PACKAGE__->add_columns(qw/
     created_by
     badge_title
     manual_reg_finance
+    children_welcome
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -854,6 +855,7 @@ bank_account - Where do registrations payments go?  To the MMI bank account ('mm
 cancelled - boolean - Has this program been cancelled?  Set/Unset via a menu link.
 canpol_id - foreign key to canpol
 category_id - foreign key to category
+children_welcome - Are children welcome to attend with parents?
 cl_template - confirmation letter template file name.  Mostly it is 'default' but can vary.
     It lives in root/static/templates/letter.
 collect_total - Should we collect the total amount due when registering online?

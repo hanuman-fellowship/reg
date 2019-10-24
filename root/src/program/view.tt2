@@ -329,6 +329,7 @@ Web
 
 <tr><th align=right>Allow Aux Regs</th><td>$program.allow_dup_regs</td></tr>
 <tr><th align=right>Kaya Kalpa</th><td>$program.kayakalpa</td></tr>
+<tr><th align=right>Children Welcome</th><td>$program.children_welcome</td></tr>
 <tr><th align=right>Retreat</th><td>$program.retreat</td></tr>
 <tr><th align=right>Waiver Needed</th><td>$program.waiver_needed</td></tr>
 <tr><th align=right>Not on Calendar</th><td>$program.not_on_calendar</td></tr>
