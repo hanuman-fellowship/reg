@@ -185,7 +185,9 @@
          </tr>
       </table>
       <div class=indent> 
-         This email contains important information regarding the check-in process and payments, meals, packing suggestions, transportation and cancellations.  Please read on to prepare for your stay on our beautiful mountain! 
+         This email contains important information regarding the check-in process and payments, meals, packing suggestions, transportation and cancellations.  
+         The attached file contains a housing map, yoga class and meal schedules, and other important details about our facilities. You may want to download and/or print this file prior to your arrival.
+         Please read on to prepare for your stay on our beautiful mountain! 
       </div>
       <p>
          [% IF    reg.confnote_not_empty
@@ -220,11 +222,11 @@
             [% END %]    <!-- if Note -->
       <h2>Arrivals</h2>
       <p>
-         You may pick up your room key and guest packet and pay your remaining
+         You may pick up your room key and pay your remaining
          balance at the Programs Office in the Community Building.   Check-in
          is at ${program.reg_start_obj}.  If you arrive after business hours, stop by our
          &ldquo;Late Notice Board&rdquo; in the entryway of the Community
-         Building to get your key and welcome packet.   Check-out is at $program.prog_end_obj  on the day of your departure.
+         Building to get your key.   Check-out is at $program.prog_end_obj  on the day of your departure.
          [% IF ! personal_retreat %]
       <p>
          Your program begins at $program.prog_start_obj and meets in the ${program.main_meeting_place}.

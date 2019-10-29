@@ -2005,21 +2005,59 @@ sub send_conf : Local {
     my $pr_title = $pr->title();
     $pr_title =~ s{\A .* (Special \s+ Guest) .*}{$1}xms;
     $pr_title =~ s{\A .* (Personal \s+ Retreat) .*}{$1}xms;
-    if (!email_letter($c,
-           to      => $reg->person->name_email(),
+
+    # a special sending of the letter - can't use Util sub email_letter
+    # we have an attachment
+    Global->init($c);
+    my @auth = ();
+    if ($string{smtp_auth}) {
+        @auth = (
+            auth    => $string{smtp_auth},
+            authid  => $string{smtp_user},
+            authpwd => $string{smtp_pass},
+        );
+    }
+    my $sender = Mail::Sender->new({
+        smtp => $string{smtp_server},
+        port => $string{smtp_port},
+        @auth,
+        on_errors => 'die',
+    });
+    my $to = $reg->person->name_email();
+    $sender->OpenMultipart({
+           to      => $to,
            from    => "$title <$from>",
            replyto => "$title <$from>",
            subject => "Confirmation of Registration for "
                       . $reg->person->name
                       . " in "
                       . $pr_title,
-           html    => $html, 
-    )) {
-        error($c,
-              'Email did not send! :(',
-              'gen_error.tt2');
-        return;
+    });
+    $sender->Body({
+        ctype => 'text/html',
+        msg   => $html,
+    });
+    my $dir = 'root/static/templates/letter';
+    $sender->Attach({
+        description => 'MMC_Guest_Packet',
+        ctype       => 'application/pdf',
+        encoding    => 'Base64',
+        disposition => 'attachment;'
+                     . 'filename="MMC_Guest_Packet.pdf";'
+                     . 'type="pdf"',
+        file        => "$dir/MMC_Guest_Packet.pdf",
+    });
+    my $rc = $sender->Close;
+    open my $mlog, ">>", "/var/log/Reg/mail.log";
+    print {$mlog} localtime() . " $to - ";
+    print {$mlog} "Confirmation letter for " . $pr->name . " - ";
+    if (ref $rc) {
+        print {$mlog} "sent\n";
     }
+    else {
+        print {$mlog} " error - $Mail::Sender::Error\n";
+    }
+    close $mlog;
     my @who_now = get_now($c, $reg_id);
     push @who_now, reg_id => $reg_id;
     if ($reg->confnote) {
