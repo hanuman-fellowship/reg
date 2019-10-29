@@ -114,9 +114,9 @@
 							<img class=logo src='https://www.mountmadonna.org/assets/img/press/logos/MMC_Logo_Teal.png'>
             </div>
 
-						<table width="280" class="hours column" align="right">
+						<table width="220" class="hours column" align="right">
 							<tr>
-									<td colspan=2 style="text-align: center;"> <b>Programs Office: 408-846-4090</b></td>
+									<td colspan=2 style="text-align: center;"> <b>Programs Office Hours</b></td>
 							 </tr>
 							 <tr>
 									<td>Monday</td>
@@ -145,6 +145,9 @@
 							 <tr>
 									<td>Sunday</td>
 									<td class=closed>Closed</td>
+							 </tr>
+							 <tr>
+									<td colspan=2 align=center><b>408-846-4090</b></td>
 							 </tr>
 						</table>
             </td>
@@ -330,7 +333,7 @@
       <h2>Still have questions?</h2>
       <p>
          Our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> has answers to many questions not answered here.
-         If you have a question about your stay that is still not answered, please call the Programs Office at (408) 846-4090. 
+         If you have a question about your stay that is still not answered, please call the Programs Office at 408-846-4090. 
       <div class=indent>
          We look forward to seeing you here soon! 
       </div>
