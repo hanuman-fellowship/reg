@@ -69,9 +69,6 @@
          width: 100%;
          max-width: 220px;
          }
-         .closed {
-         text-align: center;
-         }
          .name {
          font-weight: bold;
          margin-left: .25in;
@@ -144,7 +141,7 @@
 							 </tr>
 							 <tr>
 									<td>Sunday</td>
-									<td class=closed>Closed</td>
+									<td class=rt>10:00 am - 3:30 pm</td>
 							 </tr>
 							 <tr>
 									<td colspan=2 align=center><b>408-846-4090</b></td>
