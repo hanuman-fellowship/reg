@@ -69,8 +69,8 @@ __PACKAGE__->config(
         'ignore_extensions' => [ 'html' ],
     },
     'Plugin::Session' => {
-        dbic_class => 'RetreatCenterDB::Session',  # Assuming MyApp::Model::DBIC
-        expires    => 3600,
+        dbic_class  => 'RetreatCenterDB::Session',  # Assuming MyApp::Model::DBIC
+        expires     => 3600,
     },
     'Plugin::Authentication' => {
         default => {

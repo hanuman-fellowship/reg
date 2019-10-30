@@ -30,16 +30,17 @@ sub list : Local {
         )
     ];
     stash($c,
-        pg_title     => 'Housing Costs',
-        inc_inactive => $inc_inactive,
-        template     => "housecost/list.tt2",
+        pg_title          => 'Housing Costs',
+        inc_inactive      => $inc_inactive,
+        template          => "housecost/list.tt2",
+        number_deactivate => $c->flash->{number_deactivate}||'',
     );
 }
 
 sub bulk_inactivate : Local {
     my ($self, $c, $inc_inactive) = @_;
 
-    if (my $deactivate_proto = $c->req->parameters->{deactivate}) {
+    if (my $deactivate_proto = $c->req->body_parameters->{deactivate}) {
         my @deactivate = ref($deactivate_proto)? @$deactivate_proto
                         :                        ($deactivate_proto);
 
@@ -52,8 +53,9 @@ sub bulk_inactivate : Local {
                 inactive => 'yes'
             }
         );
-        $c->stash->{number_deactivate} = @deactivate;
-        $c->stash->{plural}            = @deactivate > 1? 's': '';
+        $c->flash->{number_deactivate} = @deactivate;
+        $c->response->redirect($c->uri_for('/housecost/list'));
+        $c->detach;
     }
 
     my @housecosts = model($c, 'HouseCost')
