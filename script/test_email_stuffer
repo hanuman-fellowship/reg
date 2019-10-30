@@ -1,0 +1,31 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use Email::Stuffer;
+use Email::Sender::Transport::SMTP;
+use Util qw(db_init email_letter);
+use Global qw(%string);
+
+my $c = db_init();
+Global->init($c, 1, 1);
+
+my $transport = Email::Sender::Transport::SMTP->new(
+    sasl_username => $string{smtp_user},
+    sasl_password => $string{smtp_pass},
+    host          => $string{smtp_server},
+    port          => $string{smtp_port},
+    ssl => 'starttls', # SES is very picky about this
+);
+
+my $stuffer = Email::Stuffer->new({
+    transport => $transport,
+    to        => 'jjn1056@gmail.com',
+    from      => 'test-stuffer@mountmadonna.org',
+});
+
+foreach my $cnt (1..25) {
+    $stuffer->subject("Email Test (${\scalar(localtime)}) # $cnt")
+      ->text_body("Test Body " x 1000)
+      ->send_or_die;
+}
