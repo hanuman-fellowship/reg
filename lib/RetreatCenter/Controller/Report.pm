@@ -841,11 +841,9 @@ sub _get_updates {
     $ftp->get("updates.sql", $archive)
         or return "no ftp get";
     $ftp->quit();
-    my $db = -d "/Users"?
-        "/usr/local/bin/sqlite3 $ENV{HOME}/Reg/retreatcenter.db"
-       :"/usr/bin/mysql --user=sahadev --password=JonB --database=reg2";
+    my $db = "/usr/bin/mysql --user=sahadev --password=JonB --database=reg2";
     my $rc = system("$db <$archive");
-    if ($rc != -1) {
+    if ($rc != 0) {
         return "no system: $db with $archive, rc = $rc";
     }
     return '';      # all okay
