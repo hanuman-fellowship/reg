@@ -51,7 +51,7 @@ my @format_desc = (
     'First Sanskrit To CMS',
     'Raw',
     'To CMS - Those sans Email',
-    'Last, First, Sanskrit, Email',
+    'Last, First, Email',
     'Email, Code for DDUP',
     'To CMS - Address, Code for DDUP',
     'CSV',
@@ -181,7 +181,6 @@ sub _get_data {
     my ($c) = @_;
 
     %hash = %{ $c->request->params() };
-    $hash{nrecs} ||= 0;
     for my $k (keys %hash) {
         delete $hash{$k} if $k =~ m{^aff\d+$};
     }
@@ -312,10 +311,8 @@ sub run : Local {
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
     my $share    = $c->request->params->{share};
-    my $ignore_opt_out = $c->request->params->{ignore_opt_out};
     my $count    = $c->request->params->{count};
-    my $collapse_same_addr = $c->request->params->{collapse_same_addr};
-    my $collapse_partners = $c->request->params->{collapse_partners};
+    my $collapse = $c->request->params->{collapse};
     my $no_foreign = $c->request->params->{no_foreign};
     my $exclude_only_temple = $c->request->params->{exclude_only_temple};
     my $incl_mmc = $c->request->params->{incl_mmc};
@@ -393,21 +390,17 @@ sub run : Local {
     # restrict it by the opt'ing in booleans.   We're asking them to
     # update their demographics.  We're not pestering them with ads.
     #
-    if (! $ignore_opt_out &&
-        (  $format == TO_CMS
+    if (   $format == TO_CMS
         || $format == NAME_ADDR_EMAIL
         || $format == TO_VISTAPRINT
         || $format == FIRST_SANS_CMS
         || $format == CMS_SANS_EMAIL
-        )
     ) {
         $restrict .= "snail_mailings = 'yes' and ";
     }
-    if (! $ignore_opt_out &&
-        (  $format == NAME_ADDR_EMAIL
+    if (   $format == NAME_ADDR_EMAIL
         || $format == JUST_EMAIL
         || $format == LAST_FIRST_EMAIL
-        )
     ) {
         $restrict .= "e_mailings = 'yes' and ";
     }
@@ -452,7 +445,7 @@ sub run : Local {
         # we only want non-blank emails
         $just_email = "email != '' and ";
         $order = "last";
-        $fields = "last, first, sanskrit, email";
+        $fields = "last, first, email";
     }
 
     my $range_ref = parse_zips($report->zip_range);
@@ -511,8 +504,6 @@ EOS
             $p->{name} = $p->{first} . " " . $p->{last};
         }
     }
-    my $ndel = 0;
-
     #
     # now to take care of two people in the report
     # who are partners.   this is tricky!  wake up.
@@ -520,38 +511,37 @@ EOS
     # if we are asking for "Just Email" this won't really apply.
     # no id_sps field so...
     #
-    if (! $just_email && $collapse_partners) {
-        my %partner_index = ();
-        my $i = 0;
-        for my $p (@people) {
-            if ($p->{id_sps}) {
-                $partner_index{$p->{id}} = $i;
-            }
-            ++$i;
+    my %partner_index = ();
+    my $i = 0;
+    for my $p (@people) {
+        if ($p->{id_sps}) {
+            $partner_index{$p->{id}} = $i;
         }
-        for my $p (@people) {
-            if ($p->{id_sps}
-                && (my $pi = $partner_index{$p->{id_sps}})
-            ) {
-                my $ptn = $people[$pi];
-                if ($p->addr1() eq $ptn->addr1()) {
-                    # good enough match of address...
-                    # modify $p so that their 'name' is both of them
-                    # direct access... :(
-                    # treating this as an arrayref of hashrefs
-                    # or an arrayref of objects as convenient.
-                    $p->{name} = ($p->last eq $ptn->last)?
-                                    $p->first." & ".$ptn->first." ".$ptn->last:
-                                    $p->name." & ".$ptn->name; 
-                    #
-                    # and modify the data so the partner is not shown
-                    # nor even considered.
-                    #
-                    delete $partner_index{$p->id};
-                    delete $partner_index{$ptn->id};
-                    $ptn->{deleted} = 1;
-                    ++$ndel;
-                }
+        ++$i;
+    }
+    my $ndel = 0;
+    for my $p (@people) {
+        if ($p->{id_sps}
+            && (my $pi = $partner_index{$p->{id_sps}})
+        ) {
+            my $ptn = $people[$pi];
+            if ($p->addr1() eq $ptn->addr1()) {
+                # good enough match of address...
+                # modify $p so that their 'name' is both of them
+                # direct access... :(
+                # treating this as an arrayref of hashrefs
+                # or an arrayref of objects as convenient.
+                $p->{name} = ($p->last eq $ptn->last)?
+                                $p->first." & ".$ptn->first." ".$ptn->last:
+                                $p->name." & ".$ptn->name; 
+                #
+                # and modify the data so the partner is not shown
+                # nor even considered.
+                #
+                delete $partner_index{$p->id};
+                delete $partner_index{$ptn->id};
+                $ptn->{deleted} = 1;
+                ++$ndel;
             }
         }
     }
@@ -559,7 +549,7 @@ EOS
     #
     # if we should collapse records with the same address, do so.
     #
-    if (! $just_email && $collapse_same_addr) {
+    if ($collapse && ! $just_email) {
         # sort to get same addresses together
         @people = map {
                       $_->[1]
@@ -625,10 +615,8 @@ EOS
         stash($c,
             message  => "Record count = " . scalar(@people),
             share    => $share,
-            collapse_partners => $collapse_partners,
-            collapse_same_addr => $collapse_same_addr,
+            collapse => $collapse,
             no_foreign => $no_foreign,
-            ignore_opt_out => $ignore_opt_out,
             exclude_only_temple => $exclude_only_temple,
             incl_mmc => $incl_mmc,
             append   => $append,
@@ -802,7 +790,7 @@ EOF
     # as it may take a while...
     my $who = $c->user->username;
     my $email = $c->user->email;
-    system("load_people_data " . " $fname '$report_name' $who $email &");
+    system("/var/www/src/load_people_data " . " $fname '$report_name' $who $email &");
     return '';
 }
 
