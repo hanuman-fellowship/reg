@@ -67,6 +67,7 @@ sub email_letter {
 
 sub finish {
     my ($status) = @_;
+    print "DDUP status: $status\n";
     email_letter(
        to      => $email, 
        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
