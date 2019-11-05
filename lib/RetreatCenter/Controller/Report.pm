@@ -790,7 +790,7 @@ EOF
     # as it may take a while...
     my $who = $c->user->username;
     my $email = $c->user->email;
-    system("load_people_data " . " $fname '$report_name' $who $email &");
+    system("/var/www/src/load_people_data " . " $fname '$report_name' $who $email &");
     return '';
 }
 

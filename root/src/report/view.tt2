@@ -1,4 +1,4 @@
-[% code = (format_verbose=='Email, Code'||format_verbose=='To CMS - Address, Code') %]
+[% code = (format_verbose=='Email, Code for DDUP'||format_verbose=='To CMS - Address, Code for DDUP') %]
 <h2>Reports</h2>
 <a href="/report/update/$report.id">Edit</a>
 &nbsp;&nbsp;&nbsp;

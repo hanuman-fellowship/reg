@@ -2,7 +2,6 @@
 use strict;
 use warnings;
 
-use DBI;
 use Net::FTP;
 use Mail::Sender;
 use URI::Escape 'uri_escape';
@@ -12,21 +11,21 @@ $report_name = uri_escape($report_name);
 
 my $cgi = "https://www.mountmadonna.org/cgi-bin";
 my $exp = "expiry_date.txt";
-my $rst_exp = "$ENV{HOME}/Reg/root/static/$exp";
+my $local_exp = "/var/Reg/report/$exp";
 
-my $dbh = DBI->connect(undef, "sahadev", "JonB")
-    or die("oh no DBI");
-my $sth = $dbh->prepare("
-    select the_key, value
-    from string
-    where the_key like 'ftp_%'
-       or the_key like 'smtp_%'
-");
-$sth->execute();
-my %string;
-while (my ($the_key, $value) = $sth->fetchrow_array()) {
-    $string{$the_key} = $value;
-}
+# hardcode for now...
+my %string = qw(
+    ftp_site mountmadonna.org
+    ftp_login reg
+    ftp_password S1tarAm!
+    ftp_passive 1
+
+    smtp_auth LOGIN
+    smtp_pass BOI6Wu1bneKSiVbpVZv+iGIQpGxzlVifnW52rodluMMk
+    smtp_port 25
+    smtp_server email-smtp.us-west-2.amazonaws.com
+    smtp_user AKIA455XE3II62QJTHXC
+);
 
 # 
 # get ready to send email - dup'ed from script/grab_new
@@ -78,6 +77,9 @@ sub finish {
     exit;
 }
 
+# thanks to jnap and haarg
+# a nice HACK to force Extended Passive Mode:
+local *Net::FTP::pasv = \&Net::FTP::epsv;
 my $ftp = Net::FTP->new($string{ftp_site},
                         Passive => $string{ftp_passive})
     or finish("no Net::FTP->new");
@@ -89,7 +91,7 @@ $ftp->ascii()
     or finish("no ascii");
 $ftp->put("/tmp/$fname", $fname)
     or finish("no put 1");
-$ftp->put($rst_exp, $exp)
+$ftp->put($local_exp, $exp)
     or finish("no put 2");
 $ftp->quit();
 my $rc = qx(curl -k '$cgi/load_people_data?report_name=$report_name&who=$who' 2>/dev/null);
