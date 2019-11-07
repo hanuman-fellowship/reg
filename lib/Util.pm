@@ -2355,6 +2355,8 @@ sub PR_progtable {
         next_hc       => $next_hc,
         next_date     => $sdate,
         type          => 'Per Day',
+        children_welcome => 'yes',
+        kayakalpa     => 'yes',
     };
     TYPE:
     for my $type (reverse housing_types(1)) {
