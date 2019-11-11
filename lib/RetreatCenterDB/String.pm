@@ -142,6 +142,8 @@ dble - the display name for the housing type 'dble'
 dble_bath - the display name for the housing type 'dble_bath'
 default_date_format - the format used when doing $dt->format() or when
     a $dt is stringified in a template.
+default_num_prog_days - when choosing 'Program' how many days
+    into the future should we show programs?
 deposit_lines_per_page - number of lines per page when printing a deposit for filing.
 dinner_cost - cost of dinner when reserving online
 dinner_cost_5_12 - cost of dinner for a child aged 5-12 when reserving online

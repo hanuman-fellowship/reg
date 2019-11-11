@@ -734,7 +734,9 @@ sub list : Local {
     # good enough to include programs that may have finished a week ago?
     #
     my $cutoff = tt_today($c) - 7;
+    my $end_date = $cutoff + $string{default_num_prog_days};
     $cutoff = $cutoff->as_d8();
+    $end_date = $end_date->as_d8();
     my @cond = ();
     if ($type eq 'long_term') {
         @cond = (
@@ -750,14 +752,14 @@ sub list : Local {
             'level.long_term' => '',
         );
         if ($hide_mmi) {
-            push @cond, ('school.mmi' => '');      # only MMC no MMI
+            push @cond, ('me.name' => { -not_like => '%MMI%' });      # only MMC no MMI
         }
     }
     stash($c,
         programs => [
             model($c, 'Program')->search(
                 {
-                    edate => { '>=', $cutoff },
+                    edate => { -between => [ $cutoff, $end_date ] },
                     @cond,
                 },
                 {
