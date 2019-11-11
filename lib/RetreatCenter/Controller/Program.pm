@@ -851,7 +851,7 @@ sub listpat : Local {
         programs => [
             model($c, 'Program')->search(
                 $cond,
-                { order_by => ['sdate desc', 'me.id asc'] },
+                { order_by => ['sdate asc', 'me.id asc'] },
             )
         ],
         pr_pat   => $pr_pat,
