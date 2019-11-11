@@ -97,6 +97,7 @@ sub add_program {
         # and override these:
         id => undef,
         gate_code => '',
+        reg_count => 0,
     });
     if (! $sdate) {
         my $last_sdate = date($last_one->sdate());
