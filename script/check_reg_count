@@ -1,0 +1,28 @@
+my $fix = $ARGV[0] && $ARGV[0] eq 'fix';
+use lib 'lib';
+use Util qw/
+    model
+    db_init
+/;
+use RetreatCenterDB;    # ??? why can't we move this to Util?
+my $c = db_init();
+Global->init($c, 1, 1);
+
+my @progs = model($c, 'Program')->search({
+                sdate => { '>=' => 20190101 },
+            }, { order_by => 'sdate' });
+for my $p (@progs) {
+    my $pid = $p->id;
+    my $n = model($c, 'Registration')->search({
+                program_id => $pid,
+                cancelled => '',
+            });
+    if ($n != $p->reg_count) {
+        print $p->name . ' ' . $p->sdate_obj . ' ' . $p->reg_count . ' ' . $n . "\n";
+        if ($fix) {
+            $p->update({
+                reg_count => $n,
+            });
+        }
+    }
+}
