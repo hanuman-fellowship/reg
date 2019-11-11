@@ -39,7 +39,7 @@
 
 <tr>
 <td>&nbsp;</td>
-<td><input type=submit value="Submit"></td>
+<td><input type=submit value="Submit" id=sub></td>
 </tr>
 
 </table>
