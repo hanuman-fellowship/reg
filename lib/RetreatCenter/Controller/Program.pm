@@ -785,6 +785,9 @@ sub list : Local {
 sub listpat : Local {
     my ($self, $c) = @_;
 
+    my @hide_mmi = $c->user->obj->hide_mmi()?
+                       ('me.name' => { -not_like => '%MMI%' })
+                     : ();
     my $today = tt_today($c)->as_d8();
     my $pr_pat = trim($c->request->params->{pr_pat});
     if (empty($pr_pat)) {
@@ -812,6 +815,7 @@ sub listpat : Local {
             $d2 = $year . '0930';
         }
         $cond = {
+            @hide_mmi,
             sdate => { 'between' => [ $d1, $d2 ] },
         };
     }
@@ -824,6 +828,7 @@ sub listpat : Local {
             $year += 2000;
         }
         $cond = {
+            @hide_mmi,
             sdate => { 'between' => [ "${year}0101", "${year}1231" ] },
         };
     }
@@ -835,6 +840,7 @@ sub listpat : Local {
         my $pat = $pr_pat;
         $pat =~ s{\*}{%}g;
         $cond = {
+            @hide_mmi,
             name => { 'like' => "${pat}%" },
         };
     }
