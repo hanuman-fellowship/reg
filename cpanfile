@@ -24,3 +24,5 @@ requires 'IO::Socket::SSL';
 requires 'LWP::Protocol::https';
 requires 'Email::Stuffer';
 requires 'Text::CSV_XS', '1.38';
+requires 'MIME::Base64';
+requires 'Authen::SASL';
