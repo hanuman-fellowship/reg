@@ -677,6 +677,10 @@ sub model {
     }
 }
 
+#
+# we now have two ways to send email
+# which will work better?
+#
 sub email_letter {
   my ($c) = @_;
   if (-f '/var/www/src/new_email') {
