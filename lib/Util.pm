@@ -863,13 +863,13 @@ print "3\n";
                 sasl_username  => $string{smtp_user},
                 sasl_password => $string{smtp_pass},
                 host => $string{smtp_server},
-                port => $string{smtp_port},
+                port => 465, #$string{smtp_port},
                 ssl => 'starttls',
             );
             $_transport = Email::Sender::Transport::SMTP->new(%args);
         }
         if (! ref $_transport) {
-print "4\n";
+print "no transport\n";
             print {$mlog} "could not create mail_sender\n";
             close $mlog;
             return;
@@ -898,7 +898,7 @@ EOM
         $args{to} = [ split m{\s*,\s*}xms, $string{redirect_email} ];
     }
 
-print "5\n";
+print "4\n";
     my $stuffer = Email::Stuffer->new({
         transport => $_transport,
         to        => $args{to},
@@ -926,9 +926,9 @@ print "5\n";
     }
 
     eval {
-print "6\n";
+print "5\n";
         $stuffer->send_or_die;
-print "7\n";
+print "6\n";
     } || do {
         print {$mlog} "Failed to send email: $@\n";
         close $mlog;
@@ -937,7 +937,7 @@ print "7\n";
 
     print {$mlog} "sent\n";
     close $mlog;
-print "8\n";
+print "7\n";
     return 1;
 }
 
