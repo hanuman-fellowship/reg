@@ -25,6 +25,8 @@ our @EXPORT_OK = qw/
     digits
     model
     email_letter
+    old_email_letter
+    new_email_letter
     lunch_table
     clear_lunch
     get_lunch
@@ -843,7 +845,7 @@ sub new_email_letter {
 
     if (! ref $_transport) {
         Global->init($c);
-        if ($c->debug) {
+        if (0 && $c->debug) {
             $c->log->debug('Using the "Print" Email transport for testing!');
             Catalyst::Utils::ensure_class_loaded(
                 'Email::Sender::Transport::Print'
@@ -912,10 +914,9 @@ EOM
     #   { content => $body, %args }
     # ]
 
-    if (my @attachments = @{$args{attachments}||[]}) {
-        foreach my $attachment (@attachments) {
-          my $content = delete $attachment->{content};
-          $stuffer->attach($content, %{$attachment} );
+    if (my @files_to_attach = @{$args{files_to_attach}||[]}) {
+        foreach my $file (@files_to_attach) {
+          $stuffer->attach_file($file);
         }
     }
 
