@@ -816,6 +816,7 @@ my $_transport;
 sub new_email_letter {
     my ($c, %args) = @_;
 
+print "1\n";
     for my $k (qw/ to from subject html /) {
         if (! exists $args{$k}) {
             die "no $k in args for Util::email_letter\n";
@@ -843,7 +844,9 @@ sub new_email_letter {
     }
     print {$mlog} "$args{which} - ";
 
+print "2\n";
     if (! ref $_transport) {
+print "3\n";
         Global->init($c);
         if (0 && $c->debug) {
             $c->log->debug('Using the "Print" Email transport for testing!');
@@ -866,6 +869,7 @@ sub new_email_letter {
             $_transport = Email::Sender::Transport::SMTP->new(%args);
         }
         if (! ref $_transport) {
+print "4\n";
             print {$mlog} "could not create mail_sender\n";
             close $mlog;
             return;
@@ -894,6 +898,7 @@ EOM
         $args{to} = [ split m{\s*,\s*}xms, $string{redirect_email} ];
     }
 
+print "5\n";
     my $stuffer = Email::Stuffer->new({
         transport => $_transport,
         to        => $args{to},
@@ -921,7 +926,9 @@ EOM
     }
 
     eval {
+print "6\n";
         $stuffer->send_or_die;
+print "7\n";
     } || do {
         print {$mlog} "Failed to send email: $@\n";
         close $mlog;
@@ -930,6 +937,7 @@ EOM
 
     print {$mlog} "sent\n";
     close $mlog;
+print "8\n";
     return 1;
 }
 
