@@ -1333,6 +1333,8 @@ sub _compute {
     my $mem = $reg->person->member();
     my $lead_assist = $reg->leader_assistant();   # no housing or tuition charge
                                                   # for these people
+                                                  # no longer true
+                                                  # it is now $string{lead_assist_daily_charge}
     # clear auto charges - they'll be re-added below
     model($c, 'RegCharge')->search({
         reg_id    => $reg_id,
@@ -1427,22 +1429,25 @@ sub _compute {
                   || $h_type eq 'unknown')? 0
                  :                          $housecost->$h_type();
                                             # column name is correct, yes?
+    if ($lead_assist && $pr->rental_id() == 0) {
+        # leaders of non-hybrid programs pay no housing
+        # not any more.   now they pay a flat fee per day
+        # regardless of what housing they are given.
+        #
+        $h_cost = $string{lead_assist_daily_charge};
+    }
     my ($tot_h_cost, $what);
-    if ($housecost->type() eq "Per Day") {
+    if ($lead_assist || $housecost->type() eq "Per Day") {
         $tot_h_cost = $prog_days*$h_cost;
         my $plural = ($prog_days == 1)? "": "s";
-        $what = "$prog_days day$plural Lodging at \$$h_cost per day";
+        my $for_whom = $lead_assist? 'for a leader/assistant<br>': '';
+        $what = "$prog_days day$plural Lodging ${for_whom}at \$$h_cost per day";
     }
     else {
         # changed from pro-rating to not pro-rating
         #
         $tot_h_cost = $h_cost;
         $what = "Lodging - Total Cost";
-    }
-    if ($lead_assist && $pr->rental_id() == 0) {
-        # leaders of non-hybrid programs pay no housing
-        #
-        $tot_h_cost = 0;
     }
     if ($auto && $tot_h_cost != 0) {
         model($c, 'RegCharge')->create({
@@ -4276,6 +4281,11 @@ sub lodge_do : Local {
         lodge($self, $c, $id);
         # ??? another way of calling? with same params???
         return;
+    }
+    elsif ($reg->leader_assistant()) {
+        # leader/assistant registrations are created without
+        # going on to the housing part.    so do the computation now.
+        _compute($c, $reg, 0, @who_now);
     }
 
     my $newnote = cf_expand($c, $c->request->params->{confnote});

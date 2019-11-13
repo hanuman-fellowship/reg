@@ -245,6 +245,7 @@ last_deposit_date - when was the last MMC deposit made?
     filled in automatically.   Must use get_string and put_string to access.
 last_mmi_deposit_date - when was the last MMI deposit made?
     filled in automatically.   Must use get_string and put_string to access.
+lead_assist_daily_charge - How much do leaders and assistants pay per day?
 long_center_tent - for housing type descriptions.  see RetreatCenterDB::Program::fee_table
 long_commuting - for housing type descriptions
 long_dble - for housing type descriptions

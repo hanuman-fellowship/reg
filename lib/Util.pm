@@ -105,6 +105,9 @@ use Global qw/
     %string
 /;
 use Mail::Sender;
+use Email::Stuffer;
+use Catalyst::Utils;
+
 # no ping on new site :(
 #use Net::Ping;
 use Carp 'croak';
@@ -136,6 +139,7 @@ sub charges_and_payments_options {
 }
 
 sub db_init {
+    Catalyst::Utils::ensure_class_loaded('RetreatCenterDB');
     return RetreatCenterDB->connect($ENV{DBI_DSN}, "sahadev", "JonB");
 }
 
@@ -171,7 +175,7 @@ sub affil_table {
     %checked = map { (ref($_)? $_->id(): $_) => 'checked' } @to_check;
 
     my $bool = $all? undef
-        :{ 
+        :{
             -or => [
                 system => { '!=' => 'yes' },
                 selectable => 'yes',
@@ -374,7 +378,7 @@ sub nsquish {
     $n =~ s{\D}{}g;
     $s =~ s{[^A-Z]}{}g;
     $s = substr($s, 0, 3);
-    return ($n . $s); 
+    return ($n . $s);
 }
 
 #
@@ -566,7 +570,7 @@ sub parse_zips {
                 return "Zip range start is greater than end";
             }
             push @$ranges_ref, [ $startzip, $endzip ];
-        } 
+        }
         elsif ($r =~ m/^\d{5}$/) {
             push @$ranges_ref, [ $r, $r ];
         }
@@ -673,6 +677,17 @@ sub model {
     }
 }
 
+sub email_letter {
+  my ($c) = @_;
+  if (-f '/var/www/src/new_email') {
+      $c->log->info("Using new email transport");
+      return new_email_letter(@_);
+  }
+  else {
+      return old_email_letter(@_);
+  }
+}
+
 my $mail_sender;
 
 #
@@ -680,7 +695,7 @@ my $mail_sender;
 # if $ENV{test_email} send it to that address instead of to and cc/bcc
 # return a boolean - did it succeed?
 #
-sub email_letter {
+sub old_email_letter {
     my ($c, %args) = @_;
 
     for my $k (qw/ to from subject html /) {
@@ -788,6 +803,128 @@ EOM
         # need to recreate or else the cc/bcc people
         # will receive ALL email! :(
     }
+    return 1;
+}
+
+my $_transport;
+sub new_email_letter {
+    my ($c, %args) = @_;
+
+    for my $k (qw/ to from subject html /) {
+        if (! exists $args{$k}) {
+            die "no $k in args for Util::email_letter\n";
+        }
+    }
+    my @cc_bcc = ();
+    if (exists $args{cc}) {
+        push @cc_bcc, cc => $args{cc};
+    }
+    if (exists $args{bcc}) {
+        push @cc_bcc, bcc => $args{bcc};
+    }
+    open my $mlog, ">>", "/var/log/Reg/mail.log";
+    if (ref $args{to} eq 'ARRAY') {
+        print {$mlog} localtime() . " @{$args{to}} - ";
+    }
+    else {
+        print {$mlog} localtime() . " $args{to} - ";
+    }
+    if (@cc_bcc) {
+        print {$mlog} " @cc_bcc - ";
+    }
+    if (! exists $args{which}) {
+        $args{which} = $args{subject};
+    }
+    print {$mlog} "$args{which} - ";
+
+    if (! ref $_transport) {
+        Global->init($c);
+        if ($c->debug) {
+            $c->log->debug('Using the "Print" Email transport for testing!');
+            Catalyst::Utils::ensure_class_loaded(
+                'Email::Sender::Transport::Print'
+            );
+            $_transport = Email::Sender::Transport::Print->new;
+        }
+        else {
+            Catalyst::Utils::ensure_class_loaded(
+                'Email::Sender::Transport::SMTP'
+            );
+            my %args = (
+                sasl_username  => $string{smtp_user},
+                sasl_password => $string{smtp_pass},
+                host => $string{smtp_server},
+                port => $string{smtp_port},
+                ssl => 'starttls',
+            );
+            $_transport = Email::Sender::Transport::SMTP->new(%args);
+        }
+        if (! ref $_transport) {
+            print {$mlog} "could not create mail_sender\n";
+            close $mlog;
+            return;
+        }
+    }
+
+    # redirecting for testing purpose
+    if (! empty($string{redirect_email})) {
+        my $to = (ref $args{to} eq 'ARRAY')? "@{$args{to}}": $args{to};
+        $args{cc} ||= '';
+        $args{bcc} ||= '';
+        for ($to, $args{cc}, $args{bcc}) {
+            s{[<]}{&lt;}xms;
+            s{[>]}{&gt;}xms;
+        }
+        $args{html} = <<"EOM";
+This email was <b>redirected</b>.<br>
+The original recipients were:<br>
+To: $to<br>
+Cc: $args{cc}<br>
+Bcc: $args{bcc}<br>
+<hr style="color: red">
+<p>
+$args{html}
+EOM
+        $args{to} = [ split m{\s*,\s*}xms, $string{redirect_email} ];
+    }
+
+    my $stuffer = Email::Stuffer->new({
+        transport => $_transport,
+        to        => $args{to},
+        from      => $args{from},
+        reply_to  => ($args{replyto} || $args{from}),
+        subject   => $args{subject},
+        @cc_bcc,
+    });
+
+    if (! $args{ctype} || ($args{ctype} eq 'text/html')) {
+        $stuffer->html_body($args{html});
+    }
+    else {
+        $stuffer->attach($args{html}, content_type => $args{ctype});
+    }
+
+    # attachments = [
+    #   { content => $body, %args }
+    # ]
+
+    if (my @attachments = @{$args{attachments}||[]}) {
+        foreach my $attachment (@attachments) {
+          my $content = delete $attachment->{content};
+          $stuffer->attach($content, %{$attachment} );
+        }
+    }
+
+    eval {
+        $stuffer->send_or_die;
+    } || do {
+        print {$mlog} "Failed to send email: $@\n";
+        close $mlog;
+        return;
+    };
+
+    print {$mlog} "sent\n";
+    close $mlog;
     return 1;
 }
 
@@ -936,9 +1073,9 @@ sub lines {
 #
 sub _br {
     my ($s) = @_;
- 
+
     if (! $s) {
-        return $s; 
+        return $s;
     }
     $s =~ s{\r?\n$}{};      # chop last
     $s =~ s{\r?\n}{<br>\n}g;   # internal newlines
@@ -972,7 +1109,7 @@ sub normalize {
 }
 
 sub tt_today {
-    my ($c) = @_;    
+    my ($c) = @_;
 
     my ($s) = model($c, 'String')->search({ the_key => 'tt_today' });
     $s = $s->value();
@@ -1028,7 +1165,7 @@ sub ceu_license_stash {
     my ($license, $has_completed, $provider);
 	if ($lic =~ /^RN/) {
 		$license  = "Registered Nurse License Number: $lic";
-		$has_completed = "Has completed the following course work<br>". 
+		$has_completed = "Has completed the following course work<br>".
                                "for Continuing Education Credit:";
 		$provider = "This Certificate must be retained by the ".
 						  "licensee for a period of four years after ".
@@ -1071,7 +1208,7 @@ sub ceu_license_stash {
                :                                      $ndays*5
                ;
     my $date = $sdate->format("%B %e");
-    if (   $sdate->month() == $edate->month() 
+    if (   $sdate->month() == $edate->month()
         && $sdate->year()  == $sdate->year() )
     {
         # February 4-6, 2005
@@ -1658,7 +1795,7 @@ sub penny {
 }
 
 # check the make up list and see
-# if the given house is currently on it.  
+# if the given house is currently on it.
 # If it is will the new use of it on
 # $sdate alter the 'date_needed'?
 #
@@ -1869,7 +2006,7 @@ sub randpass {
     my @lets = split '', 'abcdefghjkmnpqrstvwxz'
                          . uc 'abcdefghjkmnpqrstvwxz';
     my @digs = split '', '23456789';
-    return 
+    return
         $lets[rand @lets]
       . $digs[rand @digs]
       . $lets[rand @lets]
@@ -1968,7 +2105,7 @@ sub add_or_update_deduping {
     for my $k (@needed) {
         # fix this sanskrit thing later???
         if ($k ne 'sanskrit' && ! exists $href->{$k}) {
-            push @missing, $k;        
+            push @missing, $k;
         }
     }
     if (@missing) {
@@ -2434,7 +2571,7 @@ sub no_comma {
 
 #
 # Is the end date of the program/rental/block
-# beyond where we have config records?  I even add a 
+# beyond where we have config records?  I even add a
 # fudge factor of 30 days.
 #
 sub too_far {

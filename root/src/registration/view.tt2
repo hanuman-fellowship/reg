@@ -313,7 +313,7 @@ $type
 [% FOREACH ch IN reg.charges %]
 <tr>
 <td align=right valign=top>$ch.amount_disp</td>
-<td>$ch.type_disp</td>
+<td valign=top>$ch.type_disp</td>
 <td>$ch.what</td>
 <th>
 <a href="javascript:void(0);" onclick="return overlib('${ch.the_date_obj.format("%D")}&nbsp;&nbsp;$ch.time_obj&nbsp;&nbsp;$ch.user.username[% IF ! ch.automatic %]&nbsp;<span class=nh><a title=Edit href=/registration/charge_update/$ch.id><img src=/static/images/pencil.png height=20 border=0></a>&nbsp;<a title=Delete href=/registration/charge_delete/$id/$ch.id><img src=/static/images/redX.gif height=20 border=0></a></span>[% END %]', RIGHT, STICKY, TEXTSIZE, '16pt', WIDTH, 450, OFFSETX, '23', OFFSETY, '-13', CAPTION, ' ', CLOSECLICK);"><img border=0 width=20 src="/static/images/info.png"></a>
