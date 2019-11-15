@@ -2026,7 +2026,7 @@ sub send_conf : Local {
              'root/static/templates/letter/MMC_Guest_Packet.pdf',
          ],
          activity_msg => "Confirmation sent for"
-                       . " <a href='/registration/$reg_id'>$name</a>",
+                       . " <a href='/registration/view/$reg_id'>$name</a>",
     );
 
     my @who_now = get_now($c, $reg_id);
