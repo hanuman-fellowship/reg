@@ -62,7 +62,6 @@ use Badge;
 use POSIX;
 use Template;
 use CGI qw/:html/;      # for Tr, td
-use Mail::Sender;
 use List::Util qw/
     uniq
 /;
@@ -1506,108 +1505,25 @@ sub arrangements : Local {
         );
         return;
     }
-
-    my @orig_to = @to;
-    my @orig_cc = @cc;
-    # redirect of all emails
-    if (! empty($string{redirect_email})) {
-        for (@to, @cc) {
-            s{[<]}{&lt;}xmsg;
-            s{[>]}{&gt;}xmsg;
-        }
-        $html = <<"EOM";
-This email has been <b>redirected</b>.<br>
-The original recipients were:<br>
-To: @to<br>
-Cc: @cc<br>
-<hr style="color: red">
-<p>
-$html
-EOM
-        @to = split m{\s*,\s*}xms, $string{redirect_email};
-        @cc = ();
-    }
-
-    # a special sending of the letter - can't use Util sub email_letter
-    Global->init($c);
-    my @auth = ();
-    if ($string{smtp_auth}) {
-        @auth = (
-            auth    => $string{smtp_auth},
-            authid  => $string{smtp_user},
-            authpwd => $string{smtp_pass},
-        );
-    }
-    my $sender = Mail::Sender->new({
-        smtp => $string{smtp_server},
-        port => $string{smtp_port},
-        @auth,
-        on_errors => 'die',
-    });
     my $user = $c->user->obj();
-    $sender->OpenMultipart({
+    my $dir = 'root/static/templates/letter';
+    my $rental_name = $rental->name;
+    email_letter($c,
         from    =>        $user->first
                  . ' '  . $user->last
                  . ' <' . $user->email . '>',
         to      => \@to,
         cc      => \@cc,
         subject => $subject,
-    });
-    $sender->Body({
-        ctype => 'text/html',
-        msg   => $html,
-    });
-    my $dir = 'root/static/templates/letter';
-    $sender->Attach({
-        description => 'Map of the main area at MMC.',
-        ctype       => 'application/pdf',
-        encoding    => 'Base64',
-        disposition => 'attachment;'
-                     . 'filename="Main_Area_Map.pdf";'
-                     . 'type="pdf"',
-        file        => "$dir/Main Area Map 2014.pdf",
-    });
-    $sender->Attach({
-        description => 'Rental Guest Confirmation Letter.doc',
-        ctype       => 'application/msword',
-        encoding    => 'Base64',
-        disposition => 'attachment;'
-                     . 'filename="Rental_Guest_Confiration_Letter.doc";'
-                     . 'type="doc"',
-        file        => "$dir/Rental Guest Confirmation Letter.doc",
-    });
-    $sender->Attach({
-        description => 'MMC Food.doc',
-        ctype       => 'application/msword',
-        encoding    => 'Base64',
-        disposition => 'attachment;'
-                     . 'filename="MMC_Food.doc";'
-                     . 'type="doc"',
-        file        => "$dir/MMC Food.doc",
-    });
-    $sender->Attach({
-        description => 'CURRENT INFO SHEET.doc',
-        ctype       => 'application/msword',
-        encoding    => 'Base64',
-        disposition => 'attachment;'
-                     . 'filename="Current_Info_Sheet.doc";'
-                     . 'type="doc"',
-        file        => "$dir/CURRENT INFO SHEET.doc",
-    });
-    my $rc = $sender->Close;
-    open my $mlog, ">>", "/var/log/Reg/mail.log";
-    print {$mlog} localtime() . " @orig_to - ";
-    if (@orig_cc) {
-        print {$mlog} "Cc: @orig_cc - ";
-    }
-    print {$mlog} "Arrangements for " . $rental->name . " - ";
-    if (ref $rc) {
-        print {$mlog} "sent\n";
-    }
-    else {
-        print {$mlog} " error - $Mail::Sender::Error\n";
-    }
-    close $mlog;
+        html    => $html,
+        attached_files => [
+            "$dir/Main_Area_Map.pdf",
+            "$dir/Rental Guest Confirmation Letter.doc",
+            "$dir/MMC Food.doc",
+            "$dir/CURRENT INFO SHEET.doc",
+        ],
+        activity_msg => "Arrangements letter sent for <a href='/rental/view/$rental_id'>$rental_name</a>",
+    );
     $rental->update({
         arrangement_sent => tt_today($c)->as_d8(),
         arrangement_by   => $c->user->obj->id,
@@ -1690,9 +1606,9 @@ sub _contract_ready {
 }
 
 sub contract : Local {
-    my ($self, $c, $id, $email) = @_;
+    my ($self, $c, $rental_id, $email) = @_;
 
-    my $rental = model($c, 'Rental')->find($id);
+    my $rental = model($c, 'Rental')->find($rental_id);
     if (! _contract_ready($c, $rental, 1)) {
         return;
     }
@@ -1771,53 +1687,8 @@ sub contract : Local {
         );
         return;
     }
-
-    my @orig_to = @to;
-    my @orig_cc = @cc;
-    # redirect of all emails
-    if (! empty($string{redirect_email})) {
-        for (@to, @cc) {
-            s{[<]}{&lt;}xmsg;
-            s{[>]}{&gt;}xmsg;
-        }
-        $html = <<"EOM";
-This email has been <b>redirected</b>.<br>
-The original recipients were:<br>
-To: @to<br>
-Cc: @cc<br>
-<hr style="color: red">
-<p>
-$html
-EOM
-        @to = split m{\s*,\s*}xms, $string{redirect_email};
-        @cc = ();
-    }
-
-    # a special sending of the letter - can't use Util sub email_letter
-    Global->init($c);
-    my @auth = ();
-    if ($string{smtp_auth}) {
-        @auth = (
-            auth    => $string{smtp_auth},
-            authid  => $string{smtp_user},
-            authpwd => $string{smtp_pass},
-        );
-    }
-    my $sender = Mail::Sender->new({
-        smtp => $string{smtp_server},
-        port => $string{smtp_port},
-        @auth,
-        on_errors => 'die',
-    });
     my $user = $c->user->obj();
-    $sender->OpenMultipart({
-        from    =>        $user->first
-                 . ' '  . $user->last
-                 . ' <' . $user->email . '>',
-        to      => \@to,
-        cc      => \@cc,
-        subject => "MMC Rental Contract with '" . $rental->name_trimmed() . "'",
-    });
+    my $dir = 'root/static/templates/letter';
     my $preface = "";
     $tt->process(
         "rental_contract_preface.tt2",  # template
@@ -1825,59 +1696,27 @@ EOM
         \$preface,           # output
     ) or die "error in processing template: "
              . $tt->error();
-    $sender->Body({
-        ctype => 'text/html',
-        msg   => $preface,
-    });
-    my $dir = 'root/static/templates/letter';
-    my $f0 = "/tmp/contract" . $rental->id . ".html";
-    open my $out, '>', $f0 or return;   # what to do??
+    my $rental_name = $rental->name_trimmed;
+    my $contract = "/tmp/$rental_name MMC Rental Contract.html";
+    open my $out, '>', $contract or return;   # what to do??
     print {$out} $html;
     close $out;
-    my $rental_name = $rental->name_trimmed;
-    $sender->Attach({
-        description => '$rental_name MMC Rental Contract',
-        ctype       => 'text/html',
-        encoding    => 'Base64',
-        disposition => 'attachment;'
-                     . qq{filename="$rental_name MMC Rental Contract.html";}
-                     . 'type="html"',
-        file        => $f0,
-    });
-    my $f1 = "Rental Registration Guidelines.pdf";
-    $sender->Attach({
-        description => $f1,
-        ctype       => 'application/pdf',
-        encoding    => 'Base64',
-        disposition => 'attachment;'
-                     . qq{filename="$f1";}
-                     . 'type="pdf"',
-        file        => "$dir/$f1",
-    });
-    my $f2 = 'Kaya Kalpa Brochure.pdf';
-    $sender->Attach({
-        description => $f2,
-        ctype       => 'application/pdf',
-        encoding    => 'Base64',
-        disposition => 'attachment;'
-                     . qq{filename="$f2";}
-                     . 'type="pdf"',
-        file        => "$dir/$f2",
-    });
-    my $rc = $sender->Close;
-    open my $mlog, ">>", "/var/log/Reg/mail.log";
-    print {$mlog} localtime() . " @orig_to - ";
-    if (@orig_cc) {
-        print {$mlog} "Cc: @orig_cc - ";
-    }
-    print {$mlog} "Contract for " . $rental->name . " - ";
-    if (ref $rc) {
-        print {$mlog} "sent\n";
-    }
-    else {
-        print {$mlog} " error - $Mail::Sender::Error\n";
-    }
-    close $mlog;
+    email_letter($c,
+        from    =>        $user->first
+                 . ' '  . $user->last
+                 . ' <' . $user->email . '>',
+        to      => \@to,
+        cc      => \@cc,
+        subject => "MMC Rental Contract with '" . $rental->name_trimmed() . "'",
+        html    => $preface,
+        files_to_attach => [
+            $contract,
+            "$dir/Rental Registration Guidelines.pdf",
+            "$dir/Kaya Kalpa Brochure.pdf",
+        ],
+        activity_msg => 'Contract sent for'
+                      . "<a href='/rental/view/$rental_id'>$rental_name</a>",
+    );
     #
     # the contract has been sent
     #
@@ -1887,7 +1726,7 @@ EOM
         sent_by       => $c->user->obj->id,
         status        => "sent",
     });
-    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+    $c->response->redirect($c->uri_for("/rental/view/$rental_id/2"));
 }
 
 #
