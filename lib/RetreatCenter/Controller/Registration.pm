@@ -2012,6 +2012,7 @@ sub send_conf : Local {
     $pr_title =~ s{\A .* (Personal \s+ Retreat) .*}{$1}xms;
 
     my $to = $reg->person->name_email();
+    my $name = $reg->person->name;
     email_letter($c,
         to      => $to,
         from    => "$title <$from>",
@@ -2024,6 +2025,8 @@ sub send_conf : Local {
          files_to_attach => [
              'root/static/templates/letter/MMC_Guest_Packet.pdf',
          ],
+         activity_msg => "Confirmation sent for"
+                       . " <a href='/registration/$reg_id'>$name</a>",
     );
 
     my @who_now = get_now($c, $reg_id);

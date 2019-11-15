@@ -679,7 +679,9 @@ my $_transport;
 # required keys of %args are:
 #     to from subject html
 # optional keys:
-#     cc files_to_attach
+#     cc
+#     files_to_attach
+#     activity_msg
 #
 sub email_letter {
     my ($c, %args) = @_;
@@ -693,6 +695,8 @@ sub email_letter {
     my $message = 'Email Sent - To: '
                   . (ref $args{to}? "@{$args{to}}"
                     :               $args{to}     );
+    $message =~ s{<}{&lt;}xmsg;
+    $message =~ s{>}{&gt;}xmsg;
     my @cc = ();
     if (exists $args{cc}) {
         push @cc, cc => $args{cc};
@@ -700,7 +704,7 @@ sub email_letter {
                     . (ref $args{cc}? "@{$args{cc}}"
                       :               $args{to}     );
     }
-    $message .= " $args{subject}";
+    $message .= ", $args{subject}";
 
     if (! ref $_transport) {
         Global->init($c);
@@ -714,7 +718,12 @@ sub email_letter {
         $_transport = Email::Sender::Transport::SMTP->new(%args);
         if (! ref $_transport) {
             $message .= " - could not create mail_sender";
-            goto FINIS;
+            model($c, 'Activity')->create({
+                message => $message,
+                cdate   => tt_today($c)->as_d8(),
+                ctime   => get_time()->t24(),
+            });
+            return;
         }
     }
 
@@ -740,9 +749,8 @@ sub email_letter {
     } || do {
         $message .= "Failed to send email: $@\n";
     };
-FINIS:
     model($c, 'Activity')->create({
-        message => $message,
+        message => $args{activity_msg} || $message,
         cdate   => tt_today($c)->as_d8(),
         ctime   => get_time()->t24(),
     });
