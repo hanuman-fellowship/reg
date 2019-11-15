@@ -12,6 +12,6 @@
 [% END %]
 <tr><td>Cc</td><td colspan=2><input type=text name=cc size=40></td></tr>
 <tr><td>Subject</td><td colspan=2><input type=text name=subject size=60 value="$subject"></td></tr>
-<tr><td></td><td><input type=submit value="Submit"></td></tr>
+<tr><td></td><td><input type=submit value="Submit" id=sub></td></tr>
 </table>
 </form>
