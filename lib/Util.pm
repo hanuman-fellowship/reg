@@ -2325,7 +2325,7 @@ sub PR_progtable {
     };
     TYPE:
     for my $type (reverse housing_types(1)) {
-        next TYPE if $type =~ m{^economy|dormitory|triple$};
+        next TYPE if $type =~ m{^economy|dormitory|triple|commuting$};
         $href->{"basic $type"} = $currHC->$type;
         if ($next_hc) {
             $href->{"next $type"} = $nextHC->$type;
