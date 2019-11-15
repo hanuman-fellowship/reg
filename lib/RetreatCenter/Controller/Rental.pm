@@ -1522,7 +1522,7 @@ sub arrangements : Local {
             "$dir/MMC Food.doc",
             "$dir/CURRENT INFO SHEET.doc",
         ],
-        activity_msg => "Arrangements letter sent for <a href='/rental/view/$rental_id'>$rental_name</a>",
+        activity_msg => "Arrangements sent for <a href='/rental/view/$rental_id'>$rental_name</a>",
     );
     $rental->update({
         arrangement_sent => tt_today($c)->as_d8(),
@@ -1715,7 +1715,7 @@ sub contract : Local {
             "$dir/Kaya Kalpa Brochure.pdf",
         ],
         activity_msg => 'Contract sent for'
-                      . "<a href='/rental/view/$rental_id'>$rental_name</a>",
+                      . " <a href='/rental/view/$rental_id'>$rental_name</a>",
     );
     #
     # the contract has been sent
