@@ -25,8 +25,6 @@ our @EXPORT_OK = qw/
     digits
     model
     email_letter
-    old_email_letter
-    new_email_letter
     lunch_table
     clear_lunch
     get_lunch
@@ -106,14 +104,11 @@ use Template;
 use Global qw/
     %string
 /;
-use Mail::Sender;
 use Email::Stuffer;
-use Catalyst::Utils;
-
-# no ping on new site :(
-#use Net::Ping;
+use Email::Sender::Transport::SMTP;
 use Carp 'croak';
 use Data::Dumper;
+use Catalyst::Utils;
 
 our @charge_type = (
     '',
@@ -679,266 +674,78 @@ sub model {
     }
 }
 
+my $_transport;
 #
-# we now have two ways to send email
-# which will work better?
+# required keys of %args are:
+#     to from subject html
+# optional keys:
+#     cc files_to_attach
 #
 sub email_letter {
-  my ($c) = @_;
-  if (-f '/var/www/src/new_email') {
-      $c->log->info("Using new email transport");
-      return new_email_letter(@_);
-  }
-  else {
-      return old_email_letter(@_);
-  }
-}
-
-my $mail_sender;
-
-#
-# must have to, from, subject and html in the %args.
-# if $ENV{test_email} send it to that address instead of to and cc/bcc
-# return a boolean - did it succeed?
-#
-sub old_email_letter {
     my ($c, %args) = @_;
 
     for my $k (qw/ to from subject html /) {
         if (! exists $args{$k}) {
             die "no $k in args for Util::email_letter\n";
+            # die because this is a mistake of the developer
         }
     }
-    my @cc_bcc = ();
+    my $message = 'Email Sent - To: '
+                  . (ref $args{to}? "@{$args{to}}"
+                    :               $args{to}     );
+    my @cc = ();
     if (exists $args{cc}) {
-        push @cc_bcc, cc => $args{cc};
+        push @cc, cc => $args{cc};
+        $message .= ' Cc: '
+                    . (ref $args{cc}? "@{$args{cc}}"
+                      :               $args{to}     );
     }
-    if (exists $args{bcc}) {
-        push @cc_bcc, bcc => $args{bcc};
-    }
+    $message .= " $args{subject}";
 
-    # log this sending
-    open my $mlog, ">>", "/var/log/Reg/mail.log";
-    if (ref $args{to} eq 'ARRAY') {
-        print {$mlog} localtime() . " @{$args{to}} - ";
-    }
-    else {
-        print {$mlog} localtime() . " $args{to} - ";
-    }
-    if (@cc_bcc) {
-        print {$mlog} " @cc_bcc - ";
-    }
-    if (! exists $args{which}) {
-        $args{which} = $args{subject};
-    }
-    print {$mlog} "$args{which} - ";
-
-    # redirecting for testing purpose
-    if (! empty($string{redirect_email})) {
-        my $to = (ref $args{to} eq 'ARRAY')? "@{$args{to}}": $args{to};
-        $args{cc} ||= '';
-        $args{bcc} ||= '';
-        for ($to, $args{cc}, $args{bcc}) {
-            s{[<]}{&lt;}xms;
-            s{[>]}{&gt;}xms;
-        }
-        $args{html} = <<"EOM";
-This email was <b>redirected</b>.<br>
-The original recipients were:<br>
-To: $to<br>
-Cc: $args{cc}<br>
-Bcc: $args{bcc}<br>
-<hr style="color: red">
-<p>
-$args{html}
-EOM
-        $args{to} = [ split m{\s*,\s*}xms, $string{redirect_email} ];
-    }
-
-    if (! ref $mail_sender) {
-        Global->init($c);
-        my @auth = ();
-        if ($string{smtp_auth}) {
-            @auth = (
-                auth    => $string{smtp_auth},
-                authid  => $string{smtp_user},
-                authpwd => $string{smtp_pass},
-            );
-        }
-        $mail_sender = Mail::Sender->new({
-            smtp => $string{smtp_server},
-            port => $string{smtp_port},
-            @auth,
-        });
-    }
-    if (! ref $mail_sender) {
-        print {$mlog} "could not create mail_sender\n";
-        close $mlog;
-        return;
-    }
-    my @fake_to;
-    if ($args{fake_to}) {
-        @fake_to = (fake_to => $args{fake_to});
-    }
-    if (! $mail_sender->Open({
-        to       => $args{to},
-        @fake_to,
-        @cc_bcc,
-        from     => $args{from},
-        replyto  => ($args{replyto} || $args{from}),
-        subject  => $args{subject},
-        ctype    => $args{ctype}? $args{ctype}: "text/html",
-        encoding => "7bit",
-    })) {
-        $mail_sender = undef;
-        print {$mlog} "no Mail::Sender->Open $Mail::Sender::Error\n";
-        close $mlog;
-        return;
-    }
-    $mail_sender->SendLineEnc($args{html});
-    if (! $mail_sender->Close()) {
-        print {$mlog} "no Mail::Sender->Close $Mail::Sender::Error\n";
-        close $mlog;
-        $mail_sender = undef;
-        return;
-    }
-    print {$mlog} "sent\n";
-    close $mlog;
-    if (@cc_bcc) {
-        $mail_sender = undef;
-        # need to recreate or else the cc/bcc people
-        # will receive ALL email! :(
-    }
-    return 1;
-}
-
-my $_transport;
-sub new_email_letter {
-    my ($c, %args) = @_;
-
-print "1\n";
-    for my $k (qw/ to from subject html /) {
-        if (! exists $args{$k}) {
-            die "no $k in args for Util::email_letter\n";
-        }
-    }
-    my @cc_bcc = ();
-    if (exists $args{cc}) {
-        push @cc_bcc, cc => $args{cc};
-    }
-    if (exists $args{bcc}) {
-        push @cc_bcc, bcc => $args{bcc};
-    }
-    open my $mlog, ">>", "/var/log/Reg/mail.log";
-    if (ref $args{to} eq 'ARRAY') {
-        print {$mlog} localtime() . " @{$args{to}} - ";
-    }
-    else {
-        print {$mlog} localtime() . " $args{to} - ";
-    }
-    if (@cc_bcc) {
-        print {$mlog} " @cc_bcc - ";
-    }
-    if (! exists $args{which}) {
-        $args{which} = $args{subject};
-    }
-    print {$mlog} "$args{which} - ";
-
-print "2\n";
     if (! ref $_transport) {
-print "3\n";
         Global->init($c);
-        if (0 && $c->debug) {
-            $c->log->debug('Using the "Print" Email transport for testing!');
-            Catalyst::Utils::ensure_class_loaded(
-                'Email::Sender::Transport::Print'
-            );
-            $_transport = Email::Sender::Transport::Print->new;
-        }
-        else {
-            Catalyst::Utils::ensure_class_loaded(
-                'Email::Sender::Transport::SMTP'
-            );
-            my %args = (
-                sasl_username  => $string{smtp_user},
-                sasl_password => $string{smtp_pass},
-                host => $string{smtp_server},
-                port => 465, #$string{smtp_port},
-                ssl => 'starttls',
-            );
-            $_transport = Email::Sender::Transport::SMTP->new(%args);
-        }
+        my %args = (
+            sasl_username => $string{smtp_user},
+            sasl_password => $string{smtp_pass},
+            host => $string{smtp_server},
+            port => $string{smtp_port},
+            ssl  => 'starttls',
+        );
+        $_transport = Email::Sender::Transport::SMTP->new(%args);
         if (! ref $_transport) {
-print "no transport\n";
-            print {$mlog} "could not create mail_sender\n";
-            close $mlog;
-            return;
+            $message .= " - could not create mail_sender";
+            goto FINIS;
         }
     }
 
-    # redirecting for testing purpose
-    if (! empty($string{redirect_email})) {
-        my $to = (ref $args{to} eq 'ARRAY')? "@{$args{to}}": $args{to};
-        $args{cc} ||= '';
-        $args{bcc} ||= '';
-        for ($to, $args{cc}, $args{bcc}) {
-            s{[<]}{&lt;}xms;
-            s{[>]}{&gt;}xms;
-        }
-        $args{html} = <<"EOM";
-This email was <b>redirected</b>.<br>
-The original recipients were:<br>
-To: $to<br>
-Cc: $args{cc}<br>
-Bcc: $args{bcc}<br>
-<hr style="color: red">
-<p>
-$args{html}
-EOM
-        $args{to} = [ split m{\s*,\s*}xms, $string{redirect_email} ];
-    }
-
-print "4\n";
     my $stuffer = Email::Stuffer->new({
         transport => $_transport,
         to        => $args{to},
         from      => $args{from},
         reply_to  => ($args{replyto} || $args{from}),
         subject   => $args{subject},
-        @cc_bcc,
+        @cc,
     });
 
-    if (! $args{ctype} || ($args{ctype} eq 'text/html')) {
-        $stuffer->html_body($args{html});
-    }
-    else {
-        $stuffer->attach($args{html}, content_type => $args{ctype});
-    }
-
-    # attachments = [
-    #   { content => $body, %args }
-    # ]
+    $stuffer->html_body($args{html});
 
     if (my @files_to_attach = @{$args{files_to_attach}||[]}) {
-        foreach my $file (@files_to_attach) {
+        for my $file (@files_to_attach) {
           $stuffer->attach_file($file);
         }
     }
 
     eval {
-print "5\n";
         $stuffer->send_or_die;
-print "6\n";
     } || do {
-        print {$mlog} "Failed to send email: $@\n";
-        close $mlog;
-        return;
+        $message .= "Failed to send email: $@\n";
     };
-
-    print {$mlog} "sent\n";
-    close $mlog;
-print "7\n";
-    return 1;
+FINIS:
+    model($c, 'Activity')->create({
+        message => $message,
+        cdate   => tt_today($c)->as_d8(),
+        ctime   => get_time()->t24(),
+    });
 }
 
 sub lunch_table {
