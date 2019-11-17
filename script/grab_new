@@ -368,8 +368,9 @@ sub check_grid {
         grid_max       => $max,
         housing_charge => $tot_cost,
     });
-    msg "grid " . ($rental? $rental->name
-                   :        "unknown rental: code = $code");
+    my $rname = $rental->name;
+    my $rid = $rental->id;
+    msg "grid <a href='/rental/view/$rid'>$rname</a>";
 }
 
 sub temple_donation {
