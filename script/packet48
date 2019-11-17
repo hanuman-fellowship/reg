@@ -20,13 +20,17 @@ use Date::Simple qw/
 /;
 
 my $in_two_days_d8 = (today() + 2)->as_d8();
+my $tt = Template->new({
+    INTERPOLATE  => 1,
+    INCLUDE_PATH => "root/static/templates/letter",
+    EVAL_PERL    => 0,
+});
+
+# Registrations
 my @regs = model($c, 'Registration')->search({
                date_start => $in_two_days_d8,
                cancelled  => { '!=' => 'yes' },
            });
-if (! @regs) {
-    exit;
-}
 REG:
 for my $reg (@regs) {
     my $person = $reg->person();
@@ -54,11 +58,6 @@ for my $reg (@regs) {
         gate_code   => $gate_code,
         prepay_link => $prepay_link,
     };
-    my $tt = Template->new({
-        INTERPOLATE  => 1,
-        INCLUDE_PATH => "root/static/templates/letter",
-        EVAL_PERL    => 0,
-    });
     my $html;
     $tt->process(
         'guest_packet.tt2',
@@ -78,4 +77,30 @@ for my $reg (@regs) {
                               . " <a href='/registration/view/%s'>%s</a>",
                                 $reg->id, $person->name),
     );
+}
+# Rentals
+my @rentals = model($c, 'Rental')->search({
+                  sdate => $in_two_days_d8,
+                  cancelled => { '!=' => 'yes' },
+              });
+for my $rental (@rentals) {
+    my $fgrid = get_grid_file($rental->grid_code());
+    if (open my $in, "<", $fgrid) {
+        LINE:
+        while (my $line = <$in>) {
+            chomp $line;
+            my ($id, $bed, $name_notes) = split m{\|}, $line;
+            my ($name, $notes) = split /~/, $name_notes;
+            my @emails = $notes =~ m{(\S+[@]\S+)}xmsg;
+            my $first;
+            # either 'Smith, John' or 'John Smith'
+            if ($name =~ m{,\s*(\S+)}xms) {
+                $first = $1;
+            }
+            else {
+                ($first) = $name =~ m{\A \s* (\S+)}xms;
+            }
+            print "$first, @emails\n";
+        }
+    }
 }
