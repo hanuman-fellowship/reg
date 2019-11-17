@@ -37,8 +37,7 @@ PERL5LIB=/var/www/cpan-lib/lib/perl5
 0 1 * * 2 $REG/gate
 
 # at 1:05 am every morning send guest packets to people arriving in 48 hours.
-# why not?
-#5 1 * * * $REG/packet48
+5 1 * * * $REG/packet48
 
 # at 2:00 am every morning send json files to reservations machine
 0 2 * * * $REG/reserve_today

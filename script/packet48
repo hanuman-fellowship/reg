@@ -1,4 +1,4 @@
-#!/usr/bin/env perl
+#!/var/www/perl5.26.2/bin/perl
 use strict;
 use warnings;
 
@@ -8,6 +8,8 @@ use Util qw/
     model
     db_init
     email_letter
+    get_grid_file
+    empty
 /;
 my $c = db_init();
 use Global qw/
@@ -19,7 +21,9 @@ use Date::Simple qw/
     today
 /;
 
+my $packet = '/var/www/src/root/static/templates/letter/MMC_Guest_Packet.pdf';
 my $in_two_days_d8 = (today() + 2)->as_d8();
+my $today = today()->format("%B %e, %Y"),
 my $tt = Template->new({
     INTERPOLATE  => 1,
     INCLUDE_PATH => "root/static/templates/letter",
@@ -52,7 +56,7 @@ for my $reg (@regs) {
         }
     }
     my $stash_href = {
-        today       => today()->format("%B %e, %Y"),
+        today       => $today,
         balance     => $balance,
         first       => $person->first(),
         gate_code   => $gate_code,
@@ -71,27 +75,38 @@ for my $reg (@regs) {
         subject => 'Guest Packet for your visit to MMC',
         html    => $html,
         files_to_attach => [
-            '/var/www/src/root/static/templates/letter/MMC_Guest_Packet.pdf',
+            $packet,
         ],
         activity_msg => sprintf('Packet sent for'
                               . " <a href='/registration/view/%s'>%s</a>",
                                 $reg->id, $person->name),
     );
 }
+
 # Rentals
 my @rentals = model($c, 'Rental')->search({
                   sdate => $in_two_days_d8,
                   cancelled => { '!=' => 'yes' },
               });
 for my $rental (@rentals) {
+    my $rid   = $rental->id;
+    my $rname = $rental->name_trimmed;
+    my $gate_code = $rental->summary->gate_code;
     my $fgrid = get_grid_file($rental->grid_code());
     if (open my $in, "<", $fgrid) {
         LINE:
         while (my $line = <$in>) {
             chomp $line;
             my ($id, $bed, $name_notes) = split m{\|}, $line;
-            my ($name, $notes) = split /~/, $name_notes;
+            my ($name, $notes) = split /\s*~~\s*/, $name_notes;
+            if (empty($name)) {
+                next LINE;
+            }
             my @emails = $notes =~ m{(\S+[@]\S+)}xmsg;
+            my $email = join ',', @emails;
+            if (empty($email)) {
+                next LINE;
+            }
             my $first;
             # either 'Smith, John' or 'John Smith'
             if ($name =~ m{,\s*(\S+)}xms) {
@@ -100,7 +115,32 @@ for my $rental (@rentals) {
             else {
                 ($first) = $name =~ m{\A \s* (\S+)}xms;
             }
-            print "$first, @emails\n";
+            my $stash_href = {
+                today     => $today,
+                first     => $first,
+                gate_code => $gate_code,
+                balance   => 0,
+            };
+            my $html;
+            $tt->process(
+                'guest_packet.tt2',
+                $stash_href,
+                \$html,
+            ) or die "error in processing template: " . $tt->error;
+            sleep 1;        # so we aren't blacklisted as spammers?
+            email_letter($c,
+                from    => "$string{from_title} <$string{from}>",
+                to      => $email,
+                subject => 'Guest Packet for your visit to MMC',
+                html    => $html,
+                files_to_attach => [
+                    $packet,
+                ],
+                activity_msg => 'Packet sent to' 
+                              . " $name"
+                              . ' in '
+                              . "<a href='/rental/view/$rid'>$rname</a>",
+            );
         }
     }
 }
