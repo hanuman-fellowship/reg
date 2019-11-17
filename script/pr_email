@@ -1,4 +1,4 @@
-#!/var/www/perl5.26.2/bin/perl
+#!/usr/bin/env perl
 # 6/12/19
 # one time (probably) script to get email addresses
 # of people who have had a personal retreat in the last 3 years.
