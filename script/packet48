@@ -28,18 +28,18 @@ if (! @regs) {
     exit;
 }
 REG:
-for my $r (@regs) {
-    my $person = $r->person();
+for my $reg (@regs) {
+    my $person = $reg->person();
     my $email = $person->email();
     if (! $email) {
         next REG;
     }
-    my $program = $r->program();
+    my $program = $reg->program();
     my $gate_code = $program->summary->gate_code();
-    my $balance = $r->balance();
+    my $balance = $reg->balance();
     my $prepay_link = '';
     if ($balance > 0) {
-        my @req_payments = $r->req_payments();
+        my @req_payments = $reg->req_payments();
         if (@req_payments) {
             my $code = $req_payments[0]->code();
             $prepay_link = "https://www.mountmadonna.org/cgi-bin/"
@@ -69,10 +69,13 @@ for my $r (@regs) {
     email_letter($c,
         from    => "$string{from_title} <$string{from}>",
         to      => $email,
-        subject => "Guest Packet for your visit to MMC",
+        subject => 'Guest Packet for your visit to MMC',
         html    => $html,
-        attached_files => [
-            "root/static/templates/letter/MMC_Guest_Packet.pdf",
+        files_to_attach => [
+            '/var/www/src/root/static/templates/letter/MMC_Guest_Packet.pdf',
         ],
+        activity_msg => sprintf('Packet sent for'
+                              . " <a href='/registration/view/%s'>%s</a>",
+                                $reg->id, $person->name),
     );
 }
