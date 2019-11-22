@@ -368,6 +368,12 @@ sub list_reg_missing : Local {
 sub get_online : Local {
     my ($self, $c, $fname) = @_;
     
+    # likely from an Activity link that has already been brought in
+    if (! -f "$rst/online/$fname") {
+        $c->response->redirect(
+            $c->uri_for("/registration/view_trans_id/$fname")
+        );
+    }
     #
     # first extract all information from the file.
     #

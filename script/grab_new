@@ -306,7 +306,11 @@ sub check_transaction {
         }
         unlink "$get_dir/$f";
     }
-    msg "@params transaction $f, $href->{first} $href->{last}, $href->{title}";
+    msg 
+    msg "<a href='/registration/get_online/$f'>"
+      . "$href->{first} $href->{last}</a>"
+      . " for <a href='/program/view/$href->{pid}'>$href->{title}</a>"
+      ;
 }
 
 sub check_grid {
@@ -879,7 +883,7 @@ sub main {
     get_files($ftp, $string{req_mmi_dir_paid},
               $req_mmi_dir, \&process_req_payments);
 
-    # MMI Transactions
+    # MMI Transactions - obsolete, actually
     get_files($ftp, $string{ftp_mmi_transactions},
               $online, \&check_transaction, 'MMI');
 

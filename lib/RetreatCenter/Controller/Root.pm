@@ -43,6 +43,13 @@ sub _set {
 sub end : ActionClass('RenderView') {
     my ($self, $c) = @_;
     my $u = $c->user;
+    # later - for a log
+    #if ($u) {
+    #    $c->log->info(scalar(localtime) . ' '
+    #                . $u->username . ' '
+    #                . $c->action
+    #    );
+    #}
     _set($c, $u, 'fg', 'black');
     _set($c, $u, 'bg', 'white');
     _set($c, $u, 'link', 'blue');
@@ -59,7 +66,7 @@ sub end : ActionClass('RenderView') {
             my $user = $c->user();
             if ($user->username() ne 'sahadev') {
                 email_letter($c,
-                    to      => 'Jon Bjornstad <jonb@logicalpoetry.com>',
+                    to      => 'Jon Bjornstad <jon.bjornstad@gmail.com>',
                     from    => $user->name_email(),
                     subject => 'Error from Reg',
                     html    => $errs[0],
