@@ -373,6 +373,7 @@ sub get_online : Local {
         $c->response->redirect(
             $c->uri_for("/registration/view_trans_id/$fname")
         );
+        return;
     }
     #
     # first extract all information from the file.
