@@ -306,8 +306,7 @@ sub check_transaction {
         }
         unlink "$get_dir/$f";
     }
-    msg 
-    msg "<a href='/registration/get_online/$f'>"
+    msg "Online reg <a href='/registration/get_online/$f'>"
       . "$href->{first} $href->{last}</a>"
       . " for <a href='/program/view/$href->{pid}'>$href->{title}</a>"
       ;
