@@ -1,0 +1,22 @@
+<h2>Childcare Needs from $sdate to $edate</h2>
+<ul>
+<table cellpadding=5>
+<tr align=left>
+<th>Name</th>
+<th>Program</th>
+<th>Age of Kids</th>
+</tr>
+[% FOREACH rp IN regs_plus %]
+    <tr>
+    <td>$rp.0</td>
+    <td>$rp.1</td>
+    <td>$rp.2</td>
+    </tr>
+[% END %]
+</table>
+
+<h2>Emails</h2>
+[% FOREACH em IN emails %]
+    $em<br>
+[% END %]
+</ul>

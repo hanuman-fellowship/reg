@@ -14,6 +14,15 @@ p {
 [% web_des = Catalyst.check_user_roles('web_designer') %]
 [% time_traveler = Catalyst.check_user_roles('time_traveler') %]
 
+[% IF files_uploaded %]
+    <div style='color: red; margin-top: 1em; margin-bottom: 1em'>
+        These files were uploaded:
+        <ul>
+            [% files_uploaded %]
+        </ul>
+    </div>
+[% END %]
+
 <!-- two columns; each column just has a sequence of paragaphs -->
 <table cellpadding=20>
 <tr>
@@ -39,16 +48,21 @@ p {
 [% IF super %]
     <a href=/configuration/counts>Counts</a><p>
 [% END %]
+[% IF prog_admin %]
+    <a href=/configuration/documents>Documents</a><p>
+[% END %]
 [% IF web_des %]
     <a href=/exception/list>Exceptions</a><p>
 [% END %]
 [% IF prog %]
     <a href=/xaccount/list>Extra Accounts</a><p>
     <a href=/house>Houses</a><p>
-    <a href=/housecost>Housing Costs</a><p>
 [% END %]
 </td>
 <td valign=top>
+[% IF prog %]
+    <a href=/housecost>Housing Costs</a><p>
+[% END %]
 <a href=/meal>Meals</a><p>
 <a href=/issue/list>Issues</a><p>
 [% IF prog %]

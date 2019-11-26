@@ -557,6 +557,7 @@ sub view : Local {
     if ($id == 0) {
         # a personal retreat reg from online
         # show the current Personal Retreat program
+        # this is not ideal - but okay 
         #
         my $today = today()->as_d8();
         ($p) = model($c, 'Program')->search({

@@ -35,6 +35,9 @@ use DateRange;
 use Global qw/
     %string
 /;
+use List::Util qw/
+    uniq
+/;
 use Template;
 
 sub index : Local {
@@ -2574,6 +2577,75 @@ sub _house_counts {
         $counts .= "<td>$onland</td>";
     }
     $counts;
+}
+
+sub childcare : Local {
+    my ($self, $c) = @_;
+    my %P = %{ $c->request->params() };
+    my $dt = date($P{sdate});
+    my @mess;
+    my ($sdate, $edate);
+    if (! $dt) {
+        push @mess, "Invalid start date: $P{sdate}";
+    }
+    else {
+        $sdate = $dt;
+    }
+    if (empty $P{edate}) {
+        $edate = today();
+    }
+    else {
+        $dt = date($P{edate});
+        if (! $dt) {
+            push @mess, "Invalid end date: $P{edate}";
+        }
+        else {
+            $edate = $dt;
+        }
+    }
+    if (!@mess && $edate < $sdate) {
+        push @mess, "End date cannot be before start date";
+    }
+    if (@mess) {
+        error($c,
+            join("<br>", @mess),
+            "registration/error.tt2",
+        );
+        return;
+    }
+    my @regs = model($c, 'Registration')->search(
+        {
+            date_start => { between => [ $sdate->as_d8(), $edate->as_d8() ] },
+            kids       => { '!=' => '' },
+        },
+        {
+            prefetch => [ qw/ person program / ],
+        },
+    );
+    my @regs_plus = sort {
+                        $a->[0] cmp $b->[0]
+                    }
+                    map {
+                        [
+                            $_->person->name,
+                            $_->program->name,
+                            $_->kids,
+                            $_->person->email,
+                        ]
+                    }
+                    @regs;
+    my @emails;
+    for my $rp (@regs_plus) {
+        push @emails, $rp->[3] if $rp->[3];
+    }
+    @emails = uniq @emails;
+    stash($c,
+        sdate     => $sdate,
+        edate     => $edate,
+        regs_plus => \@regs_plus,
+        emails    => \@emails,
+        template  => 'listing/childcare.tt2',
+    );
 }
 
 1;

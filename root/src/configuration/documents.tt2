@@ -1,0 +1,62 @@
+<h2>Documents</h2>
+<div style="width: 700px">
+To update one or more of these 7 documents select 
+Choose File and browse the file system for the updated file.
+Note that the name of the file you choose must have exactly the same
+name as shown in the left hand column.
+</div>
+<form action=/configuration/documents_do
+          method=POST
+          enctype="multipart/form-data"
+>
+<ul>
+<table cellpadding=5>
+
+<tr><td>
+CURRENT INFO SHEET.doc
+</td><td>
+<input type=file name=a_info>
+</td></tr>
+
+<tr><td>
+Kaya Kalpa Brochure.pdf
+</td><td>
+<input type=file name=b_kaya>
+</td></tr>
+
+<tr><td>
+Main Area Map 2014.pdf
+</td><td>
+<input type=file name=c_main_map>
+</td></tr>
+
+<tr><td>
+MMC Food.doc
+</td><td>
+<input type=file name=d_food>
+</td></tr>
+
+<tr><td>
+MMC_Guest_Packet.pdf
+</td><td>
+<input type=file name=e_packet>
+</td></tr>
+
+<tr><td>
+Rental Guest Confirmation Letter.doc
+</td><td>
+<input type=file name=f_rental_conf>
+</td></tr>
+
+<tr><td>
+Rental Registration Guidelines.pdf
+</td><td>
+<input type=file name=g_rental_reg>
+</td></tr>
+
+<tr><td>&nbsp;</td><td>
+<input type=submit id=sub>
+</td></tr>
+</table>
+</form>
+</ul>
