@@ -1516,7 +1516,7 @@ sub arrangements : Local {
         cc      => \@cc,
         subject => $subject,
         html    => $html,
-        attached_files => [
+        files_to_attach => [
             "$dir/Main_Area_Map.pdf",
             "$dir/Rental Guest Confirmation Letter.doc",
             "$dir/MMC Food.doc",
