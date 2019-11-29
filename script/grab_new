@@ -732,7 +732,7 @@ sub process_meal_requests {
     $mr_desc =~ s{<br>}{ | }xmsg;
     msg 'meal request for <a href=/person/view/' . $person->id . '>'
       . $person->name . '</a>,'
-      . " $f, $mr_desc"
+      . $mr_desc
       ;
 }
 

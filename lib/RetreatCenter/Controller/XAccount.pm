@@ -307,9 +307,7 @@ sub del_payment_do : Local {
 
     # first we delete the meal_requests records
     my ($mr_ids) = $pay->what() =~ m{mr_ids(.*)}xms;
-$c->log->info("mr ids $mr_ids");
     my @mr_ids = $mr_ids =~ m{(\d+)}xmsg;
-$c->log->info("mr ids @mr_ids");
     for my $mr_id (@mr_ids) {
         my $mr = model($c, 'MealRequests')->find($mr_id);
         $mr->delete();
