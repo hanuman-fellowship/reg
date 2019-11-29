@@ -2426,12 +2426,12 @@ sub too_far {
 # Global %string is not reliable now that there are multiple slaves.
 sub get_string {
     my ($c, $key) = @_;
-    my $s = $c->model("RetreatCenterDB::String")->find($key);
+    my $s = model($c, 'String')->find($key);
     return $s->value();
 }
 sub put_string {
     my ($c, $key, $new_value) = @_;
-    my $s = $c->model("RetreatCenterDB::String")->find($key);
+    my $s = model($c, 'String')->find($key);
     $s->update({
         value => $new_value,
     });
