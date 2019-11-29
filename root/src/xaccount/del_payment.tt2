@@ -1,0 +1,8 @@
+<h2>Deleting Extra Account Payment</h2>
+Are you sure you wish to DELETE the payment of \$$payment.amount for $payment.person.name?
+<p class=p2>
+<a href=/person/view/$payment.person.id>No, sorry I clicked on that.</a>
+&nbsp;
+&nbsp;
+&nbsp;
+<a href=/xaccount/del_payment_do/$payment.id>Yes, I'm positive.</a>
