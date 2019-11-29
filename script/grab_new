@@ -691,6 +691,7 @@ sub process_meal_requests {
         $c, $href,
     );
     my @terms = split ',', $href->{encoded_requests};
+    my @mr_ids;
     my $mr_desc = "";
     while (@terms) {
         my ($date, $breakfast, $lunch, $dinner, $child) = splice @terms, 0, 5;
@@ -701,7 +702,7 @@ sub process_meal_requests {
         $mr_desc =~ s{,\s+ \z}{}xms;    # chop a trailing ,
         $mr_desc .= ($child? ' for a child': '');
         $mr_desc .= '<br>';
-        model($c, 'MealRequests')->create({
+        my $mr = model($c, 'MealRequests')->create({
             person_id => $person_id,
             date      => $date,
             breakfast => $breakfast,
@@ -711,11 +712,15 @@ sub process_meal_requests {
             date_requested => date($href->{date})->as_d8(),
             time_requested => get_time($href->{time})->t24(),
         });
+        push @mr_ids, $mr->id;
     }
     model($c, 'XAccountPayment')->create({
         person_id   => $person_id,
         xaccount_id => $meals_xaccount_id,
-        what        => "online meal request<br>$mr_desc",
+        what        => "online meal request<br>$mr_desc<!-- mr_ids @mr_ids -->",
+            # we hide the ids (with an HTML comment)
+            # so we can find them later
+            # in case this payment is deleted.
         amount      => $href->{amount},
         type        => 'O',               # online
         user_id     => 0,                 # what other user id?

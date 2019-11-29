@@ -3,6 +3,7 @@ use warnings;
 package RetreatCenter::Controller::XAccount;
 use base 'Catalyst::Controller';
 
+use lib '../..';
 use Date::Simple qw/
     date
     today
@@ -293,8 +294,33 @@ sub del_payment : Local {
     my ($self, $c, $payment_id) = @_;
 
     my $pay = model($c, 'XAccountPayment')->find($payment_id);
-    my $person_id = $pay->person_id();
+    stash($c,
+        payment  => $pay,
+        template => 'xaccount/del_payment.tt2',
+    );
+}
+
+sub del_payment_do : Local {
+    my ($self, $c, $payment_id) = @_;
+
+    my $pay = model($c, 'XAccountPayment')->find($payment_id);
+
+    # first we delete the meal_requests records
+    my ($mr_ids) = $pay->what() =~ m{mr_ids(.*)}xms;
+$c->log->info("mr ids $mr_ids");
+    my @mr_ids = $mr_ids =~ m{(\d+)}xmsg;
+$c->log->info("mr ids @mr_ids");
+    for my $mr_id (@mr_ids) {
+        my $mr = model($c, 'MealRequests')->find($mr_id);
+        $mr->delete();
+    }
+    # could have done a single delete: where id in ()
+    # but how within DBIC?
+
+    # then the payment
     $pay->delete();
+
+    my $person_id = $pay->person_id();
     $c->response->redirect($c->uri_for("/person/view/$person_id"));
 }
 
