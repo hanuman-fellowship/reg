@@ -305,17 +305,21 @@ sub del_payment_do : Local {
 
     my $pay = model($c, 'XAccountPayment')->find($payment_id);
 
-    # first we delete the meal_requests records
-    my ($mr_ids) = $pay->what() =~ m{mr_ids(.*)}xms;
-    my @mr_ids = $mr_ids =~ m{(\d+)}xmsg;
-    for my $mr_id (@mr_ids) {
-        my $mr = model($c, 'MealRequests')->find($mr_id);
-        $mr->delete();
+    my $what = $pay->what();
+    if ($what =~ m{mr_ids}xms) {
+        # a meal request payment.
+        # first we delete the meal_requests records
+        my ($mr_ids) = $pay->what() =~ m{mr_ids(.*)}xms;
+        my @mr_ids = $mr_ids =~ m{(\d+)}xmsg;
+        for my $mr_id (@mr_ids) {
+            my $mr = model($c, 'MealRequests')->find($mr_id);
+            $mr->delete();
+        }
+        # could have done a single delete: where id in ()
+        # but how within DBIC?
     }
-    # could have done a single delete: where id in ()
-    # but how within DBIC?
 
-    # then the payment
+    # the payment
     $pay->delete();
 
     my $person_id = $pay->person_id();
