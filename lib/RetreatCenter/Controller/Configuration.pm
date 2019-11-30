@@ -185,7 +185,7 @@ sub documents_do : Local {
     for my $k (sort keys %file_named) {
         my $fname = $file_named{$k};
         if (my $upload = $c->request->upload($k)) {
-            copy("$dir/$fname", "/tmp/$fname-$today_d8-$now_t24");
+            copy("$dir/$fname", "/var/Reg/documents/$fname-$today_d8-$now_t24");
             $upload->copy_to("$dir/$fname");
             model($c, 'Activity')->create({
                 message => "Uploaded document '$fname'",

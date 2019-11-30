@@ -1,6 +1,7 @@
 #!/bin/bash
 cd /var/Reg
-mkdir -p backup excel export grid images meal_requests_done mlist_done \
+mkdir -p backup documents excel export grid images \
+    meal_requests_done mlist_done \
     omp omp_done online online_done output rental_deposit rental_images \
     report req_mmc req_mmi rides_done temple_donation words
 chmod 775 *
