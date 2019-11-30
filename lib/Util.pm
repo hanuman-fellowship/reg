@@ -740,7 +740,7 @@ sub email_letter {
 
     if (my @files_to_attach = @{$args{files_to_attach}||[]}) {
         for my $file (@files_to_attach) {
-          $stuffer->attach_file($file, [ disposition => 'attachment' ]);
+          $stuffer->attach_file($file, disposition => 'attachment');
         }
     }
 
