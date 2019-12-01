@@ -1,0 +1,14 @@
+insert into string (the_key, value) values
+    ('breakfast_cost_guest', 6),
+    ('breakfast_cost_5_12_guest', 4),
+    ('breakfast_cost_family', 8),
+    ('breakfast_cost_5_12_family', 6),
+    ('lunch_cost_guest', 8),
+    ('lunch_cost_5_12_guest', 6),
+    ('lunch_cost_family', 10),
+    ('lunch_cost_5_12_family', 9),
+    ('dinner_cost_guest', 10),
+    ('dinner_cost_5_12_guest', 8),
+    ('dinner_cost_family', 13),
+    ('dinner_cost_5_12_family', 10)
+    ;

@@ -1399,6 +1399,7 @@ EOH
             or die "cannot login ", $ftp->message;
         # thanks to jnap and haarg
         # a nice HACK to force Extended Passive Mode:
+        no warnings 'redefine';
         local *Net::FTP::pasv = \&Net::FTP::epsv;
         my $dir = $string{$org eq 'MMI'? 'req_mmi_dir': 'req_mmc_dir'};
         $ftp->cwd($dir) or die "cannot chdir to $dir";
@@ -1509,6 +1510,7 @@ sub delete_req : Local {
             or die "cannot connect to $string{ftp_mmi_site}";    # not die???
         # thanks to jnap and haarg
         # a nice HACK to force Extended Passive Mode:
+        no warnings 'redefine';
         local *Net::FTP::pasv = \&Net::FTP::epsv;
         $ftp->login($string{ftp_mmi_login}, $string{ftp_mmi_password})
             or die "cannot login ", $ftp->message; # not die???

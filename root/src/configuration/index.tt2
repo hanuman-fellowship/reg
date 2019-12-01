@@ -64,6 +64,9 @@ p {
     <a href=/housecost>Housing Costs</a><p>
 [% END %]
 <a href=/meal>Meals</a><p>
+[% IF prog_admin %]
+    <a href=/string/meal_requests>Meal Requests</a><p>
+[% END %]
 <a href=/issue/list>Issues</a><p>
 [% IF prog %]
     <a href=/leader>Leaders</a><p>

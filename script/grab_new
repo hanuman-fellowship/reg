@@ -89,6 +89,7 @@ use Time::Simple qw/
 use Net::FTP;
 # thanks to jnap and haarg
 # a nice HACK to force Extended Passive Mode:
+no warnings 'redefine';
 *Net::FTP::pasv = \&Net::FTP::epsv;
 use File::FTP;      # this is mine
 use File::Basename 'basename';

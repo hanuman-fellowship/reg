@@ -833,6 +833,7 @@ sub _get_updates {
         or return "no login";
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->cwd('update_dir')
         or return "no cd";

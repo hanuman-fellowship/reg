@@ -1572,6 +1572,7 @@ sub _omp_send_and_load {
         or return "no login";
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->cwd($string{ftp_omp_dir})
         or return "no cd";

@@ -1,0 +1,83 @@
+<style>
+.tb {
+    border-bottom: 1px solid black;
+}
+.bold {
+    font-weight: bold;
+    font-size: 15pt;
+}
+td.x {
+    font-family: Helvetica;
+    font-size: 13pt;
+    text-align: right;
+}
+</style>
+<h2>Meal Request Settings</h2>
+
+<ul>
+<table cellpadding=10 cellspacing=0>
+
+<tr>
+<td class='bold tb'>&nbsp;</td>
+<td class='bold tb'>Normal</td>
+<td class='bold tb'>Family</td>
+<td class='bold tb'>Guest</td>
+<td class='bold tb'>Daily Max</td>
+</tr>
+
+<tr>
+<td class=bold>Breakfast</td>
+<td class=x>$S.breakfast_cost</td>
+<td class=x>$S.breakfast_cost_family</td>
+<td class=x>$S.breakfast_cost_guest</td>
+<td class=x>$S.breakfast_daily_max</td>
+</tr>
+
+<tr>
+<td class='tb x'>Child</td>
+<td class='tb x'>$S.breakfast_cost_5_12</td>
+<td class='tb x'>$S.breakfast_cost_5_12_family</td>
+<td class='tb x'>$S.breakfast_cost_5_12_guest</td>
+<td class='tb x'>&nbsp;</td>
+</tr>
+
+<tr class=x>
+<td class=bold>Lunch</td>
+<td class=x>$S.lunch_cost</td>
+<td class=x>$S.lunch_cost_family</td>
+<td class=x>$S.lunch_cost_guest</td>
+<td class=x>$S.lunch_daily_max</td>
+</tr>
+
+<tr>
+<td class='tb x'>Child</td>
+<td class='tb x'>$S.lunch_cost_5_12</td>
+<td class='tb x'>$S.lunch_cost_5_12_family</td>
+<td class='tb x'>$S.lunch_cost_5_12_guest</td>
+<td class='tb x'>&nbsp;</td>
+</tr>
+
+<tr>
+<td class=bold>Dinner</td>
+<td class=x>$S.dinner_cost</td>
+<td class=x>$S.dinner_cost_family</td>
+<td class=x>$S.dinner_cost_guest</td>
+<td class=x>$S.dinner_daily_max</td>
+</tr>
+
+<tr>
+<td class='tb x'>Child</td>
+<td class='tb x'>$S.dinner_cost_5_12</td>
+<td class='tb x'>$S.dinner_cost_5_12_family</td>
+<td class='tb x'>$S.dinner_cost_5_12_guest</td>
+<td class='tb x'>&nbsp;</td>
+</tr>
+
+</table>
+<p class=p2 style="margin-left: 2in; margin-top: 10mm;">
+<a href=/string/meal_requests_update>Edit</a>
+
+<p class=p2>
+Family - HFS Members, and the family of MMC/MMI/MMS Staff. <br>
+Guest - Guests of MMC Residents.
+</ul>

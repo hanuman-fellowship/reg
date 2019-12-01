@@ -2043,6 +2043,7 @@ sub _send_export {
         or die "Cannot login ", $ftp->message;
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->binary();
     $ftp->put('/tmp/exported_reg_data.tgz', 'exported_reg_data.tgz')

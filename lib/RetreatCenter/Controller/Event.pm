@@ -1453,6 +1453,7 @@ EOH
             or die "cannot login ", $ftp->message; # not die???
         # thanks to jnap and haarg
         # a nice HACK to force Extended Passive Mode:
+        no warnings 'redefine';
         local *Net::FTP::pasv = \&Net::FTP::epsv;
         $ftp->cwd($string{ftp_dir})
             or die "cannot cwd ", $ftp->message; # not die???
@@ -1812,6 +1813,7 @@ sub _send_no_prs {
     $ftp->ascii();
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->put('/tmp/noPR.txt', 'noPR.txt')
         or return (my_die($c, 'cannot put noPR.txt ' . $ftp->message));
@@ -1849,6 +1851,7 @@ sub _send_no_meals {
     $ftp->ascii();
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->put("/tmp/$nm", $nm)
         or return (my_die($c, 'cannot put $nm ' . $ftp->message));

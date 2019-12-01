@@ -456,6 +456,7 @@ sub send_grid_data {
         or die "cannot login ", $ftp->message; # not die???
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->cwd($string{ftp_grid_dir}) or die "cwd";
     $ftp->ascii() or die "ascii";
@@ -502,6 +503,7 @@ sub send_rental_deposit {
         or die "cannot login ", $ftp->message; # not die???
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->cwd($string{ftp_rental_deposit_dir}) or die "cwd";
     $ftp->ascii() or die "ascii";

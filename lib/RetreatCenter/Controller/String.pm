@@ -1,5 +1,6 @@
 use strict;
 use warnings;
+use lib '../../';
 
 package RetreatCenter::Controller::String;
 use base 'Catalyst::Controller';
@@ -15,6 +16,7 @@ use Util qw/
     empty
     time_travel_class
     set_cache_timestamp
+    put_string
 /;
 use Date::Simple qw/
     date
@@ -39,6 +41,11 @@ sub list : Local {
                 the_key => { '!=' => 'tt_today' },
                 the_key => { '-not_like' => 'badge_%' },
                 the_key => { '-not_like' => 'sys_%' },
+                # for meal requests:
+                the_key => { '-not_like' => 'breakfast_cost%' },
+                the_key => { '-not_like' => 'lunch_cost%' },
+                the_key => { '-not_like' => 'dinner_cost%' },
+                the_key => { '-not_like' => '%daily_max%' },
             ]
         },
         {
@@ -115,6 +122,7 @@ sub update_do : Local {
             or last BLOCK;
         # thanks to jnap and haarg
         # a nice HACK to force Extended Passive Mode:
+        no warnings 'redefine';
         local *Net::FTP::pasv = \&Net::FTP::epsv;
         $ftp->cwd($string{ftp_notify_dir})
             or last BLOCK;
@@ -139,41 +147,6 @@ sub update_do : Local {
         unlink "/tmp/online_notify.txt";
         }
     }
-    elsif ($the_key =~ m{^(breakfast|lunch|dinner)_(cost|daily_max)}xms) {
-        # need to send this and other meal_request items
-        # up to mountmadonna.org
-        BLOCK: {
-        my $mrs = "meal_reqest_strings.txt";
-        open my $out, '>', "/tmp/$mrs"
-            or last BLOCK;
-        my %hash;
-        for my $w (qw/ breakfast lunch dinner /) {
-            for my $t (qw/ cost cost_5_12 daily_max /) {
-                my $x = "$w\_$t";
-                $hash{$x} = $string{$x};
-            }
-        }
-        print {$out} encode_json(\%hash);
-        close $out;
-        # MMC
-        my $ftp = Net::FTP->new($string{ftp_site},
-                                Passive => $string{ftp_passive})
-            or last BLOCK;
-        $ftp->login($string{ftp_login}, $string{ftp_password})
-            or last BLOCK;
-        # thanks to jnap and haarg
-        # a nice HACK to force Extended Passive Mode:
-        local *Net::FTP::pasv = \&Net::FTP::epsv;
-        $ftp->cwd('meal_request')   # not in %string
-            or last BLOCK;
-        $ftp->ascii()
-            or last BLOCK;
-        $ftp->put("/tmp/$mrs", $mrs)
-            or last BLOCK;
-        $ftp->quit();
-        unlink "/tmp/$mrs";
-        }
-    }
     #
     # and where to go next?
     #
@@ -196,6 +169,7 @@ sub _update_CT {
                             Passive => $string{ftp_passive}) or return;
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
     $ftp->cwd($string{ftp_pr_dir}) or return;
@@ -216,6 +190,7 @@ sub _update_max_nights {
                             Passive => $string{ftp_passive}) or return;
     # thanks to jnap and haarg
     # a nice HACK to force Extended Passive Mode:
+    no warnings 'redefine';
     local *Net::FTP::pasv = \&Net::FTP::epsv;
     $ftp->login($string{ftp_login}, $string{ftp_password}) or return;
     $ftp->cwd($string{ftp_pr_dir}) or return;
@@ -303,4 +278,79 @@ sub badge_settings_do : Local {
     }
     $c->forward('/rental/badge');
 }
+
+sub meal_requests : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        S        => \%string,
+        template => 'configuration/meal_requests.tt2',
+    );
+}
+
+sub meal_requests_update : Local {
+    my ($self, $c) = @_;
+
+    stash($c,
+        S        => \%string,
+        template => 'configuration/meal_requests_update.tt2',
+    );
+}
+
+sub meal_requests_update_do : Local {
+    my ($self, $c) = @_;
+
+    my $changed = 0;
+    my %P = %{ $c->request->params() };
+    for my $k (keys %P) {
+        if ($P{$k} ne $string{$k}) {
+            put_string($c, $k, $P{$k});
+            $string{$k} = $P{$k};
+            $changed = 1;
+        }
+    }
+    if ($changed) {
+        set_cache_timestamp($c);
+        # need to send all of these meal_request items
+        # up to mountmadonna.org
+        my %hash;
+        for my $x (qw/ breakfast lunch dinner /) {
+            my $k = "$x\_daily_max";
+            $hash{$k} = $string{$k};
+            for my $y (qw/ cost cost_5_12 /) {
+                for my $z ('', qw/ _family _guest /) {
+                    my $k = "$x\_$y$z";
+                    $hash{$k} = $string{$k};
+                }
+            }
+        }
+        BLOCK: {
+        my $mrs = "meal_request_strings.txt";
+        open my $out, '>', "/tmp/$mrs"
+            or last BLOCK;
+        print {$out} encode_json(\%hash);
+        close $out;
+        # MMC
+        my $ftp = Net::FTP->new($string{ftp_site},
+                                Passive => $string{ftp_passive})
+            or last BLOCK;
+        $ftp->login($string{ftp_login}, $string{ftp_password})
+            or last BLOCK;
+        # thanks to jnap and haarg
+        # a nice HACK to force Extended Passive Mode:
+        no warnings 'redefine';
+        local *Net::FTP::pasv = \&Net::FTP::epsv;
+        $ftp->cwd('meal_request')   # not in %string
+            or last BLOCK;
+        $ftp->ascii()
+            or last BLOCK;
+        #$ftp->put("/tmp/$mrs", $mrs)
+        #    or last BLOCK;
+        $ftp->quit();
+        unlink "/tmp/$mrs";
+        }
+    }
+    $c->forward("/string/meal_requests");
+}
+
 1;

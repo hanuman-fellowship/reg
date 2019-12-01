@@ -90,8 +90,12 @@ badge_bleft - bottom left margin of badges
 badge_first_font_size - font size of first name
 badge_last_font_size - font size of last name
 badge_title_font_size - font size of title
-breakfast_cost - cost of breakfast when reserving online
-breakfast_cost_5_12 - cost of breakfast for a child age 5-12 when reserving online
+breakfast_cost - cost of breakfast - when reserving online
+breakfast_cost_5_12 - cost of breakfast for a child (age 5-12)
+breakfast_cost_5_12_family - cost of breakfast for a child - family
+breakfast_cost_5_12_guest - cost of breakfast for a child - guest
+breakfast_cost_family - cost of breakfast - family
+breakfast_cost_guest - cost of breakfast - guest
 breakfast_daily_max - maximum number of online breakfast meal requests per day
 cal_abutt_color - color used when drawing abutting events in the calendar.
     Also see lib/ActiveCal.pm.  This is used only when cal_abutt_style
@@ -145,8 +149,12 @@ default_date_format - the format used when doing $dt->format() or when
 default_num_prog_days - when choosing 'Program' how many days
     into the future should we show programs?
 deposit_lines_per_page - number of lines per page when printing a deposit for filing.
-dinner_cost - cost of dinner when reserving online
-dinner_cost_5_12 - cost of dinner for a child aged 5-12 when reserving online
+dinner_cost - cost of dinner - when reserving online
+dinner_cost_5_12 - cost of dinner for a child (aged 5-12)
+dinner_cost_5_12_family - cost of dinner for a child - family
+dinner_cost_5_12_guest - cost of dinner for a child - guest
+dinner_cost_guest - cost of dinner when reserving online - guest
+dinner_cost_family - cost of dinner when reserving online - family
 dinner_daily_max - maximum number of online dinner meal requests per day
 disc1days - number of days of housing to qualify for the first discount
 disc1pct - percentage for the first housing discount
@@ -262,8 +270,12 @@ long_triple - for housing type descriptions
 long_unknown - for housing type descriptions
 lunch_charge - obsolete - can be removed.
     rental_lunch_cost instead.  incorporated into housing cost.
-lunch_cost - cost of lunch when reserving online
-lunch_cost_5_12 - cost of lunch for a child aged 5-12 when reserving online
+lunch_cost - cost of lunch - when reserving online
+lunch_cost_5_12 - cost of lunch for a child (aged 5-12)
+lunch_cost_5_12_family - cost of lunch for a child - family
+lunch_cost_5_12_guest - cost of lunch for a child - guest
+lunch_cost_guest - cost of lunch when reserving online - guest
+lunch_cost_family - cost of lunch when reserving online - family
 lunch_daily_max - maximum number of online lunch meal requests per day
 make_up_clean_days - used when presenting the list of available rooms.
     it is the number of days before a room that needs to be cleaned is marked with an 'N'
