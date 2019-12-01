@@ -344,8 +344,8 @@ sub meal_requests_update_do : Local {
             or last BLOCK;
         $ftp->ascii()
             or last BLOCK;
-        #$ftp->put("/tmp/$mrs", $mrs)
-        #    or last BLOCK;
+        $ftp->put("/tmp/$mrs", $mrs)
+            or last BLOCK;
         $ftp->quit();
         unlink "/tmp/$mrs";
         }
