@@ -103,7 +103,7 @@ for my $rental (@rentals) {
             if (empty($name)) {
                 next LINE;
             }
-            my @emails = $notes =~ m{(\S+[@]\S+)}xmsg;
+            my @emails = $notes =~ m{(\S+[@][a-zA-Z0-9.\-]+)}xmsg;
             my $email = join ',', @emails;
             if (empty($email)) {
                 next LINE;

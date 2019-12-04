@@ -2746,7 +2746,7 @@ sub grid_emails : Local {
         while (my $line = <$in>) {
             chomp $line;
             my ($id, $bed, $name_notes) = split m{\|}, $line;
-            my @emails = $name_notes =~ m{(\S+[@]\S+)}xmsg;
+            my @emails = $name_notes =~ m{(\S+[@][a-zA-Z0-9.\-]+)}xmsg;
             push @all_emails, @emails;
         }
         @all_emails = uniq @all_emails;
