@@ -61,6 +61,7 @@ for my $reg (@regs) {
         first       => $person->first(),
         gate_code   => $gate_code,
         prepay_link => $prepay_link,
+        program     => 1,
     };
     my $html;
     $tt->process(
@@ -120,6 +121,7 @@ for my $rental (@rentals) {
                 first     => $first,
                 gate_code => $gate_code,
                 balance   => 0,
+                program   => 0,
             };
             my $html;
             $tt->process(

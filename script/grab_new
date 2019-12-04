@@ -731,8 +731,11 @@ sub process_meal_requests {
     });
     $mr_desc =~ s{<br> \z}{}xms;        # chop the last <br>
     $mr_desc =~ s{<br>}{ | }xmsg;
+    if ($href->{meal_type}) {
+        $mr_desc .= " - $href->{meal_type}";
+    }
     msg 'meal request for <a href=/person/view/' . $person->id . '>'
-      . $person->name . '</a>,'
+      . $person->name . '</a>, '
       . $mr_desc
       ;
 }

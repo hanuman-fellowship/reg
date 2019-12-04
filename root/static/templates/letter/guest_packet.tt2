@@ -23,13 +23,15 @@ The center gates are locked after 7 p.m., so if you plan on arriving
 late or leaving the center in the evening, you will need to use the
 following codes: #$gate_code for main gate access and 1$gate_code for Oaks
 cabins and Oaks campground access at the School entrance gate.
-Enter through the main gate first and follow the road to the Community
-Building where you can pick up your room key in the Programs Office
-or on the Late Arrivals Board if you arrive after office hours.
-<p>
-[% IF balance > 0 %]
-If you have not already had a chance to do so, you may pay your
-remaining balance <a target=_blank href='$prepay_link'>here</a>.
+[% IF program %]
+    Enter through the main gate first and follow the road to the Community
+    Building where you can pick up your room key in the Programs Office
+    or on the Late Arrivals Board if you arrive after office hours.
+    <p>
+    [% IF balance > 0 %]
+        If you have not already had a chance to do so, you may pay your
+        remaining balance <a target=_blank href='$prepay_link'>here</a>.
+    [% END %]
 [% END %]
 If you have any other questions please
 review our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> for additional answers.
