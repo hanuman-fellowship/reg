@@ -177,7 +177,7 @@ sub documents_do : Local {
         return;
     }
     my @uploaded;
-    my $dir = '/var/www/src/root/static/templates/letter';
+    my $dir = '/var/Reg/documents';
     my $now = get_time();
     my $now_t24 = $now->t24;
     my $today = tt_today($c);
@@ -185,7 +185,7 @@ sub documents_do : Local {
     for my $k (sort keys %file_named) {
         my $fname = $file_named{$k};
         if (my $upload = $c->request->upload($k)) {
-            copy("$dir/$fname", "/var/Reg/documents/$fname-$today_d8-$now_t24");
+            copy("$dir/$fname", "$dir/$fname-$today_d8-$now_t24");
             $upload->copy_to("$dir/$fname");
             model($c, 'Activity')->create({
                 message => "Uploaded document '$fname'",

@@ -1506,7 +1506,7 @@ sub arrangements : Local {
         return;
     }
     my $user = $c->user->obj();
-    my $dir = 'root/static/templates/letter';
+    my $dir = '/var/Reg/documents';
     my $rental_name = $rental->name;
     email_letter($c,
         from    =>        $user->first
@@ -1688,7 +1688,7 @@ sub contract : Local {
         return;
     }
     my $user = $c->user->obj();
-    my $dir = 'root/static/templates/letter';
+    my $dir = '/var/Reg/documents';
     my $preface = "";
     $tt->process(
         "rental_contract_preface.tt2",  # template

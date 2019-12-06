@@ -2030,7 +2030,7 @@ sub send_conf : Local {
                    . $pr_title,
          html   => $html,
          files_to_attach => [
-             'root/static/templates/letter/MMC_Guest_Packet.pdf',
+             '/var/Reg/documents/MMC_Guest_Packet.pdf',
          ],
          activity_msg => "Confirmation sent for"
                        . " <a href='/registration/view/$reg_id'>$name</a>",
