@@ -3,6 +3,7 @@ use warnings;
 package RetreatCenter::Controller::Configuration;
 use base 'Catalyst::Controller';
 
+use lib '../../';
 use Util qw/
     stash
     model
@@ -159,6 +160,7 @@ my %file_named = (
 sub documents_do : Local {
     my ($self, $c) = @_;
     my @mess;
+    my %uploads;
     for my $k (sort keys %file_named) {
         my $fname = $file_named{$k};
         if (my $upload = $c->request->upload($k)) {
@@ -168,6 +170,9 @@ sub documents_do : Local {
                           ;
             }
         }
+        else {
+            $uploads{$k} = $upload;
+        }
     }
     if (@mess) {
         stash($c,
@@ -176,27 +181,22 @@ sub documents_do : Local {
         );
         return;
     }
-    my @uploaded;
-    my $dir = '/var/Reg/documents';
-    my $now = get_time();
-    my $now_t24 = $now->t24;
-    my $today = tt_today($c);
-    my $today_d8 = $today->as_d8();
-    for my $k (sort keys %file_named) {
-        my $fname = $file_named{$k};
-        if (my $upload = $c->request->upload($k)) {
+    if (%uploads) {
+        my $dir = '/var/Reg/documents';
+        my $now = get_time();
+        my $now_t24 = $now->t24;
+        my $today = tt_today($c);
+        my $today_d8 = $today->as_d8();
+        for my $fname (sort keys %uploads) {
             copy("$dir/$fname", "$dir/$fname-$today_d8-$now_t24");
-            $upload->copy_to("$dir/$fname");
+            $uploads{$fname}->copy_to("$dir/$fname");
             model($c, 'Activity')->create({
                 message => "Uploaded document '$fname'",
                 ctime   => $now_t24,
                 cdate   => $today_d8,
             });
-            push @uploaded, $fname;
         }
-    }
-    if (@uploaded) {
-        $c->flash->{files_uploaded} = join('<br>', @uploaded);
+        $c->flash->{files_uploaded} = join('<br>', sort keys %uploads);
     }
     $c->response->redirect('/configuration/index');
 }
