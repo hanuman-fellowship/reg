@@ -170,7 +170,7 @@ sub documents_do : Local {
                           ;
             }
             else {
-                $uploads{$k} = $upload;
+                $uploads{$fname} = $upload;
             }
         }
     }
