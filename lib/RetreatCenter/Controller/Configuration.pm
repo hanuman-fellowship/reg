@@ -169,9 +169,9 @@ sub documents_do : Local {
                           . "' should be named '$fname'."
                           ;
             }
-        }
-        else {
-            $uploads{$k} = $upload;
+            else {
+                $uploads{$k} = $upload;
+            }
         }
     }
     if (@mess) {
