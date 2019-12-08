@@ -1517,7 +1517,7 @@ sub arrangements : Local {
         subject => $subject,
         html    => $html,
         files_to_attach => [
-            "$dir/Main_Area_Map.pdf",
+            "$dir/Main Area Map.pdf",
             "$dir/Rental Guest Confirmation Letter.doc",
             "$dir/MMC Food.doc",
             "$dir/CURRENT INFO SHEET.doc",
