@@ -136,7 +136,7 @@ sub spellings_do : Local {
 # MMC_Guest_Packet.pdf
 # Kaya Kalpa Brochure.pdf
 # Rental Guest Confirmation Letter.doc
-# Main Area Map 2014.pdf
+# Main Area Map.pdf
 # Rental Registration Guidelines.pdf
 # MMC Food.doc
 #
@@ -150,7 +150,7 @@ sub documents : Local {
 my %file_named = (
     a_info        => 'CURRENT INFO SHEET.doc',
     b_kaya        => 'Kaya Kalpa Brochure.pdf',
-    c_main_map    => 'Main Area Map 2014.pdf',
+    c_main_map    => 'Main Area Map.pdf',
     d_food        => 'MMC Food.doc',
     e_packet      => 'MMC_Guest_Packet.pdf',
     f_rental_conf => 'Rental Guest Confirmation Letter.doc',
