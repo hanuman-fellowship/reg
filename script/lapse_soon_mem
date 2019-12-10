@@ -1,0 +1,102 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib 'lib';
+use Util qw/
+    model
+    db_init
+    email_letter
+/;
+use RetreatCenterDB;    # ??? why can't we move this to Util?
+use Global qw/
+    %string
+/;
+use Date::Simple qw/
+    today
+/;
+use Template;
+
+my $c = db_init();
+Global->init($c, 1, 1);
+
+my $today = today;
+my $month = $today + 60;
+my $year = $today->year;
+$today = $today->as_d8();
+$month = $month->as_d8();
+
+my @to_lapse_members = model($c, 'Member')->search(
+        {
+            -or => [
+                -and => [
+                    category => 'General',
+                    date_general => { between => [ $today, $month ] },
+                ],
+                -and => [
+                    category => 'Sponsor',
+                    date_sponsor => { between => [ $today, $month ] },
+                ],
+            ],
+        },
+        {
+            join     => ['person'],
+            prefetch => ['person'],
+            order_by => ['person.last', 'person.first' ],
+        }
+);
+
+my $tt = Template->new({
+    INTERPOLATE  => 1,
+    INCLUDE_PATH => 'root/static/templates/letter',
+    EVAL_PERL    => 0,
+});
+
+my @no_email;
+my $nsent = 0;
+MEMBER:
+for my $m (@to_lapse_members) {
+    my $per = $m->person;
+    my $name = $per->name();
+    my $email = $per->email;
+    if (! $email) {
+        push @no_email, $m;
+        next MEMBER;
+    }
+    my $type = $m->category;
+    my $html = "";
+    my $stash = {
+        sanskrit    => ($per->sanskrit || $per->first),
+        exp_year    => $year,
+        string      => \%string,
+        secure_code => $per->secure_code,
+        has_email   => 1,
+    };
+    $tt->process(
+        "lapse_"
+            . ($type eq 'General'? 'gen': 'spons')
+            . "_soon.tt2", # template
+        $stash,           # variables
+        \$html,           # output
+    ) or die $tt->error;
+    email_letter($c,
+        to      => (($to_you)? $c->user->email(): $per->name_email()),
+        from    => "HFS Membership <$string{mem_email}>",
+        subject => "Hanuman Fellowship Membership Status",
+        html    => $html,
+    );
+    ++$nsent;
+}
+
+print "sent $nsent email reminder letters\n";
+if (@no_email) {
+    print scalar(@no_email), " were members without email addresses:\n";
+    for my $m (@no_email) {
+        my $p = $m->person;
+        print "\n", $p->name, "\n";
+        print $p->addr1, "\n";
+        print $p->addr2, "\n" if $p->addr2;
+        print $p->city, ", ", $p->st_prov, "\n";
+        print $p->zip_post, "\n";
+    }
+}
