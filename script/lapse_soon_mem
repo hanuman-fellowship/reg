@@ -80,10 +80,13 @@ for my $m (@to_lapse_members) {
         \$html,           # output
     ) or die $tt->error;
     email_letter($c,
-        to      => (($to_you)? $c->user->email(): $per->name_email()),
+        to      => $per->name_email(),
         from    => "HFS Membership <$string{mem_email}>",
         subject => "Hanuman Fellowship Membership Status",
         html    => $html,
+        activity_msg => "Lapse soon membership reminder sent to <a href='"
+                      . '/person/view/' . $per->id . "'>"
+                      . $per->name . "</a>",
     );
     ++$nsent;
 }
