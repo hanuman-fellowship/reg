@@ -11,6 +11,7 @@ use RetreatCenterDB;    # ??? why can't we move this to Util?
 use Global qw/
     %string
 /;
+use Net::FTP;
 
 my $c = db_init();
 Global->init($c, 1, 1);
@@ -109,10 +110,10 @@ sub omp_send_and_load {
     $ftp->put("/tmp/$omp_fname", $omp_fname)
         or return "no put";
     $ftp->quit();
-    #my $output = `curl $string{omp_load_url}`;
-    #if ($output !~ m{done}) {
-    #    return "no load: $output";
-    #}
+    my $output = `curl $string{omp_load_url}`;
+    if ($output !~ m{done}) {
+        return "no load: $output";
+    }
     unlink "/tmp/$omp_fname";
     return "successfully pushed";
 }
@@ -126,4 +127,4 @@ omp_init();
 for my $m (model($c, 'Member')->all()) {
     omp_add($c, $m);
 }
-print omp_send_and_load();
+print omp_send_and_load(), "\n";

@@ -3,6 +3,10 @@ DBI_DSN="dbi:mysql:reg2"
 PERL5LIB=/var/www/cpan-lib/lib/perl5
 PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
+# at 1:00 am on December 1 push all membership data
+# to prepare for sending the lapsed reminders.
+0 1 1 12 * $REG/push_mem
+
 # at noon, 3:00, and 7:00 pm back up all the data in mysql and send it offsite.
 0 12,15,19 * * * $REG/db_backup
 
