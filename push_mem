@@ -2,4 +2,6 @@
 export DBI_DSN="dbi:mysql:reg2"
 export PERL5LIB=/var/www/cpan-lib/lib/perl5
 cd /var/www/src
-/var/www/src/script/push_mem  >>/var/Reg/output/push_mem 2>&1
+log=/var/Reg/output/push_mem
+date >>$log
+/var/www/src/script/push_mem  >>$log 2>&1
