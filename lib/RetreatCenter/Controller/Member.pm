@@ -781,36 +781,6 @@ sub _lapsed_members {
         )
     ];
 }
-sub _soon_to_lapse_members {
-    my ($c) = @_;
-
-    my $today = tt_today($c);
-    my $month = $today + 60;
-    $today = $today->as_d8();
-    $month = $month->as_d8();
-
-    return [
-        model($c, 'Member')->search(
-            {
-                -or => [
-                    -and => [
-                        category => 'General',
-                        date_general => { between => [ $today, $month ] },
-                    ],
-                    -and => [
-                        category => 'Sponsor',
-                        date_sponsor => { between => [ $today, $month ] },
-                    ],
-                ],
-            },
-            {
-                join     => ['person'],
-                prefetch => ['person'],
-                order_by => ['person.last', 'person.first' ],
-            }
-        )
-    ];
-}
 
 sub _checked_members {
     my ($c) = @_;
@@ -843,24 +813,6 @@ sub lapsed : Local {
         members  => _lapsed_members($c),
         template => "member/lapsed.tt2",
     );
-}
-
-sub lapse_soon : Local {
-    my ($self, $c) = @_;
-    
-    $c->stash->{members} = _soon_to_lapse_members($c);
-    $c->stash->{template} = "member/lapse_soon.tt2";
-}
-
-sub push_to_web : Local {
-    my ($self, $c) = @_;
-
-    _omp_init();
-    for my $m (model($c, 'Member')->all()) {
-        _omp_add($c, $m);
-    }
-    my $msg = _omp_send_and_load();
-    $c->response->redirect($c->uri_for("/member/list/$msg"));
 }
 
 sub email_lapsed : Local {
@@ -919,66 +871,6 @@ sub email_lapsed : Local {
                                           . " members",
         no_email => \@no_email,
         soon     => 0,
-        template => "member/sent.tt2",
-    );
-}
-
-sub email_lapse_soon : Local {
-    my ($self, $c) = @_;
-
-    my $to_you = $c->request->params->{to_you};
-    my @no_email;
-    my $nsent = 0;
-    my $mem_admin = $c->user->name();
-    Global->init($c);
-    MEMBER:
-    for my $m (_checked_members($c)) {
-        my $per = $m->person;
-        my $name = $per->name();
-        my $email = $per->email;
-        if (! $email) {
-            push @no_email, $m;
-            next MEMBER;
-        }
-        my $type = $m->category;
-        my $html = "";
-        my $tt = Template->new({
-            INTERPOLATE  => 1,
-            INCLUDE_PATH => 'root/static/templates/letter',
-            EVAL_PERL    => 0,
-        });
-        my $stash = {
-            sanskrit    => ($per->sanskrit || $per->first),
-            exp_year    => tt_today($c)->year,
-            string      => \%string,
-            secure_code => $per->secure_code,
-            has_email   => 1,
-        };
-        $tt->process(
-            "lapse_"
-                . ($type eq 'General'? 'gen': 'spons')
-                . "_soon.tt2", # template
-            $stash,           # variables
-            \$html,           # output
-        ) or die $tt->error;
-        email_letter($c,
-            to      => (($to_you)? $c->user->email(): $per->name_email()),
-            from    => "HFS Membership <$string{mem_email}>",
-            subject => "Hanuman Fellowship Membership Status",
-            html    => $html,
-        );
-        ++$nsent;
-    }
-
-    stash($c,
-        status => "will expire",
-        msg    => "$nsent email reminder letter"
-                          . (($nsent == 1)? " was sent."
-                             :              "s were sent."),
-        num_no_email => (@no_email == 1)? "was 1 member"
-                       :                  "were " . scalar(@no_email) . " members",
-        no_email => \@no_email,
-        soon     => 1,
         template => "member/sent.tt2",
     );
 }
@@ -1484,114 +1376,6 @@ sub _xaccount_mem_pay {
         the_date    => today()->as_d8(),
         time        => get_time()->t24(),
     });
-}
-
-#
-# omp = Online Membership Payment
-#
-my $omp;
-my $omp_fname = "omp.sql";
-sub _omp_init {
-    $omp = undef;   # re-initialize in case we've done it before...
-    open $omp, '>', "/tmp/$omp_fname" or die "cannot open $omp_fname: $!\n";
-    print {$omp} <<'EOS';
-drop table if exists omp;
-create table omp (
-    secure_code text,
-    first text,
-    last text,
-    addr1 text,
-    addr2 text,
-    city text,
-    st_prov text,
-    zip_post text,
-    country text,
-    email text,
-    phone text,
-    person_id integer,
-    member_id integer,
-    category text,
-    amount_due integer,
-    total_paid integer,
-    date_payment text,
-    last_amount integer,
-    general text
-);
-EOS
-}
-sub _omp_add {
-    my ($c, $mem) = @_;
-    my $per = $mem->person;
-    my @payments = model($c, 'SponsHist')->search(
-                       {
-                           member_id => $mem->id,
-                       },
-                       { order_by => "date_payment desc" },
-                   );
-    my ($date_payment, $last_amount, $general) = ('', 0, '');
-    if (@payments) {
-        $date_payment = $payments[0]->date_payment;
-        $last_amount = $payments[0]->amount;
-        $general = $payments[0]->general;
-            # the above is not really needed, I don't think
-    }
-    my $amount_due = $mem->category eq 'General'? $string{mem_gen_amt}
-                    :                             $string{mem_spons_year}
-                    ;
-    print {$omp} "insert into omp values ("
-                 . join(', ',
-                        _quote($per->secure_code),
-                        _quote($per->first),
-                        _quote($per->last),
-                        _quote($per->addr1),
-                        _quote($per->addr2),
-                        _quote($per->city),
-                        _quote($per->st_prov),
-                        _quote($per->zip_post),
-                        _quote($per->country),
-                        _quote($per->email),
-                        _quote($per->tel_home || $per->tel_cell || ''),
-                        $per->id,
-                        $mem->id,
-                        _quote($mem->category),
-                        $amount_due,
-                        $mem->total_paid,
-                        $date_payment || 20000101,
-                        $last_amount,
-                        _quote($general),
-                   )
-                 . ");\n";
-                 ;
-}
-sub _omp_send_and_load {
-    close $omp;
-    my $ftp = Net::FTP->new($string{ftp_site},
-                            Passive => $string{ftp_passive})
-        or return "no Net::FTP->new";
-    $ftp->login($string{ftp_login}, $string{ftp_password})
-        or return "no login";
-    # thanks to jnap and haarg
-    # a nice HACK to force Extended Passive Mode:
-    no warnings 'redefine';
-    local *Net::FTP::pasv = \&Net::FTP::epsv;
-    $ftp->cwd($string{ftp_omp_dir})
-        or return "no cd";
-    $ftp->ascii()
-        or return "no ascii";
-    $ftp->put("/tmp/$omp_fname", $omp_fname)
-        or return "no put";
-    $ftp->quit();
-    my $output = `curl $string{omp_load_url}`;
-    if ($output !~ m{done}) {
-        return "no load: $output";
-    }
-    unlink "/tmp/$omp_fname";
-    return "successfully pushed";
-}
-sub _quote {
-    my ($s) = @_;
-    $s = "" if ! defined $s;
-    return qq{"$s"};
 }
 
 1;
