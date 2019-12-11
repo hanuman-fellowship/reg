@@ -945,8 +945,11 @@ sub tt_today {
         return today();
     }
     my %date_for = $s =~ m{(\w+) \s+ (\d+/\d+/\d+)}xmsg;
-    my $login = $c->user->username();
-    if (! exists $date_for{$login}) {
+    my $login;
+    eval {
+        $login = $c->user->username();
+    };
+    if (!$login || ! exists $date_for{$login}) {
         return today();
     }
     return date($date_for{$login});
