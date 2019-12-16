@@ -949,7 +949,7 @@ sub tt_today {
     eval {
         $login = $c->user->username();
     };
-    if (!$login || ! exists $date_for{$login}) {
+    if ($@ || !$login || ! exists $date_for{$login}) {
         return today();
     }
     return date($date_for{$login});

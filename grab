@@ -1,9 +1,11 @@
 #!/bin/bash
 export DBI_DSN="dbi:mysql:reg2"
 export PERL5LIB=/var/www/cpan-lib/lib/perl5
+export PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+log=/var/Reg/output/grab.out
 cd /var/www/src
 if [ "$1" == "wait" ]; then
-    /var/www/src/script/grab_new >>/var/Reg/output/grab.out 2>&1
+    /var/www/src/script/grab_new >>$log 2>&1
 else
-    /var/www/src/script/grab_new  >>/var/Reg/output/grab.out 2>&1 &
+    /var/www/src/script/grab_new  >>$log 2>&1 &
 fi

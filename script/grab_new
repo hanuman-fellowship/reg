@@ -458,8 +458,8 @@ EOH
                     # what else???
             subject => "$last_names - Online $TYPE Mailing List Requests",
             html    => $html,
+            activity_msg => "Email mailing list $TYPE alert to $email",
         );
-        msg "email mailing list $TYPE alert to $email" . failed($rc);
     }
 }
 
@@ -565,31 +565,29 @@ sub get_rental_deposit {
         the_date    => $today_d8,
         time        => $now_t24,
     });
-    msg "rental deposit of \$$hash{amount} for " . $rental->name;
     # notify the rental coordinator(s)
-    # something is wrong here that makes the whole process die
-    # TODO: eval the whole of it!
-    #my $rc = email_letter($c,
-    #    to      => $string{rental_coord_email},
-    #    from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-    #                                # what else?
-    #    subject => "Rental Deposit Received for " . $rental->name(),
-    #    html    => "$hash{first} $hash{last} paid \$$hash{amount}"
-    #             . " for <a href='$string{url_prefix}/rental/view/$hash{id}/3'>"
-    #             . $rental->name() . "</a>",
-    #);
+    my $rlink = "$string{url_prefix}/rental/view/$hash{id}/3";
+    email_letter($c,
+        to      => $string{rental_coord_email},
+        from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
+                                    # what else?
+        subject => "Rental Deposit Received for " . $rental->name(),
+        html    => "$hash{first} $hash{last} paid \$$hash{amount}"
+                 . " for <a href='$rlink'>" . $rental->name() . "</a>",
+        activity_msg => "Rental deposit of \$$hash{amount}"
+                      . " for <a href='$rlink'>" . $rental->name . "</a>",
+    );
 }
 
 sub omp_alert {
     if ($nomp) {
-        my $rc = email_letter($c,
+        email_letter($c,
             to      => "HFS Membership <$string{mem_email}>",
             from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
-                                # what else???
             subject => "Membership Payment",
-            html    => "There is an online membership payment waiting for you in Reg."
+            html    => "There is an online membership payment waiting for you in Reg.",
+            activity_msg => "Email membership payment waiting",
         );
-        msg "email membership payment waiting to $string{mem_email}" . failed($rc);
     }
 }
 
@@ -824,14 +822,14 @@ sub kayakalpa {
             },
             \$html,
         ) or quit("template error: " . $tt->error());
-        my $rc = email_letter($c,
+        email_letter($c,
             to       => $href->{email},
             cc       => "Kaya Kalpa <$string{kayakalpa_email}>",
             from     => "Kaya Kalpa <$string{kayakalpa_email}>",
             subject  => "Massage/Bodywork Request during '$program' from $dates",
             html     => $html,
+            activity_msg => "Email kayakalpa to $href->{first} $href->{last}",
         );
-        msg "email kayakalpa to $href->{email}" . failed($rc);
     }
 }
 
