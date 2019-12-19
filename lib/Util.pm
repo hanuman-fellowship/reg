@@ -2484,5 +2484,6 @@ sub add_activity {
         ctime   => $now_t24,
         cdate   => $today_d8,
     });
+}
 
 1;
