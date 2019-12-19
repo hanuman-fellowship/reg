@@ -2051,7 +2051,7 @@ sub _send_export {
     	or die 'could not put exported_reg_data.tgz';
     $ftp->quit();
     system("/usr/bin/curl --user $login:$password $command &");
-    add_activity("Programs and Rentals exported");
+    add_activity($c, "Programs and Rentals exported");
 }
 
 sub _extract_fee_table {

@@ -1819,7 +1819,7 @@ sub _send_no_prs {
     $ftp->put('/tmp/noPR.txt', 'noPR.txt')
         or return (my_die($c, 'cannot put noPR.txt ' . $ftp->message));
     $ftp->quit();
-    add_activity("No PRs sent to web");
+    add_activity($c, "No PRs sent to web");
 }
 
 sub _send_no_meals {
@@ -1859,7 +1859,7 @@ sub _send_no_meals {
         or return (my_die($c, 'cannot put $nm ' . $ftp->message));
     $ftp->quit();
     unlink "/tmp/$nm";
-    add_activity("No Meals sent to web");
+    add_activity($c, "No Meals sent to web");
 }
 
 #
