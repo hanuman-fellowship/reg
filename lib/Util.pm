@@ -89,6 +89,7 @@ our @EXPORT_OK = qw/
     put_string
     set_cache_timestamp
     kid_badge_names
+    add_activity
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2471,5 +2472,17 @@ sub kid_badge_names {
     }
     return @names;
 }
+
+sub add_activity {
+    my ($c, $msg) = @_;
+    my $now = get_time();
+    my $now_t24 = $now->t24;
+    my $today = tt_today($c);
+    my $today_d8 = $today->as_d8();
+    model($c, 'Activity')->create({
+        message => $msg,
+        ctime   => $now_t24,
+        cdate   => $today_d8,
+    });
 
 1;

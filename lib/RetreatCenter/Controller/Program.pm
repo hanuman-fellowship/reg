@@ -37,6 +37,7 @@ use Util qw/
     new_event_alert
     time_travel_class
     too_far
+    add_activity
 /;
 use Date::Simple qw/
     date
@@ -2050,6 +2051,7 @@ sub _send_export {
     	or die 'could not put exported_reg_data.tgz';
     $ftp->quit();
     system("/usr/bin/curl --user $login:$password $command &");
+    add_activity("Programs and Rentals exported");
 }
 
 sub _extract_fee_table {
