@@ -2017,8 +2017,8 @@ sub export : Local {
     system("cd $export_dir; /bin/tar czf /tmp/exported_reg_data.tgz .");
 
     # send it off
-    _send_export('mmc');
-    _send_export('mmi');
+    _send_export($c, 'mmc');
+    _send_export($c, 'mmi');
 
     stash($c,
         ftp_export_site => $string{ftp_export_site},
@@ -2027,7 +2027,7 @@ sub export : Local {
 }
 
 sub _send_export {
-    my $where = shift;
+    my ($c, $where) = @_;
     my $place = $where eq 'mmi'? 'mmi_': '';
     # MMC
     my $site     = $string{"ftp_${place}site"};
