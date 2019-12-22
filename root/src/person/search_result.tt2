@@ -13,7 +13,11 @@ Searched [% field_desc %] for: [% pattern %]
 <th align=left>First</th>
 <th align=left>Sanskrit</th>
 <th align=left>Zip</th>
-<th align=left>[% IF field == 'email' %]Email[% ELSE %]Home Phone[% END %]</th>
+<th align=left>[% IF field == 'email' %]Email[% ELSE %]Home[% END %]</th>
+[% IF field == 'telephone' %]
+    <th align=left>Cell</th>
+    <th align=left>Work</th>
+[% END %]
 </tr>
 [% FOREACH p IN people %]
 <tr>
@@ -26,6 +30,10 @@ Searched [% field_desc %] for: [% pattern %]
 <td>[% p.sanskrit %]</td>
 <td>[% p.zip_post %]</td>
 <td>[% IF field == 'email' %][% p.email %][% ELSE %][% p.tel_home %][% END %]</td>
+[% IF field == 'telephone' %]
+    <td>$p.tel_cell</td>
+    <td>$p.tel_work</td>
+[% END %]
 </tr>
 [% END -%]
 </table>

@@ -84,7 +84,7 @@ sub search : Local {
             $c->stash->{last_selected} = "selected";
         }
         for my $f (qw/ 
-            last sanskrit zip_post email first tel_home country rec_num
+            last sanskrit zip_post email first telephone country rec_num
         /) {
             if (defined $field && $field eq $f) {
                 $c->stash->{"$f\_selected"} = "selected";
@@ -133,11 +133,22 @@ sub search_do : Local {
             };
         }
     }
-    elsif ($field eq 'tel_home' && !($pattern =~ s{^(['"])(.*)\1}{$2})) {
+    elsif ($field eq 'telephone') {
         # intersperse % in the pattern - unless it was quoted
-        $pattern =~ s{(\d)}{$1%}g;
+        my $quoted = 0;
+        if ($pattern =~ s{\A \s* (['"]) (.*) \1 \s* \z}{$2}xms) {
+            $quoted = 1;
+        }
+        $pattern =~ s{\D}{}xmsg;
+        if (! $quoted) {
+            $pattern =~ s{(\d)}{$1%}xmsg;
+        }
         $search_ref = {
-            tel_home => { like => "%$pattern" },
+            -or => [
+                tel_home => { like => "%$pattern%" },
+                tel_cell => { like => "%$pattern%" },
+                tel_work => { like => "%$pattern%" },
+            ]
         };
     }
     elsif ($pattern =~ m{ \A \s* id \s* = \s* (\d+) \s* \z }xms) {
@@ -152,12 +163,12 @@ sub search_do : Local {
     }
 
     my %order_by = (
-        sanskrit => [ 'sanskrit', 'last', 'first' ],
-        zip_post => [ 'zip_post', 'last', 'first' ],
-        last     => [ 'last', 'first' ],
-        first    => [ 'first', 'last' ],
-        email    => [ 'email', 'last', 'first' ],
-        tel_home => [ 'last', 'first' ],
+        sanskrit  => [ 'sanskrit', 'last', 'first' ],
+        zip_post  => [ 'zip_post', 'last', 'first' ],
+        last      => [ 'last', 'first' ],
+        first     => [ 'first', 'last' ],
+        email     => [ 'email', 'last', 'first' ],
+        telephone => [ 'last', 'first' ],
     );
     my @people = model($c, 'Person')->search(
         $search_ref,
@@ -200,11 +211,10 @@ sub search_do : Local {
     }
     stash($c,
         time_travel_class($c),
-        field => $field eq 'tel_home'? 'tel_home': 'email',
+        field => $field eq 'telephone'? 'telephone': 'email',
         ids => join('-', map { $_->id } @people),
         people => \@people,
-        field_desc => $field eq 'tel_home'? 'Home Phone'
-                     :                      ucfirst $field,
+        field_desc => ucfirst $field,
         pattern => $orig_pattern,
         template => 'person/search_result.tt2',
     );
