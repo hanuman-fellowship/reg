@@ -5,13 +5,9 @@
 <p class=p2>
 [% END %]
 <a href="/member/membership_list">Members w/\$</a>
-&nbsp;&nbsp;&nbsp;
+<p class=p2>
 <a href="/member/membership_list/1">Members</a>
-<p class=p2>
-<a href="/member/just_expired">Expired 12/31</a>
-&nbsp;&nbsp;&nbsp;&nbsp;
-<a href="/member/lapsed">Lapsed</a>
-<p class=p2>
+&nbsp;&nbsp;&nbsp;
 <a href="/member/non_email">Without Email</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/member/bulk">Bulk Mailings</a>
