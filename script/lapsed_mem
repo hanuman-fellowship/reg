@@ -20,13 +20,7 @@ use Template;
 my $c = db_init();
 Global->init($c, 1, 1);
 
-my $today = today;
-my $month = $today + 60;
-my $year = $today->year;
-$today = $today->as_d8();
-$month = $month->as_d8();
-
-my $dt = ($today+15)->as_d8();      # after the new year...
+my $dt = today()->as_d8();
 my @lapsed_members = model($c, 'Member')->search(
     {
         -or => [
@@ -68,22 +62,22 @@ for my $m (@lapsed_members) {
     my $html = "";
     my $stash = {
         sanskrit    => ($per->sanskrit || $per->first),
-        exp_year    => $year,
         string      => \%string,
         secure_code => $per->secure_code,
         has_email   => 1,
     };
     $tt->process(
-        "lapsed.tt2",
+        "lapse.tt2",
         $stash,           # variables
         \$html,           # output
     ) or die $tt->error;
+    sleep 1;
     email_letter($c,
         to      => $per->name_email(),
         from    => "HFS Membership <$string{mem_email}>",
         subject => "Hanuman Fellowship Membership Status",
         html    => $html,
-        activity_msg => "Lapse soon membership reminder sent to <a href='"
+        activity_msg => "Lapsed membership reminder sent to <a href='"
                       . '/person/view/' . $per->id . "'>"
                       . $per->name . "</a>",
     );

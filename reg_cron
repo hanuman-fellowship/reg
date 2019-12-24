@@ -11,6 +11,10 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 # will lapse soon.
 0 1 5 12 * $REG/lapse_soon_mem
 
+# at 1:00 am on December 24 send a reminder to people whose membership
+# will have lapsed come the first of the year.
+0 1 24 12 * $REG/lapsed_mem
+
 # at noon, 3:00, and 7:00 pm back up all the data in mysql and send it offsite.
 0 12,15,19 * * * $REG/db_backup
 
