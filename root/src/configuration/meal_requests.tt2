@@ -80,4 +80,8 @@ td.x {
 <p class=p2>
 Family - HFS Members, and the family of MMC/MMI/MMS Staff. <br>
 Guest - Guests of MMC Residents.
+<p class=p2>
+If meal requests are not allowed on certain days <a href='/event/create'>add an Event</a> with the name 'No Meal'.
+<br>
+If only Lunch is not served the Event name should be 'No Lunch'.
 </ul>
