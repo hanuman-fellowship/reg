@@ -49,8 +49,8 @@ use RetreatCenter::Controller::MasterCal qw/
 
 use lib '../../';       # so you can do a perl -c here.
 
-my $no_PR_regex    = qr{\bno\b .* \bPRs?\b}xmsi;
-my $no_meals_regex = qr{\bno\b .* \bMeals?\b}xmsi;
+my $no_PR_regex    = qr{\bno\b .* \bprs?\b}xmsi;
+my $no_meals_regex = qr{\bno\b .* \b(lunch|meals?)\b}xmsi;
 
 sub index : Private {
     my ( $self, $c ) = @_;
