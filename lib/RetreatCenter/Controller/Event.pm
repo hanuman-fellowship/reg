@@ -1824,9 +1824,18 @@ sub _send_no_prs {
 
 sub _send_no_meals {
     my ($c) = @_;
-    my (@events) = model($c, 'Event')->search(
+    my (@no_meal_events) = model($c, 'Event')->search(
         {
             name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]Meals?[[:>:]]' },
+            edate => { '>='   => today()->as_d8() },
+        },
+        {
+            order_by => 'sdate',
+        }
+    );
+    my (@no_lunch_events) = model($c, 'Event')->search(
+        {
+            name  => { 'regexp' => '[[:<:]]No[[:>:]].*[[:<:]]Lunch[[:>:]]' },
             edate => { '>='   => today()->as_d8() },
         },
         {
@@ -1836,9 +1845,13 @@ sub _send_no_meals {
     my $nm = "noMeals.txt";
     open my $out, ">", "/tmp/$nm"
         or die "cannot write /tmp/$nm: $!\n";
-    for my $ev (@events) {
+    for my $ev (@no_meal_events) {
         print {$out} $ev->sdate() . "-" . $ev->edate()
-             . "\n";
+                   . "\n";
+    }
+    for my $ev (@no_lunch_events) {
+        print {$out} $ev->sdate() . "-" . $ev->edate() . ' Lunch'
+                   . "\n";
     }
     close $out;
     #
