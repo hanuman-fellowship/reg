@@ -1,0 +1,14 @@
+insert into string (the_key, value) values ('ftp_gift_cards_dir', '/for_reg/gift_cards');
+DROP TABLE IF EXISTS gift_cards;
+CREATE TABLE gift_cards (
+    id integer primary key auto_increment,
+    person_id integer not null,
+    code char(5) not null,
+    amount integer not null,
+    rec_fname varchar(40) not null,
+    rec_lname varchar(40) not null,
+    rec_email varchar(40) not null,
+    the_date char(8) not null,
+    the_time char(4) not null,
+    transaction_id varchar(20)
+);

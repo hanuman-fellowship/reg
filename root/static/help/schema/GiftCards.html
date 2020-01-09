@@ -1,0 +1,38 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>GiftCards
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
+</h2>
+Gift Cards - for lodging for PRs and other programs
+<p>
+Table: gift_cards
+<dl>
+<dt>id</dt>
+<dd>Primary key</dd>
+<dt>person_id</dt>
+<dd>foreign key to <a href=Person.html>Person</a></dd>
+<dt>code</dt>
+<dd>the 5 character code of the card</dd>
+<dt>amount</dt>
+<dd>the dollar value of the card</dd>
+<dt>rec_fname</dt>
+<dd>first name of the recipient</dd>
+<dt>rec_lname</dt>
+<dd>last name of the recipient</dd>
+<dt>rec_email</dt>
+<dd>email of the recipient</dd>
+<dt>the_date</dt>
+<dd>date purchase was made</dd>
+<dt>the_time</dt>
+<dd>time purchase was made</dd>
+<dt>transaction_id</dt>
+<dd>authorize.net transaction id for online payments</dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>person</td><td><a href=Person.html>person</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>

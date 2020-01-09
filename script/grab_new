@@ -105,7 +105,7 @@ my $ftp;
 my $run_file = '/var/Reg/grab_running';
 my $nomp = 0;
 my ($now, $now_t24, $today_d8, $year_mon_dir);
-my ($temple_xaccount_id, $meals_xaccount_id);
+my ($temple_xaccount_id, $meals_xaccount_id, $gift_cards_xaccount_id);
 my @kayakalpa;  # an array of hashrefs - these people requested
                 # information about bodywork.
 my @mlist_alerts;   # an array of hashrefs - who to send
@@ -113,6 +113,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
 
 # directories
 my ($online, $grid, $temple, $mlist_done, $meal_requests_done,
+    $gift_cards_done,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
     $temple_donation);
 my $something_happened = 0;
@@ -199,6 +200,16 @@ sub initialize {
     else {
         quit("could not find the Meals Extra Account");
     }
+    # for gift cards
+    @xaccounts = model($c, 'XAccount')->search({
+                     descr => 'Gift Cards',
+                 });
+    if (@xaccounts == 1) {
+        $gift_cards_xaccount_id = $xaccounts[0]->id;
+    }
+    else {
+        quit("could not find the Gift Cards Extra Account");
+    }
 
     my $dir = "/var/Reg";
     $online          = make_dir("$dir/online");
@@ -206,6 +217,7 @@ sub initialize {
     $temple          = make_dir("$dir/temple_done/$year_mon_dir");
     $mlist_done      = make_dir("$dir/mlist_done/$year_mon_dir");
     $meal_requests_done = make_dir("$dir/meal_requests_done/$year_mon_dir");
+    $gift_cards_done = make_dir("$dir/gift_cards_done/$year_mon_dir");
     $req_mmi_dir     = make_dir("$dir/req_mmi/$year_mon_dir");
     $req_mmc_dir     = make_dir("$dir/req_mmc/$year_mon_dir");
     $omp_dir         = make_dir("$dir/omp");
@@ -738,6 +750,48 @@ sub process_meal_requests {
       ;
 }
 
+sub process_gift_cards {
+    my ($get_dir, $f) = @_;
+    my $href = x_file_to_href("$get_dir/$f");
+    # missing keys - we're not a full mlist thingy
+    $href->{sex} = '';
+    for my $k (qw/ e_mailings snail_mailings share_mailings /) {
+        $href->{$k} = -1;
+    }
+    my ($person_id, $person, $status) = add_or_update_deduping(
+        $c, $href,
+    );
+    my $rec_name = "$href->{rec_fname} $href->{rec_lname}";
+    # payment to extra account
+    model($c, 'XAccountPayment')->create({
+        person_id   => $person_id,
+        xaccount_id => $gift_cards_xaccount_id,
+        what        => "$rec_name, code $href->{code}",
+        amount      => $href->{amount},
+        type        => 'O',               # online
+        user_id     => 0,                 # what other user id?
+        the_date    => $today_d8,
+        time        => $now_t24,
+        transaction_id => $f,
+    });
+    # create a GiftCard record ...
+    model($c, 'GiftCards')->create({
+        person_id   => $person_id,
+        code        => $href->{code},
+        amount      => $href->{amount},
+        rec_fname   => $href->{rec_fname},
+        rec_lname   => $href->{rec_lname},
+        rec_email   => $href->{rec_email},
+        the_date    => $today_d8,
+        the_time    => $now_t24,
+        transaction_id => $f,
+    });
+    msg "gift card of \$$href->{amount} for $rec_name"
+      . ' by <a href=/person/view/' . $person->id . '>'
+      . $person->name . '</a>'
+      ;
+}
+
 #
 # obsolete - stopped doing this at some point...
 #
@@ -876,6 +930,10 @@ sub main {
     # MMC Meal Requests
     get_files($ftp, $string{ftp_meal_requests_dir},
               $meal_requests_done, \&process_meal_requests);
+
+    # Gift Cards
+    get_files($ftp, $string{ftp_gift_cards_dir},
+              $gift_cards_done, \&process_gift_cards);
 
     $ftp->quit();   # all done with MMC
 
