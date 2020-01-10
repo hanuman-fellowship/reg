@@ -230,7 +230,12 @@ sub pay_balance : Local {
     my $today = today();
     my $now = ymd($today->year(), $today->month, 1);
     my $year_ago = ymd($today->year() - 1, $today->month, 1);
+    ACCT:
     for my $a (@spons_accts) {
+        if ($a->descr() =~ /Membership/) {
+            # must go through Members link
+            next ACCT;
+        }
         my ($m, $y) = $a->descr() =~ m{(\d+)/(\d+)}xms;
         my $acct_date = $y? ymd(2000 + $y, $m, 1): $now;
         my $acct_is_past = $acct_date < $year_ago;
