@@ -1,4 +1,4 @@
-insert into string (the_key, value) values ('ftp_gift_cards_dir', '/for_reg/gift_cards');
+insert into string (the_key, value) values ('ftp_gift_cards_dir', '/for_reg/gift_card');
 DROP TABLE IF EXISTS gift_cards;
 CREATE TABLE gift_cards (
     id integer primary key auto_increment,
