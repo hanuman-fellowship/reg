@@ -785,6 +785,7 @@ sub process_gift_cards {
         the_date    => $today_d8,
         the_time    => $now_t24,
         transaction_id => $f,
+        reg_id      => 0,
     });
     msg "gift card of \$$href->{amount} for $rec_name"
       . ' by <a href=/person/view/' . $person->id . '>'

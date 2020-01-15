@@ -10,5 +10,6 @@ CREATE TABLE gift_cards (
     rec_email varchar(40) not null,
     the_date char(8) not null,
     the_time char(4) not null,
-    transaction_id varchar(20)
+    transaction_id varchar(20) not null,
+    reg_id integer not null
 );
