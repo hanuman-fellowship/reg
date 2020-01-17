@@ -59,6 +59,7 @@ sub index : Local {
     );
 }
 
+# added Rentals as well...
 sub reg_badges_in_date_range : Local {
     my ($self, $c) = @_;
     my $from = trim($c->request->params->{badge_from}) || '';

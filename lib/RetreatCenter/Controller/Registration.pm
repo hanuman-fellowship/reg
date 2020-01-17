@@ -1236,6 +1236,29 @@ sub create_do : Local {
         }
     }
 
+    # was a Gift Card used?
+    if ($P{gc_code}) {
+        # ???check that gc_code exists and
+        # that the computed balance matches $P{gc_balance}
+        # if not, give warning - but proceed
+        model($c, 'GiftCards')->create({
+            person_id   => 0,
+            code        => $P{gc_code},
+            amount      => -$P{gc_used},
+            rec_fname   => '',
+            rec_lname   => '',
+            rec_email   => '',
+            the_date    => date($P{date})->as_d8(),
+            the_time    => get_time($P{time})->t24(),
+            transaction_id => 0,
+            reg_id      => $reg_id,
+        });
+        model($c, 'RegHistory')->create({
+            what    => "Gift Card $P{gc_code} used \$$P{gc_used}",
+            @who_now,
+        });
+    }
+
     # was there an online donation to the green fund?
     #
     if ($P{green_amount}) {

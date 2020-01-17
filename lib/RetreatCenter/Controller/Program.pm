@@ -2054,6 +2054,17 @@ sub _send_export {
     add_activity($c, "Programs and Rentals exported");
 }
 
+#
+# this is so so awkward
+# $p->fee_table generates HTML
+# and then this routine parses and extracts information out of it!
+# this is done in case we have an *Exception* for this program's
+# fee table.
+# we haven't used Exceptions for many years.
+# at one time Reg _generated_ the mountmadonna.org initial registration page...
+# so this code is *very* antiquated and deprecated
+# and should be rewritten
+#
 sub _extract_fee_table {
     my ($html) = @_;
     my %hash;
