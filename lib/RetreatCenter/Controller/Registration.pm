@@ -1251,8 +1251,8 @@ sub create_do : Local {
             rec_fname   => '',
             rec_lname   => '',
             rec_email   => '',
-            the_date    => date($P{date})->as_d8(),
-            the_time    => get_time($P{time})->t24(),
+            the_date    => $P{date_postmark},
+            the_time    => $P{time_postmark},
             transaction_id => 0,
             reg_id      => $reg_id,
         });
