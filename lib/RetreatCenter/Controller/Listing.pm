@@ -59,8 +59,7 @@ sub index : Local {
     );
 }
 
-# added Rentals as well...
-sub reg_badges_in_date_range : Local {
+sub badges_in_date_range : Local {
     my ($self, $c) = @_;
     my $from = trim($c->request->params->{badge_from}) || '';
     my $to   = trim($c->request->params->{badge_to}) || '';
@@ -97,7 +96,14 @@ sub reg_badges_in_date_range : Local {
                        prefetch => [qw/ program /],
                    }
                );
-    if (! @regs) {
+    # check reg programs for code, badge title
+    my @rentals = model($c, 'Rental')->search(
+                      {
+                          sdate => { between => [ $from, $to ] },
+                          'cancelled'  => '',
+                      }
+                  );
+    if (! @regs && ! @rentals) {
         my $mess = "No badges to print.<p class=p2>Close this window.";
         stash($c,
             mess     => $mess,
@@ -105,17 +111,58 @@ sub reg_badges_in_date_range : Local {
         );
         return;
     }
+    my @rental_data;
+    for my $r (@rentals) {
+        my ($mess, $title, $code, $data_aref)
+            = Badge->get_badge_data_from_rental($c, $r);
+        if ($mess) {
+            $mess .= "<p class=p2>Close this window.";
+            stash($c,
+                mess     => $mess,
+                template => 'gen_message.tt2',
+            );
+            return;
+        }
+        push @rental_data, {
+            title => $title,
+            code  => $code,
+            data  => $data_aref,
+        };
+    }
+    my @all_data;
+    my $rc = _regs_to_badge_data($c, \@regs);
+    if (! ref $rc) {
+        # missing gate code or badge title too long
+        return;
+    }
     if ($upick) {
         stash($c,
             regs     => \@regs,
+            rentals  => \@rental_data,
             template => 'listing/upick.tt2',
         );
         return;
     }
-    _regs_to_badges($c, \@regs);
+    push @all_data, @$rc;
+    for my $rd (@rental_data) {
+        for my $person (@{$rd->{data}}) {
+            push @all_data, {
+                name       => $person->{name},
+                date_start => '',   # ???
+                dates      => $person->{dates},
+                room       => $person->{room},
+                program    => $rd->{title},
+                code       => $rd->{code},
+            };
+        }
+    }
+    Badge->initialize($c);
+    Badge->add_group('', '', \@all_data);
+        # first two params will vary - date, program title
+    $c->res->output(Badge->finalize());
 }
 
-sub _regs_to_badges {
+sub _regs_to_badge_data {
     my ($c, $regs_aref) = @_;
     my $all_mess = '';
     my @data;
@@ -155,7 +202,7 @@ sub _regs_to_badges {
             mess     => $all_mess,
             template => 'gen_message.tt2',
         );
-        return;
+        return 1;
     }
     # now that we know we WILL be printing badges
     # mark everyone's badge as having been printed.
@@ -172,10 +219,7 @@ sub _regs_to_badges {
                 $a->{name}       cmp $b->{name}
             }
             @data;
-    Badge->initialize($c);
-    Badge->add_group('', '', \@data);
-        # first two params will vary - date, program
-    $c->res->output(Badge->finalize());
+    return \@data;
 }
 
 sub upick : Local {
@@ -189,16 +233,37 @@ sub upick : Local {
         );
         return;
     }
+    my @reg_ids = grep { m{\A\d+\z}xms } @ids;
+    my @rental_data = grep { !m{\A\d+\z}xms } @ids;
     my @regs = model($c, 'Registration')->search(
                    {
-                       'me.id' => { -in => \@ids },
+                       'me.id' => { -in => \@reg_ids },
                    },
                    {
                        join     => [qw/ program /],
                        prefetch => [qw/ program /],
                    }
                );
-    _regs_to_badges($c, \@regs);
+    my @all_data;
+    my $rc = _regs_to_badge_data($c, \@regs);
+    if (! ref $rc) {
+        return;
+    }
+    push @all_data, @$rc;
+    for my $rd (@rental_data) {
+        my ($name, $title, $code, $dates, $room) = split m{~}xms, $rd;
+        push @all_data, {
+            name => $name,
+            program => $title,
+            code => $code,
+            dates => $dates,
+            room => $room,
+        };
+    }
+    Badge->initialize($c);
+    Badge->add_group('', '', \@all_data);
+        # first two params will vary - date, program title
+    $c->res->output(Badge->finalize());
 }
 
 #

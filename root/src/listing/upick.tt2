@@ -2,8 +2,19 @@
 Pick the people whose badge you want to print:
 <p class=p2>
 <form action='/listing/upick'>
-[% FOR r IN regs %]
-    <input type=checkbox name=upicked value=$r.id> $r.person.name - $r.program.name<br>
+[% IF regs.0 %]
+<h3>Registrations</h3>
+[% END %]
+[% FOR reg IN regs %]
+    <input type=checkbox name=upicked value=$reg.id> $reg.person.name - $reg.program.name<br>
+[% END %]
+[% IF rentals.0 %]
+<h3>Rentals</h3>
+[% END %]
+[% FOR rental IN rentals %]
+    [% FOR person IN rental.data %]
+        <input type=checkbox name=upicked value="$person.name~$rental.title~$rental.code~$person.dates~$person.room"> $person.name - $rental.title<br>
+    [% END %]
 [% END %]
 <p class=p2>
 <input type=submit id=sub>

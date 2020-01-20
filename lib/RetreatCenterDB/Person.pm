@@ -75,7 +75,7 @@ __PACKAGE__->has_many(donations => 'RetreatCenterDB::Donation', 'person_id',
 # payments
 __PACKAGE__->has_many(payments => 'RetreatCenterDB::XAccountPayment',
                                   'person_id',
-                      { order_by => 'the_date desc'});
+                      { order_by => 'id desc'});
 
 # MMI payments
 __PACKAGE__->has_many(mmi_payments => 'RetreatCenterDB::MMIPayment',
