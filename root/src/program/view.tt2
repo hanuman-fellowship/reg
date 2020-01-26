@@ -237,7 +237,6 @@ Web
 <tr>
 <th align=right>Housing Not Needed</th>
 <td>$program.housing_not_needed</td>
-[% END %]
 </tr>
 
 </table>
