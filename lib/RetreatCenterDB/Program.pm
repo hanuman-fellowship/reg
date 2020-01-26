@@ -135,9 +135,6 @@ __PACKAGE__->has_many(leader_program => 'RetreatCenterDB::LeaderProgram',
 __PACKAGE__->many_to_many(leaders => 'leader_program', 'leader',
                           { order_by => 'l_order' });
 
-# exceptions - maybe
-__PACKAGE__->has_many(exceptions => 'RetreatCenterDB::Exception', 'prog_id');
-
 # bookings
 __PACKAGE__->has_many(bookings => 'RetreatCenterDB::Booking', 'program_id');
 
@@ -320,18 +317,12 @@ sub title_trimmed {
 
 sub title1 {
     my ($self) = @_;
-    if (my $value = $self->_exception_for('title1')) {
-        return $value;
-    }
     return ($self->leader_names && $self->leader_names !~ m{\bstaff\b}i)?
                 $self->leader_names:
                 $self->title;
 }
 sub title2 {
     my ($self) = @_;
-    if (my $value = $self->_exception_for('title2')) {
-        return $value;
-    }
     if ($self->leader_names && $self->leader_names !~ m{\bstaff\b}i) {
         if ($self->subtitle) {
             $self->title . " - " . $self->subtitle;
@@ -369,9 +360,6 @@ sub title2_barnacles {
 sub leader_names {
     my ($self) = @_;
 
-    if (my $value = $self->_exception_for('leader_names')) {
-        return $value;
-    }
     my $s = "";
     my @leaders = map {
                       $_->leader_name
@@ -394,11 +382,6 @@ sub leader_names {
 sub dates {
     my ($self) = @_;
 
-    if (ref($self) =~ /Program/) {
-        if (my $value = $self->_exception_for('dates')) {
-            return $value;
-        }
-    }
     my $sd = $self->sdate_obj;
     my $ed = $self->edate_obj;
     my $dates = $sd->format("%B %e");
@@ -497,14 +480,7 @@ sub weburl {
     return "" unless $url;
     return "<p>$string{weburl} <a href='http://$url' target='_blank'>$url</a>.";
 }
-sub _exception_for {
-    my ($self, $tag) = @_;
-    for my $e ($self->exceptions) {
-        if ($e->tag eq $tag) {
-            return $e->value;
-        }
-    }
-}
+
 #
 # generate HTML (yes :() for a fee table)
 # ??? _could_ do this in a Template.
@@ -512,9 +488,6 @@ sub _exception_for {
 sub fee_table {
     my ($self) = @_;
 
-    if (my $value = $self->_exception_for('fee_table')) {
-        return $value;
-    }
     my $housecost = $self->housecost();
     my $sdate = $self->sdate_obj();
     my $month = $sdate->month();
@@ -816,7 +789,7 @@ sub PR {
 #
 # not good to put this HTML and styling in the code
 # need to move the <!-- T xxx --> mechanism into the template toolkit
-# and all styles to a .css file.  But what about Exceptions?
+# and all styles to a .css file.
 # this is a maintenance of legacy software issue...
 #
 sub reg_link {

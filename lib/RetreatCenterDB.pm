@@ -30,7 +30,6 @@ my @classes = qw/
     Summary
     Session
 
-    Exception
     String
 
     Registration

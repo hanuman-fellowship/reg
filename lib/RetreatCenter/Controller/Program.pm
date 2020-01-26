@@ -1196,9 +1196,6 @@ sub delete : Local {
         p_id => $id,
     })->delete();
 
-    # exceptions
-    $p->exceptions()->delete();
-
     # the summary
     $p->summary->delete();
 
@@ -2058,9 +2055,7 @@ sub _send_export {
 # this is so so awkward
 # $p->fee_table generates HTML
 # and then this routine parses and extracts information out of it!
-# this is done in case we have an *Exception* for this program's
 # fee table.
-# we haven't used Exceptions for many years.
 # at one time Reg _generated_ the mountmadonna.org initial registration page...
 # so this code is *very* antiquated and deprecated
 # and should be rewritten

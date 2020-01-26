@@ -51,18 +51,15 @@ p {
 [% IF prog_admin %]
     <a href=/configuration/documents>Documents</a><p>
 [% END %]
-[% IF web_des %]
-    <a href=/exception/list>Exceptions</a><p>
-[% END %]
 [% IF prog %]
     <a href=/xaccount/list>Extra Accounts</a><p>
     <a href=/house>Houses</a><p>
 [% END %]
-</td>
-<td valign=top>
 [% IF prog %]
     <a href=/housecost>Housing Costs</a><p>
 [% END %]
+</td>
+<td valign=top>
 <a href=/meal>Meals</a><p>
 [% IF prog_admin %]
     <a href=/string/meal_requests>Meal Requests</a><p>
