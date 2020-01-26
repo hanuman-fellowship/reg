@@ -481,11 +481,7 @@ sub weburl {
     return "<p>$string{weburl} <a href='http://$url' target='_blank'>$url</a>.";
 }
 
-#
-# generate HTML (yes :() for a fee table)
-# ??? _could_ do this in a Template.
-#
-sub fee_table {
+sub fee_table_hash {
     my ($self) = @_;
 
     my $housecost = $self->housecost();
@@ -500,51 +496,35 @@ sub fee_table {
     my $tent  = $self->name() =~ m{tnt}i;
     my $dncc  = $self->do_not_compute_costs();
     my $tuition = $self->tuition();
-
-    # I had trouble getting the proper alignment of various
-    # table elements.  When I opened the gen_files/*.html file
-    # in Safari it showed proper alignment when I used the
-    # align property of the <td> or <th>.   But there was
-    # some interaction with the other style sheets that were loaded.
-    # So I tried forcing a style on each <td> and <th>.
-    # Seems to work so I celebrate.
-    #
-    my $fee_table = <<EOH;
-<p>
-<table>
-EOH
+    my $caption;
     if ($dncc) {
-        $fee_table .= <<"EOH";
-<tr><th colspan=$cols style="text-align: center">
+        $caption = <<"EOH";
 TUITION \$$tuition<br>
 plus<br>
 MEALS and LODGING FEES:<br>
 <br>
 Note that because housing availability may vary for the duration<br>
-of this program per-day fees are shown below.<br>
-<br>
-</th></tr>
+of this program per-day fees are shown below.
 EOH
     }
     elsif (! $PR) {
-        my $heading = ($tuition)?
-            "Cost Per Person<br>(including tuition, meals, lodging, and facilities use)"
-           :"Cost Per Person<br>(including meals, lodging, and facilities use"
+        $caption = ($tuition)?
+            "(including tuition, meals, lodging, and facilities use)"
+           :"(including meals, lodging, and facilities use"
                ." - does NOT include tuition)"
            ;
-        $heading = "<center>$heading</center>";
-        $fee_table .= "<tr><th colspan=$cols>$heading</th></tr>\n";
-        $fee_table .= "<tr><th colspan=$cols>&nbsp;</th></tr>\n";
     }
-    $fee_table .= "<tr><th style='text-align: left' valign=bottom>$string{typehdr}</th>";
+    my @headings;
+    push @headings, $string{typehdr};
     if ($extradays) {
         my $plural = ($ndays > 1)? "s": "";
-            $fee_table .= "<th style='text-align: right' width=70>$ndays Day$plural</th>".
-                          "<th style='text-align: right' width=70>$fulldays Days</th></tr>\n";
+            push @headings, "$ndays Day$plural";
+            push @headings, "$fulldays Days";
     }
     else {
-        $fee_table .= "<th style='text-align: right'>$string{costhdr}</th></tr>\n";
+        push @headings, $string{costhdr};
     }
+    my @fee_rows;
     # the hard coded column names below - another way?
     # somehow get them from HouseCost.pm???
     # I think we need them hardcoded.  To tie 'economy' in program to
@@ -564,17 +544,19 @@ EOH
         my $cost = $dncc || $PR? $housecost->$t()
                   :              $self->fees(0, $t);
         next unless $cost;        # this type of housing is not offered at all.
-        $fee_table .= "<tr><td>" . $string{"long_$t"} . "</td>";
-        $fee_table .= "<td style='text-align: right'>\$$cost</td>\n";
+        my @row;
+        push @row, $string{"long_$t"};
+        push @row, "\$$cost";
         if ($extradays) {
-            $fee_table .= "<td style='text-align: right'>\$" .
-             $self->fees(1, $t) .
-             "</td>\n";
+            push @row, '$' . $self->fees(1, $t);
         }
-        $fee_table .= "</tr>\n";
+        push @fee_rows, \@row;
     }
-    $fee_table .= "</table>\n";
-    return $fee_table;
+    return (
+        fee_table_caption  => $caption,
+        fee_table_headings => \@headings,
+        fee_table_rows     => \@fee_rows,
+    );
 }
 
 #

@@ -1882,8 +1882,6 @@ sub export : Local {
                 last => $l->person->last,
             },
         }
-        my $fee_table = $p->fee_table();
-        my %extracted_fee_table = _extract_fee_table($fee_table);
         my $href = {
             map({ $_ => $p->$_ } qw/
                 id
@@ -1909,9 +1907,9 @@ sub export : Local {
             /),
             sdate => $p->sdate_obj->format($fmt),
             edate => $p->edate_obj->format($fmt),
-            %extracted_fee_table,
-            mmi => $mmi,
+            mmi   => $mmi,
             leaders => \@leaders,
+            $p->fee_table_hash(),
         };
         push @export_programs, $href;
     }
@@ -2049,41 +2047,6 @@ sub _send_export {
     $ftp->quit();
     system("/usr/bin/curl --user $login:$password $command &");
     add_activity($c, "Programs and Rentals exported");
-}
-
-#
-# this is so so awkward
-# $p->fee_table generates HTML
-# and then this routine parses and extracts information out of it!
-# fee table.
-# at one time Reg _generated_ the mountmadonna.org initial registration page...
-# so this code is *very* antiquated and deprecated
-# and should be rewritten
-#
-sub _extract_fee_table {
-    my ($html) = @_;
-    my %hash;
-    my @th = $html =~ m{<th [^>]*>(.*?)</th>}xmsg;
-    if (! @th) {
-        return %hash;
-    }
-    my $top = shift @th;
-    if ($th[0] !~ m{Housing}xms) {
-        # an extra row(s) for spacing??
-        my $toss = shift @th;
-    }
-    $top =~ s{</?center>}{}xmsg;
-    $top =~ s{Cost[ ]Per[ ]Person<br>}{}xms;    # per Shantam's request
-    $hash{fee_table_caption} = $top;
-    $hash{fee_table_headings} = \@th;
-    my $n = @th;    # number of columns per row
-    my @td = $html =~ m{<td [^>]*>(.*?)</td>}xmsg;
-    my @rows;
-    while (my @one_row = splice(@td, 0, $n)) {
-        push @rows, \@one_row;
-    }
-    $hash{fee_table_rows} = \@rows;
-    return %hash;
 }
 
 my $json = JSON->new->utf8->pretty->canonical;
