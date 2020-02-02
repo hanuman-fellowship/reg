@@ -101,6 +101,7 @@ sub badges_in_date_range : Local {
                       {
                           sdate => { between => [ $from, $to ] },
                           'cancelled'  => '',
+                          program_id => 0,  # non-hybrids
                       }
                   );
     if (! @regs && ! @rentals) {

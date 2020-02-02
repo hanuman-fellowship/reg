@@ -63,6 +63,25 @@ sub add_group {
     };
     for (my $i = 0; $i <= $#$data_aref; $i += 8) {
         $stash->{data}  = [ @{$data_aref}[$i .. $i+7] ];
+
+        # we now fill in any of the undefined slots
+        # so that we will print blank badges.
+        # we can write in information by hand to make
+        # a SOMEwhat official looking badge...
+        for my $href (@{$stash->{data}}) {
+            if (! defined $href) {
+                # the iterating variable is an *alias*
+                $href = {
+                    first   => '&nbsp;',
+                    last    => '&nbsp;',
+                    name    => '&nbsp;',
+                    room    => '&nbsp;',
+                    dates   => '&nbsp;',
+                    code    => '&nbsp;',
+                    program => '&nbsp;',
+                };
+            }
+        }
         $tt->process(
             'registration/badge.tt2',
             $stash,
