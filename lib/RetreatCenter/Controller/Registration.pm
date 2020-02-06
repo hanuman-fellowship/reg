@@ -1132,6 +1132,51 @@ sub create_do : Local {
             used_reg_id => $reg_id,
         });
     }
+    # was a gift card used?
+    # if so, add a negative RegCharge record
+    # so the balance of the registration is correct
+    # and a GiftCards record indicating that it was used.
+    #
+    # first verify that the gift card code exists ...??
+    if ($P{gc_used}) {
+        model($c, 'RegHistory')->create({
+            what    => "Gift Card $P{gc_code} used \$$P{gc_used}",
+            @who_now,
+        });
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => '',        # NOT automatic
+            amount  => -1*$P{gc_used},
+            type    => $TYPE_OTHER,
+            what    => "Used Gift Card with code '$P{gc_code}'",
+        });
+        model($c, 'GiftCards')->create({
+            code      => $P{gc_code},
+            amount    => -$P{gc_used},
+            reg_id    => $reg_id,
+            the_date  => tt_today($c)->as_d8(),
+            the_time  => get_time()->t24(),
+            # the rest can't be NULL so ...
+            person_id => 0,
+            rec_fname => '',
+            rec_lname => '',
+            rec_email => '',
+            transaction_id => '',
+        });
+        # is the balance on the gift card now correct?
+        my $tot = 0;
+        for my $gc (model($c, 'GiftCards')->search({
+                        code => $P{gc_code},
+                    })
+        ) {
+            $tot += $gc->amount();
+        }
+        if ($tot != $P{gc_balance}) {
+            open JON, '>>/tmp/jongc';
+            print JON "something is wrong with code $P{gc_code}\n";
+            close JON;
+        }
+    }
     # the payment (deposit)
     if (! $pr->school->mmi() && $P{deposit}) {
         # MMC program deposit
@@ -1238,30 +1283,6 @@ sub create_do : Local {
             close $log;
         }
     }
-
-    # was a Gift Card used?
-    if ($P{gc_code}) {
-        # ???check that gc_code exists and
-        # that the computed balance matches $P{gc_balance}
-        # if not, give warning - but proceed
-        model($c, 'GiftCards')->create({
-            person_id   => 0,
-            code        => $P{gc_code},
-            amount      => -$P{gc_used},
-            rec_fname   => '',
-            rec_lname   => '',
-            rec_email   => '',
-            the_date    => $P{date_postmark},
-            the_time    => $P{time_postmark},
-            transaction_id => 0,
-            reg_id      => $reg_id,
-        });
-        model($c, 'RegHistory')->create({
-            what    => "Gift Card $P{gc_code} used \$$P{gc_used}",
-            @who_now,
-        });
-    }
-
     # was there an online donation to the green fund?
     #
     if ($P{green_amount}) {

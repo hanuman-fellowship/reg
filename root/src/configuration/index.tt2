@@ -53,9 +53,10 @@ p {
 [% END %]
 [% IF prog %]
     <a href=/xaccount/list>Extra Accounts</a><p>
-    <a href=/house>Houses</a><p>
 [% END %]
+<a href=/giftcards/list>Gift Cards</a><p>
 [% IF prog %]
+    <a href=/house>Houses</a><p>
     <a href=/housecost>Housing Costs</a><p>
 [% END %]
 </td>

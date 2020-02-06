@@ -1,0 +1,10 @@
+<h2>Gift Cards</h2>
+[% IF all %]
+    <a href=/giftcards/list>Still with a balance</a>
+[% ELSE %]
+    <a href=/giftcards/list/1>All Gift Cards</a>
+[% END %]
+<p class=p2>
+[% FOR gc IN gift_cards %]
+    $gc.code - $gc.amount - $gc.date - $gc.time<br>
+[% END %]

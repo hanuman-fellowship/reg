@@ -45,7 +45,7 @@ overview - Gift Cards - for lodging for PRs and other programs
 id - Primary key
 person_id - foreign key to Person
 code - the 5 character code of the card
-amount - the dollar value of the card
+amount - the initial dollar value of the card OR the amount used
 rec_fname - first name of the recipient
 rec_lname - last name of the recipient
 rec_email - email of the recipient
