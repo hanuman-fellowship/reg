@@ -1,10 +1,41 @@
 <h2>Gift Cards</h2>
+<style>
+.cmd {
+    margin-left: 1in;
+    font-weight: normal;
+    font-size: 12pt;
+}
+</style>
 [% IF all %]
-    <a href=/giftcards/list>Still with a balance</a>
+    <h3>All Cards
+    <a class=cmd href=/giftcards/list>Only those with a balance</a>
+    </h3>
 [% ELSE %]
-    <a href=/giftcards/list/1>All Gift Cards</a>
+    <h3>Cards with a Balance
+    <a class=cmd href=/giftcards/list/1>All Gift Cards</a>
+    </h3>
 [% END %]
+<ul>
 <p class=p2>
+<table cellpadding=5>
 [% FOR gc IN gift_cards %]
-    $gc.code - $gc.amount - $gc.date - $gc.time<br>
+    <tr><td colspan=4>$gc.code <span style="margin-left: 1in"><a href=/giftcards/add/$gc.code>add</a></span><td></tr>
+    [% FOR h IN gc.history %]
+        <tr>
+        <td>&nbsp;</td>
+        <td align=right>$h.amount</td>
+        <td>$h.what</td>
+        <td>$h.date</td>
+        <td>$h.time</td>
+        </tr>
+    [% END %]
+    <tr>
+    <td>&nbsp</td>
+    <td align=right style='border-style: solid none none none; border-width: 1px;'>$gc.balance</td>
+    <td></td>
+    </tr>
 [% END %]
+</table>
+$count cards for a total of \$$total<br>
+Remaining Liability: \$$remaining
+</ul>

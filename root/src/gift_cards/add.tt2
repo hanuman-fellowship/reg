@@ -1,0 +1,8 @@
+<h2>Adding to Gift Card with code '$code'</h2>
+<form name=form action='/giftcards/add_do/$code'>
+Amount: <input type=text name=amount size=4>
+<input type=submit id=sub>
+</form>
+<script type="text/javascript">
+document.form.amount.focus();
+</script>
