@@ -68,20 +68,24 @@ sub add_group {
         # so that we will print blank badges.
         # we can write in information by hand to make
         # a SOMEwhat official looking badge...
-        for my $href (@{$stash->{data}}) {
-            if (! defined $href) {
-                # the iterating variable is an *alias*
-                $href = {
-                    first   => '&nbsp;',
-                    last    => '&nbsp;',
-                    name    => '&nbsp;',
-                    room    => '&nbsp;',
-                    dates   => '&nbsp;',
-                    code    => '&nbsp;',
-                    program => '&nbsp;',
-                };
-            }
-        }
+        #
+        # UNdoing this - they want the blank paper
+        # for scrap paper instead.  
+        #
+        #for my $href (@{$stash->{data}}) {
+        #    if (! defined $href) {
+        #        # the iterating variable is an *alias*
+        #        $href = {
+        #            first   => '&nbsp;',
+        #            last    => '&nbsp;',
+        #            name    => '&nbsp;',
+        #            room    => '&nbsp;',
+        #            dates   => '&nbsp;',
+        #            code    => '&nbsp;',
+        #            program => '&nbsp;',
+        #        };
+        #    }
+        #}
         $tt->process(
             'registration/badge.tt2',
             $stash,
