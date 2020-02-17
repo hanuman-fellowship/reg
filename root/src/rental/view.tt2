@@ -183,11 +183,6 @@ Web
 </tr>
 
 <tr>
-<th align=right>Expected</th>
-<td>$rental.expected</td>
-</tr>
-
-<tr>
 <th align=right valign=top>Housing Cost</th>
 <td><a href="/housecost/view/$rental.housecost.id">$rental.housecost.name</a></td>
 </tr>

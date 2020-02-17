@@ -1,0 +1,9 @@
+<p class=p2>
+The following errors were found:
+<ul style="width: 900px">
+$message
+</ul>
+<form action=$action>
+<input type=submit value="Okay" id=okay style="background: lightgreen">
+<script type='text/javascript'>document.getElementById('okay').focus();</script>
+</form>

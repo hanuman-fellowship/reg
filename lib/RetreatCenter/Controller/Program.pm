@@ -679,7 +679,7 @@ sub view : Local {
 sub _get_cluster_groups {
     my ($c, $program_id, $is_editable) = @_;
 
-    my @reserved = reserved_clusters($c, $program_id, 'program');
+    my @reserved = reserved_clusters($c, $program_id, 'Program');
     my %my_reserved_ids;
     my $reserved = "<tr><th align=left>Reserved</th></tr>\n";
     for my $cl (@reserved) {
@@ -960,27 +960,8 @@ sub update_do : Local {
         || $p->edate       ne $P{edate}
         || $p->extradays() != $P{extradays}
     ) {
-        # cannot change dates if there are any meeting place
-        # bookings in effect.   no registrations, either.
-        # 
-        my @bookings = model($c, 'Booking')->search({
-            program_id => $id,
-        });
-        my @regs = model($c, 'Registration')->search({
-            program_id => $id,
-            -or => [
-                date_start => { '!=' => $P{sdate} },
-                date_end   => { '!=' => $P{edate} },
-            ],
-        });
-        if (@bookings || @regs) {
-            error($c,
-                'Cannot change the dates or add extra days when there are'
-                . ' meeting place bookings or outlying registrations.',
-                'gen_error.tt2',
-            );
-            return;
-        }
+        _check_several_things($c, $p, 'change the dates of or add extra days to ')
+            or return;
         $P{lunches} = '';
         $P{refresh_days} = '';
     }
@@ -1158,33 +1139,7 @@ sub delete : Local {
         # - delete the program (it won't cascade)
     }
 
-    if (my @regs = $p->registrations()) {
-        my $n = @regs;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n registration$pl for this program.",
-            'gen_error.tt2',
-        );
-        return;
-    }
-    if (my @bookings = $p->bookings()) {
-        my $n = @bookings;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n meeting place$pl for this program.",
-            'gen_error.tt2',
-        );
-        return;
-    }
-    if (my @blocks = $p->blocks()) {
-        my $n = @blocks;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n block$pl attached to this program.",
-            'gen_error.tt2',
-        );
-        return;
-    }
+    _check_several_things($c, $p, 'delete') or return;
 
     # affiliation/programs
     model($c, 'AffilProgram')->search({
@@ -1203,6 +1158,25 @@ sub delete : Local {
     $p->delete();
 
     $c->response->redirect($c->uri_for('/program/list'));
+}
+
+sub _check_several_things {
+    my ($c, $p, $what) = @_;
+    my $id = $p->id;
+    my @bookings = $p->bookings();
+    my @blocks = $p->blocks();
+    my @regs = $p->registrations();
+    my @res_clust = reserved_clusters($c, $id, 'Program');
+    if (@bookings || @blocks || @regs || @res_clust) {
+        stash($c,
+            action => "/program/view/$id",
+            message => "Sorry, cannot $what a program when there are"
+                     . ' meeting place bookings, blocks, registrations, or reserved clusters.',
+            template => 'action_message.tt2',
+        );
+        return 0;
+    }
+    return 1;
 }
 
 sub access_denied : Private {
@@ -1793,34 +1767,7 @@ sub cancel : Local {
         });
     }
     else {
-        if (my @regs = grep { ! $_->cancelled } $p->registrations) {
-            error($c,
-                "Cannot cancel a program with active registrations.  Cancel them first.",
-                "gen_error.tt2",
-            );
-            return;
-        }
-        if (my @bookings = $p->bookings) {
-            error($c,
-                "Cannot cancel a program with meeting place bookings.",
-                "gen_error.tt2",
-            );
-            return;
-        }
-        if (my @blocks = $p->blocks) {
-            error($c,
-                "Cannot cancel a program with blocks.",
-                "gen_error.tt2",
-            );
-            return;
-        }
-        if (my @res_clust = reserved_clusters($c, $id, 'Program')) {
-            error($c,
-                "Cannot cancel a program with reserved clusters.",
-                "gen_error.tt2",
-            );
-            return;
-        }
+        _check_several_things($c, $p, 'cancel') or return;
         $p->update({
             cancelled => 'yes',
         });

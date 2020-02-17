@@ -292,9 +292,8 @@ sub count {
         # Hybrid counts come from the program and also the web grid.
         $reg_count = $self->program->count();
     }
-    my $expected = $self->expected() || 0;
-    my $gmax = $self->grid_max() || 0;
-    return (($gmax > $expected)? $gmax: $expected) + $reg_count;
+    my $gmax = $self->grid_max() || $self->max();
+    return $gmax + $reg_count;
 }
 my %display_for = map { my $x = $_; $x =~ s{_}{ }xmsg; $x } qw/
     tentative Tentative
@@ -567,7 +566,7 @@ sub compute_balance {
     if ($start_diff > 0) {
         $extra_start = 1;
         $start_hours = $start_diff/60;
-        $np_start = $rental->expected() || 0;
+        $np_start = $rental->expected() || 0;   # expected is now obsolete
         if ($counts[0] > $np_start) {    # first day count
             $np_start = $counts[0];
         }
@@ -592,7 +591,7 @@ sub compute_balance {
     if ($end_diff > 0) {
         $extra_end = 1;
         $end_hours = $end_diff/60;
-        $np_end = $rental->expected() || 0;
+        $np_end = $rental->expected() || 0; # expected is now obsolete
         if ($counts[-1] > $np_end) {    # last day count
             $np_end = $counts[-1];
         }
@@ -710,7 +709,7 @@ deposit - how much deposit is required?
 edate - date the rental ends
 email - email address for the rental to put on the little web page (if desired)
 end_hour - time the rental will end (and people will leave)
-expected - how many people are expected?
+expected - how many people are expected? - obsolete
 fch_encoded - the encoded form of fixed_cost_houses
 fixed_cost_houses - lines describing houses with a fixed cost.
     designed specifically for economy dorms where there is only

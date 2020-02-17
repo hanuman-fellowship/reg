@@ -524,6 +524,9 @@ sub process_mlist {
             }
         }
         else {
+            if ($interest eq 'Massage') {
+                $interest = 'Kaya Kalpa';
+            }
             push @affil_ids, $system_affil_id_for{"MMI - $interest"};
         }
     }

@@ -152,9 +152,6 @@ sub _get_data {
     if ($P{max} !~ m{^\d+$}) {
         push @mess, "Invalid maximum.";
     }
-    if ($P{expected} !~ m{^\d+$}) {
-            push @mess, "Invalid expected: $P{expected}.";
-    }
     if (! $P{deposit} =~ m{^\d+$}) {
         push @mess, "Invalid deposit.";
     }
@@ -565,7 +562,7 @@ sub view : Local {
                    map {
                        $_->name()
                    }
-                   reserved_clusters($c, $rental_id, 'rental')
+                   reserved_clusters($c, $rental_id, 'Rental')
                    ;
 
     stash($c,
@@ -775,28 +772,11 @@ sub update_do : Local {
     ) {
         # we have tried to change the dates of the rental.
         # prohibit this if there are ANY meeting place bookings
-        # or rental housing bookings.
+        # or rental housing bookings ... or other things....
         #
         # if there ARE none such clear the lunches.
         #
-        my @b = model($c, 'Booking')->search({
-                    rental_id => $id,
-                });
-        if (@b) {
-            error($c,
-                  "Cannot change rental dates while any meeting places are reserved.",
-                  'gen_error.tt2');
-            return;
-        }
-        my @rb = model($c, 'RentalBooking')->search({
-                     rental_id => $id,
-                 });
-        if (@rb) {
-            error($c,
-                  "Can't change rental dates while any rooms are reserved.",
-                  'gen_error.tt2');
-            return;
-        }
+        _check_several_things($c, $r, 'change the dates of') or return;
         $P{lunches} = "";
         $P{refresh_days} = "";
     }
@@ -873,45 +853,7 @@ sub delete : Local {
         # - delete the program (it won't cascade)
     }
 
-    # make a relationship instead???
-    my @clusters = model($c, 'RentalCluster')->search({
-        rental_id => $rental_id,
-    });
-    if (@clusters) {
-        my $n = @clusters;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n cluster$pl attached to this rental.",
-            'gen_error.tt2');
-        return;
-    }
-    if (my @blocks = $r->blocks()) {
-        my $n = @blocks;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n block$pl attached to this rental.",
-            'gen_error.tt2',
-        );
-        return;
-    }
-    if (my @bookings = $r->bookings()) {
-        my $n = @bookings;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n booking$pl attached to this rental.",
-            'gen_error.tt2',
-        );
-        return;
-    }
-    if (my @rental_bookings = $r->rental_bookings()) {
-        my $n = @rental_bookings;
-        my $pl = $n == 1? '': "s";
-        error($c,
-            "You must first delete the $n room booking$pl attached to this rental.",
-            'gen_error.tt2',
-        );
-        return;
-    }
+    _check_several_things($c, $r, 'delete') or return;
 
     # first break any link from the Proposal to this Rental.
     #
@@ -938,6 +880,24 @@ sub delete : Local {
 
     $c->response->redirect($c->uri_for('/rental/list'));
 }
+
+sub _check_several_things {
+    my ($c, $r, $what) = @_;
+    my $id = $r->id();
+    my @res_clust = reserved_clusters($c, $id, 'Rental');
+    my @blocks = $r->blocks();
+    my @bookings = $r->bookings();
+    my @rental_bookings = $r->rental_bookings();
+    if (@res_clust || @blocks || @bookings || @rental_bookings) {
+        stash($c,
+            action => "/rental/view/$id",
+            message => "Sorry, cannot $what a rental when there are"
+                     . ' meeting place bookings, blocks, reserved clusters, or reserved rooms.',
+            template => 'action_message.tt2',
+        );
+    }
+}
+
 
 sub access_denied : Private {
     my ($self, $c) = @_;
@@ -2560,34 +2520,7 @@ sub cancel : Local {
         });
     }
     else {
-        if (my @bookings = $r->bookings) {
-            error($c,
-                "Cannot cancel a rental with meeting place bookings.",
-                "gen_error.tt2",
-            );
-            return;
-        }
-        if (my @rental_bookings = $r->rental_bookings) {
-            error($c,
-                "Cannot cancel a rental with room bookings.",
-                "gen_error.tt2",
-            );
-            return;
-        }
-        if (my @blocks = $r->blocks) {
-            error($c,
-                "Cannot cancel a rental with blocks.",
-                "gen_error.tt2",
-            );
-            return;
-        }
-        if (my @res_clust = reserved_clusters($c, $id, 'Rental')) {
-            error($c,
-                "Cannot cancel a rental with reserved clusters.",
-                "gen_error.tt2",
-            );
-            return;
-        }
+        _check_several_things($c, $r, 'cancel') or return;
         $r->update({
             cancelled => 'yes',
             linked    => '',

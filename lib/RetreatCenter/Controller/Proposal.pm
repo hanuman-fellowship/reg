@@ -361,7 +361,7 @@ sub _transmit {
                  });
 
     my $person_id;
-    my $prop_sub_id = $system_affil_id_for{'Proposal Submitter'};
+    my $prop_sub_id = $system_affil_id_for{'MMC Proposal Submitter'};
     if (@people == 1) {
         my $person = $people[0];
         $person_id = $person->id();

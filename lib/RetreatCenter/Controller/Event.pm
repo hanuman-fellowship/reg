@@ -937,7 +937,7 @@ EOH
                          map {
                              $_->name()
                          }
-                         reserved_clusters($c, $ev_id, 'program')
+                         reserved_clusters($c, $ev_id, 'Program')
                          ;
                     $printable_row .= "<td align=right>$count&nbsp;&nbsp;</td>"
                                    .  "<td></td><td></td>"
@@ -956,7 +956,7 @@ EOH
                         map {
                             $_->name()
                         }
-                        reserved_clusters($c, $ev_id, 'rental')
+                        reserved_clusters($c, $ev_id, 'Rental')
                         ;
                     if (!$ev->status) {
                         # how did the Rental status get unset???

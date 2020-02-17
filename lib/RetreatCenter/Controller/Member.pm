@@ -627,7 +627,7 @@ sub create : Local {
                    ;
     }
     stash($c,
-        year          => (tt_today($c)->year + 1) % 100,
+        year          => (tt_today($c)->year) % 100,
         person        => model($c, 'Person')->find($person_id),
         form_action   => "create_do/$person_id",
         voter_checked => '',
@@ -672,14 +672,15 @@ sub create_do : Local {
     #
     # add the Guru Purnima affiliation to the Person
     # if it is not already there.
+    # it was renamed to 'MMC Annual Yoga Retreats'
     #
     my @affils = model($c, 'AffilPerson')->search({
-        a_id => $system_affil_id_for{'Guru Purnima'},
+        a_id => $system_affil_id_for{'MMC Annual Yoga Retreats'},
         p_id => $person_id,
     });
     if (! @affils) {
         model($c, 'AffilPerson')->create({
-            a_id => $system_affil_id_for{'Guru Purnima'},
+            a_id => $system_affil_id_for{'MMC Annual Yoga Retreats'},
             p_id => $person_id,
         });
     }
@@ -931,65 +932,6 @@ sub non_email : Local {
         })
     ];
     $c->stash->{template} = "member/non_email.tt2";
-}
-
-sub lapsed_letter : Local {
-    my ($self, $c, $id, $soon) = @_;
-
-    my $member = model($c, 'Member')->find($id);
-    my $per = $member->person;
-    my $category = $member->category;
-    my $html = "";
-    my $tt = Template->new({
-        INTERPOLATE  => 1,
-        INCLUDE_PATH => 'root/static/templates/letter',
-        EVAL_PERL    => 0,
-    });
-    my $name = $per->name();
-    my $addr = $per->addr1 . "<br>\n";
-    if (my $addr2 = $per->addr2) {
-        $addr .= $addr2 . "<br>\n";
-    }
-    $addr .= $per->city . ", "
-           . $per->st_prov . " "
-           . $per->zip_post;
-    my $message = <<"EOA";
-<style>
-body {
-    margin-left: .5in;
-}
-#addr {
-    margin-top: 2in;
-    margin-bottom: .5in;
-}
-</style>
-<div id=addr>
-$name<br>
-$addr
-<p>
-</div>
-EOA
-    Global->init($c);
-    my $stash = {
-        sanskrit    => ($per->sanskrit || $per->first),
-        exp_year    => tt_today($c)->year(),
-        string      => \%string,
-        message     => $message,
-        has_email   => 0,
-    };
-    my $template = "lapse";
-    if ($soon) {
-         $template .= $category eq 'General'? '_gen': '_spons';
-         $template .= "_soon";
-    }
-    $template .= ".tt2";
-    $tt->process(
-        $template,
-        $stash,           # variables
-        \$html,           # output
-    ) or die $tt->error;
-    $html = _no_here($html);
-    $c->res->output($html . js_print());
 }
 
 sub payment_delete : Local {

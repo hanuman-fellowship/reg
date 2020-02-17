@@ -132,11 +132,6 @@ Web
 <td><input type=text size=3 name=max value='$rental.max'></td>
 </tr>
 
-<tr>
-<th align=right>Expected</th>
-<td><input type=text size=3 name=expected value='$rental.expected'></td>
-</tr>
-
 [% hc = rental.housecost %]
 <tr>
 <th align=right>Housing Cost</th>
