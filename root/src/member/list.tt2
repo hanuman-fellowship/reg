@@ -61,7 +61,6 @@ Click on First to see person attributes.<br>
 <td>$m.category</td>
 <td>
 [% IF    m.category == 'General' %]${m.date_general_obj.format("%D")}
-[% ELSIF m.category == 'Life'    %]${m.date_life_obj.format("%D")}
 [% ELSIF m.category == 'Sponsor' %]${m.date_sponsor_obj.format("%D")}
 [% END %]
 </td>
@@ -77,8 +76,14 @@ $m.total_paid
 $m.sponsor_nights
 </td>
 <td align=center>
-[% IF m.free_prog_taken %]
+[% IF m.category == 'Life' || m.category == 'Founding Life' %]
+    [% IF m.free_prog_taken %]
 <img src=/static/images/checked.gif>
+    [% ELSE %]
+        &nbsp;
+    [% END %]
+[% ELSE %]
+    &mdash;
 [% END %]
 </td>
 <td><a href="/member/delete/$m.id" onclick="return confirm('Okay to Delete $m.person.first $m.person.last as member?');">Del</a></td>

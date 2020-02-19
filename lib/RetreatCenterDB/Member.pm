@@ -43,10 +43,6 @@ sub date_sponsor_obj {
     my ($self) = @_;
     date($self->date_sponsor) || "";
 }
-sub date_life_obj {
-    my ($self) = @_;
-    date($self->date_life) || "";
-}
 sub lapsed {
     my ($self) = @_;
     my $today = today()->as_d8();       # can't use tt_today - no $c :(
@@ -78,7 +74,7 @@ __END__
 overview - People can become Members of the Hanuman Fellowship by paying dues.
 category - General, Contributing Sponsor, Sponsor, Life, Founding Life, or Inactive.
 date_general - date the General membership will expire
-date_life - date the Life membership began - apparently no longer used
+date_life - date the Life membership began - apparently no longer used - right
 date_sponsor - date the Sponsor membership will expire
 free_prog_taken - was this year's free program taken?
 id - unique id
