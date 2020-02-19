@@ -122,9 +122,14 @@ sub _get_data {
     if (empty($hash{name})) {
         push @mess, "Missing housing cost name.";
     }
+    KEY:
     for my $k (keys %hash) {
         next if $k eq "name" || $k eq "type" || $k eq "inactive";
-        next if empty($hash{$k}) || $hash{$k} =~ m{^\s*\d+\s*$};
+        if (empty($hash{$k})) {
+            $hash{$k} = '0';
+            next KEY;
+        }
+        next KEY if $hash{$k} =~ m{^\s*\d+\s*$};
         push @mess, "Invalid cost for \u$k: $hash{$k}";
     }
     $hash{inactive} = "" unless exists $hash{inactive};
