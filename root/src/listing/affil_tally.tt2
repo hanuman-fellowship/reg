@@ -1,0 +1,17 @@
+<h2>Affiliation Tally <span style="font-size: 12pt; color: gray">(sorted by $sort)</span></h2>
+<table cellpadding=5>
+<tr>
+    <td><a href='/listing/affil_tally/description'>Description</td>
+    <td><a href='/listing/affil_tally/people'># People</a></td>
+    <td><a href='/listing/affil_tally/program'># Programs</a></td>
+    <td><a href='/listing/affil_tally/report'># Reports</a></td>
+</tr>
+[% FOR d IN data %]
+    <tr>
+    <td>$d.descrip</td>
+    <td align=right>$d.npeople</td>
+    <td align=right>$d.nprograms</td>
+    <td align=right>$d.nreports</td>
+    </tr>
+[% END %]
+</table>

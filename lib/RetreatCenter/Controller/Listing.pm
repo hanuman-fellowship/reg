@@ -2715,4 +2715,38 @@ sub childcare : Local {
     );
 }
 
+sub affil_tally : Local {
+    my ($self, $c, $sort) = @_;
+
+    $sort ||= 'description';
+    my @data;
+    for my $a (model($c, 'Affil')->search({}, { order_by => 'descrip'})) {
+        my $a_id = $a->id();
+        my @people   = model($c, 'AffilPerson')->search({ a_id => $a_id });
+        my @programs = model($c, 'AffilProgram')->search({ a_id => $a_id });
+        my @reports  = model($c, 'AffilReport')->search({ affiliation_id => $a_id });
+        my $npeople = @people;
+        my $nprograms = @programs;
+        my $nreports = @reports;
+        push @data, {
+            descrip   => $a->descrip,
+            npeople   => scalar(@people),
+            nprograms => scalar(@programs),
+            nreports  => scalar(@reports),
+        };
+    }
+    @data = sort {
+               $sort eq 'people' ? ($b->{npeople}   <=> $a->{npeople})
+              :$sort eq 'program'? ($b->{nprograms} <=> $a->{nprograms})
+              :$sort eq 'report' ? ($b->{nreports}  <=> $a->{nreports})
+              :                    ($a->{descrip}   cmp $b->{descrip})
+            }
+            @data;
+    stash($c,
+        sort     => $sort,
+        data     => \@data,
+        template => 'listing/affil_tally.tt2',
+    );
+}
+
 1;
