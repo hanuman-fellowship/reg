@@ -107,17 +107,11 @@ for my $prog (@progs) {
         }
         $let .= "<p>\n";
     }
-    #
-    # must have a to, apparently.
-    # doesn't have to be valid.  we hide it with a fake_to.
-    #
     if (@emails) {
-        push @emails, 'POStaff@mountmadonna.org', 'jonb@logicalpoetry.com';
         email_letter($c,
             from    => "$string{from_title} <$string{from}>",
-            fake_to => "Car Pool List",
-            to      => 'reservations@mountmadonna.org',
-            bcc     => (join ", ", @emails),
+            to      => (join ", ", @emails),
+            cc      => 'POStaff@mountmadonna.org, jon.bjornstad@gmail.com';
             subject => "Carpool List for " . $prog->name,
             html    => $let,
         );
@@ -148,9 +142,7 @@ for my $prog (@progs) {
         $let .= "</ul>\n";
         email_letter($c,
             from    => "$string{from_title} <$string{from}>",
-            fake_to => '',
-            to      => 'reservations@mountmadonna.org',
-            bcc     => 'POStaff@mountmadonna.org, jonb@logicalpoetry.com',
+            to      => 'POStaff@mountmadonna.org, jon.bjornstad@gmail.com',
             subject => "Snail Mail People - Carpool List for " . $prog->name,
             html    => $let,
         );
