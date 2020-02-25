@@ -20,6 +20,9 @@ use Util qw/
 use Global qw/
     %string
 /;
+
+my $from = "$string{from_title} <$string{from}>";
+
 use Date::Simple qw/
     today
 /;
@@ -311,7 +314,7 @@ sub create_do : Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $cur_u->name_email(),
+        from    => $from,
         subject => 'Your account in Reg for MMC',
         html    => <<"EOH",
 Greetings $P{first},
@@ -492,7 +495,7 @@ sub lock : Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $c->user->name_email(),
+        from    => $from,
         subject => "Your account in Reg for MMC",
         html    => "Your account '$username' in Reg for MMC has been locked by the administrator.",
     );
@@ -514,7 +517,7 @@ sub password_reset :Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $c->user->name_email(),
+        from    => $from,
         subject => "Your account in Reg for MMC",
         html    => <<"EOH",
 Your account '$username' in Reg for MMC has a new temporary password.
@@ -548,7 +551,7 @@ sub unlock : Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $c->user->name_email(),
+        from    => $from,
         subject => "Your account in Reg for MMC",
         html    => <<"EOH",
 Your account '$username' in Reg for MMC has been unlocked.
