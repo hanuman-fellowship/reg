@@ -21,8 +21,6 @@ use Global qw/
     %string
 /;
 
-my $from = "$string{from_title} <$string{from}>";
-
 use Date::Simple qw/
     today
 /;
@@ -37,6 +35,7 @@ sub index : Private {
 sub list : Local {
     my ($self, $c, $locked, $by_login_date) = @_;
 
+    Global->init($c);      # get %string ready
     $c->stash->{users} = [
         model($c, 'User')->search(
             { locked => $locked? 'yes': '' },
@@ -314,7 +313,7 @@ sub create_do : Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $from,
+        from    => "$string{from_title} <$string{from}>",
         subject => 'Your account in Reg for MMC',
         html    => <<"EOH",
 Greetings $P{first},
@@ -495,7 +494,7 @@ sub lock : Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $from,
+        from    => "$string{from_title} <$string{from}>",
         subject => "Your account in Reg for MMC",
         html    => "Your account '$username' in Reg for MMC has been locked by the administrator.",
     );
@@ -517,7 +516,7 @@ sub password_reset :Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $from,
+        from    => "$string{from_title} <$string{from}>",
         subject => "Your account in Reg for MMC",
         html    => <<"EOH",
 Your account '$username' in Reg for MMC has a new temporary password.
@@ -551,7 +550,7 @@ sub unlock : Local {
     email_letter(
         $c,
         to      => $u->name_email(),
-        from    => $from,
+        from    => "$string{from_title} <$string{from}>",
         subject => "Your account in Reg for MMC",
         html    => <<"EOH",
 Your account '$username' in Reg for MMC has been unlocked.
