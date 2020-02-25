@@ -115,7 +115,8 @@ for my $prog (@progs) {
             subject => "Carpool List for " . $prog->name,
             html    => $let,
             activity_msg => "Sent carpool list for "
-                          . $prog->name
+                          . "<a href='/program/view/" . $prog->id . "'>"
+                          . $prog->name . "</a>"
                           . " to "
                           . scalar(@emails)
                           . " people",
