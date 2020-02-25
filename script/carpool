@@ -114,6 +114,11 @@ for my $prog (@progs) {
             cc      => 'POStaff@mountmadonna.org, jon.bjornstad@gmail.com',
             subject => "Carpool List for " . $prog->name,
             html    => $let,
+            activity_msg => "Sent carpool list for "
+                          . $prog->name
+                          . " to "
+                          . scalar(@emails)
+                          . " people",
         );
     }
     if (@no_emails) {
