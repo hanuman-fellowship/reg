@@ -16,7 +16,6 @@ for my $p (model($c, 'Person')->all()) {
     if (@affils == 1 && $affils[0]->descrip eq 'Temple Guest') {
         $only = 'yes';
         ++$n;
-        print "$n\r";
     }
     if ($p->only_temple ne $only) {
         $p->update({
