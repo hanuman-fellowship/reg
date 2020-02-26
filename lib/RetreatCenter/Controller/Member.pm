@@ -281,7 +281,7 @@ sub _get_data {
     }
     else {
         $P{sponsor_nights} = trim($P{sponsor_nights});
-        if ($P{sponsor_nights} !~ m{^\d*$}) {
+        if ($P{sponsor_nights} !~ m{^\d+$}) {
             push @mess, "Invalid Nights Left: $P{sponsor_nights}";
         }
     }
