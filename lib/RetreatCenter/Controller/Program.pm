@@ -986,6 +986,10 @@ sub update_do : Local {
             );
             return;
         }
+        if ($p->alt_packet) {
+            # there's an existing one that we need to remove
+            unlink '/var/Reg/documents/' . $p->alt_packet;
+        }
         $upload->copy_to("/var/Reg/documents/$fname");
     }
     # if we changed where we expect payments (MMC vs MMI)

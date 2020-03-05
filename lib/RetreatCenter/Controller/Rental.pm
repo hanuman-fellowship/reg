@@ -833,6 +833,10 @@ sub update_do : Local {
             );
             return;
         }
+        if ($r->alt_packet) {
+            # there's an existing one that we need to remove
+            unlink '/var/Reg/documents/' . $r->alt_packet;
+        }
         $alt_upload->copy_to("/var/Reg/documents/$fname");
     }
 
