@@ -200,6 +200,13 @@ These costs will apply for each day the person stays - regardless of how many ot
 <td colspan=2><input type=checkbox value="yes" name=mmc_does_reg $check_mmc_does_reg> <b>MMC Does Registration</b></td>
 </tr>
 
+<tr>
+<th align=right>Alternate Guest Packet</th>
+<td colspan=6>
+<input type=file name=alt_packet>$rental.alt_packet
+</td>
+</tr>
+
 <!--
 <tr>
 <td>&nbsp;</td>

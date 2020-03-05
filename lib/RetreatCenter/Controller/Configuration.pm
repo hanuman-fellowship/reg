@@ -147,7 +147,8 @@ sub documents : Local {
     );
 }
 
-my %file_named = (
+# 'our' so we can reference it from elsewhere...
+our %file_named = (
     a_info        => 'CURRENT INFO SHEET.doc',
     b_kaya        => 'Kaya Kalpa Brochure.pdf',
     c_main_map    => 'Main Area Map.pdf',

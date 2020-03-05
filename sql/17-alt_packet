@@ -1,0 +1,2 @@
+alter table rental add column alt_packet varchar(100) not null default '';
+alter table program add column alt_packet varchar(100) not null default '';

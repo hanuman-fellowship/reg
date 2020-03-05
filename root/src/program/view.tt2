@@ -454,6 +454,13 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right valign=top>Alternate Guest Packet</th>
+<td colspan=2 valign=top><a href='/program/del_alt_packet/$id' onclick="return confirm('Okay to Delete \'$program.alt_packet\'?');"
+2017/2018 Term
+>$program.alt_packet</a></td>
+</tr>
+
+<tr>
 <th align=right valign=top>PR Alert</th>
 <td colspan=2 valign=top>$program.pr_alert</td>
 </tr>

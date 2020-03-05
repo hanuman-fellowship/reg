@@ -38,6 +38,7 @@ use Util qw/
     time_travel_class
     too_far
     add_activity
+    fixed_document
 /;
 use Date::Simple qw/
     date
@@ -458,6 +459,17 @@ sub create_do : Local {
             needs_verification => 'yes',
         });
         $P{summary_id} = $sum->id();
+    }
+    if (my $upload = $c->req->upload('alt_packet')) {
+        my $fname = $upload->filename();
+        if (fixed_document($fname)) {
+            error($c,
+                "Sorry, the Alternate Guest Packet cannot be named $fname",
+                "program/error.tt2",
+            );
+            return;
+        }
+        $upload->copy_to("/var/Reg/documents/$fname");
     }
     # now we can create the program itself
     #
@@ -965,6 +977,17 @@ sub update_do : Local {
         $P{lunches} = '';
         $P{refresh_days} = '';
     }
+    if (my $upload = $c->req->upload('alt_packet')) {
+        my $fname = $upload->filename();
+        if (fixed_document($fname)) {
+            error($c,
+                "Sorry, the Alternate Guest Packet cannot be named $fname",
+                "program/error.tt2",
+            );
+            return;
+        }
+        $upload->copy_to("/var/Reg/documents/$fname");
+    }
     # if we changed where we expect payments (MMC vs MMI)
     # we will need to recalculate all registration balances AFTER the update.
     my $recalc = $p->bank_account ne $P{bank_account};
@@ -976,6 +999,16 @@ sub update_do : Local {
     }
     $c->response->redirect($c->uri_for("/program/view/"
                            . $p->id . "/$section"));
+}
+
+sub del_alt_packet : Local {
+    my ($self, $c, $id) = @_;
+    my $p = model($c, 'Program')->find($id);
+    unlink '/var/Reg/documents/' . $p->alt_packet;
+    $p->update({
+        alt_packet => '',
+    });
+    $c->response->redirect($c->uri_for("/program/view/$id/2"));
 }
 
 sub leader_update : Local {
@@ -1153,6 +1186,11 @@ sub delete : Local {
 
     # the summary
     $p->summary->delete();
+
+    # any alt packet
+    if ($p->alt_packet) {
+        unlink '/var/Reg/documents/' . $p->alt_packet;
+    }
 
     # and finally, the program itself
     $p->delete();

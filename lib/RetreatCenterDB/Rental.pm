@@ -80,6 +80,7 @@ __PACKAGE__->add_columns(qw/
     created_by
     badge_title
     image
+    alt_packet
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -689,6 +690,7 @@ overview - A rental is created when some other organization wants
     made by the coordinator by filling in a form on the global web.
     This information is brought into Reg periodically via a cron job
     or on demand (Grab New).
+alt_packet - filename (in /var/Reg/documents) of an alternate guest packet
 arrangement_sent - date that the arrangement letter was sent
 arrangement_by - who sent the arrangement letter
 badge_title - A short version of the title to fit on the badges.

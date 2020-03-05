@@ -50,6 +50,7 @@ use Util qw/
     resize
     time_travel_class
     too_far
+    fixed_document
 /;
 use Global qw/
     %string
@@ -296,6 +297,18 @@ sub create_do : Local {
     my $upload     = $c->request->upload('image');
     my $no_crop = $P{no_crop};
     delete $P{no_crop};
+
+    if (my $alt_upload = $c->req->upload('alt_packet')) {
+        my $fname = $alt_upload->filename();
+        if (fixed_document($fname)) {
+            error($c,
+                "Sorry, the Alternate Guest Packet cannot be named $fname",
+                "rental/error.tt2",
+            );
+            return;
+        }
+        $alt_upload->copy_to("/var/Reg/documents/$fname");
+    }
 
     my $r = model($c, 'Rental')->create({
         %P,
@@ -811,6 +824,18 @@ sub update_do : Local {
         resize($id, $no_crop);
     }
 
+    if (my $alt_upload = $c->req->upload('alt_packet')) {
+        my $fname = $alt_upload->filename();
+        if (fixed_document($fname)) {
+            error($c,
+                "Sorry, the Alternate Guest Packet cannot be named $fname",
+                "rental/error.tt2",
+            );
+            return;
+        }
+        $alt_upload->copy_to("/var/Reg/documents/$fname");
+    }
+
     $r->update(\%P);
     $r->compute_balance();       # the changes may have affected it
     $r->set_grid_stale();        # relevant things may have changed
@@ -869,6 +894,11 @@ sub delete : Local {
     # the image(s) if any
     unlink <$img/r*-$rental_id.*>;
 
+    # any alt packet
+    if ($r->alt_packet) {
+        unlink '/var/Reg/documents/' . $r->alt_packet;
+    }
+
     # and the rental itself
     # does this cascade to rental payments???
     # - yes, because we have a relationship in place.
@@ -895,7 +925,9 @@ sub _check_several_things {
                      . ' meeting place bookings, blocks, reserved clusters, or reserved rooms.',
             template => 'action_message.tt2',
         );
+        return 0;
     }
+    return 1;
 }
 
 
@@ -2690,5 +2722,16 @@ sub grid_emails : Local {
     }
     $c->res->output("No emails :(");
 }
+
+sub del_alt_packet : Local {
+    my ($self, $c, $id) = @_;
+    my $r = model($c, 'Rental')->find($id);
+    unlink '/var/Reg/documents/' . $r->alt_packet;
+    $r->update({
+        alt_packet => '',
+    });
+    $c->response->redirect($c->uri_for("/rental/view/$id/2"));
+}
+
 
 1;

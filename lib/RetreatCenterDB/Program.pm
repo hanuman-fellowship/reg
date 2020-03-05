@@ -93,6 +93,7 @@ __PACKAGE__->add_columns(qw/
     badge_title
     manual_reg_finance
     children_welcome
+    alt_packet
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -805,6 +806,7 @@ overview - Programs are MMC (and MMI) sponsored events for which we do registrat
     They have many attributes and many relations to other tables.  
 allow_dup_regs - Can a person sign up more than once?  Personal Retreats have this field set to 'yes'.
     Other programs could have it set as well.  If not set we prohibit a duplicate registration.
+alt_packet - filename (in /var/Reg/documents) of an alternate guest packet
 badge_title - A short description of the program for badges.
 bank_account - Where do registrations payments go?  To the MMI bank account ('mmi'), the MMC bank account ('mmc'), or both accounts ('both')?
 cancelled - boolean - Has this program been cancelled?  Set/Unset via a menu link.

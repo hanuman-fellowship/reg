@@ -216,6 +216,13 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right valign=top>Alternate Guest Packet</th>
+<td colspan=6>
+<input type=file name=alt_packet>$program.alt_packet
+</td>
+</tr>
+
+<tr>
 <th align=right>PR Alert</th>
 <td colspan=2><input type=text name=pr_alert size=70 value='$program.pr_alert'></td>
 </tr>

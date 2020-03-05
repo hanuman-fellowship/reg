@@ -90,6 +90,7 @@ our @EXPORT_OK = qw/
     set_cache_timestamp
     kid_badge_names
     add_activity
+    fixed_document
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -2484,6 +2485,16 @@ sub add_activity {
         ctime   => $now_t24,
         cdate   => $today_d8,
     });
+}
+
+sub fixed_document {
+    my ($fname) = @_;
+    for my $f (values %RetreatCenter::Controller::Configuration::file_named) {
+        if ($fname eq $f) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 1;

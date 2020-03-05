@@ -21,7 +21,7 @@ use Date::Simple qw/
     today
 /;
 
-my $packet = '/var/Reg/documents/MMC_Guest_Packet.pdf';
+my $default_packet = 'MMC_Guest_Packet.pdf';
 my $in_two_days_d8 = (today() + 2)->as_d8();
 my $today = today()->format("%B %e, %Y"),
 my $tt = Template->new({
@@ -43,6 +43,7 @@ for my $reg (@regs) {
         next REG;
     }
     my $program = $reg->program();
+    my $packet = $program->alt_packet || $default_packet;
     my $gate_code = $program->summary->gate_code();
     my $balance = $reg->balance();
     my $prepay_link = '';
@@ -70,15 +71,16 @@ for my $reg (@regs) {
         \$html,
     ) or die "error in processing template: " . $tt->error;
     sleep 1;        # so we aren't blacklisted as spammers?
+    my $alt = $packet ne $default_packet? 'Alternate ': '';
     email_letter($c,
         from    => "$string{from_title} <$string{from}>",
         to      => $email,
         subject => 'Guest Packet for your visit to MMC',
         html    => $html,
         files_to_attach => [
-            $packet,
+            "/var/Reg/documents/$packet",
         ],
-        activity_msg => sprintf('Packet sent for'
+        activity_msg => sprintf("${alt}Packet sent for"
                               . " <a href='/registration/view/%s'>%s</a>",
                                 $reg->id, $person->name),
     );
@@ -92,6 +94,7 @@ my @rentals = model($c, 'Rental')->search({
 for my $rental (@rentals) {
     my $rid   = $rental->id;
     my $rname = $rental->name_trimmed;
+    my $packet = $rental->alt_packet || $default_packet;
     my $gate_code = $rental->summary->gate_code;
     my $fgrid = get_grid_file($rental->grid_code());
     if (open my $in, "<", $fgrid) {
@@ -130,15 +133,16 @@ for my $rental (@rentals) {
                 \$html,
             ) or die "error in processing template: " . $tt->error;
             sleep 1;        # so we aren't blacklisted as spammers?
+            my $alt = $packet ne $default_packet? 'Alternate ': '';
             email_letter($c,
                 from    => "$string{from_title} <$string{from}>",
                 to      => $email,
                 subject => 'Guest Packet for your visit to MMC',
                 html    => $html,
                 files_to_attach => [
-                    $packet,
+                    "/var/Reg/documents/$packet",
                 ],
-                activity_msg => 'Packet sent to' 
+                activity_msg => "${alt}Packet sent to" 
                               . " $name"
                               . ' in '
                               . "<a href='/rental/view/$rid'>$rname</a>",

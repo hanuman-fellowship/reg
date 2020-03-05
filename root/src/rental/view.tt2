@@ -417,6 +417,11 @@ none
 <td>$rental.mmc_does_reg</td>
 </tr>
 
+<tr>
+<th align=right>Alternate Guest Packet</th>
+<td colspan=2 valign=top><a href='/rental/del_alt_packet/$id' onclick="return confirm('Okay to Delete \'$rental.alt_packet\'?');">$rental.alt_packet</a></td>
+</tr>
+
 <!--
 <tr>
 <th align=right>Staff Okay?</th>
