@@ -25,7 +25,7 @@ following codes: #$gate_code for main gate access and 1$gate_code for Oaks
 cabins and Oaks campground access at the School entrance gate.
 [% IF program %]
     Enter through the main gate first and follow the road to the Community
-    Building where you can pick up your room key in the Programs Office
+    Building where you can pick up your room key in Guest Services
     or on the Late Arrivals Board if you arrive after office hours.
     <p>
     [% IF balance > 0 %]
@@ -39,5 +39,5 @@ review our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ
 We look forward to seeing you here soon! 
 <p>
 Take care,<br>
-Mount Madonna Center Programs Office 
+Mount Madonna Center Guest Services 
 <p>
