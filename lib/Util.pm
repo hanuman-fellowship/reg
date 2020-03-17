@@ -2480,6 +2480,8 @@ sub add_activity {
     my $now_t24 = $now->t24;
     my $today = tt_today($c);
     my $today_d8 = $today->as_d8();
+    $msg = substr($msg, 0, 256);    # in case it is longer than 256 chars
+        # 256 chars should be plenty to describe the activity, yes?
     model($c, 'Activity')->create({
         message => $msg,
         ctime   => $now_t24,
