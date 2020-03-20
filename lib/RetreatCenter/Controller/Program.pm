@@ -2002,7 +2002,9 @@ sub export : Local {
 
     # send it off
     _send_export($c, 'mmc');
-    _send_export($c, 'mmi');
+    _send_export($c, 'mmi');        # not needed any more???
+
+    add_activity($c, "Programs and Rentals exported");
 
     stash($c,
         ftp_export_site => $string{ftp_export_site},
@@ -2035,7 +2037,6 @@ sub _send_export {
     	or die 'could not put exported_reg_data.tgz';
     $ftp->quit();
     system("/usr/bin/curl --user $login:$password $command &");
-    add_activity($c, "Programs and Rentals exported");
 }
 
 my $json = JSON->new->utf8->pretty->canonical;
