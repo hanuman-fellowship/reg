@@ -176,11 +176,11 @@ Finance
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Web
+Web/Files
 </div>
 <span onclick="tabs(4)">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Web
+Web/Files
 </div>
 </span>
 </td>
@@ -577,7 +577,7 @@ $leaders_house
 </table>
 </div>
 
-<!-- Web -->
+<!-- Web/Files -->
 <div id="content4" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
@@ -635,6 +635,27 @@ $leaders_house
     <td>$program.ptemplate</td>
     </tr>
 [% END %]
+
+<tr>
+<th align=right valign=top>Files</th>
+<td colspan=5>
+<table cellpadding=5>
+[% FOR f IN program.files %]
+<tr>
+<td>$f.description</td>
+<td>${f.filename}.${f.suffix}</td>
+<td>
+ <a href=/program/del_file/$f.id
+onclick="return confirm('Okay to Delete file ${f.filename}.${f.suffix}?');"><img src=/static/images/redX.gif height=20 border=0></a>
+</td>
+<td>$f.who_added.username</td>
+<td>$f.date_added_obj</td>
+<td>$f.time_added_obj</td>
+</tr>
+[% END %]
+</table>
+</td>
+</tr>
 
 </table>
 </div>

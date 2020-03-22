@@ -90,6 +90,8 @@ my @classes = qw/
     MealRequests
 
     GiftCards
+
+    File
 /;
 
 __PACKAGE__->load_classes({

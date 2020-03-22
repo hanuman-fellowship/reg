@@ -1,0 +1,38 @@
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="../help.css" />
+</head>
+<body>
+<h2>File
+<span style="margin-left: 2in; font-size: 13pt; font-weight: normal"><a href=index.html>To Help for Developers</a>
+</h2>
+Files are added to a program or a rental They might be images or other documents of various kinds. Useful for information related to the event. Either program_id or rental_id is non-zero but not both.
+<p>
+Table: file
+<dl>
+<dt>date_added</dt>
+<dd>date added</dd>
+<dt>description</dt>
+<dd>long description of the file</dd>
+<dt>filename</dt>
+<dd>base name of the file</dd>
+<dt>id</dt>
+<dd>unique id</dd>
+<dt>program_id</dt>
+<dd>the id of the program that owns this file</dd>
+<dt>rental_id</dt>
+<dd>the id of the rental that owns this file</dd>
+<dt>suffix</dt>
+<dd>suffix of the file</dd>
+<dt>time_added</dt>
+<dd>time added</dd>
+<dt>who_added</dt>
+<dd>foreign key of the user who added the file</dd>
+</dl>
+<h2>Relations</h2>
+<table cellpadding=5>
+<tr><td>program</td><td><a href=Program.html>program</a></td><td>belongs_to</td></tr>
+<tr><td>rental</td><td><a href=Rental.html>rental</a></td><td>belongs_to</td></tr>
+<tr><td>who_added</td><td><a href=User.html>user</a></td><td>belongs_to</td></tr>
+</table>
+</body></html>

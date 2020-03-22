@@ -136,6 +136,13 @@ __PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
                           order_by => 'house.name'
                       }
                      );
+# files
+__PACKAGE__->has_many(files => 'RetreatCenterDB::File',
+                      'rental_id',
+                      {
+                          order_by => 'date_added, time_added',
+                      },
+                     );
 
 # rental_bookings
 __PACKAGE__->has_many(rental_bookings => 'RetreatCenterDB::RentalBooking',

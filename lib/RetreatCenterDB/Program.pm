@@ -148,6 +148,13 @@ __PACKAGE__->has_many(blocks => 'RetreatCenterDB::Block',
                           order_by => 'house.name',
                       },
                      );
+# files
+__PACKAGE__->has_many(files => 'RetreatCenterDB::File',
+                      'program_id',
+                      {
+                          order_by => 'date_added, time_added',
+                      },
+                     );
 __PACKAGE__->belongs_to(created_by => 'RetreatCenterDB::User',
                         'created_by');
 

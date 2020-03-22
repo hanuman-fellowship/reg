@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS file;
+CREATE TABLE file (
+    id integer primary key auto_increment,
+    program_id integer,
+    rental_id integer,
+    description varchar(256) not null,
+    filename varchar(256) not null,
+    suffix varchar(256) not null,
+    date_added char(8) not null,
+    time_added char(4) not null,
+    who_added integer not null
+);

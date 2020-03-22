@@ -13,6 +13,7 @@ use Time::Simple qw/
     get_time
 /;
 use File::Copy;
+use File::Basename 'fileparse';
 use Image::Size 'imgsize';
 use Util qw/
     get_string
@@ -310,12 +311,47 @@ sub create_do : Local {
         $alt_upload->copy_to("/var/Reg/documents/$fname");
     }
 
+    my $file;
+    if (my $upload = $c->req->upload('file_name')) {
+        if (empty($P{file_desc})) {
+            error($c,
+                'Missing description for File upload',
+                'program/error.tt2',
+            );
+            return;
+        }
+        my $fname = $upload->filename();
+        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
+        $suffix =~ s{\A [.]}{}xms;
+        $file = model($c, 'File')->create({
+            program_id  => 0,
+            filename    => $filename,
+            suffix      => $suffix,
+            description => $P{file_desc},
+            date_added  => tt_today($c)->as_d8(),
+            time_added  => get_time()->t24(),
+            who_added   => $c->user->obj->id,
+        });
+        my $file_id = $file->id;
+        $upload->copy_to("/var/Reg/documents/$file_id.$suffix");
+    }
+    # remove parameters that are not Program attributes
+    delete $P{file_name};
+    delete $P{file_desc};
+
     my $r = model($c, 'Rental')->create({
         %P,
         image => $upload? 'yes': '',
     });
     $r->set_grid_stale();
     my $id = $r->id();
+
+    # update any uploaded File with the rental id now that we have it
+    if ($file) {
+        $file->update({
+            rental_id => $id,
+        });
+    }
 
     if ($upload) {
         # force the name to be .jpg even if it's a .png...
@@ -839,6 +875,35 @@ sub update_do : Local {
         }
         $alt_upload->copy_to("/var/Reg/documents/$fname");
     }
+
+    my $file;
+    if (my $upload = $c->req->upload('file_name')) {
+        if (empty($P{file_desc})) {
+            error($c,
+                'Missing description for File upload',
+                'program/error.tt2',
+            );
+            return;
+        }
+        my $fname = $upload->filename();
+        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
+        $suffix =~ s{\A [.]}{}xms;
+        $file = model($c, 'File')->create({
+            rental_id   => $id,
+            program_id  => 0,
+            filename    => $filename,
+            suffix      => $suffix,
+            description => $P{file_desc},
+            date_added  => tt_today($c)->as_d8(),
+            time_added  => get_time()->t24(),
+            who_added   => $c->user->obj->id,
+        });
+        my $file_id = $file->id;
+        $upload->copy_to("/var/Reg/documents/$file_id.$suffix");
+    }
+    # remove parameters that are not Rental attributes
+    delete $P{file_name};
+    delete $P{file_desc};
 
     $r->update(\%P);
     $r->compute_balance();       # the changes may have affected it

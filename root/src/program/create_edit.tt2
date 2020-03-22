@@ -82,11 +82,11 @@ Finance
 
 <td>
 <div id="tab4focus" class="tab tabfocus" style="display: none">
-Web
+Web/Files
 </div>
 <span onclick="tabs(4); document.form.title.focus();">
 <div id="tab4ready" class="tab tabhold" style="display: none">
-Web
+Web/Files
 </div>
 </span>
 </td>
@@ -343,7 +343,7 @@ $level_opts
 </table>
 </div>
 
-<!-- Web -->
+<!-- Web/Files -->
 <div id="content4" class="tabcontent" style="display: none">
 <table cellpadding=3 border=0>
 
@@ -414,6 +414,15 @@ $level_opts
     </td>
     </tr>
 [% END %]
+
+<tr>
+<th align=right valign=top>Add File</th>
+<td>
+<input type=file name=file_name>
+<br>
+Description: <input type=text name=file_desc size=50>
+</td>
+</tr>
 
 </table>
 </div>
