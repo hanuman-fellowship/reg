@@ -643,7 +643,8 @@ $leaders_house
 [% FOR f IN program.files %]
 <tr>
 <td>$f.description</td>
-<td>${f.filename}.${f.suffix}</td>
+<!-- yes rental below -->
+<td><a target=_blank href='/rental/show_file/${f.id}.${f.suffix}'>${f.filename}.${f.suffix}</a></td>
 <td>
  <a href=/program/del_file/$f.id
 onclick="return confirm('Okay to Delete file ${f.filename}.${f.suffix}?');"><img src=/static/images/redX.gif height=20 border=0></a>

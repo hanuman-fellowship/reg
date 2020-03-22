@@ -38,7 +38,8 @@ use Util qw/
     time_travel_class
     too_far
     add_activity
-    fixed_document
+    check_alt_packet
+    check_file_upload
 /;
 use Date::Simple qw/
     date
@@ -55,7 +56,6 @@ use Global qw/
     @clusters
 /;
 use File::Copy;
-use File::Basename 'fileparse';
 use JSON;
 use Data::Dumper;
 
@@ -461,42 +461,12 @@ sub create_do : Local {
         });
         $P{summary_id} = $sum->id();
     }
-    if (my $upload = $c->req->upload('alt_packet')) {
-        my $fname = $upload->filename();
-        if (fixed_document($fname)) {
-            error($c,
-                "Sorry, the Alternate Guest Packet cannot be named $fname",
-                "program/error.tt2",
-            );
-            return;
-        }
-        $upload->copy_to("/var/Reg/documents/$fname");
-    }
 
-    my $file;
-    if (my $upload = $c->req->upload('file_name')) {
-        if (empty($P{file_desc})) {
-            error($c,
-                'Missing description for File upload',
-                'program/error.tt2',
-            );
-            return;
-        }
-        my $fname = $upload->filename();
-        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
-        $suffix =~ s{\A [.]}{}xms;
-        $file = model($c, 'File')->create({
-            rental_id   => 0,
-            filename    => $filename,
-            suffix      => $suffix,
-            description => $P{file_desc},
-            date_added  => tt_today($c)->as_d8(),
-            time_added  => get_time()->t24(),
-            who_added   => $c->user->obj->id,
-        });
-        my $file_id = $file->id;
-        $upload->copy_to("/var/Reg/documents/$file_id.$suffix");
-    }
+    check_alt_packet($c, 'program') || return;
+
+    my $file = check_file_upload($c, 'program', $P{file_desc});
+    return if $file eq 'error';
+
     # remove parameters that are not Program attributes
     delete $P{file_name};
     delete $P{file_desc};
@@ -517,7 +487,7 @@ sub create_do : Local {
     my $id = $p->id();
 
     # update any uploaded File with the program id now that we have it
-    if ($file) {
+    if (ref $file) {
         $file->update({
             program_id => $id,
         });
@@ -1014,46 +984,17 @@ sub update_do : Local {
         $P{lunches} = '';
         $P{refresh_days} = '';
     }
-    if (my $upload = $c->req->upload('alt_packet')) {
-        my $fname = $upload->filename();
-        if (fixed_document($fname)) {
-            error($c,
-                "Sorry, the Alternate Guest Packet cannot be named $fname",
-                "program/error.tt2",
-            );
-            return;
-        }
-        if ($p->alt_packet) {
-            # there's an existing one that we need to remove
-            unlink '/var/Reg/documents/' . $p->alt_packet;
-        }
-        $upload->copy_to("/var/Reg/documents/$fname");
-    }
-    my $file;
-    if (my $upload = $c->req->upload('file_name')) {
-        if (empty($P{file_desc})) {
-            error($c,
-                'Missing description for File upload',
-                'program/error.tt2',
-            );
-            return;
-        }
-        my $fname = $upload->filename();
-        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
-        $suffix =~ s{\A [.]}{}xms;
-        $file = model($c, 'File')->create({
-            rental_id   => 0,
-            program_id  => $id,
-            filename    => $filename,
-            suffix      => $suffix,
-            description => $P{file_desc},
-            date_added  => tt_today($c)->as_d8(),
-            time_added  => get_time()->t24(),
-            who_added   => $c->user->obj->id,
+
+    check_alt_packet($c, 'program', $p) || return;
+ 
+    my $file = check_file_upload($c, 'program', $P{file_desc});
+    return if $file eq 'error';
+    if (ref $file) {
+        $file->update({
+            program_id => $id,
         });
-        my $file_id = $file->id;
-        $upload->copy_to("/var/Reg/documents/$file_id.$suffix");
     }
+
     # remove parameters that are not Program attributes
     delete $P{file_name};
     delete $P{file_desc};

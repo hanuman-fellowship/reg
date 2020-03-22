@@ -644,7 +644,7 @@ onclick="return confirm('Okay to Delete image for \'$rental.name\'?');"><img src
 [% FOR f IN rental.files %]
 <tr>
 <td>$f.description</td>
-<td>${f.filename}.${f.suffix}</td>
+<td><a target=_blank href='/rental/show_file/${f.id}.${f.suffix}'>${f.filename}.${f.suffix}</a></td>
 <td>
     <!-- yes, program here -->
  <a href=/program/del_file/$f.id

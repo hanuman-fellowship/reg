@@ -91,6 +91,8 @@ our @EXPORT_OK = qw/
     kid_badge_names
     add_activity
     fixed_document
+    check_alt_packet
+    check_file_upload
 /;
 use POSIX   qw/ceil/;
 use Date::Simple qw/
@@ -111,6 +113,7 @@ use Email::Sender::Transport::SMTP;
 use Carp 'croak';
 use Data::Dumper;
 use Catalyst::Utils;
+use File::Basename 'fileparse';
 
 our @charge_type = (
     '',
@@ -751,6 +754,7 @@ sub email_letter {
     } || do {
         $message .= "Failed to send email: $@\n";
     };
+    $message = substr($message, 0, 256);        # in case it failed...
     model($c, 'Activity')->create({
         message => $args{activity_msg} || $message,
         cdate   => tt_today($c)->as_d8(),
@@ -2497,6 +2501,58 @@ sub fixed_document {
         }
     }
     return 0;
+}
+
+sub check_file_upload {
+    my ($c, $type, $file_desc) = @_; 
+    if (my $upload = $c->req->upload('file_name')) {
+        if (empty($file_desc)) {
+            error($c,
+                'Missing description for File upload',
+                "$type/error.tt2",
+            );
+            return 'error';
+        }
+        my $fname = $upload->filename();
+        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
+        $suffix =~ s{\A [.]}{}xms;
+        my $file = model($c, 'File')->create({
+            rental_id   => 0,
+            program_id  => 0,
+            filename    => $filename,
+            suffix      => $suffix,
+            description => $file_desc,
+            date_added  => tt_today($c)->as_d8(),
+            time_added  => get_time()->t24(),
+            who_added   => $c->user->obj->id,
+        });
+        my $file_id = $file->id;
+        $upload->copy_to("/var/Reg/documents/$file_id.$suffix");
+        return $file;
+    }
+    else {
+        return '';
+    }
+}
+
+sub check_alt_packet {
+    my ($c, $type, $event) = @_;
+    if (my $upload = $c->req->upload('alt_packet')) {
+        my $fname = $upload->filename();
+        if (fixed_document($fname)) {
+            error($c,
+                "Sorry, the Alternate Guest Packet cannot be named $fname",
+                "$type/error.tt2",
+            );
+            return 0;
+        }
+        if ($event->alt_packet) {
+            # there's an existing one that we need to remove
+            unlink '/var/Reg/documents/' . $event->alt_packet;
+        }
+        $upload->copy_to("/var/Reg/documents/$fname");
+    }
+    return 1;
 }
 
 1;

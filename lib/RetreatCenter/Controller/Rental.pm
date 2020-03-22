@@ -13,7 +13,6 @@ use Time::Simple qw/
     get_time
 /;
 use File::Copy;
-use File::Basename 'fileparse';
 use Image::Size 'imgsize';
 use Util qw/
     get_string
@@ -51,7 +50,8 @@ use Util qw/
     resize
     time_travel_class
     too_far
-    fixed_document
+    check_alt_packet
+    check_file_upload
 /;
 use Global qw/
     %string
@@ -299,42 +299,11 @@ sub create_do : Local {
     my $no_crop = $P{no_crop};
     delete $P{no_crop};
 
-    if (my $alt_upload = $c->req->upload('alt_packet')) {
-        my $fname = $alt_upload->filename();
-        if (fixed_document($fname)) {
-            error($c,
-                "Sorry, the Alternate Guest Packet cannot be named $fname",
-                "rental/error.tt2",
-            );
-            return;
-        }
-        $alt_upload->copy_to("/var/Reg/documents/$fname");
-    }
+    check_alt_packet($c, 'rental') || return;
 
-    my $file;
-    if (my $upload = $c->req->upload('file_name')) {
-        if (empty($P{file_desc})) {
-            error($c,
-                'Missing description for File upload',
-                'program/error.tt2',
-            );
-            return;
-        }
-        my $fname = $upload->filename();
-        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
-        $suffix =~ s{\A [.]}{}xms;
-        $file = model($c, 'File')->create({
-            program_id  => 0,
-            filename    => $filename,
-            suffix      => $suffix,
-            description => $P{file_desc},
-            date_added  => tt_today($c)->as_d8(),
-            time_added  => get_time()->t24(),
-            who_added   => $c->user->obj->id,
-        });
-        my $file_id = $file->id;
-        $upload->copy_to("/var/Reg/documents/$file_id.$suffix");
-    }
+    my $file = check_file_upload($c, 'rental', $P{file_desc});
+    return if $file eq 'error';
+
     # remove parameters that are not Program attributes
     delete $P{file_name};
     delete $P{file_desc};
@@ -347,7 +316,7 @@ sub create_do : Local {
     my $id = $r->id();
 
     # update any uploaded File with the rental id now that we have it
-    if ($file) {
+    if (ref $file) {
         $file->update({
             rental_id => $id,
         });
@@ -391,6 +360,36 @@ sub image_file : Local Args(1) {
         or die "$image_name not found!!: $!\n";
     my ($suffix) = $image_name =~ m{[.](\w+)$}xms;
     $c->response->content_type('image/$suffix');
+    $c->response->body($fh);
+}
+
+# used for both rental and program attached Files
+sub show_file : Local Args(1) {
+    my ($self, $c, $file_name) = @_;
+    open my $fh, '<', "/var/Reg/documents/$file_name"
+        or die "$file_name not found!!: $!\n";
+    my ($suffix) = $file_name =~ m{[.](\w+)$}xms;
+    # maybe see: https://www.lemoda.net/perl/find-type-of-file/index.html
+    # or: https://stackoverflow.com/questions/4212861/what-is-a-correct-mime-type-for-docx-pptx-etc
+    if ($suffix =~ m{\A jpg|jpeg|gif|png \z}xmsi) {
+        $c->response->content_type('image/$suffix');
+    }
+    elsif ($suffix eq 'pdf') {
+        $c->response->content_type('application/pdf');
+    }
+    elsif ($suffix =~ m{htm|html}xmsi) {
+        $c->response->content_type('text/html');
+    }
+    elsif ($suffix eq 'txt') {
+        $c->response->content_type('text/plain');
+    }
+    elsif ($suffix eq 'docx') {
+        $c->response->content_type('application/vnd.openxmlformats-officedocument.wordprocessingml.document');
+    }
+    else {
+        $c->response->content_type('application/octet-stream');
+    }
+    # help - ask John!
     $c->response->body($fh);
 }
 
@@ -860,47 +859,16 @@ sub update_do : Local {
         resize($id, $no_crop);
     }
 
-    if (my $alt_upload = $c->req->upload('alt_packet')) {
-        my $fname = $alt_upload->filename();
-        if (fixed_document($fname)) {
-            error($c,
-                "Sorry, the Alternate Guest Packet cannot be named $fname",
-                "rental/error.tt2",
-            );
-            return;
-        }
-        if ($r->alt_packet) {
-            # there's an existing one that we need to remove
-            unlink '/var/Reg/documents/' . $r->alt_packet;
-        }
-        $alt_upload->copy_to("/var/Reg/documents/$fname");
+    check_alt_packet($c, 'rental', $r) || return;
+
+    my $file = check_file_upload($c, 'rental', $P{file_desc});
+    return if $file eq 'error';
+    if (ref $file) {
+        $file->update({
+            rental_id => $id,
+        });
     }
 
-    my $file;
-    if (my $upload = $c->req->upload('file_name')) {
-        if (empty($P{file_desc})) {
-            error($c,
-                'Missing description for File upload',
-                'program/error.tt2',
-            );
-            return;
-        }
-        my $fname = $upload->filename();
-        my ($filename, $dir, $suffix) = fileparse($fname, qr{[.][^.]+ \z}xms);
-        $suffix =~ s{\A [.]}{}xms;
-        $file = model($c, 'File')->create({
-            rental_id   => $id,
-            program_id  => 0,
-            filename    => $filename,
-            suffix      => $suffix,
-            description => $P{file_desc},
-            date_added  => tt_today($c)->as_d8(),
-            time_added  => get_time()->t24(),
-            who_added   => $c->user->obj->id,
-        });
-        my $file_id = $file->id;
-        $upload->copy_to("/var/Reg/documents/$file_id.$suffix");
-    }
     # remove parameters that are not Rental attributes
     delete $P{file_name};
     delete $P{file_desc};
