@@ -2029,6 +2029,13 @@ sub duplicate_do : Local {
     my $no_crop = $P{no_crop};
     delete $P{no_crop};
 
+    my $file = check_file_upload($c, 'rental', $P{file_desc});
+    return if $file eq 'error';
+
+    # remove parameters that are not Program attributes
+    delete $P{file_name};
+    delete $P{file_desc};
+
     # get the old rental and the old summary
     # so we can duplicate the summary.  and get the
     # contact person and contract signer ids.
@@ -2089,6 +2096,7 @@ sub duplicate_do : Local {
     }
     elsif ($new_r->image()) {
         for my $let ('o', 'th', '') {
+$c->log->info("copying images from $old_id to $new_id: $img/r$let-$old_id.jpg to $img/r$let-$new_id.jpg");
             copy "$img/r$let-$old_id.jpg",
                  "$img/r$let-$new_id.jpg";
         }

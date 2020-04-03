@@ -1477,6 +1477,13 @@ sub duplicate_do : Local {
         });
     }
 
+    my $file = check_file_upload($c, 'program', $P{file_desc});
+    return if $file eq 'error';
+
+    # remove parameters that are not Program attributes
+    delete $P{file_name};
+    delete $P{file_desc};
+
     # now we can create the new dup'ed program
     my $new_p = model($c, 'Program')->create({
         %P,     # this comes first so summary_id can override
