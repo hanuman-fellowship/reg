@@ -1156,9 +1156,9 @@ sub create_do : Local {
             reg_id    => $reg_id,
             the_date  => tt_today($c)->as_d8(),
             the_time  => get_time()->t24(),
-            # the rest can't be NULL so ...
+            # the rest can't be NULL so we put info about the registration
             person_id => 0,
-            rec_fname => '',
+            rec_fname => "<a href=/registration/view/$reg_id>Registration</a> for " . $pr->name,
             rec_lname => '',
             rec_email => '',
             transaction_id => '',
