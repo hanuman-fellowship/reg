@@ -36,6 +36,6 @@
     </tr>
 [% END %]
 </table>
-$count card[% IF $count > 1 %]s[% END %] for a total of \$$total<br>
+$count card[% IF $count != 1 %]s[% END %] for a total of \$$total<br>
 Remaining Liability: \$$remaining
 </ul>
