@@ -505,7 +505,7 @@ sub lock : Local {
         subject => "Your account in Reg for MMC",
         html    => "Your account '$username' in Reg for MMC has been locked by the administrator.",
     );
-    login_log($u->username, 'account locked by admin');
+    login_log($u->username, 'account locked by ' . $c->user->username);
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
 
@@ -538,7 +538,7 @@ Configuration > User Profile > Password
 </ul>
 EOH
     );
-    login_log($u->username, 'password reset by admin');
+    login_log($u->username, 'password reset by ' . $c->user->username);
     $c->flash(new_password => $pass);
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
@@ -572,7 +572,7 @@ Configuration > User Profile > Password
 </ul>
 EOH
     );
-    login_log($u->username, 'account unlocked by admin');
+    login_log($u->username, 'account unlocked by ' . $c->user->username);
     $c->flash(new_password => $pass);
     $c->response->redirect($c->uri_for("/user/view/$id"));
 }
