@@ -436,7 +436,14 @@ sub profile_password : Local {
 
 sub profile_password_do : Local {
     my ($self, $c) = @_;
-    my $u = $c->user;
+    #
+    # rather than just my $u = $c->user
+    # get the user afresh - we may have just changed
+    # the password...
+    #
+    my ($u) = model($c, 'User')->search({
+                  username => $c->user->username,
+              });
     my $cur_pass  = $c->request->body_params->{cur_pass};
     my $new_pass  = $c->request->body_params->{new_pass};
     my $new_pass2 = $c->request->body_params->{new_pass2};

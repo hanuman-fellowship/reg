@@ -81,7 +81,8 @@ sub index :Path :Args(0) {
             goto HERE;
         }
         elsif ($user->locked) {
-            $c->stash->{error_msg} = "This account is locked.";
+            $c->stash->{error_msg} = "The account for '$username' is locked."
+                                   . _user_admins($c);
             goto HERE;
         }
         my $password256 = sha256_hex($password);
@@ -126,7 +127,10 @@ sub index :Path :Args(0) {
                         # with a message.
                         $c->logout;
                         stash($c,
-                            error_msg => "Sorry, your password has fully expired. This account is now locked.",
+                            error_msg => "Sorry, your password has fully"
+                                      .  " expired. The account for '$username'"
+                                      .  " is now locked."
+                                      .  _user_admins($c),
                             time      => get_time(),
                             pg_title  => "Reg for MMC",
                             template  => 'login.tt2',
@@ -190,15 +194,27 @@ sub index :Path :Args(0) {
                 });
                 $c->stash->{error_msg}
                     = "$string{num_pass_fails} consecutive password failures"
-                    . " - This account is locked."
+                    . " - The account for '$username' is locked."
+                    . _user_admins($c)
                     ;
             }
             else {
                 my $msg = "Bad username or password.";
                 if ($user->nfails + 2 == $string{num_pass_fails}) {
-                    $msg .= "<br><span style='color: red'>Danger</span>... two more failed attempts and you will be locked out!";
+                    $msg .= "<br><span style='color: red'>"
+                         .  "Danger</span>... TWO more failed attempts"
+                         .  " and you will be locked out!"
+                         .  _user_admins($c)
+                         ;
                 }
-                $c->stash->{error_msg} = $msg;
+                elsif ($user->nfails + 1 == $string{num_pass_fails}) {
+                    $msg .= "<br><span style='color: red'>"
+                         .  "Danger</span>... ONE more failed attempt"
+                         .  " and you will be locked out!"
+                         .  _user_admins($c)
+                         ;
+                }
+                $c->stash->{error_msg} = $msg
             }
         }
     }
@@ -230,7 +246,10 @@ sub index :Path :Args(0) {
         elsif ($user->locked()) {
             login_log($user->username, 'forgot password but account is locked');
             stash($c,
-                message  => 'Sorry, the account associated with this email is locked.',
+                message  => 'Sorry, the account associated with'
+                         .  ' this email is locked.'
+                         .  _user_admins($c)
+                         ,
                 email    => $email,
                 template => 'forgot_password.tt2',
             );
@@ -278,6 +297,54 @@ EOH
         pg_title => "Reg for MMC",
         template => 'login.tt2',
     );
+}
+
+sub _user_admins {
+    my ($c) = @_;
+    my ($user_admin_role) = model($c, 'Role')->search({
+                                role => 'user_admin',
+                            });
+    my $ua_role_id = $user_admin_role->id();
+    my @user_admins = model($c, 'UserRole')->search(
+                          {
+                              role_id => $ua_role_id,
+                          },
+                          {
+                              join => qw/ user /,
+                              prefetch => qw/ user /,
+                              order_by => 'user.username',
+                          }
+                      );
+    # table instead??
+    my $msg = <<'EOH';
+<p class=p2>
+These people can help reset your account:
+<p class=p2>
+<table cell_padding=5>
+<tr align=left>
+<th>Name</th>
+<th>Email</th>
+<th>Cell Phone</th>
+<th>Office Phone</th>
+</tr>
+EOH
+    for my $ua (@user_admins) {
+        my $u = $ua->user;
+        $msg .= "<tr>"
+             .  _td($u->first . ' ' . $u->last)
+             .  _td($u->email)
+             .  _td($u->cell)
+             .  _td($u->office)
+             .  "</tr>"
+             ;
+    }
+    $msg .= "</table>";
+    return $msg;
+}
+
+sub _td {
+    my ($s) = @_;
+    return "<td>$s</td>";
 }
 
 #
