@@ -547,6 +547,7 @@ sub process_mlist {
         map { $_ => $hash{$_} } qw/
             first last
             addr1 city st_prov zip_post country
+            email
             request
         /,
     };
