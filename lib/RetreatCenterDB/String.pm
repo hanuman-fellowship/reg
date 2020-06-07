@@ -299,6 +299,7 @@ mem_sponsor_nights - number of free lodging nights for a Sponsor member
 mem_team - obsolete - can be removed
 member_meal_cost - obsolete - can be removed
 min_kid_age - minimum age of a person before they need to pay (as a child)
+min_per_day - per day cost of a rental - used to compute the Minimum Amount Due
 mmc_event_alert - who should be notified by email of a new MMC Program/Rental/Event?
 mmc_reconciling - who is doing an MMC reconciliation?
 mmi_discount - percentage discount for MMI programs - must be requested via an Affiliation
