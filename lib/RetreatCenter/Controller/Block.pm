@@ -248,63 +248,6 @@ sub _get_data {
     }
 }
 
-sub update : Local {
-    my ($self, $c, $id) = @_;
-
-    my $block = $c->stash->{block} = model($c, 'Block')->find($id);
-    $c->stash->{form_action} = "update_do/$id";
-    $c->stash->{template}    = "block/create_edit.tt2";
-}
-
-sub update_do : Local {
-    my ($self, $c, $id) = @_;
-
-    _get_data($c);
-    return if @mess;
-
-    my $block = model($c, 'Block')->find($id);
-
-    # we first vacate the old house - assuming it is allocated.
-    # If we don't vacate first it is too tricky to
-    # move a block of 4 days up by one day, yes?
-    # because there would be an overlap with itself.
-    #
-    _vacate($c, $block) if $block->allocated();
-
-    if (_available($c)) {
-        $block->update({
-            %P,
-            allocated => 'yes',
-            get_now($c),
-        });
-        $c->response->redirect($c->uri_for("/block/list"));
-    }
-    else {
-        # some error occurred.  space not available.
-        # an error will be reported when this subroutine returns.
-        # restore the block as it was before we vacated it
-        # just in case the person abandons the edit.
-        #
-        $P{house_id} = $block->house_id();
-        $P{sdate}    = $block->sdate();
-        $edate1      = ($block->edate_obj() - 1)->as_d8();
-        $P{nbeds}    = $block->nbeds();
-
-        if (_available($c)) {
-            # housing restored
-        }
-        else {
-            # something happened in the split second
-            # between vacating and re-occupying
-            # very rare - but COULD happen, I guess.
-            #
-            $block->update({
-                allocated => '',
-            });
-        }
-    }
-}
-
 sub create : Local {
     my ($self, $c) = @_;
 
@@ -329,15 +272,15 @@ sub bound_create : Local {
 
 #
 # offer to create multiple blocks at once.
-# just for the date range of the program (not rental at this time)
+# just for the date range of the event (program or rental)
 # nbeds all in house, npeople 0
 #
-sub program_create_many : Local {
-    my ($self, $c, $program_id) = @_;
-    my $program = model($c, 'Program')->find($program_id);
-    my $sdate = $program->sdate();
-    my $edate1 = ($program->edate_obj() - 1)->as_d8();
-    my %or_cids = other_reserved_cids($c, $program);
+sub create_many : Local {
+    my ($self, $c, $type, $id) = @_;
+    my $event = model($c, ucfirst $type)->find($id);
+    my $sdate = $event->sdate();
+    my $edate1 = ($event->edate_obj() - 1)->as_d8();
+    my %or_cids = other_reserved_cids($c, $event);
     my @or_cids = keys %or_cids;
     my @opt = ();
     if (@or_cids) {
@@ -405,7 +348,9 @@ sub program_create_many : Local {
         }
     }
     stash($c,
-        program     => $program,
+        type        => $type,
+        event       => $event,
+        id          => $id,
         center_tent => $center_tent,
         own_tent    => $own_tent,
         single      => $single,
@@ -417,22 +362,26 @@ sub program_create_many : Local {
         economy     => $economy,
         daily_pic_date => "indoors/$sdate",
         cluster_date   => $sdate,
-        pg_title    => "Blocks for " . $program->name(),
-        template    => 'program/many_block.tt2',
+        pg_title    => "Blocks for " . $event->name(),
+        template    => 'block/many_block.tt2',
     );
 }
 
-sub program_create_many_do : Local {
-    my ($self, $c, $program_id) = @_;
-    my $program = model($c, 'Program')->find($program_id);
-    my $sdate = $program->sdate();
-    my $edate = $program->edate();
-    my $edate1 = ($program->edate_obj() - 1)->as_d8();
+sub create_many_do : Local {
+    my ($self, $c, $type, $id) = @_;
+    my $event = model($c, ucfirst $type)->find($id);
+    my $sdate = $event->sdate();
+    my $edate = $event->edate();
+    my $edate1 = ($event->edate_obj() - 1)->as_d8();
     my @chosen_house_ids = values %{$c->request->params()};
     if (! @chosen_house_ids) {
-        $c->response->redirect($c->uri_for("/program/view/$program_id/1"));
+        $c->response->redirect($c->uri_for("/type/view/$id/1"));
         return;
     }
+    my @opt = (
+        program_id => $type eq 'program'? $id: 0,
+        rental_id  => $type eq 'rental' ? $id: 0,
+    );
     for my $h_id (@chosen_house_ids) {
         my $h = model($c, 'House')->find($h_id);
         my $hname = $h->name();
@@ -442,11 +391,10 @@ sub program_create_many_do : Local {
             edate      => $edate,
             nbeds      => $h->max(),
             npeople    => 0,
-            reason     => $program->name(),
+            reason     => $event->name(),
             comment    => 'added by Many Blocks',
             event_id   => 0,
-            program_id => $program_id,
-            rental_id  => 0,
+            @opt,
             allocated => 'yes',
             get_now($c),
         });
@@ -458,8 +406,7 @@ sub program_create_many_do : Local {
         ) {
             $cf->update({
                 cur => $h->max(),
-                program_id => $program_id,
-                rental_id  => 0,
+                @opt,
                 sex => 'B',
             });
             # housing log
@@ -474,7 +421,32 @@ sub program_create_many_do : Local {
             }
         }
     }
-    $c->response->redirect($c->uri_for("/program/view/$program_id/1"));
+    $c->response->redirect($c->uri_for("/$type/view/$id/1"));
+}
+
+sub delete_many : Local {
+    my ($self, $c, $type, $id) = @_;
+
+    my $event = model($c, ucfirst $type)->find($id);
+    stash($c,
+        type     => $type,
+        Type     => ucfirst $type,
+        event    => $event,
+        blocks   => [ $event->blocks() ],
+        template => 'block/delete_many.tt2',
+    );
+}
+
+sub delete_many_do : Local {
+    my ($self, $c, $type, $id) = @_;
+
+    %P = %{ $c->request->params() };
+    for my $block_id (keys %P) {
+        my $block = model($c, 'Block')->find($block_id);
+        _vacate($c, $block);    # deal with the config table
+        $block->delete();
+    }
+    $c->response->redirect($c->uri_for("/$type/view/$id/1"));
 }
 
 sub create_do : Local {

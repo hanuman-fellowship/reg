@@ -253,9 +253,11 @@ Web/Files
 <span class=head>Blocks</span>
 [% IF editable %]
     <a style="margin-left: .3in"
-       href=/block/program_create_many/$id>Add Blocks</a>
+       href=/block/create_many/program/$id>Add</a>
     <a style="margin-left: .3in"
-       href=/block/bound_create/program/$id>Custom Block</a>
+       href=/block/bound_create/program/$id>Custom</a>
+    <a style="margin-left: .3in"
+       href=/block/delete_many/program/$id>Mass Delete</a>
 [% END %]
 </td>
 </tr>
@@ -272,7 +274,9 @@ Web/Files
 [% FOR bl IN program.blocks %]
     <tr><td>
     [% IF editable %]
-        <a href=/block/view/$bl.id>$bl.house.name</a>
+        <a href=/block/delete/$bl.id
+        onclick="return 'y' == window.prompt('Deleting block ${bl.house.name}.\nAre you sure? y/n')"
+        >$bl.house.name</a>
     [% ELSE %]
         $bl.house.name
     [% END %]

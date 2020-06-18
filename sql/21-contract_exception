@@ -1,0 +1,1 @@
+alter table rental add column contract_exception text not null;

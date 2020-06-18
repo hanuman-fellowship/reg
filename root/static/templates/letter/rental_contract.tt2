@@ -94,8 +94,8 @@ for "${rental.name_trimmed}", hereafter called the Renter, hereby agree as follo
 <h2>Facilities</h2>
 The Center will provide workshop space in the ${rental.meeting_spaces},
 or a comparable facility, and lodging for up to $rental.max
-people from 4:00 pm on ${rental.sdate_obj.format("%A %B %e, %Y")}
-to 12:00 pm on ${rental.edate_obj.format("%A %B %e, %Y")} ($ndays nights) at the following rates:
+people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B %e, %Y")}
+to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($ndays night$pl_nights) at the following rates:
 <h2>Rates</h2>
 [% hc = rental.housecost %]
 The costs below are dollars per person per night.
@@ -150,10 +150,10 @@ occupancy of accommodations at the "Rates" per day listed above.
 The renter further agrees to pay at least the Minimum Amount Due
 which shall be equal to the number of
 people specified under "Facilities" above,
-multiplied by the number of days of the rental specified in the same place,
+multiplied by the number of nights of the rental specified in the same place,
 multiplied by a nominal rate of \$${min_per_day}.
 <ul>
-    (People X Days X \$${min_per_day} = Minimum Amount Due)
+    (People X Nights X \$${min_per_day} = Minimum Amount Due)
 </ul>
 The Minimum Amount Due is thus ${rental.max} X $ndays X \$${min_per_day} = \$${agreed}.
 <p>
@@ -199,8 +199,12 @@ per person per day rates under "Rates" above,
 or at the Minimum Amount Due formula above,
 whichever is greater.  Any balance carried forward will
 incur a finance charge of 1% per month (14% annual rate).
+[% IF rental.contract_exception %]
+<h2>Exceptions</h2>
+$rental.contract_exception
+[% END %]
 <h2>Meals</h2>
-The Center will provide three vegetarian meals per day:
+The Center will generally provide three vegetarian meals per day:
 breakfast 8:15 am, lunch 12:30 pm, and dinner 5:00 pm with the
 following exceptions: Friday dinner 5:30 pm;
 Saturday brunch 10:00 am, snack (no lunch) 1:00 pm; Sunday breakfast 8:30.

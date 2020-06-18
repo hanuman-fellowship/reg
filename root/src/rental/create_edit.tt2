@@ -220,6 +220,12 @@ These costs will apply for each day the person stays - regardless of how many ot
 </tr>
 
 <tr>
+<th align=right valign=top>Contract Exceptions</th>
+<td colspan=2><textarea name=contract_exception cols=60 rows=5>
+</textarea>
+</tr>
+
+<tr>
 <th align=right>Contract Sent</th>
 <td><input type=text name=contract_sent value='${rental.contract_sent_obj.format("%D")}' size=10></td>
 </tr>

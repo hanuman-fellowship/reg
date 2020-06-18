@@ -289,8 +289,8 @@ sub create_do : Local {
     $P{program_id} = 0;         # so it isn't NULL
     $P{grid_code} = rand6($c);
     $P{cancelled} = '';
-    my $rental_ndays = date($P{edate}) - date($P{sdate});
-    $P{counts} = join ' ', (0) x ($rental_ndays + 1);
+    my $rental_nnights = date($P{edate}) - date($P{sdate});
+    $P{counts} = join ' ', (0) x ($rental_nnights + 1);
     $P{grid_max} = 0;
     $P{housing_charge} = 0;
     # the above 3 columns will be updated only by grab_new
@@ -456,8 +456,8 @@ sub create_from_proposal : Local {
     $P{program_id} = 0;                     # so it isn't NULL
 
     $P{grid_code} = rand6($c);
-    my $rental_ndays = date($P{edate}) - date($P{sdate});
-    $P{counts} = join ' ', (0) x ($rental_ndays + 1);
+    my $rental_nnights = date($P{edate}) - date($P{sdate});
+    $P{counts} = join ' ', (0) x ($rental_nnights + 1);
     $P{grid_max} = 0;
     $P{housing_charge} = 0;
     $P{cancelled} = '';
@@ -533,7 +533,7 @@ sub view : Local {
         $tot_other_charges += $p->amount;
     }
 
-    my $ndays = date($rental->edate) - date($rental->sdate);
+    my $nnights = date($rental->edate) - date($rental->sdate);
     my (%bookings, %booking_count);
     for my $b ($rental->rental_bookings()) {
         my $h_name = $b->house->name;
@@ -542,7 +542,7 @@ sub view : Local {
             $bookings{$h_type} .=
                 "<a href=/rental/del_booking/$rental_id/"
                 .  $b->house_id
-                .  qq! onclick="return confirm('Okay to Delete booking of $h_name?');"!
+                .  qq! onclick="return 'y' == window.prompt('Deleting booking of ${h_name}.\\nAre you sure? y/n');"!
                 .  ">"
                 .  $h_name
                 .  "</a>, "
@@ -615,7 +615,7 @@ sub view : Local {
 
     stash($c,
         editable       => $is_editable,
-        ndays          => $ndays,
+        nnights        => $nnights,
         rental         => $rental,
         pg_title       => $rental->name(),
         daily_pic_date => "indoors/$sdate",
@@ -661,6 +661,7 @@ sub clusters : Local {
     # clusters - available and reserved
     my ($avail, $res) = split /XX/, _get_cluster_groups($c, $rental_id);
     stash($c,
+        houses_occupied    => ($c->flash->{houses_occupied} || ''),
         daily_pic_date     => $sdate,
         cal_param          => "$sdate/$nmonths",
         rental             => $rental,
@@ -1180,9 +1181,9 @@ sub update_lunch_do : Local {
 
     %P = %{ $c->request->params() };
     my $r = model($c, 'Rental')->find($id);
-    my $ndays = $r->edate_obj - $r->sdate_obj;
+    my $nnights = $r->edate_obj - $r->sdate_obj;
     my $l = "";
-    for my $n (0 .. $ndays) {
+    for my $n (0 .. $nnights) {
         $l .= (exists $P{"d$n"})? "1": "0";
     }
     $r->update({
@@ -1619,7 +1620,7 @@ sub _contract_ready {
         push @mess, "The housing cost must have 'Rental' in its name.";
     }
     if ($rental->lunches() =~ m{1} && $hc_name !~ m{lunch}i) {
-        push @mess, "The housing cost must have 'Lunch' in its name.";
+        push @mess, "Since are lunches provided the housing cost must have 'Lunch' in its name.";
     }
     if ($rental->lunches() !~ m{1} && $hc_name =~ m{lunch}i) {
         push @mess, "Housing Cost includes Lunch but no lunches provided.";
@@ -1648,9 +1649,9 @@ sub contract : Local {
         INCLUDE_PATH => 'root/static/templates/letter',
         EVAL_PERL    => 0,
     });
-    my $ndays  = date($rental->edate()) - date($rental->sdate());
+    my $nnights  = date($rental->edate()) - date($rental->sdate());
     my $agreed = $rental->max()
-             * $ndays
+             * $nnights
              * $string{min_per_day}
              ;
     my $contract_sent = $rental->contract_sent? $rental->contract_sent_obj
@@ -1661,7 +1662,8 @@ sub contract : Local {
         signer  => ($rental->cs_person_id()? $rental->contract_signer()
                    :                         $rental->coordinator()),
         rental  => $rental,
-        ndays   => $ndays,
+        nnights   => $nnights,
+        pl_nights => ($nnights == 1? '': 's'),
         min_per_day => $string{min_per_day},
         agreed  => commify($agreed),
         deposit => commify($rental->deposit()),
@@ -1751,8 +1753,9 @@ sub contract : Local {
 
 #
 # reserve all houses in a cluster.
-# this actually changes the config records
-# for each house in the cluster.
+# this actually adds each house in the cluster
+# to the right category
+# and changes the config records.
 #
 # then refresh the view
 #
@@ -1822,8 +1825,9 @@ sub reserve_cluster : Local {
 # 2 - for each house in the cluster
 #         remove the RentalBooking record
 #         adjust the config records for that house as well.
-# NO NO - don't remove the rentalbooking records for each house
-#         those houses may have already been reserved.
+#     of course, DON'T remove houses in which someone
+#       is already booked in the web grid!
+#       give an appropriate error message?
 # then refresh the view.
 #
 sub cancel_cluster : Local {
@@ -1849,8 +1853,30 @@ sub cancel_cluster : Local {
         cluster_id => $cluster_id,
     })->delete();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
-    return;
-    # NO NO don't do the below
+
+    # is there someone in the rooms?
+    # if so, you can't delete it!  they have to remove
+    # that person first.
+    #
+    system("/var/www/src/grab wait");   # make sure the local grids are current
+    my $fgrid = get_grid_file($rental->grid_code());
+    my %occupied;
+    if (open my $in, "<", $fgrid) {
+        LINE:
+        while (my $line = <$in>) {
+            my ($h_id, $ignore, $person) = split /\|/, $line;
+            $person =~ s{\s* ~~.*}{}xms;    # trim any notes
+            if (! empty($person)) {
+                $occupied{$h_id} = $person;
+            }
+        }
+        close $fgrid;
+    }
+    else {
+        # the rental grid has never been saved on the web.
+        # we can safely assume that no one is in this space.
+    }
+    my $error = "";
     HOUSE:
     for my $h (@{$houses_in_cluster{$cluster_id}}) {
         my $h_id = $h->id();
@@ -1859,7 +1885,15 @@ sub cancel_cluster : Local {
             rental_id => $rental_id,
             house_id  => $h_id,
         });
-        next HOUSE if ! $rb;        # it was already cancelled individually
+
+        # was it already cancelled individually?
+        next HOUSE if ! $rb;
+
+        # is this house already occupied in the web grid?
+        if ($occupied{$h_id}) {
+            $error .= "House " . $h->name . " is occupied by $occupied{$h_id}";
+            next HOUSE;
+        }
 
         $rb->delete();
 
@@ -1886,6 +1920,7 @@ sub cancel_cluster : Local {
             }
         }
     }
+    $c->flash->{houses_occupied} = $error;
     $rental->set_grid_stale();
     $c->response->redirect($c->uri_for("/rental/clusters/$rental_id"));
 }
@@ -2059,7 +2094,7 @@ sub duplicate_do : Local {
     # now we can create the new dup'ed rental
     # with the coordinator and contract signer ids from the old.
     #
-    my $ndays = date($P{edate}) - date($P{sdate});
+    my $nnights = date($P{edate}) - date($P{sdate});
     my $new_r = model($c, 'Rental')->create({
         %P,         # this comes first so summary_id can override
         summary_id => $sum->id,
@@ -2067,7 +2102,7 @@ sub duplicate_do : Local {
         cs_person_id   => $old_rental->cs_person_id(),
         grid_code      => rand6($c),
         image      => ($upload || $old_rental->image())? 'yes': '',
-        counts         => (join ' ', (0) x ($ndays + 1)),
+        counts         => (join ' ', (0) x ($nnights + 1)),
         grid_max       => 0,
         housing_charge => 0,
         rental_created => tt_today($c)->as_d8(),
@@ -2559,9 +2594,9 @@ sub update_refresh_do : Local {
 
     %P = %{ $c->request->params() };
     my $r = model($c, 'Rental')->find($id);
-    my $ndays = $r->edate_obj - $r->sdate_obj;
+    my $nnights = $r->edate_obj - $r->sdate_obj;
     my $l = "";
-    for my $n (0 .. $ndays) {
+    for my $n (0 .. $nnights) {
         $l .= (exists $P{"d$n"})? "1": "0";
     }
     $r->update({

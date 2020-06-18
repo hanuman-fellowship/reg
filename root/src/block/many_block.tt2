@@ -1,8 +1,8 @@
-<h2>Adding Blocks for $program.name</h2>
-From $program.sdate_obj to $program.edate_obj
+<h2>Adding Blocks for $type '$event.name'</h2>
+From $event.sdate_obj to $event.edate_obj
 <p class=p2>
 <ul>
-<form action='/block/program_create_many_do/$program.id'>
+<form action='/block/create_many_do/$type/$id'>
 [% IF single_bath %]
     <h3>Single with Bath</h3>
     $single_bath

@@ -768,7 +768,7 @@ sub lunch_table {
     my $one = get_time("1300");
     my @lunches = split //, ($lunches || "");
     my $s = <<"EOH";
-<table border=1 cellpadding=5 cellspacing=2>
+<table class=lunch border=1 cellpadding=5 cellspacing=2>
 <tr>
 <td align=center>Sun</td>
 <td align=center>Mon</td>

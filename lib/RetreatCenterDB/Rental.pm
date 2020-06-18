@@ -81,6 +81,7 @@ __PACKAGE__->add_columns(qw/
     badge_title
     image
     alt_packet
+    contract_exception
 /);
     # the program_id, proposal_id above are just for jumping back and forth
     # so no belongs_to relationship needed
@@ -455,6 +456,8 @@ sub send_grid_data {
             #
     }
     close $gd;
+# JON
+goto THERE;
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or die "cannot connect to $string{ftp_site}";    # not die???
     $ftp->login($string{ftp_login}, $string{ftp_password})
@@ -467,7 +470,9 @@ sub send_grid_data {
     $ftp->ascii() or die "ascii";
     $ftp->put("/tmp/$code", $code) or die "put";
     $ftp->quit();
-    unlink "/tmp/$code";
+# JON
+#    unlink "/tmp/$code";
+THERE:
     $rental->update({
         grid_stale => '',
     });
@@ -481,6 +486,8 @@ sub set_grid_stale {
 }
 
 sub send_rental_deposit {
+# JON
+return;
     my ($rental) = @_;
     my $code = $rental->grid_code();
     my $coord = $rental->coordinator();
@@ -705,6 +712,8 @@ balance - the outstanding balance
 cancelled - boolean - was this rental cancelled?  Set/Unset by a menu link.
 color - RGB values for the DailyPic display.
 comment - free text describing the rental
+contract_exception - optional text describing any
+    exceptions to the standard contract
 contract_received - date the contract was received
 contract_sent - date the contract was sent out
 coordinator_id - foreign key to person

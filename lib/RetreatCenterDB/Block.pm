@@ -63,6 +63,14 @@ sub comment_tr {
     my ($self) = @_;
     return ptrim($self->comment());
 }
+sub custom {
+    my ($self) = @_;
+    $self->rental() &&
+    $self->rental->sdate() ne $self->sdate()?
+
+        '*': ''
+    ;
+}
 
 1;
 __END__

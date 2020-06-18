@@ -1,0 +1,37 @@
+<style>
+.attention {
+    font-size: 15pt;
+    color: red;
+    font-weight: bold;
+}
+.item {
+    margin-top: 2mm;
+}
+.houses {
+    margin-top: 5mm;
+    margin-left: 10mm;
+}
+.help {
+    width: 650px;
+}
+</style>
+<h2>Mass Delete of Blocks for $Type '${event.name}'</h2>
+<p class="p2 help">
+<span class=attention>Attention!</span> - Make sure you have
+<i>already</i> printed the Meals/Lodging page.
+<p class="p2 help">
+This form is a very sharp knife.  It is primarily used when you need to change
+the dates of a $type after which blocks have already been assigned.
+</p>
+<p class="p2 help">
+You will need to know which blocks you have deleted so that
+you can add them back again after you have changed the dates.
+</p>
+<form action='/block/delete_many_do/$type/${event.id}'>
+<ul>
+[% FOR b IN blocks %]
+<p class=item><input type=checkbox name=$b.id value='yes' checked> $b.house.name
+[% END %]
+</ul>
+<input type=submit id=sub value="Delete All of the Checked Blocks for this $Type">
+</form>

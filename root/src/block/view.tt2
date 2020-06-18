@@ -2,8 +2,6 @@
 [% IF Catalyst.check_user_roles('prog_staff') %]
 <a href=/block/create>Add</a>
 &nbsp;&nbsp;&nbsp;
-<a href=/block/update/[% block.id %]>Edit</a>
-&nbsp;&nbsp;&nbsp;
 <a href=/block/delete/[% block.id %]
  onclick="return confirm('Okay to Delete Block [% block.house.name %] on [% block.sdate_obj %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
