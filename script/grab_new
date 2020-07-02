@@ -513,6 +513,7 @@ sub process_mlist {
         street type interest
         cell home work gender
         email2
+        Submit
     /) {
         delete $hash{$k};
     }
@@ -524,11 +525,12 @@ sub process_mlist {
             }
         }
         else {
-            if ($interest eq 'Massage') {
-                $interest = 'Kaya Kalpa';
-            }
             push @affil_ids, $system_affil_id_for{"MMI - $interest"};
         }
+    }
+    else {
+        push @affil_ids, $system_affil_id_for{"MMC Annual Yoga Retreats"},
+                         $system_affil_id_for("MMC Hosted By MMC"};
     }
     my ($person_id, $person, $status) = add_or_update_deduping(
         $c, \%hash,
