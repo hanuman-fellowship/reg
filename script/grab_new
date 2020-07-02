@@ -530,7 +530,7 @@ sub process_mlist {
     }
     else {
         push @affil_ids, $system_affil_id_for{"MMC Annual Yoga Retreats"},
-                         $system_affil_id_for("MMC Hosted By MMC"};
+                         $system_affil_id_for{"MMC Hosted By MMC"};
     }
     my ($person_id, $person, $status) = add_or_update_deduping(
         $c, \%hash,
