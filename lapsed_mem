@@ -5,4 +5,4 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 cd /var/www/src
 log=/var/Reg/output/lapsed_mem
 date >>$log
-/var/www/src/script/lapsed_mem  >>$log 2>&1
+/var/www/src/script/lapsed_mem $* >>$log 2>&1
