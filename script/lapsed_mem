@@ -20,6 +20,8 @@ use Template;
 my $c = db_init();
 Global->init($c, 1, 1);
 
+my $alt = @ARGV && $ARGV[0] eq 'alt'? 'alt_': '';
+
 my $dt = today()->as_d8();
 my @lapsed_members = model($c, 'Member')->search(
     {
@@ -67,7 +69,7 @@ for my $m (@lapsed_members) {
         has_email   => 1,
     };
     $tt->process(
-        "lapse.tt2",
+        "${alt}lapse.tt2",
         $stash,           # variables
         \$html,           # output
     ) or die $tt->error;
