@@ -21,8 +21,7 @@ PATH=/var/www/cpan-lib/bin:/var/www/perl5.26.2/bin:/usr/local/sbin:/usr/local/bi
 
 # at 1:00 am on July 11 send a reminder to
 # people whose membership has lapsed - with an alternate letter
-#0 1 11 7 * $REG/lapsed_mem alt
-30 19 10 7 * $REG/lapsed_mem alt
+0 1 11 7 * $REG/lapsed_mem alt
 
 # at noon, 3:00, and 7:00 pm back up all the data in mysql and send it offsite.
 0 12,15,19 * * * $REG/db_backup
