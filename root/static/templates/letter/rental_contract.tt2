@@ -95,7 +95,7 @@ for "${rental.name_trimmed}", hereafter called the Renter, hereby agree as follo
 The Center will provide workshop space in the ${rental.meeting_spaces},
 or a comparable facility, and lodging for up to $rental.max
 people from ${rental.start_hour_obj.ampm()} on ${rental.sdate_obj.format("%A %B %e, %Y")}
-to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($ndays night$pl_nights) at the following rates:
+to ${rental.end_hour_obj.ampm()} on ${rental.edate_obj.format("%A %B %e, %Y")} ($nnights night$pl_nights) at the following rates:
 <h2>Rates</h2>
 [% hc = rental.housecost %]
 The costs below are dollars per person per night.
@@ -155,7 +155,7 @@ multiplied by a nominal rate of \$${min_per_day}.
 <ul>
     (People X Nights X \$${min_per_day} = Minimum Amount Due)
 </ul>
-The Minimum Amount Due is thus ${rental.max} X $ndays X \$${min_per_day} = \$${agreed}.
+The Minimum Amount Due is thus ${rental.max} X $nnights X \$${min_per_day} = \$${agreed}.
 <p>
 Depending on the rooms and amenities chosen the final obligation for payment will likely be higher but we will require at least the Minimum Amount Due agreed to in the contract.
 <p>
