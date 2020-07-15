@@ -211,6 +211,8 @@ sub _get_data {
     }
     $hash{end_update_cutoff} = $dt? $dt->as_d8(): '';
 
+    $hash{nrecs} = 0 if empty($hash{nrecs});
+
     if ($hash{nrecs} && $hash{nrecs} !~ m{^\s*\d*\s*$}) {
         push @mess, "illegal Number of Records: $hash{nrecs}";
     }
@@ -267,6 +269,7 @@ sub create : Local {
         format_opts => $format_opts,
         affil_table => affil_table($c, 1),
         form_action => "create_do",
+        report      => { nrecs => 0 },
         template    => "report/create_edit.tt2",
     );
 }
