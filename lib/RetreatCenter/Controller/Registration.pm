@@ -676,6 +676,12 @@ sub _rest_of_reg {
     my $h_type_opts = "";
     my $h_type_opts2 = "";
 
+    # if the program has 'housing_not_needed' ensure
+    # that $house1 and $house2 are 'not_needed'.
+    if ($program->housing_not_needed()) {
+        $house1 = $house2 = 'not_needed';
+    }
+
     Global->init($c);     # get %string ready.
     HTYPE:
     for my $ht (housing_types(2)) {
@@ -3542,7 +3548,9 @@ sub manual : Local {
         room_checked  => "",
         @date_range,
     );
-    my @housing = ($prog->category->name() ne 'Normal')?
+    my @housing =  ($prog->housing_not_needed())?
+                        ('not_needed', 'not_needed', 'room')
+                  :($prog->category->name() ne 'Normal')?
                         ('single', 'single', 'room')
                   :     ('dble',   'dble',   'room')
                   ;
