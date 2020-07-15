@@ -129,7 +129,7 @@ sub time_postmark_obj {
 sub confnote_not_empty {
     my ($self) = @_;
     my $s = $self->confnote();
-    $s =~ s{<[^>]*>}{}xmsg;     # remove all html tags
+    $s =~ s{<[^>]*>}{}xmsg if $s;     # remove all html tags
     return ! empty($s);
 }
 
@@ -233,7 +233,7 @@ sub att_prog_dates {
         $pedate = $prog->edate_obj() + $prog->extradays();
     }
     if ($psdate->month == $pedate->month) {
-        return $psdate->format("%B %e-") . $pedate->format("%e");
+        return $psdate->format("%B %e-") . trim($pedate->format("%e"));
     }
     else {
         return $psdate->format("%B %e - ") . $pedate->format("%B %e");

@@ -142,7 +142,7 @@ p {
        onmouseout="return nd();">Send</a>
     [% END %]
     &nbsp;&nbsp;
-    <a href="/registration/send_conf/$id/1">Preview</a>
+    <a target=_blank href="/registration/send_conf/$id/1">Preview</a>
 [% END %]
 &nbsp;&nbsp;
 [% IF person.email_okay %]
