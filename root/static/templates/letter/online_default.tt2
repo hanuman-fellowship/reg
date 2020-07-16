@@ -114,7 +114,7 @@
 
 						<table width="280" class="hours column" align="right">
 							<tr>
-									<td colspan=2 style="text-align: center;"> <b>Programs Office Hours</b></td>
+									<td colspan=2 style="text-align: center;"> <b>Guest Services Office Hours</b></td>
 							 </tr>
 							 <tr>
 									<td>Monday</td>
@@ -180,21 +180,21 @@
 
     Since this is an ONLINE program we will be sending you a link to the ZOOM meeting a few days prior to the start date of the program.
 
+[% rem = registrar_email %]
       [% IF cancel_policy %]
       <p>
       $cancel_policy
       [% ELSE %]
       <p>
          If you need to cancel or change your reservation, please refer to our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>cancellation policy</a> and contact our registrar at 
-         [% rem = registrar_email %]
          <a href='mailto:$rem'>$rem</a>.
          [% END %]
          <p>
-         If you have any questions please call the Programs Office at 408-846-4090. 
+         If you have any questions please call the Guest Services Office at 408-846-4090 or email the registrar at <a href='mailto:$rem'>$rem</a>.
       <div class=indent>
          Sincerely,<br>
          $user.first $user.last<br>
-         and the Programs Office team
+         and the Guest Services Office team
       </div>
    </body>
 </html>

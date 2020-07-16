@@ -113,7 +113,7 @@
 
 						<table width="280" class="hours column" align="right">
 							<tr>
-									<td colspan=2 style="text-align: center;"> <b>Programs Office Hours</b></td>
+									<td colspan=2 style="text-align: center;"> <b>Guest Services Office Hours</b></td>
 							 </tr>
 							 <tr>
 									<td>Monday</td>
@@ -210,20 +210,20 @@
             [% END %]
             [% IF personal_retreat && sunday %]
          <p>
-            <b>Please note that the Programs Office is not open on Sunday.</b><br>
+            <b>Please note that the Guest Services Office is not open on Sunday.</b><br>
             Your room will be available for check-in at 4:00 pm.
             Upon arrival, please go to the Community Building lobby, where you will
             find an arrival package containing all you need to find your way to
             your lodging, a meal and yoga class schedule, and maps of the Center.
             If other concerns arise on Sunday, you can find a contact phone number
-            on the door of the Programs Office. Someone will answer your call
+            on the door of the Guest Services Office. Someone will answer your call
             and give you the help you need.
             [% END %]
             [% END %]    <!-- if Note -->
       <h2>Arrivals</h2>
       <p>
          You may pick up your room key and pay your remaining
-         balance at the Programs Office in the Community Building.   Check-in
+         balance at the Guest Services Office in the Community Building.   Check-in
          is at ${program.reg_start_obj}.  If you arrive after business hours, stop by our
          &ldquo;Late Notice Board&rdquo; in the entryway of the Community
          Building to get your key.   Check-out is at $program.prog_end_obj  on the day of your departure.
@@ -309,7 +309,7 @@
          Here is the local <a target=_blank href='https://weather.com/weather/today/l/9425:19:US'>weather prediction</a> to help guide your packing decisions.
       <h2>Meals</h2>
       <p>
-         Our food service is strictly vegetarian - no meat, fish, fowl, or eggs. Please do not bring any outside food.  With advanced notice, we do our best to accommodate dietary restrictions.  If you have serious allergies, contact your retreat coordinator and/or the Programs Office to discuss available options.  
+         Our food service is strictly vegetarian - no meat, fish, fowl, or eggs. Please do not bring any outside food.  With advanced notice, we do our best to accommodate dietary restrictions.  If you have serious allergies, contact your retreat coordinator and/or the Guest Services Office to discuss available options.  
       <p>
          More information on meals, including a sample menu, can be found <a target=_blank href='https://www.mountmadonna.org/vegetarian-cuisine-at-mount-madonna-center'>here</a>.
       <h2>Getting Here</h2>
@@ -330,14 +330,14 @@
       <h2>Still have questions?</h2>
       <p>
          Our <a target=_blank href='https://www.mountmadonna.org/explore/faqs'>FAQ page</a> has answers to many questions not answered here.
-         If you have a question about your stay that is still not answered, please call the Programs Office at 408-846-4090. 
+         If you have a question about your stay that is still not answered, please call the Guest Services Office at 408-846-4090. 
       <div class=indent>
          We look forward to seeing you here soon! 
       </div>
       <div class=indent>
          Sincerely,<br>
          $user.first $user.last<br>
-         and the Programs Office team
+         and the Guest Services Office team
             [% IF carpoolers %]
          <h2 class=after>Carpool List</h2>
          <p>

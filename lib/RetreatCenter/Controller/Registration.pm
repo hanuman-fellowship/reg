@@ -1915,7 +1915,8 @@ sub send_conf : Local {
               'gen_error.tt2');
         return;
     }
-    if (empty($pr->summary->gate_code())) {
+    # no need for a gate code if program is ONLINE...
+    if (! $pr->housing_not_needed() && empty($pr->summary->gate_code())) {
         error($c,
               "Sorry, cannot send confirmation letter because<br>"
               . $pr->name() . " needs a gate code!",
