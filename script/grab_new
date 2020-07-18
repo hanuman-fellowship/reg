@@ -465,7 +465,7 @@ EOH
         my $email = $string{"$type\_email"};   # *1 mmc_email == reception_email
         my $last_names = join '/', @last_names;
         my $rc = email_letter($c,
-            to      => "$TYPE Mail Admin <$email>",
+            to      => $email,
             from    => 'Mount Madonna Center <reservations@mountmadonna.org>',
                     # what else???
             subject => "$last_names - Online $TYPE Mailing List Requests",
