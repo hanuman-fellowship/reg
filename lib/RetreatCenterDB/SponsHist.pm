@@ -56,7 +56,8 @@ sub time_obj {
 }
 sub type_sh {
     my ($self) = @_;
-    $string{"payment_" . $self->type()};
+    my $type = $self->type() || 'D';
+    $string{"payment_$type"};
 }
 
 
