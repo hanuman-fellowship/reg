@@ -296,7 +296,7 @@ of the date alongside the Guest Services Director's signature.
 </td><td valign=bottom>${today.format("%m/%d/%Y")}</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td id=name align=left>$program_director</td><td>Date</td></tr>
-<tr><td id=name align=left>Program Director</td></tr>
+<tr><td id=name align=left>Guest Services Director</td></tr>
 <tr><td height=80>&nbsp;</td></tr>
 <tr><td colspan=2><hr></td></tr>
 <tr><td id=name align=left>$signer.first $signer.last</td><td>Date</td></tr>
