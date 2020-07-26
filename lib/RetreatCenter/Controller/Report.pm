@@ -314,6 +314,7 @@ sub run : Local {
     my $report = model($c, 'Report')->find($id);
     my $format = $report->format();
     my $share    = $c->request->params->{share};
+    my $ignore   = $c->request->params->{ignore};
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
     my $no_foreign = $c->request->params->{no_foreign};
@@ -393,19 +394,21 @@ sub run : Local {
     # restrict it by the opt'ing in booleans.   We're asking them to
     # update their demographics.  We're not pestering them with ads.
     #
-    if (   $format == TO_CMS
-        || $format == NAME_ADDR_EMAIL
-        || $format == TO_VISTAPRINT
-        || $format == FIRST_SANS_CMS
-        || $format == CMS_SANS_EMAIL
-    ) {
-        $restrict .= "snail_mailings = 'yes' and ";
-    }
-    if (   $format == NAME_ADDR_EMAIL
-        || $format == JUST_EMAIL
-        || $format == LAST_FIRST_EMAIL
-    ) {
-        $restrict .= "e_mailings = 'yes' and ";
+    if (! $ignore) {
+        if (   $format == TO_CMS
+            || $format == NAME_ADDR_EMAIL
+            || $format == TO_VISTAPRINT
+            || $format == FIRST_SANS_CMS
+            || $format == CMS_SANS_EMAIL
+        ) {
+            $restrict .= "snail_mailings = 'yes' and ";
+        }
+        if (   $format == NAME_ADDR_EMAIL
+            || $format == JUST_EMAIL
+            || $format == LAST_FIRST_EMAIL
+        ) {
+            $restrict .= "e_mailings = 'yes' and ";
+        }
     }
     if ($share) {
         $restrict .= "share_mailings = 'yes' and ";
