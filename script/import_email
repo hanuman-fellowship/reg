@@ -1,0 +1,129 @@
+#!/usr/bin/env perl
+use strict;
+use warnings;
+
+use lib 'lib';
+use Util qw/
+    model
+    db_init
+    normalize
+    rand6
+    trim
+/;
+use Date::Simple qw/
+    today
+/;
+my $today_d8 = today()->as_d8();
+use RetreatCenterDB;    # ??? why can't we move this to Util?
+use Global qw/
+    %system_affil_id_for
+/;
+my $c = db_init();
+Global->init($c, 1, 1);
+
+my $af_ayr = $system_affil_id_for{"MMC Annual Yoga Retreats"};
+my $af_lr2020 = $system_affil_id_for{"MMC Liberation Retreat 2020"};
+my %affil_name_of = (
+    $af_ayr => 'AYR',
+    $af_lr2020 => 'LR',
+);
+
+sub affil_update {
+    my ($person_id) = @_;
+    my @affil_names;
+    for my $affil_id ($af_ayr, $af_lr2020) {
+        my ($af) = model($c, 'AffilPerson')->search({
+                       a_id => $affil_id,
+                       p_id => $person_id,
+                   });
+        if (! $af) { 
+            model($c, 'AffilPerson')->create({
+                a_id => $affil_id,
+                p_id => $person_id,
+            });
+            push @affil_names, $affil_name_of{$affil_id};
+        }
+    }
+    if (@affil_names) {
+        print "        added affils @affil_names\n";
+    }
+}
+
+open my $in, '<', 'LiberationRetreat2020.csv'
+    or die "no csv file\n";
+my $line = <$in>;
+my $new = 0;
+my $updated = 0;
+my $same = 0;
+while (my $line = <$in>) {
+    chomp $line;
+    my ($last, $first, $email,$address) = split /,/, $line, 4;
+    $first = normalize(trim($first));
+    $last  = normalize(trim($last));
+    $email = lc trim($email);
+    print "$first--$last--$email--$address\n";
+    my @people = model($c, 'Person')->search({
+                     first => $first,
+                     last  => $last,
+                 });
+    if (! @people) {
+        my @people = model($c, 'Person')->search({
+                         sanskrit => $first,
+                         last  => $last,
+                     });
+        if (! @people) {
+            print "    NEW\n";
+            my $p = model($c, 'Person')->create({
+                first => $first,
+                last  => $last,
+                email => $email,
+                date_updat  => $today_d8,
+                date_entrd  => $today_d8,
+                secure_code => rand6($c),
+                e_mailings => 'yes',
+                snail_mailings => 'yes',
+                share_mailings => 'yes',
+                deceased => '',
+                inactive => '',
+                akey => '',
+            });
+            affil_update($p->id());
+            ++$new;
+        }
+        else {
+            for my $p (@people) {
+                print "    " .$p->first ." (" .$p->sanskrit .") " .$p->last;
+                if ($email eq lc $p->email) {
+                    ++$same;
+                    print " SAME\n";
+                }
+                else {
+                    ++$updated;
+                    print " UPDATED " . $p->email . "\n";
+                    $p->update({
+                        email => $email,
+                    });
+                }
+                affil_update($p->id);
+            }
+        }
+    }
+    else {
+        for my $p (@people) {
+            print "    " .$p->first ." " .$p->last;
+            if ($email eq lc $p->email) {
+                ++$same;
+                print " SAME\n";
+            }
+            else {
+                ++$updated;
+                print " UPDATED " . $p->email . "\n";
+                $p->update({
+                    email => $email,
+                });
+            }
+            affil_update($p->id);
+        }
+    }
+}
+print "new $new same $same update $updated\n";
