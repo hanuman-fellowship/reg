@@ -315,6 +315,10 @@ sub run : Local {
     my $format = $report->format();
     my $share    = $c->request->params->{share};
     my $ignore   = $c->request->params->{ignore};
+    my $ign_pass   = $c->request->params->{ign_pass};
+    if ($ignore && $ign_pass ne 'Sita') {
+        $ignore = 0;
+    }
     my $count    = $c->request->params->{count};
     my $collapse = $c->request->params->{collapse};
     my $no_foreign = $c->request->params->{no_foreign};
@@ -621,10 +625,11 @@ EOS
         stash($c,
             message  => "Record count = " . scalar(@people),
             share    => $share,
+            ignore   => $ignore,
             collapse => $collapse,
+            incl_mmc => $incl_mmc,
             no_foreign => $no_foreign,
             exclude_only_temple => $exclude_only_temple,
-            incl_mmc => $incl_mmc,
             append   => $append,
             expiry_date => $expiry? date($expiry)->format("%D"): '',
         );

@@ -66,6 +66,8 @@ onclick="return confirm('Okay to Delete $report.descrip?');">Delete</a>
 <td><input type=checkbox name=incl_mmc value=yes [% IF incl_mmc %]checked[% END %]> Include MMC</td>
 <td><input type=checkbox name=collapse value=yes [% IF collapse %]checked[% END %]> Collapse</td>
 <td><input type=checkbox name=share value=yes [% IF share %]checked[% END %]> Share</td>
+<td><input type=checkbox name=ignore value=yes [% IF ignore %]checked[% END %]> Ignore Opt Out</td>
+<td>Ignore Password <input type=text name=ign_pass size=10></td>
 </tr>
 <tr>
 <td></td>
