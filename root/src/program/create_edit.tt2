@@ -286,6 +286,13 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right valign=top>Donation Message</th>
+<td colspan=6>
+<textarea name=donation_msg cols=70 rows=10>$program.donation_msg</textarea>
+</td>
+</tr>
+
+<tr>
 <th align=right>% Tuition (+ M/L)</th>
 <td><input type=text name=percent_tuition size=3 value=$program.percent_tuition></td>
 </tr>

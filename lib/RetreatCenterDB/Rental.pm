@@ -456,8 +456,6 @@ sub send_grid_data {
             #
     }
     close $gd;
-# JON
-goto THERE;
     my $ftp = Net::FTP->new($string{ftp_site}, Passive => $string{ftp_passive})
         or die "cannot connect to $string{ftp_site}";    # not die???
     $ftp->login($string{ftp_login}, $string{ftp_password})
@@ -470,9 +468,7 @@ goto THERE;
     $ftp->ascii() or die "ascii";
     $ftp->put("/tmp/$code", $code) or die "put";
     $ftp->quit();
-# JON
-#    unlink "/tmp/$code";
-THERE:
+    unlink "/tmp/$code";
     $rental->update({
         grid_stale => '',
     });
@@ -486,8 +482,6 @@ sub set_grid_stale {
 }
 
 sub send_rental_deposit {
-# JON
-return;
     my ($rental) = @_;
     my $code = $rental->grid_code();
     my $coord = $rental->coordinator();
