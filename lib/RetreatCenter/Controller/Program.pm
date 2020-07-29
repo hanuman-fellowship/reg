@@ -117,6 +117,7 @@ sub create : Local {
         check_single        => 'checked',
         check_req_pay       => 'checked',
         check_collect_total => '',
+        check_donation      => '',
         check_economy       => '',
         check_commuting     => 'checked',
         check_dncc          => '',
@@ -212,6 +213,7 @@ sub _get_data {
     for my $f (qw/
         req_pay
         collect_total
+        donation
         allow_dup_regs
         kayakalpa
         children_welcome
@@ -886,7 +888,7 @@ sub update : Local {
     $section ||= 1;
     my $p = model($c, 'Program')->find($id);
     for my $w (qw/
-        sbath single req_pay collect_total allow_dup_regs kayakalpa
+        sbath single req_pay collect_total donation allow_dup_regs kayakalpa
         children_welcome
         retreat
         economy commuting webready linked do_not_compute_costs
@@ -1286,6 +1288,7 @@ sub gen_progtable {
                 footnotes
                 deposit
                 collect_total
+                donation
                 req_pay
                 do_not_compute_costs
                 dncc_why
@@ -1374,7 +1377,7 @@ sub duplicate : Local {
         webready => 0,
     });
     for my $w (qw/
-        sbath single req_pay collect_total allow_dup_regs kayakalpa
+        sbath single req_pay collect_total donation allow_dup_regs kayakalpa
         children_welcome
         retreat
         commuting economy webready linked
@@ -1898,6 +1901,8 @@ sub export : Local {
                 url
                 footnotes
                 deposit
+                collect_total
+                donation
                 cancellation_policy
                 reg_start
                 reg_end
@@ -1985,6 +1990,8 @@ sub export : Local {
         ],
 
     };
+# JON
+goto THERE;
     my ($currHC, $nextHC, $change_date)
         = PR_progtable($c, "$export_dir/pr/progtable");
     TYPE:
@@ -2010,6 +2017,7 @@ sub export : Local {
     }
     _json_put($pr_ref, 'pr/pr.json');
     copy 'root/static/README', $export_dir;
+THERE:
 
     # tar it up
     system("cd $export_dir; /bin/tar czf /tmp/exported_reg_data.tgz .");
@@ -2028,6 +2036,8 @@ sub export : Local {
 
 sub _send_export {
     my ($c, $where) = @_;
+# JON
+return;
     my $place = $where eq 'mmi'? 'mmi_': '';
     # MMC
     my $site     = $string{"ftp_${place}site"};

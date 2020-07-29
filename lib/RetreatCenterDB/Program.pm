@@ -94,6 +94,7 @@ __PACKAGE__->add_columns(qw/
     manual_reg_finance
     children_welcome
     alt_packet
+    donation
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -829,6 +830,7 @@ confnote - A note that is included in ALL confirmation notes.
 created_by - the user who created the program - foreign key to user
 deposit - the amount required to deposit when registering.
 dncc_why - an obsolete field
+donation - Registrants pay what they want - by donation.
 do_not_compute_costs - Should we not compute the costs of this program?
 economy - Is Economy housing available?
 edate - end date of the program

@@ -281,6 +281,11 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right>Payment by Donation</th>
+<td><input type=checkbox value=yes name=donation $check_donation></td>
+</tr>
+
+<tr>
 <th align=right>% Tuition (+ M/L)</th>
 <td><input type=text name=percent_tuition size=3 value=$program.percent_tuition></td>
 </tr>
