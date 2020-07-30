@@ -1212,11 +1212,24 @@ sub create_do : Local {
             note      => 'Deposit',
         });
     }
-
-    # IF the program has manual_reg_finance and there is
+    # IF the program has 'donation' and there is an amount
+    # that was paid, put it as a charge with the note 'Donation'.
+    # this is done so the balance will be zero.
+    # This was done for ONLINE programs in Virus Time.
+    #
+    if ($pr->donation() && $P{deposit} > 0) {
+        model($c, 'RegCharge')->create({
+            @who_now,
+            automatic => '',
+            amount    => $P{deposit},
+            type      => $TYPE_OTHER,
+            what      => "Donation",
+        });
+    }
+    # else IF the program has manual_reg_finance and there is
     # an amount that was paid, put it as a charge with the
     # note 'meals and lodging'.   This is done first for the Reunion Retreat.
-    if ($pr->manual_reg_finance() && $P{deposit} > 0) {
+    elsif ($pr->manual_reg_finance() && $P{deposit} > 0) {
         model($c, 'RegCharge')->create({
             @who_now,
             automatic => '',
