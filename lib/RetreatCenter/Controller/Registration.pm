@@ -1183,7 +1183,7 @@ sub create_do : Local {
             close JON;
         }
     }
-    # the payment (deposit)
+    # the payment (deposit) (or Donation for an ONLINE program)
     if (! $pr->school->mmi() && $P{deposit}) {
         # MMC program deposit
         #
@@ -1195,7 +1195,7 @@ sub create_do : Local {
                     # WAS made at the postmark date/time
             amount  => $P{deposit},
             type    => $P{deposit_type},
-            what    => 'Deposit',
+            what    => ($pr->donation()? 'Donation': 'Deposit'),
         });
     }
     else {
