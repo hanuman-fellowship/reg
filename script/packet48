@@ -43,6 +43,10 @@ for my $reg (@regs) {
         next REG;
     }
     my $program = $reg->program();
+    if ($program->housing_not_needed()) {
+        # likely an ONLINE program - no need to send the packet
+        next REG;
+    }
     my $packet = $program->alt_packet || $default_packet;
     my $gate_code = $program->summary->gate_code();
     my $balance = $reg->balance();
