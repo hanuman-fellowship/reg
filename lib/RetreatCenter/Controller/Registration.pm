@@ -2087,6 +2087,13 @@ sub send_conf : Local {
 
     my $to = $reg->person->name_email();
     my $name = $reg->person->name;
+    my $attached_file_aref
+        = $pr->housing_not_needed()?
+            []
+         :  [
+            '/var/Reg/documents/MMC_Guest_Packet.pdf',
+         ]
+         ;
     email_letter($c,
         to      => $to,
         from    => "$title <$from>",
@@ -2096,9 +2103,7 @@ sub send_conf : Local {
                    . " in "
                    . $pr_title,
          html   => $html,
-         files_to_attach => [
-             '/var/Reg/documents/MMC_Guest_Packet.pdf',
-         ],
+         files_to_attach => $attached_file_aref,
          activity_msg => "Confirmation sent for"
                        . " <a href='/registration/view/$reg_id'>$name</a>",
     );
