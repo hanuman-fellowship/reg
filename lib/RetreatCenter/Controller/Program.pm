@@ -131,6 +131,7 @@ sub create : Local {
             extradays    => 0,
             full_tuition => 0,
             deposit      => 100,
+            donation_minimum => 0,
             color        => '',
             max          => 0,
             canpol       => { name => "Default" },  # clever way to set default!
