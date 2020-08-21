@@ -1,0 +1,2 @@
+alter table program add column donation_minimum integer default 0;
+alter table program add column donation_zero_msg text not null;

@@ -190,6 +190,7 @@ my %readable = (
     title   => 'Title',
     full_tuition => 'Full Tuition',
     extradays    => 'Extra Days',
+    donation_minimum => "Donation Minimum",
 );
 my %P;
 my @mess;
@@ -349,7 +350,7 @@ sub _get_data {
     }
     # check for numbers
     for my $f (qw/
-        extradays tuition full_tuition deposit
+        extradays tuition full_tuition deposit donation_minimum
     /) {
         if ($P{$f} !~ m{^\s*\d+\s*$}) {
             push @mess, "$readable{$f} must be a number";
@@ -889,7 +890,7 @@ sub update : Local {
     my $p = model($c, 'Program')->find($id);
     for my $w (qw/
         sbath single req_pay collect_total
-        donation donation_msg
+        donation
         allow_dup_regs kayakalpa
         children_welcome
         retreat
@@ -911,7 +912,7 @@ sub update : Local {
     # if so, we display/edit several more fields - like webdesc, etc
     my $pre_craft = $p->sdate <= $string{pre_craft};
 
-    my $bank = $p->bank_account();
+    my $bank = $p->bank_account() || 'mmc';
     stash($c,
         section     => $section,
         program     => $p,
@@ -1292,6 +1293,8 @@ sub gen_progtable {
                 collect_total
                 donation
                 donation_msg
+                donation_minimum
+                donation_zero_msg
                 req_pay
                 do_not_compute_costs
                 dncc_why
@@ -1381,7 +1384,7 @@ sub duplicate : Local {
     });
     for my $w (qw/
         sbath single req_pay collect_total
-        donation donation_msg
+        donation
         allow_dup_regs kayakalpa
         children_welcome
         retreat
@@ -1909,6 +1912,8 @@ sub export : Local {
                 collect_total
                 donation
                 donation_msg
+                donation_minimum
+                donation_zero_msg
                 cancellation_policy
                 reg_start
                 reg_end

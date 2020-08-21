@@ -534,6 +534,17 @@ $leaders_house
 <td colspan=2 valign=top>$program.donation_msg</td>
 </tr>
 
+
+<tr>
+<th align=right>Donation Minimum</th>
+<td>$program.donation_minimum</td>
+</tr>
+
+<tr>
+<th align=right valign=top>Donation Zero Message</th>
+<td colspan=2 valign=top>$program.donation_zero_msg</td>
+</tr>
+
 <tr>
 <th align=right>% Tuition (+ M/L)</th>
 <td>$program.percent_tuition</td>
