@@ -657,6 +657,7 @@ EOH
     EVENT:
     for my $ev (sort { $a->sdate <=> $b->sdate } @events) {
         my $ev_type = ref($ev);
+        my $ev_cancelled = 0;
         $ev_type =~ s{.*::}{};
         $ev_type = lc $ev_type;
         my $ev_type_id = "$ev_type\_id";
@@ -698,6 +699,9 @@ EOH
         my $arr_lv = "";
         my $arr_lv_longer = "";
         if ($ev_type eq "program") {
+            if ($ev->cancelled()) {
+                $ev_cancelled = 1;
+            }
             if ($ev->reg_start_obj() != $std_prog_arr) {
                 $arr_lv = "A" . $ev->reg_start_obj->t12(1);
                 $arr_lv_longer = $ev->reg_start_obj->ampm();
@@ -710,6 +714,9 @@ EOH
             }
         }
         elsif ($ev_type eq "rental") {
+            if ($ev->cancelled()) {
+                $ev_cancelled = 1;
+            }
             if ($ev->start_hour_obj() != $std_rental_arr) {
                 $arr_lv = "A" . $ev->start_hour_obj->t12(1);
                 $arr_lv_longer = $ev->start_hour_obj->ampm();
@@ -977,13 +984,14 @@ EOH
                             $string{cal_event_color} =~ m{\d+}g);
                 }
 
-                $im->setThickness($event_border);
-                $im->rectangle($x1, $y1, $x2, $y2, $border);
-                $im->setThickness(1);
+                if (! $ev_cancelled) {
+                    $im->setThickness($event_border);
+                    $im->rectangle($x1, $y1, $x2, $y2, $border);
+                    $im->setThickness(1);
+                    $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $color);
+                }
 
-                $im->filledRectangle($x1+1, $y1+1, $x2-1, $y2-1, $color);
-
-                if ($full_begins) {
+                if ($full_begins && ! $ev_cancelled) {
                     # does this date appear in this cal?
                     if ($final_dr->sdate <= $full_begins
                         &&
@@ -999,25 +1007,29 @@ EOH
                     }
                 }
 
-                # print the event name in the rectangle,
-                # as much as will fit and then it will overflow.
-                $im->string(gdGiantFont, $x1 + 3, $y1 + 2,
-                            $event_name . $arr_lv, $black);
+                if (! $ev_cancelled) {
+                    # print the event name in the rectangle,
+                    # as much as will fit and then it will overflow.
+                    $im->string(gdGiantFont, $x1 + 3, $y1 + 2,
+                                $event_name . $arr_lv, $black);
 
-                # add to the image map
-                $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n";
-                if ($staff) {
-                    $imgmaps{$key} .= "    target=happening\n"
-                                   .  "    href='" . $ev->link . "'\n"
+                    # add to the image map
+                    $imgmaps{$key} .= "<area shape='rect' coords='$x1,$y1,$x2,$y2'\n";
+                    if ($staff) {
+                        $imgmaps{$key} .= "    target=happening\n"
+                                       .  "    href='" . $ev->link . "'\n"
+                    }
+                    $imgmaps{$key} .=
+                      qq!    onmouseover="return overlib('$disp',!
+                    . qq! MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333',!
+                    . qq! BORDER, 2, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP)"\n!
+                    . qq!    onmouseout="return nd();">\n!;
                 }
-                $imgmaps{$key} .=
-      qq!    onmouseover="return overlib('$disp',!
-    . qq! MOUSEOFF, FGCOLOR, '#FFFFFF', BGCOLOR, '#333333',!
-    . qq! BORDER, 2, TEXTFONT, 'Verdana', TEXTSIZE, 5, WRAP)"\n!
-    . qq!    onmouseout="return nd();">\n!;
                 if (! $details_shown) {
                     $details{$key} .= "<tr>$printable_row</tr>\n";
                     $details_shown = 1;
+                        # the details might have been shown already
+                        # if there were more than one meeting place...
                 }
             }       # places the event meets in 
         }       # keys of the calendar month images/maps the event spans
