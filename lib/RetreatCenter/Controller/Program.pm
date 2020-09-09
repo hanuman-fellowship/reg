@@ -357,6 +357,17 @@ sub _get_data {
             push @mess, "$readable{$f} must be a number";
         }
     }
+    # check format of donation_tiers
+    if (! empty($P{donation_tiers})) {
+        my $s = $P{donation_tiers};
+        $s =~ s{\b other \b}{}xms;
+            # one or more digit sequences
+            # surrounded by spaces optionally followed by a *
+            #
+        if ($s !~ m{\A ( \s* \d+ \s* [*]? \s* )+ \z }xms) {
+            push @mess, "Incorrect format for Donation Tiers: $P{donation_tiers}";
+        }
+    }
     if ($P{extradays}) {
         if ($P{full_tuition} <= $P{tuition}) {
             push @mess, "Full Tuition must be more than normal Tuition.";
@@ -1294,6 +1305,7 @@ sub gen_progtable {
                 collect_total
                 donation
                 donation_msg
+                donation_tiers
                 donation_minimum
                 donation_zero_msg
                 req_pay
@@ -1914,6 +1926,7 @@ sub export : Local {
                 donation
                 donation_msg
                 donation_minimum
+                donation_tiers
                 donation_zero_msg
                 cancellation_policy
                 reg_start

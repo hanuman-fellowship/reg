@@ -286,15 +286,20 @@ $level_opts
 </tr>
 
 <tr>
+<th align=right valign=top>Donation Message</th>
+<td colspan=6>
+<textarea name=donation_msg cols=70 rows=3>$program.donation_msg</textarea>
+</td>
+</tr>
+
+<tr>
 <th align=right>Donation Minimum</th>
 <td><input type=text name=donation_minimum value="$program.donation_minimum" size=4></td>
 </tr>
 
 <tr>
-<th align=right valign=top>Donation Message</th>
-<td colspan=6>
-<textarea name=donation_msg cols=70 rows=3>$program.donation_msg</textarea>
-</td>
+<th align=right>Donation Tiers</th>
+<td><input type=text name=donation_tiers value="$program.donation_tiers" size=50></td>
 </tr>
 
 <tr>

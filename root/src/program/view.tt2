@@ -541,6 +541,11 @@ $leaders_house
 </tr>
 
 <tr>
+<th align=right>Donation Tiers</th>
+<td>$program.donation_tiers</td>
+</tr>
+
+<tr>
 <th align=right valign=top>Donation Zero Message</th>
 <td colspan=2 valign=top>$program.donation_zero_msg</td>
 </tr>

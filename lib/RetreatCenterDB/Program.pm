@@ -98,6 +98,7 @@ __PACKAGE__->add_columns(qw/
     donation_msg
     donation_minimum
     donation_zero_msg
+    donation_tiers
 /);
 __PACKAGE__->set_primary_key(qw/id/);
 
@@ -836,6 +837,8 @@ dncc_why - an obsolete field
 donation - Registrants pay what they want - by donation.
 donation_minimum - What is the minimum donation amount?  Could be 0.
 donation_msg - What text should be displayed before the donation text box?
+donation_tiers - A string describing the tiers of donation choices
+    like:   25 50* 100 other    OR    50 100
 donation_zero_msg - If there is not minimum and someone pays nothing
     what should we say?
 do_not_compute_costs - Should we not compute the costs of this program?
