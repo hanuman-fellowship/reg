@@ -363,7 +363,7 @@ sub _get_data {
     # check format of donation_tiers
     if (! empty($P{donation_tiers})) {
         my $s = $P{donation_tiers};
-        $s =~ s{\b other \b}{}xms;
+        $s =~ s{\b other \b}{}xmsi;
             # one or more digit sequences
             # surrounded by spaces optionally followed by a *
             #
