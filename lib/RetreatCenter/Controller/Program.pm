@@ -60,6 +60,8 @@ use JSON;
 use Data::Dumper;
 
 my $export_dir = '/var/Reg/export';
+my $or = ("&nbsp;" x 4) . 'OR' . ("&nbsp;" x 4);
+    # I couldn't figure out to do this in the template itself :(
 
 # for Category, School, and Level
 sub _opts {
@@ -178,6 +180,7 @@ sub create : Local {
         @dates,
         show_level  => "hidden",
         form_action => "create_do",
+        ORS          => $or,
         template    => "program/create_edit.tt2",
     );
 }
@@ -962,6 +965,7 @@ sub update : Local {
         show_level   => $p->school->mmi()? 'visible': 'hidden',
         edit_gl      => $c->check_user_roles('account_admin') || 0,
         form_action  => "update_do/$id",
+        ORS          => $or,
         template     => "program/create_edit.tt2",
     );
 }

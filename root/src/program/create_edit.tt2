@@ -18,6 +18,11 @@ function set_level_visibility() {
     return true;
 }
 </script>
+<style>
+.ex {
+    color: black;
+}
+</style>
 </head>
 
 [% id = program.id %]
@@ -299,7 +304,13 @@ $level_opts
 
 <tr>
 <th align=right>Donation Tiers</th>
-<td><input type=text name=donation_tiers value="$program.donation_tiers" size=50></td>
+<td>
+<input type=text name=donation_tiers
+       value="$program.donation_tiers" size=50>
+<div style="color: green">
+Examples: <span class=ex>50 100</span> $ORS <span class=ex>25 50 100 other</span> $ORS <span class=ex>50 100*</span>&nbsp;&nbsp;&nbsp;(100 is the default)
+</div>
+</td>
 </tr>
 
 <tr>
