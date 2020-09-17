@@ -653,7 +653,8 @@ EOS
     }
 
     my $fname = "report$format";
-    my $suf = "txt";
+    # what suffix?  a hack breakfix:
+    my $suf = $format == CSV? 'csv': "txt";
     if (open my $in, "<", "root/src/report/$fname.tt2") {
         my $line = <$in>;
         if ($line =~ m{^<}) {
@@ -696,9 +697,11 @@ sub show_report_file : Local Args(1) {
     my ($self, $c, $fname) = @_;
     open my $fh, '<', "/var/Reg/report/$fname"
         or die "$fname not found!!: $!\n";
+    my ($suf) = $fname =~ m{[.](.*)$}xms;
     $c->response->content_type(
-        ($fname =~ m/[.]html$/xms)? 'text/html'
-       :                            'text/plain'
+        $suf eq 'html'? 'text/html'
+       :$suf eq 'csv'?  'application/excel'
+       :                'text/plain'
     );
     $c->response->body($fh);
 }
