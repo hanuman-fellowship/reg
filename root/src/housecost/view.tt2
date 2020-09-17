@@ -1,4 +1,4 @@
-<h2>Housing Costs</h2>
+<h1>Housing Costs</h1>
 [% IF Catalyst.check_user_roles('prog_admin') %]
 <a href="/housecost/update/[% housecost.id %]">Edit</a>
 &nbsp;&nbsp;&nbsp;
@@ -9,18 +9,13 @@ onclick="return confirm('Okay to Delete [% housecost.name %]?');">Delete</a>
 &nbsp;&nbsp;&nbsp;
 <a href="/housecost/list">List</a>
 <p class=p2>
+<h2 style="width: 800px">$housecost.name</h2>
 [% END %]
-<table cellpadding=3 border=0>
-
-<tr>
-<th align=right>Name</th>
-<td colspan=2><span class='larger'>[% housecost.name %]</span></td>
-</tr>
+<table cellpadding=5 border=1>
 
 <tr>
 <th align=right>Single Bath</th>
 <td align=right width=60>[% housecost.single_bath %]</td>
-<td width=250></td>
 </tr>
 
 <tr>
