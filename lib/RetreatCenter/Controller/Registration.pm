@@ -1056,7 +1056,7 @@ sub create_do : Local {
     my $reg = model($c, 'Registration')->create({
         person_id     => $P{person_id},
         program_id    => $P{program_id},
-        deposit       => $P{deposit},
+        deposit       => $P{deposit} || 0,
         date_postmark => $P{date_postmark},
         time_postmark => $P{time_postmark},
         ceu_license   => $P{ceu_license},

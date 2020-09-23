@@ -177,7 +177,7 @@
          </tr>
          <tr>
             <th class=rt2>Deposit received</th>
-            <td class=lt2>&nbsp;\$$reg.deposit</td>
+            <td class=lt2>&nbsp;\$$reg.deposit_disp</td>
          </tr>
          <tr>
             <th class=rt2>Balance remaining</th>
@@ -222,8 +222,11 @@
             [% END %]    <!-- if Note -->
       <h2>Arrivals</h2>
       <p>
-         You may pick up your room key and pay your remaining
-         balance at the Guest Services Office in the Community Building.   Check-in
+         You may pick up your room key
+         [% IF reg.balance > 0 %]
+         and pay your remaining balance
+         [% END %]
+         at the Guest Services Office in the Community Building.   Check-in
          is at ${program.reg_start_obj}.  If you arrive after business hours, stop by our
          &ldquo;Late Notice Board&rdquo; in the entryway of the Community
          Building to get your key.   Check-out is at $program.prog_end_obj  on the day of your departure.

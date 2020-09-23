@@ -133,6 +133,12 @@ sub confnote_not_empty {
     return ! empty($s);
 }
 
+sub deposit_disp {
+    my ($self) = @_;
+    # somehow the deposit might be NULL
+    return $self->deposit() || 0;
+}
+
 sub h_type_disp {
     my ($self) = @_;
     
