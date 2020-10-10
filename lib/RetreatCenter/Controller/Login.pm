@@ -312,34 +312,19 @@ sub _user_admins {
                           {
                               join => qw/ user /,
                               prefetch => qw/ user /,
-                              order_by => 'user.username',
+                              order_by => 'user.first',
                           }
                       );
-    # table instead??
     my $msg = <<'EOH';
 <p class=p2>
 These people can help reset your account:
 <p class=p2>
-<table cell_padding=5>
-<tr align=left>
-<th>Name</th>
-<th>Email</th>
-<th>Cell Phone</th>
-<th>Office Phone</th>
-</tr>
 EOH
+    my @names;
     for my $ua (@user_admins) {
-        my $u = $ua->user;
-        $msg .= "<tr>"
-             .  _td($u->first . ' ' . $u->last)
-             .  _td($u->email)
-             .  _td($u->cell)
-             .  _td($u->office)
-             .  "</tr>"
-             ;
+        push @names, $ua->user->first;
     }
-    $msg .= "</table>";
-    return $msg;
+    return $msg . join ', ', @names;
 }
 
 sub _td {
