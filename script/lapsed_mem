@@ -60,6 +60,10 @@ for my $m (@lapsed_members) {
         push @no_email, $m;
         next MEMBER;
     }
+    if ($per->addr1() =~ m{445 .* Summit}xmsi) {
+        # skip people who live at MMC
+        next MEMBER;
+    }
     my $type = $m->category;
     my $html = "";
     my $stash = {
