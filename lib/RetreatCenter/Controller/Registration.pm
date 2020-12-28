@@ -5295,10 +5295,13 @@ sub tally : Local {
 
     # Payments
     my $deposit    = 0;
+    my $payment    = 0;
+    my $donation   = 0;
     my $can_deposit = 0;
     my $can_payment = 0;
-    my $payment    = 0;
+    my $can_donation = 0;
     my $balance    = 0;
+    my %don_dis;        # donation distribution
 
     # Charges
     my @charges_for = (0) x 8;
@@ -5308,12 +5311,13 @@ sub tally : Local {
     my %seen;
     REG:
     for my $r (@regs) {
+        my  $cancelled = $r->cancelled();
         if (! $pr->school()->mmi()) {       # MMC
             for my $rp ($r->payments()) {
                 my $what   = $rp->what;
                 my $amount = $rp->amount();
                 if ($what =~ m{deposit}i) {
-                    if ($r->cancelled()) {
+                    if ($cancelled) {
                         $can_deposit += $amount;
                     }
                     else {
@@ -5321,11 +5325,20 @@ sub tally : Local {
                     }
                 }
                 elsif ($what =~ m{payment}i) {
-                    if ($r->cancelled()) {
+                    if ($cancelled) {
                         $can_payment += $amount;
                     }
                     else {
                         $payment += $amount;
+                    }
+                }
+                elsif ($what =~ m{donation}i) {
+                    if ($cancelled) {
+                        $can_donation += $amount;
+                    }
+                    else {
+                        $donation += $amount;
+                        ++$don_dis{$amount};
                     }
                 }
                 else {
@@ -5386,7 +5399,7 @@ sub tally : Local {
             ++$cancelled;
             next REG;
         }
-        if (! $r->arrived) {
+        if (! $pr->donation() && ! $r->arrived) {
             ++$no_shows;
             next REG;
         }
@@ -5407,6 +5420,10 @@ sub tally : Local {
         $tot_charge += $a;
         $a = commify($a);
     }
+    my $rows_don_dis;
+    for my $amt (sort { $a <=> $b } keys %don_dis) {
+        $rows_don_dis .= "<tr><td align=right>$amt</td><td align=right>$don_dis{$amt}</td></tr>\n";
+    }
     stash($c,
         program     => $pr,
         id          => $prog_id,
@@ -5424,13 +5441,15 @@ sub tally : Local {
 
         deposit     => commify($deposit),
         payment     => commify($payment),
+        donation    => commify($donation),
         balance     => commify($balance),
-        tot_inc     => commify($deposit + $payment + $balance),
+        tot_inc     => commify($deposit + $payment + $donation + $balance),
 
         can_deposit => commify($can_deposit),
         can_payment => commify($can_payment),
         credit      => commify($credit),
         net_cancel  => commify($can_deposit + $can_payment - $credit), 
+        rows_don_dis => $rows_don_dis,
         template    => "registration/tally.tt2",
     );
 }

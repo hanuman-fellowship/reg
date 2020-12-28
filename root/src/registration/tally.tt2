@@ -1,4 +1,4 @@
-<h2>Program Summary for [% program.name %] from [% program.dates %]</h2>
+<h2>Program Summary for $program.name from $program.dates</h2>
 
 <div style="float: left; margin-left: 1in;">
 <table cellpadding=3>
@@ -7,25 +7,25 @@
 
 <tr>
 <th align=right>Attended</td>
-<td align=right width=55>[% adults %]</td>
+<td align=right width=55>$adults</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Females</td>
-<td align=right>[% females %]</td>
+<td align=right>$females</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Males</td>
-<td align=right>[% males %]</td>
+<td align=right>$males</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Kids</td>
-<td align=right>[% kids %]</td>
+<td align=right>$kids</td>
 </tr>
 <tr>
 
@@ -33,26 +33,26 @@
 
 <tr>
 <th align=right>Registered</td>
-<td align=right>[% registered %]</td>
+<td align=right>$registered</td>
 </tr>
 <tr>
 
 <tr>
-<th align=right>Canceled</td>
-<td align=right>[% cancelled %]</td>
+<th align=right>Cancelled</td>
+<td align=right>$cancelled</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>No Shows</td>
-<td align=right>[% no_shows %]</td>
+<td align=right>$no_shows</td>
 </tr>
 <tr>
 
 
 </table>
 </div>
-<a href=/program/view/[% id %]>To Program</a>
+<a href=/program/view/$id>To Program</a>
 
 <div style="float: left; margin-left: 1in; margin-bottom: .7in;">
 <table cellpadding=3>
@@ -70,7 +70,7 @@
 
 <tr>
 <th align=right>Total Charges</td>
-<td align=right>[% tot_charge %]</td>
+<td align=right>$tot_charge</td>
 </tr>
 <tr>
 
@@ -78,19 +78,25 @@
 
 <tr>
 <th align=right>Deposits</td>
-<td align=right>[% deposit %]</td>
+<td align=right>$deposit</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Payments</td>
-<td align=right>[% payment %]</td>
+<td align=right>$payment</td>
+</tr>
+<tr>
+
+<tr>
+<th align=right>Donations</td>
+<td align=right>$donation</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Outstanding Balance</td>
-<td align=right>[% balance %]</td>
+<td align=right>$balance</td>
 </tr>
 <tr>
 
@@ -98,7 +104,7 @@
 
 <tr>
 <th align=right>Total Income</td>
-<td align=right>[% tot_inc %]</td>
+<td align=right>$tot_inc</td>
 </tr>
 <tr>
 
@@ -106,19 +112,19 @@
 
 <tr>
 <th align=right>Cancelled Deposits</td>
-<td align=right>[% can_deposit %]</td>
+<td align=right>$can_deposit</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Cancelled Payments</td>
-<td align=right>[% can_payment %]</td>
+<td align=right>$can_payment</td>
 </tr>
 <tr>
 
 <tr>
 <th align=right>Credit</td>
-<td align=right>[% credit %]</td>
+<td align=right>$credit</td>
 </tr>
 <tr>
 
@@ -126,7 +132,7 @@
 
 <tr>
 <th align=right>Net Cancelled</td>
-<td align=right>[% net_cancel %]</td>
+<td align=right>$net_cancel</td>
 </tr>
 <tr>
 
@@ -135,8 +141,15 @@
 
 <div style="clear: both; margin-left: 1in">
 [% IF full %]
-<a href=/registration/tally/[% id %]>Both</a><br>
-<a href=/registration/tally/[% id %]/1>Normal Only</a><br>
-<a href=/registration/tally/[% id %]/2>Full Only</a>
+<a href=/registration/tally/$id>Both</a><br>
+<a href=/registration/tally/$id/1>Normal Only</a><br>
+<a href=/registration/tally/$id/2>Full Only</a>
 [% END %]
 </div>
+
+<div style="clear: both; margin-left: 1in">
+[% IF program.donation %]
+<table cellpadding=5>
+$rows_don_dis
+</table>
+[% END %]
