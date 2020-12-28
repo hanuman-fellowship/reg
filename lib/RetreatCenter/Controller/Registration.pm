@@ -5338,6 +5338,7 @@ sub tally : Local {
                     }
                     else {
                         $donation += $amount;
+                        $amount =~ s{[.]00\z}{}xms;
                         ++$don_dis{$amount};
                     }
                 }
@@ -5422,7 +5423,6 @@ sub tally : Local {
     }
     my $rows_don_dis;
     for my $amt (sort { $a <=> $b } keys %don_dis) {
-        $amt =~ s{[.]00\z}{}xms;
         $rows_don_dis .= "<tr><td align=right>$amt</td><td align=right>$don_dis{$amt}</td></tr>\n";
     }
     stash($c,
