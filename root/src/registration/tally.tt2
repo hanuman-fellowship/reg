@@ -149,7 +149,9 @@
 
 <div style="clear: both; margin-left: 1in">
 [% IF program.donation %]
+<h2>Donation Distribution</h2>
 <table cellpadding=5>
+<tr><th>Amount</th><th>#</th></tr>
 $rows_don_dis
 </table>
 [% END %]
