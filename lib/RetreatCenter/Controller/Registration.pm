@@ -5284,18 +5284,23 @@ sub non_members : Local {
             prefetch => [qw/ person /],
         }
     );
-    my @emails;
+    my @info;
     for my $r (@regs) {
         my $per = $r->person();
-        if (! $per->member()) {
-            push @emails, $per->email();
+        if (! $per->member() && $per->email()) {
+            push @info, {
+                id      => $per->id(),
+                lfname  => $per->last_first_name(),
+                email   => $per->email(),
+            };
         }
     }
-    @emails = uniq @emails;
+    @info = sort { $a->{lfname} cmp $b->{lfname} } @info;
     stash($c,
+        count    => scalar(@info),
         program  => $prog,
-        emails   => \@emails,
-        bcc      => join(',', @emails),
+        info     => \@info,
+        bcc      => join(',', map { $_->{email} } @info),
         template => 'registration/non_members.tt2',
     );
 }

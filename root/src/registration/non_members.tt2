@@ -1,10 +1,10 @@
-<h2>Emails for Registrants in<br>$program.name<br>who are not HFS members</h2>
+<h2>Emails for $count Registrants in<p class=p2>$program.name<p class=p2>who are not HFS members</h2>
 <ul>
-[% FOR em IN emails %]
-<a href='mailto:$em'>$em</a><br>
-[% END %]
 <p class=p2>
 <a href='mailto: ?bcc=$bcc'>Email All Bcc</a>
+<span style='margin-left: 1in'><a href='/program/view/$program.id'>To Program</a></span>
 <p class=p2>
-<a href='/program/view/$program.id'>To Program</a>
+[% FOR in IN info %]
+<a href=/person/view/$in.id>$in.lfname</a> - <a href='mailto:$in.email'>$in.email</a><br>
+[% END %]
 </ul>
