@@ -73,6 +73,10 @@ use Global qw/
     @clusters
 /;
 use Template;
+use List::Util qw/
+    uniq
+/;
+
 my $rst = "/var/Reg";
 
 my $TYPE_TUITION           = 1;
@@ -5265,6 +5269,35 @@ sub _escape_quote_and_quote {
     return '' if ! defined $s;
     $s =~ s{"}{\\"}xmsg;
     return qq{"$s"};
+}
+
+sub non_members : Local {
+    my ($self, $c, $prog_id) = @_;
+
+    my $prog = model($c, 'Program')->find($prog_id);
+    my @regs = model($c, 'Registration')->search(
+        {
+            program_id       => $prog_id,
+        },
+        {
+            join     => [qw/ person /],
+            prefetch => [qw/ person /],
+        }
+    );
+    my @emails;
+    for my $r (@regs) {
+        my $per = $r->person();
+        if (! $per->member()) {
+            push @emails, $per->email();
+        }
+    }
+    @emails = uniq @emails;
+    stash($c,
+        program  => $prog,
+        emails   => \@emails,
+        bcc      => join(',', @emails),
+        template => 'registration/non_members.tt2',
+    );
 }
 
 #
