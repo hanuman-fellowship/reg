@@ -2,9 +2,9 @@
 <ul>
 <p class=p2>
 <a href='mailto: ?bcc=$bcc'>Email All Bcc</a>
-<span style='margin-left: 1in'><a target=_blank href='/program/view/$program.id'>To Program</a></span>
+<span style='margin-left: 1in'><a href='/program/view/$program.id'>To Program</a></span>
 <p class=p2>
 [% FOR in IN info %]
-<a href=/person/view/$in.id>$in.lfname</a> - <a href='mailto:$in.email'>$in.email</a><br>
+<a target=_blank href=/person/view/$in.id>$in.lfname</a> - <a href='mailto:$in.email'>$in.email</a><br>
 [% END %]
 </ul>
