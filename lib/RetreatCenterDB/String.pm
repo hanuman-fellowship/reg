@@ -212,6 +212,7 @@ ftp_mmi_passive - FTP info for mountmadonnainstitute.org
 ftp_mmi_password - FTP info for mountmadonnainstitute.org
 ftp_mmi_site - FTP info for mountmadonnainstitute.org
 ftp_mmi_transactions - FTP info for mountmadonnainstitute.org - for online registrations for MMI courses
+ftp_new_hfs_dir - FTP info for mountmadonna.org - for new HFS memberships
 ftp_notify_dir - where to place the online notify people
 ftp_omp_dir - The directory on mountmadonna.org for online member payments
 ftp_passive - FTP info for mountmadonna.org

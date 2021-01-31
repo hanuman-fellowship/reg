@@ -54,6 +54,8 @@ them into actual payments.
 
 9) Get rental deposit payments
 
+10) Get new HFS memberships
+
 =end
 
 =cut
@@ -115,6 +117,7 @@ my @mlist_alerts;   # an array of hashrefs - who to send
 my ($online, $grid, $temple, $mlist_done, $meal_requests_done,
     $gift_cards_done,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
+    $new_hfs_dir,
     $temple_donation);
 my $something_happened = 0;
 my $time_printed = 0;
@@ -223,6 +226,7 @@ sub initialize {
     $omp_dir         = make_dir("$dir/omp");
     $rental_deposit_dir = make_dir("$dir/rental_deposit/$year_mon_dir");
     $temple_donation = make_dir("$dir/temple_donation");
+    $new_hfs_dir     = make_dir ("$dir/new_hfs/$year_mon_dir");
 }
 
 sub finalities {
@@ -473,6 +477,67 @@ EOH
             activity_msg => "Email mailing list $TYPE alert to $email",
         );
     }
+}
+
+#
+# what if someone become a member mid-year? or in December?
+# valid_from date?
+# valid_to date?
+# sponsor nights?
+# mem_type of general_ky will be essentially the same as general
+#    Reg will not keep track of 20 hours of KY.
+#    they'll pay $25 and just help out a bit
+#
+sub process_new_hfs {
+    my ($get_dir, $f) = @_;
+    my $href = x_file_to_href("$get_dir/$f");
+    # missing keys - we're not a full mlist thingy
+    $href->{sex} = '';
+    for my $k (qw/ e_mailings snail_mailings share_mailings /) {
+        $href->{$k} = -1;
+    }
+    my ($person_id, $person, $status) = add_or_update_deduping(
+        $c, $href,
+    );
+    my ($month, $year) = ($today->month, $today->year);
+    if ($month == 12) {
+        # ??? is this right??  what about November?
+        ++$year;
+    }
+    my $exp_date = date($year, 12, 31)->as_d8();
+    my $pay_date = date($href->{date})->as_d8();
+    my $pay_time = $href->{date};
+    $pay_time =~ s{:}{}xms;     # we know it is in 24 hour time format
+    my $general = $href->{mem_type} =~ /general/;
+    my $amount = $href->{amount};
+    my $mem = model($c, 'Member')->create({
+        person_id => $person_id,
+        category  => ucfirst $href->{mem_type},
+        date_general => $general? $exp_date: '',
+        date_sponsor => $general? '': $exp_date,
+        date_life => '',    # obsolete
+        free_program_taken => '',
+        sponsor_nights => $general? 0: 4,
+            # ??? less than 4 if mid year...
+        total_paid => $general? 0: $amount,    # only relevant if sponsor???
+        voter => '',
+    });
+    my $mem_id = $mem->id();
+    model($c, 'SponsHist')->create({
+        member_id    => $mem_id,
+        date_payment => $pay_date,
+        valid_from   => date($year, 1, 1)->as_d8(),     # ???
+        valid_to     => $exp_date,
+        amount       => $amount,
+        general      => $general? 'yes': '',
+        transaction_id => $href->{trans_id},
+        the_date     => $pay_date,
+        time         => $pay_time,
+        user_id      => 2,      # sahadev = online...
+    });
+#   NightHist???
+#    _xaccount_mem_pay($c, $person_id,
+#                      $amount, $mkpay_date, $href->{mem_type}, $pay_type);
 }
 
 sub process_mlist {
@@ -937,6 +1002,10 @@ sub main {
     # MMC Meal Requests
     get_files($ftp, $string{ftp_meal_requests_dir},
               $meal_requests_done, \&process_meal_requests);
+
+    # New HFS Memberships
+    get_files($ftp, $string{ftp_new_hfs_dir},
+              $new_hfs_dir, \&process_new_hfs);
 
     # Gift Cards
     get_files($ftp, $string{ftp_gift_cards_dir},
