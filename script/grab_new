@@ -516,7 +516,7 @@ sub process_new_hfs {
         date_general => $general? $exp_date: '',
         date_sponsor => $general? '': $exp_date,
         date_life => '',    # obsolete
-        free_program_taken => '',
+        free_prog_taken => '',
         sponsor_nights => $general? 0: 4,
             # ??? less than 4 if mid year...
         total_paid => $general? 0: $amount,    # only relevant if sponsor???
