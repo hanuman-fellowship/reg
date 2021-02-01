@@ -119,7 +119,6 @@ my ($online, $grid, $temple, $mlist_done, $meal_requests_done,
     $req_mmi_dir, $req_mmc_dir, $omp_dir, $rental_deposit_dir,
     $new_hfs_dir,
     $temple_donation);
-my $something_happened = 0;
 my $time_printed = 0;
 
 sub msg {
@@ -279,9 +278,6 @@ sub get_files {
             $code_ref->($get_dir, $f, @params);
         }
         $ftp->delete($f);
-    }
-    if ($nfiles) {
-        $something_happened = 1;
     }
 }
 
@@ -479,6 +475,15 @@ EOH
     }
 }
 
+sub nights_for {
+    my ($month) = @_;
+    return $month <= 3? 4
+          :$month <= 6? 3
+          :$month <= 9? 2
+          :             1
+          ;
+}
+
 #
 # what if someone become a member mid-year? or in December?
 # valid_from date?
@@ -487,6 +492,9 @@ EOH
 # mem_type of general_ky will be essentially the same as general
 #    Reg will not keep track of 20 hours of KY.
 #    they'll pay $25 and just help out a bit
+# no one checks at the meal line who is paying what rate...
+# if someone knows they're a member they pay the member rate
+#   by putting that amount on the sheet in the folder...
 #
 sub process_new_hfs {
     my ($get_dir, $f) = @_;
@@ -506,38 +514,89 @@ sub process_new_hfs {
     }
     my $exp_date = date($year, 12, 31)->as_d8();
     my $pay_date = date($href->{date})->as_d8();
-    my $pay_time = $href->{date};
+    my $pay_time = $href->{time};
     $pay_time =~ s{:}{}xms;     # we know it is in 24 hour time format
     my $general = $href->{mem_type} =~ /general/;
+    my $mem_type = ucfirst $href->{mem_type};
     my $amount = $href->{amount};
-    my $mem = model($c, 'Member')->create({
-        person_id => $person_id,
-        category  => ucfirst $href->{mem_type},
-        date_general => $general? $exp_date: '',
-        date_sponsor => $general? '': $exp_date,
-        date_life => '',    # obsolete
-        free_prog_taken => '',
-        sponsor_nights => $general? 0: 4,
-            # ??? less than 4 if mid year...
-        total_paid => $general? 0: $amount,    # only relevant if sponsor???
-        voter => '',
-    });
+    my $mem = $person->member();
+    if (! $mem) {
+        # new member
+        $mem = model($c, 'Member')->create({
+            person_id    => $person_id,
+            category     => $mem_type,
+            date_general => $general? $exp_date: '',
+            date_sponsor => $general? '': $exp_date,
+            date_life    => '',    # obsolete
+            voter        => '',
+            free_prog_taken => '',
+            sponsor_nights  => $general? 0: nights_for($month),
+            total_paid      => $general? 0: $amount,
+                               # only relevant if sponsor???
+        });
+    }
+    else {
+        # existing member
+        # recompute the total paid
+        my $member_id = $mem->id();
+        my $total = 0;
+        for my $p (model($c, 'SponsHist')->search({
+                       member_id => $member_id,
+                       general   => { "!=", "yes" },
+                   })
+        ) {
+            $total += $p->amount;
+        }
+        $mem->update({
+            total_paid     => $total + ($general? 0: $amount),
+            sponsor_nights => $general? 0: nights_for($month),
+        });
+    }
     my $mem_id = $mem->id();
     model($c, 'SponsHist')->create({
         member_id    => $mem_id,
         date_payment => $pay_date,
-        valid_from   => date($year, 1, 1)->as_d8(),     # ???
+        valid_from   => $pay_date,      # ???
         valid_to     => $exp_date,
         amount       => $amount,
         general      => $general? 'yes': '',
-        transaction_id => $href->{trans_id},
-        the_date     => $pay_date,
+        the_date     => $pay_date,      # so many dates :(
         time         => $pay_time,
         user_id      => 2,      # sahadev = online...
+        transaction_id => $href->{trans_id},
     });
-#   NightHist???
-#    _xaccount_mem_pay($c, $person_id,
-#                      $amount, $mkpay_date, $href->{mem_type}, $pay_type);
+    # for the extra account payment
+    my @xaccounts = model($c, 'XAccount')->search({
+                        descr => 'Membership',
+                    });
+    my $membership_xaccount_id;
+    if (@xaccounts == 1) {
+        $membership_xaccount_id = $xaccounts[0]->id;
+    }
+    else {
+        quit("could not find the Membership Extra Account");
+    }
+    model($c, 'XAccountPayment')->create({
+        person_id   => $person_id,
+        xaccount_id => $membership_xaccount_id,
+        what        => "New " . ucfirst($href->{mem_type}) . " Membership",
+        amount      => $amount,
+        type        => 'O',               # online
+        user_id     => 2,                 # sahadev = online...
+        the_date    => $pay_date,
+        time        => $pay_time,
+        transaction_id => $href->{trans_id},
+    });
+    model($c, 'NightHist')->create({
+        member_id  => $mem_id,
+        reg_id     => 0,
+        num_nights => $general? 0: 4,       # ??? prorated?
+        action     => 1,    # set nights
+        the_date   => $pay_date,
+        time       => $pay_time,
+    });
+    msg "NEW $mem_type membership - payment of \$$amount for "
+      . $person->name();
 }
 
 sub process_mlist {
