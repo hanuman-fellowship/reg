@@ -596,6 +596,14 @@ sub process_new_hfs {
         the_date   => $pay_date,
         time       => $pay_time,
     });
+    # need affiliations - see Member.pm
+    #
+    # make a Util function to receive a member payment
+    # and call it in various places:
+    # - here for new members
+    # - online_member_payment (moved to grab_new)
+    # - manual (not from online) adding in Member.pm
+    #
     msg "NEW $mem_type membership - payment of \$$amount for "
       . $person->name();
 }
