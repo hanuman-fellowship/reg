@@ -605,7 +605,10 @@ sub process_new_hfs {
     # - manual (not from online) adding in Member.pm
     #
     msg "NEW $mem_type membership - payment of \$$amount for "
-      . $person->name();
+      . "<a href='/member/view/$mem_id'>"
+      . $person->name()
+      . "</a>"
+      ;
 }
 
 sub process_mlist {
