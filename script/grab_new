@@ -550,7 +550,7 @@ sub process_new_hfs {
         $mem->update({
             total_paid     => $total + ($general? 0: $amount),
             sponsor_nights => $general? 0: nights_for($month),
-            category       => $general? "General": "Sponsor";
+            category       => $general? "General": "Sponsor",
         });
     }
     my $mem_id = $mem->id();
