@@ -612,6 +612,7 @@ sub delete : Local {
 
     my $m = model($c, 'Member')->find($id);
     $m->payments()->delete();
+    $m->nighthist()->delete();
     $m->delete();
     $c->response->redirect($c->uri_for('/member/list'));
 }
